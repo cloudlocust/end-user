@@ -1,0 +1,6 @@
+react-app-env.d.ts
+reportWebVitals.ts
+*/**/*.js
+craco.config.js
+tailwind.config.js
+*/**/package.json 

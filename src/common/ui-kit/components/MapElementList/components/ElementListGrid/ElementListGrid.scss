@@ -1,0 +1,42 @@
+@import 'src/common/ui-kit/styles/media.scss';
+
+.BoxRow {
+    display: flex;
+    justify-content: space-evenly;
+    flex-wrap: wrap;
+}
+.BoxColumn {
+    display: flex;
+    flex-basis: 100%;
+    margin-bottom: 20px;
+    justify-content: center;
+    @include sm {
+        margin-right: 20px;
+        flex-basis: 50%;
+    }
+    @include md {
+        flex-basis: calc(100% / 3);
+    }
+    @include lg {
+        flex-basis: 25%;
+    }
+    @include xl {
+        flex-basis: 20%;
+    }
+}
+
+.BoxColumnShrink {
+    margin-bottom: 20px;
+    flex-basis: 100%;
+    justify-content: center;
+    @include md {
+        flex-basis: 80%;
+    }
+    @include lg {
+        margin-right: 20px;
+        flex-basis: 60%;
+    }
+    @include xl {
+        flex-basis: 40%;
+    }
+}
