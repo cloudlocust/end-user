@@ -1,0 +1,14 @@
+{
+    "name": "Nouvelles Energies Distrubution",
+    "short_name": "NED",
+    "theme_color": "#c9d200",
+    "background_color": "#a6ad10",
+    "display": "standalone",
+    "scope": "/",
+    "start_url": "/",
+    "icons": [
+        { "src": "favicon.ico", "sizes": "64x64 32x32 24x24 16x16", "type": "image/x-icon", "purpose": "any maskable" },
+        { "src": "logo192x192.png", "type": "image/png", "sizes": "192x192", "purpose": "any maskable" },
+        { "src": "logo512x512.png", "type": "image/png", "sizes": "512x512", "purpose": "any maskable" }
+    ]
+}
