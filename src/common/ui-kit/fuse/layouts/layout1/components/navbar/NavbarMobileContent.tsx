@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import NavLinkAdapter from 'src/common/ui-kit/fuse/utils/NavLinkAdapter'
-import { styled, ThemeProvider } from '@mui/material/styles'
+import { styled, ThemeProvider, useTheme } from '@mui/material/styles'
 import FuseNavigation, { navbarItemType } from 'src/common/ui-kit/fuse/components/FuseNavigation/FuseNavigation'
 import BottomNavigation from '@mui/material/BottomNavigation'
 import ClickAwayListener from '@mui/material/ClickAwayListener'
@@ -9,7 +9,7 @@ import { Location } from 'history'
 import Icon from '@mui/material/Icon'
 import clsx from 'clsx'
 import SwipeableDrawer from '@mui/material/SwipeableDrawer'
-import { selectMyemTheme } from 'src/common/ui-kit/fuse/utils/theming-generator'
+import { selectContrastMainTheme } from 'src/common/ui-kit/fuse/utils/theming-generator'
 import { BottomNavigationAction } from '@mui/material'
 import { useIntl } from 'src/common/react-platform-translation'
 
@@ -97,13 +97,14 @@ function NavbarMobileContent(props: /**
      */
     navbarContent: navbarItemType[]
 }) {
+    const theme = useTheme()
     const [selectedNavigation, setSelectedNavigation] = useState<navbarItemType[] | []>([])
     const location = useLocation()
     const { navbarContent } = props
     const [panelOpen, setPanelOpen] = useState(false)
     const { formatMessage } = useIntl()
 
-    const contrastTheme = selectMyemTheme()
+    const contrastTheme = selectContrastMainTheme(theme.palette.primary.main)
 
     useEffect(() => {
         navbarContent?.forEach((item) => {

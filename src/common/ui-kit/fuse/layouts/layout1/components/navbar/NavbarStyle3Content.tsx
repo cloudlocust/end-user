@@ -6,7 +6,7 @@ import FuseNavigation, { navbarItemType } from 'src/common/ui-kit/fuse/component
 import FuseScrollbars from 'src/common/ui-kit/fuse/components/FuseScrollbars'
 import { useLocation } from 'react-router-dom'
 import { Location } from 'history'
-import { selectMyemTheme } from 'src/common/ui-kit/fuse/utils/theming-generator'
+import { selectContrastMainTheme } from 'src/common/ui-kit/fuse/utils/theming-generator'
 import useMediaQuery from '@mui/material/useMediaQuery'
 
 const Root = styled('div')(({ theme }) => ({
@@ -102,7 +102,7 @@ function NavbarStyle3Content(props: /**
     const [panelOpen, setPanelOpen] = useState(false)
     const { navbarContent, navbarCloseMobile } = props
 
-    const contrastTheme = selectMyemTheme()
+    const contrastTheme = selectContrastMainTheme(theme.palette.primary.main)
     const location = useLocation()
 
     useEffect(() => {

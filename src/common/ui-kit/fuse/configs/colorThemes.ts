@@ -78,7 +78,7 @@ const colorThemes: colorThemesType = {
             text: lightText,
             primary: {
                 light: '#dcdbdf',
-                main: '#006970', // TODO move to myem theme
+                main: '#3e3d40',
                 dark: '#1d1d1f',
             },
             secondary: {
@@ -88,22 +88,32 @@ const colorThemes: colorThemesType = {
             },
             background: {
                 paper: '#FFFFFF',
-                default: '#f6f7f9',
+                default: '#FAFCFC',
             },
             error: red,
         },
     },
-    myemTheme: {
+    myem: {
         palette: {
-            mode: 'dark',
-            background: {
-                paper: '#006970',
-                default: '#121212',
-            },
+            mode: 'light',
             text: {
-                primary: 'rgb(255,255,255)',
-                secondary: 'rgb(229, 231, 235)',
-                disabled: 'rgb(156, 163, 175)',
+                primary: '#000000',
+                secondary: lightText.secondary,
+                disabled: '#C4C7C7',
+            },
+            background: {
+                paper: '#FFFFFF',
+                default: '#f6f7f9',
+            },
+            primary: {
+                light: '#1EBDC7',
+                main: '#006970',
+                dark: '#004F55',
+            },
+            secondary: {
+                light: '#ffe182',
+                main: '#FFC200',
+                dark: '#ffa200',
             },
         },
     },

@@ -7,7 +7,7 @@ import {
 } from 'src/common/ui-kit/fuse/configs/defaultThemeConfigs'
 import colorThemes from 'src/common/ui-kit/fuse/configs/colorThemes'
 
-const idColorTheme = 'ned'
+const idColorTheme = 'myem'
 
 /**
  * Utility function to createTheme (MUI function) from colorThemes and default-settings.
@@ -73,10 +73,3 @@ export const selectMainThemeDark = () => generateMuiTheme('mainThemeDark')
  * @returns Theme Object of generateMuiTheme.
  */
 export const selectMainThemeLight = () => generateMuiTheme('mainThemeLight')
-/**.
- * Utility function to call the generateMuiTheme function with myemTheme (those who have light bg colors).
- *
- *
- * @returns Theme Object of generateMuiTheme.
- */
-export const selectMyemTheme = () => generateMuiTheme('myemTheme')
