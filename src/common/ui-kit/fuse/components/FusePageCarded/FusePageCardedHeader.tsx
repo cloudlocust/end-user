@@ -1,5 +1,5 @@
-import { ThemeProvider } from '@mui/material/styles'
-import { selectMyemTheme } from 'src/common/ui-kit/fuse/utils/theming-generator'
+import { useTheme, ThemeProvider } from '@mui/material/styles'
+import { selectContrastMainTheme } from 'src/common/ui-kit/fuse/utils/theming-generator'
 
 /**
  * Fuse page carded header.
@@ -17,7 +17,8 @@ function FusePageCardedHeader(props: /**
      */
     header?: JSX.Element
 }) {
-    const contrastTheme = selectMyemTheme()
+    const theme = useTheme()
+    const contrastTheme = selectContrastMainTheme(theme.palette.primary.main)
 
     return (
         <div className="FusePageCarded-header">

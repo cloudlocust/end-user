@@ -1,6 +1,6 @@
 import React from 'react'
-import { ThemeProvider } from '@mui/material/styles'
-import { selectMyemTheme } from 'src/common/ui-kit/fuse/utils/theming-generator'
+import { useTheme, ThemeProvider } from '@mui/material/styles'
+import { selectContrastMainTheme } from 'src/common/ui-kit/fuse/utils/theming-generator'
 import clsx from 'clsx'
 
 /**
@@ -19,7 +19,8 @@ function PageSimpleHeader(props: /**
      */
     header: JSX.Element
 }) {
-    const contrastTheme = selectMyemTheme()
+    const theme = useTheme()
+    const contrastTheme = selectContrastMainTheme(theme.palette.primary.main)
 
     return (
         <div className={clsx('PageSimple-header')}>
