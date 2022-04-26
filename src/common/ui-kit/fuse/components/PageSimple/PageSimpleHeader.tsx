@@ -1,5 +1,5 @@
 import React from 'react'
-import { useTheme, ThemeProvider } from '@mui/material/styles'
+import { ThemeProvider } from '@mui/material/styles'
 import { selectMyemTheme } from 'src/common/ui-kit/fuse/utils/theming-generator'
 import clsx from 'clsx'
 

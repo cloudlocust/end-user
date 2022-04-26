@@ -1,4 +1,4 @@
-import { rest } from 'msw'
+// import { rest } from 'msw'
 // import { AUTH_BASE_URL } from 'src/modules/User/configs'
 // import { IUserRegister } from 'src/modules/User/model'
 
@@ -41,7 +41,8 @@ import { rest } from 'msw'
 //  * Mock Installer List, which represents users that doesn't have installers.
 //  */
 // export var TEST_SUCCESS_INSTALLERS = [TEST_SUCCESS_USER]
-// // eslint-disable-next-line jsdoc/require-jsdoc
+// eslint-disable-next-line jsdoc/require-jsdoc
+export const userEndpoints = []
 // export const userEndpoints = [
 //     // eslint-disable-next-line jsdoc/require-jsdoc
 //     rest.post<FormData>(`${AUTH_BASE_URL}/auth/jwt/login`, (req, res, ctx) => {
