@@ -197,12 +197,9 @@ const FusePageCarded = forwardRef((props: IPageCardedProps) => {
                 <div className="flex container w-full">
                     <div className={clsx('FusePageCarded-contentWrapper')}>
                         <FusePageCardedHeader header={props.header} />
-
+                        {/* // TODO add ifMobile ?? */}
+                        {props.contentToolbar && <div className="FusePageCarded-toolbar">{props.contentToolbar}</div>}
                         <div className={clsx('FusePageCarded-contentCard', props.innerScroll && 'inner-scroll')}>
-                            {props.contentToolbar && (
-                                <div className="FusePageCarded-toolbar">{props.contentToolbar}</div>
-                            )}
-
                             {props.content && (
                                 <FuseScrollbars
                                     className="FusePageCarded-content"
