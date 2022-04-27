@@ -36,7 +36,7 @@ const Root = styled(FusePageCarded)(({ theme }) => ({
             borderBottom: 'none',
             '& .multitabs': {
                 background: '#CCE7E9 ',
-                border: '1px solid #006970',
+                border: `1px solid ${theme.palette.primary.main}`,
                 borderRadius: '40px',
             },
         },
@@ -125,14 +125,14 @@ const MultiTab = ({
                     textColor="primary"
                     variant="scrollable"
                     scrollButtons="auto"
-                    classes={{ root: `${isMobile ? 'multitabs mb-20' : 'w-full'} 'h-64' ` }}
+                    classes={{ root: `${isMobile ? 'multitabs mb-20 h-44' : 'w-full h-64'} ` }}
                 >
                     {content.map((element, index) => (
                         <Tab
                             key={index}
                             value={element.tabSlug}
                             label={formatMessage({ id: element.tabTitle, defaultMessage: element.tabTitle })}
-                            className="h-64"
+                            className={isMobile ? 'h-44' : 'h-64'}
                         />
                     ))}
                 </Tabs>
