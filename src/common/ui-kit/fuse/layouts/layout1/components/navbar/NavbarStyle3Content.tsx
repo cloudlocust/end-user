@@ -159,7 +159,11 @@ function NavbarStyle3Content(props: /**
             <Root className={'flex flex-auto flex h-full'}>
                 <ThemeProvider theme={contrastTheme}>
                     <div id="fuse-navbar-side-panel" className="flex flex-shrink-0 flex-col items-center">
-                        <img className="w-44 my-32" src="/assets/images/logos/myem.svg" alt="logo" />
+                        <img
+                            className="w-44 my-32"
+                            src={`/assets/images/logos/${window._env_.REACT_APP_CLIENT_ICON_FOLDER}-on-primary.svg`}
+                            alt="logo"
+                        />
                         <FuseScrollbars
                             className="flex flex-1 min-h-0 justify-center w-full overflow-y-auto overflow-x-hidden"
                             option={{ suppressScrollX: true, wheelPropagation: false }}
