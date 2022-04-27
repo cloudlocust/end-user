@@ -14,7 +14,6 @@ import { BottomNavigationAction } from '@mui/material'
 import { useIntl } from 'src/common/react-platform-translation'
 
 const Root = styled(BottomNavigation)(({ theme }) => ({
-    color: theme.palette.primary.contrastText,
     position: 'fixed',
     bottom: 0,
     zIndex: 99,
@@ -158,7 +157,12 @@ function NavbarMobileContent(props: /**
                 <ThemeProvider theme={contrastTheme}>
                     <Root
                         showLabels
-                        sx={{ width: '100vw', overflowX: 'auto' }}
+                        sx={{
+                            width: '100vw',
+                            overflowX: 'auto',
+                            backgroundColor: theme.palette.primary.main,
+                            color: theme.palette.primary.contrastText,
+                        }}
                         value={selectedNavigation}
                         onChange={(event, item) => handleParentItemClick(item)}
                     >
