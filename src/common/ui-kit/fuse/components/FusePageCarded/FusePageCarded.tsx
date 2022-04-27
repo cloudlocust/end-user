@@ -1,9 +1,10 @@
 import FuseScrollbars from 'src/common/ui-kit/fuse/components/FuseScrollbars'
-import { styled } from '@mui/material/styles'
+import { styled, useTheme } from '@mui/material/styles'
 import clsx from 'clsx'
 import { forwardRef, memo, useRef } from 'react'
 import GlobalStyles from '@mui/material/GlobalStyles'
 import FusePageCardedHeader from './FusePageCardedHeader'
+import { useMediaQuery } from '@mui/material'
 
 const Root = styled('div')(({ theme }) => ({
     display: 'flex',
@@ -174,7 +175,9 @@ const headerContentHeight = headerHeight - toolbarHeight
 
 const FusePageCarded = forwardRef((props: IPageCardedProps) => {
     const rootRef = useRef(null)
-
+    const theme = useTheme()
+    const isMobile = useMediaQuery(theme.breakpoints.down('md'))
+    const toolbar = props.contentToolbar && <div className="FusePageCarded-toolbar">{props.contentToolbar}</div>
     return (
         <>
             <GlobalStyles
@@ -197,9 +200,9 @@ const FusePageCarded = forwardRef((props: IPageCardedProps) => {
                 <div className="flex container w-full">
                     <div className={clsx('FusePageCarded-contentWrapper')}>
                         <FusePageCardedHeader header={props.header} />
-                        {/* // TODO add ifMobile ?? */}
-                        {props.contentToolbar && <div className="FusePageCarded-toolbar">{props.contentToolbar}</div>}
+                        {isMobile && toolbar}
                         <div className={clsx('FusePageCarded-contentCard', props.innerScroll && 'inner-scroll')}>
+                            {!isMobile && toolbar}
                             {props.content && (
                                 <FuseScrollbars
                                     className="FusePageCarded-content"

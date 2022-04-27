@@ -1,20 +1,21 @@
 import React, { SyntheticEvent, useState } from 'react'
 import { useHistory, useLocation } from 'react-router'
-import { styled } from '@mui/material/styles'
+import { styled, useTheme } from '@mui/material/styles'
 import FusePageCarded from 'src/common/ui-kit/fuse/components/FusePageCarded'
 import { useIntl } from 'src/common/react-platform-translation'
 import Tabs from '@mui/material/Tabs'
 import Tab from '@mui/material/Tab'
 import { keyBy, mapValues } from 'lodash'
+import { useMediaQuery } from '@mui/material'
 
 const Root = styled(FusePageCarded)(({ theme }) => ({
     '& .FusePageCarded-header': {
-        minHeight: 72,
-        height: 72,
+        minHeight: 136,
+        height: 136,
         alignItems: 'center',
-        [theme.breakpoints.up('sm')]: {
-            minHeight: 136,
-            height: 136,
+        [theme.breakpoints.down('md')]: {
+            minHeight: 32,
+            height: 32,
         },
     },
     '& .FusePageCarded-content': {
@@ -23,8 +24,24 @@ const Root = styled(FusePageCarded)(({ theme }) => ({
     '& .FusePageCarded-contentCard': {
         overflow: 'hidden',
     },
+    '& .FusePageCarded-topBg': {
+        [theme.breakpoints.down('md')]: {
+            background: 'transparent',
+        },
+    },
+    '& .FusePageCarded-toolbar': {
+        [theme.breakpoints.down('md')]: {
+            display: 'flex',
+            justifyContent: 'center',
+            borderBottom: 'none',
+            '& .multitabs': {
+                background: '#CCE7E9 ',
+                border: '1px solid #006970',
+                borderRadius: '40px',
+            },
+        },
+    },
 }))
-
 //eslint-disable-next-line jsdoc/require-jsdoc
 interface ElementDetails {
     //eslint-disable-next-line jsdoc/require-jsdoc
@@ -68,6 +85,8 @@ const MultiTab = ({
     innerScroll?: boolean
 }) => {
     const { formatMessage } = useIntl()
+    const theme = useTheme()
+    const isMobile = useMediaQuery(theme.breakpoints.down('md'))
 
     // Add KeyContent to access slugs more easly
     let keyedContent = mapValues(keyBy(content, 'tabSlug'), 'tabContent')
@@ -106,7 +125,7 @@ const MultiTab = ({
                     textColor="primary"
                     variant="scrollable"
                     scrollButtons="auto"
-                    classes={{ root: 'w-full h-64' }}
+                    classes={{ root: `${isMobile ? 'multitabs mb-20' : 'w-full'} 'h-64' ` }}
                 >
                     {content.map((element, index) => (
                         <Tab
