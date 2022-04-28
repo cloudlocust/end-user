@@ -1,4 +1,4 @@
-// import { userModel } from 'src/modules/User'
+import { userModel } from 'src/modules/User'
 import { translationModel } from 'src/common/react-platform-translation'
 import { Models } from '@rematch/core'
 
@@ -9,7 +9,7 @@ export interface RootModel extends Models<RootModel> {
     /**
      * Model of users.
      */
-    // userModel: typeof userModel
+    userModel: typeof userModel
     /**
      * Model of translation.
      */
@@ -20,6 +20,6 @@ export interface RootModel extends Models<RootModel> {
  * Models constant to inject into redux.
  */
 export const models: RootModel = {
-    // userModel,
+    userModel,
     translationModel,
 }
