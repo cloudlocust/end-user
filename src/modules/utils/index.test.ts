@@ -1,7 +1,5 @@
 import { getMsgFromAxiosError, getQueryParamsFromFiltersObject } from '.'
-if (process.env.NODE_ENV === 'test') {
-    window._env_ = {}
-}
+window._env_ = {}
 
 describe('Test get msg from axios error function', () => {
     test('formatted case', () => {
