@@ -22,6 +22,20 @@ if (process.env.NODE_ENV === 'test' || process.env.NODE_ENV === 'development') {
             window._env_[key] = value
         }
     }
+    // To avoid errors when starting app on localhost, we duplicate PWA related tags in here because when starting app on localhost, index.html it doesn't yet know window._env_ that's why we define it here.
+    if (process.env.NODE_ENV === 'development') {
+        const REACT_APP_CLIENT_ICON_FOLDER = window._env_.REACT_APP_CLIENT_ICON_FOLDER
+        document
+            .getElementById('apple-touch-icon-link')!
+            .setAttribute('href', `/clients-icons/${REACT_APP_CLIENT_ICON_FOLDER}/logo192x192.png`)
+        document
+            .getElementById('manifest-link')!
+            .setAttribute('href', `/clients-icons/${REACT_APP_CLIENT_ICON_FOLDER}/manifest.json`)
+        document
+            .getElementById('icon-link')!
+            .setAttribute('href', `/clients-icons/${REACT_APP_CLIENT_ICON_FOLDER}/favicon.ico`)
+        document.title = window._env_.REACT_APP_TITLE
+    }
 }
 /**
  * Extends window global variable.

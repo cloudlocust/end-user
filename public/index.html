@@ -2,7 +2,8 @@
 <html lang="en">
     <head>
         <meta charset="utf-8" />
-        <link rel="icon" href="%PUBLIC_URL%/clients-icons/%REACT_APP_CLIENT_ICON_FOLDER%/favicon.ico" />
+        <!-- // Set Dynamic Manifest.json https://stackoverflow.com/a/57856162/13145536 -->
+        <link rel="icon" id="icon-link" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta name="theme-color" content="#000000" />
         <meta name="description" content="Web site created using create-react-app" />
@@ -14,8 +15,8 @@
             href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,300;0,400;0,700;1,400&display=swap"
             rel="stylesheet"
         />
-        <link rel="apple-touch-icon" href="%PUBLIC_URL%/clients-icons/%REACT_APP_CLIENT_ICON_FOLDER%/logo192x192.png" />
-        <link rel="manifest" href="%PUBLIC_URL%/clients-icons/%REACT_APP_CLIENT_ICON_FOLDER%/manifest.json" />
+        <link rel="apple-touch-icon" id="apple-touch-icon-link" />
+        <link rel="manifest" id="manifest-link" />
         <script src="%PUBLIC_URL%/env-config.js"></script>
         <!--
       manifest.json provides metadata used when your web app is installed on a
@@ -34,6 +35,20 @@
     <body>
         <noscript>You need to enable JavaScript to run this app.</noscript>
         <div id="root"></div>
+        <script>
+            // Solution inspired from (How to Create dynamic manifest.json https://stackoverflow.com/a/57856162/13145536)
+            const REACT_APP_CLIENT_ICON_FOLDER = window._env_.REACT_APP_CLIENT_ICON_FOLDER
+            document
+                .getElementById('apple-touch-icon-link')
+                .setAttribute('href', `%PUBLIC_URL%/clients-icons/${REACT_APP_CLIENT_ICON_FOLDER}/logo192x192.png`)
+            document
+                .getElementById('manifest-link')
+                .setAttribute('href', `%PUBLIC_URL%/clients-icons/${REACT_APP_CLIENT_ICON_FOLDER}/manifest.json`)
+            document
+                .getElementById('icon-link')
+                .setAttribute('href', `%PUBLIC_URL%/clients-icons/${REACT_APP_CLIENT_ICON_FOLDER}/favicon.ico`)
+            document.title = window._env_.REACT_APP_TITLE
+        </script>
         <!--
       This HTML file is a template.
       If you open it directly in the browser, you will see an empty page.
