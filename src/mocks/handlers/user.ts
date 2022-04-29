@@ -1,6 +1,6 @@
 import { rest } from 'msw'
 import { AUTH_BASE_URL } from 'src/modules/User/configs'
-// import { IUserRegister } from 'src/modules/User/model'
+import { IUserRegister } from 'src/modules/User/model'
 
 /**
  * Success mail to send for login.
@@ -42,6 +42,7 @@ export const TEST_SUCCESS_USER = {
  */
 // export var TEST_SUCCESS_USERS = [TEST_SUCCESS_USER]
 // eslint-disable-next-line jsdoc/require-jsdoc
+// export const userEndpoints = []
 export const userEndpoints = [
     // eslint-disable-next-line jsdoc/require-jsdoc
     rest.post<FormData>(`${AUTH_BASE_URL}/auth/jwt/login`, (req, res, ctx) => {
@@ -55,15 +56,15 @@ export const userEndpoints = [
             return res(ctx.status(400))
         }
     }),
-    //     // eslint-disable-next-line jsdoc/require-jsdoc
-    //     rest.post<IUserRegister>(`${AUTH_BASE_URL}/auth/register`, (req, res, ctx) => {
-    //         const { email } = req.body
-    //         if (email === TEST_SUCCESS_MAIL) {
-    //             return res(ctx.status(200))
-    //         } else {
-    //             return res(ctx.status(400))
-    //         }
-    //     }),
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    rest.post<IUserRegister>(`${AUTH_BASE_URL}/auth/register`, (req, res, ctx) => {
+        const { email } = req.body
+        if (email === TEST_SUCCESS_MAIL) {
+            return res(ctx.status(200))
+        } else {
+            return res(ctx.status(400))
+        }
+    }),
     //     // eslint-disable-next-line jsdoc/require-jsdoc
     //     rest.post<string>(`${AUTH_BASE_URL}/change`, (req, res, ctx) => {
     //         const email = req.body

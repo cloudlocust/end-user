@@ -319,6 +319,7 @@ export const userModel = createModel<RootModel>()({
  * @returns TODO Document.
  */
 export const handleRegisterErrors = (error: any) => {
+    const defaultMessage = 'Service inaccessible pour le moment.'
     if (error.response && error.response.status) {
         switch (error.response.status) {
             case 400:
@@ -329,9 +330,15 @@ export const handleRegisterErrors = (error: any) => {
             case 401:
                 // Handle unauthorized error
                 return "Vous n'avez pas le droit d'effectuer cette opération."
-
+            case 422:
+                // Errors follow thie follow format "errors": [ {"address": ["zip_code" , "street field required"] } ]
+                for (let errorField of error.response.data.errors) {
+                    // Handle Address Field Only,
+                    if (Object.keys(errorField)[0] === 'address') return 'Veuillez entrer une adresse e-mail valide'
+                }
+                return defaultMessage
             default:
-                return 'Service inaccessible pour le moment.'
+                return defaultMessage
         }
     } else {
         // If error has no response return the message of error
