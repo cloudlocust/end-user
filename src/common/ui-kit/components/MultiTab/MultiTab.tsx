@@ -1,12 +1,11 @@
 import React, { SyntheticEvent, useState } from 'react'
 import { useHistory, useLocation } from 'react-router'
-import { styled, useTheme } from '@mui/material/styles'
+import { styled } from '@mui/material/styles'
 import FusePageCarded from 'src/common/ui-kit/fuse/components/FusePageCarded'
 import { useIntl } from 'src/common/react-platform-translation'
 import Tabs from '@mui/material/Tabs'
 import Tab from '@mui/material/Tab'
 import { keyBy, mapValues } from 'lodash'
-import { useMediaQuery } from '@mui/material'
 
 const Root = styled(FusePageCarded)(({ theme }) => ({
     '& .FusePageCarded-header': {
@@ -34,7 +33,11 @@ const Root = styled(FusePageCarded)(({ theme }) => ({
             display: 'flex',
             justifyContent: 'center',
             borderBottom: 'none',
-            '& .multitabs': {
+        },
+        '& .multitabs': {
+            height: '64px',
+            [theme.breakpoints.down('md')]: {
+                height: '44px',
                 background: '#CCE7E9 ',
                 outline: `1px solid ${theme.palette.primary.main}`,
                 borderRadius: '40px',
@@ -43,11 +46,17 @@ const Root = styled(FusePageCarded)(({ theme }) => ({
                     zIndex: 1,
                 },
             },
-            '& .indicator': {
+            '& .tabs': {
+                height: '64px',
                 [theme.breakpoints.down('md')]: {
-                    height: '48px',
-                    borderRadius: '30px',
+                    height: '44px',
                 },
+            },
+        },
+        '& .indicator': {
+            [theme.breakpoints.down('md')]: {
+                height: '48px',
+                borderRadius: '30px',
             },
         },
     },
@@ -96,8 +105,6 @@ const MultiTab = ({
     innerScroll?: boolean
 }) => {
     const { formatMessage } = useIntl()
-    const theme = useTheme()
-    const isMobile = useMediaQuery(theme.breakpoints.down('md'))
 
     // Add KeyContent to access slugs more easly
     let keyedContent = mapValues(keyBy(content, 'tabSlug'), 'tabContent')
@@ -139,14 +146,14 @@ const MultiTab = ({
                     textColor="primary"
                     variant="scrollable"
                     scrollButtons="auto"
-                    classes={{ root: `${isMobile ? 'multitabs mb-20 h-44' : 'w-full h-64'} `, indicator: 'indicator' }}
+                    classes={{ root: 'multitabs', indicator: 'indicator' }}
                 >
                     {content.map((element, index) => (
                         <Tab
                             key={index}
                             value={element.tabSlug}
                             label={formatMessage({ id: element.tabTitle, defaultMessage: element.tabTitle })}
-                            className={isMobile ? 'h-44' : 'h-64'}
+                            classes={{ root: 'tabs' }}
                         />
                     ))}
                 </Tabs>
