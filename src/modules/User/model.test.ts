@@ -2,7 +2,7 @@ import { userModel } from 'src/modules/User/model'
 import { init } from '@rematch/core'
 import { models } from 'src/models'
 import { TEST_SUCCESS_MAIL, TEST_SUCCESS_USER } from 'src/mocks/handlers/user'
-// import { handleRegisterErrors } from '.'
+import { handleRegisterErrors } from '.'
 import { applyCamelCase } from 'src/common/react-platform-components'
 
 const userData = applyCamelCase(TEST_SUCCESS_USER)
@@ -126,21 +126,29 @@ describe('test models', () => {
         // test('resetPassword test error', async () => {
         //     // TODO.
         // })
-        // test('handleRegisterError test', () => {
-        //     let error = handleRegisterErrors({
-        //         response: { status: 400, data: { detail: 'REGISTER_USER_ALREADY_EXISTS' } },
-        //     })
-        //     expect(error).toStrictEqual("L'email inséré existe déjà")
-        //     error = handleRegisterErrors({
-        //         response: { status: 401, data: {} },
-        //     })
-        //     expect(error).toStrictEqual("Vous n'avez pas le droit d'effectuer cette opération.")
-        //     error = handleRegisterErrors({
-        //         response: { status: 500 },
-        //     })
-        //     expect(error).toStrictEqual('Service inaccessible pour le moment.')
-        //     error = handleRegisterErrors({ message: 'test message' })
-        //     expect(error).toStrictEqual('test message')
-        // })
+        test('handleRegisterError test', () => {
+            // Email exists error
+            let error = handleRegisterErrors({
+                response: { status: 400, data: { detail: 'REGISTER_USER_ALREADY_EXISTS' } },
+            })
+            expect(error).toStrictEqual("L'email inséré existe déjà")
+            // Unauthorize error
+            error = handleRegisterErrors({
+                response: { status: 401, data: {} },
+            })
+            expect(error).toStrictEqual("Vous n'avez pas le droit d'effectuer cette opération.")
+            // Address field error
+            error = handleRegisterErrors({
+                response: { status: 422, data: { errors: [{ address: ['zip_code none is not an allowed value'] }] } },
+            })
+            expect(error).toStrictEqual('Veuillez entrer une adresse e-mail valide')
+            // Default
+            error = handleRegisterErrors({
+                response: { status: 500 },
+            })
+            expect(error).toStrictEqual('Service inaccessible pour le moment.')
+            error = handleRegisterErrors({ message: 'test message' })
+            expect(error).toStrictEqual('test message')
+        })
     })
 })

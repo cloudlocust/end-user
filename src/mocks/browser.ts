@@ -7,33 +7,14 @@ import { setupWorker } from 'msw'
 const handlers: any = []
 
 /** Mock requests. */
-// import commentsREST from './handlers/comments'
-// import notificationsREST from './handlers/notifications'
-// import customersREST from './handlers/customers'
-// import metersEndpoints from './handlers/meters'
-// import equipmentsEndpoints from './handlers/equipments'
-// import installationsRequestsRest from './handlers/installationsRequests'
 // import { userEndpoints } from './handlers/user'
 
-// /**
-//  * Handlers to mock urls for tests.
-//  */
+/**
+ * Handlers to mock urls for tests.
+ */
 // const handlers = [
-//     /********* METER REQUESTS ****************/
-//     ...metersEndpoints,
-
-// /********* EQUIPMENT REQUESTS ****************/
-// ...equipmentsEndpoints,
-
-//     /*********** COMMENT REQUESTS. ***********/
-//     ...commentsREST,
-//     /*********** NOTIFICATIONS REQUESTS. ***********/
-//     ...notificationsREST,
-
-// /******InstallationsRequests REQUESTS*****/
-// ...installationsRequestsRest,
+/******InstallationsRequests REQUESTS*****/
 // ...userEndpoints,
-// ...customersREST,
 // ]
 
 /**
