@@ -95,13 +95,14 @@ export const RegisterForm = ({
                 {/* TODO Create a checkbox reusable component */}
                 <FormControl required error={rgpdCheckboxState === ''}>
                     <FormControlLabel
-                        sx={{ marginLeft: '0px' }}
+                        sx={{ marginLeft: '0px', pointerEvents: 'none' }}
                         control={
                             <Checkbox
                                 color="primary"
                                 value={Boolean(rgpdCheckboxState)}
                                 defaultChecked={false}
                                 onChange={handleChange}
+                                sx={{ pointerEvents: 'auto' }}
                                 name="rgpdCheckbox"
                             />
                         }
@@ -116,6 +117,7 @@ export const RegisterForm = ({
                                         color:
                                             // eslint-disable-next-line jsdoc/require-jsdoc
                                             (theme) => theme.palette.primary.light,
+                                        pointerEvents: 'auto',
                                     }}
                                     href={window._env_.REACT_APP_CLIENT_RGPD_REDIRECT}
                                     target="_blank"
@@ -131,7 +133,7 @@ export const RegisterForm = ({
                                 })}
                             </span>
                         }
-                        labelPlacement="start"
+                        labelPlacement="end"
                     />
                     {rgpdCheckboxState === '' && (
                         <FormHelperText>

@@ -78,7 +78,7 @@ const Register: FC<RegisterProps> = ({
                                     to={URL_LOGIN}
                                     underline="none"
                                 >
-                                    {formatMessage({ id: 'Login', defaultMessage: 'Login' })}
+                                    {formatMessage({ id: 'Se connecter', defaultMessage: 'Se connecter' })}
                                 </MuiLink>
                             </div>
                         </CardContent>
