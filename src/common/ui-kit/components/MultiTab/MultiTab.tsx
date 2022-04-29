@@ -158,7 +158,7 @@ const MultiTab = ({
                     ))}
                 </Tabs>
             }
-            content={<div className="p-16 sm:p-24 w-full">{keyedContent[tabSlug as string]}</div>}
+            content={<div className="p-16 sm:p-24 w-full">{keyedContent[tabSlug]}</div>}
             innerScroll={innerScroll}
         />
     )
