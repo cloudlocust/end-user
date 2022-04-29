@@ -7,6 +7,8 @@ import { ProfileConfig } from './modules/Profile'
 import { CommunityConfig } from './modules/Community'
 import { AnalysisConfig } from './modules/Analysis'
 import { LoginConfig } from './modules/User/Login/LoginConfig'
+import { ForgotPasswordConfig } from './modules/User/ForgotPassword/ForgotPasswordConfig'
+import { ResetPasswordConfig } from 'src/modules/User/ResetPassword/ResetPasswordConfig'
 import { RegisterConfig } from './modules/User/Register/RegisterConfig'
 
 /**
@@ -18,6 +20,8 @@ export const routes = [
     ...ProfileConfig,
     ...LoginConfig,
     ...RegisterConfig,
+    ...ForgotPasswordConfig,
+    ...ResetPasswordConfig,
     ...CommunityConfig,
     ...AnalysisConfig,
     {

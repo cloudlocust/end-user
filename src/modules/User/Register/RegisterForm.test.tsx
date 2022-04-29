@@ -92,9 +92,10 @@ const formatted_addr_data = 'normal formatted_address'
 const formatted_test_locality = 'test locality'
 const formatted_test_country = 'test country'
 // eslint-disable-next-line jsdoc/require-jsdoc
-const getPasswordMinErrorText = (min: number) => `Le champ doit avoir au minimum ${min} caractères`
+export const getPasswordMinErrorText = (min: number) => `Le champ doit avoir au minimum ${min} caractères`
 const CHECKBOX_RGPD_ERROR_TEXT = 'Ce champ est obligatoire'
-const passwordQuerySelector = 'input[name="password"]'
+// eslint-disable-next-line jsdoc/require-jsdoc
+export const passwordQuerySelector = 'input[name="password"]'
 const VALIDER_TEXT = 'Valider'
 
 jest.mock('use-places-autocomplete', () => ({
