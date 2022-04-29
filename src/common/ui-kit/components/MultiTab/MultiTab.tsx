@@ -38,11 +38,11 @@ const Root = styled(FusePageCarded)(({ theme }) => ({
             height: '64px',
             [theme.breakpoints.down('md')]: {
                 height: '44px',
-                background: '#CCE7E9 ',
+                background: theme.palette.primary.contrastText,
                 outline: `1px solid ${theme.palette.primary.main}`,
                 borderRadius: '40px',
                 '& .Mui-selected': {
-                    color: 'white !important',
+                    color: `${theme.palette.background.paper} !important`,
                     zIndex: 1,
                 },
             },
