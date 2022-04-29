@@ -36,12 +36,23 @@ const Root = styled(FusePageCarded)(({ theme }) => ({
             borderBottom: 'none',
             '& .multitabs': {
                 background: '#CCE7E9 ',
-                border: `1px solid ${theme.palette.primary.main}`,
+                outline: `1px solid ${theme.palette.primary.main}`,
                 borderRadius: '40px',
+                '& .Mui-selected': {
+                    color: 'white !important',
+                    zIndex: 1,
+                },
+            },
+            '& .indicator': {
+                [theme.breakpoints.down('md')]: {
+                    height: '48px',
+                    borderRadius: '30px',
+                },
             },
         },
     },
 }))
+
 //eslint-disable-next-line jsdoc/require-jsdoc
 interface ElementDetails {
     //eslint-disable-next-line jsdoc/require-jsdoc
@@ -96,13 +107,16 @@ const MultiTab = ({
     const location = pathname.split('/')
 
     // Initialise Base path and entry Tab.
-    const entryTab = location.pop()
+    let entryTab = location.pop()
     let basePath = location.join('/')
 
     // UseHistory, and tab Handle
+    const [tabSlug, setTabSlug] = useState(content[0].tabSlug)
     const history = useHistory()
-    const [tabSlug, setTabSlug] = useState(entryTab)
-
+    if (entryTab === ':tab') {
+        entryTab = entryTab.replace(':tab', content[0].tabSlug)
+        history.replace({ pathname: `${basePath}/${entryTab}`, ...restLocationState })
+    }
     /**
      * Handler for tab change.
      *
@@ -125,7 +139,7 @@ const MultiTab = ({
                     textColor="primary"
                     variant="scrollable"
                     scrollButtons="auto"
-                    classes={{ root: `${isMobile ? 'multitabs mb-20 h-44' : 'w-full h-64'} ` }}
+                    classes={{ root: `${isMobile ? 'multitabs mb-20 h-44' : 'w-full h-64'} `, indicator: 'indicator' }}
                 >
                     {content.map((element, index) => (
                         <Tab
@@ -137,7 +151,7 @@ const MultiTab = ({
                     ))}
                 </Tabs>
             }
-            content={<div className="p-16 sm:p-24 w-full">{keyedContent[tabSlug!]}</div>}
+            content={<div className="p-16 sm:p-24 w-full">{keyedContent[tabSlug as string]}</div>}
             innerScroll={innerScroll}
         />
     )
