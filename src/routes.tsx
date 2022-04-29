@@ -6,6 +6,7 @@ import { AdvicesConfig } from './modules/Advices'
 import { ProfileConfig } from './modules/Profile'
 import { CommunityConfig } from './modules/Community'
 import { AnalysisConfig } from './modules/Analysis'
+import { LoginConfig } from './modules/User/Login/LoginConfig'
 
 /**
  *
@@ -14,6 +15,7 @@ export const routes = [
     ...MyConsumptionConfig,
     ...AdvicesConfig,
     ...ProfileConfig,
+    ...LoginConfig,
     ...CommunityConfig,
     ...AnalysisConfig,
     {

@@ -1,14 +1,14 @@
 import { SyntheticEvent } from 'react'
 import Avatar from '@mui/material/Avatar'
 import Button from '@mui/material/Button'
-import Icon from '@mui/material/Icon'
-import ListItemIcon from '@mui/material/ListItemIcon'
-import ListItemText from '@mui/material/ListItemText'
-import MenuItem from '@mui/material/MenuItem'
 import Popover from '@mui/material/Popover'
 import Typography from '@mui/material/Typography'
 import { useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { Dispatch, RootState } from 'src/redux'
+import { useHistory } from 'react-router-dom'
 import { useIntl } from 'react-intl'
+import ToolbarMenuItem from './ToolbarMenuItem'
 
 // TODO This is not a generic component to share with medialem, to update.
 /**
@@ -20,29 +20,10 @@ function UserMenu() {
     /**
      * Fake UserData (which will be in the future got from the rematch state).
      */
-    // const { user } = useSelector(({ userModel }: RootState) => userModel)
-    const user = {
-        id: '1',
-        firstName: 'Orlando',
-        lastName: 'Jackson',
-        email: 'succes@gmail.com',
-        phone: '+33 1 23 45 67 89',
-        address: {
-            name: 'Apt. 556, Gwenborough. 92998-3874',
-            city: 'Gwenborough',
-            zip_code: '92998-3874',
-            address_addition: 'testFDF',
-            country: 'France',
-            lat: 45.706877,
-            lng: 5.011265,
-            extra_data: {},
-        },
-        is_active: true,
-        is_verified: true,
-        is_super_user: false,
-    }
+    const { user } = useSelector(({ userModel }: RootState) => userModel)
     const [userMenu, setUserMenu] = useState<Element | null>(null)
-    // const dispatch = useDispatch<Dispatch>()
+    const dispatch = useDispatch<Dispatch>()
+    const history = useHistory()
     const { formatMessage } = useIntl()
 
     /**
@@ -73,13 +54,15 @@ function UserMenu() {
     const userMenuClose = () => {
         setUserMenu(null)
     }
-
     return (
         <>
             <Button className="min-h-40 min-w-40 px-0 md:px-16 py-0 md:py-6" onClick={userMenuClick} color="inherit">
                 <div className="hidden md:flex flex-col mx-4 items-end">
                     <Typography component="span" className="font-semibold flex">
                         {`${user?.firstName} ${user?.lastName}`}
+                    </Typography>
+                    <Typography className="text-11 font-medium capitalize" color="textSecondary">
+                        {user?.role !== undefined ? formatMessage({ id: user?.role, defaultMessage: user?.role }) : ''}
                     </Typography>
                 </div>
 
@@ -103,23 +86,15 @@ function UserMenu() {
                 }}
             >
                 <>
-                    <MenuItem
-                        onClick={() => {
-                            // dispatch.userModel.logout()
-                            // history.replace('/login')
+                    <ToolbarMenuItem
+                        onMenuItemClick={() => {
+                            dispatch.userModel.logout()
+                            history.replace('/login')
                         }}
-                        role="button"
-                    >
-                        <ListItemIcon className="min-w-40">
-                            <Icon>exit_to_app</Icon>
-                        </ListItemIcon>
-                        <ListItemText
-                            primary={formatMessage({
-                                id: 'Déconnexion',
-                                defaultMessage: 'Déconnexion',
-                            })}
-                        />
-                    </MenuItem>
+                        iconLabel="exit_to_app"
+                        idLabel="Déconnexion"
+                        defaultMessageLabel="Déconnexion"
+                    />
                 </>
             </Popover>
         </>
