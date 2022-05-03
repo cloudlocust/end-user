@@ -20,7 +20,7 @@ pipeline{
             steps {
                 sh 'npx tsc --skipLibCheck'
             }
-            
+
         }
         stage('Unit-test'){
             steps {
@@ -38,22 +38,22 @@ pipeline{
                 }
             }
         }
-        // stage("Quality Gate") {
-        //     steps {
-        //         timeout(time: 10, unit: 'MINUTES') {
-        //             // Parameter indicates whether to set pipeline to UNSTABLE if Quality Gate fails
-        //             // true = set pipeline to UNSTABLE, false = don't
-        //             waitForQualityGate abortPipeline: true
-        //         }
-        //     }
-        // }
+        stage("Quality Gate") {
+            steps {
+                timeout(time: 10, unit: 'MINUTES') {
+                    // Parameter indicates whether to set pipeline to UNSTABLE if Quality Gate fails
+                    // true = set pipeline to UNSTABLE, false = don't
+                    waitForQualityGate abortPipeline: true
+                }
+            }
+        }
         stage('Test NG generate') {
             when {
               expression { ! (BRANCH_NAME ==~ /(production|master|develop)/) }
             }
             steps{
                sh 'yarn build'
-            }        
+            }
         }
         stage("Publish") {
             when {
