@@ -5,7 +5,7 @@ import { Profile } from './Profile'
 /**
  * Url for profile.
  */
-export const URL_PROFILE = '/profile'
+export const URL_PROFILE = '/profile/:tab'
 /**
  * Interface .
  *
@@ -29,7 +29,7 @@ export const ProfileConfig = [
     {
         path: URL_PROFILE,
         component: Profile,
-        auth: { authType: authTypes.freeAccess }, // TODO CHANGE
+        auth: { authType: authTypes.freeAccess },
         settings: {
             layout: {
                 navbar: {
