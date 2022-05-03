@@ -197,23 +197,52 @@ export const AccomodationForm = ({ enableForm, onSubmit, isEdit }: IAccomodation
                         </FormControl>
                     </div>
                 )}
-                <div className="flex flex-row flex justify-between mb-20 mt-16">
-                    <div className="mt-16 mr-10 w-224 ">
+                <div className="flex flex-row flex justify-between  mt-16 mr-24">
+                    <div className="mt-16 mr-10 w-full ">
                         {formatMessage({
                             id: 'Nombre d’habitants :',
                             defaultMessage: 'Nombre d’habitants :',
                         })}
                     </div>
-                    <TextField
-                        // disabled={!isEdit}
-                        type="number"
-                        name="phone"
-                        label={formatMessage({
-                            id: 'habitants',
-                            defaultMessage: 'habitants',
+                    <div className="w-4/6">
+                        <TextField
+                            // disabled={!isEdit}
+                            type="number"
+                            name="phone"
+                            label={formatMessage({
+                                id: 'Habitants',
+                                defaultMessage: 'Habitants',
+                            })}
+
+                            // validateFunctions={[requiredBuilder(), min(10), max(10)]}
+                        />
+                    </div>
+                </div>
+                <div className="flex flex-row flex justify-between ">
+                    <div className="mt-16 mr-10 w-full ">
+                        {formatMessage({
+                            id: 'Superficie du logements :',
+                            defaultMessage: 'Superficie du logements :',
                         })}
-                        // validateFunctions={[requiredBuilder(), min(10), max(10)]}
-                    />
+                    </div>
+                    <div className="w-4/6">
+                        <TextField
+                            // disabled={!isEdit}
+                            type="number"
+                            name="Superficie"
+                            label={formatMessage({
+                                id: 'Superficie',
+                                defaultMessage: 'Superficie',
+                            })}
+                            // validateFunctions={[requiredBuilder(), min(10), max(10)]}
+                        />
+                    </div>
+                    <div className="mt-16 ml-8  ">
+                        {formatMessage({
+                            id: 'm²',
+                            defaultMessage: 'm²',
+                        })}
+                    </div>
                 </div>
             </div>
         </Form>
