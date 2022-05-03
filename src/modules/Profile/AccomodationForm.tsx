@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { useIntl } from 'src/common/react-platform-translation'
-
+import { ButtonLoader, TextField } from 'src/common/ui-kit'
 import { email, requiredBuilder, Form } from 'src/common/react-platform-components'
 import Radio from '@mui/material/Radio'
 import RadioGroup from '@mui/material/RadioGroup'
@@ -197,6 +197,24 @@ export const AccomodationForm = ({ enableForm, onSubmit, isEdit }: IAccomodation
                         </FormControl>
                     </div>
                 )}
+                <div className="flex flex-row flex justify-between mb-20 mt-16">
+                    <div className="mt-16 mr-10 w-224 ">
+                        {formatMessage({
+                            id: 'Nombre d’habitants :',
+                            defaultMessage: 'Nombre d’habitants :',
+                        })}
+                    </div>
+                    <TextField
+                        // disabled={!isEdit}
+                        type="number"
+                        name="phone"
+                        label={formatMessage({
+                            id: 'habitants',
+                            defaultMessage: 'habitants',
+                        })}
+                        // validateFunctions={[requiredBuilder(), min(10), max(10)]}
+                    />
+                </div>
             </div>
         </Form>
     )
