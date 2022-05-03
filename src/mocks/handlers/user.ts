@@ -87,25 +87,25 @@ export const userEndpoints = [
     //             return res(ctx.status(404), ctx.delay(1000), ctx.json({ message: 'Customer not to be found!' }))
     //         }
     //     }),
-    //     // Forgot password endpoint
-    //     // eslint-disable-next-line jsdoc/require-jsdoc
-    //     rest.post<{ email: string }>(`${AUTH_BASE_URL}/auth/forgot-password`, (req, res, ctx) => {
-    //         const { email } = req.body
-    //         if (email) {
-    //             return res(ctx.status(200), ctx.delay(1000))
-    //         } else {
-    //             return res(ctx.status(404), ctx.delay(1000))
-    //         }
-    //     }),
+    // Forgot password endpoint
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    rest.post<{ email: string }>(`${AUTH_BASE_URL}/auth/forgot-password`, (req, res, ctx) => {
+        const { email } = req.body
+        if (email === TEST_SUCCESS_MAIL) {
+            return res(ctx.status(200), ctx.delay(1000))
+        } else {
+            return res(ctx.status(404), ctx.delay(1000))
+        }
+    }),
 
-    //     // Reset password endpoint
-    //     // eslint-disable-next-line jsdoc/require-jsdoc
-    //     rest.post<{ password: string; token: string }>(`${AUTH_BASE_URL}/auth/reset-password`, (req, res, ctx) => {
-    //         const { password, token } = req.body
-    //         if (password && token) {
-    //             return res(ctx.status(200), ctx.delay(1000))
-    //         } else {
-    //             return res(ctx.status(404), ctx.delay(1000))
-    //         }
-    //     }),
+    // Reset password endpoint
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    rest.post<{ password: string; token: string }>(`${AUTH_BASE_URL}/auth/reset-password`, (req, res, ctx) => {
+        const { password, token } = req.body
+        if (password !== 'errrorrr' && token) {
+            return res(ctx.status(200), ctx.delay(1000))
+        } else {
+            return res(ctx.status(404), ctx.delay(1000))
+        }
+    }),
 ]
