@@ -1,6 +1,7 @@
 import React from 'react'
 import Button from '@mui/material/Button'
 import { useIntl } from 'src/common/react-platform-translation'
+import { Icon } from '@mui/material'
 
 /**
  * Interface for Select Button.
@@ -58,7 +59,7 @@ export const SelectButton = ({ state, setState, formOptions, wrapperStyles, titl
                      *
                      * @param option .
                      * @param option.label
-                     * @param option.iconUrl
+                     * @param option.icon
                      * @param option.iconStyles
                      * @param option.buttonStyle styles for buttons
                      * @returns .
@@ -71,7 +72,7 @@ export const SelectButton = ({ state, setState, formOptions, wrapperStyles, titl
                         /**
                          *
                          */
-                        iconUrl?: string
+                        icon?: string
                         /**
                          *
                          */
@@ -81,6 +82,7 @@ export const SelectButton = ({ state, setState, formOptions, wrapperStyles, titl
                          */
                         buttonStyle?: string
                     }) => {
+                        const isIconUrl = option.icon?.includes('/assets')
                         return (
                             <Button
                                 variant={state === option.label ? 'contained' : 'outlined'}
@@ -90,9 +92,14 @@ export const SelectButton = ({ state, setState, formOptions, wrapperStyles, titl
                                 // inProgress={isRegisterInProgress}
                                 type="submit"
                             >
-                                {option.iconUrl && (
-                                    <img className={option.iconStyles} src={option.iconUrl} alt={option.iconUrl} />
-                                )}
+                                {option.icon &&
+                                    (isIconUrl ? (
+                                        <img className={option.iconStyles} src={option.icon} alt={option.icon} />
+                                    ) : (
+                                        <Icon className={option.iconStyles} color="inherit">
+                                            {option.icon}
+                                        </Icon>
+                                    ))}
                                 {formatMessage({
                                     id: option.label,
                                     defaultMessage: option.label,
