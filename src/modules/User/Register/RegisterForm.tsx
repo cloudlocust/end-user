@@ -39,7 +39,6 @@ export const RegisterForm = ({
     const { isRegisterInProgress, onSubmit } = registerHook()
     const passwordRef = useRef()
     const [rgpdCheckboxState, setRgpdCheckboxState] = React.useState<Boolean | string>('false')
-
     const { formatMessage } = useIntl()
 
     /**
@@ -117,10 +116,15 @@ export const RegisterForm = ({
                                         color:
                                             // eslint-disable-next-line jsdoc/require-jsdoc
                                             (theme) => theme.palette.primary.light,
-                                        pointerEvents: 'auto',
+                                        pointerEvents: 'visible',
                                     }}
-                                    href={window._env_.REACT_APP_CLIENT_RGPD_REDIRECT}
-                                    target="_blank"
+                                    onClick={(e: React.SyntheticEvent) => {
+                                        // Handling onClick with (preventDefault and window.open) because we're using FormControlLabel, which when you click the label (even if it has link inside) it'll behave as if we clicked on the control
+                                        // In our case the checkbox, it means when if we click on the label even if we have a link in the label and we click on it, it will check the checkbox instead of redirecting
+                                        // That's why i handle the onClick on the link itself, so that i prevent the default of checkbox clicking through the label
+                                        e.preventDefault()
+                                        window.open(window._env_.REACT_APP_CLIENT_RGPD_REDIRECT, '_blank')
+                                    }}
                                 >
                                     {formatMessage({
                                         id: 'conditions générales',
