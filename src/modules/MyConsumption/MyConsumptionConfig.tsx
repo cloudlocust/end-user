@@ -29,7 +29,7 @@ export const MyConsumptionConfig = [
     {
         path: URL_CONSUMPTION,
         component: MyConsumption,
-        auth: { authType: authTypes.anonymousRequired }, // TODO CHANGE
+        auth: { authType: authTypes.freeAccess },
         settings: {
             layout: {
                 navbar: {

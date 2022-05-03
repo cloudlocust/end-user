@@ -29,7 +29,7 @@ export const ProfileConfig = [
     {
         path: URL_PROFILE,
         component: Profile,
-        auth: { authType: authTypes.anonymousRequired }, // TODO CHANGE
+        auth: { authType: authTypes.freeAccess }, // TODO CHANGE
         settings: {
             layout: {
                 navbar: {

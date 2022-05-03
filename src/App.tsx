@@ -1,5 +1,6 @@
 import React from 'react'
-import { Switch, Route } from 'react-router-dom'
+import { Switch, Route, Redirect } from 'react-router-dom'
+import { useAuth } from 'src/modules/User/authentication/useAuth'
 import { routes, navigationsConfig } from 'src/routes'
 import Layout1 from 'src/common/ui-kit/fuse/layouts/layout1/Layout1'
 import ThemingProvider from 'src/common/ui-kit/fuse/components/ThemingProvider'
@@ -12,11 +13,11 @@ import { ToolbarWidget as ToolbarContent } from 'src/modules/Layout'
  * @returns List of routes accessible to the app wrapped by access hook.
  */
 const Routes = () => {
+    const { hasAccess, getUrlRedirection } = useAuth()
     const navbarContent: navbarItemType[] = []
     navigationsConfig.forEach((navigationConfig) => {
         const UINavbarItem = navigationConfig.settings.layout.navbar.UINavbarItem
-        // hasAccess(navigationConfig.auth) &&
-        navbarContent.push(UINavbarItem)
+        hasAccess(navigationConfig.auth) && navbarContent.push(UINavbarItem)
     })
     return (
         <Switch>
@@ -26,18 +27,27 @@ const Routes = () => {
                         key={index}
                         path={route.path}
                         exact={true}
-                        render={() => (
-                            <ThemingProvider>
-                                <Layout1
-                                    navbarContent={navbarContent}
-                                    displayToolbar={route.settings?.layout?.toolbar?.display}
-                                    displayNavbar={route.settings?.layout?.navbar?.display}
-                                    toolbarContent={<ToolbarContent />}
-                                >
-                                    <route.component {...route.props} />
-                                </Layout1>
-                            </ThemingProvider>
-                        )}
+                        render={({ location }) =>
+                            hasAccess(route.auth) ? (
+                                <ThemingProvider>
+                                    <Layout1
+                                        navbarContent={navbarContent}
+                                        displayToolbar={route.settings?.layout?.toolbar?.display}
+                                        displayNavbar={route.settings?.layout?.navbar?.display}
+                                        toolbarContent={<ToolbarContent />}
+                                    >
+                                        <route.component {...route.props} />
+                                    </Layout1>
+                                </ThemingProvider>
+                            ) : (
+                                <Redirect
+                                    to={{
+                                        pathname: getUrlRedirection(route.auth),
+                                        state: { from: location },
+                                    }}
+                                />
+                            )
+                        }
                     />
                 )
             })}

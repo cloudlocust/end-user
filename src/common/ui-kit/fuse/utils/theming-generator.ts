@@ -7,7 +7,7 @@ import {
 } from 'src/common/ui-kit/fuse/configs/defaultThemeConfigs'
 import colorThemes from 'src/common/ui-kit/fuse/configs/colorThemes'
 
-const idColorTheme = 'myem'
+const idColorTheme = window._env_.REACT_APP_CLIENT_ICON_FOLDER
 
 /**
  * Utility function to createTheme (MUI function) from colorThemes and default-settings.
