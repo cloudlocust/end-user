@@ -116,7 +116,7 @@ export const RegisterForm = ({
                                         color:
                                             // eslint-disable-next-line jsdoc/require-jsdoc
                                             (theme) => theme.palette.primary.light,
-                                        pointerEvents: 'visible',
+                                        pointerEvents: 'auto',
                                     }}
                                     onClick={(e: React.SyntheticEvent) => {
                                         // Handling onClick with (preventDefault and window.open) because we're using FormControlLabel, which when you click the label (even if it has link inside) it'll behave as if we clicked on the control
