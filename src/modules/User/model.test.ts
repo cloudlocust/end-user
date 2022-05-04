@@ -5,6 +5,7 @@ import { TEST_SUCCESS_MAIL, TEST_SUCCESS_USER } from 'src/mocks/handlers/user'
 import { handleRegisterErrors } from '.'
 import { applyCamelCase } from 'src/common/react-platform-components'
 
+const defaultHandleErrors = 'Service inaccessible pour le moment.'
 const userData = applyCamelCase(TEST_SUCCESS_USER)
 describe('test models', () => {
     describe('test pure function', () => {
@@ -27,18 +28,26 @@ describe('test models', () => {
         })
     })
     describe('test impure functions', () => {
-        // test('changePassword ok test', async () => {
-        //     const store = init({
-        //         models,
-        //     })
-        //     const result = await store.dispatch.userModel.changePassword({
-        //         data: { password: '123456', token: 'token' },
-        //     })
-        //     expect(result).toBeUndefined()
-        // }, 6000)
-        // test('changePassword unexistant email test', async () => {
-        //     // TODO.
-        // })
+        test('changePassword ok test', async () => {
+            const store = init({
+                models,
+            })
+            const result = await store.dispatch.userModel.changePassword({
+                data: { password: '123456', token: 'token' },
+            })
+            expect(result).toBeUndefined()
+        }, 6000)
+        test('changePassword error', async () => {
+            const store = init({
+                models,
+            })
+            await expect(
+                async () =>
+                    await store.dispatch.userModel.changePassword({
+                        data: { password: 'errrorrr', token: 'token' },
+                    }),
+            ).rejects.toBe(defaultHandleErrors)
+        })
         // test('updateCurrentUser test ok', async () => {
         //     const store = init({
         //         models,
@@ -112,20 +121,27 @@ describe('test models', () => {
             const { userModel } = store.getState()
             await expect(userModel.user).toBeNull()
             await expect(userModel.authenticationToken).toBeNull()
-            // TODO.
         })
-        // test('resetPassword test', async () => {
-        //     const store = init({
-        //         models,
-        //     })
-        //     const result = await store.dispatch.userModel.resetPassword({
-        //         data: { email: TEST_SUCCESS_MAIL },
-        //     })
-        //     expect(result).toBeUndefined()
-        // })
-        // test('resetPassword test error', async () => {
-        //     // TODO.
-        // })
+        test('resetPassword test', async () => {
+            const store = init({
+                models,
+            })
+            const result = await store.dispatch.userModel.resetPassword({
+                data: { email: TEST_SUCCESS_MAIL },
+            })
+            expect(result).toBeUndefined()
+        })
+        test('resetPassword test error', async () => {
+            const store = init({
+                models,
+            })
+            await expect(
+                async () =>
+                    await store.dispatch.userModel.resetPassword({
+                        data: { email: 'err@err' },
+                    }),
+            ).rejects.toBe(defaultHandleErrors)
+        })
         test('handleRegisterError test', () => {
             // Email exists error
             let error = handleRegisterErrors({
