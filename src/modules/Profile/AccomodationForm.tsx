@@ -71,7 +71,7 @@ export const AccomodationForm = ({ enableForm, onSubmit, isEdit }: IAccomodation
     return (
         <Form
             // eslint-disable-next-line jsdoc/require-jsdoc
-            onSubmit={onSubmit}
+            onSubmit={(data) => console.log(data)}
         >
             <div className="flex flex-col justify-center w-full">
                 <div className="font-semibold self-center text-sm mb-4 mt-16">
@@ -91,12 +91,14 @@ export const AccomodationForm = ({ enableForm, onSubmit, isEdit }: IAccomodation
                             icon: '/assets/images/content/logementMaison.svg',
                             iconStyles: 'my-20',
                             buttonStyle: 'w-240 mx-auto mt-16 flex flex-col mr-10',
+                            name: formOptions.house,
                         },
                         {
                             label: formOptions.apartment,
                             icon: '/assets/images/content/logementAppartement.svg',
                             iconStyles: 'my-20',
                             buttonStyle: 'w-240 mx-auto mt-16 flex flex-col',
+                            name: formOptions.apartment,
                         },
                     ]}
                 />
@@ -109,14 +111,17 @@ export const AccomodationForm = ({ enableForm, onSubmit, isEdit }: IAccomodation
                         {
                             label: formOptions.before1950,
                             buttonStyle: 'w-224 mx-auto mt-16 flex flex-col mr-10 text-xs pt-10 pb-10',
+                            name: formOptions.before1950,
                         },
                         {
                             label: formOptions.from1950to1975,
                             buttonStyle: 'w-224 mx-auto mt-16 flex flex-col mr-10 text-xs pt-10 pb-10',
+                            name: formOptions.from1950to1975,
                         },
                         {
                             label: formOptions.after1950,
                             buttonStyle: 'w-224 mx-auto mt-16 flex flex-col text-xs pt-10 pb-10',
+                            name: formOptions.after1950,
                         },
                     ]}
                 />
@@ -208,12 +213,12 @@ export const AccomodationForm = ({ enableForm, onSubmit, isEdit }: IAccomodation
                         <TextField
                             // disabled={!isEdit}
                             type="number"
-                            name="phone"
+                            name="habitants"
                             label={formatMessage({
                                 id: 'Habitants',
                                 defaultMessage: 'Habitants',
                             })}
-
+                            // required={false}
                             // validateFunctions={[requiredBuilder(), min(10), max(10)]}
                         />
                     </div>
@@ -229,11 +234,12 @@ export const AccomodationForm = ({ enableForm, onSubmit, isEdit }: IAccomodation
                         <TextField
                             // disabled={!isEdit}
                             type="number"
-                            name="Superficie"
+                            name="superficie"
                             label={formatMessage({
                                 id: 'Superficie',
                                 defaultMessage: 'Superficie',
                             })}
+                            // required={false}
                             // validateFunctions={[requiredBuilder(), min(10), max(10)]}
                         />
                     </div>

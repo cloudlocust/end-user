@@ -71,7 +71,7 @@ export const Profile = () => {
                     {formatMessage({ id: 'Modifier', defaultMessage: 'Modifier' })}
                 </Button>
             ) : (
-                <ButtonLoader variant="contained" type="submit" className="ml-8">
+                <ButtonLoader variant="contained" type="submit" className="ml-8 mb-60 mt-10">
                     {formatMessage({ id: 'Enregistrer', defaultMessage: 'Enregistrer' })}
                 </ButtonLoader>
             )}
