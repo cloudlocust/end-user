@@ -2,6 +2,7 @@ import { axios, handleErrors } from 'src/common/react-platform-components'
 import { AUTH_BASE_URL } from './configs'
 import { createModel } from '@rematch/core'
 import { RootModel } from 'src/models'
+import { isArray } from 'lodash'
 
 /**
  * User common elements between register and normal interface.
@@ -170,13 +171,13 @@ export const userModel = createModel<RootModel>()({
          * @param rootState Redux state.
          */
         // eslint-disable-next-line jsdoc/require-jsdoc
-        async updateCurrentUser({ data }: { data: IUser }, rootState) {
-            if (!rootState.userModel.user) return
-            const response = await axios.patch<IUser>(`${AUTH_BASE_URL}/users/me`, data)
-            const user = response.data
-            // Set user in localstorage
-            dispatch.userModel.setUser(user)
-        },
+        // async updateCurrentUser({ data }: { data: IUser }, rootState) {
+        //     if (!rootState.userModel.user) return
+        //     const response = await axios.patch<IUser>(`${AUTH_BASE_URL}/users/me`, data)
+        //     const user = response.data
+        //     // Set user in localstorage
+        //     dispatch.userModel.setUser(user)
+        // },
         /**
          * Get current user data.
          *
@@ -185,22 +186,22 @@ export const userModel = createModel<RootModel>()({
          * @param rootState Redux state.
          */
         // eslint-disable-next-line jsdoc/require-jsdoc
-        async fetchCurrentUser({ params } = { params: {} }, rootState?) {
-            try {
-                // Todo what should we do if update current user is called whereas use in null ?
-                if (rootState.userModel.user !== null) {
-                    const response = await axios.get<IUser>(`${AUTH_BASE_URL}/users/me`, {
-                        params,
-                    })
-                    const user = response.data
-                    // Set user in localstorage
-                    dispatch.userModel.setUser(user)
-                }
-            } catch (error) {
-                // use onError callback to handle the error request in the component
-                throw handleErrors(error)
-            }
-        },
+        // async fetchCurrentUser({ params } = { params: {} }, rootState?) {
+        //     try {
+        //         // Todo what should we do if update current user is called whereas use in null ?
+        //         if (rootState.userModel.user !== null) {
+        //             const response = await axios.get<IUser>(`${AUTH_BASE_URL}/users/me`, {
+        //                 params,
+        //             })
+        //             const user = response.data
+        //             // Set user in localstorage
+        //             dispatch.userModel.setUser(user)
+        //         }
+        //     } catch (error) {
+        //         // use onError callback to handle the error request in the component
+        //         throw handleErrors(error)
+        //     }
+        // },
         /**
          * Login function.
          *
@@ -312,6 +313,9 @@ export const userModel = createModel<RootModel>()({
     state: defaultState as IUserState,
 })
 
+// eslint-disable-next-line jsdoc/require-jsdoc
+export const defaultRequestErrorMessage = 'Service inaccessible pour le moment.'
+
 /**
  * TODO Document.Handle errors in response.
  *
@@ -319,7 +323,6 @@ export const userModel = createModel<RootModel>()({
  * @returns TODO Document.
  */
 export const handleRegisterErrors = (error: any) => {
-    const defaultMessage = 'Service inaccessible pour le moment.'
     if (error.response && error.response.status) {
         switch (error.response.status) {
             case 400:
@@ -331,14 +334,9 @@ export const handleRegisterErrors = (error: any) => {
                 // Handle unauthorized error
                 return "Vous n'avez pas le droit d'effectuer cette opération."
             case 422:
-                // Errors follow thie follow format "errors": [ {"address": ["zip_code" , "street field required"] } ]
-                for (let errorField of error.response.data.errors) {
-                    // Handle Address Field Only,
-                    if (Object.keys(errorField)[0] === 'address') return 'Veuillez entrer une adresse e-mail valide'
-                }
-                return defaultMessage
+                return handleAddressFieldError(error)
             default:
-                return defaultMessage
+                return defaultRequestErrorMessage
         }
     } else {
         // If error has no response return the message of error
@@ -346,6 +344,22 @@ export const handleRegisterErrors = (error: any) => {
     }
 }
 
+/**
+ * TODO Document.Handle errors in response.
+ *
+ * @param error TODO Document.
+ * @returns TODO Document.
+ */
+export const handleAddressFieldError = (error: any) => {
+    // Errors follow thie follow format "errors": [ {"address": ["zip_code" , "street field required"] } ]
+    if (error.response.data && error.response.data.errors && isArray(error.response.data.errors)) {
+        for (let errorField of error.response.data.errors) {
+            // Handle Address Field Only,
+            if (Object.keys(errorField)[0] === 'address') return 'Veuillez entrer une adresse e-mail valide'
+        }
+    }
+    return defaultRequestErrorMessage
+}
 /**
  * TODO Document.Handle errors in response.
  *
@@ -368,7 +382,7 @@ export const handleLoginErrors = (error: any) => {
                 return "Vous n'avez pas le droit d'effectuer cette opération."
 
             default:
-                return 'Service inaccessible pour le moment.'
+                return defaultRequestErrorMessage
         }
     } else {
         // If error has no response return the message of error
