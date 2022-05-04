@@ -12,10 +12,10 @@ import { fireEvent, act, waitFor } from '@testing-library/react'
 const TITLE_TAB_1 = 'Title one'
 const TITLE_TAB_2 = 'Title two'
 const TITLE_TAB_3 = 'Title three'
-const CLASS_TAB_1 = 'Tab-1'
-const CLASS_TAB_2 = 'Tab-2'
-const CLASS_TAB_3 = 'Tab-3'
-
+const CLASS_TAB_1 = '.Tab-1'
+const CLASS_TAB_2 = '.Tab-2'
+const CLASS_TAB_3 = '.Tab-3'
+let mockPathname = 'tabs/slug-tab1'
 /**
  * Mocking the useLocation used based on url /customers/:customerId/;tab {id, tab} params.
  */
@@ -27,7 +27,7 @@ jest.mock('react-router', () => ({
      * @returns The react-router useLocation hook.
      */
     useLocation: () => ({
-        pathname: 'customers/11047/slug-tab1',
+        pathname: mockPathname,
     }),
 }))
 
@@ -101,9 +101,9 @@ const propsMultiTab = {
     content,
 }
 
-describe('ElementDetails Test', () => {
-    describe('load ElementDetails', () => {
-        test('on success loading the element, ElementDetails should be loaded, tabs titles shown, first tab opened', async () => {
+describe('IMultiTab Test', () => {
+    describe('load IMultiTab', () => {
+        test('on success loading the element, IMultiTab should be loaded, tabs titles shown, first tab opened', async () => {
             const { getByText } = reduxedRender(
                 <Router>
                     <MultiTab {...propsMultiTab} />
@@ -174,6 +174,17 @@ describe('ElementDetails Test', () => {
             // TEST that tab 2 and 3 are hidden.
             expect(container.querySelector(CLASS_TAB_2)).toBeNull()
             expect(container.querySelector(CLASS_TAB_1)).toBeNull()
+        })
+    })
+    describe('after 1st loading show 1st tab', () => {
+        test('change ":tab" on 1st existing tab', async () => {
+            mockPathname = 'tabs/:tab'
+            const { getByText } = reduxedRender(
+                <Router>
+                    <MultiTab {...propsMultiTab} />
+                </Router>,
+            )
+            expect(getByText(TITLE_TAB_1)).toBeTruthy()
         })
     })
 })
