@@ -1,7 +1,7 @@
 import { userModel } from 'src/modules/User/model'
 import { init } from '@rematch/core'
 import { models } from 'src/models'
-import { TEST_SUCCESS_MAIL, TEST_SUCCESS_USER } from 'src/mocks/handlers/user'
+import { TEST_AUTOVALIDATION_PASSWORD, TEST_SUCCESS_MAIL, TEST_SUCCESS_USER } from 'src/mocks/handlers/user'
 import { handleRegisterErrors, defaultRequestErrorMessage, handleAddressFieldError, handleLoginErrors } from '.'
 import { applyCamelCase } from 'src/common/react-platform-components'
 const userData = applyCamelCase(TEST_SUCCESS_USER)
@@ -120,6 +120,30 @@ describe('test models', () => {
             await expect(userModel.user).toBeNull()
             await expect(userModel.authenticationToken).toBeNull()
         })
+        test('register test', async () => {
+            const store = init({
+                models,
+            })
+            const result = await store.dispatch.userModel.register({
+                data: { ...userData, password: '12345678' },
+            })
+            await expect(result).toBeUndefined()
+            const { userModel } = store.getState()
+            await expect(userModel.user).toBeNull()
+        })
+        test('register test authenticationToken', async () => {
+            const store = init({
+                models,
+            })
+            const result = await store.dispatch.userModel.register({
+                data: { ...userData, password: TEST_AUTOVALIDATION_PASSWORD },
+            })
+            await expect(result).toBeUndefined()
+            const { userModel } = store.getState()
+            await expect(userModel.user).not.toBeNull()
+            await expect(userModel.authenticationToken).not.toBeNull()
+        })
+
         test('resetPassword test', async () => {
             const store = init({
                 models,
