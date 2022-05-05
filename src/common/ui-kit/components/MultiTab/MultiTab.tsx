@@ -63,7 +63,7 @@ const Root = styled(FusePageCarded)(({ theme }) => ({
 }))
 
 //eslint-disable-next-line jsdoc/require-jsdoc
-interface ElementDetails {
+export interface IMultiTab {
     //eslint-disable-next-line jsdoc/require-jsdoc
     tabTitle: string
     //eslint-disable-next-line jsdoc/require-jsdoc
@@ -78,7 +78,7 @@ interface ElementDetails {
  *
  * @param props N/A.
  * @param props.header The Header Component of the Tab.
- * @param props.content Content that will be displayed (format : ElementDetails).
+ * @param props.content Content that will be displayed (format : IMultiTab).
  * @param props.innerScroll Indicates if there is an innerScroll inside the tabs.
  * @returns  Element Details Tabs.
  */
@@ -100,7 +100,7 @@ const MultiTab = ({
     //eslint-disable-next-line jsdoc/require-jsdoc
     header?: JSX.Element
     //eslint-disable-next-line jsdoc/require-jsdoc
-    content: Array<ElementDetails>
+    content: Array<IMultiTab>
     //eslint-disable-next-line jsdoc/require-jsdoc
     innerScroll?: boolean
 }) => {
@@ -120,10 +120,8 @@ const MultiTab = ({
     // UseHistory, and tab Handle
     const [tabSlug, setTabSlug] = useState(content[0].tabSlug)
     const history = useHistory()
-    if (entryTab === ':tab') {
-        entryTab = entryTab.replace(':tab', content[0].tabSlug)
-        history.replace({ pathname: `${basePath}/${entryTab}`, ...restLocationState })
-    }
+    entryTab === ':tab' && history.replace({ pathname: `${basePath}/${content[0].tabSlug}`, ...restLocationState })
+
     /**
      * Handler for tab change.
      *
