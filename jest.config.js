@@ -12,5 +12,7 @@ module.exports = {
     transform: {
         '^.+\\.tsx?$': 'ts-jest',
     },
+    // https://stackoverflow.com/a/50863753/13145536
+    modulePaths: ['<rootDir>'],
     verbose: true,
 }
