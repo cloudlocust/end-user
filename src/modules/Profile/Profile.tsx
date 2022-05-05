@@ -14,6 +14,7 @@ import MobileDetect from 'mobile-detect'
 import { AccomodationForm } from './AccomodationForm'
 import { Form } from 'src/common/react-platform-components'
 import { ButtonLoader } from 'src/common/ui-kit'
+import { ButtonResetForm } from 'src/common/ui-kit/components/ButtonResetForm/ButtonResetForm'
 // import MobileMultiTab from 'src/common/ui-kit/components/MobileMultiTab/MobileMultiTab'
 
 /**
@@ -64,16 +65,19 @@ export const Profile = () => {
         },
     ]
     return (
-        <div>
-            <MultiTab content={tabsContent} innerScroll />
-            {isEdit ? (
-                <Button variant="contained" onClick={enableForm} className="ml-8">
+        <div className="mb-56">
+            <MultiTab content={tabsContent} />
+            {!isEdit ? (
+                <Button variant="contained" onClick={enableForm} className="ml-16 md:ml-32">
                     {formatMessage({ id: 'Modifier', defaultMessage: 'Modifier' })}
                 </Button>
             ) : (
-                <ButtonLoader variant="contained" type="submit" className="ml-8 mb-60 mt-10">
-                    {formatMessage({ id: 'Enregistrer', defaultMessage: 'Enregistrer' })}
-                </ButtonLoader>
+                <div className="ml-16 md:ml-32">
+                    {/* <ButtonResetForm initialValues={formInitialValues} onClickButtonReset={toggleEditFormDisable} /> */}
+                    <ButtonLoader variant="contained" type="submit">
+                        {formatMessage({ id: 'Enregistrer', defaultMessage: 'Enregistrer' })}
+                    </ButtonLoader>
+                </div>
             )}
         </div>
     )

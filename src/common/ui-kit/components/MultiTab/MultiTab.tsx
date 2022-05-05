@@ -22,6 +22,8 @@ const Root = styled(FusePageCarded)(({ theme }) => ({
     },
     '& .FusePageCarded-contentCard': {
         overflow: 'hidden',
+        borderRadius: '20px',
+        flex: 'none',
     },
     '& .FusePageCarded-topBg': {
         [theme.breakpoints.down('md')]: {
