@@ -355,7 +355,7 @@ export const handleAddressFieldError = (error: any) => {
     if (error.response.data && error.response.data.errors && isArray(error.response.data.errors)) {
         for (let errorField of error.response.data.errors) {
             // Handle Address Field Only,
-            if (Object.keys(errorField)[0] === 'address') return 'Veuillez entrer une adresse e-mail valide'
+            if (Object.keys(errorField)[0] === 'address') return 'Veuillez entrer une adresse postale valide'
         }
     }
     return defaultRequestErrorMessage
