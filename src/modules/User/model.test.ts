@@ -194,7 +194,7 @@ describe('test models', () => {
             let error = handleAddressFieldError({
                 response: { status: 422, data: { errors: [{ address: ['zip_code none is not an allowed value'] }] } },
             })
-            expect(error).toStrictEqual('Veuillez entrer une adresse e-mail valide')
+            expect(error).toStrictEqual('Veuillez entrer une adresse postale valide')
             // errors not array
             error = handleAddressFieldError({
                 response: { status: 422, data: { errors: {} } },
