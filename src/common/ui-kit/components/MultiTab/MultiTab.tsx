@@ -9,12 +9,12 @@ import { keyBy, mapValues } from 'lodash'
 
 const Root = styled(FusePageCarded)(({ theme }) => ({
     '& .FusePageCarded-header': {
-        minHeight: 72,
-        height: 72,
+        minHeight: 136,
+        height: 136,
         alignItems: 'center',
-        [theme.breakpoints.up('sm')]: {
-            minHeight: 136,
-            height: 136,
+        [theme.breakpoints.down('md')]: {
+            minHeight: 32,
+            height: 32,
         },
     },
     '& .FusePageCarded-content': {
@@ -23,10 +23,47 @@ const Root = styled(FusePageCarded)(({ theme }) => ({
     '& .FusePageCarded-contentCard': {
         overflow: 'hidden',
     },
+    '& .FusePageCarded-topBg': {
+        [theme.breakpoints.down('md')]: {
+            background: 'transparent',
+        },
+    },
+    '& .FusePageCarded-toolbar': {
+        [theme.breakpoints.down('md')]: {
+            display: 'flex',
+            justifyContent: 'center',
+            borderBottom: 'none',
+        },
+        '& .multitabs': {
+            height: '64px',
+            [theme.breakpoints.down('md')]: {
+                height: '44px',
+                background: theme.palette.primary.contrastText,
+                outline: `1px solid ${theme.palette.primary.main}`,
+                borderRadius: '40px',
+                '& .Mui-selected': {
+                    color: `${theme.palette.background.paper} !important`,
+                    zIndex: 1,
+                },
+            },
+            '& .tabs': {
+                height: '64px',
+                [theme.breakpoints.down('md')]: {
+                    height: '44px',
+                },
+            },
+        },
+        '& .indicator': {
+            [theme.breakpoints.down('md')]: {
+                height: '48px',
+                borderRadius: '30px',
+            },
+        },
+    },
 }))
 
 //eslint-disable-next-line jsdoc/require-jsdoc
-interface ElementDetails {
+export interface IMultiTab {
     //eslint-disable-next-line jsdoc/require-jsdoc
     tabTitle: string
     //eslint-disable-next-line jsdoc/require-jsdoc
@@ -41,7 +78,7 @@ interface ElementDetails {
  *
  * @param props N/A.
  * @param props.header The Header Component of the Tab.
- * @param props.content Content that will be displayed (format : ElementDetails).
+ * @param props.content Content that will be displayed (format : IMultiTab).
  * @param props.innerScroll Indicates if there is an innerScroll inside the tabs.
  * @returns  Element Details Tabs.
  */
@@ -63,7 +100,7 @@ const MultiTab = ({
     //eslint-disable-next-line jsdoc/require-jsdoc
     header?: JSX.Element
     //eslint-disable-next-line jsdoc/require-jsdoc
-    content: Array<ElementDetails>
+    content: Array<IMultiTab>
     //eslint-disable-next-line jsdoc/require-jsdoc
     innerScroll?: boolean
 }) => {
@@ -77,12 +114,13 @@ const MultiTab = ({
     const location = pathname.split('/')
 
     // Initialise Base path and entry Tab.
-    const entryTab = location.pop()
+    let entryTab = location.pop()
     let basePath = location.join('/')
 
     // UseHistory, and tab Handle
+    const [tabSlug, setTabSlug] = useState(content[0].tabSlug)
     const history = useHistory()
-    const [tabSlug, setTabSlug] = useState(entryTab)
+    entryTab === ':tab' && history.replace({ pathname: `${basePath}/${content[0].tabSlug}`, ...restLocationState })
 
     /**
      * Handler for tab change.
@@ -106,19 +144,19 @@ const MultiTab = ({
                     textColor="primary"
                     variant="scrollable"
                     scrollButtons="auto"
-                    classes={{ root: 'w-full h-64' }}
+                    classes={{ root: 'multitabs', indicator: 'indicator' }}
                 >
                     {content.map((element, index) => (
                         <Tab
                             key={index}
                             value={element.tabSlug}
                             label={formatMessage({ id: element.tabTitle, defaultMessage: element.tabTitle })}
-                            className="h-64"
+                            classes={{ root: 'tabs' }}
                         />
                     ))}
                 </Tabs>
             }
-            content={<div className="p-16 sm:p-24 w-full">{keyedContent[tabSlug!]}</div>}
+            content={<div className="p-16 sm:p-24 w-full">{keyedContent[tabSlug]}</div>}
             innerScroll={innerScroll}
         />
     )
