@@ -85,6 +85,10 @@ export const SelectButton = ({ state, setState, formOptions, wrapperStyles, titl
                          *
                          */
                         name: string
+                        /**
+                         *
+                         */
+                        isDisabled: boolean
                     }) => {
                         const isIconUrl = option.icon?.includes('/assets')
                         return (
@@ -96,6 +100,7 @@ export const SelectButton = ({ state, setState, formOptions, wrapperStyles, titl
                                 // inProgress={isRegisterInProgress}
                                 // type="submit"
                                 name={option.name}
+                                disabled={option.isDisabled}
                             >
                                 {option.icon &&
                                     (isIconUrl ? (

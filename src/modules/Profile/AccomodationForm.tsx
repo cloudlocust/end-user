@@ -29,6 +29,20 @@ interface IAccomodationForm {
     isEdit: boolean
 }
 
+const formOptions = {
+    house: 'Maison',
+    apartment: 'Appartement',
+    before1950: 'Avant 1950',
+    from1950to1975: '1950 - 1975',
+    after1950: 'Après 1950',
+    main: 'Principale',
+    secondary: 'Secondaire',
+    energeticPerformance: 'Performance énergétique',
+    isolation: 'Estimation isolation',
+}
+const performanceOptions = ['A', 'B', 'C', 'D', 'E', 'F', 'G']
+const isolationOptions = ['Faible', 'Moyenne', 'Forte']
+
 /**
  * @param root0
  * @param root0.enableForm
@@ -37,25 +51,14 @@ interface IAccomodationForm {
  */
 export const AccomodationForm = ({ enableForm, onSubmit, isEdit }: IAccomodationForm) => {
     const { formatMessage } = useIntl()
-    const formOptions = {
-        house: 'Maison',
-        apartment: 'Appartement',
-        before1950: 'Avant 1950',
-        from1950to1975: '1950 - 1975',
-        after1950: 'Après 1950',
-        main: 'Principale',
-        secondary: 'Secondaire',
-        energeticPerformance: 'Performance énergétique',
-        isolation: 'Estimation isolation',
-    }
-    const performanceOptions = ['A', 'B', 'C', 'D', 'E', 'F', 'G']
-    const isolationOptions = ['Faible', 'Moyenne', 'Forte']
+
     const [logement, setLogement] = useState(formOptions.house)
     const [constructionYear, setConstructionYear] = useState(formOptions.before1950)
     const [residenceType, setResidenceType] = useState(formOptions.main)
     const [isDPE, setIsDPE] = useState(true)
     const [energeticPerformance, setEnergeticPerformance] = useState('')
     const [isolation, setIsolation] = useState('')
+    const disabledField = !isEdit
     /**
      * Handle change select menu.
      *
@@ -71,7 +74,10 @@ export const AccomodationForm = ({ enableForm, onSubmit, isEdit }: IAccomodation
     return (
         <Form
             // eslint-disable-next-line jsdoc/require-jsdoc
-            onSubmit={(data) => console.log(data)}
+            onSubmit={(data) => {
+                onSubmit(data)
+                console.log(data)
+            }}
         >
             <div className="flex flex-col justify-center w-full">
                 <div className="font-semibold self-center text-sm mb-4 mt-16">
@@ -92,6 +98,7 @@ export const AccomodationForm = ({ enableForm, onSubmit, isEdit }: IAccomodation
                             iconStyles: 'my-20',
                             buttonStyle: 'w-240 mx-auto mt-16 flex flex-col mr-10',
                             name: formOptions.house,
+                            isDisabled: disabledField,
                         },
                         {
                             label: formOptions.apartment,
@@ -99,6 +106,7 @@ export const AccomodationForm = ({ enableForm, onSubmit, isEdit }: IAccomodation
                             iconStyles: 'my-20',
                             buttonStyle: 'w-240 mx-auto mt-16 flex flex-col',
                             name: formOptions.apartment,
+                            isDisabled: disabledField,
                         },
                     ]}
                 />
@@ -112,16 +120,19 @@ export const AccomodationForm = ({ enableForm, onSubmit, isEdit }: IAccomodation
                             label: formOptions.before1950,
                             buttonStyle: 'w-224 mx-auto mt-16 flex flex-col mr-10 text-xs pt-10 pb-10',
                             name: formOptions.before1950,
+                            isDisabled: disabledField,
                         },
                         {
                             label: formOptions.from1950to1975,
                             buttonStyle: 'w-224 mx-auto mt-16 flex flex-col mr-10 text-xs pt-10 pb-10',
                             name: formOptions.from1950to1975,
+                            isDisabled: disabledField,
                         },
                         {
                             label: formOptions.after1950,
                             buttonStyle: 'w-224 mx-auto mt-16 flex flex-col text-xs pt-10 pb-10',
                             name: formOptions.after1950,
+                            isDisabled: disabledField,
                         },
                     ]}
                 />
@@ -136,12 +147,16 @@ export const AccomodationForm = ({ enableForm, onSubmit, isEdit }: IAccomodation
                             icon: 'flag',
                             iconStyles: 'mr-5',
                             buttonStyle: 'w-224 mx-auto max-h-40 mt-16 mr-10 text-xs pt-12 pb-12',
+                            name: formOptions.main,
+                            isDisabled: disabledField,
                         },
                         {
                             label: formOptions.secondary,
                             icon: 'golf_course',
                             iconStyles: 'mr-5',
                             buttonStyle: 'w-224 max-h-40 mx-auto mt-16 text-xs',
+                            name: formOptions.secondary,
+                            isDisabled: disabledField,
                         },
                     ]}
                 />
@@ -159,6 +174,7 @@ export const AccomodationForm = ({ enableForm, onSubmit, isEdit }: IAccomodation
                             label="Oui"
                             onClick={() => setIsDPE(true)}
                             checked={isDPE}
+                            disabled={disabledField}
                         />
                         <FormControlLabel
                             value="non"
@@ -166,6 +182,7 @@ export const AccomodationForm = ({ enableForm, onSubmit, isEdit }: IAccomodation
                             label="Non"
                             onClick={() => setIsDPE(false)}
                             checked={!isDPE}
+                            disabled={disabledField}
                         />
                     </RadioGroup>
                 </div>
@@ -178,6 +195,7 @@ export const AccomodationForm = ({ enableForm, onSubmit, isEdit }: IAccomodation
                             value={energeticPerformance}
                             label={formOptions.energeticPerformance}
                             onChange={(event) => handleChange(event, setEnergeticPerformance)}
+                            disabled={disabledField}
                         >
                             {performanceOptions.map((performance) => {
                                 return <MenuItem value={performance}>{performance}</MenuItem>
@@ -194,6 +212,7 @@ export const AccomodationForm = ({ enableForm, onSubmit, isEdit }: IAccomodation
                                 value={isolation}
                                 label={formOptions.isolation}
                                 onChange={(event) => handleChange(event, setIsolation)}
+                                disabled={disabledField}
                             >
                                 {isolationOptions.map((isolation) => {
                                     return <MenuItem value={isolation}>{isolation}</MenuItem>
@@ -218,6 +237,7 @@ export const AccomodationForm = ({ enableForm, onSubmit, isEdit }: IAccomodation
                                 id: 'Habitants',
                                 defaultMessage: 'Habitants',
                             })}
+                            disabled={disabledField}
                             // required={false}
                             // validateFunctions={[requiredBuilder(), min(10), max(10)]}
                         />
@@ -239,6 +259,7 @@ export const AccomodationForm = ({ enableForm, onSubmit, isEdit }: IAccomodation
                                 id: 'Superficie',
                                 defaultMessage: 'Superficie',
                             })}
+                            disabled={disabledField}
                             // required={false}
                             // validateFunctions={[requiredBuilder(), min(10), max(10)]}
                         />

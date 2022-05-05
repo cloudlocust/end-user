@@ -67,17 +67,17 @@ export const Profile = () => {
     return (
         <div className="mb-56">
             <MultiTab content={tabsContent} />
-            {!isEdit ? (
-                <Button variant="contained" onClick={enableForm} className="ml-16 md:ml-32">
-                    {formatMessage({ id: 'Modifier', defaultMessage: 'Modifier' })}
-                </Button>
-            ) : (
+            {isEdit ? (
                 <div className="ml-16 md:ml-32">
                     {/* <ButtonResetForm initialValues={formInitialValues} onClickButtonReset={toggleEditFormDisable} /> */}
                     <ButtonLoader variant="contained" type="submit">
                         {formatMessage({ id: 'Enregistrer', defaultMessage: 'Enregistrer' })}
                     </ButtonLoader>
                 </div>
+            ) : (
+                <Button variant="contained" onClick={enableForm} className="ml-16 md:ml-32">
+                    {formatMessage({ id: 'Modifier', defaultMessage: 'Modifier' })}
+                </Button>
             )}
         </div>
     )
