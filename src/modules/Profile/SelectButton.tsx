@@ -1,4 +1,4 @@
-import React, { useReducer, useState } from 'react'
+import React from 'react'
 import Button from '@mui/material/Button'
 import { useIntl } from 'src/common/react-platform-translation'
 import { Icon } from '@mui/material'
@@ -28,21 +28,26 @@ interface ISelectButton {
      */
     titleLabel?: string
     /**
-     *
+     * Section name.
      */
     name?: string
-    onBlur?: (event: any) => void
+    /**
+     * Saving data when the user leaves a form field.
+     */
+    onBlur: (event: any) => void
 }
 
 /**
- * Desctiption.
+ * Select Button is a component that allows to select one of the buttons.
  *
- * @param root0
+ * @param root0 SelectButton props.
  * @param root0.state Button state.
  * @param root0.setState Set button state.
  * @param root0.formOptions Options for buttons in form.
- * @param root0.wrapperStyles styles for wrapper
- * @param root0.titleLabel
+ * @param root0.wrapperStyles Styles for wrapper.
+ * @param root0.titleLabel Buttons title.
+ * @param root0.name Section name.
+ * @param root0.onBlur Saving data when the user leaves a form field.
  * @returns Select Buttons.
  */
 export const SelectButton = ({
@@ -55,7 +60,6 @@ export const SelectButton = ({
     onBlur,
 }: ISelectButton) => {
     const { formatMessage } = useIntl()
-
     return (
         <>
             {titleLabel && (
@@ -69,35 +73,37 @@ export const SelectButton = ({
             <div className={wrapperStyles}>
                 {formOptions.map(
                     /**
-                     * \.
+                     * Button options.
                      *
-                     * @param option .
-                     * @param option.label
-                     * @param option.icon
-                     * @param option.iconStyles
-                     * @param option.buttonStyle styles for buttons
-                     * @returns .
+                     * @param option Button options.
+                     * @param option.label Label  name.
+                     * @param option.icon Icon url.
+                     * @param option.iconStyles Styles for icon.
+                     * @param option.buttonStyle Styles for button.
+                     * @param option.isDisabled Is disabled button.
+                     * @returns  Select Buttons.
                      */
+
                     (option: {
                         /**
-                         *
+                         * Label  name.
                          */
                         label: string
                         /**
-                         *
+                         * Icon url.
                          */
                         icon?: string
                         /**
-                         *
+                         * Styles for icon.
                          */
                         iconStyles?: string
                         /**
-                         *
+                         * Styles for button.
                          */
                         buttonStyle?: string
 
                         /**
-                         *
+                         *  Is disabled button.
                          */
                         isDisabled: boolean
                     }) => {
@@ -109,12 +115,10 @@ export const SelectButton = ({
                                 className={option.buttonStyle}
                                 onClick={() => setState(option.label)}
                                 // inProgress={isRegisterInProgress}
-                                type="submit"
+                                type="button"
                                 name={name}
                                 disabled={option.isDisabled}
-                                onBlur={(event) => {
-                                    return onBlur && onBlur(event)
-                                }}
+                                onBlur={onBlur}
                                 value={option.label}
                             >
                                 {option.icon &&
