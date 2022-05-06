@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useReducer, useState } from 'react'
 import Button from '@mui/material/Button'
 import { useIntl } from 'src/common/react-platform-translation'
 import { Icon } from '@mui/material'
@@ -27,7 +27,13 @@ interface ISelectButton {
      * Buttons title.
      */
     titleLabel?: string
+    /**
+     *
+     */
+    name?: string
+    onBlur?: (event: any) => void
 }
+
 /**
  * Desctiption.
  *
@@ -39,7 +45,15 @@ interface ISelectButton {
  * @param root0.titleLabel
  * @returns Select Buttons.
  */
-export const SelectButton = ({ state, setState, formOptions, wrapperStyles, titleLabel }: ISelectButton) => {
+export const SelectButton = ({
+    state,
+    setState,
+    formOptions,
+    wrapperStyles,
+    titleLabel,
+    name,
+    onBlur,
+}: ISelectButton) => {
     const { formatMessage } = useIntl()
 
     return (
@@ -81,10 +95,7 @@ export const SelectButton = ({ state, setState, formOptions, wrapperStyles, titl
                          *
                          */
                         buttonStyle?: string
-                        /**
-                         *
-                         */
-                        name: string
+
                         /**
                          *
                          */
@@ -98,9 +109,13 @@ export const SelectButton = ({ state, setState, formOptions, wrapperStyles, titl
                                 className={option.buttonStyle}
                                 onClick={() => setState(option.label)}
                                 // inProgress={isRegisterInProgress}
-                                // type="submit"
-                                name={option.name}
+                                type="submit"
+                                name={name}
                                 disabled={option.isDisabled}
+                                onBlur={(event) => {
+                                    return onBlur && onBlur(event)
+                                }}
+                                value={option.label}
                             >
                                 {option.icon &&
                                     (isIconUrl ? (

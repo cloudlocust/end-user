@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { useIntl } from 'src/common/react-platform-translation'
-import { ButtonLoader, TextField } from 'src/common/ui-kit'
+// import { ButtonLoader, TextField } from 'src/common/ui-kit'
+import TextField from '@mui/material/TextField'
 import { email, requiredBuilder, Form } from 'src/common/react-platform-components'
 import Radio from '@mui/material/Radio'
 import RadioGroup from '@mui/material/RadioGroup'
@@ -34,7 +35,7 @@ const formOptions = {
     apartment: 'Appartement',
     before1950: 'Avant 1950',
     from1950to1975: '1950 - 1975',
-    after1950: 'Après 1950',
+    after1975: 'Après 1975',
     main: 'Principale',
     secondary: 'Secondaire',
     energeticPerformance: 'Performance énergétique',
@@ -58,7 +59,7 @@ export const AccomodationForm = ({ enableForm, onSubmit, isEdit }: IAccomodation
     const [isDPE, setIsDPE] = useState(true)
     const [energeticPerformance, setEnergeticPerformance] = useState('')
     const [isolation, setIsolation] = useState('')
-    const disabledField = !isEdit
+    const disabledField = false // !isEdit
     /**
      * Handle change select menu.
      *
@@ -70,13 +71,27 @@ export const AccomodationForm = ({ enableForm, onSubmit, isEdit }: IAccomodation
     ) => {
         setState(event.target.value)
     }
-    //<Form onSubmit={onSubmit}>Fields related to each Form</Form>
+    const [blurredFields, setBlurredFields] = useState({
+        logement: logement,
+        constructionYear: constructionYear,
+        residenceType: residenceType,
+        isDPE: isDPE ? 'oui' : 'non',
+        energeticPerformance: energeticPerformance,
+        isolation: isolation,
+        habitants: '',
+        superficie: '',
+    })
+    console.log('blurredFields', blurredFields)
+
+    const handleBlur = (event: any) => {
+        setBlurredFields({ ...blurredFields, [event.target.name]: event.target.value })
+    }
     return (
         <Form
             // eslint-disable-next-line jsdoc/require-jsdoc
-            onSubmit={(data) => {
-                onSubmit(data)
-                console.log(data)
+            onSubmit={() => {
+                onSubmit(blurredFields)
+                console.log(blurredFields)
             }}
         >
             <div className="flex flex-col justify-center w-full">
@@ -91,13 +106,14 @@ export const AccomodationForm = ({ enableForm, onSubmit, isEdit }: IAccomodation
                     setState={setLogement}
                     wrapperStyles="flex flex-row"
                     titleLabel="Type de logement :"
+                    name="logement"
+                    onBlur={handleBlur}
                     formOptions={[
                         {
                             label: formOptions.house,
                             icon: '/assets/images/content/logementMaison.svg',
                             iconStyles: 'my-20',
                             buttonStyle: 'w-240 mx-auto mt-16 flex flex-col mr-10',
-                            name: formOptions.house,
                             isDisabled: disabledField,
                         },
                         {
@@ -105,7 +121,6 @@ export const AccomodationForm = ({ enableForm, onSubmit, isEdit }: IAccomodation
                             icon: '/assets/images/content/logementAppartement.svg',
                             iconStyles: 'my-20',
                             buttonStyle: 'w-240 mx-auto mt-16 flex flex-col',
-                            name: formOptions.apartment,
                             isDisabled: disabledField,
                         },
                     ]}
@@ -115,6 +130,8 @@ export const AccomodationForm = ({ enableForm, onSubmit, isEdit }: IAccomodation
                     setState={setConstructionYear}
                     wrapperStyles="flex flex-row"
                     titleLabel="Année de construction :"
+                    name="constructionYear"
+                    onBlur={handleBlur}
                     formOptions={[
                         {
                             label: formOptions.before1950,
@@ -129,9 +146,9 @@ export const AccomodationForm = ({ enableForm, onSubmit, isEdit }: IAccomodation
                             isDisabled: disabledField,
                         },
                         {
-                            label: formOptions.after1950,
+                            label: formOptions.after1975,
                             buttonStyle: 'w-224 mx-auto mt-16 flex flex-col text-xs pt-10 pb-10',
-                            name: formOptions.after1950,
+                            name: formOptions.after1975,
                             isDisabled: disabledField,
                         },
                     ]}
@@ -141,6 +158,8 @@ export const AccomodationForm = ({ enableForm, onSubmit, isEdit }: IAccomodation
                     setState={setResidenceType}
                     wrapperStyles="flex flex-row"
                     titleLabel="Type de résidence :"
+                    name="residenceType"
+                    onBlur={handleBlur}
                     formOptions={[
                         {
                             label: formOptions.main,
@@ -167,11 +186,12 @@ export const AccomodationForm = ({ enableForm, onSubmit, isEdit }: IAccomodation
                             defaultMessage: 'Je connais mon DPE :',
                         })}
                     </div>
-                    <RadioGroup row aria-labelledby="demo-row-radio-buttons-group-label" name="row-radio-buttons-group">
+                    <RadioGroup row aria-labelledby="demo-row-radio-buttons-group-label" name="isDPE">
                         <FormControlLabel
                             value="oui"
                             control={<Radio color="primary" />}
                             label="Oui"
+                            onBlur={handleBlur}
                             onClick={() => setIsDPE(true)}
                             checked={isDPE}
                             disabled={disabledField}
@@ -180,6 +200,7 @@ export const AccomodationForm = ({ enableForm, onSubmit, isEdit }: IAccomodation
                             value="non"
                             control={<Radio color="primary" />}
                             label="Non"
+                            onBlur={handleBlur}
                             onClick={() => setIsDPE(false)}
                             checked={!isDPE}
                             disabled={disabledField}
@@ -194,7 +215,12 @@ export const AccomodationForm = ({ enableForm, onSubmit, isEdit }: IAccomodation
                             id={formOptions.energeticPerformance}
                             value={energeticPerformance}
                             label={formOptions.energeticPerformance}
-                            onChange={(event) => handleChange(event, setEnergeticPerformance)}
+                            onChange={(event) => {
+                                handleChange(event, setEnergeticPerformance)
+                                setIsolation('')
+                            }}
+                            onBlur={handleBlur}
+                            name="energeticPerformance"
                             disabled={disabledField}
                         >
                             {performanceOptions.map((performance) => {
@@ -211,7 +237,12 @@ export const AccomodationForm = ({ enableForm, onSubmit, isEdit }: IAccomodation
                                 id={formOptions.isolation}
                                 value={isolation}
                                 label={formOptions.isolation}
-                                onChange={(event) => handleChange(event, setIsolation)}
+                                onChange={(event) => {
+                                    handleChange(event, setIsolation)
+                                    setEnergeticPerformance('')
+                                }}
+                                onBlur={handleBlur}
+                                name="isolation"
                                 disabled={disabledField}
                             >
                                 {isolationOptions.map((isolation) => {
@@ -230,7 +261,6 @@ export const AccomodationForm = ({ enableForm, onSubmit, isEdit }: IAccomodation
                     </div>
                     <div className="w-4/6">
                         <TextField
-                            // disabled={!isEdit}
                             type="number"
                             name="habitants"
                             label={formatMessage({
@@ -238,21 +268,19 @@ export const AccomodationForm = ({ enableForm, onSubmit, isEdit }: IAccomodation
                                 defaultMessage: 'Habitants',
                             })}
                             disabled={disabledField}
-                            // required={false}
-                            // validateFunctions={[requiredBuilder(), min(10), max(10)]}
+                            onBlur={handleBlur}
                         />
                     </div>
                 </div>
-                <div className="flex flex-row flex justify-between ">
+                <div className="flex flex-row flex justify-between mt-16 mb-10">
                     <div className="mt-16 mr-10 w-full ">
                         {formatMessage({
                             id: 'Superficie du logements :',
                             defaultMessage: 'Superficie du logements :',
                         })}
                     </div>
-                    <div className="w-4/6">
+                    <div className="w-4/6 ">
                         <TextField
-                            // disabled={!isEdit}
                             type="number"
                             name="superficie"
                             label={formatMessage({
@@ -260,11 +288,10 @@ export const AccomodationForm = ({ enableForm, onSubmit, isEdit }: IAccomodation
                                 defaultMessage: 'Superficie',
                             })}
                             disabled={disabledField}
-                            // required={false}
-                            // validateFunctions={[requiredBuilder(), min(10), max(10)]}
+                            onBlur={handleBlur}
                         />
                     </div>
-                    <div className="mt-16 ml-8  ">
+                    <div className="mt-16 ml-6  ">
                         {formatMessage({
                             id: 'm²',
                             defaultMessage: 'm²',
