@@ -1,8 +1,7 @@
 import React, { useState } from 'react'
 import { useIntl } from 'src/common/react-platform-translation'
-// import { ButtonLoader, TextField } from 'src/common/ui-kit'
 import TextField from '@mui/material/TextField'
-import { email, requiredBuilder, Form } from 'src/common/react-platform-components'
+import { Form } from 'src/common/react-platform-components'
 import Radio from '@mui/material/Radio'
 import RadioGroup from '@mui/material/RadioGroup'
 import FormControlLabel from '@mui/material/FormControlLabel'
@@ -16,10 +15,6 @@ import { FormControl } from '@mui/material'
  * Interface IAccomodationForm.
  */
 interface IAccomodationForm {
-    /**
-     *
-     */
-    enableForm: () => void
     /**
      *
      */
@@ -59,15 +54,17 @@ const handleChange = (
     setState(event.target.value)
     setEmptyState('')
 }
-/**
- * @param root0
- * @param root0.enableForm
- * @param root0.onSubmit
- * @param root0.isEdit
- */
-export const AccomodationForm = ({ enableForm, onSubmit, isEdit }: IAccomodationForm) => {
-    const { formatMessage } = useIntl()
 
+/**
+ * AccomodationForm.
+ *
+ * @param root0 AccomodationForm props.
+ * @param root0.onSubmit Submit action.
+ * @param root0.isEdit Is edition mode.
+ * @returns AccomodationForm.
+ */
+export const AccomodationForm = ({ onSubmit, isEdit }: IAccomodationForm) => {
+    const { formatMessage } = useIntl()
     const [logement, setLogement] = useState(formOptions.house)
     const [constructionYear, setConstructionYear] = useState(formOptions.before1950)
     const [residenceType, setResidenceType] = useState(formOptions.main)
@@ -86,8 +83,12 @@ export const AccomodationForm = ({ enableForm, onSubmit, isEdit }: IAccomodation
         habitants: '',
         superficie: '',
     })
-    console.log('blurredFields', blurredFields)
 
+    /**
+     * HandleBlur for the event.
+     *
+     * @param event Click event.
+     */
     const handleBlur = (event: any) => {
         setBlurredFields({ ...blurredFields, [event.target.name]: event.target.value })
     }

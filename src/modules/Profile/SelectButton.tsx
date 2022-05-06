@@ -83,7 +83,6 @@ export const SelectButton = ({
                      * @param option.isDisabled Is disabled button.
                      * @returns  Select Buttons.
                      */
-
                     (option: {
                         /**
                          * Label  name.
