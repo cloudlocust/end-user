@@ -45,6 +45,21 @@ const performanceOptions = ['A', 'B', 'C', 'D', 'E', 'F', 'G']
 const isolationOptions = ['Faible', 'Moyenne', 'Forte']
 
 /**
+ * Handle change select menu.
+ *
+ * @param event Select Change Event.
+ * @param setState Set selected value.
+ * @param setEmptyState Set empty value in unused field.
+ */
+const handleChange = (
+    event: SelectChangeEvent<string>,
+    setState: (value: React.SetStateAction<string>) => void,
+    setEmptyState: (value: React.SetStateAction<string>) => void,
+) => {
+    setState(event.target.value)
+    setEmptyState('')
+}
+/**
  * @param root0
  * @param root0.enableForm
  * @param root0.onSubmit
@@ -60,17 +75,7 @@ export const AccomodationForm = ({ enableForm, onSubmit, isEdit }: IAccomodation
     const [energeticPerformance, setEnergeticPerformance] = useState('')
     const [isolation, setIsolation] = useState('')
     const disabledField = false // !isEdit
-    /**
-     * Handle change select menu.
-     *
-     * @param event Select Change Event.
-     */
-    const handleChange = (
-        event: SelectChangeEvent<string>,
-        setState: (value: React.SetStateAction<string>) => void,
-    ) => {
-        setState(event.target.value)
-    }
+
     const [blurredFields, setBlurredFields] = useState({
         logement: logement,
         constructionYear: constructionYear,
@@ -216,8 +221,7 @@ export const AccomodationForm = ({ enableForm, onSubmit, isEdit }: IAccomodation
                             value={energeticPerformance}
                             label={formOptions.energeticPerformance}
                             onChange={(event) => {
-                                handleChange(event, setEnergeticPerformance)
-                                setIsolation('')
+                                handleChange(event, setEnergeticPerformance, setIsolation)
                             }}
                             onBlur={handleBlur}
                             name="energeticPerformance"
@@ -238,8 +242,7 @@ export const AccomodationForm = ({ enableForm, onSubmit, isEdit }: IAccomodation
                                 value={isolation}
                                 label={formOptions.isolation}
                                 onChange={(event) => {
-                                    handleChange(event, setIsolation)
-                                    setEnergeticPerformance('')
+                                    handleChange(event, setIsolation, setEnergeticPerformance)
                                 }}
                                 onBlur={handleBlur}
                                 name="isolation"
