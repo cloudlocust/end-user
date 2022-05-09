@@ -6,6 +6,7 @@ import Tabs from '@mui/material/Tabs'
 import Tab from '@mui/material/Tab'
 import { keyBy, mapValues } from 'lodash'
 import FusePageCarded from 'src/common/ui-kit/fuse/components/FusePageCarded'
+import { IMultiTab } from 'src/common/ui-kit/components/MultiTab/MultiTab'
 
 const Root = styled(FusePageCarded)(({ theme }) => ({
     '& .FusePageCarded-header': {
@@ -63,16 +64,6 @@ const Root = styled(FusePageCarded)(({ theme }) => ({
         },
     },
 }))
-
-//eslint-disable-next-line jsdoc/require-jsdoc
-export interface IMultiTab {
-    //eslint-disable-next-line jsdoc/require-jsdoc
-    tabTitle: string
-    //eslint-disable-next-line jsdoc/require-jsdoc
-    tabSlug: string
-    //eslint-disable-next-line jsdoc/require-jsdoc
-    tabContent: JSX.Element
-}
 
 /**
  *  The Element Details let you control tabs.
