@@ -39,6 +39,7 @@ export const TEST_SUCCESS_USER = {
     is_active: true,
     is_verified: true,
     is_super_user: false,
+    first_login: false,
 }
 
 /**

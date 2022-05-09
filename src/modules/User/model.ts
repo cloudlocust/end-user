@@ -102,6 +102,10 @@ export interface IUser extends IBaseUser {
      * SuperUser State.
      */
     isSuperUser: boolean
+    /**
+     * First Time Login.
+     */
+    firstLogin: boolean
 }
 
 /**
