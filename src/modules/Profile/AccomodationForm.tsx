@@ -25,7 +25,7 @@ interface IAccomodationForm {
     isEdit: boolean
 }
 
-const formOptions = {
+const AccomodationOptions = {
     house: 'Maison',
     apartment: 'Appartement',
     before1950: 'Avant 1950',
@@ -65,15 +65,15 @@ const handleChange = (
  */
 export const AccomodationForm = ({ onSubmit, isEdit }: IAccomodationForm) => {
     const { formatMessage } = useIntl()
-    const [logement, setLogement] = useState(formOptions.house)
-    const [constructionYear, setConstructionYear] = useState(formOptions.before1950)
-    const [residenceType, setResidenceType] = useState(formOptions.main)
+    const [logement, setLogement] = useState(AccomodationOptions.house)
+    const [constructionYear, setConstructionYear] = useState(AccomodationOptions.before1950)
+    const [residenceType, setResidenceType] = useState(AccomodationOptions.main)
     const [isDPE, setIsDPE] = useState(true)
     const [energeticPerformance, setEnergeticPerformance] = useState('')
     const [isolation, setIsolation] = useState('')
     const disabledField = false // !isEdit
 
-    const [blurredFields, setBlurredFields] = useState({
+    const [accomodationFields, setAccomodationFields] = useState({
         logement: logement,
         constructionYear: constructionYear,
         residenceType: residenceType,
@@ -90,14 +90,13 @@ export const AccomodationForm = ({ onSubmit, isEdit }: IAccomodationForm) => {
      * @param event Click event.
      */
     const handleBlur = (event: any) => {
-        setBlurredFields({ ...blurredFields, [event.target.name]: event.target.value })
+        setAccomodationFields({ ...accomodationFields, [event.target.name]: event.target.value })
     }
     return (
         <Form
-            // eslint-disable-next-line jsdoc/require-jsdoc
             onSubmit={() => {
-                onSubmit(blurredFields)
-                console.log(blurredFields)
+                onSubmit(accomodationFields)
+                console.log(accomodationFields)
             }}
         >
             <div className="flex flex-col justify-center w-full">
@@ -116,14 +115,14 @@ export const AccomodationForm = ({ onSubmit, isEdit }: IAccomodationForm) => {
                     onBlur={handleBlur}
                     formOptions={[
                         {
-                            label: formOptions.house,
+                            label: AccomodationOptions.house,
                             icon: '/assets/images/content/logementMaison.svg',
                             iconStyles: 'my-20',
                             buttonStyle: 'w-240 mx-auto mt-16 flex flex-col mr-10',
                             isDisabled: disabledField,
                         },
                         {
-                            label: formOptions.apartment,
+                            label: AccomodationOptions.apartment,
                             icon: '/assets/images/content/logementAppartement.svg',
                             iconStyles: 'my-20',
                             buttonStyle: 'w-240 mx-auto mt-16 flex flex-col',
@@ -140,21 +139,21 @@ export const AccomodationForm = ({ onSubmit, isEdit }: IAccomodationForm) => {
                     onBlur={handleBlur}
                     formOptions={[
                         {
-                            label: formOptions.before1950,
+                            label: AccomodationOptions.before1950,
                             buttonStyle: 'w-224 mx-auto mt-16 flex flex-col mr-10 text-xs pt-10 pb-10',
-                            name: formOptions.before1950,
+                            name: AccomodationOptions.before1950,
                             isDisabled: disabledField,
                         },
                         {
-                            label: formOptions.from1950to1975,
+                            label: AccomodationOptions.from1950to1975,
                             buttonStyle: 'w-224 mx-auto mt-16 flex flex-col mr-10 text-xs pt-10 pb-10',
-                            name: formOptions.from1950to1975,
+                            name: AccomodationOptions.from1950to1975,
                             isDisabled: disabledField,
                         },
                         {
-                            label: formOptions.after1975,
+                            label: AccomodationOptions.after1975,
                             buttonStyle: 'w-224 mx-auto mt-16 flex flex-col text-xs pt-10 pb-10',
-                            name: formOptions.after1975,
+                            name: AccomodationOptions.after1975,
                             isDisabled: disabledField,
                         },
                     ]}
@@ -168,19 +167,19 @@ export const AccomodationForm = ({ onSubmit, isEdit }: IAccomodationForm) => {
                     onBlur={handleBlur}
                     formOptions={[
                         {
-                            label: formOptions.main,
+                            label: AccomodationOptions.main,
                             icon: 'flag',
                             iconStyles: 'mr-5',
                             buttonStyle: 'w-224 mx-auto max-h-40 mt-16 mr-10 text-xs pt-12 pb-12',
-                            name: formOptions.main,
+                            name: AccomodationOptions.main,
                             isDisabled: disabledField,
                         },
                         {
-                            label: formOptions.secondary,
+                            label: AccomodationOptions.secondary,
                             icon: 'golf_course',
                             iconStyles: 'mr-5',
                             buttonStyle: 'w-224 max-h-40 mx-auto mt-16 text-xs',
-                            name: formOptions.secondary,
+                            name: AccomodationOptions.secondary,
                             isDisabled: disabledField,
                         },
                     ]}
@@ -215,12 +214,12 @@ export const AccomodationForm = ({ onSubmit, isEdit }: IAccomodationForm) => {
                 </div>
                 {isDPE ? (
                     <FormControl fullWidth>
-                        <InputLabel id="energeticPerformance">{formOptions.energeticPerformance}</InputLabel>
+                        <InputLabel id="energeticPerformance">{AccomodationOptions.energeticPerformance}</InputLabel>
                         <Select
-                            labelId={formOptions.energeticPerformance}
-                            id={formOptions.energeticPerformance}
+                            labelId={AccomodationOptions.energeticPerformance}
+                            id={AccomodationOptions.energeticPerformance}
                             value={energeticPerformance}
-                            label={formOptions.energeticPerformance}
+                            label={AccomodationOptions.energeticPerformance}
                             onChange={(event) => {
                                 handleChange(event, setEnergeticPerformance, setIsolation)
                             }}
@@ -236,12 +235,12 @@ export const AccomodationForm = ({ onSubmit, isEdit }: IAccomodationForm) => {
                 ) : (
                     <div>
                         <FormControl fullWidth>
-                            <InputLabel id="isolation">{formOptions.isolation}</InputLabel>
+                            <InputLabel id="isolation">{AccomodationOptions.isolation}</InputLabel>
                             <Select
-                                labelId={formOptions.isolation}
-                                id={formOptions.isolation}
+                                labelId={AccomodationOptions.isolation}
+                                id={AccomodationOptions.isolation}
                                 value={isolation}
-                                label={formOptions.isolation}
+                                label={AccomodationOptions.isolation}
                                 onChange={(event) => {
                                     handleChange(event, setIsolation, setEnergeticPerformance)
                                 }}

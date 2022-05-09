@@ -1,9 +1,10 @@
 import React, { useState } from 'react'
-import MultiTab from 'src/common/ui-kit/components/MultiTab/MultiTab'
+import MultiTab from 'src/modules/shared/MultiTab/MultiTab'
 import { useIntl } from 'src/common/react-platform-translation'
 import Button from '@mui/material/Button'
 import { AccomodationForm } from './AccomodationForm'
 import { ButtonLoader } from 'src/common/ui-kit'
+import { EquipmentForm } from './EquipmentForm'
 
 /**
  * Form used for modify user profile.
@@ -48,13 +49,11 @@ export const Profile = () => {
             tabSlug: 'equipment',
             tabContent: (
                 <div className="Tab-Equipment">
-                    Equipement
-                    {/* <EquipmentForm
+                    <EquipmentForm
                         // houseDetails={houseDetails}
                         isEdit={isEdit}
-                        enableForm={enableForm}
                         onSubmit={onSubmit}
-                    /> */}
+                    />
                 </div>
             ),
         },
