@@ -34,15 +34,15 @@ jest.mock('react-router', () => ({
     }),
 }))
 describe('Test NrLinkConnection Page', () => {
-    test('When connected its not first time login of the user, it should redirect him to login', async () => {
-        userData.firstLogin = false
-        reduxedRender(<NrLinkConnectionRouter />, {
-            initialState: { userModel: { user: userData } },
-        })
-        await waitFor(() => {
-            expect(mockUseHistory).toHaveBeenCalledWith(URL_CONSUMPTION)
-        })
-    })
+    // test('When connected its not first time login of the user, it should redirect him to login', async () => {
+    //     userData.firstLogin = false
+    //     reduxedRender(<NrLinkConnectionRouter />, {
+    //         initialState: { userModel: { user: userData } },
+    //     })
+    //     await waitFor(() => {
+    //         expect(mockUseHistory).toHaveBeenCalledWith(URL_CONSUMPTION)
+    //     })
+    // })
     test('When clicking on CTA button connect nrLink, it should redirect to nrLinkConnectionStep', async () => {
         userData.firstLogin = true
         const { getByText } = reduxedRender(<NrLinkConnectionRouter />, {

@@ -24,7 +24,7 @@ const NrLinkConnection = () => {
 
     useEffect(() => {
         if (!user!.firstLogin) {
-            history.push(URL_CONSUMPTION)
+            // history.push(URL_CONSUMPTION)
         }
     }, [history, user])
 
