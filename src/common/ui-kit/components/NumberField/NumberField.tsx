@@ -1,5 +1,6 @@
 import { Button, Icon, styled } from '@mui/material'
 import React, { useReducer } from 'react'
+import { useIntl } from 'react-intl'
 
 const Root = styled('div')(({ theme }) => ({
     '& .icon-background': {
@@ -121,6 +122,7 @@ export const NumberField = ({
 }: INumberField) => {
     const [state, dispatch] = useReducer(reducer, initialCount, init)
     const disabledField = disableDecrement && state.count <= 0
+    const { formatMessage } = useIntl()
 
     return (
         <Root className={wrapperClasses}>
@@ -136,7 +138,12 @@ export const NumberField = ({
                 </div>
             )}
             <div className="flex flex-col items-center w-full border-wrapper">
-                <div className="title">{title}</div>
+                <div className="title">
+                    {formatMessage({
+                        id: title,
+                        defaultMessage: title,
+                    })}
+                </div>
                 <div className="flex buttons w-full justify-between items-center px-4 mb-4">
                     <Button variant="outlined" onClick={() => dispatch({ type: 'decrement' })} disabled={disabledField}>
                         <Icon color={disabledField ? 'disabled' : 'primary'}>remove</Icon>
