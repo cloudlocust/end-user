@@ -93,6 +93,10 @@ export interface INumberField {
      * Is decrement disabled when value === 0.
      */
     disableDecrement?: boolean
+    /**
+     * Wraper className.
+     */
+    wrapperClasses?: string
 }
 /**
  * Number Field component.
@@ -103,15 +107,22 @@ export interface INumberField {
  * @param param0.iconLabel Icon name if taken from fuse mui.
  * @param param0.iconPath Icon path if it is svg image.
  * @param param0.disableDecrement Is decrement disabled when value === 0.
+ * @param param0.wrapperClasses  Wraper className.
  * @returns NumberField.
  */
-export const NumberField = ({ initialCount = 0, title, iconLabel, iconPath, disableDecrement }: INumberField) => {
+export const NumberField = ({
+    initialCount = 0,
+    title,
+    iconLabel,
+    iconPath,
+    disableDecrement,
+    wrapperClasses = 'flex mr-8 mb-10',
+}: INumberField) => {
     const [state, dispatch] = useReducer(reducer, initialCount, init)
     const disabledField = disableDecrement && state.count <= 0
 
     return (
-        // <Root className="flex w-3/6 mb-10">
-        <Root className="flex mr-8 mb-10">
+        <Root className={wrapperClasses}>
             {(iconPath || iconLabel) && (
                 <div className="icon-background flex items-center px-4 border-wrapper">
                     {iconLabel ? (
