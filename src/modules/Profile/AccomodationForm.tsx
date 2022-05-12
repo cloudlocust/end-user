@@ -116,14 +116,14 @@ export const AccomodationForm = ({ onSubmit, isEdit }: IAccomodationForm) => {
                     formOptions={[
                         {
                             label: AccomodationOptions.house,
-                            icon: '/assets/images/content/logementMaison.svg',
+                            icon: '/assets/images/content/accomodation/logementMaison.svg',
                             iconStyles: 'my-20',
                             buttonStyle: 'w-240 mx-auto mt-16 flex flex-col mr-10',
                             isDisabled: disabledField,
                         },
                         {
                             label: AccomodationOptions.apartment,
-                            icon: '/assets/images/content/logementAppartement.svg',
+                            icon: '/assets/images/content/accomodation/logementAppartement.svg',
                             iconStyles: 'my-20',
                             buttonStyle: 'w-240 mx-auto mt-16 flex flex-col',
                             isDisabled: disabledField,
