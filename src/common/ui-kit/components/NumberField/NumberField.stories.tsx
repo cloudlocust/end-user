@@ -15,14 +15,14 @@ export default {
 } as Meta
 
 /**
- * MultiTab template.
+ * NumberField template.
  *
- * @param args Multitab props.
- * @returns MultiTab.
+ * @param args NumberField props.
+ * @returns NumberField.
  */
 const Template: Story<INumberField> = (args: INumberField) => <NumberField {...args} />
 /**
- * Mobile template.
+ * NumberFieldExample template.
  */
 export const NumberFieldExample = Template.bind({})
 NumberFieldExample.args = {
