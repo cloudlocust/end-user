@@ -69,6 +69,7 @@ const reducer = (
             throw new Error()
     }
 }
+
 /**
  * NumberField interface.
  */

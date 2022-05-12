@@ -24,11 +24,10 @@ const Template: Story<INumberField> = (args: INumberField) => <NumberField {...a
 /**
  * Mobile template.
  */
-export const Mobile = Template.bind({})
-Mobile.args = { title: 'PC de bureau', iconLabel: 'computer', disableDecrement: true }
-
-Mobile.parameters = {
-    viewport: {
-        defaultViewport: 'iphonex',
-    },
+export const NumberFieldExample = Template.bind({})
+NumberFieldExample.args = {
+    title: 'PC de bureau',
+    iconLabel: 'computer',
+    disableDecrement: true,
+    wrapperClasses: 'flex w-2/6',
 }
