@@ -1,20 +1,21 @@
 import React, { SyntheticEvent, useState } from 'react'
 import { useHistory, useLocation } from 'react-router'
 import { styled } from '@mui/material/styles'
-import FusePageCarded from 'src/common/ui-kit/fuse/components/FusePageCarded'
 import { useIntl } from 'src/common/react-platform-translation'
 import Tabs from '@mui/material/Tabs'
 import Tab from '@mui/material/Tab'
 import { keyBy, mapValues } from 'lodash'
+import FusePageCarded from 'src/common/ui-kit/fuse/components/FusePageCarded'
+import { IMultiTab } from 'src/common/ui-kit/components/MultiTab/MultiTab'
 
 const Root = styled(FusePageCarded)(({ theme }) => ({
     '& .FusePageCarded-header': {
-        minHeight: 72,
-        height: 72,
+        minHeight: 136,
+        height: 136,
         alignItems: 'center',
-        [theme.breakpoints.up('sm')]: {
-            minHeight: 136,
-            height: 136,
+        [theme.breakpoints.down('md')]: {
+            minHeight: 32,
+            height: 32,
         },
     },
     '& .FusePageCarded-content': {
@@ -25,17 +26,44 @@ const Root = styled(FusePageCarded)(({ theme }) => ({
         borderRadius: '20px',
         flex: 'none',
     },
+    '& .FusePageCarded-topBg': {
+        [theme.breakpoints.down('md')]: {
+            background: 'transparent',
+        },
+    },
+    '& .FusePageCarded-toolbar': {
+        [theme.breakpoints.down('md')]: {
+            display: 'flex',
+            justifyContent: 'center',
+            borderBottom: 'none',
+        },
+        '& .multitabs': {
+            height: '64px',
+            [theme.breakpoints.down('md')]: {
+                height: '44px',
+                background: theme.palette.primary.contrastText,
+                outline: `1px solid ${theme.palette.primary.main}`,
+                borderRadius: '40px',
+                '& .Mui-selected': {
+                    color: `${theme.palette.background.paper} !important`,
+                    zIndex: 1,
+                },
+            },
+            '& .tabs': {
+                height: '64px',
+                [theme.breakpoints.down('md')]: {
+                    height: '44px',
+                },
+            },
+        },
+        '& .indicator': {
+            [theme.breakpoints.down('md')]: {
+                height: '48px',
+                borderRadius: '30px',
+            },
+        },
+    },
 }))
-
-//eslint-disable-next-line jsdoc/require-jsdoc
-export interface IMultiTab {
-    //eslint-disable-next-line jsdoc/require-jsdoc
-    tabTitle: string
-    //eslint-disable-next-line jsdoc/require-jsdoc
-    tabSlug: string
-    //eslint-disable-next-line jsdoc/require-jsdoc
-    tabContent: JSX.Element
-}
 
 /**
  *  The Element Details let you control tabs.
@@ -109,20 +137,21 @@ const MultiTab = ({
                     textColor="primary"
                     variant="scrollable"
                     scrollButtons="auto"
-                    classes={{ root: 'w-full h-64' }}
+                    classes={{ root: 'multitabs', indicator: 'indicator' }}
                 >
                     {content.map((element, index) => (
                         <Tab
                             key={index}
                             value={element.tabSlug}
                             label={formatMessage({ id: element.tabTitle, defaultMessage: element.tabTitle })}
-                            className="h-64"
+                            classes={{ root: 'tabs' }}
                         />
                     ))}
                 </Tabs>
             }
-            content={<div className="p-16 sm:p-24 w-full">{keyedContent[tabSlug!]}</div>}
+            content={<div className="p-16 sm:p-24 w-full">{keyedContent[tabSlug]}</div>}
             innerScroll={innerScroll}
+            isToolbarOutside
         />
     )
 }
