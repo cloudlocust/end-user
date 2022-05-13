@@ -11,71 +11,58 @@ const userData = applyCamelCase(TEST_SUCCESS_USER)
 
 const CONNECT_NRLINK_BTN_TEXT = 'Je connecte mon nrLINK'
 const SKIP_LINK_TEXT = 'Passer cette étape'
-const mockUseHistory = jest.fn()
-let mockApiResourcesUrl = showNrLinkPopupFalse
+const mockHistoryPush = jest.fn()
 
+jest.mock('react-router', () => ({
+    ...jest.requireActual('react-router'),
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    useHistory: () => ({
+        push: mockHistoryPush,
+    }),
+}))
 /* eslint-disable-next-line jsdoc/require-jsdoc */
 const NrLinkConnectionRouter = () => (
     <Router>
         <NrLinkConnection />
     </Router>
 )
-
-/**
- * Mocking the react-router.
- */
-jest.mock('react-router', () => ({
-    ...jest.requireActual('react-router'),
-
-    /**
-     * Mock react-router useHistory hook.
-     *
-     * @returns The react-router useHistory replace function.
-     */
-    useHistory: () => ({
-        push: mockUseHistory,
-    }),
-}))
 describe('Test NrLinkConnection Page', () => {
-    /**
-     * Mocking the src/configs API_RESOURCES_URL.
-     */
-    jest.mock('src/configs', () => ({
-        ...jest.requireActual('src/configs'),
-        // eslint-disable-next-line jsdoc/require-jsdoc
-        API_RESOURCES_URL: mockApiResourcesUrl,
-    }))
+    // When initializing store state in reduxedRender, it doesn't update the state when using store.getState().
+    // Thus to use the state with useSelector and store.getState(), we require('src/redux') and use dispatch for updating the state, and give store in the reduxedRender.
+    // And then we can have the same state when using useSelector and store.getStore()
+    const { store } = require('src/redux')
 
     test('When response getShowNrLinkPopup false, it should redirect from NrLinkConnection', async () => {
-        mockApiResourcesUrl = showNrLinkPopupFalse
-        reduxedRender(<NrLinkConnectionRouter />, {
-            initialState: { userModel: { user: userData, authenticationToken: '1234' } },
-        })
+        await store.dispatch.userModel.setAuthenticationToken(showNrLinkPopupFalse)
 
-        await waitFor(() => {
-            expect(mockUseHistory).toHaveBeenCalledWith(URL_CONSUMPTION)
-        })
-    })
+        reduxedRender(<NrLinkConnectionRouter />, { store })
+
+        await waitFor(
+            () => {
+                expect(mockHistoryPush).toHaveBeenCalledWith(URL_CONSUMPTION)
+            },
+            { timeout: 5000 },
+        )
+    }, 10000)
     test('When response getShowNrLinkPopup true, it should not redirect from NrLinkConnection', async () => {
-        mockApiResourcesUrl = showNrLinkPopupTrue
-        reduxedRender(<NrLinkConnectionRouter />, {
-            initialState: { userModel: { user: userData, authenticationToken: '1234' } },
-        })
+        await store.dispatch.userModel.setAuthenticationToken(showNrLinkPopupTrue)
+        reduxedRender(<NrLinkConnectionRouter />, { store })
 
         await waitFor(() => {
-            expect(mockUseHistory).not.toHaveBeenCalled()
+            expect(mockHistoryPush).not.toHaveBeenCalled()
         })
-    })
+    }, 10000)
     test('When response getShowNrLinkPopup error, it should redirect from NrLinkConnection', async () => {
-        mockApiResourcesUrl = 'error'
-        reduxedRender(<NrLinkConnectionRouter />, {
-            initialState: { userModel: { user: userData, authenticationToken: '1234' } },
-        })
+        await store.dispatch.userModel.setAuthenticationToken('error')
+        reduxedRender(<NrLinkConnectionRouter />, { store })
 
-        await waitFor(() => {
-            expect(mockUseHistory).toHaveBeenCalledWith(URL_CONSUMPTION)
-        })
-    })
+        await waitFor(
+            () => {
+                expect(mockHistoryPush).toHaveBeenCalledWith(URL_CONSUMPTION)
+            },
+            { timeout: 5000 },
+        )
+    }, 10000)
     test('When clicking on CTA button connect nrLink, it should redirect to nrLinkConnectionStep', async () => {
         const { getByText } = reduxedRender(<NrLinkConnectionRouter />, {
             initialState: { userModel: { user: userData } },

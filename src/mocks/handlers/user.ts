@@ -1,5 +1,5 @@
 import { rest } from 'msw'
-import { API_RESOURCES_URL } from 'src/configs'
+import { GET_SHOW_NRLINK_POPUP_ENDPOINT } from 'src/modules/nrLinkConnection/NrLinkConnection'
 import { AUTH_BASE_URL } from 'src/modules/User/configs'
 import { IUserRegister } from 'src/modules/User/model'
 
@@ -102,10 +102,10 @@ export const userEndpoints = [
     }),
 
     // Get selected user by id.
-    rest.get(`${API_RESOURCES_URL}/get_show_nrlink_popup`, (req, res, ctx) => {
-        // TODO understand how to fix store.getState giving undefined store, even if we wrap the Component in a Redux Provider with an initial value.
-        if (API_RESOURCES_URL === showNrLinkPopupTrue || API_RESOURCES_URL === showNrLinkPopupFalse)
-            return res(ctx.status(200), ctx.delay(1000), ctx.json(API_RESOURCES_URL === showNrLinkPopupTrue))
+    rest.get(`${GET_SHOW_NRLINK_POPUP_ENDPOINT}`, (req, res, ctx) => {
+        const authorization = req.headers.get('authorization')
+        if (authorization === showNrLinkPopupTrue || authorization === showNrLinkPopupFalse)
+            return res(ctx.status(200), ctx.delay(1000), ctx.json(authorization === showNrLinkPopupTrue ? true : false))
         else return res(ctx.status(404), ctx.delay(1000))
     }),
 
