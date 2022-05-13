@@ -10,7 +10,8 @@ import { useTheme } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
 import { useMediaQuery } from '@mui/material'
 import { useIntl } from 'react-intl'
-import { FirstStepNrLinkConnection } from 'src/modules/nrLinkConnection'
+import { FirstStepNrLinkConnection, MeterFormStepNrLinkConnection } from 'src/modules/nrLinkConnection'
+import { ButtonLoader } from 'src/common/ui-kit'
 
 /**
  * Component representing the action buttons in the Stepper (Previous, Next), Next Button will be of type Submit.
@@ -19,12 +20,14 @@ import { FirstStepNrLinkConnection } from 'src/modules/nrLinkConnection'
  * @param props.activeStep Represent the current step in the stepper.
  * @param props.handleBack Callback when clicking on Previous button.
  * @param props.handleNext Callback when clicking on Next button.
+ * @param props.inProgress Boolean indicating the loading of the ButtonLoading when submitting forms before next.
  * @returns ActionsNrLinkConnectionSTEPS.
  */
 export const ActionsNrLinkConnectionSteps = ({
     activeStep,
     handleBack,
     handleNext,
+    inProgress,
 }: // eslint-disable-next-line jsdoc/require-jsdoc
 {
     // eslint-disable-next-line jsdoc/require-jsdoc
@@ -33,6 +36,8 @@ export const ActionsNrLinkConnectionSteps = ({
     handleBack: () => void
     // eslint-disable-next-line jsdoc/require-jsdoc
     handleNext: () => void
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    inProgress?: boolean
 }) => {
     const { formatMessage } = useIntl()
     const theme = useTheme()
@@ -49,7 +54,13 @@ export const ActionsNrLinkConnectionSteps = ({
                         })}
                     </Button>
                 )}
-                <Button variant="contained" type="submit" onClick={handleNext} sx={{ mt: 1, mr: 1 }}>
+                <ButtonLoader
+                    variant="contained"
+                    type="submit"
+                    onClick={handleNext}
+                    inProgress={Boolean(inProgress)}
+                    sx={{ mt: 1, mr: 1 }}
+                >
                     {activeStep === stepsLabels.length - 1
                         ? formatMessage({
                               id: 'Terminer',
@@ -59,7 +70,7 @@ export const ActionsNrLinkConnectionSteps = ({
                               id: 'Suivant',
                               defaultMessage: 'Suivant',
                           })}
-                </Button>
+                </ButtonLoader>
             </div>
             <div className="w-full"></div>
         </Box>
@@ -68,6 +79,11 @@ export const ActionsNrLinkConnectionSteps = ({
 
 const stepsLabels = ['Je branche mon capteur', 'Je configure mon compteur Linky', 'Je configure mon capteur']
 
+/**
+ * NrLinkConnectionStep Component.
+ *
+ * @returns NrLinkConnectionSteps Component.
+ */
 const NrLinkConnectionSteps = () => {
     const { formatMessage } = useIntl()
     const theme = useTheme()
@@ -77,15 +93,24 @@ const NrLinkConnectionSteps = () => {
         window.matchMedia('(orientation: portrait)').matches ? 'portrait' : 'landscape',
     )
 
+    /**
+     * Handle screen state orientation.
+     */
     const handleScreenOrientation = () => {
         if (window.matchMedia('(orientation: landscape)').matches) setScreenOrientation('landscape')
         else setScreenOrientation('portrait')
     }
 
+    /**
+     * Next Step callback.
+     */
     const handleNext = () => {
         setActiveStep((prevActiveStep) => prevActiveStep + 1)
     }
 
+    /**
+     * Previous Step callback.
+     */
     const handleBack = () => {
         setActiveStep((prevActiveStep) => prevActiveStep - 1)
     }
@@ -96,7 +121,7 @@ const NrLinkConnectionSteps = () => {
 
     const stepsContent = [
         <FirstStepNrLinkConnection handleBack={handleBack} handleNext={handleNext} />,
-        <FirstStepNrLinkConnection handleBack={handleBack} handleNext={handleNext} />,
+        <MeterFormStepNrLinkConnection handleBack={handleBack} handleNext={handleNext} />,
         <div className="flex justify-between items-center">
             <motion.div
                 initial={{ opacity: 0, scale: 0.6 }}

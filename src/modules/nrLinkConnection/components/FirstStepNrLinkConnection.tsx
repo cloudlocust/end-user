@@ -23,6 +23,7 @@ const FirstStepNrLinkConnection = ({
     handleNext: () => void
 }) => {
     const { formatMessage } = useIntl()
+
     return (
         <>
             <div className="flex justify-between items-center">
