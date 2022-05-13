@@ -2,7 +2,7 @@ import React from 'react'
 import { reduxedRender } from 'src/common/react-platform-components/test'
 import { BrowserRouter as Router } from 'react-router-dom'
 import { fireEvent, act } from '@testing-library/react'
-import { NumberField } from './NumberField'
+import { NumberFieldForm } from './NumberFieldForm'
 
 // Text variables.
 const labelTitle = 'PC de bureau'
@@ -14,7 +14,7 @@ describe('NumberField Test', () => {
         test('on success loading the element, NumberField should be loaded, title shown', async () => {
             const { getByText } = reduxedRender(
                 <Router>
-                    <NumberField {...propsNumberField} />
+                    <NumberFieldForm {...propsNumberField} />
                 </Router>,
             )
             expect(getByText(labelTitle)).toBeTruthy()
@@ -24,7 +24,7 @@ describe('NumberField Test', () => {
         test('Increment test', async () => {
             const { getByText } = reduxedRender(
                 <Router>
-                    <NumberField {...propsNumberField} />
+                    <NumberFieldForm {...propsNumberField} />
                 </Router>,
             )
             act(() => {
@@ -35,7 +35,7 @@ describe('NumberField Test', () => {
         test('Decrement test', async () => {
             const { getByText } = reduxedRender(
                 <Router>
-                    <NumberField {...propsNumberField} />
+                    <NumberFieldForm {...propsNumberField} />
                 </Router>,
             )
             act(() => {

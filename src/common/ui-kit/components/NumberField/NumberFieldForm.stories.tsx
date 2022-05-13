@@ -1,11 +1,11 @@
 import React from 'react'
 import { Meta, Story } from '@storybook/react/types-6-0'
 import { INITIAL_VIEWPORTS } from '@storybook/addon-viewport'
-import { INumberFieldForm, NumberField } from './NumberField'
+import { INumberFieldForm, NumberFieldForm } from './NumberFieldForm'
 
 export default {
     title: 'NumberField',
-    component: NumberField,
+    component: NumberFieldForm,
     argTypes: {},
     parameters: {
         viewport: {
@@ -15,17 +15,17 @@ export default {
 } as Meta
 
 /**
- * NumberField template.
+ * NumberFieldForm template.
  *
- * @param args NumberField props.
- * @returns NumberField.
+ * @param args NumberFieldForm props.
+ * @returns NumberFieldForm.
  */
-const Template: Story<INumberFieldForm> = (args: INumberFieldForm) => <NumberField {...args} />
+const Template: Story<INumberFieldForm> = (args: INumberFieldForm) => <NumberFieldForm {...args} />
 /**
- * NumberFieldExample template.
+ * NumberFieldFormExample template.
  */
-export const NumberFieldExample = Template.bind({})
-NumberFieldExample.args = {
+export const NumberFieldFormExample = Template.bind({})
+NumberFieldFormExample.args = {
     label: 'PC de bureau',
     iconLabel: 'computer',
     disableDecrement: true,

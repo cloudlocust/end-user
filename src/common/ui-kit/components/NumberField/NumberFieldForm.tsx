@@ -1,44 +1,177 @@
-import React from 'react'
-import { useFormContext } from 'react-hook-form'
-import { Controller } from 'react-hook-form'
-import { INumberFieldForm, NumberField } from './NumberField'
+import { Button, Icon, styled } from '@mui/material'
+import React, { useReducer } from 'react'
+import { useIntl } from 'react-intl'
 
+const Root = styled('div')(({ theme }) => ({
+    '& .icon-background': {
+        backgroundColor: theme.palette.primary.main,
+        '& .icon': {
+            color: theme.palette.background.paper,
+        },
+    },
+    '& .border-wrapper': {
+        borderBottom: `1px solid ${theme.palette.primary.main}`,
+    },
+    '& .title': {
+        color: theme.palette.primary.main,
+        fontSize: '1rem',
+    },
+    '& .buttons': {
+        '& button': {
+            borderRadius: '8px',
+            minWidth: '27px',
+            padding: '5px',
+        },
+    },
+}))
 /**
- * Common Ui text field interface between different ui kits. We pick common text field from basic ui kit, and add validatefunctions
- * We also override the name to make it required.
+ * Initial state function.
+ *
+ * @param value Initial number to start counting.
+ * @returns Initial number with key count.
  */
-interface INumberField extends INumberFieldForm {
-    /**
-     * Override the default name of material ui to make it required.
+const init = (value: number) => {
+    return { count: value }
+}
+/**
+ * Reducer for counting.
+ *
+ * @param state State stores counter changes.
+ * @param state.count Count state.
+ * @param action Action stores type of changes.
+ * @param action.type Action type. Is a decrement or an increment.
+ * @returns Changed state in reducer.
+ */
+const reducer = (
+    state: /**
+     State stores counter changes.
      */
-    name: string
+    {
+        /**
+         * Count state.
+         */ count: number
+    },
+    action: /**
+    Action stores type of changes.
+     */
+    {
+        /**
+         * Action type. Is a decrement or an increment.
+         */
+        type: string
+    },
+) => {
+    switch (action.type) {
+        case 'increment':
+            return { count: state.count + 1 }
+        case 'decrement':
+            return { count: state.count - 1 }
+        default:
+            throw new Error()
+    }
 }
 
 /**
- * A wrapper for text field from material ui. It must be placed with an upper from context from form hooks.
- *
- * @param root0 Diffeent props of material ui text field.
- * @param root0.name The name of the field.
- * @returns Material UI text field wrapped.
+ * NumberFieldForm interface.
  */
-export const NumberFieldForm = ({ name, ...otherProps }: INumberField) => {
-    // We muse use form provider in upper form to be able to have a context
-    const { control, setValue } = useFormContext()
+export interface INumberFieldForm {
+    /**
+     * Initial number to start counting.
+     */
+    value?: number
+    /**
+     * Label title.
+     */
+    label?: string
+    /**
+     * Icon name if taken from fuse mui.
+     */
+    iconLabel?: string
+    /**
+     * Icon path if it is svg image.
+     */
+    iconPath?: string
+    /**
+     * Is decrement disabled when value === 0.
+     */
+    disableDecrement?: boolean
+    /**
+     * Wraper className.
+     */
+    wrapperClasses?: string
+}
+/**
+ * Number Field component.
+ *
+ * @param param0 N/A.
+ * @param param0.value Initial number to start counting.
+ * @param param0.label  Label title.
+ * @param param0.iconLabel Icon name if taken from fuse mui.
+ * @param param0.iconPath Icon path if it is svg image.
+ * @param param0.disableDecrement Is decrement disabled when value === 0.
+ * @param param0.wrapperClasses  Wraper className.
+ * @returns NumberFieldForm.
+ */
+export const NumberFieldForm = ({ ...props }: any) => {
+    const {
+        value = 0,
+        label = 'titlee',
+        iconLabel,
+        iconPath,
+        disableDecrement,
+        wrapperClasses = 'flex mr-8 mb-10',
+    } = props
 
+    const [state, dispatch] = useReducer(reducer, value, init)
+    const disabledField = disableDecrement && state.count <= 0
+    const { formatMessage } = useIntl()
     return (
-        <Controller
-            name={name}
-            control={control}
-            render={({ field }: any) => (
-                <NumberField
-                    {...field}
-                    {...otherProps}
-                    onBlur={(value: any) => {
-                        setValue(name, value)
-                    }}
-                    value={otherProps.value}
-                />
+        <Root className={wrapperClasses}>
+            {(iconPath || iconLabel) && (
+                <div className="icon-background flex items-center px-4 border-wrapper">
+                    {iconLabel ? (
+                        <Icon color="action" className="icon ">
+                            {iconLabel}
+                        </Icon>
+                    ) : (
+                        <img src={iconPath} alt="icon" className="w-28" />
+                    )}
+                </div>
             )}
-        />
+            <div className="flex flex-col items-center w-full border-wrapper">
+                <div className="title">
+                    {formatMessage({
+                        id: label,
+                        defaultMessage: label,
+                    })}
+                </div>
+                <div className="flex buttons w-full justify-between items-center px-4 mb-4">
+                    <Button
+                        variant="outlined"
+                        onBlur={() => props.onBlur(state.count)}
+                        onClick={() => {
+                            dispatch({ type: 'decrement' })
+                        }}
+                        disabled={disabledField}
+                    >
+                        <Icon color={disabledField ? 'disabled' : 'primary'}>remove</Icon>
+                    </Button>
+                    {formatMessage({
+                        id: 'value',
+                        defaultMessage: ` ${state.count}`,
+                    })}
+                    <Button
+                        variant="outlined"
+                        onBlur={() => props.onBlur(state.count)}
+                        onClick={() => {
+                            dispatch({ type: 'increment' })
+                            props.onBlur(state.count)
+                        }}
+                    >
+                        <Icon color="primary">add</Icon>
+                    </Button>
+                </div>
+            </div>
+        </Root>
     )
 }
