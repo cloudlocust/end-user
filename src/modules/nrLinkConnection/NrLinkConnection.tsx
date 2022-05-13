@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useCallback } from 'react'
 import 'src/modules/User/Register/register.scss'
 import { Typography } from 'src/common/ui-kit'
 import { useIntl } from 'react-intl'
@@ -25,22 +25,22 @@ const NrLinkConnection = () => {
     const { formatMessage } = useIntl()
     const history = useHistory()
 
-    useEffect(() => {
-        /**
-         * Get ShowNrLink Popup request handler.
-         */
-        const getShowNrLinkPopup = async () => {
-            try {
-                const { data: responseData } = await axios.get<boolean>(`${GET_SHOW_NRLINK_POPUP_ENDPOINT}`)
-                if (typeof responseData !== 'boolean' || responseData === false) {
-                    history.push(URL_CONSUMPTION)
-                }
-            } catch (error) {
+    /**
+     * Get ShowNrLink Popup request handler.
+     */
+    const getShowNrLinkPopup = useCallback(async () => {
+        try {
+            const { data: responseData } = await axios.get<boolean>(`${GET_SHOW_NRLINK_POPUP_ENDPOINT}`)
+            if (typeof responseData !== 'boolean' || responseData === false) {
                 history.push(URL_CONSUMPTION)
             }
+        } catch (error) {
+            history.push(URL_CONSUMPTION)
         }
-        getShowNrLinkPopup()
     }, [history])
+    useEffect(() => {
+        getShowNrLinkPopup()
+    }, [getShowNrLinkPopup])
 
     return (
         <div className="p-24 h-full flex items-center justify-center relative">
