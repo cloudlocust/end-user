@@ -57,7 +57,7 @@ export const ActionsNrLinkConnectionSteps = ({
                 <ButtonLoader
                     variant="contained"
                     type="submit"
-                    onClick={handleNext}
+                    onClick={activeStep === stepsLabels.length - 1 ? () => {} : handleNext}
                     inProgress={Boolean(inProgress)}
                     sx={{ mt: 1, mr: 1 }}
                 >
