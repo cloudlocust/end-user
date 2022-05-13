@@ -109,6 +109,7 @@ const colorThemes: colorThemesType = {
                 light: '#1EBDC7',
                 main: '#006970',
                 dark: '#004F55',
+                contrastText: '#CCE7E9',
             },
             secondary: {
                 light: '#ffe182',
