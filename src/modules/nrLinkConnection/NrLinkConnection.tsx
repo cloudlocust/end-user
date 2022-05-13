@@ -10,6 +10,8 @@ import { motion } from 'framer-motion'
 import { URL_NRLINK_CONNECTION_STEPS, linkyNrLinkPath } from 'src/modules/nrLinkConnection'
 import { RootState } from 'src/redux'
 import { URL_CONSUMPTION } from 'src/modules/MyConsumption'
+import { axios } from 'src/common/react-platform-components'
+import { API_RESOURCES_URL } from 'src/configs'
 
 /**
  * Form used for modify user NrLinkConnection.
@@ -23,9 +25,20 @@ const NrLinkConnection = () => {
     const history = useHistory()
 
     useEffect(() => {
-        if (!user!.firstLogin) {
-            history.push(URL_CONSUMPTION)
+        /**
+         * Get ShowNrLink Popup request handler.
+         */
+        const getShowNrLinkPopup = async () => {
+            try {
+                const { data: responseData } = await axios.get<boolean>(`${API_RESOURCES_URL}/get_show_nrlink_popup`)
+                if (!responseData) {
+                    history.push(URL_CONSUMPTION)
+                }
+            } catch (error) {
+                history.push(URL_CONSUMPTION)
+            }
         }
+        getShowNrLinkPopup()
     }, [history, user])
 
     return (

@@ -1,4 +1,5 @@
 import { rest } from 'msw'
+import { API_RESOURCES_URL } from 'src/configs'
 import { AUTH_BASE_URL } from 'src/modules/User/configs'
 import { IUserRegister } from 'src/modules/User/model'
 
@@ -10,6 +11,10 @@ export const TEST_SUCCESS_MAIL = 'user@success.com'
  *
  */
 export const TEST_AUTOVALIDATION_PASSWORD = 'authToken'
+// eslint-disable-next-line jsdoc/require-jsdoc
+export const showNrLinkPopupTrue = 'showNrLinkPopupTrue'
+// eslint-disable-next-line jsdoc/require-jsdoc
+export const showNrLinkPopupFalse = 'showNrLinkPopupFalse'
 
 /**
  *
@@ -39,7 +44,6 @@ export const TEST_SUCCESS_USER = {
     is_active: true,
     is_verified: true,
     is_super_user: false,
-    first_login: false,
 }
 
 /**
@@ -95,6 +99,14 @@ export const userEndpoints = [
         } else {
             return res(ctx.status(404), ctx.delay(1000), ctx.json({ message: 'Customer not to be found!' }))
         }
+    }),
+
+    // Get selected user by id.
+    rest.get(`${API_RESOURCES_URL}/get_show_nrlink_popup`, (req, res, ctx) => {
+        // TODO understand how to fix store.getState giving undefined store, even if we wrap the Component in a Redux Provider with an initial value.
+        if (API_RESOURCES_URL === showNrLinkPopupTrue || API_RESOURCES_URL === showNrLinkPopupFalse)
+            return res(ctx.status(200), ctx.delay(1000), ctx.json(API_RESOURCES_URL === showNrLinkPopupTrue))
+        else return res(ctx.status(404), ctx.delay(1000))
     }),
 
     // Forgot password endpoint
