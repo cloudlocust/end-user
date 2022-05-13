@@ -27,11 +27,11 @@ const Root = styled('div')(({ theme }) => ({
 /**
  * Initial state function.
  *
- * @param initialCount Initial number to start counting.
+ * @param value Initial number to start counting.
  * @returns Initial number with key count.
  */
-const init = (initialCount: number) => {
-    return { count: initialCount }
+const init = (value: number) => {
+    return { count: value }
 }
 /**
  * Reducer for counting.
@@ -74,15 +74,15 @@ const reducer = (
 /**
  * NumberField interface.
  */
-export interface INumberField {
+export interface INumberFieldForm {
     /**
      * Initial number to start counting.
      */
-    initialCount?: number
+    value?: number
     /**
      * Label title.
      */
-    title: string
+    label?: string
     /**
      * Icon name if taken from fuse mui.
      */
@@ -104,26 +104,27 @@ export interface INumberField {
  * Number Field component.
  *
  * @param param0 N/A.
- * @param param0.initialCount Initial number to start counting.
- * @param param0.title  Label title.
+ * @param param0.value Initial number to start counting.
+ * @param param0.label  Label title.
  * @param param0.iconLabel Icon name if taken from fuse mui.
  * @param param0.iconPath Icon path if it is svg image.
  * @param param0.disableDecrement Is decrement disabled when value === 0.
  * @param param0.wrapperClasses  Wraper className.
  * @returns NumberField.
  */
-export const NumberField = ({
-    initialCount = 0,
-    title,
-    iconLabel,
-    iconPath,
-    disableDecrement,
-    wrapperClasses = 'flex mr-8 mb-10',
-}: INumberField) => {
-    const [state, dispatch] = useReducer(reducer, initialCount, init)
+export const NumberField = ({ ...props }: any) => {
+    const {
+        value = 0,
+        label = 'titlee',
+        iconLabel,
+        iconPath,
+        disableDecrement,
+        wrapperClasses = 'flex mr-8 mb-10',
+    } = props
+
+    const [state, dispatch] = useReducer(reducer, value, init)
     const disabledField = disableDecrement && state.count <= 0
     const { formatMessage } = useIntl()
-
     return (
         <Root className={wrapperClasses}>
             {(iconPath || iconLabel) && (
@@ -140,16 +141,33 @@ export const NumberField = ({
             <div className="flex flex-col items-center w-full border-wrapper">
                 <div className="title">
                     {formatMessage({
-                        id: title,
-                        defaultMessage: title,
+                        id: label,
+                        defaultMessage: label,
                     })}
                 </div>
                 <div className="flex buttons w-full justify-between items-center px-4 mb-4">
-                    <Button variant="outlined" onClick={() => dispatch({ type: 'decrement' })} disabled={disabledField}>
+                    <Button
+                        variant="outlined"
+                        onBlur={() => props.onBlur(state.count)}
+                        onClick={() => {
+                            dispatch({ type: 'decrement' })
+                        }}
+                        disabled={disabledField}
+                    >
                         <Icon color={disabledField ? 'disabled' : 'primary'}>remove</Icon>
                     </Button>
-                    {state.count}
-                    <Button variant="outlined" onClick={() => dispatch({ type: 'increment' })}>
+                    {formatMessage({
+                        id: 'value',
+                        defaultMessage: ` ${state.count}`,
+                    })}
+                    <Button
+                        variant="outlined"
+                        onBlur={() => props.onBlur(state.count)}
+                        onClick={() => {
+                            dispatch({ type: 'increment' })
+                            props.onBlur(state.count)
+                        }}
+                    >
                         <Icon color="primary">add</Icon>
                     </Button>
                 </div>
