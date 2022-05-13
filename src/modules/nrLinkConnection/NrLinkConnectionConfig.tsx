@@ -1,16 +1,14 @@
 import { authTypes, IRoute } from 'src/common/react-platform-components'
 import { NrLinkConnection, NrLinkConnectionSteps } from 'src/modules/nrLinkConnection'
-// import NrLinkConnection from 'src/modules/nrLinkConnection/NrLinkConnection'
-// import NrLinkConnectionSteps from 'src/modules/nrLinkConnection/NrLinkConnectionSteps'
 
 /**
  * Url for NrLinkConnection.
  */
-export const URL_NRLINK_CONNECTION = '/nrLinkConnection'
+export const URL_NRLINK_CONNECTION = '/nrlink-connection'
 /**
  * Url Component when firstConnection.
  */
-export const URL_NRLINK_CONNECTION_STEPS = '/nrLinkConnectionSteps'
+export const URL_NRLINK_CONNECTION_STEPS = '/nrlink-connection-steps'
 /**
  * Interface .
  *
