@@ -28,7 +28,7 @@ const Root = styled('div')(({ theme }) => ({
  * Initial state function.
  *
  * @param value Initial number to start counting.
- * @returns Initial number with key count.
+ * @returns Value with key count.
  */
 const init = (value: number) => {
     return { count: value }
@@ -76,13 +76,13 @@ const reducer = (
  */
 export interface INumberFieldForm {
     /**
-     * Initial number to start counting.
+     * Value to counting.
      */
     value?: number
     /**
      * Label title.
      */
-    label?: string
+    labelTitle: string
     /**
      * Icon name if taken from fuse mui.
      */
@@ -101,30 +101,23 @@ export interface INumberFieldForm {
     wrapperClasses?: string
 }
 /**
- * Number Field component.
+ * Number Field Form component.
  *
  * @param param0 N/A.
- * @param param0.value Initial number to start counting.
- * @param param0.label  Label title.
+ * @param param0.value Value to counting.
+ * @param param0.labelTitle  Label title.
  * @param param0.iconLabel Icon name if taken from fuse mui.
  * @param param0.iconPath Icon path if it is svg image.
  * @param param0.disableDecrement Is decrement disabled when value === 0.
  * @param param0.wrapperClasses  Wraper className.
  * @returns NumberFieldForm.
  */
-export const NumberFieldForm = ({ ...props }: any) => {
-    const {
-        value = 0,
-        label = 'titlee',
-        iconLabel,
-        iconPath,
-        disableDecrement,
-        wrapperClasses = 'flex mr-8 mb-10',
-    } = props
-
+export const NumberFieldForm = ({ ...props }) => {
+    const { value = 0, labelTitle, iconLabel, iconPath, disableDecrement, wrapperClasses = 'flex mr-8 mb-10' } = props
     const [state, dispatch] = useReducer(reducer, value, init)
     const disabledField = disableDecrement && state.count <= 0
     const { formatMessage } = useIntl()
+
     return (
         <Root className={wrapperClasses}>
             {(iconPath || iconLabel) && (
@@ -141,8 +134,8 @@ export const NumberFieldForm = ({ ...props }: any) => {
             <div className="flex flex-col items-center w-full border-wrapper">
                 <div className="title">
                     {formatMessage({
-                        id: label,
-                        defaultMessage: label,
+                        id: labelTitle,
+                        defaultMessage: labelTitle,
                     })}
                 </div>
                 <div className="flex buttons w-full justify-between items-center px-4 mb-4">

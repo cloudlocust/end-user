@@ -28,11 +28,11 @@ export const NumberField = ({ name, ...otherProps }: INumberField) => {
         <Controller
             name={name}
             control={control}
-            render={({ field }: any) => (
+            render={({ field }) => (
                 <NumberFieldForm
                     {...field}
                     {...otherProps}
-                    onBlur={(value: any) => {
+                    onBlur={(value: number) => {
                         setValue(name, value)
                     }}
                     value={otherProps.value}

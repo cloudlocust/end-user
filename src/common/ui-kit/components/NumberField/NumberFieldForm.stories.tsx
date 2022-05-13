@@ -26,7 +26,7 @@ const Template: Story<INumberFieldForm> = (args: INumberFieldForm) => <NumberFie
  */
 export const NumberFieldFormExample = Template.bind({})
 NumberFieldFormExample.args = {
-    label: 'PC de bureau',
+    labelTitle: 'PC de bureau',
     iconLabel: 'computer',
     disableDecrement: true,
     wrapperClasses: 'flex w-2/6',
