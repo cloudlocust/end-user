@@ -15,7 +15,7 @@ import { API_RESOURCES_URL } from 'src/configs'
 /**
  * Get Show NrLink Popup Endpoint.
  */
-export const GET_SHOW_NRLINK_POPUP_ENDPOINT = `${API_RESOURCES_URL}/get_show_nrlink_popup`
+export const GET_SHOW_NRLINK_POPUP_ENDPOINT = `${API_RESOURCES_URL}/customer/get_show_nrlink_popup`
 /**
  * Form used for modify user NrLinkConnection.
  *
