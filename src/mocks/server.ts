@@ -1,4 +1,5 @@
 import { setupServer } from 'msw/node'
+import { metersEndpoints } from './handlers/meters'
 import { userEndpoints } from './handlers/user'
 
 /**
@@ -7,6 +8,8 @@ import { userEndpoints } from './handlers/user'
 const handlers = [
     /******User REQUESTS*****/
     ...userEndpoints,
+    /******Meters REQUESTS*****/
+    ...metersEndpoints,
 ]
 
 // This configures a request mocking server with the given request handlers.

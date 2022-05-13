@@ -14,6 +14,8 @@ module.exports = {
       lg: '1280px',
       xl: '1920px',
       print: { raw: 'print' },
+      landscape: {raw: '(orientation: landscape)'},
+      portrait: {raw: '(orientation: portrait)'},
     },
     colors: {
       transparent: 'transparent',

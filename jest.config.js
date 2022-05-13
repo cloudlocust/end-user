@@ -2,8 +2,10 @@ module.exports = {
     moduleFileExtensions: ['ts', 'tsx', 'js'],
     moduleNameMapper: {
         // Mocks out all these file formats when tests are run
-        '\\.(css|less|scss|sass)$': 'identity-obj-proxy',
-        '\\.(jpg|ico|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$': 'identity-obj-proxy',
+        // https://stackoverflow.com/a/54513338/13145536
+        '\\.(css|less|scss|sass)$': '<rootDir>/src/mocks/fileMock.ts',
+        '\\.(jpg|ico|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$':
+            '<rootDir>/src/mocks/fileMock.ts',
     },
     roots: ['./src'],
     setupFilesAfterEnv: ['./jest.setup.ts'],
