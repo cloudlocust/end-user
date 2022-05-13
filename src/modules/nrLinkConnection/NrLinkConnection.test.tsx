@@ -3,7 +3,7 @@ import { BrowserRouter as Router } from 'react-router-dom'
 import { waitFor } from '@testing-library/react'
 import { reduxedRender } from 'src/common/react-platform-components/test'
 import { URL_NRLINK_CONNECTION_STEPS, NrLinkConnection } from 'src/modules/nrLinkConnection'
-import { TEST_SUCCESS_USER } from 'src/mocks/handlers/user'
+import { showNrLinkPopupFalse, showNrLinkPopupTrue, TEST_SUCCESS_USER } from 'src/mocks/handlers/user'
 import { applyCamelCase } from 'src/common/react-platform-components'
 import { URL_CONSUMPTION } from 'src/modules/MyConsumption'
 
@@ -11,40 +11,59 @@ const userData = applyCamelCase(TEST_SUCCESS_USER)
 
 const CONNECT_NRLINK_BTN_TEXT = 'Je connecte mon nrLINK'
 const SKIP_LINK_TEXT = 'Passer cette étape'
-const mockUseHistory = jest.fn()
+const mockHistoryPush = jest.fn()
+
+jest.mock('react-router', () => ({
+    ...jest.requireActual('react-router'),
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    useHistory: () => ({
+        push: mockHistoryPush,
+    }),
+}))
 /* eslint-disable-next-line jsdoc/require-jsdoc */
 const NrLinkConnectionRouter = () => (
     <Router>
         <NrLinkConnection />
     </Router>
 )
-/**
- * Mocking the useHistory.
- */
-jest.mock('react-router', () => ({
-    ...jest.requireActual('react-router'),
-
-    /**
-     * Mock react-router useHistory hook.
-     *
-     * @returns The react-router useHistory replace function.
-     */
-    useHistory: () => ({
-        push: mockUseHistory,
-    }),
-}))
 describe('Test NrLinkConnection Page', () => {
-    // test('When connected its not first time login of the user, it should redirect him to login', async () => {
-    //     userData.firstLogin = false
-    //     reduxedRender(<NrLinkConnectionRouter />, {
-    //         initialState: { userModel: { user: userData } },
-    //     })
-    //     await waitFor(() => {
-    //         expect(mockUseHistory).toHaveBeenCalledWith(URL_CONSUMPTION)
-    //     })
-    // })
+    // When initializing store state in reduxedRender, it doesn't update the state when using store.getState().
+    // Thus to use the state with useSelector and store.getState(), we require('src/redux') and use dispatch for updating the state, and give store in the reduxedRender.
+    // And then we can have the same state when using useSelector and store.getStore()
+    const { store } = require('src/redux')
+
+    test('When response getShowNrLinkPopup false, it should redirect from NrLinkConnection', async () => {
+        await store.dispatch.userModel.setAuthenticationToken(showNrLinkPopupFalse)
+
+        reduxedRender(<NrLinkConnectionRouter />, { store })
+
+        await waitFor(
+            () => {
+                expect(mockHistoryPush).toHaveBeenCalledWith(URL_CONSUMPTION)
+            },
+            { timeout: 5000 },
+        )
+    }, 10000)
+    test('When response getShowNrLinkPopup true, it should not redirect from NrLinkConnection', async () => {
+        await store.dispatch.userModel.setAuthenticationToken(showNrLinkPopupTrue)
+        reduxedRender(<NrLinkConnectionRouter />, { store })
+
+        await waitFor(() => {
+            expect(mockHistoryPush).not.toHaveBeenCalled()
+        })
+    }, 10000)
+    test('When response getShowNrLinkPopup error, it should redirect from NrLinkConnection', async () => {
+        await store.dispatch.userModel.setAuthenticationToken('error')
+        reduxedRender(<NrLinkConnectionRouter />, { store })
+
+        await waitFor(
+            () => {
+                expect(mockHistoryPush).toHaveBeenCalledWith(URL_CONSUMPTION)
+            },
+            { timeout: 5000 },
+        )
+    }, 10000)
     test('When clicking on CTA button connect nrLink, it should redirect to nrLinkConnectionStep', async () => {
-        userData.firstLogin = true
         const { getByText } = reduxedRender(<NrLinkConnectionRouter />, {
             initialState: { userModel: { user: userData } },
         })

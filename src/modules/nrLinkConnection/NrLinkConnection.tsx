@@ -2,15 +2,20 @@ import React, { useEffect } from 'react'
 import 'src/modules/User/Register/register.scss'
 import { Typography } from 'src/common/ui-kit'
 import { useIntl } from 'react-intl'
-import { Link, useHistory } from 'react-router-dom'
-import { useSelector } from 'react-redux'
+import { Link } from 'react-router-dom'
+import { useHistory } from 'react-router'
 import MuiLink from '@mui/material/Link'
 import Button from '@mui/material/Button'
 import { motion } from 'framer-motion'
 import { URL_NRLINK_CONNECTION_STEPS, linkyNrLinkPath } from 'src/modules/nrLinkConnection'
-import { RootState } from 'src/redux'
 import { URL_CONSUMPTION } from 'src/modules/MyConsumption'
+import { axios } from 'src/common/react-platform-components'
+import { API_RESOURCES_URL } from 'src/configs'
 
+/**
+ * Get Show NrLink Popup Endpoint.
+ */
+export const GET_SHOW_NRLINK_POPUP_ENDPOINT = `${API_RESOURCES_URL}/customer/get_show_nrlink_popup`
 /**
  * Form used for modify user NrLinkConnection.
  *
@@ -18,15 +23,24 @@ import { URL_CONSUMPTION } from 'src/modules/MyConsumption'
  */
 const NrLinkConnection = () => {
     const { formatMessage } = useIntl()
-    const { user } = useSelector(({ userModel }: RootState) => userModel)
-
     const history = useHistory()
 
     useEffect(() => {
-        if (!user!.firstLogin) {
-            // history.push(URL_CONSUMPTION)
+        /**
+         * Get ShowNrLink Popup request handler.
+         */
+        const getShowNrLinkPopup = async () => {
+            try {
+                const { data: responseData } = await axios.get<boolean>(`${GET_SHOW_NRLINK_POPUP_ENDPOINT}`)
+                if (typeof responseData !== 'boolean' || responseData === false) {
+                    history.push(URL_CONSUMPTION)
+                }
+            } catch (error) {
+                history.push(URL_CONSUMPTION)
+            }
         }
-    }, [history, user])
+        getShowNrLinkPopup()
+    }, [history])
 
     return (
         <div className="p-24 h-full flex items-center justify-center relative">
