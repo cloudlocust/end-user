@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useFormContext } from 'react-hook-form'
 import { Controller } from 'react-hook-form'
 import { INumberFieldForm, NumberFieldForm } from './NumberFieldForm'
@@ -22,8 +22,12 @@ export interface INumberField extends INumberFieldForm {
  */
 export const NumberField = ({ name, ...otherProps }: INumberField) => {
     // We use use form provider in upper form to be able to have a context
-    const { control, setValue } = useFormContext()
 
+    const { control, setValue } = useFormContext()
+    useEffect(() => {
+        setValue(name, otherProps.value)
+    }, [name, otherProps.value, setValue])
+    console.log(otherProps.value)
     return (
         <Controller
             name={name}
@@ -33,7 +37,8 @@ export const NumberField = ({ name, ...otherProps }: INumberField) => {
                     {...field}
                     {...otherProps}
                     onBlur={(value: number) => {
-                        setValue(name, value)
+                        // value === 0 && console.log('name, value')
+                        setValue(name, value as number)
                     }}
                     value={otherProps.value}
                 />

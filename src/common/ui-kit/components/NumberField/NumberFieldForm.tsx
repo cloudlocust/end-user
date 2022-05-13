@@ -24,6 +24,7 @@ const Root = styled('div')(({ theme }) => ({
         },
     },
 }))
+
 /**
  * Initial state function.
  *
@@ -116,6 +117,7 @@ export const NumberFieldForm = ({ ...props }) => {
     const { value = 0, labelTitle, iconLabel, iconPath, disableDecrement, wrapperClasses = 'flex mr-8 mb-10' } = props
     const [state, dispatch] = useReducer(reducer, value, init)
     const disabledField = disableDecrement && state.count <= 0
+    console.log(state)
     const { formatMessage } = useIntl()
 
     return (
@@ -133,10 +135,11 @@ export const NumberFieldForm = ({ ...props }) => {
             )}
             <div className="flex flex-col items-center w-full border-wrapper">
                 <div className="title">
-                    {formatMessage({
+                    {labelTitle}
+                    {/* {formatMessage({
                         id: labelTitle,
                         defaultMessage: labelTitle,
-                    })}
+                    })} */}
                 </div>
                 <div className="flex buttons w-full justify-between items-center px-4 mb-4">
                     <Button
@@ -149,16 +152,16 @@ export const NumberFieldForm = ({ ...props }) => {
                     >
                         <Icon color={disabledField ? 'disabled' : 'primary'}>remove</Icon>
                     </Button>
-                    {formatMessage({
+                    {state.count}
+                    {/* {formatMessage({
                         id: 'value',
                         defaultMessage: ` ${state.count}`,
-                    })}
+                    })} */}
                     <Button
                         variant="outlined"
                         onBlur={() => props.onBlur(state.count)}
                         onClick={() => {
                             dispatch({ type: 'increment' })
-                            props.onBlur(state.count)
                         }}
                     >
                         <Icon color="primary">add</Icon>
