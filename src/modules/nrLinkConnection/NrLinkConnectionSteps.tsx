@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import Box from '@mui/material/Box'
 import Stepper from '@mui/material/Stepper'
 import Step from '@mui/material/Step'
@@ -6,12 +6,15 @@ import StepLabel from '@mui/material/StepLabel'
 import { motion } from 'framer-motion'
 import StepContent from '@mui/material/StepContent'
 import Button from '@mui/material/Button'
+import { Form, max, min, requiredBuilder } from 'src/common/react-platform-components'
 import { useTheme } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
 import { useMediaQuery } from '@mui/material'
 import { useIntl } from 'react-intl'
 import { FirstStepNrLinkConnection, MeterFormStepNrLinkConnection } from 'src/modules/nrLinkConnection'
 import { ButtonLoader } from 'src/common/ui-kit'
+import { TextField } from 'src/common/ui-kit'
+import { IMeter } from 'src/modules/Meters/Meters'
 
 /**
  * Component representing the action buttons in the Stepper (Previous, Next), Next Button will be of type Submit.
@@ -92,6 +95,7 @@ const NrLinkConnectionSteps = () => {
     const [screenOrientation, setScreenOrientation] = React.useState(
         window.matchMedia('(orientation: portrait)').matches ? 'portrait' : 'landscape',
     )
+    const [meter, setMeter] = useState<IMeter | null>(null)
 
     /**
      * Handle screen state orientation.
@@ -119,25 +123,66 @@ const NrLinkConnectionSteps = () => {
         window.addEventListener('resize', handleScreenOrientation)
     }, [])
 
+    /**
+     * On Submit function which calls addMeter and handleNext on success.
+     *
+     * @param formData FormData which consists of guid only.
+     * @param formData.guid Guid Field value.
+     * @returns If meterName exit function.
+     */
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    const onSubmit = async (formData: any) => {
+        try {
+            // const data = { guid, name: meterName }
+            console.log('formData')
+            console.log(formData)
+
+            // await addMeter(data)
+            // handleNext()
+            // Catch error so that don't crash the application when response error.
+        } catch (error) {}
+    }
+
     const stepsContent = [
         <FirstStepNrLinkConnection handleBack={handleBack} handleNext={handleNext} />,
-        <MeterFormStepNrLinkConnection handleBack={handleBack} handleNext={handleNext} />,
-        <div className="flex justify-between items-center">
-            <motion.div
-                initial={{ opacity: 0, scale: 0.6 }}
-                animate={{ opacity: 1, scale: 1 }}
-                className="min-w-96 flex justify-center w-full mr-8"
-            >
-                <p>IMAGE</p>
-            </motion.div>
-            <Typography variant="body2" className="w-full">
-                {formatMessage({
-                    id: 'Allumez votre afficheur déporté et suivez les instructions pour connecter votre capteur à votre compteur Linky et suivre votre consommation.',
-                    defaultMessage:
-                        'Allumez votre afficheur déporté et suivez les instructions pour connecter votre capteur à votre compteur Linky et suivre votre consommation.',
-                })}
-            </Typography>
-        </div>,
+        // <MeterFormStepNrLinkConnection handleBack={handleBack} handleNext={handleNext} />,
+        <Form
+            onSubmit={onSubmit}
+            defaultValues={meter ? { meter_guid: meter.guid, meter_name: meter.name, nrlink_guid: '' } : {}}
+        >
+            <div className="flex justify-between items-center landscape:mt-10">
+                <div className="portrait:flex-col landscape:flex-row h-full flex justify-center items-center w-full">
+                    <div className="w-full mr-10  max-w-640">
+                        <div className="hidden">
+                            <TextField name="meter_guid" disabled label="Nom de mon compteur" />
+                        </div>
+                        <TextField name="meter_name" disabled label="Nom de mon compteur" />
+                        <TextField
+                            name="nrlink_guid"
+                            label="Numéro de mon nrLink"
+                            validateFunctions={[requiredBuilder(), min(14), max(14)]}
+                        />
+                        <Typography
+                            variant="caption"
+                            className="w-full text-center mb-7"
+                            sx={{ transform: 'translateY(-10px)' }}
+                        >
+                            {formatMessage({
+                                id: 'N° GUID de votre capteur, consultable dans les paramètres de votre afficheur',
+                                defaultMessage:
+                                    'N° GUID de votre capteur, consultable dans les paramètres de votre afficheur',
+                            })}
+                        </Typography>
+                    </div>
+                    <div className="w-full max-w-640"></div>
+                </div>
+            </div>
+            <ActionsNrLinkConnectionSteps
+                activeStep={stepsLabels.length - 1}
+                handleBack={handleBack}
+                handleNext={() => {}}
+            />
+        </Form>,
     ]
 
     return (
