@@ -3,7 +3,7 @@ import { waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { Form } from 'src/common/react-platform-components'
 import { reduxedRender } from 'src/common/react-platform-components/test'
-import { NumberField } from './NumberField'
+import { NumberFieldForm } from './NumberFieldForm'
 import { fireEvent, act } from '@testing-library/react'
 
 const handleBlur = jest.fn()
@@ -21,7 +21,7 @@ describe('<NumberField /> countries props', () => {
     test('props must be passed to NumberField and value shown', () => {
         const { getByText } = reduxedRender(
             <Form onSubmit={() => {}}>
-                <NumberField {...propsNumberField} />
+                <NumberFieldForm {...propsNumberField} />
             </Form>,
         )
         expect(getByText(1)).toBeTruthy()
@@ -32,7 +32,7 @@ describe('<NumberField /> countries props', () => {
         const { getByTestId } = reduxedRender(
             // eslint-disable-next-line jsdoc/require-jsdoc
             <Form onSubmit={(data: { phone: string }) => handleSubmit(data)}>
-                <NumberField {...propsNumberField} />
+                <NumberFieldForm {...propsNumberField} />
                 <input type="submit" data-testid="submit" />
             </Form>,
         )
@@ -48,7 +48,7 @@ describe('<NumberField /> countries props', () => {
         const { getByText, getByTestId } = reduxedRender(
             // eslint-disable-next-line jsdoc/require-jsdoc
             <Form onSubmit={(data) => handleSubmit(data)}>
-                <NumberField {...propsNumberField} />
+                <NumberFieldForm {...propsNumberField} />
                 <input type="submit" data-testid="submit" />
             </Form>,
         )
