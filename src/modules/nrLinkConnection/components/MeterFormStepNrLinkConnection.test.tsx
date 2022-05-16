@@ -12,16 +12,29 @@ const SUBMIT_BUTTON_TEXT = 'Suivant'
 const REQUIRED_ERROR_TEXT = 'Champ obligatoire non renseigné'
 const CLEAR_AUTOCOMPLETE_ICON_TEST_ID = 'CloseIcon'
 
-const guidQuerySelector = 'input[name="guid"]'
-const nameInputLabelText = 'Nom de mon compteur'
+const guidMeterInputQuerySelector = 'input[name="guid"]'
+const disabledQuerySelector = '.Mui-disabled'
+const nameMeterInputLabelText = 'Nom de mon compteur'
 const MuiAutoCompletePaperQuerySelector = 'MuiAutocomplete-paper'
 
 /**
  * Mocking props of AddCustomerPopup.
  */
-const mockMeterFormStepNrLinkConnectionProps = {
+// eslint-disable-next-line jsdoc/require-jsdoc
+const mockMeterFormStepNrLinkConnectionProps: {
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    handleBack: () => void
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    handleNext: () => void
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    setMeter: React.Dispatch<React.SetStateAction<IMeter | null>>
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    meter: IMeter | null
+} = {
     handleBack: jest.fn(),
     handleNext: jest.fn(),
+    setMeter: jest.fn(),
+    meter: null,
 }
 
 // Mock metersHook
@@ -52,7 +65,7 @@ function fillAutoComplete(
     container?: HTMLElement,
 ) {
     // fill out autocomplete
-    const meterNameAutoComplete = getByLabelText(nameInputLabelText)
+    const meterNameAutoComplete = getByLabelText(nameMeterInputLabelText)
     userEvent.click(meterNameAutoComplete)
 
     if (isMeterList) {
@@ -80,34 +93,38 @@ describe('Test MeterFormStepNrLinkConnection', () => {
                 <MeterFormStepNrLinkConnection {...mockMeterFormStepNrLinkConnectionProps} />,
             )
             // When name on blur
-            userEvent.click(getByLabelText(nameInputLabelText))
+            userEvent.click(getByLabelText(nameMeterInputLabelText))
             userEvent.click(getByText(SUBMIT_BUTTON_TEXT))
             await waitFor(() => {
                 expect(getAllByText(REQUIRED_ERROR_TEXT).length).toBe(2)
             })
+
             // When name and guid are both empty
-            userEvent.type(getByLabelText(nameInputLabelText), '')
+            userEvent.type(getByLabelText(nameMeterInputLabelText), '')
             userEvent.click(getByText(SUBMIT_BUTTON_TEXT))
             await waitFor(() => {
                 expect(getAllByText(REQUIRED_ERROR_TEXT).length).toBe(2)
             })
-            // When only name is empty
-            userEvent.type(container.querySelector(guidQuerySelector)!, '12345123451234')
+
+            //  When only name is empty
+            userEvent.type(container.querySelector(guidMeterInputQuerySelector)!, '12345123451234')
             userEvent.click(getByText(SUBMIT_BUTTON_TEXT))
             await waitFor(() => {
                 expect(getAllByText(REQUIRED_ERROR_TEXT).length).toBe(1)
             })
-        })
+        }, 20000)
         test('GUID format validation, 14 characters', async () => {
             const { container, getByText } = reduxedRender(
                 <MeterFormStepNrLinkConnection {...mockMeterFormStepNrLinkConnectionProps} />,
             )
-            fireEvent.input(container.querySelector(guidQuerySelector)!, { target: { value: '123456' } })
+            fireEvent.input(container.querySelector(guidMeterInputQuerySelector)!, { target: { value: '123456' } })
             userEvent.click(getByText(SUBMIT_BUTTON_TEXT))
             await waitFor(() => {
                 expect(getByText('Le champ doit avoir au minimum 14 caractères')).toBeTruthy()
             })
-            fireEvent.input(container.querySelector(guidQuerySelector)!, { target: { value: '12345678910111213' } })
+            fireEvent.input(container.querySelector(guidMeterInputQuerySelector)!, {
+                target: { value: '12345678910111213' },
+            })
             userEvent.click(getByText(SUBMIT_BUTTON_TEXT))
             await waitFor(() => {
                 expect(getByText('Le champ doit avoir au maximum 14 caractères')).toBeTruthy()
@@ -123,33 +140,21 @@ describe('Test MeterFormStepNrLinkConnection', () => {
             expect(getAllByText(REQUIRED_ERROR_TEXT)).toHaveLength(1)
         })
     })
-    describe('Submit form', () => {
-        test('when addMeter, it should be called, with handleNext', async () => {
-            const mockHandleNext = jest.fn()
-            mockMeterFormStepNrLinkConnectionProps.handleNext = mockHandleNext
-            const { container, getByLabelText, getByText } = reduxedRender(
-                <MeterFormStepNrLinkConnection {...mockMeterFormStepNrLinkConnectionProps} />,
-            )
-            fireEvent.change(container.querySelector(guidQuerySelector)! as HTMLInputElement, {
-                target: { value: TEST_ADD_METER.guid },
-            })
-            expect(container.querySelector(guidQuerySelector)!).toHaveValue(TEST_ADD_METER.guid)
-            userEvent.type(getByLabelText(nameInputLabelText), TEST_ADD_METER.name)
-            userEvent.click(getByText(SUBMIT_BUTTON_TEXT))
-            await waitFor(() => {
-                expect(mockAddMeter).toHaveBeenCalledWith(TEST_ADD_METER)
-            })
-            expect(mockHandleNext).toHaveBeenCalled()
-        }, 20000)
-        test('when isCustomerInProgress loader Button should be loading', async () => {
-            mockLoadingMeterInProgress = true
-            const { container } = reduxedRender(
-                <MeterFormStepNrLinkConnection {...mockMeterFormStepNrLinkConnectionProps} />,
-            )
-            expect(container.querySelector('.MuiLoadingButton-loadingIndicator')).not.toBeNull()
-        })
-    })
     describe('test autoComplete Options', () => {
+        test('When typing on autoComplete changes the setMeter should be called with null', async () => {
+            const mockSetMeter = jest.fn()
+            mockMeterFormStepNrLinkConnectionProps.setMeter = mockSetMeter
+
+            const { getByLabelText } = reduxedRender(
+                <MeterFormStepNrLinkConnection {...mockMeterFormStepNrLinkConnectionProps} />,
+            )
+            userEvent.type(getByLabelText(nameMeterInputLabelText), 'have Van')
+            expect(getByLabelText(nameMeterInputLabelText)).toHaveValue('have Van')
+            await waitFor(() => {
+                expect(mockSetMeter).toHaveBeenCalledWith(null)
+            })
+        })
+
         test('When meterList is null, no options shown', async () => {
             mockMeterList = null
             const { container, getByLabelText, getByText } = reduxedRender(
@@ -163,6 +168,60 @@ describe('Test MeterFormStepNrLinkConnection', () => {
                 <MeterFormStepNrLinkConnection {...mockMeterFormStepNrLinkConnectionProps} />,
             )
             fillAutoComplete(getByLabelText, getByText, false, container)
+        })
+        test('when option is selected, setMeter should be called with meter option', async () => {
+            mockMeterList = TEST_METERS
+            const mockSetMeter = jest.fn()
+            mockMeterFormStepNrLinkConnectionProps.setMeter = mockSetMeter
+            const { getByText, getByLabelText } = reduxedRender(
+                <MeterFormStepNrLinkConnection {...mockMeterFormStepNrLinkConnectionProps} />,
+            )
+            // Select the options of TEST_METERS
+            fillAutoComplete(getByLabelText, getByText)
+            await waitFor(() => {
+                expect(mockSetMeter).toHaveBeenCalledWith(TEST_METERS[0])
+            })
+        }, 10000)
+    })
+    describe('Submit form', () => {
+        test('when addMeter, it should be called, with handleNext', async () => {
+            const mockHandleNext = jest.fn()
+            mockMeterFormStepNrLinkConnectionProps.handleNext = mockHandleNext
+            const { container, getByLabelText, getByText } = reduxedRender(
+                <MeterFormStepNrLinkConnection {...mockMeterFormStepNrLinkConnectionProps} />,
+            )
+            fireEvent.change(container.querySelector(guidMeterInputQuerySelector)! as HTMLInputElement, {
+                target: { value: TEST_ADD_METER.guid },
+            })
+            expect(container.querySelector(guidMeterInputQuerySelector)!).toHaveValue(TEST_ADD_METER.guid)
+            userEvent.type(getByLabelText(nameMeterInputLabelText), TEST_ADD_METER.name)
+            userEvent.click(getByText(SUBMIT_BUTTON_TEXT))
+            await waitFor(() => {
+                expect(mockAddMeter).toHaveBeenCalledWith(TEST_ADD_METER)
+            })
+            expect(mockHandleNext).toHaveBeenCalled()
+        }, 20000)
+        test('when meter option is selected and submit, guid field is disabled with meterGuid value, handleNext should be called, and addMeter not be called', async () => {
+            const mockHandleNext = jest.fn()
+            mockMeterFormStepNrLinkConnectionProps.handleNext = mockHandleNext
+            mockMeterFormStepNrLinkConnectionProps.meter = TEST_METERS[0]
+            const { container, getByText } = reduxedRender(
+                <MeterFormStepNrLinkConnection {...mockMeterFormStepNrLinkConnectionProps} />,
+            )
+            expect(container.querySelector(guidMeterInputQuerySelector)!).toHaveValue(TEST_METERS[0].guid)
+            expect(container.querySelector(disabledQuerySelector)!).toBeInTheDocument()
+            userEvent.click(getByText(SUBMIT_BUTTON_TEXT))
+            await waitFor(() => {
+                expect(mockAddMeter).not.toHaveBeenCalled()
+            })
+            expect(mockHandleNext).toHaveBeenCalled()
+        })
+        test('when isCustomerInProgress loader Button should be loading', async () => {
+            mockLoadingMeterInProgress = true
+            const { container } = reduxedRender(
+                <MeterFormStepNrLinkConnection {...mockMeterFormStepNrLinkConnectionProps} />,
+            )
+            expect(container.querySelector('.MuiLoadingButton-loadingIndicator')).not.toBeNull()
         })
     })
 })

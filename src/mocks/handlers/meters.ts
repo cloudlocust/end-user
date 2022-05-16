@@ -16,6 +16,10 @@ export const TEST_ADD_METER = {
  * Fake meter ID.
  */
 export const TEST_ERROR_METER_GUID = 'fakeId'
+/**
+ * Fake meter name.
+ */
+export const TEST_ERROR_METER_NAME = 'fakeName'
 
 // eslint-disable-next-line jsdoc/require-jsdoc
 export const CREATED_AT_DATA = '2021-12-15T14:07:38.138000'
@@ -26,43 +30,43 @@ export const CREATED_AT_DATA = '2021-12-15T14:07:38.138000'
 export var TEST_METERS: SnakeCasedPropertiesDeep<IMeter>[] = [
     {
         id: 1,
-        guid: '1770736803',
+        guid: '17707368031234',
         name: 'Leanne',
     },
     {
         id: 2,
         name: 'Ervin',
-        guid: '1106926593',
+        guid: '11069265931234',
     },
     {
         id: 3,
         name: 'Clementine',
-        guid: '1463123447',
+        guid: '14631234471234',
     },
     {
         id: 4,
         name: 'Patricia',
-        guid: '4931709623',
+        guid: '49317096231234',
     },
     {
         id: 5,
         name: 'Chelsey',
-        guid: '2549541289',
+        guid: '25495412891234',
     },
     {
         id: 6,
         name: 'Mrs. Dennis',
-        guid: '1477935478',
+        guid: '14779354781234',
     },
     {
         id: 7,
         name: 'Kurtis',
-        guid: '2100676132',
+        guid: '21006761321234',
     },
     {
         id: 8,
         name: 'Nicholas',
-        guid: '5864936943',
+        guid: '58649369431234',
     },
 ]
 
@@ -81,16 +85,20 @@ export const metersEndpoints = [
     // Add Metr Post request
     rest.post<SnakeCasedPropertiesDeep<addMeterInputType>>(METERS_API, (req, res, ctx) => {
         // Duplicated guid
-        if (req.body.guid === TEST_ERROR_METER_GUID) return res(ctx.status(400), ctx.delay(1000))
+        if (req.body.guid === TEST_ERROR_METER_GUID)
+            return res(ctx.status(400), ctx.delay(1000), ctx.json({ detail: 'METER_GUID_ALREADY_EXISTS' }))
+        // Duplicated name errors
+        if (req.body.name === TEST_ERROR_METER_NAME)
+            return res(ctx.status(400), ctx.delay(1000), ctx.json({ detail: 'METER_NAME_ALREADY_EXISTS' }))
         // Other errors
         if (req.body.name === TEST_ERROR_METER_GUID) return res(ctx.status(401), ctx.delay(1000))
         // Success
         const lengthBefore = TEST_METERS.length
-        const newCustomer = {
+        const newMeter = {
             ...req.body,
             id: lengthBefore + 1,
         }
-        TEST_METERS.unshift(newCustomer)
-        return res(ctx.status(200), ctx.delay(1000), ctx.json(newCustomer))
+        TEST_METERS.unshift(newMeter)
+        return res(ctx.status(200), ctx.delay(1000), ctx.json(newMeter))
     }),
 ]

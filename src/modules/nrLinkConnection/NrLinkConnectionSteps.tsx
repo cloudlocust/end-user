@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import Box from '@mui/material/Box'
 import Stepper from '@mui/material/Stepper'
 import Step from '@mui/material/Step'
@@ -12,6 +12,7 @@ import { useMediaQuery } from '@mui/material'
 import { useIntl } from 'react-intl'
 import { FirstStepNrLinkConnection, MeterFormStepNrLinkConnection } from 'src/modules/nrLinkConnection'
 import { ButtonLoader } from 'src/common/ui-kit'
+import { IMeter } from 'src/modules/Meters/Meters'
 
 /**
  * Component representing the action buttons in the Stepper (Previous, Next), Next Button will be of type Submit.
@@ -89,6 +90,7 @@ const NrLinkConnectionSteps = () => {
     const theme = useTheme()
     const isMobile = useMediaQuery(theme.breakpoints.down('md'))
     const [activeStep, setActiveStep] = React.useState(0)
+    const [meter, setMeter] = useState<IMeter | null>(null)
     const [screenOrientation, setScreenOrientation] = React.useState(
         window.matchMedia('(orientation: portrait)').matches ? 'portrait' : 'landscape',
     )
@@ -121,7 +123,12 @@ const NrLinkConnectionSteps = () => {
 
     const stepsContent = [
         <FirstStepNrLinkConnection handleBack={handleBack} handleNext={handleNext} />,
-        <MeterFormStepNrLinkConnection handleBack={handleBack} handleNext={handleNext} />,
+        <MeterFormStepNrLinkConnection
+            handleBack={handleBack}
+            handleNext={handleNext}
+            setMeter={setMeter}
+            meter={meter}
+        />,
         <div className="flex justify-between items-center">
             <motion.div
                 initial={{ opacity: 0, scale: 0.6 }}

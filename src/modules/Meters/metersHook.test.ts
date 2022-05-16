@@ -1,7 +1,7 @@
 import { reduxedRenderHook } from 'src/common/react-platform-components/test'
 import { act } from '@testing-library/react-hooks'
 import { useMeterList } from 'src/modules/Meters/metersHook'
-import { TEST_ADD_METER, TEST_ERROR_METER_GUID } from 'src/mocks/handlers/meters'
+import { TEST_ADD_METER, TEST_ERROR_METER_GUID, TEST_ERROR_METER_NAME } from 'src/mocks/handlers/meters'
 
 const mockEnqueueSnackbar = jest.fn()
 /**
@@ -20,8 +20,10 @@ jest.mock('notistack', () => ({
 }))
 
 const TEST_LOAD_METERS_ERROR_MESSAGE = 'Erreur lors du chargement des compteurs'
-const TEST_ADD_METER_DUPLICATE_ERROR_MESSAGE = 'Le numéro de compteur existe déjà'
+const TEST_ADD_METER_DUPLICATE_GUID_ERROR_MESSAGE = 'Le numéro de compteur existe déjà'
+const TEST_ADD_METER_DUPLICATE_NAME_ERROR_MESSAGE = 'Le nom de compteur existe déjà'
 const TEST_ADD_METER_ERROR_MESSAGE = "Erreur lors de l'ajout du compteur"
+const TEST_ADD_METER_SUCCESS_MESSAGE = 'Succès lors de la configuration du compteur'
 describe('MetersListHook test', () => {
     describe('Load Meters', () => {
         test('When load error snackbar should be called with error message', async () => {
@@ -69,7 +71,37 @@ describe('MetersListHook test', () => {
                 { timeout: 2000 },
             )
             expect(result.current.loadingInProgress).toBe(false)
-            expect(mockEnqueueSnackbar).toHaveBeenCalledWith(TEST_ADD_METER_DUPLICATE_ERROR_MESSAGE, {
+            expect(mockEnqueueSnackbar).toHaveBeenCalledWith(TEST_ADD_METER_DUPLICATE_GUID_ERROR_MESSAGE, {
+                variant: 'error',
+            })
+        }, 10000)
+        test('fail, duplicate name addElementError function should be called with function message', async () => {
+            const {
+                renderedHook: { result, waitForValueToChange },
+            } = reduxedRenderHook(() => useMeterList(10), { initialState: {} })
+
+            await waitForValueToChange(
+                () => {
+                    return result.current.elementList
+                },
+                { timeout: 4000 },
+            )
+            expect(result.current.loadingInProgress).toBe(false)
+            // Element is added at the beginning of the elementList.
+            act(async () => {
+                try {
+                    await result.current.addElement({ ...TEST_ADD_METER, name: TEST_ERROR_METER_NAME })
+                } catch (err) {}
+            })
+            expect(result.current.loadingInProgress).toBe(true)
+            await waitForValueToChange(
+                () => {
+                    return result.current.loadingInProgress
+                },
+                { timeout: 2000 },
+            )
+            expect(result.current.loadingInProgress).toBe(false)
+            expect(mockEnqueueSnackbar).toHaveBeenCalledWith(TEST_ADD_METER_DUPLICATE_NAME_ERROR_MESSAGE, {
                 variant: 'error',
             })
         }, 20000)
@@ -129,7 +161,7 @@ describe('MetersListHook test', () => {
                 { timeout: 2000 },
             )
             expect(result.current.loadingInProgress).toBe(false)
-            expect(mockEnqueueSnackbar).toHaveBeenCalledWith(expect.anything(), {
+            expect(mockEnqueueSnackbar).toHaveBeenCalledWith(TEST_ADD_METER_SUCCESS_MESSAGE, {
                 variant: 'success',
             })
         })
