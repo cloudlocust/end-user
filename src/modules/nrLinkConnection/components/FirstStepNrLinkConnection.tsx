@@ -2,7 +2,7 @@ import { motion } from 'framer-motion'
 import { useIntl } from 'react-intl'
 import { screenNrLinkPath } from 'src/modules/nrLinkConnection'
 import Typography from '@mui/material/Typography'
-import { ActionsNrLinkConnectionSteps } from '../NrLinkConnectionSteps'
+import { ActionsNrLinkConnectionSteps } from 'src/modules/nrLinkConnection'
 
 /**
  * Component showing the first step in the nrLinkConnection Stepper.
