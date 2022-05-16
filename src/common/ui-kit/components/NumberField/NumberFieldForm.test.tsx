@@ -45,22 +45,12 @@ describe('NumberField Test', () => {
             expect(getByText(0)).toBeTruthy()
         })
     })
-    test('Is no value', async () => {
+    test('If no value, zero shown by default', async () => {
         const { getByText } = reduxedRender(
             <Router>
                 <NumberFieldForm {...propsNumberField2} />
             </Router>,
         )
         expect(getByText(0)).toBeTruthy()
-    })
-    test('disabled button', async () => {
-        const { getByText } = reduxedRender(
-            <Router>
-                <NumberFieldForm {...propsNumberField2} />
-            </Router>,
-        )
-        act(() => {
-            fireEvent.click(getByText('remove'))
-        })
     })
 })

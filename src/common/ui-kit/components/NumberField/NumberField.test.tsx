@@ -18,7 +18,7 @@ const propsNumberField = {
 }
 
 describe('<NumberField /> countries props', () => {
-    test('must pass a name into the input', () => {
+    test('props must be passed to NumberField and value shown', () => {
         const { getByText } = reduxedRender(
             <Form onSubmit={() => {}}>
                 <NumberField {...propsNumberField} />
@@ -26,7 +26,7 @@ describe('<NumberField /> countries props', () => {
         )
         expect(getByText(1)).toBeTruthy()
     })
-    test('should use correctly by react-hook-form', async () => {
+    test('should use correctly by NumberField', async () => {
         const handleSubmit = jest.fn()
 
         const { getByTestId } = reduxedRender(
@@ -43,7 +43,7 @@ describe('<NumberField /> countries props', () => {
 
         expect(handleSubmit).toHaveBeenCalledWith({ computer: 1 })
     })
-    test('2', async () => {
+    test('addition and subtraction work', async () => {
         const handleSubmit = jest.fn()
         const { getByText, getByTestId } = reduxedRender(
             // eslint-disable-next-line jsdoc/require-jsdoc
