@@ -6,8 +6,6 @@ import { reduxedRender } from 'src/common/react-platform-components/test'
 import { NumberField } from './NumberField'
 import { fireEvent, act } from '@testing-library/react'
 
-// afterEach(cleanup)
-
 const handleBlur = jest.fn()
 
 const propsNumberField = {
