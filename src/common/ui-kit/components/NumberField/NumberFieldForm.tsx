@@ -37,7 +37,6 @@ export const NumberField = ({ name, ...otherProps }: INumberField) => {
                     {...field}
                     {...otherProps}
                     onBlur={(value: number) => {
-                        console.log(value)
                         setValue(name, value)
                     }}
                     value={otherProps.value}
