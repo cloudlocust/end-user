@@ -32,7 +32,7 @@ export const NrLinkConnectionConfig = [
     {
         path: URL_NRLINK_CONNECTION,
         component: NrLinkConnection,
-        auth: { authType: authTypes.loginRequired }, // TODO CHANGE
+        auth: { authType: authTypes.loginRequired },
     } as IRoute</**
      *
      */
@@ -40,7 +40,7 @@ export const NrLinkConnectionConfig = [
     {
         path: URL_NRLINK_CONNECTION_STEPS,
         component: NrLinkConnectionSteps,
-        auth: { authType: authTypes.freeAccess }, // TODO CHANGE
+        auth: { authType: authTypes.loginRequired },
     } as IRoute</**
      *
      */
