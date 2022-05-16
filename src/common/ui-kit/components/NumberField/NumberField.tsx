@@ -1,6 +1,5 @@
 import { Button, Icon, styled } from '@mui/material'
 import React, { useReducer } from 'react'
-import { useIntl } from 'react-intl'
 
 const Root = styled('div')(({ theme }) => ({
     '& .icon-background': {
@@ -24,14 +23,15 @@ const Root = styled('div')(({ theme }) => ({
         },
     },
 }))
+
 /**
  * Initial state function.
  *
- * @param initialCount Initial number to start counting.
- * @returns Initial number with key count.
+ * @param value Initial number to start counting.
+ * @returns Value with key count.
  */
-const init = (initialCount: number) => {
-    return { count: initialCount }
+const init = (value: number) => {
+    return { count: value }
 }
 /**
  * Reducer for counting.
@@ -72,17 +72,18 @@ const reducer = (
 }
 
 /**
- * NumberField interface.
+ * NumberField
+ *  interface.
  */
 export interface INumberField {
     /**
-     * Initial number to start counting.
+     * Value to counting.
      */
-    initialCount?: number
+    value?: number
     /**
      * Label title.
      */
-    title: string
+    labelTitle: string
     /**
      * Icon name if taken from fuse mui.
      */
@@ -101,28 +102,22 @@ export interface INumberField {
     wrapperClasses?: string
 }
 /**
- * Number Field component.
+ * Number Field Form component.
  *
  * @param param0 N/A.
- * @param param0.initialCount Initial number to start counting.
- * @param param0.title  Label title.
+ * @param param0.value Value to counting.
+ * @param param0.labelTitle  Label title.
  * @param param0.iconLabel Icon name if taken from fuse mui.
  * @param param0.iconPath Icon path if it is svg image.
  * @param param0.disableDecrement Is decrement disabled when value === 0.
  * @param param0.wrapperClasses  Wraper className.
- * @returns NumberField.
+ * @returns NumberField
+ * .
  */
-export const NumberField = ({
-    initialCount = 0,
-    title,
-    iconLabel,
-    iconPath,
-    disableDecrement,
-    wrapperClasses = 'flex mr-8 mb-10',
-}: INumberField) => {
-    const [state, dispatch] = useReducer(reducer, initialCount, init)
+export const NumberField = ({ ...props }) => {
+    const { value = 0, labelTitle, iconLabel, iconPath, disableDecrement, wrapperClasses = 'flex mr-8 mb-10' } = props
+    const [state, dispatch] = useReducer(reducer, value, init)
     const disabledField = disableDecrement && state.count <= 0
-    const { formatMessage } = useIntl()
 
     return (
         <Root className={wrapperClasses}>
@@ -138,18 +133,29 @@ export const NumberField = ({
                 </div>
             )}
             <div className="flex flex-col items-center w-full border-wrapper">
-                <div className="title">
-                    {formatMessage({
-                        id: title,
-                        defaultMessage: title,
-                    })}
-                </div>
+                <div className="title">{labelTitle}</div>
                 <div className="flex buttons w-full justify-between items-center px-4 mb-4">
-                    <Button variant="outlined" onClick={() => dispatch({ type: 'decrement' })} disabled={disabledField}>
+                    <Button
+                        variant="outlined"
+                        onBlur={() => {
+                            props.onBlur(state.count)
+                        }}
+                        onClick={() => {
+                            !disabledField && dispatch({ type: 'decrement' })
+                        }}
+                    >
                         <Icon color={disabledField ? 'disabled' : 'primary'}>remove</Icon>
                     </Button>
                     {state.count}
-                    <Button variant="outlined" onClick={() => dispatch({ type: 'increment' })}>
+                    <Button
+                        variant="outlined"
+                        onBlur={() => {
+                            props.onBlur(state.count)
+                        }}
+                        onClick={() => {
+                            dispatch({ type: 'increment' })
+                        }}
+                    >
                         <Icon color="primary">add</Icon>
                     </Button>
                 </div>

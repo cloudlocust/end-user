@@ -7,7 +7,8 @@ import { NumberField } from './NumberField'
 // Text variables.
 const labelTitle = 'PC de bureau'
 
-const propsNumberField = { title: labelTitle, iconLabel: 'computer', disableDecrement: true, initialCount: 1 }
+const propsNumberField = { labelTitle: labelTitle, iconLabel: 'computer', disableDecrement: true, value: 1 }
+const propsNumberField2 = { labelTitle: labelTitle, iconLabel: 'computer', disableDecrement: true }
 
 describe('NumberField Test', () => {
     describe('load NumberField', () => {
@@ -43,5 +44,13 @@ describe('NumberField Test', () => {
             })
             expect(getByText(0)).toBeTruthy()
         })
+    })
+    test('If no value, zero shown by default', async () => {
+        const { getByText } = reduxedRender(
+            <Router>
+                <NumberField {...propsNumberField2} />
+            </Router>,
+        )
+        expect(getByText(0)).toBeTruthy()
     })
 })
