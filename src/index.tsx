@@ -24,14 +24,6 @@ if (isBrowser) {
 }
 
 /**
- *  Start the mocking conditionally, only during development.
- */
-if (MSW_MOCK === 'enabled') {
-    const { worker } = require('src/mocks/browser')
-    worker.start()
-}
-
-/**
  * Main app.
  *
  * @returns Main app.
@@ -79,6 +71,16 @@ bootstrapApplication().then((app) => {
 if (isBrowser && 'serviceWorker' in navigator) {
     window.addEventListener('load', async () => {
         await navigator.serviceWorker.register(`${process.env.PUBLIC_URL}/pwaSW.js`)
+        /**
+         * Start the mocking browser conditionally, only during development.
+         * MSW Browser not working because registering PWA Service Working.
+         * HINT REFERENCE: https://mswjs.io/docs/getting-started/integrate/browser#create-react-app-version-3 .
+         */
+        if (MSW_MOCK === 'enabled') {
+            await navigator.serviceWorker.register(`${process.env.PUBLIC_URL}/mockServiceWorker.js`)
+            const { worker } = require('src/mocks/browser')
+            worker.start()
+        }
     })
 }
 

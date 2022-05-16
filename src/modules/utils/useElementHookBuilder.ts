@@ -26,7 +26,7 @@ interface useElementListCommonFunctions<T, U, K> {
     // eslint-disable-next-line jsdoc/require-jsdoc
     elementList: T[] | null
     // eslint-disable-next-line jsdoc/require-jsdoc
-    addElement: (body: U) => Promise<void>
+    addElement: (body: U) => Promise<T>
     // eslint-disable-next-line jsdoc/require-jsdoc
     totalElementList: number
 }
@@ -233,6 +233,7 @@ export function BuilderUseElementList<T, U, K>({
                     { variant: 'success' },
                 )
                 setLoadingInProgress(false)
+                return responseData
             } catch (error) {
                 enqueueSnackbar(
                     snackBarMessage0verride && snackBarMessage0verride.addElementError

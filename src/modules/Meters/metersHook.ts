@@ -16,16 +16,23 @@ export const METERS_API = `${API_RESOURCES_URL}/meters`
  * @returns {string} Error message.
  */
 const addElementError = (error: any, formatMessage: formatMessageType) => {
-    if (error.response.status === 400)
-        return formatMessage({
-            id: 'Le numéro de compteur existe déjà',
-            defaultMessage: 'Le numéro de compteur existe déjà',
-        })
-    else
-        return formatMessage({
-            id: "Erreur lors de l'ajout du compteur",
-            defaultMessage: "Erreur lors de l'ajout du compteur",
-        })
+    const defaultRequestErrorMessage = formatMessage({
+        id: "Erreur lors de l'ajout du compteur",
+        defaultMessage: "Erreur lors de l'ajout du compteur",
+    })
+    if (error.response.status === 400) {
+        if (error.response.data.detail === 'METER_NAME_ALREADY_EXISTS')
+            return formatMessage({
+                id: 'Le nom de compteur existe déjà',
+                defaultMessage: 'Le nom de compteur existe déjà',
+            })
+        if (error.response.data.detail === 'METER_GUID_ALREADY_EXISTS')
+            return formatMessage({
+                id: 'Le numéro de compteur existe déjà',
+                defaultMessage: 'Le numéro de compteur existe déjà',
+            })
+        return defaultRequestErrorMessage
+    } else return defaultRequestErrorMessage
 }
 
 // eslint-disable-next-line jsdoc/require-jsdoc
@@ -33,6 +40,14 @@ const loadElementListError = (error: any, formatMessage: formatMessageType) => {
     return formatMessage({
         id: 'Erreur lors du chargement des compteurs',
         defaultMessage: 'Erreur lors du chargement des compteurs',
+    })
+}
+
+// eslint-disable-next-line jsdoc/require-jsdoc
+const addElementSuccess = (responseData: IMeter, formatMessage: formatMessageType) => {
+    return formatMessage({
+        id: 'Succès lors de la configuration du compteur',
+        defaultMessage: 'Succès lors de la configuration du compteur',
     })
 }
 
@@ -46,5 +61,5 @@ export const useMeterList = (sizeParam?: number) =>
     BuilderUseElementList<IMeter, addMeterInputType, searchFilterType>({
         API_ENDPOINT: METERS_API,
         sizeParam,
-        snackBarMessage0verride: { addElementError, loadElementListError },
+        snackBarMessage0verride: { addElementSuccess, loadElementListError, addElementError },
     })()

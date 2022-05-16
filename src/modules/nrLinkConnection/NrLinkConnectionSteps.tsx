@@ -92,6 +92,7 @@ const NrLinkConnectionSteps = () => {
     const theme = useTheme()
     const isMobile = useMediaQuery(theme.breakpoints.down('md'))
     const [activeStep, setActiveStep] = React.useState(0)
+    const [meter, setMeter] = useState<IMeter | null>(null)
     const [screenOrientation, setScreenOrientation] = React.useState(
         window.matchMedia('(orientation: portrait)').matches ? 'portrait' : 'landscape',
     )
@@ -145,7 +146,12 @@ const NrLinkConnectionSteps = () => {
 
     const stepsContent = [
         <FirstStepNrLinkConnection handleBack={handleBack} handleNext={handleNext} />,
-        // <MeterFormStepNrLinkConnection handleBack={handleBack} handleNext={handleNext} />,
+        <MeterFormStepNrLinkConnection
+            handleBack={handleBack}
+            handleNext={handleNext}
+            setMeter={setMeter}
+            meter={meter}
+        />,
         <Form
             onSubmit={onSubmit}
             defaultValues={meter ? { meter_guid: meter.guid, meter_name: meter.name, nrlink_guid: '' } : {}}
