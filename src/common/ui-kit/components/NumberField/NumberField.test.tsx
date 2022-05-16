@@ -1,7 +1,7 @@
 import React from 'react'
-import { cleanup, waitFor } from '@testing-library/react'
+import { waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { requiredBuilder, Form } from 'src/common/react-platform-components'
+import { Form } from 'src/common/react-platform-components'
 import { reduxedRender } from 'src/common/react-platform-components/test'
 import { NumberField } from './NumberField'
 import { fireEvent, act } from '@testing-library/react'
@@ -21,7 +21,7 @@ const propsNumberField = {
 
 describe('<NumberField /> countries props', () => {
     test('must pass a name into the input', () => {
-        const { container, getByText } = reduxedRender(
+        const { getByText } = reduxedRender(
             <Form onSubmit={() => {}}>
                 <NumberField {...propsNumberField} />
             </Form>,
@@ -47,7 +47,7 @@ describe('<NumberField /> countries props', () => {
     })
     test('2', async () => {
         const handleSubmit = jest.fn()
-        const { container, getByText, getByTestId } = reduxedRender(
+        const { getByText, getByTestId } = reduxedRender(
             // eslint-disable-next-line jsdoc/require-jsdoc
             <Form onSubmit={(data) => handleSubmit(data)}>
                 <NumberField {...propsNumberField} />

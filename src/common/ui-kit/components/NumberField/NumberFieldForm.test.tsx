@@ -3,25 +3,12 @@ import { reduxedRender } from 'src/common/react-platform-components/test'
 import { BrowserRouter as Router } from 'react-router-dom'
 import { fireEvent, act } from '@testing-library/react'
 import { NumberFieldForm } from './NumberFieldForm'
-import { useIntl, IntlProvider } from 'react-intl'
 
 // Text variables.
 const labelTitle = 'PC de bureau'
 
 const propsNumberField = { labelTitle: labelTitle, iconLabel: 'computer', disableDecrement: true, value: 1 }
 const propsNumberField2 = { labelTitle: labelTitle, iconLabel: 'computer', disableDecrement: true }
-
-// jest.mock('react-intl', () => {
-//     const reactIntl = jest.requireActual('react-intl')
-//     const intl = reactIntl.createIntl({
-//         locale: 'en',
-//     })
-
-//     return {
-//         ...reactIntl,
-//         useIntl: () => intl,
-//     }
-// })
 
 describe('NumberField Test', () => {
     describe('load NumberField', () => {
