@@ -2,7 +2,7 @@ import React from 'react'
 import { reduxedRender } from 'src/common/react-platform-components/test'
 import { BrowserRouter as Router } from 'react-router-dom'
 import { fireEvent, act } from '@testing-library/react'
-import { NumberFieldForm } from './NumberField'
+import { NumberField } from './NumberField'
 
 // Text variables.
 const labelTitle = 'PC de bureau'
@@ -15,7 +15,7 @@ describe('NumberField Test', () => {
         test('on success loading the element, NumberField should be loaded, title shown', async () => {
             const { getByText } = reduxedRender(
                 <Router>
-                    <NumberFieldForm {...propsNumberField} />
+                    <NumberField {...propsNumberField} />
                 </Router>,
             )
             expect(getByText(labelTitle)).toBeTruthy()
@@ -25,7 +25,7 @@ describe('NumberField Test', () => {
         test('Increment test', async () => {
             const { getByText } = reduxedRender(
                 <Router>
-                    <NumberFieldForm {...propsNumberField} />
+                    <NumberField {...propsNumberField} />
                 </Router>,
             )
             act(() => {
@@ -36,7 +36,7 @@ describe('NumberField Test', () => {
         test('Decrement test', async () => {
             const { getByText } = reduxedRender(
                 <Router>
-                    <NumberFieldForm {...propsNumberField} />
+                    <NumberField {...propsNumberField} />
                 </Router>,
             )
             act(() => {
@@ -48,7 +48,7 @@ describe('NumberField Test', () => {
     test('If no value, zero shown by default', async () => {
         const { getByText } = reduxedRender(
             <Router>
-                <NumberFieldForm {...propsNumberField2} />
+                <NumberField {...propsNumberField2} />
             </Router>,
         )
         expect(getByText(0)).toBeTruthy()

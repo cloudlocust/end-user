@@ -3,7 +3,7 @@ import { waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { Form } from 'src/common/react-platform-components'
 import { reduxedRender } from 'src/common/react-platform-components/test'
-import { NumberField } from './NumberFieldForm'
+import { NumberField } from './NumberField'
 import { fireEvent, act } from '@testing-library/react'
 
 const handleBlur = jest.fn()

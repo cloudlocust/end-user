@@ -72,9 +72,10 @@ const reducer = (
 }
 
 /**
- * NumberFieldForm interface.
+ * NumberField
+ *  interface.
  */
-export interface INumberFieldForm {
+export interface INumberField {
     /**
      * Value to counting.
      */
@@ -110,9 +111,10 @@ export interface INumberFieldForm {
  * @param param0.iconPath Icon path if it is svg image.
  * @param param0.disableDecrement Is decrement disabled when value === 0.
  * @param param0.wrapperClasses  Wraper className.
- * @returns NumberFieldForm.
+ * @returns NumberField
+ * .
  */
-export const NumberFieldForm = ({ ...props }) => {
+export const NumberField = ({ ...props }) => {
     const { value = 0, labelTitle, iconLabel, iconPath, disableDecrement, wrapperClasses = 'flex mr-8 mb-10' } = props
     const [state, dispatch] = useReducer(reducer, value, init)
     const disabledField = disableDecrement && state.count <= 0

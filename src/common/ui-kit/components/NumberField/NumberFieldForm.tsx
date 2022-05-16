@@ -1,12 +1,12 @@
 import React, { useEffect } from 'react'
 import { useFormContext } from 'react-hook-form'
 import { Controller } from 'react-hook-form'
-import { INumberFieldForm, NumberFieldForm } from './NumberField'
+import { INumberField, NumberField } from './NumberField'
 
 /**
- * Interface INumberField with field name, extending INumberFieldForm .
+ * Interface INumberFieldForm with field name, extending INumberFieldFormForm .
  */
-export interface INumberField extends INumberFieldForm {
+export interface INumberFieldForm extends INumberField {
     /**
      * Required name field.
      */
@@ -20,7 +20,7 @@ export interface INumberField extends INumberFieldForm {
  * @param root0.name The name of the field.
  * @returns NumberField wrapped.
  */
-export const NumberField = ({ name, ...otherProps }: INumberField) => {
+export const NumberFieldForm = ({ name, ...otherProps }: INumberFieldForm) => {
     // We use use form provider in upper form to be able to have a context
 
     const { control, setValue } = useFormContext()
@@ -33,7 +33,7 @@ export const NumberField = ({ name, ...otherProps }: INumberField) => {
             name={name}
             control={control}
             render={({ field }) => (
-                <NumberFieldForm
+                <NumberField
                     {...field}
                     {...otherProps}
                     onBlur={(value: number) => {
