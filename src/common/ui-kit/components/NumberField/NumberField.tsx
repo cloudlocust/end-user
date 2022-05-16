@@ -27,7 +27,6 @@ export const NumberField = ({ name, ...otherProps }: INumberField) => {
     useEffect(() => {
         setValue(name, otherProps.value)
     }, [name, otherProps.value, setValue])
-    console.log(otherProps.value)
     return (
         <Controller
             name={name}
@@ -37,10 +36,10 @@ export const NumberField = ({ name, ...otherProps }: INumberField) => {
                     {...field}
                     {...otherProps}
                     onBlur={(value: number) => {
-                        // value === 0 && console.log('name, value')
                         setValue(name, value as number)
                     }}
                     value={otherProps.value}
+                    disabled={otherProps.disableDecrement}
                 />
             )}
         />
