@@ -1,56 +1,77 @@
 import React from 'react'
+import { waitFor } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
+import { Form } from 'src/common/react-platform-components'
 import { reduxedRender } from 'src/common/react-platform-components/test'
-import { BrowserRouter as Router } from 'react-router-dom'
+import { NumberField } from './NumberFieldForm'
 import { fireEvent, act } from '@testing-library/react'
-import { NumberFieldForm } from './NumberFieldForm'
 
-// Text variables.
-const labelTitle = 'PC de bureau'
+const handleBlur = jest.fn()
 
-const propsNumberField = { labelTitle: labelTitle, iconLabel: 'computer', disableDecrement: true, value: 1 }
-const propsNumberField2 = { labelTitle: labelTitle, iconLabel: 'computer', disableDecrement: true }
+const propsNumberField = {
+    name: 'computer',
+    labelTitle: 'PC de bureau',
+    iconLabel: 'computer',
+    disableDecrement: true,
+    value: 1,
+    onBlur: handleBlur,
+}
 
-describe('NumberField Test', () => {
-    describe('load NumberField', () => {
-        test('on success loading the element, NumberField should be loaded, title shown', async () => {
-            const { getByText } = reduxedRender(
-                <Router>
-                    <NumberFieldForm {...propsNumberField} />
-                </Router>,
-            )
-            expect(getByText(labelTitle)).toBeTruthy()
-        })
+describe('<NumberField /> countries props', () => {
+    test('props must be passed to NumberField and value shown', () => {
+        const { getByText } = reduxedRender(
+            <Form onSubmit={() => {}}>
+                <NumberField {...propsNumberField} />
+            </Form>,
+        )
+        expect(getByText(1)).toBeTruthy()
     })
-    describe('Buttons test', () => {
-        test('Increment test', async () => {
-            const { getByText } = reduxedRender(
-                <Router>
-                    <NumberFieldForm {...propsNumberField} />
-                </Router>,
-            )
-            act(() => {
-                fireEvent.click(getByText('add'))
-            })
+    test('should use correctly by NumberField', async () => {
+        const handleSubmit = jest.fn()
+
+        const { getByTestId } = reduxedRender(
+            // eslint-disable-next-line jsdoc/require-jsdoc
+            <Form onSubmit={(data: { phone: string }) => handleSubmit(data)}>
+                <NumberField {...propsNumberField} />
+                <input type="submit" data-testid="submit" />
+            </Form>,
+        )
+
+        await act(async () => {
+            userEvent.click(getByTestId('submit'))
+        })
+
+        expect(handleSubmit).toHaveBeenCalledWith({ computer: 1 })
+    })
+    test('addition and subtraction work', async () => {
+        const handleSubmit = jest.fn()
+        const { getByText, getByTestId } = reduxedRender(
+            // eslint-disable-next-line jsdoc/require-jsdoc
+            <Form onSubmit={(data) => handleSubmit(data)}>
+                <NumberField {...propsNumberField} />
+                <input type="submit" data-testid="submit" />
+            </Form>,
+        )
+
+        await act(async () => {
+            fireEvent.click(getByText('add'))
+            fireEvent.blur(getByText('add'))
+        })
+        await waitFor(async () => {
             expect(getByText(2)).toBeTruthy()
         })
-        test('Decrement test', async () => {
-            const { getByText } = reduxedRender(
-                <Router>
-                    <NumberFieldForm {...propsNumberField} />
-                </Router>,
-            )
-            act(() => {
-                fireEvent.click(getByText('remove'))
-            })
-            expect(getByText(0)).toBeTruthy()
+        await act(async () => {
+            fireEvent.click(getByText('remove'))
+            fireEvent.blur(getByText('remove'))
         })
-    })
-    test('If no value, zero shown by default', async () => {
-        const { getByText } = reduxedRender(
-            <Router>
-                <NumberFieldForm {...propsNumberField2} />
-            </Router>,
-        )
-        expect(getByText(0)).toBeTruthy()
+        await waitFor(async () => {
+            expect(getByText(1)).toBeTruthy()
+        })
+        act(() => {
+            fireEvent.click(getByTestId('submit'))
+        })
+        await waitFor(async () => {
+            expect(handleSubmit).toHaveBeenCalledWith({ computer: 2 })
+        })
     })
 })
