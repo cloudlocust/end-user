@@ -167,6 +167,11 @@ export interface IPageCardedProps {
      *
      */
     onScrollY?: Function
+    /**
+     *
+     * Is toolbar outside the card.
+     */
+    isToolbarOutside?: boolean
 }
 const drawerWidth = 240
 const headerHeight = 200
@@ -178,6 +183,15 @@ const FusePageCarded = forwardRef((props: IPageCardedProps) => {
     const theme = useTheme()
     const isMobile = useMediaQuery(theme.breakpoints.down('md'))
     const toolbar = props.contentToolbar && <div className="FusePageCarded-toolbar">{props.contentToolbar}</div>
+    const content = props.content && (
+        <FuseScrollbars
+            className="FusePageCarded-content"
+            enable={props.innerScroll}
+            scrollToTopOnRouteChange={props.innerScroll}
+        >
+            {props.content}
+        </FuseScrollbars>
+    )
     return (
         <>
             <GlobalStyles
@@ -198,22 +212,23 @@ const FusePageCarded = forwardRef((props: IPageCardedProps) => {
                 <div className="FusePageCarded-topBg" />
 
                 <div className="flex container w-full">
-                    <div className={clsx('FusePageCarded-contentWrapper')}>
-                        <FusePageCardedHeader header={props.header} />
-                        {isMobile && toolbar}
-                        <div className={clsx('FusePageCarded-contentCard', props.innerScroll && 'inner-scroll')}>
-                            {!isMobile && toolbar}
-                            {props.content && (
-                                <FuseScrollbars
-                                    className="FusePageCarded-content"
-                                    enable={props.innerScroll}
-                                    scrollToTopOnRouteChange={props.innerScroll}
-                                >
-                                    {props.content}
-                                </FuseScrollbars>
-                            )}
+                    {props.isToolbarOutside && isMobile ? (
+                        <div className={clsx('FusePageCarded-contentWrapper')}>
+                            <FusePageCardedHeader header={props.header} />
+                            {toolbar}
+                            <div className={clsx('FusePageCarded-contentCard', props.innerScroll && 'inner-scroll')}>
+                                {content}
+                            </div>
                         </div>
-                    </div>
+                    ) : (
+                        <div className={clsx('FusePageCarded-contentWrapper')}>
+                            <FusePageCardedHeader header={props.header} />
+                            <div className={clsx('FusePageCarded-contentCard', props.innerScroll && 'inner-scroll')}>
+                                {toolbar}
+                                {content}
+                            </div>
+                        </div>
+                    )}
                 </div>
             </Root>
         </>
