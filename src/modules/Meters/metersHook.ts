@@ -21,15 +21,10 @@ const addElementError = (error: any, formatMessage: formatMessageType) => {
         defaultMessage: "Erreur lors de l'ajout du compteur",
     })
     if (error.response.status === 400) {
-        if (error.response.data.detail === 'METER_NAME_ALREADY_EXISTS')
+        if (error.response.data && error.response.data.detail)
             return formatMessage({
-                id: 'Le nom de compteur existe déjà',
-                defaultMessage: 'Le nom de compteur existe déjà',
-            })
-        if (error.response.data.detail === 'METER_GUID_ALREADY_EXISTS')
-            return formatMessage({
-                id: 'Le numéro de compteur existe déjà',
-                defaultMessage: 'Le numéro de compteur existe déjà',
+                id: error.response.data.detail,
+                defaultMessage: error.response.data.detail,
             })
         return defaultRequestErrorMessage
     } else return defaultRequestErrorMessage

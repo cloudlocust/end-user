@@ -86,10 +86,10 @@ export const metersEndpoints = [
     rest.post<SnakeCasedPropertiesDeep<addMeterInputType>>(METERS_API, (req, res, ctx) => {
         // Duplicated guid
         if (req.body.guid === TEST_ERROR_METER_GUID)
-            return res(ctx.status(400), ctx.delay(1000), ctx.json({ detail: 'METER_GUID_ALREADY_EXISTS' }))
+            return res(ctx.status(400), ctx.delay(1000), ctx.json({ detail: 'Le numéro de compteur existe déjà' }))
         // Duplicated name errors
         if (req.body.name === TEST_ERROR_METER_NAME)
-            return res(ctx.status(400), ctx.delay(1000), ctx.json({ detail: 'METER_NAME_ALREADY_EXISTS' }))
+            return res(ctx.status(400), ctx.delay(1000), ctx.json({ detail: 'Le nom de compteur existe déjà' }))
         // Other errors
         if (req.body.name === TEST_ERROR_METER_GUID) return res(ctx.status(401), ctx.delay(1000))
         // Success
