@@ -1,17 +1,8 @@
 import React from 'react'
 import { useFormContext } from 'react-hook-form'
 import { Controller } from 'react-hook-form'
-import { INumberField, NumberField } from './NumberField'
-
-/**
- * Interface INumberFieldForm with field name, extending INumberFieldFormForm .
- */
-export interface INumberFieldForm extends INumberField {
-    /**
-     * Required name field.
-     */
-    name: string
-}
+import { NumberField } from './NumberField'
+import { INumberFieldForm } from './NumberFieldTypes'
 
 /**
  * A wrapper for NumberField. It must be placed with an upper from context from form hooks.

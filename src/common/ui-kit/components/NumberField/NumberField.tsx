@@ -1,40 +1,8 @@
 import React from 'react'
 import { Button, Icon, useTheme } from '@mui/material'
 import 'src/common/ui-kit/components/NumberField/NumberFieldForm.scss'
-/**
- * NumberField
- *  interface.
- */
-export interface INumberField {
-    /**
-     * Value to counting.
-     */
-    value?: number
-    /**
-     * Label title.
-     */
-    labelTitle: string
-    /**
-     * Icon name if taken from fuse mui.
-     */
-    iconLabel?: string
-    /**
-     * Icon path if it is svg image.
-     */
-    iconPath?: string
-    /**
-     * Is decrement disabled when value === 0.
-     */
-    disableDecrement?: boolean
-    /**
-     * Wraper className.
-     */
-    wrapperClasses?: string
-    /**
-     *
-     */
-    onChange?: (value: number) => void
-}
+import { INumberField } from './NumberFieldTypes'
+
 /**
  * Number Field Form component.
  *

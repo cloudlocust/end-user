@@ -1,7 +1,8 @@
 import React from 'react'
 import { Meta, Story } from '@storybook/react/types-6-0'
 import { INITIAL_VIEWPORTS } from '@storybook/addon-viewport'
-import { INumberField, NumberField } from './NumberField'
+import { NumberField } from './NumberField'
+import { INumberField } from './NumberFieldTypes'
 
 export default {
     title: 'NumberField',
