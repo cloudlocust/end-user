@@ -1,7 +1,6 @@
 import React from 'react'
 import { reduxedRender } from 'src/common/react-platform-components/test'
 import { BrowserRouter as Router } from 'react-router-dom'
-import { fireEvent, act } from '@testing-library/react'
 import { NumberField } from './NumberField'
 
 // Text variables.
