@@ -6,15 +6,12 @@ import { reduxedRender } from 'src/common/react-platform-components/test'
 import { NumberFieldForm } from './NumberFieldForm'
 import { fireEvent, act } from '@testing-library/react'
 
-const handleBlur = jest.fn()
-
 const propsNumberField = {
     name: 'computer',
     labelTitle: 'PC de bureau',
     iconLabel: 'computer',
     disableDecrement: true,
     value: 1,
-    onBlur: handleBlur,
 }
 
 describe('<NumberField /> countries props', () => {
@@ -31,7 +28,7 @@ describe('<NumberField /> countries props', () => {
 
         const { getByTestId } = reduxedRender(
             // eslint-disable-next-line jsdoc/require-jsdoc
-            <Form onSubmit={(data: { phone: string }) => handleSubmit(data)}>
+            <Form onSubmit={(data) => handleSubmit(data)}>
                 <NumberFieldForm {...propsNumberField} />
                 <input type="submit" data-testid="submit" />
             </Form>,
@@ -55,14 +52,12 @@ describe('<NumberField /> countries props', () => {
 
         await act(async () => {
             fireEvent.click(getByText('add'))
-            fireEvent.blur(getByText('add'))
         })
         await waitFor(async () => {
             expect(getByText(2)).toBeTruthy()
         })
         await act(async () => {
             fireEvent.click(getByText('remove'))
-            fireEvent.blur(getByText('remove'))
         })
         await waitFor(async () => {
             expect(getByText(1)).toBeTruthy()
