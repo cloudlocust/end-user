@@ -1,106 +1,8 @@
-import { Button, Icon, styled } from '@mui/material'
-import React, { useReducer } from 'react'
+import React from 'react'
+import { Button, Icon, useTheme } from '@mui/material'
+import 'src/common/ui-kit/components/NumberField/NumberFieldForm.scss'
+import { INumberField } from './NumberFieldTypes'
 
-const Root = styled('div')(({ theme }) => ({
-    '& .icon-background': {
-        backgroundColor: theme.palette.primary.main,
-        '& .icon': {
-            color: theme.palette.background.paper,
-        },
-    },
-    '& .border-wrapper': {
-        borderBottom: `1px solid ${theme.palette.primary.main}`,
-    },
-    '& .title': {
-        color: theme.palette.primary.main,
-        fontSize: '1rem',
-    },
-    '& .buttons': {
-        '& button': {
-            borderRadius: '8px',
-            minWidth: '27px',
-            padding: '5px',
-        },
-    },
-}))
-
-/**
- * Initial state function.
- *
- * @param value Initial number to start counting.
- * @returns Value with key count.
- */
-const init = (value: number) => {
-    return { count: value }
-}
-/**
- * Reducer for counting.
- *
- * @param state State stores counter changes.
- * @param state.count Count state.
- * @param action Action stores type of changes.
- * @param action.type Action type. Is a decrement or an increment.
- * @returns Changed state in reducer.
- */
-const reducer = (
-    state: /**
-     State stores counter changes.
-     */
-    {
-        /**
-         * Count state.
-         */ count: number
-    },
-    action: /**
-    Action stores type of changes.
-     */
-    {
-        /**
-         * Action type. Is a decrement or an increment.
-         */
-        type: string
-    },
-) => {
-    switch (action.type) {
-        case 'increment':
-            return { count: state.count + 1 }
-        case 'decrement':
-            return { count: state.count - 1 }
-        default:
-            throw new Error()
-    }
-}
-
-/**
- * NumberField
- *  interface.
- */
-export interface INumberField {
-    /**
-     * Value to counting.
-     */
-    value?: number
-    /**
-     * Label title.
-     */
-    labelTitle: string
-    /**
-     * Icon name if taken from fuse mui.
-     */
-    iconLabel?: string
-    /**
-     * Icon path if it is svg image.
-     */
-    iconPath?: string
-    /**
-     * Is decrement disabled when value === 0.
-     */
-    disableDecrement?: boolean
-    /**
-     * Wraper className.
-     */
-    wrapperClasses?: string
-}
 /**
  * Number Field Form component.
  *
@@ -114,17 +16,36 @@ export interface INumberField {
  * @returns NumberField
  * .
  */
-export const NumberField = ({ ...props }) => {
-    const { value = 0, labelTitle, iconLabel, iconPath, disableDecrement, wrapperClasses = 'flex mr-8 mb-10' } = props
-    const [state, dispatch] = useReducer(reducer, value, init)
-    const disabledField = disableDecrement && state.count <= 0
+export const NumberField = ({ ...props }: INumberField) => {
+    const {
+        value = 0,
+        labelTitle,
+        iconLabel,
+        iconPath,
+        disableDecrement,
+        wrapperClasses = 'flex mr-8 mb-10',
+        onChange,
+    } = props
+    const disabledField = disableDecrement && value <= 0
+    const theme = useTheme()
 
     return (
-        <Root className={wrapperClasses}>
+        <div className={wrapperClasses}>
             {(iconPath || iconLabel) && (
-                <div className="icon-background flex items-center px-4 border-wrapper">
+                <div
+                    className="flex items-center px-4"
+                    style={{
+                        backgroundColor: theme.palette.primary.main,
+                        borderBottom: `1px solid ${theme.palette.primary.main}`,
+                    }}
+                >
                     {iconLabel ? (
-                        <Icon color="action" className="icon ">
+                        <Icon
+                            color="action"
+                            sx={{
+                                color: theme.palette.background.paper,
+                            }}
+                        >
                             {iconLabel}
                         </Icon>
                     ) : (
@@ -132,34 +53,40 @@ export const NumberField = ({ ...props }) => {
                     )}
                 </div>
             )}
-            <div className="flex flex-col items-center w-full border-wrapper">
-                <div className="title">{labelTitle}</div>
+            <div
+                className="flex flex-col items-center w-full"
+                style={{
+                    borderBottom: `1px solid ${theme.palette.primary.main}`,
+                }}
+            >
+                <div
+                    className="title"
+                    style={{
+                        color: theme.palette.primary.main,
+                    }}
+                >
+                    {labelTitle}
+                </div>
                 <div className="flex buttons w-full justify-between items-center px-4 mb-4">
                     <Button
                         variant="outlined"
-                        onBlur={() => {
-                            props.onBlur(state.count)
-                        }}
                         onClick={() => {
-                            !disabledField && dispatch({ type: 'decrement' })
+                            !disabledField && onChange && onChange(value - 1)
                         }}
                     >
                         <Icon color={disabledField ? 'disabled' : 'primary'}>remove</Icon>
                     </Button>
-                    {state.count}
+                    {value}
                     <Button
                         variant="outlined"
-                        onBlur={() => {
-                            props.onBlur(state.count)
-                        }}
                         onClick={() => {
-                            dispatch({ type: 'increment' })
+                            onChange && onChange(value + 1)
                         }}
                     >
                         <Icon color="primary">add</Icon>
                     </Button>
                 </div>
             </div>
-        </Root>
+        </div>
     )
 }
