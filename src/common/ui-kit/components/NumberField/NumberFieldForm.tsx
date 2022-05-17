@@ -25,7 +25,7 @@ export const NumberFieldForm = ({ name, ...otherProps }: INumberFieldForm) => {
                     {...field}
                     {...otherProps}
                     value={field.value}
-                    onChange={(value: any) => setValue(name, value)}
+                    onChange={(value: number) => setValue(name, value)}
                 />
             )}
         />
