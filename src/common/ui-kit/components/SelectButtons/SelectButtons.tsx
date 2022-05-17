@@ -3,65 +3,20 @@ import Button from '@mui/material/Button'
 import { useIntl } from 'src/common/react-platform-translation'
 import { Icon } from '@mui/material'
 import { Controller, useFormContext } from 'react-hook-form'
-
-/**
- * Interface for Select Button.
- */
-export interface ISelectButtons {
-    /**
-     * Button state.
-     */
-    // state: string
-    /**
-     * Set button state.
-     */
-    // setState: (value: React.SetStateAction<string>) => void
-    /**
-     * Options for buttons in form.
-     */
-    formOptions: any
-    /**
-     * Wrapper styles.
-     */
-    wrapperStyles?: string
-    /**
-     * Buttons title.
-     */
-    titleLabel?: string
-    /**
-     * Section name.
-     */
-    name: string
-    /**
-     * Saving data when the user leaves a form field.
-     */
-    // onBlur: (event: any) => void
-    value: string
-}
+import { ISelectButtons } from './SelectButtonsTypes'
 
 /**
  * Select Button is a component that allows to select one of the buttons.
  *
  * @param root0 SelectButtons props.
- * @param root0.state Button state.
- * @param root0.setState Set button state.
  * @param root0.formOptions Options for buttons in form.
  * @param root0.wrapperStyles Styles for wrapper.
  * @param root0.titleLabel Buttons title.
  * @param root0.name Section name.
- * @param root0.onBlur Saving data when the user leaves a form field.
+ * @param root0.value Initial value.
  * @returns Select Buttons.
  */
-export const SelectButtons = ({
-    // state,
-    // setState,
-    formOptions,
-    wrapperStyles,
-    titleLabel,
-    name,
-    value,
-}: // onBlur,
-ISelectButtons) => {
+export const SelectButtons = ({ formOptions, wrapperStyles, titleLabel, name, value }: ISelectButtons) => {
     const { formatMessage } = useIntl()
     const { control, setValue, getValues } = useFormContext()
 
@@ -82,26 +37,14 @@ ISelectButtons) => {
                     )}
                     <div className={wrapperStyles}>
                         {formOptions.map(
-                            /**
-                             * Button options.
-                             *
-                             * @param option Button options.
-                             * @param option.label Label  name.
-                             * @param option.icon Icon url.
-                             * @param option.iconStyles Styles for icon.
-                             * @param option.buttonStyle Styles for button.
-                             * @param option.isDisabled Is disabled button.
-                             * @returns  Select Buttons.
+                            (option: /**
+                            Button options.
                              */
-                            (option: {
+                            {
                                 /**
                                  * Label  name.
                                  */
                                 label: string
-                                /**
-                                 * Icon url.
-                                 */
-                                icon?: string
                                 /**
                                  * Styles for icon.
                                  */
@@ -115,8 +58,14 @@ ISelectButtons) => {
                                  *  Is disabled button.
                                  */
                                 isDisabled: boolean
-                                iconPath: string
-                                iconLabel: string
+                                /**
+                                 * Icon path if it is svg image.
+                                 */
+                                iconPath?: string
+                                /**
+                                 * Icon name if taken from fuse mui.
+                                 */
+                                iconLabel?: string
                             }) => {
                                 return (
                                     <Button
@@ -139,7 +88,7 @@ ISelectButtons) => {
                                                     <img
                                                         className={option.iconStyles}
                                                         src={option.iconPath}
-                                                        alt={option.icon}
+                                                        alt={option.iconPath}
                                                     />
                                                 )}
                                             </div>
