@@ -13,6 +13,12 @@ const propsNumberField = {
     disableDecrement: true,
     value: 1,
 }
+const propsNumberField2 = {
+    name: 'computer',
+    labelTitle: 'PC de bureau',
+    iconLabel: 'computer',
+    disableDecrement: true,
+}
 
 describe('<NumberField /> countries props', () => {
     test('props must be passed to NumberField and value shown', () => {
@@ -22,6 +28,14 @@ describe('<NumberField /> countries props', () => {
             </Form>,
         )
         expect(getByText(1)).toBeTruthy()
+    })
+    test('If no value, zero shown by default', () => {
+        const { getByText } = reduxedRender(
+            <Form onSubmit={() => {}}>
+                <NumberFieldForm {...propsNumberField2} />
+            </Form>,
+        )
+        expect(getByText(0)).toBeTruthy()
     })
     test('should use correctly by NumberField', async () => {
         const handleSubmit = jest.fn()
@@ -66,7 +80,7 @@ describe('<NumberField /> countries props', () => {
             fireEvent.click(getByTestId('submit'))
         })
         await waitFor(async () => {
-            expect(handleSubmit).toHaveBeenCalledWith({ computer: 2 })
+            expect(handleSubmit).toHaveBeenCalledWith({ computer: 1 })
         })
     })
 })
