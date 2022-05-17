@@ -1,0 +1,12 @@
+@import 'src/common/ui-kit/styles/media.scss';
+
+.title {
+    font-size: 1rem;
+}
+.buttons {
+    button {
+        border-radius: 8px;
+        min-width: 27px;
+        padding: 5px;
+    }
+}

@@ -1,29 +1,6 @@
-import { Button, Icon, styled } from '@mui/material'
 import React from 'react'
-
-const Root = styled('div')(({ theme }) => ({
-    '& .icon-background': {
-        backgroundColor: theme.palette.primary.main,
-        '& .icon': {
-            color: theme.palette.background.paper,
-        },
-    },
-    '& .border-wrapper': {
-        borderBottom: `1px solid ${theme.palette.primary.main}`,
-    },
-    '& .title': {
-        color: theme.palette.primary.main,
-        fontSize: '1rem',
-    },
-    '& .buttons': {
-        '& button': {
-            borderRadius: '8px',
-            minWidth: '27px',
-            padding: '5px',
-        },
-    },
-}))
-
+import { Button, Icon, useTheme } from '@mui/material'
+import 'src/common/ui-kit/components/NumberField/NumberFieldForm.scss'
 /**
  * NumberField
  *  interface.
@@ -82,13 +59,25 @@ export const NumberField = ({ ...props }: INumberField) => {
         onChange,
     } = props
     const disabledField = disableDecrement && value <= 0
+    const theme = useTheme()
 
     return (
-        <Root className={wrapperClasses}>
+        <div className={wrapperClasses}>
             {(iconPath || iconLabel) && (
-                <div className="icon-background flex items-center px-4 border-wrapper">
+                <div
+                    className="flex items-center px-4"
+                    style={{
+                        backgroundColor: theme.palette.primary.main,
+                        borderBottom: `1px solid ${theme.palette.primary.main}`,
+                    }}
+                >
                     {iconLabel ? (
-                        <Icon color="action" className="icon ">
+                        <Icon
+                            color="action"
+                            sx={{
+                                color: theme.palette.background.paper,
+                            }}
+                        >
                             {iconLabel}
                         </Icon>
                     ) : (
@@ -96,8 +85,20 @@ export const NumberField = ({ ...props }: INumberField) => {
                     )}
                 </div>
             )}
-            <div className="flex flex-col items-center w-full border-wrapper">
-                <div className="title">{labelTitle}</div>
+            <div
+                className="flex flex-col items-center w-full"
+                style={{
+                    borderBottom: `1px solid ${theme.palette.primary.main}`,
+                }}
+            >
+                <div
+                    className="title"
+                    style={{
+                        color: theme.palette.primary.main,
+                    }}
+                >
+                    {labelTitle}
+                </div>
                 <div className="flex buttons w-full justify-between items-center px-4 mb-4">
                     <Button
                         variant="outlined"
@@ -118,6 +119,6 @@ export const NumberField = ({ ...props }: INumberField) => {
                     </Button>
                 </div>
             </div>
-        </Root>
+        </div>
     )
 }
