@@ -35,17 +35,9 @@ const propsSelectButtons = {
 }
 
 describe('<SelectButtons /> props', () => {
-    test('props must be passed to SelectButtons and value shown', () => {
-        const { getByText } = reduxedRender(
-            <Form onSubmit={() => {}}>
-                <SelectButtons {...propsSelectButtons} />
-            </Form>,
-        )
-        expect(getByText('Type de plaques de cuisson:')).toBeTruthy()
-    })
     test('should use correctly by SelectButtons', async () => {
         const handleSubmit = jest.fn()
-        const { getByTestId } = reduxedRender(
+        const { getByTestId, getByText } = reduxedRender(
             // eslint-disable-next-line jsdoc/require-jsdoc
             <Form onSubmit={(data) => handleSubmit(data)}>
                 <SelectButtons {...propsSelectButtons} />
@@ -56,6 +48,7 @@ describe('<SelectButtons /> props', () => {
             userEvent.click(getByTestId('submit'))
         })
         expect(handleSubmit).toHaveBeenCalledWith({ hotplates: 'other' })
+        expect(getByText('Type de plaques de cuisson:')).toBeTruthy()
     })
     test('value should be changed', async () => {
         const handleSubmit = jest.fn()
