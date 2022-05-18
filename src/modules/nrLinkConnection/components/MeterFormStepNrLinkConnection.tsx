@@ -91,6 +91,7 @@ const MeterFormStepNrLinkConnection = ({
                             className="mb-20"
                             freeSolo
                             data-testid="MeterNameAutoCompleteField"
+                            value={meter}
                             onBlur={(e) =>
                                 // Required validation when first focus on the field.
                                 !meterName && setMeterNameError(true)
