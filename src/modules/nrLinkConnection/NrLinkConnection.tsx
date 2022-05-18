@@ -30,8 +30,11 @@ const NrLinkConnection = () => {
      */
     const getShowNrLinkPopup = useCallback(async () => {
         try {
-            const { data: responseData } = await axios.get<boolean>(`${GET_SHOW_NRLINK_POPUP_ENDPOINT}`)
-            if (typeof responseData !== 'boolean' || responseData === false) {
+            // eslint-disable-next-line jsdoc/require-jsdoc
+            const { data: responseData } = await axios.get<{ showNrlinkPopup: boolean }>(
+                `${GET_SHOW_NRLINK_POPUP_ENDPOINT}`,
+            )
+            if (!responseData.showNrlinkPopup) {
                 history.push(URL_CONSUMPTION)
             }
         } catch (error) {
