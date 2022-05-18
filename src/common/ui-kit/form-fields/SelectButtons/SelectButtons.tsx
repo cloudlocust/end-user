@@ -36,71 +36,40 @@ export const SelectButtons = ({ formOptions, wrapperStyles, titleLabel, name, va
                         </div>
                     )}
                     <div className={wrapperStyles}>
-                        {formOptions.map(
-                            (option: /**
-                            Button options.
-                             */
-                            {
-                                /**
-                                 * Label  name.
-                                 */
-                                label: string
-                                /**
-                                 * Styles for icon.
-                                 */
-                                iconStyles?: string
-                                /**
-                                 * Styles for button.
-                                 */
-                                buttonStyle?: string
-
-                                /**
-                                 *  Is disabled button.
-                                 */
-                                isDisabled: boolean
-                                /**
-                                 * Icon path if it is svg image.
-                                 */
-                                iconPath?: string
-                                /**
-                                 * Icon name if taken from fuse mui.
-                                 */
-                                iconLabel?: string
-                            }) => {
-                                return (
-                                    <Button
-                                        variant={(getValues(name) || value) === option.label ? 'contained' : 'outlined'}
-                                        color="primary"
-                                        className={option.buttonStyle}
-                                        onClick={() => setValue(name, option.label)}
-                                        type="button"
-                                        name={name}
-                                        disabled={option.isDisabled}
-                                        value={option.label}
-                                    >
-                                        {(option.iconPath || option.iconLabel) && (
-                                            <div>
-                                                {option.iconLabel ? (
-                                                    <Icon color="action" className={option.iconStyles}>
-                                                        {option.iconLabel}
-                                                    </Icon>
-                                                ) : (
-                                                    <img
-                                                        className={option.iconStyles}
-                                                        src={option.iconPath}
-                                                        alt={option.iconPath}
-                                                    />
-                                                )}
-                                            </div>
-                                        )}
-                                        {formatMessage({
-                                            id: option.label,
-                                            defaultMessage: option.label,
-                                        })}
-                                    </Button>
-                                )
-                            },
-                        )}
+                        {formOptions.map((option) => {
+                            return (
+                                <Button
+                                    variant={(getValues(name) || value) === option.label ? 'contained' : 'outlined'}
+                                    color="primary"
+                                    className={option.buttonStyle}
+                                    onClick={() => setValue(name, option.label)}
+                                    type="button"
+                                    name={name}
+                                    disabled={option.isDisabled}
+                                    value={option.label}
+                                >
+                                    {(option.iconPath || option.iconLabel) && (
+                                        <div>
+                                            {option.iconLabel ? (
+                                                <Icon color="action" className={option.iconStyles}>
+                                                    {option.iconLabel}
+                                                </Icon>
+                                            ) : (
+                                                <img
+                                                    className={option.iconStyles}
+                                                    src={option.iconPath}
+                                                    alt={option.iconPath}
+                                                />
+                                            )}
+                                        </div>
+                                    )}
+                                    {formatMessage({
+                                        id: option.label,
+                                        defaultMessage: option.label,
+                                    })}
+                                </Button>
+                            )
+                        })}
                     </div>
                 </>
             )}

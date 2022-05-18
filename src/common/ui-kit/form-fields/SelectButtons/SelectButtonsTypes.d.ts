@@ -13,7 +13,7 @@ export interface ISelectButtons {
     /**
      * Options for buttons in form.
      */
-    formOptions: any
+    formOptions: IFormOptions[]
     /**
      * Wrapper styles.
      */
@@ -22,4 +22,33 @@ export interface ISelectButtons {
      * Buttons title.
      */
     titleLabel?: string
+}
+/**
+ * Button options.
+ */
+export interface IFormOptions {
+    /**
+     * Label  name.
+     */
+    label: string
+    /**
+     * Styles for icon.
+     */
+    iconStyles?: string
+    /**
+     * Styles for button.
+     */
+    buttonStyle?: string
+    /**
+     *  Is disabled button.
+     */
+    isDisabled: boolean
+    /**
+     * Icon path if it is svg image.
+     */
+    iconPath?: string
+    /**
+     * Icon name if taken from fuse mui.
+     */
+    iconLabel?: string
 }
