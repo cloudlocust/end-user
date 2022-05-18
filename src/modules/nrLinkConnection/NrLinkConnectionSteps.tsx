@@ -47,11 +47,9 @@ export const ActionsNrLinkConnectionSteps = ({
     inProgress?: boolean
 }) => {
     const { formatMessage } = useIntl()
-    const theme = useTheme()
-    const isMobile = useMediaQuery(theme.breakpoints.down('md'))
 
     return (
-        <Box className={isMobile ? 'landscape:flex landscape:justify-between' : ''}>
+        <Box className="landscape:flex landscape:justify-between">
             <div className="my-16 w-full flex justify-center align-center">
                 {activeStep > 0 && (
                     <Button variant="contained" onClick={handleBack} sx={{ mt: 1, mr: 1 }}>
@@ -136,6 +134,8 @@ const NrLinkConnectionSteps = () => {
      * Previous Step callback.
      */
     const handleBack = () => {
+        // Reset the selected meter when going to any previous step
+        setMeter(null)
         setActiveStep((prevActiveStep) => prevActiveStep - 1)
     }
 
@@ -161,25 +161,27 @@ const NrLinkConnectionSteps = () => {
     return (
         <div className="p-24 h-full relative">
             {!isNrLinkAuthorizeInProgress ? (
-                <>
-                    <Stepper
-                        activeStep={activeStep}
-                        orientation={isMobile && screenOrientation === 'portrait' ? 'vertical' : 'horizontal'}
-                    >
-                        {stepsLabels.map((label, index) => (
-                            <Step key={label}>
-                                <StepLabel>{label}</StepLabel>
-                                {isMobile && screenOrientation === 'portrait' && (
-                                    // Vertical stepper content
-                                    <StepContent sx={{ paddingRight: '0' }}>{stepsContent[index]}</StepContent>
-                                )}
-                            </Step>
-                        ))}
-                    </Stepper>
-                    {(!isMobile || screenOrientation === 'landscape') && (
-                        // Horizontal stepper content
-                        <>{stepsContent[activeStep]}</>
-                    )}
+                <div className="flex flex-col h-full">
+                    <div className={`${isMobile && 'h-full'}`}>
+                        <Stepper
+                            activeStep={activeStep}
+                            orientation={isMobile && screenOrientation === 'portrait' ? 'vertical' : 'horizontal'}
+                        >
+                            {stepsLabels.map((label, index) => (
+                                <Step key={label}>
+                                    <StepLabel>{label}</StepLabel>
+                                    {isMobile && screenOrientation === 'portrait' && (
+                                        // Vertical stepper content
+                                        <StepContent sx={{ paddingRight: '0' }}>{stepsContent[index]}</StepContent>
+                                    )}
+                                </Step>
+                            ))}
+                        </Stepper>
+                        {(!isMobile || screenOrientation === 'landscape') && (
+                            // Horizontal stepper content
+                            <div className="mt-24">{stepsContent[activeStep]}</div>
+                        )}
+                    </div>
                     <div
                         className={`flex justify-between items-center mt-24 ${
                             !isMobile || screenOrientation === 'landscape'
@@ -190,7 +192,7 @@ const NrLinkConnectionSteps = () => {
                         <div className="w-full">{skipStepperLink}</div>
                         <div className="w-full"></div>
                     </div>
-                </>
+                </div>
             ) : (
                 <LoadingNrLinkConnectionSteps {...meter!} />
             )}

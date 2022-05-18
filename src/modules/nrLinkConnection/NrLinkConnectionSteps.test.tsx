@@ -13,10 +13,10 @@ const FINISH_BUTTON_TEXT = 'Terminer'
 const loadingButtonClassName = '.MuiCircularProgress-root '
 const horizontalStepperClassName = '.MuiStep-horizontal'
 const verticalStepperClassName = '.MuiStep-vertical'
+const stepperRootClassName = '.MuiStepper-root'
 const skipLinkBaseClassName = '.flex.justify-between.items-center.mt-24'
 const skipLinkPortraitClassName = `${skipLinkBaseClassName}.text-right.flex-row-reverse`
 const skipLinkLandscapeClassName = `${skipLinkBaseClassName}.text-center`
-const actionsClassName = 'MuiBox-root'
 const stepContentClassName = '.MuiStepContent-root'
 const mockHistoryPush = jest.fn()
 
@@ -28,6 +28,7 @@ jest.mock('react-router', () => ({
         push: mockHistoryPush,
     }),
 }))
+
 // testing for mobile as default
 jest.mock('@mui/material', () => ({
     ...jest.requireActual('@mui/material'),
@@ -118,6 +119,7 @@ describe('Test NrLinkConnection Page', () => {
     describe('test stateChanges', () => {
         test('handleNext and handleBack changes the activeStep', async () => {
             let mockPortraitOrientation = true
+            mockUseMediaQuery = false
             Object.defineProperty(window, 'matchMedia', {
                 writable: true,
                 value: jest.fn().mockImplementation((mediaParam) => ({
@@ -134,7 +136,11 @@ describe('Test NrLinkConnection Page', () => {
                 })),
             })
 
-            const { getByText } = reduxedRender(<NrLinkConnectionStepsRouter />)
+            const { container, getByText } = reduxedRender(<NrLinkConnectionStepsRouter />)
+            // When it's not mobile parent div STEPPER have h-full
+            expect(
+                container.querySelector(stepperRootClassName)?.parentElement?.classList.contains('h-full'),
+            ).toBeFalsy()
             // Click on next step (activeStep+1)
             expect(() => getByText(BACK_BUTTON_TEXT)).toThrow()
             userEvent.click(getByText(NEXT_BUTTON_TEXT))
@@ -149,6 +155,7 @@ describe('Test NrLinkConnection Page', () => {
         })
         test('handleScreenOrientation', async () => {
             let mockPortraitOrientation = true
+            mockUseMediaQuery = true
             Object.defineProperty(window, 'matchMedia', {
                 writable: true,
                 value: jest.fn().mockImplementation((media) => ({
@@ -165,6 +172,7 @@ describe('Test NrLinkConnection Page', () => {
             })
 
             const { container } = reduxedRender(<NrLinkConnectionStepsRouter />)
+
             // By default matchMedia returns true means it's portrait and thus Stepper vertical
             expect(container.querySelector(verticalStepperClassName)).toBeInTheDocument()
             expect(container.querySelector(stepContentClassName)).toBeInTheDocument()
@@ -229,11 +237,8 @@ describe('Test NrLinkConnection Page', () => {
 
         test('When inProgress props, spinner should be shown', async () => {
             actionsNrLinkConnectionStepsProps.inProgress = true
-            // When it's not mobile ActionButton have different styling
-            mockUseMediaQuery = false
             const { container } = reduxedRender(<ActionsNrLinkConnectionSteps {...actionsNrLinkConnectionStepsProps} />)
             expect(container.querySelector(loadingButtonClassName)).toBeInTheDocument()
-            expect(container.querySelector(actionsClassName)?.classList.contains('landscape:flex')).toBeFalsy()
         })
     })
 })
