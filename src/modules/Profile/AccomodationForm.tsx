@@ -1,17 +1,14 @@
 import React, { useState } from 'react'
 import { useIntl } from 'src/common/react-platform-translation'
-import TextField from '@mui/material/TextField'
 import { Form } from 'src/common/react-platform-components'
 import Radio from '@mui/material/Radio'
 import RadioGroup from '@mui/material/RadioGroup'
 import FormControlLabel from '@mui/material/FormControlLabel'
 import MenuItem from '@mui/material/MenuItem'
-// import Select, { SelectChangeEvent } from '@mui/material/Select'
-import InputLabel from '@mui/material/InputLabel'
-import { FormControl, SelectChangeEvent } from '@mui/material'
 import { SelectButtons } from 'src/common/ui-kit/form-fields/SelectButtons/SelectButtons'
-import { ButtonLoader } from 'src/common/ui-kit'
+import { ButtonLoader, TextField } from 'src/common/ui-kit'
 import { Select } from 'src/common/ui-kit/form-fields/Select'
+
 /**
  * Interface IAccomodationForm.
  */
@@ -42,22 +39,6 @@ const performanceOptions = ['A', 'B', 'C', 'D', 'E', 'F', 'G']
 const isolationOptions = ['Faible', 'Moyenne', 'Forte']
 
 /**
- * Handle change select menu.
- *
- * @param event Select Change Event.
- * @param setState Set selected value.
- * @param setEmptyState Set empty value in unused field.
- */
-const handleChange = (
-    event: SelectChangeEvent<string>,
-    setState: (value: React.SetStateAction<string>) => void,
-    setEmptyState: (value: React.SetStateAction<string>) => void,
-) => {
-    setState(event.target.value)
-    setEmptyState('')
-}
-
-/**
  * AccomodationForm.
  *
  * @param root0 AccomodationForm props.
@@ -67,32 +48,9 @@ const handleChange = (
  */
 export const AccomodationForm = ({ onSubmit, isEdit }: IAccomodationForm) => {
     const { formatMessage } = useIntl()
-    const [logement, setLogement] = useState(accomodationOptions.house)
-    const [constructionYear, setConstructionYear] = useState(accomodationOptions.before1950)
-    const [residenceType, setResidenceType] = useState(accomodationOptions.main)
     const [isDPE, setIsDPE] = useState(true)
-    const [energeticPerformance, setEnergeticPerformance] = useState('')
-    const [isolation, setIsolation] = useState('')
     const disabledField = false // !isEdit
 
-    const [accomodationFields, setAccomodationFields] = useState({
-        logement: logement,
-        constructionYear: constructionYear,
-        residenceType: residenceType,
-        isDPE: isDPE ? 'oui' : 'non',
-        energeticPerformance: energeticPerformance,
-        isolation: isolation,
-        habitants: '',
-        superficie: '',
-    })
-    /**
-     * HandleBlur for the event.
-     *
-     * @param event Click event.
-     */
-    const handleBlur = (event: any) => {
-        setAccomodationFields({ ...accomodationFields, [event.target.name]: event.target.value })
-    }
     const setSelectFields = (data: any) => {
         if (
             data.hasOwnProperty('indice_performance_energetique') &&
@@ -109,7 +67,6 @@ export const AccomodationForm = ({ onSubmit, isEdit }: IAccomodationForm) => {
             onSubmit={(data: any) => {
                 onSubmit(data)
                 console.log(data)
-
                 console.log(setSelectFields(data))
             }}
         >
@@ -199,7 +156,6 @@ export const AccomodationForm = ({ onSubmit, isEdit }: IAccomodationForm) => {
                             value="oui"
                             control={<Radio color="primary" />}
                             label="Oui"
-                            onBlur={handleBlur}
                             onClick={() => setIsDPE(true)}
                             checked={isDPE}
                             disabled={disabledField}
@@ -208,7 +164,6 @@ export const AccomodationForm = ({ onSubmit, isEdit }: IAccomodationForm) => {
                             value="non"
                             control={<Radio color="primary" />}
                             label="Non"
-                            onBlur={handleBlur}
                             onClick={() => setIsDPE(false)}
                             checked={!isDPE}
                             disabled={disabledField}
@@ -248,7 +203,6 @@ export const AccomodationForm = ({ onSubmit, isEdit }: IAccomodationForm) => {
                                 defaultMessage: 'Habitants',
                             })}
                             disabled={disabledField}
-                            onBlur={handleBlur}
                         />
                     </div>
                 </div>
@@ -268,7 +222,6 @@ export const AccomodationForm = ({ onSubmit, isEdit }: IAccomodationForm) => {
                                 defaultMessage: 'Superficie',
                             })}
                             disabled={disabledField}
-                            onBlur={handleBlur}
                         />
                     </div>
                     <div className="mt-16 ml-6  ">
