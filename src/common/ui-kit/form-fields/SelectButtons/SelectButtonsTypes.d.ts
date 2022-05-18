@@ -22,6 +22,10 @@ export interface ISelectButtons {
      * Buttons title.
      */
     titleLabel?: string
+    /**
+     *  Is disabled button.
+     */
+    isDisabled?: boolean
 }
 /**
  * Button options.
@@ -43,10 +47,6 @@ export interface IFormOptions {
      * Styles for button.
      */
     buttonStyle?: string
-    /**
-     *  Is disabled button.
-     */
-    isDisabled: boolean
     /**
      * Icon path if it is svg image.
      */
