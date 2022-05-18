@@ -6,11 +6,12 @@ import Radio from '@mui/material/Radio'
 import RadioGroup from '@mui/material/RadioGroup'
 import FormControlLabel from '@mui/material/FormControlLabel'
 import MenuItem from '@mui/material/MenuItem'
-import Select, { SelectChangeEvent } from '@mui/material/Select'
-import { SelectButton } from './SelectButton'
+// import Select, { SelectChangeEvent } from '@mui/material/Select'
 import InputLabel from '@mui/material/InputLabel'
-import { FormControl } from '@mui/material'
-
+import { FormControl, SelectChangeEvent } from '@mui/material'
+import { SelectButtons } from 'src/common/ui-kit/form-fields/SelectButtons/SelectButtons'
+import { ButtonLoader } from 'src/common/ui-kit'
+import { Select } from 'src/common/ui-kit/form-fields/Select'
 /**
  * Interface IAccomodationForm.
  */
@@ -25,7 +26,7 @@ interface IAccomodationForm {
     isEdit: boolean
 }
 
-const AccomodationOptions = {
+const accomodationOptions = {
     house: 'Maison',
     apartment: 'Appartement',
     before1950: 'Avant 1950',
@@ -36,6 +37,7 @@ const AccomodationOptions = {
     energeticPerformance: 'Performance énergétique',
     isolation: 'Estimation isolation',
 }
+const accomodationNames = {}
 const performanceOptions = ['A', 'B', 'C', 'D', 'E', 'F', 'G']
 const isolationOptions = ['Faible', 'Moyenne', 'Forte']
 
@@ -65,9 +67,9 @@ const handleChange = (
  */
 export const AccomodationForm = ({ onSubmit, isEdit }: IAccomodationForm) => {
     const { formatMessage } = useIntl()
-    const [logement, setLogement] = useState(AccomodationOptions.house)
-    const [constructionYear, setConstructionYear] = useState(AccomodationOptions.before1950)
-    const [residenceType, setResidenceType] = useState(AccomodationOptions.main)
+    const [logement, setLogement] = useState(accomodationOptions.house)
+    const [constructionYear, setConstructionYear] = useState(accomodationOptions.before1950)
+    const [residenceType, setResidenceType] = useState(accomodationOptions.main)
     const [isDPE, setIsDPE] = useState(true)
     const [energeticPerformance, setEnergeticPerformance] = useState('')
     const [isolation, setIsolation] = useState('')
@@ -83,7 +85,6 @@ export const AccomodationForm = ({ onSubmit, isEdit }: IAccomodationForm) => {
         habitants: '',
         superficie: '',
     })
-
     /**
      * HandleBlur for the event.
      *
@@ -92,11 +93,24 @@ export const AccomodationForm = ({ onSubmit, isEdit }: IAccomodationForm) => {
     const handleBlur = (event: any) => {
         setAccomodationFields({ ...accomodationFields, [event.target.name]: event.target.value })
     }
+    const setSelectFields = (data: any) => {
+        if (
+            data.hasOwnProperty('indice_performance_energetique') &&
+            data.hasOwnProperty('indice_estimation_isolation')
+        ) {
+            isDPE ? delete data['indice_estimation_isolation'] : delete data['indice_performance_energetique']
+            return data
+        }
+        return data
+    }
+
     return (
         <Form
-            onSubmit={() => {
-                onSubmit(accomodationFields)
-                console.log(accomodationFields)
+            onSubmit={(data: any) => {
+                onSubmit(data)
+                console.log(data)
+
+                console.log(setSelectFields(data))
             }}
         >
             <div className="flex flex-col justify-center w-full">
@@ -106,92 +120,81 @@ export const AccomodationForm = ({ onSubmit, isEdit }: IAccomodationForm) => {
                         defaultMessage: 'Informations Logements',
                     })}
                 </div>
-                <SelectButton
-                    state={logement}
-                    setState={setLogement}
+                <SelectButtons
+                    name="type_logement"
                     wrapperStyles="flex flex-row"
                     titleLabel="Type de logement :"
-                    name="logement"
-                    onBlur={handleBlur}
+                    isDisabled={disabledField}
                     formOptions={[
                         {
-                            label: AccomodationOptions.house,
-                            icon: '/assets/images/content/accomodation/logementMaison.svg',
+                            label: accomodationOptions.house,
+                            iconPath: '/assets/images/content/accomodation/logementMaison.svg',
                             iconStyles: 'my-20',
                             buttonStyle: 'w-240 mx-auto mt-16 flex flex-col mr-10',
-                            isDisabled: disabledField,
+                            value: accomodationOptions.house,
                         },
                         {
-                            label: AccomodationOptions.apartment,
-                            icon: '/assets/images/content/accomodation/logementAppartement.svg',
+                            label: accomodationOptions.apartment,
+                            iconPath: '/assets/images/content/accomodation/logementAppartement.svg',
                             iconStyles: 'my-20',
                             buttonStyle: 'w-240 mx-auto mt-16 flex flex-col',
-                            isDisabled: disabledField,
+                            value: accomodationOptions.apartment,
                         },
                     ]}
                 />
-                <SelectButton
-                    state={constructionYear}
-                    setState={setConstructionYear}
+                <SelectButtons
+                    name="annee_logement"
                     wrapperStyles="flex flex-row"
                     titleLabel="Année de construction :"
-                    name="constructionYear"
-                    onBlur={handleBlur}
+                    isDisabled={disabledField}
                     formOptions={[
                         {
-                            label: AccomodationOptions.before1950,
+                            label: accomodationOptions.before1950,
                             buttonStyle: 'w-224 mx-auto mt-16 flex flex-col mr-10 text-xs pt-10 pb-10',
-                            name: AccomodationOptions.before1950,
-                            isDisabled: disabledField,
+                            value: 'Avant_1950',
                         },
                         {
-                            label: AccomodationOptions.from1950to1975,
+                            label: accomodationOptions.from1950to1975,
                             buttonStyle: 'w-224 mx-auto mt-16 flex flex-col mr-10 text-xs pt-10 pb-10',
-                            name: AccomodationOptions.from1950to1975,
-                            isDisabled: disabledField,
+                            value: 'Entre_1950_1975',
                         },
                         {
-                            label: AccomodationOptions.after1975,
+                            label: accomodationOptions.after1975,
                             buttonStyle: 'w-224 mx-auto mt-16 flex flex-col text-xs pt-10 pb-10',
-                            name: AccomodationOptions.after1975,
-                            isDisabled: disabledField,
+                            value: 'Apres_1975',
                         },
                     ]}
                 />
-                <SelectButton
-                    state={residenceType}
-                    setState={setResidenceType}
+                <SelectButtons
                     wrapperStyles="flex flex-row"
                     titleLabel="Type de résidence :"
-                    name="residenceType"
-                    onBlur={handleBlur}
+                    name="type_residence"
+                    isDisabled={disabledField}
                     formOptions={[
                         {
-                            label: AccomodationOptions.main,
-                            icon: 'flag',
+                            label: accomodationOptions.main,
+                            iconLabel: 'flag',
                             iconStyles: 'mr-5',
                             buttonStyle: 'w-224 mx-auto max-h-40 mt-16 mr-10 text-xs pt-12 pb-12',
-                            name: AccomodationOptions.main,
-                            isDisabled: disabledField,
+                            value: accomodationOptions.main,
                         },
                         {
-                            label: AccomodationOptions.secondary,
-                            icon: 'golf_course',
+                            label: accomodationOptions.secondary,
+                            iconLabel: 'golf_course',
                             iconStyles: 'mr-5',
                             buttonStyle: 'w-224 max-h-40 mx-auto mt-16 text-xs',
-                            name: AccomodationOptions.secondary,
-                            isDisabled: disabledField,
+                            value: accomodationOptions.secondary,
                         },
                     ]}
                 />
-                <div className="flex flex-row select flex justify-between mb-20 mt-10">
+                <div className="flex flex-row select flex justify-between  mt-10">
                     <div className="mt-14 mr-10">
                         {formatMessage({
                             id: 'Je connais mon DPE :',
                             defaultMessage: 'Je connais mon DPE :',
                         })}
                     </div>
-                    <RadioGroup row aria-labelledby="demo-row-radio-buttons-group-label" name="isDPE">
+                    <RadioGroup row name="isDPE">
                         <FormControlLabel
                             value="oui"
                             control={<Radio color="primary" />}
@@ -213,47 +216,21 @@ export const AccomodationForm = ({ onSubmit, isEdit }: IAccomodationForm) => {
                     </RadioGroup>
                 </div>
                 {isDPE ? (
-                    <FormControl fullWidth>
-                        <InputLabel id="energeticPerformance">{AccomodationOptions.energeticPerformance}</InputLabel>
-                        <Select
-                            labelId={AccomodationOptions.energeticPerformance}
-                            id={AccomodationOptions.energeticPerformance}
-                            value={energeticPerformance}
-                            label={AccomodationOptions.energeticPerformance}
-                            onChange={(event) => {
-                                handleChange(event, setEnergeticPerformance, setIsolation)
-                            }}
-                            onBlur={handleBlur}
-                            name="energeticPerformance"
-                            disabled={disabledField}
-                        >
-                            {performanceOptions.map((performance) => {
-                                return <MenuItem value={performance}>{performance}</MenuItem>
-                            })}
-                        </Select>
-                    </FormControl>
+                    <Select
+                        name="indice_performance_energetique"
+                        label={accomodationOptions.energeticPerformance}
+                        children={performanceOptions.map((performance) => {
+                            return <MenuItem value={performance}>{performance}</MenuItem>
+                        })}
+                    />
                 ) : (
-                    <div>
-                        <FormControl fullWidth>
-                            <InputLabel id="isolation">{AccomodationOptions.isolation}</InputLabel>
-                            <Select
-                                labelId={AccomodationOptions.isolation}
-                                id={AccomodationOptions.isolation}
-                                value={isolation}
-                                label={AccomodationOptions.isolation}
-                                onChange={(event) => {
-                                    handleChange(event, setIsolation, setEnergeticPerformance)
-                                }}
-                                onBlur={handleBlur}
-                                name="isolation"
-                                disabled={disabledField}
-                            >
-                                {isolationOptions.map((isolation) => {
-                                    return <MenuItem value={isolation}>{isolation}</MenuItem>
-                                })}
-                            </Select>
-                        </FormControl>
-                    </div>
+                    <Select
+                        name="indice_estimation_isolation"
+                        label={accomodationOptions.isolation}
+                        children={isolationOptions.map((isolation) => {
+                            return <MenuItem value={isolation}>{isolation}</MenuItem>
+                        })}
+                    />
                 )}
                 <div className="flex flex-row flex justify-between  mt-16 mr-24">
                     <div className="mt-16 mr-10 w-full ">
@@ -302,6 +279,9 @@ export const AccomodationForm = ({ onSubmit, isEdit }: IAccomodationForm) => {
                     </div>
                 </div>
             </div>
+            <ButtonLoader variant="contained" type="submit" onClick={onSubmit}>
+                {formatMessage({ id: 'Enregistrer', defaultMessage: 'Enregistrer' })}
+            </ButtonLoader>
         </Form>
     )
 }
