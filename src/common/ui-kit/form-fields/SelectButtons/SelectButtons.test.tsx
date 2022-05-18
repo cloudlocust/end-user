@@ -9,22 +9,25 @@ import { SelectButtons } from './SelectButtons'
 const propsSelectButtons = {
     titleLabel: 'Type de plaques de cuisson:',
     name: 'hotplates',
-    value: 'other',
+    initialValue: 'other',
     formOptions: [
         {
             iconLabel: 'remove',
             label: 'electricity',
+            value: 'electricity',
             buttonStyle: 'mt-16 flex flex-col mr-10',
             isDisabled: false,
         },
         {
             iconPath: '/assets/images/content/equipment/heatingOther.svg',
             label: 'induction',
+            value: 'induction',
             buttonStyle: 'mt-16 flex flex-col mr-10',
             isDisabled: false,
         },
         {
             label: 'other',
+            value: 'other',
             buttonStyle: 'mt-16 flex flex-col',
             isDisabled: false,
         },

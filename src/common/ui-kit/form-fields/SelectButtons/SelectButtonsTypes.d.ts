@@ -9,7 +9,7 @@ export interface ISelectButtons {
     /**
      * Initial value.
      */
-    value: string
+    initialValue?: string
     /**
      * Options for buttons in form.
      */
@@ -31,6 +31,10 @@ export interface IFormOptions {
      * Label  name.
      */
     label: string
+    /**
+     * Button value.
+     */
+    value: string
     /**
      * Styles for icon.
      */

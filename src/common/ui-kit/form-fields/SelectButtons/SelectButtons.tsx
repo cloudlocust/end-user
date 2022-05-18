@@ -13,10 +13,10 @@ import { ISelectButtons } from './SelectButtonsTypes'
  * @param root0.wrapperStyles Styles for wrapper.
  * @param root0.titleLabel Buttons title.
  * @param root0.name Section name.
- * @param root0.value Initial value.
+ * @param root0.initialValue Initial value.
  * @returns Select Buttons.
  */
-export const SelectButtons = ({ formOptions, wrapperStyles, titleLabel, name, value }: ISelectButtons) => {
+export const SelectButtons = ({ formOptions, wrapperStyles, titleLabel, name, initialValue }: ISelectButtons) => {
     const { formatMessage } = useIntl()
     const { control, setValue, getValues } = useFormContext()
 
@@ -24,7 +24,7 @@ export const SelectButtons = ({ formOptions, wrapperStyles, titleLabel, name, va
         <Controller
             name={name}
             control={control}
-            defaultValue={value}
+            defaultValue={initialValue}
             render={() => (
                 <>
                     {titleLabel && (
@@ -39,14 +39,16 @@ export const SelectButtons = ({ formOptions, wrapperStyles, titleLabel, name, va
                         {formOptions.map((option) => {
                             return (
                                 <Button
-                                    variant={(getValues(name) || value) === option.label ? 'contained' : 'outlined'}
+                                    variant={
+                                        (getValues(name) || initialValue) === option.value ? 'contained' : 'outlined'
+                                    }
                                     color="primary"
                                     className={option.buttonStyle}
-                                    onClick={() => setValue(name, option.label)}
+                                    onClick={() => setValue(name, option.value)}
                                     type="button"
                                     name={name}
                                     disabled={option.isDisabled}
-                                    value={option.label}
+                                    value={option.value}
                                 >
                                     {(option.iconPath || option.iconLabel) && (
                                         <div>
