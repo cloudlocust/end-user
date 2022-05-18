@@ -14,9 +14,17 @@ import { ISelectButtons } from './SelectButtonsTypes'
  * @param root0.titleLabel Buttons title.
  * @param root0.name Section name.
  * @param root0.initialValue Initial value.
+ * @param root0.isDisabled Is disabled button.
  * @returns Select Buttons.
  */
-export const SelectButtons = ({ formOptions, wrapperStyles, titleLabel, name, initialValue }: ISelectButtons) => {
+export const SelectButtons = ({
+    formOptions,
+    wrapperStyles,
+    titleLabel,
+    name,
+    initialValue,
+    isDisabled,
+}: ISelectButtons) => {
     const { formatMessage } = useIntl()
     const { control, setValue, getValues } = useFormContext()
 
@@ -47,7 +55,7 @@ export const SelectButtons = ({ formOptions, wrapperStyles, titleLabel, name, in
                                     onClick={() => setValue(name, option.value)}
                                     type="button"
                                     name={name}
-                                    disabled={option.isDisabled}
+                                    disabled={isDisabled}
                                     value={option.value}
                                 >
                                     {(option.iconPath || option.iconLabel) && (

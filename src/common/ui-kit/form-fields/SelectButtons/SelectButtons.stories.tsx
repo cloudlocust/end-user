@@ -35,24 +35,22 @@ SelectButtonsWithInitialValue.args = {
     titleLabel: 'Type de plaques de cuisson:',
     name: 'hotplates',
     initialValue: 'electricity',
+    isDisabled: false,
     formOptions: [
         {
             label: 'electricity',
             value: 'electricity',
             buttonStyle: 'mt-16 flex flex-col mr-10',
-            isDisabled: false,
         },
         {
             label: 'induction',
             value: 'induction',
             buttonStyle: 'mt-16 flex flex-col mr-10',
-            isDisabled: false,
         },
         {
             label: 'other',
             value: 'other',
             buttonStyle: 'mt-16 flex flex-col',
-            isDisabled: false,
         },
     ],
 }
@@ -63,24 +61,22 @@ export const SelectButtonsWithoutInitialValue = Template.bind({})
 SelectButtonsWithoutInitialValue.args = {
     titleLabel: 'Type de plaques de cuisson:',
     name: 'hotplates',
+    isDisabled: false,
     formOptions: [
         {
             label: 'electricity',
             value: 'electricity',
             buttonStyle: 'mt-16 flex flex-col mr-8',
-            isDisabled: false,
         },
         {
             label: 'induction',
             value: 'induction',
             buttonStyle: 'mt-16 flex flex-col mr-8',
-            isDisabled: false,
         },
         {
             label: 'other',
             value: 'other',
             buttonStyle: 'mt-16 flex flex-col',
-            isDisabled: false,
         },
     ],
 }
