@@ -105,7 +105,11 @@ export const userEndpoints = [
     rest.get(`${GET_SHOW_NRLINK_POPUP_ENDPOINT}`, (req, res, ctx) => {
         const authorization = req.headers.get('authorization')
         if (authorization === showNrLinkPopupTrue || authorization === showNrLinkPopupFalse)
-            return res(ctx.status(200), ctx.delay(1000), ctx.json(authorization === showNrLinkPopupTrue ? true : false))
+            return res(
+                ctx.status(200),
+                ctx.delay(1000),
+                ctx.json({ show_nrlink_popup: authorization === showNrLinkPopupFalse ? false : true }),
+            )
         else return res(ctx.status(404), ctx.delay(1000))
     }),
 
