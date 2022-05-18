@@ -41,7 +41,7 @@ const MeterFormStepNrLinkConnection = ({
         elementList: meterList,
         addElement: addMeter,
         loadingInProgress: loadingMeterInProgress,
-    } = useMeterList(1000)
+    } = useMeterList(100)
 
     // Todo handle in a better way the AutoComplete TextField (a reusable component).
     const [meterName, setMeterName] = useState('')
