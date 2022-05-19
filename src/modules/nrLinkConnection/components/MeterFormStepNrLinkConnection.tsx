@@ -83,9 +83,9 @@ const MeterFormStepNrLinkConnection = ({
     }
     return (
         <Form onSubmit={onSubmit}>
-            <div className="flex justify-between items-center landscape:mt-10">
+            <div className="flex justify-between items-center landscape:mt-10 w-full">
                 <div className="portrait:flex-col landscape:flex-row h-full flex justify-center items-center w-full">
-                    <div className="w-full mr-10  max-w-640">
+                    <div className="w-full mr-32 ">
                         <Autocomplete
                             id="name-autocomplete"
                             className="mb-20"
@@ -143,54 +143,54 @@ const MeterFormStepNrLinkConnection = ({
                             />
                         )}
                     </div>
-                    <div className="w-full max-w-640">
-                        <Typography variant="caption" className="w-full text-center mb-7">
+                    <div className="w-full">
+                        <Typography variant="caption" className="w-full text-center">
                             {formatMessage({
                                 id: 'Vous pouvez trouver votre numéro de compteur sur :',
                                 defaultMessage: 'Vous pouvez trouver votre numéro de compteur sur :',
                             })}
                         </Typography>
-                        <div className="flex justify-between items-start mb-5">
-                            <div className="flex justify-between w-full items-center flex-col mb-5">
+                        <div className="flex justify-between items-start mt-7 mb-5">
+                            <div className="flex justify-between w-full items-center flex-col mb-5 ">
                                 <motion.div
                                     initial={{ opacity: 0, scale: 0.6 }}
                                     animate={{ opacity: 1, scale: 1 }}
-                                    className="flex justify-center w-full mr-8"
+                                    className="flex justify-center w-full mr-8 mb-5"
                                 >
                                     <img src={electricityPath} alt="electricity-img" />
                                 </motion.div>
-                                <Typography variant="caption" className="text-center">
+                                <Typography variant="caption" className="text-center md:text-12">
                                     {formatMessage({
                                         id: 'Vos Factures',
                                         defaultMessage: 'Vos Factures',
                                     })}
                                 </Typography>
                             </div>
-                            <div className="flex justify-between w-full items-center flex-col mb-5">
+                            <div className="flex justify-between w-full items-center flex-col mb-5 ">
                                 <motion.div
                                     initial={{ opacity: 0, scale: 0.6 }}
                                     animate={{ opacity: 1, scale: 1 }}
-                                    className="flex justify-center w-full mr-8"
+                                    className="flex justify-center w-full mb-5 mr-8"
                                 >
                                     <img src={linkyPath} alt="electricity-img" />
                                 </motion.div>
 
-                                <Typography variant="caption" className="text-center">
+                                <Typography variant="caption" className="text-center md:text-12">
                                     {formatMessage({
                                         id: 'Votre Linky en appuyant sur “+” (n°PRM)',
                                         defaultMessage: 'Votre Linky en appuyant sur “+” (n°PRM)',
                                     })}
                                 </Typography>
                             </div>
-                            <div className="flex justify-between w-full items-center flex-col mb-5">
+                            <div className="flex justify-between w-full items-center flex-col mb-5 ">
                                 <motion.div
                                     initial={{ opacity: 0, scale: 0.6 }}
                                     animate={{ opacity: 1, scale: 1 }}
-                                    className="flex justify-center w-full mr-8"
+                                    className="flex justify-center w-full mb-5 mr-8"
                                 >
                                     <img src={contractPath} alt="electricity-img" />
                                 </motion.div>
-                                <Typography variant="caption" className="w-full text-center">
+                                <Typography variant="caption" className="w-full text-center md:text-12">
                                     {formatMessage({
                                         id: 'Votre contrat d’électricité',
                                         defaultMessage: 'Votre contrat d’électricité',
