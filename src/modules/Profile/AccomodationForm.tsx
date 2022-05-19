@@ -23,7 +23,7 @@ interface IAccomodationForm {
     isEdit: boolean
 }
 
-const accomodationOptions = {
+const accomodationLabelOptions = {
     house: 'Maison',
     apartment: 'Appartement',
     before1950: 'Avant 1950',
@@ -34,7 +34,16 @@ const accomodationOptions = {
     energeticPerformance: 'Performance énergétique',
     isolation: 'Estimation isolation',
 }
-const accomodationNames = {}
+const accomodationNames = {
+    houseType: 'houseType',
+    houseYear: 'houseYear',
+    residenceType: 'residenceType',
+    energyPerformanceIndex: 'energyPerformanceIndex',
+    isolationLevel: 'isolationLevel',
+    numberOfInhabitants: 'numberOfInhabitants',
+    houseArea: 'houseArea',
+    meterId: 'meterId',
+}
 const performanceOptions = ['A', 'B', 'C', 'D', 'E', 'F', 'G']
 const isolationOptions = ['Faible', 'Moyenne', 'Forte']
 
@@ -53,10 +62,12 @@ export const AccomodationForm = ({ onSubmit, isEdit }: IAccomodationForm) => {
 
     const setSelectFields = (data: any) => {
         if (
-            data.hasOwnProperty('indice_performance_energetique') &&
-            data.hasOwnProperty('indice_estimation_isolation')
+            data.hasOwnProperty(accomodationNames.energyPerformanceIndex) &&
+            data.hasOwnProperty(accomodationNames.isolationLevel)
         ) {
-            isDPE ? delete data['indice_estimation_isolation'] : delete data['indice_performance_energetique']
+            isDPE
+                ? delete data[accomodationNames.isolationLevel]
+                : delete data[accomodationNames.energyPerformanceIndex]
             return data
         }
         return data
@@ -78,45 +89,45 @@ export const AccomodationForm = ({ onSubmit, isEdit }: IAccomodationForm) => {
                     })}
                 </div>
                 <SelectButtons
-                    name="type_logement"
+                    name={accomodationNames.houseType}
                     wrapperStyles="flex flex-row"
                     titleLabel="Type de logement :"
                     isDisabled={disabledField}
                     formOptions={[
                         {
-                            label: accomodationOptions.house,
+                            label: accomodationLabelOptions.house,
                             iconPath: '/assets/images/content/accomodation/logementMaison.svg',
                             iconStyles: 'my-20',
                             buttonStyle: 'w-240 mx-auto mt-16 flex flex-col mr-10',
-                            value: accomodationOptions.house,
+                            value: accomodationLabelOptions.house,
                         },
                         {
-                            label: accomodationOptions.apartment,
+                            label: accomodationLabelOptions.apartment,
                             iconPath: '/assets/images/content/accomodation/logementAppartement.svg',
                             iconStyles: 'my-20',
                             buttonStyle: 'w-240 mx-auto mt-16 flex flex-col',
-                            value: accomodationOptions.apartment,
+                            value: accomodationLabelOptions.apartment,
                         },
                     ]}
                 />
                 <SelectButtons
-                    name="annee_logement"
+                    name={accomodationNames.houseYear}
                     wrapperStyles="flex flex-row"
                     titleLabel="Année de construction :"
                     isDisabled={disabledField}
                     formOptions={[
                         {
-                            label: accomodationOptions.before1950,
+                            label: accomodationLabelOptions.before1950,
                             buttonStyle: 'w-224 mx-auto mt-16 flex flex-col mr-10 text-xs pt-10 pb-10',
                             value: 'Avant_1950',
                         },
                         {
-                            label: accomodationOptions.from1950to1975,
+                            label: accomodationLabelOptions.from1950to1975,
                             buttonStyle: 'w-224 mx-auto mt-16 flex flex-col mr-10 text-xs pt-10 pb-10',
                             value: 'Entre_1950_1975',
                         },
                         {
-                            label: accomodationOptions.after1975,
+                            label: accomodationLabelOptions.after1975,
                             buttonStyle: 'w-224 mx-auto mt-16 flex flex-col text-xs pt-10 pb-10',
                             value: 'Apres_1975',
                         },
@@ -125,22 +136,22 @@ export const AccomodationForm = ({ onSubmit, isEdit }: IAccomodationForm) => {
                 <SelectButtons
                     wrapperStyles="flex flex-row"
                     titleLabel="Type de résidence :"
-                    name="type_residence"
+                    name={accomodationNames.residenceType}
                     isDisabled={disabledField}
                     formOptions={[
                         {
-                            label: accomodationOptions.main,
+                            label: accomodationLabelOptions.main,
                             iconLabel: 'flag',
                             iconStyles: 'mr-5',
                             buttonStyle: 'w-224 mx-auto max-h-40 mt-16 mr-10 text-xs pt-12 pb-12',
-                            value: accomodationOptions.main,
+                            value: accomodationLabelOptions.main,
                         },
                         {
-                            label: accomodationOptions.secondary,
+                            label: accomodationLabelOptions.secondary,
                             iconLabel: 'golf_course',
                             iconStyles: 'mr-5',
                             buttonStyle: 'w-224 max-h-40 mx-auto mt-16 text-xs',
-                            value: accomodationOptions.secondary,
+                            value: accomodationLabelOptions.secondary,
                         },
                     ]}
                 />
@@ -172,16 +183,16 @@ export const AccomodationForm = ({ onSubmit, isEdit }: IAccomodationForm) => {
                 </div>
                 {isDPE ? (
                     <Select
-                        name="indice_performance_energetique"
-                        label={accomodationOptions.energeticPerformance}
+                        name={accomodationNames.energyPerformanceIndex}
+                        label={accomodationLabelOptions.energeticPerformance}
                         children={performanceOptions.map((performance) => {
                             return <MenuItem value={performance}>{performance}</MenuItem>
                         })}
                     />
                 ) : (
                     <Select
-                        name="indice_estimation_isolation"
-                        label={accomodationOptions.isolation}
+                        name={accomodationNames.isolationLevel}
+                        label={accomodationLabelOptions.isolation}
                         children={isolationOptions.map((isolation) => {
                             return <MenuItem value={isolation}>{isolation}</MenuItem>
                         })}
@@ -197,7 +208,7 @@ export const AccomodationForm = ({ onSubmit, isEdit }: IAccomodationForm) => {
                     <div className="w-4/6">
                         <TextField
                             type="number"
-                            name="habitants"
+                            name={accomodationNames.numberOfInhabitants}
                             label={formatMessage({
                                 id: 'Habitants',
                                 defaultMessage: 'Habitants',
@@ -216,7 +227,7 @@ export const AccomodationForm = ({ onSubmit, isEdit }: IAccomodationForm) => {
                     <div className="w-4/6 ">
                         <TextField
                             type="number"
-                            name="superficie"
+                            name={accomodationNames.houseArea}
                             label={formatMessage({
                                 id: 'Superficie',
                                 defaultMessage: 'Superficie',
