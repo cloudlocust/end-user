@@ -34,7 +34,7 @@ const FirstStepNrLinkConnection = ({
                 >
                     <img src={screenNrLinkPath} alt="screenNrLink" />
                 </motion.div>
-                <Typography variant="body2" className="w-full">
+                <Typography variant="body2" className="w-full md:text-14">
                     {formatMessage({
                         id: 'Allumez votre afficheur déporté et suivez les instructions pour connecter votre capteur à votre compteur Linky et suivre votre consommation.',
                         defaultMessage:
