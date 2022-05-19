@@ -2,7 +2,9 @@ import { chunk, filter, zip } from 'lodash'
 import React, { useState } from 'react'
 import { Form } from 'src/common/react-platform-components'
 import { useIntl } from 'src/common/react-platform-translation'
-import { NumberField } from 'src/common/ui-kit/components/NumberField/NumberField'
+import { NumberFieldForm } from 'src/common/ui-kit/components/NumberField/NumberFieldForm'
+import { INumberFieldForm } from 'src/common/ui-kit/components/NumberField/NumberFieldTypes'
+import { SelectButtons } from 'src/common/ui-kit/form-fields/SelectButtons/SelectButtons'
 import { SelectButton } from './SelectButton'
 
 interface IEquipementForm {
@@ -12,52 +14,62 @@ interface IEquipementForm {
 /**
  *
  */
-interface IEquipmentOptions {
-    /**
-     * Initial number to start counting.
-     */
-    initialCount?: number
-    /**
-     * Label title.
-     */
-    title: string
-    /**
-     * Icon name if taken from fuse mui.
-     */
-    iconLabel?: string
-    /**
-     * Icon path if it is svg image.
-     */
-    iconPath?: string
-    /**
-     * If decrement disabled when value === 0.
-     */
-    disableDecrement?: boolean
-    /**
-     * Wraper className.
-     */
-    wrapperClasses?: string
-}
+// interface IEquipmentOptions {
+//     /**
+//      * Initial number to start counting.
+//      */
+//     value?: number
+//     /**
+//      * Label title.
+//      */
+//     title: string
+//     /**
+//      * Icon name if taken from fuse mui.
+//      */
+//     iconLabel?: string
+//     /**
+//      * Icon path if it is svg image.
+//      */
+//     iconPath?: string
+//     /**
+//      * If decrement disabled when value === 0.
+//      */
+//     disableDecrement?: boolean
+//     /**
+//      * Wraper className.
+//      */
+//     wrapperClasses?: string
+// }
+
 const myEquipmentOptions = [
-    { title: 'PC de bureau', iconLabel: 'computer', disableDecrement: true },
-    { title: 'PC Portable', iconLabel: 'computer', disableDecrement: true },
-    { title: 'Téléviseur', iconLabel: 'tv', disableDecrement: true },
-    { title: 'Aspirateur', iconPath: '/assets/images/content/equipment/aspirator.svg', disableDecrement: true },
-    { title: 'Four', iconPath: '/assets/images/content/equipment/oven.svg', disableDecrement: true },
-    { title: 'Micro-onde', iconLabel: 'microwave', disableDecrement: true },
-    { title: 'Réfrigérateur', iconLabel: 'kitchen', disableDecrement: true },
+    { name: 'PC de bureau', labelTitle: 'PC de bureau', iconLabel: 'computer', disableDecrement: true },
+    { name: 'PC Portable', labelTitle: 'PC Portable', iconLabel: 'computer', disableDecrement: true },
+    { name: 'Téléviseur', labelTitle: 'Téléviseur', iconLabel: 'tv', disableDecrement: true },
     {
-        title: 'Lave-vaisselle',
+        name: 'Aspirateur',
+        labelTitle: 'Aspirateur',
+        iconPath: '/assets/images/content/equipment/aspirator.svg',
+        disableDecrement: true,
+        value: '',
+    },
+    { name: 'Four', labelTitle: 'Four', iconPath: '/assets/images/content/equipment/oven.svg', disableDecrement: true },
+    { name: 'Micro-onde', labelTitle: 'Micro-onde', iconLabel: 'microwave', disableDecrement: true },
+    { name: 'Réfrigérateur', labelTitle: 'Réfrigérateur', iconLabel: 'kitchen', disableDecrement: true },
+    {
+        name: 'Lave-vaisselle',
+        labelTitle: 'Lave-vaisselle',
         iconPath: '/assets/images/content/equipment/dishwasher.svg',
         disableDecrement: true,
     },
     {
-        title: 'Lave linge',
+        name: 'Lave linge',
+        labelTitle: 'Lave linge',
         iconPath: '/assets/images/content/equipment/washing-machine.svg',
         disableDecrement: true,
     },
     {
-        title: 'Sèche linge',
+        name: 'Sèche linge',
+        labelTitle: 'Sèche linge',
         iconPath: '/assets/images/content/equipment/clothes-dryer.svg',
         disableDecrement: true,
     },
@@ -72,6 +84,10 @@ function groupedCards<T>(cards: T[], colNumber = 2) {
     const chunkArray = cards && chunk(cards, colNumber)
     return zip(...chunkArray).map((item) => filter(item)) as T[][]
 }
+const equipmentNames = {
+    heating: 'heating',
+    hotplates: 'hotplates',
+}
 
 export const EquipmentForm = ({ onSubmit, isEdit }: IEquipementForm) => {
     const { formatMessage } = useIntl()
@@ -82,27 +98,8 @@ export const EquipmentForm = ({ onSubmit, isEdit }: IEquipementForm) => {
         other: 'Autre',
         induction: 'Induction',
     }
-    const [heating, setHeating] = useState(equipmentOptions.electricity)
-    const [hotplates, setHotplates] = useState(equipmentOptions.electricity)
-    const [equipmentFields, setEquipmentFields] = useState({
-        heating: heating,
-        hotplates: hotplates,
-    })
-    /**
-     * HandleBlur for the event.
-     *
-     * @param event Click event.
-     */
-    const handleBlur = (event: any) => {
-        setEquipmentFields({ ...equipmentFields, [event.target.name]: event.target.value })
-    }
+
     return (
-        // <Form
-        //     onSubmit={(data) => {
-        //         onSubmit(data)
-        //         // console.log(blurredFields)
-        //     }}
-        // >
         <>
             <div className="flex flex-col justify-center w-full">
                 <div className="font-semibold self-center text-sm mb-4 mt-16">
@@ -111,58 +108,54 @@ export const EquipmentForm = ({ onSubmit, isEdit }: IEquipementForm) => {
                         defaultMessage: 'Informations Equipements',
                     })}
                 </div>
-                <SelectButton
-                    state={heating}
-                    setState={setHeating}
+                <SelectButtons
                     wrapperStyles="flex flex-row justify-center"
                     titleLabel="Type de chauffage :"
-                    name="heating"
-                    onBlur={handleBlur}
+                    name={equipmentNames.heating}
+                    isDisabled={disabledField}
                     formOptions={[
                         {
                             label: equipmentOptions.electricity,
-                            icon: '/assets/images/content/equipment/heatingElectricity.svg',
+                            iconPath: '/assets/images/content/equipment/heatingElectricity.svg',
                             iconStyles: 'my-5 h-56',
                             buttonStyle: 'w-240 mt-16 flex flex-col mr-10',
-                            isDisabled: disabledField,
+                            value: equipmentOptions.electricity,
                         },
                         {
                             label: equipmentOptions.other,
-                            icon: '/assets/images/content/equipment/heatingOther.svg',
+                            iconPath: '/assets/images/content/equipment/heatingOther.svg',
                             iconStyles: 'my-5 h-56',
                             buttonStyle: 'w-240 mt-16 flex flex-col',
-                            isDisabled: disabledField,
+                            value: equipmentOptions.other,
                         },
                     ]}
                 />
-                <SelectButton
-                    state={hotplates}
-                    setState={setHotplates}
+                <SelectButtons
                     wrapperStyles="flex flex-row justify-center"
                     titleLabel="Type de plaques de cuisson:"
-                    name="hotplates"
-                    onBlur={handleBlur}
+                    name={equipmentNames.hotplates}
+                    isDisabled={disabledField}
                     formOptions={[
                         {
                             label: equipmentOptions.electricity,
-                            icon: '/assets/images/content/equipment/hotplatesElectricity.svg',
+                            iconPath: '/assets/images/content/equipment/hotplatesElectricity.svg',
                             iconStyles: 'my-5 h-56',
                             buttonStyle: ' mt-16 flex flex-col mr-10',
-                            isDisabled: disabledField,
+                            value: equipmentOptions.electricity,
                         },
                         {
                             label: equipmentOptions.induction,
-                            icon: '/assets/images/content/equipment/hotplatesInduction.svg',
+                            iconPath: '/assets/images/content/equipment/hotplatesInduction.svg',
                             iconStyles: 'my-5 h-56',
                             buttonStyle: ' mt-16 flex flex-col mr-10',
-                            isDisabled: disabledField,
+                            value: equipmentOptions.induction,
                         },
                         {
                             label: equipmentOptions.other,
-                            icon: '/assets/images/content/equipment/hotplatesOther.svg',
+                            iconPath: '/assets/images/content/equipment/hotplatesOther.svg',
                             iconStyles: 'my-5 h-56 w-64',
                             buttonStyle: ' mt-16 flex flex-col',
-                            isDisabled: disabledField,
+                            value: equipmentOptions.other,
                         },
                     ]}
                 />
@@ -175,22 +168,23 @@ export const EquipmentForm = ({ onSubmit, isEdit }: IEquipementForm) => {
                     })}
                 </div>
             </div>
-            {/* <div className="flex">
-                {groupedCards(myEquipmentOptions as IEquipmentOptions[]).map((col) => (
+            <div className="flex">
+                {groupedCards(myEquipmentOptions as INumberFieldForm[]).map((col) => (
                     <div className="w-full">
                         {col.map((item) => (
-                            <NumberField
-                                title={item.title}
+                            <NumberFieldForm
+                                labelTitle={item.labelTitle}
                                 iconLabel={item.iconLabel}
                                 iconPath={item.iconPath}
                                 disableDecrement={item.disableDecrement}
-                                initialCount={item.initialCount}
+                                value={item.value}
                                 wrapperClasses={item.wrapperClasses}
+                                name={item.name}
                             />
                         ))}
                     </div>
                 ))}
-            </div> */}
+            </div>
         </>
     )
 }

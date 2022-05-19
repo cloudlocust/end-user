@@ -61,8 +61,6 @@ export const Profile = () => {
                     <AccomodationForm
                         // houseDetails={houseDetails}
                         isEdit={isEdit}
-                        onSubmit={onSubmit}
-                        enableForm={enableForm}
                         isDPE={isDPE}
                         setIsDPE={setIsDPE}
                     />

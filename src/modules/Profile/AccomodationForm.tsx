@@ -1,11 +1,11 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { useIntl } from 'src/common/react-platform-translation'
 import Radio from '@mui/material/Radio'
 import RadioGroup from '@mui/material/RadioGroup'
 import FormControlLabel from '@mui/material/FormControlLabel'
 import MenuItem from '@mui/material/MenuItem'
 import { SelectButtons } from 'src/common/ui-kit/form-fields/SelectButtons/SelectButtons'
-import { ButtonLoader, TextField } from 'src/common/ui-kit'
+import { TextField } from 'src/common/ui-kit'
 import { Select } from 'src/common/ui-kit/form-fields/Select'
 import {
     accomodationLabelOptions,
@@ -21,16 +21,14 @@ interface IAccomodationForm {
     /**
      *
      */
-    onSubmit: (data: any) => void
-    /**
-     *
-     */
     isEdit: boolean
     /**
      *
      */
-    enableForm: () => void
     isDPE: boolean
+    /**
+     *
+     */
     setIsDPE: (isDPE: boolean) => void
 }
 
@@ -38,11 +36,12 @@ interface IAccomodationForm {
  * AccomodationForm.
  *
  * @param root0 AccomodationForm props.
- * @param root0.onSubmit Submit action.
  * @param root0.isEdit Is edition mode.
+ * @param root0.isDPE
+ * @param root0.setIsDPE
  * @returns AccomodationForm.
  */
-export const AccomodationForm = ({ onSubmit, isEdit, enableForm, isDPE, setIsDPE }: IAccomodationForm) => {
+export const AccomodationForm = ({ isEdit, isDPE, setIsDPE }: IAccomodationForm) => {
     const { formatMessage } = useIntl()
     const disabledField = false // !isEdit
 
