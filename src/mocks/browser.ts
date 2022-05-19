@@ -9,6 +9,7 @@ import { setupWorker } from 'msw'
 /** Mock requests. */
 import { userEndpoints } from './handlers/user'
 import { metersEndpoints } from './handlers/meters'
+import { nrlinkEndpoints } from './handlers/nrlink'
 
 /**
  * Handlers to mock urls for tests.
@@ -18,6 +19,8 @@ const handlers = [
     ...userEndpoints,
     /******Meters REQUESTS*****/
     ...metersEndpoints,
+    /******NrLink REQUESTS*****/
+    ...nrlinkEndpoints,
 ]
 
 /**

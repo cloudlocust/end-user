@@ -13,10 +13,7 @@ const FINISH_BUTTON_TEXT = 'Terminer'
 const loadingButtonClassName = '.MuiCircularProgress-root '
 const horizontalStepperClassName = '.MuiStep-horizontal'
 const verticalStepperClassName = '.MuiStep-vertical'
-const stepperRootClassName = '.MuiStepper-root'
-const skipLinkBaseClassName = '.flex.justify-between.items-center.mt-24'
-const skipLinkPortraitClassName = `${skipLinkBaseClassName}.text-right.flex-row-reverse`
-const skipLinkLandscapeClassName = `${skipLinkBaseClassName}.text-center`
+const stepperContentClassName = '.StepperContent'
 const stepContentClassName = '.MuiStepContent-root'
 const mockHistoryPush = jest.fn()
 
@@ -85,10 +82,8 @@ describe('Test NrLinkConnection Page', () => {
                 expect(getByText(SKIP_LINK_TEXT)).toBeTruthy()
             })
             expect(getByText(SKIP_LINK_TEXT).closest('a')).toHaveAttribute('href', URL_CONSUMPTION)
-            expect(container.querySelector(skipLinkPortraitClassName)).not.toBeInTheDocument()
-            expect(container.querySelector(skipLinkLandscapeClassName)).toBeInTheDocument()
         })
-        test('When Screen is landscape stepper is vertical, and content is inside the stepper and stepContent, Skip_Link align center, it should redirect to URL_CONSUMPTION', async () => {
+        test('When Screen is landscape stepper is vertical, and content is inside the stepper and stepContent, Skip_Link it should redirect to URL_CONSUMPTION', async () => {
             Object.defineProperty(window, 'matchMedia', {
                 writable: true,
                 value: jest.fn().mockImplementation((query) => ({
@@ -112,8 +107,6 @@ describe('Test NrLinkConnection Page', () => {
                 expect(getByText(SKIP_LINK_TEXT)).toBeTruthy()
             })
             expect(getByText(SKIP_LINK_TEXT).closest('a')).toHaveAttribute('href', URL_CONSUMPTION)
-            expect(container.querySelector(skipLinkPortraitClassName)).toBeInTheDocument()
-            expect(container.querySelector(skipLinkLandscapeClassName)).not.toBeInTheDocument()
         })
     })
     describe('test stateChanges', () => {
@@ -137,10 +130,8 @@ describe('Test NrLinkConnection Page', () => {
             })
 
             const { container, getByText } = reduxedRender(<NrLinkConnectionStepsRouter />)
-            // When it's not mobile parent div STEPPER have h-full
-            expect(
-                container.querySelector(stepperRootClassName)?.parentElement?.classList.contains('h-full'),
-            ).toBeFalsy()
+            // When it's not mobile div StepperContent is shown
+            expect(container.querySelector(stepperContentClassName)).toBeTruthy()
             // Click on next step (activeStep+1)
             expect(() => getByText(BACK_BUTTON_TEXT)).toThrow()
             userEvent.click(getByText(NEXT_BUTTON_TEXT))

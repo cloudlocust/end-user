@@ -14,6 +14,7 @@ import {
     LastStepNrLinkConnection,
     LoadingNrLinkConnectionSteps,
 } from 'src/modules/nrLinkConnection'
+import 'src/modules/nrLinkConnection/NrLinkConnectionSteps.scss'
 import { ButtonLoader } from 'src/common/ui-kit'
 import { IMeter } from 'src/modules/Meters/Meters'
 import MuiLink from '@mui/material/Link'
@@ -106,6 +107,7 @@ const NrLinkConnectionSteps = () => {
                     // eslint-disable-next-line jsdoc/require-jsdoc
                     (theme) => theme.palette.primary.light,
             }}
+            className="md:text-14"
             to={URL_CONSUMPTION}
             underline="none"
         >
@@ -159,39 +161,40 @@ const NrLinkConnectionSteps = () => {
     ]
 
     return (
-        <div className="p-24 h-full relative">
+        <div className="p-24 h-full relative md:mx-auto NrLinkConnectionSteps">
             {!isNrLinkAuthorizeInProgress ? (
-                <div className="flex flex-col h-full">
-                    <div className={`${isMobile && 'h-full'}`}>
-                        <Stepper
-                            activeStep={activeStep}
-                            orientation={isMobile && screenOrientation === 'portrait' ? 'vertical' : 'horizontal'}
-                        >
-                            {stepsLabels.map((label, index) => (
-                                <Step key={label}>
-                                    <StepLabel>{label}</StepLabel>
-                                    {isMobile && screenOrientation === 'portrait' && (
-                                        // Vertical stepper content
-                                        <StepContent sx={{ paddingRight: '0' }}>{stepsContent[index]}</StepContent>
-                                    )}
-                                </Step>
-                            ))}
-                        </Stepper>
-                        {(!isMobile || screenOrientation === 'landscape') && (
-                            // Horizontal stepper content
-                            <div className="mt-24">{stepsContent[activeStep]}</div>
-                        )}
-                    </div>
-                    <div
-                        className={`flex justify-between items-center mt-24 ${
-                            !isMobile || screenOrientation === 'landscape'
-                                ? 'text-center'
-                                : 'text-right flex-row-reverse'
-                        }`}
+                <div className="h-full flex flex-col items-center justify-between">
+                    <Stepper
+                        className="NrLinkConnectionStepsStepper w-full"
+                        activeStep={activeStep}
+                        orientation={isMobile && screenOrientation === 'portrait' ? 'vertical' : 'horizontal'}
                     >
-                        <div className="w-full">{skipStepperLink}</div>
-                        <div className="w-full"></div>
-                    </div>
+                        {stepsLabels.map((label, index) => (
+                            <Step key={label}>
+                                <StepLabel>{label}</StepLabel>
+                                {isMobile && screenOrientation === 'portrait' && (
+                                    // Vertical stepper content
+                                    <StepContent className="px-48" sx={{ paddingRight: '0' }}>
+                                        {stepsContent[index]}
+                                    </StepContent>
+                                )}
+                            </Step>
+                        ))}
+                    </Stepper>
+                    {isMobile && screenOrientation === 'portrait' ? (
+                        <div className="w-full text-right">{skipStepperLink}</div>
+                    ) : (
+                        // Horizontal stepper content
+                        <div className="h-full flex mt-32 md:mt-0 items-center">
+                            <div className="w-full px-48 StepperContent">
+                                {stepsContent[activeStep]}
+                                <div className="flex justify-between items-center mt-24 text-center">
+                                    <div className="w-full">{skipStepperLink}</div>
+                                    <div className="w-full"></div>
+                                </div>
+                            </div>
+                        </div>
+                    )}
                 </div>
             ) : (
                 <LoadingNrLinkConnectionSteps {...meter!} />
