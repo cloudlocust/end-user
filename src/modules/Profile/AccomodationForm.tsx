@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
 import { useIntl } from 'src/common/react-platform-translation'
-import { Form } from 'src/common/react-platform-components'
 import Radio from '@mui/material/Radio'
 import RadioGroup from '@mui/material/RadioGroup'
 import FormControlLabel from '@mui/material/FormControlLabel'
@@ -27,6 +26,12 @@ interface IAccomodationForm {
      *
      */
     isEdit: boolean
+    /**
+     *
+     */
+    enableForm: () => void
+    isDPE: boolean
+    setIsDPE: (isDPE: boolean) => void
 }
 
 /**
@@ -37,37 +42,12 @@ interface IAccomodationForm {
  * @param root0.isEdit Is edition mode.
  * @returns AccomodationForm.
  */
-export const AccomodationForm = ({ onSubmit, isEdit }: IAccomodationForm) => {
+export const AccomodationForm = ({ onSubmit, isEdit, enableForm, isDPE, setIsDPE }: IAccomodationForm) => {
     const { formatMessage } = useIntl()
-    const [isDPE, setIsDPE] = useState(true)
     const disabledField = false // !isEdit
-    /**
-     * Leave only one selected field in the data from.
-     *
-     * @param data OnSubmit data.
-     * @returns Data.
-     */
-    const setSelectFields = (data: any) => {
-        if (
-            data.hasOwnProperty(accomodationNames.energyPerformanceIndex) &&
-            data.hasOwnProperty(accomodationNames.isolationLevel)
-        ) {
-            isDPE
-                ? delete data[accomodationNames.isolationLevel]
-                : delete data[accomodationNames.energyPerformanceIndex]
-            return data
-        }
-        return data
-    }
 
     return (
-        <Form
-            onSubmit={(data: any) => {
-                onSubmit(data)
-                console.log(data)
-                console.log(setSelectFields(data))
-            }}
-        >
+        <>
             <div className="flex flex-col justify-center w-full">
                 <div className="font-semibold self-center text-sm mb-4 mt-16">
                     {formatMessage({
@@ -230,9 +210,6 @@ export const AccomodationForm = ({ onSubmit, isEdit }: IAccomodationForm) => {
                     </div>
                 </div>
             </div>
-            <ButtonLoader variant="contained" type="submit" onClick={onSubmit}>
-                {formatMessage({ id: 'Enregistrer', defaultMessage: 'Enregistrer' })}
-            </ButtonLoader>
-        </Form>
+        </>
     )
 }

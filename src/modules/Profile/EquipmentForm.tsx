@@ -97,12 +97,13 @@ export const EquipmentForm = ({ onSubmit, isEdit }: IEquipementForm) => {
         setEquipmentFields({ ...equipmentFields, [event.target.name]: event.target.value })
     }
     return (
-        <Form
-            onSubmit={(data) => {
-                onSubmit(data)
-                // console.log(blurredFields)
-            }}
-        >
+        // <Form
+        //     onSubmit={(data) => {
+        //         onSubmit(data)
+        //         // console.log(blurredFields)
+        //     }}
+        // >
+        <>
             <div className="flex flex-col justify-center w-full">
                 <div className="font-semibold self-center text-sm mb-4 mt-16">
                     {formatMessage({
@@ -174,7 +175,7 @@ export const EquipmentForm = ({ onSubmit, isEdit }: IEquipementForm) => {
                     })}
                 </div>
             </div>
-            <div className="flex">
+            {/* <div className="flex">
                 {groupedCards(myEquipmentOptions as IEquipmentOptions[]).map((col) => (
                     <div className="w-full">
                         {col.map((item) => (
@@ -189,7 +190,7 @@ export const EquipmentForm = ({ onSubmit, isEdit }: IEquipementForm) => {
                         ))}
                     </div>
                 ))}
-            </div>
-        </Form>
+            </div> */}
+        </>
     )
 }
