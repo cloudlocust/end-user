@@ -1,11 +1,10 @@
+import { useMediaQuery, useTheme } from '@mui/material'
 import { chunk, filter, zip } from 'lodash'
-import React, { useState } from 'react'
-import { Form } from 'src/common/react-platform-components'
+import React from 'react'
 import { useIntl } from 'src/common/react-platform-translation'
 import { NumberFieldForm } from 'src/common/ui-kit/components/NumberField/NumberFieldForm'
 import { INumberFieldForm } from 'src/common/ui-kit/components/NumberField/NumberFieldTypes'
 import { SelectButtons } from 'src/common/ui-kit/form-fields/SelectButtons/SelectButtons'
-import { SelectButton } from './SelectButton'
 import { myEquipmentOptions } from './utils/ProfileVariables'
 
 interface IEquipementForm {
@@ -31,16 +30,21 @@ const equipmentNames = {
 export const EquipmentForm = ({ onSubmit, isEdit }: IEquipementForm) => {
     const { formatMessage } = useIntl()
     const disabledField = false // !isEdit
+    const theme = useTheme()
+    const isDesktop = useMediaQuery(theme.breakpoints.up('lg'))
 
     const equipmentOptions = {
         electricity: 'Eléctricité',
         other: 'Autre',
         induction: 'Induction',
     }
+    const myEquipment = isDesktop
+        ? groupedCards(myEquipmentOptions as INumberFieldForm[], 5)
+        : groupedCards(myEquipmentOptions as INumberFieldForm[])
 
     return (
-        <>
-            <div className="flex flex-col justify-center w-full">
+        <div className="flex flex-col justify-center w-full md:w-3/4 ">
+            <div className="flex flex-col justify-center w-full ">
                 <div className="font-semibold self-center text-sm mb-4 mt-16">
                     {formatMessage({
                         id: 'Informations Equipements',
@@ -99,16 +103,14 @@ export const EquipmentForm = ({ onSubmit, isEdit }: IEquipementForm) => {
                     ]}
                 />
             </div>
-            <div className="flex flex-col justify-center w-full">
-                <div className="font-semibold self-center text-sm mb-4 mt-16">
-                    {formatMessage({
-                        id: 'Informations Equipements :',
-                        defaultMessage: 'Informations Equipements :',
-                    })}
-                </div>
+            <div className="mt-16 mb-20">
+                {formatMessage({
+                    id: 'Vos équipements :',
+                    defaultMessage: 'Vos équipements :',
+                })}
             </div>
             <div className="flex">
-                {groupedCards(myEquipmentOptions as INumberFieldForm[]).map((col) => (
+                {myEquipment.map((col) => (
                     <div className="w-full">
                         {col.map((item) => (
                             <NumberFieldForm
@@ -124,6 +126,6 @@ export const EquipmentForm = ({ onSubmit, isEdit }: IEquipementForm) => {
                     </div>
                 ))}
             </div>
-        </>
+        </div>
     )
 }

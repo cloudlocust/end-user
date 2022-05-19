@@ -57,7 +57,7 @@ export const Profile = () => {
             tabTitle: 'Logement',
             tabSlug: 'accomodation',
             tabContent: (
-                <div className="Tab-Accomodation">
+                <div className="Tab-Accomodation flex justify-center">
                     <AccomodationForm
                         // houseDetails={houseDetails}
                         isEdit={isEdit}
@@ -71,7 +71,7 @@ export const Profile = () => {
             tabTitle: 'Equipement',
             tabSlug: 'equipment',
             tabContent: (
-                <div className="Tab-Equipment">
+                <div className="Tab-Equipment flex justify-center">
                     <EquipmentForm
                         // houseDetails={houseDetails}
                         isEdit={isEdit}
