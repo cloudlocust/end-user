@@ -8,6 +8,12 @@ import MenuItem from '@mui/material/MenuItem'
 import { SelectButtons } from 'src/common/ui-kit/form-fields/SelectButtons/SelectButtons'
 import { ButtonLoader, TextField } from 'src/common/ui-kit'
 import { Select } from 'src/common/ui-kit/form-fields/Select'
+import {
+    accomodationLabelOptions,
+    accomodationNames,
+    isolationOptions,
+    performanceOptions,
+} from './utils/ProfileVariables'
 
 /**
  * Interface IAccomodationForm.
@@ -23,30 +29,6 @@ interface IAccomodationForm {
     isEdit: boolean
 }
 
-const accomodationLabelOptions = {
-    house: 'Maison',
-    apartment: 'Appartement',
-    before1950: 'Avant 1950',
-    from1950to1975: '1950 - 1975',
-    after1975: 'Après 1975',
-    main: 'Principale',
-    secondary: 'Secondaire',
-    energeticPerformance: 'Performance énergétique',
-    isolation: 'Estimation isolation',
-}
-const accomodationNames = {
-    houseType: 'houseType',
-    houseYear: 'houseYear',
-    residenceType: 'residenceType',
-    energyPerformanceIndex: 'energyPerformanceIndex',
-    isolationLevel: 'isolationLevel',
-    numberOfInhabitants: 'numberOfInhabitants',
-    houseArea: 'houseArea',
-    meterId: 'meterId',
-}
-const performanceOptions = ['A', 'B', 'C', 'D', 'E', 'F', 'G']
-const isolationOptions = ['Faible', 'Moyenne', 'Forte']
-
 /**
  * AccomodationForm.
  *
@@ -59,7 +41,12 @@ export const AccomodationForm = ({ onSubmit, isEdit }: IAccomodationForm) => {
     const { formatMessage } = useIntl()
     const [isDPE, setIsDPE] = useState(true)
     const disabledField = false // !isEdit
-
+    /**
+     * Leave only one selected field in the data from.
+     *
+     * @param data OnSubmit data.
+     * @returns Data.
+     */
     const setSelectFields = (data: any) => {
         if (
             data.hasOwnProperty(accomodationNames.energyPerformanceIndex) &&
@@ -198,7 +185,7 @@ export const AccomodationForm = ({ onSubmit, isEdit }: IAccomodationForm) => {
                         })}
                     />
                 )}
-                <div className="flex flex-row flex justify-between  mt-16 mr-24">
+                <div className="flex flex-row flex justify-between mt-16 mr-24">
                     <div className="mt-16 mr-10 w-full ">
                         {formatMessage({
                             id: 'Nombre d’habitants :',
@@ -217,7 +204,7 @@ export const AccomodationForm = ({ onSubmit, isEdit }: IAccomodationForm) => {
                         />
                     </div>
                 </div>
-                <div className="flex flex-row flex justify-between mt-16 mb-10">
+                <div className="flex flex-row flex justify-between mb-10">
                     <div className="mt-16 mr-10 w-full ">
                         {formatMessage({
                             id: 'Superficie du logements :',
