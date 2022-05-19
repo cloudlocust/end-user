@@ -75,7 +75,6 @@ export const Profile = () => {
                     <EquipmentForm
                         // houseDetails={houseDetails}
                         isEdit={isEdit}
-                        onSubmit={onSubmit}
                     />
                 </div>
             ),

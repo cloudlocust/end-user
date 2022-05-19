@@ -8,7 +8,6 @@ import { SelectButtons } from 'src/common/ui-kit/form-fields/SelectButtons/Selec
 import { myEquipmentOptions } from './utils/ProfileVariables'
 
 interface IEquipementForm {
-    onSubmit: (data: any) => void
     isEdit: boolean
 }
 
@@ -27,7 +26,7 @@ const equipmentNames = {
     hotplates: 'hotplates',
 }
 
-export const EquipmentForm = ({ onSubmit, isEdit }: IEquipementForm) => {
+export const EquipmentForm = ({ isEdit }: IEquipementForm) => {
     const { formatMessage } = useIntl()
     const disabledField = false // !isEdit
     const theme = useTheme()
