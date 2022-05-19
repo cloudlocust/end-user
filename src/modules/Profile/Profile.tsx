@@ -91,18 +91,26 @@ export const Profile = () => {
                 }}
             >
                 <MultiTab content={tabsContent} />
-                {!isEdit ? (
-                    <div className="ml-16 md:ml-32 mt-20">
-                        {/* <ButtonResetForm initialValues={formInitialValues} onClickButtonReset={toggleEditFormDisable} /> */}
-                        <ButtonLoader variant="contained" type="submit" onClick={onSubmit}>
-                            {formatMessage({ id: 'Enregistrer', defaultMessage: 'Enregistrer' })}
-                        </ButtonLoader>
-                    </div>
-                ) : (
-                    <Button variant="contained" onClick={enableForm} className="ml-16 md:ml-32  mt-20">
-                        {formatMessage({ id: 'Modifier', defaultMessage: 'Modifier' })}
-                    </Button>
-                )}
+                <div className="flex justify-center">
+                    {!isEdit ? (
+                        <div className="ml-16 md:ml-32 mt-20 w-full md:w-3/4 md:ml-72">
+                            {/* <ButtonResetForm
+                                initialValues={formInitialValues}
+                                onClickButtonReset={toggleEditFormDisable}
+                                className="mr-16"
+                            /> */}
+                            <ButtonLoader variant="contained" type="submit" onClick={onSubmit}>
+                                {formatMessage({ id: 'Enregistrer', defaultMessage: 'Enregistrer' })}
+                            </ButtonLoader>
+                        </div>
+                    ) : (
+                        <div className="ml-16 md:ml-32 mt-20 w-full md:w-3/4 md:ml-72">
+                            <Button variant="contained" onClick={enableForm}>
+                                {formatMessage({ id: 'Modifier', defaultMessage: 'Modifier' })}
+                            </Button>
+                        </div>
+                    )}
+                </div>
             </Form>
         </div>
     )
