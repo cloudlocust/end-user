@@ -6,74 +6,13 @@ import { NumberFieldForm } from 'src/common/ui-kit/components/NumberField/Number
 import { INumberFieldForm } from 'src/common/ui-kit/components/NumberField/NumberFieldTypes'
 import { SelectButtons } from 'src/common/ui-kit/form-fields/SelectButtons/SelectButtons'
 import { SelectButton } from './SelectButton'
+import { myEquipmentOptions } from './utils/ProfileVariables'
 
 interface IEquipementForm {
     onSubmit: (data: any) => void
     isEdit: boolean
 }
-/**
- *
- */
-// interface IEquipmentOptions {
-//     /**
-//      * Initial number to start counting.
-//      */
-//     value?: number
-//     /**
-//      * Label title.
-//      */
-//     title: string
-//     /**
-//      * Icon name if taken from fuse mui.
-//      */
-//     iconLabel?: string
-//     /**
-//      * Icon path if it is svg image.
-//      */
-//     iconPath?: string
-//     /**
-//      * If decrement disabled when value === 0.
-//      */
-//     disableDecrement?: boolean
-//     /**
-//      * Wraper className.
-//      */
-//     wrapperClasses?: string
-// }
 
-const myEquipmentOptions = [
-    { name: 'PC de bureau', labelTitle: 'PC de bureau', iconLabel: 'computer', disableDecrement: true },
-    { name: 'PC Portable', labelTitle: 'PC Portable', iconLabel: 'computer', disableDecrement: true },
-    { name: 'Téléviseur', labelTitle: 'Téléviseur', iconLabel: 'tv', disableDecrement: true },
-    {
-        name: 'Aspirateur',
-        labelTitle: 'Aspirateur',
-        iconPath: '/assets/images/content/equipment/aspirator.svg',
-        disableDecrement: true,
-        value: '',
-    },
-    { name: 'Four', labelTitle: 'Four', iconPath: '/assets/images/content/equipment/oven.svg', disableDecrement: true },
-    { name: 'Micro-onde', labelTitle: 'Micro-onde', iconLabel: 'microwave', disableDecrement: true },
-    { name: 'Réfrigérateur', labelTitle: 'Réfrigérateur', iconLabel: 'kitchen', disableDecrement: true },
-    {
-        name: 'Lave-vaisselle',
-        labelTitle: 'Lave-vaisselle',
-        iconPath: '/assets/images/content/equipment/dishwasher.svg',
-        disableDecrement: true,
-    },
-    {
-        name: 'Lave linge',
-        labelTitle: 'Lave linge',
-        iconPath: '/assets/images/content/equipment/washing-machine.svg',
-        disableDecrement: true,
-    },
-    {
-        name: 'Sèche linge',
-        labelTitle: 'Sèche linge',
-        iconPath: '/assets/images/content/equipment/clothes-dryer.svg',
-        disableDecrement: true,
-    },
-]
 /**
  *
  * @param cards
