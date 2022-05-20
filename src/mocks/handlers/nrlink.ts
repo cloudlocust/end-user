@@ -20,7 +20,6 @@ export const nrlinkEndpoints = [
         else return res(ctx.status(404), ctx.delay(1000))
     }),
 
-    // TODO Move endpoint to nrlink mock file
     // Authorize nrLink
     // eslint-disable-next-line jsdoc/require-jsdoc
     rest.post<{ nrlink_guid: string; meter_guid: string }>(`${API_RESOURCES_URL}/nrlink/authorize`, (req, res, ctx) => {
