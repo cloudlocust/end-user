@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { useIntl } from 'src/common/react-platform-translation'
 import Radio from '@mui/material/Radio'
 import RadioGroup from '@mui/material/RadioGroup'
@@ -13,6 +13,8 @@ import {
     isolationOptions,
     performanceOptions,
 } from './utils/ProfileVariables'
+import { Form } from 'src/common/react-platform-components'
+import { EditButtonsGroup } from './EditButtonsGroup'
 
 /**
  * Interface IAccomodationForm.
@@ -25,11 +27,11 @@ interface IAccomodationForm {
     /**
      *
      */
-    isDPE: boolean
+    onSubmit: (data: any) => void
     /**
      *
      */
-    setIsDPE: (isDPE: boolean) => void
+    enableForm: () => void
 }
 
 /**
@@ -37,176 +39,205 @@ interface IAccomodationForm {
  *
  * @param root0 AccomodationForm props.
  * @param root0.isEdit Is edition mode.
- * @param root0.isDPE
- * @param root0.setIsDPE
+ * @param root0.onSubmit
+ * @param root0.enableForm
  * @returns AccomodationForm.
  */
-export const AccomodationForm = ({ isEdit, isDPE, setIsDPE }: IAccomodationForm) => {
+export const AccomodationForm = ({ isEdit, onSubmit, enableForm }: IAccomodationForm) => {
     const { formatMessage } = useIntl()
+    const [isDPE, setIsDPE] = useState(true)
+
     const disabledField = false // !isEdit
+
+    /**
+     * Leave only one selected field in the data from.
+     *
+     * @param data OnSubmit data.
+     * @returns Data.
+     */
+    const setSelectFields = (data: any) => {
+        if (
+            data.hasOwnProperty(accomodationNames.energyPerformanceIndex) &&
+            data.hasOwnProperty(accomodationNames.isolationLevel)
+        ) {
+            isDPE
+                ? delete data[accomodationNames.isolationLevel]
+                : delete data[accomodationNames.energyPerformanceIndex]
+            return data
+        }
+        return data
+    }
 
     return (
         <div className="flex flex-col justify-center w-full md:w-3/4 ">
-            <div className="font-semibold self-center text-sm mb-4 mt-16 ">
-                {formatMessage({
-                    id: 'Informations Logements',
-                    defaultMessage: 'Informations Logements',
-                })}
-            </div>
-            <SelectButtons
-                name={accomodationNames.houseType}
-                wrapperStyles="flex flex-row  justify-center"
-                titleLabel="Type de logement :"
-                isDisabled={disabledField}
-                formOptions={[
-                    {
-                        label: accomodationLabelOptions.house,
-                        iconPath: '/assets/images/content/accomodation/logementMaison.svg',
-                        iconStyles: 'my-20',
-                        buttonStyle: 'w-240 mt-16 flex flex-col mr-16',
-                        value: accomodationLabelOptions.house,
-                    },
-                    {
-                        label: accomodationLabelOptions.apartment,
-                        iconPath: '/assets/images/content/accomodation/logementAppartement.svg',
-                        iconStyles: 'my-20',
-                        buttonStyle: 'w-240 mt-16 flex flex-col',
-                        value: accomodationLabelOptions.apartment,
-                    },
-                ]}
-            />
-            <SelectButtons
-                name={accomodationNames.houseYear}
-                wrapperStyles="flex flex-row  justify-center"
-                titleLabel="Année de construction :"
-                isDisabled={disabledField}
-                formOptions={[
-                    {
-                        label: accomodationLabelOptions.before1950,
-                        buttonStyle: 'w-224 mt-16 flex flex-col mr-16 text-xs pt-10 pb-10',
-                        value: 'Avant_1950',
-                    },
-                    {
-                        label: accomodationLabelOptions.from1950to1975,
-                        buttonStyle: 'w-224 mt-16 flex flex-col mr-16 text-xs pt-10 pb-10',
-                        value: 'Entre_1950_1975',
-                    },
-                    {
-                        label: accomodationLabelOptions.after1975,
-                        buttonStyle: 'w-224 mt-16 flex flex-col text-xs pt-10 pb-10',
-                        value: 'Apres_1975',
-                    },
-                ]}
-            />
-            <SelectButtons
-                wrapperStyles="flex flex-row justify-center"
-                titleLabel="Type de résidence :"
-                name={accomodationNames.residenceType}
-                isDisabled={disabledField}
-                formOptions={[
-                    {
-                        label: accomodationLabelOptions.main,
-                        iconLabel: 'flag',
-                        iconStyles: 'mr-5',
-                        buttonStyle: 'w-224 max-h-40 mt-16 mr-16 text-xs pt-12 pb-12',
-                        value: accomodationLabelOptions.main,
-                    },
-                    {
-                        label: accomodationLabelOptions.secondary,
-                        iconLabel: 'golf_course',
-                        iconStyles: 'mr-5',
-                        buttonStyle: 'w-224 max-h-40 mt-16 text-xs',
-                        value: accomodationLabelOptions.secondary,
-                    },
-                ]}
-            />
-            <div className="flex flex-row select flex justify-between  mt-10">
-                <div className="mt-14 mr-10">
+            <Form
+                onSubmit={(data: any) => {
+                    console.log(setSelectFields(data))
+                    // onSubmit(setSelectFields(data))
+                }}
+            >
+                <div className="flex justify-center font-semibold text-sm mb-4 mt-16">
                     {formatMessage({
-                        id: 'Je connais mon DPE :',
-                        defaultMessage: 'Je connais mon DPE :',
+                        id: 'Informations Logements',
+                        defaultMessage: 'Informations Logements',
                     })}
                 </div>
-                <RadioGroup row name="isDPE">
-                    <FormControlLabel
-                        value="oui"
-                        control={<Radio color="primary" />}
-                        label="Oui"
-                        onClick={() => setIsDPE(true)}
-                        checked={isDPE}
-                        disabled={disabledField}
-                    />
-                    <FormControlLabel
-                        value="non"
-                        control={<Radio color="primary" />}
-                        label="Non"
-                        onClick={() => setIsDPE(false)}
-                        checked={!isDPE}
-                        disabled={disabledField}
-                    />
-                </RadioGroup>
-            </div>
-            {isDPE ? (
-                <Select
-                    name={accomodationNames.energyPerformanceIndex}
-                    label={accomodationLabelOptions.energeticPerformance}
-                    children={performanceOptions.map((performance) => {
-                        return <MenuItem value={performance}>{performance}</MenuItem>
-                    })}
+                <SelectButtons
+                    name={accomodationNames.houseType}
+                    wrapperStyles="flex flex-row  justify-center"
+                    titleLabel="Type de logement :"
+                    isDisabled={disabledField}
+                    formOptions={[
+                        {
+                            label: accomodationLabelOptions.house,
+                            iconPath: '/assets/images/content/accomodation/logementMaison.svg',
+                            iconStyles: 'my-20',
+                            buttonStyle: 'w-240 mt-16 flex flex-col mr-16',
+                            value: accomodationLabelOptions.house,
+                        },
+                        {
+                            label: accomodationLabelOptions.apartment,
+                            iconPath: '/assets/images/content/accomodation/logementAppartement.svg',
+                            iconStyles: 'my-20',
+                            buttonStyle: 'w-240 mt-16 flex flex-col',
+                            value: accomodationLabelOptions.apartment,
+                        },
+                    ]}
                 />
-            ) : (
-                <Select
-                    name={accomodationNames.isolationLevel}
-                    label={accomodationLabelOptions.isolation}
-                    children={isolationOptions.map((isolation) => {
-                        return <MenuItem value={isolation}>{isolation}</MenuItem>
-                    })}
+                <SelectButtons
+                    name={accomodationNames.houseYear}
+                    wrapperStyles="flex flex-row  justify-center"
+                    titleLabel="Année de construction :"
+                    isDisabled={disabledField}
+                    formOptions={[
+                        {
+                            label: accomodationLabelOptions.before1950,
+                            buttonStyle: 'w-224 mt-16 flex flex-col mr-16 text-xs pt-10 pb-10',
+                            value: 'Avant_1950',
+                        },
+                        {
+                            label: accomodationLabelOptions.from1950to1975,
+                            buttonStyle: 'w-224 mt-16 flex flex-col mr-16 text-xs pt-10 pb-10',
+                            value: 'Entre_1950_1975',
+                        },
+                        {
+                            label: accomodationLabelOptions.after1975,
+                            buttonStyle: 'w-224 mt-16 flex flex-col text-xs pt-10 pb-10',
+                            value: 'Apres_1975',
+                        },
+                    ]}
                 />
-            )}
-            <div className="flex flex-row flex justify-between mt-16 mr-24">
-                <div className="mt-16 mr-10 w-full ">
-                    {formatMessage({
-                        id: 'Nombre d’habitants :',
-                        defaultMessage: 'Nombre d’habitants :',
-                    })}
-                </div>
-                <div className="w-4/6">
-                    <TextField
-                        type="number"
-                        name={accomodationNames.numberOfInhabitants}
-                        label={formatMessage({
-                            id: 'Habitants',
-                            defaultMessage: 'Habitants',
+                <SelectButtons
+                    wrapperStyles="flex flex-row justify-center"
+                    titleLabel="Type de résidence :"
+                    name={accomodationNames.residenceType}
+                    isDisabled={disabledField}
+                    formOptions={[
+                        {
+                            label: accomodationLabelOptions.main,
+                            iconLabel: 'flag',
+                            iconStyles: 'mr-5',
+                            buttonStyle: 'w-224 max-h-40 mt-16 mr-16 text-xs pt-12 pb-12',
+                            value: accomodationLabelOptions.main,
+                        },
+                        {
+                            label: accomodationLabelOptions.secondary,
+                            iconLabel: 'golf_course',
+                            iconStyles: 'mr-5',
+                            buttonStyle: 'w-224 max-h-40 mt-16 text-xs',
+                            value: accomodationLabelOptions.secondary,
+                        },
+                    ]}
+                />
+                <div className="flex flex-row select flex justify-between  mt-10">
+                    <div className="mt-14 mr-10">
+                        {formatMessage({
+                            id: 'Je connais mon DPE :',
+                            defaultMessage: 'Je connais mon DPE :',
                         })}
-                        disabled={disabledField}
-                    />
+                    </div>
+                    <RadioGroup row name="isDPE">
+                        <FormControlLabel
+                            value="oui"
+                            control={<Radio color="primary" />}
+                            label="Oui"
+                            onClick={() => setIsDPE(true)}
+                            checked={isDPE}
+                            disabled={disabledField}
+                        />
+                        <FormControlLabel
+                            value="non"
+                            control={<Radio color="primary" />}
+                            label="Non"
+                            onClick={() => setIsDPE(false)}
+                            checked={!isDPE}
+                            disabled={disabledField}
+                        />
+                    </RadioGroup>
                 </div>
-            </div>
-            <div className="flex flex-row flex justify-between mb-10">
-                <div className="mt-16 mr-10 w-full ">
-                    {formatMessage({
-                        id: 'Superficie du logements :',
-                        defaultMessage: 'Superficie du logements :',
-                    })}
-                </div>
-                <div className="w-4/6 ">
-                    <TextField
-                        type="number"
-                        name={accomodationNames.houseArea}
-                        label={formatMessage({
-                            id: 'Superficie',
-                            defaultMessage: 'Superficie',
+                {isDPE ? (
+                    <Select
+                        name={accomodationNames.energyPerformanceIndex}
+                        label={accomodationLabelOptions.energeticPerformance}
+                        children={performanceOptions.map((performance) => {
+                            return <MenuItem value={performance}>{performance}</MenuItem>
                         })}
-                        disabled={disabledField}
                     />
+                ) : (
+                    <Select
+                        name={accomodationNames.isolationLevel}
+                        label={accomodationLabelOptions.isolation}
+                        children={isolationOptions.map((isolation) => {
+                            return <MenuItem value={isolation}>{isolation}</MenuItem>
+                        })}
+                    />
+                )}
+                <div className="flex flex-row flex justify-between mt-16 mr-24">
+                    <div className="mt-16 mr-10 w-full ">
+                        {formatMessage({
+                            id: 'Nombre d’habitants :',
+                            defaultMessage: 'Nombre d’habitants :',
+                        })}
+                    </div>
+                    <div className="w-4/6">
+                        <TextField
+                            type="number"
+                            name={accomodationNames.numberOfInhabitants}
+                            label={formatMessage({
+                                id: 'Habitants',
+                                defaultMessage: 'Habitants',
+                            })}
+                            disabled={disabledField}
+                        />
+                    </div>
                 </div>
-                <div className="mt-16 ml-6  ">
-                    {formatMessage({
-                        id: 'm²',
-                        defaultMessage: 'm²',
-                    })}
+                <div className="flex flex-row flex justify-between mb-10">
+                    <div className="mt-16 mr-10 w-full ">
+                        {formatMessage({
+                            id: 'Superficie du logements :',
+                            defaultMessage: 'Superficie du logements :',
+                        })}
+                    </div>
+                    <div className="w-4/6 ">
+                        <TextField
+                            type="number"
+                            name={accomodationNames.houseArea}
+                            label={formatMessage({
+                                id: 'Superficie',
+                                defaultMessage: 'Superficie',
+                            })}
+                            disabled={disabledField}
+                        />
+                    </div>
+                    <div className="mt-16 ml-6  ">
+                        {formatMessage({
+                            id: 'm²',
+                            defaultMessage: 'm²',
+                        })}
+                    </div>
                 </div>
-            </div>
+                <EditButtonsGroup isEdit={isEdit} onSubmit={onSubmit} enableForm={enableForm} />
+            </Form>
         </div>
     )
 }

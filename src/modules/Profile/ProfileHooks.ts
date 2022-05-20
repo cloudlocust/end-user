@@ -12,22 +12,7 @@ import { AxiosResponse } from 'axios'
  */
 export const PROFILE_API = `${API_RESOURCES_URL}/homeConfiguration`
 
-/**
- * Updatable customer fields.
- */
-//eslint-disable-next-line jsdoc/require-jsdoc
-export type updateCustomerInputType = {
-    //eslint-disable-next-line jsdoc/require-jsdoc
-    phone: string
 
-    //eslint-disable-next-line jsdoc/require-jsdoc
-    email: string
-
-    //eslint-disable-next-line jsdoc/require-jsdoc
-    address: customerAddressType
-    //eslint-disable-next-line jsdoc/require-jsdoc
-    interests: interestValuesType[]
-}
 
 /**
  * Interests values type.
@@ -93,7 +78,7 @@ export type ProfileDataType = {
     meterId: number
 }
 /**
-`* Hooks for customers.
+`* Hooks for profile.
  *
  * @returns UseCustomersDetails hook.
  */
@@ -103,10 +88,10 @@ export function useProfile() {
     const [isLoadingInProgress, setIsLoadingInProgress] = useState(false)
     const { formatMessage } = useIntl()
 
-    const updateProfile = async (data: profileT, body: ProfileDataType) => {
+    const updateProfile = async (profile: profileT, body: ProfileDataType) => {
         setIsLoadingInProgress(true)
         try {
-            await axios.put<updateCustomerInputType, AxiosResponse<profileT>>(`${PROFILE_API}/${data.id}`, body)
+            await axios.put<ProfileDataType, AxiosResponse<profileT>>(`${PROFILE_API}/${profile.id}`, body)
             enqueueSnackbar(
                 formatMessage({
                     id: 'Vos modifications ont été sauvegardées',
