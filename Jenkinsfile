@@ -2,6 +2,7 @@ pipeline{
     agent any
     tools {nodejs "node14"}
     environment{
+        GITHUB_CREDENTIALS = credentials('github myem developer')
         DISCORD_WEBHOOK_URL = credentials('discord-webhook')
     }
 
