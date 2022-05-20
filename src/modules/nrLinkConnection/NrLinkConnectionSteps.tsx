@@ -10,7 +10,7 @@ import { useTheme } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
 import { useMediaQuery } from '@mui/material'
 import { useIntl } from 'react-intl'
-import { FirstStepNrLinkConnection, MeterFormStepNrLinkConnection } from 'src/modules/nrLinkConnection'
+import { FirstStepNrLinkConnection, MeterStepNrLinkConnectionForm } from 'src/modules/nrLinkConnection'
 import { ButtonLoader } from 'src/common/ui-kit'
 import { IMeter } from 'src/modules/Meters/Meters'
 
@@ -123,7 +123,7 @@ const NrLinkConnectionSteps = () => {
 
     const stepsContent = [
         <FirstStepNrLinkConnection handleBack={handleBack} handleNext={handleNext} />,
-        <MeterFormStepNrLinkConnection
+        <MeterStepNrLinkConnectionForm
             handleBack={handleBack}
             handleNext={handleNext}
             setMeter={setMeter}
