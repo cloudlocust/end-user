@@ -143,7 +143,12 @@ export const EquipmentForm = ({ isEdit, onSubmit, enableForm }: IEquipementForm)
                         </div>
                     ))}
                 </div>
-                <EditButtonsGroup isEdit={isEdit} onSubmit={onSubmit} enableForm={enableForm} />
+                {/* <EditButtonsGroup
+                    isEdit={isEdit}
+                    onSubmit={onSubmit}
+                    enableForm={enableForm}
+
+                /> */}
             </Form>
         </div>
     )

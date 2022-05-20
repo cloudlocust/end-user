@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useIntl } from 'src/common/react-platform-translation'
 import Radio from '@mui/material/Radio'
 import RadioGroup from '@mui/material/RadioGroup'
@@ -16,7 +16,6 @@ import {
 import { Form } from 'src/common/react-platform-components'
 import { EditButtonsGroup } from './EditButtonsGroup'
 import { useMeterList } from '../Meters/metersHook'
-import { IMeter } from '../Meters/Meters'
 import { useProfile } from './ProfileHooks'
 
 /**
@@ -35,6 +34,10 @@ interface IAccomodationForm {
      *
      */
     enableForm: () => void
+    /**
+     *
+     */
+    setIsEdit: (isEdit: boolean) => void
 }
 
 /**
@@ -46,21 +49,31 @@ interface IAccomodationForm {
  * @param root0.enableForm
  * @returns AccomodationForm.
  */
-export const AccomodationForm = ({ isEdit, onSubmit, enableForm }: IAccomodationForm) => {
+export const AccomodationForm = ({ isEdit, enableForm, setIsEdit }: IAccomodationForm) => {
     const { formatMessage } = useIntl()
     const [isDPE, setIsDPE] = useState(true)
     const { elementList: meterList, loadingInProgress: loadingMeterInProgress } = useMeterList(100)
-    console.log(meterList)
     const { loadProfile, updateProfile, profile } = useProfile()
-
-    const disabledField = false // !isEdit
-    console.log('profile', profile)
+    const disableEdit = () => {
+        setIsEdit(false)
+    }
+    const disabledField = !isEdit
     /**
      * Leave only one selected field in the data from.
      *
      * @param data OnSubmit data.
      * @returns Data.
      */
+    const profileData = {
+        houseType: profile?.houseType,
+        houseYear: profile?.houseYear,
+        residenceType: profile?.residenceType,
+        energyPerformanceIndex: profile?.energyPerformanceIndex,
+        isolationLevel: profile?.isolationLevel,
+        numberOfInhabitants: profile?.numberOfInhabitants,
+        houseArea: profile?.houseArea,
+        meterId: profile?.meterId,
+    }
     const setSelectFields = (data: any) => {
         if (
             data.hasOwnProperty(accomodationNames.energyPerformanceIndex) &&
@@ -73,17 +86,19 @@ export const AccomodationForm = ({ isEdit, onSubmit, enableForm }: IAccomodation
         }
         return data
     }
-    const meter = meterList?.length ? meterList[0] : null
+    const meterId = meterList?.length ? meterList[0] : null
+
     return (
         <div className="flex flex-col justify-center w-full md:w-3/4 ">
             <Form
                 onSubmit={async (data: any) => {
-                    if (!meter) return
-                    const dataProfile = { ...setSelectFields(data), meter }
-                    await updateProfile(meter?.guid, dataProfile)
-                    console.log(dataProfile)
-                    loadProfile(meter?.guid)
+                    if (!meterId) return
+                    const dataProfile = { ...setSelectFields(data), meterId }
+                    await updateProfile(meterId?.guid, dataProfile)
+                    loadProfile(meterId?.guid)
+                    disableEdit()
                 }}
+                defaultValues={profileData}
             >
                 <div className="flex justify-center font-semibold text-sm mb-4 mt-16">
                     {formatMessage({
@@ -245,7 +260,13 @@ export const AccomodationForm = ({ isEdit, onSubmit, enableForm }: IAccomodation
                         })}
                     </div>
                 </div>
-                <EditButtonsGroup isEdit={isEdit} onSubmit={onSubmit} enableForm={enableForm} />
+                <EditButtonsGroup
+                    isEdit={isEdit}
+                    // onSubmit={onSubmit}
+                    enableForm={enableForm}
+                    formInitialValues={profileData}
+                    disableEdit={disableEdit}
+                />
             </Form>
         </div>
     )

@@ -5,6 +5,7 @@ import { useSnackbar } from 'notistack'
 import { getMsgFromAxiosError } from 'src/modules/utils'
 import { AxiosResponse } from 'axios'
 import { METERS_API } from '../Meters/metersHook'
+import { IMeter } from '../Meters/Meters'
 
 //const CUSTOMER_API = 'https://webservice.installerclients.staging.bl.myem.fr'
 /**
@@ -23,8 +24,10 @@ export type ProfileDataType = {
     houseYear?: string
     residenceType?: string
     energyPerformanceIndex?: string
+    isolationLevel?: string
     numberOfInhabitants?: string
     houseArea?: string
+    meterId: IMeter
 }
 /**
 `* Hooks for profile.
@@ -41,6 +44,7 @@ export function useProfile() {
         setIsLoadingInProgress(true)
         try {
             await axios.post<ProfileDataType, AxiosResponse<any>>(`${PROFILE_API(meterId)}`, body)
+
             enqueueSnackbar(
                 formatMessage({
                     id: 'Vos modifications ont été sauvegardées',
@@ -67,7 +71,6 @@ export function useProfile() {
         setIsLoadingInProgress(true)
         try {
             const { data: responseData } = await axios.get<ProfileDataType>(PROFILE_API(meterId))
-            console.log(responseData)
             setProfile(responseData)
         } catch (error) {
             enqueueSnackbar(
