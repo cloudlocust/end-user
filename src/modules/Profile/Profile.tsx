@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import MultiTab from 'src/modules/shared/MultiTab/MultiTab'
 import { AccomodationForm } from './AccomodationForm'
 import { EquipmentForm } from './EquipmentForm'
+import { useProfile } from './ProfileHooks'
 
 /**
  * Form used for modify user profile.
@@ -11,6 +12,8 @@ import { EquipmentForm } from './EquipmentForm'
 export const Profile = () => {
     // const { houseDetails, updateHouseDetails } = useProfile()
     const [isEdit, setIsEdit] = useState(false)
+
+
     /**
      * OnSubmit.
      *
@@ -34,7 +37,6 @@ export const Profile = () => {
             tabContent: (
                 <div className="Tab-Accomodation flex justify-center">
                     <AccomodationForm
-                        // houseDetails={houseDetails}
                         isEdit={isEdit}
                         onSubmit={onSubmit}
                         enableForm={enableForm}

@@ -15,6 +15,9 @@ import {
 } from './utils/ProfileVariables'
 import { Form } from 'src/common/react-platform-components'
 import { EditButtonsGroup } from './EditButtonsGroup'
+import { useMeterList } from '../Meters/metersHook'
+import { IMeter } from '../Meters/Meters'
+import { useProfile } from './ProfileHooks'
 
 /**
  * Interface IAccomodationForm.
@@ -46,6 +49,9 @@ interface IAccomodationForm {
 export const AccomodationForm = ({ isEdit, onSubmit, enableForm }: IAccomodationForm) => {
     const { formatMessage } = useIntl()
     const [isDPE, setIsDPE] = useState(true)
+    const { elementList: meterList, loadingInProgress: loadingMeterInProgress } = useMeterList(100)
+    console.log(meterList)
+    const { loadProfile, updateProfile } = useProfile()
 
     const disabledField = false // !isEdit
 
@@ -67,13 +73,16 @@ export const AccomodationForm = ({ isEdit, onSubmit, enableForm }: IAccomodation
         }
         return data
     }
-
+    const meter = meterList?.length ? meterList[0] : null
     return (
         <div className="flex flex-col justify-center w-full md:w-3/4 ">
             <Form
-                onSubmit={(data: any) => {
-                    console.log(setSelectFields(data))
-                    // onSubmit(setSelectFields(data))
+                onSubmit={async (data: any) => {
+                    if (!meter) return
+                    const dataProfile = { ...setSelectFields(data), meter }
+                    await updateProfile(meter?.guid, dataProfile)
+                    console.log(dataProfile)
+                    loadProfile(meter?.guid)
                 }}
             >
                 <div className="flex justify-center font-semibold text-sm mb-4 mt-16">

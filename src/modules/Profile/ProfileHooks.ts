@@ -10,51 +10,22 @@ import { AxiosResponse } from 'axios'
 /**
  * Url for customers (clients webservice) endpoints.
  */
-export const PROFILE_API = `${API_RESOURCES_URL}/homeConfiguration`
-
-
-
 /**
- * Interests values type.
+ * Profil url.
+ *
+ * @param customerId The metersId of the meters.
+ * @returns Meters base url.
  */
-export type interestValuesType = 'installation' | 'supplier'
+export const PROFILE_API = (meterId: string) => `${PROFILE_API}/meters/${meterId}/home-configuration`
 
-/**
- * Represent the model for the customer (firstName, ...etc).
- */
-//eslint-disable-next-line jsdoc/require-jsdoc
-export type profileT = {
-    //eslint-disable-next-line jsdoc/require-jsdoc
-    id: number
-}
-
-/**
- * Customer address format.
- */
-export type customerAddressType =
-    //eslint-disable-next-line jsdoc/require-jsdoc
-    {
-        //eslint-disable-next-line jsdoc/require-jsdoc
-        street: string
-
-        //eslint-disable-next-line jsdoc/require-jsdoc
-        postalCode: string | null
-
-        //eslint-disable-next-line jsdoc/require-jsdoc
-        city: string
-
-        //eslint-disable-next-line jsdoc/require-jsdoc
-        country: string
-
-        //eslint-disable-next-line jsdoc/require-jsdoc
-        latitude: number
-
-        //eslint-disable-next-line jsdoc/require-jsdoc
-        longitude: number
-
-        //eslint-disable-next-line jsdoc/require-jsdoc
-        additionalData?: string
-    }
+// /**
+//  * Represent the model for the customer (firstName, ...etc).
+//  */
+// //eslint-disable-next-line jsdoc/require-jsdoc
+// export type profileT = {
+//     //eslint-disable-next-line jsdoc/require-jsdoc
+//     id: number
+// }
 
 export type ProfileDataType = {
     houseType?: string
@@ -63,19 +34,6 @@ export type ProfileDataType = {
     energyPerformanceIndex?: string
     numberOfInhabitants?: string
     houseArea?: string
-    heating?: string
-    hotplates?: string
-    'PC de bureau'?: number
-    Téléviseur?: number
-    Four?: number
-    Réfrigérateur?: number
-    'Lave linge'?: number
-    'PC Portable'?: number
-    Aspirateur?: number
-    'Micro-onde'?: number
-    'Lave-vaisselle'?: number
-    'Sèche linge'?: number
-    meterId: number
 }
 /**
 `* Hooks for profile.
@@ -88,10 +46,10 @@ export function useProfile() {
     const [isLoadingInProgress, setIsLoadingInProgress] = useState(false)
     const { formatMessage } = useIntl()
 
-    const updateProfile = async (profile: profileT, body: ProfileDataType) => {
+    const updateProfile = async (meterId: string, body: ProfileDataType) => {
         setIsLoadingInProgress(true)
         try {
-            await axios.put<ProfileDataType, AxiosResponse<profileT>>(`${PROFILE_API}/${profile.id}`, body)
+            await axios.post<ProfileDataType, AxiosResponse<any>>(`${PROFILE_API(meterId)}`, body)
             enqueueSnackbar(
                 formatMessage({
                     id: 'Vos modifications ont été sauvegardées',
@@ -114,10 +72,10 @@ export function useProfile() {
      * @param homeConfigurationId Represent the homeConfigurationId of the profile to be fetched.
      * @returns The function throw an error, and show snackbar message containing successful and errors message.
      */
-    const loadProfile = async (homeConfigurationId: number) => {
+    const loadProfile = async (meterId: string) => {
         setIsLoadingInProgress(true)
         try {
-            const { data: responseData } = await axios.get<ProfileDataType>(`${PROFILE_API}/${homeConfigurationId}`)
+            const { data: responseData } = await axios.get<ProfileDataType>(PROFILE_API(meterId))
             setProfile(responseData)
         } catch (error) {
             enqueueSnackbar(
