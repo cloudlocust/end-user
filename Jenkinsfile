@@ -98,6 +98,26 @@ pipeline{
                 }
            }
         }
+       stage ('Deploy-Kubernetes') {
+        when {
+                expression { BRANCH_NAME ==~ /(develop)/ }
+           }
+        environment {
+              ENV_NAME = getEnvName(BRANCH_NAME)
+           }
+            steps {
+                script{
+                    // The below will clone network devops repository
+                    git credentialsId: 'github myem developer', url: 'https://github.com/myenergymanager/network-devops'
+                    // Checkout to master
+                    sh "git checkout master"
+                    // This will apply new helm upgrade, you need to specify namespace.
+                    withKubeConfig([credentialsId:'kubernetes-large', serverUrl:'https://aba74d96-42a7-4fd9-9bcf-46b243e3c48f.api.k8s.fr-par.scw.cloud:6443']) {
+                        sh "helm upgrade --install enduser-react-ng${ENV_NAME} helm-charts/enduser-react -f environments/ng${ENV_NAME}/microservices/enduser-react.yaml --namespace ng${ENV_NAME}"
+                    }
+                }
+            }
+       }
     }
 }
 
