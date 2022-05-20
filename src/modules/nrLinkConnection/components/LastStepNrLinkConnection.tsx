@@ -88,9 +88,9 @@ const LastStepNrLinkConnection = ({
             onSubmit={onSubmit}
             defaultValues={meter ? { meterGuid: meter!.guid, meterName: meter!.name, nrlinkGuid: '' } : {}}
         >
-            <div className="flex justify-between items-center landscape:mt-10">
+            <div className="w-full flex justify-between items-center landscape:mt-10">
                 <div className="portrait:flex-col landscape:flex-row h-full flex justify-center items-center w-full">
-                    <div className="w-full mr-10  max-w-640">
+                    <div className="w-full mr-10">
                         <div className="hidden">
                             <TextField name="meterGuid" disabled label="Numéro de mon compteur" />
                         </div>
@@ -112,7 +112,7 @@ const LastStepNrLinkConnection = ({
                             })}
                         </Typography>
                     </div>
-                    <div className="w-full max-w-640"></div>
+                    <div className="w-full hidden lg:block"></div>
                 </div>
             </div>
             <ActionsNrLinkConnectionSteps activeStep={2} handleBack={handleBack} handleNext={() => {}} />
