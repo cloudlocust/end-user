@@ -1,10 +1,10 @@
 import { useState } from 'react'
-import { API_RESOURCES_URL } from 'src/configs'
 import { axios } from 'src/common/react-platform-components'
 import { useIntl } from 'src/common/react-platform-translation'
 import { useSnackbar } from 'notistack'
 import { getMsgFromAxiosError } from 'src/modules/utils'
 import { AxiosResponse } from 'axios'
+import { METERS_API } from '../Meters/metersHook'
 
 //const CUSTOMER_API = 'https://webservice.installerclients.staging.bl.myem.fr'
 /**
@@ -13,19 +13,10 @@ import { AxiosResponse } from 'axios'
 /**
  * Profil url.
  *
- * @param customerId The metersId of the meters.
+ * @param meterId The meterId of the profil.
  * @returns Meters base url.
  */
-export const PROFILE_API = (meterId: string) => `${PROFILE_API}/meters/${meterId}/home-configuration`
-
-// /**
-//  * Represent the model for the customer (firstName, ...etc).
-//  */
-// //eslint-disable-next-line jsdoc/require-jsdoc
-// export type profileT = {
-//     //eslint-disable-next-line jsdoc/require-jsdoc
-//     id: number
-// }
+export const PROFILE_API = (meterId: string) => `${METERS_API}/${meterId}/home-configuration`
 
 export type ProfileDataType = {
     houseType?: string
@@ -76,6 +67,7 @@ export function useProfile() {
         setIsLoadingInProgress(true)
         try {
             const { data: responseData } = await axios.get<ProfileDataType>(PROFILE_API(meterId))
+            console.log(responseData)
             setProfile(responseData)
         } catch (error) {
             enqueueSnackbar(

@@ -1,112 +1,29 @@
 import { rest } from 'msw'
-import { getPaginationFromElementList } from 'src/mocks/utils'
-import { SnakeCasedPropertiesDeep } from 'type-fest'
-import { METERS_API } from 'src/modules/Meters/metersHook'
-import { addMeterInputType, IMeter } from 'src/modules/Meters/Meters'
+import { PROFILE_API } from 'src/modules/Profile/ProfileHooks'
+import { TEST_METERS } from './meters'
 
-/**
- * Mock for meter data to be added.
- */
-export const TEST_ADD_METER = {
-    guid: '12345123451234',
-    name: 'meter1',
+const TEST_PROFILE_RESPONSE = {
+    house_type: 'Appartement',
+    house_year: 'Entre_1950_1975',
+    residence_type: 'Principale',
+    energy_performance_index: 'C',
+    number_of_inhabitants: '4',
+    house_area: '64',
+    meter: TEST_METERS[0],
 }
-
-/**
- * Fake meter ID.
- */
-export const TEST_ERROR_METER_GUID = 'fakeId'
-/**
- * Fake meter name.
- */
-export const TEST_ERROR_METER_NAME = 'fakeName'
-
-// eslint-disable-next-line jsdoc/require-jsdoc
-export const CREATED_AT_DATA = '2021-12-15T14:07:38.138000'
-
-/**
- * Mock of customers/clients list data.
- */
-export var TEST_METERS: SnakeCasedPropertiesDeep<IMeter>[] = [
-    {
-        id: 1,
-        guid: '17707368031234',
-        name: 'Leanne',
-    },
-    {
-        id: 2,
-        name: 'Ervin',
-        guid: '11069265931234',
-    },
-    {
-        id: 3,
-        name: 'Clementine',
-        guid: '14631234471234',
-    },
-    {
-        id: 4,
-        name: 'Patricia',
-        guid: '49317096231234',
-    },
-    {
-        id: 5,
-        name: 'Chelsey',
-        guid: '25495412891234',
-    },
-    {
-        id: 6,
-        name: 'Mrs. Dennis',
-        guid: '14779354781234',
-    },
-    {
-        id: 7,
-        name: 'Kurtis',
-        guid: '21006761321234',
-    },
-    {
-        id: 8,
-        name: 'Nicholas',
-        guid: '58649369431234',
-    },
-]
-
 // eslint-disable-next-line jsdoc/require-jsdoc
 export const profilEndpoints = [
     // Get All Meters
-    rest.get(METERS_API, (req, res, ctx) => {
-        const TEST_PROFILE_RESPONSE = {
-            house_type: 'Appartement',
-            house_year: 'Entre_1950_1975',
-            residence_type: 'Principale',
-            energy_performance_index: 'C',
-            number_of_inhabitants: '434',
-            house_area: '34',
-            meter: {
-                id: 1,
-                guid: '17707368031234',
-                name: 'Leanne',
-            },
-        }
+    rest.get(PROFILE_API(TEST_METERS[0].guid), (req, res, ctx) => {
         return res(ctx.status(200), ctx.delay(1000), ctx.json(TEST_PROFILE_RESPONSE))
     }),
 
-    // // Add Metr Post request
-    // rest.post<SnakeCasedPropertiesDeep<addMeterInputType>>(METERS_API, (req, res, ctx) => {
-    //     // Duplicated guid
-    //     if (req.body.guid === TEST_ERROR_METER_GUID)
-    //         return res(ctx.status(400), ctx.delay(1000), ctx.json({ detail: 'Le numéro de compteur existe déjà' }))
-    //     // Duplicated name errors
-    //     if (req.body.name === TEST_ERROR_METER_NAME)
-    //         return res(ctx.status(400), ctx.delay(1000), ctx.json({ detail: 'Le nom de compteur existe déjà' }))
-    //     // Other errors
-    //     if (req.body.name === TEST_ERROR_METER_GUID) return res(ctx.status(401), ctx.delay(1000))
-    //     // Success
-    //     const lengthBefore = TEST_METERS.length
-    //     const newMeter = {
-    //         ...req.body,
-    //         id: lengthBefore + 1,
-    //     }
-    //     TEST_METERS.unshift(newMeter)
-    //     return res(ctx.status(200), ctx.delay(1000), ctx.json(newMeter))
-    // }),
+    rest.post<any>(PROFILE_API(TEST_METERS[0].guid), (req, res, ctx) => {
+        const { meter } = req.body
+        if (meter.guid === TEST_METERS[0].guid) {
+            return res(ctx.status(200))
+        } else {
+            return res(ctx.status(400))
+        }
+    }),
 ]

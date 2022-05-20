@@ -51,10 +51,10 @@ export const AccomodationForm = ({ isEdit, onSubmit, enableForm }: IAccomodation
     const [isDPE, setIsDPE] = useState(true)
     const { elementList: meterList, loadingInProgress: loadingMeterInProgress } = useMeterList(100)
     console.log(meterList)
-    const { loadProfile, updateProfile } = useProfile()
+    const { loadProfile, updateProfile, profile } = useProfile()
 
     const disabledField = false // !isEdit
-
+    console.log('profile', profile)
     /**
      * Leave only one selected field in the data from.
      *
