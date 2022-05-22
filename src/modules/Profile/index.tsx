@@ -1,6 +1,6 @@
 export { ProfileConfig, URL_PROFILE } from './ProfileConfig'
 export { Profile } from './Profile'
-export { EquipmentForm } from './EquipmentForm'
+export { EquipmentForm } from './components/EquipmentForm'
 export { AccomodationForm } from './AccomodationForm'
 export { SelectButton } from './SelectButton'
 export { EditButtonsGroup } from './EditButtonsGroup'
