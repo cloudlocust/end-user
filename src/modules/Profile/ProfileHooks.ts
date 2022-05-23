@@ -6,7 +6,7 @@ import { getMsgFromAxiosError } from 'src/modules/utils'
 import { AxiosResponse } from 'axios'
 import { METERS_API } from '../Meters/metersHook'
 import { IMeter } from '../Meters/Meters'
-
+import { isMatch } from 'lodash'
 //const CUSTOMER_API = 'https://webservice.installerclients.staging.bl.myem.fr'
 /**
  * Url for customers (clients webservice) endpoints.
@@ -41,10 +41,14 @@ export function useProfile() {
     const { formatMessage } = useIntl()
 
     const updateProfile = async (meterId: string, body: ProfileDataType) => {
+        const dataIsNotModified = isMatch(profile as ProfileDataType, body)
+        console.log(dataIsNotModified)
+        // if (dataIsNotModified) return
         setIsLoadingInProgress(true)
         try {
+            console.log('meterId', meterId)
+            console.log('body', body)
             await axios.post<ProfileDataType, AxiosResponse<any>>(`${PROFILE_API(meterId)}`, body)
-
             enqueueSnackbar(
                 formatMessage({
                     id: 'Vos modifications ont été sauvegardées',
@@ -54,6 +58,7 @@ export function useProfile() {
             )
             setIsLoadingInProgress(false)
         } catch (error) {
+            console.log('EROOOr', error)
             const message = getMsgFromAxiosError(error)
             enqueueSnackbar(message, { variant: 'error' })
             setIsLoadingInProgress(false)
@@ -71,6 +76,7 @@ export function useProfile() {
         setIsLoadingInProgress(true)
         try {
             const { data: responseData } = await axios.get<ProfileDataType>(PROFILE_API(meterId))
+            console.log('responseData', responseData, meterId)
             setProfile(responseData)
         } catch (error) {
             enqueueSnackbar(

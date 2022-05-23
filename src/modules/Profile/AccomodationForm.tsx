@@ -17,47 +17,43 @@ import { Form } from 'src/common/react-platform-components'
 import { EditButtonsGroup } from './EditButtonsGroup'
 import { useMeterList } from '../Meters/metersHook'
 import { useProfile } from './ProfileHooks'
+import { useSnackbar } from 'notistack'
 
 /**
  * Interface IAccomodationForm.
  */
-interface IAccomodationForm {
-    /**
-     *
-     */
-    isEdit: boolean
-    /**
-     *
-     */
-    onSubmit: (data: any) => void
-    /**
-     *
-     */
-    enableForm: () => void
-    /**
-     *
-     */
-    setIsEdit: (isEdit: boolean) => void
-}
+// interface IAccomodationForm {
+//     // /**
+//     //  *
+//     //  */
+//     // onSubmit: (data: any) => void
+//     /**
+//      *
+//      */
+//     // enableForm: () => void
+// }
 
-/**
- * AccomodationForm.
- *
- * @param root0 AccomodationForm props.
- * @param root0.isEdit Is edition mode.
- * @param root0.onSubmit
- * @param root0.enableForm
- * @returns AccomodationForm.
- */
-export const AccomodationForm = ({ isEdit, enableForm, setIsEdit }: IAccomodationForm) => {
+// /**
+//  * AccomodationForm.
+//  *
+//  * @param root0 AccomodationForm props.
+//  * @param root0.isEdit Is edition mode.
+//  * @param root0.onSubmit
+//  * @param root0.enableForm
+//  * @returns AccomodationForm.
+//  */
+export const AccomodationForm = () => {
     const { formatMessage } = useIntl()
     const [isDPE, setIsDPE] = useState(true)
     const { elementList: meterList, loadingInProgress: loadingMeterInProgress } = useMeterList(100)
     const { loadProfile, updateProfile, profile } = useProfile()
-    const disableEdit = () => {
-        setIsEdit(false)
+    const [isEditAccomodation, setIdEditAccomodation] = useState(false)
+
+    const toggleEdit = () => {
+        setIdEditAccomodation((prevEdit) => !prevEdit)
     }
-    const disabledField = !isEdit
+    const disabledField = !isEditAccomodation
+    const { enqueueSnackbar } = useSnackbar()
     /**
      * Leave only one selected field in the data from.
      *
@@ -74,6 +70,7 @@ export const AccomodationForm = ({ isEdit, enableForm, setIsEdit }: IAccomodatio
         houseArea: profile?.houseArea,
         meterId: profile?.meterId,
     }
+    console.log('profileData', profileData)
     const setSelectFields = (data: any) => {
         if (
             data.hasOwnProperty(accomodationNames.energyPerformanceIndex) &&
@@ -92,11 +89,20 @@ export const AccomodationForm = ({ isEdit, enableForm, setIsEdit }: IAccomodatio
         <div className="flex flex-col justify-center w-full md:w-3/4 ">
             <Form
                 onSubmit={async (data: any) => {
-                    if (!meterId) return
+                    if (!meterId) {
+                        enqueueSnackbar(
+                            formatMessage({
+                                id: "Il n'existe pas de meter",
+                                defaultMessage: "Il n'existe pas de meter",
+                            }),
+                            { variant: 'error' },
+                        )
+                        return
+                    }
                     const dataProfile = { ...setSelectFields(data), meterId }
-                    await updateProfile(meterId?.guid, dataProfile)
-                    loadProfile(meterId?.guid)
-                    disableEdit()
+                    await updateProfile(meterId.guid, dataProfile)
+                    loadProfile(meterId.guid)
+                    toggleEdit()
                 }}
                 defaultValues={profileData}
             >
@@ -261,11 +267,10 @@ export const AccomodationForm = ({ isEdit, enableForm, setIsEdit }: IAccomodatio
                     </div>
                 </div>
                 <EditButtonsGroup
-                    isEdit={isEdit}
-                    // onSubmit={onSubmit}
-                    enableForm={enableForm}
+                    isEdit={isEditAccomodation}
+                    enableForm={toggleEdit}
                     formInitialValues={profileData}
-                    disableEdit={disableEdit}
+                    disableEdit={toggleEdit}
                 />
             </Form>
         </div>

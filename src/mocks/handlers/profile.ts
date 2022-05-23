@@ -2,7 +2,7 @@ import { rest } from 'msw'
 import { PROFILE_API } from 'src/modules/Profile/ProfileHooks'
 import { TEST_METERS } from './meters'
 
-const TEST_PROFILE_RESPONSE = {
+export const TEST_PROFILE_RESPONSE = {
     house_type: 'Appartement',
     house_year: 'Entre_1950_1975',
     residence_type: 'Principale',

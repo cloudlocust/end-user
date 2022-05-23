@@ -34,11 +34,8 @@ export const Profile = () => {
             tabSlug: 'accomodation',
             tabContent: (
                 <div className="Tab-Accomodation flex justify-center">
-                    <AccomodationForm
-                        isEdit={isEdit}
-                        onSubmit={onSubmit}
-                        enableForm={enableForm}
-                        setIsEdit={setIsEdit}
+                    <AccomodationForm // onSubmit={onSubmit}
+                    // enableForm={enableForm}
                     />
                 </div>
             ),
