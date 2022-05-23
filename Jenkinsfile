@@ -3,6 +3,8 @@ pipeline{
     tools {nodejs "node14"}
     environment{
         DISCORD_WEBHOOK_URL = credentials('discord-webhook')
+        GITHUB_CREDENTIALS = credentials('github myem developer')
+
     }
 
     stages{
