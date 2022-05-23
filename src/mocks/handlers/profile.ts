@@ -9,7 +9,7 @@ const TEST_PROFILE_RESPONSE = {
     energy_performance_index: 'C',
     number_of_inhabitants: '4',
     house_area: '64',
-    meter: TEST_METERS[0],
+    meter_id: TEST_METERS[0],
 }
 // eslint-disable-next-line jsdoc/require-jsdoc
 export const profilEndpoints = [
@@ -19,8 +19,8 @@ export const profilEndpoints = [
     }),
 
     rest.post<any>(PROFILE_API(TEST_METERS[0].guid), (req, res, ctx) => {
-        const { meter } = req.body
-        if (meter.guid === TEST_METERS[0].guid) {
+        const { meter_id } = req.body
+        if (meter_id.guid === TEST_METERS[0].guid) {
             return res(ctx.status(200))
         } else {
             return res(ctx.status(400))
