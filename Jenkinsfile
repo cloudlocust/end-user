@@ -2,9 +2,8 @@ pipeline{
     agent any
     tools {nodejs "node14"}
     environment{
-        DISCORD_WEBHOOK_URL = credentials('discord-webhook')
         GITHUB_CREDENTIALS = credentials('github myem developer')
-
+        DISCORD_WEBHOOK_URL = credentials('discord-webhook')
     }
 
     stages{
@@ -78,9 +77,9 @@ pipeline{
             }
 
         }
-        stage("Deploy") {
+        stage("Deploy-alpha/prod") {
             when {
-                    expression { BRANCH_NAME ==~ /(production|master|develop)/ }
+                    expression { BRANCH_NAME ==~ /(production|master)/ }
             }
             environment {
               SERVER_SSH_KEY = credentials('contabo-test-env-private-key')
@@ -100,6 +99,34 @@ pipeline{
                 }
            }
         }
+       stage ('Deploy-staging') {
+        when {
+                expression { BRANCH_NAME ==~ /(develop)/ }
+           }
+        environment {
+              ENV_NAME = getEnvName(BRANCH_NAME)
+           }
+            steps {
+                script{
+                    // The below will clone network devops repository
+                    git credentialsId: 'github myem developer', url: 'https://github.com/myenergymanager/network-devops'
+                    // Checkout to master
+                    sh "git checkout master"
+                    // This will apply new helm upgrade, you need to specify namespace.
+                    withKubeConfig([credentialsId:'kubernetes_staging-alpha-preprod', serverUrl:'https://aba74d96-42a7-4fd9-9bcf-46b243e3c48f.api.k8s.fr-par.scw.cloud:6443']) {
+                        sh "helm upgrade --install enduser-react-ng${ENV_NAME} helm-charts/enduser-react -f environments/ng${ENV_NAME}/microservices/enduser-react.yaml --namespace ng${ENV_NAME}"
+                    }
+                }
+            }
+            post {
+                success{
+                    discordSend (description: "Jenkins ${ENV_NAME} Pipeline Build Success", footer: "enduser-react has been deployed", link: env.BUILD_URL, result: currentBuild.currentResult, title: JOB_NAME, webhookURL: "${DISCORD_WEBHOOK_URL}")
+                }
+                failure{
+                    discordSend (description: "Jenkins ${ENV_NAME} Pipeline Build Failed", footer: "there was an error  in the enduser-react deployment", link: env.BUILD_URL, result: currentBuild.currentResult, title: JOB_NAME, webhookURL: "${DISCORD_WEBHOOK_URL}")
+                }
+            }
+       }
     }
 }
 
