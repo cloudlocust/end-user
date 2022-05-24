@@ -1,16 +1,9 @@
 import { reduxedRenderHook } from 'src/common/react-platform-components/test'
 import { act } from 'react-dom/test-utils'
 import { useAccomodation } from './AccomodationHooks'
-import { TEST_PROFILE_RESPONSE as MOCK_TEST_PROFILE_RESPONSE } from 'src/mocks/handlers/profile'
-import { applyCamelCase } from 'src/common/react-platform-components'
 import { TEST_METERS } from 'src/mocks/handlers/meters'
 
-//https://www.toptal.com/react/testing-react-hooks-tutorial
-//https://mswjs.io/docs/comparison
-
-const mockHistoryReplace = jest.fn()
 const mockEnqueueSnackbar = jest.fn()
-const TEST_PROFILE_RESPONSE = applyCamelCase(MOCK_TEST_PROFILE_RESPONSE)
 
 jest.mock('notistack', () => ({
     ...jest.requireActual('notistack'),
@@ -65,7 +58,7 @@ describe('Testing useAccomodation hooks', () => {
             variant: 'error',
         })
     })
-    test('when success isLoadingInProgress should change', async () => {
+    test('loadAccomodation. Request success', async () => {
         const {
             renderedHook: { result, waitForValueToChange },
         } = reduxedRenderHook(() => useAccomodation(), { initialState: {} })
@@ -81,5 +74,4 @@ describe('Testing useAccomodation hooks', () => {
             { timeout: 10000 },
         )
     })
-
 })
