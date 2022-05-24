@@ -9,9 +9,7 @@ import { EquipmentForm } from './EquipmentForm'
  * @returns Modify form component.
  */
 export const Profile = () => {
-    // const { houseDetails, updateHouseDetails } = useProfile()
     const [isEdit, setIsEdit] = useState(false)
-
     /**
      * OnSubmit.
      *
