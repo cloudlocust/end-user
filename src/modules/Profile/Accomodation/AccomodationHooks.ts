@@ -16,19 +16,43 @@ import { isMatch } from 'lodash'
 export const PROFILE_API = (meterId: string) => `${METERS_API}/${meterId}/home-configuration`
 
 export type AccomodationDataType = {
+    /**
+     * House type.
+     */
     houseType?: string
+    /**
+     * House Year.
+     */
     houseYear?: string
+    /**
+     * Residence Type.
+     */
     residenceType?: string
+    /**
+     * Energy Performance Index.
+     */
     energyPerformanceIndex?: string
+    /**
+     * Isolation Level.
+     */
     isolationLevel?: string
+    /**
+     * Number Of Inhabitants.
+     */
     numberOfInhabitants?: string
+    /**
+     * House Area.
+     */
     houseArea?: string
+    /**
+     * Meter Id.
+     */
     meterId: IMeter
 }
 /**
-`* Hooks for accomodation.
+ * Hooks for accomodation.
  *
- * @returns 
+ * @returns useAccomodation
  */
 export function useAccomodation() {
     const [accomodation, setAccomodation] = useState<AccomodationDataType>()
