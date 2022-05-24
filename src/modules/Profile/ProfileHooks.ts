@@ -7,10 +7,6 @@ import { AxiosResponse } from 'axios'
 import { METERS_API } from '../Meters/metersHook'
 import { IMeter } from '../Meters/Meters'
 import { isMatch } from 'lodash'
-//const CUSTOMER_API = 'https://webservice.installerclients.staging.bl.myem.fr'
-/**
- * Url for customers (clients webservice) endpoints.
- */
 /**
  * Profil url.
  *
@@ -46,8 +42,6 @@ export function useProfile() {
         // if (dataIsNotModified) return
         setIsLoadingInProgress(true)
         try {
-            console.log('meterId', meterId)
-            console.log('body', body)
             await axios.post<ProfileDataType, AxiosResponse<any>>(`${PROFILE_API(meterId)}`, body)
             enqueueSnackbar(
                 formatMessage({
@@ -58,7 +52,6 @@ export function useProfile() {
             )
             setIsLoadingInProgress(false)
         } catch (error) {
-            console.log('EROOOr', error)
             const message = getMsgFromAxiosError(error)
             enqueueSnackbar(message, { variant: 'error' })
             setIsLoadingInProgress(false)

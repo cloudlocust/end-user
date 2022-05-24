@@ -54,12 +54,7 @@ export const AccomodationForm = () => {
     }
     const disabledField = !isEditAccomodation
     const { enqueueSnackbar } = useSnackbar()
-    /**
-     * Leave only one selected field in the data from.
-     *
-     * @param data OnSubmit data.
-     * @returns Data.
-     */
+
     const profileData = {
         houseType: profile?.houseType,
         houseYear: profile?.houseYear,
@@ -70,7 +65,12 @@ export const AccomodationForm = () => {
         houseArea: profile?.houseArea,
         meterId: profile?.meterId,
     }
-    console.log('profileData', profileData)
+    /**
+     * Leave only one selected field in the data from.
+     *
+     * @param data OnSubmit data.
+     * @returns Data.
+     */
     const setSelectFields = (data: any) => {
         if (
             data.hasOwnProperty(accomodationNames.energyPerformanceIndex) &&
@@ -84,7 +84,6 @@ export const AccomodationForm = () => {
         return data
     }
     const meterId = meterList?.length ? meterList[0] : null
-
     return (
         <div className="flex flex-col justify-center w-full md:w-3/4 ">
             <Form

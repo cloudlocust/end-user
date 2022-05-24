@@ -13,14 +13,11 @@ const mockLoadProfile = jest.fn()
 let mockMeterList: IMeter[] | null = TEST_METERS
 const MODIFIER_BUTTON_TEXT = 'Modifier'
 const DISABLED_CLASS = 'Mui-disabled'
-const ACTIVE_BUTTON_CLASS = 'MuiButton-outlined'
 const INPUT_DISABLED_ELEMENT = `input.${DISABLED_CLASS}`
 const BUTTON_DISABLED_ELEMENT = `button.${DISABLED_CLASS}`
 const ANNULER_BUTTON_TEXT = 'Annuler'
 const ENREGISTRER_BUTTON_TEXT = 'Enregistrer'
-const NUMBER_OF_INHABITANTS_INPUT = 'numberOfInhabitants'
-const CHANGED_FIRSTNAME_INPUT = 'Bob'
-const TEST_PROFILE_RESPONSE = applyCamelCase(MOCK_TEST_PROFILE_RESPONSE)
+let TEST_PROFILE_RESPONSE = applyCamelCase(MOCK_TEST_PROFILE_RESPONSE)
 const mockProfile = TEST_PROFILE_RESPONSE
 const MOCK_TEST_PROFILE_ERROR_METER = {
     house_type: 'Appartement',
@@ -91,65 +88,14 @@ describe('Test AccomodationForm', () => {
         expect(getByText(ENREGISTRER_BUTTON_TEXT)).toBeTruthy()
         expect(() => getByText(MODIFIER_BUTTON_TEXT)).toThrow()
     })
-    // test('value should be changed', async () => {
-    //     const handleSubmit = jest.fn()
-    //     const { getByText, getByTestId } = reduxedRender(
-    //         // eslint-disable-next-line jsdoc/require-jsdoc
-    //         <BrowserRouter>
-    //             <AccomodationForm />
-    //         </BrowserRouter>,
-    //     )
-    //     await act(async () => {
-    //         fireEvent.click(getByText('Maison'))
-    //     })
-    //     await waitFor(async () => {
-    //         expect(getByText('Maison').getAttribute('value')).toBe('Maison')
-    //     })
-    //     act(() => {
-    //         fireEvent.click(getByTestId('submit'))
-    //     })
-    //     await waitFor(async () => {
-    //         expect(handleSubmit).toHaveBeenCalledWith({ hotplates: 'induction' })
-    //     })
-    // })
-
-    // test('When clicking on Annuler Modification form should reset change, and disableEditForm called', async () => {
-    //     const { getByText, getByRole } = reduxedRender(
-    //         <BrowserRouter>
-    //             <AccomodationForm />
-    //         </BrowserRouter>,
-    //         {
-    //             initialState: { profile: TEST_PROFILE_RESPONSE },
-    //         },
-    //     )
-    //     const firstNameInput = getByRole('textbox', { name: 'Nombre d’habitants :' }) as HTMLInputElement
-    //     act(() => {
-    //         fireEvent.input(firstNameInput, { target: { value: 4 } })
-    //     })
-    //     expect(firstNameInput.value).toBe(4)
-    //     act(() => {
-    //         fireEvent.click(getByText(MODIFIER_BUTTON_TEXT))
-    //     })
-    //     await waitFor(() => {
-    //         expect(getByText(ANNULER_BUTTON_TEXT)).toBeTruthy()
-    //     })
-    //     act(() => {
-    //         fireEvent.click(getByText(ANNULER_BUTTON_TEXT))
-    //     })
-    //     // Form is reset ( Values did not Change ).
-    //     await waitFor(() => {
-    //         expect(energyPerformanceIndexInput.value).toBe(TEST_PROFILE_RESPONSE.energyPerformanceIndex)
-    //     })
-    //     expect(getByText(MODIFIER_BUTTON_TEXT)).toBeTruthy()
-    // })
 
     test('When clicking on Enregistrer Modification updateInstaller, it should disable edit mode', async () => {
-        const { getByText, getByRole } = reduxedRender(
+        const { getByText } = reduxedRender(
             <BrowserRouter>
                 <AccomodationForm />
             </BrowserRouter>,
             {
-                initialState: { TEST_PROFILE_RESPONSE },
+                initialState: {},
             },
         )
         act(() => {
@@ -176,12 +122,12 @@ describe('Test AccomodationForm', () => {
         })
     })
     test('select options', async () => {
-        const { getByText, getByRole, getByLabelText } = reduxedRender(
+        const { getByText, getByRole } = reduxedRender(
             <BrowserRouter>
                 <AccomodationForm />
             </BrowserRouter>,
             {
-                initialState: { TEST_PROFILE_RESPONSE },
+                initialState: {},
             },
         )
         act(() => {
@@ -199,6 +145,26 @@ describe('Test AccomodationForm', () => {
         expect(getByRole('radio', { name: 'Oui' })).toBeChecked()
         act(() => {
             fireEvent.click(getByText(ENREGISTRER_BUTTON_TEXT))
+        })
+    })
+    test('meter error', async () => {
+        mockMeterList = []
+        const { getByText } = reduxedRender(
+            <BrowserRouter>
+                <AccomodationForm />
+            </BrowserRouter>,
+        )
+        act(() => {
+            fireEvent.click(getByText(MODIFIER_BUTTON_TEXT))
+        })
+        act(() => {
+            fireEvent.click(getByText(ENREGISTRER_BUTTON_TEXT))
+        })
+        await waitFor(() => {
+            expect(mockUpdateProfile).not.toHaveBeenCalled()
+        })
+        await waitFor(() => {
+            expect(mockEnqueueSnackbar).toHaveBeenCalledWith("Il n'existe pas de meter", { variant: 'error' })
         })
     })
 })
