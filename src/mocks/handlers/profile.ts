@@ -1,5 +1,5 @@
 import { rest } from 'msw'
-import { PROFILE_API } from 'src/modules/Profile/ProfileHooks'
+import { PROFILE_API } from 'src/modules/Profile/Accomodation/AccomodationHooks'
 import { TEST_METERS } from './meters'
 
 export const TEST_PROFILE_RESPONSE = {

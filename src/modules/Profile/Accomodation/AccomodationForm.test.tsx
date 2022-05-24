@@ -2,7 +2,7 @@ import { fireEvent, act, waitFor } from '@testing-library/react'
 import { BrowserRouter } from 'react-router-dom'
 import { reduxedRender } from 'src/common/react-platform-components/test'
 import { AccomodationForm } from './AccomodationForm'
-import { IMeter } from '../Meters/Meters'
+import { IMeter } from '../../Meters/Meters'
 import { TEST_METERS } from 'src/mocks/handlers/meters'
 
 let mockIsLoadingInProgress = false
@@ -31,8 +31,8 @@ jest.mock('notistack', () => ({
         enqueueSnackbar: mockEnqueueSnackbar,
     }),
 }))
-jest.mock('src/modules/Profile/AccomodationHooks', () => ({
-    ...jest.requireActual('src/modules/Profile/AccomodationHooks'),
+jest.mock('src/modules/Profile/Accomodation/AccomodationHooks', () => ({
+    ...jest.requireActual('src/modules/Profile/Accomodation/AccomodationHooks'),
     // eslint-disable-next-line jsdoc/require-jsdoc
     useAccomodation: () => ({
         isLoadingInProgress: mockIsLoadingInProgress,

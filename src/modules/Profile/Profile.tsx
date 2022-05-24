@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import MultiTab from 'src/modules/shared/MultiTab/MultiTab'
-import { AccomodationForm } from './AccomodationForm'
+import { AccomodationForm } from './Accomodation/AccomodationForm'
 import { EquipmentForm } from './EquipmentForm'
 
 /**
@@ -34,9 +34,7 @@ export const Profile = () => {
             tabSlug: 'accomodation',
             tabContent: (
                 <div className="Tab-Accomodation flex justify-center">
-                    <AccomodationForm // onSubmit={onSubmit}
-                    // enableForm={enableForm}
-                    />
+                    <AccomodationForm />
                 </div>
             ),
         },
