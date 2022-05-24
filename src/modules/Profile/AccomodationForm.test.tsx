@@ -6,8 +6,8 @@ import { IMeter } from '../Meters/Meters'
 import { TEST_METERS } from 'src/mocks/handlers/meters'
 
 let mockIsLoadingInProgress = false
-const mockUpdateProfile = jest.fn()
-const mockLoadProfile = jest.fn()
+const mockUpdateAccomodation = jest.fn()
+const mockLoadAccomodation = jest.fn()
 let mockMeterList: IMeter[] | null = TEST_METERS
 const MODIFIER_BUTTON_TEXT = 'Modifier'
 const DISABLED_CLASS = 'Mui-disabled'
@@ -34,10 +34,10 @@ jest.mock('notistack', () => ({
 jest.mock('src/modules/Profile/AccomodationHooks', () => ({
     ...jest.requireActual('src/modules/Profile/AccomodationHooks'),
     // eslint-disable-next-line jsdoc/require-jsdoc
-    useProfile: () => ({
+    useAccomodation: () => ({
         isLoadingInProgress: mockIsLoadingInProgress,
-        updateProfile: mockUpdateProfile,
-        loadProfile: mockLoadProfile,
+        updateAccomodation: mockUpdateAccomodation,
+        loadAccomodation: mockLoadAccomodation,
     }),
 }))
 // Mock metersHook
@@ -102,7 +102,7 @@ describe('Test AccomodationForm', () => {
             fireEvent.click(getByText(ENREGISTRER_BUTTON_TEXT))
         })
         await waitFor(() => {
-            expect(mockUpdateProfile).toHaveBeenCalled()
+            expect(mockUpdateAccomodation).toHaveBeenCalled()
         })
     })
     test('when we click on the radio button, the data changes', async () => {
@@ -142,7 +142,7 @@ describe('Test AccomodationForm', () => {
             fireEvent.click(getByText(ENREGISTRER_BUTTON_TEXT))
         })
         await waitFor(() => {
-            expect(mockUpdateProfile).not.toHaveBeenCalled()
+            expect(mockUpdateAccomodation).not.toHaveBeenCalled()
         })
         await waitFor(() => {
             expect(mockEnqueueSnackbar).toHaveBeenCalledWith("Il n'existe pas de meter", { variant: 'error' })
