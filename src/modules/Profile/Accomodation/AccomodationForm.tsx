@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { useIntl } from 'src/common/react-platform-translation'
 import Radio from '@mui/material/Radio'
 import RadioGroup from '@mui/material/RadioGroup'
@@ -18,14 +18,20 @@ import { EditButtonsGroup } from '../EditButtonsGroup'
 import { useMeterList } from '../../Meters/metersHook'
 import { useAccomodation } from './AccomodationHooks'
 import { useSnackbar } from 'notistack'
-
+/**
+ * AccomodationForm .
+ *
+ * @returns AccomodationForm.
+ */
 export const AccomodationForm = () => {
     const { formatMessage } = useIntl()
     const [isDPE, setIsDPE] = useState(true)
-    const { elementList: meterList, loadingInProgress: loadingMeterInProgress } = useMeterList(100)
+    const { elementList: meterList } = useMeterList(100)
     const { loadAccomodation, updateAccomodation, accomodation } = useAccomodation()
     const [isEditAccomodation, setIdEditAccomodation] = useState(false)
-
+    /**
+     * Toggle edit accomodation.
+     */
     const toggleEdit = () => {
         setIdEditAccomodation((prevEdit) => !prevEdit)
     }

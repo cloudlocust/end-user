@@ -1,7 +1,9 @@
 import { rest } from 'msw'
 import { PROFILE_API } from 'src/modules/Profile/Accomodation/AccomodationHooks'
 import { TEST_METERS } from './meters'
-
+/**
+ * TEST_PROFILE_RESPONSE.
+ */
 export const TEST_PROFILE_RESPONSE = {
     house_type: 'Appartement',
     house_year: 'Entre_1950_1975',
