@@ -22,7 +22,7 @@ export const profilEndpoints = [
 
     rest.post<any>(PROFILE_API(TEST_METERS[0].guid), (req, res, ctx) => {
         const { meter_id } = req.body
-        if (meter_id === TEST_METERS[0].guid) {
+        if (meter_id.guid === TEST_METERS[0].guid) {
             return res(ctx.status(200))
         } else {
             return res(ctx.status(400))

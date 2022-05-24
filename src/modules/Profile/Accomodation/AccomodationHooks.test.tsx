@@ -22,7 +22,10 @@ describe('Testing useAccomodation hooks', () => {
         })
         expect(result.current.isLoadingInProgress).toBe(false)
         act(() => {
-            result.current.updateAccomodation('17707368031234', { houseType: 'Maison', meterId: '17707368031234' })
+            result.current.updateAccomodation('17707368031234', {
+                houseType: 'Maison',
+                meterId: { guid: '17707368031234' },
+            })
         })
         expect(result.current.isLoadingInProgress).toBe(true)
         await waitForValueToChange(
