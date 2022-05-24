@@ -16,7 +16,7 @@ import {
 import { Form } from 'src/common/react-platform-components'
 import { EditButtonsGroup } from './EditButtonsGroup'
 import { useMeterList } from '../Meters/metersHook'
-import { useProfile } from './ProfileHooks'
+import { useProfile } from './AccomodationHooks'
 import { useSnackbar } from 'notistack'
 
 /**

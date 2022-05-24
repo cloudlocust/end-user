@@ -1,9 +1,7 @@
-import { fireEvent, act, waitFor, findAllByText } from '@testing-library/react'
+import { fireEvent, act, waitFor } from '@testing-library/react'
 import { BrowserRouter } from 'react-router-dom'
 import { reduxedRender } from 'src/common/react-platform-components/test'
-import { applyCamelCase } from 'src/common/react-platform-components'
 import { AccomodationForm } from './AccomodationForm'
-import { TEST_PROFILE_RESPONSE as MOCK_TEST_PROFILE_RESPONSE } from 'src/mocks/handlers/profile'
 import { IMeter } from '../Meters/Meters'
 import { TEST_METERS } from 'src/mocks/handlers/meters'
 
@@ -17,19 +15,10 @@ const INPUT_DISABLED_ELEMENT = `input.${DISABLED_CLASS}`
 const BUTTON_DISABLED_ELEMENT = `button.${DISABLED_CLASS}`
 const ANNULER_BUTTON_TEXT = 'Annuler'
 const ENREGISTRER_BUTTON_TEXT = 'Enregistrer'
-let TEST_PROFILE_RESPONSE = applyCamelCase(MOCK_TEST_PROFILE_RESPONSE)
-const mockProfile = TEST_PROFILE_RESPONSE
-const MOCK_TEST_PROFILE_ERROR_METER = {
-    house_type: 'Appartement',
-    house_year: 'Entre_1950_1975',
-    residence_type: 'Principale',
-    number_of_inhabitants: '4',
-    house_area: '64',
-}
-const TEST_PROFILE_ERROR_METER = applyCamelCase(MOCK_TEST_PROFILE_ERROR_METER)
 const mockEnqueueSnackbar = jest.fn()
+
 /**
- * Mocking the useSnackbar used in InstallerDetails to load the customers relevant to an Installeur  based on url /clients?installer_clients_id={id}.
+ * Mocking the useSnackbar used in AccomodationForm.
  */
 jest.mock('notistack', () => ({
     ...jest.requireActual('notistack'),
@@ -42,14 +31,12 @@ jest.mock('notistack', () => ({
         enqueueSnackbar: mockEnqueueSnackbar,
     }),
 }))
-
-jest.mock('src/modules/Profile/ProfileHooks', () => ({
-    ...jest.requireActual('src/modules/Profile/ProfileHooks'),
+jest.mock('src/modules/Profile/AccomodationHooks', () => ({
+    ...jest.requireActual('src/modules/Profile/AccomodationHooks'),
     // eslint-disable-next-line jsdoc/require-jsdoc
     useProfile: () => ({
         isLoadingInProgress: mockIsLoadingInProgress,
         updateProfile: mockUpdateProfile,
-        profile: mockProfile,
         loadProfile: mockLoadProfile,
     }),
 }))
@@ -61,9 +48,9 @@ jest.mock('src/modules/Meters/metersHook', () => ({
         elementList: mockMeterList,
     }),
 }))
-//
+
 describe('Test AccomodationForm', () => {
-    test('When clicking on Modifier form should not be disabled, and modifier should be disabled', async () => {
+    test('When clicking on Modifier form should not be disabled', async () => {
         const { getByText, container } = reduxedRender(
             <BrowserRouter>
                 <AccomodationForm />
@@ -89,14 +76,11 @@ describe('Test AccomodationForm', () => {
         expect(() => getByText(MODIFIER_BUTTON_TEXT)).toThrow()
     })
 
-    test('When clicking on Enregistrer Modification updateInstaller, it should disable edit mode', async () => {
+    test('When we select the data, after confirmation they are saved in the form', async () => {
         const { getByText } = reduxedRender(
             <BrowserRouter>
                 <AccomodationForm />
             </BrowserRouter>,
-            {
-                initialState: {},
-            },
         )
         act(() => {
             fireEvent.click(getByText(MODIFIER_BUTTON_TEXT))
@@ -121,14 +105,11 @@ describe('Test AccomodationForm', () => {
             expect(mockUpdateProfile).toHaveBeenCalled()
         })
     })
-    test('select options', async () => {
+    test('when we click on the radio button, the data changes', async () => {
         const { getByText, getByRole } = reduxedRender(
             <BrowserRouter>
                 <AccomodationForm />
             </BrowserRouter>,
-            {
-                initialState: {},
-            },
         )
         act(() => {
             fireEvent.click(getByText(MODIFIER_BUTTON_TEXT))
@@ -147,7 +128,7 @@ describe('Test AccomodationForm', () => {
             fireEvent.click(getByText(ENREGISTRER_BUTTON_TEXT))
         })
     })
-    test('meter error', async () => {
+    test('When there is no meter, then we display a snackbar with an error', async () => {
         mockMeterList = []
         const { getByText } = reduxedRender(
             <BrowserRouter>
