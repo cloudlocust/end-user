@@ -16,37 +16,14 @@ import {
 import { Form } from 'src/common/react-platform-components'
 import { EditButtonsGroup } from './EditButtonsGroup'
 import { useMeterList } from '../Meters/metersHook'
-import { useProfile } from './AccomodationHooks'
+import { useAccomodation } from './AccomodationHooks'
 import { useSnackbar } from 'notistack'
 
-/**
- * Interface IAccomodationForm.
- */
-// interface IAccomodationForm {
-//     // /**
-//     //  *
-//     //  */
-//     // onSubmit: (data: any) => void
-//     /**
-//      *
-//      */
-//     // enableForm: () => void
-// }
-
-// /**
-//  * AccomodationForm.
-//  *
-//  * @param root0 AccomodationForm props.
-//  * @param root0.isEdit Is edition mode.
-//  * @param root0.onSubmit
-//  * @param root0.enableForm
-//  * @returns AccomodationForm.
-//  */
 export const AccomodationForm = () => {
     const { formatMessage } = useIntl()
     const [isDPE, setIsDPE] = useState(true)
     const { elementList: meterList, loadingInProgress: loadingMeterInProgress } = useMeterList(100)
-    const { loadProfile, updateProfile, profile } = useProfile()
+    const { loadAccomodation, updateAccomodation, accomodation } = useAccomodation()
     const [isEditAccomodation, setIdEditAccomodation] = useState(false)
 
     const toggleEdit = () => {
@@ -55,15 +32,15 @@ export const AccomodationForm = () => {
     const disabledField = !isEditAccomodation
     const { enqueueSnackbar } = useSnackbar()
 
-    const profileData = {
-        houseType: profile?.houseType,
-        houseYear: profile?.houseYear,
-        residenceType: profile?.residenceType,
-        energyPerformanceIndex: profile?.energyPerformanceIndex,
-        isolationLevel: profile?.isolationLevel,
-        numberOfInhabitants: profile?.numberOfInhabitants,
-        houseArea: profile?.houseArea,
-        meterId: profile?.meterId,
+    const accomodationData = {
+        houseType: accomodation?.houseType,
+        houseYear: accomodation?.houseYear,
+        residenceType: accomodation?.residenceType,
+        energyPerformanceIndex: accomodation?.energyPerformanceIndex,
+        isolationLevel: accomodation?.isolationLevel,
+        numberOfInhabitants: accomodation?.numberOfInhabitants,
+        houseArea: accomodation?.houseArea,
+        meterId: accomodation?.meterId,
     }
     /**
      * Leave only one selected field in the data from.
@@ -98,12 +75,12 @@ export const AccomodationForm = () => {
                         )
                         return
                     }
-                    const dataProfile = { ...setSelectFields(data), meterId }
-                    await updateProfile(meterId.guid, dataProfile)
-                    loadProfile(meterId.guid)
+                    const dataAccomodation = { ...setSelectFields(data), meterId }
+                    await updateAccomodation(meterId.guid, dataAccomodation)
+                    loadAccomodation(meterId.guid)
                     toggleEdit()
                 }}
-                defaultValues={profileData}
+                defaultValues={accomodationData}
             >
                 <div className="flex justify-center font-semibold text-sm mb-4 mt-16">
                     {formatMessage({
@@ -268,7 +245,7 @@ export const AccomodationForm = () => {
                 <EditButtonsGroup
                     isEdit={isEditAccomodation}
                     enableForm={toggleEdit}
-                    formInitialValues={profileData}
+                    formInitialValues={accomodationData}
                     disableEdit={toggleEdit}
                 />
             </Form>

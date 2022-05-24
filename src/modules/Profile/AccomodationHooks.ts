@@ -8,14 +8,14 @@ import { METERS_API } from '../Meters/metersHook'
 import { IMeter } from '../Meters/Meters'
 import { isMatch } from 'lodash'
 /**
- * Profil url.
+ * Accomodation url.
  *
- * @param meterId The meterId of the profil.
+ * @param meterId The meterId of the accomodation.
  * @returns Meters base url.
  */
-export const PROFILE_API = (meterId: string) => `${METERS_API}/${meterId}/home-configuration`
+export const ACCOMODATION_API = (meterId: string) => `${METERS_API}/${meterId}/home-configuration`
 
-export type ProfileDataType = {
+export type AccomodationDataType = {
     houseType?: string
     houseYear?: string
     residenceType?: string
@@ -26,23 +26,23 @@ export type ProfileDataType = {
     meterId: IMeter
 }
 /**
-`* Hooks for profile.
+`* Hooks for accomodation.
  *
- * @returns UseCustomersDetails hook.
+ * @returns 
  */
-export function useProfile() {
-    const [profile, setProfile] = useState<ProfileDataType>()
+export function useAccomodation() {
+    const [accomodation, setAccomodation] = useState<AccomodationDataType>()
     const { enqueueSnackbar } = useSnackbar()
     const [isLoadingInProgress, setIsLoadingInProgress] = useState(false)
     const { formatMessage } = useIntl()
 
-    const updateProfile = async (meterId: string, body: ProfileDataType) => {
-        const dataIsNotModified = isMatch(profile as ProfileDataType, body)
+    const updateAccomodation = async (meterId: string, body: AccomodationDataType) => {
+        const dataIsNotModified = isMatch(accomodation as AccomodationDataType, body)
         console.log(dataIsNotModified)
         // if (dataIsNotModified) return
         setIsLoadingInProgress(true)
         try {
-            await axios.post<ProfileDataType, AxiosResponse<any>>(`${PROFILE_API(meterId)}`, body)
+            await axios.post<AccomodationDataType, AxiosResponse<any>>(`${ACCOMODATION_API(meterId)}`, body)
             enqueueSnackbar(
                 formatMessage({
                     id: 'Vos modifications ont été sauvegardées',
@@ -60,17 +60,17 @@ export function useProfile() {
     }
 
     /**
-     * Function hook responsible for fetching the function responsible for fetching Profile.
+     * Function hook responsible for fetching the function responsible for fetching Accomodation.
      *
-     * @param homeConfigurationId Represent the homeConfigurationId of the profile to be fetched.
+     * @param homeConfigurationId Represent the homeConfigurationId of the Accomodation to be fetched.
      * @returns The function throw an error, and show snackbar message containing successful and errors message.
      */
-    const loadProfile = async (meterId: string) => {
+    const loadAccomodation = async (meterId: string) => {
         setIsLoadingInProgress(true)
         try {
-            const { data: responseData } = await axios.get<ProfileDataType>(PROFILE_API(meterId))
+            const { data: responseData } = await axios.get<AccomodationDataType>(ACCOMODATION_API(meterId))
             console.log('responseData', responseData, meterId)
-            setProfile(responseData)
+            setAccomodation(responseData)
         } catch (error) {
             enqueueSnackbar(
                 formatMessage({
@@ -85,8 +85,8 @@ export function useProfile() {
 
     return {
         isLoadingInProgress,
-        profile,
-        loadProfile,
-        updateProfile,
+        accomodation,
+        loadAccomodation,
+        updateAccomodation,
     }
 }
