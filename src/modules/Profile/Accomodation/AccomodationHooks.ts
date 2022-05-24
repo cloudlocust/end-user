@@ -15,55 +15,66 @@ import { isMatch } from 'lodash'
  */
 export const PROFILE_API = (meterId: string) => `${METERS_API}/${meterId}/home-configuration`
 
-export type AccomodationDataType = {
+/**
+ * Accomodation Data Type.
+ */
+export type AccomodationDataType =
     /**
-     * House type.
+     * Accomodation Data Type.
      */
-    houseType?: string
-    /**
-     * House Year.
-     */
-    houseYear?: string
-    /**
-     * Residence Type.
-     */
-    residenceType?: string
-    /**
-     * Energy Performance Index.
-     */
-    energyPerformanceIndex?: string
-    /**
-     * Isolation Level.
-     */
-    isolationLevel?: string
-    /**
-     * Number Of Inhabitants.
-     */
-    numberOfInhabitants?: string
-    /**
-     * House Area.
-     */
-    houseArea?: string
-    /**
-     * Meter Id.
-     */
-    meterId: IMeter
-}
+    {
+        /**
+         * House type.
+         */
+        houseType?: string
+        /**
+         * House Year.
+         */
+        houseYear?: string
+        /**
+         * Residence Type.
+         */
+        residenceType?: string
+        /**
+         * Energy Performance Index.
+         */
+        energyPerformanceIndex?: string
+        /**
+         * Isolation Level.
+         */
+        isolationLevel?: string
+        /**
+         * Number Of Inhabitants.
+         */
+        numberOfInhabitants?: string
+        /**
+         * House Area.
+         */
+        houseArea?: string
+        /**
+         * Meter Id.
+         */
+        meterId: IMeter
+    }
 /**
  * Hooks for accomodation.
  *
- * @returns useAccomodation
+ * @returns UseAccomodation.
  */
 export function useAccomodation() {
     const [accomodation, setAccomodation] = useState<AccomodationDataType>()
     const { enqueueSnackbar } = useSnackbar()
     const [isLoadingInProgress, setIsLoadingInProgress] = useState(false)
     const { formatMessage } = useIntl()
-
+    /**
+     * Update Accomodation Form.
+     *
+     * @param meterId Meter Id.
+     * @param body Accomodation data.
+     */
     const updateAccomodation = async (meterId: string, body: AccomodationDataType) => {
         const dataIsNotModified = isMatch(accomodation as AccomodationDataType, body)
-        console.log(dataIsNotModified)
-        // if (dataIsNotModified) return
+        if (dataIsNotModified) return
         setIsLoadingInProgress(true)
         try {
             await axios.post<AccomodationDataType, AxiosResponse<any>>(`${PROFILE_API(meterId)}`, body)
@@ -82,18 +93,16 @@ export function useAccomodation() {
             throw message
         }
     }
-
     /**
      * Function hook responsible for fetching the function responsible for fetching Accomodation.
      *
-     * @param homeConfigurationId Represent the homeConfigurationId of the Accomodation to be fetched.
+     * @param meterId Represent the meterId of the Accomodation to be fetched.
      * @returns The function throw an error, and show snackbar message containing successful and errors message.
      */
     const loadAccomodation = async (meterId: string) => {
         setIsLoadingInProgress(true)
         try {
             const { data: responseData } = await axios.get<AccomodationDataType>(PROFILE_API(meterId))
-            console.log('responseData', responseData, meterId)
             setAccomodation(responseData)
         } catch (error) {
             enqueueSnackbar(
@@ -106,7 +115,6 @@ export function useAccomodation() {
         }
         setIsLoadingInProgress(false)
     }
-
     return {
         isLoadingInProgress,
         accomodation,
