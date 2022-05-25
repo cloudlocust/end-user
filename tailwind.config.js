@@ -9,6 +9,8 @@ module.exports = {
   darkMode: false, // or 'media' or 'class'
   theme: {
     screens: {
+      landscape: {raw: '(orientation: landscape)'},
+      portrait: {raw: '(orientation: portrait)'},
       sm: '600px',
       md: '960px',
       lg: '1280px',

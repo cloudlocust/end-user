@@ -10,6 +10,10 @@ export const TEST_SUCCESS_MAIL = 'user@success.com'
  *
  */
 export const TEST_AUTOVALIDATION_PASSWORD = 'authToken'
+// eslint-disable-next-line jsdoc/require-jsdoc
+export const showNrLinkPopupTrue = 'showNrLinkPopupTrue'
+// eslint-disable-next-line jsdoc/require-jsdoc
+export const showNrLinkPopupFalse = 'showNrLinkPopupFalse'
 
 /**
  *

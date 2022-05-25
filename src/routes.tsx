@@ -10,12 +10,13 @@ import { LoginConfig } from './modules/User/Login/LoginConfig'
 import { ForgotPasswordConfig } from './modules/User/ForgotPassword/ForgotPasswordConfig'
 import { ResetPasswordConfig } from 'src/modules/User/ResetPassword/ResetPasswordConfig'
 import { RegisterConfig } from './modules/User/Register/RegisterConfig'
-
+import { NrLinkConnectionConfig } from './modules/nrLinkConnection'
 /**
  *
  */
 export const routes = [
     ...MyConsumptionConfig,
+    ...NrLinkConnectionConfig,
     ...AdvicesConfig,
     ...ProfileConfig,
     ...LoginConfig,

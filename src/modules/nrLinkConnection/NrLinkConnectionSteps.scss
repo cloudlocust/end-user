@@ -1,0 +1,10 @@
+@import 'src/common/ui-kit/styles/media.scss';
+
+.NrLinkConnectionSteps {
+    .NrLinkConnectionStepsStepper,
+    .StepperContent {
+        @include lg {
+            width: 1100px;
+        }
+    }
+}
