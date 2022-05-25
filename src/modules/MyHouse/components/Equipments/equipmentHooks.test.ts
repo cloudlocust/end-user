@@ -1,7 +1,7 @@
 import { reduxedRenderHook } from 'src/common/react-platform-components/test'
 import { act } from '@testing-library/react-hooks'
 import { TEST_SAVE_EQUIPMENT, TEST_ERROR_SAVE_EQUIPMENT_ID } from 'src/mocks/handlers/equipments'
-import { useEquipmentList } from 'src/modules/Profile/components/Equipments/equipmentHooks'
+import { useEquipmentList } from 'src/modules/MyHouse/components/Equipments/equipmentHooks'
 const mockEnqueueSnackbar = jest.fn()
 /**
  * Mocking the useSnackbar used in CustomerDetails to load the customerDetails based on url /customers/:id {id} params.

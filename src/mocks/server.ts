@@ -1,4 +1,5 @@
 /** Mock requests. */
+import { setupServer } from 'msw/node'
 import { userEndpoints } from './handlers/user'
 import { metersEndpoints } from './handlers/meters'
 import { nrlinkEndpoints } from './handlers/nrlink'

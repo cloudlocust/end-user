@@ -1,5 +1,5 @@
 export { MyHouseConfig, URL_MY_HOUSE } from './MyHouseConfig'
 export { MyHouse } from './MyHouse'
-export { EquipmentForm } from './EquipmentForm'
 export { AccomodationForm } from './components/Accomodation/AccomodationForm'
+export { EquipmentForm } from './components/Equipments/EquipmentForm'
 export { EditButtonsGroup } from './EditButtonsGroup'

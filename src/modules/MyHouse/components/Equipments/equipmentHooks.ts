@@ -1,4 +1,4 @@
-import { IEquipment, postEquipmentInputType } from 'src/modules/Profile/components/Equipments/EquipmentsType'
+import { IEquipment, postEquipmentInputType } from 'src/modules/MyHouse/components/Equipments/EquipmentsType'
 import { useEffect, useState, useCallback, useRef } from 'react'
 import { AxiosResponse } from 'axios'
 import { axios } from 'src/common/react-platform-components'
@@ -95,7 +95,6 @@ export const useEquipmentList = (meterId: number) => {
         }
     }
     return {
-        loadEquipmentList,
         loadingEquipmentInProgress,
         saveEquipment,
         equipmentList,

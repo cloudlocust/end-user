@@ -19,9 +19,8 @@ const MODIFIER_BUTTON_TEXT = 'Modifier'
 const HEATER_TEXT = 'Type de chauffage :'
 const EQUIPMENT_INFO_TEXT = 'Informations Equipements'
 const HOTPLATE_INFO_TEXT = 'Type de plaques de cuisson :'
+const INDUCTION_VALUE_TEXT = 'Induction'
 const DISABLED_CLASS = 'Mui-disabled'
-// const INPUT_DISABLED_ELEMENT = `input.${DISABLED_CLASS}`
-const BUTTON_DISABLED_ELEMENT = `button.${DISABLED_CLASS}`
 const ANNULER_BUTTON_TEXT = 'Annuler'
 const ENREGISTRER_BUTTON_TEXT = 'Enregistrer'
 const mockEnqueueSnackbar = jest.fn()
@@ -40,8 +39,8 @@ jest.mock('notistack', () => ({
         enqueueSnackbar: mockEnqueueSnackbar,
     }),
 }))
-jest.mock('src/modules/Profile/components/Equipments/equipmentHooks', () => ({
-    ...jest.requireActual('src/modules/Profile/components/Equipments/equipmentHooks'),
+jest.mock('src/modules/MyHouse/components/Equipments/equipmentHooks', () => ({
+    ...jest.requireActual('src/modules/MyHouse/components/Equipments/equipmentHooks'),
     // eslint-disable-next-line jsdoc/require-jsdoc
     useEquipmentList: () => ({
         loadEquipmentList: mockLoadEquipmentList,
@@ -60,13 +59,13 @@ jest.mock('src/modules/Meters/metersHook', () => ({
 }))
 
 describe('Test EquipmentForm', () => {
-    test('When clicking on Modifier form should not be disabled', async () => {
-        const { getByText, container } = reduxedRender(
+    test('When equipmentForm mount form should be disabled, clicking on Modifier form should not be disabled', async () => {
+        const { getByText } = reduxedRender(
             <BrowserRouter>
                 <EquipmentForm meterId={TEST_METERS[0].id} />
             </BrowserRouter>,
         )
-        expect(container.querySelectorAll(BUTTON_DISABLED_ELEMENT)!.length).not.toBe(0)
+        expect(getByText(INDUCTION_VALUE_TEXT).classList.contains(DISABLED_CLASS)).toBeTruthy()
         expect(getByText(HEATER_TEXT)).toBeTruthy()
         expect(getByText(EQUIPMENT_INFO_TEXT)).toBeTruthy()
         expect(getByText(HOTPLATE_INFO_TEXT)).toBeTruthy()
@@ -77,35 +76,11 @@ describe('Test EquipmentForm', () => {
             fireEvent.click(getByText(MODIFIER_BUTTON_TEXT))
         })
         await waitFor(() => {
-            expect(container.querySelectorAll(BUTTON_DISABLED_ELEMENT)!.length).toBe(0)
+            expect(getByText(INDUCTION_VALUE_TEXT).classList.contains(DISABLED_CLASS)).toBeFalsy()
         })
         expect(getByText(ANNULER_BUTTON_TEXT)).toBeTruthy()
         expect(getByText(ENREGISTRER_BUTTON_TEXT)).toBeTruthy()
         expect(() => getByText(MODIFIER_BUTTON_TEXT)).toThrow()
-    })
-
-    test('When loading equipmentList, it should be shown in the form', async () => {
-        const { getByText, getByRole } = reduxedRender(
-            <BrowserRouter>
-                <EquipmentForm meterId={TEST_METERS[0].id} />
-            </BrowserRouter>,
-        )
-        act(() => {
-            fireEvent.click(getByText(MODIFIER_BUTTON_TEXT))
-        })
-        act(() => {
-            fireEvent.click(getByRole('radio', { name: 'Non' }))
-        })
-
-        expect(getByRole('radio', { name: 'Non' })).toBeChecked()
-        act(() => {
-            fireEvent.click(getByRole('radio', { name: 'Oui' }))
-        })
-
-        expect(getByRole('radio', { name: 'Oui' })).toBeChecked()
-        act(() => {
-            fireEvent.click(getByText(ENREGISTRER_BUTTON_TEXT))
-        })
     })
 
     test('When submitting data, saveEquipment data should be changed and saveEquipment should be called', async () => {
@@ -132,7 +107,21 @@ describe('Test EquipmentForm', () => {
             fireEvent.click(getByText(ENREGISTRER_BUTTON_TEXT))
         })
         await waitFor(() => {
-            expect(mockSaveEquipment).toHaveBeenCalled()
+            expect(mockSaveEquipment).toHaveBeenCalledWith([
+                { equipmentId: 1, equipmentType: 'electricity' },
+                { equipmentId: 2, equipmentType: 'induction' },
+            ])
         })
+    })
+    test('When loading equipmentList, Circular progress should be shown', async () => {
+        mockIsLoadingInProgress = true
+        const { getByText } = reduxedRender(
+            <BrowserRouter>
+                <EquipmentForm meterId={TEST_METERS[0].id} />
+            </BrowserRouter>,
+        )
+        expect(() => getByText(MODIFIER_BUTTON_TEXT)).toThrow()
+        expect(() => getByText(ANNULER_BUTTON_TEXT)).toThrow()
+        expect(() => getByText(ENREGISTRER_BUTTON_TEXT)).toThrow()
     })
 })
