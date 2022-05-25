@@ -80,10 +80,9 @@ export const EquipmentForm = ({
     } = {}
     // Initialise default Values
     Object.keys(savedEquipmentList!).forEach((equipmentName) => {
-        defaultValues[equipmentName] =
-            savedEquipmentList[equipmentName].equipmentNumber === 0
-                ? savedEquipmentList[equipmentName].equipmentNumber!
-                : savedEquipmentList[equipmentName].equipmentType!
+        defaultValues[equipmentName] = savedEquipmentList[equipmentName].equipmentType
+            ? savedEquipmentList[equipmentName].equipmentType!
+            : savedEquipmentList[equipmentName].equipmentNumber!
     })
 
     return (
