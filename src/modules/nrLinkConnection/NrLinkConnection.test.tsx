@@ -20,6 +20,7 @@ jest.mock('react-router', () => ({
         push: mockHistoryPush,
     }),
 }))
+
 /* eslint-disable-next-line jsdoc/require-jsdoc */
 const NrLinkConnectionRouter = () => (
     <Router>

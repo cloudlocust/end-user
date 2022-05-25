@@ -15,14 +15,28 @@ export default {
     },
 } as Meta
 
-const Template: Story<{
+/**
+ * Template.
+ *
+ * @param args Args.
+ * @param args.header Header.
+ * @param args.content Content.
+ * @param args.innerScroll InnerScroll.
+ * @returns Template.
+ */
+const Template: Story</**
+ *
+ */
+{
     //eslint-disable-next-line jsdoc/require-jsdoc
     header?: JSX.Element
     //eslint-disable-next-line jsdoc/require-jsdoc
     content: Array<IMultiTab>
     //eslint-disable-next-line jsdoc/require-jsdoc
     innerScroll?: boolean
-}> = (args: {
+}> = (args: //eslint-disable-next-line jsdoc/require-jsdoc
+//eslint-disable-next-line jsdoc/require-jsdoc
+{
     //eslint-disable-next-line jsdoc/require-jsdoc
     header?: JSX.Element
     //eslint-disable-next-line jsdoc/require-jsdoc
@@ -34,6 +48,9 @@ const Template: Story<{
         <Route component={(routerProps: any) => <MultiTab {...routerProps} {...args} />} path="/profil/:tab" />
     </MemoryRouter>
 )
+/**
+ *
+ */
 export const Mobile = Template.bind({})
 Mobile.args = {
     content: [

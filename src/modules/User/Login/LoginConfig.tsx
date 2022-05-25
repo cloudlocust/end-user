@@ -13,6 +13,8 @@ export const URL_LOGIN = '/login'
 /**
  * After login url.
  */
+// TODO to reset this once customer first connection is returned by the user
+// export const AFTER_LOGIN_URL = '/my-consumption'
 export const AFTER_LOGIN_URL = URL_NRLINK_CONNECTION
 /**
  * Configuration object for the login page. It contains, url, component and its props, and authentication level needed.

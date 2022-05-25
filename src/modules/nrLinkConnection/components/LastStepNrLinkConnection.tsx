@@ -9,6 +9,7 @@ import { API_RESOURCES_URL } from 'src/configs'
 import { URL_CONSUMPTION } from 'src/modules/MyConsumption'
 import { axios } from 'src/common/react-platform-components'
 import { useHistory } from 'react-router-dom'
+import { SET_SHOW_NRLINK_POPUP_ENDPOINT } from 'src/modules/nrLinkConnection/NrLinkConnection'
 
 /**
  * Component showing the first step in the nrLinkConnection Stepper.
@@ -50,6 +51,11 @@ const LastStepNrLinkConnection = ({
             const { meterName, ...data } = formData
             setIsNrLinkAuthorizeInProgress(true)
             await axios.post(`${API_RESOURCES_URL}/nrlink/authorize`, data)
+            // Set Show NrLinkPopup when last step is done
+            // eslint-disable-next-line jsdoc/require-jsdoc
+            await axios.patch<{ showNrlinkPopup: boolean }>(`${SET_SHOW_NRLINK_POPUP_ENDPOINT}`, {
+                showNrlinkPopup: false,
+            })
             enqueueSnackbar(
                 formatMessage(
                     {

@@ -18,9 +18,9 @@ import { IMeter } from 'src/modules/Meters/Meters'
  * @param props.handleNext HandleNext.
  * @param props.setMeter Handler to set the newMeter or selected meter from the AutoComplete Options .
  * @param props.meter The selectedMeter.
- * @returns MeterFormStepNrLinkConnection.
+ * @returns MeterStepNrLinkConnectionForm.
  */
-const MeterFormStepNrLinkConnection = ({
+const MeterStepNrLinkConnectionForm = ({
     handleBack,
     handleNext,
     setMeter,
@@ -86,6 +86,7 @@ const MeterFormStepNrLinkConnection = ({
             <div className="flex justify-between items-center landscape:mt-10 w-full">
                 <div className="portrait:flex-col landscape:flex-row h-full flex justify-center items-center w-full">
                     <div className="w-full mr-32 ">
+                        {/* DO NOT REPRODUCE! */}
                         <Autocomplete
                             id="name-autocomplete"
                             className="mb-20"
@@ -211,4 +212,4 @@ const MeterFormStepNrLinkConnection = ({
     )
 }
 
-export default MeterFormStepNrLinkConnection
+export default MeterStepNrLinkConnectionForm
