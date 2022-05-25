@@ -1,3 +1,6 @@
+import { chunk, filter, zip } from 'lodash'
+import { INumberFieldForm } from 'src/common/ui-kit/components/NumberField/NumberFieldTypes'
+import { ISelectButtons } from 'src/common/ui-kit/form-fields/SelectButtons/SelectButtonsTypes'
 /**
  * Accomodation labels.
  */
@@ -34,39 +37,135 @@ export const performanceOptions = ['A', 'B', 'C', 'D', 'E', 'F', 'G']
  */
 export const isolationOptions = ['Faible', 'Moyenne', 'Forte']
 
-/**
- *
- */
-export const myEquipmentOptions = [
-    { name: 'PC de bureau', labelTitle: 'PC de bureau', iconLabel: 'computer', disableDecrement: true },
-    { name: 'PC Portable', labelTitle: 'PC Portable', iconLabel: 'computer', disableDecrement: true },
-    { name: 'Téléviseur', labelTitle: 'Téléviseur', iconLabel: 'tv', disableDecrement: true },
+const buttonStyleLast = 'w-160 mt-16 flex flex-col'
+const buttonStyle = `${buttonStyleLast} mr-10`
+const wrapperStyles = 'flex flex-row justify-center'
+const iconStyles = 'my-5 h-56'
+// eslint-disable-next-line jsdoc/require-jsdoc
+const getEquipmentIconPath = (name: string) => `/assets/images/content/equipment/${name}.svg`
+
+// eslint-disable-next-line jsdoc/require-jsdoc
+export const heaterEquipment: ISelectButtons = {
+    name: 'heater',
+    wrapperStyles,
+    titleLabel: 'Type de chauffage :',
+    formOptions: [
+        {
+            label: 'Eléctricité',
+            iconPath: getEquipmentIconPath('electricity'),
+            buttonStyle,
+            iconStyles,
+            value: 'electricity',
+        },
+        {
+            label: 'Autre',
+            iconPath: getEquipmentIconPath('heaterOther'),
+            buttonStyle: buttonStyleLast,
+            iconStyles,
+            value: 'other',
+        },
+    ],
+}
+
+// eslint-disable-next-line jsdoc/require-jsdoc
+export const hotPlateEquipment: ISelectButtons = {
+    name: 'hotplate',
+    wrapperStyles,
+    titleLabel: 'Type de plaques de cuisson :',
+    formOptions: [
+        {
+            label: 'Eléctricité',
+            iconPath: getEquipmentIconPath('vitroceramic'),
+            buttonStyle,
+            iconStyles,
+            value: 'vitroceramic',
+        },
+        {
+            label: 'Induction',
+            iconPath: getEquipmentIconPath('induction'),
+            buttonStyle,
+            iconStyles,
+            value: 'induction',
+        },
+        {
+            label: 'Autre',
+            iconPath: getEquipmentIconPath('hotplateOther'),
+            buttonStyle: buttonStyleLast,
+            iconStyles,
+            value: 'other',
+        },
+    ],
+}
+
+// eslint-disable-next-line jsdoc/require-jsdoc
+export const myEquipmentOptions: INumberFieldForm[] = [
     {
-        name: 'Aspirateur',
+        name: 'computerdesktop',
+        labelTitle: 'PC de bureau',
+        iconLabel: 'computer',
+    },
+    {
+        name: 'laptop',
+        labelTitle: 'PC Portable',
+        iconLabel: 'computer',
+    },
+    {
+        name: 'tv',
+        labelTitle: 'Téléviseur',
+        iconLabel: 'tv',
+    },
+    {
+        name: 'vacuum',
         labelTitle: 'Aspirateur',
-        iconPath: '/assets/images/content/equipment/aspirator.svg',
-        disableDecrement: true,
-        value: '',
+        // eslint-disable-next-line jsdoc/require-jsdoc
+        get iconPath() {
+            return getEquipmentIconPath(this.name)
+        },
     },
-    { name: 'Four', labelTitle: 'Four', iconPath: '/assets/images/content/equipment/oven.svg', disableDecrement: true },
-    { name: 'Micro-onde', labelTitle: 'Micro-onde', iconLabel: 'microwave', disableDecrement: true },
-    { name: 'Réfrigérateur', labelTitle: 'Réfrigérateur', iconLabel: 'kitchen', disableDecrement: true },
     {
-        name: 'Lave-vaisselle',
+        name: 'oven',
+        labelTitle: 'Four',
+        // eslint-disable-next-line jsdoc/require-jsdoc
+        get iconPath() {
+            return getEquipmentIconPath(this.name)
+        },
+    },
+    { name: 'microwave', labelTitle: 'Micro-onde', iconLabel: 'microwave' },
+    { name: 'fridge', labelTitle: 'Réfrigérateur', iconLabel: 'kitchen' },
+    {
+        name: 'dishwasher',
         labelTitle: 'Lave-vaisselle',
-        iconPath: '/assets/images/content/equipment/dishwasher.svg',
-        disableDecrement: true,
+        // eslint-disable-next-line jsdoc/require-jsdoc
+        get iconPath() {
+            return getEquipmentIconPath(this.name)
+        },
     },
     {
-        name: 'Lave linge',
+        name: 'washingmachine',
         labelTitle: 'Lave linge',
-        iconPath: '/assets/images/content/equipment/washing-machine.svg',
-        disableDecrement: true,
+        // eslint-disable-next-line jsdoc/require-jsdoc
+        get iconPath() {
+            return getEquipmentIconPath(this.name)
+        },
     },
     {
-        name: 'Sèche linge',
+        name: 'dryer',
         labelTitle: 'Sèche linge',
-        iconPath: '/assets/images/content/equipment/clothes-dryer.svg',
-        disableDecrement: true,
+        // eslint-disable-next-line jsdoc/require-jsdoc
+        get iconPath() {
+            return getEquipmentIconPath(this.name)
+        },
     },
 ]
+
+/**
+ * Grouped Cards for showing in flex mode.
+ *
+ * @param cards Cards Type.
+ * @param colNumber Number of colons.
+ * @returns Grouped Cards component.
+ */
+export function groupedCards<T>(cards: T[], colNumber = 2) {
+    const chunkArray = cards && chunk(cards, colNumber)
+    return zip(...chunkArray).map((item) => filter(item)) as T[][]
+}

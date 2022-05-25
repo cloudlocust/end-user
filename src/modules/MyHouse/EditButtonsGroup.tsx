@@ -24,6 +24,10 @@ interface IEditButtonsGroup {
      * Initial values.
      */
     formInitialValues: FieldValues
+    /**
+     * Progress Status.
+     */
+    inProgress?: boolean
 }
 /**
  * EditButtonsGroup consist of modify, cancel and save buttons.

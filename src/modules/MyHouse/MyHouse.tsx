@@ -3,6 +3,7 @@ import FuseLoading from 'src/common/ui-kit/fuse/components/FuseLoading'
 import MultiTab from 'src/modules/shared/MultiTab/MultiTab'
 import { useMeterList } from '../Meters/metersHook'
 import { AccomodationForm } from './components/Accomodation/AccomodationForm'
+import { EquipmentForm } from './components/Equipments/EquipmentForm'
 
 /**
  * Form used for modify MyHouse.
@@ -11,7 +12,9 @@ import { AccomodationForm } from './components/Accomodation/AccomodationForm'
  */
 export const MyHouse = () => {
     const { elementList: meterList } = useMeterList()
-    if (!meterList || !meterList.length) return <FuseLoading />
+
+    // TODO Fix when meter will be configured in profile.
+    if (!meterList || meterList.length === 0) return <FuseLoading />
     const tabsContent = [
         {
             tabTitle: 'Logement',
@@ -27,9 +30,7 @@ export const MyHouse = () => {
             tabSlug: 'equipment',
             tabContent: (
                 <div className="Tab-Equipment flex justify-center">
-                    {/* <EquipmentForm
-                        // houseDetails={houseDetails}
-                    /> */}
+                    <EquipmentForm meterId={meterList[0].id} />
                 </div>
             ),
         },
