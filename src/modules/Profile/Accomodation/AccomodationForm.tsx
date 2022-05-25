@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { useIntl } from 'src/common/react-platform-translation'
 import Radio from '@mui/material/Radio'
 import RadioGroup from '@mui/material/RadioGroup'
@@ -12,68 +12,48 @@ import {
     accomodationNames,
     isolationOptions,
     performanceOptions,
-} from './utils/ProfileVariables'
+} from '../utils/ProfileVariables'
 import { Form } from 'src/common/react-platform-components'
-import { EditButtonsGroup } from './EditButtonsGroup'
-import { useMeterList } from '../Meters/metersHook'
-import { useProfile } from './ProfileHooks'
-
+import { EditButtonsGroup } from '../EditButtonsGroup'
+import { useMeterList } from '../../Meters/metersHook'
+import { useAccomodation } from './AccomodationHooks'
+import { useSnackbar } from 'notistack'
 /**
- * Interface IAccomodationForm.
- */
-interface IAccomodationForm {
-    /**
-     *
-     */
-    isEdit: boolean
-    /**
-     *
-     */
-    onSubmit: (data: any) => void
-    /**
-     *
-     */
-    enableForm: () => void
-    /**
-     *
-     */
-    setIsEdit: (isEdit: boolean) => void
-}
-
-/**
- * AccomodationForm.
+ * AccomodationForm .
  *
- * @param root0 AccomodationForm props.
- * @param root0.isEdit Is edition mode.
- * @param root0.onSubmit
- * @param root0.enableForm
  * @returns AccomodationForm.
  */
-export const AccomodationForm = ({ isEdit, enableForm, setIsEdit }: IAccomodationForm) => {
+export const AccomodationForm = () => {
     const { formatMessage } = useIntl()
     const [isDPE, setIsDPE] = useState(true)
-    const { elementList: meterList, loadingInProgress: loadingMeterInProgress } = useMeterList(100)
-    const { loadProfile, updateProfile, profile } = useProfile()
-    const disableEdit = () => {
-        setIsEdit(false)
+    const { elementList: meterList } = useMeterList(100)
+    const { loadAccomodation, updateAccomodation, accomodation } = useAccomodation()
+    const [isEditAccomodation, setIdEditAccomodation] = useState(false)
+    /**
+     * Toggle edit accomodation.
+     */
+    const toggleEdit = () => {
+        setIdEditAccomodation((prevEdit) => !prevEdit)
     }
-    const disabledField = !isEdit
+    const disabledField = !isEditAccomodation
+    const { enqueueSnackbar } = useSnackbar()
+
+    const accomodationData = {
+        houseType: accomodation?.houseType,
+        houseYear: accomodation?.houseYear,
+        residenceType: accomodation?.residenceType,
+        energyPerformanceIndex: accomodation?.energyPerformanceIndex,
+        isolationLevel: accomodation?.isolationLevel,
+        numberOfInhabitants: accomodation?.numberOfInhabitants,
+        houseArea: accomodation?.houseArea,
+        meterId: accomodation?.meterId,
+    }
     /**
      * Leave only one selected field in the data from.
      *
      * @param data OnSubmit data.
      * @returns Data.
      */
-    const profileData = {
-        houseType: profile?.houseType,
-        houseYear: profile?.houseYear,
-        residenceType: profile?.residenceType,
-        energyPerformanceIndex: profile?.energyPerformanceIndex,
-        isolationLevel: profile?.isolationLevel,
-        numberOfInhabitants: profile?.numberOfInhabitants,
-        houseArea: profile?.houseArea,
-        meterId: profile?.meterId,
-    }
     const setSelectFields = (data: any) => {
         if (
             data.hasOwnProperty(accomodationNames.energyPerformanceIndex) &&
@@ -87,18 +67,26 @@ export const AccomodationForm = ({ isEdit, enableForm, setIsEdit }: IAccomodatio
         return data
     }
     const meterId = meterList?.length ? meterList[0] : null
-
     return (
         <div className="flex flex-col justify-center w-full md:w-3/4 ">
             <Form
                 onSubmit={async (data: any) => {
-                    if (!meterId) return
-                    const dataProfile = { ...setSelectFields(data), meterId }
-                    await updateProfile(meterId?.guid, dataProfile)
-                    loadProfile(meterId?.guid)
-                    disableEdit()
+                    if (!meterId) {
+                        enqueueSnackbar(
+                            formatMessage({
+                                id: "Il n'existe pas de meter",
+                                defaultMessage: "Il n'existe pas de meter",
+                            }),
+                            { variant: 'error' },
+                        )
+                        return
+                    }
+                    const dataAccomodation = { ...setSelectFields(data), meterId }
+                    await updateAccomodation(meterId.guid, dataAccomodation)
+                    loadAccomodation(meterId.guid)
+                    toggleEdit()
                 }}
-                defaultValues={profileData}
+                defaultValues={accomodationData}
             >
                 <div className="flex justify-center font-semibold text-sm mb-4 mt-16">
                     {formatMessage({
@@ -261,11 +249,10 @@ export const AccomodationForm = ({ isEdit, enableForm, setIsEdit }: IAccomodatio
                     </div>
                 </div>
                 <EditButtonsGroup
-                    isEdit={isEdit}
-                    // onSubmit={onSubmit}
-                    enableForm={enableForm}
-                    formInitialValues={profileData}
-                    disableEdit={disableEdit}
+                    isEdit={isEditAccomodation}
+                    enableForm={toggleEdit}
+                    formInitialValues={accomodationData}
+                    disableEdit={toggleEdit}
                 />
             </Form>
         </div>

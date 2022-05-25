@@ -1,24 +1,41 @@
-import { Button } from '@mui/material'
 import React from 'react'
+import { Button } from '@mui/material'
 import { useIntl } from 'react-intl'
 import { ButtonLoader } from 'src/common/ui-kit'
 import { ButtonResetForm } from 'src/common/ui-kit/components/ButtonResetForm/ButtonResetForm'
-
+import { FieldValues } from 'react-hook-form'
+/**
+ * Interface for Edit Button Group.
+ */
 interface IEditButtonsGroup {
+    /**
+     * Is it Edit mode.
+     */
     isEdit: boolean
-    // onSubmit: (data: any) => void
+    /**
+     * Function to enable form.
+     */
     enableForm: () => void
-    formInitialValues: {}
+    /**
+     * Function to disable form.
+     */
     disableEdit: () => void
+    /**
+     * Initial values.
+     */
+    formInitialValues: FieldValues
 }
-
-export const EditButtonsGroup = ({
-    isEdit,
-    // onSubmit,
-    enableForm,
-    formInitialValues,
-    disableEdit,
-}: IEditButtonsGroup) => {
+/**
+ * EditButtonsGroup consist of modify, cancel and save buttons.
+ *
+ * @param param0 N/A.
+ * @param param0.isEdit Is it Edit mode.
+ * @param param0.enableForm Function to enable form.
+ * @param param0.formInitialValues Function to disable form.
+ * @param param0.disableEdit Initial values.
+ * @returns EditButtonsGroup.
+ */
+export const EditButtonsGroup = ({ isEdit, enableForm, formInitialValues, disableEdit }: IEditButtonsGroup) => {
     const { formatMessage } = useIntl()
     return (
         <div className="flex justify-center mt-10">
