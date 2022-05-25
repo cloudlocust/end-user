@@ -10,7 +10,7 @@ import { useMediaQuery } from '@mui/material'
 import { useIntl } from 'react-intl'
 import {
     FirstStepNrLinkConnection,
-    MeterFormStepNrLinkConnection,
+    MeterStepNrLinkConnectionForm,
     LastStepNrLinkConnection,
     LoadingNrLinkConnectionSteps,
 } from 'src/modules/nrLinkConnection'
@@ -147,7 +147,7 @@ const NrLinkConnectionSteps = () => {
 
     const stepsContent = [
         <FirstStepNrLinkConnection handleBack={handleBack} handleNext={handleNext} />,
-        <MeterFormStepNrLinkConnection
+        <MeterStepNrLinkConnectionForm
             handleBack={handleBack}
             handleNext={handleNext}
             setMeter={setMeter}
