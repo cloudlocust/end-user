@@ -4,7 +4,7 @@ import { userEndpoints } from './handlers/user'
 import { metersEndpoints } from './handlers/meters'
 import { nrlinkEndpoints } from './handlers/nrlink'
 import { equipmentsEndpoints } from './handlers/equipments'
-import { myHouseEndpoints } from './handlers/myHouse'
+import { accomodationEndpoints } from './handlers/accomodation'
 
 /**
  * Handlers to mock urls for tests.
@@ -18,8 +18,8 @@ const handlers = [
     ...nrlinkEndpoints,
     /******Equipments REQUESTS*****/
     ...equipmentsEndpoints,
-    /******MyHouse REQUESTS*****/
-    ...myHouseEndpoints,
+    /******accomodation REQUESTS*****/
+    ...accomodationEndpoints,
 ]
 
 // This configures a request mocking server with the given request handlers.

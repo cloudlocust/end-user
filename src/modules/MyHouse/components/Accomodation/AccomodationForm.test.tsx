@@ -53,7 +53,7 @@ describe('Test AccomodationForm', () => {
     test('When clicking on Modifier form should not be disabled', async () => {
         const { getByText, container } = reduxedRender(
             <BrowserRouter>
-                <AccomodationForm />
+                <AccomodationForm meterId={1} />
             </BrowserRouter>,
         )
         expect(container.querySelectorAll(INPUT_DISABLED_ELEMENT)!.length).toBe(2)
@@ -79,7 +79,7 @@ describe('Test AccomodationForm', () => {
     test('When we select the data, after confirmation they are saved in the form', async () => {
         const { getByText } = reduxedRender(
             <BrowserRouter>
-                <AccomodationForm />
+                <AccomodationForm meterId={1} />
             </BrowserRouter>,
         )
         act(() => {
@@ -108,7 +108,7 @@ describe('Test AccomodationForm', () => {
     test('when we click on the radio button, the data changes', async () => {
         const { getByText, getByRole } = reduxedRender(
             <BrowserRouter>
-                <AccomodationForm />
+                <AccomodationForm meterId={1} />
             </BrowserRouter>,
         )
         act(() => {
@@ -126,26 +126,6 @@ describe('Test AccomodationForm', () => {
         expect(getByRole('radio', { name: 'Oui' })).toBeChecked()
         act(() => {
             fireEvent.click(getByText(ENREGISTRER_BUTTON_TEXT))
-        })
-    })
-    test('When there is no meter, then we display a snackbar with an error', async () => {
-        mockMeterList = []
-        const { getByText } = reduxedRender(
-            <BrowserRouter>
-                <AccomodationForm />
-            </BrowserRouter>,
-        )
-        act(() => {
-            fireEvent.click(getByText(MODIFIER_BUTTON_TEXT))
-        })
-        act(() => {
-            fireEvent.click(getByText(ENREGISTRER_BUTTON_TEXT))
-        })
-        await waitFor(() => {
-            expect(mockUpdateAccomodation).not.toHaveBeenCalled()
-        })
-        await waitFor(() => {
-            expect(mockEnqueueSnackbar).toHaveBeenCalledWith("Il n'existe pas de meter", { variant: 'error' })
         })
     })
 })

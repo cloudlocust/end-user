@@ -5,7 +5,6 @@ import { useSnackbar } from 'notistack'
 import { getMsgFromAxiosError } from 'src/modules/utils'
 import { AxiosResponse } from 'axios'
 import { METERS_API } from '../../../Meters/metersHook'
-import { IMeter } from '../../../Meters/Meters'
 import { isMatch } from 'lodash'
 /**
  * Accomodation url.
@@ -13,7 +12,7 @@ import { isMatch } from 'lodash'
  * @param meterId The meterId of the accomodation.
  * @returns Meters base url.
  */
-export const MY_HOUSE_API = (meterId: string) => `${METERS_API}/${meterId}/home-configuration`
+export const ACCOMODATION_API = (meterId: number) => `${METERS_API}/${meterId}/home-configuration`
 
 /**
  * Accomodation Data Type.
@@ -54,7 +53,7 @@ export type AccomodationDataType =
         /**
          * Meter Id.
          */
-        meterId: IMeter
+        meterId: number
     }
 /**
  * Hooks for accomodation.
@@ -72,12 +71,12 @@ export function useAccomodation() {
      * @param meterId Meter Id.
      * @param body Accomodation data.
      */
-    const updateAccomodation = async (meterId: string, body: AccomodationDataType) => {
+    const updateAccomodation = async (meterId: number, body: AccomodationDataType) => {
         const dataIsNotModified = isMatch(accomodation as AccomodationDataType, body)
         if (dataIsNotModified) return
         setIsLoadingInProgress(true)
         try {
-            await axios.post<AccomodationDataType, AxiosResponse<any>>(`${MY_HOUSE_API(meterId)}`, body)
+            await axios.post<AccomodationDataType, AxiosResponse<any>>(`${ACCOMODATION_API(meterId)}`, body)
             enqueueSnackbar(
                 formatMessage({
                     id: 'Vos modifications ont été sauvegardées',
@@ -99,10 +98,10 @@ export function useAccomodation() {
      * @param meterId Represent the meterId of the Accomodation to be fetched.
      * @returns The function throw an error, and show snackbar message containing successful and errors message.
      */
-    const loadAccomodation = async (meterId: string) => {
+    const loadAccomodation = async (meterId: number) => {
         setIsLoadingInProgress(true)
         try {
-            const { data: responseData } = await axios.get<AccomodationDataType>(MY_HOUSE_API(meterId))
+            const { data: responseData } = await axios.get<AccomodationDataType>(ACCOMODATION_API(meterId))
             setAccomodation(responseData)
         } catch (error) {
             enqueueSnackbar(

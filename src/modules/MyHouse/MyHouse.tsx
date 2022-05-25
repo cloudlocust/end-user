@@ -1,12 +1,12 @@
 import React from 'react'
+import FuseLoading from 'src/common/ui-kit/fuse/components/FuseLoading'
 import MultiTab from 'src/modules/shared/MultiTab/MultiTab'
-import { useMeterList } from 'src/modules/Meters/metersHook'
+import { useMeterList } from '../Meters/metersHook'
 import { AccomodationForm } from './components/Accomodation/AccomodationForm'
 import { EquipmentForm } from './components/Equipments/EquipmentForm'
-import FuseLoading from 'src/common/ui-kit/fuse/components/FuseLoading'
 
 /**
- * Form used for modify user MyHouse.
+ * Form used for modify MyHouse.
  *
  * @returns MyHouse form component.
  */
@@ -21,7 +21,7 @@ export const MyHouse = () => {
             tabSlug: 'accomodation',
             tabContent: (
                 <div className="Tab-Accomodation flex justify-center">
-                    <AccomodationForm />
+                    <AccomodationForm meterId={meterList[0].id} />
                 </div>
             ),
         },

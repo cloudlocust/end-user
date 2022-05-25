@@ -15,18 +15,26 @@ import {
 } from '../../utils/MyHouseVariables'
 import { Form } from 'src/common/react-platform-components'
 import { EditButtonsGroup } from '../../EditButtonsGroup'
-import { useMeterList } from '../../../Meters/metersHook'
 import { useAccomodation } from './AccomodationHooks'
-import { useSnackbar } from 'notistack'
+/**
+ * Interface IAccomodation.
+ */
+interface IAccomodation {
+    /**
+     * MeterId.
+     */
+    meterId: number
+}
 /**
  * AccomodationForm .
  *
+ * @param root0 N/A.
+ * @param root0.meterId MeterId.
  * @returns AccomodationForm.
  */
-export const AccomodationForm = () => {
+export const AccomodationForm = ({ meterId }: IAccomodation) => {
     const { formatMessage } = useIntl()
     const [isDPE, setIsDPE] = useState(true)
-    const { elementList: meterList } = useMeterList(100)
     const { loadAccomodation, updateAccomodation, accomodation } = useAccomodation()
     const [isEditAccomodation, setIdEditAccomodation] = useState(false)
     /**
@@ -36,8 +44,6 @@ export const AccomodationForm = () => {
         setIdEditAccomodation((prevEdit) => !prevEdit)
     }
     const disabledField = !isEditAccomodation
-    const { enqueueSnackbar } = useSnackbar()
-
     const accomodationData = {
         houseType: accomodation?.houseType,
         houseYear: accomodation?.houseYear,
@@ -66,24 +72,13 @@ export const AccomodationForm = () => {
         }
         return data
     }
-    const meterId = meterList?.length ? meterList[0] : null
     return (
         <div className="flex flex-col justify-center w-full md:w-3/4 ">
             <Form
                 onSubmit={async (data: any) => {
-                    if (!meterId) {
-                        enqueueSnackbar(
-                            formatMessage({
-                                id: "Il n'existe pas de meter",
-                                defaultMessage: "Il n'existe pas de meter",
-                            }),
-                            { variant: 'error' },
-                        )
-                        return
-                    }
                     const dataAccomodation = { ...setSelectFields(data), meterId }
-                    await updateAccomodation(meterId.guid, dataAccomodation)
-                    loadAccomodation(meterId.guid)
+                    await updateAccomodation(meterId, dataAccomodation)
+                    loadAccomodation(meterId)
                     toggleEdit()
                 }}
                 defaultValues={accomodationData}
