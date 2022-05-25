@@ -31,8 +31,8 @@ jest.mock('notistack', () => ({
         enqueueSnackbar: mockEnqueueSnackbar,
     }),
 }))
-jest.mock('src/modules/Profile/Accomodation/AccomodationHooks', () => ({
-    ...jest.requireActual('src/modules/Profile/Accomodation/AccomodationHooks'),
+jest.mock('src/modules/MyHouse/Accomodation/AccomodationHooks', () => ({
+    ...jest.requireActual('src/modules/MyHouse/Accomodation/AccomodationHooks'),
     // eslint-disable-next-line jsdoc/require-jsdoc
     useAccomodation: () => ({
         isLoadingInProgress: mockIsLoadingInProgress,

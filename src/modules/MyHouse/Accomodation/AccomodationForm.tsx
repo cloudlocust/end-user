@@ -12,7 +12,7 @@ import {
     accomodationNames,
     isolationOptions,
     performanceOptions,
-} from '../utils/ProfileVariables'
+} from '../utils/MyHouseVariables'
 import { Form } from 'src/common/react-platform-components'
 import { EditButtonsGroup } from '../EditButtonsGroup'
 import { useMeterList } from '../../Meters/metersHook'

@@ -1,5 +1,5 @@
-export { ProfileConfig, URL_PROFILE } from './ProfileConfig'
-export { Profile } from './Profile'
+export { MyHouseConfig, URL_MY_HOUSE } from './MyHouseConfig'
+export { MyHouse } from './MyHouse'
 export { EquipmentForm } from './EquipmentForm'
 export { AccomodationForm } from './Accomodation/AccomodationForm'
 export { EditButtonsGroup } from './EditButtonsGroup'

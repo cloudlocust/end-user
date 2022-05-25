@@ -1,9 +1,9 @@
 import React from 'react'
 
 /**
- * Form used for modify user profile.
+ * MyConsumption.
  *
- * @returns Modify form component.
+ * @returns MyConsumption.
  */
 export const MyConsumption = () => {
     return <div>My conso</div>

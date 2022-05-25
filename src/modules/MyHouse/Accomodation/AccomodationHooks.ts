@@ -13,7 +13,7 @@ import { isMatch } from 'lodash'
  * @param meterId The meterId of the accomodation.
  * @returns Meters base url.
  */
-export const PROFILE_API = (meterId: string) => `${METERS_API}/${meterId}/home-configuration`
+export const MY_HOUSE_API = (meterId: string) => `${METERS_API}/${meterId}/home-configuration`
 
 /**
  * Accomodation Data Type.
@@ -77,7 +77,7 @@ export function useAccomodation() {
         if (dataIsNotModified) return
         setIsLoadingInProgress(true)
         try {
-            await axios.post<AccomodationDataType, AxiosResponse<any>>(`${PROFILE_API(meterId)}`, body)
+            await axios.post<AccomodationDataType, AxiosResponse<any>>(`${MY_HOUSE_API(meterId)}`, body)
             enqueueSnackbar(
                 formatMessage({
                     id: 'Vos modifications ont été sauvegardées',
@@ -102,7 +102,7 @@ export function useAccomodation() {
     const loadAccomodation = async (meterId: string) => {
         setIsLoadingInProgress(true)
         try {
-            const { data: responseData } = await axios.get<AccomodationDataType>(PROFILE_API(meterId))
+            const { data: responseData } = await axios.get<AccomodationDataType>(MY_HOUSE_API(meterId))
             setAccomodation(responseData)
         } catch (error) {
             enqueueSnackbar(

@@ -4,11 +4,11 @@ import { AccomodationForm } from './Accomodation/AccomodationForm'
 import { EquipmentForm } from './EquipmentForm'
 
 /**
- * Form used for modify user profile.
+ * Form used for modify user MyHouse.
  *
- * @returns Modify form component.
+ * @returns MyHouse form component.
  */
-export const Profile = () => {
+export const MyHouse = () => {
     const [isEdit, setIsEdit] = useState(false)
     /**
      * OnSubmit.

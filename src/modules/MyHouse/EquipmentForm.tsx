@@ -3,11 +3,12 @@ import { chunk, filter, zip } from 'lodash'
 import React from 'react'
 import { Form } from 'src/common/react-platform-components'
 import { useIntl } from 'src/common/react-platform-translation'
+import { ButtonLoader } from 'src/common/ui-kit'
 import { NumberFieldForm } from 'src/common/ui-kit/components/NumberField/NumberFieldForm'
 import { INumberFieldForm } from 'src/common/ui-kit/components/NumberField/NumberFieldTypes'
 import { SelectButtons } from 'src/common/ui-kit/form-fields/SelectButtons/SelectButtons'
 import { EditButtonsGroup } from './EditButtonsGroup'
-import { myEquipmentOptions } from './utils/ProfileVariables'
+import { myEquipmentOptions } from './utils/MyHouseVariables'
 
 interface IEquipementForm {
     isEdit: boolean
@@ -143,12 +144,9 @@ export const EquipmentForm = ({ isEdit, onSubmit, enableForm }: IEquipementForm)
                         </div>
                     ))}
                 </div>
-                {/* <EditButtonsGroup
-                    isEdit={isEdit}
-                    onSubmit={onSubmit}
-                    enableForm={enableForm}
-
-                /> */}
+                <ButtonLoader variant="contained" type="submit" className="ml-16">
+                    {formatMessage({ id: 'Enregistrer', defaultMessage: 'Enregistrer' })}
+                </ButtonLoader>
             </Form>
         </div>
     )

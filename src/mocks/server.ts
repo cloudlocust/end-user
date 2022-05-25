@@ -2,7 +2,7 @@ import { setupServer } from 'msw/node'
 import { metersEndpoints } from './handlers/meters'
 import { userEndpoints } from './handlers/user'
 import { nrlinkEndpoints } from './handlers/nrlink'
-import { profilEndpoints } from './handlers/profile'
+import { myHouseEndpoints } from './handlers/myHouse'
 
 /**
  * Handlers to mock urls for tests.
@@ -14,7 +14,8 @@ const handlers = [
     ...metersEndpoints,
     /******NrLink REQUESTS*****/
     ...nrlinkEndpoints,
-    ...profilEndpoints,
+    /******myHouse REQUESTS*****/
+    ...myHouseEndpoints,
 ]
 
 // This configures a request mocking server with the given request handlers.
