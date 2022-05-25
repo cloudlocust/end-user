@@ -111,7 +111,7 @@ const MultiTab = ({
     let basePath = location.join('/')
 
     // UseHistory, and tab Handle
-    const [tabSlug, setTabSlug] = useState(content[0].tabSlug)
+    const [tabSlug, setTabSlug] = useState(entryTab === ':tab' ? content[0].tabSlug : entryTab)
     const history = useHistory()
     entryTab === ':tab' && history.replace({ pathname: `${basePath}/${content[0].tabSlug}`, ...restLocationState })
 
@@ -149,7 +149,7 @@ const MultiTab = ({
                     ))}
                 </Tabs>
             }
-            content={<div className="p-16 sm:p-24 w-full">{keyedContent[tabSlug]}</div>}
+            content={<div className="p-16 sm:p-24 w-full">{keyedContent[tabSlug as string]}</div>}
             innerScroll={innerScroll}
             isToolbarOutside
         />
