@@ -22,9 +22,9 @@ describe('Testing useAccomodation hooks', () => {
         })
         expect(result.current.isLoadingInProgress).toBe(false)
         act(() => {
-            result.current.updateAccomodation('17707368031234', {
+            result.current.updateAccomodation(1, {
                 houseType: 'Maison',
-                meterId: { guid: '17707368031234' },
+                meterId: 1,
             })
         })
         expect(result.current.isLoadingInProgress).toBe(true)
@@ -47,7 +47,7 @@ describe('Testing useAccomodation hooks', () => {
         expect(result.current.isLoadingInProgress).toBe(false)
         act(async () => {
             try {
-                await result.current.updateAccomodation('17707368031234', { houseType: 'Maison' })
+                await result.current.updateAccomodation(1, { houseType: 'Maison' })
             } catch (error) {}
         })
         expect(result.current.isLoadingInProgress).toBe(true)
@@ -67,7 +67,7 @@ describe('Testing useAccomodation hooks', () => {
         } = reduxedRenderHook(() => useAccomodation(), { initialState: {} })
         expect(result.current.isLoadingInProgress).toBe(false)
         act(() => {
-            result.current.loadAccomodation(TEST_METERS[0].guid)
+            result.current.loadAccomodation(TEST_METERS[0].id)
         })
         expect(result.current.isLoadingInProgress).toBe(true)
         await waitForValueToChange(

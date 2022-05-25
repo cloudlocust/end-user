@@ -1,38 +1,25 @@
-import React, { useState } from 'react'
+import React from 'react'
+import FuseLoading from 'src/common/ui-kit/fuse/components/FuseLoading'
 import MultiTab from 'src/modules/shared/MultiTab/MultiTab'
+import { useMeterList } from '../Meters/metersHook'
 import { AccomodationForm } from './components/Accomodation/AccomodationForm'
 import { EquipmentForm } from './EquipmentForm'
 
 /**
- * Form used for modify user MyHouse.
+ * Form used for modify MyHouse.
  *
  * @returns MyHouse form component.
  */
 export const MyHouse = () => {
-    const [isEdit, setIsEdit] = useState(false)
-    /**
-     * OnSubmit.
-     *
-     * @param data Data to submit.
-     */
-    const onSubmit = (data: any) => {
-        // updateHouseDetails(data)
-        setIsEdit(false)
-    }
-    /**
-     * Enable edit form.
-     */
-    const enableForm = () => {
-        setIsEdit(true)
-    }
-
+    const { elementList: meterList } = useMeterList()
+    if (!meterList || !meterList.length) return <FuseLoading />
     const tabsContent = [
         {
             tabTitle: 'Logement',
             tabSlug: 'accomodation',
             tabContent: (
                 <div className="Tab-Accomodation flex justify-center">
-                    <AccomodationForm />
+                    <AccomodationForm meterId={meterList[0].id} />
                 </div>
             ),
         },
@@ -41,12 +28,9 @@ export const MyHouse = () => {
             tabSlug: 'equipment',
             tabContent: (
                 <div className="Tab-Equipment flex justify-center">
-                    <EquipmentForm
+                    {/* <EquipmentForm
                         // houseDetails={houseDetails}
-                        isEdit={isEdit}
-                        onSubmit={onSubmit}
-                        enableForm={enableForm}
-                    />
+                    /> */}
                 </div>
             ),
         },
