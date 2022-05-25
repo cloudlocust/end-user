@@ -1,20 +1,20 @@
 import React from 'react'
 import MultiTab from 'src/modules/shared/MultiTab/MultiTab'
-import { AccomodationForm, EquipmentForm } from 'src/modules/Profile'
 import { useMeterList } from 'src/modules/Meters/metersHook'
+import { AccomodationForm } from './components/Accomodation/AccomodationForm'
+import { EquipmentForm } from './components/Equipments/EquipmentForm'
 import FuseLoading from 'src/common/ui-kit/fuse/components/FuseLoading'
 
 /**
- * Form used for modify user profile.
+ * Form used for modify user MyHouse.
  *
- * @returns Modify form component.
+ * @returns MyHouse form component.
  */
-export const Profile = () => {
+export const MyHouse = () => {
     const { elementList: meterList } = useMeterList()
 
     // TODO Fix when meter will be configured in profile.
     if (!meterList || meterList.length === 0) return <FuseLoading />
-
     const tabsContent = [
         {
             tabTitle: 'Logement',
