@@ -17,6 +17,11 @@ import { API_RESOURCES_URL } from 'src/configs'
  */
 export const GET_SHOW_NRLINK_POPUP_ENDPOINT = `${API_RESOURCES_URL}/customer/get_show_nrlink_popup`
 /**
+ * Set Show NrLink Popup Endpoint.
+ */
+export const SET_SHOW_NRLINK_POPUP_ENDPOINT = `${API_RESOURCES_URL}/customer/set_show_nrlink_popup`
+
+/**
  * Form used for modify user NrLinkConnection.
  *
  * @returns Modify form component.
@@ -74,6 +79,12 @@ const NrLinkConnection = () => {
                     <div className="portrait:absolute portrait:bottom-24 portrait:right-24 md:static md:mt-44 landscape:mt-44">
                         <MuiLink
                             component={Link}
+                            onClick={() => {
+                                // eslint-disable-next-line jsdoc/require-jsdoc
+                                axios.patch<{ showNrlinkPopup: boolean }>(`${SET_SHOW_NRLINK_POPUP_ENDPOINT}`, {
+                                    showNrlinkPopup: false,
+                                })
+                            }}
                             sx={{
                                 color:
                                     // eslint-disable-next-line jsdoc/require-jsdoc
