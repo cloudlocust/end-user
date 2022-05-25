@@ -1,32 +1,23 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { CircularProgress, useMediaQuery, useTheme } from '@mui/material'
-import { chunk, filter, zip } from 'lodash'
 import { Form } from 'src/common/react-platform-components'
 import { useIntl } from 'src/common/react-platform-translation'
 import { NumberFieldForm } from 'src/common/ui-kit/components/NumberField/NumberFieldForm'
 import { INumberFieldForm } from 'src/common/ui-kit/components/NumberField/NumberFieldTypes'
 import { SelectButtons } from 'src/common/ui-kit/form-fields/SelectButtons/SelectButtons'
 import { EditButtonsGroup } from 'src/modules/Profile/EditButtonsGroup'
-import { myEquipmentOptions, heaterEquipment, hotPlateEquipment } from 'src/modules/Profile/utils/ProfileVariables'
+import {
+    myEquipmentOptions,
+    heaterEquipment,
+    hotPlateEquipment,
+    groupedCards,
+} from 'src/modules/Profile/utils/ProfileVariables'
 import { useEquipmentList } from 'src/modules/Profile/components/Equipments/equipmentHooks'
 import {
-    equipmentNameType,
+    equipmentAllowedTypeT,
     equipmentValuesType,
     meterEquipmentType,
-    postEquipmentInputType,
 } from 'src/modules/Profile/components/Equipments/EquipmentsType'
-
-// TODO move to utils
-/**
- *
- * @param cards
- * @param colNumber
- * @returns
- */
-function groupedCards<T>(cards: T[], colNumber = 2) {
-    const chunkArray = cards && chunk(cards, colNumber)
-    return zip(...chunkArray).map((item) => filter(item)) as T[][]
-}
 
 /**
  * EquipmentForm Component.
@@ -47,9 +38,8 @@ export const EquipmentForm = ({
     const { equipmentList, saveEquipment, loadingEquipmentInProgress } = useEquipmentList(meterId)
 
     // eslint-disable-next-line jsdoc/require-jsdoc
-    let savedEquipmentList: { [key: string]: meterEquipmentType } | null = null
+    let savedEquipmentList: { [key: string]: meterEquipmentType } = {}
     if (equipmentList) {
-        if (!savedEquipmentList) savedEquipmentList = {}
         equipmentList.forEach((equipment) => {
             if (equipment.equipmentAllowedType.length > 0)
                 savedEquipmentList![equipment.equipmentName] = {
@@ -59,16 +49,9 @@ export const EquipmentForm = ({
             else
                 savedEquipmentList![equipment.equipmentName] = {
                     equipmentId: equipment.id,
-                    equipmentNumber: equipment.meterEquipment ? equipment.meterEquipment[0].equipmentNumber : undefined,
+                    equipmentNumber: equipment.meterEquipment ? equipment.meterEquipment[0].equipmentNumber : 0,
                 }
         })
-    }
-
-    /**
-     * Enable edit form.
-     */
-    const enableForm = () => {
-        setIsEdit(true)
     }
 
     const { formatMessage } = useIntl()
@@ -79,9 +62,58 @@ export const EquipmentForm = ({
         ? groupedCards(myEquipmentOptions as INumberFieldForm[], 5)
         : groupedCards(myEquipmentOptions as INumberFieldForm[])
 
+    if (!equipmentList || loadingEquipmentInProgress || equipmentList.length === 0)
+        return (
+            <div className="flex flex-col justify-center items-center w-full" style={{ minHeight: '60vh' }}>
+                <CircularProgress />
+            </div>
+        )
+
+    // eslint-disabled-next-line jsdoc/require-jsdoc
+    let defaultValues: // eslint-disabled-next-line jsdoc/require-jsdoc
+    /**
+     * Default values used for setting the value of the form, and when resseting form.
+     */
+    {
+        // eslint-disabled-next-line jsdoc/require-jsdoc
+        [key: string]: number | equipmentAllowedTypeT
+    } = {}
+    // Initialise default Values
+    Object.keys(savedEquipmentList!).forEach((equipmentName) => {
+        defaultValues[equipmentName] =
+            savedEquipmentList[equipmentName].equipmentNumber === 0
+                ? savedEquipmentList[equipmentName].equipmentNumber!
+                : savedEquipmentList[equipmentName].equipmentType!
+    })
+
     return (
         <div className="flex flex-col justify-center w-full md:w-3/4 ">
-            <Form onSubmit={(data: equipmentValuesType) => {}}>
+            <Form
+                defaultValues={defaultValues}
+                onSubmit={async (formData: equipmentValuesType) => {
+                    let body: meterEquipmentType[] = []
+                    // Transform formData into body for saveEquipment Request, using the savedData.
+                    Object.keys(savedEquipmentList!).forEach((equipmentName) => {
+                        if (formData[equipmentName as keyof equipmentValuesType]) {
+                            if (savedEquipmentList![equipmentName].equipmentNumber === 0)
+                                savedEquipmentList![equipmentName].equipmentNumber = formData[
+                                    equipmentName as keyof equipmentValuesType
+                                ] as number
+                            else
+                                savedEquipmentList![equipmentName].equipmentType = formData[
+                                    equipmentName as keyof equipmentValuesType
+                                ] as equipmentAllowedTypeT
+
+                            body.push(savedEquipmentList![equipmentName])
+                        }
+                    })
+                    if (body.length > 1) {
+                        await saveEquipment(body)
+
+                        setIsEdit(false)
+                    }
+                }}
+            >
                 <div className="flex flex-col justify-center w-full ">
                     <div className="font-semibold self-center text-sm mb-4 mt-16">
                         {formatMessage({
@@ -90,26 +122,10 @@ export const EquipmentForm = ({
                         })}
                     </div>
                     <div className="text-13">
-                        <SelectButtons
-                            isDisabled={!isEdit}
-                            {...heaterEquipment}
-                            initialValue={
-                                savedEquipmentList
-                                    ? savedEquipmentList![heaterEquipment.name as equipmentNameType].equipmentType
-                                    : undefined
-                            }
-                        />
+                        <SelectButtons isDisabled={!isEdit} {...heaterEquipment} />
                     </div>
                     <div className="text-13">
-                        <SelectButtons
-                            isDisabled={!isEdit}
-                            {...hotPlateEquipment}
-                            initialValue={
-                                savedEquipmentList
-                                    ? savedEquipmentList![hotPlateEquipment.name as equipmentNameType].equipmentType
-                                    : undefined
-                            }
-                        />
+                        <SelectButtons isDisabled={!isEdit} {...hotPlateEquipment} />
                     </div>
                 </div>
                 <div className="mt-16 mb-20">
@@ -122,24 +138,16 @@ export const EquipmentForm = ({
                     {myEquipment.map((col) => (
                         <div className="w-full text-13">
                             {col.map((item) => (
-                                <NumberFieldForm
-                                    {...item}
-                                    disableDecrement={true}
-                                    value={
-                                        savedEquipmentList
-                                            ? savedEquipmentList![item.name as equipmentNameType].equipmentNumber
-                                            : undefined
-                                    }
-                                />
+                                <NumberFieldForm {...item} disableDecrement={true} />
                             ))}
                         </div>
                     ))}
                 </div>
                 <EditButtonsGroup
-                    formInitialValues={{}}
+                    formInitialValues={defaultValues}
                     isEdit={isEdit}
                     disableEdit={() => setIsEdit(false)}
-                    enableForm={enableForm}
+                    enableForm={() => setIsEdit(true)}
                 />
             </Form>
         </div>

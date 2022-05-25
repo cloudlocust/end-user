@@ -106,7 +106,6 @@ export const equipmentsEndpoints = [
     rest.get(EQUIPMENTS_API(1), (req, res, ctx) => {
         const authorization = req.headers.get('authorization')
         if (authorization) return res(ctx.status(404), ctx.delay(1000), ctx.json('error'))
-
         return res(ctx.status(200), ctx.delay(1000), ctx.json(TEST_EQUIPMENTS))
     }),
 
@@ -115,6 +114,7 @@ export const equipmentsEndpoints = [
         // Success
         if (req.body[0].equipment_id === TEST_SAVE_EQUIPMENT.equipment_id) {
             TEST_EQUIPMENTS[0].meter_equipment = [TEST_SAVE_EQUIPMENT]
+            TEST_EQUIPMENTS[1].meter_equipment = [{ ...TEST_SAVE_EQUIPMENT, equipment_type: 'induction' }]
             return res(ctx.status(200), ctx.delay(1000), ctx.json([TEST_SAVE_EQUIPMENT]))
         } else if (req.body[0].equipment_id === TEST_ERROR_SAVE_EQUIPMENT_ID) {
             // Message error

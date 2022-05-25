@@ -1,3 +1,4 @@
+import { chunk, filter, zip } from 'lodash'
 import { INumberFieldForm } from 'src/common/ui-kit/components/NumberField/NumberFieldTypes'
 import { ISelectButtons } from 'src/common/ui-kit/form-fields/SelectButtons/SelectButtonsTypes'
 /**
@@ -156,3 +157,15 @@ export const myEquipmentOptions: INumberFieldForm[] = [
         },
     },
 ]
+
+/**
+ * Grouped Cards for showing in flex mode.
+ *
+ * @param cards Cards Type.
+ * @param colNumber Number of colons.
+ * @returns Grouped Cards component.
+ */
+export function groupedCards<T>(cards: T[], colNumber = 2) {
+    const chunkArray = cards && chunk(cards, colNumber)
+    return zip(...chunkArray).map((item) => filter(item)) as T[][]
+}

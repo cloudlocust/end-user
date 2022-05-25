@@ -68,6 +68,7 @@ export const useEquipmentList = (meterId: number) => {
                 AxiosResponse<postEquipmentInputType>
             >(EQUIPMENTS_API(meterId), body)
 
+            await loadEquipmentList()
             enqueueSnackbar(
                 formatMessage({
                     id: "Succès lors de l'enregistrement de vos équipments",
