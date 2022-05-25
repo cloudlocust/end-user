@@ -30,7 +30,7 @@ export var TEST_EQUIPMENTS: SnakeCasedPropertiesDeep<IEquipment>[] = [
         equipment_name: 'heater' as equipmentNameType,
         equipment_allowed_type: ['electricity', 'other'],
         // meter_equipment: null,
-        meter_equipment: [{ equipment_id: 1, equipment_type: 'electricity' }],
+        meter_equipment: null,
     },
     {
         id: 2,

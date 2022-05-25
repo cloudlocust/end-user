@@ -44,7 +44,7 @@ const iconStyles = 'my-5 h-56'
 const getEquipmentIconPath = (name: string) => `/assets/images/content/equipment/${name}.svg`
 
 // eslint-disable-next-line jsdoc/require-jsdoc
-export const heatingEquipment: ISelectButtons = {
+export const heaterEquipment: ISelectButtons = {
     name: 'heater',
     wrapperStyles,
     titleLabel: 'Type de chauffage :',
@@ -70,7 +70,7 @@ export const heatingEquipment: ISelectButtons = {
 export const hotPlateEquipment: ISelectButtons = {
     name: 'hotplate',
     wrapperStyles,
-    titleLabel: 'Type de chauffage :',
+    titleLabel: 'Type de plaques de cuisson :',
     formOptions: [
         {
             label: 'Eléctricité',

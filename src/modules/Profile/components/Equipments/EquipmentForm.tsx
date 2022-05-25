@@ -7,7 +7,7 @@ import { NumberFieldForm } from 'src/common/ui-kit/components/NumberField/Number
 import { INumberFieldForm } from 'src/common/ui-kit/components/NumberField/NumberFieldTypes'
 import { SelectButtons } from 'src/common/ui-kit/form-fields/SelectButtons/SelectButtons'
 import { EditButtonsGroup } from 'src/modules/Profile/EditButtonsGroup'
-import { myEquipmentOptions, heatingEquipment, hotPlateEquipment } from '../utils/ProfileVariables'
+import { myEquipmentOptions, heaterEquipment, hotPlateEquipment } from 'src/modules/Profile/utils/ProfileVariables'
 import { useEquipmentList } from 'src/modules/Profile/components/Equipments/equipmentHooks'
 import {
     equipmentNameType,
@@ -92,10 +92,10 @@ export const EquipmentForm = ({
                     <div className="text-13">
                         <SelectButtons
                             isDisabled={!isEdit}
-                            {...heatingEquipment}
+                            {...heaterEquipment}
                             initialValue={
                                 savedEquipmentList
-                                    ? savedEquipmentList![heatingEquipment.name as equipmentNameType].equipmentType
+                                    ? savedEquipmentList![heaterEquipment.name as equipmentNameType].equipmentType
                                     : undefined
                             }
                         />
@@ -106,7 +106,7 @@ export const EquipmentForm = ({
                             {...hotPlateEquipment}
                             initialValue={
                                 savedEquipmentList
-                                    ? savedEquipmentList![heatingEquipment.name as equipmentNameType].equipmentType
+                                    ? savedEquipmentList![hotPlateEquipment.name as equipmentNameType].equipmentType
                                     : undefined
                             }
                         />

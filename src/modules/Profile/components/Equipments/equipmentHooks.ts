@@ -57,8 +57,8 @@ export const useEquipmentList = (meterId: number) => {
     /**
      * Save Equipment function.
      *
-     * @param body Values for saving equipment
-     * @returns newEquipment saved
+     * @param body Values for saving equipment.
+     * @returns Equipments saved.
      */
     const saveEquipment = async (body: postEquipmentInputType) => {
         setLoadingEquipmentInProgress(true)
