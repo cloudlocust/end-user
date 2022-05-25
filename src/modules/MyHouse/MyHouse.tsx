@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import MultiTab from 'src/modules/shared/MultiTab/MultiTab'
-import { AccomodationForm } from './Accomodation/AccomodationForm'
+import { AccomodationForm } from './components/Accomodation/AccomodationForm'
 import { EquipmentForm } from './EquipmentForm'
 
 /**

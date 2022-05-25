@@ -4,8 +4,8 @@ import { useIntl } from 'src/common/react-platform-translation'
 import { useSnackbar } from 'notistack'
 import { getMsgFromAxiosError } from 'src/modules/utils'
 import { AxiosResponse } from 'axios'
-import { METERS_API } from '../../Meters/metersHook'
-import { IMeter } from '../../Meters/Meters'
+import { METERS_API } from '../../../Meters/metersHook'
+import { IMeter } from '../../../Meters/Meters'
 import { isMatch } from 'lodash'
 /**
  * Accomodation url.

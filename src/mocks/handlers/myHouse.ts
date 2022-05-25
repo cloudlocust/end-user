@@ -1,5 +1,5 @@
 import { rest } from 'msw'
-import { MY_HOUSE_API } from 'src/modules/MyHouse/Accomodation/AccomodationHooks'
+import { MY_HOUSE_API } from 'src/modules/MyHouse/components/Accomodation/AccomodationHooks'
 import { TEST_METERS } from './meters'
 /**
  * TEST_MY_HOUSE_RESPONSE.
