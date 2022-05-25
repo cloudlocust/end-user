@@ -71,8 +71,9 @@ export const NumberField = ({ ...props }: INumberField) => {
                     <Button
                         variant="outlined"
                         onClick={() => {
-                            !disabledField && onChange && onChange(value - 1)
+                            onChange && onChange(value - 1)
                         }}
+                        disabled={disabledField}
                     >
                         <Icon color={disabledField ? 'disabled' : 'primary'}>remove</Icon>
                     </Button>
