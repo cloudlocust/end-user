@@ -3,7 +3,6 @@ import FuseLoading from 'src/common/ui-kit/fuse/components/FuseLoading'
 import MultiTab from 'src/modules/shared/MultiTab/MultiTab'
 import { useMeterList } from '../Meters/metersHook'
 import { AccomodationForm } from './components/Accomodation/AccomodationForm'
-import { EquipmentForm } from './EquipmentForm'
 
 /**
  * Form used for modify MyHouse.
