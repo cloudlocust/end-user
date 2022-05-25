@@ -10,7 +10,7 @@ import { setupWorker } from 'msw'
 import { userEndpoints } from './handlers/user'
 import { metersEndpoints } from './handlers/meters'
 import { nrlinkEndpoints } from './handlers/nrlink'
-import { myHouseEndpoints } from './handlers/myHouse'
+import { accomodationEndpoints } from './handlers/accomodation'
 
 /**
  * Handlers to mock urls for tests.
@@ -22,7 +22,8 @@ const handlers = [
     ...metersEndpoints,
     /******NrLink REQUESTS*****/
     ...nrlinkEndpoints,
-    ...myHouseEndpoints,
+    /******accomodation REQUESTS*****/
+    ...accomodationEndpoints,
 ]
 
 /**
