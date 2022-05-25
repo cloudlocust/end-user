@@ -1,25 +1,22 @@
 import { rest } from 'msw'
-import { getPaginationFromElementList } from 'src/mocks/utils'
 import { SnakeCasedPropertiesDeep } from 'type-fest'
-import { METERS_API } from 'src/modules/Meters/metersHook'
-import { addMeterInputType, IMeter } from 'src/modules/Meters/Meters'
-
+import { EQUIPMENTS_API } from 'src/modules/Profile/components/Equipments/equipmentHooks'
+import {
+    equipmentNameType,
+    IEquipment,
+    meterEquipmentType,
+    postEquipmentInputType,
+} from 'src/modules/Profile/components/Equipments/EquipmentsType'
 /**
  * Mock for meter data to be added.
  */
-export const TEST_ADD_METER = {
-    guid: '12345123451234',
-    name: 'meter1',
+export const TEST_SAVE_EQUIPMENT: SnakeCasedPropertiesDeep<meterEquipmentType> = {
+    equipment_id: 1,
+    equipment_type: 'electricity',
 }
 
-/**
- * Fake meter ID.
- */
-export const TEST_ERROR_METER_GUID = 'fakeId'
-/**
- * Fake meter name.
- */
-export const TEST_ERROR_METER_NAME = 'fakeName'
+// eslint-disable-next-line jsdoc/require-jsdoc
+export const TEST_ERROR_SAVE_EQUIPMENT_ID = -1
 
 // eslint-disable-next-line jsdoc/require-jsdoc
 export const CREATED_AT_DATA = '2021-12-15T14:07:38.138000'
@@ -27,78 +24,104 @@ export const CREATED_AT_DATA = '2021-12-15T14:07:38.138000'
 /**
  * Mock of customers/clients list data.
  */
-export var TEST_METERS: SnakeCasedPropertiesDeep<IMeter>[] = [
+export var TEST_EQUIPMENTS: SnakeCasedPropertiesDeep<IEquipment>[] = [
     {
         id: 1,
-        guid: '17707368031234',
-        name: 'Leanne',
+        equipment_name: 'heater' as equipmentNameType,
+        equipment_allowed_type: ['electricity', 'other'],
+        // meter_equipment: null,
+        meter_equipment: [{ equipment_id: 1, equipment_type: 'electricity' }],
     },
     {
         id: 2,
-        name: 'Ervin',
-        guid: '11069265931234',
+        equipment_name: 'hotplate' as equipmentNameType,
+        equipment_allowed_type: ['vitroceramic', 'induction', 'other'],
+        meter_equipment: null,
     },
     {
         id: 3,
-        name: 'Clementine',
-        guid: '14631234471234',
+        equipment_name: 'computerdesktop' as equipmentNameType,
+        equipment_allowed_type: [],
+        meter_equipment: null,
     },
     {
         id: 4,
-        name: 'Patricia',
-        guid: '49317096231234',
+        equipment_name: 'laptop' as equipmentNameType,
+        equipment_allowed_type: [],
+        meter_equipment: null,
     },
     {
         id: 5,
-        name: 'Chelsey',
-        guid: '25495412891234',
+        equipment_name: 'tv' as equipmentNameType,
+        equipment_allowed_type: [],
+        meter_equipment: null,
     },
     {
         id: 6,
-        name: 'Mrs. Dennis',
-        guid: '14779354781234',
+        equipment_name: 'vacuum' as equipmentNameType,
+        equipment_allowed_type: [],
+        meter_equipment: null,
     },
     {
         id: 7,
-        name: 'Kurtis',
-        guid: '21006761321234',
+        equipment_name: 'oven' as equipmentNameType,
+        equipment_allowed_type: [],
+        meter_equipment: null,
     },
     {
         id: 8,
-        name: 'Nicholas',
-        guid: '58649369431234',
+        equipment_name: 'microwave' as equipmentNameType,
+        equipment_allowed_type: [],
+        meter_equipment: null,
+    },
+    {
+        id: 9,
+        equipment_name: 'fridge' as equipmentNameType,
+        equipment_allowed_type: [],
+        meter_equipment: null,
+    },
+    {
+        id: 10,
+        equipment_name: 'dishwasher' as equipmentNameType,
+        equipment_allowed_type: [],
+        meter_equipment: null,
+    },
+    {
+        id: 11,
+        equipment_name: 'washingmachine' as equipmentNameType,
+        equipment_allowed_type: [],
+        meter_equipment: null,
+    },
+    {
+        id: 12,
+        equipment_name: 'dryer' as equipmentNameType,
+        equipment_allowed_type: [],
+        meter_equipment: null,
     },
 ]
 
 // eslint-disable-next-line jsdoc/require-jsdoc
-export const metersEndpoints = [
-    // Get All Meters
-    rest.get(METERS_API, (req, res, ctx) => {
-        const TEST_METERS_RESPONSE = getPaginationFromElementList<SnakeCasedPropertiesDeep<IMeter>>(
-            req,
-            TEST_METERS as [],
-        )
-        if (TEST_METERS_RESPONSE !== null) return res(ctx.status(200), ctx.delay(1000), ctx.json(TEST_METERS_RESPONSE))
-        return res(ctx.status(404), ctx.delay(1000), ctx.json('error'))
+export const equipmentsEndpoints = [
+    // Get All Equipments
+    rest.get(EQUIPMENTS_API(1), (req, res, ctx) => {
+        const authorization = req.headers.get('authorization')
+        if (authorization) return res(ctx.status(404), ctx.delay(1000), ctx.json('error'))
+
+        return res(ctx.status(200), ctx.delay(1000), ctx.json(TEST_EQUIPMENTS))
     }),
 
-    // Add Metr Post request
-    rest.post<SnakeCasedPropertiesDeep<addMeterInputType>>(METERS_API, (req, res, ctx) => {
-        // Duplicated guid
-        if (req.body.guid === TEST_ERROR_METER_GUID)
-            return res(ctx.status(400), ctx.delay(1000), ctx.json({ detail: 'Le numéro de compteur existe déjà' }))
-        // Duplicated name errors
-        if (req.body.name === TEST_ERROR_METER_NAME)
-            return res(ctx.status(400), ctx.delay(1000), ctx.json({ detail: 'Le nom de compteur existe déjà' }))
-        // Other errors
-        if (req.body.name === TEST_ERROR_METER_GUID) return res(ctx.status(401), ctx.delay(1000))
+    // Save Equipment Post request
+    rest.post<SnakeCasedPropertiesDeep<postEquipmentInputType>>(EQUIPMENTS_API(1), (req, res, ctx) => {
         // Success
-        const lengthBefore = TEST_METERS.length
-        const newMeter = {
-            ...req.body,
-            id: lengthBefore + 1,
+        if (req.body[0].equipment_id === TEST_SAVE_EQUIPMENT.equipment_id) {
+            TEST_EQUIPMENTS[0].meter_equipment = [TEST_SAVE_EQUIPMENT]
+            return res(ctx.status(200), ctx.delay(1000), ctx.json([TEST_SAVE_EQUIPMENT]))
+        } else if (req.body[0].equipment_id === TEST_ERROR_SAVE_EQUIPMENT_ID) {
+            // Message error
+            return res(ctx.status(400), ctx.delay(1000), ctx.json({ detail: 'Erreur backend' }))
+        } else {
+            // Other error
+            return res(ctx.status(401), ctx.delay(1000))
         }
-        TEST_METERS.unshift(newMeter)
-        return res(ctx.status(200), ctx.delay(1000), ctx.json(newMeter))
     }),
 ]

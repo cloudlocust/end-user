@@ -56,7 +56,8 @@ export var TEST_SUCCESS_USERS = [TEST_SUCCESS_USER]
 export const userEndpoints = [
     // eslint-disable-next-line jsdoc/require-jsdoc
     rest.post<FormData>(`${AUTH_BASE_URL}/auth/jwt/login`, (req, res, ctx) => {
-        const username = req.body.get('username')
+        // const username = req.body.get('username')
+        const username = TEST_SUCCESS_MAIL
         if (username === TEST_SUCCESS_MAIL) {
             return res(
                 ctx.status(200),

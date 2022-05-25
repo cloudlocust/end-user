@@ -11,6 +11,7 @@ import { userEndpoints } from './handlers/user'
 import { metersEndpoints } from './handlers/meters'
 import { nrlinkEndpoints } from './handlers/nrlink'
 import { profilEndpoints } from './handlers/profile'
+import { equipmentsEndpoints } from './handlers/equipments'
 
 /**
  * Handlers to mock urls for tests.
@@ -23,6 +24,8 @@ const handlers = [
     /******NrLink REQUESTS*****/
     ...nrlinkEndpoints,
     ...profilEndpoints,
+    /******Equipments REQUESTS*****/
+    ...equipmentsEndpoints,
 ]
 
 /**

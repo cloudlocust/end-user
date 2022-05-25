@@ -2,6 +2,8 @@ import React, { useState } from 'react'
 import MultiTab from 'src/modules/shared/MultiTab/MultiTab'
 import { AccomodationForm } from './AccomodationForm'
 import { EquipmentForm } from './components/EquipmentForm'
+import { useMeterList } from 'src/modules/Meters/metersHook'
+import FuseLoading from 'src/common/ui-kit/fuse/components/FuseLoading'
 
 /**
  * Form used for modify user profile.
@@ -11,6 +13,10 @@ import { EquipmentForm } from './components/EquipmentForm'
 export const Profile = () => {
     // const { houseDetails, updateHouseDetails } = useProfile()
     const [isEdit, setIsEdit] = useState(false)
+    const { elementList: meterList } = useMeterList()
+
+    // TODO Fix when meter will be configured in profile.
+    if (!meterList || meterList.length === 0) return <FuseLoading />
 
     /**
      * OnSubmit.
@@ -48,7 +54,7 @@ export const Profile = () => {
             tabSlug: 'equipment',
             tabContent: (
                 <div className="Tab-Equipment flex justify-center">
-                    <EquipmentForm />
+                    <EquipmentForm meterId={meterList[0].id} />
                 </div>
             ),
         },

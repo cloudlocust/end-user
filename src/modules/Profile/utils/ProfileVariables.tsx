@@ -45,20 +45,20 @@ const getEquipmentIconPath = (name: string) => `/assets/images/content/equipment
 
 // eslint-disable-next-line jsdoc/require-jsdoc
 export const heatingEquipment: ISelectButtons = {
-    name: 'heating',
+    name: 'heater',
     wrapperStyles,
     titleLabel: 'Type de chauffage :',
     formOptions: [
         {
             label: 'Eléctricité',
-            iconPath: getEquipmentIconPath('heatingElectricity'),
+            iconPath: getEquipmentIconPath('electricity'),
             buttonStyle,
             iconStyles,
             value: 'electricity',
         },
         {
             label: 'Autre',
-            iconPath: getEquipmentIconPath('heatingOther'),
+            iconPath: getEquipmentIconPath('heaterOther'),
             buttonStyle: buttonStyleLast,
             iconStyles,
             value: 'other',
@@ -67,28 +67,28 @@ export const heatingEquipment: ISelectButtons = {
 }
 
 // eslint-disable-next-line jsdoc/require-jsdoc
-export const hotPlatesEquipment: ISelectButtons = {
-    name: 'hotplates',
+export const hotPlateEquipment: ISelectButtons = {
+    name: 'hotplate',
     wrapperStyles,
     titleLabel: 'Type de chauffage :',
     formOptions: [
         {
             label: 'Eléctricité',
-            iconPath: getEquipmentIconPath('hotplatesElectricity'),
+            iconPath: getEquipmentIconPath('vitroceramic'),
             buttonStyle,
             iconStyles,
-            value: 'electricity',
+            value: 'vitroceramic',
         },
         {
             label: 'Induction',
-            iconPath: getEquipmentIconPath('hotplatesInduction'),
+            iconPath: getEquipmentIconPath('induction'),
             buttonStyle,
             iconStyles,
             value: 'induction',
         },
         {
             label: 'Autre',
-            iconPath: getEquipmentIconPath('hotplatesOther'),
+            iconPath: getEquipmentIconPath('hotplateOther'),
             buttonStyle: buttonStyleLast,
             iconStyles,
             value: 'other',
@@ -99,31 +99,27 @@ export const hotPlatesEquipment: ISelectButtons = {
 // eslint-disable-next-line jsdoc/require-jsdoc
 export const myEquipmentOptions: INumberFieldForm[] = [
     {
-        name: 'computer',
+        name: 'computerdesktop',
         labelTitle: 'PC de bureau',
         iconLabel: 'computer',
-        disableDecrement: true,
     },
     {
         name: 'laptop',
         labelTitle: 'PC Portable',
         iconLabel: 'computer',
-        disableDecrement: true,
     },
     {
-        name: 'television',
+        name: 'tv',
         labelTitle: 'Téléviseur',
         iconLabel: 'tv',
-        disableDecrement: true,
     },
     {
-        name: 'aspirator',
+        name: 'vacuum',
         labelTitle: 'Aspirateur',
         // eslint-disable-next-line jsdoc/require-jsdoc
         get iconPath() {
             return getEquipmentIconPath(this.name)
         },
-        disableDecrement: true,
     },
     {
         name: 'oven',
@@ -132,27 +128,24 @@ export const myEquipmentOptions: INumberFieldForm[] = [
         get iconPath() {
             return getEquipmentIconPath(this.name)
         },
-        disableDecrement: true,
     },
-    { name: 'microwave', labelTitle: 'Micro-onde', iconLabel: 'microwave', disableDecrement: true },
-    { name: 'Réfrigérateur', labelTitle: 'Réfrigérateur', iconLabel: 'kitchen', disableDecrement: true },
+    { name: 'microwave', labelTitle: 'Micro-onde', iconLabel: 'microwave' },
+    { name: 'fridge', labelTitle: 'Réfrigérateur', iconLabel: 'kitchen' },
     {
         name: 'dishwasher',
         labelTitle: 'Lave-vaisselle',
-        disableDecrement: true,
         // eslint-disable-next-line jsdoc/require-jsdoc
         get iconPath() {
             return getEquipmentIconPath(this.name)
         },
     },
     {
-        name: 'washingMachine',
+        name: 'washingmachine',
         labelTitle: 'Lave linge',
         // eslint-disable-next-line jsdoc/require-jsdoc
         get iconPath() {
             return getEquipmentIconPath(this.name)
         },
-        disableDecrement: true,
     },
     {
         name: 'dryer',
@@ -161,6 +154,5 @@ export const myEquipmentOptions: INumberFieldForm[] = [
         get iconPath() {
             return getEquipmentIconPath(this.name)
         },
-        disableDecrement: true,
     },
 ]
