@@ -1,6 +1,11 @@
 import { reduxedRenderHook } from 'src/common/react-platform-components/test'
 import { act } from '@testing-library/react-hooks'
-import { TEST_SAVE_EQUIPMENT, TEST_ERROR_SAVE_EQUIPMENT_ID } from 'src/mocks/handlers/equipments'
+import {
+    TEST_SAVE_EQUIPMENT,
+    TEST_ERROR_SAVE_EQUIPMENT_ID,
+    TEST_LOAD_ERROR_EQUIPMENT,
+    TEST_LOAD_ERROR_METER_EQUIPMENT,
+} from 'src/mocks/handlers/equipments'
 import { useEquipmentList } from 'src/modules/MyHouse/components/Equipments/equipmentHooks'
 const mockEnqueueSnackbar = jest.fn()
 /**
@@ -126,9 +131,35 @@ describe('EquipmentHooks test', () => {
         }, 20000)
     })
     describe('Load Equipments', () => {
-        test('When load error snackbar should be called with error message', async () => {
+        test('When load error meterEquipment snackbar should be called with error message', async () => {
             const { store } = require('src/redux')
-            await store.dispatch.userModel.setAuthenticationToken('123')
+            await store.dispatch.userModel.setAuthenticationToken(TEST_LOAD_ERROR_METER_EQUIPMENT)
+
+            const {
+                renderedHook: { result, waitForValueToChange },
+            } = reduxedRenderHook(() => useEquipmentList(1), { store })
+            await waitForValueToChange(
+                () => {
+                    return result.current.loadingEquipmentInProgress
+                },
+                { timeout: 2000 },
+            )
+            expect(result.current.loadingEquipmentInProgress).toBe(true)
+
+            await waitForValueToChange(
+                () => {
+                    return result.current.loadingEquipmentInProgress
+                },
+                { timeout: 4000 },
+            )
+            expect(result.current.loadingEquipmentInProgress).toBe(false)
+            expect(mockEnqueueSnackbar).toHaveBeenCalledWith(TEST_LOAD_EQUIPMENTS_ERROR_MESSAGE, {
+                variant: 'error',
+            })
+        })
+        test('When load error equipments snackbar should be called with error message', async () => {
+            const { store } = require('src/redux')
+            await store.dispatch.userModel.setAuthenticationToken(TEST_LOAD_ERROR_EQUIPMENT)
 
             const {
                 renderedHook: { result, waitForValueToChange },

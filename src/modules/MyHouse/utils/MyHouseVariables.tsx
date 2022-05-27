@@ -1,6 +1,7 @@
 import { chunk, filter, zip } from 'lodash'
 import { INumberFieldForm } from 'src/common/ui-kit/components/NumberField/NumberFieldTypes'
 import { ISelectButtons } from 'src/common/ui-kit/form-fields/SelectButtons/SelectButtonsTypes'
+import { equipmentNameType } from 'src/modules/MyHouse/components/Equipments/EquipmentsType'
 /**
  * Accomodation labels.
  */
@@ -100,7 +101,7 @@ export const hotPlateEquipment: ISelectButtons = {
 // eslint-disable-next-line jsdoc/require-jsdoc
 export const myEquipmentOptions: INumberFieldForm[] = [
     {
-        name: 'computerdesktop',
+        name: 'desktopcomputer',
         labelTitle: 'PC de bureau',
         iconLabel: 'computer',
     },
@@ -158,6 +159,24 @@ export const myEquipmentOptions: INumberFieldForm[] = [
     },
 ]
 
+/**
+ * Equipment Name type.
+ */
+// eslint-disable-next-line jsdoc/require-jsdoc
+export const mappingEquipmentNameToType: { [key in equipmentNameType]: 'number' | 'type' } = {
+    heater: 'type',
+    hotplate: 'type',
+    tv: 'number',
+    vacuum: 'number',
+    oven: 'number',
+    microwave: 'number',
+    fridge: 'number',
+    dishwasher: 'number',
+    washingmachine: 'number',
+    dryer: 'number',
+    laptop: 'number',
+    desktopcomputer: 'number',
+}
 /**
  * Grouped Cards for showing in flex mode.
  *

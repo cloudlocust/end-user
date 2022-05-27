@@ -4,17 +4,17 @@ import { reduxedRender } from 'src/common/react-platform-components/test'
 import { EquipmentForm } from 'src/modules/MyHouse/components/Equipments/EquipmentForm'
 import { IMeter } from 'src/modules/Meters/Meters'
 import { TEST_METERS } from 'src/mocks/handlers/meters'
-import { TEST_EQUIPMENTS as MOCK_EQUIPMENTS } from 'src/mocks/handlers/equipments'
+import { TEST_METER_EQUIPMENTS as MOCK_EQUIPMENTS } from 'src/mocks/handlers/equipments'
 import { applyCamelCase } from 'src/common/react-platform-components'
-import { IEquipment } from 'src/modules/MyHouse/components/Equipments/EquipmentsType'
+import { IEquipmentMeter } from 'src/modules/MyHouse/components/Equipments/EquipmentsType'
 
-const TEST_EQUIPMENTS = applyCamelCase(MOCK_EQUIPMENTS)
+const TEST_METER_EQUIPMENTS = applyCamelCase(MOCK_EQUIPMENTS)
 
 let mockIsLoadingInProgress = false
 const mockSaveEquipment = jest.fn()
 const mockLoadEquipmentList = jest.fn()
 let mockMeterList: IMeter[] | null = TEST_METERS
-let mockEquipmentList: IEquipment[] | null = TEST_EQUIPMENTS
+let mockEquipmentList: IEquipmentMeter[] | null = TEST_METER_EQUIPMENTS
 const MODIFIER_BUTTON_TEXT = 'Modifier'
 const HEATER_TEXT = 'Type de chauffage :'
 const EQUIPMENT_INFO_TEXT = 'Informations Equipements'
@@ -108,8 +108,8 @@ describe('Test EquipmentForm', () => {
         })
         await waitFor(() => {
             expect(mockSaveEquipment).toHaveBeenCalledWith([
-                { equipmentId: 1, equipmentType: 'electricity' },
-                { equipmentId: 2, equipmentType: 'induction' },
+                { equipmentId: 1, equipmentType: 'electricity', equipmentNumber: 0 },
+                { equipmentId: 2, equipmentType: 'induction', equipmentNumber: 0 },
             ])
         })
     })
