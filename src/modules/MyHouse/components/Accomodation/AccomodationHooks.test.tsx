@@ -1,7 +1,7 @@
 import { reduxedRenderHook } from 'src/common/react-platform-components/test'
 import { act } from 'react-dom/test-utils'
 import { TEST_METERS } from 'src/mocks/handlers/meters'
-import { useAccomodation } from './AccomodationHooks'
+import { useAccomodation } from 'src/modules/MyHouse/components/Accomodation/AccomodationHooks'
 
 const mockEnqueueSnackbar = jest.fn()
 

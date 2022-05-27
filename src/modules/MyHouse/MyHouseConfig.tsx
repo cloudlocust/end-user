@@ -1,6 +1,6 @@
 import { authTypes } from 'src/common/react-platform-components'
 import { IRouteNavigationConfig } from 'src/routes'
-import { MyHouse } from './MyHouse'
+import { MyHouse } from 'src/modules/MyHouse/MyHouse'
 
 /**
  * Url for myHouse.

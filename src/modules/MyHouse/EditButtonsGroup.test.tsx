@@ -1,6 +1,6 @@
 import { reduxedRender } from 'src/common/react-platform-components/test'
 import { BrowserRouter as Router } from 'react-router-dom'
-import { EditButtonsGroup } from './EditButtonsGroup'
+import { EditButtonsGroup } from 'src/modules/MyHouse/EditButtonsGroup'
 
 let mockEnableForm = jest.fn()
 let mockDisableForm = jest.fn()

@@ -1,8 +1,8 @@
 import { fireEvent, act, waitFor } from '@testing-library/react'
 import { BrowserRouter } from 'react-router-dom'
 import { reduxedRender } from 'src/common/react-platform-components/test'
-import { AccomodationForm } from './AccomodationForm'
-import { IMeter } from '../../../Meters/Meters'
+import { AccomodationForm } from 'src/modules/MyHouse/components/Accomodation/AccomodationForm'
+import { IMeter } from 'src/modules/Meters/Meters'
 import { TEST_METERS } from 'src/mocks/handlers/meters'
 
 let mockIsLoadingInProgress = false
