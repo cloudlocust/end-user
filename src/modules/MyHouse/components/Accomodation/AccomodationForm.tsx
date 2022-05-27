@@ -12,19 +12,12 @@ import {
     accomodationNames,
     isolationOptions,
     performanceOptions,
-} from '../../utils/MyHouseVariables'
+} from 'src/modules/MyHouse/utils/MyHouseVariables'
 import { Form } from 'src/common/react-platform-components'
-import { EditButtonsGroup } from '../../EditButtonsGroup'
-import { useAccomodation } from './AccomodationHooks'
-/**
- * Interface IAccomodation.
- */
-interface IAccomodation {
-    /**
-     * MeterId.
-     */
-    meterId: number
-}
+import { EditButtonsGroup } from 'src/modules/MyHouse/EditButtonsGroup'
+import { useAccomodation } from 'src/modules/MyHouse/components/Accomodation/AccomodationHooks'
+import { AccomodationDataType, IAccomodation } from 'src/modules/MyHouse/components/Accomodation/AccomodationType'
+
 /**
  * AccomodationForm .
  *
@@ -60,14 +53,14 @@ export const AccomodationForm = ({ meterId }: IAccomodation) => {
      * @param data OnSubmit data.
      * @returns Data.
      */
-    const setSelectFields = (data: any) => {
+    const setSelectFields = (data: AccomodationDataType) => {
         if (
             data.hasOwnProperty(accomodationNames.energyPerformanceIndex) &&
             data.hasOwnProperty(accomodationNames.isolationLevel)
         ) {
             isDPE
-                ? delete data[accomodationNames.isolationLevel]
-                : delete data[accomodationNames.energyPerformanceIndex]
+                ? delete data[accomodationNames.isolationLevel as keyof AccomodationDataType]
+                : delete data[accomodationNames.energyPerformanceIndex as keyof AccomodationDataType]
             return data
         }
         return data
@@ -75,7 +68,7 @@ export const AccomodationForm = ({ meterId }: IAccomodation) => {
     return (
         <div className="flex flex-col justify-center w-full md:w-3/4 ">
             <Form
-                onSubmit={async (data: any) => {
+                onSubmit={async (data: AccomodationDataType) => {
                     const dataAccomodation = { ...setSelectFields(data), meterId }
                     await updateAccomodation(meterId, dataAccomodation)
                     loadAccomodation(meterId)

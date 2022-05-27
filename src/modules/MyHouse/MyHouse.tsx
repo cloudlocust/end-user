@@ -1,9 +1,9 @@
 import React from 'react'
 import FuseLoading from 'src/common/ui-kit/fuse/components/FuseLoading'
 import MultiTab from 'src/modules/shared/MultiTab/MultiTab'
-import { useMeterList } from '../Meters/metersHook'
-import { AccomodationForm } from './components/Accomodation/AccomodationForm'
-import { EquipmentForm } from './components/Equipments/EquipmentForm'
+import { useMeterList } from 'src/modules/Meters/metersHook'
+import { AccomodationForm } from 'src/modules/MyHouse/components/Accomodation/AccomodationForm'
+import { EquipmentForm } from 'src/modules/MyHouse/components/Equipments/EquipmentForm'
 
 /**
  * Form used for modify MyHouse.
@@ -13,8 +13,7 @@ import { EquipmentForm } from './components/Equipments/EquipmentForm'
 export const MyHouse = () => {
     const { elementList: meterList } = useMeterList()
 
-    // TODO Fix when meter will be configured in profile.
-    if (!meterList || meterList.length === 0) return <FuseLoading />
+    if (!meterList || !meterList.length) return <FuseLoading />
     const tabsContent = [
         {
             tabTitle: 'Logement',
