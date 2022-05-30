@@ -17,6 +17,7 @@ import { Form } from 'src/common/react-platform-components'
 import { EditButtonsGroup } from 'src/modules/MyHouse/EditButtonsGroup'
 import { useAccomodation } from 'src/modules/MyHouse/components/Accomodation/AccomodationHooks'
 import { AccomodationDataType, IAccomodation } from 'src/modules/MyHouse/components/Accomodation/AccomodationType'
+import { CircularProgress } from '@mui/material'
 
 /**
  * AccomodationForm .
@@ -28,7 +29,7 @@ import { AccomodationDataType, IAccomodation } from 'src/modules/MyHouse/compone
 export const AccomodationForm = ({ meterId }: IAccomodation) => {
     const { formatMessage } = useIntl()
     const [isDPE, setIsDPE] = useState(true)
-    const { loadAccomodation, updateAccomodation, accomodation } = useAccomodation()
+    const { loadAccomodation, updateAccomodation, accomodation, isLoadingInProgress } = useAccomodation()
     const [isEditAccomodation, setIdEditAccomodation] = useState(false)
     /**
      * Toggle edit accomodation.
@@ -36,7 +37,7 @@ export const AccomodationForm = ({ meterId }: IAccomodation) => {
     const toggleEdit = () => {
         setIdEditAccomodation((prevEdit) => !prevEdit)
     }
-    const disabledField = !isEditAccomodation
+    const disabledField = !!(accomodation && !isEditAccomodation)
     const accomodationData = {
         houseType: accomodation?.houseType,
         houseYear: accomodation?.houseYear,
@@ -65,6 +66,12 @@ export const AccomodationForm = ({ meterId }: IAccomodation) => {
         }
         return data
     }
+    if (isLoadingInProgress)
+        return (
+            <div className="flex flex-col justify-center items-center w-full" style={{ minHeight: '60vh' }}>
+                <CircularProgress />
+            </div>
+        )
     return (
         <div className="flex flex-col justify-center w-full md:w-3/4 ">
             <Form
@@ -182,6 +189,7 @@ export const AccomodationForm = ({ meterId }: IAccomodation) => {
                         children={performanceOptions.map((performance) => {
                             return <MenuItem value={performance}>{performance}</MenuItem>
                         })}
+                        defaultValue={null}
                     />
                 ) : (
                     <Select
@@ -190,6 +198,7 @@ export const AccomodationForm = ({ meterId }: IAccomodation) => {
                         children={isolationOptions.map((isolation) => {
                             return <MenuItem value={isolation}>{isolation}</MenuItem>
                         })}
+                        defaultValue={null}
                     />
                 )}
                 <div className="flex flex-row flex justify-between mt-16 mr-24">
@@ -237,7 +246,7 @@ export const AccomodationForm = ({ meterId }: IAccomodation) => {
                     </div>
                 </div>
                 <EditButtonsGroup
-                    isEdit={isEditAccomodation}
+                    isEdit={!disabledField}
                     enableForm={toggleEdit}
                     formInitialValues={accomodationData}
                     disableEdit={toggleEdit}

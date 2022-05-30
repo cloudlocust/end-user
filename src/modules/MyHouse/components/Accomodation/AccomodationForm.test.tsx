@@ -4,6 +4,9 @@ import { reduxedRender } from 'src/common/react-platform-components/test'
 import { AccomodationForm } from 'src/modules/MyHouse/components/Accomodation/AccomodationForm'
 import { IMeter } from 'src/modules/Meters/Meters'
 import { TEST_METERS } from 'src/mocks/handlers/meters'
+import { TEST_ACCOMODATION_RESPONSE as MOCK_TEST_ACCOMODATION_RESPONSE } from 'src/mocks/handlers/accomodation'
+import { AccomodationDataType } from './AccomodationType'
+import { applyCamelCase } from 'src/common/react-platform-components'
 
 let mockIsLoadingInProgress = false
 const mockUpdateAccomodation = jest.fn()
@@ -16,6 +19,8 @@ const BUTTON_DISABLED_ELEMENT = `button.${DISABLED_CLASS}`
 const ANNULER_BUTTON_TEXT = 'Annuler'
 const ENREGISTRER_BUTTON_TEXT = 'Enregistrer'
 const mockEnqueueSnackbar = jest.fn()
+const TEST_ACCOMODATION_RESPONSE = applyCamelCase(MOCK_TEST_ACCOMODATION_RESPONSE)
+let mockAccomodation: AccomodationDataType = TEST_ACCOMODATION_RESPONSE
 
 /**
  * Mocking the useSnackbar used in AccomodationForm.
@@ -38,6 +43,7 @@ jest.mock('src/modules/MyHouse/components/Accomodation/AccomodationHooks', () =>
         isLoadingInProgress: mockIsLoadingInProgress,
         updateAccomodation: mockUpdateAccomodation,
         loadAccomodation: mockLoadAccomodation,
+        accomodation: mockAccomodation,
     }),
 }))
 // Mock metersHook
