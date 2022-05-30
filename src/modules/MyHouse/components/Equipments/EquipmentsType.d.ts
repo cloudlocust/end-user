@@ -19,19 +19,23 @@ export type equipmentNameType =
 export type equipmentAllowedTypeT = 'induction' | 'electricity' | 'other' | 'vitroceramic'
 
 // eslint-disable-next-line jsdoc/require-jsdoc
-export type equipmentMetersType = {
-    // eslint-disable-next-line jsdoc/require-jsdoc
+export type equipmentMeterType = {
+    /**
+     * Id of Equipment.
+     */
     equipmentId: number
-    // eslint-disable-next-line jsdoc/require-jsdoc
+    /**
+     * Number value of the equipment.
+     */
     equipmentNumber?: number
-    // eslint-disable-next-line jsdoc/require-jsdoc
+    /**
+     * Type value of the Equipment.
+     */
     equipmentType?: equipmentAllowedTypeT
 }
 
-/**
- * Equipment model.
- */
-export interface IEquipment {
+// eslint-disable-next-line jsdoc/require-jsdoc
+export type equipmentType = {
     /**
      * Id of Equipment.
      */
@@ -44,17 +48,24 @@ export interface IEquipment {
      * Type of the Equipment.
      */
     allowedType: equipmentAllowedTypeT[]
+}
+
+/**
+ * Equipment Meter model.
+ */
+// eslint-disable-next-line jsdoc/require-jsdoc
+export type IEquipmentMeter = equipmentMeterType & {
     /**
-     * Indicate if this equipment is associated to the meter with meter_id.
+     * Indicate information about the equipments.
      */
-    equipmentMeters: null | equipmentMetersType[]
+    equipment: equipmentType
 }
 
 /**
  * Information to be passed when .
  */
 //eslint-disable-next-line jsdoc/require-jsdoc
-export type postEquipmentInputType = equipmentMetersType[]
+export type postEquipmentInputType = equipmentMeterType[]
 
 //eslint-disable-next-line jsdoc/require-jsdoc
 export type equipmentValuesType = { [key in equipmentNameType]: number | string }

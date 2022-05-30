@@ -1,4 +1,8 @@
-import { IEquipment, postEquipmentInputType } from 'src/modules/MyHouse/components/Equipments/EquipmentsType'
+import {
+    equipmentType,
+    IEquipmentMeter,
+    postEquipmentInputType,
+} from 'src/modules/MyHouse/components/Equipments/EquipmentsType'
 import { useEffect, useState, useCallback, useRef } from 'react'
 import { AxiosResponse } from 'axios'
 import { axios } from 'src/common/react-platform-components'
@@ -8,7 +12,10 @@ import { METERS_API } from 'src/modules/Meters/metersHook'
 
 // Meter Equipments API
 // eslint-disable-next-line jsdoc/require-jsdoc
-export const EQUIPMENTS_API = (meterId: number) => `${METERS_API}/${meterId}/equipments`
+export const METER_EQUIPMENTS_API = (meterId: number) => `${METERS_API}/${meterId}/equipments`
+// Equipments API
+// eslint-disable-next-line jsdoc/require-jsdoc
+export const EQUIPMENTS_API = `${METERS_API}/equipments`
 
 /**
 `* Hooks for equipmentList.
@@ -21,7 +28,7 @@ export const useEquipmentList = (meterId: number) => {
     const { formatMessage } = useIntl()
     const isInitialMount = useRef(true)
     const [loadingEquipmentInProgress, setLoadingEquipmentInProgress] = useState(false)
-    const [equipmentList, setEquipmentList] = useState<IEquipment[] | null>(null)
+    const [equipmentList, setEquipmentList] = useState<IEquipmentMeter[] | null>(null)
 
     /**
      * Load Customers function responsing for fetching customersList.
@@ -32,7 +39,20 @@ export const useEquipmentList = (meterId: number) => {
         setLoadingEquipmentInProgress(true)
 
         try {
-            const { data: responseData } = await axios.get<IEquipment[]>(EQUIPMENTS_API(meterId))
+            const { data: meterEquipments } = await axios.get<IEquipmentMeter[]>(METER_EQUIPMENTS_API(meterId))
+            const { data: equipments } = await axios.get<equipmentType[]>(EQUIPMENTS_API)
+            const responseData = equipments.map((equipment) => {
+                const foundEquipment = meterEquipments.find(
+                    (meterEquipment) => meterEquipment.equipmentId === equipment.id,
+                )
+                if (foundEquipment) return foundEquipment
+                else
+                    return {
+                        equipmentId: equipment.id,
+                        equipmentNumber: 0,
+                        equipment,
+                    }
+            })
             setEquipmentList(responseData)
         } catch (error) {
             enqueueSnackbar(
@@ -66,7 +86,7 @@ export const useEquipmentList = (meterId: number) => {
             const { data: responseData } = await axios.post<
                 postEquipmentInputType,
                 AxiosResponse<postEquipmentInputType>
-            >(EQUIPMENTS_API(meterId), body)
+            >(METER_EQUIPMENTS_API(meterId), body)
 
             await loadEquipmentList()
             enqueueSnackbar(

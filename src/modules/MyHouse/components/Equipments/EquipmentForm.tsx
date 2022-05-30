@@ -11,12 +11,14 @@ import {
     heaterEquipment,
     hotPlateEquipment,
     groupedCards,
+    mappingEquipmentNameToType,
 } from 'src/modules/MyHouse/utils/MyHouseVariables'
 import { useEquipmentList } from 'src/modules/MyHouse/components/Equipments/equipmentHooks'
 import {
     equipmentAllowedTypeT,
     equipmentValuesType,
-    equipmentMetersType,
+    equipmentMeterType,
+    IEquipmentMeter,
 } from 'src/modules/MyHouse/components/Equipments/EquipmentsType'
 
 /**
@@ -37,20 +39,15 @@ export const EquipmentForm = ({
 
     const { equipmentList, saveEquipment, loadingEquipmentInProgress } = useEquipmentList(meterId)
 
+    // It'll have the following format an object of all equipment, name is the key, for example: {"heater": {equipment_id, equipment_type, equipment_number, isNumber, equipment: {id, name, allowed_type} } }.
     // eslint-disable-next-line jsdoc/require-jsdoc
-    let savedEquipmentList: { [key: string]: equipmentMetersType } = {}
+    let savedEquipmentList: { [key: string]: IEquipmentMeter & { isNumber: boolean } } = {}
     if (equipmentList) {
         equipmentList.forEach((equipment) => {
-            if (equipment.allowedType.length > 0)
-                savedEquipmentList![equipment.name] = {
-                    equipmentId: equipment.id,
-                    equipmentType: equipment.equipmentMeters ? equipment.equipmentMeters[0].equipmentType : undefined,
-                }
-            else
-                savedEquipmentList![equipment.name] = {
-                    equipmentId: equipment.id,
-                    equipmentNumber: equipment.equipmentMeters ? equipment.equipmentMeters[0].equipmentNumber : 0,
-                }
+            savedEquipmentList![equipment.equipment.name] = {
+                ...equipment,
+                isNumber: mappingEquipmentNameToType[equipment.equipment.name] === 'number',
+            }
         })
     }
 
@@ -80,9 +77,9 @@ export const EquipmentForm = ({
     } = {}
     // Initialise default Values
     Object.keys(savedEquipmentList!).forEach((equipmentName) => {
-        defaultValues[equipmentName] = savedEquipmentList[equipmentName].equipmentType
-            ? savedEquipmentList[equipmentName].equipmentType!
-            : savedEquipmentList[equipmentName].equipmentNumber!
+        defaultValues[equipmentName] = savedEquipmentList[equipmentName].isNumber
+            ? savedEquipmentList[equipmentName].equipmentNumber!
+            : savedEquipmentList[equipmentName].equipmentType!
     })
 
     return (
@@ -90,27 +87,34 @@ export const EquipmentForm = ({
             <Form
                 defaultValues={defaultValues}
                 onSubmit={async (formData: equipmentValuesType) => {
-                    let body: equipmentMetersType[] = []
+                    let body: equipmentMeterType[] = []
                     // Transform formData into body for saveEquipment Request, using the savedData.
-                    Object.keys(savedEquipmentList!).forEach((equipmentName) => {
-                        if (formData[equipmentName as keyof equipmentValuesType]) {
-                            if (savedEquipmentList![equipmentName].equipmentNumber === 0)
-                                savedEquipmentList![equipmentName].equipmentNumber = formData[
+                    Object.keys(savedEquipmentList).forEach((equipmentName) => {
+                        if (
+                            formData[equipmentName as keyof equipmentValuesType] &&
+                            // Check that it's new values.
+                            savedEquipmentList[equipmentName].equipmentNumber !==
+                                formData[equipmentName as keyof equipmentValuesType] &&
+                            savedEquipmentList[equipmentName].equipmentType !==
+                                formData[equipmentName as keyof equipmentValuesType]
+                        ) {
+                            if (savedEquipmentList[equipmentName].isNumber)
+                                savedEquipmentList[equipmentName].equipmentNumber = formData[
                                     equipmentName as keyof equipmentValuesType
                                 ] as number
                             else
-                                savedEquipmentList![equipmentName].equipmentType = formData[
+                                savedEquipmentList[equipmentName].equipmentType = formData[
                                     equipmentName as keyof equipmentValuesType
                                 ] as equipmentAllowedTypeT
 
-                            body.push(savedEquipmentList![equipmentName])
+                            const { equipment, isNumber, ...rest } = savedEquipmentList[equipmentName]
+                            body.push(rest)
                         }
                     })
-                    if (body.length > 1) {
+                    if (body.length > 0) {
                         await saveEquipment(body)
-
-                        setIsEdit(false)
                     }
+                    setIsEdit(false)
                 }}
             >
                 <div className="flex flex-col justify-center w-full ">
@@ -137,7 +141,11 @@ export const EquipmentForm = ({
                     {myEquipment.map((col) => (
                         <div className="w-full text-13">
                             {col.map((item) => (
-                                <NumberFieldForm {...item} disableDecrement={true} />
+                                <NumberFieldForm
+                                    {...item}
+                                    disableDecrement={true}
+                                    value={savedEquipmentList[item.name].equipmentNumber}
+                                />
                             ))}
                         </div>
                     ))}
