@@ -20,6 +20,8 @@ export const TEST_SAVE_EQUIPMENT: SnakeCasedPropertiesDeep<equipmentMeterType> =
 export const TEST_ERROR_SAVE_EQUIPMENT_ID = -1
 
 // eslint-disable-next-line jsdoc/require-jsdoc
+export const TEST_AUTHORIZATION_LOAD_EMPTY_METER_EQUIPEMENTS = 'empty meter equipments'
+// eslint-disable-next-line jsdoc/require-jsdoc
 export const TEST_LOAD_ERROR_METER_EQUIPMENT = 'errorMeter'
 // eslint-disable-next-line jsdoc/require-jsdoc
 export const TEST_LOAD_ERROR_EQUIPMENT = 'errorEquipment'
@@ -233,6 +235,8 @@ export const equipmentsEndpoints = [
         const authorization = req.headers.get('authorization')
         if (authorization && authorization === TEST_LOAD_ERROR_EQUIPMENT)
             return res(ctx.status(404), ctx.delay(1000), ctx.json('error'))
+        else if (authorization && authorization === TEST_AUTHORIZATION_LOAD_EMPTY_METER_EQUIPEMENTS)
+            return res(ctx.status(200), ctx.delay(1000), ctx.json([]))
         return res(ctx.status(200), ctx.delay(1000), ctx.json(TEST_METER_EQUIPMENTS))
     }),
 

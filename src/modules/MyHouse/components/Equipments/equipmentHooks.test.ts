@@ -5,6 +5,7 @@ import {
     TEST_ERROR_SAVE_EQUIPMENT_ID,
     TEST_LOAD_ERROR_EQUIPMENT,
     TEST_LOAD_ERROR_METER_EQUIPMENT,
+    TEST_AUTHORIZATION_LOAD_EMPTY_METER_EQUIPEMENTS,
 } from 'src/mocks/handlers/equipments'
 import { useEquipmentList } from 'src/modules/MyHouse/components/Equipments/equipmentHooks'
 const mockEnqueueSnackbar = jest.fn()
@@ -182,6 +183,32 @@ describe('EquipmentHooks test', () => {
             expect(mockEnqueueSnackbar).toHaveBeenCalledWith(TEST_LOAD_EQUIPMENTS_ERROR_MESSAGE, {
                 variant: 'error',
             })
+        })
+
+        test('When load success with meterEquipment empty isEquipmentMeterListEmpty gets true', async () => {
+            const { store } = require('src/redux')
+            await store.dispatch.userModel.setAuthenticationToken(TEST_AUTHORIZATION_LOAD_EMPTY_METER_EQUIPEMENTS)
+
+            const {
+                renderedHook: { result, waitForValueToChange },
+            } = reduxedRenderHook(() => useEquipmentList(1), { store })
+            expect(result.current.isEquipmentMeterListEmpty).toBe(false)
+            await waitForValueToChange(
+                () => {
+                    return result.current.loadingEquipmentInProgress
+                },
+                { timeout: 2000 },
+            )
+            expect(result.current.loadingEquipmentInProgress).toBe(true)
+
+            await waitForValueToChange(
+                () => {
+                    return result.current.loadingEquipmentInProgress
+                },
+                { timeout: 4000 },
+            )
+            expect(result.current.loadingEquipmentInProgress).toBe(false)
+            expect(result.current.isEquipmentMeterListEmpty).toBe(true)
         })
     })
 })

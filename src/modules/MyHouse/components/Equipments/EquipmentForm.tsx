@@ -35,22 +35,23 @@ export const EquipmentForm = ({
     // eslint-disable-next-line jsdoc/require-jsdoc
     meterId: number
 }) => {
-    const [isEdit, setIsEdit] = useState(false)
+    const { equipmentList, saveEquipment, loadingEquipmentInProgress, isEquipmentMeterListEmpty } =
+        useEquipmentList(meterId)
 
-    const { equipmentList, saveEquipment, loadingEquipmentInProgress } = useEquipmentList(meterId)
+    const [isEdit, setIsEdit] = useState(false)
 
     // It'll have the following format an object of all equipment, name is the key, for example: {"heater": {equipment_id, equipment_type, equipment_number, isNumber, equipment: {id, name, allowed_type} } }.
     // eslint-disable-next-line jsdoc/require-jsdoc
     let savedEquipmentList: { [key: string]: IEquipmentMeter & { isNumber: boolean } } = {}
     if (equipmentList) {
         equipmentList.forEach((equipment) => {
+            // Check that equipmentMeterList is not empty.
             savedEquipmentList![equipment.equipment.name] = {
                 ...equipment,
                 isNumber: mappingEquipmentNameToType[equipment.equipment.name] === 'number',
             }
         })
     }
-
     const { formatMessage } = useIntl()
     const theme = useTheme()
     const isDesktop = useMediaQuery(theme.breakpoints.up('lg'))
@@ -125,10 +126,10 @@ export const EquipmentForm = ({
                         })}
                     </div>
                     <div className="text-13">
-                        <SelectButtons isDisabled={!isEdit} {...heaterEquipment} />
+                        <SelectButtons isDisabled={!isEquipmentMeterListEmpty && !isEdit} {...heaterEquipment} />
                     </div>
                     <div className="text-13">
-                        <SelectButtons isDisabled={!isEdit} {...hotPlateEquipment} />
+                        <SelectButtons isDisabled={!isEquipmentMeterListEmpty && !isEdit} {...hotPlateEquipment} />
                     </div>
                 </div>
                 <div className="mt-16 mb-20">
@@ -142,9 +143,9 @@ export const EquipmentForm = ({
                         <div className="w-full text-13">
                             {col.map((item) => (
                                 <NumberFieldForm
+                                    key={item.name}
                                     {...item}
-                                    disableDecrement={true}
-                                    value={savedEquipmentList[item.name].equipmentNumber}
+                                    disabled={!isEquipmentMeterListEmpty && !isEdit}
                                 />
                             ))}
                         </div>
@@ -152,7 +153,7 @@ export const EquipmentForm = ({
                 </div>
                 <EditButtonsGroup
                     formInitialValues={defaultValues}
-                    isEdit={isEdit}
+                    isEdit={isEquipmentMeterListEmpty || isEdit}
                     disableEdit={() => setIsEdit(false)}
                     enableForm={() => setIsEdit(true)}
                 />

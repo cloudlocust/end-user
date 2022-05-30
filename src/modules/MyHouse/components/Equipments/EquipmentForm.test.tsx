@@ -7,10 +7,12 @@ import { TEST_METERS } from 'src/mocks/handlers/meters'
 import { TEST_METER_EQUIPMENTS as MOCK_EQUIPMENTS } from 'src/mocks/handlers/equipments'
 import { applyCamelCase } from 'src/common/react-platform-components'
 import { IEquipmentMeter } from 'src/modules/MyHouse/components/Equipments/EquipmentsType'
+import userEvent from '@testing-library/user-event'
 
 const TEST_METER_EQUIPMENTS = applyCamelCase(MOCK_EQUIPMENTS)
 
 let mockIsLoadingInProgress = false
+let mockIsEquipmentMeterListEmpty = false
 const mockSaveEquipment = jest.fn()
 const mockLoadEquipmentList = jest.fn()
 let mockMeterList: IMeter[] | null = TEST_METERS
@@ -47,6 +49,7 @@ jest.mock('src/modules/MyHouse/components/Equipments/equipmentHooks', () => ({
         loadingEquipmentInProgress: mockIsLoadingInProgress,
         saveEquipment: mockSaveEquipment,
         equipmentList: mockEquipmentList,
+        isEquipmentMeterListEmpty: mockIsEquipmentMeterListEmpty,
     }),
 }))
 // Mock metersHook
@@ -59,7 +62,7 @@ jest.mock('src/modules/Meters/metersHook', () => ({
 }))
 
 describe('Test EquipmentForm', () => {
-    test('When equipmentForm mount form should be disabled, clicking on Modifier form should not be disabled', async () => {
+    test('When equipmentForm mount, with equipmentMeterList form should be disabled, clicking on Modifier form should not be disabled', async () => {
         const { getByText } = reduxedRender(
             <BrowserRouter>
                 <EquipmentForm meterId={TEST_METERS[0].id} />
@@ -72,9 +75,7 @@ describe('Test EquipmentForm', () => {
         expect(getByText(MODIFIER_BUTTON_TEXT)).toBeTruthy()
         expect(() => getByText(ANNULER_BUTTON_TEXT)).toThrow()
         expect(() => getByText(ENREGISTRER_BUTTON_TEXT)).toThrow()
-        act(() => {
-            fireEvent.click(getByText(MODIFIER_BUTTON_TEXT))
-        })
+        userEvent.click(getByText(MODIFIER_BUTTON_TEXT))
         await waitFor(() => {
             expect(getByText(INDUCTION_VALUE_TEXT).classList.contains(DISABLED_CLASS)).toBeFalsy()
         })
@@ -89,9 +90,7 @@ describe('Test EquipmentForm', () => {
                 <EquipmentForm meterId={TEST_METERS[0].id} />
             </BrowserRouter>,
         )
-        act(() => {
-            fireEvent.click(getByText(MODIFIER_BUTTON_TEXT))
-        })
+        userEvent.click(getByText(MODIFIER_BUTTON_TEXT))
         await act(async () => {
             fireEvent.click(getAllByText('Eléctricité')[0])
             fireEvent.click(getByText('Induction'))
@@ -103,15 +102,48 @@ describe('Test EquipmentForm', () => {
         await waitFor(() => {
             expect(getByText(ENREGISTRER_BUTTON_TEXT)).toBeTruthy()
         })
-        act(() => {
-            fireEvent.click(getByText(ENREGISTRER_BUTTON_TEXT))
-        })
+        userEvent.click(getByText(ENREGISTRER_BUTTON_TEXT))
         await waitFor(() => {
             expect(mockSaveEquipment).toHaveBeenCalledWith([
                 { equipmentId: 1, equipmentType: 'electricity', equipmentNumber: 0 },
                 { equipmentId: 2, equipmentType: 'induction', equipmentNumber: 0 },
             ])
         })
+    })
+
+    test('When clicking on Cancel Edit it should disableEdit', async () => {
+        const { getByText } = reduxedRender(
+            <BrowserRouter>
+                <EquipmentForm meterId={TEST_METERS[0].id} />
+            </BrowserRouter>,
+        )
+        expect(getByText(INDUCTION_VALUE_TEXT).classList.contains(DISABLED_CLASS)).toBeTruthy()
+        expect(() => getByText(ANNULER_BUTTON_TEXT)).toThrow()
+        expect(() => getByText(ENREGISTRER_BUTTON_TEXT)).toThrow()
+        userEvent.click(getByText(MODIFIER_BUTTON_TEXT))
+        await waitFor(() => {
+            expect(getByText(ANNULER_BUTTON_TEXT)).toBeTruthy()
+        })
+        expect(() => getByText(MODIFIER_BUTTON_TEXT)).toThrow()
+        userEvent.click(getByText(ANNULER_BUTTON_TEXT))
+        await waitFor(() => {
+            expect(getByText(MODIFIER_BUTTON_TEXT)).toBeTruthy()
+        })
+        expect(getByText(INDUCTION_VALUE_TEXT).classList.contains(DISABLED_CLASS)).toBeTruthy()
+        expect(() => getByText(ENREGISTRER_BUTTON_TEXT)).toThrow()
+        expect(() => getByText(ANNULER_BUTTON_TEXT)).toThrow()
+    })
+    test('When equipmentForm mount, and empty equipmentMeterList form should not be disabled', async () => {
+        mockIsEquipmentMeterListEmpty = true
+        const { getByText } = reduxedRender(
+            <BrowserRouter>
+                <EquipmentForm meterId={TEST_METERS[0].id} />
+            </BrowserRouter>,
+        )
+        expect(getByText(INDUCTION_VALUE_TEXT).classList.contains(DISABLED_CLASS)).toBeFalsy()
+        expect(getByText(ANNULER_BUTTON_TEXT)).toBeTruthy()
+        expect(getByText(ENREGISTRER_BUTTON_TEXT)).toBeTruthy()
+        expect(() => getByText(MODIFIER_BUTTON_TEXT)).toThrow()
     })
     test('When loading equipmentList, Circular progress should be shown', async () => {
         mockIsLoadingInProgress = true
