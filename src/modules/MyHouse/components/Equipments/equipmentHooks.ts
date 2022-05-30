@@ -28,6 +28,7 @@ export const useEquipmentList = (meterId: number) => {
     const { formatMessage } = useIntl()
     const isInitialMount = useRef(true)
     const [loadingEquipmentInProgress, setLoadingEquipmentInProgress] = useState(false)
+    const [isEquipmentMeterListEmpty, setIsEquipmentMeterListEmpty] = useState(false)
     const [equipmentList, setEquipmentList] = useState<IEquipmentMeter[] | null>(null)
 
     /**
@@ -37,10 +38,12 @@ export const useEquipmentList = (meterId: number) => {
      */
     const loadEquipmentList = useCallback(async () => {
         setLoadingEquipmentInProgress(true)
+        setIsEquipmentMeterListEmpty(false)
 
         try {
             const { data: meterEquipments } = await axios.get<IEquipmentMeter[]>(METER_EQUIPMENTS_API(meterId))
             const { data: equipments } = await axios.get<equipmentType[]>(EQUIPMENTS_API)
+            if (!meterEquipments || meterEquipments.length === 0) setIsEquipmentMeterListEmpty(true)
             const responseData = equipments.map((equipment) => {
                 const foundEquipment = meterEquipments.find(
                     (meterEquipment) => meterEquipment.equipmentId === equipment.id,
@@ -118,5 +121,6 @@ export const useEquipmentList = (meterId: number) => {
         loadingEquipmentInProgress,
         saveEquipment,
         equipmentList,
+        isEquipmentMeterListEmpty,
     }
 }

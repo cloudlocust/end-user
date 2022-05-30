@@ -20,9 +20,9 @@ export interface INumberField {
      */
     iconPath?: string
     /**
-     * Is decrement disabled when value === 0.
+     * Is Field disabled.
      */
-    disableDecrement?: boolean
+    disabled?: boolean
     /**
      * Wraper className.
      */
