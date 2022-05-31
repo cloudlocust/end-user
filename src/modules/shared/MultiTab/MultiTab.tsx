@@ -101,7 +101,6 @@ const MultiTab = ({
 
     // Add KeyContent to access slugs more easly
     let keyedContent = mapValues(keyBy(content, 'tabSlug'), 'tabContent')
-
     // Get Location from URL.
     const { pathname, ...restLocationState } = useLocation()
     const location = pathname.split('/')
@@ -111,11 +110,11 @@ const MultiTab = ({
     let basePath = location.join('/')
 
     // UseHistory, and tab Handle
-
-    const showFirstTab = content.filter((item) => item.tabSlug.includes(entryTab!))
-    const [tabSlug, setTabSlug] = useState(!showFirstTab.length ? content[0].tabSlug : entryTab)
+    const tabSlugList = content.filter((item) => item.tabSlug === entryTab)
+    const isInvalidValue = !tabSlugList.length || !entryTab?.length
+    const [tabSlug, setTabSlug] = useState(isInvalidValue ? content[0].tabSlug : entryTab)
     const history = useHistory()
-    !showFirstTab.length && history.replace({ pathname: `${basePath}/${content[0].tabSlug}`, ...restLocationState })
+    isInvalidValue && history.replace({ pathname: `${basePath}/${content[0].tabSlug}`, ...restLocationState })
     /**
      * Handler for tab change.
      *

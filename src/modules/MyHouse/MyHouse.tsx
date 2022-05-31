@@ -4,6 +4,7 @@ import MultiTab from 'src/modules/shared/MultiTab/MultiTab'
 import { useMeterList } from 'src/modules/Meters/metersHook'
 import { AccomodationForm } from 'src/modules/MyHouse/components/Accomodation/AccomodationForm'
 import { EquipmentForm } from 'src/modules/MyHouse/components/Equipments/EquipmentForm'
+import { useHistory } from 'react-router-dom'
 
 /**
  * Form used for modify MyHouse.
@@ -12,6 +13,8 @@ import { EquipmentForm } from 'src/modules/MyHouse/components/Equipments/Equipme
  */
 export const MyHouse = () => {
     const { elementList: meterList } = useMeterList()
+    const history = useHistory()
+    history.location.pathname === '/my-house' && history.replace({ pathname: '/my-house/accomodation' })
 
     if (!meterList || !meterList.length) return <FuseLoading />
     const tabsContent = [
