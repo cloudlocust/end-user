@@ -13,7 +13,7 @@ import {
     isolationOptions,
     performanceOptions,
 } from 'src/modules/MyHouse/utils/MyHouseVariables'
-import { Form } from 'src/common/react-platform-components'
+import { Form, isPositive } from 'src/common/react-platform-components'
 import { EditButtonsGroup } from 'src/modules/MyHouse/EditButtonsGroup'
 import { useAccomodation } from 'src/modules/MyHouse/components/Accomodation/AccomodationHooks'
 import { AccomodationDataType, IAccomodation } from 'src/modules/MyHouse/components/Accomodation/AccomodationType'
@@ -217,6 +217,7 @@ export const AccomodationForm = ({ meterId }: IAccomodation) => {
                                 defaultMessage: 'Habitants',
                             })}
                             disabled={disabledField}
+                            inputProps={{ min: 0 }}
                         />
                     </div>
                 </div>
@@ -236,6 +237,7 @@ export const AccomodationForm = ({ meterId }: IAccomodation) => {
                                 defaultMessage: 'Superficie',
                             })}
                             disabled={disabledField}
+                            inputProps={{ min: 0 }}
                         />
                     </div>
                     <div className="mt-16 ml-6  ">
