@@ -75,7 +75,7 @@ export const hotPlateEquipment: ISelectButtons = {
     titleLabel: 'Type de plaques de cuisson :',
     formOptions: [
         {
-            label: 'Eléctricité',
+            label: 'Vitrocéramique',
             iconPath: getEquipmentIconPath('vitroceramic'),
             buttonStyle,
             iconStyles,
