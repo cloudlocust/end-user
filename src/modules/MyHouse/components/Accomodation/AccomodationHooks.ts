@@ -4,7 +4,7 @@ import { useIntl } from 'src/common/react-platform-translation'
 import { useSnackbar } from 'notistack'
 import { getMsgFromAxiosError } from 'src/modules/utils'
 import { AxiosResponse } from 'axios'
-import { METERS_API, useMeterList } from 'src/modules/Meters/metersHook'
+import { METERS_API } from 'src/modules/Meters/metersHook'
 import { AccomodationDataType } from 'src/modules/MyHouse/components/Accomodation/AccomodationType'
 /**
  * Accomodation url.
@@ -17,23 +17,23 @@ export const ACCOMODATION_API = (meterId: number) => `${METERS_API}/${meterId}/h
 /**
  * Hooks for accomodation.
  *
+ * @param meterId MeterId.
  * @returns UseAccomodation.
  */
-export function useAccomodation() {
+export function useAccomodation(meterId: number) {
     const [accomodation, setAccomodation] = useState<AccomodationDataType>()
     const { enqueueSnackbar } = useSnackbar()
     const [isLoadingInProgress, setIsLoadingInProgress] = useState(false)
     const { formatMessage } = useIntl()
     const isInitialMount = useRef(true)
-    const { elementList: meterList } = useMeterList()
+    const [isAccomodationMeterListEmpty, setIsAccomodationMeterListEmpty] = useState(false)
 
     /**
      * Update Accomodation Form.
      *
-     * @param meterId Meter Id.
      * @param body Accomodation data.
      */
-    const updateAccomodation = async (meterId: number, body: AccomodationDataType) => {
+    const updateAccomodation = async (body: AccomodationDataType) => {
         setIsLoadingInProgress(true)
         try {
             await axios.post<AccomodationDataType, AxiosResponse<AccomodationDataType>>(
@@ -61,37 +61,44 @@ export function useAccomodation() {
      * @param meterId Represent the meterId of the Accomodation to be fetched.
      * @returns The function throw an error, and show snackbar message containing successful and errors message.
      */
-    const loadAccomodation = useCallback(
-        async (meterId: number) => {
-            setIsLoadingInProgress(true)
-            try {
-                const { data: responseData } = await axios.get<AccomodationDataType>(ACCOMODATION_API(meterId))
-                setAccomodation(responseData)
-            } catch (error) {
+    const loadAccomodation = useCallback(async () => {
+        setIsLoadingInProgress(true)
+        setIsAccomodationMeterListEmpty(false)
+        try {
+            const { data: responseData } = await axios.get<AccomodationDataType>(ACCOMODATION_API(meterId))
+            setAccomodation(responseData)
+            setIsLoadingInProgress(false)
+        } catch (error: any) {
+            if (error.response.status === 404) {
+                setIsAccomodationMeterListEmpty(true)
+                setIsLoadingInProgress(false)
+                return
+            } else {
+                // error.response.data
                 enqueueSnackbar(
                     formatMessage({
-                        id: "Home configuration n'existe pas",
-                        defaultMessage: "Home configuration n'existe pas",
+                        id: error.response.data.detail,
+                        defaultMessage: error.response.data.detail,
                     }),
                     { variant: 'error' },
                 )
             }
             setIsLoadingInProgress(false)
-        },
-        [enqueueSnackbar, formatMessage],
-    )
+        }
+    }, [enqueueSnackbar, formatMessage, meterId])
+
     // UseEffect executes on initial intantiation of Accomodation.
     useEffect(() => {
-        if (!meterList?.length) return
         if (isInitialMount.current) {
             isInitialMount.current = false
-            loadAccomodation(meterList[0].id)
+            loadAccomodation()
         }
-    }, [loadAccomodation, meterList])
+    }, [loadAccomodation])
     return {
         isLoadingInProgress,
         accomodation,
         loadAccomodation,
         updateAccomodation,
+        isAccomodationMeterListEmpty,
     }
 }

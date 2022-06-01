@@ -30,15 +30,10 @@ import { isMatch } from 'lodash'
 export const AccomodationForm = ({ meterId }: IAccomodation) => {
     const { formatMessage } = useIntl()
     const [isDPE, setIsDPE] = useState(true)
-    const { loadAccomodation, updateAccomodation, accomodation, isLoadingInProgress } = useAccomodation()
+    const { loadAccomodation, updateAccomodation, accomodation, isLoadingInProgress, isAccomodationMeterListEmpty } =
+        useAccomodation(meterId)
     const [isEditAccomodation, setIdEditAccomodation] = useState(false)
-    /**
-     * Toggle edit accomodation.
-     */
-    const toggleEdit = () => {
-        setIdEditAccomodation((prevEdit) => !prevEdit)
-    }
-    const disabledField = !!(accomodation && !isEditAccomodation)
+    const disabledField = !isAccomodationMeterListEmpty && !isEditAccomodation
     const accomodationData = {
         houseType: accomodation?.houseType,
         houseYear: accomodation?.houseYear,
@@ -79,9 +74,9 @@ export const AccomodationForm = ({ meterId }: IAccomodation) => {
                     const dataAccomodation = setSelectFields(data)
                     const dataIsNotModified = isMatch(accomodationData as AccomodationDataType, dataAccomodation)
                     if (dataIsNotModified) return
-                    await updateAccomodation(meterId, dataAccomodation)
-                    loadAccomodation(meterId)
-                    toggleEdit()
+                    await updateAccomodation(dataAccomodation)
+                    loadAccomodation()
+                    setIdEditAccomodation(false)
                 }}
                 defaultValues={accomodationData}
             >
@@ -252,10 +247,10 @@ export const AccomodationForm = ({ meterId }: IAccomodation) => {
                     </div>
                 </div>
                 <EditButtonsGroup
-                    isEdit={!disabledField}
-                    enableForm={toggleEdit}
+                    isEdit={isEditAccomodation || isAccomodationMeterListEmpty}
+                    enableForm={() => setIdEditAccomodation(true)}
                     formInitialValues={accomodationData}
-                    disableEdit={toggleEdit}
+                    disableEdit={() => setIdEditAccomodation(false)}
                 />
             </Form>
         </div>
