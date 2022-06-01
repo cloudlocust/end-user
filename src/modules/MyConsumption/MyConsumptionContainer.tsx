@@ -3,7 +3,7 @@ import Typography from '@mui/material/Typography'
 import { motion } from 'framer-motion'
 import { MyConsumptionChart } from 'src/modules/MyConsumption/components/MyConsumptionChart'
 import { MyConsumptionSelectMeters } from 'src/modules/MyConsumption/components/MyConsumptionSelectMeters'
-import { MyConsumptionTimeFrame } from 'src/modules/MyConsumption/components/MyConsumptionTimeFrame'
+import { MyConsumptionPeriod } from 'src/modules/MyConsumption/components/MyConsumptionPeriod'
 
 /**
  * MyConsoContainer. Parent component.
@@ -33,7 +33,7 @@ export const MyConsumptionContainer = () => {
             <MyConsumptionChart />
 
             {/* TODO: MYEM-2425 */}
-            <MyConsumptionTimeFrame />
+            <MyConsumptionPeriod />
         </>
     )
 }

@@ -5,10 +5,10 @@ import React from 'react'
  *
  * @returns MyConsumptionTimeFrame.
  */
-export const MyConsumptionTimeFrame = () => {
+export const MyConsumptionPeriod = () => {
     return (
         <div className="container flex flex-row items-center">
-            <div>MyConsumptionTimeFrame</div>
+            <div>MyConsumptionPeriod</div>
         </div>
     )
 }
