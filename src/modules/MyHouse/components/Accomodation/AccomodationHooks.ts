@@ -5,7 +5,6 @@ import { useSnackbar } from 'notistack'
 import { getMsgFromAxiosError } from 'src/modules/utils'
 import { AxiosResponse } from 'axios'
 import { METERS_API, useMeterList } from 'src/modules/Meters/metersHook'
-import { isMatch } from 'lodash'
 import { AccomodationDataType } from 'src/modules/MyHouse/components/Accomodation/AccomodationType'
 /**
  * Accomodation url.
@@ -35,8 +34,6 @@ export function useAccomodation() {
      * @param body Accomodation data.
      */
     const updateAccomodation = async (meterId: number, body: AccomodationDataType) => {
-        const dataIsNotModified = isMatch(accomodation as AccomodationDataType, body)
-        if (dataIsNotModified) return
         setIsLoadingInProgress(true)
         try {
             await axios.post<AccomodationDataType, AxiosResponse<AccomodationDataType>>(

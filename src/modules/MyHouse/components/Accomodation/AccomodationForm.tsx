@@ -13,11 +13,12 @@ import {
     isolationOptions,
     performanceOptions,
 } from 'src/modules/MyHouse/utils/MyHouseVariables'
-import { Form, isPositive } from 'src/common/react-platform-components'
+import { Form } from 'src/common/react-platform-components'
 import { EditButtonsGroup } from 'src/modules/MyHouse/EditButtonsGroup'
 import { useAccomodation } from 'src/modules/MyHouse/components/Accomodation/AccomodationHooks'
 import { AccomodationDataType, IAccomodation } from 'src/modules/MyHouse/components/Accomodation/AccomodationType'
 import { CircularProgress } from '@mui/material'
+import { isMatch } from 'lodash'
 
 /**
  * AccomodationForm .
@@ -46,7 +47,6 @@ export const AccomodationForm = ({ meterId }: IAccomodation) => {
         isolationLevel: accomodation?.isolationLevel,
         numberOfInhabitants: accomodation?.numberOfInhabitants,
         houseArea: accomodation?.houseArea,
-        meterId: accomodation?.meterId,
     }
     /**
      * Leave only one selected field in the data from.
@@ -76,7 +76,9 @@ export const AccomodationForm = ({ meterId }: IAccomodation) => {
         <div className="flex flex-col justify-center w-full md:w-3/4 ">
             <Form
                 onSubmit={async (data: AccomodationDataType) => {
-                    const dataAccomodation = { ...setSelectFields(data), meterId }
+                    const dataAccomodation = setSelectFields(data)
+                    const dataIsNotModified = isMatch(accomodationData as AccomodationDataType, dataAccomodation)
+                    if (dataIsNotModified) return
                     await updateAccomodation(meterId, dataAccomodation)
                     loadAccomodation(meterId)
                     toggleEdit()

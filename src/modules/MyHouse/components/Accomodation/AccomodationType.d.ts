@@ -44,8 +44,4 @@ export type AccomodationDataType =
          * House Area.
          */
         houseArea?: string
-        /**
-         * Meter Id.
-         */
-        meterId: number
     }
