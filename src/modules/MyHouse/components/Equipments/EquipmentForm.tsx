@@ -82,7 +82,6 @@ export const EquipmentForm = ({
             ? savedEquipmentList[equipmentName].equipmentNumber!
             : savedEquipmentList[equipmentName].equipmentType!
     })
-    console.log(!isEquipmentMeterListEmpty, !isEdit)
     return (
         <div className="flex flex-col justify-center w-full md:w-3/4 ">
             <Form
