@@ -21,8 +21,8 @@ export const accomodationEndpoints = [
     }),
 
     rest.post<any>(ACCOMODATION_API(TEST_METERS[0].id), (req, res, ctx) => {
-        const { meter_id } = req.body
-        if (meter_id === TEST_METERS[0].id) {
+        const { house_type } = req.body
+        if (house_type === TEST_ACCOMODATION_RESPONSE.house_type) {
             return res(ctx.status(200))
         } else {
             return res(ctx.status(400))

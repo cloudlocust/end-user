@@ -24,6 +24,7 @@ export function useAccomodation(meterId: number) {
     const [accomodation, setAccomodation] = useState<AccomodationDataType>()
     const { enqueueSnackbar } = useSnackbar()
     const [isLoadingInProgress, setIsLoadingInProgress] = useState(false)
+
     const { formatMessage } = useIntl()
     const isInitialMount = useRef(true)
     const [isAccomodationMeterListEmpty, setIsAccomodationMeterListEmpty] = useState(false)
@@ -73,16 +74,14 @@ export function useAccomodation(meterId: number) {
                 setIsAccomodationMeterListEmpty(true)
                 setIsLoadingInProgress(false)
                 return
-            } else {
-                // error.response.data
-                enqueueSnackbar(
-                    formatMessage({
-                        id: error.response.data.detail,
-                        defaultMessage: error.response.data.detail,
-                    }),
-                    { variant: 'error' },
-                )
             }
+            enqueueSnackbar(
+                formatMessage({
+                    id: error.response.data.detail,
+                    defaultMessage: error.response.data.detail,
+                }),
+                { variant: 'error' },
+            )
             setIsLoadingInProgress(false)
         }
     }, [enqueueSnackbar, formatMessage, meterId])

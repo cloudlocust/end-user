@@ -7,6 +7,7 @@ import { TEST_METERS } from 'src/mocks/handlers/meters'
 import { TEST_ACCOMODATION_RESPONSE as MOCK_TEST_ACCOMODATION_RESPONSE } from 'src/mocks/handlers/accomodation'
 import { AccomodationDataType } from './AccomodationType'
 import { applyCamelCase } from 'src/common/react-platform-components'
+import userEvent from '@testing-library/user-event'
 
 let mockIsLoadingInProgress = false
 const mockUpdateAccomodation = jest.fn()
@@ -133,5 +134,36 @@ describe('Test AccomodationForm', () => {
         act(() => {
             fireEvent.click(getByText(ENREGISTRER_BUTTON_TEXT))
         })
+    })
+    test('When clicking on Cancel Edit it should disableEdit', async () => {
+        const { getByText } = reduxedRender(
+            <BrowserRouter>
+                <AccomodationForm meterId={TEST_METERS[0].id} />
+            </BrowserRouter>,
+        )
+        expect(() => getByText(ANNULER_BUTTON_TEXT)).toThrow()
+        expect(() => getByText(ENREGISTRER_BUTTON_TEXT)).toThrow()
+        userEvent.click(getByText(MODIFIER_BUTTON_TEXT))
+        await waitFor(() => {
+            expect(getByText(ANNULER_BUTTON_TEXT)).toBeTruthy()
+        })
+        expect(() => getByText(MODIFIER_BUTTON_TEXT)).toThrow()
+        userEvent.click(getByText(ANNULER_BUTTON_TEXT))
+        await waitFor(() => {
+            expect(getByText(MODIFIER_BUTTON_TEXT)).toBeTruthy()
+        })
+        expect(() => getByText(ENREGISTRER_BUTTON_TEXT)).toThrow()
+        expect(() => getByText(ANNULER_BUTTON_TEXT)).toThrow()
+    })
+    test('When loading equipmentList, Circular progress should be shown', async () => {
+        mockIsLoadingInProgress = true
+        const { getByText } = reduxedRender(
+            <BrowserRouter>
+                <AccomodationForm meterId={TEST_METERS[0].id} />
+            </BrowserRouter>,
+        )
+        expect(() => getByText(MODIFIER_BUTTON_TEXT)).toThrow()
+        expect(() => getByText(ANNULER_BUTTON_TEXT)).toThrow()
+        expect(() => getByText(ENREGISTRER_BUTTON_TEXT)).toThrow()
     })
 })

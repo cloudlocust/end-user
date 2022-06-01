@@ -39,7 +39,6 @@ export const useEquipmentList = (meterId: number) => {
     const loadEquipmentList = useCallback(async () => {
         setLoadingEquipmentInProgress(true)
         setIsEquipmentMeterListEmpty(false)
-
         try {
             const { data: meterEquipments } = await axios.get<IEquipmentMeter[]>(METER_EQUIPMENTS_API(meterId))
             const { data: equipments } = await axios.get<equipmentType[]>(EQUIPMENTS_API)
@@ -49,12 +48,11 @@ export const useEquipmentList = (meterId: number) => {
                     (meterEquipment) => meterEquipment.equipmentId === equipment.id,
                 )
                 if (foundEquipment) return foundEquipment
-                else
-                    return {
-                        equipmentId: equipment.id,
-                        equipmentNumber: 0,
-                        equipment,
-                    }
+                return {
+                    equipmentId: equipment.id,
+                    equipmentNumber: 0,
+                    equipment,
+                }
             })
             setEquipmentList(responseData)
         } catch (error) {
@@ -68,7 +66,6 @@ export const useEquipmentList = (meterId: number) => {
         }
         setLoadingEquipmentInProgress(false)
     }, [meterId, formatMessage, enqueueSnackbar])
-
     // UseEffect executes on initial intantiation of useEquipmentList, responsible for loadEquipmentList on initialLoad.
     useEffect(() => {
         if (isInitialMount.current) {

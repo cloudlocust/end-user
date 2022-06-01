@@ -34,6 +34,7 @@ export const AccomodationForm = ({ meterId }: IAccomodation) => {
         useAccomodation(meterId)
     const [isEditAccomodation, setIdEditAccomodation] = useState(false)
     const disabledField = !isAccomodationMeterListEmpty && !isEditAccomodation
+
     const accomodationData = {
         houseType: accomodation?.houseType,
         houseYear: accomodation?.houseYear,
