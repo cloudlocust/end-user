@@ -104,16 +104,19 @@ export const myEquipmentOptions: INumberFieldForm[] = [
         name: 'desktopcomputer',
         labelTitle: 'PC de bureau',
         iconLabel: 'computer',
+        disableDecrement: true,
     },
     {
         name: 'laptop',
         labelTitle: 'PC Portable',
         iconLabel: 'computer',
+        disableDecrement: true,
     },
     {
         name: 'tv',
         labelTitle: 'Téléviseur',
         iconLabel: 'tv',
+        disableDecrement: true,
     },
     {
         name: 'vacuum',
@@ -122,6 +125,7 @@ export const myEquipmentOptions: INumberFieldForm[] = [
         get iconPath() {
             return getEquipmentIconPath(this.name)
         },
+        disableDecrement: true,
     },
     {
         name: 'oven',
@@ -130,9 +134,10 @@ export const myEquipmentOptions: INumberFieldForm[] = [
         get iconPath() {
             return getEquipmentIconPath(this.name)
         },
+        disableDecrement: true,
     },
-    { name: 'microwave', labelTitle: 'Micro-onde', iconLabel: 'microwave' },
-    { name: 'fridge', labelTitle: 'Réfrigérateur', iconLabel: 'kitchen' },
+    { name: 'microwave', labelTitle: 'Micro-onde', iconLabel: 'microwave', disableDecrement: true },
+    { name: 'fridge', labelTitle: 'Réfrigérateur', iconLabel: 'kitchen', disableDecrement: true },
     {
         name: 'dishwasher',
         labelTitle: 'Lave-vaisselle',
@@ -140,6 +145,7 @@ export const myEquipmentOptions: INumberFieldForm[] = [
         get iconPath() {
             return getEquipmentIconPath(this.name)
         },
+        disableDecrement: true,
     },
     {
         name: 'washingmachine',
@@ -148,6 +154,7 @@ export const myEquipmentOptions: INumberFieldForm[] = [
         get iconPath() {
             return getEquipmentIconPath(this.name)
         },
+        disableDecrement: true,
     },
     {
         name: 'dryer',
@@ -156,6 +163,7 @@ export const myEquipmentOptions: INumberFieldForm[] = [
         get iconPath() {
             return getEquipmentIconPath(this.name)
         },
+        disableDecrement: true,
     },
 ]
 

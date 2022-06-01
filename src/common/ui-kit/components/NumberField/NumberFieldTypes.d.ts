@@ -28,6 +28,10 @@ export interface INumberField {
      */
     wrapperClasses?: string
     /**
+     * Is decrement disabled when value === 0.
+     */
+    disableDecrement?: boolean
+    /**
      *
      */
     onChange?: (value: number) => void

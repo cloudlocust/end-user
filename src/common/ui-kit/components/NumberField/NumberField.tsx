@@ -12,13 +12,24 @@ import { INumberField } from './NumberFieldTypes'
  * @param param0.iconLabel Icon name if taken from fuse mui.
  * @param param0.iconPath Icon path if it is svg image.
  * @param param0.disabled Is field disabled.
+ * @param param0.disableDecrement Is decrement disabled when value === 0.
  * @param param0.wrapperClasses  Wraper className.
  * @returns NumberField
  * .
  */
 export const NumberField = ({ ...props }: INumberField) => {
-    const { value = 0, labelTitle, iconLabel, iconPath, disabled, wrapperClasses = 'flex mr-8 mb-10', onChange } = props
+    const {
+        value = 0,
+        labelTitle,
+        disableDecrement,
+        iconLabel,
+        iconPath,
+        disabled,
+        wrapperClasses = 'flex mr-8 mb-10',
+        onChange,
+    } = props
     const theme = useTheme()
+    const disabledField = disableDecrement && value <= 0
 
     return (
         <div className={wrapperClasses}>
@@ -64,9 +75,9 @@ export const NumberField = ({ ...props }: INumberField) => {
                         onClick={() => {
                             onChange && onChange(value - 1)
                         }}
-                        disabled={disabled || value <= 0}
+                        disabled={disabled || disabledField}
                     >
-                        <Icon color={disabled ? 'disabled' : 'primary'}>remove</Icon>
+                        <Icon color={disabled || disabledField ? 'disabled' : 'primary'}>remove</Icon>
                     </Button>
                     <span style={disabled ? { color: theme.palette.grey[300] } : {}}>{value}</span>
                     <Button

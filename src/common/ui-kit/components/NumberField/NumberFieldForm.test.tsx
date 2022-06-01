@@ -9,12 +9,14 @@ const propsNumberField = {
     name: 'computer',
     labelTitle: 'PC de bureau',
     iconLabel: 'computer',
+    disableDecrement: true,
     value: 1,
 }
 const propsNumberField2 = {
     name: 'computer',
     labelTitle: 'PC de bureau',
     iconLabel: 'computer',
+    disableDecrement: true,
 }
 const DISABLED_BUTTON_CLASS = 'Mui-disabled'
 const ADD_BUTTON_TEXT = 'add'
