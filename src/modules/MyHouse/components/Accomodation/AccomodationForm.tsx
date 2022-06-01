@@ -170,7 +170,7 @@ export const AccomodationForm = ({ meterId }: IAccomodation) => {
                             value="oui"
                             control={<Radio color="primary" />}
                             label="Oui"
-                            onClick={() => setIsDPE(true)}
+                            onClick={() => !disabledField && setIsDPE(true)}
                             checked={isDPE}
                             disabled={disabledField}
                         />
@@ -178,7 +178,7 @@ export const AccomodationForm = ({ meterId }: IAccomodation) => {
                             value="non"
                             control={<Radio color="primary" />}
                             label="Non"
-                            onClick={() => setIsDPE(false)}
+                            onClick={() => !disabledField && setIsDPE(false)}
                             checked={!isDPE}
                             disabled={disabledField}
                         />
@@ -192,6 +192,7 @@ export const AccomodationForm = ({ meterId }: IAccomodation) => {
                             return <MenuItem value={performance}>{performance}</MenuItem>
                         })}
                         defaultValue={null}
+                        disabled={disabledField}
                     />
                 ) : (
                     <Select
@@ -201,6 +202,7 @@ export const AccomodationForm = ({ meterId }: IAccomodation) => {
                             return <MenuItem value={isolation}>{isolation}</MenuItem>
                         })}
                         defaultValue={null}
+                        disabled={disabledField}
                     />
                 )}
                 <div className="flex flex-row flex justify-between mt-16 mr-24">
