@@ -56,6 +56,7 @@ export const axios = applyCaseMiddleware(baseAxios, {
                 .toLowerCase()
         },
     },
+    preservedKeys: ['addHookFilters'],
 }) as AxiosStatic
 
 /**

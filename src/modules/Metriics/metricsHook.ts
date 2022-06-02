@@ -1,41 +1,32 @@
-import { useEffect, useState } from 'react'
+import dayjs from 'dayjs'
+import { useCallback, useEffect, useState } from 'react'
 import { axios } from 'src/common/react-platform-components'
 import { API_RESOURCES_URL } from 'src/configs'
-
-/**
- * Metric Targets.
- */
-export enum MetricTargets {
-    /**
-     *
-     */
-    NRLINK_CONSUMPTION_METRICS = 'nrlink_consumption_metrics',
-    /**
-     *
-     */
-    ENEDIS_CONSUMPTION_METRICS = 'enedis_consumption_metrics',
-    /**
-     *
-     */
-    ENPHASE_CONSUMPTION_METRICS = 'enphase_consumption_metrics',
-    /**
-     *
-     */
-    ENPHASE_PRODUCTION_METRICS = 'enphase_production_metrics',
-    /**
-     *
-     */
-    EXTERNAL_TEMPERATURE_METRICS = 'external_temperature_metrics',
-    /**
-     *
-     */
-    NRLINK_INTERNAL_TEMPERATURE_METRICS = 'nrlink_internal_temperature_metrics',
-}
+import {
+    getMetricType,
+    metricInterval,
+    metricTargets,
+    IMetrics,
+    metricRange,
+    metricFilters,
+} from 'src/modules/Metriics/Metrics'
 
 /**
  * Metrics endpoint.
  */
 export const METRICS_API = `${API_RESOURCES_URL}/metrics`
+
+const DEFAULT_RANGE: metricRange = {
+    from: dayjs().startOf('day').toDate().toISOString(),
+    to: dayjs().toDate().toISOString(),
+}
+
+const DEFAULT_TARGET: metricTargets = [
+    {
+        target: 'nrlink_consumption_metrics',
+        type: 'timeseries',
+    },
+]
 
 /**
  * Consumption Metrics hook.
@@ -43,26 +34,35 @@ export const METRICS_API = `${API_RESOURCES_URL}/metrics`
  * @returns Consumption metrics hook.
  */
 export function useConsumptionMetrics() {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [isMetricsLoading, setIsMetricsLoading] = useState(false)
-    const [data, setData] = useState()
-    const [interval, setInterval] = useState<string>()
-    const [filters, setFilters] = useState<string>('')
-    const [range, setRange] = useState<string>()
+    const [data, setData] = useState<IMetrics>()
+    const [range, setRange] = useState<metricRange>(DEFAULT_RANGE)
+    const [interval, setPeriod] = useState<metricInterval>('1min')
+    const [targets, setTargets] = useState<metricTargets>(DEFAULT_TARGET)
+    const [filters, setFilters] = useState<metricFilters>()
 
-    useEffect(() => {
-        /**
-         * Get Metrics function.
-         */
-        async function getMetrics() {
+    /**
+     * Get Metrics function: Everytime filters or range or interval or targets has changed, it triggers the effect.
+     */
+    const getMetrics = useCallback(async () => {
+        try {
             setIsMetricsLoading(true)
-            const response = await axios.post(METRICS_API, { filters, interval, range })
+            const response = await axios.post(METRICS_API, {
+                range,
+                interval,
+                targets,
+                addHookFilters: filters,
+            } as getMetricType)
             setData(response.data)
             setIsMetricsLoading(false)
+        } catch (error) {
+            setIsMetricsLoading(false)
         }
+    }, [filters, range, interval, targets])
 
+    useEffect(() => {
         getMetrics()
-    }, [filters, range, interval])
+    }, [getMetrics])
 
-    return { data, setInterval, setFilters, setRange }
+    return { isMetricsLoading, data, targets, setPeriod, setFilters, setRange, setTargets, getMetrics }
 }
