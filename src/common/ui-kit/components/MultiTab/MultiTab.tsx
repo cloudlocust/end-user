@@ -81,12 +81,12 @@ const MultiTab = ({
     // Initialise Base path and entry Tab.
     let entryTab = location.pop()
     let basePath = location.join('/')
-
     // UseHistory, and tab Handle
-    const [tabSlug, setTabSlug] = useState(entryTab === ':tab' ? content[0].tabSlug : entryTab)
+    const tabSlugList = content.filter((item) => item.tabSlug === entryTab)
+    const isInvalidValue = !tabSlugList.length || !entryTab?.length
+    const [tabSlug, setTabSlug] = useState(isInvalidValue ? content[0].tabSlug : entryTab)
     const history = useHistory()
-    entryTab === ':tab' && history.replace({ pathname: `${basePath}/${content[0].tabSlug}`, ...restLocationState })
-
+    isInvalidValue && history.replace({ pathname: `${basePath}/${content[0].tabSlug}`, ...restLocationState })
     /**
      * Handler for tab change.
      *
