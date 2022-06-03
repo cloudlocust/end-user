@@ -12,7 +12,7 @@ describe('load MyConsumptionPeriod', () => {
     test('on success loading the element, MyConsumptionPeriod should be loaded, tabs titles shown', async () => {
         const { getByText } = reduxedRender(
             <Router>
-                <MyConsumptionPeriod onChange={() => {}} />
+                <MyConsumptionPeriod onHandleMetricsChange={() => {}} />
             </Router>,
         )
         // Tabs titles showing.
