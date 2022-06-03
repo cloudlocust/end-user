@@ -1,14 +1,4 @@
 /**
- * Interface IAccomodation.
- */
-export interface IAccomodation {
-    /**
-     * MeterId.
-     */
-    meterId: number
-}
-
-/**
  * Accomodation Data Type.
  */
 export type AccomodationDataType =

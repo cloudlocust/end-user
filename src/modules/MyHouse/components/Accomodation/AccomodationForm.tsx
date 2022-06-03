@@ -16,7 +16,7 @@ import {
 import { Form } from 'src/common/react-platform-components'
 import { EditButtonsGroup } from 'src/modules/MyHouse/EditButtonsGroup'
 import { useAccomodation } from 'src/modules/MyHouse/components/Accomodation/AccomodationHooks'
-import { AccomodationDataType, IAccomodation } from 'src/modules/MyHouse/components/Accomodation/AccomodationType'
+import { AccomodationDataType } from 'src/modules/MyHouse/components/Accomodation/AccomodationType'
 import { CircularProgress } from '@mui/material'
 import { isMatch } from 'lodash'
 
@@ -27,7 +27,16 @@ import { isMatch } from 'lodash'
  * @param root0.meterId MeterId.
  * @returns AccomodationForm.
  */
-export const AccomodationForm = ({ meterId }: IAccomodation) => {
+export const AccomodationForm = ({
+    meterId,
+}: /**
+ * AccomodationForm props.
+ */ {
+    /**
+     * MeterId.
+     */
+    meterId: number
+}) => {
     const { formatMessage } = useIntl()
     const [isDPE, setIsDPE] = useState(true)
     const { loadAccomodation, updateAccomodation, accomodation, isLoadingInProgress, isAccomodationMeterListEmpty } =
