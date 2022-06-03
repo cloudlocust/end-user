@@ -9,7 +9,7 @@ import React from 'react'
 export const MyConsumptionChart = (props: any) => {
     return (
         <div className="container relative h-200 sm:h-256 pb-16">
-            {props.isMetricsLoading ? 'loading' : JSON.stringify(props.data)}
+            <div>MyConsumptionChart</div>
         </div>
     )
 }
