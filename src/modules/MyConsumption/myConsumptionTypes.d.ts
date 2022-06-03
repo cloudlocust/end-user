@@ -3,9 +3,9 @@
  */
 export interface IMyConsumptionPeriod {
     /**
-     * OnChange function.
+     * OnHandleMetricsChange function.
      */
-    onChange: (interval: string, range: IRange) => void
+    onHandleMetricsChange: (interval: string, range: IRange) => void
 }
 /**
  * Range selection interface.

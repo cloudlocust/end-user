@@ -9,10 +9,10 @@ import { IMyConsumptionPeriod } from './myConsumptionTypes'
  * MyConsumptionPeriod Component.
  *
  * @param param0 N/A.
- * @param param0.onChange OnChange function.
+ * @param param0.onHandleMetricsChange onHandleMetricsChange function.
  * @returns  MyConsumptionPeriod.
  */
-export const MyConsumptionPeriod = ({ onChange }: IMyConsumptionPeriod) => {
+export const MyConsumptionPeriod = ({ onHandleMetricsChange }: IMyConsumptionPeriod) => {
     const theme = useTheme()
     const [tabValue, setTabValue] = useState(0)
     return (
@@ -26,7 +26,7 @@ export const MyConsumptionPeriod = ({ onChange }: IMyConsumptionPeriod) => {
                 value={tabValue}
                 onChange={(event, value) => {
                     setTabValue(value)
-                    onChange(dataConsumptionPeriod[value].interval, dataConsumptionPeriod[value].range)
+                    onHandleMetricsChange(dataConsumptionPeriod[value].interval, dataConsumptionPeriod[value].range)
                 }}
                 indicatorColor="primary"
                 textColor="inherit"
