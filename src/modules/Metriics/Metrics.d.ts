@@ -79,11 +79,11 @@ export type IMetrics = {
     /**
      * Nrlink consent.
      */
-    nrlink_consent: boolean
+    nrlinkConsent: boolean
     /**
      * Enedis consent.
      */
-    enedis_consent: boolean
+    enedisConsent: boolean
 }[]
 
 /**

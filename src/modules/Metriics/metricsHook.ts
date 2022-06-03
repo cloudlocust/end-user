@@ -64,5 +64,5 @@ export function useConsumptionMetrics() {
         getMetrics()
     }, [getMetrics])
 
-    return { isMetricsLoading, data, targets, setPeriod, setFilters, setRange, setTargets, getMetrics }
+    return { isMetricsLoading, data, targets, interval, setPeriod, setFilters, setRange, setTargets, getMetrics }
 }
