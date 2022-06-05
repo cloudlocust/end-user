@@ -429,16 +429,17 @@ export const metricsEndpoints = [
         /*
          * When req.body checks RANGE, it throws an error of 404.
          */
-
-        if (req.body.interval === FAKE_DAY_INTERVAL)
+        if (req.body.interval === FAKE_DAY_INTERVAL && req.body.range) {
             return res(ctx.status(200), ctx.delay(1000), ctx.json(TEST_SUCCESS_DAY_METRICS))
-        if (req.body.interval === FAKE_WEEK_INTERVAL)
+        }
+        if (req.body.interval === FAKE_WEEK_INTERVAL && req.body.range) {
             return res(ctx.status(200), ctx.delay(1000), ctx.json(TEST_SUCCESS_WEEK_METRICS))
+        }
 
-        if (req.body.interval === FAKE_MONTH_INTERVAL)
+        if (req.body.interval === FAKE_MONTH_INTERVAL && req.body.range)
             return res(ctx.status(200), ctx.delay(1000), ctx.json(TEST_SUCCESS_MONTH_METRICS))
 
-        if (req.body.interval === FAKE_YEAR_INTERVAL)
+        if (req.body.interval === FAKE_YEAR_INTERVAL && req.body.range)
             return res(ctx.status(200), ctx.delay(1000), ctx.json(TEST_SUCCESS_YEAR_METRICS))
 
         return res(ctx.status(401), ctx.json(1000), ctx.json({ error: 'Error' }))

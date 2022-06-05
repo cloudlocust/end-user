@@ -1,4 +1,3 @@
-import dayjs from 'dayjs'
 import { useCallback, useEffect, useState } from 'react'
 import { axios } from 'src/common/react-platform-components'
 import { API_RESOURCES_URL } from 'src/configs'
@@ -16,53 +15,44 @@ import {
  */
 export const METRICS_API = `${API_RESOURCES_URL}/metrics`
 
-const DEFAULT_RANGE: metricRange = {
-    from: dayjs().startOf('day').toDate().toISOString(),
-    to: dayjs().toDate().toISOString(),
-}
-
-const DEFAULT_TARGET: metricTargets = [
-    {
-        target: 'nrlink_consumption_metrics',
-        type: 'timeseries',
-    },
-]
-
 /**
  * Consumption Metrics hook.
  *
+ * @param initialState Initial State of the hook.
  * @returns Consumption metrics hook.
  */
-export function useConsumptionMetrics() {
+export function useConsumptionMetrics(initialState: getMetricType) {
     const [isMetricsLoading, setIsMetricsLoading] = useState(false)
     const [data, setData] = useState<IMetrics>()
-    const [range, setRange] = useState<metricRange>(DEFAULT_RANGE)
-    const [interval, setPeriod] = useState<metricInterval>('1min')
-    const [targets, setTargets] = useState<metricTargets>(DEFAULT_TARGET)
-    const [filters, setFilters] = useState<metricFilters>()
+    const [range, setRange] = useState<metricRange>(initialState.range)
+    const [interval, setPeriod] = useState<metricInterval>(initialState.interval)
+    const [targets, setTargets] = useState<metricTargets>(initialState.targets)
+    const [filters, setFilters] = useState<metricFilters>(
+        initialState.addHookFilters ? initialState.addHookFilters : [],
+    )
 
     /**
-     * Get Metrics function: Everytime filters or range or interval or targets has changed, it triggers the effect.
+     * Get Metrics function: Everytime filters or range or interval or targets has changed, it triggers the function call.
      */
     const getMetrics = useCallback(async () => {
+        setIsMetricsLoading(true)
         try {
-            setIsMetricsLoading(true)
             const response = await axios.post(METRICS_API, {
-                range,
                 interval,
+                range,
                 targets,
                 addHookFilters: filters,
-            } as getMetricType)
+            })
             setData(response.data)
             setIsMetricsLoading(false)
         } catch (error) {
             setIsMetricsLoading(false)
         }
-    }, [filters, range, interval, targets])
+    }, [interval, range, targets, filters])
 
     useEffect(() => {
         getMetrics()
     }, [getMetrics])
 
-    return { isMetricsLoading, data, targets, interval, setPeriod, setFilters, setRange, setTargets, getMetrics }
+    return { isMetricsLoading, data, targets, interval, range, setPeriod, setFilters, setRange, setTargets, getMetrics }
 }

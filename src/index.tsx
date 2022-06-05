@@ -64,23 +64,17 @@ bootstrapApplication().then((app) => {
     ReactDOM.render(app, document.getElementById('root'))
 })
 
-/**
- * TODO Made sure that the PWA service worker is loaded only in Production environement.
- * Add NODE_ENV === "production" to the condition.
- */
-if (isBrowser && 'serviceWorker' in navigator) {
+// In order to activate MSW, you have to set the env variable to enabled in env.development.
+if ('serviceWorker' in navigator && process.env.NODE_ENV === 'development' && MSW_MOCK === 'enabled') {
+    navigator.serviceWorker.register(`${process.env.PUBLIC_URL}/mockServiceWorker.js`)
+    const { worker } = require('src/mocks/browser')
+    worker.start()
+}
+
+// PWA service worker should only be working in production mode.
+if (isBrowser && 'serviceWorker' in navigator && process.env.NODE_ENV === 'production') {
     window.addEventListener('load', async () => {
         await navigator.serviceWorker.register(`${process.env.PUBLIC_URL}/pwaSW.js`)
-        /**
-         * Start the mocking browser conditionally, only during development.
-         * MSW Browser not working because registering PWA Service Working.
-         * HINT REFERENCE: https://mswjs.io/docs/getting-started/integrate/browser#create-react-app-version-3 .
-         */
-        if (MSW_MOCK === 'enabled') {
-            await navigator.serviceWorker.register(`${process.env.PUBLIC_URL}/mockServiceWorker.js`)
-            const { worker } = require('src/mocks/browser')
-            worker.start()
-        }
     })
 }
 
