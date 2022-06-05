@@ -7,6 +7,7 @@ export interface IMyConsumptionPeriod {
      */
     onHandleMetricsChange: (interval: string, range: IRange) => void
 }
+//TODO to remove
 /**
  * Range selection interface.
  */
