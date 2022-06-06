@@ -14,7 +14,7 @@ import { Link } from 'react-router-dom'
  * Range value type.
  *
  */
-type rangeValue = 1 | 7 | 30 | 365
+type periodValue = 1 | 7 | 30 | 365
 
 /**
  * InitialMetricsStates for useConsumptionMetrics.
@@ -22,7 +22,7 @@ type rangeValue = 1 | 7 | 30 | 365
 export const initialMetricsHookValues: getMetricType = {
     interval: '1m',
     range: {
-        from: dayjs().subtract(7, 'day').startOf('day').toDate().toJSON(),
+        from: dayjs().startOf('day').toDate().toJSON(),
         to: dayjs().toDate().toJSON(),
     },
     targets: [
@@ -42,7 +42,7 @@ export const MyConsumptionContainer = () => {
     const { setPeriod, setTargets, setRange, setFilters, isMetricsLoading, data, interval, getMetrics } =
         useConsumptionMetrics(initialMetricsHookValues)
     const [error, setError] = useState<boolean>(false)
-    const [periodValue, setPeriodValue] = useState<rangeValue>(1)
+    const [periodValue, setPeriodValue] = useState<periodValue>(1)
 
     /* Load the metrics data when when component loads */
     useEffect(() => {
@@ -50,6 +50,7 @@ export const MyConsumptionContainer = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
+    /* Everytime data changes, check if there is consent for both NRLink & Enedis */
     useEffect(() => {
         if (data?.every((element) => !element.nrlinkConsent || !element.enedisConsent)) {
             setError(true)
