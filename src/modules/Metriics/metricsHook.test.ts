@@ -1,6 +1,13 @@
 import { reduxedRenderHook } from 'src/common/react-platform-components/test'
-import { useConsumptionMetrics } from 'src/modules/Metriics/metricsHook'
+import { METRICS_API, useConsumptionMetrics } from 'src/modules/Metriics/metricsHook'
 import { getMetricType, metricRange, metricTargets } from 'src/modules/Metriics/Metrics'
+
+import axios from 'axios'
+
+jest.mock('axios', () => ({
+    ...jest.requireActual('axios'),
+    post: jest.fn(),
+}))
 
 const FAKE_RANGE: metricRange = {
     from: '2022-06-04T22:00:00.000Z',
@@ -14,10 +21,11 @@ const FAKE_TARGETS: metricTargets = [
     },
 ]
 
-const mockHookArguments: getMetricType = {
+let mockHookArguments: getMetricType = {
     interval: '1min',
     range: FAKE_RANGE,
     targets: FAKE_TARGETS,
+    addHookFilters: [],
 }
 
 describe('useConsumptionMetrics hook test', () => {
@@ -32,17 +40,9 @@ describe('useConsumptionMetrics hook test', () => {
         expect(currentResult.range).toStrictEqual(FAKE_RANGE)
         expect(currentResult.targets).toStrictEqual(FAKE_TARGETS)
         expect(currentResult.filters).toBeFalsy()
-    }, 10000)
-    test('when the hook is called with different initial values', async () => {
-        const {
-            renderedHook: { result },
-        } = reduxedRenderHook(() => useConsumptionMetrics({ ...mockHookArguments, interval: '1d' }))
 
-        const currentResult = result.current
-        expect(currentResult.isMetricsLoading).toBe(true)
-        expect(currentResult.interval).toBe('1d')
-        expect(currentResult.range).toStrictEqual(FAKE_RANGE)
-        expect(currentResult.targets).toStrictEqual(FAKE_TARGETS)
-        expect(currentResult.filters).toBeFalsy()
-    }, 10000)
+        const AXIOS_POST_DATA = mockHookArguments
+
+        expect(axios.post).toHaveBeenCalledWith(METRICS_API, AXIOS_POST_DATA)
+    }, 8000)
 })

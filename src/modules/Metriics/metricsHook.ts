@@ -23,7 +23,7 @@ export const METRICS_API = `${API_RESOURCES_URL}/metrics`
  */
 export function useConsumptionMetrics(initialState: getMetricType) {
     const [isMetricsLoading, setIsMetricsLoading] = useState(false)
-    const [data, setData] = useState<IMetrics>()
+    const [data, setData] = useState<IMetrics | []>([])
     const [range, setRange] = useState<metricRange>(initialState.range)
     const [interval, setPeriod] = useState<metricInterval>(initialState.interval)
     const [targets, setTargets] = useState<metricTargets>(initialState.targets)
