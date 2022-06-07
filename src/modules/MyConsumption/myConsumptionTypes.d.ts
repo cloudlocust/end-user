@@ -6,6 +6,10 @@ export interface IMyConsumptionPeriod {
      * OnHandleMetricsChange function.
      */
     onHandleMetricsChange: (interval: string, range: IRange) => void
+    /**
+     * SetPeriodValue function.
+     */
+    setPeriodValue: (period: number) => void
 }
 //TODO to remove
 /**
