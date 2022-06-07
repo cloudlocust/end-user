@@ -4,7 +4,7 @@ import { MyConsumptionChart } from 'src/modules/MyConsumption/components/MyConsu
 import { MyConsumptionSelectMeters } from 'src/modules/MyConsumption/components/MyConsumptionSelectMeters'
 import { MyConsumptionPeriod } from 'src/modules/MyConsumption/components/MyConsumptionPeriod'
 import { useConsumptionMetrics } from 'src/modules/Metriics/metricsHook'
-import { getMetricType, metricFilters, metricInterval, metricRange, metricTargets } from 'src/modules/Metriics/Metrics'
+import { getMetricType } from 'src/modules/Metriics/Metrics'
 import dayjs from 'dayjs'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import { Typography } from '@mui/material'
@@ -39,16 +39,10 @@ export const initialMetricsHookValues: getMetricType = {
  * @returns MyConsoContainer.
  */
 export const MyConsumptionContainer = () => {
-    const { setPeriod, setTargets, setRange, setFilters, isMetricsLoading, data, interval, getMetrics } =
+    const { setPeriod, setRange, setFilters, isMetricsLoading, data, interval } =
         useConsumptionMetrics(initialMetricsHookValues)
     const [error, setError] = useState<boolean>(false)
     const [periodValue, setPeriodValue] = useState<periodValue>(1)
-
-    /* Load the metrics data when when component loads */
-    useEffect(() => {
-        getMetrics()
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [])
 
     /* Everytime data changes, check if there is consent for both NRLink & Enedis */
     useEffect(() => {
@@ -58,50 +52,6 @@ export const MyConsumptionContainer = () => {
             setError(false)
         }
     }, [data])
-
-    /**
-     * OnChange function that handles metrics.
-     * To be passed to children component.
-     *
-     * @param root0 N/A.
-     * @param root0.targets Targets..
-     * @param root0.filters Filters.
-     * @param root0.range Range.
-     * @param root0.interval Interval.
-     */
-    const onHandleMetricsChange = ({
-        targets,
-        filters,
-        range,
-        interval,
-    }: /**
-     *
-     */
-    {
-        /**
-         *
-         */
-        targets?: metricTargets
-        /**
-         *
-         */
-        filters?: metricFilters
-        /**
-         *
-         */
-        range?: metricRange
-        /**
-         *
-         */
-        interval?: metricInterval
-    }) => {
-        if (targets) setTargets(targets)
-        if (filters) setFilters(filters)
-        if (interval && range) {
-            setPeriod(interval)
-            setRange(range)
-        }
-    }
 
     /**
      * Show text according to interval.
@@ -155,20 +105,17 @@ export const MyConsumptionContainer = () => {
                         </motion.div>
 
                         {/* TODO: MYEM-2418 */}
-                        <MyConsumptionSelectMeters />
+                        <MyConsumptionSelectMeters setFilters={setFilters} />
                     </div>
                     {/* TODO: MYEM-2422 */}
                     <MyConsumptionChart
                         isMetricsLoading={isMetricsLoading}
                         data={data}
-                        chartType={interval === '1min' ? 'area' : 'column'}
+                        chartType={interval === '1min' ? 'area' : 'bar'}
                     />
 
                     {/* TODO: MYEM-2425 */}
-                    <MyConsumptionPeriod
-                        onHandleMetricsChange={onHandleMetricsChange}
-                        setPeriodValue={setPeriodValue}
-                    />
+                    <MyConsumptionPeriod setPeriod={setPeriod} setRange={setRange} setPeriodValue={setPeriodValue} />
                 </>
             )}
         </>

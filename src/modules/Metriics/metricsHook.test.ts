@@ -31,7 +31,7 @@ let mockHookArguments: getMetricType = {
 describe('useConsumptionMetrics hook test', () => {
     test('When the hook is called with default values', async () => {
         const {
-            renderedHook: { result },
+            renderedHook: { result, waitForValueToChange },
         } = reduxedRenderHook(() => useConsumptionMetrics(mockHookArguments))
 
         const currentResult = result.current
@@ -44,5 +44,12 @@ describe('useConsumptionMetrics hook test', () => {
         const AXIOS_POST_DATA = mockHookArguments
 
         expect(axios.post).toHaveBeenCalledWith(METRICS_API, AXIOS_POST_DATA)
+
+        await waitForValueToChange(
+            () => {
+                return result.current.data
+            },
+            { timeout: 4000 },
+        )
     }, 8000)
 })
