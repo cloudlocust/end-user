@@ -1,6 +1,5 @@
 .apexcharts-canvas {
     width: 100% !important;
-    .apexcharts-svg {
-        width: 100% !important;
-    }
+    overflow-x: auto;
+    overflow-y: hidden;
 }

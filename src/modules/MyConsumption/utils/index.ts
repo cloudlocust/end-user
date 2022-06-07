@@ -9,51 +9,80 @@ export const defaultApexChartOptions = (theme: Theme): Props['options'] => ({
         fontFamily: theme.typography.fontFamily,
         stacked: true,
         locales: [fr],
+        defaultLocale: 'fr',
+        background: theme.palette.primary.main,
         toolbar: {
             show: false,
         },
-        defaultLocale: 'fr',
-        background: 'transparent',
+        zoom: {
+            enabled: false,
+        },
     },
     theme: {
         // We set the theme so that the text in the chart and stuffs is updated.
         mode: theme.palette.mode === 'light' ? 'dark' : 'light',
     },
-    stroke: {
-        width: 2,
-        lineCap: 'butt',
-
-        curve: 'smooth',
-    },
     dataLabels: {
         enabled: false,
     },
     markers: {
-        size: 5,
-        colors: undefined,
-        strokeColors: '#fff',
-        strokeWidth: 2,
-        strokeOpacity: 0.9,
+        size: 3,
+        strokeWidth: 1.5,
+        strokeOpacity: 1,
         strokeDashArray: 0,
         fillOpacity: 1,
-        discrete: [],
         shape: 'circle',
         radius: 2,
-        offsetX: 0,
-        offsetY: 0,
-        onClick: undefined,
-        onDblClick: undefined,
-        showNullDataPoints: true,
         hover: {
-            size: undefined,
-            sizeOffset: 4,
+            size: 5,
+        },
+    },
+    fill: {
+        type: 'solid',
+        opacity: 0.7,
+        gradient: {
+            shadeIntensity: 0.4,
+            opacityFrom: 1,
+            opacityTo: 0.5,
+            stops: [30, 100, 100],
+        },
+    },
+    grid: {
+        show: true,
+        strokeDashArray: 3,
+        position: 'back',
+        xaxis: {
+            lines: {
+                show: true,
+            },
+        },
+        yaxis: {
+            lines: {
+                show: true,
+            },
+        },
+        padding: {
+            top: 0,
+            right: 0,
+            bottom: 0,
+            left: 0,
         },
     },
     xaxis: {
         type: 'datetime',
-        axisBorder: {
-            show: false,
+        tooltip: {
+            enabled: false,
         },
+        axisBorder: {
+            show: true,
+        },
+    },
+    stroke: {
+        show: true,
+        curve: 'smooth',
+        lineCap: 'butt',
+        width: 1.5,
+        dashArray: 0,
     },
 })
 

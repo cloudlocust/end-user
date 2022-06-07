@@ -11,8 +11,11 @@ const MyConsumptionChart = ({ data, chartType }: { data: IMetrics; chartType: st
     const { formatMessage } = useIntl()
     const theme = useTheme()
     return (
-        <div style={{ background: theme.palette.primary.main }}>
-            <ReactApexChart {...convertMetricsDataToApexChartsProps(data, 'area', formatMessage, theme)} width="100%" />
+        <div className="w-full">
+            <ReactApexChart
+                {...convertMetricsDataToApexChartsProps(data, 'area', formatMessage, theme)}
+                width={'100%'}
+            />
         </div>
     )
 }
