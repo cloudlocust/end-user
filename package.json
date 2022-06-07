@@ -6,7 +6,6 @@
         "src/common"
     ],
     "dependencies": {
-        "dayjs": "^1.11.2",
         "react-scripts": "4.0.3",
         "redux-persist-transform-filter": "^0.0.20",
         "typeface-poppins": "^1.1.13"

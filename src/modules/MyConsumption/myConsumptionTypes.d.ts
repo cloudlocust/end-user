@@ -3,9 +3,13 @@
  */
 export interface IMyConsumptionPeriod {
     /**
-     * OnHandleMetricsChange function.
+     * SetPeriod function.
      */
-    onHandleMetricsChange: (interval: string, range: IRange) => void
+    setPeriod: (interval: string) => void
+    /**
+     * SetRange function.
+     */
+    setRange: (range: IRange) => void
     /**
      * SetPeriodValue function.
      */
