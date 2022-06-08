@@ -2,12 +2,14 @@ import React from 'react'
 import { waitFor } from '@testing-library/react'
 import { reduxedRender } from 'src/common/react-platform-components/test'
 import { MyConsumptionChart } from 'src/modules/MyConsumption'
-import { fakeData } from 'src/modules/MyConsumption/utils/fakeData'
 import { createTheme } from '@mui/material/styles'
 import { ThemeProvider } from '@mui/material'
+import { TEST_SUCCESS_DAY_METRICS as MOCK_DAY_METRICS } from 'src/mocks/handlers/metrics'
+import { applyCamelCase } from 'src/common/react-platform-components'
+const TEST_SUCCESS_DAY_METRICS = applyCamelCase(MOCK_DAY_METRICS)
 // eslint-disable-next-line jsdoc/require-jsdoc
 const propsMyConsumptionChart = {
-    data: fakeData,
+    data: TEST_SUCCESS_DAY_METRICS,
     chartType: 'bar',
     isMetricsLoading: false,
 }
