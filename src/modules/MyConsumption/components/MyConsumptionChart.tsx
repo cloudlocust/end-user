@@ -29,12 +29,10 @@ const MyConsumptionChart = ({
                 <CircularProgress />
             </div>
         )
+    const reactApexChartsProps = convertMetricsDataToApexChartsProps(data, 'area', formatMessage, theme)
     return (
         <div className="w-full">
-            <ReactApexChart
-                {...convertMetricsDataToApexChartsProps(data, 'area', formatMessage, theme)}
-                width={'100%'}
-            />
+            <ReactApexChart {...reactApexChartsProps} data-testid="apexcharts" width={'100%'} />
         </div>
     )
 }
