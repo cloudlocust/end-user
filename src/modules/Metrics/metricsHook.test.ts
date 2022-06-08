@@ -5,8 +5,23 @@ import { axios } from 'src/common/react-platform-components'
 import { TEST_SUCCESS_DAY_METRICS } from 'src/mocks/handlers/metrics'
 
 jest.mock('axios')
-
+const mockEnqueueSnackbar = jest.fn()
 const mockedAxios = axios as jest.Mocked<typeof axios>
+
+/**
+ * Mocking the useSnackbar.
+ */
+jest.mock('notistack', () => ({
+    ...jest.requireActual('notistack'),
+    /**
+     * Mock the notistack useSnackbar hooks.
+     *
+     * @returns The notistack useSnackbar hook.
+     */
+    useSnackbar: () => ({
+        enqueueSnackbar: mockEnqueueSnackbar,
+    }),
+}))
 
 const FAKE_RANGE: metricRange = {
     from: '2022-06-04T22:00:00.000Z',
@@ -61,4 +76,23 @@ describe('useConsumptionMetrics hook test', () => {
             { timeout: 6000 },
         )
     }, 8000)
+    test('When there is a server issue and the data cannot be retrieved, a snackbar is shown', async () => {
+        const {
+            renderedHook: { waitFor },
+        } = reduxedRenderHook(() => useConsumptionMetrics(mockHookArguments))
+
+        mockedAxios.post.mockRejectedValue('Error')
+
+        waitFor(
+            () => {
+                expect(mockEnqueueSnackbar).toHaveBeenCalledWith(
+                    'Erreur de chargement de vos données de consommation',
+                    {
+                        variant: 'error',
+                    },
+                )
+            },
+            { timeout: 6000 },
+        )
+    })
 })
