@@ -1,0 +1,64 @@
+import { reduxedRenderHook } from 'src/common/react-platform-components/test'
+import { METRICS_API, useConsumptionMetrics } from 'src/modules/Metrics/metricsHook'
+import { getMetricType, metricRange, metricTargets } from 'src/modules/Metrics/Metrics'
+import { axios } from 'src/common/react-platform-components'
+import { TEST_SUCCESS_DAY_METRICS } from 'src/mocks/handlers/metrics'
+
+jest.mock('axios')
+
+const mockedAxios = axios as jest.Mocked<typeof axios>
+
+const FAKE_RANGE: metricRange = {
+    from: '2022-06-04T22:00:00.000Z',
+    to: '2022-06-04T23:26:59.169Z',
+}
+
+const FAKE_TARGETS: metricTargets = [
+    {
+        target: 'nrlink_consumption_metrics',
+        type: 'timeseries',
+    },
+]
+
+let mockHookArguments: getMetricType = {
+    interval: '1min',
+    range: FAKE_RANGE,
+    targets: FAKE_TARGETS,
+    addHookFilters: [],
+}
+
+describe('useConsumptionMetrics hook test', () => {
+    test('When the hook is called with default values', async () => {
+        const {
+            renderedHook: { result, waitFor },
+        } = reduxedRenderHook(() => useConsumptionMetrics(mockHookArguments))
+
+        const currentResult = result.current
+        await waitFor(
+            () => {
+                expect(currentResult.isMetricsLoading).toBe(true)
+                expect(currentResult.interval).toBe('1min')
+                expect(currentResult.range).toStrictEqual(FAKE_RANGE)
+                expect(currentResult.targets).toStrictEqual(FAKE_TARGETS)
+                expect(currentResult.filters).toBeFalsy()
+            },
+            { timeout: 4000 },
+        )
+    }, 8000)
+    test('When there is an HTTP request with the right body', async () => {
+        const {
+            renderedHook: { result, waitFor },
+        } = reduxedRenderHook(() => useConsumptionMetrics(mockHookArguments))
+
+        const AXIOS_POST_DATA = mockHookArguments
+
+        expect(mockedAxios.post).toHaveBeenCalledWith(METRICS_API, AXIOS_POST_DATA)
+
+        waitFor(
+            () => {
+                expect(result.current.data).toBe(TEST_SUCCESS_DAY_METRICS)
+            },
+            { timeout: 6000 },
+        )
+    }, 8000)
+})
