@@ -8,34 +8,9 @@ import {
     metricRange,
     metricFilters,
 } from 'src/modules/Metriics/Metrics'
-import applyCaseMiddleware from 'axios-case-converter'
-import baseAxios, { AxiosStatic } from 'axios'
 import { useSnackbar } from 'notistack'
 import { useIntl } from 'react-intl'
-
-// Axios with preservedKeys. It was copied from src/common/react-platform-components/utils/mm.tsx in order not to modify the original axios.
-const axios = applyCaseMiddleware(baseAxios, {
-    ignoreHeaders: true,
-    caseFunctions: {
-        /**
-         * TODO Document.
-         *
-         * @param input TODO Document.
-         * @param options TODO Document.
-         * @returns TODO Document.
-         */
-        //TODO Correct this
-        //@ts-ignore
-        snake: (input: string, options: never) => {
-            return input
-                .split(/(?=[A-Z])/)
-                .join('_')
-                .toLowerCase()
-        },
-    },
-    // PreservedKeys are keys that we don't want them to be snake case.
-    preservedKeys: ['addHookFilters'],
-}) as AxiosStatic
+import { axios } from 'src/common/react-platform-components'
 
 /**
  * Metrics endpoint.
