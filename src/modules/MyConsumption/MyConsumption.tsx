@@ -1,6 +1,6 @@
 import React from 'react'
 import { MyConsumptionChart } from 'src/modules/MyConsumption'
-import { fakeData } from './utils/fakeData'
+import { fakeData } from 'src/modules/MyConsumption/utils/fakeData'
 /**
  * Form used for modify user profile.
  *
@@ -10,7 +10,7 @@ export const MyConsumption = () => {
     return (
         <div className="p-24 h-full">
             <h1>My conso</h1>
-            <MyConsumptionChart data={fakeData} chartType="bar" />
+            <MyConsumptionChart data={fakeData} chartType="bar" isMetricsLoading={false} />
         </div>
     )
 }

@@ -10,7 +10,6 @@ export const defaultApexChartOptions = (theme: Theme): Props['options'] => ({
         stacked: true,
         locales: [fr],
         defaultLocale: 'fr',
-        background: theme.palette.primary.main,
         toolbar: {
             show: false,
         },
@@ -20,7 +19,7 @@ export const defaultApexChartOptions = (theme: Theme): Props['options'] => ({
     },
     theme: {
         // We set the theme so that the text in the chart and stuffs is updated.
-        mode: theme.palette.mode === 'light' ? 'dark' : 'light',
+        mode: theme.palette.mode,
     },
     dataLabels: {
         enabled: false,
