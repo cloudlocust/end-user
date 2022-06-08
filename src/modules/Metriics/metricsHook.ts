@@ -9,7 +9,7 @@ import {
     metricFilters,
 } from 'src/modules/Metriics/Metrics'
 import applyCaseMiddleware from 'axios-case-converter'
-import baseAxios from 'axios'
+import baseAxios, { AxiosStatic } from 'axios'
 import { useSnackbar } from 'notistack'
 import { useIntl } from 'react-intl'
 
@@ -35,7 +35,7 @@ const axios = applyCaseMiddleware(baseAxios, {
     },
     // PreservedKeys are keys that we don't want them to be snake case.
     preservedKeys: ['addHookFilters'],
-})
+}) as AxiosStatic
 
 /**
  * Metrics endpoint.
