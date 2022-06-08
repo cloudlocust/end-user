@@ -59,7 +59,7 @@ export function useConsumptionMetrics(initialState: getMetricType) {
     const [filters, setFilters] = useState<metricFilters>(
         initialState.addHookFilters ? initialState.addHookFilters : [],
     )
-    const isInitialMount = useRef(true)
+    const isInitialMount = useRef(false)
 
     /**
      * Get Metrics function: Everytime filters or range or interval or targets has changed, it triggers the function call.
@@ -89,20 +89,18 @@ export function useConsumptionMetrics(initialState: getMetricType) {
             )
         }
         setIsMetricsLoading(false)
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [interval, range, targets, filters])
+    }, [interval, range, targets, filters, enqueueSnackbar, formatMessage])
 
+    // Useeffect is called whenever the hook is instantiated or whenever the dependencies changes.
     useEffect(() => {
+        isInitialMount.current = true
         getMetrics()
-    }, [getMetrics])
 
-    // UseEffect executes on initial intantiation, responsible for getMetrics on initialLoad.
-    useEffect(() => {
-        if (isInitialMount.current) {
+        // Return here is to replicate componentDidUnmount
+        return () => {
             isInitialMount.current = false
-            getMetrics()
         }
     }, [getMetrics])
 
-    return { isMetricsLoading, data, targets, interval, range, setPeriod, setFilters, setRange, setTargets, getMetrics }
+    return { isMetricsLoading, data, targets, interval, setPeriod, setFilters, setRange, setTargets, getMetrics }
 }
