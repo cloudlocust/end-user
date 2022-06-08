@@ -427,7 +427,7 @@ export const metricsEndpoints = [
     // Get meters metrics
     rest.post<getMetricType>(METRICS_API, (req, res, ctx) => {
         /*
-         * When req.body checks RANGE, it throws an error of 404.
+         * When req.body checks RANGE, it throws an error of 404 because the range is dynamic date.
          */
         if (req.body.interval === FAKE_DAY_INTERVAL && req.body.range) {
             return res(ctx.status(200), ctx.delay(1000), ctx.json(TEST_SUCCESS_DAY_METRICS))

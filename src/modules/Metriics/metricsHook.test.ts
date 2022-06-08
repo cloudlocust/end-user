@@ -2,13 +2,6 @@ import { reduxedRenderHook } from 'src/common/react-platform-components/test'
 import { METRICS_API, useConsumptionMetrics } from 'src/modules/Metriics/metricsHook'
 import { getMetricType, metricRange, metricTargets } from 'src/modules/Metriics/Metrics'
 
-import axios from 'axios'
-
-jest.mock('axios', () => ({
-    ...jest.requireActual('axios'),
-    post: jest.fn(),
-}))
-
 const FAKE_RANGE: metricRange = {
     from: '2022-06-04T22:00:00.000Z',
     to: '2022-06-04T23:26:59.169Z',
@@ -31,7 +24,7 @@ let mockHookArguments: getMetricType = {
 describe('useConsumptionMetrics hook test', () => {
     test('When the hook is called with default values', async () => {
         const {
-            renderedHook: { result, waitForValueToChange },
+            renderedHook: { result },
         } = reduxedRenderHook(() => useConsumptionMetrics(mockHookArguments))
 
         const currentResult = result.current
@@ -40,16 +33,5 @@ describe('useConsumptionMetrics hook test', () => {
         expect(currentResult.range).toStrictEqual(FAKE_RANGE)
         expect(currentResult.targets).toStrictEqual(FAKE_TARGETS)
         expect(currentResult.filters).toBeFalsy()
-
-        const AXIOS_POST_DATA = mockHookArguments
-
-        expect(axios.post).toHaveBeenCalledWith(METRICS_API, AXIOS_POST_DATA)
-
-        await waitForValueToChange(
-            () => {
-                return result.current.data
-            },
-            { timeout: 4000 },
-        )
     }, 8000)
 })
