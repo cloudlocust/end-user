@@ -1,4 +1,5 @@
 import React from 'react'
+import { MyConsumptionContainer } from 'src/modules/MyConsumption/MyConsumptionContainer'
 
 /**
  * Form used for modify user profile.
@@ -6,5 +7,5 @@ import React from 'react'
  * @returns Modify form component.
  */
 export const MyConsumption = () => {
-    return <div>My conso</div>
+    return <MyConsumptionContainer />
 }
