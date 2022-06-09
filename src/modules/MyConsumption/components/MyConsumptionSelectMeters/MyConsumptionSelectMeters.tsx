@@ -16,7 +16,7 @@ import { formatMetricFilter, formatMetricFilterList } from '../../utils/ MyConsu
 export const MyConsumptionSelectMeters = ({ metersList, setFilters }: IMyConsumptionSelectMeters) => {
     const { formatMessage } = useIntl()
     const theme = useTheme()
-    const [selectedMeter, setSelectedMeter] = useState('')
+    const [selectedMeter, setSelectedMeter] = useState('allMeters')
     /**
      * HandleOnChange function.
      *
@@ -44,13 +44,12 @@ export const MyConsumptionSelectMeters = ({ metersList, setFilters }: IMyConsump
                     // variant="filled"
                     id="input-label"
                     // focused={true}
-                    style={
-                        {
-                            // backgroundColor: theme.palette.primary.dark,
-                            // color: theme.palette.primary.light,
-                            // borderColor: 'rgba(238, 238, 238, 1)',
-                        }
-                    }
+                    // color="primary"
+                    style={{
+                        // backgroundColor: theme.palette.primary.dark,
+                        color: theme.palette.primary.light,
+                        // borderColor: 'rgba(238, 238, 238, 1)',
+                    }}
                     className="rounded-md text-sm"
                 >
                     {formatMessage({ id: 'Compteur', defaultMessage: 'Compteur' })}
@@ -66,7 +65,7 @@ export const MyConsumptionSelectMeters = ({ metersList, setFilters }: IMyConsump
                         stroke: theme.palette.primary.light,
                     }}
                 >
-                    <MenuItem value="">
+                    <MenuItem value="allMeters">
                         {formatMessage({ id: 'Tous les compteurs', defaultMessage: 'Tous les compteurs' })}
                     </MenuItem>
                     {metersList.map((meter: IMeter) => {
