@@ -40,6 +40,7 @@ const mockSeries: ApexAxisChartSeries = [
         color: '',
     },
 ]
+
 describe('test pure function', () => {
     const theme = createTheme({
         palette: {
@@ -52,7 +53,11 @@ describe('test pure function', () => {
     test('convertMetricsDataToApexChartsProps test with valid data', async () => {
         // ApexChart Props
         const apexChartProps = convertMetricsDataToApexChartsProps(mockMetricsData, 'bar', mockFormatMessage, theme)
-        expect(apexChartProps.options).toStrictEqual({ ...defaultApexChartOptions(theme), yaxis: mockYAxis })
+        expect(apexChartProps.options).toStrictEqual({
+            ...defaultApexChartOptions(theme),
+            xaxis: { ...defaultApexChartOptions(theme)?.xaxis, labels: expect.anything() },
+            yaxis: mockYAxis,
+        })
         expect(apexChartProps.series).toStrictEqual(mockSeries)
     })
     test('convertMetricsDataToApexChartsProps test empty data', async () => {
@@ -60,7 +65,11 @@ describe('test pure function', () => {
         mockSeries[0].data = []
         // ApexChart Props empty data
         const apexChartProps = convertMetricsDataToApexChartsProps(mockMetricsData, 'bar', mockFormatMessage, theme)
-        expect(apexChartProps.options).toStrictEqual({ ...defaultApexChartOptions(theme), yaxis: mockYAxis })
+        expect(apexChartProps.options).toStrictEqual({
+            ...defaultApexChartOptions(theme),
+            xaxis: { ...defaultApexChartOptions(theme)?.xaxis, labels: expect.anything() },
+            yaxis: mockYAxis,
+        })
         expect(apexChartProps.series).toStrictEqual(mockSeries)
     })
 })

@@ -3,6 +3,9 @@ import { formatMessageType } from 'src/common/react-platform-translation'
 import { Props } from 'react-apexcharts'
 import fr from 'apexcharts/dist/locales/fr.json'
 import { Theme } from '@mui/material/styles/createTheme'
+import dayjs from 'dayjs'
+import { dayjsUTC } from 'src/common/react-platform-components/utils/mm'
+
 // eslint-disable-next-line jsdoc/require-jsdoc
 export const defaultApexChartOptions = (theme: Theme): Props['options'] => ({
     chart: {
@@ -25,7 +28,7 @@ export const defaultApexChartOptions = (theme: Theme): Props['options'] => ({
         enabled: false,
     },
     markers: {
-        size: 3,
+        size: 1,
         strokeWidth: 1.5,
         strokeOpacity: 1,
         strokeDashArray: 0,
@@ -174,6 +177,23 @@ export const convertMetricsDataToApexChartsProps = (
             },
         })
     })
+
+    options.xaxis = {
+        ...options.xaxis,
+        labels: {
+            /**
+             * Allows users to apply a custom formatter function to x-axis labels.
+             *
+             * @param value The default value generated.
+             * @param timestamp Timestamp - In a datetime series, this is the raw timestamp.
+             * @param opts Contains DateFormatter for datetime x-axis.
+             * @returns New Formatter for the xAxis labels.
+             */
+            formatter: function (value, timestamp, opts) {
+                return dayjsUTC(dayjs.unix(timestamp!)).format(chartType === 'area' ? 'hh:mm' : 'dddd D MMM')
+            },
+        },
+    }
     options.yaxis = yAxis
     return { series, options }
 }
