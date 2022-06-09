@@ -7,5 +7,5 @@ import React from 'react'
  * @returns MyConsumptionSelectMeters.
  */
 export const MyConsumptionSelectMeters = (props: any) => {
-    return <div>MyConsumptionSelectMeters</div>
+    return <div></div>
 }

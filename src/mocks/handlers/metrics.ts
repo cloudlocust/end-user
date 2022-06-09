@@ -1,6 +1,6 @@
 import { rest } from 'msw'
-import { getMetricType, IMetrics } from 'src/modules/Metriics/Metrics'
-import { METRICS_API } from 'src/modules/Metriics/metricsHook'
+import { getMetricType, IMetrics } from 'src/modules/Metrics/Metrics'
+import { METRICS_API } from 'src/modules/Metrics/metricsHook'
 import { SnakeCasedPropertiesDeep } from 'type-fest'
 
 const FAKE_DAY_INTERVAL = '1min'
@@ -425,7 +425,7 @@ export var TEST_SUCCESS_YEAR_METRICS: SnakeCasedPropertiesDeep<IMetrics> = [
 // eslint-disable-next-line jsdoc/require-jsdoc
 export const metricsEndpoints = [
     // Get meters metrics
-    rest.post<getMetricType>(METRICS_API, (req, res, ctx) => {
+    rest.post<getMetricType>(`${METRICS_API}`, (req, res, ctx) => {
         /*
          * When req.body checks RANGE, it throws an error of 404 because the range is dynamic date.
          */

@@ -7,7 +7,7 @@ import {
     IMetrics,
     metricRange,
     metricFilters,
-} from 'src/modules/Metriics/Metrics'
+} from 'src/modules/Metrics/Metrics'
 import { useSnackbar } from 'notistack'
 import { useIntl } from 'react-intl'
 import { axios } from 'src/common/react-platform-components'
@@ -77,5 +77,5 @@ export function useConsumptionMetrics(initialState: getMetricType) {
         }
     }, [getMetrics])
 
-    return { isMetricsLoading, data, targets, interval, setPeriod, setFilters, setRange, setTargets, getMetrics }
+    return { isMetricsLoading, data, targets, range, interval, setPeriod, setFilters, setRange, setTargets, getMetrics }
 }

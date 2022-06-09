@@ -4,7 +4,7 @@ import { IMetrics } from 'src/modules/Metrics/Metrics'
 import { useTheme } from '@mui/material/styles'
 import { useIntl } from 'react-intl'
 import { CircularProgress } from '@mui/material'
-import 'src/modules/MyConsumption/components/MyConsumptionChart.scss'
+import 'src/modules/MyConsumption/components/MyConsumptionChart/MyConsumptionChart.scss'
 import { convertMetricsDataToApexChartsProps } from 'src/modules/MyConsumption'
 
 // eslint-disable-next-line jsdoc/require-jsdoc
