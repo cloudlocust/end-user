@@ -1,14 +1,16 @@
 import React, { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import { MyConsumptionChart } from 'src/modules/MyConsumption/components/MyConsumptionChart'
-import { MyConsumptionSelectMeters } from 'src/modules/MyConsumption/components/MyConsumptionSelectMeters'
+import { MyConsumptionSelectMeters } from 'src/modules/MyConsumption/components/MyConsumptionSelectMeters/MyConsumptionSelectMeters'
 import { MyConsumptionPeriod } from 'src/modules/MyConsumption/components/MyConsumptionPeriod'
-import { useConsumptionMetrics } from 'src/modules/Metriics/metricsHook'
-import { getMetricType } from 'src/modules/Metriics/Metrics'
+import { useConsumptionMetrics } from 'src/modules/Metrics/metricsHook'
+import { getMetricType } from 'src/modules/Metrics/Metrics'
 import dayjs from 'dayjs'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import { Typography } from '@mui/material'
 import { Link } from 'react-router-dom'
+import { useMeterList } from '../Meters/metersHook'
+import { formatMetricFilter, formatMetricFilterList } from './utils/ MyConsumptionFunctions'
 
 /**
  * Range value type.
@@ -43,6 +45,7 @@ export const MyConsumptionContainer = () => {
         useConsumptionMetrics(initialMetricsHookValues)
     const [error, setError] = useState<boolean>(false)
     const [periodValue, setPeriodValue] = useState<periodValue>(1)
+    const { elementList: metersList } = useMeterList()
 
     /* Everytime data changes, check if there is consent for both NRLink & Enedis */
     useEffect(() => {
@@ -52,7 +55,14 @@ export const MyConsumptionContainer = () => {
             setError(false)
         }
     }, [data])
-
+    useEffect(() => {
+        if (!metersList) return
+        if (metersList.length > 1) {
+            setFilters(formatMetricFilterList(metersList))
+        } else {
+            setFilters(formatMetricFilter(metersList[0].guid))
+        }
+    }, [metersList, setFilters])
     /**
      * Show text according to interval.
      *
@@ -105,7 +115,9 @@ export const MyConsumptionContainer = () => {
                         </motion.div>
 
                         {/* TODO: MYEM-2418 */}
-                        <MyConsumptionSelectMeters setFilters={setFilters} />
+                        {metersList && metersList?.length > 1 && (
+                            <MyConsumptionSelectMeters setFilters={setFilters} metersList={metersList} />
+                        )}
                     </div>
                     {/* TODO: MYEM-2422 */}
                     <MyConsumptionChart

@@ -7,7 +7,7 @@ import {
     IMetrics,
     metricRange,
     metricFilters,
-} from 'src/modules/Metriics/Metrics'
+} from 'src/modules/Metrics/Metrics'
 import applyCaseMiddleware from 'axios-case-converter'
 import baseAxios from 'axios'
 import { useSnackbar } from 'notistack'

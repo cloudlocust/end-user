@@ -1,6 +1,6 @@
 import { rest } from 'msw'
-import { getMetricType, IMetrics } from 'src/modules/Metriics/Metrics'
-import { METRICS_API } from 'src/modules/Metriics/metricsHook'
+import { getMetricType, IMetrics } from 'src/modules/Metrics/Metrics'
+import { METRICS_API } from 'src/modules/Metrics/metricsHook'
 import { SnakeCasedPropertiesDeep } from 'type-fest'
 
 const FAKE_DAY_INTERVAL = '1min'
