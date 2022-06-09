@@ -1,10 +1,10 @@
 import React from 'react'
 import { reduxedRender } from 'src/common/react-platform-components/test'
 import { BrowserRouter as Router } from 'react-router-dom'
-import { MyConsumptionPeriod } from './MyConsumptionPeriod'
-import { dataConsumptionPeriod } from './utils/myConsumptionVariables'
 import userEvent from '@testing-library/user-event'
 import { waitFor } from '@testing-library/react'
+import { MyConsumptionPeriod } from 'src/modules/MyConsumption/MyConsumptionPeriod/MyConsumptionPeriod'
+import { dataConsumptionPeriod } from 'src/modules/MyConsumption/utils/myConsumptionVariables'
 /*
  * We will test This component if he render and switch content correctly.
  */

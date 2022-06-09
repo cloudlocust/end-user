@@ -3,8 +3,8 @@ import Tab from '@mui/material/Tab'
 import Tabs from '@mui/material/Tabs'
 import React, { useState } from 'react'
 import Box from '@mui/material/Box'
-import { dataConsumptionPeriod } from './utils/myConsumptionVariables'
-import { IMyConsumptionPeriod } from './myConsumptionTypes'
+import { IMyConsumptionPeriod } from 'src/modules/MyConsumption/MyConsumptionPeriod/myConsumptionTypes'
+import { dataConsumptionPeriod } from 'src/modules/MyConsumption/utils/myConsumptionVariables'
 /**
  * MyConsumptionPeriod Component.
  *
@@ -20,9 +20,11 @@ export const MyConsumptionPeriod = ({ setRange, setPeriod, setPeriodValue }: IMy
     return (
         <div
             className="flex flex-row items-center"
-            style={{
-                backgroundColor: theme.palette.primary.main,
-            }}
+            style={
+                {
+                    // backgroundColor: theme.palette.primary.main,
+                }
+            }
         >
             <Tabs
                 value={tabValue}
@@ -50,7 +52,12 @@ export const MyConsumptionPeriod = ({ setRange, setPeriod, setPeriodValue }: IMy
                         className="text-14 font-semibold min-h-40 min-w-64 mx-4 px-12 capitalize opacity-60"
                         disableRipple
                         label={item.name}
-                        style={{ color: theme.palette.background.paper, zIndex: 1 }}
+                        style={{
+                            color: theme.palette.background.paper,
+                            zIndex: 1,
+                            backgroundColor: theme.palette.primary.main,
+                            borderRadius: '35px',
+                        }}
                     />
                 ))}
             </Tabs>
