@@ -32,6 +32,7 @@ describe('load MyConsumptionPeriod', () => {
         userEvent.click(getByText(dataConsumptionPeriod[1].name))
         expect(getByText(dataConsumptionPeriod[1].name).classList.contains(SELECTED_CLASSNAME)).toBeTruthy()
         expect(getByText(dataConsumptionPeriod[2].name).classList.contains(SELECTED_CLASSNAME)).toBeFalsy()
+
         await waitFor(() => {
             expect(mockSetPeriod).toHaveBeenCalledWith(dataConsumptionPeriod[1].interval)
             expect(mockSetPeriodValue).toHaveBeenCalledWith(dataConsumptionPeriod[1].period)
