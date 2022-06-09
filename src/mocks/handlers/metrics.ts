@@ -1,6 +1,6 @@
 import { rest } from 'msw'
 import { getMetricType, IMetrics } from 'src/modules/Metrics/Metrics'
-import { METRICS_API } from 'src/modules/Metrics/metricsHook'
+import { ENEDIS_CONSENT_API, METRICS_API, NRLINK_CONSENT_API } from 'src/modules/Metrics/metricsHook'
 import { SnakeCasedPropertiesDeep } from 'type-fest'
 
 const FAKE_DAY_INTERVAL = '1min'
@@ -381,8 +381,6 @@ export var TEST_SUCCESS_DAY_METRICS: SnakeCasedPropertiesDeep<IMetrics> = [
     {
         target: 'nrlink_consumption_metrics',
         datapoints: FAKE_DAY_DATA,
-        nrlink_consent: true,
-        enedis_consent: true,
     },
 ]
 
@@ -393,8 +391,6 @@ export var TEST_SUCCESS_WEEK_METRICS: SnakeCasedPropertiesDeep<IMetrics> = [
     {
         target: 'nrlink_consumption_metrics',
         datapoints: FAKE_WEEK_DATA,
-        nrlink_consent: true,
-        enedis_consent: true,
     },
 ]
 
@@ -405,8 +401,6 @@ export var TEST_SUCCESS_MONTH_METRICS: SnakeCasedPropertiesDeep<IMetrics> = [
     {
         target: 'nrlink_consumption_metrics',
         datapoints: FAKE_MONTH_DATA,
-        nrlink_consent: true,
-        enedis_consent: true,
     },
 ]
 
@@ -417,8 +411,6 @@ export var TEST_SUCCESS_YEAR_METRICS: SnakeCasedPropertiesDeep<IMetrics> = [
     {
         target: 'nrlink_consumption_metrics',
         datapoints: FAKE_YEAR_DATA,
-        nrlink_consent: true,
-        enedis_consent: true,
     },
 ]
 
@@ -443,5 +435,13 @@ export const metricsEndpoints = [
             return res(ctx.status(200), ctx.delay(1000), ctx.json(TEST_SUCCESS_YEAR_METRICS))
 
         return res(ctx.status(401), ctx.json(1000), ctx.json({ error: 'Error' }))
+    }),
+
+    rest.get(`${NRLINK_CONSENT_API}`, (req, res, ctx) => {
+        return res(ctx.status(200), ctx.delay(1000), ctx.json('LOL'))
+    }),
+
+    rest.get(`${ENEDIS_CONSENT_API}`, (req, res, ctx) => {
+        return res(ctx.status(200), ctx.delay(1000), ctx.json('LOL'))
     }),
 ]
