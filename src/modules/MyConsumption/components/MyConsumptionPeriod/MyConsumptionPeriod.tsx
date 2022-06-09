@@ -18,14 +18,7 @@ export const MyConsumptionPeriod = ({ setRange, setPeriod, setPeriodValue }: IMy
     const theme = useTheme()
     const [tabValue, setTabValue] = useState(0)
     return (
-        <div
-            className="flex flex-row items-center"
-            style={
-                {
-                    // backgroundColor: theme.palette.primary.main,
-                }
-            }
-        >
+        <div className="flex flex-row items-center">
             <Tabs
                 value={tabValue}
                 onChange={(event, value) => {
