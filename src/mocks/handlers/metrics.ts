@@ -1,6 +1,6 @@
 import { rest } from 'msw'
-import { getMetricType, IMetrics } from 'src/modules/Metriics/Metrics'
-import { METRICS_API } from 'src/modules/Metriics/metricsHook'
+import { getMetricType, IMetrics } from 'src/modules/Metrics/Metrics'
+import { METRICS_API } from 'src/modules/Metrics/metricsHook'
 import { SnakeCasedPropertiesDeep } from 'type-fest'
 
 const FAKE_DAY_INTERVAL = '1min'
@@ -377,57 +377,49 @@ const FAKE_YEAR_DATA = [
 /**
  * Success day test metrics.
  */
-export var TEST_SUCCESS_DAY_METRICS: SnakeCasedPropertiesDeep<IMetrics> = [
+export const TEST_SUCCESS_DAY_METRICS: SnakeCasedPropertiesDeep<IMetrics> = [
     {
         target: 'nrlink_consumption_metrics',
         datapoints: FAKE_DAY_DATA,
-        nrlink_consent: true,
-        enedis_consent: true,
     },
 ]
 
 /**
  * Sucess week test metrics.
  */
-export var TEST_SUCCESS_WEEK_METRICS: SnakeCasedPropertiesDeep<IMetrics> = [
+export const TEST_SUCCESS_WEEK_METRICS: SnakeCasedPropertiesDeep<IMetrics> = [
     {
         target: 'nrlink_consumption_metrics',
         datapoints: FAKE_WEEK_DATA,
-        nrlink_consent: true,
-        enedis_consent: true,
     },
 ]
 
 /**
  * Sucess month test metrics.
  */
-export var TEST_SUCCESS_MONTH_METRICS: SnakeCasedPropertiesDeep<IMetrics> = [
+export const TEST_SUCCESS_MONTH_METRICS: SnakeCasedPropertiesDeep<IMetrics> = [
     {
         target: 'nrlink_consumption_metrics',
         datapoints: FAKE_MONTH_DATA,
-        nrlink_consent: true,
-        enedis_consent: true,
     },
 ]
 
 /**
  * Success year test metrics.
  */
-export var TEST_SUCCESS_YEAR_METRICS: SnakeCasedPropertiesDeep<IMetrics> = [
+export const TEST_SUCCESS_YEAR_METRICS: SnakeCasedPropertiesDeep<IMetrics> = [
     {
         target: 'nrlink_consumption_metrics',
         datapoints: FAKE_YEAR_DATA,
-        nrlink_consent: true,
-        enedis_consent: true,
     },
 ]
 
 // eslint-disable-next-line jsdoc/require-jsdoc
 export const metricsEndpoints = [
     // Get meters metrics
-    rest.post<getMetricType>(METRICS_API, (req, res, ctx) => {
+    rest.post<getMetricType>(`${METRICS_API}`, (req, res, ctx) => {
         /*
-         * When req.body checks RANGE, it throws an error of 404.
+         * When req.body checks RANGE, it throws an error of 404 because the range is dynamic date.
          */
         if (req.body.interval === FAKE_DAY_INTERVAL && req.body.range) {
             return res(ctx.status(200), ctx.delay(1000), ctx.json(TEST_SUCCESS_DAY_METRICS))
