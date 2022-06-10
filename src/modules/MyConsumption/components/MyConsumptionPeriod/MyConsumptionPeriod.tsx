@@ -45,13 +45,13 @@ export const MyConsumptionPeriod = ({ setRange, setPeriod, setPeriodValue }: IMy
                 {dataConsumptionPeriod.map((item) => (
                     <Tab
                         key={item.name}
-                        className="text-14 font-semibold min-h-40 min-w-64 mx-4 px-12 capitalize opacity-60"
+                        className="text-14 font-semibold min-h-40 min-w-64 mx-4 px-12 capitalize opacity-50"
                         disableRipple
                         label={item.name}
                         style={{
                             color: theme.palette.background.paper,
                             zIndex: 1,
-                            backgroundColor: theme.palette.primary.main,
+                            backgroundColor: theme.palette.primary.dark,
                             borderRadius: '35px',
                         }}
                     />
