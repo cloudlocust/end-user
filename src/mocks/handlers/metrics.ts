@@ -2,6 +2,7 @@ import { rest } from 'msw'
 import { getMetricType, IMetrics } from 'src/modules/Metrics/Metrics'
 import { METRICS_API } from 'src/modules/Metrics/metricsHook'
 import { SnakeCasedPropertiesDeep } from 'type-fest'
+import dayjs from 'dayjs'
 
 const FAKE_DAY_INTERVAL = '1min'
 const FAKE_WEEK_INTERVAL = '1d'
@@ -360,18 +361,18 @@ const FAKE_MONTH_DATA = [
 
 // Data of 1 year with 1 month interval.
 const FAKE_YEAR_DATA = [
-    [33, 1640995200],
-    [34, 1643673600],
-    [41, 1646092800],
-    [38, 1648771200],
-    [45, 1651363200],
-    [62, 1654041600],
-    [42, 1656633600],
-    [32, 1659312000],
-    [66, 1661990400],
-    [37, 1664582400],
-    [24, 1667260800],
-    [78, 1669852800],
+    [33, 1640991600],
+    [34, 1643670000],
+    [41, 1646089200],
+    [38, 1648764000],
+    [45, 1651356000],
+    [62, 1654034400],
+    [42, 1656626400],
+    [32, 1659304800],
+    [66, 1661983200],
+    [37, 1664575200],
+    [24, 1667257200],
+    [78, 1669849200],
 ]
 
 /**
@@ -416,22 +417,23 @@ export const TEST_SUCCESS_YEAR_METRICS: SnakeCasedPropertiesDeep<IMetrics> = [
 
 // eslint-disable-next-line jsdoc/require-jsdoc
 export const metricsEndpoints = [
-    // Get meters metrics
+    // Get meters metrics endpoint
     rest.post<getMetricType>(`${METRICS_API}`, (req, res, ctx) => {
-        /*
-         * When req.body checks RANGE, it throws an error of 404 because the range is dynamic date.
-         */
-        if (req.body.interval === FAKE_DAY_INTERVAL && req.body.range) {
+        const fromInMilliseconds = dayjs(new Date(req.body.range.from).getTime())
+        const toInMilliseconds = dayjs(new Date(req.body.range.to).getTime())
+        const difference = toInMilliseconds.diff(fromInMilliseconds, 'day')
+
+        if (FAKE_DAY_INTERVAL === '1min' && difference === 1) {
             return res(ctx.status(200), ctx.delay(1000), ctx.json(TEST_SUCCESS_DAY_METRICS))
         }
-        if (req.body.interval === FAKE_WEEK_INTERVAL && req.body.range) {
+        if (FAKE_WEEK_INTERVAL === '1d' && difference === 7) {
             return res(ctx.status(200), ctx.delay(1000), ctx.json(TEST_SUCCESS_WEEK_METRICS))
         }
 
-        if (req.body.interval === FAKE_MONTH_INTERVAL && req.body.range)
+        if (FAKE_MONTH_INTERVAL === '1d' && difference === 31)
             return res(ctx.status(200), ctx.delay(1000), ctx.json(TEST_SUCCESS_MONTH_METRICS))
 
-        if (req.body.interval === FAKE_YEAR_INTERVAL && req.body.range)
+        if (FAKE_YEAR_INTERVAL === '1m' && difference === 365)
             return res(ctx.status(200), ctx.delay(1000), ctx.json(TEST_SUCCESS_YEAR_METRICS))
 
         return res(ctx.status(401), ctx.json(1000), ctx.json({ error: 'Error' }))
