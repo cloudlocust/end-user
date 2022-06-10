@@ -1,4 +1,5 @@
 import { rest } from 'msw'
+import { IEnedisConsent, INrlinkConsent } from 'src/modules/Meters/Meters'
 import { getMetricType, IMetrics } from 'src/modules/Metrics/Metrics'
 import { ENEDIS_CONSENT_API, METRICS_API, NRLINK_CONSENT_API } from 'src/modules/Metrics/metricsHook'
 import { SnakeCasedPropertiesDeep } from 'type-fest'
@@ -377,7 +378,7 @@ const FAKE_YEAR_DATA = [
 /**
  * Success day test metrics.
  */
-export var TEST_SUCCESS_DAY_METRICS: SnakeCasedPropertiesDeep<IMetrics> = [
+export const TEST_SUCCESS_DAY_METRICS: SnakeCasedPropertiesDeep<IMetrics> = [
     {
         target: 'nrlink_consumption_metrics',
         datapoints: FAKE_DAY_DATA,
@@ -387,7 +388,7 @@ export var TEST_SUCCESS_DAY_METRICS: SnakeCasedPropertiesDeep<IMetrics> = [
 /**
  * Sucess week test metrics.
  */
-export var TEST_SUCCESS_WEEK_METRICS: SnakeCasedPropertiesDeep<IMetrics> = [
+export const TEST_SUCCESS_WEEK_METRICS: SnakeCasedPropertiesDeep<IMetrics> = [
     {
         target: 'nrlink_consumption_metrics',
         datapoints: FAKE_WEEK_DATA,
@@ -397,7 +398,7 @@ export var TEST_SUCCESS_WEEK_METRICS: SnakeCasedPropertiesDeep<IMetrics> = [
 /**
  * Sucess month test metrics.
  */
-export var TEST_SUCCESS_MONTH_METRICS: SnakeCasedPropertiesDeep<IMetrics> = [
+export const TEST_SUCCESS_MONTH_METRICS: SnakeCasedPropertiesDeep<IMetrics> = [
     {
         target: 'nrlink_consumption_metrics',
         datapoints: FAKE_MONTH_DATA,
@@ -407,12 +408,28 @@ export var TEST_SUCCESS_MONTH_METRICS: SnakeCasedPropertiesDeep<IMetrics> = [
 /**
  * Success year test metrics.
  */
-export var TEST_SUCCESS_YEAR_METRICS: SnakeCasedPropertiesDeep<IMetrics> = [
+export const TEST_SUCCESS_YEAR_METRICS: SnakeCasedPropertiesDeep<IMetrics> = [
     {
         target: 'nrlink_consumption_metrics',
         datapoints: FAKE_YEAR_DATA,
     },
 ]
+
+/**
+ * Success test Nrlink consent.
+ */
+export const TEST_SUCCESS_NRLINK_CONSENT: SnakeCasedPropertiesDeep<INrlinkConsent> = {
+    meter_guid: '17707368031234',
+    nrlink_consent_state: 'NONEXISTENT',
+}
+
+/**
+ * Success test Enedis consent.
+ */
+export const TEST_SUCCESS_ENEDIS_CONSENT: SnakeCasedPropertiesDeep<IEnedisConsent> = {
+    meter_guid: '17707368031234',
+    enedis_consent_state: 'NONEXISTENT',
+}
 
 // eslint-disable-next-line jsdoc/require-jsdoc
 export const metricsEndpoints = [
@@ -437,11 +454,21 @@ export const metricsEndpoints = [
         return res(ctx.status(401), ctx.json(1000), ctx.json({ error: 'Error' }))
     }),
 
-    rest.get(`${NRLINK_CONSENT_API}`, (req, res, ctx) => {
-        return res(ctx.status(200), ctx.delay(1000), ctx.json('LOL'))
+    rest.get<IEnedisConsent>(`${ENEDIS_CONSENT_API}`, (req, res, ctx) => {
+        const meterGuid = req.url.searchParams.get('meter_guid')
+        if (meterGuid) {
+            return res(ctx.status(200), ctx.delay(1000), ctx.json(TEST_SUCCESS_ENEDIS_CONSENT))
+        } else {
+            return res(ctx.status(400), ctx.delay(1000))
+        }
     }),
 
-    rest.get(`${ENEDIS_CONSENT_API}`, (req, res, ctx) => {
-        return res(ctx.status(200), ctx.delay(1000), ctx.json('LOL'))
+    rest.get<INrlinkConsent>(`${NRLINK_CONSENT_API}`, (req, res, ctx) => {
+        const meterGuid = req.url.searchParams.get('meter_guid')
+        if (meterGuid) {
+            return res(ctx.status(200), ctx.delay(1000), ctx.json(TEST_SUCCESS_NRLINK_CONSENT))
+        } else {
+            return res(ctx.status(400), ctx.delay(1000))
+        }
     }),
 ]

@@ -31,12 +31,12 @@ export type addMeterInputType = {
 /**
  * Nrlink consent type.
  */
-export type nrlinkConsent = 'PENDING' | 'ACTIVE' | 'EXPIRED' | 'NONEXISTENT'
+export type nrlinkConsentType = 'PENDING' | 'ACTIVE' | 'EXPIRED' | 'NONEXISTENT'
 
 /**
  * Enedis consent type.
  */
-export type enedisConsent = 'PENDING' | 'ACTIVE' | 'EXPIRED' | 'NONEXISTENT' | null
+export type enedisConsentType = 'PENDING' | 'ACTIVE' | 'EXPIRED' | 'NONEXISTENT' | null
 
 /**
  * Nrlink Consent Status.
@@ -55,15 +55,15 @@ export interface INrlinkConsent {
     /**
      * Meter Guid.
      */
-    meter_guid: string
+    meterGuid: string
     /**
      * Nrlink consent status.
      */
-    nrlink_consent_state: nrlinkConsentStatus
+    nrlinkConsentState: nrlinkConsentStatus
     /**
      * Nrlink guid.
      */
-    nrlink_guid?: string
+    nrlinkGuid?: string
 }
 
 /**
@@ -73,13 +73,24 @@ export interface IEnedisConsent {
     /**
      * Meter Guid.
      */
-    meter_guid: string
+    meterGuid: string
     /**
      * Enedis consent status.
      */
-    enedis_consent_state: enedisConsentStatus
+    enedisConsentState: enedisConsentStatus
     /**
      * Created At.
      */
-    created_a?: string
+    createdAt?: string
+}
+
+/**
+ * Consents type.
+ */
+//eslint-disable-next-line jsdoc/require-jsdoc
+export type consentsType = {
+    //eslint-disable-next-line jsdoc/require-jsdoc
+    nrlinkConsent: INrlinkConsent
+    //eslint-disable-next-line jsdoc/require-jsdoc
+    enedisConsent: IEnedisConsent
 }

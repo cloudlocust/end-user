@@ -11,6 +11,7 @@ import {
 import { useSnackbar } from 'notistack'
 import { useIntl } from 'react-intl'
 import { axios } from 'src/common/react-platform-components'
+import { consentsType, IEnedisConsent, INrlinkConsent } from 'src/modules/Meters/Meters'
 
 /**
  * Metrics endpoint.
@@ -45,6 +46,7 @@ export function useConsumptionMetrics(initialState: getMetricType) {
         initialState.addHookFilters ? initialState.addHookFilters : [],
     )
     const isInitialMount = useRef(false)
+    const [consents, setConsents] = useState<consentsType>()
 
     /**
      * Get Metrics function: Everytime filters or range or interval or targets has changed, it triggers the function call.
@@ -80,23 +82,33 @@ export function useConsumptionMetrics(initialState: getMetricType) {
      * Check Consents function.
      */
     const checkConsents = useCallback(async () => {
+        if (filters.length === 0) return
         if (filters.length > 0) {
-            const meterGuid = filters[0].value
-
-            const nrlinkConsentRequest = await axios.get(`${NRLINK_CONSENT_API}/meter_guid=${meterGuid}`)
-            const enedisConsentRequest = await axios.get(`${ENEDIS_CONSENT_API}/meter_guid=${meterGuid}`)
-
+            const meterGuidValue = filters[0].value
             try {
-                const responses = await Promise.all([nrlinkConsentRequest, enedisConsentRequest])
-
-                // eslint-disable-next-line no-console
-                console.log(responses)
+                await Promise.all([
+                    axios.get<INrlinkConsent>(`${NRLINK_CONSENT_API}?meter_guid=${meterGuidValue}`),
+                    axios.get<IEnedisConsent>(`${ENEDIS_CONSENT_API}?meter_guid=${meterGuidValue}`),
+                ]).then(([nrlinkConsentResponse, enedisConsentResponse]) => {
+                    setConsents({
+                        nrlinkConsent: nrlinkConsentResponse.data,
+                        enedisConsent: enedisConsentResponse.data,
+                    })
+                })
             } catch (errors) {
-                // eslint-disable-next-line no-console
-                console.error(errors)
+                enqueueSnackbar(
+                    formatMessage({
+                        id: 'Erreur lors de la récupération des consentements',
+                        defaultMessage: 'Erreur lors de la récupération des consentements',
+                    }),
+                    {
+                        variant: 'error',
+                        autoHideDuration: 5000,
+                    },
+                )
             }
         }
-    }, [filters])
+    }, [filters, enqueueSnackbar, formatMessage])
 
     // Useeffect is called whenever the hook is instantiated or whenever the dependencies changes.
     useEffect(() => {
@@ -120,6 +132,7 @@ export function useConsumptionMetrics(initialState: getMetricType) {
         range,
         interval,
         filters,
+        consents,
         setPeriod,
         setFilters,
         setRange,
