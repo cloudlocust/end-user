@@ -4,7 +4,7 @@ import { useIntl } from 'src/common/react-platform-translation'
 import { FormControl, InputLabel, MenuItem, Select, SelectChangeEvent } from '@mui/material'
 import { IMeter } from 'src/modules/Meters/Meters'
 import { formatMetricFilter, formatMetricFilterList } from '../../utils/ MyConsumptionFunctions'
-
+// import './'
 /**
  * Select Input that displays all the meters.
  *
@@ -64,6 +64,7 @@ export const MyConsumptionSelectMeters = ({ metersList, setFilters }: IMyConsump
                         color: theme.palette.primary.light,
                         stroke: theme.palette.primary.light,
                     }}
+                    classes={{}}
                 >
                     <MenuItem value="allMeters">
                         {formatMessage({ id: 'Tous les compteurs', defaultMessage: 'Tous les compteurs' })}
