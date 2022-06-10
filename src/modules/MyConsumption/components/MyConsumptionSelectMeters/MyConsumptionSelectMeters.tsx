@@ -45,7 +45,13 @@ export const MyConsumptionSelectMeters = ({ metersList, setFilters }: IMyConsump
         },
         '& .MuiOutlinedInput-root:hover': {
             '& fieldset': {
-                borderColor: theme.palette.primary.main,
+                borderColor: theme.palette.primary.light,
+                borderWidth: '2px',
+            },
+        },
+        '& .Mui-focused': {
+            '& fieldset': {
+                borderColor: ` ${theme.palette.primary.light} !important`,
             },
         },
     }))
