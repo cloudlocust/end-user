@@ -2,19 +2,14 @@ import React, { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import { MyConsumptionChart } from 'src/modules/MyConsumption'
 import { MyConsumptionSelectMeters } from 'src/modules/MyConsumption/components/MyConsumptionSelectMeters'
-import { MyConsumptionPeriod } from 'src/modules/MyConsumption/components/MyConsumptionPeriod'
+import { MyConsumptionPeriod } from 'src/modules/MyConsumption/MyConsumptionPeriod'
 import { useConsumptionMetrics } from 'src/modules/Metrics/metricsHook'
 import { getMetricType } from 'src/modules/Metrics/Metrics'
 import dayjs from 'dayjs'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import { Typography } from '@mui/material'
 import { Link } from 'react-router-dom'
-
-/**
- * Range value type.
- *
- */
-type periodValue = 1 | 7 | 30 | 365
+import { periodValue } from 'src/modules/MyConsumption/myConsumptionTypes'
 
 /**
  * InitialMetricsStates for useConsumptionMetrics.
@@ -111,9 +106,9 @@ export const MyConsumptionContainer = () => {
                         isMetricsLoading={isMetricsLoading}
                         data={data}
                         chartType={interval === '1min' ? 'area' : 'bar'}
+                        period={periodValue}
                     />
 
-                    {/* TODO: MYEM-2425 */}
                     <MyConsumptionPeriod setPeriod={setPeriod} setRange={setRange} setPeriodValue={setPeriodValue} />
                 </>
             )}

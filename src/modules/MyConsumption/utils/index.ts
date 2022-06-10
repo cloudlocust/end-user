@@ -4,155 +4,183 @@ import { Props } from 'react-apexcharts'
 import fr from 'apexcharts/dist/locales/fr.json'
 import { Theme } from '@mui/material/styles/createTheme'
 import dayjs from 'dayjs'
-import { dayjsUTC } from 'src/common/react-platform-components/utils/mm'
+import { periodValue } from 'src/modules/MyConsumption/myConsumptionTypes'
 
 // eslint-disable-next-line jsdoc/require-jsdoc
-export const defaultApexChartOptions = (theme: Theme): Props['options'] => ({
-    chart: {
-        fontFamily: theme.typography.fontFamily,
-        stacked: true,
-        locales: [fr],
-        defaultLocale: 'fr',
-        toolbar: {
-            show: false,
-        },
-        zoom: {
-            enabled: false,
-        },
-    },
-    theme: {
-        // We set the theme so that the text in the chart and stuffs is updated.
-        mode: theme.palette.mode,
-    },
-    dataLabels: {
-        enabled: false,
-    },
-    markers: {
-        size: 1,
-        strokeWidth: 1.5,
-        strokeOpacity: 1,
-        strokeDashArray: 0,
-        fillOpacity: 1,
-        shape: 'circle',
-        radius: 2,
-        hover: {
-            size: 5,
-        },
-    },
-    fill: {
-        type: 'solid',
-        opacity: 0.7,
-        gradient: {
-            shadeIntensity: 0.4,
-            opacityFrom: 1,
-            opacityTo: 0.5,
-            stops: [30, 100, 100],
-        },
-    },
-    grid: {
-        show: true,
-        strokeDashArray: 3,
-        position: 'back',
-        xaxis: {
-            lines: {
-                show: true,
+export const defaultApexChartOptions = (theme: Theme): Props['options'] => {
+    return {
+        chart: {
+            fontFamily: theme.typography.fontFamily,
+            background: theme.palette.primary.main,
+            stacked: true,
+            locales: [fr],
+            defaultLocale: 'fr',
+            height: '100%',
+            toolbar: {
+                show: false,
+            },
+            zoom: {
+                enabled: false,
             },
         },
-        yaxis: {
-            lines: {
-                show: true,
-            },
+        theme: {
+            // We set the theme so that the text in the chart and stuffs is updated.
+            mode: theme.palette.mode === 'light' ? 'dark' : 'light',
         },
-        padding: {
-            top: 0,
-            right: 0,
-            bottom: 0,
-            left: 0,
-        },
-    },
-    xaxis: {
-        type: 'datetime',
-        tooltip: {
+        dataLabels: {
             enabled: false,
         },
-        axisBorder: {
+        fill: {
+            type: 'solid',
+            opacity: 0.7,
+            gradient: {
+                shadeIntensity: 0.4,
+                opacityFrom: 1,
+                opacityTo: 0.5,
+                stops: [30, 100, 100],
+            },
+        },
+        grid: {
             show: true,
+            strokeDashArray: 4,
+            position: 'back',
+            borderColor: theme.palette.text.disabled,
+            xaxis: {
+                lines: {
+                    show: true,
+                },
+            },
+            yaxis: {
+                lines: {
+                    show: true,
+                },
+            },
         },
-    },
-    stroke: {
-        show: true,
-        curve: 'smooth',
-        lineCap: 'butt',
-        width: 1.5,
-        dashArray: 0,
-    },
-})
+        xaxis: {
+            tooltip: {
+                enabled: false,
+            },
+            axisBorder: {
+                show: true,
+                strokeWidth: 3,
+            },
+            type: 'datetime',
+        },
+        stroke: {
+            show: true,
+            curve: 'smooth',
+            lineCap: 'butt',
+            width: 1.5,
+            dashArray: 0,
+        },
+    }
+}
+
+// eslint-disable-next-line jsdoc/require-jsdoc
+const defaultYAxisLabelsFormatter =
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    (value: number) => `${value}`
 
 // eslint-disable-next-line jsdoc/require-jsdoc
 const targetNameOptions = (
     theme: Theme,
     // eslint-disable-next-line jsdoc/require-jsdoc
-): { [key in metricTarget]: { label: string; type?: string; color?: string } } => ({
+): {
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    [key in metricTarget]: { label: string; type?: string; color?: string; formatter: (value: number) => string }
+} => ({
     nrlink_consumption_metrics: {
-        label: 'Consommation Nrlink',
+        label: 'Consommation',
         color: theme.palette.primary.light,
+        // eslint-disable-next-line jsdoc/require-jsdoc
+        formatter: (value: number) => `${value} Kwh`,
     },
     enedis_consumption_metrics: {
-        label: 'Consommation Enedis',
+        label: 'Consommation',
         type: 'line',
+        formatter: defaultYAxisLabelsFormatter,
     },
     enphase_consumption_metrics: {
         label: 'Consommation Enphase',
         type: 'line',
+        formatter: defaultYAxisLabelsFormatter,
     },
     enphase_production_metrics: {
         label: 'Production Enphase',
         type: 'line',
+        formatter: defaultYAxisLabelsFormatter,
     },
     external_temperature_metrics: {
         label: 'Température Extérieure',
         type: 'line',
+        formatter: defaultYAxisLabelsFormatter,
     },
     nrlink_internal_temperature_metrics: {
         label: 'Température Intérieure',
         type: 'line',
+        formatter: defaultYAxisLabelsFormatter,
     },
 })
 
-// Typing the return to [number, number][], because it is the type of ApexChart series data (otherwise we'll have typing error with number[][]).
 /**
- * Convert dataPoints array that has the format [Yaxis, Xaxis][] where Yaxis and Xaxis are numbers, to apexChart format which is [Xaxis, Yaxis][].
+ * Convert dataPoints array that has the format [Yaxis, Xaxis][] where Yaxis and Xaxis are numbers, to more readable apexChart format which is {x: date, y: number}[].
  *
  * @param dataPoints Array of datapoints in format [Yaxis, Xaxis][].
- * @returns Array of data in format [Xaxis, Yaxis][] supported by apexCharts series data.
+ * @returns Array of data in format {x: Xaxis, y: Yaxis}[] supported by apexCharts series data.
  */
-const getApexSerieDataFromDatapoint = (dataPoints: IMetrics[0]['datapoints']): [number, number][] => {
-    // dataPoints are represented with [Y, X] values and in apexCharts it takes series values as [X,Y].
-    return dataPoints.map((dataPoint) => [dataPoint[1], dataPoint[0]])
+const getApexSerieDataFromDatapoint = (
+    dataPoints: IMetrics[0]['datapoints'],
+): // eslint-disable-next-line jsdoc/require-jsdoc
+ApexAxisChartSeries[0]['data'] => {
+    return dataPoints.map((dataPoint) => ({
+        x: new Date(dataPoint[1]),
+        y: dataPoint[0],
+    }))
 }
 
 /**
  * Pure Function to convertMetrics Data to ApexCharts Props.
  *
- * @param data Data of format IMetrics that will be converted to IMetrics.
- * @param chartType Type of the main chart which represents nrlink_consumption_metrics.
- * @param formatMessage Format Message for translation of yAxis titles and names.
- * @param theme Current Theme applied.
+ * @param params N/A.
+ * @param params.data Data of format IMetrics that will be converted to IMetrics.
+ * @param params.chartType Type of the main chart which represents nrlink_consumption_metrics.
+ * @param params.formatMessage Format Message for translation of yAxis titles and names.
+ * @param params.theme Current Theme applied.
+ * @param params.period Period value of the current chart.
+ * @param params.isMobile Boolean indicating if it's mobile mode or not.
  * @returns ApexCharts Props.
  */
-export const convertMetricsDataToApexChartsProps = (
-    data: IMetrics,
-    chartType: string,
-    formatMessage: formatMessageType,
-    theme: Theme,
-) => {
+export const convertMetricsDataToApexChartsProps = ({
+    data,
+    chartType,
+    formatMessage,
+    theme,
+    period,
+    isMobile,
+}: // eslint-disable-next-line jsdoc/require-jsdoc
+{
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    data: IMetrics
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    chartType: string
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    formatMessage: formatMessageType
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    theme: Theme
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    period?: periodValue
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    isMobile?: boolean
+}) => {
     let options: Props['options'] = defaultApexChartOptions(theme)!
     let series: ApexAxisChartSeries = []
     let yAxis: ApexYAxis[] = []
 
     data.forEach((metric: IMetrics[0]) => {
-        let apexChartSerieData: [number, number][] = []
+        // eslint-disable-next-line jsdoc/require-jsdoc
+        let apexChartSerieData: ApexAxisChartSeries[0]['data'] = []
         if (metric.datapoints.length > 0) apexChartSerieData = getApexSerieDataFromDatapoint(metric.datapoints)
+
         series!.push({
             data: apexChartSerieData,
             name: formatMessage({
@@ -163,17 +191,20 @@ export const convertMetricsDataToApexChartsProps = (
             type: targetNameOptions(theme)[metric.target].type || chartType,
         })
         yAxis.push({
-            title: {
-                text: formatMessage({
-                    id: targetNameOptions(theme)[metric.target].label,
-                    defaultMessage: targetNameOptions(theme)[metric.target].label,
-                }),
-            },
+            // TODO uncomment when having multiple yAxis curves.
+            // title: {
+            //     text: formatMessage({
+            //         id: targetNameOptions(theme)[metric.target].label,
+            //         defaultMessage: targetNameOptions(theme)[metric.target].label,
+            //     }),
+            // },
             opposite: !!targetNameOptions(theme)[metric.target].type,
             axisBorder: {
                 show: true,
-                offsetX: 0,
-                offsetY: 0,
+            },
+            labels: {
+                // eslint-disable-next-line jsdoc/require-jsdoc
+                formatter: targetNameOptions(theme)[metric.target].formatter,
             },
         })
     })
@@ -181,19 +212,28 @@ export const convertMetricsDataToApexChartsProps = (
     options.xaxis = {
         ...options.xaxis,
         labels: {
-            /**
-             * Allows users to apply a custom formatter function to x-axis labels.
-             *
-             * @param value The default value generated.
-             * @param timestamp Timestamp - In a datetime series, this is the raw timestamp.
-             * @param opts Contains DateFormatter for datetime x-axis.
-             * @returns New Formatter for the xAxis labels.
-             */
-            formatter: function (value, timestamp, opts) {
-                return dayjsUTC(dayjs.unix(timestamp!)).format(chartType === 'area' ? 'hh:mm' : 'dddd D MMM')
+            datetimeFormatter: {
+                year: 'yyyy',
+                month: isMobile ? 'MMM' : 'MMMM',
+                day: period === 7 ? 'ddd' : 'dd MMM',
+                hour: 'HH:mm',
             },
+            // eslint-disable-next-line jsdoc/require-jsdoc
+            formatter: period === 1 ? (value, timestamp) => dayjs(new Date(timestamp!)!).format('HH:mm') : undefined,
         },
     }
     options.yaxis = yAxis
+    options.tooltip = {
+        x: {
+            // eslint-disable-next-line jsdoc/require-jsdoc
+            formatter: (timestamp, opts) => {
+                if (period === 1) return dayjs(new Date(timestamp)!).format('HH:mm')
+                if (period === 7) return dayjs(new Date(timestamp)!).format('dddd D MMM')
+                if (period === 365) return dayjs(new Date(timestamp)!).format('MMMM')
+                return dayjs(new Date(timestamp)!).format('DD MMM')
+            },
+        },
+    }
+
     return { series, options }
 }

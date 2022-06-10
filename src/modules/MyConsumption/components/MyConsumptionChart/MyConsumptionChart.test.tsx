@@ -29,18 +29,6 @@ describe('Test MyConsumptionChart', () => {
         unobserve: jest.fn(),
         disconnect: jest.fn(),
     }))
-    // TODO test better and fix s.observe error.
-    // test('When component mount with data', async () => {
-    //     const { getByTestId } = reduxedRender(
-    //         <ThemeProvider theme={theme}>
-    //             <MyConsumptionChart {...propsMyConsumptionChart} />)
-    //         </ThemeProvider>,
-    //     )
-
-    //     await waitFor(() => {
-    //         expect(getByTestId(APEXCHARTS_TESTID)).toBeTruthy()
-    //     })
-    // })
     test('When isMetricsLoading true, Circular progress should be shown', async () => {
         propsMyConsumptionChart.isMetricsLoading = true
         const { getByText } = reduxedRender(

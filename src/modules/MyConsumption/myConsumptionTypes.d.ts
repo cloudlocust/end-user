@@ -5,7 +5,7 @@ export interface IMyConsumptionPeriod {
     /**
      * SetPeriod function.
      */
-    setPeriod: (interval: string) => void
+    setPeriod: any
     /**
      * SetRange function.
      */
@@ -13,7 +13,7 @@ export interface IMyConsumptionPeriod {
     /**
      * SetPeriodValue function.
      */
-    setPeriodValue: (period: number) => void
+    setPeriodValue: any
 }
 //TODO to remove
 /**
@@ -29,3 +29,9 @@ interface IRange {
      */
     to: string
 }
+
+/**
+ * Range value type.
+ *
+ */
+export type periodValue = 1 | 7 | 30 | 365
