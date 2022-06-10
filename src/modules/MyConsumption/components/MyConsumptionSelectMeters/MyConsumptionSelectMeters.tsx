@@ -3,8 +3,8 @@ import { useTheme } from '@mui/material/styles'
 import { useIntl } from 'src/common/react-platform-translation'
 import { FormControl, InputLabel, MenuItem, Select, SelectChangeEvent } from '@mui/material'
 import { IMeter } from 'src/modules/Meters/Meters'
-import { formatMetricFilter, formatMetricFilterList } from '../../utils/ MyConsumptionFunctions'
 import { styled } from '@mui/material/styles'
+import { formatMetricFilter, formatMetricFilterList } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
 /**
  * Select Input that displays all the meters.
  *

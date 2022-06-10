@@ -7,8 +7,8 @@ import { useConsumptionMetrics } from 'src/modules/Metrics/metricsHook'
 import { getMetricType } from 'src/modules/Metrics/Metrics'
 import dayjs from 'dayjs'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
-import { useMeterList } from '../Meters/metersHook'
-import { formatMetricFilter, formatMetricFilterList } from './utils/ MyConsumptionFunctions'
+import { useMeterList } from 'src/modules/Meters/metersHook'
+import { formatMetricFilter, formatMetricFilterList } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
 
 /**
  * Range value type.
