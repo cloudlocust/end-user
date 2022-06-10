@@ -5,6 +5,32 @@ import { FormControl, InputLabel, MenuItem, Select, SelectChangeEvent } from '@m
 import { IMeter } from 'src/modules/Meters/Meters'
 import { styled } from '@mui/material/styles'
 import { formatMetricFilter, formatMetricFilterList } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
+
+const Root = styled('div')(({ theme }) => ({
+    '& .MuiOutlinedInput-root': {
+        '& svg': {
+            color: theme.palette.primary.light,
+        },
+        '& fieldset': {
+            borderColor: theme.palette.primary.light,
+            '& legend': {
+                fontSize: '1.35rem',
+            },
+        },
+    },
+    '& .MuiOutlinedInput-root:hover': {
+        '& fieldset': {
+            borderColor: theme.palette.primary.light,
+            borderWidth: '2px',
+        },
+    },
+    '& .Mui-focused': {
+        '& fieldset': {
+            borderColor: ` ${theme.palette.primary.light} !important`,
+        },
+    },
+}))
+
 /**
  * Select Input that displays all the meters.
  *
@@ -31,30 +57,6 @@ export const MyConsumptionSelectMeters = ({ metersList, setFilters }: IMyConsump
         }
     }
 
-    const Root = styled('div')(({ theme }) => ({
-        '& .MuiOutlinedInput-root': {
-            '& svg': {
-                color: theme.palette.primary.light,
-            },
-            '& fieldset': {
-                borderColor: theme.palette.primary.light,
-                '& legend': {
-                    fontSize: '1.35rem',
-                },
-            },
-        },
-        '& .MuiOutlinedInput-root:hover': {
-            '& fieldset': {
-                borderColor: theme.palette.primary.light,
-                borderWidth: '2px',
-            },
-        },
-        '& .Mui-focused': {
-            '& fieldset': {
-                borderColor: ` ${theme.palette.primary.light} !important`,
-            },
-        },
-    }))
     return (
         <Root>
             <div style={{ minWidth: '220px' }} className="container flex flex-row items-center">
