@@ -8,39 +8,14 @@ import {
     metricRange,
     metricFilters,
 } from 'src/modules/Metrics/Metrics'
-import applyCaseMiddleware from 'axios-case-converter'
-import baseAxios from 'axios'
 import { useSnackbar } from 'notistack'
 import { useIntl } from 'react-intl'
-
-// Axios with preservedKeys. It was copied from src/common/react-platform-components/utils/mm.tsx in order not to modify the original axios.
-const axios = applyCaseMiddleware(baseAxios, {
-    ignoreHeaders: true,
-    caseFunctions: {
-        /**
-         * TODO Document.
-         *
-         * @param input TODO Document.
-         * @param options TODO Document.
-         * @returns TODO Document.
-         */
-        //TODO Correct this
-        //@ts-ignore
-        snake: (input: string, options: never) => {
-            return input
-                .split(/(?=[A-Z])/)
-                .join('_')
-                .toLowerCase()
-        },
-    },
-    // PreservedKeys are keys that we don't want them to be snake case.
-    preservedKeys: ['addHookFilters'],
-})
+import { axios } from 'src/common/react-platform-components'
 
 /**
  * Metrics endpoint.
  */
-export const METRICS_API = `${API_RESOURCES_URL}/metrics`
+export const METRICS_API = `${API_RESOURCES_URL}/query`
 
 /**
  * Consumption Metrics hook.
@@ -59,7 +34,7 @@ export function useConsumptionMetrics(initialState: getMetricType) {
     const [filters, setFilters] = useState<metricFilters>(
         initialState.addHookFilters ? initialState.addHookFilters : [],
     )
-    const isInitialMount = useRef(true)
+    const isInitialMount = useRef(false)
 
     /**
      * Get Metrics function: Everytime filters or range or interval or targets has changed, it triggers the function call.
@@ -89,20 +64,30 @@ export function useConsumptionMetrics(initialState: getMetricType) {
             )
         }
         setIsMetricsLoading(false)
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [interval, range, targets, filters])
+    }, [interval, range, targets, filters, enqueueSnackbar, formatMessage])
 
+    // Useeffect is called whenever the hook is instantiated or whenever the dependencies changes.
     useEffect(() => {
+        isInitialMount.current = true
         getMetrics()
-    }, [getMetrics])
 
-    // UseEffect executes on initial intantiation, responsible for getMetrics on initialLoad.
-    useEffect(() => {
-        if (isInitialMount.current) {
+        // Return here is to replicate componentDidUnmount
+        return () => {
             isInitialMount.current = false
-            getMetrics()
         }
     }, [getMetrics])
 
-    return { isMetricsLoading, data, targets, interval, range, setPeriod, setFilters, setRange, setTargets, getMetrics }
+    return {
+        isMetricsLoading,
+        data,
+        targets,
+        range,
+        interval,
+        filters,
+        setPeriod,
+        setFilters,
+        setRange,
+        setTargets,
+        getMetrics,
+    }
 }
