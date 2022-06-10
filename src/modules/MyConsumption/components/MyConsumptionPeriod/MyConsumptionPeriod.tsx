@@ -32,7 +32,10 @@ export const MyConsumptionPeriod = ({ setRange, setPeriod, setPeriodValue }: IMy
                 variant="scrollable"
                 scrollButtons={false}
                 className="w-full px-24 -mx-4 min-h-40"
-                classes={{ indicator: 'flex justify-center bg-transparent w-full h-full' }}
+                classes={{
+                    indicator: 'flex justify-center bg-transparent w-full h-full  ',
+                    flexContainer: 'flex justify-center',
+                }}
                 TabIndicatorProps={{
                     children: (
                         <Box sx={{ bgcolor: theme.palette.primary.dark }} className="w-full h-full rounded-full " />

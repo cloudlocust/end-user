@@ -2,13 +2,13 @@ import React, { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import { MyConsumptionChart } from 'src/modules/MyConsumption/components/MyConsumptionChart'
 import { MyConsumptionSelectMeters } from 'src/modules/MyConsumption/components/MyConsumptionSelectMeters'
-import { MyConsumptionPeriod } from 'src/modules/MyConsumption/components/MyConsumptionPeriod'
 import { useConsumptionMetrics } from 'src/modules/Metriics/metricsHook'
 import { getMetricType } from 'src/modules/Metriics/Metrics'
 import dayjs from 'dayjs'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import { Typography } from '@mui/material'
 import { Link } from 'react-router-dom'
+import { MyConsumptionPeriod } from './components/MyConsumptionPeriod/MyConsumptionPeriod'
 
 /**
  * Range value type.
