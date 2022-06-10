@@ -4,7 +4,7 @@ import { useIntl } from 'src/common/react-platform-translation'
 import { FormControl, InputLabel, MenuItem, Select, SelectChangeEvent } from '@mui/material'
 import { IMeter } from 'src/modules/Meters/Meters'
 import { formatMetricFilter, formatMetricFilterList } from '../../utils/ MyConsumptionFunctions'
-// import './'
+import { styled } from '@mui/material/styles'
 /**
  * Select Input that displays all the meters.
  *
@@ -30,50 +30,58 @@ export const MyConsumptionSelectMeters = ({ metersList, setFilters }: IMyConsump
             setFilters(formatMetricFilter(event.target.value))
         }
     }
-
+    const Root = styled('div')(({ theme }) => ({
+        '& .MuiOutlinedInput-root': {
+            '& svg': {
+                color: theme.palette.primary.light,
+            },
+            '& fieldset': {
+                borderColor: theme.palette.primary.light,
+                '& legend': {
+                    fontSize: '1.35rem',
+                },
+            },
+        },
+        '& .MuiOutlinedInput-root:hover': {
+            '& fieldset': {
+                borderColor: theme.palette.primary.main,
+            },
+        },
+    }))
     return (
-        <div style={{ minWidth: '220px' }} className="container flex flex-row items-center">
-            <FormControl
-                fullWidth
-                // style={{ border: `1px solid ${theme.palette.primary.light}` }}
-                className="rounded-md"
-            >
-                <InputLabel
-                    // focused={false}
-                    shrink
-                    // variant="filled"
-                    id="input-label"
-                    // focused={true}
-                    // color="primary"
-                    style={{
-                        // backgroundColor: theme.palette.primary.dark,
-                        color: theme.palette.primary.light,
-                        // borderColor: 'rgba(238, 238, 238, 1)',
-                    }}
-                    className="rounded-md text-sm"
-                >
-                    {formatMessage({ id: 'Compteur', defaultMessage: 'Compteur' })}
-                </InputLabel>
-                <Select
-                    labelId="input-label"
-                    label="Compteur"
-                    value={selectedMeter}
-                    onChange={handleOnChange}
-                    displayEmpty
-                    style={{
-                        color: theme.palette.primary.light,
-                        stroke: theme.palette.primary.light,
-                    }}
-                    classes={{}}
-                >
-                    <MenuItem value="allMeters">
-                        {formatMessage({ id: 'Tous les compteurs', defaultMessage: 'Tous les compteurs' })}
-                    </MenuItem>
-                    {metersList.map((meter: IMeter) => {
-                        return <MenuItem value={meter.guid}>{meter.name}</MenuItem>
-                    })}
-                </Select>
-            </FormControl>
-        </div>
+        <Root>
+            <div style={{ minWidth: '220px' }} className="container flex flex-row items-center">
+                <FormControl fullWidth className="rounded-md">
+                    <InputLabel
+                        shrink
+                        id="input-label"
+                        style={{
+                            color: theme.palette.primary.light,
+                        }}
+                        className="rounded-md text-lg leading-6"
+                    >
+                        {formatMessage({ id: 'Compteur', defaultMessage: 'Compteur' })}
+                    </InputLabel>
+                    <Select
+                        labelId="input-label"
+                        label="Compteur"
+                        value={selectedMeter}
+                        onChange={handleOnChange}
+                        displayEmpty
+                        style={{
+                            color: theme.palette.primary.light,
+                            stroke: theme.palette.primary.light,
+                        }}
+                    >
+                        <MenuItem value="allMeters">
+                            {formatMessage({ id: 'Tous les compteurs', defaultMessage: 'Tous les compteurs' })}
+                        </MenuItem>
+                        {metersList.map((meter: IMeter) => {
+                            return <MenuItem value={meter.guid}>{meter.name}</MenuItem>
+                        })}
+                    </Select>
+                </FormControl>
+            </div>
+        </Root>
     )
 }
