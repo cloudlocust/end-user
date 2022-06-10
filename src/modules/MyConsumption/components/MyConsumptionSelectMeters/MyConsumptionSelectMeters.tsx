@@ -24,7 +24,7 @@ export const MyConsumptionSelectMeters = ({ metersList, setFilters }: IMyConsump
      */
     const handleOnChange = (event: SelectChangeEvent) => {
         setSelectedMeter(event.target.value)
-        if (!event.target.value) {
+        if (event.target.value === 'allMeters') {
             setFilters(formatMetricFilterList(metersList))
         } else {
             setFilters(formatMetricFilter(event.target.value))
