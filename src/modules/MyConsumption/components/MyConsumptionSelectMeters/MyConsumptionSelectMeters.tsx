@@ -30,6 +30,7 @@ export const MyConsumptionSelectMeters = ({ metersList, setFilters }: IMyConsump
             setFilters(formatMetricFilter(event.target.value))
         }
     }
+
     const Root = styled('div')(({ theme }) => ({
         '& .MuiOutlinedInput-root': {
             '& svg': {

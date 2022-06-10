@@ -10,8 +10,6 @@ let mockMeterList: IMeter[] | null = TEST_METERS
 let mockSetFilters = jest.fn()
 const ALL_METERS = 'Tous les compteurs'
 const METER_NAME = 'Leanne'
-const SELECTED_CLASSNAME = 'Mui-selected'
-
 jest.mock('src/modules/Meters/metersHook', () => ({
     ...jest.requireActual('src/modules/Meters/metersHook'),
     // eslint-disable-next-line jsdoc/require-jsdoc
@@ -30,7 +28,6 @@ describe('Test MyConsumptionSelectMeters', () => {
         userEvent.click(getByText(ALL_METERS))
         expect(getByText(METER_NAME)).toBeTruthy()
         userEvent.click(getByText(METER_NAME))
-        expect(getByText(ALL_METERS).classList.contains(SELECTED_CLASSNAME)).toBeFalsy()
-        userEvent.click(getByText(ALL_METERS))
+        expect(getByText(METER_NAME)).toBeTruthy()
     })
 })
