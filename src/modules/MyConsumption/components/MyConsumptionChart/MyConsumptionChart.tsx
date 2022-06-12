@@ -24,7 +24,7 @@ const MyConsumptionChart = ({
     // eslint-disable-next-line jsdoc/require-jsdoc
     isMetricsLoading: boolean
     // eslint-disable-next-line jsdoc/require-jsdoc
-    period?: periodValue
+    period: periodValue
 }) => {
     const { formatMessage } = useIntl()
     const theme = useTheme()
@@ -32,8 +32,8 @@ const MyConsumptionChart = ({
 
     if (isMetricsLoading)
         return (
-            <div className="flex flex-col justify-center items-center w-full h-full">
-                <CircularProgress />
+            <div className="flex flex-col justify-center items-center w-full h-full" style={{ height: '320px' }}>
+                <CircularProgress style={{ color: theme.palette.background.paper }} />
             </div>
         )
     const reactApexChartsProps = convertMetricsDataToApexChartsProps({
@@ -46,7 +46,7 @@ const MyConsumptionChart = ({
     })
     return (
         <div className="w-full">
-            <ReactApexChart {...reactApexChartsProps} data-testid="apexcharts" width={'100%'} />
+            <ReactApexChart {...reactApexChartsProps} data-testid="apexcharts" width={'100%'} height={320} />
         </div>
     )
 }

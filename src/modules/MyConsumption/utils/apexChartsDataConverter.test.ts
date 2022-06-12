@@ -1,4 +1,7 @@
-import { convertMetricsDataToApexChartsProps, defaultApexChartOptions } from 'src/modules/MyConsumption/utils'
+import {
+    convertMetricsDataToApexChartsProps,
+    defaultApexChartOptions,
+} from 'src/modules/MyConsumption/utils/apexChartsDataConverter'
 import { IMetrics } from 'src/modules/Metrics/Metrics'
 import { Theme } from '@mui/material/styles/createTheme'
 import { createTheme } from '@mui/material/styles'
@@ -12,6 +15,10 @@ const mockFormatMessage = () => nrlinkConsumptionMetricsText
 let mockChartType = 'bar'
 const mockDatapoints = [[247, 1651406400]]
 
+const hourFormat = 'HH:mm'
+const apexWeekFormat = 'ddd'
+const yearFormat = 'MMMM'
+const apexMonthFormat = 'dd MMM'
 // eslint-disable-next-line jsdoc/require-jsdoc
 const mockMetricsData: IMetrics = [
     {
@@ -21,6 +28,20 @@ const mockMetricsData: IMetrics = [
         nrlinkConsent: true,
     },
 ]
+
+// eslint-disable-next-line jsdoc/require-jsdoc
+const getXAxisLabelFormatFromPeriod = (period: periodValue, dayjsFormat?: boolean) => {
+    switch (period) {
+        case 1:
+            return 'HH:mm'
+        case 7:
+            return dayjsFormat ? 'dddd D MMM' : 'ddd'
+        case 365:
+            return 'MMMM'
+        default:
+            return dayjsFormat ? 'DD MMMM' : 'dd MMM'
+    }
+}
 
 const mockYAxis: ApexYAxis[] = [
     {
@@ -49,31 +70,20 @@ const mockSeries: ApexAxisChartSeries = [
 ]
 
 // eslint-disable-next-line jsdoc/require-jsdoc
-const mockOptions: (theme: Theme, period?: periodValue) => ApexOptions = (theme, period) => ({
+const mockOptions: (theme: Theme, period: periodValue) => ApexOptions = (theme, period) => ({
     ...defaultApexChartOptions(theme),
     xaxis: {
         ...defaultApexChartOptions(theme)?.xaxis,
         labels: {
-            datetimeFormatter: {
-                year: 'yyyy',
-                month: 'MMMM',
-                day: period === 7 ? 'ddd' : 'dd MMM',
-                hour: 'HH:mm',
-            },
-            // eslint-disable-next-line jsdoc/require-jsdoc
-            formatter: period === 1 ? (value, timestamp) => dayjs(new Date(timestamp!)!).format('HH:mm') : undefined,
+            format: getXAxisLabelFormatFromPeriod(period),
         },
     },
     yaxis: mockYAxis,
     tooltip: {
         x: {
             // eslint-disable-next-line jsdoc/require-jsdoc
-            formatter: (timestamp, opts) => {
-                if (period === 1) return dayjs(new Date(timestamp)!).format('HH:mm')
-                if (period === 7) return dayjs(new Date(timestamp)!).format('dddd D MMM')
-                if (period === 365) return dayjs(new Date(timestamp)!).format('MMMM')
-                return dayjs(new Date(timestamp)!).format('DD MMM')
-            },
+            formatter: (timestamp, opts) =>
+                dayjs(new Date(timestamp)!).format(getXAxisLabelFormatFromPeriod(period, true)),
         },
     },
 })
@@ -100,9 +110,8 @@ describe('test pure function', () => {
 
         expect(JSON.stringify(apexChartProps.options)).toStrictEqual(JSON.stringify(mockOptions(theme, period)))
         expect(apexChartProps.series).toStrictEqual(mockSeries)
-        expect(apexChartProps.options.xaxis?.labels?.datetimeFormatter?.month).toEqual('MMMM')
+        expect(apexChartProps.options.xaxis?.labels?.format).toEqual(apexWeekFormat)
         expect((apexChartProps.options.yaxis as ApexYAxis[])[0].labels!.formatter!(12)).toStrictEqual('12 Kwh')
-        expect(apexChartProps.options.xaxis?.labels?.formatter).toBeUndefined()
     })
     test('convertMetricsDataToApexChartsProps test empty data', async () => {
         mockMetricsData[0].datapoints = []
@@ -113,6 +122,7 @@ describe('test pure function', () => {
             chartType: 'bar',
             formatMessage: mockFormatMessage,
             theme,
+            period: 7,
         })
         // expect(JSON.stringify(apexChartProps.options)).toStrictEqual(JSON.stringify(mockOptions(theme)))
         expect(apexChartProps.series).toStrictEqual(mockSeries)
@@ -123,7 +133,7 @@ describe('test pure function', () => {
         const timestamp = 1640997720000
         const timeStampDay = `0${new Date(1640997720000).getHours()}:${new Date(1640997720000).getMinutes()}`
         const timeStampWeek = 'Saturday 1 Jan'
-        const timeStampMonth = '01 Jan'
+        const timeStampMonth = '01 January'
         const timeStampYear = 'January'
 
         // xAxis tooltip will show hours:minutes
@@ -135,7 +145,7 @@ describe('test pure function', () => {
             period,
         })
         expect(apexChartProps.options.tooltip!.x!.formatter!(timestamp)!).toEqual(timeStampDay)
-        expect(apexChartProps.options.xaxis!.labels!.formatter!('', timestamp)!).toEqual(timeStampDay)
+        expect(apexChartProps.options.xaxis!.labels!.format).toEqual(hourFormat)
 
         // xAxis tooltip will show day of the week, samedi 1 jan.
         period = 7 as periodValue
@@ -147,7 +157,7 @@ describe('test pure function', () => {
             period,
         })
         expect(apexChartProps.options.tooltip!.x!.formatter!(timestamp)!).toEqual(timeStampWeek)
-        expect(apexChartProps.options.xaxis!.labels!.formatter).toBeUndefined()
+        expect(apexChartProps.options.xaxis!.labels!.format).toEqual(apexWeekFormat)
 
         // xAxis tooltip will show day of the month, 01 jan.
         period = 30 as periodValue
@@ -159,7 +169,7 @@ describe('test pure function', () => {
             period,
         })
         expect(apexChartProps.options.tooltip!.x!.formatter!(timestamp)!).toEqual(timeStampMonth)
-        expect(apexChartProps.options.xaxis!.labels!.formatter).toBeUndefined()
+        expect(apexChartProps.options.xaxis!.labels!.format).toEqual(apexMonthFormat)
 
         // xAxis tooltip will show month
         period = 365 as periodValue
@@ -172,7 +182,6 @@ describe('test pure function', () => {
             isMobile: true,
         })
         expect(apexChartProps.options.tooltip!.x!.formatter!(timestamp)!).toEqual(timeStampYear)
-        expect(apexChartProps.options.xaxis?.labels?.datetimeFormatter?.month).toEqual('MMM')
-        expect(apexChartProps.options.xaxis!.labels!.formatter).toBeUndefined()
+        expect(apexChartProps.options.xaxis!.labels!.format).toEqual(yearFormat)
     })
 })

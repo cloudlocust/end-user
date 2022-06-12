@@ -33,6 +33,7 @@ export const defaultApexChartOptions = (theme: Theme): Props['options'] => {
         fill: {
             type: 'solid',
             opacity: 0.7,
+            colors: [theme.palette.primary.light],
             gradient: {
                 shadeIntensity: 0.4,
                 opacityFrom: 1,
@@ -44,7 +45,7 @@ export const defaultApexChartOptions = (theme: Theme): Props['options'] => {
             show: true,
             strokeDashArray: 4,
             position: 'back',
-            borderColor: theme.palette.text.disabled,
+            borderColor: theme.palette.primary.contrastText,
             xaxis: {
                 lines: {
                     show: true,
@@ -65,13 +66,18 @@ export const defaultApexChartOptions = (theme: Theme): Props['options'] => {
                 strokeWidth: 3,
             },
             type: 'datetime',
+            tickPlacement: 'on',
         },
         stroke: {
+            colors: [theme.palette.primary.contrastText],
             show: true,
             curve: 'smooth',
             lineCap: 'butt',
             width: 1.5,
             dashArray: 0,
+        },
+        markers: {
+            colors: [theme.palette.primary.light],
         },
     }
 }
@@ -139,6 +145,26 @@ ApexAxisChartSeries[0]['data'] => {
 }
 
 /**
+ * Get date (apexcharts or dayjs) format for xaxis labels according to the current period selected, by default it follows the apexcharts format.
+ * ApexCharts format: https://apexcharts.com/docs/datetime/ .
+ *
+ * @param period Current Period.
+ * @param dayjsFormat Indicate if the desired format follows dayjs format.
+ * @returns Format of xAxis labels according to the current format.
+ */
+const getXAxisLabelFormatFromPeriod = (period: periodValue, dayjsFormat?: boolean) => {
+    switch (period) {
+        case 1:
+            return 'HH:mm'
+        case 7:
+            return dayjsFormat ? 'dddd D MMM' : 'ddd'
+        case 365:
+            return 'MMMM'
+        default:
+            return dayjsFormat ? 'DD MMMM' : 'dd MMM'
+    }
+}
+/**
  * Pure Function to convertMetrics Data to ApexCharts Props.
  *
  * @param params N/A.
@@ -168,9 +194,10 @@ export const convertMetricsDataToApexChartsProps = ({
     // eslint-disable-next-line jsdoc/require-jsdoc
     theme: Theme
     // eslint-disable-next-line jsdoc/require-jsdoc
-    period?: periodValue
+    period: periodValue
     // eslint-disable-next-line jsdoc/require-jsdoc
     isMobile?: boolean
+    // eslint-disable-next-line
 }) => {
     let options: Props['options'] = defaultApexChartOptions(theme)!
     let series: ApexAxisChartSeries = []
@@ -212,26 +239,15 @@ export const convertMetricsDataToApexChartsProps = ({
     options.xaxis = {
         ...options.xaxis,
         labels: {
-            datetimeFormatter: {
-                year: 'yyyy',
-                month: isMobile ? 'MMM' : 'MMMM',
-                day: period === 7 ? 'ddd' : 'dd MMM',
-                hour: 'HH:mm',
-            },
-            // eslint-disable-next-line jsdoc/require-jsdoc
-            formatter: period === 1 ? (value, timestamp) => dayjs(new Date(timestamp!)!).format('HH:mm') : undefined,
+            format: getXAxisLabelFormatFromPeriod(period),
         },
     }
     options.yaxis = yAxis
     options.tooltip = {
         x: {
             // eslint-disable-next-line jsdoc/require-jsdoc
-            formatter: (timestamp, opts) => {
-                if (period === 1) return dayjs(new Date(timestamp)!).format('HH:mm')
-                if (period === 7) return dayjs(new Date(timestamp)!).format('dddd D MMM')
-                if (period === 365) return dayjs(new Date(timestamp)!).format('MMMM')
-                return dayjs(new Date(timestamp)!).format('DD MMM')
-            },
+            formatter: (timestamp, opts) =>
+                dayjs(new Date(timestamp)!).format(getXAxisLabelFormatFromPeriod(period, true)),
         },
     }
 

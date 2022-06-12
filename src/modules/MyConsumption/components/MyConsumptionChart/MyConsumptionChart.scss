@@ -3,4 +3,8 @@
     height: 100% !important;
     overflow-x: auto;
     overflow-y: hidden;
+    .apexcharts-text.apexcharts-xaxis-label,
+    .apexcharts-tooltip-title {
+        text-transform: capitalize;
+    }
 }
