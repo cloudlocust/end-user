@@ -24,8 +24,6 @@ const mockMetricsData: IMetrics = [
     {
         target: 'nrlink_consumption_metrics',
         datapoints: mockDatapoints,
-        enedisConsent: true,
-        nrlinkConsent: true,
     },
 ]
 

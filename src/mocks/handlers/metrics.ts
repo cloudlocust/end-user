@@ -2,6 +2,7 @@ import { rest } from 'msw'
 import { getMetricType, IMetrics } from 'src/modules/Metrics/Metrics'
 import { METRICS_API } from 'src/modules/Metrics/metricsHook'
 import { SnakeCasedPropertiesDeep } from 'type-fest'
+import dayjs from 'dayjs'
 
 const FAKE_DAY_INTERVAL = '1min'
 const FAKE_WEEK_INTERVAL = '1d'
@@ -377,69 +378,62 @@ const FAKE_YEAR_DATA = [
 /**
  * Success day test metrics.
  */
-export var TEST_SUCCESS_DAY_METRICS: SnakeCasedPropertiesDeep<IMetrics> = [
+export const TEST_SUCCESS_DAY_METRICS: SnakeCasedPropertiesDeep<IMetrics> = [
     {
         target: 'nrlink_consumption_metrics',
         datapoints: FAKE_DAY_DATA,
-        nrlink_consent: true,
-        enedis_consent: true,
     },
 ]
 
 /**
  * Sucess week test metrics.
  */
-export var TEST_SUCCESS_WEEK_METRICS: SnakeCasedPropertiesDeep<IMetrics> = [
+export const TEST_SUCCESS_WEEK_METRICS: SnakeCasedPropertiesDeep<IMetrics> = [
     {
         target: 'nrlink_consumption_metrics',
         datapoints: FAKE_WEEK_DATA,
-        nrlink_consent: true,
-        enedis_consent: true,
     },
 ]
 
 /**
  * Sucess month test metrics.
  */
-export var TEST_SUCCESS_MONTH_METRICS: SnakeCasedPropertiesDeep<IMetrics> = [
+export const TEST_SUCCESS_MONTH_METRICS: SnakeCasedPropertiesDeep<IMetrics> = [
     {
         target: 'nrlink_consumption_metrics',
         datapoints: FAKE_MONTH_DATA,
-        nrlink_consent: true,
-        enedis_consent: true,
     },
 ]
 
 /**
  * Success year test metrics.
  */
-export var TEST_SUCCESS_YEAR_METRICS: SnakeCasedPropertiesDeep<IMetrics> = [
+export const TEST_SUCCESS_YEAR_METRICS: SnakeCasedPropertiesDeep<IMetrics> = [
     {
         target: 'nrlink_consumption_metrics',
         datapoints: FAKE_YEAR_DATA,
-        nrlink_consent: true,
-        enedis_consent: true,
     },
 ]
 
 // eslint-disable-next-line jsdoc/require-jsdoc
 export const metricsEndpoints = [
-    // Get meters metrics
+    // Get meters metrics endpoint
     rest.post<getMetricType>(`${METRICS_API}`, (req, res, ctx) => {
-        /*
-         * When req.body checks RANGE, it throws an error of 404 because the range is dynamic date.
-         */
-        if (req.body.interval === FAKE_DAY_INTERVAL && req.body.range) {
+        const fromInMilliseconds = dayjs(new Date(req.body.range.from).getTime())
+        const toInMilliseconds = dayjs(new Date(req.body.range.to).getTime())
+        const difference = toInMilliseconds.diff(fromInMilliseconds, 'day')
+
+        if (FAKE_DAY_INTERVAL === '1min' && difference === 1) {
             return res(ctx.status(200), ctx.delay(1000), ctx.json(TEST_SUCCESS_DAY_METRICS))
         }
-        if (req.body.interval === FAKE_WEEK_INTERVAL && req.body.range) {
+        if (FAKE_WEEK_INTERVAL === '1d' && difference === 7) {
             return res(ctx.status(200), ctx.delay(1000), ctx.json(TEST_SUCCESS_WEEK_METRICS))
         }
 
-        if (req.body.interval === FAKE_MONTH_INTERVAL && req.body.range)
+        if (FAKE_MONTH_INTERVAL === '1d' && difference === 31)
             return res(ctx.status(200), ctx.delay(1000), ctx.json(TEST_SUCCESS_MONTH_METRICS))
 
-        if (req.body.interval === FAKE_YEAR_INTERVAL && req.body.range)
+        if (FAKE_YEAR_INTERVAL === '1m' && difference === 365)
             return res(ctx.status(200), ctx.delay(1000), ctx.json(TEST_SUCCESS_YEAR_METRICS))
 
         return res(ctx.status(401), ctx.delay(1000), ctx.json({ error: 'Error' }))

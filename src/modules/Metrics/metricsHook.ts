@@ -15,7 +15,7 @@ import { axios } from 'src/common/react-platform-components'
 /**
  * Metrics endpoint.
  */
-export const METRICS_API = `${API_RESOURCES_URL}/metrics`
+export const METRICS_API = `${API_RESOURCES_URL}/query`
 
 /**
  * Consumption Metrics hook.
@@ -77,5 +77,17 @@ export function useConsumptionMetrics(initialState: getMetricType) {
         }
     }, [getMetrics])
 
-    return { isMetricsLoading, data, targets, range, interval, setPeriod, setFilters, setRange, setTargets, getMetrics }
+    return {
+        isMetricsLoading,
+        data,
+        targets,
+        range,
+        interval,
+        filters,
+        setPeriod,
+        setFilters,
+        setRange,
+        setTargets,
+        getMetrics,
+    }
 }

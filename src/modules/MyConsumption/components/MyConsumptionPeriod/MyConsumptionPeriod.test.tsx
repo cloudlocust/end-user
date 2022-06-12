@@ -1,10 +1,10 @@
 import React from 'react'
 import { reduxedRender } from 'src/common/react-platform-components/test'
 import { BrowserRouter as Router } from 'react-router-dom'
-import { MyConsumptionPeriod } from './MyConsumptionPeriod'
-import { dataConsumptionPeriod } from './utils/myConsumptionVariables'
 import userEvent from '@testing-library/user-event'
 import { waitFor } from '@testing-library/react'
+import { MyConsumptionPeriod } from 'src/modules/MyConsumption/components/MyConsumptionPeriod/MyConsumptionPeriod'
+import { dataConsumptionPeriod } from 'src/modules/MyConsumption/utils/myConsumptionVariables'
 /*
  * We will test This component if he render and switch content correctly.
  */
@@ -32,6 +32,7 @@ describe('load MyConsumptionPeriod', () => {
         userEvent.click(getByText(dataConsumptionPeriod[1].name))
         expect(getByText(dataConsumptionPeriod[1].name).classList.contains(SELECTED_CLASSNAME)).toBeTruthy()
         expect(getByText(dataConsumptionPeriod[2].name).classList.contains(SELECTED_CLASSNAME)).toBeFalsy()
+
         await waitFor(() => {
             expect(mockSetPeriod).toHaveBeenCalledWith(dataConsumptionPeriod[1].interval)
             expect(mockSetPeriodValue).toHaveBeenCalledWith(dataConsumptionPeriod[1].period)

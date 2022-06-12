@@ -76,14 +76,6 @@ export type IMetrics = {
      * Metric Datapoints.
      */
     datapoints: number[][]
-    /**
-     * Nrlink consent.
-     */
-    nrlinkConsent: boolean
-    /**
-     * Enedis consent.
-     */
-    enedisConsent: boolean
 }[]
 
 /**

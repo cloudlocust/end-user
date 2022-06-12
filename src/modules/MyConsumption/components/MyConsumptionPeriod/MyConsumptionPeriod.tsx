@@ -3,8 +3,8 @@ import Tab from '@mui/material/Tab'
 import Tabs from '@mui/material/Tabs'
 import React, { useState } from 'react'
 import Box from '@mui/material/Box'
-import { dataConsumptionPeriod } from './utils/myConsumptionVariables'
-import { IMyConsumptionPeriod } from './myConsumptionTypes'
+import { IMyConsumptionPeriod } from 'src/modules/MyConsumption/components/MyConsumptionPeriod/myConsumptionTypes'
+import { dataConsumptionPeriod } from 'src/modules/MyConsumption/utils/myConsumptionVariables'
 /**
  * MyConsumptionPeriod Component.
  *
@@ -18,12 +18,7 @@ export const MyConsumptionPeriod = ({ setRange, setPeriod, setPeriodValue }: IMy
     const theme = useTheme()
     const [tabValue, setTabValue] = useState(0)
     return (
-        <div
-            className="flex flex-row items-center"
-            style={{
-                backgroundColor: theme.palette.primary.main,
-            }}
-        >
+        <div className="flex flex-row items-center">
             <Tabs
                 value={tabValue}
                 onChange={(event, value) => {
@@ -37,7 +32,10 @@ export const MyConsumptionPeriod = ({ setRange, setPeriod, setPeriodValue }: IMy
                 variant="scrollable"
                 scrollButtons={false}
                 className="w-full px-24 -mx-4 min-h-40"
-                classes={{ indicator: 'flex justify-center bg-transparent w-full h-full' }}
+                classes={{
+                    indicator: 'flex justify-center bg-transparent w-full h-full  ',
+                    flexContainer: 'flex justify-center',
+                }}
                 TabIndicatorProps={{
                     children: (
                         <Box sx={{ bgcolor: theme.palette.primary.dark }} className="w-full h-full rounded-full " />
@@ -47,10 +45,15 @@ export const MyConsumptionPeriod = ({ setRange, setPeriod, setPeriodValue }: IMy
                 {dataConsumptionPeriod.map((item) => (
                     <Tab
                         key={item.name}
-                        className="text-14 font-semibold min-h-40 min-w-64 mx-4 px-12 capitalize opacity-60"
+                        className="text-14 font-semibold min-h-40 min-w-64 mx-4 px-12 capitalize opacity-50"
                         disableRipple
                         label={item.name}
-                        style={{ color: theme.palette.background.paper, zIndex: 1 }}
+                        style={{
+                            color: theme.palette.background.paper,
+                            zIndex: 1,
+                            backgroundColor: theme.palette.primary.dark,
+                            borderRadius: '35px',
+                        }}
                     />
                 ))}
             </Tabs>

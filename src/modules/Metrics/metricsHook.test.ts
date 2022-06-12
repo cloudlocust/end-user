@@ -5,11 +5,12 @@ import { axios } from 'src/common/react-platform-components'
 import { TEST_SUCCESS_DAY_METRICS } from 'src/mocks/handlers/metrics'
 
 jest.mock('axios')
-const mockEnqueueSnackbar = jest.fn()
+
 const mockedAxios = axios as jest.Mocked<typeof axios>
 
+const mockEnqueueSnackbar = jest.fn()
 /**
- * Mocking the useSnackbar.
+ * Mocking the useSnackbar used in CustomerDetails to load the customerDetails based on url /customers/:id {id} params.
  */
 jest.mock('notistack', () => ({
     ...jest.requireActual('notistack'),
@@ -45,20 +46,15 @@ let mockHookArguments: getMetricType = {
 describe('useConsumptionMetrics hook test', () => {
     test('When the hook is called with default values', async () => {
         const {
-            renderedHook: { result, waitFor },
+            renderedHook: { result },
         } = reduxedRenderHook(() => useConsumptionMetrics(mockHookArguments))
 
         const currentResult = result.current
-        await waitFor(
-            () => {
-                expect(currentResult.isMetricsLoading).toBe(true)
-                expect(currentResult.interval).toBe('1min')
-                expect(currentResult.range).toStrictEqual(FAKE_RANGE)
-                expect(currentResult.targets).toStrictEqual(FAKE_TARGETS)
-                expect(currentResult.filters).toBeFalsy()
-            },
-            { timeout: 4000 },
-        )
+        expect(currentResult.isMetricsLoading).toStrictEqual(true)
+        expect(currentResult.interval).toStrictEqual('1min')
+        expect(currentResult.range).toStrictEqual(FAKE_RANGE)
+        expect(currentResult.targets).toStrictEqual(FAKE_TARGETS)
+        expect(currentResult.filters).toStrictEqual([])
     }, 8000)
     test('When there is an HTTP request with the right body', async () => {
         const {
@@ -69,12 +65,9 @@ describe('useConsumptionMetrics hook test', () => {
 
         expect(mockedAxios.post).toHaveBeenCalledWith(METRICS_API, AXIOS_POST_DATA)
 
-        waitFor(
-            () => {
-                expect(result.current.data).toBe(TEST_SUCCESS_DAY_METRICS)
-            },
-            { timeout: 6000 },
-        )
+        waitFor(() => {
+            expect(result.current.data).toBe(TEST_SUCCESS_DAY_METRICS)
+        })
     }, 8000)
     test('When there is a server issue and the data cannot be retrieved, a snackbar is shown', async () => {
         const {
@@ -83,16 +76,10 @@ describe('useConsumptionMetrics hook test', () => {
 
         mockedAxios.post.mockRejectedValue('Error')
 
-        waitFor(
-            () => {
-                expect(mockEnqueueSnackbar).toHaveBeenCalledWith(
-                    'Erreur de chargement de vos données de consommation',
-                    {
-                        variant: 'error',
-                    },
-                )
-            },
-            { timeout: 6000 },
-        )
-    })
+        waitFor(() => {
+            expect(mockEnqueueSnackbar).toHaveBeenCalledWith('Erreur de chargement de vos données de consommation', {
+                variant: 'error',
+            })
+        })
+    }, 8000)
 })
