@@ -18,9 +18,9 @@ type periodValue = 1 | 7 | 30 | 365
  * InitialMetricsStates for useConsumptionMetrics.
  */
 export const initialMetricsHookValues: getMetricType = {
-    interval: '1d',
+    interval: '1min',
     range: {
-        from: dayjs().subtract(1, 'week').startOf('day').toDate().toISOString(),
+        from: dayjs().subtract(1, 'day').startOf('day').toDate().toISOString(),
         to: dayjs().startOf('day').toDate().toISOString(),
     },
     targets: [
