@@ -3,6 +3,7 @@ import { METRICS_API, useConsumptionMetrics } from 'src/modules/Metrics/metricsH
 import { getMetricType, metricRange, metricTargets } from 'src/modules/Metrics/Metrics'
 import { axios } from 'src/common/react-platform-components'
 import { TEST_SUCCESS_DAY_METRICS } from 'src/mocks/handlers/metrics'
+import { act } from '@testing-library/react-hooks'
 
 jest.mock('axios')
 
@@ -43,6 +44,14 @@ let mockHookArguments: getMetricType = {
     addHookFilters: [],
 }
 
+const FILTERS_TEST = [
+    {
+        key: 'meter_guid',
+        operator: '=',
+        value: '12345',
+    },
+]
+
 describe('useConsumptionMetrics hook test', () => {
     test('When the hook is called with default values', async () => {
         const {
@@ -80,6 +89,19 @@ describe('useConsumptionMetrics hook test', () => {
             expect(mockEnqueueSnackbar).toHaveBeenCalledWith('Erreur de chargement de vos données de consommation', {
                 variant: 'error',
             })
+        })
+    }, 8000)
+    test('When setFilters is triggered, filters and consents state change', async () => {
+        const {
+            renderedHook: { result, waitFor },
+        } = reduxedRenderHook(() => useConsumptionMetrics(mockHookArguments))
+
+        act(() => {
+            result.current.setFilters(FILTERS_TEST)
+        })
+
+        waitFor(() => {
+            expect(result.current.filters).toStrictEqual(FILTERS_TEST)
         })
     }, 8000)
 })

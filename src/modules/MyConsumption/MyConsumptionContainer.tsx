@@ -1,18 +1,14 @@
-import React, { useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import { MyConsumptionChart } from 'src/modules/MyConsumption/components/MyConsumptionChart'
 import { MyConsumptionSelectMeters } from 'src/modules/MyConsumption/components/MyConsumptionSelectMeters'
 import { MyConsumptionPeriod } from 'src/modules/MyConsumption/components/MyConsumptionPeriod'
 import { useConsumptionMetrics } from 'src/modules/Metrics/metricsHook'
-import { getMetricType } from 'src/modules/Metrics/Metrics'
+import { getMetricType, periodValue } from 'src/modules/Metrics/Metrics'
 import dayjs from 'dayjs'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
-
-/**
- * Range value type.
- *
- */
-type periodValue = 1 | 7 | 30 | 365
+import { Typography } from '@mui/material'
+import { Link } from 'react-router-dom'
 
 /**
  * InitialMetricsStates for useConsumptionMetrics.
@@ -38,9 +34,28 @@ export const initialMetricsHookValues: getMetricType = {
  * @returns MyConsoContainer.
  */
 export const MyConsumptionContainer = () => {
-    const { setPeriod, setRange, setFilters, isMetricsLoading, data, interval } =
+    const { setPeriod, setRange, setFilters, isMetricsLoading, data, interval, consents } =
         useConsumptionMetrics(initialMetricsHookValues)
     const [periodValue, setPeriodValue] = useState<periodValue>(1)
+    const [isConsentError, setIsConsentError] = useState<boolean>(false)
+
+    /**
+     * Check if consent exist for both Nrlink and Enedis from metrics hook consents state.
+     */
+    const checkNrlinkAndEnedisConsent = useCallback(() => {
+        if (
+            consents?.nrlinkConsent.nrlinkConsentState === 'NONEXISTENT' &&
+            consents?.enedisConsent.enedisConsentState === 'NONEXISTENT'
+        ) {
+            setIsConsentError(true)
+        } else {
+            setIsConsentError(false)
+        }
+    }, [consents])
+
+    useEffect(() => {
+        checkNrlinkAndEnedisConsent()
+    }, [checkNrlinkAndEnedisConsent])
 
     /**
      * Show text according to interval.
@@ -59,6 +74,19 @@ export const MyConsumptionContainer = () => {
         } else {
             throw Error('PeriodValue not set')
         }
+    }
+
+    if (isConsentError) {
+        return (
+            <div className="container relative h-200 sm:h-256 pb-16 sm:p-24 text-center flex items-center justify-center">
+                <Typography>
+                    Pour voir votre consommation vous devez d'abord{' '}
+                    <Link to="/nrlink-connection" className="underline">
+                        enregistrer votre compteur et votre nrLink
+                    </Link>
+                </Typography>
+            </div>
+        )
     }
 
     return (

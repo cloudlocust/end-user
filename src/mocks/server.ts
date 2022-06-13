@@ -3,6 +3,7 @@ import { metersEndpoints } from './handlers/meters'
 import { userEndpoints } from './handlers/user'
 import { nrlinkEndpoints } from './handlers/nrlink'
 import { metricsEndpoints } from './handlers/metrics'
+import { consentsEndpoints } from 'src/mocks/handlers/consents'
 
 /**
  * Handlers to mock urls for tests.
@@ -16,6 +17,8 @@ const handlers = [
     ...nrlinkEndpoints,
     /******Meters REQUESTS*****/
     ...metricsEndpoints,
+    /******Consents REQUESTS*****/
+    ...consentsEndpoints,
 ]
 
 // This configures a request mocking server with the given request handlers.
