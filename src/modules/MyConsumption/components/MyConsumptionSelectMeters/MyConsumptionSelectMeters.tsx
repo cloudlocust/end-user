@@ -59,7 +59,7 @@ export const MyConsumptionSelectMeters = ({ metersList, setFilters }: IMyConsump
 
     return (
         <Root>
-            <div style={{ minWidth: '220px' }} className="container flex flex-row items-center md:mr-10">
+            <div style={{ minWidth: '220px' }} className="container flex flex-row items-center">
                 <FormControl fullWidth className="rounded-md">
                     <InputLabel
                         shrink
