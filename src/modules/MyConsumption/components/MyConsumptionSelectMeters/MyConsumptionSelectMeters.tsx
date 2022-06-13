@@ -9,10 +9,10 @@ import { formatMetricFilter, formatMetricFilterList } from 'src/modules/MyConsum
 const Root = styled('div')(({ theme }) => ({
     '& .MuiOutlinedInput-root': {
         '& svg': {
-            color: theme.palette.primary.light,
+            color: theme.palette.primary.contrastText,
         },
         '& fieldset': {
-            borderColor: theme.palette.primary.light,
+            borderColor: theme.palette.primary.contrastText,
             '& legend': {
                 fontSize: '1.35rem',
             },
@@ -20,13 +20,13 @@ const Root = styled('div')(({ theme }) => ({
     },
     '& .MuiOutlinedInput-root:hover': {
         '& fieldset': {
-            borderColor: theme.palette.primary.light,
+            borderColor: theme.palette.primary.contrastText,
             borderWidth: '2px',
         },
     },
     '& .Mui-focused': {
         '& fieldset': {
-            borderColor: ` ${theme.palette.primary.light} !important`,
+            borderColor: ` ${theme.palette.primary.contrastText} !important`,
         },
     },
 }))
@@ -65,7 +65,7 @@ export const MyConsumptionSelectMeters = ({ metersList, setFilters }: IMyConsump
                         shrink
                         id="input-label"
                         style={{
-                            color: theme.palette.primary.light,
+                            color: theme.palette.primary.contrastText,
                         }}
                         className="rounded-md text-lg leading-6"
                     >
@@ -78,8 +78,8 @@ export const MyConsumptionSelectMeters = ({ metersList, setFilters }: IMyConsump
                         onChange={handleOnChange}
                         displayEmpty
                         style={{
-                            color: theme.palette.primary.light,
-                            stroke: theme.palette.primary.light,
+                            color: theme.palette.primary.contrastText,
+                            stroke: theme.palette.primary.contrastText,
                         }}
                     >
                         <MenuItem value="allMeters">

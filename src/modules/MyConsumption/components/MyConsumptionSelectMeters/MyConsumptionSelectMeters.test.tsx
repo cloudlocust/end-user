@@ -1,9 +1,9 @@
 import React from 'react'
 import { reduxedRender } from 'src/common/react-platform-components/test'
-import { MyConsumptionSelectMeters } from 'src/modules/MyConsumption/components/MyConsumptionSelectMeters/MyConsumptionSelectMeters'
 import { TEST_METERS } from 'src/mocks/handlers/meters'
 import { IMeter } from 'src/modules/Meters/Meters'
 import userEvent from '@testing-library/user-event'
+import { MyConsumptionSelectMeters } from 'src/modules/MyConsumption/components/MyConsumptionSelectMeters'
 
 let mockMeterList: IMeter[] | null = TEST_METERS
 let mockSetFilters = jest.fn()
