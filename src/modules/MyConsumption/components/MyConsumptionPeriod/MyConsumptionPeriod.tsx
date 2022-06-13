@@ -31,7 +31,7 @@ export const MyConsumptionPeriod = ({ setRange, setPeriod, setPeriodValue }: IMy
                 textColor="inherit"
                 variant="scrollable"
                 scrollButtons={false}
-                className="w-full px-24 -mx-4 min-h-40"
+                className="w-full mx-4 min-h-40"
                 classes={{
                     indicator: 'flex justify-center bg-transparent w-full h-full  ',
                     flexContainer: 'flex justify-center',
