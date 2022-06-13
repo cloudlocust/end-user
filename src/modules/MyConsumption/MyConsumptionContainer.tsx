@@ -7,7 +7,7 @@ import { getMetricType } from 'src/modules/Metrics/Metrics'
 import dayjs from 'dayjs'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import { useMeterList } from 'src/modules/Meters/metersHook'
-import { formatMetricFilter, formatMetricFilterList } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
+import { formatMetricFilter } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
 import { MyConsumptionSelectMeters } from 'src/modules/MyConsumption/components/MyConsumptionSelectMeters'
 
 /**
@@ -46,11 +46,7 @@ export const MyConsumptionContainer = () => {
 
     useEffect(() => {
         if (!metersList) return
-        if (metersList.length > 1) {
-            setFilters(formatMetricFilterList(metersList))
-        } else {
-            setFilters(formatMetricFilter(metersList[0].guid))
-        }
+        if (metersList.length === 1) setFilters(formatMetricFilter(metersList[0].guid))
     }, [metersList, setFilters])
     /**
      * Show text according to interval.
@@ -101,8 +97,6 @@ export const MyConsumptionContainer = () => {
                 data={data}
                 chartType={interval === '1min' ? 'area' : 'bar'}
             />
-
-            {/* TODO: MYEM-2425 */}
             <MyConsumptionPeriod setPeriod={setPeriod} setRange={setRange} setPeriodValue={setPeriodValue} />
         </>
     )

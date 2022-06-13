@@ -4,7 +4,7 @@ import { useIntl } from 'src/common/react-platform-translation'
 import { FormControl, InputLabel, MenuItem, Select, SelectChangeEvent } from '@mui/material'
 import { IMeter } from 'src/modules/Meters/Meters'
 import { styled } from '@mui/material/styles'
-import { formatMetricFilter, formatMetricFilterList } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
+import { formatMetricFilter } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
 
 const Root = styled('div')(({ theme }) => ({
     '& .MuiOutlinedInput-root': {
@@ -51,7 +51,7 @@ export const MyConsumptionSelectMeters = ({ metersList, setFilters }: IMyConsump
     const handleOnChange = (event: SelectChangeEvent) => {
         setSelectedMeter(event.target.value)
         if (event.target.value === 'allMeters') {
-            setFilters(formatMetricFilterList(metersList))
+            setFilters([])
         } else {
             setFilters(formatMetricFilter(event.target.value))
         }
