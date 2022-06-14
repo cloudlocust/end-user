@@ -383,6 +383,14 @@ export const TEST_SUCCESS_DAY_METRICS: SnakeCasedPropertiesDeep<IMetrics> = [
         target: 'nrlink_consumption_metrics',
         datapoints: FAKE_DAY_DATA,
     },
+    {
+        target: 'nrlink_internal_temperature_metrics',
+        datapoints: FAKE_DAY_DATA.map((datapoint) => [20, datapoint[1]]),
+    },
+    {
+        target: 'external_temperature_metrics',
+        datapoints: FAKE_DAY_DATA.map((datapoint) => [16, datapoint[1]]),
+    },
 ]
 
 /**
@@ -392,6 +400,14 @@ export const TEST_SUCCESS_WEEK_METRICS: SnakeCasedPropertiesDeep<IMetrics> = [
     {
         target: 'nrlink_consumption_metrics',
         datapoints: FAKE_WEEK_DATA,
+    },
+    {
+        target: 'external_temperature_metrics',
+        datapoints: FAKE_WEEK_DATA.map((datapoint) => [datapoint[0] - 12, datapoint[1]]),
+    },
+    {
+        target: 'nrlink_internal_temperature_metrics',
+        datapoints: FAKE_WEEK_DATA.map((datapoint) => [datapoint[0] + 12, datapoint[1]]),
     },
 ]
 
@@ -403,6 +419,14 @@ export const TEST_SUCCESS_MONTH_METRICS: SnakeCasedPropertiesDeep<IMetrics> = [
         target: 'nrlink_consumption_metrics',
         datapoints: FAKE_MONTH_DATA,
     },
+    {
+        target: 'nrlink_internal_temperature_metrics',
+        datapoints: FAKE_MONTH_DATA.map((datapoint) => [datapoint[0] + 12, datapoint[1]]),
+    },
+    {
+        target: 'external_temperature_metrics',
+        datapoints: FAKE_MONTH_DATA.map((datapoint) => [datapoint[0] - 12, datapoint[1]]),
+    },
 ]
 
 /**
@@ -412,6 +436,14 @@ export const TEST_SUCCESS_YEAR_METRICS: SnakeCasedPropertiesDeep<IMetrics> = [
     {
         target: 'nrlink_consumption_metrics',
         datapoints: FAKE_YEAR_DATA,
+    },
+    {
+        target: 'nrlink_internal_temperature_metrics',
+        datapoints: FAKE_YEAR_DATA.map((datapoint) => [datapoint[0] + 12, datapoint[1]]),
+    },
+    {
+        target: 'external_temperature_metrics',
+        datapoints: FAKE_YEAR_DATA.map((datapoint) => [datapoint[0] - 12, datapoint[1]]),
     },
 ]
 

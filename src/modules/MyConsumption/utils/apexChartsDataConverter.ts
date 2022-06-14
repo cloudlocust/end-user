@@ -12,7 +12,7 @@ export const defaultApexChartOptions = (theme: Theme): Props['options'] => {
         chart: {
             fontFamily: theme.typography.fontFamily,
             background: theme.palette.primary.main,
-            stacked: true,
+            stacked: false,
             locales: [fr],
             defaultLocale: 'fr',
             height: '100%',
@@ -23,6 +23,7 @@ export const defaultApexChartOptions = (theme: Theme): Props['options'] => {
                 enabled: false,
             },
         },
+
         theme: {
             // We set the theme so that the text in the chart and stuffs is updated.
             mode: theme.palette.mode === 'light' ? 'dark' : 'light',
@@ -42,6 +43,10 @@ export const defaultApexChartOptions = (theme: Theme): Props['options'] => {
             },
         },
         grid: {
+            padding: {
+                right: 8,
+                left: 8,
+            },
             show: true,
             strokeDashArray: 4,
             position: 'back',
@@ -53,7 +58,9 @@ export const defaultApexChartOptions = (theme: Theme): Props['options'] => {
             },
             yaxis: {
                 lines: {
-                    show: true,
+                    offsetX: 0,
+                    offsetY: 0,
+                    show: false,
                 },
             },
         },
@@ -88,43 +95,199 @@ const defaultYAxisLabelsFormatter =
     (value: number) => `${value}`
 
 // eslint-disable-next-line jsdoc/require-jsdoc
+export const temperatureTitle = 'Température'
+// eslint-disable-next-line jsdoc/require-jsdoc
+export const externalTemperaturTitle = `${temperatureTitle} Extérieure`
+// eslint-disable-next-line jsdoc/require-jsdoc
+export const internalTemperaturTitle = `${temperatureTitle} Intérieure`
+// eslint-disable-next-line jsdoc/require-jsdoc
+// eslint-disable-next-line jsdoc/require-jsdoc
+export const enphaseProductionTitle = 'Production Enphase'
+// eslint-disable-next-line jsdoc/require-jsdoc
+export const enphaseConsumptionTitle = 'Consommation Enphase'
+// eslint-disable-next-line jsdoc/require-jsdoc
+export const enedisConsumptionTitle = 'Consommation Enedis'
+// eslint-disable-next-line jsdoc/require-jsdoc
 const targetNameOptions = (
     theme: Theme,
-    // eslint-disable-next-line jsdoc/require-jsdoc
+    formatMessage: formatMessageType,
+    chartType: string,
 ): {
     // eslint-disable-next-line jsdoc/require-jsdoc
-    [key in metricTarget]: { label: string; type?: string; color?: string; formatter: (value: number) => string }
+    [key in metricTarget]: ApexYAxis & { seriesOptions: ApexAxisChartSeries[0] }
 } => ({
     nrlink_consumption_metrics: {
-        label: 'Consommation',
-        color: theme.palette.primary.light,
-        // eslint-disable-next-line jsdoc/require-jsdoc
-        formatter: (value: number) => `${value} Kwh`,
+        seriesOptions: {
+            name: formatMessage({
+                id: 'Consommation',
+                defaultMessage: 'Consommation',
+            }),
+            color: theme.palette.primary.light,
+            data: [],
+            type: chartType,
+        },
+        title: {
+            text: formatMessage({
+                id: 'Consommation',
+                defaultMessage: 'Consommation',
+            }),
+        },
+        axisBorder: {
+            show: true,
+        },
+        axisTicks: {
+            show: true,
+        },
+        opposite: false,
+        labels: {
+            // eslint-disable-next-line jsdoc/require-jsdoc
+            formatter: (value: number) => `${value} Kwh`,
+        },
     },
     enedis_consumption_metrics: {
-        label: 'Consommation',
-        type: 'line',
-        formatter: defaultYAxisLabelsFormatter,
+        seriesOptions: {
+            name: formatMessage({
+                id: enedisConsumptionTitle,
+                defaultMessage: enedisConsumptionTitle,
+            }),
+            data: [],
+            type: 'line',
+        },
+        title: {
+            text: formatMessage({
+                id: enedisConsumptionTitle,
+                defaultMessage: enedisConsumptionTitle,
+            }),
+        },
+        axisBorder: {
+            show: true,
+        },
+        axisTicks: {
+            show: true,
+        },
+        opposite: true,
+        labels: {
+            // eslint-disable-next-line jsdoc/require-jsdoc
+            formatter: defaultYAxisLabelsFormatter,
+        },
     },
     enphase_consumption_metrics: {
-        label: 'Consommation Enphase',
-        type: 'line',
-        formatter: defaultYAxisLabelsFormatter,
+        seriesOptions: {
+            name: formatMessage({
+                id: enphaseConsumptionTitle,
+                defaultMessage: enphaseConsumptionTitle,
+            }),
+            data: [],
+            type: 'line',
+        },
+        title: {
+            text: formatMessage({
+                id: enphaseConsumptionTitle,
+                defaultMessage: enphaseConsumptionTitle,
+            }),
+        },
+        axisBorder: {
+            show: true,
+        },
+        opposite: true,
+        labels: {
+            // eslint-disable-next-line jsdoc/require-jsdoc
+            formatter: defaultYAxisLabelsFormatter,
+        },
+        axisTicks: {
+            show: true,
+        },
     },
     enphase_production_metrics: {
-        label: 'Production Enphase',
-        type: 'line',
-        formatter: defaultYAxisLabelsFormatter,
+        seriesOptions: {
+            name: formatMessage({
+                id: enphaseProductionTitle,
+                defaultMessage: enphaseProductionTitle,
+            }),
+            data: [],
+            type: 'line',
+        },
+        title: {
+            text: formatMessage({
+                id: enphaseProductionTitle,
+                defaultMessage: enphaseProductionTitle,
+            }),
+        },
+        axisBorder: {
+            show: true,
+        },
+        axisTicks: {
+            show: true,
+        },
+        opposite: true,
+        labels: {
+            // eslint-disable-next-line jsdoc/require-jsdoc
+            formatter: defaultYAxisLabelsFormatter,
+        },
     },
     external_temperature_metrics: {
-        label: 'Température Extérieure',
-        type: 'line',
-        formatter: defaultYAxisLabelsFormatter,
+        seriesOptions: {
+            name: formatMessage({
+                id: externalTemperaturTitle,
+                defaultMessage: externalTemperaturTitle,
+            }),
+            data: [],
+            color: '#0000FF',
+            type: 'line',
+        },
+        title: {
+            text: formatMessage({
+                id: temperatureTitle,
+                defaultMessage: temperatureTitle,
+            }),
+        },
+        axisTicks: {
+            show: true,
+        },
+        seriesName: formatMessage({
+            id: internalTemperaturTitle,
+            defaultMessage: internalTemperaturTitle,
+        }),
+        axisBorder: {
+            show: true,
+        },
+        opposite: true,
+        labels: {
+            // eslint-disable-next-line jsdoc/require-jsdoc
+            formatter: (value: number) => `${value} °C`,
+        },
     },
     nrlink_internal_temperature_metrics: {
-        label: 'Température Intérieure',
-        type: 'line',
-        formatter: defaultYAxisLabelsFormatter,
+        seriesOptions: {
+            name: formatMessage({
+                id: internalTemperaturTitle,
+                defaultMessage: internalTemperaturTitle,
+            }),
+            color: '#FF0000',
+            data: [],
+            type: 'line',
+        },
+        title: {
+            text: formatMessage({
+                id: temperatureTitle,
+                defaultMessage: temperatureTitle,
+            }),
+        },
+        seriesName: formatMessage({
+            id: externalTemperaturTitle,
+            defaultMessage: externalTemperaturTitle,
+        }),
+        axisTicks: {
+            show: true,
+        },
+        axisBorder: {
+            show: true,
+        },
+        opposite: true,
+        labels: {
+            // eslint-disable-next-line jsdoc/require-jsdoc
+            formatter: (value: number) => `${value} °C`,
+        },
     },
 })
 
@@ -202,38 +365,26 @@ export const convertMetricsDataToApexChartsProps = ({
     let options: Props['options'] = defaultApexChartOptions(theme)!
     let series: ApexAxisChartSeries = []
     let yAxis: ApexYAxis[] = []
+    // We'll handle the case where we have same YAxis for multiple charts, for example: (external and internal temperature) we should have only one YAxis displaying values for 2 charts.
+    const apexYAxisTitles: string[] = []
 
     data.forEach((metric: IMetrics[0]) => {
         // eslint-disable-next-line jsdoc/require-jsdoc
         let apexChartSerieData: ApexAxisChartSeries[0]['data'] = []
         if (metric.datapoints.length > 0) apexChartSerieData = getApexSerieDataFromDatapoint(metric.datapoints)
 
+        const { seriesOptions, ...yAxisOptions } = targetNameOptions(theme, formatMessage, chartType)[metric.target]
+        if (apexYAxisTitles.includes(yAxisOptions.title!.text!!)) {
+            yAxisOptions.show = false
+        } else {
+            apexYAxisTitles.push(yAxisOptions.title!.text!)
+        }
+
         series!.push({
+            ...seriesOptions,
             data: apexChartSerieData,
-            name: formatMessage({
-                id: targetNameOptions(theme)[metric.target].label,
-                defaultMessage: targetNameOptions(theme)[metric.target].label,
-            }),
-            color: targetNameOptions(theme)[metric.target].color || undefined,
-            type: targetNameOptions(theme)[metric.target].type || chartType,
         })
-        yAxis.push({
-            // TODO uncomment when having multiple yAxis curves.
-            // title: {
-            //     text: formatMessage({
-            //         id: targetNameOptions(theme)[metric.target].label,
-            //         defaultMessage: targetNameOptions(theme)[metric.target].label,
-            //     }),
-            // },
-            opposite: !!targetNameOptions(theme)[metric.target].type,
-            axisBorder: {
-                show: true,
-            },
-            labels: {
-                // eslint-disable-next-line jsdoc/require-jsdoc
-                formatter: targetNameOptions(theme)[metric.target].formatter,
-            },
-        })
+        yAxis.push(yAxisOptions)
     })
 
     options.xaxis = {
