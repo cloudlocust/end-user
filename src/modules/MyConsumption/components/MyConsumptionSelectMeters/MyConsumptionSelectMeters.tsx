@@ -5,6 +5,7 @@ import { FormControl, InputLabel, MenuItem, Select, SelectChangeEvent } from '@m
 import { IMeter } from 'src/modules/Meters/Meters'
 import { styled } from '@mui/material/styles'
 import { formatMetricFilter } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
+import { IMyConsumptionSelectMeters } from 'src/modules/MyConsumption/myConsumptionTypes'
 
 const Root = styled('div')(({ theme }) => ({
     '& .MuiOutlinedInput-root': {
