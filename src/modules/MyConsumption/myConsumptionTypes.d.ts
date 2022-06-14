@@ -5,31 +5,16 @@ export interface IMyConsumptionPeriod {
     /**
      * SetPeriod function.
      */
-    setPeriod: any
+    setPeriod: (interval: metricIntervals) => void
     /**
      * SetRange function.
      */
-    setRange: (range: IRange) => void
+    setRange: (range: metricRange) => void
     /**
      * SetPeriodValue function.
      */
-    setPeriodValue: any
+    setPeriodValue: (period: periodValue) => void
 }
-//TODO to remove
-/**
- * Range selection interface.
- */
-interface IRange {
-    /**
-     * Date from which the range is selected.
-     */
-    from: string
-    /**
-     * Date to which the range is selected.
-     */
-    to: string
-}
-
 /**
  * Range value type.
  *
