@@ -11,7 +11,7 @@ import {
 import { useSnackbar } from 'notistack'
 import { useIntl } from 'react-intl'
 import { axios } from 'src/common/react-platform-components'
-import { consentsType, IEnedisConsent, INrlinkConsent } from 'src/modules/Consents/Consents'
+import { IEnedisConsent, INrlinkConsent } from 'src/modules/Consents/Consents'
 
 /**
  * Metrics endpoint.
@@ -34,6 +34,7 @@ export const ENEDIS_CONSENT_API = `${API_RESOURCES_URL}/enedis/consent`
  * @param initialState Initial State of the hook.
  * @returns Consumption metrics hook.
  */
+// eslint-disable-next-line sonarjs/cognitive-complexity
 export function useConsumptionMetrics(initialState: getMetricType) {
     const { enqueueSnackbar } = useSnackbar()
     const { formatMessage } = useIntl()
@@ -46,7 +47,8 @@ export function useConsumptionMetrics(initialState: getMetricType) {
         initialState.addHookFilters ? initialState.addHookFilters : [],
     )
     const isInitialMount = useRef(false)
-    const [consents, setConsents] = useState<consentsType>()
+    const [nrlinkConsent, setNrlinkConsent] = useState<INrlinkConsent>()
+    const [enedisConsent, setEnedisConsent] = useState<IEnedisConsent>()
 
     /**
      * Get Metrics function: Everytime filters or range or interval or targets has changed, it triggers the function call.
@@ -82,38 +84,45 @@ export function useConsumptionMetrics(initialState: getMetricType) {
      * Check Consents function.
      */
     const getConsents = useCallback(async () => {
-        /**
-         * Filters is used when we want to get the data of a specific meter. We only check the consents of the meter when the state is populated.
-         */
+        // Filters is used when we want to get the data of a specific meter.
+        // We only check the consents of the meter when the state is populated.
         if (filters.length === 0) return
         if (filters.length > 0) {
             const meterGuidValue = filters[0].value
-            try {
-                // TODO: use Promise.allSettled() instead of Promise.all to returns a promise that resolves after all of the given promises have either fulfilled or rejected.
-                // Because Promise.all() rejects when the first promise you pass it rejects and it returns only that rejection.
-                await Promise.all([
-                    axios.get<INrlinkConsent>(`${NRLINK_CONSENT_API}?meter_guid=${meterGuidValue}`),
-                    axios.get<IEnedisConsent>(`${ENEDIS_CONSENT_API}?meter_guid=${meterGuidValue}`),
-                ]).then(([nrlinkConsentResponse, enedisConsentResponse]) => {
-                    setConsents({
-                        nrlinkConsent: nrlinkConsentResponse.data,
-                        enedisConsent: enedisConsentResponse.data,
-                    })
+
+            // Used Promise.allSettled() instead of Promise.all to return a promise that resolves after all of the given requests have either been fulfilled or rejected.
+            // Because Promise.all() throws only when the first promise you pass it rejects and it returns only that rejection.
+            const result = await Promise.allSettled([
+                axios.get<INrlinkConsent>(`${NRLINK_CONSENT_API}?meter_guid=${meterGuidValue}`),
+                axios.get<IEnedisConsent>(`${ENEDIS_CONSENT_API}?meter_guid=${meterGuidValue}`),
+            ])
+
+            // If the promise status is "fulfilled" it returns value
+            // If it's "rejetected" it returns reason
+            const [nrlinkConsent, enedisConsent] = await Promise.all(result)
+            if (nrlinkConsent.status === 'fulfilled') {
+                setNrlinkConsent(nrlinkConsent.value?.data)
+            }
+
+            if (nrlinkConsent.status === 'rejected') {
+                enqueueSnackbar('Erreur lors de la récupération du consentement Nrlink', {
+                    variant: 'error',
+                    autoHideDuration: 5000,
                 })
-            } catch (errors) {
-                enqueueSnackbar(
-                    formatMessage({
-                        id: 'Erreur lors de la récupération des consentements',
-                        defaultMessage: 'Erreur lors de la récupération des consentements',
-                    }),
-                    {
-                        variant: 'error',
-                        autoHideDuration: 5000,
-                    },
-                )
+            }
+
+            if (enedisConsent.status === 'fulfilled') {
+                setEnedisConsent(enedisConsent.value?.data)
+            }
+
+            if (enedisConsent.status === 'rejected') {
+                enqueueSnackbar('Erreur lors de la récupération du consentement Enedis', {
+                    variant: 'error',
+                    autoHideDuration: 5000,
+                })
             }
         }
-    }, [filters, enqueueSnackbar, formatMessage])
+    }, [filters, enqueueSnackbar])
 
     // Useeffect is called whenever the hook is instantiated or whenever the dependencies changes.
     useEffect(() => {
@@ -137,7 +146,8 @@ export function useConsumptionMetrics(initialState: getMetricType) {
         range,
         interval,
         filters,
-        consents,
+        nrlinkConsent,
+        enedisConsent,
         setPeriod,
         setFilters,
         setRange,

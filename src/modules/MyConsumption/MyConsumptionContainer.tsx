@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import { MyConsumptionChart } from 'src/modules/MyConsumption/components/MyConsumptionChart'
 import { MyConsumptionSelectMeters } from 'src/modules/MyConsumption/components/MyConsumptionSelectMeters'
@@ -25,7 +25,13 @@ export const initialMetricsHookValues: getMetricType = {
             type: 'timeseries',
         },
     ],
-    addHookFilters: [],
+    addHookFilters: [
+        {
+            key: 'meter_guid',
+            operator: '=',
+            value: '123456',
+        },
+    ],
 }
 
 /**
@@ -34,28 +40,10 @@ export const initialMetricsHookValues: getMetricType = {
  * @returns MyConsoContainer.
  */
 export const MyConsumptionContainer = () => {
-    const { setPeriod, setRange, setFilters, isMetricsLoading, data, interval, consents } =
+    const { setPeriod, setRange, setFilters, isMetricsLoading, data, interval, nrlinkConsent, enedisConsent } =
         useConsumptionMetrics(initialMetricsHookValues)
     const [periodValue, setPeriodValue] = useState<periodValue>(1)
-    const [isConsentError, setIsConsentError] = useState<boolean>(false)
-
-    /**
-     * Check if consent exist for both Nrlink and Enedis from metrics hook consents state.
-     */
-    const checkNrlinkAndEnedisConsent = useCallback(() => {
-        if (
-            consents?.nrlinkConsent.nrlinkConsentState === 'NONEXISTENT' &&
-            consents?.enedisConsent.enedisConsentState === 'NONEXISTENT'
-        ) {
-            setIsConsentError(true)
-        } else {
-            setIsConsentError(false)
-        }
-    }, [consents])
-
-    useEffect(() => {
-        checkNrlinkAndEnedisConsent()
-    }, [checkNrlinkAndEnedisConsent])
+    const [isConsentError, setIsConsentError] = useState(false)
 
     /**
      * Show text according to interval.
@@ -75,6 +63,17 @@ export const MyConsumptionContainer = () => {
             throw Error('PeriodValue not set')
         }
     }
+
+    useEffect(() => {
+        if (
+            nrlinkConsent?.nrlinkConsentState === 'NONEXISTENT' &&
+            enedisConsent?.enedisConsentState === 'NONEXISTENT'
+        ) {
+            setIsConsentError(true)
+        } else {
+            setIsConsentError(false)
+        }
+    }, [enedisConsent?.enedisConsentState, nrlinkConsent?.nrlinkConsentState])
 
     if (isConsentError) {
         return (

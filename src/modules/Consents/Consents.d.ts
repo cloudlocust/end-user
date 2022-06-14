@@ -53,14 +53,3 @@ export interface IEnedisConsent {
      */
     createdAt?: string
 }
-
-/**
- * Consents type.
- */
-//eslint-disable-next-line jsdoc/require-jsdoc
-export type consentsType = {
-    //eslint-disable-next-line jsdoc/require-jsdoc
-    nrlinkConsent: INrlinkConsent
-    //eslint-disable-next-line jsdoc/require-jsdoc
-    enedisConsent: IEnedisConsent
-}
