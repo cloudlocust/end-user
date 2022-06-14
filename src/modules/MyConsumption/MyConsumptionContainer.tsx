@@ -2,17 +2,12 @@ import React, { useState } from 'react'
 import { motion } from 'framer-motion'
 import { MyConsumptionChart } from 'src/modules/MyConsumption/components/MyConsumptionChart'
 import { MyConsumptionSelectMeters } from 'src/modules/MyConsumption/components/MyConsumptionSelectMeters'
-import { MyConsumptionPeriod } from 'src/modules/MyConsumption/components/MyConsumptionPeriod'
 import { useConsumptionMetrics } from 'src/modules/Metrics/metricsHook'
 import { getMetricType } from 'src/modules/Metrics/Metrics'
 import dayjs from 'dayjs'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
-
-/**
- * Range value type.
- *
- */
-type periodValue = 1 | 7 | 30 | 365
+import { MyConsumptionPeriod } from './components/MyConsumptionPeriod/MyConsumptionPeriod'
+import { periodValue } from 'src/modules/MyConsumption/myConsumptionTypes'
 
 /**
  * InitialMetricsStates for useConsumptionMetrics.

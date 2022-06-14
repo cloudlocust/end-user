@@ -1,1 +1,1 @@
-export * from './MyConsumptionPeriod'
+export { MyConsumptionPeriod } from './MyConsumptionPeriod'

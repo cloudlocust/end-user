@@ -15,3 +15,8 @@ export interface IMyConsumptionPeriod {
      */
     setPeriodValue: (period: periodValue) => void
 }
+/**
+ * Range value type.
+ *
+ */
+export type periodValue = 1 | 7 | 30 | 365
