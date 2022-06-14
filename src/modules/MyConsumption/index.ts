@@ -4,3 +4,5 @@ export { default as MyConsumptionChart } from './components/MyConsumptionChart/M
 export * from './components/MyConsumptionPeriod/MyConsumptionPeriod'
 export { convertMetricsDataToApexChartsProps } from './utils/apexChartsDataConverter'
 export { MyConsumptionContainer } from './MyConsumptionContainer'
+export * from './components/MyConsumptionSelectMeters/MyConsumptionSelectMeters'
+export * from './components/MyConsumptionPeriod/MyConsumptionPeriod'

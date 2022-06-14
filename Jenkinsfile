@@ -77,9 +77,9 @@ pipeline{
             }
 
         }
-        stage("Deploy-alpha/prod") {
+        stage("Deploy-prod") {
             when {
-                    expression { BRANCH_NAME ==~ /(production|master)/ }
+                    expression { BRANCH_NAME ==~ /(production)/ }
             }
             environment {
               SERVER_SSH_KEY = credentials('contabo-test-env-private-key')
@@ -99,9 +99,9 @@ pipeline{
                 }
            }
         }
-       stage ('Deploy-staging') {
+       stage ('Deploy-alpha/staging') {
         when {
-                expression { BRANCH_NAME ==~ /(develop)/ }
+                expression { BRANCH_NAME ==~ /(master|develop)/ }
            }
         environment {
               ENV_NAME = getEnvName(BRANCH_NAME)
