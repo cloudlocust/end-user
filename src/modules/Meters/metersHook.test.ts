@@ -144,7 +144,7 @@ describe('MetersListHook test', () => {
                 () => {
                     return result.current.elementList
                 },
-                { timeout: 1000 },
+                { timeout: 4000 },
             )
             expect(result.current.loadingInProgress).toBe(false)
             // Element is added.
