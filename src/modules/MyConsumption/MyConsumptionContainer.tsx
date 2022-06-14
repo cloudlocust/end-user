@@ -1,8 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
-import { formatMetricFilter, MyConsumptionChart } from 'src/modules/MyConsumption/'
-import { MyConsumptionSelectMeters } from 'src/modules/MyConsumption/'
-import { MyConsumptionPeriod } from 'src/modules/MyConsumption/'
+import {
+    formatMetricFilter,
+    MyConsumptionChart,
+    MyConsumptionSelectMeters,
+    MyConsumptionPeriod,
+} from 'src/modules/MyConsumption/'
 import { useMetrics } from 'src/modules/Metrics/metricsHook'
 import { getMetricType, periodValue } from 'src/modules/Metrics/Metrics'
 import dayjs from 'dayjs'
