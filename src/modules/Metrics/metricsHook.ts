@@ -35,7 +35,7 @@ export const ENEDIS_CONSENT_API = `${API_RESOURCES_URL}/enedis/consent`
  * @returns Consumption metrics hook.
  */
 // eslint-disable-next-line sonarjs/cognitive-complexity
-export function useConsumptionMetrics(initialState: getMetricType) {
+export function useMetrics(initialState: getMetricType) {
     const { enqueueSnackbar } = useSnackbar()
     const { formatMessage } = useIntl()
     const [isMetricsLoading, setIsMetricsLoading] = useState(false)

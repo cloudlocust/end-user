@@ -15,7 +15,7 @@ const handlers = [
     ...metersEndpoints,
     /******NrLink REQUESTS*****/
     ...nrlinkEndpoints,
-    /******Meters REQUESTS*****/
+    /******Metrics REQUESTS*****/
     ...metricsEndpoints,
     /******Consents REQUESTS*****/
     ...consentsEndpoints,

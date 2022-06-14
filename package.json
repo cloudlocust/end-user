@@ -6,7 +6,7 @@
         "src/common"
     ],
     "dependencies": {
-        "apexcharts": "^3.35.2",
+        "apexcharts": "^3.35.3",
         "react-apexcharts": "^1.4.0",
         "react-scripts": "4.0.3",
         "redux-persist-transform-filter": "^0.0.20",

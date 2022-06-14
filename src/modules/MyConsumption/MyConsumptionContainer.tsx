@@ -1,17 +1,19 @@
 import React, { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
-import { MyConsumptionChart } from 'src/modules/MyConsumption/components/MyConsumptionChart'
-import { MyConsumptionSelectMeters } from 'src/modules/MyConsumption/components/MyConsumptionSelectMeters'
-import { MyConsumptionPeriod } from 'src/modules/MyConsumption/components/MyConsumptionPeriod'
-import { useConsumptionMetrics } from 'src/modules/Metrics/metricsHook'
+import { formatMetricFilter, MyConsumptionChart } from 'src/modules/MyConsumption/'
+import { MyConsumptionSelectMeters } from 'src/modules/MyConsumption/'
+import { MyConsumptionPeriod } from 'src/modules/MyConsumption/'
+import { useMetrics } from 'src/modules/Metrics/metricsHook'
 import { getMetricType, periodValue } from 'src/modules/Metrics/Metrics'
 import dayjs from 'dayjs'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import { Typography } from '@mui/material'
 import { Link } from 'react-router-dom'
+import { useTheme } from '@mui/material'
+import { useMeterList } from 'src/modules/Meters/metersHook'
 
 /**
- * InitialMetricsStates for useConsumptionMetrics.
+ * InitialMetricsStates for useMetrics.
  */
 export const initialMetricsHookValues: getMetricType = {
     interval: '1min',
@@ -35,9 +37,27 @@ export const initialMetricsHookValues: getMetricType = {
  */
 export const MyConsumptionContainer = () => {
     const { setPeriod, setRange, setFilters, isMetricsLoading, data, interval, nrlinkConsent, enedisConsent } =
-        useConsumptionMetrics(initialMetricsHookValues)
+        useMetrics(initialMetricsHookValues)
     const [periodValue, setPeriodValue] = useState<periodValue>(1)
     const [isConsentError, setIsConsentError] = useState(false)
+    const { elementList: metersList } = useMeterList()
+    const theme = useTheme()
+
+    useEffect(() => {
+        if (!metersList) return
+        if (metersList.length === 1) setFilters(formatMetricFilter(metersList[0].guid))
+    }, [metersList, setFilters])
+
+    useEffect(() => {
+        if (
+            nrlinkConsent?.nrlinkConsentState === 'NONEXISTENT' &&
+            enedisConsent?.enedisConsentState === 'NONEXISTENT'
+        ) {
+            setIsConsentError(true)
+        } else {
+            setIsConsentError(false)
+        }
+    }, [enedisConsent?.enedisConsentState, nrlinkConsent?.nrlinkConsentState])
 
     /**
      * Show text according to interval.
@@ -58,17 +78,6 @@ export const MyConsumptionContainer = () => {
         }
     }
 
-    useEffect(() => {
-        if (
-            nrlinkConsent?.nrlinkConsentState === 'NONEXISTENT' &&
-            enedisConsent?.enedisConsentState === 'NONEXISTENT'
-        ) {
-            setIsConsentError(true)
-        } else {
-            setIsConsentError(false)
-        }
-    }, [enedisConsent?.enedisConsentState, nrlinkConsent?.nrlinkConsentState])
-
     if (isConsentError) {
         return (
             <div className="container relative h-200 sm:h-256 pb-16 sm:p-24 text-center flex items-center justify-center">
@@ -83,38 +92,45 @@ export const MyConsumptionContainer = () => {
     }
 
     return (
-        <>
-            <div className="container relative p-16 sm:p-24 flex flex-col sm:flex-row justify-between items-center">
-                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-                    <div className="flex flex-col sm:flex-row items-center sm:items-center mb-16 sm:mb-0 ">
-                        <TypographyFormatMessage className="h3 sm:mr-3" color="textPrimary">
+        <div style={{ background: theme.palette.primary.main }} className="p-24">
+            <div className="relative flex flex-col md:flex-row justify-between items-center">
+                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mb-16 md:mb-0">
+                    <div className="flex flex-col md:flex-row items-center">
+                        <TypographyFormatMessage
+                            variant="h4"
+                            className="sm:mr-8"
+                            style={{ color: theme.palette.primary.contrastText }}
+                        >
                             Ma Consommation
                         </TypographyFormatMessage>
-                        <div className="flex flex-row">
+                        <div className="flex flex-row items-end">
                             {/* TODO: kWh can also be P.max in MYEM-2408, to be dynamic. */}
-                            <TypographyFormatMessage className="h3 mr-3 sm:mr-3" color="textSecondary">
+                            <TypographyFormatMessage
+                                variant="h5"
+                                className="mr-8 sm:mr-8"
+                                style={{ color: theme.palette.primary.contrastText }}
+                            >
                                 en kWh
                             </TypographyFormatMessage>
                             {/* Consommation par Jour / Semaiine / Mois / Année */}
-                            <TypographyFormatMessage className="h3" color="textSecondary">
+                            <TypographyFormatMessage variant="h5" style={{ color: theme.palette.primary.contrastText }}>
                                 {showPerPeriodText()}
                             </TypographyFormatMessage>
                         </div>
                     </div>
                 </motion.div>
-
-                {/* TODO: MYEM-2418 */}
-                <MyConsumptionSelectMeters setFilters={setFilters} />
+                {metersList && metersList?.length > 1 && (
+                    <MyConsumptionSelectMeters setFilters={setFilters} metersList={metersList} />
+                )}
             </div>
-            {/* TODO: MYEM-2422 */}
+
             <MyConsumptionChart
                 isMetricsLoading={isMetricsLoading}
                 data={data}
                 chartType={interval === '1min' ? 'area' : 'bar'}
+                period={periodValue}
             />
-
-            {/* TODO: MYEM-2425 */}
             <MyConsumptionPeriod setPeriod={setPeriod} setRange={setRange} setPeriodValue={setPeriodValue} />
-        </>
+        </div>
     )
 }
