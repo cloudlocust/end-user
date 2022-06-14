@@ -25,13 +25,7 @@ export const initialMetricsHookValues: getMetricType = {
             type: 'timeseries',
         },
     ],
-    addHookFilters: [
-        {
-            key: 'meter_guid',
-            operator: '=',
-            value: '123456',
-        },
-    ],
+    addHookFilters: [],
 }
 
 /**
@@ -80,7 +74,7 @@ export const MyConsumptionContainer = () => {
             <div className="container relative h-200 sm:h-256 pb-16 sm:p-24 text-center flex items-center justify-center">
                 <Typography>
                     Pour voir votre consommation vous devez d'abord{' '}
-                    <Link to="/nrlink-connection" className="underline">
+                    <Link to="/nrlink-connection-steps" className="underline">
                         enregistrer votre compteur et votre nrLink
                     </Link>
                 </Typography>
