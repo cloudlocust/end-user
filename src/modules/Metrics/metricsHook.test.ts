@@ -1,5 +1,5 @@
 import { reduxedRenderHook } from 'src/common/react-platform-components/test'
-import { METRICS_API, useConsumptionMetrics } from 'src/modules/Metrics/metricsHook'
+import { METRICS_API, useMetrics } from 'src/modules/Metrics/metricsHook'
 import { getMetricType, metricRange, metricTargets } from 'src/modules/Metrics/Metrics'
 import { axios } from 'src/common/react-platform-components'
 import { TEST_SUCCESS_DAY_METRICS } from 'src/mocks/handlers/metrics'
@@ -43,11 +43,11 @@ let mockHookArguments: getMetricType = {
     addHookFilters: [],
 }
 
-describe('useConsumptionMetrics hook test', () => {
+describe('useMetrics hook test', () => {
     test('When the hook is called with default values', async () => {
         const {
             renderedHook: { result },
-        } = reduxedRenderHook(() => useConsumptionMetrics(mockHookArguments))
+        } = reduxedRenderHook(() => useMetrics(mockHookArguments))
 
         const currentResult = result.current
         expect(currentResult.isMetricsLoading).toStrictEqual(true)
@@ -59,7 +59,7 @@ describe('useConsumptionMetrics hook test', () => {
     test('When there is an HTTP request with the right body', async () => {
         const {
             renderedHook: { result, waitFor },
-        } = reduxedRenderHook(() => useConsumptionMetrics(mockHookArguments))
+        } = reduxedRenderHook(() => useMetrics(mockHookArguments))
 
         const AXIOS_POST_DATA = mockHookArguments
 
@@ -72,7 +72,7 @@ describe('useConsumptionMetrics hook test', () => {
     test('When there is a server issue and the data cannot be retrieved, a snackbar is shown', async () => {
         const {
             renderedHook: { waitFor },
-        } = reduxedRenderHook(() => useConsumptionMetrics(mockHookArguments))
+        } = reduxedRenderHook(() => useMetrics(mockHookArguments))
 
         mockedAxios.post.mockRejectedValue('Error')
 

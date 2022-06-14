@@ -144,7 +144,7 @@ describe('MetersListHook test', () => {
                 () => {
                     return result.current.elementList
                 },
-                { timeout: 10000 },
+                { timeout: 4000 },
             )
             expect(result.current.loadingInProgress).toBe(false)
             // Element is added.
@@ -158,12 +158,12 @@ describe('MetersListHook test', () => {
                 () => {
                     return result.current.loadingInProgress
                 },
-                { timeout: 5000 },
+                { timeout: 2000 },
             )
             expect(result.current.loadingInProgress).toBe(false)
             expect(mockEnqueueSnackbar).toHaveBeenCalledWith(TEST_ADD_METER_SUCCESS_MESSAGE, {
                 variant: 'success',
             })
-        }, 200000)
+        })
     })
 })

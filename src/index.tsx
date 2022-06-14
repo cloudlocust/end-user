@@ -65,8 +65,7 @@ bootstrapApplication().then((app) => {
 })
 
 // In order to activate MSW, you have to set the env variable to enabled in env.development.
-if ('serviceWorker' in navigator && process.env.NODE_ENV === 'development' && MSW_MOCK === 'enabled') {
-    navigator.serviceWorker.register(`${process.env.PUBLIC_URL}/mockServiceWorker.js`)
+if (process.env.NODE_ENV === 'development' && MSW_MOCK === 'enabled') {
     const { worker } = require('src/mocks/browser')
     worker.start()
 }

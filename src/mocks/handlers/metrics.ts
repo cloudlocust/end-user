@@ -468,6 +468,6 @@ export const metricsEndpoints = [
         if (FAKE_YEAR_INTERVAL === '1m' && difference === 365)
             return res(ctx.status(200), ctx.delay(1000), ctx.json(TEST_SUCCESS_YEAR_METRICS))
 
-        return res(ctx.status(401), ctx.delay(1000), ctx.json({ error: 'Error' }))
+        return res(ctx.status(401), ctx.json(1000), ctx.json({ error: 'Error' }))
     }),
 ]

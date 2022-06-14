@@ -3,8 +3,8 @@ import Tab from '@mui/material/Tab'
 import Tabs from '@mui/material/Tabs'
 import React, { useState } from 'react'
 import Box from '@mui/material/Box'
-import { IMyConsumptionPeriod } from 'src/modules/MyConsumption/components/MyConsumptionPeriod/myConsumptionTypes'
 import { dataConsumptionPeriod } from 'src/modules/MyConsumption/utils/myConsumptionVariables'
+import { IMyConsumptionPeriod } from 'src/modules/MyConsumption/myConsumptionTypes'
 /**
  * MyConsumptionPeriod Component.
  *
