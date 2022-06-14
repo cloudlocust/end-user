@@ -65,10 +65,10 @@ bootstrapApplication().then((app) => {
 })
 
 // In order to activate MSW, you have to set the env variable to enabled in env.development.
-// if (process.env.NODE_ENV === 'development' && MSW_MOCK === 'enabled') {
-const { worker } = require('src/mocks/browser')
-worker.start()
-// }
+if (process.env.NODE_ENV === 'development' && MSW_MOCK === 'enabled') {
+    const { worker } = require('src/mocks/browser')
+    worker.start()
+}
 
 // PWA service worker should only be working in production mode.
 if (isBrowser && 'serviceWorker' in navigator && process.env.NODE_ENV === 'production') {
