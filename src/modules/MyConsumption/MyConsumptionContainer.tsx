@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import {
     formatMetricFilter,
@@ -14,6 +14,7 @@ import { Typography } from '@mui/material'
 import { Link } from 'react-router-dom'
 import { useTheme } from '@mui/material'
 import { useMeterList } from 'src/modules/Meters/metersHook'
+import Icon from '@mui/material/Icon'
 
 /**
  * InitialMetricsStates for useMetrics.
@@ -83,7 +84,12 @@ export const MyConsumptionContainer = () => {
 
     if (isConsentError) {
         return (
-            <div className="container relative h-200 sm:h-256 pb-16 sm:p-24 text-center flex items-center justify-center">
+            <div className="container relative h-200 sm:h-256 p-16 sm:p-24 flex-col text-center flex items-center justify-center">
+                <>
+                    <Icon style={{ fontSize: '4rem', marginBottom: '1rem', color: theme.palette.secondary.main }}>
+                        error_outline_outlined
+                    </Icon>
+                </>
                 <Typography>
                     Pour voir votre consommation vous devez d'abord{' '}
                     <Link to="/nrlink-connection-steps" className="underline">
