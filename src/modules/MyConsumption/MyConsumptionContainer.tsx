@@ -1,16 +1,16 @@
 import React, { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
-import { MyConsumptionSelectMeters } from 'src/modules/MyConsumption/components/MyConsumptionSelectMeters'
-import { useMetrics } from 'src/modules/Metrics/metricsHook'
-import { getMetricType } from 'src/modules/Metrics/Metrics'
-import dayjs from 'dayjs'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import { useMeterList } from 'src/modules/Meters/metersHook'
-import { MyConsumptionPeriod } from 'src/modules/MyConsumption/components/MyConsumptionPeriod/MyConsumptionPeriod'
 import MyConsumptionChart from './components/MyConsumptionChart/MyConsumptionChart'
-import { periodValue } from 'src/modules/MyConsumption/myConsumptionTypes'
 import { useTheme } from '@mui/material'
 import { formatMetricFilter } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
+import { MyConsumptionSelectMeters } from 'src/modules/MyConsumption'
+import { getMetricType } from 'src/modules/Metrics/Metrics'
+import dayjs from 'dayjs'
+import { periodValue } from 'src/modules/MyConsumption/myConsumptionTypes'
+import { useMetrics } from 'src/modules/Metrics/metricsHook'
+import { MyConsumptionPeriod } from 'src/modules/MyConsumption'
 
 /**
  * InitialMetricsStates for useMetrics.

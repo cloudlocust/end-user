@@ -20,3 +20,16 @@ export interface IMyConsumptionPeriod {
  *
  */
 export type periodValue = 1 | 7 | 30 | 365
+/**
+ * Interface IMyConsumptionSelectMeters.
+ */
+interface IMyConsumptionSelectMeters {
+    /**
+     * List of meters.
+     */
+    metersList: IMeter[]
+    /**
+     * SetFilters function.
+     */
+    setFilters: (value: metricFilters) => void
+}

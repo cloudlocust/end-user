@@ -4,7 +4,7 @@ import { BrowserRouter as Router } from 'react-router-dom'
 import userEvent from '@testing-library/user-event'
 import { waitFor } from '@testing-library/react'
 import { dataConsumptionPeriod } from 'src/modules/MyConsumption/utils/myConsumptionVariables'
-import { MyConsumptionPeriod } from 'src/modules/MyConsumption/components/MyConsumptionPeriod'
+import { MyConsumptionPeriod } from 'src/modules/MyConsumption'
 /*
  * We will test This component if he render and switch content correctly.
  */
