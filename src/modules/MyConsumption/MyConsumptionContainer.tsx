@@ -4,7 +4,7 @@ import { MyConsumptionChart } from 'src/modules/MyConsumption/components/MyConsu
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import { useMeterList } from 'src/modules/Meters/metersHook'
 import { formatMetricFilter } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
-import { MyConsumptionSelectMeters } from 'src/modules/MyConsumption/components/MyConsumptionSelectMeters'
+import { MyConsumptionSelectMeters } from 'src/modules/MyConsumption'
 import { getMetricType } from 'src/modules/Metrics/Metrics'
 import dayjs from 'dayjs'
 import { periodValue } from 'src/modules/MyConsumption/myConsumptionTypes'
