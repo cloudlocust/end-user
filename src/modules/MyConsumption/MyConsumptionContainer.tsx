@@ -106,7 +106,7 @@ export const MyConsumptionContainer = () => {
                 <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mb-16 md:mb-0">
                     <div className="flex flex-col md:flex-row items-center">
                         <TypographyFormatMessage
-                            variant="h4"
+                            variant="h5"
                             className="sm:mr-8"
                             style={{ color: theme.palette.primary.contrastText }}
                         >

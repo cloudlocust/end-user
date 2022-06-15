@@ -63,7 +63,6 @@ export function useMetrics(initialState: getMetricType) {
                 addHookFilters: filters,
             })
             setData(response.data)
-            setIsMetricsLoading(false)
         } catch (error) {
             setIsMetricsLoading(false)
             enqueueSnackbar(
