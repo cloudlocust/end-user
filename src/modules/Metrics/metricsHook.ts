@@ -23,7 +23,7 @@ export const METRICS_API = `${API_RESOURCES_URL}/query`
  * @param initialState Initial State of the hook.
  * @returns Consumption metrics hook.
  */
-export function useConsumptionMetrics(initialState: getMetricType) {
+export function useMetrics(initialState: getMetricType) {
     const { enqueueSnackbar } = useSnackbar()
     const { formatMessage } = useIntl()
     const [isMetricsLoading, setIsMetricsLoading] = useState(false)
@@ -49,7 +49,6 @@ export function useConsumptionMetrics(initialState: getMetricType) {
                 addHookFilters: filters,
             })
             setData(response.data)
-            setIsMetricsLoading(false)
         } catch (error) {
             setIsMetricsLoading(false)
             enqueueSnackbar(
@@ -84,6 +83,7 @@ export function useConsumptionMetrics(initialState: getMetricType) {
         range,
         interval,
         filters,
+        setData,
         setPeriod,
         setFilters,
         setRange,
