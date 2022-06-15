@@ -43,14 +43,13 @@ const getXAxisLabelFormatFromPeriod = (period: periodValue, dayjsFormat?: boolea
 
 const mockYAxis: ApexYAxis[] = [
     {
-        // TODO Reset when we'll have multiple graphs
-        // title: {
-        //     text: nrlinkConsumptionMetricsText,
-        // },
-        opposite: false,
         axisBorder: {
             show: true,
         },
+        axisTicks: {
+            show: true,
+        },
+        opposite: false,
         labels: {
             // eslint-disable-next-line jsdoc/require-jsdoc
             formatter: (value: number) => `${value} Kwh`,
@@ -75,6 +74,9 @@ const mockOptions: (theme: Theme, period: periodValue) => ApexOptions = (theme, 
         labels: {
             format: getXAxisLabelFormatFromPeriod(period),
         },
+    },
+    markers: {
+        ...defaultApexChartOptions(theme)!.markers,
     },
     yaxis: mockYAxis,
     tooltip: {
@@ -105,8 +107,9 @@ describe('test pure function', () => {
             theme,
             period,
         })
-
-        expect(JSON.stringify(apexChartProps.options)).toStrictEqual(JSON.stringify(mockOptions(theme, period)))
+        const mockOptionsResult = mockOptions(theme, period)
+        mockOptionsResult.markers!.size = [0]
+        expect(JSON.stringify(apexChartProps.options)).toStrictEqual(JSON.stringify(mockOptionsResult))
         expect(apexChartProps.series).toStrictEqual(mockSeries)
         expect(apexChartProps.options.xaxis?.labels?.format).toEqual(apexWeekFormat)
         expect((apexChartProps.options.yaxis as ApexYAxis[])[0].labels!.formatter!(12)).toStrictEqual('12 Kwh')

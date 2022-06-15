@@ -7,6 +7,7 @@ import {
     IMetrics,
     metricRange,
     metricFilters,
+    metricTarget,
 } from 'src/modules/Metrics/Metrics'
 import { useSnackbar } from 'notistack'
 import { useIntl } from 'react-intl'
@@ -77,6 +78,33 @@ export function useMetrics(initialState: getMetricType) {
         }
     }, [getMetrics])
 
+    /**
+     * Add a target in the metrics request.
+     *
+     * @param target Target to be added.
+     */
+    const addTarget = (target: metricTarget) => {
+        const isExistTarget = targets.find((targetEl) => targetEl.target === target)
+        if (!isExistTarget) {
+            setTargets((prevState) => {
+                const newTarget = [...prevState]
+                newTarget.push({
+                    type: 'timeseries',
+                    target,
+                })
+                return newTarget
+            })
+        }
+    }
+    /**
+     * Remove a target in the metrics request.
+     *
+     * @param target Target to be removed.
+     */
+    const removeTarget = (target: metricTarget) => {
+        setTargets((prevState) => prevState.filter((targetEl) => targetEl.target !== target))
+    }
+
     return {
         isMetricsLoading,
         data,
@@ -84,6 +112,8 @@ export function useMetrics(initialState: getMetricType) {
         range,
         interval,
         filters,
+        addTarget,
+        removeTarget,
         setPeriod,
         setFilters,
         setRange,

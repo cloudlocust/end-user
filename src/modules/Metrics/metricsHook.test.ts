@@ -1,14 +1,11 @@
 import { reduxedRenderHook } from 'src/common/react-platform-components/test'
-import { METRICS_API, useMetrics } from 'src/modules/Metrics/metricsHook'
+import { useMetrics } from 'src/modules/Metrics/metricsHook'
 import { getMetricType, metricRange, metricTargets } from 'src/modules/Metrics/Metrics'
-import { axios } from 'src/common/react-platform-components'
-import { TEST_SUCCESS_DAY_METRICS } from 'src/mocks/handlers/metrics'
-
-jest.mock('axios')
-
-const mockedAxios = axios as jest.Mocked<typeof axios>
+import { act } from '@testing-library/react-hooks'
+import dayjs from 'dayjs'
 
 const mockEnqueueSnackbar = jest.fn()
+
 /**
  * Mocking the useSnackbar used in CustomerDetails to load the customerDetails based on url /customers/:id {id} params.
  */
@@ -26,7 +23,7 @@ jest.mock('notistack', () => ({
 
 const FAKE_RANGE: metricRange = {
     from: '2022-06-04T22:00:00.000Z',
-    to: '2022-06-04T23:26:59.169Z',
+    to: '2022-06-05T23:26:59.169Z',
 }
 
 const FAKE_TARGETS: metricTargets = [
@@ -44,6 +41,7 @@ let mockHookArguments: getMetricType = {
 }
 
 describe('useMetrics hook test', () => {
+    // TODO Fix in Amine-2452
     test('When the hook is called with default values', async () => {
         const {
             renderedHook: { result },
@@ -58,28 +56,77 @@ describe('useMetrics hook test', () => {
     }, 8000)
     test('When there is an HTTP request with the right body', async () => {
         const {
-            renderedHook: { result, waitFor },
+            renderedHook: { result, waitForValueToChange },
         } = reduxedRenderHook(() => useMetrics(mockHookArguments))
-
-        const AXIOS_POST_DATA = mockHookArguments
-
-        expect(mockedAxios.post).toHaveBeenCalledWith(METRICS_API, AXIOS_POST_DATA)
-
-        waitFor(() => {
-            expect(result.current.data).toBe(TEST_SUCCESS_DAY_METRICS)
-        })
-    }, 8000)
+        expect(result.current.isMetricsLoading).toBeTruthy()
+        await waitForValueToChange(
+            () => {
+                return result.current.isMetricsLoading
+            },
+            { timeout: 10000 },
+        )
+        expect(result.current.isMetricsLoading).toBeFalsy()
+        expect(result.current.data.length).toBeGreaterThan(0)
+    }, 20000)
     test('When there is a server issue and the data cannot be retrieved, a snackbar is shown', async () => {
+        mockHookArguments.range.to = mockHookArguments.range.from
         const {
-            renderedHook: { waitFor },
+            renderedHook: { result, waitForValueToChange },
         } = reduxedRenderHook(() => useMetrics(mockHookArguments))
 
-        mockedAxios.post.mockRejectedValue('Error')
-
-        waitFor(() => {
-            expect(mockEnqueueSnackbar).toHaveBeenCalledWith('Erreur de chargement de vos données de consommation', {
-                variant: 'error',
-            })
+        expect(result.current.isMetricsLoading).toBeTruthy()
+        await waitForValueToChange(
+            () => {
+                return result.current.isMetricsLoading
+            },
+            { timeout: 10000 },
+        )
+        expect(result.current.isMetricsLoading).toBeFalsy()
+        expect(mockEnqueueSnackbar).toHaveBeenCalledWith('Erreur de chargement de vos données de consommation', {
+            variant: 'error',
+            autoHideDuration: 5000,
         })
     }, 8000)
+
+    test('When add and remove target, targets should change and getMetrics should work', async () => {
+        mockHookArguments.targets = []
+        mockHookArguments.interval = '1d'
+        mockHookArguments.range.to = dayjs(mockHookArguments.range.from).add(7, 'day').format()
+        const {
+            renderedHook: { result, waitForValueToChange },
+        } = reduxedRenderHook(() => useMetrics(mockHookArguments))
+
+        expect(result.current.isMetricsLoading).toBeTruthy()
+        await waitForValueToChange(
+            () => {
+                return result.current.isMetricsLoading
+            },
+            { timeout: 4000 },
+        )
+        expect(result.current.isMetricsLoading).toBeFalsy()
+        expect(result.current.data.length).toBe(0)
+        // Add Target
+        act(() => {
+            result.current.addTarget(FAKE_TARGETS[0].target)
+        })
+        await waitForValueToChange(
+            () => {
+                return result.current.data
+            },
+            { timeout: 8000 },
+        )
+        expect(result.current.data.length).toBeGreaterThan(0)
+        expect(result.current.data[0].target).toBe(FAKE_TARGETS[0].target)
+        // Remove target
+        act(() => {
+            result.current.removeTarget(FAKE_TARGETS[0].target)
+        })
+        await waitForValueToChange(
+            () => {
+                return result.current.data
+            },
+            { timeout: 8000 },
+        )
+        expect(result.current.data.length).toBe(0)
+    }, 30000)
 })

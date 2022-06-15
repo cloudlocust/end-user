@@ -1,5 +1,5 @@
 import { rest } from 'msw'
-import { getMetricType, IMetrics } from 'src/modules/Metrics/Metrics'
+import { getMetricType, IMetrics, metricTarget } from 'src/modules/Metrics/Metrics'
 import { METRICS_API } from 'src/modules/Metrics/metricsHook'
 import { SnakeCasedPropertiesDeep } from 'type-fest'
 import dayjs from 'dayjs'
@@ -357,6 +357,7 @@ const FAKE_MONTH_DATA = [
     [65, 1643328000000],
     [62, 1643414400000],
     [58, 1643500800000],
+    // [68, 1643635482000],
 ]
 
 // Data of 1 year with 1 month interval.
@@ -375,77 +376,40 @@ const FAKE_YEAR_DATA = [
     [78, 1669852800000],
 ]
 
-/**
- * Success day test metrics.
- */
-export const TEST_SUCCESS_DAY_METRICS: SnakeCasedPropertiesDeep<IMetrics> = [
-    {
-        target: 'nrlink_consumption_metrics',
-        datapoints: FAKE_DAY_DATA,
-    },
-    {
-        target: 'nrlink_internal_temperature_metrics',
-        datapoints: FAKE_DAY_DATA.map((datapoint) => [20, datapoint[1]]),
-    },
-    {
-        target: 'external_temperature_metrics',
-        datapoints: FAKE_DAY_DATA.map((datapoint) => [16, datapoint[1]]),
-    },
-]
+// eslint-disable-next-line jsdoc/require-jsdoc
+function getMetricsDataFromTarget(targets: metricTarget[], FAKE_DATA: number[][]) {
+    return targets.map((target) => {
+        let datapoints = FAKE_DATA
+        if (target === 'nrlink_internal_temperature_metrics')
+            datapoints = FAKE_DATA.map((datapoint) => [datapoint[0] + 12, datapoint[1]])
+        if (target === 'external_temperature_metrics')
+            datapoints = FAKE_DATA.map((datapoint) => [datapoint[0] - 12, datapoint[1]])
+        return {
+            target,
+            datapoints,
+        }
+    })
+}
 
-/**
- * Sucess week test metrics.
- */
-export const TEST_SUCCESS_WEEK_METRICS: SnakeCasedPropertiesDeep<IMetrics> = [
-    {
-        target: 'nrlink_consumption_metrics',
-        datapoints: FAKE_WEEK_DATA,
-    },
-    {
-        target: 'external_temperature_metrics',
-        datapoints: FAKE_WEEK_DATA.map((datapoint) => [datapoint[0] - 12, datapoint[1]]),
-    },
-    {
-        target: 'nrlink_internal_temperature_metrics',
-        datapoints: FAKE_WEEK_DATA.map((datapoint) => [datapoint[0] + 12, datapoint[1]]),
-    },
-]
+// eslint-disable-next-line jsdoc/require-jsdoc
+export const TEST_SUCCESS_DAY_METRICS: (targets: metricTarget[]) => SnakeCasedPropertiesDeep<IMetrics> = (
+    targets: metricTarget[],
+) => getMetricsDataFromTarget(targets, FAKE_DAY_DATA)
 
-/**
- * Sucess month test metrics.
- */
-export const TEST_SUCCESS_MONTH_METRICS: SnakeCasedPropertiesDeep<IMetrics> = [
-    {
-        target: 'nrlink_consumption_metrics',
-        datapoints: FAKE_MONTH_DATA,
-    },
-    {
-        target: 'nrlink_internal_temperature_metrics',
-        datapoints: FAKE_MONTH_DATA.map((datapoint) => [datapoint[0] + 12, datapoint[1]]),
-    },
-    {
-        target: 'external_temperature_metrics',
-        datapoints: FAKE_MONTH_DATA.map((datapoint) => [datapoint[0] - 12, datapoint[1]]),
-    },
-]
+// eslint-disable-next-line jsdoc/require-jsdoc
+export const TEST_SUCCESS_WEEK_METRICS: (targets: metricTarget[]) => SnakeCasedPropertiesDeep<IMetrics> = (
+    targets: metricTarget[],
+) => getMetricsDataFromTarget(targets, FAKE_WEEK_DATA)
 
-/**
- * Success year test metrics.
- */
-export const TEST_SUCCESS_YEAR_METRICS: SnakeCasedPropertiesDeep<IMetrics> = [
-    {
-        target: 'nrlink_consumption_metrics',
-        datapoints: FAKE_YEAR_DATA,
-    },
-    {
-        target: 'nrlink_internal_temperature_metrics',
-        datapoints: FAKE_YEAR_DATA.map((datapoint) => [datapoint[0] + 12, datapoint[1]]),
-    },
-    {
-        target: 'external_temperature_metrics',
-        datapoints: FAKE_YEAR_DATA.map((datapoint) => [datapoint[0] - 12, datapoint[1]]),
-    },
-]
+// eslint-disable-next-line jsdoc/require-jsdoc
+export const TEST_SUCCESS_MONTH_METRICS: (targets: metricTarget[]) => SnakeCasedPropertiesDeep<IMetrics> = (
+    targets: metricTarget[],
+) => getMetricsDataFromTarget(targets, FAKE_MONTH_DATA)
+
+// eslint-disable-next-line jsdoc/require-jsdoc
+export const TEST_SUCCESS_YEAR_METRICS: (targets: metricTarget[]) => SnakeCasedPropertiesDeep<IMetrics> = (
+    targets: metricTarget[],
+) => getMetricsDataFromTarget(targets, FAKE_YEAR_DATA)
 
 // eslint-disable-next-line jsdoc/require-jsdoc
 export const metricsEndpoints = [
@@ -454,19 +418,20 @@ export const metricsEndpoints = [
         const fromInMilliseconds = dayjs(new Date(req.body.range.from).getTime())
         const toInMilliseconds = dayjs(new Date(req.body.range.to).getTime())
         const difference = toInMilliseconds.diff(fromInMilliseconds, 'day')
+        const targets: metricTarget[] = req.body.targets ? req.body.targets.map((target) => target.target) : []
 
         if (FAKE_DAY_INTERVAL === '1min' && difference === 1) {
-            return res(ctx.status(200), ctx.delay(1000), ctx.json(TEST_SUCCESS_DAY_METRICS))
+            return res(ctx.status(200), ctx.delay(1000), ctx.json(TEST_SUCCESS_DAY_METRICS(targets)))
         }
         if (FAKE_WEEK_INTERVAL === '1d' && difference === 7) {
-            return res(ctx.status(200), ctx.delay(1000), ctx.json(TEST_SUCCESS_WEEK_METRICS))
+            return res(ctx.status(200), ctx.delay(1000), ctx.json(TEST_SUCCESS_WEEK_METRICS(targets)))
         }
 
         if (FAKE_MONTH_INTERVAL === '1d' && difference === 31)
-            return res(ctx.status(200), ctx.delay(1000), ctx.json(TEST_SUCCESS_MONTH_METRICS))
+            return res(ctx.status(200), ctx.delay(1000), ctx.json(TEST_SUCCESS_MONTH_METRICS(targets)))
 
         if (FAKE_YEAR_INTERVAL === '1m' && difference === 365)
-            return res(ctx.status(200), ctx.delay(1000), ctx.json(TEST_SUCCESS_YEAR_METRICS))
+            return res(ctx.status(200), ctx.delay(1000), ctx.json(TEST_SUCCESS_YEAR_METRICS(targets)))
 
         return res(ctx.status(401), ctx.json(1000), ctx.json({ error: 'Error' }))
     }),

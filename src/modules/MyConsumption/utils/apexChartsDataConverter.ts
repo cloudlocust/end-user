@@ -23,7 +23,6 @@ export const defaultApexChartOptions = (theme: Theme): Props['options'] => {
                 enabled: false,
             },
         },
-
         theme: {
             // We set the theme so that the text in the chart and stuffs is updated.
             mode: theme.palette.mode === 'light' ? 'dark' : 'light',
@@ -43,10 +42,6 @@ export const defaultApexChartOptions = (theme: Theme): Props['options'] => {
             },
         },
         grid: {
-            padding: {
-                right: 8,
-                left: 8,
-            },
             show: true,
             strokeDashArray: 4,
             position: 'back',
@@ -54,13 +49,8 @@ export const defaultApexChartOptions = (theme: Theme): Props['options'] => {
             xaxis: {
                 lines: {
                     show: true,
-                },
-            },
-            yaxis: {
-                lines: {
-                    offsetX: 0,
                     offsetY: 0,
-                    show: false,
+                    offsetX: 0,
                 },
             },
         },
@@ -83,9 +73,6 @@ export const defaultApexChartOptions = (theme: Theme): Props['options'] => {
             width: 1.5,
             dashArray: 0,
         },
-        markers: {
-            colors: [theme.palette.primary.light],
-        },
     }
 }
 
@@ -97,9 +84,11 @@ const defaultYAxisLabelsFormatter =
 // eslint-disable-next-line jsdoc/require-jsdoc
 export const temperatureTitle = 'Température'
 // eslint-disable-next-line jsdoc/require-jsdoc
-export const externalTemperaturTitle = `${temperatureTitle} Extérieure`
+export const consumptionTitle = 'Consommation'
 // eslint-disable-next-line jsdoc/require-jsdoc
-export const internalTemperaturTitle = `${temperatureTitle} Intérieure`
+export const externalTemperaturTitle = 'Température Extérieure'
+// eslint-disable-next-line jsdoc/require-jsdoc
+export const internalTemperaturTitle = 'Température Intérieure'
 // eslint-disable-next-line jsdoc/require-jsdoc
 // eslint-disable-next-line jsdoc/require-jsdoc
 export const enphaseProductionTitle = 'Production Enphase'
@@ -112,9 +101,10 @@ const targetNameOptions = (
     theme: Theme,
     formatMessage: formatMessageType,
     chartType: string,
+    period: periodValue,
 ): {
     // eslint-disable-next-line jsdoc/require-jsdoc
-    [key in metricTarget]: ApexYAxis & { seriesOptions: ApexAxisChartSeries[0] }
+    [key in metricTarget]: ApexYAxis & { seriesOptions: ApexAxisChartSeries[0]; markerSize: number }
 } => ({
     nrlink_consumption_metrics: {
         seriesOptions: {
@@ -126,12 +116,7 @@ const targetNameOptions = (
             data: [],
             type: chartType,
         },
-        title: {
-            text: formatMessage({
-                id: 'Consommation',
-                defaultMessage: 'Consommation',
-            }),
-        },
+        markerSize: 0,
         axisBorder: {
             show: true,
         },
@@ -153,12 +138,7 @@ const targetNameOptions = (
             data: [],
             type: 'line',
         },
-        title: {
-            text: formatMessage({
-                id: enedisConsumptionTitle,
-                defaultMessage: enedisConsumptionTitle,
-            }),
-        },
+        markerSize: period === 1 ? 0 : 2,
         axisBorder: {
             show: true,
         },
@@ -180,12 +160,7 @@ const targetNameOptions = (
             data: [],
             type: 'line',
         },
-        title: {
-            text: formatMessage({
-                id: enphaseConsumptionTitle,
-                defaultMessage: enphaseConsumptionTitle,
-            }),
-        },
+        markerSize: period === 1 ? 0 : 2,
         axisBorder: {
             show: true,
         },
@@ -207,12 +182,7 @@ const targetNameOptions = (
             data: [],
             type: 'line',
         },
-        title: {
-            text: formatMessage({
-                id: enphaseProductionTitle,
-                defaultMessage: enphaseProductionTitle,
-            }),
-        },
+        markerSize: period === 1 ? 0 : 2,
         axisBorder: {
             show: true,
         },
@@ -232,15 +202,10 @@ const targetNameOptions = (
                 defaultMessage: externalTemperaturTitle,
             }),
             data: [],
-            color: '#0000FF',
+            color: theme.palette.secondary.main,
             type: 'line',
         },
-        title: {
-            text: formatMessage({
-                id: temperatureTitle,
-                defaultMessage: temperatureTitle,
-            }),
-        },
+        markerSize: period === 1 ? 0 : 2,
         axisTicks: {
             show: true,
         },
@@ -263,16 +228,11 @@ const targetNameOptions = (
                 id: internalTemperaturTitle,
                 defaultMessage: internalTemperaturTitle,
             }),
-            color: '#FF0000',
+            color: '#BA1B1B',
             data: [],
             type: 'line',
         },
-        title: {
-            text: formatMessage({
-                id: temperatureTitle,
-                defaultMessage: temperatureTitle,
-            }),
-        },
+        markerSize: period === 1 ? 0 : 2,
         seriesName: formatMessage({
             id: externalTemperaturTitle,
             defaultMessage: externalTemperaturTitle,
@@ -366,25 +326,31 @@ export const convertMetricsDataToApexChartsProps = ({
     let series: ApexAxisChartSeries = []
     let yAxis: ApexYAxis[] = []
     // We'll handle the case where we have same YAxis for multiple charts, for example: (external and internal temperature) we should have only one YAxis displaying values for 2 charts.
-    const apexYAxisTitles: string[] = []
+    const apexYAxisSeriesNames: string[] = []
+    const markerSizeList: number[] = []
 
     data.forEach((metric: IMetrics[0]) => {
         // eslint-disable-next-line jsdoc/require-jsdoc
         let apexChartSerieData: ApexAxisChartSeries[0]['data'] = []
         if (metric.datapoints.length > 0) apexChartSerieData = getApexSerieDataFromDatapoint(metric.datapoints)
 
-        const { seriesOptions, ...yAxisOptions } = targetNameOptions(theme, formatMessage, chartType)[metric.target]
-        if (apexYAxisTitles.includes(yAxisOptions.title!.text!!)) {
+        const { seriesOptions, markerSize, ...yAxisOptions } = targetNameOptions(
+            theme,
+            formatMessage,
+            chartType,
+            period,
+        )[metric.target]
+        if (yAxisOptions.seriesName && apexYAxisSeriesNames.includes(yAxisOptions.seriesName!)) {
             yAxisOptions.show = false
-        } else {
-            apexYAxisTitles.push(yAxisOptions.title!.text!)
         }
+        apexYAxisSeriesNames.push(seriesOptions.name!)
 
         series!.push({
             ...seriesOptions,
             data: apexChartSerieData,
         })
         yAxis.push(yAxisOptions)
+        markerSizeList.push(markerSize)
     })
 
     options.xaxis = {
@@ -392,6 +358,10 @@ export const convertMetricsDataToApexChartsProps = ({
         labels: {
             format: getXAxisLabelFormatFromPeriod(period),
         },
+    }
+    options.markers = {
+        ...options.markers,
+        size: markerSizeList,
     }
     options.yaxis = yAxis
     options.tooltip = {

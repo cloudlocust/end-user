@@ -1,6 +1,4 @@
 .apexcharts-canvas {
-    width: 100% !important;
-    height: 100% !important;
     overflow-x: auto;
     overflow-y: hidden;
     .apexcharts-text.apexcharts-xaxis-label,
@@ -8,3 +6,20 @@
         text-transform: capitalize;
     }
 }
+// YAxis colliding with grid when multiple YAxis that are opposite.
+// .apexChartsWrapper {
+//     .apexcharts-grid {
+//         .apexcharts-gridlines-vertical {
+//             .apexcharts-gridline:last-child {
+//                 display: none;
+//             }
+//         }
+//         .apexcharts-xaxis {
+//             .apexcharts-xaxis-texts-g {
+//                 .apexcharts-text.apexcharts-xaxis-label:last-child {
+//                     display: none;
+//                 }
+//             }
+//         }
+//     }
+// }

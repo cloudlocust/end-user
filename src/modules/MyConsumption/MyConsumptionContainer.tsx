@@ -11,7 +11,18 @@ import dayjs from 'dayjs'
 import { periodValue } from 'src/modules/MyConsumption/myConsumptionTypes'
 import { useMetrics } from 'src/modules/Metrics/metricsHook'
 import { MyConsumptionPeriod } from 'src/modules/MyConsumption'
+import Button from '@mui/material/Button'
+import ButtonGroup from '@mui/material/ButtonGroup'
 
+// TODO improve in 2411.
+// eslint-disable-next-line jsdoc/require-jsdoc
+const TargetButtonGroup = ({ onClick }: { onClick: () => void }) => (
+    <ButtonGroup variant="contained" aria-label="outlined primary button group">
+        <Button disabled>O</Button>
+        <Button onClick={onClick}>T°</Button>
+        <Button disabled>PMax</Button>
+    </ButtonGroup>
+)
 /**
  * InitialMetricsStates for useMetrics.
  */
@@ -36,7 +47,8 @@ export const initialMetricsHookValues: getMetricType = {
  * @returns MyConsoContainer.
  */
 export const MyConsumptionContainer = () => {
-    const { setPeriod, setRange, setFilters, isMetricsLoading, data, interval } = useMetrics(initialMetricsHookValues)
+    const { setPeriod, setRange, addTarget, removeTarget, setFilters, isMetricsLoading, data, interval } =
+        useMetrics(initialMetricsHookValues)
     const [periodValue, setPeriodValue] = useState<periodValue>(1)
     const { elementList: metersList } = useMeterList()
     const theme = useTheme()
@@ -95,6 +107,15 @@ export const MyConsumptionContainer = () => {
                 {metersList && metersList?.length > 1 && (
                     <MyConsumptionSelectMeters setFilters={setFilters} metersList={metersList} />
                 )}
+            </div>
+            <div className="my-16 flex justify-center">
+                <TargetButtonGroup
+                    onClick={() => {
+                        removeTarget('enedis_consumption_metrics')
+                        addTarget('nrlink_internal_temperature_metrics')
+                        addTarget('external_temperature_metrics')
+                    }}
+                />
             </div>
 
             <MyConsumptionChart
