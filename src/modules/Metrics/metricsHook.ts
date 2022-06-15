@@ -91,14 +91,15 @@ export function useMetrics(initialState: getMetricType) {
 
             // Used Promise.allSettled() instead of Promise.all to return a promise that resolves after all of the given requests have either been fulfilled or rejected.
             // Because Promise.all() throws only when the first promise you pass it rejects and it returns only that rejection.
-            const result = await Promise.allSettled([
+            const [nrlinkConsent, enedisConsent] = await Promise.allSettled([
                 axios.get<INrlinkConsent>(`${NRLINK_CONSENT_API}?meter_guid=${meterGuidValue}`),
                 axios.get<IEnedisConsent>(`${ENEDIS_CONSENT_API}?meter_guid=${meterGuidValue}`),
             ])
 
             // If the promise status is "fulfilled" it returns value
             // If it's "rejetected" it returns reason
-            const [nrlinkConsent, enedisConsent] = await Promise.all(result)
+
+            // Nrlink consent.
             if (nrlinkConsent.status === 'fulfilled') {
                 setNrlinkConsent(nrlinkConsent.value?.data)
             }
@@ -110,6 +111,7 @@ export function useMetrics(initialState: getMetricType) {
                 })
             }
 
+            // Enedis consent.
             if (enedisConsent.status === 'fulfilled') {
                 setEnedisConsent(enedisConsent.value?.data)
             }
