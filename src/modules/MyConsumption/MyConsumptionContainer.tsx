@@ -1,18 +1,22 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
-import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
-import { useMeterList } from 'src/modules/Meters/metersHook'
-import MyConsumptionChart from './components/MyConsumptionChart/MyConsumptionChart'
-import { useTheme } from '@mui/material'
-import { formatMetricFilter } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
-import { MyConsumptionSelectMeters } from 'src/modules/MyConsumption'
-import { getMetricType } from 'src/modules/Metrics/Metrics'
-import dayjs from 'dayjs'
-import { periodValue } from 'src/modules/MyConsumption/myConsumptionTypes'
+import {
+    formatMetricFilter,
+    MyConsumptionChart,
+    MyConsumptionSelectMeters,
+    MyConsumptionPeriod,
+} from 'src/modules/MyConsumption'
 import { useMetrics } from 'src/modules/Metrics/metricsHook'
-import { MyConsumptionPeriod } from 'src/modules/MyConsumption'
 import Button from '@mui/material/Button'
 import ButtonGroup from '@mui/material/ButtonGroup'
+import { getMetricType, periodValue } from 'src/modules/Metrics/Metrics'
+import dayjs from 'dayjs'
+import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
+import { Typography } from '@mui/material'
+import { Link } from 'react-router-dom'
+import { useTheme } from '@mui/material'
+import { useMeterList } from 'src/modules/Meters/metersHook'
+import Icon from '@mui/material/Icon'
 
 // TODO improve in 2411.
 // eslint-disable-next-line jsdoc/require-jsdoc
@@ -47,9 +51,20 @@ export const initialMetricsHookValues: getMetricType = {
  * @returns MyConsoContainer.
  */
 export const MyConsumptionContainer = () => {
-    const { setPeriod, setRange, addTarget, removeTarget, setFilters, isMetricsLoading, data, interval } =
-        useMetrics(initialMetricsHookValues)
+    const {
+        setPeriod,
+        setRange,
+        setFilters,
+        isMetricsLoading,
+        data,
+        interval,
+        nrlinkConsent,
+        enedisConsent,
+        addTarget,
+        removeTarget,
+    } = useMetrics(initialMetricsHookValues)
     const [periodValue, setPeriodValue] = useState<periodValue>(1)
+    const [isConsentError, setIsConsentError] = useState(false)
     const { elementList: metersList } = useMeterList()
     const theme = useTheme()
 
@@ -57,6 +72,18 @@ export const MyConsumptionContainer = () => {
         if (!metersList) return
         if (metersList.length === 1) setFilters(formatMetricFilter(metersList[0].guid))
     }, [metersList, setFilters])
+
+    useEffect(() => {
+        if (
+            nrlinkConsent?.nrlinkConsentState === 'NONEXISTENT' &&
+            enedisConsent?.enedisConsentState === 'NONEXISTENT'
+        ) {
+            setIsConsentError(true)
+        } else {
+            setIsConsentError(false)
+        }
+    }, [enedisConsent?.enedisConsentState, nrlinkConsent?.nrlinkConsentState])
+
     /**
      * Show text according to interval.
      *
@@ -76,13 +103,31 @@ export const MyConsumptionContainer = () => {
         }
     }
 
+    if (isConsentError) {
+        return (
+            <div className="container relative h-200 sm:h-256 p-16 sm:p-24 flex-col text-center flex items-center justify-center">
+                <>
+                    <Icon style={{ fontSize: '4rem', marginBottom: '1rem', color: theme.palette.secondary.main }}>
+                        error_outline_outlined
+                    </Icon>
+                </>
+                <Typography>
+                    Pour voir votre consommation vous devez d'abord{' '}
+                    <Link to="/nrlink-connection-steps" className="underline">
+                        enregistrer votre compteur et votre nrLink
+                    </Link>
+                </Typography>
+            </div>
+        )
+    }
+
     return (
         <div style={{ background: theme.palette.primary.main }} className="p-24">
             <div className="relative flex flex-col md:flex-row justify-between items-center">
                 <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mb-16 md:mb-0">
                     <div className="flex flex-col md:flex-row items-center">
                         <TypographyFormatMessage
-                            variant="h4"
+                            variant="h5"
                             className="sm:mr-8"
                             style={{ color: theme.palette.primary.contrastText }}
                         >

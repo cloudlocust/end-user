@@ -40,6 +40,14 @@ let mockHookArguments: getMetricType = {
     addHookFilters: [],
 }
 
+const FILTERS_TEST = [
+    {
+        key: 'meter_guid',
+        operator: '=',
+        value: '12345',
+    },
+]
+
 describe('useMetrics hook test', () => {
     // TODO Fix in Amine-2452
     test('When the hook is called with default values', async () => {
@@ -88,6 +96,22 @@ describe('useMetrics hook test', () => {
         })
     }, 8000)
 
+    test('When setFilters is triggered, filters state change', async () => {
+        const {
+            renderedHook: { result, waitForValueToChange },
+        } = reduxedRenderHook(() => useMetrics(mockHookArguments))
+
+        act(() => {
+            result.current.setFilters(FILTERS_TEST)
+        })
+        await waitForValueToChange(
+            () => {
+                return result.current.isMetricsLoading
+            },
+            { timeout: 10000 },
+        )
+        expect(result.current.filters).toStrictEqual(FILTERS_TEST)
+    }, 20000)
     test('When add and remove target, targets should change and getMetrics should work', async () => {
         mockHookArguments.targets = []
         mockHookArguments.interval = '1d'
