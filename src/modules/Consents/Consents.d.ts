@@ -1,14 +1,4 @@
 /**
- * Nrlink consent type.
- */
-export type nrlinkConsent = 'PENDING' | 'ACTIVE' | 'EXPIRED' | 'NONEXISTENT'
-
-/**
- * Enedis consent type.
- */
-export type enedisConsent = 'PENDING' | 'ACTIVE' | 'EXPIRED' | 'NONEXISTENT' | null
-
-/**
  * Nrlink Consent Status.
  */
 export type nrlinkConsentStatus = 'NONEXISTENT' | 'CONNECTED' | 'DISCONNECTED' | 'EXPIRED'

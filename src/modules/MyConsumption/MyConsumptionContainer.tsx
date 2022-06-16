@@ -7,7 +7,7 @@ import {
     MyConsumptionPeriod,
 } from 'src/modules/MyConsumption/'
 import { useMetrics } from 'src/modules/Metrics/metricsHook'
-import { getMetricType, periodValue } from 'src/modules/Metrics/Metrics'
+import { getMetricType } from 'src/modules/Metrics/Metrics'
 import dayjs from 'dayjs'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import { Typography } from '@mui/material'
@@ -15,6 +15,8 @@ import { Link } from 'react-router-dom'
 import { useTheme } from '@mui/material'
 import { useMeterList } from 'src/modules/Meters/metersHook'
 import Icon from '@mui/material/Icon'
+import { periodValue } from './myConsumptionTypes'
+import { useIntl } from 'react-intl'
 
 /**
  * InitialMetricsStates for useMetrics.
@@ -39,29 +41,18 @@ export const initialMetricsHookValues: getMetricType = {
  *
  * @returns MyConsoContainer.
  */
-export const MyConsumptionContainer = () => {
+export const MyConsumptionContainer = (): JSX.Element => {
     const { setPeriod, setRange, setFilters, isMetricsLoading, data, interval, nrlinkConsent, enedisConsent } =
         useMetrics(initialMetricsHookValues)
     const [periodValue, setPeriodValue] = useState<periodValue>(1)
-    const [isConsentError, setIsConsentError] = useState(false)
     const { elementList: metersList } = useMeterList()
     const theme = useTheme()
+    const { formatMessage } = useIntl()
 
     useEffect(() => {
         if (!metersList) return
         if (metersList.length === 1) setFilters(formatMetricFilter(metersList[0].guid))
     }, [metersList, setFilters])
-
-    useEffect(() => {
-        if (
-            nrlinkConsent?.nrlinkConsentState === 'NONEXISTENT' &&
-            enedisConsent?.enedisConsentState === 'NONEXISTENT'
-        ) {
-            setIsConsentError(true)
-        } else {
-            setIsConsentError(false)
-        }
-    }, [enedisConsent?.enedisConsentState, nrlinkConsent?.nrlinkConsentState])
 
     /**
      * Show text according to interval.
@@ -82,7 +73,7 @@ export const MyConsumptionContainer = () => {
         }
     }
 
-    if (isConsentError) {
+    if (nrlinkConsent?.nrlinkConsentState === 'NONEXISTENT' && enedisConsent?.enedisConsentState === 'NONEXISTENT') {
         return (
             <div className="container relative h-200 sm:h-256 p-16 sm:p-24 flex-col text-center flex items-center justify-center">
                 <>
@@ -91,9 +82,15 @@ export const MyConsumptionContainer = () => {
                     </Icon>
                 </>
                 <Typography>
-                    Pour voir votre consommation vous devez d'abord{' '}
+                    {formatMessage({
+                        id: "Pour voir votre consommation vous devez d'abord ",
+                        defaultMessage: "Pour voir votre consommation vous devez d'abord ",
+                    })}
                     <Link to="/nrlink-connection-steps" className="underline">
-                        enregistrer votre compteur et votre nrLink
+                        {formatMessage({
+                            id: 'enregistrer votre compteur et votre nrLink',
+                            defaultMessage: 'enregistrer votre compteur et votre nrLink',
+                        })}
                     </Link>
                 </Typography>
             </div>
