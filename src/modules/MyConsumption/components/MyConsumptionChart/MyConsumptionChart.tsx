@@ -45,7 +45,7 @@ const MyConsumptionChart = ({
         isMobile,
     })
     return (
-        <div className={`w-full ${(period === 7 || period === 30) && 'apexChartsWrapper'}`}>
+        <div className={`w-full ${period === 30 && 'apexChartsWrapper'}`}>
             <ReactApexChart {...reactApexChartsProps} data-testid="apexcharts" width={'100%'} height={320} />
         </div>
     )

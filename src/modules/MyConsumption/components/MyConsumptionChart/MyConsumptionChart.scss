@@ -1,3 +1,5 @@
+@import 'src/common/ui-kit/styles/media.scss';
+
 .apexcharts-canvas {
     overflow-x: auto;
     overflow-y: hidden;
@@ -6,20 +8,19 @@
         text-transform: capitalize;
     }
 }
-// YAxis colliding with grid when multiple YAxis that are opposite.
-// .apexChartsWrapper {
-//     .apexcharts-grid {
-//         .apexcharts-gridlines-vertical {
-//             .apexcharts-gridline:last-child {
-//                 display: none;
-//             }
-//         }
-//         .apexcharts-xaxis {
-//             .apexcharts-xaxis-texts-g {
-//                 .apexcharts-text.apexcharts-xaxis-label:last-child {
-//                     display: none;
-//                 }
-//             }
-//         }
-//     }
-// }
+.apexChartsWrapper {
+    .apexcharts-xaxis {
+        .apexcharts-text.apexcharts-xaxis-label:nth-child(4n + 2),
+        .apexcharts-text.apexcharts-xaxis-label:nth-child(4n + 3) {
+            display: none;
+        }
+        @include sm {
+            .apexcharts-text.apexcharts-xaxis-label:nth-child(2n) {
+                display: none;
+            }
+            .apexcharts-text.apexcharts-xaxis-label:nth-child(2n + 1) {
+                display: inline;
+            }
+        }
+    }
+}
