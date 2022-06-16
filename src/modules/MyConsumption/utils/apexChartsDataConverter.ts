@@ -23,6 +23,9 @@ export const defaultApexChartOptions = (theme: Theme): Props['options'] => {
                 enabled: false,
             },
         },
+        legend: {
+            show: false,
+        },
         theme: {
             // We set the theme so that the text in the chart and stuffs is updated.
             mode: theme.palette.mode === 'light' ? 'dark' : 'light',
