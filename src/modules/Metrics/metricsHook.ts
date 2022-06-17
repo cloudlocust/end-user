@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { API_RESOURCES_URL } from 'src/configs'
 import {
     getMetricType,
@@ -32,15 +32,13 @@ export function useMetrics(initialState: getMetricType) {
     const [metricsInterval, setMetricsInterval] = useState<metricIntervalType>(initialState.interval)
     const [targets, setTargets] = useState<metricTargetsType>(initialState.targets)
     const [filters, setFilters] = useState<metricFiltersType>(initialState.filters ? initialState.filters : [])
-    const isInitialMount = useRef(false)
 
     // Useeffect is called whenever the hook is instantiated or whenever the dependencies changes.
     useEffect(() => {
-        isInitialMount.current = true
         /**
          * Get Metrics function: Everytime filters or range or interval or targets or metricsInterval has changed, it triggers the function call.
          */
-        async function getMetrics() {
+        ;(async () => {
             setIsMetricsLoading(true)
             try {
                 const response = await axios.post(METRICS_API, {
@@ -64,16 +62,7 @@ export function useMetrics(initialState: getMetricType) {
                 )
             }
             setIsMetricsLoading(false)
-        }
-
-        if (isInitialMount.current) {
-            getMetrics()
-        }
-
-        // Return here is to replicate componentDidUnmount
-        return () => {
-            isInitialMount.current = false
-        }
+        })()
     }, [enqueueSnackbar, filters, formatMessage, metricsInterval, range, targets])
 
     return {
