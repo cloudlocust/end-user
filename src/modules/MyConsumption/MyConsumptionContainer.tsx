@@ -8,8 +8,7 @@ import { getMetricType } from 'src/modules/Metrics/Metrics'
 import dayjs from 'dayjs'
 import { periodValue } from 'src/modules/MyConsumption/myConsumptionTypes'
 import { useMetrics } from 'src/modules/Metrics/metricsHook'
-import { MyConsumptionPeriod } from 'src/modules/MyConsumption'
-import { MyConsumptionSelectMeters } from './components/MyConsumptionSelectMeters/MyConsumptionSelectMeters'
+import { MyConsumptionPeriod, MyConsumptionSelectMeters } from 'src/modules/MyConsumption'
 
 /**
  * InitialMetricsStates for useMetrics.
