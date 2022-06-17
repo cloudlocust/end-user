@@ -34,8 +34,9 @@ export const initialMetricsHookValues: getMetricType = {
  * @returns MyConsumptionContainer and its children.
  */
 export const MyConsumptionContainer = () => {
-    const { setPeriod, setRange, setFilters, isMetricsLoading, data, interval } = useMetrics(initialMetricsHookValues)
-    const [periodValue, setPeriodValue] = useState<periodValue>(1)
+    const { setMetricInterval, setRange, setFilters, isMetricsLoading, data, interval } =
+        useMetrics(initialMetricsHookValues)
+    const [periodValue, setPeriod] = useState<periodValue>(1)
 
     /**
      * Show text according to interval.
@@ -88,7 +89,7 @@ export const MyConsumptionContainer = () => {
             />
 
             {/* TODO: MYEM-2425 */}
-            <MyConsumptionPeriod setPeriod={setPeriod} setRange={setRange} setPeriodValue={setPeriodValue} />
+            <MyConsumptionPeriod setMetricInterval={setMetricInterval} setRange={setRange} setPeriod={setPeriod} />
         </>
     )
 }

@@ -9,7 +9,7 @@ import { MyConsumptionPeriod } from 'src/modules/MyConsumption'
  * We will test This component if he render and switch content correctly.
  */
 const SELECTED_CLASSNAME = 'Mui-selected'
-let mockSetPeriodValue = jest.fn()
+let mockSetMetricInterval = jest.fn()
 let mockSetPeriod = jest.fn()
 let mockSetRange = jest.fn()
 
@@ -19,8 +19,8 @@ describe('load MyConsumptionPeriod', () => {
             <Router>
                 <MyConsumptionPeriod
                     setPeriod={mockSetPeriod}
-                    setPeriodValue={mockSetPeriodValue}
                     setRange={mockSetRange}
+                    setMetricInterval={mockSetMetricInterval}
                 />
             </Router>,
         )
@@ -34,8 +34,8 @@ describe('load MyConsumptionPeriod', () => {
         expect(getByText(dataConsumptionPeriod[2].name).classList.contains(SELECTED_CLASSNAME)).toBeFalsy()
 
         await waitFor(() => {
-            expect(mockSetPeriod).toHaveBeenCalledWith(dataConsumptionPeriod[1].interval)
-            expect(mockSetPeriodValue).toHaveBeenCalledWith(dataConsumptionPeriod[1].period)
+            expect(mockSetPeriod).toHaveBeenCalledWith(dataConsumptionPeriod[1].period)
+            expect(mockSetMetricInterval).toHaveBeenCalledWith(dataConsumptionPeriod[1].interval)
             expect(mockSetRange).toHaveBeenCalledWith(dataConsumptionPeriod[1].range)
         })
     })

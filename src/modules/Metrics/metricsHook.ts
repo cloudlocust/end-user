@@ -29,7 +29,7 @@ export function useMetrics(initialState: getMetricType) {
     const [isMetricsLoading, setIsMetricsLoading] = useState(false)
     const [data, setData] = useState<IMetrics | []>([])
     const [range, setRange] = useState<metricRange>(initialState.range)
-    const [interval, setPeriod] = useState<metricInterval>(initialState.interval)
+    const [interval, setMetricInterval] = useState<metricInterval>(initialState.interval)
     const [targets, setTargets] = useState<metricTargets>(initialState.targets)
     const [filters, setFilters] = useState<metricFilters>(initialState.filters ? initialState.filters : [])
     const isInitialMount = useRef(false)
@@ -84,7 +84,7 @@ export function useMetrics(initialState: getMetricType) {
         interval,
         filters,
         setData,
-        setPeriod,
+        setMetricInterval,
         setFilters,
         setRange,
         setTargets,
