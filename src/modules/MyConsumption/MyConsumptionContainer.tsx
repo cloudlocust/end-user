@@ -35,10 +35,11 @@ export const initialMetricsHookValues: getMetricType = {
  * @returns MyConsumptionContainer and its children.
  */
 export const MyConsumptionContainer = () => {
-    const { setPeriod, setRange, setFilters, isMetricsLoading, data, interval } = useMetrics(initialMetricsHookValues)
-    const [periodValue, setPeriodValue] = useState<periodValue>(1)
     const { elementList: metersList } = useMeterList()
     const theme = useTheme()
+    const { setMetricInterval, setRange, setFilters, isMetricsLoading, data, interval } =
+        useMetrics(initialMetricsHookValues)
+    const [periodValue, setPeriod] = useState<periodValue>(1)
 
     useEffect(() => {
         if (!metersList) return
@@ -112,7 +113,9 @@ export const MyConsumptionContainer = () => {
                 data={data}
                 chartType={interval === '1min' ? 'area' : 'bar'}
             />
-            <MyConsumptionPeriod setPeriod={setPeriod} setRange={setRange} setPeriodValue={setPeriodValue} />
+
+            {/* TODO: MYEM-2425 */}
+            <MyConsumptionPeriod setMetricInterval={setMetricInterval} setRange={setRange} setPeriod={setPeriod} />
         </>
     )
 }
