@@ -1,6 +1,6 @@
 import { reduxedRenderHook } from 'src/common/react-platform-components/test'
 import { useMetrics } from 'src/modules/Metrics/metricsHook'
-import { getMetricType, metricRange, metricTargets } from 'src/modules/Metrics/Metrics'
+import { getMetricType, metricRangeType, metricTargetsType } from 'src/modules/Metrics/Metrics'
 
 const mockEnqueueSnackbar = jest.fn()
 
@@ -19,12 +19,12 @@ jest.mock('notistack', () => ({
     }),
 }))
 
-const FAKE_RANGE: metricRange = {
+const FAKE_RANGE: metricRangeType = {
     from: '2022-06-04T22:00:00.000Z',
     to: '2022-06-05T23:26:59.169Z',
 }
 
-const FAKE_TARGETS: metricTargets = [
+const FAKE_TARGETS: metricTargetsType = [
     {
         target: 'nrlink_consumption_metrics',
         type: 'timeseries',
@@ -46,7 +46,7 @@ describe('useMetrics hook test', () => {
 
         const currentResult = result.current
         expect(currentResult.isMetricsLoading).toStrictEqual(true)
-        expect(currentResult.interval).toStrictEqual('1min')
+        expect(currentResult.metricsInterval).toStrictEqual('1min')
         expect(currentResult.range).toStrictEqual(FAKE_RANGE)
         expect(currentResult.targets).toStrictEqual(FAKE_TARGETS)
         expect(currentResult.filters).toStrictEqual([])

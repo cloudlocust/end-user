@@ -2,11 +2,11 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { API_RESOURCES_URL } from 'src/configs'
 import {
     getMetricType,
-    metricInterval,
-    metricTargets,
+    metricIntervalType,
+    metricTargetsType,
     IMetrics,
-    metricRange,
-    metricFilters,
+    metricRangeType,
+    metricFiltersType,
 } from 'src/modules/Metrics/Metrics'
 import { useSnackbar } from 'notistack'
 import { useIntl } from 'react-intl'
@@ -28,10 +28,10 @@ export function useMetrics(initialState: getMetricType) {
     const { formatMessage } = useIntl()
     const [isMetricsLoading, setIsMetricsLoading] = useState(false)
     const [data, setData] = useState<IMetrics | []>([])
-    const [range, setRange] = useState<metricRange>(initialState.range)
-    const [interval, setPeriod] = useState<metricInterval>(initialState.interval)
-    const [targets, setTargets] = useState<metricTargets>(initialState.targets)
-    const [filters, setFilters] = useState<metricFilters>(initialState.filters ? initialState.filters : [])
+    const [range, setRange] = useState<metricRangeType>(initialState.range)
+    const [metricsInterval, setMetricsInterval] = useState<metricIntervalType>(initialState.interval)
+    const [targets, setTargets] = useState<metricTargetsType>(initialState.targets)
+    const [filters, setFilters] = useState<metricFiltersType>(initialState.filters ? initialState.filters : [])
     const isInitialMount = useRef(false)
 
     /**
@@ -41,7 +41,7 @@ export function useMetrics(initialState: getMetricType) {
         setIsMetricsLoading(true)
         try {
             const response = await axios.post(METRICS_API, {
-                interval,
+                interval: metricsInterval,
                 range,
                 targets,
                 adHocFilters: filters,
@@ -61,7 +61,7 @@ export function useMetrics(initialState: getMetricType) {
             )
         }
         setIsMetricsLoading(false)
-    }, [interval, range, targets, filters, enqueueSnackbar, formatMessage])
+    }, [metricsInterval, range, targets, filters, enqueueSnackbar, formatMessage])
 
     // Useeffect is called whenever the hook is instantiated or whenever the dependencies changes.
     useEffect(() => {
@@ -81,10 +81,10 @@ export function useMetrics(initialState: getMetricType) {
         data,
         targets,
         range,
-        interval,
+        metricsInterval,
         filters,
         setData,
-        setPeriod,
+        setMetricsInterval,
         setFilters,
         setRange,
         setTargets,

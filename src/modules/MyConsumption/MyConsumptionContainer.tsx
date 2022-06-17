@@ -4,7 +4,7 @@ import { MyConsumptionChart } from 'src/modules/MyConsumption/components/MyConsu
 import { MyConsumptionSelectMeters } from 'src/modules/MyConsumption/components/MyConsumptionSelectMeters'
 import { MyConsumptionPeriod } from 'src/modules/MyConsumption/components/MyConsumptionPeriod'
 import { useMetrics } from 'src/modules/Metrics/metricsHook'
-import { getMetricType, periodValue } from 'src/modules/Metrics/Metrics'
+import { getMetricType, periodValueType } from 'src/modules/Metrics/Metrics'
 import dayjs from 'dayjs'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 
@@ -33,8 +33,9 @@ export const initialMetricsHookValues: getMetricType = {
  * @returns MyConsumptionContainer and its children.
  */
 export const MyConsumptionContainer = () => {
-    const { setPeriod, setRange, setFilters, isMetricsLoading, data, interval } = useMetrics(initialMetricsHookValues)
-    const [periodValue, setPeriodValue] = useState<periodValue>(1)
+    const { setMetricsInterval, setRange, setFilters, isMetricsLoading, data, metricsInterval } =
+        useMetrics(initialMetricsHookValues)
+    const [period, setPeriod] = useState<periodValueType>(1)
 
     /**
      * Show text according to interval.
@@ -42,13 +43,13 @@ export const MyConsumptionContainer = () => {
      * @returns Text that represents the interval.
      */
     const showPerPeriodText = () => {
-        if (periodValue === 1) {
+        if (period === 1) {
             return 'par jour'
-        } else if (periodValue === 7) {
+        } else if (period === 7) {
             return 'par semaine'
-        } else if (periodValue === 30) {
+        } else if (period === 30) {
             return 'par mois'
-        } else if (periodValue === 365) {
+        } else if (period === 365) {
             return 'par année'
         } else {
             throw Error('PeriodValue not set')
@@ -83,11 +84,11 @@ export const MyConsumptionContainer = () => {
             <MyConsumptionChart
                 isMetricsLoading={isMetricsLoading}
                 data={data}
-                chartType={interval === '1min' ? 'area' : 'bar'}
+                chartType={metricsInterval === '1min' ? 'area' : 'bar'}
             />
 
             {/* TODO: MYEM-2425 */}
-            <MyConsumptionPeriod setPeriod={setPeriod} setRange={setRange} setPeriodValue={setPeriodValue} />
+            <MyConsumptionPeriod setPeriod={setPeriod} setRange={setRange} setMetricsInterval={setMetricsInterval} />
         </>
     )
 }
