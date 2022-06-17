@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { API_RESOURCES_URL } from 'src/configs'
 import {
     getMetricType,
@@ -34,38 +34,38 @@ export function useMetrics(initialState: getMetricType) {
     const [filters, setFilters] = useState<metricFiltersType>(initialState.filters ? initialState.filters : [])
     const isInitialMount = useRef(false)
 
-    /**
-     * Get Metrics function: Everytime filters or range or interval or targets has changed, it triggers the function call.
-     */
-    const getMetrics = useCallback(async () => {
-        setIsMetricsLoading(true)
-        try {
-            const response = await axios.post(METRICS_API, {
-                interval: metricsInterval,
-                range,
-                targets,
-                adHocFilters: filters,
-            })
-            setData(response.data)
-        } catch (error) {
-            setIsMetricsLoading(false)
-            enqueueSnackbar(
-                formatMessage({
-                    id: 'Erreur de chargement de vos données de consommation',
-                    defaultMessage: 'Erreur de chargement de vos données de consommation',
-                }),
-                {
-                    variant: 'error',
-                    autoHideDuration: 5000,
-                },
-            )
-        }
-        setIsMetricsLoading(false)
-    }, [metricsInterval, range, targets, filters, enqueueSnackbar, formatMessage])
-
     // Useeffect is called whenever the hook is instantiated or whenever the dependencies changes.
     useEffect(() => {
         isInitialMount.current = true
+        /**
+         * Get Metrics function: Everytime filters or range or interval or targets or metricsInterval has changed, it triggers the function call.
+         */
+        async function getMetrics() {
+            setIsMetricsLoading(true)
+            try {
+                const response = await axios.post(METRICS_API, {
+                    interval: metricsInterval,
+                    range,
+                    targets,
+                    adHocFilters: filters,
+                })
+                setData(response.data)
+            } catch (error) {
+                setIsMetricsLoading(false)
+                enqueueSnackbar(
+                    formatMessage({
+                        id: 'Erreur de chargement de vos données de consommation',
+                        defaultMessage: 'Erreur de chargement de vos données de consommation',
+                    }),
+                    {
+                        variant: 'error',
+                        autoHideDuration: 5000,
+                    },
+                )
+            }
+            setIsMetricsLoading(false)
+        }
+
         if (isInitialMount.current) {
             getMetrics()
         }
@@ -74,7 +74,7 @@ export function useMetrics(initialState: getMetricType) {
         return () => {
             isInitialMount.current = false
         }
-    }, [getMetrics])
+    }, [enqueueSnackbar, filters, formatMessage, metricsInterval, range, targets])
 
     return {
         isMetricsLoading,
@@ -88,6 +88,5 @@ export function useMetrics(initialState: getMetricType) {
         setFilters,
         setRange,
         setTargets,
-        getMetrics,
     }
 }
