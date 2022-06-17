@@ -8,8 +8,8 @@ import { getMetricType } from 'src/modules/Metrics/Metrics'
 import dayjs from 'dayjs'
 import { periodValue } from 'src/modules/MyConsumption/myConsumptionTypes'
 import { useMetrics } from 'src/modules/Metrics/metricsHook'
-import { MyConsumptionPeriod, MyConsumptionSelectMeters } from 'src/modules/MyConsumption'
-
+import { MyConsumptionPeriod, SelectMeters } from 'src/modules/MyConsumption'
+import { SelectChangeEvent, useTheme } from '@mui/material'
 /**
  * InitialMetricsStates for useMetrics.
  */
@@ -38,6 +38,7 @@ export const MyConsumptionContainer = () => {
     const { setPeriod, setRange, setFilters, isMetricsLoading, data, interval } = useMetrics(initialMetricsHookValues)
     const [periodValue, setPeriodValue] = useState<periodValue>(1)
     const { elementList: metersList } = useMeterList()
+    const theme = useTheme()
 
     useEffect(() => {
         if (!metersList) return
@@ -59,6 +60,20 @@ export const MyConsumptionContainer = () => {
             return 'par année'
         } else {
             throw Error('PeriodValue not set')
+        }
+    }
+    /**
+     * HandleOnChange function.
+     *
+     * @param event HandleOnChange event.
+     * @param setSelectedMeter Set Selected Meter on value change.
+     */
+    const handleOnChange = (event: SelectChangeEvent, setSelectedMeter: (value: string) => void) => {
+        setSelectedMeter(event.target.value)
+        if (event.target.value === 'allMeters') {
+            setFilters([])
+        } else {
+            setFilters(formatMetricFilter(event.target.value))
         }
     }
 
@@ -83,7 +98,12 @@ export const MyConsumptionContainer = () => {
                     </div>
                 </motion.div>
                 {metersList && metersList?.length > 1 && (
-                    <MyConsumptionSelectMeters setFilters={setFilters} metersList={metersList} />
+                    <SelectMeters
+                        metersList={metersList}
+                        handleOnChange={handleOnChange}
+                        inputTextColor={theme.palette.primary.contrastText}
+                        inputColor={theme.palette.primary.contrastText}
+                    />
                 )}
             </div>
             {/* TODO: MYEM-2422 */}
