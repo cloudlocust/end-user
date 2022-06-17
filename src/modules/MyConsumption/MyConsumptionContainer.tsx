@@ -23,11 +23,11 @@ export const initialMetricsHookValues: getMetricType = {
             type: 'timeseries',
         },
     ],
-    addHookFilters: [],
+    filters: [],
 }
 
 /**
- * MyConsoContainer. Parent component.
+ * MyConsumptionContainer. Parent component.
  *
  * @returns MyConsoContainer.
  */

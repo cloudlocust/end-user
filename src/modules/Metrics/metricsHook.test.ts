@@ -35,7 +35,7 @@ let mockHookArguments: getMetricType = {
     interval: '1min',
     range: FAKE_RANGE,
     targets: FAKE_TARGETS,
-    addHookFilters: [],
+    filters: [],
 }
 
 describe('useMetrics hook test', () => {

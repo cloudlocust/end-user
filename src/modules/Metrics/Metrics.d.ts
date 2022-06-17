@@ -99,7 +99,7 @@ export type getMetricType = {
     /**
      * Metric filters.
      */
-    addHookFilters?: metricFilters
+    filters?: metricFilters
 }
 
 /**
