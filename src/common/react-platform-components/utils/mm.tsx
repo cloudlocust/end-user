@@ -56,6 +56,8 @@ export const axios = applyCaseMiddleware(baseAxios, {
                 .toLowerCase()
         },
     },
+    // TODO, find a way to make add additional options without having to add it here directly since it's in common.
+    preservedKeys: ['adhocFilters'],
 }) as AxiosStatic
 
 /**
