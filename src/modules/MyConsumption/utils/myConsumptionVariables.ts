@@ -1,4 +1,5 @@
 import dayjs from 'dayjs'
+import { metricTarget } from 'src/modules/Metrics/Metrics'
 import { periodValue } from 'src/modules/MyConsumption/myConsumptionTypes'
 /**
  * Function to get range.
@@ -41,4 +42,24 @@ export const dataConsumptionPeriod = [
         range: getRange('year'),
         period: 365 as periodValue,
     },
+]
+/**
+ *  Button options.
+ */
+export const buttonOptions = [
+    { value: 'reset', label: '∅', targets: [] },
+    {
+        value: 'temperature',
+        label: 'T°',
+        targets: ['nrlink_internal_temperature_metrics', 'external_temperature_metrics'],
+    },
+    { value: 'Pmax', label: 'Pmax', targets: ['enedis_max_power'] },
+]
+/**
+ * Target options.
+ */
+export const targetOptions: metricTarget[] = [
+    'nrlink_internal_temperature_metrics',
+    'external_temperature_metrics',
+    'enedis_max_power',
 ]

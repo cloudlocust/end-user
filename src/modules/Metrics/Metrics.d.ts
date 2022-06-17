@@ -8,7 +8,7 @@ export type metricTarget =
     | 'enphase_production_metrics'
     | 'external_temperature_metrics'
     | 'nrlink_internal_temperature_metrics'
-
+    | 'enedis_max_power'
 /**
  * Metrics intervals.
  */

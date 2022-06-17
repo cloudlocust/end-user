@@ -5,10 +5,9 @@ import {
     MyConsumptionChart,
     MyConsumptionSelectMeters,
     MyConsumptionPeriod,
+    TargetButtonGroup,
 } from 'src/modules/MyConsumption'
 import { useMetrics } from 'src/modules/Metrics/metricsHook'
-import Button from '@mui/material/Button'
-import ButtonGroup from '@mui/material/ButtonGroup'
 import { getMetricType, periodValue } from 'src/modules/Metrics/Metrics'
 import dayjs from 'dayjs'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
@@ -18,15 +17,6 @@ import { useTheme } from '@mui/material'
 import { useMeterList } from 'src/modules/Meters/metersHook'
 import Icon from '@mui/material/Icon'
 
-// TODO improve in 2411.
-// eslint-disable-next-line jsdoc/require-jsdoc
-const TargetButtonGroup = ({ onClick }: { onClick: () => void }) => (
-    <ButtonGroup variant="contained" aria-label="outlined primary button group">
-        <Button disabled>O</Button>
-        <Button onClick={onClick}>T°</Button>
-        <Button disabled>PMax</Button>
-    </ButtonGroup>
-)
 /**
  * InitialMetricsStates for useMetrics.
  */
@@ -154,13 +144,7 @@ export const MyConsumptionContainer = () => {
                 )}
             </div>
             <div className="my-16 flex justify-center">
-                <TargetButtonGroup
-                    onClick={() => {
-                        removeTarget('enedis_consumption_metrics')
-                        addTarget('nrlink_internal_temperature_metrics')
-                        addTarget('external_temperature_metrics')
-                    }}
-                />
+                <TargetButtonGroup removeTarget={removeTarget} addTarget={addTarget} hidePmax={periodValue === 1} />
             </div>
 
             <MyConsumptionChart

@@ -256,6 +256,15 @@ const targetNameOptions = (
             formatter: (value: number) => `${value} °C`,
         },
     },
+    enedis_max_power: {
+        seriesOptions: {
+            name: 'Pmax',
+            color: '#BA1B1B',
+            data: [],
+            type: 'line',
+        },
+        markerSize: 1,
+    },
 })
 
 /**

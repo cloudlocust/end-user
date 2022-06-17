@@ -33,3 +33,20 @@ interface IMyConsumptionSelectMeters {
      */
     setFilters: (value: metricFilters) => void
 }
+/**
+ * Interface for TargetButtonGroup.
+ */
+interface ITargetButtonGroup {
+    /**
+     * RemoveTarget.
+     */
+    removeTarget: (target: metricTarget) => void
+    /**
+     * AddTarget.
+     */
+    addTarget: (target: metricTarget) => void
+    /**
+     * If hidePmax exists Pmax button will be disabled.
+     */
+    hidePmax: boolean
+}
