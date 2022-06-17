@@ -17,6 +17,7 @@ import { IMyConsumptionPeriod } from 'src/modules/MyConsumption/myConsumptionTyp
 export const MyConsumptionPeriod = ({ setRange, setPeriod, setMetricsInterval }: IMyConsumptionPeriod) => {
     const theme = useTheme()
     const [tabValue, setTabValue] = useState(0)
+
     return (
         <div className="flex flex-row items-center">
             <Tabs
