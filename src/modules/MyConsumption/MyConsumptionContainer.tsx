@@ -36,7 +36,7 @@ export const initialMetricsHookValues: getMetricType = {
 export const MyConsumptionContainer = () => {
     const { setMetricInterval, setRange, setFilters, isMetricsLoading, data, interval } =
         useMetrics(initialMetricsHookValues)
-    const [periodValue, setPeriod] = useState<periodValue>(1)
+    const [period, setPeriod] = useState<periodValue>(1)
 
     /**
      * Show text according to interval.
@@ -44,16 +44,16 @@ export const MyConsumptionContainer = () => {
      * @returns Text that represents the interval.
      */
     const showPerPeriodText = () => {
-        if (periodValue === 1) {
+        if (period === 1) {
             return 'par jour'
-        } else if (periodValue === 7) {
+        } else if (period === 7) {
             return 'par semaine'
-        } else if (periodValue === 30) {
+        } else if (period === 30) {
             return 'par mois'
-        } else if (periodValue === 365) {
+        } else if (period === 365) {
             return 'par année'
         } else {
-            throw Error('PeriodValue not set')
+            throw Error('Period not set')
         }
     }
 
