@@ -31,9 +31,7 @@ export function useMetrics(initialState: getMetricType) {
     const [range, setRange] = useState<metricRange>(initialState.range)
     const [interval, setPeriod] = useState<metricInterval>(initialState.interval)
     const [targets, setTargets] = useState<metricTargets>(initialState.targets)
-    const [filters, setFilters] = useState<metricFilters>(
-        initialState.addHookFilters ? initialState.addHookFilters : [],
-    )
+    const [filters, setFilters] = useState<metricFilters>(initialState.filters ? initialState.filters : [])
     const isInitialMount = useRef(false)
 
     /**
@@ -46,10 +44,9 @@ export function useMetrics(initialState: getMetricType) {
                 interval,
                 range,
                 targets,
-                addHookFilters: filters,
+                adHocFilters: filters,
             })
             setData(response.data)
-            setIsMetricsLoading(false)
         } catch (error) {
             setIsMetricsLoading(false)
             enqueueSnackbar(
@@ -69,7 +66,9 @@ export function useMetrics(initialState: getMetricType) {
     // Useeffect is called whenever the hook is instantiated or whenever the dependencies changes.
     useEffect(() => {
         isInitialMount.current = true
-        getMetrics()
+        if (isInitialMount.current) {
+            getMetrics()
+        }
 
         // Return here is to replicate componentDidUnmount
         return () => {
@@ -84,6 +83,7 @@ export function useMetrics(initialState: getMetricType) {
         range,
         interval,
         filters,
+        setData,
         setPeriod,
         setFilters,
         setRange,

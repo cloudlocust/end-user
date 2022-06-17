@@ -99,5 +99,11 @@ export type getMetricType = {
     /**
      * Metric filters.
      */
-    addHookFilters?: metricFilters
+    filters?: metricFilters
 }
+
+/**
+ * Range value type.
+ *
+ */
+type periodValue = 1 | 7 | 30 | 365
