@@ -100,6 +100,8 @@ export const enphaseConsumptionTitle = 'Consommation Enphase'
 // eslint-disable-next-line jsdoc/require-jsdoc
 export const enedisConsumptionTitle = 'Consommation Enedis'
 // eslint-disable-next-line jsdoc/require-jsdoc
+export const pMaxTitle = 'PMax'
+// eslint-disable-next-line jsdoc/require-jsdoc
 const targetNameOptions = (
     theme: Theme,
     formatMessage: formatMessageType,
@@ -129,7 +131,7 @@ const targetNameOptions = (
         opposite: false,
         labels: {
             // eslint-disable-next-line jsdoc/require-jsdoc
-            formatter: (value: number) => `${value} Kwh`,
+            formatter: (value: number) => `${value} KWh`,
         },
     },
     enedis_consumption_metrics: {
@@ -209,14 +211,14 @@ const targetNameOptions = (
             type: 'line',
         },
         markerSize: period === 1 ? 0 : 2,
-        axisTicks: {
-            show: true,
-        },
         seriesName: formatMessage({
             id: internalTemperaturTitle,
             defaultMessage: internalTemperaturTitle,
         }),
         axisBorder: {
+            show: true,
+        },
+        axisTicks: {
             show: true,
         },
         opposite: true,
@@ -240,16 +242,12 @@ const targetNameOptions = (
             id: externalTemperaturTitle,
             defaultMessage: externalTemperaturTitle,
         }),
-        axisTicks: {
-            show: true,
-        },
         axisBorder: {
             show: true,
         },
-        crosshairs: {
+        axisTicks: {
             show: true,
         },
-        forceNiceScale: true,
         opposite: true,
         labels: {
             // eslint-disable-next-line jsdoc/require-jsdoc
@@ -258,12 +256,26 @@ const targetNameOptions = (
     },
     enedis_max_power: {
         seriesOptions: {
-            name: 'Pmax',
-            color: '#BA1B1B',
+            name: formatMessage({
+                id: pMaxTitle,
+                defaultMessage: pMaxTitle,
+            }),
+            color: '#FF7A00',
             data: [],
             type: 'line',
         },
-        markerSize: 1,
+        markerSize: 2,
+        axisBorder: {
+            show: true,
+        },
+        axisTicks: {
+            show: true,
+        },
+        opposite: true,
+        labels: {
+            // eslint-disable-next-line jsdoc/require-jsdoc
+            formatter: (value: number) => `${value} kVA`,
+        },
     },
 })
 

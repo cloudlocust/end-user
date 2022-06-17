@@ -144,7 +144,15 @@ export const MyConsumptionContainer = () => {
                 )}
             </div>
             <div className="my-16 flex justify-center">
-                <TargetButtonGroup removeTarget={removeTarget} addTarget={addTarget} hidePmax={periodValue === 1} />
+                <TargetButtonGroup
+                    removeTarget={removeTarget}
+                    addTarget={addTarget}
+                    hidePmax={
+                        periodValue === 1 ||
+                        (nrlinkConsent?.nrlinkConsentState === 'NONEXISTENT' &&
+                            enedisConsent?.enedisConsentState === 'NONEXISTENT')
+                    }
+                />
             </div>
 
             <MyConsumptionChart

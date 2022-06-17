@@ -3,6 +3,7 @@ import {
     defaultApexChartOptions,
     externalTemperaturTitle,
     internalTemperaturTitle,
+    pMaxTitle,
 } from 'src/modules/MyConsumption/utils/apexChartsDataConverter'
 import { IMetrics } from 'src/modules/Metrics/Metrics'
 import { Theme } from '@mui/material/styles/createTheme'
@@ -13,6 +14,9 @@ import { dayjsUTC } from 'src/common/react-platform-components'
 import { MessageDescriptor } from 'react-intl'
 
 const nrlinkConsumptionMetricsText = 'Consommation'
+const nrlinkConsumptionMetricValueText = '12 KWh'
+const nrlinkTemperaturMetricValueText = '12 °C'
+const nrlinkPMaxMetricValueText = '12 kVA'
 // eslint-disable-next-line jsdoc/require-jsdoc
 const mockFormatMessage: any = (input: MessageDescriptor) => input.id
 let mockChartType = 'bar'
@@ -53,7 +57,7 @@ const mockYAxis: ApexYAxis[] = [
         opposite: false,
         labels: {
             // eslint-disable-next-line jsdoc/require-jsdoc
-            formatter: (value: number) => `${value} Kwh`,
+            formatter: (value: number) => `${value} KWh`,
         },
     },
 ]
@@ -119,7 +123,9 @@ describe('test pure function', () => {
         const mockOptionsResult = mockOptions(theme, period)
         expect(JSON.stringify(apexChartProps.options)).toStrictEqual(JSON.stringify(mockOptionsResult))
         expect(apexChartProps.series).toStrictEqual(mockSeries)
-        expect((apexChartProps.options.yaxis as ApexYAxis[])[0].labels!.formatter!(12)).toStrictEqual('12 Kwh')
+        expect((apexChartProps.options.yaxis as ApexYAxis[])[0].labels!.formatter!(12)).toStrictEqual(
+            nrlinkConsumptionMetricValueText,
+        )
         expect(apexChartProps.options.theme?.mode).toBe('dark')
     })
     test('convertMetricsDataToApexChartsProps with different period and mobile', async () => {
@@ -232,6 +238,17 @@ describe('test pure function', () => {
             type: 'line',
             color: '#BA1B1B',
         })
+        // PMax
+        mockMetricsData.push({
+            target: 'enedis_max_power',
+            datapoints: mockDatapoints,
+        })
+        mockSeries.push({
+            data: [mockDatapoints[0][0]],
+            name: pMaxTitle,
+            type: 'line',
+            color: '#FF7A00',
+        })
         // ApexChart Props
         const apexChartProps = convertMetricsDataToApexChartsProps({
             data: mockMetricsData,
@@ -240,11 +257,21 @@ describe('test pure function', () => {
             theme,
             period,
         })
-        // const mockOptionsResult = mockOptions(theme, period)
         expect(apexChartProps.series).toStrictEqual(mockSeries)
-        expect((apexChartProps.options.yaxis as ApexYAxis[])[0].labels!.formatter!(12)).toStrictEqual('12 Kwh')
-        expect((apexChartProps.options.yaxis as ApexYAxis[])[1].labels!.formatter!(12)).toStrictEqual('12 °C')
-        expect((apexChartProps.options.yaxis as ApexYAxis[])[2].labels!.formatter!(12)).toStrictEqual('12 °C')
+        expect((apexChartProps.options.yaxis as ApexYAxis[])[0].labels!.formatter!(12)).toStrictEqual(
+            nrlinkConsumptionMetricValueText,
+        )
+        expect((apexChartProps.options.yaxis as ApexYAxis[])[1].labels!.formatter!(12)).toStrictEqual(
+            nrlinkTemperaturMetricValueText,
+        )
+        expect((apexChartProps.options.yaxis as ApexYAxis[])[2].labels!.formatter!(12)).toStrictEqual(
+            nrlinkTemperaturMetricValueText,
+        )
+        // Only the first temperature YAxis is shown
         expect((apexChartProps.options.yaxis as ApexYAxis[])[2].show).toBeFalsy()
+
+        expect((apexChartProps.options.yaxis as ApexYAxis[])[3].labels!.formatter!(12)).toStrictEqual(
+            nrlinkPMaxMetricValueText,
+        )
     })
 })
