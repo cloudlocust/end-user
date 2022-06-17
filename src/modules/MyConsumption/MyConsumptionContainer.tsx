@@ -27,9 +27,10 @@ export const initialMetricsHookValues: getMetricType = {
 }
 
 /**
- * MyConsumptionContainer. Parent component.
+ * MyConsumptionContainer.
+ * Parent component.
  *
- * @returns MyConsoContainer.
+ * @returns MyConsumptionContainer and its children.
  */
 export const MyConsumptionContainer = () => {
     const { setPeriod, setRange, setFilters, isMetricsLoading, data, interval } = useMetrics(initialMetricsHookValues)
