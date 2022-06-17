@@ -2,12 +2,12 @@ import React, { useState } from 'react'
 import { motion } from 'framer-motion'
 import { MyConsumptionChart } from 'src/modules/MyConsumption/components/MyConsumptionChart'
 import { MyConsumptionSelectMeters } from 'src/modules/MyConsumption/components/MyConsumptionSelectMeters'
-import { useConsumptionMetrics } from 'src/modules/Metrics/metricsHook'
 import { getMetricType } from 'src/modules/Metrics/Metrics'
 import dayjs from 'dayjs'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import { MyConsumptionPeriod } from './components/MyConsumptionPeriod/MyConsumptionPeriod'
 import { periodValue } from 'src/modules/MyConsumption/myConsumptionTypes'
+import { useMetrics } from '../Metrics/metricsHook'
 
 /**
  * InitialMetricsStates for useConsumptionMetrics.
@@ -24,17 +24,17 @@ export const initialMetricsHookValues: getMetricType = {
             type: 'timeseries',
         },
     ],
-    addHookFilters: [],
+    filters: [],
 }
 
 /**
- * MyConsoContainer. Parent component.
+ * MyConsumptionContainer.
+ * Parent component.
  *
- * @returns MyConsoContainer.
+ * @returns MyConsumptionContainer and its children.
  */
 export const MyConsumptionContainer = () => {
-    const { setPeriod, setRange, setFilters, isMetricsLoading, data, interval } =
-        useConsumptionMetrics(initialMetricsHookValues)
+    const { setPeriod, setRange, setFilters, isMetricsLoading, data, interval } = useMetrics(initialMetricsHookValues)
     const [periodValue, setPeriodValue] = useState<periodValue>(1)
 
     /**

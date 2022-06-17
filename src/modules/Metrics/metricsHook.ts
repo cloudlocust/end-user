@@ -23,7 +23,7 @@ export const METRICS_API = `${API_RESOURCES_URL}/query`
  * @param initialState Initial State of the hook.
  * @returns Consumption metrics hook.
  */
-export function useConsumptionMetrics(initialState: getMetricType) {
+export function useMetrics(initialState: getMetricType) {
     const { enqueueSnackbar } = useSnackbar()
     const { formatMessage } = useIntl()
     const [isMetricsLoading, setIsMetricsLoading] = useState(false)
@@ -31,9 +31,7 @@ export function useConsumptionMetrics(initialState: getMetricType) {
     const [range, setRange] = useState<metricRange>(initialState.range)
     const [interval, setPeriod] = useState<metricInterval>(initialState.interval)
     const [targets, setTargets] = useState<metricTargets>(initialState.targets)
-    const [filters, setFilters] = useState<metricFilters>(
-        initialState.addHookFilters ? initialState.addHookFilters : [],
-    )
+    const [filters, setFilters] = useState<metricFilters>(initialState.filters ? initialState.filters : [])
     const isInitialMount = useRef(false)
 
     /**
@@ -46,10 +44,9 @@ export function useConsumptionMetrics(initialState: getMetricType) {
                 interval,
                 range,
                 targets,
-                addHookFilters: filters,
+                adHocFilters: filters,
             })
             setData(response.data)
-            setIsMetricsLoading(false)
         } catch (error) {
             setIsMetricsLoading(false)
             enqueueSnackbar(
@@ -69,7 +66,9 @@ export function useConsumptionMetrics(initialState: getMetricType) {
     // Useeffect is called whenever the hook is instantiated or whenever the dependencies changes.
     useEffect(() => {
         isInitialMount.current = true
-        getMetrics()
+        if (isInitialMount.current) {
+            getMetrics()
+        }
 
         // Return here is to replicate componentDidUnmount
         return () => {
@@ -84,6 +83,7 @@ export function useConsumptionMetrics(initialState: getMetricType) {
         range,
         interval,
         filters,
+        setData,
         setPeriod,
         setFilters,
         setRange,

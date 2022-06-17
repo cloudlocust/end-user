@@ -1,14 +1,9 @@
 import { reduxedRenderHook } from 'src/common/react-platform-components/test'
-import { METRICS_API, useConsumptionMetrics } from 'src/modules/Metrics/metricsHook'
+import { useMetrics } from 'src/modules/Metrics/metricsHook'
 import { getMetricType, metricRange, metricTargets } from 'src/modules/Metrics/Metrics'
-import { axios } from 'src/common/react-platform-components'
-import { TEST_SUCCESS_DAY_METRICS } from 'src/mocks/handlers/metrics'
-
-jest.mock('axios')
-
-const mockedAxios = axios as jest.Mocked<typeof axios>
 
 const mockEnqueueSnackbar = jest.fn()
+
 /**
  * Mocking the useSnackbar used in CustomerDetails to load the customerDetails based on url /customers/:id {id} params.
  */
@@ -26,7 +21,7 @@ jest.mock('notistack', () => ({
 
 const FAKE_RANGE: metricRange = {
     from: '2022-06-04T22:00:00.000Z',
-    to: '2022-06-04T23:26:59.169Z',
+    to: '2022-06-05T23:26:59.169Z',
 }
 
 const FAKE_TARGETS: metricTargets = [
@@ -40,14 +35,14 @@ let mockHookArguments: getMetricType = {
     interval: '1min',
     range: FAKE_RANGE,
     targets: FAKE_TARGETS,
-    addHookFilters: [],
+    filters: [],
 }
 
-describe('useConsumptionMetrics hook test', () => {
+describe('useMetrics hook test', () => {
     test('When the hook is called with default values', async () => {
         const {
             renderedHook: { result },
-        } = reduxedRenderHook(() => useConsumptionMetrics(mockHookArguments))
+        } = reduxedRenderHook(() => useMetrics(mockHookArguments))
 
         const currentResult = result.current
         expect(currentResult.isMetricsLoading).toStrictEqual(true)
@@ -58,28 +53,35 @@ describe('useConsumptionMetrics hook test', () => {
     }, 8000)
     test('When there is an HTTP request with the right body', async () => {
         const {
-            renderedHook: { result, waitFor },
-        } = reduxedRenderHook(() => useConsumptionMetrics(mockHookArguments))
-
-        const AXIOS_POST_DATA = mockHookArguments
-
-        expect(mockedAxios.post).toHaveBeenCalledWith(METRICS_API, AXIOS_POST_DATA)
-
-        waitFor(() => {
-            expect(result.current.data).toBe(TEST_SUCCESS_DAY_METRICS)
-        })
-    }, 8000)
+            renderedHook: { result, waitForValueToChange },
+        } = reduxedRenderHook(() => useMetrics(mockHookArguments))
+        expect(result.current.isMetricsLoading).toBeTruthy()
+        await waitForValueToChange(
+            () => {
+                return result.current.isMetricsLoading
+            },
+            { timeout: 10000 },
+        )
+        expect(result.current.isMetricsLoading).toBeFalsy()
+        expect(result.current.data.length).toBeGreaterThan(0)
+    }, 20000)
     test('When there is a server issue and the data cannot be retrieved, a snackbar is shown', async () => {
+        mockHookArguments.range.to = mockHookArguments.range.from
         const {
-            renderedHook: { waitFor },
-        } = reduxedRenderHook(() => useConsumptionMetrics(mockHookArguments))
+            renderedHook: { result, waitForValueToChange },
+        } = reduxedRenderHook(() => useMetrics(mockHookArguments))
 
-        mockedAxios.post.mockRejectedValue('Error')
-
-        waitFor(() => {
-            expect(mockEnqueueSnackbar).toHaveBeenCalledWith('Erreur de chargement de vos données de consommation', {
-                variant: 'error',
-            })
+        expect(result.current.isMetricsLoading).toBeTruthy()
+        await waitForValueToChange(
+            () => {
+                return result.current.isMetricsLoading
+            },
+            { timeout: 10000 },
+        )
+        expect(result.current.isMetricsLoading).toBeFalsy()
+        expect(mockEnqueueSnackbar).toHaveBeenCalledWith('Erreur de chargement de vos données de consommation', {
+            variant: 'error',
+            autoHideDuration: 5000,
         })
     }, 8000)
 })
