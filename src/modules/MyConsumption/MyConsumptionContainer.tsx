@@ -1,15 +1,17 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import { MyConsumptionChart } from 'src/modules/MyConsumption/components/MyConsumptionChart'
-import { MyConsumptionSelectMeters } from 'src/modules/MyConsumption/components/MyConsumptionSelectMeters'
-import { MyConsumptionPeriod } from 'src/modules/MyConsumption'
+import { useMeterList } from 'src/modules/Meters/metersHook'
+import { formatMetricFilter } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
+import { MyConsumptionPeriod, SelectMeters } from 'src/modules/MyConsumption'
+import { SelectChangeEvent, useTheme } from '@mui/material'
 import { useMetrics } from 'src/modules/Metrics/metricsHook'
 import { getMetricType, periodValueType } from 'src/modules/Metrics/Metrics'
 import dayjs from 'dayjs'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 
 /**
- * InitialMetricsStates for useConsumptionMetrics.
+ * InitialMetricsStates for useMetrics.
  */
 export const initialMetricsHookValues: getMetricType = {
     interval: '1min',
@@ -33,10 +35,16 @@ export const initialMetricsHookValues: getMetricType = {
  * @returns MyConsumptionContainer and its children.
  */
 export const MyConsumptionContainer = () => {
+    const { elementList: metersList } = useMeterList()
+    const theme = useTheme()
     const { setMetricsInterval, setRange, setFilters, isMetricsLoading, data, metricsInterval } =
         useMetrics(initialMetricsHookValues)
     const [period, setPeriod] = useState<periodValueType>(1)
 
+    useEffect(() => {
+        if (!metersList) return
+        if (metersList.length === 1) setFilters(formatMetricFilter(metersList[0].guid))
+    }, [metersList, setFilters])
     /**
      * Show text according to interval.
      *
@@ -53,6 +61,20 @@ export const MyConsumptionContainer = () => {
             return 'par année'
         } else {
             throw Error('PeriodValue not set')
+        }
+    }
+    /**
+     * HandleOnChange function.
+     *
+     * @param event HandleOnChange event.
+     * @param setSelectedMeter Set Selected Meter on value change.
+     */
+    const handleOnChange = (event: SelectChangeEvent, setSelectedMeter: (value: string) => void) => {
+        setSelectedMeter(event.target.value)
+        if (event.target.value === 'allMeters') {
+            setFilters([])
+        } else {
+            setFilters(formatMetricFilter(event.target.value))
         }
     }
 
@@ -76,9 +98,14 @@ export const MyConsumptionContainer = () => {
                         </div>
                     </div>
                 </motion.div>
-
-                {/* TODO: MYEM-2418 */}
-                <MyConsumptionSelectMeters setFilters={setFilters} />
+                {metersList && metersList?.length > 1 && (
+                    <SelectMeters
+                        metersList={metersList}
+                        handleOnChange={handleOnChange}
+                        inputTextColor={theme.palette.primary.contrastText}
+                        inputColor={theme.palette.primary.contrastText}
+                    />
+                )}
             </div>
             {/* TODO: MYEM-2422 */}
             <MyConsumptionChart
