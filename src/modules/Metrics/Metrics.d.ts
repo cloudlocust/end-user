@@ -1,7 +1,7 @@
 /**
  * Metric Targets.
  */
-export type metricTarget =
+export type metricTargetType =
     | 'nrlink_consumption_metrics'
     | 'enedis_consumption_metrics'
     | 'enphase_consumption_metrics'
@@ -12,13 +12,13 @@ export type metricTarget =
 /**
  * Metrics intervals.
  */
-export type metricInterval = '1min' | '1d' | '1m'
+export type metricIntervalType = '1min' | '1d' | '1m'
 
 /**
  * Metric range.
  */
 // eslint-disable-next-line jsdoc/require-jsdoc
-export type metricRange = {
+export type metricRangeType = {
     /**
      *
      */
@@ -33,11 +33,11 @@ export type metricRange = {
  * Metrics filter.
  */
 // eslint-disable-next-line jsdoc/require-jsdoc
-export type metricTargets = {
+export type metricTargetsType = {
     /**
      * Single metric target.
      */
-    target: metricTarget
+    target: metricTargetType
     /**
      * Metric type.
      */
@@ -48,7 +48,7 @@ export type metricTargets = {
  * Metric Filters.
  */
 // eslint-disable-next-line jsdoc/require-jsdoc
-export type metricFilters = {
+export type metricFiltersType = {
     /**
      * Key. Default is: "meter_guid".
      */
@@ -71,7 +71,7 @@ export type IMetrics = {
     /**
      * Metric target.
      */
-    target: metricTarget
+    target: metricTargetType
     /**
      * Metric Datapoints.
      */
@@ -99,5 +99,11 @@ export type getMetricType = {
     /**
      * Metric filters.
      */
-    addHookFilters?: metricFilters
+    filters?: metricFilters
 }
+
+/**
+ * Range value type.
+ *
+ */
+export type periodValueType = 1 | 7 | 30 | 365

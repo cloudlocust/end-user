@@ -1,10 +1,10 @@
-import { IMetrics, metricTarget } from 'src/modules/Metrics/Metrics'
+import { IMetrics, metricTargetType } from 'src/modules/Metrics/Metrics'
 import { formatMessageType } from 'src/common/react-platform-translation'
 import { Props } from 'react-apexcharts'
 import fr from 'apexcharts/dist/locales/fr.json'
 import { Theme } from '@mui/material/styles/createTheme'
-import dayjs from 'dayjs'
 import { periodValue } from 'src/modules/MyConsumption/myConsumptionTypes'
+import { dayjsUTC } from 'src/common/react-platform-components'
 
 // eslint-disable-next-line jsdoc/require-jsdoc
 export const defaultApexChartOptions = (theme: Theme): Props['options'] => {
@@ -12,7 +12,7 @@ export const defaultApexChartOptions = (theme: Theme): Props['options'] => {
         chart: {
             fontFamily: theme.typography.fontFamily,
             background: theme.palette.primary.main,
-            stacked: true,
+            stacked: false,
             locales: [fr],
             defaultLocale: 'fr',
             height: '100%',
@@ -22,6 +22,9 @@ export const defaultApexChartOptions = (theme: Theme): Props['options'] => {
             zoom: {
                 enabled: false,
             },
+        },
+        legend: {
+            show: false,
         },
         theme: {
             // We set the theme so that the text in the chart and stuffs is updated.
@@ -49,11 +52,8 @@ export const defaultApexChartOptions = (theme: Theme): Props['options'] => {
             xaxis: {
                 lines: {
                     show: true,
-                },
-            },
-            yaxis: {
-                lines: {
-                    show: true,
+                    offsetY: 0,
+                    offsetX: 0,
                 },
             },
         },
@@ -76,9 +76,6 @@ export const defaultApexChartOptions = (theme: Theme): Props['options'] => {
             width: 1.5,
             dashArray: 0,
         },
-        markers: {
-            colors: [theme.palette.primary.light],
-        },
     }
 }
 
@@ -88,82 +85,207 @@ const defaultYAxisLabelsFormatter =
     (value: number) => `${value}`
 
 // eslint-disable-next-line jsdoc/require-jsdoc
+export const temperatureTitle = 'Température'
+// eslint-disable-next-line jsdoc/require-jsdoc
+export const consumptionTitle = 'Consommation'
+// eslint-disable-next-line jsdoc/require-jsdoc
+export const externalTemperaturTitle = 'Température Extérieure'
+// eslint-disable-next-line jsdoc/require-jsdoc
+export const internalTemperaturTitle = 'Température Intérieure'
+// eslint-disable-next-line jsdoc/require-jsdoc
+// eslint-disable-next-line jsdoc/require-jsdoc
+export const enphaseProductionTitle = 'Production Enphase'
+// eslint-disable-next-line jsdoc/require-jsdoc
+export const enphaseConsumptionTitle = 'Consommation Enphase'
+// eslint-disable-next-line jsdoc/require-jsdoc
+export const enedisConsumptionTitle = 'Consommation Enedis'
+// eslint-disable-next-line jsdoc/require-jsdoc
 const targetNameOptions = (
     theme: Theme,
-    // eslint-disable-next-line jsdoc/require-jsdoc
+    formatMessage: formatMessageType,
+    chartType: string,
+    period: periodValue,
 ): {
     // eslint-disable-next-line jsdoc/require-jsdoc
-    [key in metricTarget]: { label: string; type?: string; color?: string; formatter: (value: number) => string }
+    [key in metricTargetType]: ApexYAxis & { seriesOptions: ApexAxisChartSeries[0]; markerSize: number }
 } => ({
     nrlink_consumption_metrics: {
-        label: 'Consommation',
-        color: theme.palette.primary.light,
-        // eslint-disable-next-line jsdoc/require-jsdoc
-        formatter: (value: number) => `${value} Kwh`,
+        seriesOptions: {
+            name: formatMessage({
+                id: 'Consommation',
+                defaultMessage: 'Consommation',
+            }),
+            color: theme.palette.primary.light,
+            data: [],
+            type: chartType,
+        },
+        markerSize: 0,
+        axisBorder: {
+            show: true,
+        },
+        axisTicks: {
+            show: true,
+        },
+        opposite: false,
+        labels: {
+            // eslint-disable-next-line jsdoc/require-jsdoc
+            formatter: (value: number) => `${value} Kwh`,
+        },
     },
     enedis_consumption_metrics: {
-        label: 'Consommation',
-        type: 'line',
-        formatter: defaultYAxisLabelsFormatter,
+        seriesOptions: {
+            name: formatMessage({
+                id: enedisConsumptionTitle,
+                defaultMessage: enedisConsumptionTitle,
+            }),
+            data: [],
+            type: 'line',
+        },
+        markerSize: period === 1 ? 0 : 2,
+        axisBorder: {
+            show: true,
+        },
+        axisTicks: {
+            show: true,
+        },
+        opposite: true,
+        labels: {
+            // eslint-disable-next-line jsdoc/require-jsdoc
+            formatter: defaultYAxisLabelsFormatter,
+        },
     },
     enphase_consumption_metrics: {
-        label: 'Consommation Enphase',
-        type: 'line',
-        formatter: defaultYAxisLabelsFormatter,
+        seriesOptions: {
+            name: formatMessage({
+                id: enphaseConsumptionTitle,
+                defaultMessage: enphaseConsumptionTitle,
+            }),
+            data: [],
+            type: 'line',
+        },
+        markerSize: period === 1 ? 0 : 2,
+        axisBorder: {
+            show: true,
+        },
+        opposite: true,
+        labels: {
+            // eslint-disable-next-line jsdoc/require-jsdoc
+            formatter: defaultYAxisLabelsFormatter,
+        },
+        axisTicks: {
+            show: true,
+        },
     },
     enphase_production_metrics: {
-        label: 'Production Enphase',
-        type: 'line',
-        formatter: defaultYAxisLabelsFormatter,
+        seriesOptions: {
+            name: formatMessage({
+                id: enphaseProductionTitle,
+                defaultMessage: enphaseProductionTitle,
+            }),
+            data: [],
+            type: 'line',
+        },
+        markerSize: period === 1 ? 0 : 2,
+        axisBorder: {
+            show: true,
+        },
+        axisTicks: {
+            show: true,
+        },
+        opposite: true,
+        labels: {
+            // eslint-disable-next-line jsdoc/require-jsdoc
+            formatter: defaultYAxisLabelsFormatter,
+        },
     },
     external_temperature_metrics: {
-        label: 'Température Extérieure',
-        type: 'line',
-        formatter: defaultYAxisLabelsFormatter,
+        seriesOptions: {
+            name: formatMessage({
+                id: externalTemperaturTitle,
+                defaultMessage: externalTemperaturTitle,
+            }),
+            data: [],
+            type: 'line',
+        },
+        markerSize: period === 1 ? 0 : 2,
+        axisTicks: {
+            show: true,
+        },
+        axisBorder: {
+            show: true,
+        },
+        opposite: true,
+        labels: {
+            // eslint-disable-next-line jsdoc/require-jsdoc
+            formatter: defaultYAxisLabelsFormatter,
+        },
     },
     nrlink_internal_temperature_metrics: {
-        label: 'Température Intérieure',
-        type: 'line',
-        formatter: defaultYAxisLabelsFormatter,
+        seriesOptions: {
+            name: formatMessage({
+                id: internalTemperaturTitle,
+                defaultMessage: internalTemperaturTitle,
+            }),
+            data: [],
+            type: 'line',
+        },
+        markerSize: period === 1 ? 0 : 2,
+        axisTicks: {
+            show: true,
+        },
+        axisBorder: {
+            show: true,
+        },
+        crosshairs: {
+            show: true,
+        },
+        opposite: true,
+        labels: {
+            // eslint-disable-next-line jsdoc/require-jsdoc
+            formatter: defaultYAxisLabelsFormatter,
+        },
     },
 })
 
 /**
- * Convert dataPoints array that has the format [Yaxis, Xaxis][] where Yaxis and Xaxis are numbers, to more readable apexChart format which is {x: date, y: number}[].
+ * Convert dataPoints array that has the format [Yaxis, Xaxis][] where Yaxis and Xaxis are numbers, to Object {data, categories} for more controllable apexChart format which is {x: date, y: number}[].
  *
  * @param dataPoints Array of datapoints in format [Yaxis, Xaxis][].
- * @returns Array of data in format {x: Xaxis, y: Yaxis}[] supported by apexCharts series data.
+ * @returns Object {data, categories}, data is in format number[] supported by apexCharts series data, categories in format string[] for options.xaxis.categories, to have a more flexible, beautiful chart.
  */
 const getApexSerieDataFromDatapoint = (
     dataPoints: IMetrics[0]['datapoints'],
 ): // eslint-disable-next-line jsdoc/require-jsdoc
-ApexAxisChartSeries[0]['data'] => {
-    return dataPoints.map((dataPoint) => ({
-        x: new Date(dataPoint[1]),
-        y: dataPoint[0],
-    }))
+{ data: ApexAxisChartSeries[0]['data']; categories: number[] } => {
+    let categories: number[] = []
+
+    const data = dataPoints.map((dataPoint) => {
+        categories.push(dataPoint[1])
+        return dataPoint[0]
+    })
+    return { data, categories }
 }
 
 /**
- * Get date (apexcharts or dayjs) format for xaxis labels according to the current period selected, by default it follows the apexcharts format.
- * ApexCharts format: https://apexcharts.com/docs/datetime/ .
+ * Get date dayjs format for xxaxis and tooltip label according to the current period selected.
  *
  * @param period Current Period.
- * @param dayjsFormat Indicate if the desired format follows dayjs format.
- * @returns Format of xAxis labels according to the current format.
+ * @param isTooltipLabel Indicate if it's tooltipXAxis label.
+ * @returns Format of xAxis or tooltip labels according to the current period.
  */
-const getXAxisLabelFormatFromPeriod = (period: periodValue, dayjsFormat?: boolean) => {
+const getXAxisLabelFormatFromPeriod = (period: periodValue, isTooltipLabel?: boolean) => {
     switch (period) {
         case 1:
             return 'HH:mm'
         case 7:
-            return dayjsFormat ? 'dddd D MMM' : 'ddd'
+            return isTooltipLabel ? 'dddd' : 'ddd'
         case 365:
-            return 'MMMM'
+            return isTooltipLabel ? 'MMMM' : 'MMM'
         default:
-            return dayjsFormat ? 'DD MMMM' : 'dd MMM'
+            return isTooltipLabel ? 'ddd DD MMM' : 'D MMM'
     }
 }
+
 /**
  * Pure Function to convertMetrics Data to ApexCharts Props.
  *
@@ -173,7 +295,6 @@ const getXAxisLabelFormatFromPeriod = (period: periodValue, dayjsFormat?: boolea
  * @param params.formatMessage Format Message for translation of yAxis titles and names.
  * @param params.theme Current Theme applied.
  * @param params.period Period value of the current chart.
- * @param params.isMobile Boolean indicating if it's mobile mode or not.
  * @returns ApexCharts Props.
  */
 export const convertMetricsDataToApexChartsProps = ({
@@ -182,7 +303,6 @@ export const convertMetricsDataToApexChartsProps = ({
     formatMessage,
     theme,
     period,
-    isMobile,
 }: // eslint-disable-next-line jsdoc/require-jsdoc
 {
     // eslint-disable-next-line jsdoc/require-jsdoc
@@ -196,60 +316,78 @@ export const convertMetricsDataToApexChartsProps = ({
     // eslint-disable-next-line jsdoc/require-jsdoc
     period: periodValue
     // eslint-disable-next-line jsdoc/require-jsdoc
-    isMobile?: boolean
-    // eslint-disable-next-line
 }) => {
     let options: Props['options'] = defaultApexChartOptions(theme)!
     let series: ApexAxisChartSeries = []
     let yAxis: ApexYAxis[] = []
+    const markerSizeList: number[] = []
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    let categoriesList: number[] = []
 
     data.forEach((metric: IMetrics[0]) => {
         // eslint-disable-next-line jsdoc/require-jsdoc
-        let apexChartSerieData: ApexAxisChartSeries[0]['data'] = []
+        let apexChartSerieData: { data: ApexAxisChartSeries[0]['data']; categories: number[] } = {
+            data: [],
+            categories: [],
+        }
         if (metric.datapoints.length > 0) apexChartSerieData = getApexSerieDataFromDatapoint(metric.datapoints)
+        const { seriesOptions, markerSize, ...yAxisOptions } = targetNameOptions(
+            theme,
+            formatMessage,
+            chartType,
+            period,
+        )[metric.target]
 
         series!.push({
-            data: apexChartSerieData,
-            name: formatMessage({
-                id: targetNameOptions(theme)[metric.target].label,
-                defaultMessage: targetNameOptions(theme)[metric.target].label,
-            }),
-            color: targetNameOptions(theme)[metric.target].color || undefined,
-            type: targetNameOptions(theme)[metric.target].type || chartType,
+            ...seriesOptions,
+            data: apexChartSerieData.data,
         })
-        yAxis.push({
-            // TODO uncomment when having multiple yAxis curves.
-            // title: {
-            //     text: formatMessage({
-            //         id: targetNameOptions(theme)[metric.target].label,
-            //         defaultMessage: targetNameOptions(theme)[metric.target].label,
-            //     }),
-            // },
-            opposite: !!targetNameOptions(theme)[metric.target].type,
-            axisBorder: {
-                show: true,
-            },
-            labels: {
-                // eslint-disable-next-line jsdoc/require-jsdoc
-                formatter: targetNameOptions(theme)[metric.target].formatter,
-            },
-        })
+        yAxis.push(yAxisOptions)
+        markerSizeList.push(markerSize)
+        categoriesList = apexChartSerieData.categories
     })
 
     options.xaxis = {
         ...options.xaxis,
+        categories: categoriesList,
         labels: {
-            format: getXAxisLabelFormatFromPeriod(period),
+            format: 'HH:mm',
+            /**
+             * Formatter function for showing label in the xAxis.
+             *
+             * @param value Number.
+             * @param timestamp Represent the value in the categories.
+             * @returns Label that's going to be shown in the xaxis.
+             */
+            formatter(value, timestamp) {
+                return dayjsUTC(new Date(value!)).format(getXAxisLabelFormatFromPeriod(period))
+            },
         },
     }
+    if (period !== 1) {
+        options.xaxis.type = 'category'
+        options.tooltip = {
+            x: {
+                /**
+                 * Formatter function for showing label in the tooltip.
+                 *
+                 * @param index Represent the index in the options.xaxis.categories.
+                 * @returns Label concerning the xaxis that's going to be shown in the tooltip.
+                 */
+                formatter: (index: number) => {
+                    return dayjsUTC(new Date(options!.xaxis!.categories![index - 1])).format(
+                        getXAxisLabelFormatFromPeriod(period, true),
+                    )
+                },
+            },
+        }
+    }
+    options.markers = {
+        ...options.markers,
+        size: markerSizeList,
+    }
+
     options.yaxis = yAxis
-    options.tooltip = {
-        x: {
-            // eslint-disable-next-line jsdoc/require-jsdoc
-            formatter: (timestamp, opts) =>
-                dayjs(new Date(timestamp)!).format(getXAxisLabelFormatFromPeriod(period, true)),
-        },
-    }
 
     return { series, options }
 }

@@ -1,6 +1,6 @@
 import React from 'react'
 import { reduxedRender } from 'src/common/react-platform-components/test'
-import { MyConsumptionChart } from 'src/modules/MyConsumption'
+import MyConsumptionChart from 'src/modules/MyConsumption/components/MyConsumptionChart'
 import { createTheme } from '@mui/material/styles'
 import { ThemeProvider } from '@mui/material'
 import { TEST_SUCCESS_WEEK_METRICS as MOCK_WEEK_METRICS } from 'src/mocks/handlers/metrics'

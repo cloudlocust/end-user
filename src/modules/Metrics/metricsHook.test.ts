@@ -1,7 +1,7 @@
 import { reduxedRenderHook } from 'src/common/react-platform-components/test'
 import { useMetrics } from 'src/modules/Metrics/metricsHook'
-import { getMetricType, metricRange, metricTargets } from 'src/modules/Metrics/Metrics'
 import { act } from '@testing-library/react-hooks'
+import { getMetricType, metricRangeType, metricTargetsType } from 'src/modules/Metrics/Metrics'
 
 const mockEnqueueSnackbar = jest.fn()
 
@@ -20,12 +20,12 @@ jest.mock('notistack', () => ({
     }),
 }))
 
-const FAKE_RANGE: metricRange = {
+const FAKE_RANGE: metricRangeType = {
     from: '2022-06-04T22:00:00.000Z',
     to: '2022-06-05T23:26:59.169Z',
 }
 
-const FAKE_TARGETS: metricTargets = [
+const FAKE_TARGETS: metricTargetsType = [
     {
         target: 'nrlink_consumption_metrics',
         type: 'timeseries',
@@ -36,7 +36,7 @@ let mockHookArguments: getMetricType = {
     interval: '1min',
     range: FAKE_RANGE,
     targets: FAKE_TARGETS,
-    addHookFilters: [],
+    filters: [],
 }
 
 const FILTERS_TEST = [
@@ -55,7 +55,7 @@ describe('useMetrics hook test', () => {
 
         const currentResult = result.current
         expect(currentResult.isMetricsLoading).toStrictEqual(true)
-        expect(currentResult.interval).toStrictEqual('1min')
+        expect(currentResult.metricsInterval).toStrictEqual('1min')
         expect(currentResult.range).toStrictEqual(FAKE_RANGE)
         expect(currentResult.targets).toStrictEqual(FAKE_TARGETS)
         expect(currentResult.filters).toStrictEqual([])
@@ -111,7 +111,8 @@ describe('useMetrics hook test', () => {
     }, 20000)
     test('When getting consents fail', async () => {
         const { store } = require('src/redux')
-        await store.dispatch.userModel.setAuthenticationToken('error')
+        // Empty string is gonna throw an error. See consent handler.
+        await store.dispatch.userModel.setAuthenticationToken('')
 
         const {
             renderedHook: { result, waitForValueToChange },

@@ -25,7 +25,7 @@ export const TEST_SUCCESS_ENEDIS_CONSENT: SnakeCasedPropertiesDeep<IEnedisConsen
 export const consentsEndpoints = [
     rest.get<IEnedisConsent>(`${ENEDIS_CONSENT_API}`, (req, res, ctx) => {
         const authorization = req.headers.get('authorization')
-        if (authorization === 'enedis') {
+        if (authorization) {
             return res(ctx.status(200), ctx.delay(1000), ctx.json(TEST_SUCCESS_ENEDIS_CONSENT))
         } else {
             return res(ctx.status(400), ctx.delay(1000))
@@ -34,7 +34,7 @@ export const consentsEndpoints = [
 
     rest.get<INrlinkConsent>(`${NRLINK_CONSENT_API}`, (req, res, ctx) => {
         const authorization = req.headers.get('authorization')
-        if (authorization === 'nrlink') {
+        if (authorization) {
             return res(ctx.status(200), ctx.delay(1000), ctx.json(TEST_SUCCESS_NRLINK_CONSENT))
         } else {
             return res(ctx.status(400), ctx.delay(1000))

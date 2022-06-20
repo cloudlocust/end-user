@@ -2,9 +2,9 @@ import React from 'react'
 import { MyConsumptionContainer } from 'src/modules/MyConsumption/MyConsumptionContainer'
 
 /**
- * Form used for modify user profile.
+ * MyConsumption page.
  *
- * @returns Modify form component.
+ * @returns MyConsumptionContainer.
  */
 export const MyConsumption = () => {
     return <MyConsumptionContainer />

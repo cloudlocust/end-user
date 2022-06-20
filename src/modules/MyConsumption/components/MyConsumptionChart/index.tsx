@@ -5,9 +5,8 @@ import { useTheme } from '@mui/material/styles'
 import { useIntl } from 'react-intl'
 import { CircularProgress } from '@mui/material'
 import 'src/modules/MyConsumption/components/MyConsumptionChart/MyConsumptionChart.scss'
-import { convertMetricsDataToApexChartsProps } from 'src/modules/MyConsumption'
+import { convertMetricsDataToApexChartsProps } from 'src/modules/MyConsumption/utils/apexChartsDataConverter'
 import { periodValue } from 'src/modules/MyConsumption/myConsumptionTypes'
-import { useMediaQuery } from '@mui/material'
 
 // eslint-disable-next-line jsdoc/require-jsdoc
 const MyConsumptionChart = ({
@@ -28,7 +27,6 @@ const MyConsumptionChart = ({
 }) => {
     const { formatMessage } = useIntl()
     const theme = useTheme()
-    const isMobile = useMediaQuery(theme.breakpoints.down('md'))
 
     if (isMetricsLoading)
         return (
@@ -42,7 +40,6 @@ const MyConsumptionChart = ({
         formatMessage,
         theme,
         period,
-        isMobile,
     })
     return (
         <div className="w-full">
