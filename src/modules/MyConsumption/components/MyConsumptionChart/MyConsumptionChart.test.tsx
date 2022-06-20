@@ -5,14 +5,14 @@ import { createTheme } from '@mui/material/styles'
 import { ThemeProvider } from '@mui/material'
 import { TEST_SUCCESS_WEEK_METRICS as MOCK_WEEK_METRICS } from 'src/mocks/handlers/metrics'
 import { applyCamelCase } from 'src/common/react-platform-components'
-import { periodValue } from 'src/modules/MyConsumption/myConsumptionTypes'
+import { periodValueType } from 'src/modules/MyConsumption/myConsumptionTypes'
 const TEST_SUCCESS_WEEK_METRICS = applyCamelCase(MOCK_WEEK_METRICS)
 // eslint-disable-next-line jsdoc/require-jsdoc
 const propsMyConsumptionChart = {
     data: TEST_SUCCESS_WEEK_METRICS,
     chartType: 'bar',
     isMetricsLoading: false,
-    period: 7 as periodValue,
+    period: 'weekly' as periodValueType,
 }
 const circularProgressClassname = '.MuiCircularProgress-root'
 const apexChartsClassName = '.apexcharts-svg'

@@ -7,7 +7,8 @@ import { formatMetricFilter } from 'src/modules/MyConsumption/utils/MyConsumptio
 import { MyConsumptionPeriod, SelectMeters } from 'src/modules/MyConsumption'
 import { SelectChangeEvent, useTheme } from '@mui/material'
 import { useMetrics } from 'src/modules/Metrics/metricsHook'
-import { getMetricType, periodValueType } from 'src/modules/Metrics/Metrics'
+import { getMetricType } from 'src/modules/Metrics/Metrics'
+import { periodValueType } from 'src/modules/MyConsumption/myConsumptionTypes'
 import dayjs from 'dayjs'
 
 /**
@@ -39,7 +40,7 @@ export const MyConsumptionContainer = () => {
     const theme = useTheme()
     const { setMetricsInterval, setRange, setFilters, isMetricsLoading, data, metricsInterval } =
         useMetrics(initialMetricsHookValues)
-    const [period, setPeriod] = useState<periodValueType>(1)
+    const [period, setPeriod] = useState<periodValueType>('daily')
 
     useEffect(() => {
         if (!metersList) return
@@ -51,13 +52,13 @@ export const MyConsumptionContainer = () => {
      * @returns Text that represents the interval.
      */
     const showPerPeriodText = () => {
-        if (period === 1) {
+        if (period === 'daily') {
             return 'par jour'
-        } else if (period === 7) {
+        } else if (period === 'weekly') {
             return 'par semaine'
-        } else if (period === 30) {
+        } else if (period === 'monthly') {
             return 'par mois'
-        } else if (period === 365) {
+        } else if (period === 'yearly') {
             return 'par année'
         } else {
             throw Error('PeriodValue not set')

@@ -5,8 +5,9 @@ import { useTheme } from '@mui/material/styles'
 import { useIntl } from 'react-intl'
 import { CircularProgress } from '@mui/material'
 import 'src/modules/MyConsumption/components/MyConsumptionChart/MyConsumptionChart.scss'
-import { convertMetricsDataToApexChartsProps } from 'src/modules/MyConsumption/utils/apexChartsDataConverter'
-import { periodValue } from 'src/modules/MyConsumption/myConsumptionTypes'
+import { convertMetricsDataToApexChartsAxisValues } from 'src/modules/MyConsumption/utils/apexChartsDataConverter'
+import { getApexChartMyConsumptionOptions } from 'src/modules/MyConsumption/utils/apexChartMyConsumptionOptions'
+import { periodValueType } from 'src/modules/MyConsumption/myConsumptionTypes'
 
 // eslint-disable-next-line jsdoc/require-jsdoc
 const MyConsumptionChart = ({
@@ -23,7 +24,7 @@ const MyConsumptionChart = ({
     // eslint-disable-next-line jsdoc/require-jsdoc
     isMetricsLoading: boolean
     // eslint-disable-next-line jsdoc/require-jsdoc
-    period: periodValue
+    period: periodValueType
 }) => {
     const { formatMessage } = useIntl()
     const theme = useTheme()
@@ -34,18 +35,16 @@ const MyConsumptionChart = ({
                 <CircularProgress style={{ color: theme.palette.background.paper }} />
             </div>
         )
-    const reactApexChartsProps = convertMetricsDataToApexChartsProps({
-        data,
+    const { series, categories } = convertMetricsDataToApexChartsAxisValues(data)
+    const reactApexChartsProps = getApexChartMyConsumptionOptions({
+        series,
+        categories,
+        period,
         chartType,
         formatMessage,
         theme,
-        period,
     })
-    return (
-        <div className="w-full">
-            <ReactApexChart {...reactApexChartsProps} data-testid="apexcharts" width={'100%'} height={320} />
-        </div>
-    )
+    return <ReactApexChart {...reactApexChartsProps} data-testid="apexcharts" width={'100%'} height={320} />
 }
 
 export default MyConsumptionChart
