@@ -1,4 +1,4 @@
-import { metricFilters } from 'src/modules/Metrics/Metrics'
+import { metricFiltersType } from 'src/modules/Metrics/Metrics'
 
 /**
  * FormatMetricFilter function converts the data to the required format.
@@ -13,5 +13,5 @@ export const formatMetricFilter = (valueGuid: string) => {
             operator: '=',
             value: valueGuid,
         },
-    ] as metricFilters
+    ] as metricFiltersType
 }

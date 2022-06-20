@@ -5,7 +5,7 @@ import { useTheme } from '@mui/material/styles'
 import { useIntl } from 'react-intl'
 import { CircularProgress } from '@mui/material'
 import 'src/modules/MyConsumption/components/MyConsumptionChart/MyConsumptionChart.scss'
-import { convertMetricsDataToApexChartsProps } from 'src/modules/MyConsumption'
+import { convertMetricsDataToApexChartsProps } from 'src/modules/MyConsumption/utils/apexChartsDataConverter'
 import { periodValue } from 'src/modules/MyConsumption/myConsumptionTypes'
 import { useMediaQuery } from '@mui/material'
 

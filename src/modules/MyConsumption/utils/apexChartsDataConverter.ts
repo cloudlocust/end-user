@@ -1,4 +1,4 @@
-import { IMetrics, metricTarget } from 'src/modules/Metrics/Metrics'
+import { IMetrics, metricTargetType } from 'src/modules/Metrics/Metrics'
 import { formatMessageType } from 'src/common/react-platform-translation'
 import { Props } from 'react-apexcharts'
 import fr from 'apexcharts/dist/locales/fr.json'
@@ -93,7 +93,7 @@ const targetNameOptions = (
     // eslint-disable-next-line jsdoc/require-jsdoc
 ): {
     // eslint-disable-next-line jsdoc/require-jsdoc
-    [key in metricTarget]: { label: string; type?: string; color?: string; formatter: (value: number) => string }
+    [key in metricTargetType]: { label: string; type?: string; color?: string; formatter: (value: number) => string }
 } => ({
     nrlink_consumption_metrics: {
         label: 'Consommation',

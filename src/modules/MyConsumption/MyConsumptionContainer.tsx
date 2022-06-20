@@ -1,16 +1,14 @@
 import React, { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
+import MyConsumptionChart from 'src/modules/MyConsumption/components/MyConsumptionChart'
 import { useMeterList } from 'src/modules/Meters/metersHook'
-import MyConsumptionChart from './components/MyConsumptionChart/MyConsumptionChart'
-import { useTheme } from '@mui/material'
 import { formatMetricFilter } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
-import { MyConsumptionSelectMeters } from 'src/modules/MyConsumption'
-import { getMetricType } from 'src/modules/Metrics/Metrics'
-import dayjs from 'dayjs'
-import { periodValue } from 'src/modules/MyConsumption/myConsumptionTypes'
+import { MyConsumptionPeriod, SelectMeters } from 'src/modules/MyConsumption'
+import { SelectChangeEvent, useTheme } from '@mui/material'
 import { useMetrics } from 'src/modules/Metrics/metricsHook'
-import { MyConsumptionPeriod } from 'src/modules/MyConsumption'
+import { getMetricType, periodValueType } from 'src/modules/Metrics/Metrics'
+import dayjs from 'dayjs'
 
 /**
  * InitialMetricsStates for useMetrics.
@@ -27,19 +25,21 @@ export const initialMetricsHookValues: getMetricType = {
             type: 'timeseries',
         },
     ],
-    addHookFilters: [],
+    filters: [],
 }
 
 /**
- * MyConsoContainer. Parent component.
+ * MyConsumptionContainer.
+ * Parent component.
  *
- * @returns MyConsoContainer.
+ * @returns MyConsumptionContainer and its children.
  */
 export const MyConsumptionContainer = () => {
-    const { setPeriod, setRange, setFilters, isMetricsLoading, data, interval } = useMetrics(initialMetricsHookValues)
-    const [periodValue, setPeriodValue] = useState<periodValue>(1)
     const { elementList: metersList } = useMeterList()
     const theme = useTheme()
+    const { setMetricsInterval, setRange, setFilters, isMetricsLoading, data, metricsInterval } =
+        useMetrics(initialMetricsHookValues)
+    const [period, setPeriod] = useState<periodValueType>(1)
 
     useEffect(() => {
         if (!metersList) return
@@ -51,16 +51,30 @@ export const MyConsumptionContainer = () => {
      * @returns Text that represents the interval.
      */
     const showPerPeriodText = () => {
-        if (periodValue === 1) {
+        if (period === 1) {
             return 'par jour'
-        } else if (periodValue === 7) {
+        } else if (period === 7) {
             return 'par semaine'
-        } else if (periodValue === 30) {
+        } else if (period === 30) {
             return 'par mois'
-        } else if (periodValue === 365) {
+        } else if (period === 365) {
             return 'par année'
         } else {
             throw Error('PeriodValue not set')
+        }
+    }
+    /**
+     * HandleOnChange function.
+     *
+     * @param event HandleOnChange event.
+     * @param setSelectedMeter Set Selected Meter on value change.
+     */
+    const handleOnChange = (event: SelectChangeEvent, setSelectedMeter: (value: string) => void) => {
+        setSelectedMeter(event.target.value)
+        if (event.target.value === 'allMeters') {
+            setFilters([])
+        } else {
+            setFilters(formatMetricFilter(event.target.value))
         }
     }
 
@@ -93,17 +107,22 @@ export const MyConsumptionContainer = () => {
                     </div>
                 </motion.div>
                 {metersList && metersList?.length > 1 && (
-                    <MyConsumptionSelectMeters setFilters={setFilters} metersList={metersList} />
+                    <SelectMeters
+                        metersList={metersList}
+                        handleOnChange={handleOnChange}
+                        inputTextColor={theme.palette.primary.contrastText}
+                        inputColor={theme.palette.primary.contrastText}
+                    />
                 )}
             </div>
 
             <MyConsumptionChart
                 isMetricsLoading={isMetricsLoading}
                 data={data}
-                chartType={interval === '1min' ? 'area' : 'bar'}
-                period={periodValue}
+                chartType={metricsInterval === '1min' ? 'area' : 'bar'}
+                period={period}
             />
-            <MyConsumptionPeriod setPeriod={setPeriod} setRange={setRange} setPeriodValue={setPeriodValue} />
+            <MyConsumptionPeriod setPeriod={setPeriod} setRange={setRange} setMetricsInterval={setMetricsInterval} />
         </div>
     )
 }

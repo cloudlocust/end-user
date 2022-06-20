@@ -43,10 +43,6 @@ const getXAxisLabelFormatFromPeriod = (period: periodValue, dayjsFormat?: boolea
 
 const mockYAxis: ApexYAxis[] = [
     {
-        // TODO Reset when we'll have multiple graphs
-        // title: {
-        //     text: nrlinkConsumptionMetricsText,
-        // },
         opposite: false,
         axisBorder: {
             show: true,
