@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import { MyConsumptionChart } from 'src/modules/MyConsumption/components/MyConsumptionChart'
-import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import { useMeterList } from 'src/modules/Meters/metersHook'
 import { formatMetricFilter } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
-import { getMetricType } from 'src/modules/Metrics/Metrics'
-import dayjs from 'dayjs'
-import { periodValue } from 'src/modules/MyConsumption/myConsumptionTypes'
-import { useMetrics } from 'src/modules/Metrics/metricsHook'
 import { MyConsumptionPeriod, SelectMeters } from 'src/modules/MyConsumption'
 import { SelectChangeEvent, useTheme } from '@mui/material'
+import { useMetrics } from 'src/modules/Metrics/metricsHook'
+import { getMetricType, periodValueType } from 'src/modules/Metrics/Metrics'
+import dayjs from 'dayjs'
+import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
+
 /**
  * InitialMetricsStates for useMetrics.
  */
@@ -37,9 +37,9 @@ export const initialMetricsHookValues: getMetricType = {
 export const MyConsumptionContainer = () => {
     const { elementList: metersList } = useMeterList()
     const theme = useTheme()
-    const { setMetricInterval, setRange, setFilters, isMetricsLoading, data, interval } =
+    const { setMetricsInterval, setRange, setFilters, isMetricsLoading, data, metricsInterval } =
         useMetrics(initialMetricsHookValues)
-    const [period, setPeriod] = useState<periodValue>(1)
+    const [period, setPeriod] = useState<periodValueType>(1)
 
     useEffect(() => {
         if (!metersList) return
@@ -60,7 +60,7 @@ export const MyConsumptionContainer = () => {
         } else if (period === 365) {
             return 'par année'
         } else {
-            throw Error('Period not set')
+            throw Error('PeriodValue not set')
         }
     }
     /**
@@ -111,11 +111,11 @@ export const MyConsumptionContainer = () => {
             <MyConsumptionChart
                 isMetricsLoading={isMetricsLoading}
                 data={data}
-                chartType={interval === '1min' ? 'area' : 'bar'}
+                chartType={metricsInterval === '1min' ? 'area' : 'bar'}
             />
 
             {/* TODO: MYEM-2425 */}
-            <MyConsumptionPeriod setMetricInterval={setMetricInterval} setRange={setRange} setPeriod={setPeriod} />
+            <MyConsumptionPeriod setPeriod={setPeriod} setRange={setRange} setMetricsInterval={setMetricsInterval} />
         </>
     )
 }

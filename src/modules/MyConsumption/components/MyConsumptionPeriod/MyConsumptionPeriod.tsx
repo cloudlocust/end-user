@@ -11,12 +11,13 @@ import { IMyConsumptionPeriod } from 'src/modules/MyConsumption/myConsumptionTyp
  * @param param0 N/A.
  * @param param0.setPeriod SetPeriod function.
  * @param param0.setRange SetRange function.
- * @param param0.setMetricInterval SetMetricInterval function.
+ * @param param0.setMetricsInterval SetMetricsInterval function.
  * @returns  MyConsumptionPeriod.
  */
-export const MyConsumptionPeriod = ({ setRange, setMetricInterval, setPeriod }: IMyConsumptionPeriod) => {
+export const MyConsumptionPeriod = ({ setRange, setPeriod, setMetricsInterval }: IMyConsumptionPeriod) => {
     const theme = useTheme()
     const [tabValue, setTabValue] = useState(0)
+
     return (
         <div className="flex flex-row items-center">
             <Tabs
@@ -24,7 +25,7 @@ export const MyConsumptionPeriod = ({ setRange, setMetricInterval, setPeriod }: 
                 onChange={(event, value) => {
                     setTabValue(value)
                     setRange(dataConsumptionPeriod[value].range)
-                    setMetricInterval(dataConsumptionPeriod[value].interval)
+                    setMetricsInterval(dataConsumptionPeriod[value].interval)
                     setPeriod(dataConsumptionPeriod[value].period)
                 }}
                 indicatorColor="primary"
