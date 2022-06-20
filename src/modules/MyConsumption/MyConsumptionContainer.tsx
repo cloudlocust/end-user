@@ -2,14 +2,14 @@ import React, { useState } from 'react'
 import { motion } from 'framer-motion'
 import { MyConsumptionChart } from 'src/modules/MyConsumption/components/MyConsumptionChart'
 import { MyConsumptionSelectMeters } from 'src/modules/MyConsumption/components/MyConsumptionSelectMeters'
-import { MyConsumptionPeriod } from 'src/modules/MyConsumption/components/MyConsumptionPeriod'
+import { MyConsumptionPeriod } from 'src/modules/MyConsumption'
 import { useMetrics } from 'src/modules/Metrics/metricsHook'
 import { getMetricType, periodValueType } from 'src/modules/Metrics/Metrics'
 import dayjs from 'dayjs'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 
 /**
- * InitialMetricsStates for useMetrics.
+ * InitialMetricsStates for useConsumptionMetrics.
  */
 export const initialMetricsHookValues: getMetricType = {
     interval: '1min',
