@@ -77,31 +77,10 @@ pipeline{
             }
 
         }
-        stage("Deploy-prod") {
-            when {
-                    expression { BRANCH_NAME ==~ /(production)/ }
-            }
-            environment {
-              SERVER_SSH_KEY = credentials('contabo-test-env-private-key')
-              SERVER_IP = getIp(BRANCH_NAME)
-              SERVER_USER = getUser(BRANCH_NAME)
-              ENV_NAME = getEnvName(BRANCH_NAME)
-           }
-            steps {
-                sh "./ci/deploy.sh ${SERVER_USER} ${SERVER_IP} ${SERVER_SSH_KEY} /${SERVER_USER}/enduser-react-devops/${ENV_NAME}"
-           }
-           post {
-                success{
-                    discordSend (description: "Jenkins ${ENV_NAME} Pipeline Build Success", footer: "enduser-react has been deployed", link: env.BUILD_URL, result: currentBuild.currentResult, title: JOB_NAME, webhookURL: "${DISCORD_WEBHOOK_URL}")
-                }
-                failure{
-                    discordSend (description: "Jenkins ${ENV_NAME} Pipeline Build Failed", footer: "there was an error  in the enduser-react deployment", link: env.BUILD_URL, result: currentBuild.currentResult, title: JOB_NAME, webhookURL: "${DISCORD_WEBHOOK_URL}")
-                }
-           }
-        }
-       stage ('Deploy-alpha/staging') {
+
+       stage ('Deploy') {
         when {
-                expression { BRANCH_NAME ==~ /(master|develop)/ }
+                expression { BRANCH_NAME ==~ /(master|develop|production)/ }
            }
         environment {
               ENV_NAME = getEnvName(BRANCH_NAME)
@@ -128,35 +107,6 @@ pipeline{
             }
        }
     }
-}
-
-
-def getIp(branchName) {
-     // This function return the ip of the adrress.
-     if(branchName == "master")  {
-         return "alpha.enduser.myem.io";
-     }
-     // production branch is deployed manually in prod and automatically in preprod.
-     else if (branchName == "production"){
-         return "preprod.enduser.myem.io";
-     }
-     else {
-         return "staging.enduser.myem.io";
-     }
-}
-
-def getUser(branchName) {
-     // This function return the user per branch.
-     if(branchName == "master")  {
-         return "root";
-     }
-     // production branch is deployed manually in prod and automatically in preprod.
-     else if (branchName == "production"){
-         return "root";
-     }
-     else {
-         return "root";
-     }
 }
 
 def getImgTag(branchName) {
