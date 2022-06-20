@@ -23,21 +23,21 @@ export const TEST_SUCCESS_ENEDIS_CONSENT: SnakeCasedPropertiesDeep<IEnedisConsen
  * Consents endpoints.
  */
 export const consentsEndpoints = [
-    rest.get<IEnedisConsent>(`${ENEDIS_CONSENT_API}`, (req, res, ctx) => {
+    rest.get<IEnedisConsent>(`${ENEDIS_CONSENT_API}/:meter_guid`, (req, res, ctx) => {
         const authorization = req.headers.get('authorization')
-        if (authorization) {
-            return res(ctx.status(200), ctx.delay(1000), ctx.json(TEST_SUCCESS_ENEDIS_CONSENT))
-        } else {
+        if (authorization === 'error') {
             return res(ctx.status(400), ctx.delay(1000))
+        } else {
+            return res(ctx.status(200), ctx.delay(1000), ctx.json(TEST_SUCCESS_ENEDIS_CONSENT))
         }
     }),
 
-    rest.get<INrlinkConsent>(`${NRLINK_CONSENT_API}`, (req, res, ctx) => {
+    rest.get<INrlinkConsent>(`${NRLINK_CONSENT_API}/:meter_guid`, (req, res, ctx) => {
         const authorization = req.headers.get('authorization')
-        if (authorization) {
-            return res(ctx.status(200), ctx.delay(1000), ctx.json(TEST_SUCCESS_NRLINK_CONSENT))
-        } else {
+        if (authorization === 'error') {
             return res(ctx.status(400), ctx.delay(1000))
+        } else {
+            return res(ctx.status(200), ctx.delay(1000), ctx.json(TEST_SUCCESS_NRLINK_CONSENT))
         }
     }),
 ]

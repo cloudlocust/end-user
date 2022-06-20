@@ -47,6 +47,8 @@ const FILTERS_TEST = [
     },
 ]
 
+const NonExistantState = 'NONEXISTENT'
+
 describe('useMetrics hook test', () => {
     test('When the hook is called with default values', async () => {
         const {
@@ -93,7 +95,7 @@ describe('useMetrics hook test', () => {
             autoHideDuration: 5000,
         })
     }, 8000)
-    test('When setFilters is triggered, filters state changes', async () => {
+    test('When setFilters is triggered, filters state changes and returns', async () => {
         const {
             renderedHook: { result, waitForValueToChange },
         } = reduxedRenderHook(() => useMetrics(mockHookArguments))
@@ -108,11 +110,12 @@ describe('useMetrics hook test', () => {
             { timeout: 10000 },
         )
         expect(result.current.filters).toStrictEqual(FILTERS_TEST)
-    }, 20000)
+        expect(result.current.enedisConsent.enedisConsentState).toStrictEqual(NonExistantState)
+        expect(result.current.nrlinkConsent.nrlinkConsentState).toStrictEqual(NonExistantState)
+    }, 30000)
     test('When getting consents fail', async () => {
         const { store } = require('src/redux')
-        // Empty string is gonna throw an error. See consent handler.
-        await store.dispatch.userModel.setAuthenticationToken('')
+        await store.dispatch.userModel.setAuthenticationToken('error')
 
         const {
             renderedHook: { result, waitForValueToChange },
@@ -137,5 +140,5 @@ describe('useMetrics hook test', () => {
             autoHideDuration: 5000,
             variant: 'error',
         })
-    })
+    }, 20000)
 })
