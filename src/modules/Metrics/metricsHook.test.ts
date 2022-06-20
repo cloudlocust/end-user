@@ -93,7 +93,7 @@ describe('useMetrics hook test', () => {
             autoHideDuration: 5000,
         })
     }, 8000)
-    test('When setFilters is triggered, filters state change', async () => {
+    test('When setFilters is triggered, filters state changes', async () => {
         const {
             renderedHook: { result, waitForValueToChange },
         } = reduxedRenderHook(() => useMetrics(mockHookArguments))
@@ -109,4 +109,32 @@ describe('useMetrics hook test', () => {
         )
         expect(result.current.filters).toStrictEqual(FILTERS_TEST)
     }, 20000)
+    test('When getting consents fail', async () => {
+        const { store } = require('src/redux')
+        await store.dispatch.userModel.setAuthenticationToken('error')
+
+        const {
+            renderedHook: { result, waitForValueToChange },
+        } = reduxedRenderHook(() => useMetrics(mockHookArguments))
+
+        act(() => {
+            result.current.setFilters(FILTERS_TEST)
+        })
+        await waitForValueToChange(
+            () => {
+                return result.current.isMetricsLoading
+            },
+            { timeout: 10000 },
+        )
+
+        expect(mockEnqueueSnackbar).toHaveBeenCalledWith('Erreur lors de la récupération du consentement Nrlink', {
+            autoHideDuration: 5000,
+            variant: 'error',
+        })
+
+        expect(mockEnqueueSnackbar).toHaveBeenCalledWith('Erreur lors de la récupération du consentement Enedis', {
+            autoHideDuration: 5000,
+            variant: 'error',
+        })
+    })
 })
