@@ -67,7 +67,7 @@ export type metricFiltersType = {
  * Metric model.
  */
 // eslint-disable-next-line jsdoc/require-jsdoc
-export type IMetrics = {
+export type IMetric = {
     /**
      * Metric target.
      */
@@ -76,7 +76,13 @@ export type IMetrics = {
      * Metric Datapoints.
      */
     datapoints: number[][]
-}[]
+}
+
+/**
+ * Metric model List.
+ */
+// eslint-disable-next-line jsdoc/require-jsdoc
+export type IMetrics = IMetric[]
 
 /**
  * Information to be passed to body when getting metrics.

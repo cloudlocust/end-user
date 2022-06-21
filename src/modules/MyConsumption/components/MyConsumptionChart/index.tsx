@@ -6,8 +6,8 @@ import { useIntl } from 'react-intl'
 import { CircularProgress } from '@mui/material'
 import 'src/modules/MyConsumption/components/MyConsumptionChart/MyConsumptionChart.scss'
 import { convertMetricsDataToApexChartsAxisValues } from 'src/modules/MyConsumption/utils/apexChartsDataConverter'
-import { getApexChartMyConsumptionOptions } from 'src/modules/MyConsumption/utils/apexChartMyConsumptionOptions'
-import { periodValueType } from 'src/modules/MyConsumption/myConsumptionTypes'
+import { getApexChartMyConsumptionProps } from 'src/modules/MyConsumption/utils/apexChartsMyConsumptionOptions'
+import { periodType } from 'src/modules/MyConsumption/myConsumptionTypes'
 
 // eslint-disable-next-line jsdoc/require-jsdoc
 const MyConsumptionChart = ({
@@ -20,11 +20,11 @@ const MyConsumptionChart = ({
     // eslint-disable-next-line jsdoc/require-jsdoc
     data: IMetrics
     // eslint-disable-next-line jsdoc/require-jsdoc
-    chartType: string
+    chartType: ApexChart['type']
     // eslint-disable-next-line jsdoc/require-jsdoc
     isMetricsLoading: boolean
     // eslint-disable-next-line jsdoc/require-jsdoc
-    period: periodValueType
+    period: periodType
 }) => {
     const { formatMessage } = useIntl()
     const theme = useTheme()
@@ -35,10 +35,10 @@ const MyConsumptionChart = ({
                 <CircularProgress style={{ color: theme.palette.background.paper }} />
             </div>
         )
-    const { series, categories } = convertMetricsDataToApexChartsAxisValues(data)
-    const reactApexChartsProps = getApexChartMyConsumptionOptions({
-        series,
-        categories,
+    const { yAxisSeries, xAxisValues } = convertMetricsDataToApexChartsAxisValues(data)
+    const reactApexChartsProps = getApexChartMyConsumptionProps({
+        yAxisSeries,
+        xAxisValues,
         period,
         chartType,
         formatMessage,

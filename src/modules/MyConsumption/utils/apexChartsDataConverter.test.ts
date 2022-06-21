@@ -17,16 +17,16 @@ describe('test pure function', () => {
     test('convertMetricsDataToApexChartsAxisValues test with valid data', async () => {
         // ApexChart Props
         const apexChartsAxisValues = convertMetricsDataToApexChartsAxisValues(mockMetricsData)
-        expect(apexChartsAxisValues.series).toStrictEqual([
+        expect(apexChartsAxisValues.yAxisSeries).toStrictEqual([
             { name: mockMetricsData[0].target, data: [mockDatapoints[0][0]] },
         ])
-        expect(apexChartsAxisValues.categories).toStrictEqual([mockDatapoints[0][1]])
+        expect(apexChartsAxisValues.xAxisValues).toStrictEqual([mockDatapoints[0][1]])
     })
     test('convertMetricsDataToApexChartsAxisValues test empty data', async () => {
         mockMetricsData[0].datapoints = []
         // ApexChart Props empty data
         const apexChartsAxisValues = convertMetricsDataToApexChartsAxisValues(mockMetricsData)
-        expect(apexChartsAxisValues.series).toStrictEqual([{ name: mockMetricsData[0].target, data: [] }])
-        expect(apexChartsAxisValues.categories).toStrictEqual([])
+        expect(apexChartsAxisValues.yAxisSeries).toStrictEqual([{ name: mockMetricsData[0].target, data: [] }])
+        expect(apexChartsAxisValues.xAxisValues).toStrictEqual([])
     })
 })
