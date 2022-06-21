@@ -1,10 +1,11 @@
 import React from 'react'
+import { MyConsumptionContainer } from 'src/modules/MyConsumption/MyConsumptionContainer'
 
 /**
- * MyConsumption.
+ * MyConsumption page.
  *
- * @returns MyConsumption.
+ * @returns MyConsumptionContainer.
  */
 export const MyConsumption = () => {
-    return <div>My conso</div>
+    return <MyConsumptionContainer />
 }
