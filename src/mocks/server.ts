@@ -1,7 +1,10 @@
+/** Mock requests. */
 import { setupServer } from 'msw/node'
-import { metersEndpoints } from './handlers/meters'
 import { userEndpoints } from './handlers/user'
+import { metersEndpoints } from './handlers/meters'
 import { nrlinkEndpoints } from './handlers/nrlink'
+import { equipmentsEndpoints } from './handlers/equipments'
+import { accomodationEndpoints } from './handlers/accomodation'
 import { metricsEndpoints } from './handlers/metrics'
 
 /**
@@ -14,6 +17,10 @@ const handlers = [
     ...metersEndpoints,
     /******NrLink REQUESTS*****/
     ...nrlinkEndpoints,
+    /******Equipments REQUESTS*****/
+    ...equipmentsEndpoints,
+    /******accomodation REQUESTS*****/
+    ...accomodationEndpoints,
     /******Meters REQUESTS*****/
     ...metricsEndpoints,
 ]

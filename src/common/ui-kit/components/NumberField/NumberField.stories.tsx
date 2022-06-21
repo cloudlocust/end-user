@@ -29,6 +29,6 @@ export const NumberFieldExample = Template.bind({})
 NumberFieldExample.args = {
     labelTitle: 'PC de bureau',
     iconLabel: 'computer',
-    disableDecrement: true,
+    disabled: false,
     wrapperClasses: 'flex w-2/6',
 }
