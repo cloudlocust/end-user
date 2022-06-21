@@ -1,14 +1,9 @@
 import Icon from '@mui/material/Icon'
-import { styled, ThemeProvider } from '@mui/material/styles'
 import IconButton from '@mui/material/IconButton'
 import Tooltip from '@mui/material/Tooltip'
 import Typography from '@mui/material/Typography'
-// import { selectMainThemeDark } from 'app/store/fuse/settingsSlice'
-import clsx from 'clsx'
 import { motion } from 'framer-motion'
-import { useSelector } from 'react-redux'
 import {
-    formatDistance,
     subDays,
     format,
     subWeeks,
@@ -18,52 +13,79 @@ import {
     addWeeks,
     addYears,
     addMonths,
+    differenceInCalendarDays,
 } from 'date-fns'
+import dayjs from 'dayjs'
+import { useEffect, useState } from 'react'
 
-import { useState } from 'react'
-
-function CalendarHeader({ period }: any) {
-    const getCurrentDate = () => {
-        // eslint-disable-next-line sonarjs/no-duplicate-string
-        return new Date()
+const MyConsumptionCalendar = ({ period, setRange }: any) => {
+    const [currentDate, setCurrentDate] = useState(new Date())
+    const isFutureDate = differenceInCalendarDays(currentDate, new Date()) >= 0
+    useEffect(() => {
+        isFutureDate && setCurrentDate(new Date())
+    }, [isFutureDate])
+    /**
+     * SetCurrentPeriodDate
+     * @param periodToChange
+     * @returns
+     */
+    const setCurrentPeriodDate = (periodToChange: (date: number | Date, amount: number) => Date) => {
+        return periodToChange(currentDate, 1)
     }
-    const [currentDate, setCurrentDate] = useState(getCurrentDate())
-    const subCalendar = (period: any) => {
+    /**
+     *
+     * @param period
+     * @param arrowName
+     */
+    const setCalendar = (period: any, arrowName: string) => {
+        const subData = arrowName === 'sub'
         switch (period) {
             case 1:
-                setCurrentDate(subDays(currentDate, 1))
+                setCurrentDate(setCurrentPeriodDate(subData ? subDays : addDays))
                 break
             case 7:
-                setCurrentDate(subWeeks(currentDate, 1))
+                setCurrentDate(setCurrentPeriodDate(subData ? subWeeks : addWeeks))
                 break
             case 30:
-                setCurrentDate(subMonths(currentDate, 1))
+                setCurrentDate(setCurrentPeriodDate(subData ? subMonths : addMonths))
                 break
             case 365:
-                setCurrentDate(subYears(currentDate, 1))
+                setCurrentDate(setCurrentPeriodDate(subData ? subYears : addYears))
                 break
         }
     }
-    const addCalendar = (period: any) => {
+    /**
+     *
+     * @param period
+     * @returns
+     */
+    const setCalendarRangeFrom = (period: any) => {
         switch (period) {
             case 1:
-                setCurrentDate(addDays(currentDate, 1))
-                break
+                return setCurrentPeriodDate(subDays)
             case 7:
-                setCurrentDate(addWeeks(currentDate, 1))
-                break
+                return setCurrentPeriodDate(subWeeks)
             case 30:
-                setCurrentDate(addMonths(currentDate, 1))
-                break
+                return setCurrentPeriodDate(subMonths)
             case 365:
-                setCurrentDate(addYears(currentDate, 1))
-                break
+                return setCurrentPeriodDate(subYears)
         }
     }
+    /**
+     *
+     * @param period
+     * @returns
+     */
+    const getRange = (period: dayjs.ManipulateType) => {
+        return {
+            from: currentDate.toISOString(),
+            to: setCalendarRangeFrom(period)!.toISOString(),
+        }
+    }
+
     return (
-        // <ThemeProvider theme={mainThemeDark}>
         <div>
-            <div className="flex flex-1 flex-col p-12 justify-between z-10 container">
+            <div className="flex flex-col justify-between z-10 container">
                 <motion.div
                     className="flex items-center justify-center"
                     initial={{ opacity: 0 }}
@@ -73,11 +95,11 @@ function CalendarHeader({ period }: any) {
                         <IconButton
                             aria-label="Previous"
                             onClick={() => {
-                                subCalendar(period)
+                                setCalendar(period, 'sub')
+                                setRange(getRange(period))
                             }}
                             size="large"
                         >
-                            {/* <Icon>{mainThemeDark.direction === 'ltr' ? 'chevron_left' : 'chevron_right'}</Icon> */}
                             <Icon>chevron_left </Icon>
                         </IconButton>
                     </Tooltip>
@@ -86,9 +108,11 @@ function CalendarHeader({ period }: any) {
                         <IconButton
                             aria-label="Next"
                             onClick={() => {
-                                addCalendar(period)
+                                setCalendar(period, 'add')
+                                setRange(getRange(period))
                             }}
                             size="large"
+                            disabled={isFutureDate}
                         >
                             <Icon>chevron_right</Icon>
                         </IconButton>
@@ -99,4 +123,4 @@ function CalendarHeader({ period }: any) {
     )
 }
 
-export default CalendarHeader
+export default MyConsumptionCalendar

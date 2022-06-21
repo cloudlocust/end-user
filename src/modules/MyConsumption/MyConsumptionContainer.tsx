@@ -9,7 +9,7 @@ import { useMetrics } from 'src/modules/Metrics/metricsHook'
 import { getMetricType, periodValueType } from 'src/modules/Metrics/Metrics'
 import dayjs from 'dayjs'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
-import CalendarHeader from './components/MyConsumptionCalendar/MyConsumptionCalendar'
+import MyConsumptionCalendar from './components/MyConsumptionCalendar/MyConsumptionCalendar'
 
 /**
  * InitialMetricsStates for useMetrics.
@@ -99,7 +99,7 @@ export const MyConsumptionContainer = () => {
                         </div>
                     </div>
                 </motion.div>
-                <CalendarHeader period={period} />
+                <MyConsumptionCalendar period={period} setRange={setRange} />
 
                 {metersList && metersList?.length > 1 && (
                     <SelectMeters
