@@ -15,17 +15,26 @@ import {
     addMonths,
     differenceInCalendarDays,
 } from 'date-fns'
-import dayjs from 'dayjs'
 import { useEffect, useState } from 'react'
-
-const MyConsumptionCalendar = ({ period, setRange }: any) => {
+import { periodValueType } from 'src/modules/Metrics/Metrics'
+import { IMyConsumptionCalendar } from 'src/modules/MyConsumption/myConsumptionTypes'
+/**
+ * MyConsumptionCalendar component.
+ *
+ * @param root0 N/A.
+ * @param root0.period Period range.
+ * @param root0.setRange SetRange function.
+ * @returns MyConsumptionCalendar.
+ */
+const MyConsumptionCalendar = ({ period, setRange }: IMyConsumptionCalendar) => {
     const [currentDate, setCurrentDate] = useState(new Date())
     const isFutureDate = differenceInCalendarDays(currentDate, new Date()) >= 0
     useEffect(() => {
         isFutureDate && setCurrentDate(new Date())
     }, [isFutureDate])
     /**
-     * SetCurrentPeriodDate
+     * SetCurrentPeriodDate.
+     *
      * @param periodToChange
      * @returns
      */
@@ -55,11 +64,12 @@ const MyConsumptionCalendar = ({ period, setRange }: any) => {
         }
     }
     /**
+     * SetRangeFrom function sets the date according to the selected period until which the range will exist.
      *
      * @param period
      * @returns
      */
-    const setCalendarRangeFrom = (period: any) => {
+    const setRangeTo = (period: periodValueType) => {
         switch (period) {
             case 1:
                 return setCurrentPeriodDate(subDays)
@@ -76,10 +86,10 @@ const MyConsumptionCalendar = ({ period, setRange }: any) => {
      * @param period
      * @returns
      */
-    const getRange = (period: dayjs.ManipulateType) => {
+    const getRange = (period: periodValueType) => {
         return {
             from: currentDate.toISOString(),
-            to: setCalendarRangeFrom(period)!.toISOString(),
+            to: setRangeTo(period).toISOString(),
         }
     }
 

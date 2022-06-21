@@ -41,3 +41,16 @@ interface ISelectMeters {
      */
     inputTextColor?: string
 }
+/**
+ * Interface IMyConsumptionCalendar.
+ */
+export interface IMyConsumptionCalendar {
+    /**
+     * Period range.
+     */
+    period: periodValueType
+    /**
+     * SetRange function.
+     */
+    setRange: (range: metricRange) => void
+}
