@@ -79,12 +79,6 @@ export type IMetric = {
 }
 
 /**
- * Metric model List.
- */
-// eslint-disable-next-line jsdoc/require-jsdoc
-export type IMetrics = IMetric[]
-
-/**
  * Information to be passed to body when getting metrics.
  */
 //eslint-disable-next-line jsdoc/require-jsdoc

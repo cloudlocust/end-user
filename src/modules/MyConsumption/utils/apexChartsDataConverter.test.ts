@@ -1,11 +1,11 @@
 import { convertMetricsDataToApexChartsAxisValues } from 'src/modules/MyConsumption/utils/apexChartsDataConverter'
-import { IMetrics } from 'src/modules/Metrics/Metrics'
+import { IMetric } from 'src/modules/Metrics/Metrics'
 
 // eslint-disable-next-line jsdoc/require-jsdoc
 const mockDatapoints = [[247, 1651406400]]
 
 // eslint-disable-next-line jsdoc/require-jsdoc
-const mockMetricsData: IMetrics = [
+const mockMetricsData: IMetric[] = [
     {
         target: 'nrlink_consumption_metrics',
         datapoints: mockDatapoints,

@@ -1,6 +1,6 @@
 import React from 'react'
 import ReactApexChart from 'react-apexcharts'
-import { IMetrics } from 'src/modules/Metrics/Metrics'
+import { IMetric } from 'src/modules/Metrics/Metrics'
 import { useTheme } from '@mui/material/styles'
 import { useIntl } from 'react-intl'
 import { CircularProgress } from '@mui/material'
@@ -18,7 +18,7 @@ const MyConsumptionChart = ({
 }: // eslint-disable-next-line jsdoc/require-jsdoc
 {
     // eslint-disable-next-line jsdoc/require-jsdoc
-    data: IMetrics
+    data: IMetric[]
     // eslint-disable-next-line jsdoc/require-jsdoc
     chartType: ApexChart['type']
     // eslint-disable-next-line jsdoc/require-jsdoc
