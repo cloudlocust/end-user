@@ -34,7 +34,6 @@ export const ENEDIS_CONSENT_API = `${API_RESOURCES_URL}/enedis/consent`
  * @param initialState Initial State of the hook.
  * @returns Consumption metrics hook.
  */
-// eslint-disable-next-line sonarjs/cognitive-complexity
 export function useMetrics(initialState: getMetricType) {
     const { enqueueSnackbar } = useSnackbar()
     const { formatMessage } = useIntl()
@@ -102,8 +101,7 @@ export function useMetrics(initialState: getMetricType) {
             // Nrlink consent.
             if (nrlinkConsent.status === 'fulfilled') {
                 setNrlinkConsent(nrlinkConsent.value?.data)
-            }
-            if (nrlinkConsent.status === 'rejected') {
+            } else if (nrlinkConsent.status === 'rejected') {
                 enqueueSnackbar('Erreur lors de la récupération du consentement Nrlink', {
                     variant: 'error',
                     autoHideDuration: 5000,
@@ -112,8 +110,7 @@ export function useMetrics(initialState: getMetricType) {
             // Enedis consent.
             if (enedisConsent.status === 'fulfilled') {
                 setEnedisConsent(enedisConsent.value?.data)
-            }
-            if (enedisConsent.status === 'rejected') {
+            } else if (enedisConsent.status === 'rejected') {
                 enqueueSnackbar('Erreur lors de la récupération du consentement Enedis', {
                     variant: 'error',
                     autoHideDuration: 5000,
