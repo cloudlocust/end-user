@@ -37,7 +37,7 @@ export type metricTargetsType = {
     /**
      * Single metric target.
      */
-    target: metricTarget
+    target: metricTargetType
     /**
      * Metric type.
      */
@@ -67,16 +67,16 @@ export type metricFiltersType = {
  * Metric model.
  */
 // eslint-disable-next-line jsdoc/require-jsdoc
-export type IMetrics = {
+export type IMetric = {
     /**
      * Metric target.
      */
-    target: metricTarget
+    target: metricTargetType
     /**
      * Metric Datapoints.
      */
     datapoints: number[][]
-}[]
+}
 
 /**
  * Information to be passed to body when getting metrics.
@@ -101,9 +101,3 @@ export type getMetricType = {
      */
     filters?: metricFilters
 }
-
-/**
- * Range value type.
- *
- */
-type periodValueType = 1 | 7 | 30 | 365
