@@ -39,6 +39,7 @@ export const convertMetricsDataToApexChartsAxisValues = (data: IMetrics) => {
         if (metric.datapoints.length > 0) axisValues = getAxisValuesFromDatapoints(metric.datapoints)
         yAxisSeries!.push({
             name: metric.target,
+            // Choosing to send data as yAxisValues of format number[], and xAxisValues in option.xaxis of ApexCharts Options, let us take more control of the chart and have a more structured chart, (For example, in bar chart by giving options.xaxis.categories as xAxisValues and series.data as yAxisValues, will show each bar directly below its x value, when gave data as [number, number][] it decayed the bar from its x value).
             data: axisValues.yAxisValues,
         })
         // We'll have at the end of the loop the last xAxisValues as categories, because charts will have the same xAxis.
