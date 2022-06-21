@@ -139,7 +139,7 @@ export const getApexChartMyConsumptionProps = ({
     let myConsumptionApexChartSeries: ApexAxisChartSeries = []
     let yAxisOptions: ApexYAxis[] = []
     yAxisSeries.forEach((yAxisSerie) => {
-        // If this Serie doesn't have any data we don't show it on the chart thus we do return, and this is true for all series then we'll show an empty chart.
+        // If this Serie doesn't have any data we don't show it on the chart thus we do return, and if this is true for all series then we'll show an empty chart.
         if (yAxisSerie.data.length === 0) return
         myConsumptionApexChartSeries!.push({
             ...yAxisSerie,
@@ -153,7 +153,12 @@ export const getApexChartMyConsumptionProps = ({
         yAxisOptions.push({
             opposite: false,
             labels: {
-                // eslint-disable-next-line jsdoc/require-jsdoc
+                /**
+                 * Represent the label shown in the yAxis for each value (this also is take as yAxis label in tooltip).
+                 *
+                 * @param value Yaxis Value.
+                 * @returns Desired label to be shown for values in the yAxis.
+                 */
                 formatter: (value: number) => `${value} KWh`,
             },
             axisBorder: {
