@@ -4,7 +4,7 @@ import ButtonGroup from '@mui/material/ButtonGroup'
 import { useState } from 'react'
 import { useTheme } from '@mui/material'
 import { useIntl } from 'react-intl'
-import { buttonOptions, targetOptions } from 'src/modules/MyConsumption/utils/myConsumptionVariables'
+import { buttonOptions, targetOptions, TargetType } from 'src/modules/MyConsumption/utils/myConsumptionVariables'
 import { ITargetButtonGroup } from 'src/modules/MyConsumption/myConsumptionTypes'
 
 /**
@@ -27,7 +27,7 @@ export const TargetButtonGroup = ({ removeTarget, addTarget, hidePmax }: ITarget
      */
     const handleTarget = (optionBtn: typeof buttonOptions[0]) => {
         targetOptions.forEach((target) => {
-            optionBtn.targets.includes(target) ? addTarget(target) : removeTarget(target)
+            optionBtn.targets.includes(target as TargetType) ? addTarget(target) : removeTarget(target)
         })
     }
     return (
