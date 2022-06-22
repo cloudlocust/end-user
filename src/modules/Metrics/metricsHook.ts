@@ -45,7 +45,7 @@ export function useMetrics(initialState: getMetricType) {
                     interval: metricsInterval,
                     range,
                     targets,
-                    adHocFilters: filters,
+                    adhocFilters: filters,
                 })
                 setData(response.data)
             } catch (error) {

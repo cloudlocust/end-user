@@ -23,6 +23,7 @@ export const ENEDIS_CONSENT_API = `${API_RESOURCES_URL}/enedis/consent`
 export function useConsents() {
     const { enqueueSnackbar } = useSnackbar()
     const { formatMessage } = useIntl()
+    const [consentsLoading, setConsentsLoading] = useState(false)
     const [nrlinkConsent, setNrlinkConsent] = useState<INrlinkConsent>()
     const [enedisConsent, setEnedisConsent] = useState<IEnedisConsent>()
 
@@ -33,6 +34,7 @@ export function useConsents() {
      */
     const getConsents = useCallback(
         async (meterGuid: string) => {
+            setConsentsLoading(true)
             if (!meterGuid) return
             // Used Promise.allSettled() instead of Promise.all to return a promise that resolves after all of the given requests have either been fulfilled or rejected.
             // Because Promise.all() throws only when the first promise is rejected and it returns only that rejection.
@@ -50,7 +52,7 @@ export function useConsents() {
                 enqueueSnackbar(
                     formatMessage({
                         id: 'Erreur lors de la récupération du consentement Nrlink',
-                        defaultMessage: "'Erreur lors de la récupération du consentement Nrlink'",
+                        defaultMessage: 'Erreur lors de la récupération du consentement Nrlink',
                     }),
                     {
                         variant: 'error',
@@ -73,9 +75,10 @@ export function useConsents() {
                     },
                 )
             }
+            setConsentsLoading(false)
         },
         [enqueueSnackbar, formatMessage],
     )
 
-    return { nrlinkConsent, enedisConsent, getConsents }
+    return { nrlinkConsent, enedisConsent, consentsLoading, getConsents }
 }
