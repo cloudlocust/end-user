@@ -45,7 +45,13 @@ const MyConsumptionChart = ({
         theme,
     })
     return (
-        <div className={`w-full ${period === 'monthly' && 'apexChartsWrapper'}`}>
+        <div
+            className={`w-full
+            ${
+                // We add some styling when period is monthly to make xAxis more visible and responsive, When it's desktop (we'll show 1st, 3rd, 5th ...etc, and we hide 2nd, 4th, 6th ...Etc of the month), and when its mobile we show every 4 days.
+                period === 'monthly' && 'apexChartsMonthPeriodWrapper'
+            }`}
+        >
             <ReactApexChart {...reactApexChartsProps} data-testid="apexcharts" width={'100%'} height={320} />
         </div>
     )

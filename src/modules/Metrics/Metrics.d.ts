@@ -7,6 +7,23 @@ export type metricTargetType =
     | 'nrlink_internal_temperature_metrics'
 
 /**
+ * Enum representing the metricTarget without exposing the backend naming.
+ */
+export enum metricTargetsEnum {
+    /**
+     * Enum value for consumption_metrics.
+     */
+    consumption = 'consumption_metrics',
+    /**
+     * Enum value for nrlink_internal_temperature_metrics.
+     */
+    internalTemperatur = 'nrlink_internal_temperature_metrics',
+    /**
+     * Enum value for external_temperature_metrics.
+     */
+    externalTemperatur = 'external_temperature_metrics',
+}
+/**
  * Metrics intervals.
  */
 export type metricIntervalType = '1min' | '1d' | '1m'

@@ -6,18 +6,19 @@ import { ThemeProvider } from '@mui/material'
 import { TEST_SUCCESS_WEEK_METRICS as MOCK_WEEK_METRICS } from 'src/mocks/handlers/metrics'
 import { applyCamelCase } from 'src/common/react-platform-components'
 import { periodType } from 'src/modules/MyConsumption/myConsumptionTypes'
+import { metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
 
-const TEST_SUCCESS_WEEK_METRICS = applyCamelCase(MOCK_WEEK_METRICS(['consumption_metrics']))
+const TEST_SUCCESS_WEEK_METRICS = applyCamelCase(MOCK_WEEK_METRICS([metricTargetsEnum.consumption]))
 // eslint-disable-next-line jsdoc/require-jsdoc
 const propsMyConsumptionChart = {
     data: TEST_SUCCESS_WEEK_METRICS,
     chartType: 'bar' as ApexChart['type'],
     isMetricsLoading: false,
-    period: 'weekly' as periodType,
+    period: 'monthly' as periodType,
 }
 const circularProgressClassname = '.MuiCircularProgress-root'
 const apexChartsClassName = '.apexcharts-svg'
-const wrapperChartsClassName = '.apexChartsWrapper'
+const apexChartsMonthPeriodWrapperClassName = '.apexChartsMonthPeriodWrapper'
 
 // Mocking apexcharts, because there are errors related to modules not found, in test mode.
 // TODO remove this and check if there is a solution to test ApexCharts without mocking it.
@@ -41,7 +42,7 @@ describe('Test MyConsumptionChart', () => {
                 <MyConsumptionChart {...propsMyConsumptionChart} />
             </ThemeProvider>,
         )
-        expect(container.querySelector(wrapperChartsClassName)).toBeInTheDocument()
+        expect(container.querySelector(apexChartsMonthPeriodWrapperClassName)).toBeInTheDocument()
         expect(container.querySelector(apexChartsClassName)).toBeInTheDocument()
     })
     test('When isMetricsLoading true, Circular progress should be shown', async () => {

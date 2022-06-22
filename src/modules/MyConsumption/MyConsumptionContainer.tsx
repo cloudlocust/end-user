@@ -9,7 +9,7 @@ import { formatMetricFilter } from 'src/modules/MyConsumption/utils/MyConsumptio
 import { MyConsumptionPeriod, SelectMeters } from 'src/modules/MyConsumption'
 import { SelectChangeEvent, useTheme } from '@mui/material'
 import { useMetrics } from 'src/modules/Metrics/metricsHook'
-import { getMetricType } from 'src/modules/Metrics/Metrics'
+import { getMetricType, metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
 import { periodType } from 'src/modules/MyConsumption/myConsumptionTypes'
 import dayjs from 'dayjs'
 import { Link } from 'react-router-dom'
@@ -18,8 +18,22 @@ import { useIntl } from 'react-intl'
 import { useConsents } from 'src/modules/Consents/consentsHook'
 
 // TODO improve in 2411.
-// eslint-disable-next-line jsdoc/require-jsdoc
-const TargetButtonGroup = ({ onClick }: { onClick: () => void }) => (
+/**
+ * TargetButtonGroup component for toggling between PMax, temperature or no charts.
+ *
+ * @param param N/A.
+ * @param param.onClick Handling only Temperatur Charts for now.
+ * @returns TargetButtonGroup Component.
+ */
+const TargetButtonGroup = ({
+    onClick,
+}: // eslint-disable-next-line jsdoc/require-jsdoc
+{
+    /**
+     * OnClick Temperature toggl.
+     */
+    onClick: () => void
+}) => (
     <ButtonGroup variant="contained" aria-label="outlined primary button group">
         <Button disabled>O</Button>
         <Button onClick={onClick}>T°</Button>
@@ -55,17 +69,8 @@ export const MyConsumptionContainer = () => {
     const theme = useTheme()
     const { formatMessage } = useIntl()
     const { getConsents, nrlinkConsent, enedisConsent } = useConsents()
-    const {
-        setMetricsInterval,
-        setRange,
-        setFilters,
-        isMetricsLoading,
-        data,
-        metricsInterval,
-        filters,
-        addTarget,
-        removeTarget,
-    } = useMetrics(initialMetricsHookValues)
+    const { setMetricsInterval, setRange, setFilters, isMetricsLoading, data, metricsInterval, filters, addTarget } =
+        useMetrics(initialMetricsHookValues)
     const [period, setPeriod] = useState<periodType>('daily')
 
     useEffect(() => {
@@ -177,9 +182,8 @@ export const MyConsumptionContainer = () => {
             <div className="my-16 flex justify-center">
                 <TargetButtonGroup
                     onClick={() => {
-                        removeTarget('consumption_metrics')
-                        addTarget('nrlink_internal_temperature_metrics')
-                        addTarget('external_temperature_metrics')
+                        addTarget(metricTargetsEnum.externalTemperatur)
+                        addTarget(metricTargetsEnum.internalTemperatur)
                     }}
                 />
             </div>

@@ -4,6 +4,11 @@ import { Props } from 'react-apexcharts'
 import { periodType } from 'src/modules/MyConsumption/myConsumptionTypes'
 import { dayjsUTC } from 'src/common/react-platform-components'
 import fr from 'apexcharts/dist/locales/fr.json'
+import {
+    myConsumptionChartProperties,
+    getMyConsumptionChartColor,
+} from 'src/modules/MyConsumption/utils/myConsumptionVariables'
+import { metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
 
 /**
  * Default ApexChart Options, represent the general options related to the overall look of the MyConsumptionChart.
@@ -79,6 +84,17 @@ export const defaultApexChartOptions: (theme: Theme) => Props['options'] = (them
         width: 1.5,
         dashArray: 0,
     },
+    markers: {
+        strokeWidth: 1.5,
+        strokeOpacity: 1,
+        strokeDashArray: 0,
+        fillOpacity: 1,
+        shape: 'circle',
+        radius: 2,
+        hover: {
+            size: 5,
+        },
+    },
 })
 
 /**
@@ -138,21 +154,27 @@ export const getApexChartMyConsumptionProps = ({
     let options: Props['options'] = defaultApexChartOptions(theme)!
     let myConsumptionApexChartSeries: ApexAxisChartSeries = []
     let yAxisOptions: ApexYAxis[] = []
+    // For each chart we'll indicate what size his marker is.
+    let markerSizeList: number[] = []
 
     yAxisSeries.forEach((yAxisSerie) => {
         // If this Serie doesn't have any data we don't show it on the chart thus we do return, and if this is true for all series then we'll show an empty chart.
         if (yAxisSerie.data.length === 0) return
+        const { label, unit, ...restChartYAxisProperties } =
+            myConsumptionChartProperties[yAxisSerie.name as keyof typeof myConsumptionChartProperties]
+
         myConsumptionApexChartSeries!.push({
             ...yAxisSerie,
-            color: theme.palette.primary.light,
+            color: getMyConsumptionChartColor(yAxisSerie.name as metricTargetsEnum, theme),
             name: formatMessage({
-                id: 'Consommation',
-                defaultMessage: 'Consommation',
+                id: label,
+                defaultMessage: label,
             }),
-            type: chartType,
+            type: yAxisSerie.name === metricTargetsEnum.consumption ? chartType : 'line',
         })
         yAxisOptions.push({
-            opposite: false,
+            ...restChartYAxisProperties,
+            opposite: yAxisSerie.name !== metricTargetsEnum.consumption,
             labels: {
                 /**
                  * Represent the label shown in the yAxis for each value (this also is take as yAxis label in tooltip).
@@ -160,7 +182,7 @@ export const getApexChartMyConsumptionProps = ({
                  * @param value Yaxis Value.
                  * @returns Desired label to be shown for values in the yAxis.
                  */
-                formatter: (value: number) => `${value} KWh`,
+                formatter: (value: number) => `${value} ${unit}`,
             },
             axisBorder: {
                 show: true,
@@ -169,6 +191,8 @@ export const getApexChartMyConsumptionProps = ({
                 show: true,
             },
         })
+        // When period is daily and chart is consumption then we show no marker, otherwise if period is not daily we don't show consumption marker.
+        markerSizeList.push(yAxisSerie.name === metricTargetsEnum.consumption || period === 'daily' ? 0 : 2)
     })
 
     options.xaxis = {
@@ -206,7 +230,7 @@ export const getApexChartMyConsumptionProps = ({
             },
         }
     }
-
+    options!.markers!.size = markerSizeList
     options.yaxis = yAxisOptions
     return { series: myConsumptionApexChartSeries, options }
 }

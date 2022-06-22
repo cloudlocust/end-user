@@ -72,15 +72,9 @@ export function useMetrics(initialState: getMetricType) {
      * @param target Target to be added.
      */
     const addTarget = (target: metricTargetType) => {
-        const isExistTarget = targets.find((targetEl) => targetEl.target === target)
-        if (!isExistTarget) {
+        if (!targets.find((targetEl) => targetEl.target === target)) {
             setTargets((prevState) => {
-                const newTarget = [...prevState]
-                newTarget.push({
-                    type: 'timeseries',
-                    target,
-                })
-                return newTarget
+                return [...prevState, { type: 'timeseries', target }]
             })
         }
     }

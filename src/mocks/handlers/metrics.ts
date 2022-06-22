@@ -376,7 +376,13 @@ const FAKE_YEAR_DATA = [
     [78, 1669852800000],
 ]
 
-// eslint-disable-next-line jsdoc/require-jsdoc
+/**
+ * Function that return MOCK Data, for all targets in the requests, instead of repeating ourselves creating FAKE DATA for each targets, It'll return FAKE DATA for all targets, especially if we have DAY DATA, MONTH DATA, ...etc.
+ *
+ * @param targets Targets of the request.
+ * @param FAKE_DATA FAKE_DATA will represent which data we want to associate to all the targets.
+ * @returns FAKE_DATA for all targets.
+ */
 function getMetricsDataFromTarget(targets: metricTargetType[], FAKE_DATA: number[][]) {
     return targets.map((target) => {
         let datapoints = FAKE_DATA
