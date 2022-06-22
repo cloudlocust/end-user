@@ -5,7 +5,7 @@ import { useConsents } from 'src/modules/Consents/consentsHook'
 const mockEnqueueSnackbar = jest.fn()
 
 /**
- * Mocking the useSnackbar used in CustomerDetails to load the customerDetails based on url /customers/:id {id} params.
+ * Mocking the useSnackbar.
  */
 jest.mock('notistack', () => ({
     ...jest.requireActual('notistack'),

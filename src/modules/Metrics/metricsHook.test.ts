@@ -1,12 +1,11 @@
 import { reduxedRenderHook } from 'src/common/react-platform-components/test'
 import { useMetrics } from 'src/modules/Metrics/metricsHook'
-// import { act } from '@testing-library/react-hooks'
 import { getMetricType, metricRangeType, metricTargetsType } from 'src/modules/Metrics/Metrics'
 
 const mockEnqueueSnackbar = jest.fn()
 
 /**
- * Mocking the useSnackbar used in CustomerDetails to load the customerDetails based on url /customers/:id {id} params.
+ * Mocking the useSnackbar.
  */
 jest.mock('notistack', () => ({
     ...jest.requireActual('notistack'),
@@ -38,16 +37,6 @@ let mockHookArguments: getMetricType = {
     targets: FAKE_TARGETS,
     filters: [],
 }
-
-// const FILTERS_TEST = [
-//     {
-//         key: 'meter_guid',
-//         operator: '=',
-//         value: '12345',
-//     },
-// ]
-
-// const NonExistantState = 'NONEXISTENT'
 
 describe('useMetrics hook test', () => {
     test('When the hook is called with default values', async () => {
@@ -95,50 +84,4 @@ describe('useMetrics hook test', () => {
             autoHideDuration: 5000,
         })
     }, 8000)
-    // test('When setFilters is triggered, filters state changes and returns', async () => {
-    //     const {
-    //         renderedHook: { result, waitForValueToChange },
-    //     } = reduxedRenderHook(() => useMetrics(mockHookArguments))
-
-    //     act(() => {
-    //         result.current.setFilters(FILTERS_TEST)
-    //     })
-    //     await waitForValueToChange(
-    //         () => {
-    //             return result.current.isMetricsLoading
-    //         },
-    //         { timeout: 10000 },
-    //     )
-    //     expect(result.current.filters).toStrictEqual(FILTERS_TEST)
-    //     expect(result.current.enedisConsent.enedisConsentState).toStrictEqual(NonExistantState)
-    //     expect(result.current.nrlinkConsent.nrlinkConsentState).toStrictEqual(NonExistantState)
-    // }, 30000)
-    // test('When getting consents fail', async () => {
-    //     const { store } = require('src/redux')
-    //     await store.dispatch.userModel.setAuthenticationToken('error')
-
-    //     const {
-    //         renderedHook: { result, waitForValueToChange },
-    //     } = reduxedRenderHook(() => useMetrics(mockHookArguments))
-
-    //     act(() => {
-    //         result.current.setFilters(FILTERS_TEST)
-    //     })
-    //     await waitForValueToChange(
-    //         () => {
-    //             return result.current.isMetricsLoading
-    //         },
-    //         { timeout: 10000 },
-    //     )
-
-    //     expect(mockEnqueueSnackbar).toHaveBeenCalledWith('Erreur lors de la récupération du consentement Nrlink', {
-    //         autoHideDuration: 5000,
-    //         variant: 'error',
-    //     })
-
-    //     expect(mockEnqueueSnackbar).toHaveBeenCalledWith('Erreur lors de la récupération du consentement Enedis', {
-    //         autoHideDuration: 5000,
-    //         variant: 'error',
-    //     })
-    // }, 20000)
 })
