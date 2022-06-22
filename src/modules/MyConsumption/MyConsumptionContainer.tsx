@@ -8,7 +8,7 @@ import { MyConsumptionPeriod, SelectMeters } from 'src/modules/MyConsumption'
 import { SelectChangeEvent, useTheme } from '@mui/material'
 import { useMetrics } from 'src/modules/Metrics/metricsHook'
 import { getMetricType } from 'src/modules/Metrics/Metrics'
-import { periodValueType } from 'src/modules/MyConsumption/myConsumptionTypes'
+import { periodType } from 'src/modules/MyConsumption/myConsumptionTypes'
 import dayjs from 'dayjs'
 import { Link } from 'react-router-dom'
 import { Icon, Typography } from 'src/common/ui-kit'
@@ -52,7 +52,7 @@ export const MyConsumptionContainer = () => {
         nrlinkConsent,
         enedisConsent,
     } = useMetrics(initialMetricsHookValues)
-    const [period, setPeriod] = useState<periodValueType>('daily')
+    const [period, setPeriod] = useState<periodType>('daily')
 
     useEffect(() => {
         if (!metersList) return

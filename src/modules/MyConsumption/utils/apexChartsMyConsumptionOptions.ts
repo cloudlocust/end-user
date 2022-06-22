@@ -1,12 +1,16 @@
 import { formatMessageType } from 'src/common/react-platform-translation'
 import { Theme } from '@mui/material/styles/createTheme'
 import { Props } from 'react-apexcharts'
-import { periodValueType } from 'src/modules/MyConsumption/myConsumptionTypes'
+import { periodType } from 'src/modules/MyConsumption/myConsumptionTypes'
 import { dayjsUTC } from 'src/common/react-platform-components'
 import fr from 'apexcharts/dist/locales/fr.json'
-import { metricTargetType } from 'src/modules/Metrics/Metrics'
 
-// eslint-disable-next-line jsdoc/require-jsdoc
+/**
+ * Default ApexChart Options, represent the general options related to the overall look of the MyConsumptionChart.
+ *
+ * @param theme Current Theme so that we set the grid colors, background of chart, font of chart related to the theme.
+ * @returns Default ApexChart Options for MyConsumptionChart.
+ */
 export const defaultApexChartOptions: (theme: Theme) => Props['options'] = (theme) => ({
     chart: {
         fontFamily: theme.typography.fontFamily,
@@ -84,7 +88,7 @@ export const defaultApexChartOptions: (theme: Theme) => Props['options'] = (them
  * @param isTooltipLabel Indicate if it's tooltipXAxis label.
  * @returns Format of xAxis or tooltip labels according to the current period.
  */
-const getXAxisLabelFormatFromPeriod = (period: periodValueType, isTooltipLabel?: boolean) => {
+const getXAxisLabelFormatFromPeriod = (period: periodType, isTooltipLabel?: boolean) => {
     switch (period) {
         case 'daily':
             return 'HH:mm'
@@ -97,36 +101,21 @@ const getXAxisLabelFormatFromPeriod = (period: periodValueType, isTooltipLabel?:
     }
 }
 
-// eslint-disable-next-line jsdoc/require-jsdoc
-export const consumptionTitle = 'Consommation'
-// eslint-disable-next-line jsdoc/require-jsdoc
-const getMetricTargetYAxisOptions = (
-    target: metricTargetType,
-    theme: Theme,
-    formatMessage: formatMessageType,
-    chartType: string,
-): // eslint-disable-next-line jsdoc/require-jsdoc
-ApexYAxis & { color: string; name: string; type: string; markerSize: number } => {
-    return {
-        name: formatMessage({
-            id: consumptionTitle,
-            defaultMessage: consumptionTitle,
-        }),
-        color: theme.palette.primary.light,
-        type: chartType,
-        markerSize: 0,
-        opposite: false,
-        labels: {
-            // eslint-disable-next-line jsdoc/require-jsdoc
-            formatter: (value: number) => `${value} Kwh`,
-        },
-    }
-}
-
-// eslint-disable-next-line jsdoc/require-jsdoc
-export const getApexChartMyConsumptionOptions = ({
-    series,
-    categories,
+/**
+ * Function that returns apexCharts Props related to MyConsumptionChart with its different yAxis charts for each target.
+ *
+ * @param params N/A.
+ * @param params.yAxisSeries Represents yAxisSeries that has same format as apexChartsChartSeries, which represents a list of yAxis for each target, that will be customized (color, labels, types ...etc) that suits MyConsumptionChart (for example, when target is consumption it should have theme.palette.primary.light color).
+ * @param params.xAxisValues Represents the xAxisValues for all apexCharts that will be the same in myConsumptionChart, xAxisValues are going to be categories of apexCharts.
+ * @param params.theme Represents the current theme as it is needed to set apexCharts options to fit MyConsumptionChart, for example the colors of the grid should be theme.palette.primary.contrastText.
+ * @param params.period Represents the current period ('daily', 'weekly', 'monthly', 'yearly' ...etc), which will be used to handle xAxis values format (for example when yearly we should show values as 'January', 'February', ...etc).
+ * @param params.formatMessage Represents the formatMessage from useIntl to handle translation of yAxis names.
+ * @param params.chartType Represents the type of the consumption Chart (type has the format of ApexChart['type']).
+ * @returns Props of apexCharts in MyConsumptionChart.
+ */
+export const getApexChartMyConsumptionProps = ({
+    yAxisSeries,
+    xAxisValues,
     theme,
     period,
     formatMessage,
@@ -134,41 +123,44 @@ export const getApexChartMyConsumptionOptions = ({
 }: // eslint-disable-next-line jsdoc/require-jsdoc
 {
     // eslint-disable-next-line jsdoc/require-jsdoc
-    series: ApexAxisChartSeries
+    yAxisSeries: ApexAxisChartSeries
     // eslint-disable-next-line jsdoc/require-jsdoc
-    categories: number[]
+    xAxisValues: number[]
     // eslint-disable-next-line jsdoc/require-jsdoc
     theme: Theme
     // eslint-disable-next-line jsdoc/require-jsdoc
-    period: periodValueType
+    period: periodType
     // eslint-disable-next-line jsdoc/require-jsdoc
     formatMessage: formatMessageType
     // eslint-disable-next-line jsdoc/require-jsdoc
-    chartType: string
+    chartType: ApexChart['type']
 }) => {
     let options: Props['options'] = defaultApexChartOptions(theme)!
     let myConsumptionApexChartSeries: ApexAxisChartSeries = []
-    let yAxis: ApexYAxis[] = []
-    const markerSizeList: number[] = []
-    series.forEach((serie) => {
-        if (serie.data.length === 0) return
-        // eslint-disable-next-line jsdoc/require-jsdoc
-        const { color, name, type, markerSize, ...restYAxisOptions } = getMetricTargetYAxisOptions(
-            serie.name as metricTargetType,
-            theme,
-            formatMessage,
-            chartType,
-        )
-
+    let yAxisOptions: ApexYAxis[] = []
+    yAxisSeries.forEach((yAxisSerie) => {
+        // If this Serie doesn't have any data we don't show it on the chart thus we do return, and if this is true for all series then we'll show an empty chart.
+        if (yAxisSerie.data.length === 0) return
         myConsumptionApexChartSeries!.push({
-            ...serie,
-            color,
-            name,
-            type,
+            ...yAxisSerie,
+            color: theme.palette.primary.light,
+            name: formatMessage({
+                id: 'Consommation',
+                defaultMessage: 'Consommation',
+            }),
+            type: chartType,
         })
-        yAxis.push({
+        yAxisOptions.push({
             opposite: false,
-            ...restYAxisOptions,
+            labels: {
+                /**
+                 * Represent the label shown in the yAxis for each value (this also is take as yAxis label in tooltip).
+                 *
+                 * @param value Yaxis Value.
+                 * @returns Desired label to be shown for values in the yAxis.
+                 */
+                formatter: (value: number) => `${value} KWh`,
+            },
             axisBorder: {
                 show: true,
             },
@@ -176,12 +168,11 @@ export const getApexChartMyConsumptionOptions = ({
                 show: true,
             },
         })
-        markerSizeList.push(markerSize)
     })
 
     options.xaxis = {
         ...options.xaxis,
-        categories,
+        categories: xAxisValues,
         labels: {
             format: 'HH:mm',
             /**
@@ -215,11 +206,6 @@ export const getApexChartMyConsumptionOptions = ({
         }
     }
 
-    options.markers = {
-        ...options.markers,
-        size: markerSizeList,
-    }
-
-    options.yaxis = yAxis
+    options.yaxis = yAxisOptions
     return { series: myConsumptionApexChartSeries, options }
 }

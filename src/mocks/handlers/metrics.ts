@@ -1,5 +1,5 @@
 import { rest } from 'msw'
-import { getMetricType, IMetrics } from 'src/modules/Metrics/Metrics'
+import { getMetricType, IMetric } from 'src/modules/Metrics/Metrics'
 import { METRICS_API } from 'src/modules/Metrics/metricsHook'
 import { SnakeCasedPropertiesDeep } from 'type-fest'
 import dayjs from 'dayjs'
@@ -378,7 +378,7 @@ const FAKE_YEAR_DATA = [
 /**
  * Success day test metrics.
  */
-export const TEST_SUCCESS_DAY_METRICS: SnakeCasedPropertiesDeep<IMetrics> = [
+export const TEST_SUCCESS_DAY_METRICS: SnakeCasedPropertiesDeep<IMetric[]> = [
     {
         target: 'nrlink_consumption_metrics',
         datapoints: FAKE_DAY_DATA,
@@ -388,7 +388,7 @@ export const TEST_SUCCESS_DAY_METRICS: SnakeCasedPropertiesDeep<IMetrics> = [
 /**
  * Sucess week test metrics.
  */
-export const TEST_SUCCESS_WEEK_METRICS: SnakeCasedPropertiesDeep<IMetrics> = [
+export const TEST_SUCCESS_WEEK_METRICS: SnakeCasedPropertiesDeep<IMetric[]> = [
     {
         target: 'nrlink_consumption_metrics',
         datapoints: FAKE_WEEK_DATA,
@@ -398,7 +398,7 @@ export const TEST_SUCCESS_WEEK_METRICS: SnakeCasedPropertiesDeep<IMetrics> = [
 /**
  * Sucess month test metrics.
  */
-export const TEST_SUCCESS_MONTH_METRICS: SnakeCasedPropertiesDeep<IMetrics> = [
+export const TEST_SUCCESS_MONTH_METRICS: SnakeCasedPropertiesDeep<IMetric[]> = [
     {
         target: 'nrlink_consumption_metrics',
         datapoints: FAKE_MONTH_DATA,
@@ -408,7 +408,7 @@ export const TEST_SUCCESS_MONTH_METRICS: SnakeCasedPropertiesDeep<IMetrics> = [
 /**
  * Success year test metrics.
  */
-export const TEST_SUCCESS_YEAR_METRICS: SnakeCasedPropertiesDeep<IMetrics> = [
+export const TEST_SUCCESS_YEAR_METRICS: SnakeCasedPropertiesDeep<IMetric[]> = [
     {
         target: 'nrlink_consumption_metrics',
         datapoints: FAKE_YEAR_DATA,

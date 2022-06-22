@@ -1,5 +1,5 @@
 import dayjs from 'dayjs'
-import { periodValueType } from 'src/modules/MyConsumption/myConsumptionTypes'
+import { periodType } from 'src/modules/MyConsumption/myConsumptionTypes'
 /**
  * Function to get range.
  *
@@ -20,25 +20,25 @@ export const dataConsumptionPeriod = [
         name: 'Jour',
         interval: '1min',
         range: getRange('day'),
-        period: 'daily' as periodValueType,
+        period: 'daily' as periodType,
     },
     {
         name: 'Semaine',
         interval: '1d',
         range: getRange('week'),
-        period: 'weekly' as periodValueType,
+        period: 'weekly' as periodType,
     },
     {
         name: 'Mois',
         interval: '1d',
         range: getRange('month'),
-        period: 'monthly' as periodValueType,
+        period: 'monthly' as periodType,
     },
 
     {
         name: 'Année',
         interval: '1m',
         range: getRange('year'),
-        period: 'yearly' as periodValueType,
+        period: 'yearly' as periodType,
     },
 ]

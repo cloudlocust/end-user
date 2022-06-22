@@ -51,7 +51,7 @@ export const MuiTextField: FC<UiTextFieldProps & MaterialUiTextFieldProps> = fun
 
     // do not use _.omit, going to be deprecated in lodash 5 for perf issues
     const nativeProps: MaterialUiTextFieldProps = { ...otherProps }
-    if (validateFunctions.filter((validator) => validator.name === 'required')) {
+    if (validateFunctions.filter((validator) => validator.name === 'required').length) {
         nativeProps.required = true
     }
     if (!('label' in nativeProps)) {
