@@ -1,0 +1,38 @@
+.MuiOutlinedInput-root {
+    svg {
+        color: black; //TODO
+    }
+    fieldset {
+        border-width: 0 !important;
+    }
+    :hover {
+        fieldset {
+            border-width: 0;
+        }
+    }
+    .Mui-focused {
+        fieldset {
+            border-width: 0 !important;
+        }
+    }
+}
+.wrapper {
+    width: 250px;
+}
+
+//         '& fieldset': {
+//             borderColor: ` ${setColor(inputColor)} !important`,
+//         },
+//     },
+//     '& .MuiOutlinedInput-root:hover': {
+//         '& fieldset': {
+//             borderColor: setColor(inputColor),
+//             borderWidth: '2px',
+//         },
+//     },
+//     '& .Mui-focused': {
+//         '& fieldset': {
+//             borderColor: ` ${setColor(inputColor)} !important`,
+//         },
+//     },
+// }))

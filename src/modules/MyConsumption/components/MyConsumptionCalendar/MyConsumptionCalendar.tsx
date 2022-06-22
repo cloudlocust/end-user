@@ -24,6 +24,7 @@ import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
 import { DatePicker } from '@mui/x-date-pickers/DatePicker'
 import Stack from '@mui/material/Stack'
+import 'src/modules/MyConsumption/components/MyConsumptionCalendar/MyConsumptonCalendar.scss'
 /**
  * MyConsumptionCalendar component.
  *
@@ -149,6 +150,7 @@ const MyConsumptionCalendar = ({ period, setRange }: IMyConsumptionCalendar) => 
                         views={['day']}
                         value={value}
                         inputFormat="dd/MM/yyyy"
+                        maxDate={new Date()}
                         onChange={handleChange}
                         renderInput={(params) => <TextField {...params} helperText={null} />}
                     />
@@ -159,7 +161,7 @@ const MyConsumptionCalendar = ({ period, setRange }: IMyConsumptionCalendar) => 
                     <DatePicker
                         views={['day']}
                         // minDate={new Date('2012-03-01')}
-                        // maxDate={new Date('2023-06-01')}
+                        maxDate={new Date()}
                         inputFormat="dd/MM/yyyy"
                         value={value}
                         onChange={handleChange}
@@ -172,6 +174,7 @@ const MyConsumptionCalendar = ({ period, setRange }: IMyConsumptionCalendar) => 
                         views={['month']}
                         // minDate={new Date('2012-03-01')}
                         // maxDate={new Date('2023-06-01')}
+                        maxDate={new Date()}
                         inputFormat="dd/MM/yyyy"
                         value={value}
                         onChange={handleChange}
@@ -183,6 +186,7 @@ const MyConsumptionCalendar = ({ period, setRange }: IMyConsumptionCalendar) => 
                     <DatePicker
                         views={['year']}
                         inputFormat="dd/MM/yyyy"
+                        maxDate={new Date()}
                         value={value}
                         onChange={handleChange}
                         renderInput={(params) => <TextField {...params} helperText={null} />}
@@ -193,12 +197,12 @@ const MyConsumptionCalendar = ({ period, setRange }: IMyConsumptionCalendar) => 
 
     return (
         <motion.div
-            className="flex items-center justify-center"
+            className="flex items-center justify-center wrapper"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1, transition: { delay: 0.3 } }}
             style={{ color: theme.palette.primary.dark }}
         >
-            <Typography className="mr-10">{format(currentDate, 'dd/MM/yyyy')}</Typography>
+            {/* <Typography className="mr-10">{format(currentDate, 'dd/MM/yyyy')}</Typography> */}
             <Tooltip title="Previous">
                 <IconButton
                     aria-label="Previous"
