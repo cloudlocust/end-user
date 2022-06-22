@@ -380,7 +380,7 @@ const FAKE_YEAR_DATA = [
  */
 export const TEST_SUCCESS_DAY_METRICS: SnakeCasedPropertiesDeep<IMetric[]> = [
     {
-        target: 'nrlink_consumption_metrics',
+        target: 'consumption_metrics',
         datapoints: FAKE_DAY_DATA,
     },
 ]
@@ -390,7 +390,7 @@ export const TEST_SUCCESS_DAY_METRICS: SnakeCasedPropertiesDeep<IMetric[]> = [
  */
 export const TEST_SUCCESS_WEEK_METRICS: SnakeCasedPropertiesDeep<IMetric[]> = [
     {
-        target: 'nrlink_consumption_metrics',
+        target: 'consumption_metrics',
         datapoints: FAKE_WEEK_DATA,
     },
 ]
@@ -400,7 +400,7 @@ export const TEST_SUCCESS_WEEK_METRICS: SnakeCasedPropertiesDeep<IMetric[]> = [
  */
 export const TEST_SUCCESS_MONTH_METRICS: SnakeCasedPropertiesDeep<IMetric[]> = [
     {
-        target: 'nrlink_consumption_metrics',
+        target: 'consumption_metrics',
         datapoints: FAKE_MONTH_DATA,
     },
 ]
@@ -410,7 +410,7 @@ export const TEST_SUCCESS_MONTH_METRICS: SnakeCasedPropertiesDeep<IMetric[]> = [
  */
 export const TEST_SUCCESS_YEAR_METRICS: SnakeCasedPropertiesDeep<IMetric[]> = [
     {
-        target: 'nrlink_consumption_metrics',
+        target: 'consumption_metrics',
         datapoints: FAKE_YEAR_DATA,
     },
 ]
@@ -436,6 +436,6 @@ export const metricsEndpoints = [
         if (FAKE_YEAR_INTERVAL === '1m' && difference === 365)
             return res(ctx.status(200), ctx.delay(1000), ctx.json(TEST_SUCCESS_YEAR_METRICS))
 
-        return res(ctx.status(401), ctx.json(1000), ctx.json({ error: 'Error' }))
+        return res(ctx.status(401), ctx.delay(1000), ctx.json({ error: 'Error' }))
     }),
 ]
