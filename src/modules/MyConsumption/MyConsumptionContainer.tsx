@@ -26,7 +26,7 @@ export const initialMetricsHookValues: getMetricType = {
     },
     targets: [
         {
-            target: 'nrlink_consumption_metrics',
+            target: 'consumption_metrics',
             type: 'timeseries',
         },
     ],

@@ -7,7 +7,7 @@ const mockDatapoints = [[247, 1651406400]]
 // eslint-disable-next-line jsdoc/require-jsdoc
 const mockMetricsData: IMetric[] = [
     {
-        target: 'nrlink_consumption_metrics',
+        target: 'consumption_metrics',
         datapoints: mockDatapoints,
     },
 ]

@@ -380,7 +380,7 @@ const FAKE_YEAR_DATA = [
  */
 export const TEST_SUCCESS_DAY_METRICS: SnakeCasedPropertiesDeep<IMetric[]> = [
     {
-        target: 'nrlink_consumption_metrics',
+        target: 'consumption_metrics',
         datapoints: FAKE_DAY_DATA,
     },
 ]
@@ -390,7 +390,7 @@ export const TEST_SUCCESS_DAY_METRICS: SnakeCasedPropertiesDeep<IMetric[]> = [
  */
 export const TEST_SUCCESS_WEEK_METRICS: SnakeCasedPropertiesDeep<IMetric[]> = [
     {
-        target: 'nrlink_consumption_metrics',
+        target: 'consumption_metrics',
         datapoints: FAKE_WEEK_DATA,
     },
 ]
@@ -400,7 +400,7 @@ export const TEST_SUCCESS_WEEK_METRICS: SnakeCasedPropertiesDeep<IMetric[]> = [
  */
 export const TEST_SUCCESS_MONTH_METRICS: SnakeCasedPropertiesDeep<IMetric[]> = [
     {
-        target: 'nrlink_consumption_metrics',
+        target: 'consumption_metrics',
         datapoints: FAKE_MONTH_DATA,
     },
 ]
@@ -410,7 +410,7 @@ export const TEST_SUCCESS_MONTH_METRICS: SnakeCasedPropertiesDeep<IMetric[]> = [
  */
 export const TEST_SUCCESS_YEAR_METRICS: SnakeCasedPropertiesDeep<IMetric[]> = [
     {
-        target: 'nrlink_consumption_metrics',
+        target: 'consumption_metrics',
         datapoints: FAKE_YEAR_DATA,
     },
 ]

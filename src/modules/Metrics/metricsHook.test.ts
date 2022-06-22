@@ -26,7 +26,7 @@ const FAKE_RANGE: metricRangeType = {
 
 const FAKE_TARGETS: metricTargetsType = [
     {
-        target: 'nrlink_consumption_metrics',
+        target: 'consumption_metrics',
         type: 'timeseries',
     },
 ]
