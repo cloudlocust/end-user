@@ -7,10 +7,6 @@ export interface IMyConsumptionPeriod {
      */
     setMetricsInterval: (interval: metricIntervals) => void
     /**
-     * SetRange function.
-     */
-    setRange: (range: metricRange) => void
-    /**
      * SetPeriodValue function.
      */
     setPeriod: (period: periodValue) => void

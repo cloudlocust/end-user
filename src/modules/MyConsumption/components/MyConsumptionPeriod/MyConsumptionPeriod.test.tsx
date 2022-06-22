@@ -11,17 +11,12 @@ import { MyConsumptionPeriod } from 'src/modules/MyConsumption'
 const SELECTED_CLASSNAME = 'Mui-selected'
 let mockSetMetricsInterval = jest.fn()
 let mockSetPeriod = jest.fn()
-let mockSetRange = jest.fn()
 
 describe('load MyConsumptionPeriod', () => {
     test('on success loading the element, MyConsumptionPeriod should be loaded, tabs titles shown', async () => {
         const { getByText } = reduxedRender(
             <Router>
-                <MyConsumptionPeriod
-                    setPeriod={mockSetPeriod}
-                    setRange={mockSetRange}
-                    setMetricsInterval={mockSetMetricsInterval}
-                />
+                <MyConsumptionPeriod setPeriod={mockSetPeriod} setMetricsInterval={mockSetMetricsInterval} />
             </Router>,
         )
         // Tabs titles showing.
@@ -36,7 +31,6 @@ describe('load MyConsumptionPeriod', () => {
         await waitFor(() => {
             expect(mockSetPeriod).toHaveBeenCalledWith(dataConsumptionPeriod[1].period)
             expect(mockSetMetricsInterval).toHaveBeenCalledWith(dataConsumptionPeriod[1].interval)
-            expect(mockSetRange).toHaveBeenCalledWith(dataConsumptionPeriod[1].range)
         })
     })
 })

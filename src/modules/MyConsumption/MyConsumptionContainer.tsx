@@ -118,7 +118,7 @@ export const MyConsumptionContainer = () => {
             />
 
             {/* TODO: MYEM-2425 */}
-            <MyConsumptionPeriod setPeriod={setPeriod} setRange={setRange} setMetricsInterval={setMetricsInterval} />
+            <MyConsumptionPeriod setPeriod={setPeriod} setMetricsInterval={setMetricsInterval} />
         </>
     )
 }

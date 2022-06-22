@@ -15,9 +15,10 @@ import {
     addMonths,
     differenceInCalendarDays,
 } from 'date-fns'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { periodValueType } from 'src/modules/Metrics/Metrics'
 import { IMyConsumptionCalendar } from 'src/modules/MyConsumption/myConsumptionTypes'
+import _ from 'lodash'
 /**
  * MyConsumptionCalendar component.
  *
@@ -38,9 +39,12 @@ const MyConsumptionCalendar = ({ period, setRange }: IMyConsumptionCalendar) => 
      * @param periodToChange
      * @returns
      */
-    const setCurrentPeriodDate = (periodToChange: (date: number | Date, amount: number) => Date) => {
-        return periodToChange(currentDate, 1)
-    }
+    const setCurrentPeriodDate = useCallback(
+        (periodToChange: (date: number | Date, amount: number) => Date) => {
+            return periodToChange(currentDate, 1)
+        },
+        [currentDate],
+    )
     /**
      *
      * @param period
@@ -69,30 +73,39 @@ const MyConsumptionCalendar = ({ period, setRange }: IMyConsumptionCalendar) => 
      * @param period
      * @returns
      */
-    const setRangeTo = (period: periodValueType) => {
-        switch (period) {
-            case 1:
-                return setCurrentPeriodDate(subDays)
-            case 7:
-                return setCurrentPeriodDate(subWeeks)
-            case 30:
-                return setCurrentPeriodDate(subMonths)
-            case 365:
-                return setCurrentPeriodDate(subYears)
-        }
-    }
+    const setRangeFrom = useCallback(
+        (period: periodValueType) => {
+            switch (period) {
+                case 1:
+                    return setCurrentPeriodDate(subDays)
+                case 7:
+                    return setCurrentPeriodDate(subWeeks)
+                case 30:
+                    return setCurrentPeriodDate(subMonths)
+                case 365:
+                    return setCurrentPeriodDate(subYears)
+            }
+        },
+        [setCurrentPeriodDate],
+    )
     /**
      *
      * @param period
      * @returns
      */
-    const getRange = (period: periodValueType) => {
-        return {
-            from: currentDate.toISOString(),
-            to: setRangeTo(period).toISOString(),
-        }
-    }
-
+    const getRange = useCallback(
+        (period: periodValueType) => {
+            return {
+                from: setRangeFrom(period).toISOString(),
+                to: currentDate.toISOString(),
+            }
+        },
+        [currentDate, setRangeFrom],
+    )
+    useEffect(() => {
+        setRange(getRange(period))
+        console.log(getRange(period))
+    }, [getRange, period, setRange])
     return (
         <div>
             <div className="flex flex-col justify-between z-10 container">
@@ -105,6 +118,7 @@ const MyConsumptionCalendar = ({ period, setRange }: IMyConsumptionCalendar) => 
                         <IconButton
                             aria-label="Previous"
                             onClick={() => {
+                                console.log(getRange(period))
                                 setCalendar(period, 'sub')
                                 setRange(getRange(period))
                             }}
@@ -118,6 +132,7 @@ const MyConsumptionCalendar = ({ period, setRange }: IMyConsumptionCalendar) => 
                         <IconButton
                             aria-label="Next"
                             onClick={() => {
+                                console.log(getRange(period))
                                 setCalendar(period, 'add')
                                 setRange(getRange(period))
                             }}
