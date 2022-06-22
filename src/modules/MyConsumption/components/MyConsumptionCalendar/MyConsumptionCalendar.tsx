@@ -18,7 +18,12 @@ import {
 import { useCallback, useEffect, useState } from 'react'
 import { periodValueType } from 'src/modules/Metrics/Metrics'
 import { IMyConsumptionCalendar } from 'src/modules/MyConsumption/myConsumptionTypes'
-import _ from 'lodash'
+import { useTheme } from '@mui/material'
+import TextField from '@mui/material/TextField'
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
+import { DatePicker } from '@mui/x-date-pickers/DatePicker'
+import Stack from '@mui/material/Stack'
 /**
  * MyConsumptionCalendar component.
  *
@@ -29,15 +34,32 @@ import _ from 'lodash'
  */
 const MyConsumptionCalendar = ({ period, setRange }: IMyConsumptionCalendar) => {
     const [currentDate, setCurrentDate] = useState(new Date())
-    const isFutureDate = differenceInCalendarDays(currentDate, new Date()) >= 0
+    const [value, setValue] = useState<Date | null>(currentDate)
+    const isFutureDate = differenceInCalendarDays(value!, new Date()) >= 0
+
+    const handleChange = (newValue: Date | null) => {
+        setValue(newValue)
+    }
+
+    const theme = useTheme()
+    // If a future date is selected, then today's date is set
     useEffect(() => {
-        isFutureDate && setCurrentDate(new Date())
+        isFutureDate && setValue(new Date())
     }, [isFutureDate])
+
+    useEffect(() => {
+        setValue(currentDate)
+    }, [currentDate])
+
+    useEffect(() => {
+        value && setCurrentDate(value)
+    }, [value])
+
     /**
      * SetCurrentPeriodDate.
      *
-     * @param periodToChange
-     * @returns
+     * @param periodToChange Substract or add the specified years, months, weeks from/to the current date.
+     * @returns The date from which the data is shown.
      */
     const setCurrentPeriodDate = useCallback(
         (periodToChange: (date: number | Date, amount: number) => Date) => {
@@ -46,32 +68,45 @@ const MyConsumptionCalendar = ({ period, setRange }: IMyConsumptionCalendar) => 
         [currentDate],
     )
     /**
+     * Set calendar changes the value of the current date according to the selected period.
      *
-     * @param period
-     * @param arrowName
+     * @param period Selected period.
+     * @param arrowName Name of the clicked arrow.
      */
     const setCalendar = (period: any, arrowName: string) => {
         const subData = arrowName === 'sub'
+        /**
+         * SetCalendarData function based on argument values.
+         *
+         * @param sub Subtract the specified years, months, weeks, days from the given date.
+         * @param add Add the specified years, months, weeks, days to the given date.
+         */
+        const setCalendarData = (
+            sub: (date: number | Date, amount: number) => Date,
+            add: (date: number | Date, amount: number) => Date,
+        ) => {
+            setCurrentDate(setCurrentPeriodDate(subData ? sub : add))
+        }
         switch (period) {
             case 1:
-                setCurrentDate(setCurrentPeriodDate(subData ? subDays : addDays))
+                setCalendarData(subDays, addDays)
                 break
             case 7:
-                setCurrentDate(setCurrentPeriodDate(subData ? subWeeks : addWeeks))
+                setCalendarData(subWeeks, addWeeks)
                 break
             case 30:
-                setCurrentDate(setCurrentPeriodDate(subData ? subMonths : addMonths))
+                setCalendarData(subMonths, addMonths)
                 break
             case 365:
-                setCurrentDate(setCurrentPeriodDate(subData ? subYears : addYears))
+                setCalendarData(subYears, addYears)
                 break
         }
     }
     /**
      * SetRangeFrom function sets the date according to the selected period until which the range will exist.
      *
-     * @param period
-     * @returns
+     * @param period Selected period.
+     * @returns According to the selected period setRangeFrom sets the value from which data should be shown.
      */
     const setRangeFrom = useCallback(
         (period: periodValueType) => {
@@ -104,47 +139,97 @@ const MyConsumptionCalendar = ({ period, setRange }: IMyConsumptionCalendar) => 
     )
     useEffect(() => {
         setRange(getRange(period))
-        console.log(getRange(period))
     }, [getRange, period, setRange])
+
+    const setDatePicker = (period: any) => {
+        switch (period) {
+            case 1:
+                return (
+                    <DatePicker
+                        views={['day']}
+                        value={value}
+                        inputFormat="dd/MM/yyyy"
+                        onChange={handleChange}
+                        renderInput={(params) => <TextField {...params} helperText={null} />}
+                    />
+                )
+            // eslint-disable-next-line sonarjs/no-duplicated-branches
+            case 7:
+                return (
+                    <DatePicker
+                        views={['day']}
+                        // minDate={new Date('2012-03-01')}
+                        // maxDate={new Date('2023-06-01')}
+                        inputFormat="dd/MM/yyyy"
+                        value={value}
+                        onChange={handleChange}
+                        renderInput={(params) => <TextField {...params} helperText={null} />}
+                    />
+                )
+            case 30:
+                return (
+                    <DatePicker
+                        views={['month']}
+                        // minDate={new Date('2012-03-01')}
+                        // maxDate={new Date('2023-06-01')}
+                        inputFormat="dd/MM/yyyy"
+                        value={value}
+                        onChange={handleChange}
+                        renderInput={(params) => <TextField {...params} helperText={null} />}
+                    />
+                )
+            case 365:
+                return (
+                    <DatePicker
+                        views={['year']}
+                        inputFormat="dd/MM/yyyy"
+                        value={value}
+                        onChange={handleChange}
+                        renderInput={(params) => <TextField {...params} helperText={null} />}
+                    />
+                )
+        }
+    }
+
     return (
-        <div>
-            <div className="flex flex-col justify-between z-10 container">
-                <motion.div
-                    className="flex items-center justify-center"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1, transition: { delay: 0.3 } }}
+        <motion.div
+            className="flex items-center justify-center"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1, transition: { delay: 0.3 } }}
+            style={{ color: theme.palette.primary.dark }}
+        >
+            <Typography className="mr-10">{format(currentDate, 'dd/MM/yyyy')}</Typography>
+            <Tooltip title="Previous">
+                <IconButton
+                    aria-label="Previous"
+                    onClick={() => {
+                        setCalendar(period, 'sub')
+                        setRange(getRange(period))
+                    }}
+                    size="large"
+                    style={{ color: theme.palette.primary.contrastText }}
                 >
-                    <Tooltip title="Previous">
-                        <IconButton
-                            aria-label="Previous"
-                            onClick={() => {
-                                console.log(getRange(period))
-                                setCalendar(period, 'sub')
-                                setRange(getRange(period))
-                            }}
-                            size="large"
-                        >
-                            <Icon>chevron_left </Icon>
-                        </IconButton>
-                    </Tooltip>
-                    <Typography>{format(currentDate, 'dd/MM/yyyy')}</Typography>
-                    <Tooltip title="Next">
-                        <IconButton
-                            aria-label="Next"
-                            onClick={() => {
-                                console.log(getRange(period))
-                                setCalendar(period, 'add')
-                                setRange(getRange(period))
-                            }}
-                            size="large"
-                            disabled={isFutureDate}
-                        >
-                            <Icon>chevron_right</Icon>
-                        </IconButton>
-                    </Tooltip>
-                </motion.div>
-            </div>
-        </div>
+                    <Icon>chevron_left </Icon>
+                </IconButton>
+            </Tooltip>
+            <LocalizationProvider dateAdapter={AdapterDateFns}>{setDatePicker(period)} </LocalizationProvider>
+            <Tooltip title="Next">
+                <IconButton
+                    aria-label="Next"
+                    onClick={() => {
+                        setCalendar(period, 'add')
+                        setRange(getRange(period))
+                    }}
+                    size="large"
+                    disabled={isFutureDate}
+                    style={{
+                        color: isFutureDate ? theme.palette.grey[500] : theme.palette.primary.contrastText,
+                    }}
+                >
+                    <Icon>chevron_right</Icon>
+                </IconButton>
+            </Tooltip>
+        </motion.div>
     )
 }
 

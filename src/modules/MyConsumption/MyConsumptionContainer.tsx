@@ -82,8 +82,12 @@ export const MyConsumptionContainer = () => {
     return (
         <>
             <div className="container relative p-16 sm:p-24 flex flex-col sm:flex-row justify-between items-center">
-                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-                    <div className="flex flex-col sm:flex-row items-center sm:items-center mb-16 sm:mb-0 ">
+                <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    className="flex flex-col md:flex-row mb-16 sm:mb-0"
+                >
+                    <div className="flex flex-col sm:flex-row items-center sm:items-center ">
                         <TypographyFormatMessage className="h3 sm:mr-3" color="textPrimary">
                             Ma Consommation
                         </TypographyFormatMessage>
@@ -98,8 +102,8 @@ export const MyConsumptionContainer = () => {
                             </TypographyFormatMessage>
                         </div>
                     </div>
+                    <MyConsumptionCalendar period={period} setRange={setRange} />
                 </motion.div>
-                <MyConsumptionCalendar period={period} setRange={setRange} />
 
                 {metersList && metersList?.length > 1 && (
                     <SelectMeters
