@@ -1,13 +1,13 @@
 import React from 'react'
 import ReactApexChart from 'react-apexcharts'
-import { IMetrics } from 'src/modules/Metrics/Metrics'
+import { IMetric } from 'src/modules/Metrics/Metrics'
 import { useTheme } from '@mui/material/styles'
 import { useIntl } from 'react-intl'
 import { CircularProgress } from '@mui/material'
 import 'src/modules/MyConsumption/components/MyConsumptionChart/MyConsumptionChart.scss'
-import { convertMetricsDataToApexChartsProps } from 'src/modules/MyConsumption'
-import { periodValue } from 'src/modules/MyConsumption/myConsumptionTypes'
-import { useMediaQuery } from '@mui/material'
+import { convertMetricsDataToApexChartsAxisValues } from 'src/modules/MyConsumption/utils/apexChartsDataConverter'
+import { getApexChartMyConsumptionProps } from 'src/modules/MyConsumption/utils/apexChartsMyConsumptionOptions'
+import { periodType } from 'src/modules/MyConsumption/myConsumptionTypes'
 
 // eslint-disable-next-line jsdoc/require-jsdoc
 const MyConsumptionChart = ({
@@ -18,17 +18,16 @@ const MyConsumptionChart = ({
 }: // eslint-disable-next-line jsdoc/require-jsdoc
 {
     // eslint-disable-next-line jsdoc/require-jsdoc
-    data: IMetrics
+    data: IMetric[]
     // eslint-disable-next-line jsdoc/require-jsdoc
-    chartType: string
+    chartType: ApexChart['type']
     // eslint-disable-next-line jsdoc/require-jsdoc
     isMetricsLoading: boolean
     // eslint-disable-next-line jsdoc/require-jsdoc
-    period: periodValue
+    period: periodType
 }) => {
     const { formatMessage } = useIntl()
     const theme = useTheme()
-    const isMobile = useMediaQuery(theme.breakpoints.down('md'))
 
     if (isMetricsLoading)
         return (
@@ -36,16 +35,17 @@ const MyConsumptionChart = ({
                 <CircularProgress style={{ color: theme.palette.background.paper }} />
             </div>
         )
-    const reactApexChartsProps = convertMetricsDataToApexChartsProps({
-        data,
+    const { yAxisSeries, xAxisValues } = convertMetricsDataToApexChartsAxisValues(data)
+    const reactApexChartsProps = getApexChartMyConsumptionProps({
+        yAxisSeries,
+        xAxisValues,
+        period,
         chartType,
         formatMessage,
         theme,
-        period,
-        isMobile,
     })
     return (
-        <div className={`w-full ${period === 30 && 'apexChartsWrapper'}`}>
+        <div className={`w-full ${period === 'monthly' && 'apexChartsWrapper'}`}>
             <ReactApexChart {...reactApexChartsProps} data-testid="apexcharts" width={'100%'} height={320} />
         </div>
     )

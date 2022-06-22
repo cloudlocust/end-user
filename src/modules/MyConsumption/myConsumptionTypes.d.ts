@@ -3,9 +3,9 @@
  */
 export interface IMyConsumptionPeriod {
     /**
-     * SetPeriod function.
+     * SetMetricInterval function.
      */
-    setPeriod: (interval: metricIntervals) => void
+    setMetricsInterval: (interval: metricIntervals) => void
     /**
      * SetRange function.
      */
@@ -13,23 +13,31 @@ export interface IMyConsumptionPeriod {
     /**
      * SetPeriodValue function.
      */
-    setPeriodValue: (period: periodValue) => void
+    setPeriod: (period: periodValue) => void
 }
 /**
  * Range value type.
  *
  */
-export type periodValue = 1 | 7 | 30 | 365
+export type periodType = 'daily' | 'weekly' | 'monthly' | 'yearly'
 /**
- * Interface IMyConsumptionSelectMeters.
+ * Interface ISelectMeters.
  */
-interface IMyConsumptionSelectMeters {
+interface ISelectMeters {
     /**
      * List of meters.
      */
     metersList: IMeter[]
     /**
-     * SetFilters function.
+     * Handling function when we change values.
      */
-    setFilters: (value: metricFilters) => void
+    handleOnChange: (event: SelectChangeEvent, setSelectedMeter: (value: string) => void) => void
+    /**
+     * Color for input: borders and svg.
+     */
+    inputColor?: string
+    /**
+     * Text color.
+     */
+    inputTextColor?: string
 }

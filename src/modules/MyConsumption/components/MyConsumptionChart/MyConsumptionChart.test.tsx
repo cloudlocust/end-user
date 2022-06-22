@@ -1,18 +1,19 @@
 import React from 'react'
 import { reduxedRender } from 'src/common/react-platform-components/test'
-import { MyConsumptionChart } from 'src/modules/MyConsumption'
+import MyConsumptionChart from 'src/modules/MyConsumption/components/MyConsumptionChart'
 import { createTheme } from '@mui/material/styles'
 import { ThemeProvider } from '@mui/material'
 import { TEST_SUCCESS_WEEK_METRICS as MOCK_WEEK_METRICS } from 'src/mocks/handlers/metrics'
 import { applyCamelCase } from 'src/common/react-platform-components'
-import { periodValue } from 'src/modules/MyConsumption/myConsumptionTypes'
-const TEST_SUCCESS_WEEK_METRICS = applyCamelCase(MOCK_WEEK_METRICS(['nrlink_consumption_metrics']))
+import { periodType } from 'src/modules/MyConsumption/myConsumptionTypes'
+
+const TEST_SUCCESS_WEEK_METRICS = applyCamelCase(MOCK_WEEK_METRICS(['consumption_metrics']))
 // eslint-disable-next-line jsdoc/require-jsdoc
 const propsMyConsumptionChart = {
     data: TEST_SUCCESS_WEEK_METRICS,
-    chartType: 'bar',
+    chartType: 'bar' as ApexChart['type'],
     isMetricsLoading: false,
-    period: 30 as periodValue,
+    period: 'weekly' as periodType,
 }
 const circularProgressClassname = '.MuiCircularProgress-root'
 const apexChartsClassName = '.apexcharts-svg'

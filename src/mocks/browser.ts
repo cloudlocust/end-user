@@ -10,6 +10,8 @@ import { setupWorker } from 'msw'
 import { userEndpoints } from './handlers/user'
 import { metersEndpoints } from './handlers/meters'
 import { nrlinkEndpoints } from './handlers/nrlink'
+import { equipmentsEndpoints } from './handlers/equipments'
+import { accomodationEndpoints } from './handlers/accomodation'
 import { metricsEndpoints } from './handlers/metrics'
 import { consentsEndpoints } from 'src/mocks/handlers/consents'
 
@@ -23,6 +25,10 @@ const handlers = [
     ...metersEndpoints,
     /******NrLink REQUESTS*****/
     ...nrlinkEndpoints,
+    /******Equipments REQUESTS*****/
+    ...equipmentsEndpoints,
+    /******accomodation REQUESTS*****/
+    ...accomodationEndpoints,
     /******Metrics REQUESTS*****/
     ...metricsEndpoints,
     /******Consents REQUESTS*****/

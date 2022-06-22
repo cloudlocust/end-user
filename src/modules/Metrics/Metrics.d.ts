@@ -1,24 +1,21 @@
 /**
  * Metric Targets.
  */
-export type metricTarget =
-    | 'nrlink_consumption_metrics'
-    | 'enedis_consumption_metrics'
-    | 'enphase_consumption_metrics'
-    | 'enphase_production_metrics'
+export type metricTargetType =
+    | 'consumption_metrics'
     | 'external_temperature_metrics'
     | 'nrlink_internal_temperature_metrics'
 
 /**
  * Metrics intervals.
  */
-export type metricInterval = '1min' | '1d' | '1m'
+export type metricIntervalType = '1min' | '1d' | '1m'
 
 /**
  * Metric range.
  */
 // eslint-disable-next-line jsdoc/require-jsdoc
-export type metricRange = {
+export type metricRangeType = {
     /**
      *
      */
@@ -33,11 +30,11 @@ export type metricRange = {
  * Metrics filter.
  */
 // eslint-disable-next-line jsdoc/require-jsdoc
-export type metricTargets = {
+export type metricTargetsType = {
     /**
      * Single metric target.
      */
-    target: metricTarget
+    target: metricTargetType
     /**
      * Metric type.
      */
@@ -48,7 +45,7 @@ export type metricTargets = {
  * Metric Filters.
  */
 // eslint-disable-next-line jsdoc/require-jsdoc
-export type metricFilters = {
+export type metricFiltersType = {
     /**
      * Key. Default is: "meter_guid".
      */
@@ -67,16 +64,16 @@ export type metricFilters = {
  * Metric model.
  */
 // eslint-disable-next-line jsdoc/require-jsdoc
-export type IMetrics = {
+export type IMetric = {
     /**
      * Metric target.
      */
-    target: metricTarget
+    target: metricTargetType
     /**
      * Metric Datapoints.
      */
     datapoints: number[][]
-}[]
+}
 
 /**
  * Information to be passed to body when getting metrics.
@@ -87,7 +84,7 @@ export type getMetricType = {
      * Range of time.
      */
     //eslint-disable-next-line jsdoc/require-jsdoc
-    range: metricRange
+    range: metricRangeType
     /**
      * Metric interval of time.
      */
@@ -95,15 +92,9 @@ export type getMetricType = {
     /**
      * Metrics targets.
      */
-    targets: metricTargets
+    targets: metricTargetsType
     /**
      * Metric filters.
      */
-    addHookFilters?: metricFilters
+    filters?: metricFiltersType
 }
-
-/**
- * Range value type.
- *
- */
-type periodValue = 1 | 7 | 30 | 365

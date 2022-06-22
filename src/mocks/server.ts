@@ -1,9 +1,12 @@
+/** Mock requests. */
 import { setupServer } from 'msw/node'
-import { metersEndpoints } from './handlers/meters'
 import { userEndpoints } from './handlers/user'
+import { metersEndpoints } from './handlers/meters'
 import { nrlinkEndpoints } from './handlers/nrlink'
 import { consentsEndpoints } from 'src/mocks/handlers/consents'
-import { metricsEndpoints } from 'src/mocks/handlers/metrics'
+import { equipmentsEndpoints } from './handlers/equipments'
+import { accomodationEndpoints } from './handlers/accomodation'
+import { metricsEndpoints } from './handlers/metrics'
 
 /**
  * Handlers to mock urls for tests.
@@ -15,6 +18,10 @@ const handlers = [
     ...metersEndpoints,
     /******NrLink REQUESTS*****/
     ...nrlinkEndpoints,
+    /******Equipments REQUESTS*****/
+    ...equipmentsEndpoints,
+    /******accomodation REQUESTS*****/
+    ...accomodationEndpoints,
     /******Metrics REQUESTS*****/
     ...metricsEndpoints,
     /******Consents REQUESTS*****/
