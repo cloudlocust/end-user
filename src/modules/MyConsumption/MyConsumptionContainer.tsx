@@ -118,52 +118,69 @@ export const MyConsumptionContainer = () => {
     }
 
     return (
-        <div style={{ background: theme.palette.primary.main }} className="p-24">
-            <div className="relative flex flex-col md:flex-row justify-between items-center">
-                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mb-16 md:mb-0">
-                    <div className="flex flex-col md:flex-row items-center">
-                        <TypographyFormatMessage
-                            variant="h5"
-                            className="sm:mr-8"
-                            style={{ color: theme.palette.primary.contrastText }}
-                        >
-                            Ma Consommation
-                        </TypographyFormatMessage>
-                        <div className="flex flex-row items-end">
-                            {/* TODO: kWh can also be P.max in MYEM-2408, to be dynamic. */}
+        <>
+            <div style={{ background: theme.palette.primary.main }} className="p-24">
+                <div className="relative flex flex-col md:flex-row justify-between items-center">
+                    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mb-16 md:mb-0">
+                        <div className="flex flex-col md:flex-row items-center">
                             <TypographyFormatMessage
                                 variant="h5"
-                                className="mr-8 sm:mr-8"
+                                className="sm:mr-8"
                                 style={{ color: theme.palette.primary.contrastText }}
                             >
-                                en kWh
+                                Ma Consommation
                             </TypographyFormatMessage>
-                            {/* Consommation par Jour / Semaine / Mois / Année */}
-                            <TypographyFormatMessage variant="h5" style={{ color: theme.palette.primary.contrastText }}>
-                                {showPerPeriodText()}
-                            </TypographyFormatMessage>
+                            <div className="flex flex-row items-end">
+                                {/* TODO: kWh can also be P.max in MYEM-2408, to be dynamic. */}
+                                <TypographyFormatMessage
+                                    variant="h5"
+                                    className="mr-8 sm:mr-8"
+                                    style={{ color: theme.palette.primary.contrastText }}
+                                >
+                                    en kWh
+                                </TypographyFormatMessage>
+                                {/* Consommation par Jour / Semaine / Mois / Année */}
+                                <TypographyFormatMessage
+                                    variant="h5"
+                                    style={{ color: theme.palette.primary.contrastText }}
+                                >
+                                    {showPerPeriodText()}
+                                </TypographyFormatMessage>
+                            </div>
                         </div>
-                    </div>
-                </motion.div>
-                {metersList && metersList?.length > 1 && (
-                    <SelectMeters
-                        metersList={metersList}
-                        handleOnChange={handleOnChange}
-                        inputTextColor={theme.palette.primary.contrastText}
-                        inputColor={theme.palette.primary.contrastText}
-                    />
-                )}
+                    </motion.div>
+                    {metersList && metersList?.length > 1 && (
+                        <SelectMeters
+                            metersList={metersList}
+                            handleOnChange={handleOnChange}
+                            inputTextColor={theme.palette.primary.contrastText}
+                            inputColor={theme.palette.primary.contrastText}
+                        />
+                    )}
+                </div>
+
+                <MyConsumptionChart
+                    isMetricsLoading={isMetricsLoading}
+                    data={data}
+                    chartType={metricsInterval === '1min' ? 'area' : 'bar'}
+                    period={period}
+                />
+                <MyConsumptionPeriod
+                    setPeriod={setPeriod}
+                    setRange={setRange}
+                    setMetricsInterval={setMetricsInterval}
+                />
             </div>
-
-            <MyConsumptionChart
-                isMetricsLoading={isMetricsLoading}
-                data={data}
-                chartType={metricsInterval === '1min' ? 'area' : 'bar'}
-                period={period}
-            />
-            <MyConsumptionPeriod setPeriod={setPeriod} setRange={setRange} setMetricsInterval={setMetricsInterval} />
-
-            <Widget type="total_consumption" />
-        </div>
+            <div style={{ background: theme.palette.grey[100] }}>
+                <div className="p-8 flex flex-row flex-wrap justify-evenly">
+                    <Widget type="total_consumption" />
+                    <Widget type="max_power" />
+                    <Widget type="external_temperature" />
+                    <Widget type="internal _temperature" />
+                    <Widget type="internal _temperature" />
+                    <Widget type="internal _temperature" />
+                </div>
+            </div>
+        </>
     )
 }

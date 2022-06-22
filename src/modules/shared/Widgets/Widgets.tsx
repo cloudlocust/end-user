@@ -1,6 +1,9 @@
 import { Card, Typography } from '@mui/material'
 import { WidgetProps } from './Widget'
 
+const WIDGET_MAX_WIDTH = '170px'
+const WIDGET_MAX_HEIGHT = '180px'
+
 /**
  * Reusable widget component.
  *
@@ -17,46 +20,59 @@ export const Widget = ({ type }: WidgetProps) => {
      * @returns Title according to the widget type.
      */
     const renderWidgetAssets = (type: WidgetProps['type'], element: 'title' | 'unit') => {
-        let title: string = ''
-        let unit: string = ''
+        let widgetTitle: string = ''
+        let widgetUnit: string = ''
         switch (type) {
             case 'total_consumption':
-                title = 'Consommation totale'
-                unit = 'kWh'
+                widgetTitle = 'Consommation totale'
+                widgetUnit = 'kWh'
                 break
             case 'max_power':
-                title = 'Puissance max'
-                unit = 'kVa'
+                widgetTitle = 'Puissance max'
+                widgetUnit = 'kVa'
                 break
             case 'internal _temperature':
-                title = 'Température intérieure'
-                unit = '°C'
+                widgetTitle = 'Température intérieure'
+                widgetUnit = '°C'
                 break
             case 'external_temperature':
-                title = 'Température extérieure'
-                unit = '°C'
+                widgetTitle = 'Température extérieure'
+                widgetUnit = '°C'
                 break
             default:
                 break
         }
 
         if (element === 'unit') {
-            return unit
+            return widgetUnit
         } else if (element === 'title') {
-            return title
+            return widgetTitle
         }
     }
 
     return (
-        <Card className="w-full rounded-20 shadow">
-            <div className="p-20 pb-0">
-                <Typography className="h3 font-medium">{renderWidgetAssets(type, 'title')}</Typography>
-                <div className="flex flex-row flex-wrap items-center mt-12">
-                    <Typography className="text-48 font-semibold leading-none tracking-tighter">22</Typography>
-                    <div className="flex flex-col mx-8">
-                        <Typography className="font-semibold" color="textSecondary">
+        <Card
+            className="w-full rounded-20 shadow my-8 mx-6 sm:m-4"
+            style={{ maxWidth: WIDGET_MAX_WIDTH, maxHeight: WIDGET_MAX_HEIGHT }}
+        >
+            <div className="p-16">
+                <Typography className="h4 font-medium" style={{ minHeight: '65px' }}>
+                    {renderWidgetAssets(type, 'title')}
+                </Typography>
+                <div className="flex flex-row flex-wrap mt-12">
+                    {/* Widget value */}
+                    <Typography className="text-6xl font-normal leading-none tracking-tighter items-center mx-auto">
+                        22
+                    </Typography>
+                    <div className="flex flex-col mx-8 ml-auto">
+                        {/* Widget unit */}
+                        <Typography className="font-medium text-base mb-8" color="textSecondary">
                             {renderWidgetAssets(type, 'unit')}
                         </Typography>
+                        {/* Widget sign */}
+                        {/* <Typography className="font-semibold text-base" color="textSecondary">
+                            {renderWidgetAssets(type, 'unit')}
+                        </Typography> */}
                     </div>
                 </div>
             </div>
