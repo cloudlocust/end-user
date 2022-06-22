@@ -2,10 +2,7 @@
  * Metric Targets.
  */
 export type metricTargetType =
-    | 'nrlink_consumption_metrics'
-    | 'enedis_consumption_metrics'
-    | 'enphase_consumption_metrics'
-    | 'enphase_production_metrics'
+    | 'consumption_metrics'
     | 'external_temperature_metrics'
     | 'nrlink_internal_temperature_metrics'
 
@@ -87,7 +84,7 @@ export type getMetricType = {
      * Range of time.
      */
     //eslint-disable-next-line jsdoc/require-jsdoc
-    range: metricRange
+    range: metricRangeType
     /**
      * Metric interval of time.
      */
@@ -95,9 +92,9 @@ export type getMetricType = {
     /**
      * Metrics targets.
      */
-    targets: metricTargets
+    targets: metricTargetsType
     /**
      * Metric filters.
      */
-    filters?: metricFilters
+    filters?: metricFiltersType
 }

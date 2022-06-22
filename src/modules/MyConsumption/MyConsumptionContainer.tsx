@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import MyConsumptionChart from 'src/modules/MyConsumption/components/MyConsumptionChart'
@@ -10,6 +10,10 @@ import { useMetrics } from 'src/modules/Metrics/metricsHook'
 import { getMetricType } from 'src/modules/Metrics/Metrics'
 import { periodType } from 'src/modules/MyConsumption/myConsumptionTypes'
 import dayjs from 'dayjs'
+import { Link } from 'react-router-dom'
+import { Icon, Typography } from 'src/common/ui-kit'
+import { useIntl } from 'react-intl'
+import { useConsents } from 'src/modules/Consents/consentsHook'
 
 /**
  * InitialMetricsStates for useMetrics.
@@ -22,7 +26,7 @@ export const initialMetricsHookValues: getMetricType = {
     },
     targets: [
         {
-            target: 'nrlink_consumption_metrics',
+            target: 'consumption_metrics',
             type: 'timeseries',
         },
     ],
@@ -38,7 +42,9 @@ export const initialMetricsHookValues: getMetricType = {
 export const MyConsumptionContainer = () => {
     const { elementList: metersList } = useMeterList()
     const theme = useTheme()
-    const { setMetricsInterval, setRange, setFilters, isMetricsLoading, data, metricsInterval } =
+    const { formatMessage } = useIntl()
+    const { getConsents, nrlinkConsent, enedisConsent } = useConsents()
+    const { setMetricsInterval, setRange, setFilters, isMetricsLoading, data, metricsInterval, filters } =
         useMetrics(initialMetricsHookValues)
     const [period, setPeriod] = useState<periodType>('daily')
 
@@ -46,6 +52,14 @@ export const MyConsumptionContainer = () => {
         if (!metersList) return
         if (metersList.length === 1) setFilters(formatMetricFilter(metersList[0].guid))
     }, [metersList, setFilters])
+
+    // UseEffect to check for consent whenever a meter is selected.
+    useEffect(() => {
+        if (filters.length > 0) {
+            getConsents(filters[0].value)
+        }
+    }, [filters, getConsents])
+
     /**
      * Show text according to interval.
      *
@@ -79,13 +93,37 @@ export const MyConsumptionContainer = () => {
         }
     }
 
+    if (nrlinkConsent?.nrlinkConsentState === 'NONEXISTENT' && enedisConsent?.enedisConsentState === 'NONEXISTENT') {
+        return (
+            <div className="container relative h-200 sm:h-256 p-16 sm:p-24 flex-col text-center flex items-center justify-center">
+                <>
+                    <Icon style={{ fontSize: '4rem', marginBottom: '1rem', color: theme.palette.secondary.main }}>
+                        error_outline_outlined
+                    </Icon>
+                </>
+                <Typography>
+                    {formatMessage({
+                        id: "Pour voir votre consommation vous devez d'abord ",
+                        defaultMessage: "Pour voir votre consommation vous devez d'abord ",
+                    })}
+                    <Link to="/nrlink-connection-steps" className="underline">
+                        {formatMessage({
+                            id: 'enregistrer votre compteur et votre nrLink',
+                            defaultMessage: 'enregistrer votre compteur et votre nrLink',
+                        })}
+                    </Link>
+                </Typography>
+            </div>
+        )
+    }
+
     return (
         <div style={{ background: theme.palette.primary.main }} className="p-24">
             <div className="relative flex flex-col md:flex-row justify-between items-center">
                 <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mb-16 md:mb-0">
                     <div className="flex flex-col md:flex-row items-center">
                         <TypographyFormatMessage
-                            variant="h4"
+                            variant="h5"
                             className="sm:mr-8"
                             style={{ color: theme.palette.primary.contrastText }}
                         >
@@ -100,7 +138,7 @@ export const MyConsumptionContainer = () => {
                             >
                                 en kWh
                             </TypographyFormatMessage>
-                            {/* Consommation par Jour / Semaiine / Mois / Année */}
+                            {/* Consommation par Jour / Semaine / Mois / Année */}
                             <TypographyFormatMessage variant="h5" style={{ color: theme.palette.primary.contrastText }}>
                                 {showPerPeriodText()}
                             </TypographyFormatMessage>

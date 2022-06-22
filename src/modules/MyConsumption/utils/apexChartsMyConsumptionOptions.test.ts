@@ -20,7 +20,7 @@ const xaxisDatetimeType = 'datetime'
 // eslint-disable-next-line jsdoc/require-jsdoc
 const mockYAxisSeriesConvertedData: ApexAxisChartSeries = [
     {
-        name: 'nrlink_consumption_metrics',
+        name: 'consumption_metrics',
         data: [mockDatapoints[0][0]],
     },
 ]

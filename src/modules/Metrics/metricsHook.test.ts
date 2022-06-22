@@ -5,7 +5,7 @@ import { getMetricType, metricRangeType, metricTargetsType } from 'src/modules/M
 const mockEnqueueSnackbar = jest.fn()
 
 /**
- * Mocking the useSnackbar used in CustomerDetails to load the customerDetails based on url /customers/:id {id} params.
+ * Mocking the useSnackbar.
  */
 jest.mock('notistack', () => ({
     ...jest.requireActual('notistack'),
@@ -26,7 +26,7 @@ const FAKE_RANGE: metricRangeType = {
 
 const FAKE_TARGETS: metricTargetsType = [
     {
-        target: 'nrlink_consumption_metrics',
+        target: 'consumption_metrics',
         type: 'timeseries',
     },
 ]
