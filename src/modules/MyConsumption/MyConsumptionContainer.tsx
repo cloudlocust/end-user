@@ -3,7 +3,7 @@ import { motion } from 'framer-motion'
 import { MyConsumptionChart } from 'src/modules/MyConsumption/components/MyConsumptionChart'
 import { useMeterList } from 'src/modules/Meters/metersHook'
 import { formatMetricFilter } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
-import { MyConsumptionPeriod, SelectMeters } from 'src/modules/MyConsumption'
+import { MyConsumptionPeriod, SelectMeters, Widget } from 'src/modules/MyConsumption'
 import { SelectChangeEvent, useTheme } from '@mui/material'
 import { useMetrics } from 'src/modules/Metrics/metricsHook'
 import { getMetricType, periodValueType } from 'src/modules/Metrics/Metrics'
@@ -116,6 +116,8 @@ export const MyConsumptionContainer = () => {
 
             {/* TODO: MYEM-2425 */}
             <MyConsumptionPeriod setPeriod={setPeriod} setRange={setRange} setMetricsInterval={setMetricsInterval} />
+
+            <Widget type="total_consumption" />
         </>
     )
 }
