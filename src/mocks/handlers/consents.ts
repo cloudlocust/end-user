@@ -1,6 +1,6 @@
 import { rest } from 'msw'
 import { IEnedisConsent, INrlinkConsent } from 'src/modules/Consents/Consents'
-import { ENEDIS_CONSENT_API, NRLINK_CONSENT_API } from 'src/modules/Metrics/metricsHook'
+import { ENEDIS_CONSENT_API, NRLINK_CONSENT_API } from 'src/modules/Consents/consentsHook'
 import { SnakeCasedPropertiesDeep } from 'type-fest'
 
 /**

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import MyConsumptionChart from 'src/modules/MyConsumption/components/MyConsumptionChart'
@@ -13,6 +13,7 @@ import dayjs from 'dayjs'
 import { Link } from 'react-router-dom'
 import { Icon, Typography } from 'src/common/ui-kit'
 import { useIntl } from 'react-intl'
+import { useConsents } from 'src/modules/Consents/consentsHook'
 
 /**
  * InitialMetricsStates for useMetrics.
@@ -42,22 +43,22 @@ export const MyConsumptionContainer = () => {
     const { elementList: metersList } = useMeterList()
     const theme = useTheme()
     const { formatMessage } = useIntl()
-    const {
-        setMetricsInterval,
-        setRange,
-        setFilters,
-        isMetricsLoading,
-        data,
-        metricsInterval,
-        nrlinkConsent,
-        enedisConsent,
-    } = useMetrics(initialMetricsHookValues)
+    const { getConsents, nrlinkConsent, enedisConsent } = useConsents()
+    const { setMetricsInterval, setRange, setFilters, isMetricsLoading, data, metricsInterval, filters } =
+        useMetrics(initialMetricsHookValues)
     const [period, setPeriod] = useState<periodType>('daily')
 
     useEffect(() => {
         if (!metersList) return
         if (metersList.length === 1) setFilters(formatMetricFilter(metersList[0].guid))
     }, [metersList, setFilters])
+
+    // UseEffect to check for consent whenever a meter is selected.
+    useEffect(() => {
+        if (filters.length > 0) {
+            getConsents(filters[0].value)
+        }
+    }, [filters, getConsents])
 
     /**
      * Show text according to interval.
@@ -137,7 +138,7 @@ export const MyConsumptionContainer = () => {
                             >
                                 en kWh
                             </TypographyFormatMessage>
-                            {/* Consommation par Jour / Semaiine / Mois / Année */}
+                            {/* Consommation par Jour / Semaine / Mois / Année */}
                             <TypographyFormatMessage variant="h5" style={{ color: theme.palette.primary.contrastText }}>
                                 {showPerPeriodText()}
                             </TypographyFormatMessage>
