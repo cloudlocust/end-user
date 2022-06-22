@@ -1,14 +1,15 @@
 import React, { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
-import { MyConsumptionChart } from 'src/modules/MyConsumption/components/MyConsumptionChart'
+import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
+import MyConsumptionChart from 'src/modules/MyConsumption/components/MyConsumptionChart'
 import { useMeterList } from 'src/modules/Meters/metersHook'
 import { formatMetricFilter } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
 import { MyConsumptionPeriod, SelectMeters, Widget } from 'src/modules/MyConsumption'
 import { SelectChangeEvent, useTheme } from '@mui/material'
 import { useMetrics } from 'src/modules/Metrics/metricsHook'
-import { getMetricType, periodValueType } from 'src/modules/Metrics/Metrics'
+import { getMetricType } from 'src/modules/Metrics/Metrics'
+import { periodType } from 'src/modules/MyConsumption/myConsumptionTypes'
 import dayjs from 'dayjs'
-import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 
 /**
  * InitialMetricsStates for useMetrics.
@@ -39,7 +40,7 @@ export const MyConsumptionContainer = () => {
     const theme = useTheme()
     const { setMetricsInterval, setRange, setFilters, isMetricsLoading, data, metricsInterval } =
         useMetrics(initialMetricsHookValues)
-    const [period, setPeriod] = useState<periodValueType>(1)
+    const [period, setPeriod] = useState<periodType>('daily')
 
     useEffect(() => {
         if (!metersList) return
@@ -51,13 +52,13 @@ export const MyConsumptionContainer = () => {
      * @returns Text that represents the interval.
      */
     const showPerPeriodText = () => {
-        if (period === 1) {
+        if (period === 'daily') {
             return 'par jour'
-        } else if (period === 7) {
+        } else if (period === 'weekly') {
             return 'par semaine'
-        } else if (period === 30) {
+        } else if (period === 'monthly') {
             return 'par mois'
-        } else if (period === 365) {
+        } else if (period === 'yearly') {
             return 'par année'
         } else {
             throw Error('PeriodValue not set')
@@ -79,20 +80,28 @@ export const MyConsumptionContainer = () => {
     }
 
     return (
-        <>
-            <div className="container relative p-16 sm:p-24 flex flex-col sm:flex-row justify-between items-center">
-                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-                    <div className="flex flex-col sm:flex-row items-center sm:items-center mb-16 sm:mb-0 ">
-                        <TypographyFormatMessage className="h3 sm:mr-3" color="textPrimary">
+        <div style={{ background: theme.palette.primary.main }} className="p-24">
+            <div className="relative flex flex-col md:flex-row justify-between items-center">
+                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mb-16 md:mb-0">
+                    <div className="flex flex-col md:flex-row items-center">
+                        <TypographyFormatMessage
+                            variant="h4"
+                            className="sm:mr-8"
+                            style={{ color: theme.palette.primary.contrastText }}
+                        >
                             Ma Consommation
                         </TypographyFormatMessage>
-                        <div className="flex flex-row">
+                        <div className="flex flex-row items-end">
                             {/* TODO: kWh can also be P.max in MYEM-2408, to be dynamic. */}
-                            <TypographyFormatMessage className="h3 mr-3 sm:mr-3" color="textSecondary">
+                            <TypographyFormatMessage
+                                variant="h5"
+                                className="mr-8 sm:mr-8"
+                                style={{ color: theme.palette.primary.contrastText }}
+                            >
                                 en kWh
                             </TypographyFormatMessage>
                             {/* Consommation par Jour / Semaiine / Mois / Année */}
-                            <TypographyFormatMessage className="h3" color="textSecondary">
+                            <TypographyFormatMessage variant="h5" style={{ color: theme.palette.primary.contrastText }}>
                                 {showPerPeriodText()}
                             </TypographyFormatMessage>
                         </div>
@@ -107,17 +116,16 @@ export const MyConsumptionContainer = () => {
                     />
                 )}
             </div>
-            {/* TODO: MYEM-2422 */}
+
             <MyConsumptionChart
                 isMetricsLoading={isMetricsLoading}
                 data={data}
                 chartType={metricsInterval === '1min' ? 'area' : 'bar'}
+                period={period}
             />
-
-            {/* TODO: MYEM-2425 */}
             <MyConsumptionPeriod setPeriod={setPeriod} setRange={setRange} setMetricsInterval={setMetricsInterval} />
 
             <Widget type="total_consumption" />
-        </>
+        </div>
     )
 }

@@ -4,7 +4,7 @@ import {
     getMetricType,
     metricIntervalType,
     metricTargetsType,
-    IMetrics,
+    IMetric,
     metricRangeType,
     metricFiltersType,
 } from 'src/modules/Metrics/Metrics'
@@ -27,7 +27,7 @@ export function useMetrics(initialState: getMetricType) {
     const { enqueueSnackbar } = useSnackbar()
     const { formatMessage } = useIntl()
     const [isMetricsLoading, setIsMetricsLoading] = useState(false)
-    const [data, setData] = useState<IMetrics | []>([])
+    const [data, setData] = useState<IMetric[] | []>([])
     const [range, setRange] = useState<metricRangeType>(initialState.range)
     const [metricsInterval, setMetricsInterval] = useState<metricIntervalType>(initialState.interval)
     const [targets, setTargets] = useState<metricTargetsType>(initialState.targets)
