@@ -61,6 +61,7 @@ export const Widget = ({ type, data, isMetricsLoading }: IWidgetProps) => {
         }
     }
 
+    // If there is no data, the widget is not displayed.
     if (data.length === 0) return null
 
     return (
