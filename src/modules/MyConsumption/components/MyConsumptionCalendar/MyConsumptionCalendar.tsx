@@ -24,6 +24,7 @@ import TextField from '@mui/material/TextField'
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
 import { DatePicker } from '@mui/x-date-pickers/DatePicker'
+import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker'
 import Stack from '@mui/material/Stack'
 import 'src/modules/MyConsumption/components/MyConsumptionCalendar/MyConsumptonCalendar.scss'
 /**
@@ -35,42 +36,27 @@ import 'src/modules/MyConsumption/components/MyConsumptionCalendar/MyConsumptonC
  * @returns MyConsumptionCalendar.
  */
 const MyConsumptionCalendar = ({ period, setRange }: IMyConsumptionCalendar) => {
-    const [currentDate, setCurrentDate] = useState(new Date())
-    const [value, setValue] = useState<Date | null>(currentDate)
-    const isFutureDate = differenceInCalendarDays(value!, new Date()) >= 0
+    // const [currentDate, setCurrentDate] = useState(new Date())
+    const [currentDate, setCurrentDate] = useState<Date>(new Date())
+    const isFutureDate = differenceInCalendarDays(currentDate, new Date()) >= 0
 
-    const handleChange = (newValue: Date | null) => {
-        console.log('value', value)
-        console.log(
-            newValue,
-            newValue && newValue?.getDate(),
-            newValue && getDaysInMonth(newValue),
-            newValue && newValue?.getDate(),
-        )
-        if (
-            newValue &&
-            newValue?.getDate() <= getDaysInMonth(newValue) &&
-            newValue?.getDate() > 0 &&
-            newValue.getMonth() <= 12 &&
-            newValue.getMonth() > 0 &&
-            newValue.getFullYear() <= new Date().getFullYear()
-        )
-            setValue(newValue)
+    const handleChange = (newValue: Date) => {
+        setCurrentDate(newValue)
     }
-
     const theme = useTheme()
     // If a future date is selected, then today's date is set
     useEffect(() => {
-        isFutureDate && setValue(new Date())
-    }, [isFutureDate])
+        // console.log(currentDate.getFullYear(), new Date().getFullYear())
+        if (
+            currentDate?.getDate() > getDaysInMonth(currentDate) ||
+            currentDate?.getDate() <= 0 ||
+            currentDate.getMonth() > 12 ||
+            currentDate.getMonth() <= 0 ||
+            currentDate.getFullYear() > new Date().getFullYear()
+        )
 
-    useEffect(() => {
-        setValue(currentDate)
+            setCurrentDate(new Date())
     }, [currentDate])
-
-    useEffect(() => {
-        value && setCurrentDate(value)
-    }, [value])
 
     /**
      * SetCurrentPeriodDate.
@@ -162,24 +148,14 @@ const MyConsumptionCalendar = ({ period, setRange }: IMyConsumptionCalendar) => 
         switch (period) {
             case 1:
                 return (
-                    <DatePicker
+                    <MobileDatePicker
                         views={['day']}
-                        value={value}
-                        inputFormat="dd/MM/yyyy"
+                        value={currentDate}
                         maxDate={new Date()}
-                        onChange={handleChange}
-                        renderInput={(params) => (
-                            <TextField
-                                {...params}
-                                // helperText={null}
-                                // type="number"
-                                // sx={{
-                                //     svg: { color: 'red' },
-                                //     // input: { color },
-                                //     // label: { color },
-                                // }}
-                            />
-                        )}
+                        inputFormat="dd/MM/yyyy"
+                        // maxDate={new Date()}
+                        onChange={(e) => handleChange(e!)}
+                        renderInput={(params) => <TextField {...params} />}
                     />
                 )
             // eslint-disable-next-line sonarjs/no-duplicated-branches
@@ -190,22 +166,20 @@ const MyConsumptionCalendar = ({ period, setRange }: IMyConsumptionCalendar) => 
                         // minDate={new Date('2012-03-01')}
                         maxDate={new Date()}
                         inputFormat="dd/MM/yyyy"
-                        value={value}
-                        onChange={handleChange}
-                        renderInput={(params) => <TextField {...params} helperText={null} type="number" />}
+                        value={currentDate}
+                        onChange={(e) => handleChange(e!)}
+                        renderInput={(params) => <TextField {...params} helperText={null} />}
                     />
                 )
             case 30:
                 return (
                     <DatePicker
                         views={['month']}
-                        // minDate={new Date('2012-03-01')}
-                        // maxDate={new Date('2023-06-01')}
                         maxDate={new Date()}
                         inputFormat="dd/MM/yyyy"
-                        value={value}
-                        onChange={handleChange}
-                        renderInput={(params) => <TextField {...params} helperText={null} type="number" />}
+                        value={currentDate}
+                        onChange={(e) => handleChange(e!)}
+                        renderInput={(params) => <TextField {...params} helperText={null} />}
                     />
                 )
             case 365:
@@ -214,9 +188,9 @@ const MyConsumptionCalendar = ({ period, setRange }: IMyConsumptionCalendar) => 
                         views={['year']}
                         inputFormat="dd/MM/yyyy"
                         maxDate={new Date()}
-                        value={value}
-                        onChange={handleChange}
-                        renderInput={(params) => <TextField {...params} helperText={null} type="number" />}
+                        value={currentDate}
+                        onChange={(e) => handleChange(e!)}
+                        renderInput={(params) => <TextField {...params} helperText={null} />}
                     />
                 )
         }
@@ -229,7 +203,7 @@ const MyConsumptionCalendar = ({ period, setRange }: IMyConsumptionCalendar) => 
             animate={{ opacity: 1, transition: { delay: 0.3 } }}
             style={{ color: theme.palette.primary.dark }}
         >
-            <Typography className="mr-10">{format(currentDate, 'dd/MM/yyyy')}</Typography>
+            {/* <Typography className="mr-10">{format(currentDate, 'dd/MM/yyyy')}</Typography> */}
             <Tooltip title="Previous">
                 <IconButton
                     aria-label="Previous"

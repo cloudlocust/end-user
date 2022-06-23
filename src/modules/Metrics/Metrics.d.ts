@@ -106,4 +106,4 @@ export type getMetricType = {
  * Range value type.
  *
  */
-type periodValueType = 1 | 7 | 30 | 365
+export type periodValueType = 1 | 7 | 30 | 365
