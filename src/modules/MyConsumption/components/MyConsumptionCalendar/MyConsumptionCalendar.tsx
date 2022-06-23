@@ -14,8 +14,9 @@ import {
     addYears,
     addMonths,
     differenceInCalendarDays,
+    getDaysInMonth,
 } from 'date-fns'
-import { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { periodValueType } from 'src/modules/Metrics/Metrics'
 import { IMyConsumptionCalendar } from 'src/modules/MyConsumption/myConsumptionTypes'
 import { useTheme } from '@mui/material'
@@ -39,7 +40,22 @@ const MyConsumptionCalendar = ({ period, setRange }: IMyConsumptionCalendar) => 
     const isFutureDate = differenceInCalendarDays(value!, new Date()) >= 0
 
     const handleChange = (newValue: Date | null) => {
-        setValue(newValue)
+        console.log('value', value)
+        console.log(
+            newValue,
+            newValue && newValue?.getDate(),
+            newValue && getDaysInMonth(newValue),
+            newValue && newValue?.getDate(),
+        )
+        if (
+            newValue &&
+            newValue?.getDate() <= getDaysInMonth(newValue) &&
+            newValue?.getDate() > 0 &&
+            newValue.getMonth() <= 12 &&
+            newValue.getMonth() > 0 &&
+            newValue.getFullYear() <= new Date().getFullYear()
+        )
+            setValue(newValue)
     }
 
     const theme = useTheme()
@@ -152,7 +168,18 @@ const MyConsumptionCalendar = ({ period, setRange }: IMyConsumptionCalendar) => 
                         inputFormat="dd/MM/yyyy"
                         maxDate={new Date()}
                         onChange={handleChange}
-                        renderInput={(params) => <TextField {...params} helperText={null} />}
+                        renderInput={(params) => (
+                            <TextField
+                                {...params}
+                                // helperText={null}
+                                // type="number"
+                                // sx={{
+                                //     svg: { color: 'red' },
+                                //     // input: { color },
+                                //     // label: { color },
+                                // }}
+                            />
+                        )}
                     />
                 )
             // eslint-disable-next-line sonarjs/no-duplicated-branches
@@ -165,7 +192,7 @@ const MyConsumptionCalendar = ({ period, setRange }: IMyConsumptionCalendar) => 
                         inputFormat="dd/MM/yyyy"
                         value={value}
                         onChange={handleChange}
-                        renderInput={(params) => <TextField {...params} helperText={null} />}
+                        renderInput={(params) => <TextField {...params} helperText={null} type="number" />}
                     />
                 )
             case 30:
@@ -178,7 +205,7 @@ const MyConsumptionCalendar = ({ period, setRange }: IMyConsumptionCalendar) => 
                         inputFormat="dd/MM/yyyy"
                         value={value}
                         onChange={handleChange}
-                        renderInput={(params) => <TextField {...params} helperText={null} />}
+                        renderInput={(params) => <TextField {...params} helperText={null} type="number" />}
                     />
                 )
             case 365:
@@ -189,7 +216,7 @@ const MyConsumptionCalendar = ({ period, setRange }: IMyConsumptionCalendar) => 
                         maxDate={new Date()}
                         value={value}
                         onChange={handleChange}
-                        renderInput={(params) => <TextField {...params} helperText={null} />}
+                        renderInput={(params) => <TextField {...params} helperText={null} type="number" />}
                     />
                 )
         }
@@ -202,7 +229,7 @@ const MyConsumptionCalendar = ({ period, setRange }: IMyConsumptionCalendar) => 
             animate={{ opacity: 1, transition: { delay: 0.3 } }}
             style={{ color: theme.palette.primary.dark }}
         >
-            {/* <Typography className="mr-10">{format(currentDate, 'dd/MM/yyyy')}</Typography> */}
+            <Typography className="mr-10">{format(currentDate, 'dd/MM/yyyy')}</Typography>
             <Tooltip title="Previous">
                 <IconButton
                     aria-label="Previous"

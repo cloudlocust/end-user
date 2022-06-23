@@ -1,25 +1,29 @@
-.MuiOutlinedInput-root {
-    svg {
-        color: black; //TODO
-    }
-    fieldset {
-        border-width: 0 !important;
-    }
-    :hover {
-        fieldset {
-            border-width: 0;
+.wrapper {
+    // width: 250px;
+    .MuiOutlinedInput-root {
+        svg {
+            color: black !important; //TODO
+            z-index: 10;
         }
-    }
-    .Mui-focused {
         fieldset {
             border-width: 0 !important;
         }
+        :hover {
+            fieldset {
+                border-width: 0;
+            }
+        }
+        .Mui-focused {
+            fieldset {
+                border-width: 0 !important;
+            }
+        }
     }
 }
-.wrapper {
-    width: 250px;
-}
-
+//     // .wrapper {
+//     //
+//     // }
+// }
 //         '& fieldset': {
 //             borderColor: ` ${setColor(inputColor)} !important`,
 //         },
