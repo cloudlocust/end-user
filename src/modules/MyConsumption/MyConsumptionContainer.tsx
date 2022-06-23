@@ -14,6 +14,7 @@ import { Link } from 'react-router-dom'
 import { Icon, Typography } from 'src/common/ui-kit'
 import { useIntl } from 'react-intl'
 import { useConsents } from 'src/modules/Consents/consentsHook'
+import { widgetType } from 'src/modules/shared/Widgets/Widget'
 
 /**
  * InitialMetricsStates for useMetrics.
@@ -92,6 +93,21 @@ export const MyConsumptionContainer = () => {
             setFilters(formatMetricFilter(event.target.value))
         }
     }
+
+    const widgetsList = [
+        {
+            type: 'total_consumption' as widgetType,
+        },
+        {
+            type: 'max_power' as widgetType,
+        },
+        {
+            type: 'external_temperature' as widgetType,
+        },
+        {
+            type: 'internal_temperature' as widgetType,
+        },
+    ]
 
     if (nrlinkConsent?.nrlinkConsentState === 'NONEXISTENT' && enedisConsent?.enedisConsentState === 'NONEXISTENT') {
         return (
@@ -173,12 +189,9 @@ export const MyConsumptionContainer = () => {
             </div>
             <div style={{ background: theme.palette.grey[100] }}>
                 <div className="p-8 flex flex-row flex-wrap justify-evenly">
-                    <Widget type="total_consumption" />
-                    <Widget type="max_power" />
-                    <Widget type="external_temperature" />
-                    <Widget type="internal _temperature" />
-                    <Widget type="internal _temperature" />
-                    <Widget type="internal _temperature" />
+                    {widgetsList.map(({ type }) => {
+                        return <Widget key={type} type={type} data={data} isMetricsLoading={isMetricsLoading} />
+                    })}
                 </div>
             </div>
         </>
