@@ -135,7 +135,6 @@ const MyConsumptionCalendar = ({ period, setRange }: IMyConsumptionCalendar) => 
     const handleDateChange = (newDate: Date | null) => {
         newDate && setCurrentDate(newDate)
     }
-
     /**
      * Set Date Picker fuction sets DatePicker according to the selected period.
      *
