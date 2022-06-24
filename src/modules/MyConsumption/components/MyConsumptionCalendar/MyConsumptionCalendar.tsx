@@ -1,11 +1,9 @@
 import Icon from '@mui/material/Icon'
 import IconButton from '@mui/material/IconButton'
 import Tooltip from '@mui/material/Tooltip'
-import Typography from '@mui/material/Typography'
 import { motion } from 'framer-motion'
 import {
     subDays,
-    format,
     subWeeks,
     subMonths,
     subYears,
@@ -124,9 +122,11 @@ const MyConsumptionCalendar = ({ period, setRange }: IMyConsumptionCalendar) => 
         },
         [currentDate, setRangeFrom],
     )
+
     useEffect(() => {
         setRange(getRange(period))
     }, [getRange, period, setRange])
+
     /**
      * Handle data change.
      *
@@ -135,20 +135,40 @@ const MyConsumptionCalendar = ({ period, setRange }: IMyConsumptionCalendar) => 
     const handleDateChange = (newDate: Date | null) => {
         newDate && setCurrentDate(newDate)
     }
+
     /**
+     * Set Date Picker fuction sets DatePicker according to the selected period.
      *
      * @param period Selected period.
-     * @returns
+     * @returns DatePicker.
      */
     const setDatePicker = (period: periodValueType) => {
         switch (period) {
             case 1:
             case 7:
-                return setDatePickerData(['day'], currentDate, handleDateChange, 'dd/MM/yyyy')
+                return setDatePickerData(
+                    ['day'],
+                    currentDate,
+                    handleDateChange,
+                    { color: theme.palette.primary.contrastText, width: '80px' },
+                    'dd/MM/yyyy',
+                )
             case 30:
-                return setDatePickerData(['month', 'year'], currentDate, handleDateChange, 'MM/yyyy')
+                return setDatePickerData(
+                    ['month', 'year'],
+                    currentDate,
+                    handleDateChange,
+                    { color: theme.palette.primary.contrastText, width: '55px' },
+                    'MM/yyyy',
+                )
             case 365:
-                return setDatePickerData(['year'], currentDate, handleDateChange)
+                return setDatePickerData(
+                    ['year'],
+                    currentDate,
+                    handleDateChange,
+                    { color: theme.palette.primary.contrastText, width: '40px' },
+                    'yyyy',
+                )
         }
     }
 
@@ -157,9 +177,7 @@ const MyConsumptionCalendar = ({ period, setRange }: IMyConsumptionCalendar) => 
             className="flex items-center justify-center wrapper"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1, transition: { delay: 0.3 } }}
-            style={{ color: theme.palette.primary.dark }}
         >
-            <Typography className="mr-10">{format(currentDate, 'dd/MM/yyyy')}</Typography>
             <Tooltip title="Previous">
                 <IconButton
                     aria-label="Previous"

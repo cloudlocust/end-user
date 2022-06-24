@@ -1,10 +1,5 @@
 .wrapper {
-    // width: 250px;
     .MuiOutlinedInput-root {
-        svg {
-            color: black !important; //TODO
-            z-index: 10;
-        }
         fieldset {
             border-width: 0 !important;
         }
@@ -20,23 +15,3 @@
         }
     }
 }
-//     // .wrapper {
-//     //
-//     // }
-// }
-//         '& fieldset': {
-//             borderColor: ` ${setColor(inputColor)} !important`,
-//         },
-//     },
-//     '& .MuiOutlinedInput-root:hover': {
-//         '& fieldset': {
-//             borderColor: setColor(inputColor),
-//             borderWidth: '2px',
-//         },
-//     },
-//     '& .Mui-focused': {
-//         '& fieldset': {
-//             borderColor: ` ${setColor(inputColor)} !important`,
-//         },
-//     },
-// }))
