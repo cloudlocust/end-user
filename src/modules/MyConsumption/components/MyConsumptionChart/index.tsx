@@ -8,7 +8,10 @@ import 'src/modules/MyConsumption/components/MyConsumptionChart/MyConsumptionCha
 import { convertMetricsDataToApexChartsAxisValues } from 'src/modules/MyConsumption/utils/apexChartsDataConverter'
 import { getApexChartMyConsumptionProps } from 'src/modules/MyConsumption/utils/apexChartsMyConsumptionOptions'
 import { ApexChartsAxisValuesType, periodType } from 'src/modules/MyConsumption/myConsumptionTypes'
-import { fillApexChartsAxisMissingValues } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
+import {
+    fillApexChartsAxisMissingValues,
+    isMissingApexChartsAxisValues,
+} from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
 
 /**
  * MyConsumptionChart Component.
@@ -52,8 +55,11 @@ const MyConsumptionChart = ({
 
     let ApexChartsAxisValues: ApexChartsAxisValuesType = convertMetricsDataToApexChartsAxisValues(data)
 
-    // Because of ApexCharts to show the right amount of xAxis even If there are missing values according to the period (for example for 'weekly' we expect seven values), we n
-    ApexChartsAxisValues = fillApexChartsAxisMissingValues(ApexChartsAxisValues, period, range)
+    // Checking if there are missing axis values otherwise we fill them.
+    if (isMissingApexChartsAxisValues(ApexChartsAxisValues, period)) {
+        // Because of ApexCharts to show the right amount of xAxis even If there are missing values according to the period (for example for 'weekly' we expect seven values), we fill the missing values with null.
+        ApexChartsAxisValues = fillApexChartsAxisMissingValues(ApexChartsAxisValues, period, range)
+    }
 
     const reactApexChartsProps = getApexChartMyConsumptionProps({
         yAxisSeries: ApexChartsAxisValues.yAxisSeries,
@@ -69,6 +75,10 @@ const MyConsumptionChart = ({
     ${
         // We add some styling when period is daily to hide some labels in the xAxis when screen is small, otherwise it'll be too much labels and thus becomes unreadable.
         period === 'daily' && 'apexChartsDailyPeriodWrapper'
+    }
+    ${
+        // We add some styling when period is monthly to show only 1 xAxis day label every 2 labels, and on small screens we show only 1 label day every 4 labels, It makes the Chart more readable and nicer.
+        period === 'monthly' && 'apexChartsMonthlyPeriodWrapper'
     }`}
         >
             <ReactApexChart {...reactApexChartsProps} data-testid="apexcharts" width={'100%'} height={320} />

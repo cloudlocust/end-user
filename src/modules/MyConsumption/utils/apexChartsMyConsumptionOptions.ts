@@ -190,23 +190,23 @@ export const getApexChartMyConsumptionProps = ({
         },
     }
 
+    options.tooltip = {
+        x: {
+            /**
+             * Formatter function for showing label in the tooltip.
+             *
+             * @param index Represent the index in the options.xaxis.categories.
+             * @returns Label concerning the xaxis that's going to be shown in the tooltip.
+             */
+            formatter: (index: number) => {
+                return dayjsUTC(new Date(options!.xaxis!.categories[index - 1])).format(
+                    getXAxisLabelFormatFromPeriod(period, true),
+                )
+            },
+        },
+    }
     if (period !== 'daily') {
         options.stroke!.show = true
-        options.tooltip = {
-            x: {
-                /**
-                 * Formatter function for showing label in the tooltip.
-                 *
-                 * @param index Represent the index in the options.xaxis.categories.
-                 * @returns Label concerning the xaxis that's going to be shown in the tooltip.
-                 */
-                formatter: (index: number) => {
-                    return dayjsUTC(new Date(options!.xaxis!.categories[index - 1])).format(
-                        getXAxisLabelFormatFromPeriod(period, true),
-                    )
-                },
-            },
-        }
     }
     options.yaxis = yAxisOptions
     return { series: myConsumptionApexChartSeries, options }

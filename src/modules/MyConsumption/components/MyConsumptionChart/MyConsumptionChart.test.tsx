@@ -18,6 +18,7 @@ const propsMyConsumptionChart = {
 }
 const circularProgressClassname = '.MuiCircularProgress-root'
 const apexChartsDailyPeriodWrapper = '.apexChartsDailyPeriodWrapper'
+const apexChartsMonthlyPeriodWrapper = '.apexChartsMonthlyPeriodWrapper'
 const apexChartsClassName = '.apexcharts-svg'
 
 // Mocking apexcharts, because there are errors related to modules not found, in test mode.
@@ -45,6 +46,16 @@ describe('Test MyConsumptionChart', () => {
 
         expect(container.querySelector(apexChartsDailyPeriodWrapper)).toBeInTheDocument()
         expect(container.querySelector(apexChartsClassName)).toBeInTheDocument()
+    })
+    test('When Period changes, monthly and daily class should be shown', async () => {
+        propsMyConsumptionChart.period = 'monthly'
+        const { container } = reduxedRender(
+            <ThemeProvider theme={theme}>
+                <MyConsumptionChart {...propsMyConsumptionChart} />
+            </ThemeProvider>,
+        )
+
+        expect(container.querySelector(apexChartsMonthlyPeriodWrapper)).toBeInTheDocument()
     })
     test('When isMetricsLoading true, Circular progress should be shown', async () => {
         propsMyConsumptionChart.isMetricsLoading = true

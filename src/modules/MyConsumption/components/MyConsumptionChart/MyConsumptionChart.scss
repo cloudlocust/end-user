@@ -12,7 +12,8 @@
 
 .apexChartsDailyPeriodWrapper {
     .apexcharts-xaxis {
-        .apexcharts-text.apexcharts-xaxis-label:nth-child(2n) {
+        .apexcharts-text.apexcharts-xaxis-label:nth-child(4n + 2),
+        .apexcharts-text.apexcharts-xaxis-label:nth-child(4n + 3) {
             display: none;
         }
         @include sm {
@@ -20,5 +21,29 @@
                 display: inline;
             }
         }
+    }
+}
+.apexChartsMonthlyPeriodWrapper {
+    .apexcharts-xaxis {
+        .apexcharts-text.apexcharts-xaxis-label:nth-child(4n + 2),
+        .apexcharts-text.apexcharts-xaxis-label:nth-child(4n + 3) {
+            display: none;
+        }
+        @include sm {
+            .apexcharts-text.apexcharts-xaxis-label:nth-child(2n + 1) {
+                display: none;
+            }
+            .apexcharts-text.apexcharts-xaxis-label:nth-child(2n) {
+                display: inline;
+            }
+        }
+        // @include lg {
+        //     .apexcharts-text.apexcharts-xaxis-label:nth-child(4n + 2) {
+        //         display: none;
+        //     }
+        //     .apexcharts-text.apexcharts-xaxis-label:nth-child(2n + 1) {
+        //         display: inline;
+        //     }
+        // }
     }
 }

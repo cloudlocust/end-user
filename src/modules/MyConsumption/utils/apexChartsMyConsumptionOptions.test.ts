@@ -16,7 +16,6 @@ const mockFormatMessage: any = (input: MessageDescriptor) => input.id
 let mockChartType = 'bar' as ApexChart['type']
 const mockDatapoints = [[247, 1651406400]]
 
-const xaxisCategoryType = 'category'
 // eslint-disable-next-line jsdoc/require-jsdoc
 const mockYAxisSeriesConvertedData: ApexAxisChartSeries = [
     {
@@ -141,7 +140,7 @@ describe('test pure function', () => {
             period,
         })
         apexChartProps.options!.stroke!.show = false
-        expect(apexChartProps.options.tooltip!).toBeUndefined()
+        expect(apexChartProps.options.tooltip!.x!.formatter!(1)!).toEqual(xAxisTimeStampDay)
         expect(apexChartProps.options.xaxis!.labels!.formatter!(new Date(timestamp).toString())).toEqual(
             xAxisTimeStampDay,
         )
@@ -161,7 +160,6 @@ describe('test pure function', () => {
             xAxisTimeStampWeek,
         )
         expect(apexChartProps.options.tooltip!.x!.formatter!(1)!).toEqual(tooltipTimeStampDays)
-        expect(apexChartProps.options.xaxis!.type).toEqual(xaxisCategoryType)
 
         // xAxis tooltip will show day of the month, 01 jan.
         period = 'monthly' as periodType
@@ -179,7 +177,6 @@ describe('test pure function', () => {
         expect(apexChartProps.options.xaxis!.labels!.formatter!(new Date(timestamp).toString())).toEqual(
             xAxisTimeStampMonth,
         )
-        expect(apexChartProps.options.xaxis!.type).toEqual(xaxisCategoryType)
         expect(apexChartProps.options.theme!.mode).toStrictEqual('dark')
 
         // xAxis tooltip will show month
@@ -198,7 +195,6 @@ describe('test pure function', () => {
             xAxisTimeStampYear,
         )
         expect(apexChartProps.options.theme!.mode).toStrictEqual('light')
-        expect(apexChartProps.options.xaxis!.type).toEqual(xaxisCategoryType)
     })
     test('getApexChartMyConsumptionProps test empty data', async () => {
         const period = 'weekly' as periodType

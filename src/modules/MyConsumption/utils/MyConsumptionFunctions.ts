@@ -100,7 +100,8 @@ export const fillApexChartsAxisMissingValues = (
     period: periodType,
     range: metricRangeType,
 ) => {
-    if (ApexChartsMissingAxisValues.yAxisSeries.length === 0) return ApexChartsMissingAxisValues
+    if (ApexChartsMissingAxisValues.yAxisSeries.length === 0 || ApexChartsMissingAxisValues.xAxisValues.length === 0)
+        return ApexChartsMissingAxisValues
     const xAxisFilledValues = generateXAxisValues(period, range)
     const consumptionSeries: ApexAxisChartSerie = ApexChartsMissingAxisValues.yAxisSeries.find(
         // TODO FIX IN 2427, by adding the enum type
@@ -110,12 +111,17 @@ export const fillApexChartsAxisMissingValues = (
     // This index will help to go through backend xAxis because there is a gap, the length of xAxis backend will not be the same of expected xAxis length, thus they'll not have the same idnexing.
     let missingAxisValuesIndex = 0
     // Filling the missing y value with null, so that we can show its xAxis label, otherwise if ApexCharts if he find xAxis[i] and doesn't find yAxis[i] of the same index it'll hide the xAxis label, however even if yAxis[i] === null ApexCharts will show its xAxis[i], and that's why we're doing this so that we can show xAxis labels (for example: period === 'weekly', xAxis will be [Saturday, Sunday, Monday, Tuesday, Wednesday, Thursday, Friday], and if yValus in Monday doesn't exist in ApexCharts it'll hide Tuesday, thus it'll show only 6 entries on the graph instead of 7, but by giving null to yValue it'll show all days including Tuesday but with no value on the chart).
-    consumptionSeries.data = xAxisFilledValues.map((xFilledValue, index) => {
+    consumptionSeries.data = xAxisFilledValues.map((xFilledValue) => {
         // Checking dates so that even if there is gap from backend response, we put the backend xAxis index value in its correct expected xAxis counterpart.
-        if (!isEqualDates(xFilledValue, ApexChartsMissingAxisValues.xAxisValues[missingAxisValuesIndex], period)) {
+        if (
+            // This condition means we covered all values from back, so we just need to return null to fill the missing ones.
+            missingAxisValuesIndex === ApexChartsMissingAxisValues.xAxisValues.length ||
+            !isEqualDates(xFilledValue, ApexChartsMissingAxisValues.xAxisValues[missingAxisValuesIndex], period)
+        ) {
             // Filling the missing y value with null, so that we can show its xAxis label, otherwise if ApexCharts if he find xAxis[i] and doesn't find yAxis[i] of the same index it'll hide the xAxis label, however even if yAxis[i] === null ApexCharts will show its xAxis[i], and that's why we're doing this so that we can show xAxis labels (for example: period === 'weekly', xAxis will be [Saturday, Sunday, Monday, Tuesday, Wednesday, Thursday, Friday], and if yValus in Monday doesn't exist in ApexCharts it'll hide Tuesday, thus it'll show only 6 entries on the graph instead of 7, but by giving null to yValue it'll show all days including Tuesday but with no value on the chart).
             return null
         }
+
         // Here we're saving the the backend axis value in its correct place (index) on the expected axis values counterpart, and thus we increment the index to handle and map the next backend axis value.
         missingAxisValuesIndex += 1
         return consumptionSeries.data[missingAxisValuesIndex - 1] as number
@@ -140,13 +146,13 @@ export const isMissingApexChartsAxisValues = (ApexChartsAxisValues: ApexChartsAx
     )
 
     // If Consumption chart has 7 elements, representing the total for weekly priod.
-    if (period === 'weekly') return consumptionSeries!.data.length === 7
+    if (period === 'weekly') return consumptionSeries!.data.length !== 7
     // If Consumption chart has 30 elements, representing the total for weekly monthly.
-    if (period === 'monthly') return consumptionSeries!.data.length === 30 || consumptionSeries!.data.length === 31
+    if (period === 'monthly') return consumptionSeries!.data.length !== 30 || consumptionSeries!.data.length === 31
     // If Consumption chart has 12 elements, representing the total for yearly period.
-    if (period === 'yearly') return consumptionSeries!.data.length === 12
+    if (period === 'yearly') return consumptionSeries!.data.length !== 12
     // Default is daily chart has 1h * 24 elements, representing the total for daily period.
-    return consumptionSeries!.data.length === 30 * 24
+    return consumptionSeries!.data.length !== 30 * 24
 }
 
 /**
