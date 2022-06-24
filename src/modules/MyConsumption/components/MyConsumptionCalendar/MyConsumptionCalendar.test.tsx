@@ -6,7 +6,7 @@ import MyConsumptionCalendar from 'src/modules/MyConsumption/components/MyConsum
 import format from 'date-fns/format'
 
 let mockSetRange = jest.fn()
-let mockPeriod = 1
+let mockPeriod = 'daily'
 const dateFormat = 'dd/MM/yyyy'
 const buttonLeft = 'chevron_left'
 const date = new Date()
@@ -23,7 +23,7 @@ describe('Load MyConsumptionCalendar', () => {
         expect(container.querySelector('input')?.value).toBe(format(new Date(yesterday), dateFormat))
     })
     test('when the user clicks on the left arrow, the last week is shown', async () => {
-        mockPeriod = 7
+        mockPeriod = 'weekly'
         const { getByText, container } = reduxedRender(
             <Router>
                 <MyConsumptionCalendar period={mockPeriod} setRange={mockSetRange} />
@@ -35,7 +35,7 @@ describe('Load MyConsumptionCalendar', () => {
         expect(container.querySelector('input')?.value).toBe(format(new Date(prevWeek), dateFormat))
     })
     test('when the user clicks on the left arrow, the last month is shown', async () => {
-        mockPeriod = 30
+        mockPeriod = 'monthly'
         const { getByText, container } = reduxedRender(
             <Router>
                 <MyConsumptionCalendar period={mockPeriod} setRange={mockSetRange} />
@@ -46,7 +46,7 @@ describe('Load MyConsumptionCalendar', () => {
         expect(container.querySelector('input')?.value).toBe(format(new Date(prevMonth), 'MM/yyyy'))
     })
     test('when the user clicks on the left arrow, the last year is shown', async () => {
-        mockPeriod = 365
+        mockPeriod = 'yearly'
         const { getByText, container } = reduxedRender(
             <Router>
                 <MyConsumptionCalendar period={mockPeriod} setRange={mockSetRange} />

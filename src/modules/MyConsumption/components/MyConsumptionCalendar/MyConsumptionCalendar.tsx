@@ -14,8 +14,7 @@ import {
     differenceInCalendarDays,
 } from 'date-fns'
 import React, { useCallback, useEffect, useState } from 'react'
-import { periodValueType } from 'src/modules/Metrics/Metrics'
-import { IMyConsumptionCalendar } from 'src/modules/MyConsumption/myConsumptionTypes'
+import { IMyConsumptionCalendar, periodType } from 'src/modules/MyConsumption/myConsumptionTypes'
 import { useTheme } from '@mui/material'
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
@@ -57,7 +56,7 @@ const MyConsumptionCalendar = ({ period, setRange }: IMyConsumptionCalendar) => 
      * @param period Selected period.
      * @param arrowName Name of the clicked arrow.
      */
-    const setCalendar = (period: periodValueType, arrowName: string) => {
+    const setCalendar = (period: periodType, arrowName: string) => {
         const subData = arrowName === 'sub'
         /**
          * SetCalendarData function based on argument values.
@@ -72,16 +71,16 @@ const MyConsumptionCalendar = ({ period, setRange }: IMyConsumptionCalendar) => 
             setCurrentDate(setCurrentPeriodDate(subData ? sub : add))
         }
         switch (period) {
-            case 1:
+            case 'daily':
                 setCalendarData(subDays, addDays)
                 break
-            case 7:
+            case 'weekly':
                 setCalendarData(subWeeks, addWeeks)
                 break
-            case 30:
+            case 'monthly':
                 setCalendarData(subMonths, addMonths)
                 break
-            case 365:
+            case 'yearly':
                 setCalendarData(subYears, addYears)
                 break
         }
@@ -93,15 +92,15 @@ const MyConsumptionCalendar = ({ period, setRange }: IMyConsumptionCalendar) => 
      * @returns According to the selected period setRangeFrom sets the value from which data should be shown.
      */
     const setRangeFrom = useCallback(
-        (period: periodValueType) => {
+        (period: periodType) => {
             switch (period) {
-                case 1:
+                case 'daily':
                     return setCurrentPeriodDate(subDays)
-                case 7:
+                case 'weekly':
                     return setCurrentPeriodDate(subWeeks)
-                case 30:
+                case 'monthly':
                     return setCurrentPeriodDate(subMonths)
-                case 365:
+                case 'yearly':
                     return setCurrentPeriodDate(subYears)
             }
         },
@@ -114,7 +113,7 @@ const MyConsumptionCalendar = ({ period, setRange }: IMyConsumptionCalendar) => 
      * @returns Object with formatted range.
      */
     const getRange = useCallback(
-        (period: periodValueType) => {
+        (period: periodType) => {
             return {
                 from: setRangeFrom(period).toISOString(),
                 to: currentDate.toISOString(),
@@ -141,10 +140,10 @@ const MyConsumptionCalendar = ({ period, setRange }: IMyConsumptionCalendar) => 
      * @param period Selected period.
      * @returns DatePicker.
      */
-    const setDatePicker = (period: periodValueType) => {
+    const setDatePicker = (period: periodType) => {
         switch (period) {
-            case 1:
-            case 7:
+            case 'daily':
+            case 'weekly':
                 return setDatePickerData(
                     ['day'],
                     currentDate,
@@ -152,7 +151,7 @@ const MyConsumptionCalendar = ({ period, setRange }: IMyConsumptionCalendar) => 
                     { color: theme.palette.primary.contrastText, width: '80px' },
                     'dd/MM/yyyy',
                 )
-            case 30:
+            case 'monthly':
                 return setDatePickerData(
                     ['month', 'year'],
                     currentDate,
@@ -160,7 +159,7 @@ const MyConsumptionCalendar = ({ period, setRange }: IMyConsumptionCalendar) => 
                     { color: theme.palette.primary.contrastText, width: '55px' },
                     'MM/yyyy',
                 )
-            case 365:
+            case 'yearly':
                 return setDatePickerData(
                     ['year'],
                     currentDate,
