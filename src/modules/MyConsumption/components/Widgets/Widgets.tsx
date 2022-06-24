@@ -8,9 +8,7 @@ import {
     calculateMaxNumber,
     calculateSum,
 } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
-
-const WIDGET_MAX_WIDTH = '170px'
-const WIDGET_MAX_HEIGHT = '180px'
+import Grid from '@mui/material/Grid'
 
 /**
  * Function to get the values from data.
@@ -134,36 +132,41 @@ export const Widget = ({ type, data, isMetricsLoading }: IWidgetProps) => {
         }
     }
 
+    // If there is no data, the widget is not displayed.
     if (data.length === 0) return null
 
     return (
-        <Card
-            className="w-full rounded-20 shadow my-8 mx-6 sm:m-4"
-            style={{ maxWidth: WIDGET_MAX_WIDTH, maxHeight: WIDGET_MAX_HEIGHT }}
-        >
-            {isMetricsLoading && (
-                <div className="flex flex-col justify-center items-center w-full h-full">
-                    <CircularProgress style={{ color: theme.palette.primary.main }} />
-                </div>
-            )}
-            <div className="p-16">
-                <Typography className="h4 font-medium" style={{ minHeight: '65px' }}>
-                    {renderWidgetAssets(type, 'title')}
-                </Typography>
-                <div className="flex flex-row flex-wrap mt-12">
-                    {/* Widget value */}
-                    <Typography className="text-6xl font-normal leading-none tracking-tighter items-center mx-auto">
-                        {renderWidgetAssets(type, 'value')}
-                    </Typography>
-                    <div className="flex flex-col mx-8 ml-auto">
-                        {/* Widget unit */}
-                        <Typography className="font-medium text-base mb-8" color="textSecondary">
-                            {renderWidgetAssets(type, 'unit')}
-                        </Typography>
-                        {/* Widget arrow */}
+        <Grid item xs={12} sm={6} md={4} lg={3} xl={3}>
+            <Card className="w-full rounded-20 shadow my-8 mx-6 sm:m-4">
+                {isMetricsLoading ? (
+                    <div
+                        className="flex flex-col justify-center items-center w-full h-full"
+                        style={{ minHeight: '200px' }}
+                    >
+                        <CircularProgress style={{ color: theme.palette.primary.main }} />
                     </div>
-                </div>
-            </div>
-        </Card>
+                ) : (
+                    <div className="p-12">
+                        <Typography className="h4 font-medium" style={{ minHeight: '65px' }}>
+                            {renderWidgetAssets(type, 'title')}
+                        </Typography>
+                        <div className="flex flex-row flex-wrap mt-12">
+                            {/* Widget value */}
+                            <Typography className="text-5xl font-normal leading-none tracking-tighter items-center mr-auto">
+                                {renderWidgetAssets(type, 'value')}
+                            </Typography>
+                            <div className="flex flex-col mx-8 ml-auto">
+                                {/* Widget unit */}
+                                <Typography className="font-medium text-base mb-8" color="textSecondary">
+                                    {renderWidgetAssets(type, 'unit')}
+                                </Typography>
+                                {/* TODDO MYEM-2588*/}
+                                {/* Widget arrow */}
+                            </div>
+                        </div>
+                    </div>
+                )}
+            </Card>
+        </Grid>
     )
 }

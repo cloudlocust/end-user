@@ -15,6 +15,7 @@ import { Icon, Typography } from 'src/common/ui-kit'
 import { useIntl } from 'react-intl'
 import { useConsents } from 'src/modules/Consents/consentsHook'
 import { widgetType } from 'src/modules/MyConsumption/components/Widgets/Widget'
+import Grid from '@mui/material/Grid'
 
 /**
  * InitialMetricsStates for useMetrics.
@@ -187,13 +188,12 @@ export const MyConsumptionContainer = () => {
                     setMetricsInterval={setMetricsInterval}
                 />
             </div>
-
-            <div style={{ background: theme.palette.grey[100] }}>
-                <div className="p-8 flex flex-row flex-wrap justify-evenly">
+            <div style={{ background: theme.palette.grey[100] }} className="p-10">
+                <Grid container spacing={2} className="p-10 flex flex-row flex-wrap justify-between">
                     {widgetsList.map(({ type }) => {
                         return <Widget key={type} type={type} data={data} isMetricsLoading={isMetricsLoading} />
                     })}
-                </div>
+                </Grid>
             </div>
         </>
     )
