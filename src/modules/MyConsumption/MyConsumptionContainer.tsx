@@ -14,7 +14,7 @@ import { Link } from 'react-router-dom'
 import { Icon, Typography } from 'src/common/ui-kit'
 import { useIntl } from 'react-intl'
 import { useConsents } from 'src/modules/Consents/consentsHook'
-import { widgetType } from 'src/modules/shared/Widgets/Widget'
+import { widgetType } from 'src/modules/MyConsumption/components/Widgets/Widget'
 
 /**
  * InitialMetricsStates for useMetrics.
@@ -33,6 +33,21 @@ export const initialMetricsHookValues: getMetricType = {
     ],
     filters: [],
 }
+
+const widgetsList = [
+    {
+        type: 'consumption_metrics' as widgetType,
+    },
+    {
+        type: 'enedis_max_power' as widgetType,
+    },
+    {
+        type: 'external_temperature_metrics' as widgetType,
+    },
+    {
+        type: 'nrlink_internal_temperature_metrics' as widgetType,
+    },
+]
 
 /**
  * MyConsumptionContainer.
@@ -93,21 +108,6 @@ export const MyConsumptionContainer = () => {
             setFilters(formatMetricFilter(event.target.value))
         }
     }
-
-    const widgetsList = [
-        {
-            type: 'total_consumption' as widgetType,
-        },
-        {
-            type: 'max_power' as widgetType,
-        },
-        {
-            type: 'external_temperature' as widgetType,
-        },
-        {
-            type: 'internal_temperature' as widgetType,
-        },
-    ]
 
     if (nrlinkConsent?.nrlinkConsentState === 'NONEXISTENT' && enedisConsent?.enedisConsentState === 'NONEXISTENT') {
         return (
@@ -187,6 +187,7 @@ export const MyConsumptionContainer = () => {
                     setMetricsInterval={setMetricsInterval}
                 />
             </div>
+
             <div style={{ background: theme.palette.grey[100] }}>
                 <div className="p-8 flex flex-row flex-wrap justify-evenly">
                     {widgetsList.map(({ type }) => {
