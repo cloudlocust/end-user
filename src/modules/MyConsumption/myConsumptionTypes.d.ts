@@ -50,3 +50,7 @@ export interface IMyConsumptionCalendar {
      */
     setRange: (range: metricRange) => void
 }
+/**
+ * Type for views in MobileDatePicker.
+ */
+export type ViewsType = 'day' | 'month' | 'year'

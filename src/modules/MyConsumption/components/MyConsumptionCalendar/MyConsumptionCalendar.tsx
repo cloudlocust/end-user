@@ -14,19 +14,15 @@ import {
     addYears,
     addMonths,
     differenceInCalendarDays,
-    getDaysInMonth,
 } from 'date-fns'
 import React, { useCallback, useEffect, useState } from 'react'
 import { periodValueType } from 'src/modules/Metrics/Metrics'
 import { IMyConsumptionCalendar } from 'src/modules/MyConsumption/myConsumptionTypes'
 import { useTheme } from '@mui/material'
-import TextField from '@mui/material/TextField'
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
-import { DatePicker } from '@mui/x-date-pickers/DatePicker'
-import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker'
-import Stack from '@mui/material/Stack'
 import 'src/modules/MyConsumption/components/MyConsumptionCalendar/MyConsumptonCalendar.scss'
+import { isInvalidDate, setDatePickerData } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
 /**
  * MyConsumptionCalendar component.
  *
@@ -36,26 +32,13 @@ import 'src/modules/MyConsumption/components/MyConsumptionCalendar/MyConsumptonC
  * @returns MyConsumptionCalendar.
  */
 const MyConsumptionCalendar = ({ period, setRange }: IMyConsumptionCalendar) => {
-    // const [currentDate, setCurrentDate] = useState(new Date())
     const [currentDate, setCurrentDate] = useState<Date>(new Date())
     const isFutureDate = differenceInCalendarDays(currentDate, new Date()) >= 0
-
-    const handleChange = (newValue: Date) => {
-        setCurrentDate(newValue)
-    }
     const theme = useTheme()
-    // If a future date is selected, then today's date is set
-    useEffect(() => {
-        // console.log(currentDate.getFullYear(), new Date().getFullYear())
-        if (
-            currentDate?.getDate() > getDaysInMonth(currentDate) ||
-            currentDate?.getDate() <= 0 ||
-            currentDate.getMonth() > 12 ||
-            currentDate.getMonth() <= 0 ||
-            currentDate.getFullYear() > new Date().getFullYear()
-        )
 
-            setCurrentDate(new Date())
+    // If invalid date is selected, then today's date is set
+    useEffect(() => {
+        if (isInvalidDate(currentDate)) setCurrentDate(new Date())
     }, [currentDate])
 
     /**
@@ -76,7 +59,7 @@ const MyConsumptionCalendar = ({ period, setRange }: IMyConsumptionCalendar) => 
      * @param period Selected period.
      * @param arrowName Name of the clicked arrow.
      */
-    const setCalendar = (period: any, arrowName: string) => {
+    const setCalendar = (period: periodValueType, arrowName: string) => {
         const subData = arrowName === 'sub'
         /**
          * SetCalendarData function based on argument values.
@@ -127,9 +110,10 @@ const MyConsumptionCalendar = ({ period, setRange }: IMyConsumptionCalendar) => 
         [setCurrentPeriodDate],
     )
     /**
+     * Get range function.
      *
-     * @param period
-     * @returns
+     * @param period Selected period.
+     * @returns Object with formatted range.
      */
     const getRange = useCallback(
         (period: periodValueType) => {
@@ -143,56 +127,28 @@ const MyConsumptionCalendar = ({ period, setRange }: IMyConsumptionCalendar) => 
     useEffect(() => {
         setRange(getRange(period))
     }, [getRange, period, setRange])
-
-    const setDatePicker = (period: any) => {
+    /**
+     * Handle data change.
+     *
+     * @param newDate New Date to set.
+     */
+    const handleDateChange = (newDate: Date | null) => {
+        newDate && setCurrentDate(newDate)
+    }
+    /**
+     *
+     * @param period Selected period.
+     * @returns
+     */
+    const setDatePicker = (period: periodValueType) => {
         switch (period) {
             case 1:
-                return (
-                    <MobileDatePicker
-                        views={['day']}
-                        value={currentDate}
-                        maxDate={new Date()}
-                        inputFormat="dd/MM/yyyy"
-                        // maxDate={new Date()}
-                        onChange={(e) => handleChange(e!)}
-                        renderInput={(params) => <TextField {...params} />}
-                    />
-                )
-            // eslint-disable-next-line sonarjs/no-duplicated-branches
             case 7:
-                return (
-                    <DatePicker
-                        views={['day']}
-                        // minDate={new Date('2012-03-01')}
-                        maxDate={new Date()}
-                        inputFormat="dd/MM/yyyy"
-                        value={currentDate}
-                        onChange={(e) => handleChange(e!)}
-                        renderInput={(params) => <TextField {...params} helperText={null} />}
-                    />
-                )
+                return setDatePickerData(['day'], currentDate, handleDateChange, 'dd/MM/yyyy')
             case 30:
-                return (
-                    <DatePicker
-                        views={['month']}
-                        maxDate={new Date()}
-                        inputFormat="dd/MM/yyyy"
-                        value={currentDate}
-                        onChange={(e) => handleChange(e!)}
-                        renderInput={(params) => <TextField {...params} helperText={null} />}
-                    />
-                )
+                return setDatePickerData(['month', 'year'], currentDate, handleDateChange, 'MM/yyyy')
             case 365:
-                return (
-                    <DatePicker
-                        views={['year']}
-                        inputFormat="dd/MM/yyyy"
-                        maxDate={new Date()}
-                        value={currentDate}
-                        onChange={(e) => handleChange(e!)}
-                        renderInput={(params) => <TextField {...params} helperText={null} />}
-                    />
-                )
+                return setDatePickerData(['year'], currentDate, handleDateChange)
         }
     }
 
@@ -203,7 +159,7 @@ const MyConsumptionCalendar = ({ period, setRange }: IMyConsumptionCalendar) => 
             animate={{ opacity: 1, transition: { delay: 0.3 } }}
             style={{ color: theme.palette.primary.dark }}
         >
-            {/* <Typography className="mr-10">{format(currentDate, 'dd/MM/yyyy')}</Typography> */}
+            <Typography className="mr-10">{format(currentDate, 'dd/MM/yyyy')}</Typography>
             <Tooltip title="Previous">
                 <IconButton
                     aria-label="Previous"
