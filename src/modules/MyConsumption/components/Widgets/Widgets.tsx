@@ -3,7 +3,11 @@ import { IWidgetAssets, IWidgetProps } from 'src/modules/MyConsumption/component
 import { useTheme } from '@mui/material'
 import { convertMetricsDataToApexChartsAxisValues } from 'src/modules/MyConsumption/utils/apexChartsDataConverter'
 import { IMetric } from 'src/modules/Metrics/Metrics'
-import { calculateSum } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
+import {
+    calculateAverage,
+    calculateMaxNumber,
+    calculateSum,
+} from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
 
 const WIDGET_MAX_WIDTH = '170px'
 const WIDGET_MAX_HEIGHT = '180px'
@@ -51,6 +55,21 @@ export const Widget = ({ type, data, isMetricsLoading }: IWidgetProps) => {
         if (type === 'consumption_metrics' && data.find((el) => el.target === type)) {
             const values = getValuesFromData(data)
             totalConsumption = calculateSum(values)
+        }
+
+        if (type === 'enedis_max_power' && data.find((el) => el.target === type)) {
+            const values = getValuesFromData(data)
+            maxPower = calculateMaxNumber(values)
+        }
+
+        if (type === 'external_temperature_metrics' && data.find((el) => el.target === type)) {
+            const values = getValuesFromData(data)
+            averageExternalTemp = calculateAverage(values)
+        }
+
+        if (type === 'nrlink_internal_temperature_metrics' && data.find((el) => el.target === type)) {
+            const values = getValuesFromData(data)
+            averageInteranalTemp = calculateAverage(values)
         }
 
         switch (type) {
