@@ -37,7 +37,10 @@ const MyConsumptionCalendar = ({ period, setRange }: IMyConsumptionCalendar) => 
     useEffect(() => {
         if (isInvalidDate(currentDate)) setCurrentDate(new Date())
     }, [currentDate])
-
+    // If a future date is selected, then today's date is set
+    useEffect(() => {
+        isFutureDate && setCurrentDate(new Date())
+    }, [isFutureDate])
     /**
      * SetCurrentPeriodDate.
      *
