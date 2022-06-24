@@ -1,9 +1,9 @@
-import { IMetric } from 'src/modules/Metrics/Metrics'
+import { IMetric, metricTargetType } from 'src/modules/Metrics/Metrics'
 
 /**
  * Widget type.
  */
-export type widgetType = 'total_consumption' | 'max_power' | 'internal_temperature' | 'external_temperature'
+export type widgetType = metricTargetType
 /**
 
 /**

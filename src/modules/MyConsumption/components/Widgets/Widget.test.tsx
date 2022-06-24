@@ -1,10 +1,10 @@
 import { reduxedRender } from 'src/common/react-platform-components/test'
 import { Widget } from 'src/modules/MyConsumption'
-import { IWidgetProps } from 'src/modules/shared/Widgets/Widget'
+import { IWidgetProps } from 'src/modules/MyConsumption/components/Widgets/Widget'
 import { TEST_SUCCESS_WEEK_METRICS } from 'src/mocks/handlers/metrics'
 
 const mockWidgetProps: IWidgetProps = {
-    type: 'total_consumption',
+    type: 'consumption_metrics',
     data: TEST_SUCCESS_WEEK_METRICS,
     isMetricsLoading: false,
 }
@@ -27,21 +27,21 @@ describe('Widget component test', () => {
         expect(getByText(CONSOMMATION_TOTALE_UNIT)).toBeTruthy()
     })
     test('when the widget is rendered with puissance max', async () => {
-        mockWidgetProps.type = 'max_power'
+        mockWidgetProps.type = 'enedis_max_power'
         const { getByText } = reduxedRender(<Widget {...mockWidgetProps} />)
 
         expect(getByText(PUISSANCE_MAX_TEXT)).toBeTruthy()
         expect(getByText(PUISSANCE_MAX_UNIT)).toBeTruthy()
     })
     test('when the widget is rendered with internal temperature', async () => {
-        mockWidgetProps.type = 'internal_temperature'
+        mockWidgetProps.type = 'nrlink_internal_temperature_metrics'
         const { getByText } = reduxedRender(<Widget {...mockWidgetProps} />)
 
         expect(getByText(INTERNAL_TEMPERATURE_TEXT)).toBeTruthy()
         expect(getByText(TEMPERATURE_UNIT)).toBeTruthy()
     })
     test('when the widget is rendered with external temperature', async () => {
-        mockWidgetProps.type = 'external_temperature'
+        mockWidgetProps.type = 'external_temperature_metrics'
         const { getByText } = reduxedRender(<Widget {...mockWidgetProps} />)
 
         expect(getByText(EXTERNAL_TEMPERATURE_TEXT)).toBeTruthy()
