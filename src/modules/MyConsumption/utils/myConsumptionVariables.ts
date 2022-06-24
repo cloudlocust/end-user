@@ -1,4 +1,4 @@
-import { periodValue } from 'src/modules/MyConsumption/myConsumptionTypes'
+import { periodType } from 'src/modules/MyConsumption/myConsumptionTypes'
 /**
  * Data Consumption Period.
  */
@@ -6,22 +6,22 @@ export const dataConsumptionPeriod = [
     {
         name: 'Jour',
         interval: '1min',
-        period: 1 as periodValue,
+        period: 'daily' as periodType,
     },
     {
         name: 'Semaine',
         interval: '1d',
-        period: 7 as periodValue,
+        period: 'weekly' as periodType,
     },
     {
         name: 'Mois',
         interval: '1d',
-        period: 30 as periodValue,
+        period: 'monthly' as periodType,
     },
 
     {
         name: 'Année',
         interval: '1m',
-        period: 365 as periodValue,
+        period: 'yearly' as periodType,
     },
 ]

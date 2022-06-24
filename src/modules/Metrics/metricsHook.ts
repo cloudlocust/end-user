@@ -4,7 +4,7 @@ import {
     getMetricType,
     metricIntervalType,
     metricTargetsType,
-    IMetrics,
+    IMetric,
     metricRangeType,
     metricFiltersType,
 } from 'src/modules/Metrics/Metrics'
@@ -27,16 +27,16 @@ export function useMetrics(initialState: getMetricType) {
     const { enqueueSnackbar } = useSnackbar()
     const { formatMessage } = useIntl()
     const [isMetricsLoading, setIsMetricsLoading] = useState(false)
-    const [data, setData] = useState<IMetrics | []>([])
+    const [data, setData] = useState<IMetric[] | []>([])
     const [range, setRange] = useState<metricRangeType>(initialState.range)
     const [metricsInterval, setMetricsInterval] = useState<metricIntervalType>(initialState.interval)
     const [targets, setTargets] = useState<metricTargetsType>(initialState.targets)
     const [filters, setFilters] = useState<metricFiltersType>(initialState.filters ? initialState.filters : [])
 
-    // Useeffect is called whenever the hook is instantiated or whenever the dependencies changes.
+    // UseEffect is called whenever the hook is instantiated or whenever the dependencies changes.
     useEffect(() => {
         /**
-         * Get Metrics function: Everytime filters or range or interval or targets or metricsInterval has changed, it triggers the function call.
+         * Get Metrics function: Everytime filters or range or targets or metricsInterval has changed, it triggers the function call.
          */
         ;(async () => {
             setIsMetricsLoading(true)
@@ -45,7 +45,7 @@ export function useMetrics(initialState: getMetricType) {
                     interval: metricsInterval,
                     range,
                     targets,
-                    adHocFilters: filters,
+                    adhocFilters: filters,
                 })
                 setData(response.data)
             } catch (error) {

@@ -15,7 +15,7 @@ export interface IMyConsumptionPeriod {
  * Range value type.
  *
  */
-export type periodValue = 1 | 7 | 30 | 365
+export type periodType = 'daily' | 'weekly' | 'monthly' | 'yearly'
 /**
  * Interface ISelectMeters.
  */
