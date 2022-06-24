@@ -146,7 +146,6 @@ export const MyConsumptionContainer = () => {
                         <MyConsumptionCalendar period={period} setRange={setRange} />
                     </div>
                 </motion.div>
-
                 {metersList && metersList?.length > 1 && (
                     <SelectMeters
                         metersList={metersList}

@@ -212,4 +212,3 @@ export const MyConsumptionCalendar = ({ period, setRange }: IMyConsumptionCalend
         </motion.div>
     )
 }
-
