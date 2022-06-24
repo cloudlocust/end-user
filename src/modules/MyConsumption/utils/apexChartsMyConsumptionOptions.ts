@@ -4,6 +4,7 @@ import { Props } from 'react-apexcharts'
 import { periodType } from 'src/modules/MyConsumption/myConsumptionTypes'
 import { dayjsUTC } from 'src/common/react-platform-components'
 import fr from 'apexcharts/dist/locales/fr.json'
+import { isNull } from 'lodash'
 
 /**
  * Default ApexChart Options, represent the general options related to the overall look of the MyConsumptionChart.
@@ -68,11 +69,11 @@ export const defaultApexChartOptions: (theme: Theme) => Props['options'] = (them
             show: true,
             strokeWidth: 3,
         },
-        type: 'datetime',
+        type: 'category',
         tickPlacement: 'on',
     },
     stroke: {
-        show: true,
+        show: false,
         curve: 'smooth',
         lineCap: 'butt',
         colors: [theme.palette.primary.contrastText],
@@ -125,7 +126,7 @@ export const getApexChartMyConsumptionProps = ({
     // eslint-disable-next-line jsdoc/require-jsdoc
     yAxisSeries: ApexAxisChartSeries
     // eslint-disable-next-line jsdoc/require-jsdoc
-    xAxisValues: number[]
+    xAxisValues: ApexXAxis['categories']
     // eslint-disable-next-line jsdoc/require-jsdoc
     theme: Theme
     // eslint-disable-next-line jsdoc/require-jsdoc
@@ -159,7 +160,7 @@ export const getApexChartMyConsumptionProps = ({
                  * @param value Yaxis Value.
                  * @returns Desired label to be shown for values in the yAxis.
                  */
-                formatter: (value: number) => `${value} KWh`,
+                formatter: (value: number) => `${isNull(value) ? '' : value} KWh`,
             },
             axisBorder: {
                 show: true,
@@ -182,13 +183,15 @@ export const getApexChartMyConsumptionProps = ({
              * @returns Label that's going to be shown in the xaxis.
              */
             formatter(value) {
+                // If period === daily, on the xAxis label we'll show only by hours [1:00, 2:00, ... 23:00], and thus we take only the timestamps that has minutes and second to 00 (HH:00:00 represent the first hour).
+                if (period === 'daily' && dayjsUTC(new Date(value)).format('mm:ss') !== '00:00') return ''
                 return dayjsUTC(new Date(value)).format(getXAxisLabelFormatFromPeriod(period))
             },
         },
     }
 
     if (period !== 'daily') {
-        options.xaxis.type = 'category'
+        options.stroke!.show = true
         options.tooltip = {
             x: {
                 /**
@@ -205,7 +208,6 @@ export const getApexChartMyConsumptionProps = ({
             },
         }
     }
-
     options.yaxis = yAxisOptions
     return { series: myConsumptionApexChartSeries, options }
 }

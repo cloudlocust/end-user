@@ -6,15 +6,18 @@ import { ThemeProvider } from '@mui/material'
 import { TEST_SUCCESS_WEEK_METRICS as MOCK_WEEK_METRICS } from 'src/mocks/handlers/metrics'
 import { applyCamelCase } from 'src/common/react-platform-components'
 import { periodType } from 'src/modules/MyConsumption/myConsumptionTypes'
+import { getRange } from 'src/modules/MyConsumption/utils/myConsumptionVariables'
 const TEST_SUCCESS_WEEK_METRICS = applyCamelCase(MOCK_WEEK_METRICS)
 // eslint-disable-next-line jsdoc/require-jsdoc
 const propsMyConsumptionChart = {
     data: TEST_SUCCESS_WEEK_METRICS,
     chartType: 'bar' as ApexChart['type'],
     isMetricsLoading: false,
-    period: 'weekly' as periodType,
+    period: 'daily' as periodType,
+    range: getRange('daily'),
 }
 const circularProgressClassname = '.MuiCircularProgress-root'
+const apexChartsDailyPeriodWrapper = '.apexChartsDailyPeriodWrapper'
 const apexChartsClassName = '.apexcharts-svg'
 
 // Mocking apexcharts, because there are errors related to modules not found, in test mode.
@@ -40,6 +43,7 @@ describe('Test MyConsumptionChart', () => {
             </ThemeProvider>,
         )
 
+        expect(container.querySelector(apexChartsDailyPeriodWrapper)).toBeInTheDocument()
         expect(container.querySelector(apexChartsClassName)).toBeInTheDocument()
     })
     test('When isMetricsLoading true, Circular progress should be shown', async () => {

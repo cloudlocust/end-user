@@ -8,6 +8,7 @@ import { ApexOptions } from 'apexcharts'
 import { periodType } from 'src/modules/MyConsumption/myConsumptionTypes'
 import { dayjsUTC } from 'src/common/react-platform-components'
 import { MessageDescriptor } from 'react-intl'
+import dayjs from 'dayjs'
 
 const nrlinkConsumptionMetricsText = 'Consommation'
 // eslint-disable-next-line jsdoc/require-jsdoc
@@ -16,7 +17,6 @@ let mockChartType = 'bar' as ApexChart['type']
 const mockDatapoints = [[247, 1651406400]]
 
 const xaxisCategoryType = 'category'
-const xaxisDatetimeType = 'datetime'
 // eslint-disable-next-line jsdoc/require-jsdoc
 const mockYAxisSeriesConvertedData: ApexAxisChartSeries = [
     {
@@ -114,6 +114,7 @@ describe('test pure function', () => {
             period,
         })
         const mockOptionsResult = mockOptions(theme, period)
+        mockOptionsResult.stroke!.show = true
         expect(JSON.stringify(apexChartProps.options)).toStrictEqual(JSON.stringify(mockOptionsResult))
         expect(apexChartProps.series).toStrictEqual(mockyAxisSeries)
         expect((apexChartProps.options.yaxis as ApexYAxis[])[0].labels!.formatter!(12)).toStrictEqual('12 KWh')
@@ -122,11 +123,11 @@ describe('test pure function', () => {
     test('getApexChartMyConsumptionProps with different period and mobile', async () => {
         // ApexChart Props
         let period = 'daily' as periodType
-        const timestamp = 1640997720000
+        const timestamp = new Date(dayjs(new Date(1640997720000)).startOf('day').format()).getTime()
         mockXAxisValuesConvertedData[0] = timestamp
         const tooltipTimeStampDays = 'Sat 01 Jan'
         const tooltipTimeStampYear = 'January'
-        const xAxisTimeStampDay = `0${new Date(timestamp).getHours()}:${new Date(timestamp).getMinutes()}`
+        const xAxisTimeStampDay = `00:00`
         const xAxisTimeStampWeek = 'Sat'
         const xAxisTimeStampMonth = '1 Jan'
         const xAxisTimeStampYear = 'Jan'
@@ -139,11 +140,11 @@ describe('test pure function', () => {
             theme,
             period,
         })
+        apexChartProps.options!.stroke!.show = false
         expect(apexChartProps.options.tooltip!).toBeUndefined()
         expect(apexChartProps.options.xaxis!.labels!.formatter!(new Date(timestamp).toString())).toEqual(
             xAxisTimeStampDay,
         )
-        expect(apexChartProps.options.xaxis!.type).toEqual(xaxisDatetimeType)
         // xAxis tooltip will show day of the week, samedi 1 jan.
         period = 'weekly' as periodType
         // ApexChart Props
@@ -155,6 +156,7 @@ describe('test pure function', () => {
             theme,
             period,
         })
+        apexChartProps.options!.stroke!.show = true
         expect(apexChartProps.options.xaxis!.labels!.formatter!(new Date(timestamp).toString())).toEqual(
             xAxisTimeStampWeek,
         )

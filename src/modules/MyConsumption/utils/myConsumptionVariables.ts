@@ -1,15 +1,23 @@
-import dayjs from 'dayjs'
 import { periodType } from 'src/modules/MyConsumption/myConsumptionTypes'
+import dayjs from 'dayjs'
 /**
  * Function to get range.
  *
  * @param rangePeriod Period for range.
  * @returns Object with range data.
  */
-const getRange = (rangePeriod: dayjs.ManipulateType) => {
+export const getRange = (rangePeriod: dayjs.ManipulateType) => {
+    const fromDay = dayjs().subtract(1, rangePeriod)
+
     return {
-        from: dayjs().subtract(1, rangePeriod).startOf('day').toDate().toISOString(),
-        to: dayjs().startOf('day').toDate().toISOString(),
+        from: fromDay.startOf('day').toDate().toISOString(),
+        /**
+         * When rangePeriod is day then the end of date is the end of the same day ie: 23:59.
+         */
+        to:
+            rangePeriod === 'day'
+                ? fromDay.endOf('day').toDate().toISOString()
+                : dayjs().subtract(1, 'day').startOf('day').toDate().toISOString(),
     }
 }
 /**
@@ -18,7 +26,7 @@ const getRange = (rangePeriod: dayjs.ManipulateType) => {
 export const dataConsumptionPeriod = [
     {
         name: 'Jour',
-        interval: '1min',
+        interval: '2min',
         range: getRange('day'),
         period: 'daily' as periodType,
     },
@@ -37,7 +45,7 @@ export const dataConsumptionPeriod = [
 
     {
         name: 'Année',
-        interval: '1m',
+        interval: '1 month',
         range: getRange('year'),
         period: 'yearly' as periodType,
     },

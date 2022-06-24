@@ -1,3 +1,4 @@
+@import 'src/common/ui-kit/styles/media.scss';
 .apexcharts-canvas {
     width: 100% !important;
     height: 100% !important;
@@ -6,5 +7,18 @@
     .apexcharts-text.apexcharts-xaxis-label,
     .apexcharts-tooltip-title {
         text-transform: capitalize;
+    }
+}
+
+.apexChartsDailyPeriodWrapper {
+    .apexcharts-xaxis {
+        .apexcharts-text.apexcharts-xaxis-label:nth-child(2n) {
+            display: none;
+        }
+        @include sm {
+            .apexcharts-text.apexcharts-xaxis-label:nth-child(n) {
+                display: inline;
+            }
+        }
     }
 }

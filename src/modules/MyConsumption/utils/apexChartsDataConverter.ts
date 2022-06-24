@@ -1,4 +1,5 @@
-import { IMetric } from 'src/modules/Metrics/Metrics'
+import { ApexAxisChartSerie, IMetric } from 'src/modules/Metrics/Metrics'
+import { ApexChartsAxisValuesType } from 'src/modules/MyConsumption/myConsumptionTypes'
 
 /**
  * Convert dataPoints array that has the format [Yaxis, Xaxis][] where Yaxis and Xaxis are numbers, to Object {yAxisValues, xAxisValues}.
@@ -9,11 +10,11 @@ import { IMetric } from 'src/modules/Metrics/Metrics'
 const getAxisValuesFromDatapoints = (
     dataPoints: IMetric['datapoints'],
 ): // eslint-disable-next-line jsdoc/require-jsdoc
-{ yAxisValues: number[]; xAxisValues: number[] } => {
+{ yAxisValues: ApexAxisChartSerie['data']; xAxisValues: number[] } => {
     let xAxisValues: number[] = []
 
     const yAxisValues = dataPoints.map((dataPoint) => {
-        xAxisValues.push(dataPoint[1])
+        xAxisValues.push(Math.ceil(dataPoint[1]))
         return dataPoint[0]
     })
     return { yAxisValues, xAxisValues }
@@ -25,14 +26,14 @@ const getAxisValuesFromDatapoints = (
  * @param data Data of format IMetric[] that will be converted to IMetric[].
  * @returns ApexCharts Axis Values.
  */
-export const convertMetricsDataToApexChartsAxisValues = (data: IMetric[]) => {
+export const convertMetricsDataToApexChartsAxisValues = (data: IMetric[]): ApexChartsAxisValuesType => {
     let xAxisValues: number[] = []
     // We can have multiple yAxisSeries, for each target it'll have its own yAxis Series.
     let yAxisSeries: ApexAxisChartSeries = []
 
     data.forEach((metric) => {
         // eslint-disable-next-line jsdoc/require-jsdoc
-        let axisValues: { yAxisValues: number[]; xAxisValues: number[] } = {
+        let axisValues: { yAxisValues: ApexAxisChartSerie['data']; xAxisValues: number[] } = {
             yAxisValues: [],
             xAxisValues: [],
         }

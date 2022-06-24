@@ -4,15 +4,10 @@ import { METRICS_API } from 'src/modules/Metrics/metricsHook'
 import { SnakeCasedPropertiesDeep } from 'type-fest'
 import dayjs from 'dayjs'
 
-const FAKE_DAY_INTERVAL = '1min'
-const FAKE_WEEK_INTERVAL = '1d'
-const FAKE_MONTH_INTERVAL = '1d'
-const FAKE_YEAR_INTERVAL = '1m'
-
 /**
- * Data of one day with 1min interval.
+ * Data of one day with 2min interval.
  */
-const FAKE_DAY_DATA = [
+export const FAKE_DAY_DATA = [
     [79, 1640995200000],
     [117, 1640995260000],
     [112, 1640995320000],
@@ -315,8 +310,10 @@ const FAKE_DAY_DATA = [
     [123, 1641013140000],
 ]
 
-// Data of 7 days with 1 day interval
-const FAKE_WEEK_DATA = [
+/**
+ * Data of 7 days with 1 day interval.
+ */
+export const FAKE_WEEK_DATA = [
     [33, 1640995200000],
     [34, 1641081600000],
     [41, 1641168000000],
@@ -325,8 +322,10 @@ const FAKE_WEEK_DATA = [
     [62, 1641427200000],
     [42, 1641513600000],
 ]
-// Data of 30 days with 1 day interval
-const FAKE_MONTH_DATA = [
+/**
+ * Data of 30 days with 1 day interval.
+ */
+export const FAKE_MONTH_DATA = [
     [22, 1640995200000],
     [11, 1641081600000],
     [33, 1641168000000],
@@ -359,8 +358,10 @@ const FAKE_MONTH_DATA = [
     [58, 1643500800000],
 ]
 
-// Data of 1 year with 1 month interval.
-const FAKE_YEAR_DATA = [
+/**
+ * Data of 1 year with 1 month interval.
+ */
+export const FAKE_YEAR_DATA = [
     [33, 1640995200000],
     [34, 1643673600000],
     [41, 1646092800000],
@@ -423,18 +424,16 @@ export const metricsEndpoints = [
         const toInMilliseconds = dayjs(new Date(req.body.range.to).getTime())
         const difference = toInMilliseconds.diff(fromInMilliseconds, 'day')
 
-        if (FAKE_DAY_INTERVAL === '1min' && difference === 1) {
+        if (difference === 0) {
             return res(ctx.status(200), ctx.delay(1000), ctx.json(TEST_SUCCESS_DAY_METRICS))
         }
-        if (FAKE_WEEK_INTERVAL === '1d' && difference === 7) {
+        if (difference === 7) {
             return res(ctx.status(200), ctx.delay(1000), ctx.json(TEST_SUCCESS_WEEK_METRICS))
         }
 
-        if (FAKE_MONTH_INTERVAL === '1d' && difference === 31)
-            return res(ctx.status(200), ctx.delay(1000), ctx.json(TEST_SUCCESS_MONTH_METRICS))
+        if (difference === 31) return res(ctx.status(200), ctx.delay(1000), ctx.json(TEST_SUCCESS_MONTH_METRICS))
 
-        if (FAKE_YEAR_INTERVAL === '1m' && difference === 365)
-            return res(ctx.status(200), ctx.delay(1000), ctx.json(TEST_SUCCESS_YEAR_METRICS))
+        if (difference === 365) return res(ctx.status(200), ctx.delay(1000), ctx.json(TEST_SUCCESS_YEAR_METRICS))
 
         return res(ctx.status(401), ctx.delay(1000), ctx.json({ error: 'Error' }))
     }),
