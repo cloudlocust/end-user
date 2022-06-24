@@ -28,7 +28,7 @@ import { isInvalidDate, setDatePickerData } from 'src/modules/MyConsumption/util
  * @param root0.setRange SetRange function.
  * @returns MyConsumptionCalendar.
  */
-const MyConsumptionCalendar = ({ period, setRange }: IMyConsumptionCalendar) => {
+export const MyConsumptionCalendar = ({ period, setRange }: IMyConsumptionCalendar) => {
     const [currentDate, setCurrentDate] = useState<Date>(new Date())
     const isFutureDate = differenceInCalendarDays(currentDate, new Date()) >= 0
     const theme = useTheme()
@@ -213,4 +213,3 @@ const MyConsumptionCalendar = ({ period, setRange }: IMyConsumptionCalendar) => 
     )
 }
 
-export default MyConsumptionCalendar

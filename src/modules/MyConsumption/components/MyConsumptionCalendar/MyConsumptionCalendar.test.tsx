@@ -2,8 +2,8 @@ import React from 'react'
 import { reduxedRender } from 'src/common/react-platform-components/test'
 import { BrowserRouter as Router } from 'react-router-dom'
 import userEvent from '@testing-library/user-event'
-import MyConsumptionCalendar from 'src/modules/MyConsumption/components/MyConsumptionCalendar/MyConsumptionCalendar'
 import format from 'date-fns/format'
+import { MyConsumptionCalendar } from 'src/modules/MyConsumption'
 
 let mockSetRange = jest.fn()
 let mockPeriod = 'daily'
