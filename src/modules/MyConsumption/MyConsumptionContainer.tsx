@@ -189,7 +189,7 @@ export const MyConsumptionContainer = () => {
                 />
             </div>
             <div style={{ background: theme.palette.grey[100] }} className="p-10">
-                <Grid container spacing={2} className="p-10 flex flex-row flex-wrap justify-between">
+                <Grid container spacing={2}>
                     {widgetsList.map(({ type }) => {
                         return <Widget key={type} type={type} data={data} isMetricsLoading={isMetricsLoading} />
                     })}
