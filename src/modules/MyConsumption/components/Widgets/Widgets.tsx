@@ -16,7 +16,7 @@ import Grid from '@mui/material/Grid'
  * @param data Data.
  * @returns Array of values.
  */
-const getValuesFromData = (data: IMetric[]) => {
+const getValuesFromData = (data: IMetric[]): number[] => {
     // The values to be used in the widget are the values of the Y axis in the chart.
     const { yAxisSeries } = convertMetricsDataToApexChartsAxisValues(data)
     let values: number[] = []
@@ -45,75 +45,66 @@ export const Widget = ({ type, data, isMetricsLoading }: IWidgetProps) => {
      * @returns Data according to widget type.
      */
     const getValueAccordingToWidgetType = (type: IWidgetProps['type'], data: IWidgetProps['data']) => {
-        let totalConsumption: number = 0
-        let maxPower: number = 0
-        let averageInteranalTemp: number = 0
-        let averageExternalTemp: number = 0
-
-        if (type === 'consumption_metrics' && data.find((el) => el.target === type)) {
-            const values = getValuesFromData(data)
-            totalConsumption = calculateSum(values)
-        }
-
-        if (type === 'enedis_max_power' && data.find((el) => el.target === type)) {
-            const values = getValuesFromData(data)
-            maxPower = calculateMaxNumber(values)
-        }
-
-        if (type === 'external_temperature_metrics' && data.find((el) => el.target === type)) {
-            const values = getValuesFromData(data)
-            averageExternalTemp = calculateAverage(values)
-        }
-
-        if (type === 'nrlink_internal_temperature_metrics' && data.find((el) => el.target === type)) {
-            const values = getValuesFromData(data)
-            averageInteranalTemp = calculateAverage(values)
-        }
+        let values: number[]
+        let totalConsumption: number
+        let maxPower: number
+        let averageInteranalTemp: number
+        let averageExternalTemp: number
 
         switch (type) {
             case 'consumption_metrics':
+                values = getValuesFromData(data)
+                totalConsumption = calculateSum(values)
                 return totalConsumption
             case 'enedis_max_power':
+                values = getValuesFromData(data)
+                maxPower = calculateMaxNumber(values)
                 return maxPower
             case 'external_temperature_metrics':
+                values = getValuesFromData(data)
+                averageExternalTemp = calculateAverage(values)
                 return averageExternalTemp
             case 'nrlink_internal_temperature_metrics':
+                values = getValuesFromData(data)
+                averageInteranalTemp = calculateAverage(values)
                 return averageInteranalTemp
+            default:
+                return
         }
     }
 
     /**
-     * Function that returns widget title and unit according to type.
+     * Function that returns widget title, unit, and value according to type.
      *
      * @param type Widget type.
      * @param element Widget elements like title, unit.
      * @returns Title according to the widget type.
      */
     const renderWidgetAssets = (type: IWidgetProps['type'], element: 'title' | 'unit' | 'value') => {
-        let widgetTitle: string = ''
-        let widgetUnit: string = ''
-        let widgetValue: number = 0
+        let widgetTitle!: string
+        let widgetUnit!: string
+        let widgetValue!: number
         // Render widget information according to the type from props.
         switch (type) {
             case 'consumption_metrics':
                 widgetTitle = 'Consommation totale' as IWidgetAssets['title']
                 widgetUnit = 'kWh' as IWidgetAssets['unit']
-                widgetValue = getValueAccordingToWidgetType('consumption_metrics', data)
+                widgetValue = getValueAccordingToWidgetType('consumption_metrics', data) as number
                 break
             case 'enedis_max_power':
                 widgetTitle = 'Puissance max' as IWidgetAssets['title']
                 widgetUnit = 'kVa' as IWidgetAssets['unit']
-                widgetValue = getValueAccordingToWidgetType('enedis_max_power', data)
+                widgetValue = getValueAccordingToWidgetType('enedis_max_power', data) as number
                 break
             case 'nrlink_internal_temperature_metrics':
                 widgetTitle = 'Température intérieure' as IWidgetAssets['title']
                 widgetUnit = '°C' as IWidgetAssets['unit']
-                widgetValue = getValueAccordingToWidgetType('nrlink_internal_temperature_metrics', data)
+                widgetValue = getValueAccordingToWidgetType('nrlink_internal_temperature_metrics', data) as number
                 break
             case 'external_temperature_metrics':
                 widgetTitle = 'Température extérieure' as IWidgetAssets['title']
                 widgetUnit = '°C' as IWidgetAssets['unit']
-                widgetValue = getValueAccordingToWidgetType('external_temperature_metrics', data)
+                widgetValue = getValueAccordingToWidgetType('external_temperature_metrics', data) as number
                 break
             default:
                 break
