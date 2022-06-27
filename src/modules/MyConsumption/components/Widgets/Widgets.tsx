@@ -141,12 +141,12 @@ export const Widget = ({ type, data, isMetricsLoading }: IWidgetProps) => {
                 {isMetricsLoading ? (
                     <div
                         className="flex flex-col justify-center items-center w-full h-full"
-                        style={{ minHeight: '200px' }}
+                        style={{ height: '170px' }}
                     >
                         <CircularProgress style={{ color: theme.palette.primary.main }} />
                     </div>
                 ) : (
-                    <div className="p-16">
+                    <div className="p-16 flex flex-col justify-between">
                         <Typography className="sm:text-17 md:text-18 font-normal" style={{ minHeight: '65px' }}>
                             {renderWidgetAssets(type, 'title')}
                         </Typography>
@@ -157,7 +157,7 @@ export const Widget = ({ type, data, isMetricsLoading }: IWidgetProps) => {
                             </Typography>
                             <div className="flex flex-col">
                                 {/* Widget unit */}
-                                <Typography className="text-18 font-medium mb-20" color="textSecondary">
+                                <Typography className="text-18 font-medium mb-24" color="textSecondary">
                                     {renderWidgetAssets(type, 'unit')}
                                 </Typography>
                                 {/* TODDO MYEM-2588*/}
