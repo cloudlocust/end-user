@@ -45,10 +45,10 @@ export const Widget = ({ type, data, isMetricsLoading }: IWidgetProps) => {
      * @returns Data according to widget type.
      */
     const getValueAccordingToWidgetType = (type: IWidgetProps['type'], data: IWidgetProps['data']) => {
-        let totalConsumption!: number
-        let maxPower!: number
-        let averageInteranalTemp!: number
-        let averageExternalTemp!: number
+        let totalConsumption: number = 0
+        let maxPower: number = 0
+        let averageInteranalTemp: number = 0
+        let averageExternalTemp: number = 0
 
         if (type === 'consumption_metrics' && data.find((el) => el.target === type)) {
             const values = getValuesFromData(data)
@@ -136,8 +136,8 @@ export const Widget = ({ type, data, isMetricsLoading }: IWidgetProps) => {
     if (data.length === 0) return null
 
     return (
-        <Grid item xs={12} sm={6} md={4} lg={3} xl={3}>
-            <Card className="w-full rounded-20 shadow my-8 mx-6 sm:m-4">
+        <Grid item xs={6} sm={6} md={4} lg={3} xl={3}>
+            <Card className="w-full rounded-20 shadow sm:m-4 " variant="outlined">
                 {isMetricsLoading ? (
                     <div
                         className="flex flex-col justify-center items-center w-full h-full"
@@ -146,22 +146,25 @@ export const Widget = ({ type, data, isMetricsLoading }: IWidgetProps) => {
                         <CircularProgress style={{ color: theme.palette.primary.main }} />
                     </div>
                 ) : (
-                    <div className="p-12">
-                        <Typography className="h4 font-medium" style={{ minHeight: '65px' }}>
+                    <div className="p-16">
+                        <Typography className="sm:text-17 md:text-18 font-normal" style={{ minHeight: '65px' }}>
                             {renderWidgetAssets(type, 'title')}
                         </Typography>
-                        <div className="flex flex-row flex-wrap mt-12">
+                        <div className="flex flex-row flex-wrap mt-12 items-end">
                             {/* Widget value */}
-                            <Typography className="text-5xl font-normal leading-none tracking-tighter items-center mr-auto">
+                            <Typography className="text-3xl sm:text-4xl md:text-5xl font-normal tracking-tighter items-end mr-auto">
                                 {renderWidgetAssets(type, 'value')}
                             </Typography>
-                            <div className="flex flex-col mx-8 ml-auto">
+                            <div className="flex flex-col">
                                 {/* Widget unit */}
-                                <Typography className="font-medium text-base mb-8" color="textSecondary">
+                                <Typography className="text-18 font-medium mb-20" color="textSecondary">
                                     {renderWidgetAssets(type, 'unit')}
                                 </Typography>
                                 {/* TODDO MYEM-2588*/}
                                 {/* Widget arrow */}
+                                {/* <Typography className="font-medium text-base" color="textSecondary">
+                                    Arrow
+                                </Typography> */}
                             </div>
                         </div>
                     </div>
