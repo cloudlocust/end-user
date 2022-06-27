@@ -40,7 +40,7 @@ interface ISelectMeters {
 /**
  * Interface IMyConsumptionCalendar.
  */
-export interface IMyConsumptionCalendar {
+export interface IMyConsumptionDatePicker {
     /**
      * Period range.
      */

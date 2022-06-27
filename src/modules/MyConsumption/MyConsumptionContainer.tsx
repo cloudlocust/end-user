@@ -4,7 +4,7 @@ import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyForm
 import MyConsumptionChart from 'src/modules/MyConsumption/components/MyConsumptionChart'
 import { useMeterList } from 'src/modules/Meters/metersHook'
 import { formatMetricFilter } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
-import { MyConsumptionCalendar, MyConsumptionPeriod, SelectMeters } from 'src/modules/MyConsumption'
+import { MyConsumptionDatePicker, MyConsumptionPeriod, SelectMeters } from 'src/modules/MyConsumption'
 import { SelectChangeEvent, useTheme } from '@mui/material'
 import { useMetrics } from 'src/modules/Metrics/metricsHook'
 import { getMetricType } from 'src/modules/Metrics/Metrics'
@@ -143,7 +143,7 @@ export const MyConsumptionContainer = () => {
                                 {showPerPeriodText()}
                             </TypographyFormatMessage>
                         </div>
-                        <MyConsumptionCalendar period={period} setRange={setRange} />
+                        <MyConsumptionDatePicker period={period} setRange={setRange} />
                     </div>
                 </motion.div>
                 {metersList && metersList?.length > 1 && (

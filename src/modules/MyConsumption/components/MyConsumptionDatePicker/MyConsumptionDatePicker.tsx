@@ -14,21 +14,21 @@ import {
     differenceInCalendarDays,
 } from 'date-fns'
 import React, { useCallback, useEffect, useState } from 'react'
-import { IMyConsumptionCalendar, periodType } from 'src/modules/MyConsumption/myConsumptionTypes'
+import { IMyConsumptionDatePicker, periodType } from 'src/modules/MyConsumption/myConsumptionTypes'
 import { useTheme } from '@mui/material'
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
-import 'src/modules/MyConsumption/components/MyConsumptionCalendar/MyConsumptonCalendar.scss'
+import 'src/modules/MyConsumption/components/MyConsumptionDatePicker/MyConsumptionDatePicker.scss'
 import { isInvalidDate, setDatePickerData } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
 /**
- * MyConsumptionCalendar component.
+ * MyConsumptionDatePicker component.
  *
  * @param root0 N/A.
  * @param root0.period Period range.
  * @param root0.setRange SetRange function.
- * @returns MyConsumptionCalendar.
+ * @returns MyConsumptionDatePicker.
  */
-export const MyConsumptionCalendar = ({ period, setRange }: IMyConsumptionCalendar) => {
+export const MyConsumptionDatePicker = ({ period, setRange }: IMyConsumptionDatePicker) => {
     const [currentDate, setCurrentDate] = useState<Date>(new Date())
     const isFutureDate = differenceInCalendarDays(currentDate, new Date()) >= 0
     const theme = useTheme()
