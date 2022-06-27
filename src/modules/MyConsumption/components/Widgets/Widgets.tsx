@@ -45,31 +45,40 @@ export const Widget = ({ type, data, isMetricsLoading }: IWidgetProps) => {
      * @returns Data according to widget type.
      */
     const getValueAccordingToWidgetType = (type: IWidgetProps['type'], data: IWidgetProps['data']) => {
-        let values: number[]
-        let totalConsumption: number
-        let maxPower: number
-        let averageInteranalTemp: number
-        let averageExternalTemp: number
+        let totalConsumption!: number
+        let maxPower!: number
+        let averageInteranalTemp!: number
+        let averageExternalTemp!: number
+
+        if (type === 'consumption_metrics' && data.find((el) => el.target === type)) {
+            const values = getValuesFromData(data)
+            totalConsumption = calculateSum(values)
+        }
+
+        if (type === 'enedis_max_power' && data.find((el) => el.target === type)) {
+            const values = getValuesFromData(data)
+            maxPower = calculateMaxNumber(values)
+        }
+
+        if (type === 'external_temperature_metrics' && data.find((el) => el.target === type)) {
+            const values = getValuesFromData(data)
+            averageExternalTemp = calculateAverage(values)
+        }
+
+        if (type === 'nrlink_internal_temperature_metrics' && data.find((el) => el.target === type)) {
+            const values = getValuesFromData(data)
+            averageInteranalTemp = calculateAverage(values)
+        }
 
         switch (type) {
             case 'consumption_metrics':
-                values = getValuesFromData(data)
-                totalConsumption = calculateSum(values)
                 return totalConsumption
             case 'enedis_max_power':
-                values = getValuesFromData(data)
-                maxPower = calculateMaxNumber(values)
                 return maxPower
             case 'external_temperature_metrics':
-                values = getValuesFromData(data)
-                averageExternalTemp = calculateAverage(values)
                 return averageExternalTemp
             case 'nrlink_internal_temperature_metrics':
-                values = getValuesFromData(data)
-                averageInteranalTemp = calculateAverage(values)
                 return averageInteranalTemp
-            default:
-                return
         }
     }
 
