@@ -27,6 +27,39 @@ const getValuesFromData = (data: IMetric[]): number[] => {
 }
 
 /**
+ * Render widgetr function.
+ *
+ * @param title Title of widget.
+ * @param unit Unit of widget.
+ * @param value Value of widget.
+ * @returns Widget component.
+ */
+const renderWidget = (title: string, unit: string, value: number) => {
+    return (
+        <div className="p-16 flex flex-col justify-between">
+            <Typography className="sm:text-17 md:text-18 font-normal" style={{ minHeight: '65px' }}>
+                {title}
+            </Typography>
+            <div className="flex flex-row flex-wrap mt-12 items-end">
+                {/* Widget value */}
+                <Typography className="text-3xl sm:text-4xl md:text-5xl font-normal tracking-tighter items-end mr-auto">
+                    {value}
+                </Typography>
+                <div className="flex flex-col">
+                    {/* Widget unit */}
+                    <Typography className="text-18 font-medium mb-24" color="textSecondary">
+                        {unit}
+                    </Typography>
+                    {/* TODDO MYEM-2588*/}
+                    {/* Widget arrow */}
+                    {/* <Typography className="font-medium text-base" color="textSecondary">Arrow</Typography> */}
+                </div>
+            </div>
+        </div>
+    )
+}
+
+/**
  * Reusable widget component.
  *
  * @param root0 N/A.
@@ -73,39 +106,6 @@ export const Widget = ({ type, period }: IWidgetProps) => {
         }
         onHandletRangeFromPeriod(period)
     }, [period, setMetricsInterval, setRange])
-
-    /**
-     * Render widgetr function.
-     *
-     * @param title Title of widget.
-     * @param unit Unit of widget.
-     * @param value Value of widget.
-     * @returns Widget component.
-     */
-    const renderWidget = (title: string, unit: string, value: number) => {
-        return (
-            <div className="p-16 flex flex-col justify-between">
-                <Typography className="sm:text-17 md:text-18 font-normal" style={{ minHeight: '65px' }}>
-                    {title}
-                </Typography>
-                <div className="flex flex-row flex-wrap mt-12 items-end">
-                    {/* Widget value */}
-                    <Typography className="text-3xl sm:text-4xl md:text-5xl font-normal tracking-tighter items-end mr-auto">
-                        {value}
-                    </Typography>
-                    <div className="flex flex-col">
-                        {/* Widget unit */}
-                        <Typography className="text-18 font-medium mb-24" color="textSecondary">
-                            {unit}
-                        </Typography>
-                        {/* TODDO MYEM-2588*/}
-                        {/* Widget arrow */}
-                        {/* <Typography className="font-medium text-base" color="textSecondary">Arrow</Typography> */}
-                    </div>
-                </div>
-            </div>
-        )
-    }
 
     /**
      * Function that return value according to the type of widget.
