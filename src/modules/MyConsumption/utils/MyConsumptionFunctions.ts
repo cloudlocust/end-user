@@ -2,7 +2,18 @@ import { ApexAxisChartSerie, metricFiltersType, metricRangeType } from 'src/modu
 import dayjs from 'dayjs'
 import { periodType } from 'src/modules/MyConsumption/myConsumptionTypes.d'
 import { ApexChartsAxisValuesType } from 'src/modules/MyConsumption/myConsumptionTypes'
-import { getDaysInMonth } from 'date-fns'
+import {
+    add,
+    addDays,
+    differenceInMinutes,
+    endOfDay,
+    getDaysInMonth,
+    isToday,
+    startOfDay,
+    sub,
+    subDays,
+    subWeeks,
+} from 'date-fns'
 // import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker'
 // import TextField from '@mui/material/TextField'
 // import { IInputStyles, ViewsType } from 'src/modules/MyConsumption/myConsumptionTypes'
@@ -22,14 +33,8 @@ export const formatMetricFilter = (valueGuid: string) => {
         },
     ] as metricFiltersType
 }
-
-/**
- * Function to get range.
- *
- * @param rangePeriod Period for range.
- * @returns Object with range data.
- */
-export const getRange = (rangePeriod: dayjs.ManipulateType) => {
+export const getRange = (rangePeriod: dayjs.ManipulateType, operation: 'sub' | 'add' = 'sub') => {
+    const fromDate = operation === 'sub' ? dayjs().subtract(1, rangePeriod) : dayjs().add(1, rangePeriod)
     return {
         /**
          * When rangePeriod is:
@@ -42,12 +47,72 @@ export const getRange = (rangePeriod: dayjs.ManipulateType) => {
             rangePeriod === 'day'
                 ? dayjs().startOf('date').toDate().toISOString()
                 : rangePeriod === 'week'
-                ? dayjs().subtract(1, rangePeriod).add(1, 'day').toDate().toISOString()
-                : dayjs().subtract(1, rangePeriod).toDate().toISOString(),
+                ? fromDate.add(1, 'day').toDate().toISOString()
+                : fromDate.toDate().toISOString(),
         to: dayjs().endOf('date').toDate().toISOString(),
     }
 }
 
+const convertPeriod = (period: periodType) => {
+    switch (period) {
+        case 'daily':
+            return 'days'
+        case 'weekly':
+            return 'weeks'
+        case 'monthly':
+            return 'months'
+        case 'yearly':
+            return 'years'
+    }
+}
+/**
+ *
+ * @param period
+ * @param toDate
+ * @param operation
+ * @returns
+ */
+export const getRangeFns = (period: periodType, toDate?: Date, operation: 'sub' | 'add' = 'sub') => {
+    const currentDate = toDate || new Date()
+    const endOfCurrentDay = isToday(currentDate) ? currentDate : endOfDay(currentDate)
+    const convertedPeriod = convertPeriod(period)
+    /**
+     *
+     * @param operator
+     * @param isOperatorDays
+     * @param doDays
+     * @param action
+     * @param isAnotherOperatorDays
+     * @returns
+     */
+    const setRange = (
+        operator: 'sub' | 'add',
+        isOperatorDays: Date,
+        doDays: (date: number | Date, amount: number) => Date,
+        action: (date: number | Date, duration: Duration) => Date,
+        isAnotherOperatorDays: Date,
+    ) => {
+        if (operation === operator) {
+            if (convertedPeriod === 'days') {
+                return isOperatorDays
+            }
+            if (convertedPeriod === 'weeks') {
+                return doDays(currentDate, 6)
+            }
+            return action(currentDate, {
+                [convertedPeriod as string]: 1,
+            })
+        }
+        if (convertedPeriod === 'days') {
+            return isAnotherOperatorDays
+        }
+        return currentDate
+    }
+    return {
+        from: setRange('sub', startOfDay(currentDate), subDays, sub, startOfDay(currentDate)).toISOString(),
+        to: setRange('add', endOfCurrentDay, addDays, add, endOfCurrentDay).toISOString(),
+    }
+}
 /**
  * Function that returns list of every 2 minutes as a date in the given range.
  *

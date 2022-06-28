@@ -19,7 +19,7 @@ import { useTheme } from '@mui/material'
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
 import 'src/modules/MyConsumption/components/MyConsumptionDatePicker/MyConsumptionDatePicker.scss'
-import { getRange, isInvalidDate } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
+import { getRange, getRangeFns, isInvalidDate } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
 import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker'
 import TextField from '@mui/material/TextField'
 /**
@@ -90,31 +90,36 @@ export const MyConsumptionDatePicker = ({ period, setRange }: IMyConsumptionDate
                 break
         }
     }
+    // console.log('Days,add ', getRangeFns('years', new Date(), 'sub'))
+    // console.log('days,sub ', getRangeFns('days', currentDate, 'sub'))
+    console.log('days,add ', getRangeFns(period))
+    // console.log('days1,add ', getRangeFns('days', new Date(2022, 5, 27, 17, 20, 0), 'add'))
+    // console.log('weeks,add ', getRangeFns('weeks', currentDate, 'sub'))
     /**
      * SetRangeFrom function sets the date according to the selected period until which the range will exist.
      *
      * @param period Selected period.
      * @returns According to the selected period setRangeFrom sets the value from which data should be shown.
      */
-    // const setRangeFrom = useCallback(
-    //     (period: periodType) => {
-    //         switch (period) {
-    //             case 'daily':
-    //                 return getRange('day')
-    //             // return setCurrentPeriodDate(subDays)
-    //             case 'weekly':
-    //                 return getRange('week')
-    //             // return setCurrentPeriodDate(subWeeks)
-    //             case 'monthly':
-    //                 return getRange('month')
-    //             // return setCurrentPeriodDate(subMonths)
-    //             case 'yearly':
-    //                 return getRange('year')
-    //             // return setCurrentPeriodDate(subYears)
-    //         }
-    //     },
-    //     [setCurrentPeriodDate],
-    // )
+    // const setRangeFrom = (period: periodType) => {
+    //     switch (period) {
+    //         case 'daily':
+    //             return getRange('day', 'add', currentDate)
+    //         // return setCurrenteriodDate(subDays)
+    //         case 'weekly':P
+    //             return getRange('week', 'sub', currentDate)
+    //         // return setCurrentPeriodDate(subWeeks)
+    //         case 'monthly':
+    //             return getRange('month', 'add', currentDate)
+    //         // return setCurrentPeriodDate(subMonths)
+    //         case 'yearly':
+    //             return getRange('year', 'add', currentDate)
+    //         // return setCurrentPeriodDate(subYears)
+    //     }
+    // }
+    // console.log('')
+    // [setCurrentPeriodDate],
+
     // /**
     //  * Get range function.
     //  *
@@ -131,9 +136,9 @@ export const MyConsumptionDatePicker = ({ period, setRange }: IMyConsumptionDate
     //     [currentDate, setRangeFrom],
     // )
 
-    // useEffect(() => {
-    //     setRange(getRange(period))
-    // }, [getRange, period, setRange])
+    useEffect(() => {
+        setRange(getRange(period))
+    }, [period, setRange])
 
     /**
      * Handle data change.
@@ -143,6 +148,7 @@ export const MyConsumptionDatePicker = ({ period, setRange }: IMyConsumptionDate
     const handleDateChange = (newDate: Date | null) => {
         newDate && setCurrentDate(newDate)
     }
+    // console.log(setRangeFrom(period))
     /**
      * Set Date Picker fuction sets DatePicker according to the selected period.
      *
@@ -161,7 +167,7 @@ export const MyConsumptionDatePicker = ({ period, setRange }: IMyConsumptionDate
                         maxDate={new Date()}
                         onAccept={handleDateChange}
                         // eslint-disable-next-line no-console
-                        onChange={() => console.log('first')}
+                        onChange={() => console.log('')}
                         renderInput={(params) => (
                             <TextField
                                 {...params}
@@ -179,7 +185,7 @@ export const MyConsumptionDatePicker = ({ period, setRange }: IMyConsumptionDate
                         value={currentDate}
                         inputFormat="MM/yyyy"
                         maxDate={new Date()}
-                        onChange={handleDateChange}
+                        onChange={() => console.log('')}
                         renderInput={(params) => (
                             <TextField
                                 {...params}
@@ -197,7 +203,7 @@ export const MyConsumptionDatePicker = ({ period, setRange }: IMyConsumptionDate
                         value={currentDate}
                         // inputFormat="MM/yyyy"
                         maxDate={new Date()}
-                        onChange={handleDateChange}
+                        onChange={() => console.log('')}
                         renderInput={(params) => (
                             <TextField
                                 {...params}
@@ -221,8 +227,8 @@ export const MyConsumptionDatePicker = ({ period, setRange }: IMyConsumptionDate
                 <IconButton
                     aria-label="Previous"
                     onClick={() => {
-                        setCalendar(period, 'sub')
-                        setRange(getRange(period))
+                        // setCalendar(period, 'sub')
+                        setRange(getRange(period, 'sub'))
                     }}
                     size="large"
                     style={{ color: theme.palette.primary.contrastText }}
@@ -235,8 +241,8 @@ export const MyConsumptionDatePicker = ({ period, setRange }: IMyConsumptionDate
                 <IconButton
                     aria-label="Next"
                     onClick={() => {
-                        setCalendar(period, 'add')
-                        setRange(getRange(period))
+                        // setCalendar(period, 'add')
+                        setRange(getRange(period, 'add'))
                     }}
                     size="large"
                     disabled={isFutureDate}
