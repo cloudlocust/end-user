@@ -420,24 +420,23 @@ export const TEST_SUCCESS_YEAR_METRICS: SnakeCasedPropertiesDeep<IMetric[]> = [
 export const metricsEndpoints = [
     // Get meters metrics endpoint
     rest.post<getMetricType>(`${METRICS_API}`, (req, res, ctx) => {
-        const fromInMilliseconds = dayjs(new Date(req.body.range.from).getTime())
-        const toInMilliseconds = dayjs(new Date(req.body.range.to).getTime())
-        // Difference will be the number of day starting date is from, end date is to, and starting date is counted in the period. so for a week we need a difference of 6, becaause (first day is the starting date, then 6 days which give us a total of 7 days, so the rule is whatever number of days you looking for, you decrease by one, cuz starting date is counted).
+        const fromInMilliseconds = dayjs(
+            new Date(dayjs(new Date(req.body.range.from)).startOf('day').toDate()).getTime(),
+        )
+        const toInMilliseconds = dayjs(new Date(dayjs(new Date(req.body.range.to)).startOf('day').toDate()).getTime())
+        // Difference will be the number of day starting date is from, end date is to, and ending date is counted in the period. so for a week we need a difference of 6.
         const difference = toInMilliseconds.diff(fromInMilliseconds, 'day')
 
-        if (difference === 0) {
+        if (difference === 1) {
             return res(ctx.status(200), ctx.delay(1000), ctx.json(TEST_SUCCESS_DAY_METRICS))
         }
         if (difference === 6) {
             return res(ctx.status(200), ctx.delay(1000), ctx.json(TEST_SUCCESS_WEEK_METRICS))
         }
-        // Check 30 or 29 for the months where it can be 31days oe 30 days (differece start counting at 0 cuz starting date is not counted)
-        if (difference === 30 || difference === 29)
+        if (difference === 30 || difference === 31)
             return res(ctx.status(200), ctx.delay(1000), ctx.json(TEST_SUCCESS_MONTH_METRICS))
 
-        // We check with 334 because the to date will be always the start of December, so the diff is from (1st jan) to (1st dec && not 31dec) that's we won't have 364 days.
-        // Check 334 or 335 for the years where it can be february 29 or 28 (difference start counting at 0 cuz starting date is not counted)
-        if (difference === 334 || difference === 335)
+        if (difference === 365 || difference === 366)
             return res(ctx.status(200), ctx.delay(1000), ctx.json(TEST_SUCCESS_YEAR_METRICS))
 
         return res(ctx.status(401), ctx.delay(1000), ctx.json({ error: 'Error' }))

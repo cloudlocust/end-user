@@ -7,7 +7,7 @@ import {
 } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
 import { IMetric, metricIntervalType } from 'src/modules/Metrics/Metrics'
 import { FAKE_WEEK_DATA, FAKE_DAY_DATA, FAKE_MONTH_DATA, FAKE_YEAR_DATA } from 'src/mocks/handlers/metrics'
-import { getRange } from 'src/modules/MyConsumption/utils/myConsumptionVariables'
+import { getRange } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
 import { convertMetricsDataToApexChartsAxisValues } from 'src/modules/MyConsumption/utils/apexChartsDataConverter'
 import dayjs from 'dayjs'
 
@@ -77,15 +77,15 @@ describe('test pure functions', () => {
         // When period is monthly we have correct length of xAxisValues.
         interval = '1d'
         xAxisValues = generateXAxisValues('monthly', getRange('month'))
-        // If interval is 1d and period is monthly , then length should be 30.
+        // If interval is 1d and period is monthly , then length should be less or Equal than 32 because we start counting from the current day till the same day next month, so it's like the current date and the month before so whether 31 or 32.
         expect(xAxisValues.length).toBeGreaterThanOrEqual(30)
-        expect(xAxisValues.length).toBeLessThanOrEqual(31)
+        expect(xAxisValues.length).toBeLessThanOrEqual(32)
 
         // When period is yearly we have correct length of xAxisValues.
         interval = '1 month'
         xAxisValues = generateXAxisValues('yearly', getRange('year'))
-        // If interval is 1d and period is yearly , then length should be 12.
-        expect(xAxisValues).toHaveLength(12)
+        // If interval is 1d and period is yearly , then length should be 13 because we start from the current month till the month of next year.
+        expect(xAxisValues).toHaveLength(13)
     })
 
     test('fillApexChartsAxisMissingValues test with different cases', async () => {

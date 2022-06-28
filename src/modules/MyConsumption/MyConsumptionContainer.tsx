@@ -4,7 +4,7 @@ import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyForm
 import MyConsumptionChart from 'src/modules/MyConsumption/components/MyConsumptionChart'
 import { useMeterList } from 'src/modules/Meters/metersHook'
 import { formatMetricFilter } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
-import { getRange } from 'src/modules/MyConsumption/utils/myConsumptionVariables'
+import { getRange } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
 import { MyConsumptionPeriod, SelectMeters } from 'src/modules/MyConsumption'
 import { SelectChangeEvent, useTheme } from '@mui/material'
 import { useMetrics } from 'src/modules/Metrics/metricsHook'
@@ -14,7 +14,7 @@ import { Link } from 'react-router-dom'
 import { Icon, Typography } from 'src/common/ui-kit'
 import { useIntl } from 'react-intl'
 import { useConsents } from 'src/modules/Consents/consentsHook'
-
+import CircularProgress from '@mui/material/CircularProgress'
 /**
  * InitialMetricsStates for useMetrics.
  */
@@ -75,6 +75,7 @@ export const MyConsumptionContainer = () => {
             throw Error('PeriodValue not set')
         }
     }
+
     /**
      * HandleOnChange function.
      *
@@ -151,14 +152,18 @@ export const MyConsumptionContainer = () => {
                     />
                 )}
             </div>
-
-            <MyConsumptionChart
-                isMetricsLoading={isMetricsLoading}
-                data={data}
-                chartType={period === 'daily' ? 'area' : 'bar'}
-                period={period}
-                range={range}
-            />
+            {isMetricsLoading ? (
+                <div className="flex flex-col justify-center items-center w-full h-full" style={{ height: '320px' }}>
+                    <CircularProgress style={{ color: theme.palette.background.paper }} />
+                </div>
+            ) : (
+                <MyConsumptionChart
+                    data={data}
+                    chartType={period === 'daily' ? 'area' : 'bar'}
+                    period={period}
+                    range={range}
+                />
+            )}
             <MyConsumptionPeriod setPeriod={setPeriod} setRange={setRange} setMetricsInterval={setMetricsInterval} />
         </div>
     )
