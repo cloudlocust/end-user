@@ -427,7 +427,8 @@ export const metricsEndpoints = [
         // Difference will be the number of day starting date is from, end date is to, and ending date is counted in the period. so for a week we need a difference of 6.
         const difference = toInMilliseconds.diff(fromInMilliseconds, 'day')
 
-        if (difference === 1) {
+        // Difference can be 0 when checking the consumption at start of 00:00 to the same day 23:59.
+        if (difference === 1 || difference === 0) {
             return res(ctx.status(200), ctx.delay(1000), ctx.json(TEST_SUCCESS_DAY_METRICS))
         }
         if (difference === 6) {
