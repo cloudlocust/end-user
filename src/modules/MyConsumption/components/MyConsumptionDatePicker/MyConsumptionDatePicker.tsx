@@ -19,10 +19,9 @@ import { useTheme } from '@mui/material'
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
 import 'src/modules/MyConsumption/components/MyConsumptionDatePicker/MyConsumptionDatePicker.scss'
-import { isInvalidDate } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
+import { getRange, isInvalidDate } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
 import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker'
 import TextField from '@mui/material/TextField'
-import { getRange } from '../../utils/myConsumptionVariables'
 /**
  * MyConsumptionDatePicker component.
  *
@@ -97,26 +96,25 @@ export const MyConsumptionDatePicker = ({ period, setRange }: IMyConsumptionDate
      * @param period Selected period.
      * @returns According to the selected period setRangeFrom sets the value from which data should be shown.
      */
-    const setRangeFrom = useCallback(
-        (period: periodType) => {
-            switch (period) {
-                case 'daily':
-                    return getRange('day')
-                    return setCurrentPeriodDate(subDays)
-                case 'weekly':
-                    return getRange('week')
-                    return setCurrentPeriodDate(subWeeks)
-                case 'monthly':
-                    return getRange('month')
-                    return setCurrentPeriodDate(subMonths)
-                case 'yearly':
-                    return getRange('year')
-                    return setCurrentPeriodDate(subYears)
-            }
-        },
-        [setCurrentPeriodDate],
-    )
-    console.log(setRangeFrom(period))
+    // const setRangeFrom = useCallback(
+    //     (period: periodType) => {
+    //         switch (period) {
+    //             case 'daily':
+    //                 return getRange('day')
+    //             // return setCurrentPeriodDate(subDays)
+    //             case 'weekly':
+    //                 return getRange('week')
+    //             // return setCurrentPeriodDate(subWeeks)
+    //             case 'monthly':
+    //                 return getRange('month')
+    //             // return setCurrentPeriodDate(subMonths)
+    //             case 'yearly':
+    //                 return getRange('year')
+    //             // return setCurrentPeriodDate(subYears)
+    //         }
+    //     },
+    //     [setCurrentPeriodDate],
+    // )
     // /**
     //  * Get range function.
     //  *
@@ -143,7 +141,6 @@ export const MyConsumptionDatePicker = ({ period, setRange }: IMyConsumptionDate
      * @param newDate New Date to set.
      */
     const handleDateChange = (newDate: Date | null) => {
-        
         newDate && setCurrentDate(newDate)
     }
     /**
@@ -163,6 +160,7 @@ export const MyConsumptionDatePicker = ({ period, setRange }: IMyConsumptionDate
                         inputFormat="dd/MM/yyyy"
                         maxDate={new Date()}
                         onAccept={handleDateChange}
+                        // eslint-disable-next-line no-console
                         onChange={() => console.log('first')}
                         renderInput={(params) => (
                             <TextField

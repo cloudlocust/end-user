@@ -26,6 +26,9 @@ export const defaultApexChartOptions: (theme: Theme) => Props['options'] = (them
         zoom: {
             enabled: false,
         },
+        animations: {
+            enabled: false,
+        },
     },
     theme: {
         // We set the theme so that the text in the chart and stuffs is updated.
@@ -195,13 +198,11 @@ export const getApexChartMyConsumptionProps = ({
             /**
              * Formatter function for showing label in the tooltip.
              *
-             * @param index Represent the index in the options.xaxis.categories.
+             * @param index Represent the index in the xAxisValues.
              * @returns Label concerning the xaxis that's going to be shown in the tooltip.
              */
             formatter: (index: number) => {
-                return dayjsUTC(new Date(options!.xaxis!.categories[index - 1])).format(
-                    getXAxisLabelFormatFromPeriod(period, true),
-                )
+                return dayjsUTC(new Date(xAxisValues[index - 1])).format(getXAxisLabelFormatFromPeriod(period, true))
             },
         },
     }

@@ -3,9 +3,9 @@ import dayjs from 'dayjs'
 import { periodType } from 'src/modules/MyConsumption/myConsumptionTypes.d'
 import { ApexChartsAxisValuesType } from 'src/modules/MyConsumption/myConsumptionTypes'
 import { getDaysInMonth } from 'date-fns'
-import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker'
-import TextField from '@mui/material/TextField'
-import { IInputStyles, ViewsType } from 'src/modules/MyConsumption/myConsumptionTypes'
+// import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker'
+// import TextField from '@mui/material/TextField'
+// import { IInputStyles, ViewsType } from 'src/modules/MyConsumption/myConsumptionTypes'
 
 /**
  * FormatMetricFilter function converts the data to the required format.
@@ -21,6 +21,31 @@ export const formatMetricFilter = (valueGuid: string) => {
             value: valueGuid,
         },
     ] as metricFiltersType
+}
+
+/**
+ * Function to get range.
+ *
+ * @param rangePeriod Period for range.
+ * @returns Object with range data.
+ */
+export const getRange = (rangePeriod: dayjs.ManipulateType) => {
+    return {
+        /**
+         * When rangePeriod is:
+         *  Day then the "from" will represent the start of the current Date and the "to" will represent the end of the current date.
+         *  Week then the from date, represent the subtracted Week + 1day, because we have to count the Week including the subtracted day thus we add 1 day (for example, if we subtract 1 week from 27/06, it'll return the 20th because it doesn't count the 27th, thus we add 1 day because the 27th is counted and thus we start from the 21st till 27th which give us 7 days).
+         *  Month or Year, we count from the subtracted Date a month or year from now, including the current current date or the current month.
+         *
+         */
+        from:
+            rangePeriod === 'day'
+                ? dayjs().startOf('date').toDate().toISOString()
+                : rangePeriod === 'week'
+                ? dayjs().subtract(1, rangePeriod).add(1, 'day').toDate().toISOString()
+                : dayjs().subtract(1, rangePeriod).toDate().toISOString(),
+        to: dayjs().endOf('date').toDate().toISOString(),
+    }
 }
 
 /**
@@ -52,6 +77,7 @@ const getDaysValues = (range: metricRangeType) => {
 const getMonthValues = (range: metricRangeType) => {
     return getDatesList(range, 'month')
 }
+
 /**
  * Function that returns a a list of millisecond timestamp dates between two dates, and the dates depends on the dayjsPeriod (it can be every 2 minute every dayjsPeriod is 'minute', or every day is dayjsPeriod is 'day' and every month if dayjsPeriod is 'month' ).
  *
@@ -104,9 +130,13 @@ export const fillApexChartsAxisMissingValues = (
     period: periodType,
     range: metricRangeType,
 ) => {
+    // Checking if AxisValues are empty no need to feel anything, because there is no response data.
     if (ApexChartsMissingAxisValues.yAxisSeries.length === 0 || ApexChartsMissingAxisValues.xAxisValues.length === 0)
         return ApexChartsMissingAxisValues
+    // Checking if there are missing axis values to fill them.
+    if (!isMissingApexChartsAxisValues(ApexChartsMissingAxisValues, period)) return ApexChartsMissingAxisValues
     const xAxisFilledValues = generateXAxisValues(period, range)
+
     const consumptionSeries: ApexAxisChartSerie = ApexChartsMissingAxisValues.yAxisSeries.find(
         // TODO FIX IN 2427, by adding the enum type
         (serie: ApexAxisChartSerie) => serie.name === 'consumption_metrics',
