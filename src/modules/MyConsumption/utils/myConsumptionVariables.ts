@@ -6,7 +6,7 @@ import { periodType } from 'src/modules/MyConsumption/myConsumptionTypes'
  * @param rangePeriod Period for range.
  * @returns Object with range data.
  */
-const getRange = (rangePeriod: dayjs.ManipulateType) => {
+export const getRange = (rangePeriod: dayjs.ManipulateType) => {
     return {
         from: dayjs().subtract(1, rangePeriod).startOf('day').toDate().toISOString(),
         to: dayjs().startOf('day').toDate().toISOString(),

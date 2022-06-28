@@ -1,12 +1,11 @@
+import { waitFor } from '@testing-library/react'
 import { reduxedRender } from 'src/common/react-platform-components/test'
 import { Widget } from 'src/modules/MyConsumption'
 import { IWidgetProps } from 'src/modules/MyConsumption/components/Widgets/Widget'
-import { TEST_SUCCESS_WEEK_METRICS } from 'src/mocks/handlers/metrics'
 
-const mockWidgetProps: IWidgetProps = {
+let mockWidgetProps: IWidgetProps = {
     type: 'consumption_metrics',
-    data: TEST_SUCCESS_WEEK_METRICS,
-    isMetricsLoading: false,
+    period: 'daily',
 }
 
 const CONSOMMATION_TOTALE_TEXT = 'Consommation totale'
@@ -22,34 +21,45 @@ const TEMPERATURE_UNIT = '°C'
 describe('Widget component test', () => {
     test('when the widget is rendered with consommation totale', async () => {
         const { getByText } = reduxedRender(<Widget {...mockWidgetProps} />)
-
-        expect(getByText(CONSOMMATION_TOTALE_TEXT)).toBeTruthy()
-        expect(getByText(CONSOMMATION_TOTALE_UNIT)).toBeTruthy()
-    })
+        await waitFor(
+            () => {
+                expect(getByText(CONSOMMATION_TOTALE_TEXT)).toBeInTheDocument()
+                expect(getByText(CONSOMMATION_TOTALE_UNIT)).toBeInTheDocument()
+            },
+            { timeout: 6000 },
+        )
+    }, 10000)
     test('when the widget is rendered with puissance max', async () => {
         mockWidgetProps.type = 'enedis_max_power'
         const { getByText } = reduxedRender(<Widget {...mockWidgetProps} />)
-
-        expect(getByText(PUISSANCE_MAX_TEXT)).toBeTruthy()
-        expect(getByText(PUISSANCE_MAX_UNIT)).toBeTruthy()
-    })
+        await waitFor(
+            () => {
+                expect(getByText(PUISSANCE_MAX_TEXT)).toBeInTheDocument()
+                expect(getByText(PUISSANCE_MAX_UNIT)).toBeInTheDocument()
+            },
+            { timeout: 6000 },
+        )
+    }, 10000)
     test('when the widget is rendered with internal temperature', async () => {
         mockWidgetProps.type = 'nrlink_internal_temperature_metrics'
         const { getByText } = reduxedRender(<Widget {...mockWidgetProps} />)
-
-        expect(getByText(INTERNAL_TEMPERATURE_TEXT)).toBeTruthy()
-        expect(getByText(TEMPERATURE_UNIT)).toBeTruthy()
-    })
+        await waitFor(
+            () => {
+                expect(getByText(INTERNAL_TEMPERATURE_TEXT)).toBeInTheDocument()
+                expect(getByText(TEMPERATURE_UNIT)).toBeInTheDocument()
+            },
+            { timeout: 6000 },
+        )
+    }, 10000)
     test('when the widget is rendered with external temperature', async () => {
         mockWidgetProps.type = 'external_temperature_metrics'
         const { getByText } = reduxedRender(<Widget {...mockWidgetProps} />)
-
-        expect(getByText(EXTERNAL_TEMPERATURE_TEXT)).toBeTruthy()
-        expect(getByText(TEMPERATURE_UNIT)).toBeTruthy()
-    })
-    test("when there is no data, the widget isn't rendered", async () => {
-        mockWidgetProps.data = []
-        const { container } = reduxedRender(<Widget {...mockWidgetProps} />)
-        expect(container.firstChild).toBeNull()
-    })
+        await waitFor(
+            () => {
+                expect(getByText(EXTERNAL_TEMPERATURE_TEXT)).toBeInTheDocument()
+                expect(getByText(TEMPERATURE_UNIT)).toBeInTheDocument()
+            },
+            { timeout: 6000 },
+        )
+    }, 10000)
 })

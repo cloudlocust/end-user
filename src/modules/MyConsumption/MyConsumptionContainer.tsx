@@ -191,7 +191,7 @@ export const MyConsumptionContainer = () => {
             <div style={{ background: theme.palette.grey[100] }} className="w-full p-12">
                 <Grid container spacing={{ xs: 2, md: 3 }}>
                     {widgetsList.map(({ type }) => {
-                        return <Widget key={type} type={type} data={data} isMetricsLoading={isMetricsLoading} />
+                        return <Widget key={type} type={type} period={period} />
                     })}
                 </Grid>
             </div>

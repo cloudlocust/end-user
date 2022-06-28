@@ -2,9 +2,14 @@ import { Card, Typography, CircularProgress } from '@mui/material'
 import { IWidgetAssets, IWidgetProps } from 'src/modules/MyConsumption/components/Widgets/Widget'
 import { useTheme } from '@mui/material'
 import { convertMetricsDataToApexChartsAxisValues } from 'src/modules/MyConsumption/utils/apexChartsDataConverter'
-import { IMetric } from 'src/modules/Metrics/Metrics'
+import { getMetricType, IMetric } from 'src/modules/Metrics/Metrics'
 import Grid from '@mui/material/Grid'
 import _ from 'lodash'
+import { useEffect } from 'react'
+import { useMetrics } from 'src/modules/Metrics/metricsHook'
+import { initialMetricsHookValues } from 'src/modules/MyConsumption/MyConsumptionContainer'
+import { getRange } from 'src/modules/MyConsumption/utils/myConsumptionVariables'
+import { periodType } from 'src/modules/MyConsumption/myConsumptionTypes'
 
 /**
  * Function to get the values from data.
@@ -26,12 +31,48 @@ const getValuesFromData = (data: IMetric[]): number[] => {
  *
  * @param root0 N/A.
  * @param root0.type Widget type.
- * @param root0.data Widget data.
- * @param root0.isMetricsLoading Widget loading indicator.
+ * @param root0.period Period props.
  * @returns Widget component.
  */
-export const Widget = ({ type, data, isMetricsLoading }: IWidgetProps) => {
+export const Widget = ({ type, period }: IWidgetProps) => {
+    const widgetInitialMetricsValues: getMetricType = {
+        ...initialMetricsHookValues,
+        targets: [
+            {
+                target: type,
+                type: 'timeseries',
+            },
+        ],
+    }
     const theme = useTheme()
+    const { setMetricsInterval, data, setRange, isMetricsLoading } = useMetrics(widgetInitialMetricsValues)
+
+    /**
+     * Widget component is reloaded whenever period changes.
+     */
+    useEffect(() => {
+        /**
+         * Function that set the range according to the period chosen in the parent component: MyConsumptionContainer.
+         *
+         * @param period Period chosen in the metric interval.
+         */
+        const onHandletRangeFromPeriod = (period: periodType) => {
+            if (period === 'daily') {
+                setRange(getRange('day'))
+                setMetricsInterval('1min')
+            } else if (period === 'weekly') {
+                setRange(getRange('week'))
+                setMetricsInterval('1d')
+            } else if (period === 'monthly') {
+                setRange(getRange('month'))
+                setMetricsInterval('1d')
+            } else if (period === 'yearly') {
+                setRange(getRange('year'))
+                setMetricsInterval('1m')
+            }
+        }
+        onHandletRangeFromPeriod(period)
+    }, [period, setMetricsInterval, setRange])
 
     /**
      * Render widgetr function.
@@ -59,9 +100,7 @@ export const Widget = ({ type, data, isMetricsLoading }: IWidgetProps) => {
                         </Typography>
                         {/* TODDO MYEM-2588*/}
                         {/* Widget arrow */}
-                        {/* <Typography className="font-medium text-base" color="textSecondary">
-                    Arrow
-                </Typography> */}
+                        {/* <Typography className="font-medium text-base" color="textSecondary">Arrow</Typography> */}
                     </div>
                 </div>
             </div>

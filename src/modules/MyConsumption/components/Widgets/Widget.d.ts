@@ -1,4 +1,5 @@
-import { IMetric, metricTargetType } from 'src/modules/Metrics/Metrics'
+import { metricTargetType } from 'src/modules/Metrics/Metrics'
+import { periodType } from 'src/modules/MyConsumption/myConsumptionTypes'
 
 /**
  * Widget type.
@@ -14,13 +15,9 @@ export interface IWidgetProps {
      */
     type: widgetType
     /**
-     * Widget data.
+     * Period.
      */
-    data: IMetric[]
-    /**
-     * Widget metrics loading.
-     */
-    isMetricsLoading: boolean
+    period: periodType
 }
 
 /**
