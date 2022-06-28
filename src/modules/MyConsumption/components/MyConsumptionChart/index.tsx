@@ -55,14 +55,17 @@ const MyConsumptionChart = ({
         [period, range, ApexChartsAxisValues],
     )
 
-    const reactApexChartsProps = getApexChartMyConsumptionProps({
-        yAxisSeries: ApexChartsAxisValues.yAxisSeries,
-        xAxisValues: ApexChartsAxisValues.xAxisValues,
-        period,
-        chartType,
-        formatMessage,
-        theme,
-    })
+    // // Wrap in useMemo for better performance, as we save the heavy computational result of getApexChartMyConsumptionProps function and we don't call it again on every reender, untli its dependencies change.
+    const reactApexChartsProps = React.useMemo(() => {
+        return getApexChartMyConsumptionProps({
+            yAxisSeries: ApexChartsAxisValues.yAxisSeries,
+            xAxisValues: ApexChartsAxisValues.xAxisValues,
+            period,
+            chartType,
+            formatMessage,
+            theme,
+        })
+    }, [ApexChartsAxisValues, period, chartType, formatMessage, theme])
 
     reactApexChartsProps.options!.chart!.events = {
         /**
