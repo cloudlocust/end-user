@@ -123,23 +123,17 @@ export const Widget = ({ type, period }: IWidgetProps) => {
             const values = getValuesFromData(data)
             totalConsumption = _.sum(values)
             return totalConsumption
-        }
-
-        if (type === 'enedis_max_power' && data.find((el) => el.target === type)) {
+        } else if (type === 'enedis_max_power' && data.find((el) => el.target === type)) {
             const values = getValuesFromData(data)
             maxPower = _.max(values) as number
             return maxPower
-        }
-
-        if (type === 'external_temperature_metrics' && data.find((el) => el.target === type)) {
+        } else if (type === 'external_temperature_metrics' && data.find((el) => el.target === type)) {
             const values = getValuesFromData(data)
-            averageExternalTemp = _.mean(values)
+            averageExternalTemp = Math.ceil(_.mean(values))
             return averageExternalTemp
-        }
-
-        if (type === 'nrlink_internal_temperature_metrics' && data.find((el) => el.target === type)) {
+        } else if (type === 'nrlink_internal_temperature_metrics' && data.find((el) => el.target === type)) {
             const values = getValuesFromData(data)
-            averageInteranalTemp = _.mean(values)
+            averageInteranalTemp = Math.ceil(_.mean(values))
             return averageInteranalTemp
         }
     }
