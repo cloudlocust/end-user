@@ -5,11 +5,11 @@ import MyConsumptionChart from 'src/modules/MyConsumption/components/MyConsumpti
 import { useMeterList } from 'src/modules/Meters/metersHook'
 import { formatMetricFilter } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
 import { MyConsumptionDatePicker, MyConsumptionPeriod, SelectMeters } from 'src/modules/MyConsumption'
+import { getRange } from 'src/modules/MyConsumption/utils/myConsumptionVariables'
 import { SelectChangeEvent, useTheme } from '@mui/material'
 import { useMetrics } from 'src/modules/Metrics/metricsHook'
 import { getMetricType } from 'src/modules/Metrics/Metrics'
 import { periodType } from 'src/modules/MyConsumption/myConsumptionTypes'
-import dayjs from 'dayjs'
 import { Link } from 'react-router-dom'
 import { Icon, Typography } from 'src/common/ui-kit'
 import { useIntl } from 'react-intl'
@@ -19,15 +19,12 @@ import { useConsents } from 'src/modules/Consents/consentsHook'
  * InitialMetricsStates for useMetrics.
  */
 export const initialMetricsHookValues: getMetricType = {
-    interval: '1min',
-    range: {
-        from: dayjs().subtract(1, 'day').startOf('day').toDate().toISOString(),
-        to: dayjs().startOf('day').toDate().toISOString(),
-    },
+    interval: '2min',
+    range: getRange('day'),
     targets: [
         {
             target: 'consumption_metrics',
-            type: 'timeseries',
+            type: 'timeserie',
         },
     ],
     filters: [],
@@ -44,7 +41,7 @@ export const MyConsumptionContainer = () => {
     const theme = useTheme()
     const { formatMessage } = useIntl()
     const { getConsents, nrlinkConsent, enedisConsent } = useConsents()
-    const { setMetricsInterval, setRange, setFilters, isMetricsLoading, data, metricsInterval, filters } =
+    const { setMetricsInterval, setRange, setFilters, isMetricsLoading, data, filters, range } =
         useMetrics(initialMetricsHookValues)
     const [period, setPeriod] = useState<periodType>('daily')
 
@@ -159,8 +156,9 @@ export const MyConsumptionContainer = () => {
             <MyConsumptionChart
                 isMetricsLoading={isMetricsLoading}
                 data={data}
-                chartType={metricsInterval === '1min' ? 'area' : 'bar'}
+                chartType={period === 'daily' ? 'area' : 'bar'}
                 period={period}
+                range={range}
             />
             <MyConsumptionPeriod setPeriod={setPeriod} setMetricsInterval={setMetricsInterval} />
         </div>

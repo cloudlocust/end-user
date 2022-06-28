@@ -9,7 +9,7 @@ export type metricTargetType =
 /**
  * Metrics intervals.
  */
-export type metricIntervalType = '1min' | '1d' | '1m'
+export type metricIntervalType = '2min' | '1d' | '1 month'
 
 /**
  * Metric range.
@@ -38,7 +38,7 @@ export type metricTargetsType = {
     /**
      * Metric type.
      */
-    type: 'timeseries'
+    type: 'timeserie'
 }[]
 
 /**
@@ -88,7 +88,7 @@ export type getMetricType = {
     /**
      * Metric interval of time.
      */
-    interval: metricIntervals
+    interval: metricIntervalType
     /**
      * Metrics targets.
      */
@@ -98,3 +98,8 @@ export type getMetricType = {
      */
     filters?: metricFiltersType
 }
+
+/**
+ * Type of ApexAxisChartSerie.
+ */
+declare type ApexAxisChartSerie = ApexAxisChartSeries[0]

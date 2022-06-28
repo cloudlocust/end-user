@@ -68,3 +68,10 @@ export interface IInputStyles {
      */
     width: string
 }
+
+/**
+ * Represent the type return by apexChartsDataConverter.
+ */
+export type ApexChartsAxisValuesType =
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    { yAxisSeries: ApexAxisChartSerie['data']; xAxisValues: number[] }
