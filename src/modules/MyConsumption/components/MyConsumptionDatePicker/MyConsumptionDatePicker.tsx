@@ -19,7 +19,10 @@ import { useTheme } from '@mui/material'
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
 import 'src/modules/MyConsumption/components/MyConsumptionDatePicker/MyConsumptionDatePicker.scss'
-import { isInvalidDate, setDatePickerData } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
+import { isInvalidDate } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
+import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker'
+import TextField from '@mui/material/TextField'
+import { getRange } from '../../utils/myConsumptionVariables'
 /**
  * MyConsumptionDatePicker component.
  *
@@ -98,36 +101,41 @@ export const MyConsumptionDatePicker = ({ period, setRange }: IMyConsumptionDate
         (period: periodType) => {
             switch (period) {
                 case 'daily':
+                    return getRange('day')
                     return setCurrentPeriodDate(subDays)
                 case 'weekly':
+                    return getRange('week')
                     return setCurrentPeriodDate(subWeeks)
                 case 'monthly':
+                    return getRange('month')
                     return setCurrentPeriodDate(subMonths)
                 case 'yearly':
+                    return getRange('year')
                     return setCurrentPeriodDate(subYears)
             }
         },
         [setCurrentPeriodDate],
     )
-    /**
-     * Get range function.
-     *
-     * @param period Selected period.
-     * @returns Object with formatted range.
-     */
-    const getRange = useCallback(
-        (period: periodType) => {
-            return {
-                from: setRangeFrom(period).toISOString(),
-                to: currentDate.toISOString(),
-            }
-        },
-        [currentDate, setRangeFrom],
-    )
+    console.log(setRangeFrom(period))
+    // /**
+    //  * Get range function.
+    //  *
+    //  * @param period Selected period.
+    //  * @returns Object with formatted range.
+    //  */
+    // const getRange = useCallback(
+    //     (period: periodType) => {
+    //         return {
+    //             from: setRangeFrom(period).toISOString(),
+    //             to: currentDate.toISOString(),
+    //         }
+    //     },
+    //     [currentDate, setRangeFrom],
+    // )
 
-    useEffect(() => {
-        setRange(getRange(period))
-    }, [getRange, period, setRange])
+    // useEffect(() => {
+    //     setRange(getRange(period))
+    // }, [getRange, period, setRange])
 
     /**
      * Handle data change.
@@ -135,6 +143,7 @@ export const MyConsumptionDatePicker = ({ period, setRange }: IMyConsumptionDate
      * @param newDate New Date to set.
      */
     const handleDateChange = (newDate: Date | null) => {
+        
         newDate && setCurrentDate(newDate)
     }
     /**
@@ -147,28 +156,59 @@ export const MyConsumptionDatePicker = ({ period, setRange }: IMyConsumptionDate
         switch (period) {
             case 'daily':
             case 'weekly':
-                return setDatePickerData(
-                    ['day'],
-                    currentDate,
-                    handleDateChange,
-                    { color: theme.palette.primary.contrastText, width: '80px' },
-                    'dd/MM/yyyy',
+                return (
+                    <MobileDatePicker
+                        views={['day']}
+                        value={currentDate}
+                        inputFormat="dd/MM/yyyy"
+                        maxDate={new Date()}
+                        onAccept={handleDateChange}
+                        onChange={() => console.log('first')}
+                        renderInput={(params) => (
+                            <TextField
+                                {...params}
+                                sx={{
+                                    input: { color: theme.palette.primary.contrastText, width: '80px' },
+                                }}
+                            />
+                        )}
+                    />
                 )
             case 'monthly':
-                return setDatePickerData(
-                    ['month', 'year'],
-                    currentDate,
-                    handleDateChange,
-                    { color: theme.palette.primary.contrastText, width: '55px' },
-                    'MM/yyyy',
+                return (
+                    <MobileDatePicker
+                        views={['month', 'year']}
+                        value={currentDate}
+                        inputFormat="MM/yyyy"
+                        maxDate={new Date()}
+                        onChange={handleDateChange}
+                        renderInput={(params) => (
+                            <TextField
+                                {...params}
+                                sx={{
+                                    input: { color: theme.palette.primary.contrastText, width: '55px' },
+                                }}
+                            />
+                        )}
+                    />
                 )
             case 'yearly':
-                return setDatePickerData(
-                    ['year'],
-                    currentDate,
-                    handleDateChange,
-                    { color: theme.palette.primary.contrastText, width: '40px' },
-                    'yyyy',
+                return (
+                    <MobileDatePicker
+                        views={['year']}
+                        value={currentDate}
+                        // inputFormat="MM/yyyy"
+                        maxDate={new Date()}
+                        onChange={handleDateChange}
+                        renderInput={(params) => (
+                            <TextField
+                                {...params}
+                                sx={{
+                                    input: { color: theme.palette.primary.contrastText, width: '40px' },
+                                }}
+                            />
+                        )}
+                    />
                 )
         }
     }

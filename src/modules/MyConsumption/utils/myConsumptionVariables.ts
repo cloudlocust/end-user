@@ -20,6 +20,12 @@ export const getRange = (rangePeriod: dayjs.ManipulateType) => {
                 : dayjs().subtract(1, 'day').startOf('day').toDate().toISOString(),
     }
 }
+const getRange = (rangePeriod: dayjs.ManipulateType, operation: 'substract' | 'add' = 'subtract', toDate?: Date | string) => {
+    return {
+    from: dayjs(toDate ? toDate : Date.now()).subtract(1, rangePeriod).startOf('day').toDate().toISOString(),
+    to: dayjs(toDate ? toDate : Date.now()).startOf('day').toDate().toISOString(),
+    }
+    }
 /**
  * Data Consumption Period.
  */
