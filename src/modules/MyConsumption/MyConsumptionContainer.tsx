@@ -188,8 +188,8 @@ export const MyConsumptionContainer = () => {
                     setMetricsInterval={setMetricsInterval}
                 />
             </div>
-            <div style={{ background: theme.palette.grey[100] }} className="p-10">
-                <Grid container spacing={2} className="p-10 flex flex-row flex-wrap justify-between">
+            <div style={{ background: theme.palette.grey[100] }} className="w-full p-12">
+                <Grid container spacing={{ xs: 2, md: 3 }}>
                     {widgetsList.map(({ type }) => {
                         return <Widget key={type} type={type} data={data} isMetricsLoading={isMetricsLoading} />
                     })}
