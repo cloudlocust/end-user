@@ -18,7 +18,7 @@ import TextField from '@mui/material/TextField'
  * @param root0 N/A.
  * @param root0.period Period range.
  * @param root0.setRange SetRange function.
- * @param root0.range
+ * @param root0.range Range data.
  * @returns MyConsumptionDatePicker.
  */
 export const MyConsumptionDatePicker = ({ period, setRange, range }: IMyConsumptionDatePicker) => {
@@ -41,7 +41,6 @@ export const MyConsumptionDatePicker = ({ period, setRange, range }: IMyConsumpt
         setRange(getRange(period, currentDate))
     }, [currentDate, period, setRange])
 
-    console.log('RANGE', new Date(range.from), new Date(range.to))
     // If invalid date is selected, then today's date is set
     useEffect(() => {
         if (isInvalidDate(currentDate)) setCurrentDate(new Date())
@@ -58,8 +57,6 @@ export const MyConsumptionDatePicker = ({ period, setRange, range }: IMyConsumpt
     const handleDateChange = (newDate: Date | null) => {
         newDate && setCurrentDate(newDate)
     }
-    // console.log(setRangeFrom(period))
-    // console.log('GET range', getRange(period))
     /**
      * Set Date Picker fuction sets DatePicker according to the selected period.
      *

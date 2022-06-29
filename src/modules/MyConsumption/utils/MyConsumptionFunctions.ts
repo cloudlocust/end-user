@@ -2,21 +2,7 @@ import { ApexAxisChartSerie, metricFiltersType, metricRangeType } from 'src/modu
 import dayjs from 'dayjs'
 import { periodType } from 'src/modules/MyConsumption/myConsumptionTypes.d'
 import { ApexChartsAxisValuesType } from 'src/modules/MyConsumption/myConsumptionTypes'
-import {
-    add,
-    addDays,
-    differenceInMinutes,
-    endOfDay,
-    getDaysInMonth,
-    isToday,
-    startOfDay,
-    sub,
-    subDays,
-    subWeeks,
-} from 'date-fns'
-// import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker'
-// import TextField from '@mui/material/TextField'
-// import { IInputStyles, ViewsType } from 'src/modules/MyConsumption/myConsumptionTypes'
+import { add, addDays, endOfDay, getDaysInMonth, startOfDay, sub, subDays } from 'date-fns'
 
 /**
  * FormatMetricFilter function converts the data to the required format.
@@ -33,9 +19,14 @@ export const formatMetricFilter = (valueGuid: string) => {
         },
     ] as metricFiltersType
 }
-
-const convertPeriod = (period: string) => {
-    switch (period) {
+/**
+ * Convert Period function gets the period to convert for date-fns library.
+ *
+ * @param rangePeriod Selected period to range.
+ * @returns Changed period names.
+ */
+const convertPeriod = (rangePeriod: string) => {
+    switch (rangePeriod) {
         case 'day':
         case 'daily':
             return 'days'
@@ -51,44 +42,46 @@ const convertPeriod = (period: string) => {
     }
 }
 /**
+ * Function to get range.
  *
- * @param period
- * @param toDate
- * @param operation
- * @returns
+ * @param rangePeriod Period for range.
+ * @param toDate Current Date.
+ * @param operation Add or Sub operation.
+ * @returns Object with ranged data.
  */
-export const getRange = (period: string, toDate?: Date, operation: 'sub' | 'add' = 'sub') => {
+export const getRange = (rangePeriod: string, toDate?: Date, operation: 'sub' | 'add' = 'sub') => {
     const currentDate = toDate || new Date()
-    const convertedPeriod = convertPeriod(period)
+    const period = convertPeriod(rangePeriod)
     /**
+     * SetRange function.
      *
-     * @param operator
-     * @param isOperatorDays
-     * @param doDays
-     * @param action
-     * @param isAnotherOperatorDays
-     * @returns
+     * @param operator Add or Sub operator.
+     * @param dayDate Day then the "from" will represent the start of the current Date and the "to" will represent the end of the current date.
+     * @param doDays SubDays or AddDays. Week then the from date, represent the subtracted Week + 1day(6 full days), because we have to count the Week including the subtracted day
+     * thus we add 1 day (for example, if we subtract 1 week from 27/06, it'll return the 20th because it doesn't count the 27th,
+     * thus we add 1 day because the 27th is counted and thus we start from the 21st till 27th which give us 7 days).
+     * @param action Add or sub operation.
+     * @returns Ranged data.
      */
     const setRange = (
         operator: 'sub' | 'add',
-        isOperatorDays: Date,
+        dayDate: Date,
         doDays: (date: number | Date, amount: number) => Date,
         action: (date: number | Date, duration: Duration) => Date,
-        isAnotherOperatorDays: Date,
     ) => {
         if (operation === operator) {
-            if (convertedPeriod === 'days') return isOperatorDays
-            if (convertedPeriod === 'weeks') return doDays(currentDate, 6)
+            if (period === 'days') return dayDate
+            if (period === 'weeks') return doDays(currentDate, 6)
             return action(currentDate, {
-                [convertedPeriod as string]: 1,
+                [period as string]: 1,
             })
         }
-        if (convertedPeriod === 'days') return isAnotherOperatorDays
+        if (period === 'days') return dayDate
         return currentDate
     }
     return {
-        from: setRange('sub', startOfDay(currentDate), subDays, sub, startOfDay(currentDate)).toISOString(),
-        to: setRange('add', endOfDay(currentDate), addDays, add, endOfDay(currentDate)).toISOString(),
+        from: setRange('sub', startOfDay(currentDate), subDays, sub).toISOString(),
+        to: setRange('add', endOfDay(currentDate), addDays, add).toISOString(),
     }
 }
 
