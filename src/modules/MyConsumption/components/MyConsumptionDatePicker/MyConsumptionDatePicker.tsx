@@ -4,7 +4,7 @@ import Tooltip from '@mui/material/Tooltip'
 import { motion } from 'framer-motion'
 import { subDays, addDays, differenceInCalendarDays } from 'date-fns'
 import React, { useEffect, useState } from 'react'
-import { IMyConsumptionDatePicker, periodType } from 'src/modules/MyConsumption/myConsumptionTypes'
+import { IMyConsumptionDatePicker, ViewsType } from 'src/modules/MyConsumption/myConsumptionTypes'
 import { useTheme } from '@mui/material'
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
@@ -15,6 +15,7 @@ import TextField from '@mui/material/TextField'
 import DateFnsUtils from '@date-io/date-fns'
 import { fr } from 'date-fns/locale'
 import { useIntl } from 'src/common/react-platform-translation'
+import { mobileDatePickerPeriodProps } from '../../utils/myConsumptionVariables'
 
 /**
  * MyConsumptionDatePicker component.
@@ -59,76 +60,7 @@ export const MyConsumptionDatePicker = ({ period, setRange, range }: IMyConsumpt
     const handleDateChange = (newDate: Date | null) => {
         newDate && setCurrentDate(newDate)
     }
-    /**
-     * Set Date Picker fuction sets DatePicker according to the selected period.
-     *
-     * @param period Selected period.
-     * @returns DatePicker.
-     */
-    const setDatePicker = (period: periodType) => {
-        switch (period) {
-            case 'daily':
-            case 'weekly':
-                return (
-                    <MobileDatePicker
-                        views={['day']}
-                        value={currentDate}
-                        inputFormat="dd/MM/yyyy"
-                        maxDate={new Date()}
-                        toolbarTitle={null}
-                        onChange={handleDateChange}
-                        cancelText={formatMessage({ id: 'Annuler', defaultMessage: 'Annuler' })}
-                        renderInput={(params) => (
-                            <TextField
-                                {...params}
-                                sx={{
-                                    input: { color: theme.palette.primary.contrastText, width: '80px' },
-                                }}
-                            />
-                        )}
-                    />
-                )
-            case 'monthly':
-                return (
-                    <MobileDatePicker
-                        views={['month', 'year']}
-                        value={currentDate}
-                        inputFormat="MM/yyyy"
-                        maxDate={new Date()}
-                        onChange={handleDateChange}
-                        cancelText={formatMessage({ id: 'Annuler', defaultMessage: 'Annuler' })}
-                        toolbarTitle={null}
-                        renderInput={(params) => (
-                            <TextField
-                                {...params}
-                                sx={{
-                                    input: { color: theme.palette.primary.contrastText, width: '55px' },
-                                }}
-                            />
-                        )}
-                    />
-                )
-            case 'yearly':
-                return (
-                    <MobileDatePicker
-                        views={['year']}
-                        value={currentDate}
-                        maxDate={new Date()}
-                        toolbarTitle={null}
-                        cancelText={formatMessage({ id: 'Annuler', defaultMessage: 'Annuler' })}
-                        onChange={handleDateChange}
-                        renderInput={(params) => (
-                            <TextField
-                                {...params}
-                                sx={{
-                                    input: { color: theme.palette.primary.contrastText, width: '40px' },
-                                }}
-                            />
-                        )}
-                    />
-                )
-        }
-    }
+
     return (
         <motion.div
             className="flex items-center justify-center wrapper"
@@ -149,7 +81,28 @@ export const MyConsumptionDatePicker = ({ period, setRange, range }: IMyConsumpt
                 </IconButton>
             </Tooltip>
             <LocalizationProvider dateAdapter={AdapterDateFns} locale={fr} utils={DateFnsUtils}>
-                {setDatePicker(period)}
+                {mobileDatePickerPeriodProps.map(
+                    (item) =>
+                        item.period === period && (
+                            <MobileDatePicker
+                                views={item.views as ViewsType[]}
+                                value={currentDate}
+                                inputFormat={item.inputFormat}
+                                maxDate={new Date()}
+                                onChange={handleDateChange}
+                                cancelText={formatMessage({ id: 'Annuler', defaultMessage: 'Annuler' })}
+                                toolbarTitle={null}
+                                renderInput={(params) => (
+                                    <TextField
+                                        {...params}
+                                        sx={{
+                                            input: { color: theme.palette.primary.contrastText, width: item.width },
+                                        }}
+                                    />
+                                )}
+                            />
+                        ),
+                )}
             </LocalizationProvider>
             <Tooltip title="Next">
                 <IconButton

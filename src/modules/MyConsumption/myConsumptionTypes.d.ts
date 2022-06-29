@@ -54,7 +54,10 @@ export interface IMyConsumptionDatePicker {
      */
     range: metricRange
 }
-
+/**
+ * Type for views in MobileDatePicker.
+ */
+export type ViewsType = 'day' | 'month' | 'year'
 /**
  * Represent the type return by apexChartsDataConverter.
  */

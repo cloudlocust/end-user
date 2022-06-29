@@ -25,3 +25,32 @@ export const dataConsumptionPeriod = [
         period: 'yearly' as periodType,
     },
 ]
+/**
+ * Mobile Date Picker Period Props.
+ */
+export const mobileDatePickerPeriodProps = [
+    {
+        period: 'daily',
+        views: ['day'],
+        width: '80px',
+        inputFormat: 'dd/MM/yyyy',
+    },
+    {
+        period: 'weekly',
+        views: ['day'],
+        width: '80px',
+        inputFormat: 'dd/MM/yyyy',
+    },
+    {
+        period: 'monthly',
+        views: ['month', 'year'],
+        width: '55px',
+        inputFormat: 'MM/yyyy',
+    },
+    {
+        period: 'yearly',
+        views: ['year'],
+        width: '40px',
+        inputFormat: 'yyyy',
+    },
+]
