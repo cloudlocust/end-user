@@ -14,6 +14,7 @@ import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker'
 import TextField from '@mui/material/TextField'
 import DateFnsUtils from '@date-io/date-fns'
 import { fr } from 'date-fns/locale'
+import { useIntl } from 'src/common/react-platform-translation'
 
 /**
  * MyConsumptionDatePicker component.
@@ -26,6 +27,7 @@ import { fr } from 'date-fns/locale'
  */
 export const MyConsumptionDatePicker = ({ period, setRange, range }: IMyConsumptionDatePicker) => {
     const theme = useTheme()
+    const { formatMessage } = useIntl()
     const [currentDate, setCurrentDate] = useState<Date>(new Date())
     const [buttonAction, setButtonAction] = useState({ sub: false, add: false })
     const isFutureDate = differenceInCalendarDays(currentDate, new Date()) >= 0
@@ -48,6 +50,7 @@ export const MyConsumptionDatePicker = ({ period, setRange, range }: IMyConsumpt
     useEffect(() => {
         isFutureDate && setCurrentDate(new Date())
     }, [isFutureDate])
+
     /**
      * Handle data change.
      *
@@ -74,7 +77,7 @@ export const MyConsumptionDatePicker = ({ period, setRange, range }: IMyConsumpt
                         maxDate={new Date()}
                         toolbarTitle={null}
                         onChange={handleDateChange}
-                        cancelText="Annuler"
+                        cancelText={formatMessage({ id: 'Annuler', defaultMessage: 'Annuler' })}
                         renderInput={(params) => (
                             <TextField
                                 {...params}
@@ -93,7 +96,7 @@ export const MyConsumptionDatePicker = ({ period, setRange, range }: IMyConsumpt
                         inputFormat="MM/yyyy"
                         maxDate={new Date()}
                         onChange={handleDateChange}
-                        cancelText="Annuler"
+                        cancelText={formatMessage({ id: 'Annuler', defaultMessage: 'Annuler' })}
                         toolbarTitle={null}
                         renderInput={(params) => (
                             <TextField
@@ -112,7 +115,7 @@ export const MyConsumptionDatePicker = ({ period, setRange, range }: IMyConsumpt
                         value={currentDate}
                         maxDate={new Date()}
                         toolbarTitle={null}
-                        cancelText="Annuler"
+                        cancelText={formatMessage({ id: 'Annuler', defaultMessage: 'Annuler' })}
                         onChange={handleDateChange}
                         renderInput={(params) => (
                             <TextField
