@@ -4,17 +4,19 @@ import { BrowserRouter as Router } from 'react-router-dom'
 import userEvent from '@testing-library/user-event'
 import format from 'date-fns/format'
 import { MyConsumptionDatePicker } from 'src/modules/MyConsumption'
+import { getRange } from '../../utils/MyConsumptionFunctions'
 
 let mockSetRange = jest.fn()
 let mockPeriod = 'daily'
 const dateFormat = 'dd/MM/yyyy'
 const buttonLeft = 'chevron_left'
 const date = new Date()
+const mockRange = getRange('day')
 describe('Load MyConsumptionDatePicker', () => {
     test('when the user clicks on the left arrow, yesterday`s date is shown', async () => {
         const { getByText, container } = reduxedRender(
             <Router>
-                <MyConsumptionDatePicker period={mockPeriod} setRange={mockSetRange} />
+                <MyConsumptionDatePicker period={mockPeriod} setRange={mockSetRange} range={mockRange} />
             </Router>,
         )
         expect(container.querySelector('input')?.value).toBe(format(date, dateFormat))
@@ -26,7 +28,7 @@ describe('Load MyConsumptionDatePicker', () => {
         mockPeriod = 'weekly'
         const { getByText, container } = reduxedRender(
             <Router>
-                <MyConsumptionDatePicker period={mockPeriod} setRange={mockSetRange} />
+                <MyConsumptionDatePicker period={mockPeriod} setRange={mockSetRange} range={mockRange} />
             </Router>,
         )
         const date = new Date()
@@ -38,7 +40,7 @@ describe('Load MyConsumptionDatePicker', () => {
         mockPeriod = 'monthly'
         const { getByText, container } = reduxedRender(
             <Router>
-                <MyConsumptionDatePicker period={mockPeriod} setRange={mockSetRange} />
+                <MyConsumptionDatePicker period={mockPeriod} setRange={mockSetRange} range={mockRange} />
             </Router>,
         )
         userEvent.click(getByText(buttonLeft))
@@ -49,7 +51,7 @@ describe('Load MyConsumptionDatePicker', () => {
         mockPeriod = 'yearly'
         const { getByText, container } = reduxedRender(
             <Router>
-                <MyConsumptionDatePicker period={mockPeriod} setRange={mockSetRange} />
+                <MyConsumptionDatePicker period={mockPeriod} setRange={mockSetRange} range={mockRange} />
             </Router>,
         )
         userEvent.click(getByText(buttonLeft))

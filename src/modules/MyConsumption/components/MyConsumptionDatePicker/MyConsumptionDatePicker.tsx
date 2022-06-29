@@ -12,6 +12,7 @@ import {
     addYears,
     addMonths,
     differenceInCalendarDays,
+    startOfYesterday,
 } from 'date-fns'
 import React, { useCallback, useEffect, useState } from 'react'
 import { IMyConsumptionDatePicker, periodType } from 'src/modules/MyConsumption/myConsumptionTypes'
@@ -19,7 +20,7 @@ import { useTheme } from '@mui/material'
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
 import 'src/modules/MyConsumption/components/MyConsumptionDatePicker/MyConsumptionDatePicker.scss'
-import { getRange, getRangeFns, isInvalidDate } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
+import { getRange, isInvalidDate } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
 import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker'
 import TextField from '@mui/material/TextField'
 /**
@@ -30,11 +31,25 @@ import TextField from '@mui/material/TextField'
  * @param root0.setRange SetRange function.
  * @returns MyConsumptionDatePicker.
  */
-export const MyConsumptionDatePicker = ({ period, setRange }: IMyConsumptionDatePicker) => {
-    const [currentDate, setCurrentDate] = useState<Date>(new Date())
-    const isFutureDate = differenceInCalendarDays(currentDate, new Date()) >= 0
+export const MyConsumptionDatePicker = ({ period, setRange, range }: IMyConsumptionDatePicker) => {
     const theme = useTheme()
-
+    const [currentDate, setCurrentDate] = useState<Date>(new Date())
+    const [buttonAction, setButtonAction] = useState({ sub: false, add: false })
+    const isFutureDate = differenceInCalendarDays(currentDate, new Date()) >= 0
+    useEffect(() => {
+        if (buttonAction.sub) {
+            period === 'daily' ? setCurrentDate(subDays(new Date(range.from), 1)) : setCurrentDate(new Date(range.from))
+            setButtonAction({ sub: false, add: false })
+        }
+        if (buttonAction.add) {
+            period === 'daily' ? setCurrentDate(addDays(new Date(range.to), 1)) : setCurrentDate(new Date(range.to))
+            setButtonAction({ sub: false, add: false })
+        }
+    }, [buttonAction, period, range])
+    useEffect(() => {
+        setRange(getRange(period))
+    }, [period, setRange])
+    console.log('RANGE', new Date(range.from), new Date(range.to))
     // If invalid date is selected, then today's date is set
     useEffect(() => {
         if (isInvalidDate(currentDate)) setCurrentDate(new Date())
@@ -43,103 +58,6 @@ export const MyConsumptionDatePicker = ({ period, setRange }: IMyConsumptionDate
     useEffect(() => {
         isFutureDate && setCurrentDate(new Date())
     }, [isFutureDate])
-    /**
-     * SetCurrentPeriodDate.
-     *
-     * @param periodToChange Substract or add the specified years, months, weeks from/to the current date.
-     * @returns The date from which the data is shown.
-     */
-    const setCurrentPeriodDate = useCallback(
-        (periodToChange: (date: number | Date, amount: number) => Date) => {
-            return periodToChange(currentDate, 1)
-        },
-        [currentDate],
-    )
-    /**
-     * Set calendar changes the value of the current date according to the selected period.
-     *
-     * @param period Selected period.
-     * @param arrowName Name of the clicked arrow.
-     */
-    const setCalendar = (period: periodType, arrowName: string) => {
-        const subData = arrowName === 'sub'
-        /**
-         * SetCalendarData function based on argument values.
-         *
-         * @param sub Subtract the specified years, months, weeks, days from the given date.
-         * @param add Add the specified years, months, weeks, days to the given date.
-         */
-        const setCalendarData = (
-            sub: (date: number | Date, amount: number) => Date,
-            add: (date: number | Date, amount: number) => Date,
-        ) => {
-            setCurrentDate(setCurrentPeriodDate(subData ? sub : add))
-        }
-        switch (period) {
-            case 'daily':
-                setCalendarData(subDays, addDays)
-                break
-            case 'weekly':
-                setCalendarData(subWeeks, addWeeks)
-                break
-            case 'monthly':
-                setCalendarData(subMonths, addMonths)
-                break
-            case 'yearly':
-                setCalendarData(subYears, addYears)
-                break
-        }
-    }
-    // console.log('Days,add ', getRangeFns('years', new Date(), 'sub'))
-    // console.log('days,sub ', getRangeFns('days', currentDate, 'sub'))
-    console.log('days,add ', getRangeFns(period))
-    // console.log('days1,add ', getRangeFns('days', new Date(2022, 5, 27, 17, 20, 0), 'add'))
-    // console.log('weeks,add ', getRangeFns('weeks', currentDate, 'sub'))
-    /**
-     * SetRangeFrom function sets the date according to the selected period until which the range will exist.
-     *
-     * @param period Selected period.
-     * @returns According to the selected period setRangeFrom sets the value from which data should be shown.
-     */
-    // const setRangeFrom = (period: periodType) => {
-    //     switch (period) {
-    //         case 'daily':
-    //             return getRange('day', 'add', currentDate)
-    //         // return setCurrenteriodDate(subDays)
-    //         case 'weekly':P
-    //             return getRange('week', 'sub', currentDate)
-    //         // return setCurrentPeriodDate(subWeeks)
-    //         case 'monthly':
-    //             return getRange('month', 'add', currentDate)
-    //         // return setCurrentPeriodDate(subMonths)
-    //         case 'yearly':
-    //             return getRange('year', 'add', currentDate)
-    //         // return setCurrentPeriodDate(subYears)
-    //     }
-    // }
-    // console.log('')
-    // [setCurrentPeriodDate],
-
-    // /**
-    //  * Get range function.
-    //  *
-    //  * @param period Selected period.
-    //  * @returns Object with formatted range.
-    //  */
-    // const getRange = useCallback(
-    //     (period: periodType) => {
-    //         return {
-    //             from: setRangeFrom(period).toISOString(),
-    //             to: currentDate.toISOString(),
-    //         }
-    //     },
-    //     [currentDate, setRangeFrom],
-    // )
-
-    useEffect(() => {
-        setRange(getRange(period))
-    }, [period, setRange])
-
     /**
      * Handle data change.
      *
@@ -216,19 +134,19 @@ export const MyConsumptionDatePicker = ({ period, setRange }: IMyConsumptionDate
                 )
         }
     }
-
     return (
         <motion.div
             className="flex items-center justify-center wrapper"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1, transition: { delay: 0.3 } }}
         >
+            {/* <div>{currentDate}</div> */}
             <Tooltip title="Previous">
                 <IconButton
                     aria-label="Previous"
                     onClick={() => {
-                        // setCalendar(period, 'sub')
-                        setRange(getRange(period, 'sub'))
+                        setRange(getRange(period, currentDate, 'sub'))
+                        setButtonAction({ sub: true, add: false })
                     }}
                     size="large"
                     style={{ color: theme.palette.primary.contrastText }}
@@ -241,8 +159,8 @@ export const MyConsumptionDatePicker = ({ period, setRange }: IMyConsumptionDate
                 <IconButton
                     aria-label="Next"
                     onClick={() => {
-                        // setCalendar(period, 'add')
-                        setRange(getRange(period, 'add'))
+                        setRange(getRange(period, currentDate, 'add'))
+                        setButtonAction({ sub: false, add: true })
                     }}
                     size="large"
                     disabled={isFutureDate}
@@ -254,5 +172,6 @@ export const MyConsumptionDatePicker = ({ period, setRange }: IMyConsumptionDate
                 </IconButton>
             </Tooltip>
         </motion.div>
+        // <div>hu</div>
     )
 }
