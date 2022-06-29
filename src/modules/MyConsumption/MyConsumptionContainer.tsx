@@ -4,7 +4,7 @@ import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyForm
 import MyConsumptionChart from 'src/modules/MyConsumption/components/MyConsumptionChart'
 import { useMeterList } from 'src/modules/Meters/metersHook'
 import { formatMetricFilter } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
-import { MyConsumptionPeriod, SelectMeters, Widget } from 'src/modules/MyConsumption'
+import { MyConsumptionPeriod, SelectMeters } from 'src/modules/MyConsumption'
 import { SelectChangeEvent, useTheme } from '@mui/material'
 import { useMetrics } from 'src/modules/Metrics/metricsHook'
 import { getMetricType } from 'src/modules/Metrics/Metrics'
@@ -14,8 +14,7 @@ import { Link } from 'react-router-dom'
 import { Icon, Typography } from 'src/common/ui-kit'
 import { useIntl } from 'react-intl'
 import { useConsents } from 'src/modules/Consents/consentsHook'
-import { widgetType } from 'src/modules/MyConsumption/components/Widgets/Widget'
-import Grid from '@mui/material/Grid'
+import { WidgetList } from 'src/modules/MyConsumption/WidgetsList'
 
 /**
  * InitialMetricsStates for useMetrics.
@@ -95,21 +94,6 @@ export const MyConsumptionContainer = () => {
         }
     }
 
-    const widgetsList = [
-        {
-            type: 'consumption_metrics' as widgetType,
-        },
-        {
-            type: 'enedis_max_power' as widgetType,
-        },
-        {
-            type: 'external_temperature_metrics' as widgetType,
-        },
-        {
-            type: 'nrlink_internal_temperature_metrics' as widgetType,
-        },
-    ]
-
     if (nrlinkConsent?.nrlinkConsentState === 'NONEXISTENT' && enedisConsent?.enedisConsentState === 'NONEXISTENT') {
         return (
             <div className="container relative h-200 sm:h-256 p-16 sm:p-24 flex-col text-center flex items-center justify-center">
@@ -188,12 +172,13 @@ export const MyConsumptionContainer = () => {
                     setMetricsInterval={setMetricsInterval}
                 />
             </div>
-            <div style={{ background: theme.palette.grey[100] }} className="w-full p-12">
-                <Grid container spacing={{ xs: 2, md: 3 }}>
-                    {widgetsList.map(({ type }) => {
-                        return <Widget key={type} type={type} data={data} isMetricsLoading={isMetricsLoading} />
-                    })}
-                </Grid>
+            <div className="p-12 sm:p-24 ">
+                <div className="flex justify-center items-center md:justify-start">
+                    <TypographyFormatMessage variant="h5" className="sm:mr-8 text-black font-medium">
+                        Chiffres clés
+                    </TypographyFormatMessage>
+                </div>
+                <WidgetList />
             </div>
         </>
     )
