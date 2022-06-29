@@ -2,16 +2,19 @@ import Icon from '@mui/material/Icon'
 import IconButton from '@mui/material/IconButton'
 import Tooltip from '@mui/material/Tooltip'
 import { motion } from 'framer-motion'
-import { subDays, addDays, differenceInCalendarDays, format } from 'date-fns'
+import { subDays, addDays, differenceInCalendarDays } from 'date-fns'
 import React, { useEffect, useState } from 'react'
 import { IMyConsumptionDatePicker, periodType } from 'src/modules/MyConsumption/myConsumptionTypes'
 import { useTheme } from '@mui/material'
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
 import 'src/modules/MyConsumption/components/MyConsumptionDatePicker/MyConsumptionDatePicker.scss'
-import { getRange, isInvalidDate } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
+import { getRange } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
 import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker'
 import TextField from '@mui/material/TextField'
+import DateFnsUtils from '@date-io/date-fns'
+import { fr } from 'date-fns/locale'
+
 /**
  * MyConsumptionDatePicker component.
  *
@@ -41,10 +44,6 @@ export const MyConsumptionDatePicker = ({ period, setRange, range }: IMyConsumpt
         setRange(getRange(period, currentDate))
     }, [currentDate, period, setRange])
 
-    // If invalid date is selected, then today's date is set
-    useEffect(() => {
-        if (isInvalidDate(currentDate)) setCurrentDate(new Date())
-    }, [currentDate])
     // If a future date is selected, then today's date is set
     useEffect(() => {
         isFutureDate && setCurrentDate(new Date())
@@ -73,9 +72,9 @@ export const MyConsumptionDatePicker = ({ period, setRange, range }: IMyConsumpt
                         value={currentDate}
                         inputFormat="dd/MM/yyyy"
                         maxDate={new Date()}
-                        onAccept={handleDateChange}
-                        // eslint-disable-next-line no-console
-                        onChange={() => console.log('')}
+                        toolbarTitle={null}
+                        onChange={handleDateChange}
+                        cancelText="Annuler"
                         renderInput={(params) => (
                             <TextField
                                 {...params}
@@ -93,7 +92,9 @@ export const MyConsumptionDatePicker = ({ period, setRange, range }: IMyConsumpt
                         value={currentDate}
                         inputFormat="MM/yyyy"
                         maxDate={new Date()}
-                        onChange={() => console.log('')}
+                        onChange={handleDateChange}
+                        cancelText="Annuler"
+                        toolbarTitle={null}
                         renderInput={(params) => (
                             <TextField
                                 {...params}
@@ -109,9 +110,10 @@ export const MyConsumptionDatePicker = ({ period, setRange, range }: IMyConsumpt
                     <MobileDatePicker
                         views={['year']}
                         value={currentDate}
-                        // inputFormat="MM/yyyy"
                         maxDate={new Date()}
-                        onChange={() => console.log('')}
+                        toolbarTitle={null}
+                        cancelText="Annuler"
+                        onChange={handleDateChange}
                         renderInput={(params) => (
                             <TextField
                                 {...params}
@@ -130,7 +132,6 @@ export const MyConsumptionDatePicker = ({ period, setRange, range }: IMyConsumpt
             initial={{ opacity: 0 }}
             animate={{ opacity: 1, transition: { delay: 0.3 } }}
         >
-            <div>{format(currentDate, 'dd/MM/yyyy HH:mm:ss')}</div>
             <Tooltip title="Previous">
                 <IconButton
                     aria-label="Previous"
@@ -144,7 +145,9 @@ export const MyConsumptionDatePicker = ({ period, setRange, range }: IMyConsumpt
                     <Icon>chevron_left </Icon>
                 </IconButton>
             </Tooltip>
-            <LocalizationProvider dateAdapter={AdapterDateFns}>{setDatePicker(period)} </LocalizationProvider>
+            <LocalizationProvider dateAdapter={AdapterDateFns} locale={fr} utils={DateFnsUtils}>
+                {setDatePicker(period)}
+            </LocalizationProvider>
             <Tooltip title="Next">
                 <IconButton
                     aria-label="Next"
@@ -162,6 +165,5 @@ export const MyConsumptionDatePicker = ({ period, setRange, range }: IMyConsumpt
                 </IconButton>
             </Tooltip>
         </motion.div>
-        // <div>hu</div>
     )
 }

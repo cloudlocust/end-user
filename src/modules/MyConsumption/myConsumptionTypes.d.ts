@@ -49,25 +49,10 @@ export interface IMyConsumptionDatePicker {
      * SetRange function.
      */
     setRange: (range: metricRange) => void
+    /**
+     * Period for range.
+     */
     range: metricRange
-}
-/**
- * Type for views in MobileDatePicker.
- */
-export type ViewsType = 'day' | 'month' | 'year'
-
-/**
- * Interface for InputStyles.
- */
-export interface IInputStyles {
-    /**
-     * Color.
-     */
-    color: string
-    /**
-     * Width.
-     */
-    width: string
 }
 
 /**

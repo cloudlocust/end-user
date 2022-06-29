@@ -16,7 +16,9 @@
     }
 }
 .MuiPaper-root {
-    input {
-        color: black ;
+    .PrivatePickersToolbar-root {
+        svg {
+            display: none;
+        }
     }
 }
