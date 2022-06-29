@@ -4,7 +4,7 @@ import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyForm
 import MyConsumptionChart from 'src/modules/MyConsumption/components/MyConsumptionChart'
 import { useMeterList } from 'src/modules/Meters/metersHook'
 import { formatMetricFilter, getRange } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
-import { MyConsumptionDatePicker, MyConsumptionPeriod, SelectMeters } from 'src/modules/MyConsumption'
+import { MyConsumptionPeriod, SelectMeters } from 'src/modules/MyConsumption'
 import { SelectChangeEvent, useTheme } from '@mui/material'
 import { useMetrics } from 'src/modules/Metrics/metricsHook'
 import { getMetricType } from 'src/modules/Metrics/Metrics'
@@ -14,6 +14,7 @@ import { Icon, Typography } from 'src/common/ui-kit'
 import { useIntl } from 'react-intl'
 import { useConsents } from 'src/modules/Consents/consentsHook'
 import CircularProgress from '@mui/material/CircularProgress'
+import { MyConsumptionDatePicker } from 'src/modules/MyConsumption/components/MyConsumptionDatePicker'
 /**
  * InitialMetricsStates for useMetrics.
  */

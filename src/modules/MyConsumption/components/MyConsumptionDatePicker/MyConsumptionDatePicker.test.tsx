@@ -3,8 +3,8 @@ import { reduxedRender } from 'src/common/react-platform-components/test'
 import { BrowserRouter as Router } from 'react-router-dom'
 import userEvent from '@testing-library/user-event'
 import format from 'date-fns/format'
-import { MyConsumptionDatePicker } from 'src/modules/MyConsumption'
 import { getRange } from '../../utils/MyConsumptionFunctions'
+import { MyConsumptionDatePicker } from 'src/modules/MyConsumption/components/MyConsumptionDatePicker'
 
 let mockSetRange = jest.fn()
 let mockPeriod = 'daily'

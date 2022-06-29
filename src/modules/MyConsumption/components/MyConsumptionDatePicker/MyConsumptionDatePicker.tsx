@@ -15,7 +15,7 @@ import TextField from '@mui/material/TextField'
 import DateFnsUtils from '@date-io/date-fns'
 import { fr } from 'date-fns/locale'
 import { useIntl } from 'src/common/react-platform-translation'
-import { mobileDatePickerPeriodProps } from '../../utils/myConsumptionVariables'
+import { mobileDatePickerPeriodProps } from 'src/modules/MyConsumption/utils/myConsumptionVariables'
 
 /**
  * MyConsumptionDatePicker component.
