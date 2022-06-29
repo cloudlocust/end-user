@@ -11,7 +11,7 @@ let mockPeriod = 'daily'
 const dateFormat = 'dd/MM/yyyy'
 const buttonLeft = 'chevron_left'
 const date = new Date()
-const mockRange = getRange('day')
+let mockRange = getRange(mockPeriod)
 describe('Load MyConsumptionDatePicker', () => {
     test('when the user clicks on the left arrow, yesterday`s date is shown', async () => {
         const { getByText, container } = reduxedRender(
@@ -26,6 +26,7 @@ describe('Load MyConsumptionDatePicker', () => {
     })
     test('when the user clicks on the left arrow, the last week is shown', async () => {
         mockPeriod = 'weekly'
+        mockRange = getRange(mockPeriod)
         const { getByText, container } = reduxedRender(
             <Router>
                 <MyConsumptionDatePicker period={mockPeriod} setRange={mockSetRange} range={mockRange} />
@@ -33,11 +34,12 @@ describe('Load MyConsumptionDatePicker', () => {
         )
         const date = new Date()
         userEvent.click(getByText(buttonLeft))
-        const prevWeek = date.setDate(date.getDate() - 7)
+        const prevWeek = date.setDate(date.getDate() - 6)
         expect(container.querySelector('input')?.value).toBe(format(new Date(prevWeek), dateFormat))
     })
     test('when the user clicks on the left arrow, the last month is shown', async () => {
         mockPeriod = 'monthly'
+        mockRange = getRange(mockPeriod)
         const { getByText, container } = reduxedRender(
             <Router>
                 <MyConsumptionDatePicker period={mockPeriod} setRange={mockSetRange} range={mockRange} />
@@ -49,6 +51,7 @@ describe('Load MyConsumptionDatePicker', () => {
     })
     test('when the user clicks on the left arrow, the last year is shown', async () => {
         mockPeriod = 'yearly'
+        mockRange = getRange(mockPeriod)
         const { getByText, container } = reduxedRender(
             <Router>
                 <MyConsumptionDatePicker period={mockPeriod} setRange={mockSetRange} range={mockRange} />
@@ -57,8 +60,7 @@ describe('Load MyConsumptionDatePicker', () => {
         userEvent.click(getByText(buttonLeft))
         const prevYear = date.setFullYear(date.getFullYear() - 1)
         expect(container.querySelector('input')?.value).toBe(format(new Date(prevYear), 'yyyy'))
-        userEvent.click(getByText(buttonLeft))
         userEvent.click(getByText('chevron_right'))
-        expect(container.querySelector('input')?.value).toBe(format(new Date(prevYear), 'yyyy'))
+        expect(container.querySelector('input')?.value).toBe(format(new Date(), 'yyyy'))
     })
 })
