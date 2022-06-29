@@ -1,4 +1,5 @@
 import { metricTargetType } from 'src/modules/Metrics/Metrics'
+import { periodType } from 'src/modules/MyConsumption/myConsumptionTypes'
 
 /**
  * Widget Title type.
@@ -38,6 +39,10 @@ export type widgetListType = {
  */
 export interface IWidgetProps {
     /**
+     * Widget type.
+     */
+    type: metricTargetType
+    /**
      * Widget title.
      */
     title: widgetTitleType
@@ -46,7 +51,7 @@ export interface IWidgetProps {
      */
     unit: widgetUnitType
     /**
-     * Widget value. TODO in 2623.
+     * Period.
      */
-    value?: number
+    period: periodType
 }

@@ -178,7 +178,7 @@ export const MyConsumptionContainer = () => {
                         Chiffres clés
                     </TypographyFormatMessage>
                 </div>
-                <WidgetList />
+                <WidgetList period={period} />
             </div>
         </>
     )
