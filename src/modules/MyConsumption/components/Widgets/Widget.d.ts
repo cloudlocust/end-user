@@ -1,35 +1,52 @@
 import { metricTargetType } from 'src/modules/Metrics/Metrics'
-import { periodType } from 'src/modules/MyConsumption/myConsumptionTypes'
 
 /**
- * Widget type.
+ * Widget Title type.
  */
-export type widgetType = metricTargetType
+export type widgetTitleType =
+    | 'Consommation Totale'
+    | 'Puissance Maximale'
+    | 'Température Intérieure'
+    | 'Température Extérieure'
 
 /**
- * Widget Props Type.
+ * Widget unit type.
  */
-export interface IWidgetProps {
+export type widgetUnitType = 'kWh' | 'kVh' | '°C'
+
+/**
+ * Widget list type.
+ */
+// eslint-disable-next-line jsdoc/require-jsdoc
+export type widgetListType = {
     /**
      * Widget type.
      */
-    type: widgetType
-    /**
-     * Period.
-     */
-    period: periodType
-}
-
-/**
- * Widget Assets.
- */
-export interface IWidgetAssets {
+    type: metricTargetType
     /**
      * Widget title.
      */
-    title: 'Consommation totale' | 'Puissance max' | 'Température intérieure' | 'Température extérieure'
+    title: widgetTitleType
     /**
      * Widget unit.
      */
-    unit: 'kWh' | 'kVa' | '°C'
+    unit: widgetUnitType
+}[]
+
+/**
+ * Widget Props.
+ */
+export interface IWidgetProps {
+    /**
+     * Widget title.
+     */
+    title: widgetTitleType
+    /**
+     * Widget unit.
+     */
+    unit: widgetUnitType
+    /**
+     * Widget value. TODO in 2623.
+     */
+    value?: number
 }
