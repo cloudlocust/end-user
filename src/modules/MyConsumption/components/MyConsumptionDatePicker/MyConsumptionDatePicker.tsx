@@ -2,19 +2,8 @@ import Icon from '@mui/material/Icon'
 import IconButton from '@mui/material/IconButton'
 import Tooltip from '@mui/material/Tooltip'
 import { motion } from 'framer-motion'
-import {
-    subDays,
-    subWeeks,
-    subMonths,
-    subYears,
-    addDays,
-    addWeeks,
-    addYears,
-    addMonths,
-    differenceInCalendarDays,
-    startOfYesterday,
-} from 'date-fns'
-import React, { useCallback, useEffect, useState } from 'react'
+import { subDays, addDays, differenceInCalendarDays, format } from 'date-fns'
+import React, { useEffect, useState } from 'react'
 import { IMyConsumptionDatePicker, periodType } from 'src/modules/MyConsumption/myConsumptionTypes'
 import { useTheme } from '@mui/material'
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
@@ -29,6 +18,7 @@ import TextField from '@mui/material/TextField'
  * @param root0 N/A.
  * @param root0.period Period range.
  * @param root0.setRange SetRange function.
+ * @param root0.range
  * @returns MyConsumptionDatePicker.
  */
 export const MyConsumptionDatePicker = ({ period, setRange, range }: IMyConsumptionDatePicker) => {
@@ -46,9 +36,11 @@ export const MyConsumptionDatePicker = ({ period, setRange, range }: IMyConsumpt
             setButtonAction({ sub: false, add: false })
         }
     }, [buttonAction, period, range])
+
     useEffect(() => {
-        setRange(getRange(period))
-    }, [period, setRange])
+        setRange(getRange(period, currentDate))
+    }, [currentDate, period, setRange])
+
     console.log('RANGE', new Date(range.from), new Date(range.to))
     // If invalid date is selected, then today's date is set
     useEffect(() => {
@@ -67,6 +59,7 @@ export const MyConsumptionDatePicker = ({ period, setRange, range }: IMyConsumpt
         newDate && setCurrentDate(newDate)
     }
     // console.log(setRangeFrom(period))
+    // console.log('GET range', getRange(period))
     /**
      * Set Date Picker fuction sets DatePicker according to the selected period.
      *
@@ -140,7 +133,7 @@ export const MyConsumptionDatePicker = ({ period, setRange, range }: IMyConsumpt
             initial={{ opacity: 0 }}
             animate={{ opacity: 1, transition: { delay: 0.3 } }}
         >
-            {/* <div>{currentDate}</div> */}
+            <div>{format(currentDate, 'dd/MM/yyyy HH:mm:ss')}</div>
             <Tooltip title="Previous">
                 <IconButton
                     aria-label="Previous"

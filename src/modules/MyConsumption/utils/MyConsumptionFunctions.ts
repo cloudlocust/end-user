@@ -33,25 +33,6 @@ export const formatMetricFilter = (valueGuid: string) => {
         },
     ] as metricFiltersType
 }
-// export const getRange = (rangePeriod: dayjs.ManipulateType, operation: 'sub' | 'add' = 'sub') => {
-//     const fromDate = operation === 'sub' ? dayjs().subtract(1, rangePeriod) : dayjs().add(1, rangePeriod)
-//     return {
-//         /**
-//          * When rangePeriod is:
-//          *  Day then the "from" will represent the start of the current Date and the "to" will represent the end of the current date.
-//          *  Week then the from date, represent the subtracted Week + 1day, because we have to count the Week including the subtracted day thus we add 1 day (for example, if we subtract 1 week from 27/06, it'll return the 20th because it doesn't count the 27th, thus we add 1 day because the 27th is counted and thus we start from the 21st till 27th which give us 7 days).
-//          *  Month or Year, we count from the subtracted Date a month or year from now, including the current current date or the current month.
-//          *
-//          */
-//         from:
-//             rangePeriod === 'day'
-//                 ? dayjs().startOf('date').toDate().toISOString()
-//                 : rangePeriod === 'week'
-//                 ? fromDate.add(1, 'day').toDate().toISOString()
-//                 : fromDate.toDate().toISOString(),
-//         to: dayjs().endOf('date').toDate().toISOString(),
-//     }
-// }
 
 const convertPeriod = (period: string) => {
     switch (period) {
@@ -78,7 +59,6 @@ const convertPeriod = (period: string) => {
  */
 export const getRange = (period: string, toDate?: Date, operation: 'sub' | 'add' = 'sub') => {
     const currentDate = toDate || new Date()
-    const endOfCurrentDay = isToday(currentDate) ? currentDate : endOfDay(currentDate)
     const convertedPeriod = convertPeriod(period)
     /**
      *
@@ -97,26 +77,21 @@ export const getRange = (period: string, toDate?: Date, operation: 'sub' | 'add'
         isAnotherOperatorDays: Date,
     ) => {
         if (operation === operator) {
-            if (convertedPeriod === 'days') {
-                return isOperatorDays
-            }
-            if (convertedPeriod === 'weeks') {
-                return doDays(currentDate, 6)
-            }
+            if (convertedPeriod === 'days') return isOperatorDays
+            if (convertedPeriod === 'weeks') return doDays(currentDate, 6)
             return action(currentDate, {
                 [convertedPeriod as string]: 1,
             })
         }
-        if (convertedPeriod === 'days') {
-            return isAnotherOperatorDays
-        }
+        if (convertedPeriod === 'days') return isAnotherOperatorDays
         return currentDate
     }
     return {
         from: setRange('sub', startOfDay(currentDate), subDays, sub, startOfDay(currentDate)).toISOString(),
-        to: setRange('add', endOfCurrentDay, addDays, add, endOfCurrentDay).toISOString(),
+        to: setRange('add', endOfDay(currentDate), addDays, add, endOfDay(currentDate)).toISOString(),
     }
 }
+
 /**
  * Function that returns list of every 2 minutes as a date in the given range.
  *
