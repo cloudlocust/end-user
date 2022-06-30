@@ -16,7 +16,7 @@ const propsMyConsumptionChart = {
     chartType: 'bar' as ApexChart['type'],
     isMetricsLoading: false,
     period: 'daily' as periodType,
-    range: getRange('daily'),
+    range: getRange('day'),
 }
 const circularProgressClassname = '.MuiCircularProgress-root'
 const apexChartsDailyPeriodWrapper = '.apexChartsDailyPeriodWrapper'
