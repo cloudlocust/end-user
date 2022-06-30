@@ -34,23 +34,6 @@ export const dataConsumptionPeriod = [
     },
 ]
 /**
- * Target buttons type.
- */
-export enum TargetType {
-    /**
-     * Internal Temperature Target.
-     */
-    internalTemperatureTarget = 'nrlink_internal_temperature_metrics',
-    /**
-     * External Temperature Target.
-     */
-    externalTemperatureTarget = 'external_temperature_metrics',
-    /**
-     * Max power target.
-     */
-    pmaxTarget = 'enedis_max_power',
-}
-/**
  *  Button options.
  */
 export const buttonOptions = [
@@ -58,17 +41,17 @@ export const buttonOptions = [
     {
         value: 'temperature',
         label: 'T°',
-        targets: [TargetType.internalTemperatureTarget, TargetType.externalTemperatureTarget],
+        targets: [metricTargetsEnum.externalTemperatur, metricTargetsEnum.internalTemperatur],
     },
-    { value: 'Pmax', label: 'Pmax', targets: [TargetType.pmaxTarget] },
+    { value: 'Pmax', label: 'Pmax', targets: [metricTargetsEnum.pMax] },
 ]
 /**
  * Target options.
  */
-export const targetOptions: any[] = [
-    TargetType.internalTemperatureTarget,
-    TargetType.externalTemperatureTarget,
-    TargetType.pmaxTarget,
+export const targetOptions: metricTargetsEnum[] = [
+    metricTargetsEnum.externalTemperatur,
+    metricTargetsEnum.internalTemperatur,
+    metricTargetsEnum.pMax,
 ]
 
 /**

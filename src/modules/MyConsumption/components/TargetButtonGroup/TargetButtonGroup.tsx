@@ -4,8 +4,9 @@ import ButtonGroup from '@mui/material/ButtonGroup'
 import { useState } from 'react'
 import { useTheme } from '@mui/material'
 import { useIntl } from 'react-intl'
-import { buttonOptions, targetOptions, TargetType } from 'src/modules/MyConsumption/utils/myConsumptionVariables'
+import { buttonOptions, targetOptions } from 'src/modules/MyConsumption/utils/myConsumptionVariables'
 import { ITargetButtonGroup } from 'src/modules/MyConsumption/myConsumptionTypes'
+import { metricTargetsEnum } from 'src/modules/Metrics/Metrics'
 
 /**
  * TargetButtonGroup component.
@@ -23,16 +24,18 @@ export const TargetButtonGroup = ({ removeTarget, addTarget, hidePmax }: ITarget
     /**
      * Function to handle Target.
      *
-     * @param optionBtn Value to handle.
+     * @param targets Target value to handle.
      */
-    const handleTarget = (optionBtn: typeof buttonOptions[0]) => {
+    const handleTarget = (targets: metricTargetsEnum[]) => {
         targetOptions.forEach((target) => {
-            optionBtn.targets.includes(target as TargetType) ? addTarget(target) : removeTarget(target)
+            targets.includes(target) ? addTarget(target) : removeTarget(target)
         })
     }
+
     return (
         <ButtonGroup variant="contained">
             {buttonOptions.map((option) => {
+                // console.log(option)
                 const disabledField = hidePmax && option.value === 'Pmax'
                 const activeField = activeButton === option.value
                 const activeBackgroundColor = activeField ? theme.palette.primary.light : theme.palette.primary.dark
@@ -42,7 +45,7 @@ export const TargetButtonGroup = ({ removeTarget, addTarget, hidePmax }: ITarget
                         value={option.value}
                         onClick={() => {
                             setActiveButton(option.value)
-                            handleTarget(option)
+                            handleTarget(option.targets)
                         }}
                         style={{
                             backgroundColor: disabledField ? theme.palette.grey[600] : activeBackgroundColor,
