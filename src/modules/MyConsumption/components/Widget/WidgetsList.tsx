@@ -1,8 +1,8 @@
 import { Grid, useTheme } from '@mui/material'
-import { Widget } from 'src/modules/MyConsumption/components/Widgets'
-import { widgetListType } from 'src/modules/MyConsumption/components/Widgets/Widget'
+import { Widget } from 'src/modules/MyConsumption/components/Widget'
+import { widgetType } from 'src/modules/MyConsumption/components/Widget/Widget'
 
-const widgetsList: widgetListType = [
+const widgetsList: widgetType = [
     {
         type: 'consumption_metrics',
         title: 'Consommation Totale',

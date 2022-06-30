@@ -14,7 +14,7 @@ import { Link } from 'react-router-dom'
 import { Icon, Typography } from 'src/common/ui-kit'
 import { useIntl } from 'react-intl'
 import { useConsents } from 'src/modules/Consents/consentsHook'
-import { WidgetList } from 'src/modules/MyConsumption/WidgetsList'
+import { WidgetList } from 'src/modules/MyConsumption/components/Widget/WidgetsList'
 
 /**
  * InitialMetricsStates for useMetrics.

@@ -1,11 +1,10 @@
 import { reduxedRender } from 'src/common/react-platform-components/test'
-import { Widget } from 'src/modules/MyConsumption/components/Widgets'
-import { IWidgetProps } from 'src/modules/MyConsumption/components/Widgets/Widget'
+import { Widget } from 'src/modules/MyConsumption/components/Widget'
+import { IWidgetProps } from 'src/modules/MyConsumption/components/Widget/Widget'
 
 const mockWidgetProps: IWidgetProps = {
     title: 'Consommation Totale',
     unit: 'kWh',
-    value: 123,
 }
 
 const CONSOMMATION_TOTALE_TEXT = 'Consommation Totale'
@@ -24,7 +23,6 @@ describe('Widget component test', () => {
 
         expect(getByText(CONSOMMATION_TOTALE_TEXT)).toBeTruthy()
         expect(getByText(CONSOMMATION_TOTALE_UNIT)).toBeTruthy()
-        expect(getByText(123)).toBeTruthy()
     })
     test('when the widget is rendered with puissance max', async () => {
         mockWidgetProps.title = 'Puissance Maximale'
@@ -33,7 +31,6 @@ describe('Widget component test', () => {
 
         expect(getByText(PUISSANCE_MAX_TEXT)).toBeTruthy()
         expect(getByText(PUISSANCE_MAX_UNIT)).toBeTruthy()
-        expect(getByText(123)).toBeTruthy()
     })
     test('when the widget is rendered with internal temperature', async () => {
         mockWidgetProps.title = 'Température Intérieure'
@@ -42,7 +39,6 @@ describe('Widget component test', () => {
 
         expect(getByText(INTERNAL_TEMPERATURE_TEXT)).toBeTruthy()
         expect(getByText(TEMPERATURE_UNIT)).toBeTruthy()
-        expect(getByText(123)).toBeTruthy()
     })
     test('when the widget is rendered with external temperature', async () => {
         mockWidgetProps.title = 'Température Extérieure'
@@ -51,6 +47,5 @@ describe('Widget component test', () => {
 
         expect(getByText(EXTERNAL_TEMPERATURE_TEXT)).toBeTruthy()
         expect(getByText(TEMPERATURE_UNIT)).toBeTruthy()
-        expect(getByText(123)).toBeTruthy()
     })
 })

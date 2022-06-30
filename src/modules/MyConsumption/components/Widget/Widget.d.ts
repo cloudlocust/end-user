@@ -18,7 +18,7 @@ export type widgetUnitType = 'kWh' | 'kVh' | '°C'
  * Widget list type.
  */
 // eslint-disable-next-line jsdoc/require-jsdoc
-export type widgetListType = {
+export type widgetType = {
     /**
      * Widget type.
      */

@@ -1,6 +1,6 @@
 import { Typography, Grid, Card } from '@mui/material'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
-import { IWidgetProps } from 'src/modules/MyConsumption/components/Widgets/Widget'
+import { IWidgetProps } from 'src/modules/MyConsumption/components/Widget/Widget'
 
 /**
  * Single Widget component.
@@ -8,10 +8,9 @@ import { IWidgetProps } from 'src/modules/MyConsumption/components/Widgets/Widge
  * @param root0 N/A.
  * @param root0.title Widget title.
  * @param root0.unit Widget unit.
- * @param root0.value Widget value.
  * @returns Single Widget component.
  */
-export const Widget = ({ title, unit, value }: IWidgetProps) => {
+export const Widget = ({ title, unit }: IWidgetProps) => {
     return (
         <Grid item xs={6} sm={6} md={4} lg={3} xl={3}>
             <Card className="w-full rounded-20 shadow sm:m-4 " variant="outlined">
@@ -26,7 +25,7 @@ export const Widget = ({ title, unit, value }: IWidgetProps) => {
                     <div className="flex flex-row flex-wrap mt-12 items-end">
                         {/* Widget value */}
                         <Typography className="text-3xl sm:text-4xl md:text-5xl font-normal tracking-tighter items-end mr-auto">
-                            {value}
+                            {/* {value} */}
                         </Typography>
                         <div className="flex flex-col">
                             {/* Widget unit */}
