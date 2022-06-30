@@ -86,6 +86,10 @@ const mockOptions: (theme: Theme, period: periodType) => ApexOptions = (theme, p
         ...defaultApexChartOptions(theme)?.markers,
         size: [0],
     },
+    stroke: {
+        ...defaultApexChartOptions(theme)?.stroke,
+        width: [0],
+    },
     tooltip: {
         x: {
             // eslint-disable-next-line jsdoc/require-jsdoc

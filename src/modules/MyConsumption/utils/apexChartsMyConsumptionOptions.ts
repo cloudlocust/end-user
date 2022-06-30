@@ -78,7 +78,7 @@ export const defaultApexChartOptions: (theme: Theme) => Props['options'] = (them
         tickPlacement: 'on',
     },
     stroke: {
-        show: false,
+        show: true,
         curve: 'smooth',
         lineCap: 'butt',
         colors: [theme.palette.primary.contrastText],
@@ -157,6 +157,8 @@ export const getApexChartMyConsumptionProps = ({
     let yAxisOptions: ApexYAxis[] = []
     // For each chart we'll indicate what size his marker is.
     let markerSizeList: number[] = []
+    // Stroke represent the line that joins all points of a chart (Stroke should be shown only for line charts, drawing the stroke in the consumption chart makes it too cumbersome).
+    let strokeWidthList: number[] = []
 
     yAxisSeries.forEach((yAxisSerie) => {
         // If this Serie doesn't have any data we don't show it on the chart thus we do return, and if this is true for all series then we'll show an empty chart.
@@ -195,6 +197,8 @@ export const getApexChartMyConsumptionProps = ({
         })
         // When period is daily and chart is consumption then we show no marker, otherwise if period is not daily we don't show consumption marker.
         markerSizeList.push(yAxisSerie.name === metricTargetsEnum.consumption || period === 'daily' ? 0 : 2)
+        // When chart is consumption then we show no stroke cause the area chart is enough otherwise it'll be too cumbersome.
+        strokeWidthList.push(yAxisSerie.name === metricTargetsEnum.consumption ? 0 : 1.5)
     })
 
     options.xaxis = {
@@ -229,10 +233,8 @@ export const getApexChartMyConsumptionProps = ({
             },
         },
     }
-    if (period !== 'daily') {
-        options.stroke!.show = true
-    }
     options!.markers!.size = markerSizeList
+    options!.stroke!.width = strokeWidthList
     options.yaxis = yAxisOptions
     return { series: myConsumptionApexChartSeries, options }
 }

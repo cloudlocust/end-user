@@ -52,6 +52,8 @@ export const chartSpecifities: {
     [metricTargetsEnum.internalTemperatur]: {
         label: 'Température Intérieure',
         unit: '°C',
+        // We put seriesName the same as internal temperature so that internal and external temperature charts will show their values in the same YAxis, instead of having 2 YAxis for each chart.
+        seriesName: 'Température Extérieure',
     },
     [metricTargetsEnum.externalTemperatur]: {
         label: 'Température Extérieure',
