@@ -4,7 +4,6 @@ import userEvent from '@testing-library/user-event'
 import { Form } from 'src/common/react-platform-components'
 import { reduxedRender } from 'src/common/react-platform-components/test'
 import { NumberFieldForm } from './NumberFieldForm'
-import { fireEvent, act } from '@testing-library/react'
 
 const propsNumberField = {
     name: 'computer',
@@ -19,6 +18,9 @@ const propsNumberField2 = {
     iconLabel: 'computer',
     disableDecrement: true,
 }
+const DISABLED_BUTTON_CLASS = 'Mui-disabled'
+const ADD_BUTTON_TEXT = 'add'
+const SUBTRACT_BUTTON_TEXT = 'remove'
 
 describe('<NumberField /> countries props', () => {
     test('props must be passed to NumberField and value shown', () => {
@@ -29,13 +31,23 @@ describe('<NumberField /> countries props', () => {
         )
         expect(getByText(1)).toBeTruthy()
     })
-    test('If no value, zero shown by default', () => {
+    test('when Default Value in form, it should be shown', () => {
+        const { getByText } = reduxedRender(
+            <Form onSubmit={() => {}} defaultValues={{ computer: 20 }}>
+                <NumberFieldForm {...propsNumberField2} />
+            </Form>,
+        )
+        expect(getByText(20)).toBeTruthy()
+    })
+    test('If no value, zero shown by default, and subtraction is disabled', () => {
         const { getByText } = reduxedRender(
             <Form onSubmit={() => {}}>
                 <NumberFieldForm {...propsNumberField2} />
             </Form>,
         )
         expect(getByText(0)).toBeTruthy()
+        expect(getByText(SUBTRACT_BUTTON_TEXT).parentElement!.classList.contains(DISABLED_BUTTON_CLASS)).toBeTruthy()
+        expect(getByText(ADD_BUTTON_TEXT).parentElement!.classList.contains(DISABLED_BUTTON_CLASS)).toBeFalsy()
     })
     test('should use correctly by NumberField', async () => {
         const handleSubmit = jest.fn()
@@ -48,13 +60,12 @@ describe('<NumberField /> countries props', () => {
             </Form>,
         )
 
-        await act(async () => {
-            userEvent.click(getByTestId('submit'))
+        userEvent.click(getByTestId('submit'))
+        await waitFor(() => {
+            expect(handleSubmit).toHaveBeenCalledWith({ computer: 1 })
         })
-
-        expect(handleSubmit).toHaveBeenCalledWith({ computer: 1 })
     })
-    test('addition and subtraction work', async () => {
+    test('addition and subtraction work, and when substraction 0 it should be disabled', async () => {
         const handleSubmit = jest.fn()
         const { getByText, getByTestId } = reduxedRender(
             // eslint-disable-next-line jsdoc/require-jsdoc
@@ -64,23 +75,29 @@ describe('<NumberField /> countries props', () => {
             </Form>,
         )
 
-        await act(async () => {
-            fireEvent.click(getByText('add'))
-        })
+        userEvent.click(getByText(ADD_BUTTON_TEXT).parentElement!)
         await waitFor(async () => {
             expect(getByText(2)).toBeTruthy()
         })
-        await act(async () => {
-            fireEvent.click(getByText('remove'))
-        })
+        userEvent.click(getByText(SUBTRACT_BUTTON_TEXT).parentElement!)
         await waitFor(async () => {
             expect(getByText(1)).toBeTruthy()
         })
-        act(() => {
-            fireEvent.click(getByTestId('submit'))
-        })
+        userEvent.click(getByTestId('submit'))
         await waitFor(async () => {
             expect(handleSubmit).toHaveBeenCalledWith({ computer: 1 })
         })
+    })
+    test('When props disabled, addition and subtraction too', async () => {
+        const handleSubmit = jest.fn()
+        const { getByText } = reduxedRender(
+            // eslint-disable-next-line jsdoc/require-jsdoc
+            <Form onSubmit={(data) => handleSubmit(data)}>
+                <NumberFieldForm {...propsNumberField} disabled={true} />
+                <input type="submit" data-testid="submit" />
+            </Form>,
+        )
+        expect(getByText(SUBTRACT_BUTTON_TEXT).parentElement!.classList.contains(DISABLED_BUTTON_CLASS)).toBeTruthy()
+        expect(getByText(ADD_BUTTON_TEXT).parentElement!.classList.contains(DISABLED_BUTTON_CLASS)).toBeTruthy()
     })
 })

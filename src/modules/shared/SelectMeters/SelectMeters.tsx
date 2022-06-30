@@ -1,63 +1,59 @@
 import React, { useState } from 'react'
 import { useTheme } from '@mui/material/styles'
 import { useIntl } from 'src/common/react-platform-translation'
-import { FormControl, InputLabel, MenuItem, Select, SelectChangeEvent } from '@mui/material'
+import { FormControl, InputLabel, MenuItem, Select } from '@mui/material'
 import { IMeter } from 'src/modules/Meters/Meters'
 import { styled } from '@mui/material/styles'
-import { formatMetricFilter } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
-import { IMyConsumptionSelectMeters } from 'src/modules/MyConsumption/myConsumptionTypes'
-
-const Root = styled('div')(({ theme }) => ({
-    '& .MuiOutlinedInput-root': {
-        '& svg': {
-            color: theme.palette.primary.contrastText,
-        },
-        '& fieldset': {
-            borderColor: theme.palette.primary.contrastText,
-            '& legend': {
-                fontSize: '1.35rem',
-            },
-        },
-    },
-    '& .MuiOutlinedInput-root:hover': {
-        '& fieldset': {
-            borderColor: theme.palette.primary.contrastText,
-            borderWidth: '2px',
-        },
-    },
-    '& .Mui-focused': {
-        '& fieldset': {
-            borderColor: ` ${theme.palette.primary.contrastText} !important`,
-        },
-    },
-}))
+import { ISelectMeters } from 'src/modules/MyConsumption/myConsumptionTypes'
 
 /**
  * Select Input that displays all the meters.
  *
  * @param root0 N/A.
  * @param root0.metersList List of meters.
- * @param root0.setFilters SetFilters function.
- * @returns MyConsumptionSelectMeters component.
+ * @param root0.handleOnChange Handling function when we change values.
+ * @param root0.inputColor Color for input: borders and svg.
+ * @param root0.inputTextColor Text color.
+ * @returns SelectMeters component.
  */
-export const MyConsumptionSelectMeters = ({ metersList, setFilters }: IMyConsumptionSelectMeters) => {
+export const SelectMeters = ({ metersList, handleOnChange, inputColor, inputTextColor }: ISelectMeters) => {
     const { formatMessage } = useIntl()
     const theme = useTheme()
     const [selectedMeter, setSelectedMeter] = useState('allMeters')
     /**
-     * HandleOnChange function.
+     * Set color for select.
      *
-     * @param event HandleOnChange event.
+     * @param color Color to set.
+     * @returns Select input color.
      */
-    const handleOnChange = (event: SelectChangeEvent) => {
-        setSelectedMeter(event.target.value)
-        if (event.target.value === 'allMeters') {
-            setFilters([])
-        } else {
-            setFilters(formatMetricFilter(event.target.value))
-        }
+    const setColor = (color?: string) => {
+        return color || theme.palette.primary.main
     }
 
+    const Root = styled('div')(() => ({
+        '& .MuiOutlinedInput-root': {
+            '& svg': {
+                color: setColor(inputColor),
+            },
+            '& fieldset': {
+                borderColor: setColor(inputColor),
+                '& legend': {
+                    fontSize: '1.35rem',
+                },
+            },
+        },
+        '& .MuiOutlinedInput-root:hover': {
+            '& fieldset': {
+                borderColor: setColor(inputColor),
+                borderWidth: '2px',
+            },
+        },
+        '& .Mui-focused': {
+            '& fieldset': {
+                borderColor: ` ${setColor(inputColor)} !important`,
+            },
+        },
+    }))
     return (
         <Root>
             <div style={{ minWidth: '220px' }} className="container flex flex-row items-center">
@@ -66,7 +62,7 @@ export const MyConsumptionSelectMeters = ({ metersList, setFilters }: IMyConsump
                         shrink
                         id="input-label"
                         style={{
-                            color: theme.palette.primary.contrastText,
+                            color: setColor(inputTextColor),
                         }}
                         className="rounded-md text-lg leading-6"
                     >
@@ -76,11 +72,11 @@ export const MyConsumptionSelectMeters = ({ metersList, setFilters }: IMyConsump
                         labelId="input-label"
                         label="Compteur"
                         value={selectedMeter}
-                        onChange={handleOnChange}
+                        onChange={(event) => handleOnChange(event, setSelectedMeter)}
                         displayEmpty
                         style={{
-                            color: theme.palette.primary.contrastText,
-                            stroke: theme.palette.primary.contrastText,
+                            color: setColor(inputTextColor),
+                            stroke: setColor(inputColor),
                         }}
                     >
                         <MenuItem value="allMeters">

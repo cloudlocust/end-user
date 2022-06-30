@@ -11,3 +11,4 @@ export type textFieldCommonTypes =
     | 'placeholder'
     | 'inputRef'
     | 'variant'
+    | 'inputProps'

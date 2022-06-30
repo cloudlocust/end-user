@@ -1,78 +1,71 @@
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
-import {
-    formatMetricFilter,
-    MyConsumptionChart,
-    MyConsumptionSelectMeters,
-    MyConsumptionPeriod,
-    TargetButtonGroup,
-} from 'src/modules/MyConsumption'
-import { useMetrics } from 'src/modules/Metrics/metricsHook'
-import { getMetricType, periodValue } from 'src/modules/Metrics/Metrics'
-import dayjs from 'dayjs'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
-import { Typography } from '@mui/material'
-import { Link } from 'react-router-dom'
-import { useTheme } from '@mui/material'
+import MyConsumptionChart from 'src/modules/MyConsumption/components/MyConsumptionChart'
 import { useMeterList } from 'src/modules/Meters/metersHook'
-import Icon from '@mui/material/Icon'
+import { formatMetricFilter, getRange } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
+import { SelectChangeEvent, useTheme } from '@mui/material'
+import { useMetrics } from 'src/modules/Metrics/metricsHook'
+import { getMetricType } from 'src/modules/Metrics/Metrics.d'
+import { periodType } from 'src/modules/MyConsumption/myConsumptionTypes'
+import { Link } from 'react-router-dom'
+import { Icon, Typography } from 'src/common/ui-kit'
+import { useIntl } from 'react-intl'
+import { useConsents } from 'src/modules/Consents/consentsHook'
+import CircularProgress from '@mui/material/CircularProgress'
+import { TargetButtonGroup } from './components/TargetButtonGroup/TargetButtonGroup'
+import { MyConsumptionPeriod, SelectMeters } from '.'
 
 /**
  * InitialMetricsStates for useMetrics.
  */
 export const initialMetricsHookValues: getMetricType = {
-    interval: '1min',
-    range: {
-        from: dayjs().subtract(1, 'day').startOf('day').toDate().toISOString(),
-        to: dayjs().startOf('day').toDate().toISOString(),
-    },
+    interval: '2min',
+    range: getRange('day'),
     targets: [
         {
-            target: 'nrlink_consumption_metrics',
-            type: 'timeseries',
+            target: 'consumption_metrics',
+            type: 'timeserie',
         },
     ],
-    addHookFilters: [],
+    filters: [],
 }
 
 /**
- * MyConsoContainer. Parent component.
+ * MyConsumptionContainer.
+ * Parent component.
  *
- * @returns MyConsoContainer.
+ * @returns MyConsumptionContainer and its children.
  */
 export const MyConsumptionContainer = () => {
+    const { elementList: metersList } = useMeterList()
+    const theme = useTheme()
+    const { formatMessage } = useIntl()
+    const { getConsents, nrlinkConsent, enedisConsent } = useConsents()
     const {
-        setPeriod,
+        setMetricsInterval,
         setRange,
         setFilters,
         isMetricsLoading,
         data,
-        interval,
-        nrlinkConsent,
-        enedisConsent,
+        filters,
+        range,
         addTarget,
         removeTarget,
     } = useMetrics(initialMetricsHookValues)
-    const [periodValue, setPeriodValue] = useState<periodValue>(1)
-    const [isConsentError, setIsConsentError] = useState(false)
-    const { elementList: metersList } = useMeterList()
-    const theme = useTheme()
+    const [period, setPeriod] = useState<periodType>('daily')
 
     useEffect(() => {
         if (!metersList) return
         if (metersList.length === 1) setFilters(formatMetricFilter(metersList[0].guid))
     }, [metersList, setFilters])
 
+    // UseEffect to check for consent whenever a meter is selected.
     useEffect(() => {
-        if (
-            nrlinkConsent?.nrlinkConsentState === 'NONEXISTENT' &&
-            enedisConsent?.enedisConsentState === 'NONEXISTENT'
-        ) {
-            setIsConsentError(true)
-        } else {
-            setIsConsentError(false)
+        if (filters.length > 0) {
+            getConsents(filters[0].value)
         }
-    }, [enedisConsent?.enedisConsentState, nrlinkConsent?.nrlinkConsentState])
+    }, [filters, getConsents])
 
     /**
      * Show text according to interval.
@@ -80,20 +73,35 @@ export const MyConsumptionContainer = () => {
      * @returns Text that represents the interval.
      */
     const showPerPeriodText = () => {
-        if (periodValue === 1) {
+        if (period === 'daily') {
             return 'par jour'
-        } else if (periodValue === 7) {
+        } else if (period === 'weekly') {
             return 'par semaine'
-        } else if (periodValue === 30) {
+        } else if (period === 'monthly') {
             return 'par mois'
-        } else if (periodValue === 365) {
+        } else if (period === 'yearly') {
             return 'par année'
         } else {
             throw Error('PeriodValue not set')
         }
     }
 
-    if (isConsentError) {
+    /**
+     * HandleOnChange function.
+     *
+     * @param event HandleOnChange event.
+     * @param setSelectedMeter Set Selected Meter on value change.
+     */
+    const handleOnChange = (event: SelectChangeEvent, setSelectedMeter: (value: string) => void) => {
+        setSelectedMeter(event.target.value)
+        if (event.target.value === 'allMeters') {
+            setFilters([])
+        } else {
+            setFilters(formatMetricFilter(event.target.value))
+        }
+    }
+
+    if (nrlinkConsent?.nrlinkConsentState === 'NONEXISTENT' && enedisConsent?.enedisConsentState === 'NONEXISTENT') {
         return (
             <div className="container relative h-200 sm:h-256 p-16 sm:p-24 flex-col text-center flex items-center justify-center">
                 <>
@@ -102,9 +110,15 @@ export const MyConsumptionContainer = () => {
                     </Icon>
                 </>
                 <Typography>
-                    Pour voir votre consommation vous devez d'abord{' '}
+                    {formatMessage({
+                        id: "Pour voir votre consommation vous devez d'abord ",
+                        defaultMessage: "Pour voir votre consommation vous devez d'abord ",
+                    })}
                     <Link to="/nrlink-connection-steps" className="underline">
-                        enregistrer votre compteur et votre nrLink
+                        {formatMessage({
+                            id: 'enregistrer votre compteur et votre nrLink',
+                            defaultMessage: 'enregistrer votre compteur et votre nrLink',
+                        })}
                     </Link>
                 </Typography>
             </div>
@@ -132,7 +146,7 @@ export const MyConsumptionContainer = () => {
                             >
                                 en kWh
                             </TypographyFormatMessage>
-                            {/* Consommation par Jour / Semaiine / Mois / Année */}
+                            {/* Consommation par Jour / Semaine / Mois / Année */}
                             <TypographyFormatMessage variant="h5" style={{ color: theme.palette.primary.contrastText }}>
                                 {showPerPeriodText()}
                             </TypographyFormatMessage>
@@ -140,20 +154,36 @@ export const MyConsumptionContainer = () => {
                     </div>
                 </motion.div>
                 {metersList && metersList?.length > 1 && (
-                    <MyConsumptionSelectMeters setFilters={setFilters} metersList={metersList} />
+                    <SelectMeters
+                        metersList={metersList}
+                        handleOnChange={handleOnChange}
+                        inputTextColor={theme.palette.primary.contrastText}
+                        inputColor={theme.palette.primary.contrastText}
+                    />
                 )}
             </div>
-            <div className="my-16 flex justify-center">
-                <TargetButtonGroup removeTarget={removeTarget} addTarget={addTarget} hidePmax={periodValue === 1} />
-            </div>
-
-            <MyConsumptionChart
-                isMetricsLoading={isMetricsLoading}
-                data={data}
-                chartType={interval === '1min' ? 'area' : 'bar'}
-                period={periodValue}
-            />
-            <MyConsumptionPeriod setPeriod={setPeriod} setRange={setRange} setPeriodValue={setPeriodValue} />
+            {isMetricsLoading ? (
+                <div className="flex flex-col justify-center items-center w-full h-full" style={{ height: '320px' }}>
+                    <CircularProgress style={{ color: theme.palette.background.paper }} />
+                </div>
+            ) : (
+                <>
+                    <div className="my-16 flex justify-center">
+                        <TargetButtonGroup
+                            removeTarget={removeTarget}
+                            addTarget={addTarget}
+                            hidePmax={period === 'daily'}
+                        />
+                    </div>
+                    <MyConsumptionChart
+                        data={data}
+                        chartType={period === 'daily' ? 'area' : 'bar'}
+                        period={period}
+                        range={range}
+                    />
+                </>
+            )}
+            <MyConsumptionPeriod setPeriod={setPeriod} setRange={setRange} setMetricsInterval={setMetricsInterval} />
         </div>
     )
 }

@@ -11,6 +11,7 @@ import { INumberField } from './NumberFieldTypes'
  * @param param0.labelTitle  Label title.
  * @param param0.iconLabel Icon name if taken from fuse mui.
  * @param param0.iconPath Icon path if it is svg image.
+ * @param param0.disabled Is field disabled.
  * @param param0.disableDecrement Is decrement disabled when value === 0.
  * @param param0.wrapperClasses  Wraper className.
  * @returns NumberField
@@ -20,23 +21,24 @@ export const NumberField = ({ ...props }: INumberField) => {
     const {
         value = 0,
         labelTitle,
+        disableDecrement,
         iconLabel,
         iconPath,
-        disableDecrement,
+        disabled,
         wrapperClasses = 'flex mr-8 mb-10',
         onChange,
     } = props
-    const disabledField = disableDecrement && value <= 0
     const theme = useTheme()
+    const disabledField = disableDecrement && value <= 0
 
     return (
         <div className={wrapperClasses}>
             {(iconPath || iconLabel) && (
                 <div
-                    className="flex items-center px-4"
+                    className="flex items-center px-4 Mui-disabled"
                     style={{
-                        backgroundColor: theme.palette.primary.main,
-                        borderBottom: `1px solid ${theme.palette.primary.main}`,
+                        backgroundColor: disabled ? theme.palette.grey[300] : theme.palette.primary.main,
+                        borderBottom: `1px solid ${disabled ? theme.palette.grey[300] : theme.palette.primary.main}`,
                     }}
                 >
                     {iconLabel ? (
@@ -56,13 +58,13 @@ export const NumberField = ({ ...props }: INumberField) => {
             <div
                 className="flex flex-col items-center w-full"
                 style={{
-                    borderBottom: `1px solid ${theme.palette.primary.main}`,
+                    borderBottom: `1px solid ${disabled ? theme.palette.grey[300] : theme.palette.primary.main}`,
                 }}
             >
                 <div
                     className="title"
                     style={{
-                        color: theme.palette.primary.main,
+                        color: disabled ? theme.palette.grey[300] : theme.palette.primary.main,
                     }}
                 >
                     {labelTitle}
@@ -71,19 +73,21 @@ export const NumberField = ({ ...props }: INumberField) => {
                     <Button
                         variant="outlined"
                         onClick={() => {
-                            !disabledField && onChange && onChange(value - 1)
+                            onChange && onChange(value - 1)
                         }}
+                        disabled={disabled || disabledField}
                     >
-                        <Icon color={disabledField ? 'disabled' : 'primary'}>remove</Icon>
+                        <Icon color={disabled || disabledField ? 'disabled' : 'primary'}>remove</Icon>
                     </Button>
-                    {value}
+                    <span style={disabled ? { color: theme.palette.grey[300] } : {}}>{value}</span>
                     <Button
                         variant="outlined"
                         onClick={() => {
                             onChange && onChange(value + 1)
                         }}
+                        disabled={disabled}
                     >
-                        <Icon color="primary">add</Icon>
+                        <Icon color={disabled ? 'disabled' : 'primary'}>add</Icon>
                     </Button>
                 </div>
             </div>

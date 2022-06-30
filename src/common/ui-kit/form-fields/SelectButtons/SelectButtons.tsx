@@ -61,7 +61,7 @@ export const SelectButtons = ({
                                     {(option.iconPath || option.iconLabel) && (
                                         <div>
                                             {option.iconLabel ? (
-                                                <Icon color="action" className={option.iconStyles}>
+                                                <Icon color="inherit" className={option.iconStyles}>
                                                     {option.iconLabel}
                                                 </Icon>
                                             ) : (
