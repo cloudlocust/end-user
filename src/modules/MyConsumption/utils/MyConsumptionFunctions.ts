@@ -202,12 +202,10 @@ export const isMissingApexChartsAxisValues = (ApexChartsAxisValues: ApexChartsAx
      */
     if (period === 'yearly') return consumptionSeries!.data.length !== 13
     /**
-     * Default is daily, Data should have 30 * 24 + 1 elements.
-     * 30 Represents 1h, because interval each 2min.
+     * Default is daily, Data should have 30 * 24 elements.     * 30 Represents 1h, because interval each 2min.
      * 24 Because there is 24 hours a day.
-     * Additional last minute of the day.
      */
-    return consumptionSeries!.data.length !== 30 * 24 + 1
+    return consumptionSeries!.data.length !== 30 * 24
 }
 
 /**
