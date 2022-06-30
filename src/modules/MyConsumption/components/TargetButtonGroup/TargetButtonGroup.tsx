@@ -31,11 +31,9 @@ export const TargetButtonGroup = ({ removeTarget, addTarget, hidePmax }: ITarget
             targets.includes(target) ? addTarget(target) : removeTarget(target)
         })
     }
-
     return (
         <ButtonGroup variant="contained">
             {buttonOptions.map((option) => {
-                // console.log(option)
                 const disabledField = hidePmax && option.value === 'Pmax'
                 const activeField = activeButton === option.value
                 const activeBackgroundColor = activeField ? theme.palette.primary.light : theme.palette.primary.dark

@@ -13,8 +13,8 @@ import { Icon, Typography } from 'src/common/ui-kit'
 import { useIntl } from 'react-intl'
 import { useConsents } from 'src/modules/Consents/consentsHook'
 import CircularProgress from '@mui/material/CircularProgress'
-import { TargetButtonGroup } from './components/TargetButtonGroup/TargetButtonGroup'
-import { MyConsumptionPeriod, SelectMeters } from '.'
+import { MyConsumptionPeriod, SelectMeters } from 'src/modules/MyConsumption'
+import { TargetButtonGroup } from 'src/modules/MyConsumption/components/TargetButtonGroup'
 
 /**
  * InitialMetricsStates for useMetrics.
@@ -162,19 +162,15 @@ export const MyConsumptionContainer = () => {
                     />
                 )}
             </div>
+            <div className="my-16 flex justify-center">
+                <TargetButtonGroup removeTarget={removeTarget} addTarget={addTarget} hidePmax={period === 'daily'} />
+            </div>
             {isMetricsLoading ? (
                 <div className="flex flex-col justify-center items-center w-full h-full" style={{ height: '320px' }}>
                     <CircularProgress style={{ color: theme.palette.background.paper }} />
                 </div>
             ) : (
                 <>
-                    <div className="my-16 flex justify-center">
-                        <TargetButtonGroup
-                            removeTarget={removeTarget}
-                            addTarget={addTarget}
-                            hidePmax={period === 'daily'}
-                        />
-                    </div>
                     <MyConsumptionChart
                         data={data}
                         chartType={period === 'daily' ? 'area' : 'bar'}
