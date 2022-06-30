@@ -41,7 +41,7 @@ const mockMetricsData: IMetric[] = [
 describe('test pure functions', () => {
     test('isEqualDates test with different cases', async () => {
         // When period is daily and time are not the same, it should return false.
-        let timestamp2 = new Date(dayjs(new Date(timestamp1)).add(10, 'minute').format()).getTime()
+        let timestamp2 = new Date(dayjs(new Date(timestamp1)).add(1, 'minute').format()).getTime()
         let equalityResult = isEqualDates(timestamp1, timestamp2, 'daily')
         expect(equalityResult).toBeFalsy()
 

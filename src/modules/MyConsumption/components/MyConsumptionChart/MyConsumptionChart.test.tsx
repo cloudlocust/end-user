@@ -10,7 +10,6 @@ import { metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
 import { getRange } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
 
 const TEST_SUCCESS_WEEK_METRICS = applyCamelCase(MOCK_WEEK_METRICS([metricTargetsEnum.consumption]))
-// const TEST_SUCCESS_WEEK_METRICS = applyCamelCase(MOCK_WEEK_METRICS)
 // eslint-disable-next-line jsdoc/require-jsdoc
 const propsMyConsumptionChart = {
     data: TEST_SUCCESS_WEEK_METRICS,
