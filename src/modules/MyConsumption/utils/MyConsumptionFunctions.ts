@@ -86,51 +86,63 @@ export const getRange = (rangePeriod: string, toDate?: Date, operation: 'sub' | 
 }
 
 /**
- * Function that returns list of every 2 minutes as a date in the given range.
+ * Function that returns list of dates representing every 2 minutes for the given day.
  *
  * @param range Range represents start date and end date.
- * @returns List of every 2minute as dates in the given range.
+ * @returns List of dates representing every 2 minutes for the given day.
  */
 const getMinutesValues = (range: metricRangeType) => {
-    return getDatesList(range, 'minute')
+    return getAddedDates(720, range.from, 'minute')
 }
 
 /**
- * Function that returns list of every day as a date in the given range.
+ * Function that returns list of days.
  *
  * @param range Range represents start date and end date.
- * @returns List of day as dates.
+ * @param opts N/A.
+ * @param opts.isWeek Indicates if list is of days for a week, or days for month.
+ * @returns List of days.
  */
-const getDaysValues = (range: metricRangeType) => {
-    return getDatesList(range, 'day')
-}
+const getDaysValues = (
+    range: metricRangeType,
+    /**
+     * Indicates the list will contain the days for a week.
+     */
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    { isWeek }: { isWeek?: boolean },
+) =>
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    {
+        if (isWeek) return getAddedDates(7, range.from, 'day')
+        return getAddedDates(dayjs(range.from).daysInMonth() + 1, range.from, 'day')
+    }
 
 /**
- * Function that returns list of every month as a date in the given range.
+ * Function that returns list months.
  *
  * @param range Range represents start date and end date.
- * @returns List of months as dates.
+ * @returns List of months.
  */
 const getMonthValues = (range: metricRangeType) => {
-    return getDatesList(range, 'month')
+    return getAddedDates(13, range.from, 'month')
 }
 
 /**
- * Function that returns a a list of millisecond timestamp dates between two dates, and the dates depends on the dayjsPeriod (it can be every 2 minute every dayjsPeriod is 'minute', or every day is dayjsPeriod is 'day' and every month if dayjsPeriod is 'month' ).
+ * Function that adds an amount of dayjsPeriod, to the start date and return a list of all periods containing [Start Date, Elements In Between, Start Date + amount].
+ * For example: amount is 6, startDate: 20 June, dayjsPeriod is 'day', then we'll add 6 Days to 20 june, and will have a list of all the days as following [20 june, 21 june, 22 june, 23 june, 24 june, 25 june, 26 june].
  *
- * @param range Range represents the first day and last day.
+ * @param amount The amount of dayjsPeriod added (When dayjsPeriod is week, and amount is 6, then we'll add 6 Weeks to the startDate), it'll indicates the length of the list.
+ * @param startDate Range represents the first day and last day.
  * @param dayjsPeriod The dayjsPeriod indicates the dates and length of the list.
  * @returns List of dates between a range.
  */
-const getDatesList = (range: metricRangeType, dayjsPeriod: dayjs.ManipulateType) => {
+const getAddedDates = (amount: number, startDate: string | number | Date, dayjsPeriod: dayjs.ManipulateType) => {
     const dates: number[] = []
-    let currentDate = dayjs(new Date(range.from)).format()
-    const endDate = dayjs(new Date(range.to)).format()
-    while (currentDate <= endDate) {
-        dates.push(dayjs(currentDate).unix() * 1000)
-        currentDate = dayjs(currentDate)
-            .add(dayjsPeriod === 'minute' ? 2 : 1, dayjsPeriod)
+    for (let i = 0; i < amount; i++) {
+        const currentDate = dayjs(startDate)
+            .add(dayjsPeriod === 'minute' ? 2 * i : i, dayjsPeriod)
             .format()
+        dates.push(dayjs(currentDate).unix() * 1000)
     }
     return dates
 }
@@ -143,9 +155,9 @@ const getDatesList = (range: metricRangeType, dayjsPeriod: dayjs.ManipulateType)
  * @returns XAxisValues for the given range and period.
  */
 export const generateXAxisValues = (period: periodType, range: metricRangeType) => {
-    if (period === 'weekly' || period === 'monthly') return getDaysValues(range)
     if (period === 'daily') return getMinutesValues(range)
-    return getMonthValues(range)
+    if (period === 'yearly') return getMonthValues(range)
+    return getDaysValues(range, { isWeek: period === 'weekly' })
 }
 
 /**
@@ -173,7 +185,6 @@ export const fillApexChartsAxisMissingValues = (
     // Checking if there are missing axis values to fill them.
     if (!isMissingApexChartsAxisValues(ApexChartsMissingAxisValues, period)) return ApexChartsMissingAxisValues
     const xAxisFilledValues = generateXAxisValues(period, range)
-
     const consumptionSeries: ApexAxisChartSerie = ApexChartsMissingAxisValues.yAxisSeries.find(
         // TODO FIX IN 2427, by adding the enum type
         (serie: ApexAxisChartSerie) => serie.name === 'consumption_metrics',
@@ -216,13 +227,25 @@ export const isMissingApexChartsAxisValues = (ApexChartsAxisValues: ApexChartsAx
         (serie: ApexAxisChartSerie) => serie.name === 'consumption_metrics',
     )
 
-    // If Consumption chart has 7 elements, representing the total for weekly priod.
+    /**
+     * If period is weekly then Consumption chart has 7, representing all the the days of the week ending at the current day.
+     * Example: Saturday 20 June, data will include [Sunday 14 June, Monday 15 June, Tuesday 16 June, Wednesday 17 June, Thursday 18 June, Friday 19 June, Saturday 20 June].
+     */
     if (period === 'weekly') return consumptionSeries!.data.length !== 7
-    // If Consumption chart has 30 elements, representing the total for weekly monthly.
-    if (period === 'monthly') return consumptionSeries!.data.length !== 30 || consumptionSeries!.data.length === 31
-    // If Consumption chart has 12 elements, representing the total for yearly period.
-    if (period === 'yearly') return consumptionSeries!.data.length !== 12
-    // Default is daily chart has 1h * 24 elements, representing the total for daily period.
+    /**
+     * When Period is monthly then Consumption elements has 31 || 32 elements, representing all the days of the month preceding the current day.
+     * Thus number of elements represents the length of month including the previous day.
+     */
+    if (period === 'monthly') return consumptionSeries!.data.length !== 31 || consumptionSeries!.data.length === 32
+    /**
+     * If period is yearly then Consumption chart has 13 elements, representing all the months starting from the year preceding the current month with duplicating the current month.
+     * Because example wwhen current month is June 2021, then the data will include [June 2020, July 2020, August 2020, September 2020, October 2020, November 2020, December 2020, January 2021, February 2021, March 2021, April 2021, May 2021, June 2021].
+     */
+    if (period === 'yearly') return consumptionSeries!.data.length !== 13
+    /**
+     * Default is daily, Data should have 30 * 24 elements.     * 30 Represents 1h, because interval each 2min.
+     * 24 Because there is 24 hours a day.
+     */
     return consumptionSeries!.data.length !== 30 * 24
 }
 

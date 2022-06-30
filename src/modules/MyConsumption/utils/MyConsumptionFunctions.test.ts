@@ -146,20 +146,21 @@ describe('test pure functions', () => {
         isMissingValues = isMissingApexChartsAxisValues(ApexChartsFilledAxisValues, 'weekly')
         expect(isMissingValues).toBeTruthy()
 
-        // When month period, and data contains all week values.
+        // When month period, and data contains all month values.
         mockMetricsData[0].datapoints = FAKE_MONTH_DATA
         ApexChartsFilledAxisValues = convertMetricsDataToApexChartsAxisValues(mockMetricsData)
         isMissingValues = isMissingApexChartsAxisValues(ApexChartsFilledAxisValues, 'monthly')
         expect(isMissingValues).toBeFalsy()
 
-        // When month period, and data doesn't contains all week values.
+        // When month period, and data doesn't contains all month values.
         mockMetricsData[0].datapoints = FAKE_MONTH_DATA.filter((v, i) => i !== 0)
         ApexChartsFilledAxisValues = convertMetricsDataToApexChartsAxisValues(mockMetricsData)
         isMissingValues = isMissingApexChartsAxisValues(ApexChartsFilledAxisValues, 'yearly')
         expect(isMissingValues).toBeTruthy()
 
-        // When year period, and data contains all week values.
+        // When year period, and data contains all year values.
         mockMetricsData[0].datapoints = FAKE_YEAR_DATA
+        mockMetricsData[0].datapoints.push([33, timestamp1])
         ApexChartsFilledAxisValues = convertMetricsDataToApexChartsAxisValues(mockMetricsData)
         isMissingValues = isMissingApexChartsAxisValues(ApexChartsFilledAxisValues, 'yearly')
         expect(isMissingValues).toBeFalsy()
