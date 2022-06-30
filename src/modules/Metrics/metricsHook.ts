@@ -74,7 +74,7 @@ export function useMetrics(initialState: getMetricType) {
     const addTarget = (target: metricTargetType) => {
         if (!targets.find((targetEl) => targetEl.target === target)) {
             setTargets((prevState) => {
-                return [...prevState, { type: 'timeseries', target }]
+                return [...prevState, { type: 'timeserie', target }]
             })
         }
     }

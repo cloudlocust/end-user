@@ -1,8 +1,8 @@
 import { reduxedRenderHook } from 'src/common/react-platform-components/test'
 import { useMetrics } from 'src/modules/Metrics/metricsHook'
 import { act } from '@testing-library/react-hooks'
-import dayjs from 'dayjs'
 import { getMetricType, metricRangeType, metricTargetsType } from 'src/modules/Metrics/Metrics'
+import { getRange } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
 
 const mockEnqueueSnackbar = jest.fn()
 
@@ -22,19 +22,19 @@ jest.mock('notistack', () => ({
 }))
 
 const FAKE_RANGE: metricRangeType = {
-    from: '2022-06-04T22:00:00.000Z',
-    to: '2022-06-05T23:26:59.169Z',
+    from: '2022-06-04T00:00:00.000Z',
+    to: '2022-06-04T23:59:59.999Z',
 }
 
 const FAKE_TARGETS: metricTargetsType = [
     {
         target: 'consumption_metrics',
-        type: 'timeseries',
+        type: 'timeserie',
     },
 ]
 
 let mockHookArguments: getMetricType = {
-    interval: '1min',
+    interval: '2min',
     range: FAKE_RANGE,
     targets: FAKE_TARGETS,
     filters: [],
@@ -48,7 +48,7 @@ describe('useMetrics hook test', () => {
 
         const currentResult = result.current
         expect(currentResult.isMetricsLoading).toStrictEqual(true)
-        expect(currentResult.metricsInterval).toStrictEqual('1min')
+        expect(currentResult.metricsInterval).toStrictEqual('2min')
         expect(currentResult.range).toStrictEqual(FAKE_RANGE)
         expect(currentResult.targets).toStrictEqual(FAKE_TARGETS)
         expect(currentResult.filters).toStrictEqual([])
@@ -68,7 +68,7 @@ describe('useMetrics hook test', () => {
         expect(result.current.data.length).toBeGreaterThan(0)
     }, 20000)
     test('When there is a server issue and the data cannot be retrieved, a snackbar is shown', async () => {
-        mockHookArguments.range.to = mockHookArguments.range.from
+        mockHookArguments.range.to = '2022-06-06T23:59:59.999Z'
         const {
             renderedHook: { result, waitForValueToChange },
         } = reduxedRenderHook(() => useMetrics(mockHookArguments))
@@ -90,7 +90,7 @@ describe('useMetrics hook test', () => {
     test('When add and remove target, targets should change and getMetrics should work', async () => {
         mockHookArguments.targets = []
         mockHookArguments.interval = '1d'
-        mockHookArguments.range.to = dayjs(mockHookArguments.range.from).add(7, 'day').format()
+        mockHookArguments.range = getRange('week')
         const {
             renderedHook: { result, waitForValueToChange },
         } = reduxedRenderHook(() => useMetrics(mockHookArguments))

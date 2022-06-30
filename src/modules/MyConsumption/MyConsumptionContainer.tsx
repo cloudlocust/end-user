@@ -6,16 +6,17 @@ import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyForm
 import MyConsumptionChart from 'src/modules/MyConsumption/components/MyConsumptionChart'
 import { useMeterList } from 'src/modules/Meters/metersHook'
 import { formatMetricFilter } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
+import { getRange } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
 import { MyConsumptionPeriod, SelectMeters } from 'src/modules/MyConsumption'
 import { SelectChangeEvent, useTheme } from '@mui/material'
 import { useMetrics } from 'src/modules/Metrics/metricsHook'
 import { getMetricType, metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
 import { periodType } from 'src/modules/MyConsumption/myConsumptionTypes'
-import dayjs from 'dayjs'
 import { Link } from 'react-router-dom'
 import { Icon, Typography } from 'src/common/ui-kit'
 import { useIntl } from 'react-intl'
 import { useConsents } from 'src/modules/Consents/consentsHook'
+import CircularProgress from '@mui/material/CircularProgress'
 
 // TODO improve in 2411.
 /**
@@ -44,15 +45,12 @@ const TargetButtonGroup = ({
  * InitialMetricsStates for useMetrics.
  */
 export const initialMetricsHookValues: getMetricType = {
-    interval: '1min',
-    range: {
-        from: dayjs().subtract(1, 'day').startOf('day').toDate().toISOString(),
-        to: dayjs().startOf('day').toDate().toISOString(),
-    },
+    interval: '2min',
+    range: getRange('day'),
     targets: [
         {
             target: 'consumption_metrics',
-            type: 'timeseries',
+            type: 'timeserie',
         },
     ],
     filters: [],
@@ -69,7 +67,7 @@ export const MyConsumptionContainer = () => {
     const theme = useTheme()
     const { formatMessage } = useIntl()
     const { getConsents, nrlinkConsent, enedisConsent } = useConsents()
-    const { setMetricsInterval, setRange, setFilters, isMetricsLoading, data, metricsInterval, filters, addTarget } =
+    const { setMetricsInterval, setRange, setFilters, isMetricsLoading, data, filters, range, addTarget } =
         useMetrics(initialMetricsHookValues)
     const [period, setPeriod] = useState<periodType>('daily')
 
@@ -103,6 +101,7 @@ export const MyConsumptionContainer = () => {
             throw Error('PeriodValue not set')
         }
     }
+
     /**
      * HandleOnChange function.
      *
@@ -179,21 +178,28 @@ export const MyConsumptionContainer = () => {
                     />
                 )}
             </div>
-            <div className="my-16 flex justify-center">
-                <TargetButtonGroup
-                    onClick={() => {
-                        addTarget(metricTargetsEnum.externalTemperatur)
-                        addTarget(metricTargetsEnum.internalTemperatur)
-                    }}
-                />
-            </div>
-
-            <MyConsumptionChart
-                isMetricsLoading={isMetricsLoading}
-                data={data}
-                chartType={metricsInterval === '1min' ? 'area' : 'bar'}
-                period={period}
-            />
+            {isMetricsLoading ? (
+                <div className="flex flex-col justify-center items-center w-full h-full" style={{ height: '320px' }}>
+                    <CircularProgress style={{ color: theme.palette.background.paper }} />
+                </div>
+            ) : (
+                <>
+                    <div className="my-16 flex justify-center">
+                        <TargetButtonGroup
+                            onClick={() => {
+                                addTarget(metricTargetsEnum.externalTemperatur)
+                                addTarget(metricTargetsEnum.internalTemperatur)
+                            }}
+                        />
+                    </div>
+                    <MyConsumptionChart
+                        data={data}
+                        chartType={period === 'daily' ? 'area' : 'bar'}
+                        period={period}
+                        range={range}
+                    />
+                </>
+            )}
             <MyConsumptionPeriod setPeriod={setPeriod} setRange={setRange} setMetricsInterval={setMetricsInterval} />
         </div>
     )

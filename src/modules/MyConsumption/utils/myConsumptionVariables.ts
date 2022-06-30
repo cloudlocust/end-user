@@ -1,27 +1,15 @@
-import dayjs from 'dayjs'
-import { periodType } from 'src/modules/MyConsumption/myConsumptionTypes'
 import { metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
+import { periodType } from 'src/modules/MyConsumption/myConsumptionTypes'
+import { getRange } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
 import { Theme } from '@mui/material/styles/createTheme'
 
-/**
- * Function to get range.
- *
- * @param rangePeriod Period for range.
- * @returns Object with range data.
- */
-const getRange = (rangePeriod: dayjs.ManipulateType) => {
-    return {
-        from: dayjs().subtract(1, rangePeriod).startOf('day').toDate().toISOString(),
-        to: dayjs().startOf('day').toDate().toISOString(),
-    }
-}
 /**
  * Data Consumption Period.
  */
 export const dataConsumptionPeriod = [
     {
         name: 'Jour',
-        interval: '1min',
+        interval: '2min',
         range: getRange('day'),
         period: 'daily' as periodType,
     },
@@ -40,7 +28,7 @@ export const dataConsumptionPeriod = [
 
     {
         name: 'Année',
-        interval: '1m',
+        interval: '1 month',
         range: getRange('year'),
         period: 'yearly' as periodType,
     },
@@ -50,7 +38,7 @@ export const dataConsumptionPeriod = [
  * Properties for the different metricTarget apexCharts of MyConsumptionChart.
  */
 // eslint-disable-next-line jsdoc/require-jsdoc
-export const myConsumptionChartProperties: {
+export const chartSpecifities: {
     /**
      * For each metric target, we can store color, label and additional apexCharts ApexYAxis options such as seriesNames, show, ..etc.
      */
@@ -73,6 +61,7 @@ export const myConsumptionChartProperties: {
         // Show is false here so that we don't show external temperature YAxis because its values will be shown on internal Temperature YAxis
         show: false,
     },
+    [metricTargetsEnum.pMax]: {},
 }
 
 /**
@@ -82,7 +71,7 @@ export const myConsumptionChartProperties: {
  * @param theme Current MUI Theme Applied.
  * @returns Color of the chartName.
  */
-export const getMyConsumptionChartColor = (chartName: metricTargetsEnum, theme: Theme) => {
+export const getChartColor = (chartName: metricTargetsEnum, theme: Theme) => {
     switch (chartName) {
         case metricTargetsEnum.externalTemperatur:
             return theme.palette.secondary.main

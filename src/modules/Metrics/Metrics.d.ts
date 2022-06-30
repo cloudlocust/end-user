@@ -5,6 +5,7 @@ export type metricTargetType =
     | 'consumption_metrics'
     | 'external_temperature_metrics'
     | 'nrlink_internal_temperature_metrics'
+    | 'enedis_max_power'
 
 /**
  * Enum representing the metricTarget without exposing the backend naming.
@@ -22,11 +23,15 @@ export enum metricTargetsEnum {
      * Enum value for external_temperature_metrics.
      */
     externalTemperatur = 'external_temperature_metrics',
+    /**
+     * Enum value for enedis_max_power.
+     */
+    pMax = 'enedis_max_power',
 }
 /**
  * Metrics intervals.
  */
-export type metricIntervalType = '1min' | '1d' | '1m'
+export type metricIntervalType = '2min' | '1d' | '1 month'
 
 /**
  * Metric range.
@@ -55,7 +60,7 @@ export type metricTargetsType = {
     /**
      * Metric type.
      */
-    type: 'timeseries'
+    type: 'timeserie'
 }[]
 
 /**
@@ -105,7 +110,7 @@ export type getMetricType = {
     /**
      * Metric interval of time.
      */
-    interval: metricIntervals
+    interval: metricIntervalType
     /**
      * Metrics targets.
      */
@@ -115,3 +120,8 @@ export type getMetricType = {
      */
     filters?: metricFiltersType
 }
+
+/**
+ * Type of ApexAxisChartSerie.
+ */
+declare type ApexAxisChartSerie = ApexAxisChartSeries[0]

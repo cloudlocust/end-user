@@ -41,3 +41,19 @@ interface ISelectMeters {
      */
     inputTextColor?: string
 }
+
+/**
+ * Represent the type return by apexChartsDataConverter.
+ */
+export type ApexChartsAxisValuesType =
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    {
+        /**
+         * Represent the yAxisValues for each target, as ApexChartSerie.
+         */
+        yAxisSeries: ApexAxisChartSerie['data']
+        /**
+         * Represent the xAxisValues for each target.
+         */
+        xAxisSeries: number[][]
+    }

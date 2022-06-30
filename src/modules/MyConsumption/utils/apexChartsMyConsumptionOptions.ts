@@ -4,11 +4,9 @@ import { Props } from 'react-apexcharts'
 import { periodType } from 'src/modules/MyConsumption/myConsumptionTypes'
 import { dayjsUTC } from 'src/common/react-platform-components'
 import fr from 'apexcharts/dist/locales/fr.json'
-import {
-    myConsumptionChartProperties,
-    getMyConsumptionChartColor,
-} from 'src/modules/MyConsumption/utils/myConsumptionVariables'
+import { chartSpecifities, getChartColor } from 'src/modules/MyConsumption/utils/myConsumptionVariables'
 import { metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
+import { isNil } from 'lodash'
 
 /**
  * Default ApexChart Options, represent the general options related to the overall look of the MyConsumptionChart.
@@ -28,6 +26,9 @@ export const defaultApexChartOptions: (theme: Theme) => Props['options'] = (them
             show: false,
         },
         zoom: {
+            enabled: false,
+        },
+        animations: {
             enabled: false,
         },
     },
@@ -73,11 +74,11 @@ export const defaultApexChartOptions: (theme: Theme) => Props['options'] = (them
             show: true,
             strokeWidth: 3,
         },
-        type: 'datetime',
+        type: 'category',
         tickPlacement: 'on',
     },
     stroke: {
-        show: true,
+        show: false,
         curve: 'smooth',
         lineCap: 'butt',
         colors: [theme.palette.primary.contrastText],
@@ -141,7 +142,7 @@ export const getApexChartMyConsumptionProps = ({
     // eslint-disable-next-line jsdoc/require-jsdoc
     yAxisSeries: ApexAxisChartSeries
     // eslint-disable-next-line jsdoc/require-jsdoc
-    xAxisValues: number[]
+    xAxisValues: ApexXAxis['categories']
     // eslint-disable-next-line jsdoc/require-jsdoc
     theme: Theme
     // eslint-disable-next-line jsdoc/require-jsdoc
@@ -160,12 +161,11 @@ export const getApexChartMyConsumptionProps = ({
     yAxisSeries.forEach((yAxisSerie) => {
         // If this Serie doesn't have any data we don't show it on the chart thus we do return, and if this is true for all series then we'll show an empty chart.
         if (yAxisSerie.data.length === 0) return
-        const { label, unit, ...restChartYAxisProperties } =
-            myConsumptionChartProperties[yAxisSerie.name as keyof typeof myConsumptionChartProperties]
+        const { label, unit, ...restChartSpecifities } = chartSpecifities[yAxisSerie.name as metricTargetsEnum]
 
         myConsumptionApexChartSeries!.push({
             ...yAxisSerie,
-            color: getMyConsumptionChartColor(yAxisSerie.name as metricTargetsEnum, theme),
+            color: getChartColor(yAxisSerie.name as metricTargetsEnum, theme),
             name: formatMessage({
                 id: label,
                 defaultMessage: label,
@@ -173,7 +173,7 @@ export const getApexChartMyConsumptionProps = ({
             type: yAxisSerie.name === metricTargetsEnum.consumption ? chartType : 'line',
         })
         yAxisOptions.push({
-            ...restChartYAxisProperties,
+            ...restChartSpecifities,
             opposite: yAxisSerie.name !== metricTargetsEnum.consumption,
             labels: {
                 /**
@@ -182,7 +182,9 @@ export const getApexChartMyConsumptionProps = ({
                  * @param value Yaxis Value.
                  * @returns Desired label to be shown for values in the yAxis.
                  */
-                formatter: (value: number) => `${value} ${unit}`,
+                formatter: (value: number) =>
+                    // IsNill check that value is undefined or null.
+                    `${isNil(value) ? '' : value} ${unit}`,
             },
             axisBorder: {
                 show: true,
@@ -207,28 +209,28 @@ export const getApexChartMyConsumptionProps = ({
              * @returns Label that's going to be shown in the xaxis.
              */
             formatter(value) {
+                // If period === daily, on the xAxis label we'll show only by hours [1:00, 2:00, ... 23:00], and thus we take only the timestamps that has minutes and second to 00 (HH:00:00 represent the first hour).
+                if (period === 'daily' && dayjsUTC(new Date(value)).format('mm:ss') !== '00:00') return ''
                 return dayjsUTC(new Date(value)).format(getXAxisLabelFormatFromPeriod(period))
             },
         },
     }
 
-    if (period !== 'daily') {
-        options.xaxis.type = 'category'
-        options.tooltip = {
-            x: {
-                /**
-                 * Formatter function for showing label in the tooltip.
-                 *
-                 * @param index Represent the index in the options.xaxis.categories.
-                 * @returns Label concerning the xaxis that's going to be shown in the tooltip.
-                 */
-                formatter: (index: number) => {
-                    return dayjsUTC(new Date(options!.xaxis!.categories[index - 1])).format(
-                        getXAxisLabelFormatFromPeriod(period, true),
-                    )
-                },
+    options.tooltip = {
+        x: {
+            /**
+             * Formatter function for showing label in the tooltip.
+             *
+             * @param index Represent the index in the xAxisValues.
+             * @returns Label concerning the xaxis that's going to be shown in the tooltip.
+             */
+            formatter: (index: number) => {
+                return dayjsUTC(new Date(xAxisValues[index - 1])).format(getXAxisLabelFormatFromPeriod(period, true))
             },
-        }
+        },
+    }
+    if (period !== 'daily') {
+        options.stroke!.show = true
     }
     options!.markers!.size = markerSizeList
     options.yaxis = yAxisOptions
