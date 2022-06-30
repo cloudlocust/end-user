@@ -1,24 +1,43 @@
 /**
  * Metric Targets.
  */
-export type metricTarget =
-    | 'nrlink_consumption_metrics'
-    | 'enedis_consumption_metrics'
-    | 'enphase_consumption_metrics'
-    | 'enphase_production_metrics'
+export type metricTargetType =
+    | 'consumption_metrics'
     | 'external_temperature_metrics'
     | 'nrlink_internal_temperature_metrics'
     | 'enedis_max_power'
+
+/**
+ * Enum representing the metricTarget without exposing the backend naming.
+ */
+export enum metricTargetsEnum {
+    /**
+     * Enum value for consumption_metrics.
+     */
+    consumption = 'consumption_metrics',
+    /**
+     * Enum value for nrlink_internal_temperature_metrics.
+     */
+    internalTemperatur = 'nrlink_internal_temperature_metrics',
+    /**
+     * Enum value for external_temperature_metrics.
+     */
+    externalTemperatur = 'external_temperature_metrics',
+    /**
+     * Enum value for enedis_max_power.
+     */
+    pMax = 'enedis_max_power',
+}
 /**
  * Metrics intervals.
  */
-export type metricInterval = '1min' | '1d' | '1m'
+export type metricIntervalType = '2min' | '1d' | '1 month'
 
 /**
  * Metric range.
  */
 // eslint-disable-next-line jsdoc/require-jsdoc
-export type metricRange = {
+export type metricRangeType = {
     /**
      *
      */
@@ -33,22 +52,22 @@ export type metricRange = {
  * Metrics filter.
  */
 // eslint-disable-next-line jsdoc/require-jsdoc
-export type metricTargets = {
+export type metricTargetsType = {
     /**
      * Single metric target.
      */
-    target: metricTarget
+    target: metricTargetType
     /**
      * Metric type.
      */
-    type: 'timeseries'
+    type: 'timeserie'
 }[]
 
 /**
  * Metric Filters.
  */
 // eslint-disable-next-line jsdoc/require-jsdoc
-export type metricFilters = {
+export type metricFiltersType = {
     /**
      * Key. Default is: "meter_guid".
      */
@@ -67,16 +86,16 @@ export type metricFilters = {
  * Metric model.
  */
 // eslint-disable-next-line jsdoc/require-jsdoc
-export type IMetrics = {
+export type IMetric = {
     /**
      * Metric target.
      */
-    target: metricTarget
+    target: metricTargetType
     /**
      * Metric Datapoints.
      */
     datapoints: number[][]
-}[]
+}
 
 /**
  * Information to be passed to body when getting metrics.
@@ -87,23 +106,22 @@ export type getMetricType = {
      * Range of time.
      */
     //eslint-disable-next-line jsdoc/require-jsdoc
-    range: metricRange
+    range: metricRangeType
     /**
      * Metric interval of time.
      */
-    interval: metricIntervals
+    interval: metricIntervalType
     /**
      * Metrics targets.
      */
-    targets: metricTargets
+    targets: metricTargetsType
     /**
      * Metric filters.
      */
-    addHookFilters?: metricFilters
+    filters?: metricFiltersType
 }
 
 /**
- * Range value type.
- *
+ * Type of ApexAxisChartSerie.
  */
-type periodValue = 1 | 7 | 30 | 365
+declare type ApexAxisChartSerie = ApexAxisChartSeries[0]

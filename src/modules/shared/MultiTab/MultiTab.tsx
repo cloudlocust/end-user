@@ -101,7 +101,6 @@ const MultiTab = ({
 
     // Add KeyContent to access slugs more easly
     let keyedContent = mapValues(keyBy(content, 'tabSlug'), 'tabContent')
-
     // Get Location from URL.
     const { pathname, ...restLocationState } = useLocation()
     const location = pathname.split('/')
@@ -111,10 +110,11 @@ const MultiTab = ({
     let basePath = location.join('/')
 
     // UseHistory, and tab Handle
-    const [tabSlug, setTabSlug] = useState(content[0].tabSlug)
+    const tabSlugList = content.filter((item) => item.tabSlug === entryTab)
+    const isInvalidValue = !tabSlugList.length || !entryTab?.length
+    const [tabSlug, setTabSlug] = useState(isInvalidValue ? content[0].tabSlug : entryTab)
     const history = useHistory()
-    entryTab === ':tab' && history.replace({ pathname: `${basePath}/${content[0].tabSlug}`, ...restLocationState })
-
+    isInvalidValue && history.replace({ pathname: `${basePath}/${content[0].tabSlug}`, ...restLocationState })
     /**
      * Handler for tab change.
      *
@@ -149,7 +149,7 @@ const MultiTab = ({
                     ))}
                 </Tabs>
             }
-            content={<div className="p-16 sm:p-24 w-full">{keyedContent[tabSlug]}</div>}
+            content={<div className="p-16 sm:p-24 w-full">{keyedContent[tabSlug as string]}</div>}
             innerScroll={innerScroll}
             isToolbarOutside
         />

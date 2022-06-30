@@ -38,7 +38,7 @@ export const MyConsumptionConfig = [
                         label: 'Ma Conso',
                         labelAbbreviation: 'Ma Conso',
                         type: 'item',
-                        iconLabel: 'home',
+                        iconLabel: 'timeline',
                         url: URL_CONSUMPTION,
                     },
                 },

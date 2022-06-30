@@ -6,6 +6,7 @@ import { useTheme } from '@mui/material'
 import { useIntl } from 'react-intl'
 import { buttonOptions, targetOptions } from 'src/modules/MyConsumption/utils/myConsumptionVariables'
 import { ITargetButtonGroup } from 'src/modules/MyConsumption/myConsumptionTypes'
+import { metricTargetsEnum } from 'src/modules/Metrics/Metrics'
 
 /**
  * TargetButtonGroup component.
@@ -23,11 +24,11 @@ export const TargetButtonGroup = ({ removeTarget, addTarget, hidePmax }: ITarget
     /**
      * Function to handle Target.
      *
-     * @param optionBtn Value to handle.
+     * @param targets Target value to handle.
      */
-    const handleTarget = (optionBtn: typeof buttonOptions[0]) => {
+    const handleTarget = (targets: metricTargetsEnum[]) => {
         targetOptions.forEach((target) => {
-            optionBtn.targets.includes(target) ? addTarget(target) : removeTarget(target)
+            targets.includes(target) ? addTarget(target) : removeTarget(target)
         })
     }
     return (
@@ -42,7 +43,7 @@ export const TargetButtonGroup = ({ removeTarget, addTarget, hidePmax }: ITarget
                         value={option.value}
                         onClick={() => {
                             setActiveButton(option.value)
-                            handleTarget(option)
+                            handleTarget(option.targets)
                         }}
                         style={{
                             backgroundColor: disabledField ? theme.palette.grey[600] : activeBackgroundColor,
