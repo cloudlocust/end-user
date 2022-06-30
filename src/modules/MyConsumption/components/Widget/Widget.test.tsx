@@ -1,7 +1,7 @@
 import { waitFor } from '@testing-library/react'
 import { reduxedRender } from 'src/common/react-platform-components/test'
-import { Widget } from 'src/modules/MyConsumption/components/Widgets'
-import { IWidgetProps } from 'src/modules/MyConsumption/components/Widgets/Widget'
+import { Widget } from 'src/modules/MyConsumption/components/Widget'
+import { IWidgetProps } from 'src/modules/MyConsumption/components/Widget/Widget'
 
 const mockWidgetProps: IWidgetProps = {
     type: 'consumption_metrics',
