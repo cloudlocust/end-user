@@ -1,4 +1,4 @@
-import { metricTargetType } from 'src/modules/Metrics/Metrics'
+import { metricTargetType, metricIntervalType, metricFiltersType } from 'src/modules/Metrics/Metrics'
 import { periodType } from 'src/modules/MyConsumption/myConsumptionTypes'
 
 /**
@@ -51,7 +51,15 @@ export interface IWidgetProps {
      */
     unit: widgetUnitType
     /**
-     * Period.
+     * Period: "day", "week", "month", "year".
      */
     period: periodType
+    /**
+     * Metrics interval.
+     */
+    WidgetMetricsInterval: metricIntervalType
+    /**
+     * Metrics filters.
+     */
+    WidgetFilters: metricFiltersType
 }

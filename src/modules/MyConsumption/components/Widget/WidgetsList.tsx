@@ -2,6 +2,7 @@ import { Grid, useTheme } from '@mui/material'
 import { periodType } from 'src/modules/MyConsumption/myConsumptionTypes'
 import { Widget } from 'src/modules/MyConsumption/components/Widget'
 import { widgetType } from 'src/modules/MyConsumption/components/Widget/Widget'
+import { metricFiltersType, metricIntervalType } from 'src/modules/Metrics/Metrics'
 
 const widgetsList: widgetType = [
     {
@@ -31,10 +32,24 @@ const widgetsList: widgetType = [
  *
  * @param root0 N/A.
  * @param root0.period Period from parent component.
+ * @param root0.metricsInterval MetricsInterval from parent component.
+ * @param root0.filters Filters from parent component.
  * @returns WidgetsList component.
  */
 // eslint-disable-next-line jsdoc/require-jsdoc
-export const WidgetList = ({ period }: { period: periodType }) => {
+export const WidgetList = ({
+    period,
+    metricsInterval: WidgetMetricsInterval,
+    filters: WidgetFilters,
+}: // eslint-disable-next-line jsdoc/require-jsdoc
+{
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    period: periodType
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    metricsInterval: metricIntervalType
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    filters: metricFiltersType
+}) => {
     const theme = useTheme()
 
     return (
@@ -48,6 +63,8 @@ export const WidgetList = ({ period }: { period: periodType }) => {
                             type={widget.type}
                             title={widget.title}
                             unit={widget.unit}
+                            WidgetMetricsInterval={WidgetMetricsInterval}
+                            WidgetFilters={WidgetFilters}
                         />
                     )
                 })}

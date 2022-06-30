@@ -8,6 +8,8 @@ const mockWidgetProps: IWidgetProps = {
     title: 'Consommation Totale',
     unit: 'kWh',
     period: 'daily',
+    WidgetMetricsInterval: '1m',
+    WidgetFilters: [],
 }
 
 const CONSOMMATION_TOTALE_TEXT = 'Consommation Totale'
