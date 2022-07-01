@@ -14,7 +14,7 @@ import { useIntl } from 'react-intl'
 import { useConsents } from 'src/modules/Consents/consentsHook'
 import CircularProgress from '@mui/material/CircularProgress'
 import { MyConsumptionPeriod, SelectMeters } from 'src/modules/MyConsumption'
-import { TargetButtonGroup } from 'src/modules/MyConsumption/components/TargetButtonGroup'
+import TargetButtonGroup from 'src/modules/MyConsumption/components/TargetButtonGroup'
 
 /**
  * InitialMetricsStates for useMetrics.
@@ -174,14 +174,12 @@ export const MyConsumptionContainer = () => {
                     <CircularProgress style={{ color: theme.palette.background.paper }} />
                 </div>
             ) : (
-                <>
-                    <MyConsumptionChart
-                        data={data}
-                        chartType={period === 'daily' ? 'area' : 'bar'}
-                        period={period}
-                        range={range}
-                    />
-                </>
+                <MyConsumptionChart
+                    data={data}
+                    chartType={period === 'daily' ? 'area' : 'bar'}
+                    period={period}
+                    range={range}
+                />
             )}
             <MyConsumptionPeriod setPeriod={setPeriod} setRange={setRange} setMetricsInterval={setMetricsInterval} />
         </div>

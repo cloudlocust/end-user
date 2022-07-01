@@ -24,7 +24,12 @@ const fakeWeekTimestamp = 1641603600000
  * Fake Range for the fake timestamp, according to the FAKE_WEEK_DATA.
  */
 const fakeWeekRange = {
-    from: dayjs(new Date(fakeWeekTimestamp)).subtract(1, 'week').startOf('day').toDate().toISOString(),
+    from: dayjs
+        .utc(new Date(fakeWeekTimestamp).toUTCString())
+        .subtract(1, 'week')
+        .startOf('day')
+        .toDate()
+        .toISOString(),
     to: dayjs(new Date(fakeWeekTimestamp)).subtract(1, 'day').startOf('day').toDate().toISOString(),
 }
 

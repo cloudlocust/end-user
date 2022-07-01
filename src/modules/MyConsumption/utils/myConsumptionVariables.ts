@@ -41,7 +41,7 @@ export const buttonOptions = [
     {
         value: 'temperature',
         label: 'T°',
-        targets: [metricTargetsEnum.externalTemperatur, metricTargetsEnum.internalTemperatur],
+        targets: [metricTargetsEnum.externalTemperature, metricTargetsEnum.internalTemperature],
     },
     { value: 'Pmax', label: 'Pmax', targets: [metricTargetsEnum.pMax] },
 ]
@@ -49,8 +49,8 @@ export const buttonOptions = [
  * Target options.
  */
 export const targetOptions: metricTargetsEnum[] = [
-    metricTargetsEnum.externalTemperatur,
-    metricTargetsEnum.internalTemperatur,
+    metricTargetsEnum.externalTemperature,
+    metricTargetsEnum.internalTemperature,
     metricTargetsEnum.pMax,
 ]
 
@@ -69,11 +69,13 @@ export const chartSpecifities: {
         label: 'Consommation',
         unit: 'KWh',
     },
-    [metricTargetsEnum.internalTemperatur]: {
+    [metricTargetsEnum.internalTemperature]: {
         label: 'Température Intérieure',
         unit: '°C',
+        // We put seriesName the same as internal temperature so that internal and external temperature charts will show their values in the same YAxis, instead of having 2 YAxis for each chart.
+        seriesName: 'Température Extérieure',
     },
-    [metricTargetsEnum.externalTemperatur]: {
+    [metricTargetsEnum.externalTemperature]: {
         label: 'Température Extérieure',
         unit: '°C',
         // We put seriesName the same as internal temperature so that internal and external temperature charts will show their values in the same YAxis, instead of having 2 YAxis for each chart.
@@ -96,9 +98,9 @@ export const chartSpecifities: {
  */
 export const getChartColor = (chartName: metricTargetsEnum, theme: Theme) => {
     switch (chartName) {
-        case metricTargetsEnum.externalTemperatur:
+        case metricTargetsEnum.externalTemperature:
             return theme.palette.secondary.main
-        case metricTargetsEnum.internalTemperatur:
+        case metricTargetsEnum.internalTemperature:
             return '#BA1B1B'
         case metricTargetsEnum.pMax:
             return '#FF7A00'

@@ -2,15 +2,16 @@ import React from 'react'
 import userEvent from '@testing-library/user-event'
 import { reduxedRender } from 'src/common/react-platform-components/test'
 import { buttonOptions } from 'src/modules/MyConsumption/utils/myConsumptionVariables'
-import { TargetButtonGroup } from './TargetButtonGroup'
+import TargetButtonGroup from 'src/modules/MyConsumption/components/TargetButtonGroup'
+import { metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
 
 const mockRemoveTarget = jest.fn()
 const mockAddTarget = jest.fn()
 let mockHidePMax = false
 const DISABLED_CLASSNAME = 'Mui-disabled'
-const pmaxTarget = 'enedis_max_power'
-const internalTemperatureTarget = 'nrlink_internal_temperature_metrics'
-const externalTemperatureTarget = 'external_temperature_metrics'
+const pmaxTarget = metricTargetsEnum.pMax
+const internalTemperatureTarget = metricTargetsEnum.internalTemperature
+const externalTemperatureTarget = metricTargetsEnum.externalTemperature
 describe('<TargetButtonGroup /> props', () => {
     test('Checking that when the button is clicked, the value is saved', async () => {
         const { getByText } = reduxedRender(

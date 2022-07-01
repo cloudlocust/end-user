@@ -89,8 +89,8 @@ describe('useMetrics hook test', () => {
 
     test('When add and remove target, targets should change and getMetrics should work', async () => {
         mockHookArguments.targets = []
-        mockHookArguments.interval = '1d'
-        mockHookArguments.range = getRange('week')
+        mockHookArguments.interval = '2min'
+        mockHookArguments.range = getRange('day')
         const {
             renderedHook: { result, waitForValueToChange },
         } = reduxedRenderHook(() => useMetrics(mockHookArguments))
