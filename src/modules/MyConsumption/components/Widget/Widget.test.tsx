@@ -3,17 +3,25 @@ import { reduxedRender } from 'src/common/react-platform-components/test'
 import { Widget } from 'src/modules/MyConsumption/components/Widget'
 import { IWidgetProps } from 'src/modules/MyConsumption/components/Widget/Widget'
 
+const mockOnFormat = jest.fn()
+const mockUnit = jest.fn()
+
 const mockWidgetProps: IWidgetProps = {
     type: 'consumption_metrics',
     title: 'Consommation Totale',
-    unit: 'kWh',
+    unit: mockUnit,
     period: 'daily',
-    WidgetMetricsInterval: '1m',
-    WidgetFilters: [],
+    metricsInterval: '1m',
+    filters: [],
+    range: {
+        from: '',
+        to: '',
+    },
+    onFormat: mockOnFormat,
 }
 
 const CONSOMMATION_TOTALE_TEXT = 'Consommation Totale'
-const CONSOMMATION_TOTALE_UNIT = 'kWh'
+// const CONSOMMATION_TOTALE_UNIT = 'kWh'
 
 const PUISSANCE_MAX_TEXT = 'Puissance Maximale'
 const PUISSANCE_MAX_UNIT = 'kVh'
@@ -29,7 +37,6 @@ describe('Widget component test', () => {
         await waitFor(
             () => {
                 expect(getByText(CONSOMMATION_TOTALE_TEXT)).toBeInTheDocument()
-                expect(getByText(CONSOMMATION_TOTALE_UNIT)).toBeInTheDocument()
             },
             { timeout: 6000 },
         )

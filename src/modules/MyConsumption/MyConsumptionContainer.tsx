@@ -45,7 +45,7 @@ export const MyConsumptionContainer = () => {
     const theme = useTheme()
     const { formatMessage } = useIntl()
     const { getConsents, nrlinkConsent, enedisConsent } = useConsents()
-    const { setMetricsInterval, setRange, setFilters, isMetricsLoading, data, metricsInterval, filters } =
+    const { setMetricsInterval, setRange, setFilters, isMetricsLoading, data, metricsInterval, filters, range } =
         useMetrics(initialMetricsHookValues)
     const [period, setPeriod] = useState<periodType>('daily')
 
@@ -178,7 +178,7 @@ export const MyConsumptionContainer = () => {
                         Chiffres clés
                     </TypographyFormatMessage>
                 </div>
-                <WidgetList period={period} filters={filters} metricsInterval={metricsInterval} />
+                <WidgetList period={period} filters={filters} metricsInterval={metricsInterval} range={range} />
             </div>
         </>
     )

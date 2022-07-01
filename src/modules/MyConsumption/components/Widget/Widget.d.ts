@@ -1,4 +1,10 @@
-import { metricTargetType, metricIntervalType, metricFiltersType } from 'src/modules/Metrics/Metrics'
+import {
+    metricTargetType,
+    metricIntervalType,
+    metricFiltersType,
+    metricRangeType,
+    IMetric,
+} from 'src/modules/Metrics/Metrics'
 import { periodType } from 'src/modules/MyConsumption/myConsumptionTypes'
 
 /**
@@ -13,7 +19,7 @@ export type widgetTitleType =
 /**
  * Widget unit type.
  */
-export type widgetUnitType = 'kWh' | 'kVh' | '°C'
+export type widgetUnitType = 'kWh' | 'MWh' | 'kVh' | '°C'
 
 /**
  * Widget list type.
@@ -31,7 +37,11 @@ export type widgetType = {
     /**
      * Widget unit.
      */
-    unit: widgetUnitType
+    unit: ((data: IMetric[], type: metricTargetType) => string) | 'kVh' | '°C'
+    /**
+     * Format data according to widget type.
+     */
+    onFormat: (data: IMetric[], type: metricTargetType) => number
 }[]
 
 /**
@@ -49,7 +59,7 @@ export interface IWidgetProps {
     /**
      * Widget unit.
      */
-    unit: widgetUnitType
+    unit: ((data: IMetric[], type: metricTargetType) => string) | 'kVh' | '°C'
     /**
      * Period: "day", "week", "month", "year".
      */
@@ -57,9 +67,17 @@ export interface IWidgetProps {
     /**
      * Metrics interval.
      */
-    WidgetMetricsInterval: metricIntervalType
+    metricsInterval: metricIntervalType
     /**
      * Metrics filters.
      */
-    WidgetFilters: metricFiltersType
+    filters: metricFiltersType
+    /**
+     * Metrics Range.
+     */
+    range: metricRangeType
+    /**
+     * Format data according to widget type.
+     */
+    onFormat: (data: IMetric[], type: metricTargetType) => number
 }
