@@ -1,7 +1,5 @@
 @import 'src/common/ui-kit/styles/media.scss';
 .apexcharts-canvas {
-    width: 100% !important;
-    height: 100% !important;
     overflow-x: auto;
     overflow-y: hidden;
     .apexcharts-text.apexcharts-xaxis-label,

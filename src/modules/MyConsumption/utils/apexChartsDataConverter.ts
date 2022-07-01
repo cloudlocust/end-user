@@ -27,7 +27,7 @@ const getAxisValuesFromDatapoints = (
  * @returns ApexCharts Axis Values.
  */
 export const convertMetricsDataToApexChartsAxisValues = (data: IMetric[]): ApexChartsAxisValuesType => {
-    let xAxisValues: number[] = []
+    let xAxisSeries: number[][] = []
     // We can have multiple yAxisSeries, for each target it'll have its own yAxis Series.
     let yAxisSeries: ApexAxisChartSeries = []
 
@@ -43,9 +43,11 @@ export const convertMetricsDataToApexChartsAxisValues = (data: IMetric[]): ApexC
             // Choosing to send data as yAxisValues of format number[], and xAxisValues in option.xaxis of ApexCharts Options, let us take more control of the chart and have a more structured chart, (For example, in bar chart by giving options.xaxis.categories as xAxisValues and series.data as yAxisValues, will show each bar directly below its x value, when gave data as [number, number][] it shifted the bar from its x value).
             data: axisValues.yAxisValues,
         })
-        // We'll have at the end of the loop the last xAxisValues as categories, because charts will have the same xAxis.
-        xAxisValues = axisValues.xAxisValues
+        /*
+         * We'll save the xAxisValues for each target in xAxisSeries.
+         */
+        xAxisSeries.push(axisValues.xAxisValues)
     })
 
-    return { xAxisValues, yAxisSeries }
+    return { xAxisSeries, yAxisSeries }
 }

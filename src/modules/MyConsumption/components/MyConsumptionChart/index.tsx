@@ -47,19 +47,20 @@ const MyConsumptionChart = ({
         [data],
     )
 
-    // // Wrap in useMemo for better performance, as we save the heavy computational result of fillApexChartsAxisMissingValues function and we don't call it again on every reender, until period, range or ApexChartsAxisValues from convertMetricsDataToApexChartsAxisValues changes.
-    // The fillApexChartsAxisMissingValues checks if there are missing axis values otherwise we fill them, so that if there are no missing value it return the ApexChartsAxisValues from ApexChartsAxisValues without filling.
+    // Wrap in useMemo for better performance, as we save the heavy computational result of fillApexChartsAxisMissingValues function and we don't call it again on every reender, until period, range or ApexChartsAxisValues from convertMetricsDataToApexChartsAxisValues changes.
+    // The fillApexChartsAxisMissingValues checks if there are missing axis values.
     ApexChartsAxisValues = React.useMemo(
         // Because of ApexCharts to show the right amount of xAxis even If there are missing values according to the period (for example for 'weekly' we expect seven values), we fill the missing values with null.
         () => fillApexChartsAxisMissingValues(ApexChartsAxisValues, period, range),
         [period, range, ApexChartsAxisValues],
     )
 
-    // // Wrap in useMemo for better performance, as we save the heavy computational result of getApexChartMyConsumptionProps function and we don't call it again on every reender, untli its dependencies change.
+    // Wrap in useMemo for better performance, as we save the heavy computational result of getApexChartMyConsumptionProps function and we don't call it again on every reender, untli its dependencies change.
     const reactApexChartsProps = React.useMemo(() => {
         return getApexChartMyConsumptionProps({
             yAxisSeries: ApexChartsAxisValues.yAxisSeries,
-            xAxisValues: ApexChartsAxisValues.xAxisValues,
+            // As xAxis will be the same for all charts, we make sure that xAxisSeries[0] contains all the expected values.
+            xAxisValues: ApexChartsAxisValues.xAxisSeries[0],
             period,
             chartType,
             formatMessage,
