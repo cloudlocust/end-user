@@ -41,6 +41,23 @@ interface ISelectMeters {
      */
     inputTextColor?: string
 }
+/**
+ * Interface for TargetButtonGroup.
+ */
+interface ITargetButtonGroup {
+    /**
+     * RemoveTarget.
+     */
+    removeTarget: (target: metricTarget) => void
+    /**
+     * AddTarget.
+     */
+    addTarget: (target: metricTarget) => void
+    /**
+     * If hidePmax exists Pmax button will be disabled.
+     */
+    hidePmax: boolean
+}
 
 /**
  * Represent the type return by apexChartsDataConverter.

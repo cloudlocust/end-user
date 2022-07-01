@@ -22,7 +22,7 @@ export enum metricTargetsEnum {
     /**
      * Enum value for external_temperature_metrics.
      */
-    externalTemperatur = 'external_temperature_metrics',
+    externalTemperature = 'external_temperature_metrics',
     /**
      * Enum value for enedis_max_power.
      */

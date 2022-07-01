@@ -33,6 +33,26 @@ export const dataConsumptionPeriod = [
         period: 'yearly' as periodType,
     },
 ]
+/**
+ *  Button options.
+ */
+export const buttonOptions = [
+    { value: 'reset', label: '∅', targets: [] },
+    {
+        value: 'temperature',
+        label: 'T°',
+        targets: [metricTargetsEnum.externalTemperature, metricTargetsEnum.internalTemperature],
+    },
+    { value: 'Pmax', label: 'Pmax', targets: [metricTargetsEnum.pMax] },
+]
+/**
+ * Target options.
+ */
+export const targetOptions: metricTargetsEnum[] = [
+    metricTargetsEnum.externalTemperature,
+    metricTargetsEnum.internalTemperature,
+    metricTargetsEnum.pMax,
+]
 
 /**
  * Properties for the different metricTarget apexCharts of MyConsumptionChart.
@@ -55,7 +75,7 @@ export const chartSpecifities: {
         // We put seriesName the same as internal temperature so that internal and external temperature charts will show their values in the same YAxis, instead of having 2 YAxis for each chart.
         seriesName: 'Température Extérieure',
     },
-    [metricTargetsEnum.externalTemperatur]: {
+    [metricTargetsEnum.externalTemperature]: {
         label: 'Température Extérieure',
         unit: '°C',
         // We put seriesName the same as internal temperature so that internal and external temperature charts will show their values in the same YAxis, instead of having 2 YAxis for each chart.
@@ -75,7 +95,7 @@ export const chartSpecifities: {
  */
 export const getChartColor = (chartName: metricTargetsEnum, theme: Theme) => {
     switch (chartName) {
-        case metricTargetsEnum.externalTemperatur:
+        case metricTargetsEnum.externalTemperature:
             return theme.palette.secondary.main
         case metricTargetsEnum.internalTemperature:
             return '#BA1B1B'

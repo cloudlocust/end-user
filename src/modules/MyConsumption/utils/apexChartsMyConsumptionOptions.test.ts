@@ -229,7 +229,7 @@ describe('test pure function', () => {
         let period = 'weekly' as periodType
         // External Temperature
         mockYAxisSeriesConvertedData.push({
-            name: metricTargetsEnum.externalTemperatur,
+            name: metricTargetsEnum.externalTemperature,
             data: mockYAxisSeriesConvertedData[0].data,
         })
         mockyAxisSeries.push({

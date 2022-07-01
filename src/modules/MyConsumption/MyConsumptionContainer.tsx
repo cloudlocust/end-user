@@ -1,46 +1,21 @@
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
-import Button from '@mui/material/Button'
-import ButtonGroup from '@mui/material/ButtonGroup'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import MyConsumptionChart from 'src/modules/MyConsumption/components/MyConsumptionChart'
 import { useMeterList } from 'src/modules/Meters/metersHook'
-import { formatMetricFilter } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
-import { getRange } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
-import { MyConsumptionPeriod, SelectMeters } from 'src/modules/MyConsumption'
+import { formatMetricFilter, getRange } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
 import { SelectChangeEvent, useTheme } from '@mui/material'
 import { useMetrics } from 'src/modules/Metrics/metricsHook'
-import { getMetricType, metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
+import { getMetricType } from 'src/modules/Metrics/Metrics.d'
 import { periodType } from 'src/modules/MyConsumption/myConsumptionTypes'
 import { Link } from 'react-router-dom'
 import { Icon, Typography } from 'src/common/ui-kit'
 import { useIntl } from 'react-intl'
 import { useConsents } from 'src/modules/Consents/consentsHook'
 import CircularProgress from '@mui/material/CircularProgress'
+import { MyConsumptionPeriod, SelectMeters } from 'src/modules/MyConsumption'
+import TargetButtonGroup from 'src/modules/MyConsumption/components/TargetButtonGroup'
 
-// TODO improve in 2411.
-/**
- * TargetButtonGroup component for toggling between PMax, temperature or no charts.
- *
- * @param param N/A.
- * @param param.onClick Handling only Temperatur Charts for now.
- * @returns TargetButtonGroup Component.
- */
-const TargetButtonGroup = ({
-    onClick,
-}: // eslint-disable-next-line jsdoc/require-jsdoc
-{
-    /**
-     * OnClick Temperature toggl.
-     */
-    onClick: () => void
-}) => (
-    <ButtonGroup variant="contained" aria-label="outlined primary button group">
-        <Button disabled>O</Button>
-        <Button onClick={onClick}>T°</Button>
-        <Button disabled>PMax</Button>
-    </ButtonGroup>
-)
 /**
  * InitialMetricsStates for useMetrics.
  */
@@ -67,8 +42,17 @@ export const MyConsumptionContainer = () => {
     const theme = useTheme()
     const { formatMessage } = useIntl()
     const { getConsents, nrlinkConsent, enedisConsent } = useConsents()
-    const { setMetricsInterval, setRange, setFilters, isMetricsLoading, data, filters, range, addTarget } =
-        useMetrics(initialMetricsHookValues)
+    const {
+        setMetricsInterval,
+        setRange,
+        setFilters,
+        isMetricsLoading,
+        data,
+        filters,
+        range,
+        addTarget,
+        removeTarget,
+    } = useMetrics(initialMetricsHookValues)
     const [period, setPeriod] = useState<periodType>('daily')
 
     useEffect(() => {
@@ -178,27 +162,20 @@ export const MyConsumptionContainer = () => {
                     />
                 )}
             </div>
+            <div className="my-16 flex justify-center">
+                <TargetButtonGroup removeTarget={removeTarget} addTarget={addTarget} hidePmax={period === 'daily'} />
+            </div>
             {isMetricsLoading ? (
                 <div className="flex flex-col justify-center items-center w-full h-full" style={{ height: '320px' }}>
                     <CircularProgress style={{ color: theme.palette.background.paper }} />
                 </div>
             ) : (
-                <>
-                    <div className="my-16 flex justify-center">
-                        <TargetButtonGroup
-                            onClick={() => {
-                                addTarget(metricTargetsEnum.externalTemperatur)
-                                addTarget(metricTargetsEnum.internalTemperature)
-                            }}
-                        />
-                    </div>
-                    <MyConsumptionChart
-                        data={data}
-                        chartType={period === 'daily' ? 'area' : 'bar'}
-                        period={period}
-                        range={range}
-                    />
-                </>
+                <MyConsumptionChart
+                    data={data}
+                    chartType={period === 'daily' ? 'area' : 'bar'}
+                    period={period}
+                    range={range}
+                />
             )}
             <MyConsumptionPeriod setPeriod={setPeriod} setRange={setRange} setMetricsInterval={setMetricsInterval} />
         </div>
