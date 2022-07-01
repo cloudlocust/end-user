@@ -170,14 +170,12 @@ export const MyConsumptionContainer = () => {
                     <CircularProgress style={{ color: theme.palette.background.paper }} />
                 </div>
             ) : (
-                <>
-                    <MyConsumptionChart
-                        data={data}
-                        chartType={period === 'daily' ? 'area' : 'bar'}
-                        period={period}
-                        range={range}
-                    />
-                </>
+                <MyConsumptionChart
+                    data={data}
+                    chartType={period === 'daily' ? 'area' : 'bar'}
+                    period={period}
+                    range={range}
+                />
             )}
             <MyConsumptionPeriod setPeriod={setPeriod} setRange={setRange} setMetricsInterval={setMetricsInterval} />
         </div>
