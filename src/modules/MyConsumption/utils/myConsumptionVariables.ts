@@ -49,7 +49,7 @@ export const chartSpecifities: {
         label: 'Consommation',
         unit: 'KWh',
     },
-    [metricTargetsEnum.internalTemperatur]: {
+    [metricTargetsEnum.internalTemperature]: {
         label: 'Température Intérieure',
         unit: '°C',
         // We put seriesName the same as internal temperature so that internal and external temperature charts will show their values in the same YAxis, instead of having 2 YAxis for each chart.
@@ -77,7 +77,7 @@ export const getChartColor = (chartName: metricTargetsEnum, theme: Theme) => {
     switch (chartName) {
         case metricTargetsEnum.externalTemperatur:
             return theme.palette.secondary.main
-        case metricTargetsEnum.internalTemperatur:
+        case metricTargetsEnum.internalTemperature:
             return '#BA1B1B'
         default:
             return theme.palette.primary.light

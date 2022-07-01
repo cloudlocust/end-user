@@ -18,7 +18,7 @@ export enum metricTargetsEnum {
     /**
      * Enum value for nrlink_internal_temperature_metrics.
      */
-    internalTemperatur = 'nrlink_internal_temperature_metrics',
+    internalTemperature = 'nrlink_internal_temperature_metrics',
     /**
      * Enum value for external_temperature_metrics.
      */

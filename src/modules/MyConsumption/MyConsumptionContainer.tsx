@@ -188,7 +188,7 @@ export const MyConsumptionContainer = () => {
                         <TargetButtonGroup
                             onClick={() => {
                                 addTarget(metricTargetsEnum.externalTemperatur)
-                                addTarget(metricTargetsEnum.internalTemperatur)
+                                addTarget(metricTargetsEnum.internalTemperature)
                             }}
                         />
                     </div>
