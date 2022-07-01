@@ -166,11 +166,7 @@ export const MyConsumptionContainer = () => {
                 <TargetButtonGroup
                     removeTarget={removeTarget}
                     addTarget={addTarget}
-                    hidePmax={
-                        period === 'daily' ||
-                        (nrlinkConsent?.nrlinkConsentState === 'NONEXISTENT' &&
-                            enedisConsent?.enedisConsentState === 'NONEXISTENT')
-                    }
+                    hidePmax={period === 'daily' || enedisConsent?.enedisConsentState === 'NONEXISTENT'}
                 />
             </div>
             {isMetricsLoading ? (
