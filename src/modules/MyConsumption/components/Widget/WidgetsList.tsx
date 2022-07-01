@@ -61,7 +61,7 @@ const widgetsList: widgetType = [
     },
     {
         type: 'external_temperature_metrics',
-        title: 'Température Intérieure',
+        title: 'Température Extérieure',
         unit: '°C',
         // eslint-disable-next-line jsdoc/require-jsdoc
         onFormat: (data: IMetric[], type: metricTargetType) =>
@@ -69,7 +69,7 @@ const widgetsList: widgetType = [
     },
     {
         type: 'nrlink_internal_temperature_metrics',
-        title: 'Température Extérieure',
+        title: 'Température Intérieure',
         unit: '°C',
         // eslint-disable-next-line jsdoc/require-jsdoc
         onFormat: (data: IMetric[], type: metricTargetType) =>
