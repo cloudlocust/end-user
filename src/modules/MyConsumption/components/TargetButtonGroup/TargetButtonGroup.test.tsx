@@ -2,7 +2,7 @@ import React from 'react'
 import userEvent from '@testing-library/user-event'
 import { reduxedRender } from 'src/common/react-platform-components/test'
 import { buttonOptions } from 'src/modules/MyConsumption/utils/myConsumptionVariables'
-import { TargetButtonGroup } from './TargetButtonGroup'
+import TargetButtonGroup from 'src/modules/MyConsumption/components/TargetButtonGroup'
 
 const mockRemoveTarget = jest.fn()
 const mockAddTarget = jest.fn()

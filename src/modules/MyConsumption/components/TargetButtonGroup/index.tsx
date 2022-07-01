@@ -17,7 +17,7 @@ import { metricTargetsEnum } from 'src/modules/Metrics/Metrics'
  * @param root0.hidePmax If hidePmax exists Pmax button will be disabled.
  * @returns TargetButtonGroup.
  */
-export const TargetButtonGroup = ({ removeTarget, addTarget, hidePmax }: ITargetButtonGroup) => {
+const TargetButtonGroup = ({ removeTarget, addTarget, hidePmax }: ITargetButtonGroup) => {
     const [activeButton, setActiveButton] = useState('reset')
     const { formatMessage } = useIntl()
     const theme = useTheme()
@@ -62,3 +62,5 @@ export const TargetButtonGroup = ({ removeTarget, addTarget, hidePmax }: ITarget
         </ButtonGroup>
     )
 }
+
+export default TargetButtonGroup
