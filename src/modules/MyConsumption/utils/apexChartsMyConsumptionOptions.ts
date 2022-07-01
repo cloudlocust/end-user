@@ -2,8 +2,9 @@ import { formatMessageType } from 'src/common/react-platform-translation'
 import { Theme } from '@mui/material/styles/createTheme'
 import { Props } from 'react-apexcharts'
 import { periodType } from 'src/modules/MyConsumption/myConsumptionTypes'
-import { dayjsUTC } from 'src/common/react-platform-components'
+import dayjs from 'dayjs'
 import fr from 'apexcharts/dist/locales/fr.json'
+import { isNull } from 'lodash'
 
 /**
  * Default ApexChart Options, represent the general options related to the overall look of the MyConsumptionChart.
@@ -23,6 +24,9 @@ export const defaultApexChartOptions: (theme: Theme) => Props['options'] = (them
             show: false,
         },
         zoom: {
+            enabled: false,
+        },
+        animations: {
             enabled: false,
         },
     },
@@ -68,11 +72,11 @@ export const defaultApexChartOptions: (theme: Theme) => Props['options'] = (them
             show: true,
             strokeWidth: 3,
         },
-        type: 'datetime',
+        type: 'category',
         tickPlacement: 'on',
     },
     stroke: {
-        show: true,
+        show: false,
         curve: 'smooth',
         lineCap: 'butt',
         colors: [theme.palette.primary.contrastText],
@@ -125,7 +129,7 @@ export const getApexChartMyConsumptionProps = ({
     // eslint-disable-next-line jsdoc/require-jsdoc
     yAxisSeries: ApexAxisChartSeries
     // eslint-disable-next-line jsdoc/require-jsdoc
-    xAxisValues: number[]
+    xAxisValues: ApexXAxis['categories']
     // eslint-disable-next-line jsdoc/require-jsdoc
     theme: Theme
     // eslint-disable-next-line jsdoc/require-jsdoc
@@ -159,7 +163,7 @@ export const getApexChartMyConsumptionProps = ({
                  * @param value Yaxis Value.
                  * @returns Desired label to be shown for values in the yAxis.
                  */
-                formatter: (value: number) => `${value} KWh`,
+                formatter: (value: number) => `${isNull(value) ? '' : value} KWh`,
             },
             axisBorder: {
                 show: true,
@@ -182,30 +186,32 @@ export const getApexChartMyConsumptionProps = ({
              * @returns Label that's going to be shown in the xaxis.
              */
             formatter(value) {
-                return dayjsUTC(new Date(value)).format(getXAxisLabelFormatFromPeriod(period))
+                // If period === daily, on the xAxis label we'll show only by hours [1:00, 2:00, ... 23:00], and thus we take only the timestamps that has minutes and second to 00 (HH:00:00 represent the first hour).
+                if (period === 'daily' && dayjs.utc(new Date(value).toUTCString()).format('mm:ss') !== '00:00')
+                    return ''
+                return dayjs.utc(new Date(value).toUTCString()).format(getXAxisLabelFormatFromPeriod(period))
             },
         },
     }
 
-    if (period !== 'daily') {
-        options.xaxis.type = 'category'
-        options.tooltip = {
-            x: {
-                /**
-                 * Formatter function for showing label in the tooltip.
-                 *
-                 * @param index Represent the index in the options.xaxis.categories.
-                 * @returns Label concerning the xaxis that's going to be shown in the tooltip.
-                 */
-                formatter: (index: number) => {
-                    return dayjsUTC(new Date(options!.xaxis!.categories[index - 1])).format(
-                        getXAxisLabelFormatFromPeriod(period, true),
-                    )
-                },
+    options.tooltip = {
+        x: {
+            /**
+             * Formatter function for showing label in the tooltip.
+             *
+             * @param index Represent the index in the xAxisValues.
+             * @returns Label concerning the xaxis that's going to be shown in the tooltip.
+             */
+            formatter: (index: number) => {
+                return dayjs
+                    .utc(new Date(xAxisValues[index - 1]).toUTCString())
+                    .format(getXAxisLabelFormatFromPeriod(period, true))
             },
-        }
+        },
     }
-
+    if (period !== 'daily') {
+        options.stroke!.show = true
+    }
     options.yaxis = yAxisOptions
     return { series: myConsumptionApexChartSeries, options }
 }

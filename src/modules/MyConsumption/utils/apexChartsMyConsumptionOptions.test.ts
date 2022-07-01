@@ -8,6 +8,7 @@ import { ApexOptions } from 'apexcharts'
 import { periodType } from 'src/modules/MyConsumption/myConsumptionTypes'
 import { dayjsUTC } from 'src/common/react-platform-components'
 import { MessageDescriptor } from 'react-intl'
+import dayjs from 'dayjs'
 
 const nrlinkConsumptionMetricsText = 'Consommation'
 // eslint-disable-next-line jsdoc/require-jsdoc
@@ -15,8 +16,6 @@ const mockFormatMessage: any = (input: MessageDescriptor) => input.id
 let mockChartType = 'bar' as ApexChart['type']
 const mockDatapoints = [[247, 1651406400]]
 
-const xaxisCategoryType = 'category'
-const xaxisDatetimeType = 'datetime'
 // eslint-disable-next-line jsdoc/require-jsdoc
 const mockYAxisSeriesConvertedData: ApexAxisChartSeries = [
     {
@@ -114,6 +113,7 @@ describe('test pure function', () => {
             period,
         })
         const mockOptionsResult = mockOptions(theme, period)
+        mockOptionsResult.stroke!.show = true
         expect(JSON.stringify(apexChartProps.options)).toStrictEqual(JSON.stringify(mockOptionsResult))
         expect(apexChartProps.series).toStrictEqual(mockyAxisSeries)
         expect((apexChartProps.options.yaxis as ApexYAxis[])[0].labels!.formatter!(12)).toStrictEqual('12 KWh')
@@ -122,11 +122,13 @@ describe('test pure function', () => {
     test('getApexChartMyConsumptionProps with different period and mobile', async () => {
         // ApexChart Props
         let period = 'daily' as periodType
-        const timestamp = 1640997720000
+        // GMT: Saturday, 1 January 2022 00:42:00
+        const TEST_TIMESTAMP = 1640997720000
+        const timestamp = new Date(dayjs.utc(new Date(TEST_TIMESTAMP).toUTCString()).startOf('day').format()).getTime()
         mockXAxisValuesConvertedData[0] = timestamp
         const tooltipTimeStampDays = 'Sat 01 Jan'
         const tooltipTimeStampYear = 'January'
-        const xAxisTimeStampDay = `0${new Date(timestamp).getHours()}:${new Date(timestamp).getMinutes()}`
+        const xAxisTimeStampDay = `00:00`
         const xAxisTimeStampWeek = 'Sat'
         const xAxisTimeStampMonth = '1 Jan'
         const xAxisTimeStampYear = 'Jan'
@@ -139,11 +141,11 @@ describe('test pure function', () => {
             theme,
             period,
         })
-        expect(apexChartProps.options.tooltip!).toBeUndefined()
+        apexChartProps.options!.stroke!.show = false
+        expect(apexChartProps.options.tooltip!.x!.formatter!(1)!).toEqual(xAxisTimeStampDay)
         expect(apexChartProps.options.xaxis!.labels!.formatter!(new Date(timestamp).toString())).toEqual(
             xAxisTimeStampDay,
         )
-        expect(apexChartProps.options.xaxis!.type).toEqual(xaxisDatetimeType)
         // xAxis tooltip will show day of the week, samedi 1 jan.
         period = 'weekly' as periodType
         // ApexChart Props
@@ -155,11 +157,11 @@ describe('test pure function', () => {
             theme,
             period,
         })
+        apexChartProps.options!.stroke!.show = true
         expect(apexChartProps.options.xaxis!.labels!.formatter!(new Date(timestamp).toString())).toEqual(
             xAxisTimeStampWeek,
         )
         expect(apexChartProps.options.tooltip!.x!.formatter!(1)!).toEqual(tooltipTimeStampDays)
-        expect(apexChartProps.options.xaxis!.type).toEqual(xaxisCategoryType)
 
         // xAxis tooltip will show day of the month, 01 jan.
         period = 'monthly' as periodType
@@ -177,7 +179,6 @@ describe('test pure function', () => {
         expect(apexChartProps.options.xaxis!.labels!.formatter!(new Date(timestamp).toString())).toEqual(
             xAxisTimeStampMonth,
         )
-        expect(apexChartProps.options.xaxis!.type).toEqual(xaxisCategoryType)
         expect(apexChartProps.options.theme!.mode).toStrictEqual('dark')
 
         // xAxis tooltip will show month
@@ -196,7 +197,6 @@ describe('test pure function', () => {
             xAxisTimeStampYear,
         )
         expect(apexChartProps.options.theme!.mode).toStrictEqual('light')
-        expect(apexChartProps.options.xaxis!.type).toEqual(xaxisCategoryType)
     })
     test('getApexChartMyConsumptionProps test empty data', async () => {
         const period = 'weekly' as periodType

@@ -20,19 +20,19 @@ jest.mock('notistack', () => ({
 }))
 
 const FAKE_RANGE: metricRangeType = {
-    from: '2022-06-04T22:00:00.000Z',
-    to: '2022-06-05T23:26:59.169Z',
+    from: '2022-06-04T00:00:00.000Z',
+    to: '2022-06-04T23:59:59.999Z',
 }
 
 const FAKE_TARGETS: metricTargetsType = [
     {
         target: 'consumption_metrics',
-        type: 'timeseries',
+        type: 'timeserie',
     },
 ]
 
 let mockHookArguments: getMetricType = {
-    interval: '1min',
+    interval: '2min',
     range: FAKE_RANGE,
     targets: FAKE_TARGETS,
     filters: [],
@@ -46,7 +46,7 @@ describe('useMetrics hook test', () => {
 
         const currentResult = result.current
         expect(currentResult.isMetricsLoading).toStrictEqual(true)
-        expect(currentResult.metricsInterval).toStrictEqual('1min')
+        expect(currentResult.metricsInterval).toStrictEqual('2min')
         expect(currentResult.range).toStrictEqual(FAKE_RANGE)
         expect(currentResult.targets).toStrictEqual(FAKE_TARGETS)
         expect(currentResult.filters).toStrictEqual([])
@@ -66,7 +66,7 @@ describe('useMetrics hook test', () => {
         expect(result.current.data.length).toBeGreaterThan(0)
     }, 20000)
     test('When there is a server issue and the data cannot be retrieved, a snackbar is shown', async () => {
-        mockHookArguments.range.to = mockHookArguments.range.from
+        mockHookArguments.range.to = '2022-06-06T23:59:59.999Z'
         const {
             renderedHook: { result, waitForValueToChange },
         } = reduxedRenderHook(() => useMetrics(mockHookArguments))
