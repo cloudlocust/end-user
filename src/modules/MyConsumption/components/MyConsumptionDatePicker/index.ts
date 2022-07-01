@@ -1,1 +1,0 @@
-export { MyConsumptionDatePicker } from './MyConsumptionDatePicker'

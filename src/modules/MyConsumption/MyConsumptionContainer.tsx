@@ -14,7 +14,7 @@ import { Icon, Typography } from 'src/common/ui-kit'
 import { useIntl } from 'react-intl'
 import { useConsents } from 'src/modules/Consents/consentsHook'
 import CircularProgress from '@mui/material/CircularProgress'
-import { MyConsumptionDatePicker } from 'src/modules/MyConsumption/components/MyConsumptionDatePicker'
+import MyConsumptionDatePicker from 'src/modules/MyConsumption/components/MyConsumptionDatePicker'
 /**
  * InitialMetricsStates for useMetrics.
  */

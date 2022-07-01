@@ -26,7 +26,7 @@ import { mobileDatePickerPeriodProps } from 'src/modules/MyConsumption/utils/myC
  * @param root0.range Range data.
  * @returns MyConsumptionDatePicker.
  */
-export const MyConsumptionDatePicker = ({ period, setRange, range }: IMyConsumptionDatePicker) => {
+const MyConsumptionDatePicker = ({ period, setRange, range }: IMyConsumptionDatePicker) => {
     const theme = useTheme()
     const { formatMessage } = useIntl()
     const [currentDate, setCurrentDate] = useState<Date>(new Date())
@@ -123,3 +123,4 @@ export const MyConsumptionDatePicker = ({ period, setRange, range }: IMyConsumpt
         </motion.div>
     )
 }
+export default MyConsumptionDatePicker
