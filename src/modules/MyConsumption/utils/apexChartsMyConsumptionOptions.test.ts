@@ -250,6 +250,19 @@ describe('test pure function', () => {
             type: 'line',
             color: '#BA1B1B',
         })
+
+        // Pmax
+        mockYAxisSeriesConvertedData.push({
+            name: metricTargetsEnum.pMax,
+            data: mockYAxisSeriesConvertedData[0].data,
+        })
+        mockyAxisSeries.push({
+            data: mockYAxisSeriesConvertedData[0].data,
+            name: 'Pmax',
+            type: 'line',
+            color: '#FF7A00',
+        })
+
         // ApexChart Props
         const apexChartProps = getApexChartMyConsumptionProps({
             yAxisSeries: mockYAxisSeriesConvertedData,
@@ -264,5 +277,6 @@ describe('test pure function', () => {
         expect((apexChartProps.options.yaxis as ApexYAxis[])[1].labels!.formatter!(12)).toStrictEqual('12 °C')
         expect((apexChartProps.options.yaxis as ApexYAxis[])[2].labels!.formatter!(12)).toStrictEqual('12 °C')
         expect((apexChartProps.options.yaxis as ApexYAxis[])[2].show).toBeFalsy()
+        expect((apexChartProps.options.yaxis as ApexYAxis[])[3].labels!.formatter!(12)).toStrictEqual('12 kVA')
     })
 })

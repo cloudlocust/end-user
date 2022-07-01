@@ -163,7 +163,11 @@ export const MyConsumptionContainer = () => {
                 )}
             </div>
             <div className="my-16 flex justify-center">
-                <TargetButtonGroup removeTarget={removeTarget} addTarget={addTarget} hidePmax={period === 'daily'} />
+                <TargetButtonGroup
+                    removeTarget={removeTarget}
+                    addTarget={addTarget}
+                    hidePmax={period === 'daily' || enedisConsent?.enedisConsentState === 'NONEXISTENT'}
+                />
             </div>
             {isMetricsLoading ? (
                 <div className="flex flex-col justify-center items-center w-full h-full" style={{ height: '320px' }}>

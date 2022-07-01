@@ -83,7 +83,10 @@ export const chartSpecifities: {
         // Show is false here so that we don't show external temperature YAxis because its values will be shown on internal Temperature YAxis
         show: false,
     },
-    [metricTargetsEnum.pMax]: {},
+    [metricTargetsEnum.pMax]: {
+        label: 'Pmax',
+        unit: 'kVA',
+    },
 }
 
 /**
@@ -99,6 +102,8 @@ export const getChartColor = (chartName: metricTargetsEnum, theme: Theme) => {
             return theme.palette.secondary.main
         case metricTargetsEnum.internalTemperature:
             return '#BA1B1B'
+        case metricTargetsEnum.pMax:
+            return '#FF7A00'
         default:
             return theme.palette.primary.light
     }
