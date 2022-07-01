@@ -28,6 +28,10 @@ export const formatMetricFilter = (valueGuid: string) => {
 export const getRange = (rangePeriod: dayjs.ManipulateType) => {
     return {
         /**
+         * We must have range "from" and "to" as local time but in ISO String format, because backend data will be saved in local time, thus the query must be in local time.
+         * For example (for a date 20 June 2022 00:00:00 if timezone : GMT+2, then ISO format will be 2022-06-19T23:00:00.000Z, and thus back end will return data from 06 June 2022 at 23:00:00).
+         * That's why with dayjs.utc() it'll take the local time as utc time without applying any modification, thus returns 2022-06-20T00:00:00.000Z.
+         *
          * When rangePeriod is:
          *  Day then the "from" will represent the start of the current Date (example: 27 june at midnight) and the "to" will represent the end of the current date (example: 27 june at 23:59).
          *  Week then the from date, represent the subtracted Week + 1day, because we have to count the Week including the subtracted day thus we add 1 day (for example, if we subtract 1 week from 27/06, it'll return the 20th because it doesn't count the 27th, thus we add 1 day because the 27th is counted and thus we start from the 21st till 27th which give us 7 days).
@@ -36,11 +40,11 @@ export const getRange = (rangePeriod: dayjs.ManipulateType) => {
          */
         from:
             rangePeriod === 'day'
-                ? dayjs().startOf('date').toDate().toISOString()
+                ? dayjs.utc().startOf('date').toISOString()
                 : rangePeriod === 'week'
-                ? dayjs().subtract(1, rangePeriod).add(1, 'day').toDate().toISOString()
-                : dayjs().subtract(1, rangePeriod).toDate().toISOString(),
-        to: dayjs().endOf('date').toDate().toISOString(),
+                ? dayjs.utc().subtract(1, rangePeriod).add(1, 'day').toISOString()
+                : dayjs.utc().subtract(1, rangePeriod).toISOString(),
+        to: dayjs.utc().endOf('date').toISOString(),
     }
 }
 
@@ -221,6 +225,14 @@ export const isMissingApexChartsAxisValues = (ApexChartsAxisValues: ApexChartsAx
  * @returns Boolean if the dates are equal, the comparaison will depend on the period.
  */
 export const isEqualDates = (date1: number, date2: number, period: periodType) => {
-    if (period === 'daily') return dayjs(new Date(date1)).format() === dayjs(new Date(date2)).format()
-    else return dayjs(new Date(date1)).format('DD/MM/YYYY') === dayjs(new Date(date2)).format('DD/MM/YYYY')
+    if (period === 'daily')
+        return (
+            dayjs.utc(new Date(date1).toUTCString()).format('D/M/YY-HH:mm') ===
+            dayjs.utc(new Date(date2).toUTCString()).format('D/M/YY-HH:mm')
+        )
+    else
+        return (
+            dayjs.utc(new Date(date1).toUTCString()).format('DD/MM/YYYY') ===
+            dayjs.utc(new Date(date2).toUTCString()).format('DD/MM/YYYY')
+        )
 }

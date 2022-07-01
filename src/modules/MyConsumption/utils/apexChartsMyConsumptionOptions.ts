@@ -2,7 +2,7 @@ import { formatMessageType } from 'src/common/react-platform-translation'
 import { Theme } from '@mui/material/styles/createTheme'
 import { Props } from 'react-apexcharts'
 import { periodType } from 'src/modules/MyConsumption/myConsumptionTypes'
-import { dayjsUTC } from 'src/common/react-platform-components'
+import dayjs from 'dayjs'
 import fr from 'apexcharts/dist/locales/fr.json'
 import { isNull } from 'lodash'
 
@@ -187,8 +187,9 @@ export const getApexChartMyConsumptionProps = ({
              */
             formatter(value) {
                 // If period === daily, on the xAxis label we'll show only by hours [1:00, 2:00, ... 23:00], and thus we take only the timestamps that has minutes and second to 00 (HH:00:00 represent the first hour).
-                if (period === 'daily' && dayjsUTC(new Date(value)).format('mm:ss') !== '00:00') return ''
-                return dayjsUTC(new Date(value)).format(getXAxisLabelFormatFromPeriod(period))
+                if (period === 'daily' && dayjs.utc(new Date(value).toUTCString()).format('mm:ss') !== '00:00')
+                    return ''
+                return dayjs.utc(new Date(value).toUTCString()).format(getXAxisLabelFormatFromPeriod(period))
             },
         },
     }
@@ -202,7 +203,9 @@ export const getApexChartMyConsumptionProps = ({
              * @returns Label concerning the xaxis that's going to be shown in the tooltip.
              */
             formatter: (index: number) => {
-                return dayjsUTC(new Date(xAxisValues[index - 1])).format(getXAxisLabelFormatFromPeriod(period, true))
+                return dayjs
+                    .utc(new Date(xAxisValues[index - 1]).toUTCString())
+                    .format(getXAxisLabelFormatFromPeriod(period, true))
             },
         },
     }

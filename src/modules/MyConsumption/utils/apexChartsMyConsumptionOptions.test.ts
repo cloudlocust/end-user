@@ -122,7 +122,9 @@ describe('test pure function', () => {
     test('getApexChartMyConsumptionProps with different period and mobile', async () => {
         // ApexChart Props
         let period = 'daily' as periodType
-        const timestamp = new Date(dayjs(new Date(1640997720000)).startOf('day').format()).getTime()
+        // GMT: Saturday, 1 January 2022 00:42:00
+        const TEST_TIMESTAMP = 1640997720000
+        const timestamp = new Date(dayjs.utc(new Date(TEST_TIMESTAMP).toUTCString()).startOf('day').format()).getTime()
         mockXAxisValuesConvertedData[0] = timestamp
         const tooltipTimeStampDays = 'Sat 01 Jan'
         const tooltipTimeStampYear = 'January'
