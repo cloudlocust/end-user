@@ -31,6 +31,7 @@ const TargetButtonGroup = ({ removeTarget, addTarget, hidePmax }: ITargetButtonG
             targets.includes(target) ? addTarget(target) : removeTarget(target)
         })
     }
+
     return (
         <ButtonGroup variant="contained">
             {buttonOptions.map((option) => {
