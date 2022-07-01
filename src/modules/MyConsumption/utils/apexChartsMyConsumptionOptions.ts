@@ -2,7 +2,7 @@ import { formatMessageType } from 'src/common/react-platform-translation'
 import { Theme } from '@mui/material/styles/createTheme'
 import { Props } from 'react-apexcharts'
 import { periodType } from 'src/modules/MyConsumption/myConsumptionTypes'
-import { dayjsUTC } from 'src/common/react-platform-components'
+import dayjs from 'dayjs'
 import fr from 'apexcharts/dist/locales/fr.json'
 import { chartSpecifities, getChartColor } from 'src/modules/MyConsumption/utils/myConsumptionVariables'
 import { metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
@@ -78,7 +78,7 @@ export const defaultApexChartOptions: (theme: Theme) => Props['options'] = (them
         tickPlacement: 'on',
     },
     stroke: {
-        show: false,
+        show: true,
         curve: 'smooth',
         lineCap: 'butt',
         colors: [theme.palette.primary.contrastText],
@@ -157,6 +157,8 @@ export const getApexChartMyConsumptionProps = ({
     let yAxisOptions: ApexYAxis[] = []
     // For each chart we'll indicate what size his marker is.
     let markerSizeList: number[] = []
+    // Stroke represent the line that joins all points of a chart (Stroke should be shown only for line charts, drawing the stroke in the consumption chart makes it too cumbersome).
+    let strokeWidthList: number[] = []
 
     yAxisSeries.forEach((yAxisSerie) => {
         // If this Serie doesn't have any data we don't show it on the chart thus we do return, and if this is true for all series then we'll show an empty chart.
@@ -195,6 +197,8 @@ export const getApexChartMyConsumptionProps = ({
         })
         // When period is daily and chart is consumption then we show no marker, otherwise if period is not daily we don't show consumption marker.
         markerSizeList.push(yAxisSerie.name === metricTargetsEnum.consumption || period === 'daily' ? 0 : 2)
+        // When chart is consumption then we show no stroke cause the area chart is enough otherwise it'll be too cumbersome.
+        strokeWidthList.push(yAxisSerie.name === metricTargetsEnum.consumption ? 0 : 1.5)
     })
 
     options.xaxis = {
@@ -210,8 +214,9 @@ export const getApexChartMyConsumptionProps = ({
              */
             formatter(value) {
                 // If period === daily, on the xAxis label we'll show only by hours [1:00, 2:00, ... 23:00], and thus we take only the timestamps that has minutes and second to 00 (HH:00:00 represent the first hour).
-                if (period === 'daily' && dayjsUTC(new Date(value)).format('mm:ss') !== '00:00') return ''
-                return dayjsUTC(new Date(value)).format(getXAxisLabelFormatFromPeriod(period))
+                if (period === 'daily' && dayjs.utc(new Date(value).toUTCString()).format('mm:ss') !== '00:00')
+                    return ''
+                return dayjs.utc(new Date(value).toUTCString()).format(getXAxisLabelFormatFromPeriod(period))
             },
         },
     }
@@ -225,14 +230,14 @@ export const getApexChartMyConsumptionProps = ({
              * @returns Label concerning the xaxis that's going to be shown in the tooltip.
              */
             formatter: (index: number) => {
-                return dayjsUTC(new Date(xAxisValues[index - 1])).format(getXAxisLabelFormatFromPeriod(period, true))
+                return dayjs
+                    .utc(new Date(xAxisValues[index - 1]).toUTCString())
+                    .format(getXAxisLabelFormatFromPeriod(period, true))
             },
         },
     }
-    if (period !== 'daily') {
-        options.stroke!.show = true
-    }
     options!.markers!.size = markerSizeList
+    options!.stroke!.width = strokeWidthList
     options.yaxis = yAxisOptions
     return { series: myConsumptionApexChartSeries, options }
 }
