@@ -63,7 +63,7 @@ export const Widget = ({ title, unit, type, period, filters, metricsInterval, ra
                             {/* Widget title */}
                             <TypographyFormatMessage
                                 className="sm:text-16 font-medium md:text-17"
-                                style={{ minHeight: '65px' }}
+                                style={{ minHeight: '75px' }}
                             >
                                 {title}
                             </TypographyFormatMessage>
@@ -75,7 +75,7 @@ export const Widget = ({ title, unit, type, period, filters, metricsInterval, ra
                                 <div className="flex flex-col">
                                     {/* Widget unit */}
                                     <Typography className="text-14 font-medium mb-24" color="textSecondary">
-                                        {typeof unit === 'function' ? unit(data, type) : (unit as string)}
+                                        {typeof unit === 'function' ? unit(data, 'consumption_metrics') : unit}
                                     </Typography>
                                     {/* TODDO MYEM-2588*/}
                                     {/* Widget arrow */}

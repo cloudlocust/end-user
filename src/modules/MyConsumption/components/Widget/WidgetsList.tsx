@@ -55,7 +55,7 @@ const widgetsList: widgetType = [
     {
         type: 'enedis_max_power',
         title: 'Puissance Maximale',
-        unit: 'kVh',
+        unit: 'kVa',
         // eslint-disable-next-line jsdoc/require-jsdoc
         onFormat: (data: IMetric[], type: metricTargetType) => handleWidgetFormat(data, 'enedis_max_power')! as number,
     },
@@ -110,7 +110,6 @@ export const WidgetList = (props: {
                             type={widget.type}
                             title={widget.title}
                             unit={widget.unit}
-                            // onError={widget.onError}
                             onFormat={widget.onFormat}
                             {...props}
                         />

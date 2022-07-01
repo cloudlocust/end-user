@@ -19,7 +19,7 @@ export type widgetTitleType =
 /**
  * Widget unit type.
  */
-export type widgetUnitType = 'kWh' | 'MWh' | 'kVh' | '°C'
+export type widgetUnitType = 'kWh' | 'MWh' | 'kVa' | '°C'
 
 /**
  * Widget list type.
@@ -37,7 +37,7 @@ export type widgetType = {
     /**
      * Widget unit.
      */
-    unit: ((data: IMetric[], type: metricTargetType) => string) | 'kVh' | '°C'
+    unit: ((data: IMetric[], type: metricTargetType) => string) | 'kVa' | '°C'
     /**
      * Format data according to widget type.
      */
@@ -59,7 +59,7 @@ export interface IWidgetProps {
     /**
      * Widget unit.
      */
-    unit: ((data: IMetric[], type: metricTargetType) => string) | 'kVh' | '°C'
+    unit: ((data: IMetric[], type: metricTargetType) => string) | 'kVa' | '°C'
     /**
      * Period: "day", "week", "month", "year".
      */

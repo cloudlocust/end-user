@@ -1,10 +1,25 @@
 import { waitFor } from '@testing-library/react'
 import { reduxedRender } from 'src/common/react-platform-components/test'
+import { TEST_SUCCESS_DAY_METRICS } from 'src/mocks/handlers/metrics'
+import { IMetric } from 'src/modules/Metrics/Metrics'
 import { Widget } from 'src/modules/MyConsumption/components/Widget'
 import { IWidgetProps } from 'src/modules/MyConsumption/components/Widget/Widget'
 
 const mockOnFormat = jest.fn()
 const mockUnit = jest.fn()
+
+let mockData: IMetric[] = TEST_SUCCESS_DAY_METRICS
+
+jest.mock('src/modules/Metrics/metricsHook.ts', () => ({
+    ...jest.requireActual('src/modules/Metrics/metricsHook.ts'),
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    useMetrics: () => ({
+        data: mockData,
+        setFilters: jest.fn(),
+        setMetricsInterval: jest.fn(),
+        setRange: jest.fn(),
+    }),
+}))
 
 const mockWidgetProps: IWidgetProps = {
     type: 'consumption_metrics',
@@ -24,7 +39,7 @@ const CONSOMMATION_TOTALE_TEXT = 'Consommation Totale'
 // const CONSOMMATION_TOTALE_UNIT = 'kWh'
 
 const PUISSANCE_MAX_TEXT = 'Puissance Maximale'
-const PUISSANCE_MAX_UNIT = 'kVh'
+const PUISSANCE_MAX_UNIT = 'kVa'
 
 const INTERNAL_TEMPERATURE_TEXT = 'Température Intérieure'
 const EXTERNAL_TEMPERATURE_TEXT = 'Température Extérieure'
@@ -43,7 +58,7 @@ describe('Widget component test', () => {
     }, 10000)
     test('when the widget is rendered with puissance max', async () => {
         mockWidgetProps.title = 'Puissance Maximale'
-        mockWidgetProps.unit = 'kVh'
+        mockWidgetProps.unit = 'kVa'
         const { getByText } = reduxedRender(<Widget {...mockWidgetProps} />)
 
         await waitFor(
@@ -80,4 +95,10 @@ describe('Widget component test', () => {
             { timeout: 6000 },
         )
     }, 10000)
+    // test('when there is no data, no widget is shown', async () => {
+    //     mockData = []
+    //     const { container } = reduxedRender(<Widget {...mockWidgetProps} />)
+
+    //     expect(container.firstChild).toBeNull()
+    // }, 10000)
 })
