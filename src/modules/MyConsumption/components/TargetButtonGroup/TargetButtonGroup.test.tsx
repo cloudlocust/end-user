@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event'
 import { reduxedRender } from 'src/common/react-platform-components/test'
 import { buttonOptions } from 'src/modules/MyConsumption/utils/myConsumptionVariables'
 import TargetButtonGroup from 'src/modules/MyConsumption/components/TargetButtonGroup'
-import { metricTargetsEnum } from 'src/modules/Metrics/Metrics'
+import { metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
 
 const mockRemoveTarget = jest.fn()
 const mockAddTarget = jest.fn()
