@@ -1,6 +1,5 @@
 import Icon from '@mui/material/Icon'
 import IconButton from '@mui/material/IconButton'
-import Tooltip from '@mui/material/Tooltip'
 import { motion } from 'framer-motion'
 import { subDays, addDays, differenceInCalendarDays } from 'date-fns'
 import React, { useEffect, useState } from 'react'
@@ -67,19 +66,17 @@ const MyConsumptionDatePicker = ({ period, setRange, range }: IMyConsumptionDate
             initial={{ opacity: 0 }}
             animate={{ opacity: 1, transition: { delay: 0.3 } }}
         >
-            <Tooltip title="Previous">
-                <IconButton
-                    aria-label="Previous"
-                    onClick={() => {
-                        setRange(getRange(period, currentDate, 'sub'))
-                        setButtonAction({ sub: true, add: false })
-                    }}
-                    size="large"
-                    style={{ color: theme.palette.primary.contrastText }}
-                >
-                    <Icon>chevron_left </Icon>
-                </IconButton>
-            </Tooltip>
+            <IconButton
+                aria-label="Previous"
+                onClick={() => {
+                    setRange(getRange(period, currentDate, 'sub'))
+                    setButtonAction({ sub: true, add: false })
+                }}
+                size="large"
+                style={{ color: theme.palette.primary.contrastText }}
+            >
+                <Icon>chevron_left </Icon>
+            </IconButton>
             <LocalizationProvider dateAdapter={AdapterDateFns} locale={fr} utils={DateFnsUtils}>
                 {mobileDatePickerPeriodProps.map(
                     (item) =>
@@ -104,22 +101,20 @@ const MyConsumptionDatePicker = ({ period, setRange, range }: IMyConsumptionDate
                         ),
                 )}
             </LocalizationProvider>
-            <Tooltip title="Next">
-                <IconButton
-                    aria-label="Next"
-                    onClick={() => {
-                        setRange(getRange(period, currentDate, 'add'))
-                        setButtonAction({ sub: false, add: true })
-                    }}
-                    size="large"
-                    disabled={isFutureDate}
-                    style={{
-                        color: isFutureDate ? theme.palette.grey[500] : theme.palette.primary.contrastText,
-                    }}
-                >
-                    <Icon>chevron_right</Icon>
-                </IconButton>
-            </Tooltip>
+            <IconButton
+                aria-label="Next"
+                onClick={() => {
+                    setRange(getRange(period, currentDate, 'add'))
+                    setButtonAction({ sub: false, add: true })
+                }}
+                size="large"
+                disabled={isFutureDate}
+                style={{
+                    color: isFutureDate ? theme.palette.grey[500] : theme.palette.primary.contrastText,
+                }}
+            >
+                <Icon>chevron_right</Icon>
+            </IconButton>
         </motion.div>
     )
 }
