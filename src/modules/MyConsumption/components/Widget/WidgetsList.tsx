@@ -1,43 +1,73 @@
 import { Grid, useTheme } from '@mui/material'
 import { periodType } from 'src/modules/MyConsumption/myConsumptionTypes'
 import { Widget } from 'src/modules/MyConsumption/components/Widget'
-import { widgetType } from 'src/modules/MyConsumption/components/Widget/Widget'
 import {
-    IMetric,
-    metricFiltersType,
-    metricIntervalType,
-    metricRangeType,
-    metricTargetType,
-} from 'src/modules/Metrics/Metrics'
+    consumptionAndMaxPowerTypes,
+    temperatureTypes,
+    widgetType,
+} from 'src/modules/MyConsumption/components/Widget/Widget'
+import { IMetric, metricFiltersType, metricIntervalType, metricRangeType } from 'src/modules/Metrics/Metrics'
 import { convertMetricsDataToApexChartsAxisValues } from 'src/modules/MyConsumption/utils/apexChartsDataConverter'
-import _ from 'lodash'
+import { sum, max, mean } from 'lodash'
 
 /**
- * Function that handles values from metrics data.
+ * Function that returns values from yAxis of the graph.
+ *
+ * @param data Metrics data.
+ * @returns Values.
+ */
+const getDataFromYAxis = (data: IMetric[]) => {
+    // The values to be used in the widget are the values of the Y axis in the chart.
+    const { yAxisSeries } = convertMetricsDataToApexChartsAxisValues(data)
+    const values: number[] = []
+    yAxisSeries.forEach((el: any) => el.data.map((number: number) => values.push(number as number)))
+
+    return values
+}
+
+/**
+ * Function that handles temperature format values from metrics data.
  *
  * @param data Metrics data.
  * @param type Metrics type.
  * @returns Values according to metrics type.
  */
-const handleWidgetFormat = (data: IMetric[], type: metricTargetType) => {
-    // The values to be used in the widget are the values of the Y axis in the chart.
-    const { yAxisSeries } = convertMetricsDataToApexChartsAxisValues(data)
-    let values: number[] = []
-    yAxisSeries.forEach((el: any) => el.data.forEach((number: number) => values.push(number as number)))
+const handleTemperatureFormat = (data: IMetric[], type: temperatureTypes) => {
+    const values = getDataFromYAxis(data)
+    if (
+        (type === 'nrlink_internal_temperature_metrics' || type === 'external_temperature_metrics') &&
+        data.find((el) => el.target === type)
+    ) {
+        return Math.ceil(mean(values))
+    }
+}
+
+/**
+ * Function that handles Consumption Metrics & Max power format values from metrics data.
+ *
+ * @param data Metrics data.
+ * @param type Metrics target.
+ * @returns Value according to type.
+ */
+const handleConsumptionMetricsAndMaxPowerFormat = (data: IMetric[], type: consumptionAndMaxPowerTypes) => {
+    const values = getDataFromYAxis(data)
     if (type === 'consumption_metrics' && data.find((el) => el.target === type)) {
-        const totalConsumptionValueKwh = _.sum(values)
+        const totalConsumptionValueKwh = sum(values)
         // If the number has more than 3 digits, we convert it into Mega Watt (MWh)
-        if (totalConsumptionValueKwh.toString().length > 2) {
+        if (totalConsumptionValueKwh > 999) {
             return (totalConsumptionValueKwh / 1000).toFixed(2)
         } else {
             return totalConsumptionValueKwh
         }
-    } else if (type === 'enedis_max_power' && data.find((el) => el.target === type)) {
-        return _.max(values) as number
-    } else if (type === 'external_temperature_metrics' && data.find((el) => el.target === type)) {
-        return Math.ceil(_.mean(values))
-    } else if (type === 'nrlink_internal_temperature_metrics' && data.find((el) => el.target === type)) {
-        return Math.ceil(_.mean(values))
+    }
+
+    if (type === 'enedis_max_power' && data.find((el) => el.target === type)) {
+        const maxPowerKw = max(values) as number
+        if (maxPowerKw > 999) {
+            return (maxPowerKw / 1000).toFixed(2)
+        } else {
+            return maxPowerKw
+        }
     }
 }
 
@@ -47,33 +77,33 @@ const widgetsList: widgetType = [
         title: 'Consommation Totale',
         // eslint-disable-next-line jsdoc/require-jsdoc
         unit: (data: IMetric[]) =>
-            handleWidgetFormat(data, 'consumption_metrics')?.toString().length! > 2 ? 'MWh' : 'kWh',
+            handleConsumptionMetricsAndMaxPowerFormat(data, 'consumption_metrics')?.toString().length! > 3
+                ? 'MWh'
+                : 'kWh',
         // eslint-disable-next-line jsdoc/require-jsdoc
-        onFormat: (data: IMetric[], type: metricTargetType) =>
-            handleWidgetFormat(data, 'consumption_metrics') as number,
+        onFormat: (data: IMetric[]) =>
+            handleConsumptionMetricsAndMaxPowerFormat(data, 'consumption_metrics')! as number,
     },
     {
         type: 'enedis_max_power',
         title: 'Puissance Maximale',
         unit: 'kVa',
         // eslint-disable-next-line jsdoc/require-jsdoc
-        onFormat: (data: IMetric[], type: metricTargetType) => handleWidgetFormat(data, 'enedis_max_power')! as number,
+        onFormat: (data: IMetric[]) => handleConsumptionMetricsAndMaxPowerFormat(data, 'enedis_max_power')! as number,
     },
     {
         type: 'external_temperature_metrics',
         title: 'Température Extérieure',
         unit: '°C',
         // eslint-disable-next-line jsdoc/require-jsdoc
-        onFormat: (data: IMetric[], type: metricTargetType) =>
-            handleWidgetFormat(data, 'external_temperature_metrics') as number,
+        onFormat: (data: IMetric[]) => handleTemperatureFormat(data, 'external_temperature_metrics')! as number,
     },
     {
         type: 'nrlink_internal_temperature_metrics',
         title: 'Température Intérieure',
         unit: '°C',
         // eslint-disable-next-line jsdoc/require-jsdoc
-        onFormat: (data: IMetric[], type: metricTargetType) =>
-            handleWidgetFormat(data, 'nrlink_internal_temperature_metrics') as number,
+        onFormat: (data: IMetric[]) => handleTemperatureFormat(data, 'nrlink_internal_temperature_metrics')! as number,
     },
 ]
 

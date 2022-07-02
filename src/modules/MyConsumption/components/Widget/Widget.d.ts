@@ -17,11 +17,6 @@ export type widgetTitleType =
     | 'Température Extérieure'
 
 /**
- * Widget unit type.
- */
-export type widgetUnitType = 'kWh' | 'MWh' | 'kVa' | '°C'
-
-/**
  * Widget list type.
  */
 // eslint-disable-next-line jsdoc/require-jsdoc
@@ -37,11 +32,11 @@ export type widgetType = {
     /**
      * Widget unit.
      */
-    unit: ((data: IMetric[], type: metricTargetType) => string) | 'kVa' | '°C'
+    unit: ((data: IMetric[], type: metricTargetType) => 'kWh' | 'MWh') | 'kVa' | '°C'
     /**
      * Format data according to widget type.
      */
-    onFormat: (data: IMetric[], type: metricTargetType) => number
+    onFormat: (data: IMetric[]) => number
 }[]
 
 /**
@@ -81,3 +76,16 @@ export interface IWidgetProps {
      */
     onFormat: (data: IMetric[], type: metricTargetType) => number
 }
+
+/**
+ * Consumption Metrics and Enedis Max Power type.
+ */
+export type consumptionAndMaxPowerTypes = Exclude<
+    metricTargetType,
+    'external_temperature_metrics' | 'nrlink_internal_temperature_metrics'
+>
+
+/**
+ * Temperature types.
+ */
+export type temperatureTypes = Exclude<metricTargetType, 'consumption_metrics' | 'enedis_max_power'>
