@@ -75,7 +75,9 @@ export const Widget = ({ title, unit, type, period, filters, metricsInterval, ra
                                 <div className="flex flex-col">
                                     {/* Widget unit */}
                                     <Typography className="text-14 font-medium mb-24" color="textSecondary">
-                                        {typeof unit === 'function' ? unit(data, 'consumption_metrics') : unit}
+                                        {typeof unit === 'function'
+                                            ? unit(data, 'consumption_metrics' || ' "enedis_max_power"')
+                                            : unit}
                                     </Typography>
                                     {/* TODDO MYEM-2588*/}
                                     {/* Widget arrow */}

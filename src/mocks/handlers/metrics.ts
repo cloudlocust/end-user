@@ -391,6 +391,7 @@ function getMetricsDataFromTarget(targets: metricTargetType[], FAKE_DATA: number
             datapoints = FAKE_DATA.map((datapoint) => [datapoint[0] + 12, datapoint[1]])
         if (target === 'external_temperature_metrics')
             datapoints = FAKE_DATA.map((datapoint) => [datapoint[0] - 12, datapoint[1]])
+        if (target === 'enedis_max_power') datapoints = FAKE_DATA.map((datapoint) => [datapoint[0] + 50, datapoint[1]])
         return {
             target,
             datapoints,
