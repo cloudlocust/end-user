@@ -1,10 +1,39 @@
+@import 'src/common/ui-kit/styles/media.scss';
 .apexcharts-canvas {
-    width: 100% !important;
-    height: 100% !important;
     overflow-x: auto;
     overflow-y: hidden;
     .apexcharts-text.apexcharts-xaxis-label,
     .apexcharts-tooltip-title {
         text-transform: capitalize;
+    }
+}
+
+.apexChartsDailyPeriodWrapper {
+    .apexcharts-xaxis {
+        .apexcharts-text.apexcharts-xaxis-label:nth-child(4n + 2),
+        .apexcharts-text.apexcharts-xaxis-label:nth-child(4n + 3) {
+            display: none;
+        }
+        @include sm {
+            .apexcharts-text.apexcharts-xaxis-label:nth-child(n) {
+                display: inline;
+            }
+        }
+    }
+}
+.apexChartsMonthlyPeriodWrapper {
+    .apexcharts-xaxis {
+        .apexcharts-text.apexcharts-xaxis-label:nth-child(4n + 2),
+        .apexcharts-text.apexcharts-xaxis-label:nth-child(4n + 3) {
+            display: none;
+        }
+        @include sm {
+            .apexcharts-text.apexcharts-xaxis-label:nth-child(2n + 1) {
+                display: none;
+            }
+            .apexcharts-text.apexcharts-xaxis-label:nth-child(2n) {
+                display: inline;
+            }
+        }
     }
 }
