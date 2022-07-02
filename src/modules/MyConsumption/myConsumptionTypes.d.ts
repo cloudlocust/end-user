@@ -41,3 +41,36 @@ interface ISelectMeters {
      */
     inputTextColor?: string
 }
+/**
+ * Interface for TargetButtonGroup.
+ */
+interface ITargetButtonGroup {
+    /**
+     * RemoveTarget.
+     */
+    removeTarget: (target: metricTarget) => void
+    /**
+     * AddTarget.
+     */
+    addTarget: (target: metricTarget) => void
+    /**
+     * If hidePmax exists Pmax button will be disabled.
+     */
+    hidePmax: boolean
+}
+
+/**
+ * Represent the type return by apexChartsDataConverter.
+ */
+export type ApexChartsAxisValuesType =
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    {
+        /**
+         * Represent the yAxisValues for each target, as ApexChartSerie.
+         */
+        yAxisSeries: ApexAxisChartSerie['data']
+        /**
+         * Represent the xAxisValues for each target.
+         */
+        xAxisSeries: number[][]
+    }

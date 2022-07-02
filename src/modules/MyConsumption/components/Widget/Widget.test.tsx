@@ -8,7 +8,12 @@ import { IWidgetProps } from 'src/modules/MyConsumption/components/Widget/Widget
 const mockOnFormat = jest.fn()
 const mockUnit = jest.fn()
 
-let mockData: IMetric[] = TEST_SUCCESS_DAY_METRICS
+let mockData: IMetric[] = TEST_SUCCESS_DAY_METRICS([
+    'consumption_metrics',
+    'enedis_max_power',
+    'external_temperature_metrics',
+    'nrlink_internal_temperature_metrics',
+])
 
 jest.mock('src/modules/Metrics/metricsHook.ts', () => ({
     ...jest.requireActual('src/modules/Metrics/metricsHook.ts'),
@@ -26,7 +31,7 @@ const mockWidgetProps: IWidgetProps = {
     title: 'Consommation Totale',
     unit: mockUnit,
     period: 'daily',
-    metricsInterval: '1m',
+    metricsInterval: '2min',
     filters: [],
     range: {
         from: '',

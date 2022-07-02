@@ -28,7 +28,7 @@ export const Widget = ({ title, unit, type, period, filters, metricsInterval, ra
         targets: [
             {
                 target: type,
-                type: 'timeseries',
+                type: 'timeserie',
             },
         ],
     }

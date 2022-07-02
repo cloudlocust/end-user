@@ -23,11 +23,11 @@ const handleWidgetFormat = (data: IMetric[], type: metricTargetType) => {
     // The values to be used in the widget are the values of the Y axis in the chart.
     const { yAxisSeries } = convertMetricsDataToApexChartsAxisValues(data)
     let values: number[] = []
-    yAxisSeries.forEach((el) => el.data.forEach((number) => values.push(number as number)))
+    yAxisSeries.forEach((el: any) => el.data.forEach((number: number) => values.push(number as number)))
     if (type === 'consumption_metrics' && data.find((el) => el.target === type)) {
         const totalConsumptionValueKwh = _.sum(values)
         // If the number has more than 3 digits, we convert it into Mega Watt (MWh)
-        if (totalConsumptionValueKwh.toString().length > 3) {
+        if (totalConsumptionValueKwh.toString().length > 2) {
             return (totalConsumptionValueKwh / 1000).toFixed(2)
         } else {
             return totalConsumptionValueKwh
@@ -47,7 +47,7 @@ const widgetsList: widgetType = [
         title: 'Consommation Totale',
         // eslint-disable-next-line jsdoc/require-jsdoc
         unit: (data: IMetric[]) =>
-            handleWidgetFormat(data, 'consumption_metrics')?.toString().length! > 3 ? 'MWh' : 'kWh',
+            handleWidgetFormat(data, 'consumption_metrics')?.toString().length! > 2 ? 'MWh' : 'kWh',
         // eslint-disable-next-line jsdoc/require-jsdoc
         onFormat: (data: IMetric[], type: metricTargetType) =>
             handleWidgetFormat(data, 'consumption_metrics') as number,
