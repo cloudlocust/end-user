@@ -55,6 +55,7 @@ const handleConsumptionMetricsAndMaxPowerFormat = (data: IMetric[], type: consum
         const totalConsumptionValueKwh = sum(values)
         // If the number has more than 3 digits, we convert it into Mega Watt (MWh)
         if (totalConsumptionValueKwh > 999) {
+            // This will return in MWh
             return (totalConsumptionValueKwh / 1000).toFixed(2)
         } else {
             return totalConsumptionValueKwh
@@ -63,8 +64,9 @@ const handleConsumptionMetricsAndMaxPowerFormat = (data: IMetric[], type: consum
 
     if (type === 'enedis_max_power' && data.find((el) => el.target === type)) {
         const maxPowerVA = max(values) as number
-        // If the number has more than 3 digits, we convert it to kVA
+        // If the number has more than 3 digits, we convert from VA to kVA
         if (maxPowerVA > 999) {
+            // This will return in kVA
             return (maxPowerVA / 1000).toFixed(2)
         } else {
             return maxPowerVA
@@ -88,7 +90,9 @@ const widgetsList: widgetType = [
     {
         type: 'enedis_max_power',
         title: 'Puissance Maximale',
-        unit: 'kVa',
+        // eslint-disable-next-line jsdoc/require-jsdoc
+        unit: (data: IMetric[]) =>
+            handleConsumptionMetricsAndMaxPowerFormat(data, 'enedis_max_power')?.toString().length! > 3 ? 'kVa' : 'VA',
         // eslint-disable-next-line jsdoc/require-jsdoc
         onFormat: (data: IMetric[]) => handleConsumptionMetricsAndMaxPowerFormat(data, 'enedis_max_power')! as number,
     },

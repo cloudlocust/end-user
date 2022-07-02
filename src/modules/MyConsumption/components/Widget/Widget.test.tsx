@@ -41,7 +41,7 @@ const mockWidgetProps: IWidgetProps = {
 }
 
 const CONSOMMATION_TOTALE_TEXT = 'Consommation Totale'
-// const CONSOMMATION_TOTALE_UNIT = 'kWh'
+const CONSOMMATION_TOTALE_UNIT = 'kWh'
 
 const PUISSANCE_MAX_TEXT = 'Puissance Maximale'
 const PUISSANCE_MAX_UNIT = 'kVa'
@@ -52,18 +52,22 @@ const TEMPERATURE_UNIT = '°C'
 
 describe('Widget component test', () => {
     test('when the widget is rendered with consommation totale', async () => {
+        // eslint-disable-next-line jsdoc/require-jsdoc
+        mockWidgetProps.unit = () => 'kWh'
         const { getByText } = reduxedRender(<Widget {...mockWidgetProps} />)
 
         await waitFor(
             () => {
                 expect(getByText(CONSOMMATION_TOTALE_TEXT)).toBeInTheDocument()
+                expect(getByText(CONSOMMATION_TOTALE_UNIT)).toBeInTheDocument()
             },
             { timeout: 6000 },
         )
     }, 10000)
     test('when the widget is rendered with puissance max', async () => {
         mockWidgetProps.title = 'Puissance Maximale'
-        mockWidgetProps.unit = 'kVa'
+        // eslint-disable-next-line jsdoc/require-jsdoc
+        mockWidgetProps.unit = () => 'kVa'
         const { getByText } = reduxedRender(<Widget {...mockWidgetProps} />)
 
         await waitFor(
