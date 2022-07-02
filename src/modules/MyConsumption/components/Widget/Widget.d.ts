@@ -32,7 +32,7 @@ export type widgetType = {
     /**
      * Widget unit.
      */
-    unit: ((data: IMetric[], type: metricTargetType) => 'kWh' | 'MWh') | 'kVa' | '°C'
+    unit: ((data: IMetric[], type: consumptionAndMaxPowerTypes) => 'kWh' | 'MWh') | 'kVa' | '°C'
     /**
      * Format data according to widget type.
      */
@@ -54,7 +54,7 @@ export interface IWidgetProps {
     /**
      * Widget unit.
      */
-    unit: ((data: IMetric[], type: metricTargetType) => string) | 'kVa' | '°C'
+    unit: ((data: IMetric[], type: consumptionAndMaxPowerTypes) => 'kWh' | 'MWh') | 'kVa' | '°C'
     /**
      * Period: "day", "week", "month", "year".
      */

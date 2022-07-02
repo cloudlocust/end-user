@@ -62,11 +62,12 @@ const handleConsumptionMetricsAndMaxPowerFormat = (data: IMetric[], type: consum
     }
 
     if (type === 'enedis_max_power' && data.find((el) => el.target === type)) {
-        const maxPowerKw = max(values) as number
-        if (maxPowerKw > 999) {
-            return (maxPowerKw / 1000).toFixed(2)
+        const maxPowerVA = max(values) as number
+        // If the number has more than 3 digits, we convert it to kVA
+        if (maxPowerVA > 999) {
+            return (maxPowerVA / 1000).toFixed(2)
         } else {
-            return maxPowerKw
+            return maxPowerVA
         }
     }
 }
