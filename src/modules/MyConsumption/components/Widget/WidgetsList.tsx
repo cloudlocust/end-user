@@ -86,6 +86,8 @@ const widgetsList: widgetType = [
         // eslint-disable-next-line jsdoc/require-jsdoc
         onFormat: (data: IMetric[]) =>
             handleConsumptionMetricsAndMaxPowerFormat(data, 'consumption_metrics')! as number,
+        // eslint-disable-next-line jsdoc/require-jsdoc
+        onError: (data: IMetric[]) => Boolean(handleConsumptionMetricsAndMaxPowerFormat(data, 'consumption_metrics')),
     },
     {
         type: 'enedis_max_power',
@@ -95,6 +97,8 @@ const widgetsList: widgetType = [
             handleConsumptionMetricsAndMaxPowerFormat(data, 'enedis_max_power')?.toString().length! > 3 ? 'kVa' : 'VA',
         // eslint-disable-next-line jsdoc/require-jsdoc
         onFormat: (data: IMetric[]) => handleConsumptionMetricsAndMaxPowerFormat(data, 'enedis_max_power')! as number,
+        // eslint-disable-next-line jsdoc/require-jsdoc
+        onError: (data: IMetric[]) => Boolean(handleConsumptionMetricsAndMaxPowerFormat(data, 'enedis_max_power')),
     },
     {
         type: 'external_temperature_metrics',
@@ -102,6 +106,8 @@ const widgetsList: widgetType = [
         unit: '°C',
         // eslint-disable-next-line jsdoc/require-jsdoc
         onFormat: (data: IMetric[]) => handleTemperatureFormat(data, 'external_temperature_metrics')! as number,
+        // eslint-disable-next-line jsdoc/require-jsdoc
+        onError: (data: IMetric[]) => Boolean(handleTemperatureFormat(data, 'external_temperature_metrics')),
     },
     {
         type: 'nrlink_internal_temperature_metrics',
@@ -109,6 +115,8 @@ const widgetsList: widgetType = [
         unit: '°C',
         // eslint-disable-next-line jsdoc/require-jsdoc
         onFormat: (data: IMetric[]) => handleTemperatureFormat(data, 'nrlink_internal_temperature_metrics')! as number,
+        // eslint-disable-next-line jsdoc/require-jsdoc
+        onError: (data: IMetric[]) => Boolean(handleTemperatureFormat(data, 'nrlink_internal_temperature_metrics')),
     },
 ]
 
@@ -146,6 +154,7 @@ export const WidgetList = (props: {
                             title={widget.title}
                             unit={widget.unit}
                             onFormat={widget.onFormat}
+                            onError={widget.onError}
                             {...props}
                         />
                     )

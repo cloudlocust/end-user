@@ -17,9 +17,20 @@ import { IWidgetProps } from 'src/modules/MyConsumption/components/Widget/Widget
  * @param root0.metricsInterval MetricsInterval from parent component.
  * @param root0.range Range from parent component.
  * @param root0.onFormat Function that format data according to widget type.
+ * @param root0.onError Function that handles widget error message.
  * @returns Single Widget component.
  */
-export const Widget = ({ title, unit, type, period, filters, metricsInterval, range, onFormat }: IWidgetProps) => {
+export const Widget = ({
+    title,
+    unit,
+    type,
+    period,
+    filters,
+    metricsInterval,
+    range,
+    onFormat,
+    onError,
+}: IWidgetProps) => {
     const theme = useTheme()
     const widgetInitialMetricsValues: getMetricType = {
         range,
@@ -48,8 +59,8 @@ export const Widget = ({ title, unit, type, period, filters, metricsInterval, ra
     }, [filters, metricsInterval, period, range, setFilters, setMetricsInterval, setRange])
 
     return (
-        <Grid item xs={6} sm={6} md={4} lg={3} xl={3}>
-            <Card className="w-full rounded-20 shadow sm:m-4 " variant="outlined">
+        <Grid item xs={6} sm={6} md={4} lg={3} xl={3} className="flex">
+            <Card className="w-full rounded-20 shadow sm:m-4" variant="outlined" style={{ minHeight: '170px' }}>
                 {isMetricsLoading ? (
                     <div
                         className="flex flex-col justify-center items-center w-full h-full"
@@ -59,30 +70,34 @@ export const Widget = ({ title, unit, type, period, filters, metricsInterval, ra
                     </div>
                 ) : (
                     <>
-                        <div className="p-16 flex flex-col justify-between">
+                        <div className="p-16 flex flex-col justify-between h-full">
                             {/* Widget title */}
-                            <TypographyFormatMessage
-                                className="sm:text-16 font-medium md:text-17"
-                                style={{ minHeight: '75px' }}
-                            >
+                            <TypographyFormatMessage className="sm:text-16 font-medium md:text-17">
                                 {title}
                             </TypographyFormatMessage>
-                            <div className="flex flex-row flex-wrap mt-12 items-end">
-                                {/* Widget value */}
-                                <Typography className="text-2xl sm:text-3xl md:text-4xl font-normal tracking-tighter items-end mr-auto">
-                                    {onFormat(data, type)}
-                                </Typography>
-                                <div className="flex flex-col">
-                                    {/* Widget unit */}
-                                    <Typography className="text-14 font-medium mb-24" color="textSecondary">
-                                        {typeof unit === 'function'
-                                            ? unit(data, 'consumption_metrics' || ' "enedis_max_power"')
-                                            : unit}
-                                    </Typography>
-                                    {/* TODDO MYEM-2588*/}
-                                    {/* Widget arrow */}
+                            {/* If onError returns true, it will display an error message for the widget type */}
+                            {!onError(data) ? (
+                                <div className="mb-44 text-center">
+                                    <TypographyFormatMessage>Aucune donnée disponnible</TypographyFormatMessage>
                                 </div>
-                            </div>
+                            ) : (
+                                <div className="flex flex-row flex-wrap mt-12 items-end">
+                                    {/* Widget value */}
+                                    <Typography className="text-2xl sm:text-3xl md:text-4xl font-normal tracking-tighter items-end mr-auto">
+                                        {onFormat(data, type)}
+                                    </Typography>
+                                    <div className="flex flex-col">
+                                        {/* Widget unit */}
+                                        <Typography className="text-14 font-medium mb-24" color="textSecondary">
+                                            {typeof unit === 'function'
+                                                ? unit(data, 'consumption_metrics' || ' "enedis_max_power"')
+                                                : unit}
+                                        </Typography>
+                                        {/* TODDO MYEM-2588*/}
+                                        {/* Widget arrow */}
+                                    </div>
+                                </div>
+                            )}
                         </div>
                     </>
                 )}

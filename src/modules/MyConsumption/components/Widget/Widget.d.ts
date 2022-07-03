@@ -37,6 +37,11 @@ export type widgetType = {
      * Format data according to widget type.
      */
     onFormat: (data: IMetric[]) => number
+    /**
+     * Handle widget error message when there is no value returned.
+     * If it returns true, it means that there is value, otherwise it returns false.
+     */
+    onError: (data: IMetric[]) => boolean
 }[]
 
 /**
@@ -75,6 +80,11 @@ export interface IWidgetProps {
      * Format data according to widget type.
      */
     onFormat: (data: IMetric[], type: metricTargetType) => number
+    /**
+     * Handle widget error message when there is no value returned.
+     * If it returns true, it means that there is value, otherwise it returns false.
+     */
+    onError: (data: IMetric[]) => boolean
 }
 
 /**
