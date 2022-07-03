@@ -47,6 +47,7 @@ export const MyConsumptionContainer = () => {
         setMetricsInterval,
         setRange,
         setFilters,
+        metricsInterval,
         isMetricsLoading,
         data,
         filters,
@@ -203,7 +204,7 @@ export const MyConsumptionContainer = () => {
                         Chiffres clés
                     </TypographyFormatMessage>
                 </div>
-                <WidgetList />
+                <WidgetList period={period} filters={filters} metricsInterval={metricsInterval} range={range} />
             </div>
         </>
     )

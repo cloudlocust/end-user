@@ -1,4 +1,11 @@
-import { metricTargetType } from 'src/modules/Metrics/Metrics'
+import {
+    metricTargetType,
+    metricIntervalType,
+    metricFiltersType,
+    metricRangeType,
+    IMetric,
+} from 'src/modules/Metrics/Metrics'
+import { periodType } from 'src/modules/MyConsumption/myConsumptionTypes'
 
 /**
  * Widget Title type.
@@ -8,11 +15,6 @@ export type widgetTitleType =
     | 'Puissance Maximale'
     | 'Température Intérieure'
     | 'Température Extérieure'
-
-/**
- * Widget unit type.
- */
-export type widgetUnitType = 'kWh' | 'kVh' | '°C'
 
 /**
  * Widget list type.
@@ -30,7 +32,11 @@ export type widgetType = {
     /**
      * Widget unit.
      */
-    unit: widgetUnitType
+    unit: ((data: IMetric[], type: consumptionAndMaxPowerTypes) => 'kWh' | 'MWh' | 'VA' | 'kVa') | '°C'
+    /**
+     * Format data according to widget type.
+     */
+    onFormat: (data: IMetric[]) => number
 }[]
 
 /**
@@ -38,15 +44,48 @@ export type widgetType = {
  */
 export interface IWidgetProps {
     /**
+     * Widget type.
+     */
+    type: metricTargetType
+    /**
      * Widget title.
      */
     title: widgetTitleType
     /**
      * Widget unit.
      */
-    unit: widgetUnitType
+    unit: ((data: IMetric[], type: consumptionAndMaxPowerTypes) => 'kWh' | 'MWh' | 'VA' | 'kVa') | '°C'
     /**
-     * Widget value. TODO in 2623.
+     * Period: "day", "week", "month", "year".
      */
-    value?: number
+    period: periodType
+    /**
+     * Metrics interval.
+     */
+    metricsInterval: metricIntervalType
+    /**
+     * Metrics filters.
+     */
+    filters: metricFiltersType
+    /**
+     * Metrics Range.
+     */
+    range: metricRangeType
+    /**
+     * Format data according to widget type.
+     */
+    onFormat: (data: IMetric[], type: metricTargetType) => number
 }
+
+/**
+ * Consumption Metrics and Enedis Max Power type.
+ */
+export type consumptionAndMaxPowerTypes = Exclude<
+    metricTargetType,
+    'external_temperature_metrics' | 'nrlink_internal_temperature_metrics'
+>
+
+/**
+ * Temperature types.
+ */
+export type temperatureTypes = Exclude<metricTargetType, 'consumption_metrics' | 'enedis_max_power'>
