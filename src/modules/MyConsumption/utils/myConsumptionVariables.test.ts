@@ -48,9 +48,9 @@ describe('test pure functions', () => {
         /**
          * PMAX TEST.
          */
-        // When Pmax it'll show the value given in Watt.
+        // When Pmax it'll convert and show the data given in kVA.
         label = getYPointValueLabel(yValue, metricTargetsEnum.pMax, 'daily')
-        expect(label).toBe(`${yValue} kVA`)
+        expect(label).toBe(`${(yValue / 1000).toFixed(2)} kVA`)
 
         // When value is null and Pmax it'll show only the unit.
         label = getYPointValueLabel(null, metricTargetsEnum.pMax, 'monthly')

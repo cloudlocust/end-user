@@ -130,7 +130,8 @@ export const getYPointValueLabel = (
         case metricTargetsEnum.internalTemperature:
             return `${value} °C`
         case metricTargetsEnum.pMax:
-            return `${value} kVA`
+            // Value given by backend is in Va and thus convert it to kVA.
+            return value === '' ? `${value} kVA` : `${(value / 1000).toFixed(2)} kVA`
         default:
             if (period === 'daily') return `${value} W`
             return value === '' ? `${value} kWh` : `${(value / 1000).toFixed(2)} kWh`
