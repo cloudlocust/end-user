@@ -4,9 +4,12 @@ import { Props } from 'react-apexcharts'
 import { periodType } from 'src/modules/MyConsumption/myConsumptionTypes'
 import dayjs from 'dayjs'
 import fr from 'apexcharts/dist/locales/fr.json'
-import { chartSpecifities, getChartColor } from 'src/modules/MyConsumption/utils/myConsumptionVariables'
+import {
+    chartSpecifities,
+    getChartColor,
+    getYPointValueLabel,
+} from 'src/modules/MyConsumption/utils/myConsumptionVariables'
 import { metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
-import { isNil } from 'lodash'
 
 /**
  * Default ApexChart Options, represent the general options related to the overall look of the MyConsumptionChart.
@@ -163,7 +166,7 @@ export const getApexChartMyConsumptionProps = ({
     yAxisSeries.forEach((yAxisSerie) => {
         // If this Serie doesn't have any data we don't show it on the chart thus we do return, and if this is true for all series then we'll show an empty chart.
         if (yAxisSerie.data.length === 0) return
-        const { label, unit, ...restChartSpecifities } = chartSpecifities[yAxisSerie.name as metricTargetsEnum]
+        const { label, ...restChartSpecifities } = chartSpecifities[yAxisSerie.name as metricTargetsEnum]
 
         myConsumptionApexChartSeries!.push({
             ...yAxisSerie,
@@ -184,9 +187,7 @@ export const getApexChartMyConsumptionProps = ({
                  * @param value Yaxis Value.
                  * @returns Desired label to be shown for values in the yAxis.
                  */
-                formatter: (value: number) =>
-                    // IsNill check that value is undefined or null.
-                    `${isNil(value) ? '' : value} ${unit}`,
+                formatter: (value: number) => getYPointValueLabel(value, yAxisSerie.name as metricTargetsEnum, period),
             },
             axisBorder: {
                 show: true,

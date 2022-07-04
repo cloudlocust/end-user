@@ -111,7 +111,7 @@ describe('test pure function', () => {
     })
     mockyAxisSeries[0].color = theme.palette.primary.light
     test('getApexChartMyConsumptionProps test with valid data', async () => {
-        let period = 'weekly' as periodType
+        let period = 'daily' as periodType
         // ApexChart Props
         const apexChartProps = getApexChartMyConsumptionProps({
             yAxisSeries: mockYAxisSeriesConvertedData,
@@ -226,7 +226,7 @@ describe('test pure function', () => {
     test('convertMetricsDataToApexChartsProps with additional temperatures yaxis', async () => {
         mockYAxisSeriesConvertedData[0].data = [mockDatapoints[0][0]]
 
-        let period = 'weekly' as periodType
+        let period = 'daily' as periodType
         // External Temperature
         mockYAxisSeriesConvertedData.push({
             name: metricTargetsEnum.externalTemperature,
