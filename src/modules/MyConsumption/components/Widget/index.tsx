@@ -16,21 +16,10 @@ import { IWidgetProps } from 'src/modules/MyConsumption/components/Widget/Widget
  * @param root0.filters Filters from parent component.
  * @param root0.metricsInterval MetricsInterval from parent component.
  * @param root0.range Range from parent component.
- * @param root0.onFormat Function that format data according to widget type.
- * @param root0.onError Function that handles widget error message.
+ * @param root0.value Value displayed for a specific widget type.
  * @returns Single Widget component.
  */
-export const Widget = ({
-    title,
-    unit,
-    type,
-    period,
-    filters,
-    metricsInterval,
-    range,
-    onFormat,
-    onError,
-}: IWidgetProps) => {
+export const Widget = ({ title, unit, type, period, filters, metricsInterval, range, value }: IWidgetProps) => {
     const theme = useTheme()
     const widgetInitialMetricsValues: getMetricType = {
         range,
@@ -76,7 +65,7 @@ export const Widget = ({
                                 {title}
                             </TypographyFormatMessage>
                             {/* If onError returns true, it will display an error message for the widget type */}
-                            {!onError(data) ? (
+                            {!value(data) ? (
                                 <div className="mb-44 text-center">
                                     <TypographyFormatMessage>Aucune donnée disponnible</TypographyFormatMessage>
                                 </div>
@@ -84,14 +73,12 @@ export const Widget = ({
                                 <div className="flex flex-row flex-wrap mt-12 items-end">
                                     {/* Widget value */}
                                     <Typography className="text-2xl sm:text-3xl md:text-4xl font-normal tracking-tighter items-end mr-auto">
-                                        {onFormat(data, type)}
+                                        {value(data)}
                                     </Typography>
                                     <div className="flex flex-col">
                                         {/* Widget unit */}
                                         <Typography className="text-14 font-medium mb-24" color="textSecondary">
-                                            {typeof unit === 'function'
-                                                ? unit(data, 'consumption_metrics' || ' "enedis_max_power"')
-                                                : unit}
+                                            {unit}
                                         </Typography>
                                         {/* TODDO MYEM-2588*/}
                                         {/* Widget arrow */}

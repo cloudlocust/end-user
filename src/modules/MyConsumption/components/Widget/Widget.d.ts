@@ -32,16 +32,11 @@ export type widgetType = {
     /**
      * Widget unit.
      */
-    unit: ((data: IMetric[], type: consumptionAndMaxPowerTypes) => 'kWh' | 'MWh' | 'VA' | 'kVa') | '°C'
+    unit: () => 'W' | 'kWh' | 'MWh' | 'VA' | 'kVa' | '°C'
     /**
-     * Format data according to widget type.
+     * Function that returns the value of the specific widget type.
      */
-    onFormat: (data: IMetric[]) => number
-    /**
-     * Handle widget error message when there is no value returned.
-     * If it returns true, it means that there is value, otherwise it returns false.
-     */
-    onError: (data: IMetric[]) => boolean
+    computeValue: (data: IMetric[]) => number
 }[]
 
 /**
@@ -56,10 +51,6 @@ export interface IWidgetProps {
      * Widget title.
      */
     title: widgetTitleType
-    /**
-     * Widget unit.
-     */
-    unit: ((data: IMetric[], type: consumptionAndMaxPowerTypes) => 'kWh' | 'MWh' | 'VA' | 'kVa') | '°C'
     /**
      * Period: "day", "week", "month", "year".
      */
@@ -77,25 +68,11 @@ export interface IWidgetProps {
      */
     range: metricRangeType
     /**
-     * Format data according to widget type.
+     * Widget unit.
      */
-    onFormat: (data: IMetric[], type: metricTargetType) => number
+    unit: 'W' | 'kWh' | 'MWh' | 'VA' | 'kVa' | '°C'
     /**
-     * Handle widget error message when there is no value returned.
-     * If it returns true, it means that there is value, otherwise it returns false.
+     * Widget value.
      */
-    onError: (data: IMetric[]) => boolean
+    value: (data: IMetrc[]) => number
 }
-
-/**
- * Consumption Metrics and Enedis Max Power type.
- */
-export type consumptionAndMaxPowerTypes = Exclude<
-    metricTargetType,
-    'external_temperature_metrics' | 'nrlink_internal_temperature_metrics'
->
-
-/**
- * Temperature types.
- */
-export type temperatureTypes = Exclude<metricTargetType, 'consumption_metrics' | 'enedis_max_power'>

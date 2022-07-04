@@ -27,14 +27,12 @@ jest.mock('src/modules/Metrics/metricsHook.ts', () => ({
     }),
 }))
 
-let mockOnFormat = jest.fn()
-let mockOnError = jest.fn()
-let mockUnit = jest.fn() || 'C°'
+let mockValue = jest.fn()
 
 let mockWidgetProps: IWidgetProps = {
     type: 'consumption_metrics',
     title: 'Consommation Totale',
-    unit: mockUnit,
+    unit: 'kVa',
     period: 'daily',
     metricsInterval: '2min',
     filters: [],
@@ -42,8 +40,7 @@ let mockWidgetProps: IWidgetProps = {
         from: '',
         to: '',
     },
-    onFormat: mockOnFormat,
-    onError: mockOnError,
+    value: mockValue,
 }
 
 const CONSOMMATION_TOTALE_TEXT = 'Consommation Totale'
@@ -60,9 +57,8 @@ const NO_DATA_MESSAGE = 'Aucune donnée disponnible'
 
 describe('Widget component test', () => {
     test('when the widget is rendered with consommation totale', async () => {
-        mockUnit.mockReturnValue('kWh')
-        mockOnFormat.mockReturnValue(123)
-        mockOnError.mockReturnValue(true)
+        mockWidgetProps.unit = 'kWh'
+        mockValue.mockReturnValue(123)
         const { getByText } = reduxedRender(<Widget {...mockWidgetProps} />)
 
         expect(getByText(CONSOMMATION_TOTALE_TEXT)).toBeInTheDocument()
@@ -70,9 +66,8 @@ describe('Widget component test', () => {
     })
     test('when the widget is rendered with puissance max', async () => {
         mockWidgetProps.title = 'Puissance Maximale'
-        mockUnit.mockReturnValue('kVa')
-        mockOnFormat.mockReturnValue(123)
-        mockOnError.mockReturnValue(true)
+        mockWidgetProps.unit = 'kVa'
+        mockValue.mockReturnValue(123)
         const { getByText } = reduxedRender(<Widget {...mockWidgetProps} />)
 
         expect(getByText(PUISSANCE_MAX_TEXT)).toBeInTheDocument()
@@ -81,8 +76,7 @@ describe('Widget component test', () => {
     test('when the widget is rendered with internal temperature', async () => {
         mockWidgetProps.title = 'Température Intérieure'
         mockWidgetProps.unit = '°C'
-        mockOnFormat.mockReturnValue(123)
-        mockOnError.mockReturnValue(true)
+        mockValue.mockReturnValue(123)
         const { getByText } = reduxedRender(<Widget {...mockWidgetProps} />)
 
         expect(getByText(INTERNAL_TEMPERATURE_TEXT)).toBeInTheDocument()
@@ -91,15 +85,14 @@ describe('Widget component test', () => {
     test('when the widget is rendered with external temperature', async () => {
         mockWidgetProps.title = 'Température Extérieure'
         mockWidgetProps.unit = '°C'
-        mockOnFormat.mockReturnValue(123)
-        mockOnError.mockReturnValue(true)
+        mockValue.mockReturnValue(123)
         const { getByText } = reduxedRender(<Widget {...mockWidgetProps} />)
 
         expect(getByText(EXTERNAL_TEMPERATURE_TEXT)).toBeInTheDocument()
         expect(getByText(TEMPERATURE_UNIT)).toBeInTheDocument()
     })
     test('when there is no data, an error message is shown', async () => {
-        mockOnError.mockReturnValue(false)
+        mockValue.mockReturnValue(null)
         const { getByText } = reduxedRender(<Widget {...mockWidgetProps} />)
 
         expect(getByText(NO_DATA_MESSAGE)).toBeTruthy()
