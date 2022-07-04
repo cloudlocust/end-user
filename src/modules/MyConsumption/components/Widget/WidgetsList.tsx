@@ -6,7 +6,13 @@ import {
     temperatureTypes,
     widgetType,
 } from 'src/modules/MyConsumption/components/Widget/Widget'
-import { IMetric, metricFiltersType, metricIntervalType, metricRangeType } from 'src/modules/Metrics/Metrics'
+import {
+    ApexAxisChartSerie,
+    IMetric,
+    metricFiltersType,
+    metricIntervalType,
+    metricRangeType,
+} from 'src/modules/Metrics/Metrics'
 import { convertMetricsDataToApexChartsAxisValues } from 'src/modules/MyConsumption/utils/apexChartsDataConverter'
 import { sum, max, mean } from 'lodash'
 
@@ -20,7 +26,7 @@ const getDataFromYAxis = (data: IMetric[]) => {
     // The values to be used in the widget are the values of the Y axis in the chart.
     const { yAxisSeries } = convertMetricsDataToApexChartsAxisValues(data)
     const values: number[] = []
-    yAxisSeries.forEach((el: any) => el.data.map((number: number) => values.push(number as number)))
+    yAxisSeries.forEach((el: ApexAxisChartSerie) => el.data.map((number) => values.push(number as number)))
 
     return values
 }
@@ -58,7 +64,7 @@ const handleConsumptionMetricsAndMaxPowerFormat = (data: IMetric[], type: consum
             // This will return in MWh
             return (totalConsumptionValueKwh / 1000).toFixed(2)
         } else {
-            return totalConsumptionValueKwh
+            return totalConsumptionValueKwh.toFixed(2)
         }
     }
 
