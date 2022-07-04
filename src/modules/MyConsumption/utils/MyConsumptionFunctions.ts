@@ -49,8 +49,8 @@ export const getRange = (rangePeriod: dayjs.ManipulateType) => {
             rangePeriod === 'day'
                 ? dayjs.utc().startOf('date').toISOString()
                 : rangePeriod === 'week'
-                ? dayjs.utc().subtract(1, rangePeriod).add(1, 'day').toISOString()
-                : dayjs.utc().subtract(1, rangePeriod).toISOString(),
+                ? dayjs.utc().subtract(1, rangePeriod).add(1, 'day').startOf('day').toISOString()
+                : dayjs.utc().subtract(1, rangePeriod).startOf('month').toISOString(),
         to: dayjs.utc().endOf('date').toISOString(),
     }
 }

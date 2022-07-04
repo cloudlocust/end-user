@@ -67,7 +67,7 @@ export const chartSpecifities: {
 } = {
     [metricTargetsEnum.consumption]: {
         label: 'Consommation',
-        unit: 'KWh',
+        unit: 'W',
     },
     [metricTargetsEnum.internalTemperature]: {
         label: 'Température Intérieure',
