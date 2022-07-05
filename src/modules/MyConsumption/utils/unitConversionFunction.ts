@@ -9,14 +9,25 @@ import convert, { Unit } from 'convert-units'
  */
 export const consumptionWattUnitConversion = (valueInWatt: number) => {
     const units: Unit[] = ['Wh', 'kWh', 'MWh']
-    for (let index = 0; index < units.length; index++) {
-        // Convert from Wh to Wh, kWh or MWh
+    for (let index = 0; index < units.length - 1; index++) {
+        // Convert from Wh to Wh, kWh
         const convertedValue = convert(valueInWatt).from(units[0]).to(units[index])
+        // We return if its the adequate unit.
         if (convertedValue < 999)
             return {
-                value: convertedValue.toFixed(2),
-                // If the corresponding unit is Wh, we returns W because we use W indicating Watt instead of Wh in our MyConsumption Module and not (Wh, kWh, MWh), because we can not convert using this library, from W to kWh , or W to MWh.
+                value: Number(convertedValue.toFixed(2)),
+                // If the corresponding unit is Wh, we returns W because we use W indicating Watt instead of Wh in our MyConsumption Module and not (Wh, kWh), because we can not convert using this library, from W to kWh.
                 unit: index === 0 ? 'W' : units[index],
             }
+    }
+    // Returns the value and unit of the last unit, W to MWh.
+    return {
+        value: Number(
+            convert(valueInWatt)
+                .from(units[0])
+                .to(units[units.length - 1])
+                .toFixed(2),
+        ),
+        unit: units[units.length - 1],
     }
 }
