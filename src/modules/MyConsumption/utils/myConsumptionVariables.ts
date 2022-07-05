@@ -3,6 +3,7 @@ import { periodType } from 'src/modules/MyConsumption/myConsumptionTypes'
 import { getRange } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
 import { Theme } from '@mui/material/styles/createTheme'
 import { isNil } from 'lodash'
+import convert, { Unit } from 'convert-units'
 
 /**
  * Data Consumption Period.
@@ -111,18 +112,14 @@ export const getChartColor = (chartName: metricTargetsEnum, theme: Theme) => {
  *
  * For Example: Consumption chart for a given y datapoint will show.
  *  - "{value} W" when period is day.
- *  - And "{value/1000} kWh" when period is different than day, we divide by 1000 because data returned is in Watt and thus we divide and show the unit.
+ *  - And "{value} {unit}" depends on the unit of the maximum value, whether (W, kWh, MWh) so that we have one synchronized unit depending on the maxValue.
  *
  * @param yValue Given Y value datapoint in the chart (we'll go through all the y values).
  * @param chartName MetricTarget Chart.
- * @param period Represents the current period ('daily', 'weekly', 'monthly', 'yearly' ...etc), which will be used to handle xAxis values format (for example when yearly we should show values as 'January', 'February', ...etc).
+ * @param unit The unit for consumption, it's given outside as its related with the unit of maximum value to have one unit for all values in consumption chart.
  * @returns Text shown for each y value datapoint.
  */
-export const getYPointValueLabel = (
-    yValue: number | null | undefined,
-    chartName: metricTargetsEnum,
-    period: periodType,
-) => {
+export const getYPointValueLabel = (yValue: number | null | undefined, chartName: metricTargetsEnum, unit?: Unit) => {
     // IsNill check that value is undefined or null.
     const value = isNil(yValue) ? '' : yValue
     switch (chartName) {
@@ -131,9 +128,10 @@ export const getYPointValueLabel = (
             return `${value} °C`
         case metricTargetsEnum.pMax:
             // Value given by backend is in Va and thus convert it to kVA.
-            return value === '' ? `${value} kVA` : `${(value / 1000).toFixed(2)} kVA`
+            return `${value === '' ? value : convert(value).from('VA').to('kVA'!).toFixed(2)} kVA`
         default:
-            if (period === 'daily') return `${value} W`
-            return value === '' ? `${value} kWh` : `${(value / 1000).toFixed(2)} kWh`
+            if (unit === 'W') return `${value} ${unit}`
+            if (value === '') return ` ${unit}`
+            return `${convert(value).from('Wh').to(unit!).toFixed(2)} ${unit}`
     }
 }
