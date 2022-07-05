@@ -17,6 +17,11 @@ export type widgetTitleType =
     | 'Température Extérieure'
 
 /**
+ * Total Consumption Units types.
+ */
+export type totalConsumptionUnits = 'W' | 'kWh' | 'MWh'
+
+/**
  * Widget list type.
  */
 // eslint-disable-next-line jsdoc/require-jsdoc

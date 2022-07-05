@@ -8,6 +8,7 @@ import {
     computeTemperature,
     computeTotalConsumption,
 } from 'src/modules/MyConsumption/components/Widget/WidgetFunctions'
+import { ceil } from 'lodash'
 
 const widgetsList: widgetType = [
     {
@@ -19,9 +20,9 @@ const widgetsList: widgetType = [
          * @param data Metrics data.
          * @returns W, kWh or MWh depending on the length of the value.
          */
-        unit: (data: IMetric[]) => computeTotalConsumption(data).unit,
+        unit: (data: IMetric[]) => computeTotalConsumption(data)!.unit,
         // eslint-disable-next-line jsdoc/require-jsdoc
-        computeValue: (data: IMetric[]) => computeTotalConsumption(data).value,
+        computeValue: (data: IMetric[]) => ceil(computeTotalConsumption(data)!.value),
     },
     {
         type: 'enedis_max_power',
@@ -35,7 +36,7 @@ const widgetsList: widgetType = [
         // eslint-disable-next-line jsdoc/require-jsdoc
         unit: (data: IMetric[]) => computePMax(data).unit,
         // eslint-disable-next-line jsdoc/require-jsdoc
-        computeValue: (data: IMetric[]) => computePMax(data).value as number,
+        computeValue: (data: IMetric[]) => computePMax(data).value,
     },
     {
         type: 'external_temperature_metrics',
