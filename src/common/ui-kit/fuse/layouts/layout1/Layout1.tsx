@@ -66,7 +66,7 @@ function Layout1({
                 <main
                     id="fuse-main"
                     className="flex flex-col flex-auto min-h-screen min-w-0 relative z-10 overflow-y-auto"
-                    style={{ marginBottom: '64px' }}
+                    style={{ marginBottom: lgDown ? '64px' : '0' }}
                 >
                     {displayToolbar && (
                         <ToolbarLayout1
