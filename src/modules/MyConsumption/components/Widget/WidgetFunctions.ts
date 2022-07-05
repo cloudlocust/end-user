@@ -22,18 +22,30 @@ export const getDataFromYAxis = (data: IMetric[]) => {
  * @param data Metrics data.
  * @returns Total consumption rounded.
  */
-export const computeTotalConsumption = (data: IMetric[]) => {
+// eslint-disable-next-line jsdoc/require-jsdoc
+export const computeTotalConsumption = (data: IMetric[]): { value: number; unit: 'W' | 'kWh' | 'MWh' } => {
     const values = getDataFromYAxis(data)
     const totalConsumptionValueInWatts = sum(values)
     // Reference for writing big numbers in JS: https://stackoverflow.com/questions/17605444/making-large-numbers-readable-in-javascript
     // If value is greater than 999 it returns in kWh (kilowatts)
-    if (totalConsumptionValueInWatts > 999) {
-        return ceil(totalConsumptionValueInWatts / 1000)
+    if (totalConsumptionValueInWatts > 999 && totalConsumptionValueInWatts < 999_999) {
+        return {
+            value: ceil(totalConsumptionValueInWatts / 1000),
+            unit: 'kWh',
+        }
         // If value is greater than 999_999 it returns in Mhw (megawatts)
     } else if (totalConsumptionValueInWatts > 999_999) {
-        return ceil(totalConsumptionValueInWatts / 1000_000)
+        return {
+            value: ceil(totalConsumptionValueInWatts / 1000_000),
+            unit: 'MWh',
+        }
         // If value is less than 999 it returns in Watts
-    } else return totalConsumptionValueInWatts
+    } else {
+        return {
+            value: ceil(totalConsumptionValueInWatts),
+            unit: 'W',
+        }
+    }
 }
 
 /**
@@ -42,13 +54,22 @@ export const computeTotalConsumption = (data: IMetric[]) => {
  * @param data Metrics data.
  * @returns Max power value.
  */
-export const computePMax = (data: IMetric[]) => {
+// eslint-disable-next-line jsdoc/require-jsdoc
+export const computePMax = (data: IMetric[]): { value: number; unit: 'kVa' | 'VA' } => {
     const values = getDataFromYAxis(data)
     const maxPowerVA = max(values)!
     // If the number has more than 3 digits, we convert from VA to kVA
     if (maxPowerVA > 999) {
-        return (maxPowerVA / 1000).toFixed(2)
-    } else return maxPowerVA
+        return {
+            value: maxPowerVA / 1000,
+            unit: 'kVa',
+        }
+    } else {
+        return {
+            value: maxPowerVA,
+            unit: 'VA',
+        }
+    }
 }
 
 /**
@@ -57,7 +78,11 @@ export const computePMax = (data: IMetric[]) => {
  * @param data Metrics data.
  * @returns Temperature value.
  */
-export const computeTemperature = (data: IMetric[]) => {
+// eslint-disable-next-line jsdoc/require-jsdoc
+export const computeTemperature = (data: IMetric[]): { value: number; unit: '°C' } => {
     const values = getDataFromYAxis(data)
-    return Math.ceil(mean(values))
+    return {
+        value: Math.ceil(mean(values)),
+        unit: '°C',
+    }
 }

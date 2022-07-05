@@ -16,24 +16,12 @@ const widgetsList: widgetType = [
         /**
          * Unit function.
          *
+         * @param data Metrics data.
          * @returns W, kWh or MWh depending on the length of the value.
          */
-        unit: function () {
-            if (
-                this.computeValue &&
-                this.computeValue.toString().length > 3 &&
-                this.computeValue.toString().length < 6
-            ) {
-                return 'kWh'
-            } else if (this.computeValue.toString().length > 6) {
-                return 'MWh'
-            } else {
-                return 'W'
-            }
-        },
-
+        unit: (data: IMetric[]) => computeTotalConsumption(data).unit,
         // eslint-disable-next-line jsdoc/require-jsdoc
-        computeValue: (data: IMetric[]) => computeTotalConsumption(data)!,
+        computeValue: (data: IMetric[]) => computeTotalConsumption(data).value,
     },
     {
         type: 'enedis_max_power',
@@ -41,17 +29,13 @@ const widgetsList: widgetType = [
         /**
          * Unit function.
          *
+         * @param data Metrics data.
          * @returns VA, kVa depending on the length of the value.
          */
-        unit: function () {
-            if (this.computeValue && this.computeValue.toString().length > 3) {
-                return 'kVa'
-            } else {
-                return 'VA'
-            }
-        },
         // eslint-disable-next-line jsdoc/require-jsdoc
-        computeValue: (data: IMetric[]) => computePMax(data) as number,
+        unit: (data: IMetric[]) => computePMax(data).unit,
+        // eslint-disable-next-line jsdoc/require-jsdoc
+        computeValue: (data: IMetric[]) => computePMax(data).value as number,
     },
     {
         type: 'external_temperature_metrics',
@@ -59,13 +43,12 @@ const widgetsList: widgetType = [
         /**
          * Unit function.
          *
+         * @param data Metrics data.
          * @returns Celcius unit.
          */
-        unit: function () {
-            return '°C'
-        },
+        unit: (data: IMetric[]) => computeTemperature(data)!.unit,
         // eslint-disable-next-line jsdoc/require-jsdoc
-        computeValue: (data: IMetric[]) => computeTemperature(data)!,
+        computeValue: (data: IMetric[]) => computeTemperature(data)!.value,
     },
     {
         type: 'nrlink_internal_temperature_metrics',
@@ -73,13 +56,12 @@ const widgetsList: widgetType = [
         /**
          * Unit function.
          *
+         * @param data Metrics data.
          * @returns Celcius unit.
          */
-        unit: function () {
-            return '°C'
-        },
+        unit: (data: IMetric[]) => computeTemperature(data)!.unit,
         // eslint-disable-next-line jsdoc/require-jsdoc
-        computeValue: (data: IMetric[]) => computeTemperature(data)!,
+        computeValue: (data: IMetric[]) => computeTemperature(data)!.value,
     },
 ]
 
@@ -115,7 +97,7 @@ export const WidgetList = (props: {
                             key={widget.title}
                             type={widget.type}
                             title={widget.title}
-                            unit={widget.unit()}
+                            unit={widget.unit}
                             value={widget.computeValue}
                             {...props}
                         />

@@ -28,11 +28,12 @@ jest.mock('src/modules/Metrics/metricsHook.ts', () => ({
 }))
 
 let mockValue = jest.fn()
+let mockUnit = jest.fn()
 
 let mockWidgetProps: IWidgetProps = {
     type: 'consumption_metrics',
     title: 'Consommation Totale',
-    unit: 'kVa',
+    unit: mockUnit,
     period: 'daily',
     metricsInterval: '2min',
     filters: [],
@@ -57,7 +58,7 @@ const NO_DATA_MESSAGE = 'Aucune donnée disponnible'
 
 describe('Widget component test', () => {
     test('when the widget is rendered with consommation totale', async () => {
-        mockWidgetProps.unit = 'kWh'
+        mockUnit.mockReturnValue('kWh')
         mockValue.mockReturnValue(123)
         const { getByText } = reduxedRender(<Widget {...mockWidgetProps} />)
 
@@ -66,7 +67,7 @@ describe('Widget component test', () => {
     })
     test('when the widget is rendered with puissance max', async () => {
         mockWidgetProps.title = 'Puissance Maximale'
-        mockWidgetProps.unit = 'kVa'
+        mockUnit.mockReturnValue('kVa')
         mockValue.mockReturnValue(123)
         const { getByText } = reduxedRender(<Widget {...mockWidgetProps} />)
 
@@ -75,7 +76,7 @@ describe('Widget component test', () => {
     })
     test('when the widget is rendered with internal temperature', async () => {
         mockWidgetProps.title = 'Température Intérieure'
-        mockWidgetProps.unit = '°C'
+        mockUnit.mockReturnValue('°C')
         mockValue.mockReturnValue(123)
         const { getByText } = reduxedRender(<Widget {...mockWidgetProps} />)
 
@@ -84,7 +85,7 @@ describe('Widget component test', () => {
     })
     test('when the widget is rendered with external temperature', async () => {
         mockWidgetProps.title = 'Température Extérieure'
-        mockWidgetProps.unit = '°C'
+        mockUnit.mockReturnValue('°C')
         mockValue.mockReturnValue(123)
         const { getByText } = reduxedRender(<Widget {...mockWidgetProps} />)
 

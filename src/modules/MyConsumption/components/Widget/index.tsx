@@ -78,7 +78,7 @@ export const Widget = ({ title, unit, type, period, filters, metricsInterval, ra
                                     <div className="flex flex-col">
                                         {/* Widget unit */}
                                         <Typography className="text-14 font-medium mb-24" color="textSecondary">
-                                            {unit}
+                                            {unit(data)}
                                         </Typography>
                                         {/* TODDO MYEM-2588*/}
                                         {/* Widget arrow */}
