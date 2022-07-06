@@ -1,4 +1,9 @@
-import { ApexAxisChartSerie, metricFiltersType, metricRangeType } from 'src/modules/Metrics/Metrics.d'
+import {
+    ApexAxisChartSerie,
+    metricFiltersType,
+    metricRangeType,
+    metricTargetsEnum,
+} from 'src/modules/Metrics/Metrics.d'
 import dayjs from 'dayjs'
 import { periodType } from 'src/modules/MyConsumption/myConsumptionTypes.d'
 import { ApexChartsAxisValuesType } from 'src/modules/MyConsumption/myConsumptionTypes'
@@ -179,7 +184,7 @@ export const generateXAxisValues = (period: periodType, range: metricRangeType) 
  * We have to do a maping also because, from the example [Saturday, Sunday, Monday, Tuesday, Wednesday, Thursday, Friday] xAxisLabels that we generate front side, backend can response with gap ie, backend can give values for only [Saturday, Friday] and no data is given for days in between Saturday and Friay, thus we're using an alogirthm where we will map through [Saturday, Sunday, Monday, Tuesday, Wednesday, Thursday, Friday] and we construct a new yAxisValues that will have length of 7, where don't lose the indexing of Saturday and Friday given by back which will be respectively index 0 and 6  and still fill yAxisValues[indexes: 1, 2, 3, 4, 5, 6 representing the missing data from back], if there is no mapping yAxisValues will have the index 0 representing data for Saturday and index 1 representing data for Friday, which will be a wrong chart.
  *
  * @param ApexChartsMissingAxisValues ApexChartsAxisValues with the missing values for the indicated period.
- * @param period The Curent Period.
+ * @param period Period of the chart ('daily', 'weekly', 'montly', 'yearly').
  * @param range Range represents the first day and last day.
  * @returns ApexChartsAxisValues for the given range and period.
  */
@@ -189,88 +194,143 @@ export const fillApexChartsAxisMissingValues = (
     range: metricRangeType,
 ) => {
     // Checking if AxisValues are empty no need to feel anything, because there is no response data.
-    if (ApexChartsMissingAxisValues.yAxisSeries.length === 0 || ApexChartsMissingAxisValues.xAxisValues.length === 0)
+    if (ApexChartsMissingAxisValues.yAxisSeries.length === 0 || ApexChartsMissingAxisValues.xAxisSeries.length === 0)
         return ApexChartsMissingAxisValues
+    const xAxisExpectedValues = generateXAxisValues(period, range)
+
+    // Filling the missing values for all data targets happens only when period is yearly, otherwise the check is only for consumption target.
+    if (period === 'yearly')
+        ApexChartsMissingAxisValues.yAxisSeries.forEach((yAxisSerie: ApexAxisChartSerie, serieIndex: number) => {
+            // fillTargetYAxisValues check also if there are missing values.
+            yAxisSerie.data = fillTargetYAxisValues(
+                yAxisSerie.data,
+                ApexChartsMissingAxisValues.xAxisSeries[serieIndex],
+                xAxisExpectedValues,
+                period,
+            ) as ApexAxisChartSerie['data']
+        })
+    else {
+        let consumptionSerieIndex = 0
+        // When period not yearly the missing values is only in the consumption target.
+        const consumptionSeries: ApexAxisChartSerie = ApexChartsMissingAxisValues.yAxisSeries.find(
+            (serie: ApexAxisChartSerie, serieIndex: number) => {
+                if (serie.name === metricTargetsEnum.consumption) {
+                    consumptionSerieIndex = serieIndex
+                    return true
+                }
+                return false
+            },
+        )!
+        consumptionSeries.data = fillTargetYAxisValues(
+            consumptionSeries.data,
+            ApexChartsMissingAxisValues.xAxisSeries[consumptionSerieIndex],
+            xAxisExpectedValues,
+            period,
+        ) as ApexAxisChartSerie['data']
+    }
+
+    ApexChartsMissingAxisValues.xAxisSeries[0] = xAxisExpectedValues
+    return ApexChartsMissingAxisValues
+}
+/**
+ * Function that map and fills missing values for given yAxisMissingValues.
+ *
+ * @param yAxisMissingValues ApexChartsAxisValues with the missing values for the indicated period.
+ * @param xAxisMissingValues The Curent Period.
+ * @param xAxisExpectedValues The Curent Period.
+ * @param period Period of the chart ('daily', 'weekly', 'montly', 'yearly').
+ * @returns ApexChartsAxisValues for the given range and period.
+ */
+const fillTargetYAxisValues = (
+    yAxisMissingValues: ApexAxisChartSerie['data'],
+    xAxisMissingValues: number[],
+    xAxisExpectedValues: number[],
+    period: periodType,
+) => {
     // Checking if there are missing axis values to fill them.
-    if (!isMissingApexChartsAxisValues(ApexChartsMissingAxisValues, period)) return ApexChartsMissingAxisValues
-    const xAxisFilledValues = generateXAxisValues(period, range)
-    const consumptionSeries: ApexAxisChartSerie = ApexChartsMissingAxisValues.yAxisSeries.find(
-        // TODO FIX IN 2427, by adding the enum type
-        (serie: ApexAxisChartSerie) => serie.name === 'consumption_metrics',
-    )!
+    if (!isMissingYAxisValues(yAxisMissingValues, period)) return yAxisMissingValues
 
     // This index will help to go through backend xAxis because there is a gap, the length of xAxis backend will not be the same of expected xAxis length, thus they'll not have the same idnexing.
-    let missingAxisValuesIndex = 0
+    let missAxisValuesIndex = 0
+
     // Filling the missing y value with null, so that we can show its xAxis label, otherwise if ApexCharts if he find xAxis[i] and doesn't find yAxis[i] of the same index it'll hide the xAxis label, however even if yAxis[i] === null ApexCharts will show its xAxis[i], and that's why we're doing this so that we can show xAxis labels (for example: period === 'weekly', xAxis will be [Saturday, Sunday, Monday, Tuesday, Wednesday, Thursday, Friday], and if yValus in Monday doesn't exist in ApexCharts it'll hide Tuesday, thus it'll show only 6 entries on the graph instead of 7, but by giving null to yValue it'll show all days including Tuesday but with no value on the chart).
-    consumptionSeries.data = xAxisFilledValues.map((xFilledValue) => {
+    // consumptionSeries.data = fillMissingYValues(xAxisExpectedValues,
+    return xAxisExpectedValues.map((xAxisValue) => {
         // Checking dates so that even if there is gap from backend response, we put the backend xAxis index value in its correct expected xAxis counterpart.
         if (
             // This condition means we covered all values from back, so we just need to return null to fill the missing ones.
-            missingAxisValuesIndex === ApexChartsMissingAxisValues.xAxisValues.length ||
-            !isEqualDates(xFilledValue, ApexChartsMissingAxisValues.xAxisValues[missingAxisValuesIndex], period)
+            missAxisValuesIndex === xAxisMissingValues.length ||
+            !isEqualDates(xAxisValue, xAxisMissingValues[missAxisValuesIndex], period)
         ) {
             // Filling the missing y value with null, so that we can show its xAxis label, otherwise if ApexCharts if he find xAxis[i] and doesn't find yAxis[i] of the same index it'll hide the xAxis label, however even if yAxis[i] === null ApexCharts will show its xAxis[i], and that's why we're doing this so that we can show xAxis labels (for example: period === 'weekly', xAxis will be [Saturday, Sunday, Monday, Tuesday, Wednesday, Thursday, Friday], and if yValus in Monday doesn't exist in ApexCharts it'll hide Tuesday, thus it'll show only 6 entries on the graph instead of 7, but by giving null to yValue it'll show all days including Tuesday but with no value on the chart).
             return null
         }
 
         // Here we're saving the the backend axis value in its correct place (index) on the expected axis values counterpart, and thus we increment the index to handle and map the next backend axis value.
-        missingAxisValuesIndex += 1
-        return consumptionSeries.data[missingAxisValuesIndex - 1] as number
+        missAxisValuesIndex += 1
+        return yAxisMissingValues[missAxisValuesIndex - 1]
     })
-    ApexChartsMissingAxisValues.xAxisValues = xAxisFilledValues
-    return ApexChartsMissingAxisValues
 }
 
 /**
- * Check if the converted ApexChartsAxisValues have missing values, according to the expected number elements for each period.
+ * Check if the YAxisValues given have missing values, according to the expected number of elements for each period.
  *
- * @param ApexChartsAxisValues ApexChartsAxisValues.
- * @param period Current Period.
+ * @param yAxisValues The YAxisValues.
+ * @param period Period of the chart ('daily', 'weekly', 'montly', 'yearly').
  * @returns Boolean indicating if there is the expected number of data according to the period given.
  */
-export const isMissingApexChartsAxisValues = (ApexChartsAxisValues: ApexChartsAxisValuesType, period: periodType) => {
-    if (ApexChartsAxisValues.yAxisSeries.length === 0) return false
-
-    // TODO FIX IN 2427, by adding the enum type
-    const consumptionSeries = ApexChartsAxisValues.yAxisSeries.find(
-        (serie: ApexAxisChartSerie) => serie.name === 'consumption_metrics',
-    )
-
+export const isMissingYAxisValues = (yAxisValues: ApexAxisChartSerie['data'], period: periodType) => {
     /**
-     * If period is weekly then Consumption chart has 7, representing all the the days of the week ending at the current day.
+     * If period is weekly then yAxisValues chart has 7, representing all the the days of the week ending at the current day.
      * Example: Saturday 20 June, data will include [Sunday 14 June, Monday 15 June, Tuesday 16 June, Wednesday 17 June, Thursday 18 June, Friday 19 June, Saturday 20 June].
      */
-    if (period === 'weekly') return consumptionSeries!.data.length !== 7
+    if (period === 'weekly') return yAxisValues.length !== 7
     /**
-     * When Period is monthly then Consumption elements has 31 || 32 elements, representing all the days of the month preceding the current day.
+     * When Period is monthly then yAxisValues elements has 31 || 32 elements, representing all the days of the month preceding the current day.
      * Thus number of elements represents the length of month including the previous day.
      */
-    if (period === 'monthly') return consumptionSeries!.data.length !== 31 || consumptionSeries!.data.length === 32
+    if (period === 'monthly') return yAxisValues.length < 31 || yAxisValues.length > 32
     /**
-     * If period is yearly then Consumption chart has 13 elements, representing all the months starting from the year preceding the current month with duplicating the current month.
+     * If period is yearly then yAxisValues chart has 13 elements, representing all the months starting from the year preceding the current month with duplicating the current month.
      * Because example wwhen current month is June 2021, then the data will include [June 2020, July 2020, August 2020, September 2020, October 2020, November 2020, December 2020, January 2021, February 2021, March 2021, April 2021, May 2021, June 2021].
      */
-    if (period === 'yearly') return consumptionSeries!.data.length !== 13
+    if (period === 'yearly') return yAxisValues.length !== 13
     /**
-     * Default is daily, Data should have 30 * 24 elements.     * 30 Represents 1h, because interval each 2min.
+     * Default is daily, Data should have 30 * 24 elements.
+     * 30 Represents 1h, because interval each 2min.
      * 24 Because there is 24 hours a day.
      */
-    return consumptionSeries!.data.length !== 30 * 24
+    return yAxisValues.length !== 30 * 24
 }
 
 /**
  * Check the equality of two timestamps according to the period, if its daily we check the time (for example, date1: 12/12/2022 12:00, date2: 12/12/2022 12:01).
  *
- * If period is not daily, we don't need to check the time thus we check only the day, month and year.
+ * If period is daily, we check the whole day including hours and minutes.
+ * If period is yearly, we check the month and year.
+ * Otherwise, we check the day, month and year.
  *
- * Thus function will help to map correctly the missingAxisValues and put it in the right index in the expectedAxisValues.
+ * Thus function will help to map correctly the missingYAxisValues and put it in the right index in the expectedXAxisValues.
  *
  * @param date1 Timestamp of first date.
  * @param date2 Timestamp of second date.
- * @param period Period.
+ * @param period Period of the chart ('daily', 'weekly', 'montly', 'yearly').
  * @returns Boolean if the dates are equal, the comparaison will depend on the period.
  */
 export const isEqualDates = (date1: number, date2: number, period: periodType) => {
-    if (period === 'daily') return dayjs(new Date(date1)).format() === dayjs(new Date(date2)).format()
-    else return dayjs(new Date(date1)).format('DD/MM/YYYY') === dayjs(new Date(date2)).format('DD/MM/YYYY')
+    if (period === 'daily')
+        return (
+            dayjs.utc(new Date(date1).toUTCString()).format('D/M/YY-HH:mm') ===
+            dayjs.utc(new Date(date2).toUTCString()).format('D/M/YY-HH:mm')
+        )
+    else if (period === 'yearly')
+        return (
+            dayjs.utc(new Date(date1).toUTCString()).format('MM/YYYY') ===
+            dayjs.utc(new Date(date2).toUTCString()).format('MM/YYYY')
+        )
+    else
+        return (
+            dayjs.utc(new Date(date1).toUTCString()).format('DD/MM/YYYY') ===
+            dayjs.utc(new Date(date2).toUTCString()).format('DD/MM/YYYY')
+        )
 }

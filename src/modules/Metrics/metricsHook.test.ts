@@ -1,6 +1,8 @@
 import { reduxedRenderHook } from 'src/common/react-platform-components/test'
 import { useMetrics } from 'src/modules/Metrics/metricsHook'
+import { act } from '@testing-library/react-hooks'
 import { getMetricType, metricRangeType, metricTargetsType } from 'src/modules/Metrics/Metrics'
+import { getRange } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
 
 const mockEnqueueSnackbar = jest.fn()
 
@@ -84,4 +86,46 @@ describe('useMetrics hook test', () => {
             autoHideDuration: 5000,
         })
     }, 8000)
+
+    test('When add and remove target, targets should change and getMetrics should work', async () => {
+        mockHookArguments.targets = []
+        mockHookArguments.interval = '2min'
+        mockHookArguments.range = getRange('day')
+        const {
+            renderedHook: { result, waitForValueToChange },
+        } = reduxedRenderHook(() => useMetrics(mockHookArguments))
+
+        expect(result.current.isMetricsLoading).toBeTruthy()
+        await waitForValueToChange(
+            () => {
+                return result.current.isMetricsLoading
+            },
+            { timeout: 4000 },
+        )
+        expect(result.current.isMetricsLoading).toBeFalsy()
+        expect(result.current.data.length).toBe(0)
+        // Add Target
+        act(() => {
+            result.current.addTarget(FAKE_TARGETS[0].target)
+        })
+        await waitForValueToChange(
+            () => {
+                return result.current.data
+            },
+            { timeout: 8000 },
+        )
+        expect(result.current.data.length).toBeGreaterThan(0)
+        expect(result.current.data[0].target).toBe(FAKE_TARGETS[0].target)
+        // Remove target
+        act(() => {
+            result.current.removeTarget(FAKE_TARGETS[0].target)
+        })
+        await waitForValueToChange(
+            () => {
+                return result.current.data
+            },
+            { timeout: 8000 },
+        )
+        expect(result.current.data.length).toBe(0)
+    }, 30000)
 })

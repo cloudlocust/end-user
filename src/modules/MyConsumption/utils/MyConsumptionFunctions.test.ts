@@ -3,7 +3,7 @@ import {
     generateXAxisValues,
     fillApexChartsAxisMissingValues,
     formatMetricFilter,
-    isMissingApexChartsAxisValues,
+    isMissingYAxisValues,
 } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
 import { IMetric, metricIntervalType } from 'src/modules/Metrics/Metrics'
 import { FAKE_WEEK_DATA, FAKE_DAY_DATA, FAKE_MONTH_DATA, FAKE_YEAR_DATA } from 'src/mocks/handlers/metrics'
@@ -24,7 +24,12 @@ const fakeWeekTimestamp = 1641603600000
  * Fake Range for the fake timestamp, according to the FAKE_WEEK_DATA.
  */
 const fakeWeekRange = {
-    from: dayjs(new Date(fakeWeekTimestamp)).subtract(1, 'week').startOf('day').toDate().toISOString(),
+    from: dayjs
+        .utc(new Date(fakeWeekTimestamp).toUTCString())
+        .subtract(1, 'week')
+        .startOf('day')
+        .toDate()
+        .toISOString(),
     to: dayjs(new Date(fakeWeekTimestamp)).subtract(1, 'day').startOf('day').toDate().toISOString(),
 }
 
@@ -98,7 +103,7 @@ describe('test pure functions', () => {
             'weekly',
             fakeWeekRange,
         )
-        expect(ApexChartsFilledAxisValues.xAxisValues).toHaveLength(7)
+        expect(ApexChartsFilledAxisValues.xAxisSeries[0]).toHaveLength(7)
         expect(ApexChartsFilledAxisValues.yAxisSeries[0].data).toHaveLength(7)
         expect(ApexChartsFilledAxisValues.yAxisSeries[0].data[0]).toEqual(MOCK_WEEK_MISSING_DATA[0][0])
         expect(ApexChartsFilledAxisValues.yAxisSeries[0].data[1]).toEqual(MOCK_WEEK_MISSING_DATA[1][0])
@@ -111,7 +116,7 @@ describe('test pure functions', () => {
         // When yAxisSeries is empty nothing should changes
         apexChartsMissingValues = convertMetricsDataToApexChartsAxisValues([])
         ApexChartsFilledAxisValues = fillApexChartsAxisMissingValues(apexChartsMissingValues, 'weekly', fakeWeekRange)
-        expect(ApexChartsFilledAxisValues.xAxisValues).toHaveLength(0)
+        expect(ApexChartsFilledAxisValues.xAxisSeries).toHaveLength(0)
         expect(ApexChartsFilledAxisValues.yAxisSeries).toHaveLength(0)
     }, 20000)
 
@@ -126,49 +131,49 @@ describe('test pure functions', () => {
             },
         ])
     })
-    test('isMissingApexChartsAxisValues test', async () => {
+    test('isMissingYAxisValues test', async () => {
         interval = '2min'
         // When day period, and data doesn't contains all day values.
         mockMetricsData[0].datapoints = FAKE_DAY_DATA
         let ApexChartsFilledAxisValues = convertMetricsDataToApexChartsAxisValues(mockMetricsData)
-        let isMissingValues = isMissingApexChartsAxisValues(ApexChartsFilledAxisValues, 'daily')
+        let isMissingValues = isMissingYAxisValues(ApexChartsFilledAxisValues.yAxisSeries[0].data, 'daily')
         expect(isMissingValues).toBeTruthy()
 
         // When week period, and data contains all week values.
         mockMetricsData[0].datapoints = FAKE_WEEK_DATA
         ApexChartsFilledAxisValues = convertMetricsDataToApexChartsAxisValues(mockMetricsData)
-        isMissingValues = isMissingApexChartsAxisValues(ApexChartsFilledAxisValues, 'weekly')
+        isMissingValues = isMissingYAxisValues(ApexChartsFilledAxisValues.yAxisSeries[0].data, 'weekly')
         expect(isMissingValues).toBeFalsy()
 
         // When week period, and data doesn't contains all week values.
         mockMetricsData[0].datapoints = FAKE_WEEK_DATA.filter((v, i) => i !== 0)
         ApexChartsFilledAxisValues = convertMetricsDataToApexChartsAxisValues(mockMetricsData)
-        isMissingValues = isMissingApexChartsAxisValues(ApexChartsFilledAxisValues, 'weekly')
+        isMissingValues = isMissingYAxisValues(ApexChartsFilledAxisValues.yAxisSeries[0].data, 'weekly')
         expect(isMissingValues).toBeTruthy()
 
         // When month period, and data contains all month values.
         mockMetricsData[0].datapoints = FAKE_MONTH_DATA
         ApexChartsFilledAxisValues = convertMetricsDataToApexChartsAxisValues(mockMetricsData)
-        isMissingValues = isMissingApexChartsAxisValues(ApexChartsFilledAxisValues, 'monthly')
+        isMissingValues = isMissingYAxisValues(ApexChartsFilledAxisValues.yAxisSeries[0].data, 'monthly')
         expect(isMissingValues).toBeFalsy()
 
         // When month period, and data doesn't contains all month values.
         mockMetricsData[0].datapoints = FAKE_MONTH_DATA.filter((v, i) => i !== 0)
         ApexChartsFilledAxisValues = convertMetricsDataToApexChartsAxisValues(mockMetricsData)
-        isMissingValues = isMissingApexChartsAxisValues(ApexChartsFilledAxisValues, 'yearly')
+        isMissingValues = isMissingYAxisValues(ApexChartsFilledAxisValues.yAxisSeries[0].data, 'yearly')
         expect(isMissingValues).toBeTruthy()
 
         // When year period, and data contains all year values.
         mockMetricsData[0].datapoints = FAKE_YEAR_DATA
         mockMetricsData[0].datapoints.push([33, timestamp1])
         ApexChartsFilledAxisValues = convertMetricsDataToApexChartsAxisValues(mockMetricsData)
-        isMissingValues = isMissingApexChartsAxisValues(ApexChartsFilledAxisValues, 'yearly')
+        isMissingValues = isMissingYAxisValues(ApexChartsFilledAxisValues.yAxisSeries[0].data, 'yearly')
         expect(isMissingValues).toBeFalsy()
 
         // When year period, and data doesn't contains all week values.
         mockMetricsData[0].datapoints = FAKE_YEAR_DATA.filter((v, i) => i !== 0)
         ApexChartsFilledAxisValues = convertMetricsDataToApexChartsAxisValues(mockMetricsData)
-        isMissingValues = isMissingApexChartsAxisValues(ApexChartsFilledAxisValues, 'yearly')
+        isMissingValues = isMissingYAxisValues(ApexChartsFilledAxisValues.yAxisSeries[0].data, 'yearly')
         expect(isMissingValues).toBeTruthy()
     })
 })

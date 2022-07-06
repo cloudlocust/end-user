@@ -8,6 +8,7 @@ import { ApexOptions } from 'apexcharts'
 import { periodType } from 'src/modules/MyConsumption/myConsumptionTypes'
 import { dayjsUTC } from 'src/common/react-platform-components'
 import { MessageDescriptor } from 'react-intl'
+import { metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
 import dayjs from 'dayjs'
 
 const nrlinkConsumptionMetricsText = 'Consommation'
@@ -19,7 +20,7 @@ const mockDatapoints = [[247, 1651406400]]
 // eslint-disable-next-line jsdoc/require-jsdoc
 const mockYAxisSeriesConvertedData: ApexAxisChartSeries = [
     {
-        name: 'consumption_metrics',
+        name: metricTargetsEnum.consumption,
         data: [mockDatapoints[0][0]],
     },
 ]
@@ -81,6 +82,14 @@ const mockOptions: (theme: Theme, period: periodType) => ApexOptions = (theme, p
         },
         type: 'category',
     },
+    markers: {
+        ...defaultApexChartOptions(theme)?.markers,
+        size: [0],
+    },
+    stroke: {
+        ...defaultApexChartOptions(theme)?.stroke,
+        width: [0],
+    },
     tooltip: {
         x: {
             // eslint-disable-next-line jsdoc/require-jsdoc
@@ -122,7 +131,9 @@ describe('test pure function', () => {
     test('getApexChartMyConsumptionProps with different period and mobile', async () => {
         // ApexChart Props
         let period = 'daily' as periodType
-        const timestamp = new Date(dayjs(new Date(1640997720000)).startOf('day').format()).getTime()
+        // GMT: Saturday, 1 January 2022 00:42:00
+        const TEST_TIMESTAMP = 1640997720000
+        const timestamp = new Date(dayjs.utc(new Date(TEST_TIMESTAMP).toUTCString()).startOf('day').format()).getTime()
         mockXAxisValuesConvertedData[0] = timestamp
         const tooltipTimeStampDays = 'Sat 01 Jan'
         const tooltipTimeStampYear = 'January'
@@ -211,5 +222,61 @@ describe('test pure function', () => {
         })
         expect(apexChartProps.series).toStrictEqual([])
         expect(apexChartProps.options.xaxis!.categories).toStrictEqual([])
+    })
+    test('convertMetricsDataToApexChartsProps with additional temperatures yaxis', async () => {
+        mockYAxisSeriesConvertedData[0].data = [mockDatapoints[0][0]]
+
+        let period = 'weekly' as periodType
+        // External Temperature
+        mockYAxisSeriesConvertedData.push({
+            name: metricTargetsEnum.externalTemperature,
+            data: mockYAxisSeriesConvertedData[0].data,
+        })
+        mockyAxisSeries.push({
+            data: mockYAxisSeriesConvertedData[0].data,
+            name: 'Température Extérieure',
+            type: 'line',
+            color: theme.palette.secondary.main,
+        })
+
+        // Internal Temperature
+        mockYAxisSeriesConvertedData.push({
+            name: metricTargetsEnum.internalTemperature,
+            data: mockYAxisSeriesConvertedData[0].data,
+        })
+        mockyAxisSeries.push({
+            data: mockYAxisSeriesConvertedData[0].data,
+            name: 'Température Intérieure',
+            type: 'line',
+            color: '#BA1B1B',
+        })
+
+        // Pmax
+        mockYAxisSeriesConvertedData.push({
+            name: metricTargetsEnum.pMax,
+            data: mockYAxisSeriesConvertedData[0].data,
+        })
+        mockyAxisSeries.push({
+            data: mockYAxisSeriesConvertedData[0].data,
+            name: 'Pmax',
+            type: 'line',
+            color: '#FF7A00',
+        })
+
+        // ApexChart Props
+        const apexChartProps = getApexChartMyConsumptionProps({
+            yAxisSeries: mockYAxisSeriesConvertedData,
+            xAxisValues: mockXAxisValuesConvertedData,
+            chartType: 'bar',
+            formatMessage: mockFormatMessage,
+            theme,
+            period,
+        })
+        expect(apexChartProps.series).toStrictEqual(mockyAxisSeries)
+        expect((apexChartProps.options.yaxis as ApexYAxis[])[0].labels!.formatter!(12)).toStrictEqual('12 KWh')
+        expect((apexChartProps.options.yaxis as ApexYAxis[])[1].labels!.formatter!(12)).toStrictEqual('12 °C')
+        expect((apexChartProps.options.yaxis as ApexYAxis[])[2].labels!.formatter!(12)).toStrictEqual('12 °C')
+        expect((apexChartProps.options.yaxis as ApexYAxis[])[2].show).toBeFalsy()
+        expect((apexChartProps.options.yaxis as ApexYAxis[])[3].labels!.formatter!(12)).toStrictEqual('12 kVA')
     })
 })

@@ -6,8 +6,10 @@ import { ThemeProvider } from '@mui/material'
 import { TEST_SUCCESS_WEEK_METRICS as MOCK_WEEK_METRICS } from 'src/mocks/handlers/metrics'
 import { applyCamelCase } from 'src/common/react-platform-components'
 import { periodType } from 'src/modules/MyConsumption/myConsumptionTypes'
+import { metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
 import { getRange } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
-const TEST_SUCCESS_WEEK_METRICS = applyCamelCase(MOCK_WEEK_METRICS)
+
+const TEST_SUCCESS_WEEK_METRICS = applyCamelCase(MOCK_WEEK_METRICS([metricTargetsEnum.consumption]))
 // eslint-disable-next-line jsdoc/require-jsdoc
 const propsMyConsumptionChart = {
     data: TEST_SUCCESS_WEEK_METRICS,
