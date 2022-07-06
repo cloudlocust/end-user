@@ -2,7 +2,7 @@ import { ApexAxisChartSerie, metricFiltersType, metricRangeType } from 'src/modu
 import dayjs from 'dayjs'
 import { periodType } from 'src/modules/MyConsumption/myConsumptionTypes.d'
 import { ApexChartsAxisValuesType } from 'src/modules/MyConsumption/myConsumptionTypes'
-import { add, addDays, endOfDay, isToday, startOfDay, sub, subDays } from 'date-fns'
+import { add, addDays, endOfDay, subMinutes, startOfDay, sub, subDays } from 'date-fns'
 
 /**
  * FormatMetricFilter function converts the data to the required format.
@@ -51,8 +51,8 @@ const convertPeriod = (rangePeriod: string) => {
  */
 export const getRange = (rangePeriod: string, toDate?: Date, operation: 'sub' | 'add' = 'sub') => {
     const currentDate = toDate || new Date()
-    const endOfCurrentDay = isToday(currentDate) ? currentDate : endOfDay(currentDate)
     const period = convertPeriod(rangePeriod)
+    const localOffset = currentDate.getTimezoneOffset()
     /**
      * SetRange function.
      *
@@ -80,9 +80,18 @@ export const getRange = (rangePeriod: string, toDate?: Date, operation: 'sub' | 
         if (period === 'days') return dayDate
         return currentDate
     }
+    /**
+     * GetDateWithoutOffset function.
+     *
+     * @param date Current date.
+     * @returns Date without utc offset.
+     */
+    const getDateWithoutOffset = (date: Date) => {
+        return subMinutes(date, localOffset).toISOString()
+    }
     return {
-        from: setRange('sub', startOfDay(currentDate), subDays, sub).toISOString(),
-        to: setRange('add', endOfCurrentDay, addDays, add).toISOString(),
+        from: getDateWithoutOffset(setRange('sub', startOfDay(currentDate), subDays, sub)),
+        to: getDateWithoutOffset(setRange('add', endOfDay(currentDate), addDays, add)),
     }
 }
 
