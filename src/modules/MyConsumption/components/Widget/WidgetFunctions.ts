@@ -49,7 +49,7 @@ export const computePMax = (data: IMetric[]): { value: number; unit: 'kVa' | 'VA
         }
     } else {
         return {
-            // Number(maxPowerVA) crashes the app (black screen) so an alterantive way
+            // Number(maxPowerVA) crashes the app (black screen)
             value: maxPowerVA,
             unit: 'VA',
         }
