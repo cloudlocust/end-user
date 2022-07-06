@@ -49,7 +49,7 @@ export const computePMax = (data: IMetric[]): { value: number; unit: 'kVa' | 'VA
         }
     } else {
         return {
-            value: maxPowerVA,
+            value: Number(maxPowerVA.toFixed(2)),
             unit: 'VA',
         }
     }
