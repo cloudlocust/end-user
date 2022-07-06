@@ -44,11 +44,12 @@ export const computePMax = (data: IMetric[]): { value: number; unit: 'kVa' | 'VA
     // The number is rounded with two number of digits after the decimal point.
     if (maxPowerVA > 999) {
         return {
-            value: Number(convert(maxPowerVA).to('kVA').toFixed(2)),
+            value: Number(convert(maxPowerVA).from('VA').to('kVA').toFixed(2)),
             unit: 'kVa',
         }
     } else {
         return {
+            // Number(maxPowerVA) crashes the app (black screen) so an alterantive way
             value: maxPowerVA,
             unit: 'VA',
         }
