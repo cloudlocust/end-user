@@ -37,7 +37,7 @@ export type widgetType = {
     /**
      * Widget unit.
      */
-    unit: (data: IMetric[]) => 'W' | 'kWh' | 'MWh' | 'VA' | 'kVa' | '°C'
+    computeUnit: (data: IMetric[]) => 'W' | 'kWh' | 'MWh' | 'VA' | 'kVa' | '°C'
     /**
      * Function that returns the value of the specific widget type.
      */

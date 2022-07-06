@@ -10,15 +10,17 @@ import { IWidgetProps } from 'src/modules/MyConsumption/components/Widget/Widget
  *
  * @param root0 N/A.
  * @param root0.title Widget title.
- * @param root0.unit Widget unit.
  * @param root0.type Widget type.
  * @param root0.period Period date.
  * @param root0.filters Filters from parent component.
  * @param root0.metricsInterval MetricsInterval from parent component.
  * @param root0.range Range from parent component.
+ * @param root0.unit Widget unit.
  * @param root0.value Value displayed for a specific widget type.
  * @returns Single Widget component.
  */
+// TODO Improve value and unit in order not to have them from 2 functions but rather one.
+// To be done when the architecture of metrics in Widgets is changed.
 export const Widget = ({ title, unit, type, period, filters, metricsInterval, range, value }: IWidgetProps) => {
     const theme = useTheme()
     const widgetInitialMetricsValues: getMetricType = {
