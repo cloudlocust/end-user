@@ -43,6 +43,7 @@ function Layout1({
 
     const theme = useTheme()
     const lgDown = useMediaQuery(theme.breakpoints.down('lg'))
+    const mdDown = useMediaQuery(theme.breakpoints.down('md'))
 
     /**
      *  Handler for closing mobileNavbar.
@@ -66,7 +67,7 @@ function Layout1({
                 <main
                     id="fuse-main"
                     className="flex flex-col flex-auto min-h-screen min-w-0 relative z-10 overflow-y-auto"
-                    style={{ marginBottom: lgDown ? '64px' : '0' }}
+                    style={{ marginBottom: mdDown ? '64px' : '0' }}
                 >
                     {displayToolbar && (
                         <ToolbarLayout1
