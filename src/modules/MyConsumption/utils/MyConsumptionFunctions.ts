@@ -2,7 +2,7 @@ import { ApexAxisChartSerie, metricFiltersType, metricRangeType } from 'src/modu
 import dayjs from 'dayjs'
 import { periodType } from 'src/modules/MyConsumption/myConsumptionTypes.d'
 import { ApexChartsAxisValuesType } from 'src/modules/MyConsumption/myConsumptionTypes'
-import { add, addDays, endOfDay, subMinutes, startOfDay, sub, subDays } from 'date-fns'
+import { add, addDays, endOfDay, subMinutes, startOfDay, sub, subDays, startOfMonth } from 'date-fns'
 
 /**
  * FormatMetricFilter function converts the data to the required format.
@@ -72,13 +72,12 @@ export const getRange = (rangePeriod: string, toDate?: Date, operation: 'sub' | 
     ) => {
         if (operation === operator) {
             if (period === 'days') return dayDate
-            if (period === 'weeks') return doDays(currentDate, 6)
-            return action(currentDate, {
+            if (period === 'weeks') return doDays(dayDate, 6)
+            return action(period === 'years' ? startOfMonth(currentDate) : dayDate, {
                 [period as string]: 1,
             })
         }
-        if (period === 'days') return dayDate
-        return currentDate
+        return dayDate
     }
     /**
      * GetDateWithoutOffset function.
