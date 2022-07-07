@@ -91,7 +91,8 @@ const MyConsumptionDatePicker = ({ period, setRange, range }: IMyConsumptionDate
                                 value={currentDate}
                                 inputFormat={item.inputFormat}
                                 maxDate={new Date()}
-                                onChange={handleDateChange}
+                                onChange={() => {}}
+                                onAccept={handleDateChange}
                                 cancelText={formatMessage({ id: 'Annuler', defaultMessage: 'Annuler' })}
                                 toolbarTitle={null}
                                 renderInput={(params) => (
