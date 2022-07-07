@@ -19,7 +19,7 @@ export type widgetTitleType =
 /**
  * Total Consumption Units types.
  */
-export type totalConsumptionUnits = 'W' | 'kWh' | 'MWh'
+export type totalConsumptionUnits = 'Wh' | 'kWh' | 'MWh'
 
 /**
  * Widget list type.
@@ -37,7 +37,7 @@ export type widgetType = {
     /**
      * Widget unit.
      */
-    computeUnit: (data: IMetric[]) => 'W' | 'kWh' | 'MWh' | 'VA' | 'kVa' | '°C'
+    computeUnit: (data: IMetric[]) => 'Wh' | 'kWh' | 'MWh' | 'VA' | 'kVa' | '°C'
     /**
      * Function that returns the value of the specific widget type.
      */
@@ -75,7 +75,7 @@ export interface IWidgetProps {
     /**
      * Widget unit.
      */
-    unit: (data: IMetric[]) => 'W' | 'kWh' | 'MWh' | 'VA' | 'kVa' | '°C'
+    unit: (data: IMetric[]) => 'Wh' | 'kWh' | 'MWh' | 'VA' | 'kVa' | '°C'
     /**
      * Widget value.
      */

@@ -2,7 +2,7 @@
 import convert, { Unit } from 'convert-units'
 import { totalConsumptionUnits } from 'src/modules/MyConsumption/components/Widget/Widget'
 /**
- * Converts Watt value into its adequate unit (W, kWh, MWh), and return the value with its corresponding unit.
+ * Converts Watt value into its adequate unit (Wh, kWh, MWh), and return the value with its corresponding unit.
  * If the conversion to a specific unit is less than 999 it returns it.
  *
  * @param valueInWatt Value to be converted.
@@ -18,10 +18,10 @@ export const consumptionWattUnitConversion = (valueInWatt: number) => {
             return {
                 value: Number(convertedValue.toFixed(2)),
                 // If the corresponding unit is Wh, we returns W because we use W indicating Watt instead of Wh in our MyConsumption Module and not (Wh, kWh, MWh), because we can not convert using this library, from W to kWh , or W to MWh.
-                unit: (index === 0 ? 'W' : units[index]) as totalConsumptionUnits,
+                unit: (index === 0 ? 'Wh' : units[index]) as totalConsumptionUnits,
             }
     }
-    // Returns the value and unit of the last unit, W to MWh.
+    // Returns the value and unit of the last unit, Wh to MWh.
     return {
         value: Number(
             convert(valueInWatt)

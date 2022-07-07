@@ -27,7 +27,7 @@ describe('Test widget functions', () => {
         test('when it returns W unit', () => {
             const expectedResult = {
                 value: 50,
-                unit: 'W',
+                unit: 'Wh',
             }
             const data: IMetric[] = [
                 {
