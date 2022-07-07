@@ -1,4 +1,3 @@
-// import { waitFor,  } from '@testing-library/react'
 import { reduxedRender } from 'src/common/react-platform-components/test'
 import { TEST_SUCCESS_DAY_METRICS } from 'src/mocks/handlers/metrics'
 import { IMetric } from 'src/modules/Metrics/Metrics'
