@@ -158,8 +158,8 @@ export const MyConsumptionContainer = () => {
                                     {showPerPeriodText()}
                                 </TypographyFormatMessage>
                             </div>
+                            <MyConsumptionDatePicker period={period} setRange={setRange} range={range} />
                         </div>
-                        <MyConsumptionDatePicker period={period} setRange={setRange} range={range} />
                     </motion.div>
                     {metersList && metersList?.length > 1 && (
                         <SelectMeters
