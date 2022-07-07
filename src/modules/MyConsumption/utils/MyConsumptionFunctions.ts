@@ -47,6 +47,44 @@ const convertPeriod = (rangePeriod: string) => {
     }
 }
 /**
+ * SetRange function.
+ *
+ * @param operation  Add or Sub operation.
+ * @param dayDate Day then the "from" will represent the start of the current Date and the "to" will represent the end of the current date.
+ * @param doDays SubDays or AddDays. Week then the from date, represent the subtracted Week + 1day(6 full days), because we have to count the Week including the subtracted day
+ * thus we add 1 day (for example, if we subtract 1 week from 27/06, it'll return the 20th because it doesn't count the 27th,
+ * thus we add 1 day because the 27th is counted and thus we start from the 21st till 27th which give us 7 days).
+ * @param action Add or sub operation.
+ * @param period Selected period.
+ * @returns Ranged data.
+ */
+const setRange = (
+    operation: 'sub' | 'add',
+    dayDate: Date,
+    doDays: (date: number | Date, amount: number) => Date,
+    action: (date: number | Date, duration: Duration) => Date,
+    period: string | undefined,
+) => {
+    if (operation === action.name) {
+        if (period === 'days') return dayDate
+        if (period === 'weeks') return doDays(dayDate, 6)
+        return action(period === 'years' ? startOfMonth(dayDate) : dayDate, {
+            [period as string]: 1,
+        })
+    }
+    return dayDate
+}
+/**
+ * GetDateWithoutOffset function.
+ *
+ * @param date Current date.
+ * @param localOffset Local offset.
+ * @returns Date without utc offset.
+ */
+const getDateWithoutOffset = (date: Date, localOffset: number) => {
+    return subMinutes(date, localOffset).toISOString()
+}
+/**
  * Function to get range.
  *
  * @param rangePeriod Period for range.
@@ -58,44 +96,9 @@ export const getRange = (rangePeriod: string, toDate?: Date, operation: 'sub' | 
     const currentDate = toDate || new Date()
     const period = convertPeriod(rangePeriod)
     const localOffset = currentDate.getTimezoneOffset()
-    /**
-     * SetRange function.
-     *
-     * @param operator Add or Sub operator.
-     * @param dayDate Day then the "from" will represent the start of the current Date and the "to" will represent the end of the current date.
-     * @param doDays SubDays or AddDays. Week then the from date, represent the subtracted Week + 1day(6 full days), because we have to count the Week including the subtracted day
-     * thus we add 1 day (for example, if we subtract 1 week from 27/06, it'll return the 20th because it doesn't count the 27th,
-     * thus we add 1 day because the 27th is counted and thus we start from the 21st till 27th which give us 7 days).
-     * @param action Add or sub operation.
-     * @returns Ranged data.
-     */
-    const setRange = (
-        operator: 'sub' | 'add',
-        dayDate: Date,
-        doDays: (date: number | Date, amount: number) => Date,
-        action: (date: number | Date, duration: Duration) => Date,
-    ) => {
-        if (operation === operator) {
-            if (period === 'days') return dayDate
-            if (period === 'weeks') return doDays(dayDate, 6)
-            return action(period === 'years' ? startOfMonth(currentDate) : dayDate, {
-                [period as string]: 1,
-            })
-        }
-        return dayDate
-    }
-    /**
-     * GetDateWithoutOffset function.
-     *
-     * @param date Current date.
-     * @returns Date without utc offset.
-     */
-    const getDateWithoutOffset = (date: Date) => {
-        return subMinutes(date, localOffset).toISOString()
-    }
     return {
-        from: getDateWithoutOffset(setRange('sub', startOfDay(currentDate), subDays, sub)),
-        to: getDateWithoutOffset(setRange('add', endOfDay(currentDate), addDays, add)),
+        from: getDateWithoutOffset(setRange(operation, startOfDay(currentDate), subDays, sub, period), localOffset),
+        to: getDateWithoutOffset(setRange(operation, endOfDay(currentDate), addDays, add, period), localOffset),
     }
 }
 
