@@ -1,7 +1,7 @@
 import Icon from '@mui/material/Icon'
 import IconButton from '@mui/material/IconButton'
 import { motion } from 'framer-motion'
-import { subDays, addDays, differenceInCalendarDays } from 'date-fns'
+import { subDays, differenceInCalendarDays } from 'date-fns'
 import React, { useEffect, useState } from 'react'
 import { IMyConsumptionDatePicker, ViewsType } from 'src/modules/MyConsumption/myConsumptionTypes'
 import { useTheme } from '@mui/material'
@@ -31,17 +31,22 @@ const MyConsumptionDatePicker = ({ period, setRange, range }: IMyConsumptionDate
     const [currentDate, setCurrentDate] = useState<Date>(new Date())
     const [buttonAction, setButtonAction] = useState({ sub: false, add: false })
     const isFutureDate = differenceInCalendarDays(currentDate, new Date()) >= 0
+
+    // This useEffect allows to follow the button changes when the user clicks on the right(add) and left(sub) arrows.
+    // If the period === 'daily', then when switching, it need to subtract 1 day, because the daily range is (example): from July 7 00:00 to July 8 23:59
+    // that's why for the day we take the range from previous day
     useEffect(() => {
         if (buttonAction.sub) {
             period === 'daily' ? setCurrentDate(subDays(new Date(range.from), 1)) : setCurrentDate(new Date(range.from))
             setButtonAction({ sub: false, add: false })
         }
         if (buttonAction.add) {
-            period === 'daily' ? setCurrentDate(addDays(new Date(range.to), 1)) : setCurrentDate(new Date(range.to))
+            setCurrentDate(new Date(range.to))
             setButtonAction({ sub: false, add: false })
         }
     }, [buttonAction, period, range])
 
+    // Set Range after first loading or when changing period
     useEffect(() => {
         setRange(getRange(period, currentDate))
     }, [currentDate, period, setRange])

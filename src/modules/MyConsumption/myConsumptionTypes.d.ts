@@ -48,11 +48,11 @@ export interface IMyConsumptionDatePicker {
     /**
      * SetRange function.
      */
-    setRange: (range: metricRange) => void
+    setRange: (range: metricRangeType) => void
     /**
      * Period for range.
      */
-    range: metricRange
+    range: metricRangeType
 }
 /**
  * Type for views in MobileDatePicker.
