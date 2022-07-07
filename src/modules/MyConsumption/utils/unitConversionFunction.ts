@@ -17,7 +17,7 @@ export const consumptionWattUnitConversion = (valueInWatt: number) => {
         if (convertedValue < 999)
             return {
                 value: Number(convertedValue.toFixed(2)),
-                // If the corresponding unit is Wh, we returns W because we use W indicating Watt instead of Wh in our MyConsumption Module and not (Wh, kWh, MWh), because we can not convert using this library, from W to kWh , or W to MWh.
+                //TODO: Change this comment => If the corresponding unit is Wh, we returns W because we use W indicating Watt instead of Wh in our MyConsumption Module and not (Wh, kWh, MWh), because we can not convert using this library, from W to kWh , or W to MWh.
                 unit: (index === 0 ? 'Wh' : units[index]) as totalConsumptionUnits,
             }
     }
