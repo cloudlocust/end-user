@@ -1,6 +1,6 @@
 import { ApexAxisChartSerie, IMetric } from 'src/modules/Metrics/Metrics'
 import { convertMetricsDataToApexChartsAxisValues } from 'src/modules/MyConsumption/utils/apexChartsDataConverter'
-import { sum, max, mean } from 'lodash'
+import { sum, max, mean, ceil } from 'lodash'
 import { consumptionWattUnitConversion } from 'src/modules/MyConsumption/utils/unitConversionFunction'
 import convert from 'convert-units'
 
@@ -65,7 +65,8 @@ export const computePMax = (data: IMetric[]): { value: number; unit: 'kVa' | 'VA
 export const computeTemperature = (data: IMetric[]): { value: number; unit: '°C' } => {
     const values = getDataFromYAxis(data)
     return {
-        value: Math.ceil(mean(values)),
+        // filter(Number) allows us to not take into considerattion any value that is not a Number
+        value: ceil(mean(values.filter(Number))),
         unit: '°C',
     }
 }

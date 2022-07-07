@@ -125,6 +125,8 @@ describe('Test widget functions', () => {
                     datapoints: [
                         [25, 1640995200000],
                         [50, 1641081600000],
+                        [NaN, 1641081600000],
+                        [NaN, 1641081600000],
                     ],
                     target: 'nrlink_internal_temperature_metrics',
                 },
