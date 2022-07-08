@@ -17,6 +17,11 @@ export type widgetTitleType =
     | 'Température Extérieure'
 
 /**
+ * Total Consumption Units types.
+ */
+export type totalConsumptionUnits = 'Wh' | 'kWh' | 'MWh'
+
+/**
  * Widget list type.
  */
 // eslint-disable-next-line jsdoc/require-jsdoc
@@ -32,11 +37,11 @@ export type widgetType = {
     /**
      * Widget unit.
      */
-    unit: ((data: IMetric[], type: consumptionAndMaxPowerTypes) => 'kWh' | 'MWh' | 'VA' | 'kVa') | '°C'
+    computeUnit: (data: IMetric[]) => 'Wh' | 'kWh' | 'MWh' | 'VA' | 'kVa' | '°C'
     /**
-     * Format data according to widget type.
+     * Function that returns the value of the specific widget type.
      */
-    onFormat: (data: IMetric[]) => number
+    computeValue: (data: IMetric[]) => number
 }[]
 
 /**
@@ -51,10 +56,6 @@ export interface IWidgetProps {
      * Widget title.
      */
     title: widgetTitleType
-    /**
-     * Widget unit.
-     */
-    unit: ((data: IMetric[], type: consumptionAndMaxPowerTypes) => 'kWh' | 'MWh' | 'VA' | 'kVa') | '°C'
     /**
      * Period: "day", "week", "month", "year".
      */
@@ -72,20 +73,11 @@ export interface IWidgetProps {
      */
     range: metricRangeType
     /**
-     * Format data according to widget type.
+     * Widget unit.
      */
-    onFormat: (data: IMetric[], type: metricTargetType) => number
+    unit: (data: IMetric[]) => 'Wh' | 'kWh' | 'MWh' | 'VA' | 'kVa' | '°C'
+    /**
+     * Widget value.
+     */
+    value: (data: IMetrc[]) => number
 }
-
-/**
- * Consumption Metrics and Enedis Max Power type.
- */
-export type consumptionAndMaxPowerTypes = Exclude<
-    metricTargetType,
-    'external_temperature_metrics' | 'nrlink_internal_temperature_metrics'
->
-
-/**
- * Temperature types.
- */
-export type temperatureTypes = Exclude<metricTargetType, 'consumption_metrics' | 'enedis_max_power'>
