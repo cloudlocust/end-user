@@ -127,7 +127,8 @@ export const getYPointValueLabel = (yValue: number | null | undefined, chartName
         case metricTargetsEnum.internalTemperature:
             return `${value} °C`
         case metricTargetsEnum.pMax:
-            return `${value} kVA`
+            // Value given by backend is in Va and thus convert it to kVA.
+            return `${value === '' ? value : convert(value).from('VA').to('kVA'!).toFixed(2)} kVA`
         default:
             if (value === '') return ` ${unit}`
             return `${convert(value).from('Wh').to(unit!).toFixed(2)} ${unit}`
