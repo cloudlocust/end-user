@@ -125,7 +125,7 @@ describe('test pure function', () => {
         mockOptionsResult.stroke!.show = true
         expect(JSON.stringify(apexChartProps.options)).toStrictEqual(JSON.stringify(mockOptionsResult))
         expect(apexChartProps.series).toStrictEqual(mockyAxisSeries)
-        expect((apexChartProps.options.yaxis as ApexYAxis[])[0].labels!.formatter!(12)).toStrictEqual('12 W')
+        expect((apexChartProps.options.yaxis as ApexYAxis[])[0].labels!.formatter!(12)).toStrictEqual('12.00 Wh')
         expect(apexChartProps.options.theme?.mode).toBe('dark')
     })
     test('getApexChartMyConsumptionProps with different period and mobile', async () => {
@@ -273,7 +273,7 @@ describe('test pure function', () => {
             period,
         })
         expect(apexChartProps.series).toStrictEqual(mockyAxisSeries)
-        expect((apexChartProps.options.yaxis as ApexYAxis[])[0].labels!.formatter!(12)).toStrictEqual('12 W')
+        expect((apexChartProps.options.yaxis as ApexYAxis[])[0].labels!.formatter!(12)).toStrictEqual('12.00 Wh')
         expect((apexChartProps.options.yaxis as ApexYAxis[])[1].labels!.formatter!(12)).toStrictEqual('12 °C')
         expect((apexChartProps.options.yaxis as ApexYAxis[])[2].labels!.formatter!(12)).toStrictEqual('12 °C')
         expect((apexChartProps.options.yaxis as ApexYAxis[])[2].show).toBeFalsy()
