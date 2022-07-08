@@ -65,7 +65,7 @@ export const MyConsumptionContainer = () => {
         if (filters.length > 0) {
             getConsents(filters[0].value)
         }
-    }, [filters, getConsents, metersList])
+    }, [filters, getConsents])
 
     /**
      * Show text according to interval.
