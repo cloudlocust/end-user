@@ -42,15 +42,19 @@ export const getRange = (rangePeriod: dayjs.ManipulateType) => {
          * When rangePeriod is:
          *  Day then the "from" will represent the start of the current Date (example: 27 june at midnight) and the "to" will represent the end of the current date (example: 27 june at 23:59).
          *  Week then the from date, represent the subtracted Week + 1day, because we have to count the Week including the subtracted day thus we add 1 day (for example, if we subtract 1 week from 27/06, it'll return the 20th because it doesn't count the 27th, thus we add 1 day because the 27th is counted and thus we start from the 21st till 27th which give us 7 days).
-         *  Month or Year, we count from the subtracted Date a month or year from now, including the current current date or the current month.
+         *  Month, we count from the subtracted Date a month from now at T00:00:00.000Z, including the current current day.
+         *  Month, we count from the subtracted Date a year from now at the start of the month, (if we're 5 july 2023, then we should go from 1st July 2022 - 5 july 2023), including the current month.
          *
          */
         from:
             rangePeriod === 'day'
-                ? dayjs.utc().startOf('date').toISOString()
+                ? dayjs.utc().startOf('day').toISOString()
                 : rangePeriod === 'week'
-                ? dayjs.utc().subtract(1, rangePeriod).add(1, 'day').toISOString()
-                : dayjs.utc().subtract(1, rangePeriod).toISOString(),
+                ? dayjs.utc().subtract(1, rangePeriod).add(1, 'day').startOf('day').toISOString()
+                : rangePeriod === 'year'
+                ? // From should contains the first day of the month of the previous year.
+                  dayjs.utc().subtract(1, rangePeriod).startOf('month').toISOString()
+                : dayjs.utc().subtract(1, rangePeriod).startOf('day').toISOString(),
         to: dayjs.utc().endOf('date').toISOString(),
     }
 }
