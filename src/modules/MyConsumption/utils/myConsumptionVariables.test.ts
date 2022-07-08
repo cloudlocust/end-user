@@ -5,6 +5,7 @@ import { createTheme } from '@mui/material/styles'
 const yValue = 1.2
 const yValuekWh = 1_200
 const yValueMWh = 1_200_000
+const yValueVA = 1_200
 const yValueConverted = '1.20'
 
 // eslint-disable-next-line jsdoc/require-jsdoc
@@ -59,8 +60,8 @@ describe('test pure functions', () => {
          * PMAX TEST.
          */
         // When Pmax it'll show the value given in Watt.
-        label = getYPointValueLabel(yValue, metricTargetsEnum.pMax)
-        expect(label).toBe(`${yValue} kVA`)
+        label = getYPointValueLabel(yValueVA, metricTargetsEnum.pMax)
+        expect(label).toBe(`${yValueConverted} kVA`)
 
         // When value is null and Pmax it'll show only the unit.
         label = getYPointValueLabel(null, metricTargetsEnum.pMax)

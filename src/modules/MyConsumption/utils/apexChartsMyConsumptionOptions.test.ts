@@ -277,6 +277,6 @@ describe('test pure function', () => {
         expect((apexChartProps.options.yaxis as ApexYAxis[])[1].labels!.formatter!(12)).toStrictEqual('12 °C')
         expect((apexChartProps.options.yaxis as ApexYAxis[])[2].labels!.formatter!(12)).toStrictEqual('12 °C')
         expect((apexChartProps.options.yaxis as ApexYAxis[])[2].show).toBeFalsy()
-        expect((apexChartProps.options.yaxis as ApexYAxis[])[3].labels!.formatter!(12)).toStrictEqual('12 kVA')
+        expect((apexChartProps.options.yaxis as ApexYAxis[])[3].labels!.formatter!(12000)).toStrictEqual('12.00 kVA')
     })
 })
