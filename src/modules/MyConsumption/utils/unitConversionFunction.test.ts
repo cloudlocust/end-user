@@ -4,8 +4,8 @@ import { consumptionWattUnitConversion } from 'src/modules/MyConsumption/utils/u
 describe('test pure functions', () => {
     test('consumptionWattUnitConversion test with different cases', async () => {
         let expectedResult = {
-            value: 120,
-            unit: 'W',
+            value: 120.0,
+            unit: 'Wh',
         }
         // Reference for writing big numbers in JS: https://stackoverflow.com/questions/17605444/making-large-numbers-readable-in-javascript
         // When Watt.

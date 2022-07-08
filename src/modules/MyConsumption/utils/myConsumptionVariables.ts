@@ -129,7 +129,6 @@ export const getYPointValueLabel = (yValue: number | null | undefined, chartName
         case metricTargetsEnum.pMax:
             return `${value} kVA`
         default:
-            if (unit === 'W') return `${value} ${unit}`
             if (value === '') return ` ${unit}`
             return `${convert(value).from('Wh').to(unit!).toFixed(2)} ${unit}`
     }

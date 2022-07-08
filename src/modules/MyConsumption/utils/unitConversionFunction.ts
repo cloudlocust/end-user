@@ -17,7 +17,7 @@ export const consumptionWattUnitConversion = (valueInWatt: number) => {
             return {
                 value: Number(convertedValue.toFixed(2)),
                 // If the corresponding unit is Wh, we returns W because we use W indicating Watt instead of Wh in our MyConsumption Module and not (Wh, kWh), because we can not convert using this library, from W to kWh.
-                unit: index === 0 ? 'W' : units[index],
+                unit: units[index],
             }
     }
     // Returns the value and unit of the last unit, W to MWh.

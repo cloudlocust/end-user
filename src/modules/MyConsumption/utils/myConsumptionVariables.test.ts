@@ -2,7 +2,7 @@ import { metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
 import { getYPointValueLabel, getChartColor } from 'src/modules/MyConsumption/utils/myConsumptionVariables'
 import { createTheme } from '@mui/material/styles'
 
-const yValue = 120
+const yValue = 1.2
 const yValuekWh = 1_200
 const yValueMWh = 1_200_000
 const yValueConverted = '1.20'
@@ -13,9 +13,9 @@ describe('test pure functions', () => {
         /**
          * CONSUMPTION TEST.
          */
-        // When unit is W and consumption it'll show the value given in Watt.
-        let label = getYPointValueLabel(yValue, metricTargetsEnum.consumption, 'W')
-        expect(label).toBe(`${yValue} W`)
+        // When unit is Wh and consumption it'll show the value given in Wh.
+        let label = getYPointValueLabel(yValue, metricTargetsEnum.consumption, 'Wh')
+        expect(label).toBe(`${yValue.toFixed(2)} Wh`)
 
         // When period is not daily and unit is kWh consumption it'll convert the value in kWh.
         label = getYPointValueLabel(yValuekWh, metricTargetsEnum.consumption, 'kWh')
@@ -25,9 +25,9 @@ describe('test pure functions', () => {
         label = getYPointValueLabel(yValueMWh, metricTargetsEnum.consumption, 'MWh')
         expect(label).toBe(`${yValueConverted} MWh`)
 
-        // When value is null and unit W consumption it'll show only the unit.
-        label = getYPointValueLabel(null, metricTargetsEnum.consumption, 'W')
-        expect(label).toBe(' W')
+        // When value is null and unit Wh consumption it'll show only the unit.
+        label = getYPointValueLabel(null, metricTargetsEnum.consumption, 'Wh')
+        expect(label).toBe(' Wh')
 
         // When value is null and unit kWh consumption it'll show only the unit.
         label = getYPointValueLabel(null, metricTargetsEnum.consumption, 'kWh')

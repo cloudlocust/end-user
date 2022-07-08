@@ -198,7 +198,7 @@ export const getApexChartMyConsumptionProps = ({
                     if (yAxisSerie.name === metricTargetsEnum.consumption) {
                         // Consumption unit shown in the chart will be W if its daily, or it'll be the unit of the maximum y value.
                         const consumptionUnit =
-                            period === 'daily' ? 'W' : consumptionWattUnitConversion(consumptionMaxYValue).unit
+                            period === 'daily' ? 'Wh' : consumptionWattUnitConversion(consumptionMaxYValue).unit
                         return getYPointValueLabel(value, yAxisSerie.name as metricTargetsEnum, consumptionUnit)
                     }
                     return getYPointValueLabel(value, yAxisSerie.name as metricTargetsEnum)
