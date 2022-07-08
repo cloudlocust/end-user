@@ -103,7 +103,12 @@ export const MyConsumptionContainer = () => {
         }
     }
 
-    if (nrlinkConsent?.nrlinkConsentState === 'NONEXISTENT' && enedisConsent?.enedisConsentState === 'NONEXISTENT') {
+    // By checking if the metersList is true we make sure that if someone has skipped the step of connecting their PDL, they will see this error message.
+    // Else if they have a PDL, we check its consent.
+    if (
+        (nrlinkConsent?.nrlinkConsentState === 'NONEXISTENT' && enedisConsent?.enedisConsentState === 'NONEXISTENT') ||
+        (metersList && metersList.length === 0)
+    ) {
         return (
             <div className="container relative h-200 sm:h-256 p-16 sm:p-24 flex-col text-center flex items-center justify-center">
                 <>
