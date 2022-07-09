@@ -1,11 +1,4 @@
-import {
-    metricTargetType,
-    metricIntervalType,
-    metricFiltersType,
-    metricRangeType,
-    IMetric,
-} from 'src/modules/Metrics/Metrics'
-import { periodType } from 'src/modules/MyConsumption/myConsumptionTypes'
+import { metricTargetType, IMetric } from 'src/modules/Metrics/Metrics'
 
 /**
  * Widget Title type.
@@ -22,29 +15,6 @@ export type widgetTitleType =
 export type totalConsumptionUnits = 'Wh' | 'kWh' | 'MWh'
 
 /**
- * Widget list type.
- */
-// eslint-disable-next-line jsdoc/require-jsdoc
-export type widgetType = {
-    /**
-     * Widget type.
-     */
-    type: metricTargetType
-    /**
-     * Widget title.
-     */
-    title: widgetTitleType
-    /**
-     * Widget unit.
-     */
-    computeUnit: (data: IMetric[]) => 'Wh' | 'kWh' | 'MWh' | 'VA' | 'kVa' | '°C'
-    /**
-     * Function that returns the value of the specific widget type.
-     */
-    computeValue: (data: IMetric[]) => number
-}[]
-
-/**
  * Widget Props.
  */
 export interface IWidgetProps {
@@ -53,31 +23,62 @@ export interface IWidgetProps {
      */
     type: metricTargetType
     /**
-     * Widget title.
+     * Metrics loading state.
      */
-    title: widgetTitleType
+    isMetricsLoading: boolean
     /**
-     * Period: "day", "week", "month", "year".
+     * Function that renders widget assets: value & unit.
      */
-    period: periodType
+    computeAssets:
+        | /**
+         *
+         */
+        {
+              /**
+               *
+               */
+              unit: totalConsumptionUnits
+              /**
+               *
+               */
+              value: number
+          }
+        | /**
+         *
+         */ {
+              /**
+               *
+               */
+              unit: 'VA' | 'kVa'
+              /**
+               *
+               */
+              value: number
+          }
+        | /**
+         *
+         */ {
+              /**
+               *
+               */
+              unit: '°C'
+              /**
+               *
+               */
+              value: number
+          }
+}
+
+/**
+ * WidgetList Props.
+ */
+export interface IWidgetListProps {
     /**
-     * Metrics interval.
+     * Metrics data.
      */
-    metricsInterval: metricIntervalType
+    data: IMetric[]
     /**
-     * Metrics filters.
+     * Loading state from useMetrics hook.
      */
-    filters: metricFiltersType
-    /**
-     * Metrics Range.
-     */
-    range: metricRangeType
-    /**
-     * Widget unit.
-     */
-    unit: (data: IMetric[]) => 'Wh' | 'kWh' | 'MWh' | 'VA' | 'kVa' | '°C'
-    /**
-     * Widget value.
-     */
-    value: (data: IMetrc[]) => number
+    isMetricsLoading: boolean
 }
