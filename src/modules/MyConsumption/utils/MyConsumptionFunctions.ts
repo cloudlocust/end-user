@@ -65,7 +65,7 @@ const convertPeriod = (rangePeriod: string) => {
  */
 export const getDateWithTimezoneOffset = (date: Date) => {
     const localOffset = date.getTimezoneOffset()
-    return addMinutes(date, localOffset) //.toISOString()
+    return addMinutes(date, localOffset)
 }
 /**
  * GetDateWithoutOffset function.
