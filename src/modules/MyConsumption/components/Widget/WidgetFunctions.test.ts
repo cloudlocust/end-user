@@ -3,7 +3,7 @@ import {
     computeTotalConsumption,
     getDataFromYAxis,
     computePMax,
-    computeTemperature,
+    computeInternallTemperature,
 } from 'src/modules/MyConsumption/components/Widget/WidgetFunctions'
 
 describe('Test widget functions', () => {
@@ -19,7 +19,7 @@ describe('Test widget functions', () => {
                 target: 'consumption_metrics',
             },
         ]
-        const result = getDataFromYAxis(data)
+        const result = getDataFromYAxis(data, 'consumption_metrics')
         expect(result).toStrictEqual(expectedResult)
     })
 
@@ -131,7 +131,7 @@ describe('Test widget functions', () => {
                     target: 'nrlink_internal_temperature_metrics',
                 },
             ]
-            const result = computeTemperature(data)
+            const result = computeInternallTemperature(data)
             expect(result).toStrictEqual(expectedResult)
         })
     })

@@ -8,13 +8,15 @@ import convert from 'convert-units'
  * Function that returns values from yAxis of the graph.
  *
  * @param data Metrics data.
+ * @param target Metric target.
  * @returns Values.
  */
-export const getDataFromYAxis = (data: IMetric[]) => {
+export const getDataFromYAxis = (data: IMetric[], target: metricTargetType) => {
     // The values to be used in the widget are the values of the Y axis in the chart.
     const { yAxisSeries } = convertMetricsDataToApexChartsAxisValues(data)
-    const values: number[] = []
-    yAxisSeries.forEach((el: ApexAxisChartSerie) => el.data.forEach((number) => values.push(number as number)))
+    let values: number[] = []
+    // Filter xAxisSeries according to the target.
+    values = yAxisSeries.filter((el: ApexAxisChartSerie) => el.name === target)[0].data as number[]
     return values
 }
 
@@ -25,7 +27,7 @@ export const getDataFromYAxis = (data: IMetric[]) => {
  * @returns Total consumption rounded.
  */
 export const computeTotalConsumption = (data: IMetric[]) => {
-    const values = getDataFromYAxis(data)
+    const values = getDataFromYAxis(data, metricTargetsEnum.consumption)
     const totalConsumptionValueInWatts = sum(values)
     return consumptionWattUnitConversion(totalConsumptionValueInWatts)
 }
@@ -38,7 +40,7 @@ export const computeTotalConsumption = (data: IMetric[]) => {
  */
 // eslint-disable-next-line jsdoc/require-jsdoc
 export const computePMax = (data: IMetric[]): { value: number; unit: 'kVa' | 'VA' } => {
-    const values = getDataFromYAxis(data)
+    const values = getDataFromYAxis(data, metricTargetsEnum.pMax)
     const maxPowerVA = max(values)!
     // If the number has more than 3 digits, we convert from VA to kVA
     // The number is rounded with two number of digits after the decimal point.
@@ -62,8 +64,24 @@ export const computePMax = (data: IMetric[]): { value: number; unit: 'kVa' | 'VA
  * @returns Temperature value.
  */
 // eslint-disable-next-line jsdoc/require-jsdoc
-export const computeTemperature = (data: IMetric[]): { value: number; unit: '°C' } => {
-    const values = getDataFromYAxis(data)
+export const computeExternalTemperature = (data: IMetric[]): { value: number; unit: '°C' } => {
+    const values = getDataFromYAxis(data, metricTargetsEnum.externalTemperature)
+    return {
+        // filter(Number) allows us to not take into considerattion any value that is not a Number
+        value: ceil(mean(values.filter(Number))),
+        unit: '°C',
+    }
+}
+
+/**
+ * Function that computes temperature.
+ *
+ * @param data Metrics data.
+ * @returns Temperature value.
+ */
+// eslint-disable-next-line jsdoc/require-jsdoc
+export const computeInternallTemperature = (data: IMetric[]): { value: number; unit: '°C' } => {
+    const values = getDataFromYAxis(data, metricTargetsEnum.internalTemperature)
     return {
         // filter(Number) allows us to not take into considerattion any value that is not a Number
         value: ceil(mean(values.filter(Number))),
@@ -85,8 +103,9 @@ export const computeWidgetAssets = (data: IMetric[], type: metricTargetType) => 
         case metricTargetsEnum.pMax:
             return computePMax(data)!
         case metricTargetsEnum.externalTemperature:
+            return computeInternallTemperature(data)!
         case metricTargetsEnum.internalTemperature:
-            return computeTemperature(data)!
+            return computeExternalTemperature(data)!
         default:
             throw Error('Wrong target')
     }
