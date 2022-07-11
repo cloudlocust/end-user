@@ -78,10 +78,10 @@ const setRange = (
  * GetDateWithoutOffset function.
  *
  * @param date Current date.
- * @param localOffset Local offset.
  * @returns Date without utc offset.
  */
-const getDateWithoutOffset = (date: Date, localOffset: number) => {
+const getDateWithoutOffset = (date: Date) => {
+    const localOffset = date.getTimezoneOffset()
     return subMinutes(date, localOffset).toISOString()
 }
 /**
@@ -95,10 +95,9 @@ const getDateWithoutOffset = (date: Date, localOffset: number) => {
 export const getRange = (rangePeriod: string, toDate?: Date, operation: 'sub' | 'add' = 'sub') => {
     const currentDate = toDate || new Date()
     const period = convertPeriod(rangePeriod)
-    const localOffset = currentDate.getTimezoneOffset()
     return {
-        from: getDateWithoutOffset(setRange(operation, startOfDay(currentDate), subDays, sub, period), localOffset),
-        to: getDateWithoutOffset(setRange(operation, endOfDay(currentDate), addDays, add, period), localOffset),
+        from: getDateWithoutOffset(setRange(operation, startOfDay(currentDate), subDays, sub, period)),
+        to: getDateWithoutOffset(setRange(operation, endOfDay(currentDate), addDays, add, period)),
     }
 }
 
