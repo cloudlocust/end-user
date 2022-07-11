@@ -50,7 +50,7 @@ const convertPeriod = (rangePeriod: string) => {
  * SetRange function.
  *
  * @param operation  Add or Sub operation.
- * @param dayDate Day then the "from" will represent the start of the current Date and the "to" will represent the end of the current date.
+ * @param currentDayTime Day then the "from" will represent the start of the current Date and the "to" will represent the end of the current date.
  * @param doDays SubDays or AddDays. Week then the from date, represent the subtracted Week + 1day(6 full days), because we have to count the Week including the subtracted day
  * thus we add 1 day (for example, if we subtract 1 week from 27/06, it'll return the 20th because it doesn't count the 27th,
  * thus we add 1 day because the 27th is counted and thus we start from the 21st till 27th which give us 7 days).
@@ -60,19 +60,19 @@ const convertPeriod = (rangePeriod: string) => {
  */
 const setRange = (
     operation: 'sub' | 'add',
-    dayDate: Date,
+    currentDayTime: Date,
     doDays: (date: number | Date, amount: number) => Date,
     action: (date: number | Date, duration: Duration) => Date,
     period: string | undefined,
 ) => {
     if (operation === action.name) {
-        if (period === 'days') return dayDate
-        if (period === 'weeks') return doDays(dayDate, 6)
-        return action(period === 'years' ? startOfMonth(dayDate) : dayDate, {
+        if (period === 'days') return currentDayTime
+        if (period === 'weeks') return doDays(currentDayTime, 6)
+        return action(period === 'years' ? startOfMonth(currentDayTime) : currentDayTime, {
             [period as string]: 1,
         })
     }
-    return dayDate
+    return currentDayTime
 }
 /**
  * GetDateWithoutOffset function.
