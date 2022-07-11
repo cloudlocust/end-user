@@ -1,14 +1,13 @@
 import Icon from '@mui/material/Icon'
 import IconButton from '@mui/material/IconButton'
 import { motion } from 'framer-motion'
-import { subDays, differenceInCalendarDays } from 'date-fns'
-import React, { useEffect, useState } from 'react'
+import { differenceInCalendarDays, subDays, addDays } from 'date-fns'
 import { IMyConsumptionDatePicker, ViewsType } from 'src/modules/MyConsumption/myConsumptionTypes'
 import { useTheme } from '@mui/material'
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
 import 'src/modules/MyConsumption/components/MyConsumptionDatePicker/MyConsumptionDatePicker.scss'
-import { getRange } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
+import { getDateWithTimezoneOffset, getRange } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
 import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker'
 import TextField from '@mui/material/TextField'
 import DateFnsUtils from '@date-io/date-fns'
@@ -28,33 +27,12 @@ import { mobileDatePickerPeriodProps } from 'src/modules/MyConsumption/utils/myC
 const MyConsumptionDatePicker = ({ period, setRange, range }: IMyConsumptionDatePicker) => {
     const theme = useTheme()
     const { formatMessage } = useIntl()
-    const [currentDate, setCurrentDate] = useState<Date>(new Date())
-    const [buttonAction, setButtonAction] = useState({ sub: false, add: false })
-    const isFutureDate = differenceInCalendarDays(currentDate, new Date()) >= 0
-
-    // This useEffect allows to follow the button changes when the user clicks on the right(add) and left(sub) arrows.
-    // If the period === 'daily', then when switching, it need to subtract 1 day, because the daily range is (example): from July 7 00:00 to July 8 23:59
-    // that's why for the day we take the range from previous day
-    useEffect(() => {
-        if (buttonAction.sub) {
-            period === 'daily' ? setCurrentDate(subDays(new Date(range.from), 1)) : setCurrentDate(new Date(range.from))
-            setButtonAction({ sub: false, add: false })
-        }
-        if (buttonAction.add) {
-            setCurrentDate(new Date(range.to))
-            setButtonAction({ sub: false, add: false })
-        }
-    }, [buttonAction, period, range])
-
-    // // Set Range after first loading or when changing period
-    // useEffect(() => {
-    //     setRange(getRange(period, currentDate))
-    // }, [currentDate, period, setRange])
-
-    // If a future date is selected, then today's date is set
-    useEffect(() => {
-        isFutureDate && setCurrentDate(new Date())
-    }, [isFutureDate])
+    const rangeDateFormat = {
+        from: new Date(range.from),
+        // Because range is already in local time and ISO String, we convert from string to Date without applying local time.
+        to: getDateWithTimezoneOffset(new Date(range.to)),
+    }
+    const isFutureDate = differenceInCalendarDays(rangeDateFormat.to, new Date()) >= 0
 
     /**
      * Handle data change.
@@ -62,7 +40,22 @@ const MyConsumptionDatePicker = ({ period, setRange, range }: IMyConsumptionDate
      * @param newDate New Date to set.
      */
     const handleDateChange = (newDate: Date | null) => {
-        newDate && setCurrentDate(newDate)
+        if (newDate) setRange(getRange(period, newDate, 'sub'))
+    }
+    /**
+     * Handle button click.
+     *
+     * @param calculateDays SubDays or AddDays.
+     * @param date Current date.
+     * @param operator Sub or add operator.
+     */
+    const handleClick = (
+        calculateDays: (date: number | Date, amount: number) => Date,
+        date: Date,
+        operator: 'add' | 'sub',
+    ) => {
+        const toDate = period === 'daily' ? calculateDays(date, 1) : date
+        setRange(getRange(period, toDate, operator))
     }
 
     return (
@@ -74,8 +67,7 @@ const MyConsumptionDatePicker = ({ period, setRange, range }: IMyConsumptionDate
             <IconButton
                 aria-label="Previous"
                 onClick={() => {
-                    setRange(getRange(period, currentDate, 'sub'))
-                    setButtonAction({ sub: true, add: false })
+                    handleClick(subDays, rangeDateFormat.from, 'sub')
                 }}
                 size="large"
                 style={{ color: theme.palette.primary.contrastText }}
@@ -88,11 +80,12 @@ const MyConsumptionDatePicker = ({ period, setRange, range }: IMyConsumptionDate
                         item.period === period && (
                             <MobileDatePicker
                                 views={item.views as ViewsType[]}
-                                value={currentDate}
+                                value={rangeDateFormat.to}
                                 inputFormat={item.inputFormat}
                                 maxDate={new Date()}
                                 onChange={() => {}}
                                 onAccept={handleDateChange}
+                                onClose={() => {}}
                                 cancelText={formatMessage({ id: 'Annuler', defaultMessage: 'Annuler' })}
                                 toolbarTitle={null}
                                 renderInput={(params) => (
@@ -110,8 +103,7 @@ const MyConsumptionDatePicker = ({ period, setRange, range }: IMyConsumptionDate
             <IconButton
                 aria-label="Next"
                 onClick={() => {
-                    setRange(getRange(period, currentDate, 'add'))
-                    setButtonAction({ sub: false, add: true })
+                    handleClick(addDays, rangeDateFormat.to, 'add')
                 }}
                 size="large"
                 disabled={isFutureDate}

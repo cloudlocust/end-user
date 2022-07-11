@@ -203,6 +203,7 @@ export const MyConsumptionContainer = () => {
                     setPeriod={setPeriod}
                     setRange={setRange}
                     setMetricsInterval={setMetricsInterval}
+                    range={range}
                 />
             </div>
             <div className="p-12 sm:p-24 ">

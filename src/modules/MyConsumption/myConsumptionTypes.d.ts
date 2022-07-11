@@ -14,6 +14,10 @@ export interface IMyConsumptionPeriod {
      * SetPeriodValue function.
      */
     setPeriod: (period: periodValue) => void
+    /**
+     * Period to range.
+     */
+    range: metricRangeType
 }
 /**
  * Range value type.

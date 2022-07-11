@@ -12,26 +12,22 @@ export const dataConsumptionPeriod = [
     {
         name: 'Jour',
         interval: '2min',
-        range: getRange('daily'),
         period: 'daily' as periodType,
     },
     {
         name: 'Semaine',
         interval: '1d',
-        range: getRange('weekly'),
         period: 'weekly' as periodType,
     },
     {
         name: 'Mois',
         interval: '1d',
-        range: getRange('monthly'),
         period: 'monthly' as periodType,
     },
 
     {
         name: 'Année',
         interval: '1 month',
-        range: getRange('yearly'),
         period: 'yearly' as periodType,
     },
 ]

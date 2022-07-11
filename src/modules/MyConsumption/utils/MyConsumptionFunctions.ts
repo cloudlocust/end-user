@@ -7,7 +7,7 @@ import {
 import dayjs from 'dayjs'
 import { periodType } from 'src/modules/MyConsumption/myConsumptionTypes.d'
 import { ApexChartsAxisValuesType } from 'src/modules/MyConsumption/myConsumptionTypes'
-import { add, addDays, endOfDay, subMinutes, startOfDay, sub, subDays, startOfMonth } from 'date-fns'
+import { add, addDays, endOfDay, subMinutes, startOfDay, sub, subDays, startOfMonth, addMinutes } from 'date-fns'
 
 /**
  * FormatMetricFilter function converts the data to the required format.
@@ -47,32 +47,14 @@ const convertPeriod = (rangePeriod: string) => {
     }
 }
 /**
- * SetRange function.
- *
- * @param operation  Add or Sub operation.
- * @param currentDayTime Day then the "from" will represent the start of the current Date and the "to" will represent the end of the current date.
- * @param calculateDays SubDays or AddDays. Week then the from date, represent the subtracted Week + 1day(6 full days), because we have to count the Week including the subtracted day
- * thus we add 1 day (for example, if we subtract 1 week from 27/06, it'll return the 20th because it doesn't count the 27th,
- * thus we add 1 day because the 27th is counted and thus we start from the 21st till 27th which give us 7 days).
- * @param operator Add or sub operation.
- * @param period Selected period.
- * @returns Ranged data.
+ * GetDateWithTimezoneOffset function.
+
+ * @param date Current date.
+ * @returns Date with utc offset.
  */
-const setRange = (
-    operation: 'sub' | 'add',
-    currentDayTime: Date,
-    calculateDays: (date: number | Date, amount: number) => Date,
-    operator: (date: number | Date, duration: Duration) => Date,
-    period: string | undefined,
-) => {
-    if (operation === operator.name) {
-        if (period === 'days') return currentDayTime
-        if (period === 'weeks') return calculateDays(currentDayTime, 6)
-        return operator(period === 'years' ? startOfMonth(currentDayTime) : currentDayTime, {
-            [period as string]: 1,
-        })
-    }
-    return currentDayTime
+export const getDateWithTimezoneOffset = (date: Date) => {
+    const localOffset = date.getTimezoneOffset()
+    return addMinutes(date, localOffset) //.toISOString()
 }
 /**
  * GetDateWithoutOffset function.
@@ -80,24 +62,62 @@ const setRange = (
  * @param date Current date.
  * @returns Date without utc offset.
  */
-const getDateWithoutOffset = (date: Date) => {
+const getDateWithoutTimezoneOffset = (date: Date) => {
     const localOffset = date.getTimezoneOffset()
     return subMinutes(date, localOffset).toISOString()
 }
+
 /**
- * Function to get range.
+ * Add period.
  *
- * @param rangePeriod Period for range.
- * @param toDate Current Date.
- * @param operation Add or Sub operation.
- * @returns Object with ranged data.
+ * @param date Current Date.
+ * @param period Selected period.
+ * @returns Add period.
+ */
+const addPeriod = (date: Date, period: string) => {
+    if (period === 'days') return endOfDay(date)
+    if (period === 'weeks') return addDays(date, 6)
+    return add(period === 'years' ? startOfMonth(date) : endOfDay(date), {
+        [period]: 1,
+    })
+}
+/**
+ * Subtract period.
+ *
+ * @param date Current Date.
+ * @param period Selected period.
+ * @returns Sub period.
+ */
+const subPeriod = (date: Date, period: string) => {
+    if (period === 'days') return startOfDay(date)
+    if (period === 'weeks') return subDays(date, 6)
+    return sub(period === 'years' ? startOfMonth(date) : startOfDay(date), {
+        [period]: 1,
+    })
+}
+/**
+ * SetRange function.
+ *
+ * @param rangePeriod Selected period.
+ * @param toDate Current date.
+ * @param operation  Add or Sub operation.
+ * Day then the "from" will represent the start of the current Date and the "to" will represent the end of the current date.
+ * Week then the from date, represent the subtracted Week + 1day(6 full days), because we have to count the Week including the subtracted day
+ * thus we add 1 day (for example, if we subtract 1 week from 27/06, it'll return the 20th because it doesn't count the 27th,
+ * thus we add 1 day because the 27th is counted and thus we start from the 21st till 27th which give us 7 days).
+ * @returns Ranged data.
  */
 export const getRange = (rangePeriod: string, toDate?: Date, operation: 'sub' | 'add' = 'sub') => {
     const currentDate = toDate || new Date()
     const period = convertPeriod(rangePeriod)
+    if (operation === 'sub')
+        return {
+            from: getDateWithoutTimezoneOffset(subPeriod(currentDate, period as string)),
+            to: getDateWithoutTimezoneOffset(endOfDay(currentDate)),
+        }
     return {
-        from: getDateWithoutOffset(setRange(operation, startOfDay(currentDate), subDays, sub, period)),
-        to: getDateWithoutOffset(setRange(operation, endOfDay(currentDate), addDays, add, period)),
+        from: getDateWithoutTimezoneOffset(startOfDay(currentDate)),
+        to: getDateWithoutTimezoneOffset(addPeriod(currentDate, period as string)),
     }
 }
 
