@@ -3,12 +3,10 @@ import { Widget } from 'src/modules/MyConsumption/components/Widget'
 import { IWidgetProps } from 'src/modules/MyConsumption/components/Widget/Widget'
 
 let mockWidgetProps: IWidgetProps = {
-    type: 'consumption_metrics',
+    title: 'Consommation Totale',
     isMetricsLoading: false,
-    computeAssets: {
-        unit: 'kWh',
-        value: 1,
-    },
+    unit: 'kWh',
+    value: 0,
 }
 
 const CONSOMMATION_TOTALE_TEXT = 'Consommation Totale'
@@ -37,63 +35,59 @@ describe('Widget component test', () => {
     test('when the widget is rendered with consommation totale', async () => {
         mockWidgetProps = {
             isMetricsLoading: false,
-            type: 'consumption_metrics',
-            computeAssets: {
-                unit: 'kWh',
-                value: 1000,
-            },
+            title: CONSOMMATION_TOTALE_TEXT,
+            unit: CONSOMMATION_TOTALE_UNIT,
+            value: 1000,
         }
 
         const { getByText } = reduxedRender(<Widget {...mockWidgetProps} />)
 
         expect(getByText(CONSOMMATION_TOTALE_TEXT)).toBeInTheDocument()
         expect(getByText(CONSOMMATION_TOTALE_UNIT)).toBeInTheDocument()
+        expect(getByText(1000)).toBeInTheDocument()
     })
     test('when the widget is rendered with puissance max', async () => {
         mockWidgetProps = {
             isMetricsLoading: false,
-            type: 'enedis_max_power',
-            computeAssets: {
-                unit: 'kVa',
-                value: 1000,
-            },
+            title: PUISSANCE_MAX_TEXT,
+            unit: PUISSANCE_MAX_UNIT,
+            value: 1000,
         }
 
         const { getByText } = reduxedRender(<Widget {...mockWidgetProps} />)
 
         expect(getByText(PUISSANCE_MAX_TEXT)).toBeInTheDocument()
         expect(getByText(PUISSANCE_MAX_UNIT)).toBeInTheDocument()
+        expect(getByText(1000)).toBeInTheDocument()
     })
     test('when the widget is rendered with internal temperature', async () => {
         mockWidgetProps = {
             isMetricsLoading: false,
-            type: 'nrlink_internal_temperature_metrics',
-            computeAssets: {
-                unit: '°C',
-                value: 10,
-            },
+            title: INTERNAL_TEMPERATURE_TEXT,
+            unit: TEMPERATURE_UNIT,
+            value: 50,
         }
         const { getByText } = reduxedRender(<Widget {...mockWidgetProps} />)
 
         expect(getByText(INTERNAL_TEMPERATURE_TEXT)).toBeInTheDocument()
         expect(getByText(TEMPERATURE_UNIT)).toBeInTheDocument()
+        expect(getByText(50)).toBeInTheDocument()
     })
     test('when the widget is rendered with external temperature', async () => {
         mockWidgetProps = {
             isMetricsLoading: false,
-            type: 'external_temperature_metrics',
-            computeAssets: {
-                unit: '°C',
-                value: 1,
-            },
+            title: EXTERNAL_TEMPERATURE_TEXT,
+            unit: TEMPERATURE_UNIT,
+            value: 50,
         }
         const { getByText } = reduxedRender(<Widget {...mockWidgetProps} />)
 
         expect(getByText(EXTERNAL_TEMPERATURE_TEXT)).toBeInTheDocument()
         expect(getByText(TEMPERATURE_UNIT)).toBeInTheDocument()
+        expect(getByText(50)).toBeInTheDocument()
     })
     test('when there is no data, an error message is shown', async () => {
-        mockWidgetProps.computeAssets.value = NaN
+        mockWidgetProps.value = NaN
         const { getByText } = reduxedRender(<Widget {...mockWidgetProps} />)
 
         expect(getByText(NO_DATA_MESSAGE)).toBeTruthy()

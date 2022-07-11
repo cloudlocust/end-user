@@ -1,4 +1,4 @@
-import { metricTargetType, IMetric } from 'src/modules/Metrics/Metrics'
+import { IMetric } from 'src/modules/Metrics/Metrics.d'
 
 /**
  * Widget Title type.
@@ -19,54 +19,21 @@ export type totalConsumptionUnits = 'Wh' | 'kWh' | 'MWh'
  */
 export interface IWidgetProps {
     /**
-     * Widget type.
-     */
-    type: metricTargetType
-    /**
      * Metrics loading state.
      */
     isMetricsLoading: boolean
     /**
-     * Function that renders widget assets: value & unit.
+     * Widget unit.
      */
-    computeAssets:
-        | /**
-         *
-         */
-        {
-              /**
-               *
-               */
-              unit: totalConsumptionUnits
-              /**
-               *
-               */
-              value: number
-          }
-        | /**
-         *
-         */ {
-              /**
-               *
-               */
-              unit: 'VA' | 'kVa'
-              /**
-               *
-               */
-              value: number
-          }
-        | /**
-         *
-         */ {
-              /**
-               *
-               */
-              unit: '°C'
-              /**
-               *
-               */
-              value: number
-          }
+    unit: 'Wh' | 'kWh' | 'MWh' | 'VA' | 'kVa' | '°C'
+    /**
+     * Widget value.
+     */
+    value: number
+    /**
+     * Widget title.
+     */
+    title: widgetTitleType
 }
 
 /**
