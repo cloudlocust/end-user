@@ -89,7 +89,7 @@ export type ApexChartsAxisValuesType =
         /**
          * Represent the yAxisValues for each target, as ApexChartSerie.
          */
-        yAxisSeries: ApexAxisChartSerie['data']
+        yAxisSeries: ApexAxisChartSeries
         /**
          * Represent the xAxisValues for each target.
          */

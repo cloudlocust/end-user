@@ -47,7 +47,7 @@ const mockYAxis: ApexYAxis[] = [
         opposite: false,
         labels: {
             // eslint-disable-next-line jsdoc/require-jsdoc
-            formatter: (value: number) => `${value} Kwh`,
+            formatter: (value: number) => `${value} W`,
         },
         axisBorder: {
             show: true,
@@ -111,7 +111,7 @@ describe('test pure function', () => {
     })
     mockyAxisSeries[0].color = theme.palette.primary.light
     test('getApexChartMyConsumptionProps test with valid data', async () => {
-        let period = 'weekly' as periodType
+        let period = 'daily' as periodType
         // ApexChart Props
         const apexChartProps = getApexChartMyConsumptionProps({
             yAxisSeries: mockYAxisSeriesConvertedData,
@@ -125,7 +125,7 @@ describe('test pure function', () => {
         mockOptionsResult.stroke!.show = true
         expect(JSON.stringify(apexChartProps.options)).toStrictEqual(JSON.stringify(mockOptionsResult))
         expect(apexChartProps.series).toStrictEqual(mockyAxisSeries)
-        expect((apexChartProps.options.yaxis as ApexYAxis[])[0].labels!.formatter!(12)).toStrictEqual('12 KWh')
+        expect((apexChartProps.options.yaxis as ApexYAxis[])[0].labels!.formatter!(12)).toStrictEqual('12.00 Wh')
         expect(apexChartProps.options.theme?.mode).toBe('dark')
     })
     test('getApexChartMyConsumptionProps with different period and mobile', async () => {
@@ -226,7 +226,7 @@ describe('test pure function', () => {
     test('convertMetricsDataToApexChartsProps with additional temperatures yaxis', async () => {
         mockYAxisSeriesConvertedData[0].data = [mockDatapoints[0][0]]
 
-        let period = 'weekly' as periodType
+        let period = 'daily' as periodType
         // External Temperature
         mockYAxisSeriesConvertedData.push({
             name: metricTargetsEnum.externalTemperature,
@@ -273,10 +273,10 @@ describe('test pure function', () => {
             period,
         })
         expect(apexChartProps.series).toStrictEqual(mockyAxisSeries)
-        expect((apexChartProps.options.yaxis as ApexYAxis[])[0].labels!.formatter!(12)).toStrictEqual('12 KWh')
+        expect((apexChartProps.options.yaxis as ApexYAxis[])[0].labels!.formatter!(12)).toStrictEqual('12.00 Wh')
         expect((apexChartProps.options.yaxis as ApexYAxis[])[1].labels!.formatter!(12)).toStrictEqual('12 °C')
         expect((apexChartProps.options.yaxis as ApexYAxis[])[2].labels!.formatter!(12)).toStrictEqual('12 °C')
         expect((apexChartProps.options.yaxis as ApexYAxis[])[2].show).toBeFalsy()
-        expect((apexChartProps.options.yaxis as ApexYAxis[])[3].labels!.formatter!(12)).toStrictEqual('12 kVA')
+        expect((apexChartProps.options.yaxis as ApexYAxis[])[3].labels!.formatter!(12000)).toStrictEqual('12.00 kVA')
     })
 })
