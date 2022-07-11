@@ -54,7 +54,7 @@ const convertPeriod = (rangePeriod: string) => {
  * @param doDays SubDays or AddDays. Week then the from date, represent the subtracted Week + 1day(6 full days), because we have to count the Week including the subtracted day
  * thus we add 1 day (for example, if we subtract 1 week from 27/06, it'll return the 20th because it doesn't count the 27th,
  * thus we add 1 day because the 27th is counted and thus we start from the 21st till 27th which give us 7 days).
- * @param action Add or sub operation.
+ * @param operator Add or sub operation.
  * @param period Selected period.
  * @returns Ranged data.
  */
@@ -62,13 +62,13 @@ const setRange = (
     operation: 'sub' | 'add',
     currentDayTime: Date,
     doDays: (date: number | Date, amount: number) => Date,
-    action: (date: number | Date, duration: Duration) => Date,
+    operator: (date: number | Date, duration: Duration) => Date,
     period: string | undefined,
 ) => {
-    if (operation === action.name) {
+    if (operation === operator.name) {
         if (period === 'days') return currentDayTime
         if (period === 'weeks') return doDays(currentDayTime, 6)
-        return action(period === 'years' ? startOfMonth(currentDayTime) : currentDayTime, {
+        return operator(period === 'years' ? startOfMonth(currentDayTime) : currentDayTime, {
             [period as string]: 1,
         })
     }
