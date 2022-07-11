@@ -46,10 +46,10 @@ const MyConsumptionDatePicker = ({ period, setRange, range }: IMyConsumptionDate
         }
     }, [buttonAction, period, range])
 
-    // Set Range after first loading or when changing period
-    useEffect(() => {
-        setRange(getRange(period, currentDate))
-    }, [currentDate, period, setRange])
+    // // Set Range after first loading or when changing period
+    // useEffect(() => {
+    //     setRange(getRange(period, currentDate))
+    // }, [currentDate, period, setRange])
 
     // If a future date is selected, then today's date is set
     useEffect(() => {

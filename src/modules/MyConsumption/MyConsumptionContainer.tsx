@@ -194,7 +194,11 @@ export const MyConsumptionContainer = () => {
                         range={range}
                     />
                 )}
-                <MyConsumptionPeriod setPeriod={setPeriod} setMetricsInterval={setMetricsInterval} />
+                <MyConsumptionPeriod
+                    setPeriod={setPeriod}
+                    setRange={setRange}
+                    setMetricsInterval={setMetricsInterval}
+                />
             </div>
             <div className="p-12 sm:p-24 ">
                 <div className="flex justify-center items-center md:justify-start">
