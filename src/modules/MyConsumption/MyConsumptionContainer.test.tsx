@@ -1,8 +1,10 @@
 import { reduxedRender } from 'src/common/react-platform-components/test'
 import { MyConsumptionContainer } from 'src/modules/MyConsumption/MyConsumptionContainer'
 import { BrowserRouter as Router } from 'react-router-dom'
+import { IMetric } from 'src/modules/Metrics/Metrics'
+import { TEST_SUCCESS_WEEK_METRICS } from 'src/mocks/handlers/metrics'
 
-let mockData: any = []
+let mockData: IMetric[] = TEST_SUCCESS_WEEK_METRICS(['consumption_metrics'])
 let mockNrlinkConsent: string
 let mockEnedisConsent: string
 
@@ -43,6 +45,7 @@ jest.mock('src/modules/Consents/consentsHook.ts', () => ({
     }),
 }))
 
+// MyConsumptionContainer cannot render if we don't mock react-apexcharts
 jest.mock(
     'react-apexcharts',
     // eslint-disable-next-line jsdoc/require-jsdoc
@@ -63,7 +66,6 @@ describe('MyConsumptionContainer test', () => {
         expect(getByText('enregistrer votre compteur et votre nrLink')).toBeTruthy()
     })
     test("when data from useMetrics is empty, widget section isn't shown", async () => {
-        mockData = []
         mockNrlinkConsent = 'CONNECTED'
         mockEnedisConsent = 'CONNECTED'
         const { getByText } = reduxedRender(
