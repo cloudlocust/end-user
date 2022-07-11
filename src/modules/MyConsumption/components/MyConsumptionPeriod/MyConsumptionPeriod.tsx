@@ -5,7 +5,7 @@ import React, { useState } from 'react'
 import Box from '@mui/material/Box'
 import { dataConsumptionPeriod } from 'src/modules/MyConsumption/utils/myConsumptionVariables'
 import { IMyConsumptionPeriod } from 'src/modules/MyConsumption/myConsumptionTypes'
-import { getRange } from '../../utils/MyConsumptionFunctions'
+import { getDateWithTimezoneOffset, getRange } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
 /**
  * MyConsumptionPeriod Component.
  *
@@ -26,7 +26,13 @@ export const MyConsumptionPeriod = ({ setRange, setPeriod, setMetricsInterval, r
                 value={tabValue}
                 onChange={(event, value) => {
                     setTabValue(value)
-                    setRange(getRange(dataConsumptionPeriod[value].period, range.to))
+                    setRange(
+                        getRange(
+                            dataConsumptionPeriod[value].period,
+                            // Because range is already in local time and ISO String, we convert from string to Date without applying local time.
+                            getDateWithTimezoneOffset(new Date(range.to)),
+                        ),
+                    )
                     setMetricsInterval(dataConsumptionPeriod[value].interval)
                     setPeriod(dataConsumptionPeriod[value].period)
                 }}

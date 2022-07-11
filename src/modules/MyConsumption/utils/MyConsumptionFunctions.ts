@@ -7,7 +7,18 @@ import {
 import dayjs from 'dayjs'
 import { periodType } from 'src/modules/MyConsumption/myConsumptionTypes.d'
 import { ApexChartsAxisValuesType } from 'src/modules/MyConsumption/myConsumptionTypes'
-import { add, addDays, endOfDay, subMinutes, startOfDay, sub, subDays, startOfMonth, addMinutes } from 'date-fns'
+import {
+    add,
+    addDays,
+    endOfDay,
+    subMinutes,
+    startOfDay,
+    sub,
+    subDays,
+    startOfMonth,
+    addMinutes,
+    differenceInCalendarDays,
+} from 'date-fns'
 
 /**
  * FormatMetricFilter function converts the data to the required format.
@@ -109,15 +120,16 @@ const subPeriod = (date: Date, period: string) => {
  */
 export const getRange = (rangePeriod: string, toDate?: Date, operation: 'sub' | 'add' = 'sub') => {
     const currentDate = toDate || new Date()
-    const period = convertPeriod(rangePeriod)
+    const period = convertPeriod(rangePeriod) as string
+    const isFutureDate = differenceInCalendarDays(addPeriod(currentDate, period), new Date()) >= 0
     if (operation === 'sub')
         return {
-            from: getDateWithoutTimezoneOffset(subPeriod(currentDate, period as string)),
+            from: getDateWithoutTimezoneOffset(subPeriod(currentDate, period)),
             to: getDateWithoutTimezoneOffset(endOfDay(currentDate)),
         }
     return {
-        from: getDateWithoutTimezoneOffset(startOfDay(currentDate)),
-        to: getDateWithoutTimezoneOffset(addPeriod(currentDate, period as string)),
+        from: getDateWithoutTimezoneOffset(isFutureDate ? subPeriod(new Date(), period) : startOfDay(currentDate)),
+        to: getDateWithoutTimezoneOffset(isFutureDate ? new Date() : addPeriod(currentDate, period)),
     }
 }
 

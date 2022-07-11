@@ -1,7 +1,6 @@
 import { metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
 import { periodType } from 'src/modules/MyConsumption/myConsumptionTypes'
 import { Theme } from '@mui/material/styles/createTheme'
-import { getRange } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
 import { isNil } from 'lodash'
 import convert, { Unit } from 'convert-units'
 

@@ -33,7 +33,6 @@ const MyConsumptionDatePicker = ({ period, setRange, range }: IMyConsumptionDate
         to: getDateWithTimezoneOffset(new Date(range.to)),
     }
     const isFutureDate = differenceInCalendarDays(rangeDateFormat.to, new Date()) >= 0
-
     /**
      * Handle data change.
      *
@@ -66,9 +65,7 @@ const MyConsumptionDatePicker = ({ period, setRange, range }: IMyConsumptionDate
         >
             <IconButton
                 aria-label="Previous"
-                onClick={() => {
-                    handleClick(subDays, rangeDateFormat.from, 'sub')
-                }}
+                onClick={() => handleClick(subDays, rangeDateFormat.from, 'sub')}
                 size="large"
                 style={{ color: theme.palette.primary.contrastText }}
             >
@@ -102,9 +99,7 @@ const MyConsumptionDatePicker = ({ period, setRange, range }: IMyConsumptionDate
             </LocalizationProvider>
             <IconButton
                 aria-label="Next"
-                onClick={() => {
-                    handleClick(addDays, rangeDateFormat.to, 'add')
-                }}
+                onClick={() => handleClick(addDays, rangeDateFormat.to, 'add')}
                 size="large"
                 disabled={isFutureDate}
                 style={{
