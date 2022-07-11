@@ -13,7 +13,7 @@ const SELECTED_CLASSNAME = 'Mui-selected'
 let mockSetMetricsInterval = jest.fn()
 let mockSetPeriod = jest.fn()
 let mockSetRange = jest.fn()
-let mockRange = getRange('weekly')
+let mockRange = getRange('daily')
 
 describe('load MyConsumptionPeriod', () => {
     test('on success loading the element, MyConsumptionPeriod should be loaded, tabs titles shown', async () => {
@@ -35,11 +35,11 @@ describe('load MyConsumptionPeriod', () => {
         userEvent.click(getByText(dataConsumptionPeriod[1].name))
         expect(getByText(dataConsumptionPeriod[1].name).classList.contains(SELECTED_CLASSNAME)).toBeTruthy()
         expect(getByText(dataConsumptionPeriod[2].name).classList.contains(SELECTED_CLASSNAME)).toBeFalsy()
-
+        userEvent.click(getByText(dataConsumptionPeriod[0].name))
         await waitFor(() => {
-            expect(mockSetPeriod).toHaveBeenCalledWith(dataConsumptionPeriod[1].period)
-            expect(mockSetMetricsInterval).toHaveBeenCalledWith(dataConsumptionPeriod[1].interval)
-            expect(mockSetRange).toHaveBeenCalledWith(getRange(dataConsumptionPeriod[1].period))
+            expect(mockSetPeriod).toHaveBeenCalledWith(dataConsumptionPeriod[0].period)
+            expect(mockSetMetricsInterval).toHaveBeenCalledWith(dataConsumptionPeriod[0].interval)
+            expect(mockSetRange).toHaveBeenCalledWith(mockRange)
         })
     })
 })
