@@ -58,7 +58,7 @@ export const MyConsumptionContainer = () => {
     const { setMetricsInterval, setRange, setFilters, isMetricsLoading, data, filters, range } =
         useMetrics(initialMetricsHookValues)
     const [period, setPeriod] = useState<periodType>('daily')
-    const [filteredTargets, setFilteredTargets] = useState<metricTargetType[]>(['consumption_metrics'])
+    const [filteredTargets, setFilteredTargets] = useState<metricTargetType[]>([metricTargetsEnum.consumption])
 
     useEffect(() => {
         if (!metersList) return
