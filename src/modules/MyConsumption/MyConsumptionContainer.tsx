@@ -58,7 +58,7 @@ export const MyConsumptionContainer = () => {
     const { setMetricsInterval, setRange, setFilters, isMetricsLoading, data, filters, range } =
         useMetrics(initialMetricsHookValues)
     const [period, setPeriod] = useState<periodType>('daily')
-    const [filteredTargets, setFilteredTargets] = useState<metricTargetType[]>(['consumption_metrics'])
+    const [filteredTargets, setFilteredTargets] = useState<metricTargetType[]>([metricTargetsEnum.consumption])
 
     useEffect(() => {
         if (!metersList) return
@@ -228,7 +228,7 @@ export const MyConsumptionContainer = () => {
                     setMetricsInterval={setMetricsInterval}
                 />
             </div>
-            {data.length === 0 ? null : (
+            {data.length !== 0 && (
                 <div className="p-12 sm:p-24 ">
                     <div className="flex justify-center items-center md:justify-start">
                         <TypographyFormatMessage variant="h5" className="sm:mr-8 text-black font-medium">
