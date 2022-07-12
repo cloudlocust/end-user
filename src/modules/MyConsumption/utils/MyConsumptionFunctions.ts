@@ -63,9 +63,10 @@ const convertPeriod = (rangePeriod: string) => {
  * @param date Current date.
  * @returns Date with utc offset.
  */
-export const getDateWithTimezoneOffset = (date: Date) => {
-    const localOffset = date.getTimezoneOffset()
-    return addMinutes(date, localOffset)
+export const getDateWithTimezoneOffset = (date: string) => {
+    const formattedData = new Date(date)
+    const localOffset = formattedData.getTimezoneOffset()
+    return addMinutes(formattedData, localOffset)
 }
 /**
  * GetDateWithoutOffset function.
@@ -357,14 +358,13 @@ export const isEqualDates = (date1: number, date2: number, period: periodType) =
             dayjs.utc(new Date(date1).toUTCString()).format('D/M/YY-HH:mm') ===
             dayjs.utc(new Date(date2).toUTCString()).format('D/M/YY-HH:mm')
         )
-    else if (period === 'yearly')
+    if (period === 'yearly')
         return (
             dayjs.utc(new Date(date1).toUTCString()).format('MM/YYYY') ===
             dayjs.utc(new Date(date2).toUTCString()).format('MM/YYYY')
         )
-    else
-        return (
-            dayjs.utc(new Date(date1).toUTCString()).format('DD/MM/YYYY') ===
-            dayjs.utc(new Date(date2).toUTCString()).format('DD/MM/YYYY')
-        )
+    return (
+        dayjs.utc(new Date(date1).toUTCString()).format('DD/MM/YYYY') ===
+        dayjs.utc(new Date(date2).toUTCString()).format('DD/MM/YYYY')
+    )
 }

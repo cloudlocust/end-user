@@ -30,7 +30,7 @@ export const MyConsumptionPeriod = ({ setRange, setPeriod, setMetricsInterval, r
                         getRange(
                             dataConsumptionPeriod[value].period,
                             // Because range is already in local time and ISO String, we convert from string to Date without applying local time.
-                            getDateWithTimezoneOffset(new Date(range.to)),
+                            getDateWithTimezoneOffset(range.to),
                         ),
                     )
                     setMetricsInterval(dataConsumptionPeriod[value].interval)

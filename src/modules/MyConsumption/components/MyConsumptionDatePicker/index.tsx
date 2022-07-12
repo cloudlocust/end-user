@@ -29,9 +29,9 @@ const MyConsumptionDatePicker = ({ period, setRange, range }: IMyConsumptionDate
     const theme = useTheme()
     const { formatMessage } = useIntl()
     const rangeDateFormat = {
-        from: getDateWithTimezoneOffset(new Date(range.from)),
+        from: getDateWithTimezoneOffset(range.from),
         // Because range is already in local time and ISO String, we convert from string to Date without applying local time.
-        to: getDateWithTimezoneOffset(new Date(range.to)),
+        to: getDateWithTimezoneOffset(range.to),
     }
     const isFutureDate = differenceInCalendarDays(rangeDateFormat.to, new Date()) >= 0
     /**
