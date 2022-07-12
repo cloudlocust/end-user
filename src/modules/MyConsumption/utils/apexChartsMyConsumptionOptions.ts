@@ -113,12 +113,10 @@ const getXAxisLabelFormatFromPeriod = (period: periodType, isTooltipLabel?: bool
     switch (period) {
         case 'daily':
             return 'HH:mm'
-        case 'weekly':
-            return isTooltipLabel ? 'ddd DD MMM' : 'ddd'
         case 'yearly':
             return isTooltipLabel ? 'MMMM' : 'MMM'
         default:
-            return isTooltipLabel ? 'ddd DD MMM' : 'D MMM'
+            return isTooltipLabel ? 'ddd DD MMM' : 'ddd D'
     }
 }
 

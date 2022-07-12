@@ -138,8 +138,8 @@ describe('test pure function', () => {
         const tooltipTimeStampDays = 'Sat 01 Jan'
         const tooltipTimeStampYear = 'January'
         const xAxisTimeStampDay = `00:00`
-        const xAxisTimeStampWeek = 'Sat'
-        const xAxisTimeStampMonth = '1 Jan'
+        const xAxisTimeStampWeek = 'Sat 1'
+        const xAxisTimeStampMonth = 'Sat 1'
         const xAxisTimeStampYear = 'Jan'
         // ApexChart Props
         let apexChartProps = getApexChartMyConsumptionProps({
