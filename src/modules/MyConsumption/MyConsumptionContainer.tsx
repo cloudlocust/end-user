@@ -6,7 +6,7 @@ import { useMeterList } from 'src/modules/Meters/metersHook'
 import { formatMetricFilter, getRange } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
 import { SelectChangeEvent, useTheme } from '@mui/material'
 import { useMetrics } from 'src/modules/Metrics/metricsHook'
-import { getMetricType, metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
+import { getMetricType, metricTargetsEnum, metricTargetType } from 'src/modules/Metrics/Metrics.d'
 import { periodType } from 'src/modules/MyConsumption/myConsumptionTypes'
 import { Link } from 'react-router-dom'
 import { Icon, Typography } from 'src/common/ui-kit'
@@ -55,18 +55,10 @@ export const MyConsumptionContainer = () => {
     const theme = useTheme()
     const { formatMessage } = useIntl()
     const { getConsents, nrlinkConsent, enedisConsent } = useConsents()
-    const {
-        setMetricsInterval,
-        setRange,
-        setFilters,
-        isMetricsLoading,
-        data,
-        filters,
-        range,
-        addTarget,
-        removeTarget,
-    } = useMetrics(initialMetricsHookValues)
+    const { setMetricsInterval, setRange, setFilters, isMetricsLoading, data, filters, range } =
+        useMetrics(initialMetricsHookValues)
     const [period, setPeriod] = useState<periodType>('daily')
+    const [filteredTargets, setFilteredTargets] = useState<metricTargetType[]>([metricTargetsEnum.consumption])
 
     useEffect(() => {
         if (!metersList) return
@@ -111,6 +103,28 @@ export const MyConsumptionContainer = () => {
             setFilters([])
         } else {
             setFilters(formatMetricFilter(event.target.value))
+        }
+    }
+
+    /**
+     * Function that removes target from graph.
+     *
+     * @param target Metric target.
+     */
+    const removeTarget = (target: metricTargetType) => {
+        setFilteredTargets((prevState) => prevState.filter((filteredTargetsEl) => filteredTargetsEl !== target))
+    }
+
+    /**
+     * Function that adds target to the graph.
+     *
+     * @param target Metric target.
+     */
+    const addTarget = (target: metricTargetType) => {
+        if (!filteredTargets.find((filteredTargetsEl) => filteredTargetsEl === target)) {
+            setFilteredTargets((prevState) => {
+                return [...prevState, target]
+            })
         }
     }
 
@@ -202,7 +216,7 @@ export const MyConsumptionContainer = () => {
                     </div>
                 ) : (
                     <MyConsumptionChart
-                        data={data}
+                        data={data.filter((metric) => filteredTargets.includes(metric.target))}
                         chartType={period === 'daily' ? 'area' : 'bar'}
                         period={period}
                         range={range}

@@ -1,7 +1,7 @@
 import { reduxedRenderHook } from 'src/common/react-platform-components/test'
 import { useMetrics } from 'src/modules/Metrics/metricsHook'
-import { act } from '@testing-library/react-hooks'
 import { getMetricType, metricRangeType, metricTargetsType } from 'src/modules/Metrics/Metrics'
+import { act } from '@testing-library/react-hooks'
 import { getRange } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
 
 const mockEnqueueSnackbar = jest.fn()
@@ -86,7 +86,6 @@ describe('useMetrics hook test', () => {
             autoHideDuration: 5000,
         })
     }, 8000)
-
     test('When add and remove target, targets should change and getMetrics should work', async () => {
         mockHookArguments.targets = []
         mockHookArguments.interval = '2min'

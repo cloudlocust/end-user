@@ -94,12 +94,12 @@ export function useMetrics(initialState: getMetricType) {
         range,
         metricsInterval,
         filters,
-        addTarget,
-        removeTarget,
         setData,
         setMetricsInterval,
         setFilters,
         setRange,
         setTargets,
+        addTarget,
+        removeTarget,
     }
 }
