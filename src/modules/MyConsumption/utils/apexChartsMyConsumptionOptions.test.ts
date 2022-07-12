@@ -75,6 +75,7 @@ const mockOptions: (theme: Theme, period: periodType) => ApexOptions = (theme, p
         categories: [mockDatapoints[0][1]],
         labels: {
             format: 'HH:mm',
+            hideOverlappingLabels: false,
             // eslint-disable-next-line jsdoc/require-jsdoc
             formatter(value, timestamp) {
                 return dayjsUTC(new Date(value!)).format(getXAxisLabelFormatFromPeriod(period))
