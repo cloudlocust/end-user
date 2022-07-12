@@ -1,6 +1,5 @@
 import { metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
 import { periodType } from 'src/modules/MyConsumption/myConsumptionTypes'
-import { getRange } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
 import { Theme } from '@mui/material/styles/createTheme'
 import { isNil } from 'lodash'
 import convert, { Unit } from 'convert-units'
@@ -12,27 +11,52 @@ export const dataConsumptionPeriod = [
     {
         name: 'Jour',
         interval: '2min',
-        range: getRange('day'),
         period: 'daily' as periodType,
     },
     {
         name: 'Semaine',
         interval: '1d',
-        range: getRange('week'),
         period: 'weekly' as periodType,
     },
     {
         name: 'Mois',
         interval: '1d',
-        range: getRange('month'),
         period: 'monthly' as periodType,
     },
 
     {
         name: 'Année',
         interval: '1 month',
-        range: getRange('year'),
         period: 'yearly' as periodType,
+    },
+]
+/**
+ * Mobile Date Picker Period Props.
+ */
+export const mobileDatePickerPeriodProps = [
+    {
+        period: 'daily',
+        views: ['day'],
+        width: '80px',
+        inputFormat: 'dd/MM/yyyy',
+    },
+    {
+        period: 'weekly',
+        views: ['day'],
+        width: '80px',
+        inputFormat: 'dd/MM/yyyy',
+    },
+    {
+        period: 'monthly',
+        views: ['month', 'year'],
+        width: '55px',
+        inputFormat: 'MM/yyyy',
+    },
+    {
+        period: 'yearly',
+        views: ['year'],
+        width: '40px',
+        inputFormat: 'yyyy',
     },
 ]
 /**

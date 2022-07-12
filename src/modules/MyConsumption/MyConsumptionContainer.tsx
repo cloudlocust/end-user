@@ -14,6 +14,7 @@ import { useIntl } from 'react-intl'
 import { useConsents } from 'src/modules/Consents/consentsHook'
 import { WidgetList } from 'src/modules/MyConsumption/components/Widget/WidgetsList'
 import CircularProgress from '@mui/material/CircularProgress'
+import MyConsumptionDatePicker from 'src/modules/MyConsumption/components/MyConsumptionDatePicker'
 import { MyConsumptionPeriod, SelectMeters } from 'src/modules/MyConsumption'
 import TargetButtonGroup from 'src/modules/MyConsumption/components/TargetButtonGroup'
 
@@ -187,6 +188,7 @@ export const MyConsumptionContainer = () => {
                                     {showPerPeriodText()}
                                 </TypographyFormatMessage>
                             </div>
+                            <MyConsumptionDatePicker period={period} setRange={setRange} range={range} />
                         </div>
                     </motion.div>
                     {metersList && metersList?.length > 1 && (
@@ -226,6 +228,7 @@ export const MyConsumptionContainer = () => {
                     setPeriod={setPeriod}
                     setRange={setRange}
                     setMetricsInterval={setMetricsInterval}
+                    range={range}
                 />
             </div>
             {data.length !== 0 && (

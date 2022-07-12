@@ -9,11 +9,15 @@ export interface IMyConsumptionPeriod {
     /**
      * SetRange function.
      */
-    setRange: (range: metricRange) => void
+    setRange: (range: metricRangeType) => void
     /**
      * SetPeriodValue function.
      */
     setPeriod: (period: periodValue) => void
+    /**
+     * Period to range.
+     */
+    range: metricRangeType
 }
 /**
  * Range value type.
@@ -41,6 +45,27 @@ interface ISelectMeters {
      */
     inputTextColor?: string
 }
+/**
+ * Interface IMyConsumptionCalendar.
+ */
+export interface IMyConsumptionDatePicker {
+    /**
+     * Period range.
+     */
+    period: periodValueType
+    /**
+     * SetRange function.
+     */
+    setRange: (range: metricRangeType) => void
+    /**
+     * Period for range.
+     */
+    range: metricRangeType
+}
+/**
+ * Type for views in MobileDatePicker.
+ */
+export type ViewsType = 'day' | 'month' | 'year'
 /**
  * Interface for TargetButtonGroup.
  */

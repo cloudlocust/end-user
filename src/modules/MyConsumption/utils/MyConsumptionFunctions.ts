@@ -7,8 +7,18 @@ import {
 import dayjs from 'dayjs'
 import { periodType } from 'src/modules/MyConsumption/myConsumptionTypes.d'
 import { ApexChartsAxisValuesType } from 'src/modules/MyConsumption/myConsumptionTypes'
-import utc from 'dayjs/plugin/utc'
-dayjs.extend(utc)
+import {
+    add,
+    addDays,
+    endOfDay,
+    subMinutes,
+    startOfDay,
+    sub,
+    subDays,
+    startOfMonth,
+    addMinutes,
+    differenceInCalendarDays,
+} from 'date-fns'
 
 /**
  * FormatMetricFilter function converts the data to the required format.
@@ -25,37 +35,102 @@ export const formatMetricFilter = (valueGuid: string) => {
         },
     ] as metricFiltersType
 }
+/**
+ * Convert Period function gets the period to convert for date-fns library.
+ *
+ * @param rangePeriod Selected period to range.
+ * @returns Changed period names.
+ */
+const convertPeriod = (rangePeriod: string) => {
+    switch (rangePeriod) {
+        case 'day':
+        case 'daily':
+            return 'days'
+        case 'week':
+        case 'weekly':
+            return 'weeks'
+        case 'month':
+        case 'monthly':
+            return 'months'
+        case 'year':
+        case 'yearly':
+            return 'years'
+    }
+}
+/**
+ * GetDateWithTimezoneOffset function.
+
+ * @param date Current date.
+ * @returns Date with utc offset.
+ */
+export const getDateWithTimezoneOffset = (date: string) => {
+    const formattedData = new Date(date)
+    const localOffset = formattedData.getTimezoneOffset()
+    return addMinutes(formattedData, localOffset)
+}
+/**
+ * GetDateWithoutOffset function.
+ *
+ * @param date Current date.
+ * @returns Date without utc offset.
+ */
+const getDateWithoutTimezoneOffset = (date: Date) => {
+    const localOffset = date.getTimezoneOffset()
+    return subMinutes(date, localOffset).toISOString()
+}
 
 /**
- * Function to get range.
+ * Add period.
  *
- * @param rangePeriod Period for range.
- * @returns Object with range data.
+ * @param date Current Date.
+ * @param period Selected period.
+ * @returns Add period.
  */
-export const getRange = (rangePeriod: dayjs.ManipulateType) => {
+const addPeriod = (date: Date, period: string) => {
+    if (period === 'days') return endOfDay(date)
+    if (period === 'weeks') return addDays(date, 6)
+    return add(period === 'years' ? startOfMonth(date) : endOfDay(date), {
+        [period]: 1,
+    })
+}
+/**
+ * Subtract period.
+ *
+ * @param date Current Date.
+ * @param period Selected period.
+ * @returns Sub period.
+ */
+const subPeriod = (date: Date, period: string) => {
+    if (period === 'days') return startOfDay(date)
+    if (period === 'weeks') return subDays(date, 6)
+    return sub(period === 'years' ? startOfMonth(date) : startOfDay(date), {
+        [period]: 1,
+    })
+}
+/**
+ * SetRange function.
+ *
+ * @param rangePeriod Selected period.
+ * @param toDate Current date.
+ * @param operation  Add or Sub operation.
+ * Day then the "from" will represent the start of the current Date and the "to" will represent the end of the current date.
+ * Week then the from date, represent the subtracted Week + 1day(6 full days), because we have to count the Week including the subtracted day
+ * thus we add 1 day (for example, if we subtract 1 week from 27/06, it'll return the 20th because it doesn't count the 27th,
+ * thus we add 1 day because the 27th is counted and thus we start from the 21st till 27th which give us 7 days).
+ * @returns Ranged data.
+ */
+export const getRange = (rangePeriod: string, toDate?: Date, operation: 'sub' | 'add' = 'sub') => {
+    const currentDate = toDate || new Date()
+    const period = convertPeriod(rangePeriod) as string
+    const isFutureDate = differenceInCalendarDays(addPeriod(currentDate, period), new Date()) >= 0
+    if (operation === 'sub')
+        return {
+            from: getDateWithoutTimezoneOffset(subPeriod(currentDate, period)),
+            to: getDateWithoutTimezoneOffset(endOfDay(currentDate)),
+        }
     return {
-        /**
-         * We must have range "from" and "to" as local time but in ISO String format, because backend data will be saved in local time, thus the query must be in local time.
-         * For example (for a date 20 June 2022 00:00:00 if timezone : GMT+2, then ISO format will be 2022-06-19T23:00:00.000Z, and thus back end will return data from 06 June 2022 at 23:00:00).
-         * That's why with dayjs.utc() it'll take the local time as utc time without applying any modification, thus returns 2022-06-20T00:00:00.000Z.
-         *
-         * When rangePeriod is:
-         *  Day then the "from" will represent the start of the current Date (example: 27 june at midnight) and the "to" will represent the end of the current date (example: 27 june at 23:59).
-         *  Week then the from date, represent the subtracted Week + 1day, because we have to count the Week including the subtracted day thus we add 1 day (for example, if we subtract 1 week from 27/06, it'll return the 20th because it doesn't count the 27th, thus we add 1 day because the 27th is counted and thus we start from the 21st till 27th which give us 7 days).
-         *  Month, we count from the subtracted Date a month from now at T00:00:00.000Z, including the current current day.
-         *  Month, we count from the subtracted Date a year from now at the start of the month, (if we're 5 july 2023, then we should go from 1st July 2022 - 5 july 2023), including the current month.
-         *
-         */
-        from:
-            rangePeriod === 'day'
-                ? dayjs.utc().startOf('day').toISOString()
-                : rangePeriod === 'week'
-                ? dayjs.utc().subtract(1, rangePeriod).add(1, 'day').startOf('day').toISOString()
-                : rangePeriod === 'year'
-                ? // From should contains the first day of the month of the previous year.
-                  dayjs.utc().subtract(1, rangePeriod).startOf('month').toISOString()
-                : dayjs.utc().subtract(1, rangePeriod).startOf('day').toISOString(),
-        to: dayjs.utc().endOf('date').toISOString(),
+        from: getDateWithoutTimezoneOffset(isFutureDate ? subPeriod(new Date(), period) : startOfDay(currentDate)),
+        to: getDateWithoutTimezoneOffset(isFutureDate ? new Date() : addPeriod(currentDate, period)),
     }
 }
 
@@ -283,14 +358,13 @@ export const isEqualDates = (date1: number, date2: number, period: periodType) =
             dayjs.utc(new Date(date1).toUTCString()).format('D/M/YY-HH:mm') ===
             dayjs.utc(new Date(date2).toUTCString()).format('D/M/YY-HH:mm')
         )
-    else if (period === 'yearly')
+    if (period === 'yearly')
         return (
             dayjs.utc(new Date(date1).toUTCString()).format('MM/YYYY') ===
             dayjs.utc(new Date(date2).toUTCString()).format('MM/YYYY')
         )
-    else
-        return (
-            dayjs.utc(new Date(date1).toUTCString()).format('DD/MM/YYYY') ===
-            dayjs.utc(new Date(date2).toUTCString()).format('DD/MM/YYYY')
-        )
+    return (
+        dayjs.utc(new Date(date1).toUTCString()).format('DD/MM/YYYY') ===
+        dayjs.utc(new Date(date2).toUTCString()).format('DD/MM/YYYY')
+    )
 }

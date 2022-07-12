@@ -6,6 +6,7 @@
         "src/common"
     ],
     "dependencies": {
+        "date-fns": "^2.28.0",
         "apexcharts": "^3.35.3",
         "convert-units": "^2.3.4",
         "react-apexcharts": "^1.4.0",
