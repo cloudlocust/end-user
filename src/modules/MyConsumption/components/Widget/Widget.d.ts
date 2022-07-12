@@ -1,11 +1,4 @@
-import {
-    metricTargetType,
-    metricIntervalType,
-    metricFiltersType,
-    metricRangeType,
-    IMetric,
-} from 'src/modules/Metrics/Metrics'
-import { periodType } from 'src/modules/MyConsumption/myConsumptionTypes'
+import { IMetric } from 'src/modules/Metrics/Metrics.d'
 
 /**
  * Widget Title type.
@@ -22,62 +15,37 @@ export type widgetTitleType =
 export type totalConsumptionUnits = 'Wh' | 'kWh' | 'MWh'
 
 /**
- * Widget list type.
- */
-// eslint-disable-next-line jsdoc/require-jsdoc
-export type widgetType = {
-    /**
-     * Widget type.
-     */
-    type: metricTargetType
-    /**
-     * Widget title.
-     */
-    title: widgetTitleType
-    /**
-     * Widget unit.
-     */
-    computeUnit: (data: IMetric[]) => 'Wh' | 'kWh' | 'MWh' | 'VA' | 'kVa' | '°C'
-    /**
-     * Function that returns the value of the specific widget type.
-     */
-    computeValue: (data: IMetric[]) => number
-}[]
-
-/**
  * Widget Props.
  */
 export interface IWidgetProps {
     /**
-     * Widget type.
+     * Metrics loading state.
      */
-    type: metricTargetType
+    isMetricsLoading: boolean
+    /**
+     * Widget unit.
+     */
+    unit: 'Wh' | 'kWh' | 'MWh' | 'VA' | 'kVa' | '°C'
+    /**
+     * Widget value.
+     */
+    value: number
     /**
      * Widget title.
      */
     title: widgetTitleType
+}
+
+/**
+ * WidgetList Props.
+ */
+export interface IWidgetListProps {
     /**
-     * Period: "day", "week", "month", "year".
+     * Metrics data.
      */
-    period: periodType
+    data: IMetric[]
     /**
-     * Metrics interval.
+     * Loading state from useMetrics hook.
      */
-    metricsInterval: metricIntervalType
-    /**
-     * Metrics filters.
-     */
-    filters: metricFiltersType
-    /**
-     * Metrics Range.
-     */
-    range: metricRangeType
-    /**
-     * Widget unit.
-     */
-    unit: (data: IMetric[]) => 'Wh' | 'kWh' | 'MWh' | 'VA' | 'kVa' | '°C'
-    /**
-     * Widget value.
-     */
-    value: (data: IMetrc[]) => number
+    isMetricsLoading: boolean
 }

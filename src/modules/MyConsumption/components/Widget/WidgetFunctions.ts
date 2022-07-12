@@ -1,4 +1,4 @@
-import { ApexAxisChartSerie, IMetric } from 'src/modules/Metrics/Metrics'
+import { ApexAxisChartSerie, IMetric, metricTargetsEnum, metricTargetType } from 'src/modules/Metrics/Metrics.d'
 import { convertMetricsDataToApexChartsAxisValues } from 'src/modules/MyConsumption/utils/apexChartsDataConverter'
 import { sum, max, mean, ceil } from 'lodash'
 import { consumptionWattUnitConversion } from 'src/modules/MyConsumption/utils/unitConversionFunction'
@@ -68,5 +68,26 @@ export const computeTemperature = (data: IMetric[]): { value: number; unit: '°C
         // filter(Number) allows us to not take into considerattion any value that is not a Number
         value: ceil(mean(values.filter(Number))),
         unit: '°C',
+    }
+}
+
+/**
+ * Function that compute widget assets from metric type.
+ *
+ * @param data Metrics data.
+ * @param type Metric target.
+ * @returns Unit and value for every metric type.
+ */
+export const computeWidgetAssets = (data: IMetric[], type: metricTargetType) => {
+    switch (type) {
+        case metricTargetsEnum.consumption:
+            return computeTotalConsumption(data)!
+        case metricTargetsEnum.pMax:
+            return computePMax(data)!
+        case metricTargetsEnum.externalTemperature:
+        case metricTargetsEnum.internalTemperature:
+            return computeTemperature(data)!
+        default:
+            throw Error('Wrong target')
     }
 }

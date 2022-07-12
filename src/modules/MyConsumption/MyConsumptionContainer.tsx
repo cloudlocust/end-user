@@ -6,7 +6,7 @@ import { useMeterList } from 'src/modules/Meters/metersHook'
 import { formatMetricFilter, getRange } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
 import { SelectChangeEvent, useTheme } from '@mui/material'
 import { useMetrics } from 'src/modules/Metrics/metricsHook'
-import { getMetricType } from 'src/modules/Metrics/Metrics.d'
+import { getMetricType, metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
 import { periodType } from 'src/modules/MyConsumption/myConsumptionTypes'
 import { Link } from 'react-router-dom'
 import { Icon, Typography } from 'src/common/ui-kit'
@@ -25,7 +25,19 @@ export const initialMetricsHookValues: getMetricType = {
     range: getRange('day'),
     targets: [
         {
-            target: 'consumption_metrics',
+            target: metricTargetsEnum.consumption,
+            type: 'timeserie',
+        },
+        {
+            target: metricTargetsEnum.pMax,
+            type: 'timeserie',
+        },
+        {
+            target: metricTargetsEnum.externalTemperature,
+            type: 'timeserie',
+        },
+        {
+            target: metricTargetsEnum.internalTemperature,
             type: 'timeserie',
         },
     ],
@@ -47,7 +59,6 @@ export const MyConsumptionContainer = () => {
         setMetricsInterval,
         setRange,
         setFilters,
-        metricsInterval,
         isMetricsLoading,
         data,
         filters,
@@ -203,14 +214,16 @@ export const MyConsumptionContainer = () => {
                     setMetricsInterval={setMetricsInterval}
                 />
             </div>
-            <div className="p-12 sm:p-24 ">
-                <div className="flex justify-center items-center md:justify-start">
-                    <TypographyFormatMessage variant="h5" className="sm:mr-8 text-black font-medium">
-                        Chiffres clés
-                    </TypographyFormatMessage>
+            {data.length !== 0 && (
+                <div className="p-12 sm:p-24 ">
+                    <div className="flex justify-center items-center md:justify-start">
+                        <TypographyFormatMessage variant="h5" className="sm:mr-8 text-black font-medium">
+                            Chiffres clés
+                        </TypographyFormatMessage>
+                    </div>
+                    <WidgetList data={data} isMetricsLoading={isMetricsLoading} />
                 </div>
-                <WidgetList period={period} filters={filters} metricsInterval={metricsInterval} range={range} />
-            </div>
+            )}
         </>
     )
 }

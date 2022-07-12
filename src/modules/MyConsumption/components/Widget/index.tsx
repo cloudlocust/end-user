@@ -1,53 +1,19 @@
 import { Typography, Grid, Card, CircularProgress, useTheme } from '@mui/material'
-import { useEffect } from 'react'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
-import { getMetricType } from 'src/modules/Metrics/Metrics'
-import { useMetrics } from 'src/modules/Metrics/metricsHook'
 import { IWidgetProps } from 'src/modules/MyConsumption/components/Widget/Widget'
 
 /**
  * Single Widget component.
  *
  * @param root0 N/A.
+ * @param root0.isMetricsLoading Loading metric state.
  * @param root0.title Widget title.
- * @param root0.type Widget type.
- * @param root0.period Period date.
- * @param root0.filters Filters from parent component.
- * @param root0.metricsInterval MetricsInterval from parent component.
- * @param root0.range Range from parent component.
  * @param root0.unit Widget unit.
- * @param root0.value Value displayed for a specific widget type.
+ * @param root0.value Widget value.
  * @returns Single Widget component.
  */
-// TODO Improve value and unit in order not to have them from 2 functions but rather one.
-// To be done when the architecture of metrics in Widgets is changed.
-export const Widget = ({ title, unit, type, period, filters, metricsInterval, range, value }: IWidgetProps) => {
+export const Widget = ({ isMetricsLoading, title, unit, value }: IWidgetProps) => {
     const theme = useTheme()
-    const widgetInitialMetricsValues: getMetricType = {
-        range,
-        interval: metricsInterval,
-        filters,
-        targets: [
-            {
-                target: type,
-                type: 'timeserie',
-            },
-        ],
-    }
-    const { setMetricsInterval, data, setRange, isMetricsLoading, setFilters } = useMetrics(widgetInitialMetricsValues)
-
-    /**
-     * Widget component is reloaded whenever period, range or interval changes.
-     */
-    useEffect(() => {
-        /**
-         * In order to retrieve data for the widgets of a specific range, period or interval. We passed range, period and interval from MyConsumptionContainer to this component as props
-         * And used a new instantiation of useMetrics to make API calls with those props.
-         */
-        setFilters(filters)
-        setMetricsInterval(metricsInterval)
-        setRange(range)
-    }, [filters, metricsInterval, period, range, setFilters, setMetricsInterval, setRange])
 
     return (
         <Grid item xs={6} sm={6} md={4} lg={3} xl={3} className="flex">
@@ -67,7 +33,7 @@ export const Widget = ({ title, unit, type, period, filters, metricsInterval, ra
                                 {title}
                             </TypographyFormatMessage>
                             {/* If onError returns true, it will display an error message for the widget type */}
-                            {!value(data) ? (
+                            {!value ? (
                                 <div className="mb-44 text-center">
                                     <TypographyFormatMessage>Aucune donnée disponnible</TypographyFormatMessage>
                                 </div>
@@ -75,12 +41,12 @@ export const Widget = ({ title, unit, type, period, filters, metricsInterval, ra
                                 <div className="flex flex-row flex-wrap mt-12 items-end">
                                     {/* Widget value */}
                                     <Typography className="text-2xl sm:text-3xl md:text-4xl font-normal tracking-tighter items-end mr-auto">
-                                        {value(data)}
+                                        {value}
                                     </Typography>
                                     <div className="flex flex-col">
                                         {/* Widget unit */}
                                         <Typography className="text-14 font-medium mb-24" color="textSecondary">
-                                            {unit(data)}
+                                            {unit}
                                         </Typography>
                                         {/* TODDO MYEM-2588*/}
                                         {/* Widget arrow */}
