@@ -220,6 +220,9 @@ export const getApexChartMyConsumptionProps = ({
         categories: xAxisValues,
         labels: {
             format: 'HH:mm',
+            // Setting this false, because apexChart hides by default overlapping labels, and because we're hiding the labels with css, by letting apexCharts default it gives us unexpected styling behaviour
+            // For example when period is monthly we want to show xAxis each 1 out of two days, and thus we can handle this with css only when apex shows all labels, cuz apex will hide some labels when they overlap.
+            hideOverlappingLabels: false,
             /**
              * Formatter function for showing label in the xAxis.
              *
