@@ -11,7 +11,8 @@ let mockPeriod = 'daily'
 const dateFormat = 'dd/MM/yyyy'
 const buttonLeft = 'chevron_left'
 const date = new Date()
-let mockRange = getRange(mockPeriod)
+const yesterday = date.setDate(date.getDate() - 1)
+let mockRange = getRange(mockPeriod, new Date(yesterday), 'sub')
 describe('Load MyConsumptionDatePicker', () => {
     test('when the user clicks on the left arrow, yesterday`s date is shown', async () => {
         const { getByText, container } = reduxedRender(
@@ -21,48 +22,58 @@ describe('Load MyConsumptionDatePicker', () => {
         )
         expect(container.querySelector('input')?.value).toBe(format(date, dateFormat))
         userEvent.click(getByText(buttonLeft))
-        const yesterday = date.setDate(date.getDate() - 1)
         expect(container.querySelector('input')?.value).toBe(format(new Date(yesterday), dateFormat))
     })
-    test('when the user clicks on the left arrow, the last week is shown', async () => {
+    test('when the user clicks on the left arrow, the previous week is shown', async () => {
         mockPeriod = 'weekly'
-        mockRange = getRange(mockPeriod)
+        const dateWeek = new Date()
+        const prevWeek = dateWeek.setDate(dateWeek.getDate() - 6)
+        mockRange = getRange(mockPeriod, new Date(prevWeek), 'sub')
         const { getByText, container } = reduxedRender(
             <Router>
                 <MyConsumptionDatePicker period={mockPeriod} setRange={mockSetRange} range={mockRange} />
             </Router>,
         )
-        const dateWeek = new Date()
         userEvent.click(getByText(buttonLeft))
-        const prevWeek = dateWeek.setDate(dateWeek.getDate() - 6)
         expect(container.querySelector('input')?.value).toBe(format(new Date(prevWeek), dateFormat))
     })
-    test('when the user clicks on the left arrow, the last month is shown', async () => {
+    test('when the user clicks on the left arrow, the previous month is shown', async () => {
         mockPeriod = 'monthly'
-        mockRange = getRange(mockPeriod)
+        const dateMonth = new Date()
+        const prevMonth = dateMonth.setMonth(dateMonth.getMonth() - 1)
+        mockRange = getRange(mockPeriod, new Date(prevMonth), 'sub')
         const { getByText, container } = reduxedRender(
             <Router>
                 <MyConsumptionDatePicker period={mockPeriod} setRange={mockSetRange} range={mockRange} />
             </Router>,
         )
-        const dateMonth = new Date()
         userEvent.click(getByText(buttonLeft))
-        const prevMonth = dateMonth.setMonth(dateMonth.getMonth() - 1)
         expect(container.querySelector('input')?.value).toBe(format(new Date(prevMonth), 'MM/yyyy'))
     })
-    test('when the user clicks on the left arrow, the last year is shown', async () => {
+    test('when the user clicks on the left arrow, the previous year is shown', async () => {
         mockPeriod = 'yearly'
-        mockRange = getRange(mockPeriod)
+        const dateYear = new Date()
+        const prevYear = dateYear.setFullYear(dateYear.getFullYear() - 1)
+        mockRange = getRange(mockPeriod, new Date(prevYear), 'sub')
         const { getByText, container } = reduxedRender(
             <Router>
                 <MyConsumptionDatePicker period={mockPeriod} setRange={mockSetRange} range={mockRange} />
             </Router>,
         )
         userEvent.click(getByText(buttonLeft))
-        const dateYear = new Date()
-        const prevYear = dateYear.setFullYear(dateYear.getFullYear() - 1)
         expect(container.querySelector('input')?.value).toBe(format(new Date(prevYear), 'yyyy'))
+    })
+    test('when the user clicks on the right arrow, the next year is shown', async () => {
+        mockPeriod = 'yearly'
+        const dateYear = new Date('2019')
+        const nextYear = dateYear.setFullYear(dateYear.getFullYear() + 1)
+        mockRange = getRange(mockPeriod, new Date(nextYear), 'sub')
+        const { getByText, container } = reduxedRender(
+            <Router>
+                <MyConsumptionDatePicker period={mockPeriod} setRange={mockSetRange} range={mockRange} />
+            </Router>,
+        )
         userEvent.click(getByText('chevron_right'))
-        expect(container.querySelector('input')?.value).toBe(format(new Date(), 'yyyy'))
+        expect(container.querySelector('input')?.value).toBe(format(new Date(nextYear), 'yyyy'))
     })
 })
