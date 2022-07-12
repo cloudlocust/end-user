@@ -1,6 +1,6 @@
 import { ApexAxisChartSerie, IMetric, metricTargetsEnum, metricTargetType } from 'src/modules/Metrics/Metrics.d'
 import { convertMetricsDataToApexChartsAxisValues } from 'src/modules/MyConsumption/utils/apexChartsDataConverter'
-import { sum, max, mean, ceil } from 'lodash'
+import { sum, max, mean, round } from 'lodash'
 import { consumptionWattUnitConversion } from 'src/modules/MyConsumption/utils/unitConversionFunction'
 import convert from 'convert-units'
 
@@ -68,7 +68,7 @@ export const computeExternalTemperature = (data: IMetric[]): { value: number; un
     const values = getDataFromYAxis(data, metricTargetsEnum.externalTemperature)
     return {
         // filter(Number) allows us to not take into considerattion any value that is not a Number
-        value: ceil(mean(values.filter(Number))),
+        value: round(mean(values.filter(Number))),
         unit: '°C',
     }
 }
@@ -84,7 +84,7 @@ export const computeInternallTemperature = (data: IMetric[]): { value: number; u
     const values = getDataFromYAxis(data, metricTargetsEnum.internalTemperature)
     return {
         // filter(Number) allows us to not take into considerattion any value that is not a Number
-        value: ceil(mean(values.filter(Number))),
+        value: round(mean(values.filter(Number))),
         unit: '°C',
     }
 }
@@ -103,9 +103,9 @@ export const computeWidgetAssets = (data: IMetric[], type: metricTargetType) => 
         case metricTargetsEnum.pMax:
             return computePMax(data)!
         case metricTargetsEnum.externalTemperature:
-            return computeInternallTemperature(data)!
-        case metricTargetsEnum.internalTemperature:
             return computeExternalTemperature(data)!
+        case metricTargetsEnum.internalTemperature:
+            return computeInternallTemperature(data)!
         default:
             throw Error('Wrong target')
     }
