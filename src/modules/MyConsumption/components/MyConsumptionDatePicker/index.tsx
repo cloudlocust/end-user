@@ -33,6 +33,7 @@ const MyConsumptionDatePicker = ({ period, setRange, range }: IMyConsumptionDate
         // Because range is already in local time and ISO String, we convert from string to Date without applying local time.
         to: getDateWithTimezoneOffset(range.to),
     }
+
     const isFutureDate = differenceInCalendarDays(rangeDateFormat.to, new Date()) >= 0
     /**
      * Handle data change.
@@ -82,9 +83,10 @@ const MyConsumptionDatePicker = ({ period, setRange, range }: IMyConsumptionDate
                                 value={rangeDateFormat.to}
                                 inputFormat={item.inputFormat}
                                 maxDate={new Date()}
-                                onChange={() => {}}
+                                onChange={() => {
+                                    return null
+                                }}
                                 onAccept={handleDateChange}
-                                onClose={() => {}}
                                 cancelText={formatMessage({ id: 'Annuler', defaultMessage: 'Annuler' })}
                                 toolbarTitle={null}
                                 renderInput={(params) => (
