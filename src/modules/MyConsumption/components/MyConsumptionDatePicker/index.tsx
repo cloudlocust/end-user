@@ -16,7 +16,8 @@ import { useIntl } from 'src/common/react-platform-translation'
 import { mobileDatePickerPeriodProps } from 'src/modules/MyConsumption/utils/myConsumptionVariables'
 
 /**
- * MyConsumptionDatePicker component.
+ * MyConsumptionDatePicker component allows the user to select a new date and use
+ * the right and left buttons to trigger the range change for all the consumption container.
  *
  * @param root0 N/A.
  * @param root0.period Period range.
@@ -42,7 +43,8 @@ const MyConsumptionDatePicker = ({ period, setRange, range }: IMyConsumptionDate
         if (newDate) setRange(getRange(period, newDate, 'sub'))
     }
     /**
-     * Handle button click.
+     * Handle the click on next and previous buttons in the date picker, sub will be triggered on the previous button click,
+     * and add will be triggered on the next button click.
      *
      * @param calculateDays SubDays or AddDays.
      * @param date Current date.
