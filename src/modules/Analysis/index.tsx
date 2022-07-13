@@ -108,7 +108,7 @@ const Analysis = () => {
             <div className="p-24">
                 <div style={{ height: '240px' }} className="flex flex-col justify-center items-center ">
                     {isMetricsLoading ? (
-                        <CircularProgress style={{ color: theme.palette.background.paper }} />
+                        <CircularProgress style={{ color: theme.palette.primary.main }} />
                     ) : (
                         <p className="text-16 md:text-20 font-medium">
                             {totalConsumption.value} {totalConsumption.unit}
