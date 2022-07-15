@@ -7,7 +7,13 @@ import { useTheme } from '@mui/material'
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
 import 'src/modules/MyConsumption/components/MyConsumptionDatePicker/MyConsumptionDatePicker.scss'
-import { getDateWithTimezoneOffset, getRange } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
+import {
+    addPeriod,
+    convertToDateFnsPeriod,
+    getDateWithTimezoneOffset,
+    getRange,
+    subPeriod,
+} from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
 import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker'
 import TextField from '@mui/material/TextField'
 import DateFnsUtils from '@date-io/date-fns'
@@ -23,9 +29,17 @@ import { mobileDatePickerPeriodProps } from 'src/modules/MyConsumption/utils/myC
  * @param root0.period Period range.
  * @param root0.setRange SetRange function.
  * @param root0.range Range data.
+ * @param root0.onDatePickerChange Callback function that overwrites the default handleDateChange for DatePicker used in MyConsumption modules.
+ * @param root0.maxDate Max Date the DatePicker can go to..
  * @returns MyConsumptionDatePicker.
  */
-const MyConsumptionDatePicker = ({ period, setRange, range }: IMyConsumptionDatePicker) => {
+const MyConsumptionDatePicker = ({
+    period,
+    setRange,
+    range,
+    onDatePickerChange,
+    maxDate,
+}: IMyConsumptionDatePicker) => {
     const theme = useTheme()
     const { formatMessage } = useIntl()
     const rangeDateFormat = {
@@ -34,15 +48,19 @@ const MyConsumptionDatePicker = ({ period, setRange, range }: IMyConsumptionDate
         to: getDateWithTimezoneOffset(range.to),
     }
 
-    const isFutureDate = differenceInCalendarDays(rangeDateFormat.to, new Date()) >= 0
+    const isFutureDate = differenceInCalendarDays(rangeDateFormat.to, maxDate || new Date()) >= 0
     /**
      * Handle data change.
      *
      * @param newDate New Date to set.
      */
     const handleDateChange = (newDate: Date | null) => {
-        if (newDate) setRange(getRange(period, newDate, 'sub'))
+        if (newDate) {
+            if (onDatePickerChange) onDatePickerChange(newDate)
+            else setRange(getRange(period, newDate, 'sub'))
+        }
     }
+
     /**
      * Handle the click on next and previous buttons in the date picker, sub will be triggered on the previous button click,
      * and add will be triggered on the next button click.
@@ -57,7 +75,13 @@ const MyConsumptionDatePicker = ({ period, setRange, range }: IMyConsumptionDate
         operator: 'add' | 'sub',
     ) => {
         const toDate = period === 'daily' ? calculateDays(date, 1) : date
-        setRange(getRange(period, toDate, operator))
+        if (onDatePickerChange)
+            onDatePickerChange(
+                operator === 'sub'
+                    ? subPeriod(toDate, convertToDateFnsPeriod(period)!)
+                    : addPeriod(toDate, convertToDateFnsPeriod(period)!),
+            )
+        else setRange(getRange(period, toDate, operator))
     }
 
     return (
@@ -79,10 +103,11 @@ const MyConsumptionDatePicker = ({ period, setRange, range }: IMyConsumptionDate
                     (item) =>
                         item.period === period && (
                             <MobileDatePicker
+                                date-testid="date-picker"
                                 views={item.views as ViewsType[]}
                                 value={rangeDateFormat.to}
                                 inputFormat={item.inputFormat}
-                                maxDate={new Date()}
+                                maxDate={maxDate || new Date()}
                                 onChange={() => {
                                     return null
                                 }}
@@ -93,7 +118,12 @@ const MyConsumptionDatePicker = ({ period, setRange, range }: IMyConsumptionDate
                                     <TextField
                                         {...params}
                                         sx={{
-                                            input: { color: theme.palette.primary.contrastText, width: item.width },
+                                            input: {
+                                                color: theme.palette.primary.contrastText,
+                                                textAlign: 'center',
+                                                width: item.width,
+                                                fontSize: '1.6rem',
+                                            },
                                         }}
                                     />
                                 )}

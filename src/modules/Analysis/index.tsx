@@ -2,7 +2,10 @@ import { useEffect } from 'react'
 import { motion } from 'framer-motion'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import { useMeterList } from 'src/modules/Meters/metersHook'
-import { formatMetricFilter, getRange } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
+import {
+    formatMetricFilter,
+    getDateWithoutTimezoneOffset,
+} from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
 import { useTheme } from '@mui/material'
 import { useMetrics } from 'src/modules/Metrics/metricsHook'
 import { getMetricType, metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
@@ -22,8 +25,8 @@ import { computeTotalConsumption } from '../MyConsumption/components/Widget/Widg
 export const initialMetricsHookValues: getMetricType = {
     interval: '1d',
     range: {
-        from: getRange('month', startOfMonth(subMonths(new Date(), 1)), 'add').from,
-        to: getRange('month', endOfMonth(subMonths(new Date(), 1)), 'sub').to,
+        from: getDateWithoutTimezoneOffset(startOfMonth(subMonths(new Date(), 1))),
+        to: getDateWithoutTimezoneOffset(endOfMonth(subMonths(new Date(), 1))),
     },
     targets: [
         {
@@ -57,6 +60,20 @@ const Analysis = () => {
             getConsents(filters[0].value)
         }
     }, [filters, getConsents])
+
+    /**
+     * Handler when DatePicker change, to apply the range related to Analysis Component and overwrites the default ConsumptionDatePicker.
+     * In Analysis range always go from: start month of a given date, to: end of same month for the same given date.
+     *
+     * @param newDate Represent the new picked date on DatePicker.
+     */
+    const handleDatePickerOnChange = (newDate: Date) => {
+        let newRange = {
+            from: getDateWithoutTimezoneOffset(startOfMonth(newDate)),
+            to: getDateWithoutTimezoneOffset(endOfMonth(newDate)),
+        }
+        setRange(newRange)
+    }
 
     // By checking if the metersList is true we make sure that if someone has skipped the step of connecting their PDL, they will see this error message.
     // Else if they have a PDL, we check its consent.
@@ -102,7 +119,13 @@ const Analysis = () => {
                     >
                         Consommation Quotidienne pour
                     </TypographyFormatMessage>
-                    <MyConsumptionDatePicker period={'monthly' as periodType} setRange={setRange} range={range} />
+                    <MyConsumptionDatePicker
+                        period={'monthly' as periodType}
+                        setRange={setRange}
+                        range={range}
+                        onDatePickerChange={handleDatePickerOnChange}
+                        maxDate={endOfMonth(subMonths(new Date(), 1))}
+                    />
                 </motion.div>
             </div>
             <div className="p-24">

@@ -3,13 +3,19 @@ import { reduxedRender } from 'src/common/react-platform-components/test'
 import { BrowserRouter as Router } from 'react-router-dom'
 import userEvent from '@testing-library/user-event'
 import format from 'date-fns/format'
-import { getRange } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
+import { addPeriod, getRange, subPeriod } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
 import MyConsumptionDatePicker from 'src/modules/MyConsumption/components/MyConsumptionDatePicker'
+import { waitFor } from '@testing-library/react'
+import { endOfDay } from 'date-fns'
 
 let mockSetRange = jest.fn()
+let mockOnDatePickerChange = jest.fn()
+const INCREMENT_DATE_ARROW_TEXT = 'chevron_right'
+const DECREMENT_DATE_ARROW_TEXT = 'chevron_left'
+const disabledClass = 'Mui-disabled'
+const CONFIRM_DATE_PICKER_TEXT = 'OK'
 let mockPeriod = 'daily'
 const dateFormat = 'dd/MM/yyyy'
-const buttonLeft = 'chevron_left'
 const date = new Date()
 const yesterday = date.setDate(date.getDate() - 1)
 let mockRange = getRange(mockPeriod, new Date(yesterday), 'sub')
@@ -21,7 +27,7 @@ describe('Load MyConsumptionDatePicker', () => {
             </Router>,
         )
         expect(container.querySelector('input')?.value).toBe(format(date, dateFormat))
-        userEvent.click(getByText(buttonLeft))
+        userEvent.click(getByText(DECREMENT_DATE_ARROW_TEXT))
         expect(container.querySelector('input')?.value).toBe(format(new Date(yesterday), dateFormat))
     })
     test('when the user clicks on the left arrow, the previous week is shown', async () => {
@@ -34,7 +40,7 @@ describe('Load MyConsumptionDatePicker', () => {
                 <MyConsumptionDatePicker period={mockPeriod} setRange={mockSetRange} range={mockRange} />
             </Router>,
         )
-        userEvent.click(getByText(buttonLeft))
+        userEvent.click(getByText(DECREMENT_DATE_ARROW_TEXT))
         expect(container.querySelector('input')?.value).toBe(format(new Date(prevWeek), dateFormat))
     })
     test('when the user clicks on the left arrow, the previous month is shown', async () => {
@@ -47,7 +53,7 @@ describe('Load MyConsumptionDatePicker', () => {
                 <MyConsumptionDatePicker period={mockPeriod} setRange={mockSetRange} range={mockRange} />
             </Router>,
         )
-        userEvent.click(getByText(buttonLeft))
+        userEvent.click(getByText(DECREMENT_DATE_ARROW_TEXT))
         expect(container.querySelector('input')?.value).toBe(format(new Date(prevMonth), 'MM/yyyy'))
     })
     test('when the user clicks on the left arrow, the previous year is shown', async () => {
@@ -60,7 +66,7 @@ describe('Load MyConsumptionDatePicker', () => {
                 <MyConsumptionDatePicker period={mockPeriod} setRange={mockSetRange} range={mockRange} />
             </Router>,
         )
-        userEvent.click(getByText(buttonLeft))
+        userEvent.click(getByText(DECREMENT_DATE_ARROW_TEXT))
         expect(container.querySelector('input')?.value).toBe(format(new Date(prevYear), 'yyyy'))
     })
     test('when the user clicks on the right arrow, the next year is shown', async () => {
@@ -73,7 +79,69 @@ describe('Load MyConsumptionDatePicker', () => {
                 <MyConsumptionDatePicker period={mockPeriod} setRange={mockSetRange} range={mockRange} />
             </Router>,
         )
-        userEvent.click(getByText('chevron_right'))
+        userEvent.click(getByText(INCREMENT_DATE_ARROW_TEXT))
         expect(container.querySelector('input')?.value).toBe(format(new Date(nextYear), 'yyyy'))
+    })
+
+    test('When onDatePickerChange is given, it should be called with the right data when previous or next', async () => {
+        mockPeriod = 'yearly'
+        const date = new Date('2022-01-01 00:00:00:000')
+        mockRange = getRange(mockPeriod, date, 'sub')
+        const { getByText, container } = reduxedRender(
+            <Router>
+                <MyConsumptionDatePicker
+                    period={mockPeriod}
+                    setRange={mockSetRange}
+                    range={mockRange}
+                    onDatePickerChange={mockOnDatePickerChange}
+                />
+            </Router>,
+        )
+        // INCREMENT DATE BUTTON
+        userEvent.click(getByText(INCREMENT_DATE_ARROW_TEXT))
+        await waitFor(() => {
+            // When we increment a period, we increment "to" in range.
+            expect(mockOnDatePickerChange).toHaveBeenNthCalledWith(1, addPeriod(new Date(mockRange.to), 'years'))
+        })
+
+        // DECREMENT DATE BUTTON
+        userEvent.click(getByText(DECREMENT_DATE_ARROW_TEXT))
+        await waitFor(() => {
+            // When we decrement, we decrement "from" in range.
+            expect(mockOnDatePickerChange).toHaveBeenNthCalledWith(2, subPeriod(new Date(mockRange.from), 'years'))
+        })
+
+        // SELECTING DATE IN DATE PICKER
+        // Opening the DatePicker
+        userEvent.click(container.querySelector('input')!)
+
+        // Selecting a year
+        const selectedYear = '2009'
+        userEvent.click(getByText(selectedYear)!)
+        userEvent.click(getByText(CONFIRM_DATE_PICKER_TEXT)!)
+        await waitFor(() => {
+            expect(() => getByText(selectedYear)!).toThrow()
+        })
+        expect(mockOnDatePickerChange).toHaveBeenNthCalledWith(3, endOfDay(new Date('2009-01-01')))
+    }, 20000)
+
+    test('When maxDate given, disabled should be shown on increment date arrow when date is max', async () => {
+        mockPeriod = 'yearly'
+        const maxDate = new Date('2010-01-01 00:00:00:000')
+        const date = new Date('2022-01-01 00:00:00:000')
+        mockRange = getRange(mockPeriod, date, 'sub')
+        const { getByText } = reduxedRender(
+            <Router>
+                <MyConsumptionDatePicker
+                    period={mockPeriod}
+                    setRange={mockSetRange}
+                    range={mockRange}
+                    maxDate={maxDate}
+                />
+            </Router>,
+        )
+
+        // Button Icon Increment
+        expect(getByText(INCREMENT_DATE_ARROW_TEXT)!.parentElement!.classList.contains(disabledClass)).toBeTruthy()
     })
 })
