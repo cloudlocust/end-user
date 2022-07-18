@@ -14,7 +14,7 @@ import { FAKE_WEEK_DATA, FAKE_DAY_DATA, FAKE_MONTH_DATA, FAKE_YEAR_DATA } from '
 import { getRange } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
 import { convertMetricsDataToApexChartsAxisValues } from 'src/modules/MyConsumption/utils/apexChartsDataConverter'
 import dayjs from 'dayjs'
-import { periodType } from 'src/modules/MyConsumption/myConsumptionTypes'
+import { dateFnsPeriod, periodType } from 'src/modules/MyConsumption/myConsumptionTypes'
 
 // eslint-disable-next-line jsdoc/require-jsdoc
 let interval: metricIntervalType = '2min'
@@ -183,33 +183,22 @@ describe('test pure functions', () => {
     })
 
     test('convertToDateFnsPeriod test with different cases', async () => {
-        const daysDateFnsPeriod = 'days'
-        const monthsDateFnsPeriod = 'months'
-        const weeksDateFnsPeriod = 'weeks'
-        const yearsDateFnsPeriod = 'years'
-        // Daily period.
-        let result = convertToDateFnsPeriod('daily' as periodType)
-        expect(result).toEqual(daysDateFnsPeriod)
-        result = convertToDateFnsPeriod('day')
-        expect(result).toEqual(daysDateFnsPeriod)
-
-        // Weekly period.
-        result = convertToDateFnsPeriod('weekly' as periodType)
-        expect(result).toEqual(weeksDateFnsPeriod)
-        result = convertToDateFnsPeriod('week')
-        expect(result).toEqual(weeksDateFnsPeriod)
-
-        // Monthly period.
-        result = convertToDateFnsPeriod('monthly' as periodType)
-        expect(result).toEqual(monthsDateFnsPeriod)
-        result = convertToDateFnsPeriod('month')
-        expect(result).toEqual(monthsDateFnsPeriod)
-
-        // Yearly period.
-        result = convertToDateFnsPeriod('yearly' as periodType)
-        expect(result).toEqual(yearsDateFnsPeriod)
-        result = convertToDateFnsPeriod('year')
-        expect(result).toEqual(yearsDateFnsPeriod)
+        const caseList = [
+            // Daily period.
+            { dateFnsPeriod: 'days', period1: 'daily', period2: 'day' },
+            // Weekly period.
+            { dateFnsPeriod: 'weeks', period1: 'weekly', period2: 'week' },
+            // Monthly period.
+            { dateFnsPeriod: 'months', period1: 'monthly', period2: 'month' },
+            // Yearly period.
+            { dateFnsPeriod: 'years', period1: 'yearly', period2: 'year' },
+        ]
+        caseList.forEach(({ dateFnsPeriod, period1, period2 }) => {
+            let result = convertToDateFnsPeriod(period1 as periodType)
+            expect(result).toEqual(dateFnsPeriod)
+            result = convertToDateFnsPeriod(period2)
+            expect(result).toEqual(dateFnsPeriod)
+        })
     })
 
     test('getDateWithoutTimezoneOffset test with different cases', async () => {
@@ -224,40 +213,38 @@ describe('test pure functions', () => {
     test('addPeriod test with different cases', async () => {
         const date = new Date('10/10/2022 00:00:00')
 
-        // Days period.
-        let result = addPeriod(date, 'days')
-        expect(getDateWithoutTimezoneOffset(result)).toEqual('2022-10-10T23:59:59.999Z')
-
-        // Weeks period.
-        result = addPeriod(date, 'weeks')
-        expect(getDateWithoutTimezoneOffset(result)).toEqual('2022-10-16T00:00:00.000Z')
-
-        // Months period.
-        result = addPeriod(date, 'months')
-        expect(getDateWithoutTimezoneOffset(result)).toEqual('2022-11-10T23:59:59.999Z')
-
-        // Years period.
-        result = addPeriod(date, 'years')
-        expect(getDateWithoutTimezoneOffset(result)).toEqual('2023-10-01T00:00:00.000Z')
+        const caseList = [
+            // Adding 1 day period.
+            { period: 'days', resultDate: '2022-10-10T23:59:59.999Z' },
+            // Adding 1 week period.
+            { period: 'weeks', resultDate: '2022-10-16T00:00:00.000Z' },
+            // Adding 1 month period.
+            { period: 'months', resultDate: '2022-11-10T23:59:59.999Z' },
+            // Adding 1 year period.
+            { period: 'years', resultDate: '2023-10-01T00:00:00.000Z' },
+        ]
+        caseList.forEach(({ period, resultDate }) => {
+            const result = addPeriod(date, period as dateFnsPeriod)
+            expect(getDateWithoutTimezoneOffset(result)).toEqual(resultDate)
+        })
     })
 
     test('subPeriod test with different cases', async () => {
         const date = new Date('10/10/2022 23:59:59:999')
 
-        // Days period.
-        let result = subPeriod(date, 'days')
-        expect(getDateWithoutTimezoneOffset(result)).toEqual('2022-10-10T00:00:00.000Z')
-
-        // Weeks period.
-        result = subPeriod(date, 'weeks')
-        expect(getDateWithoutTimezoneOffset(result)).toEqual('2022-10-04T23:59:59.999Z')
-
-        // Months period.
-        result = subPeriod(date, 'months')
-        expect(getDateWithoutTimezoneOffset(result)).toEqual('2022-09-10T00:00:00.000Z')
-
-        // Years period.
-        result = subPeriod(date, 'years')
-        expect(getDateWithoutTimezoneOffset(result)).toEqual('2021-10-01T00:00:00.000Z')
+        const caseList = [
+            // Subtracting 1 day period.
+            { period: 'days', resultDate: '2022-10-10T00:00:00.000Z' },
+            // Subtracting 1 week period.
+            { period: 'weeks', resultDate: '2022-10-04T23:59:59.999Z' },
+            // Subtracting 1 month period.
+            { period: 'months', resultDate: '2022-09-10T00:00:00.000Z' },
+            // Subtracting 1 year period.
+            { period: 'years', resultDate: '2021-10-01T00:00:00.000Z' },
+        ]
+        caseList.forEach(({ period, resultDate }) => {
+            const result = subPeriod(date, period as dateFnsPeriod)
+            expect(getDateWithoutTimezoneOffset(result)).toEqual(resultDate)
+        })
     })
 })
