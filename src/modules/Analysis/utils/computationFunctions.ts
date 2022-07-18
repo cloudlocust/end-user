@@ -39,11 +39,11 @@ export const computeStatisticConsumption = (
             if (
                 value &&
                 (statisticConsumptionType === 'maximum'
-                    ? resultStatisticConsumption < (value as number)
+                    ? resultStatisticConsumption < value
                     : // When resultStatisticConsumption === -1, we take the first value found as min.
-                      resultStatisticConsumption > (value as number) || resultStatisticConsumption === -1)
+                      resultStatisticConsumption > value || resultStatisticConsumption === -1)
             ) {
-                resultStatisticConsumption = value as number
+                resultStatisticConsumption = value
                 timestampStatisticConsumption = timeStampsConsumption[index]
             }
         })
