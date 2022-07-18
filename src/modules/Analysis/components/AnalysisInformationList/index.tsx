@@ -1,7 +1,11 @@
 import { useMemo } from 'react'
 import { IMetric, metricRangeType } from 'src/modules/Metrics/Metrics.d'
 import { Typography, useTheme } from '@mui/material'
-import { computeMeanConsumption, computeMinConsumption } from 'src/modules/Analysis/utils/computationFunctions'
+import {
+    computeMaxConsumption,
+    computeMeanConsumption,
+    computeMinConsumption,
+} from 'src/modules/Analysis/utils/computationFunctions'
 import { analysisInformationType } from 'src/modules/Analysis/analysisTypes.d'
 import { convertMetricsDataToApexChartsAxisValues } from 'src/modules/MyConsumption/utils/apexChartsDataConverter'
 import { ApexChartsAxisValuesType } from 'src/modules/MyConsumption/myConsumptionTypes'
@@ -37,12 +41,12 @@ const analysisInformationList: analysisInformationType[] = [
         iconPath: '/assets/images/content/analysis/maxConsumption.svg',
         computationFunction:
             // eslint-disable-next-line jsdoc/require-jsdoc
-            (consumptionAxisValues: ApexChartsAxisValuesType) => computeMinConsumption(consumptionAxisValues),
+            (consumptionAxisValues: ApexChartsAxisValuesType) => computeMaxConsumption(consumptionAxisValues),
     },
     {
         title: 'Jour de Conso minimale',
         color: 'palette.primary.light',
-        iconPath: '/assets/images/content/analysis/meanConsumption.svg',
+        iconPath: '/assets/images/content/analysis/minConsumption.svg',
         computationFunction:
             // eslint-disable-next-line jsdoc/require-jsdoc
             (consumptionAxisValues: ApexChartsAxisValuesType) => computeMinConsumption(consumptionAxisValues),
@@ -108,12 +112,7 @@ const AnalysisInformationList = ({
                             <TypographyFormatMessage className="sm:text-13 font-bold md:text-16">
                                 {`${title} : `}
                             </TypographyFormatMessage>
-
-                            {!value ? (
-                                <TypographyFormatMessage className="sm:text-13 font-medium md:text-16">
-                                    Aucune donnée disponible
-                                </TypographyFormatMessage>
-                            ) : (
+                            {value ? (
                                 <>
                                     {/* Analysis Information Day */}
                                     {timestamp ? (
@@ -128,6 +127,10 @@ const AnalysisInformationList = ({
                                         {value} {unit}
                                     </Typography>
                                 </>
+                            ) : (
+                                <TypographyFormatMessage className="sm:text-13 font-medium md:text-16">
+                                    Aucune donnée disponible
+                                </TypographyFormatMessage>
                             )}
                         </div>
                     </div>
