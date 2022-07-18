@@ -14,6 +14,7 @@ let mockEnedisConsent: string
 let mockSetRange = jest.fn()
 let mockIsMetricsLoading = false
 const circularProgressClassname = '.MuiCircularProgress-root'
+const analysisInformationListClassname = '.AnalysisInformationList'
 const CONSENT_TEXT = "Pour voir votre consommation vous devez d'abord"
 const mockRange = {
     from: '2022-05-01T00:00:00.000Z',
@@ -102,12 +103,13 @@ describe('Analysis test', () => {
         const totalDataPoints = 1000
         const TOTAL_CONSUMPTION_TEXT = `1 kWh`
         mockData[0].datapoints = [[totalDataPoints, 1643628944000]]
-        const { getByText } = reduxedRender(
+        const { getByText, container } = reduxedRender(
             <Router>
                 <Analysis />
             </Router>,
         )
         expect(getByText(TOTAL_CONSUMPTION_TEXT)).toBeTruthy()
+        expect(container.querySelector(analysisInformationListClassname)).toBeInTheDocument()
     })
     test('when data from useMetrics is empty', async () => {
         mockNrlinkConsent = 'CONNECTED'
@@ -120,7 +122,7 @@ describe('Analysis test', () => {
         )
         expect(getByText('0 kWh')).toBeTruthy()
     })
-    test('when isMetricsLoading spinner is shown', async () => {
+    test('when isMetricsLoading spinner is shown, and AnalysisInformationList is hidden', async () => {
         mockIsMetricsLoading = true
         mockNrlinkConsent = 'CONNECTED'
         mockEnedisConsent = 'CONNECTED'
@@ -130,5 +132,6 @@ describe('Analysis test', () => {
             </Router>,
         )
         expect(container.querySelector(circularProgressClassname)).toBeInTheDocument()
+        expect(container.querySelector(analysisInformationListClassname)).not.toBeInTheDocument()
     })
 })
