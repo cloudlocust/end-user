@@ -17,7 +17,8 @@ import { useConsents } from 'src/modules/Consents/consentsHook'
 import CircularProgress from '@mui/material/CircularProgress'
 import { subMonths, startOfMonth, endOfMonth } from 'date-fns'
 import MyConsumptionDatePicker from 'src/modules/MyConsumption/components/MyConsumptionDatePicker'
-import { computeTotalConsumption } from '../MyConsumption/components/Widget/WidgetFunctions'
+import { computeTotalConsumption } from 'src/modules/MyConsumption/components/Widget/WidgetFunctions'
+import AnalysisInformationList from 'src/modules/Analysis/components/AnalysisInformationList'
 
 /**
  * InitialMetricsStates for useMetrics.
@@ -139,6 +140,11 @@ const Analysis = () => {
                     )}
                 </div>
             </div>
+            {!isMetricsLoading && (
+                <div className="p-24 AnalysisInformationList">
+                    <AnalysisInformationList data={data} range={range} />
+                </div>
+            )}
         </div>
     )
 }

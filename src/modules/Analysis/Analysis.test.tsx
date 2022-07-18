@@ -11,6 +11,7 @@ let mockNrlinkConsent: string
 let mockEnedisConsent: string
 let mockIsMetricsLoading = false
 const circularProgressClassname = '.MuiCircularProgress-root'
+const analysisInformationListClassname = '.AnalysisInformationList'
 const CONSENT_TEXT = "Pour voir votre consommation vous devez d'abord"
 const REDIRECT_TEXT = 'enregistrer votre compteur et votre nrLink'
 let mockMeterList: IMeter[] | null = TEST_METERS
@@ -79,12 +80,13 @@ describe('Analysis test', () => {
         const totalDataPoints = 1000
         const TOTAL_CONSUMPTION_TEXT = `1 kWh`
         mockData[0].datapoints = [[totalDataPoints, 1643628944000]]
-        const { getByText } = reduxedRender(
+        const { getByText, container } = reduxedRender(
             <Router>
                 <Analysis />
             </Router>,
         )
         expect(getByText(TOTAL_CONSUMPTION_TEXT)).toBeTruthy()
+        expect(container.querySelector(analysisInformationListClassname)).toBeInTheDocument()
     })
     test('when data from useMetrics is empty', async () => {
         mockNrlinkConsent = 'CONNECTED'
@@ -97,7 +99,7 @@ describe('Analysis test', () => {
         )
         expect(getByText('0 kWh')).toBeTruthy()
     })
-    test('when isMetricsLoading spinner is shown', async () => {
+    test('when isMetricsLoading spinner is shown, and AnalysisInformationList is hidden', async () => {
         mockIsMetricsLoading = true
         mockNrlinkConsent = 'CONNECTED'
         mockEnedisConsent = 'CONNECTED'
@@ -107,5 +109,6 @@ describe('Analysis test', () => {
             </Router>,
         )
         expect(container.querySelector(circularProgressClassname)).toBeInTheDocument()
+        expect(container.querySelector(analysisInformationListClassname)).not.toBeInTheDocument()
     })
 })
