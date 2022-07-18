@@ -5,7 +5,7 @@ import {
     metricTargetsEnum,
 } from 'src/modules/Metrics/Metrics.d'
 import dayjs from 'dayjs'
-import { periodType } from 'src/modules/MyConsumption/myConsumptionTypes.d'
+import { dateFnsPeriod, periodType } from 'src/modules/MyConsumption/myConsumptionTypes.d'
 import { ApexChartsAxisValuesType } from 'src/modules/MyConsumption/myConsumptionTypes'
 import {
     add,
@@ -41,7 +41,7 @@ export const formatMetricFilter = (valueGuid: string) => {
  * @param rangePeriod Selected period to range.
  * @returns Changed period names.
  */
-const convertPeriod = (rangePeriod: string) => {
+export const convertToDateFnsPeriod = (rangePeriod: string) => {
     switch (rangePeriod) {
         case 'day':
         case 'daily':
@@ -74,7 +74,7 @@ export const getDateWithTimezoneOffset = (date: string) => {
  * @param date Current date.
  * @returns Date without utc offset.
  */
-const getDateWithoutTimezoneOffset = (date: Date) => {
+export const getDateWithoutTimezoneOffset = (date: Date) => {
     const localOffset = date.getTimezoneOffset()
     return subMinutes(date, localOffset).toISOString()
 }
@@ -86,7 +86,7 @@ const getDateWithoutTimezoneOffset = (date: Date) => {
  * @param period Selected period.
  * @returns Add period.
  */
-const addPeriod = (date: Date, period: string) => {
+export const addPeriod = (date: Date, period: dateFnsPeriod) => {
     if (period === 'days') return endOfDay(date)
     if (period === 'weeks') return addDays(date, 6)
     return add(period === 'years' ? startOfMonth(date) : endOfDay(date), {
@@ -100,7 +100,7 @@ const addPeriod = (date: Date, period: string) => {
  * @param period Selected period.
  * @returns Sub period.
  */
-const subPeriod = (date: Date, period: string) => {
+export const subPeriod = (date: Date, period: dateFnsPeriod) => {
     if (period === 'days') return startOfDay(date)
     if (period === 'weeks') return subDays(date, 6)
     return sub(period === 'years' ? startOfMonth(date) : startOfDay(date), {
@@ -121,7 +121,7 @@ const subPeriod = (date: Date, period: string) => {
  */
 export const getRange = (rangePeriod: string, toDate?: Date, operation: 'sub' | 'add' = 'sub') => {
     const currentDate = toDate || new Date()
-    const period = convertPeriod(rangePeriod) as string
+    const period = convertToDateFnsPeriod(rangePeriod) as dateFnsPeriod
     const isFutureDate = differenceInCalendarDays(addPeriod(currentDate, period), new Date()) >= 0
     if (operation === 'sub')
         return {
