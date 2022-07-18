@@ -96,9 +96,7 @@ const AnalysisInformationList = ({
                         {/* Analysis Information Icon */}
                         <Avatar
                             style={{
-                                backgroundColor: (color as string).startsWith('palette')
-                                    ? get(theme, color)
-                                    : (color as string),
+                                backgroundColor: color.startsWith('palette') ? get(theme, color) : color,
                                 width: 64,
                                 height: 64,
                             }}
@@ -120,7 +118,7 @@ const AnalysisInformationList = ({
                                     {/* Analysis Information Day */}
                                     {timestamp ? (
                                         <Typography className="sm:text-13 font-medium md:text-16">
-                                            {dayjs(new Date(timestamp!)).format('dddd DD')}
+                                            {dayjs(new Date(timestamp)).format('dddd DD')}
                                         </Typography>
                                     ) : (
                                         <></>
