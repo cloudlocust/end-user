@@ -5,13 +5,12 @@ import {
     computeMaxConsumption,
     computeMinConsumption,
 } from 'src/modules/Analysis/utils/computationFunctions'
-import { IMetric } from 'src/modules/Metrics/Metrics.d'
+import { IMetric, metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
 
 // eslint-disable-next-line jsdoc/require-jsdoc
 const mockMetricsData: IMetric[] = [
     {
-        // TODO FIX in 2427, change name to enum
-        target: 'consumption_metrics',
+        target: metricTargetsEnum.consumption,
         datapoints: [
             [10, 1640995200000],
             [20, 1641081600000],

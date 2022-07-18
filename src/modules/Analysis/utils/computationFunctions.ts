@@ -1,4 +1,4 @@
-import { isNil, mean } from 'lodash'
+import { mean } from 'lodash'
 import { ApexChartsAxisValuesType } from 'src/modules/MyConsumption/myConsumptionTypes'
 import { consumptionWattUnitConversion } from 'src/modules/MyConsumption/utils/unitConversionFunction'
 import { computationFunctionType } from 'src/modules/Analysis/analysisTypes.d'
@@ -19,29 +19,44 @@ export const computeMeanConsumption = (consumptionValues: number[]): computation
 }
 
 /**
- * Compute the MaxConsumption.
+ * Compute the Min or Max Consumption, as the difference in computing Min or Max Consumption is the condition, this function regroup both in computeStatisticConsumption.
  *
+ * @param statisticConsumptionType Indicate if we're looking to compute the statistic maximum or minimum consumption.
  * @param consumptionAxisValues Consumption Y and X values, where (Y, represent each consumption entry) and (X, represent the timestamp for it).
- * @returns Value and Unit and the timestamp of the maximum consumption.
+ * @returns Value and Unit and the timestamp of the minimum or maximum consumption.
  */
-export const computeMaxConsumption = (consumptionAxisValues: ApexChartsAxisValuesType): computationFunctionType => {
-    let maxConsumption = 0
-    let timeStampMaxConsumption = 0
+export const computeStatisticConsumption = (
+    statisticConsumptionType: 'maximum' | 'minimum',
+    consumptionAxisValues: ApexChartsAxisValuesType,
+): computationFunctionType => {
+    // If we're looking at the minimum we initialize the result to -1, because consumption is a positive number.
+    let resultStatisticConsumption = statisticConsumptionType === 'maximum' ? 0 : -1
+    let timestampStatisticConsumption = 0
     if (consumptionAxisValues.yAxisSeries.length > 0) {
-        const valuesConsumption = consumptionAxisValues.yAxisSeries[0].data as Array<number>
+        const valuesConsumption = consumptionAxisValues.yAxisSeries[0].data as Array<number | null>
         const timeStampsConsumption = consumptionAxisValues.xAxisSeries[0]
-        valuesConsumption.forEach((value: number | null, index) => {
-            if (!isNil(value) && maxConsumption < value) {
-                maxConsumption = value
-                timeStampMaxConsumption = timeStampsConsumption[index]
+        valuesConsumption.forEach((value, index: number) => {
+            if (
+                value &&
+                (statisticConsumptionType === 'maximum'
+                    ? resultStatisticConsumption < (value as number)
+                    : // When resultStatisticConsumption === -1, we take the first value found as min.
+                      resultStatisticConsumption > (value as number) || resultStatisticConsumption === -1)
+            ) {
+                resultStatisticConsumption = value as number
+                timestampStatisticConsumption = timeStampsConsumption[index]
             }
         })
     }
-    const convertedMaxConsumption = consumptionWattUnitConversion(maxConsumption)
+
+    const convertedResultStatisticConsumption = consumptionWattUnitConversion(
+        resultStatisticConsumption === -1 ? 0 : resultStatisticConsumption,
+    )
+
     return {
-        value: convertedMaxConsumption.value,
-        unit: convertedMaxConsumption.unit,
-        timestamp: timeStampMaxConsumption,
+        value: convertedResultStatisticConsumption.value,
+        unit: convertedResultStatisticConsumption.unit,
+        timestamp: timestampStatisticConsumption,
     }
 }
 
@@ -49,26 +64,16 @@ export const computeMaxConsumption = (consumptionAxisValues: ApexChartsAxisValue
  * Compute the MaxConsumption.
  *
  * @param consumptionAxisValues Consumption Y and X values, where (Y, represent each consumption entry) and (X, represent the timestamp for it).
+ * @returns Value and Unit and the timestamp of the maximum consumption.
+ */
+export const computeMaxConsumption = (consumptionAxisValues: ApexChartsAxisValuesType): computationFunctionType =>
+    computeStatisticConsumption('maximum', consumptionAxisValues)
+
+/**
+ * Compute the MaxConsumption.
+ *
+ * @param consumptionAxisValues Consumption Y and X values, where (Y, represent each consumption entry) and (X, represent the timestamp for it).
  * @returns Value and Unit and the timestamp of the minimum consumption.
  */
-export const computeMinConsumption = (consumptionAxisValues: ApexChartsAxisValuesType): computationFunctionType => {
-    let minConsumption = 0
-    let timeStampMinConsumption = 0
-    if (consumptionAxisValues.yAxisSeries.length > 0) {
-        const valuesConsumption = consumptionAxisValues.yAxisSeries[0].data as Array<number>
-        const timeStampsConsumption = consumptionAxisValues.xAxisSeries[0]
-        valuesConsumption.forEach((value: number | null, index) => {
-            // When minConsumption is 0, we initialize minConsumption with the first value found
-            if (!isNil(value) && (minConsumption > value || minConsumption === 0)) {
-                minConsumption = value
-                timeStampMinConsumption = timeStampsConsumption[index]
-            }
-        })
-    }
-    const convertedMinConsumption = consumptionWattUnitConversion(minConsumption)
-    return {
-        value: convertedMinConsumption.value,
-        unit: convertedMinConsumption.unit,
-        timestamp: timeStampMinConsumption,
-    }
-}
+export const computeMinConsumption = (consumptionAxisValues: ApexChartsAxisValuesType): computationFunctionType =>
+    computeStatisticConsumption('minimum', consumptionAxisValues)
