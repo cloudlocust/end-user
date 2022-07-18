@@ -2,7 +2,7 @@ import Icon from '@mui/material/Icon'
 import IconButton from '@mui/material/IconButton'
 import { motion } from 'framer-motion'
 import { differenceInCalendarDays, subDays, addDays } from 'date-fns'
-import { IMyConsumptionDatePicker, ViewsType } from 'src/modules/MyConsumption/myConsumptionTypes'
+import { dateFnsPeriod, IMyConsumptionDatePicker, ViewsType } from 'src/modules/MyConsumption/myConsumptionTypes'
 import { useTheme } from '@mui/material'
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
@@ -78,8 +78,8 @@ const MyConsumptionDatePicker = ({
         if (onDatePickerChange)
             onDatePickerChange(
                 operator === 'sub'
-                    ? subPeriod(toDate, convertToDateFnsPeriod(period)!)
-                    : addPeriod(toDate, convertToDateFnsPeriod(period)!),
+                    ? subPeriod(toDate, convertToDateFnsPeriod(period) as dateFnsPeriod)
+                    : addPeriod(toDate, convertToDateFnsPeriod(period) as dateFnsPeriod),
             )
         else setRange(getRange(period, toDate, operator))
     }

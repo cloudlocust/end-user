@@ -69,7 +69,7 @@ const Analysis = () => {
      * @param newDate Represent the new picked date on DatePicker.
      */
     const handleDatePickerOnChange = (newDate: Date) => {
-        let newRange = {
+        const newRange = {
             from: getDateWithoutTimezoneOffset(startOfMonth(newDate)),
             to: getDateWithoutTimezoneOffset(endOfMonth(newDate)),
         }

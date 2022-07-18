@@ -5,16 +5,24 @@ import { IMetric, metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
 import { TEST_SUCCESS_MONTH_METRICS } from 'src/mocks/handlers/metrics'
 import { IMeter } from 'src/modules/Meters/Meters'
 import { TEST_METERS } from 'src/mocks/handlers/meters'
+import userEvent from '@testing-library/user-event'
+import { waitFor } from '@testing-library/react'
 
 let mockData: IMetric[] = TEST_SUCCESS_MONTH_METRICS([metricTargetsEnum.consumption])
 let mockNrlinkConsent: string
 let mockEnedisConsent: string
+let mockSetRange = jest.fn()
 let mockIsMetricsLoading = false
 const circularProgressClassname = '.MuiCircularProgress-root'
 const analysisInformationListClassname = '.AnalysisInformationList'
 const CONSENT_TEXT = "Pour voir votre consommation vous devez d'abord"
+const mockRange = {
+    from: '2022-05-01T00:00:00.000Z',
+    to: '2022-05-31T23:59:59.999Z',
+}
 const REDIRECT_TEXT = 'enregistrer votre compteur et votre nrLink'
 let mockMeterList: IMeter[] | null = TEST_METERS
+const INCREMENT_DATE_ARROW_TEXT = 'chevron_right'
 
 // Mock metersHook
 jest.mock('src/modules/Meters/metersHook', () => ({
@@ -37,12 +45,10 @@ jest.mock('src/modules/Metrics/metricsHook.ts', () => ({
                 value: '123456789',
             },
         ],
-        range: {
-            from: '2022-05-01T00:00:00.000Z',
-            to: '2022-05-31T23:59:59.999Z',
-        },
+        range: mockRange,
         interval: '1d',
         setFilters: jest.fn(),
+        setRange: mockSetRange,
     }),
 }))
 
@@ -63,6 +69,23 @@ jest.mock('src/modules/Consents/consentsHook.ts', () => ({
 }))
 
 describe('Analysis test', () => {
+    test('When DatePicker change setRange should be called', async () => {
+        const { getByText } = reduxedRender(
+            <Router>
+                <Analysis />
+            </Router>,
+        )
+
+        // INCREMENT DATE BUTTON
+        userEvent.click(getByText(INCREMENT_DATE_ARROW_TEXT))
+        await waitFor(() => {
+            // When we increment a period, we increment "to" in range.
+            expect(mockSetRange).toHaveBeenCalledWith({
+                from: '2022-06-01T00:00:00.000Z',
+                to: '2022-06-30T23:59:59.999Z',
+            })
+        })
+    })
     test('when there is no nrlinkConsent and no enedisConsent, awarening text is shown', async () => {
         mockNrlinkConsent = 'NONEXISTENT'
         mockEnedisConsent = 'NONEXISTENT'
