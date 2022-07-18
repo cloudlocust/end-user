@@ -92,20 +92,20 @@ const AnalysisInformationList = ({
             {analysisInformationList.map(({ computationFunction, iconPath, title, color }) => {
                 const { unit, value, timestamp } = computationFunction(ApexChartsAxisValues)
                 return (
-                    <div className="flex flex-row items-center mb-16">
+                    <div className="flex flex-row mb-16">
                         {/* Analysis Information Icon */}
                         <Avatar
                             style={{
                                 backgroundColor: (color as string).startsWith('palette')
                                     ? get(theme, color)
                                     : (color as string),
-                                width: 56,
-                                height: 56,
+                                width: 64,
+                                height: 64,
                             }}
                         >
                             <img src={iconPath} alt={title} />
                         </Avatar>
-                        <div className="ml-16 flex flex-col h-full">
+                        <div className="ml-8 flex flex-col h-full">
                             {/* Analysis Information title */}
                             <TypographyFormatMessage className="sm:text-13 font-bold md:text-16">
                                 {`${title} : `}
