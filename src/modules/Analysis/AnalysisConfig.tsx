@@ -29,7 +29,7 @@ export const AnalysisConfig = [
     {
         path: URL_ANALYSIS,
         component: Analysis,
-        auth: { authType: authTypes.loginRequired }, // TODO CHANGE
+        auth: { authType: authTypes.loginRequired },
         settings: {
             layout: {
                 navbar: {
