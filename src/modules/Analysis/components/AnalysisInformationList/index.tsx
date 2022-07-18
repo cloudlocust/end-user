@@ -112,24 +112,21 @@ const AnalysisInformationList = ({
                             </TypographyFormatMessage>
 
                             {!value ? (
-                                <TypographyFormatMessage
-                                    className="sm:text-13 font-medium md:text-16"
-                                    color="textSecondary"
-                                >
+                                <TypographyFormatMessage className="sm:text-13 font-medium md:text-16">
                                     Aucune donnée disponible
                                 </TypographyFormatMessage>
                             ) : (
                                 <>
                                     {/* Analysis Information Day */}
                                     {timestamp ? (
-                                        <Typography className="sm:text-13 font-medium md:text-16" color="textSecondary">
+                                        <Typography className="sm:text-13 font-medium md:text-16">
                                             {dayjs(new Date(timestamp!)).format('dddd DD')}
                                         </Typography>
                                     ) : (
                                         <></>
                                     )}
                                     {/* Analysis Information Value Unit */}
-                                    <Typography className="sm:text-13 font-medium md:text-16" color="textSecondary">
+                                    <Typography className="sm:text-13 font-medium md:text-16">
                                         {value} {unit}
                                     </Typography>
                                 </>
