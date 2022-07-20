@@ -4,6 +4,7 @@ import {
     computeMeanConsumption,
     computeMaxConsumption,
     computeMinConsumption,
+    computePercentageChange,
 } from 'src/modules/Analysis/utils/computationFunctions'
 import { IMetric, metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
 
@@ -72,4 +73,41 @@ test('computeMeanConsumption test with different cases', async () => {
 
     result = computeMinConsumption(apexChartsValues) as computationFunctionType
     expect(result).toEqual(emptyConsumption)
+}, 20000)
+
+test('computePercentageChange test with different cases', async () => {
+    // When data is not empty
+    const cases = [
+        // Increase percentage change
+        {
+            oldValue: 100,
+            newValue: 150,
+            increase: true,
+            decrease: false,
+            result: 50,
+        },
+        // Decrease percentage change
+        {
+            oldValue: 200,
+            newValue: 100,
+            increase: false,
+            decrease: true,
+            result: -50,
+        },
+        // No percentage change
+        {
+            oldValue: 100,
+            newValue: 100,
+            decrease: false,
+            increase: false,
+            result: -0,
+        },
+    ]
+
+    cases.forEach(({ oldValue, newValue, increase, decrease, result }) => {
+        const percentage = computePercentageChange(oldValue, newValue)
+        expect(percentage < 0).toEqual(decrease)
+        expect(percentage > 0).toEqual(increase)
+        expect(percentage).toEqual(result)
+    })
 }, 20000)
