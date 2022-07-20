@@ -117,8 +117,10 @@ const AnalysisPercentageChangeArrows = ({
     let previousMonthPercentageChange = 0
     let previousYearPercentageChange = 0
 
+    // Previous Month consumption represent the element before the last, because the last represent the dateReference and thus before it is the previous month of dateReference.
     const indexPreviousMonthPercentageChange = ApexChartsAxisValues.yAxisSeries[0].data.length - 2
-    // Previous Month consumption represent the last element for the range given.
+    // Because example: if dateReference is 01-01-2022, then our range will be {from: "01-12-2021", to: "31-01-2022"}.
+    // Thus we'll have data array showing: [Jan 2021, Feb 2021, Mar 2021, Apr 2021, May 2021, June 2021, July 2021, Aug 2021, Sept 2021, Oct 2021, Nov 2021, Dec 2021, Jan 2022].
     previousMonthPercentageChange = computePercentageChange(
         Number(ApexChartsAxisValues.yAxisSeries[0].data[indexPreviousMonthPercentageChange]),
         referenceConsumptionValue,
