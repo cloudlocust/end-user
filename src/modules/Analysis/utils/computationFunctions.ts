@@ -88,4 +88,4 @@ export const computeMinConsumption = (consumptionAxisValues: ApexChartsAxisValue
 export const computePercentageChange = (oldValue: number, newValue: number) =>
     // This formula ((oldValue - newValue) / oldValue) * 100, when negative percentage means there is increase, and when positive means there is decrease.
     // Thus multiplying by -1 means, when negative percentage its decrease, and positive percentage its increase.
-    -((oldValue - newValue) / oldValue) * 100
+    oldValue === 0 ? oldValue : -((oldValue - newValue) / oldValue) * 100
