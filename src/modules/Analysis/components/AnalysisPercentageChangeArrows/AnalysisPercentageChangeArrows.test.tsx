@@ -73,7 +73,7 @@ jest.mock('src/modules/Metrics/metricsHook.ts', () => ({
          */
         range: {
             from: '2022-01-01T00:00:00.000Z',
-            to: '2023-01-01T00:00:00.000Z',
+            to: '2023-01-31T23:59:59.999Z',
         },
     }),
 }))

@@ -108,7 +108,11 @@ const Analysis = () => {
     }
 
     const totalConsumption = data.length !== 0 ? computeTotalConsumption(data) : { value: 0, unit: 'kWh' }
-
+    const referenceConsumptionValue = Number(
+        convert(totalConsumption.value)
+            .from(totalConsumption.unit as Unit)
+            .to('Wh'),
+    )
     return (
         <div>
             <div
@@ -142,11 +146,7 @@ const Analysis = () => {
                             </p>
                             <AnalysisPercentageChangeArrows
                                 dateReferenceConsumptionValue={subDays(new Date(range.to), 1)}
-                                referenceConsumptionValue={Number(
-                                    convert(totalConsumption.value)
-                                        .from(totalConsumption.unit as Unit)
-                                        .to('Wh'),
-                                )}
+                                referenceConsumptionValue={referenceConsumptionValue}
                                 filters={filters}
                             />
                         </>

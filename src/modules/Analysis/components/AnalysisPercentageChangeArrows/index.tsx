@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react'
-import { endOfMonth, startOfMonth, subMonths, subYears } from 'date-fns'
+import { endOfMonth, startOfMonth, subDays, subMonths, subYears } from 'date-fns'
 import { getMetricType, metricFiltersType, metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
 import { useMetrics } from 'src/modules/Metrics/metricsHook'
 import {
@@ -11,6 +11,7 @@ import { convertMetricsDataToApexChartsAxisValues } from 'src/modules/MyConsumpt
 import { computePercentageChange } from 'src/modules/Analysis/utils/computationFunctions'
 import Icon from '@mui/material/Icon'
 import dayjs from 'dayjs'
+import { motion } from 'framer-motion'
 import { Typography } from '@mui/material'
 
 /**
@@ -34,7 +35,11 @@ const PercentageChangeLine = ({
     return (
         <>
             {percentageChange ? (
-                <div className="flex items-center mb-8">
+                <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1, transition: { delay: 0.1 } }}
+                    className="flex items-center mb-8"
+                >
                     <>
                         {
                             // Negative means decrease
@@ -53,7 +58,7 @@ const PercentageChangeLine = ({
                         </Typography>
                     </>
                     <p className="text-13 md:text-16 font-medium"> vs {datePercentageChange}</p>
-                </div>
+                </motion.div>
             ) : (
                 <></>
             )}
@@ -135,7 +140,7 @@ const AnalysisPercentageChangeArrows = ({
     return (
         <>
             <PercentageChangeLine
-                datePercentageChange={dayjs(subMonths(new Date(range.to), 1)).format('MM/YYYY')}
+                datePercentageChange={dayjs(subMonths(subDays(new Date(range.to), 1), 1)).format('MM/YYYY')}
                 percentageChange={previousMonthPercentageChange}
             />
             <PercentageChangeLine
