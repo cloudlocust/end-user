@@ -15,10 +15,12 @@ import { Icon, Typography } from 'src/common/ui-kit'
 import { useIntl } from 'react-intl'
 import { useConsents } from 'src/modules/Consents/consentsHook'
 import CircularProgress from '@mui/material/CircularProgress'
-import { subMonths, startOfMonth, endOfMonth } from 'date-fns'
+import { subMonths, startOfMonth, endOfMonth, subDays } from 'date-fns'
 import MyConsumptionDatePicker from 'src/modules/MyConsumption/components/MyConsumptionDatePicker'
 import { computeTotalConsumption } from 'src/modules/MyConsumption/components/Widget/WidgetFunctions'
 import AnalysisInformationList from 'src/modules/Analysis/components/AnalysisInformationList'
+import AnalysisPercentageChangeArrows from 'src/modules/Analysis/components/AnalysisPercentageChangeArrows'
+import convert, { Unit } from 'convert-units'
 
 /**
  * InitialMetricsStates for useMetrics.
@@ -134,9 +136,20 @@ const Analysis = () => {
                     {isMetricsLoading ? (
                         <CircularProgress style={{ color: theme.palette.primary.main }} />
                     ) : (
-                        <p className="text-16 md:text-20 font-medium">
-                            {totalConsumption.value} {totalConsumption.unit}
-                        </p>
+                        <>
+                            <p className="text-16 md:text-20 font-medium mb-8">
+                                {totalConsumption.value} {totalConsumption.unit}
+                            </p>
+                            <AnalysisPercentageChangeArrows
+                                dateReferenceConsumptionValue={subDays(new Date(range.to), 1)}
+                                referenceConsumptionValue={Number(
+                                    convert(totalConsumption.value)
+                                        .from(totalConsumption.unit as Unit)
+                                        .to('Wh'),
+                                )}
+                                filters={filters}
+                            />
+                        </>
                     )}
                 </div>
             </div>
