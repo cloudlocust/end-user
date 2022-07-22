@@ -3,13 +3,18 @@ import {
     generateXAxisValues,
     fillApexChartsAxisMissingValues,
     formatMetricFilter,
+    convertToDateFnsPeriod,
     isMissingYAxisValues,
+    getDateWithoutTimezoneOffset,
+    addPeriod,
+    subPeriod,
 } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
 import { IMetric, metricIntervalType } from 'src/modules/Metrics/Metrics'
 import { FAKE_WEEK_DATA, FAKE_DAY_DATA, FAKE_MONTH_DATA, FAKE_YEAR_DATA } from 'src/mocks/handlers/metrics'
 import { getRange } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
 import { convertMetricsDataToApexChartsAxisValues } from 'src/modules/MyConsumption/utils/apexChartsDataConverter'
 import dayjs from 'dayjs'
+import { dateFnsPeriod, periodType } from 'src/modules/MyConsumption/myConsumptionTypes'
 
 // eslint-disable-next-line jsdoc/require-jsdoc
 let interval: metricIntervalType = '2min'
@@ -175,5 +180,71 @@ describe('test pure functions', () => {
         ApexChartsFilledAxisValues = convertMetricsDataToApexChartsAxisValues(mockMetricsData)
         isMissingValues = isMissingYAxisValues(ApexChartsFilledAxisValues.yAxisSeries[0].data, 'yearly')
         expect(isMissingValues).toBeTruthy()
+    })
+
+    test('convertToDateFnsPeriod test with different cases', async () => {
+        const caseList = [
+            // Daily period.
+            { dateFnsPeriod: 'days', period1: 'daily', period2: 'day' },
+            // Weekly period.
+            { dateFnsPeriod: 'weeks', period1: 'weekly', period2: 'week' },
+            // Monthly period.
+            { dateFnsPeriod: 'months', period1: 'monthly', period2: 'month' },
+            // Yearly period.
+            { dateFnsPeriod: 'years', period1: 'yearly', period2: 'year' },
+        ]
+        caseList.forEach(({ dateFnsPeriod, period1, period2 }) => {
+            let result = convertToDateFnsPeriod(period1 as periodType)
+            expect(result).toEqual(dateFnsPeriod)
+            result = convertToDateFnsPeriod(period2)
+            expect(result).toEqual(dateFnsPeriod)
+        })
+    })
+
+    test('getDateWithoutTimezoneOffset test with different cases', async () => {
+        const date = new Date('12/12/2012')
+        // Set our local time to midnight.
+        date.setHours(0, 0, 0, 0)
+        // Local time is returned into ISOString.
+        let result = getDateWithoutTimezoneOffset(date)
+        expect(result).toEqual('2012-12-12T00:00:00.000Z')
+    })
+
+    test('addPeriod test with different cases', async () => {
+        const date = new Date('10/10/2022 00:00:00')
+
+        const caseList = [
+            // Adding 1 day period.
+            { period: 'days', resultDate: '2022-10-10T23:59:59.999Z' },
+            // Adding 1 week period.
+            { period: 'weeks', resultDate: '2022-10-16T00:00:00.000Z' },
+            // Adding 1 month period.
+            { period: 'months', resultDate: '2022-11-10T23:59:59.999Z' },
+            // Adding 1 year period.
+            { period: 'years', resultDate: '2023-10-01T00:00:00.000Z' },
+        ]
+        caseList.forEach(({ period, resultDate }) => {
+            const result = addPeriod(date, period as dateFnsPeriod)
+            expect(getDateWithoutTimezoneOffset(result)).toEqual(resultDate)
+        })
+    })
+
+    test('subPeriod test with different cases', async () => {
+        const date = new Date('10/10/2022 23:59:59:999')
+
+        const caseList = [
+            // Subtracting 1 day period.
+            { period: 'days', resultDate: '2022-10-10T00:00:00.000Z' },
+            // Subtracting 1 week period.
+            { period: 'weeks', resultDate: '2022-10-04T23:59:59.999Z' },
+            // Subtracting 1 month period.
+            { period: 'months', resultDate: '2022-09-10T00:00:00.000Z' },
+            // Subtracting 1 year period.
+            { period: 'years', resultDate: '2021-10-01T00:00:00.000Z' },
+        ]
+        caseList.forEach(({ period, resultDate }) => {
+            const result = subPeriod(date, period as dateFnsPeriod)
+            expect(getDateWithoutTimezoneOffset(result)).toEqual(resultDate)
+        })
     })
 })

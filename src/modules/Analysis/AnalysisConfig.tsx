@@ -1,6 +1,6 @@
 import { authTypes } from 'src/common/react-platform-components'
 import { IRouteNavigationConfig } from 'src/routes'
-import { Analysis } from './Analysis'
+import Analysis from 'src/modules/Analysis'
 
 /**
  * Url for analysis.
@@ -29,7 +29,7 @@ export const AnalysisConfig = [
     {
         path: URL_ANALYSIS,
         component: Analysis,
-        auth: { authType: authTypes.freeAccess }, // TODO CHANGE
+        auth: { authType: authTypes.loginRequired },
         settings: {
             layout: {
                 navbar: {

@@ -4,7 +4,7 @@ import { navbarItemType } from './common/ui-kit/fuse/components/FuseNavigation/F
 import { MyConsumptionConfig } from './modules/MyConsumption'
 import { AdvicesConfig } from './modules/Advices'
 import { CommunityConfig } from './modules/Community'
-import { AnalysisConfig } from './modules/Analysis'
+import { AnalysisConfig } from './modules/Analysis/AnalysisConfig'
 import { LoginConfig } from './modules/User/Login/LoginConfig'
 import { ForgotPasswordConfig } from './modules/User/ForgotPassword/ForgotPasswordConfig'
 import { ResetPasswordConfig } from 'src/modules/User/ResetPassword/ResetPasswordConfig'

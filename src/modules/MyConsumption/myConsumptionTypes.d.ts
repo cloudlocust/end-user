@@ -61,7 +61,21 @@ export interface IMyConsumptionDatePicker {
      * Period for range.
      */
     range: metricRangeType
+    /**
+     * Callback function that overwrites the default handleDateChange for DatePicker used in MyConsumption modules.
+     * Date represents the new Date picked on the DatePicker.
+     */
+    onDatePickerChange?: (newDate: Date) => void
+    /**
+     * Represent the maximum date in the DatePicker.
+     */
+    maxDate?: Date
 }
+
+/**
+ * Period type for dateFns library when using sub, add for a certain period.
+ */
+export type dateFnsPeriod = 'seconds' | 'hours' | 'minutes' | 'days' | 'weeks' | 'months' | 'years'
 /**
  * Type for views in MobileDatePicker.
  */
