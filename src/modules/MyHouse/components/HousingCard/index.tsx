@@ -8,35 +8,10 @@ import Check from '@mui/icons-material/Check'
 import Close from '@mui/icons-material/Close'
 import Divider from '@mui/material/Divider'
 import Typography from '@mui/material/Typography'
-import { defaultValueType } from 'src/common/ui-kit/form-fields/GoogleMapsAddressAutoComplete/utils'
 import { NavLink } from 'react-router-dom'
 import { useIntl } from 'react-intl'
 
-/**
- * The Type of a logement.
- */
-export type LogementType =
-    /**
-     * Logement Type.
-     */
-    {
-        /**
-         * The Id of the Logement.
-         */
-        id: number
-        /**
-         * The Name of the logement.
-         */
-        name: string | null
-        /**
-         * The Guid of the PDL.
-         */
-        guid: string | null
-        /**
-         * The address related to the PDL's GUID.
-         */
-        address: defaultValueType
-    }
+import { LogementType } from 'src/modules/MyHouse/components/HousingCard/index.d'
 
 /**
  * This is a card for the display of a logement item.
