@@ -3,7 +3,8 @@ import HousingCard from 'src/modules/MyHouse/components/HousingCard'
 import { TEST_HOUSES } from 'src/mocks/handlers/houses'
 import { applyCamelCase } from 'src/common/react-platform-components/utils/mm'
 import { BrowserRouter as Router } from 'react-router-dom'
-import { act, fireEvent, waitFor } from '@testing-library/react'
+import { act, waitFor } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 
 const TEST_MOCKED_HOUSES = applyCamelCase(TEST_HOUSES)
 
@@ -50,7 +51,7 @@ describe('Test HousingCard', () => {
 
         // Test that the URL works.
         act(() => {
-            fireEvent.click(getByText(DEFAULT_GUID_TEXT))
+            userEvent.click(getByText(DEFAULT_GUID_TEXT))
         })
 
         await waitFor(() => expect(window.location.pathname).toBe(URL_TO_GUID_INSCRIPTION))

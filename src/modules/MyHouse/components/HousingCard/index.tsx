@@ -11,7 +11,7 @@ import Typography from '@mui/material/Typography'
 import { NavLink } from 'react-router-dom'
 import { useIntl } from 'react-intl'
 
-import { LogementType } from 'src/modules/MyHouse/components/HousingCard/index.d'
+import { LogementType } from 'src/modules/MyHouse/components/HousingCard/housing.d'
 
 /**
  * This is a card for the display of a logement item.

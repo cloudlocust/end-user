@@ -1,4 +1,4 @@
-import { LogementType } from 'src/modules/MyHouse/components/HousingCard/index.d'
+import { LogementType } from 'src/modules/MyHouse/components/HousingCard/housing.d'
 import { SnakeCasedPropertiesDeep } from 'type-fest'
 
 /**
