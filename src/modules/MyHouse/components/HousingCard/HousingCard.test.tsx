@@ -1,0 +1,58 @@
+import { reduxedRender } from 'src/common/react-platform-components/test'
+import HousingCard from 'src/modules/MyHouse/components/HousingCard'
+import { TEST_HOUSES } from 'src/mocks/handlers/houses'
+import { applyCamelCase } from 'src/common/react-platform-components/utils/mm'
+import { BrowserRouter as Router } from 'react-router-dom'
+import { act, fireEvent, waitFor } from '@testing-library/react'
+
+const TEST_MOCKED_HOUSES = applyCamelCase(TEST_HOUSES)
+
+const DEFAULT_HOUSE_NAME = 'Mon Logement'
+const DEFAULT_GUID_TEXT = 'Veuillez renseigner votre compteur'
+const URL_TO_GUID_INSCRIPTION = '/nrlink-connection-steps'
+
+describe('Test HousingCard', () => {
+    test('When Component Mount data should be shown', async () => {
+        const { getByText } = reduxedRender(
+            <Router>
+                <HousingCard logement={TEST_MOCKED_HOUSES[0]} />
+            </Router>,
+        )
+        const ADDRESS_TO_SHOW = `${TEST_MOCKED_HOUSES[0].address.city}, ${TEST_MOCKED_HOUSES[0].address.zipCode}, ${TEST_MOCKED_HOUSES[0].address.country}`
+        const GUID_TEXT_TO_SHOW = `Compteur n°${TEST_MOCKED_HOUSES[0].guid}`
+
+        expect(getByText(TEST_MOCKED_HOUSES[0].name)).toBeTruthy()
+        expect(getByText(GUID_TEXT_TO_SHOW)).toBeTruthy()
+        expect(getByText(ADDRESS_TO_SHOW)).toBeTruthy()
+    })
+
+    test('When name and guid are null, default name and link should be visible', async () => {
+        const { getByText } = reduxedRender(
+            <Router>
+                <HousingCard logement={TEST_MOCKED_HOUSES[1]} />
+            </Router>,
+        )
+        const ADDRESS_TO_SHOW = `${TEST_MOCKED_HOUSES[1].address.city}, ${TEST_MOCKED_HOUSES[1].address.zipCode}, ${TEST_MOCKED_HOUSES[0].address.country}`
+
+        expect(getByText(DEFAULT_HOUSE_NAME)).toBeTruthy()
+        expect(getByText(DEFAULT_GUID_TEXT)).toBeTruthy()
+        expect(getByText(ADDRESS_TO_SHOW)).toBeTruthy()
+    })
+
+    test('When guid not registered, test that navlink appear', async () => {
+        const { getByText } = reduxedRender(
+            <Router>
+                <HousingCard logement={TEST_MOCKED_HOUSES[1]} />
+            </Router>,
+        )
+
+        expect(getByText(DEFAULT_GUID_TEXT)).toBeTruthy()
+
+        // Test that the URL works.
+        act(() => {
+            fireEvent.click(getByText(DEFAULT_GUID_TEXT))
+        })
+
+        await waitFor(() => expect(window.location.pathname).toBe(URL_TO_GUID_INSCRIPTION))
+    })
+})
