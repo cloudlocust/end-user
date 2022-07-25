@@ -2,9 +2,9 @@ import React from 'react'
 import FuseLoading from 'src/common/ui-kit/fuse/components/FuseLoading'
 import MultiTab from 'src/modules/shared/MultiTab/MultiTab'
 import { useMeterList } from 'src/modules/Meters/metersHook'
-import { AccomodationForm } from 'src/modules/MyHouse/components/Accomodation/AccomodationForm'
 import { EquipmentForm } from 'src/modules/MyHouse/components/Equipments/EquipmentForm'
 import { useHistory } from 'react-router-dom'
+import HousingList from './components/HousingList'
 
 /**
  * Form used for modify MyHouse.
@@ -23,7 +23,7 @@ export const MyHouse = () => {
             tabSlug: 'accomodation',
             tabContent: (
                 <div className="Tab-Accomodation flex justify-center">
-                    <AccomodationForm meterId={meterList[0].id} />
+                    <HousingList />
                 </div>
             ),
         },

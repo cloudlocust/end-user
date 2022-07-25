@@ -16,7 +16,7 @@ describe('Test HousingCard', () => {
     test('When Component Mount data should be shown', async () => {
         const { getByText } = reduxedRender(
             <Router>
-                <HousingCard logement={TEST_MOCKED_HOUSES[0]} />
+                <HousingCard element={TEST_MOCKED_HOUSES[0]} />
             </Router>,
         )
         const ADDRESS_TO_SHOW = `${TEST_MOCKED_HOUSES[0].address.city}, ${TEST_MOCKED_HOUSES[0].address.zipCode}, ${TEST_MOCKED_HOUSES[0].address.country}`
@@ -30,7 +30,7 @@ describe('Test HousingCard', () => {
     test('When name and guid are null, default name and link should be visible', async () => {
         const { getByText } = reduxedRender(
             <Router>
-                <HousingCard logement={TEST_MOCKED_HOUSES[1]} />
+                <HousingCard element={TEST_MOCKED_HOUSES[1]} />
             </Router>,
         )
         const ADDRESS_TO_SHOW = `${TEST_MOCKED_HOUSES[1].address.city}, ${TEST_MOCKED_HOUSES[1].address.zipCode}, ${TEST_MOCKED_HOUSES[0].address.country}`
@@ -43,7 +43,7 @@ describe('Test HousingCard', () => {
     test('When guid not registered, test that navlink appear', async () => {
         const { getByText } = reduxedRender(
             <Router>
-                <HousingCard logement={TEST_MOCKED_HOUSES[1]} />
+                <HousingCard element={TEST_MOCKED_HOUSES[1]} />
             </Router>,
         )
 

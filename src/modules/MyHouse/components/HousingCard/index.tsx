@@ -11,17 +11,17 @@ import Typography from '@mui/material/Typography'
 import { NavLink } from 'react-router-dom'
 import { useIntl } from 'react-intl'
 
-import { LogementType } from 'src/modules/MyHouse/components/HousingCard/housing.d'
+import { IHousing } from 'src/modules/MyHouse/components/HousingCard/housing.d'
 
 /**
  * This is a card for the display of a logement item.
  *
  * @param props Props.
- * @param props.logement Logement object we cant to display.
+ * @param props.element Logement object we cant to display.
  * @returns Card.
  */
 const HousingCard = ({
-    logement,
+    element: logement,
 }: /**
  * Props Typing.
  */
@@ -29,7 +29,7 @@ const HousingCard = ({
     /**
      * The fields required for the display of the logement.
      */
-    logement: LogementType
+    element: IHousing
 }) => {
     const { formatMessage } = useIntl()
     const [onEditName, setOnEditName] = useState(false)

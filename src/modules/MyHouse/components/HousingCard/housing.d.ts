@@ -3,7 +3,7 @@ import { defaultValueType } from 'src/common/ui-kit/form-fields/GoogleMapsAddres
 /**
  * The Type of a logement.
  */
-export type LogementType =
+export type IHousing =
     /**
      * Logement Type.
      */
