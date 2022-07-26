@@ -4,7 +4,7 @@ import MultiTab from 'src/modules/shared/MultiTab/MultiTab'
 import { useMeterList } from 'src/modules/Meters/metersHook'
 import { EquipmentForm } from 'src/modules/MyHouse/components/Equipments/EquipmentForm'
 import { useHistory } from 'react-router-dom'
-import HousingList from './components/HousingList'
+import HousingList from 'src/modules/MyHouse/components/HousingList'
 
 /**
  * Form used for modify MyHouse.

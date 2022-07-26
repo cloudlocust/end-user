@@ -1,7 +1,7 @@
 import { rest } from 'msw'
 import { IHousing } from 'src/modules/MyHouse/components/HousingCard/housing.d'
 import { getPaginationFromElementList } from 'src/mocks/utils'
-import { AUTH_BASE_URL } from 'src/modules/User/configs'
+import { API_RESOURCES_URL } from 'src/configs'
 import { SnakeCasedPropertiesDeep } from 'type-fest'
 
 /**
@@ -43,7 +43,7 @@ export const TEST_HOUSES: SnakeCasedPropertiesDeep<IHousing>[] = [
 //eslint-disable-next-line
 export const housingEndpoints = [
     // Get All housings
-    rest.get(`${AUTH_BASE_URL}/housings`, (req, res, ctx) => {
+    rest.get(`${API_RESOURCES_URL}/housings`, (req, res, ctx) => {
         const TEST_CUSTOMERS_RESPONSE = getPaginationFromElementList<SnakeCasedPropertiesDeep<IHousing>>(
             req,
             TEST_HOUSES,
