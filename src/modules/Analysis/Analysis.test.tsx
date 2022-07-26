@@ -14,7 +14,9 @@ let mockEnedisConsent: string
 let mockSetRange = jest.fn()
 let mockIsMetricsLoading = false
 const circularProgressClassname = '.MuiCircularProgress-root'
+const NO_DATA_TEXT = 'Aucune donnée disponible'
 const analysisInformationListClassname = '.AnalysisInformationList'
+const analysisChartClassname = '.apexcharts-svg'
 const CONSENT_TEXT = "Pour voir votre consommation vous devez d'abord"
 const mockRange = {
     from: '2022-05-01T00:00:00.000Z',
@@ -68,6 +70,18 @@ jest.mock('src/modules/Consents/consentsHook.ts', () => ({
     }),
 }))
 
+// Analysis component cannot render if we don't mock react-apexcharts
+jest.mock(
+    'react-apexcharts',
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    () => (props: any) =>
+        (
+            <div className="apexcharts-svg" {...props}>
+                {props.children}
+            </div>
+        ),
+)
+
 describe('Analysis test', () => {
     test('When DatePicker change setRange should be called', async () => {
         const { getByText } = reduxedRender(
@@ -111,18 +125,18 @@ describe('Analysis test', () => {
         expect(getByText(TOTAL_CONSUMPTION_TEXT)).toBeTruthy()
         expect(container.querySelector(analysisInformationListClassname)).toBeInTheDocument()
     })
-    test('when data from useMetrics is empty', async () => {
+    test('when data from useMetrics is empty, AnalysisChart should show empty message', async () => {
         mockNrlinkConsent = 'CONNECTED'
         mockEnedisConsent = 'CONNECTED'
         mockData = []
-        const { getByText } = reduxedRender(
+        const { getAllByText } = reduxedRender(
             <Router>
                 <Analysis />
             </Router>,
         )
-        expect(getByText('0 kWh')).toBeTruthy()
+        expect(getAllByText(NO_DATA_TEXT)[0]).toBeTruthy()
     })
-    test('when isMetricsLoading spinner is shown, and AnalysisInformationList is hidden', async () => {
+    test('when isMetricsLoading, Spinner is shown, AnalysisChart and AnalysisInformationList are hidden', async () => {
         mockIsMetricsLoading = true
         mockNrlinkConsent = 'CONNECTED'
         mockEnedisConsent = 'CONNECTED'
@@ -132,6 +146,7 @@ describe('Analysis test', () => {
             </Router>,
         )
         expect(container.querySelector(circularProgressClassname)).toBeInTheDocument()
+        expect(container.querySelector(analysisChartClassname)).not.toBeInTheDocument()
         expect(container.querySelector(analysisInformationListClassname)).not.toBeInTheDocument()
     })
 })
