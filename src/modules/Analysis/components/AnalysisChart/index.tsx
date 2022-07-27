@@ -1,4 +1,5 @@
-import { useEffect, useRef } from 'react'
+import React, { useEffect, useRef } from 'react'
+import ReactDOM from 'react-dom'
 import ReactApexChart from 'react-apexcharts'
 import { useTheme } from '@mui/material/styles'
 import useMediaQuery from '@mui/material/useMediaQuery'
@@ -11,7 +12,7 @@ import { getAnalysisApexChartOptions } from 'src/modules/Analysis/utils/analysis
 import { normalizeValues } from 'src/modules/Analysis/utils/computationFunctions'
 
 const analysisChartClassname = 'apexcharts-inner apexcharts-graphical'
-
+const analysisChartTooltipClassname = 'apexcharts-tooltip'
 /**
  * Analysis Polar Area Chart.
  *
@@ -67,6 +68,46 @@ const AnalysisChart = ({
     }
 
     const analysisApexChartOptions = getAnalysisApexChartOptions(values, theme)
+
+    analysisApexChartOptions.chart!.events = {
+        /**
+         * Showing tooltip when clicking selecting an element in the polarArea chart, this is mostly for mobile because tooltip doesn't show only if we click on element.
+         *
+         * @param e DOM Element clicked on, it can represent each element in the polarArea chart, or the chart container.
+         */
+        dataPointSelection(e) {
+            const tooltipContainerElement = document.getElementsByClassName(
+                analysisChartTooltipClassname,
+            )[0] as HTMLDivElement
+            const activeTooltipClassname = 'apexcharts-active'
+            const activeTooltipElement = tooltipContainerElement.firstElementChild as HTMLDivElement
+
+            // If we click an element on the chart, we show tooltip
+            tooltipContainerElement.style!.left = `${e.offsetX - 40}px`
+            tooltipContainerElement.style!.top = `${e.offsetY - 40}px`
+            tooltipContainerElement.classList.add(activeTooltipClassname)
+            tooltipContainerElement.style.display = 'flex'
+            const indexActiveElement = e.target.className.baseVal.slice(-1)
+            // If the element is already highlighted
+            if (e.target.instance.filterer) {
+                const textNodeActiveTooltipElement = React.createElement(
+                    'span',
+                    {},
+                    `${values[indexActiveElement].toFixed(2)} kWh`,
+                )
+                ReactDOM.render(
+                    textNodeActiveTooltipElement,
+                    activeTooltipElement.querySelector('.apexcharts-tooltip-text-y-value'),
+                )
+                activeTooltipElement.style.background = theme.palette.primary.main
+                activeTooltipElement.style.display = 'flex'
+                activeTooltipElement.classList.add(activeTooltipClassname)
+            } else {
+                tooltipContainerElement.classList.remove(activeTooltipClassname)
+                tooltipContainerElement.style.display = 'none'
+            }
+        },
+    }
 
     // normalize values to [200, 150], to improve polarArea chart and show all values from min to max.
     // Values taken of min: 150, max: 200, makes the bars big enough for the lowest value, while being able to show the CircleContent inside the chart.

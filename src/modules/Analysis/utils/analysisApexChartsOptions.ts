@@ -15,9 +15,6 @@ export const defaultAnalysisApexChartsOptions: (theme: Theme) => Props['options'
     legend: {
         show: false,
     },
-    dataLabels: {
-        enabled: false,
-    },
     yaxis: {
         show: false,
     },
