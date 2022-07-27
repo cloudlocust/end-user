@@ -1,10 +1,13 @@
-import { LogementType } from 'src/modules/MyHouse/components/HousingCard/housing.d'
+import { rest } from 'msw'
+import { IHousing } from 'src/modules/MyHouse/components/HousingCard/housing.d'
+import { getPaginationFromElementList } from 'src/mocks/utils'
+import { API_RESOURCES_URL } from 'src/configs'
 import { SnakeCasedPropertiesDeep } from 'type-fest'
 
 /**
  * Array of houses (logements) for test.
  */
-export const TEST_HOUSES: SnakeCasedPropertiesDeep<LogementType>[] = [
+export const TEST_HOUSES: SnakeCasedPropertiesDeep<IHousing>[] = [
     {
         id: 123456789,
         name: 'logement super cool',
@@ -35,4 +38,17 @@ export const TEST_HOUSES: SnakeCasedPropertiesDeep<LogementType>[] = [
             address_addition: undefined,
         },
     },
+]
+
+//eslint-disable-next-line
+export const housingEndpoints = [
+    // Get All housings
+    rest.get(`${API_RESOURCES_URL}/housings`, (req, res, ctx) => {
+        const TEST_CUSTOMERS_RESPONSE = getPaginationFromElementList<SnakeCasedPropertiesDeep<IHousing>>(
+            req,
+            TEST_HOUSES,
+        )
+
+        return res(ctx.status(200), ctx.delay(1000), ctx.json(TEST_CUSTOMERS_RESPONSE))
+    }),
 ]
