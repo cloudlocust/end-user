@@ -5,6 +5,9 @@ import Divider from '@mui/material/Divider'
 import Typography from '@mui/material/Typography'
 import { NavLink } from 'react-router-dom'
 import { useIntl } from 'react-intl'
+import Button from '@mui/material/Button'
+import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight'
+import CardActions from '@mui/material/CardActions'
 
 import { IHousing } from 'src/modules/MyHouse/components/HousingList/housing.d'
 
@@ -35,18 +38,18 @@ const HousingCard = ({
 
     return (
         <Card className="relative rounded-16">
-            <div className="px-24 pt-16 flex items-center">
-                <Typography className="font-bold text-16 whitespace-normal">
-                    {MY_HOUSING_AT + logement.address.city.toUpperCase()}
-                </Typography>
-            </div>
-            <CardContent className="px-32 py-0">
+            <CardContent>
+                <div className="flex items-center jutsify-center">
+                    <Typography className="font-bold text-16 whitespace-normal">
+                        {MY_HOUSING_AT + logement.address.city.toUpperCase()}
+                    </Typography>
+                </div>
                 <Divider className="my-16" />
                 <div className="flex flex-col">
                     <Typography variant="subtitle1" className="mb-10 text-13 flex">
                         {`${logement.address.city}, ${logement.address.zipCode}, ${logement.address.country}`}
                     </Typography>
-                    <Typography variant="subtitle1" className="mb-10 text-13 flex">
+                    <Typography variant="subtitle1" className="text-13 flex">
                         {logement.guid ? (
                             `Compteur n°${logement.guid}`
                         ) : (
@@ -60,6 +63,14 @@ const HousingCard = ({
                     </Typography>
                 </div>
             </CardContent>
+            <CardActions className="flex items-center content-center justify-end">
+                <Button variant="contained" endIcon={<KeyboardArrowRightIcon />}>
+                    {formatMessage({
+                        id: 'Détails',
+                        defaultMessage: 'Détails',
+                    })}
+                </Button>
+            </CardActions>
         </Card>
     )
 }
