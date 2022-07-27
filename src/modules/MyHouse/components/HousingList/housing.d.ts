@@ -13,10 +13,6 @@ export type IHousing =
          */
         id: number
         /**
-         * The Name of the logement.
-         */
-        name: string | null
-        /**
          * The Guid of the PDL.
          */
         guid: string | null

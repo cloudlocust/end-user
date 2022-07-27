@@ -1,14 +1,14 @@
 import { reduxedRender } from 'src/common/react-platform-components/test'
-import HousingCard from 'src/modules/MyHouse/components/HousingCard'
+import HousingCard from 'src/modules/MyHouse/components/HousingList/components/HousingCard'
 import { TEST_HOUSES } from 'src/mocks/handlers/houses'
 import { applyCamelCase } from 'src/common/react-platform-components/utils/mm'
 import { BrowserRouter as Router } from 'react-router-dom'
 import { act, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
+import { IHousing } from 'src/modules/MyHouse/components/HousingList/housing.d'
 
-const TEST_MOCKED_HOUSES = applyCamelCase(TEST_HOUSES)
+const TEST_MOCKED_HOUSES: IHousing[] = applyCamelCase(TEST_HOUSES)
 
-const DEFAULT_HOUSE_NAME = 'Mon Logement'
 const DEFAULT_GUID_TEXT = 'Veuillez renseigner votre compteur'
 const URL_TO_GUID_INSCRIPTION = '/nrlink-connection-steps'
 
@@ -22,12 +22,12 @@ describe('Test HousingCard', () => {
         const ADDRESS_TO_SHOW = `${TEST_MOCKED_HOUSES[0].address.city}, ${TEST_MOCKED_HOUSES[0].address.zipCode}, ${TEST_MOCKED_HOUSES[0].address.country}`
         const GUID_TEXT_TO_SHOW = `Compteur n°${TEST_MOCKED_HOUSES[0].guid}`
 
-        expect(getByText(TEST_MOCKED_HOUSES[0].name)).toBeTruthy()
+        expect(getByText('Mon Logement à ' + TEST_MOCKED_HOUSES[0].address.city.toUpperCase())).toBeTruthy()
         expect(getByText(GUID_TEXT_TO_SHOW)).toBeTruthy()
         expect(getByText(ADDRESS_TO_SHOW)).toBeTruthy()
     })
 
-    test('When name and guid are null, default name and link should be visible', async () => {
+    test('When guid is null, link should be visible', async () => {
         const { getByText } = reduxedRender(
             <Router>
                 <HousingCard element={TEST_MOCKED_HOUSES[1]} />
@@ -35,7 +35,6 @@ describe('Test HousingCard', () => {
         )
         const ADDRESS_TO_SHOW = `${TEST_MOCKED_HOUSES[1].address.city}, ${TEST_MOCKED_HOUSES[1].address.zipCode}, ${TEST_MOCKED_HOUSES[0].address.country}`
 
-        expect(getByText(DEFAULT_HOUSE_NAME)).toBeTruthy()
         expect(getByText(DEFAULT_GUID_TEXT)).toBeTruthy()
         expect(getByText(ADDRESS_TO_SHOW)).toBeTruthy()
     })

@@ -1,4 +1,4 @@
-import { IHousing } from 'src/modules/MyHouse/components/HousingCard/housing.d'
+import { IHousing } from 'src/modules/MyHouse/components/HousingList/housing.d'
 import { BuilderUseElementList } from 'src/modules/utils/useElementHookBuilder'
 import { formatMessageType } from 'src/common/react-platform-translation'
 import { searchFilterType } from 'src/modules/utils'
