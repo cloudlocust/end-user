@@ -132,7 +132,8 @@ const Analysis = () => {
                         setRange={setRange}
                         range={range}
                         onDatePickerChange={handleDatePickerOnChange}
-                        maxDate={endOfMonth(subMonths(new Date(), 1))}
+                        // maxDate={endOfMonth(subMonths(new Date(), 1))}
+                        maxDate={new Date()}
                     />
                 </motion.div>
             </div>

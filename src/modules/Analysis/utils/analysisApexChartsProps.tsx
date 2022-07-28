@@ -1,17 +1,9 @@
 import { Theme } from '@mui/material/styles/createTheme'
-import { isNull } from 'lodash'
 import { Props } from 'react-apexcharts'
+import AnalysisChartTooltip from 'src/modules/Analysis/components/AnalysisChart/AnalysisChartTooltip'
 import { normalizeValues } from './computationFunctions'
+import { renderToString } from 'react-dom/server'
 
-/**
- * Customize the tooltip text.
- *
- * @param valueIndex Index of active value.
- * @param values List of all values.
- * @returns Tooltip text.
- */
-export const getValueTooltipText = (valueIndex: number, values: (number | null)[]) =>
-    `${isNull(values[valueIndex]) ? '' : values[valueIndex]?.toFixed(2)} kWh`
 /**
  * Default AnalysisApexChart Options, represent the default options of AnalysisChart.
  *
@@ -66,16 +58,16 @@ export const getAnalysisApexChartProps = (
     let optionsAnalysisApexCharts: Props['options'] = defaultAnalysisApexChartsOptions(theme)!
 
     optionsAnalysisApexCharts.tooltip = {
+        /**
+         * Change default tooltip, to keep same tooltip when clicking or hovering.
+         *
+         * @param param0 N/A.
+         * @param param0.seriesIndex Index of selected value.
+         * @returns Custom tooltip.
+         */
+        custom: ({ seriesIndex }) =>
+            renderToString(<AnalysisChartTooltip valueIndex={seriesIndex} values={values} theme={theme} />),
         y: {
-            /**
-             * Customize the text in the tooltip.
-             *
-             * @param normalizedValue Represent normalized value not the real value.
-             * @param opts N/A.
-             * @param opts.seriesIndex Represent the index of active value.
-             * @returns Tooltip text.
-             */
-            formatter: (normalizedValue, { seriesIndex: valueIndex }) => getValueTooltipText(valueIndex, values),
             title: {
                 /**
                  * Customize tooltip text, by removing seriesName to show only the value.
