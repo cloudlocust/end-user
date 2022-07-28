@@ -62,6 +62,7 @@ describe('test pure function', () => {
         const results = [
             // Null value tooltip text
             ` ${unit}`,
+            // Valid value tooltip text
             `10.55 ${unit}`,
         ]
         results.forEach((newValue, index) => {
