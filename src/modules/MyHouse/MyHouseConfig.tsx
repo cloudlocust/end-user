@@ -5,8 +5,7 @@ import { MyHouse } from 'src/modules/MyHouse/MyHouse'
 /**
  * Url for myHouse.
  */
-export const URL_MY_HOUSE = '/my-house/:tab'
-const URL_MY_HOUSE_MAIN = '/my-house'
+export const URL_MY_HOUSE = '/my-houses'
 /**
  * Interface .
  *
@@ -30,36 +29,17 @@ export const MyHouseConfig = [
     {
         path: URL_MY_HOUSE,
         component: MyHouse,
-        auth: { authType: authTypes.freeAccess },
+        auth: { authType: authTypes.loginRequired },
         settings: {
             layout: {
                 navbar: {
                     UINavbarItem: {
-                        id: 'myHouse',
-                        label: 'Mon Foyer',
-                        labelAbbreviation: 'Mon Foyer',
+                        id: 'myHouses',
+                        label: 'Logement',
+                        labelAbbreviation: 'Logement',
                         type: 'item',
                         iconLabel: 'home',
                         url: URL_MY_HOUSE,
-                    },
-                },
-            },
-        },
-    } as IRouteNavigationConfig<MyHouseProps>,
-    {
-        path: URL_MY_HOUSE_MAIN,
-        component: MyHouse,
-        auth: { authType: authTypes.freeAccess },
-        settings: {
-            layout: {
-                navbar: {
-                    UINavbarItem: {
-                        id: 'myHouse',
-                        label: 'Mon Foyer',
-                        labelAbbreviation: 'Mon Foyer',
-                        type: 'item',
-                        iconLabel: 'home',
-                        url: URL_MY_HOUSE_MAIN,
                     },
                 },
             },

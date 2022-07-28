@@ -30,6 +30,7 @@ const HousingCard = ({
     element: IHousing
 }) => {
     const { formatMessage } = useIntl()
+    const [raisedState, setRaisedState] = React.useState(false)
 
     const MY_HOUSING_AT = formatMessage({
         id: 'Mon Logement à ',
@@ -37,7 +38,12 @@ const HousingCard = ({
     })
 
     return (
-        <Card className="relative rounded-16">
+        <Card
+            className="relative cursor-pointer flex-wrap rounded-16"
+            onMouseOver={() => setRaisedState(true)}
+            onMouseOut={() => setRaisedState(false)}
+            raised={raisedState}
+        >
             <CardContent>
                 <div className="flex items-center jutsify-center">
                     <Typography className="font-bold text-16 whitespace-normal">

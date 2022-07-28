@@ -1,9 +1,7 @@
 import React from 'react'
-import FuseLoading from 'src/common/ui-kit/fuse/components/FuseLoading'
-import MultiTab from 'src/modules/shared/MultiTab/MultiTab'
-import { useMeterList } from 'src/modules/Meters/metersHook'
-import { EquipmentForm } from 'src/modules/MyHouse/components/Equipments/EquipmentForm'
-import { useHistory } from 'react-router-dom'
+// import MultiTab from 'src/modules/shared/MultiTab/MultiTab'
+// import { useMeterList } from 'src/modules/Meters/metersHook'
+// import { EquipmentForm } from 'src/modules/MyHouse/components/Equipments/EquipmentForm'
 import HousingList from 'src/modules/MyHouse/components/HousingList'
 
 /**
@@ -12,30 +10,5 @@ import HousingList from 'src/modules/MyHouse/components/HousingList'
  * @returns MyHouse form component.
  */
 export const MyHouse = () => {
-    const { elementList: meterList } = useMeterList()
-    const history = useHistory()
-    history.location.pathname === '/my-house' && history.replace({ pathname: '/my-house/accomodation' })
-
-    if (!meterList || !meterList.length) return <FuseLoading />
-    const tabsContent = [
-        {
-            tabTitle: 'Logement',
-            tabSlug: 'accomodation',
-            tabContent: (
-                <div className="Tab-Accomodation flex justify-center">
-                    <HousingList />
-                </div>
-            ),
-        },
-        {
-            tabTitle: 'Equipement',
-            tabSlug: 'equipment',
-            tabContent: (
-                <div className="Tab-Equipment flex justify-center">
-                    <EquipmentForm meterId={meterList[0].id} />
-                </div>
-            ),
-        },
-    ]
-    return <MultiTab content={tabsContent} />
+    return <HousingList />
 }
