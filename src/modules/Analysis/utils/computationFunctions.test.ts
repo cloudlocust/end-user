@@ -5,6 +5,7 @@ import {
     computeMaxConsumption,
     computeMinConsumption,
     computePercentageChange,
+    normalizeValues,
 } from 'src/modules/Analysis/utils/computationFunctions'
 import { IMetric, metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
 
@@ -111,3 +112,30 @@ test('computePercentageChange test with different cases', async () => {
         expect(percentage).toEqual(result)
     })
 }, 20000)
+test('normalizeValues test with different cases', async () => {
+    const values = [
+        // Min value.
+        10,
+        // Middle value (represent the half of (max+min)).
+        15,
+        // Max Value
+        20,
+    ]
+
+    const newMin = 100
+    const newMax = 200
+    const halfMinMax = (newMin + newMax) / 2
+    // Test cases
+    const cases = [
+        // New min value
+        newMin,
+        // New Half value
+        halfMinMax,
+        // New Max Value
+        newMax,
+    ]
+    const newValues = normalizeValues(values, newMin, newMax)
+    cases.forEach((newValue, index) => {
+        expect(newValues[index]).toStrictEqual(newValue)
+    })
+})
