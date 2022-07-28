@@ -1,10 +1,10 @@
 import React from 'react'
-import FuseLoading from 'src/common/ui-kit/fuse/components/FuseLoading'
-import MultiTab from 'src/modules/shared/MultiTab/MultiTab'
-import { useMeterList } from 'src/modules/Meters/metersHook'
-import { EquipmentForm } from 'src/modules/MyHouse/components/Equipments/EquipmentForm'
-import { useHistory } from 'react-router-dom'
+// import MultiTab from 'src/modules/shared/MultiTab/MultiTab'
+// import { useMeterList } from 'src/modules/Meters/metersHook'
+// import { EquipmentForm } from 'src/modules/MyHouse/components/Equipments/EquipmentForm'
 import HousingList from 'src/modules/MyHouse/components/HousingList'
+import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
+import { useTheme } from '@mui/material'
 
 /**
  * Form used for modify MyHouse.
@@ -12,30 +12,24 @@ import HousingList from 'src/modules/MyHouse/components/HousingList'
  * @returns MyHouse form component.
  */
 export const MyHouse = () => {
-    const { elementList: meterList } = useMeterList()
-    const history = useHistory()
-    history.location.pathname === '/my-house' && history.replace({ pathname: '/my-house/accomodation' })
+    const theme = useTheme()
 
-    if (!meterList || !meterList.length) return <FuseLoading />
-    const tabsContent = [
-        {
-            tabTitle: 'Logement',
-            tabSlug: 'accomodation',
-            tabContent: (
-                <div className="Tab-Accomodation flex justify-center">
-                    <HousingList />
+    return (
+        <div>
+            <div
+                style={{ background: theme.palette.primary.main, minHeight: '64px' }}
+                className="w-full relative flex flex-col justify-center items-center p-16"
+            >
+                <div>
+                    <TypographyFormatMessage
+                        className="text-18 md:text-24"
+                        style={{ color: theme.palette.primary.contrastText }}
+                    >
+                        Logement
+                    </TypographyFormatMessage>
                 </div>
-            ),
-        },
-        {
-            tabTitle: 'Equipement',
-            tabSlug: 'equipment',
-            tabContent: (
-                <div className="Tab-Equipment flex justify-center">
-                    <EquipmentForm meterId={meterList[0].id} />
-                </div>
-            ),
-        },
-    ]
-    return <MultiTab content={tabsContent} />
+            </div>
+            <HousingList />
+        </div>
+    )
 }
