@@ -1,5 +1,5 @@
 import { rest } from 'msw'
-import { IHousing } from 'src/modules/MyHouse/components/HousingCard/housing.d'
+import { IHousing } from 'src/modules/MyHouse/components/HousingList/housing.d'
 import { getPaginationFromElementList } from 'src/mocks/utils'
 import { API_RESOURCES_URL } from 'src/configs'
 import { SnakeCasedPropertiesDeep } from 'type-fest'
@@ -10,7 +10,6 @@ import { SnakeCasedPropertiesDeep } from 'type-fest'
 export const TEST_HOUSES: SnakeCasedPropertiesDeep<IHousing>[] = [
     {
         id: 123456789,
-        name: 'logement super cool',
         guid: '12345Her',
         address: {
             city: 'monaco',
@@ -25,7 +24,6 @@ export const TEST_HOUSES: SnakeCasedPropertiesDeep<IHousing>[] = [
     },
     {
         id: 123456789,
-        name: null,
         guid: null,
         address: {
             city: 'monaco',
