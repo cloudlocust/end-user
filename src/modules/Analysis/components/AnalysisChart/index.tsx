@@ -48,7 +48,7 @@ const AnalysisChart = ({
             const analysisPolarAreaChartRec = analysisChartContainerRef.current
                 .getElementsByClassName(analysisChartClassname)[0]
                 .getBoundingClientRect()
-            // Because ApexChart PolarArea div will have a height different from the container, the CircleContent won't be centered in the polarArea chart unless the container have the same height as the circle content.
+            // Because ApexChart PolarArea div will have a height different from the container, the CircleContent won't be centered in the polarArea chart unless the container have the same height as the PolarArea div.
             analysisChartContainerRef.current.style!.height = `${analysisPolarAreaChartRec.height}px`
         }
     })
