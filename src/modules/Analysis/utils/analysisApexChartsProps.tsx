@@ -67,17 +67,6 @@ export const getAnalysisApexChartProps = (
          */
         custom: ({ seriesIndex }) =>
             renderToString(<AnalysisChartTooltip valueIndex={seriesIndex} values={values} theme={theme} />),
-        y: {
-            title: {
-                /**
-                 * Customize tooltip text, by removing seriesName to show only the value.
-                 *
-                 * @param seriesName SerieName.
-                 * @returns Tooltip text without seriesName.
-                 */
-                formatter: (seriesName) => '',
-            },
-        },
     }
 
     return {

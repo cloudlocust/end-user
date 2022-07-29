@@ -10,21 +10,13 @@ import { renderToString } from 'react-dom/server'
 const mockValues = [10, 20, 30]
 
 // eslint-disable-next-line jsdoc/require-jsdoc
-const mockTooltipY: ApexTooltipY = {
-    title: {
-        // eslint-disable-next-line jsdoc/require-jsdoc
-        formatter: (seriesName) => '',
-    },
-}
-// eslint-disable-next-line jsdoc/require-jsdoc
 const mockOptions: (theme: Theme) => ApexOptions = (theme) => ({
     ...defaultAnalysisApexChartsOptions(theme),
     tooltip: {
         custom:
             // eslint-disable-next-line jsdoc/require-jsdoc
             ({ seriesIndex }) =>
-                renderToString(<AnalysisChartTooltip valueIndex={seriesIndex} values={values} theme={theme} />),
-        y: { ...mockTooltipY },
+                renderToString(<AnalysisChartTooltip valueIndex={seriesIndex} values={mockValues} theme={theme} />),
     },
 })
 
@@ -42,11 +34,7 @@ describe('test pure function', () => {
         const mockOptionsResult = mockOptions(theme)
         expect(JSON.stringify(analysisApexChartsProps.options)).toStrictEqual(JSON.stringify(mockOptionsResult))
         expect(
-            (analysisApexChartsProps.options.tooltip!.y! as ApexTooltipY).title!.formatter!('SERIES NAME'),
-        ).toStrictEqual('')
-
-        expect(analysisApexChartsProps.options.tooltip!.custom!({ seriesIndex: 0 })).toBe(
-            renderToString(<AnalysisChartTooltip valueIndex={0} values={mockValues} theme={theme} />),
-        )
+            (analysisApexChartsProps.options.tooltip!.custom! as (options: any) => any)({ seriesIndex: 1 }),
+        ).toStrictEqual(renderToString(<AnalysisChartTooltip valueIndex={1} values={mockValues} theme={theme} />))
     })
 })
