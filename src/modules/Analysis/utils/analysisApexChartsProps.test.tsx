@@ -12,6 +12,10 @@ const mockValues = [10, 20, 30]
 // eslint-disable-next-line jsdoc/require-jsdoc
 const mockOptions: (theme: Theme) => ApexOptions = (theme) => ({
     ...defaultAnalysisApexChartsOptions(theme),
+    fill: {
+        opacity: [1, 0.7, 1],
+    },
+    colors: [theme.palette.primary.light, theme.palette.primary.main, theme.palette.primary.dark],
     tooltip: {
         custom:
             // eslint-disable-next-line jsdoc/require-jsdoc

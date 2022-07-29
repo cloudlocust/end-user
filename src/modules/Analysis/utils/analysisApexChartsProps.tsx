@@ -3,6 +3,7 @@ import { Props } from 'react-apexcharts'
 import AnalysisChartTooltip from 'src/modules/Analysis/components/AnalysisChart/AnalysisChartTooltip'
 import { normalizeValues } from './computationFunctions'
 import { renderToString } from 'react-dom/server'
+import { getColorsArrayType } from 'src/modules/Analysis/analysisTypes.d'
 
 /**
  * Generating and showin a tooltip, when selecting an element because Apexcharts in its default behaviour, it doesn't show tooltip onClick only on hover which doesn't exist on mobile.
@@ -76,6 +77,40 @@ export const defaultAnalysisApexChartsOptions: (theme: Theme) => Props['options'
 })
 
 /**
+ * Return the opacity array, where we'll fill all values with default Opacity, only the one indicated in indexes array with opacity of 1.
+ *
+ * @param size Size of Opacity Array (representing the opacity for each index).
+ * @param defaultOpacity Opacity applied to all elements.
+ * @param indexes List of indexes that will have opacity of 1 in the opacity Array.
+ * @returns Opacity Array.
+ */
+export const getFillOpacityArray = (size: number, defaultOpacity: number, indexes: number[]): number[] => {
+    const fillOpacityArray = Array(size).fill(defaultOpacity)
+    indexes.forEach((valIndex) => {
+        fillOpacityArray[valIndex] = 1
+    })
+    return fillOpacityArray
+}
+
+/**
+ * Get colors array for all values with defaultColor except the ones in indexes with their colorIndexes.
+ *
+ * @param size Size of colors Array (representing the color for each index).
+ * @param opts Opts.
+ * @param opts.defaultColor Default color applied to all elements.
+ * @param opts.indexes List of indexes that will have different color.
+ * @param opts.colorIndexes Color of the indexes elements, the first colorIndexes will go to the first indexes and so on...etc.
+ * @returns Colors Array.
+ */
+export const getColorsArray: getColorsArrayType = (size, { defaultColor, indexes, colorIndexes }) => {
+    const colorsArray = Array(size).fill(defaultColor)
+    indexes.forEach((valIndex, i) => {
+        colorsArray[valIndex] = colorIndexes[i]
+    })
+    return colorsArray
+}
+
+/**
  * Function that returns apexCharts Props related to MyConsumptionChart with its different yAxis charts for each target.
  *
  * @param values Represents values shown in the chart.
@@ -101,6 +136,16 @@ export const getAnalysisApexChartProps = (
         custom: ({ seriesIndex }) =>
             renderToString(<AnalysisChartTooltip valueIndex={seriesIndex} values={values} theme={theme} />),
     }
+
+    // Fill the min and max values with their corresponding colors colors
+    let minIndex = values.indexOf(Math.min(...values))
+    let maxIndex = values.indexOf(Math.max(...values))
+    optionsAnalysisApexCharts.fill!.opacity = getFillOpacityArray(values.length, 0.7, [minIndex, maxIndex])
+    optionsAnalysisApexCharts.colors = getColorsArray(values.length, {
+        indexes: [minIndex, maxIndex],
+        colorIndexes: [theme.palette.primary.light, theme.palette.primary.dark],
+        defaultColor: theme.palette.primary.main,
+    })
 
     return {
         options: optionsAnalysisApexCharts,
