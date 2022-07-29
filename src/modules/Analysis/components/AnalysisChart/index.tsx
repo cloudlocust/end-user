@@ -7,7 +7,10 @@ import { IMetric, metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
 import { getDataFromYAxis } from 'src/modules/MyConsumption/components/Widget/WidgetFunctions'
 import convert from 'convert-units'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
-import { getAnalysisApexChartProps } from 'src/modules/Analysis/utils/analysisApexChartsProps'
+import {
+    getAnalysisApexChartProps,
+    showAnalysisChartTooltipOnValueSelected,
+} from 'src/modules/Analysis/utils/analysisApexChartsProps'
 
 const analysisChartClassname = 'apexcharts-inner apexcharts-graphical'
 
@@ -30,12 +33,12 @@ const AnalysisChart = ({
     children: JSX.Element
 }) => {
     const theme = useTheme()
-    const isMobile = useMediaQuery(theme.breakpoints.down('md'))
+    const isMobile = useMediaQuery(theme.breakpoints.down('lg'))
     const analysisChartContainerRef = useRef<HTMLDivElement>(null)
     const analysisChartCircleContentRef = useRef<HTMLDivElement>(null)
 
     // Getting consumption values from data.
-    const values: ApexNonAxisChartSeries = data.length ? getDataFromYAxis(data, metricTargetsEnum.consumption) : []
+    let values: ApexNonAxisChartSeries = data.length ? getDataFromYAxis(data, metricTargetsEnum.consumption) : []
 
     useEffect(() => {
         // This UseEffect is used to do some styling, in order to dynamically style the CircleContent in the middle of the analysisChart.
@@ -63,11 +66,23 @@ const AnalysisChart = ({
         )
     }
 
-    const analysisApexChartProps = getAnalysisApexChartProps(
-        // We convert Wh to kWh as analysisChart shows kWh tooltip values.
-        values.map((val) => convert(val).from('Wh').to('kWh')),
-        theme,
-    )
+    // We convert Wh to kWh as analysisChart shows kWh tooltip values.
+    values = values.map((val) => convert(val).from('Wh').to('kWh'))
+
+    const analysisApexChartProps = getAnalysisApexChartProps(values, theme)
+
+    if (isMobile) {
+        analysisApexChartProps.options.chart!.events = {
+            /**
+             * Generating and showin a tooltip on Mobile, when selecting an element because Apexcharts in its default behaviour, it doesn't show tooltip onClick only on hover which doesn't exist on mobile.
+             *
+             * @param e Event of selected value.
+             */
+            dataPointSelection(e) {
+                showAnalysisChartTooltipOnValueSelected(e, values, theme)
+            },
+        }
+    }
 
     return (
         <div className="analysisChartContainer px-24" ref={analysisChartContainerRef}>
