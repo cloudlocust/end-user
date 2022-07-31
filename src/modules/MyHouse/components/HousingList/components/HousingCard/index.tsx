@@ -10,6 +10,7 @@ import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight'
 import CardActions from '@mui/material/CardActions'
 
 import { IHousing } from 'src/modules/MyHouse/components/HousingList/housing.d'
+import { URL_MY_HOUSE } from 'src/modules/MyHouse/MyHouseConfig'
 
 /**
  * This is a card for the display of a logement item.
@@ -70,12 +71,14 @@ const HousingCard = ({
                 </div>
             </CardContent>
             <CardActions className="flex items-center content-center justify-end">
-                <Button variant="contained" endIcon={<KeyboardArrowRightIcon />}>
-                    {formatMessage({
-                        id: 'Détails',
-                        defaultMessage: 'Détails',
-                    })}
-                </Button>
+                <NavLink to={`${URL_MY_HOUSE}/${logement.id}`}>
+                    <Button variant="contained" endIcon={<KeyboardArrowRightIcon />}>
+                        {formatMessage({
+                            id: 'Détails',
+                            defaultMessage: 'Détails',
+                        })}
+                    </Button>
+                </NavLink>
             </CardActions>
         </Card>
     )
