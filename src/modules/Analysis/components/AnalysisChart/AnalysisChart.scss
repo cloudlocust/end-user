@@ -1,0 +1,21 @@
+@import 'src/common/ui-kit/styles/media.scss';
+
+.apexcharts-canvas {
+    overflow: hidden;
+    .apexcharts-tooltip-marker {
+        display: none;
+    }
+}
+.analysisChartCircleContent {
+    position: absolute;
+    transform: translate(-50%, 50%);
+    left: 50%;
+    bottom: 50%;
+    border-radius: 50%;
+    height: 160px;
+    width: 160px;
+    @include md {
+        height: 212px;
+        width: 212px;
+    }
+}

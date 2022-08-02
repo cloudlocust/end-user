@@ -21,6 +21,7 @@ import { computeTotalConsumption } from 'src/modules/MyConsumption/components/Wi
 import AnalysisInformationList from 'src/modules/Analysis/components/AnalysisInformationList'
 import AnalysisPercentageChangeArrows from 'src/modules/Analysis/components/AnalysisPercentageChangeArrows'
 import convert, { Unit } from 'convert-units'
+import AnalysisChart from 'src/modules/Analysis/components/AnalysisChart'
 
 /**
  * InitialMetricsStates for useMetrics.
@@ -135,12 +136,18 @@ const Analysis = () => {
                     />
                 </motion.div>
             </div>
-            <div className="p-24">
-                <div style={{ height: '240px' }} className="flex flex-col justify-center items-center ">
-                    {isMetricsLoading ? (
+
+            <div style={{ position: 'relative' }}>
+                {isMetricsLoading ? (
+                    <div
+                        style={{ height: '300px' }}
+                        className="p-24 CircularProgress flex flex-col justify-center items-center "
+                    >
                         <CircularProgress style={{ color: theme.palette.primary.main }} />
-                    ) : (
-                        <>
+                    </div>
+                ) : (
+                    <AnalysisChart data={data}>
+                        <div className="flex flex-col justify-center items-center">
                             <p className="text-16 md:text-20 font-medium mb-8">
                                 {totalConsumption.value} {totalConsumption.unit}
                             </p>
@@ -149,9 +156,9 @@ const Analysis = () => {
                                 referenceConsumptionValue={referenceConsumptionValue}
                                 filters={filters}
                             />
-                        </>
-                    )}
-                </div>
+                        </div>
+                    </AnalysisChart>
+                )}
             </div>
             {!isMetricsLoading && (
                 <div className="p-24 AnalysisInformationList">
