@@ -81,7 +81,7 @@ const HousingCard = ({
                                 {MY_HOUSING_AT + logement.address.city.toUpperCase()}
                             </Typography>
                         </div>
-                        <IconButton className="ml-12" onClick={() => setModalOpen(true)}>
+                        <IconButton aria-label="delete" className="ml-12" onClick={() => setModalOpen(true)}>
                             <DeleteOutlinedIcon color="error" />
                         </IconButton>
                     </div>
