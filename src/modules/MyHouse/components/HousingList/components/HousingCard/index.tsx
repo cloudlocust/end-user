@@ -27,6 +27,7 @@ const HousingCard = ({
     element: IHousing
 }) => {
     const { formatMessage } = useIntl()
+    const [raisedState, setRaisedState] = React.useState(false)
 
     const MY_HOUSING_AT = formatMessage({
         id: 'Mon Logement à ',
@@ -34,7 +35,12 @@ const HousingCard = ({
     })
 
     return (
-        <Card className="relative rounded-16">
+        <Card
+            className="relative cursor-pointer flex-wrap rounded-16"
+            onMouseOver={() => setRaisedState(true)}
+            onMouseOut={() => setRaisedState(false)}
+            raised={raisedState}
+        >
             <div className="px-24 pt-16 flex items-center">
                 <Typography className="font-bold text-16 whitespace-normal">
                     {MY_HOUSING_AT + logement.address.city.toUpperCase()}
