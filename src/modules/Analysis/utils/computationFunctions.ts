@@ -89,3 +89,18 @@ export const computePercentageChange = (oldValue: number, newValue: number) =>
     // This formula ((oldValue - newValue) / oldValue) * 100, when negative percentage means there is increase, and when positive means there is decrease.
     // Thus multiplying by -1 means, when negative percentage its decrease, and positive percentage its increase.
     oldValue === 0 ? oldValue : -((oldValue - newValue) / oldValue) * 100
+
+/**
+ * Transform data so that all of its elements fall between customMin, customMax.
+ *
+ * @param values Data.
+ * @param customMin Represent the lowest value of the transformed data.
+ * @param customMax Represent the Highest value of the transformed data.
+ * @returns Data within a custom range where the lowest value is customMin and the highest value is customMax.
+ */
+export const normalizeValues = (values: number[], customMin: number, customMax: number) => {
+    const min = Math.min(...values)
+    const max = Math.max(...values)
+    const range = max - min
+    return values.map((val) => customMin + ((val - min) * (customMax - customMin)) / range)
+}
