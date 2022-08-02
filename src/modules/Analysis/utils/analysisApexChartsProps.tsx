@@ -5,6 +5,39 @@ import { normalizeValues } from './computationFunctions'
 import { renderToString } from 'react-dom/server'
 
 /**
+ * Generating and showin a tooltip, when selecting an element because Apexcharts in its default behaviour, it doesn't show tooltip onClick only on hover which doesn't exist on mobile.
+ *
+ * @param e Selection Event of selected value.
+ * @param values Represents values shown in the chart.
+ * @param theme Current Theme so that we set tooltip color related to the theme.
+ */
+export const showAnalysisChartTooltipOnValueSelected = (e: any, values: ApexNonAxisChartSeries, theme: Theme) => {
+    const tooltipContainerElement = document.getElementsByClassName('apexcharts-tooltip')[0] as HTMLDivElement
+    // Serie Element will have ClassList[1] as follow apexcharts-polararea-slice-18
+    const valueIndex = Number(e.target.classList[1].split('-').slice(-1))
+    // If the element is selected
+    if (e.target.instance.filterer) {
+        // Positioning the tooltip close to the click
+        tooltipContainerElement.style!.left = `${e.offsetX - 40}px`
+        tooltipContainerElement.style!.top = `${e.offsetY - 40}px`
+        // Rendering the tooltip text
+        tooltipContainerElement.innerHTML = renderToString(
+            <AnalysisChartTooltip valueIndex={valueIndex} values={values} theme={theme} />,
+        )
+        // Displaying the tooltip
+        tooltipContainerElement.classList.add('apexcharts-active')
+        tooltipContainerElement.style.display = 'flex'
+    }
+    // If the element is deselected
+    else {
+        // Hide tooltip
+        tooltipContainerElement.style.display = 'none'
+        // Remove tooltip text is needed because we can have a behaviour where we store not related tooltip text
+        tooltipContainerElement.innerHTML = ''
+    }
+}
+
+/**
  * Default AnalysisApexChart Options, represent the default options of AnalysisChart.
  *
  * @param theme Current Theme so that we set properties related to the theme (such as chart color).
