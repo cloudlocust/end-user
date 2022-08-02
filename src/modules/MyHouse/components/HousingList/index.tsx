@@ -1,7 +1,7 @@
 import React, { SyntheticEvent } from 'react'
 import { PostPlaceholder } from 'src/common/ui-kit/components/MapElementList/components/ContentLoader/ContentLoader'
 // import MapElementList from 'src/common/ui-kit/components/MapElementList'
-import { useHousingList } from 'src/modules/MyHouse/components/HousingList/HousingListHook'
+import { useHousingList } from 'src/modules/MyHouse/components/HousingList/HousingsHooks'
 import HousingCard from 'src/modules/MyHouse/components/HousingList/components/HousingCard'
 import { IHousing } from 'src/modules/MyHouse/components/HousingList/housing.d'
 import { useTheme } from '@mui/material/styles'

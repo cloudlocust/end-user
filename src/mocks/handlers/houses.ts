@@ -1,7 +1,7 @@
 import { rest } from 'msw'
 import { IHousing } from 'src/modules/MyHouse/components/HousingList/housing.d'
 import { getPaginationFromElementList } from 'src/mocks/utils'
-import { API_RESOURCES_URL } from 'src/configs'
+import { HOUSING_API } from 'src/modules/MyHouse/components/HousingList/HousingsHooks'
 import { SnakeCasedPropertiesDeep } from 'type-fest'
 
 /**
@@ -41,12 +41,24 @@ export const TEST_HOUSES: SnakeCasedPropertiesDeep<IHousing>[] = [
 //eslint-disable-next-line
 export const housingEndpoints = [
     // Get All housings
-    rest.get(`${API_RESOURCES_URL}/housings`, (req, res, ctx) => {
+    rest.get(HOUSING_API, (req, res, ctx) => {
         const TEST_CUSTOMERS_RESPONSE = getPaginationFromElementList<SnakeCasedPropertiesDeep<IHousing>>(
             req,
             TEST_HOUSES,
         )
 
         return res(ctx.status(200), ctx.delay(1000), ctx.json(TEST_CUSTOMERS_RESPONSE))
+    }),
+    // Remove Housing
+    rest.delete(`${HOUSING_API}/:id`, (req, res, ctx) => {
+        const { id } = req.params
+        if (parseInt(id)) {
+            let indexOfComment = TEST_HOUSES.findIndex((c) => c.id === parseInt(id))
+            let oldComment = TEST_HOUSES[indexOfComment]
+            TEST_HOUSES.splice(indexOfComment, 1)
+            return res(ctx.status(200), ctx.delay(1000), ctx.json(oldComment))
+        } else {
+            return res(ctx.status(401), ctx.delay(1000))
+        }
     }),
 ]
