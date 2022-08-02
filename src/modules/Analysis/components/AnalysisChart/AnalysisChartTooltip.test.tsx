@@ -1,4 +1,5 @@
 import { createTheme } from '@mui/material/styles'
+import { waitFor } from '@testing-library/react'
 import { reduxedRender } from 'src/common/react-platform-components/test'
 import AnalysisChartTooltip from 'src/modules/Analysis/components/AnalysisChart/AnalysisChartTooltip'
 
@@ -11,6 +12,9 @@ describe('test pure function', () => {
         },
     })
     test('AnalysisChartTooltip custom tooltip test with different cases', async () => {
+        // Saturday 1 Jan 2022, Sunday 2 Jan 2022
+        const timestampValues = [1640995200000, 1641081600000]
+
         const values = [
             // Null value.
             null,
@@ -22,15 +26,22 @@ describe('test pure function', () => {
         // Test cases
         const results = [
             // Null value tooltip text
-            `${unit}`,
+            `Sat 01 -  ${unit}`,
             // Valid value tooltip text
-            `10.55 ${unit}`,
+            `Sun 02 - 10.55 ${unit}`,
         ]
-        results.forEach((result, index) => {
+        results.forEach(async (result, index) => {
             const { getByText } = reduxedRender(
-                <AnalysisChartTooltip valueIndex={index} values={values} theme={theme} />,
+                <AnalysisChartTooltip
+                    valueIndex={index}
+                    values={values}
+                    timestampValues={timestampValues}
+                    theme={theme}
+                />,
             )
-            expect(getByText(result)).toBeTruthy()
+            await waitFor(() => {
+                expect(getByText(result)).toBeTruthy()
+            })
         })
     })
 })

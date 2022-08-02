@@ -31,6 +31,7 @@ jest.mock(
         mockIsMobile,
 )
 const mockValueSelected = getDataFromYAxis(mockData, metricTargetsEnum.consumption)[0]
+const mockTimeStampValueSelected = mockData[0].datapoints[0][1]
 const tooltipContainerClassname = 'tooltipContainer'
 const analysisChartValueClasslist = ['element-0', 'apexcharts-polararea-slice-0']
 const mockTheme = createTheme()
@@ -196,6 +197,7 @@ describe('AnalysisChart test', () => {
                 <AnalysisChartTooltip
                     valueIndex={0}
                     values={[convert(mockValueSelected).from('Wh').to('kWh')]}
+                    timestampValues={[mockTimeStampValueSelected]}
                     theme={mockTheme}
                 />,
             ),

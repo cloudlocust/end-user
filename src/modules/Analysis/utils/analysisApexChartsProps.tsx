@@ -10,9 +10,15 @@ import { getColorsArrayType } from 'src/modules/Analysis/analysisTypes.d'
  *
  * @param e Selection Event of selected value.
  * @param values Represents values shown in the chart.
+ * @param timestampValues Timestamps of the values.
  * @param theme Current Theme so that we set tooltip color related to the theme.
  */
-export const showAnalysisChartTooltipOnValueSelected = (e: any, values: ApexNonAxisChartSeries, theme: Theme) => {
+export const showAnalysisChartTooltipOnValueSelected = (
+    e: any,
+    values: ApexNonAxisChartSeries,
+    timestampValues: ApexNonAxisChartSeries,
+    theme: Theme,
+) => {
     const tooltipContainerElement = document.getElementsByClassName('apexcharts-tooltip')[0] as HTMLDivElement
     // Serie Element will have ClassList[1] as follow apexcharts-polararea-slice-18
     const valueIndex = Number(e.target.classList[1].split('-').slice(-1))
@@ -23,7 +29,12 @@ export const showAnalysisChartTooltipOnValueSelected = (e: any, values: ApexNonA
         tooltipContainerElement.style!.top = `${e.offsetY - 40}px`
         // Rendering the tooltip text
         tooltipContainerElement.innerHTML = renderToString(
-            <AnalysisChartTooltip valueIndex={valueIndex} values={values} theme={theme} />,
+            <AnalysisChartTooltip
+                valueIndex={valueIndex}
+                values={values}
+                timestampValues={timestampValues}
+                theme={theme}
+            />,
         )
         // Displaying the tooltip
         tooltipContainerElement.classList.add('apexcharts-active')
@@ -114,12 +125,15 @@ export const getColorsArray: getColorsArrayType = (size, { defaultColor, indexes
  * Function that returns apexCharts Props related to MyConsumptionChart with its different yAxis charts for each target.
  *
  * @param values Represents values shown in the chart.
+ * @param timestampValues Timestamps of the values.
  * @param theme Represents the current theme as it is needed to set apexCharts options to fit MyConsumptionChart, for example the colors of the grid should be theme.palette.primary.contrastText.
  * @returns Props of apexCharts in MyConsumptionChart.
  */
 export const getAnalysisApexChartProps = (
     // eslint-disable-next-line jsdoc/require-jsdoc
     values: ApexNonAxisChartSeries,
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    timestampValues: ApexNonAxisChartSeries,
     // eslint-disable-next-line jsdoc/require-jsdoc
     theme: Theme,
 ) => {
@@ -134,7 +148,14 @@ export const getAnalysisApexChartProps = (
          * @returns Custom tooltip.
          */
         custom: ({ seriesIndex }) =>
-            renderToString(<AnalysisChartTooltip valueIndex={seriesIndex} values={values} theme={theme} />),
+            renderToString(
+                <AnalysisChartTooltip
+                    valueIndex={seriesIndex}
+                    values={values}
+                    timestampValues={timestampValues}
+                    theme={theme}
+                />,
+            ),
     }
 
     // Fill the min and max values with their corresponding colors colors
