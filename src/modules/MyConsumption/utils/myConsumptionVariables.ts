@@ -37,13 +37,13 @@ export const mobileDatePickerPeriodProps = [
     {
         period: 'daily',
         views: ['day'],
-        width: '90px',
+        width: '95px',
         inputFormat: 'dd/MM/yyyy',
     },
     {
         period: 'weekly',
         views: ['day'],
-        width: '90px',
+        width: '95px',
         inputFormat: 'dd/MM/yyyy',
     },
     {
