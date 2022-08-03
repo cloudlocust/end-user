@@ -3,7 +3,6 @@ import { Props } from 'react-apexcharts'
 import AnalysisChartTooltip from 'src/modules/Analysis/components/AnalysisChart/AnalysisChartTooltip'
 import { normalizeValues } from './computationFunctions'
 import { renderToString } from 'react-dom/server'
-import { getColorsArrayType } from 'src/modules/Analysis/analysisTypes.d'
 
 /**
  * Generating and showin a tooltip, when selecting an element because Apexcharts in its default behaviour, it doesn't show tooltip onClick only on hover which doesn't exist on mobile.
@@ -79,6 +78,9 @@ export const defaultAnalysisApexChartsOptions: (theme: Theme) => Props['options'
     chart: {
         height: '100%',
         width: '100%',
+        animations: {
+            enabled: true,
+        },
     },
     legend: {
         show: false,
@@ -106,40 +108,6 @@ export const defaultAnalysisApexChartsOptions: (theme: Theme) => Props['options'
     },
     colors: [theme.palette.primary.main],
 })
-
-/**
- * Return the opacity array, where we'll fill all values with default Opacity, only the one indicated in indexes array with opacity of 1.
- *
- * @param size Size of Opacity Array (representing the opacity for each index).
- * @param defaultOpacity Opacity applied to all elements.
- * @param indexes List of indexes that will have opacity of 1 in the opacity Array.
- * @returns Opacity Array.
- */
-export const getFillOpacityArray = (size: number, defaultOpacity: number, indexes: number[]): number[] => {
-    const fillOpacityArray = Array(size).fill(defaultOpacity)
-    indexes.forEach((valIndex) => {
-        fillOpacityArray[valIndex] = 1
-    })
-    return fillOpacityArray
-}
-
-/**
- * Get colors array for all values with defaultColor except the ones in indexes with their colorIndexes.
- *
- * @param size Size of colors Array (representing the color for each index).
- * @param opts Opts.
- * @param opts.defaultColor Default color applied to all elements.
- * @param opts.indexes List of indexes that will have different color.
- * @param opts.colorIndexes Color of the indexes elements, the first colorIndexes will go to the first indexes and so on...etc.
- * @returns Colors Array.
- */
-export const getColorsArray: getColorsArrayType = (size, { defaultColor, indexes, colorIndexes }) => {
-    const colorsArray = Array(size).fill(defaultColor)
-    indexes.forEach((valIndex, i) => {
-        colorsArray[valIndex] = colorIndexes[i]
-    })
-    return colorsArray
-}
 
 /**
  * Function that returns apexCharts Props related to MyConsumptionChart with its different yAxis charts for each target.
@@ -179,19 +147,21 @@ export const getAnalysisApexChartProps = (
     }
 
     // Fill the min and max values with their corresponding colors colors
-    let minIndex = values.indexOf(Math.min(...values.filter((val) => val !== 0)))
-    let maxIndex = values.indexOf(Math.max(...values))
-    optionsAnalysisApexCharts.fill!.opacity = getFillOpacityArray(values.length, 0.7, [minIndex, maxIndex])
-    optionsAnalysisApexCharts.colors = getColorsArray(values.length, {
-        indexes: [minIndex, maxIndex],
-        colorIndexes: [theme.palette.primary.light, theme.palette.primary.dark],
-        defaultColor: theme.palette.primary.main,
-    })
+    let minDayConsumptionIndex = values.indexOf(Math.min(...values.filter((value) => value !== 0)))
+    let maxDayConsumptionIndex = values.indexOf(Math.max(...values))
+    optionsAnalysisApexCharts.fill!.opacity = Array(values.length).fill(0.7)
+    optionsAnalysisApexCharts.fill!.opacity[minDayConsumptionIndex] = 1
+    optionsAnalysisApexCharts.fill!.opacity[maxDayConsumptionIndex] = 1
+
+    optionsAnalysisApexCharts.colors = Array(values.length).fill(theme.palette.primary.main)
+    optionsAnalysisApexCharts.colors[minDayConsumptionIndex] = theme.palette.primary.light
+    optionsAnalysisApexCharts.colors[maxDayConsumptionIndex] = theme.palette.primary.dark
 
     return {
         options: optionsAnalysisApexCharts,
         // normalize values to [200, 150], to improve polarArea chart and show all values from min to max.
         // Values taken of min: 150, max: 200, makes the bars big enough for the lowest value, while being able to show the CircleContent inside the chart.
+        // For consumption values of 0, it shouldn't be normalized as min, their charts should be only small enough to be selected.
         series: normalizeValues(values, 150, 200),
     }
 }

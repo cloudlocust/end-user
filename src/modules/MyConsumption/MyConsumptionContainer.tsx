@@ -80,13 +80,13 @@ export const MyConsumptionContainer = () => {
      */
     const showPerPeriodText = () => {
         if (period === 'daily') {
-            return 'par jour'
+            return 'en Wh par jour'
         } else if (period === 'weekly') {
-            return 'par semaine'
+            return 'en kWh par semaine'
         } else if (period === 'monthly') {
-            return 'par mois'
+            return 'en kWh par mois'
         } else if (period === 'yearly') {
-            return 'par année'
+            return 'en kWh par année'
         } else {
             throw Error('PeriodValue not set')
         }
@@ -171,23 +171,10 @@ export const MyConsumptionContainer = () => {
                             >
                                 Ma Consommation
                             </TypographyFormatMessage>
-                            <div className="flex flex-row items-end">
-                                {/* TODO: kWh can also be P.max in MYEM-2408, to be dynamic. */}
-                                <TypographyFormatMessage
-                                    variant="h5"
-                                    className="mr-8 sm:mr-8"
-                                    style={{ color: theme.palette.primary.contrastText }}
-                                >
-                                    en kWh
-                                </TypographyFormatMessage>
-                                {/* Consommation par Jour / Semaine / Mois / Année */}
-                                <TypographyFormatMessage
-                                    variant="h5"
-                                    style={{ color: theme.palette.primary.contrastText }}
-                                >
-                                    {showPerPeriodText()}
-                                </TypographyFormatMessage>
-                            </div>
+                            {/* Consommation Wh par Jour / Semaine / Mois / Année */}
+                            <TypographyFormatMessage variant="h5" style={{ color: theme.palette.primary.contrastText }}>
+                                {showPerPeriodText()}
+                            </TypographyFormatMessage>
                             <MyConsumptionDatePicker period={period} setRange={setRange} range={range} />
                         </div>
                     </motion.div>

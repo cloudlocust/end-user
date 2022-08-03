@@ -48,27 +48,3 @@ export type analysisInformationType =
          */
         color: string
     }
-
-/**
- * Colors Array options param type.
- */
-type getColorsArrayOptsType =
-    // eslint-disable-next-line jsdoc/require-jsdoc
-    {
-        /**
-         * Indexes with different color than the default.
-         */
-        indexes: number[]
-        /**
-         * Colors of Indexes.
-         */
-        colorIndexes: string[]
-        /**
-         * Default color applied to all elements except elements in given indexes.
-         */
-        defaultColor: string
-    }
-/**
- * Get colors array for analysisChart values.
- */
-export type getColorsArrayType = (size, opts: getColorsArrayOptsType) => string[]
