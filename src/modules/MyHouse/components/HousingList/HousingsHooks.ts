@@ -37,10 +37,9 @@ export const useHousingList = (sizeParam?: number) =>
 /**
  * Hook for Housings.
  *
- * @param apiEndpoint The base path of the apiEndpoint URL.
  * @returns UseHousings hook.
  */
-export const useHousingsDetails = (apiEndpoint: string) => {
+export const useHousingsDetails = () => {
     const [loadingRequest, setLoadingRequest] = useToggle(false)
     const { enqueueSnackbar } = useSnackbar()
     const { formatMessage } = useIntl()
@@ -54,7 +53,7 @@ export const useHousingsDetails = (apiEndpoint: string) => {
     const removeHousing = async (HousingId: number) => {
         setLoadingRequest(true)
         try {
-            await axios.delete<IHousing>(`${apiEndpoint}/${HousingId}`)
+            await axios.delete<IHousing>(`${HOUSING_API}/${HousingId}`)
             enqueueSnackbar(
                 formatMessage({
                     id: 'Le logement a été supprimé',

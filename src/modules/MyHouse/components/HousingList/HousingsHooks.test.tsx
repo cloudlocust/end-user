@@ -2,7 +2,6 @@ import { reduxedRenderHook } from 'src/common/react-platform-components/test'
 import { useHousingList, useHousingsDetails } from 'src/modules/MyHouse/components/HousingList/HousingsHooks'
 import { act } from '@testing-library/react-hooks'
 import { TEST_HOUSES } from 'src/mocks/handlers/houses'
-import { HOUSING_API } from 'src/modules/MyHouse/components/HousingList/HousingsHooks'
 import { IHousing } from 'src/modules/MyHouse/components/HousingList/housing.d'
 import { applyCamelCase } from 'src/common/react-platform-components/utils/mm'
 
@@ -56,7 +55,7 @@ describe('housingstHooks test', () => {
         test('when fail, housings should not be removed', async () => {
             const {
                 renderedHook: { result, waitForValueToChange },
-            } = reduxedRenderHook(() => useHousingsDetails(HOUSING_API), { initialState: {} })
+            } = reduxedRenderHook(() => useHousingsDetails(), { initialState: {} })
 
             expect(result.current.loadingRequest).toBe(false)
             const fakeId = 'fakeId'
@@ -80,7 +79,7 @@ describe('housingstHooks test', () => {
         test('when success, comments should be removed', async () => {
             const {
                 renderedHook: { result, waitForValueToChange },
-            } = reduxedRenderHook(() => useHousingsDetails(HOUSING_API), { initialState: {} })
+            } = reduxedRenderHook(() => useHousingsDetails(), { initialState: {} })
 
             expect(result.current.loadingRequest).toBe(false)
             act(() => {

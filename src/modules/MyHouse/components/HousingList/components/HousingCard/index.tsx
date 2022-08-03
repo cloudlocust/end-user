@@ -16,7 +16,6 @@ import Box from '@mui/material/Box'
 import { IHousing } from 'src/modules/MyHouse/components/HousingList/housing.d'
 import { useHousingsDetails } from 'src/modules/MyHouse/components/HousingList/HousingsHooks'
 import { URL_MY_HOUSE } from 'src/modules/MyHouse/MyHouseConfig'
-import { HOUSING_API } from 'src/modules/MyHouse/components/HousingList/HousingsHooks'
 
 /**
  * This is a card for the display of a logement item.
@@ -40,7 +39,7 @@ const HousingCard = ({
     const [raisedState, setRaisedState] = React.useState(false)
 
     const [modalOpen, setModalOpen] = React.useState(false)
-    const { removeHousing } = useHousingsDetails(HOUSING_API)
+    const { removeHousing } = useHousingsDetails()
 
     const MY_HOUSING_AT = formatMessage({
         id: 'Mon Logement à ',
@@ -121,9 +120,25 @@ const HousingCard = ({
             <Modal open={modalOpen} onClose={handleCloseModal}>
                 <Box sx={style} className="flex-col w-2/3 h-2/4 sm:w-1/3 sm:h-2/4">
                     <div className="flex flex-col justify-center align-center text-white text-center text-sm font-medium my-20">
-                        <p className="mb-5">Vous êtes sur le point de supprimer votre logement.</p>
-                        <p className="mb-5">Attention, toutes les données relatives à ce logement seront supprimées.</p>
-                        <p className="mb-5">Êtes-vous sûr de vouloir continuer ?</p>
+                        <p className="mb-5">
+                            {formatMessage({
+                                id: 'Vous êtes sur le point de supprimer votre logement.',
+                                defaultMessage: 'Vous êtes sur le point de supprimer votre logement.',
+                            })}
+                        </p>
+                        <p className="mb-5">
+                            {formatMessage({
+                                id: 'Attention, toutes les données relatives à ce logement seront supprimées.',
+                                defaultMessage:
+                                    'Attention, toutes les données relatives à ce logement seront supprimées.',
+                            })}
+                        </p>
+                        <p className="mb-5">
+                            {formatMessage({
+                                id: 'Êtes-vous sûr de vouloir continuer ?',
+                                defaultMessage: 'Êtes-vous sûr de vouloir continuer ?',
+                            })}
+                        </p>
                     </div>
                     <div className="flex items-center content-center">
                         <Button variant="outlined" className="text-white m-12 border-white" onClick={handleCloseModal}>
