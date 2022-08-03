@@ -3,14 +3,15 @@ import ReactApexChart from 'react-apexcharts'
 import { useTheme } from '@mui/material/styles'
 import useMediaQuery from '@mui/material/useMediaQuery'
 import './AnalysisChart.scss'
-import { IMetric, metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
-import { getDataFromYAxis } from 'src/modules/MyConsumption/components/Widget/WidgetFunctions'
+import { IMetric } from 'src/modules/Metrics/Metrics.d'
 import convert from 'convert-units'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import {
     getAnalysisApexChartProps,
     showAnalysisChartTooltipOnValueSelected,
 } from 'src/modules/Analysis/utils/analysisApexChartsProps'
+import { convertMetricsDataToApexChartsAxisValues } from 'src/modules/MyConsumption/utils/apexChartsDataConverter'
+import { ApexChartsAxisValuesType } from 'src/modules/MyConsumption/myConsumptionTypes'
 
 const analysisChartClassname = 'apexcharts-inner apexcharts-graphical'
 
@@ -37,8 +38,11 @@ const AnalysisChart = ({
     const analysisChartContainerRef = useRef<HTMLDivElement>(null)
     const analysisChartCircleContentRef = useRef<HTMLDivElement>(null)
 
-    // Getting consumption values from data.
-    let values: ApexNonAxisChartSeries = data.length ? getDataFromYAxis(data, metricTargetsEnum.consumption) : []
+    // Represents the consumption values in yAxisSeries, and their timestamp in xAxisSeries
+    let { yAxisSeries, xAxisSeries }: ApexChartsAxisValuesType = convertMetricsDataToApexChartsAxisValues(data)
+    let [values, timeStampValues] = data.length
+        ? [yAxisSeries[0].data as ApexNonAxisChartSeries, xAxisSeries[0]]
+        : [[], []]
 
     useEffect(() => {
         // This UseEffect is used to do some styling, in order to dynamically style the CircleContent in the middle of the analysisChart.
@@ -69,7 +73,7 @@ const AnalysisChart = ({
     // We convert Wh to kWh as analysisChart shows kWh tooltip values.
     values = values.map((val) => convert(val).from('Wh').to('kWh'))
 
-    const analysisApexChartProps = getAnalysisApexChartProps(values, theme)
+    const analysisApexChartProps = getAnalysisApexChartProps(values, timeStampValues, theme)
 
     if (isMobile) {
         analysisApexChartProps.options.chart!.events = {
@@ -79,7 +83,7 @@ const AnalysisChart = ({
              * @param e Event of selected value.
              */
             dataPointSelection(e) {
-                showAnalysisChartTooltipOnValueSelected(e, values, theme)
+                showAnalysisChartTooltipOnValueSelected(e, values, timeStampValues, theme)
             },
         }
     }
