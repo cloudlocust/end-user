@@ -59,12 +59,15 @@ export const addAnalysisChartSelectedValueStroke = (
             valueElement.style.filter = index === indexSelectedValue ? 'contrast(150%)' : 'none'
             // This removes previous stroke
             valueElement.style.stroke = index === indexSelectedValue ? strokeColorSelectedValue : defaultStrokeColor
-            // This Condition helps to show the stroke of the selected value, because analysisChart value elements are put that each one hide the stroke of its previous sibling, and by doing this we can show the stroke of selected value in a better way.
-            valueElement.style.strokeOpacity =
-                // When the selected value is the first element it, its stroke will be hidden by its previous and next sibling, thus we put its previous and next sibling strokeOpacity to '0'
-                (indexSelectedValue === 0 && (index + 1) % size === 0) || index === (indexSelectedValue + 1) % size
-                    ? '0'
-                    : '1'
+            // This Condition helps to show the stroke of the selected value, because analysisChart value elements are put that each one hide the stroke of its previous sibling, only for the last element, and by doing this we can show the stroke of selected value in a better way.
+            if (indexSelectedValue !== size - 1)
+                valueElement.style.strokeOpacity =
+                    // When the selected value is at index 0, its stroke will be hidden by its previous and next sibling, thus we put its previous and next sibling strokeOpacity to '0'
+                    (indexSelectedValue === 0 && index === size - 1) ||
+                    // When the selected value is not at index 0, its stroke will be hidden by its next sibling, thus we we put its next sibling strokeOpacity to '0'
+                    index === indexSelectedValue + 1
+                        ? '0'
+                        : '1'
         })
 }
 
