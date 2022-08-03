@@ -31,12 +31,14 @@ jest.mock(
         mockIsMobile,
 )
 const mockValueSelected = getDataFromYAxis(mockData, metricTargetsEnum.consumption)[0]
+const mockValueHovered = getDataFromYAxis(mockData, metricTargetsEnum.consumption)[2]
 const mockTimeStampValueSelected = mockData[0].datapoints[0][1]
+const mockTimeStampValueHovered = mockData[0].datapoints[2][1]
 const tooltipContainerClassname = 'tooltipContainer'
 const analysisChartValueClasslist = ['element-0', 'apexcharts-polararea-slice-0']
 const mockTheme = createTheme()
 
-const mockEventNotSelected = {
+const mockEventSelected = {
     offsetX: 140,
     offsetY: 140,
     target: {
@@ -44,21 +46,6 @@ const mockEventNotSelected = {
         instance: {},
     },
 }
-
-const mockEventSelected = {
-    ...mockEventNotSelected,
-    target: {
-        ...mockEventNotSelected.target,
-        instance: {
-            // Represent the styling when Chart Value is selected (When hover a valueElement background got grey, because of filter css property).
-            filterer: {
-                background: 'grey',
-            },
-        },
-    },
-}
-
-let mockEvent: typeof mockEventSelected | typeof mockEventNotSelected = mockEventSelected
 
 // AnalysisChart component cannot render if we don't mock react-apexcharts
 jest.mock(
@@ -74,13 +61,35 @@ jest.mock(
             >
                 <div className="analysisChartValuesContainer">
                     <div
+                        style={{}}
                         className={analysisChartValueClasslist.join(' ')}
                         onClick={() => {
                             // When clicking calling the dataPointSelection given, to be tested.
-                            props.options.chart!.events!.dataPointSelection(mockEvent, {}, { dataPointIndex: 0 })
+                            props.options.chart!.events!.dataPointSelection(
+                                mockEventSelected,
+                                {},
+                                { dataPointIndex: 0 },
+                            )
                         }}
                     >
                         {mockValueSelected}
+                    </div>
+                    <div style={{}} className="apexcharts-polararea-slice-1">
+                        {1}
+                    </div>
+                    <div
+                        style={{}}
+                        className="apexcharts-polararea-slice-2"
+                        onMouseEnter={() => {
+                            // When clicking calling the dataPointSelection given, to be tested.
+                            props.options.chart!.events!.dataPointMouseEnter(
+                                mockEventSelected,
+                                {},
+                                { dataPointIndex: 2 },
+                            )
+                        }}
+                    >
+                        {2}
                     </div>
                 </div>
                 <div className="tooltipContainer apexcharts-tooltip"></div>
@@ -175,6 +184,7 @@ describe('AnalysisChart test', () => {
             }
         })
         mockAnalysisChartProps.data = mockData
+        mockAnalysisChartProps.data[0].datapoints = mockAnalysisChartProps.data[0].datapoints.slice(0, 3)
         const { container, getByText } = reduxedRender(
             <Router>
                 <AnalysisChart {...mockAnalysisChartProps} />
@@ -182,7 +192,6 @@ describe('AnalysisChart test', () => {
         )
 
         const tooltipContainerElement = container.getElementsByClassName(tooltipContainerClassname)[0] as HTMLDivElement
-
         // When selecting a value tooltip should be shown.
         userEvent.click(getByText(mockValueSelected))
         await waitFor(() => {
@@ -202,14 +211,25 @@ describe('AnalysisChart test', () => {
         )
         expect(tooltipContainerElement.style.display).toBe('flex')
         expect(tooltipContainerElement.classList.contains(activeClassname)).toBeTruthy()
+        // Stroke color should change in the valueSelected.
+        expect(getByText(mockValueSelected).style.stroke).toBe(mockTheme.palette.primary.light)
 
-        // When deselecting a value tooltip should be hidden
-        mockEvent = mockEventNotSelected
-        userEvent.click(getByText(mockValueSelected))
+        // When hover a value tooltip should be shown.
+        userEvent.hover(getByText(2))
         await waitFor(() => {
-            expect(tooltipContainerElement.firstElementChild! as HTMLDivElement).not.toBeInTheDocument()
+            expect(tooltipContainerElement.firstElementChild! as HTMLDivElement).toBeInTheDocument()
         })
-        expect(tooltipContainerElement.style.display).toBe('none')
-        expect(tooltipContainerElement.innerHTML).toBe('')
+        expect(tooltipContainerElement.innerHTML).toBe(
+            renderToString(
+                <AnalysisChartTooltip
+                    valueIndex={0}
+                    values={[convert(mockValueHovered).from('Wh').to('kWh')]}
+                    timestampValues={[mockTimeStampValueHovered]}
+                    theme={mockTheme}
+                />,
+            ),
+        )
+        // Stroke color should change in the valueSelected.
+        expect(getByText(2).style.stroke).toBe(mockTheme.palette.primary.light)
     }, 20000)
 })
