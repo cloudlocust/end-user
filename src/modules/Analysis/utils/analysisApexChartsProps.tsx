@@ -11,42 +11,62 @@ import { getColorsArrayType } from 'src/modules/Analysis/analysisTypes.d'
  * @param e Selection Event of selected value.
  * @param values Represents values shown in the chart.
  * @param timestampValues Timestamps of the values.
+ * @param valueIndex Index of selected value.
  * @param theme Current Theme so that we set tooltip color related to the theme.
  */
 export const showAnalysisChartTooltipOnValueSelected = (
     e: any,
     values: ApexNonAxisChartSeries,
     timestampValues: ApexNonAxisChartSeries,
+    valueIndex: number,
     theme: Theme,
 ) => {
     const tooltipContainerElement = document.getElementsByClassName('apexcharts-tooltip')[0] as HTMLDivElement
-    // Serie Element will have ClassList[1] as follow apexcharts-polararea-slice-18
-    const valueIndex = Number(e.target.classList[1].split('-').slice(-1))
-    // If the element is selected
-    if (e.target.instance.filterer) {
-        // Positioning the tooltip close to the click
-        tooltipContainerElement.style!.left = `${e.offsetX - 40}px`
-        tooltipContainerElement.style!.top = `${e.offsetY - 40}px`
-        // Rendering the tooltip text
-        tooltipContainerElement.innerHTML = renderToString(
-            <AnalysisChartTooltip
-                valueIndex={valueIndex}
-                values={values}
-                timestampValues={timestampValues}
-                theme={theme}
-            />,
-        )
-        // Displaying the tooltip
-        tooltipContainerElement.classList.add('apexcharts-active')
-        tooltipContainerElement.style.display = 'flex'
-    }
-    // If the element is deselected
-    else {
-        // Hide tooltip
-        tooltipContainerElement.style.display = 'none'
-        // Remove tooltip text is needed because we can have a behaviour where we store not related tooltip text
-        tooltipContainerElement.innerHTML = ''
-    }
+    tooltipContainerElement.style!.left = `${e.offsetX - 40}px`
+    tooltipContainerElement.style!.top = `${e.offsetY - 40}px`
+    // Rendering the tooltip text
+    tooltipContainerElement.innerHTML = renderToString(
+        <AnalysisChartTooltip
+            valueIndex={valueIndex}
+            values={values}
+            timestampValues={timestampValues}
+            theme={theme}
+        />,
+    )
+    // Displaying the tooltip
+    tooltipContainerElement.classList.add('apexcharts-active')
+    tooltipContainerElement.style.display = 'flex'
+}
+
+/**
+ * Applying a stroke color to the selected element in analysisChart, as we deals with SVG elements, When you select an element it'll apply a stroke color and remove it when you select an other element.
+ *
+ * @param indexSelectedValue Index of selected value.
+ * @param strokeColorSelectedValue Selected Value Stroke color applied.
+ * @param defaultStrokeColor Default color applied as default stroke.
+ * @param size Size of values so that we apply a color stroke when selecting a datapoint and apply default color to all other datapoint.
+ */
+export const addAnalysisChartSelectedValueStroke = (
+    indexSelectedValue: number,
+    strokeColorSelectedValue: string,
+    defaultStrokeColor: string,
+    size: number,
+) => {
+    Array(size)
+        .fill(0)
+        .forEach((zeroValue, index) => {
+            const valueElement = document.getElementsByClassName(`apexcharts-polararea-slice-${index}`)[0] as SVGElement
+            // This removes previous filter for making the stroke color better
+            valueElement.style.filter = index === indexSelectedValue ? 'contrast(150%)' : 'none'
+            // This removes previous stroke
+            valueElement.style.stroke = index === indexSelectedValue ? strokeColorSelectedValue : defaultStrokeColor
+            // This Condition helps to show the stroke of the selected value, because analysisChart value elements are put that each one hide the stroke of its previous sibling, and by doing this we can show the stroke of selected value in a better way.
+            valueElement.style.strokeOpacity =
+                // When the selected value is the first element it, its stroke will be hidden by its previous and next sibling, thus we put its previous and next sibling strokeOpacity to '0'
+                (indexSelectedValue === 0 && (index + 1) % size === 0) || index === (indexSelectedValue + 1) % size
+                    ? '0'
+                    : '1'
+        })
 }
 
 /**
@@ -159,7 +179,7 @@ export const getAnalysisApexChartProps = (
     }
 
     // Fill the min and max values with their corresponding colors colors
-    let minIndex = values.indexOf(Math.min(...values))
+    let minIndex = values.indexOf(Math.min(...values.filter((val) => val !== 0)))
     let maxIndex = values.indexOf(Math.max(...values))
     optionsAnalysisApexCharts.fill!.opacity = getFillOpacityArray(values.length, 0.7, [minIndex, maxIndex])
     optionsAnalysisApexCharts.colors = getColorsArray(values.length, {

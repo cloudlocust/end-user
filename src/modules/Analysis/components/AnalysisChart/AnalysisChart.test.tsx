@@ -76,7 +76,8 @@ jest.mock(
                     <div
                         className={analysisChartValueClasslist.join(' ')}
                         onClick={() => {
-                            props.options.chart!.events!.dataPointSelection(mockEvent)
+                            // When clicking calling the dataPointSelection given, to be tested.
+                            props.options.chart!.events!.dataPointSelection(mockEvent, {}, { dataPointIndex: 0 })
                         }}
                     >
                         {mockValueSelected}
@@ -157,8 +158,7 @@ describe('AnalysisChart test', () => {
         expect(getByText(NO_DATA_TEXT)).toBeTruthy()
     })
 
-    test('When mobile and selecting analysisChart Element tooltip should be shown', async () => {
-        mockIsMobile = true
+    test('When selecting analysisChart Element tooltip should be shown, and stroke color should change', async () => {
         const styleDirection = '100px'
         const activeClassname = 'apexcharts-active'
         Element.prototype.getBoundingClientRect = jest.fn(() => {
@@ -175,15 +175,13 @@ describe('AnalysisChart test', () => {
             }
         })
         mockAnalysisChartProps.data = mockData
-        const { container: containerMobile, getByText } = reduxedRender(
+        const { container, getByText } = reduxedRender(
             <Router>
                 <AnalysisChart {...mockAnalysisChartProps} />
             </Router>,
         )
 
-        const tooltipContainerElement = containerMobile.getElementsByClassName(
-            tooltipContainerClassname,
-        )[0] as HTMLDivElement
+        const tooltipContainerElement = container.getElementsByClassName(tooltipContainerClassname)[0] as HTMLDivElement
 
         // When selecting a value tooltip should be shown.
         userEvent.click(getByText(mockValueSelected))
