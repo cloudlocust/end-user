@@ -58,6 +58,9 @@ export const defaultAnalysisApexChartsOptions: (theme: Theme) => Props['options'
     chart: {
         height: '100%',
         width: '100%',
+        animations: {
+            enabled: true,
+        },
     },
     legend: {
         show: false,
@@ -124,7 +127,7 @@ export const getAnalysisApexChartProps = (
     }
 
     // Fill the min and max values with their corresponding colors colors
-    let minDayConsumptionIndex = values.indexOf(Math.min(...values))
+    let minDayConsumptionIndex = values.indexOf(Math.min(...values.filter((value) => value !== 0)))
     let maxDayConsumptionIndex = values.indexOf(Math.max(...values))
     optionsAnalysisApexCharts.fill!.opacity = Array(values.length).fill(0.7)
     optionsAnalysisApexCharts.fill!.opacity[minDayConsumptionIndex] = 1
@@ -138,6 +141,7 @@ export const getAnalysisApexChartProps = (
         options: optionsAnalysisApexCharts,
         // normalize values to [200, 150], to improve polarArea chart and show all values from min to max.
         // Values taken of min: 150, max: 200, makes the bars big enough for the lowest value, while being able to show the CircleContent inside the chart.
+        // For consumption values of 0, it shouldn't be normalized as min, their charts should be only small enough to be selected.
         series: normalizeValues(values, 150, 200),
     }
 }
