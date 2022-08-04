@@ -21,8 +21,18 @@ export const showAnalysisChartTooltipOnValueSelected = (
     theme: Theme,
 ) => {
     const tooltipContainerElement = document.getElementsByClassName('apexcharts-tooltip')[0] as HTMLDivElement
-    tooltipContainerElement.style!.left = `${e.offsetX - 40}px`
-    tooltipContainerElement.style!.top = `${e.offsetY - 40}px`
+    const analysisChartContainer = document.getElementsByClassName('apexcharts-canvas')[0] as HTMLDivElement
+    let leftPositionTooltip = e.offsetX - 40
+    // Check if tooltip will be overflowing on Left of analysisChart, then tooltip will start at the position of click
+    if (leftPositionTooltip <= analysisChartContainer.getBoundingClientRect().left) leftPositionTooltip = e.offsetX
+    // Check if tooltip will be overflowing on Right of analysisChart, then tooltip will end at the position of click
+    else if (
+        e.offsetX + tooltipContainerElement.getBoundingClientRect().width >=
+        analysisChartContainer.getBoundingClientRect().right
+    )
+        leftPositionTooltip = e.offsetX - tooltipContainerElement.getBoundingClientRect().width
+    tooltipContainerElement.style.left = `${leftPositionTooltip}px`
+    tooltipContainerElement.style.top = `${e.offsetY - 40}px`
     // Rendering the tooltip text
     tooltipContainerElement.innerHTML = renderToString(
         <AnalysisChartTooltip

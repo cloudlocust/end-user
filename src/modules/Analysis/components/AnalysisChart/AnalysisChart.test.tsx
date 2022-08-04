@@ -38,7 +38,7 @@ const tooltipContainerClassname = 'tooltipContainer'
 const analysisChartValueClasslist = ['element-0', 'apexcharts-polararea-slice-0']
 const mockTheme = createTheme()
 
-const mockEventSelected = {
+let mockEventSelected = {
     offsetX: 140,
     offsetY: 140,
     target: {
@@ -59,40 +59,42 @@ jest.mock(
                 className={analysisChartClassname}
                 {...props}
             >
-                <div className="analysisChartValuesContainer">
-                    <div
-                        style={{}}
-                        className={analysisChartValueClasslist.join(' ')}
-                        onClick={() => {
-                            // When clicking calling the dataPointSelection given, to be tested.
-                            props.options.chart!.events!.dataPointSelection(
-                                mockEventSelected,
-                                {},
-                                { dataPointIndex: 0 },
-                            )
-                        }}
-                    >
-                        {mockValueSelected}
+                <div className="apexcharts-canvas">
+                    <div className="analysisChartValuesContainer">
+                        <div
+                            style={{}}
+                            className={analysisChartValueClasslist.join(' ')}
+                            onClick={() => {
+                                // When clicking calling the dataPointSelection given, to be tested.
+                                props.options.chart!.events!.dataPointSelection(
+                                    mockEventSelected,
+                                    {},
+                                    { dataPointIndex: 0 },
+                                )
+                            }}
+                        >
+                            {mockValueSelected}
+                        </div>
+                        <div style={{}} className="apexcharts-polararea-slice-1">
+                            {1}
+                        </div>
+                        <div
+                            style={{}}
+                            className="apexcharts-polararea-slice-2"
+                            onMouseEnter={() => {
+                                // When clicking calling the dataPointSelection given, to be tested.
+                                props.options.chart!.events!.dataPointMouseEnter(
+                                    mockEventSelected,
+                                    {},
+                                    { dataPointIndex: 2 },
+                                )
+                            }}
+                        >
+                            {2}
+                        </div>
                     </div>
-                    <div style={{}} className="apexcharts-polararea-slice-1">
-                        {1}
-                    </div>
-                    <div
-                        style={{}}
-                        className="apexcharts-polararea-slice-2"
-                        onMouseEnter={() => {
-                            // When clicking calling the dataPointSelection given, to be tested.
-                            props.options.chart!.events!.dataPointMouseEnter(
-                                mockEventSelected,
-                                {},
-                                { dataPointIndex: 2 },
-                            )
-                        }}
-                    >
-                        {2}
-                    </div>
+                    <div className="tooltipContainer apexcharts-tooltip"></div>
                 </div>
-                <div className="tooltipContainer apexcharts-tooltip"></div>
             </div>
         )
     },
@@ -168,7 +170,9 @@ describe('AnalysisChart test', () => {
     })
 
     test('When selecting analysisChart Element tooltip should be shown, and stroke color should change', async () => {
-        const styleDirection = '100px'
+        // Testing overflowing tooltip on left of analysisChart
+        let styleDirectionLeft = '20px'
+        const styleDirectionTop = '100px'
         const activeClassname = 'apexcharts-active'
         Element.prototype.getBoundingClientRect = jest.fn(() => {
             return {
@@ -197,8 +201,8 @@ describe('AnalysisChart test', () => {
         await waitFor(() => {
             expect(tooltipContainerElement.firstElementChild! as HTMLDivElement).toBeInTheDocument()
         })
-        expect(tooltipContainerElement.style.top).toBe(styleDirection)
-        expect(tooltipContainerElement.style.left).toBe(styleDirection)
+        expect(tooltipContainerElement.style.top).toBe(styleDirectionTop)
+        expect(tooltipContainerElement.style.left).toBe(styleDirectionLeft)
         expect(tooltipContainerElement.innerHTML).toBe(
             renderToString(
                 <AnalysisChartTooltip
@@ -214,11 +218,19 @@ describe('AnalysisChart test', () => {
         // Stroke color should change in the valueSelected.
         expect(getByText(mockValueSelected).style.stroke).toBe(mockTheme.palette.primary.light)
 
+        // Testing overflowing tooltip on right of analysisChart
+        mockEventSelected = {
+            ...mockEventSelected,
+            offsetX: 0,
+        }
+        styleDirectionLeft = '0px'
         // When hover a value tooltip should be shown.
         userEvent.hover(getByText(2))
         await waitFor(() => {
             expect(tooltipContainerElement.firstElementChild! as HTMLDivElement).toBeInTheDocument()
         })
+        // expect(tooltipContainerElement.style.top).toBe(styleDirectionTop)
+        // expect(tooltipContainerElement.style.left).toBe(styleDirectionLeft)
         expect(tooltipContainerElement.innerHTML).toBe(
             renderToString(
                 <AnalysisChartTooltip
