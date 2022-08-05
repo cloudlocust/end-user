@@ -99,20 +99,34 @@ const AnalysisInformationList = ({
 
     return (
         <div className="w-full flex flex-col md:items-center">
-            {analysisInformationList.map(({ computationFunction, iconPath, title, color, name }) => {
+            {analysisInformationList.map(({ computationFunction, iconPath, title, color, name }, index) => {
                 const { unit, value, timestamp } = computationFunction(ApexChartsAxisValues)
                 return (
-                    <div className="flex flex-row mb-16">
+                    <div
+                        className="flex flex-row mb-16"
+                        style={{
+                            // If its active information name, then we put it on top, otherwise we just give index + 2, so that when we have another active information there won't be two 1's which can lead one information at index 1 can be on top of the activeInformation as they have the same order of 1, always 2 3 4 5 ...etc, or 1 2 3 4 5 ...etc.
+                            order: activeInformationName && activeInformationName === name ? 1 : index + 2,
+                        }}
+                    >
                         {/* Analysis Information Icon */}
                         <Avatar
                             style={{
                                 backgroundColor: color.startsWith('palette') ? get(theme, color) : color,
-                                // Adding the same styling when selecting an element in analysisChart with filter(150%) and border primary.light.
-                                border:
-                                    activeInformationName === name ? `3px solid ${theme.palette.primary.light}` : '',
-                                filter: activeInformationName === name ? 'contrast(150%)' : 'none',
                                 width: 64,
                                 height: 64,
+                                // Adding the same styling when selecting an element in analysisChart with filter(150%) and border primary.light.
+                                /**
+                                 * Border of information, if its active it'll have a borderColor theme.primary.light to highlight it, otherwise the border color is not different and based on the background color.
+                                 *
+                                 * @returns Border color.
+                                 */
+                                get border() {
+                                    if (activeInformationName === name)
+                                        return `3px solid ${theme.palette.primary.light}`
+                                    return `3px solid ${this.backgroundColor}`
+                                },
+                                filter: activeInformationName === name ? 'contrast(150%)' : 'none',
                             }}
                         >
                             <img src={iconPath} alt={title} />

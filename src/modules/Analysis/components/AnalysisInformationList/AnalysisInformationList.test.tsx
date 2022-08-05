@@ -41,6 +41,10 @@ describe('AnalysisInformationList test', () => {
         expect(getByText(MIN_CONSUMPTION_DAY_INFORMATION_TEXT, { exact: false })).toBeTruthy()
         expect(getByText(MEAN_CONSUMPTION_INFORMATION_TEXT, { exact: false })).toBeTruthy()
         expect(container.getElementsByClassName(informationAvatarClassname)[0] as HTMLDivElement).toBeTruthy()
+        expect(
+            (container.getElementsByClassName(informationAvatarClassname)[0].parentElement as HTMLDivElement).style
+                .order,
+        ).toBe('1')
         expect((container.getElementsByClassName(informationAvatarClassname)[0] as HTMLDivElement).style.border).toBe(
             `3px solid ${mockTheme.palette.primary.light}`,
         )
@@ -51,16 +55,18 @@ describe('AnalysisInformationList test', () => {
         // Min and Max have 20 Wh
         expect(getAllByText('20 Wh')).toHaveLength(2)
         expect(getAllByText('Saturday 01')).toHaveLength(2)
-
-        // When no activeInformation is given then no border styling on the information avatar
-        const { container: containerEl } = reduxedRender(
-            <AnalysisInformationList {...mockAnalysisInformationListProps} />,
+    })
+    test('When no activeInformation is given then no border styling on the information avatar', async () => {
+        const { container } = reduxedRender(
+            <AnalysisInformationList {...mockAnalysisInformationListProps} activeInformationName={'meanConsumption'} />,
         )
+        // When no activeInformation is given then no border styling on the information avatar
         Array.from(
-            containerEl.getElementsByClassName(informationAvatarClassname) as HTMLCollectionOf<HTMLDivElement>,
-        ).forEach((informationElement) => {
-            expect(informationElement.style.border).toBe('')
+            container.getElementsByClassName(informationAvatarClassname) as HTMLCollectionOf<HTMLDivElement>,
+        ).forEach((informationElement, index) => {
+            expect(informationElement.style.border).toBe(`3px solid ${mockTheme.palette.primary.main}`)
             expect(informationElement.style.filter).toBe('none')
+            expect((informationElement.parentElement as HTMLDivElement).style.order).toBe(`${index + 2}`)
         })
     })
     test('when data is empty, no data available should be shown', async () => {

@@ -22,7 +22,7 @@ const analysisChartClassname = 'apexcharts-inner apexcharts-graphical'
  * @param props N/A.
  * @param props.data Data received from backend of format IMetric[].
  * @param props.children Represent the content put inside the circle center of AnalysisChart.
- * @param props.getSelectedValueElementColor Indicate the color of the selectedValueElement so that we can match it to its .
+ * @param props.getSelectedValueElementColor Indicate the color of the selectedValueElement so that we can match the color with the information (minConsumptionDay, maxConsumptionDay, meanConsumption).
  * @returns AnalysisChart.
  */
 const AnalysisChart = ({
@@ -97,8 +97,8 @@ const AnalysisChart = ({
                 theme.palette.background.default,
             )
             // configs.w.config.colors, represent the analysisChart options.colors that will have colors for all element in the analysishart.
-            // Including the minConsumptionDay which have color of theme.primary.light
-            // maxConsumptionDay which have color of theme.primary.dark
+            // Including the minConsumptionDay in options.color will have theme.primary.light
+            // maxConsumptionDay have theme.primary.dark
             getSelectedValueElementColor(configs.w.config.colors[indexSelectedValue])
         },
         /**
