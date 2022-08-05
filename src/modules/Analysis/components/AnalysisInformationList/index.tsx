@@ -6,13 +6,12 @@ import {
     computeMeanConsumption,
     computeMinConsumption,
 } from 'src/modules/Analysis/utils/computationFunctions'
-import { analysisInformationType } from 'src/modules/Analysis/analysisTypes.d'
+import { analysisInformationName, analysisInformationType } from 'src/modules/Analysis/analysisTypes.d'
 import { convertMetricsDataToApexChartsAxisValues } from 'src/modules/MyConsumption/utils/apexChartsDataConverter'
 import { ApexChartsAxisValuesType } from 'src/modules/MyConsumption/myConsumptionTypes'
 import { fillApexChartsAxisMissingValues } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import Avatar from '@mui/material/Avatar'
-
 import dayjs from 'dayjs'
 import { get } from 'lodash'
 /**
@@ -24,6 +23,7 @@ import { get } from 'lodash'
 const analysisInformationList: analysisInformationType[] = [
     {
         title: 'Conso moyenne par jour',
+        name: 'meanConsumption',
         iconPath: '/assets/images/content/analysis/meanConsumption.svg',
         color: 'palette.primary.main',
         computationFunction:
@@ -37,6 +37,7 @@ const analysisInformationList: analysisInformationType[] = [
     },
     {
         title: 'Jour de Conso maximale',
+        name: 'maxConsumptionDay',
         color: 'palette.primary.dark',
         iconPath: '/assets/images/content/analysis/maxConsumption.svg',
         computationFunction:
@@ -45,6 +46,7 @@ const analysisInformationList: analysisInformationType[] = [
     },
     {
         title: 'Jour de Conso minimale',
+        name: 'minConsumptionDay',
         color: 'palette.primary.light',
         iconPath: '/assets/images/content/analysis/minConsumption.svg',
         computationFunction:
@@ -59,11 +61,13 @@ const analysisInformationList: analysisInformationType[] = [
  * @param props N/A.
  * @param props.data Metrics data passed as props from parent.
  * @param props.range Range from metricHooks, needed to fill missing values for timestamps.
+ * @param props.activeInformationName Represent the active information that is retrieved from analysisChart.
  * @returns Analysis Information List component.
  */
 const AnalysisInformationList = ({
     data,
     range,
+    activeInformationName,
 }: // eslint-disable-next-line jsdoc/require-jsdoc
 {
     /**
@@ -74,6 +78,8 @@ const AnalysisInformationList = ({
      * Range from metricHooks, needed to fill missing values for timestamps.
      */
     range: metricRangeType
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    activeInformationName?: analysisInformationName
 }) => {
     const theme = useTheme()
 
@@ -93,7 +99,7 @@ const AnalysisInformationList = ({
 
     return (
         <div className="w-full flex flex-col md:items-center">
-            {analysisInformationList.map(({ computationFunction, iconPath, title, color }) => {
+            {analysisInformationList.map(({ computationFunction, iconPath, title, color, name }) => {
                 const { unit, value, timestamp } = computationFunction(ApexChartsAxisValues)
                 return (
                     <div className="flex flex-row mb-16">
@@ -101,6 +107,10 @@ const AnalysisInformationList = ({
                         <Avatar
                             style={{
                                 backgroundColor: color.startsWith('palette') ? get(theme, color) : color,
+                                // Adding the same styling when selecting an element in analysisChart with filter(150%) and border primary.light.
+                                border:
+                                    activeInformationName === name ? `3px solid ${theme.palette.primary.light}` : '',
+                                filter: activeInformationName === name ? 'contrast(150%)' : 'none',
                                 width: 64,
                                 height: 64,
                             }}

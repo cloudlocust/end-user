@@ -17,9 +17,11 @@ const analysisChartContainerClassname = 'analysisChartContainer'
 const analysisChartClassname = 'apexcharts-inner apexcharts-graphical'
 const heightAnalaysisChartMobile = 360
 const heightAnalaysisChartDesktop = 520
+const mockGetSelectedValueElementColor = jest.fn()
 const mockAnalysisChartProps = {
     data: mockData,
     children: <></>,
+    getSelectedValueElementColor: mockGetSelectedValueElementColor,
 }
 
 let mockIsMobile = true
@@ -37,7 +39,6 @@ const mockTimeStampValueHovered = mockData[0].datapoints[2][1]
 const tooltipContainerClassname = 'tooltipContainer'
 const analysisChartValueClasslist = ['element-0', 'apexcharts-polararea-slice-0']
 const mockTheme = createTheme()
-
 let mockEventSelected = {
     offsetX: 140,
     offsetY: 140,
@@ -70,7 +71,7 @@ jest.mock(
                                     props.options.chart!.events!.dataPointSelection(
                                         mockEventSelected,
                                         {},
-                                        { dataPointIndex: 0 },
+                                        { dataPointIndex: 0, w: { config: { colors: ['', '', ''] } } },
                                     )
                                 }}
                             >
@@ -91,7 +92,7 @@ jest.mock(
                                     props.options.chart!.events!.dataPointMouseEnter(
                                         mockEventSelected,
                                         {},
-                                        { dataPointIndex: 2 },
+                                        { dataPointIndex: 2, w: { config: { colors: ['', '', ''] } } },
                                     )
                                 }}
                             >
@@ -223,7 +224,6 @@ describe('AnalysisChart test', () => {
         expect(tooltipContainerElement.classList.contains(activeClassname)).toBeTruthy()
         // Stroke color should change in the valueSelected.
         expect(getByText(mockValueSelected).style.stroke).toBe(mockTheme.palette.primary.light)
-
         // Testing overflowing tooltip on right of analysisChart
         mockEventSelected = {
             ...mockEventSelected,
