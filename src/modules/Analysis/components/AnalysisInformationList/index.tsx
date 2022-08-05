@@ -106,7 +106,7 @@ const AnalysisInformationList = ({
                         className="flex flex-row mb-16"
                         style={{
                             // If its active information name, then we put it on top, otherwise we just give index + 2, so that when we have another active information there won't be two 1's which can lead one information at index 1 can be on top of the activeInformation as they have the same order of 1, always 2 3 4 5 ...etc, or 1 2 3 4 5 ...etc.
-                            order: activeInformationName && activeInformationName === name ? 1 : index + 2,
+                            order: activeInformationName === name ? 1 : index + 2,
                         }}
                     >
                         {/* Analysis Information Icon */}

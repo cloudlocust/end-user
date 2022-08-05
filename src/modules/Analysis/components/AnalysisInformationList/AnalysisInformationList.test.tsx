@@ -57,14 +57,12 @@ describe('AnalysisInformationList test', () => {
         expect(getAllByText('Saturday 01')).toHaveLength(2)
     })
     test('When no activeInformation is given then no border styling on the information avatar', async () => {
-        const { container } = reduxedRender(
-            <AnalysisInformationList {...mockAnalysisInformationListProps} activeInformationName={'meanConsumption'} />,
-        )
+        const { container } = reduxedRender(<AnalysisInformationList {...mockAnalysisInformationListProps} />)
         // When no activeInformation is given then no border styling on the information avatar
         Array.from(
             container.getElementsByClassName(informationAvatarClassname) as HTMLCollectionOf<HTMLDivElement>,
         ).forEach((informationElement, index) => {
-            expect(informationElement.style.border).toBe(`3px solid ${mockTheme.palette.primary.main}`)
+            expect(informationElement.style.border.includes('3px solid')).toBeTruthy()
             expect(informationElement.style.filter).toBe('none')
             expect((informationElement.parentElement as HTMLDivElement).style.order).toBe(`${index + 2}`)
         })
