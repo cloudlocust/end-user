@@ -22,16 +22,21 @@ export const showAnalysisChartTooltipOnValueSelected = (
 ) => {
     const tooltipContainerElement = document.getElementsByClassName('apexcharts-tooltip')[0] as HTMLDivElement
     const analysisChartContainer = document.getElementsByClassName('apexcharts-canvas')[0] as HTMLDivElement
-    let leftPositionTooltip = e.offsetX - 40
-    // Check if tooltip will be overflowing on Left of analysisChart, then tooltip will start at the position of click
-    if (leftPositionTooltip <= analysisChartContainer.getBoundingClientRect().left) leftPositionTooltip = e.offsetX
+    // As default tooltip left position is 40px left the position of click
+    let tooltipXStartPosition = e.offsetX - 40
+    // Check if tooltip will be overflowing on Left of analysisChart
+    // Tooltip overflow on left of analysisChart when start position of tooltip is before the start position of analysisChartContainer (which is represented by getBoundingClientRect().left )
+    // If its true then tooltip will start its position where the click happened, as it'll have plenty space.
+    if (tooltipXStartPosition <= analysisChartContainer.getBoundingClientRect().left) tooltipXStartPosition = e.offsetX
     // Check if tooltip will be overflowing on Right of analysisChart, then tooltip will end at the position of click
+    // Tooltip overflow on right of analysisChart when right of tooltip (which is represented by the position of click + width of tooltip) is after the end position of analysisChartContainer (which is represented by getBoundingClientRect().right )
     else if (
         e.offsetX + tooltipContainerElement.getBoundingClientRect().width >=
         analysisChartContainer.getBoundingClientRect().right
     )
-        leftPositionTooltip = e.offsetX - tooltipContainerElement.getBoundingClientRect().width
-    tooltipContainerElement.style.left = `${leftPositionTooltip}px`
+        // If its true then tooltip will end its position where the click happened.
+        tooltipXStartPosition = e.offsetX - tooltipContainerElement.getBoundingClientRect().width
+    tooltipContainerElement.style.left = `${tooltipXStartPosition}px`
     tooltipContainerElement.style.top = `${e.offsetY - 40}px`
     // Rendering the tooltip text
     tooltipContainerElement.innerHTML = renderToString(
@@ -53,32 +58,29 @@ export const showAnalysisChartTooltipOnValueSelected = (
  * @param indexSelectedValue Index of selected value.
  * @param strokeColorSelectedValue Selected Value Stroke color applied.
  * @param defaultStrokeColor Default color applied as default stroke.
- * @param size Size of values so that we apply a color stroke when selecting a datapoint and apply default color to all other datapoint.
  */
 export const addAnalysisChartSelectedValueStroke = (
     indexSelectedValue: number,
     strokeColorSelectedValue: string,
     defaultStrokeColor: string,
-    size: number,
 ) => {
-    Array(size)
-        .fill(0)
-        .forEach((zeroValue, index) => {
-            const valueElement = document.getElementsByClassName(`apexcharts-polararea-slice-${index}`)[0] as SVGElement
-            // This removes previous filter for making the stroke color better
-            valueElement.style.filter = index === indexSelectedValue ? 'contrast(150%)' : 'none'
-            // This removes previous stroke
-            valueElement.style.stroke = index === indexSelectedValue ? strokeColorSelectedValue : defaultStrokeColor
-            // This Condition helps to show the stroke of the selected value, because analysisChart value elements are put that each one hide the stroke of its previous sibling, only for the last element, and by doing this we can show the stroke of selected value in a better way.
-            if (indexSelectedValue !== size - 1)
-                valueElement.style.strokeOpacity =
-                    // When the selected value is at index 0, its stroke will be hidden by its previous and next sibling, thus we put its previous and next sibling strokeOpacity to '0'
-                    (indexSelectedValue === 0 && index === size - 1) ||
-                    // When the selected value is not at index 0, its stroke will be hidden by its next sibling, thus we we put its next sibling strokeOpacity to '0'
-                    index === indexSelectedValue + 1
-                        ? '0'
-                        : '1'
-        })
+    const activeStrokeClassname = 'active-stroke'
+    const chartValueElements = document.getElementsByClassName('apexcharts-slices')[0]
+    // Check previous selectedElement and clear previous stroke.
+    const previousSelectedElement = document.getElementsByClassName(activeStrokeClassname)[0] as SVGElement
+    if (previousSelectedElement) {
+        // Clear to default stroke
+        ;(previousSelectedElement.firstElementChild! as SVGElement).style.stroke = defaultStrokeColor
+        // Remove the active stroke class
+        previousSelectedElement.classList.remove(activeStrokeClassname)
+    }
+
+    // Apply the stroke to the selected element
+    const selectedValueElement = chartValueElements.children[indexSelectedValue] as SVGElement
+    // Apply the selected element stroke color
+    ;(selectedValueElement.firstElementChild! as SVGElement).style.stroke = strokeColorSelectedValue
+    // Add the active stroke class
+    selectedValueElement.classList.add(activeStrokeClassname)
 }
 
 /**

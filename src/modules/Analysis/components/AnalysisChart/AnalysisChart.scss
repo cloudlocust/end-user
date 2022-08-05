@@ -5,6 +5,30 @@
     .apexcharts-tooltip-marker {
         display: none;
     }
+    .apexcharts-slices {
+        // Remove the default apexcharts stroke
+        g {
+            path {
+                filter: none;
+            }
+        }
+        // To show the stroke of the selected value Element, we need to hide the stroke of its next sibling. Because in ApexCharts polarArea each stroke is hidden by its next sibling.
+        .active-stroke + g,
+        // To show the stroke of the element at index 0, we need to hide the stroke of its next and previous siblings.
+        // Because its previous sibling represents the last element in the chart, so we can always hide the last element stroke to work when index 0, and this doesn't affect styling when selected element is not at index 0.
+        .apexcharts-slices:last-child {
+            path {
+                stroke-opacity: 0;
+            }
+        }
+        // Add the active stroke class
+        .active-stroke {
+            path {
+                stroke-opacity: 1;
+                filter: contrast(150%);
+            }
+        }
+    }
 }
 .analysisChartCircleContent {
     position: absolute;

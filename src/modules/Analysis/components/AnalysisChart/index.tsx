@@ -91,7 +91,6 @@ const AnalysisChart = ({
                 indexSelectedValue,
                 theme.palette.primary.light,
                 theme.palette.background.default,
-                values.length,
             )
         },
         /**
@@ -107,11 +106,7 @@ const AnalysisChart = ({
     }
 
     return (
-        <div
-            className="analysisChartContainer px-24"
-            ref={analysisChartContainerRef}
-            style={{ background: theme.palette.background.default }}
-        >
+        <div className="analysisChartContainer px-24" ref={analysisChartContainerRef}>
             <ReactApexChart
                 {...analysisApexChartProps}
                 type={'polarArea'}

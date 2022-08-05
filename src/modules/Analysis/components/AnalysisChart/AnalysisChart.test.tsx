@@ -60,37 +60,43 @@ jest.mock(
                 {...props}
             >
                 <div className="apexcharts-canvas">
-                    <div className="analysisChartValuesContainer">
-                        <div
-                            style={{}}
-                            className={analysisChartValueClasslist.join(' ')}
-                            onClick={() => {
-                                // When clicking calling the dataPointSelection given, to be tested.
-                                props.options.chart!.events!.dataPointSelection(
-                                    mockEventSelected,
-                                    {},
-                                    { dataPointIndex: 0 },
-                                )
-                            }}
-                        >
-                            {mockValueSelected}
+                    <div className="analysisChartValuesContainer apexcharts-slices">
+                        <div>
+                            <div
+                                style={{}}
+                                className={analysisChartValueClasslist.join(' ')}
+                                onClick={() => {
+                                    // When clicking calling the dataPointSelection given, to be tested.
+                                    props.options.chart!.events!.dataPointSelection(
+                                        mockEventSelected,
+                                        {},
+                                        { dataPointIndex: 0 },
+                                    )
+                                }}
+                            >
+                                {mockValueSelected}
+                            </div>
                         </div>
-                        <div style={{}} className="apexcharts-polararea-slice-1">
-                            {1}
+                        <div>
+                            <div style={{}} className="apexcharts-polararea-slice-1">
+                                {1}
+                            </div>
                         </div>
-                        <div
-                            style={{}}
-                            className="apexcharts-polararea-slice-2"
-                            onMouseEnter={() => {
-                                // When clicking calling the dataPointSelection given, to be tested.
-                                props.options.chart!.events!.dataPointMouseEnter(
-                                    mockEventSelected,
-                                    {},
-                                    { dataPointIndex: 2 },
-                                )
-                            }}
-                        >
-                            {2}
+                        <div>
+                            <div
+                                style={{}}
+                                className="apexcharts-polararea-slice-2"
+                                onMouseEnter={() => {
+                                    // When clicking calling the dataPointSelection given, to be tested.
+                                    props.options.chart!.events!.dataPointMouseEnter(
+                                        mockEventSelected,
+                                        {},
+                                        { dataPointIndex: 2 },
+                                    )
+                                }}
+                            >
+                                {2}
+                            </div>
                         </div>
                     </div>
                     <div className="tooltipContainer apexcharts-tooltip"></div>
@@ -229,8 +235,6 @@ describe('AnalysisChart test', () => {
         await waitFor(() => {
             expect(tooltipContainerElement.firstElementChild! as HTMLDivElement).toBeInTheDocument()
         })
-        // expect(tooltipContainerElement.style.top).toBe(styleDirectionTop)
-        // expect(tooltipContainerElement.style.left).toBe(styleDirectionLeft)
         expect(tooltipContainerElement.innerHTML).toBe(
             renderToString(
                 <AnalysisChartTooltip
