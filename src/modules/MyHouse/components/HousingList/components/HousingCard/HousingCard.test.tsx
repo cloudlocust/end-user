@@ -34,7 +34,7 @@ describe('Test HousingCard', () => {
                     <HousingCard element={TEST_MOCKED_HOUSES[0]} />
                 </Router>,
             )
-            const ADDRESS_TO_SHOW = `${TEST_MOCKED_HOUSES[0].address.city}, ${TEST_MOCKED_HOUSES[0].address.zipCode}, ${TEST_MOCKED_HOUSES[0].address.country}`
+            const ADDRESS_TO_SHOW = `${TEST_MOCKED_HOUSES[0].address.name}`
             const GUID_TEXT_TO_SHOW = `Compteur n°${TEST_MOCKED_HOUSES[0].guid}`
 
             expect(getByText('Mon Logement à ' + TEST_MOCKED_HOUSES[0].address.city.toUpperCase())).toBeTruthy()
@@ -48,7 +48,7 @@ describe('Test HousingCard', () => {
                     <HousingCard element={TEST_MOCKED_HOUSES[1]} />
                 </Router>,
             )
-            const ADDRESS_TO_SHOW = `${TEST_MOCKED_HOUSES[1].address.city}, ${TEST_MOCKED_HOUSES[1].address.zipCode}, ${TEST_MOCKED_HOUSES[0].address.country}`
+            const ADDRESS_TO_SHOW = `${TEST_MOCKED_HOUSES[1].address.name}`
 
             expect(getByText(DEFAULT_GUID_TEXT)).toBeTruthy()
             expect(getByText(ADDRESS_TO_SHOW)).toBeTruthy()
