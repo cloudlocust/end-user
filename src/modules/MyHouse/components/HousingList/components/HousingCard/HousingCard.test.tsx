@@ -14,6 +14,9 @@ const mockRemoveHousing = jest.fn()
 const DEFAULT_GUID_TEXT = 'Veuillez renseigner votre compteur'
 const URL_TO_GUID_INSCRIPTION = '/nrlink-connection-steps'
 const MODAL_POPUP_TEXT_VERIFICATION = 'Êtes-vous sûr de vouloir continuer ?'
+const SAVE_BUTTON = 'Enregistrer'
+const MY_NEW_HOUSING_TITLE = 'Mon Nouveau Logement'
+const ADDRESS_PLACEHOLDER = 'Adresse'
 
 /**
  * Mocking the useHousingsDetails.
@@ -132,6 +135,18 @@ describe('Test HousingCard', () => {
                 expect(mockRemoveHousing).toHaveBeenCalled()
             })
             expect(mockRemoveHousing).toHaveBeenCalled()
+        })
+
+        test('When there is no housing passed, adding form should appear', async () => {
+            const { getByText } = reduxedRender(
+                <Router>
+                    <HousingCard />
+                </Router>,
+            )
+
+            expect(getByText(MY_NEW_HOUSING_TITLE)).toBeTruthy()
+            expect(getByText(SAVE_BUTTON)).toBeTruthy()
+            expect(getByText(ADDRESS_PLACEHOLDER)).toBeTruthy()
         })
     })
 })
