@@ -12,12 +12,9 @@ import IconButton from '@mui/material/IconButton'
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined'
 import Modal from '@mui/material/Modal'
 import Box from '@mui/material/Box'
-import { GoogleMapsAddressAutoCompleteField } from 'src/common/ui-kit/form-fields/GoogleMapsAddressAutoComplete/GoogleMapsAddressAutoCompleteField'
-import { requiredBuilder } from 'src/common/react-platform-components'
-import { useForm, FormProvider } from 'react-hook-form'
 
 import { IHousing } from 'src/modules/MyHouse/components/HousingList/housing.d'
-import { useHousingList, useHousingsDetails } from 'src/modules/MyHouse/components/HousingList/HousingsHooks'
+import { useHousingsDetails } from 'src/modules/MyHouse/components/HousingList/HousingsHooks'
 import { URL_MY_HOUSE } from 'src/modules/MyHouse/MyHouseConfig'
 
 /**
@@ -36,7 +33,7 @@ const HousingCard = ({
     /**
      * The fields required for the display of the logement.
      */
-    element?: IHousing
+    element: IHousing
 }) => {
     const { formatMessage } = useIntl()
     const [raisedState, setRaisedState] = React.useState(false)
@@ -47,11 +44,6 @@ const HousingCard = ({
     const MY_HOUSING_AT = formatMessage({
         id: 'Mon Logement à ',
         defaultMessage: 'Mon Logement à ',
-    })
-
-    const NEW_HOUSING = formatMessage({
-        id: 'Mon Nouveau Logement',
-        defaultMessage: 'Mon Nouveau Logement',
     })
 
     const style = {
@@ -68,24 +60,30 @@ const HousingCard = ({
         p: 4,
     }
 
-    //eslint-disable-next-line
+    /**
+     * What should be done when closing the confirm Modal that pop up before deleting element.
+     */
     const handleCloseConfirmModal = () => {
         setConfirmModalOpen(false)
     }
 
-    //eslint-disable-next-line
+    /**
+     * What should be done when opening the confirm Modal that pop up before deleting element.
+     */
     const handleOpenConfirmModal = () => {
         setConfirmModalOpen(true)
     }
 
-    //eslint-disable-next-line
+    /**
+     * What should be done to delete housing.
+     *
+     * @param id Identifier of the Housing to delete.
+     */
     const handleDeleteHousing = (id: number) => {
         removeHousing(id)
         handleCloseConfirmModal()
     }
 
-    const methods = useForm()
-    const { addElement: addHousing } = useHousingList()
     return (
         <>
             <Card
@@ -98,72 +96,50 @@ const HousingCard = ({
                     <div className="flex justify-between">
                         <div className="flex items-center jutsify-center">
                             <Typography className="font-bold text-16 whitespace-normal">
-                                {logement ? MY_HOUSING_AT + logement.address.city.toUpperCase() : NEW_HOUSING}
+                                {MY_HOUSING_AT + logement.address.city.toUpperCase()}
                             </Typography>
                         </div>
-                        {logement && (
-                            <IconButton aria-label="delete" className="ml-12" onClick={handleOpenConfirmModal}>
-                                <DeleteOutlinedIcon color="error" />
-                            </IconButton>
-                        )}
+                        <IconButton aria-label="delete" className="ml-12" onClick={handleOpenConfirmModal}>
+                            <DeleteOutlinedIcon color="error" />
+                        </IconButton>
                     </div>
                     <Divider className="my-16" />
-                    {logement ? (
-                        <div className="flex flex-col">
-                            <Typography variant="subtitle1" className="mb-10 text-13 flex">
-                                {`${logement.address.name}`}
-                            </Typography>
-                            <Typography variant="subtitle1" className="text-13 flex">
-                                {logement?.guid ? (
-                                    `Compteur n°${logement.guid}`
-                                ) : (
-                                    <NavLink
-                                        to="/nrlink-connection-steps"
-                                        className="underline text-blue hover:text-blue-900"
-                                    >
-                                        {formatMessage({
-                                            id: 'Veuillez renseigner votre compteur',
-                                            defaultMessage: 'Veuillez renseigner votre compteur',
-                                        })}
-                                    </NavLink>
-                                )}
-                            </Typography>
-                        </div>
-                    ) : (
-                        <FormProvider {...methods}>
-                            <form id="form" onSubmit={methods.handleSubmit((data: any) => addHousing(data))}>
-                                <GoogleMapsAddressAutoCompleteField
-                                    name="address"
-                                    validateFunctions={[requiredBuilder()]}
-                                />
-                            </form>
-                        </FormProvider>
-                    )}
+                    <div className="flex flex-col">
+                        <Typography variant="subtitle1" className="mb-10 text-13 flex">
+                            {`${logement.address.name}`}
+                        </Typography>
+                        <Typography variant="subtitle1" className="text-13 flex">
+                            {logement?.guid ? (
+                                `Compteur n°${logement.guid}`
+                            ) : (
+                                <NavLink
+                                    to="/nrlink-connection-steps"
+                                    className="underline text-blue hover:text-blue-900"
+                                >
+                                    {formatMessage({
+                                        id: 'Veuillez renseigner votre compteur',
+                                        defaultMessage: 'Veuillez renseigner votre compteur',
+                                    })}
+                                </NavLink>
+                            )}
+                        </Typography>
+                    </div>
                 </CardContent>
                 <CardActions
                     className={`flex items-center content-center ${logement ? 'justify-end' : 'justify-center'}`}
                 >
-                    {!logement ? (
-                        <Button type="submit" size="large" form="form" variant="contained">
+                    <NavLink to={`${URL_MY_HOUSE}/${logement?.id}`}>
+                        <Button
+                            variant={logement ? 'contained' : 'outlined'}
+                            endIcon={logement && <KeyboardArrowRightIcon />}
+                            disabled={logement ? false : true}
+                        >
                             {formatMessage({
-                                id: 'Enregistrer',
-                                defaultMessage: 'Enregistrer',
+                                id: 'Détails',
+                                defaultMessage: 'Détails',
                             })}
                         </Button>
-                    ) : (
-                        <NavLink to={`${URL_MY_HOUSE}/${logement?.id}`}>
-                            <Button
-                                variant={logement ? 'contained' : 'outlined'}
-                                endIcon={logement && <KeyboardArrowRightIcon />}
-                                disabled={logement ? false : true}
-                            >
-                                {formatMessage({
-                                    id: 'Détails',
-                                    defaultMessage: 'Détails',
-                                })}
-                            </Button>
-                        </NavLink>
-                    )}
+                    </NavLink>
                 </CardActions>
             </Card>
             <Modal open={confirmModalOpen} onClose={handleCloseConfirmModal}>

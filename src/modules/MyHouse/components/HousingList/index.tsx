@@ -17,6 +17,7 @@ import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyForm
 import { Icon } from '@mui/material'
 import Modal from '@mui/material/Modal'
 import Box from '@mui/material/Box'
+import HousingForm from 'src/modules/MyHouse/components/HousingList/components/HousingForm'
 
 const Root = styled(PageSimple)(({ theme }) => ({
     '& .PageSimple-header': {
@@ -139,7 +140,7 @@ const HousingList = () => {
                     </div>
                     <Modal open={modalAddHousingOpen} onClose={() => setModalAddHousingOpen(false)}>
                         <Box sx={styleModalBox}>
-                            <HousingCard />
+                            <HousingForm />
                         </Box>
                     </Modal>
                 </>
