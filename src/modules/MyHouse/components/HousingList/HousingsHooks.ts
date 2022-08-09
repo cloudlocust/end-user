@@ -1,3 +1,4 @@
+import { defaultValueType } from './../../../../common/ui-kit/form-fields/GoogleMapsAddressAutoComplete/utils'
 import { IHousing } from 'src/modules/MyHouse/components/HousingList/housing.d'
 import { BuilderUseElementList } from 'src/modules/utils/useElementHookBuilder'
 import { formatMessageType } from 'src/common/react-platform-translation'
@@ -21,6 +22,22 @@ export const loadElementListError = (error: any, formatMessage: formatMessageTyp
     })
 }
 
+// eslint-disable-next-line jsdoc/require-jsdoc
+export const addElementSuccess = (error: any, formatMessage: formatMessageType) => {
+    return formatMessage({
+        id: 'Le logement a été ajouté',
+        defaultMessage: 'Le logement a été ajouté',
+    })
+}
+
+// eslint-disable-next-line jsdoc/require-jsdoc
+export const addElementError = (error: any, formatMessage: formatMessageType) => {
+    return formatMessage({
+        id: "Erreur lors de l'ajout du logement",
+        defaultMessage: "Erreur lors de l'ajout du logement",
+    })
+}
+
 /**
 `* Hooks for Housing List.
  *
@@ -28,10 +45,10 @@ export const loadElementListError = (error: any, formatMessage: formatMessageTyp
  * @returns UseHousingList Hook.
  */
 export const useHousingList = (sizeParam?: number) =>
-    BuilderUseElementList<IHousing, undefined, searchFilterType>({
+    BuilderUseElementList<IHousing, defaultValueType, searchFilterType>({
         API_ENDPOINT: HOUSING_API,
         sizeParam,
-        snackBarMessage0verride: { loadElementListError },
+        snackBarMessage0verride: { loadElementListError, addElementSuccess, addElementError },
     })()
 
 /**

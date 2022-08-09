@@ -1,7 +1,7 @@
 import { reduxedRenderHook } from 'src/common/react-platform-components/test'
 import { useHousingList, useHousingsDetails } from 'src/modules/MyHouse/components/HousingList/HousingsHooks'
 import { act } from '@testing-library/react-hooks'
-import { TEST_HOUSES } from 'src/mocks/handlers/houses'
+import { falseAddress, TEST_HOUSES } from 'src/mocks/handlers/houses'
 import { IHousing } from 'src/modules/MyHouse/components/HousingList/housing.d'
 import { applyCamelCase } from 'src/common/react-platform-components/utils/mm'
 
@@ -26,6 +26,18 @@ jest.mock('notistack', () => ({
 const TEST_LOAD_HOUSINGS_ERROR_MESSAGE = 'Erreur lors du chargement des logements'
 const ERROR_REMOVE_MESSAGE = 'Erreur lors de la Suppression du logement'
 const SUCCESS_REMOVE_MESSAGE = 'Le logement a été supprimé'
+const ERROR_ADD_MESSAGE = "Erreur lors de l'ajout du logement"
+const SUCCESS_ADD_MESSAGE = 'Le logement a été ajouté'
+const newAddress = {
+    city: 'city',
+    zipCode: 'zipCode',
+    country: 'counry',
+    lat: 7,
+    lng: 7,
+    name: 'name',
+    placeId: 'placeId',
+    addressAddition: undefined,
+}
 
 describe('housingstHooks test', () => {
     describe('Builder functions', () => {
@@ -48,6 +60,82 @@ describe('housingstHooks test', () => {
 
             expect(mockEnqueueSnackbar).toHaveBeenCalledWith(TEST_LOAD_HOUSINGS_ERROR_MESSAGE, {
                 variant: 'error',
+            })
+        })
+    })
+    describe('add housing', () => {
+        test('when fail, housing should not be added', async () => {
+            const {
+                renderedHook: { result, waitForValueToChange },
+            } = reduxedRenderHook(() => useHousingList(), { initialState: {} })
+
+            // wait for elements to load.
+            await waitForValueToChange(
+                () => {
+                    return result.current.loadingInProgress
+                },
+                { timeout: 4000 },
+            )
+
+            let lengthBeforeAdd = result.current.elementList.length
+            act(async () => {
+                try {
+                    await result.current.addElement({ address: falseAddress })
+                } catch (err) {}
+            })
+
+            expect(result.current.loadingInProgress).toBe(true)
+            await waitForValueToChange(
+                () => {
+                    return result.current.loadingInProgress
+                },
+                { timeout: 2000 },
+            )
+            expect(result.current.loadingInProgress).toBe(false)
+            expect(result.current.elementList.length).toEqual(lengthBeforeAdd)
+            expect(mockEnqueueSnackbar).toHaveBeenLastCalledWith(ERROR_ADD_MESSAGE, {
+                variant: 'error',
+            })
+        })
+        test('when success, housing should be added', async () => {
+            const {
+                renderedHook: { result, waitForValueToChange },
+            } = reduxedRenderHook(() => useHousingList(), { initialState: {} })
+
+            // wait for elements to load.
+            await waitForValueToChange(
+                () => {
+                    return result.current.loadingInProgress
+                },
+                { timeout: 4000 },
+            )
+
+            expect(result.current.loadingInProgress).toBe(true)
+            await waitForValueToChange(
+                () => {
+                    return result.current.loadingInProgress
+                },
+                { timeout: 4000 },
+            )
+
+            act(async () => {
+                try {
+                    await result.current.addElement({
+                        address: newAddress,
+                    })
+                } catch (err) {}
+            })
+            expect(result.current.loadingInProgress).toBe(true)
+            await waitForValueToChange(
+                () => {
+                    return result.current.loadingInProgress
+                },
+                { timeout: 5000 },
+            )
+
+            expect(result.current.loadingInProgress).toBe(false)
+            expect(mockEnqueueSnackbar).toHaveBeenLastCalledWith(SUCCESS_ADD_MESSAGE, {
+                variant: 'success',
             })
         })
     })

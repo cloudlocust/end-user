@@ -38,7 +38,7 @@ const HousingCard = ({
     const { formatMessage } = useIntl()
     const [raisedState, setRaisedState] = React.useState(false)
 
-    const [modalOpen, setModalOpen] = React.useState(false)
+    const [confirmModalOpen, setConfirmModalOpen] = React.useState(false)
     const { removeHousing } = useHousingsDetails()
 
     const MY_HOUSING_AT = formatMessage({
@@ -60,9 +60,28 @@ const HousingCard = ({
         p: 4,
     }
 
-    //eslint-disable-next-line
-    const handleCloseModal = () => {
-        setModalOpen(false)
+    /**
+     * What should be done when closing the confirm Modal that pop up before deleting element.
+     */
+    const handleCloseConfirmModal = () => {
+        setConfirmModalOpen(false)
+    }
+
+    /**
+     * What should be done when opening the confirm Modal that pop up before deleting element.
+     */
+    const handleOpenConfirmModal = () => {
+        setConfirmModalOpen(true)
+    }
+
+    /**
+     * What should be done to delete housing.
+     *
+     * @param id Identifier of the Housing to delete.
+     */
+    const handleDeleteHousing = (id: number) => {
+        removeHousing(id)
+        handleCloseConfirmModal()
     }
 
     return (
@@ -80,17 +99,17 @@ const HousingCard = ({
                                 {MY_HOUSING_AT + logement.address.city.toUpperCase()}
                             </Typography>
                         </div>
-                        <IconButton aria-label="delete" className="ml-12" onClick={() => setModalOpen(true)}>
+                        <IconButton aria-label="delete" className="ml-12" onClick={handleOpenConfirmModal}>
                             <DeleteOutlinedIcon color="error" />
                         </IconButton>
                     </div>
                     <Divider className="my-16" />
                     <div className="flex flex-col">
                         <Typography variant="subtitle1" className="mb-10 text-13 flex">
-                            {`${logement.address.city}, ${logement.address.zipCode}, ${logement.address.country}`}
+                            {`${logement.address.name}`}
                         </Typography>
                         <Typography variant="subtitle1" className="text-13 flex">
-                            {logement.guid ? (
+                            {logement?.guid ? (
                                 `Compteur n°${logement.guid}`
                             ) : (
                                 <NavLink
@@ -106,9 +125,15 @@ const HousingCard = ({
                         </Typography>
                     </div>
                 </CardContent>
-                <CardActions className="flex items-center content-center justify-end">
-                    <NavLink to={`${URL_MY_HOUSE}/${logement.id}`}>
-                        <Button variant="contained" endIcon={<KeyboardArrowRightIcon />}>
+                <CardActions
+                    className={`flex items-center content-center ${logement ? 'justify-end' : 'justify-center'}`}
+                >
+                    <NavLink to={`${URL_MY_HOUSE}/${logement?.id}`}>
+                        <Button
+                            variant={logement ? 'contained' : 'outlined'}
+                            endIcon={logement && <KeyboardArrowRightIcon />}
+                            disabled={logement ? false : true}
+                        >
                             {formatMessage({
                                 id: 'Détails',
                                 defaultMessage: 'Détails',
@@ -117,7 +142,7 @@ const HousingCard = ({
                     </NavLink>
                 </CardActions>
             </Card>
-            <Modal open={modalOpen} onClose={handleCloseModal}>
+            <Modal open={confirmModalOpen} onClose={handleCloseConfirmModal}>
                 <Box sx={style} className="flex-col w-2/3 h-2/4 sm:w-1/3 sm:h-2/4">
                     <div className="flex flex-col justify-center align-center text-white text-center text-sm font-medium my-20">
                         <p className="mb-5">
@@ -141,7 +166,11 @@ const HousingCard = ({
                         </p>
                     </div>
                     <div className="flex items-center content-center">
-                        <Button variant="outlined" className="text-white m-12 border-white" onClick={handleCloseModal}>
+                        <Button
+                            variant="outlined"
+                            className="text-white m-12 border-white"
+                            onClick={handleCloseConfirmModal}
+                        >
                             {formatMessage({
                                 id: 'Annuler',
                                 defaultMessage: 'Annuler',
@@ -151,8 +180,7 @@ const HousingCard = ({
                             variant="outlined"
                             className="text-white m-12 border-white"
                             onClick={() => {
-                                removeHousing(logement.id)
-                                handleCloseModal()
+                                logement && handleDeleteHousing(logement.id)
                             }}
                         >
                             {formatMessage({

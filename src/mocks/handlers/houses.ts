@@ -1,8 +1,10 @@
+import { applyCamelCase } from 'src/common/react-platform-components'
 import { rest } from 'msw'
 import { IHousing } from 'src/modules/MyHouse/components/HousingList/housing.d'
 import { getPaginationFromElementList } from 'src/mocks/utils'
 import { HOUSING_API } from 'src/modules/MyHouse/components/HousingList/HousingsHooks'
 import { SnakeCasedPropertiesDeep } from 'type-fest'
+import { defaultValueType } from 'src/common/ui-kit/form-fields/GoogleMapsAddressAutoComplete/utils'
 
 /**
  * Array of houses (logements) for test.
@@ -38,6 +40,20 @@ export const TEST_HOUSES: SnakeCasedPropertiesDeep<IHousing>[] = [
     },
 ]
 
+/**
+ * Address umpty to generate an error in tests.
+ */
+export const falseAddress: defaultValueType = {
+    city: '',
+    zipCode: '',
+    country: '',
+    lat: 0,
+    lng: 0,
+    name: '',
+    placeId: '',
+    addressAddition: undefined,
+}
+
 //eslint-disable-next-line
 export const housingEndpoints = [
     // Get All housings
@@ -48,6 +64,32 @@ export const housingEndpoints = [
         )
 
         return res(ctx.status(200), ctx.delay(1000), ctx.json(TEST_CUSTOMERS_RESPONSE))
+    }),
+    /* Add Housing By address. */
+    rest.post</**
+     *
+     */
+    {
+        /**
+         *
+         */
+        address: defaultValueType
+    }>(HOUSING_API, (req, res, ctx) => {
+        const { address } = req.body
+
+        if (address.city !== falseAddress.city) {
+            const newId = TEST_HOUSES.length + 1
+            let newHouse: SnakeCasedPropertiesDeep<IHousing> = {
+                address: applyCamelCase(address),
+                guid: null,
+                id: newId,
+            }
+
+            TEST_HOUSES.push(newHouse)
+            return res(ctx.status(200), ctx.delay(1000), ctx.json(newHouse))
+        } else {
+            return res(ctx.status(401), ctx.delay(1000))
+        }
     }),
     // Remove Housing
     rest.delete(`${HOUSING_API}/:id`, (req, res, ctx) => {
