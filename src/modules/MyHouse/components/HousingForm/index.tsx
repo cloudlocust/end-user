@@ -10,6 +10,7 @@ import { Form, requiredBuilder } from 'src/common/react-platform-components'
 
 import { useHousingList } from 'src/modules/MyHouse/components/HousingList/HousingsHooks'
 import { ButtonLoader } from 'src/common/ui-kit'
+import { defaultValueType } from 'src/common/ui-kit/form-fields/GoogleMapsAddressAutoComplete/utils'
 
 /**
  * This is a card for adding Housing.
@@ -46,7 +47,7 @@ const HousingForm = ({
     const { addElement: addHousing, loadingInProgress } = useHousingList()
     return (
         <Form
-            onSubmit={async (data: any) => {
+            onSubmit={async (data: defaultValueType) => {
                 await addHousing(data)
                 closeForm()
                 reloadHousingsList()
