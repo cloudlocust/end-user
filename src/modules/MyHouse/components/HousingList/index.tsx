@@ -142,8 +142,10 @@ const HousingList = () => {
                     <Modal open={modalAddHousingOpen} onClose={() => setModalAddHousingOpen(false)}>
                         <Box sx={styleModalBox}>
                             <HousingForm
-                                closeForm={() => setModalAddHousingOpen(false)}
-                                reloadHousingsList={reloadHousings}
+                                onSuccess={() => {
+                                    setModalAddHousingOpen(false)
+                                    reloadHousings()
+                                }}
                             />
                         </Box>
                     </Modal>

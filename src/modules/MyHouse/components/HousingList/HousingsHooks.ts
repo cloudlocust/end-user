@@ -1,3 +1,4 @@
+import { defaultValueType } from './../../../../common/ui-kit/form-fields/GoogleMapsAddressAutoComplete/utils'
 import { IHousing } from 'src/modules/MyHouse/components/HousingList/housing.d'
 import { BuilderUseElementList } from 'src/modules/utils/useElementHookBuilder'
 import { formatMessageType } from 'src/common/react-platform-translation'
@@ -44,7 +45,7 @@ export const addElementError = (error: any, formatMessage: formatMessageType) =>
  * @returns UseHousingList Hook.
  */
 export const useHousingList = (sizeParam?: number) =>
-    BuilderUseElementList<IHousing, undefined, searchFilterType>({
+    BuilderUseElementList<IHousing, defaultValueType, searchFilterType>({
         API_ENDPOINT: HOUSING_API,
         sizeParam,
         snackBarMessage0verride: { loadElementListError, addElementSuccess, addElementError },

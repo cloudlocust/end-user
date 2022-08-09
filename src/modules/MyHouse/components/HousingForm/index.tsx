@@ -10,30 +10,25 @@ import { Form, requiredBuilder } from 'src/common/react-platform-components'
 
 import { useHousingList } from 'src/modules/MyHouse/components/HousingList/HousingsHooks'
 import { ButtonLoader } from 'src/common/ui-kit'
+import { defaultValueType } from 'src/common/ui-kit/form-fields/GoogleMapsAddressAutoComplete/utils'
 
 /**
  * This is a card for adding Housing.
  *
  * @param props Props.
- * @param props.closeForm Close Form.
- * @param props.reloadHousingsList Reload housings.
+ * @param props.onSuccess Close Form.
  * @returns Form To Add Housing.
  */
 const HousingForm = ({
-    closeForm,
-    reloadHousingsList,
+    onSuccess,
 }: /**
  * Props Typing.
  */
 {
     /**
-     * Function to close the adding form.
+     * Function on success.
      */
-    closeForm: () => void
-    /**
-     * Reload housing list.
-     */
-    reloadHousingsList: () => void
+    onSuccess: () => void
 }) => {
     const { formatMessage } = useIntl()
     const [raisedState, setRaisedState] = React.useState(false)
@@ -46,10 +41,9 @@ const HousingForm = ({
     const { addElement: addHousing, loadingInProgress } = useHousingList()
     return (
         <Form
-            onSubmit={async (data: any) => {
+            onSubmit={async (data: defaultValueType) => {
                 await addHousing(data)
-                closeForm()
-                reloadHousingsList()
+                onSuccess()
             }}
         >
             <Card

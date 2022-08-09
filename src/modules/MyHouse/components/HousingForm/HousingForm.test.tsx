@@ -3,8 +3,7 @@ import HousingForm from 'src/modules/MyHouse/components/HousingForm'
 import { BrowserRouter as Router } from 'react-router-dom'
 
 const mockAddHousing = jest.fn()
-const mockCloseForm = jest.fn()
-const mockReloadHousingsList = jest.fn()
+const mockOnSuccess = jest.fn()
 
 const SAVE_BUTTON = 'Enregistrer'
 const MY_NEW_HOUSING_TITLE = 'Mon Nouveau Logement'
@@ -25,7 +24,7 @@ describe('Test HousingForm', () => {
     test('When Housing Form called, elements should Appear.', async () => {
         const { getByText } = reduxedRender(
             <Router>
-                <HousingForm closeForm={mockCloseForm} reloadHousingsList={mockReloadHousingsList} />
+                <HousingForm onSuccess={mockOnSuccess} />
             </Router>,
         )
 
