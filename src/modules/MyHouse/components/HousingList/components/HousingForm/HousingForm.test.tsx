@@ -3,6 +3,8 @@ import HousingForm from 'src/modules/MyHouse/components/HousingList/components/H
 import { BrowserRouter as Router } from 'react-router-dom'
 
 const mockAddHousing = jest.fn()
+const mockCloseForm = jest.fn()
+const mockReloadHousingsList = jest.fn()
 
 const SAVE_BUTTON = 'Enregistrer'
 const MY_NEW_HOUSING_TITLE = 'Mon Nouveau Logement'
@@ -23,7 +25,7 @@ describe('Test HousingForm', () => {
     test('When Housing Form called, elements should Appear.', async () => {
         const { getByText } = reduxedRender(
             <Router>
-                <HousingForm />
+                <HousingForm closeForm={mockCloseForm} reloadHousingsList={mockReloadHousingsList} />
             </Router>,
         )
 
@@ -31,24 +33,4 @@ describe('Test HousingForm', () => {
         expect(getByText(SAVE_BUTTON)).toBeTruthy()
         expect(getByText(ADDRESS_PLACEHOLDER)).toBeTruthy()
     })
-    // test('When clicking on Enregistrer addElement Should be called.', async () => {
-    //     const { getByTestId, getByText } = reduxedRender(
-    //         <Router>
-    //             <HousingForm />
-    //         </Router>,
-    //     )
-    //     // Fill the address.
-    //     const addressInput = getByTestId('AddressAutoCompleteField')
-    //     expect(addressInput).toBe(0)
-    //     fireEvent.change(addressInput, { target: { value: TEST_MOCKED_HOUSES[0] } })
-
-    //     // Open delete warning popup.
-    //     act(() => {
-    //         userEvent.click(getByText('Enregistrer'))
-    //     })
-
-    //     await waitFor(() => {
-    //         expect(mockAddHousing).toHaveBeenCalled()
-    //     })
-    // })
 })

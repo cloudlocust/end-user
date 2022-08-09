@@ -4,20 +4,37 @@ import CardContent from '@mui/material/CardContent'
 import Divider from '@mui/material/Divider'
 import Typography from '@mui/material/Typography'
 import { useIntl } from 'react-intl'
-import Button from '@mui/material/Button'
 import CardActions from '@mui/material/CardActions'
 import { GoogleMapsAddressAutoCompleteField } from 'src/common/ui-kit/form-fields/GoogleMapsAddressAutoComplete/GoogleMapsAddressAutoCompleteField'
-import { requiredBuilder } from 'src/common/react-platform-components'
-import { useForm, FormProvider } from 'react-hook-form'
+import { Form, requiredBuilder } from 'src/common/react-platform-components'
 
 import { useHousingList } from 'src/modules/MyHouse/components/HousingList/HousingsHooks'
+import { ButtonLoader } from 'src/common/ui-kit'
 
 /**
  * This is a card for adding Housing.
  *
+ * @param props Props.
+ * @param props.closeForm Close Form.
+ * @param props.reloadHousingsList Reload housings.
  * @returns Form To Add Housing.
  */
-const HousingForm = () => {
+const HousingForm = ({
+    closeForm,
+    reloadHousingsList,
+}: /**
+ * Props Typing.
+ */
+{
+    /**
+     * Function to close the adding form.
+     */
+    closeForm: () => void
+    /**
+     * Reload housing list.
+     */
+    reloadHousingsList: () => void
+}) => {
     const { formatMessage } = useIntl()
     const [raisedState, setRaisedState] = React.useState(false)
 
@@ -26,10 +43,15 @@ const HousingForm = () => {
         defaultMessage: 'Mon Nouveau Logement',
     })
 
-    const methods = useForm()
-    const { addElement: addHousing } = useHousingList()
+    const { addElement: addHousing, loadingInProgress } = useHousingList()
     return (
-        <>
+        <Form
+            onSubmit={async (data: any) => {
+                await addHousing(data)
+                closeForm()
+                reloadHousingsList()
+            }}
+        >
             <Card
                 className="relative cursor-pointer flex-wrap rounded-16"
                 onMouseOver={() => setRaisedState(true)}
@@ -43,25 +65,19 @@ const HousingForm = () => {
                         </div>
                     </div>
                     <Divider className="my-16" />
-                    <FormProvider {...methods}>
-                        <form id="form" onSubmit={methods.handleSubmit((data: any) => addHousing(data))}>
-                            <GoogleMapsAddressAutoCompleteField
-                                name="address"
-                                validateFunctions={[requiredBuilder()]}
-                            />
-                        </form>
-                    </FormProvider>
+
+                    <GoogleMapsAddressAutoCompleteField name="address" validateFunctions={[requiredBuilder()]} />
                 </CardContent>
                 <CardActions className="flex items-center content-center justify-center">
-                    <Button type="submit" size="large" form="form" variant="contained">
+                    <ButtonLoader inProgress={loadingInProgress} type="submit" size="large" variant="contained">
                         {formatMessage({
                             id: 'Enregistrer',
                             defaultMessage: 'Enregistrer',
                         })}
-                    </Button>
+                    </ButtonLoader>
                 </CardActions>
             </Card>
-        </>
+        </Form>
     )
 }
 export default HousingForm

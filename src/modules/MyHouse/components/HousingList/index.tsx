@@ -57,6 +57,7 @@ const HousingList = () => {
         loadingInProgress: isHousingInProgress,
         loadMoreElements: loadMoreHousings,
         noMoreElementToLoad: noMoreHousingToLoad,
+        reloadElements: reloadHousings,
     } = useHousingList(10)
 
     const [modalAddHousingOpen, setModalAddHousingOpen] = useState(false)
@@ -140,7 +141,10 @@ const HousingList = () => {
                     </div>
                     <Modal open={modalAddHousingOpen} onClose={() => setModalAddHousingOpen(false)}>
                         <Box sx={styleModalBox}>
-                            <HousingForm />
+                            <HousingForm
+                                closeForm={() => setModalAddHousingOpen(false)}
+                                reloadHousingsList={reloadHousings}
+                            />
                         </Box>
                     </Modal>
                 </>
