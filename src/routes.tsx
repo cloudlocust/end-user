@@ -11,6 +11,7 @@ import { ResetPasswordConfig } from 'src/modules/User/ResetPassword/ResetPasswor
 import { RegisterConfig } from './modules/User/Register/RegisterConfig'
 import { NrLinkConnectionConfig } from './modules/nrLinkConnection'
 import { MyHouseConfig } from './modules/MyHouse'
+import { ContractsConfig } from './modules/Contracts/ContractsConfig'
 /**
  *
  */
@@ -19,6 +20,7 @@ export const routes = [
     ...NrLinkConnectionConfig,
     ...AdvicesConfig,
     ...MyHouseConfig,
+    ...ContractsConfig,
     ...LoginConfig,
     ...RegisterConfig,
     ...ForgotPasswordConfig,
