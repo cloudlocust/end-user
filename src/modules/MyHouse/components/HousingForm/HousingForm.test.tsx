@@ -1,5 +1,5 @@
 import { reduxedRender } from 'src/common/react-platform-components/test'
-import HousingForm from 'src/modules/MyHouse/components/HousingList/components/HousingForm'
+import HousingForm from 'src/modules/MyHouse/components/HousingForm'
 import { BrowserRouter as Router } from 'react-router-dom'
 
 const mockAddHousing = jest.fn()

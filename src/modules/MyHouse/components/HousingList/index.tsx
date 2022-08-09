@@ -17,7 +17,7 @@ import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyForm
 import { Icon } from '@mui/material'
 import Modal from '@mui/material/Modal'
 import Box from '@mui/material/Box'
-import HousingForm from 'src/modules/MyHouse/components/HousingList/components/HousingForm'
+import HousingForm from 'src/modules/MyHouse/components/HousingForm'
 
 const Root = styled(PageSimple)(({ theme }) => ({
     '& .PageSimple-header': {
