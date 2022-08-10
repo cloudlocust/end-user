@@ -13,3 +13,29 @@ export type contractsRouteParam =
          */
         id: string
     }
+
+/**
+ * Interface Contract model.
+ */
+export interface IContract {
+    /**
+     * Guid contract.
+     */
+    guid: string
+    /**
+     * Provider of the contract.
+     */
+    provider: string
+    /**
+     * Offer of the contract.
+     */
+    offer: string
+    /**
+     * Type of the contract.
+     */
+    type: string
+    /**
+     * Power of the offer.
+     */
+    power: string
+}
