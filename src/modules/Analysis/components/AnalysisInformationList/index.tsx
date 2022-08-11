@@ -78,7 +78,9 @@ const AnalysisInformationList = ({
      * Range from metricHooks, needed to fill missing values for timestamps.
      */
     range: metricRangeType
-    // eslint-disable-next-line jsdoc/require-jsdoc
+    /**
+     * Active information name that is retrieved from analysisChart.
+     */
     activeInformationName?: analysisInformationName
 }) => {
     const theme = useTheme()

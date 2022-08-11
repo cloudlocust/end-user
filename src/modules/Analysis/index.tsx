@@ -62,9 +62,16 @@ const Analysis = () => {
      * @param color Fill Color of the selected value element.
      */
     const getSelectedValueElementColor = (color: string) => {
-        if (color === theme.palette.primary.light) setActiveInformationName('minConsumptionDay')
-        else if (color === theme.palette.primary.dark) setActiveInformationName('maxConsumptionDay')
-        else setActiveInformationName('meanConsumption')
+        switch (color) {
+            case theme.palette.primary.light:
+                setActiveInformationName('minConsumptionDay')
+                break
+            case theme.palette.primary.dark:
+                setActiveInformationName('maxConsumptionDay')
+                break
+            default:
+                setActiveInformationName('meanConsumption')
+        }
     }
 
     useEffect(() => {
@@ -174,7 +181,7 @@ const Analysis = () => {
                 )}
             </div>
             {!isMetricsLoading && (
-                <div className="p-24 AnalysisInformationList">
+                <div className="p-24 analysis-information-list">
                     <AnalysisInformationList activeInformationName={activeInformationName} data={data} range={range} />
                 </div>
             )}
