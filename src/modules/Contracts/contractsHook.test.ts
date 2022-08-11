@@ -3,6 +3,8 @@ import { useContractList } from 'src/modules/Contracts/contractsHook'
 import { TEST_HOUSE_ID } from 'src/mocks/handlers/contracts'
 
 const mockEnqueueSnackbar = jest.fn()
+const mockHouseId = TEST_HOUSE_ID
+
 /**
  * Mocking the useSnackbar used in CustomerDetails to load the customerDetails based on url /customers/:id {id} params.
  */
@@ -18,13 +20,28 @@ jest.mock('notistack', () => ({
     }),
 }))
 
+/**
+ * Mocking the react-router-dom used in contractsHooks.
+ */
+jest.mock('react-router-dom', () => ({
+    ...jest.requireActual('react-router-dom'),
+    /**
+     * Mock the useParams to get the houseId from url.
+     *
+     * @returns UseParams containing houseId.
+     */
+    useParams: () => ({
+        houseId: `${mockHouseId}`,
+    }),
+}))
+
 const TEST_LOAD_CONTRACTS_ERROR_MESSAGE = 'Erreur lors du chargement des contrats'
 describe('useContractsList test', () => {
     describe('Load Contracts', () => {
         test('When load error snackbar should be called with error message', async () => {
             const {
                 renderedHook: { result, waitForValueToChange },
-            } = reduxedRenderHook(() => useContractList(TEST_HOUSE_ID, -1), { initialState: {} })
+            } = reduxedRenderHook(() => useContractList(-1), { initialState: {} })
             expect(result.current.loadingInProgress).toBe(true)
 
             await waitForValueToChange(

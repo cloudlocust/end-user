@@ -1,13 +1,10 @@
 import { Card } from '@mui/material'
 import React from 'react'
-import { useParams } from 'react-router-dom'
-import { contractsRouteParam } from 'src/modules/Contracts/contractsTypes.d'
 import { useContractList } from './contractsHook'
 
 // eslint-disable-next-line jsdoc/require-jsdoc
 const Contracts = () => {
-    const { houseId } = useParams<contractsRouteParam>()
-    const { elementList: contractList } = useContractList(Number(houseId))
+    const { elementList: contractList } = useContractList()
     return (
         <div className="flex wrap p-16">
             {contractList &&

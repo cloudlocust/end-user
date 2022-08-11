@@ -2,7 +2,9 @@ import { searchFilterType } from 'src/modules/utils'
 import { BuilderUseElementList } from 'src/modules/utils/useElementHookBuilder'
 import { formatMessageType } from 'src/common/react-platform-translation'
 import { IContract } from './contractsTypes'
+import { useParams } from 'react-router-dom'
 import { HOUSING_API } from 'src/modules/MyHouse/components/HousingList/HousingsHooks'
+import { contractsRouteParam } from 'src/modules/Contracts/contractsTypes.d'
 
 /**
  * Contracts microservice endpoint.
@@ -29,13 +31,16 @@ const loadElementListError = (error: any, formatMessage: formatMessageType) => {
 /**
 `* Hooks for contractList.
  *
- * @param houseId HouseId of the contractList.
  * @param sizeParam Indicates the default size when loadElement.
  * @returns Hook useContractList.
  */
-export const useContractList = (houseId: number, sizeParam?: number) =>
-    BuilderUseElementList<IContract, undefined, searchFilterType>({
-        API_ENDPOINT: CONTRACTS_API(houseId),
+export const useContractList = (sizeParam?: number) => {
+    // HouseId extracted from the url :houseId/contracts
+    const { houseId } = useParams<contractsRouteParam>()
+
+    return BuilderUseElementList<IContract, undefined, searchFilterType>({
+        API_ENDPOINT: CONTRACTS_API(Number(houseId)),
         sizeParam,
         snackBarMessage0verride: { loadElementListError },
     })()
+}
