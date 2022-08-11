@@ -35,7 +35,7 @@ const loadElementListError = (error: any, formatMessage: formatMessageType) => {
  * @returns Hook useContractList.
  */
 export const useContractList = (sizeParam?: number) => {
-    // HouseId extracted from params of the url :houseId/contracts
+    // HouseId extracted from the url :houseId/contracts
     const { houseId } = useParams<contractsRouteParam>()
 
     return BuilderUseElementList<IContract, undefined, searchFilterType>({
