@@ -1,8 +1,13 @@
 import { rest } from 'msw'
 import { getPaginationFromElementList } from 'src/mocks/utils'
 import { SnakeCasedPropertiesDeep } from 'type-fest'
-import { CONTRACTS_API } from 'src/modules/Contracts/contractsHook'
 import { IContract } from 'src/modules/Contracts/contractsTypes'
+import { HOUSING_API } from 'src/modules/MyHouse/components/HousingList/HousingsHooks'
+
+/**
+ * Endpoint for contracts mock.
+ */
+const MOCK_CONTRACT_ENDPOINT = `${HOUSING_API}/:houseId/contracts`
 
 /**
  * HouseId for contract mock requests.
@@ -74,7 +79,7 @@ export var TEST_CONTRACTS: SnakeCasedPropertiesDeep<IContract>[] = [
 // eslint-disable-next-line jsdoc/require-jsdoc
 export const contractsEndpoints = [
     // Get All Contracts
-    rest.get(CONTRACTS_API(TEST_HOUSE_ID), (req, res, ctx) => {
+    rest.get(MOCK_CONTRACT_ENDPOINT, (req, res, ctx) => {
         const CONTRACTS_REPONSE = getPaginationFromElementList<SnakeCasedPropertiesDeep<IContract>>(
             req,
             TEST_CONTRACTS as [],
