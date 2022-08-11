@@ -42,15 +42,15 @@ const Contracts = () => {
                 <TypographyFormatMessage className="text-16 font-medium md:text-20">
                     Mes Contrats
                 </TypographyFormatMessage>
-                <IconButton color="primary" size="large">
-                    <PostAddIcon />
+                <IconButton color="primary">
+                    <PostAddIcon style={{ width: '30px', height: '30px' }} />
                 </IconButton>
             </div>
 
             {isEmpty(contractList) && !isContractsLoading ? (
                 <div className="flex justify-center items-center p-24" style={{ height: '320px' }}>
                     <TypographyFormatMessage
-                        className="text-16 font-medium md:text-20 w-full text-center"
+                        className="text-13 font-medium md:text-16 w-full text-center"
                         style={{ color: theme.palette.secondary.main }}
                     >
                         Aucun contrat enregistré. Les valeurs de votre consommation exprimées en Euros proviennent d'un
