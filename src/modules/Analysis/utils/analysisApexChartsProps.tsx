@@ -10,42 +10,77 @@ import { renderToString } from 'react-dom/server'
  * @param e Selection Event of selected value.
  * @param values Represents values shown in the chart.
  * @param timestampValues Timestamps of the values.
+ * @param valueIndex Index of selected value.
  * @param theme Current Theme so that we set tooltip color related to the theme.
  */
 export const showAnalysisChartTooltipOnValueSelected = (
     e: any,
     values: ApexNonAxisChartSeries,
     timestampValues: ApexNonAxisChartSeries,
+    valueIndex: number,
     theme: Theme,
 ) => {
     const tooltipContainerElement = document.getElementsByClassName('apexcharts-tooltip')[0] as HTMLDivElement
-    // Serie Element will have ClassList[1] as follow apexcharts-polararea-slice-18
-    const valueIndex = Number(e.target.classList[1].split('-').slice(-1))
-    // If the element is selected
-    if (e.target.instance.filterer) {
-        // Positioning the tooltip close to the click
-        tooltipContainerElement.style!.left = `${e.offsetX - 40}px`
-        tooltipContainerElement.style!.top = `${e.offsetY - 40}px`
-        // Rendering the tooltip text
-        tooltipContainerElement.innerHTML = renderToString(
-            <AnalysisChartTooltip
-                valueIndex={valueIndex}
-                values={values}
-                timestampValues={timestampValues}
-                theme={theme}
-            />,
-        )
-        // Displaying the tooltip
-        tooltipContainerElement.classList.add('apexcharts-active')
-        tooltipContainerElement.style.display = 'flex'
+    const analysisChartContainer = document.getElementsByClassName('apexcharts-canvas')[0] as HTMLDivElement
+    // As default tooltip left position is 40px left the position of click
+    let tooltipXStartPosition = e.offsetX - 40
+    // Check if tooltip will be overflowing on Left of analysisChart
+    // Tooltip overflow on left of analysisChart when start position of tooltip is before the start position of analysisChartContainer (which is represented by getBoundingClientRect().left )
+    // If its true then tooltip will start its position where the click happened, as it'll have plenty space.
+    if (tooltipXStartPosition <= analysisChartContainer.getBoundingClientRect().left) tooltipXStartPosition = e.offsetX
+    // Check if tooltip will be overflowing on Right of analysisChart, then tooltip will end at the position of click
+    // Tooltip overflow on right of analysisChart when right of tooltip (which is represented by the position of click + width of tooltip) is after the end position of analysisChartContainer (which is represented by getBoundingClientRect().right )
+    else if (
+        e.offsetX + tooltipContainerElement.getBoundingClientRect().width >=
+        analysisChartContainer.getBoundingClientRect().right
+    )
+        // If its true then tooltip will end its position where the click happened.
+        tooltipXStartPosition = e.offsetX - tooltipContainerElement.getBoundingClientRect().width
+    tooltipContainerElement.style.left = `${tooltipXStartPosition}px`
+    tooltipContainerElement.style.top = `${e.offsetY - 40}px`
+    // Rendering the tooltip text
+    tooltipContainerElement.innerHTML = renderToString(
+        <AnalysisChartTooltip
+            valueIndex={valueIndex}
+            values={values}
+            timestampValues={timestampValues}
+            theme={theme}
+        />,
+    )
+    // Displaying the tooltip
+    tooltipContainerElement.classList.add('apexcharts-active')
+    tooltipContainerElement.style.display = 'flex'
+}
+
+/**
+ * Applying a stroke color to the selected element in analysisChart, as we deals with SVG elements, When you select an element it'll apply a stroke color and remove it when you select an other element.
+ *
+ * @param indexSelectedValue Index of selected value.
+ * @param strokeColorSelectedValue Selected Value Stroke color applied.
+ * @param defaultStrokeColor Default color applied as default stroke.
+ */
+export const addAnalysisChartSelectedValueStroke = (
+    indexSelectedValue: number,
+    strokeColorSelectedValue: string,
+    defaultStrokeColor: string,
+) => {
+    const activeStrokeClassname = 'active-stroke'
+    const chartValueElements = document.getElementsByClassName('apexcharts-slices')[0]
+    // Check previous selectedElement and clear previous stroke.
+    const previousSelectedElement = document.getElementsByClassName(activeStrokeClassname)[0] as SVGElement
+    if (previousSelectedElement) {
+        // Clear to default stroke
+        ;(previousSelectedElement.firstElementChild! as SVGElement).style.stroke = defaultStrokeColor
+        // Remove the active stroke class
+        previousSelectedElement.classList.remove(activeStrokeClassname)
     }
-    // If the element is deselected
-    else {
-        // Hide tooltip
-        tooltipContainerElement.style.display = 'none'
-        // Remove tooltip text is needed because we can have a behaviour where we store not related tooltip text
-        tooltipContainerElement.innerHTML = ''
-    }
+
+    // Apply the stroke to the selected element
+    const selectedValueElement = chartValueElements.children[indexSelectedValue] as SVGElement
+    // Apply the selected element stroke color
+    ;(selectedValueElement.firstElementChild! as SVGElement).style.stroke = strokeColorSelectedValue
+    // Add the active stroke class
+    selectedValueElement.classList.add(activeStrokeClassname)
 }
 
 /**

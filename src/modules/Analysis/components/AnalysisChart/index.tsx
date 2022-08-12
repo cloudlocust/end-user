@@ -7,6 +7,7 @@ import { IMetric } from 'src/modules/Metrics/Metrics.d'
 import convert from 'convert-units'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import {
+    addAnalysisChartSelectedValueStroke,
     getAnalysisApexChartProps,
     showAnalysisChartTooltipOnValueSelected,
 } from 'src/modules/Analysis/utils/analysisApexChartsProps'
@@ -75,17 +76,33 @@ const AnalysisChart = ({
 
     const analysisApexChartProps = getAnalysisApexChartProps(values, timeStampValues, theme)
 
-    if (isMobile) {
-        analysisApexChartProps.options.chart!.events = {
-            /**
-             * Generating and showin a tooltip on Mobile, when selecting an element because Apexcharts in its default behaviour, it doesn't show tooltip onClick only on hover which doesn't exist on mobile.
-             *
-             * @param e Event of selected value.
-             */
-            dataPointSelection(e) {
-                showAnalysisChartTooltipOnValueSelected(e, values, timeStampValues, theme)
-            },
-        }
+    analysisApexChartProps.options.chart!.events = {
+        /**
+         * Generating and showin a tooltip on Mobile, when selecting an element because Apexcharts in its default behaviour, it doesn't show tooltip onClick only on hover which doesn't exist on mobile.
+         *
+         * @param e Event of selected value.
+         * @param chartContext Chart context.
+         * @param config Current chart config options, with information about the index of selected value in (dataPointIndex).
+         */
+        dataPointSelection(e, chartContext, config) {
+            const indexSelectedValue = config.dataPointIndex
+            showAnalysisChartTooltipOnValueSelected(e, values, timeStampValues, indexSelectedValue, theme)
+            addAnalysisChartSelectedValueStroke(
+                indexSelectedValue,
+                theme.palette.primary.light,
+                theme.palette.background.default,
+            )
+        },
+        /**
+         * Generating and showin a tooltip on Mobile, when selecting an element because Apexcharts in its default behaviour, it doesn't show tooltip onClick only on hover which doesn't exist on mobile.
+         *
+         * @param e Event of selected value.
+         * @param chartContext Chart context.
+         * @param config Current chart config options, with information about the index of selected value in (dataPointIndex).
+         */
+        dataPointMouseEnter(e, chartContext, config) {
+            this.dataPointSelection!(e, chartContext, config)
+        },
     }
 
     return (
