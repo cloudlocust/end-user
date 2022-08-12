@@ -20,6 +20,7 @@ const heightAnalaysisChartDesktop = 520
 const mockAnalysisChartProps = {
     data: mockData,
     children: <></>,
+    getSelectedValueElementColor: jest.fn(),
 }
 
 let mockIsMobile = true
@@ -37,7 +38,6 @@ const mockTimeStampValueHovered = mockData[0].datapoints[2][1]
 const tooltipContainerClassname = 'tooltipContainer'
 const analysisChartValueClasslist = ['element-0', 'apexcharts-polararea-slice-0']
 const mockTheme = createTheme()
-
 let mockEventSelected = {
     offsetX: 140,
     offsetY: 140,
@@ -45,6 +45,7 @@ let mockEventSelected = {
         classList: analysisChartValueClasslist,
         instance: {},
     },
+    type: '',
 }
 
 // AnalysisChart component cannot render if we don't mock react-apexcharts
@@ -70,7 +71,7 @@ jest.mock(
                                     props.options.chart!.events!.dataPointSelection(
                                         mockEventSelected,
                                         {},
-                                        { dataPointIndex: 0 },
+                                        { dataPointIndex: 0, w: { config: { colors: ['', '', ''] } } },
                                     )
                                 }}
                             >
@@ -87,11 +88,11 @@ jest.mock(
                                 style={{}}
                                 className="apexcharts-polararea-slice-2"
                                 onMouseEnter={() => {
-                                    // When clicking calling the dataPointSelection given, to be tested.
+                                    // When hovering There won't be any order change.
                                     props.options.chart!.events!.dataPointMouseEnter(
                                         mockEventSelected,
                                         {},
-                                        { dataPointIndex: 2 },
+                                        { dataPointIndex: 2, w: { config: { colors: ['', '', ''] } } },
                                     )
                                 }}
                             >
@@ -175,7 +176,9 @@ describe('AnalysisChart test', () => {
         expect(getByText(NO_DATA_TEXT)).toBeTruthy()
     })
 
-    test('When selecting analysisChart Element tooltip should be shown, and stroke color should change', async () => {
+    test('When selecting analysisChart Element tooltip should be shown, and stroke color should change, and order of analysisInformation should change', async () => {
+        const mockGetSelectedValueElementColor = jest.fn()
+        mockAnalysisChartProps.getSelectedValueElementColor = mockGetSelectedValueElementColor
         // Testing overflowing tooltip on left of analysisChart
         let styleDirectionLeft = '20px'
         const styleDirectionTop = '100px'
@@ -223,11 +226,15 @@ describe('AnalysisChart test', () => {
         expect(tooltipContainerElement.classList.contains(activeClassname)).toBeTruthy()
         // Stroke color should change in the valueSelected.
         expect(getByText(mockValueSelected).style.stroke).toBe(mockTheme.palette.primary.light)
+        // Test that there is order change in informationList, with this function having been called
+        expect(mockGetSelectedValueElementColor).toHaveBeenCalled()
 
+        /*** Hover on AnalysisChart */
         // Testing overflowing tooltip on right of analysisChart
         mockEventSelected = {
             ...mockEventSelected,
             offsetX: 0,
+            type: 'mouseenter',
         }
         styleDirectionLeft = '0px'
         // When hover a value tooltip should be shown.
@@ -247,5 +254,7 @@ describe('AnalysisChart test', () => {
         )
         // Stroke color should change in the valueSelected.
         expect(getByText(2).style.stroke).toBe(mockTheme.palette.primary.light)
+        // The getSelectedValueElementColor have been called one time when its click, and not called when its hover.
+        expect(mockGetSelectedValueElementColor).toHaveBeenCalledTimes(1)
     }, 20000)
 })

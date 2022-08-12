@@ -47,4 +47,13 @@ export type analysisInformationType =
          * Color of the Icon analysis information.
          */
         color: string
+        /**
+         * Name of the analysis Information.
+         */
+        name: analysisInformationName
     }
+
+/**
+ * Name of the Analysis Information Element, used to retrieve the active information name.
+ */
+export type analysisInformationName = 'meanConsumption' | 'minConsumptionDay' | 'maxConsumptionDay'

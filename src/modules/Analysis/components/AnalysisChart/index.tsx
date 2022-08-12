@@ -22,17 +22,21 @@ const analysisChartClassname = 'apexcharts-inner apexcharts-graphical'
  * @param props N/A.
  * @param props.data Data received from backend of format IMetric[].
  * @param props.children Represent the content put inside the circle center of AnalysisChart.
+ * @param props.getSelectedValueElementColor Indicate the color of the selectedValueElement so that we can match the color with the information (minConsumptionDay, maxConsumptionDay, meanConsumption).
  * @returns AnalysisChart.
  */
 const AnalysisChart = ({
     data,
     children,
+    getSelectedValueElementColor,
 }: // eslint-disable-next-line jsdoc/require-jsdoc
 {
     // eslint-disable-next-line jsdoc/require-jsdoc
     data: IMetric[]
     // eslint-disable-next-line jsdoc/require-jsdoc
     children: JSX.Element
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    getSelectedValueElementColor: (color: string) => void
 }) => {
     const theme = useTheme()
     const isMobile = useMediaQuery(theme.breakpoints.down('lg'))
@@ -82,16 +86,24 @@ const AnalysisChart = ({
          *
          * @param e Event of selected value.
          * @param chartContext Chart context.
-         * @param config Current chart config options, with information about the index of selected value in (dataPointIndex).
+         * @param configs Current chart configs options, with information about the index of selected value in (dataPointIndex).
          */
-        dataPointSelection(e, chartContext, config) {
-            const indexSelectedValue = config.dataPointIndex
+        dataPointSelection(e, chartContext, configs) {
+            const indexSelectedValue = configs.dataPointIndex
             showAnalysisChartTooltipOnValueSelected(e, values, timeStampValues, indexSelectedValue, theme)
             addAnalysisChartSelectedValueStroke(
                 indexSelectedValue,
                 theme.palette.primary.light,
                 theme.palette.background.default,
             )
+            // The order change of analysisInformationList doesn't happen on hover in chart (mouseenter), but on click and selection.
+            // Check that it's not mouse hover.
+            if (e.type !== 'mouseenter') {
+                // configs.w.config.colors, represent the analysisChart options.colors that will have colors for all element in the analysishart.
+                // Including the minConsumptionDay in options.color will have theme.primary.light
+                // maxConsumptionDay have theme.primary.dark
+                getSelectedValueElementColor(configs.w.config.colors[indexSelectedValue])
+            }
         },
         /**
          * Generating and showin a tooltip on Mobile, when selecting an element because Apexcharts in its default behaviour, it doesn't show tooltip onClick only on hover which doesn't exist on mobile.
