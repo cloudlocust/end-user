@@ -96,10 +96,14 @@ const AnalysisChart = ({
                 theme.palette.primary.light,
                 theme.palette.background.default,
             )
-            // configs.w.config.colors, represent the analysisChart options.colors that will have colors for all element in the analysishart.
-            // Including the minConsumptionDay in options.color will have theme.primary.light
-            // maxConsumptionDay have theme.primary.dark
-            getSelectedValueElementColor(configs.w.config.colors[indexSelectedValue])
+            // The order change of analysisInformationList doesn't happen on hover in chart (mouseenter), but on click and selection.
+            // Check that it's not mouse hover.
+            if (e.type !== 'mouseenter') {
+                // configs.w.config.colors, represent the analysisChart options.colors that will have colors for all element in the analysishart.
+                // Including the minConsumptionDay in options.color will have theme.primary.light
+                // maxConsumptionDay have theme.primary.dark
+                getSelectedValueElementColor(configs.w.config.colors[indexSelectedValue])
+            }
         },
         /**
          * Generating and showin a tooltip on Mobile, when selecting an element because Apexcharts in its default behaviour, it doesn't show tooltip onClick only on hover which doesn't exist on mobile.
