@@ -11,7 +11,7 @@ import Icon from '@mui/material/Icon'
 import CircularProgress from '@mui/material/CircularProgress'
 import { NavLink, useParams } from 'react-router-dom'
 import { contractsRouteParam } from 'src/modules/Contracts/contractsTypes.d'
-import { isEmpty } from 'lodash'
+import { isEmpty, isNull } from 'lodash'
 import { URL_MY_HOUSE } from 'src/modules/MyHouse/MyHouseConfig'
 
 /**
@@ -58,7 +58,7 @@ const Contracts = () => {
                 </div>
             ) : (
                 <div className="Contracts items-center p-24">
-                    {isContractsLoading ? (
+                    {isNull(contractList) || isContractsLoading ? (
                         <div
                             className="flex flex-col justify-center items-center w-full h-full"
                             style={{ height: '320px' }}
@@ -66,7 +66,7 @@ const Contracts = () => {
                             <CircularProgress style={{ color: theme.palette.primary.main }} />
                         </div>
                     ) : (
-                        contractList!.map((contract) => <ContractCard key={contract.guid} contract={contract} />)
+                        contractList.map((contract) => <ContractCard key={contract.guid} contract={contract} />)
                     )}
                 </div>
             )}
