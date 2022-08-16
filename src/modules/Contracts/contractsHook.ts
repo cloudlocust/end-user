@@ -1,5 +1,5 @@
 import { searchFilterType } from 'src/modules/utils'
-import { BuilderUseElementList } from 'src/modules/utils/useElementHookBuilder'
+import { BuilderUseElementDetails, BuilderUseElementList } from 'src/modules/utils/useElementHookBuilder'
 import { formatMessageType } from 'src/common/react-platform-translation'
 import { IContract } from './contractsTypes'
 import { useParams } from 'react-router-dom'
@@ -29,6 +29,34 @@ const loadElementListError = (error: any, formatMessage: formatMessageType) => {
 }
 
 /**
+ * Error message removeElementDetails.
+ *
+ * @param error Axios error object.
+ * @param formatMessage FormatMessage intl object from (react-intl package).
+ * @returns {string} Error message.
+ */
+const removeElementDetailsError = (error: any, formatMessage: formatMessageType) => {
+    return formatMessage({
+        id: 'Erreur lors de la suppression du contrat',
+        defaultMessage: 'Erreur lors de la suppression du contrat',
+    })
+}
+
+/**
+ * Success message removeElementDetails.
+ *
+ * @param responseData Removed Contract.
+ * @param formatMessage FormatMessage intl object from (react-intl package).
+ * @returns {string} Success message.
+ */
+const removeElementDetailsSuccess = (responseData: IContract, formatMessage: formatMessageType) => {
+    return formatMessage({
+        id: 'Succès lors de la suppression du contrat',
+        defaultMessage: 'Succès lors de la suppression du contrat',
+    })
+}
+
+/**
 `* Hooks for contractList.
  *
  * @param sizeParam Indicates the default size when loadElement.
@@ -42,5 +70,22 @@ export const useContractList = (sizeParam?: number) => {
         API_ENDPOINT: CONTRACTS_API(Number(houseId)),
         sizeParam,
         snackBarMessage0verride: { loadElementListError },
+    })()
+}
+
+/**
+`* Hooks for contractDetails.
+ *
+ * @param contractGuid Indicates current contractDetails guid.
+ * @returns Hook useContractDetails.
+ */
+export const useContractDetails = (contractGuid: string) => {
+    // HouseId extracted from the url :houseId/contracts
+    const { houseId } = useParams<contractsRouteParam>()
+
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    return BuilderUseElementDetails<IContract, {}, IContract>({
+        API_ENDPOINT: `${CONTRACTS_API(Number(houseId))}/${contractGuid}`,
+        snackBarMessage0verride: { removeElementDetailsError, removeElementDetailsSuccess },
     })()
 }

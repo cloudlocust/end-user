@@ -15,11 +15,16 @@ const MOCK_CONTRACT_ENDPOINT = `${HOUSING_API}/:houseId/contracts`
 export const TEST_HOUSE_ID = 1234
 
 /**
+ * Contract GUID for success contractDetails request.
+ */
+export const TEST_SUCCESS_GUID = '17707368031234'
+
+/**
  * Mock of customers/clients list data.
  */
 export var TEST_CONTRACTS: SnakeCasedPropertiesDeep<IContract>[] = [
     {
-        guid: '17707368031234',
+        guid: TEST_SUCCESS_GUID,
         offer: 'Leanne',
         power: '6 kVA',
         provider: 'EDF',
@@ -86,5 +91,18 @@ export const contractsEndpoints = [
         )
         if (CONTRACTS_REPONSE !== null) return res(ctx.status(200), ctx.delay(1000), ctx.json(CONTRACTS_REPONSE))
         return res(ctx.status(404), ctx.delay(1000), ctx.json('error'))
+    }),
+
+    // Remove Housing
+    rest.delete(`${MOCK_CONTRACT_ENDPOINT}/:guid`, (req, res, ctx) => {
+        const { guid } = req.params
+        if (guid === TEST_SUCCESS_GUID) {
+            let indexOfContract = TEST_CONTRACTS.findIndex((c) => c.guid === guid)
+            let oldContract = TEST_CONTRACTS[indexOfContract]
+            TEST_CONTRACTS.splice(indexOfContract, 1)
+            return res(ctx.status(200), ctx.delay(2000), ctx.json(oldContract))
+        } else {
+            return res(ctx.status(401), ctx.delay(2000))
+        }
     }),
 ]
