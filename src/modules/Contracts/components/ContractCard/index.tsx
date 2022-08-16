@@ -6,7 +6,6 @@ import Typography from '@mui/material/Typography'
 import EditIcon from '@mui/icons-material/Edit'
 import DeleteIcon from '@mui/icons-material/Delete'
 import { IContract } from 'src/modules/Contracts/contractsTypes'
-import { useTheme } from '@mui/material'
 import { useConfirm } from 'material-ui-confirm'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 
@@ -25,7 +24,6 @@ const ContractCard = ({
     contract: IContract
 }) => {
     const openMuiDialog = useConfirm()
-    const theme = useTheme()
 
     /**
      * Open warning remove popup on delete click.
@@ -36,31 +34,23 @@ const ContractCard = ({
             dialogProps: {
                 PaperProps: {
                     style: {
-                        background: theme.palette.error.main,
+                        // MUI snackbar red color, used as a global error color.
+                        background: '#D32F2F',
                     },
                 },
             },
             description: (
-                <TypographyFormatMessage
-                    className="text-16 md:text-20 text-center"
-                    style={{ color: theme.palette.error.contrastText }}
-                >
+                <TypographyFormatMessage className="text-16 md:text-20 text-center text-white">
                     Vous êtes sur le point de supprimer un contrat. Ëtes-vous sûr de vouloir continuer ?
                 </TypographyFormatMessage>
             ),
             confirmationText: (
-                <TypographyFormatMessage
-                    className="text-13 md:text-16 font-medium"
-                    style={{ color: theme.palette.error.contrastText }}
-                >
+                <TypographyFormatMessage className="text-13 md:text-16 font-medium text-white">
                     Continuer
                 </TypographyFormatMessage>
             ),
             cancellationText: (
-                <TypographyFormatMessage
-                    className="text-13 md:text-16 font-medium"
-                    style={{ color: theme.palette.error.contrastText }}
-                >
+                <TypographyFormatMessage className="text-13 md:text-16 font-medium text-white">
                     Annuler
                 </TypographyFormatMessage>
             ),
