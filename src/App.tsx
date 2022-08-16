@@ -6,6 +6,7 @@ import Layout1 from 'src/common/ui-kit/fuse/layouts/layout1/Layout1'
 import ThemingProvider from 'src/common/ui-kit/fuse/components/ThemingProvider'
 import { navbarItemType } from 'src/common/ui-kit/fuse/components/FuseNavigation/FuseNavigation'
 import { ToolbarWidget as ToolbarContent } from 'src/modules/Layout'
+import { ConfirmProvider } from 'material-ui-confirm'
 
 /**
  * Routes accessible to the app wrapped by access hook.
@@ -30,14 +31,18 @@ const Routes = () => {
                         render={({ location }) =>
                             hasAccess(route.auth) ? (
                                 <ThemingProvider>
-                                    <Layout1
-                                        navbarContent={navbarContent}
-                                        displayToolbar={route.settings?.layout?.toolbar?.display}
-                                        displayNavbar={route.settings?.layout?.navbar?.display}
-                                        toolbarContent={<ToolbarContent />}
-                                    >
-                                        <route.component {...route.props} />
-                                    </Layout1>
+                                    {/* Wrap your app inside the ConfirmProvider component. */}
+                                    {/* Note: If you're using Material UI ThemeProvider, make sure ConfirmProvider is a child of it. */}
+                                    <ConfirmProvider>
+                                        <Layout1
+                                            navbarContent={navbarContent}
+                                            displayToolbar={route.settings?.layout?.toolbar?.display}
+                                            displayNavbar={route.settings?.layout?.navbar?.display}
+                                            toolbarContent={<ToolbarContent />}
+                                        >
+                                            <route.component {...route.props} />
+                                        </Layout1>
+                                    </ConfirmProvider>
                                 </ThemingProvider>
                             ) : (
                                 <Redirect

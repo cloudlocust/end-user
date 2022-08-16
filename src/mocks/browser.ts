@@ -15,7 +15,7 @@ import { accomodationEndpoints } from './handlers/accomodation'
 import { metricsEndpoints } from './handlers/metrics'
 import { consentsEndpoints } from 'src/mocks/handlers/consents'
 import { housingEndpoints } from 'src/mocks/handlers/houses'
-
+import { contractsEndpoints } from './handlers/contracts'
 /**
  * Handlers to mock urls for tests.
  */
@@ -36,6 +36,8 @@ const handlers = [
     ...consentsEndpoints,
     /******Housing REQUESTS*****/
     ...housingEndpoints,
+    /******Contracts REQUESTS*****/
+    ...contractsEndpoints,
 ]
 
 /**
