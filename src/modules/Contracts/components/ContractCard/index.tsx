@@ -5,25 +5,23 @@ import IconButton from '@mui/material/IconButton'
 import Typography from '@mui/material/Typography'
 import EditIcon from '@mui/icons-material/Edit'
 import DeleteIcon from '@mui/icons-material/Delete'
-import { IContract } from 'src/modules/Contracts/contractsTypes'
+import { ContractCardProps } from 'src/modules/Contracts/contractsTypes'
 import { useConfirm } from 'material-ui-confirm'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
+import CircularProgress from '@mui/material/CircularProgress'
+import { useContractDetails } from 'src/modules/Contracts/contractsHook'
 
 /**
  * Contract Card component.
  *
  * @param props N/A.
  * @param props.contract Contract information object.
+ * @param props.onAfterDeleteUpdateSuccess Callback after delete or update success contract.
  * @returns Contract Card component.
  */
-const ContractCard = ({
-    contract,
-}: // eslint-disable-next-line jsdoc/require-jsdoc
-{
-    // eslint-disable-next-line jsdoc/require-jsdoc
-    contract: IContract
-}) => {
+const ContractCard = ({ contract, onAfterDeleteUpdateSuccess }: ContractCardProps) => {
     const openMuiDialog = useConfirm()
+    const { removeElementDetails: removeContract, loadingInProgress } = useContractDetails(contract.guid)
 
     /**
      * Open warning remove popup on delete click.
@@ -56,7 +54,12 @@ const ContractCard = ({
             ),
         })
             // Then handle the click on confirmation button
-            .then(() => {})
+            .then(async () => {
+                try {
+                    await removeContract()
+                    onAfterDeleteUpdateSuccess && onAfterDeleteUpdateSuccess()
+                } catch (error) {}
+            })
             // Catch handles the click on cancel button, giving an empty function it just close the dialog
             .catch(() => {})
     }
@@ -64,13 +67,18 @@ const ContractCard = ({
         <Card key={contract.guid} className="p-16 overflow-hidden">
             <div className="flex justify-between items-center">
                 <Typography className="text-16 font-bold md:text-20">{contract.provider}</Typography>
-                <div>
+                <div className="flex items-center">
                     <IconButton color="primary" size="small">
                         <EditIcon />
                     </IconButton>
-                    <IconButton color="error" size="small" onClick={onDeleteClick}>
-                        <DeleteIcon />
-                    </IconButton>
+                    {/* Because material-ui-confirm package close the dialog whether we click on CONFIRM or CANCEL buttons, for user experience showing the spinner in the card when removing contract. */}
+                    {loadingInProgress ? (
+                        <CircularProgress style={{ color: '#D32F2F', width: '32px', height: '32px' }} />
+                    ) : (
+                        <IconButton color="error" size="small" onClick={onDeleteClick}>
+                            <DeleteIcon />
+                        </IconButton>
+                    )}
                 </div>
             </div>
             <Divider className="my-8" />

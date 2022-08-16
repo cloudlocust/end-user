@@ -15,6 +15,21 @@ export type contractsRouteParam =
     }
 
 /**
+ * ContractCardProps.
+ */
+export type ContractCardProps =
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    {
+        /**
+         * Contract information object.
+         */
+        contract: IContract
+        /**
+         * Callback after delete or update success contract.
+         */
+        onAfterDeleteUpdateSuccess?: () => void
+    }
+/**
  * Interface Contract model.
  */
 export interface IContract {

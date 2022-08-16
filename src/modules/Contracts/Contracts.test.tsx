@@ -37,6 +37,7 @@ jest.mock('src/modules/Contracts/contractsHook', () => ({
     useContractList: () => ({
         elementList: mockContractList,
         loadingInProgress: mockIsContractsLoading,
+        reloadElements: jest.fn(),
     }),
 }))
 

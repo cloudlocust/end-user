@@ -23,7 +23,11 @@ const Contracts = () => {
     const theme = useTheme()
     // HouseId extracted from params of the url :houseId/contracts
     const { houseId } = useParams<contractsRouteParam>()
-    const { elementList: contractList, loadingInProgress: isContractsLoading } = useContractList()
+    const {
+        elementList: contractList,
+        loadingInProgress: isContractsLoading,
+        reloadElements: reloadContractList,
+    } = useContractList()
     return (
         <div className="p-24">
             <NavLink to={`${URL_MY_HOUSE}/${houseId}`} className="flex">
@@ -66,7 +70,13 @@ const Contracts = () => {
                             <CircularProgress style={{ color: theme.palette.primary.main }} />
                         </div>
                     ) : (
-                        contractList.map((contract) => <ContractCard key={contract.guid} contract={contract} />)
+                        contractList.map((contract) => (
+                            <ContractCard
+                                key={contract.guid}
+                                contract={contract}
+                                onAfterDeleteUpdateSuccess={reloadContractList}
+                            />
+                        ))
                     )}
                 </div>
             )}
