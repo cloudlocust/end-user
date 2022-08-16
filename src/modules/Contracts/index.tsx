@@ -1,5 +1,5 @@
 import React from 'react'
-import ContractCard from 'src/modules/Contracts/components/ContractCard/ContractCard'
+import ContractCard from 'src/modules/Contracts/components/ContractCard'
 import { useContractList } from 'src/modules/Contracts/contractsHook'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import './Contracts.scss'
