@@ -1,5 +1,5 @@
 import { reduxedRender } from 'src/common/react-platform-components/test'
-import HousingCard from 'src/modules/MyHouse/components/HousingList/components/HousingCard'
+import HousingCard from 'src/modules/MyHouse/components/HousingCard'
 import { TEST_HOUSES } from 'src/mocks/handlers/houses'
 import { applyCamelCase } from 'src/common/react-platform-components/utils/mm'
 import { BrowserRouter as Router } from 'react-router-dom'
