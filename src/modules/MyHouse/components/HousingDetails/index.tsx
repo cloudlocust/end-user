@@ -10,12 +10,15 @@ import { URL_MY_HOUSE } from 'src/modules/MyHouse/MyHouseConfig'
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz'
 import LocalFireDepartmentIcon from '@mui/icons-material/LocalFireDepartment'
 import BoltIcon from '@mui/icons-material/Bolt'
-import HouseDetailsCard from 'src/modules/MyHouse/components/MyHouseDetails/HouseDetailsCard'
-import { HouseDetailsElementType } from 'src/modules/MyHouse/components/MyHouseDetails/houseDetails'
+import HousingDetailsCard from 'src/modules/MyHouse/components/HousingDetails/HousingDetailsCard'
+import { HouseDetailsElementType } from 'src/modules/MyHouse/components/HousingDetails/housingDetails'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import { NavLink } from 'react-router-dom'
 import Card from '@mui/material/Card'
 import { ReactComponent as ContractIcon } from 'src/assets/images/content/housing/contract.svg'
+import { ReactComponent as SuperficieIcon } from 'src/assets/images/content/housing/Superficie.svg'
+import { ReactComponent as OccupantIcon } from 'src/assets/images/content/housing/Occupant.svg'
+import { ReactComponent as MainIcon } from 'src/assets/images/content/housing/Main.svg'
 import { useTheme } from '@mui/material'
 
 const Root = styled(FusePageCarded)(({ theme }) => ({
@@ -37,7 +40,7 @@ const Root = styled(FusePageCarded)(({ theme }) => ({
  *
  * @returns  Element Details Tabs.
  */
-export const MyHouseDetails = () => {
+export const HousingDetails = () => {
     const history = useHistory()
     const { formatMessage } = useIntl()
 
@@ -47,27 +50,15 @@ export const MyHouseDetails = () => {
     // for UI testing purpose
     const housingElements: HouseDetailsElementType[] = [
         {
-            icon: (
-                <Icon>
-                    <img src="/assets/images/content/housing/Main.svg" alt="type logement" />
-                </Icon>
-            ),
+            icon: <MainIcon style={{ fill: theme.palette.primary.main }} height={35} />,
             label: 'Type de logement',
         },
         {
-            icon: (
-                <Icon>
-                    <img src="/assets/images/content/housing/Occupant.svg" alt="occupants" />
-                </Icon>
-            ),
+            icon: <OccupantIcon style={{ fill: theme.palette.primary.main }} height={35} />,
             label: "Nombre d'occupants",
         },
         {
-            icon: (
-                <Icon>
-                    <img src="/assets/images/content/housing/Superficie.svg" alt="superficie" />
-                </Icon>
-            ),
+            icon: <SuperficieIcon style={{ fill: theme.palette.primary.main }} height={35} />,
             label: 'superficie',
         },
     ]
@@ -75,15 +66,15 @@ export const MyHouseDetails = () => {
     // for UI testing purpose
     const equipmentElements: HouseDetailsElementType[] = [
         {
-            icon: <BoltIcon color="primary" />,
+            icon: <BoltIcon color="primary" fontSize="large" />,
             label: 'Chauffage',
         },
         {
-            icon: <LocalFireDepartmentIcon color="primary" />,
+            icon: <LocalFireDepartmentIcon color="primary" fontSize="large" />,
             label: 'Eau',
         },
         {
-            icon: <MoreHorizIcon color="primary" font-fontSize="large" />,
+            icon: <MoreHorizIcon color="primary" fontSize="large" />,
             label: 'Plaques',
         },
     ]
@@ -121,8 +112,8 @@ export const MyHouseDetails = () => {
                         </Card>
                     </NavLink>
                     <div className="flex flex-col items-center md:flex-row justify-around mt-40">
-                        <HouseDetailsCard title="Informations logement" elements={housingElements} />
-                        <HouseDetailsCard title="Informations équipements" elements={equipmentElements} />
+                        <HousingDetailsCard title="Informations logement" elements={housingElements} />
+                        <HousingDetailsCard title="Informations équipements" elements={equipmentElements} />
                     </div>
                 </div>
             }

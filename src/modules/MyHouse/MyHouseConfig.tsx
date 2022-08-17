@@ -1,7 +1,7 @@
 import { authTypes } from 'src/common/react-platform-components'
 import { IRouteNavigationConfig } from 'src/routes'
 import { MyHouse } from 'src/modules/MyHouse/MyHouse'
-import { MyHouseDetails } from 'src/modules/MyHouse/components/MyHouseDetails'
+import { HousingDetails } from 'src/modules/MyHouse/components/HousingDetails'
 
 /**
  * Url for myHouse.
@@ -52,7 +52,7 @@ export const MyHouseConfig = [
     } as IRouteNavigationConfig<MyHouseProps>,
     {
         path: URL_MY_HOUSE_DETAILS,
-        component: MyHouseDetails,
+        component: HousingDetails,
         auth: { authType: authTypes.loginRequired },
         settings: {
             layout: {

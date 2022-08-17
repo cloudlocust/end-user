@@ -4,8 +4,7 @@ import CardContent from '@mui/material/CardContent'
 import CardActions from '@mui/material/CardActions'
 import Button from '@mui/material/Button'
 import { useIntl } from 'react-intl'
-import { HouseDetailsElementType } from 'src/modules/MyHouse/components/MyHouseDetails/houseDetails'
-import HouseElementDetail from 'src/modules/MyHouse/components/MyHouseDetails/HouseElementDetail'
+import { HouseDetailsElementType } from 'src/modules/MyHouse/components/HousingDetails/housingDetails'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 
 /**
@@ -16,7 +15,7 @@ import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyForm
  * @param props.elements List of Elements to display in the card.
  * @returns Void.
  */
-const HouseDetailsCard = ({
+const HousingDetailsCard = ({
     title,
     elements,
 }: /**
@@ -33,13 +32,18 @@ const HouseDetailsCard = ({
     const { formatMessage } = useIntl()
 
     return (
-        <Card className="rounded-16 border border-slate-600 bg-gray-50 mb-20 mx-10 w-400 h-300">
+        <Card className="rounded-16 border border-slate-600 bg-gray-50 mb-20 mx-10 w-400 h-256 flex flex-col justify-between">
             <TypographyFormatMessage className="font-bold mt-20 ml-20 text-14 whitespace-normal">
                 {title}
             </TypographyFormatMessage>
             <CardContent className="flex content-center items-baseline">
                 {elements.map((element) => (
-                    <HouseElementDetail element={element} />
+                    <div className="w-70 h-120 flex flex-1 flex-col items-center justify-items-center m-10">
+                        <div className="p-10 bg-white rounded-md flex items-center justify-items-center mb-5 shadow-md border border-slate-800">
+                            {element.icon}
+                        </div>
+                        <p className="text-center">{element.label}</p>
+                    </div>
                 ))}
             </CardContent>
             <CardActions className="flex items-center content-center justify-end">
@@ -54,4 +58,4 @@ const HouseDetailsCard = ({
     )
 }
 
-export default HouseDetailsCard
+export default HousingDetailsCard
