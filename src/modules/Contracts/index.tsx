@@ -9,10 +9,10 @@ const Contracts = () => {
         <div className="flex wrap p-16">
             {contractList &&
                 contractList.map((contract) => (
-                    <Card key={contract.guid} className="m-5 p-16" style={{ width: 200, flexBasis: 200 }}>
+                    <Card key={contract.id} className="m-5 p-16" style={{ width: 200, flexBasis: 200 }}>
                         <p>{contract.provider}</p>
                         <p>
-                            {contract.offer} - {contract.type} - {contract.power}
+                            {contract.offer} - {contract.tariffType} - {contract.power}
                         </p>
                     </Card>
                 ))}

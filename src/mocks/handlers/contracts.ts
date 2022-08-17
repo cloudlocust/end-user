@@ -15,64 +15,84 @@ const MOCK_CONTRACT_ENDPOINT = `${HOUSING_API}/:houseId/contracts`
 export const TEST_HOUSE_ID = 1234
 
 /**
+ * TEST DATE TIME.
+ */
+export const TEST_DATETIME = '2021-12-15T14:07:38.138000'
+/**
  * Mock of customers/clients list data.
  */
 export var TEST_CONTRACTS: SnakeCasedPropertiesDeep<IContract>[] = [
     {
-        guid: '17707368031234',
+        id: 17707368031234,
         offer: 'Leanne',
-        power: '6 kVA',
+        power: 6,
         provider: 'EDF',
-        type: 'Essentielle',
+        tariff_type: 'Essentielle',
+        end_subscription: TEST_DATETIME,
+        start_subscription: TEST_DATETIME,
     },
     {
         offer: 'Ervin',
-        power: '6 kVA',
+        power: 6,
         provider: 'EDF',
-        type: 'Essentielle',
-        guid: '11069265931234',
+        tariff_type: 'Essentielle',
+        id: 11069265931234,
+        end_subscription: TEST_DATETIME,
+        start_subscription: TEST_DATETIME,
     },
     {
         offer: 'Clementine',
-        power: '6 kVA',
+        power: 6,
         provider: 'EDF',
-        type: 'Base',
-        guid: '14631234471234',
+        tariff_type: 'Base',
+        id: 14631234471234,
+        end_subscription: TEST_DATETIME,
+        start_subscription: TEST_DATETIME,
     },
     {
         offer: 'Patricia',
-        power: '6 kVA',
+        power: 6,
         provider: 'Eni',
-        type: 'Base',
-        guid: '49317096231234',
+        tariff_type: 'Base',
+        id: 49317096231234,
+        end_subscription: TEST_DATETIME,
+        start_subscription: TEST_DATETIME,
     },
     {
         offer: 'Chelsey',
-        power: '6 kVA',
+        power: 6,
         provider: 'Eni',
-        type: 'Premium',
-        guid: '25495412891234',
+        tariff_type: 'Premium',
+        id: 25495412891234,
+        end_subscription: TEST_DATETIME,
+        start_subscription: TEST_DATETIME,
     },
     {
         offer: 'Mrs. Dennis',
-        power: '6 kVA',
+        power: 6,
         provider: 'Planète Oui',
-        type: 'Premium',
-        guid: '14779354781234',
+        tariff_type: 'Premium',
+        id: 14779354781234,
+        end_subscription: TEST_DATETIME,
+        start_subscription: TEST_DATETIME,
     },
     {
         offer: 'Kurtis',
-        power: '6 kVA',
+        power: 6,
         provider: 'Total Energies',
-        type: 'MaxPower',
-        guid: '21006761321234',
+        tariff_type: 'MaxPower',
+        id: 21006761321234,
+        end_subscription: TEST_DATETIME,
+        start_subscription: TEST_DATETIME,
     },
     {
         offer: 'Nicholas',
-        power: '6 kVA',
+        power: 6,
         provider: 'Total Energies',
-        type: 'MaxPower',
-        guid: '58649369431234',
+        tariff_type: 'MaxPower',
+        id: 58649369431234,
+        end_subscription: TEST_DATETIME,
+        start_subscription: TEST_DATETIME,
     },
 ]
 
