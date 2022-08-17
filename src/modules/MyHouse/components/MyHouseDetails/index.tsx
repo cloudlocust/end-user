@@ -7,9 +7,11 @@ import FusePageCarded from 'src/common/ui-kit/fuse/components/FusePageCarded'
 import { useIntl } from 'src/common/react-platform-translation'
 import { Button } from '@mui/material'
 import { URL_MY_HOUSE } from 'src/modules/MyHouse/MyHouseConfig'
+import MoreHorizIcon from '@mui/icons-material/MoreHoriz'
+import LocalFireDepartmentIcon from '@mui/icons-material/LocalFireDepartment'
+import BoltIcon from '@mui/icons-material/Bolt'
 import HouseDetailsCard from 'src/modules/MyHouse/components/MyHouseDetails/HouseDetailsCard'
 import { HouseDetailsElementType } from 'src/modules/MyHouse/components/MyHouseDetails/houseDetails'
-// import PageSimple from 'src/common/ui-kit/fuse/components/PageSimple'
 
 const Root = styled(FusePageCarded)(({ theme }) => ({
     '& .FusePageCarded-header': {
@@ -65,27 +67,15 @@ export const MyHouseDetails = () => {
     // for UI testing purpose
     const equipmentElements: HouseDetailsElementType[] = [
         {
-            icon: (
-                <Icon>
-                    <img src="/assets/images/content/housing/Bolt.svg" alt="chauffage" />
-                </Icon>
-            ),
+            icon: <BoltIcon color="primary" />,
             label: 'Chauffage',
         },
         {
-            icon: (
-                <Icon>
-                    <img src="/assets/images/content/housing/Gaz.svg" alt="eau" />
-                </Icon>
-            ),
+            icon: <LocalFireDepartmentIcon color="primary" />,
             label: 'Eau',
         },
         {
-            icon: (
-                <Icon>
-                    <img src="/assets/images/content/housing/3PetitsPoints.svg" alt="plaques" />
-                </Icon>
-            ),
+            icon: <MoreHorizIcon color="primary" font-fontSize="large" />,
             label: 'Plaques',
         },
     ]
