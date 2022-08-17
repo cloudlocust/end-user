@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import { useMeterList } from 'src/modules/Meters/metersHook'
@@ -22,6 +22,7 @@ import AnalysisInformationList from 'src/modules/Analysis/components/AnalysisInf
 import AnalysisPercentageChangeArrows from 'src/modules/Analysis/components/AnalysisPercentageChangeArrows'
 import convert, { Unit } from 'convert-units'
 import AnalysisChart from 'src/modules/Analysis/components/AnalysisChart'
+import { analysisInformationName } from './analysisTypes'
 
 /**
  * InitialMetricsStates for useMetrics.
@@ -53,6 +54,25 @@ const Analysis = () => {
     const { formatMessage } = useIntl()
     const { getConsents, nrlinkConsent, enedisConsent } = useConsents()
     const { data, setRange, setFilters, isMetricsLoading, filters, range } = useMetrics(initialMetricsHookValues)
+    const [activeInformationName, setActiveInformationName] = useState<analysisInformationName | undefined>(undefined)
+
+    /**
+     * Handler to set the correct information name (min, max, mean) Based on the selected value element fill color in analysisChart.
+     *
+     * @param color Fill Color of the selected value element.
+     */
+    const getSelectedValueElementColor = (color: string) => {
+        switch (color) {
+            case theme.palette.primary.light:
+                setActiveInformationName('minConsumptionDay')
+                break
+            case theme.palette.primary.dark:
+                setActiveInformationName('maxConsumptionDay')
+                break
+            default:
+                setActiveInformationName('meanConsumption')
+        }
+    }
 
     useEffect(() => {
         if (metersList && metersList.length > 0) setFilters(formatMetricFilter(metersList[0].guid))
@@ -146,7 +166,7 @@ const Analysis = () => {
                         <CircularProgress style={{ color: theme.palette.primary.main }} />
                     </div>
                 ) : (
-                    <AnalysisChart data={data}>
+                    <AnalysisChart data={data} getSelectedValueElementColor={getSelectedValueElementColor}>
                         <div className="flex flex-col justify-center items-center">
                             <p className="text-16 md:text-20 font-medium mb-8">
                                 {totalConsumption.value} {totalConsumption.unit}
@@ -161,8 +181,8 @@ const Analysis = () => {
                 )}
             </div>
             {!isMetricsLoading && (
-                <div className="p-24 AnalysisInformationList">
-                    <AnalysisInformationList data={data} range={range} />
+                <div className="p-24 analysis-information-list">
+                    <AnalysisInformationList activeInformationName={activeInformationName} data={data} range={range} />
                 </div>
             )}
         </div>
