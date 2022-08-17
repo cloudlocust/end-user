@@ -3,7 +3,7 @@ import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyForm
 import { NavLink } from 'react-router-dom'
 import { URL_MY_HOUSE } from 'src/modules/MyHouse/MyHouseConfig'
 import Card from '@mui/material/Card'
-import { ReactComponent as ContractIcon } from './contract.svg'
+import { ReactComponent as ContractIcon } from 'src/assets/images/content/housing/contract.svg'
 import { useTheme } from '@mui/material'
 
 /**
