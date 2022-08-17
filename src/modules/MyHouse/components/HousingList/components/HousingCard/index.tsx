@@ -125,15 +125,9 @@ const HousingCard = ({
                         </Typography>
                     </div>
                 </CardContent>
-                <CardActions
-                    className={`flex items-center content-center ${logement ? 'justify-end' : 'justify-center'}`}
-                >
+                <CardActions className="flex items-center content-center justify-end">
                     <NavLink to={`${URL_MY_HOUSE}/${logement?.id}`}>
-                        <Button
-                            variant={logement ? 'contained' : 'outlined'}
-                            endIcon={logement && <KeyboardArrowRightIcon />}
-                            disabled={logement ? false : true}
-                        >
+                        <Button variant="contained" endIcon={<KeyboardArrowRightIcon />}>
                             {formatMessage({
                                 id: 'Détails',
                                 defaultMessage: 'Détails',
