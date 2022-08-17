@@ -7,7 +7,10 @@ import { MyHouseDetails } from 'src/modules/MyHouse/components/MyHouseDetails'
  * Url for myHouse.
  */
 export const URL_MY_HOUSE = '/my-houses'
-const URL_MY_HOUSE_DETAILS = URL_MY_HOUSE + '/:id'
+/**
+ * Url for myHouse Details.
+ */
+export const URL_MY_HOUSE_DETAILS = URL_MY_HOUSE + '/:houseId'
 /**
  * Interface .
  *

@@ -12,6 +12,11 @@ import LocalFireDepartmentIcon from '@mui/icons-material/LocalFireDepartment'
 import BoltIcon from '@mui/icons-material/Bolt'
 import HouseDetailsCard from 'src/modules/MyHouse/components/MyHouseDetails/HouseDetailsCard'
 import { HouseDetailsElementType } from 'src/modules/MyHouse/components/MyHouseDetails/houseDetails'
+import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
+import { NavLink } from 'react-router-dom'
+import Card from '@mui/material/Card'
+import { ReactComponent as ContractIcon } from 'src/assets/images/content/housing/contract.svg'
+import { useTheme } from '@mui/material'
 
 const Root = styled(FusePageCarded)(({ theme }) => ({
     '& .FusePageCarded-header': {
@@ -35,6 +40,9 @@ const Root = styled(FusePageCarded)(({ theme }) => ({
 export const MyHouseDetails = () => {
     const history = useHistory()
     const { formatMessage } = useIntl()
+
+    const houseId = 123
+    const theme = useTheme()
 
     // for UI testing purpose
     const housingElements: HouseDetailsElementType[] = [
@@ -96,9 +104,26 @@ export const MyHouseDetails = () => {
                 </Button>
             }
             content={
-                <div className="flex flex-col items-center md:flex-row justify-around mt-40">
-                    <HouseDetailsCard title="Informations logement" elements={housingElements} />
-                    <HouseDetailsCard title="Informations équipements" elements={equipmentElements} />
+                <div>
+                    <NavLink to={`${URL_MY_HOUSE}/${houseId}/contracts`} className="flex">
+                        <Card className="flex flex-col items-center rounded p-8">
+                            <ContractIcon
+                                style={{ fill: theme.palette.primary.main, marginBottom: '4px' }}
+                                height={35}
+                            />
+                            <TypographyFormatMessage
+                                variant="subtitle1"
+                                color="CaptionText"
+                                className="text-10 font-semibold"
+                            >
+                                Contrat
+                            </TypographyFormatMessage>
+                        </Card>
+                    </NavLink>
+                    <div className="flex flex-col items-center md:flex-row justify-around mt-40">
+                        <HouseDetailsCard title="Informations logement" elements={housingElements} />
+                        <HouseDetailsCard title="Informations équipements" elements={equipmentElements} />
+                    </div>
                 </div>
             }
         />
