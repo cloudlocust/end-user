@@ -1,6 +1,6 @@
 import { reduxedRenderHook } from 'src/common/react-platform-components/test'
 import { useContractList, useContractDetails } from 'src/modules/Contracts/contractsHook'
-import { TEST_HOUSE_ID, TEST_SUCCESS_GUID } from 'src/mocks/handlers/contracts'
+import { TEST_HOUSE_ID, TEST_SUCCESS_ID } from 'src/mocks/handlers/contracts'
 import { act } from '@testing-library/react-hooks'
 
 const mockEnqueueSnackbar = jest.fn()
@@ -65,7 +65,7 @@ describe('useContractDetails test', () => {
         test('Success', async () => {
             const {
                 renderedHook: { result, waitForValueToChange },
-            } = reduxedRenderHook(() => useContractDetails(TEST_SUCCESS_GUID), { initialState: {} })
+            } = reduxedRenderHook(() => useContractDetails(TEST_SUCCESS_ID), { initialState: {} })
             act(() => {
                 result.current.removeElementDetails()
             })
@@ -84,7 +84,7 @@ describe('useContractDetails test', () => {
         test('Error', async () => {
             const {
                 renderedHook: { result, waitForValueToChange },
-            } = reduxedRenderHook(() => useContractDetails('fakeId'), { initialState: {} })
+            } = reduxedRenderHook(() => useContractDetails(0), { initialState: {} })
             act(() => {
                 result.current.removeElementDetails()
             })

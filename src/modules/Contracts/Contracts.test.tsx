@@ -1,16 +1,18 @@
 import { reduxedRender } from 'src/common/react-platform-components/test'
 import Contracts from 'src/modules/Contracts'
 import { BrowserRouter as Router } from 'react-router-dom'
-import { TEST_CONTRACTS, TEST_HOUSE_ID } from 'src/mocks/handlers/contracts'
+import { TEST_CONTRACTS as MOCK_CONTRACTS, TEST_HOUSE_ID } from 'src/mocks/handlers/contracts'
 import { URL_MY_HOUSE } from 'src/modules/MyHouse/MyHouseConfig'
+import { applyCamelCase } from 'src/common/react-platform-components'
 
+const TEST_CONTRACTS = applyCamelCase(MOCK_CONTRACTS)
 const EMPTY_CONTRACT_LIST_MESSAGE_TEXT =
     "Aucun contrat enregistré. Les valeurs de votre consommation exprimées en Euros proviennent d'un contrat EDF Tarif Bleu Base d'une puissance de 6kVA donnée à titre exemple."
 const mockHouseId = TEST_HOUSE_ID
 let mockIsContractsLoading = false
 let mockContractList = [TEST_CONTRACTS[0]]
 const CONTRACT_PROVIDER_TEXT = TEST_CONTRACTS[0].provider
-const CONTRACT_OTHER_INFO_TEXT = `${TEST_CONTRACTS[0].offer} - ${TEST_CONTRACTS[0].type} - ${TEST_CONTRACTS[0].power}`
+const CONTRACT_OTHER_INFO_TEXT = `${TEST_CONTRACTS[0].offer} - ${TEST_CONTRACTS[0].tariffType} - ${TEST_CONTRACTS[0].power} kVA`
 const circularProgressClassname = '.MuiCircularProgress-root'
 
 /**
