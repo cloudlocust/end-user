@@ -1,8 +1,11 @@
 import { reduxedRender } from 'src/common/react-platform-components/test'
 import ContractCard from 'src/modules/Contracts/components/ContractCard'
-import { TEST_CONTRACTS } from 'src/mocks/handlers/contracts'
+import { TEST_CONTRACTS as MOCK_CONTRACTS } from 'src/mocks/handlers/contracts'
 import userEvent from '@testing-library/user-event'
 import { ConfirmProvider } from 'material-ui-confirm'
+import { applyCamelCase } from 'src/common/react-platform-components'
+
+const TEST_CONTRACTS = applyCamelCase(MOCK_CONTRACTS)
 
 const DELETE_CONTRACT_WARNING_MESSAGE =
     'Vous êtes sur le point de supprimer un contrat. Ëtes-vous sûr de vouloir continuer ?'
