@@ -76,16 +76,16 @@ export const useContractList = (sizeParam?: number) => {
 /**
 `* Hooks for contractDetails.
  *
- * @param contractGuid Indicates current contractDetails guid.
+ * @param contractId Indicates current contractDetails guid.
  * @returns Hook useContractDetails.
  */
-export const useContractDetails = (contractGuid: string) => {
+export const useContractDetails = (contractId: number) => {
     // HouseId extracted from the url :houseId/contracts
     const { houseId } = useParams<contractsRouteParam>()
 
     // eslint-disable-next-line jsdoc/require-jsdoc
     return BuilderUseElementDetails<IContract, {}, IContract>({
-        API_ENDPOINT: `${CONTRACTS_API(Number(houseId))}/${contractGuid}`,
+        API_ENDPOINT: `${CONTRACTS_API(Number(houseId))}/${contractId}`,
         snackBarMessage0verride: { removeElementDetailsError, removeElementDetailsSuccess },
     })()
 }

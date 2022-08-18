@@ -61,7 +61,7 @@ const ContractCard = ({
             .catch(() => {})
     }
     return (
-        <Card key={contract.guid} className="p-16 overflow-hidden">
+        <Card key={contract.id} className="p-16 overflow-hidden">
             <div className="flex justify-between items-center">
                 <Typography className="text-16 font-bold md:text-20">{contract.provider}</Typography>
                 <div>
@@ -75,7 +75,7 @@ const ContractCard = ({
             </div>
             <Divider className="my-8" />
             <Typography className="text-13 font-medium md:text-16">
-                {contract.offer} - {contract.type} - {contract.power}
+                {contract.offer} - {contract.tariffType} - {contract.power} kVA
             </Typography>
         </Card>
     )
