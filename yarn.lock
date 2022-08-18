@@ -11967,6 +11967,11 @@ marked@^4.0.10:
   resolved "https://registry.yarnpkg.com/marked/-/marked-4.0.12.tgz#2262a4e6fd1afd2f13557726238b69a48b982f7d"
   integrity sha512-hgibXWrEDNBWgGiK18j/4lkS6ihTe9sxtV4Q1OQppb/0zzyPSzoFANBa5MfsG/zgsWklmNnhm0XACZOH/0HBiQ==
 
+material-ui-confirm@^3.0.4:
+  version "3.0.4"
+  resolved "https://registry.yarnpkg.com/material-ui-confirm/-/material-ui-confirm-3.0.4.tgz#db4892452f65628f4bb9da3166bfbc0c53877d3b"
+  integrity sha512-2Aqh1gU6JqGvFtm2KTEUsFf+SKkNQPxWXz6CU3lJlbuFkLmIm28kjmT9sUjNkcdFOL0WhRmI3UwIbBVVBPckiA==
+
 material-ui-phone-number-2@^1.2.4:
   version "1.2.4"
   resolved "https://registry.yarnpkg.com/material-ui-phone-number-2/-/material-ui-phone-number-2-1.2.4.tgz#7bb32cad6ccf5da03d7b16baf8dbc69d6900b02f"
