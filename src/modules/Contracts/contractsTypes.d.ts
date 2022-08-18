@@ -15,27 +15,86 @@ export type contractsRouteParam =
     }
 
 /**
+ * Freq type.
+ */
+export type frequencyType = 'YEARLY' | 'MONTHLY' | 'WEEKLY' | 'DAILY' | 'HOURLY' | 'MINUTELY' | 'SECONDLY'
+
+/**
+ * Type Tariff Components.
+ */
+export type ITariffComponents =
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    {
+        /**
+         * Id of tariff component.
+         */
+        id: number
+        /**
+         * Name tariff component.
+         */
+        name: string
+        /**
+         * Use meter off peak in tariff type.
+         */
+        useMeterOfffpeak?: boolean
+        /**
+         * By Week day tariff component.
+         */
+        byweekday?: string[]
+        /**
+         * Start time of tariff type.
+         */
+        startTime?: string
+        /**
+         * Frequency tariff component.
+         */
+        freq?: frequencyType
+        /**
+         * End time of tariff type.
+         */
+        endTime?: string
+        /**
+         * Deactivated At of tariff type.
+         */
+        deactivatedAt?: string
+    }
+
+/**
  * Interface Contract model.
  */
-export interface IContract {
-    /**
-     * Guid contract.
-     */
-    guid: string
-    /**
-     * Provider of the contract.
-     */
-    provider: string
-    /**
-     * Offer of the contract.
-     */
-    offer: string
-    /**
-     * Type of the contract.
-     */
-    type: string
-    /**
-     * Power of the offer.
-     */
-    power: string
-}
+export type IContract =
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    {
+        /**
+         * Id contract.
+         */
+        id: number
+        /**
+         * Provider of the contract.
+         */
+        provider: string
+        /**
+         * Offer of the contract.
+         */
+        offer: string
+        /**
+         * Type of the contract.
+         */
+        tariffType: string
+        /**
+         * Information related to tariffType (for example, if tariffType is heure creuses, then tariffComponents will have heure début, heure fin).
+         */
+        tariffComponents?: ITariffComponents
+        /**
+         * Power of the offer.
+         */
+        power: number
+        /**
+         * Start contract subscription.
+         */
+        startSubscription: string
+        /**
+         * End contract subscription.
+         */
+        endSubscription: string
+    }
