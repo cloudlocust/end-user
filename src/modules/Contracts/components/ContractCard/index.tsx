@@ -55,10 +55,8 @@ const ContractCard = ({ contract, onAfterDeleteUpdateSuccess }: ContractCardProp
         })
             // Then handle the click on confirmation button
             .then(async () => {
-                try {
-                    await removeContract()
-                    onAfterDeleteUpdateSuccess && onAfterDeleteUpdateSuccess()
-                } catch (error) {}
+                await removeContract()
+                onAfterDeleteUpdateSuccess && onAfterDeleteUpdateSuccess()
             })
             // Catch handles the click on cancel button, giving an empty function it just close the dialog
             .catch(() => {})
