@@ -11,7 +11,7 @@ import { defaultValueType } from 'src/common/ui-kit/form-fields/GoogleMapsAddres
  */
 export const TEST_HOUSES: SnakeCasedPropertiesDeep<IHousing>[] = [
     {
-        id: 123456789,
+        id: 1,
         guid: '12345Her',
         address: {
             city: 'monaco',
@@ -25,7 +25,7 @@ export const TEST_HOUSES: SnakeCasedPropertiesDeep<IHousing>[] = [
         },
     },
     {
-        id: 123456789,
+        id: 2,
         guid: null,
         address: {
             city: 'monaco',

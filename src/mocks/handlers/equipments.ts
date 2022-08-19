@@ -1,6 +1,6 @@
 import { rest } from 'msw'
 import { SnakeCasedPropertiesDeep } from 'type-fest'
-import { METER_EQUIPMENTS_API, EQUIPMENTS_API } from 'src/modules/MyHouse/components/Equipments/equipmentHooks'
+import { HOUSING_EQUIPMENTS_API, ALL_EQUIPMENTS_API } from 'src/modules/MyHouse/components/Equipments/equipmentHooks'
 import {
     equipmentNameType,
     equipmentType,
@@ -40,56 +40,61 @@ export var TEST_EQUIPMENTS: SnakeCasedPropertiesDeep<equipmentType>[] = [
     },
     {
         id: 2,
+        name: 'sanitary' as equipmentNameType,
+        allowed_type: ['electricity', 'gaz', 'other'],
+    },
+    {
+        id: 3,
         name: 'hotplate' as equipmentNameType,
         allowed_type: ['vitroceramic', 'induction', 'other'],
     },
     {
-        id: 3,
+        id: 4,
         name: 'desktopcomputer' as equipmentNameType,
         allowed_type: [],
     },
     {
-        id: 4,
+        id: 5,
         name: 'laptop' as equipmentNameType,
         allowed_type: [],
     },
     {
-        id: 5,
+        id: 6,
         name: 'tv' as equipmentNameType,
         allowed_type: [],
     },
     {
-        id: 6,
+        id: 7,
         name: 'vacuum' as equipmentNameType,
         allowed_type: [],
     },
     {
-        id: 7,
+        id: 8,
         name: 'oven' as equipmentNameType,
         allowed_type: [],
     },
     {
-        id: 8,
+        id: 9,
         name: 'microwave' as equipmentNameType,
         allowed_type: [],
     },
     {
-        id: 9,
+        id: 10,
         name: 'fridge' as equipmentNameType,
         allowed_type: [],
     },
     {
-        id: 10,
+        id: 11,
         name: 'dishwasher' as equipmentNameType,
         allowed_type: [],
     },
     {
-        id: 11,
+        id: 12,
         name: 'washingmachine' as equipmentNameType,
         allowed_type: [],
     },
     {
-        id: 12,
+        id: 13,
         name: 'dryer' as equipmentNameType,
         allowed_type: [],
     },
@@ -98,7 +103,7 @@ export var TEST_EQUIPMENTS: SnakeCasedPropertiesDeep<equipmentType>[] = [
 /**
  * Mock of customers/clients list data.
  */
-export var TEST_METER_EQUIPMENTS: SnakeCasedPropertiesDeep<IEquipmentMeter>[] = [
+export var TEST_HOUSING_EQUIPMENTS: SnakeCasedPropertiesDeep<IEquipmentMeter>[] = [
     {
         equipment_id: 1,
         equipment_number: 0,
@@ -111,30 +116,29 @@ export var TEST_METER_EQUIPMENTS: SnakeCasedPropertiesDeep<IEquipmentMeter>[] = 
     {
         equipment_id: 2,
         equipment_number: 0,
-        equipment_type: 'vitroceramic',
         equipment: {
             id: 2,
+            name: 'sanitary' as equipmentNameType,
+            allowed_type: ['electricity', 'other'],
+        },
+    },
+    {
+        equipment_id: 3,
+        equipment_number: 0,
+        equipment_type: 'vitroceramic',
+        equipment: {
+            id: 3,
             name: 'hotplate' as equipmentNameType,
             allowed_type: ['vitroceramic', 'induction', 'other'],
         },
     },
     {
-        equipment_id: 3,
+        equipment_id: 4,
         equipment_number: 3,
         equipment_type: 'electricity',
         equipment: {
-            id: 3,
-            name: 'desktopcomputer' as equipmentNameType,
-            allowed_type: [],
-        },
-    },
-    {
-        equipment_id: 4,
-        equipment_number: 0,
-        equipment_type: 'electricity',
-        equipment: {
             id: 4,
-            name: 'laptop' as equipmentNameType,
+            name: 'desktopcomputer' as equipmentNameType,
             allowed_type: [],
         },
     },
@@ -144,7 +148,7 @@ export var TEST_METER_EQUIPMENTS: SnakeCasedPropertiesDeep<IEquipmentMeter>[] = 
         equipment_type: 'electricity',
         equipment: {
             id: 5,
-            name: 'tv' as equipmentNameType,
+            name: 'laptop' as equipmentNameType,
             allowed_type: [],
         },
     },
@@ -154,7 +158,7 @@ export var TEST_METER_EQUIPMENTS: SnakeCasedPropertiesDeep<IEquipmentMeter>[] = 
         equipment_type: 'electricity',
         equipment: {
             id: 6,
-            name: 'vacuum' as equipmentNameType,
+            name: 'tv' as equipmentNameType,
             allowed_type: [],
         },
     },
@@ -164,7 +168,7 @@ export var TEST_METER_EQUIPMENTS: SnakeCasedPropertiesDeep<IEquipmentMeter>[] = 
         equipment_type: 'electricity',
         equipment: {
             id: 7,
-            name: 'oven' as equipmentNameType,
+            name: 'vacuum' as equipmentNameType,
             allowed_type: [],
         },
     },
@@ -174,7 +178,7 @@ export var TEST_METER_EQUIPMENTS: SnakeCasedPropertiesDeep<IEquipmentMeter>[] = 
         equipment_type: 'electricity',
         equipment: {
             id: 8,
-            name: 'microwave' as equipmentNameType,
+            name: 'oven' as equipmentNameType,
             allowed_type: [],
         },
     },
@@ -184,7 +188,7 @@ export var TEST_METER_EQUIPMENTS: SnakeCasedPropertiesDeep<IEquipmentMeter>[] = 
         equipment_type: 'electricity',
         equipment: {
             id: 9,
-            name: 'fridge' as equipmentNameType,
+            name: 'microwave' as equipmentNameType,
             allowed_type: [],
         },
     },
@@ -194,7 +198,7 @@ export var TEST_METER_EQUIPMENTS: SnakeCasedPropertiesDeep<IEquipmentMeter>[] = 
         equipment_type: 'electricity',
         equipment: {
             id: 10,
-            name: 'dishwasher' as equipmentNameType,
+            name: 'fridge' as equipmentNameType,
             allowed_type: [],
         },
     },
@@ -204,7 +208,7 @@ export var TEST_METER_EQUIPMENTS: SnakeCasedPropertiesDeep<IEquipmentMeter>[] = 
         equipment_type: 'electricity',
         equipment: {
             id: 11,
-            name: 'washingmachine' as equipmentNameType,
+            name: 'dishwasher' as equipmentNameType,
             allowed_type: [],
         },
     },
@@ -214,6 +218,16 @@ export var TEST_METER_EQUIPMENTS: SnakeCasedPropertiesDeep<IEquipmentMeter>[] = 
         equipment_type: 'electricity',
         equipment: {
             id: 12,
+            name: 'washingmachine' as equipmentNameType,
+            allowed_type: [],
+        },
+    },
+    {
+        equipment_id: 13,
+        equipment_number: 0,
+        equipment_type: 'electricity',
+        equipment: {
+            id: 13,
             name: 'dryer' as equipmentNameType,
             allowed_type: [],
         },
@@ -223,7 +237,7 @@ export var TEST_METER_EQUIPMENTS: SnakeCasedPropertiesDeep<IEquipmentMeter>[] = 
 // eslint-disable-next-line jsdoc/require-jsdoc
 export const equipmentsEndpoints = [
     // Get All Equipments of Meter
-    rest.get(EQUIPMENTS_API, (req, res, ctx) => {
+    rest.get(ALL_EQUIPMENTS_API, (req, res, ctx) => {
         const authorization = req.headers.get('authorization')
         if (authorization && authorization === TEST_LOAD_ERROR_METER_EQUIPMENT)
             return res(ctx.status(404), ctx.delay(1000), ctx.json('error'))
@@ -231,24 +245,24 @@ export const equipmentsEndpoints = [
     }),
 
     // Get All Equipments of Meter
-    rest.get(METER_EQUIPMENTS_API(1), (req, res, ctx) => {
+    rest.get(HOUSING_EQUIPMENTS_API(1), (req, res, ctx) => {
         const authorization = req.headers.get('authorization')
         if (authorization && authorization === TEST_LOAD_ERROR_EQUIPMENT)
             return res(ctx.status(404), ctx.delay(1000), ctx.json('error'))
         else if (authorization && authorization === TEST_AUTHORIZATION_LOAD_EMPTY_METER_EQUIPEMENTS)
             return res(ctx.status(200), ctx.delay(1000), ctx.json([]))
-        return res(ctx.status(200), ctx.delay(1000), ctx.json(TEST_METER_EQUIPMENTS))
+        return res(ctx.status(200), ctx.delay(1000), ctx.json(TEST_HOUSING_EQUIPMENTS))
     }),
 
     // Save Equipment Post request
-    rest.post<SnakeCasedPropertiesDeep<postEquipmentInputType>>(METER_EQUIPMENTS_API(1), (req, res, ctx) => {
+    rest.post<SnakeCasedPropertiesDeep<postEquipmentInputType>>(HOUSING_EQUIPMENTS_API(1), (req, res, ctx) => {
         // Success
         if (req.body[0].equipment_id === TEST_SAVE_EQUIPMENT.equipment_id) {
-            TEST_METER_EQUIPMENTS[0] = { ...TEST_SAVE_EQUIPMENT, ...TEST_METER_EQUIPMENTS[0] }
-            TEST_METER_EQUIPMENTS[1] = {
+            TEST_HOUSING_EQUIPMENTS[0] = { ...TEST_SAVE_EQUIPMENT, ...TEST_HOUSING_EQUIPMENTS[0] }
+            TEST_HOUSING_EQUIPMENTS[2] = {
                 ...TEST_SAVE_EQUIPMENT,
                 equipment_type: 'induction',
-                ...TEST_METER_EQUIPMENTS[0],
+                ...TEST_HOUSING_EQUIPMENTS[0],
             }
             return res(ctx.status(200), ctx.delay(1000), ctx.json(TEST_SAVE_EQUIPMENT))
         } else if (req.body[0].equipment_id === TEST_ERROR_SAVE_EQUIPMENT_ID) {

@@ -173,6 +173,7 @@ export const myEquipmentOptions: INumberFieldForm[] = [
 // eslint-disable-next-line jsdoc/require-jsdoc
 export const mappingEquipmentNameToType: { [key in equipmentNameType]: 'number' | 'type' } = {
     heater: 'type',
+    sanitary: 'type',
     hotplate: 'type',
     tv: 'number',
     vacuum: 'number',

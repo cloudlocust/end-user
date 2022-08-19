@@ -20,23 +20,26 @@ import {
     equipmentMeterType,
     IEquipmentMeter,
 } from 'src/modules/MyHouse/components/Equipments/EquipmentsType'
+import { useParams } from 'react-router-dom'
 
 /**
  * EquipmentForm Component.
  *
- * @param props N/A.
- * @param props.meterId Id of the meter.
  * @returns Equipment Form equipment.
  */
-export const EquipmentForm = ({
-    meterId,
-}: // eslint-disable-next-line jsdoc/require-jsdoc
-{
-    // eslint-disable-next-line jsdoc/require-jsdoc
-    meterId: number
-}) => {
+export const EquipmentForm = () => {
+    const { houseId } = useParams</**
+     *
+     */
+    {
+        // eslint-disable-next-line jsdoc/require-jsdoc
+        houseId: string
+    }>()
+
+    const housingId = parseInt(houseId)
+
     const { equipmentList, saveEquipment, loadingEquipmentInProgress, isEquipmentMeterListEmpty } =
-        useEquipmentList(meterId)
+        useEquipmentList(housingId)
 
     const [isEdit, setIsEdit] = useState(false)
 
