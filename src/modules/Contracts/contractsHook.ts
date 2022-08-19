@@ -66,7 +66,7 @@ export const useContractList = (sizeParam?: number) => {
     // HouseId extracted from the url :houseId/contracts
     const { houseId } = useParams<contractsRouteParam>()
 
-    return BuilderUseElementList<IContract, undefined, searchFilterType>({
+    return BuilderUseElementList<IContract, IContract, searchFilterType>({
         API_ENDPOINT: CONTRACTS_API(Number(houseId)),
         sizeParam,
         snackBarMessage0verride: { loadElementListError },

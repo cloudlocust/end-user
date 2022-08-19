@@ -15,7 +15,6 @@ export type contractsRouteParam =
     }
 
 /**
-<<<<<<< HEAD
  * ContractCardProps.
  */
 export type ContractCardProps =
@@ -30,6 +29,23 @@ export type ContractCardProps =
          */
         onAfterDeleteUpdateSuccess?: () => void
     }
+
+/**
+ * ContractFormProps.
+ */
+export type ContractFormProps =
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    {
+        /**
+         * Callback when submitting contract form.
+         */
+        onSubmit: (input: IContract) => void
+        /**
+         * Loading state when submitting form.
+         */
+        isContractsLoading?: boolean
+    }
+
 /**
  * Freq type.
  */
