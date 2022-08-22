@@ -29,8 +29,8 @@ const ContractCard = ({ contract, onAfterDeleteUpdateSuccess }: ContractCardProp
     /**
      * Open warning remove popup on delete click.
      */
-    const onDeleteClick = () => {
-        openMuiDialog({
+    const onDeleteClick = async () => {
+        await openMuiDialog({
             title: '',
             dialogProps: {
                 PaperProps: {
@@ -56,13 +56,11 @@ const ContractCard = ({ contract, onAfterDeleteUpdateSuccess }: ContractCardProp
                 </TypographyFormatMessage>
             ),
         })
-            // Then handle the click on confirmation button
-            .then(async () => {
-                await removeContract()
-                onAfterDeleteUpdateSuccess && onAfterDeleteUpdateSuccess()
-            })
-            // Catch handles the click on cancel button, giving an empty function it just close the dialog
-            .catch(() => {})
+
+        // Then handle the click on confirmation button
+        await removeContract()
+        onAfterDeleteUpdateSuccess && onAfterDeleteUpdateSuccess()
+        // Catch handles the click on cancel button, But no need for a catch as it closes the dialog no matter what
     }
     return (
         <Card key={contract.id} className="p-16 overflow-hidden">
