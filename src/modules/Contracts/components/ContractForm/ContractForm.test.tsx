@@ -1,7 +1,6 @@
 import { reduxedRender } from 'src/common/react-platform-components/test'
 import ContractForm from 'src/modules/Contracts/components/ContractForm'
 import userEvent from '@testing-library/user-event'
-import { fireEvent, screen } from '@testing-library/react'
 import { ContractFormProps } from 'src/modules/Contracts/contractsTypes'
 
 const PROVIDER_LABEL_TEXT = 'Fournisseur'
@@ -89,6 +88,8 @@ describe('Test ContractForm Component', () => {
         CONTRACT_FORM_FIELDS_LABELS.shift()
         // Other fields are not shown
         LabelsNotToBeInDocument(CONTRACT_FORM_FIELDS_LABELS, getByText)
+
+        // TODO test when filling startSubscription
     }, 30000)
 
     test('When isContractLoadingInProgress spinner should be shown', async () => {
