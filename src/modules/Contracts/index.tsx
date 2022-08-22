@@ -21,7 +21,7 @@ import { primaryMainColor } from 'src/modules/utils/muiThemeVariables'
 const Contracts = () => {
     // HouseId extracted from params of the url :houseId/contracts
     const { houseId } = useParams<contractsRouteParam>()
-    const { elementList: contractList, loadingInProgress: isContractsLoading } = useContractList()
+    const { elementList: contractList, loadingInProgress: isContractsLoading } = useContractList(Number(houseId))
     return (
         <div className="p-24">
             <NavLink to={`${URL_MY_HOUSE}/${houseId}`} className="flex">
