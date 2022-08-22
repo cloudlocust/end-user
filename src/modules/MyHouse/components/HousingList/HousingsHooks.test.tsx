@@ -7,6 +7,7 @@ import { applyCamelCase } from 'src/common/react-platform-components/utils/mm'
 
 const TEST_MOCKED_HOUSES: IHousing[] = applyCamelCase(TEST_HOUSES)
 const mockEnqueueSnackbar = jest.fn()
+const mockReloadHousings = jest.fn()
 
 /**
  * Mocking the useSnackbar used in CustomerDetails to load the customerDetails based on url /customers/:id {id} params.
@@ -150,7 +151,7 @@ describe('housingstHooks test', () => {
             act(async () => {
                 try {
                     // FAKE ID that's different from the TEST_SUCCESS_COMMENT
-                    await result.current.removeHousing(fakeId)
+                    await result.current.removeHousing(fakeId, mockReloadHousings)
                 } catch (err) {}
             })
             expect(result.current.loadingRequest).toBe(true)
@@ -171,7 +172,7 @@ describe('housingstHooks test', () => {
 
             expect(result.current.loadingRequest).toBe(false)
             act(() => {
-                result.current.removeHousing(TEST_MOCKED_HOUSES[0].id)
+                result.current.removeHousing(TEST_MOCKED_HOUSES[0].id, mockReloadHousings)
             })
             expect(result.current.loadingRequest).toBe(true)
             await waitForValueToChange(
