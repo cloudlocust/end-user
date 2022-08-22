@@ -60,6 +60,8 @@ pipeline{
             when {
                     expression { BRANCH_NAME ==~ /(production|master|develop)/ }
             }
+           stages {
+           stage('Publish in dockerhub'){
             environment {
                 registryCredential = 'dockerhub'
                 app_regisgtry = 'myem/enduser-react'
@@ -77,6 +79,33 @@ pipeline{
             }
 
         }
+         stage('Publish in chart regisry'){
+                       when { changeset "enduser-react-chart/*"}
+                       environment {
+                           ENV_NAME = getEnvName(BRANCH_NAME)
+                           VERSION_CHART = "0.1.0+${BRANCH_NAME}${GIT_COMMIT}"
+                           USER_NAME_ = credentials('helm_registry_username')
+                           PASSWORD_ = credentials('helm_registry_password')
+                           url = credentials('helm_registry_url')
+                           URL_ = "${url}/${ENV_NAME}registry"
+                           }
+                        steps {
+                              script{
+
+                                sh(script: " helm registry login -u ${USER_NAME_} -p ${PASSWORD_} ${URL_} ")
+                                sh(script: "rm -rf helm-chart-repository")
+                                sh(script: "mkdir helm-chart-repository")         
+                                sh(script: "helm package enduser-react-chart --version ${VERSION_CHART} -d helm-chart-repository")
+                                sh(script: "helm push helm-chart-repository/* oci://${URL_}")
+                                sh(script: "rm -rf helm-chart-repository")
+
+                }
+              }  
+
+                }  
+           }
+        }
+
 
        stage ('Deploy') {
         when {
@@ -84,16 +113,20 @@ pipeline{
            }
         environment {
               ENV_NAME = getEnvName(BRANCH_NAME)
+              USER_NAME_ = credentials('helm_registry_username')
+              PASSWORD_ = credentials('helm_registry_password')
+              url = credentials('helm_registry_url')
+              URL_ = "${url}/${ENV_NAME}registry"               
            }
             steps {
                 script{
                     // The below will clone network devops repository
-                    git credentialsId: 'github myem developer', url: 'https://github.com/myenergymanager/network-devops'
+                    git([url: 'https://github.com/myenergymanager/network-devops', branch: "${BRANCH_NAME}", credentialsId: 'github myem developer'])
                     // Checkout to master
-                    sh "git checkout master"
+                    sh " helm registry login -u ${USER_NAME_} -p ${PASSWORD_} ${URL_} "
                     // This will apply new helm upgrade, you need to specify namespace.
                     withKubeConfig([credentialsId:'kubernetes_staging-alpha-preprod', serverUrl:'https://aba74d96-42a7-4fd9-9bcf-46b243e3c48f.api.k8s.fr-par.scw.cloud:6443']) {
-                        sh "helm upgrade --install enduser-react-ng${ENV_NAME} helm-charts/enduser-react -f environments/ng${ENV_NAME}/microservices/enduser-react.yaml --namespace ng${ENV_NAME}"
+                        sh "helm upgrade --install enduser-react-ng${ENV_NAME} oci://rg.fr-par.scw.cloud/${ENV_NAME}registry/enduser-react -f environments/ng${ENV_NAME}/microservices/enduser-react.yaml --namespace ng${ENV_NAME}"
                     }
                 }
             }
