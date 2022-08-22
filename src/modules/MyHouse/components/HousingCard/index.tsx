@@ -18,7 +18,7 @@ import { Form, max, min, requiredBuilder } from 'src/common/react-platform-compo
 import { IHousing } from 'src/modules/MyHouse/components/HousingList/housing.d'
 import { useHousingsDetails } from 'src/modules/MyHouse/components/HousingList/HousingsHooks'
 import { URL_MY_HOUSE } from 'src/modules/MyHouse/MyHouseConfig'
-import { useMeterForHousing } from 'src/modules/MyHouse/components/HousingCard/HousingCardHooks'
+import { useMeterForHousing } from 'src/modules/Meters/metersHook'
 import { IMeter } from 'src/modules/Meters/Meters'
 
 /**
@@ -52,7 +52,7 @@ const HousingCard = ({
     const [addMeterOpen, setAddMeterOpen] = React.useState(false)
 
     const { removeHousing } = useHousingsDetails()
-    const { addMeter, loadingInProgress: isMeterInProgress } = useMeterForHousing(logement.id)
+    const { addMeter, loadingInProgress: isMeterInProgress } = useMeterForHousing()
 
     const MY_HOUSING_AT = formatMessage({
         id: 'Mon Logement à ',
@@ -107,7 +107,7 @@ const HousingCard = ({
      * @param id Identifier of the Housing to delete.
      */
     const handleDeleteHousing = (id: number) => {
-        removeHousing(id)
+        removeHousing(id, reloadHousings)
         handleCloseConfirmModal()
     }
 
@@ -215,7 +215,7 @@ const HousingCard = ({
             <Modal open={addMeterOpen} onClose={handleCloseAddMeterOpen}>
                 <Form
                     onSubmit={async (value: Omit<IMeter, 'id'>) => {
-                        await addMeter(value, reloadHousings)
+                        await addMeter(logement.id, value, reloadHousings)
                         handleCloseAddMeterOpen()
                     }}
                 >
