@@ -70,6 +70,18 @@ const HousingList = () => {
         width: 300,
     }
 
+    /**
+     * This is a function to be able to pass props to the housing card.
+     *
+     * @param props Props.
+     * @param props.element Element that is the housing.
+     * @returns JSX.Element.
+     */
+    const HousingCardElement = ({
+        element,
+    }: //eslint-disable-next-line
+        { element: IHousing }) => <HousingCard element={element} reloadHousings={reloadHousings} />
+
     // TODO - Refacto this component.
     return (
         <Root
@@ -100,7 +112,7 @@ const HousingList = () => {
                                         data={housingList}
                                         shrink={false}
                                         loadingData={isHousingInProgress}
-                                        ElementCard={HousingCard}
+                                        ElementCard={HousingCardElement}
                                         placeholder={<PostPlaceholder />}
                                     />
                                     {!noMoreHousingToLoad && (

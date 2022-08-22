@@ -13,9 +13,15 @@ export type IHousing =
          */
         id: number
         /**
-         * The Guid of the PDL.
+         * The meter of the housing.
          */
-        guid: string | null
+        meter: //eslint-disable-next-line
+        {
+            /**
+             * The Guid of the PDL.
+             */
+            guid: string
+        } | null
         /**
          * The address related to the PDL's GUID.
          */
