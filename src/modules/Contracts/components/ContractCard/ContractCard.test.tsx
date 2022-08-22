@@ -6,6 +6,7 @@ import { ConfirmProvider } from 'material-ui-confirm'
 import { waitFor } from '@testing-library/react'
 import { ContractCardProps } from 'src/modules/Contracts/contractsTypes'
 import { applyCamelCase } from 'src/common/react-platform-components'
+import { TEST_HOUSE_ID } from 'src/mocks/handlers/contracts'
 
 const TEST_CONTRACTS = applyCamelCase(MOCK_CONTRACTS)
 const DELETE_CONTRACT_WARNING_MESSAGE =
@@ -16,6 +17,22 @@ const DELETE_ICON_DATA_TESTID = 'DeleteIcon'
 const circularProgressClassname = '.MuiCircularProgress-root'
 let mockIsContractsLoading = false
 let mockRemoveElementDetails = jest.fn()
+const mockHouseId = TEST_HOUSE_ID
+
+/**
+ * Mocking the react-router-dom used in contractsHooks.
+ */
+jest.mock('react-router-dom', () => ({
+    ...jest.requireActual('react-router-dom'),
+    /**
+     * Mock the useParams to get the houseId from url.
+     *
+     * @returns UseParams containing houseId.
+     */
+    useParams: () => ({
+        houseId: `${mockHouseId}`,
+    }),
+}))
 
 /**
  * Mock for ContractCard props.

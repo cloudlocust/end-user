@@ -25,7 +25,7 @@ const Contracts = () => {
         elementList: contractList,
         loadingInProgress: isContractsLoading,
         reloadElements: reloadContractList,
-    } = useContractList()
+    } = useContractList(Number(houseId))
     return (
         <div className="p-24">
             <NavLink to={`${URL_MY_HOUSE}/${houseId}`} className="flex">
