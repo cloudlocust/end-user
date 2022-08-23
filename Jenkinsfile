@@ -83,7 +83,7 @@ pipeline{
                        when { changeset "enduser-react-chart/*"}
                        environment {
                            ENV_NAME = getEnvName(BRANCH_NAME)
-                           VERSION_CHART = "0.1.0+${BRANCH_NAME}${GIT_COMMIT}"
+                           VERSION_CHART = "0.1.0+${BUILD_NUMBER}"
                            USER_NAME_ = credentials('helm_registry_username')
                            PASSWORD_ = credentials('helm_registry_password')
                            url = credentials('helm_registry_url')
