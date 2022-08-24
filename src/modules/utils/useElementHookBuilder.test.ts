@@ -91,7 +91,7 @@ describe('BuilderUseElementList', () => {
                 { timeout: 2000 },
             )
             expect(result.current.elementList).toHaveLength(TEST_SIZE)
-            expect(result.current.elementList[0].guid).not.toBe(prevElementList[0].guid)
+            expect(result.current.elementList[0].id).not.toBe(prevElementList[0].guid)
         })
 
         test('NextPage and PreviousPage', async () => {
@@ -126,7 +126,7 @@ describe('BuilderUseElementList', () => {
                 { timeout: 2000 },
             )
             expect(result.current.elementList).toHaveLength(TEST_SIZE)
-            expect(result.current.elementList[0].guid).not.toBe(firstLoadElementList[0].guid)
+            expect(result.current.elementList[0].id).not.toBe(firstLoadElementList[0].id)
 
             // Previous Page
             act(() => {
