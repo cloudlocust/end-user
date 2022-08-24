@@ -10,7 +10,7 @@ import convert, { Unit } from 'convert-units'
 export const dataConsumptionPeriod = [
     {
         name: 'Jour',
-        interval: '2min',
+        interval: '2m',
         period: 'daily' as periodType,
     },
     {
@@ -26,7 +26,7 @@ export const dataConsumptionPeriod = [
 
     {
         name: 'Année',
-        interval: '1 month',
+        interval: '1M',
         period: 'yearly' as periodType,
     },
 ]

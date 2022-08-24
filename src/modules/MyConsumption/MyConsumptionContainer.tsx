@@ -26,7 +26,7 @@ import { getChartColor } from './utils/myConsumptionVariables'
  * InitialMetricsStates for useMetrics.
  */
 export const initialMetricsHookValues: getMetricType = {
-    interval: '2min',
+    interval: '2m',
     range: getRange('day'),
     targets: [
         {
