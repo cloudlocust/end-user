@@ -17,7 +17,7 @@ import dayjs from 'dayjs'
 import { dateFnsPeriod, periodType } from 'src/modules/MyConsumption/myConsumptionTypes'
 
 // eslint-disable-next-line jsdoc/require-jsdoc
-let interval: metricIntervalType = '2min'
+let interval: metricIntervalType = '2m'
 
 // GMT: Thursday, 23 June 2022 00:00:00
 const timestamp1 = 1655942400000
@@ -92,7 +92,7 @@ describe('test pure functions', () => {
         expect(xAxisValues.length).toBeLessThanOrEqual(32)
 
         // When period is yearly we have correct length of xAxisValues.
-        interval = '1 month'
+        interval = '1M'
         xAxisValues = generateXAxisValues('yearly', getRange('year'))
         // If interval is 1d and period is yearly , then length should be 13 because we start from the current month till the month of next year.
         expect(xAxisValues).toHaveLength(13)
@@ -137,7 +137,7 @@ describe('test pure functions', () => {
         ])
     })
     test('isMissingYAxisValues test', async () => {
-        interval = '2min'
+        interval = '2m'
         // When day period, and data doesn't contains all day values.
         mockMetricsData[0].datapoints = FAKE_DAY_DATA
         let ApexChartsFilledAxisValues = convertMetricsDataToApexChartsAxisValues(mockMetricsData)

@@ -34,7 +34,7 @@ const FAKE_TARGETS: metricTargetsType = [
 ]
 
 let mockHookArguments: getMetricType = {
-    interval: '2min',
+    interval: '2m',
     range: FAKE_RANGE,
     targets: FAKE_TARGETS,
     filters: [],
@@ -48,7 +48,7 @@ describe('useMetrics hook test', () => {
 
         const currentResult = result.current
         expect(currentResult.isMetricsLoading).toStrictEqual(true)
-        expect(currentResult.metricsInterval).toStrictEqual('2min')
+        expect(currentResult.metricsInterval).toStrictEqual('2m')
         expect(currentResult.range).toStrictEqual(FAKE_RANGE)
         expect(currentResult.targets).toStrictEqual(FAKE_TARGETS)
         expect(currentResult.filters).toStrictEqual([])
@@ -88,7 +88,7 @@ describe('useMetrics hook test', () => {
     }, 8000)
     test('When add and remove target, targets should change and getMetrics should work', async () => {
         mockHookArguments.targets = []
-        mockHookArguments.interval = '2min'
+        mockHookArguments.interval = '2m'
         mockHookArguments.range = getRange('day')
         const {
             renderedHook: { result, waitForValueToChange },

@@ -31,7 +31,7 @@ export enum metricTargetsEnum {
 /**
  * Metrics intervals.
  */
-export type metricIntervalType = '2min' | '1d' | '1 month'
+export type metricIntervalType = '2m' | '1d' | '1M'
 
 /**
  * Metric range.
