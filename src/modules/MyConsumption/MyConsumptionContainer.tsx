@@ -88,14 +88,15 @@ export const MyConsumptionContainer = () => {
      * @returns Text that represents the interval.
      */
     const showPerPeriodText = () => {
+        let textUnit = `en ${isEurosConsumptionChart ? '€' : period === 'daily' ? 'Wh' : 'kWh'}`
         if (period === 'daily') {
-            return 'en Wh par jour'
+            return `${textUnit} par jour`
         } else if (period === 'weekly') {
-            return 'en kWh par semaine'
+            return `${textUnit} par semaine`
         } else if (period === 'monthly') {
-            return 'en kWh par mois'
+            return `${textUnit} par mois`
         } else if (period === 'yearly') {
-            return 'en kWh par année'
+            return `${textUnit} par année`
         } else {
             throw Error('PeriodValue not set')
         }
