@@ -80,10 +80,10 @@ pipeline{
 
         }
          stage('Publish in chart regisry'){
-                       when { changeset "enduser-react-chart/*"}
+                       when{  expression { changeset('enduser-react-chart')} }
                        environment {
                            ENV_NAME = getEnvName(BRANCH_NAME)
-                           VERSION_CHART = "0.1.0+${BUILD_NUMBER}"
+                           VERSION_CHART = "0.1.${BUILD_NUMBER}"
                            USER_NAME_ = credentials('helm_registry_username')
                            PASSWORD_ = credentials('helm_registry_password')
                            url = credentials('helm_registry_url')
@@ -121,12 +121,12 @@ pipeline{
             steps {
                 script{
                     // The below will clone network devops repository
-                    git([url: 'https://github.com/myenergymanager/network-devops', branch: "${BRANCH_NAME}", credentialsId: 'github myem developer'])
+                    git([url: 'https://github.com/myenergymanager/network-devops', branch: "master", credentialsId: 'github myem developer'])
                     // Checkout to master
                     sh " helm registry login -u ${USER_NAME_} -p ${PASSWORD_} ${URL_} "
                     // This will apply new helm upgrade, you need to specify namespace.
                     withKubeConfig([credentialsId:'kubernetes_staging-alpha-preprod', serverUrl:'https://aba74d96-42a7-4fd9-9bcf-46b243e3c48f.api.k8s.fr-par.scw.cloud:6443']) {
-                        sh "helm upgrade --install enduser-react-ng${ENV_NAME} oci://rg.fr-par.scw.cloud/${ENV_NAME}registry/enduser-react -f environments/ng${ENV_NAME}/microservices/enduser-react.yaml --namespace ng${ENV_NAME}"
+                        sh "helm upgrade --install enduser-react-ng${ENV_NAME} oci://${URL_}/enduser-react -f environments/ng${ENV_NAME}/microservices/enduser-react.yaml --namespace ng${ENV_NAME}"
                     }
                 }
             }
@@ -180,4 +180,56 @@ def getBuildEnv(branchName) {
      else{
          return "alpha";
      }
+}
+
+def allChangeSetsFromLastSuccessfulBuild() { 
+    def jobName="$JOB_NAME"
+    def job = Jenkins.getInstance().getItemByFullName(jobName)
+    def lastSuccessBuild = job.lastSuccessfulBuild.number as int
+    def currentBuildId = "$BUILD_ID" as int
+    
+    def changeSets = []
+
+    for(int i = lastSuccessBuild + 1; i < currentBuildId; i++) {
+        echo "Getting Change Set for the Build ID : ${i}"
+        def chageSet = job.getBuildByNumber(i).getChangeSets()
+        changeSets.addAll(chageSet)
+    }
+     changeSets.addAll(currentBuild.changeSets) // Add the  current Changeset
+     return changeSets
+}
+
+def getFilesChanged(chgSets) {
+    def filesList = []
+    def changeLogSets = chgSets
+        for (int i = 0; i < changeLogSets.size(); i++) {
+            def entries = changeLogSets[i].items
+            for (int j = 0; j < entries.length; j++) {
+                def entry = entries[j]
+                def files = new ArrayList(entry.affectedFiles)
+                    for (int k = 0; k < files.size(); k++) {
+                    def file = files[k]
+                    filesList.add(file.path)
+            }
+        }
+    }
+    return filesList
+}
+
+def isPathExist(changeSets,path) {
+    
+            b = false
+            changeSets.each { 
+                a = it.startsWith(path)
+                b = a || b
+            }
+            return b
+            
+    
+}
+
+def changeset(path){
+    def changeSets = allChangeSetsFromLastSuccessfulBuild()                                          
+    return  isPathExist(getFilesChanged(changeSets),path)
+
 }
