@@ -10,17 +10,17 @@ import { getMetricType, metricTargetsEnum, metricTargetType } from 'src/modules/
 import { periodType } from 'src/modules/MyConsumption/myConsumptionTypes'
 import { Link } from 'react-router-dom'
 import { Icon, Typography } from 'src/common/ui-kit'
-import IconButton from '@mui/material/IconButton'
 import { useIntl } from 'react-intl'
 import { useConsents } from 'src/modules/Consents/consentsHook'
 import { WidgetList } from 'src/modules/MyConsumption/components/Widget/WidgetsList'
 import CircularProgress from '@mui/material/CircularProgress'
 import MyConsumptionDatePicker from 'src/modules/MyConsumption/components/MyConsumptionDatePicker'
+import EurosConsumptionButtonToggler from 'src/modules/MyConsumption/components/EurosConsumptionButtonToggler'
 import { MyConsumptionPeriod, SelectMeters } from 'src/modules/MyConsumption'
 import TargetButtonGroup from 'src/modules/MyConsumption/components/TargetButtonGroup'
-import BoltIcon from '@mui/icons-material/Bolt'
-import EuroIcon from '@mui/icons-material/Euro'
-import { getChartColor } from './utils/myConsumptionVariables'
+import { NavLink } from 'react-router-dom'
+import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline'
+import { URL_CONTRACTS } from 'src/modules/Contracts/ContractsConfig'
 
 /**
  * InitialMetricsStates for useMetrics.
@@ -199,33 +199,12 @@ export const MyConsumptionContainer = () => {
                 </div>
 
                 <div className="my-16 flex justify-between">
-                    {isEurosConsumptionChart ? (
-                        <IconButton
-                            sx={{
-                                color: 'primary.contrastText',
-                                backgroundColor: 'primary.light',
-                            }}
-                            onClick={() => {
-                                removeTarget(metricTargetsEnum.eurosConsumption)
-                                addTarget(metricTargetsEnum.consumption)
-                            }}
-                        >
-                            <BoltIcon sx={{ width: 24, height: 24 }} />
-                        </IconButton>
-                    ) : (
-                        <IconButton
-                            sx={{
-                                color: 'white',
-                                backgroundColor: getChartColor(metricTargetsEnum.eurosConsumption, theme),
-                            }}
-                            onClick={() => {
-                                removeTarget(metricTargetsEnum.consumption)
-                                addTarget(metricTargetsEnum.eurosConsumption)
-                            }}
-                        >
-                            <EuroIcon sx={{ width: 20, height: 20 }} />
-                        </IconButton>
-                    )}
+                    <EurosConsumptionButtonToggler
+                        removeTarget={removeTarget}
+                        addTarget={addTarget}
+                        showEurosConsumption={!isEurosConsumptionChart}
+                    />
+
                     <TargetButtonGroup
                         removeTarget={removeTarget}
                         addTarget={addTarget}
@@ -254,6 +233,18 @@ export const MyConsumptionContainer = () => {
                     setMetricsInterval={setMetricsInterval}
                     range={range}
                 />
+                {isEurosConsumptionChart && (
+                    // TODO Fix URL redirection with the correct housingId.
+                    <NavLink to={`${URL_CONTRACTS}`} className="flex flex-col items-center mt-16">
+                        <ErrorOutlineIcon sx={{ color: 'secondary.main', width: '32px', height: '32px' }} />
+                        <TypographyFormatMessage
+                            className="text-13 underline md:text-16 w-full text-center"
+                            sx={{ color: 'secondary.main' }}
+                        >
+                            Ce graphe est un exemple. Renseigner votre contrat d'énergie
+                        </TypographyFormatMessage>
+                    </NavLink>
+                )}
             </div>
             {data.length !== 0 && (
                 <div className="p-12 sm:p-24 ">
@@ -264,7 +255,7 @@ export const MyConsumptionContainer = () => {
                     </div>
                     <WidgetList
                         data={
-                            // TODO Fix when getting to the story of consumptionEuros
+                            // TODO Fix when getting to the story of widget consumptionEuros
                             data.filter((metric) => metric.target !== metricTargetsEnum.eurosConsumption)
                         }
                         isMetricsLoading={isMetricsLoading}
