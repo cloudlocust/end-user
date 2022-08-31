@@ -233,11 +233,13 @@ const HousingCard = ({
                                 <TextField
                                     name="name"
                                     label="Nom de mon compteur"
+                                    placeholder="Donnez un nom à votre compteur"
                                     validateFunctions={[requiredBuilder()]}
                                 />
                                 <TextField
                                     name="guid"
                                     label="Numéro de mon compteur"
+                                    placeholder="Donnez le numéro de votre compteur"
                                     validateFunctions={[requiredBuilder(), min(14), max(14)]}
                                 />
                             </CardContent>
