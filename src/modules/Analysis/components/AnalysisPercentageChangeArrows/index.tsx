@@ -100,7 +100,7 @@ const AnalysisPercentageChangeArrows = ({
                 type: 'timeserie',
             },
         ],
-        interval: '1 month',
+        interval: '1M',
     } as getMetricType)
 
     // Wrap in useMemo for better performance, as we save the result of convertMetricsData function and we don't call it again on every reender, until data changes.

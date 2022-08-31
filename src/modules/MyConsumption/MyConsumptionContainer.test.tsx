@@ -25,7 +25,7 @@ jest.mock('src/modules/Metrics/metricsHook.ts', () => ({
             from: '2022-06-04T00:00:00.000Z',
             to: '2022-06-04T23:59:59.999Z',
         },
-        interval: '2min',
+        interval: '2m',
     }),
 }))
 

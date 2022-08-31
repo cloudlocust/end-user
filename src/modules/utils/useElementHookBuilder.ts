@@ -88,6 +88,35 @@ export type snackBarMessage0verrideType<responseDataType> =
     | undefined
 
 /**
+ * Function that returns custom snackbar messages for useElementDetails functions.
+ */
+export type elementDetailsSnackBarMessage0verrideType<T, K> =
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    | {
+          /**
+           *  Callback returns the fail load elementDetails snackbar message.
+           */
+          loadElementDetailsError?: (error: any, formatMessage: formatMessageType) => string
+          /**
+           *  Callback returns the success edit elementDetails snackbar message.
+           */
+          editElementDetailsSuccess?: (responseData: T, formatMessage: formatMessageType) => string
+          /**
+           *  Callback returns the fail edit elementDetails snackbar message.
+           */
+          editElementDetailsError?: (error: any, formatMessage: formatMessageType) => string
+          /**
+           *  Callback returns the success remove elementDetails snackbar message.
+           */
+          removeElementDetailsSuccess?: (responseData: K, formatMessage: formatMessageType) => string
+          /**
+           *  Callback returns the fail remove elementDetails snackbar message.
+           */
+          removeElementDetailsError?: (error: any, formatMessage: formatMessageType) => string
+      }
+    | undefined
+
+/**
  * Builder for implementing useElement.
  *
  * @param props N/A.
@@ -298,4 +327,153 @@ export function BuilderUseElementList<T, U, K>({
         return useElementListFunctions as useElementListFunctionsType<T, U, K, N>
     }
     return useElementList
+}
+
+/**
+ * Builder for implementing useElementDetails.
+ *
+ * @param props N/A.
+ * @param props.API_ENDPOINT Represent the endpoint for all requests of the useElementDetails.
+ * @param props.isLoadElementDetailsOnHookInstanciation Boolean indicating if the we load element details when hook is instanciated.
+ * @param props.snackBarMessage0verride Function that returns Custom snackbar message for overriding the default useElementDetails messages.
+ * @returns Builder for implement useElementDetails hook.
+ */
+export function BuilderUseElementDetails<T, U, K>({
+    API_ENDPOINT,
+    isLoadElementDetailsOnHookInstanciation,
+    snackBarMessage0verride,
+}: // eslint-disable-next-line jsdoc/require-jsdoc
+{
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    API_ENDPOINT: string
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    isLoadElementDetailsOnHookInstanciation?: boolean
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    snackBarMessage0verride?: elementDetailsSnackBarMessage0verrideType<T, K>
+}) {
+    /**
+    `* Hooks for elementDetails.
+     *
+     * @returns Hook useElementDetails.
+    */
+    // eslint-disable-next-line sonarjs/cognitive-complexity
+    function useElementDetails() {
+        const [elementDetails, setElementDetails] = useState<T | null>(null)
+        const [loadingInProgress, setLoadingInProgress] = useState(false)
+        const { enqueueSnackbar } = useSnackbar()
+        const { formatMessage } = useIntl()
+        const isInitialMount = useRef(true)
+
+        /**
+         * Load Element Details function.
+         */
+        const loadElementDetails = useCallback(async () => {
+            setLoadingInProgress(true)
+
+            try {
+                const { data: responseData } = await axios.get<T>(`${API_ENDPOINT}`)
+                setElementDetails(responseData)
+            } catch (error) {
+                enqueueSnackbar(
+                    snackBarMessage0verride && snackBarMessage0verride.loadElementDetailsError
+                        ? snackBarMessage0verride.loadElementDetailsError(error, formatMessage)
+                        : formatMessage({
+                              id: "Erreur lors du chargement de l'élément",
+                              defaultMessage: "Erreur lors du chargement de l'élément",
+                          }),
+                    { variant: 'error' },
+                )
+            }
+            setLoadingInProgress(false)
+        }, [formatMessage, enqueueSnackbar])
+
+        // UseEffect executes on initial intantiation of useElementDetails, responsible for loadElementDetails on initial instanciation of hook.
+        useEffect(() => {
+            if (isInitialMount.current && isLoadElementDetailsOnHookInstanciation) {
+                isInitialMount.current = false
+                loadElementDetails()
+            }
+        }, [loadElementDetails])
+
+        /**
+         * Edit Element Details function.
+         *
+         * @param body Updated elementDetails Request body.
+         * @returns Updated ElementDetails.
+         */
+        const editElementDetails = async (body: U) => {
+            setLoadingInProgress(true)
+            try {
+                const { data: responseData } = await axios.put<T, AxiosResponse<T>>(`${API_ENDPOINT}`, body)
+
+                enqueueSnackbar(
+                    snackBarMessage0verride && snackBarMessage0verride.editElementDetailsSuccess
+                        ? snackBarMessage0verride.editElementDetailsSuccess(responseData, formatMessage)
+                        : formatMessage({
+                              id: "Succès lors de la modification de l'élément",
+                              defaultMessage: "Succès lors de la modification de l'élément",
+                          }),
+                    { variant: 'success' },
+                )
+                setLoadingInProgress(false)
+                setElementDetails(responseData)
+                return responseData
+            } catch (error) {
+                enqueueSnackbar(
+                    snackBarMessage0verride && snackBarMessage0verride.editElementDetailsError
+                        ? snackBarMessage0verride.editElementDetailsError(error, formatMessage)
+                        : formatMessage({
+                              id: "Erreur lors de la modification de l'élément",
+                              defaultMessage: "Erreur lors de la modification de l'élément",
+                          }),
+                    { variant: 'error' },
+                )
+                setLoadingInProgress(false)
+            }
+        }
+
+        /**
+         * Remove Element Details function.
+         *
+         * @returns Deleted elementDetails.
+         */
+        const removeElementDetails = async () => {
+            setLoadingInProgress(true)
+            try {
+                const { data: responseData } = await axios.delete<K, AxiosResponse<K>>(`${API_ENDPOINT}`)
+                enqueueSnackbar(
+                    snackBarMessage0verride && snackBarMessage0verride.removeElementDetailsSuccess
+                        ? snackBarMessage0verride.removeElementDetailsSuccess(responseData, formatMessage)
+                        : formatMessage({
+                              id: "Succès lors de la suppression de l'élément",
+                              defaultMessage: "Succès lors de la suppression de l'élément",
+                          }),
+                    { variant: 'success' },
+                )
+                setLoadingInProgress(false)
+                setElementDetails(null)
+                return responseData
+            } catch (error) {
+                enqueueSnackbar(
+                    snackBarMessage0verride && snackBarMessage0verride.removeElementDetailsError
+                        ? snackBarMessage0verride.removeElementDetailsError(error, formatMessage)
+                        : formatMessage({
+                              id: "Erreur lors de la suppression de l'élément",
+                              defaultMessage: "Erreur lors de la suppression de l'élément",
+                          }),
+                    { variant: 'error' },
+                )
+                setLoadingInProgress(false)
+            }
+        }
+
+        return {
+            loadElementDetails,
+            loadingInProgress,
+            elementDetails,
+            removeElementDetails,
+            editElementDetails,
+        }
+    }
+    return useElementDetails
 }
