@@ -1,6 +1,6 @@
 import { Button, Card, CardContent } from '@mui/material'
-import React, { FC, useState } from 'react'
-import { email, requiredBuilder, Form } from 'src/common/react-platform-components'
+import React, { FC, useRef, useState } from 'react'
+import { email, requiredBuilder, Form, repeatPassword } from 'src/common/react-platform-components'
 import { useIntl } from 'src/common/react-platform-translation'
 import { TextField, ButtonLoader, PasswordField } from 'src/common/ui-kit'
 import { useForgotPassword } from 'src/modules/User/ForgotPassword/hooks'
@@ -16,6 +16,15 @@ import { ButtonResetForm } from 'src/common/ui-kit/components/ButtonResetForm/Bu
 export const ChangePassword: FC = () => {
     const { formatMessage } = useIntl()
     const { isForgotPasswordProgress, onSubmitForgotPassword } = useForgotPassword()
+    const passwordRef = useRef()
+    const [isActive, setIsActive] = useState(false)
+    /**
+     * Handler function to setIsActive.
+     */
+    const toggleActiveForm = () => {
+        setIsActive((isActive) => !isActive)
+    }
+
     return (
         <>
             <div className="forgot-password-container">
@@ -38,15 +47,15 @@ export const ChangePassword: FC = () => {
                                         <PasswordField
                                             name="repeatPwd"
                                             label="Confirmer mot de passe"
-                                            // validateFunctions={[requiredBuilder(), repeatPassword(passwordRef)]}
+                                            validateFunctions={[requiredBuilder(), repeatPassword(passwordRef)]}
                                         />
                                         <div>
                                             <ButtonResetForm
                                                 initialValues={formInitialValues}
-                                                onClickButtonReset={toggleEditFormDisable}
+                                                onClickButtonReset={toggleActiveForm}
                                             />
                                             <ButtonLoader
-                                                inProgress={isModifyInProgress}
+                                                // inProgress={isModifyInProgress}
                                                 variant="contained"
                                                 type="submit"
                                                 className="ml-8 mb-4 sm:mr-8 sm:mb-0"
