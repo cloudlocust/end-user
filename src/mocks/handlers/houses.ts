@@ -12,7 +12,11 @@ import { defaultValueType } from 'src/common/ui-kit/form-fields/GoogleMapsAddres
 export const TEST_HOUSES: SnakeCasedPropertiesDeep<IHousing>[] = [
     {
         id: 1,
+<<<<<<< HEAD
         guid: '12345Her',
+=======
+        meter: { guid: '12345Her' },
+>>>>>>> master
         address: {
             city: 'monaco',
             zip_code: '3333',
@@ -26,7 +30,11 @@ export const TEST_HOUSES: SnakeCasedPropertiesDeep<IHousing>[] = [
     },
     {
         id: 2,
+<<<<<<< HEAD
         guid: null,
+=======
+        meter: null,
+>>>>>>> master
         address: {
             city: 'monaco',
             zip_code: '3333',
@@ -81,7 +89,7 @@ export const housingEndpoints = [
             const newId = TEST_HOUSES.length + 1
             let newHouse: SnakeCasedPropertiesDeep<IHousing> = {
                 address: applyCamelCase(address),
-                guid: null,
+                meter: null,
                 id: newId,
             }
 
@@ -99,6 +107,38 @@ export const housingEndpoints = [
             let oldComment = TEST_HOUSES[indexOfComment]
             TEST_HOUSES.splice(indexOfComment, 1)
             return res(ctx.status(200), ctx.delay(1000), ctx.json(oldComment))
+        } else {
+            return res(ctx.status(401), ctx.delay(1000))
+        }
+    }),
+    // add meter to housing.
+    rest.post</**
+     *
+     */
+    {
+        /**
+         * Meter Name.
+         */
+        name: string
+        /**
+         * Meter Name.
+         */
+        guid: string
+    }>(`${HOUSING_API}/:housingId/meter`, (req, res, ctx) => {
+        const { name, guid } = req.body
+        const { housingId } = req.params
+        const houseId = parseInt(housingId)
+
+        if (housingId !== 0) {
+            const IndexHousingToUpdate = TEST_HOUSES.findIndex(
+                (housing: SnakeCasedPropertiesDeep<IHousing>) => housing.id === houseId,
+            )
+
+            if (IndexHousingToUpdate) {
+                TEST_HOUSES[IndexHousingToUpdate].meter = { guid }
+            }
+            // id is just random number hypothecly generated from database.
+            return res(ctx.status(200), ctx.delay(1000), ctx.json({ name, guid, id: Math.random() }))
         } else {
             return res(ctx.status(401), ctx.delay(1000))
         }

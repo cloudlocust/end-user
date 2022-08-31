@@ -22,7 +22,7 @@ import TargetButtonGroup from 'src/modules/MyConsumption/components/TargetButton
  * InitialMetricsStates for useMetrics.
  */
 export const initialMetricsHookValues: getMetricType = {
-    interval: '2min',
+    interval: '2m',
     range: getRange('day'),
     targets: [
         {

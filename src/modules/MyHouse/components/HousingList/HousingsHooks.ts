@@ -1,4 +1,4 @@
-import { defaultValueType } from './../../../../common/ui-kit/form-fields/GoogleMapsAddressAutoComplete/utils'
+import { defaultValueType } from 'src/common/ui-kit/form-fields/GoogleMapsAddressAutoComplete/utils'
 import { IHousing } from 'src/modules/MyHouse/components/HousingList/housing.d'
 import { BuilderUseElementList } from 'src/modules/utils/useElementHookBuilder'
 import { formatMessageType } from 'src/common/react-platform-translation'
@@ -65,9 +65,10 @@ export const useHousingsDetails = () => {
      * Remove Element Housing Handler.
      *
      * @param HousingId Housing Id of the Housing.
+     * @param reloadHousings To reload housings once added.
      * @returns The function returns a string message containing successful and errors message.
      */
-    const removeHousing = async (HousingId: number) => {
+    const removeHousing = async (HousingId: number, reloadHousings: () => void) => {
         setLoadingRequest(true)
         try {
             await axios.delete<IHousing>(`${HOUSING_API}/${HousingId}`)
@@ -79,6 +80,7 @@ export const useHousingsDetails = () => {
                 { variant: 'success' },
             )
             setLoadingRequest(false)
+            reloadHousings()
         } catch (error) {
             enqueueSnackbar(
                 formatMessage({
