@@ -153,7 +153,12 @@ const HousingCard = ({
                     </div>
                 </CardContent>
                 <CardActions className="flex items-center content-center justify-end">
-                    <NavLink to={`${URL_MY_HOUSE}/${logement?.id}`}>
+                    <NavLink
+                        to={{
+                            pathname: `${URL_MY_HOUSE}/${logement?.id}`,
+                            state: { meterGuid: logement.meter?.guid },
+                        }}
+                    >
                         <Button variant="contained" endIcon={<KeyboardArrowRightIcon />}>
                             {formatMessage({
                                 id: 'Détails',
