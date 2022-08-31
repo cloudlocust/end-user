@@ -92,11 +92,4 @@ export type IRouteNavigationConfig<T> = IRoute<T> & /**
 export const navigationsConfig: IRouteNavigationConfig</**
  *
  */
-{}>[] = [
-    MyConsumptionConfig[0],
-    AnalysisConfig[0],
-    AdvicesConfig[0],
-    CommunityConfig[0],
-    MyHouseConfig[0],
-    // ProfileManagementConfig[0],
-]
+{}>[] = [MyConsumptionConfig[0], AnalysisConfig[0], AdvicesConfig[0], CommunityConfig[0], MyHouseConfig[0]]
