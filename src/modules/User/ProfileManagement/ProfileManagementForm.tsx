@@ -17,7 +17,7 @@ import { useProfileManagement } from 'src/modules/User/ProfileManagement/Profile
  */
 export const ProfileManagementForm = () => {
     const { user } = useSelector(({ userModel }: RootState) => userModel)
-    const { isModifyInProgress, onSubmit } = useProfileManagement()
+    const { isModifyInProgress, updateProfile } = useProfileManagement()
     const { formatMessage } = useIntl()
     const [isEdit, setIsEdit] = useState(false)
     const disabledField = !isEdit
@@ -40,7 +40,7 @@ export const ProfileManagementForm = () => {
         <Form
             defaultValues={formInitialValues}
             onSubmit={async (data: IUser) => {
-                await onSubmit(data)
+                await updateProfile(data)
                 setIsEdit(false)
             }}
         >
