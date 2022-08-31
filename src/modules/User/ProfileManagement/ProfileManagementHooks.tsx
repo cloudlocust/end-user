@@ -1,11 +1,11 @@
 import { useIntl } from 'src/common/react-platform-translation'
-import { useToggle } from 'react-use'
 import { useDispatch, useSelector } from 'react-redux'
 import { Dispatch, RootState } from 'src/redux'
 import { useSnackbar } from 'notistack'
 import { isMatch } from 'lodash'
 import { IUser } from 'src/modules/User/model'
 import { getMsgFromAxiosError } from 'src/modules/utils'
+import { useState } from 'react'
 
 //eslint-disable-next-line jsdoc/require-jsdoc
 export const BACKEND_EMAIL_EXIST_ERROR_MESSAGE = 'UPDATE_USER_EMAIL_ALREADY_EXISTS'
@@ -18,7 +18,7 @@ export const EMAIL_ALREADY_EXIST_SNACKBAR_MESSAGE = "L'email inséré existe dé
  */
 export const useProfileManagement = () => {
     const dispatch = useDispatch<Dispatch>()
-    const [isModifyInProgress, setIsModifyInProgress] = useToggle(false)
+    const [isModifyInProgress, setIsModifyInProgress] = useState(false)
     const { enqueueSnackbar } = useSnackbar()
     const { formatMessage } = useIntl()
     const { user } = useSelector(({ userModel }: RootState) => userModel)
