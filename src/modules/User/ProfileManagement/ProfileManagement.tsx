@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Icon, Typography } from 'src/common/ui-kit'
 import PageSimple from 'src/common/ui-kit/fuse/components/PageSimple'
 import { useIntl } from 'src/common/react-platform-translation'
@@ -6,6 +6,8 @@ import { useHistory } from 'react-router-dom'
 import Button from '@mui/material/Button'
 import { motion } from 'framer-motion'
 import { ProfileManagementForm } from './ProfileManagementForm'
+import { ChangePassword } from '../ChangePassword/ChangePassword'
+import { ResetPassword } from '../ResetPassword/ResetPassword'
 
 /**
  * Modify Profile component with the posibility to modify the profile.
@@ -15,7 +17,7 @@ import { ProfileManagementForm } from './ProfileManagementForm'
 const ProfileManagement = () => {
     const { formatMessage } = useIntl()
     const history = useHistory()
-
+    const [changePassword, setChangePassword] = useState(false)
     return (
         <PageSimple
             header={
@@ -54,7 +56,27 @@ const ProfileManagement = () => {
                     </div>
                 </div>
             }
-            content={<ProfileManagementForm />}
+            content={
+                <>
+                    <ProfileManagementForm />
+                    <div className="ml-32">
+                        <Button
+                            variant={'contained'}
+                            className={'w-224 mx-auto mb-16'}
+                            onClick={() => {
+                                history.push('/change-password')
+                                setChangePassword(true)
+                            }}
+                        >
+                            {formatMessage({
+                                id: 'Changer mon mot de passe',
+                                defaultMessage: 'Changer mon mot de passe',
+                            })}
+                        </Button>
+                    </div>
+                    {changePassword && <ChangePassword />}
+                </>
+            }
         />
     )
 }

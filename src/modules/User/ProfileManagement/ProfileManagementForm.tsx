@@ -98,7 +98,7 @@ export const ProfileManagementForm = () => {
                             </ButtonLoader>
                         </div>
                     ) : (
-                        <Button variant={'contained'} className={'w-224 mx-auto mb-16'} onClick={toggleEditFormDisable}>
+                        <Button variant={'contained'} className={'w-224 mx-auto'} onClick={toggleEditFormDisable}>
                             {formatMessage({ id: 'Modifier', defaultMessage: 'Modifier' })}
                         </Button>
                     )}

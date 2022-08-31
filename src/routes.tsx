@@ -13,10 +13,12 @@ import { NrLinkConnectionConfig } from './modules/nrLinkConnection'
 import { MyHouseConfig } from './modules/MyHouse'
 import { ContractsConfig } from './modules/Contracts/ContractsConfig'
 import { ProfileManagementConfig } from './modules/User/ProfileManagement/ProfileManagementConfig'
+import { ChangePasswordConfig } from './modules/User/ChangePassword/ChangePasswordConfig'
 /**
  *
  */
 export const routes = [
+    ...ChangePasswordConfig,
     ...MyConsumptionConfig,
     ...NrLinkConnectionConfig,
     ...AdvicesConfig,
