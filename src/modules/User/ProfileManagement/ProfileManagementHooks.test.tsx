@@ -34,7 +34,7 @@ describe('Testing useProfileManagement hooks', () => {
         })
         expect(result.current.isModifyInProgress).toBe(false)
         act(() => {
-            result.current.onSubmit({ firstName: 'Alex', email: TEST_SUCCESS_USER.email })
+            result.current.updateProfile({ firstName: 'Alex', email: TEST_SUCCESS_USER.email })
         })
         expect(result.current.isModifyInProgress).toBe(true)
         await waitForValueToChange(
@@ -57,7 +57,7 @@ describe('Testing useProfileManagement hooks', () => {
         expect(result.current.isModifyInProgress).toBe(false)
         act(async () => {
             try {
-                await result.current.onSubmit({ email: 'error@gmail.com' })
+                await result.current.updateProfile({ email: 'error@gmail.com' })
             } catch (error) {}
         })
 
