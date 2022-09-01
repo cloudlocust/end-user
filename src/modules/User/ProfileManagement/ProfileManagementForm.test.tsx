@@ -6,7 +6,7 @@ import { ProfileManagementForm } from 'src/modules/User/ProfileManagement/Profil
 import { applyCamelCase } from 'src/common/react-platform-components'
 
 let mockIsModifyInProgress = false
-const mockOnSubmit = jest.fn()
+const mockUpdateProfile = jest.fn()
 const MODIFIER_BUTTON_TEXT = 'Modifier'
 const DISABLED_CLASS = 'Mui-disabled'
 const INPUT_DISABLED_ELEMENT = `input.${DISABLED_CLASS}`
@@ -21,7 +21,7 @@ jest.mock('src/modules/User/ProfileManagement/ProfileManagementHooks', () => ({
     // eslint-disable-next-line jsdoc/require-jsdoc
     useProfileManagement: () => ({
         isModifyInProgress: mockIsModifyInProgress,
-        onSubmit: mockOnSubmit,
+        updateProfile: mockUpdateProfile,
     }),
 }))
 
@@ -68,7 +68,7 @@ describe('Test ProfileManagementForm', () => {
         await waitFor(() => {
             expect(getAllByText('Champ obligatoire non renseigné').length).toBe(5)
         })
-        expect(mockOnSubmit).not.toHaveBeenCalled()
+        expect(mockUpdateProfile).not.toHaveBeenCalled()
     })
 
     test('When clicking on Annuler Modification form should reset change, and disableEditForm called', async () => {
@@ -124,7 +124,7 @@ describe('Test ProfileManagementForm', () => {
             fireEvent.click(getByText(ENREGISTRER_BUTTON_TEXT))
         })
         await waitFor(() => {
-            expect(mockOnSubmit).toHaveBeenCalledWith({
+            expect(mockUpdateProfile).toHaveBeenCalledWith({
                 firstName: CHANGED_FIRSTNAME_INPUT,
                 lastName: TEST_SUCCESS_USER.lastName,
                 email: TEST_SUCCESS_USER.email,

@@ -27,7 +27,7 @@ export const useProfileManagement = () => {
      *
      * @param data Data for modification in my profile.
      */
-    const onSubmit = async (data: IUser) => {
+    const updateProfile = async (data: IUser) => {
         const dataIsNotModified = isMatch(user as IUser, data)
         if (dataIsNotModified) return
         setIsModifyInProgress(true)
@@ -49,7 +49,7 @@ export const useProfileManagement = () => {
         }
     }
 
-    return { isModifyInProgress, onSubmit }
+    return { isModifyInProgress, updateProfile }
 }
 /**
  * Handle message to show in snackbar when update is wrong.
