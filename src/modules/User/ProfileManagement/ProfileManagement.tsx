@@ -18,10 +18,10 @@ const ProfileManagement = () => {
     const { formatMessage } = useIntl()
     const history = useHistory()
     const [activeChangePassword, setActiveChangePassword] = useState(false)
-    const toggleActiveForm = () => {
+
+    const toggleChangeForm = () => {
         setActiveChangePassword((isActive) => !isActive)
     }
-    console.log(activeChangePassword)
 
     return (
         <PageSimple
@@ -70,7 +70,7 @@ const ProfileManagement = () => {
                             className="w-256 mx-auto mb-16"
                             onClick={() => {
                                 history.push('/change-password')
-                                toggleActiveForm()
+                                toggleChangeForm()
                             }}
                         >
                             {formatMessage({
@@ -80,7 +80,7 @@ const ProfileManagement = () => {
                             <Icon className="ml-10">mode_edit</Icon>
                         </Button>
                     </div>
-                    {activeChangePassword && <ChangePassword toggleActiveForm={toggleActiveForm} />}
+                    {activeChangePassword && <ChangePassword toggleChangeForm={toggleChangeForm} />}
                 </>
             }
         />

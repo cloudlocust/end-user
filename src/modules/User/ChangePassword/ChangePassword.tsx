@@ -1,23 +1,23 @@
 import { Button, Card, CardContent, useTheme } from '@mui/material'
-import React, { FC, MouseEventHandler, useRef, useState } from 'react'
-import { email, requiredBuilder, Form, repeatPassword } from 'src/common/react-platform-components'
+import React, { useRef } from 'react'
+import { requiredBuilder, Form, repeatPassword } from 'src/common/react-platform-components'
 import { useIntl } from 'src/common/react-platform-translation'
-import { TextField, ButtonLoader, PasswordField } from 'src/common/ui-kit'
+import { ButtonLoader, PasswordField } from 'src/common/ui-kit'
 import '../ForgotPassword/ForgotPassword.scss'
 import { motion } from 'framer-motion'
 import { useHistory } from 'react-router-dom'
-import { ButtonResetForm } from 'src/common/ui-kit/components/ButtonResetForm/ButtonResetForm'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 /**
  * Forgot password form, this form is based on react hooks.
  *
  * @returns Forgot password form.
  */
-export const ChangePassword = ({ toggleActiveForm }: { toggleActiveForm: any }) => {
+export const ChangePassword = ({ toggleChangeForm }: { toggleChangeForm: any }) => {
     const { formatMessage } = useIntl()
     const passwordRef = useRef()
     const theme = useTheme()
     const history = useHistory()
+
     return (
         <>
             <div className="forgot-password-container">
@@ -62,7 +62,7 @@ export const ChangePassword = ({ toggleActiveForm }: { toggleActiveForm: any }) 
                                                 className="mb-4 sm:mr-8 sm:mb-0"
                                                 onClick={() => {
                                                     history.goBack()
-                                                    toggleActiveForm()
+                                                    toggleChangeForm()
                                                 }}
                                             >
                                                 {formatMessage({ id: 'Annuler', defaultMessage: 'Annuler' })}
