@@ -7,7 +7,6 @@ import Button from '@mui/material/Button'
 import { motion } from 'framer-motion'
 import { ProfileManagementForm } from './ProfileManagementForm'
 import { ChangePassword } from '../ChangePassword/ChangePassword'
-import { ResetPassword } from '../ResetPassword/ResetPassword'
 
 /**
  * Modify Profile component with the posibility to modify the profile.
@@ -18,7 +17,9 @@ const ProfileManagement = () => {
     const { formatMessage } = useIntl()
     const history = useHistory()
     const [activeChangePassword, setActiveChangePassword] = useState(false)
-
+    /**
+     * The toggleChangeForm function changes the value to open the change password window.
+     */
     const toggleChangeForm = () => {
         setActiveChangePassword((isActive) => !isActive)
     }
@@ -69,7 +70,7 @@ const ProfileManagement = () => {
                             variant="contained"
                             className="w-256 mx-auto mb-16"
                             onClick={() => {
-                                history.push('/change-password')
+                                history.push('/profile-management/change-password')
                                 toggleChangeForm()
                             }}
                         >
