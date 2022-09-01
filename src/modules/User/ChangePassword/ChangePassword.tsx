@@ -1,13 +1,13 @@
-import { Button, Card, CardContent } from '@mui/material'
+import { Button, Card, CardContent, useTheme } from '@mui/material'
 import React, { FC, MouseEventHandler, useRef, useState } from 'react'
 import { email, requiredBuilder, Form, repeatPassword } from 'src/common/react-platform-components'
 import { useIntl } from 'src/common/react-platform-translation'
 import { TextField, ButtonLoader, PasswordField } from 'src/common/ui-kit'
-import { useForgotPassword } from 'src/modules/User/ForgotPassword/hooks'
 import '../ForgotPassword/ForgotPassword.scss'
 import { motion } from 'framer-motion'
 import { useHistory } from 'react-router-dom'
 import { ButtonResetForm } from 'src/common/ui-kit/components/ButtonResetForm/ButtonResetForm'
+import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 /**
  * Forgot password form, this form is based on react hooks.
  *
@@ -15,16 +15,8 @@ import { ButtonResetForm } from 'src/common/ui-kit/components/ButtonResetForm/Bu
  */
 export const ChangePassword = ({ toggleActiveForm }: { toggleActiveForm: any }) => {
     const { formatMessage } = useIntl()
-    const { isForgotPasswordProgress, onSubmitForgotPassword } = useForgotPassword()
     const passwordRef = useRef()
-    // const [isActive, setIsActive] = useState(true)
-    // /**
-    //  * Handler function to setIsActive.
-    //  */
-    // const toggleActiveForm = () => {
-    //     setIsActive((isActive) => !isActive)
-    // }
-
+    const theme = useTheme()
     const history = useHistory()
     return (
         <>
@@ -38,28 +30,36 @@ export const ChangePassword = ({ toggleActiveForm }: { toggleActiveForm: any }) 
                                         throw new Error('Function not implemented.')
                                     }}
                                 >
+                                    <TypographyFormatMessage
+                                        variant="subtitle1"
+                                        className="font-semibold mb-20"
+                                        style={{ color: theme.palette.primary.main }}
+                                    >
+                                        Changer mon mot de passe
+                                    </TypographyFormatMessage>
                                     <div className="flex flex-col justify-center w-full">
+                                        <TypographyFormatMessage variant="subtitle2" className="font-semibold mb-10">
+                                            Nouveau mot de passe
+                                        </TypographyFormatMessage>
                                         <PasswordField
                                             name="password"
                                             label="Nouveau mot de passe"
                                             // inputRef={passwordRef}
                                             // validateFunctions={[requiredBuilder(), min(8)]}
                                         />
+                                        <TypographyFormatMessage variant="subtitle2" className="font-semibold mb-10">
+                                            Confirmer mot de passe
+                                        </TypographyFormatMessage>
                                         <PasswordField
                                             name="repeatPwd"
                                             label="Confirmer mot de passe"
                                             validateFunctions={[requiredBuilder(), repeatPassword(passwordRef)]}
                                         />
                                         <div>
-                                            {/* <ButtonResetForm
-                                                initialValues={formInitialValues}
-                                                onClickButtonReset={toggleActiveForm}
-                                            /> */}
                                             <Button
                                                 // inProgress={isModifyInProgress}
                                                 variant="outlined"
-                                                // type="submit"
-                                                className="ml-8 mb-4 sm:mr-8 sm:mb-0"
+                                                className="mb-4 sm:mr-8 sm:mb-0"
                                                 onClick={() => {
                                                     history.goBack()
                                                     toggleActiveForm()
