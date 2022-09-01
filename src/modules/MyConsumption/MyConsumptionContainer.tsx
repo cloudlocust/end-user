@@ -10,6 +10,7 @@ import { getMetricType, metricTargetsEnum, metricTargetType } from 'src/modules/
 import { periodType } from 'src/modules/MyConsumption/myConsumptionTypes'
 import { Link } from 'react-router-dom'
 import { Icon, Typography } from 'src/common/ui-kit'
+import IconButton from '@mui/material/IconButton'
 import { useIntl } from 'react-intl'
 import { useConsents } from 'src/modules/Consents/consentsHook'
 import { WidgetList } from 'src/modules/MyConsumption/components/Widget/WidgetsList'
@@ -17,6 +18,9 @@ import CircularProgress from '@mui/material/CircularProgress'
 import MyConsumptionDatePicker from 'src/modules/MyConsumption/components/MyConsumptionDatePicker'
 import { MyConsumptionPeriod, SelectMeters } from 'src/modules/MyConsumption'
 import TargetButtonGroup from 'src/modules/MyConsumption/components/TargetButtonGroup'
+import BoltIcon from '@mui/icons-material/Bolt'
+import EuroIcon from '@mui/icons-material/Euro'
+import { getChartColor } from './utils/myConsumptionVariables'
 
 /**
  * InitialMetricsStates for useMetrics.
@@ -27,6 +31,10 @@ export const initialMetricsHookValues: getMetricType = {
     targets: [
         {
             target: metricTargetsEnum.consumption,
+            type: 'timeserie',
+        },
+        {
+            target: metricTargetsEnum.eurosConsumption,
             type: 'timeserie',
         },
         {
@@ -60,6 +68,7 @@ export const MyConsumptionContainer = () => {
         useMetrics(initialMetricsHookValues)
     const [period, setPeriod] = useState<periodType>('daily')
     const [filteredTargets, setFilteredTargets] = useState<metricTargetType[]>([metricTargetsEnum.consumption])
+    const isEurosConsumptionChart = filteredTargets.includes(metricTargetsEnum.eurosConsumption)
 
     useEffect(() => {
         if (!metersList) return
@@ -79,14 +88,15 @@ export const MyConsumptionContainer = () => {
      * @returns Text that represents the interval.
      */
     const showPerPeriodText = () => {
+        let textUnit = `en ${isEurosConsumptionChart ? '€' : period === 'daily' ? 'Wh' : 'kWh'}`
         if (period === 'daily') {
-            return 'en Wh par jour'
+            return `${textUnit} par jour`
         } else if (period === 'weekly') {
-            return 'en kWh par semaine'
+            return `${textUnit} par semaine`
         } else if (period === 'monthly') {
-            return 'en kWh par mois'
+            return `${textUnit} par mois`
         } else if (period === 'yearly') {
-            return 'en kWh par année'
+            return `${textUnit} par année`
         } else {
             throw Error('PeriodValue not set')
         }
@@ -188,7 +198,34 @@ export const MyConsumptionContainer = () => {
                     )}
                 </div>
 
-                <div className="my-16 flex justify-center">
+                <div className="my-16 flex justify-between">
+                    {isEurosConsumptionChart ? (
+                        <IconButton
+                            sx={{
+                                color: 'primary.contrastText',
+                                backgroundColor: 'primary.light',
+                            }}
+                            onClick={() => {
+                                removeTarget(metricTargetsEnum.eurosConsumption)
+                                addTarget(metricTargetsEnum.consumption)
+                            }}
+                        >
+                            <BoltIcon sx={{ width: 24, height: 24 }} />
+                        </IconButton>
+                    ) : (
+                        <IconButton
+                            sx={{
+                                color: 'white',
+                                backgroundColor: getChartColor(metricTargetsEnum.eurosConsumption, theme),
+                            }}
+                            onClick={() => {
+                                removeTarget(metricTargetsEnum.consumption)
+                                addTarget(metricTargetsEnum.eurosConsumption)
+                            }}
+                        >
+                            <EuroIcon sx={{ width: 20, height: 20 }} />
+                        </IconButton>
+                    )}
                     <TargetButtonGroup
                         removeTarget={removeTarget}
                         addTarget={addTarget}
@@ -225,7 +262,13 @@ export const MyConsumptionContainer = () => {
                             Chiffres clés
                         </TypographyFormatMessage>
                     </div>
-                    <WidgetList data={data} isMetricsLoading={isMetricsLoading} />
+                    <WidgetList
+                        data={
+                            // TODO Fix when getting to the story of consumptionEuros
+                            data.filter((metric) => metric.target !== metricTargetsEnum.eurosConsumption)
+                        }
+                        isMetricsLoading={isMetricsLoading}
+                    />
                 </div>
             )}
         </>
