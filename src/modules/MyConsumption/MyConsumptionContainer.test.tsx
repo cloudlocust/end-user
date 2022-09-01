@@ -7,6 +7,7 @@ import { waitFor } from '@testing-library/react'
 import { formatMetricFilter } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
 import { TEST_METERS } from 'src/mocks/handlers/meters'
 import userEvent from '@testing-library/user-event'
+import { URL_CONTRACTS } from 'src/modules/Contracts/ContractsConfig'
 
 let mockData: IMetric[] = TEST_SUCCESS_WEEK_METRICS(['consumption_metrics'])
 let mockNrlinkConsent: string
@@ -14,6 +15,7 @@ let mockIsMetricsLoading = false
 let mockEnedisConsent: string
 const mockSetFilters = jest.fn()
 const circularProgressClassname = '.MuiCircularProgress-root'
+const EUROS_CONSUMPTION_EXAMPLE_CHART_WARNING_TEXT = "Ce graphe est un exemple. Renseigner votre contrat d'énergie"
 const WEEKLY_PERIOD_BUTTON_TEXT = 'Semaine'
 const SELECT_METERS_TEXT = 'Tous les compteurs'
 const MONTHLY_PERIOD_BUTTON_TEXT = 'Mois'
@@ -173,6 +175,13 @@ describe('MyConsumptionContainer test', () => {
         await waitFor(() => {
             expect(getByText(EUROS_CONSUMPTION_TITLE_YEARLY)).toBeTruthy()
         })
+        // Example Chart Information Text
+        expect(getByText(EUROS_CONSUMPTION_EXAMPLE_CHART_WARNING_TEXT)).toBeTruthy()
+        // Contracts Redirection URL
+        expect(getByText(EUROS_CONSUMPTION_EXAMPLE_CHART_WARNING_TEXT).parentElement!.closest('a')).toHaveAttribute(
+            'href',
+            URL_CONTRACTS,
+        )
 
         // TOGGLING TO CONSUMPTION CHART
         userEvent.click(getByTestId(CONSUMPTION_ICON_TEST_ID).parentElement as HTMLButtonElement)
