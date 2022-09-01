@@ -1,5 +1,5 @@
 import { Button, Card, CardContent } from '@mui/material'
-import React, { FC, useRef, useState } from 'react'
+import React, { FC, MouseEventHandler, useRef, useState } from 'react'
 import { email, requiredBuilder, Form, repeatPassword } from 'src/common/react-platform-components'
 import { useIntl } from 'src/common/react-platform-translation'
 import { TextField, ButtonLoader, PasswordField } from 'src/common/ui-kit'
@@ -13,18 +13,19 @@ import { ButtonResetForm } from 'src/common/ui-kit/components/ButtonResetForm/Bu
  *
  * @returns Forgot password form.
  */
-export const ChangePassword: FC = () => {
+export const ChangePassword = ({ toggleActiveForm }: { toggleActiveForm: any }) => {
     const { formatMessage } = useIntl()
     const { isForgotPasswordProgress, onSubmitForgotPassword } = useForgotPassword()
     const passwordRef = useRef()
-    const [isActive, setIsActive] = useState(false)
-    /**
-     * Handler function to setIsActive.
-     */
-    const toggleActiveForm = () => {
-        setIsActive((isActive) => !isActive)
-    }
+    // const [isActive, setIsActive] = useState(true)
+    // /**
+    //  * Handler function to setIsActive.
+    //  */
+    // const toggleActiveForm = () => {
+    //     setIsActive((isActive) => !isActive)
+    // }
 
+    const history = useHistory()
     return (
         <>
             <div className="forgot-password-container">
@@ -50,10 +51,22 @@ export const ChangePassword: FC = () => {
                                             validateFunctions={[requiredBuilder(), repeatPassword(passwordRef)]}
                                         />
                                         <div>
-                                            <ButtonResetForm
+                                            {/* <ButtonResetForm
                                                 initialValues={formInitialValues}
                                                 onClickButtonReset={toggleActiveForm}
-                                            />
+                                            /> */}
+                                            <Button
+                                                // inProgress={isModifyInProgress}
+                                                variant="outlined"
+                                                // type="submit"
+                                                className="ml-8 mb-4 sm:mr-8 sm:mb-0"
+                                                onClick={() => {
+                                                    history.goBack()
+                                                    toggleActiveForm()
+                                                }}
+                                            >
+                                                {formatMessage({ id: 'Annuler', defaultMessage: 'Annuler' })}
+                                            </Button>
                                             <ButtonLoader
                                                 // inProgress={isModifyInProgress}
                                                 variant="contained"

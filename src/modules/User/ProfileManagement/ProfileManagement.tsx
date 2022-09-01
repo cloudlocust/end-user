@@ -17,7 +17,12 @@ import { ResetPassword } from '../ResetPassword/ResetPassword'
 const ProfileManagement = () => {
     const { formatMessage } = useIntl()
     const history = useHistory()
-    const [changePassword, setChangePassword] = useState(false)
+    const [activeChangePassword, setActiveChangePassword] = useState(false)
+    const toggleActiveForm = () => {
+        setActiveChangePassword((isActive) => !isActive)
+    }
+    console.log(activeChangePassword)
+
     return (
         <PageSimple
             header={
@@ -59,22 +64,23 @@ const ProfileManagement = () => {
             content={
                 <>
                     <ProfileManagementForm />
-                    <div className="ml-32">
+                    <div className="pl-16 sm:pl-24 md:pl-32">
                         <Button
-                            variant={'contained'}
-                            className={'w-224 mx-auto mb-16'}
+                            variant="contained"
+                            className="w-256 mx-auto mb-16"
                             onClick={() => {
                                 history.push('/change-password')
-                                setChangePassword(true)
+                                toggleActiveForm()
                             }}
                         >
                             {formatMessage({
                                 id: 'Changer mon mot de passe',
                                 defaultMessage: 'Changer mon mot de passe',
                             })}
+                            <Icon className="ml-10">mode_edit</Icon>
                         </Button>
                     </div>
-                    {changePassword && <ChangePassword />}
+                    {activeChangePassword && <ChangePassword toggleActiveForm={toggleActiveForm} />}
                 </>
             }
         />
