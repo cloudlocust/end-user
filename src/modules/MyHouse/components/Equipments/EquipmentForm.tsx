@@ -9,6 +9,7 @@ import { EditButtonsGroup } from 'src/modules/MyHouse/EditButtonsGroup'
 import {
     myEquipmentOptions,
     heaterEquipment,
+    sanitaryEquipment,
     hotPlateEquipment,
     groupedCards,
     mappingEquipmentNameToType,
@@ -129,6 +130,9 @@ export const EquipmentForm = () => {
                     </div>
                     <div className="text-13">
                         <SelectButtons isDisabled={!isEquipmentMeterListEmpty && !isEdit} {...heaterEquipment} />
+                    </div>
+                    <div className="text-13">
+                        <SelectButtons isDisabled={!isEquipmentMeterListEmpty && !isEdit} {...sanitaryEquipment} />
                     </div>
                     <div className="text-13">
                         <SelectButtons isDisabled={!isEquipmentMeterListEmpty && !isEdit} {...hotPlateEquipment} />

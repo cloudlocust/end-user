@@ -42,6 +42,9 @@ const buttonStyleLast = 'w-160 mt-16 flex flex-col'
 const buttonStyle = `${buttonStyleLast} mr-10`
 const wrapperStyles = 'flex flex-row justify-center'
 const iconStyles = 'my-5 h-56'
+
+// TODO - Channge this icons on the newer version.
+
 // eslint-disable-next-line jsdoc/require-jsdoc
 const getEquipmentIconPath = (name: string) => `/assets/images/content/equipment/${name}.svg`
 
@@ -57,6 +60,37 @@ export const heaterEquipment: ISelectButtons = {
             buttonStyle,
             iconStyles,
             value: 'electricity',
+        },
+        {
+            label: 'Autre',
+            iconPath: getEquipmentIconPath('heaterOther'),
+            buttonStyle: buttonStyleLast,
+            iconStyles,
+            value: 'other',
+        },
+    ],
+}
+
+// eslint-disable-next-line jsdoc/require-jsdoc
+export const sanitaryEquipment: ISelectButtons = {
+    name: 'sanitary',
+    wrapperStyles,
+    titleLabel: 'Eau chaude sanitaire :',
+    formOptions: [
+        {
+            label: 'Eléctricité',
+            iconPath: getEquipmentIconPath('electricity'),
+            buttonStyle,
+            iconStyles,
+            value: 'electricity',
+        },
+        {
+            label: 'Gaz',
+            // TODO - Change the icon to gaz in new version.
+            iconPath: getEquipmentIconPath('electricity'),
+            buttonStyle,
+            iconStyles,
+            value: 'gaz',
         },
         {
             label: 'Autre',

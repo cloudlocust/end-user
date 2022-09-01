@@ -1,6 +1,6 @@
 import { rest } from 'msw'
 import { SnakeCasedPropertiesDeep } from 'type-fest'
-import { HOUSING_EQUIPMENTS_API, ALL_EQUIPMENTS_API } from 'src/modules/MyHouse/components/Equipments/equipmentHooks'
+import { ALL_EQUIPMENTS_API } from 'src/modules/MyHouse/components/Equipments/equipmentHooks'
 import {
     equipmentNameType,
     equipmentType,
@@ -8,6 +8,7 @@ import {
     postEquipmentInputType,
     IEquipmentMeter,
 } from 'src/modules/MyHouse/components/Equipments/EquipmentsType'
+import { HOUSING_API } from 'src/modules/MyHouse/components/HousingList/HousingsHooks'
 /**
  * Mock for meter data to be added.
  */
@@ -245,7 +246,7 @@ export const equipmentsEndpoints = [
     }),
 
     // Get All Equipments of Meter
-    rest.get(HOUSING_EQUIPMENTS_API(1), (req, res, ctx) => {
+    rest.get(`${HOUSING_API}/:id/equipments`, (req, res, ctx) => {
         const authorization = req.headers.get('authorization')
         if (authorization && authorization === TEST_LOAD_ERROR_EQUIPMENT)
             return res(ctx.status(404), ctx.delay(1000), ctx.json('error'))
@@ -255,7 +256,7 @@ export const equipmentsEndpoints = [
     }),
 
     // Save Equipment Post request
-    rest.post<SnakeCasedPropertiesDeep<postEquipmentInputType>>(HOUSING_EQUIPMENTS_API(1), (req, res, ctx) => {
+    rest.post<SnakeCasedPropertiesDeep<postEquipmentInputType>>(`${HOUSING_API}/:id/equipments`, (req, res, ctx) => {
         // Success
         if (req.body[0].equipment_id === TEST_SAVE_EQUIPMENT.equipment_id) {
             TEST_HOUSING_EQUIPMENTS[0] = { ...TEST_SAVE_EQUIPMENT, ...TEST_HOUSING_EQUIPMENTS[0] }
