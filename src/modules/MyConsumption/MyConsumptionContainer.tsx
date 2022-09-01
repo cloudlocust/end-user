@@ -15,8 +15,12 @@ import { useConsents } from 'src/modules/Consents/consentsHook'
 import { WidgetList } from 'src/modules/MyConsumption/components/Widget/WidgetsList'
 import CircularProgress from '@mui/material/CircularProgress'
 import MyConsumptionDatePicker from 'src/modules/MyConsumption/components/MyConsumptionDatePicker'
+import EurosConsumptionButtonToggler from 'src/modules/MyConsumption/components/EurosConsumptionButtonToggler'
 import { MyConsumptionPeriod, SelectMeters } from 'src/modules/MyConsumption'
 import TargetButtonGroup from 'src/modules/MyConsumption/components/TargetButtonGroup'
+import { NavLink } from 'react-router-dom'
+import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline'
+import { URL_CONTRACTS } from 'src/modules/Contracts/ContractsConfig'
 
 /**
  * InitialMetricsStates for useMetrics.
@@ -27,6 +31,10 @@ export const initialMetricsHookValues: getMetricType = {
     targets: [
         {
             target: metricTargetsEnum.consumption,
+            type: 'timeserie',
+        },
+        {
+            target: metricTargetsEnum.eurosConsumption,
             type: 'timeserie',
         },
         {
@@ -60,6 +68,7 @@ export const MyConsumptionContainer = () => {
         useMetrics(initialMetricsHookValues)
     const [period, setPeriod] = useState<periodType>('daily')
     const [filteredTargets, setFilteredTargets] = useState<metricTargetType[]>([metricTargetsEnum.consumption])
+    const isEurosConsumptionChart = filteredTargets.includes(metricTargetsEnum.eurosConsumption)
 
     useEffect(() => {
         if (!metersList) return
@@ -79,14 +88,15 @@ export const MyConsumptionContainer = () => {
      * @returns Text that represents the interval.
      */
     const showPerPeriodText = () => {
+        let textUnit = `en ${isEurosConsumptionChart ? '€' : period === 'daily' ? 'Wh' : 'kWh'}`
         if (period === 'daily') {
-            return 'en Wh par jour'
+            return `${textUnit} par jour`
         } else if (period === 'weekly') {
-            return 'en kWh par semaine'
+            return `${textUnit} par semaine`
         } else if (period === 'monthly') {
-            return 'en kWh par mois'
+            return `${textUnit} par mois`
         } else if (period === 'yearly') {
-            return 'en kWh par année'
+            return `${textUnit} par année`
         } else {
             throw Error('PeriodValue not set')
         }
@@ -188,7 +198,13 @@ export const MyConsumptionContainer = () => {
                     )}
                 </div>
 
-                <div className="my-16 flex justify-center">
+                <div className="my-16 flex justify-between">
+                    <EurosConsumptionButtonToggler
+                        removeTarget={removeTarget}
+                        addTarget={addTarget}
+                        showEurosConsumption={!isEurosConsumptionChart}
+                    />
+
                     <TargetButtonGroup
                         removeTarget={removeTarget}
                         addTarget={addTarget}
@@ -217,6 +233,18 @@ export const MyConsumptionContainer = () => {
                     setMetricsInterval={setMetricsInterval}
                     range={range}
                 />
+                {isEurosConsumptionChart && (
+                    // TODO Fix URL redirection with the correct housingId.
+                    <NavLink to={`${URL_CONTRACTS}`} className="flex flex-col items-center mt-16">
+                        <ErrorOutlineIcon sx={{ color: 'secondary.main', width: '32px', height: '32px' }} />
+                        <TypographyFormatMessage
+                            className="text-13 underline md:text-16 w-full text-center"
+                            sx={{ color: 'secondary.main' }}
+                        >
+                            Ce graphe est un exemple. Renseigner votre contrat d'énergie
+                        </TypographyFormatMessage>
+                    </NavLink>
+                )}
             </div>
             {data.length !== 0 && (
                 <div className="p-12 sm:p-24 ">
@@ -225,7 +253,13 @@ export const MyConsumptionContainer = () => {
                             Chiffres clés
                         </TypographyFormatMessage>
                     </div>
-                    <WidgetList data={data} isMetricsLoading={isMetricsLoading} />
+                    <WidgetList
+                        data={
+                            // TODO Fix when getting to the story of widget consumptionEuros
+                            data.filter((metric) => metric.target !== metricTargetsEnum.eurosConsumption)
+                        }
+                        isMetricsLoading={isMetricsLoading}
+                    />
                 </div>
             )}
         </>
