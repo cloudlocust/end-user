@@ -20,7 +20,6 @@ import { ReactComponent as SuperficieIcon } from 'src/assets/images/content/hous
 import { ReactComponent as OccupantIcon } from 'src/assets/images/content/housing/Occupant.svg'
 import { ReactComponent as MainIcon } from 'src/assets/images/content/housing/Main.svg'
 import { useTheme } from '@mui/material'
-// import { useEquipmentList } from 'src/modules/MyHouse/components/Equipments/equipmentHooks'
 
 const Root = styled(FusePageCarded)(({ theme }) => ({
     '& .FusePageCarded-header': {
@@ -45,7 +44,6 @@ export const HousingDetails = () => {
     const history = useHistory()
     const { formatMessage } = useIntl()
 
-    // const houseId = 123
     const theme = useTheme()
 
     const { houseId } = useParams</**
@@ -55,10 +53,6 @@ export const HousingDetails = () => {
         // eslint-disable-next-line jsdoc/require-jsdoc
         houseId: string
     }>()
-
-    // const housingId = parseInt(houseId)
-
-    // const { equipmentList } = useEquipmentList(housingId)
 
     // for UI testing purpose
     const housingElements: HouseDetailsElementType[] = [
