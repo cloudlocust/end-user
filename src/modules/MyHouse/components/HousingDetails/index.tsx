@@ -1,5 +1,5 @@
 import React from 'react'
-import { useHistory } from 'react-router'
+import { useHistory, useParams } from 'react-router'
 import { motion } from 'framer-motion'
 import Icon from '@mui/material/Icon'
 import { styled } from '@mui/material/styles'
@@ -44,8 +44,15 @@ export const HousingDetails = () => {
     const history = useHistory()
     const { formatMessage } = useIntl()
 
-    const houseId = 123
     const theme = useTheme()
+
+    const { houseId } = useParams</**
+     *
+     */
+    {
+        // eslint-disable-next-line jsdoc/require-jsdoc
+        houseId: string
+    }>()
 
     // for UI testing purpose
     const housingElements: HouseDetailsElementType[] = [
