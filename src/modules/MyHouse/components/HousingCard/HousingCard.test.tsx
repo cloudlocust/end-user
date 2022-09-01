@@ -3,7 +3,7 @@ import HousingCard from 'src/modules/MyHouse/components/HousingCard'
 import { TEST_HOUSES } from 'src/mocks/handlers/houses'
 import { applyCamelCase } from 'src/common/react-platform-components/utils/mm'
 import { BrowserRouter as Router } from 'react-router-dom'
-import { act, waitFor } from '@testing-library/react'
+import { waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { IHousing } from 'src/modules/MyHouse/components/HousingList/housing.d'
 
@@ -83,9 +83,7 @@ describe('Test HousingCard', () => {
             expect(getByText(DEFAULT_GUID_TEXT)).toBeTruthy()
 
             // Test that the popup to add meter show.
-            act(() => {
-                userEvent.click(getByText(DEFAULT_GUID_TEXT))
-            })
+            userEvent.click(getByText(DEFAULT_GUID_TEXT))
 
             await waitFor(() => expect(getByText('Nom de mon compteur')).toBeTruthy())
         })
@@ -98,9 +96,8 @@ describe('Test HousingCard', () => {
                 </Router>,
             )
             // Open delete warning popup.
-            act(() => {
-                userEvent.click(getByRole('button', { name: /delete/i }))
-            })
+            userEvent.click(getByRole('button', { name: /delete/i }))
+
             // Test that delete warning popup is open.
             await waitFor(() => {
                 expect(getByText(MODAL_POPUP_TEXT_VERIFICATION)).toBeTruthy()
@@ -113,17 +110,15 @@ describe('Test HousingCard', () => {
                 </Router>,
             )
             // Open delete warning popup.
-            act(() => {
-                userEvent.click(getByRole('button', { name: /delete/i }))
-            })
+            userEvent.click(getByRole('button', { name: /delete/i }))
+
             // Test that delete warning popup is open.
             await waitFor(() => {
                 expect(getByText(MODAL_POPUP_TEXT_VERIFICATION)).toBeTruthy()
             })
             // Close delete warning popup.
-            act(() => {
-                userEvent.click(getByText('Annuler'))
-            })
+            userEvent.click(getByText('Annuler'))
+
             // Test that delete warning popup is closed.
             await waitFor(() => {
                 expect(() => getByText(MODAL_POPUP_TEXT_VERIFICATION)).toThrow()
@@ -136,17 +131,15 @@ describe('Test HousingCard', () => {
                 </Router>,
             )
             // Open delete warning popup.
-            act(() => {
-                userEvent.click(getByRole('button', { name: /delete/i }))
-            })
+            userEvent.click(getByRole('button', { name: /delete/i }))
+
             // Test that delete warning popup is open.
             await waitFor(() => {
                 expect(getByText(MODAL_POPUP_TEXT_VERIFICATION)).toBeTruthy()
             })
             // Confirm delete Housing.
-            act(() => {
-                userEvent.click(getByText('Continuer'))
-            })
+            userEvent.click(getByText('Continuer'))
+
             await waitFor(() => {
                 expect(mockRemoveHousing).toHaveBeenCalled()
             })
@@ -161,9 +154,8 @@ describe('Test HousingCard', () => {
                 </Router>,
             )
             // Open add meter popup.
-            act(() => {
-                userEvent.click(getByText(DEFAULT_GUID_TEXT))
-            })
+            userEvent.click(getByText(DEFAULT_GUID_TEXT))
+
             // Test that add meter popup is open.
             await waitFor(() => {
                 expect(getByText(DEFAULT_ADD_METER_NAME_TEXT)).toBeTruthy()
@@ -177,9 +169,7 @@ describe('Test HousingCard', () => {
                 </Router>,
             )
             // Open add meter popup.
-            act(() => {
-                userEvent.click(getByText(DEFAULT_GUID_TEXT))
-            })
+            userEvent.click(getByText(DEFAULT_GUID_TEXT))
 
             // Test that add meter popup is open.
             await waitFor(() => {
@@ -194,9 +184,7 @@ describe('Test HousingCard', () => {
             userEvent.type(numberInput, NUMBER_OF_MY_METER)
 
             // Save the changes.
-            act(() => {
-                userEvent.click(getByText('Enregistrer'))
-            })
+            userEvent.click(getByText('Enregistrer'))
 
             // Add meter function is called
             await waitFor(() => {
@@ -210,9 +198,7 @@ describe('Test HousingCard', () => {
                 </Router>,
             )
             // Open add meter popup.
-            act(() => {
-                userEvent.click(getByText(DEFAULT_GUID_TEXT))
-            })
+            userEvent.click(getByText(DEFAULT_GUID_TEXT))
 
             // Test that add meter popup is open.
             await waitFor(() => {
@@ -227,9 +213,7 @@ describe('Test HousingCard', () => {
             userEvent.type(numberInput, NUMBER_OF_MY_METER)
 
             // Cancel the changes.
-            act(() => {
-                userEvent.click(getByText('Annuler'))
-            })
+            userEvent.click(getByText('Annuler'))
 
             // Add meter function is not called and popup closed
             await waitFor(() => {
@@ -244,9 +228,7 @@ describe('Test HousingCard', () => {
                 </Router>,
             )
             // Open add meter popup.
-            act(() => {
-                userEvent.click(getByText(DEFAULT_GUID_TEXT))
-            })
+            userEvent.click(getByText(DEFAULT_GUID_TEXT))
 
             // Test that add meter popup is open.
             await waitFor(() => {
@@ -263,9 +245,7 @@ describe('Test HousingCard', () => {
             userEvent.type(numberInput, '123')
 
             // Save the changes.
-            act(() => {
-                userEvent.click(getByText('Enregistrer'))
-            })
+            userEvent.click(getByText('Enregistrer'))
 
             // Add meter function is not called
             await waitFor(() => {
