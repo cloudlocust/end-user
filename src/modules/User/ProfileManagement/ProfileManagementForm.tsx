@@ -9,6 +9,7 @@ import { RootState } from 'src/redux'
 import { Button } from '@mui/material'
 import { ButtonResetForm } from 'src/common/ui-kit/components/ButtonResetForm/ButtonResetForm'
 import { IUser } from 'src/modules/User'
+import { useProfileManagement } from 'src/modules/User/ProfileManagement/ProfileManagementHooks'
 /**
  * Form used for modify user profile.
  *
@@ -16,6 +17,7 @@ import { IUser } from 'src/modules/User'
  */
 export const ProfileManagementForm = () => {
     const { user } = useSelector(({ userModel }: RootState) => userModel)
+    const { isModifyInProgress, updateProfile } = useProfileManagement()
     const { formatMessage } = useIntl()
     const [isEdit, setIsEdit] = useState(false)
     const disabledField = !isEdit
@@ -38,8 +40,7 @@ export const ProfileManagementForm = () => {
         <Form
             defaultValues={formInitialValues}
             onSubmit={async (data: IUser) => {
-                //TODO uncomment in MYEM-2938
-                //  await onSubmit(data)
+                await updateProfile(data)
                 setIsEdit(false)
             }}
         >
@@ -88,8 +89,7 @@ export const ProfileManagementForm = () => {
                                 onClickButtonReset={toggleEditFormDisable}
                             />
                             <ButtonLoader
-                                //TODO uncomment in MYEM-2938
-                                // inProgress={isModifyInProgress}
+                                inProgress={isModifyInProgress}
                                 variant="contained"
                                 type="submit"
                                 className="ml-8 mb-4 sm:mr-8 sm:mb-0"
