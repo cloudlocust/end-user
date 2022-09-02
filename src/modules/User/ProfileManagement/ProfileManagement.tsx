@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { Icon, Typography } from 'src/common/ui-kit'
 import PageSimple from 'src/common/ui-kit/fuse/components/PageSimple'
 import { useIntl } from 'src/common/react-platform-translation'
@@ -16,13 +16,6 @@ import { ChangePassword } from '../ChangePassword/ChangePassword'
 const ProfileManagement = () => {
     const { formatMessage } = useIntl()
     const history = useHistory()
-    const [activeChangePassword, setActiveChangePassword] = useState(false)
-    /**
-     * The toggleChangeForm function changes the value to open the change password window.
-     */
-    const toggleChangeForm = () => {
-        setActiveChangePassword((isActive) => !isActive)
-    }
 
     return (
         <PageSimple
