@@ -3,6 +3,7 @@ import { BrowserRouter as Router } from 'react-router-dom'
 import { MeterStatus } from 'src/modules/MyHouse/components/MeterStatus'
 import { enedisConsentStatus, nrlinkConsentStatus } from 'src/modules/Consents/Consents'
 import dayjs from 'dayjs'
+import { URL_NRLINK_CONNECTION_STEPS } from 'src/modules/nrLinkConnection'
 
 let mockMeterStatusProps = {
     houseId: 1,
@@ -98,6 +99,10 @@ describe('MeterStatus component test', () => {
             expect(getByText(NRLINK_TITLE)).toBeTruthy()
             expect(getByText(NONEXISTANT_EXPIRED_MESSAGE)).toBeTruthy()
             expect(image).toHaveAttribute('src', '/assets/images/content/housing/consent-status/meter-off.svg')
+            expect(getByText(NONEXISTANT_EXPIRED_MESSAGE).closest('a')).toHaveAttribute(
+                'href',
+                URL_NRLINK_CONNECTION_STEPS,
+            )
         })
         test('when there is no meterGuid, a message is displayed: Veuillez renseigner votre compteur', async () => {
             mockMeterStatusProps.meterGuid = ''
