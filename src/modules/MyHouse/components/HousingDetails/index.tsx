@@ -119,8 +119,16 @@ export const HousingDetails = () => {
                         </Card>
                     </NavLink>
                     <div className="flex flex-col items-center md:flex-row justify-around mt-40">
-                        <HousingDetailsCard title="Informations logement" elements={housingElements} />
-                        <HousingDetailsCard title="Informations équipements" elements={equipmentElements} />
+                        <HousingDetailsCard
+                            title="Informations logement"
+                            elements={housingElements}
+                            typeOfDetails="accomodation"
+                        />
+                        <HousingDetailsCard
+                            title="Informations équipements"
+                            elements={equipmentElements}
+                            typeOfDetails="equipments"
+                        />
                     </div>
                 </div>
             }

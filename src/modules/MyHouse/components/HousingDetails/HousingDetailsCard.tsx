@@ -15,11 +15,13 @@ import { URL_MY_HOUSE } from 'src/modules/MyHouse/MyHouseConfig'
  * @param props Props.
  * @param props.title The title of the card.
  * @param props.elements List of Elements to display in the card.
+ * @param props.typeOfDetails List of Elements to display in the card.
  * @returns Void.
  */
 const HousingDetailsCard = ({
     title,
     elements,
+    typeOfDetails,
 }: /**
  */ {
     /**
@@ -30,6 +32,10 @@ const HousingDetailsCard = ({
      * Elements to display (element is a icon and a label).
      */
     elements: HouseDetailsElementType[]
+    /**
+     * Title of the card.
+     */
+    typeOfDetails: string
 }) => {
     const { formatMessage } = useIntl()
 
@@ -57,7 +63,7 @@ const HousingDetailsCard = ({
                 ))}
             </CardContent>
             <CardActions className="flex items-center content-center justify-end">
-                <NavLink to={`${URL_MY_HOUSE}/${houseId}/equipments`}>
+                <NavLink to={`${URL_MY_HOUSE}/${houseId}/${typeOfDetails}`}>
                     <Button variant="contained" color="primary" className="text-white">
                         {formatMessage({
                             id: 'Configuration',
