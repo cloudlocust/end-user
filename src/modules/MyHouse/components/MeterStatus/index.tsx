@@ -100,7 +100,14 @@ export const MeterStatus = ({ houseId, meterGuid }: MeterStatusProps) => {
                 <div className="flex flex-row justify-between bg-grey-200 p-12 border-b-1 border-grey-300">
                     <div className="flex flex-col justify-between">
                         <TypographyFormatMessage className="text-base font-medium">Compteur</TypographyFormatMessage>
-                        <span className="text-grey-600 text-base">{`n° ${meterGuid}`}</span>
+                        {meterGuid ? (
+                            <span className="text-grey-600 text-base">{`n° ${meterGuid}`}</span>
+                        ) : (
+                            /* TODO: To be worked on in another story. It should open a pop up to add a meterr. */
+                            <TypographyFormatMessage className="underline text-blue hover:text-blue-900 cursor-pointer">
+                                Veuillez renseigner votre compteur
+                            </TypographyFormatMessage>
+                        )}
                     </div>
                     <NavLink to={`${URL_MY_HOUSE}/${houseId}/contracts`} className="flex">
                         <Card className="flex flex-col items-center rounded p-8">
@@ -121,7 +128,14 @@ export const MeterStatus = ({ houseId, meterGuid }: MeterStatusProps) => {
                 <div className="flex flex-col md:flex-row justify-around">
                     {/* Nrlink Consent Status */}
                     <div className="p-12 border-b-1 border-grey-300">
-                        {consentsLoading ? (
+                        {!meterGuid ? (
+                            <>
+                                <TypographyFormatMessage className="text-xs md:text-sm font-semibold">
+                                    Consommation en temps réel
+                                </TypographyFormatMessage>
+                                <div className="flex flex-row items-center">{renderNrlinkStatus('NONEXISTENT')}</div>
+                            </>
+                        ) : consentsLoading ? (
                             <CircularProgress size={25} />
                         ) : (
                             <>
