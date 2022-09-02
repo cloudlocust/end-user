@@ -5,26 +5,30 @@ import DialogTitle from '@mui/material/DialogTitle'
 import { Icon } from 'src/common/ui-kit'
 import { useIntl } from 'src/common/react-platform-translation'
 import { Button, useTheme } from '@mui/material'
-import { requiredBuilder, Form, repeatPassword } from 'src/common/react-platform-components'
+import { requiredBuilder, Form, repeatPassword, min } from 'src/common/react-platform-components'
 import { ButtonLoader, PasswordField } from 'src/common/ui-kit'
 import '../ForgotPassword/ForgotPassword.scss'
 import { motion } from 'framer-motion'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
-import { useRef } from 'react'
+import { useRef, useState } from 'react'
 /**
  * Change password form, this form is based on react hooks.
  *
  * @returns Change password form.
  */
 export const ChangePassword = () => {
-    const [open, setOpen] = React.useState(false)
-
+    const [openChangePassword, setOpenChangePassword] = useState(false)
+    /**
+     * Handle the click on open dialog window.
+     */
     const handleClickOpen = () => {
-        setOpen(true)
+        setOpenChangePassword(true)
     }
-
+    /**
+     * Handle the click on close dialog window.
+     */
     const handleClose = () => {
-        setOpen(false)
+        setOpenChangePassword(false)
     }
     const { formatMessage } = useIntl()
     const passwordRef = useRef()
@@ -40,7 +44,7 @@ export const ChangePassword = () => {
                     <Icon className="ml-10">mode_edit</Icon>
                 </Button>
             </div>
-            <Dialog open={open} onClose={handleClose} aria-labelledby="alert-dialog-title">
+            <Dialog open={openChangePassword} onClose={handleClose} aria-labelledby="alert-dialog-title">
                 <DialogTitle id="alert-dialog-title" style={{ color: theme.palette.primary.main }}>
                     Changer mon mot de passe
                 </DialogTitle>
@@ -59,7 +63,7 @@ export const ChangePassword = () => {
                                     name="password"
                                     label="Nouveau mot de passe"
                                     // inputRef={passwordRef}
-                                    // validateFunctions={[requiredBuilder(), min(8)]}
+                                    validateFunctions={[requiredBuilder(), min(8)]}
                                 />
                                 <TypographyFormatMessage variant="subtitle2" className="font-semibold mb-10">
                                     Confirmer mot de passe
