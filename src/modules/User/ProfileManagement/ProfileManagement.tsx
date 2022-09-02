@@ -65,23 +65,7 @@ const ProfileManagement = () => {
             content={
                 <>
                     <ProfileManagementForm />
-                    <div className="pl-16 sm:pl-24 md:pl-32">
-                        <Button
-                            variant="contained"
-                            className="w-256 mx-auto mb-16"
-                            onClick={() => {
-                                history.push('/profile-management/change-password')
-                                toggleChangeForm()
-                            }}
-                        >
-                            {formatMessage({
-                                id: 'Changer mon mot de passe',
-                                defaultMessage: 'Changer mon mot de passe',
-                            })}
-                            <Icon className="ml-10">mode_edit</Icon>
-                        </Button>
-                    </div>
-                    {activeChangePassword && <ChangePassword toggleChangeForm={toggleChangeForm} />}
+                    <ChangePassword />
                 </>
             }
         />
