@@ -2,13 +2,14 @@ import React from 'react'
 import { Card } from '@mui/material'
 import CardContent from '@mui/material/CardContent'
 import CardActions from '@mui/material/CardActions'
-import Button from '@mui/material/Button'
 import { useIntl } from 'react-intl'
 import { HouseDetailsElementType } from 'src/modules/MyHouse/components/HousingDetails/housingDetails'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import { NavLink, useParams } from 'react-router-dom'
 import { URL_MY_HOUSE } from 'src/modules/MyHouse/MyHouseConfig'
-
+import EditIcon from '@mui/icons-material/Edit'
+import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined'
+import { ButtonLoader } from 'src/common/ui-kit'
 /**
  * This is a component to display different elements of equipements/home-configuration in a card.
  *
@@ -16,12 +17,16 @@ import { URL_MY_HOUSE } from 'src/modules/MyHouse/MyHouseConfig'
  * @param props.title The title of the card.
  * @param props.elements List of Elements to display in the card.
  * @param props.typeOfDetails List of Elements to display in the card.
+ * @param props.isConfigured Are the elements on the card configured.
+ * @param props.loadingInProgress Are the elements loaded.
  * @returns Void.
  */
 const HousingDetailsCard = ({
     title,
     elements,
     typeOfDetails,
+    isConfigured,
+    loadingInProgress,
 }: /**
  */ {
     /**
@@ -36,6 +41,14 @@ const HousingDetailsCard = ({
      * Title of the card.
      */
     typeOfDetails: string
+    /**
+     * Are the elements configured.
+     */
+    isConfigured: boolean
+    /**
+     * Are the elements loaded or not.
+     */
+    loadingInProgress: boolean
 }) => {
     const { formatMessage } = useIntl()
 
@@ -64,12 +77,23 @@ const HousingDetailsCard = ({
             </CardContent>
             <CardActions className="flex items-center content-center justify-end">
                 <NavLink to={`${URL_MY_HOUSE}/${houseId}/${typeOfDetails}`}>
-                    <Button variant="contained" color="primary" className="text-white">
-                        {formatMessage({
-                            id: 'Configuration',
-                            defaultMessage: 'Configuration',
-                        })}
-                    </Button>
+                    <ButtonLoader
+                        variant="contained"
+                        color="primary"
+                        className="text-white"
+                        endIcon={isConfigured ? <SettingsOutlinedIcon /> : <EditIcon />}
+                        inProgress={loadingInProgress}
+                    >
+                        {isConfigured
+                            ? formatMessage({
+                                  id: 'Configuration',
+                                  defaultMessage: 'Configuration',
+                              })
+                            : formatMessage({
+                                  id: 'Modifier',
+                                  defaultMessage: 'Modifier',
+                              })}
+                    </ButtonLoader>
                 </NavLink>
             </CardActions>
         </Card>
