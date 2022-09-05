@@ -171,14 +171,14 @@ export const HousingDetails = () => {
                             title="Informations logement"
                             elements={housingElements}
                             typeOfDetails="accomodation"
-                            isConfigured={isAccomodationMeterListEmpty}
+                            isConfigured={!isAccomodationMeterListEmpty}
                             loadingInProgress={loadingAccomodationInProgress}
                         />
                         <HousingDetailsCard
                             title="Informations équipements"
                             elements={equipementElements}
                             typeOfDetails="equipments"
-                            isConfigured={isEquipmentMeterListEmpty}
+                            isConfigured={!isEquipmentMeterListEmpty}
                             loadingInProgress={loadingEquipmentInProgress}
                         />
                     </div>

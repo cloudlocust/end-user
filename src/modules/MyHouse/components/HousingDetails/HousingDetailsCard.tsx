@@ -86,12 +86,12 @@ const HousingDetailsCard = ({
                     >
                         {isConfigured
                             ? formatMessage({
-                                  id: 'Configuration',
-                                  defaultMessage: 'Configuration',
-                              })
-                            : formatMessage({
                                   id: 'Modifier',
                                   defaultMessage: 'Modifier',
+                              })
+                            : formatMessage({
+                                  id: 'Configuration',
+                                  defaultMessage: 'Configuration',
                               })}
                     </ButtonLoader>
                 </NavLink>
