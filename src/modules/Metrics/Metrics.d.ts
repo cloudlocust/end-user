@@ -3,6 +3,7 @@
  */
 export type metricTargetType =
     | 'consumption_metrics'
+    | '__euro__consumption_metrics'
     | 'external_temperature_metrics'
     | 'nrlink_internal_temperature_metrics'
     | 'enedis_max_power'
@@ -15,6 +16,10 @@ export enum metricTargetsEnum {
      * Enum value for consumption_metrics.
      */
     consumption = 'consumption_metrics',
+    /**
+     * Enum value for eurosConsumption.
+     */
+    eurosConsumption = '__euro__consumption_metrics',
     /**
      * Enum value for nrlink_internal_temperature_metrics.
      */

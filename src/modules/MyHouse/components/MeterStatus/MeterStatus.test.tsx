@@ -4,8 +4,8 @@ import { MeterStatus } from 'src/modules/MyHouse/components/MeterStatus'
 import { enedisConsentStatus, nrlinkConsentStatus } from 'src/modules/Consents/Consents'
 import { URL_NRLINK_CONNECTION_STEPS } from 'src/modules/nrLinkConnection'
 
-let mockMeterStatusProps = {
-    houseId: 1,
+const mockMeterStatusProps = {
+    houseId: '1',
     meterGuid: '12345678901234',
 }
 
