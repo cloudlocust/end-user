@@ -246,10 +246,10 @@ export const fillApexChartsAxisMissingValues = (
         })
     else {
         let consumptionSerieIndex = 0
-        // When period not yearly the missing values is only in the consumption target.
+        // When period not yearly the missing values is only in the consumption target or eurosConsumption.
         const consumptionSeries: ApexAxisChartSerie = ApexChartsMissingAxisValues.yAxisSeries.find(
             (serie: ApexAxisChartSerie, serieIndex: number) => {
-                if (serie.name === metricTargetsEnum.consumption) {
+                if (serie.name === metricTargetsEnum.consumption || serie.name === metricTargetsEnum.eurosConsumption) {
                     consumptionSerieIndex = serieIndex
                     return true
                 }

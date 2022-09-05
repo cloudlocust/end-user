@@ -2,10 +2,9 @@ import { reduxedRender } from 'src/common/react-platform-components/test'
 import { BrowserRouter as Router } from 'react-router-dom'
 import { MeterStatus } from 'src/modules/MyHouse/components/MeterStatus'
 import { enedisConsentStatus, nrlinkConsentStatus } from 'src/modules/Consents/Consents'
-import dayjs from 'dayjs'
 
-let mockMeterStatusProps = {
-    houseId: 1,
+const mockMeterStatusProps = {
+    houseId: '1',
     meterGuid: '12345678901234',
 }
 
@@ -22,7 +21,6 @@ let mockEnedisConsent: enedisConsentStatus
 let mockGetConsent = jest.fn()
 let mockNrlinkCreatedAt = '2022-09-02T08:06:08Z'
 let mockNrlinkGuid = 'ABCD1234'
-let formatedCreatedAt = dayjs(mockNrlinkCreatedAt).format('DD/MM/YYYY')
 
 // Mock consentsHook
 jest.mock('src/modules/Consents/consentsHook.ts', () => ({
@@ -63,7 +61,6 @@ describe('MeterStatus component test', () => {
             expect(getByText(NRLINK_TITLE)).toBeTruthy()
             expect(image).toHaveAttribute('src', '/assets/images/content/housing/consent-status/meter-on.svg')
             expect(getByText(`nrLink n° ${mockNrlinkGuid}`)).toBeTruthy()
-            expect(getByText(`Connexion le ${formatedCreatedAt}`)).toBeTruthy()
         })
         test('when nrlink status is disconnected', async () => {
             mockNrlinkConsent = 'DISCONNECTED'
