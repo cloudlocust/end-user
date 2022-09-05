@@ -15,7 +15,7 @@ jest.mock('src/modules/User/ResetPassword/hooks', () => ({
     }),
 }))
 
-describe('RestPasswordForm component test', () => {
+describe('ChangePasswordForm component test', () => {
     test('Check if the dialog window has appeared', async () => {
         const { getByText } = reduxedRender(<ChangePassword />)
         userEvent.click(getByText(CHANGE_PASSWORD))
