@@ -19,7 +19,7 @@ import { IHousing } from 'src/modules/MyHouse/components/HousingList/housing.d'
 import { useHousingsDetails } from 'src/modules/MyHouse/components/HousingList/HousingsHooks'
 import { URL_MY_HOUSE } from 'src/modules/MyHouse/MyHouseConfig'
 import { useMeterForHousing } from 'src/modules/Meters/metersHook'
-import { IMeter } from 'src/modules/Meters/Meters'
+import { addMeterInputType } from 'src/modules/Meters/Meters'
 
 /**
  * This is a card for the display of a logement item.
@@ -219,7 +219,7 @@ const HousingCard = ({
             </Modal>
             <Modal open={addMeterOpen} onClose={handleCloseAddMeterOpen}>
                 <Form
-                    onSubmit={async (value: Omit<IMeter, 'id'>) => {
+                    onSubmit={async (value: addMeterInputType) => {
                         await addMeter(logement.id, value, reloadHousings)
                         handleCloseAddMeterOpen()
                     }}
@@ -238,11 +238,19 @@ const HousingCard = ({
                                 <TextField
                                     name="name"
                                     label="Nom de mon compteur"
+                                    placeholder={formatMessage({
+                                        id: 'Donnez un nom à votre compteur',
+                                        defaultMessage: 'Donnez un nom à votre compteur',
+                                    })}
                                     validateFunctions={[requiredBuilder()]}
                                 />
                                 <TextField
                                     name="guid"
                                     label="Numéro de mon compteur"
+                                    placeholder={formatMessage({
+                                        id: 'Donnez le numéro de votre compteur',
+                                        defaultMessage: 'Donnez le numéro de votre compteur',
+                                    })}
                                     validateFunctions={[requiredBuilder(), min(14), max(14)]}
                                 />
                             </CardContent>

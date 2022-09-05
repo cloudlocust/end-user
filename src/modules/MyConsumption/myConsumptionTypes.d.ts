@@ -99,6 +99,26 @@ interface ITargetButtonGroup {
 }
 
 /**
+ * Interface for EurosConsumptionButtonTogglerProps.
+ */
+export type EurosConsumptionButtonTogglerProps =
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    {
+        /**
+         * RemoveTarget.
+         */
+        removeTarget: (target: metricTarget) => void
+        /**
+         * AddTarget.
+         */
+        addTarget: (target: metricTarget) => void
+        /**
+         * Indicate eurosConsumption or consumption IconButton to be shown.
+         */
+        showEurosConsumption?: boolean
+    }
+
+/**
  * Represent the type return by apexChartsDataConverter.
  */
 export type ApexChartsAxisValuesType =

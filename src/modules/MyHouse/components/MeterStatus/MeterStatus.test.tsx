@@ -3,7 +3,7 @@ import { BrowserRouter as Router } from 'react-router-dom'
 import { MeterStatus } from 'src/modules/MyHouse/components/MeterStatus'
 
 const mockMeterStatusProps = {
-    houseId: 1,
+    houseId: '1',
     meterGuid: '12345678901234',
 }
 
