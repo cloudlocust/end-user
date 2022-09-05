@@ -6,6 +6,8 @@ import Button from '@mui/material/Button'
 import { useIntl } from 'react-intl'
 import { HouseDetailsElementType } from 'src/modules/MyHouse/components/HousingDetails/housingDetails'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
+import { NavLink, useParams } from 'react-router-dom'
+import { URL_MY_HOUSE } from 'src/modules/MyHouse/MyHouseConfig'
 
 /**
  * This is a component to display different elements of equipements/home-configuration in a card.
@@ -31,6 +33,14 @@ const HousingDetailsCard = ({
 }) => {
     const { formatMessage } = useIntl()
 
+    const { houseId } = useParams</**
+     *
+     */
+    {
+        // eslint-disable-next-line jsdoc/require-jsdoc
+        houseId: string
+    }>()
+
     return (
         <Card className="rounded-16 border border-slate-600 bg-gray-50 mb-20 mx-10 w-400 h-256 flex flex-col justify-between">
             <TypographyFormatMessage className="font-bold mt-20 ml-20 text-14 whitespace-normal">
@@ -47,12 +57,14 @@ const HousingDetailsCard = ({
                 ))}
             </CardContent>
             <CardActions className="flex items-center content-center justify-end">
-                <Button variant="contained" color="primary" className="text-white">
-                    {formatMessage({
-                        id: 'Configuration',
-                        defaultMessage: 'Configuration',
-                    })}
-                </Button>
+                <NavLink to={`${URL_MY_HOUSE}/${houseId}/equipments`}>
+                    <Button variant="contained" color="primary" className="text-white">
+                        {formatMessage({
+                            id: 'Configuration',
+                            defaultMessage: 'Configuration',
+                        })}
+                    </Button>
+                </NavLink>
             </CardActions>
         </Card>
     )

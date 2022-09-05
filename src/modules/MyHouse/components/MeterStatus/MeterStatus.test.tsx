@@ -5,8 +5,8 @@ import { enedisConsentStatus, nrlinkConsentStatus } from 'src/modules/Consents/C
 import { URL_NRLINK_CONNECTION_STEPS } from 'src/modules/nrLinkConnection'
 import dayjs from 'dayjs'
 
-let mockMeterStatusProps = {
-    houseId: 1,
+const mockMeterStatusProps = {
+    houseId: '1',
     meterGuid: '12345678901234',
 }
 

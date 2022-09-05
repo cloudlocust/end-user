@@ -4,13 +4,14 @@ import { reduxedRender } from 'src/common/react-platform-components/test'
 import { EquipmentForm } from 'src/modules/MyHouse/components/Equipments/EquipmentForm'
 import { IMeter } from 'src/modules/Meters/Meters'
 import { TEST_METERS } from 'src/mocks/handlers/meters'
-import { TEST_METER_EQUIPMENTS as MOCK_EQUIPMENTS } from 'src/mocks/handlers/equipments'
+import { TEST_HOUSING_EQUIPMENTS as MOCK_EQUIPMENTS } from 'src/mocks/handlers/equipments'
 import { applyCamelCase } from 'src/common/react-platform-components'
 import { IEquipmentMeter } from 'src/modules/MyHouse/components/Equipments/EquipmentsType'
 import userEvent from '@testing-library/user-event'
 
 const TEST_METER_EQUIPMENTS = applyCamelCase(MOCK_EQUIPMENTS)
 
+let mockHouseId = TEST_METERS[0].id
 let mockIsLoadingInProgress = false
 let mockIsEquipmentMeterListEmpty = false
 const mockSaveEquipment = jest.fn()
@@ -18,6 +19,7 @@ const mockLoadEquipmentList = jest.fn()
 let mockMeterList: IMeter[] | null = TEST_METERS
 let mockEquipmentList: IEquipmentMeter[] | null = TEST_METER_EQUIPMENTS
 const MODIFIER_BUTTON_TEXT = 'Modifier'
+const SANITARY_INFO_TEXT = 'Eau chaude sanitaire :'
 const HEATER_TEXT = 'Type de chauffage :'
 const EQUIPMENT_INFO_TEXT = 'Informations Equipements'
 const HOTPLATE_INFO_TEXT = 'Type de plaques de cuisson :'
@@ -60,16 +62,31 @@ jest.mock('src/modules/Meters/metersHook', () => ({
         elementList: mockMeterList,
     }),
 }))
+/**
+ * Mocking the useParams used in "equipmentForm" to get the house id based on url /houses/:houseId/equipements {houseId} params.
+ */
+jest.mock('react-router-dom', () => ({
+    ...jest.requireActual('react-router-dom'),
+    /**
+     * Mock the react-router useParams hooks.
+     *
+     * @returns The react-router useParams hook.
+     */
+    useParams: () => ({
+        houseId: mockHouseId,
+    }),
+}))
 
 describe('Test EquipmentForm', () => {
     test('When equipmentForm mount, with equipmentMeterList form should be disabled, clicking on Modifier form should not be disabled', async () => {
         const { getByText } = reduxedRender(
             <BrowserRouter>
-                <EquipmentForm meterId={TEST_METERS[0].id} />
+                <EquipmentForm />
             </BrowserRouter>,
         )
         expect(getByText(INDUCTION_VALUE_TEXT).classList.contains(DISABLED_CLASS)).toBeTruthy()
         expect(getByText(HEATER_TEXT)).toBeTruthy()
+        expect(getByText(SANITARY_INFO_TEXT)).toBeTruthy()
         expect(getByText(EQUIPMENT_INFO_TEXT)).toBeTruthy()
         expect(getByText(HOTPLATE_INFO_TEXT)).toBeTruthy()
         expect(getByText(MODIFIER_BUTTON_TEXT)).toBeTruthy()
@@ -87,7 +104,7 @@ describe('Test EquipmentForm', () => {
     test('When submitting data, saveEquipment data should be changed and saveEquipment should be called', async () => {
         const { getAllByText, getByText } = reduxedRender(
             <BrowserRouter>
-                <EquipmentForm meterId={TEST_METERS[0].id} />
+                <EquipmentForm />
             </BrowserRouter>,
         )
         userEvent.click(getByText(MODIFIER_BUTTON_TEXT))
@@ -106,7 +123,7 @@ describe('Test EquipmentForm', () => {
         await waitFor(() => {
             expect(mockSaveEquipment).toHaveBeenCalledWith([
                 { equipmentId: 1, equipmentType: 'electricity', equipmentNumber: 0 },
-                { equipmentId: 2, equipmentType: 'induction', equipmentNumber: 0 },
+                { equipmentId: 3, equipmentType: 'induction', equipmentNumber: 0 },
             ])
         })
     })
@@ -114,7 +131,7 @@ describe('Test EquipmentForm', () => {
     test('When clicking on Cancel Edit it should disableEdit', async () => {
         const { getByText } = reduxedRender(
             <BrowserRouter>
-                <EquipmentForm meterId={TEST_METERS[0].id} />
+                <EquipmentForm />
             </BrowserRouter>,
         )
         expect(getByText(INDUCTION_VALUE_TEXT).classList.contains(DISABLED_CLASS)).toBeTruthy()
@@ -137,7 +154,7 @@ describe('Test EquipmentForm', () => {
         mockIsEquipmentMeterListEmpty = true
         const { getByText } = reduxedRender(
             <BrowserRouter>
-                <EquipmentForm meterId={TEST_METERS[0].id} />
+                <EquipmentForm />
             </BrowserRouter>,
         )
         expect(getByText(INDUCTION_VALUE_TEXT).classList.contains(DISABLED_CLASS)).toBeFalsy()
@@ -149,7 +166,7 @@ describe('Test EquipmentForm', () => {
         mockIsLoadingInProgress = true
         const { getByText } = reduxedRender(
             <BrowserRouter>
-                <EquipmentForm meterId={TEST_METERS[0].id} />
+                <EquipmentForm />
             </BrowserRouter>,
         )
         expect(() => getByText(MODIFIER_BUTTON_TEXT)).toThrow()

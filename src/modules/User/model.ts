@@ -171,13 +171,13 @@ export const userModel = createModel<RootModel>()({
          * @param rootState Redux state.
          */
         // eslint-disable-next-line jsdoc/require-jsdoc
-        // async updateCurrentUser({ data }: { data: IUser }, rootState) {
-        //     if (!rootState.userModel.user) return
-        //     const response = await axios.patch<IUser>(`${AUTH_BASE_URL}/users/me`, data)
-        //     const user = response.data
-        //     // Set user in localstorage
-        //     dispatch.userModel.setUser(user)
-        // },
+        async updateCurrentUser({ data }: { data: IUser }, rootState) {
+            if (!rootState.userModel.user) return
+            const response = await axios.patch<IUser>(`${AUTH_BASE_URL}/users/me`, data)
+            const user = response.data
+            // Set user in localstorage
+            dispatch.userModel.setUser(user)
+        },
         /**
          * Get current user data.
          *

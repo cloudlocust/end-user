@@ -5,7 +5,7 @@ export interface MeterStatusProps {
     /**
      * House Id of the actual house.
      */
-    houseId: number
+    houseId: string
     /**
      * MeterGuid of the house's meter.
      */
