@@ -2,8 +2,8 @@ import { reduxedRender } from 'src/common/react-platform-components/test'
 import { BrowserRouter as Router } from 'react-router-dom'
 import { MeterStatus } from 'src/modules/MyHouse/components/MeterStatus'
 import { enedisConsentStatus, nrlinkConsentStatus } from 'src/modules/Consents/Consents'
-import dayjs from 'dayjs'
 import { URL_NRLINK_CONNECTION_STEPS } from 'src/modules/nrLinkConnection'
+import dayjs from 'dayjs'
 
 let mockMeterStatusProps = {
     houseId: 1,

@@ -18,7 +18,7 @@ import 'src/modules/nrLinkConnection/NrLinkConnectionSteps.scss'
 import { ButtonLoader } from 'src/common/ui-kit'
 import { IMeter } from 'src/modules/Meters/Meters'
 import MuiLink from '@mui/material/Link'
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import { URL_CONSUMPTION } from 'src/modules/MyConsumption'
 
 /**
@@ -92,6 +92,9 @@ const stepsLabels = ['Je branche mon capteur', 'Je configure mon compteur Linky'
  */
 const NrLinkConnectionSteps = () => {
     const theme = useTheme()
+
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    const { state: locationState }: { state: { activeStep: number } } = useLocation()
     const isMobile = useMediaQuery(theme.breakpoints.down('md'))
     const [activeStep, setActiveStep] = React.useState(0)
     const [meter, setMeter] = useState<IMeter | null>(null)
@@ -99,6 +102,14 @@ const NrLinkConnectionSteps = () => {
         window.matchMedia('(orientation: portrait)').matches ? 'portrait' : 'landscape',
     )
     const { formatMessage } = useIntl()
+
+    /* If we receive activateStep from useLocation we set ActiveStep to 1  */
+    useEffect(() => {
+        if (locationState) {
+            setActiveStep(locationState.activeStep)
+        }
+    }, [locationState])
+
     const skipStepperLink = (
         <MuiLink
             component={Link}

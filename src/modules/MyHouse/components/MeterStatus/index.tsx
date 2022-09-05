@@ -77,7 +77,7 @@ export const MeterStatus = ({ houseId, meterGuid }: MeterStatusProps) => {
                             <img src="/assets/images/content/housing/consent-status/meter-off.svg" alt="off-icon" />
                         </Icon>
                         <div className="flex flex-col">
-                            <NavLink to={{ pathname: '/nrlink-connection-steps' }}>
+                            <NavLink to={{ pathname: '/nrlink-connection-steps', state: { activeStep: 1 } }}>
                                 <TypographyFormatMessage color={theme.palette.error.main} className="underline">
                                     Connectez votre nrLINK pour visualiser votre consommation.
                                 </TypographyFormatMessage>
