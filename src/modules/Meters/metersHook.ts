@@ -81,7 +81,7 @@ export const useMeterForHousing = () => {
     const { formatMessage } = useIntl()
 
     // eslint-disable-next-line
-    const addMeter = async ( housingId: number, body: Omit<IMeter, 'id'>, reloadHousings: () => void ) => {
+    const addMeter = async ( housingId: number, body: addMeterInputType, reloadHousings: () => void ) => {
         setLoadingInProgress(true)
         try {
             const { data: responseData } = await axios.post(`${HOUSING_API}/${housingId}/meter`, body)

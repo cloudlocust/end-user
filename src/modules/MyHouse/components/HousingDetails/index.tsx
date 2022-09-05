@@ -48,8 +48,15 @@ export const HousingDetails = () => {
     // eslint-disable-next-line jsdoc/require-jsdoc
     const location: { state: { meterGuid: string } } = useLocation()
 
-    const houseId = 123
     const theme = useTheme()
+
+    const { houseId } = useParams</**
+     *
+     */
+    {
+        // eslint-disable-next-line jsdoc/require-jsdoc
+        houseId: string
+    }>()
 
     // for UI testing purpose
     const housingElements: HouseDetailsElementType[] = [
