@@ -5,7 +5,7 @@ import { ReactComponent as ContractIcon } from 'src/assets/images/content/housin
 import { URL_MY_HOUSE } from 'src/modules/MyHouse/MyHouseConfig'
 
 // eslint-disable-next-line jsdoc/require-jsdoc
-export const MeterStatus = ({ houseId, meterGuid }: { houseId: number; meterGuid: string }) => {
+export const MeterStatus = ({ houseId, meterGuid }: { houseId: string; meterGuid: string }) => {
     const theme = useTheme()
 
     // TODO: MYEM-2940
