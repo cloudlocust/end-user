@@ -16,11 +16,11 @@ export const URL_MY_HOUSE_DETAILS = URL_MY_HOUSE + '/:houseId'
 /**
  * Url for housing equipments.
  */
-export const URL_HOUSING_EQUIPMENTS = URL_MY_HOUSE_DETAILS + '/equipments'
+export const URL_HOUSING_EQUIPMENTS = `${URL_MY_HOUSE_DETAILS}/equipments`
 /**
  * Url for housing accomodation.
  */
-export const URL_HOUSING_ACCOMODATION = URL_MY_HOUSE_DETAILS + '/accomodation'
+export const URL_HOUSING_ACCOMODATION = `${URL_MY_HOUSE_DETAILS}/accomodation`
 
 /**
  * Interface .

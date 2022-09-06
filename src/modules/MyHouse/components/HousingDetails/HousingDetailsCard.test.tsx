@@ -8,6 +8,7 @@ import { ReactComponent as SuperficieIcon } from 'src/assets/images/content/hous
 import { ReactComponent as OccupantIcon } from 'src/assets/images/content/housing/Occupant.svg'
 import { ReactComponent as MainIcon } from 'src/assets/images/content/housing/Main.svg'
 import { URL_MY_HOUSE } from 'src/modules/MyHouse/MyHouseConfig'
+import { HousingCardTypeOfDetails } from 'src/modules/MyHouse/components/HousingDetails/housingDetails'
 
 // mocks text and icons
 const SUPERFICIE_ICON = 'Superficie.svg'
@@ -26,7 +27,7 @@ let mockHouseId = TEST_MOCKED_HOUSES[0].id
 
 // mock housing details props
 const mockTitle = 'Informations logement'
-const mockTypeOfDetails = 'accomodation'
+const mockTypeOfDetails: HousingCardTypeOfDetails = 'accomodation'
 let mockIsConfigured = true
 let mockIsLoadingInProgress = false
 

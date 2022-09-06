@@ -3,7 +3,7 @@ import { Card } from '@mui/material'
 import CardContent from '@mui/material/CardContent'
 import CardActions from '@mui/material/CardActions'
 import { useIntl } from 'react-intl'
-import { HouseDetailsElementType } from 'src/modules/MyHouse/components/HousingDetails/housingDetails'
+import { HousingDetailsCardProps } from 'src/modules/MyHouse/components/HousingDetails/housingDetails'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import { NavLink, useParams } from 'react-router-dom'
 import { URL_MY_HOUSE } from 'src/modules/MyHouse/MyHouseConfig'
@@ -27,29 +27,7 @@ const HousingDetailsCard = ({
     typeOfDetails,
     isConfigured,
     loadingInProgress,
-}: /**
- */ {
-    /**
-     * Title of the card.
-     */
-    title: string
-    /**
-     * Elements to display (element is a icon and a label).
-     */
-    elements: HouseDetailsElementType[]
-    /**
-     * Title of the card.
-     */
-    typeOfDetails: string
-    /**
-     * Are the elements configured.
-     */
-    isConfigured: boolean
-    /**
-     * Are the elements loaded or not.
-     */
-    loadingInProgress: boolean
-}) => {
+}: HousingDetailsCardProps) => {
     const { formatMessage } = useIntl()
 
     const { houseId } = useParams</**

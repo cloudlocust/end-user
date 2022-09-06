@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
+import { useEffect, useState } from 'react'
 import { useHistory, useParams } from 'react-router'
 import { motion } from 'framer-motion'
 import Icon from '@mui/material/Icon'
