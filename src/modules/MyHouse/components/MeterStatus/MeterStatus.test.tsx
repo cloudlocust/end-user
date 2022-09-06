@@ -21,7 +21,7 @@ const ENEDIS_CONNECTED_MESSAGE = 'Historique de consommation'
 const ENEDIS_NONEXISTANT_EXPIRED_MESSAGE =
     'Autorisez la récupération de vos données de consommation pour avoir accès à votre historique.'
 
-const NO_METER_MESSAGE = 'Veuillez renseigner votre compteur'
+const NO_METER_MESSAGE = 'Aucun compteur renseigné'
 let mockNrlinkConsent: nrlinkConsentStatus
 let mockEnedisConsent: enedisConsentStatus
 let mockGetConsent = jest.fn()

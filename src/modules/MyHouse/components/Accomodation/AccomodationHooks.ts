@@ -4,23 +4,23 @@ import { useIntl } from 'src/common/react-platform-translation'
 import { useSnackbar } from 'notistack'
 import { getMsgFromAxiosError } from 'src/modules/utils'
 import { AxiosResponse } from 'axios'
-import { METERS_API } from 'src/modules/Meters/metersHook'
 import { AccomodationDataType } from 'src/modules/MyHouse/components/Accomodation/AccomodationType'
+import { HOUSING_API } from 'src/modules/MyHouse/components/HousingList/HousingsHooks'
 /**
  * Accomodation url.
  *
- * @param meterId The meterId of the accomodation.
+ * @param housingId The meterId of the accomodation.
  * @returns Meters base url.
  */
-export const ACCOMODATION_API = (meterId: number) => `${METERS_API}/${meterId}/home-configuration`
+export const ACCOMODATION_API = (housingId: number) => `${HOUSING_API}/${housingId}/home-configuration`
 
 /**
  * Hooks for accomodation.
  *
- * @param meterId MeterId.
+ * @param housingId MeterId.
  * @returns UseAccomodation.
  */
-export function useAccomodation(meterId: number) {
+export function useAccomodation(housingId: number) {
     const [accomodation, setAccomodation] = useState<AccomodationDataType>()
     const { enqueueSnackbar } = useSnackbar()
     const [isLoadingInProgress, setIsLoadingInProgress] = useState(false)
@@ -38,7 +38,7 @@ export function useAccomodation(meterId: number) {
         setIsLoadingInProgress(true)
         try {
             await axios.post<AccomodationDataType, AxiosResponse<AccomodationDataType>>(
-                `${ACCOMODATION_API(meterId)}`,
+                `${ACCOMODATION_API(housingId)}`,
                 body,
             )
             enqueueSnackbar(
@@ -59,14 +59,14 @@ export function useAccomodation(meterId: number) {
     /**
      * Function hook responsible for fetching the function responsible for fetching Accomodation.
      *
-     * @param meterId Represent the meterId of the Accomodation to be fetched.
+     * @param housingId Represent the housingId of the Accomodation to be fetched.
      * @returns The function throw an error, and show snackbar message containing successful and errors message.
      */
     const loadAccomodation = useCallback(async () => {
         setIsLoadingInProgress(true)
         setIsAccomodationMeterListEmpty(false)
         try {
-            const { data: responseData } = await axios.get<AccomodationDataType>(ACCOMODATION_API(meterId))
+            const { data: responseData } = await axios.get<AccomodationDataType>(ACCOMODATION_API(housingId))
             setAccomodation(responseData)
             setIsLoadingInProgress(false)
         } catch (error: any) {
@@ -84,7 +84,7 @@ export function useAccomodation(meterId: number) {
             )
             setIsLoadingInProgress(false)
         }
-    }, [enqueueSnackbar, formatMessage, meterId])
+    }, [enqueueSnackbar, formatMessage, housingId])
 
     // UseEffect executes on initial intantiation of Accomodation.
     useEffect(() => {
