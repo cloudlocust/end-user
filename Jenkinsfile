@@ -126,7 +126,7 @@ pipeline{
                     sh " helm registry login -u ${USER_NAME_} -p ${PASSWORD_} ${URL_} "
                     // This will apply new helm upgrade, you need to specify namespace.
 
-                    withKubeConfig([credentialsId:'kubernetes_staging-alpha-preprod', contextName: "${ENV_NAME}"]) {
+                    withKubeConfig([credentialsId:'kubernetes_staging-alpha-preprod', contextName: "ng${ENV_NAME}"]) {
                         sh "helm upgrade --install enduser-react-ng${ENV_NAME} oci://${URL_}/enduser-react -f environments/ng${ENV_NAME}/microservices/enduser-react.yaml --namespace ng${ENV_NAME}"
 
                     }
