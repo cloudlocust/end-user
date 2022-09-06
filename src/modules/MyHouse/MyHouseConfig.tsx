@@ -2,8 +2,8 @@ import { authTypes } from 'src/common/react-platform-components'
 import { IRouteNavigationConfig } from 'src/routes'
 import { MyHouse } from 'src/modules/MyHouse/MyHouse'
 import { HousingDetails } from 'src/modules/MyHouse/components/HousingDetails'
-import { EquipmentForm } from 'src/modules/MyHouse/components/Equipments/EquipmentForm'
-import { AccomodationForm } from 'src/modules/MyHouse/components/Accomodation/AccomodationForm'
+import Equipments from 'src/modules/MyHouse/components/Equipments'
+import Accomodation from 'src/modules/MyHouse/components/Accomodation'
 
 /**
  * Url for myHouse.
@@ -82,7 +82,7 @@ export const MyHouseConfig = [
     } as IRouteNavigationConfig<MyHouseProps>,
     {
         path: URL_HOUSING_EQUIPMENTS,
-        component: EquipmentForm,
+        component: Equipments,
         auth: { authType: authTypes.loginRequired },
         settings: {
             layout: {
@@ -101,7 +101,7 @@ export const MyHouseConfig = [
     } as IRouteNavigationConfig<MyHouseProps>,
     {
         path: URL_HOUSING_ACCOMODATION,
-        component: AccomodationForm,
+        component: Accomodation,
         auth: { authType: authTypes.loginRequired },
         settings: {
             layout: {

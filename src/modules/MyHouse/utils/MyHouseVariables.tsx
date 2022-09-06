@@ -2,6 +2,13 @@ import { chunk, filter, zip } from 'lodash'
 import { INumberFieldForm } from 'src/common/ui-kit/components/NumberField/NumberFieldTypes'
 import { ISelectButtons } from 'src/common/ui-kit/form-fields/SelectButtons/SelectButtonsTypes'
 import { equipmentNameType } from 'src/modules/MyHouse/components/Equipments/EquipmentsType'
+import { SvgIcon } from '@mui/material'
+import { ReactComponent as ElectricityIcon } from 'src/assets/images/content/housing/Electricity.svg'
+import { ReactComponent as OtherIcon } from 'src/assets/images/content/housing/Other.svg'
+import { ReactComponent as GazIcon } from 'src/assets/images/content/housing/Gaz.svg'
+import { ReactComponent as InductionIcon } from 'src/assets/images/content/housing/Induction.svg'
+import { ReactComponent as VitroceramicIcon } from 'src/assets/images/content/housing/Vitroceramic.svg'
+
 /**
  * Accomodation labels.
  */
@@ -42,8 +49,12 @@ const buttonStyleLast = 'w-160 mt-16 flex flex-col'
 const buttonStyle = `${buttonStyleLast} mr-10`
 const wrapperStyles = 'flex flex-row justify-center'
 const iconStyles = 'my-5 h-56'
-
-// TODO - Channge this icons on the newer version.
+const customSvgIconsStyling = {
+    marginTop: '5px',
+    marginBottom: '5px',
+    height: '56px',
+    width: '56px',
+}
 
 // eslint-disable-next-line jsdoc/require-jsdoc
 const getEquipmentIconPath = (name: string) => `/assets/images/content/equipment/${name}.svg`
@@ -56,14 +67,22 @@ export const heaterEquipment: ISelectButtons = {
     formOptions: [
         {
             label: 'Eléctricité',
-            iconPath: getEquipmentIconPath('electricity'),
             buttonStyle,
+            icon: (
+                <SvgIcon sx={customSvgIconsStyling}>
+                    <ElectricityIcon />
+                </SvgIcon>
+            ),
             iconStyles,
             value: 'electricity',
         },
         {
             label: 'Autre',
-            iconPath: getEquipmentIconPath('heaterOther'),
+            icon: (
+                <SvgIcon sx={customSvgIconsStyling}>
+                    <OtherIcon />
+                </SvgIcon>
+            ),
             buttonStyle: buttonStyleLast,
             iconStyles,
             value: 'other',
@@ -79,22 +98,33 @@ export const sanitaryEquipment: ISelectButtons = {
     formOptions: [
         {
             label: 'Eléctricité',
-            iconPath: getEquipmentIconPath('electricity'),
+            icon: (
+                <SvgIcon sx={customSvgIconsStyling}>
+                    <ElectricityIcon />
+                </SvgIcon>
+            ),
             buttonStyle,
             iconStyles,
             value: 'electricity',
         },
         {
             label: 'Gaz',
-            // TODO - Change the icon to gaz in new version.
-            iconPath: getEquipmentIconPath('electricity'),
+            icon: (
+                <SvgIcon sx={customSvgIconsStyling}>
+                    <GazIcon />
+                </SvgIcon>
+            ),
             buttonStyle,
             iconStyles,
             value: 'gaz',
         },
         {
             label: 'Autre',
-            iconPath: getEquipmentIconPath('heaterOther'),
+            icon: (
+                <SvgIcon sx={customSvgIconsStyling}>
+                    <OtherIcon />
+                </SvgIcon>
+            ),
             buttonStyle: buttonStyleLast,
             iconStyles,
             value: 'other',
@@ -110,21 +140,33 @@ export const hotPlateEquipment: ISelectButtons = {
     formOptions: [
         {
             label: 'Vitrocéramique',
-            iconPath: getEquipmentIconPath('vitroceramic'),
+            icon: (
+                <SvgIcon sx={customSvgIconsStyling}>
+                    <VitroceramicIcon />
+                </SvgIcon>
+            ),
             buttonStyle,
             iconStyles,
             value: 'vitroceramic',
         },
         {
             label: 'Induction',
-            iconPath: getEquipmentIconPath('induction'),
+            icon: (
+                <SvgIcon sx={customSvgIconsStyling}>
+                    <InductionIcon />
+                </SvgIcon>
+            ),
             buttonStyle,
             iconStyles,
             value: 'induction',
         },
         {
             label: 'Autre',
-            iconPath: getEquipmentIconPath('hotplateOther'),
+            icon: (
+                <SvgIcon sx={customSvgIconsStyling}>
+                    <OtherIcon />
+                </SvgIcon>
+            ),
             buttonStyle: buttonStyleLast,
             iconStyles,
             value: 'other',

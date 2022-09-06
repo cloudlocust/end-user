@@ -18,7 +18,7 @@ import { ReactComponent as OccupantIcon } from 'src/assets/images/content/housin
 import { ReactComponent as MainIcon } from 'src/assets/images/content/housing/Main.svg'
 import { ReactComponent as VitroceramicIcon } from 'src/assets/images/content/housing/Vitroceramic.svg'
 import { ReactComponent as InductionIcon } from 'src/assets/images/content/housing/Induction.svg'
-import { ReactComponent as AutreIcon } from 'src/assets/images/content/housing/Autre.svg'
+import { ReactComponent as OtherIcon } from 'src/assets/images/content/housing/Other.svg'
 import SvgIcon from '@mui/material/SvgIcon'
 import { useTheme } from '@mui/material'
 import { useAccomodation } from 'src/modules/MyHouse/components/Accomodation/AccomodationHooks'
@@ -116,7 +116,7 @@ export const HousingDetails = () => {
                 case 'other':
                     return (
                         <SvgIcon>
-                            <AutreIcon color="primary" fontSize="large" />
+                            <OtherIcon color="primary" fontSize="large" />
                         </SvgIcon>
                     )
                 default:
