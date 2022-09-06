@@ -65,10 +65,10 @@ const HousingDetailsCard = ({
             <TypographyFormatMessage className="font-bold mt-20 ml-20 text-14 whitespace-normal">
                 {title}
             </TypographyFormatMessage>
-            <CardContent className="flex content-center items-baseline">
+            <CardContent className="flex content-center items-start">
                 {elements.map((element) => (
                     <div className="w-70 h-120 flex flex-1 flex-col items-center justify-items-center m-10">
-                        <div className="p-10 bg-white rounded-md flex items-center justify-items-center mb-5 shadow-md border border-slate-800">
+                        <div className="w-56 h-56 bg-white rounded-md flex items-center justify-center mb-5 shadow-md border border-slate-800">
                             {element.icon}
                         </div>
                         <p className="text-center">{element.label}</p>
@@ -81,7 +81,7 @@ const HousingDetailsCard = ({
                         variant="contained"
                         color="primary"
                         className="text-white"
-                        endIcon={isConfigured ? <SettingsOutlinedIcon /> : <EditIcon />}
+                        endIcon={isConfigured ? <EditIcon /> : <SettingsOutlinedIcon />}
                         inProgress={loadingInProgress}
                     >
                         {isConfigured

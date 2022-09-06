@@ -19,6 +19,10 @@ import { ReactComponent as ContractIcon } from 'src/assets/images/content/housin
 import { ReactComponent as SuperficieIcon } from 'src/assets/images/content/housing/Superficie.svg'
 import { ReactComponent as OccupantIcon } from 'src/assets/images/content/housing/Occupant.svg'
 import { ReactComponent as MainIcon } from 'src/assets/images/content/housing/Main.svg'
+import { ReactComponent as VitroceramicIcon } from 'src/assets/images/content/housing/Vitroceramic.svg'
+import { ReactComponent as InductionIcon } from 'src/assets/images/content/housing/Induction.svg'
+import { ReactComponent as AutreIcon } from 'src/assets/images/content/housing/Autre.svg'
+import SvgIcon from '@mui/material/SvgIcon'
 import { useTheme } from '@mui/material'
 import { useAccomodation } from 'src/modules/MyHouse/components/Accomodation/AccomodationHooks'
 import { useEquipmentList } from 'src/modules/MyHouse/components/Equipments/equipmentHooks'
@@ -85,18 +89,32 @@ export const HousingDetails = () => {
     useEffect(() => {
         // eslint-disable-next-line
         const handleEquipmentsIcons = (equipementName: string) => {
-            if (!isEquipmentMeterListEmpty) {
-                const equipement = equipmentList?.find((equipement) => equipement.equipment.name === equipementName)
-                switch (equipement?.equipmentType) {
-                    case 'electricity':
-                        return <BoltIcon color="primary" fontSize="large" />
-                    case 'gaz':
-                        return <LocalFireDepartmentIcon color="primary" fontSize="large" />
-                    default:
-                        return <MoreHorizIcon color="primary" fontSize="large" />
-                }
-            } else {
-                return <MoreHorizIcon color="primary" fontSize="large" />
+            const equipement = equipmentList?.find((equipement) => equipement.equipment.name === equipementName)
+            switch (equipement?.equipmentType) {
+                case 'electricity':
+                    return <BoltIcon color="primary" fontSize="large" />
+                case 'gaz':
+                    return <LocalFireDepartmentIcon color="primary" fontSize="large" />
+                case 'vitroceramic':
+                    return (
+                        <SvgIcon>
+                            <VitroceramicIcon color="primary" fontSize="large" />
+                        </SvgIcon>
+                    )
+                case 'induction':
+                    return (
+                        <SvgIcon>
+                            <InductionIcon color="primary" fontSize="large" />
+                        </SvgIcon>
+                    )
+                case 'other':
+                    return (
+                        <SvgIcon>
+                            <AutreIcon color="primary" fontSize="large" />
+                        </SvgIcon>
+                    )
+                default:
+                    return <MoreHorizIcon color="primary" fontSize="large" />
             }
         }
 
@@ -116,7 +134,7 @@ export const HousingDetails = () => {
                 },
             ])
         }
-    }, [equipmentList, isEquipmentMeterListEmpty])
+    }, [equipmentList])
 
     // For the house accomodation we don't need to handle the icons based on a certain type.
     const housingElements: HouseDetailsElementType[] = [
