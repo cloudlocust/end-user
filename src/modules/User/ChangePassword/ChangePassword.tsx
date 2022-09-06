@@ -4,7 +4,6 @@ import DialogContent from '@mui/material/DialogContent'
 import DialogTitle from '@mui/material/DialogTitle'
 import { Icon } from 'src/common/ui-kit'
 import { useIntl } from 'src/common/react-platform-translation'
-import { useTheme } from '@mui/material'
 import { requiredBuilder, Form, repeatPassword, min } from 'src/common/react-platform-components'
 import { ButtonLoader, PasswordField } from 'src/common/ui-kit'
 import 'src/modules/User/ForgotPassword/ForgotPassword.scss'
@@ -21,7 +20,7 @@ import { IUser } from 'src/modules/User/model'
  */
 export const ChangePassword = () => {
     const [openChangePassword, setOpenChangePassword] = useState(false)
-    const { isChangePasswordInProgress, updatePassword } = useProfileManagement()
+    const { isUpdateInProgress, updatePassword } = useProfileManagement()
     /**
      * Handle the click on open dialog window.
      */
@@ -36,7 +35,6 @@ export const ChangePassword = () => {
     }
     const { formatMessage } = useIntl()
     const passwordRef = useRef()
-    const theme = useTheme()
     return (
         <div>
             <div className="pl-16 sm:pl-24 md:pl-32">
@@ -49,7 +47,7 @@ export const ChangePassword = () => {
                 </Button>
             </div>
             <Dialog open={openChangePassword} onClose={handleClose} aria-labelledby="alert-dialog-title">
-                <DialogTitle id="alert-dialog-title" style={{ color: theme.palette.primary.main }}>
+                <DialogTitle id="alert-dialog-title" sx={{ color: 'primary.main' }}>
                     Changer mon mot de passe
                 </DialogTitle>
                 <motion.div initial={{ opacity: 0, scale: 0.6 }} animate={{ opacity: 1, scale: 1 }}>
@@ -83,7 +81,7 @@ export const ChangePassword = () => {
                                         {formatMessage({ id: 'Annuler', defaultMessage: 'Annuler' })}
                                     </Button>
                                     <ButtonLoader
-                                        inProgress={isChangePasswordInProgress}
+                                        inProgress={isUpdateInProgress}
                                         variant="contained"
                                         type="submit"
                                         className="ml-8 mb-4 sm:mr-8 sm:mb-0"

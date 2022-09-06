@@ -17,7 +17,7 @@ import { useProfileManagement } from 'src/modules/User/ProfileManagement/Profile
  */
 export const ProfileManagementForm = () => {
     const { user } = useSelector(({ userModel }: RootState) => userModel)
-    const { isModifyInProgress, updateProfile } = useProfileManagement()
+    const { isUpdateInProgress, updateProfile } = useProfileManagement()
     const { formatMessage } = useIntl()
     const [isEdit, setIsEdit] = useState(false)
     const disabledField = !isEdit
@@ -89,7 +89,7 @@ export const ProfileManagementForm = () => {
                                 onClickButtonReset={toggleEditFormDisable}
                             />
                             <ButtonLoader
-                                inProgress={isModifyInProgress}
+                                inProgress={isUpdateInProgress}
                                 variant="contained"
                                 type="submit"
                                 className=" w-128 ml-8 mb-4 sm:mr-8 sm:mb-0"
