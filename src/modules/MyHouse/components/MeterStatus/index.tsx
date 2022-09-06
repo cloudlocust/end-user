@@ -10,6 +10,7 @@ import { useEffect } from 'react'
 import { nrlinkConsentStatus } from 'src/modules/Consents/Consents'
 import dayjs from 'dayjs'
 import { useIntl } from 'react-intl'
+import { NrlinkConnectionStepsEnum } from 'src/modules/nrLinkConnection/nrlinkConnectionSteps.d'
 
 /**
  * Meter Status Component.
@@ -80,7 +81,14 @@ export const MeterStatus = ({ houseId, meterGuid }: MeterStatusProps) => {
                             <img src="/assets/images/content/housing/consent-status/meter-off.svg" alt="off-icon" />
                         </Icon>
                         <div className="flex flex-col">
-                            <NavLink to={{ pathname: '/nrlink-connection-steps', state: { activeStep: 1 } }}>
+                            <NavLink
+                                to={{
+                                    pathname: '/nrlink-connection-steps',
+                                    state: {
+                                        activeStep: NrlinkConnectionStepsEnum.secondStep,
+                                    },
+                                }}
+                            >
                                 <TypographyFormatMessage
                                     color={theme.palette.error.main}
                                     className="underline"
