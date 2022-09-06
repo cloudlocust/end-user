@@ -24,6 +24,10 @@ export interface INrlinkConsent {
      * Nrlink guid.
      */
     nrlinkGuid?: string
+    /**
+     * When the nrlink consent was created.
+     */
+    createdAt?: string
 }
 
 /**
@@ -39,7 +43,7 @@ export interface IEnedisConsent {
      */
     enedisConsentState: enedisConsentStatus
     /**
-     * Created At.
+     * When the enedis consent was created.
      */
     createdAt?: string
 }

@@ -1,9 +1,16 @@
 import { rest } from 'msw'
-import { getMetricType, IMetric, metricTargetType } from 'src/modules/Metrics/Metrics'
+import {
+    getMetricType,
+    IMetric,
+    metricRangeType,
+    metricTargetsEnum,
+    metricTargetType,
+} from 'src/modules/Metrics/Metrics.d'
 import { METRICS_API } from 'src/modules/Metrics/metricsHook'
 import { SnakeCasedPropertiesDeep } from 'type-fest'
 import dayjs from 'dayjs'
-
+import { generateXAxisValues, getRange } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
+import Chance from 'chance'
 /**
  * Data of one day with 2min interval.
  */
@@ -378,20 +385,54 @@ export const FAKE_YEAR_DATA = [
 ]
 
 /**
- * Function that return MOCK Data, for all targets in the requests, instead of repeating ourselves creating FAKE DATA for each targets, It'll return FAKE DATA for all targets, especially if we have DAY DATA, MONTH DATA, ...etc.
+ * Function that return MOCK Metrics Data, for all targets given and timestamp list given, instead of repeating ourselves creating hard coded FAKE DATA LIST for each targets, through timestampList which will be dynamic according to the range of the request, mock metrics will always work no matter the date of using the mock.
  *
  * @param targets Targets of the request.
- * @param FAKE_DATA FAKE_DATA will represent which data we want to associate to all the targets.
- * @returns FAKE_DATA for all targets.
+ * @param timeStampList TimeStampList used for all targets, it'll be generated outside according to the range and period of the request.
+ * @returns Metrics response.
  */
-function getMetricsDataFromTarget(targets: metricTargetType[], FAKE_DATA: number[][]) {
+function getMetrics(targets: metricTargetType[], timeStampList: number[]) {
+    const chance = new Chance()
     return targets.map((target) => {
-        let datapoints = FAKE_DATA
-        if (target === 'nrlink_internal_temperature_metrics')
-            datapoints = FAKE_DATA.map((datapoint) => [datapoint[0] + 12, datapoint[1]])
-        if (target === 'external_temperature_metrics')
-            datapoints = FAKE_DATA.map((datapoint) => [datapoint[0] - 12, datapoint[1]])
-        if (target === 'enedis_max_power') datapoints = FAKE_DATA.map((datapoint) => [datapoint[0] + 50, datapoint[1]])
+        let datapoints = timeStampList.map((timestamp) => {
+            switch (target) {
+                case metricTargetsEnum.internalTemperature:
+                    // Generate a random internal temperature value, it can be between 22 - 30 with 90% chance, or 10% chance to be null
+                    // Typing as Array<number>, because datapoints is considered as number[][], and with chance we can have null value, thus typescript will say number[] is not compatible with (number|null)[], thus this will stop typescript shouting, and this won't create any problem in the application if there are null values in metrics datapoints, just typescript shouting.
+                    return [
+                        chance.weighted([chance.integer({ min: 22, max: 30 }), null], [0.9, 0.1]),
+                        timestamp,
+                    ] as Array<number>
+                case metricTargetsEnum.externalTemperature:
+                    // Generate a random external temperature value, it can be between 14 - 21 with 90% chance, or 10% chance to be null
+                    // Typing as Array<number>, because datapoints is considered as number[][], and with chance we can have null value, thus typescript will say number[] is not compatible with (number|null)[], thus this will stop typescript shouting, and this won't create any problem in the application if there are null values in metrics datapoints, just typescript shouting.
+                    return [
+                        chance.weighted([chance.integer({ min: 14, max: 21 }), null], [0.9, 0.1]),
+                        timestamp,
+                    ] as Array<number>
+                case metricTargetsEnum.pMax:
+                    // Generate a random pMax value, it can be between 4000 - 5000 with 90% chance, or 10% chance to be null
+                    // Typing as Array<number>, because datapoints is considered as number[][], and with chance we can have null value, thus typescript will say number[] is not compatible with (number|null)[], thus this will stop typescript shouting, and this won't create any problem in the application if there are null values in metrics datapoints, just typescript shouting.
+                    return [
+                        chance.weighted([chance.integer({ min: 4000, max: 5000 }), null], [0.9, 0.1]),
+                        timestamp,
+                    ] as Array<number>
+                case metricTargetsEnum.consumption:
+                    // Generate a random consumption value, it can be between 1000 - 9000  with 90% chance, or 10% chance to be null
+                    // Typing as Array<number>, because datapoints is considered as number[][], and with chance we can have null value, thus typescript will say number[] is not compatible with (number|null)[], thus this will stop typescript shouting, and this won't create any problem in the application if there are null values in metrics datapoints, just typescript shouting.
+                    return [
+                        chance.weighted([chance.integer({ min: 1000, max: 9000 }), null], [0.9, 0.1]),
+                        timestamp,
+                    ] as Array<number>
+                default:
+                    // Generate a random value what's left in target, it can be between 30 - 120 with 90% chance, or 10% chance to be null
+                    // Typing as Array<number>, because datapoints is considered as number[][], and with chance we can have null value, thus typescript will say number[] is not compatible with (number|null)[], thus this will stop typescript shouting, and this won't create any problem in the application if there are null values in metrics datapoints, just typescript shouting.
+                    return [
+                        chance.weighted([chance.integer({ min: 30, max: 120 }), null], [0.9, 0.1]),
+                        timestamp,
+                    ] as Array<number>
+            }
+        })
         return {
             target,
             datapoints,
@@ -399,25 +440,61 @@ function getMetricsDataFromTarget(targets: metricTargetType[], FAKE_DATA: number
     })
 }
 
-// eslint-disable-next-line jsdoc/require-jsdoc
-export const TEST_SUCCESS_DAY_METRICS: (targets: metricTargetType[]) => SnakeCasedPropertiesDeep<IMetric[]> = (
+/**
+ * Mock metrics response for a daily consumption, it'll generate timestampList dynamically according to the range and daily period so that we have dynamic metricDatapoints for the given range.
+ *
+ * @param targets Targets of the request.
+ * @param range Range given, this can be the range of the request, to generate timeseries of the given range.
+ * @returns Mock Metrics Data for a daily consumption.
+ */
+export const TEST_SUCCESS_DAY_METRICS: (
     targets: metricTargetType[],
-) => getMetricsDataFromTarget(targets, FAKE_DAY_DATA)
+    range?: metricRangeType,
+    // eslint-disable-next-line jsdoc/require-jsdoc
+) => SnakeCasedPropertiesDeep<IMetric[]> = (targets: metricTargetType[], range) =>
+    getMetrics(targets, generateXAxisValues('daily', range || getRange('daily')))
 
-// eslint-disable-next-line jsdoc/require-jsdoc
-export const TEST_SUCCESS_WEEK_METRICS: (targets: metricTargetType[]) => SnakeCasedPropertiesDeep<IMetric[]> = (
+/**
+ * Mock metrics response for a weekly consumption, it'll generate timestampList dynamically according to the range and weekly period so that we have dynamic metricDatapoints for the given range.
+ *
+ * @param targets Targets of the request.
+ * @param range Range given, this can be the range of the request, to generate timeseries of the given range.
+ * @returns Mock Metrics Data for a weekly consumption.
+ */
+export const TEST_SUCCESS_WEEK_METRICS: (
     targets: metricTargetType[],
-) => getMetricsDataFromTarget(targets, FAKE_WEEK_DATA)
+    range?: metricRangeType,
+    // eslint-disable-next-line jsdoc/require-jsdoc
+) => SnakeCasedPropertiesDeep<IMetric[]> = (targets: metricTargetType[], range) =>
+    getMetrics(targets, generateXAxisValues('weekly', range || getRange('weekly')))
 
-// eslint-disable-next-line jsdoc/require-jsdoc
-export const TEST_SUCCESS_MONTH_METRICS: (targets: metricTargetType[]) => SnakeCasedPropertiesDeep<IMetric[]> = (
+/**
+ * Mock metrics response for a monthly consumption, it'll generate timestampList dynamically according to the range and monthly period so that we have dynamic metricDatapoints for the given range.
+ *
+ * @param targets Targets of the request.
+ * @param range Range given, this can be the range of the request, to generate timeseries of the given range.
+ * @returns Mock Metrics Data for a monthly consumption.
+ */
+export const TEST_SUCCESS_MONTH_METRICS: (
     targets: metricTargetType[],
-) => getMetricsDataFromTarget(targets, FAKE_MONTH_DATA)
+    range?: metricRangeType,
+    // eslint-disable-next-line jsdoc/require-jsdoc
+) => SnakeCasedPropertiesDeep<IMetric[]> = (targets: metricTargetType[], range) =>
+    getMetrics(targets, generateXAxisValues('monthly', range || getRange('monthly')))
 
-// eslint-disable-next-line jsdoc/require-jsdoc
-export const TEST_SUCCESS_YEAR_METRICS: (targets: metricTargetType[]) => SnakeCasedPropertiesDeep<IMetric[]> = (
+/**
+ * Mock metrics response for a yearly consumption, it'll generate timestampList dynamically according to the range and yearly period so that we have dynamic metricDatapoints for the given range.
+ *
+ * @param targets Targets of the request.
+ * @param range Range given, this can be the range of the request, to generate timeseries of the given range.
+ * @returns Mock Metrics Data for a yearly consumption.
+ */
+export const TEST_SUCCESS_YEAR_METRICS: (
     targets: metricTargetType[],
-) => getMetricsDataFromTarget(targets, FAKE_YEAR_DATA)
+    range?: metricRangeType,
+    // eslint-disable-next-line jsdoc/require-jsdoc
+) => SnakeCasedPropertiesDeep<IMetric[]> = (targets: metricTargetType[], range) =>
+    getMetrics(targets, generateXAxisValues('yearly', range || getRange('yearly')))
 
 // eslint-disable-next-line jsdoc/require-jsdoc
 export const metricsEndpoints = [
@@ -430,18 +507,17 @@ export const metricsEndpoints = [
         // Difference will be the number of day starting date is from, end date is to, and ending date is counted in the period. so for a week we need a difference of 6.
         const difference = toInMilliseconds.diff(fromInMilliseconds, 'day')
         const targets: metricTargetType[] = req.body.targets ? req.body.targets.map((target) => target.target) : []
+        const range = req.body.range
 
         // Difference can be 0 when checking the consumption at start of 00:00 to the same day 23:59.
         if (difference === 1 || difference === 0)
-            return res(ctx.status(200), ctx.delay(1000), ctx.json(TEST_SUCCESS_DAY_METRICS(targets)))
-        if (difference === 6) return res(ctx.status(200), ctx.delay(1000), ctx.json(TEST_SUCCESS_WEEK_METRICS(targets)))
-
+            return res(ctx.status(200), ctx.delay(1000), ctx.json(TEST_SUCCESS_DAY_METRICS(targets, range)))
+        if (difference === 6)
+            return res(ctx.status(200), ctx.delay(1000), ctx.json(TEST_SUCCESS_WEEK_METRICS(targets, range)))
         if (difference === 30 || difference === 31)
-            return res(ctx.status(200), ctx.delay(1000), ctx.json(TEST_SUCCESS_MONTH_METRICS(targets)))
-
+            return res(ctx.status(200), ctx.delay(1000), ctx.json(TEST_SUCCESS_MONTH_METRICS(targets, range)))
         if (difference === 365 || difference === 366)
-            return res(ctx.status(200), ctx.delay(1000), ctx.json(TEST_SUCCESS_YEAR_METRICS(targets)))
-
+            return res(ctx.status(200), ctx.delay(1000), ctx.json(TEST_SUCCESS_YEAR_METRICS(targets, range)))
         return res(ctx.status(400), ctx.delay(1000), ctx.json(TEST_SUCCESS_MONTH_METRICS))
     }),
 ]

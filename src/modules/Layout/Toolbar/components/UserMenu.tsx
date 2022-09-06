@@ -88,6 +88,14 @@ function UserMenu() {
                 <>
                     <ToolbarMenuItem
                         onMenuItemClick={() => {
+                            history.push('/profile-management')
+                        }}
+                        iconLabel="account_box"
+                        idLabel="Gestion de Profil"
+                        defaultMessageLabel="Gestion de Profil"
+                    />
+                    <ToolbarMenuItem
+                        onMenuItemClick={() => {
                             dispatch.userModel.logout()
                             history.replace('/login')
                         }}
