@@ -45,6 +45,13 @@ function ToolbarLayout1(props: /**
             position="static"
         >
             <Toolbar className="p-0 min-h-48 md:min-h-64">
+                <Hidden lgUp>
+                    <img
+                        className="w-32 m-8"
+                        src={`/assets/images/logos/${window._env_.REACT_APP_CLIENT_ICON_FOLDER}.svg`}
+                        alt="logo"
+                    />
+                </Hidden>
                 <div className="flex flex-1 px-16">
                     <>
                         <Hidden lgDown>
