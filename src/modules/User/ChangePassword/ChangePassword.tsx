@@ -7,13 +7,13 @@ import { useIntl } from 'src/common/react-platform-translation'
 import { useTheme } from '@mui/material'
 import { requiredBuilder, Form, repeatPassword, min } from 'src/common/react-platform-components'
 import { ButtonLoader, PasswordField } from 'src/common/ui-kit'
-import '../ForgotPassword/ForgotPassword.scss'
+import 'src/modules/User/ForgotPassword/ForgotPassword.scss'
 import { motion } from 'framer-motion'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import { useRef, useState } from 'react'
-import { useProfileManagement } from '../ProfileManagement/ProfileManagementHooks'
+import { useProfileManagement } from 'src/modules/User/ProfileManagement/ProfileManagementHooks'
 import Button from '@mui/material/Button'
-import { IUser } from '../model'
+import { IUser } from 'src/modules/User/model'
 /**
  * Change password form, this form is based on react hooks.
  *
