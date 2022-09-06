@@ -5,11 +5,12 @@ import IconButton from '@mui/material/IconButton'
 import Typography from '@mui/material/Typography'
 import EditIcon from '@mui/icons-material/Edit'
 import DeleteIcon from '@mui/icons-material/Delete'
-import { ContractCardProps } from 'src/modules/Contracts/contractsTypes'
+import { ContractCardProps, contractsRouteParam } from 'src/modules/Contracts/contractsTypes'
 import { useConfirm } from 'material-ui-confirm'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import CircularProgress from '@mui/material/CircularProgress'
 import { useContractDetails } from 'src/modules/Contracts/contractsHook'
+import { useParams } from 'react-router-dom'
 
 /**
  * Contract Card component.
@@ -21,13 +22,15 @@ import { useContractDetails } from 'src/modules/Contracts/contractsHook'
  */
 const ContractCard = ({ contract, onAfterDeleteUpdateSuccess }: ContractCardProps) => {
     const openMuiDialog = useConfirm()
-    const { removeElementDetails: removeContract, loadingInProgress } = useContractDetails(contract.id)
+    // HouseId extracted from params of the url :houseId/contracts
+    const { houseId } = useParams<contractsRouteParam>()
+    const { removeElementDetails: removeContract, loadingInProgress } = useContractDetails(Number(houseId), contract.id)
 
     /**
      * Open warning remove popup on delete click.
      */
-    const onDeleteClick = () => {
-        openMuiDialog({
+    const onDeleteClick = async () => {
+        await openMuiDialog({
             title: '',
             dialogProps: {
                 PaperProps: {
@@ -53,13 +56,11 @@ const ContractCard = ({ contract, onAfterDeleteUpdateSuccess }: ContractCardProp
                 </TypographyFormatMessage>
             ),
         })
-            // Then handle the click on confirmation button
-            .then(async () => {
-                await removeContract()
-                onAfterDeleteUpdateSuccess && onAfterDeleteUpdateSuccess()
-            })
-            // Catch handles the click on cancel button, giving an empty function it just close the dialog
-            .catch(() => {})
+
+        // Then handle the click on confirmation button
+        await removeContract()
+        onAfterDeleteUpdateSuccess && onAfterDeleteUpdateSuccess()
+        // Catch handles the click on cancel button, But no need for a catch as it closes the dialog no matter what
     }
     return (
         <Card key={contract.id} className="p-16 overflow-hidden">

@@ -5,14 +5,15 @@ import { getPaginationFromElementList } from 'src/mocks/utils'
 import { HOUSING_API } from 'src/modules/MyHouse/components/HousingList/HousingsHooks'
 import { SnakeCasedPropertiesDeep } from 'type-fest'
 import { defaultValueType } from 'src/common/ui-kit/form-fields/GoogleMapsAddressAutoComplete/utils'
+import { addMeterInputType } from 'src/modules/Meters/Meters'
 
 /**
  * Array of houses (logements) for test.
  */
 export const TEST_HOUSES: SnakeCasedPropertiesDeep<IHousing>[] = [
     {
-        id: 123456789,
-        guid: '12345Her',
+        id: 1,
+        meter: { guid: '12345Her' },
         address: {
             city: 'monaco',
             zip_code: '3333',
@@ -25,8 +26,8 @@ export const TEST_HOUSES: SnakeCasedPropertiesDeep<IHousing>[] = [
         },
     },
     {
-        id: 123456789,
-        guid: null,
+        id: 2,
+        meter: null,
         address: {
             city: 'monaco',
             zip_code: '3333',
@@ -81,7 +82,7 @@ export const housingEndpoints = [
             const newId = TEST_HOUSES.length + 1
             let newHouse: SnakeCasedPropertiesDeep<IHousing> = {
                 address: applyCamelCase(address),
-                guid: null,
+                meter: null,
                 id: newId,
             }
 
@@ -99,6 +100,26 @@ export const housingEndpoints = [
             let oldComment = TEST_HOUSES[indexOfComment]
             TEST_HOUSES.splice(indexOfComment, 1)
             return res(ctx.status(200), ctx.delay(1000), ctx.json(oldComment))
+        } else {
+            return res(ctx.status(401), ctx.delay(1000))
+        }
+    }),
+    // add meter to housing.
+    rest.post<addMeterInputType>(`${HOUSING_API}/:housingId/meter`, (req, res, ctx) => {
+        const { name, guid } = req.body
+        const { housingId } = req.params
+        const houseId = parseInt(housingId)
+
+        if (housingId) {
+            const IndexHousingToUpdate = TEST_HOUSES.findIndex(
+                (housing: SnakeCasedPropertiesDeep<IHousing>) => housing.id === houseId,
+            )
+
+            if (IndexHousingToUpdate) {
+                TEST_HOUSES[IndexHousingToUpdate].meter = { guid }
+            }
+            // id is just random number hypothecly generated from database.
+            return res(ctx.status(200), ctx.delay(1000), ctx.json({ name, guid, id: Math.random() }))
         } else {
             return res(ctx.status(401), ctx.delay(1000))
         }

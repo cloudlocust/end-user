@@ -10,7 +10,7 @@ import convert, { Unit } from 'convert-units'
 export const dataConsumptionPeriod = [
     {
         name: 'Jour',
-        interval: '2min',
+        interval: '2m',
         period: 'daily' as periodType,
     },
     {
@@ -26,7 +26,7 @@ export const dataConsumptionPeriod = [
 
     {
         name: 'Année',
-        interval: '1 month',
+        interval: '1M',
         period: 'yearly' as periodType,
     },
 ]
@@ -94,6 +94,9 @@ export const chartSpecifities: {
     [metricTargetsEnum.consumption]: {
         label: 'Consommation',
     },
+    [metricTargetsEnum.eurosConsumption]: {
+        label: 'Consommation Euros',
+    },
     [metricTargetsEnum.internalTemperature]: {
         label: 'Température Intérieure',
         // We put seriesName the same as internal temperature so that internal and external temperature charts will show their values in the same YAxis, instead of having 2 YAxis for each chart.
@@ -126,6 +129,8 @@ export const getChartColor = (chartName: metricTargetsEnum, theme: Theme) => {
             return '#BA1B1B'
         case metricTargetsEnum.pMax:
             return '#FF7A00'
+        case metricTargetsEnum.eurosConsumption:
+            return '#ABCFA8'
         default:
             return theme.palette.primary.light
     }
@@ -147,6 +152,8 @@ export const getYPointValueLabel = (yValue: number | null | undefined, chartName
     // IsNill check that value is undefined or null.
     const value = isNil(yValue) ? '' : yValue
     switch (chartName) {
+        case metricTargetsEnum.eurosConsumption:
+            return `${value} €`
         case metricTargetsEnum.externalTemperature:
         case metricTargetsEnum.internalTemperature:
             return `${value} °C`
