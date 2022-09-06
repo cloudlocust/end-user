@@ -46,40 +46,40 @@ describe('test models', () => {
                     }),
             ).rejects.toBe(defaultRequestErrorMessage)
         })
-        // test('updateCurrentUser test ok', async () => {
-        //     const store = init({
-        //         models,
-        //     })
-        //     store.dispatch.userModel.setUser(userData)
+        test('updateCurrentUser test ok', async () => {
+            const store = init({
+                models,
+            })
+            store.dispatch.userModel.setUser(userData)
 
-        //     const result = await store.dispatch.userModel.updateCurrentUser({
-        //         data: { ...userData, firstName: 'updated first name' },
-        //     })
-        //     expect(result).toBeUndefined()
-        //     // Lets get the state and check if it has been modified
-        //     const { userModel } = store.getState()
-        //     expect(userModel.user).not.toBeNull()
-        //     // @ts-ignore nullable tested above
-        //     expect(userModel.user.firstName).toBe('updated first name')
-        // })
-        // test('updateCurrentUser test error', async () => {
-        //     const store = init({
-        //         models,
-        //     })
-        //     store.dispatch.userModel.setUser(userData)
-        //     let result
-        //     try {
-        //         result = await store.dispatch.userModel.updateCurrentUser({
-        //             data: { ...userData, email: 'error@gmail.com' },
-        //         })
-        //     } catch (error) {}
-        //     expect(result).toBeUndefined()
-        //     // Lets get the state and check if it has been modified
-        //     const { userModel } = store.getState()
-        //     expect(userModel.user).not.toBeNull()
-        //     // @ts-ignore nullable tested above
-        //     expect(userModel.user.firstName).toBe(userData.firstName)
-        // })
+            const result = await store.dispatch.userModel.updateCurrentUser({
+                data: { ...userData, firstName: 'updated first name' },
+            })
+            expect(result).toBeUndefined()
+            // Lets get the state and check if it has been modified
+            const { userModel } = store.getState()
+            expect(userModel.user).not.toBeNull()
+            // @ts-ignore nullable tested above
+            expect(userModel.user.firstName).toBe('updated first name')
+        })
+        test('updateCurrentUser test error', async () => {
+            const store = init({
+                models,
+            })
+            store.dispatch.userModel.setUser(userData)
+            let result
+            try {
+                result = await store.dispatch.userModel.updateCurrentUser({
+                    data: { ...userData, email: 'error@gmail.com' },
+                })
+            } catch (error) {}
+            expect(result).toBeUndefined()
+            // Lets get the state and check if it has been modified
+            const { userModel } = store.getState()
+            expect(userModel.user).not.toBeNull()
+            // @ts-ignore nullable tested above
+            expect(userModel.user.firstName).toBe(userData.firstName)
+        })
         // test('fetchCurrentUser test', async () => {
         //     const store = init({
         //         models,
