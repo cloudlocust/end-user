@@ -3,6 +3,7 @@
  */
 export type equipmentNameType =
     | 'heater'
+    | 'sanitary'
     | 'hotplate'
     | 'tv'
     | 'vacuum'
@@ -16,7 +17,7 @@ export type equipmentNameType =
     | 'desktopcomputer'
 
 // eslint-disable-next-line jsdoc/require-jsdoc
-export type equipmentAllowedTypeT = 'induction' | 'electricity' | 'other' | 'vitroceramic'
+export type equipmentAllowedTypeT = 'induction' | 'electricity' | 'other' | 'vitroceramic' | 'gaz'
 
 // eslint-disable-next-line jsdoc/require-jsdoc
 export type equipmentMeterType = {
