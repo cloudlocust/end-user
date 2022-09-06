@@ -9,6 +9,7 @@ import { useConsents } from 'src/modules/Consents/consentsHook'
 import { useEffect } from 'react'
 import { nrlinkConsentStatus } from 'src/modules/Consents/Consents'
 import dayjs from 'dayjs'
+import { useIntl } from 'react-intl'
 
 /**
  * Meter Status Component.
@@ -20,6 +21,7 @@ import dayjs from 'dayjs'
  */
 export const MeterStatus = ({ houseId, meterGuid }: MeterStatusProps) => {
     const theme = useTheme()
+    const { formatMessage } = useIntl()
     const { getConsents, consentsLoading, nrlinkConsent } = useConsents()
 
     const nrlinkConsentCreatedAt = dayjs(nrlinkConsent?.createdAt).format('DD/MM/YYYY')
@@ -46,8 +48,14 @@ export const MeterStatus = ({ houseId, meterGuid }: MeterStatusProps) => {
                             />
                         </Icon>
                         <div className="flex flex-col">
-                            <span className="text-grey-600">{`nrLink n° ${nrlinkConsent?.nrlinkGuid}`}</span>
-                            <span className="text-grey-600">{`Connexion le ${nrlinkConsentCreatedAt}`}</span>
+                            <span className="text-grey-600">{`${formatMessage({
+                                id: 'nrLink n°',
+                                defaultMessage: 'nrLink n°',
+                            })} ${nrlinkConsent?.nrlinkGuid}`}</span>
+                            <span className="text-grey-600">{`${formatMessage({
+                                id: 'Connexion le',
+                                defaultMessage: 'Connexion le',
+                            })} ${nrlinkConsentCreatedAt}`}</span>
                         </div>
                     </>
                 )
@@ -58,7 +66,7 @@ export const MeterStatus = ({ houseId, meterGuid }: MeterStatusProps) => {
                             <img src="/assets/images/content/housing/consent-status/meter-error.svg" alt="error-icon" />
                         </Icon>
                         <div className="flex flex-col">
-                            <TypographyFormatMessage color={theme.palette.warning.main} className="underline">
+                            <TypographyFormatMessage color={theme.palette.warning.main} fontWeight={600}>
                                 Veuillez vérifier le branchement de votre appareil et/ou la connexion wifi.
                             </TypographyFormatMessage>
                         </div>
@@ -73,7 +81,11 @@ export const MeterStatus = ({ houseId, meterGuid }: MeterStatusProps) => {
                         </Icon>
                         <div className="flex flex-col">
                             <NavLink to={{ pathname: '/nrlink-connection-steps', state: { activeStep: 1 } }}>
-                                <TypographyFormatMessage color={theme.palette.error.main} className="underline">
+                                <TypographyFormatMessage
+                                    color={theme.palette.error.main}
+                                    className="underline"
+                                    fontWeight={600}
+                                >
                                     Connectez votre nrLINK pour visualiser votre consommation.
                                 </TypographyFormatMessage>
                             </NavLink>
@@ -88,7 +100,7 @@ export const MeterStatus = ({ houseId, meterGuid }: MeterStatusProps) => {
                         </Icon>
                         <div className="flex flex-col">
                             <TypographyFormatMessage color={theme.palette.error.main} className="underline">
-                                C'est erreur est survenue.
+                                Une erreur est survenue.
                             </TypographyFormatMessage>
                         </div>
                     </>
@@ -106,8 +118,8 @@ export const MeterStatus = ({ houseId, meterGuid }: MeterStatusProps) => {
                             <span className="text-grey-600 text-base">{`n° ${meterGuid}`}</span>
                         ) : (
                             /* TODO: To be worked on in another story. It should open a pop up to add a meterr. */
-                            <TypographyFormatMessage className="underline text-blue hover:text-blue-900 cursor-pointer">
-                                Veuillez renseigner votre compteur
+                            <TypographyFormatMessage className="text-grey-600 text-base">
+                                Aucun compteur renseigné
                             </TypographyFormatMessage>
                         )}
                     </div>
@@ -151,7 +163,6 @@ export const MeterStatus = ({ houseId, meterGuid }: MeterStatusProps) => {
                         )}
                     </div>
                     {/* Enedis Consent Status */}
-                    {/* TODO: To be worked on in MYEM-2555 */}
                     <div className="p-12 border-b-1 border-grey-300 hidden">
                         <TypographyFormatMessage className="text-xs md:text-sm font-semibold">
                             Historique de consommation
