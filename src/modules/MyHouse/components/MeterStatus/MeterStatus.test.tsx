@@ -14,7 +14,7 @@ const METER_GUID = '12345678901234'
 
 const DISCONNECTED_MESSAGE = 'Veuillez vérifier le branchement de votre appareil et/ou la connexion wifi.'
 const NONEXISTANT_EXPIRED_MESSAGE = 'Connectez votre nrLINK pour visualiser votre consommation.'
-const NO_METER_MESSAGE = 'Veuillez renseigner votre compteur'
+const NO_METER_MESSAGE = 'Aucun compteur renseigné'
 
 let mockNrlinkConsent: nrlinkConsentStatus
 let mockEnedisConsent: enedisConsentStatus
