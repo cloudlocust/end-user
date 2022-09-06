@@ -92,7 +92,7 @@ pipeline{
                     // Checkout to master
                     sh "git checkout master"
                     // This will apply new helm upgrade, you need to specify namespace.
-                    withKubeConfig([credentialsId:'kubernetes_staging-alpha-preprod', contextName: "${ENV_NAME}"]) {
+                    withKubeConfig([credentialsId:'kubernetes_staging-alpha-preprod', contextName: "ng${ENV_NAME}"]) {
                         sh "helm upgrade --install enduser-react-ng${ENV_NAME} helm-charts/enduser-react -f environments/ng${ENV_NAME}/microservices/enduser-react.yaml --namespace ng${ENV_NAME}"
                     }
                 }
