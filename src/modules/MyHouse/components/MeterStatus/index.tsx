@@ -197,7 +197,6 @@ export const MeterStatus = ({ houseId, meterGuid }: MeterStatusProps) => {
                         )}
                     </div>
                     {/* Enedis Consent Status */}
-                    {/* TODO: To be worked on in MYEM-2555 */}
                     <div className="w-full md:w-1/3 p-12 border-b-1 border-grey-300">
                         {!meterGuid ? (
                             <>
