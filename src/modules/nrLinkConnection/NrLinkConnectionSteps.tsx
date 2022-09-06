@@ -18,8 +18,9 @@ import 'src/modules/nrLinkConnection/NrLinkConnectionSteps.scss'
 import { ButtonLoader } from 'src/common/ui-kit'
 import { IMeter } from 'src/modules/Meters/Meters'
 import MuiLink from '@mui/material/Link'
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import { URL_CONSUMPTION } from 'src/modules/MyConsumption'
+import { NrlinkConnectionStepsEnum } from 'src/modules/nrLinkConnection/nrlinkConnectionSteps.d'
 
 /**
  * Component representing the action buttons in the Stepper (Previous, Next), Next Button will be of type Submit.
@@ -92,13 +93,44 @@ const stepsLabels = ['Je branche mon capteur', 'Je configure mon compteur Linky'
  */
 const NrLinkConnectionSteps = () => {
     const theme = useTheme()
+
+    /**
+     * ActiveStep state is received from MeterStatus.tsx component.
+     * When the user doesn't have either a meter nor nrlink, we redirect them to the second step.
+     * When the user does have a meter but doesn't have nrlink assigned in the app. We redirect them to the third step.
+     */
+    const {
+        state: locationState,
+    }: // eslint-disable-next-line jsdoc/require-jsdoc
+    {
+        /**
+         * Route state.
+         */
+        // eslint-disable-next-line jsdoc/require-jsdoc
+        state: {
+            /**
+             * Activate step that we want the stepper to be in.
+             */
+            activeStep: NrlinkConnectionStepsEnum.secondStep | NrlinkConnectionStepsEnum.thirdStep
+        }
+    } = useLocation()
     const isMobile = useMediaQuery(theme.breakpoints.down('md'))
-    const [activeStep, setActiveStep] = React.useState(0)
+    const [activeStep, setActiveStep] = React.useState(NrlinkConnectionStepsEnum.firstStep)
     const [meter, setMeter] = useState<IMeter | null>(null)
     const [screenOrientation, setScreenOrientation] = React.useState(
         window.matchMedia('(orientation: portrait)').matches ? 'portrait' : 'landscape',
     )
     const { formatMessage } = useIntl()
+
+    /**
+     * If we receive activateStep from useLocation we set ActiveStep to 1 or 2 depending on the value that was passed.
+     */
+    useEffect(() => {
+        if (locationState) {
+            setActiveStep(locationState.activeStep)
+        }
+    }, [locationState])
+
     const skipStepperLink = (
         <MuiLink
             component={Link}
