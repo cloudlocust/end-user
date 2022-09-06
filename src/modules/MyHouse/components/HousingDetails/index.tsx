@@ -26,6 +26,7 @@ import SvgIcon from '@mui/material/SvgIcon'
 import { useTheme } from '@mui/material'
 import { useAccomodation } from 'src/modules/MyHouse/components/Accomodation/AccomodationHooks'
 import { useEquipmentList } from 'src/modules/MyHouse/components/Equipments/equipmentHooks'
+import { equipmentNameType } from 'src/modules/MyHouse/components/Equipments/EquipmentsType'
 
 const Root = styled(FusePageCarded)(({ theme }) => ({
     '& .FusePageCarded-header': {
@@ -88,7 +89,7 @@ export const HousingDetails = () => {
     // Then once elements are loaded handle each icon based on it's equipementType.
     useEffect(() => {
         // eslint-disable-next-line
-        const handleEquipmentsIcons = (equipementName: string) => {
+        const handleEquipmentsIcons = (equipementName: equipmentNameType) => {
             const equipement = equipmentList?.find((equipement) => equipement.equipment.name === equipementName)
             switch (equipement?.equipmentType) {
                 case 'electricity':
