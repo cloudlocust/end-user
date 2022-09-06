@@ -26,6 +26,7 @@ export const useProfileManagement = () => {
      * UpdateProfile function.
      *
      * @param data Data for modification in my profile.
+     * @param successUpdateMsg Success update message.
      */
     const updateProfile = async (data: IUser, successUpdateMsg?: string) => {
         const dataIsNotModified = isMatch(user as IUser, data)
