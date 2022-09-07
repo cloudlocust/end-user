@@ -63,6 +63,7 @@ export const ChangePassword = () => {
                                     Nouveau mot de passe
                                 </TypographyFormatMessage>
                                 <PasswordField
+                                    data-testid="password"
                                     name="password"
                                     label="Nouveau mot de passe"
                                     inputRef={passwordRef}
@@ -72,6 +73,7 @@ export const ChangePassword = () => {
                                     Confirmer mot de passe
                                 </TypographyFormatMessage>
                                 <PasswordField
+                                    data-testid="repeatPwd"
                                     name="repeatPwd"
                                     label="Confirmer mot de passe"
                                     validateFunctions={[requiredBuilder(), repeatPassword(passwordRef)]}
