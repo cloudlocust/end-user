@@ -12,9 +12,6 @@ import dayjs from 'dayjs'
 import { useIntl } from 'react-intl'
 import { NrlinkConnectionStepsEnum } from 'src/modules/nrLinkConnection/nrlinkConnectionSteps.d'
 
-/* Circular Progress bar put in a const to avoid having to repeazt it multiple times in the code */
-const circularProgress = <CircularProgress size={25} />
-
 /**
  * Meter Status Component.
  *
@@ -112,7 +109,11 @@ export const MeterStatus = ({ houseId, meterGuid }: MeterStatusProps) => {
                             <img src="/assets/images/content/housing/consent-status/meter-off.svg" alt="off-icon" />
                         </Icon>
                         <div className="flex flex-col">
-                            <TypographyFormatMessage color={theme.palette.error.main} className="underline">
+                            <TypographyFormatMessage
+                                color={theme.palette.error.main}
+                                className="underline"
+                                fontWeight={600}
+                            >
                                 Une erreur est survenue.
                             </TypographyFormatMessage>
                         </div>
@@ -139,7 +140,9 @@ export const MeterStatus = ({ houseId, meterGuid }: MeterStatusProps) => {
                             />
                         </Icon>
                         <div className="flex flex-col">
-                            <span className="text-grey-600">Date de fin de consentement</span>
+                            <TypographyFormatMessage className="text-grey-600">
+                                Date de fin de consentement
+                            </TypographyFormatMessage>
                             <span className="text-grey-600">{enedisConsentEndingDate}</span>
                         </div>
                     </>
@@ -152,7 +155,11 @@ export const MeterStatus = ({ houseId, meterGuid }: MeterStatusProps) => {
                             <img src="/assets/images/content/housing/consent-status/meter-off.svg" alt="off-icon" />
                         </Icon>
                         <div className="flex flex-col">
-                            <TypographyFormatMessage color={theme.palette.error.main} className="underline">
+                            <TypographyFormatMessage
+                                color={theme.palette.error.main}
+                                className="underline"
+                                fontWeight={600}
+                            >
                                 Autorisez la récupération de vos données de consommation pour avoir accès à votre
                                 historique.
                             </TypographyFormatMessage>
@@ -192,7 +199,7 @@ export const MeterStatus = ({ houseId, meterGuid }: MeterStatusProps) => {
                         </Card>
                     </NavLink>
                 </div>
-                <div className="flex flex-col md:flex-row">
+                <div className="flex flex-col md:flex-row justify-evenly">
                     {/* Nrlink Consent Status */}
                     <div className="w-full md:w-1/3 p-12 border-b-1 border-grey-300">
                         {!meterGuid ? (
@@ -203,7 +210,7 @@ export const MeterStatus = ({ houseId, meterGuid }: MeterStatusProps) => {
                                 <div className="flex flex-row items-center">{renderNrlinkStatus('NONEXISTENT')}</div>
                             </>
                         ) : consentsLoading ? (
-                            circularProgress
+                            <CircularProgress size={25} />
                         ) : (
                             <>
                                 <TypographyFormatMessage className="text-xs md:text-sm font-semibold">
@@ -225,7 +232,7 @@ export const MeterStatus = ({ houseId, meterGuid }: MeterStatusProps) => {
                                 <div className="flex flex-row items-center">{renderEnedisStatus('NONEXISTENT')}</div>
                             </>
                         ) : consentsLoading ? (
-                            circularProgress
+                            <CircularProgress size={25} />
                         ) : (
                             <>
                                 <TypographyFormatMessage className="text-xs md:text-sm font-semibold">
