@@ -1,0 +1,93 @@
+import { IHousing, IHousingState } from 'src/modules/MyHouse/components/HousingList/housing.d'
+import { axios, handleErrors } from 'src/common/react-platform-components'
+import { createModel } from '@rematch/core'
+import { RootModel } from 'src/models'
+import { isArray } from 'lodash'
+import { ILoadDataPagination } from 'src/common/react-platform-components/utils/mm'
+import { HOUSING_API } from 'src/modules/MyHouse/components/HousingList/HousingsHooks'
+
+/**
+ * Default state of housing state.
+ */
+export const defaultState = {
+    housingList: [],
+    currentHousing: null,
+} as IHousingState
+
+// eslint-disable-next-line jsdoc/require-jsdoc
+export const defaultRequestErrorMessage = 'Impossible de charger vos logements.'
+
+/**
+ * Rematch housings Model, it contains states, reducers and effects (treatment with side effects).
+ */
+export const housingModel = createModel<RootModel>()({
+    /**
+     * Effects of the housing model.
+     *
+     * @param dispatch Dispatch to call dispatch of other models.
+     * @returns List of effects.
+     */
+    effects: (dispatch) => ({
+        /**
+         * LoadHousingsList function.
+         *
+         * @returns List of available housings.
+         */
+        // eslint-disable-next-line jsdoc/require-jsdoc
+        async loadHousingsList() {
+            try {
+                const { data } = await axios.get<ILoadDataPagination<IHousing[]>>(`${HOUSING_API}?size=100&page=1`)
+                dispatch.housingModel.setHousingState(data.items)
+            } catch (error) {
+                // use onError callback to handle the error request in the component
+                throw handleErrors(error)
+            }
+        },
+    }),
+    reducers: {
+        /**
+         * Set User state.
+         *
+         * @param state Current state.
+         * @param housingList Housing list data.
+         * @returns New state with user data.
+         */
+        setHousingState(state: IHousingState, housingList: IHousing[]): IHousingState {
+            return {
+                currentHousing: housingList[0],
+                housingList,
+            }
+        },
+    },
+    state: defaultState as IHousingState,
+})
+
+/**
+ * TODO Document.Handle errors in response.
+ *
+ * @param error TODO Document.
+ * @returns TODO Document.
+ */
+export const handleLoginErrors = (error: any) => {
+    if (error.response && error.response.status) {
+        switch (error.response.status) {
+            case 400:
+                if (error.response.data.detail === 'LOGIN_BAD_CREDENTIALS') {
+                    return "Vérifiez l'email et/ou le mot de passe"
+                }
+                if (error.response.data.detail === 'LOGIN_USER_NOT_VERIFIED') {
+                    return "Votre email n'a pas encore été validé par l'administrateur."
+                }
+                break
+            case 401:
+                // Handle unauthorized error
+                return "Vous n'avez pas le droit d'effectuer cette opération."
+
+            default:
+                return defaultRequestErrorMessage
+        }
+    } else {
+        // If error has no response return the message of error
+        return error.message
+    }
+}
