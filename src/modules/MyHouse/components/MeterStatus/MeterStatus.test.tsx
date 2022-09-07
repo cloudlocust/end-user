@@ -4,6 +4,8 @@ import { MeterStatus } from 'src/modules/MyHouse/components/MeterStatus'
 import { enedisConsentStatus, nrlinkConsentStatus } from 'src/modules/Consents/Consents'
 import { URL_NRLINK_CONNECTION_STEPS } from 'src/modules/nrLinkConnection'
 import dayjs from 'dayjs'
+import userEvent from '@testing-library/user-event'
+import { fireEvent } from '@testing-library/react'
 
 const mockMeterStatusProps = {
     houseId: '1',
@@ -20,8 +22,15 @@ const NRLINK_NONEXISTANT_EXPIRED_MESSAGE = 'Connectez votre nrLINK pour visualis
 const ENEDIS_CONNECTED_MESSAGE = 'Historique de consommation'
 const ENEDIS_NONEXISTANT_EXPIRED_MESSAGE =
     'Autorisez la récupération de vos données de consommation pour avoir accès à votre historique.'
-
 const NO_METER_MESSAGE = 'Aucun compteur renseigné'
+
+// Data TEST ID
+const SGE_CHECKBOX_TEST_ID = 'sge-checkbox'
+const SGE_MESSAGE_TEST_ID = 'sge-message'
+
+// ClassNames
+const MUI_CHECKED = 'Mui-checked'
+
 let mockNrlinkConsent: nrlinkConsentStatus
 let mockEnedisConsent: enedisConsentStatus
 let mockGetConsent = jest.fn()
@@ -29,6 +38,8 @@ let mockNrlinkCreatedAt = '2022-09-02T08:06:08Z'
 let mockNrlinkGuid = 'ABCD1234'
 let mockEnedisCreatedAt = mockNrlinkCreatedAt
 let enedisFormatedEndingDate = dayjs(mockNrlinkCreatedAt).add(3, 'year').format('DD/MM/YYYY')
+let mockWindowOpen = jest.fn()
+window.open = mockWindowOpen
 
 // Mock consentsHook
 jest.mock('src/modules/Consents/consentsHook.ts', () => ({
@@ -159,6 +170,48 @@ describe('MeterStatus component test', () => {
 
             const image = getByAltText('off-icon')
             expect(image).toHaveAttribute('src', '/assets/images/content/housing/consent-status/meter-off.svg')
+        })
+    })
+    describe('test popup', () => {
+        test('when clicked on error message, popup is shown', async () => {
+            mockEnedisConsent = 'EXPIRED' || 'NONEXISTENT'
+
+            const { getByText, getByTestId } = reduxedRender(
+                <Router>
+                    <MeterStatus {...mockMeterStatusProps} />
+                </Router>,
+            )
+            userEvent.click(getByText(ENEDIS_NONEXISTANT_EXPIRED_MESSAGE))
+
+            // For some reasons, jest is unable to retrieve the text by getByText although it's getting rendered in the jsdom.
+            expect(getByTestId(SGE_MESSAGE_TEST_ID)).toBeTruthy()
+        })
+        test('when clicked on the sge message, new browser tab is shown with a link', async () => {
+            const { getByText, getByTestId } = reduxedRender(
+                <Router>
+                    <MeterStatus {...mockMeterStatusProps} />
+                </Router>,
+            )
+
+            userEvent.click(getByText(ENEDIS_NONEXISTANT_EXPIRED_MESSAGE))
+            expect(getByTestId(SGE_MESSAGE_TEST_ID)).toBeTruthy()
+            userEvent.click(getByTestId(SGE_MESSAGE_TEST_ID))
+            expect(mockWindowOpen).toHaveBeenCalledWith('https://www.myem.fr/politique-de-confidentialite/', '_blank')
+        })
+        test('when sge checkbox is checked', async () => {
+            const { getByText, getByTestId } = reduxedRender(
+                <Router>
+                    <MeterStatus {...mockMeterStatusProps} />
+                </Router>,
+            )
+
+            userEvent.click(getByText(ENEDIS_NONEXISTANT_EXPIRED_MESSAGE))
+            expect(getByTestId(SGE_MESSAGE_TEST_ID)).toBeTruthy()
+            const checkbox = getByTestId(SGE_CHECKBOX_TEST_ID)
+            expect(checkbox?.classList.contains(MUI_CHECKED)).toBeFalsy()
+            // userEvent.click seems not working with checkboxses.
+            fireEvent.change(getByTestId(SGE_CHECKBOX_TEST_ID), { target: { checked: true } })
+            expect(checkbox).toHaveProperty('checked', true)
         })
     })
 })
