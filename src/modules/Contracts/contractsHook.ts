@@ -62,7 +62,7 @@ const removeElementDetailsSuccess = (responseData: IContract, formatMessage: for
  * @returns Hook useContractList.
  */
 export const useContractList = (houseId: number, sizeParam?: number) => {
-    return BuilderUseElementList<IContract, undefined, searchFilterType>({
+    return BuilderUseElementList<IContract, IContract, searchFilterType>({
         API_ENDPOINT: CONTRACTS_API(Number(houseId)),
         sizeParam,
         snackBarMessage0verride: { loadElementListError },
