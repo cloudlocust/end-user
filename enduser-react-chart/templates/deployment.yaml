@@ -1,0 +1,82 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.name }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Values.name }}
+  template:
+    metadata:
+    # We add this annotations.rollme so that each time we upgrade the chart, the deployment restarts
+      annotations:
+        rollme: {{ randAlphaNum 5 | quote }}
+      labels:
+        app: {{ .Values.name }}
+    spec:
+      containers:
+      - name: {{ .Values.name }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 80
+          port: 
+        env:
+        - name: NGINX_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: {{ .Values.name }}
+              key: NGINX_HOST
+        - name: REACT_APP_MSW_MOCK
+          valueFrom:
+            configMapKeyRef:
+              name: {{ .Values.name }}
+              key: REACT_APP_MSW_MOCK
+        - name: REACT_APP_AUTH_BASE_URL
+          valueFrom:
+            configMapKeyRef:
+              name: {{ .Values.name }}
+              key: REACT_APP_AUTH_BASE_URL
+        - name: REACT_APP_API_BASE_URL
+          valueFrom:
+            configMapKeyRef:
+              name: {{ .Values.name }}
+              key: REACT_APP_API_BASE_URL
+        - name: REACT_APP_API_RESOURCES_URL
+          valueFrom:
+            configMapKeyRef:
+              name: {{ .Values.name }}
+              key: REACT_APP_API_RESOURCES_URL
+        - name: REACT_APP_LOGO_URL
+          valueFrom:
+            configMapKeyRef:
+              name: {{ .Values.name }}
+              key: REACT_APP_LOGO_URL
+        - name: REACT_APP_GOOGLE_MAPS_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.name }}
+              key: REACT_APP_GOOGLE_MAPS_API_KEY
+        - name: REACT_APP_TITLE
+          valueFrom:
+            configMapKeyRef:
+              name: {{ .Values.name }}
+              key: REACT_APP_TITLE
+        - name: REACT_APP_CLIENT_ICON_FOLDER
+          valueFrom:
+            configMapKeyRef:
+              name: {{ .Values.name }}
+              key: REACT_APP_CLIENT_ICON_FOLDER
+        - name: REACT_APP_CLIENT_RGPD_REDIRECT
+          valueFrom:
+            configMapKeyRef:
+              name: {{ .Values.name }}
+              key: REACT_APP_CLIENT_RGPD_REDIRECT
+        - name: ENVIRONMENT
+          valueFrom:
+            configMapKeyRef:
+              name: {{ .Values.name }}
+              key: ENVIRONMENT
+      imagePullSecrets:
+      - name: dockersecret  
