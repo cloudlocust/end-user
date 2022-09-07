@@ -60,6 +60,8 @@ pipeline{
             when {
                     expression { BRANCH_NAME ==~ /(production|master|develop)/ }
             }
+           stages {
+           stage('Publish in dockerhub'){
             environment {
                 registryCredential = 'dockerhub'
                 app_regisgtry = 'myem/enduser-react'
@@ -77,6 +79,33 @@ pipeline{
             }
 
         }
+         stage('Publish in chart regisry'){
+                       when{  expression { changeset('enduser-react-chart')} }
+                       environment {
+                           ENV_NAME = getEnvName(BRANCH_NAME)
+                           VERSION_CHART = "0.1.${BUILD_NUMBER}"
+                           USER_NAME_ = credentials('helm_registry_username')
+                           PASSWORD_ = credentials('helm_registry_password')
+                           url = credentials('helm_registry_url')
+                           URL_ = "${url}/${ENV_NAME}registry"
+                           }
+                        steps {
+                              script{
+
+                                sh(script: " helm registry login -u ${USER_NAME_} -p ${PASSWORD_} ${URL_} ")
+                                sh(script: "rm -rf helm-chart-repository")
+                                sh(script: "mkdir helm-chart-repository")         
+                                sh(script: "helm package enduser-react-chart --version ${VERSION_CHART} -d helm-chart-repository")
+                                sh(script: "helm push helm-chart-repository/* oci://${URL_}")
+                                sh(script: "rm -rf helm-chart-repository")
+
+                }
+              }  
+
+                }  
+           }
+        }
+
 
        stage ('Deploy') {
         when {
@@ -84,16 +113,23 @@ pipeline{
            }
         environment {
               ENV_NAME = getEnvName(BRANCH_NAME)
+              USER_NAME_ = credentials('helm_registry_username')
+              PASSWORD_ = credentials('helm_registry_password')
+              url = credentials('helm_registry_url')
+              URL_ = "${url}/${ENV_NAME}registry"               
            }
             steps {
                 script{
                     // The below will clone network devops repository
-                    git credentialsId: 'github myem developer', url: 'https://github.com/myenergymanager/network-devops'
+                    git([url: 'https://github.com/myenergymanager/network-devops', branch: "master", credentialsId: 'github myem developer'])
                     // Checkout to master
-                    sh "git checkout master"
+                    sh " helm registry login -u ${USER_NAME_} -p ${PASSWORD_} ${URL_} "
                     // This will apply new helm upgrade, you need to specify namespace.
+
+
                     withKubeConfig([credentialsId:'kubernetes_staging-alpha-preprod', contextName: "ng${ENV_NAME}"]) {
-                        sh "helm upgrade --install enduser-react-ng${ENV_NAME} helm-charts/enduser-react -f environments/ng${ENV_NAME}/microservices/enduser-react.yaml --namespace ng${ENV_NAME}"
+                        sh "helm upgrade --install enduser-react-ng${ENV_NAME} oci://${URL_}/enduser-react -f environments/ng${ENV_NAME}/microservices/enduser-react.yaml --namespace ng${ENV_NAME}"
+                        
                     }
                 }
             }
@@ -147,4 +183,56 @@ def getBuildEnv(branchName) {
      else{
          return "alpha";
      }
+}
+
+def allChangeSetsFromLastSuccessfulBuild() { 
+    def jobName="$JOB_NAME"
+    def job = Jenkins.getInstance().getItemByFullName(jobName)
+    def lastSuccessBuild = job.lastSuccessfulBuild.number as int
+    def currentBuildId = "$BUILD_ID" as int
+    
+    def changeSets = []
+
+    for(int i = lastSuccessBuild + 1; i < currentBuildId; i++) {
+        echo "Getting Change Set for the Build ID : ${i}"
+        def chageSet = job.getBuildByNumber(i).getChangeSets()
+        changeSets.addAll(chageSet)
+    }
+     changeSets.addAll(currentBuild.changeSets) // Add the  current Changeset
+     return changeSets
+}
+
+def getFilesChanged(chgSets) {
+    def filesList = []
+    def changeLogSets = chgSets
+        for (int i = 0; i < changeLogSets.size(); i++) {
+            def entries = changeLogSets[i].items
+            for (int j = 0; j < entries.length; j++) {
+                def entry = entries[j]
+                def files = new ArrayList(entry.affectedFiles)
+                    for (int k = 0; k < files.size(); k++) {
+                    def file = files[k]
+                    filesList.add(file.path)
+            }
+        }
+    }
+    return filesList
+}
+
+def isPathExist(changeSets,path) {
+    
+            b = false
+            changeSets.each { 
+                a = it.startsWith(path)
+                b = a || b
+            }
+            return b
+            
+    
+}
+
+def changeset(path){
+    def changeSets = allChangeSetsFromLastSuccessfulBuild()                                          
+    return  isPathExist(getFilesChanged(changeSets),path)
+
 }
