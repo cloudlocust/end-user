@@ -66,7 +66,7 @@ const ContractFormFields = () => {
 
     return (
         <>
-            {/* TODO Change provider Select so that data comes from commercial offer request  */}
+            {/* TODO Change provider Select so that data comes from request  */}
             <Select
                 name="provider"
                 label={formatMessage({
@@ -82,7 +82,7 @@ const ContractFormFields = () => {
                         }`}</MenuItem>
                     ))}
             </Select>
-            {/* TODO Change offer Select so that data comes from commercial offer request  */}
+            {/* TODO Change offer Select so that data comes from request  */}
             {formData.provider && (
                 <Select
                     name="offer"
@@ -100,7 +100,7 @@ const ContractFormFields = () => {
                         ))}
                 </Select>
             )}
-            {/* TODO Change TariffType Select so that data comes from commercial offer request  */}
+            {/* TODO Change TariffType Select so that data comes from request  */}
             {formData.offer && (
                 <Select
                     name="tariffType"
@@ -152,7 +152,6 @@ const ContractFormFields = () => {
                         id: 'Date de fin',
                         defaultMessage: 'Date de fin',
                     })}
-                    validateFunctions={[requiredBuilder()]}
                 />
             )}
         </>
