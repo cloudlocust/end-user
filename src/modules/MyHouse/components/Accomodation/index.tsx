@@ -8,7 +8,8 @@ const Root = styled(PageSimple)(({ theme }) => ({
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        margin: '15px',
+        marginX: '15px',
+        marginY: '0px',
     },
     '& .PageSimple-contentCard': {
         overflow: 'hidden',

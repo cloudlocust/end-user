@@ -9,8 +9,6 @@ import { useIntl } from 'src/common/react-platform-translation'
 import { Button } from '@mui/material'
 import { URL_MY_HOUSE } from 'src/modules/MyHouse/MyHouseConfig'
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz'
-import LocalFireDepartmentIcon from '@mui/icons-material/LocalFireDepartment'
-import BoltIcon from '@mui/icons-material/Bolt'
 import HousingDetailsCard from 'src/modules/MyHouse/components/HousingDetails/HousingDetailsCard'
 import { HouseDetailsElementType } from 'src/modules/MyHouse/components/HousingDetails/housingDetails'
 import { ReactComponent as SuperficieIcon } from 'src/assets/images/content/housing/Superficie.svg'
@@ -25,6 +23,8 @@ import { useAccomodation } from 'src/modules/MyHouse/components/Accomodation/Acc
 import { useEquipmentList } from 'src/modules/MyHouse/components/Equipments/equipmentHooks'
 import { equipmentNameType } from 'src/modules/MyHouse/components/Equipments/EquipmentsType'
 import { MeterStatus } from 'src/modules/MyHouse/components/MeterStatus'
+import { ReactComponent as ElectricityIcon } from 'src/assets/images/content/housing/Electricity.svg'
+import { ReactComponent as GazIcon } from 'src/assets/images/content/housing/Gaz.svg'
 
 const Root = styled(FusePageCarded)(({ theme }) => ({
     '& .FusePageCarded-header': {
@@ -98,29 +98,37 @@ export const HousingDetails = () => {
             const equipement = equipmentList?.find((equipement) => equipement.equipment.name === equipementName)
             switch (equipement?.equipmentType) {
                 case 'electricity':
-                    return <BoltIcon color="primary" fontSize="large" />
+                    return (
+                        <SvgIcon color="primary">
+                            <ElectricityIcon />
+                        </SvgIcon>
+                    )
                 case 'gaz':
-                    return <LocalFireDepartmentIcon color="primary" fontSize="large" />
+                    return (
+                        <SvgIcon color="primary">
+                            <GazIcon />
+                        </SvgIcon>
+                    )
                 case 'vitroceramic':
                     return (
-                        <SvgIcon>
-                            <VitroceramicIcon color="primary" fontSize="large" />
+                        <SvgIcon color="primary">
+                            <VitroceramicIcon />
                         </SvgIcon>
                     )
                 case 'induction':
                     return (
-                        <SvgIcon>
-                            <InductionIcon color="primary" fontSize="large" />
+                        <SvgIcon color="primary">
+                            <InductionIcon />
                         </SvgIcon>
                     )
                 case 'other':
                     return (
-                        <SvgIcon>
-                            <OtherIcon color="primary" fontSize="large" />
+                        <SvgIcon color="primary">
+                            <OtherIcon />
                         </SvgIcon>
                     )
                 default:
-                    return <MoreHorizIcon color="primary" fontSize="large" />
+                    return <MoreHorizIcon />
             }
         }
 
