@@ -37,6 +37,18 @@ describe('test pure functions', () => {
         // When value is null and unit MWh consumption it'll show only the unit.
         label = getYPointValueLabel(null, metricTargetsEnum.consumption, 'MWh')
         expect(label).toBe(' MWh')
+
+        /**
+         * Euros Consumption TEST.
+         */
+        // When Euros Consumption it'll show the value given in €.
+        label = getYPointValueLabel(yValue, metricTargetsEnum.eurosConsumption)
+        expect(label).toBe(`${yValue} €`)
+
+        // When value is null and External temperature it'll show only the unit.
+        label = getYPointValueLabel(null, metricTargetsEnum.eurosConsumption)
+        expect(label).toBe(' €')
+
         /**
          * TEMPERATURE TEST.
          */
@@ -83,6 +95,10 @@ describe('test pure functions', () => {
         // When Consumption, it should return palette.primary.light.
         let label = getChartColor(metricTargetsEnum.consumption, theme)
         expect(label).toBe('#FFEECD')
+
+        // When Euros Consumption, it should return palette.primary.light.
+        label = getChartColor(metricTargetsEnum.eurosConsumption, theme)
+        expect(label).toBe('#ABCFA8')
 
         // When internal temperature.
         label = getChartColor(metricTargetsEnum.internalTemperature, theme)

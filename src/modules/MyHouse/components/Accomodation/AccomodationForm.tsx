@@ -19,28 +19,28 @@ import { useAccomodation } from 'src/modules/MyHouse/components/Accomodation/Acc
 import { AccomodationDataType } from 'src/modules/MyHouse/components/Accomodation/AccomodationType'
 import { CircularProgress } from '@mui/material'
 import { isMatch } from 'lodash'
+import { useParams } from 'react-router-dom'
 
 /**
  * AccomodationForm .
  *
- * @param root0 N/A.
- * @param root0.meterId MeterId.
  * @returns AccomodationForm.
  */
-export const AccomodationForm = ({
-    meterId,
-}: /**
- * AccomodationForm props.
- */ {
-    /**
-     * MeterId.
+export const AccomodationForm = () => {
+    const { houseId } = useParams</**
+     *
      */
-    meterId: number
-}) => {
+    {
+        // eslint-disable-next-line jsdoc/require-jsdoc
+        houseId: string
+    }>()
+
+    const housingId = parseInt(houseId)
+
     const { formatMessage } = useIntl()
     const [isDPE, setIsDPE] = useState(true)
     const { loadAccomodation, updateAccomodation, accomodation, isLoadingInProgress, isAccomodationMeterListEmpty } =
-        useAccomodation(meterId)
+        useAccomodation(housingId)
     const [isEditAccomodation, setIdEditAccomodation] = useState(false)
     const disabledField = !isAccomodationMeterListEmpty && !isEditAccomodation
 

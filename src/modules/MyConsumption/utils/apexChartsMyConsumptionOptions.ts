@@ -175,7 +175,11 @@ export const getApexChartMyConsumptionProps = ({
                 id: label,
                 defaultMessage: label,
             }),
-            type: yAxisSerie.name === metricTargetsEnum.consumption ? chartType : 'line',
+            type:
+                yAxisSerie.name === metricTargetsEnum.consumption ||
+                yAxisSerie.name === metricTargetsEnum.eurosConsumption
+                    ? chartType
+                    : 'line',
         })
 
         // We compute the consumption chart maximum y value, so that we can indicate the correct unit on the chart, and we do it only one time with this condition.
@@ -184,7 +188,9 @@ export const getApexChartMyConsumptionProps = ({
 
         yAxisOptions.push({
             ...restChartSpecifities,
-            opposite: yAxisSerie.name !== metricTargetsEnum.consumption,
+            opposite:
+                yAxisSerie.name !== metricTargetsEnum.consumption &&
+                yAxisSerie.name !== metricTargetsEnum.eurosConsumption,
             labels: {
                 /**
                  * Represent the label shown in the yAxis for each value (this also is take as yAxis label in tooltip).
@@ -209,10 +215,20 @@ export const getApexChartMyConsumptionProps = ({
                 show: true,
             },
         })
-        // When period is daily and chart is consumption then we show no marker, otherwise if period is not daily we don't show consumption marker.
-        markerSizeList.push(yAxisSerie.name === metricTargetsEnum.consumption || period === 'daily' ? 0 : 2)
-        // When chart is consumption then we show no stroke cause the area chart is enough otherwise it'll be too cumbersome.
-        strokeWidthList.push(yAxisSerie.name === metricTargetsEnum.consumption ? 0 : 1.5)
+        // When period is daily and chart is consumption or eurosConsumption then we show no marker, otherwise if period is not daily we don't show consumption marker.
+        markerSizeList.push(
+            yAxisSerie.name === metricTargetsEnum.consumption ||
+                yAxisSerie.name === metricTargetsEnum.eurosConsumption ||
+                period === 'daily'
+                ? 0
+                : 2,
+        )
+        // When chart is consumption or eurosConsumption then we show no stroke cause the area chart is enough otherwise it'll be too cumbersome.
+        strokeWidthList.push(
+            yAxisSerie.name === metricTargetsEnum.consumption || yAxisSerie.name === metricTargetsEnum.eurosConsumption
+                ? 0
+                : 1.5,
+        )
     })
 
     options.xaxis = {

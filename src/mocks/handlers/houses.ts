@@ -5,6 +5,7 @@ import { getPaginationFromElementList } from 'src/mocks/utils'
 import { HOUSING_API } from 'src/modules/MyHouse/components/HousingList/HousingsHooks'
 import { SnakeCasedPropertiesDeep } from 'type-fest'
 import { defaultValueType } from 'src/common/ui-kit/form-fields/GoogleMapsAddressAutoComplete/utils'
+import { addMeterInputType } from 'src/modules/Meters/Meters'
 
 /**
  * Array of houses (logements) for test.
@@ -104,24 +105,12 @@ export const housingEndpoints = [
         }
     }),
     // add meter to housing.
-    rest.post</**
-     *
-     */
-    {
-        /**
-         * Meter Name.
-         */
-        name: string
-        /**
-         * Meter Name.
-         */
-        guid: string
-    }>(`${HOUSING_API}/:housingId/meter`, (req, res, ctx) => {
+    rest.post<addMeterInputType>(`${HOUSING_API}/:housingId/meter`, (req, res, ctx) => {
         const { name, guid } = req.body
         const { housingId } = req.params
         const houseId = parseInt(housingId)
 
-        if (housingId !== 0) {
+        if (housingId) {
             const IndexHousingToUpdate = TEST_HOUSES.findIndex(
                 (housing: SnakeCasedPropertiesDeep<IHousing>) => housing.id === houseId,
             )
