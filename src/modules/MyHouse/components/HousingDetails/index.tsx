@@ -128,7 +128,7 @@ export const HousingDetails = () => {
                         </SvgIcon>
                     )
                 default:
-                    return <MoreHorizIcon />
+                    return <MoreHorizIcon color="primary" />
             }
         }
 

@@ -73,7 +73,7 @@ export const SelectButtons = ({
                                             )}
                                         </div>
                                     ) : (
-                                        <div>{option.icon}</div>
+                                        <>{option.icon}</>
                                     )}
                                     {formatMessage({
                                         id: option.label,

@@ -56,6 +56,9 @@ const customSvgIconsStyling = {
     width: '56px',
 }
 
+// Just for that eslint does scream at us about the duplication
+const ELECTRICITY_LABEL = 'Eléctricité'
+
 // eslint-disable-next-line jsdoc/require-jsdoc
 const getEquipmentIconPath = (name: string) => `/assets/images/content/equipment/${name}.svg`
 
@@ -66,7 +69,7 @@ export const heaterEquipment: ISelectButtons = {
     titleLabel: 'Type de chauffage :',
     formOptions: [
         {
-            label: 'Eléctricité',
+            label: ELECTRICITY_LABEL,
             buttonStyle,
             icon: (
                 <SvgIcon sx={customSvgIconsStyling}>
@@ -97,7 +100,7 @@ export const sanitaryEquipment: ISelectButtons = {
     titleLabel: 'Eau chaude sanitaire :',
     formOptions: [
         {
-            label: 'Eléctricité',
+            label: ELECTRICITY_LABEL,
             icon: (
                 <SvgIcon sx={customSvgIconsStyling}>
                     <ElectricityIcon />
@@ -139,7 +142,7 @@ export const hotPlateEquipment: ISelectButtons = {
     titleLabel: 'Type de plaques de cuisson :',
     formOptions: [
         {
-            label: 'Vitrocéramique',
+            label: ELECTRICITY_LABEL,
             icon: (
                 <SvgIcon sx={customSvgIconsStyling}>
                     <VitroceramicIcon />
