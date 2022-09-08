@@ -71,10 +71,7 @@ describe('ChangePasswordForm component test', () => {
         userEvent.type(repeatPwdField.getByText('Confirmer mot de passe'), '12345678')
         userEvent.click(getByText('Enregistrer'))
         await waitFor(() => {
-            expect(mockUpdatePassword).toHaveBeenCalledWith({
-                password: '12345678',
-                repeatPwd: '12345678',
-            })
+            expect(mockUpdatePassword).toHaveBeenCalledWith('12345678')
         })
         await waitFor(() => {
             expect(getByText(CHANGE_PASSWORD)).toBeTruthy()
