@@ -53,7 +53,7 @@ export const housingModel = createModel<RootModel>()({
          */
         setHousingModelState(state: IHousingState, housingList: IHousing[]): IHousingState {
             return {
-                currentHousing: state.currentHousing ?? housingList[0],
+                currentHousing: setCurrentHousingOnLoad(state, housingList),
                 housingList,
             }
         },
@@ -73,6 +73,37 @@ export const housingModel = createModel<RootModel>()({
     },
     state: defaultState as IHousingState,
 })
+
+/**
+ * This function handles the cases for updating the current housing when calling load housings.
+ *
+ * @param state Current Housing State.
+ * @param housingList Housing List that we get from fetching data when onLoad.
+ * @returns Current Hsouing value based on the behaviour of the app and prece.
+ */
+const setCurrentHousingOnLoad = (state: IHousingState, housingList: IHousing[]) => {
+    if (!state.currentHousing) {
+        // if the current housing is null this mean that we just loged in and no state has been saved yet.
+        if (housingList![0]) {
+            // if the fetched housing list is not empty then give it the first value.
+            return housingList![0]
+        } else {
+            // if the fetched housing list is empty then the user has no housings so give it null
+            return null
+        }
+    } else if (
+        typeof housingList.find((housing: IHousing) => housing.id === state.currentHousing?.id) !== 'undefined'
+    ) {
+        // if the current housing has a value and it exist in the new fetched house list the return it
+        return state.currentHousing
+    } else if (housingList![0]) {
+        // if it does not exist in the new fetched array then it has been deleted, if the housingList is not empty then return the first value by default
+        return housingList[0]
+    } else {
+        // if the new fetched housingList is empty then the user has no housings so give it null
+        return null
+    }
+}
 
 /**
  * TODO Document.Handle errors in response.
