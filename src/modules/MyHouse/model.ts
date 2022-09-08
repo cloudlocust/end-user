@@ -84,13 +84,7 @@ export const handleLoginErrors = (error: any) => {
     if (error.response && error.response.status) {
         switch (error.response.status) {
             case 400:
-                if (error.response.data.detail === 'LOGIN_BAD_CREDENTIALS') {
-                    return "Vérifiez l'email et/ou le mot de passe"
-                }
-                if (error.response.data.detail === 'LOGIN_USER_NOT_VERIFIED') {
-                    return "Votre email n'a pas encore été validé par l'administrateur."
-                }
-                break
+                return "Erreur chargement des logements - utilisateur n'existe pas."
             case 401:
                 // Handle unauthorized error
                 return "Vous n'avez pas le droit d'effectuer cette opération."
