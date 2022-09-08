@@ -43,6 +43,7 @@ export const BuilderUseLogin = ({
             setLoginInProgress(true)
             try {
                 await dispatch.userModel.login({ data })
+                await dispatch.housingModel.loadHousingsList()
                 history.replace(redirect())
             } catch (error) {
                 setLoginInProgress(false)

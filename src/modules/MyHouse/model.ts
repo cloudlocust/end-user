@@ -2,7 +2,6 @@ import { IHousing, IHousingState } from 'src/modules/MyHouse/components/HousingL
 import { axios, handleErrors } from 'src/common/react-platform-components'
 import { createModel } from '@rematch/core'
 import { RootModel } from 'src/models'
-import { isArray } from 'lodash'
 import { ILoadDataPagination } from 'src/common/react-platform-components/utils/mm'
 import { HOUSING_API } from 'src/modules/MyHouse/components/HousingList/HousingsHooks'
 
@@ -37,7 +36,7 @@ export const housingModel = createModel<RootModel>()({
         async loadHousingsList() {
             try {
                 const { data } = await axios.get<ILoadDataPagination<IHousing[]>>(`${HOUSING_API}?size=100&page=1`)
-                dispatch.housingModel.setHousingState(data.items)
+                dispatch.housingModel.setHousingModelState(data.items)
             } catch (error) {
                 // use onError callback to handle the error request in the component
                 throw handleErrors(error)
@@ -46,16 +45,29 @@ export const housingModel = createModel<RootModel>()({
     }),
     reducers: {
         /**
-         * Set User state.
+         * Set the housing model state.
          *
          * @param state Current state.
          * @param housingList Housing list data.
          * @returns New state with user data.
          */
-        setHousingState(state: IHousingState, housingList: IHousing[]): IHousingState {
+        setHousingModelState(state: IHousingState, housingList: IHousing[]): IHousingState {
             return {
                 currentHousing: housingList[0],
                 housingList,
+            }
+        },
+        /**
+         * Set the housing model state.
+         *
+         * @param state Current state.
+         * @param selectedHousingId The Id of the current Housing selected.
+         * @returns New state with user data.
+         */
+        setCurrentHousingState(state: IHousingState, selectedHousingId: number): IHousingState {
+            return {
+                ...state,
+                currentHousing: state.housingList.find((housing) => housing.id === selectedHousingId) ?? null,
             }
         },
     },
