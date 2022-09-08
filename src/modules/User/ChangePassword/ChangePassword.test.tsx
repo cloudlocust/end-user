@@ -1,9 +1,10 @@
 import { waitFor } from '@testing-library/react'
 import { reduxedRender } from 'src/common/react-platform-components/test'
 import userEvent from '@testing-library/user-event'
-import { ChangePassword } from './ChangePassword'
+import { ChangePassword } from 'src/modules/User/ChangePassword/ChangePassword'
 import { within } from '@testing-library/react'
 
+let mockIsUpdateInProgress = false
 const mockUpdatePassword = jest.fn()
 const mockEnqueueSnackbar = jest.fn()
 const CHANGE_PASSWORD = 'Changer mon mot de passe'
@@ -12,7 +13,7 @@ jest.mock('src/modules/User/ProfileManagement/ProfileManagementHooks', () => ({
     ...jest.requireActual('src/modules/User/ProfileManagement/ProfileManagementHooks'),
     // eslint-disable-next-line jsdoc/require-jsdoc
     useProfileManagement: () => ({
-        isUpdateInProgress: false,
+        isUpdateInProgress: mockIsUpdateInProgress,
         updatePassword: mockUpdatePassword,
     }),
 }))
@@ -44,7 +45,6 @@ describe('ChangePasswordForm component test', () => {
         await waitFor(() => {
             expect(mockUpdatePassword).not.toHaveBeenCalled()
         })
-
         await waitFor(() => {
             expect(getAllByText('Champ obligatoire non renseigné').length).toBe(2)
         })
@@ -58,7 +58,6 @@ describe('ChangePasswordForm component test', () => {
         await waitFor(() => {
             expect(mockUpdatePassword).not.toHaveBeenCalled()
         })
-
         await waitFor(() => {
             expect(getByText(CHANGE_PASSWORD)).toBeTruthy()
         })
@@ -70,7 +69,6 @@ describe('ChangePasswordForm component test', () => {
         userEvent.type(passwordField.getByText('Nouveau mot de passe'), '12345678')
         const repeatPwdField = within(getByTestId('repeatPwd'))
         userEvent.type(repeatPwdField.getByText('Confirmer mot de passe'), '12345678')
-
         userEvent.click(getByText('Enregistrer'))
         await waitFor(() => {
             expect(mockUpdatePassword).toHaveBeenCalledWith({
@@ -78,5 +76,14 @@ describe('ChangePasswordForm component test', () => {
                 repeatPwd: '12345678',
             })
         })
+        await waitFor(() => {
+            expect(getByText(CHANGE_PASSWORD)).toBeTruthy()
+        })
+    })
+    test('ButtonLoader state when mockIsChangePasswordInProgress true', async () => {
+        mockIsUpdateInProgress = true
+        const { getByText, getByRole } = reduxedRender(<ChangePassword />)
+        userEvent.click(getByText(CHANGE_PASSWORD))
+        expect(getByRole('progressbar')).toBeTruthy()
     })
 })
