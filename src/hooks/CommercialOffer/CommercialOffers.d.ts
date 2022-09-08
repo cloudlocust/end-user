@@ -1,19 +1,16 @@
 /**
- * Commercial Offer model.
+ * Commercial Offer ContractType Model (Professional or Particulier).
  */
-export type ICommercialOffer =
-    //eslint-disable-next-line jsdoc/require-jsdoc
-    {
-        /**
-         * Provider List of commercial offer.
-         */
-        providers: IProvider[]
-        /**
-         * Commercial offer tariff types (example: Base, Heures plaines / Heures creuses...etc).
-         */
-        tariffType: ITariffType[]
-    }
-
+export interface IContractType {
+    /**
+     * Id of the contractType.
+     */
+    id: int
+    /**
+     * Name of the contractType.
+     */
+    name: str
+}
 /**
  * Provider model.
  */
@@ -28,10 +25,6 @@ export type IProvider =
          * Name of provider.
          */
         name: string
-        /**
-         * Offers of provider.
-         */
-        offers: IOffer[]
     }
 
 /**
@@ -65,3 +58,8 @@ export type ITariffType =
          */
         name: string
     }
+
+/**
+ * Type of power.
+ */
+export type IPower = number
