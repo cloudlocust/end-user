@@ -55,4 +55,9 @@ export interface IFormOptions {
      * Icon name if taken from fuse mui.
      */
     iconLabel?: string
+    /**
+     * Generated Material ui SvgIcon example: <SvgIcon sx={{...}}><Icon ../></SvgIcon>.
+     * Icon is imported like so : import {ReactComponent as Icon } from 'src/.../icon.svg'.
+     */
+    icon?: ReactComponentElement
 }
