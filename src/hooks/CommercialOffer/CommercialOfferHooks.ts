@@ -34,7 +34,11 @@ export const POWERS_API = `${API_RESOURCES_URL}/powers`
 export const useCommercialOffer = () => {
     const { enqueueSnackbar } = useSnackbar()
     const { formatMessage } = useIntl()
-    const [loadingInProgress, setLoadingInProgress] = useState(false)
+    const [isContractTypesLoading, setIsContractTypesLoading] = useState(false)
+    const [isProvidersLoading, setIsProvidersLoading] = useState(false)
+    const [isOffersLoading, setIsOffersLoading] = useState(false)
+    const [isTariffTypesLoading, setIsTariffTypesLoading] = useState(false)
+    const [isPowersLoading, setIsPowersLoading] = useState(false)
     const [providerList, setProviderList] = useState<IProvider[] | null>(null)
     const [offerList, setOfferList] = useState<IProvider[] | null>(null)
     const [contractTypeList, setContractTypeList] = useState<IContractType[] | null>(null)
@@ -45,7 +49,7 @@ export const useCommercialOffer = () => {
      * Fetching Contract Types function.
      */
     const loadContractTypes = useCallback(async () => {
-        setLoadingInProgress(true)
+        setIsContractTypesLoading(true)
         try {
             const { data: responseData } = await axios.get<IContractType[]>(CONTRACT_TYPE_LIST_API)
             setContractTypeList(responseData)
@@ -58,7 +62,7 @@ export const useCommercialOffer = () => {
                 { variant: 'error' },
             )
         }
-        setLoadingInProgress(false)
+        setIsContractTypesLoading(false)
     }, [formatMessage, enqueueSnackbar])
 
     /**
@@ -66,7 +70,7 @@ export const useCommercialOffer = () => {
      */
     const loadProviders = useCallback(
         async (contractType: IContractType['id']) => {
-            setLoadingInProgress(true)
+            setIsProvidersLoading(true)
             try {
                 const { data: responseData } = await axios.get<IProvider[]>(
                     `${PROVIDERS_API}?contract_type=${contractType}`,
@@ -81,7 +85,7 @@ export const useCommercialOffer = () => {
                     { variant: 'error' },
                 )
             }
-            setLoadingInProgress(false)
+            setIsProvidersLoading(false)
         },
         [formatMessage, enqueueSnackbar],
     )
@@ -91,7 +95,7 @@ export const useCommercialOffer = () => {
      */
     const loadOffers = useCallback(
         async (provider: IProvider['id'], contractType: IContractType['id']) => {
-            setLoadingInProgress(true)
+            setIsOffersLoading(true)
             try {
                 const { data: responseData } = await axios.get<ITariffType[]>(
                     `${OFFERS_API}?provider=${provider}&contract_type=${contractType}`,
@@ -106,7 +110,7 @@ export const useCommercialOffer = () => {
                     { variant: 'error' },
                 )
             }
-            setLoadingInProgress(false)
+            setIsOffersLoading(false)
         },
         [formatMessage, enqueueSnackbar],
     )
@@ -116,7 +120,7 @@ export const useCommercialOffer = () => {
      */
     const loadTariffTypes = useCallback(
         async (offer: IOffer['id']) => {
-            setLoadingInProgress(true)
+            setIsTariffTypesLoading(true)
             try {
                 const { data: responseData } = await axios.get<ITariffType[]>(`${TARIFF_TYPES_API}?offer=${offer}`)
                 setTariffTypeList(responseData)
@@ -129,7 +133,7 @@ export const useCommercialOffer = () => {
                     { variant: 'error' },
                 )
             }
-            setLoadingInProgress(false)
+            setIsTariffTypesLoading(false)
         },
         [formatMessage, enqueueSnackbar],
     )
@@ -139,7 +143,7 @@ export const useCommercialOffer = () => {
      */
     const loadPowers = useCallback(
         async (offer: IOffer['id'], tariffType: ITariffType['id']) => {
-            setLoadingInProgress(true)
+            setIsPowersLoading(true)
             try {
                 const { data: responseData } = await axios.get<IPower[]>(
                     `${POWERS_API}?offer=${offer}&tarif_type=${tariffType}`,
@@ -154,13 +158,17 @@ export const useCommercialOffer = () => {
                     { variant: 'error' },
                 )
             }
-            setLoadingInProgress(false)
+            setIsPowersLoading(false)
         },
         [formatMessage, enqueueSnackbar],
     )
 
     return {
-        loadingInProgress,
+        isProvidersLoading,
+        isContractTypesLoading,
+        isTariffTypesLoading,
+        isOffersLoading,
+        isPowersLoading,
         loadContractTypes,
         contractTypeList,
         loadProviders,

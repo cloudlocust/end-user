@@ -95,7 +95,6 @@ export const DatePicker: FC<DatePickerFieldProps> = function ({
                 // https://github.com/react-hook-form/react-hook-form/pull/5574 waiting for PR.
                 validate: validators([
                     ...validateFunctions,
-                    dateFormat(valueFormat),
                     minDateValidator(minDateStringValue),
                     maxDateValidator(maxDateStringValue),
                 ]),

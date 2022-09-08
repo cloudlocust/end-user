@@ -5,11 +5,11 @@ export interface IContractType {
     /**
      * Id of the contractType.
      */
-    id: int
+    id: number
     /**
      * Name of the contractType.
      */
-    name: str
+    name: string
 }
 /**
  * Provider model.
