@@ -12,7 +12,8 @@ import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyForm
 import { useRef, useState } from 'react'
 import { useProfileManagement } from 'src/modules/User/ProfileManagement/ProfileManagementHooks'
 import Button from '@mui/material/Button'
-import { IUser } from 'src/modules/User/model'
+import { IChangePasswordData } from 'src/modules/User/ChangePassword/changePassword'
+
 /**
  * Change password form, this form is based on react hooks.
  *
@@ -53,8 +54,8 @@ export const ChangePassword = () => {
                 <motion.div initial={{ opacity: 0, scale: 0.6 }} animate={{ opacity: 1, scale: 1 }}>
                     <DialogContent>
                         <Form
-                            onSubmit={async (data: IUser) => {
-                                await updatePassword(data)
+                            onSubmit={async (data: IChangePasswordData) => {
+                                await updatePassword(data.password)
                                 handleClose()
                             }}
                         >

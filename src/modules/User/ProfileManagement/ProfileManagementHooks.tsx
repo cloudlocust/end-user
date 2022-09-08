@@ -28,7 +28,16 @@ export const useProfileManagement = () => {
      * @param data Data for modification in my profile.
      * @param successUpdateMsg Success update message.
      */
-    const updateProfile = async (data: IUser, successUpdateMsg?: string) => {
+    const updateProfile = async (
+        data: IUser & /**Data to change the current user.
+         */ {
+            /**
+             * Password to change.
+             */
+            password?: string
+        },
+        successUpdateMsg?: string,
+    ) => {
         const dataIsNotModified = isMatch(user as IUser, data)
         if (dataIsNotModified) return
         setIsUpdateInProgress(true)
@@ -53,10 +62,10 @@ export const useProfileManagement = () => {
     /**
      * UpdateProfile function.
      *
-     * @param data Data for modification in my profile.
+     * @param password Password for modification in my profile.
      */
-    const updatePassword = async (data: IUser) => {
-        await updateProfile({ ...user, ...data }, 'Mot de passe modifié avec succès')
+    const updatePassword = async (password: string) => {
+        await updateProfile({ ...user!, password }, 'Mot de passe modifié avec succès')
     }
 
     return { isUpdateInProgress, updateProfile, updatePassword }
