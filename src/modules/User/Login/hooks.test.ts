@@ -65,12 +65,9 @@ describe('Testing useLogin hooks', () => {
             store,
         } = reduxedRenderHook(() => useLogin(), { initialState: {} })
         act(onSubmitBuilder(result, TEST_SUCCESS_MAIL))
-        await waitForValueToChange(
-            () => {
-                return result.current.isLoginInProgress
-            },
-            { timeout: 5000 },
-        )
+        await waitForValueToChange(() => {
+            return result.current.isLoginInProgress
+        })
         expect(mockHistoryReplace).toHaveBeenCalledWith('/user')
         const { userModel } = store.getState()
         expect(userModel.authenticationToken).not.toBeNull()
@@ -108,12 +105,9 @@ describe('test useLoginBuilder', () => {
         act(() => {
             result.current.onSubmit({ email: 'user@success.com', password: '123456' })
         })
-        await waitForValueToChange(
-            () => {
-                return result.current.isLoginInProgress
-            },
-            { timeout: 5000 },
-        )
+        await waitForValueToChange(() => {
+            return result.current.isLoginInProgress
+        })
         expect(mockHistoryReplace).toHaveBeenCalledWith('/redirection_test')
         const { userModel } = store.getState()
         expect(userModel.authenticationToken).not.toBeNull()
