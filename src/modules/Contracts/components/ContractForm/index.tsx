@@ -1,24 +1,16 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { useIntl } from 'react-intl'
 import { requiredBuilder } from 'src/common/react-platform-components'
 import { ButtonLoader } from 'src/common/ui-kit'
 import { Select } from 'src/common/ui-kit/form-fields/Select'
-import { ContractFormProps, addContractDataType } from 'src/modules/Contracts/contractsTypes'
-import { useFormContext, useWatch } from 'react-hook-form'
+import { ContractFormProps, IContract } from 'src/modules/Contracts/contractsTypes'
+import { useWatch } from 'react-hook-form'
 import MenuItem from '@mui/material/MenuItem'
 import { Form } from 'src/common/react-platform-components'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import './ContractForm.scss'
 import { DatePicker } from 'src/common/ui-kit/form-fields/DatePicker'
 
-const defaultContractFormValues = {
-    endSubscription: '',
-    offer: '',
-    power: 0,
-    provider: '',
-    startSubscription: '',
-    tariffType: '',
-} as addContractDataType
 /**
  * Contract form component.
  *
@@ -31,7 +23,7 @@ const ContractForm = ({ onSubmit, isContractsLoading }: ContractFormProps) => {
     const { formatMessage } = useIntl()
 
     return (
-        <Form onSubmit={onSubmit} defaultValues={defaultContractFormValues}>
+        <Form onSubmit={onSubmit}>
             <div className="p-24">
                 <TypographyFormatMessage className="text-16 font-medium md:text-20">
                     Contrat de fourniture
@@ -69,29 +61,12 @@ export default ContractForm
  * @returns Contract Form Fields component.
  */
 const ContractFormFields = () => {
-    const formData = useWatch<addContractDataType>({ defaultValue: defaultContractFormValues })
-    const { reset, watch, getValues } = useFormContext<addContractDataType>()
-    const providerValue = watch('provider')
-    const offerValue = watch('offer')
-    const tariffTypeValue = watch('tariffType')
-    const powerValue = watch('power')
-    const startSubscriptionValue = watch('startSubscription')
+    const formData = useWatch<IContract>({})
     const { formatMessage } = useIntl()
-
-    console.log('formData', formData)
-
-    useEffect(() => {
-        // Load OFFERS
-        // fieldNNames.reduce((prev, curr) => {}, )
-        reset({
-            ...defaultContractFormValues,
-            provider: formData.provider,
-        })
-    }, [formData.provider, reset])
 
     return (
         <>
-            {/* TODO Change offer Select so that data comes from commercial offer request  */}
+            {/* TODO Change provider Select so that data comes from commercial offer request  */}
             <Select
                 name="provider"
                 label={formatMessage({
@@ -108,14 +83,13 @@ const ContractFormFields = () => {
                     ))}
             </Select>
             {/* TODO Change offer Select so that data comes from commercial offer request  */}
-            {providerValue && (
+            {formData.provider && (
                 <Select
                     name="offer"
                     label={formatMessage({
                         id: 'Offre',
                         defaultMessage: 'Offre',
                     })}
-                    validateFunctions={[requiredBuilder()]}
                 >
                     {Array(5)
                         .fill(0)
@@ -126,15 +100,14 @@ const ContractFormFields = () => {
                         ))}
                 </Select>
             )}
-            {/* TODO Change offer Select so that data comes from commercial offer request  */}
-            {offerValue && (
+            {/* TODO Change TariffType Select so that data comes from commercial offer request  */}
+            {formData.offer && (
                 <Select
                     name="tariffType"
                     label={formatMessage({
                         id: 'Type de contrat',
                         defaultMessage: 'Type de contrat',
                     })}
-                    validateFunctions={[requiredBuilder()]}
                 >
                     {Array(3)
                         .fill(0)
@@ -145,14 +118,13 @@ const ContractFormFields = () => {
                         ))}
                 </Select>
             )}
-            {tariffTypeValue && (
+            {formData.tariffType && (
                 <Select
                     name="power"
                     label={formatMessage({
                         id: 'Puissance',
                         defaultMessage: 'Puissance',
                     })}
-                    validateFunctions={[requiredBuilder()]}
                 >
                     {Array(9)
                         .fill(0)
@@ -163,7 +135,7 @@ const ContractFormFields = () => {
                         ))}
                 </Select>
             )}
-            {powerValue !== 0 && (
+            {formData.power && (
                 <DatePicker
                     name="startSubscription"
                     label={formatMessage({
@@ -173,13 +145,14 @@ const ContractFormFields = () => {
                     validateFunctions={[requiredBuilder()]}
                 />
             )}
-            {startSubscriptionValue && (
+            {formData.startSubscription && (
                 <DatePicker
                     name="endSubscription"
                     label={formatMessage({
                         id: 'Date de fin',
                         defaultMessage: 'Date de fin',
                     })}
+                    validateFunctions={[requiredBuilder()]}
                 />
             )}
         </>
