@@ -33,10 +33,11 @@ export const initialMetricsHookValues: getMetricType = {
             target: metricTargetsEnum.consumption,
             type: 'timeserie',
         },
-        {
-            target: metricTargetsEnum.eurosConsumption,
-            type: 'timeserie',
-        },
+        // TODO Reset euro consumption when backend ready.
+        // {
+        // target: metricTargetsEnum.eurosConsumption,
+        // type: 'timeserie',
+        // },
         {
             target: metricTargetsEnum.pMax,
             type: 'timeserie',

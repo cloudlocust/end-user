@@ -1,4 +1,5 @@
 import React from 'react'
+import { useEffect, useState } from 'react'
 import { useHistory, useLocation, useParams } from 'react-router'
 import { motion } from 'framer-motion'
 import Icon from '@mui/material/Icon'
@@ -8,15 +9,22 @@ import { useIntl } from 'src/common/react-platform-translation'
 import { Button } from '@mui/material'
 import { URL_MY_HOUSE } from 'src/modules/MyHouse/MyHouseConfig'
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz'
-import LocalFireDepartmentIcon from '@mui/icons-material/LocalFireDepartment'
-import BoltIcon from '@mui/icons-material/Bolt'
 import HousingDetailsCard from 'src/modules/MyHouse/components/HousingDetails/HousingDetailsCard'
 import { HouseDetailsElementType } from 'src/modules/MyHouse/components/HousingDetails/housingDetails'
 import { ReactComponent as SuperficieIcon } from 'src/assets/images/content/housing/Superficie.svg'
 import { ReactComponent as OccupantIcon } from 'src/assets/images/content/housing/Occupant.svg'
 import { ReactComponent as MainIcon } from 'src/assets/images/content/housing/Main.svg'
+import { ReactComponent as VitroceramicIcon } from 'src/assets/images/content/housing/Vitroceramic.svg'
+import { ReactComponent as InductionIcon } from 'src/assets/images/content/housing/Induction.svg'
+import { ReactComponent as OtherIcon } from 'src/assets/images/content/housing/Other.svg'
+import SvgIcon from '@mui/material/SvgIcon'
 import { useTheme } from '@mui/material'
+import { useAccomodation } from 'src/modules/MyHouse/components/Accomodation/AccomodationHooks'
+import { useEquipmentList } from 'src/modules/MyHouse/components/Equipments/equipmentHooks'
+import { equipmentNameType } from 'src/modules/MyHouse/components/Equipments/EquipmentsType'
 import { MeterStatus } from 'src/modules/MyHouse/components/MeterStatus'
+import { ReactComponent as ElectricityIcon } from 'src/assets/images/content/housing/Electricity.svg'
+import { ReactComponent as GazIcon } from 'src/assets/images/content/housing/Gaz.svg'
 
 const Root = styled(FusePageCarded)(({ theme }) => ({
     '& .FusePageCarded-header': {
@@ -58,35 +66,103 @@ export const HousingDetails = () => {
         houseId: string
     }>()
 
-    // for UI testing purpose
-    const housingElements: HouseDetailsElementType[] = [
-        {
-            icon: <MainIcon style={{ fill: theme.palette.primary.main }} height={35} />,
-            label: 'Type de logement',
-        },
-        {
-            icon: <OccupantIcon style={{ fill: theme.palette.primary.main }} height={35} />,
-            label: "Nombre d'occupants",
-        },
-        {
-            icon: <SuperficieIcon style={{ fill: theme.palette.primary.main }} height={35} />,
-            label: 'superficie',
-        },
-    ]
+    const housingId = parseInt(houseId)
 
-    // for UI testing purpose
-    const equipmentElements: HouseDetailsElementType[] = [
+    const {
+        accomodation,
+        isAccomodationMeterListEmpty,
+        isLoadingInProgress: loadingAccomodationInProgress,
+    } = useAccomodation(housingId)
+    const { equipmentList, isEquipmentMeterListEmpty, loadingEquipmentInProgress } = useEquipmentList(housingId)
+
+    // get a default elements with default icons for when it's loading.
+    const [equipementElements, setEquipementElements] = useState<HouseDetailsElementType[]>([
         {
-            icon: <BoltIcon color="primary" fontSize="large" />,
+            icon: <MoreHorizIcon color="primary" fontSize="large" />,
             label: 'Chauffage',
         },
         {
-            icon: <LocalFireDepartmentIcon color="primary" fontSize="large" />,
+            icon: <MoreHorizIcon color="primary" fontSize="large" />,
             label: 'Eau',
         },
         {
             icon: <MoreHorizIcon color="primary" fontSize="large" />,
             label: 'Plaques',
+        },
+    ])
+
+    // Then once elements are loaded handle each icon based on it's equipementType.
+    useEffect(() => {
+        // eslint-disable-next-line
+        const handleEquipmentsIcons = (equipementName: equipmentNameType) => {
+            const equipement = equipmentList?.find((equipement) => equipement.equipment.name === equipementName)
+            switch (equipement?.equipmentType) {
+                case 'electricity':
+                    return (
+                        <SvgIcon color="primary">
+                            <ElectricityIcon />
+                        </SvgIcon>
+                    )
+                case 'gaz':
+                    return (
+                        <SvgIcon color="primary">
+                            <GazIcon />
+                        </SvgIcon>
+                    )
+                case 'vitroceramic':
+                    return (
+                        <SvgIcon color="primary">
+                            <VitroceramicIcon />
+                        </SvgIcon>
+                    )
+                case 'induction':
+                    return (
+                        <SvgIcon color="primary">
+                            <InductionIcon />
+                        </SvgIcon>
+                    )
+                case 'other':
+                    return (
+                        <SvgIcon color="primary">
+                            <OtherIcon />
+                        </SvgIcon>
+                    )
+                default:
+                    return <MoreHorizIcon color="primary" />
+            }
+        }
+
+        if (equipmentList) {
+            setEquipementElements([
+                {
+                    icon: handleEquipmentsIcons('heater'),
+                    label: 'Chauffage',
+                },
+                {
+                    icon: handleEquipmentsIcons('sanitary'),
+                    label: 'Eau',
+                },
+                {
+                    icon: handleEquipmentsIcons('hotplate'),
+                    label: 'Plaques',
+                },
+            ])
+        }
+    }, [equipmentList])
+
+    // For the house accomodation we don't need to handle the icons based on a certain type.
+    const housingElements: HouseDetailsElementType[] = [
+        {
+            icon: <MainIcon style={{ fill: theme.palette.primary.main }} height={35} />,
+            label: accomodation?.houseType ?? 'Type de logement',
+        },
+        {
+            icon: <OccupantIcon style={{ fill: theme.palette.primary.main }} height={35} />,
+            label: accomodation?.numberOfInhabitants ?? "Nombre d'occupants",
+        },
+        {
+            icon: <SuperficieIcon style={{ fill: theme.palette.primary.main }} height={35} />,
+            label: accomodation?.houseArea ? `${accomodation?.houseArea} m²` : 'superficie',
         },
     ]
 
@@ -109,8 +185,20 @@ export const HousingDetails = () => {
                 <>
                     <MeterStatus houseId={houseId} meterGuid={location.state.meterGuid} />
                     <div className="flex flex-col items-center md:flex-row justify-around mt-40">
-                        <HousingDetailsCard title="Informations logement" elements={housingElements} />
-                        <HousingDetailsCard title="Informations équipements" elements={equipmentElements} />
+                        <HousingDetailsCard
+                            title="Informations logement"
+                            elements={housingElements}
+                            typeOfDetails="accomodation"
+                            isConfigured={!isAccomodationMeterListEmpty}
+                            loadingInProgress={loadingAccomodationInProgress}
+                        />
+                        <HousingDetailsCard
+                            title="Informations équipements"
+                            elements={equipementElements}
+                            typeOfDetails="equipments"
+                            isConfigured={!isEquipmentMeterListEmpty}
+                            loadingInProgress={loadingEquipmentInProgress}
+                        />
                     </div>
                 </>
             }
