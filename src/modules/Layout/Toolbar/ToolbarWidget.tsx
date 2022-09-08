@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import { useDispatch } from 'react-redux'
 import { Dispatch } from 'src/redux'
 import UserMenu from 'src/modules/Layout/Toolbar/components/UserMenu'
@@ -37,14 +37,6 @@ export const ToolbarWidget = () => {
     const dispatch = useDispatch<Dispatch>()
     const { housingList, currentHousing } = useSelector(({ housingModel }: RootState) => housingModel)
 
-    // Before the data is loaded the current housing is default to null, so the select must have a value of '' to define that nothing is selected
-    const [selectedHouseId, setSelectedHouseId] = useState<string | number>('')
-
-    // Once current housing loaded we set the current housing.
-    useEffect(() => {
-        currentHousing && setSelectedHouseId(currentHousing.id)
-    }, [currentHousing])
-
     // when the toolbar mount we refetch the housings (this insure that the housings are updated when refresh the page)
     useEffect(() => {
         dispatch.housingModel.loadHousingsList()
@@ -69,7 +61,7 @@ export const ToolbarWidget = () => {
                 }}
             >
                 <InputLabel id="select-housing-label">
-                    {!selectedHouseId
+                    {!currentHousing?.id
                         ? formatMessage({
                               id: 'Aucun logement disponible',
                               defaultMessage: 'Aucun logement disponible',
@@ -82,11 +74,11 @@ export const ToolbarWidget = () => {
                 <Select
                     labelId="select-housing-label"
                     id="select-housing"
-                    value={selectedHouseId}
+                    value={currentHousing?.id ?? ''}
                     onChange={handleChange}
                     input={<OutlinedInput label="Logement" />}
                     MenuProps={MenuProps}
-                    disabled={!selectedHouseId}
+                    disabled={!currentHousing?.id}
                 >
                     {housingList?.map((housing) => (
                         <MenuItem key={housing.id} value={housing.id}>
