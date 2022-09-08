@@ -53,7 +53,7 @@ export const housingModel = createModel<RootModel>()({
          */
         setHousingModelState(state: IHousingState, housingList: IHousing[]): IHousingState {
             return {
-                currentHousing: housingList[0],
+                currentHousing: state.currentHousing ?? housingList[0],
                 housingList,
             }
         },
