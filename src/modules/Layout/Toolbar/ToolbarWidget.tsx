@@ -13,7 +13,7 @@ export const ToolbarWidget = () => {
 
     useEffect(() => {
         dispatch.housingModel.loadHousingsList()
-    })
+    }, [dispatch.housingModel])
 
     return (
         <>
