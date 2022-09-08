@@ -5,8 +5,8 @@ import { useIntl } from 'src/common/react-platform-translation'
 import { useHistory } from 'react-router-dom'
 import Button from '@mui/material/Button'
 import { motion } from 'framer-motion'
-import { ProfileManagementForm } from './ProfileManagementForm'
-import { ChangePassword } from '../ChangePassword/ChangePassword'
+import { ProfileManagementForm } from 'src/modules/User/ProfileManagement/ProfileManagementForm'
+import { ChangePassword } from 'src/modules/User/ChangePassword/ChangePassword'
 
 /**
  * Modify Profile component with the posibility to modify the profile.
