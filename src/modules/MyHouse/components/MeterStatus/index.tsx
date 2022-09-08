@@ -7,7 +7,7 @@ import { MuiCardContent } from 'src/common/ui-kit'
 import { MeterStatusProps } from 'src/modules/MyHouse/components/MeterStatus/meterStatus.d'
 import { useConsents } from 'src/modules/Consents/consentsHook'
 import { useEffect } from 'react'
-import { nrlinkConsentStatus } from 'src/modules/Consents/Consents'
+import { enedisConsentStatus, nrlinkConsentStatus } from 'src/modules/Consents/Consents'
 import dayjs from 'dayjs'
 import { useIntl } from 'react-intl'
 import { NrlinkConnectionStepsEnum } from 'src/modules/nrLinkConnection/nrlinkConnectionSteps.d'
@@ -23,9 +23,11 @@ import { NrlinkConnectionStepsEnum } from 'src/modules/nrLinkConnection/nrlinkCo
 export const MeterStatus = ({ houseId, meterGuid }: MeterStatusProps) => {
     const theme = useTheme()
     const { formatMessage } = useIntl()
-    const { getConsents, consentsLoading, nrlinkConsent } = useConsents()
+    const { getConsents, consentsLoading, nrlinkConsent, enedisConsent } = useConsents()
 
     const nrlinkConsentCreatedAt = dayjs(nrlinkConsent?.createdAt).format('DD/MM/YYYY')
+    /* To have the ending date of the consent, we add 3 years to the date the consent was made */
+    const enedisConsentEndingDate = dayjs(enedisConsent?.createdAt).add(3, 'year').format('DD/MM/YYYY')
 
     useEffect(() => {
         getConsents(meterGuid)
@@ -107,8 +109,59 @@ export const MeterStatus = ({ houseId, meterGuid }: MeterStatusProps) => {
                             <img src="/assets/images/content/housing/consent-status/meter-off.svg" alt="off-icon" />
                         </Icon>
                         <div className="flex flex-col">
-                            <TypographyFormatMessage color={theme.palette.error.main} className="underline">
+                            <TypographyFormatMessage
+                                color={theme.palette.error.main}
+                                className="underline"
+                                fontWeight={600}
+                            >
                                 Une erreur est survenue.
+                            </TypographyFormatMessage>
+                        </div>
+                    </>
+                )
+        }
+    }
+
+    /**
+     * Function that renders JSX accorrding to enedis status.
+     *
+     * @param enedisConsent Different nrlink statuses.
+     * @returns JSX according to enedis Status.
+     */
+    function renderEnedisStatus(enedisConsent?: enedisConsentStatus) {
+        switch (enedisConsent) {
+            case 'CONNECTED':
+                return (
+                    <>
+                        <Icon className="mr-12">
+                            <img
+                                src="/assets/images/content/housing/consent-status/meter-on.svg"
+                                alt="connected-icon"
+                            />
+                        </Icon>
+                        <div className="flex flex-col">
+                            <TypographyFormatMessage className="text-grey-600">
+                                Date de fin de consentement
+                            </TypographyFormatMessage>
+                            <span className="text-grey-600">{enedisConsentEndingDate}</span>
+                        </div>
+                    </>
+                )
+            case 'EXPIRED':
+            case 'NONEXISTENT':
+                return (
+                    <>
+                        <Icon className="mr-12">
+                            <img src="/assets/images/content/housing/consent-status/meter-off.svg" alt="off-icon" />
+                        </Icon>
+                        <div className="flex flex-col">
+                            <TypographyFormatMessage
+                                color={theme.palette.error.main}
+                                className="underline"
+                                fontWeight={600}
+                            >
+                                Autorisez la récupération de vos données de consommation pour avoir accès à votre
+                                historique.
                             </TypographyFormatMessage>
                         </div>
                     </>
@@ -125,7 +178,6 @@ export const MeterStatus = ({ houseId, meterGuid }: MeterStatusProps) => {
                         {meterGuid ? (
                             <span className="text-grey-600 text-base">{`n° ${meterGuid}`}</span>
                         ) : (
-                            /* TODO: To be worked on in another story. It should open a pop up to add a meterr. */
                             <TypographyFormatMessage className="text-grey-600 text-base">
                                 Aucun compteur renseigné
                             </TypographyFormatMessage>
@@ -147,9 +199,9 @@ export const MeterStatus = ({ houseId, meterGuid }: MeterStatusProps) => {
                         </Card>
                     </NavLink>
                 </div>
-                <div className="flex flex-col md:flex-row justify-around">
+                <div className="flex flex-col md:flex-row justify-evenly">
                     {/* Nrlink Consent Status */}
-                    <div className="p-12 border-b-1 border-grey-300">
+                    <div className="w-full md:w-1/3 p-12 border-b-1 border-grey-300">
                         {!meterGuid ? (
                             <>
                                 <TypographyFormatMessage className="text-xs md:text-sm font-semibold">
@@ -171,22 +223,26 @@ export const MeterStatus = ({ houseId, meterGuid }: MeterStatusProps) => {
                         )}
                     </div>
                     {/* Enedis Consent Status */}
-                    <div className="p-12 border-b-1 border-grey-300 hidden">
-                        <TypographyFormatMessage className="text-xs md:text-sm font-semibold">
-                            Historique de consommation
-                        </TypographyFormatMessage>
-                        <div className="flex flex-row items-center">
-                            <Icon className="mr-12">
-                                <img
-                                    src="/assets/images/content/housing/consent-status/meter-on.svg"
-                                    alt="meter-status"
-                                />
-                            </Icon>
-                            <div className="flex flex-col">
-                                <span className="text-grey-600">Date de fin de consentement</span>
-                                <span className="text-grey-600">01/01/2030</span>
-                            </div>
-                        </div>
+                    <div className="w-full md:w-1/3 p-12 border-b-1 border-grey-300">
+                        {!meterGuid ? (
+                            <>
+                                <TypographyFormatMessage className="text-xs md:text-sm font-semibold">
+                                    Historique de consommation
+                                </TypographyFormatMessage>
+                                <div className="flex flex-row items-center">{renderEnedisStatus('NONEXISTENT')}</div>
+                            </>
+                        ) : consentsLoading ? (
+                            <CircularProgress size={25} />
+                        ) : (
+                            <>
+                                <TypographyFormatMessage className="text-xs md:text-sm font-semibold">
+                                    Historique de consommation
+                                </TypographyFormatMessage>
+                                <div className="flex flex-row items-center">
+                                    {renderEnedisStatus(enedisConsent?.enedisConsentState)}
+                                </div>
+                            </>
+                        )}
                     </div>
                 </div>
             </MuiCardContent>
