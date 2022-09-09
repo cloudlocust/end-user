@@ -18,7 +18,7 @@ export const SgePopup = ({
     openSgePopup,
     setOpenSgePopup,
     isMeterVerifyLoading,
-    isMeterVerified = false,
+    isMeterVerified,
     setIsMeterVerified,
 }: /**
  * SgePopup props types.
