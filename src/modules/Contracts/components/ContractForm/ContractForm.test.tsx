@@ -73,12 +73,12 @@ let mockIsOffersLoading = false
 let mockIsContractTypesLoading = false
 
 /**
- * Mocking the useMeterForHousing.
+ * Mocking the useCommercialOffer.
  */
 jest.mock('src/hooks/CommercialOffer/CommercialOfferHooks', () => ({
     ...jest.requireActual('src/hooks/CommercialOffer/CommercialOfferHooks'),
     // eslint-disable-next-line jsdoc/require-jsdoc
-    useMeterForHousing: () => ({
+    useCommercialOffer: () => ({
         contractTypeList: mockContractTypeList,
         offerList: mockOfferList,
         loadOffers: mockLoadOffers,
