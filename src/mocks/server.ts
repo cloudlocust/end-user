@@ -9,6 +9,7 @@ import { accomodationEndpoints } from './handlers/accomodation'
 import { metricsEndpoints } from './handlers/metrics'
 import { housingEndpoints } from 'src/mocks/handlers/houses'
 import { contractsEndpoints } from 'src/mocks/handlers/contracts'
+import { commercialOfferEndpoints } from 'src/mocks/handlers/commercialOffer'
 
 /**
  * Handlers to mock urls for tests.
@@ -32,6 +33,8 @@ const handlers = [
     ...housingEndpoints,
     /******Contracts REQUESTS*****/
     ...contractsEndpoints,
+    /******Commercial Offer REQUEST*****/
+    ...commercialOfferEndpoints,
 ]
 
 // This configures a request mocking server with the given request handlers.
