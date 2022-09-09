@@ -37,8 +37,6 @@ const ContractFormSelect = <T extends unknown>({
         loadOptions()
     }, [loadOptions])
 
-    expect(optionList).toBe('blue')
-    expect(isOptionsInProgress).toBe('blue')
     if (isOptionsInProgress || isNull(optionList))
         return (
             <div style={{ display: 'flex', justifyContent: 'center', padding: '16px' }}>

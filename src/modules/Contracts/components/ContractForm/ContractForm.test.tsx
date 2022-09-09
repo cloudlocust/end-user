@@ -9,12 +9,14 @@ import {
     TEST_PROVIDERS,
     TEST_TARIFF_TYPES,
 } from 'src/mocks/handlers/commercialOffer'
+import { waitFor } from '@testing-library/react'
 
-const TYPE_LABEL_TEXT = 'Type'
-const PROVIDER_LABEL_TEXT = 'Fournisseur'
-const OFFER_LABEL_TEXT = 'Offre'
-const TARRIF_TYPE_LABEL_TEXT = 'Type de contrat'
-const POWER_LABEL_TEXT = 'Puissance'
+const SUBMIT_BUTTON_TEXT = 'Enregistrer'
+const TYPE_LABEL_TEXT = 'Type *'
+const PROVIDER_LABEL_TEXT = 'Fournisseur *'
+const OFFER_LABEL_TEXT = 'Offre *'
+const TARRIF_TYPE_LABEL_TEXT = 'Type de contrat *'
+const POWER_LABEL_TEXT = 'Puissance *'
 const START_SUBSCRIPTION_LABEL_TEXT = 'Date de début'
 const END_SUBSCRIPTION_LABEL_TEXT = 'Date de fin'
 const CONTRACT_FORM_FIELDS_LABELS = [
@@ -35,7 +37,7 @@ const CONTRACT_FORM_FIELDS_LABELS = [
  */
 const LabelsNotToBeInDocument = (LABELS: string[], getByLabelText: any) => {
     LABELS.forEach((label) => {
-        expect(() => getByLabelText(label, { exact: true })).toThrow()
+        expect(() => getByLabelText(label, { exact: false })).toThrow()
     })
 }
 /**
@@ -46,7 +48,6 @@ const LabelsNotToBeInDocument = (LABELS: string[], getByLabelText: any) => {
 const selectFirstOption = (getAllByRole: any) => {
     userEvent.click(getAllByRole('option')[0])
 }
-const LoadingIndicatorClass = '.MuiLoadingButton-loadingIndicator'
 
 /**
  * Mock for ContractForm props.
@@ -96,63 +97,96 @@ jest.mock('src/hooks/CommercialOffer/CommercialOfferHooks', () => ({
         isTariffTypesLoading: mockIsTariffTypesLoading,
     }),
 }))
-describe('Test ContractForm Component', () => {
-    test('Different fields should show according to the previous one', async () => {
+describe('Test ContractFormSelect Component', () => {
+    test('Filling fields should show according to the previous one, and submitting works', async () => {
+        const mockOnSubmit = jest.fn()
+        mockContractFormProps.onSubmit = mockOnSubmit
         const { getByText, getByLabelText, getAllByRole } = reduxedRender(<ContractForm {...mockContractFormProps} />)
 
         // Initially only Type is shown
-        expect(getByLabelText(TYPE_LABEL_TEXT)).toBeTruthy()
+        expect(getByLabelText(TYPE_LABEL_TEXT, { exact: false })).toBeTruthy()
         CONTRACT_FORM_FIELDS_LABELS.shift()
+        await waitFor(() => {
+            expect(mockLoadContractTypes).toHaveBeenCalled()
+        })
         // Other fields are not shown
         LabelsNotToBeInDocument(CONTRACT_FORM_FIELDS_LABELS, getByLabelText)
 
         // When selecting Type, provider is shown
-        userEvent.click(getByLabelText(TYPE_LABEL_TEXT))
+        userEvent.click(getByLabelText(TYPE_LABEL_TEXT, { exact: false }))
         selectFirstOption(getAllByRole)
-        expect(getByLabelText(PROVIDER_LABEL_TEXT)).toBeTruthy()
         CONTRACT_FORM_FIELDS_LABELS.shift()
+        expect(getByLabelText(PROVIDER_LABEL_TEXT, { exact: false })).toBeTruthy()
+        await waitFor(() => {
+            expect(mockLoadProviders).toHaveBeenCalled()
+        })
         // Other fields are not shown
         LabelsNotToBeInDocument(CONTRACT_FORM_FIELDS_LABELS, getByText)
 
         // When selecting provider, offer is shown
-        userEvent.click(getByLabelText(PROVIDER_LABEL_TEXT))
+        userEvent.click(getByLabelText(PROVIDER_LABEL_TEXT, { exact: false }))
         selectFirstOption(getAllByRole)
-        expect(getByLabelText(OFFER_LABEL_TEXT)).toBeTruthy()
+        expect(getByLabelText(OFFER_LABEL_TEXT, { exact: false })).toBeTruthy()
+        await waitFor(() => {
+            expect(mockLoadOffers).toHaveBeenCalled()
+        })
         CONTRACT_FORM_FIELDS_LABELS.shift()
         // Other fields are not shown
         LabelsNotToBeInDocument(CONTRACT_FORM_FIELDS_LABELS, getByText)
 
         // When selecting offer, tariffType is shown
-        userEvent.click(getByLabelText(OFFER_LABEL_TEXT))
+        userEvent.click(getByLabelText(OFFER_LABEL_TEXT, { exact: false }))
         selectFirstOption(getAllByRole)
-        expect(getByLabelText(TARRIF_TYPE_LABEL_TEXT)).toBeTruthy()
+        expect(getByLabelText(TARRIF_TYPE_LABEL_TEXT, { exact: false })).toBeTruthy()
+        await waitFor(() => {
+            expect(mockLoadTariffTypes).toHaveBeenCalled()
+        })
         CONTRACT_FORM_FIELDS_LABELS.shift()
         // Other fields are not shown
         LabelsNotToBeInDocument(CONTRACT_FORM_FIELDS_LABELS, getByText)
 
         // When selecting tariffType, power is shown
-        userEvent.click(getByLabelText(TARRIF_TYPE_LABEL_TEXT))
+        userEvent.click(getByLabelText(TARRIF_TYPE_LABEL_TEXT, { exact: false }))
         selectFirstOption(getAllByRole)
-        expect(getByLabelText(POWER_LABEL_TEXT)).toBeTruthy()
+        expect(getByLabelText(POWER_LABEL_TEXT, { exact: false })).toBeTruthy()
+        await waitFor(() => {
+            expect(mockLoadPowers).toHaveBeenCalled()
+        })
         CONTRACT_FORM_FIELDS_LABELS.shift()
         // Other fields are not shown
         LabelsNotToBeInDocument(CONTRACT_FORM_FIELDS_LABELS, getByText)
 
         // When selecting power, startSubscription is shown
-        userEvent.click(getByLabelText(POWER_LABEL_TEXT))
+        userEvent.click(getByLabelText(POWER_LABEL_TEXT, { exact: false }))
         selectFirstOption(getAllByRole)
         expect(getByLabelText(START_SUBSCRIPTION_LABEL_TEXT)).toBeTruthy()
         CONTRACT_FORM_FIELDS_LABELS.shift()
         // Other fields are not shown
         LabelsNotToBeInDocument(CONTRACT_FORM_FIELDS_LABELS, getByText)
 
-        // TODO test when filling startSubscription
+        // When selecting startSubscription, endSubscription is shown
+        userEvent.click(getByLabelText(START_SUBSCRIPTION_LABEL_TEXT))
+        userEvent.click(getByText('1'))
+        userEvent.click(getByText('OK'))
+        await waitFor(() => {
+            expect(() => getByText('OK')).toThrow()
+        })
+
+        // Fill endSubscription
+        userEvent.click(getByLabelText(END_SUBSCRIPTION_LABEL_TEXT))
+        userEvent.click(getByText('1'))
+        userEvent.click(getByText('OK'))
+        await waitFor(() => {
+            expect(() => getByText('OK')).toThrow()
+        })
+        expect(getByLabelText(END_SUBSCRIPTION_LABEL_TEXT)).toBeTruthy()
+
+        userEvent.click(getByText(SUBMIT_BUTTON_TEXT))
+
+        userEvent.click(getByText(SUBMIT_BUTTON_TEXT))
+
+        await waitFor(() => {
+            expect(mockOnSubmit).toHaveBeenCalled()
+        })
     }, 30000)
-
-    test('When isContractLoadingInProgress spinner should be shown', async () => {
-        mockContractFormProps.isContractsLoading = true
-        const { container } = reduxedRender(<ContractForm {...mockContractFormProps} />)
-
-        expect(container.querySelector(LoadingIndicatorClass)).toBeInTheDocument()
-    })
 })
