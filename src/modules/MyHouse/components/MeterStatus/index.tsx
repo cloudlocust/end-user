@@ -1,4 +1,4 @@
-import { Card, useTheme, Icon, CircularProgress, DialogContent } from '@mui/material'
+import { Card, useTheme, Icon, CircularProgress } from '@mui/material'
 import { NavLink } from 'react-router-dom'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import { ReactComponent as ContractIcon } from 'src/assets/images/content/housing/contract.svg'
@@ -11,8 +11,7 @@ import { enedisConsentStatus, nrlinkConsentStatus } from 'src/modules/Consents/C
 import dayjs from 'dayjs'
 import { useIntl } from 'react-intl'
 import { NrlinkConnectionStepsEnum } from 'src/modules/nrLinkConnection/nrlinkConnectionSteps.d'
-import Checkbox from '@mui/material/Checkbox'
-import Dialog from '@mui/material/Dialog'
+import { VerifyMeterPopup } from 'src/modules/MyHouse/components/MeterStatus/VerifyMeterPopup'
 
 /**
  * Meter Status Component.
@@ -26,54 +25,8 @@ export const MeterStatus = ({ houseId, meterGuid }: MeterStatusProps) => {
     const theme = useTheme()
     const { formatMessage } = useIntl()
     const { getConsents, consentsLoading, nrlinkConsent, enedisConsent } = useConsents()
-    const [openPopup, setOpenPopup] = useState(false)
 
-    /**
-     * Component that display SGE dialog.
-     *
-     * @returns SGE Dialoh JSX.
-     */
-    const SGEPopup = (): JSX.Element => {
-        const [checked, setChecked] = useState(false)
-
-        if (checked) {
-            setOpenPopup(false)
-        }
-
-        /**
-         * Function that handles checkbox onChange event.
-         *
-         * @param event OnChangeEvent.
-         */
-        const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-            setChecked(event.target.checked)
-        }
-
-        return (
-            <Dialog onClose={() => setOpenPopup(false)} open={openPopup} maxWidth={'sm'}>
-                <DialogContent>
-                    <div className="flex flex-row">
-                        <Checkbox
-                            checked={checked}
-                            onChange={handleCheckboxChange}
-                            color="primary"
-                            data-testid="sge-checkbox"
-                        />
-
-                        <TypographyFormatMessage
-                            className="underline cursor-pointer ml-12"
-                            fontWeight={500}
-                            data-testid="sge-message"
-                            onClick={() => window.open('https://www.myem.fr/politique-de-confidentialite/', '_blank')}
-                        >
-                            J'autorise My Energy Manager à la récolte de mon historique de données de consommation
-                            auprès d'Enedis.
-                        </TypographyFormatMessage>
-                    </div>
-                </DialogContent>
-            </Dialog>
-        )
-    }
+    const [openVerifyMeterPopup, setOpenVerifyMeterPopup] = useState<boolean>(false)
 
     const nrlinkConsentCreatedAt = dayjs(nrlinkConsent?.createdAt).format('DD/MM/YYYY')
     /* To have the ending date of the consent, we add 3 years to the date the consent was made */
@@ -209,7 +162,7 @@ export const MeterStatus = ({ houseId, meterGuid }: MeterStatusProps) => {
                                 color={theme.palette.error.main}
                                 className="underline cursor-pointer"
                                 fontWeight={600}
-                                onClick={() => setOpenPopup(true)}
+                                onClick={() => setOpenVerifyMeterPopup(true)}
                             >
                                 Autorisez la récupération de vos données de consommation pour avoir accès à votre
                                 historique.
@@ -222,7 +175,12 @@ export const MeterStatus = ({ houseId, meterGuid }: MeterStatusProps) => {
 
     return (
         <>
-            {openPopup && <SGEPopup />}
+            {openVerifyMeterPopup && (
+                <VerifyMeterPopup
+                    openVerifyMeterPopup={openVerifyMeterPopup}
+                    setOpenVerifyMeterPopup={setOpenVerifyMeterPopup}
+                />
+            )}
             <Card className="my-12 md:mx-16" variant="outlined">
                 <MuiCardContent sx={{ p: 0, '&:last-child': { pb: 0 } }}>
                     <div className="flex flex-row justify-between bg-grey-200 p-12 border-b-1 border-grey-300">
