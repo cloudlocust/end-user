@@ -4,7 +4,6 @@ import TextField, { TextFieldProps } from '@mui/material/TextField'
 import { Controller, useFormContext } from 'react-hook-form'
 import { CustomValidateResult, validators } from 'src/common/react-platform-components'
 import {
-    dateFormat,
     minDate as minDateValidator,
     maxDate as maxDateValidator,
 } from 'src/common/react-platform-components/form-validators'

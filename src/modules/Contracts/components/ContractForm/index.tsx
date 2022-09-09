@@ -192,7 +192,7 @@ const ContractFormFields = () => {
                     validateFunctions={[requiredBuilder()]}
                 />
             )}
-            {/* Whe doing formData.power && there is a 0 showing in the UI, that's why doing formData.power !== 0 &&  */}
+            {/* When doing formData.power && there is a weird unexpected 0 showing in the UI, that's why doing formData.power !== 0 &&  */}
             {formData.power !== 0 && (
                 <DatePicker
                     name="startSubscription"
