@@ -27,3 +27,17 @@ export type IHousing =
          */
         address: defaultValueType
     }
+
+/**
+ * Housing state.
+ */
+export interface IHousingState {
+    /**
+     * Current Housing selected.
+     */
+    currentHousing: IHousing | null
+    /**
+     * List of available housings.
+     */
+    housingList: IHousing[]
+}
