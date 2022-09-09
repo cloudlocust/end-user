@@ -1,5 +1,5 @@
 import { IHousing, IHousingState } from 'src/modules/MyHouse/components/HousingList/housing.d'
-import { axios, handleErrors } from 'src/common/react-platform-components'
+import { axios } from 'src/common/react-platform-components'
 import { createModel } from '@rematch/core'
 import { RootModel } from 'src/models'
 import { ILoadDataPagination } from 'src/common/react-platform-components/utils/mm'
@@ -8,10 +8,10 @@ import { HOUSING_API } from 'src/modules/MyHouse/components/HousingList/Housings
 /**
  * Default state of housing state.
  */
-export const defaultState = {
+export const defaultState: IHousingState = {
     housingList: [],
     currentHousing: null,
-} as IHousingState
+}
 
 // eslint-disable-next-line jsdoc/require-jsdoc
 export const defaultRequestErrorMessage = 'Impossible de charger vos logements.'
@@ -39,7 +39,7 @@ export const housingModel = createModel<RootModel>()({
                 dispatch.housingModel.setHousingModelState(data.items)
             } catch (error) {
                 // use onError callback to handle the error request in the component
-                throw handleErrors(error)
+                throw handleHousingEffectsErrors(error)
             }
         },
     }),
@@ -71,7 +71,7 @@ export const housingModel = createModel<RootModel>()({
             }
         },
     },
-    state: defaultState as IHousingState,
+    state: defaultState,
 })
 
 /**
@@ -111,7 +111,7 @@ const setCurrentHousingOnLoad = (state: IHousingState, housingList: IHousing[]) 
  * @param error TODO Document.
  * @returns TODO Document.
  */
-export const handleLoginErrors = (error: any) => {
+export const handleHousingEffectsErrors = (error: any) => {
     if (error.response && error.response.status) {
         switch (error.response.status) {
             case 400:
