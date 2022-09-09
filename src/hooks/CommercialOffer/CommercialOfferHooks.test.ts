@@ -43,14 +43,14 @@ describe('useCommercialOffer Hook test', () => {
             act(() => {
                 result.current.loadContractTypes()
             })
-            expect(result.current.loadingInProgress).toBe(true)
+            expect(result.current.isContractTypesLoading).toBe(true)
             await waitForValueToChange(
                 () => {
-                    return result.current.loadingInProgress
+                    return result.current.isContractTypesLoading
                 },
                 { timeout: 4000 },
             )
-            expect(result.current.loadingInProgress).toBe(false)
+            expect(result.current.isContractTypesLoading).toBe(false)
             expect(mockEnqueueSnackbar).toHaveBeenCalledWith(TEST_LOAD_CONTRACT_TYPES_ERROR_MESSAGE, {
                 variant: 'error',
             })
@@ -73,7 +73,7 @@ describe('useCommercialOffer Hook test', () => {
                 },
                 { timeout: 8000 },
             )
-            expect(result.current.loadingInProgress).toBe(false)
+            expect(result.current.isContractTypesLoading).toBe(false)
             expect(result.current.contractTypeList.length).toBeGreaterThan(0)
         }, 10000)
     })
@@ -86,14 +86,14 @@ describe('useCommercialOffer Hook test', () => {
             act(() => {
                 result.current.loadProviders(TEST_LOAD_ERROR_ID)
             })
-            expect(result.current.loadingInProgress).toBe(true)
+            expect(result.current.isProvidersLoading).toBe(true)
             await waitForValueToChange(
                 () => {
-                    return result.current.loadingInProgress
+                    return result.current.isProvidersLoading
                 },
                 { timeout: 4000 },
             )
-            expect(result.current.loadingInProgress).toBe(false)
+            expect(result.current.isProvidersLoading).toBe(false)
             expect(mockEnqueueSnackbar).toHaveBeenCalledWith(TEST_LOAD_PROVIDERS_ERROR_MESSAGE, {
                 variant: 'error',
             })
@@ -113,7 +113,7 @@ describe('useCommercialOffer Hook test', () => {
                 },
                 { timeout: 8000 },
             )
-            expect(result.current.loadingInProgress).toBe(false)
+            expect(result.current.isProvidersLoading).toBe(false)
             expect(result.current.providerList.length).toBeGreaterThan(0)
         }, 10000)
     })
@@ -126,14 +126,14 @@ describe('useCommercialOffer Hook test', () => {
             act(() => {
                 result.current.loadOffers(TEST_LOAD_ERROR_ID, TEST_LOAD_ERROR_ID)
             })
-            expect(result.current.loadingInProgress).toBe(true)
+            expect(result.current.isOffersLoading).toBe(true)
             await waitForValueToChange(
                 () => {
-                    return result.current.loadingInProgress
+                    return result.current.isOffersLoading
                 },
                 { timeout: 4000 },
             )
-            expect(result.current.loadingInProgress).toBe(false)
+            expect(result.current.isOffersLoading).toBe(false)
             expect(mockEnqueueSnackbar).toHaveBeenCalledWith(TEST_LOAD_OFFERS_ERROR_MESSAGE, {
                 variant: 'error',
             })
@@ -153,7 +153,7 @@ describe('useCommercialOffer Hook test', () => {
                 },
                 { timeout: 8000 },
             )
-            expect(result.current.loadingInProgress).toBe(false)
+            expect(result.current.isOffersLoading).toBe(false)
             expect(result.current.offerList.length).toBeGreaterThan(0)
         }, 10000)
     })
@@ -167,14 +167,14 @@ describe('useCommercialOffer Hook test', () => {
             act(() => {
                 result.current.loadTariffTypes(TEST_LOAD_ERROR_ID)
             })
-            expect(result.current.loadingInProgress).toBe(true)
+            expect(result.current.isTariffTypesLoading).toBe(true)
             await waitForValueToChange(
                 () => {
-                    return result.current.loadingInProgress
+                    return result.current.isTariffTypesLoading
                 },
                 { timeout: 4000 },
             )
-            expect(result.current.loadingInProgress).toBe(false)
+            expect(result.current.isTariffTypesLoading).toBe(false)
             expect(mockEnqueueSnackbar).toHaveBeenCalledWith(TEST_LOAD_TARIFF_TYPES_ERROR_MESSAGE, {
                 variant: 'error',
             })
@@ -194,7 +194,7 @@ describe('useCommercialOffer Hook test', () => {
                 },
                 { timeout: 8000 },
             )
-            expect(result.current.loadingInProgress).toBe(false)
+            expect(result.current.isTariffTypesLoading).toBe(false)
             expect(result.current.tariffTypeList.length).toBeGreaterThan(0)
         }, 10000)
     })
@@ -207,14 +207,14 @@ describe('useCommercialOffer Hook test', () => {
             act(() => {
                 result.current.loadPowers(TEST_LOAD_ERROR_ID)
             })
-            expect(result.current.loadingInProgress).toBe(true)
+            expect(result.current.isPowersLoading).toBe(true)
             await waitForValueToChange(
                 () => {
-                    return result.current.loadingInProgress
+                    return result.current.isPowersLoading
                 },
                 { timeout: 4000 },
             )
-            expect(result.current.loadingInProgress).toBe(false)
+            expect(result.current.isPowersLoading).toBe(false)
             expect(mockEnqueueSnackbar).toHaveBeenCalledWith(TEST_LOAD_POWERS_ERROR_MESSAGE, {
                 variant: 'error',
             })
@@ -234,7 +234,7 @@ describe('useCommercialOffer Hook test', () => {
                 },
                 { timeout: 8000 },
             )
-            expect(result.current.loadingInProgress).toBe(false)
+            expect(result.current.isPowersLoading).toBe(false)
             expect(result.current.powerList.length).toBeGreaterThan(0)
         }, 10000)
     })
