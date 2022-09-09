@@ -23,7 +23,7 @@ const TEST_METER_GUID = '123456'
 const NonExistantState = 'NONEXISTENT'
 const TEST_NRLINK_ERROR = 'Erreur lors de la récupération du consentement Nrlink'
 const TEST_ENEDIS_ERROR = 'Erreur lors de la récupération du consentement Enedis'
-const TEST_LOAD_CONSENTS = 'error'
+const TEST_ERROR = 'error'
 
 describe('useConsents test', () => {
     test('when getConsents is called, state changes', async () => {
@@ -44,7 +44,7 @@ describe('useConsents test', () => {
     }, 20000)
     test('when there is server error while fetching consents, snackbar is shown', async () => {
         const { store } = require('src/redux')
-        await store.dispatch.userModel.setAuthenticationToken(TEST_LOAD_CONSENTS)
+        await store.dispatch.userModel.setAuthenticationToken(TEST_ERROR)
 
         const {
             renderedHook: { result, waitForValueToChange },
@@ -68,4 +68,40 @@ describe('useConsents test', () => {
             variant: 'error',
         })
     }, 20000)
+    test('when verifyMater request is performed succesfully', async () => {
+        const { store } = require('src/redux')
+        await store.dispatch.userModel.setAuthenticationToken('')
+        const {
+            renderedHook: { result, waitForValueToChange },
+        } = reduxedRenderHook(() => useConsents())
+        expect(result.current.isMeterVerified).toBeFalsy()
+        act(() => {
+            result.current.verifyMeter(1)
+        })
+        await waitForValueToChange(
+            () => {
+                return result.current.isMeterVerifyLoading
+            },
+            { timeout: 6000 },
+        )
+        expect(result.current.isMeterVerified).toStrictEqual(true)
+    })
+    test('when verifyMeter request fails', async () => {
+        const { store } = require('src/redux')
+        await store.dispatch.userModel.setAuthenticationToken(TEST_ERROR)
+        const {
+            renderedHook: { result, waitForValueToChange },
+        } = reduxedRenderHook(() => useConsents())
+        expect(result.current.isMeterVerified).toBeFalsy()
+        act(() => {
+            result.current.verifyMeter(1)
+        })
+        await waitForValueToChange(
+            () => {
+                return result.current.isMeterVerifyLoading
+            },
+            { timeout: 6000 },
+        )
+        expect(result.current.isMeterVerified).toStrictEqual(false)
+    }, 10000)
 })

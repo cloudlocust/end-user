@@ -11,7 +11,7 @@ import { enedisConsentStatus, nrlinkConsentStatus } from 'src/modules/Consents/C
 import dayjs from 'dayjs'
 import { useIntl } from 'react-intl'
 import { NrlinkConnectionStepsEnum } from 'src/modules/nrLinkConnection/nrlinkConnectionSteps.d'
-import { VerifyMeterPopup } from 'src/modules/MyHouse/components/MeterStatus/VerifyMeterPopup'
+import { SgePopup } from 'src/modules/MyHouse/components/MeterStatus/SgePopup'
 
 /**
  * Meter Status Component.
@@ -24,17 +24,34 @@ import { VerifyMeterPopup } from 'src/modules/MyHouse/components/MeterStatus/Ver
 export const MeterStatus = ({ houseId, meterGuid }: MeterStatusProps) => {
     const theme = useTheme()
     const { formatMessage } = useIntl()
-    const { getConsents, consentsLoading, nrlinkConsent, enedisConsent } = useConsents()
+    const {
+        getConsents,
+        consentsLoading,
+        nrlinkConsent,
+        enedisConsent,
+        verifyMeter,
+        isMeterVerifyLoading,
+        isMeterVerified,
+        setIsMeterVerified,
+    } = useConsents()
 
-    const [openVerifyMeterPopup, setOpenVerifyMeterPopup] = useState<boolean>(false)
+    const [openSgePopup, setOpenSgePopup] = useState<boolean>(false)
 
     const nrlinkConsentCreatedAt = dayjs(nrlinkConsent?.createdAt).format('DD/MM/YYYY')
     /* To have the ending date of the consent, we add 3 years to the date the consent was made */
     const enedisConsentEndingDate = dayjs(enedisConsent?.createdAt).add(3, 'year').format('DD/MM/YYYY')
 
+    // UseEffect that fetches the consents.
     useEffect(() => {
         getConsents(meterGuid)
     }, [getConsents, meterGuid])
+
+    // UseEffect starts when the verifyMeterPopup is true which verifies the meter.
+    useEffect(() => {
+        if (openSgePopup) {
+            verifyMeter(houseId)
+        }
+    }, [houseId, openSgePopup, verifyMeter])
 
     /**
      * Function that renders JSX accorrding to nrlink status.
@@ -162,7 +179,7 @@ export const MeterStatus = ({ houseId, meterGuid }: MeterStatusProps) => {
                                 color={theme.palette.error.main}
                                 className="underline cursor-pointer"
                                 fontWeight={600}
-                                onClick={() => setOpenVerifyMeterPopup(true)}
+                                onClick={() => setOpenSgePopup(true)}
                             >
                                 Autorisez la récupération de vos données de consommation pour avoir accès à votre
                                 historique.
@@ -175,10 +192,13 @@ export const MeterStatus = ({ houseId, meterGuid }: MeterStatusProps) => {
 
     return (
         <>
-            {openVerifyMeterPopup && (
-                <VerifyMeterPopup
-                    openVerifyMeterPopup={openVerifyMeterPopup}
-                    setOpenVerifyMeterPopup={setOpenVerifyMeterPopup}
+            {openSgePopup && (
+                <SgePopup
+                    openSgePopup={openSgePopup}
+                    setOpenSgePopup={setOpenSgePopup}
+                    isMeterVerifyLoading={isMeterVerifyLoading}
+                    isMeterVerified={isMeterVerified}
+                    setIsMeterVerified={setIsMeterVerified}
                 />
             )}
             <Card className="my-12 md:mx-16" variant="outlined">

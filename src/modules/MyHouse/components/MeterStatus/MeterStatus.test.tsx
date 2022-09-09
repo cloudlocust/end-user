@@ -29,12 +29,16 @@ const VERIFY_METER_MESSAGE = "Vérification de l'existence de votre compteur"
 let mockNrlinkConsent: nrlinkConsentStatus
 let mockEnedisConsent: enedisConsentStatus
 let mockGetConsent = jest.fn()
+let mockVerifyMeter = jest.fn()
 let mockNrlinkCreatedAt = '2022-09-02T08:06:08Z'
 let mockNrlinkGuid = 'ABCD1234'
 let mockEnedisCreatedAt = mockNrlinkCreatedAt
 let enedisFormatedEndingDate = dayjs(mockNrlinkCreatedAt).add(3, 'year').format('DD/MM/YYYY')
 let mockWindowOpen = jest.fn()
 window.open = mockWindowOpen
+let mockSetIsMeterVerifyLoading = jest.fn()
+let mockisMeterVerifyLoading = false
+let mockIsMeterVerified = false
 
 // Mock consentsHook
 jest.mock('src/modules/Consents/consentsHook.ts', () => ({
@@ -52,6 +56,10 @@ jest.mock('src/modules/Consents/consentsHook.ts', () => ({
             nrlinkGuid: mockNrlinkGuid,
         },
         getConsents: mockGetConsent,
+        verifyMeter: mockVerifyMeter,
+        setIsMeterVerifyLoading: mockSetIsMeterVerifyLoading,
+        isMeterVerifyLoading: mockisMeterVerifyLoading,
+        isMeterVerified: mockIsMeterVerified,
     }),
 }))
 
@@ -168,8 +176,9 @@ describe('MeterStatus component test', () => {
         })
     })
     describe('test verifyMeterPopup', () => {
-        test('when clicked on error message, verify meter popup is shown', async () => {
+        test('when clicked on error message, verify meter popup is shown with loading', async () => {
             mockEnedisConsent = 'EXPIRED' || 'NONEXISTENT'
+            mockisMeterVerifyLoading = true
 
             const { getByText, getByTestId } = reduxedRender(
                 <Router>
@@ -177,7 +186,7 @@ describe('MeterStatus component test', () => {
                 </Router>,
             )
             userEvent.click(getByText(ENEDIS_NONEXISTANT_EXPIRED_MESSAGE))
-
+            expect(mockVerifyMeter).toBeCalledWith(mockMeterStatusProps.houseId)
             expect(getByText(VERIFY_METER_MESSAGE)).toBeVisible()
             expect(getByTestId('linear-progess')).toHaveClass('MuiLinearProgress-colorPrimary')
         })
