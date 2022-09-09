@@ -5,8 +5,9 @@ import { enedisConsentStatus, nrlinkConsentStatus } from 'src/modules/Consents/C
 import { URL_NRLINK_CONNECTION_STEPS } from 'src/modules/nrLinkConnection'
 import dayjs from 'dayjs'
 import userEvent from '@testing-library/user-event'
+import { MeterStatusProps } from 'src/modules/MyHouse/components/MeterStatus/meterStatus'
 
-const mockMeterStatusProps = {
+const mockMeterStatusProps: MeterStatusProps = {
     houseId: '1',
     meterGuid: '12345678901234',
 }
@@ -180,32 +181,5 @@ describe('MeterStatus component test', () => {
             expect(getByText(VERIFY_METER_MESSAGE)).toBeVisible()
             expect(getByTestId('linear-progess')).toHaveClass('MuiLinearProgress-colorPrimary')
         })
-        // test('when clicked on the sge message, new browser tab is shown with a link', async () => {
-        //     const { getByText, getByTestId } = reduxedRender(
-        //         <Router>
-        //             <MeterStatus {...mockMeterStatusProps} />
-        //         </Router>,
-        //     )
-
-        //     userEvent.click(getByText(ENEDIS_NONEXISTANT_EXPIRED_MESSAGE))
-        //     expect(getByTestId(SGE_MESSAGE_TEST_ID)).toBeTruthy()
-        //     userEvent.click(getByTestId(SGE_MESSAGE_TEST_ID))
-        //     expect(mockWindowOpen).toHaveBeenCalledWith('https://www.myem.fr/politique-de-confidentialite/', '_blank')
-        // })
-        // test('when sge checkbox is checked', async () => {
-        //     const { getByText, getByTestId } = reduxedRender(
-        //         <Router>
-        //             <MeterStatus {...mockMeterStatusProps} />
-        //         </Router>,
-        //     )
-
-        //     userEvent.click(getByText(ENEDIS_NONEXISTANT_EXPIRED_MESSAGE))
-        //     expect(getByTestId(SGE_MESSAGE_TEST_ID)).toBeTruthy()
-        //     const checkbox = getByTestId(SGE_CHECKBOX_TEST_ID)
-        //     expect(checkbox?.classList.contains(MUI_CHECKED)).toBeFalsy()
-        //     // userEvent.click seems not working with checkboxses.
-        //     fireEvent.change(getByTestId(SGE_CHECKBOX_TEST_ID), { target: { checked: true } })
-        //     expect(checkbox).toHaveProperty('checked', true)
-        // })
     })
 })
