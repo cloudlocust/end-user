@@ -28,7 +28,7 @@ const FAQContainer = () => {
                         >
                             arrow_back
                         </Icon>
-                        {formatMessage({ id: 'retour', defaultMessage: 'Retour' })}
+                        {formatMessage({ id: 'Retour', defaultMessage: 'Retour' })}
                     </Button>
                     <div className="flex pl-16 mt-10 md:mt-0">
                         <Icon
