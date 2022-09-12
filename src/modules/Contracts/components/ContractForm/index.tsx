@@ -11,6 +11,7 @@ import ContractFormSelect from 'src/modules/Contracts/components/ContractFormSel
 import { useCommercialOffer } from 'src/hooks/CommercialOffer/CommercialOfferHooks'
 import { IContractType, IOffer, IPower, IProvider } from 'src/hooks/CommercialOffer/CommercialOffers'
 import { ButtonLoader } from 'src/common/ui-kit'
+import { isNull } from 'lodash'
 
 const defaultContractFormValues = {
     contractType: '',
@@ -27,10 +28,9 @@ const defaultContractFormValues = {
  *
  * @param props N/A.
  * @param props.onSubmit Callback when submitting form.
- * @param props.isContractsLoading Loading state when submitting form.
  * @returns Contract Form component.
  */
-const ContractForm = ({ onSubmit, isContractsLoading }: ContractFormProps) => {
+const ContractForm = ({ onSubmit }: ContractFormProps) => {
     return (
         <Form
             onSubmit={(data: contractFormValuesType) => {
@@ -220,10 +220,15 @@ const ContractFormFields = () => {
                 inProgress={isSubmitting}
                 disabled={
                     isContractTypesLoading ||
-                    isOffersLoading ||
-                    isPowersLoading ||
                     isProvidersLoading ||
-                    isTariffTypesLoading
+                    isOffersLoading ||
+                    isTariffTypesLoading ||
+                    isPowersLoading ||
+                    isNull(contractTypeList) ||
+                    isNull(providerList) ||
+                    isNull(offerList) ||
+                    isNull(tariffTypeList) ||
+                    isNull(powerList)
                 }
             >
                 {formatMessage({
