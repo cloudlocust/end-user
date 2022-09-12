@@ -52,6 +52,7 @@ const ContractFormSelect = <T extends unknown>({
                     id: selectLabel,
                     defaultMessage: selectLabel,
                 })}
+                defaultValue=""
                 validateFunctions={validateFunctions}
             >
                 {optionList.map((option, index) => (

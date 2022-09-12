@@ -1,4 +1,5 @@
 import { SelectFieldProps } from 'src/common/ui-kit/form-fields/Select'
+import { Except } from 'type-fest'
 
 /**
  * Type contracts route param.
@@ -88,19 +89,18 @@ export type IContract =
  * Add Contract Data type.
  */
 // eslint-disable-next-line jsdoc/require-jsdoc
-export type addContractDataType = Omit<IContract, 'id', 'provider'>
+export type addContractDataType = Except<IContract, 'id' | 'provider'>
 
 /**
  * Type contractFormValues.
  */
-export type contractFormValuesType = addContractDataType &
-    // eslint-disable-next-line jsdoc/require-jsdoc
-    IContract['provider'] & {
-        /**
-         * ContractType.
-         */
-        contractType: string
-    }
+// eslint-disable-next-line jsdoc/require-jsdoc
+export type contractFormValuesType = Except<IContract, 'id'> & {
+    /**
+     * ContractType.
+     */
+    contractType: string
+}
 /**
  * Prop of ContractFormSelect, to load options and show the optionList in the select.
  */

@@ -9,7 +9,7 @@ import PostAddIcon from '@mui/icons-material/PostAdd'
 import Icon from '@mui/material/Icon'
 import CircularProgress from '@mui/material/CircularProgress'
 import { NavLink, useParams } from 'react-router-dom'
-import { contractsRouteParam, IContract } from 'src/modules/Contracts/contractsTypes.d'
+import { contractsRouteParam, addContractDataType } from 'src/modules/Contracts/contractsTypes.d'
 import { isEmpty, isNull } from 'lodash'
 import { URL_MY_HOUSE } from 'src/modules/MyHouse/MyHouseConfig'
 import { primaryMainColor } from 'src/modules/utils/muiThemeVariables'
@@ -37,7 +37,7 @@ const Contracts = () => {
         <>
             <Dialog open={isOpenDialog} fullWidth={true} maxWidth="sm" onClose={() => setIsOpenDialog(false)}>
                 <ContractForm
-                    onSubmit={async (input: IContract) => {
+                    onSubmit={async (input: addContractDataType) => {
                         await addContract(input)
                         setIsOpenDialog(false)
                     }}

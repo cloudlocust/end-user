@@ -9,9 +9,9 @@ import './ContractForm.scss'
 import { DatePicker } from 'src/common/ui-kit/form-fields/DatePicker'
 import ContractFormSelect from 'src/modules/Contracts/components/ContractFormSelect'
 import { useCommercialOffer } from 'src/hooks/CommercialOffer/CommercialOfferHooks'
-import { IContractType, IOffer, IPower, IProvider } from 'src/hooks/CommercialOffer/CommercialOffers'
+import { IContractType, IOffer, IPower, IProvider, ITariffType } from 'src/hooks/CommercialOffer/CommercialOffers'
 import { ButtonLoader } from 'src/common/ui-kit'
-import { isNull } from 'lodash'
+import { isNull, pick } from 'lodash'
 
 const defaultContractFormValues = {
     contractType: '',
@@ -58,6 +58,7 @@ const ContractForm = ({ onSubmit }: ContractFormProps) => {
 }
 
 export default ContractForm
+
 /**
  * Contract Form Fields component.
  *
@@ -66,8 +67,8 @@ export default ContractForm
 const ContractFormFields = () => {
     const formData = useWatch<contractFormValuesType>({ defaultValue: defaultContractFormValues })
     const {
-        // reset,
-        // getValues,
+        reset,
+        getValues,
         formState: { isSubmitting },
     } = useFormContext<contractFormValuesType>()
     const {
@@ -94,41 +95,45 @@ const ContractFormFields = () => {
      * To avoid defining () => loadProviders as a prop inside the ContractFormSelect and thus multiple re-rendering cuz ()=>{} create a new function and thus re-ender and thus infinite re-render.
      */
     const loadProviderOptions = useCallback(() => {
+        reset({
+            ...defaultContractFormValues,
+            ...pick(getValues(), ['contractType']),
+        })
         loadProviders(Number(formData.contractType))
-    }, [loadProviders, formData.contractType])
+    }, [loadProviders, reset, getValues, formData.contractType])
 
     /**
      * LoadOfferOptions useCallback.
      */
     const loadOfferOptions = useCallback(() => {
+        reset({
+            ...defaultContractFormValues,
+            ...pick(getValues(), ['provider', 'contractType']),
+        })
         loadOffers(Number(formData.provider), Number(formData.contractType))
-    }, [loadOffers, formData.provider, formData.contractType])
+    }, [loadOffers, formData.provider, formData.contractType, getValues, reset])
 
     /**
      * LoadTariffTypeOptions useCallback.
      */
     const loadTariffTypeOptions = useCallback(() => {
+        reset({
+            ...defaultContractFormValues,
+            ...pick(getValues(), ['provider', 'contractType', 'offer']),
+        })
         loadTariffTypes(Number(formData.offer))
-    }, [loadTariffTypes, formData.offer])
+    }, [loadTariffTypes, getValues, formData.offer, reset])
 
     /**
      * LoadPowerOptions useCallback.
      */
     const loadPowerOptions = useCallback(() => {
+        reset({
+            ...defaultContractFormValues,
+            ...pick(getValues(), ['provider', 'contractType', 'offer', 'tariffType']),
+        })
         loadPowers(Number(formData.offer), Number(formData.tariffType))
-    }, [loadPowers, formData.offer, formData.tariffType])
-
-    // TODO Fix in next subtask
-    // useEffect(() => {
-    // Load OFFERS
-    // fieldNNames.reduce((prev, curr) => {}, )
-    // console.log('watch', watch)
-    // console.log('formData', formData)
-    // reset({
-    // ...formData,
-    // defaultContractFormValues,
-    // })
-    // }, [formData, getValues, reset])
+    }, [loadPowers, getValues, reset, formData.offer, formData.tariffType])
 
     return (
         <>
@@ -168,7 +173,7 @@ const ContractFormFields = () => {
             )}
 
             {formData.offer && (
-                <ContractFormSelect<IOffer>
+                <ContractFormSelect<ITariffType>
                     formatOptionLabel={(option) => option.name}
                     formatOptionValue={(option) => `${option.id}`}
                     isOptionsInProgress={isTariffTypesLoading}

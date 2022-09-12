@@ -1,7 +1,7 @@
 import { searchFilterType } from 'src/modules/utils'
 import { BuilderUseElementDetails, BuilderUseElementList } from 'src/modules/utils/useElementHookBuilder'
 import { formatMessageType } from 'src/common/react-platform-translation'
-import { IContract } from './contractsTypes'
+import { addContractDataType, IContract } from './contractsTypes'
 import { HOUSING_API } from 'src/modules/MyHouse/components/HousingList/HousingsHooks'
 
 /**
@@ -62,7 +62,7 @@ const removeElementDetailsSuccess = (responseData: IContract, formatMessage: for
  * @returns Hook useContractList.
  */
 export const useContractList = (houseId: number, sizeParam?: number) => {
-    return BuilderUseElementList<IContract, IContract, searchFilterType>({
+    return BuilderUseElementList<IContract, addContractDataType, searchFilterType>({
         API_ENDPOINT: CONTRACTS_API(Number(houseId)),
         sizeParam,
         snackBarMessage0verride: { loadElementListError },
