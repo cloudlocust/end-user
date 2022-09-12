@@ -40,7 +40,9 @@ const Contracts = () => {
                     onSubmit={async (input: addContractDataType) => {
                         await addContract(input)
                         setIsOpenDialog(false)
+                        reloadContractList()
                     }}
+                    isContractsLoading={isContractsLoading}
                 />
             </Dialog>
             <div className="p-24">

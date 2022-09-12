@@ -1,7 +1,11 @@
 import React, { useCallback } from 'react'
 import { useIntl } from 'react-intl'
 import { requiredBuilder } from 'src/common/react-platform-components'
-import { ContractFormProps, contractFormValuesType } from 'src/modules/Contracts/contractsTypes'
+import {
+    ContractFormFieldsProps,
+    ContractFormProps,
+    contractFormValuesType,
+} from 'src/modules/Contracts/contractsTypes'
 import { useFormContext, useWatch } from 'react-hook-form'
 import { Form } from 'src/common/react-platform-components'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
@@ -28,9 +32,10 @@ const defaultContractFormValues = {
  *
  * @param props N/A.
  * @param props.onSubmit Callback when submitting form.
+ * @param props.isContractsLoading Loading state when addContract request.
  * @returns Contract Form component.
  */
-const ContractForm = ({ onSubmit }: ContractFormProps) => {
+const ContractForm = ({ onSubmit, isContractsLoading }: ContractFormProps) => {
     return (
         <Form
             onSubmit={(data: contractFormValuesType) => {
@@ -50,7 +55,7 @@ const ContractForm = ({ onSubmit }: ContractFormProps) => {
                     Toutes les informations demandées sont disponibles sur votre facture ou votre contrat d'énergie
                 </TypographyFormatMessage>
                 <div className="flex flex-col justify-center w-full">
-                    <ContractFormFields />
+                    <ContractFormFields isContractsLoading={isContractsLoading} />
                 </div>
             </div>
         </Form>
@@ -62,15 +67,13 @@ export default ContractForm
 /**
  * Contract Form Fields component.
  *
+ * @param props N/A.
+ * @param props.isContractsLoading Loading state when addContract request.
  * @returns Contract Form Fields component.
  */
-const ContractFormFields = () => {
+const ContractFormFields = ({ isContractsLoading }: ContractFormFieldsProps) => {
     const formData = useWatch<contractFormValuesType>({ defaultValue: defaultContractFormValues })
-    const {
-        reset,
-        getValues,
-        formState: { isSubmitting },
-    } = useFormContext<contractFormValuesType>()
+    const { reset, getValues } = useFormContext<contractFormValuesType>()
     const {
         contractTypeList,
         offerList,
@@ -222,7 +225,7 @@ const ContractFormFields = () => {
                 color="primary"
                 className="w-224 mx-auto"
                 type="submit"
-                inProgress={isSubmitting}
+                inProgress={isContractsLoading}
                 disabled={
                     isContractTypesLoading ||
                     isProvidersLoading ||

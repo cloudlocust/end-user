@@ -1,6 +1,11 @@
 import { reduxedRenderHook } from 'src/common/react-platform-components/test'
 import { useContractList, useContractDetails } from 'src/modules/Contracts/contractsHook'
-import { TEST_HOUSE_ID, TEST_SUCCESS_ID } from 'src/mocks/handlers/contracts'
+import {
+    TEST_HOUSE_ID,
+    TEST_SUCCESS_ID,
+    TEST_SUCCESS_ADD_CONTRACT,
+    TEST_ERROR_OFFER,
+} from 'src/mocks/handlers/contracts'
 import { act } from '@testing-library/react-hooks'
 
 const mockEnqueueSnackbar = jest.fn()
@@ -21,6 +26,10 @@ jest.mock('notistack', () => ({
 }))
 
 const TEST_LOAD_CONTRACTS_ERROR_MESSAGE = 'Erreur lors du chargement des contrats'
+// ADD Contract
+const TEST_SUCCESS_ADD_CONTRACT_MESSAGE = "Succès lors de l'ajout du contrat"
+const TEST_ERROR_ADD_CONTRACT_MESSAGE = "Erreur lors de l'ajout du contrat"
+// REMOVE Contract
 const TEST_SUCCESS_REMOVE_CONTRACT_MESSAGE = 'Succès lors de la suppression du contrat'
 const TEST_ERROR_REMOVE_CONTRACT_MESSAGE = 'Erreur lors de la suppression du contrat'
 describe('useContractsList test', () => {
@@ -42,6 +51,68 @@ describe('useContractsList test', () => {
                 variant: 'error',
             })
         })
+    })
+    describe('add Contract when', () => {
+        test('fail, error message', async () => {
+            const {
+                renderedHook: { result, waitForValueToChange },
+            } = reduxedRenderHook(() => useContractList(TEST_HOUSE_ID), { initialState: {} })
+
+            await waitForValueToChange(
+                () => {
+                    return result.current.elementList
+                },
+                { timeout: 4000 },
+            )
+            expect(result.current.loadingInProgress).toBe(false)
+            // Element is added.
+            act(async () => {
+                try {
+                    await result.current.addElement({ ...TEST_SUCCESS_ADD_CONTRACT, offer: TEST_ERROR_OFFER })
+                } catch (err) {}
+            })
+            expect(result.current.loadingInProgress).toBe(true)
+            await waitForValueToChange(
+                () => {
+                    return result.current.loadingInProgress
+                },
+                { timeout: 2000 },
+            )
+            expect(result.current.loadingInProgress).toBe(false)
+            expect(mockEnqueueSnackbar).toHaveBeenCalledWith(TEST_ERROR_ADD_CONTRACT_MESSAGE, {
+                variant: 'error',
+            })
+        }, 10000)
+        test('success, contract should be added', async () => {
+            const {
+                renderedHook: { result, waitForValueToChange },
+            } = reduxedRenderHook(() => useContractList(TEST_HOUSE_ID), { initialState: {} })
+
+            await waitForValueToChange(
+                () => {
+                    return result.current.elementList
+                },
+                { timeout: 4000 },
+            )
+            expect(result.current.loadingInProgress).toBe(false)
+            // Element is added.
+            act(async () => {
+                try {
+                    await result.current.addElement(TEST_SUCCESS_ADD_CONTRACT)
+                } catch (err) {}
+            })
+            expect(result.current.loadingInProgress).toBe(true)
+            await waitForValueToChange(
+                () => {
+                    return result.current.loadingInProgress
+                },
+                { timeout: 2000 },
+            )
+            expect(result.current.loadingInProgress).toBe(false)
+            expect(mockEnqueueSnackbar).toHaveBeenCalledWith(TEST_SUCCESS_ADD_CONTRACT_MESSAGE, {
+                variant: 'success',
+            })
+        }, 10000)
     })
 })
 describe('useContractDetails test', () => {

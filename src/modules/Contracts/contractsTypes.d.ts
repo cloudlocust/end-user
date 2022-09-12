@@ -44,7 +44,19 @@ export type ContractFormProps =
          */
         onSubmit: (data: addContractDataType) => void
         /**
-         * Loading state when submitting form.
+         * Loading state when addContract request.
+         */
+        isContractsLoading?: boolean
+    }
+
+/**
+ * ContractFieldFormProps.
+ */
+export type ContractFormFieldsProps =
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    {
+        /**
+         * Loading state when addContract request.
          */
         isContractsLoading?: boolean
     }
@@ -86,12 +98,6 @@ export type IContract =
     }
 
 /**
- * Add Contract Data type.
- */
-// eslint-disable-next-line jsdoc/require-jsdoc
-export type addContractDataType = Except<IContract, 'id' | 'provider'>
-
-/**
  * Type contractFormValues.
  */
 // eslint-disable-next-line jsdoc/require-jsdoc
@@ -101,6 +107,13 @@ export type contractFormValuesType = Except<IContract, 'id'> & {
      */
     contractType: string
 }
+
+/**
+ * Add Contract Data type.
+ */
+// eslint-disable-next-line jsdoc/require-jsdoc
+export type addContractDataType = Except<contractFormValuesType, 'provider'>
+
 /**
  * Prop of ContractFormSelect, to load options and show the optionList in the select.
  */
