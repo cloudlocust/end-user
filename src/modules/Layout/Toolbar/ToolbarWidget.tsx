@@ -61,14 +61,14 @@ export const ToolbarWidget = () => {
                 }}
             >
                 <InputLabel id="select-housing-label">
-                    {!currentHousing?.id
+                    {currentHousing?.id
                         ? formatMessage({
-                              id: 'Aucun logement disponible',
-                              defaultMessage: 'Aucun logement disponible',
-                          })
-                        : formatMessage({
                               id: 'Logements',
                               defaultMessage: 'Logements',
+                          })
+                        : formatMessage({
+                              id: 'Aucun logement disponible',
+                              defaultMessage: 'Aucun logement disponible',
                           })}
                 </InputLabel>
                 <Select
