@@ -1,9 +1,9 @@
 import Hidden from '@mui/material/Hidden'
 
 /**
- * Component displays a menu with items.
+ * Component displays the icon.
  *
- * @returns Returns menu with items.
+ * @returns Returns icon.
  */
 const ToolbarIcon = () => {
     return (
