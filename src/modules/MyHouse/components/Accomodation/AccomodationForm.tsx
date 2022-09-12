@@ -209,63 +209,67 @@ export const AccomodationForm = () => {
                             },
                         ]}
                     />
-                    <div className="flex flex-row select flex justify-between  mt-10">
-                        <div className="mt-14 mr-10">
-                            {formatMessage({
-                                id: 'Je connais mon DPE :',
-                                defaultMessage: 'Je connais mon DPE :',
-                            })}
-                            <Tooltip
-                                title={formatMessage({
-                                    id: 'Diagnostic de performance énergétique',
-                                    defaultMessage: 'Diagnostic de performance énergétique',
+                    <div className="flex flex-col md:flex-row mt-16 mr-24 content-center items-end md:items-center justify-end">
+                        <div className="w-full flex flex-row justify-between content-center items-center">
+                            <div>
+                                {formatMessage({
+                                    id: 'Je connais mon DPE :',
+                                    defaultMessage: 'Je connais mon DPE :',
                                 })}
-                                placement="top"
-                                color="primary"
-                            >
-                                <HelpOutlineIcon className="cursor-pointer ml-5" />
-                            </Tooltip>
+                                <Tooltip
+                                    title={formatMessage({
+                                        id: 'Diagnostic de performance énergétique',
+                                        defaultMessage: 'Diagnostic de performance énergétique',
+                                    })}
+                                    placement="top"
+                                    color="primary"
+                                >
+                                    <HelpOutlineIcon className="cursor-pointer ml-5" />
+                                </Tooltip>
+                            </div>
+                            <RadioGroup row name="isDPE">
+                                <FormControlLabel
+                                    value="oui"
+                                    control={<Radio color="primary" />}
+                                    label="Oui"
+                                    onClick={() => !disabledField && setIsDPE(true)}
+                                    checked={isDPE}
+                                    disabled={disabledField}
+                                />
+                                <FormControlLabel
+                                    value="non"
+                                    control={<Radio color="primary" />}
+                                    label="Non"
+                                    onClick={() => !disabledField && setIsDPE(false)}
+                                    checked={!isDPE}
+                                    disabled={disabledField}
+                                />
+                            </RadioGroup>
                         </div>
-                        <RadioGroup row name="isDPE">
-                            <FormControlLabel
-                                value="oui"
-                                control={<Radio color="primary" />}
-                                label="Oui"
-                                onClick={() => !disabledField && setIsDPE(true)}
-                                checked={isDPE}
-                                disabled={disabledField}
-                            />
-                            <FormControlLabel
-                                value="non"
-                                control={<Radio color="primary" />}
-                                label="Non"
-                                onClick={() => !disabledField && setIsDPE(false)}
-                                checked={!isDPE}
-                                disabled={disabledField}
-                            />
-                        </RadioGroup>
+                        <div className="w-4/6 md:mt-20">
+                            {isDPE ? (
+                                <Select
+                                    name={accomodationNames.energyPerformanceIndex}
+                                    label={accomodationLabelOptions.energeticPerformance}
+                                    children={performanceOptions.map((performance) => {
+                                        return <MenuItem value={performance}>{performance}</MenuItem>
+                                    })}
+                                    defaultValue={null}
+                                    disabled={disabledField}
+                                />
+                            ) : (
+                                <Select
+                                    name={accomodationNames.isolationLevel}
+                                    label={accomodationLabelOptions.isolation}
+                                    children={isolationOptions.map((isolation) => {
+                                        return <MenuItem value={isolation}>{isolation}</MenuItem>
+                                    })}
+                                    defaultValue={null}
+                                    disabled={disabledField}
+                                />
+                            )}
+                        </div>
                     </div>
-                    {isDPE ? (
-                        <Select
-                            name={accomodationNames.energyPerformanceIndex}
-                            label={accomodationLabelOptions.energeticPerformance}
-                            children={performanceOptions.map((performance) => {
-                                return <MenuItem value={performance}>{performance}</MenuItem>
-                            })}
-                            defaultValue={null}
-                            disabled={disabledField}
-                        />
-                    ) : (
-                        <Select
-                            name={accomodationNames.isolationLevel}
-                            label={accomodationLabelOptions.isolation}
-                            children={isolationOptions.map((isolation) => {
-                                return <MenuItem value={isolation}>{isolation}</MenuItem>
-                            })}
-                            defaultValue={null}
-                            disabled={disabledField}
-                        />
-                    )}
                     <div className="flex flex-row flex justify-between mt-16 mr-24">
                         <div className="mt-16 mr-10 w-full ">
                             {formatMessage({
