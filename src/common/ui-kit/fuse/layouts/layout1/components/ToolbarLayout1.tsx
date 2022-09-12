@@ -13,6 +13,7 @@ import { useTheme } from '@mui/material/styles'
  * @param props.toggleMobileNavbarOpen Handler when clicking on the navbar toggle button (mobile devices).
  * @param props.toggleNavbarOpen Handler when clicking on the navbar toggle button (for other devices not mobile).
  * @param props.toolbarContent Represent the content that's gonna be displayed in the Toolbar.
+ * @param props.toolbarIcon Represent the icon that's gonna be displayed in the Toolbar.
  * @returns ToolbarLayout1 UI Component.
  */
 function ToolbarLayout1(props: /**
@@ -33,6 +34,8 @@ function ToolbarLayout1(props: /**
     toggleNavbarOpen?: () => void
     // eslint-disable-next-line jsdoc/require-jsdoc
     toolbarContent?: JSX.Element
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    toolbarIcon?: JSX.Element
 }) {
     const theme = useTheme()
 
@@ -45,13 +48,7 @@ function ToolbarLayout1(props: /**
             position="static"
         >
             <Toolbar className="p-0 min-h-48 md:min-h-64">
-                <Hidden lgUp>
-                    <img
-                        className="w-32 m-8"
-                        src={`/assets/images/logos/${window._env_.REACT_APP_CLIENT_ICON_FOLDER}.svg`}
-                        alt="logo"
-                    />
-                </Hidden>
+                {props.toolbarIcon}
                 <div className="flex flex-1 px-16">
                     <>
                         <Hidden lgDown>
