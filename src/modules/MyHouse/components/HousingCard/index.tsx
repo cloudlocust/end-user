@@ -21,6 +21,9 @@ import { URL_MY_HOUSE } from 'src/modules/MyHouse/MyHouseConfig'
 import { useMeterForHousing } from 'src/modules/Meters/metersHook'
 import { addMeterInputType } from 'src/modules/Meters/Meters'
 
+import { useDispatch } from 'react-redux'
+import { Dispatch } from 'src/redux'
+
 /**
  * This is a card for the display of a logement item.
  *
@@ -53,6 +56,8 @@ const HousingCard = ({
 
     const { removeHousing } = useHousingsDetails()
     const { addMeter, loadingInProgress: isMeterInProgress } = useMeterForHousing()
+
+    const dispatch = useDispatch<Dispatch>()
 
     const MY_HOUSING_AT = formatMessage({
         id: 'Mon Logement à ',
@@ -106,8 +111,9 @@ const HousingCard = ({
      *
      * @param id Identifier of the Housing to delete.
      */
-    const handleDeleteHousing = (id: number) => {
-        removeHousing(id, reloadHousings)
+    const handleDeleteHousing = async (id: number) => {
+        await removeHousing(id, reloadHousings)
+        dispatch.housingModel.loadHousingsList()
         handleCloseConfirmModal()
     }
 
