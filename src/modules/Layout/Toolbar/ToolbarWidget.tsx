@@ -1,4 +1,6 @@
-import React from 'react'
+import React, { useEffect } from 'react'
+import { useDispatch } from 'react-redux'
+import { Dispatch } from 'src/redux'
 import UserMenu from 'src/modules/Layout/Toolbar/components/UserMenu'
 
 /**
@@ -7,6 +9,12 @@ import UserMenu from 'src/modules/Layout/Toolbar/components/UserMenu'
  * @returns ToolbarWidget Component.
  */
 export const ToolbarWidget = () => {
+    const dispatch = useDispatch<Dispatch>()
+
+    useEffect(() => {
+        dispatch.housingModel.loadHousingsList()
+    }, [dispatch.housingModel])
+
     return (
         <>
             <UserMenu />

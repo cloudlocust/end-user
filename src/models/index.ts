@@ -1,3 +1,4 @@
+import { housingModel } from 'src/modules/MyHouse/model'
 import { userModel } from 'src/modules/User'
 import { translationModel } from 'src/common/react-platform-translation'
 import { Models } from '@rematch/core'
@@ -14,6 +15,10 @@ export interface RootModel extends Models<RootModel> {
      * Model of translation.
      */
     translationModel: typeof translationModel
+    /**
+     * Model of housings.
+     */
+    housingModel: typeof housingModel
 }
 
 /**
@@ -22,4 +27,5 @@ export interface RootModel extends Models<RootModel> {
 export const models: RootModel = {
     userModel,
     translationModel,
+    housingModel,
 }
