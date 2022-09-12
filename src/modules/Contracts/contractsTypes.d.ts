@@ -31,6 +31,22 @@ export type ContractCardProps =
     }
 
 /**
+ * ContractFormProps.
+ */
+export type ContractFormProps =
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    {
+        /**
+         * Callback when submitting contract form.
+         */
+        onSubmit: (input: IContract) => void
+        /**
+         * Loading state when submitting form.
+         */
+        isContractsLoading?: boolean
+    }
+
+/**
  * Interface Contract model.
  */
 export type IContract =

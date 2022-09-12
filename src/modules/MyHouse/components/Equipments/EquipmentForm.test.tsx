@@ -8,10 +8,13 @@ import { TEST_HOUSING_EQUIPMENTS as MOCK_EQUIPMENTS } from 'src/mocks/handlers/e
 import { applyCamelCase } from 'src/common/react-platform-components'
 import { IEquipmentMeter } from 'src/modules/MyHouse/components/Equipments/EquipmentsType'
 import userEvent from '@testing-library/user-event'
+import { TEST_HOUSES } from 'src/mocks/handlers/houses'
+import { IHousing } from 'src/modules/MyHouse/components/HousingList/housing'
 
 const TEST_METER_EQUIPMENTS = applyCamelCase(MOCK_EQUIPMENTS)
+const TEST_MOCKED_HOUSES: IHousing[] = applyCamelCase(TEST_HOUSES)
 
-let mockHouseId = TEST_METERS[0].id
+let mockHouseId = TEST_MOCKED_HOUSES[0].id
 let mockIsLoadingInProgress = false
 let mockIsEquipmentMeterListEmpty = false
 const mockSaveEquipment = jest.fn()

@@ -13,3 +13,36 @@ export type HouseDetailsElementType =
          */
         label: string
     }
+
+/**
+ * Housing card types.
+ */
+export type HousingCardTypeOfDetails = 'accomodation' | 'equipments'
+
+/**
+ * Housing details card props.
+ */
+export type HousingDetailsCardProps =
+    //eslint-disable-next-line
+    {
+        /**
+         * Title of the card.
+         */
+        title: string
+        /**
+         * Elements to display (element is a icon and a label).
+         */
+        elements: HouseDetailsElementType[]
+        /**
+         * Title of the card.
+         */
+        typeOfDetails: HousingCardTypeOfDetails
+        /**
+         * Are the elements configured.
+         */
+        isConfigured: boolean
+        /**
+         * Are the elements loaded or not.
+         */
+        loadingInProgress: boolean
+    }
