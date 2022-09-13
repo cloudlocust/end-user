@@ -6,7 +6,7 @@ import { API_RESOURCES_URL } from 'src/configs'
 import { IFaq } from 'src/modules/FAQ/FAQHook/FAQhook.d'
 /**
  * FAQ url.
- *
+
  */
 export const FAQ_API = `${API_RESOURCES_URL}/faq`
 
