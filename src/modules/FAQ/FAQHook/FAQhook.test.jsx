@@ -1,6 +1,5 @@
 import { reduxedRenderHook } from 'src/common/react-platform-components/test'
 import { act } from 'react-dom/test-utils'
-import { TEST_METERS } from 'src/mocks/handlers/meters'
 import { useFAQ } from 'src/modules/FAQ/FAQHook/FAQhook'
 
 const mockEnqueueSnackbar = jest.fn()
@@ -28,5 +27,5 @@ describe('Testing useAccomodation hooks', () => {
             { timeout: 10000 },
         )
         expect(result.current.isLoadingInProgress).toBe(false)
-    })
+    }, 10000)
 })

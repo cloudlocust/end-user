@@ -9,7 +9,7 @@ import { IFaq } from 'src/modules/FAQ/FAQHook/FAQhook.d'
  *
  * @returns Meters base url.
  */
-export const FAQ_API = () => `${API_RESOURCES_URL}/faq`
+export const FAQ_API = `${API_RESOURCES_URL}/faq`
 
 /**
  * Hooks for FAQ.
@@ -30,7 +30,7 @@ export function useFAQ() {
     const loadFAQ = async () => {
         setIsLoadingInProgress(true)
         try {
-            const { data: responseData } = await axios.get<IFaq>(FAQ_API())
+            const { data: responseData } = await axios.get<IFaq>(FAQ_API)
             setDataFAQ(responseData)
             setIsLoadingInProgress(false)
         } catch (error: any) {

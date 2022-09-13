@@ -17,7 +17,7 @@ import { consentsEndpoints } from 'src/mocks/handlers/consents'
 import { housingEndpoints } from 'src/mocks/handlers/houses'
 import { contractsEndpoints } from './handlers/contracts'
 import { commercialOfferEndpoints } from 'src/mocks/handlers/commercialOffer'
-import { faqEndpoints } from './handlers/faq'
+import { faqEndpoints } from 'src/mocks/handlers/faq'
 
 /**
  * Handlers to mock urls for tests.

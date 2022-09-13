@@ -10,7 +10,7 @@ import { metricsEndpoints } from './handlers/metrics'
 import { housingEndpoints } from 'src/mocks/handlers/houses'
 import { contractsEndpoints } from 'src/mocks/handlers/contracts'
 import { commercialOfferEndpoints } from 'src/mocks/handlers/commercialOffer'
-import { faqEndpoints } from './handlers/faq'
+import { faqEndpoints } from 'src/mocks/handlers/faq'
 
 /**
  * Handlers to mock urls for tests.
