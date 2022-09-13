@@ -1,6 +1,6 @@
 import { rest } from 'msw'
+import { FAQ_API } from 'src/modules/FAQ/FAQHook/FAQhook'
 import { IFaq } from 'src/modules/FAQ/FAQHook/FAQhook.d'
-import { AUTH_BASE_URL } from 'src/modules/User/configs'
 
 /**
  * Success user to send in response.
@@ -41,7 +41,7 @@ export const TEST_FAQ = [
 // eslint-disable-next-line jsdoc/require-jsdoc
 export const faqEndpoints = [
     // eslint-disable-next-line jsdoc/require-jsdoc
-    rest.get<IFaq>(`${AUTH_BASE_URL}/faq`, (req, res, ctx) => {
+    rest.get<IFaq[]>(FAQ_API, (req, res, ctx) => {
         return res(ctx.status(200), ctx.json(TEST_FAQ))
     }),
 ]
