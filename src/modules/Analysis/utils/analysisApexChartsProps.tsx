@@ -164,13 +164,28 @@ export const getAnalysisApexChartProps = (
     // Fill the min and max values with their corresponding colors colors
     let minDayConsumptionIndex = values.indexOf(Math.min(...values.filter((value) => value !== 0)))
     let maxDayConsumptionIndex = values.indexOf(Math.max(...values))
-    optionsAnalysisApexCharts.fill!.opacity = Array(values.length).fill(0.7)
-    optionsAnalysisApexCharts.fill!.opacity[minDayConsumptionIndex] = 1
-    optionsAnalysisApexCharts.fill!.opacity[maxDayConsumptionIndex] = 1
 
-    optionsAnalysisApexCharts.colors = Array(values.length).fill(theme.palette.primary.main)
-    optionsAnalysisApexCharts.colors[minDayConsumptionIndex] = theme.palette.primary.light
-    optionsAnalysisApexCharts.colors[maxDayConsumptionIndex] = theme.palette.primary.dark
+    const opacityList: number[] = []
+    const colorList: string[] = []
+    values.forEach((val, index) => {
+        switch (index) {
+            case minDayConsumptionIndex:
+                opacityList.push(1)
+                colorList.push(theme.palette.primary.light)
+                break
+            case maxDayConsumptionIndex:
+                opacityList.push(1)
+                colorList.push(theme.palette.primary.dark)
+                break
+            default:
+                // When value is 0 then we hide the element from analysisChart
+                opacityList.push(val === 0 ? 0 : 0.7)
+                colorList.push(theme.palette.primary.main)
+                break
+        }
+    })
+    optionsAnalysisApexCharts!.colors = colorList
+    optionsAnalysisApexCharts!.fill!.opacity = opacityList
 
     return {
         options: optionsAnalysisApexCharts,
