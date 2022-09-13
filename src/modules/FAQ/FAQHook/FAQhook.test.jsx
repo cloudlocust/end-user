@@ -12,8 +12,8 @@ jest.mock('notistack', () => ({
     }),
 }))
 
-describe('Testing useAccomodation hooks', () => {
-    test('loadAccomodation. Request success', async () => {
+describe('Testing useFAQ hooks', () => {
+    test('loadFAQ. Request success', async () => {
         const {
             renderedHook: { result, waitForValueToChange },
         } = reduxedRenderHook(() => useFAQ(), { initialState: {} })
@@ -27,5 +27,5 @@ describe('Testing useAccomodation hooks', () => {
             { timeout: 10000 },
         )
         expect(result.current.isLoadingInProgress).toBe(false)
-    }, 10000)
+    })
 })

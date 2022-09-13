@@ -5,9 +5,8 @@ import { useSnackbar } from 'notistack'
 import { API_RESOURCES_URL } from 'src/configs'
 import { IFaq } from 'src/modules/FAQ/FAQHook/FAQhook.d'
 /**
- * Accomodation url.
- *
- * @returns Meters base url.
+ * FAQ url.
+
  */
 export const FAQ_API = `${API_RESOURCES_URL}/faq`
 
@@ -23,20 +22,17 @@ export function useFAQ() {
     const { formatMessage } = useIntl()
 
     /**
-     * Function hook responsible for  the function responsible for fetching Accomodation.
+     * Function to get FAQ data.
      *
-     * @returns The function throw an error, and show snackbar message containing successful and errors message.
+     * @returns FAQ data.
      */
     const loadFAQ = async () => {
         setIsLoadingInProgress(true)
-        console.log('here')
         try {
             const { data: responseData } = await axios.get<IFaq[]>(FAQ_API)
-            console.log('responseData', responseData)
             setDataFAQ(responseData)
             setIsLoadingInProgress(false)
         } catch (error: any) {
-            console.log('errorrrrrrrr')
             enqueueSnackbar(
                 formatMessage({
                     id: error.response.data.detail,

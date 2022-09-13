@@ -1,7 +1,6 @@
 import { rest } from 'msw'
 import { FAQ_API } from 'src/modules/FAQ/FAQHook/FAQhook'
 import { IFaq } from 'src/modules/FAQ/FAQHook/FAQhook.d'
-import { AUTH_BASE_URL } from 'src/modules/User/configs'
 
 /**
  * Success user to send in response.
@@ -43,7 +42,6 @@ export const TEST_FAQ = [
 export const faqEndpoints = [
     // eslint-disable-next-line jsdoc/require-jsdoc
     rest.get<IFaq[]>(FAQ_API, (req, res, ctx) => {
-        console.log('here22')
         return res(ctx.status(200), ctx.json(TEST_FAQ))
     }),
 ]
