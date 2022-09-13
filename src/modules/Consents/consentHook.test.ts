@@ -1,5 +1,6 @@
 import { act } from '@testing-library/react-hooks'
 import { reduxedRenderHook } from 'src/common/react-platform-components/test'
+import { MeterVerificationEnum } from 'src/modules/Consents/Consents.d'
 import { useConsents } from 'src/modules/Consents/consentsHook'
 
 const mockEnqueueSnackbar = jest.fn()
@@ -74,7 +75,7 @@ describe('useConsents test', () => {
         const {
             renderedHook: { result, waitForValueToChange },
         } = reduxedRenderHook(() => useConsents())
-        expect(result.current.isMeterVerified).toBeFalsy()
+        expect(result.current.meterVerification).toStrictEqual(MeterVerificationEnum.NOT_YET_VERIFIED)
         act(() => {
             result.current.verifyMeter(1)
         })
@@ -84,7 +85,7 @@ describe('useConsents test', () => {
             },
             { timeout: 6000 },
         )
-        expect(result.current.isMeterVerified).toStrictEqual(true)
+        expect(result.current.meterVerification).toStrictEqual(MeterVerificationEnum.VERIFIED)
     })
     test('when verifyMeter request fails', async () => {
         const { store } = require('src/redux')
@@ -92,7 +93,7 @@ describe('useConsents test', () => {
         const {
             renderedHook: { result, waitForValueToChange },
         } = reduxedRenderHook(() => useConsents())
-        expect(result.current.isMeterVerified).toBeFalsy()
+        expect(result.current.meterVerification).toStrictEqual(MeterVerificationEnum.NOT_YET_VERIFIED)
         act(() => {
             result.current.verifyMeter(1)
         })
@@ -102,6 +103,10 @@ describe('useConsents test', () => {
             },
             { timeout: 6000 },
         )
-        expect(result.current.isMeterVerified).toStrictEqual(false)
+        expect(result.current.meterVerification).toStrictEqual(MeterVerificationEnum.NOT_YET_VERIFIED)
+        expect(mockEnqueueSnackbar).toHaveBeenCalledWith('Erreur lors de la vérification de votre compteur', {
+            autoHideDuration: 5000,
+            variant: 'error',
+        })
     }, 10000)
 })

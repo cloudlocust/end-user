@@ -1,7 +1,9 @@
-import { Dialog, DialogContent, LinearProgress, Typography } from '@mui/material'
+import { Dialog, DialogContent, LinearProgress, Typography, Icon } from '@mui/material'
 import { useEffect, useState } from 'react'
 import { useIntl } from 'react-intl'
+import { NavLink } from 'react-router-dom'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
+import { MeterVerificationEnum } from 'src/modules/Consents/Consents.d'
 
 /**
  * Verify meter popup.
@@ -10,16 +12,16 @@ import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyForm
  * @param root0.openSgePopup State for openVerifyMeterPopup.
  * @param root0.setOpenSgePopup Setter for openVerifyMeterPopup state.
  * @param root0.isMeterVerifyLoading State when meter is being verified.
- * @param root0.isMeterVerified State that shows if the meterr has been verified successfully or not.
- * @param root0.setIsMeterVerified Setterr for setIsMeterVerified.
+ * @param root0.meterVerification State that shows if the meterr has been verified successfully or not.
+ * @param root0.setMeterVerification Setterr for setIsMeterVerified.
  * @returns JSX for verify meter popup.
  */
 export const SgePopup = ({
     openSgePopup,
     setOpenSgePopup,
     isMeterVerifyLoading,
-    isMeterVerified,
-    setIsMeterVerified,
+    meterVerification,
+    setMeterVerification,
 }: /**
  * SgePopup props types.
  */
@@ -39,20 +41,20 @@ export const SgePopup = ({
     /**
      * State that shows if the meterr has been verified successfully or not.
      */
-    isMeterVerified: boolean
+    meterVerification: MeterVerificationEnum
     /**
      * Setterr for setIsMeterVerified.
      */
-    setIsMeterVerified: (isMeterVerified: boolean) => void
+    setMeterVerification: React.Dispatch<React.SetStateAction<MeterVerificationEnum>>
 }): JSX.Element => {
     const { formatMessage } = useIntl()
     const [sgeStep, setSgeStep] = useState(0)
 
     useEffect(() => {
-        if (isMeterVerified) {
+        if (meterVerification === MeterVerificationEnum.VERIFIED) {
             setSgeStep(1)
         }
-    }, [isMeterVerified])
+    }, [meterVerification])
 
     return (
         <Dialog
@@ -60,7 +62,7 @@ export const SgePopup = ({
                 // Not allow the user to close the popup when the meter is being checked.
                 if ((reason !== 'backdropClick' && reason !== 'escapeKeyDown') || sgeStep === 1) {
                     setOpenSgePopup(false)
-                    setIsMeterVerified(false)
+                    setMeterVerification(MeterVerificationEnum.NOT_YET_VERIFIED)
                     setSgeStep(0)
                 }
             }}
@@ -73,35 +75,50 @@ export const SgePopup = ({
             <DialogContent>
                 {sgeStep === 0 && (
                     <>
-                        <div className="flex flex-row items-center justify-center">
-                            <TypographyFormatMessage fontWeight={500} className="text-center">
-                                Vérification de l'existence de votre compteur
-                            </TypographyFormatMessage>
-                        </div>
                         <div className="flex flex-1 flex-col items-center justify-center p-24">
                             {isMeterVerifyLoading ? (
-                                <LinearProgress
-                                    className="w-192 sm:w-320 max-w-full rounded-2"
-                                    color="primary"
-                                    data-testid="linear-progess"
-                                />
+                                <>
+                                    <div className="flex flex-row items-center justify-center mb-24">
+                                        <TypographyFormatMessage fontWeight={500} className="text-center">
+                                            Vérification de l'existence de votre compteur
+                                        </TypographyFormatMessage>
+                                    </div>
+                                    <LinearProgress
+                                        className="w-192 sm:w-320 max-w-full rounded-2"
+                                        color="primary"
+                                        data-testid="linear-progess"
+                                    />
+                                </>
                             ) : (
-                                !isMeterVerified && (
-                                    <Typography
-                                        sx={(theme) => ({
-                                            color: theme.palette.warning.main,
-                                        })}
-                                    >
-                                        {formatMessage({
-                                            id: "Votre compteur n'a pas été reconnu",
-                                            defaultMessage: "Votre compteur n'a pas été reconnu",
-                                        })}
-                                        <br />
-                                        {formatMessage({
-                                            id: 'Veuillez renseigner un numéro de compteur',
-                                            defaultMessage: 'Veuillez renseigner un numéro de compteur',
-                                        })}
-                                    </Typography>
+                                (meterVerification === MeterVerificationEnum.NOT_VERIFIED ||
+                                    meterVerification === MeterVerificationEnum.NOT_YET_VERIFIED) && (
+                                    <div className="flex flex-col items-center">
+                                        <Icon className="mb-10">
+                                            <img
+                                                src="/assets/images/content/housing/consent-status/meter-error.svg"
+                                                alt="error-icon"
+                                            />
+                                        </Icon>
+                                        <Typography
+                                            sx={(theme) => ({
+                                                color: theme.palette.warning.main,
+                                            })}
+                                            className="text-center"
+                                            fontWeight={500}
+                                        >
+                                            {formatMessage({
+                                                id: "Votre compteur n'a pas été reconnu",
+                                                defaultMessage: "Votre compteur n'a pas été reconnu",
+                                            })}
+                                            <br />
+                                            <NavLink to={`/my-houses`} className="underline">
+                                                {formatMessage({
+                                                    id: 'Veuillez renseigner un numéro de compteur',
+                                                    defaultMessage: 'Veuillez renseigner un numéro de compteur',
+                                                })}
+                                            </NavLink>
+                                        </Typography>
+                                    </div>
                                 )
                             )}
                         </div>

@@ -4,6 +4,7 @@ import { useSnackbar } from 'notistack'
 import { useIntl } from 'react-intl'
 import { axios } from 'src/common/react-platform-components'
 import { API_RESOURCES_URL } from 'src/configs'
+import { MeterVerificationEnum } from 'src/modules/Consents/Consents.d'
 
 /**
  * Nrlink consent endpoint.
@@ -26,7 +27,9 @@ export function useConsents() {
     const [consentsLoading, setConsentsLoading] = useState(false)
     const [nrlinkConsent, setNrlinkConsent] = useState<INrlinkConsent>()
     const [enedisConsent, setEnedisConsent] = useState<IEnedisConsent>()
-    const [isMeterVerified, setIsMeterVerified] = useState<boolean>(false)
+    const [meterVerification, setMeterVerification] = useState<MeterVerificationEnum>(
+        MeterVerificationEnum.NOT_YET_VERIFIED,
+    )
     const [isMeterVerifyLoading, setIsMeterVerifyLoading] = useState(false)
 
     /**
@@ -89,14 +92,13 @@ export function useConsents() {
      * @returns Whether meter is verified or not.
      */
     const verifyMeter = useCallback(
-        async (houseId: string) => {
-            const housingId = parseInt(houseId)
+        async (housingId: number) => {
             if (!housingId) return
             try {
                 setIsMeterVerifyLoading(true)
                 const response = await axios.get(`${API_RESOURCES_URL}/enedis-sge/consent/${housingId}/check`)
-                if (response.status === 200) setIsMeterVerified(true)
-                else setIsMeterVerified(false)
+                if (response.status === 200) setMeterVerification(MeterVerificationEnum.VERIFIED)
+                else setMeterVerification(MeterVerificationEnum.NOT_VERIFIED)
                 setIsMeterVerifyLoading(false)
             } catch (error) {
                 setIsMeterVerifyLoading(false)
@@ -121,9 +123,9 @@ export function useConsents() {
         consentsLoading,
         getConsents,
         verifyMeter,
-        isMeterVerified,
+        meterVerification,
         setIsMeterVerifyLoading,
         isMeterVerifyLoading,
-        setIsMeterVerified,
+        setMeterVerification,
     }
 }

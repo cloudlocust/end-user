@@ -1,4 +1,5 @@
 import { reduxedRender } from 'src/common/react-platform-components/test'
+import { MeterVerificationEnum } from 'src/modules/Consents/Consents.d'
 import { SgePopup } from 'src/modules/MyHouse/components/MeterStatus/SgePopup'
 
 // Component Props.
@@ -6,8 +7,8 @@ let mockVerifyMeterPopupProps = {
     openSgePopup: false,
     setOpenSgePopup: jest.fn(),
     isMeterVerifyLoading: false,
-    isMeterVerified: false,
-    setIsMeterVerified: jest.fn(),
+    meterVerification: MeterVerificationEnum.NOT_YET_VERIFIED,
+    setMeterVerification: jest.fn(),
 }
 
 const VERIFY_METER_MESSAGE = "Vérification de l'existence de votre compteur"
