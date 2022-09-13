@@ -23,9 +23,9 @@ export function useFAQ() {
     const { formatMessage } = useIntl()
 
     /**
-     * Function hook responsible for  the function responsible for fetching Accomodation.
+     * Function to get FAQ data.
      *
-     * @returns The function throw an error, and show snackbar message containing successful and errors message.
+     * @returns FAQ data.
      */
     const loadFAQ = async () => {
         setIsLoadingInProgress(true)
