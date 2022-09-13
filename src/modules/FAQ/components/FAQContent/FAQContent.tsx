@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import { useFAQ } from 'src/modules/FAQ/FAQHook/FAQhook'
 import { FAQField } from 'src/modules/FAQ/components/FAQFileld/FAQField'
-import { Button } from '@mui/material'
+import { Button, CircularProgress } from '@mui/material'
 import { useIntl } from 'react-intl'
 /**
  * FAQContent component.
@@ -9,15 +9,20 @@ import { useIntl } from 'react-intl'
  * @returns FAQContent component.
  */
 export const FAQContent = () => {
-    const { dataFAQ, loadFAQ } = useFAQ()
+    const { dataFAQ, loadFAQ, isLoadingInProgress } = useFAQ()
     const { formatMessage } = useIntl()
-
-    useEffect(() => {
-        if (!dataFAQ) {
-            loadFAQ()
-        }
-    }, [dataFAQ, loadFAQ])
-
+    // useEffect(() => {
+    //     if (!dataFAQ?.length) {
+    //         loadFAQ()
+    //     }
+    // }, [dataFAQ, isLoadingInProgress, loadFAQ])
+    console.log(isLoadingInProgress)
+    if (isLoadingInProgress)
+        return (
+            <div className="flex flex-col justify-center items-center w-full" style={{ minHeight: '60vh' }}>
+                <CircularProgress />
+            </div>
+        )
     return (
         <>
             {dataFAQ?.map((item) => (
