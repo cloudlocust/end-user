@@ -258,7 +258,7 @@ export const MeterStatus = () => {
                         </div>
                         {/* Enedis Consent Status */}
                         <div className="w-full md:w-1/3 p-12 border-b-1 border-grey-300">
-                            {!setFoundHousing ? (
+                            {!foundHousing ? (
                                 <>
                                     <TypographyFormatMessage className="text-xs md:text-sm font-semibold">
                                         Historique de consommation
