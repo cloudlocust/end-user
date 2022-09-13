@@ -4,6 +4,7 @@ import { useIntl } from 'react-intl'
 import { NavLink } from 'react-router-dom'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import { MeterVerificationEnum } from 'src/modules/Consents/Consents.d'
+import { SgePopupProps } from 'src/modules/MyHouse/components/MeterStatus/sgePopup'
 
 /**
  * Verify meter popup.
@@ -22,31 +23,7 @@ export const SgePopup = ({
     isMeterVerifyLoading,
     meterVerification,
     setMeterVerification,
-}: /**
- * SgePopup props types.
- */
-{
-    /**
-     * State for openVerifyMeterPopup.
-     */
-    openSgePopup: boolean
-    /**
-     * Setter for openVerifyMeterPopup state.
-     */
-    setOpenSgePopup: (openVerifyMeterPopup: boolean) => void
-    /**
-     * Verifying meter state.
-     */
-    isMeterVerifyLoading: boolean
-    /**
-     * State that shows if the meterr has been verified successfully or not.
-     */
-    meterVerification: MeterVerificationEnum
-    /**
-     * Setterr for setIsMeterVerified.
-     */
-    setMeterVerification: React.Dispatch<React.SetStateAction<MeterVerificationEnum>>
-}): JSX.Element => {
+}: SgePopupProps): JSX.Element => {
     const { formatMessage } = useIntl()
     const [sgeStep, setSgeStep] = useState(0)
 
