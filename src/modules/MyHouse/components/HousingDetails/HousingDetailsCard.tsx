@@ -39,17 +39,17 @@ const HousingDetailsCard = ({
     }>()
 
     return (
-        <Card className="rounded-16 border border-slate-600 bg-gray-50 mb-20 mx-10 w-400 h-256 flex flex-col justify-between">
+        <Card className="rounded-16 border border-slate-600 bg-gray-50 mb-20 w-full h-256 md:w-400 flex flex-col justify-between">
             <TypographyFormatMessage className="font-bold mt-20 ml-20 text-14 whitespace-normal">
                 {title}
             </TypographyFormatMessage>
-            <CardContent className="flex content-center items-start">
+            <CardContent className="flex content-center items-start p-0">
                 {elements.map((element) => (
                     <div className="w-70 h-120 flex flex-1 flex-col items-center justify-items-center m-10">
                         <div className="w-56 h-56 bg-white rounded-md flex items-center justify-center mb-5 shadow-md border border-slate-800">
                             {element.icon}
                         </div>
-                        <p className="text-center">{element.label}</p>
+                        <p className="w-56 md:w-80 text-center">{element.label}</p>
                     </div>
                 ))}
             </CardContent>

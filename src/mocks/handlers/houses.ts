@@ -34,7 +34,7 @@ export const TEST_HOUSES: SnakeCasedPropertiesDeep<IHousing>[] = [
             country: 'france',
             lat: 23,
             lng: 23,
-            name: 'the name of something',
+            name: 'the name of something 02',
             place_id: 'xyzab',
             address_addition: undefined,
         },

@@ -171,7 +171,7 @@ export const userModel = createModel<RootModel>()({
          * @param rootState Redux state.
          */
         // eslint-disable-next-line jsdoc/require-jsdoc
-        async updateCurrentUser({ data }: { data: IUser }, rootState) {
+        async updateCurrentUser({ data }: { data: IUser & { password?: string } }, rootState) {
             if (!rootState.userModel.user) return
             const response = await axios.patch<IUser>(`${AUTH_BASE_URL}/users/me`, data)
             const user = response.data

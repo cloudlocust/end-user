@@ -17,7 +17,7 @@ import { useProfileManagement } from 'src/modules/User/ProfileManagement/Profile
  */
 export const ProfileManagementForm = () => {
     const { user } = useSelector(({ userModel }: RootState) => userModel)
-    const { isModifyInProgress, updateProfile } = useProfileManagement()
+    const { isUpdateInProgress, updateProfile } = useProfileManagement()
     const { formatMessage } = useIntl()
     const [isEdit, setIsEdit] = useState(false)
     const disabledField = !isEdit
@@ -89,16 +89,16 @@ export const ProfileManagementForm = () => {
                                 onClickButtonReset={toggleEditFormDisable}
                             />
                             <ButtonLoader
-                                inProgress={isModifyInProgress}
+                                inProgress={isUpdateInProgress}
                                 variant="contained"
                                 type="submit"
-                                className="ml-8 mb-4 sm:mr-8 sm:mb-0"
+                                className=" w-128 ml-8 mb-4 sm:mr-8 sm:mb-0"
                             >
                                 {formatMessage({ id: 'Enregistrer', defaultMessage: 'Enregistrer' })}
                             </ButtonLoader>
                         </div>
                     ) : (
-                        <Button variant={'contained'} className={'w-224 mx-auto mb-16'} onClick={toggleEditFormDisable}>
+                        <Button variant={'contained'} className={'w-256 mx-auto'} onClick={toggleEditFormDisable}>
                             {formatMessage({ id: 'Modifier', defaultMessage: 'Modifier' })}
                         </Button>
                     )}
