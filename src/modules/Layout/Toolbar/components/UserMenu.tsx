@@ -96,6 +96,14 @@ function UserMenu() {
                     />
                     <ToolbarMenuItem
                         onMenuItemClick={() => {
+                            history.push('/FAQ')
+                        }}
+                        iconLabel="help_center"
+                        idLabel="FAQ"
+                        defaultMessageLabel="FAQ"
+                    />
+                    <ToolbarMenuItem
+                        onMenuItemClick={() => {
                             dispatch.userModel.logout()
                             history.replace('/login')
                         }}
