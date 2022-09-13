@@ -5,7 +5,7 @@ import { useSnackbar } from 'notistack'
 import { API_RESOURCES_URL } from 'src/configs'
 import { IFaq } from 'src/modules/FAQ/FAQHook/FAQhook.d'
 /**
- * Accomodation url.
+ * FAQ url.
  *
  * @returns Meters base url.
  */
