@@ -26,20 +26,20 @@ jest.mock('notistack', () => ({
 }))
 
 describe('Testing useProfileManagement hooks', () => {
-    test('Request success and isModifyInProgress should change following request state', async () => {
+    test('Request success and isUpdateInProgress should change following request state', async () => {
         const {
             renderedHook: { result, waitForValueToChange },
         } = reduxedRenderHook(() => useProfileManagement(), {
             initialState: { userModel: { user: TEST_SUCCESS_USER } },
         })
-        expect(result.current.isModifyInProgress).toBe(false)
+        expect(result.current.isUpdateInProgress).toBe(false)
         act(() => {
             result.current.updateProfile({ firstName: 'Alex', email: TEST_SUCCESS_USER.email })
         })
-        expect(result.current.isModifyInProgress).toBe(true)
+        expect(result.current.isUpdateInProgress).toBe(true)
         await waitForValueToChange(
             () => {
-                return result.current.isModifyInProgress
+                return result.current.isUpdateInProgress
             },
             { timeout: 10000 },
         )
@@ -48,29 +48,51 @@ describe('Testing useProfileManagement hooks', () => {
             autoHideDuration: 8000,
         })
     })
-    test('Request error and isModifyInProgress should change following request state', async () => {
+    test('Request error and isUpdateInProgress should change following request state', async () => {
         const {
             renderedHook: { result, waitForValueToChange },
         } = reduxedRenderHook(() => useProfileManagement(), {
             initialState: { userModel: { user: TEST_SUCCESS_USER } },
         })
-        expect(result.current.isModifyInProgress).toBe(false)
+        expect(result.current.isUpdateInProgress).toBe(false)
         act(async () => {
             try {
                 await result.current.updateProfile({ email: 'error@gmail.com' })
             } catch (error) {}
         })
 
-        expect(result.current.isModifyInProgress).toBe(true)
+        expect(result.current.isUpdateInProgress).toBe(true)
         await waitForValueToChange(
             () => {
-                return result.current.isModifyInProgress
+                return result.current.isUpdateInProgress
             },
             { timeout: 10000 },
         )
 
         expect(mockEnqueueSnackbar).toHaveBeenCalledWith("L'email inséré existe déjà", {
             variant: 'error',
+        })
+    })
+    test('Request success in change password, and isUpdateInProgress should change following request state', async () => {
+        const {
+            renderedHook: { result, waitForValueToChange },
+        } = reduxedRenderHook(() => useProfileManagement(), {
+            initialState: { userModel: { user: TEST_SUCCESS_USER } },
+        })
+        expect(result.current.isUpdateInProgress).toBe(false)
+        act(() => {
+            result.current.updatePassword({ password: '12345678', repeatPwd: '12345678' })
+        })
+        expect(result.current.isUpdateInProgress).toBe(true)
+        await waitForValueToChange(
+            () => {
+                return result.current.isUpdateInProgress
+            },
+            { timeout: 10000 },
+        )
+        expect(mockEnqueueSnackbar).toHaveBeenCalledWith('Mot de passe modifié avec succès', {
+            variant: 'success',
+            autoHideDuration: 8000,
         })
     })
 })
