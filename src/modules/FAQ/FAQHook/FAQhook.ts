@@ -7,7 +7,6 @@ import { IFaq } from 'src/modules/FAQ/FAQHook/FAQhook.d'
 /**
  * FAQ url.
  *
- * @returns Meters base url.
  */
 export const FAQ_API = `${API_RESOURCES_URL}/faq`
 
