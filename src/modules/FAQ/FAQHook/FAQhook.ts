@@ -17,7 +17,7 @@ export const FAQ_API = `${API_RESOURCES_URL}/faq`
  * @returns UseFAQ.
  */
 export function useFAQ() {
-    const [dataFAQ, setDataFAQ] = useState<IFaq>()
+    const [dataFAQ, setDataFAQ] = useState<IFaq[]>()
     const { enqueueSnackbar } = useSnackbar()
     const [isLoadingInProgress, setIsLoadingInProgress] = useState(false)
     const { formatMessage } = useIntl()
@@ -29,11 +29,14 @@ export function useFAQ() {
      */
     const loadFAQ = async () => {
         setIsLoadingInProgress(true)
+        console.log('here')
         try {
-            const { data: responseData } = await axios.get<IFaq>(FAQ_API)
+            const { data: responseData } = await axios.get<IFaq[]>(FAQ_API)
+            console.log('responseData', responseData)
             setDataFAQ(responseData)
             setIsLoadingInProgress(false)
         } catch (error: any) {
+            console.log('errorrrrrrrr')
             enqueueSnackbar(
                 formatMessage({
                     id: error.response.data.detail,
