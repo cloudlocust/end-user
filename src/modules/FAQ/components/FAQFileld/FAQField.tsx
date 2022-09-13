@@ -13,7 +13,7 @@ import { IFAQField } from 'src/modules/FAQ/components/FAQFileld/FAQField.d'
 export const FAQField = ({ title, content }: IFAQField) => {
     const [isExpanded, setIsExpanded] = useState(false)
     return (
-        <div className="border rounded m-16 md:ml-36 border-gray-400 p-16 max-w-screen-sm">
+        <div className="border rounded m-16 md:ml-36 border-gray-400 p-16 max-w-screen-md">
             <div className="flex flex-row justify-between">
                 <TypographyFormatMessage className="self-center" sx={{ color: 'text.primary' }}>
                     {title}
