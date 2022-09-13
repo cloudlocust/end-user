@@ -1,14 +1,10 @@
-import React, { useEffect, useState } from 'react'
-import { Icon } from 'src/common/ui-kit'
-import { IFAQField } from 'src/modules/FAQ/components/FAQFileld/FAQField.d'
-import { useFAQ } from '../../FAQHook/FAQhook'
+import React, { useEffect } from 'react'
+import { useFAQ } from 'src/modules/FAQ/FAQHook/FAQhook'
+import { FAQField } from 'src/modules/FAQ/components/FAQFileld/FAQField'
 /**
- * FAQField component.
+ * FAQContent component.
  *
- * @param root0 N/A.
- * @param root0.title FAQ title.
- * @param root0.content FAQ content.
- * @returns FAQField component.
+ * @returns FAQContent component.
  */
 export const FAQContent = () => {
     const { dataFAQ, loadFAQ } = useFAQ()
@@ -17,7 +13,11 @@ export const FAQContent = () => {
             loadFAQ()
         }
     }, [dataFAQ, loadFAQ])
-
-    console.log(dataFAQ)
-    return <div className="border rounded m-16 md:ml-36 border-gray-400 p-16 max-w-screen-sm">faq</div>
+    return (
+        <>
+            {dataFAQ?.map((item) => (
+                <FAQField content={item.content} title={item.title} />
+            ))}
+        </>
+    )
 }
