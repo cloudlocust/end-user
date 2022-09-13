@@ -9,14 +9,9 @@ import { useIntl } from 'react-intl'
  * @returns FAQContent component.
  */
 export const FAQContent = () => {
-    const { dataFAQ, loadFAQ, isLoadingInProgress } = useFAQ()
+    const { dataFAQ, isLoadingInProgress } = useFAQ()
     const { formatMessage } = useIntl()
-    // useEffect(() => {
-    //     if (!dataFAQ?.length) {
-    //         loadFAQ()
-    //     }
-    // }, [dataFAQ, isLoadingInProgress, loadFAQ])
-    console.log(isLoadingInProgress)
+
     if (isLoadingInProgress)
         return (
             <div className="flex flex-col justify-center items-center w-full" style={{ minHeight: '60vh' }}>
