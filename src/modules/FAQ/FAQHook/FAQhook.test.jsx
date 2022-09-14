@@ -1,5 +1,4 @@
 import { reduxedRenderHook } from 'src/common/react-platform-components/test'
-import { act } from 'react-dom/test-utils'
 import { useFAQ } from 'src/modules/FAQ/FAQHook/FAQhook'
 
 const mockEnqueueSnackbar = jest.fn()
@@ -17,9 +16,6 @@ describe('Testing useFAQ hooks', () => {
         const {
             renderedHook: { result, waitForValueToChange },
         } = reduxedRenderHook(() => useFAQ(), { initialState: {} })
-        act(() => {
-            result.current.loadFAQ()
-        })
         await waitForValueToChange(
             () => {
                 return result.current.isLoadingInProgress
