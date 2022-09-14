@@ -18,38 +18,57 @@ export const EMAIL_ALREADY_EXIST_SNACKBAR_MESSAGE = "L'email inséré existe dé
  */
 export const useProfileManagement = () => {
     const dispatch = useDispatch<Dispatch>()
-    const [isModifyInProgress, setIsModifyInProgress] = useState(false)
+    const [isUpdateInProgress, setIsUpdateInProgress] = useState(false)
     const { enqueueSnackbar } = useSnackbar()
     const { formatMessage } = useIntl()
     const { user } = useSelector(({ userModel }: RootState) => userModel)
     /**
-     * Submit function.
+     * UpdateProfile function.
      *
      * @param data Data for modification in my profile.
+     * @param successUpdateMsg Success update message.
      */
-    const updateProfile = async (data: IUser) => {
+    const updateProfile = async (
+        data: IUser & /**Data to change the current user.
+         */ {
+            /**
+             * Password to change.
+             */
+            password?: string
+        },
+        successUpdateMsg?: string,
+    ) => {
         const dataIsNotModified = isMatch(user as IUser, data)
         if (dataIsNotModified) return
-        setIsModifyInProgress(true)
+        setIsUpdateInProgress(true)
         try {
             await dispatch.userModel.updateCurrentUser({ data })
-            setIsModifyInProgress(false)
+            setIsUpdateInProgress(false)
             enqueueSnackbar(
                 formatMessage({
-                    id: 'Profil modifié avec succès',
-                    defaultMessage: 'Profil modifié avec succès',
+                    id: successUpdateMsg || 'Profil modifié avec succès',
+                    defaultMessage: successUpdateMsg || 'Profil modifié avec succès',
                 }),
                 { variant: 'success', autoHideDuration: 8000 },
             )
         } catch (error) {
-            setIsModifyInProgress(false)
+            setIsUpdateInProgress(false)
             const errorMessage = handleUpdateUserError(error)
             enqueueSnackbar(formatMessage({ id: errorMessage, defaultMessage: errorMessage }), { variant: 'error' })
             throw error
         }
     }
 
-    return { isModifyInProgress, updateProfile }
+    /**
+     * UpdateProfile function.
+     *
+     * @param password Password for modification in my profile.
+     */
+    const updatePassword = async (password: string) => {
+        await updateProfile({ ...user!, password }, 'Mot de passe modifié avec succès')
+    }
+
+    return { isUpdateInProgress, updateProfile, updatePassword }
 }
 /**
  * Handle message to show in snackbar when update is wrong.

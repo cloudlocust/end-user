@@ -49,7 +49,7 @@ function ToolbarLayout1(props: /**
         >
             <Toolbar className="p-0 min-h-48 md:min-h-64">
                 {props.toolbarIcon}
-                <div className="flex flex-1 px-16">
+                <div className="flex px-16">
                     <>
                         <Hidden lgDown>
                             <NavbarToggleButton
@@ -61,7 +61,7 @@ function ToolbarLayout1(props: /**
                     </>
                 </div>
 
-                <div className="flex items-center px-8 h-full overflow-x-auto">
+                <div className="flex flex-1 items-center px-8 h-full overflow-x-auto">
                     {props.toolbarContent ? props.toolbarContent : <></>}
                 </div>
             </Toolbar>
