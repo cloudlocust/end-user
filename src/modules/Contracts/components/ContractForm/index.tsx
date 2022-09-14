@@ -55,7 +55,7 @@ const ContractForm = ({ onSubmit, isContractsLoading }: ContractFormProps) => {
                     Toutes les informations demandées sont disponibles sur votre facture ou votre contrat d'énergie
                 </TypographyFormatMessage>
                 <div className="flex flex-col justify-center w-full">
-                    <ContractFormFields isContractsLoading={isContractsLoading} />{' '}
+                    <ContractFormFields isContractsLoading={isContractsLoading} />
                 </div>
             </div>
         </Form>
