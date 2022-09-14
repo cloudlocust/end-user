@@ -1,5 +1,4 @@
 import { reduxedRenderHook } from 'src/common/react-platform-components/test'
-import { act } from 'react-dom/test-utils'
 import { useFAQ } from 'src/modules/FAQ/FAQHook/FAQhook'
 
 const mockEnqueueSnackbar = jest.fn()
