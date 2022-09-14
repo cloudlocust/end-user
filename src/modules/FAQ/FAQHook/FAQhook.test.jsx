@@ -17,9 +17,6 @@ describe('Testing useFAQ hooks', () => {
         const {
             renderedHook: { result, waitForValueToChange },
         } = reduxedRenderHook(() => useFAQ(), { initialState: {} })
-        act(() => {
-            result.current.loadFAQ()
-        })
         await waitForValueToChange(
             () => {
                 return result.current.isLoadingInProgress
