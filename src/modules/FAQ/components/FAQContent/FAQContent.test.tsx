@@ -2,7 +2,6 @@ import React from 'react'
 import { reduxedRender } from 'src/common/react-platform-components/test'
 import { FAQContent } from 'src/modules/FAQ/components/FAQContent/FAQContent'
 import { TEST_FAQ } from 'src/mocks/handlers/faq'
-import { userInfo } from 'os'
 import userEvent from '@testing-library/user-event'
 
 let mockIsLoadingInProgress = true
