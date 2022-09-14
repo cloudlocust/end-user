@@ -25,12 +25,7 @@ export const FAQContent = () => {
                 <FAQField content={item.content} title={item.title} key={item.id} />
             ))}
             <div className="m-16 md:ml-36">
-                <Button
-                    variant="contained"
-                    onClick={() => {
-                        window.location.href = 'mailto:laurence@myem.fr'
-                    }}
-                >
+                <Button variant="contained" href="mailto:laurence@myem.fr">
                     {formatMessage({
                         id: 'Contacter le Support Technique',
                         defaultMessage: 'Contacter le Support Technique',

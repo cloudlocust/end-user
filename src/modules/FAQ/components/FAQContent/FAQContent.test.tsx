@@ -2,6 +2,8 @@ import React from 'react'
 import { reduxedRender } from 'src/common/react-platform-components/test'
 import { FAQContent } from 'src/modules/FAQ/components/FAQContent/FAQContent'
 import { TEST_FAQ } from 'src/mocks/handlers/faq'
+import { userInfo } from 'os'
+import userEvent from '@testing-library/user-event'
 
 let mockIsLoadingInProgress = true
 const mockDataFAQ = TEST_FAQ
@@ -33,5 +35,7 @@ describe('<FAQContent />', () => {
             expect(getByText(item.title)).toBeTruthy()
         })
         expect(getByText(BUTTON_TEXT_CONTACT)).toBeTruthy()
+        userEvent.click(getByText(BUTTON_TEXT_CONTACT))
+        expect(getByText(BUTTON_TEXT_CONTACT)).toHaveAttribute('href', 'mailto:laurence@myem.fr')
     })
 })
