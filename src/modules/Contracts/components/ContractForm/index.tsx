@@ -1,7 +1,11 @@
 import React, { useCallback } from 'react'
 import { useIntl } from 'react-intl'
 import { requiredBuilder } from 'src/common/react-platform-components'
-import { ContractFormProps, contractFormValuesType } from 'src/modules/Contracts/contractsTypes'
+import {
+    ContractFormFieldsProps,
+    ContractFormProps,
+    contractFormValuesType,
+} from 'src/modules/Contracts/contractsTypes'
 import { useFormContext, useWatch } from 'react-hook-form'
 import { Form } from 'src/common/react-platform-components'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
@@ -14,13 +18,13 @@ import { ButtonLoader } from 'src/common/ui-kit'
 import { isNull, pick } from 'lodash'
 
 const defaultContractFormValues = {
-    contractType: '',
+    contractTypeId: 0,
     endSubscription: '',
-    offer: '',
+    offerId: 0,
     power: 0,
-    provider: '',
+    providerId: 0,
     startSubscription: '',
-    tariffType: '',
+    tariffTypeId: 0,
 } as contractFormValuesType
 
 /**
@@ -28,13 +32,14 @@ const defaultContractFormValues = {
  *
  * @param props N/A.
  * @param props.onSubmit Callback when submitting form.
+ * @param props.isContractsLoading Loading state when addContract request.
  * @returns Contract Form component.
  */
-const ContractForm = ({ onSubmit }: ContractFormProps) => {
+const ContractForm = ({ onSubmit, isContractsLoading }: ContractFormProps) => {
     return (
         <Form
             onSubmit={(data: contractFormValuesType) => {
-                const { provider, ...cleanData } = data
+                const { providerId, ...cleanData } = data
                 onSubmit(cleanData)
             }}
             defaultValues={defaultContractFormValues}
@@ -50,7 +55,7 @@ const ContractForm = ({ onSubmit }: ContractFormProps) => {
                     Toutes les informations demandées sont disponibles sur votre facture ou votre contrat d'énergie
                 </TypographyFormatMessage>
                 <div className="flex flex-col justify-center w-full">
-                    <ContractFormFields />
+                    <ContractFormFields isContractsLoading={isContractsLoading} />{' '}
                 </div>
             </div>
         </Form>
@@ -62,15 +67,13 @@ export default ContractForm
 /**
  * Contract Form Fields component.
  *
+ * @param props N/A.
+ * @param props.isContractsLoading Loading state when addContract request.
  * @returns Contract Form Fields component.
  */
-const ContractFormFields = () => {
+const ContractFormFields = ({ isContractsLoading }: ContractFormFieldsProps) => {
     const formData = useWatch<contractFormValuesType>({ defaultValue: defaultContractFormValues })
-    const {
-        reset,
-        getValues,
-        formState: { isSubmitting },
-    } = useFormContext<contractFormValuesType>()
+    const { reset, getValues } = useFormContext<contractFormValuesType>()
     const {
         contractTypeList,
         offerList,
@@ -97,10 +100,10 @@ const ContractFormFields = () => {
     const loadProviderOptions = useCallback(() => {
         reset({
             ...defaultContractFormValues,
-            ...pick(getValues(), ['contractType']),
+            ...pick(getValues(), ['contractTypeId']),
         })
-        loadProviders(Number(formData.contractType))
-    }, [loadProviders, reset, getValues, formData.contractType])
+        loadProviders(Number(formData.contractTypeId))
+    }, [loadProviders, reset, getValues, formData.contractTypeId])
 
     /**
      * LoadOfferOptions useCallback.
@@ -108,10 +111,10 @@ const ContractFormFields = () => {
     const loadOfferOptions = useCallback(() => {
         reset({
             ...defaultContractFormValues,
-            ...pick(getValues(), ['provider', 'contractType']),
+            ...pick(getValues(), ['providerId', 'contractTypeId']),
         })
-        loadOffers(Number(formData.provider), Number(formData.contractType))
-    }, [loadOffers, formData.provider, formData.contractType, getValues, reset])
+        loadOffers(Number(formData.providerId), Number(formData.contractTypeId))
+    }, [loadOffers, formData.providerId, formData.contractTypeId, getValues, reset])
 
     /**
      * LoadTariffTypeOptions useCallback.
@@ -119,10 +122,10 @@ const ContractFormFields = () => {
     const loadTariffTypeOptions = useCallback(() => {
         reset({
             ...defaultContractFormValues,
-            ...pick(getValues(), ['provider', 'contractType', 'offer']),
+            ...pick(getValues(), ['providerId', 'contractTypeId', 'offerId']),
         })
-        loadTariffTypes(Number(formData.offer))
-    }, [loadTariffTypes, getValues, formData.offer, reset])
+        loadTariffTypes(Number(formData.offerId))
+    }, [loadTariffTypes, getValues, formData.offerId, reset])
 
     /**
      * LoadPowerOptions useCallback.
@@ -130,65 +133,65 @@ const ContractFormFields = () => {
     const loadPowerOptions = useCallback(() => {
         reset({
             ...defaultContractFormValues,
-            ...pick(getValues(), ['provider', 'contractType', 'offer', 'tariffType']),
+            ...pick(getValues(), ['providerId', 'contractTypeId', 'offerId', 'tariffTypeId']),
         })
-        loadPowers(Number(formData.offer), Number(formData.tariffType))
-    }, [loadPowers, getValues, reset, formData.offer, formData.tariffType])
+        loadPowers(Number(formData.offerId), Number(formData.tariffTypeId))
+    }, [loadPowers, getValues, reset, formData.offerId, formData.tariffTypeId])
 
     return (
         <>
             <ContractFormSelect<IContractType>
                 formatOptionLabel={(option) => option.name}
-                formatOptionValue={(option) => `${option.id}`}
+                formatOptionValue={(option) => option.id}
                 isOptionsInProgress={isContractTypesLoading}
                 loadOptions={loadContractTypes}
                 optionList={contractTypeList}
-                name="contractType"
+                name="contractTypeId"
                 selectLabel="Type"
                 validateFunctions={[requiredBuilder()]}
             />
-            {formData.contractType && (
+            {Boolean(formData.contractTypeId) && (
                 <ContractFormSelect<IProvider>
                     formatOptionLabel={(option) => option.name}
-                    formatOptionValue={(option) => `${option.id}`}
+                    formatOptionValue={(option) => option.id}
                     isOptionsInProgress={isProvidersLoading}
                     loadOptions={loadProviderOptions}
                     optionList={providerList}
-                    name="provider"
+                    name="providerId"
                     selectLabel="Fournisseur"
                     validateFunctions={[requiredBuilder()]}
                 />
             )}
-            {formData.provider && (
+            {Boolean(formData.providerId) && (
                 <ContractFormSelect<IOffer>
                     formatOptionLabel={(option) => option.name}
-                    formatOptionValue={(option) => `${option.id}`}
+                    formatOptionValue={(option) => option.id}
                     isOptionsInProgress={isOffersLoading}
                     loadOptions={loadOfferOptions}
                     optionList={offerList}
-                    name="offer"
+                    name="offerId"
                     selectLabel="Offre"
                     validateFunctions={[requiredBuilder()]}
                 />
             )}
 
-            {formData.offer && (
+            {Boolean(formData.offerId) && (
                 <ContractFormSelect<ITariffType>
                     formatOptionLabel={(option) => option.name}
-                    formatOptionValue={(option) => `${option.id}`}
+                    formatOptionValue={(option) => option.id}
                     isOptionsInProgress={isTariffTypesLoading}
                     loadOptions={loadTariffTypeOptions}
                     optionList={tariffTypeList}
-                    name="tariffType"
+                    name="tariffTypeId"
                     selectLabel="Type de contrat"
                     validateFunctions={[requiredBuilder()]}
                 />
             )}
 
-            {formData.tariffType && (
+            {Boolean(formData.tariffTypeId) && (
                 <ContractFormSelect<IPower>
                     formatOptionLabel={(option) => `${option} kVA`}
-                    formatOptionValue={(option) => `${option}`}
+                    formatOptionValue={(option) => option}
                     isOptionsInProgress={isPowersLoading}
                     loadOptions={loadPowerOptions}
                     optionList={powerList}
@@ -198,7 +201,7 @@ const ContractFormFields = () => {
                 />
             )}
             {/* When doing formData.power && there is a weird unexpected 0 showing in the UI, that's why doing formData.power !== 0 &&  */}
-            {formData.power !== 0 && (
+            {Boolean(formData.power) && (
                 <DatePicker
                     name="startSubscription"
                     label={formatMessage({
@@ -222,7 +225,7 @@ const ContractFormFields = () => {
                 color="primary"
                 className="w-224 mx-auto"
                 type="submit"
-                inProgress={isSubmitting}
+                inProgress={isContractsLoading}
                 disabled={
                     isContractTypesLoading ||
                     isProvidersLoading ||
