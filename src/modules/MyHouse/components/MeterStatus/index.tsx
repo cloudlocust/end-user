@@ -85,7 +85,7 @@ export const MeterStatus = ({ houseId, meterGuid }: MeterStatusProps) => {
                         <div className="flex flex-col">
                             <NavLink
                                 to={{
-                                    pathname: '/nrlink-connection-steps',
+                                    pathname: `/nrlink-connection-steps/${parseInt(houseId)}`,
                                     state: {
                                         activeStep: NrlinkConnectionStepsEnum.secondStep,
                                     },

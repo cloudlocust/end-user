@@ -18,9 +18,11 @@ import 'src/modules/nrLinkConnection/NrLinkConnectionSteps.scss'
 import { ButtonLoader } from 'src/common/ui-kit'
 import { IMeter } from 'src/modules/Meters/Meters'
 import MuiLink from '@mui/material/Link'
-import { Link, useLocation } from 'react-router-dom'
+import { Link, useLocation, useParams } from 'react-router-dom'
 import { URL_CONSUMPTION } from 'src/modules/MyConsumption'
 import { NrlinkConnectionStepsEnum } from 'src/modules/nrLinkConnection/nrlinkConnectionSteps.d'
+import { useSelector } from 'react-redux'
+import { RootState } from 'src/redux'
 
 /**
  * Component representing the action buttons in the Stepper (Previous, Next), Next Button will be of type Submit.
@@ -94,6 +96,33 @@ const stepsLabels = ['Je branche mon capteur', 'Je configure mon compteur Linky'
 const NrLinkConnectionSteps = () => {
     const theme = useTheme()
 
+    // this ones are for handling the housing id's and their speceif meters
+    const { currentHousing, housingList } = useSelector(({ housingModel }: RootState) => housingModel)
+    const { houseId } = useParams</**
+     *
+     */
+    {
+        // eslint-disable-next-line jsdoc/require-jsdoc
+        houseId: string
+    }>()
+    const parsedHouseId = parseInt(houseId)
+    const [housingId, setHousingId] = useState<number | undefined>(parsedHouseId)
+
+    // to keep the housing and meter updated depending on which house we are updating.
+    // by default this page is for the current housing, if
+    useEffect(() => {
+        // if no house id in the url, we set it to the current housing
+        !parsedHouseId && setHousingId(currentHousing?.id)
+    }, [currentHousing, parsedHouseId])
+
+    const [meter, setMeter] = useState<IMeter | null>(null)
+
+    useEffect(() => {
+        // once we have witch house we are using, we search for it in the housing list to get the meter
+        const handledHousing = housingList?.find((housing) => housing.id === housingId)
+        handledHousing && setMeter(handledHousing.meter)
+    }, [housingId, housingList])
+
     /**
      * ActiveStep state is received from MeterStatus.tsx component.
      * When the user doesn't have either a meter nor nrlink, we redirect them to the second step.
@@ -114,9 +143,9 @@ const NrLinkConnectionSteps = () => {
             activeStep: NrlinkConnectionStepsEnum.secondStep | NrlinkConnectionStepsEnum.thirdStep
         }
     } = useLocation()
+
     const isMobile = useMediaQuery(theme.breakpoints.down('md'))
     const [activeStep, setActiveStep] = React.useState(NrlinkConnectionStepsEnum.firstStep)
-    const [meter, setMeter] = useState<IMeter | null>(null)
     const [screenOrientation, setScreenOrientation] = React.useState(
         window.matchMedia('(orientation: portrait)').matches ? 'portrait' : 'landscape',
     )
@@ -168,8 +197,6 @@ const NrLinkConnectionSteps = () => {
      * Previous Step callback.
      */
     const handleBack = () => {
-        // Reset the selected meter when going to any previous step
-        setMeter(null)
         setActiveStep((prevActiveStep) => prevActiveStep - 1)
     }
 
@@ -184,6 +211,7 @@ const NrLinkConnectionSteps = () => {
             handleNext={handleNext}
             setMeter={setMeter}
             meter={meter}
+            housingId={housingId}
         />,
         <LastStepNrLinkConnection
             handleBack={handleBack}

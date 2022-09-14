@@ -13,7 +13,11 @@ import { addMeterInputType } from 'src/modules/Meters/Meters'
 export const TEST_HOUSES: SnakeCasedPropertiesDeep<IHousing>[] = [
     {
         id: 1,
-        meter: { guid: '12345Her' },
+        meter: {
+            id: '1234569865',
+            name: 'my nrlink',
+            guid: '12345Her',
+        },
         address: {
             city: 'monaco',
             zip_code: '3333',
