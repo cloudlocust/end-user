@@ -59,12 +59,12 @@ jest.mock('src/modules/Contracts/components/ContractForm', () => (props: Contrac
         <form
             onSubmit={() =>
                 props.onSubmit({
-                    contractType: '',
+                    contractTypeId: 2,
                     endSubscription: '',
-                    offer: '',
-                    power: 0,
+                    offerId: 2,
+                    power: 2,
                     startSubscription: '',
-                    tariffType: '',
+                    tariffTypeId: 3,
                 })
             }
         >

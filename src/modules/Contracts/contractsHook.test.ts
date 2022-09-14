@@ -68,7 +68,7 @@ describe('useContractsList test', () => {
             // Element is added.
             act(async () => {
                 try {
-                    await result.current.addElement({ ...TEST_SUCCESS_ADD_CONTRACT, offer: TEST_ERROR_OFFER })
+                    await result.current.addElement({ ...TEST_SUCCESS_ADD_CONTRACT, offerId: TEST_ERROR_OFFER })
                 } catch (err) {}
             })
             expect(result.current.loadingInProgress).toBe(true)

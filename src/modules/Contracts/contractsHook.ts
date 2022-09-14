@@ -10,7 +10,7 @@ import { HOUSING_API } from 'src/modules/MyHouse/components/HousingList/Housings
  * @param houseId HouseId of the contractList.
  * @returns Contract microservice Endpoint.
  */
-export const CONTRACTS_API = (houseId: number) => `${HOUSING_API}/${houseId}/contracts`
+export const CONTRACTS_API = (houseId: number) => `${HOUSING_API}/${houseId}/housing_contracts`
 
 /**
  * Error message fetch contracts request.
