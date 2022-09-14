@@ -18,6 +18,7 @@ export const FAQContent = () => {
                 <CircularProgress />
             </div>
         )
+
     return (
         <>
             {dataFAQ?.map((item) => (
