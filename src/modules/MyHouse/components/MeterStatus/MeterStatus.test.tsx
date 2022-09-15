@@ -52,7 +52,7 @@ let mockWindowOpen = jest.fn()
 window.open = mockWindowOpen
 let mockSetIsMeterVerifyLoading = jest.fn()
 let mockisMeterVerifyLoading = false
-let mockMeterVerificationEnum = MeterVerificationEnum.NOT_YET_VERIFIED
+let mockMeterVerificationEnum = MeterVerificationEnum.NOT_VERIFIED
 let mockHouseId = TEST_MOCKED_HOUSES[0].id
 
 /**

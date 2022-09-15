@@ -21,7 +21,7 @@ let mockVerifyMeter = jest.fn()
 // window.open = mockWindowOpen
 let mockSetIsMeterVerifyLoading = jest.fn()
 let mockisMeterVerifyLoading = false
-let mockMeterVerificationEnum = MeterVerificationEnum.NOT_YET_VERIFIED
+let mockMeterVerificationEnum = MeterVerificationEnum.NOT_VERIFIED
 
 // Mock consentsHook
 jest.mock('src/modules/Consents/consentsHook.ts', () => ({
