@@ -20,7 +20,7 @@ jest.mock('notistack', () => ({
 }))
 
 const TEST_METER_GUID = '123456'
-const NonExistantState = 'NONEXISTENT'
+const connectedState = 'CONNECTED'
 const TEST_NRLINK_ERROR = 'Erreur lors de la récupération du consentement Nrlink'
 const TEST_ENEDIS_ERROR = 'Erreur lors de la récupération du consentement Enedis'
 const TEST_LOAD_CONSENTS = 'error'
@@ -39,8 +39,8 @@ describe('useConsents test', () => {
             },
             { timeout: 6000 },
         )
-        expect(result.current.nrlinkConsent.nrlinkConsentState).toStrictEqual(NonExistantState)
-        expect(result.current.enedisConsent.enedisConsentState).toStrictEqual(NonExistantState)
+        expect(result.current.nrlinkConsent.nrlinkConsentState).toStrictEqual(connectedState)
+        expect(result.current.enedisConsent.enedisConsentState).toStrictEqual(connectedState)
     }, 20000)
     test('when there is server error while fetching consents, snackbar is shown', async () => {
         const { store } = require('src/redux')
