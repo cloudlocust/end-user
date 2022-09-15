@@ -1,7 +1,11 @@
 import React, { useCallback } from 'react'
 import { useIntl } from 'react-intl'
 import { requiredBuilder } from 'src/common/react-platform-components'
-import { ContractFormProps, contractFormValuesType } from 'src/modules/Contracts/contractsTypes'
+import {
+    ContractFormFieldsProps,
+    ContractFormProps,
+    contractFormValuesType,
+} from 'src/modules/Contracts/contractsTypes'
 import { useFormContext, useWatch } from 'react-hook-form'
 import { Form } from 'src/common/react-platform-components'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
@@ -9,32 +13,33 @@ import './ContractForm.scss'
 import { DatePicker } from 'src/common/ui-kit/form-fields/DatePicker'
 import ContractFormSelect from 'src/modules/Contracts/components/ContractFormSelect'
 import { useCommercialOffer } from 'src/hooks/CommercialOffer/CommercialOfferHooks'
-import { IContractType, IOffer, IPower, IProvider } from 'src/hooks/CommercialOffer/CommercialOffers'
+import { IContractType, IOffer, IPower, IProvider, ITariffType } from 'src/hooks/CommercialOffer/CommercialOffers'
 import { ButtonLoader } from 'src/common/ui-kit'
-import { isNull } from 'lodash'
+import { isNull, pick } from 'lodash'
 
-const defaultContractFormValues = {
-    contractType: '',
+const defaultContractFormValues: contractFormValuesType = {
+    contractTypeId: 0,
     endSubscription: '',
-    offer: '',
+    offerId: 0,
     power: 0,
-    provider: '',
+    providerId: 0,
     startSubscription: '',
-    tariffType: '',
-} as contractFormValuesType
+    tariffTypeId: 0,
+}
 
 /**
  * Contract form component.
  *
  * @param props N/A.
  * @param props.onSubmit Callback when submitting form.
+ * @param props.isContractsLoading Loading state when addContract request.
  * @returns Contract Form component.
  */
-const ContractForm = ({ onSubmit }: ContractFormProps) => {
+const ContractForm = ({ onSubmit, isContractsLoading }: ContractFormProps) => {
     return (
         <Form
             onSubmit={(data: contractFormValuesType) => {
-                const { provider, ...cleanData } = data
+                const { providerId, ...cleanData } = data
                 onSubmit(cleanData)
             }}
             defaultValues={defaultContractFormValues}
@@ -50,7 +55,7 @@ const ContractForm = ({ onSubmit }: ContractFormProps) => {
                     Toutes les informations demandées sont disponibles sur votre facture ou votre contrat d'énergie
                 </TypographyFormatMessage>
                 <div className="flex flex-col justify-center w-full">
-                    <ContractFormFields />
+                    <ContractFormFields isContractsLoading={isContractsLoading} />
                 </div>
             </div>
         </Form>
@@ -58,18 +63,17 @@ const ContractForm = ({ onSubmit }: ContractFormProps) => {
 }
 
 export default ContractForm
+
 /**
  * Contract Form Fields component.
  *
+ * @param props N/A.
+ * @param props.isContractsLoading Loading state when addContract request.
  * @returns Contract Form Fields component.
  */
-const ContractFormFields = () => {
+const ContractFormFields = ({ isContractsLoading }: ContractFormFieldsProps) => {
     const formData = useWatch<contractFormValuesType>({ defaultValue: defaultContractFormValues })
-    const {
-        // reset,
-        // getValues,
-        formState: { isSubmitting },
-    } = useFormContext<contractFormValuesType>()
+    const { reset, getValues } = useFormContext<contractFormValuesType>()
     const {
         contractTypeList,
         offerList,
@@ -94,96 +98,100 @@ const ContractFormFields = () => {
      * To avoid defining () => loadProviders as a prop inside the ContractFormSelect and thus multiple re-rendering cuz ()=>{} create a new function and thus re-ender and thus infinite re-render.
      */
     const loadProviderOptions = useCallback(() => {
-        loadProviders(Number(formData.contractType))
-    }, [loadProviders, formData.contractType])
+        reset({
+            ...defaultContractFormValues,
+            ...pick(getValues(), ['contractTypeId']),
+        })
+        loadProviders(formData.contractTypeId!)
+    }, [loadProviders, reset, getValues, formData.contractTypeId])
 
     /**
      * LoadOfferOptions useCallback.
      */
     const loadOfferOptions = useCallback(() => {
-        loadOffers(Number(formData.provider), Number(formData.contractType))
-    }, [loadOffers, formData.provider, formData.contractType])
+        reset({
+            ...defaultContractFormValues,
+            ...pick(getValues(), ['providerId', 'contractTypeId']),
+        })
+        loadOffers(formData.providerId!, formData.contractTypeId!)
+    }, [loadOffers, formData.providerId, formData.contractTypeId, getValues, reset])
 
     /**
      * LoadTariffTypeOptions useCallback.
      */
     const loadTariffTypeOptions = useCallback(() => {
-        loadTariffTypes(Number(formData.offer))
-    }, [loadTariffTypes, formData.offer])
+        reset({
+            ...defaultContractFormValues,
+            ...pick(getValues(), ['providerId', 'contractTypeId', 'offerId']),
+        })
+        loadTariffTypes(formData.offerId!)
+    }, [loadTariffTypes, getValues, formData.offerId, reset])
 
     /**
      * LoadPowerOptions useCallback.
      */
     const loadPowerOptions = useCallback(() => {
-        loadPowers(Number(formData.offer), Number(formData.tariffType))
-    }, [loadPowers, formData.offer, formData.tariffType])
-
-    // TODO Fix in next subtask
-    // useEffect(() => {
-    // Load OFFERS
-    // fieldNNames.reduce((prev, curr) => {}, )
-    // console.log('watch', watch)
-    // console.log('formData', formData)
-    // reset({
-    // ...formData,
-    // defaultContractFormValues,
-    // })
-    // }, [formData, getValues, reset])
+        reset({
+            ...defaultContractFormValues,
+            ...pick(getValues(), ['providerId', 'contractTypeId', 'offerId', 'tariffTypeId']),
+        })
+        loadPowers(formData.offerId!, formData.tariffTypeId!)
+    }, [loadPowers, getValues, reset, formData.offerId, formData.tariffTypeId])
 
     return (
         <>
             <ContractFormSelect<IContractType>
                 formatOptionLabel={(option) => option.name}
-                formatOptionValue={(option) => `${option.id}`}
+                formatOptionValue={(option) => option.id}
                 isOptionsInProgress={isContractTypesLoading}
                 loadOptions={loadContractTypes}
                 optionList={contractTypeList}
-                name="contractType"
+                name="contractTypeId"
                 selectLabel="Type"
                 validateFunctions={[requiredBuilder()]}
             />
-            {formData.contractType && (
+            {Boolean(formData.contractTypeId) && (
                 <ContractFormSelect<IProvider>
                     formatOptionLabel={(option) => option.name}
-                    formatOptionValue={(option) => `${option.id}`}
+                    formatOptionValue={(option) => option.id}
                     isOptionsInProgress={isProvidersLoading}
                     loadOptions={loadProviderOptions}
                     optionList={providerList}
-                    name="provider"
+                    name="providerId"
                     selectLabel="Fournisseur"
                     validateFunctions={[requiredBuilder()]}
                 />
             )}
-            {formData.provider && (
+            {Boolean(formData.providerId) && (
                 <ContractFormSelect<IOffer>
                     formatOptionLabel={(option) => option.name}
-                    formatOptionValue={(option) => `${option.id}`}
+                    formatOptionValue={(option) => option.id}
                     isOptionsInProgress={isOffersLoading}
                     loadOptions={loadOfferOptions}
                     optionList={offerList}
-                    name="offer"
+                    name="offerId"
                     selectLabel="Offre"
                     validateFunctions={[requiredBuilder()]}
                 />
             )}
 
-            {formData.offer && (
-                <ContractFormSelect<IOffer>
+            {Boolean(formData.offerId) && (
+                <ContractFormSelect<ITariffType>
                     formatOptionLabel={(option) => option.name}
-                    formatOptionValue={(option) => `${option.id}`}
+                    formatOptionValue={(option) => option.id}
                     isOptionsInProgress={isTariffTypesLoading}
                     loadOptions={loadTariffTypeOptions}
                     optionList={tariffTypeList}
-                    name="tariffType"
+                    name="tariffTypeId"
                     selectLabel="Type de contrat"
                     validateFunctions={[requiredBuilder()]}
                 />
             )}
 
-            {formData.tariffType && (
+            {Boolean(formData.tariffTypeId) && (
                 <ContractFormSelect<IPower>
                     formatOptionLabel={(option) => `${option} kVA`}
-                    formatOptionValue={(option) => `${option}`}
+                    formatOptionValue={(option) => option}
                     isOptionsInProgress={isPowersLoading}
                     loadOptions={loadPowerOptions}
                     optionList={powerList}
@@ -193,7 +201,7 @@ const ContractFormFields = () => {
                 />
             )}
             {/* When doing formData.power && there is a weird unexpected 0 showing in the UI, that's why doing formData.power !== 0 &&  */}
-            {formData.power !== 0 && (
+            {Boolean(formData.power) && (
                 <DatePicker
                     name="startSubscription"
                     label={formatMessage({
@@ -217,7 +225,7 @@ const ContractFormFields = () => {
                 color="primary"
                 className="w-224 mx-auto"
                 type="submit"
-                inProgress={isSubmitting}
+                inProgress={isContractsLoading}
                 disabled={
                     isContractTypesLoading ||
                     isProvidersLoading ||

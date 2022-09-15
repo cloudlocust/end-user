@@ -43,7 +43,19 @@ export type ContractFormProps =
          */
         onSubmit: (data: addContractDataType) => void
         /**
-         * Loading state when submitting form.
+         * Loading state when addContract request.
+         */
+        isContractsLoading?: boolean
+    }
+
+/**
+ * ContractFieldFormProps.
+ */
+export type ContractFormFieldsProps =
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    {
+        /**
+         * Loading state when addContract request.
          */
         isContractsLoading?: boolean
     }
@@ -85,22 +97,47 @@ export type IContract =
     }
 
 /**
+ * Type contractFormValues.
+ */
+// eslint-disable-next-line jsdoc/require-jsdoc
+export type contractFormValuesType = addContractDataType & {
+    /**
+     * Provider Id.
+     */
+    providerId: number
+}
+
+/**
  * Add Contract Data type.
  */
 // eslint-disable-next-line jsdoc/require-jsdoc
-export type addContractDataType = Omit<IContract, 'id', 'provider'>
+export type addContractDataType = {
+    /**
+     * Offer of the contract.
+     */
+    offerId: number
+    /**
+     * Type of the contract.
+     */
+    tariffTypeId: number
+    /**
+     * ContractType Id.
+     */
+    contractTypeId: number
+    /**
+     * Power of the offer.
+     */
+    power: number
+    /**
+     * Start contract subscription.
+     */
+    startSubscription: string
+    /**
+     * End contract subscription.
+     */
+    endSubscription: string
+}
 
-/**
- * Type contractFormValues.
- */
-export type contractFormValuesType = addContractDataType &
-    // eslint-disable-next-line jsdoc/require-jsdoc
-    IContract['provider'] & {
-        /**
-         * ContractType.
-         */
-        contractType: string
-    }
 /**
  * Prop of ContractFormSelect, to load options and show the optionList in the select.
  */
@@ -130,7 +167,7 @@ export type ContractFormSelectProps<T> =
         /**
          * Function to format the option value.
          */
-        formatOptionValue: (option: T) => string
+        formatOptionValue: (option: T) => string | number
         /**
          * Function to format the option label.
          */
