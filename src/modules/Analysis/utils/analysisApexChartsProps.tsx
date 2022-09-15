@@ -167,17 +167,21 @@ export const getAnalysisApexChartProps = (
 
     const opacityList: number[] = []
     const colorList: string[] = []
+    // Filling the color and opacity for each value in analysisChart.
     values.forEach((val, index) => {
         switch (index) {
+            // When value represent the minDayConsumption then it has its own color.
             case minDayConsumptionIndex:
                 opacityList.push(1)
                 colorList.push(theme.palette.primary.light)
                 break
+            // When value represent the maxDayConsumption then it has its own color.
             case maxDayConsumptionIndex:
                 opacityList.push(1)
                 colorList.push(theme.palette.primary.dark)
                 break
             default:
+                // When value that's not minDayConsumption or maxDayConsumption then it'll have a different color, and when value is 0 then the element will be transparent (through opacity 0).
                 // When value is 0 then we hide the element from analysisChart
                 opacityList.push(val === 0 ? 0 : 0.7)
                 colorList.push(theme.palette.primary.main)
