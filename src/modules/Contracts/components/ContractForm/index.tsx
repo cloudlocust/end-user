@@ -17,7 +17,7 @@ import { IContractType, IOffer, IPower, IProvider, ITariffType } from 'src/hooks
 import { ButtonLoader } from 'src/common/ui-kit'
 import { isNull, pick } from 'lodash'
 
-const defaultContractFormValues = {
+const defaultContractFormValues: contractFormValuesType = {
     contractTypeId: 0,
     endSubscription: '',
     offerId: 0,
@@ -25,7 +25,7 @@ const defaultContractFormValues = {
     providerId: 0,
     startSubscription: '',
     tariffTypeId: 0,
-} as contractFormValuesType
+}
 
 /**
  * Contract form component.
@@ -102,7 +102,7 @@ const ContractFormFields = ({ isContractsLoading }: ContractFormFieldsProps) => 
             ...defaultContractFormValues,
             ...pick(getValues(), ['contractTypeId']),
         })
-        loadProviders(Number(formData.contractTypeId))
+        loadProviders(formData.contractTypeId!)
     }, [loadProviders, reset, getValues, formData.contractTypeId])
 
     /**
@@ -113,7 +113,7 @@ const ContractFormFields = ({ isContractsLoading }: ContractFormFieldsProps) => 
             ...defaultContractFormValues,
             ...pick(getValues(), ['providerId', 'contractTypeId']),
         })
-        loadOffers(Number(formData.providerId), Number(formData.contractTypeId))
+        loadOffers(formData.providerId!, formData.contractTypeId!)
     }, [loadOffers, formData.providerId, formData.contractTypeId, getValues, reset])
 
     /**
@@ -124,7 +124,7 @@ const ContractFormFields = ({ isContractsLoading }: ContractFormFieldsProps) => 
             ...defaultContractFormValues,
             ...pick(getValues(), ['providerId', 'contractTypeId', 'offerId']),
         })
-        loadTariffTypes(Number(formData.offerId))
+        loadTariffTypes(formData.offerId!)
     }, [loadTariffTypes, getValues, formData.offerId, reset])
 
     /**
@@ -135,7 +135,7 @@ const ContractFormFields = ({ isContractsLoading }: ContractFormFieldsProps) => 
             ...defaultContractFormValues,
             ...pick(getValues(), ['providerId', 'contractTypeId', 'offerId', 'tariffTypeId']),
         })
-        loadPowers(Number(formData.offerId), Number(formData.tariffTypeId))
+        loadPowers(formData.offerId!, formData.tariffTypeId!)
     }, [loadPowers, getValues, reset, formData.offerId, formData.tariffTypeId])
 
     return (

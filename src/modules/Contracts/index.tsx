@@ -38,9 +38,12 @@ const Contracts = () => {
             <Dialog open={isOpenDialog} fullWidth={true} maxWidth="sm" onClose={() => setIsOpenDialog(false)}>
                 <ContractForm
                     onSubmit={async (input: addContractDataType) => {
-                        await addContract(input)
-                        setIsOpenDialog(false)
-                        reloadContractList()
+                        try {
+                            await addContract(input)
+                            setIsOpenDialog(false)
+                            reloadContractList()
+                            // Catching the error to avoir application crash and stops working.
+                        } catch (error) {}
                     }}
                     isContractsLoading={isContractsLoading}
                 />
