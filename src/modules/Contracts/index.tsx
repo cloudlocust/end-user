@@ -41,7 +41,6 @@ const Contracts = () => {
                         await addContract(input)
                         setIsOpenDialog(false)
                     }}
-                    isContractsLoading={isContractsLoading}
                 />
             </Dialog>
             <div className="p-24">
