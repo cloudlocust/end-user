@@ -112,7 +112,8 @@ const HousingCard = ({
      * @param id Identifier of the Housing to delete.
      */
     const handleDeleteHousing = async (id: number) => {
-        await removeHousing(id, reloadHousings)
+        await removeHousing(id)
+        reloadHousings()
         dispatch.housingModel.loadHousingsList()
         handleCloseConfirmModal()
     }

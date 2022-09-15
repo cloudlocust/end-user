@@ -3,11 +3,6 @@ import DatePickerUI, { DatePickerProps } from '@mui/lab/DatePicker'
 import TextField, { TextFieldProps } from '@mui/material/TextField'
 import { Controller, useFormContext } from 'react-hook-form'
 import { CustomValidateResult, validators } from 'src/common/react-platform-components'
-import {
-    dateFormat,
-    minDate as minDateValidator,
-    maxDate as maxDateValidator,
-} from 'src/common/react-platform-components/form-validators'
 import dayjs from 'dayjs'
 
 /**
@@ -93,12 +88,7 @@ export const DatePicker: FC<DatePickerFieldProps> = function ({
             rules={{
                 // @ts-ignore
                 // https://github.com/react-hook-form/react-hook-form/pull/5574 waiting for PR.
-                validate: validators([
-                    ...validateFunctions,
-                    dateFormat(valueFormat),
-                    minDateValidator(minDateStringValue),
-                    maxDateValidator(maxDateStringValue),
-                ]),
+                validate: validators([...validateFunctions]),
             }}
             render={({ field, fieldState }) => (
                 <DatePickerUI

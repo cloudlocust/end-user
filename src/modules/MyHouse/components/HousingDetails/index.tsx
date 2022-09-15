@@ -1,6 +1,6 @@
 import React from 'react'
 import { useEffect, useState } from 'react'
-import { useHistory, useLocation, useParams } from 'react-router'
+import { useHistory, useParams } from 'react-router'
 import { motion } from 'framer-motion'
 import Icon from '@mui/material/Icon'
 import { styled } from '@mui/material/styles'
@@ -48,13 +48,6 @@ const Root = styled(FusePageCarded)(({ theme }) => ({
 export const HousingDetails = () => {
     const history = useHistory()
     const { formatMessage } = useIntl()
-    /**
-     *
-     * Receiving meterGuid from the housing list page.
-     *
-     */
-    // eslint-disable-next-line jsdoc/require-jsdoc
-    const location: { state: { meterGuid: string } } = useLocation()
 
     const theme = useTheme()
 
@@ -183,8 +176,8 @@ export const HousingDetails = () => {
             }
             content={
                 <>
-                    <MeterStatus houseId={houseId} meterGuid={location.state.meterGuid} />
-                    <div className="flex flex-col items-center md:flex-row justify-around mx-16 mt-40">
+                    <MeterStatus />
+                    <div className="flex flex-col items-center md:flex-row justify-around mt-40">
                         <HousingDetailsCard
                             title="Informations logement"
                             elements={housingElements}
