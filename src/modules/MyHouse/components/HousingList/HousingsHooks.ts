@@ -65,10 +65,9 @@ export const useHousingsDetails = () => {
      * Remove Element Housing Handler.
      *
      * @param HousingId Housing Id of the Housing.
-     * @param reloadHousings To reload housings once added.
      * @returns The function returns a string message containing successful and errors message.
      */
-    const removeHousing = async (HousingId: number, reloadHousings: () => void) => {
+    const removeHousing = async (HousingId: number) => {
         setLoadingRequest(true)
         try {
             await axios.delete<IHousing>(`${HOUSING_API}/${HousingId}`)
@@ -80,7 +79,6 @@ export const useHousingsDetails = () => {
                 { variant: 'success' },
             )
             setLoadingRequest(false)
-            reloadHousings()
         } catch (error) {
             enqueueSnackbar(
                 formatMessage({

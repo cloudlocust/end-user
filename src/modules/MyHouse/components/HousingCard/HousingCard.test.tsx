@@ -6,7 +6,6 @@ import { BrowserRouter as Router } from 'react-router-dom'
 import { waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { IHousing } from 'src/modules/MyHouse/components/HousingList/housing.d'
-import * as reactRedux from 'react-redux'
 import { store } from 'src/redux'
 
 const TEST_MOCKED_HOUSES: IHousing[] = applyCamelCase(TEST_HOUSES)
@@ -47,7 +46,6 @@ jest.mock('src/modules/Meters/metersHook', () => ({
     }),
 }))
 
-const mockUseDispatch = jest.spyOn(reactRedux, 'useDispatch')
 const mockLoadHousings = jest.spyOn(store.dispatch.housingModel, 'loadHousingsList')
 
 describe('Test HousingCard', () => {
@@ -94,15 +92,12 @@ describe('Test HousingCard', () => {
         })
     })
     describe('removeHousing, when clicking on on delete icon of card', () => {
-        beforeEach(() => {
-            mockUseDispatch.mockClear()
-            mockUseDispatch.mockImplementation(() => store.dispatch)
-        })
         test('popup delete warning should open', async () => {
             const { getByRole, getByText } = reduxedRender(
                 <Router>
                     <HousingCard element={TEST_MOCKED_HOUSES[1]} reloadHousings={mockReloadHousings} />
                 </Router>,
+                { store },
             )
             // Open delete warning popup.
             userEvent.click(getByRole('button', { name: /delete/i }))
@@ -117,6 +112,7 @@ describe('Test HousingCard', () => {
                 <Router>
                     <HousingCard element={TEST_MOCKED_HOUSES[1]} reloadHousings={mockReloadHousings} />
                 </Router>,
+                { store },
             )
             // Open delete warning popup.
             userEvent.click(getByRole('button', { name: /delete/i }))
@@ -138,6 +134,7 @@ describe('Test HousingCard', () => {
                 <Router>
                     <HousingCard element={TEST_MOCKED_HOUSES[1]} reloadHousings={mockReloadHousings} />
                 </Router>,
+                { store },
             )
             // Open delete warning popup.
             userEvent.click(getByRole('button', { name: /delete/i }))
@@ -161,6 +158,7 @@ describe('Test HousingCard', () => {
                 <Router>
                     <HousingCard element={TEST_MOCKED_HOUSES[1]} reloadHousings={mockReloadHousings} />
                 </Router>,
+                { store },
             )
             // Open add meter popup.
             userEvent.click(getByText(DEFAULT_GUID_TEXT))
@@ -176,6 +174,7 @@ describe('Test HousingCard', () => {
                 <Router>
                     <HousingCard element={TEST_MOCKED_HOUSES[1]} reloadHousings={mockReloadHousings} />
                 </Router>,
+                { store },
             )
             // Open add meter popup.
             userEvent.click(getByText(DEFAULT_GUID_TEXT))
@@ -205,6 +204,7 @@ describe('Test HousingCard', () => {
                 <Router>
                     <HousingCard element={TEST_MOCKED_HOUSES[1]} reloadHousings={mockReloadHousings} />
                 </Router>,
+                { store },
             )
             // Open add meter popup.
             userEvent.click(getByText(DEFAULT_GUID_TEXT))
@@ -235,6 +235,7 @@ describe('Test HousingCard', () => {
                 <Router>
                     <HousingCard element={TEST_MOCKED_HOUSES[1]} reloadHousings={mockReloadHousings} />
                 </Router>,
+                { store },
             )
             // Open add meter popup.
             userEvent.click(getByText(DEFAULT_GUID_TEXT))
