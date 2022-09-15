@@ -85,11 +85,11 @@ const MeterStepNrLinkConnectionForm = ({
         <Form onSubmit={onSubmit}>
             <div className="flex justify-between items-center landscape:mt-10 w-full">
                 <div className="portrait:flex-col landscape:flex-row h-full flex justify-center items-center w-full">
-                    <div className="w-full mr-32 ">
+                    <div className="w-full mr-26 sm:mr-32 ">
                         {/* DO NOT REPRODUCE! */}
                         <Autocomplete
                             id="name-autocomplete"
-                            className="mb-20"
+                            className="mb-0 sm:mb-20"
                             freeSolo
                             data-testid="MeterNameAutoCompleteField"
                             value={meter}
@@ -122,7 +122,7 @@ const MeterStepNrLinkConnectionForm = ({
                                         })
                                     }
                                     name="name"
-                                    label="Nom de mon compteur"
+                                    label="Nommer mon compteur"
                                     variant="outlined"
                                 />
                             )}
@@ -152,13 +152,13 @@ const MeterStepNrLinkConnectionForm = ({
                             })}
                         </Typography>
                         <div className="flex justify-between items-start mt-7 mb-5">
-                            <div className="flex justify-between w-full items-center flex-col mb-5 ">
+                            <div className="flex justify-between w-full items-center flex-col mb-5 mr-10 sm:mr-0">
                                 <motion.div
                                     initial={{ opacity: 0, scale: 0.6 }}
                                     animate={{ opacity: 1, scale: 1 }}
                                     className="flex justify-center w-full mr-8 mb-5"
                                 >
-                                    <img src={electricityPath} alt="electricity-img" />
+                                    <img src={electricityPath} alt="electricity-img" className="border p-5" />
                                 </motion.div>
                                 <Typography variant="caption" className="text-center md:text-12">
                                     {formatMessage({
@@ -167,13 +167,13 @@ const MeterStepNrLinkConnectionForm = ({
                                     })}
                                 </Typography>
                             </div>
-                            <div className="flex justify-between w-full items-center flex-col mb-5 ">
+                            <div className="flex justify-between w-full items-center flex-col mb-5 mr-10 sm:mr-0">
                                 <motion.div
                                     initial={{ opacity: 0, scale: 0.6 }}
                                     animate={{ opacity: 1, scale: 1 }}
                                     className="flex justify-center w-full mb-5 mr-8"
                                 >
-                                    <img src={linkyPath} alt="electricity-img" />
+                                    <img src={linkyPath} alt="electricity-img" className="border p-6" />
                                 </motion.div>
 
                                 <Typography variant="caption" className="text-center md:text-12">
@@ -189,7 +189,7 @@ const MeterStepNrLinkConnectionForm = ({
                                     animate={{ opacity: 1, scale: 1 }}
                                     className="flex justify-center w-full mb-5 mr-8"
                                 >
-                                    <img src={contractPath} alt="electricity-img" />
+                                    <img src={contractPath} alt="electricity-img" className="border p-5" />
                                 </motion.div>
                                 <Typography variant="caption" className="w-full text-center md:text-12">
                                     {formatMessage({
