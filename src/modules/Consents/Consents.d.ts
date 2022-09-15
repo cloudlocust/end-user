@@ -60,10 +60,6 @@ export enum MeterVerificationEnum {
     /**
      *
      */
-    NOT_YET_VERIFIED = 'NOT_YET_VERIFIED',
-    /**
-     *
-     */
     VERIFIED = 'VERIFIED',
     /**
      *

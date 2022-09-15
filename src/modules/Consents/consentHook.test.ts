@@ -77,7 +77,7 @@ describe('useConsents test', () => {
         const {
             renderedHook: { result, waitForValueToChange },
         } = reduxedRenderHook(() => useConsents())
-        expect(result.current.meterVerification).toStrictEqual(MeterVerificationEnum.NOT_YET_VERIFIED)
+        expect(result.current.meterVerification).toStrictEqual(MeterVerificationEnum.NOT_VERIFIED)
         act(() => {
             result.current.verifyMeter(TEST_HOUSES[0].id)
         })
@@ -95,7 +95,7 @@ describe('useConsents test', () => {
         const {
             renderedHook: { result, waitForValueToChange },
         } = reduxedRenderHook(() => useConsents())
-        expect(result.current.meterVerification).toStrictEqual(MeterVerificationEnum.NOT_YET_VERIFIED)
+        expect(result.current.meterVerification).toStrictEqual(MeterVerificationEnum.NOT_VERIFIED)
         act(() => {
             result.current.verifyMeter(TEST_HOUSES[0].id)
         })
@@ -105,7 +105,7 @@ describe('useConsents test', () => {
             },
             { timeout: 6000 },
         )
-        expect(result.current.meterVerification).toStrictEqual(MeterVerificationEnum.NOT_YET_VERIFIED)
+        expect(result.current.meterVerification).toStrictEqual(MeterVerificationEnum.NOT_VERIFIED)
         expect(mockEnqueueSnackbar).toHaveBeenCalledWith('Erreur lors de la vérification de votre compteur', {
             autoHideDuration: 5000,
             variant: 'error',

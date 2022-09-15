@@ -37,7 +37,7 @@ export function useConsents() {
     const [nrlinkConsent, setNrlinkConsent] = useState<INrlinkConsent>()
     const [enedisConsent, setEnedisConsent] = useState<IEnedisConsent>()
     const [meterVerification, setMeterVerification] = useState<MeterVerificationEnum>(
-        MeterVerificationEnum.NOT_YET_VERIFIED,
+        MeterVerificationEnum.NOT_VERIFIED,
     )
     const [isMeterVerifyLoading, setIsMeterVerifyLoading] = useState(false)
     const [enedisSgeConsent, setEnedisSgeConsent] = useState<IEnedisSgeConsent | null>(null)
@@ -109,10 +109,10 @@ export function useConsents() {
                 setIsMeterVerifyLoading(true)
                 const response = await axios.get(`${API_RESOURCES_URL}/enedis-sge/consent/${housingId}/check`)
                 if (response.status === 200) setMeterVerification(MeterVerificationEnum.VERIFIED)
-                else setMeterVerification(MeterVerificationEnum.NOT_VERIFIED)
                 setIsMeterVerifyLoading(false)
             } catch (error: any) {
                 setIsMeterVerifyLoading(false)
+                setMeterVerification(MeterVerificationEnum.NOT_VERIFIED)
                 enqueueSnackbar(
                     error.response.data && error.response.data.detail
                         ? formatMessage({

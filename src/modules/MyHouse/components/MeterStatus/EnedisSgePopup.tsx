@@ -52,7 +52,7 @@ export const EnedisSgePopup = ({
         if (enedisConsentCheckbox && propsOrReduxHouseId) {
             createEnedisSgeConsent(propsOrReduxHouseId)
             setOpenSgePopup(false)
-            setMeterVerification(MeterVerificationEnum.NOT_YET_VERIFIED)
+            setMeterVerification(MeterVerificationEnum.NOT_VERIFIED)
             setEnedisConsentCheckbox(false)
             setSgeStep(0)
         }
@@ -85,7 +85,7 @@ export const EnedisSgePopup = ({
                         // Not allow the user to close the popup when the meter is being checked.
                         if ((reason !== 'backdropClick' && reason !== 'escapeKeyDown') || sgeStep === 1) {
                             setOpenSgePopup(false)
-                            setMeterVerification(MeterVerificationEnum.NOT_YET_VERIFIED)
+                            setMeterVerification(MeterVerificationEnum.NOT_VERIFIED)
                             setSgeStep(0)
                         }
                     }}
@@ -113,8 +113,7 @@ export const EnedisSgePopup = ({
                                             />
                                         </>
                                     ) : (
-                                        (meterVerification === MeterVerificationEnum.NOT_VERIFIED ||
-                                            meterVerification === MeterVerificationEnum.NOT_YET_VERIFIED) && (
+                                        meterVerification === MeterVerificationEnum.NOT_VERIFIED && (
                                             <div className="flex flex-col items-center">
                                                 <Icon className="mb-10">
                                                     <img
