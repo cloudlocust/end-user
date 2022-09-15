@@ -1,4 +1,4 @@
-import { Dialog, DialogContent, LinearProgress, Typography, Icon } from '@mui/material'
+import { Dialog, DialogContent, LinearProgress, Typography, Icon, Checkbox } from '@mui/material'
 import { useEffect, useState } from 'react'
 import { useIntl } from 'react-intl'
 import { useSelector } from 'react-redux'
@@ -26,10 +26,13 @@ export const EnedisSgePopup = ({
     const { formatMessage } = useIntl()
     const [sgeStep, setSgeStep] = useState(0)
     const [openSgePopup, setOpenSgePopup] = useState<boolean>(false)
-    const { meterVerification, verifyMeter, isMeterVerifyLoading, setMeterVerification } = useConsents()
+    const { meterVerification, verifyMeter, isMeterVerifyLoading, setMeterVerification, createEnedisSgeConsent } =
+        useConsents()
     const { currentHousing } = useSelector(({ housingModel }: RootState) => housingModel)
     const [propsOrReduxHouseId] = useState(houseId ? houseId : currentHousing?.id)
+    const [enedisConsentCheckbox, setEnedisConsentCheckbox] = useState(false)
 
+    // UseEffect that set the second step when the meter is verified succesfully.
     useEffect(() => {
         if (meterVerification === MeterVerificationEnum.VERIFIED) {
             setSgeStep(1)
@@ -42,6 +45,27 @@ export const EnedisSgePopup = ({
             verifyMeter(propsOrReduxHouseId)
         }
     }, [openSgePopup, propsOrReduxHouseId, setOpenSgePopup, verifyMeter])
+
+    // UseEffect starts when the checkbox is true that creates the enedis sge consent.
+    // This also reset the sgeStep and the checkbox.
+    useEffect(() => {
+        if (enedisConsentCheckbox && propsOrReduxHouseId) {
+            createEnedisSgeConsent(propsOrReduxHouseId)
+            setOpenSgePopup(false)
+            setMeterVerification(MeterVerificationEnum.NOT_YET_VERIFIED)
+            setEnedisConsentCheckbox(false)
+            setSgeStep(0)
+        }
+    }, [createEnedisSgeConsent, enedisConsentCheckbox, propsOrReduxHouseId, setMeterVerification])
+
+    /**
+     * Function that handles checkbox onChange event.
+     *
+     * @param event OnChangeEvent.
+     */
+    function handleCheckboxChange(event: React.ChangeEvent<HTMLInputElement>) {
+        setEnedisConsentCheckbox(event.target.checked)
+    }
 
     return (
         <>
@@ -123,8 +147,28 @@ export const EnedisSgePopup = ({
                                 </div>
                             </>
                         )}
-                        {/* TODO: MYEM-2628 */}
-                        {sgeStep === 1 && <>Second Step Here</>}
+                        {sgeStep === 1 && (
+                            <div className="flex flex-row">
+                                <Checkbox
+                                    checked={enedisConsentCheckbox}
+                                    onChange={handleCheckboxChange}
+                                    color="primary"
+                                    data-testid="sge-checkbox"
+                                />
+
+                                <TypographyFormatMessage
+                                    className="underline cursor-pointer ml-12"
+                                    fontWeight={500}
+                                    data-testid="sge-message"
+                                    onClick={() =>
+                                        window.open('https://www.myem.fr/politique-de-confidentialite/', '_blank')
+                                    }
+                                >
+                                    J'autorise My Energy Manager à la récolte de mon historique de données de
+                                    consommation auprès d'Enedis.
+                                </TypographyFormatMessage>
+                            </div>
+                        )}
                     </DialogContent>
                 </Dialog>
             )}
