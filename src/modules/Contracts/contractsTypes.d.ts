@@ -1,5 +1,6 @@
 import { SelectFieldProps } from 'src/common/ui-kit/form-fields/Select'
-
+import { IOffer, IContractType, IPower, IProvider, ITariffType } from 'src/hooks/CommercialOffer/CommercialOffers'
+import { Except } from 'type-fest'
 /**
  * Type contracts route param.
  */
@@ -61,9 +62,9 @@ export type ContractFormFieldsProps =
     }
 
 /**
- * Interface Contract model.
+ * Type of request response of load contract.
  */
-export type IContract =
+export type loadContractResponse =
     // eslint-disable-next-line jsdoc/require-jsdoc
     {
         /**
@@ -71,21 +72,27 @@ export type IContract =
          */
         id: number
         /**
-         * Provider of the contract.
-         */
-        provider: string
-        /**
          * Offer of the contract.
          */
-        offer: string
+        // eslint-disable-next-line jsdoc/require-jsdoc
+        offer: IOffer & {
+            /**
+             * Provider of the contract.
+             */
+            provider: IProvider
+        }
         /**
-         * Type of the contract.
+         * Tariff Type of the contract.
          */
-        tariffType: string
+        tariffType: ITariffType
+        /**
+         * Contract Type (Professional, particulier ...etc).
+         */
+        contractType: IContractType
         /**
          * Power of the offer.
          */
-        power: number
+        power: IPower
         /**
          * Start contract subscription.
          */
@@ -95,6 +102,22 @@ export type IContract =
          */
         endSubscription: string
     }
+
+/**
+ * Interface Contract that's formatted from response of request loadContract.
+ * This format makes it easier to handle contractList and contractDetails.
+ */
+// eslint-disable-next-line jsdoc/require-jsdoc
+export type IContract = {
+    /**
+     * Provider of the contract.
+     */
+    provider: IProvider
+    /**
+     * Offer of the contract.
+     */
+    offer: IOffer
+} & Except<loadContractResponse, 'offer'>
 
 /**
  * Type contractFormValues.
