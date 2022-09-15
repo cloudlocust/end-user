@@ -4,8 +4,10 @@ import { MeterStatus } from 'src/modules/MyHouse/components/MeterStatus'
 import { enedisConsentStatus, nrlinkConsentStatus } from 'src/modules/Consents/Consents'
 import { URL_NRLINK_CONNECTION_STEPS } from 'src/modules/nrLinkConnection'
 import dayjs from 'dayjs'
+import userEvent from '@testing-library/user-event'
+import { MeterStatusProps } from 'src/modules/MyHouse/components/MeterStatus/meterStatus'
 
-const mockMeterStatusProps = {
+const mockMeterStatusProps: MeterStatusProps = {
     houseId: '1',
     meterGuid: '12345678901234',
 }
@@ -20,8 +22,10 @@ const NRLINK_NONEXISTANT_EXPIRED_MESSAGE = 'Connectez votre nrLINK pour visualis
 const ENEDIS_CONNECTED_MESSAGE = 'Historique de consommation'
 const ENEDIS_NONEXISTANT_EXPIRED_MESSAGE =
     'Autorisez la récupération de vos données de consommation pour avoir accès à votre historique.'
-
 const NO_METER_MESSAGE = 'Aucun compteur renseigné'
+
+const VERIFY_METER_MESSAGE = "Vérification de l'existence de votre compteur"
+
 let mockNrlinkConsent: nrlinkConsentStatus
 let mockEnedisConsent: enedisConsentStatus
 let mockGetConsent = jest.fn()
@@ -29,6 +33,8 @@ let mockNrlinkCreatedAt = '2022-09-02T08:06:08Z'
 let mockNrlinkGuid = 'ABCD1234'
 let mockEnedisCreatedAt = mockNrlinkCreatedAt
 let enedisFormatedEndingDate = dayjs(mockNrlinkCreatedAt).add(3, 'year').format('DD/MM/YYYY')
+let mockWindowOpen = jest.fn()
+window.open = mockWindowOpen
 
 // Mock consentsHook
 jest.mock('src/modules/Consents/consentsHook.ts', () => ({
@@ -159,6 +165,21 @@ describe('MeterStatus component test', () => {
 
             const image = getByAltText('off-icon')
             expect(image).toHaveAttribute('src', '/assets/images/content/housing/consent-status/meter-off.svg')
+        })
+    })
+    describe('test verifyMeterPopup', () => {
+        test('when clicked on error message, verify meter popup is shown', async () => {
+            mockEnedisConsent = 'EXPIRED' || 'NONEXISTENT'
+
+            const { getByText, getByTestId } = reduxedRender(
+                <Router>
+                    <MeterStatus {...mockMeterStatusProps} />
+                </Router>,
+            )
+            userEvent.click(getByText(ENEDIS_NONEXISTANT_EXPIRED_MESSAGE))
+
+            expect(getByText(VERIFY_METER_MESSAGE)).toBeVisible()
+            expect(getByTestId('linear-progess')).toHaveClass('MuiLinearProgress-colorPrimary')
         })
     })
 })
