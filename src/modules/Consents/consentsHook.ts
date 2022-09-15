@@ -40,7 +40,7 @@ export function useConsents() {
         MeterVerificationEnum.NOT_VERIFIED,
     )
     const [isMeterVerifyLoading, setIsMeterVerifyLoading] = useState(false)
-    const [enedisSgeConsent, setEnedisSgeConsent] = useState<IEnedisSgeConsent | null>(null)
+    const [enedisSgeConsent, setEnedisSgeConsent] = useState<IEnedisSgeConsent>()
     const [isEnedisSgeConsentLoading, setIsEnedisSgeConsentLoading] = useState(false)
 
     /**
