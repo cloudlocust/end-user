@@ -10,7 +10,7 @@ import { enedisConsentStatus, nrlinkConsentStatus } from 'src/modules/Consents/C
 import dayjs from 'dayjs'
 import { useIntl } from 'react-intl'
 import { NrlinkConnectionStepsEnum } from 'src/modules/nrLinkConnection/nrlinkConnectionSteps.d'
-import { SgePopup } from 'src/modules/MyHouse/components/MeterStatus/SgePopup'
+import { EnedisSgePopup } from 'src/modules/MyHouse/components/MeterStatus/EnedisSgePopup'
 import { useSelector } from 'react-redux'
 import { RootState } from 'src/redux'
 import { IHousing } from 'src/modules/MyHouse/components/HousingList/housing'
@@ -23,24 +23,13 @@ import { IHousing } from 'src/modules/MyHouse/components/HousingList/housing'
 export const MeterStatus = () => {
     const theme = useTheme()
     const { formatMessage } = useIntl()
-    const {
-        getConsents,
-        consentsLoading,
-        nrlinkConsent,
-        enedisConsent,
-        verifyMeter,
-        isMeterVerifyLoading,
-        meterVerification,
-        setMeterVerification,
-    } = useConsents()
+    const { getConsents, consentsLoading, nrlinkConsent, enedisConsent } = useConsents()
     const { housingList } = useSelector(({ housingModel }: RootState) => housingModel)
     const [foundHousing, setFoundHousing] = useState<IHousing>()
 
     // Retrieving house id from url params /my-houses/:houseId
     // eslint-disable-next-line jsdoc/require-jsdoc
     const { houseId }: { houseId: string } = useParams()
-
-    const [openSgePopup, setOpenSgePopup] = useState<boolean>(false)
 
     const nrlinkConsentCreatedAt = dayjs(nrlinkConsent?.createdAt).format('DD/MM/YYYY')
     /* To have the ending date of the consent, we add 3 years to the date the consent was made */
@@ -49,7 +38,7 @@ export const MeterStatus = () => {
     // UseEffect that find the housing with the house Id from url params.
     useEffect(() => {
         if (housingList) {
-            setFoundHousing(housingList.find((housing) => housing.id === Number(houseId)))
+            setFoundHousing(housingList.find((housing) => housing.id === parseInt(houseId)))
         }
     }, [houseId, housingList])
 
@@ -59,13 +48,6 @@ export const MeterStatus = () => {
             getConsents(foundHousing?.meter?.guid)
         }
     }, [getConsents, foundHousing])
-
-    // UseEffect starts when the verifyMeterPopup is true which verifies the meter.
-    useEffect(() => {
-        if (openSgePopup) {
-            verifyMeter(Number(houseId))
-        }
-    }, [houseId, openSgePopup, verifyMeter])
 
     /**
      * Function that renders JSX accorrding to nrlink status.
@@ -174,15 +156,17 @@ export const MeterStatus = () => {
                             <img src="/assets/images/content/housing/consent-status/meter-off.svg" alt="off-icon" />
                         </Icon>
                         <div className="flex flex-col">
-                            <TypographyFormatMessage
-                                color={theme.palette.error.main}
-                                className="underline cursor-pointer"
-                                fontWeight={600}
-                                onClick={() => setOpenSgePopup(true)}
-                            >
-                                Autorisez la récupération de vos données de consommation pour avoir accès à votre
-                                historique.
-                            </TypographyFormatMessage>
+                            <EnedisSgePopup
+                                openEnedisSgeConsentText={formatMessage({
+                                    id: 'Autorisez la récupération de vos données de consommation pour avoir accès à votre historique.',
+                                    defaultMessage:
+                                        'Autorisez la récupération de vos données de consommation pour avoir accès à votre historique.',
+                                })}
+                                TypographyProps={{
+                                    color: theme.palette.error.main,
+                                }}
+                                houseId={parseInt(houseId)}
+                            />
                         </div>
                     </>
                 )
@@ -191,15 +175,6 @@ export const MeterStatus = () => {
 
     return (
         <>
-            {openSgePopup && (
-                <SgePopup
-                    openSgePopup={openSgePopup}
-                    setOpenSgePopup={setOpenSgePopup}
-                    isMeterVerifyLoading={isMeterVerifyLoading}
-                    meterVerification={meterVerification}
-                    setMeterVerification={setMeterVerification}
-                />
-            )}
             <Card className="my-12 md:mx-16" variant="outlined">
                 <MuiCardContent sx={{ p: 0, '&:last-child': { pb: 0 } }}>
                     <div className="flex flex-row justify-between bg-grey-200 p-12 border-b-1 border-grey-300">

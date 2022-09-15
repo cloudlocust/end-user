@@ -43,6 +43,7 @@ export const consentsEndpoints = [
     }),
 
     rest.get(`${API_RESOURCES_URL}/enedis-sge/consent/:houseid/check`, (req, res, ctx) => {
+        // Use authorization to test the different cases in error.response.data.detail
         const authorization = req.headers.get('authorization')
         if (authorization === 'error') {
             return res(ctx.status(400), ctx.delay(1000))

@@ -93,23 +93,29 @@ export function useConsents() {
      */
     const verifyMeter = useCallback(
         async (housingId: number) => {
-            if (!housingId) return
             try {
+                if (!housingId) return
                 setIsMeterVerifyLoading(true)
                 const response = await axios.get(`${API_RESOURCES_URL}/enedis-sge/consent/${housingId}/check`)
                 if (response.status === 200) setMeterVerification(MeterVerificationEnum.VERIFIED)
                 else setMeterVerification(MeterVerificationEnum.NOT_VERIFIED)
                 setIsMeterVerifyLoading(false)
-            } catch (error) {
+            } catch (error: any) {
                 setIsMeterVerifyLoading(false)
                 enqueueSnackbar(
-                    formatMessage({
-                        id: 'Erreur lors de la vérification de votre compteur',
-                        defaultMessage: 'Erreur lors de la vérification de votre compteur',
-                    }),
+                    error.response.data && error.response.data.detail
+                        ? formatMessage({
+                              id: error.response.data.detail,
+                              defaultMessage: error.response.data.detail,
+                          })
+                        : formatMessage({
+                              id: 'Erreur lors de la vérification de votre compteur',
+                              defaultMessage: 'Erreur lors de la vérification de votre compteur',
+                          }),
+
                     {
-                        variant: 'error',
                         autoHideDuration: 5000,
+                        variant: 'error',
                     },
                 )
             }
