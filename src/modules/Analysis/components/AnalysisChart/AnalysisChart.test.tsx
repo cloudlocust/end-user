@@ -2,7 +2,7 @@ import { reduxedRender } from 'src/common/react-platform-components/test'
 import AnalysisChart from 'src/modules/Analysis/components/AnalysisChart'
 import { BrowserRouter as Router } from 'react-router-dom'
 import { IMetric, metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
-import { TEST_SUCCESS_WEEK_METRICS } from 'src/mocks/handlers/metrics'
+import { FAKE_WEEK_DATA } from 'src/mocks/handlers/metrics'
 import { createTheme } from '@mui/material/styles'
 import userEvent from '@testing-library/user-event'
 import { waitFor } from '@testing-library/react'
@@ -11,7 +11,7 @@ import { renderToString } from 'react-dom/server'
 import { getDataFromYAxis } from 'src/modules/MyConsumption/components/Widget/WidgetFunctions'
 import convert from 'convert-units'
 
-let mockData: IMetric[] = TEST_SUCCESS_WEEK_METRICS([metricTargetsEnum.consumption])
+let mockData: IMetric[] = [{ target: metricTargetsEnum.consumption, datapoints: FAKE_WEEK_DATA }]
 const NO_DATA_TEXT = 'Aucune donnée disponible'
 const analysisChartContainerClassname = 'analysisChartContainer'
 const analysisChartClassname = 'apexcharts-inner apexcharts-graphical'

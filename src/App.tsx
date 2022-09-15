@@ -7,6 +7,7 @@ import ThemingProvider from 'src/common/ui-kit/fuse/components/ThemingProvider'
 import { navbarItemType } from 'src/common/ui-kit/fuse/components/FuseNavigation/FuseNavigation'
 import { ToolbarWidget as ToolbarContent } from 'src/modules/Layout'
 import { ConfirmProvider } from 'material-ui-confirm'
+import ToolbarIcon from 'src/modules/Layout/Toolbar/components/ToolbarIcon'
 
 /**
  * Routes accessible to the app wrapped by access hook.
@@ -39,6 +40,7 @@ const Routes = () => {
                                             displayToolbar={route.settings?.layout?.toolbar?.display}
                                             displayNavbar={route.settings?.layout?.navbar?.display}
                                             toolbarContent={<ToolbarContent />}
+                                            toolbarIcon={<ToolbarIcon />}
                                         >
                                             <route.component {...route.props} />
                                         </Layout1>
