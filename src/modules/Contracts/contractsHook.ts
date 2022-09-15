@@ -10,7 +10,7 @@ import { HOUSING_API } from 'src/modules/MyHouse/components/HousingList/Housings
  * @param houseId HouseId of the contractList.
  * @returns Contract microservice Endpoint.
  */
-export const CONTRACTS_API = (houseId: number) => `${HOUSING_API}/${houseId}/contracts`
+export const CONTRACTS_API = (houseId: number) => `${HOUSING_API}/${houseId}/housing_contracts`
 
 /**
  * Error message fetch contracts request.
@@ -23,6 +23,34 @@ const loadElementListError = (error: any, formatMessage: formatMessageType) => {
     return formatMessage({
         id: 'Erreur lors du chargement des contrats',
         defaultMessage: 'Erreur lors du chargement des contrats',
+    })
+}
+
+/**
+ * Error message add contract.
+ *
+ * @param error Axios error object.
+ * @param formatMessage FormatMessage intl object from (react-intl package).
+ * @returns {string} Error message.
+ */
+const addElementError = (error: any, formatMessage: formatMessageType) => {
+    return formatMessage({
+        id: "Erreur lors de l'ajout du contrat",
+        defaultMessage: "Erreur lors de l'ajout du contrat",
+    })
+}
+
+/**
+ * Success message addElement.
+ *
+ * @param responseData Added Contract.
+ * @param formatMessage FormatMessage intl object from (react-intl package).
+ * @returns {string} Success message.
+ */
+const addElementSuccess = (responseData: IContract, formatMessage: formatMessageType) => {
+    return formatMessage({
+        id: "Succès lors de l'ajout du contrat",
+        defaultMessage: "Succès lors de l'ajout du contrat",
     })
 }
 
@@ -65,7 +93,7 @@ export const useContractList = (houseId: number, sizeParam?: number) => {
     return BuilderUseElementList<IContract, addContractDataType, searchFilterType>({
         API_ENDPOINT: CONTRACTS_API(Number(houseId)),
         sizeParam,
-        snackBarMessage0verride: { loadElementListError },
+        snackBarMessage0verride: { loadElementListError, addElementError, addElementSuccess },
     })()
 }
 
