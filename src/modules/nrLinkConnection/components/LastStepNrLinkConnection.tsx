@@ -1,5 +1,4 @@
 import { useIntl } from 'react-intl'
-import Typography from '@mui/material/Typography'
 import { ActionsNrLinkConnectionSteps } from 'src/modules/nrLinkConnection'
 import { Form, requiredBuilder } from 'src/common/react-platform-components'
 import { useSnackbar } from 'notistack'
@@ -13,6 +12,7 @@ import { SET_SHOW_NRLINK_POPUP_ENDPOINT } from 'src/modules/nrLinkConnection/NrL
 import { motion } from 'framer-motion'
 import { nrLinkGUID, nrLinkInfo, nrLinkMain } from 'src/modules/nrLinkConnection'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
+const textNrlinkColor = 'text.secondary'
 
 /**
  * Component showing the first step in the nrLinkConnection Stepper.
@@ -115,7 +115,7 @@ const LastStepNrLinkConnection = ({
                             variant="caption"
                             className="w-full text-center text-stone-400"
                             // eslint-disable-next-line sonarjs/no-duplicate-string
-                            sx={{ color: 'text.secondary' }}
+                            sx={{ color: textNrlinkColor }}
                         >
                             Vous pouvez trouver le № GUID de votre nrLINK sur:
                         </TypographyFormatMessage>
@@ -131,7 +131,7 @@ const LastStepNrLinkConnection = ({
                                 <TypographyFormatMessage
                                     variant="caption"
                                     className="text-center md:text-12"
-                                    sx={{ color: 'text.secondary' }}
+                                    sx={{ color: textNrlinkColor }}
                                 >
                                     Sous le socle de votre afficheur
                                 </TypographyFormatMessage>
@@ -147,7 +147,7 @@ const LastStepNrLinkConnection = ({
                                 <TypographyFormatMessage
                                     variant="caption"
                                     className="text-center md:text-12"
-                                    sx={{ color: 'text.secondary' }}
+                                    sx={{ color: textNrlinkColor }}
                                 >
                                     A l'allumage de votre afficheur
                                 </TypographyFormatMessage>
@@ -163,7 +163,7 @@ const LastStepNrLinkConnection = ({
                                 <TypographyFormatMessage
                                     variant="caption"
                                     className="w-full text-center md:text-12"
-                                    sx={{ color: 'text.secondary' }}
+                                    sx={{ color: textNrlinkColor }}
                                 >
                                     Dans Menu/IHD
                                 </TypographyFormatMessage>
