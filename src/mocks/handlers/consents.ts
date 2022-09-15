@@ -1,4 +1,5 @@
 import { rest } from 'msw'
+import { API_RESOURCES_URL } from 'src/configs'
 import { IEnedisConsent, INrlinkConsent } from 'src/modules/Consents/Consents'
 import { ENEDIS_CONSENT_API, NRLINK_CONSENT_API } from 'src/modules/Consents/consentsHook'
 import { SnakeCasedPropertiesDeep } from 'type-fest'
@@ -38,6 +39,16 @@ export const consentsEndpoints = [
             return res(ctx.status(400), ctx.delay(1000))
         } else {
             return res(ctx.status(200), ctx.delay(1000), ctx.json(TEST_SUCCESS_NRLINK_CONSENT))
+        }
+    }),
+
+    rest.get(`${API_RESOURCES_URL}/enedis-sge/consent/:houseid/check`, (req, res, ctx) => {
+        // Use authorization to test the different cases in error.response.data.detail
+        const authorization = req.headers.get('authorization')
+        if (authorization === 'error') {
+            return res(ctx.status(400), ctx.delay(1000))
+        } else {
+            return res(ctx.status(200), ctx.delay(1000))
         }
     }),
 ]

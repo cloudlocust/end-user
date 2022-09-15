@@ -47,3 +47,21 @@ export interface IEnedisConsent {
      */
     createdAt?: string
 }
+
+/**
+ * Enum representing different verification state for the meter.
+ */
+export enum MeterVerificationEnum {
+    /**
+     *
+     */
+    NOT_YET_VERIFIED = 'NOT_YET_VERIFIED',
+    /**
+     *
+     */
+    VERIFIED = 'VERIFIED',
+    /**
+     *
+     */
+    NOT_VERIFIED = 'NOT_VERIFIED',
+}
