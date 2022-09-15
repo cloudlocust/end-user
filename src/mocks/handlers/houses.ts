@@ -114,16 +114,20 @@ export const housingEndpoints = [
         const { housingId } = req.params
         const houseId = parseInt(housingId)
 
-        if (housingId) {
-            const IndexHousingToUpdate = TEST_HOUSES.findIndex(
-                (housing: SnakeCasedPropertiesDeep<IHousing>) => housing.id === houseId,
-            )
+        const housingToUpdate = TEST_HOUSES.find(
+            (housing: SnakeCasedPropertiesDeep<IHousing>) => housing.id === houseId,
+        )
 
-            if (IndexHousingToUpdate) {
-                TEST_HOUSES[IndexHousingToUpdate].meter = { guid }
+        if (housingToUpdate) {
+            if (housingToUpdate?.meter) {
+                // already exist
+                return res(ctx.status(409), ctx.delay(1000))
+            } else {
+                const newMeter = { name, guid, id: Math.random() }
+                housingToUpdate.meter = newMeter
+
+                return res(ctx.status(200), ctx.delay(1000), ctx.json(newMeter))
             }
-            // id is just random number hypothecly generated from database.
-            return res(ctx.status(200), ctx.delay(1000), ctx.json({ name, guid, id: Math.random() }))
         } else {
             return res(ctx.status(401), ctx.delay(1000))
         }
