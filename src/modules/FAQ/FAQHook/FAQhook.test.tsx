@@ -1,4 +1,5 @@
 import { reduxedRenderHook } from 'src/common/react-platform-components/test'
+import { TEST_FAQ } from 'src/mocks/handlers/faq'
 import { useFAQ } from 'src/modules/FAQ/FAQHook/FAQhook'
 
 const mockEnqueueSnackbar = jest.fn()
@@ -23,5 +24,6 @@ describe('Testing useFAQ hooks', () => {
             { timeout: 10000 },
         )
         expect(result.current.isLoadingInProgress).toBe(false)
+        expect(result.current.dataFAQ).toHaveLength(TEST_FAQ.length)
     })
 })
