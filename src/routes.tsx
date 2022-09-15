@@ -13,6 +13,7 @@ import { NrLinkConnectionConfig } from './modules/nrLinkConnection'
 import { MyHouseConfig } from './modules/MyHouse'
 import { ContractsConfig } from './modules/Contracts/ContractsConfig'
 import { ProfileManagementConfig } from './modules/User/ProfileManagement/ProfileManagementConfig'
+import { FAQConfig } from './modules/FAQ/FAQConfig'
 /**
  *
  */
@@ -29,6 +30,7 @@ export const routes = [
     ...CommunityConfig,
     ...AnalysisConfig,
     ...ProfileManagementConfig,
+    ...FAQConfig,
     {
         /**
          * TODO Document.

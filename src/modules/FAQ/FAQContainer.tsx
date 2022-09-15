@@ -5,15 +5,13 @@ import { useIntl } from 'src/common/react-platform-translation'
 import { useHistory } from 'react-router-dom'
 import Button from '@mui/material/Button'
 import { motion } from 'framer-motion'
-import { ProfileManagementForm } from 'src/modules/User/ProfileManagement/ProfileManagementForm'
-import { ChangePassword } from 'src/modules/User/ChangePassword/ChangePassword'
 
 /**
- * Modify Profile component with the posibility to modify the profile.
+ * FAQ component with the possibility to display frequently asked questions.
  *
- * @returns Modify Profile component.
+ * @returns FAQ component.
  */
-const ProfileManagement = () => {
+const FAQContainer = () => {
     const { formatMessage } = useIntl()
     const history = useHistory()
 
@@ -30,7 +28,7 @@ const ProfileManagement = () => {
                         >
                             arrow_back
                         </Icon>
-                        {formatMessage({ id: 'retour', defaultMessage: 'Retour' })}
+                        {formatMessage({ id: 'Retour', defaultMessage: 'Retour' })}
                     </Button>
                     <div className="flex pl-16 mt-10 md:mt-0">
                         <Icon
@@ -39,7 +37,7 @@ const ProfileManagement = () => {
                             animate={{ scale: 1, transition: { delay: 0.2 } }}
                             className="text-24 md:text-32"
                         >
-                            account_box
+                            help_center
                         </Icon>
                         <Typography
                             component={motion.span}
@@ -48,21 +46,17 @@ const ProfileManagement = () => {
                             className="sm:flex text-18 sm:text-20 md:text-24 mx-12 font-semibold"
                         >
                             {formatMessage({
-                                id: 'Mes Informations',
-                                defaultMessage: 'Mes Informations',
+                                id: 'Questions Fréquentes',
+                                defaultMessage: 'Questions Fréquentes',
                             })}
                         </Typography>
                     </div>
                 </div>
             }
-            content={
-                <>
-                    <ProfileManagementForm />
-                    <ChangePassword />
-                </>
-            }
+            // TODO: Change in MYEM-3020
+            content={<div>faq</div>}
         />
     )
 }
 
-export default ProfileManagement
+export default FAQContainer
