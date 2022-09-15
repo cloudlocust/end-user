@@ -4,11 +4,14 @@ import { TEST_CONTRACTS as MOCK_CONTRACTS } from 'src/mocks/handlers/contracts'
 import userEvent from '@testing-library/user-event'
 import { ConfirmProvider } from 'material-ui-confirm'
 import { waitFor } from '@testing-library/react'
-import { ContractCardProps } from 'src/modules/Contracts/contractsTypes'
+import { ContractCardProps, IContract, loadContractResponse } from 'src/modules/Contracts/contractsTypes'
 import { applyCamelCase } from 'src/common/react-platform-components'
 import { TEST_HOUSE_ID } from 'src/mocks/handlers/contracts'
+import { formatLoadContractResponseToIContract } from 'src/modules/Contracts/utils/contractsFunctions'
 
-const TEST_CONTRACTS = applyCamelCase(MOCK_CONTRACTS)
+const TEST_CONTRACTS: IContract[] = applyCamelCase(MOCK_CONTRACTS).map((contract: loadContractResponse) =>
+    formatLoadContractResponseToIContract(contract),
+)
 const DELETE_CONTRACT_WARNING_MESSAGE =
     'Vous êtes sur le point de supprimer un contrat. Ëtes-vous sûr de vouloir continuer ?'
 const CONFIRM_BUTTON_TEXT = 'Continuer'

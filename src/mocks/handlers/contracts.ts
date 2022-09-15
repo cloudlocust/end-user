@@ -1,9 +1,9 @@
 import { rest } from 'msw'
 import { getPaginationFromElementList } from 'src/mocks/utils'
 import { SnakeCasedPropertiesDeep } from 'type-fest'
-import { addContractDataType, IContract } from 'src/modules/Contracts/contractsTypes'
+import { addContractDataType, IContract, loadContractResponse } from 'src/modules/Contracts/contractsTypes'
 import { HOUSING_API } from 'src/modules/MyHouse/components/HousingList/HousingsHooks'
-
+import { TEST_OFFERS, TEST_CONTRACT_TYPES, TEST_PROVIDERS, TEST_TARIFF_TYPES } from 'src/mocks/handlers/commercialOffer'
 /**
  * Endpoint for contracts mock.
  */
@@ -41,75 +41,75 @@ export const TEST_SUCCESS_ADD_CONTRACT: SnakeCasedPropertiesDeep<addContractData
 /**
  * Mock of customers/clients list data.
  */
-export var TEST_CONTRACTS: SnakeCasedPropertiesDeep<IContract>[] = [
+export var TEST_CONTRACTS: SnakeCasedPropertiesDeep<loadContractResponse>[] = [
     {
         id: TEST_SUCCESS_ID,
-        offer: 'Leanne',
+        offer: { ...TEST_OFFERS[0], provider: TEST_PROVIDERS[0] },
         power: 6,
-        provider: 'EDF',
-        tariff_type: 'Essentielle',
+        tariff_type: TEST_TARIFF_TYPES[0],
+        contract_type: TEST_CONTRACT_TYPES[0],
         end_subscription: TEST_DATETIME,
         start_subscription: TEST_DATETIME,
     },
     {
-        offer: 'Ervin',
+        offer: { ...TEST_OFFERS[0], provider: TEST_PROVIDERS[1] },
         power: 6,
-        provider: 'EDF',
-        tariff_type: 'Essentielle',
+        tariff_type: TEST_TARIFF_TYPES[0],
+        contract_type: TEST_CONTRACT_TYPES[0],
         id: 11069265931234,
         end_subscription: TEST_DATETIME,
         start_subscription: TEST_DATETIME,
     },
     {
-        offer: 'Clementine',
+        offer: { ...TEST_OFFERS[1], provider: TEST_PROVIDERS[2] },
         power: 6,
-        provider: 'EDF',
-        tariff_type: 'Base',
+        tariff_type: TEST_TARIFF_TYPES[1],
+        contract_type: TEST_CONTRACT_TYPES[0],
         id: 14631234471234,
         end_subscription: TEST_DATETIME,
         start_subscription: TEST_DATETIME,
     },
     {
-        offer: 'Patricia',
+        offer: { ...TEST_OFFERS[1], provider: TEST_PROVIDERS[3] },
         power: 6,
-        provider: 'Eni',
-        tariff_type: 'Base',
+        tariff_type: TEST_TARIFF_TYPES[1],
+        contract_type: TEST_CONTRACT_TYPES[1],
         id: 49317096231234,
         end_subscription: TEST_DATETIME,
         start_subscription: TEST_DATETIME,
     },
     {
-        offer: 'Chelsey',
+        offer: { ...TEST_OFFERS[2], provider: TEST_PROVIDERS[4] },
         power: 6,
-        provider: 'Eni',
-        tariff_type: 'Premium',
+        tariff_type: TEST_TARIFF_TYPES[2],
+        contract_type: TEST_CONTRACT_TYPES[1],
         id: 25495412891234,
         end_subscription: TEST_DATETIME,
         start_subscription: TEST_DATETIME,
     },
     {
-        offer: 'Mrs. Dennis',
+        offer: { ...TEST_OFFERS[2], provider: TEST_PROVIDERS[5] },
         power: 6,
-        provider: 'Planète Oui',
-        tariff_type: 'Premium',
+        tariff_type: TEST_TARIFF_TYPES[2],
+        contract_type: TEST_CONTRACT_TYPES[1],
         id: 14779354781234,
         end_subscription: TEST_DATETIME,
         start_subscription: TEST_DATETIME,
     },
     {
-        offer: 'Kurtis',
+        offer: { ...TEST_OFFERS[3], provider: TEST_PROVIDERS[6] },
         power: 6,
-        provider: 'Total Energies',
-        tariff_type: 'MaxPower',
+        tariff_type: TEST_TARIFF_TYPES[1],
+        contract_type: TEST_CONTRACT_TYPES[0],
         id: 21006761321234,
         end_subscription: TEST_DATETIME,
         start_subscription: TEST_DATETIME,
     },
     {
-        offer: 'Nicholas',
+        offer: { ...TEST_OFFERS[3], provider: TEST_PROVIDERS[7] },
         power: 6,
-        provider: 'Total Energies',
-        tariff_type: 'MaxPower',
+        tariff_type: TEST_TARIFF_TYPES[0],
+        contract_type: TEST_CONTRACT_TYPES[1],
         id: 58649369431234,
         end_subscription: TEST_DATETIME,
         start_subscription: TEST_DATETIME,
@@ -143,7 +143,7 @@ export const contractsEndpoints = [
 
     // Add Contract
     rest.post<SnakeCasedPropertiesDeep<addContractDataType>>(MOCK_CONTRACT_ENDPOINT, (req, res, ctx) => {
-        const { offer_id: offerId } = req.body
+        const { offer_id: offerId, contract_type_id: contractTypeId, tariff_type_id: tariffTypeId } = req.body
         // Offer Error
         if (offerId === TEST_ERROR_OFFER) {
             return res(ctx.status(400), ctx.delay(1000), ctx.json({ detail: 'Le numéro de compteur existe déjà' }))
@@ -154,9 +154,9 @@ export const contractsEndpoints = [
         const newContract = {
             id: lengthBefore + 1,
             power,
-            offer: 'TEST',
-            provider: 'EDF',
-            tariff_type: 'Base',
+            offer: { ...TEST_OFFERS[offerId - 1], provider: TEST_PROVIDERS[0] },
+            contract_type: TEST_CONTRACT_TYPES[contractTypeId - 1],
+            tariff_type: TEST_TARIFF_TYPES[tariffTypeId - 1],
             end_subscription: TEST_DATETIME,
             start_subscription: TEST_DATETIME,
         }
