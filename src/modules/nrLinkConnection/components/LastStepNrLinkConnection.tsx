@@ -10,6 +10,9 @@ import { URL_CONSUMPTION } from 'src/modules/MyConsumption'
 import { axios } from 'src/common/react-platform-components'
 import { useHistory } from 'react-router-dom'
 import { SET_SHOW_NRLINK_POPUP_ENDPOINT } from 'src/modules/nrLinkConnection/NrLinkConnection'
+import { motion } from 'framer-motion'
+import { nrLinkGUID, nrLinkInfo, nrLinkMain } from 'src/modules/nrLinkConnection'
+import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 
 /**
  * Component showing the first step in the nrLinkConnection Stepper.
@@ -96,29 +99,77 @@ const LastStepNrLinkConnection = ({
         >
             <div className="w-full flex justify-between items-center landscape:mt-10">
                 <div className="portrait:flex-col landscape:flex-row h-full flex justify-center items-center w-full">
-                    <div className="w-full mr-10">
+                    <div className="w-full mx-32">
                         <div className="hidden">
                             <TextField name="meterGuid" disabled label="Numéro de mon compteur" />
                         </div>
-                        <TextField name="meterName" disabled label="Nom de mon compteur" />
+                        <TextField name="meterName" disabled label="Mon compteur" />
                         <TextField
                             name="nrlinkGuid"
-                            label="Numéro de mon nrLink"
+                            label="№ d'identification nrLink"
                             validateFunctions={[requiredBuilder()]}
                         />
-                        <Typography
-                            variant="caption"
-                            className="w-full text-center mb-7"
-                            sx={{ transform: 'translateY(-10px)' }}
-                        >
-                            {formatMessage({
-                                id: 'N° GUID de votre capteur, consultable dans les paramètres de votre afficheur',
-                                defaultMessage:
-                                    'N° GUID de votre capteur, consultable dans les paramètres de votre afficheur',
-                            })}
-                        </Typography>
                     </div>
-                    <div className="w-full hidden lg:block"></div>
+                    <div className="w-full flex flex-col text-stone-400">
+                        <TypographyFormatMessage
+                            variant="caption"
+                            className="w-full text-center text-stone-400"
+                            // eslint-disable-next-line sonarjs/no-duplicate-string
+                            sx={{ color: 'text.secondary' }}
+                        >
+                            Vous pouvez trouver le № GUID de votre nrLINK sur:
+                        </TypographyFormatMessage>
+                        <div className="flex justify-between items-start mt-7 mb-5">
+                            <div className="flex justify-between w-full items-center flex-col mb-5 mr-10 sm:mr-0">
+                                <motion.div
+                                    initial={{ opacity: 0, scale: 0.6 }}
+                                    animate={{ opacity: 1, scale: 1 }}
+                                    className="flex justify-center w-full mr-8 mb-5"
+                                >
+                                    <img src={nrLinkMain} alt="nrlink-img" />
+                                </motion.div>
+                                <TypographyFormatMessage
+                                    variant="caption"
+                                    className="text-center md:text-12"
+                                    sx={{ color: 'text.secondary' }}
+                                >
+                                    Sous le socle de votre afficheur
+                                </TypographyFormatMessage>
+                            </div>
+                            <div className="flex justify-between w-full items-center flex-col mb-5 mr-10 sm:mr-0">
+                                <motion.div
+                                    initial={{ opacity: 0, scale: 0.6 }}
+                                    animate={{ opacity: 1, scale: 1 }}
+                                    className="flex justify-center w-full mb-5 mr-8"
+                                >
+                                    <img src={nrLinkGUID} alt="nrlink-img" />
+                                </motion.div>
+                                <TypographyFormatMessage
+                                    variant="caption"
+                                    className="text-center md:text-12"
+                                    sx={{ color: 'text.secondary' }}
+                                >
+                                    A l'allumage de votre afficheur
+                                </TypographyFormatMessage>
+                            </div>
+                            <div className="flex justify-between w-full items-center flex-col mb-5 ">
+                                <motion.div
+                                    initial={{ opacity: 0, scale: 0.6 }}
+                                    animate={{ opacity: 1, scale: 1 }}
+                                    className="flex justify-center w-full mb-5 mr-8"
+                                >
+                                    <img src={nrLinkInfo} alt="nrlink-img" />
+                                </motion.div>
+                                <TypographyFormatMessage
+                                    variant="caption"
+                                    className="w-full text-center md:text-12"
+                                    sx={{ color: 'text.secondary' }}
+                                >
+                                    Dans Menu/IHD
+                                </TypographyFormatMessage>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
             <ActionsNrLinkConnectionSteps activeStep={2} handleBack={handleBack} handleNext={() => {}} />

@@ -85,7 +85,7 @@ const MeterStepNrLinkConnectionForm = ({
         <Form onSubmit={onSubmit}>
             <div className="flex justify-between items-center landscape:mt-10 w-full">
                 <div className="portrait:flex-col landscape:flex-row h-full flex justify-center items-center w-full">
-                    <div className="w-full mr-26 sm:mr-32 ">
+                    <div className="w-full mx-32 ">
                         {/* DO NOT REPRODUCE! */}
                         <Autocomplete
                             id="name-autocomplete"
@@ -178,8 +178,8 @@ const MeterStepNrLinkConnectionForm = ({
 
                                 <Typography variant="caption" className="text-center md:text-12">
                                     {formatMessage({
-                                        id: 'Votre Linky en appuyant sur “+” (n°PRM)',
-                                        defaultMessage: 'Votre Linky en appuyant sur “+” (n°PRM)',
+                                        id: 'Votre compteur Linky en appuyant sur “+” (n°PRM)',
+                                        defaultMessage: 'Votre compteur Linky en appuyant sur “+” (n°PRM)',
                                     })}
                                 </Typography>
                             </div>
