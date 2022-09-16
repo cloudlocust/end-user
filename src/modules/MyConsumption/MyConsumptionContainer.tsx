@@ -2,9 +2,8 @@ import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import MyConsumptionChart from 'src/modules/MyConsumption/components/MyConsumptionChart'
-import { useMeterList } from 'src/modules/Meters/metersHook'
 import { formatMetricFilter, getRange } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
-import { SelectChangeEvent, useTheme } from '@mui/material'
+import { useTheme } from '@mui/material'
 import { useMetrics } from 'src/modules/Metrics/metricsHook'
 import { getMetricType, metricTargetsEnum, metricTargetType } from 'src/modules/Metrics/Metrics.d'
 import { periodType } from 'src/modules/MyConsumption/myConsumptionTypes'
@@ -16,7 +15,7 @@ import { WidgetList } from 'src/modules/MyConsumption/components/Widget/WidgetsL
 import CircularProgress from '@mui/material/CircularProgress'
 import MyConsumptionDatePicker from 'src/modules/MyConsumption/components/MyConsumptionDatePicker'
 import EurosConsumptionButtonToggler from 'src/modules/MyConsumption/components/EurosConsumptionButtonToggler'
-import { MyConsumptionPeriod, SelectMeters } from 'src/modules/MyConsumption'
+import { MyConsumptionPeriod } from 'src/modules/MyConsumption'
 import TargetButtonGroup from 'src/modules/MyConsumption/components/TargetButtonGroup'
 import { NavLink } from 'react-router-dom'
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline'
@@ -63,7 +62,6 @@ export const initialMetricsHookValues: getMetricType = {
  * @returns MyConsumptionContainer and its children.
  */
 export const MyConsumptionContainer = () => {
-    const { elementList: metersList } = useMeterList()
     const theme = useTheme()
     const { formatMessage } = useIntl()
     const { getConsents, nrlinkConsent, enedisConsent } = useConsents()
@@ -76,9 +74,9 @@ export const MyConsumptionContainer = () => {
     const { currentHousing } = useSelector(({ housingModel }: RootState) => housingModel)
 
     useEffect(() => {
-        if (!metersList) return
-        if (metersList.length === 1) setFilters(formatMetricFilter(metersList[0].guid))
-    }, [metersList, setFilters])
+        if (!currentHousing) return
+        if (currentHousing?.meter) setFilters(formatMetricFilter(currentHousing.meter?.guid))
+    }, [currentHousing, setFilters])
 
     // UseEffect to check for consent whenever a meter is selected.
     useEffect(() => {
@@ -108,21 +106,6 @@ export const MyConsumptionContainer = () => {
     }
 
     /**
-     * HandleOnChange function.
-     *
-     * @param event HandleOnChange event.
-     * @param setSelectedMeter Set Selected Meter on value change.
-     */
-    const handleOnChange = (event: SelectChangeEvent, setSelectedMeter: (value: string) => void) => {
-        setSelectedMeter(event.target.value)
-        if (event.target.value === 'allMeters') {
-            setFilters([])
-        } else {
-            setFilters(formatMetricFilter(event.target.value))
-        }
-    }
-
-    /**
      * Function that removes target from graph.
      *
      * @param target Metric target.
@@ -148,7 +131,7 @@ export const MyConsumptionContainer = () => {
     // Else if they have a PDL, we check its consent.
     if (
         (nrlinkConsent?.nrlinkConsentState === 'NONEXISTENT' && enedisConsent?.enedisConsentState === 'NONEXISTENT') ||
-        (metersList && metersList.length === 0)
+        (currentHousing && !currentHousing?.meter)
     ) {
         return (
             <div className="container relative h-200 sm:h-256 p-16 sm:p-24 flex-col text-center flex items-center justify-center">
@@ -193,14 +176,6 @@ export const MyConsumptionContainer = () => {
                             <MyConsumptionDatePicker period={period} setRange={setRange} range={range} />
                         </div>
                     </motion.div>
-                    {metersList && metersList?.length > 1 && (
-                        <SelectMeters
-                            metersList={metersList}
-                            handleOnChange={handleOnChange}
-                            inputTextColor={theme.palette.primary.contrastText}
-                            inputColor={theme.palette.primary.contrastText}
-                        />
-                    )}
                 </div>
 
                 <div className="my-16 flex justify-between">
