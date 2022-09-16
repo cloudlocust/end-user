@@ -14,7 +14,6 @@ import { EnedisSgePopup } from 'src/modules/MyHouse/components/MeterStatus/Enedi
 import { useSelector } from 'react-redux'
 import { RootState } from 'src/redux'
 import { IHousing } from 'src/modules/MyHouse/components/HousingList/housing'
-// import { EnedisSgePopupContext } from 'src/modules/MyHouse/context/EnedisSgePopupContext'
 
 /**
  * Meter Status Component.
