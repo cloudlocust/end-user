@@ -147,40 +147,40 @@ export const commercialOfferEndpoints = [
             return res(ctx.status(404), ctx.delay(1000), ctx.json('error'))
         return res(ctx.status(200), ctx.delay(1000), ctx.json(TEST_CONTRACT_TYPES))
     }),
-    // GET PROVIDERS /providers?contract_type=X
+    // GET PROVIDERS /providers?contract_type_id=X
     rest.get(PROVIDERS_API, (req, res, ctx) => {
-        const contractType = req.url.searchParams.get('contract_type')!
+        const contractTypeId = req.url.searchParams.get('contract_type_id')!
 
-        if (parseInt(contractType) !== TEST_LOAD_ERROR_ID) {
+        if (parseInt(contractTypeId) !== TEST_LOAD_ERROR_ID) {
             return res(ctx.status(200), ctx.delay(1000), ctx.json(TEST_PROVIDERS))
         }
         return res(ctx.status(404), ctx.delay(1000), ctx.json('error'))
     }),
-    // GET OFFERS /offers?provider=X&contract_type=X
+    // GET OFFERS /offers?provider_id=X&contract_type_id=X
     rest.get(OFFERS_API, (req, res, ctx) => {
-        const contractType = req.url.searchParams.get('contract_type')!
-        const provider = req.url.searchParams.get('provider')!
+        const contractTypeId = req.url.searchParams.get('contract_type_id')!
+        const providerId = req.url.searchParams.get('provider_id')!
 
-        if (parseInt(contractType) !== TEST_LOAD_ERROR_ID && parseInt(provider) !== TEST_LOAD_ERROR_ID) {
+        if (parseInt(contractTypeId) !== TEST_LOAD_ERROR_ID && parseInt(providerId) !== TEST_LOAD_ERROR_ID) {
             return res(ctx.status(200), ctx.delay(1000), ctx.json(TEST_OFFERS))
         }
         return res(ctx.status(404), ctx.delay(1000), ctx.json('error'))
     }),
-    // GET TARIFF TYPES /tariff_types?offer=X
+    // GET TARIFF TYPES /tariff_types?offer_id=X
     rest.get(TARIFF_TYPES_API, (req, res, ctx) => {
-        const offer = req.url.searchParams.get('offer')!
+        const offerId = req.url.searchParams.get('offer_id')!
 
-        if (parseInt(offer) !== TEST_LOAD_ERROR_ID) {
+        if (parseInt(offerId) !== TEST_LOAD_ERROR_ID) {
             return res(ctx.status(200), ctx.delay(1000), ctx.json(TEST_TARIFF_TYPES))
         }
         return res(ctx.status(404), ctx.delay(1000), ctx.json('error'))
     }),
-    // GET POWERS /powers?offer=X&tariff_type=X
+    // GET POWERS /powers?offer_id=X&tariff_type_id=X
     rest.get(POWERS_API, (req, res, ctx) => {
-        const tariffType = req.url.searchParams.get('offer')!
-        const offer = req.url.searchParams.get('tariff_type')!
+        const tariffType = req.url.searchParams.get('tariff_type_id')!
+        const offerId = req.url.searchParams.get('offer_id')!
 
-        if (parseInt(tariffType) !== TEST_LOAD_ERROR_ID && parseInt(offer) !== TEST_LOAD_ERROR_ID) {
+        if (parseInt(tariffType) !== TEST_LOAD_ERROR_ID && parseInt(offerId) !== TEST_LOAD_ERROR_ID) {
             return res(ctx.status(200), ctx.delay(1000), ctx.json(TEST_POWERS))
         }
         return res(ctx.status(404), ctx.delay(1000), ctx.json('error'))

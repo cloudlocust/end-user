@@ -1,6 +1,5 @@
 import React, { SyntheticEvent, useState } from 'react'
 import { PostPlaceholder } from 'src/common/ui-kit/components/MapElementList/components/ContentLoader/ContentLoader'
-// import MapElementList from 'src/common/ui-kit/components/MapElementList'
 import { useHousingList } from 'src/modules/MyHouse/components/HousingList/HousingsHooks'
 import HousingCard from 'src/modules/MyHouse/components/HousingCard'
 import { IHousing } from 'src/modules/MyHouse/components/HousingList/housing.d'
@@ -18,6 +17,9 @@ import { Icon } from '@mui/material'
 import Modal from '@mui/material/Modal'
 import Box from '@mui/material/Box'
 import HousingForm from 'src/modules/MyHouse/components/HousingForm'
+
+import { useDispatch } from 'react-redux'
+import { Dispatch } from 'src/redux'
 
 const Root = styled(PageSimple)(({ theme }) => ({
     '& .PageSimple-header': {
@@ -50,6 +52,9 @@ const Root = styled(PageSimple)(({ theme }) => ({
  */
 const HousingList = () => {
     const { formatMessage } = useIntl()
+
+    const dispatch = useDispatch<Dispatch>()
+
     const theme = useTheme()
 
     const {
@@ -157,6 +162,7 @@ const HousingList = () => {
                                 onSuccess={() => {
                                     setModalAddHousingOpen(false)
                                     reloadHousings()
+                                    dispatch.housingModel.loadHousingsList()
                                 }}
                             />
                         </Box>

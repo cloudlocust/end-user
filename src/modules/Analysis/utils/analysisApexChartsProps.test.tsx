@@ -7,7 +7,7 @@ import { createTheme } from '@mui/material/styles'
 import { ApexOptions } from 'apexcharts'
 import AnalysisChartTooltip from 'src/modules/Analysis/components/AnalysisChart/AnalysisChartTooltip'
 import { renderToString } from 'react-dom/server'
-const mockValues = [10, 20, 30]
+const mockValues = [10, 20, 30, 0]
 // 1 Jan 2022, 2 Jan 2022, 3 Jan 2022
 const mockTimeStampValues = [1640995200000, 1641081600000, 1641168000000]
 
@@ -15,9 +15,14 @@ const mockTimeStampValues = [1640995200000, 1641081600000, 1641168000000]
 const mockOptions: (theme: Theme) => ApexOptions = (theme) => ({
     ...defaultAnalysisApexChartsOptions(theme),
     fill: {
-        opacity: [1, 0.7, 1],
+        opacity: [1, 0.7, 1, 0],
     },
-    colors: [theme.palette.primary.light, theme.palette.primary.main, theme.palette.primary.dark],
+    colors: [
+        theme.palette.primary.light,
+        theme.palette.primary.main,
+        theme.palette.primary.dark,
+        theme.palette.primary.main,
+    ],
     tooltip: {
         custom:
             // eslint-disable-next-line jsdoc/require-jsdoc

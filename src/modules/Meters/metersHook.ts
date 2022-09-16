@@ -81,7 +81,7 @@ export const useMeterForHousing = () => {
     const { formatMessage } = useIntl()
 
     // eslint-disable-next-line
-    const addMeter = async ( housingId: number, body: addMeterInputType, reloadHousings: () => void ) => {
+    const addMeter = async ( housingId: number, body: addMeterInputType ) => {
         setLoadingInProgress(true)
         try {
             const { data: responseData } = await axios.post(`${HOUSING_API}/${housingId}/meter`, body)
@@ -95,10 +95,6 @@ export const useMeterForHousing = () => {
             )
 
             setLoadingInProgress(false)
-
-            // if success reload housings before returning data.
-            reloadHousings()
-
             return responseData
         } catch (error) {
             enqueueSnackbar(

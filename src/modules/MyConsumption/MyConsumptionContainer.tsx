@@ -21,6 +21,8 @@ import TargetButtonGroup from 'src/modules/MyConsumption/components/TargetButton
 import { NavLink } from 'react-router-dom'
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline'
 import { URL_CONTRACTS } from 'src/modules/Contracts/ContractsConfig'
+import { useSelector } from 'react-redux'
+import { RootState } from 'src/redux'
 
 /**
  * InitialMetricsStates for useMetrics.
@@ -70,6 +72,8 @@ export const MyConsumptionContainer = () => {
     const [period, setPeriod] = useState<periodType>('daily')
     const [filteredTargets, setFilteredTargets] = useState<metricTargetType[]>([metricTargetsEnum.consumption])
     const isEurosConsumptionChart = filteredTargets.includes(metricTargetsEnum.eurosConsumption)
+
+    const { currentHousing } = useSelector(({ housingModel }: RootState) => housingModel)
 
     useEffect(() => {
         if (!metersList) return
@@ -158,7 +162,7 @@ export const MyConsumptionContainer = () => {
                         id: "Pour voir votre consommation vous devez d'abord ",
                         defaultMessage: "Pour voir votre consommation vous devez d'abord ",
                     })}
-                    <Link to="/nrlink-connection-steps" className="underline">
+                    <Link to={`/nrlink-connection-steps/${currentHousing?.id}`} className="underline">
                         {formatMessage({
                             id: 'enregistrer votre compteur et votre nrLink',
                             defaultMessage: 'enregistrer votre compteur et votre nrLink',

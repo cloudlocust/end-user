@@ -23,6 +23,8 @@ import AnalysisPercentageChangeArrows from 'src/modules/Analysis/components/Anal
 import convert, { Unit } from 'convert-units'
 import AnalysisChart from 'src/modules/Analysis/components/AnalysisChart'
 import { analysisInformationName } from './analysisTypes'
+import { useSelector } from 'react-redux'
+import { RootState } from 'src/redux'
 
 /**
  * InitialMetricsStates for useMetrics.
@@ -55,6 +57,8 @@ const Analysis = () => {
     const { getConsents, nrlinkConsent, enedisConsent } = useConsents()
     const { data, setRange, setFilters, isMetricsLoading, filters, range } = useMetrics(initialMetricsHookValues)
     const [activeInformationName, setActiveInformationName] = useState<analysisInformationName | undefined>(undefined)
+
+    const { currentHousing } = useSelector(({ housingModel }: RootState) => housingModel)
 
     /**
      * Handler to set the correct information name (min, max, mean) Based on the selected value element fill color in analysisChart.
@@ -117,7 +121,7 @@ const Analysis = () => {
                         id: "Pour voir votre consommation vous devez d'abord ",
                         defaultMessage: "Pour voir votre consommation vous devez d'abord ",
                     })}
-                    <Link to="/nrlink-connection-steps" className="underline">
+                    <Link to={`/nrlink-connection-steps/${currentHousing?.id}`} className="underline">
                         {formatMessage({
                             id: 'enregistrer votre compteur et votre nrLink',
                             defaultMessage: 'enregistrer votre compteur et votre nrLink',
