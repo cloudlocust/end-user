@@ -227,7 +227,8 @@ const HousingCard = ({
             <Modal open={addMeterOpen} onClose={handleCloseAddMeterOpen}>
                 <Form
                     onSubmit={async (value: addMeterInputType) => {
-                        await addMeter(logement.id, value, reloadHousings)
+                        await addMeter(logement.id, value)
+                        reloadHousings()
                         handleCloseAddMeterOpen()
                     }}
                 >

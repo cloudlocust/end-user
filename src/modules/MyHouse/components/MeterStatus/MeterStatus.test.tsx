@@ -191,7 +191,7 @@ describe('MeterStatus component test', () => {
             expect(image).toHaveAttribute('src', '/assets/images/content/housing/consent-status/meter-off.svg')
             expect(getByText(NRLINK_NONEXISTANT_EXPIRED_MESSAGE).closest('a')).toHaveAttribute(
                 'href',
-                URL_NRLINK_CONNECTION_STEPS,
+                `${URL_NRLINK_CONNECTION_STEPS}/${mockHouseId}`,
             )
         })
         test('when there is no meterGuid, a message is displayed: Veuillez renseigner votre compteur', async () => {

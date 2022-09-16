@@ -10,6 +10,11 @@ export const URL_NRLINK_CONNECTION = '/nrlink-connection'
  */
 export const URL_NRLINK_CONNECTION_STEPS = '/nrlink-connection-steps'
 /**
+ * Url Component when it's for specefic housing.
+ */
+export const URL_NRLINK_CONNECTION_STEPS_SPECEFIC_HOUSING = '/nrlink-connection-steps/:houseId'
+
+/**
  * Interface .
  *
  */
@@ -39,6 +44,14 @@ export const NrLinkConnectionConfig = [
     {}>,
     {
         path: URL_NRLINK_CONNECTION_STEPS,
+        component: NrLinkConnectionSteps,
+        auth: { authType: authTypes.loginRequired },
+    } as IRoute</**
+     *
+     */
+    {}>,
+    {
+        path: URL_NRLINK_CONNECTION_STEPS_SPECEFIC_HOUSING,
         component: NrLinkConnectionSteps,
         auth: { authType: authTypes.loginRequired },
     } as IRoute</**
