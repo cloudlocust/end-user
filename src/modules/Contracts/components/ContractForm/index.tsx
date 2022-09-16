@@ -1,29 +1,49 @@
-import React from 'react'
+import React, { useCallback } from 'react'
 import { useIntl } from 'react-intl'
 import { requiredBuilder } from 'src/common/react-platform-components'
-import { ButtonLoader } from 'src/common/ui-kit'
-import { Select } from 'src/common/ui-kit/form-fields/Select'
-import { ContractFormProps, IContract } from 'src/modules/Contracts/contractsTypes'
-import { useWatch } from 'react-hook-form'
-import MenuItem from '@mui/material/MenuItem'
+import {
+    ContractFormFieldsProps,
+    ContractFormProps,
+    contractFormValuesType,
+} from 'src/modules/Contracts/contractsTypes'
+import { useFormContext, useWatch } from 'react-hook-form'
 import { Form } from 'src/common/react-platform-components'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import './ContractForm.scss'
 import { DatePicker } from 'src/common/ui-kit/form-fields/DatePicker'
+import ContractFormSelect from 'src/modules/Contracts/components/ContractFormSelect'
+import { useCommercialOffer } from 'src/hooks/CommercialOffer/CommercialOfferHooks'
+import { IContractType, IOffer, IPower, IProvider, ITariffType } from 'src/hooks/CommercialOffer/CommercialOffers'
+import { ButtonLoader } from 'src/common/ui-kit'
+import { isNull, pick } from 'lodash'
+
+const defaultContractFormValues: contractFormValuesType = {
+    contractTypeId: 0,
+    endSubscription: '',
+    offerId: 0,
+    power: 0,
+    providerId: 0,
+    startSubscription: '',
+    tariffTypeId: 0,
+}
 
 /**
  * Contract form component.
  *
  * @param props N/A.
  * @param props.onSubmit Callback when submitting form.
- * @param props.isContractsLoading Loading state when submitting form.
+ * @param props.isContractsLoading Loading state when addContract request.
  * @returns Contract Form component.
  */
 const ContractForm = ({ onSubmit, isContractsLoading }: ContractFormProps) => {
-    const { formatMessage } = useIntl()
-
     return (
-        <Form onSubmit={onSubmit}>
+        <Form
+            onSubmit={(data: contractFormValuesType) => {
+                const { providerId, ...cleanData } = data
+                onSubmit(cleanData)
+            }}
+            defaultValues={defaultContractFormValues}
+        >
             <div className="p-24">
                 <TypographyFormatMessage className="text-16 font-medium md:text-20">
                     Contrat de fourniture
@@ -35,19 +55,7 @@ const ContractForm = ({ onSubmit, isContractsLoading }: ContractFormProps) => {
                     Toutes les informations demandées sont disponibles sur votre facture ou votre contrat d'énergie
                 </TypographyFormatMessage>
                 <div className="flex flex-col justify-center w-full">
-                    <ContractFormFields />
-                    <ButtonLoader
-                        variant="contained"
-                        color="primary"
-                        className="w-224 mx-auto"
-                        inProgress={isContractsLoading}
-                        type="submit"
-                    >
-                        {formatMessage({
-                            id: 'Enregistrer',
-                            defaultMessage: 'Enregistrer',
-                        })}
-                    </ButtonLoader>
+                    <ContractFormFields isContractsLoading={isContractsLoading} />
                 </div>
             </div>
         </Form>
@@ -55,87 +63,145 @@ const ContractForm = ({ onSubmit, isContractsLoading }: ContractFormProps) => {
 }
 
 export default ContractForm
+
 /**
  * Contract Form Fields component.
  *
+ * @param props N/A.
+ * @param props.isContractsLoading Loading state when addContract request.
  * @returns Contract Form Fields component.
  */
-const ContractFormFields = () => {
-    const formData = useWatch<IContract>({})
+const ContractFormFields = ({ isContractsLoading }: ContractFormFieldsProps) => {
+    const formData = useWatch<contractFormValuesType>({ defaultValue: defaultContractFormValues })
+    const { reset, getValues } = useFormContext<contractFormValuesType>()
+    const {
+        contractTypeList,
+        offerList,
+        loadOffers,
+        providerList,
+        powerList,
+        tariffTypeList,
+        loadContractTypes,
+        loadPowers,
+        loadProviders,
+        loadTariffTypes,
+        isContractTypesLoading,
+        isOffersLoading,
+        isPowersLoading,
+        isProvidersLoading,
+        isTariffTypesLoading,
+    } = useCommercialOffer()
     const { formatMessage } = useIntl()
+
+    /**
+     * Store the loadProviders in a useCalleback to pass it as a prop and avoid multiple re-rendering.
+     * To avoid defining () => loadProviders as a prop inside the ContractFormSelect and thus multiple re-rendering cuz ()=>{} create a new function and thus re-ender and thus infinite re-render.
+     */
+    const loadProviderOptions = useCallback(() => {
+        reset({
+            ...defaultContractFormValues,
+            ...pick(getValues(), ['contractTypeId']),
+        })
+        loadProviders(formData.contractTypeId!)
+    }, [loadProviders, reset, getValues, formData.contractTypeId])
+
+    /**
+     * LoadOfferOptions useCallback.
+     */
+    const loadOfferOptions = useCallback(() => {
+        reset({
+            ...defaultContractFormValues,
+            ...pick(getValues(), ['providerId', 'contractTypeId']),
+        })
+        loadOffers(formData.providerId!, formData.contractTypeId!)
+    }, [loadOffers, formData.providerId, formData.contractTypeId, getValues, reset])
+
+    /**
+     * LoadTariffTypeOptions useCallback.
+     */
+    const loadTariffTypeOptions = useCallback(() => {
+        reset({
+            ...defaultContractFormValues,
+            ...pick(getValues(), ['providerId', 'contractTypeId', 'offerId']),
+        })
+        loadTariffTypes(formData.offerId!)
+    }, [loadTariffTypes, getValues, formData.offerId, reset])
+
+    /**
+     * LoadPowerOptions useCallback.
+     */
+    const loadPowerOptions = useCallback(() => {
+        reset({
+            ...defaultContractFormValues,
+            ...pick(getValues(), ['providerId', 'contractTypeId', 'offerId', 'tariffTypeId']),
+        })
+        loadPowers(formData.offerId!, formData.tariffTypeId!)
+    }, [loadPowers, getValues, reset, formData.offerId, formData.tariffTypeId])
 
     return (
         <>
-            {/* TODO Change provider Select so that data comes from commercial offer request  */}
-            <Select
-                name="provider"
-                label={formatMessage({
-                    id: 'Fournisseur',
-                    defaultMessage: 'Fournisseur',
-                })}
-            >
-                {Array(9)
-                    .fill(0)
-                    .map((val, index) => (
-                        <MenuItem key={`Fournisseur-${index + 1}`} value={`Fournisseur-${index + 1}`}>{`Fournisseur-${
-                            index + 1
-                        }`}</MenuItem>
-                    ))}
-            </Select>
-            {/* TODO Change offer Select so that data comes from commercial offer request  */}
-            {formData.provider && (
-                <Select
-                    name="offer"
-                    label={formatMessage({
-                        id: 'Offre',
-                        defaultMessage: 'Offre',
-                    })}
-                >
-                    {Array(5)
-                        .fill(0)
-                        .map((val, index) => (
-                            <MenuItem key={`Offre-${index + 1}`} value={`Offre-${index + 1}`}>{`Offre-${
-                                index + 1
-                            }`}</MenuItem>
-                        ))}
-                </Select>
+            <ContractFormSelect<IContractType>
+                formatOptionLabel={(option) => option.name}
+                formatOptionValue={(option) => option.id}
+                isOptionsInProgress={isContractTypesLoading}
+                loadOptions={loadContractTypes}
+                optionList={contractTypeList}
+                name="contractTypeId"
+                selectLabel="Type"
+                validateFunctions={[requiredBuilder()]}
+            />
+            {Boolean(formData.contractTypeId) && (
+                <ContractFormSelect<IProvider>
+                    formatOptionLabel={(option) => option.name}
+                    formatOptionValue={(option) => option.id}
+                    isOptionsInProgress={isProvidersLoading}
+                    loadOptions={loadProviderOptions}
+                    optionList={providerList}
+                    name="providerId"
+                    selectLabel="Fournisseur"
+                    validateFunctions={[requiredBuilder()]}
+                />
             )}
-            {/* TODO Change TariffType Select so that data comes from commercial offer request  */}
-            {formData.offer && (
-                <Select
-                    name="tariffType"
-                    label={formatMessage({
-                        id: 'Type de contrat',
-                        defaultMessage: 'Type de contrat',
-                    })}
-                >
-                    {Array(3)
-                        .fill(0)
-                        .map((val, index) => (
-                            <MenuItem key={`Type-${index + 1}`} value={`Type-${index + 1}`}>{`Type-${
-                                index + 1
-                            }`}</MenuItem>
-                        ))}
-                </Select>
+            {Boolean(formData.providerId) && (
+                <ContractFormSelect<IOffer>
+                    formatOptionLabel={(option) => option.name}
+                    formatOptionValue={(option) => option.id}
+                    isOptionsInProgress={isOffersLoading}
+                    loadOptions={loadOfferOptions}
+                    optionList={offerList}
+                    name="offerId"
+                    selectLabel="Offre"
+                    validateFunctions={[requiredBuilder()]}
+                />
             )}
-            {formData.tariffType && (
-                <Select
+
+            {Boolean(formData.offerId) && (
+                <ContractFormSelect<ITariffType>
+                    formatOptionLabel={(option) => option.name}
+                    formatOptionValue={(option) => option.id}
+                    isOptionsInProgress={isTariffTypesLoading}
+                    loadOptions={loadTariffTypeOptions}
+                    optionList={tariffTypeList}
+                    name="tariffTypeId"
+                    selectLabel="Type de contrat"
+                    validateFunctions={[requiredBuilder()]}
+                />
+            )}
+
+            {Boolean(formData.tariffTypeId) && (
+                <ContractFormSelect<IPower>
+                    formatOptionLabel={(option) => `${option} kVA`}
+                    formatOptionValue={(option) => option}
+                    isOptionsInProgress={isPowersLoading}
+                    loadOptions={loadPowerOptions}
+                    optionList={powerList}
                     name="power"
-                    label={formatMessage({
-                        id: 'Puissance',
-                        defaultMessage: 'Puissance',
-                    })}
-                >
-                    {Array(9)
-                        .fill(0)
-                        .map((val, index) => (
-                            <MenuItem key={`${index + 1} kVA`} value={`${index + 1} kVA`}>{`${
-                                index + 1
-                            } kVA`}</MenuItem>
-                        ))}
-                </Select>
+                    selectLabel="Puissance"
+                    validateFunctions={[requiredBuilder()]}
+                />
             )}
-            {formData.power && (
+            {/* When doing formData.power && there is a weird unexpected 0 showing in the UI, that's why doing formData.power !== 0 &&  */}
+            {Boolean(formData.power) && (
                 <DatePicker
                     name="startSubscription"
                     label={formatMessage({
@@ -152,9 +218,32 @@ const ContractFormFields = () => {
                         id: 'Date de fin',
                         defaultMessage: 'Date de fin',
                     })}
-                    validateFunctions={[requiredBuilder()]}
                 />
             )}
+            <ButtonLoader
+                variant="contained"
+                color="primary"
+                className="w-224 mx-auto"
+                type="submit"
+                inProgress={isContractsLoading}
+                disabled={
+                    isContractTypesLoading ||
+                    isProvidersLoading ||
+                    isOffersLoading ||
+                    isTariffTypesLoading ||
+                    isPowersLoading ||
+                    isNull(contractTypeList) ||
+                    isNull(providerList) ||
+                    isNull(offerList) ||
+                    isNull(tariffTypeList) ||
+                    isNull(powerList)
+                }
+            >
+                {formatMessage({
+                    id: 'Enregistrer',
+                    defaultMessage: 'Enregistrer',
+                })}
+            </ButtonLoader>
         </>
     )
 }

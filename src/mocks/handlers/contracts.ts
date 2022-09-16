@@ -1,14 +1,13 @@
 import { rest } from 'msw'
 import { getPaginationFromElementList } from 'src/mocks/utils'
 import { SnakeCasedPropertiesDeep } from 'type-fest'
-import { IContract } from 'src/modules/Contracts/contractsTypes'
+import { addContractDataType, IContract } from 'src/modules/Contracts/contractsTypes'
 import { HOUSING_API } from 'src/modules/MyHouse/components/HousingList/HousingsHooks'
 
 /**
  * Endpoint for contracts mock.
  */
-const MOCK_CONTRACT_ENDPOINT = `${HOUSING_API}/:houseId/contracts`
-
+const MOCK_CONTRACT_ENDPOINT = `${HOUSING_API}/:houseId/housing_contracts`
 /**
  * HouseId for contract mock requests.
  */
@@ -20,10 +19,25 @@ export const TEST_HOUSE_ID = 1234
 export const TEST_SUCCESS_ID = 17707368031234
 
 /**
+ * Offer for error mock add contract.
+ */
+export const TEST_ERROR_OFFER = -1
+/**
  * TEST DATE TIME.
  */
 export const TEST_DATETIME = '2021-12-15T14:07:38.138000'
 
+/**
+ * MOCK Success Add Contract Object.
+ */
+export const TEST_SUCCESS_ADD_CONTRACT: SnakeCasedPropertiesDeep<addContractDataType> = {
+    offer_id: 7,
+    power: 5,
+    contract_type_id: 1,
+    tariff_type_id: 2,
+    end_subscription: TEST_DATETIME,
+    start_subscription: TEST_DATETIME,
+}
 /**
  * Mock of customers/clients list data.
  */
@@ -114,7 +128,7 @@ export const contractsEndpoints = [
         return res(ctx.status(404), ctx.delay(1000), ctx.json('error'))
     }),
 
-    // Remove Housing
+    // Remove Contract
     rest.delete(`${MOCK_CONTRACT_ENDPOINT}/:id`, (req, res, ctx) => {
         const { id } = req.params
         if (parseInt(id) === TEST_SUCCESS_ID) {
@@ -125,5 +139,28 @@ export const contractsEndpoints = [
         } else {
             return res(ctx.status(401), ctx.delay(2000))
         }
+    }),
+
+    // Add Contract
+    rest.post<SnakeCasedPropertiesDeep<addContractDataType>>(MOCK_CONTRACT_ENDPOINT, (req, res, ctx) => {
+        const { offer_id: offerId } = req.body
+        // Offer Error
+        if (offerId === TEST_ERROR_OFFER) {
+            return res(ctx.status(400), ctx.delay(1000), ctx.json({ detail: 'Le numéro de compteur existe déjà' }))
+        }
+        // SUCCESS
+        const lengthBefore = TEST_CONTRACTS.length
+        const power = req.body.power
+        const newContract = {
+            id: lengthBefore + 1,
+            power,
+            offer: 'TEST',
+            provider: 'EDF',
+            tariff_type: 'Base',
+            end_subscription: TEST_DATETIME,
+            start_subscription: TEST_DATETIME,
+        }
+        TEST_CONTRACTS.push(newContract)
+        return res(ctx.status(200), ctx.delay(1000), ctx.json(newContract))
     }),
 ]

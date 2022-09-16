@@ -69,11 +69,11 @@ export const useCommercialOffer = () => {
      * Fetching Providers function.
      */
     const loadProviders = useCallback(
-        async (contractType: IContractType['id']) => {
+        async (contractTypeId: IContractType['id']) => {
             setIsProvidersLoading(true)
             try {
                 const { data: responseData } = await axios.get<IProvider[]>(
-                    `${PROVIDERS_API}?contract_type=${contractType}`,
+                    `${PROVIDERS_API}?contract_type_id=${contractTypeId}`,
                 )
                 setProviderList(responseData)
             } catch (error) {
@@ -94,11 +94,11 @@ export const useCommercialOffer = () => {
      * Fetching Offers function.
      */
     const loadOffers = useCallback(
-        async (provider: IProvider['id'], contractType: IContractType['id']) => {
+        async (providerId: IProvider['id'], contractTypeId: IContractType['id']) => {
             setIsOffersLoading(true)
             try {
                 const { data: responseData } = await axios.get<ITariffType[]>(
-                    `${OFFERS_API}?provider=${provider}&contract_type=${contractType}`,
+                    `${OFFERS_API}?provider_id=${providerId}&contract_type_id=${contractTypeId}`,
                 )
                 setOfferList(responseData)
             } catch (error) {
@@ -119,10 +119,10 @@ export const useCommercialOffer = () => {
      * Fetching Tariff Types function.
      */
     const loadTariffTypes = useCallback(
-        async (offer: IOffer['id']) => {
+        async (offerId: IOffer['id']) => {
             setIsTariffTypesLoading(true)
             try {
-                const { data: responseData } = await axios.get<ITariffType[]>(`${TARIFF_TYPES_API}?offer=${offer}`)
+                const { data: responseData } = await axios.get<ITariffType[]>(`${TARIFF_TYPES_API}?offer_id=${offerId}`)
                 setTariffTypeList(responseData)
             } catch (error) {
                 enqueueSnackbar(
@@ -142,11 +142,11 @@ export const useCommercialOffer = () => {
      * Fetching Powers function.
      */
     const loadPowers = useCallback(
-        async (offer: IOffer['id'], tariffType: ITariffType['id']) => {
+        async (offerId: IOffer['id'], tariffTypeId: ITariffType['id']) => {
             setIsPowersLoading(true)
             try {
                 const { data: responseData } = await axios.get<IPower[]>(
-                    `${POWERS_API}?offer=${offer}&tarif_type=${tariffType}`,
+                    `${POWERS_API}?offer_id=${offerId}&tariff_type_id=${tariffTypeId}`,
                 )
                 setPowerList(responseData)
             } catch (error) {

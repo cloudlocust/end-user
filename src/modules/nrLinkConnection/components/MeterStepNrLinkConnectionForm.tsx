@@ -55,7 +55,7 @@ const MeterStepNrLinkConnectionForm = ({
     const onSubmit = async (data: { name: string; guid: string }) => {
         try {
             if (meter) {
-                // this mens that the meter is already existing.
+                // this means that the meter is already existing.
                 handleNext()
                 return
             }
@@ -79,7 +79,8 @@ const MeterStepNrLinkConnectionForm = ({
                                     value={meter.name}
                                     disabled
                                     name="name"
-                                    style={{ marginBottom: '20px', width: '100%' }}
+                                    style={{ marginBottom: '20px' }}
+                                    fullWidth
                                     label="Nom de mon compteur"
                                     variant="outlined"
                                 />
@@ -87,7 +88,8 @@ const MeterStepNrLinkConnectionForm = ({
                                     value={meter.guid}
                                     disabled
                                     name="guid"
-                                    style={{ marginBottom: '20px', width: '100%' }}
+                                    style={{ marginBottom: '20px' }}
+                                    fullWidth
                                     label="Numéro de mon compteur"
                                     variant="outlined"
                                 />

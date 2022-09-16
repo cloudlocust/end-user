@@ -4,6 +4,7 @@ import { useSnackbar } from 'notistack'
 import { useIntl } from 'react-intl'
 import { axios } from 'src/common/react-platform-components'
 import { API_RESOURCES_URL } from 'src/configs'
+import { MeterVerificationEnum } from 'src/modules/Consents/Consents.d'
 
 /**
  * Nrlink consent endpoint.
@@ -26,6 +27,10 @@ export function useConsents() {
     const [consentsLoading, setConsentsLoading] = useState(false)
     const [nrlinkConsent, setNrlinkConsent] = useState<INrlinkConsent>()
     const [enedisConsent, setEnedisConsent] = useState<IEnedisConsent>()
+    const [meterVerification, setMeterVerification] = useState<MeterVerificationEnum>(
+        MeterVerificationEnum.NOT_YET_VERIFIED,
+    )
+    const [isMeterVerifyLoading, setIsMeterVerifyLoading] = useState(false)
 
     /**
      * Function that performs HTTP call to get consents.
@@ -80,5 +85,53 @@ export function useConsents() {
         [enqueueSnackbar, formatMessage],
     )
 
-    return { nrlinkConsent, enedisConsent, consentsLoading, getConsents }
+    /**
+     * Function that performs API call that verify meter.
+     *
+     * @param housingId Housing id.
+     * @returns Whether meter is verified or not.
+     */
+    const verifyMeter = useCallback(
+        async (housingId: number) => {
+            try {
+                if (!housingId) return
+                setIsMeterVerifyLoading(true)
+                const response = await axios.get(`${API_RESOURCES_URL}/enedis-sge/consent/${housingId}/check`)
+                if (response.status === 200) setMeterVerification(MeterVerificationEnum.VERIFIED)
+                else setMeterVerification(MeterVerificationEnum.NOT_VERIFIED)
+                setIsMeterVerifyLoading(false)
+            } catch (error: any) {
+                setIsMeterVerifyLoading(false)
+                enqueueSnackbar(
+                    error.response.data && error.response.data.detail
+                        ? formatMessage({
+                              id: error.response.data.detail,
+                              defaultMessage: error.response.data.detail,
+                          })
+                        : formatMessage({
+                              id: 'Erreur lors de la vérification de votre compteur',
+                              defaultMessage: 'Erreur lors de la vérification de votre compteur',
+                          }),
+
+                    {
+                        autoHideDuration: 5000,
+                        variant: 'error',
+                    },
+                )
+            }
+        },
+        [enqueueSnackbar, formatMessage],
+    )
+
+    return {
+        nrlinkConsent,
+        enedisConsent,
+        consentsLoading,
+        getConsents,
+        verifyMeter,
+        meterVerification,
+        setIsMeterVerifyLoading,
+        isMeterVerifyLoading,
+        setMeterVerification,
+    }
 }

@@ -1,5 +1,6 @@
 import { act } from '@testing-library/react-hooks'
 import { reduxedRenderHook } from 'src/common/react-platform-components/test'
+import { MeterVerificationEnum } from 'src/modules/Consents/Consents.d'
 import { useConsents } from 'src/modules/Consents/consentsHook'
 
 const mockEnqueueSnackbar = jest.fn()
@@ -20,10 +21,10 @@ jest.mock('notistack', () => ({
 }))
 
 const TEST_METER_GUID = '123456'
-const NonExistantState = 'NONEXISTENT'
+const connectedState = 'CONNECTED'
 const TEST_NRLINK_ERROR = 'Erreur lors de la récupération du consentement Nrlink'
 const TEST_ENEDIS_ERROR = 'Erreur lors de la récupération du consentement Enedis'
-const TEST_LOAD_CONSENTS = 'error'
+const TEST_ERROR = 'error'
 
 describe('useConsents test', () => {
     test('when getConsents is called, state changes', async () => {
@@ -39,12 +40,12 @@ describe('useConsents test', () => {
             },
             { timeout: 6000 },
         )
-        expect(result.current.nrlinkConsent.nrlinkConsentState).toStrictEqual(NonExistantState)
-        expect(result.current.enedisConsent.enedisConsentState).toStrictEqual(NonExistantState)
+        expect(result.current.nrlinkConsent.nrlinkConsentState).toStrictEqual(connectedState)
+        expect(result.current.enedisConsent.enedisConsentState).toStrictEqual(connectedState)
     }, 20000)
     test('when there is server error while fetching consents, snackbar is shown', async () => {
         const { store } = require('src/redux')
-        await store.dispatch.userModel.setAuthenticationToken(TEST_LOAD_CONSENTS)
+        await store.dispatch.userModel.setAuthenticationToken(TEST_ERROR)
 
         const {
             renderedHook: { result, waitForValueToChange },
@@ -68,4 +69,44 @@ describe('useConsents test', () => {
             variant: 'error',
         })
     }, 20000)
+    test('when verifyMater request is performed succesfully', async () => {
+        const { store } = require('src/redux')
+        await store.dispatch.userModel.setAuthenticationToken('')
+        const {
+            renderedHook: { result, waitForValueToChange },
+        } = reduxedRenderHook(() => useConsents())
+        expect(result.current.meterVerification).toStrictEqual(MeterVerificationEnum.NOT_YET_VERIFIED)
+        act(() => {
+            result.current.verifyMeter(1)
+        })
+        await waitForValueToChange(
+            () => {
+                return result.current.isMeterVerifyLoading
+            },
+            { timeout: 6000 },
+        )
+        expect(result.current.meterVerification).toStrictEqual(MeterVerificationEnum.VERIFIED)
+    })
+    test('when verifyMeter request fails', async () => {
+        const { store } = require('src/redux')
+        await store.dispatch.userModel.setAuthenticationToken(TEST_ERROR)
+        const {
+            renderedHook: { result, waitForValueToChange },
+        } = reduxedRenderHook(() => useConsents())
+        expect(result.current.meterVerification).toStrictEqual(MeterVerificationEnum.NOT_YET_VERIFIED)
+        act(() => {
+            result.current.verifyMeter(1)
+        })
+        await waitForValueToChange(
+            () => {
+                return result.current.isMeterVerifyLoading
+            },
+            { timeout: 6000 },
+        )
+        expect(result.current.meterVerification).toStrictEqual(MeterVerificationEnum.NOT_YET_VERIFIED)
+        expect(mockEnqueueSnackbar).toHaveBeenCalledWith('Erreur lors de la vérification de votre compteur', {
+            autoHideDuration: 5000,
+            variant: 'error',
+        })
+    }, 10000)
 })

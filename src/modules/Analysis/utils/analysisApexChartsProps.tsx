@@ -164,13 +164,32 @@ export const getAnalysisApexChartProps = (
     // Fill the min and max values with their corresponding colors colors
     let minDayConsumptionIndex = values.indexOf(Math.min(...values.filter((value) => value !== 0)))
     let maxDayConsumptionIndex = values.indexOf(Math.max(...values))
-    optionsAnalysisApexCharts.fill!.opacity = Array(values.length).fill(0.7)
-    optionsAnalysisApexCharts.fill!.opacity[minDayConsumptionIndex] = 1
-    optionsAnalysisApexCharts.fill!.opacity[maxDayConsumptionIndex] = 1
 
-    optionsAnalysisApexCharts.colors = Array(values.length).fill(theme.palette.primary.main)
-    optionsAnalysisApexCharts.colors[minDayConsumptionIndex] = theme.palette.primary.light
-    optionsAnalysisApexCharts.colors[maxDayConsumptionIndex] = theme.palette.primary.dark
+    const opacityList: number[] = []
+    const colorList: string[] = []
+    // Filling the color and opacity for each value in analysisChart.
+    values.forEach((val, index) => {
+        switch (index) {
+            // When value represent the minDayConsumption then it has its own color.
+            case minDayConsumptionIndex:
+                opacityList.push(1)
+                colorList.push(theme.palette.primary.light)
+                break
+            // When value represent the maxDayConsumption then it has its own color.
+            case maxDayConsumptionIndex:
+                opacityList.push(1)
+                colorList.push(theme.palette.primary.dark)
+                break
+            default:
+                // When value that's not minDayConsumption or maxDayConsumption then it'll have a different color, and when value is 0 then the element will be transparent (through opacity 0).
+                // When value is 0 then we hide the element from analysisChart
+                opacityList.push(val === 0 ? 0 : 0.7)
+                colorList.push(theme.palette.primary.main)
+                break
+        }
+    })
+    optionsAnalysisApexCharts!.colors = colorList
+    optionsAnalysisApexCharts!.fill!.opacity = opacityList
 
     return {
         options: optionsAnalysisApexCharts,

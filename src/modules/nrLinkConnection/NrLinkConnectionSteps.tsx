@@ -113,15 +113,13 @@ const NrLinkConnectionSteps = () => {
     useEffect(() => {
         // if no house id in the url, we set it to the current housing
         !parsedHouseId && setHousingId(currentHousing?.id)
-    }, [currentHousing, parsedHouseId])
 
-    const [meter, setMeter] = useState<IMeter | null>(null)
-
-    useEffect(() => {
-        // once we have witch house we are using, we search for it in the housing list to get the meter
+        // once we have wich house we are using, we search for it in the housing list to get the meter
         const handledHousing = housingList?.find((housing) => housing.id === housingId)
         handledHousing && setMeter(handledHousing.meter)
-    }, [housingId, housingList])
+    }, [currentHousing, parsedHouseId, housingList, housingId])
+
+    const [meter, setMeter] = useState<IMeter | null>(null)
 
     /**
      * ActiveStep state is received from MeterStatus.tsx component.

@@ -17,6 +17,7 @@ const Root = styled('div')()
  * @param props.displayNavbar Display navbar.
  * @param props.navbarContent Represent the content that's gonna be displayed in the navbar.
  * @param props.toolbarContent Represent the content that's gonna be displayed in the Toolbar.
+ * @param props.toolbarIcon Represent the icon that's gonna be displayed in the Toolbar.
  * @returns Layout1 UI Component.
  */
 function Layout1({
@@ -25,6 +26,7 @@ function Layout1({
     displayNavbar = true,
     navbarContent,
     toolbarContent,
+    toolbarIcon,
 }: // eslint-disable-next-line jsdoc/require-jsdoc
 {
     // eslint-disable-next-line jsdoc/require-jsdoc
@@ -37,6 +39,8 @@ function Layout1({
     navbarContent: navbarItemType[]
     // eslint-disable-next-line jsdoc/require-jsdoc
     toolbarContent?: JSX.Element
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    toolbarIcon?: JSX.Element
 }) {
     const [mobileNavbarOpen, toggleMobileNavbarOpen] = useToggle(false)
     const [navbarOpen, toggleNavbarOpen] = useToggle(true)
@@ -71,6 +75,7 @@ function Layout1({
                 >
                     {displayToolbar && (
                         <ToolbarLayout1
+                            toolbarIcon={toolbarIcon}
                             toggleMobileNavbarOpen={toggleMobileNavbarOpen}
                             toggleNavbarOpen={toggleNavbarOpen}
                             toolbarContent={toolbarContent}
