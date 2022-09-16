@@ -7,9 +7,10 @@ import Button from '@mui/material/Button'
 import { motion } from 'framer-motion'
 import { ProfileManagementForm } from 'src/modules/User/ProfileManagement/ProfileManagementForm'
 import { ChangePassword } from 'src/modules/User/ChangePassword/ChangePassword'
+import DeleteProfile from 'src/modules/User/DeleteProfile/DeleteProfile'
 
 /**
- * Modify Profile component with the posibility to modify the profile.
+ * Modify Profile component with the possibility to modify the profile.
  *
  * @returns Modify Profile component.
  */
@@ -58,7 +59,10 @@ const ProfileManagement = () => {
             content={
                 <>
                     <ProfileManagementForm />
-                    <ChangePassword />
+                    <div className="flex flex-row items-center">
+                        <ChangePassword />
+                        <DeleteProfile />
+                    </div>
                 </>
             }
         />

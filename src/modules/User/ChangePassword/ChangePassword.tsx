@@ -39,7 +39,7 @@ export const ChangePassword = () => {
     return (
         <div>
             <div className="pl-16 sm:pl-24 md:pl-32">
-                <Button variant="contained" className="w-256 mx-auto mb-16" onClick={handleClickOpen}>
+                <Button variant="contained" className="w-256 mx-auto" onClick={handleClickOpen}>
                     {formatMessage({
                         id: 'Changer mon mot de passe',
                         defaultMessage: 'Changer mon mot de passe',
