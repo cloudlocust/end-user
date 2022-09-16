@@ -14,6 +14,8 @@ import { EnedisSgePopup } from 'src/modules/MyHouse/components/MeterStatus/Enedi
 import { useSelector } from 'react-redux'
 import { RootState } from 'src/redux'
 import { IHousing } from 'src/modules/MyHouse/components/HousingList/housing'
+// import { EnedisSgePopupContext } from 'src/modules/MyHouse/context/EnedisSgePopupContext'
+
 /**
  * Meter Status Component.
  *
@@ -22,7 +24,7 @@ import { IHousing } from 'src/modules/MyHouse/components/HousingList/housing'
 export const MeterStatus = () => {
     const theme = useTheme()
     const { formatMessage } = useIntl()
-    const { getConsents, consentsLoading, nrlinkConsent, enedisSgeConsent } = useConsents()
+    const { getConsents, consentsLoading, nrlinkConsent, enedisSgeConsent, createEnedisSgeConsent } = useConsents()
     const { housingList } = useSelector(({ housingModel }: RootState) => housingModel)
     const [foundHousing, setFoundHousing] = useState<IHousing>()
 
@@ -143,6 +145,13 @@ export const MeterStatus = () => {
                                 Date de fin de consentement
                             </TypographyFormatMessage>
                             <span className="text-grey-600">{enedisConsentEndingDate}</span>
+                            <TypographyFormatMessage
+                                className="underline cursor-pointer"
+                                color={theme.palette.primary.main}
+                                fontWeight={500}
+                            >
+                                Annuler la récolte de mes données
+                            </TypographyFormatMessage>
                         </div>
                     </>
                 )
@@ -165,6 +174,7 @@ export const MeterStatus = () => {
                                     color: theme.palette.error.main,
                                 }}
                                 houseId={parseInt(houseId)}
+                                createEnedisSgeConsent={createEnedisSgeConsent}
                             />
                         </div>
                     </>
