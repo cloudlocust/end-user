@@ -131,7 +131,7 @@ export const MyConsumptionContainer = () => {
     // Else if they have a PDL, we check its consent.
     if (
         (nrlinkConsent?.nrlinkConsentState === 'NONEXISTENT' && enedisConsent?.enedisConsentState === 'NONEXISTENT') ||
-        (currentHousing && currentHousing?.meter === null)
+        (currentHousing && !currentHousing?.meter)
     ) {
         return (
             <div className="container relative h-200 sm:h-256 p-16 sm:p-24 flex-col text-center flex items-center justify-center">
