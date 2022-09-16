@@ -68,7 +68,7 @@ const LastStepNrLinkConnection = ({
                     },
                     { meterName: meter?.name },
                 ),
-                { autoHideDuration: 5000, variant: 'success' },
+                { autoHideDuration: 10000, variant: 'success' },
             )
             setIsNrLinkAuthorizeInProgress(false)
             history.push(URL_CONSUMPTION)

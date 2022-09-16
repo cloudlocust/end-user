@@ -14,7 +14,7 @@ const CLEAR_AUTOCOMPLETE_ICON_TEST_ID = 'CloseIcon'
 
 const guidMeterInputQuerySelector = 'input[name="guid"]'
 const disabledQuerySelector = '.Mui-disabled'
-const nameMeterInputLabelText = 'Nom de mon compteur'
+const nameMeterInputLabelText = 'Nommer mon compteur'
 const MuiAutoCompletePaperQuerySelector = 'MuiAutocomplete-paper'
 
 /**
