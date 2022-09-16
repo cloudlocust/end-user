@@ -31,7 +31,7 @@ export enum EnedisSgePopupStepsEnum {
     /**
      * Step when the meter is being verified.
      */
-    METER_VERIFICATION = 'VERIFICATION',
+    METER_VERIFICATION = 'METER_VERIFICATION',
     /**
      * Step when the user gives their consent for enedis.
      */
