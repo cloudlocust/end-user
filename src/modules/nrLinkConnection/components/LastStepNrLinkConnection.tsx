@@ -114,7 +114,6 @@ const LastStepNrLinkConnection = ({
                         <TypographyFormatMessage
                             variant="caption"
                             className="w-full text-center text-stone-400"
-                            // eslint-disable-next-line sonarjs/no-duplicate-string
                             sx={{ color: textNrlinkColor }}
                         >
                             Vous pouvez trouver le № GUID de votre nrLINK sur:
