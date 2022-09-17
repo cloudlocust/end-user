@@ -2,8 +2,6 @@ import { fireEvent, act, waitFor } from '@testing-library/react'
 import { BrowserRouter } from 'react-router-dom'
 import { reduxedRender } from 'src/common/react-platform-components/test'
 import { EquipmentForm } from 'src/modules/MyHouse/components/Equipments/EquipmentForm'
-import { IMeter } from 'src/modules/Meters/Meters'
-import { TEST_METERS } from 'src/mocks/handlers/meters'
 import { TEST_HOUSING_EQUIPMENTS as MOCK_EQUIPMENTS } from 'src/mocks/handlers/equipments'
 import { applyCamelCase } from 'src/common/react-platform-components'
 import { IEquipmentMeter } from 'src/modules/MyHouse/components/Equipments/EquipmentsType'
@@ -19,7 +17,6 @@ let mockIsLoadingInProgress = false
 let mockIsEquipmentMeterListEmpty = false
 const mockSaveEquipment = jest.fn()
 const mockLoadEquipmentList = jest.fn()
-let mockMeterList: IMeter[] | null = TEST_METERS
 let mockEquipmentList: IEquipmentMeter[] | null = TEST_METER_EQUIPMENTS
 const MODIFIER_BUTTON_TEXT = 'Modifier'
 const SANITARY_INFO_TEXT = 'Eau chaude sanitaire :'
@@ -57,14 +54,7 @@ jest.mock('src/modules/MyHouse/components/Equipments/equipmentHooks', () => ({
         isEquipmentMeterListEmpty: mockIsEquipmentMeterListEmpty,
     }),
 }))
-// Mock metersHook
-jest.mock('src/modules/Meters/metersHook', () => ({
-    ...jest.requireActual('src/modules/Meters/metersHook'),
-    // eslint-disable-next-line jsdoc/require-jsdoc
-    useMeterList: () => ({
-        elementList: mockMeterList,
-    }),
-}))
+
 /**
  * Mocking the useParams used in "equipmentForm" to get the house id based on url /houses/:houseId/equipements {houseId} params.
  */
