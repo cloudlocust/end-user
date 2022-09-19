@@ -4,6 +4,10 @@ import { FAQField } from 'src/modules/FAQ/components/FAQFileld/FAQField'
 import { Button, CircularProgress } from '@mui/material'
 import { useIntl } from 'react-intl'
 /**
+ * Contact email address.
+ */
+export const mailtoUrl = 'mailto:laurence@myem.fr'
+/**
  * FAQContent component.
  *
  * @returns FAQContent component.
@@ -25,7 +29,7 @@ export const FAQContent = () => {
                 <FAQField content={item.content} title={item.title} key={item.id} />
             ))}
             <div className="m-16 md:ml-36">
-                <Button variant="contained">
+                <Button variant="contained" href={mailtoUrl}>
                     {formatMessage({
                         id: 'Contacter le Support Technique',
                         defaultMessage: 'Contacter le Support Technique',
