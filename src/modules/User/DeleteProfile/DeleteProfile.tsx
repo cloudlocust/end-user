@@ -5,23 +5,36 @@ import DialogContent from '@mui/material/DialogContent'
 import { motion } from 'framer-motion'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import { useIntl } from 'react-intl'
+const whiteColor = 'background.paper'
 /**
+ * Pop-up component "Delete profile" with the ability to delete a profile.
  *
- * @returns
+ * @returns Delete profile pop up.
  */
 const DeleteProfile = () => {
     const [openDelete, setOpenDelete] = useState(false)
     const { formatMessage } = useIntl()
+    /**
+     * Function open the Delete Dialog.
+     */
+    const openDeleteDialog = () => {
+        setOpenDelete(true)
+    }
+    /**
+     * Function close the Delete Dialog.
+     */
+    const closeDeleteDialog = () => {
+        setOpenDelete(false)
+    }
     if (openDelete) {
         return (
-            <Dialog open={openDelete} onClose={() => setOpenDelete(false)} aria-labelledby="alert-dialog-title">
+            <Dialog open={openDelete} onClose={closeDeleteDialog} aria-labelledby="alert-dialog-title">
                 <motion.div initial={{ opacity: 0, scale: 0.6 }} animate={{ opacity: 1, scale: 1 }}>
                     <DialogContent
                         sx={{
                             // MUI snackbar red color, used as a global error color.
                             background: '#D32F2F',
-                            // eslint-disable-next-line sonarjs/no-duplicate-string
-                            color: 'background.paper',
+                            color: whiteColor,
                         }}
                     >
                         <div className="flex flex-col justify-center w-full">
@@ -33,17 +46,13 @@ const DeleteProfile = () => {
                                 <Button
                                     variant="outlined"
                                     className="mr-10"
-                                    onClick={() => setOpenDelete(false)}
-                                    sx={{ color: 'background.paper', borderColor: 'background.paper' }}
+                                    onClick={closeDeleteDialog}
+                                    sx={{ color: whiteColor, borderColor: whiteColor }}
                                 >
                                     {formatMessage({ id: 'Annuler', defaultMessage: 'Annuler' })}
                                 </Button>
-                                <Button
-                                    variant="outlined"
-                                    // className="mb-4 sm:mr-8 sm:mb-0"
-                                    sx={{ color: 'background.paper', borderColor: 'background.paper' }}
-                                    // onClick={() => setOpenDelete(false)}
-                                >
+                                {/* TODO: Add onClick delete profile after adding hook */}
+                                <Button variant="outlined" sx={{ color: whiteColor, borderColor: whiteColor }}>
                                     {formatMessage({ id: 'Continuer', defaultMessage: 'Continuer' })}
                                 </Button>
                             </div>
@@ -54,13 +63,7 @@ const DeleteProfile = () => {
         )
     }
     return (
-        <Icon
-            color="error"
-            className="ml-6"
-            onClick={() => {
-                setOpenDelete(true)
-            }}
-        >
+        <Icon color="error" className="ml-6" onClick={openDeleteDialog}>
             delete
         </Icon>
     )
