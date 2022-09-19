@@ -18,7 +18,7 @@ const REQUIRED_ERROR_TEXT = 'Champ obligatoire non renseigné'
 const guidMeterInputQuerySelector = 'input[name="guid"]'
 const nameMeterInputQuerySelector = 'input[name="name"]'
 const disabledQuerySelector = '.Mui-disabled'
-const nameMeterInputLabelText = 'Nom de mon compteur'
+const nameMeterInputLabelText = 'Nommer mon compteur'
 
 /**
  * Mocking props of AddCustomerPopup.

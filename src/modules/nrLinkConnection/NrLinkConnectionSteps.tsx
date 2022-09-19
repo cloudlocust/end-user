@@ -232,7 +232,7 @@ const NrLinkConnectionSteps = () => {
                                 <StepLabel>{label}</StepLabel>
                                 {isMobile && screenOrientation === 'portrait' && (
                                     // Vertical stepper content
-                                    <StepContent className="px-48" sx={{ paddingRight: '0' }}>
+                                    <StepContent className="px-20" sx={{ paddingRight: '0' }}>
                                         {stepsContent[index]}
                                     </StepContent>
                                 )}

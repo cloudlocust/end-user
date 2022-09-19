@@ -180,7 +180,7 @@ describe('Test LastStepNrLinkConnection', () => {
                 { timeout: 10000 },
             )
             expect(mockEnqueueSnackbar).toHaveBeenCalledWith(SUCCESS_NRLINK_AUTHORIZE_MESSAGE, {
-                autoHideDuration: 5000,
+                autoHideDuration: 10000,
                 variant: 'success',
             })
             expect(mockSetIsNrLinkAuthorizeInProgress).toHaveBeenCalledWith(false)
