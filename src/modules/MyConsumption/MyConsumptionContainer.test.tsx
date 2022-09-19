@@ -5,9 +5,17 @@ import { IMetric } from 'src/modules/Metrics/Metrics.d'
 import { TEST_SUCCESS_WEEK_METRICS } from 'src/mocks/handlers/metrics'
 import { waitFor } from '@testing-library/react'
 import { formatMetricFilter } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
-import { TEST_METERS } from 'src/mocks/handlers/meters'
 import userEvent from '@testing-library/user-event'
 import { URL_CONTRACTS } from 'src/modules/Contracts/ContractsConfig'
+import { store } from 'src/redux'
+import { applyCamelCase } from 'src/common/react-platform-components'
+import { IHousing } from 'src/modules/MyHouse/components/HousingList/housing'
+import { TEST_HOUSES } from 'src/mocks/handlers/houses'
+
+// List of houses to add to the redux state
+const LIST_OF_HOUSES: IHousing[] = applyCamelCase(TEST_HOUSES)
+
+// mock store.
 
 let mockData: IMetric[] = TEST_SUCCESS_WEEK_METRICS(['consumption_metrics'])
 let mockNrlinkConsent: string
@@ -17,7 +25,6 @@ const mockSetFilters = jest.fn()
 const circularProgressClassname = '.MuiCircularProgress-root'
 const EUROS_CONSUMPTION_EXAMPLE_CHART_WARNING_TEXT = "Ce graphe est un exemple. Renseigner votre contrat d'énergie"
 const WEEKLY_PERIOD_BUTTON_TEXT = 'Semaine'
-const SELECT_METERS_TEXT = 'Tous les compteurs'
 const MONTHLY_PERIOD_BUTTON_TEXT = 'Mois'
 const YEARLY_PERIOD_BUTTON_TEXT = 'Année'
 const CONSUMPTION_TITLE_DAILY = 'en Wh par jour'
@@ -32,7 +39,6 @@ const CONSUMPTION_ICON_TEST_ID = 'BoltIcon'
 const EUROS_CONSUMPTION_ICON_TEST_ID = 'EuroIcon'
 const apexchartsClassName = 'apexcharts-svg'
 const mockGetConsents = jest.fn()
-let mockMeterList = [TEST_METERS[0]]
 
 // Mock metricsHook
 jest.mock('src/modules/Metrics/metricsHook.ts', () => ({
@@ -71,15 +77,6 @@ jest.mock('src/modules/Consents/consentsHook.ts', () => ({
             nrlinkConsentState: mockEnedisConsent,
         },
         getConsents: mockGetConsents,
-    }),
-}))
-
-// Mock useMeterList
-jest.mock('src/modules/Meters/metersHook.ts', () => ({
-    ...jest.requireActual('src/modules/Meters/metersHook.ts'),
-    // eslint-disable-next-line jsdoc/require-jsdoc
-    useMeterList: () => ({
-        elementList: mockMeterList,
     }),
 }))
 
@@ -190,30 +187,36 @@ describe('MyConsumptionContainer test', () => {
             expect(getByTestId(EUROS_CONSUMPTION_ICON_TEST_ID)).toBeTruthy()
         })
     })
-    test('MeterList not empty, then filters metrics should have first element of meterList, otherwise setFilters is not called', async () => {
+    test('housesList not empty, then filters metrics should have currentHousing of houseList, otherwise setFilters is not called', async () => {
+        // we initiate the store by adding the housing list - by default current state will be the first element
+        await store.dispatch.housingModel.setHousingModelState(LIST_OF_HOUSES)
+
         reduxedRender(
             <Router>
                 <MyConsumptionContainer />
             </Router>,
+            { store },
         )
         await waitFor(() => {
-            expect(mockSetFilters).toHaveBeenCalledWith(formatMetricFilter(mockMeterList[0].guid))
+            expect(mockSetFilters).toHaveBeenCalledWith(formatMetricFilter(LIST_OF_HOUSES[0].meter.guid))
         })
-        mockMeterList = []
+
+        await store.dispatch.housingModel.setHousingModelState([])
         await waitFor(() => {
             expect(mockSetFilters).toHaveBeenCalledTimes(1)
         })
     })
-    test('meterList is filled SelectMeters shown, and isMetricsLoading true, Spinner is shown', async () => {
-        mockMeterList = TEST_METERS
+    test('housing list is filled and isMetricsLoading true, Spinner is shown', async () => {
+        // initiate the store by adding housing list - by default current state will be the first element
+        await store.dispatch.housingModel.setHousingModelState(LIST_OF_HOUSES)
         mockIsMetricsLoading = true
         mockData = []
-        const { container, getByText } = reduxedRender(
+        const { container } = reduxedRender(
             <Router>
                 <MyConsumptionContainer />
             </Router>,
+            { store },
         )
-        expect(getByText(SELECT_METERS_TEXT)).toBeTruthy()
         expect(container.querySelector(circularProgressClassname)).toBeInTheDocument()
         expect(container.querySelector(`.${apexchartsClassName}`)).not.toBeInTheDocument()
     })

@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
-import { useMeterList } from 'src/modules/Meters/metersHook'
 import {
     formatMetricFilter,
     getDateWithoutTimezoneOffset,
@@ -23,6 +22,8 @@ import AnalysisPercentageChangeArrows from 'src/modules/Analysis/components/Anal
 import convert, { Unit } from 'convert-units'
 import AnalysisChart from 'src/modules/Analysis/components/AnalysisChart'
 import { analysisInformationName } from './analysisTypes'
+import { useSelector } from 'react-redux'
+import { RootState } from 'src/redux'
 
 /**
  * InitialMetricsStates for useMetrics.
@@ -49,12 +50,13 @@ export const initialMetricsHookValues: getMetricType = {
  * @returns Analysis and its children.
  */
 const Analysis = () => {
-    const { elementList: metersList } = useMeterList()
     const theme = useTheme()
     const { formatMessage } = useIntl()
     const { getConsents, nrlinkConsent, enedisConsent } = useConsents()
     const { data, setRange, setFilters, isMetricsLoading, filters, range } = useMetrics(initialMetricsHookValues)
     const [activeInformationName, setActiveInformationName] = useState<analysisInformationName | undefined>(undefined)
+
+    const { currentHousing } = useSelector(({ housingModel }: RootState) => housingModel)
 
     /**
      * Handler to set the correct information name (min, max, mean) Based on the selected value element fill color in analysisChart.
@@ -75,8 +77,8 @@ const Analysis = () => {
     }
 
     useEffect(() => {
-        if (metersList && metersList.length > 0) setFilters(formatMetricFilter(metersList[0].guid))
-    }, [metersList, setFilters])
+        if (currentHousing && currentHousing.meter) setFilters(formatMetricFilter(currentHousing.meter.guid))
+    }, [currentHousing, setFilters])
 
     // UseEffect to check for consent whenever a meter is selected.
     useEffect(() => {
@@ -103,7 +105,7 @@ const Analysis = () => {
     // Else if they have a PDL, we check its consent.
     if (
         (nrlinkConsent?.nrlinkConsentState === 'NONEXISTENT' && enedisConsent?.enedisConsentState === 'NONEXISTENT') ||
-        (metersList && metersList.length === 0)
+        (currentHousing && !currentHousing.meter)
     ) {
         return (
             <div className="container relative h-200 sm:h-256 p-16 sm:p-24 flex-col text-center flex items-center justify-center">
@@ -117,7 +119,7 @@ const Analysis = () => {
                         id: "Pour voir votre consommation vous devez d'abord ",
                         defaultMessage: "Pour voir votre consommation vous devez d'abord ",
                     })}
-                    <Link to="/nrlink-connection-steps" className="underline">
+                    <Link to={`/nrlink-connection-steps/${currentHousing?.id}`} className="underline">
                         {formatMessage({
                             id: 'enregistrer votre compteur et votre nrLink',
                             defaultMessage: 'enregistrer votre compteur et votre nrLink',

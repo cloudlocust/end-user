@@ -13,7 +13,7 @@ export const TEST_CREATED_AT_DATE = '2022-09-15T08:23:55+0000'
  */
 export const TEST_SUCCESS_NRLINK_CONSENT: SnakeCasedPropertiesDeep<INrlinkConsent> = {
     meter_guid: '17707368031234',
-    nrlink_consent_state: 'NONEXISTENT',
+    nrlink_consent_state: 'CONNECTED',
 }
 
 /**
@@ -21,7 +21,7 @@ export const TEST_SUCCESS_NRLINK_CONSENT: SnakeCasedPropertiesDeep<INrlinkConsen
  */
 export const TEST_SUCCESS_ENEDIS_CONSENT: SnakeCasedPropertiesDeep<IEnedisConsent> = {
     meter_guid: '17707368031234',
-    enedis_consent_state: 'NONEXISTENT',
+    enedis_consent_state: 'CONNECTED',
 }
 
 /**

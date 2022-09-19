@@ -2,8 +2,6 @@ import { fireEvent, act, waitFor } from '@testing-library/react'
 import { BrowserRouter } from 'react-router-dom'
 import { reduxedRender } from 'src/common/react-platform-components/test'
 import { AccomodationForm } from 'src/modules/MyHouse/components/Accomodation/AccomodationForm'
-import { IMeter } from 'src/modules/Meters/Meters'
-import { TEST_METERS } from 'src/mocks/handlers/meters'
 import { TEST_ACCOMODATION_RESPONSE as MOCK_TEST_ACCOMODATION_RESPONSE } from 'src/mocks/handlers/accomodation'
 import { AccomodationDataType } from './AccomodationType'
 import { applyCamelCase } from 'src/common/react-platform-components'
@@ -18,7 +16,6 @@ let mockHouseId = TEST_MOCKED_HOUSES[0].id
 let mockIsLoadingInProgress = false
 const mockUpdateAccomodation = jest.fn()
 const mockLoadAccomodation = jest.fn()
-let mockMeterList: IMeter[] | null = TEST_METERS
 const MODIFIER_BUTTON_TEXT = 'Modifier'
 const DISABLED_CLASS = 'Mui-disabled'
 const INPUT_DISABLED_ELEMENT = `input.${DISABLED_CLASS}`
@@ -53,14 +50,7 @@ jest.mock('src/modules/MyHouse/components/Accomodation/AccomodationHooks', () =>
         accomodation: mockAccomodation,
     }),
 }))
-// Mock metersHook
-jest.mock('src/modules/Meters/metersHook', () => ({
-    ...jest.requireActual('src/modules/Meters/metersHook'),
-    // eslint-disable-next-line jsdoc/require-jsdoc
-    useMeterList: () => ({
-        elementList: mockMeterList,
-    }),
-}))
+
 /**
  * Mocking the useParams used in "accomodationForm" to get the house id based on url /houses/:houseId/accomodation {houseId} params.
  */
