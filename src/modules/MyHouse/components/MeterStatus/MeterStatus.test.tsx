@@ -301,8 +301,6 @@ describe('MeterStatus component test', () => {
             expect(checkbox).toHaveProperty('checked', false)
             userEvent.click(checkbox)
             expect(mockCreateEnedisSgeConsent).toBeCalled()
-            // When createEnedisSgeConsent is performed we reset.
-            expect(mockSetMeterVerification).toBeCalledWith(MeterVerificationEnum.NOT_VERIFIED)
         })
     })
 })

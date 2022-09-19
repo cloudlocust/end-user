@@ -8,17 +8,6 @@ import dayjs from 'dayjs'
 // eslint-disable-next-line jsdoc/require-jsdoc
 export const TEST_CREATED_AT_DATE = '2022-09-15T08:23:55+0000'
 
-// eslint-disable-next-line jsdoc/require-jsdoc
-export const TEST_ERROR_HOUSING_DOESNT_EXIT = 'error1'
-// eslint-disable-next-line jsdoc/require-jsdoc
-export const TEST_ERROR_HOUSING_BELONGS_TO_ANOTHER_USER = 'error2'
-// eslint-disable-next-line jsdoc/require-jsdoc
-export const TEST_ERROR_HOUSING_DOESNT_HAVE_METER = 'error3'
-// eslint-disable-next-line jsdoc/require-jsdoc
-export const TEST_ERROR_METER_DOESNT_EXIST_SGE_DB = 'error4'
-// eslint-disable-next-line jsdoc/require-jsdoc
-export const TEST_ERROR_METER_BELONGS_ANOTHER_USER_SGE_DB = 'error'
-
 /**
  * Success test Nrlink consent.
  */

@@ -156,7 +156,7 @@ export function useConsents() {
                 enqueueSnackbar(
                     formatMessage({
                         id: 'Erreur lors de la création de votre compteur',
-                        defaultMessage: "Erreur lors de la création de votre compteur'",
+                        defaultMessage: 'Erreur lors de la création de votre compteur',
                     }),
                     {
                         autoHideDuration: 5000,

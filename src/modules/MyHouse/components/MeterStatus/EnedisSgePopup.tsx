@@ -59,9 +59,9 @@ export const EnedisSgePopup = ({
     useEffect(() => {
         if (enedisConsentCheckbox && propsOrReduxHouseId) {
             createEnedisSgeConsent(propsOrReduxHouseId)
+            setEnedisConsentCheckbox(false)
             // setOpenSgePopup(false)
             // setMeterVerification(MeterVerificationEnum.NOT_VERIFIED)
-            setEnedisConsentCheckbox(false)
             // setSgeStep(EnedisSgePopupStepsEnum.METER_VERIFICATION)
         }
     }, [createEnedisSgeConsent, enedisConsentCheckbox, propsOrReduxHouseId, setMeterVerification])
@@ -90,12 +90,8 @@ export const EnedisSgePopup = ({
             {openSgePopup && (
                 <Dialog
                     onClose={(event, reason) => {
-                        // Not allow the user to close the popup when the meter is being checked.
-                        if (
-                            (reason !== 'backdropClick' && reason !== 'escapeKeyDown') ||
-                            sgeStep === EnedisSgePopupStepsEnum.ENEDIS_CONSENT_CREATION ||
-                            isCreateEnedisSgeConsentLoading
-                        ) {
+                        // Not allow the user to close the popup when popup is opened
+                        if (reason !== 'backdropClick' && reason !== 'escapeKeyDown') {
                             setOpenSgePopup(false)
                             setMeterVerification(MeterVerificationEnum.NOT_VERIFIED)
                             setSgeStep(EnedisSgePopupStepsEnum.METER_VERIFICATION)

@@ -117,15 +117,15 @@ describe('useConsents test', () => {
         const {
             renderedHook: { result, waitForValueToChange },
         } = reduxedRenderHook(() => useConsents())
-        expect(result.current.isEnedisSgeConsentLoading).toBeFalsy()
+        expect(result.current.isCreateEnedisSgeConsentLoading).toBeFalsy()
 
         act(() => {
             result.current.createEnedisSgeConsent(TEST_HOUSES[0].id)
         })
-        expect(result.current.isEnedisSgeConsentLoading).toBeTruthy()
+        expect(result.current.isCreateEnedisSgeConsentLoading).toBeTruthy()
         await waitForValueToChange(
             () => {
-                return result.current.isEnedisSgeConsentLoading
+                return result.current.isCreateEnedisSgeConsentLoading
             },
             { timeout: 6000 },
         )
@@ -140,18 +140,20 @@ describe('useConsents test', () => {
         const {
             renderedHook: { result, waitForValueToChange },
         } = reduxedRenderHook(() => useConsents())
-        expect(result.current.isEnedisSgeConsentLoading).toBeFalsy()
+        expect(result.current.isCreateEnedisSgeConsentLoading).toBeFalsy()
+        expect(result.current.createEnedisSgeConsentError).toBe(false)
 
         act(() => {
             result.current.createEnedisSgeConsent(TEST_HOUSES[0].id)
         })
-        expect(result.current.isEnedisSgeConsentLoading).toBeTruthy()
+        expect(result.current.isCreateEnedisSgeConsentLoading).toBeTruthy()
         await waitForValueToChange(
             () => {
-                return result.current.isEnedisSgeConsentLoading
+                return result.current.isCreateEnedisSgeConsentLoading
             },
             { timeout: 6000 },
         )
+        expect(result.current.createEnedisSgeConsentError).toBe(true)
         expect(mockEnqueueSnackbar).toHaveBeenCalledWith('Erreur lors de la création de votre compteur', {
             autoHideDuration: 5000,
             variant: 'error',
