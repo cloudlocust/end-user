@@ -73,7 +73,7 @@ describe('useConsents test', () => {
     }, 20000)
     test('when verifyMater request is performed succesfully', async () => {
         const { store } = require('src/redux')
-        await store.dispatch.userModel.setAuthenticationToken('')
+        await store.dispatch.userModel.setAuthenticationToken('success')
         const {
             renderedHook: { result, waitForValueToChange },
         } = reduxedRenderHook(() => useConsents())
@@ -91,7 +91,7 @@ describe('useConsents test', () => {
     })
     test('when verifyMeter request fails', async () => {
         const { store } = require('src/redux')
-        await store.dispatch.userModel.setAuthenticationToken(TEST_ERROR)
+        await store.dispatch.userModel.setAuthenticationToken('snackbar_error')
         const {
             renderedHook: { result, waitForValueToChange },
         } = reduxedRenderHook(() => useConsents())
@@ -113,7 +113,7 @@ describe('useConsents test', () => {
     }, 10000)
     test('when createEnedisSgeConsent requestt is performed successfully', async () => {
         const { store } = require('src/redux')
-        await store.dispatch.userModel.setAuthenticationToken('')
+        await store.dispatch.userModel.setAuthenticationToken('success')
         const {
             renderedHook: { result, waitForValueToChange },
         } = reduxedRenderHook(() => useConsents())
@@ -136,7 +136,7 @@ describe('useConsents test', () => {
     })
     test('when createEnedisSgeConsent request fails', async () => {
         const { store } = require('src/redux')
-        await store.dispatch.userModel.setAuthenticationToken(TEST_ERROR)
+        await store.dispatch.userModel.setAuthenticationToken('snackbar_error')
         const {
             renderedHook: { result, waitForValueToChange },
         } = reduxedRenderHook(() => useConsents())
@@ -153,10 +153,9 @@ describe('useConsents test', () => {
             },
             { timeout: 6000 },
         )
-        expect(result.current.createEnedisSgeConsentError).toBe(true)
         expect(mockEnqueueSnackbar).toHaveBeenCalledWith('Erreur lors de la création de votre compteur', {
             autoHideDuration: 5000,
             variant: 'error',
         })
-    })
+    }, 10000)
 })
