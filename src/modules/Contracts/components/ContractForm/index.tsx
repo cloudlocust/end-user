@@ -2,6 +2,7 @@ import React, { useCallback } from 'react'
 import { useIntl } from 'react-intl'
 import { requiredBuilder } from 'src/common/react-platform-components'
 import {
+    addContractDataType,
     ContractFormFieldsProps,
     ContractFormProps,
     contractFormValuesType,
@@ -39,7 +40,14 @@ const ContractForm = ({ onSubmit, isContractsLoading }: ContractFormProps) => {
     return (
         <Form
             onSubmit={(data: contractFormValuesType) => {
-                const { providerId, ...cleanData } = data
+                const { providerId, startSubscription, endSubscription, ...restData } = data
+                // Format the start subscription to ISO Datetime.
+                let cleanData: addContractDataType = {
+                    ...restData,
+                    startSubscription: new Date(startSubscription).toISOString(),
+                }
+                // Format the end subscription to ISO Datetime.
+                if (endSubscription) cleanData.endSubscription = new Date(startSubscription).toISOString()
                 onSubmit(cleanData)
             }}
             defaultValues={defaultContractFormValues}
@@ -72,7 +80,7 @@ export default ContractForm
  * @returns Contract Form Fields component.
  */
 const ContractFormFields = ({ isContractsLoading }: ContractFormFieldsProps) => {
-    const formData = useWatch<contractFormValuesType>({ defaultValue: defaultContractFormValues })
+    const formData = useWatch<contractFormValuesType>({})
     const { reset, getValues } = useFormContext<contractFormValuesType>()
     const {
         contractTypeList,

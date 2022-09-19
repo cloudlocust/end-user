@@ -1,6 +1,6 @@
 import { formatLoadContractResponseToIContract } from 'src/modules/Contracts/utils/contractsFunctions'
 import { TEST_DATETIME } from 'src/mocks/handlers/contracts'
-import { INewContract, loadContractResponse } from '../contractsTypes'
+import { IContract, loadContractResponse } from 'src/modules/Contracts/contractsTypes'
 
 const value: loadContractResponse = {
     contract: {
@@ -28,7 +28,7 @@ const value: loadContractResponse = {
     startSubscription: TEST_DATETIME,
 }
 
-const expectedValue: INewContract = {
+const expectedValue: IContract = {
     id: 11069265931234,
     offer: {
         id: 1,
