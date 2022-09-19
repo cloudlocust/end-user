@@ -1,13 +1,54 @@
 import { formatLoadContractResponseToIContract } from 'src/modules/Contracts/utils/contractsFunctions'
-import { TEST_CONTRACTS } from 'src/mocks/handlers/contracts'
-import { applyCamelCase } from 'src/common/react-platform-components'
-import { IContract, loadContractResponse } from '../contractsTypes'
+import { TEST_DATETIME } from 'src/mocks/handlers/contracts'
+import { INewContract, loadContractResponse } from '../contractsTypes'
 
-const value = applyCamelCase(TEST_CONTRACTS)[0] as loadContractResponse
-const expectedValue: IContract = {
-    ...value,
-    offer: { id: value.offer.id, name: value.offer.name },
-    provider: value.offer.provider,
+const value: loadContractResponse = {
+    contract: {
+        id: 11069265931234,
+        commercialOffer: {
+            id: 1,
+            name: 'Bleu',
+            provider: {
+                id: 1,
+                name: 'EDF',
+            },
+        },
+        tariffType: {
+            id: 1,
+            name: 'BASE',
+        },
+        contractType: {
+            id: 1,
+            name: 'Particulier',
+        },
+    },
+    power: 6,
+    id: 11069265931234,
+    endSubscription: TEST_DATETIME,
+    startSubscription: TEST_DATETIME,
+}
+
+const expectedValue: INewContract = {
+    id: 11069265931234,
+    offer: {
+        id: 1,
+        name: 'Bleu',
+    },
+    provider: {
+        id: 1,
+        name: 'EDF',
+    },
+    tariffType: {
+        id: 1,
+        name: 'BASE',
+    },
+    contractType: {
+        id: 1,
+        name: 'Particulier',
+    },
+    power: 6,
+    endSubscription: TEST_DATETIME,
+    startSubscription: TEST_DATETIME,
 }
 describe('contractFunctions', () => {
     test('formatLoadContractResponseToIContract', async () => {
