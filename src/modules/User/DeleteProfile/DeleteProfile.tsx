@@ -51,7 +51,7 @@ const DeleteProfile = () => {
                                 >
                                     {formatMessage({ id: 'Annuler', defaultMessage: 'Annuler' })}
                                 </Button>
-                                {/* TODO: Add onClick delete profile after adding hook */}
+                                {/* TODO: Add onClick delete profile after hook added */}
                                 <Button variant="outlined" sx={{ color: whiteColor, borderColor: whiteColor }}>
                                     {formatMessage({ id: 'Continuer', defaultMessage: 'Continuer' })}
                                 </Button>
