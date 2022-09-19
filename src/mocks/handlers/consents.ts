@@ -8,6 +8,17 @@ import dayjs from 'dayjs'
 // eslint-disable-next-line jsdoc/require-jsdoc
 export const TEST_CREATED_AT_DATE = '2022-09-15T08:23:55+0000'
 
+// eslint-disable-next-line jsdoc/require-jsdoc
+export const TEST_ERROR_HOUSING_DOESNT_EXIT = 'error1'
+// eslint-disable-next-line jsdoc/require-jsdoc
+export const TEST_ERROR_HOUSING_BELONGS_TO_ANOTHER_USER = 'error2'
+// eslint-disable-next-line jsdoc/require-jsdoc
+export const TEST_ERROR_HOUSING_DOESNT_HAVE_METER = 'error3'
+// eslint-disable-next-line jsdoc/require-jsdoc
+export const TEST_ERROR_METER_DOESNT_EXIST_SGE_DB = 'error4'
+// eslint-disable-next-line jsdoc/require-jsdoc
+export const TEST_ERROR_METER_BELONGS_ANOTHER_USER_SGE_DB = 'error'
+
 /**
  * Success test Nrlink consent.
  */
@@ -60,9 +71,9 @@ export const consentsEndpoints = [
         // Use authorization to test the different cases in error.response.data.detail
         const authorization = req.headers.get('authorization')
         if (authorization === 'error') {
-            return res(ctx.status(400), ctx.delay(1000))
+            return res(ctx.status(400), ctx.delay(3000), ctx.json({ retail: 'error' }))
         } else {
-            return res(ctx.status(200), ctx.delay(1000))
+            return res(ctx.status(200), ctx.delay(3000))
         }
     }),
 
@@ -70,9 +81,9 @@ export const consentsEndpoints = [
     rest.post<{ housing_id: number }>(`${API_RESOURCES_URL}/enedis-sge/consent`, (req, res, ctx) => {
         const authorization = req.headers.get('authorization')
         if (authorization === 'error') {
-            return res(ctx.status(400), ctx.delay(1000))
+            return res(ctx.status(400), ctx.delay(3000), ctx.json({ retail: 'error' }))
         } else {
-            return res(ctx.status(200), ctx.delay(1000), ctx.json(TEST_SUCCESS_ENEDIS_SGE_CONSENT))
+            return res(ctx.status(200), ctx.delay(3000), ctx.json(TEST_SUCCESS_ENEDIS_SGE_CONSENT))
         }
     }),
 ]

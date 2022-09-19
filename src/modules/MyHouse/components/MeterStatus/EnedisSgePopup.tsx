@@ -20,6 +20,8 @@ import { RootState } from 'src/redux'
  * @param param0.openEnedisSgeConsentText Text that opens the popup.
  * @param param0.houseId House's id. (logement's id). Can be undefined, if so we use the house id from currentHousing of redux store.
  * @param param0.createEnedisSgeConsent Setter function that handles Enedis consent request.
+ * @param param0.isCreateEnedisSgeConsentLoading Loading state when creating enedis sge consent.
+ * @param param0.createEnedisSgeConsentError Error when create enedis sge consent.
  * @returns Enedis Sge consent JSX.
  */
 export const EnedisSgePopup = ({
@@ -27,6 +29,8 @@ export const EnedisSgePopup = ({
     openEnedisSgeConsentText,
     houseId,
     createEnedisSgeConsent,
+    isCreateEnedisSgeConsentLoading,
+    createEnedisSgeConsentError,
 }: EnedisSgePopupProps): JSX.Element => {
     const { formatMessage } = useIntl()
     const [sgeStep, setSgeStep] = useState<EnedisSgePopupStepsEnum>(EnedisSgePopupStepsEnum.METER_VERIFICATION)
@@ -55,10 +59,10 @@ export const EnedisSgePopup = ({
     useEffect(() => {
         if (enedisConsentCheckbox && propsOrReduxHouseId) {
             createEnedisSgeConsent(propsOrReduxHouseId)
-            setOpenSgePopup(false)
-            setMeterVerification(MeterVerificationEnum.NOT_VERIFIED)
+            // setOpenSgePopup(false)
+            // setMeterVerification(MeterVerificationEnum.NOT_VERIFIED)
             setEnedisConsentCheckbox(false)
-            setSgeStep(EnedisSgePopupStepsEnum.METER_VERIFICATION)
+            // setSgeStep(EnedisSgePopupStepsEnum.METER_VERIFICATION)
         }
     }, [createEnedisSgeConsent, enedisConsentCheckbox, propsOrReduxHouseId, setMeterVerification])
 
@@ -89,7 +93,8 @@ export const EnedisSgePopup = ({
                         // Not allow the user to close the popup when the meter is being checked.
                         if (
                             (reason !== 'backdropClick' && reason !== 'escapeKeyDown') ||
-                            sgeStep === EnedisSgePopupStepsEnum.ENEDIS_CONSENT_CREATION
+                            sgeStep === EnedisSgePopupStepsEnum.ENEDIS_CONSENT_CREATION ||
+                            isCreateEnedisSgeConsentLoading
                         ) {
                             setOpenSgePopup(false)
                             setMeterVerification(MeterVerificationEnum.NOT_VERIFIED)
@@ -154,25 +159,75 @@ export const EnedisSgePopup = ({
                             </>
                         )}
                         {sgeStep === EnedisSgePopupStepsEnum.ENEDIS_CONSENT_CREATION && (
-                            <div className="flex flex-row">
-                                <Checkbox
-                                    checked={enedisConsentCheckbox}
-                                    onChange={handleCheckboxChange}
-                                    color="primary"
-                                    data-testid="sge-checkbox"
-                                />
+                            <div className="flex flex-1 flex-row items-center justify-center">
+                                {isCreateEnedisSgeConsentLoading ? (
+                                    <div className="p-24">
+                                        <div className="flex flex-row items-center justify-center mb-24">
+                                            <TypographyFormatMessage fontWeight={500} className="text-center">
+                                                Demande d'authorisation SGE en cours
+                                            </TypographyFormatMessage>
+                                        </div>
+                                        <LinearProgress
+                                            className="w-192 sm:w-320 max-w-full rounded-2"
+                                            color="primary"
+                                            data-testid="linear-progess"
+                                        />
+                                    </div>
+                                ) : createEnedisSgeConsentError ? (
+                                    <div className="flex flex-col items-center">
+                                        <Icon className="mb-10">
+                                            <img
+                                                src="/assets/images/content/housing/consent-status/meter-error.svg"
+                                                alt="error-icon"
+                                            />
+                                        </Icon>
+                                        <Typography
+                                            sx={(theme) => ({
+                                                color: theme.palette.warning.main,
+                                            })}
+                                            className="text-center"
+                                            fontWeight={500}
+                                        >
+                                            {formatMessage({
+                                                id: "Le numéro de compteur n'a pas été reconnu ou ne correspond pas au nom renseigné",
+                                                defaultMessage:
+                                                    "Le numéro de compteur n'a pas été reconnu ou ne correspond pas au nom renseigné",
+                                            })}
+                                            <br />
+                                            <NavLink to={`/my-houses`} className="underline">
+                                                {formatMessage({
+                                                    id: 'Veuillez vérifiez votre compteur ou votre logement',
+                                                    defaultMessage:
+                                                        'Veuillez vérifiez votre compteur ou votre logement',
+                                                })}
+                                            </NavLink>
+                                        </Typography>
+                                    </div>
+                                ) : (
+                                    <>
+                                        <Checkbox
+                                            checked={enedisConsentCheckbox}
+                                            onChange={handleCheckboxChange}
+                                            color="primary"
+                                            data-testid="sge-checkbox"
+                                        />
 
-                                <TypographyFormatMessage
-                                    className="underline cursor-pointer ml-12"
-                                    fontWeight={500}
-                                    data-testid="sge-message"
-                                    onClick={() =>
-                                        window.open('https://www.myem.fr/politique-de-confidentialite/', '_blank')
-                                    }
-                                >
-                                    J'autorise My Energy Manager à la récolte de mon historique de données de
-                                    consommation auprès d'Enedis.
-                                </TypographyFormatMessage>
+                                        <TypographyFormatMessage
+                                            className="underline cursor-pointer ml-12"
+                                            fontWeight={500}
+                                            data-testid="sge-message"
+                                            onClick={() =>
+                                                window.open(
+                                                    'https://www.myem.fr/politique-de-confidentialite/',
+                                                    '_blank',
+                                                )
+                                            }
+                                        >
+                                            J'autorise My Energy Manager à la récolte de mon historique de données de
+                                            consommation auprès d'Enedis.
+                                        </TypographyFormatMessage>
+                                    </>
+                                )}
                             </div>
                         )}
                     </DialogContent>

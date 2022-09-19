@@ -23,7 +23,15 @@ import { IHousing } from 'src/modules/MyHouse/components/HousingList/housing'
 export const MeterStatus = () => {
     const theme = useTheme()
     const { formatMessage } = useIntl()
-    const { getConsents, consentsLoading, nrlinkConsent, enedisSgeConsent, createEnedisSgeConsent } = useConsents()
+    const {
+        getConsents,
+        consentsLoading,
+        nrlinkConsent,
+        enedisSgeConsent,
+        createEnedisSgeConsent,
+        isCreateEnedisSgeConsentLoading,
+        createEnedisSgeConsentError,
+    } = useConsents()
     const { housingList } = useSelector(({ housingModel }: RootState) => housingModel)
     const [foundHousing, setFoundHousing] = useState<IHousing>()
 
@@ -174,6 +182,8 @@ export const MeterStatus = () => {
                                 }}
                                 houseId={parseInt(houseId)}
                                 createEnedisSgeConsent={createEnedisSgeConsent}
+                                createEnedisSgeConsentError={createEnedisSgeConsentError}
+                                isCreateEnedisSgeConsentLoading={isCreateEnedisSgeConsentLoading}
                             />
                         </div>
                     </>

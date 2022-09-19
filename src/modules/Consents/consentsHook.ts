@@ -41,7 +41,8 @@ export function useConsents() {
     )
     const [isMeterVerifyLoading, setIsMeterVerifyLoading] = useState(false)
     const [enedisSgeConsent, setEnedisSgeConsent] = useState<IEnedisSgeConsent>()
-    const [isEnedisSgeConsentLoading, setIsEnedisSgeConsentLoading] = useState(false)
+    const [isCreateEnedisSgeConsentLoading, setIsCreateEnedisSgeConsentLoading] = useState(false)
+    const [createEnedisSgeConsentError, setCreateEnedisSgeConsentError] = useState<boolean>(false)
 
     /**
      * Function that performs HTTP call to get consents.
@@ -138,27 +139,25 @@ export function useConsents() {
         async (housingId: number) => {
             try {
                 if (!housingId) return
-                setIsEnedisSgeConsentLoading(true)
+                setIsCreateEnedisSgeConsentLoading(true)
                 const { status, data } = await axios.post<IEnedisSgeConsent>(ENEDIS_SGE_CONSENT_API, {
                     housing_id: housingId,
                 })
                 if (status === 200) {
                     setEnedisSgeConsent(data)
                 }
-                setIsEnedisSgeConsentLoading(false)
+                setIsCreateEnedisSgeConsentLoading(false)
             } catch (error: any) {
-                setIsEnedisSgeConsentLoading(false)
-                enqueueSnackbar(
-                    error.response.data && error.response.data.detail
-                        ? formatMessage({
-                              id: error.response.data.detail,
-                              defaultMessage: error.response.data.detail,
-                          })
-                        : formatMessage({
-                              id: 'Erreur lors de la création de votre compteur',
-                              defaultMessage: 'Erreur lors de la création de votre compteur',
-                          }),
+                setIsCreateEnedisSgeConsentLoading(false)
 
+                if (axios.isAxiosError(error) && error.response?.data.retail) {
+                    setCreateEnedisSgeConsentError(true)
+                }
+                enqueueSnackbar(
+                    formatMessage({
+                        id: 'Erreur lors de la création de votre compteur',
+                        defaultMessage: "Erreur lors de la création de votre compteur'",
+                    }),
                     {
                         autoHideDuration: 5000,
                         variant: 'error',
@@ -182,6 +181,7 @@ export function useConsents() {
         createEnedisSgeConsent,
         enedisSgeConsent,
         setEnedisSgeConsent,
-        isEnedisSgeConsentLoading,
+        isCreateEnedisSgeConsentLoading,
+        createEnedisSgeConsentError,
     }
 }
