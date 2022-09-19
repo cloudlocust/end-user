@@ -60,7 +60,7 @@ export const consentsEndpoints = [
         // Use authorization to test the different cases in error.response.data.detail
         const authorization = req.headers.get('authorization')
         if (authorization === 'error') {
-            return res(ctx.status(400), ctx.delay(3000), ctx.json({ retail: 'error' }))
+            return res(ctx.status(400), ctx.delay(3000), ctx.json({ detail: 'error' }))
         } else {
             return res(ctx.status(200), ctx.delay(3000))
         }
@@ -70,7 +70,7 @@ export const consentsEndpoints = [
     rest.post<{ housing_id: number }>(`${API_RESOURCES_URL}/enedis-sge/consent`, (req, res, ctx) => {
         const authorization = req.headers.get('authorization')
         if (authorization === 'error') {
-            return res(ctx.status(400), ctx.delay(3000), ctx.json({ retail: 'error' }))
+            return res(ctx.status(400), ctx.delay(3000), ctx.json({ detail: 'error' }))
         } else {
             return res(ctx.status(200), ctx.delay(3000), ctx.json(TEST_SUCCESS_ENEDIS_SGE_CONSENT))
         }
