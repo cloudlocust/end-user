@@ -6,6 +6,9 @@ import { MeterVerificationEnum } from 'src/modules/Consents/Consents.d'
 import { useConsents } from 'src/modules/Consents/consentsHook'
 
 const mockEnqueueSnackbar = jest.fn()
+const TEST_SUCCESS = 'success'
+const TEST_ERROR = 'error'
+const TEST_SNACKBAR_ERROR = 'snackbar_error'
 
 /**
  * Mocking the useSnackbar.
@@ -26,7 +29,6 @@ const TEST_METER_GUID = '123456'
 const NonExistantState = 'NONEXISTENT'
 const TEST_NRLINK_ERROR = 'Erreur lors de la récupération du consentement Nrlink'
 const TEST_ENEDIS_ERROR = 'Erreur lors de la récupération du consentement Enedis'
-const TEST_ERROR = 'error'
 
 describe('useConsents test', () => {
     test('when getConsents is called, state changes', async () => {
@@ -73,7 +75,7 @@ describe('useConsents test', () => {
     }, 20000)
     test('when verifyMater request is performed succesfully', async () => {
         const { store } = require('src/redux')
-        await store.dispatch.userModel.setAuthenticationToken('success')
+        await store.dispatch.userModel.setAuthenticationToken(TEST_SUCCESS)
         const {
             renderedHook: { result, waitForValueToChange },
         } = reduxedRenderHook(() => useConsents())
@@ -91,7 +93,7 @@ describe('useConsents test', () => {
     })
     test('when verifyMeter request fails', async () => {
         const { store } = require('src/redux')
-        await store.dispatch.userModel.setAuthenticationToken('snackbar_error')
+        await store.dispatch.userModel.setAuthenticationToken(TEST_SNACKBAR_ERROR)
         const {
             renderedHook: { result, waitForValueToChange },
         } = reduxedRenderHook(() => useConsents())
@@ -113,7 +115,7 @@ describe('useConsents test', () => {
     }, 10000)
     test('when createEnedisSgeConsent requestt is performed successfully', async () => {
         const { store } = require('src/redux')
-        await store.dispatch.userModel.setAuthenticationToken('success')
+        await store.dispatch.userModel.setAuthenticationToken(TEST_SUCCESS)
         const {
             renderedHook: { result, waitForValueToChange },
         } = reduxedRenderHook(() => useConsents())
@@ -136,7 +138,7 @@ describe('useConsents test', () => {
     })
     test('when createEnedisSgeConsent request fails', async () => {
         const { store } = require('src/redux')
-        await store.dispatch.userModel.setAuthenticationToken('snackbar_error')
+        await store.dispatch.userModel.setAuthenticationToken(TEST_SNACKBAR_ERROR)
         const {
             renderedHook: { result, waitForValueToChange },
         } = reduxedRenderHook(() => useConsents())

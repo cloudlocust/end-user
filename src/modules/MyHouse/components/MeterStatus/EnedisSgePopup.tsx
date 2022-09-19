@@ -60,9 +60,6 @@ export const EnedisSgePopup = ({
         if (enedisConsentCheckbox && propsOrReduxHouseId) {
             createEnedisSgeConsent(propsOrReduxHouseId)
             setEnedisConsentCheckbox(false)
-            // setOpenSgePopup(false)
-            // setMeterVerification(MeterVerificationEnum.NOT_VERIFIED)
-            // setSgeStep(EnedisSgePopupStepsEnum.METER_VERIFICATION)
         }
     }, [createEnedisSgeConsent, enedisConsentCheckbox, propsOrReduxHouseId, setMeterVerification])
 
