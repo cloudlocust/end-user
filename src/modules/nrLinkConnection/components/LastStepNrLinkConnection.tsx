@@ -110,10 +110,10 @@ const LastStepNrLinkConnection = ({
                             validateFunctions={[requiredBuilder()]}
                         />
                     </div>
-                    <div className="w-full flex flex-col text-stone-400">
+                    <div className="w-full flex flex-col">
                         <TypographyFormatMessage
                             variant="caption"
-                            className="w-full text-center text-stone-400"
+                            className="w-full text-center"
                             sx={{ color: textNrlinkColor }}
                         >
                             Vous pouvez trouver le № GUID de votre nrLINK sur:
