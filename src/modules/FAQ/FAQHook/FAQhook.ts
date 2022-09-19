@@ -54,6 +54,5 @@ export function useFAQ() {
     return {
         isLoadingInProgress,
         dataFAQ,
-        loadFAQ,
     }
 }
