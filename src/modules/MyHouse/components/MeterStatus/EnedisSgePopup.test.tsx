@@ -8,11 +8,13 @@ import { TEST_HOUSES } from 'src/mocks/handlers/houses'
 
 const SGE_MESSAGE = 'Example text'
 const VERIFY_METER_MESSAGE = "Vérification de l'existence de votre compteur"
+let mockCreateEnedisSgeConsent = jest.fn()
 
 // Component Props.
 let mockEnedisSgePopup: EnedisSgePopupProps = {
     openEnedisSgeConsentText: SGE_MESSAGE,
     houseId: TEST_HOUSES[0].id,
+    createEnedisSgeConsent: mockCreateEnedisSgeConsent,
 }
 
 let mockVerifyMeter = jest.fn()
@@ -21,7 +23,7 @@ let mockVerifyMeter = jest.fn()
 // window.open = mockWindowOpen
 let mockSetIsMeterVerifyLoading = jest.fn()
 let mockisMeterVerifyLoading = false
-let mockMeterVerificationEnum = MeterVerificationEnum.NOT_YET_VERIFIED
+let mockMeterVerificationEnum = MeterVerificationEnum.NOT_VERIFIED
 
 // Mock consentsHook
 jest.mock('src/modules/Consents/consentsHook.ts', () => ({

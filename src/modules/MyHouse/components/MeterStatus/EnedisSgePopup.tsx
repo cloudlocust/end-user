@@ -1,4 +1,4 @@
-import { Dialog, DialogContent, LinearProgress, Typography, Icon } from '@mui/material'
+import { Dialog, DialogContent, LinearProgress, Typography, Icon, Checkbox } from '@mui/material'
 import { useEffect, useState } from 'react'
 import { useIntl } from 'react-intl'
 import { useSelector } from 'react-redux'
@@ -6,7 +6,10 @@ import { NavLink } from 'react-router-dom'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import { MeterVerificationEnum } from 'src/modules/Consents/Consents.d'
 import { useConsents } from 'src/modules/Consents/consentsHook'
-import { EnedisSgePopupProps } from 'src/modules/MyHouse/components/MeterStatus/enedisSgePopup'
+import {
+    EnedisSgePopupProps,
+    EnedisSgePopupStepsEnum,
+} from 'src/modules/MyHouse/components/MeterStatus/enedisSgePopup.d'
 import { RootState } from 'src/redux'
 
 /**
@@ -16,23 +19,27 @@ import { RootState } from 'src/redux'
  * @param param0.TypographyProps Props relevant to Mui Typographu component.
  * @param param0.openEnedisSgeConsentText Text that opens the popup.
  * @param param0.houseId House's id. (logement's id). Can be undefined, if so we use the house id from currentHousing of redux store.
+ * @param param0.createEnedisSgeConsent Setter function that handles Enedis consent request.
  * @returns Enedis Sge consent JSX.
  */
 export const EnedisSgePopup = ({
     TypographyProps,
     openEnedisSgeConsentText,
     houseId,
+    createEnedisSgeConsent,
 }: EnedisSgePopupProps): JSX.Element => {
     const { formatMessage } = useIntl()
-    const [sgeStep, setSgeStep] = useState(0)
+    const [sgeStep, setSgeStep] = useState<EnedisSgePopupStepsEnum>(EnedisSgePopupStepsEnum.METER_VERIFICATION)
     const [openSgePopup, setOpenSgePopup] = useState<boolean>(false)
     const { meterVerification, verifyMeter, isMeterVerifyLoading, setMeterVerification } = useConsents()
     const { currentHousing } = useSelector(({ housingModel }: RootState) => housingModel)
     const [propsOrReduxHouseId] = useState(houseId ? houseId : currentHousing?.id)
+    const [enedisConsentCheckbox, setEnedisConsentCheckbox] = useState(false)
 
+    // UseEffect that set the second step when the meter is verified succesfully.
     useEffect(() => {
         if (meterVerification === MeterVerificationEnum.VERIFIED) {
-            setSgeStep(1)
+            setSgeStep(EnedisSgePopupStepsEnum.ENEDIS_CONSENT_CREATION)
         }
     }, [meterVerification])
 
@@ -42,6 +49,27 @@ export const EnedisSgePopup = ({
             verifyMeter(propsOrReduxHouseId)
         }
     }, [openSgePopup, propsOrReduxHouseId, setOpenSgePopup, verifyMeter])
+
+    // UseEffect starts when the checkbox is true that creates the enedis sge consent.
+    // This also reset the sgeStep and the checkbox.
+    useEffect(() => {
+        if (enedisConsentCheckbox && propsOrReduxHouseId) {
+            createEnedisSgeConsent(propsOrReduxHouseId)
+            setOpenSgePopup(false)
+            setMeterVerification(MeterVerificationEnum.NOT_VERIFIED)
+            setEnedisConsentCheckbox(false)
+            setSgeStep(EnedisSgePopupStepsEnum.METER_VERIFICATION)
+        }
+    }, [createEnedisSgeConsent, enedisConsentCheckbox, propsOrReduxHouseId, setMeterVerification])
+
+    /**
+     * Function that handles checkbox onChange event.
+     *
+     * @param event OnChangeEvent.
+     */
+    function handleCheckboxChange(event: React.ChangeEvent<HTMLInputElement>) {
+        setEnedisConsentCheckbox(event.target.checked)
+    }
 
     return (
         <>
@@ -59,10 +87,13 @@ export const EnedisSgePopup = ({
                 <Dialog
                     onClose={(event, reason) => {
                         // Not allow the user to close the popup when the meter is being checked.
-                        if ((reason !== 'backdropClick' && reason !== 'escapeKeyDown') || sgeStep === 1) {
+                        if (
+                            (reason !== 'backdropClick' && reason !== 'escapeKeyDown') ||
+                            sgeStep === EnedisSgePopupStepsEnum.ENEDIS_CONSENT_CREATION
+                        ) {
                             setOpenSgePopup(false)
-                            setMeterVerification(MeterVerificationEnum.NOT_YET_VERIFIED)
-                            setSgeStep(0)
+                            setMeterVerification(MeterVerificationEnum.NOT_VERIFIED)
+                            setSgeStep(EnedisSgePopupStepsEnum.METER_VERIFICATION)
                         }
                     }}
                     open={openSgePopup}
@@ -72,7 +103,7 @@ export const EnedisSgePopup = ({
                     }}
                 >
                     <DialogContent>
-                        {sgeStep === 0 && (
+                        {sgeStep === EnedisSgePopupStepsEnum.METER_VERIFICATION && (
                             <>
                                 <div className="flex flex-1 flex-col items-center justify-center p-24">
                                     {isMeterVerifyLoading ? (
@@ -89,8 +120,7 @@ export const EnedisSgePopup = ({
                                             />
                                         </>
                                     ) : (
-                                        (meterVerification === MeterVerificationEnum.NOT_VERIFIED ||
-                                            meterVerification === MeterVerificationEnum.NOT_YET_VERIFIED) && (
+                                        meterVerification === MeterVerificationEnum.NOT_VERIFIED && (
                                             <div className="flex flex-col items-center">
                                                 <Icon className="mb-10">
                                                     <img
@@ -123,8 +153,28 @@ export const EnedisSgePopup = ({
                                 </div>
                             </>
                         )}
-                        {/* TODO: MYEM-2628 */}
-                        {sgeStep === 1 && <>Second Step Here</>}
+                        {sgeStep === EnedisSgePopupStepsEnum.ENEDIS_CONSENT_CREATION && (
+                            <div className="flex flex-row">
+                                <Checkbox
+                                    checked={enedisConsentCheckbox}
+                                    onChange={handleCheckboxChange}
+                                    color="primary"
+                                    data-testid="sge-checkbox"
+                                />
+
+                                <TypographyFormatMessage
+                                    className="underline cursor-pointer ml-12"
+                                    fontWeight={500}
+                                    data-testid="sge-message"
+                                    onClick={() =>
+                                        window.open('https://www.myem.fr/politique-de-confidentialite/', '_blank')
+                                    }
+                                >
+                                    J'autorise My Energy Manager à la récolte de mon historique de données de
+                                    consommation auprès d'Enedis.
+                                </TypographyFormatMessage>
+                            </div>
+                        )}
                     </DialogContent>
                 </Dialog>
             )}

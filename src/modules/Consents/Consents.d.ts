@@ -9,6 +9,11 @@ export type nrlinkConsentStatus = 'NONEXISTENT' | 'CONNECTED' | 'DISCONNECTED' |
 export type enedisConsentStatus = 'NONEXISTENT' | 'CONNECTED' | 'EXPIRED'
 
 /**
+ * Enedis Sge Consent Status.
+ */
+export type enedisSgeConsentStatus = 'NONEXISTENT' | 'CONNECTED' | 'EXPIRED' | 'REVOKED'
+
+/**
  * Nrlink consent model.
  */
 export interface INrlinkConsent {
@@ -55,13 +60,35 @@ export enum MeterVerificationEnum {
     /**
      *
      */
-    NOT_YET_VERIFIED = 'NOT_YET_VERIFIED',
-    /**
-     *
-     */
     VERIFIED = 'VERIFIED',
     /**
      *
      */
     NOT_VERIFIED = 'NOT_VERIFIED',
+}
+
+/**
+ * Inerface for Enedis Sge consent.
+ */
+export interface IEnedisSgeConsent {
+    /**
+     * Enedis Sge consent state.
+     */
+    enedisSgeConsentState: enedisSgeConsentStatus
+    /**
+     * Meter guid.
+     */
+    meterGuid: string
+    /**
+     * Created at date.
+     */
+    createdAt?: string
+    /**
+     * Revoked at date.
+     */
+    revokedAt?: string
+    /**
+     * Expired at date.
+     */
+    expiredAt: string
 }

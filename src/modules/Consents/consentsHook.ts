@@ -1,10 +1,14 @@
 import { useCallback, useState } from 'react'
-import { IEnedisConsent, INrlinkConsent } from 'src/modules/Consents/Consents'
+import {
+    IEnedisConsent,
+    IEnedisSgeConsent,
+    INrlinkConsent,
+    MeterVerificationEnum,
+} from 'src/modules/Consents/Consents.d'
 import { useSnackbar } from 'notistack'
 import { useIntl } from 'react-intl'
 import { axios } from 'src/common/react-platform-components'
 import { API_RESOURCES_URL } from 'src/configs'
-import { MeterVerificationEnum } from 'src/modules/Consents/Consents.d'
 
 /**
  * Nrlink consent endpoint.
@@ -15,6 +19,11 @@ export const NRLINK_CONSENT_API = `${API_RESOURCES_URL}/nrlink/consent`
  * Nrlink consent endpoint.
  */
 export const ENEDIS_CONSENT_API = `${API_RESOURCES_URL}/enedis/consent`
+
+/**
+ * Enedis Sge consent endpoint.
+ */
+export const ENEDIS_SGE_CONSENT_API = `${API_RESOURCES_URL}/enedis-sge/consent`
 
 /**
  * Consents hook.
@@ -28,9 +37,11 @@ export function useConsents() {
     const [nrlinkConsent, setNrlinkConsent] = useState<INrlinkConsent>()
     const [enedisConsent, setEnedisConsent] = useState<IEnedisConsent>()
     const [meterVerification, setMeterVerification] = useState<MeterVerificationEnum>(
-        MeterVerificationEnum.NOT_YET_VERIFIED,
+        MeterVerificationEnum.NOT_VERIFIED,
     )
     const [isMeterVerifyLoading, setIsMeterVerifyLoading] = useState(false)
+    const [enedisSgeConsent, setEnedisSgeConsent] = useState<IEnedisSgeConsent>()
+    const [isEnedisSgeConsentLoading, setIsEnedisSgeConsentLoading] = useState(false)
 
     /**
      * Function that performs HTTP call to get consents.
@@ -98,10 +109,10 @@ export function useConsents() {
                 setIsMeterVerifyLoading(true)
                 const response = await axios.get(`${API_RESOURCES_URL}/enedis-sge/consent/${housingId}/check`)
                 if (response.status === 200) setMeterVerification(MeterVerificationEnum.VERIFIED)
-                else setMeterVerification(MeterVerificationEnum.NOT_VERIFIED)
                 setIsMeterVerifyLoading(false)
             } catch (error: any) {
                 setIsMeterVerifyLoading(false)
+                setMeterVerification(MeterVerificationEnum.NOT_VERIFIED)
                 enqueueSnackbar(
                     error.response.data && error.response.data.detail
                         ? formatMessage({
@@ -111,6 +122,41 @@ export function useConsents() {
                         : formatMessage({
                               id: 'Erreur lors de la vérification de votre compteur',
                               defaultMessage: 'Erreur lors de la vérification de votre compteur',
+                          }),
+
+                    {
+                        autoHideDuration: 5000,
+                        variant: 'error',
+                    },
+                )
+            }
+        },
+        [enqueueSnackbar, formatMessage],
+    )
+
+    const createEnedisSgeConsent = useCallback(
+        async (housingId: number) => {
+            try {
+                if (!housingId) return
+                setIsEnedisSgeConsentLoading(true)
+                const { status, data } = await axios.post<IEnedisSgeConsent>(ENEDIS_SGE_CONSENT_API, {
+                    housing_id: housingId,
+                })
+                if (status === 200) {
+                    setEnedisSgeConsent(data)
+                }
+                setIsEnedisSgeConsentLoading(false)
+            } catch (error: any) {
+                setIsEnedisSgeConsentLoading(false)
+                enqueueSnackbar(
+                    error.response.data && error.response.data.detail
+                        ? formatMessage({
+                              id: error.response.data.detail,
+                              defaultMessage: error.response.data.detail,
+                          })
+                        : formatMessage({
+                              id: 'Erreur lors de la création de votre compteur',
+                              defaultMessage: 'Erreur lors de la création de votre compteur',
                           }),
 
                     {
@@ -133,5 +179,9 @@ export function useConsents() {
         setIsMeterVerifyLoading,
         isMeterVerifyLoading,
         setMeterVerification,
+        createEnedisSgeConsent,
+        enedisSgeConsent,
+        setEnedisSgeConsent,
+        isEnedisSgeConsentLoading,
     }
 }

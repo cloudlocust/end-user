@@ -1,7 +1,7 @@
 import { reduxedRender } from 'src/common/react-platform-components/test'
 import { BrowserRouter as Router } from 'react-router-dom'
 import { MeterStatus } from 'src/modules/MyHouse/components/MeterStatus'
-import { enedisConsentStatus, MeterVerificationEnum, nrlinkConsentStatus } from 'src/modules/Consents/Consents.d'
+import { enedisSgeConsentStatus, MeterVerificationEnum, nrlinkConsentStatus } from 'src/modules/Consents/Consents.d'
 import { URL_NRLINK_CONNECTION_STEPS } from 'src/modules/nrLinkConnection'
 import dayjs from 'dayjs'
 import userEvent from '@testing-library/user-event'
@@ -34,9 +34,11 @@ const ENEDIS_NONEXISTANT_EXPIRED_MESSAGE =
 const NO_METER_MESSAGE = 'Aucun compteur renseigné'
 
 const VERIFY_METER_MESSAGE = "Vérification de l'existence de votre compteur"
+const CREATION_ENEDIS_SGE_CONSENT_TEXT =
+    "J'autorise My Energy Manager à la récolte de mon historique de données de consommation auprès d'Enedis."
 
 let mockNrlinkConsent: nrlinkConsentStatus
-let mockEnedisConsent: enedisConsentStatus
+let mockEnedisSgeConsent: enedisSgeConsentStatus
 let mockGetConsent = jest.fn()
 let mockVerifyMeter = jest.fn()
 let mockNrlinkCreatedAt = '2022-09-02T08:06:08Z'
@@ -47,8 +49,10 @@ let mockWindowOpen = jest.fn()
 window.open = mockWindowOpen
 let mockSetIsMeterVerifyLoading = jest.fn()
 let mockisMeterVerifyLoading = false
-let mockMeterVerificationEnum = MeterVerificationEnum.NOT_YET_VERIFIED
+let mockMeterVerificationEnum = MeterVerificationEnum.NOT_VERIFIED
 let mockHouseId = TEST_MOCKED_HOUSES[0].id
+let mockCreateEnedisSgeConsent = jest.fn()
+let mockSetMeterVerification = jest.fn()
 
 /**
  * Mocking the useParams used in "meterStatus" to get the house id based on url /my-houses/:houseId params.
@@ -69,9 +73,9 @@ jest.mock('react-router-dom', () => ({
 jest.mock('src/modules/Consents/consentsHook.ts', () => ({
     // eslint-disable-next-line jsdoc/require-jsdoc
     useConsents: () => ({
-        enedisConsent: {
+        enedisSgeConsent: {
             meterGuid: '133456',
-            enedisConsentState: mockEnedisConsent,
+            enedisSgeConsentState: mockEnedisSgeConsent,
             createdAt: mockEnedisCreatedAt,
         },
         nrlinkConsent: {
@@ -82,9 +86,11 @@ jest.mock('src/modules/Consents/consentsHook.ts', () => ({
         },
         getConsents: mockGetConsent,
         verifyMeter: mockVerifyMeter,
+        createEnedisSgeConsent: mockCreateEnedisSgeConsent,
         setIsMeterVerifyLoading: mockSetIsMeterVerifyLoading,
         isMeterVerifyLoading: mockisMeterVerifyLoading,
         meterVerification: mockMeterVerificationEnum,
+        setMeterVerification: mockSetMeterVerification,
     }),
 }))
 
@@ -212,7 +218,7 @@ describe('MeterStatus component test', () => {
         test('when enedis status is connected', async () => {
             foundHouse!.meter!.guid = '12345Her'
             mockNrlinkConsent = 'DISCONNECTED'
-            mockEnedisConsent = 'CONNECTED'
+            mockEnedisSgeConsent = 'CONNECTED'
             const { getByText, getByAltText } = reduxedRender(
                 <Router>
                     <MeterStatus />
@@ -227,8 +233,9 @@ describe('MeterStatus component test', () => {
             expect(getByText(enedisFormatedEndingDate)).toBeTruthy()
         })
         test('when enedis status is expired or nonexistant', async () => {
+            foundHouse!.meter!.guid = '12345Her'
             mockNrlinkConsent = 'DISCONNECTED'
-            mockEnedisConsent = 'EXPIRED' || 'NONEXISTENT'
+            mockEnedisSgeConsent = 'EXPIRED' || 'NONEXISTENT'
             const { getByText, getByAltText } = reduxedRender(
                 <Router>
                     <MeterStatus />
@@ -241,10 +248,10 @@ describe('MeterStatus component test', () => {
             expect(image).toHaveAttribute('src', '/assets/images/content/housing/consent-status/meter-off.svg')
         })
     })
-    describe('test verifyMeterPopup', () => {
+    describe('test implementation of EnedisSgePopup', () => {
         test('when clicked on error message, verify meter popup is shown with loading', async () => {
             foundHouse!.meter!.guid = '12345Her'
-            mockEnedisConsent = 'EXPIRED' || 'NONEXISTENT'
+            mockEnedisSgeConsent = 'EXPIRED' || 'NONEXISTENT'
             mockisMeterVerifyLoading = true
             const { getByText, getByTestId } = reduxedRender(
                 <Router>
@@ -257,7 +264,7 @@ describe('MeterStatus component test', () => {
             expect(getByTestId('linear-progess')).toHaveClass('MuiLinearProgress-colorPrimary')
         })
         test('when meter fails to be verified, an error message is shown', async () => {
-            mockEnedisConsent = 'EXPIRED' || 'NONEXISTENT'
+            mockEnedisSgeConsent = 'EXPIRED' || 'NONEXISTENT'
             mockisMeterVerifyLoading = false
             mockMeterVerificationEnum = MeterVerificationEnum.NOT_VERIFIED
 
@@ -275,6 +282,27 @@ describe('MeterStatus component test', () => {
                 'href',
                 '/my-houses',
             )
+        })
+        test('when enedis sge consent is retrieved succesfully', async () => {
+            mockEnedisSgeConsent = 'EXPIRED' || 'NONEXISTENT'
+            mockisMeterVerifyLoading = false
+            mockMeterVerificationEnum = MeterVerificationEnum.VERIFIED
+
+            const { getByText, getByTestId } = reduxedRender(
+                <Router>
+                    <MeterStatus />
+                </Router>,
+            )
+
+            userEvent.click(getByText(ENEDIS_NONEXISTANT_EXPIRED_MESSAGE))
+            expect(mockVerifyMeter).toBeCalledWith(mockHouseId)
+            expect(getByText(CREATION_ENEDIS_SGE_CONSENT_TEXT)).toBeTruthy()
+            const checkbox = getByTestId('sge-checkbox').querySelector('input[type="checkbox"]') as Element
+            expect(checkbox).toHaveProperty('checked', false)
+            userEvent.click(checkbox)
+            expect(mockCreateEnedisSgeConsent).toBeCalled()
+            // When createEnedisSgeConsent is performed we reset.
+            expect(mockSetMeterVerification).toBeCalledWith(MeterVerificationEnum.NOT_VERIFIED)
         })
     })
 })

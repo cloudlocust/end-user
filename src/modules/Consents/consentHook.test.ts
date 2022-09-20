@@ -1,5 +1,7 @@
 import { act } from '@testing-library/react-hooks'
 import { reduxedRenderHook } from 'src/common/react-platform-components/test'
+import { TEST_SUCCESS_ENEDIS_SGE_CONSENT } from 'src/mocks/handlers/consents'
+import { TEST_HOUSES } from 'src/mocks/handlers/houses'
 import { MeterVerificationEnum } from 'src/modules/Consents/Consents.d'
 import { useConsents } from 'src/modules/Consents/consentsHook'
 
@@ -75,9 +77,9 @@ describe('useConsents test', () => {
         const {
             renderedHook: { result, waitForValueToChange },
         } = reduxedRenderHook(() => useConsents())
-        expect(result.current.meterVerification).toStrictEqual(MeterVerificationEnum.NOT_YET_VERIFIED)
+        expect(result.current.meterVerification).toStrictEqual(MeterVerificationEnum.NOT_VERIFIED)
         act(() => {
-            result.current.verifyMeter(1)
+            result.current.verifyMeter(TEST_HOUSES[0].id)
         })
         await waitForValueToChange(
             () => {
@@ -93,9 +95,9 @@ describe('useConsents test', () => {
         const {
             renderedHook: { result, waitForValueToChange },
         } = reduxedRenderHook(() => useConsents())
-        expect(result.current.meterVerification).toStrictEqual(MeterVerificationEnum.NOT_YET_VERIFIED)
+        expect(result.current.meterVerification).toStrictEqual(MeterVerificationEnum.NOT_VERIFIED)
         act(() => {
-            result.current.verifyMeter(1)
+            result.current.verifyMeter(TEST_HOUSES[0].id)
         })
         await waitForValueToChange(
             () => {
@@ -103,10 +105,56 @@ describe('useConsents test', () => {
             },
             { timeout: 6000 },
         )
-        expect(result.current.meterVerification).toStrictEqual(MeterVerificationEnum.NOT_YET_VERIFIED)
+        expect(result.current.meterVerification).toStrictEqual(MeterVerificationEnum.NOT_VERIFIED)
         expect(mockEnqueueSnackbar).toHaveBeenCalledWith('Erreur lors de la vérification de votre compteur', {
             autoHideDuration: 5000,
             variant: 'error',
         })
     }, 10000)
+    test('when createEnedisSgeConsent requestt is performed successfully', async () => {
+        const { store } = require('src/redux')
+        await store.dispatch.userModel.setAuthenticationToken('')
+        const {
+            renderedHook: { result, waitForValueToChange },
+        } = reduxedRenderHook(() => useConsents())
+        expect(result.current.isEnedisSgeConsentLoading).toBeFalsy()
+
+        act(() => {
+            result.current.createEnedisSgeConsent(TEST_HOUSES[0].id)
+        })
+        expect(result.current.isEnedisSgeConsentLoading).toBeTruthy()
+        await waitForValueToChange(
+            () => {
+                return result.current.isEnedisSgeConsentLoading
+            },
+            { timeout: 6000 },
+        )
+
+        expect(result.current.enedisSgeConsent.enedisSgeConsentState).toStrictEqual(
+            TEST_SUCCESS_ENEDIS_SGE_CONSENT.enedis_sge_consent_state,
+        )
+    })
+    test('when createEnedisSgeConsent request fails', async () => {
+        const { store } = require('src/redux')
+        await store.dispatch.userModel.setAuthenticationToken(TEST_ERROR)
+        const {
+            renderedHook: { result, waitForValueToChange },
+        } = reduxedRenderHook(() => useConsents())
+        expect(result.current.isEnedisSgeConsentLoading).toBeFalsy()
+
+        act(() => {
+            result.current.createEnedisSgeConsent(TEST_HOUSES[0].id)
+        })
+        expect(result.current.isEnedisSgeConsentLoading).toBeTruthy()
+        await waitForValueToChange(
+            () => {
+                return result.current.isEnedisSgeConsentLoading
+            },
+            { timeout: 6000 },
+        )
+        expect(mockEnqueueSnackbar).toHaveBeenCalledWith('Erreur lors de la création de votre compteur', {
+            autoHideDuration: 5000,
+            variant: 'error',
+        })
+    })
 })

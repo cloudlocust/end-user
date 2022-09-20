@@ -6,7 +6,7 @@ import { URL_MY_HOUSE } from 'src/modules/MyHouse/MyHouseConfig'
 import { MuiCardContent } from 'src/common/ui-kit'
 import { useConsents } from 'src/modules/Consents/consentsHook'
 import { useEffect, useState } from 'react'
-import { enedisConsentStatus, nrlinkConsentStatus } from 'src/modules/Consents/Consents'
+import { enedisSgeConsentStatus, nrlinkConsentStatus } from 'src/modules/Consents/Consents'
 import dayjs from 'dayjs'
 import { useIntl } from 'react-intl'
 import { NrlinkConnectionStepsEnum } from 'src/modules/nrLinkConnection/nrlinkConnectionSteps.d'
@@ -23,7 +23,7 @@ import { IHousing } from 'src/modules/MyHouse/components/HousingList/housing'
 export const MeterStatus = () => {
     const theme = useTheme()
     const { formatMessage } = useIntl()
-    const { getConsents, consentsLoading, nrlinkConsent, enedisConsent } = useConsents()
+    const { getConsents, consentsLoading, nrlinkConsent, enedisSgeConsent, createEnedisSgeConsent } = useConsents()
     const { housingList } = useSelector(({ housingModel }: RootState) => housingModel)
     const [foundHousing, setFoundHousing] = useState<IHousing>()
 
@@ -33,7 +33,7 @@ export const MeterStatus = () => {
 
     const nrlinkConsentCreatedAt = dayjs(nrlinkConsent?.createdAt).format('DD/MM/YYYY')
     /* To have the ending date of the consent, we add 3 years to the date the consent was made */
-    const enedisConsentEndingDate = dayjs(enedisConsent?.createdAt).add(3, 'year').format('DD/MM/YYYY')
+    const enedisConsentEndingDate = dayjs(enedisSgeConsent?.createdAt).add(3, 'year').format('DD/MM/YYYY')
 
     // UseEffect that find the housing with the house Id from url params.
     useEffect(() => {
@@ -125,11 +125,11 @@ export const MeterStatus = () => {
     /**
      * Function that renders JSX accorrding to enedis status.
      *
-     * @param enedisConsent Different nrlink statuses.
+     * @param enedisSgeConsent Different enedis sge statuses.
      * @returns JSX according to enedis Status.
      */
-    function renderEnedisStatus(enedisConsent?: enedisConsentStatus) {
-        switch (enedisConsent) {
+    function renderEnedisStatus(enedisSgeConsent?: enedisSgeConsentStatus) {
+        switch (enedisSgeConsent) {
             case 'CONNECTED':
                 return (
                     <>
@@ -144,6 +144,13 @@ export const MeterStatus = () => {
                                 Date de fin de consentement
                             </TypographyFormatMessage>
                             <span className="text-grey-600">{enedisConsentEndingDate}</span>
+                            <TypographyFormatMessage
+                                className="underline cursor-pointer"
+                                color={theme.palette.primary.main}
+                                fontWeight={500}
+                            >
+                                Annuler la récolte de mes données
+                            </TypographyFormatMessage>
                         </div>
                     </>
                 )
@@ -166,6 +173,7 @@ export const MeterStatus = () => {
                                     color: theme.palette.error.main,
                                 }}
                                 houseId={parseInt(houseId)}
+                                createEnedisSgeConsent={createEnedisSgeConsent}
                             />
                         </div>
                     </>
@@ -250,7 +258,7 @@ export const MeterStatus = () => {
                                         Historique de consommation
                                     </TypographyFormatMessage>
                                     <div className="flex flex-row items-center">
-                                        {renderEnedisStatus(enedisConsent?.enedisConsentState)}
+                                        {renderEnedisStatus(enedisSgeConsent?.enedisSgeConsentState)}
                                     </div>
                                 </>
                             )}
