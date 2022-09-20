@@ -59,9 +59,9 @@ export const consentsEndpoints = [
     rest.get(`${API_RESOURCES_URL}/enedis-sge/consent/:houseid/check`, (req, res, ctx) => {
         // Use authorization to test the different cases in error.response.data.detail
         const authorization = req.headers.get('authorization')
-        if (authorization === 'error') {
+        if (authorization && authorization === 'snackbar_error') {
             return res(ctx.status(400), ctx.delay(1000))
-        } else {
+        } else if (authorization && authorization === 'success') {
             return res(ctx.status(200), ctx.delay(1000))
         }
     }),
@@ -69,9 +69,9 @@ export const consentsEndpoints = [
     // eslint-disable-next-line jsdoc/require-jsdoc
     rest.post<{ housing_id: number }>(`${API_RESOURCES_URL}/enedis-sge/consent`, (req, res, ctx) => {
         const authorization = req.headers.get('authorization')
-        if (authorization === 'error') {
+        if (authorization && authorization === 'snackbar_error') {
             return res(ctx.status(400), ctx.delay(1000))
-        } else {
+        } else if (authorization && authorization === 'success') {
             return res(ctx.status(200), ctx.delay(1000), ctx.json(TEST_SUCCESS_ENEDIS_SGE_CONSENT))
         }
     }),

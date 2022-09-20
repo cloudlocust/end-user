@@ -15,12 +15,11 @@ let mockEnedisSgePopup: EnedisSgePopupProps = {
     openEnedisSgeConsentText: SGE_MESSAGE,
     houseId: TEST_HOUSES[0].id,
     createEnedisSgeConsent: mockCreateEnedisSgeConsent,
+    createEnedisSgeConsentError: false,
+    isCreateEnedisSgeConsentLoading: false,
 }
 
 let mockVerifyMeter = jest.fn()
-// TODO:: TO USE in the next popup step.
-// let mockWindowOpen = jest.fn()
-// window.open = mockWindowOpen
 let mockSetIsMeterVerifyLoading = jest.fn()
 let mockisMeterVerifyLoading = false
 let mockMeterVerificationEnum = MeterVerificationEnum.NOT_VERIFIED
@@ -50,7 +49,7 @@ describe('Test EnedisSgePopup component', () => {
         expect(getByText(VERIFY_METER_MESSAGE)).toBeVisible()
         expect(getByTestId('linear-progess')).toHaveClass('MuiLinearProgress-colorPrimary')
     })
-    test('whhen popup is not shown', async () => {
+    test('when popup is not shown', async () => {
         mockEnedisSgePopup.houseId = undefined
         const { getByText } = reduxedRender(
             <Router>
@@ -58,5 +57,21 @@ describe('Test EnedisSgePopup component', () => {
             </Router>,
         )
         expect(() => getByText(VERIFY_METER_MESSAGE)).toThrow()
+    })
+    test('when popup goes to the next step', async () => {
+        mockEnedisSgePopup.houseId = TEST_HOUSES[0].id
+        mockMeterVerificationEnum = MeterVerificationEnum.VERIFIED
+        const { getByText, getByTestId } = reduxedRender(
+            <Router>
+                <EnedisSgePopup {...mockEnedisSgePopup} />
+            </Router>,
+        )
+        expect(getByText(SGE_MESSAGE)).toBeTruthy()
+        userEvent.click(getByText(SGE_MESSAGE))
+        expect(mockVerifyMeter).toBeCalledWith(mockEnedisSgePopup.houseId)
+        const checkbox = getByTestId('sge-checkbox').querySelector('input[type="checkbox"]') as Element
+        expect(checkbox).toHaveProperty('checked', false)
+        userEvent.click(checkbox)
+        expect(mockCreateEnedisSgeConsent).toBeCalled()
     })
 })

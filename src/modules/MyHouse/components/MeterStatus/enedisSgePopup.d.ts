@@ -22,6 +22,14 @@ export interface EnedisSgePopupProps {
      * Setter function that handles the parent enedisSgeConsent state.
      */
     createEnedisSgeConsent: Dispatch<SetStateAction<IEnedisSgeConsent | undefined>>
+    /**
+     * Enedis consent error message.
+     */
+    createEnedisSgeConsentError: boolean
+    /**
+     * Create enedis sge loading state.
+     */
+    isCreateEnedisSgeConsentLoading: boolean
 }
 
 /**
