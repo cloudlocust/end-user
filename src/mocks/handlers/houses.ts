@@ -14,7 +14,7 @@ export const TEST_HOUSES: SnakeCasedPropertiesDeep<IHousing>[] = [
     {
         id: 1,
         meter: {
-            id: '1234569865',
+            id: parseInt('1234569865'),
             name: 'my nrlink',
             guid: '12345Her',
         },

@@ -1,9 +1,19 @@
-import { Card, useTheme, Icon, CircularProgress } from '@mui/material'
+import {
+    Card,
+    useTheme,
+    Icon,
+    CircularProgress,
+    IconButton,
+    CardActions,
+    Button,
+    Modal,
+    CardContent,
+} from '@mui/material'
 import { NavLink, useParams } from 'react-router-dom'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import { ReactComponent as ContractIcon } from 'src/assets/images/content/housing/contract.svg'
 import { URL_MY_HOUSE } from 'src/modules/MyHouse/MyHouseConfig'
-import { MuiCardContent } from 'src/common/ui-kit'
+import { ButtonLoader, MuiCardContent, TextField } from 'src/common/ui-kit'
 import { useConsents } from 'src/modules/Consents/consentsHook'
 import { useEffect, useState } from 'react'
 import { enedisSgeConsentStatus, nrlinkConsentStatus } from 'src/modules/Consents/Consents'
@@ -14,6 +24,8 @@ import { EnedisSgePopup } from 'src/modules/MyHouse/components/MeterStatus/Enedi
 import { useSelector } from 'react-redux'
 import { RootState } from 'src/redux'
 import { IHousing } from 'src/modules/MyHouse/components/HousingList/housing'
+import ModeEditOutlineOutlinedIcon from '@mui/icons-material/ModeEditOutlineOutlined'
+import { Form, requiredBuilder, min, max } from 'src/common/react-platform-components'
 
 /**
  * Meter Status Component.
@@ -34,6 +46,7 @@ export const MeterStatus = () => {
     } = useConsents()
     const { housingList } = useSelector(({ housingModel }: RootState) => housingModel)
     const [foundHousing, setFoundHousing] = useState<IHousing>()
+    const [editMeterOpen, setEditMeterOpen] = useState(false)
 
     // Retrieving house id from url params /my-houses/:houseId
     // eslint-disable-next-line jsdoc/require-jsdoc
@@ -197,9 +210,84 @@ export const MeterStatus = () => {
                 <MuiCardContent sx={{ p: 0, '&:last-child': { pb: 0 } }}>
                     <div className="flex flex-row justify-between bg-grey-200 p-12 border-b-1 border-grey-300">
                         <div className="flex flex-col justify-between">
-                            <TypographyFormatMessage className="text-base font-medium">
-                                Compteur
-                            </TypographyFormatMessage>
+                            <div className="flex flex-row items-center">
+                                <TypographyFormatMessage className="text-base font-medium mr-8">
+                                    Compteur
+                                </TypographyFormatMessage>
+                                {foundHousing?.meter?.guid && (
+                                    <>
+                                        <IconButton onClick={() => setEditMeterOpen(true)}>
+                                            <ModeEditOutlineOutlinedIcon color="primary" />
+                                        </IconButton>
+
+                                        <Modal open={editMeterOpen} onClose={() => setEditMeterOpen(false)}>
+                                            <Form
+                                                onSubmit={async (value) => null}
+                                                defaultValues={{
+                                                    name: foundHousing.meter.name,
+                                                    guid: foundHousing.meter.guid,
+                                                }}
+                                            >
+                                                <div
+                                                    className="flex justify-center absolute top-1/2 left-1/2"
+                                                    style={{ transform: 'translate(-50%, -50%)' }}
+                                                >
+                                                    <Card className="relative cursor-pointer flex-wrap rounded-16">
+                                                        <CardContent className="mt-10">
+                                                            <TextField
+                                                                name="name"
+                                                                label="Nom de mon compteur"
+                                                                placeholder={formatMessage({
+                                                                    id: 'Modifier le nom de votre compteur',
+                                                                    defaultMessage: 'Modifier le nom de votre compteur',
+                                                                })}
+                                                                validateFunctions={[requiredBuilder()]}
+                                                            />
+                                                            <TextField
+                                                                name="guid"
+                                                                label="Numéro de mon compteur"
+                                                                placeholder={formatMessage({
+                                                                    id: 'Modifier le numéro de votre compteur',
+                                                                    defaultMessage:
+                                                                        'Modifier le numéro de votre compteur',
+                                                                })}
+                                                                validateFunctions={[
+                                                                    requiredBuilder(),
+                                                                    min(14),
+                                                                    max(14),
+                                                                ]}
+                                                            />
+                                                        </CardContent>
+                                                        <CardActions className="flex items-center content-center justify-center mb-10">
+                                                            <Button
+                                                                variant="outlined"
+                                                                className="mr-4"
+                                                                onClick={() => setEditMeterOpen(false)}
+                                                            >
+                                                                {formatMessage({
+                                                                    id: 'Annuler',
+                                                                    defaultMessage: 'Annuler',
+                                                                })}
+                                                            </Button>
+                                                            <ButtonLoader
+                                                                // inProgress={isMeterInProgress}
+                                                                variant="contained"
+                                                                type="submit"
+                                                                className="ml-4"
+                                                            >
+                                                                {formatMessage({
+                                                                    id: 'Enregistrer',
+                                                                    defaultMessage: 'Enregistrer',
+                                                                })}
+                                                            </ButtonLoader>
+                                                        </CardActions>
+                                                    </Card>
+                                                </div>
+                                            </Form>
+                                        </Modal>
+                                    </>
+                                )}
+                            </div>
                             {foundHousing?.meter?.guid ? (
                                 <span className="text-grey-600 text-base">{`n° ${foundHousing?.meter?.guid}`}</span>
                             ) : (
