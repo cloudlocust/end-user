@@ -4,6 +4,7 @@ import { formatMessageType } from 'src/common/react-platform-translation'
 import { addContractDataType, IContract, loadContractResponse } from './contractsTypes'
 import { HOUSING_API } from 'src/modules/MyHouse/components/HousingList/HousingsHooks'
 import { formatLoadContractResponseToIContract } from 'src/modules/Contracts/utils/contractsFunctions'
+import { AxiosError } from 'axios'
 
 /**
  * Contracts microservice endpoint.
@@ -34,10 +35,11 @@ const loadElementListError = (error: any, formatMessage: formatMessageType) => {
  * @param formatMessage FormatMessage intl object from (react-intl package).
  * @returns {string} Error message.
  */
-const addElementError = (error: any, formatMessage: formatMessageType) => {
+const addElementError = (error: AxiosError, formatMessage: formatMessageType) => {
+    const errorAddElementMsg = error.response?.data.detail || "Erreur lors de l'ajout du contrat"
     return formatMessage({
-        id: "Erreur lors de l'ajout du contrat",
-        defaultMessage: "Erreur lors de l'ajout du contrat",
+        id: errorAddElementMsg,
+        defaultMessage: errorAddElementMsg,
     })
 }
 
@@ -52,6 +54,35 @@ const addElementSuccess = (responseData: loadContractResponse, formatMessage: fo
     return formatMessage({
         id: "Succès lors de l'ajout du contrat",
         defaultMessage: "Succès lors de l'ajout du contrat",
+    })
+}
+
+/**
+ * Error message editElementDetails.
+ *
+ * @param error Axios error object.
+ * @param formatMessage FormatMessage intl object from (react-intl package).
+ * @returns {string} Error message.
+ */
+const editElementDetailsError = (error: AxiosError, formatMessage: formatMessageType) => {
+    const erroreEitElementMsg = error.response?.data.detail || 'Erreur lors de la modification du contrat'
+    return formatMessage({
+        id: erroreEitElementMsg,
+        defaultMessage: erroreEitElementMsg,
+    })
+}
+
+/**
+ * Success message editElementDetails.
+ *
+ * @param responseData Edit Contract.
+ * @param formatMessage FormatMessage intl object from (react-intl package).
+ * @returns {string} Success message.
+ */
+const editElementDetailsSuccess = (responseData: loadContractResponse, formatMessage: formatMessageType) => {
+    return formatMessage({
+        id: 'Succès lors de la modification du contrat',
+        defaultMessage: 'Succès lors de la modification du contrat',
     })
 }
 
@@ -118,8 +149,13 @@ export const useContractList = (houseId: number, sizeParam?: number) => {
  */
 export const useContractDetails = (houseId: number, contractId: number) => {
     // eslint-disable-next-line jsdoc/require-jsdoc
-    return BuilderUseElementDetails<loadContractResponse, {}, IContract>({
+    return BuilderUseElementDetails<loadContractResponse, addContractDataType, IContract>({
         API_ENDPOINT: `${CONTRACTS_API(Number(houseId))}/${contractId}`,
-        snackBarMessage0verride: { removeElementDetailsError, removeElementDetailsSuccess },
+        snackBarMessage0verride: {
+            removeElementDetailsError,
+            removeElementDetailsSuccess,
+            editElementDetailsError,
+            editElementDetailsSuccess,
+        },
     })()
 }
