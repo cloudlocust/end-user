@@ -1,7 +1,12 @@
 @import 'src/common/ui-kit/styles/media.scss';
+
 .apexcharts-canvas {
     overflow-x: auto;
     overflow-y: hidden;
+    margin-left: -15px;
+    @include sm {
+        margin-left: 0px;
+    }
     .apexcharts-text.apexcharts-xaxis-label,
     .apexcharts-tooltip-title {
         text-transform: capitalize;

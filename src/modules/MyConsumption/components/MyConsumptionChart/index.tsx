@@ -9,7 +9,7 @@ import { getApexChartMyConsumptionProps } from 'src/modules/MyConsumption/utils/
 import { ApexChartsAxisValuesType, periodType } from 'src/modules/MyConsumption/myConsumptionTypes'
 import { fillApexChartsAxisMissingValues } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
 import { CircularProgress } from '@mui/material'
-
+import useMediaQuery from '@mui/material/useMediaQuery'
 /**
  * MyConsumptionChart Component.
  *
@@ -40,7 +40,7 @@ const MyConsumptionChart = ({
     const theme = useTheme()
     //To improve user experience by showing a spinner when chart mount and start drawing, until the chart is completely shown and drawn. Instead of showing an empty chart while while the chart is drawing heavy computations (Because of the length of categories given and labels, tooltip.labels especially when period === 'daily', and when options.xaxis.type === 'category' chart performance in drawing is slower).
     const [isApexChartsFinishDrawing, setIsApexChartsFinishDrawing] = React.useState(false)
-
+    const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
     // Wrap in useMemo for better performance, as we save the result of convertMetricsData function and we don't call it again on every reender, until data changes.
     let ApexChartsAxisValues: ApexChartsAxisValuesType = React.useMemo(
         () => convertMetricsDataToApexChartsAxisValues(data),
@@ -90,18 +90,18 @@ const MyConsumptionChart = ({
             setIsApexChartsFinishDrawing(true)
         },
     }
-
     return (
         <div
-            className={`w-full
-    ${
-        // We add some styling when period is daily to hide some labels in the xAxis when screen is small, otherwise it'll be too much labels and thus becomes unreadable.
-        period === 'daily' && 'apexChartsDailyPeriodWrapper'
-    }
-    ${
-        // We add some styling when period is monthly to show only 1 xAxis day label every 2 labels, and on small screens we show only 1 label day every 4 labels, It makes the Chart more readable and nicer.
-        period === 'monthly' && 'apexChartsMonthlyPeriodWrapper'
-    }`}
+            className={`${
+                // We add some styling when period is daily to hide some labels in the xAxis when screen is small, otherwise it'll be too much labels and thus becomes unreadable.
+                period === 'daily' && 'apexChartsDailyPeriodWrapper'
+            } ${
+                // We add some styling when period is monthly to show only 1 xAxis day label every 2 labels, and on small screens we show only 1 label day every 4 labels, It makes the Chart more readable and nicer.
+                period === 'monthly' && 'apexChartsMonthlyPeriodWrapper'
+            }`}
+            // When there is more than one curve on the graph, then it is necessary to increase its width (on Mobile version),
+            // without this, the width increase will only apply to the consumption chart
+            style={{ width: `${isMobile && reactApexChartsProps.series.length > 1 ? '105%' : '100%'}` }}
         >
             {!isApexChartsFinishDrawing && (
                 <div className="flex flex-col justify-center items-center w-full h-full" style={{ height: '320px' }}>
@@ -109,7 +109,12 @@ const MyConsumptionChart = ({
                 </div>
             )}
             <div className={`${!isApexChartsFinishDrawing && 'invisible h-0'}`}>
-                <ReactApexChart {...reactApexChartsProps} data-testid="apexcharts" width={'100%'} height={320} />
+                <ReactApexChart
+                    {...reactApexChartsProps}
+                    data-testid="apexcharts"
+                    width={isMobile ? '105%' : '100%'}
+                    height={320}
+                />
             </div>
         </div>
     )
