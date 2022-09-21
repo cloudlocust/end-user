@@ -287,8 +287,8 @@ export const MeterStatus = () => {
                                                                 className="ml-4"
                                                             >
                                                                 {formatMessage({
-                                                                    id: 'Enregistrer',
-                                                                    defaultMessage: 'Enregistrer',
+                                                                    id: 'Modifier',
+                                                                    defaultMessage: 'Modifier',
                                                                 })}
                                                             </ButtonLoader>
                                                         </CardActions>
