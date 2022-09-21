@@ -240,7 +240,7 @@ export const MeterStatus = () => {
                                             >
                                                 <div
                                                     className="flex justify-center absolute top-1/2 left-1/2"
-                                                    style={{ transform: 'translate(-50%, -50%)' }}
+                                                    style={{ transform: 'translate(-50%, -50%)', width: '300px' }}
                                                 >
                                                     <Card className="relative cursor-pointer flex-wrap rounded-16">
                                                         <CardContent className="mt-10">
