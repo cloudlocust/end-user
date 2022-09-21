@@ -21,11 +21,14 @@ import dayjs from 'dayjs'
 import { useIntl } from 'react-intl'
 import { NrlinkConnectionStepsEnum } from 'src/modules/nrLinkConnection/nrlinkConnectionSteps.d'
 import { EnedisSgePopup } from 'src/modules/MyHouse/components/MeterStatus/EnedisSgePopup'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from 'src/redux'
 import { IHousing } from 'src/modules/MyHouse/components/HousingList/housing'
 import ModeEditOutlineOutlinedIcon from '@mui/icons-material/ModeEditOutlineOutlined'
 import { Form, requiredBuilder, min, max } from 'src/common/react-platform-components'
+import { editMeterInputType } from 'src/modules/Meters/Meters'
+import { useMeterForHousing } from 'src/modules/Meters/metersHook'
+import { Dispatch } from 'src/redux'
 
 /**
  * Meter Status Component.
@@ -44,6 +47,8 @@ export const MeterStatus = () => {
         isCreateEnedisSgeConsentLoading,
         createEnedisSgeConsentError,
     } = useConsents()
+    const { editMeter, loadingInProgress } = useMeterForHousing()
+    const dispatch = useDispatch<Dispatch>()
     const { housingList } = useSelector(({ housingModel }: RootState) => housingModel)
     const [foundHousing, setFoundHousing] = useState<IHousing>()
     const [editMeterOpen, setEditMeterOpen] = useState(false)
@@ -214,6 +219,7 @@ export const MeterStatus = () => {
                                 <TypographyFormatMessage className="text-base font-medium mr-8">
                                     Compteur
                                 </TypographyFormatMessage>
+                                {/* If the meter exist, we show the edit icon that opens the popup for meter editing */}
                                 {foundHousing?.meter?.guid && (
                                     <>
                                         <IconButton onClick={() => setEditMeterOpen(true)}>
@@ -222,7 +228,11 @@ export const MeterStatus = () => {
 
                                         <Modal open={editMeterOpen} onClose={() => setEditMeterOpen(false)}>
                                             <Form
-                                                onSubmit={async (value) => null}
+                                                onSubmit={async (values: editMeterInputType) => {
+                                                    await editMeter(parseInt(houseId), values)
+                                                    dispatch.housingModel.loadHousingsList()
+                                                    setEditMeterOpen(false)
+                                                }}
                                                 defaultValues={{
                                                     name: foundHousing.meter.name,
                                                     guid: foundHousing.meter.guid,
@@ -256,6 +266,7 @@ export const MeterStatus = () => {
                                                                     min(14),
                                                                     max(14),
                                                                 ]}
+                                                                inputProps={{ maxLength: 14 }}
                                                             />
                                                         </CardContent>
                                                         <CardActions className="flex items-center content-center justify-center mb-10">
@@ -270,7 +281,7 @@ export const MeterStatus = () => {
                                                                 })}
                                                             </Button>
                                                             <ButtonLoader
-                                                                // inProgress={isMeterInProgress}
+                                                                inProgress={loadingInProgress}
                                                                 variant="contained"
                                                                 type="submit"
                                                                 className="ml-4"
