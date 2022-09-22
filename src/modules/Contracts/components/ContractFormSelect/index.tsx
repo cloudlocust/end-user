@@ -54,6 +54,7 @@ const ContractFormSelect = <T extends unknown>({
                 })}
                 defaultValue=""
                 validateFunctions={validateFunctions}
+                className="mb-20"
             >
                 {optionList.map((option, index) => (
                     <MenuItem key={formatOptionValue(option)} value={formatOptionValue(option)}>
