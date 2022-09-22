@@ -1,7 +1,12 @@
 @import 'src/common/ui-kit/styles/media.scss';
+
 .apexcharts-canvas {
     overflow-x: auto;
     overflow-y: hidden;
+    margin-left: -15px;
+    @include sm {
+        margin-left: 0px;
+    }
     .apexcharts-text.apexcharts-xaxis-label,
     .apexcharts-tooltip-title {
         text-transform: capitalize;
@@ -23,15 +28,14 @@
 }
 .apexChartsMonthlyPeriodWrapper {
     .apexcharts-xaxis {
-        .apexcharts-text.apexcharts-xaxis-label:nth-child(4n + 2),
-        .apexcharts-text.apexcharts-xaxis-label:nth-child(4n + 3) {
+        .apexcharts-text.apexcharts-xaxis-label:not(:first-child):not(:last-child) {
             display: none;
         }
         @include sm {
             .apexcharts-text.apexcharts-xaxis-label:nth-child(2n + 1) {
                 display: none;
             }
-            .apexcharts-text.apexcharts-xaxis-label:nth-child(2n) {
+            .apexcharts-text.apexcharts-xaxis-label:not(:first-child):not(:last-child):nth-child(2n) {
                 display: inline;
             }
         }
