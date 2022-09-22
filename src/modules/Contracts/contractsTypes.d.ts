@@ -31,6 +31,10 @@ export type ContractCardProps =
          * Callback after delete or update success contract.
          */
         onAfterDeleteUpdateSuccess?: () => void
+        /**
+         * Callback when clicking the edit icon.
+         */
+        onEditClick?: () => void
     }
 
 /**
@@ -47,6 +51,10 @@ export type ContractFormProps =
          * Loading state when addContract request.
          */
         isContractsLoading?: boolean
+        /**
+         * Default values  request.
+         */
+        defaultValues?: contractFormValuesType
     }
 
 /**
@@ -59,6 +67,10 @@ export type ContractFormFieldsProps =
          * Loading state when addContract request.
          */
         isContractsLoading?: boolean
+        /**
+         * Indicate if ContractFormFIelds are disabled.
+         */
+        disabled?: boolean
     }
 
 /**
@@ -199,39 +211,26 @@ export type addContractDataType = {
 /**
  * Prop of ContractFormSelect, to load options and show the optionList in the select.
  */
-export type ContractFormSelectProps<T> =
+export interface ContractFormSelectProps<T> extends SelectFieldProps {
     // eslint-disable-next-line jsdoc/require-jsdoc
-    {
-        /**
-         * Name of the select.
-         */
-        name: string
-        /**
-         * Select Label.
-         */
-        selectLabel: string
-        /**
-         * Functions to load options, when the ContractFormSelect is mounted.
-         */
-        loadOptions: () => void
-        /**
-         * Boolean indicating the loading state of loadOptions.
-         */
-        isOptionsInProgress: Boolean
-        /**
-         * Option List.
-         */
-        optionList: T[] | null
-        /**
-         * Function to format the option value.
-         */
-        formatOptionValue: (option: T) => string | number
-        /**
-         * Function to format the option label.
-         */
-        formatOptionLabel: (option: T) => string
-        /**
-         * Validate functions passed in the Select.
-         */
-        validateFunctions?: SelectFieldProps['validateFunctions']
-    }
+    /**
+     * Functions to load options, when the ContractFormSelect is mounted.
+     */
+    loadOptions: () => void
+    /**
+     * Boolean indicating the loading state of loadOptions.
+     */
+    isOptionsInProgress: Boolean
+    /**
+     * Option List.
+     */
+    optionList: T[] | null
+    /**
+     * Function to format the option value.
+     */
+    formatOptionValue: (option: T) => string | number
+    /**
+     * Function to format the option label.
+     */
+    formatOptionLabel: (option: T) => string
+}

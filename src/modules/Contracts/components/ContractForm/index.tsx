@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react'
+import React, { useCallback, useState } from 'react'
 import { useIntl } from 'react-intl'
 import { requiredBuilder } from 'src/common/react-platform-components'
 import {
@@ -17,6 +17,7 @@ import { useCommercialOffer } from 'src/hooks/CommercialOffer/CommercialOfferHoo
 import { IContractType, IOffer, IPower, IProvider, ITariffType } from 'src/hooks/CommercialOffer/CommercialOffers'
 import { ButtonLoader } from 'src/common/ui-kit'
 import { isNull, pick } from 'lodash'
+import { SelectChangeEvent } from '@mui/material/Select'
 
 const defaultContractFormValues: contractFormValuesType = {
     contractTypeId: 0,
@@ -34,12 +35,18 @@ const defaultContractFormValues: contractFormValuesType = {
  * @param props N/A.
  * @param props.onSubmit Callback when submitting form.
  * @param props.isContractsLoading Loading state when addContract request.
+ * @param props.defaultValues Indicate if contractForm has defaultValues and thus in edit mode.
  * @returns Contract Form component.
  */
-const ContractForm = ({ onSubmit, isContractsLoading }: ContractFormProps) => {
+const ContractForm = ({ onSubmit, isContractsLoading, defaultValues }: ContractFormProps) => {
+    const [isEdit, setIsEdit] = useState(!Boolean(defaultValues))
     return (
         <Form
             onSubmit={(data: contractFormValuesType) => {
+                if (!isEdit) {
+                    setIsEdit(true)
+                    return
+                }
                 const { providerId, startSubscription, endSubscription, ...restData } = data
                 // Format the start subscription to ISO Datetime.
                 let cleanData: addContractDataType = {
@@ -47,10 +54,10 @@ const ContractForm = ({ onSubmit, isContractsLoading }: ContractFormProps) => {
                     startSubscription: new Date(startSubscription).toISOString(),
                 }
                 // Format the end subscription to ISO Datetime.
-                if (endSubscription) cleanData.endSubscription = new Date(startSubscription).toISOString()
+                if (endSubscription) cleanData.endSubscription = new Date(endSubscription).toISOString()
                 onSubmit(cleanData)
             }}
-            defaultValues={defaultContractFormValues}
+            defaultValues={defaultValues || defaultContractFormValues}
         >
             <div className="p-24">
                 <TypographyFormatMessage className="text-16 font-medium md:text-20">
@@ -63,7 +70,7 @@ const ContractForm = ({ onSubmit, isContractsLoading }: ContractFormProps) => {
                     Toutes les informations demandées sont disponibles sur votre facture ou votre contrat d'énergie
                 </TypographyFormatMessage>
                 <div className="flex flex-col justify-center w-full">
-                    <ContractFormFields isContractsLoading={isContractsLoading} />
+                    <ContractFormFields isContractsLoading={isContractsLoading} disabled={!isEdit} />
                 </div>
             </div>
         </Form>
@@ -77,9 +84,10 @@ export default ContractForm
  *
  * @param props N/A.
  * @param props.isContractsLoading Loading state when addContract request.
+ * @param props.disabled Indicate if contractFormFields are disabled and thus in edit mode.
  * @returns Contract Form Fields component.
  */
-const ContractFormFields = ({ isContractsLoading }: ContractFormFieldsProps) => {
+const ContractFormFields = ({ isContractsLoading, disabled }: ContractFormFieldsProps) => {
     const formData = useWatch<contractFormValuesType>({})
     const { reset, getValues } = useFormContext<contractFormValuesType>()
     const {
@@ -102,49 +110,46 @@ const ContractFormFields = ({ isContractsLoading }: ContractFormFieldsProps) => 
     const { formatMessage } = useIntl()
 
     /**
+     * Handler when the Select field change, it resets the fields that comes after the changed select.
+     *
+     * @param e Select Change Event.
+     * @param keepFields Fields that are prior to the select and thus should not be ressetted.
+     */
+    const onSelectChange = (e: SelectChangeEvent<unknown>, keepFields: string[]) => {
+        reset({
+            ...defaultContractFormValues,
+            ...pick(getValues(), keepFields),
+            [e.target.name]: e.target.value,
+        })
+    }
+    /**
      * Store the loadProviders in a useCalleback to pass it as a prop and avoid multiple re-rendering.
      * To avoid defining () => loadProviders as a prop inside the ContractFormSelect and thus multiple re-rendering cuz ()=>{} create a new function and thus re-ender and thus infinite re-render.
      */
     const loadProviderOptions = useCallback(() => {
-        reset({
-            ...defaultContractFormValues,
-            ...pick(getValues(), ['contractTypeId']),
-        })
         loadProviders(formData.contractTypeId!)
-    }, [loadProviders, reset, getValues, formData.contractTypeId])
+    }, [loadProviders, formData.contractTypeId])
 
     /**
      * LoadOfferOptions useCallback.
      */
     const loadOfferOptions = useCallback(() => {
-        reset({
-            ...defaultContractFormValues,
-            ...pick(getValues(), ['providerId', 'contractTypeId']),
-        })
         loadOffers(formData.providerId!, formData.contractTypeId!)
-    }, [loadOffers, formData.providerId, formData.contractTypeId, getValues, reset])
+    }, [loadOffers, formData.providerId, formData.contractTypeId])
 
     /**
      * LoadTariffTypeOptions useCallback.
      */
     const loadTariffTypeOptions = useCallback(() => {
-        reset({
-            ...defaultContractFormValues,
-            ...pick(getValues(), ['providerId', 'contractTypeId', 'offerId']),
-        })
         loadTariffTypes(formData.offerId!)
-    }, [loadTariffTypes, getValues, formData.offerId, reset])
+    }, [loadTariffTypes, formData.offerId])
 
     /**
      * LoadPowerOptions useCallback.
      */
     const loadPowerOptions = useCallback(() => {
-        reset({
-            ...defaultContractFormValues,
-            ...pick(getValues(), ['providerId', 'contractTypeId', 'offerId', 'tariffTypeId']),
-        })
         loadPowers(formData.offerId!, formData.tariffTypeId!)
-    }, [loadPowers, getValues, reset, formData.offerId, formData.tariffTypeId])
+    }, [loadPowers, formData.offerId, formData.tariffTypeId])
 
     return (
         <>
@@ -155,8 +160,10 @@ const ContractFormFields = ({ isContractsLoading }: ContractFormFieldsProps) => 
                 loadOptions={loadContractTypes}
                 optionList={contractTypeList}
                 name="contractTypeId"
-                selectLabel="Type"
+                label="Type"
                 validateFunctions={[requiredBuilder()]}
+                disabled={disabled}
+                onChange={(e) => onSelectChange(e, [])}
             />
             {Boolean(formData.contractTypeId) && (
                 <ContractFormSelect<IProvider>
@@ -166,8 +173,10 @@ const ContractFormFields = ({ isContractsLoading }: ContractFormFieldsProps) => 
                     loadOptions={loadProviderOptions}
                     optionList={providerList}
                     name="providerId"
-                    selectLabel="Fournisseur"
+                    label="Fournisseur"
                     validateFunctions={[requiredBuilder()]}
+                    disabled={disabled}
+                    onChange={(e) => onSelectChange(e, ['contractTypeId'])}
                 />
             )}
             {Boolean(formData.providerId) && (
@@ -178,8 +187,10 @@ const ContractFormFields = ({ isContractsLoading }: ContractFormFieldsProps) => 
                     loadOptions={loadOfferOptions}
                     optionList={offerList}
                     name="offerId"
-                    selectLabel="Offre"
+                    label="Offre"
                     validateFunctions={[requiredBuilder()]}
+                    disabled={disabled}
+                    onChange={(e) => onSelectChange(e, ['providerId', 'contractTypeId'])}
                 />
             )}
 
@@ -191,8 +202,10 @@ const ContractFormFields = ({ isContractsLoading }: ContractFormFieldsProps) => 
                     loadOptions={loadTariffTypeOptions}
                     optionList={tariffTypeList}
                     name="tariffTypeId"
-                    selectLabel="Type de contrat"
+                    label="Type de contrat"
                     validateFunctions={[requiredBuilder()]}
+                    disabled={disabled}
+                    onChange={(e) => onSelectChange(e, ['providerId', 'contractTypeId', 'offerId'])}
                 />
             )}
 
@@ -204,8 +217,10 @@ const ContractFormFields = ({ isContractsLoading }: ContractFormFieldsProps) => 
                     loadOptions={loadPowerOptions}
                     optionList={powerList}
                     name="power"
-                    selectLabel="Puissance"
+                    label="Puissance"
                     validateFunctions={[requiredBuilder()]}
+                    disabled={disabled}
+                    onChange={(e) => onSelectChange(e, ['providerId', 'contractTypeId', 'offerId', 'tariffTypeId'])}
                 />
             )}
             {/* When doing formData.power && there is a weird unexpected 0 showing in the UI, that's why doing formData.power !== 0 &&  */}
@@ -217,6 +232,7 @@ const ContractFormFields = ({ isContractsLoading }: ContractFormFieldsProps) => 
                         defaultMessage: 'Date de début',
                     })}
                     validateFunctions={[requiredBuilder()]}
+                    disabled={disabled}
                 />
             )}
             {formData.startSubscription && (
@@ -226,6 +242,7 @@ const ContractFormFields = ({ isContractsLoading }: ContractFormFieldsProps) => 
                         id: 'Date de fin',
                         defaultMessage: 'Date de fin',
                     })}
+                    disabled={disabled}
                 />
             )}
             <ButtonLoader
@@ -248,8 +265,8 @@ const ContractFormFields = ({ isContractsLoading }: ContractFormFieldsProps) => 
                 }
             >
                 {formatMessage({
-                    id: 'Enregistrer',
-                    defaultMessage: 'Enregistrer',
+                    id: disabled ? 'Modifier' : 'Enregistrer',
+                    defaultMessage: disabled ? 'Modifier' : 'Enregistrer',
                 })}
             </ButtonLoader>
         </>
