@@ -18,7 +18,7 @@ import { FormHelperText } from '@mui/material'
  * @param root0 N/A.
  * @param root0.registerHook React hook that handles all logical treatment. It has a default value.
  * @param root0.defaultRole Default role to send.
- * @returns Fegister form component.
+ * @returns Register form component.
  */
 export const RegisterForm = ({
     registerHook = useRegister,
@@ -61,6 +61,47 @@ export const RegisterForm = ({
             onSubmit(cleanData)
         }
     }
+    /**
+     * Function getLinkRedirection.
+     *
+     * @param param0 N/A.
+     * @param param0.url Url to redirect.
+     * @param param0.label Label name.
+     * @returns Link to redirect.
+     */
+    const getLinkRedirection = ({
+        url,
+        label,
+    }: // eslint-disable-next-line jsdoc/require-jsdoc
+    {
+        // eslint-disable-next-line jsdoc/require-jsdoc
+        url: string
+        // eslint-disable-next-line jsdoc/require-jsdoc
+        label: string
+    }) => {
+        return (
+            <MuiLink
+                sx={{
+                    color:
+                        // eslint-disable-next-line jsdoc/require-jsdoc
+                        (theme) => theme.palette.primary.light,
+                    pointerEvents: 'auto',
+                }}
+                onClick={(e: React.SyntheticEvent) => {
+                    // Handling onClick with (preventDefault and window.open) because we're using FormControlLabel, which when you click the label (even if it has link inside) it'll behave as if we clicked on the control
+                    // In our case the checkbox, it means when if we click on the label even if we have a link in the label and we click on it, it will check the checkbox instead of redirecting
+                    // That's why i handle the onClick on the link itself, so that i prevent the default of checkbox clicking through the label
+                    e.preventDefault()
+                    window.open(url, '_blank')
+                }}
+            >
+                {formatMessage({
+                    id: label,
+                    defaultMessage: label,
+                })}
+            </MuiLink>
+        )
+    }
     return (
         <Form
             // eslint-disable-next-line jsdoc/require-jsdoc
@@ -91,10 +132,25 @@ export const RegisterForm = ({
                     label="Confirmation de mot de passe"
                     validateFunctions={[requiredBuilder(), repeatPassword(passwordRef)]}
                 />
+
+                <span>
+                    {formatMessage({
+                        id: ` Les informations récoltées dans ce formulaire sont utilisées afin de vous permettre de rejoindre la
+                                    plateforme et suivre votre consommation. Vous pouvez retrouver plus d'informations sur vos droits
+                                    via notre `,
+                        defaultMessage: ` Les informations récoltées dans ce formulaire sont utilisées afin de vous permettre de rejoindre la
+                                    plateforme et suivre votre consommation. Vous pouvez retrouver plus d'informations sur vos droits
+                                    via notre `,
+                    })}
+                    {getLinkRedirection({
+                        url: window._env_.REACT_APP_CLIENT_RGPD_REDIRECT,
+                        label: 'Politique de Confidentialité',
+                    })}
+                </span>
                 {/* TODO Create a checkbox reusable component */}
                 <FormControl required error={rgpdCheckboxState === ''}>
                     <FormControlLabel
-                        sx={{ marginLeft: '0px', pointerEvents: 'none' }}
+                        sx={{ marginLeft: '0px', pointerEvents: 'none', marginTop: '10px' }}
                         control={
                             <Checkbox
                                 color="primary"
@@ -108,32 +164,24 @@ export const RegisterForm = ({
                         label={
                             <span>
                                 {formatMessage({
-                                    id: `J’ai lu et j’accepte les`,
-                                    defaultMessage: `J’ai lu et j’accepte les`,
-                                })}{' '}
-                                <MuiLink
-                                    sx={{
-                                        color:
-                                            // eslint-disable-next-line jsdoc/require-jsdoc
-                                            (theme) => theme.palette.primary.light,
-                                        pointerEvents: 'auto',
-                                    }}
-                                    onClick={(e: React.SyntheticEvent) => {
-                                        // Handling onClick with (preventDefault and window.open) because we're using FormControlLabel, which when you click the label (even if it has link inside) it'll behave as if we clicked on the control
-                                        // In our case the checkbox, it means when if we click on the label even if we have a link in the label and we click on it, it will check the checkbox instead of redirecting
-                                        // That's why i handle the onClick on the link itself, so that i prevent the default of checkbox clicking through the label
-                                        e.preventDefault()
-                                        window.open(window._env_.REACT_APP_CLIENT_RGPD_REDIRECT, '_blank')
-                                    }}
-                                >
-                                    {formatMessage({
-                                        id: 'conditions générales',
-                                        defaultMessage: 'conditions générales',
-                                    })}
-                                </MuiLink>{' '}
+                                    id: `J’ai lu et j’accepte les `,
+                                    defaultMessage: `J’ai lu et j’accepte les `,
+                                })}
+                                {getLinkRedirection({
+                                    url: window._env_.REACT_APP_CLIENT_RGPD_REDIRECT,
+                                    label: 'Conditions Générales d’Utilisation',
+                                })}
                                 {formatMessage({
-                                    id: `d’utilisation`,
-                                    defaultMessage: `d’utilisation`,
+                                    id: ` et de `,
+                                    defaultMessage: ` et de `,
+                                })}
+                                {getLinkRedirection({
+                                    url: window._env_.REACT_APP_CLIENT_RGPD_REDIRECT,
+                                    label: 'Vente',
+                                })}
+                                {formatMessage({
+                                    id: ` de la plateforme`,
+                                    defaultMessage: ` de la plateforme`,
                                 })}
                             </span>
                         }
