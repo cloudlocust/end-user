@@ -12,6 +12,8 @@ import Checkbox from '@mui/material/Checkbox'
 import FormControl from '@mui/material/FormControl'
 import { FormHelperText } from '@mui/material'
 
+const urlLegalNotice = 'https://www.myem.fr/mentions-legales/'
+
 /**
  * Form used for user registration. This is a component based on form hooks.
  *
@@ -143,7 +145,7 @@ export const RegisterForm = ({
                                     via notre `,
                     })}
                     {getLinkRedirection({
-                        url: window._env_.REACT_APP_CLIENT_RGPD_REDIRECT,
+                        url: urlLegalNotice,
                         label: 'Politique de Confidentialité',
                     })}
                 </span>
@@ -168,7 +170,7 @@ export const RegisterForm = ({
                                     defaultMessage: `J’ai lu et j’accepte les `,
                                 })}
                                 {getLinkRedirection({
-                                    url: window._env_.REACT_APP_CLIENT_RGPD_REDIRECT,
+                                    url: urlLegalNotice,
                                     label: 'Conditions Générales d’Utilisation',
                                 })}
                                 {formatMessage({
@@ -176,7 +178,7 @@ export const RegisterForm = ({
                                     defaultMessage: ` et de `,
                                 })}
                                 {getLinkRedirection({
-                                    url: window._env_.REACT_APP_CLIENT_RGPD_REDIRECT,
+                                    url: urlLegalNotice,
                                     label: 'Vente',
                                 })}
                                 {formatMessage({
