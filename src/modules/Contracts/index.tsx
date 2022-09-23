@@ -31,7 +31,7 @@ const Contracts = () => {
         loadingInProgress: isContractsLoading,
         reloadElements: reloadContractList,
         addElement: addContract,
-    } = useContractList(Number(houseId))
+    } = useContractList(parseInt(houseId))
 
     return (
         <>
