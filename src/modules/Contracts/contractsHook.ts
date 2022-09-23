@@ -96,7 +96,7 @@ export const useContractList = (houseId: number, sizeParam?: number) => {
         addContractDataType,
         searchFilterType
     >({
-        API_ENDPOINT: CONTRACTS_API(Number(houseId)),
+        API_ENDPOINT: CONTRACTS_API(houseId),
         sizeParam,
         snackBarMessage0verride: { loadElementListError, addElementError, addElementSuccess },
     })()
@@ -119,7 +119,7 @@ export const useContractList = (houseId: number, sizeParam?: number) => {
 export const useContractDetails = (houseId: number, contractId: number) => {
     // eslint-disable-next-line jsdoc/require-jsdoc
     return BuilderUseElementDetails<loadContractResponse, {}, IContract>({
-        API_ENDPOINT: `${CONTRACTS_API(Number(houseId))}/${contractId}`,
+        API_ENDPOINT: `${CONTRACTS_API(houseId)}/${contractId}`,
         snackBarMessage0verride: { removeElementDetailsError, removeElementDetailsSuccess },
     })()
 }
