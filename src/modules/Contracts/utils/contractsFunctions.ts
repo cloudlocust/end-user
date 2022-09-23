@@ -7,7 +7,7 @@ import { INewContract, loadContractResponse } from 'src/modules/Contracts/contra
  * @param contract Contract object that has format of loadContractResponse.
  * @returns Contract object with format IContract.
  */
-export const formatLoadContractResponseToIContract = (contract: loadContractResponse) => {
+export const formatLoadContractResponseToIContract = (contract: loadContractResponse): INewContract => {
     const { contract: housingContractCopy, ...restHousingContractCopy } = cloneDeep(contract)
     const { provider, ...offer } = housingContractCopy.commercialOffer
 
@@ -17,5 +17,5 @@ export const formatLoadContractResponseToIContract = (contract: loadContractResp
         offer,
         provider,
         ...restHousingContractCopy,
-    } as INewContract
+    }
 }
