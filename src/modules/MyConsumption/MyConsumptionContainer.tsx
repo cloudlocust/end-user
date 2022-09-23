@@ -17,9 +17,6 @@ import MyConsumptionDatePicker from 'src/modules/MyConsumption/components/MyCons
 import EurosConsumptionButtonToggler from 'src/modules/MyConsumption/components/EurosConsumptionButtonToggler'
 import { MyConsumptionPeriod } from 'src/modules/MyConsumption'
 import TargetButtonGroup from 'src/modules/MyConsumption/components/TargetButtonGroup'
-import { NavLink } from 'react-router-dom'
-import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline'
-import { URL_CONTRACTS } from 'src/modules/Contracts/ContractsConfig'
 import { useSelector } from 'react-redux'
 import { RootState } from 'src/redux'
 
@@ -213,18 +210,6 @@ export const MyConsumptionContainer = () => {
                     setMetricsInterval={setMetricsInterval}
                     range={range}
                 />
-                {isEurosConsumptionChart && (
-                    // TODO Fix URL redirection with the correct housingId.
-                    <NavLink to={`${URL_CONTRACTS}`} className="flex flex-col items-center mt-16">
-                        <ErrorOutlineIcon sx={{ color: 'secondary.main', width: '32px', height: '32px' }} />
-                        <TypographyFormatMessage
-                            className="text-13 underline md:text-16 w-full text-center"
-                            sx={{ color: 'secondary.main' }}
-                        >
-                            Ce graphe est un exemple. Renseigner votre contrat d'énergie
-                        </TypographyFormatMessage>
-                    </NavLink>
-                )}
             </div>
             {data.length !== 0 && (
                 <div className="p-12 sm:p-24 ">
