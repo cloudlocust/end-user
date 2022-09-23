@@ -30,7 +30,7 @@ const defaultContractFormValues: contractFormValuesType = {
 }
 
 /**
- * Contract form component.
+ * Contract form component, for adding contract or editing an existing one (the existing contract will be sent as props defaultValues for the form).
  *
  * @param props N/A.
  * @param props.onSubmit Callback when submitting form.
@@ -39,10 +39,13 @@ const defaultContractFormValues: contractFormValuesType = {
  * @returns Contract Form component.
  */
 const ContractForm = ({ onSubmit, isContractsLoading, defaultValues }: ContractFormProps) => {
+    // The ContractForm can add new contract, or edit an existing one (in the edition the existing contract will have edition and presentation mode).
+    // The default state of isEdit When giving an existing contract through defaultValues prop, will be false.
     const [isEdit, setIsEdit] = useState(!Boolean(defaultValues))
     return (
         <Form
             onSubmit={(data: contractFormValuesType) => {
+                // This Change the presentation mode to edition mode when giving an existing contract.
                 if (!isEdit) {
                     setIsEdit(true)
                     return

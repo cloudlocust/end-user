@@ -192,8 +192,6 @@ describe('Test ContractCard Component', () => {
         mockIsContractsLoading = true
         const mockOnAfterDeleteUpdateSuccess = jest.fn()
         mockContractCardProps.onAfterDeleteUpdateSuccess = mockOnAfterDeleteUpdateSuccess
-        const mockEditClick = jest.fn()
-        mockContractCardProps.onEditClick = mockEditClick
         const { getByText, getByTestId } = reduxedRender(<ContractCard {...mockContractCardProps} />)
 
         // Open Modal

@@ -32,10 +32,6 @@ const ContractFormSelect = <T extends unknown>({
     ...otherSelectProps
 }: ContractFormSelectProps<T>): JSX.Element => {
     const { formatMessage } = useIntl()
-    const selectLabel = formatMessage({
-        id: `${label}`,
-        defaultMessage: `${label}`,
-    })
     useEffect(() => {
         // Load optionList on mount, which will automatically update the optionList
         loadOptions()
@@ -52,7 +48,10 @@ const ContractFormSelect = <T extends unknown>({
         <>
             <Select
                 name={name}
-                label={selectLabel}
+                label={formatMessage({
+                    id: `${label}`,
+                    defaultMessage: `${label}`,
+                })}
                 defaultValue=""
                 validateFunctions={validateFunctions}
                 {...otherSelectProps}

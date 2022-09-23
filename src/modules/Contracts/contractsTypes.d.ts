@@ -31,10 +31,6 @@ export type ContractCardProps =
          * Callback after delete or update success contract.
          */
         onAfterDeleteUpdateSuccess?: () => void
-        /**
-         * Callback when clicking the edit icon.
-         */
-        onEditClick?: () => void
     }
 
 /**

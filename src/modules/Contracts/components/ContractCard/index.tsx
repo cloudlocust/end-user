@@ -21,10 +21,9 @@ import ContractForm from 'src/modules/Contracts/components/ContractForm'
  * @param props N/A.
  * @param props.contract Contract information object.
  * @param props.onAfterDeleteUpdateSuccess Callback after delete or update success contract.
- * @param props.onEditClick Callback when clicking the edit icon.
  * @returns Contract Card component.
  */
-const ContractCard = ({ contract, onAfterDeleteUpdateSuccess, onEditClick }: ContractCardProps) => {
+const ContractCard = ({ contract, onAfterDeleteUpdateSuccess }: ContractCardProps) => {
     const openMuiDialog = useConfirm()
     // HouseId extracted from params of the url :houseId/contracts
     const { houseId } = useParams<contractsRouteParam>()
