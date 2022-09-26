@@ -17,8 +17,12 @@ import MyConsumptionDatePicker from 'src/modules/MyConsumption/components/MyCons
 import EurosConsumptionButtonToggler from 'src/modules/MyConsumption/components/EurosConsumptionButtonToggler'
 import { MyConsumptionPeriod } from 'src/modules/MyConsumption'
 import TargetButtonGroup from 'src/modules/MyConsumption/components/TargetButtonGroup'
+import { NavLink } from 'react-router-dom'
+import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline'
 import { useSelector } from 'react-redux'
 import { RootState } from 'src/redux'
+import { URL_MY_HOUSE } from 'src/modules/MyHouse/MyHouseConfig'
+import { useMyConsumptionHooks } from 'src/modules/MyConsumption/hooks/MyConsumptionHooks'
 
 /**
  * InitialMetricsStates for useMetrics.
@@ -67,13 +71,14 @@ export const MyConsumptionContainer = () => {
     const [period, setPeriod] = useState<periodType>('daily')
     const [filteredTargets, setFilteredTargets] = useState<metricTargetType[]>([metricTargetsEnum.consumption])
     const isEurosConsumptionChart = filteredTargets.includes(metricTargetsEnum.eurosConsumption)
-
     const { currentHousing } = useSelector(({ housingModel }: RootState) => housingModel)
 
     useEffect(() => {
         if (!currentHousing) return
         if (currentHousing?.meter) setFilters(formatMetricFilter(currentHousing.meter?.guid))
     }, [currentHousing, setFilters])
+
+    const { hasMissingHousingContracts } = useMyConsumptionHooks(range, currentHousing?.id)
 
     // UseEffect to check for consent whenever a meter is selected.
     useEffect(() => {
@@ -210,6 +215,20 @@ export const MyConsumptionContainer = () => {
                     setMetricsInterval={setMetricsInterval}
                     range={range}
                 />
+                {hasMissingHousingContracts && (
+                    <NavLink
+                        to={`${URL_MY_HOUSE}/${currentHousing?.id}/contracts`}
+                        className="flex flex-col items-center mt-16"
+                    >
+                        <ErrorOutlineIcon sx={{ color: 'secondary.main', width: '32px', height: '32px' }} />
+                        <TypographyFormatMessage
+                            className="text-13 underline md:text-16 w-full text-center"
+                            sx={{ color: 'secondary.main' }}
+                        >
+                            Ce graphe est un exemple. Renseigner votre contrat d'énergie
+                        </TypographyFormatMessage>
+                    </NavLink>
+                )}
             </div>
             {data.length !== 0 && (
                 <div className="p-12 sm:p-24 ">
