@@ -26,7 +26,9 @@ const TEST_GET_HAS_MISSING_HOUSING_CONTRACTS_ERROR_MESSAGE =
 describe('useMyConsumptionHooks test', () => {
     describe('getHasMissingHousingContracts', () => {
         test('When load error snackbar should be called with error message', async () => {
-            reduxedRenderHook(() => useMyConsumptionHooks(getRange('week'), -1), {
+            const {
+                renderedHook: { result },
+            } = reduxedRenderHook(() => useMyConsumptionHooks(getRange('week'), -1), {
                 initialState: {},
             })
 
@@ -41,22 +43,24 @@ describe('useMyConsumptionHooks test', () => {
                 },
                 { timeout: 10000 },
             )
+            expect(result.current.hasMissingHousingContracts).toBe(null)
         }, 15000)
 
         test('When success and hasMissingHousingContracts returns false', async () => {
             const {
-                renderedHook: { result },
+                renderedHook: { result, waitForValueToChange },
             } = reduxedRenderHook(() => useMyConsumptionHooks(getRange('week'), TEST_HOUSES[1].id), {
                 initialState: {},
             })
 
-            await waitFor(
+            await waitForValueToChange(
                 () => {
-                    expect(mockEnqueueSnackbar).not.toHaveBeenCalled()
+                    return result.current.hasMissingHousingContracts
                 },
-                { timeout: 5000 },
+                { timeout: 4000 },
             )
             expect(result.current.hasMissingHousingContracts).toBe(false)
+            expect(mockEnqueueSnackbar).not.toHaveBeenCalled()
         }, 10000)
 
         test('When success and hasMissingHousingContracts returns true', async () => {

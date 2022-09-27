@@ -24,7 +24,7 @@ export const getHasMissingHousingContractsApi = (housingId: IHousing['id']) =>
  * @returns UseMyConsumptionHooks.
  */
 export const useMyConsumptionHooks = (range: metricRangeType, housingId?: IHousing['id']) => {
-    const [hasMissingHousingContracts, setHasMissingHousingContracts] = useState<Boolean | null>(false)
+    const [hasMissingHousingContracts, setHasMissingHousingContracts] = useState<Boolean | null>(null)
     const { enqueueSnackbar } = useSnackbar()
     const { formatMessage } = useIntl()
 
