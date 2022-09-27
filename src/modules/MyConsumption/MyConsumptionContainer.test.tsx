@@ -126,7 +126,6 @@ describe('MyConsumptionContainer test', () => {
             <Router>
                 <MyConsumptionContainer />
             </Router>,
-            { initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[0] } } },
         )
         // Daily CONSUMPTION Text
         expect(getByText(CONSUMPTION_TITLE_DAILY)).toBeTruthy()
@@ -154,6 +153,7 @@ describe('MyConsumptionContainer test', () => {
             <Router>
                 <MyConsumptionContainer />
             </Router>,
+            { initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[0] } } },
         )
         // TOGGLING TO EUROS CONSUMPTION CHART
         userEvent.click(getByTestId(EUROS_CONSUMPTION_ICON_TEST_ID).parentElement as HTMLButtonElement)

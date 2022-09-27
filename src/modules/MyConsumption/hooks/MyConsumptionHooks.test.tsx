@@ -26,33 +26,38 @@ const TEST_GET_HAS_MISSING_HOUSING_CONTRACTS_ERROR_MESSAGE =
 describe('useMyConsumptionHooks test', () => {
     describe('getHasMissingHousingContracts', () => {
         test('When load error snackbar should be called with error message', async () => {
-            const {
-                renderedHook: { result, waitForValueToChange },
-            } = reduxedRenderHook(() => useMyConsumptionHooks(getRange('week'), 0), { initialState: {} })
-
-            await waitFor(() => {
-                expect(mockEnqueueSnackbar).toHaveBeenCalledWith(TEST_GET_HAS_MISSING_HOUSING_CONTRACTS_ERROR_MESSAGE, {
-                    variant: 'error',
-                })
+            reduxedRenderHook(() => useMyConsumptionHooks(getRange('week'), -1), {
+                initialState: {},
             })
-        })
+
+            await waitFor(
+                () => {
+                    expect(mockEnqueueSnackbar).toHaveBeenCalledWith(
+                        TEST_GET_HAS_MISSING_HOUSING_CONTRACTS_ERROR_MESSAGE,
+                        {
+                            variant: 'error',
+                        },
+                    )
+                },
+                { timeout: 10000 },
+            )
+        }, 15000)
 
         test('When success and hasMissingHousingContracts returns false', async () => {
             const {
-                renderedHook: { result, waitForValueToChange },
+                renderedHook: { result },
             } = reduxedRenderHook(() => useMyConsumptionHooks(getRange('week'), TEST_HOUSES[1].id), {
                 initialState: {},
             })
 
-            await waitForValueToChange(
+            await waitFor(
                 () => {
-                    return result.current.hasMissingHousingContracts
+                    expect(mockEnqueueSnackbar).not.toHaveBeenCalled()
                 },
-                { timeout: 4000 },
+                { timeout: 5000 },
             )
             expect(result.current.hasMissingHousingContracts).toBe(false)
-            expect(mockEnqueueSnackbar).not.toHaveBeenCalled()
-        })
+        }, 10000)
 
         test('When success and hasMissingHousingContracts returns true', async () => {
             const {
