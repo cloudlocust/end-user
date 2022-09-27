@@ -1,6 +1,7 @@
 import { rest } from 'msw'
-import { IInstallationRequest } from 'src/modules/InstallatinRequests/installationRequests'
-import { INSTALLATION_REQUESTS_API } from 'src/modules/InstallatinRequests/installationRequestsHook'
+import { getPaginationFromElementList } from 'src/mocks/utils'
+import { IInstallationRequest, IInstallationRequests } from 'src/modules/InstallationRequests/installationRequests'
+import { INSTALLATION_REQUESTS_API } from 'src/modules/InstallationRequests/installationRequestsHook'
 import { SnakeCasedPropertiesDeep } from 'type-fest'
 
 const CREATED_AT_DATA = '2021-12-15T14:07:38.138000'
@@ -161,15 +162,9 @@ export var TEST_INSTALLATION_REQUESTS: SnakeCasedPropertiesDeep<IInstallationReq
 export const installationRequestsEndpoints = [
     // Get all the installation requests.
     rest.get(INSTALLATION_REQUESTS_API, (req, res, ctx) => {
-        return res(
-            ctx.status(200),
-            ctx.delay(1000),
-            ctx.json({
-                items: TEST_INSTALLATION_REQUESTS,
-                size: 10000,
-                page: 1,
-                total: TEST_INSTALLATION_REQUESTS.length,
-            }),
-        )
+        const TEST_INSTALLATIONS_REQUESTS_RESPONSE = getPaginationFromElementList<
+            SnakeCasedPropertiesDeep<IInstallationRequests>
+        >(req, TEST_INSTALLATION_REQUESTS as [])
+        return res(ctx.status(200), ctx.delay(1000), ctx.json(TEST_INSTALLATIONS_REQUESTS_RESPONSE))
     }),
 ]

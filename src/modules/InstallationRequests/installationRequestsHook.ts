@@ -1,6 +1,6 @@
 import { formatMessageType } from 'src/common/react-platform-translation'
 import { API_RESOURCES_URL } from 'src/configs'
-import { IInstallationRequest } from 'src/modules/InstallatinRequests/installationRequests.d'
+import { IInstallationRequest } from 'src/modules/InstallationRequests/installationRequests.d'
 import { searchFilterType } from 'src/modules/utils'
 import { BuilderUseElementList } from 'src/modules/utils/useElementHookBuilder'
 

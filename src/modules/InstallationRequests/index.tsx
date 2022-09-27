@@ -5,14 +5,14 @@ import { Icon } from 'src/common/ui-kit'
 import Table from 'src/common/ui-kit/components/Table/Table'
 import FuseLoading from 'src/common/ui-kit/fuse/components/FuseLoading'
 import FusePageCarded from 'src/common/ui-kit/fuse/components/FusePageCarded'
-import { IInstallationRequest } from 'src/modules/InstallatinRequests/installationRequests.d'
-import { useInstallationRequestsList } from 'src/modules/InstallatinRequests/installationRequestsHook'
+import { IInstallationRequest } from 'src/modules/InstallationRequests/installationRequests'
+import { useInstallationRequestsList } from 'src/modules/InstallationRequests/installationRequestsHook'
 import { VariantType } from 'notistack'
 import dayjs from 'dayjs'
 import { motion } from 'framer-motion'
 import { useState } from 'react'
-import { InstallationRequestDetailsPopup } from 'src/modules/InstallatinRequests/components/InstallationRequestDetailsPopup/'
-import { InstallationRequestsHeader } from 'src/modules/InstallatinRequests/components/InstallationRequestsHeader/'
+import { InstallationRequestDetailsPopup } from 'src/modules/InstallationRequests/components/InstallationRequestDetailsPopup'
+import { InstallationRequestsHeader } from 'src/modules/InstallationRequests/components/InstallationRequestsHeader'
 
 const Root = styled(FusePageCarded)(({ theme }) => ({
     '& .FusePageCarded-header': {
