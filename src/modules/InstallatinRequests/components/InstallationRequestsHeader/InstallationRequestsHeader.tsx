@@ -1,4 +1,3 @@
-import React from 'react'
 import Icon from '@mui/material/Icon'
 import Button from '@mui/material/Button'
 import { ThemeProvider } from '@mui/material/styles'
@@ -12,7 +11,7 @@ import { useIntl } from 'src/common/react-platform-translation'
  *
  * @returns InstallationsRequestsHeader component.
  */
-export const InstallationRequestsHeader: React.FC = () => {
+export const InstallationRequestsHeader = (): JSX.Element => {
     const mainTheme = selectTheme()
     const { formatMessage } = useIntl()
 
