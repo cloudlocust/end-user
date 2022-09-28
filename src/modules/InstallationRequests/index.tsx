@@ -55,6 +55,28 @@ export const statusList = {
 }
 
 /**
+ * Equipement type list.
+ */
+export const equipmentsTypeList = {
+    SOLAR: {
+        label: 'Panneau Solaire',
+        icon: 'panorama_horizontal_select',
+    },
+    INVERTER: {
+        label: 'Onduleur',
+        icon: 'autofps_select',
+    },
+    DEMOTIC: {
+        label: 'Domotique',
+        icon: 'other_houses',
+    },
+    OTHER: {
+        label: 'Autre',
+        icon: 'help_center',
+    },
+}
+
+/**
  * Component ActionsCell that will be rendered as content of the ActionButtons Cell.
  *
  * @param props N/A.
@@ -122,9 +144,9 @@ const ActionsCell = ({
 export const InstallationRequests = (): JSX.Element => {
     const {
         elementList: installationRequestsList,
-        // reloadElements: reloadInstallationRequestsList,
         loadingInProgress: isInstallationRequestsLoading,
         totalElementList: totalInstallationRequests,
+        reloadElements: reloadInstallationRequests,
         loadPage,
         page,
     } = useInstallationRequestsList()
@@ -185,7 +207,7 @@ export const InstallationRequests = (): JSX.Element => {
             headCellLabel: '',
             // TODO: to be worked on when updating & deleting installation request.
             // eslint-disable-next-line jsdoc/require-jsdoc
-            rowCell: () => <ActionsCell />,
+            rowCell: () => <ActionsCell onAfterCreateUpdateDeleteSuccess={reloadInstallationRequests} />,
         },
     ]
 
@@ -194,16 +216,19 @@ export const InstallationRequests = (): JSX.Element => {
             header={<InstallationRequestsHeader />}
             content={
                 <>
-                    <InstallationRequestDetailsPopup
-                        installationRequestDetails={installationRequestDetails}
-                        open={isInstallationsRequestsPopup}
-                        handleClosePopup={() => {
-                            setIsInstallationsRequestsPopup(false)
-                            setInstallationRequestDetails(null)
-                        }}
-                    />
+                    {isInstallationsRequestsPopup && installationRequestDetails && (
+                        <InstallationRequestDetailsPopup
+                            installationRequestDetails={installationRequestDetails}
+                            open={isInstallationsRequestsPopup}
+                            handleClosePopup={() => {
+                                setIsInstallationsRequestsPopup(false)
+                                setInstallationRequestDetails(null)
+                            }}
+                            onAfterCreateUpdateDeleteSuccess={reloadInstallationRequests}
+                        />
+                    )}
 
-                    {isInstallationRequestsLoading || !!!installationRequestsList?.length ? (
+                    {isInstallationRequestsLoading || !installationRequestsList ? (
                         <FuseLoading />
                     ) : installationRequestsList.length === 0 ? (
                         <motion.div

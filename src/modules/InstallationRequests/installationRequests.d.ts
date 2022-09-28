@@ -54,3 +54,13 @@ export interface IInstallationRequest {
      */
     status: statusType
 }
+
+/**
+ * Type for create installation request.
+ */
+export type createInstallationRequestType = Omit<IInstallationRequest, 'id' | 'createdAt' | 'updatedAt'>
+
+/**
+ * Type for update installation request.
+ */
+export type updateInstallationRequestType = Omit<IInstallationRequest, 'updatedAt'>

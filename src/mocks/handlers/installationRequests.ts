@@ -1,6 +1,10 @@
 import { rest } from 'msw'
 import { getPaginationFromElementList } from 'src/mocks/utils'
-import { IInstallationRequest, IInstallationRequests } from 'src/modules/InstallationRequests/installationRequests'
+import {
+    IInstallationRequest,
+    IInstallationRequests,
+    updateInstallationRequestType,
+} from 'src/modules/InstallationRequests/installationRequests'
 import { INSTALLATION_REQUESTS_API } from 'src/modules/InstallationRequests/installationRequestsHook'
 import { SnakeCasedPropertiesDeep } from 'type-fest'
 
@@ -166,5 +170,14 @@ export const installationRequestsEndpoints = [
             SnakeCasedPropertiesDeep<IInstallationRequests>
         >(req, TEST_INSTALLATION_REQUESTS as [])
         return res(ctx.status(200), ctx.delay(1000), ctx.json(TEST_INSTALLATIONS_REQUESTS_RESPONSE))
+    }),
+
+    // CREATE one installation request.
+    rest.patch<updateInstallationRequestType>(`${INSTALLATION_REQUESTS_API}/:equipmentId`, (req, res, ctx) => {
+        if (req.body) {
+            return res(ctx.status(200), ctx.delay(1000), ctx.json(req.body))
+        }
+
+        return res(ctx.status(400), ctx.delay(1000))
     }),
 ]
