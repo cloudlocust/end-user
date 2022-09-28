@@ -1,5 +1,5 @@
 import { authTypes } from 'src/common/react-platform-components'
-import { InstallationRequests } from 'src/modules/InstallatinRequests'
+import { InstallationRequests } from 'src/modules/InstallationRequests'
 import { IRoute } from 'src/common/react-platform-components/utils/mm'
 
 const URL_INSTALLATIONS_REQUESTS = '/installation-requests'

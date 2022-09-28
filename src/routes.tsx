@@ -14,7 +14,7 @@ import { MyHouseConfig } from './modules/MyHouse'
 import { ContractsConfig } from './modules/Contracts/ContractsConfig'
 import { ProfileManagementConfig } from './modules/User/ProfileManagement/ProfileManagementConfig'
 import { FAQConfig } from './modules/FAQ/FAQConfig'
-import { InstallationsRequestsConfig } from 'src/modules/InstallatinRequests/InstallationRequestsConfig'
+import { InstallationsRequestsConfig } from 'src/modules/InstallationRequests/InstallationRequestsConfig'
 /**
  *
  */
