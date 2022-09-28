@@ -3,7 +3,7 @@ import { act } from '@testing-library/react-hooks'
 import { TEST_HOUSES } from 'src/mocks/handlers/houses'
 import { applyCamelCase } from 'src/common/react-platform-components'
 import { IHousing } from 'src/modules/MyHouse/components/HousingList/housing'
-import { useMeterForHousing } from './metersHook'
+import { EDIT_ERROR_MESSAGE, EDIT_SUCCESS_MESSAGE, useMeterForHousing } from './metersHook'
 
 const TEST_MOCKED_HOUSES: IHousing[] = applyCamelCase(TEST_HOUSES)
 
@@ -29,7 +29,7 @@ jest.mock('notistack', () => ({
     }),
 }))
 
-describe('useMeterForHousing test', () => {
+describe('addMeter test', () => {
     test('success adding, when adding new it send back correct values.', async () => {
         const {
             renderedHook: { result, waitForValueToChange },
@@ -75,5 +75,49 @@ describe('useMeterForHousing test', () => {
         expect(result.current.loadingInProgress).toBe(false)
 
         expect(mockEnqueueSnackbar).toHaveBeenCalledWith(ERROR_ADD_MESSAGE, { variant: 'error' })
+    })
+})
+
+describe('editMeter test', () => {
+    test('when editMeter, it sends back the correct response', async () => {
+        const {
+            renderedHook: { result, waitForValueToChange },
+        } = reduxedRenderHook(() => useMeterForHousing(), { initialState: {} })
+        expect(result.current.loadingInProgress).toBe(false)
+
+        act(() => {
+            result.current.editMeter(TEST_MOCKED_HOUSES[0].id, { name: TEST_NAME_METER, guid: TEST_NUMBER_METER })
+        })
+
+        expect(result.current.loadingInProgress).toBe(true)
+        await waitForValueToChange(
+            () => {
+                return result.current.loadingInProgress
+            },
+            { timeout: 2000 },
+        )
+
+        expect(result.current.loadingInProgress).toBe(false)
+        expect(mockEnqueueSnackbar).toBeCalledWith(EDIT_SUCCESS_MESSAGE, { variant: 'success', autoHideDuration: 5000 })
+    })
+    test('when editMeter fails', async () => {
+        const {
+            renderedHook: { result, waitForValueToChange },
+        } = reduxedRenderHook(() => useMeterForHousing(), { initialState: {} })
+        expect(result.current.loadingInProgress).toBe(false)
+
+        act(() => {
+            result.current.editMeter()
+        })
+
+        await waitForValueToChange(
+            () => {
+                return result.current.loadingInProgress
+            },
+            { timeout: 2000 },
+        )
+
+        expect(result.current.loadingInProgress).toBe(false)
+        expect(mockEnqueueSnackbar).toBeCalledWith(EDIT_ERROR_MESSAGE, { variant: 'error' })
     })
 })

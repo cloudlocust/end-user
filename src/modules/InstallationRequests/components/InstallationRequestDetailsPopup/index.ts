@@ -1,0 +1,1 @@
+export { InstallationRequestDetailsPopup } from 'src/modules/InstallationRequests/components/InstallationRequestDetailsPopup/InstallationRequestDetailsPopup'

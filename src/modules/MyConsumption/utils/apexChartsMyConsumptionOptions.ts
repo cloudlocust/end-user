@@ -215,14 +215,8 @@ export const getApexChartMyConsumptionProps = ({
                 show: true,
             },
         })
-        // When period is daily and chart is consumption or eurosConsumption then we show no marker, otherwise if period is not daily we don't show consumption marker.
-        markerSizeList.push(
-            yAxisSerie.name === metricTargetsEnum.consumption ||
-                yAxisSerie.name === metricTargetsEnum.eurosConsumption ||
-                period === 'daily'
-                ? 0
-                : 2,
-        )
+        // We don't show marker.
+        markerSizeList.push(0)
         // When chart is consumption or eurosConsumption then we show no stroke cause the area chart is enough otherwise it'll be too cumbersome.
         strokeWidthList.push(
             yAxisSerie.name === metricTargetsEnum.consumption || yAxisSerie.name === metricTargetsEnum.eurosConsumption
