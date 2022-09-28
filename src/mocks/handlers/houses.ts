@@ -5,7 +5,7 @@ import { getPaginationFromElementList } from 'src/mocks/utils'
 import { HOUSING_API } from 'src/modules/MyHouse/components/HousingList/HousingsHooks'
 import { SnakeCasedPropertiesDeep } from 'type-fest'
 import { defaultValueType } from 'src/common/ui-kit/form-fields/GoogleMapsAddressAutoComplete/utils'
-import { addMeterInputType } from 'src/modules/Meters/Meters'
+import { addMeterInputType, editMeterInputType } from 'src/modules/Meters/Meters'
 
 /**
  * Array of houses (logements) for test.
@@ -14,9 +14,9 @@ export const TEST_HOUSES: SnakeCasedPropertiesDeep<IHousing>[] = [
     {
         id: 1,
         meter: {
-            id: '1234569865',
+            id: 1,
             name: 'my nrlink',
-            guid: '12345Her',
+            guid: '12345678911234',
         },
         address: {
             city: 'monaco',
@@ -131,5 +131,22 @@ export const housingEndpoints = [
         } else {
             return res(ctx.status(401), ctx.delay(1000))
         }
+    }),
+
+    // Edit meter
+    rest.patch<editMeterInputType>(`${HOUSING_API}/:housingId/meter`, (req, res, ctx) => {
+        const { name, guid } = req.body
+        const { housingId } = req.params
+        const houseId = parseInt(housingId)
+
+        const housingToUpdate = TEST_HOUSES.find(
+            (housing: SnakeCasedPropertiesDeep<IHousing>) => housing.id === houseId,
+        )
+
+        if (!housingToUpdate) {
+            return res(ctx.status(400), ctx.delay(1000))
+        }
+
+        return res(ctx.status(200), ctx.delay(1000), ctx.json({ ...TEST_HOUSES[0].meter, ...{ name, guid } }))
     }),
 ]
