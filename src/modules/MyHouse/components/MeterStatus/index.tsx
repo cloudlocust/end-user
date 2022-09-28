@@ -1,19 +1,9 @@
-import {
-    Card,
-    useTheme,
-    Icon,
-    CircularProgress,
-    IconButton,
-    CardActions,
-    Button,
-    Modal,
-    CardContent,
-} from '@mui/material'
+import { Card, useTheme, Icon, CircularProgress, IconButton } from '@mui/material'
 import { NavLink, useParams } from 'react-router-dom'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import { ReactComponent as ContractIcon } from 'src/assets/images/content/housing/contract.svg'
 import { URL_MY_HOUSE } from 'src/modules/MyHouse/MyHouseConfig'
-import { ButtonLoader, MuiCardContent, TextField } from 'src/common/ui-kit'
+import { MuiCardContent } from 'src/common/ui-kit'
 import { useConsents } from 'src/modules/Consents/consentsHook'
 import { useEffect, useState } from 'react'
 import { enedisSgeConsentStatus, nrlinkConsentStatus } from 'src/modules/Consents/Consents'
@@ -25,10 +15,9 @@ import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from 'src/redux'
 import { IHousing } from 'src/modules/MyHouse/components/HousingList/housing'
 import ModeEditOutlineOutlinedIcon from '@mui/icons-material/ModeEditOutlineOutlined'
-import { Form, requiredBuilder, min, max } from 'src/common/react-platform-components'
-import { editMeterInputType } from 'src/modules/Meters/Meters'
 import { useMeterForHousing } from 'src/modules/Meters/metersHook'
 import { Dispatch } from 'src/redux'
+import { EditMeterFormPopup } from 'src/modules/MyHouse/components/EditMeterFormPopup'
 
 /**
  * Meter Status Component.
@@ -226,76 +215,15 @@ export const MeterStatus = () => {
                                             <ModeEditOutlineOutlinedIcon color="primary" />
                                         </IconButton>
 
-                                        <Modal open={editMeterOpen} onClose={() => setEditMeterOpen(false)}>
-                                            <Form
-                                                onSubmit={async (values: editMeterInputType) => {
-                                                    await editMeter(parseInt(houseId), values)
-                                                    dispatch.housingModel.loadHousingsList()
-                                                    setEditMeterOpen(false)
-                                                }}
-                                                defaultValues={{
-                                                    name: foundHousing.meter.name,
-                                                    guid: foundHousing.meter.guid,
-                                                }}
-                                            >
-                                                <div
-                                                    className="flex justify-center absolute top-1/2 left-1/2"
-                                                    style={{ transform: 'translate(-50%, -50%)', width: '300px' }}
-                                                >
-                                                    <Card className="relative cursor-pointer flex-wrap rounded-16">
-                                                        <CardContent className="mt-10">
-                                                            <TextField
-                                                                name="name"
-                                                                label="Nom de mon compteur"
-                                                                placeholder={formatMessage({
-                                                                    id: 'Modifier le nom de votre compteur',
-                                                                    defaultMessage: 'Modifier le nom de votre compteur',
-                                                                })}
-                                                                validateFunctions={[requiredBuilder()]}
-                                                            />
-                                                            <TextField
-                                                                name="guid"
-                                                                label="Numéro de mon compteur"
-                                                                placeholder={formatMessage({
-                                                                    id: 'Modifier le numéro de votre compteur',
-                                                                    defaultMessage:
-                                                                        'Modifier le numéro de votre compteur',
-                                                                })}
-                                                                validateFunctions={[
-                                                                    requiredBuilder(),
-                                                                    min(14),
-                                                                    max(14),
-                                                                ]}
-                                                                inputProps={{ maxLength: 14 }}
-                                                            />
-                                                        </CardContent>
-                                                        <CardActions className="flex items-center content-center justify-center mb-10">
-                                                            <Button
-                                                                variant="outlined"
-                                                                className="mr-4"
-                                                                onClick={() => setEditMeterOpen(false)}
-                                                            >
-                                                                {formatMessage({
-                                                                    id: 'Annuler',
-                                                                    defaultMessage: 'Annuler',
-                                                                })}
-                                                            </Button>
-                                                            <ButtonLoader
-                                                                inProgress={loadingInProgress}
-                                                                variant="contained"
-                                                                type="submit"
-                                                                className="ml-4"
-                                                            >
-                                                                {formatMessage({
-                                                                    id: 'Modifier',
-                                                                    defaultMessage: 'Modifier',
-                                                                })}
-                                                            </ButtonLoader>
-                                                        </CardActions>
-                                                    </Card>
-                                                </div>
-                                            </Form>
-                                        </Modal>
+                                        <EditMeterFormPopup
+                                            open={editMeterOpen}
+                                            onClose={() => setEditMeterOpen(false)}
+                                            houseId={houseId}
+                                            editMeter={editMeter}
+                                            loadingInProgress={loadingInProgress}
+                                            loadHousinglist={dispatch.housingModel.loadHousingsList}
+                                            foundHousing={foundHousing}
+                                        />
                                     </>
                                 )}
                             </div>
