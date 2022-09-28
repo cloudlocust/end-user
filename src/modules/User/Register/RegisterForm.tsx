@@ -7,10 +7,10 @@ import { useRegister } from 'src/modules/User/Register/hooks'
 import { IUserRegister } from '../model'
 import { PhoneNumber } from 'src/common/ui-kit/form-fields/phoneNumber/PhoneNumber'
 import FormControlLabel from '@mui/material/FormControlLabel'
-import MuiLink from '@mui/material/Link'
 import Checkbox from '@mui/material/Checkbox'
 import FormControl from '@mui/material/FormControl'
 import { FormHelperText } from '@mui/material'
+import { LinkRedirection } from 'src/modules/utils/LinkRedirection'
 
 const urlLegalNotice = 'https://www.myem.fr/mentions-legales/'
 
@@ -63,47 +63,7 @@ export const RegisterForm = ({
             onSubmit(cleanData)
         }
     }
-    /**
-     * Function getLinkRedirection.
-     *
-     * @param param0 N/A.
-     * @param param0.url Url to redirect.
-     * @param param0.label Label name.
-     * @returns Link to redirect.
-     */
-    const getLinkRedirection = ({
-        url,
-        label,
-    }: // eslint-disable-next-line jsdoc/require-jsdoc
-    {
-        // eslint-disable-next-line jsdoc/require-jsdoc
-        url: string
-        // eslint-disable-next-line jsdoc/require-jsdoc
-        label: string
-    }) => {
-        return (
-            <MuiLink
-                sx={{
-                    color:
-                        // eslint-disable-next-line jsdoc/require-jsdoc
-                        (theme) => theme.palette.primary.light,
-                    pointerEvents: 'auto',
-                }}
-                onClick={(e: React.SyntheticEvent) => {
-                    // Handling onClick with (preventDefault and window.open) because we're using FormControlLabel, which when you click the label (even if it has link inside) it'll behave as if we clicked on the control
-                    // In our case the checkbox, it means when if we click on the label even if we have a link in the label and we click on it, it will check the checkbox instead of redirecting
-                    // That's why i handle the onClick on the link itself, so that i prevent the default of checkbox clicking through the label
-                    e.preventDefault()
-                    window.open(url, '_blank')
-                }}
-            >
-                {formatMessage({
-                    id: label,
-                    defaultMessage: label,
-                })}
-            </MuiLink>
-        )
-    }
+
     return (
         <Form
             // eslint-disable-next-line jsdoc/require-jsdoc
@@ -144,10 +104,7 @@ export const RegisterForm = ({
                                     plateforme et suivre votre consommation. Vous pouvez retrouver plus d'informations sur vos droits
                                     via notre `,
                     })}
-                    {getLinkRedirection({
-                        url: urlLegalNotice,
-                        label: 'Politique de Confidentialité',
-                    })}
+                    <LinkRedirection url={urlLegalNotice} label="Politique de Confidentialité" color="primary.light" />
                 </span>
                 {/* TODO Create a checkbox reusable component */}
                 <FormControl required error={rgpdCheckboxState === ''}>
@@ -169,18 +126,16 @@ export const RegisterForm = ({
                                     id: `J’ai lu et j’accepte les `,
                                     defaultMessage: `J’ai lu et j’accepte les `,
                                 })}
-                                {getLinkRedirection({
-                                    url: urlLegalNotice,
-                                    label: 'Conditions Générales d’Utilisation',
-                                })}
+                                <LinkRedirection
+                                    url={urlLegalNotice}
+                                    label="Conditions Générales d’Utilisation"
+                                    color="primary.light"
+                                />
                                 {formatMessage({
                                     id: ` et de `,
                                     defaultMessage: ` et de `,
                                 })}
-                                {getLinkRedirection({
-                                    url: urlLegalNotice,
-                                    label: 'Vente',
-                                })}
+                                <LinkRedirection url={urlLegalNotice} label="Vente" color="primary.light" />
                                 {formatMessage({
                                     id: ` de la plateforme`,
                                     defaultMessage: ` de la plateforme`,
