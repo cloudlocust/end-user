@@ -145,8 +145,8 @@ export const housingEndpoints = [
 
         if (!housingToUpdate) {
             return res(ctx.status(400), ctx.delay(1000))
-        } else {
-            return res(ctx.status(200), ctx.delay(1000), ctx.json({ ...TEST_HOUSES[0].meter, ...{ name, guid } }))
         }
+
+        return res(ctx.status(200), ctx.delay(1000), ctx.json({ ...TEST_HOUSES[0].meter, ...{ name, guid } }))
     }),
 ]
