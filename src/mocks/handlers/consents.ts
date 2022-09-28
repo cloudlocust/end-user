@@ -57,22 +57,23 @@ export const consentsEndpoints = [
     }),
 
     rest.get(`${API_RESOURCES_URL}/enedis-sge/consent/:houseid/check`, (req, res, ctx) => {
-        // Use authorization to test the different cases in error.response.data.detail
         const authorization = req.headers.get('authorization')
         if (authorization && authorization === 'snackbar_error') {
             return res(ctx.status(400), ctx.delay(1000))
-        } else if (authorization && authorization === 'success') {
+        } else {
             return res(ctx.status(200), ctx.delay(1000))
         }
     }),
 
     // eslint-disable-next-line jsdoc/require-jsdoc
-    rest.post<{ housing_id: number }>(`${API_RESOURCES_URL}/enedis-sge/consent`, (req, res, ctx) => {
+    rest.post(`${API_RESOURCES_URL}/enedis-sge/consent/:housingId`, (req, res, ctx) => {
+        const { housingId } = req.params
+        if (!housingId) return res(ctx.status(400), ctx.delay(1000))
         const authorization = req.headers.get('authorization')
         if (authorization && authorization === 'snackbar_error') {
             return res(ctx.status(400), ctx.delay(1000))
-        } else if (authorization && authorization === 'success') {
-            return res(ctx.status(200), ctx.delay(1000), ctx.json(TEST_SUCCESS_ENEDIS_SGE_CONSENT))
+        } else {
+            return res(ctx.status(201), ctx.delay(1000), ctx.json(TEST_SUCCESS_ENEDIS_SGE_CONSENT))
         }
     }),
 ]
