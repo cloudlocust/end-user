@@ -13,6 +13,7 @@ let mockTotalInstallationRequests = 0
 // Mock useInstallationRequestsList hook
 jest.mock('src/modules/InstallationRequests/installationRequestsHook', () => ({
     ...jest.requireActual('src/modules/InstallationRequests/installationRequestsHook'),
+    // eslint-disable-next-line jsdoc/require-jsdoc
     useInstallationRequestsList: () => ({
         elementList: mockInstallationRequestList,
         loadingInProgress: mockLoadingInProgress,
