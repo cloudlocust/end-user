@@ -172,7 +172,7 @@ export const installationRequestsEndpoints = [
         return res(ctx.status(200), ctx.delay(1000), ctx.json(TEST_INSTALLATIONS_REQUESTS_RESPONSE))
     }),
 
-    // CREATE one installation request.
+    // UPDATE one installation request.
     rest.patch<updateInstallationRequestType>(`${INSTALLATION_REQUESTS_API}/:equipmentId`, (req, res, ctx) => {
         if (req.body) {
             return res(ctx.status(200), ctx.delay(1000), ctx.json(req.body))
