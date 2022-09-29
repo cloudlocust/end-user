@@ -174,19 +174,32 @@ export const installationRequestsEndpoints = [
     }),
 
     // UPDATE one installation request.
-    rest.patch<updateInstallationRequestType>(`${INSTALLATION_REQUESTS_API}/:equipmentId`, (req, res, ctx) => {
-        if (req.body) {
-            return res(ctx.status(200), ctx.delay(1000), ctx.json(req.body))
-        }
+    rest.patch<updateInstallationRequestType>(
+        `${INSTALLATION_REQUESTS_API}/:installationRequestId`,
+        (req, res, ctx) => {
+            const { installationRequestId } = req.params
+            if (installationRequestId && req.body) {
+                return res(ctx.status(200), ctx.delay(1000), ctx.json(req.body))
+            }
 
-        return res(ctx.status(400), ctx.delay(1000))
-    }),
+            return res(ctx.status(400), ctx.delay(1000))
+        },
+    ),
 
     // CREATE one installation request.
     // eslint-disable-next-line sonarjs/no-identical-functions
     rest.post<createInstallationRequestType>(INSTALLATION_REQUESTS_API, (req, res, ctx) => {
         if (req.body) {
-            return res(ctx.status(200), ctx.delay(1000), ctx.json(req.body))
+            return res(ctx.status(201), ctx.delay(1000), ctx.json(req.body))
+        }
+        return res(ctx.status(400), ctx.delay(1000))
+    }),
+
+    // Delete one installation request
+    rest.delete(`${INSTALLATION_REQUESTS_API}/:installationRequestId`, (req, res, ctx) => {
+        const { installationRequestId } = req.params
+        if (installationRequestId) {
+            return res(ctx.status(204), ctx.delay(1000))
         }
 
         return res(ctx.status(400), ctx.delay(1000))

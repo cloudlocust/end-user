@@ -9,10 +9,12 @@ import {
 const mockEnqueueSnackbar = jest.fn()
 
 const ERROR_SNACKBAR_MESSAGE = 'Erreur lors du chargement des demandes'
-const ERROR_UPDATE_INSTALLATION_REQUEST_MESSAGE = "Erreur lors de la mis à jour d'un équipement"
-const SUCCESS_UPDATE_INSTALLATION_REQUEST_MESSAGE = 'Equipement a été mis à jour avec succès'
-const ERROR_CREATE_INSTALLATION_REQUEST_MESSAGE = "Erreur lors de la création d'un équipement"
-const SUCCESS_CREATE_INSTALLATION_REQUEST_MESSAGE = 'Equipement créé avec succès'
+const ERROR_UPDATE_INSTALLATION_REQUEST_MESSAGE = "Erreur lors de la mis à jour d'une demande"
+const SUCCESS_UPDATE_INSTALLATION_REQUEST_MESSAGE = 'Demande a été mis à jour avec succès'
+const ERROR_CREATE_INSTALLATION_REQUEST_MESSAGE = "Erreur lors de la création d'une demande"
+const SUCCESS_CREATE_INSTALLATION_REQUEST_MESSAGE = 'Demande créé avec succès'
+const ERROR_DELETE_INSTALLTION_REQUEST_MESSAGE = "Erreur lors de la suppression d'une demande"
+const SUCCESS_DELETE_INSTALLTION_REQUEST_MESSAGE = 'Demande a été supprimée avec succès'
 
 const { id, created_at, updated_at, ...rest } = TEST_INSTALLATION_REQUESTS[0]
 
@@ -177,6 +179,47 @@ describe('InstallationRequestList hook test', () => {
             expect(result.current.loadingInProgress).toBe(false)
 
             expect(mockEnqueueSnackbar).toHaveBeenCalledWith(SUCCESS_CREATE_INSTALLATION_REQUEST_MESSAGE, {
+                variant: 'success',
+                autoHideDuration: 5000,
+            })
+        })
+        test('when deleteInstallationRequest rejects, a snackbar is shown', async () => {
+            const {
+                renderedHook: { result },
+            } = reduxedRenderHook(() => useInstallationRequests(), { initialState: {} })
+
+            act(() => {
+                result.current.deleteInstallationRequest()
+            })
+
+            expect(result.current.loadingInProgress).toBe(false)
+
+            expect(mockEnqueueSnackbar).toHaveBeenCalledWith(ERROR_DELETE_INSTALLTION_REQUEST_MESSAGE, {
+                variant: 'error',
+                autoHideDuration: 5000,
+            })
+        })
+        test('when deleteInstallationRequest resolves, a success snackbar is shown', async () => {
+            const {
+                renderedHook: { result, waitForValueToChange },
+            } = reduxedRenderHook(() => useInstallationRequests(), { initialState: {} })
+
+            act(() => {
+                result.current.deleteInstallationRequest(TEST_INSTALLATION_REQUESTS[0].id)
+            })
+
+            expect(result.current.loadingInProgress).toBe(true)
+
+            await waitForValueToChange(
+                () => {
+                    return result.current.loadingInProgress
+                },
+                { timeout: 4000 },
+            )
+
+            expect(result.current.loadingInProgress).toBe(false)
+
+            expect(mockEnqueueSnackbar).toHaveBeenCalledWith(SUCCESS_DELETE_INSTALLTION_REQUEST_MESSAGE, {
                 variant: 'success',
                 autoHideDuration: 5000,
             })

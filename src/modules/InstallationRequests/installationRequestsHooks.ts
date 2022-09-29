@@ -55,8 +55,8 @@ export const useInstallationRequests = () => {
                 if (data) {
                     enqueueSnackbar(
                         formatMessage({
-                            id: 'Equipement créé avec succès',
-                            defaultMessage: 'Equipement créé avec succès',
+                            id: 'Demande créé avec succès',
+                            defaultMessage: 'Demande créé avec succès',
                         }),
                         { variant: 'success', autoHideDuration: 5000 },
                     )
@@ -66,8 +66,8 @@ export const useInstallationRequests = () => {
                 setLoadingInProgress(false)
                 enqueueSnackbar(
                     formatMessage({
-                        id: "Erreur lors de la création d'un équipement",
-                        defaultMessage: "Erreur lors de la création d'un équipement",
+                        id: "Erreur lors de la création d'une demande",
+                        defaultMessage: "Erreur lors de la création d'une demande",
                     }),
                     { variant: 'error', autoHideDuration: 5000 },
                 )
@@ -77,18 +77,18 @@ export const useInstallationRequests = () => {
     )
 
     const updateInstallationRequest = useCallback(
-        async (equipmentId: number, body: Omit<updateInstallationRequestType, 'id'>) => {
+        async (installationRequestId: number, body: Omit<updateInstallationRequestType, 'id'>) => {
             try {
                 setLoadingInProgress(true)
                 const { data } = await axios.patch<Omit<updateInstallationRequestType, 'id'>>(
-                    `${INSTALLATION_REQUESTS_API}/${equipmentId}`,
+                    `${INSTALLATION_REQUESTS_API}/${installationRequestId}`,
                     body,
                 )
                 if (data) {
                     enqueueSnackbar(
                         formatMessage({
-                            id: 'Equipement a été mis à jour avec succès',
-                            defaultMessage: 'Equipement a été mis à jour avec succès',
+                            id: 'Demande a été mis à jour avec succès',
+                            defaultMessage: 'Demande a été mis à jour avec succès',
                         }),
                         { variant: 'success', autoHideDuration: 5000 },
                     )
@@ -98,8 +98,8 @@ export const useInstallationRequests = () => {
                 setLoadingInProgress(false)
                 enqueueSnackbar(
                     formatMessage({
-                        id: "Erreur lors de la mis à jour d'un équipement",
-                        defaultMessage: "Erreur lors de la mis à jour d'un équipement",
+                        id: "Erreur lors de la mis à jour d'une demande",
+                        defaultMessage: "Erreur lors de la mis à jour d'une demande",
                     }),
                     { variant: 'error', autoHideDuration: 5000 },
                 )
@@ -108,5 +108,41 @@ export const useInstallationRequests = () => {
         [enqueueSnackbar, formatMessage],
     )
 
-    return { loadingInProgress, setLoadingInProgress, updateInstallationRequest, createInstallationRequeest }
+    const deleteInstallationRequest = useCallback(
+        async (installationRequestId: number) => {
+            try {
+                if (!installationRequestId) throw Error('No id provided')
+                setLoadingInProgress(true)
+                const { status } = await axios.delete(`${INSTALLATION_REQUESTS_API}/${installationRequestId}`)
+                if (status === 204) {
+                    enqueueSnackbar(
+                        formatMessage({
+                            id: 'Demande a été supprimée avec succès',
+                            defaultMessage: 'Demande a été supprimée avec succès',
+                        }),
+                        { variant: 'success', autoHideDuration: 5000 },
+                    )
+                }
+                setLoadingInProgress(false)
+            } catch (error) {
+                setLoadingInProgress(false)
+                enqueueSnackbar(
+                    formatMessage({
+                        id: "Erreur lors de la suppression d'une demande",
+                        defaultMessage: "Erreur lors de la suppression d'une demande",
+                    }),
+                    { variant: 'error', autoHideDuration: 5000 },
+                )
+            }
+        },
+        [enqueueSnackbar, formatMessage],
+    )
+
+    return {
+        loadingInProgress,
+        setLoadingInProgress,
+        updateInstallationRequest,
+        createInstallationRequeest,
+        deleteInstallationRequest,
+    }
 }
