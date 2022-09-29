@@ -164,9 +164,6 @@ export const InstallationRequests = (): JSX.Element => {
     const [isUpdateInstallationsRequestsPopup, setIsUpdateInstallationsRequestsPopup] = useState(false)
     const [isCreateInstallationRequestPopup, setIsCreateInstallationRequestPopup] = useState(false)
 
-    /**
-     * Row containing the Cells of the Chameleons Table.
-     */
     const installerRequestsCells = [
         {
             id: 'type',
