@@ -3,7 +3,7 @@ import { axios } from 'src/common/react-platform-components'
 import { formatMessageType, useIntl } from 'src/common/react-platform-translation'
 import { API_RESOURCES_URL } from 'src/configs'
 import {
-    // createInstallationRequestType,
+    createInstallationRequestType,
     IInstallationRequest,
     updateInstallationRequestType,
 } from 'src/modules/InstallationRequests/installationRequests.d'
@@ -47,35 +47,34 @@ export const useInstallationRequests = () => {
     const [loadingInProgress, setLoadingInProgress] = useState(false)
     const { formatMessage } = useIntl()
 
-    // TODO: To be worked on in the next tasks.
-    // const createInstallationRequeest = useCallback(
-    //     async (body: createInstallationRequestType) => {
-    //         try {
-    //             setLoadingInProgress(true)
-    //             const { data } = await axios.post<createInstallationRequestType>(INSTALLATION_REQUESTS_API, body)
-    //             if (data) {
-    //                 enqueueSnackbar(
-    //                     formatMessage({
-    //                         id: 'Equipement créé avec succès',
-    //                         defaultMessage: 'Equipement créé avec succès',
-    //                     }),
-    //                     { variant: 'success', autoHideDuration: 5000 },
-    //                 )
-    //             }
-    //             setLoadingInProgress(false)
-    //         } catch (error) {
-    //             setLoadingInProgress(false)
-    //             enqueueSnackbar(
-    //                 formatMessage({
-    //                     id: "Erreur lors de la création d'un équipement",
-    //                     defaultMessage: "Erreur lors de la création d'un équipement",
-    //                 }),
-    //                 { variant: 'error', autoHideDuration: 5000 },
-    //             )
-    //         }
-    //     },
-    //     [enqueueSnackbar, formatMessage],
-    // )
+    const createInstallationRequeest = useCallback(
+        async (body: createInstallationRequestType) => {
+            try {
+                setLoadingInProgress(true)
+                const { data } = await axios.post<createInstallationRequestType>(INSTALLATION_REQUESTS_API, body)
+                if (data) {
+                    enqueueSnackbar(
+                        formatMessage({
+                            id: 'Equipement créé avec succès',
+                            defaultMessage: 'Equipement créé avec succès',
+                        }),
+                        { variant: 'success', autoHideDuration: 5000 },
+                    )
+                }
+                setLoadingInProgress(false)
+            } catch (error) {
+                setLoadingInProgress(false)
+                enqueueSnackbar(
+                    formatMessage({
+                        id: "Erreur lors de la création d'un équipement",
+                        defaultMessage: "Erreur lors de la création d'un équipement",
+                    }),
+                    { variant: 'error', autoHideDuration: 5000 },
+                )
+            }
+        },
+        [enqueueSnackbar, formatMessage],
+    )
 
     const updateInstallationRequest = useCallback(
         async (equipmentId: number, body: Omit<updateInstallationRequestType, 'id'>) => {
@@ -109,5 +108,5 @@ export const useInstallationRequests = () => {
         [enqueueSnackbar, formatMessage],
     )
 
-    return { loadingInProgress, setLoadingInProgress, updateInstallationRequest }
+    return { loadingInProgress, setLoadingInProgress, updateInstallationRequest, createInstallationRequeest }
 }
