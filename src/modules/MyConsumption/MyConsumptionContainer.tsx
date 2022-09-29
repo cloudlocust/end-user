@@ -236,7 +236,11 @@ export const MyConsumptionContainer = () => {
                             Chiffres clés
                         </TypographyFormatMessage>
                     </div>
-                    <WidgetList data={data} isMetricsLoading={isMetricsLoading} />
+                    <WidgetList
+                        data={data}
+                        hasMissingHousingContracts={hasMissingHousingContracts}
+                        isMetricsLoading={isMetricsLoading}
+                    />
                 </div>
             )}
         </>
