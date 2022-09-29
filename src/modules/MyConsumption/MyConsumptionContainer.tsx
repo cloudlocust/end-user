@@ -35,7 +35,6 @@ export const initialMetricsHookValues: getMetricType = {
             target: metricTargetsEnum.consumption,
             type: 'timeserie',
         },
-        // TODO Reset euro consumption when backend ready.
         {
             target: metricTargetsEnum.eurosConsumption,
             type: 'timeserie',
@@ -237,16 +236,7 @@ export const MyConsumptionContainer = () => {
                             Chiffres clés
                         </TypographyFormatMessage>
                     </div>
-                    <WidgetList
-                        data={
-                            // TODO Fix when getting to the story of widget consumptionEuros
-                            data.filter((metric) => metric.target !== metricTargetsEnum.eurosConsumption)
-                        }
-                        // TODO Rest when backend ready
-                        // data={data}
-                        hasMissingHousingContracts={hasMissingHousingContracts}
-                        isMetricsLoading={isMetricsLoading}
-                    />
+                    <WidgetList data={data} isMetricsLoading={isMetricsLoading} />
                 </div>
             )}
         </>

@@ -3,7 +3,6 @@ import { metricTargetsEnum, metricTargetType } from 'src/modules/Metrics/Metrics
 import { Widget } from 'src/modules/MyConsumption/components/Widget'
 import { IWidgetListProps, widgetTitleType } from 'src/modules/MyConsumption/components/Widget/Widget'
 import { computeWidgetAssets } from 'src/modules/MyConsumption/components/Widget/WidgetFunctions'
-import { getWidgetInfoIcon } from 'src/modules/MyConsumption/components/WidgetInfoIcons'
 
 /**
  * Function that returns title according to metric target.
@@ -34,10 +33,9 @@ const renderWidgetTitle = (target: metricTargetType): widgetTitleType => {
  * @param props N/A.
  * @param props.data Metrics data.
  * @param props.isMetricsLoading Loading state from useMetrics.
- * @param props.hasMissingHousingContracts HasMissingHousingContracts come from metrics when euroConsumption, responsible for showing an info icon in EuroWidget.
  * @returns WidgetsList component.
  */
-export const WidgetList = ({ data, isMetricsLoading, hasMissingHousingContracts }: IWidgetListProps) => {
+export const WidgetList = ({ data, isMetricsLoading }: IWidgetListProps) => {
     const theme = useTheme()
 
     return (
@@ -52,7 +50,6 @@ export const WidgetList = ({ data, isMetricsLoading, hasMissingHousingContracts 
                             unit={widgetAsset.unit}
                             title={renderWidgetTitle(target)}
                             value={widgetAsset.value}
-                            infoIcon={getWidgetInfoIcon(target, hasMissingHousingContracts)}
                         />
                     )
                 })}
