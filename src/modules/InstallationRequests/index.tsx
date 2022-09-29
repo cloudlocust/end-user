@@ -10,7 +10,7 @@ import { useInstallationRequestsList } from 'src/modules/InstallationRequests/in
 import { VariantType } from 'notistack'
 import dayjs from 'dayjs'
 import { motion } from 'framer-motion'
-import { useState } from 'react'
+import { Dispatch, SetStateAction, useState } from 'react'
 import { InstallationRequestDetailsPopup } from 'src/modules/InstallationRequests/components/InstallationRequestDetailsPopup'
 import { InstallationRequestsHeader } from 'src/modules/InstallationRequests/components/InstallationRequestsHeader'
 
@@ -82,17 +82,25 @@ export const equipmentsTypeList = {
  * @param props N/A.
  * @param props.row Represent the installer information of the current row (current row represent the row when clicking on Accept or Refuse).
  * @param props.onAfterCreateUpdateDeleteSuccess Callback function when activation succeeded.
+ * @param props.setIsUpdateInstallationsRequestsPopup Setter function to trigger update popup.
+ * @param props.setInstallationRequestDetails Setter function to be passed in the row data.
  * @returns ActionsCell Component.
  */
 const ActionsCell = ({
     row,
     onAfterCreateUpdateDeleteSuccess,
+    setIsUpdateInstallationsRequestsPopup,
+    setInstallationRequestDetails,
 }: //eslint-disable-next-line jsdoc/require-jsdoc
 {
     //eslint-disable-next-line jsdoc/require-jsdoc
-    row?: any
+    row: IInstallationRequest
     //eslint-disable-next-line jsdoc/require-jsdoc
     onAfterCreateUpdateDeleteSuccess?: () => void
+    //eslint-disable-next-line jsdoc/require-jsdoc
+    setIsUpdateInstallationsRequestsPopup: Dispatch<SetStateAction<boolean>>
+    //eslint-disable-next-line jsdoc/require-jsdoc
+    setInstallationRequestDetails: Dispatch<SetStateAction<IInstallationRequest | null>>
 }) => {
     const { formatMessage } = useIntl()
 
@@ -107,9 +115,9 @@ const ActionsCell = ({
                 >
                     <IconButton
                         color="success"
-                        onClick={async () => {
-                            // await acceptInstallerRequest()
-                            // onAfterCreateUpdateDeleteSuccess()
+                        onClickCapture={() => {
+                            setIsUpdateInstallationsRequestsPopup(true)
+                            setInstallationRequestDetails(row)
                         }}
                     >
                         <Icon>edit</Icon>
@@ -152,7 +160,7 @@ export const InstallationRequests = (): JSX.Element => {
     } = useInstallationRequestsList()
     const { formatMessage } = useIntl()
     const [installationRequestDetails, setInstallationRequestDetails] = useState<IInstallationRequest | null>(null)
-    const [isInstallationsRequestsPopup, setIsInstallationsRequestsPopup] = useState(false)
+    const [isUpdateInstallationsRequestsPopup, setIsUpdateInstallationsRequestsPopup] = useState(false)
 
     /**
      * Row containing the Cells of the Chameleons Table.
@@ -205,9 +213,14 @@ export const InstallationRequests = (): JSX.Element => {
         {
             id: '',
             headCellLabel: '',
-            // TODO: to be worked on when updating & deleting installation request.
             // eslint-disable-next-line jsdoc/require-jsdoc
-            rowCell: () => <ActionsCell onAfterCreateUpdateDeleteSuccess={reloadInstallationRequests} />,
+            rowCell: (row: IInstallationRequest) => (
+                <ActionsCell
+                    row={row}
+                    setIsUpdateInstallationsRequestsPopup={setIsUpdateInstallationsRequestsPopup}
+                    setInstallationRequestDetails={setInstallationRequestDetails}
+                />
+            ),
         },
     ]
 
@@ -216,18 +229,17 @@ export const InstallationRequests = (): JSX.Element => {
             header={<InstallationRequestsHeader />}
             content={
                 <>
-                    {isInstallationsRequestsPopup && installationRequestDetails && (
+                    {isUpdateInstallationsRequestsPopup && installationRequestDetails && (
                         <InstallationRequestDetailsPopup
                             installationRequestDetails={installationRequestDetails}
-                            open={isInstallationsRequestsPopup}
+                            open={isUpdateInstallationsRequestsPopup}
                             handleClosePopup={() => {
-                                setIsInstallationsRequestsPopup(false)
+                                setIsUpdateInstallationsRequestsPopup(false)
                                 setInstallationRequestDetails(null)
                             }}
                             onAfterCreateUpdateDeleteSuccess={reloadInstallationRequests}
                         />
                     )}
-
                     {isInstallationRequestsLoading || !installationRequestsList ? (
                         <FuseLoading />
                     ) : installationRequestsList.length === 0 ? (
@@ -251,10 +263,6 @@ export const InstallationRequests = (): JSX.Element => {
                                 onPageChange={loadPage}
                                 rows={installationRequestsList}
                                 pageProps={page}
-                                onRowClick={(installationRequestDetails) => {
-                                    setInstallationRequestDetails(installationRequestDetails)
-                                    setIsInstallationsRequestsPopup(true)
-                                }}
                             />
                         </div>
                     )}

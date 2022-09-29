@@ -1,6 +1,7 @@
 import { rest } from 'msw'
 import { getPaginationFromElementList } from 'src/mocks/utils'
 import {
+    // createInstallationRequestType,
     IInstallationRequest,
     IInstallationRequests,
     updateInstallationRequestType,
@@ -180,4 +181,13 @@ export const installationRequestsEndpoints = [
 
         return res(ctx.status(400), ctx.delay(1000))
     }),
+
+    // // CREATE one installation request.
+    // rest.post<createInstallationRequestType>(INSTALLATION_REQUESTS_API, (req, res, ctx) => {
+    //     if (Object.values(req.body)) {
+    //         return res(ctx.status(200), ctx.delay(1000), ctx.json(req.body))
+    //     }
+
+    //     return res(ctx.status(400), ctx.delay(1000))
+    // }),
 ]
