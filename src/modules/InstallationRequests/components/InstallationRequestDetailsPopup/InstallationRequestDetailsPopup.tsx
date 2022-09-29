@@ -25,7 +25,7 @@ import dayjs from 'dayjs'
 import { useState } from 'react'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import { ButtonResetForm } from 'src/common/ui-kit/components/ButtonResetForm/ButtonResetForm'
-import { useInstallationRequests } from 'src/modules/InstallationRequests/installationRequestsHook'
+import { useInstallationRequests } from 'src/modules/InstallationRequests/installationRequestsHooks'
 
 /**
  * Installation request details popup component that shows the details of one installation request.

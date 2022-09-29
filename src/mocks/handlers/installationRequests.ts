@@ -5,7 +5,7 @@ import {
     IInstallationRequests,
     updateInstallationRequestType,
 } from 'src/modules/InstallationRequests/installationRequests'
-import { INSTALLATION_REQUESTS_API } from 'src/modules/InstallationRequests/installationRequestsHook'
+import { INSTALLATION_REQUESTS_API } from 'src/modules/InstallationRequests/installationRequestsHooks'
 import { SnakeCasedPropertiesDeep } from 'type-fest'
 
 const CREATED_AT_DATA = '2021-12-15T14:07:38.138000'
