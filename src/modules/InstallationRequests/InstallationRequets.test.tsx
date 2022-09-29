@@ -4,6 +4,7 @@ import { TEST_INSTALLATION_REQUESTS } from 'src/mocks/handlers/installationReque
 import { InstallationRequests } from 'src/modules/InstallationRequests'
 import { BrowserRouter as Router } from 'react-router-dom'
 import { IInstallationRequests } from 'src/modules/InstallationRequests/installationRequests'
+import userEvent from '@testing-library/user-event'
 
 let mockInstallationRequestList: IInstallationRequests | null = applyCamelCase(TEST_INSTALLATION_REQUESTS[0])
 let mockLoadingInProgress = false
@@ -57,5 +58,27 @@ describe('Installation requests', () => {
         )
         expect(mockLoadingInProgress).toBeTruthy()
         expect(getByText(LOADING_TEXT)).toBeTruthy()
+    })
+    test('when InstalationRequestCreatePopup is shown when clicked on Ajouter', async () => {
+        const { getByText, getByTestId } = reduxedRender(
+            <Router>
+                <InstallationRequests />
+            </Router>,
+        )
+
+        userEvent.click(getByText(AJOUTER_DEMANDE_TEXT))
+
+        expect(getByText("Demande d'installation")).toBeTruthy()
+        expect(getByTestId('InstallationsRequestsPopupCloseIcon')).toBeTruthy()
+    })
+    test('when InstallationRequestCreatePopup is closed', async () => {
+        const { getByTestId, getByText } = reduxedRender(
+            <Router>
+                <InstallationRequests />
+            </Router>,
+        )
+        userEvent.click(getByText(AJOUTER_DEMANDE_TEXT))
+        userEvent.click(getByTestId('InstallationsRequestsPopupCloseIcon'))
+        expect(() => getByText("Demande d'installation")).toThrow()
     })
 })
