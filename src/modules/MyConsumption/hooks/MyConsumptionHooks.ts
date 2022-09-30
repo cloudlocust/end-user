@@ -36,7 +36,7 @@ export const useMyConsumptionHooks = (range: metricRangeType, housingId?: IHousi
         try {
             // eslint-disable-next-line jsdoc/require-jsdoc
             const { data: responseData } = await axios.get<getHasMissingHousingContractsResponse>(
-                `${getHasMissingHousingContractsApi(housingId)}?from=${range.from}&to=${range.to}`,
+                `${getHasMissingHousingContractsApi(housingId)}?start_at=${range.from}&end_at=${range.to}`,
             )
             setHasMissingHousingContracts(responseData.hasMissingHousingContracts)
         } catch (error) {
