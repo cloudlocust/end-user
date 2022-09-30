@@ -87,21 +87,25 @@ const AnalysisPercentageChangeArrows = ({
     // eslint-disable-next-line jsdoc/require-jsdoc
     filters: metricFiltersType
 }) => {
-    const { range, data, isMetricsLoading } = useMetrics({
-        range: {
-            // From represent the consumption of
-            from: getDateWithoutTimezoneOffset(startOfMonth(subYears(new Date(dateReferenceConsumptionValue), 1))),
-            to: getDateWithoutTimezoneOffset(endOfMonth(new Date(dateReferenceConsumptionValue))),
-        },
-        filters,
-        targets: [
-            {
-                target: metricTargetsEnum.consumption,
-                type: 'timeserie',
+    const { range, data, isMetricsLoading } = useMetrics(
+        {
+            range: {
+                // From represent the consumption of
+                from: getDateWithoutTimezoneOffset(startOfMonth(subYears(new Date(dateReferenceConsumptionValue), 1))),
+                to: getDateWithoutTimezoneOffset(endOfMonth(new Date(dateReferenceConsumptionValue))),
             },
-        ],
-        interval: '1M',
-    } as getMetricType)
+            filters,
+            targets: [
+                {
+                    target: metricTargetsEnum.consumption,
+                    type: 'timeserie',
+                },
+            ],
+            interval: '1M',
+        } as getMetricType,
+        // execute getMetrics on instanciation only if filters meterGuid is not empty, because the filters props error will already be handled in the parent.
+        Boolean(filters.length),
+    )
 
     // Wrap in useMemo for better performance, as we save the result of convertMetricsData function and we don't call it again on every reender, until data changes.
     let ApexChartsAxisValues: ApexChartsAxisValuesType = useMemo(

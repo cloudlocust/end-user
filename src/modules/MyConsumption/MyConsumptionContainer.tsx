@@ -217,7 +217,13 @@ export const MyConsumptionContainer = () => {
                             Chiffres clés
                         </TypographyFormatMessage>
                     </div>
-                    <WidgetList data={data} isMetricsLoading={isMetricsLoading} />
+                    <WidgetList
+                        data={
+                            // TODO Fix when getting to the story of widget consumptionEuros
+                            data.filter((metric) => metric.target !== metricTargetsEnum.eurosConsumption)
+                        }
+                        isMetricsLoading={isMetricsLoading}
+                    />
                 </div>
             )}
         </>
