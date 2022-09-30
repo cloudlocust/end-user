@@ -47,7 +47,7 @@ describe('useMetrics hook test', () => {
         } = reduxedRenderHook(() => useMetrics(mockHookArguments))
 
         const currentResult = result.current
-        expect(currentResult.isMetricsLoading).toStrictEqual(true)
+        expect(currentResult.isMetricsLoading).toStrictEqual(false)
         expect(currentResult.metricsInterval).toStrictEqual('2m')
         expect(currentResult.range).toStrictEqual(FAKE_RANGE)
         expect(currentResult.targets).toStrictEqual(FAKE_TARGETS)
@@ -56,7 +56,7 @@ describe('useMetrics hook test', () => {
     test('When there is an HTTP request with the right body', async () => {
         const {
             renderedHook: { result, waitForValueToChange },
-        } = reduxedRenderHook(() => useMetrics(mockHookArguments))
+        } = reduxedRenderHook(() => useMetrics(mockHookArguments, true))
         expect(result.current.isMetricsLoading).toBeTruthy()
         await waitForValueToChange(
             () => {
@@ -71,7 +71,7 @@ describe('useMetrics hook test', () => {
         mockHookArguments.range.to = '2022-06-06T23:59:59.999Z'
         const {
             renderedHook: { result, waitForValueToChange },
-        } = reduxedRenderHook(() => useMetrics(mockHookArguments))
+        } = reduxedRenderHook(() => useMetrics(mockHookArguments, true))
 
         expect(result.current.isMetricsLoading).toBeTruthy()
         await waitForValueToChange(
@@ -92,7 +92,7 @@ describe('useMetrics hook test', () => {
         mockHookArguments.range = getRange('day')
         const {
             renderedHook: { result, waitForValueToChange },
-        } = reduxedRenderHook(() => useMetrics(mockHookArguments))
+        } = reduxedRenderHook(() => useMetrics(mockHookArguments, true))
 
         expect(result.current.isMetricsLoading).toBeTruthy()
         await waitForValueToChange(
