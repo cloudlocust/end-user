@@ -1,71 +1,62 @@
-import React, { useState } from 'react'
-import { Button, Icon } from '@mui/material'
-import Dialog from '@mui/material/Dialog'
-import DialogContent from '@mui/material/DialogContent'
-import { motion } from 'framer-motion'
+import { Icon, IconButton, Tooltip } from '@mui/material'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
-import { useIntl } from 'react-intl'
-const whiteColor = 'background.paper'
+import { useConfirm } from 'material-ui-confirm'
+import { useTheme } from '@mui/material/styles'
+
 /**
  * Pop-up component "Delete profile" with the ability to delete a profile.
  *
  * @returns Delete profile pop up.
  */
 const DeleteProfile = () => {
-    const [openDelete, setOpenDelete] = useState(false)
-    const { formatMessage } = useIntl()
+    const confirm = useConfirm()
+    const theme = useTheme()
+
     /**
-     * Function open the Delete Dialog.
+     * Function that handles on profite delete.
+     *
+     * It opens a popup.
      */
-    const openDeleteDialog = () => {
-        setOpenDelete(true)
+    const onProfileDelete = async () => {
+        await confirm({
+            title: '',
+            dialogProps: {
+                PaperProps: {
+                    style: {
+                        background: theme.palette.error.main,
+                    },
+                },
+            },
+            description: (
+                <TypographyFormatMessage className="text-16 md:text-18 text-center text-white">
+                    Vous êtes sur le point de supprimer votre compte utilisateur. Attention, toutes les données
+                    relatives à votre compte seront supprimées. Êtes-vous sûr de vouloir continuer ?
+                </TypographyFormatMessage>
+            ),
+            confirmationText: (
+                <TypographyFormatMessage className="text-13 md:text-16 font-medium text-white">
+                    Continuer
+                </TypographyFormatMessage>
+            ),
+            cancellationText: (
+                <TypographyFormatMessage className="text-13 md:text-16 font-medium text-white">
+                    Annuler
+                </TypographyFormatMessage>
+            ),
+        })
     }
-    /**
-     * Function close the Delete Dialog.
-     */
-    const closeDeleteDialog = () => {
-        setOpenDelete(false)
-    }
-    if (openDelete) {
-        return (
-            <Dialog open={openDelete} onClose={closeDeleteDialog} aria-labelledby="alert-dialog-title">
-                <motion.div initial={{ opacity: 0, scale: 0.6 }} animate={{ opacity: 1, scale: 1 }}>
-                    <DialogContent
-                        sx={{
-                            // MUI snackbar red color, used as a global error color.
-                            background: '#D32F2F',
-                            color: whiteColor,
-                        }}
-                    >
-                        <div className="flex flex-col justify-center w-full">
-                            <TypographyFormatMessage variant="subtitle2" className="font-semibold mb-10">
-                                Vous êtes sur le point de supprimer votre compte utilisateur. Attention, toutes les
-                                données relatives à votre compte seront supprimées. Êtes-vous sûr de vouloir continuer ?
-                            </TypographyFormatMessage>
-                            <div>
-                                <Button
-                                    variant="outlined"
-                                    className="mr-10"
-                                    onClick={closeDeleteDialog}
-                                    sx={{ color: whiteColor, borderColor: whiteColor }}
-                                >
-                                    {formatMessage({ id: 'Annuler', defaultMessage: 'Annuler' })}
-                                </Button>
-                                {/* TODO: Add onClick delete profile after hook added */}
-                                <Button variant="outlined" sx={{ color: whiteColor, borderColor: whiteColor }}>
-                                    {formatMessage({ id: 'Continuer', defaultMessage: 'Continuer' })}
-                                </Button>
-                            </div>
-                        </div>
-                    </DialogContent>
-                </motion.div>
-            </Dialog>
-        )
-    }
+
     return (
-        <Icon color="error" className="ml-6" onClick={openDeleteDialog}>
-            delete
-        </Icon>
+        <Tooltip title="Supprimer votre compte">
+            <IconButton
+                color="error"
+                onClick={onProfileDelete}
+                className="mx-12"
+                sx={{ outlined: theme.palette.secondary.main }}
+            >
+                <Icon>delete</Icon>
+            </IconButton>
+        </Tooltip>
     )
 }
 
