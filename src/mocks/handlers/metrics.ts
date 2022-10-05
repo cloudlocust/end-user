@@ -516,7 +516,7 @@ export const metricsEndpoints = [
             return res(ctx.status(200), ctx.delay(1000), ctx.json(TEST_SUCCESS_WEEK_METRICS(targets, range)))
         if (difference === 30 || difference === 31)
             return res(ctx.status(200), ctx.delay(1000), ctx.json(TEST_SUCCESS_MONTH_METRICS(targets, range)))
-        if (difference === 365 || difference === 366)
+        if (difference >= 365)
             return res(ctx.status(200), ctx.delay(1000), ctx.json(TEST_SUCCESS_YEAR_METRICS(targets, range)))
         return res(ctx.status(400), ctx.delay(1000), ctx.json(TEST_SUCCESS_MONTH_METRICS))
     }),
