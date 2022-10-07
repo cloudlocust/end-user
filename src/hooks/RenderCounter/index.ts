@@ -4,9 +4,18 @@ import { useRef } from 'react'
  * Hook that show renderCount.
  *
  * In order to get the component name dynamically.
- * Let's suppose the name is named Home, you pass Home.name as an argument to the hook.
+ * Let's suppose the component is named Home, you pass Home.name as an argument to the hook.
  * Then, the hook will console log the component name followed by the renderCount.
  *
+ * @example
+ * const Home = () => {
+ *  renderCount = useRenderCounter(Home.name)
+ *  // output: Home: 1
+ *  return (
+ *      // JSX
+ *      {renderCount} // This will be ran every time the component is re-rendered.
+ *  )
+ * }
  * @param componentName Component name to be passed as arg.
  * @returns Render count.
  */
