@@ -168,9 +168,13 @@ export const contractsEndpoints = [
     // Add Contract
     rest.post<SnakeCasedPropertiesDeep<addContractDataType>>(MOCK_CONTRACT_ENDPOINT, (req, res, ctx) => {
         const { offer_id: offerId, contract_type_id: contractTypeId, tariff_type_id: tariffTypeId } = req.body
-        // Offer Error
+        // Detail Offer Error
         if (offerId === TEST_ERROR_OFFER) {
-            return res(ctx.status(400), ctx.delay(1000), ctx.json({ detail: 'Le numéro de compteur existe déjà' }))
+            return res(ctx.status(400), ctx.delay(1000), ctx.json({ detail: "L'offre est invalide" }))
+        }
+        // ContractType Error
+        if (contractTypeId === TEST_ERROR_OFFER) {
+            return res(ctx.status(400), ctx.delay(1000))
         }
         // SUCCESS
         const lengthBefore = TEST_CONTRACTS.length
@@ -189,5 +193,37 @@ export const contractsEndpoints = [
         }
         TEST_CONTRACTS.push(newContract)
         return res(ctx.status(200), ctx.delay(1000), ctx.json(newContract))
+    }),
+
+    // Edit Contract
+    rest.put<SnakeCasedPropertiesDeep<addContractDataType>>(`${MOCK_CONTRACT_ENDPOINT}/:id`, (req, res, ctx) => {
+        const { offer_id: offerId, contract_type_id: contractTypeId, tariff_type_id: tariffTypeId } = req.body
+        const { id } = req.params
+
+        // SUCCESS
+        if (parseInt(id)) {
+            const lengthBefore = TEST_CONTRACTS.length
+            const power = req.body.power
+            const newContract = {
+                id: lengthBefore + 1,
+                power,
+                contract: {
+                    id: lengthBefore + 1,
+                    commercial_offer: { ...TEST_OFFERS[offerId - 1], provider: TEST_PROVIDERS[0] },
+                    contract_type: TEST_CONTRACT_TYPES[contractTypeId - 1],
+                    tariff_type: TEST_TARIFF_TYPES[tariffTypeId - 1],
+                },
+                end_subscription: TEST_DATETIME,
+                start_subscription: TEST_DATETIME,
+            }
+            TEST_CONTRACTS.push(newContract)
+            return res(ctx.status(200), ctx.delay(1000), ctx.json(newContract))
+        }
+        // Detail Offer Error
+        if (offerId === TEST_ERROR_OFFER) {
+            return res(ctx.status(400), ctx.delay(1000), ctx.json({ detail: "L'offre est invalide" }))
+        }
+        // Edit Error
+        return res(ctx.status(400), ctx.delay(1000))
     }),
 ]

@@ -4,6 +4,7 @@ import { formatMessageType } from 'src/common/react-platform-translation'
 import { addContractDataType, IContract, loadContractResponse } from './contractsTypes'
 import { HOUSING_API } from 'src/modules/MyHouse/components/HousingList/HousingsHooks'
 import { formatLoadContractResponseToIContract } from 'src/modules/Contracts/utils/contractsFunctions'
+import { AxiosError } from 'axios'
 
 /**
  * Contracts microservice endpoint.
@@ -20,7 +21,7 @@ export const CONTRACTS_API = (houseId: number) => `${HOUSING_API}/${houseId}/hou
  * @param formatMessage FormatMessage intl object from (react-intl package).
  * @returns {string} Error message.
  */
-const loadElementListError = (error: any, formatMessage: formatMessageType) => {
+const loadContractListError = (error: any, formatMessage: formatMessageType) => {
     return formatMessage({
         id: 'Erreur lors du chargement des contrats',
         defaultMessage: 'Erreur lors du chargement des contrats',
@@ -34,21 +35,22 @@ const loadElementListError = (error: any, formatMessage: formatMessageType) => {
  * @param formatMessage FormatMessage intl object from (react-intl package).
  * @returns {string} Error message.
  */
-const addElementError = (error: any, formatMessage: formatMessageType) => {
+const addContractError = (error: AxiosError, formatMessage: formatMessageType) => {
+    const errorAddContractMsg = error.response?.data.detail || "Erreur lors de l'ajout du contrat"
     return formatMessage({
-        id: "Erreur lors de l'ajout du contrat",
-        defaultMessage: "Erreur lors de l'ajout du contrat",
+        id: errorAddContractMsg,
+        defaultMessage: errorAddContractMsg,
     })
 }
 
 /**
- * Success message addElement.
+ * Success message add Contract.
  *
  * @param responseData Added Contract.
  * @param formatMessage FormatMessage intl object from (react-intl package).
  * @returns {string} Success message.
  */
-const addElementSuccess = (responseData: loadContractResponse, formatMessage: formatMessageType) => {
+const addContractSuccess = (responseData: loadContractResponse, formatMessage: formatMessageType) => {
     return formatMessage({
         id: "Succès lors de l'ajout du contrat",
         defaultMessage: "Succès lors de l'ajout du contrat",
@@ -56,13 +58,42 @@ const addElementSuccess = (responseData: loadContractResponse, formatMessage: fo
 }
 
 /**
- * Error message removeElementDetails.
+ * Error message editElementDetails.
  *
  * @param error Axios error object.
  * @param formatMessage FormatMessage intl object from (react-intl package).
  * @returns {string} Error message.
  */
-const removeElementDetailsError = (error: any, formatMessage: formatMessageType) => {
+const editContractError = (error: AxiosError, formatMessage: formatMessageType) => {
+    const erroreEitContractMsg = error.response?.data.detail || 'Erreur lors de la modification du contrat'
+    return formatMessage({
+        id: erroreEitContractMsg,
+        defaultMessage: erroreEitContractMsg,
+    })
+}
+
+/**
+ * Success message editContract.
+ *
+ * @param responseData Edit Contract.
+ * @param formatMessage FormatMessage intl object from (react-intl package).
+ * @returns {string} Success message.
+ */
+const editContractSuccess = (responseData: loadContractResponse, formatMessage: formatMessageType) => {
+    return formatMessage({
+        id: 'Succès lors de la modification du contrat',
+        defaultMessage: 'Succès lors de la modification du contrat',
+    })
+}
+
+/**
+ * Error message removeContract.
+ *
+ * @param error Axios error object.
+ * @param formatMessage FormatMessage intl object from (react-intl package).
+ * @returns {string} Error message.
+ */
+const removeContractError = (error: any, formatMessage: formatMessageType) => {
     return formatMessage({
         id: 'Erreur lors de la suppression du contrat',
         defaultMessage: 'Erreur lors de la suppression du contrat',
@@ -70,13 +101,13 @@ const removeElementDetailsError = (error: any, formatMessage: formatMessageType)
 }
 
 /**
- * Success message removeElementDetails.
+ * Success message removeContract.
  *
  * @param responseData Removed Contract.
  * @param formatMessage FormatMessage intl object from (react-intl package).
  * @returns {string} Success message.
  */
-const removeElementDetailsSuccess = (responseData: IContract, formatMessage: formatMessageType) => {
+const removeContractSuccess = (responseData: IContract, formatMessage: formatMessageType) => {
     return formatMessage({
         id: 'Succès lors de la suppression du contrat',
         defaultMessage: 'Succès lors de la suppression du contrat',
@@ -98,7 +129,11 @@ export const useContractList = (houseId: number, sizeParam?: number) => {
     >({
         API_ENDPOINT: CONTRACTS_API(houseId),
         sizeParam,
-        snackBarMessage0verride: { loadElementListError, addElementError, addElementSuccess },
+        snackBarMessage0verride: {
+            loadElementListError: loadContractListError,
+            addElementError: addContractError,
+            addElementSuccess: addContractSuccess,
+        },
     })()
 
     return {
@@ -118,8 +153,13 @@ export const useContractList = (houseId: number, sizeParam?: number) => {
  */
 export const useContractDetails = (houseId: number, contractId: number) => {
     // eslint-disable-next-line jsdoc/require-jsdoc
-    return BuilderUseElementDetails<loadContractResponse, {}, IContract>({
+    return BuilderUseElementDetails<loadContractResponse, addContractDataType, IContract>({
         API_ENDPOINT: `${CONTRACTS_API(houseId)}/${contractId}`,
-        snackBarMessage0verride: { removeElementDetailsError, removeElementDetailsSuccess },
+        snackBarMessage0verride: {
+            removeElementDetailsError: removeContractError,
+            removeElementDetailsSuccess: removeContractSuccess,
+            editElementDetailsError: editContractError,
+            editElementDetailsSuccess: editContractSuccess,
+        },
     })()
 }
