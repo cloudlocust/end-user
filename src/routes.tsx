@@ -51,44 +51,49 @@ export const routes = [
 ]
 
 /**
- * Represent the routes that are going to be displayed in the navbar, they have a type of IRoute but with UINavbarItem property that is required.
+ * Represent custom page settings.
  */
-// eslint-lint-disable-next-line jsdoc/require-jsdoc
-export type IRouteNavigationConfig<T> = IRoute<T> & /**
- *
+export type IAdditionnalSettings = /**
  */ {
     /**
      *
      */
-    settings: /**
+    layout: // eslint-lint-disable-next-line jsdoc/require-jsdoc
+    /**
      *
      */
     {
+        // eslint-lint-disable-next-line jsdoc/require-jsdoc
         /**
          *
          */
-        layout: // eslint-lint-disable-next-line jsdoc/require-jsdoc
-        /**
+        navbar: /**
          *
          */
         {
-            // eslint-lint-disable-next-line jsdoc/require-jsdoc
             /**
              *
              */
-            navbar: /**
-             *
-             */
-            {
-                /**
-                 *
-                 */
-                UINavbarItem: navbarItemType
-            }
+            UINavbarItem: navbarItemType
         }
     }
+    /**
+     * If the navbar is accessible or not.
+     */
+    disabled?: boolean | undefined
 }
 
+/**
+ * Represent the routes that are going to be displayed in the navbar, they have a type of IRoute but with UINavbarItem property that is required.
+ */
+// eslint-lint-disable-next-line jsdoc/require-jsdoc
+export type IRouteNavigationConfig<T> = IRoute<T> & /**
+ */ {
+    /**
+     *
+     */
+    settings: IAdditionnalSettings
+}
 /**
  * NavigationConfig Represent all the routes that are going to be displayed in the first level of the navbar, they potentially have children which are going to be IRouteNavigationConfig.
  */

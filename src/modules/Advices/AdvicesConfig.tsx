@@ -22,6 +22,12 @@ export interface AdvicesProps {
         url: string
     }
 }
+
+/**
+ * Env Variable to know if the feature is enabled.
+ */
+export const advicesFeatureState = window._env_.REACT_APP_ADVICES_STATE
+
 /**
  * AdvicesConfig.
  */
@@ -43,6 +49,7 @@ export const AdvicesConfig = [
                     },
                 },
             },
+            disabled: advicesFeatureState === 'disabled' ?? false,
         },
     } as IRouteNavigationConfig<AdvicesProps>,
 ]
