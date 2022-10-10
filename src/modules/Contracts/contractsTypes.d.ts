@@ -1,4 +1,5 @@
 import { SelectFieldProps } from 'src/common/ui-kit/form-fields/Select'
+import { IOffer, IContractType, IPower, IProvider, ITariffType } from 'src/hooks/CommercialOffer/CommercialOffers'
 
 /**
  * Type contracts route param.
@@ -59,6 +60,100 @@ export type ContractFormFieldsProps =
          */
         isContractsLoading?: boolean
     }
+
+/**
+ * Type of request response of load contract.
+ */
+export type loadContractResponse =
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    {
+        /**
+         * Id Housing contract.
+         */
+        id: number
+        /**
+         * Contract.
+         */
+        // eslint-disable-next-line jsdoc/require-jsdoc
+        contract: {
+            /**
+             * Id contract.
+             */
+            id: number
+            /**
+             * Offer of the contract.
+             */
+            // eslint-disable-next-line jsdoc/require-jsdoc
+            commercialOffer: IOffer & {
+                /**
+                 * Provider of the contract.
+                 */
+                provider: IProvider
+            }
+            /**
+             * Tariff Type of the contract.
+             */
+            tariffType: ITariffType
+            /**
+             * Contract Type (Professional, particulier ...etc).
+             */
+            contractType: IContractType
+        }
+
+        /**
+         * Power of the offer.
+         */
+        power: IPower
+        /**
+         * Start contract subscription.
+         */
+        startSubscription: string
+        /**
+         * End contract subscription.
+         */
+        endSubscription: string
+    }
+
+/**
+ * Interface Contract that's formatted from response of request loadContract.
+ * This format makes it easier to handle contractList and contractDetails.
+ */
+// TODO Fix in mehdi/MYEM-3058, change INewContract to IContract and remove IContract
+// eslint-disable-next-line jsdoc/require-jsdoc
+export type INewContract = {
+    /**
+     * Id contract.
+     */
+    id: number
+    /**
+     * Provider of the contract.
+     */
+    provider: IProvider
+    /**
+     * Offer of the contract.
+     */
+    offer: IOffer
+    /**
+     * Tariff Type of the contract.
+     */
+    tariffType: ITariffType
+    /**
+     * Contract Type (Professional, particulier ...etc).
+     */
+    contractType: IContractType
+    /**
+     * Power of the offer.
+     */
+    power: number
+    /**
+     * Start contract subscription.
+     */
+    startSubscription: string
+    /**
+     * End contract subscription.
+     */
+    endSubscription: string
+}
 
 /**
  * Interface Contract model.
