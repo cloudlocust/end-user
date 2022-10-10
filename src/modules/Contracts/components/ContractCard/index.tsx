@@ -65,7 +65,7 @@ const ContractCard = ({ contract, onAfterDeleteUpdateSuccess }: ContractCardProp
     return (
         <Card key={contract.id} className="p-16 overflow-hidden">
             <div className="flex justify-between items-center">
-                <Typography className="text-16 font-bold md:text-20">{contract.provider}</Typography>
+                <Typography className="text-16 font-bold md:text-20">{contract.provider.name}</Typography>
                 <div className="flex items-center">
                     <IconButton color="primary" size="small">
                         <EditIcon />
@@ -82,7 +82,7 @@ const ContractCard = ({ contract, onAfterDeleteUpdateSuccess }: ContractCardProp
             </div>
             <Divider className="my-8" />
             <Typography className="text-13 font-medium md:text-16">
-                {contract.offer} - {contract.tariffType} - {contract.power} kVA
+                {contract.offer.name} - {contract.tariffType.name} - {contract.power} kVA
             </Typography>
         </Card>
     )

@@ -1,5 +1,5 @@
 import { cloneDeep } from 'lodash'
-import { INewContract, loadContractResponse } from 'src/modules/Contracts/contractsTypes'
+import { IContract, loadContractResponse } from 'src/modules/Contracts/contractsTypes'
 
 /**
  * Function that formats the contract object from loadContract request, to a more handy format which is IContract (which consists to get out the provider from the offer, as provider is nested inside offer).
@@ -7,7 +7,7 @@ import { INewContract, loadContractResponse } from 'src/modules/Contracts/contra
  * @param contract Contract object that has format of loadContractResponse.
  * @returns Contract object with format IContract.
  */
-export const formatLoadContractResponseToIContract = (contract: loadContractResponse): INewContract => {
+export const formatLoadContractResponseToIContract = (contract: loadContractResponse): IContract => {
     const { contract: housingContractCopy, ...restHousingContractCopy } = cloneDeep(contract)
     const { provider, ...offer } = housingContractCopy.commercialOffer
 

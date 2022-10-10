@@ -1,8 +1,9 @@
 import { searchFilterType } from 'src/modules/utils'
 import { BuilderUseElementDetails, BuilderUseElementList } from 'src/modules/utils/useElementHookBuilder'
 import { formatMessageType } from 'src/common/react-platform-translation'
-import { addContractDataType, IContract } from './contractsTypes'
+import { addContractDataType, IContract, loadContractResponse } from './contractsTypes'
 import { HOUSING_API } from 'src/modules/MyHouse/components/HousingList/HousingsHooks'
+import { formatLoadContractResponseToIContract } from 'src/modules/Contracts/utils/contractsFunctions'
 
 /**
  * Contracts microservice endpoint.
@@ -47,7 +48,7 @@ const addElementError = (error: any, formatMessage: formatMessageType) => {
  * @param formatMessage FormatMessage intl object from (react-intl package).
  * @returns {string} Success message.
  */
-const addElementSuccess = (responseData: IContract, formatMessage: formatMessageType) => {
+const addElementSuccess = (responseData: loadContractResponse, formatMessage: formatMessageType) => {
     return formatMessage({
         id: "Succès lors de l'ajout du contrat",
         defaultMessage: "Succès lors de l'ajout du contrat",
@@ -90,11 +91,22 @@ const removeElementDetailsSuccess = (responseData: IContract, formatMessage: for
  * @returns Hook useContractList.
  */
 export const useContractList = (houseId: number, sizeParam?: number) => {
-    return BuilderUseElementList<IContract, addContractDataType, searchFilterType>({
-        API_ENDPOINT: CONTRACTS_API(Number(houseId)),
+    const { elementList, ...restBuilderUseElementList } = BuilderUseElementList<
+        loadContractResponse,
+        addContractDataType,
+        searchFilterType
+    >({
+        API_ENDPOINT: CONTRACTS_API(houseId),
         sizeParam,
         snackBarMessage0verride: { loadElementListError, addElementError, addElementSuccess },
     })()
+
+    return {
+        elementList: elementList
+            ? elementList.map((contract) => formatLoadContractResponseToIContract(contract))
+            : null,
+        ...restBuilderUseElementList,
+    }
 }
 
 /**
@@ -106,8 +118,8 @@ export const useContractList = (houseId: number, sizeParam?: number) => {
  */
 export const useContractDetails = (houseId: number, contractId: number) => {
     // eslint-disable-next-line jsdoc/require-jsdoc
-    return BuilderUseElementDetails<IContract, {}, IContract>({
-        API_ENDPOINT: `${CONTRACTS_API(Number(houseId))}/${contractId}`,
+    return BuilderUseElementDetails<loadContractResponse, {}, IContract>({
+        API_ENDPOINT: `${CONTRACTS_API(houseId)}/${contractId}`,
         snackBarMessage0verride: { removeElementDetailsError, removeElementDetailsSuccess },
     })()
 }

@@ -118,9 +118,8 @@ export type loadContractResponse =
  * Interface Contract that's formatted from response of request loadContract.
  * This format makes it easier to handle contractList and contractDetails.
  */
-// TODO Fix in mehdi/MYEM-3058, change INewContract to IContract and remove IContract
 // eslint-disable-next-line jsdoc/require-jsdoc
-export type INewContract = {
+export type IContract = {
     /**
      * Id contract.
      */
@@ -146,50 +145,14 @@ export type INewContract = {
      */
     power: number
     /**
-     * Start contract subscription.
+     * Start contract subscription (ISO datetime format).
      */
     startSubscription: string
     /**
-     * End contract subscription.
+     * End contract subscription (ISO datetime format).
      */
     endSubscription: string
 }
-
-/**
- * Interface Contract model.
- */
-export type IContract =
-    // eslint-disable-next-line jsdoc/require-jsdoc
-    {
-        /**
-         * Id contract.
-         */
-        id: number
-        /**
-         * Provider of the contract.
-         */
-        provider: string
-        /**
-         * Offer of the contract.
-         */
-        offer: string
-        /**
-         * Type of the contract.
-         */
-        tariffType: string
-        /**
-         * Power of the offer.
-         */
-        power: number
-        /**
-         * Start contract subscription.
-         */
-        startSubscription: string
-        /**
-         * End contract subscription.
-         */
-        endSubscription: string
-    }
 
 /**
  * Type contractFormValues.
@@ -230,7 +193,7 @@ export type addContractDataType = {
     /**
      * End contract subscription.
      */
-    endSubscription: string
+    endSubscription?: string
 }
 
 /**
