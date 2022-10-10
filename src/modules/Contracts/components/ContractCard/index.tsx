@@ -31,7 +31,7 @@ const ContractCard = ({ contract, onAfterDeleteUpdateSuccess }: ContractCardProp
         removeElementDetails: removeContract,
         loadingInProgress: isContractsLoading,
         editElementDetails,
-    } = useContractDetails(Number(houseId), contract.id)
+    } = useContractDetails(parseInt(houseId), contract.id)
     const [isContractFormOpen, setIsContractFormOpen] = useState(false)
 
     /**

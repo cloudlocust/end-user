@@ -60,7 +60,7 @@ const ContractForm = ({ onSubmit, isContractsLoading, defaultValues }: ContractF
                 if (endSubscription) cleanData.endSubscription = new Date(endSubscription).toISOString()
                 onSubmit(cleanData)
             }}
-            defaultValues={defaultValues || defaultContractFormValues}
+            defaultValues={defaultValues ?? defaultContractFormValues}
         >
             <div className="p-24">
                 <TypographyFormatMessage className="text-16 font-medium md:text-20">
