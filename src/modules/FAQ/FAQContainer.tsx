@@ -5,6 +5,7 @@ import { useIntl } from 'src/common/react-platform-translation'
 import { useHistory } from 'react-router-dom'
 import Button from '@mui/material/Button'
 import { motion } from 'framer-motion'
+import { FAQContent } from './components/FAQContent/FAQContent'
 
 /**
  * FAQ component with the possibility to display frequently asked questions.
@@ -54,7 +55,7 @@ const FAQContainer = () => {
                 </div>
             }
             // TODO: Change in MYEM-3020
-            content={<div>faq</div>}
+            content={<FAQContent />}
         />
     )
 }

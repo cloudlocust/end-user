@@ -106,9 +106,9 @@ export const AccomodationForm = () => {
                 >
                     <div className="max-w-xs text-white text-center">
                         {formatMessage({
-                            id: 'En renseignant votre logement nous pourrons vous apporter une analyse plus précise de votre consomation',
+                            id: 'En renseignant votre logement nous pourrons vous apporter une analyse plus précise de votre consommation',
                             defaultMessage:
-                                'En renseignant votre logement nous pourrons vous apporter une analyse plus précise de votre consomation',
+                                'En renseignant votre logement nous pourrons vous apporter une analyse plus précise de votre consommation',
                         })}
                     </div>
                 </div>

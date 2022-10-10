@@ -3,8 +3,6 @@ import Analysis from 'src/modules/Analysis'
 import { BrowserRouter as Router } from 'react-router-dom'
 import { IMetric, metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
 import { TEST_SUCCESS_MONTH_METRICS } from 'src/mocks/handlers/metrics'
-import { IMeter } from 'src/modules/Meters/Meters'
-import { TEST_METERS } from 'src/mocks/handlers/meters'
 import userEvent from '@testing-library/user-event'
 import { waitFor } from '@testing-library/react'
 
@@ -23,17 +21,8 @@ const mockRange = {
     to: '2022-05-31T23:59:59.999Z',
 }
 const REDIRECT_TEXT = 'enregistrer votre compteur et votre nrLink'
-let mockMeterList: IMeter[] | null = TEST_METERS
 const INCREMENT_DATE_ARROW_TEXT = 'chevron_right'
 
-// Mock metersHook
-jest.mock('src/modules/Meters/metersHook', () => ({
-    ...jest.requireActual('src/modules/Meters/metersHook'),
-    // eslint-disable-next-line jsdoc/require-jsdoc
-    useMeterList: () => ({
-        elementList: mockMeterList,
-    }),
-}))
 // Mock metricsHook
 jest.mock('src/modules/Metrics/metricsHook.ts', () => ({
     // eslint-disable-next-line jsdoc/require-jsdoc

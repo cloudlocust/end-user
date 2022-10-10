@@ -1,9 +1,6 @@
 import { useState } from 'react'
-import { searchFilterType } from 'src/modules/utils'
-import { BuilderUseElementList } from 'src/modules/utils/useElementHookBuilder'
-import { formatMessageType } from 'src/common/react-platform-translation'
-import { addMeterInputType, IMeter } from 'src/modules/Meters/Meters'
-import { axios, catchError } from 'src/common/react-platform-components'
+import { addMeterInputType, editMeterInputType } from 'src/modules/Meters/Meters'
+import { axios } from 'src/common/react-platform-components'
 import { API_RESOURCES_URL } from 'src/configs'
 import { useIntl } from 'src/common/react-platform-translation'
 import { useSnackbar } from 'notistack'
@@ -15,60 +12,19 @@ import { HOUSING_API } from 'src/modules/MyHouse/components/HousingList/Housings
 export const METERS_API = `${API_RESOURCES_URL}/meters`
 
 /**
- * Success add message.
+ * Error add message.
  */
 export const ADD_ERROR_MESSAGE = "Erreur lors de l'ajout du compteur"
 
 /**
- * Handle retured error from axios add client request, (Message handled From Custom IFG FormatError).
- *
- * @param error Axios error object.
- * @param formatMessage FormatMessage intl object from (react-intl package).
- * @returns {string} Error message.
+ * Error edit message.
  */
-const addElementError = (error: any, formatMessage: formatMessageType) => {
-    const defaultRequestErrorMessage = formatMessage({
-        id: ADD_ERROR_MESSAGE,
-        defaultMessage: ADD_ERROR_MESSAGE,
-    })
-    if (error.response.status === 400) {
-        if (error.response.data && error.response.data.detail)
-            return formatMessage({
-                id: error.response.data.detail,
-                defaultMessage: error.response.data.detail,
-            })
-        return defaultRequestErrorMessage
-    } else return defaultRequestErrorMessage
-}
-
-// eslint-disable-next-line jsdoc/require-jsdoc
-const loadElementListError = (error: any, formatMessage: formatMessageType) => {
-    return formatMessage({
-        id: 'Erreur lors du chargement des compteurs',
-        defaultMessage: 'Erreur lors du chargement des compteurs',
-    })
-}
-
-// eslint-disable-next-line jsdoc/require-jsdoc
-const addElementSuccess = (responseData: IMeter, formatMessage: formatMessageType) => {
-    return formatMessage({
-        id: 'Succès lors de la configuration du compteur',
-        defaultMessage: 'Succès lors de la configuration du compteur',
-    })
-}
+export const EDIT_ERROR_MESSAGE = 'Erreur lors de la modification du compteur'
 
 /**
-`* Hooks for meterList.
- *
- * @param sizeParam Indicates the default size when loadElement.
- * @returns UseMeterList Hook.
+ * Edit success message.
  */
-export const useMeterList = (sizeParam?: number) =>
-    BuilderUseElementList<IMeter, addMeterInputType, searchFilterType>({
-        API_ENDPOINT: METERS_API,
-        sizeParam,
-        snackBarMessage0verride: { addElementSuccess, loadElementListError, addElementError },
-    })()
+export const EDIT_SUCCESS_MESSAGE = 'Votre compteur à été modifier avec succées'
 
 /**
  * Handle meters for a housing in particular.
@@ -81,7 +37,7 @@ export const useMeterForHousing = () => {
     const { formatMessage } = useIntl()
 
     // eslint-disable-next-line
-    const addMeter = async ( housingId: number, body: addMeterInputType, reloadHousings: () => void ) => {
+    const addMeter = async (housingId: number, body: addMeterInputType) => {
         setLoadingInProgress(true)
         try {
             const { data: responseData } = await axios.post(`${HOUSING_API}/${housingId}/meter`, body)
@@ -95,10 +51,6 @@ export const useMeterForHousing = () => {
             )
 
             setLoadingInProgress(false)
-
-            // if success reload housings before returning data.
-            reloadHousings()
-
             return responseData
         } catch (error) {
             enqueueSnackbar(
@@ -110,12 +62,53 @@ export const useMeterForHousing = () => {
             )
 
             setLoadingInProgress(false)
-            throw catchError(error)
+        }
+    }
+
+    /**
+     * Function that edit meter.
+     *
+     * @param houseId Housing id.
+     * @param body Attributes to update.
+     * @returns PATCH response.
+     */
+    const editMeter = async (houseId: number, body: editMeterInputType) => {
+        try {
+            setLoadingInProgress(true)
+            // eslint-disable-next-line jsdoc/require-jsdoc
+            const { data: responseData } = await axios.patch<{ id: number; name: string; guild: string }>(
+                `${HOUSING_API}/${houseId}/meter`,
+                body,
+            )
+            setLoadingInProgress(false)
+            if (responseData) {
+                enqueueSnackbar(
+                    formatMessage({
+                        id: EDIT_SUCCESS_MESSAGE,
+                        defaultMessage: EDIT_SUCCESS_MESSAGE,
+                    }),
+                    {
+                        variant: 'success',
+                        autoHideDuration: 5000,
+                    },
+                )
+                return responseData
+            }
+        } catch (error) {
+            enqueueSnackbar(
+                formatMessage({
+                    id: EDIT_ERROR_MESSAGE,
+                    defaultMessage: EDIT_ERROR_MESSAGE,
+                }),
+                { variant: 'error' },
+            )
+            setLoadingInProgress(false)
         }
     }
 
     return {
         addMeter,
+        editMeter,
         loadingInProgress,
     }
 }

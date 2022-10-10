@@ -1,4 +1,5 @@
 import { defaultValueType } from 'src/common/ui-kit/form-fields/GoogleMapsAddressAutoComplete/utils'
+import { IMeter } from 'src/modules/Meters/Meters'
 
 /**
  * The Type of a logement.
@@ -15,13 +16,7 @@ export type IHousing =
         /**
          * The meter of the housing.
          */
-        meter: //eslint-disable-next-line
-        {
-            /**
-             * The Guid of the PDL.
-             */
-            guid: string
-        } | null
+        meter: IMeter | null
         /**
          * The address related to the PDL's GUID.
          */

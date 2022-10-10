@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { motion } from 'framer-motion'
 import { useIntl } from 'react-intl'
 import { linkyPath, electricityPath, contractPath, ActionsNrLinkConnectionSteps } from 'src/modules/nrLinkConnection'
@@ -6,8 +6,7 @@ import { TextField } from 'src/common/ui-kit'
 import TextFieldMui from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
 import { Form, max, min, requiredBuilder } from 'src/common/react-platform-components'
-import { useMeterList } from 'src/modules/Meters/metersHook'
-import Autocomplete from '@mui/material/Autocomplete'
+import { useMeterForHousing } from 'src/modules/Meters/metersHook'
 import { IMeter } from 'src/modules/Meters/Meters'
 
 /**
@@ -18,6 +17,7 @@ import { IMeter } from 'src/modules/Meters/Meters'
  * @param props.handleNext HandleNext.
  * @param props.setMeter Handler to set the newMeter or selected meter from the AutoComplete Options .
  * @param props.meter The selectedMeter.
+ * @param props.housingId The Id of the housing.
  * @returns MeterStepNrLinkConnectionForm.
  */
 const MeterStepNrLinkConnectionForm = ({
@@ -25,6 +25,7 @@ const MeterStepNrLinkConnectionForm = ({
     handleNext,
     setMeter,
     meter,
+    housingId,
 }: // eslint-disable-next-line jsdoc/require-jsdoc
 {
     // eslint-disable-next-line jsdoc/require-jsdoc
@@ -35,49 +36,35 @@ const MeterStepNrLinkConnectionForm = ({
     setMeter: React.Dispatch<React.SetStateAction<IMeter | null>>
     // eslint-disable-next-line jsdoc/require-jsdoc
     meter: IMeter | null
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    housingId: number | undefined
 }) => {
     const { formatMessage } = useIntl()
-    const {
-        elementList: meterList,
-        addElement: addMeter,
-        loadingInProgress: loadingMeterInProgress,
-    } = useMeterList(100)
 
-    // Todo handle in a better way the AutoComplete TextField (a reusable component).
-    const [meterName, setMeterName] = useState('')
-    const [meterNameError, setMeterNameError] = useState(false)
-    /**
-     * Handle MeterName Change function.
-     *
-     * @param newVal New Val of Meter Name Field.
-     */
-    const handleMeterNameChange = (newVal: string) => {
-        if (newVal) setMeterNameError(false)
-        else setMeterNameError(true)
-        setMeterName(newVal)
-    }
+    const { addMeter, loadingInProgress: loadingMeterInProgress } = useMeterForHousing()
+
     /**
      * On Submit function which calls addMeter and handleNext on success.
      *
-     * @param formData FormData which consists of guid only.
-     * @param formData.guid Guid Field value.
-     * @returns If meterName exit function.
+     * @param data Name and Guid of the new meter.
+     * @param data.name Name.
+     * @param data.guid Guid.
+     * @returns New Meter.
      */
     // eslint-disable-next-line jsdoc/require-jsdoc
-    const onSubmit = async ({ guid }: { guid: string }) => {
+    const onSubmit = async (data: { name: string; guid: string }) => {
         try {
             if (meter) {
+                // this means that the meter is already existing.
                 handleNext()
                 return
             }
-            if (!meterName) {
-                setMeterNameError(true)
-                return
+            if (housingId) {
+                // if it does not exist and there is a valid housing id (if the user has no housing and access to this page by the url)
+                const newMeter = await addMeter(housingId, data)
+                setMeter(newMeter)
+                handleNext()
             }
-            const data = { guid, name: meterName }
-            const newMeter = await addMeter(data)
-            setMeter(newMeter)
-            handleNext()
             // Catch error so that don't crash the application when response error.
         } catch (error) {}
     }
@@ -85,63 +72,41 @@ const MeterStepNrLinkConnectionForm = ({
         <Form onSubmit={onSubmit}>
             <div className="flex justify-between items-center landscape:mt-10 w-full">
                 <div className="portrait:flex-col landscape:flex-row h-full flex justify-center items-center w-full">
-                    <div className="w-full mr-32 ">
-                        {/* DO NOT REPRODUCE! */}
-                        <Autocomplete
-                            id="name-autocomplete"
-                            className="mb-20"
-                            freeSolo
-                            data-testid="MeterNameAutoCompleteField"
-                            value={meter}
-                            onBlur={(e) =>
-                                // Required validation when first focus on the field.
-                                !meterName && setMeterNameError(true)
-                            }
-                            onChange={(e, value) => {
-                                setMeter(value as IMeter | null)
-                            }}
-                            onInputChange={
-                                // eslint-disable-next-line jsdoc/require-jsdoc
-                                (e, value) => {
-                                    setMeter(null)
-                                    handleMeterNameChange(value || '')
-                                }
-                            }
-                            getOptionLabel={(option) => option.name}
-                            options={meterList ? meterList : []}
-                            renderInput={(params) => (
+                    <div className="w-full mx-32 ">
+                        {meter ? (
+                            <>
                                 <TextFieldMui
-                                    {...params}
-                                    value={meterName}
-                                    error={meterNameError}
-                                    helperText={
-                                        meterNameError &&
-                                        formatMessage({
-                                            id: `Champ obligatoire non renseigné`,
-                                            defaultMessage: `Champ obligatoire non renseigné`,
-                                        })
-                                    }
+                                    value={meter.name}
+                                    disabled
                                     name="name"
-                                    label="Nom de mon compteur"
+                                    style={{ marginBottom: '20px' }}
+                                    fullWidth
+                                    label="Nommer mon compteur"
                                     variant="outlined"
                                 />
-                            )}
-                        />
-                        {meter ? (
-                            <TextFieldMui
-                                value={meter.guid}
-                                disabled
-                                name="guid"
-                                style={{ marginBottom: '20px', width: '100%' }}
-                                label="Numéro de mon compteur"
-                                variant="outlined"
-                            />
+                                <TextFieldMui
+                                    value={meter.guid}
+                                    disabled
+                                    name="guid"
+                                    style={{ marginBottom: '20px' }}
+                                    fullWidth
+                                    label="Numéro de mon compteur"
+                                    variant="outlined"
+                                />
+                            </>
                         ) : (
-                            <TextField
-                                name="guid"
-                                label="Numéro de mon compteur"
-                                validateFunctions={[requiredBuilder(), min(14), max(14)]}
-                            />
+                            <>
+                                <TextField
+                                    name="name"
+                                    label="Nommer mon compteur"
+                                    validateFunctions={[requiredBuilder()]}
+                                />
+                                <TextField
+                                    name="guid"
+                                    label="Numéro de mon compteur"
+                                    validateFunctions={[requiredBuilder(), min(14), max(14)]}
+                                />
+                            </>
                         )}
                     </div>
                     <div className="w-full">
@@ -152,13 +117,13 @@ const MeterStepNrLinkConnectionForm = ({
                             })}
                         </Typography>
                         <div className="flex justify-between items-start mt-7 mb-5">
-                            <div className="flex justify-between w-full items-center flex-col mb-5 ">
+                            <div className="flex justify-between w-full items-center flex-col mb-5 mr-10 sm:mr-0">
                                 <motion.div
                                     initial={{ opacity: 0, scale: 0.6 }}
                                     animate={{ opacity: 1, scale: 1 }}
                                     className="flex justify-center w-full mr-8 mb-5"
                                 >
-                                    <img src={electricityPath} alt="electricity-img" />
+                                    <img src={electricityPath} alt="electricity-img" className="border p-5" />
                                 </motion.div>
                                 <Typography variant="caption" className="text-center md:text-12">
                                     {formatMessage({
@@ -167,19 +132,19 @@ const MeterStepNrLinkConnectionForm = ({
                                     })}
                                 </Typography>
                             </div>
-                            <div className="flex justify-between w-full items-center flex-col mb-5 ">
+                            <div className="flex justify-between w-full items-center flex-col mb-5 mr-10 sm:mr-0">
                                 <motion.div
                                     initial={{ opacity: 0, scale: 0.6 }}
                                     animate={{ opacity: 1, scale: 1 }}
                                     className="flex justify-center w-full mb-5 mr-8"
                                 >
-                                    <img src={linkyPath} alt="electricity-img" />
+                                    <img src={linkyPath} alt="electricity-img" className="border p-6" />
                                 </motion.div>
 
                                 <Typography variant="caption" className="text-center md:text-12">
                                     {formatMessage({
-                                        id: 'Votre Linky en appuyant sur “+” (n°PRM)',
-                                        defaultMessage: 'Votre Linky en appuyant sur “+” (n°PRM)',
+                                        id: 'Votre compteur Linky en appuyant sur “+” (n°PRM)',
+                                        defaultMessage: 'Votre compteur Linky en appuyant sur “+” (n°PRM)',
                                     })}
                                 </Typography>
                             </div>
@@ -189,7 +154,7 @@ const MeterStepNrLinkConnectionForm = ({
                                     animate={{ opacity: 1, scale: 1 }}
                                     className="flex justify-center w-full mb-5 mr-8"
                                 >
-                                    <img src={contractPath} alt="electricity-img" />
+                                    <img src={contractPath} alt="electricity-img" className="border p-5" />
                                 </motion.div>
                                 <Typography variant="caption" className="w-full text-center md:text-12">
                                     {formatMessage({

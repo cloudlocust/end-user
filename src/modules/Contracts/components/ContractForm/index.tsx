@@ -10,7 +10,6 @@ import {
 import { useFormContext, useWatch } from 'react-hook-form'
 import { Form } from 'src/common/react-platform-components'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
-import './ContractForm.scss'
 import { DatePicker } from 'src/common/ui-kit/form-fields/DatePicker'
 import ContractFormSelect from 'src/modules/Contracts/components/ContractFormSelect'
 import { useCommercialOffer } from 'src/hooks/CommercialOffer/CommercialOfferHooks'
