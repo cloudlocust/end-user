@@ -1,4 +1,7 @@
-import { convertMetricsDataToApexChartsAxisValues } from 'src/modules/MyConsumption/utils/apexChartsDataConverter'
+import {
+    convertMetricsDataToApexChartsAxisValues,
+    convertMetricsDataToApexChartsDateTimeAxisValues,
+} from 'src/modules/MyConsumption/utils/apexChartsDataConverter'
 import { IMetric } from 'src/modules/Metrics/Metrics'
 
 // eslint-disable-next-line jsdoc/require-jsdoc
@@ -28,5 +31,19 @@ describe('test pure function', () => {
         const apexChartsAxisValues = convertMetricsDataToApexChartsAxisValues(mockMetricsData)
         expect(apexChartsAxisValues.yAxisSeries).toStrictEqual([{ name: mockMetricsData[0].target, data: [] }])
         expect(apexChartsAxisValues.xAxisSeries).toStrictEqual([[]])
+    })
+
+    test('convertMetricsDataToApexChartsDateTimeAxisValues test with valid data', async () => {
+        // ApexChartDatetime Props
+        const ApexChartsDateTimeAxisValues = convertMetricsDataToApexChartsDateTimeAxisValues(mockMetricsData)
+        expect(ApexChartsDateTimeAxisValues).toStrictEqual([
+            { name: mockMetricsData[0].target, data: [[mockDatapoints[0][1], mockDatapoints[0][0]]] },
+        ])
+    })
+    test('convertMetricsDataToApexChartsDateTimeAxisValues test empty data', async () => {
+        mockMetricsData[0].datapoints = []
+        // ApexChartDatetime Props empty data
+        const ApexChartsDateTimeAxisValues = convertMetricsDataToApexChartsDateTimeAxisValues(mockMetricsData)
+        expect(ApexChartsDateTimeAxisValues).toStrictEqual([{ name: mockMetricsData[0].target, data: [] }])
     })
 })
