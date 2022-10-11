@@ -25,7 +25,7 @@ import dayjs from 'dayjs'
 import { useState } from 'react'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import { ButtonResetForm } from 'src/common/ui-kit/components/ButtonResetForm/ButtonResetForm'
-import { useInstallationRequests } from 'src/modules/InstallationRequests/installationRequestsHooks'
+import { useInstallationDetails } from 'src/modules/InstallationRequests/installationRequestsHooks'
 
 /**
  * Installation request details popup component that shows the details of one installation request.
@@ -35,9 +35,9 @@ import { useInstallationRequests } from 'src/modules/InstallationRequests/instal
  */
 export const InstallationRequestDetailsPopup = (props: InstallationRequestDetailsPopupProps) => {
     const { handleClosePopup, open, installationRequestDetails, onAfterCreateUpdateDeleteSuccess } = props
-    const { updateInstallationRequest, loadingInProgress } = useInstallationRequests()
     const selectedTheme = selectTheme()
     const { formatMessage } = useIntl()
+    const { editElementDetails: editInstallationRequest } = useInstallationDetails(installationRequestDetails.id)
 
     const [activeEquipmentButton, setActiveEquipmentButton] = useState<equipmentTypeT>(
         installationRequestDetails.equipmentType,
@@ -104,8 +104,8 @@ export const InstallationRequestDetailsPopup = (props: InstallationRequestDetail
 
                         <Form
                             onSubmit={(data: updateInstallationRequestType) => {
-                                const { id: equipmentId, equipmentType, ...restOfData } = data
-                                updateInstallationRequest(equipmentId, {
+                                const { equipmentType, ...restOfData } = data
+                                editInstallationRequest({
                                     ...restOfData,
                                     equipmentType: activeEquipmentButton,
                                 })
@@ -221,7 +221,7 @@ export const InstallationRequestDetailsPopup = (props: InstallationRequestDetail
                                     <ButtonResetForm initialValues={defaultFormValues} />
                                 </div>
                                 <div className="px-16">
-                                    <ButtonLoader inProgress={loadingInProgress} type="submit">
+                                    <ButtonLoader type="submit">
                                         <TypographyFormatMessage>Valider</TypographyFormatMessage>
                                     </ButtonLoader>
                                 </div>

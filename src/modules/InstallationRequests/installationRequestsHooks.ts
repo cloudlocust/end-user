@@ -1,4 +1,4 @@
-import { formatMessageType, FormattedMessage } from 'src/common/react-platform-translation'
+import { formatMessageType } from 'src/common/react-platform-translation'
 import { API_RESOURCES_URL } from 'src/configs'
 import {
     createInstallationRequestType,
@@ -58,7 +58,7 @@ const removeElementDetailsError = (error: any, formatMessage: formatMessageType)
 /**
  * Success message removeElementDetails.
  *
- * @param responseData Removed Contract.
+ * @param responseData Removed Installation Request.
  * @param formatMessage FormatMessage intl object from (react-intl package).
  * @returns {string} Success message.
  */
@@ -69,6 +69,13 @@ const removeElementDetailsSuccess = (responseData: IInstallationRequest, formatM
     })
 }
 
+/**
+ * Error message editElementDetailsError.
+ *
+ * @param responseData Edited Installation Request.
+ * @param formatMessage FormatMessage intl object from (react-intl package).
+ * @returns {string} Success message.
+ */
 const editElementDetailsError = (responseData: IInstallationRequest, formatMessage: formatMessageType) => {
     return formatMessage({
         id: 'Erreur lors de la modification de la demande',
@@ -76,6 +83,13 @@ const editElementDetailsError = (responseData: IInstallationRequest, formatMessa
     })
 }
 
+/**
+ * Success message editElementDetailsSuccess.
+ *
+ * @param responseData Edited Installation Request.
+ * @param formatMessage FormatMessage intl object from (react-intl package).
+ * @returns {string} Success message.
+ */
 const editElementDetailsSuccess = (responseData: IInstallationRequest, formatMessage: formatMessageType) => {
     return formatMessage({
         id: 'Succcès lors de la modification de la demande',
@@ -83,7 +97,13 @@ const editElementDetailsSuccess = (responseData: IInstallationRequest, formatMes
     })
 }
 
-// eslint-disable-next-line jsdoc/require-jsdoc
+/**
+ * Error message loadElementListError.
+ *
+ * @param error Error.
+ * @param formatMessage FormatMessage intl object from (react-intl package).
+ * @returns {string} Success message.
+ */
 export const loadElementListError = (error: any, formatMessage: formatMessageType) => {
     return formatMessage({
         id: 'Erreur lors du chargement des demandes',
@@ -111,7 +131,7 @@ export const useInstallationRequestsList = (sizeParam?: number) =>
  * @returns Installation requests hook funvtions & states.
  */
 export const useInstallationDetails = (installationRequestId: number) => {
-    return BuilderUseElementDetails<IInstallationRequest, undefined, IInstallationRequest>({
+    return BuilderUseElementDetails<IInstallationRequest, updateInstallationRequestType, IInstallationRequest>({
         API_ENDPOINT: `${INSTALLATION_REQUESTS_API}/${installationRequestId}`,
         snackBarMessage0verride: {
             removeElementDetailsError,
@@ -119,5 +139,5 @@ export const useInstallationDetails = (installationRequestId: number) => {
             editElementDetailsError,
             editElementDetailsSuccess,
         },
-    })
+    })()
 }

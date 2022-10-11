@@ -174,8 +174,9 @@ export const installationRequestsEndpoints = [
     }),
 
     // UPDATE one installation request.
-    rest.patch<updateInstallationRequestType>(`${INSTALLATION_REQUESTS_API}/:equipmentId`, (req, res, ctx) => {
-        if (req.body) {
+    rest.put<updateInstallationRequestType>(`${INSTALLATION_REQUESTS_API}/:installationRequestId`, (req, res, ctx) => {
+        const { installationRequestId } = req.params
+        if (installationRequestId) {
             return res(ctx.status(200), ctx.delay(1000), ctx.json(req.body))
         }
 
