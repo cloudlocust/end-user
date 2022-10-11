@@ -78,7 +78,7 @@ export const defaultApexChartOptions: (theme: Theme) => Props['options'] = (them
             show: true,
             strokeWidth: 3,
         },
-        type: 'category',
+        type: 'datetime',
         tickPlacement: 'on',
     },
     stroke: {
@@ -103,10 +103,12 @@ export const defaultApexChartOptions: (theme: Theme) => Props['options'] = (them
 })
 
 /**
- * Get date dayjs format for xxaxis and tooltip label according to the current period selected.
+ * Get apexCharts format for xxaxis labels or dayjs format for tooltip label according to the current period selected.
+ *
+ * Apexcharts format: https://apexcharts.com/docs/datetime/.
  *
  * @param period Current Period.
- * @param isTooltipLabel Indicate if it's tooltipXAxis label.
+ * @param isTooltipLabel Indicate if it's format (dayjs) tooltipXAxis label, by default its format apexcharts.
  * @returns Format of xAxis or tooltip labels according to the current period.
  */
 const getXAxisLabelFormatFromPeriod = (period: periodType, isTooltipLabel?: boolean) => {
@@ -116,7 +118,7 @@ const getXAxisLabelFormatFromPeriod = (period: periodType, isTooltipLabel?: bool
         case 'yearly':
             return isTooltipLabel ? 'MMMM' : 'MMM'
         default:
-            return isTooltipLabel ? 'ddd DD MMM' : 'ddd D'
+            return isTooltipLabel ? 'ddd DD MMM' : 'ddd d'
     }
 }
 
@@ -125,7 +127,6 @@ const getXAxisLabelFormatFromPeriod = (period: periodType, isTooltipLabel?: bool
  *
  * @param params N/A.
  * @param params.yAxisSeries Represents yAxisSeries that has same format as apexChartsChartSeries, which represents a list of yAxis for each target, that will be customized (color, labels, types ...etc) that suits MyConsumptionChart (for example, when target is consumption it should have theme.palette.primary.light color).
- * @param params.xAxisValues Represents the xAxisValues for all apexCharts that will be the same in myConsumptionChart, xAxisValues are going to be categories of apexCharts.
  * @param params.theme Represents the current theme as it is needed to set apexCharts options to fit MyConsumptionChart, for example the colors of the grid should be theme.palette.primary.contrastText.
  * @param params.period Represents the current period ('daily', 'weekly', 'monthly', 'yearly' ...etc), which will be used to handle xAxis values format (for example when yearly we should show values as 'January', 'February', ...etc).
  * @param params.formatMessage Represents the formatMessage from useIntl to handle translation of yAxis names.
@@ -134,7 +135,6 @@ const getXAxisLabelFormatFromPeriod = (period: periodType, isTooltipLabel?: bool
  */
 export const getApexChartMyConsumptionProps = ({
     yAxisSeries,
-    xAxisValues,
     theme,
     period,
     formatMessage,
@@ -143,8 +143,6 @@ export const getApexChartMyConsumptionProps = ({
 {
     // eslint-disable-next-line jsdoc/require-jsdoc
     yAxisSeries: ApexAxisChartSeries
-    // eslint-disable-next-line jsdoc/require-jsdoc
-    xAxisValues: ApexXAxis['categories']
     // eslint-disable-next-line jsdoc/require-jsdoc
     theme: Theme
     // eslint-disable-next-line jsdoc/require-jsdoc
@@ -227,24 +225,11 @@ export const getApexChartMyConsumptionProps = ({
 
     options.xaxis = {
         ...options.xaxis,
-        categories: xAxisValues,
         labels: {
-            format: 'HH:mm',
+            format: getXAxisLabelFormatFromPeriod(period),
             // Setting this false, because apexChart hides by default overlapping labels, and because we're hiding the labels with css, by letting apexCharts default it gives us unexpected styling behaviour
             // For example when period is monthly we want to show xAxis each 1 out of two days, and thus we can handle this with css only when apex shows all labels, cuz apex will hide some labels when they overlap.
             hideOverlappingLabels: false,
-            /**
-             * Formatter function for showing label in the xAxis.
-             *
-             * @param value Number.
-             * @returns Label that's going to be shown in the xaxis.
-             */
-            formatter(value) {
-                // If period === daily, on the xAxis label we'll show only by hours [1:00, 2:00, ... 23:00], and thus we take only the timestamps that has minutes and second to 00 (HH:00:00 represent the first hour).
-                if (period === 'daily' && dayjs.utc(new Date(value).toUTCString()).format('mm:ss') !== '00:00')
-                    return ''
-                return dayjs.utc(new Date(value).toUTCString()).format(getXAxisLabelFormatFromPeriod(period))
-            },
         },
     }
 
@@ -253,13 +238,11 @@ export const getApexChartMyConsumptionProps = ({
             /**
              * Formatter function for showing label in the tooltip.
              *
-             * @param index Represent the index in the xAxisValues.
+             * @param timestamp Represent the timestamp in the xAxisValues.
              * @returns Label concerning the xaxis that's going to be shown in the tooltip.
              */
-            formatter: (index: number) => {
-                return dayjs
-                    .utc(new Date(xAxisValues[index - 1]).toUTCString())
-                    .format(getXAxisLabelFormatFromPeriod(period, true))
+            formatter: (timestamp: number) => {
+                return dayjs.utc(new Date(timestamp).toUTCString()).format(getXAxisLabelFormatFromPeriod(period, true))
             },
         },
     }

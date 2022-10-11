@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { motion } from 'framer-motion'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import MyConsumptionChart from 'src/modules/MyConsumption/components/MyConsumptionChart'
@@ -84,6 +84,12 @@ export const MyConsumptionContainer = () => {
             getConsents(filters[0].value)
         }
     }, [filters, getConsents])
+
+    // Storing the chartData with useMemo, so that we don't compute data.filter on every state change (period, range ...etc), and thus we won't reender heavy computation inside MyConsumptionChart because chartData will be stable.
+    const chartData = useMemo(
+        () => data.filter((metric) => filteredTargets.includes(metric.target)),
+        [data, filteredTargets],
+    )
 
     /**
      * Show text according to interval.
@@ -201,7 +207,7 @@ export const MyConsumptionContainer = () => {
                     </div>
                 ) : (
                     <MyConsumptionChart
-                        data={data.filter((metric) => filteredTargets.includes(metric.target))}
+                        data={chartData}
                         chartType={period === 'daily' ? 'area' : 'bar'}
                         period={period}
                         range={range}
