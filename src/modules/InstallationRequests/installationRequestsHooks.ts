@@ -1,20 +1,87 @@
-import { useCallback, useState } from 'react'
-import { axios } from 'src/common/react-platform-components'
-import { formatMessageType, useIntl } from 'src/common/react-platform-translation'
+import { formatMessageType, FormattedMessage } from 'src/common/react-platform-translation'
 import { API_RESOURCES_URL } from 'src/configs'
 import {
-    // createInstallationRequestType,
+    createInstallationRequestType,
     IInstallationRequest,
     updateInstallationRequestType,
 } from 'src/modules/InstallationRequests/installationRequests.d'
 import { searchFilterType } from 'src/modules/utils'
-import { BuilderUseElementList } from 'src/modules/utils/useElementHookBuilder'
-import { useSnackbar } from 'notistack'
+import { BuilderUseElementDetails, BuilderUseElementList } from 'src/modules/utils/useElementHookBuilder'
 
 /**
  * Installation requests API.
  */
 export const INSTALLATION_REQUESTS_API = `${API_RESOURCES_URL}/installation-requests`
+
+/**
+ * Error message add contract.
+ *
+ * @param error Axios error object.
+ * @param formatMessage FormatMessage intl object from (react-intl package).
+ * @returns {string} Error message.
+ */
+const addElementError = (error: any, formatMessage: formatMessageType) => {
+    return formatMessage({
+        id: "Erreur lors de l'ajout de la demande",
+        defaultMessage: "Erreur lors de l'ajout de la demande",
+    })
+}
+
+/**
+ * Success message addElement.
+ *
+ * @param responseData Added Contract.
+ * @param formatMessage FormatMessage intl object from (react-intl package).
+ * @returns {string} Success message.
+ */
+const addElementSuccess = (responseData: IInstallationRequest, formatMessage: formatMessageType) => {
+    return formatMessage({
+        id: "Succès lors de l'ajout de la demande",
+        defaultMessage: "Succès lors de l'ajout de la demande",
+    })
+}
+
+/**
+ * Error message removeElementDetails.
+ *
+ * @param error Axios error object.
+ * @param formatMessage FormatMessage intl object from (react-intl package).
+ * @returns {string} Error message.
+ */
+const removeElementDetailsError = (error: any, formatMessage: formatMessageType) => {
+    return formatMessage({
+        id: 'Erreur lors de la suppression de la demande',
+        defaultMessage: 'Erreur lors de la suppression de la demande',
+    })
+}
+
+/**
+ * Success message removeElementDetails.
+ *
+ * @param responseData Removed Contract.
+ * @param formatMessage FormatMessage intl object from (react-intl package).
+ * @returns {string} Success message.
+ */
+const removeElementDetailsSuccess = (responseData: IInstallationRequest, formatMessage: formatMessageType) => {
+    return formatMessage({
+        id: 'Succès lors de la suppression de la demande',
+        defaultMessage: 'Succès lors de la suppression de la demande',
+    })
+}
+
+const editElementDetailsError = (responseData: IInstallationRequest, formatMessage: formatMessageType) => {
+    return formatMessage({
+        id: 'Erreur lors de la modification de la demande',
+        defaultMessage: 'Erreur lors de la modification de la demande',
+    })
+}
+
+const editElementDetailsSuccess = (responseData: IInstallationRequest, formatMessage: formatMessageType) => {
+    return formatMessage({
+        id: 'Succcès lors de la modification de la demande',
+        defaultMessage: 'Succès lors de la modification de la demande',
+    })
+}
 
 // eslint-disable-next-line jsdoc/require-jsdoc
 export const loadElementListError = (error: any, formatMessage: formatMessageType) => {
@@ -31,83 +98,26 @@ export const loadElementListError = (error: any, formatMessage: formatMessageTyp
  * @returns UseInstalltionRequestsList.
  */
 export const useInstallationRequestsList = (sizeParam?: number) =>
-    BuilderUseElementList<IInstallationRequest, undefined, searchFilterType>({
+    BuilderUseElementList<IInstallationRequest, createInstallationRequestType, searchFilterType>({
         API_ENDPOINT: INSTALLATION_REQUESTS_API,
         sizeParam,
-        snackBarMessage0verride: { loadElementListError },
+        snackBarMessage0verride: { loadElementListError, addElementSuccess, addElementError },
     })(true)
 
 /**
- * Installation requests hook for CREATE / UPDATE / DELETE.
+ * Installation requests hook for UPDATE / DELETE.
  *
+ * @param installationRequestId InstallationRequest's id.
  * @returns Installation requests hook funvtions & states.
  */
-export const useInstallationRequests = () => {
-    const { enqueueSnackbar } = useSnackbar()
-    const [loadingInProgress, setLoadingInProgress] = useState(false)
-    const { formatMessage } = useIntl()
-
-    // TODO: To be worked on in the next tasks.
-    // const createInstallationRequeest = useCallback(
-    //     async (body: createInstallationRequestType) => {
-    //         try {
-    //             setLoadingInProgress(true)
-    //             const { data } = await axios.post<createInstallationRequestType>(INSTALLATION_REQUESTS_API, body)
-    //             if (data) {
-    //                 enqueueSnackbar(
-    //                     formatMessage({
-    //                         id: 'Equipement créé avec succès',
-    //                         defaultMessage: 'Equipement créé avec succès',
-    //                     }),
-    //                     { variant: 'success', autoHideDuration: 5000 },
-    //                 )
-    //             }
-    //             setLoadingInProgress(false)
-    //         } catch (error) {
-    //             setLoadingInProgress(false)
-    //             enqueueSnackbar(
-    //                 formatMessage({
-    //                     id: "Erreur lors de la création d'un équipement",
-    //                     defaultMessage: "Erreur lors de la création d'un équipement",
-    //                 }),
-    //                 { variant: 'error', autoHideDuration: 5000 },
-    //             )
-    //         }
-    //     },
-    //     [enqueueSnackbar, formatMessage],
-    // )
-
-    const updateInstallationRequest = useCallback(
-        async (equipmentId: number, body: Omit<updateInstallationRequestType, 'id'>) => {
-            try {
-                setLoadingInProgress(true)
-                const { data } = await axios.patch<Omit<updateInstallationRequestType, 'id'>>(
-                    `${INSTALLATION_REQUESTS_API}/${equipmentId}`,
-                    body,
-                )
-                if (data) {
-                    enqueueSnackbar(
-                        formatMessage({
-                            id: 'Equipement a été mis à jour avec succès',
-                            defaultMessage: 'Equipement a été mis à jour avec succès',
-                        }),
-                        { variant: 'success', autoHideDuration: 5000 },
-                    )
-                }
-                setLoadingInProgress(false)
-            } catch (error) {
-                setLoadingInProgress(false)
-                enqueueSnackbar(
-                    formatMessage({
-                        id: "Erreur lors de la mis à jour d'un équipement",
-                        defaultMessage: "Erreur lors de la mis à jour d'un équipement",
-                    }),
-                    { variant: 'error', autoHideDuration: 5000 },
-                )
-            }
+export const useInstallationDetails = (installationRequestId: number) => {
+    return BuilderUseElementDetails<IInstallationRequest, undefined, IInstallationRequest>({
+        API_ENDPOINT: `${INSTALLATION_REQUESTS_API}/${installationRequestId}`,
+        snackBarMessage0verride: {
+            removeElementDetailsError,
+            removeElementDetailsSuccess,
+            editElementDetailsError,
+            editElementDetailsSuccess,
         },
-        [enqueueSnackbar, formatMessage],
-    )
-
-    return { loadingInProgress, setLoadingInProgress, updateInstallationRequest }
+    })
 }

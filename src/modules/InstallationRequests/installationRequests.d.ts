@@ -36,11 +36,11 @@ export interface IInstallationRequest {
     /**
      * Creation Date of the installation request.
      */
-    createdAt: string
+    createdAt?: string
     /**
      * Update Date of the installation request.
      */
-    updatedAt: string
+    updatedAt?: string
     /**
      * Budget of the installation request.
      */
