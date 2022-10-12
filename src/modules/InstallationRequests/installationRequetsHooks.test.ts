@@ -1,6 +1,6 @@
 import { reduxedRenderHook } from 'src/common/react-platform-components/test'
 import {
-    useInstallationDetails,
+    useInstallationRequestDetails,
     useInstallationRequestsList,
 } from 'src/modules/InstallationRequests/installationRequestsHooks'
 import { TEST_INSTALLATION_REQUESTS } from 'src/mocks/handlers/installationRequests'
@@ -123,7 +123,9 @@ describe('InstallationRequestList hook test', () => {
         test('success snackbar when edit installation request resolves', async () => {
             const {
                 renderedHook: { result, waitForValueToChange },
-            } = reduxedRenderHook(() => useInstallationDetails(TEST_INSTALLATION_REQUESTS[0].id), { initialState: {} })
+            } = reduxedRenderHook(() => useInstallationRequestDetails(TEST_INSTALLATION_REQUESTS[0].id), {
+                initialState: {},
+            })
             act(() => {
                 result.current.editElementDetails()
             })
@@ -142,7 +144,7 @@ describe('InstallationRequestList hook test', () => {
         test('error snackbar when edit installation request fails', async () => {
             const {
                 renderedHook: { result, waitForValueToChange },
-            } = reduxedRenderHook(() => useInstallationDetails(-1), { initialState: {} })
+            } = reduxedRenderHook(() => useInstallationRequestDetails(-1), { initialState: {} })
             act(() => {
                 result.current.editElementDetails(null)
             })

@@ -21,7 +21,7 @@ import dayjs from 'dayjs'
 import { useState } from 'react'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import { ButtonResetForm } from 'src/common/ui-kit/components/ButtonResetForm/ButtonResetForm'
-import { useInstallationDetails } from 'src/modules/InstallationRequests/installationRequestsHooks'
+import { useInstallationRequestDetails } from 'src/modules/InstallationRequests/installationRequestsHooks'
 
 /**
  * Installation request details popup component that shows the details of one installation request.
@@ -33,7 +33,7 @@ export const InstallationRequestDetailsPopup = (props: InstallationRequestDetail
     const { handleClosePopup, open, installationRequestDetails, onAfterCreateUpdateDeleteSuccess } = props
     const selectedTheme = selectTheme()
     const { formatMessage } = useIntl()
-    const { editElementDetails: editInstallationRequest } = useInstallationDetails(installationRequestDetails.id)
+    const { editElementDetails: editInstallationRequest } = useInstallationRequestDetails(installationRequestDetails.id)
 
     const [activeEquipmentButton, setActiveEquipmentButton] = useState<equipmentTypeT>(
         installationRequestDetails.equipmentType,

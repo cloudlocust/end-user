@@ -7,8 +7,8 @@ import FuseLoading from 'src/common/ui-kit/fuse/components/FuseLoading'
 import FusePageCarded from 'src/common/ui-kit/fuse/components/FusePageCarded'
 import { IInstallationRequest } from 'src/modules/InstallationRequests/installationRequests'
 import {
-    useInstallationRequests,
     useInstallationRequestsList,
+    useInstallationRequestDetails,
 } from 'src/modules/InstallationRequests/installationRequestsHooks'
 import { VariantType } from 'notistack'
 import dayjs from 'dayjs'
@@ -111,7 +111,7 @@ const ActionsCell = ({
     const theme = useTheme()
     const { formatMessage } = useIntl()
     const openMuiDialog = useConfirm()
-    const { deleteInstallationRequest } = useInstallationRequests()
+    const { removeElementDetails } = useInstallationRequestDetails(row.id)
 
     /**
      * Open warning remove popup on delete click.
@@ -144,7 +144,7 @@ const ActionsCell = ({
                 </TypographyFormatMessage>
             ),
         })
-        await deleteInstallationRequest(row.id)
+        await removeElementDetails()
         onAfterCreateUpdateDeleteSuccess()
     }
 
