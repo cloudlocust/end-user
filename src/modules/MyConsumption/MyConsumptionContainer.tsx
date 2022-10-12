@@ -85,6 +85,12 @@ export const MyConsumptionContainer = () => {
         }
     }, [filters, getConsents])
 
+    // Storing the chartData with useMemo, so that we don't compute data.filter on every state change (period, range ...etc), and thus we won't reender heavy computation inside MyConsumptionChart because chartData will be stable.
+    const chartData = useMemo(
+        () => data.filter((metric) => filteredTargets.includes(metric.target)),
+        [data, filteredTargets],
+    )
+
     /**
      * Show text according to interval.
      *
@@ -150,17 +156,6 @@ export const MyConsumptionContainer = () => {
             />
         )
     }, [range, setMetricsInterval, setRange])
-
-    const memoizedMyConsumptionChart = useMemo(() => {
-        return (
-            <MyConsumptionChart
-                data={data.filter((metric) => filteredTargets.includes(metric.target))}
-                chartType={period === 'daily' ? 'area' : 'bar'}
-                period={period}
-                range={range}
-            />
-        )
-    }, [data, filteredTargets, period, range])
 
     // By checking if the metersList is true we make sure that if someone has skipped the step of connecting their PDL, they will see this error message.
     // Else if they have a PDL, we check its consent.
@@ -230,7 +225,12 @@ export const MyConsumptionContainer = () => {
                         <CircularProgress style={{ color: theme.palette.background.paper }} />
                     </div>
                 ) : (
-                    memoizedMyConsumptionChart
+                    <MyConsumptionChart
+                        data={chartData}
+                        chartType={period === 'daily' ? 'area' : 'bar'}
+                        period={period}
+                        range={range}
+                    />
                 )}
                 {memoizedMyConsumptionPeriod}
                 {isEurosConsumptionChart && (
