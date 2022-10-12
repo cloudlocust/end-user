@@ -38,6 +38,23 @@ export interface MyHouseProps {
         url: string
     }
 }
+
+/**
+ * Env Variable to know if the delete and add housing feature is enabled.
+ */
+export const deleteAddFeatureState = window._env_.REACT_APP_ADD_DELETE_HOUSING_FEATURE_STATE === 'disabled'
+
+/**
+ * Env Variable to know if the equipments and accomodation feature is enabled.
+ */
+export const equipmentsAccomodationFeatureState =
+    window._env_.REACT_APP_EQUIPMENTS_ACCOMODATION_FEATURE_STATE === 'disabled'
+
+/**
+ * Env Variable to know if the temp and pmax features are enabled.
+ */
+export const tempPmaxFeatureState = window._env_.REACT_APP_TEMP_PMAX_FEATURE_STATE === 'disabled'
+
 /**
  * MyHouseConfig.
  */
@@ -97,6 +114,7 @@ export const MyHouseConfig = [
                     },
                 },
             },
+            disabled: equipmentsAccomodationFeatureState,
         },
     } as IRouteNavigationConfig<MyHouseProps>,
     {
@@ -116,6 +134,7 @@ export const MyHouseConfig = [
                     },
                 },
             },
+            disabled: equipmentsAccomodationFeatureState,
         },
     } as IRouteNavigationConfig<MyHouseProps>,
 ]

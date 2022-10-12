@@ -20,6 +20,8 @@ import { useHousingsDetails } from 'src/modules/MyHouse/components/HousingList/H
 import { URL_MY_HOUSE } from 'src/modules/MyHouse/MyHouseConfig'
 import { useMeterForHousing } from 'src/modules/Meters/metersHook'
 import { addMeterInputType } from 'src/modules/Meters/Meters'
+import { deleteAddFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
+import Tooltip from '@mui/material/Tooltip'
 
 import { useDispatch } from 'react-redux'
 import { Dispatch } from 'src/redux'
@@ -133,9 +135,26 @@ const HousingCard = ({
                                 {MY_HOUSING_AT + logement.address.city.toUpperCase()}
                             </Typography>
                         </div>
-                        <IconButton aria-label="delete" className="ml-12" onClick={handleOpenConfirmModal}>
-                            <DeleteOutlinedIcon color="error" />
-                        </IconButton>
+                        <Tooltip
+                            arrow
+                            placement="bottom-end"
+                            disableHoverListener={!deleteAddFeatureState}
+                            title={formatMessage({
+                                id: "Cette fonctionnalitée n'est pas encore disponible",
+                                defaultMessage: "Cette fonctionnalitée n'est pas encore disponible",
+                            })}
+                        >
+                            <div className={`${deleteAddFeatureState && 'cursor-not-allowed'}`}>
+                                <IconButton
+                                    disabled={deleteAddFeatureState}
+                                    aria-label="delete"
+                                    className={`ml-12 `}
+                                    onClick={handleOpenConfirmModal}
+                                >
+                                    <DeleteOutlinedIcon color={deleteAddFeatureState ? 'disabled' : 'error'} />
+                                </IconButton>
+                            </div>
+                        </Tooltip>
                     </div>
                     <Divider className="my-16" />
                     <div className="flex flex-col">
