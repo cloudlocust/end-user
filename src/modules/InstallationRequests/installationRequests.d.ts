@@ -63,4 +63,4 @@ export type createInstallationRequestType = Omit<IInstallationRequest, 'id' | 'c
 /**
  * Type for update installation request.
  */
-export type updateInstallationRequestType = Omit<IInstallationRequest, 'updatedAt'>
+export type updateInstallationRequestType = Omit<IInstallationRequest, 'updatedAt' | 'id'>

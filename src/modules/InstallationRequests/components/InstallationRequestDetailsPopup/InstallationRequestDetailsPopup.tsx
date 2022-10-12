@@ -16,11 +16,7 @@ import {
 import { ButtonLoader, TextField } from 'src/common/ui-kit'
 import { equipmentsTypeList } from 'src/modules/InstallationRequests'
 import { Form } from 'src/common/react-platform-components'
-import {
-    equipmentTypeT,
-    IInstallationRequest,
-    updateInstallationRequestType,
-} from 'src/modules/InstallationRequests/installationRequests.d'
+import { equipmentTypeT, IInstallationRequest } from 'src/modules/InstallationRequests/installationRequests.d'
 import dayjs from 'dayjs'
 import { useState } from 'react'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
@@ -103,8 +99,8 @@ export const InstallationRequestDetailsPopup = (props: InstallationRequestDetail
                         </div>
 
                         <Form
-                            onSubmit={(data: updateInstallationRequestType) => {
-                                const { equipmentType, ...restOfData } = data
+                            onSubmit={(data: Omit<IInstallationRequest, 'updatedAt'>) => {
+                                const { equipmentType, id, ...restOfData } = data
                                 editInstallationRequest({
                                     ...restOfData,
                                     equipmentType: activeEquipmentButton,
