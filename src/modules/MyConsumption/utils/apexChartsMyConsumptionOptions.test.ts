@@ -26,9 +26,6 @@ const mockYAxisSeriesConvertedData: ApexAxisChartSeries = [
 ]
 
 // eslint-disable-next-line jsdoc/require-jsdoc
-const mockXAxisValuesConvertedData = [mockDatapoints[0][1]]
-
-// eslint-disable-next-line jsdoc/require-jsdoc
 const getXAxisLabelFormatFromPeriod = (period: periodType, isTooltipLabel?: boolean) => {
     switch (period) {
         case 'daily':
@@ -72,7 +69,6 @@ const mockOptions: (theme: Theme, period: periodType) => ApexOptions = (theme, p
     ...defaultApexChartOptions(theme),
     xaxis: {
         ...defaultApexChartOptions(theme)?.xaxis,
-        categories: [mockDatapoints[0][1]],
         labels: {
             format: 'HH:mm',
             hideOverlappingLabels: false,
@@ -81,7 +77,6 @@ const mockOptions: (theme: Theme, period: periodType) => ApexOptions = (theme, p
                 return dayjsUTC(new Date(value!)).format(getXAxisLabelFormatFromPeriod(period))
             },
         },
-        type: 'category',
     },
     markers: {
         ...defaultApexChartOptions(theme)?.markers,
@@ -116,7 +111,6 @@ describe('test pure function', () => {
         // ApexChart Props
         const apexChartProps = getApexChartMyConsumptionProps({
             yAxisSeries: mockYAxisSeriesConvertedData,
-            xAxisValues: mockXAxisValuesConvertedData,
             chartType: 'bar',
             formatMessage: mockFormatMessage,
             theme,
@@ -135,43 +129,37 @@ describe('test pure function', () => {
         // GMT: Saturday, 1 January 2022 00:42:00
         const TEST_TIMESTAMP = 1640997720000
         const timestamp = new Date(dayjs.utc(new Date(TEST_TIMESTAMP).toUTCString()).startOf('day').format()).getTime()
-        mockXAxisValuesConvertedData[0] = timestamp
         const tooltipTimeStampDays = 'Sat 01 Jan'
         const tooltipTimeStampYear = 'January'
         const xAxisTimeStampDay = `00:00`
-        const xAxisTimeStampWeek = 'Sat 1'
-        const xAxisTimeStampMonth = 'Sat 1'
-        const xAxisTimeStampYear = 'Jan'
+        const xAxisFormatDay = `HH:mm`
+        const xAxisFormatWeek = 'ddd d'
+        const xAxisFormatMonth = 'ddd d'
+        const xAxisFormatYear = 'MMM'
         // ApexChart Props
         let apexChartProps = getApexChartMyConsumptionProps({
             yAxisSeries: mockYAxisSeriesConvertedData,
-            xAxisValues: mockXAxisValuesConvertedData,
             chartType: 'bar',
             formatMessage: mockFormatMessage,
             theme,
             period,
         })
         apexChartProps.options!.stroke!.show = false
-        expect(apexChartProps.options.tooltip!.x!.formatter!(1)!).toEqual(xAxisTimeStampDay)
-        expect(apexChartProps.options.xaxis!.labels!.formatter!(new Date(timestamp).toString())).toEqual(
-            xAxisTimeStampDay,
-        )
+        expect(apexChartProps.options.tooltip!.x!.formatter!(timestamp)!).toEqual(xAxisTimeStampDay)
+        expect(apexChartProps.options.xaxis!.labels!.format!).toEqual(xAxisFormatDay)
         // xAxis tooltip will show day of the week, samedi 1 jan.
         period = 'weekly' as periodType
         // ApexChart Props
         apexChartProps = getApexChartMyConsumptionProps({
             yAxisSeries: mockYAxisSeriesConvertedData,
-            xAxisValues: mockXAxisValuesConvertedData,
             chartType: 'bar',
             formatMessage: mockFormatMessage,
             theme,
             period,
         })
         apexChartProps.options!.stroke!.show = true
-        expect(apexChartProps.options.xaxis!.labels!.formatter!(new Date(timestamp).toString())).toEqual(
-            xAxisTimeStampWeek,
-        )
-        expect(apexChartProps.options.tooltip!.x!.formatter!(1)!).toEqual(tooltipTimeStampDays)
+        expect(apexChartProps.options.xaxis!.labels!.format!).toEqual(xAxisFormatWeek)
+        expect(apexChartProps.options.tooltip!.x!.formatter!(timestamp)!).toEqual(tooltipTimeStampDays)
 
         // xAxis tooltip will show day of the month, 01 jan.
         period = 'monthly' as periodType
@@ -179,16 +167,13 @@ describe('test pure function', () => {
         // ApexChart Props
         apexChartProps = getApexChartMyConsumptionProps({
             yAxisSeries: mockYAxisSeriesConvertedData,
-            xAxisValues: mockXAxisValuesConvertedData,
             chartType: 'bar',
             formatMessage: mockFormatMessage,
             theme,
             period,
         })
-        expect(apexChartProps.options.tooltip!.x!.formatter!(1)!).toEqual(tooltipTimeStampDays)
-        expect(apexChartProps.options.xaxis!.labels!.formatter!(new Date(timestamp).toString())).toEqual(
-            xAxisTimeStampMonth,
-        )
+        expect(apexChartProps.options.tooltip!.x!.formatter!(timestamp)!).toEqual(tooltipTimeStampDays)
+        expect(apexChartProps.options.xaxis!.labels!.format!).toEqual(xAxisFormatMonth)
         expect(apexChartProps.options.theme!.mode).toStrictEqual('dark')
 
         // xAxis tooltip will show month
@@ -196,16 +181,13 @@ describe('test pure function', () => {
         theme.palette.mode = 'dark'
         apexChartProps = getApexChartMyConsumptionProps({
             yAxisSeries: mockYAxisSeriesConvertedData,
-            xAxisValues: mockXAxisValuesConvertedData,
             chartType: 'bar',
             formatMessage: mockFormatMessage,
             theme,
             period,
         })
-        expect(apexChartProps.options.tooltip!.x!.formatter!(1)!).toEqual(tooltipTimeStampYear)
-        expect(apexChartProps.options.xaxis!.labels!.formatter!(new Date(timestamp).toString())).toEqual(
-            xAxisTimeStampYear,
-        )
+        expect(apexChartProps.options.tooltip!.x!.formatter!(timestamp)!).toEqual(tooltipTimeStampYear)
+        expect(apexChartProps.options.xaxis!.labels!.format!).toEqual(xAxisFormatYear)
         expect(apexChartProps.options.theme!.mode).toStrictEqual('light')
     })
     test('getApexChartMyConsumptionProps test empty data', async () => {
@@ -215,14 +197,12 @@ describe('test pure function', () => {
         // ApexChart Props empty data
         const apexChartProps = getApexChartMyConsumptionProps({
             yAxisSeries: mockYAxisSeriesConvertedData,
-            xAxisValues: [],
             chartType: 'bar',
             formatMessage: mockFormatMessage,
             theme,
             period,
         })
         expect(apexChartProps.series).toStrictEqual([])
-        expect(apexChartProps.options.xaxis!.categories).toStrictEqual([])
     })
     test('convertMetricsDataToApexChartsProps with additional temperatures yaxis', async () => {
         mockYAxisSeriesConvertedData[0].data = [mockDatapoints[0][0]]
@@ -267,7 +247,6 @@ describe('test pure function', () => {
         // ApexChart Props
         const apexChartProps = getApexChartMyConsumptionProps({
             yAxisSeries: mockYAxisSeriesConvertedData,
-            xAxisValues: mockXAxisValuesConvertedData,
             chartType: 'bar',
             formatMessage: mockFormatMessage,
             theme,

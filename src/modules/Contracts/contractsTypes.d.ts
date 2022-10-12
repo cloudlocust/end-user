@@ -1,4 +1,5 @@
 import { SelectFieldProps } from 'src/common/ui-kit/form-fields/Select'
+import { IOffer, IContractType, IPower, IProvider, ITariffType } from 'src/hooks/CommercialOffer/CommercialOffers'
 
 /**
  * Type contracts route param.
@@ -46,6 +47,10 @@ export type ContractFormProps =
          * Loading state when addContract request.
          */
         isContractsLoading?: boolean
+        /**
+         * Default values  request.
+         */
+        defaultValues?: contractFormValuesType
     }
 
 /**
@@ -58,34 +63,55 @@ export type ContractFormFieldsProps =
          * Loading state when addContract request.
          */
         isContractsLoading?: boolean
+        /**
+         * Indicate if ContractFormFIelds are disabled.
+         */
+        disabled?: boolean
     }
 
 /**
- * Interface Contract model.
+ * Type of request response of load contract.
  */
-export type IContract =
+export type loadContractResponse =
     // eslint-disable-next-line jsdoc/require-jsdoc
     {
         /**
-         * Id contract.
+         * Id Housing contract.
          */
         id: number
         /**
-         * Provider of the contract.
+         * Contract.
          */
-        provider: string
-        /**
-         * Offer of the contract.
-         */
-        offer: string
-        /**
-         * Type of the contract.
-         */
-        tariffType: string
+        // eslint-disable-next-line jsdoc/require-jsdoc
+        contract: {
+            /**
+             * Id contract.
+             */
+            id: number
+            /**
+             * Offer of the contract.
+             */
+            // eslint-disable-next-line jsdoc/require-jsdoc
+            commercialOffer: IOffer & {
+                /**
+                 * Provider of the contract.
+                 */
+                provider: IProvider
+            }
+            /**
+             * Tariff Type of the contract.
+             */
+            tariffType: ITariffType
+            /**
+             * Contract Type (Professional, particulier ...etc).
+             */
+            contractType: IContractType
+        }
+
         /**
          * Power of the offer.
          */
-        power: number
+        power: IPower
         /**
          * Start contract subscription.
          */
@@ -95,6 +121,46 @@ export type IContract =
          */
         endSubscription: string
     }
+
+/**
+ * Interface Contract that's formatted from response of request loadContract.
+ * This format makes it easier to handle contractList and contractDetails.
+ */
+// eslint-disable-next-line jsdoc/require-jsdoc
+export type IContract = {
+    /**
+     * Id contract.
+     */
+    id: number
+    /**
+     * Provider of the contract.
+     */
+    provider: IProvider
+    /**
+     * Offer of the contract.
+     */
+    offer: IOffer
+    /**
+     * Tariff Type of the contract.
+     */
+    tariffType: ITariffType
+    /**
+     * Contract Type (Professional, particulier ...etc).
+     */
+    contractType: IContractType
+    /**
+     * Power of the offer.
+     */
+    power: number
+    /**
+     * Start contract subscription (ISO datetime format).
+     */
+    startSubscription: string
+    /**
+     * End contract subscription (ISO datetime format).
+     */
+    endSubscription: string
+}
 
 /**
  * Type contractFormValues.
@@ -135,45 +201,32 @@ export type addContractDataType = {
     /**
      * End contract subscription.
      */
-    endSubscription: string
+    endSubscription?: string
 }
 
 /**
  * Prop of ContractFormSelect, to load options and show the optionList in the select.
  */
-export type ContractFormSelectProps<T> =
+export interface ContractFormSelectProps<T> extends SelectFieldProps {
     // eslint-disable-next-line jsdoc/require-jsdoc
-    {
-        /**
-         * Name of the select.
-         */
-        name: string
-        /**
-         * Select Label.
-         */
-        selectLabel: string
-        /**
-         * Functions to load options, when the ContractFormSelect is mounted.
-         */
-        loadOptions: () => void
-        /**
-         * Boolean indicating the loading state of loadOptions.
-         */
-        isOptionsInProgress: Boolean
-        /**
-         * Option List.
-         */
-        optionList: T[] | null
-        /**
-         * Function to format the option value.
-         */
-        formatOptionValue: (option: T) => string | number
-        /**
-         * Function to format the option label.
-         */
-        formatOptionLabel: (option: T) => string
-        /**
-         * Validate functions passed in the Select.
-         */
-        validateFunctions?: SelectFieldProps['validateFunctions']
-    }
+    /**
+     * Functions to load options, when the ContractFormSelect is mounted.
+     */
+    loadOptions: () => void
+    /**
+     * Boolean indicating the loading state of loadOptions.
+     */
+    isOptionsInProgress: Boolean
+    /**
+     * Option List.
+     */
+    optionList: T[] | null
+    /**
+     * Function to format the option value.
+     */
+    formatOptionValue: (option: T) => string | number
+    /**
+     * Function to format the option label.
+     */
+    formatOptionLabel: (option: T) => string
+}
