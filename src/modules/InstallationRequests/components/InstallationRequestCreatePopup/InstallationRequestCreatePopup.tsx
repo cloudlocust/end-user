@@ -20,7 +20,7 @@ import { ButtonResetForm } from 'src/common/ui-kit/components/ButtonResetForm/Bu
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import { useState } from 'react'
 import { createInstallationRequestType, equipmentTypeT } from 'src/modules/InstallationRequests/installationRequests'
-import { useInstallationRequests } from 'src/modules/InstallationRequests/installationRequestsHooks'
+import { useInstallationRequestsList } from 'src/modules/InstallationRequests/installationRequestsHooks'
 
 /**
  * Installation request creation popup component.
@@ -30,7 +30,7 @@ import { useInstallationRequests } from 'src/modules/InstallationRequests/instal
  */
 export const InstallationRequestCreatePopup = (props: InstallationRequestCreatePopupProps) => {
     const { handleClosePopup, open, onAfterCreateUpdateDeleteSuccess } = props
-    const { createInstallationRequeest, loadingInProgress } = useInstallationRequests()
+    const { loadingInProgress } = useInstallationRequestsList()
     const [activeEquipmentButton, setActiveEquipmentButton] = useState<equipmentTypeT | null>(null)
 
     const selectedTheme = selectTheme()
@@ -87,11 +87,11 @@ export const InstallationRequestCreatePopup = (props: InstallationRequestCreateP
 
                         <Form
                             onSubmit={(data: createInstallationRequestType) => {
-                                const { equipmentType, ...restOfData } = data
-                                createInstallationRequeest({
-                                    ...restOfData,
-                                    equipmentType: activeEquipmentButton!,
-                                })
+                                // const { equipmentType, ...restOfData } = data
+                                // // createInstallationRequeest({
+                                // //     ...restOfData,
+                                // //     equipmentType: activeEquipmentButton!,
+                                // // })
                                 handleClosePopup()
                                 onAfterCreateUpdateDeleteSuccess()
                             }}

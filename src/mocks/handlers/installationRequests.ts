@@ -16,7 +16,7 @@ const CREATED_AT_DATA = '2021-12-15T14:07:38.138000'
  */
 export var TEST_INSTALLATION_REQUESTS: SnakeCasedPropertiesDeep<IInstallationRequest[]> = [
     {
-        id: 9,
+        id: 1,
         budget: 1000.0,
         equipment_brand: 'Inspirion',
         status: 'NEW',
@@ -39,7 +39,7 @@ export var TEST_INSTALLATION_REQUESTS: SnakeCasedPropertiesDeep<IInstallationReq
         equipment_model: 'AZS',
     },
     {
-        id: 1,
+        id: 20,
         budget: 1010.0,
         equipment_brand: 'Azero',
         status: 'CLOSED',
@@ -174,8 +174,8 @@ export const installationRequestsEndpoints = [
     }),
 
     // UPDATE one installation request.
-    rest.patch<updateInstallationRequestType>(`${INSTALLATION_REQUESTS_API}/:equipmentId`, (req, res, ctx) => {
-        if (req.body) {
+    rest.put<updateInstallationRequestType>(`${INSTALLATION_REQUESTS_API}/:id`, (req, res, ctx) => {
+        if (parseInt(req.params.id) !== -1) {
             return res(ctx.status(200), ctx.delay(1000), ctx.json(req.body))
         }
 
