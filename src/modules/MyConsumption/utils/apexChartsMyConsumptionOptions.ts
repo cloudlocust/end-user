@@ -181,8 +181,13 @@ export const getApexChartMyConsumptionProps = ({
         })
 
         // We compute the consumption chart maximum y value, so that we can indicate the correct unit on the chart, and we do it only one time with this condition.
-        if (yAxisSerie.name === metricTargetsEnum.consumption && period !== 'daily')
-            consumptionMaxYValue = Math.max(...(yAxisSerie.data as Array<number>))
+        // data.length !== 720 is added because there can be case where period is not daily, and yAxisSerie.data didn't updated and still express data of daily.
+        // TODO Fix find a better way to reender period and data at same time, instead of doing yAxisSerie.data.length !== 720
+        if (yAxisSerie.name === metricTargetsEnum.consumption && period !== 'daily' && yAxisSerie.data.length !== 720) {
+            consumptionMaxYValue = Math.max(
+                ...(yAxisSerie.data.map((datapoint) => (datapoint as [number, number])[1]) as Array<number>),
+            )
+        }
 
         yAxisOptions.push({
             ...restChartSpecifities,
