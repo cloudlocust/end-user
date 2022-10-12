@@ -52,7 +52,7 @@ describe('AnalysisInformationList test', () => {
             'contrast(150%)',
         )
 
-        // Min and Max have 20 Wh
+        // Mean, Min and Maxhave 20 Wh
         expect(getAllByText('20 Wh')).toHaveLength(2)
         expect(getAllByText('Saturday 01')).toHaveLength(2)
     })
