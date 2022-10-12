@@ -36,11 +36,11 @@ export interface IInstallationRequest {
     /**
      * Creation Date of the installation request.
      */
-    createdAt: string
+    createdAt?: string
     /**
      * Update Date of the installation request.
      */
-    updatedAt: string
+    updatedAt?: string
     /**
      * Budget of the installation request.
      */
@@ -63,4 +63,4 @@ export type createInstallationRequestType = Omit<IInstallationRequest, 'id' | 'c
 /**
  * Type for update installation request.
  */
-export type updateInstallationRequestType = Omit<IInstallationRequest, 'updatedAt'>
+export type updateInstallationRequestType = Omit<IInstallationRequest, 'updatedAt' | 'id'>

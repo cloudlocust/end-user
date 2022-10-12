@@ -16,7 +16,7 @@ const CREATED_AT_DATA = '2021-12-15T14:07:38.138000'
  */
 export var TEST_INSTALLATION_REQUESTS: SnakeCasedPropertiesDeep<IInstallationRequest[]> = [
     {
-        id: 9,
+        id: 1,
         budget: 1000.0,
         equipment_brand: 'Inspirion',
         status: 'NEW',
@@ -39,7 +39,7 @@ export var TEST_INSTALLATION_REQUESTS: SnakeCasedPropertiesDeep<IInstallationReq
         equipment_model: 'AZS',
     },
     {
-        id: 1,
+        id: 20,
         budget: 1010.0,
         equipment_brand: 'Azero',
         status: 'CLOSED',
@@ -174,20 +174,15 @@ export const installationRequestsEndpoints = [
     }),
 
     // UPDATE one installation request.
-    rest.patch<updateInstallationRequestType>(
-        `${INSTALLATION_REQUESTS_API}/:installationRequestId`,
-        (req, res, ctx) => {
-            const { installationRequestId } = req.params
-            if (installationRequestId && req.body) {
-                return res(ctx.status(200), ctx.delay(1000), ctx.json(req.body))
-            }
+    rest.put<updateInstallationRequestType>(`${INSTALLATION_REQUESTS_API}/:id`, (req, res, ctx) => {
+        if (parseInt(req.params.id) !== -1) {
+            return res(ctx.status(200), ctx.delay(1000), ctx.json(req.body))
+        }
 
-            return res(ctx.status(400), ctx.delay(1000))
-        },
-    ),
+        return res(ctx.status(400), ctx.delay(1000))
+    }),
 
     // CREATE one installation request.
-    // eslint-disable-next-line sonarjs/no-identical-functions
     rest.post<createInstallationRequestType>(INSTALLATION_REQUESTS_API, (req, res, ctx) => {
         if (req.body) {
             return res(ctx.status(201), ctx.delay(1000), ctx.json(req.body))
@@ -197,7 +192,7 @@ export const installationRequestsEndpoints = [
 
     // Delete one installation request
     rest.delete(`${INSTALLATION_REQUESTS_API}/:installationRequestId`, (req, res, ctx) => {
-        const { installationRequestId } = req.params
+        const { id: installationRequestId } = req.params
         if (installationRequestId) {
             return res(ctx.status(204), ctx.delay(1000))
         }
