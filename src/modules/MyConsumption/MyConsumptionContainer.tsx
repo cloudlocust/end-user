@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react'
+import { useState, useEffect, useMemo, useCallback } from 'react'
 import { motion } from 'framer-motion'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import MyConsumptionChart from 'src/modules/MyConsumption/components/MyConsumptionChart'
@@ -125,13 +125,37 @@ export const MyConsumptionContainer = () => {
      *
      * @param target Metric target.
      */
-    const addTarget = (target: metricTargetType) => {
-        if (!filteredTargets.find((filteredTargetsEl) => filteredTargetsEl === target)) {
-            setFilteredTargets((prevState) => {
-                return [...prevState, target]
-            })
-        }
-    }
+    const addTarget = useCallback(
+        (target: metricTargetType) => {
+            if (!filteredTargets.find((filteredTargetsEl) => filteredTargetsEl === target)) {
+                setFilteredTargets((prevState) => {
+                    return [...prevState, target]
+                })
+            }
+        },
+        [filteredTargets],
+    )
+
+    const memoizedTargetButtonGroup = useMemo(() => {
+        return (
+            <TargetButtonGroup
+                removeTarget={removeTarget}
+                addTarget={addTarget}
+                hidePmax={period === 'daily' || enedisConsent?.enedisConsentState === 'NONEXISTENT'}
+            />
+        )
+    }, [addTarget, enedisConsent?.enedisConsentState, period])
+
+    const memoizedMyConsumptionPeriod = useMemo(() => {
+        return (
+            <MyConsumptionPeriod
+                setPeriod={setPeriod}
+                setRange={setRange}
+                setMetricsInterval={setMetricsInterval}
+                range={range}
+            />
+        )
+    }, [range, setMetricsInterval, setRange])
 
     // By checking if the metersList is true we make sure that if someone has skipped the step of connecting their PDL, they will see this error message.
     // Else if they have a PDL, we check its consent.
@@ -190,12 +214,7 @@ export const MyConsumptionContainer = () => {
                         addTarget={addTarget}
                         showEurosConsumption={!isEurosConsumptionChart}
                     />
-
-                    <TargetButtonGroup
-                        removeTarget={removeTarget}
-                        addTarget={addTarget}
-                        hidePmax={period === 'daily' || enedisConsent?.enedisConsentState === 'NONEXISTENT'}
-                    />
+                    {memoizedTargetButtonGroup}
                 </div>
 
                 {isMetricsLoading ? (
@@ -213,12 +232,7 @@ export const MyConsumptionContainer = () => {
                         range={range}
                     />
                 )}
-                <MyConsumptionPeriod
-                    setPeriod={setPeriod}
-                    setRange={setRange}
-                    setMetricsInterval={setMetricsInterval}
-                    range={range}
-                />
+                {memoizedMyConsumptionPeriod}
                 {isEurosConsumptionChart && (
                     // TODO Fix URL redirection with the correct housingId.
                     <NavLink to={`${URL_CONTRACTS}`} className="flex flex-col items-center mt-16">

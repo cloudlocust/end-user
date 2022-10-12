@@ -312,7 +312,6 @@ export const fillApexChartsDatetimeSeriesMissingValues = (
         // Fill datapoints missing values.
         // This index will help to go through datapoints and map between missing value and its timestamp counterpart.
         let missingDatapointIndex = 0
-        // Filling the missing y value with null, so that we can show its xAxis label, otherwise if ApexCharts if he find xAxis[i] and doesn't find yAxis[i] of the same index it'll hide the xAxis label, however even if yAxis[i] === null ApexCharts will show its xAxis[i], and that's why we're doing this so that we can show xAxis labels (for example: period === 'weekly', xAxis will be [Saturday, Sunday, Monday, Tuesday, Wednesday, Thursday, Friday], and if yValus in Monday doesn't exist in ApexCharts it'll hide Tuesday, thus it'll show only 6 entries on the graph instead of 7, but by giving null to yValue it'll show all days including Tuesday but with no value on the chart).
         yAxisSerie.data = expectedTimestampList.map((xAxisValue) => {
             // Check for gap of current expected timestamp and current datapoint timestamp, otherwise check if we covered all given datapoints then we just fill the remaining datapoints.
             if (
