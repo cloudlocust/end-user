@@ -191,9 +191,9 @@ export const installationRequestsEndpoints = [
     }),
 
     // Delete one installation request
-    rest.delete(`${INSTALLATION_REQUESTS_API}/:installationRequestId`, (req, res, ctx) => {
+    rest.delete(`${INSTALLATION_REQUESTS_API}/:id`, (req, res, ctx) => {
         const { id: installationRequestId } = req.params
-        if (installationRequestId) {
+        if (parseInt(installationRequestId) !== -1) {
             return res(ctx.status(204), ctx.delay(1000))
         }
 

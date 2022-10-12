@@ -15,7 +15,9 @@ const TEST_CREATE_INSTALLATION_REQUEST = rest
 const ERROR_SNACKBAR_GET_MESSAGE = 'Erreur lors du chargement des demandes'
 const SUCCESS_SNACKBAR_EDIT_MESSAGE = 'Succès lors de la modification de la demande'
 const ERROR_SNACKBAR_EDT_MESSAGE = 'Erreur lors de la modification de la demande'
-const SUCCESS_SNACKBAR_CREATE_MESSAGe = "Succès lors de l'ajout de la demande"
+const SUCCESS_SNACKBAR_CREATE_MESSAGE = "Succès lors de l'ajout de la demande"
+const SUCCESS_SNACKBAR_DELETE_MESSAGE = 'Succès lors de la suppression de la demande'
+const ERROR_SNACKBAR_DELETE_MESSAGE = 'Erreur lors de la suppression de la demande'
 
 /**
  * Mocking the useSnackbar.
@@ -89,35 +91,10 @@ describe('InstallationRequestList hook test', () => {
 
             expect(result.current.loadingInProgress).toBe(false)
 
-            expect(mockEnqueueSnackbar).toHaveBeenCalledWith(SUCCESS_SNACKBAR_CREATE_MESSAGe, {
+            expect(mockEnqueueSnackbar).toHaveBeenCalledWith(SUCCESS_SNACKBAR_CREATE_MESSAGE, {
                 variant: 'success',
             })
         })
-        // test('when createInstallationRequeest resolves, a success snackbar is shown', async () => {
-        //     const {
-        //         renderedHook: { result, waitForValueToChange },
-        //     } = reduxedRenderHook(() => useInstallationRequests(), { initialState: {} })
-
-        //     act(() => {
-        //         result.current.createInstallationRequeest(TEST_CREATE_INSTALLATION_REQUEST)
-        //     })
-
-        //     expect(result.current.loadingInProgress).toBe(true)
-
-        //     await waitForValueToChange(
-        //         () => {
-        //             return result.current.loadingInProgress
-        //         },
-        //         { timeout: 4000 },
-        //     )
-
-        //     expect(result.current.loadingInProgress).toBe(false)
-
-        //     expect(mockEnqueueSnackbar).toHaveBeenCalledWith(SUCCESS_CREATE_INSTALLATION_REQUEST_MESSAGE, {
-        //         variant: 'success',
-        //         autoHideDuration: 5000,
-        //     })
-        // })
     })
     describe('useInstallationDetails', () => {
         test('success snackbar when edit installation request resolves', async () => {
@@ -157,6 +134,48 @@ describe('InstallationRequestList hook test', () => {
             )
             expect(result.current.loadingInProgress).toBe(false)
             expect(mockEnqueueSnackbar).toHaveBeenCalledWith(ERROR_SNACKBAR_EDT_MESSAGE, {
+                variant: 'error',
+            })
+        })
+        test('success snackbar when delete installation request resolves', async () => {
+            const {
+                renderedHook: { result, waitForValueToChange },
+            } = reduxedRenderHook(() => useInstallationRequestDetails(TEST_INSTALLATION_REQUESTS[0].id), {
+                initialState: {},
+            })
+            act(() => {
+                result.current.removeElementDetails(TEST_INSTALLATION_REQUESTS[0].id)
+            })
+            expect(result.current.loadingInProgress).toBe(true)
+            await waitForValueToChange(
+                () => {
+                    return result.current.loadingInProgress
+                },
+                { timeout: 4000 },
+            )
+            expect(result.current.loadingInProgress).toBe(false)
+            expect(mockEnqueueSnackbar).toHaveBeenCalledWith(SUCCESS_SNACKBAR_DELETE_MESSAGE, {
+                variant: 'success',
+            })
+        })
+        test('error snackbar when delete installation request fails', async () => {
+            const {
+                renderedHook: { result, waitForValueToChange },
+            } = reduxedRenderHook(() => useInstallationRequestDetails(-1), {
+                initialState: {},
+            })
+            act(() => {
+                result.current.removeElementDetails(null)
+            })
+            expect(result.current.loadingInProgress).toBe(true)
+            await waitForValueToChange(
+                () => {
+                    return result.current.loadingInProgress
+                },
+                { timeout: 4000 },
+            )
+            expect(result.current.loadingInProgress).toBe(false)
+            expect(mockEnqueueSnackbar).toHaveBeenCalledWith(ERROR_SNACKBAR_DELETE_MESSAGE, {
                 variant: 'error',
             })
         })
