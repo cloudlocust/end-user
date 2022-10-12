@@ -27,7 +27,7 @@ const mockContractFormSelectProps: ContractFormSelectProps<string> = {
     loadOptions: jest.fn(),
     optionList: ['opt1', 'opt2', 'opt3', 'opt4'],
     isOptionsInProgress: false,
-    selectLabel: LABEL_SELECT_TEXT,
+    label: LABEL_SELECT_TEXT,
 }
 
 describe('Test ContractFormSelect Component', () => {

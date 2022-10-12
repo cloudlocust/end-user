@@ -1,4 +1,7 @@
-import { convertMetricsDataToApexChartsAxisValues } from 'src/modules/MyConsumption/utils/apexChartsDataConverter'
+import {
+    convertMetricsDataToApexChartsAxisValues,
+    convertMetricsDataToApexChartsDateTimeAxisValues,
+} from 'src/modules/MyConsumption/utils/apexChartsDataConverter'
 import { IMetric } from 'src/modules/Metrics/Metrics'
 
 // eslint-disable-next-line jsdoc/require-jsdoc
@@ -14,19 +17,37 @@ const mockMetricsData: IMetric[] = [
 
 // eslint-disable-next-line jsdoc/require-jsdoc
 describe('test pure function', () => {
-    test('convertMetricsDataToApexChartsAxisValues test with valid data', async () => {
-        // ApexChart Props
-        const apexChartsAxisValues = convertMetricsDataToApexChartsAxisValues(mockMetricsData)
-        expect(apexChartsAxisValues.yAxisSeries).toStrictEqual([
-            { name: mockMetricsData[0].target, data: [mockDatapoints[0][0]] },
-        ])
-        expect(apexChartsAxisValues.xAxisSeries).toStrictEqual([[mockDatapoints[0][1]]])
+    describe('convertMetricsDataToApexChartsAxisValues', () => {
+        test('convertMetricsDataToApexChartsAxisValues test with valid data', async () => {
+            // ApexChart Props
+            const apexChartsAxisValues = convertMetricsDataToApexChartsAxisValues(mockMetricsData)
+            expect(apexChartsAxisValues.yAxisSeries).toStrictEqual([
+                { name: mockMetricsData[0].target, data: [mockDatapoints[0][0]] },
+            ])
+            expect(apexChartsAxisValues.xAxisSeries).toStrictEqual([[mockDatapoints[0][1]]])
+        })
+        test('convertMetricsDataToApexChartsAxisValues test empty data', async () => {
+            mockMetricsData[0].datapoints = []
+            // ApexChart Props empty data
+            const apexChartsAxisValues = convertMetricsDataToApexChartsAxisValues(mockMetricsData)
+            expect(apexChartsAxisValues.yAxisSeries).toStrictEqual([{ name: mockMetricsData[0].target, data: [] }])
+            expect(apexChartsAxisValues.xAxisSeries).toStrictEqual([[]])
+        })
     })
-    test('convertMetricsDataToApexChartsAxisValues test empty data', async () => {
-        mockMetricsData[0].datapoints = []
-        // ApexChart Props empty data
-        const apexChartsAxisValues = convertMetricsDataToApexChartsAxisValues(mockMetricsData)
-        expect(apexChartsAxisValues.yAxisSeries).toStrictEqual([{ name: mockMetricsData[0].target, data: [] }])
-        expect(apexChartsAxisValues.xAxisSeries).toStrictEqual([[]])
+    describe('convertMetricsDataToApexChartsDateTimeAxisValues', () => {
+        test('convertMetricsDataToApexChartsDateTimeAxisValues test with valid data', async () => {
+            mockMetricsData[0].datapoints = mockDatapoints
+            // ApexChartDatetime Props
+            const ApexChartsDateTimeAxisValues = convertMetricsDataToApexChartsDateTimeAxisValues(mockMetricsData)
+            expect(ApexChartsDateTimeAxisValues).toStrictEqual([
+                { name: mockMetricsData[0].target, data: [[mockDatapoints[0][1], mockDatapoints[0][0]]] },
+            ])
+        })
+        test('convertMetricsDataToApexChartsDateTimeAxisValues test empty data', async () => {
+            mockMetricsData[0].datapoints = []
+            // ApexChartDatetime Props empty data
+            const ApexChartsDateTimeAxisValues = convertMetricsDataToApexChartsDateTimeAxisValues(mockMetricsData)
+            expect(ApexChartsDateTimeAxisValues).toStrictEqual([{ name: mockMetricsData[0].target, data: [] }])
+        })
     })
 })
