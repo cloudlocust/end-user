@@ -30,7 +30,7 @@ import { useInstallationRequestsList } from 'src/modules/InstallationRequests/in
  */
 export const InstallationRequestCreatePopup = (props: InstallationRequestCreatePopupProps) => {
     const { handleClosePopup, open, onAfterCreateUpdateDeleteSuccess } = props
-    const { loadingInProgress } = useInstallationRequestsList()
+    const { loadingInProgress, addElement } = useInstallationRequestsList()
     const [activeEquipmentButton, setActiveEquipmentButton] = useState<equipmentTypeT | null>(null)
 
     const selectedTheme = selectTheme()
@@ -87,11 +87,11 @@ export const InstallationRequestCreatePopup = (props: InstallationRequestCreateP
 
                         <Form
                             onSubmit={(data: createInstallationRequestType) => {
-                                // const { equipmentType, ...restOfData } = data
-                                // // createInstallationRequeest({
-                                // //     ...restOfData,
-                                // //     equipmentType: activeEquipmentButton!,
-                                // // })
+                                const { equipmentType, ...restOfData } = data
+                                addElement({
+                                    ...restOfData,
+                                    equipmentType: activeEquipmentButton!,
+                                })
                                 handleClosePopup()
                                 onAfterCreateUpdateDeleteSuccess()
                             }}

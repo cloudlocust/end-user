@@ -183,7 +183,6 @@ export const installationRequestsEndpoints = [
     }),
 
     // CREATE one installation request.
-    // eslint-disable-next-line sonarjs/no-identical-functions
     rest.post<createInstallationRequestType>(INSTALLATION_REQUESTS_API, (req, res, ctx) => {
         if (req.body) {
             return res(ctx.status(200), ctx.delay(1000), ctx.json(req.body))

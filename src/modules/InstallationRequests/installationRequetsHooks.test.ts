@@ -15,6 +15,7 @@ const TEST_CREATE_INSTALLATION_REQUEST = rest
 const ERROR_SNACKBAR_GET_MESSAGE = 'Erreur lors du chargement des demandes'
 const SUCCESS_SNACKBAR_EDIT_MESSAGE = 'Succès lors de la modification de la demande'
 const ERROR_SNACKBAR_EDT_MESSAGE = 'Erreur lors de la modification de la demande'
+const SUCCESS_SNACKBAR_CREATE_MESSAGe = "Succès lors de l'ajout de la demande"
 
 /**
  * Mocking the useSnackbar.
@@ -33,6 +34,7 @@ jest.mock('notistack', () => ({
 
 describe('InstallationRequestList hook test', () => {
     describe('useInstallationRequestsList', () => {
+        /* Get Elements */
         test('when snackbar is called with error', async () => {
             const {
                 renderedHook: { result, waitForValueToChange },
@@ -65,6 +67,57 @@ describe('InstallationRequestList hook test', () => {
             expect(result.current.loadingInProgress).toBe(false)
             expect(result.current.elementList).toBeTruthy()
         })
+
+        /* Add Element */
+        test('snackbar succes is shown when addElement request resolves', async () => {
+            const {
+                renderedHook: { result, waitForValueToChange },
+            } = reduxedRenderHook(() => useInstallationRequestsList(), { initialState: {} })
+
+            act(() => {
+                result.current.addElement(TEST_CREATE_INSTALLATION_REQUEST)
+            })
+
+            expect(result.current.loadingInProgress).toBe(true)
+
+            await waitForValueToChange(
+                () => {
+                    return result.current.loadingInProgress
+                },
+                { timeout: 4000 },
+            )
+
+            expect(result.current.loadingInProgress).toBe(false)
+
+            expect(mockEnqueueSnackbar).toHaveBeenCalledWith(SUCCESS_SNACKBAR_CREATE_MESSAGe, {
+                variant: 'success',
+            })
+        })
+        // test('when createInstallationRequeest resolves, a success snackbar is shown', async () => {
+        //     const {
+        //         renderedHook: { result, waitForValueToChange },
+        //     } = reduxedRenderHook(() => useInstallationRequests(), { initialState: {} })
+
+        //     act(() => {
+        //         result.current.createInstallationRequeest(TEST_CREATE_INSTALLATION_REQUEST)
+        //     })
+
+        //     expect(result.current.loadingInProgress).toBe(true)
+
+        //     await waitForValueToChange(
+        //         () => {
+        //             return result.current.loadingInProgress
+        //         },
+        //         { timeout: 4000 },
+        //     )
+
+        //     expect(result.current.loadingInProgress).toBe(false)
+
+        //     expect(mockEnqueueSnackbar).toHaveBeenCalledWith(SUCCESS_CREATE_INSTALLATION_REQUEST_MESSAGE, {
+        //         variant: 'success',
+        //         autoHideDuration: 5000,
+        //     })
+        // })
     })
     describe('useInstallationDetails', () => {
         test('success snackbar when edit installation request resolves', async () => {
@@ -105,55 +158,5 @@ describe('InstallationRequestList hook test', () => {
                 variant: 'error',
             })
         })
-        // test('when createInstallationRequest rejects, an error snackbar is shown', async () => {
-        //     const {
-        //         renderedHook: { result, waitForValueToChange },
-        //     } = reduxedRenderHook(() => useInstallationRequests(), { initialState: {} })
-
-        //     act(() => {
-        //         result.current.createInstallationRequeest()
-        //     })
-
-        //     expect(result.current.loadingInProgress).toBe(true)
-
-        //     await waitForValueToChange(
-        //         () => {
-        //             return result.current.loadingInProgress
-        //         },
-        //         { timeout: 4000 },
-        //     )
-
-        //     expect(result.current.loadingInProgress).toBe(false)
-
-        //     expect(mockEnqueueSnackbar).toHaveBeenCalledWith(ERROR_CREATE_INSTALLATION_REQUEST_MESSAGE, {
-        //         variant: 'error',
-        //         autoHideDuration: 5000,
-        //     })
-        // })
-        // test('when createInstallationRequeest resolves, a success snackbar is shown', async () => {
-        //     const {
-        //         renderedHook: { result, waitForValueToChange },
-        //     } = reduxedRenderHook(() => useInstallationRequests(), { initialState: {} })
-
-        //     act(() => {
-        //         result.current.createInstallationRequeest(TEST_CREATE_INSTALLATION_REQUEST)
-        //     })
-
-        //     expect(result.current.loadingInProgress).toBe(true)
-
-        //     await waitForValueToChange(
-        //         () => {
-        //             return result.current.loadingInProgress
-        //         },
-        //         { timeout: 4000 },
-        //     )
-
-        //     expect(result.current.loadingInProgress).toBe(false)
-
-        //     expect(mockEnqueueSnackbar).toHaveBeenCalledWith(SUCCESS_CREATE_INSTALLATION_REQUEST_MESSAGE, {
-        //         variant: 'success',
-        //         autoHideDuration: 5000,
-        //     })
-        // })
     })
 })
