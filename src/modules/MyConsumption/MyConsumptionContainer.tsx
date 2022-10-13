@@ -19,9 +19,10 @@ import { MyConsumptionPeriod } from 'src/modules/MyConsumption'
 import TargetButtonGroup from 'src/modules/MyConsumption/components/TargetButtonGroup'
 import { NavLink } from 'react-router-dom'
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline'
-import { URL_CONTRACTS } from 'src/modules/Contracts/ContractsConfig'
 import { useSelector } from 'react-redux'
 import { RootState } from 'src/redux'
+import { URL_MY_HOUSE } from 'src/modules/MyHouse/MyHouseConfig'
+import { useMyConsumptionHooks } from 'src/modules/MyConsumption/hooks/MyConsumptionHooks'
 
 /**
  * InitialMetricsStates for useMetrics.
@@ -34,11 +35,10 @@ export const initialMetricsHookValues: getMetricType = {
             target: metricTargetsEnum.consumption,
             type: 'timeserie',
         },
-        // TODO Reset euro consumption when backend ready.
-        // {
-        // target: metricTargetsEnum.eurosConsumption,
-        // type: 'timeserie',
-        // },
+        {
+            target: metricTargetsEnum.eurosConsumption,
+            type: 'timeserie',
+        },
         {
             target: metricTargetsEnum.pMax,
             type: 'timeserie',
@@ -70,13 +70,14 @@ export const MyConsumptionContainer = () => {
     const [period, setPeriod] = useState<periodType>('daily')
     const [filteredTargets, setFilteredTargets] = useState<metricTargetType[]>([metricTargetsEnum.consumption])
     const isEurosConsumptionChart = filteredTargets.includes(metricTargetsEnum.eurosConsumption)
-
     const { currentHousing } = useSelector(({ housingModel }: RootState) => housingModel)
 
     useEffect(() => {
         if (!currentHousing) return
         if (currentHousing?.meter) setFilters(formatMetricFilter(currentHousing.meter?.guid))
     }, [currentHousing, setFilters])
+
+    const { hasMissingHousingContracts } = useMyConsumptionHooks(range, currentHousing?.id)
 
     // UseEffect to check for consent whenever a meter is selected.
     useEffect(() => {
@@ -233,9 +234,11 @@ export const MyConsumptionContainer = () => {
                     />
                 )}
                 {memoizedMyConsumptionPeriod}
-                {isEurosConsumptionChart && (
-                    // TODO Fix URL redirection with the correct housingId.
-                    <NavLink to={`${URL_CONTRACTS}`} className="flex flex-col items-center mt-16">
+                {hasMissingHousingContracts && (
+                    <NavLink
+                        to={`${URL_MY_HOUSE}/${currentHousing?.id}/contracts`}
+                        className="flex flex-col items-center mt-16"
+                    >
                         <ErrorOutlineIcon sx={{ color: 'secondary.main', width: '32px', height: '32px' }} />
                         <TypographyFormatMessage
                             className="text-13 underline md:text-16 w-full text-center"
@@ -254,10 +257,8 @@ export const MyConsumptionContainer = () => {
                         </TypographyFormatMessage>
                     </div>
                     <WidgetList
-                        data={
-                            // TODO Fix when getting to the story of widget consumptionEuros
-                            data.filter((metric) => metric.target !== metricTargetsEnum.eurosConsumption)
-                        }
+                        data={data}
+                        hasMissingHousingContracts={hasMissingHousingContracts}
                         isMetricsLoading={isMetricsLoading}
                     />
                 </div>

@@ -11,9 +11,10 @@ import { IWidgetProps } from 'src/modules/MyConsumption/components/Widget/Widget
  * @param root0.title Widget title.
  * @param root0.unit Widget unit.
  * @param root0.value Widget value.
+ * @param root0.infoIcon Widget infoIcon.
  * @returns Single Widget component.
  */
-export const Widget = memo(({ isMetricsLoading, title, unit, value }: IWidgetProps) => {
+export const Widget = memo(({ isMetricsLoading, title, unit, infoIcon, value }: IWidgetProps) => {
     const theme = useTheme()
 
     return (
@@ -29,10 +30,14 @@ export const Widget = memo(({ isMetricsLoading, title, unit, value }: IWidgetPro
                         </div>
                     ) : (
                         <div className="p-16 flex flex-col justify-between h-full">
-                            {/* Widget title */}
-                            <TypographyFormatMessage className="sm:text-16 font-medium md:text-17">
-                                {title}
-                            </TypographyFormatMessage>
+                            <div className="flex justify-between">
+                                {/* Widget title */}
+                                <TypographyFormatMessage className="sm:text-16 font-medium md:text-17">
+                                    {title}
+                                </TypographyFormatMessage>
+                                {/* Widget infoIcon */}
+                                {infoIcon}
+                            </div>
                             {/* If onError returns true, it will display an error message for the widget type */}
                             {!value ? (
                                 <div className="mb-44 text-center">

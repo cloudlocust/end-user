@@ -6,11 +6,11 @@ import { TEST_SUCCESS_WEEK_METRICS } from 'src/mocks/handlers/metrics'
 import { waitFor } from '@testing-library/react'
 import { formatMetricFilter } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
 import userEvent from '@testing-library/user-event'
-import { URL_CONTRACTS } from 'src/modules/Contracts/ContractsConfig'
 import { store } from 'src/redux'
 import { applyCamelCase } from 'src/common/react-platform-components'
 import { IHousing } from 'src/modules/MyHouse/components/HousingList/housing'
 import { TEST_HOUSES } from 'src/mocks/handlers/houses'
+import { URL_MY_HOUSE } from 'src/modules/MyHouse/MyHouseConfig'
 
 // List of houses to add to the redux state
 const LIST_OF_HOUSES: IHousing[] = applyCamelCase(TEST_HOUSES)
@@ -80,6 +80,14 @@ jest.mock('src/modules/Consents/consentsHook.ts', () => ({
     }),
 }))
 
+// Mock MyConsumptionHooks
+jest.mock('src/modules/MyConsumption/hooks/MyConsumptionHooks', () => ({
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    useMyConsumptionHooks: () => ({
+        hasMissingHousingContracts: true,
+    }),
+}))
+
 // MyConsumptionContainer cannot render if we don't mock react-apexcharts
 jest.mock(
     'react-apexcharts',
@@ -145,6 +153,7 @@ describe('MyConsumptionContainer test', () => {
             <Router>
                 <MyConsumptionContainer />
             </Router>,
+            { initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[0] } } },
         )
         // TOGGLING TO EUROS CONSUMPTION CHART
         userEvent.click(getByTestId(EUROS_CONSUMPTION_ICON_TEST_ID).parentElement as HTMLButtonElement)
@@ -177,7 +186,7 @@ describe('MyConsumptionContainer test', () => {
         // Contracts Redirection URL
         expect(getByText(EUROS_CONSUMPTION_EXAMPLE_CHART_WARNING_TEXT).parentElement!.closest('a')).toHaveAttribute(
             'href',
-            URL_CONTRACTS,
+            `${URL_MY_HOUSE}/${LIST_OF_HOUSES[0].id}/contracts`,
         )
 
         // TOGGLING TO CONSUMPTION CHART
