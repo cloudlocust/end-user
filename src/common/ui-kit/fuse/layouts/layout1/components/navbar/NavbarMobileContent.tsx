@@ -186,12 +186,19 @@ function NavbarMobileContent(props: /**
                                 exact={item.exact}
                                 role="button"
                                 icon={
-                                    <Icon
-                                        className={clsx(`type-${item!.type}`, 'fuse-bottom-navigation-item-icon')}
-                                        color="action"
-                                    >
-                                        {item.iconLabel}
-                                    </Icon>
+                                    item!.icon ? (
+                                        <Icon
+                                            className={clsx(`type-${item!.type}`, 'fuse-bottom-navigation-item-icon')}
+                                            color="action"
+                                        >
+                                            {item.icon}
+                                        </Icon>
+                                    ) : (
+                                        formatMessage({
+                                            id: item!.label,
+                                            defaultMessage: item!.label,
+                                        }) && <div className="font-bold text-20">{item!.label![0]}</div>
+                                    )
                                 }
                             />
                         ))}

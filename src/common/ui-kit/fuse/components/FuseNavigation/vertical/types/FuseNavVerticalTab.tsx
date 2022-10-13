@@ -92,12 +92,12 @@ function FuseNavVerticalTab(props: IFuseNavigationComponentProps) {
                         placement="right"
                     >
                         <div className="w-32 h-32 min-h-32 flex items-center justify-center relative">
-                            {item!.iconLabel ? (
+                            {item!.icon ? (
                                 <Icon
                                     className={clsx('fuse-list-item-icon text-24', item!.iconClassName)}
                                     color="action"
                                 >
-                                    {item!.iconLabel}
+                                    {item!.icon}
                                 </Icon>
                             ) : (
                                 formatMessage({
@@ -110,12 +110,12 @@ function FuseNavVerticalTab(props: IFuseNavigationComponentProps) {
                 ) : (
                     <>
                         <div className="w-32 h-32 min-h-32 flex items-center justify-center relative mb-8">
-                            {item!.iconLabel ? (
+                            {item!.icon ? (
                                 <Icon
                                     className={clsx('fuse-list-item-icon text-32', item!.iconClassName)}
                                     color="action"
                                 >
-                                    {item!.iconLabel}
+                                    {item!.icon}
                                 </Icon>
                             ) : (
                                 formatMessage({
