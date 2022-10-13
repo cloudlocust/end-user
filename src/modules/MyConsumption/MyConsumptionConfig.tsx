@@ -1,6 +1,8 @@
 import { authTypes } from 'src/common/react-platform-components'
 import { IRouteNavigationConfig } from 'src/routes'
 import { MyConsumption } from './MyConsumption'
+import { ReactComponent as MyConsumptionIcon } from 'src/assets/images/navbarItems/MyConsumption.svg'
+import SvgIcon from '@mui/material/SvgIcon'
 
 /**
  * Url for my-consumption.
@@ -38,7 +40,11 @@ export const MyConsumptionConfig = [
                         label: 'Ma Conso',
                         labelAbbreviation: 'Ma Conso',
                         type: 'item',
-                        iconLabel: 'timeline',
+                        icon: (
+                            <SvgIcon>
+                                <MyConsumptionIcon />
+                            </SvgIcon>
+                        ),
                         url: URL_CONSUMPTION,
                     },
                 },

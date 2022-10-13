@@ -4,6 +4,8 @@ import { MyHouse } from 'src/modules/MyHouse/MyHouse'
 import { HousingDetails } from 'src/modules/MyHouse/components/HousingDetails'
 import Equipments from 'src/modules/MyHouse/components/Equipments'
 import Accomodation from 'src/modules/MyHouse/components/Accomodation'
+import { ReactComponent as HousingIcon } from 'src/assets/images/navbarItems/Housings.svg'
+import SvgIcon from '@mui/material/SvgIcon'
 
 /**
  * Url for myHouse.
@@ -54,7 +56,11 @@ export const MyHouseConfig = [
                         label: 'Logement',
                         labelAbbreviation: 'Logement',
                         type: 'item',
-                        iconLabel: 'home',
+                        icon: (
+                            <SvgIcon>
+                                <HousingIcon />
+                            </SvgIcon>
+                        ),
                         url: URL_MY_HOUSE,
                     },
                 },
@@ -73,7 +79,11 @@ export const MyHouseConfig = [
                         label: 'Logement',
                         labelAbbreviation: 'Logement',
                         type: 'item',
-                        iconLabel: 'home',
+                        icon: (
+                            <SvgIcon>
+                                <HousingIcon />
+                            </SvgIcon>
+                        ),
                         url: URL_MY_HOUSE_DETAILS,
                     },
                 },
@@ -92,7 +102,11 @@ export const MyHouseConfig = [
                         label: 'Logement',
                         labelAbbreviation: 'Logement',
                         type: 'item',
-                        iconLabel: 'home',
+                        icon: (
+                            <SvgIcon>
+                                <HousingIcon />
+                            </SvgIcon>
+                        ),
                         url: URL_HOUSING_EQUIPMENTS,
                     },
                 },
@@ -111,7 +125,11 @@ export const MyHouseConfig = [
                         label: 'Logement',
                         labelAbbreviation: 'Logement',
                         type: 'item',
-                        iconLabel: 'home',
+                        icon: (
+                            <SvgIcon>
+                                <HousingIcon />
+                            </SvgIcon>
+                        ),
                         url: URL_HOUSING_ACCOMODATION,
                     },
                 },
