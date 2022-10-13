@@ -23,7 +23,7 @@ let mockIsMetricsLoading = false
 let mockEnedisConsent: string
 const mockSetFilters = jest.fn()
 const circularProgressClassname = '.MuiCircularProgress-root'
-const EUROS_CONSUMPTION_EXAMPLE_CHART_WARNING_TEXT = "Ce graphe est un exemple. Renseigner votre contrat d'énergie"
+const HAS_MISSING_CONTRACTS_WARNING_TEXT = "Ce graphe est un exemple. Renseigner votre contrat d'énergie"
 const WEEKLY_PERIOD_BUTTON_TEXT = 'Semaine'
 const MONTHLY_PERIOD_BUTTON_TEXT = 'Mois'
 const YEARLY_PERIOD_BUTTON_TEXT = 'Année'
@@ -80,10 +80,10 @@ jest.mock('src/modules/Consents/consentsHook.ts', () => ({
     }),
 }))
 
-// Mock MyConsumptionHooks
-jest.mock('src/modules/MyConsumption/hooks/MyConsumptionHooks', () => ({
+// Mock useHasMissingHousingContracts
+jest.mock('src/hooks/HasMissingHousingContracts', () => ({
     // eslint-disable-next-line jsdoc/require-jsdoc
-    useMyConsumptionHooks: () => ({
+    useHasMissingHousingContracts: () => ({
         hasMissingHousingContracts: true,
     }),
 }))
@@ -181,10 +181,10 @@ describe('MyConsumptionContainer test', () => {
         await waitFor(() => {
             expect(getByText(EUROS_CONSUMPTION_TITLE_YEARLY)).toBeTruthy()
         })
-        // Example Chart Information Text
-        expect(getByText(EUROS_CONSUMPTION_EXAMPLE_CHART_WARNING_TEXT)).toBeTruthy()
+        // HasMissingContractsExample Text
+        expect(getByText(HAS_MISSING_CONTRACTS_WARNING_TEXT)).toBeTruthy()
         // Contracts Redirection URL
-        expect(getByText(EUROS_CONSUMPTION_EXAMPLE_CHART_WARNING_TEXT).parentElement!.closest('a')).toHaveAttribute(
+        expect(getByText(HAS_MISSING_CONTRACTS_WARNING_TEXT).parentElement!.closest('a')).toHaveAttribute(
             'href',
             `${URL_MY_HOUSE}/${LIST_OF_HOUSES[0].id}/contracts`,
         )

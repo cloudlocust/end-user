@@ -17,13 +17,13 @@ export const getHasMissingHousingContractsApi = (housingId: IHousing['id']) =>
     `${HOUSING_API}/${housingId}/has_missing_housing_contracts`
 
 /**
- * Custom Hook used in MyConsumptionContainer, for requested related to euroConsumption target (such as showing a message if the euroConsumption chart hasMissingHousingContracts).
+ * Custom Hook used in for requested related to hasMissingHousingContract requet, for example in ConsumptionChart when euroConsumption target (showing a message if the euroConsumption chart hasMissingHousingContracts).
  *
  * @param range Range to check if hasMissingContracts.
  * @param housingId Housing Id.
- * @returns UseMyConsumptionHooks.
+ * @returns Hook useHasMissingHousingContracts.
  */
-export const useMyConsumptionHooks = (range: metricRangeType, housingId?: IHousing['id']) => {
+export const useHasMissingHousingContracts = (range: metricRangeType, housingId?: IHousing['id']) => {
     const [hasMissingHousingContracts, setHasMissingHousingContracts] = useState<boolean | null>(null)
     const { enqueueSnackbar } = useSnackbar()
     const { formatMessage } = useIntl()
