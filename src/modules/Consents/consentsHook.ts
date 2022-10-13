@@ -106,7 +106,7 @@ export function useConsents() {
     const verifyMeter = useCallback(
         async (housingId: number) => {
             try {
-                if (!housingId) return
+                if (!housingId) throw new Error('No housing id provided')
                 setIsMeterVerifyLoading(true)
                 const response = await axios.get(`${API_RESOURCES_URL}/enedis-sge/consent/${housingId}/check`)
                 if (response.status === 200) setMeterVerification(MeterVerificationEnum.VERIFIED)
@@ -138,12 +138,12 @@ export function useConsents() {
     const createEnedisSgeConsent = useCallback(
         async (housingId: number) => {
             try {
-                if (!housingId) return
+                if (!housingId) throw new Error('No housing id provided')
                 setIsCreateEnedisSgeConsentLoading(true)
-                const { status, data } = await axios.post<IEnedisSgeConsent>(ENEDIS_SGE_CONSENT_API, {
-                    housing_id: housingId,
-                })
-                if (status === 200) {
+                const { status, data } = await axios.post<IEnedisSgeConsent>(
+                    `${API_RESOURCES_URL}/enedis-sge/consent/${housingId}`,
+                )
+                if (status === 201) {
                     setEnedisSgeConsent(data)
                 }
                 setIsCreateEnedisSgeConsentLoading(false)

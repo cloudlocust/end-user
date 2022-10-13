@@ -7,8 +7,12 @@ import { applyCamelCase } from 'src/common/react-platform-components'
 import { fireEvent, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { ContractFormProps } from './contractsTypes'
+import { formatLoadContractResponseToIContract } from 'src/modules/Contracts/utils/contractsFunctions'
+import { IContract, loadContractResponse } from 'src/modules/Contracts/contractsTypes'
 
-const TEST_CONTRACTS = applyCamelCase(MOCK_CONTRACTS)
+const TEST_CONTRACTS: IContract[] = applyCamelCase(MOCK_CONTRACTS).map((contract: loadContractResponse) =>
+    formatLoadContractResponseToIContract(contract),
+)
 const EMPTY_CONTRACT_LIST_MESSAGE_TEXT =
     "Aucun contrat enregistré. Les valeurs de votre consommation exprimées en Euros proviennent d'un contrat EDF Tarif Bleu Base d'une puissance de 6kVA donnée à titre exemple."
 const mockHouseId = TEST_HOUSE_ID
@@ -16,8 +20,8 @@ let mockIsContractsLoading = false
 let mockReloadContractList = jest.fn()
 let mockAddContract = jest.fn()
 let mockContractList = [TEST_CONTRACTS[0]]
-const CONTRACT_PROVIDER_TEXT = TEST_CONTRACTS[0].provider
-const CONTRACT_OTHER_INFO_TEXT = `${TEST_CONTRACTS[0].offer} - ${TEST_CONTRACTS[0].tariffType} - ${TEST_CONTRACTS[0].power} kVA`
+const CONTRACT_PROVIDER_TEXT = TEST_CONTRACTS[0].provider.name
+const CONTRACT_OTHER_INFO_TEXT = `${TEST_CONTRACTS[0].offer.name} - ${TEST_CONTRACTS[0].tariffType.name} - ${TEST_CONTRACTS[0].power} kVA`
 const circularProgressClassname = '.MuiCircularProgress-root'
 const CONTRACT_FORM_MODAL_TEXT = 'Contrat de fourniture'
 const ADD_CONTRACT_BUTTON_DATA_TESTID = 'PostAddIcon'

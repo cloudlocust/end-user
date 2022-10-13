@@ -12,7 +12,7 @@ import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyForm
 import { useRef, useState } from 'react'
 import { useProfileManagement } from 'src/modules/User/ProfileManagement/ProfileManagementHooks'
 import Button from '@mui/material/Button'
-import { IChangePasswordData } from 'src/modules/User/ChangePassword/changePassword'
+import { IChangePasswordData } from 'src/modules/User/ChangePassword/changePassword.d'
 
 /**
  * Change password form, this form is based on react hooks.

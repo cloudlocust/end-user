@@ -14,6 +14,7 @@ import { models } from 'src/models'
 import { TEST_HOUSES } from 'src/mocks/handlers/houses'
 import { applyCamelCase } from 'src/common/react-platform-components'
 import * as reactRedux from 'react-redux'
+import { waitFor } from '@testing-library/react'
 
 const LIST_OF_HOUSES: IHousing[] = applyCamelCase(TEST_HOUSES)
 /**
@@ -37,6 +38,9 @@ const VERIFY_METER_MESSAGE = "Vérification de l'existence de votre compteur"
 const CREATION_ENEDIS_SGE_CONSENT_TEXT =
     "J'autorise My Energy Manager à la récolte de mon historique de données de consommation auprès d'Enedis."
 
+const EDIT_METER_NAME_PLACEHOLDER = 'Modifier le nom de votre compteur'
+const EDIT_METER_NUMBER_PLACEHOLDER = 'Modifier le numéro de votre compteur'
+
 let mockNrlinkConsent: nrlinkConsentStatus
 let mockEnedisSgeConsent: enedisSgeConsentStatus
 let mockGetConsent = jest.fn()
@@ -53,6 +57,16 @@ let mockMeterVerificationEnum = MeterVerificationEnum.NOT_VERIFIED
 let mockHouseId = TEST_MOCKED_HOUSES[0].id
 let mockCreateEnedisSgeConsent = jest.fn()
 let mockSetMeterVerification = jest.fn()
+let mockEditMeter = jest.fn()
+
+jest.mock('src/modules/Meters/metersHook', () => ({
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    ...jest.requireActual('src/modules/Meters/metersHook'),
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    useMeterForHousing: () => ({
+        editMeter: mockEditMeter,
+    }),
+}))
 
 /**
  * Mocking the useParams used in "meterStatus" to get the house id based on url /my-houses/:houseId params.
@@ -70,7 +84,7 @@ jest.mock('react-router-dom', () => ({
 }))
 
 // Mock consentsHook
-jest.mock('src/modules/Consents/consentsHook.ts', () => ({
+jest.mock('src/modules/Consents/consentsHook', () => ({
     // eslint-disable-next-line jsdoc/require-jsdoc
     useConsents: () => ({
         enedisSgeConsent: {
@@ -301,6 +315,60 @@ describe('MeterStatus component test', () => {
             expect(checkbox).toHaveProperty('checked', false)
             userEvent.click(checkbox)
             expect(mockCreateEnedisSgeConsent).toBeCalled()
+        })
+    })
+
+    describe('edit meter test', () => {
+        test('when edit icon is clicked, a modal is shown', async () => {
+            const { getByText, getByTestId, getByPlaceholderText } = reduxedRender(
+                <Router>
+                    <MeterStatus />
+                </Router>,
+            )
+
+            const editButton = getByTestId('ModeEditOutlineOutlinedIcon')
+
+            expect(editButton).toBeTruthy()
+            userEvent.click(editButton)
+            expect(getByPlaceholderText('Modifier le nom de votre compteur')).toBeTruthy()
+            expect(getByPlaceholderText('Modifier le numéro de votre compteur')).toBeTruthy()
+            expect(getByText('Annuler')).toBeTruthy()
+            expect(getByText('Modifier')).toBeTruthy()
+        })
+        test('when user edit a meter a submit it', async () => {
+            const { getByText, getByTestId, getByPlaceholderText } = reduxedRender(
+                <Router>
+                    <MeterStatus />
+                </Router>,
+            )
+
+            const TEST_METER_NUMBER_INPUT = '11223344556677'
+            const TEST_METER_NAME_INPUT = 'this is my meter'
+            const editButton = getByTestId('ModeEditOutlineOutlinedIcon')
+
+            expect(editButton).toBeTruthy()
+            userEvent.click(editButton)
+            const nameInput = getByPlaceholderText(EDIT_METER_NAME_PLACEHOLDER)
+            const numberInput = getByPlaceholderText(EDIT_METER_NUMBER_PLACEHOLDER)
+
+            // Clear inputs
+            userEvent.clear(nameInput)
+            userEvent.clear(numberInput)
+
+            // Type inputs
+            userEvent.type(nameInput, TEST_METER_NAME_INPUT)
+            userEvent.type(numberInput, TEST_METER_NUMBER_INPUT)
+
+            userEvent.click(getByText('Modifier'))
+
+            await waitFor(() => {
+                expect(mockEditMeter).toHaveBeenCalledWith(mockHouseId, {
+                    name: TEST_METER_NAME_INPUT,
+                    guid: TEST_METER_NUMBER_INPUT,
+                })
+            })
+
+            expect(() => getByPlaceholderText(EDIT_METER_NAME_PLACEHOLDER)).toThrow()
         })
     })
 })

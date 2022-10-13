@@ -28,10 +28,15 @@ jest.mock('notistack', () => ({
 const TEST_LOAD_CONTRACTS_ERROR_MESSAGE = 'Erreur lors du chargement des contrats'
 // ADD Contract
 const TEST_SUCCESS_ADD_CONTRACT_MESSAGE = "Succès lors de l'ajout du contrat"
+const TEST_ERROR_OFFER_ADD_CONTRACT_MESSAGE = "L'offre est invalide"
 const TEST_ERROR_ADD_CONTRACT_MESSAGE = "Erreur lors de l'ajout du contrat"
 // REMOVE Contract
 const TEST_SUCCESS_REMOVE_CONTRACT_MESSAGE = 'Succès lors de la suppression du contrat'
 const TEST_ERROR_REMOVE_CONTRACT_MESSAGE = 'Erreur lors de la suppression du contrat'
+// Edit Contract
+const TEST_SUCCESS_EDIT_CONTRACT_MESSAGE = 'Succès lors de la modification du contrat'
+const TEST_ERROR_OFFER_EDIT_CONTRACT_MESSAGE = "L'offre est invalide"
+const TEST_ERROR_EDIT_CONTRACT_MESSAGE = 'Erreur lors de la modification du contrat'
 describe('useContractsList test', () => {
     describe('Load Contracts', () => {
         test('When load error snackbar should be called with error message', async () => {
@@ -53,7 +58,7 @@ describe('useContractsList test', () => {
         })
     })
     describe('add Contract when', () => {
-        test('fail, error message', async () => {
+        test('fail, error message from backend', async () => {
             const {
                 renderedHook: { result, waitForValueToChange },
             } = reduxedRenderHook(() => useContractList(TEST_HOUSE_ID), { initialState: {} })
@@ -79,6 +84,38 @@ describe('useContractsList test', () => {
                 { timeout: 2000 },
             )
             expect(result.current.loadingInProgress).toBe(false)
+            // Message Error
+            expect(mockEnqueueSnackbar).toHaveBeenCalledWith(TEST_ERROR_OFFER_ADD_CONTRACT_MESSAGE, {
+                variant: 'error',
+            })
+        }, 10000)
+        test('fail, default error message', async () => {
+            const {
+                renderedHook: { result, waitForValueToChange },
+            } = reduxedRenderHook(() => useContractList(TEST_HOUSE_ID), { initialState: {} })
+
+            await waitForValueToChange(
+                () => {
+                    return result.current.elementList
+                },
+                { timeout: 4000 },
+            )
+            expect(result.current.loadingInProgress).toBe(false)
+            // Element is added.
+            act(async () => {
+                try {
+                    await result.current.addElement({ ...TEST_SUCCESS_ADD_CONTRACT, contractTypeId: TEST_ERROR_OFFER })
+                } catch (err) {}
+            })
+            expect(result.current.loadingInProgress).toBe(true)
+            await waitForValueToChange(
+                () => {
+                    return result.current.loadingInProgress
+                },
+                { timeout: 2000 },
+            )
+            expect(result.current.loadingInProgress).toBe(false)
+            // Message Error
             expect(mockEnqueueSnackbar).toHaveBeenCalledWith(TEST_ERROR_ADD_CONTRACT_MESSAGE, {
                 variant: 'error',
             })
@@ -152,6 +189,69 @@ describe('useContractDetails test', () => {
             )
             expect(result.current.loadingInProgress).toBe(false)
             expect(mockEnqueueSnackbar).toHaveBeenCalledWith(TEST_ERROR_REMOVE_CONTRACT_MESSAGE, { variant: 'error' })
+        }, 10000)
+    })
+
+    describe('editContractDetails test', () => {
+        test('Success', async () => {
+            const {
+                renderedHook: { result, waitForValueToChange },
+            } = reduxedRenderHook(() => useContractDetails(TEST_HOUSE_ID, TEST_SUCCESS_ID), { initialState: {} })
+            // Element is edited.
+            act(async () => {
+                try {
+                    await result.current.editElementDetails({ ...TEST_SUCCESS_ADD_CONTRACT, offerId: TEST_ERROR_OFFER })
+                } catch (err) {}
+            })
+            expect(result.current.loadingInProgress).toBe(true)
+            await waitForValueToChange(
+                () => {
+                    return result.current.loadingInProgress
+                },
+                { timeout: 4000 },
+            )
+            expect(result.current.loadingInProgress).toBe(false)
+            expect(mockEnqueueSnackbar).toHaveBeenCalledWith(TEST_SUCCESS_EDIT_CONTRACT_MESSAGE, {
+                variant: 'success',
+            })
+        }, 10000)
+        test('Error detail from backend', async () => {
+            const {
+                renderedHook: { result, waitForValueToChange },
+            } = reduxedRenderHook(() => useContractDetails(TEST_HOUSE_ID, 0), { initialState: {} })
+            // Element is edited.
+            act(async () => {
+                await result.current.editElementDetails({ ...TEST_SUCCESS_ADD_CONTRACT, offerId: TEST_ERROR_OFFER })
+            })
+            expect(result.current.loadingInProgress).toBe(true)
+            await waitForValueToChange(
+                () => {
+                    return result.current.loadingInProgress
+                },
+                { timeout: 4000 },
+            )
+            expect(result.current.loadingInProgress).toBe(false)
+            expect(mockEnqueueSnackbar).toHaveBeenCalledWith(TEST_ERROR_OFFER_EDIT_CONTRACT_MESSAGE, {
+                variant: 'error',
+            })
+        }, 10000)
+        test('Error', async () => {
+            const {
+                renderedHook: { result, waitForValueToChange },
+            } = reduxedRenderHook(() => useContractDetails(TEST_HOUSE_ID, 0), { initialState: {} })
+            // Element is edited.
+            act(async () => {
+                await result.current.editElementDetails({ ...TEST_SUCCESS_ADD_CONTRACT })
+            })
+            expect(result.current.loadingInProgress).toBe(true)
+            await waitForValueToChange(
+                () => {
+                    return result.current.loadingInProgress
+                },
+                { timeout: 4000 },
+            )
+            expect(result.current.loadingInProgress).toBe(false)
+            expect(mockEnqueueSnackbar).toHaveBeenCalledWith(TEST_ERROR_EDIT_CONTRACT_MESSAGE, { variant: 'error' })
         }, 10000)
     })
 })

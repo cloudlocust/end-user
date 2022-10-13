@@ -1,5 +1,4 @@
 import React from 'react'
-// import MultiTab from 'src/modules/shared/MultiTab/MultiTab'
 import HousingList from 'src/modules/MyHouse/components/HousingList'
 
 /**
