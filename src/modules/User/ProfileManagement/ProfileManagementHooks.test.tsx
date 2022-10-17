@@ -108,7 +108,7 @@ describe('Testing useProfileManagement hooks', () => {
             })
             expect(result.current.isLoadingInProgress).toBe(false)
             act(() => {
-                result.current.deleteProfile({ firstName: 'Alex', email: TEST_SUCCESS_USER.email })
+                result.current.deleteProfile()
             })
             expect(result.current.isLoadingInProgress).toBe(true)
             await waitForValueToChange(
