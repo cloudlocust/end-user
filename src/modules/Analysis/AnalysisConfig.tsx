@@ -56,7 +56,6 @@ export const AnalysisConfig = [
                     },
                 },
             },
-            disabled: analysisFeatureState,
         },
     } as IRouteNavigationConfig<AnalysisProps>,
 ]

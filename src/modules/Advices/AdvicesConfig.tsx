@@ -56,7 +56,6 @@ export const AdvicesConfig = [
                     },
                 },
             },
-            disabled: advicesFeatureState,
         },
     } as IRouteNavigationConfig<AdvicesProps>,
 ]

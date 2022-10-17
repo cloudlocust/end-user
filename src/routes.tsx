@@ -77,10 +77,6 @@ export type IAdditionnalSettings = /**
             UINavbarItem: navbarItemType
         }
     }
-    /**
-     * If the navbar is accessible or not.
-     */
-    disabled?: boolean | undefined
 }
 
 /**

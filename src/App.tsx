@@ -17,8 +17,8 @@ import { IPageSettings } from 'src/common/react-platform-components'
  * @returns Return true if it's disabled, false if not disabled or does not contain the property.
  */
 const isRouteDisabled = (settings: (IPageSettings & IAdditionnalSettings) | IPageSettings | undefined) => {
-    if (settings && settings.hasOwnProperty('disabled')) {
-        return (settings as IPageSettings & IAdditionnalSettings)?.disabled
+    if (settings && settings?.layout?.navbar?.UINavbarItem?.hasOwnProperty('disabled')) {
+        return (settings as IPageSettings & IAdditionnalSettings)?.layout?.navbar?.UINavbarItem?.disabled
     } else {
         return false
     }
