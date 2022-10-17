@@ -51,6 +51,7 @@ export const AnalysisConfig = [
                                 <AnalysisIcon />
                             </SvgIcon>
                         ),
+                        disabled: analysisFeatureState,
                         url: URL_ANALYSIS,
                     },
                 },

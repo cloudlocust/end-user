@@ -41,6 +41,10 @@ export type navbarItemType = {
      */
     icon?: React.ReactNode
     /**
+     * Is Item Disabled.
+     */
+    disabled?: boolean
+    /**
      * Additional ClassName for the Icon.
      */
     iconClassName?: string

@@ -51,6 +51,7 @@ export const AdvicesConfig = [
                                 <AdvicesIcon />
                             </SvgIcon>
                         ),
+                        disabled: advicesFeatureState,
                         url: URL_ADVICES,
                     },
                 },

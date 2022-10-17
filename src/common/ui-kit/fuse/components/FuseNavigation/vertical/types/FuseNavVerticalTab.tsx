@@ -49,6 +49,9 @@ const Root = styled('div')(({ theme }) => ({
                 color: 'inherit',
             },
         },
+        '&.disabled': {
+            pointerEvents: 'none',
+        },
         '& .fuse-list-item-icon': {
             color: 'inherit',
         },
@@ -67,79 +70,92 @@ function FuseNavVerticalTab(props: IFuseNavigationComponentProps) {
     const { formatMessage } = useIntl()
 
     return (
-        <Root>
-            <ListItemButton
-                component={item!.url ? NavLinkAdapter : 'button'}
-                to={item!.url}
-                className={clsx(
-                    `type-${item!.type}`,
-                    dense && 'dense',
-                    selectedId === item!.id && 'active',
-                    'fuse-list-item flex flex-col items-center justify-center p-12',
-                )}
-                onClick={() => onItemClick && onItemClick(item)}
-                exact={item!.exact!}
-                role="button"
-            >
-                {dense ? (
-                    <Tooltip
-                        title={
-                            formatMessage({
-                                id: item!.label,
-                                defaultMessage: item!.label,
-                            }) || ''
-                        }
-                        placement="right"
-                    >
-                        <div className="w-32 h-32 min-h-32 flex items-center justify-center relative">
-                            {item!.icon ? (
-                                <Icon
-                                    className={clsx('fuse-list-item-icon text-24', item!.iconClassName)}
-                                    color="action"
-                                >
-                                    {item!.icon}
-                                </Icon>
-                            ) : (
+        <Tooltip
+            arrow
+            placement="right"
+            disableHoverListener={!item?.disabled}
+            className={`${item?.disabled && 'cursor-not-allowed'}`}
+            title={formatMessage({
+                id: "Cette fonctionnalitée n'est pas encore disponible",
+                defaultMessage: "Cette fonctionnalitée n'est pas encore disponible",
+            })}
+        >
+            <Root>
+                <ListItemButton
+                    component={item!.url ? NavLinkAdapter : 'button'}
+                    to={item!.url}
+                    className={clsx(
+                        `type-${item!.type}`,
+                        dense && 'dense',
+                        item?.disabled && 'disabled',
+                        selectedId === item!.id && 'active',
+                        'fuse-list-item flex flex-col items-center justify-center p-12',
+                    )}
+                    disabled={item?.disabled}
+                    onClick={() => onItemClick && onItemClick(item)}
+                    exact={item!.exact!}
+                    role="button"
+                >
+                    {dense ? (
+                        <Tooltip
+                            title={
                                 formatMessage({
                                     id: item!.label,
                                     defaultMessage: item!.label,
-                                }) && <div className="font-bold text-16">{item!.label![0]}</div>
-                            )}
-                        </div>
-                    </Tooltip>
-                ) : (
-                    <>
-                        <div className="w-32 h-32 min-h-32 flex items-center justify-center relative mb-8">
-                            {item!.icon ? (
-                                <Icon
-                                    className={clsx('fuse-list-item-icon text-32', item!.iconClassName)}
-                                    color="action"
-                                >
-                                    {item!.icon}
-                                </Icon>
-                            ) : (
-                                formatMessage({
-                                    id: item!.label,
-                                    defaultMessage: item!.label,
-                                }) && <div className="font-bold text-20">{item!.label![0]}</div>
-                            )}
-                        </div>
+                                }) || ''
+                            }
+                            placement="right"
+                        >
+                            <div className="w-32 h-32 min-h-32 flex items-center justify-center relative">
+                                {item!.icon ? (
+                                    <Icon
+                                        className={clsx('fuse-list-item-icon text-24', item!.iconClassName)}
+                                        color="action"
+                                    >
+                                        {item!.icon}
+                                    </Icon>
+                                ) : (
+                                    formatMessage({
+                                        id: item!.label,
+                                        defaultMessage: item!.label,
+                                    }) && <div className="font-bold text-16">{item!.label![0]}</div>
+                                )}
+                            </div>
+                        </Tooltip>
+                    ) : (
+                        <>
+                            <div className="w-32 h-32 min-h-32 flex items-center justify-center relative mb-8">
+                                {item!.icon ? (
+                                    <Icon
+                                        className={clsx('fuse-list-item-icon text-32', item!.iconClassName)}
+                                        color="action"
+                                    >
+                                        {item!.icon}
+                                    </Icon>
+                                ) : (
+                                    formatMessage({
+                                        id: item!.label,
+                                        defaultMessage: item!.label,
+                                    }) && <div className="font-bold text-20">{item!.label![0]}</div>
+                                )}
+                            </div>
 
-                        <ListItemText
-                            className="fuse-list-item-text flex-grow-0 w-full m-0"
-                            primary={formatMessage({
-                                id: item!.label,
-                                defaultMessage: item!.label,
-                            })}
-                            classes={{
-                                primary:
-                                    'text-12 font-medium whitespace-pre-wrap fuse-list-item-text-primary truncate text-center',
-                            }}
-                        />
-                    </>
-                )}
-            </ListItemButton>
-        </Root>
+                            <ListItemText
+                                className="fuse-list-item-text flex-grow-0 w-full m-0"
+                                primary={formatMessage({
+                                    id: item!.label,
+                                    defaultMessage: item!.label,
+                                })}
+                                classes={{
+                                    primary:
+                                        'text-12 font-medium whitespace-pre-wrap fuse-list-item-text-primary truncate text-center',
+                                }}
+                            />
+                        </>
+                    )}
+                </ListItemButton>
+            </Root>
+        </Tooltip>
     )
 }
 

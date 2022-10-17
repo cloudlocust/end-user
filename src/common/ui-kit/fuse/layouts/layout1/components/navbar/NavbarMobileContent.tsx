@@ -9,9 +9,9 @@ import { Location } from 'history'
 import Icon from '@mui/material/Icon'
 import clsx from 'clsx'
 import SwipeableDrawer from '@mui/material/SwipeableDrawer'
-import { selectContrastMainTheme } from 'src/common/ui-kit/fuse/utils/theming-generator'
 import { BottomNavigationAction } from '@mui/material'
 import { useIntl } from 'src/common/react-platform-translation'
+import Tooltip from '@mui/material/Tooltip'
 
 const Root = styled(BottomNavigation)(({ theme }) => ({
     position: 'fixed',
@@ -19,14 +19,37 @@ const Root = styled(BottomNavigation)(({ theme }) => ({
     zIndex: 99,
     overflow: 'hidden',
     wordWrap: 'break-word',
-    '& > .fuse-bottom-navigation-item': {
+    '& > div': {
+        display: 'flex',
+        justifyContent: 'center',
+        flexGrow: 1,
+        flexShrink: 1,
+    },
+    '& > div > .fuse-bottom-navigation-item': {
         textAlign: 'center',
-        justifyContent: 'flex-start',
+        justifyContent: 'center',
+        height: '100%',
+        padding: '0px',
+        minWidth: '80px',
+        maxWidth: '168px',
+        '& > .MuiBottomNavigationAction-label': {
+            color: theme.palette.primary.main,
+        },
+        '& > .MuiIcon-root': {
+            color: theme.palette.primary.main,
+        },
         '&.active': {
-            color: theme.palette.text.primary,
-            backgroundColor:
-                theme.palette.mode === 'light' ? 'rgba(0, 0, 0, .05)!important' : 'rgba(255, 255, 255, .1)!important',
-            pointerEvents: 'none',
+            '& > .MuiBottomNavigationAction-label': {
+                color: 'white',
+            },
+            '& > .MuiIcon-root': {
+                color: 'white',
+            },
+            backgroundColor: theme.palette.primary.main,
+        },
+        '&.disabled': {
+            opacity: '0.38',
+            PointerEvent: 'none!important',
         },
     },
 }))
@@ -103,8 +126,6 @@ function NavbarMobileContent(props: /**
     const [panelOpen, setPanelOpen] = useState(false)
     const { formatMessage } = useIntl()
 
-    const contrastTheme = selectContrastMainTheme(theme.palette.primary.main)
-
     useEffect(() => {
         navbarContent?.forEach((item) => {
             if (needsToBeOpened(location, item)) {
@@ -154,53 +175,68 @@ function NavbarMobileContent(props: /**
     return (
         <ClickAwayListener onClickAway={() => setPanelOpen(false)}>
             <>
-                <ThemeProvider theme={contrastTheme}>
+                <ThemeProvider theme>
                     <Root
                         showLabels
                         sx={{
                             width: '100vw',
                             overflowX: 'auto',
-                            backgroundColor: theme.palette.primary.main,
-                            color: theme.palette.primary.contrastText,
+                            backgroundColor: theme.palette.background.default,
                         }}
                         value={selectedNavigation}
                         onChange={(event, item) => handleParentItemClick(item)}
                     >
                         {navbarContent.map((item) => (
-                            <BottomNavigationAction
-                                component={item.url ? NavLinkAdapter : 'button'}
-                                to={item!.url!}
-                                className="fuse-bottom-navigation-item"
-                                label={
-                                    item.labelAbbreviation
-                                        ? formatMessage({
-                                              id: item.labelAbbreviation,
-                                              defaultMessage: item.labelAbbreviation,
-                                          })
-                                        : formatMessage({
-                                              id: item.label,
-                                              defaultMessage: item.label,
-                                          })
-                                }
-                                value={item}
-                                exact={item.exact}
-                                role="button"
-                                icon={
-                                    item!.icon ? (
-                                        <Icon
-                                            className={clsx(`type-${item!.type}`, 'fuse-bottom-navigation-item-icon')}
-                                            color="action"
-                                        >
-                                            {item.icon}
-                                        </Icon>
-                                    ) : (
-                                        formatMessage({
-                                            id: item!.label,
-                                            defaultMessage: item!.label,
-                                        }) && <div className="font-bold text-20">{item!.label![0]}</div>
-                                    )
-                                }
-                            />
+                            <Tooltip
+                                arrow
+                                placement="bottom-end"
+                                disableHoverListener={!item.disabled}
+                                title={formatMessage({
+                                    id: "Cette fonctionnalitée n'est pas encore disponible",
+                                    defaultMessage: "Cette fonctionnalitée n'est pas encore disponible",
+                                })}
+                            >
+                                <div className={`${item?.disabled && 'cursor-not-allowed'}`}>
+                                    <BottomNavigationAction
+                                        component={item.url ? NavLinkAdapter : 'button'}
+                                        to={item!.url!}
+                                        className={`fuse-bottom-navigation-item ${item.disabled && 'disabled'}`}
+                                        showLabel={true}
+                                        label={
+                                            item.labelAbbreviation
+                                                ? formatMessage({
+                                                      id: item.labelAbbreviation,
+                                                      defaultMessage: item.labelAbbreviation,
+                                                  })
+                                                : formatMessage({
+                                                      id: item.label,
+                                                      defaultMessage: item.label,
+                                                  })
+                                        }
+                                        value={item}
+                                        exact={item.exact}
+                                        role="button"
+                                        disabled={item.disabled}
+                                        icon={
+                                            item.icon ? (
+                                                <Icon
+                                                    className={clsx(
+                                                        `type-${item!.type}`,
+                                                        'fuse-bottom-navigation-item-icon',
+                                                    )}
+                                                >
+                                                    {item.icon}
+                                                </Icon>
+                                            ) : (
+                                                formatMessage({
+                                                    id: item!.label,
+                                                    defaultMessage: item!.label,
+                                                }) && <div className="font-bold text-20">{item!.label![0]}</div>
+                                            )
+                                        }
+                                    />
+                                </div>
+                            </Tooltip>
                         ))}
                     </Root>
                 </ThemeProvider>
