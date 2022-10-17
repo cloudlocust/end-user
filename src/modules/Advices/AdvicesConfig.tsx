@@ -28,7 +28,7 @@ export interface AdvicesProps {
 /**
  * Env Variable to know if the feature is enabled.
  */
-export const advicesFeatureState = window._env_.REACT_APP_ADVICES_STATE === 'disabled'
+export const advicesFeatureState = window._env_.REACT_APP_ADVICES_FEATURE_STATE === 'disabled'
 
 /**
  * AdvicesConfig.

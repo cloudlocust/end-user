@@ -28,7 +28,7 @@ export interface AnalysisProps {
 /**
  * Env Variable to know if the feature is enabled.
  */
-export const analysisFeatureState = window._env_.REACT_APP_ANALYSIS_STATE === 'disabled'
+export const analysisFeatureState = window._env_.REACT_APP_ANALYSIS_FEATURE_STATE === 'disabled'
 
 /**
  * AnalysisConfig.

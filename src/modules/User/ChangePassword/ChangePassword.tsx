@@ -37,16 +37,18 @@ export const ChangePassword = () => {
     const { formatMessage } = useIntl()
     const passwordRef = useRef()
     return (
-        <div>
-            <div className="pl-16 sm:pl-24 md:pl-32">
-                <Button variant="contained" className="w-256 mx-auto mb-16" onClick={handleClickOpen}>
-                    {formatMessage({
-                        id: 'Changer mon mot de passe',
-                        defaultMessage: 'Changer mon mot de passe',
-                    })}
-                    <Icon className="ml-10">mode_edit</Icon>
-                </Button>
-            </div>
+        <>
+            <Button
+                variant="contained"
+                className="w-256 mx-auto"
+                onClick={handleClickOpen}
+                endIcon={<Icon>mode_edit</Icon>}
+            >
+                {formatMessage({
+                    id: 'Changer mon mot de passe',
+                    defaultMessage: 'Changer mon mot de passe',
+                })}
+            </Button>
             <Dialog open={openChangePassword} onClose={handleClose} aria-labelledby="alert-dialog-title">
                 <DialogTitle id="alert-dialog-title" sx={{ color: 'primary.main' }}>
                     Changer mon mot de passe
@@ -97,6 +99,6 @@ export const ChangePassword = () => {
                     </DialogContent>
                 </motion.div>
             </Dialog>
-        </div>
+        </>
     )
 }
