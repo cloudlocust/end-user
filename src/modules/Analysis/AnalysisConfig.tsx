@@ -22,6 +22,12 @@ export interface AnalysisProps {
         url: string
     }
 }
+
+/**
+ * Env Variable to know if the feature is enabled.
+ */
+export const analysisFeatureState = window._env_.REACT_APP_ANALYSIS_FEATURE_STATE === 'disabled'
+
 /**
  * AnalysisConfig.
  */
@@ -43,6 +49,7 @@ export const AnalysisConfig = [
                     },
                 },
             },
+            disabled: analysisFeatureState,
         },
     } as IRouteNavigationConfig<AnalysisProps>,
 ]
