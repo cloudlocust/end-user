@@ -21,7 +21,7 @@ import { IChangePasswordData } from 'src/modules/User/ChangePassword/changePassw
  */
 export const ChangePassword = () => {
     const [openChangePassword, setOpenChangePassword] = useState(false)
-    const { isUpdateInProgress, updatePassword } = useProfileManagement()
+    const { isLoadingInProgress, updatePassword } = useProfileManagement()
     /**
      * Handle the click on open dialog window.
      */
@@ -86,7 +86,7 @@ export const ChangePassword = () => {
                                         {formatMessage({ id: 'Annuler', defaultMessage: 'Annuler' })}
                                     </Button>
                                     <ButtonLoader
-                                        inProgress={isUpdateInProgress}
+                                        inProgress={isLoadingInProgress}
                                         variant="contained"
                                         type="submit"
                                         className="ml-8 mb-4 sm:mr-8 sm:mb-0"
