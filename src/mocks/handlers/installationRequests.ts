@@ -185,7 +185,16 @@ export const installationRequestsEndpoints = [
     // CREATE one installation request.
     rest.post<createInstallationRequestType>(INSTALLATION_REQUESTS_API, (req, res, ctx) => {
         if (req.body) {
-            return res(ctx.status(200), ctx.delay(1000), ctx.json(req.body))
+            return res(ctx.status(201), ctx.delay(1000), ctx.json(req.body))
+        }
+        return res(ctx.status(400), ctx.delay(1000))
+    }),
+
+    // Delete one installation request
+    rest.delete(`${INSTALLATION_REQUESTS_API}/:id`, (req, res, ctx) => {
+        const { id: installationRequestId } = req.params
+        if (parseInt(installationRequestId) !== -1) {
+            return res(ctx.status(204), ctx.delay(1000))
         }
 
         return res(ctx.status(400), ctx.delay(1000))

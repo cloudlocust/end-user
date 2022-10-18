@@ -1,4 +1,4 @@
-import { IconButton, Tooltip, Chip, Typography } from '@mui/material'
+import { IconButton, Tooltip, Chip, Typography, useTheme } from '@mui/material'
 import { styled } from '@mui/material/styles'
 import { useIntl } from 'react-intl'
 import { Icon } from 'src/common/ui-kit'
@@ -6,7 +6,10 @@ import Table from 'src/common/ui-kit/components/Table/Table'
 import FuseLoading from 'src/common/ui-kit/fuse/components/FuseLoading'
 import FusePageCarded from 'src/common/ui-kit/fuse/components/FusePageCarded'
 import { IInstallationRequest } from 'src/modules/InstallationRequests/installationRequests'
-import { useInstallationRequestsList } from 'src/modules/InstallationRequests/installationRequestsHooks'
+import {
+    useInstallationRequestsList,
+    useInstallationRequestDetails,
+} from 'src/modules/InstallationRequests/installationRequestsHooks'
 import { VariantType } from 'notistack'
 import dayjs from 'dayjs'
 import { motion } from 'framer-motion'
@@ -14,6 +17,8 @@ import { Dispatch, SetStateAction, useState } from 'react'
 import { InstallationRequestDetailsPopup } from 'src/modules/InstallationRequests/components/InstallationRequestDetailsPopup'
 import { InstallationRequestsHeader } from 'src/modules/InstallationRequests/components/InstallationRequestsHeader'
 import { InstallationRequestCreatePopup } from 'src/modules/InstallationRequests/components/InstallationRequestCreatePopup'
+import { useConfirm } from 'material-ui-confirm'
+import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 
 const Root = styled(FusePageCarded)(({ theme }) => ({
     '& .FusePageCarded-header': {
@@ -97,13 +102,51 @@ const ActionsCell = ({
     //eslint-disable-next-line jsdoc/require-jsdoc
     row: IInstallationRequest
     //eslint-disable-next-line jsdoc/require-jsdoc
-    onAfterCreateUpdateDeleteSuccess?: () => void
+    onAfterCreateUpdateDeleteSuccess: () => void
     //eslint-disable-next-line jsdoc/require-jsdoc
     setIsUpdateInstallationsRequestsPopup: Dispatch<SetStateAction<boolean>>
     //eslint-disable-next-line jsdoc/require-jsdoc
     setInstallationRequestDetails: Dispatch<SetStateAction<IInstallationRequest | null>>
-}) => {
+}): JSX.Element => {
+    const theme = useTheme()
     const { formatMessage } = useIntl()
+    const openMuiDialog = useConfirm()
+    const { removeElementDetails } = useInstallationRequestDetails(row.id)
+
+    /**
+     * Open warning remove popup on delete click.
+     */
+    const onDeleteInstallationRequestHandler = async () => {
+        await openMuiDialog({
+            title: '',
+            dialogProps: {
+                PaperProps: {
+                    style: {
+                        // MUI snackbar red color, used as a global error color.
+                        background: theme.palette.error.main,
+                    },
+                },
+            },
+            description: (
+                <TypographyFormatMessage className="text-16 md:text-20 text-center text-white">
+                    Vous êtes sur le point de supprimer cette demande d'installation. Ëtes-vous sûr de vouloir continuer
+                    ?
+                </TypographyFormatMessage>
+            ),
+            confirmationText: (
+                <TypographyFormatMessage className="text-13 md:text-16 font-medium text-white">
+                    Continuer
+                </TypographyFormatMessage>
+            ),
+            cancellationText: (
+                <TypographyFormatMessage className="text-13 md:text-16 font-medium text-white">
+                    Annuler
+                </TypographyFormatMessage>
+            ),
+        })
+        await removeElementDetails()
+        onAfterCreateUpdateDeleteSuccess()
+    }
 
     return (
         <div>
@@ -130,13 +173,7 @@ const ActionsCell = ({
                         defaultMessage: 'Supprimer',
                     })}
                 >
-                    <IconButton
-                        color="error"
-                        onClick={async () => {
-                            // await refuseInstallerRequest()
-                            // onAfterCreateUpdateDeleteSuccess()
-                        }}
-                    >
+                    <IconButton color="error" onClick={onDeleteInstallationRequestHandler}>
                         <Icon>delete</Icon>
                     </IconButton>
                 </Tooltip>
@@ -218,6 +255,7 @@ export const InstallationRequests = (): JSX.Element => {
                     row={row}
                     setIsUpdateInstallationsRequestsPopup={setIsUpdateInstallationsRequestsPopup}
                     setInstallationRequestDetails={setInstallationRequestDetails}
+                    onAfterCreateUpdateDeleteSuccess={reloadInstallationRequests}
                 />
             ),
         },

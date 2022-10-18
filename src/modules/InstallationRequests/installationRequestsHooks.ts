@@ -130,7 +130,7 @@ export const useInstallationRequestsList = (sizeParam?: number) =>
  * @param installationRequestId InstallationRequest's id.
  * @returns Installation requests hook funvtions & states.
  */
-export const useInstallationDetails = (installationRequestId: number) => {
+export const useInstallationRequestDetails = (installationRequestId: number) => {
     return BuilderUseElementDetails<IInstallationRequest, updateInstallationRequestType, IInstallationRequest>({
         API_ENDPOINT: `${INSTALLATION_REQUESTS_API}/${installationRequestId}`,
         snackBarMessage0verride: {
