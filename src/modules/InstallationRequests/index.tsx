@@ -13,6 +13,7 @@ import { motion } from 'framer-motion'
 import { Dispatch, SetStateAction, useState } from 'react'
 import { InstallationRequestDetailsPopup } from 'src/modules/InstallationRequests/components/InstallationRequestDetailsPopup'
 import { InstallationRequestsHeader } from 'src/modules/InstallationRequests/components/InstallationRequestsHeader'
+import { InstallationRequestCreatePopup } from 'src/modules/InstallationRequests/components/InstallationRequestCreatePopup'
 
 const Root = styled(FusePageCarded)(({ theme }) => ({
     '& .FusePageCarded-header': {
@@ -161,10 +162,8 @@ export const InstallationRequests = (): JSX.Element => {
     const { formatMessage } = useIntl()
     const [installationRequestDetails, setInstallationRequestDetails] = useState<IInstallationRequest | null>(null)
     const [isUpdateInstallationsRequestsPopup, setIsUpdateInstallationsRequestsPopup] = useState(false)
+    const [isCreateInstallationRequestPopup, setIsCreateInstallationRequestPopup] = useState(false)
 
-    /**
-     * Row containing the Cells of the Chameleons Table.
-     */
     const installerRequestsCells = [
         {
             id: 'type',
@@ -226,9 +225,20 @@ export const InstallationRequests = (): JSX.Element => {
 
     return (
         <Root
-            header={<InstallationRequestsHeader />}
+            header={
+                <InstallationRequestsHeader setIsCreateInstallationRequestPopup={setIsCreateInstallationRequestPopup} />
+            }
             content={
                 <>
+                    {isCreateInstallationRequestPopup && (
+                        <InstallationRequestCreatePopup
+                            open={isCreateInstallationRequestPopup}
+                            handleClosePopup={() => {
+                                setIsCreateInstallationRequestPopup(false)
+                            }}
+                            onAfterCreateUpdateDeleteSuccess={reloadInstallationRequests}
+                        />
+                    )}
                     {isUpdateInstallationsRequestsPopup && installationRequestDetails && (
                         <InstallationRequestDetailsPopup
                             installationRequestDetails={installationRequestDetails}

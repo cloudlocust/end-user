@@ -5,13 +5,22 @@ import Typography from '@mui/material/Typography'
 import { motion } from 'framer-motion'
 import { selectTheme } from 'src/common/ui-kit/fuse/utils/theming-generator'
 import { useIntl } from 'src/common/react-platform-translation'
+import { Dispatch, SetStateAction } from 'react'
 
 /**
  * Header component.
  *
+ * @param root0 N/A.
+ * @param root0.setIsCreateInstallationRequestPopup Setter function to open popup to create installation request.
  * @returns InstallationsRequestsHeader component.
  */
-export const InstallationRequestsHeader = (): JSX.Element => {
+export const InstallationRequestsHeader = ({
+    setIsCreateInstallationRequestPopup,
+}: // eslint-disable-next-line jsdoc/require-jsdoc
+{
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    setIsCreateInstallationRequestPopup: Dispatch<SetStateAction<boolean>>
+}): JSX.Element => {
     const mainTheme = selectTheme()
     const { formatMessage } = useIntl()
 
@@ -57,7 +66,9 @@ export const InstallationRequestsHeader = (): JSX.Element => {
                             className="whitespace-nowrap"
                             variant="contained"
                             color="secondary"
-                            onClick={() => null}
+                            onClick={() => {
+                                setIsCreateInstallationRequestPopup(true)
+                            }}
                         >
                             <span className="hidden sm:flex">
                                 {formatMessage({
