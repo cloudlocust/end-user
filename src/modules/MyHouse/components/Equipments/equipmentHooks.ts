@@ -10,6 +10,7 @@ import { useIntl } from 'src/common/react-platform-translation'
 import { useSnackbar } from 'notistack'
 import { HOUSING_API } from 'src/modules/MyHouse/components/HousingList/HousingsHooks'
 import { API_RESOURCES_URL } from 'src/configs'
+import { equipmentsAccomodationFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
 
 // Housing Equipments API
 
@@ -72,7 +73,7 @@ export const useEquipmentList = (housingId: number) => {
     }, [housingId, formatMessage, enqueueSnackbar])
     // UseEffect executes on initial intantiation of useEquipmentList, responsible for loadEquipmentList on initialLoad.
     useEffect(() => {
-        if (isInitialMount.current) {
+        if (isInitialMount.current && !equipmentsAccomodationFeatureState) {
             isInitialMount.current = false
             loadEquipmentList()
         }

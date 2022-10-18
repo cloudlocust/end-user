@@ -1,6 +1,8 @@
 import { authTypes } from 'src/common/react-platform-components'
 import { IRouteNavigationConfig } from 'src/routes'
 import Analysis from 'src/modules/Analysis'
+import { ReactComponent as AnalysisIcon } from 'src/assets/images/navbarItems/Analysis.svg'
+import SvgIcon from '@mui/material/SvgIcon'
 
 /**
  * Url for analysis.
@@ -44,12 +46,16 @@ export const AnalysisConfig = [
                         label: 'Analyse',
                         labelAbbreviation: 'Analyse',
                         type: 'item',
-                        iconLabel: 'search',
+                        icon: (
+                            <SvgIcon>
+                                <AnalysisIcon />
+                            </SvgIcon>
+                        ),
+                        disabled: analysisFeatureState,
                         url: URL_ANALYSIS,
                     },
                 },
             },
-            disabled: analysisFeatureState,
         },
     } as IRouteNavigationConfig<AnalysisProps>,
 ]
