@@ -1,7 +1,12 @@
 import { rest } from 'msw'
 import { getPaginationFromElementList } from 'src/mocks/utils'
-import { IInstallationRequest, IInstallationRequests } from 'src/modules/InstallationRequests/installationRequests'
-import { INSTALLATION_REQUESTS_API } from 'src/modules/InstallationRequests/installationRequestsHook'
+import {
+    // createInstallationRequestType,
+    IInstallationRequest,
+    IInstallationRequests,
+    updateInstallationRequestType,
+} from 'src/modules/InstallationRequests/installationRequests'
+import { INSTALLATION_REQUESTS_API } from 'src/modules/InstallationRequests/installationRequestsHooks'
 import { SnakeCasedPropertiesDeep } from 'type-fest'
 
 const CREATED_AT_DATA = '2021-12-15T14:07:38.138000'
@@ -11,7 +16,7 @@ const CREATED_AT_DATA = '2021-12-15T14:07:38.138000'
  */
 export var TEST_INSTALLATION_REQUESTS: SnakeCasedPropertiesDeep<IInstallationRequest[]> = [
     {
-        id: 9,
+        id: 1,
         budget: 1000.0,
         equipment_brand: 'Inspirion',
         status: 'NEW',
@@ -34,7 +39,7 @@ export var TEST_INSTALLATION_REQUESTS: SnakeCasedPropertiesDeep<IInstallationReq
         equipment_model: 'AZS',
     },
     {
-        id: 1,
+        id: 20,
         budget: 1010.0,
         equipment_brand: 'Azero',
         status: 'CLOSED',
@@ -167,4 +172,22 @@ export const installationRequestsEndpoints = [
         >(req, TEST_INSTALLATION_REQUESTS as [])
         return res(ctx.status(200), ctx.delay(1000), ctx.json(TEST_INSTALLATIONS_REQUESTS_RESPONSE))
     }),
+
+    // UPDATE one installation request.
+    rest.put<updateInstallationRequestType>(`${INSTALLATION_REQUESTS_API}/:id`, (req, res, ctx) => {
+        if (parseInt(req.params.id) !== -1) {
+            return res(ctx.status(200), ctx.delay(1000), ctx.json(req.body))
+        }
+
+        return res(ctx.status(400), ctx.delay(1000))
+    }),
+
+    // // CREATE one installation request.
+    // rest.post<createInstallationRequestType>(INSTALLATION_REQUESTS_API, (req, res, ctx) => {
+    //     if (Object.values(req.body)) {
+    //         return res(ctx.status(200), ctx.delay(1000), ctx.json(req.body))
+    //     }
+
+    //     return res(ctx.status(400), ctx.delay(1000))
+    // }),
 ]
