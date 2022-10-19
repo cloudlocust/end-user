@@ -10,6 +10,7 @@ import { store } from 'src/redux'
 import { applyCamelCase } from 'src/common/react-platform-components'
 import { IHousing } from 'src/modules/MyHouse/components/HousingList/housing'
 import { TEST_HOUSES } from 'src/mocks/handlers/houses'
+import { URL_MY_HOUSE } from 'src/modules/MyHouse/MyHouseConfig'
 
 // List of houses to add to the redux state
 const LIST_OF_HOUSES: IHousing[] = applyCamelCase(TEST_HOUSES)
@@ -22,6 +23,7 @@ let mockIsMetricsLoading = false
 let mockEnedisConsent: string
 const mockSetFilters = jest.fn()
 const circularProgressClassname = '.MuiCircularProgress-root'
+const EUROS_CONSUMPTION_EXAMPLE_CHART_WARNING_TEXT = "Ce graphe est un exemple. Renseigner votre contrat d'énergie"
 const WEEKLY_PERIOD_BUTTON_TEXT = 'Semaine'
 const MONTHLY_PERIOD_BUTTON_TEXT = 'Mois'
 const YEARLY_PERIOD_BUTTON_TEXT = 'Année'
@@ -75,6 +77,14 @@ jest.mock('src/modules/Consents/consentsHook.ts', () => ({
             nrlinkConsentState: mockEnedisConsent,
         },
         getConsents: mockGetConsents,
+    }),
+}))
+
+// Mock MyConsumptionHooks
+jest.mock('src/modules/MyConsumption/hooks/MyConsumptionHooks', () => ({
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    useMyConsumptionHooks: () => ({
+        hasMissingHousingContracts: true,
     }),
 }))
 
@@ -143,6 +153,7 @@ describe('MyConsumptionContainer test', () => {
             <Router>
                 <MyConsumptionContainer />
             </Router>,
+            { initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[0] } } },
         )
         // TOGGLING TO EUROS CONSUMPTION CHART
         userEvent.click(getByTestId(EUROS_CONSUMPTION_ICON_TEST_ID).parentElement as HTMLButtonElement)
@@ -170,6 +181,13 @@ describe('MyConsumptionContainer test', () => {
         await waitFor(() => {
             expect(getByText(EUROS_CONSUMPTION_TITLE_YEARLY)).toBeTruthy()
         })
+        // Example Chart Information Text
+        expect(getByText(EUROS_CONSUMPTION_EXAMPLE_CHART_WARNING_TEXT)).toBeTruthy()
+        // Contracts Redirection URL
+        expect(getByText(EUROS_CONSUMPTION_EXAMPLE_CHART_WARNING_TEXT).parentElement!.closest('a')).toHaveAttribute(
+            'href',
+            `${URL_MY_HOUSE}/${LIST_OF_HOUSES[0].id}/contracts`,
+        )
 
         // TOGGLING TO CONSUMPTION CHART
         userEvent.click(getByTestId(CONSUMPTION_ICON_TEST_ID).parentElement as HTMLButtonElement)
