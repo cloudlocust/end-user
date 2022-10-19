@@ -23,6 +23,8 @@ import { useSelector } from 'react-redux'
 import { RootState } from 'src/redux'
 import { URL_MY_HOUSE } from 'src/modules/MyHouse/MyHouseConfig'
 import { useMyConsumptionHooks } from 'src/modules/MyConsumption/hooks/MyConsumptionHooks'
+import { tempPmaxFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
+import Tooltip from '@mui/material/Tooltip'
 
 /**
  * InitialMetricsStates for useMetrics.
@@ -215,7 +217,19 @@ export const MyConsumptionContainer = () => {
                         addTarget={addTarget}
                         showEurosConsumption={!isEurosConsumptionChart}
                     />
-                    {memoizedTargetButtonGroup}
+                    <Tooltip
+                        arrow
+                        placement="bottom-end"
+                        disableHoverListener={!tempPmaxFeatureState}
+                        title={formatMessage({
+                            id: "Cette fonctionnalitée n'est pas encore disponible",
+                            defaultMessage: "Cette fonctionnalitée n'est pas encore disponible",
+                        })}
+                    >
+                        <div className={`${tempPmaxFeatureState && 'cursor-not-allowed'}`}>
+                            {memoizedTargetButtonGroup}
+                        </div>
+                    </Tooltip>
                 </div>
 
                 {isMetricsLoading ? (

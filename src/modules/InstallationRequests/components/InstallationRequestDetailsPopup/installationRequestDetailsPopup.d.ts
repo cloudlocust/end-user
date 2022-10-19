@@ -1,4 +1,4 @@
-import { IInstallationRequest } from 'src/modules/InstallatinRequests/installationRequests.d'
+import { IInstallationRequest } from 'src/modules/InstallationRequests/installationRequests.d'
 
 /**
  * Inteface for installation request details popup.
@@ -15,5 +15,9 @@ export interface InstallationRequestDetailsPopupProps {
     /**
      * Full details of one installation request.
      */
-    installationRequestDetails: IInstallationRequest | null
+    installationRequestDetails: IInstallationRequest
+    /**
+     * Function that reloading installation requests.
+     */
+    onAfterCreateUpdateDeleteSuccess: () => void
 }

@@ -10,6 +10,9 @@ import { URL_MY_HOUSE } from 'src/modules/MyHouse/MyHouseConfig'
 import EditIcon from '@mui/icons-material/Edit'
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined'
 import { ButtonLoader } from 'src/common/ui-kit'
+import { equipmentsAccomodationFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
+import Tooltip from '@mui/material/Tooltip'
+
 /**
  * This is a component to display different elements of equipements/home-configuration in a card.
  *
@@ -54,25 +57,41 @@ const HousingDetailsCard = ({
                 ))}
             </CardContent>
             <CardActions className="flex items-center content-center justify-end">
-                <NavLink to={`${URL_MY_HOUSE}/${houseId}/${typeOfDetails}`}>
-                    <ButtonLoader
-                        variant="contained"
-                        color="primary"
-                        className="text-white"
-                        endIcon={isConfigured ? <EditIcon /> : <SettingsOutlinedIcon />}
-                        inProgress={loadingInProgress}
-                    >
-                        {isConfigured
-                            ? formatMessage({
-                                  id: 'Modifier',
-                                  defaultMessage: 'Modifier',
-                              })
-                            : formatMessage({
-                                  id: 'Configuration',
-                                  defaultMessage: 'Configuration',
-                              })}
-                    </ButtonLoader>
-                </NavLink>
+                <Tooltip
+                    arrow
+                    placement="top"
+                    disableHoverListener={!equipmentsAccomodationFeatureState}
+                    title={formatMessage({
+                        id: "Cette fonctionnalitée n'est pas encore disponible",
+                        defaultMessage: "Cette fonctionnalitée n'est pas encore disponible",
+                    })}
+                >
+                    <div className={`${equipmentsAccomodationFeatureState && 'cursor-not-allowed'}`}>
+                        <NavLink
+                            className={`${equipmentsAccomodationFeatureState && 'pointer-events-none'}`}
+                            to={`${URL_MY_HOUSE}/${houseId}/${typeOfDetails}`}
+                        >
+                            <ButtonLoader
+                                variant="contained"
+                                color="primary"
+                                className="text-white"
+                                disabled={equipmentsAccomodationFeatureState}
+                                endIcon={isConfigured ? <EditIcon /> : <SettingsOutlinedIcon />}
+                                inProgress={loadingInProgress}
+                            >
+                                {isConfigured
+                                    ? formatMessage({
+                                          id: 'Modifier',
+                                          defaultMessage: 'Modifier',
+                                      })
+                                    : formatMessage({
+                                          id: 'Configuration',
+                                          defaultMessage: 'Configuration',
+                                      })}
+                            </ButtonLoader>
+                        </NavLink>
+                    </div>
+                </Tooltip>
             </CardActions>
         </Card>
     )

@@ -1,18 +1,18 @@
 import { authTypes } from 'src/common/react-platform-components'
 import { IRouteNavigationConfig } from 'src/routes'
-import { Advices } from './Advices'
-import { ReactComponent as AdvicesIcon } from 'src/assets/images/navbarItems/Advices.svg'
+import { Settings } from './Settings'
+import { ReactComponent as SettingsIcon } from 'src/assets/images/navbarItems/Settings.svg'
 import SvgIcon from '@mui/material/SvgIcon'
 
 /**
- * Url for advices.
+ * Url for Settings.
  */
-export const URL_ADVICES = '/advices'
+export const URL_SETTINGS = '/settings'
 /**
  * Interface .
  *
  */
-export interface AdvicesProps {
+export interface SettingsProps {
     /**
      * Logo to dislay.
      */
@@ -24,38 +24,31 @@ export interface AdvicesProps {
         url: string
     }
 }
-
 /**
- * Env Variable to know if the feature is enabled.
+ * SettingsConfig.
  */
-export const advicesFeatureState = window._env_.REACT_APP_ADVICES_FEATURE_STATE === 'disabled'
-
-/**
- * AdvicesConfig.
- */
-export const AdvicesConfig = [
+export const SettingsConfig = [
     {
-        path: URL_ADVICES,
-        component: Advices,
+        path: URL_SETTINGS,
+        component: Settings,
         auth: { authType: authTypes.freeAccess }, // TODO CHANGE
         settings: {
             layout: {
                 navbar: {
                     UINavbarItem: {
-                        id: 'Conseils',
-                        label: 'Conseils',
-                        labelAbbreviation: 'Conseils',
+                        id: 'Settings',
+                        label: 'Paramètres',
+                        labelAbbreviation: 'Paramètres',
                         type: 'item',
                         icon: (
                             <SvgIcon>
-                                <AdvicesIcon />
+                                <SettingsIcon />
                             </SvgIcon>
                         ),
-                        disabled: advicesFeatureState,
-                        url: URL_ADVICES,
+                        url: URL_SETTINGS,
                     },
                 },
             },
         },
-    } as IRouteNavigationConfig<AdvicesProps>,
+    } as IRouteNavigationConfig<SettingsProps>,
 ]

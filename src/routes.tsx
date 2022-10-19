@@ -3,7 +3,7 @@ import { Redirect } from 'react-router-dom'
 import { navbarItemType } from './common/ui-kit/fuse/components/FuseNavigation/FuseNavigation'
 import { MyConsumptionConfig } from './modules/MyConsumption'
 import { AdvicesConfig } from './modules/Advices'
-import { CommunityConfig } from './modules/Community'
+import { SettingsConfig } from 'src/modules/Settings'
 import { AnalysisConfig } from './modules/Analysis/AnalysisConfig'
 import { LoginConfig } from './modules/User/Login/LoginConfig'
 import { ForgotPasswordConfig } from './modules/User/ForgotPassword/ForgotPasswordConfig'
@@ -28,7 +28,7 @@ export const routes = [
     ...RegisterConfig,
     ...ForgotPasswordConfig,
     ...ResetPasswordConfig,
-    ...CommunityConfig,
+    ...SettingsConfig,
     ...AnalysisConfig,
     ...ProfileManagementConfig,
     ...FAQConfig,
@@ -51,44 +51,45 @@ export const routes = [
 ]
 
 /**
- * Represent the routes that are going to be displayed in the navbar, they have a type of IRoute but with UINavbarItem property that is required.
+ * Represent custom page settings.
  */
-// eslint-lint-disable-next-line jsdoc/require-jsdoc
-export type IRouteNavigationConfig<T> = IRoute<T> & /**
- *
+export type IAdditionnalSettings = /**
  */ {
     /**
      *
      */
-    settings: /**
+    layout: // eslint-lint-disable-next-line jsdoc/require-jsdoc
+    /**
      *
      */
     {
+        // eslint-lint-disable-next-line jsdoc/require-jsdoc
         /**
          *
          */
-        layout: // eslint-lint-disable-next-line jsdoc/require-jsdoc
-        /**
+        navbar: /**
          *
          */
         {
-            // eslint-lint-disable-next-line jsdoc/require-jsdoc
             /**
              *
              */
-            navbar: /**
-             *
-             */
-            {
-                /**
-                 *
-                 */
-                UINavbarItem: navbarItemType
-            }
+            UINavbarItem: navbarItemType
         }
     }
 }
 
+/**
+ * Represent the routes that are going to be displayed in the navbar, they have a type of IRoute but with UINavbarItem property that is required.
+ */
+// eslint-lint-disable-next-line jsdoc/require-jsdoc
+export type IRouteNavigationConfig<T> = IRoute<T> & /**
+ */ {
+    /**
+     *
+     */
+    settings: IAdditionnalSettings
+}
 /**
  * NavigationConfig Represent all the routes that are going to be displayed in the first level of the navbar, they potentially have children which are going to be IRouteNavigationConfig.
  */
@@ -96,4 +97,4 @@ export type IRouteNavigationConfig<T> = IRoute<T> & /**
 export const navigationsConfig: IRouteNavigationConfig</**
  *
  */
-{}>[] = [MyConsumptionConfig[0], AnalysisConfig[0], AdvicesConfig[0], CommunityConfig[0], MyHouseConfig[0]]
+{}>[] = [MyConsumptionConfig[0], AnalysisConfig[0], AdvicesConfig[0], MyHouseConfig[0], SettingsConfig[0]]
