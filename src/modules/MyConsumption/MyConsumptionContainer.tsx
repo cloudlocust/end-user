@@ -22,7 +22,7 @@ import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline'
 import { useSelector } from 'react-redux'
 import { RootState } from 'src/redux'
 import { URL_MY_HOUSE } from 'src/modules/MyHouse/MyHouseConfig'
-import { useMyConsumptionHooks } from 'src/modules/MyConsumption/hooks/MyConsumptionHooks'
+import { useHasMissingHousingContracts } from 'src/hooks/HasMissingHousingContracts'
 import { tempPmaxFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
 import Tooltip from '@mui/material/Tooltip'
 
@@ -79,7 +79,7 @@ export const MyConsumptionContainer = () => {
         if (currentHousing?.meter) setFilters(formatMetricFilter(currentHousing.meter?.guid))
     }, [currentHousing, setFilters])
 
-    const { hasMissingHousingContracts } = useMyConsumptionHooks(range, currentHousing?.id)
+    const { hasMissingHousingContracts } = useHasMissingHousingContracts(range, currentHousing?.id)
 
     // UseEffect to check for consent whenever a meter is selected.
     useEffect(() => {

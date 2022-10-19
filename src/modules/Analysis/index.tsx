@@ -9,8 +9,10 @@ import { useTheme } from '@mui/material'
 import { useMetrics } from 'src/modules/Metrics/metricsHook'
 import { getMetricType, metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
 import { periodType } from 'src/modules/MyConsumption/myConsumptionTypes'
-import { Link } from 'react-router-dom'
+import { Link, NavLink } from 'react-router-dom'
 import { Icon, Typography } from 'src/common/ui-kit'
+import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline'
+import { URL_MY_HOUSE } from 'src/modules/MyHouse/MyHouseConfig'
 import { useIntl } from 'react-intl'
 import { useConsents } from 'src/modules/Consents/consentsHook'
 import CircularProgress from '@mui/material/CircularProgress'
@@ -24,6 +26,7 @@ import AnalysisChart from 'src/modules/Analysis/components/AnalysisChart'
 import { analysisInformationName } from './analysisTypes'
 import { useSelector } from 'react-redux'
 import { RootState } from 'src/redux'
+import { useHasMissingHousingContracts } from 'src/hooks/HasMissingHousingContracts'
 
 /**
  * InitialMetricsStates for useMetrics.
@@ -61,6 +64,7 @@ const Analysis = () => {
     const [activeInformationName, setActiveInformationName] = useState<analysisInformationName | undefined>(undefined)
 
     const { currentHousing } = useSelector(({ housingModel }: RootState) => housingModel)
+    const { hasMissingHousingContracts } = useHasMissingHousingContracts(range, currentHousing?.id)
 
     /**
      * Handler to set the correct information name (min, max, mean) Based on the selected value element fill color in analysisChart.
@@ -163,6 +167,27 @@ const Analysis = () => {
                         maxDate={endOfMonth(subMonths(new Date(), 1))}
                     />
                 </motion.div>
+                {hasMissingHousingContracts && (
+                    <NavLink
+                        to={`${URL_MY_HOUSE}/${currentHousing?.id}/contracts`}
+                        className="flex items-center flex-col md:flex-row"
+                    >
+                        <ErrorOutlineIcon
+                            sx={{
+                                color: 'secondary.main',
+                                width: '32px',
+                                height: '32px',
+                                margin: { xs: '0 0 4px 0', md: '0 6px 0 0' },
+                            }}
+                        />
+                        <TypographyFormatMessage
+                            className="text-13 underline md:text-16 w-full text-center"
+                            sx={{ color: 'secondary.main' }}
+                        >
+                            Ce graphe est un exemple. Renseigner votre contrat d'énergie
+                        </TypographyFormatMessage>
+                    </NavLink>
+                )}
             </div>
 
             <div style={{ position: 'relative' }}>
@@ -185,7 +210,7 @@ const Analysis = () => {
                                 filters={filters}
                             />
                             <p className="text-16 md:text-20 font-medium">
-                                {totalEurosConsumption.value} {totalEurosConsumption.unit}
+                                {Number(totalEurosConsumption.value).toFixed(2)} {totalEurosConsumption.unit}
                             </p>
                         </div>
                     </AnalysisChart>

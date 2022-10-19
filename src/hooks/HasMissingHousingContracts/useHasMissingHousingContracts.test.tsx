@@ -1,6 +1,6 @@
 import { reduxedRenderHook } from 'src/common/react-platform-components/test'
 import { getRange } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
-import { useMyConsumptionHooks } from 'src/modules/MyConsumption/hooks/MyConsumptionHooks'
+import { useHasMissingHousingContracts } from 'src/hooks/HasMissingHousingContracts'
 import { TEST_HOUSES } from 'src/mocks/handlers/houses'
 import { waitFor } from '@testing-library/react'
 
@@ -23,12 +23,12 @@ jest.mock('notistack', () => ({
 
 const TEST_GET_HAS_MISSING_HOUSING_CONTRACTS_ERROR_MESSAGE =
     'Erreur lors de la récupération du méssage du contrat example'
-describe('useMyConsumptionHooks test', () => {
+describe('useHasMissingHousingContracts test', () => {
     describe('getHasMissingHousingContracts', () => {
         test('When load error snackbar should be called with error message', async () => {
             const {
                 renderedHook: { result },
-            } = reduxedRenderHook(() => useMyConsumptionHooks(getRange('week'), -1), {
+            } = reduxedRenderHook(() => useHasMissingHousingContracts(getRange('week'), -1), {
                 initialState: {},
             })
 
@@ -49,7 +49,7 @@ describe('useMyConsumptionHooks test', () => {
         test('When success and hasMissingHousingContracts returns false', async () => {
             const {
                 renderedHook: { result, waitForValueToChange },
-            } = reduxedRenderHook(() => useMyConsumptionHooks(getRange('week'), TEST_HOUSES[1].id), {
+            } = reduxedRenderHook(() => useHasMissingHousingContracts(getRange('week'), TEST_HOUSES[1].id), {
                 initialState: {},
             })
 
@@ -66,7 +66,7 @@ describe('useMyConsumptionHooks test', () => {
         test('When success and hasMissingHousingContracts returns true', async () => {
             const {
                 renderedHook: { result, waitForValueToChange },
-            } = reduxedRenderHook(() => useMyConsumptionHooks(getRange('week'), TEST_HOUSES[0].id), {
+            } = reduxedRenderHook(() => useHasMissingHousingContracts(getRange('week'), TEST_HOUSES[0].id), {
                 initialState: {},
             })
 
