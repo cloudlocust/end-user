@@ -248,7 +248,7 @@ export const MyConsumptionContainer = () => {
                     />
                 )}
                 {memoizedMyConsumptionPeriod}
-                {hasMissingHousingContracts && (
+                {isEurosConsumptionChart && hasMissingHousingContracts && (
                     <NavLink
                         to={`${URL_MY_HOUSE}/${currentHousing?.id}/contracts`}
                         className="flex flex-col items-center mt-16"
