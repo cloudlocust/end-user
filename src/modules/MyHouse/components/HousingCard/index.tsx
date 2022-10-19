@@ -116,9 +116,16 @@ const HousingCard = ({
      */
     const handleDeleteHousing = async (id: number) => {
         await removeHousing(id)
+        onAfterDeleteUpdateSuccess()
+        handleCloseConfirmModal()
+    }
+
+    /**
+     * Handler onAfterDeleteUpdateSuccess function when updating or delete housing.
+     */
+    const onAfterDeleteUpdateSuccess = () => {
         reloadHousings()
         dispatch.housingModel.loadHousingsList()
-        handleCloseConfirmModal()
     }
 
     return (
@@ -139,10 +146,7 @@ const HousingCard = ({
                         <div className="ml-12 flex">
                             <HousingCardForm
                                 housing={logement}
-                                onAfterDeleteUpdateSuccess={() => {
-                                    reloadHousings()
-                                    dispatch.housingModel.loadHousingsList()
-                                }}
+                                onAfterDeleteUpdateSuccess={onAfterDeleteUpdateSuccess}
                             />
 
                             <Tooltip
