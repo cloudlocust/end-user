@@ -46,7 +46,7 @@ describe('useConsents test', () => {
         )
         expect(result.current.nrlinkConsent.nrlinkConsentState).toStrictEqual(connectedState)
         expect(result.current.enedisConsent.enedisConsentState).toStrictEqual(connectedState)
-    }, 20000)
+    }, 8000)
     test('when there is server error while fetching consents, snackbar is shown', async () => {
         const { store } = require('src/redux')
         await store.dispatch.userModel.setAuthenticationToken(TEST_ERROR)
@@ -72,7 +72,7 @@ describe('useConsents test', () => {
             autoHideDuration: 5000,
             variant: 'error',
         })
-    }, 20000)
+    }, 8000)
     test('when verifyMater request is performed succesfully', async () => {
         const { store } = require('src/redux')
         await store.dispatch.userModel.setAuthenticationToken(TEST_SUCCESS)
@@ -90,7 +90,7 @@ describe('useConsents test', () => {
             { timeout: 6000 },
         )
         expect(result.current.meterVerification).toStrictEqual(MeterVerificationEnum.VERIFIED)
-    })
+    }, 8000)
     test('when verifyMeter request fails', async () => {
         const { store } = require('src/redux')
         await store.dispatch.userModel.setAuthenticationToken(TEST_SNACKBAR_ERROR)
@@ -135,7 +135,7 @@ describe('useConsents test', () => {
         expect(result.current.enedisSgeConsent.enedisSgeConsentState).toStrictEqual(
             TEST_SUCCESS_ENEDIS_SGE_CONSENT.enedis_sge_consent_state,
         )
-    })
+    }, 8000)
     test('when createEnedisSgeConsent request fails', async () => {
         const { store } = require('src/redux')
         await store.dispatch.userModel.setAuthenticationToken(TEST_SNACKBAR_ERROR)
@@ -159,5 +159,5 @@ describe('useConsents test', () => {
             autoHideDuration: 5000,
             variant: 'error',
         })
-    }, 10000)
+    }, 8000)
 })

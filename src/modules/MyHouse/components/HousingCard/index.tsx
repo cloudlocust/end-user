@@ -20,9 +20,12 @@ import { useHousingsDetails } from 'src/modules/MyHouse/components/HousingList/H
 import { URL_MY_HOUSE } from 'src/modules/MyHouse/MyHouseConfig'
 import { useMeterForHousing } from 'src/modules/Meters/metersHook'
 import { addMeterInputType } from 'src/modules/Meters/Meters'
+import { deleteAddFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
+import Tooltip from '@mui/material/Tooltip'
 
 import { useDispatch } from 'react-redux'
 import { Dispatch } from 'src/redux'
+import { HousingCardForm } from 'src/modules/MyHouse/components/HousingCardForm'
 
 /**
  * This is a card for the display of a logement item.
@@ -113,9 +116,16 @@ const HousingCard = ({
      */
     const handleDeleteHousing = async (id: number) => {
         await removeHousing(id)
+        onAfterDeleteUpdateSuccess()
+        handleCloseConfirmModal()
+    }
+
+    /**
+     * Handler onAfterDeleteUpdateSuccess function when updating or delete housing.
+     */
+    const onAfterDeleteUpdateSuccess = () => {
         reloadHousings()
         dispatch.housingModel.loadHousingsList()
-        handleCloseConfirmModal()
     }
 
     return (
@@ -133,9 +143,33 @@ const HousingCard = ({
                                 {MY_HOUSING_AT + logement.address.city.toUpperCase()}
                             </Typography>
                         </div>
-                        <IconButton aria-label="delete" className="ml-12" onClick={handleOpenConfirmModal}>
-                            <DeleteOutlinedIcon color="error" />
-                        </IconButton>
+                        <div className="ml-12 flex">
+                            <HousingCardForm
+                                housing={logement}
+                                onAfterDeleteUpdateSuccess={onAfterDeleteUpdateSuccess}
+                            />
+
+                            <Tooltip
+                                arrow
+                                placement="bottom-end"
+                                disableHoverListener={!deleteAddFeatureState}
+                                title={formatMessage({
+                                    id: "Cette fonctionnalitée n'est pas encore disponible",
+                                    defaultMessage: "Cette fonctionnalitée n'est pas encore disponible",
+                                })}
+                            >
+                                <div className={`${deleteAddFeatureState && 'cursor-not-allowed'}`}>
+                                    <IconButton
+                                        className="ml-4"
+                                        disabled={deleteAddFeatureState}
+                                        aria-label="delete"
+                                        onClick={handleOpenConfirmModal}
+                                    >
+                                        <DeleteOutlinedIcon color={deleteAddFeatureState ? 'disabled' : 'error'} />
+                                    </IconButton>
+                                </div>
+                            </Tooltip>
+                        </div>
                     </div>
                     <Divider className="my-16" />
                     <div className="flex flex-col">

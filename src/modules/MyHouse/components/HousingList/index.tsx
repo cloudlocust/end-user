@@ -13,13 +13,16 @@ import ElementListGrid from 'src/common/ui-kit/components/MapElementList/compone
 import { ButtonLoader } from 'src/common/ui-kit'
 import Button from '@mui/material/Button'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
-import { Icon } from '@mui/material'
 import Modal from '@mui/material/Modal'
 import Box from '@mui/material/Box'
 import HousingForm from 'src/modules/MyHouse/components/HousingForm'
 
 import { useDispatch } from 'react-redux'
 import { Dispatch } from 'src/redux'
+import SvgIcon from '@mui/material/SvgIcon'
+import { ReactComponent as HouseIcon } from 'src/assets/images/content/housing/HousePlus.svg'
+import { deleteAddFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
+import Tooltip from '@mui/material/Tooltip'
 
 const Root = styled(PageSimple)(({ theme }) => ({
     '& .PageSimple-header': {
@@ -137,24 +140,37 @@ const HousingList = () => {
                                 </div>
                             )}
                         </div>
-                        <div className="flex justify-center mt-24">
-                            <Button
-                                variant="outlined"
-                                className="w-4/5 sm:w-auto"
-                                size="large"
-                                startIcon={
-                                    <Icon>
-                                        <img src="/assets/images/content/housing/House+.svg" alt="add house" />
-                                    </Icon>
-                                }
-                                onClick={() => setModalAddHousingOpen(true)}
+                        <Tooltip
+                            arrow
+                            placement="top"
+                            disableHoverListener={!deleteAddFeatureState}
+                            title={formatMessage({
+                                id: "Cette fonctionnalité n'est pas encore disponible",
+                                defaultMessage: "Cette fonctionnalité n'est pas encore disponible",
+                            })}
+                        >
+                            <div
+                                className={`flex justify-center mt-24 ${deleteAddFeatureState && 'cursor-not-allowed'}`}
                             >
-                                {formatMessage({
-                                    id: 'Ajouter un logement',
-                                    defaultMessage: 'Ajouter un logement',
-                                })}
-                            </Button>
-                        </div>
+                                <Button
+                                    variant="outlined"
+                                    className="w-4/5 sm:w-auto"
+                                    size="large"
+                                    disabled={deleteAddFeatureState}
+                                    startIcon={
+                                        <SvgIcon color={deleteAddFeatureState ? 'disabled' : 'primary'}>
+                                            <HouseIcon />
+                                        </SvgIcon>
+                                    }
+                                    onClick={() => setModalAddHousingOpen(true)}
+                                >
+                                    {formatMessage({
+                                        id: 'Ajouter un logement',
+                                        defaultMessage: 'Ajouter un logement',
+                                    })}
+                                </Button>
+                            </div>
+                        </Tooltip>
                     </div>
                     <Modal open={modalAddHousingOpen} onClose={() => setModalAddHousingOpen(false)}>
                         <Box sx={styleModalBox}>

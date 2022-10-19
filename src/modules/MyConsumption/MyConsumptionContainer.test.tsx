@@ -189,7 +189,7 @@ describe('MyConsumptionContainer test', () => {
             { store },
         )
         await waitFor(() => {
-            expect(mockSetFilters).toHaveBeenCalledWith(formatMetricFilter(LIST_OF_HOUSES[0].meter.guid))
+            expect(mockSetFilters).toHaveBeenCalledWith(formatMetricFilter(LIST_OF_HOUSES[0]!.meter!.guid))
         })
 
         await store.dispatch.housingModel.setHousingModelState([])
