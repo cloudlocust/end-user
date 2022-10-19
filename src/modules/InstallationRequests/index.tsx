@@ -1,4 +1,4 @@
-import { IconButton, Tooltip, Chip, Typography } from '@mui/material'
+import { IconButton, Tooltip, Chip, Typography, useTheme } from '@mui/material'
 import { styled } from '@mui/material/styles'
 import { useIntl } from 'react-intl'
 import { Icon } from 'src/common/ui-kit'
@@ -6,13 +6,19 @@ import Table from 'src/common/ui-kit/components/Table/Table'
 import FuseLoading from 'src/common/ui-kit/fuse/components/FuseLoading'
 import FusePageCarded from 'src/common/ui-kit/fuse/components/FusePageCarded'
 import { IInstallationRequest } from 'src/modules/InstallationRequests/installationRequests'
-import { useInstallationRequestsList } from 'src/modules/InstallationRequests/installationRequestsHook'
+import {
+    useInstallationRequestsList,
+    useInstallationRequestDetails,
+} from 'src/modules/InstallationRequests/installationRequestsHooks'
 import { VariantType } from 'notistack'
 import dayjs from 'dayjs'
 import { motion } from 'framer-motion'
-import { useState } from 'react'
+import { Dispatch, SetStateAction, useState } from 'react'
 import { InstallationRequestDetailsPopup } from 'src/modules/InstallationRequests/components/InstallationRequestDetailsPopup'
 import { InstallationRequestsHeader } from 'src/modules/InstallationRequests/components/InstallationRequestsHeader'
+import { InstallationRequestCreatePopup } from 'src/modules/InstallationRequests/components/InstallationRequestCreatePopup'
+import { useConfirm } from 'material-ui-confirm'
+import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 
 const Root = styled(FusePageCarded)(({ theme }) => ({
     '& .FusePageCarded-header': {
@@ -55,24 +61,92 @@ export const statusList = {
 }
 
 /**
+ * Equipement type list.
+ */
+export const equipmentsTypeList = {
+    SOLAR: {
+        label: 'Panneau Solaire',
+        icon: 'panorama_horizontal_select',
+    },
+    INVERTER: {
+        label: 'Onduleur',
+        icon: 'autofps_select',
+    },
+    DEMOTIC: {
+        label: 'Domotique',
+        icon: 'other_houses',
+    },
+    OTHER: {
+        label: 'Autre',
+        icon: 'help_center',
+    },
+}
+
+/**
  * Component ActionsCell that will be rendered as content of the ActionButtons Cell.
  *
  * @param props N/A.
  * @param props.row Represent the installer information of the current row (current row represent the row when clicking on Accept or Refuse).
  * @param props.onAfterCreateUpdateDeleteSuccess Callback function when activation succeeded.
+ * @param props.setIsUpdateInstallationsRequestsPopup Setter function to trigger update popup.
+ * @param props.setInstallationRequestDetails Setter function to be passed in the row data.
  * @returns ActionsCell Component.
  */
 const ActionsCell = ({
     row,
     onAfterCreateUpdateDeleteSuccess,
+    setIsUpdateInstallationsRequestsPopup,
+    setInstallationRequestDetails,
 }: //eslint-disable-next-line jsdoc/require-jsdoc
 {
     //eslint-disable-next-line jsdoc/require-jsdoc
-    row?: any
+    row: IInstallationRequest
     //eslint-disable-next-line jsdoc/require-jsdoc
-    onAfterCreateUpdateDeleteSuccess?: () => void
-}) => {
+    onAfterCreateUpdateDeleteSuccess: () => void
+    //eslint-disable-next-line jsdoc/require-jsdoc
+    setIsUpdateInstallationsRequestsPopup: Dispatch<SetStateAction<boolean>>
+    //eslint-disable-next-line jsdoc/require-jsdoc
+    setInstallationRequestDetails: Dispatch<SetStateAction<IInstallationRequest | null>>
+}): JSX.Element => {
+    const theme = useTheme()
     const { formatMessage } = useIntl()
+    const openMuiDialog = useConfirm()
+    const { removeElementDetails } = useInstallationRequestDetails(row.id)
+
+    /**
+     * Open warning remove popup on delete click.
+     */
+    const onDeleteInstallationRequestHandler = async () => {
+        await openMuiDialog({
+            title: '',
+            dialogProps: {
+                PaperProps: {
+                    style: {
+                        // MUI snackbar red color, used as a global error color.
+                        background: theme.palette.error.main,
+                    },
+                },
+            },
+            description: (
+                <TypographyFormatMessage className="text-16 md:text-20 text-center text-white">
+                    Vous êtes sur le point de supprimer cette demande d'installation. Ëtes-vous sûr de vouloir continuer
+                    ?
+                </TypographyFormatMessage>
+            ),
+            confirmationText: (
+                <TypographyFormatMessage className="text-13 md:text-16 font-medium text-white">
+                    Continuer
+                </TypographyFormatMessage>
+            ),
+            cancellationText: (
+                <TypographyFormatMessage className="text-13 md:text-16 font-medium text-white">
+                    Annuler
+                </TypographyFormatMessage>
+            ),
+        })
+        await removeElementDetails()
+        onAfterCreateUpdateDeleteSuccess()
+    }
 
     return (
         <div>
@@ -85,9 +159,9 @@ const ActionsCell = ({
                 >
                     <IconButton
                         color="success"
-                        onClick={async () => {
-                            // await acceptInstallerRequest()
-                            // onAfterCreateUpdateDeleteSuccess()
+                        onClickCapture={() => {
+                            setIsUpdateInstallationsRequestsPopup(true)
+                            setInstallationRequestDetails(row)
                         }}
                     >
                         <Icon>edit</Icon>
@@ -99,13 +173,7 @@ const ActionsCell = ({
                         defaultMessage: 'Supprimer',
                     })}
                 >
-                    <IconButton
-                        color="error"
-                        onClick={async () => {
-                            // await refuseInstallerRequest()
-                            // onAfterCreateUpdateDeleteSuccess()
-                        }}
-                    >
+                    <IconButton color="error" onClick={onDeleteInstallationRequestHandler}>
                         <Icon>delete</Icon>
                     </IconButton>
                 </Tooltip>
@@ -122,19 +190,17 @@ const ActionsCell = ({
 export const InstallationRequests = (): JSX.Element => {
     const {
         elementList: installationRequestsList,
-        // reloadElements: reloadInstallationRequestsList,
         loadingInProgress: isInstallationRequestsLoading,
         totalElementList: totalInstallationRequests,
+        reloadElements: reloadInstallationRequests,
         loadPage,
         page,
     } = useInstallationRequestsList()
     const { formatMessage } = useIntl()
     const [installationRequestDetails, setInstallationRequestDetails] = useState<IInstallationRequest | null>(null)
-    const [isInstallationsRequestsPopup, setIsInstallationsRequestsPopup] = useState(false)
+    const [isUpdateInstallationsRequestsPopup, setIsUpdateInstallationsRequestsPopup] = useState(false)
+    const [isCreateInstallationRequestPopup, setIsCreateInstallationRequestPopup] = useState(false)
 
-    /**
-     * Row containing the Cells of the Chameleons Table.
-     */
     const installerRequestsCells = [
         {
             id: 'type',
@@ -183,27 +249,46 @@ export const InstallationRequests = (): JSX.Element => {
         {
             id: '',
             headCellLabel: '',
-            // TODO: to be worked on when updating & deleting installation request.
             // eslint-disable-next-line jsdoc/require-jsdoc
-            rowCell: () => <ActionsCell />,
+            rowCell: (row: IInstallationRequest) => (
+                <ActionsCell
+                    row={row}
+                    setIsUpdateInstallationsRequestsPopup={setIsUpdateInstallationsRequestsPopup}
+                    setInstallationRequestDetails={setInstallationRequestDetails}
+                    onAfterCreateUpdateDeleteSuccess={reloadInstallationRequests}
+                />
+            ),
         },
     ]
 
     return (
         <Root
-            header={<InstallationRequestsHeader />}
+            header={
+                <InstallationRequestsHeader setIsCreateInstallationRequestPopup={setIsCreateInstallationRequestPopup} />
+            }
             content={
                 <>
-                    <InstallationRequestDetailsPopup
-                        installationRequestDetails={installationRequestDetails}
-                        open={isInstallationsRequestsPopup}
-                        handleClosePopup={() => {
-                            setIsInstallationsRequestsPopup(false)
-                            setInstallationRequestDetails(null)
-                        }}
-                    />
-
-                    {isInstallationRequestsLoading || !!!installationRequestsList?.length ? (
+                    {isCreateInstallationRequestPopup && (
+                        <InstallationRequestCreatePopup
+                            open={isCreateInstallationRequestPopup}
+                            handleClosePopup={() => {
+                                setIsCreateInstallationRequestPopup(false)
+                            }}
+                            onAfterCreateUpdateDeleteSuccess={reloadInstallationRequests}
+                        />
+                    )}
+                    {isUpdateInstallationsRequestsPopup && installationRequestDetails && (
+                        <InstallationRequestDetailsPopup
+                            installationRequestDetails={installationRequestDetails}
+                            open={isUpdateInstallationsRequestsPopup}
+                            handleClosePopup={() => {
+                                setIsUpdateInstallationsRequestsPopup(false)
+                                setInstallationRequestDetails(null)
+                            }}
+                            onAfterCreateUpdateDeleteSuccess={reloadInstallationRequests}
+                        />
+                    )}
+                    {isInstallationRequestsLoading || !installationRequestsList ? (
                         <FuseLoading />
                     ) : installationRequestsList.length === 0 ? (
                         <motion.div
@@ -226,10 +311,6 @@ export const InstallationRequests = (): JSX.Element => {
                                 onPageChange={loadPage}
                                 rows={installationRequestsList}
                                 pageProps={page}
-                                onRowClick={(installationRequestDetails) => {
-                                    setInstallationRequestDetails(installationRequestDetails)
-                                    setIsInstallationsRequestsPopup(true)
-                                }}
                             />
                         </div>
                     )}

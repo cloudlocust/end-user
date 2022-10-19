@@ -1,7 +1,3 @@
-import { useIntl } from 'react-intl'
-import { selectTheme } from 'src/common/ui-kit/fuse/utils/theming-generator'
-import { InstallationRequestDetailsPopupProps } from 'src/modules/InstallationRequests/components/InstallationRequestDetailsPopup/installationRequestDetailsPopup'
-import { ThemeProvider } from '@mui/material/styles'
 import {
     AppBar,
     Dialog,
@@ -13,42 +9,33 @@ import {
     Button,
     DialogActions,
 } from '@mui/material'
+import { InstallationRequestCreatePopupProps } from 'src/modules/InstallationRequests/components/InstallationRequestCreatePopup/installationRequestCreatePopup.d'
+import { ThemeProvider } from '@mui/material/styles'
+import { useIntl } from 'react-intl'
+import { selectTheme } from 'src/common/ui-kit/fuse/utils/theming-generator'
 import { ButtonLoader, TextField } from 'src/common/ui-kit'
 import { equipmentsTypeList } from 'src/modules/InstallationRequests'
 import { Form } from 'src/common/react-platform-components'
-import { equipmentTypeT, IInstallationRequest } from 'src/modules/InstallationRequests/installationRequests.d'
-import dayjs from 'dayjs'
-import { useState } from 'react'
-import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import { ButtonResetForm } from 'src/common/ui-kit/components/ButtonResetForm/ButtonResetForm'
-import { useInstallationRequestDetails } from 'src/modules/InstallationRequests/installationRequestsHooks'
+import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
+import { useState } from 'react'
+import { createInstallationRequestType, equipmentTypeT } from 'src/modules/InstallationRequests/installationRequests'
+import { useInstallationRequestsList } from 'src/modules/InstallationRequests/installationRequestsHooks'
 
 /**
- * Installation request details popup component that shows the details of one installation request.
+ * Installation request creation popup component.
  *
- * @param props Props relevant to Installation request details popup.
- * @returns JSX for installation request details.
+ * @param props Props relevant to Installation request creation popup.
+ * @returns JSX for installation request creation.
  */
-export const InstallationRequestDetailsPopup = (props: InstallationRequestDetailsPopupProps) => {
-    const { handleClosePopup, open, installationRequestDetails, onAfterCreateUpdateDeleteSuccess } = props
+export const InstallationRequestCreatePopup = (props: InstallationRequestCreatePopupProps) => {
+    const { handleClosePopup, open, onAfterCreateUpdateDeleteSuccess } = props
+    const { loadingInProgress, addElement } = useInstallationRequestsList()
+    const [activeEquipmentButton, setActiveEquipmentButton] = useState<equipmentTypeT | null>(null)
+
     const selectedTheme = selectTheme()
     const { formatMessage } = useIntl()
-    const { editElementDetails: editInstallationRequest } = useInstallationRequestDetails(installationRequestDetails.id)
 
-    const [activeEquipmentButton, setActiveEquipmentButton] = useState<equipmentTypeT>(
-        installationRequestDetails.equipmentType,
-    )
-
-    const defaultFormValues: Omit<IInstallationRequest, 'updatedAt'> = {
-        id: installationRequestDetails.id,
-        budget: installationRequestDetails.budget,
-        comment: installationRequestDetails.comment,
-        createdAt: dayjs.utc(installationRequestDetails.createdAt).local().format('DD/MM/YYYY'),
-        equipmentBrand: installationRequestDetails.equipmentBrand,
-        equipmentModel: installationRequestDetails.equipmentModel,
-        equipmentType: installationRequestDetails.equipmentType,
-        status: installationRequestDetails.status,
-    }
     /**
      * Function that handle on change  equipment type.
      * When user click on button, the clicked button becomes outlined.
@@ -74,8 +61,8 @@ export const InstallationRequestDetailsPopup = (props: InstallationRequestDetail
                     <Toolbar className="flex w-full justify-between">
                         <Typography variant="h5" color="inherit" className="flex items-center justify-center p-32">
                             {formatMessage({
-                                id: "Détail d'une demande",
-                                defaultMessage: "Détail d'une demande",
+                                id: "Demande d'installation",
+                                defaultMessage: "Demande d'installation",
                             })}
                         </Typography>
                         <IconButton
@@ -99,34 +86,16 @@ export const InstallationRequestDetailsPopup = (props: InstallationRequestDetail
                         </div>
 
                         <Form
-                            onSubmit={(data: Omit<IInstallationRequest, 'updatedAt'>) => {
-                                const { equipmentType, id, ...restOfData } = data
-                                editInstallationRequest({
+                            onSubmit={(data: createInstallationRequestType) => {
+                                const { equipmentType, ...restOfData } = data
+                                addElement({
                                     ...restOfData,
-                                    equipmentType: activeEquipmentButton,
+                                    equipmentType: activeEquipmentButton!,
                                 })
                                 handleClosePopup()
                                 onAfterCreateUpdateDeleteSuccess()
                             }}
-                            defaultValues={defaultFormValues}
                         >
-                            <div className="flex items-center mb-12">
-                                <Typography variant="subtitle1" className="font-semibold mr-4 whitespace-nowrap">
-                                    <span className="hidden font-semibold mr-4 sm:inline">
-                                        {formatMessage({
-                                            id: `Date de la demande:`,
-                                            defaultMessage: `Date de la demande:`,
-                                        })}
-                                    </span>
-                                    <span className="inline font-semibold mr-4 sm:hidden">
-                                        {formatMessage({
-                                            id: `Date:`,
-                                            defaultMessage: `Date:`,
-                                        })}
-                                    </span>
-                                </Typography>
-                                <TextField disabled name="createdAt" label="" />
-                            </div>
                             {/* Matèriel demandé */}
                             <div className="flex flex-col mb-12">
                                 <Typography variant="subtitle1" className="font-semibold mb-8 whitespace-nowrap">
@@ -214,10 +183,10 @@ export const InstallationRequestDetailsPopup = (props: InstallationRequestDetail
                             </div>
                             <DialogActions className="justify-center p-4 pb-16">
                                 <div className="px-16">
-                                    <ButtonResetForm initialValues={defaultFormValues} />
+                                    <ButtonResetForm initialValues={() => {}} />
                                 </div>
                                 <div className="px-16">
-                                    <ButtonLoader type="submit">
+                                    <ButtonLoader inProgress={loadingInProgress} type="submit">
                                         <TypographyFormatMessage>Valider</TypographyFormatMessage>
                                     </ButtonLoader>
                                 </div>

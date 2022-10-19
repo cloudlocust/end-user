@@ -17,7 +17,7 @@ const LIST_OF_HOUSES: IHousing[] = applyCamelCase(TEST_HOUSES)
 
 // mock store.
 
-let mockData: IMetric[] = TEST_SUCCESS_WEEK_METRICS(['consumption_metrics'])
+let mockData: IMetric[] = TEST_SUCCESS_WEEK_METRICS(['consumption_metrics', '__euros__consumption_metrics'])
 let mockNrlinkConsent: string
 let mockIsMetricsLoading = false
 let mockEnedisConsent: string

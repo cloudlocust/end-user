@@ -152,8 +152,9 @@ describe('Test widget functions', () => {
 
     describe('test computeTotalEuros', () => {
         test('when it returns € unit', () => {
+            const val = 70.123456
             const expectedResult = {
-                value: 70,
+                value: val.toFixed(4),
                 unit: '€',
             }
             const data: IMetric[] = [
@@ -173,30 +174,36 @@ describe('Test widget functions', () => {
 
     describe('test computeWidgetAssets', () => {
         test('when it returns € unit', () => {
-            const val = 20
+            const val = 70.123456
+            const expectValue = val
             const cases = [
                 {
                     target: metricTargetsEnum.eurosConsumption,
                     unit: '€',
+                    value: expectValue.toFixed(4),
                 },
                 {
                     target: metricTargetsEnum.consumption,
                     unit: 'Wh',
+                    value: expectValue,
                 },
                 {
                     target: metricTargetsEnum.internalTemperature,
                     unit: '°C',
+                    value: expectValue,
                 },
                 {
                     target: metricTargetsEnum.externalTemperature,
                     unit: '°C',
+                    value: expectValue,
                 },
                 {
                     target: metricTargetsEnum.pMax,
                     unit: 'VA',
+                    value: expectValue,
                 },
             ]
-            const datapoints = [[val, 1640995200000]]
+            const datapoints = [[expectValue, 1640995200000]]
             const data: IMetric[] = [
                 {
                     datapoints,
@@ -207,7 +214,7 @@ describe('Test widget functions', () => {
             cases.forEach((testCase) => {
                 data[0].target = testCase.target
                 const result = computeWidgetAssets(data, testCase.target)
-                expect(result).toStrictEqual({ value: val, unit: testCase.unit })
+                expect(result).toStrictEqual({ value: testCase.value, unit: testCase.unit })
             })
         })
     })

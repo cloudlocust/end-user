@@ -25,6 +25,8 @@ jest.mock('notistack', () => ({
 }))
 
 const TEST_LOAD_HOUSINGS_ERROR_MESSAGE = 'Erreur lors du chargement des logements'
+const ERROR_EDIT_MESSAGE = 'Erreur lors de la modification du logement'
+const SUCCESS_EDIT_MESSAGE = 'Le logement a été modifié'
 const ERROR_REMOVE_MESSAGE = 'Erreur lors de la Suppression du logement'
 const SUCCESS_REMOVE_MESSAGE = 'Le logement a été supprimé'
 const ERROR_ADD_MESSAGE = "Erreur lors de l'ajout du logement"
@@ -183,6 +185,49 @@ describe('housingstHooks test', () => {
             )
             expect(result.current.loadingRequest).toBe(false)
             expect(mockEnqueueSnackbar).toHaveBeenCalledWith(SUCCESS_REMOVE_MESSAGE, { variant: 'success' })
+        })
+    })
+    describe('edit housing', () => {
+        test('when fail, housings should not be edited', async () => {
+            const {
+                renderedHook: { result, waitForValueToChange },
+            } = reduxedRenderHook(() => useHousingsDetails(), { initialState: {} })
+
+            expect(result.current.loadingRequest).toBe(false)
+            act(async () => {
+                try {
+                    await result.current.editHousing(TEST_MOCKED_HOUSES[0].id, { address: falseAddress })
+                } catch (err) {}
+            })
+            expect(result.current.loadingRequest).toBe(true)
+            await waitForValueToChange(
+                () => {
+                    return result.current.loadingRequest
+                },
+                { timeout: 4000 },
+            )
+
+            expect(result.current.loadingRequest).toBe(false)
+            expect(mockEnqueueSnackbar).toHaveBeenCalledWith(ERROR_EDIT_MESSAGE, { variant: 'error' })
+        })
+        test('when success, housing should be edited', async () => {
+            const {
+                renderedHook: { result, waitForValueToChange },
+            } = reduxedRenderHook(() => useHousingsDetails(), { initialState: {} })
+
+            expect(result.current.loadingRequest).toBe(false)
+            act(() => {
+                result.current.editHousing(TEST_MOCKED_HOUSES[0].id, { address: TEST_MOCKED_HOUSES[0].address })
+            })
+            expect(result.current.loadingRequest).toBe(true)
+            await waitForValueToChange(
+                () => {
+                    return result.current.loadingRequest
+                },
+                { timeout: 4000 },
+            )
+            expect(result.current.loadingRequest).toBe(false)
+            expect(mockEnqueueSnackbar).toHaveBeenCalledWith(SUCCESS_EDIT_MESSAGE, { variant: 'success' })
         })
     })
 })

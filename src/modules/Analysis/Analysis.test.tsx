@@ -160,7 +160,7 @@ describe('Analysis test', () => {
         mockEnedisConsent = 'CONNECTED'
         const totalDataPoints = 1000
         const TOTAL_CONSUMPTION_TEXT = `1 kWh`
-        const TOTAL_EUROS_CONSUMPTION_TEXT = `1000 €`
+        const TOTAL_EUROS_CONSUMPTION_TEXT = `1000.00 €`
         // Overriding datapoints of useMetrics for consumption target (index: 0), eurosConsumption target (index: 1).
         mockData[0].datapoints = [[totalDataPoints, 1643628944000]]
         mockData[1].datapoints = [[totalDataPoints, 1643628944000]]

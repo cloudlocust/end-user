@@ -70,6 +70,18 @@ export const housingEndpoints = [
 
         return res(ctx.status(200), ctx.delay(1000), ctx.json(TEST_CUSTOMERS_RESPONSE))
     }),
+    /* Update Housing By address. */
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    rest.put<{ address: SnakeCasedPropertiesDeep<defaultValueType> }>(`${HOUSING_API}/:id`, (req, res, ctx) => {
+        const { address } = req.body
+        if (address.city !== falseAddress.city) {
+            TEST_HOUSES[0].address = address
+            return res(ctx.status(200), ctx.delay(1000), ctx.json(TEST_HOUSES[0]))
+        } else {
+            return res(ctx.status(401), ctx.delay(1000))
+        }
+    }),
+
     /* Add Housing By address. */
     rest.post</**
      *

@@ -98,7 +98,7 @@ export const computeInternallTemperature = (data: IMetric[]): { value: number; u
 // eslint-disable-next-line jsdoc/require-jsdoc
 export const computeTotalEuros = (data: IMetric[]): { value: number; unit: '€' } => {
     const values = getDataFromYAxis(data, metricTargetsEnum.eurosConsumption)
-    return { value: sum(values), unit: '€' }
+    return { value: parseInt(sum(values).toFixed(4)), unit: '€' }
 }
 
 /**
