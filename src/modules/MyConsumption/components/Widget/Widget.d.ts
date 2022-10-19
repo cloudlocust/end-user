@@ -8,6 +8,7 @@ export type widgetTitleType =
     | 'Puissance Maximale'
     | 'Température Intérieure'
     | 'Température Extérieure'
+    | 'Coût Total'
 
 /**
  * Total Consumption Units types.
@@ -25,7 +26,7 @@ export interface IWidgetProps {
     /**
      * Widget unit.
      */
-    unit: 'Wh' | 'kWh' | 'MWh' | 'VA' | 'kVa' | '°C'
+    unit: 'Wh' | 'kWh' | 'MWh' | 'VA' | 'kVa' | '°C' | '€'
     /**
      * Widget value.
      */
@@ -34,6 +35,10 @@ export interface IWidgetProps {
      * Widget title.
      */
     title: widgetTitleType
+    /**
+     * Widget infoIcon.
+     */
+    infoIcon?: JSX.Element
 }
 
 /**

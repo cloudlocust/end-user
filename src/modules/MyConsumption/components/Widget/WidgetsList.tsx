@@ -20,6 +20,8 @@ const renderWidgetTitle = (target: metricTargetType): widgetTitleType => {
             return 'Température Extérieure'
         case metricTargetsEnum.internalTemperature:
             return 'Température Intérieure'
+        case metricTargetsEnum.eurosConsumption:
+            return 'Coût Total'
         default:
             throw Error('Wrong target')
     }
