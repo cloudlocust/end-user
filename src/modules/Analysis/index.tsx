@@ -16,7 +16,7 @@ import { useConsents } from 'src/modules/Consents/consentsHook'
 import CircularProgress from '@mui/material/CircularProgress'
 import { subMonths, startOfMonth, endOfMonth, subDays } from 'date-fns'
 import MyConsumptionDatePicker from 'src/modules/MyConsumption/components/MyConsumptionDatePicker'
-import { computeTotalConsumption } from 'src/modules/MyConsumption/components/Widget/WidgetFunctions'
+import { computeTotalConsumption, computeTotalEuros } from 'src/modules/MyConsumption/components/Widget/WidgetFunctions'
 import AnalysisInformationList from 'src/modules/Analysis/components/AnalysisInformationList'
 import AnalysisPercentageChangeArrows from 'src/modules/Analysis/components/AnalysisPercentageChangeArrows'
 import convert, { Unit } from 'convert-units'
@@ -37,6 +37,10 @@ export const initialMetricsHookValues: getMetricType = {
     targets: [
         {
             target: metricTargetsEnum.consumption,
+            type: 'timeserie',
+        },
+        {
+            target: metricTargetsEnum.eurosConsumption,
             type: 'timeserie',
         },
     ],
@@ -130,12 +134,14 @@ const Analysis = () => {
         )
     }
 
-    const totalConsumption = data.length !== 0 ? computeTotalConsumption(data) : { value: 0, unit: 'kWh' }
+    const totalConsumption = data.length ? computeTotalConsumption(data) : { value: 0, unit: 'kWh' }
     const referenceConsumptionValue = Number(
         convert(totalConsumption.value)
             .from(totalConsumption.unit as Unit)
             .to('Wh'),
     )
+    const totalEurosConsumption = data.length ? computeTotalEuros(data) : { value: 0, unit: 'kWh' }
+
     return (
         <div>
             <div
@@ -178,6 +184,9 @@ const Analysis = () => {
                                 referenceConsumptionValue={referenceConsumptionValue}
                                 filters={filters}
                             />
+                            <p className="text-16 md:text-20 font-medium">
+                                {totalEurosConsumption.value} {totalEurosConsumption.unit}
+                            </p>
                         </div>
                     </AnalysisChart>
                 )}

@@ -145,15 +145,6 @@ export const housingEndpoints = [
         }
     }),
 
-    // Get Has Missing Housing Contracts Api
-    rest.get(`${HOUSING_API}/:housingId/has_missing_housing_contracts`, (req, res, ctx) => {
-        const { housingId } = req.params
-        if (parseInt(housingId) === TEST_HOUSES[0].id) return res(ctx.json({ has_missing_housing_contracts: true }))
-        if (parseInt(housingId) === TEST_HOUSES[1].id)
-            return res(ctx.status(200), ctx.delay(2000), ctx.json({ has_missing_housing_contracts: false }))
-        return res(ctx.status(401), ctx.delay(2000))
-    }),
-
     // Edit meter
     rest.patch<editMeterInputType>(`${HOUSING_API}/:housingId/meter`, (req, res, ctx) => {
         const { name, guid } = req.body
@@ -169,5 +160,14 @@ export const housingEndpoints = [
         }
 
         return res(ctx.status(200), ctx.delay(1000), ctx.json({ ...TEST_HOUSES[0].meter, ...{ name, guid } }))
+    }),
+
+    // Get Has Missing Housing Contracts Api
+    rest.get(`${HOUSING_API}/:housingId/has_missing_housing_contracts`, (req, res, ctx) => {
+        const { housingId } = req.params
+        if (parseInt(housingId) === TEST_HOUSES[0].id) return res(ctx.json({ has_missing_housing_contracts: true }))
+        if (parseInt(housingId) === TEST_HOUSES[1].id)
+            return res(ctx.status(200), ctx.delay(2000), ctx.json({ has_missing_housing_contracts: false }))
+        return res(ctx.status(401), ctx.delay(2000))
     }),
 ]
