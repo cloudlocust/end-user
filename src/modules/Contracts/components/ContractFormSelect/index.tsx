@@ -16,7 +16,7 @@ import { isNull } from 'lodash'
  * @param props.isOptionsInProgress Boolean indicating loading state of optionList.
  * @param props.formatOptionLabel Function that returns the option label format.
  * @param props.formatOptionValue Function that returns the option value format.
- * @param props.selectLabel Label of the select.
+ * @param props.label Label of the select.
  * @param props.validateFunctions Validate functions passed in the Select.
  * @returns ContractFormSelect component.
  */
@@ -27,11 +27,11 @@ const ContractFormSelect = <T extends unknown>({
     isOptionsInProgress,
     formatOptionLabel,
     formatOptionValue,
-    selectLabel,
+    label,
     validateFunctions,
+    ...otherSelectProps
 }: ContractFormSelectProps<T>): JSX.Element => {
     const { formatMessage } = useIntl()
-
     useEffect(() => {
         // Load optionList on mount, which will automatically update the optionList
         loadOptions()
@@ -49,12 +49,12 @@ const ContractFormSelect = <T extends unknown>({
             <Select
                 name={name}
                 label={formatMessage({
-                    id: selectLabel,
-                    defaultMessage: selectLabel,
+                    id: `${label}`,
+                    defaultMessage: `${label}`,
                 })}
                 defaultValue=""
                 validateFunctions={validateFunctions}
-                className="mb-20"
+                {...otherSelectProps}
             >
                 {optionList.map((option, index) => (
                     <MenuItem key={formatOptionValue(option)} value={formatOptionValue(option)}>

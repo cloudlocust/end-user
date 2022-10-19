@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo, useCallback } from 'react'
 import { motion } from 'framer-motion'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import MyConsumptionChart from 'src/modules/MyConsumption/components/MyConsumptionChart'
@@ -23,6 +23,8 @@ import { useSelector } from 'react-redux'
 import { RootState } from 'src/redux'
 import { URL_MY_HOUSE } from 'src/modules/MyHouse/MyHouseConfig'
 import { useMyConsumptionHooks } from 'src/modules/MyConsumption/hooks/MyConsumptionHooks'
+import { tempPmaxFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
+import Tooltip from '@mui/material/Tooltip'
 
 /**
  * InitialMetricsStates for useMetrics.
@@ -86,6 +88,12 @@ export const MyConsumptionContainer = () => {
         }
     }, [filters, getConsents])
 
+    // Storing the chartData with useMemo, so that we don't compute data.filter on every state change (period, range ...etc), and thus we won't reender heavy computation inside MyConsumptionChart because chartData will be stable.
+    const chartData = useMemo(
+        () => data.filter((metric) => filteredTargets.includes(metric.target)),
+        [data, filteredTargets],
+    )
+
     /**
      * Show text according to interval.
      *
@@ -120,13 +128,37 @@ export const MyConsumptionContainer = () => {
      *
      * @param target Metric target.
      */
-    const addTarget = (target: metricTargetType) => {
-        if (!filteredTargets.find((filteredTargetsEl) => filteredTargetsEl === target)) {
-            setFilteredTargets((prevState) => {
-                return [...prevState, target]
-            })
-        }
-    }
+    const addTarget = useCallback(
+        (target: metricTargetType) => {
+            if (!filteredTargets.find((filteredTargetsEl) => filteredTargetsEl === target)) {
+                setFilteredTargets((prevState) => {
+                    return [...prevState, target]
+                })
+            }
+        },
+        [filteredTargets],
+    )
+
+    const memoizedTargetButtonGroup = useMemo(() => {
+        return (
+            <TargetButtonGroup
+                removeTarget={removeTarget}
+                addTarget={addTarget}
+                hidePmax={period === 'daily' || enedisConsent?.enedisConsentState === 'NONEXISTENT'}
+            />
+        )
+    }, [addTarget, enedisConsent?.enedisConsentState, period])
+
+    const memoizedMyConsumptionPeriod = useMemo(() => {
+        return (
+            <MyConsumptionPeriod
+                setPeriod={setPeriod}
+                setRange={setRange}
+                setMetricsInterval={setMetricsInterval}
+                range={range}
+            />
+        )
+    }, [range, setMetricsInterval, setRange])
 
     // By checking if the metersList is true we make sure that if someone has skipped the step of connecting their PDL, they will see this error message.
     // Else if they have a PDL, we check its consent.
@@ -185,12 +217,19 @@ export const MyConsumptionContainer = () => {
                         addTarget={addTarget}
                         showEurosConsumption={!isEurosConsumptionChart}
                     />
-
-                    <TargetButtonGroup
-                        removeTarget={removeTarget}
-                        addTarget={addTarget}
-                        hidePmax={period === 'daily' || enedisConsent?.enedisConsentState === 'NONEXISTENT'}
-                    />
+                    <Tooltip
+                        arrow
+                        placement="bottom-end"
+                        disableHoverListener={!tempPmaxFeatureState}
+                        title={formatMessage({
+                            id: "Cette fonctionnalitée n'est pas encore disponible",
+                            defaultMessage: "Cette fonctionnalitée n'est pas encore disponible",
+                        })}
+                    >
+                        <div className={`${tempPmaxFeatureState && 'cursor-not-allowed'}`}>
+                            {memoizedTargetButtonGroup}
+                        </div>
+                    </Tooltip>
                 </div>
 
                 {isMetricsLoading ? (
@@ -202,18 +241,13 @@ export const MyConsumptionContainer = () => {
                     </div>
                 ) : (
                     <MyConsumptionChart
-                        data={data.filter((metric) => filteredTargets.includes(metric.target))}
+                        data={chartData}
                         chartType={period === 'daily' ? 'area' : 'bar'}
                         period={period}
                         range={range}
                     />
                 )}
-                <MyConsumptionPeriod
-                    setPeriod={setPeriod}
-                    setRange={setRange}
-                    setMetricsInterval={setMetricsInterval}
-                    range={range}
-                />
+                {memoizedMyConsumptionPeriod}
                 {hasMissingHousingContracts && (
                     <NavLink
                         to={`${URL_MY_HOUSE}/${currentHousing?.id}/contracts`}

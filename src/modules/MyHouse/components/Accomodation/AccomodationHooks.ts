@@ -6,6 +6,7 @@ import { getMsgFromAxiosError } from 'src/modules/utils'
 import { AxiosResponse } from 'axios'
 import { AccomodationDataType } from 'src/modules/MyHouse/components/Accomodation/AccomodationType'
 import { HOUSING_API } from 'src/modules/MyHouse/components/HousingList/HousingsHooks'
+import { equipmentsAccomodationFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
 /**
  * Accomodation url.
  *
@@ -88,7 +89,7 @@ export function useAccomodation(housingId: number) {
 
     // UseEffect executes on initial intantiation of Accomodation.
     useEffect(() => {
-        if (isInitialMount.current) {
+        if (isInitialMount.current && !equipmentsAccomodationFeatureState) {
             isInitialMount.current = false
             loadAccomodation()
         }

@@ -63,12 +63,12 @@ function FuseNavVerticalItem(props: IFuseNavigationComponentProps) {
                 exact={item!.exact!}
                 role="button"
             >
-                {item?.iconLabel && (
+                {item?.icon && (
                     <Icon
                         className={clsx('fuse-list-item-icon text-20 flex-shrink-0', item.iconClassName)}
                         color="action"
                     >
-                        {item?.iconLabel}
+                        {item?.icon}
                     </Icon>
                 )}
 

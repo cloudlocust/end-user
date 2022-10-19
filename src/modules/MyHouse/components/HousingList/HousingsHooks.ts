@@ -8,6 +8,7 @@ import { useIntl } from 'src/common/react-platform-translation'
 import { useToggle } from 'react-use'
 import { axios, catchError } from 'src/common/react-platform-components'
 import { useSnackbar } from 'notistack'
+import { housingCardFormValuesType } from '../HousingCardForm/HousingCardFormProps'
 
 /**
  * Url for User management webservice endpoints.
@@ -51,6 +52,7 @@ export const useHousingList = (sizeParam?: number) =>
         snackBarMessage0verride: { loadElementListError, addElementSuccess, addElementError },
     })()
 
+// TODO change with useHousingDetails from useElementHookBuilder
 /**
  * Hook for Housings.
  *
@@ -92,8 +94,41 @@ export const useHousingsDetails = () => {
         }
     }
 
+    /**
+     * Remove Element Housing Handler.
+     *
+     * @param HousingId Housing Id of the Housing.
+     * @param body Body edit housing.
+     * @returns The function returns a string message containing successful and errors message.
+     */
+    const editHousing = async (HousingId: number, body: housingCardFormValuesType) => {
+        setLoadingRequest(true)
+        try {
+            await axios.put<IHousing>(`${HOUSING_API}/${HousingId}`, body)
+            enqueueSnackbar(
+                formatMessage({
+                    id: 'Le logement a été modifié',
+                    defaultMessage: 'Le logement a été modifié',
+                }),
+                { variant: 'success' },
+            )
+            setLoadingRequest(false)
+        } catch (error) {
+            enqueueSnackbar(
+                formatMessage({
+                    id: 'Erreur lors de la modification du logement',
+                    defaultMessage: 'Erreur lors de la modification du logement',
+                }),
+                { variant: 'error' },
+            )
+            setLoadingRequest(false)
+            throw catchError(error)
+        }
+    }
+
     return {
         loadingRequest,
         removeHousing,
+        editHousing,
     }
 }

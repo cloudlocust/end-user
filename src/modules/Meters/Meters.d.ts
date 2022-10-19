@@ -27,3 +27,8 @@ export type addMeterInputType = {
     //eslint-disable-next-line jsdoc/require-jsdoc
     guid: string
 }
+
+/**
+ * Information to be passed when editing a meter.
+ */
+export type editMeterInputType = addMeterInputType

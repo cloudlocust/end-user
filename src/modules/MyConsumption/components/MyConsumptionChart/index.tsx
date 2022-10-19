@@ -4,12 +4,13 @@ import { IMetric, metricRangeType } from 'src/modules/Metrics/Metrics'
 import { useTheme } from '@mui/material/styles'
 import { useIntl } from 'react-intl'
 import 'src/modules/MyConsumption/components/MyConsumptionChart/MyConsumptionChart.scss'
-import { convertMetricsDataToApexChartsAxisValues } from 'src/modules/MyConsumption/utils/apexChartsDataConverter'
+import { convertMetricsDataToApexChartsDateTimeAxisValues } from 'src/modules/MyConsumption/utils/apexChartsDataConverter'
 import { getApexChartMyConsumptionProps } from 'src/modules/MyConsumption/utils/apexChartsMyConsumptionOptions'
-import { ApexChartsAxisValuesType, periodType } from 'src/modules/MyConsumption/myConsumptionTypes'
-import { fillApexChartsAxisMissingValues } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
+import { periodType } from 'src/modules/MyConsumption/myConsumptionTypes'
+import { fillApexChartsDatetimeSeriesMissingValues } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
 import { CircularProgress } from '@mui/material'
 import useMediaQuery from '@mui/material/useMediaQuery'
+
 /**
  * MyConsumptionChart Component.
  *
@@ -42,25 +43,23 @@ const MyConsumptionChart = ({
     const [isApexChartsFinishDrawing, setIsApexChartsFinishDrawing] = React.useState(false)
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
     // Wrap in useMemo for better performance, as we save the result of convertMetricsData function and we don't call it again on every reender, until data changes.
-    let ApexChartsAxisValues: ApexChartsAxisValuesType = React.useMemo(
-        () => convertMetricsDataToApexChartsAxisValues(data),
+    let ApexChartsAxisValues: ApexAxisChartSeries = React.useMemo(
+        () => convertMetricsDataToApexChartsDateTimeAxisValues(data),
         [data],
     )
 
     // Wrap in useMemo for better performance, as we save the heavy computational result of fillApexChartsAxisMissingValues function and we don't call it again on every reender, until period, range or ApexChartsAxisValues from convertMetricsDataToApexChartsAxisValues changes.
-    // The fillApexChartsAxisMissingValues checks if there are missing axis values.
+    // The fillApexChartsDatetimeSeriesMissingValues checks if there are missing datapoints.
     ApexChartsAxisValues = React.useMemo(
         // Because of ApexCharts to show the right amount of xAxis even If there are missing values according to the period (for example for 'weekly' we expect seven values), we fill the missing values with null.
-        () => fillApexChartsAxisMissingValues(ApexChartsAxisValues, period, range),
-        [period, range, ApexChartsAxisValues],
+        () => fillApexChartsDatetimeSeriesMissingValues(ApexChartsAxisValues, period, range),
+        [ApexChartsAxisValues, period, range],
     )
 
     // Wrap in useMemo for better performance, as we save the heavy computational result of getApexChartMyConsumptionProps function and we don't call it again on every reender, untli its dependencies change.
     const reactApexChartsProps = React.useMemo(() => {
         return getApexChartMyConsumptionProps({
-            yAxisSeries: ApexChartsAxisValues.yAxisSeries,
-            // As xAxis will be the same for all charts, we make sure that xAxisSeries[0] contains all the expected values.
-            xAxisValues: ApexChartsAxisValues.xAxisSeries[0],
+            yAxisSeries: ApexChartsAxisValues,
             period,
             chartType,
             formatMessage,
@@ -95,10 +94,19 @@ const MyConsumptionChart = ({
             className={`${
                 // We add some styling when period is daily to hide some labels in the xAxis when screen is small, otherwise it'll be too much labels and thus becomes unreadable.
                 period === 'daily' && 'apexChartsDailyPeriodWrapper'
-            } ${
-                // We add some styling when period is monthly to show only 1 xAxis day label every 2 labels, and on small screens we show only 1 label day every 4 labels, It makes the Chart more readable and nicer.
-                period === 'monthly' && 'apexChartsMonthlyPeriodWrapper'
-            }`}
+            }
+            ${
+                // We add some styling when period is weekly to show only 1 xAxis day label every 2 labels, and on small screens we show only 1 label day every 4 labels, It makes the Chart more readable and nicer.
+                period === 'weekly' && 'apexChartsWeeklyPeriodWrapper'
+            }
+             ${
+                 // We add some styling when period is monthly to show only 1 xAxis day label every 2 labels, and on small screens we show only 1 label day every 4 labels, It makes the Chart more readable and nicer.
+                 period === 'monthly' && 'apexChartsMonthlyPeriodWrapper'
+             }
+             ${
+                 // We add some styling when period is yearly to show only 1 xAxis day label every 2 labels, and on small screens we show only 1 label day every 4 labels, It makes the Chart more readable and nicer.
+                 period === 'yearly' && 'apexChartsYearlyPeriodWrapper'
+             }`}
             // When there is more than one curve on the graph, then it is necessary to increase its width (on Mobile version),
             // without this, the width increase will only apply to the consumption chart
             style={{ width: `${isMobile && reactApexChartsProps.series.length > 1 ? '105%' : '100%'}` }}

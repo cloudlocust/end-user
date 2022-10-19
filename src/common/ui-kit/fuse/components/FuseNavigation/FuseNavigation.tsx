@@ -39,7 +39,11 @@ export type navbarItemType = {
     /**
      * Label of the icon that will be shown with the label, using MUI Icon Component to have something like <Icon>{iconLabel}</Icon>.
      */
-    iconLabel?: string
+    icon?: React.ReactNode
+    /**
+     * Is Item Disabled.
+     */
+    disabled?: boolean
     /**
      * Additional ClassName for the Icon.
      */

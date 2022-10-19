@@ -106,12 +106,12 @@ describe('Analysis test', () => {
         const totalDataPoints = 1000
         const TOTAL_CONSUMPTION_TEXT = `1 kWh`
         mockData[0].datapoints = [[totalDataPoints, 1643628944000]]
-        const { getByText, container } = reduxedRender(
+        const { getAllByText, container } = reduxedRender(
             <Router>
                 <Analysis />
             </Router>,
         )
-        expect(getByText(TOTAL_CONSUMPTION_TEXT)).toBeTruthy()
+        expect(getAllByText(TOTAL_CONSUMPTION_TEXT)[0]).toBeTruthy()
         expect(container.querySelector(analysisInformationListClassname)).toBeInTheDocument()
     })
     test('when data from useMetrics is empty, AnalysisChart should show empty message', async () => {
