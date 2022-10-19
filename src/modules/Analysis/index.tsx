@@ -210,7 +210,7 @@ const Analysis = () => {
                                 filters={filters}
                             />
                             <p className="text-16 md:text-20 font-medium">
-                                {totalEurosConsumption.value.toFixed(2)} {totalEurosConsumption.unit}
+                                {Number(totalEurosConsumption.value).toFixed(2)} {totalEurosConsumption.unit}
                             </p>
                         </div>
                     </AnalysisChart>

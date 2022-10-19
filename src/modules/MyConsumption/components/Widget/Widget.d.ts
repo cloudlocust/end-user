@@ -30,7 +30,7 @@ export interface IWidgetProps {
     /**
      * Widget value.
      */
-    value: number
+    value: number | string
     /**
      * Widget title.
      */

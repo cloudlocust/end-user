@@ -152,7 +152,7 @@ describe('Test widget functions', () => {
 
     describe('test computeTotalEuros', () => {
         test('when it returns € unit', () => {
-            const val = 70.123456
+            const val = 70
             const expectedResult = {
                 value: val.toFixed(4),
                 unit: '€',
@@ -174,36 +174,35 @@ describe('Test widget functions', () => {
 
     describe('test computeWidgetAssets', () => {
         test('when it returns € unit', () => {
-            const val = 70.123456
-            const expectValue = val
+            const val = 70
             const cases = [
                 {
                     target: metricTargetsEnum.eurosConsumption,
                     unit: '€',
-                    value: expectValue.toFixed(4),
+                    value: val.toFixed(4),
                 },
                 {
                     target: metricTargetsEnum.consumption,
                     unit: 'Wh',
-                    value: expectValue,
+                    value: val,
                 },
                 {
                     target: metricTargetsEnum.internalTemperature,
                     unit: '°C',
-                    value: expectValue,
+                    value: val,
                 },
                 {
                     target: metricTargetsEnum.externalTemperature,
                     unit: '°C',
-                    value: expectValue,
+                    value: val,
                 },
                 {
                     target: metricTargetsEnum.pMax,
                     unit: 'VA',
-                    value: expectValue,
+                    value: val,
                 },
             ]
-            const datapoints = [[expectValue, 1640995200000]]
+            const datapoints = [[val, 1640995200000]]
             const data: IMetric[] = [
                 {
                     datapoints,
