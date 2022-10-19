@@ -271,10 +271,8 @@ export const MyConsumptionContainer = () => {
                         </TypographyFormatMessage>
                     </div>
                     <WidgetList
-                        data={
-                            // TODO Fix when getting to the story of widget consumptionEuros
-                            data.filter((metric) => metric.target !== metricTargetsEnum.eurosConsumption)
-                        }
+                        data={data}
+                        hasMissingHousingContracts={hasMissingHousingContracts}
                         isMetricsLoading={isMetricsLoading}
                     />
                 </div>

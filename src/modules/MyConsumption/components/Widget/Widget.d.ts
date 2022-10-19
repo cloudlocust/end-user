@@ -53,4 +53,8 @@ export interface IWidgetListProps {
      * Loading state from useMetrics hook.
      */
     isMetricsLoading: boolean
+    /**
+     * HasMissingHousingContracts come from metrics when euroConsumption, responsible for showing an info icon in EuroWidget.
+     */
+    hasMissingHousingContracts: boolean | null
 }
