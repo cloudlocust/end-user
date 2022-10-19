@@ -6,7 +6,13 @@ import { TEST_SUCCESS_MONTH_METRICS } from 'src/mocks/handlers/metrics'
 import userEvent from '@testing-library/user-event'
 import { waitFor } from '@testing-library/react'
 import { createTheme } from '@mui/material/styles'
+import { applyCamelCase } from 'src/common/react-platform-components'
+import { IHousing } from 'src/modules/MyHouse/components/HousingList/housing'
+import { TEST_HOUSES } from 'src/mocks/handlers/houses'
+import { URL_MY_HOUSE } from 'src/modules/MyHouse/MyHouseConfig'
 
+// List of houses to add to the redux state
+const LIST_OF_HOUSES: IHousing[] = applyCamelCase(TEST_HOUSES)
 let mockData: IMetric[] = TEST_SUCCESS_MONTH_METRICS([
     metricTargetsEnum.consumption,
     metricTargetsEnum.eurosConsumption,
@@ -15,6 +21,7 @@ let mockNrlinkConsent: string
 let mockEnedisConsent: string
 let mockSetRange = jest.fn()
 let mockIsMetricsLoading = false
+const HAS_MISSING_CONTRACTS_WARNING_TEXT = "Ce graphe est un exemple. Renseigner votre contrat d'énergie"
 const MIN_CONSUMPTION_DAY_HIGHLIGHT = 'minConsumptionDay'
 const MIN_CONSUMPTION_DAY_CHART = 'minConsumptionDayChart'
 const MAX_CONSUMPTION_DAY_HIGHLIGHT = 'maxConsumptionDay'
@@ -93,6 +100,14 @@ jest.mock(
     },
 )
 
+// Mock useHasMissingHousingContracts
+jest.mock('src/hooks/HasMissingHousingContracts', () => ({
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    useHasMissingHousingContracts: () => ({
+        hasMissingHousingContracts: true,
+    }),
+}))
+
 // Mocking AnalysisChart Component to test props passed to AnalysisInformationList (The analysisInformation that is highlighted, to make it simple we just show the name of selection).
 jest.mock(
     'src/modules/Analysis/components/AnalysisInformationList',
@@ -108,6 +123,15 @@ describe('Analysis test', () => {
             <Router>
                 <Analysis />
             </Router>,
+            { initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[0] } } },
+        )
+
+        // HasMissingContractsExample Text
+        expect(getByText(HAS_MISSING_CONTRACTS_WARNING_TEXT)).toBeTruthy()
+        // Contracts Redirection URL
+        expect(getByText(HAS_MISSING_CONTRACTS_WARNING_TEXT).parentElement!.closest('a')).toHaveAttribute(
+            'href',
+            `${URL_MY_HOUSE}/${LIST_OF_HOUSES[0].id}/contracts`,
         )
 
         // INCREMENT DATE BUTTON
