@@ -115,3 +115,14 @@ export interface IEnphaseConsent {
      */
     createdAt?: string
 }
+
+/**
+ * Enphase link type.
+ */
+// eslint-disable-next-line jsdoc/require-jsdoc
+export type EnphaseLink = {
+    /**
+     * Enphase url.
+     */
+    url: string
+}

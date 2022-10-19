@@ -1,7 +1,7 @@
 import { rest } from 'msw'
 import { API_RESOURCES_URL } from 'src/configs'
 import { IEnedisConsent, IEnedisSgeConsent, INrlinkConsent } from 'src/modules/Consents/Consents'
-import { ENEDIS_CONSENT_API, NRLINK_CONSENT_API } from 'src/modules/Consents/consentsHook'
+import { ENEDIS_CONSENT_API, ENPHASE_URL, NRLINK_CONSENT_API } from 'src/modules/Consents/consentsHook'
 import { SnakeCasedPropertiesDeep } from 'type-fest'
 import dayjs from 'dayjs'
 
@@ -74,6 +74,21 @@ export const consentsEndpoints = [
             return res(ctx.status(400), ctx.delay(1000))
         } else {
             return res(ctx.status(201), ctx.delay(1000), ctx.json(TEST_SUCCESS_ENEDIS_SGE_CONSENT))
+        }
+    }),
+
+    rest.get(`${ENPHASE_URL}/:housingId`, (req, res, ctx) => {
+        const authorization = req.headers.get('authorization')
+        if (authorization && authorization === 'error') {
+            return res(ctx.status(400), ctx.delay(1000))
+        } else {
+            return res(
+                ctx.status(200),
+                ctx.delay(1000),
+                ctx.json({
+                    url: 'https://enlighten.enphaseenergy.com/',
+                }),
+            )
         }
     }),
 ]

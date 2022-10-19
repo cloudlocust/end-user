@@ -160,4 +160,38 @@ describe('useConsents test', () => {
             variant: 'error',
         })
     }, 8000)
+    test('when getEnphaseLink resolves', async () => {
+        const { store } = require('src/redux')
+        await store.dispatch.userModel.setAuthenticationToken()
+        const {
+            renderedHook: { result, waitForValueToChange },
+        } = reduxedRenderHook(() => useConsents())
+        expect(result.current.enphaseLink).toBeFalsy()
+        act(() => {
+            result.current.getEnphaseLink(TEST_HOUSES[0].id)
+        })
+        await waitForValueToChange(
+            () => {
+                return result.current.enphaseLink
+            },
+            { timeout: 6000 },
+        )
+        expect(result.current.enphaseLink).toBe('https://enlighten.enphaseenergy.com/')
+    }, 8000)
+    test('when getEnphaseLink fails', async () => {
+        const { store } = require('src/redux')
+        await store.dispatch.userModel.setAuthenticationToken(TEST_ERROR)
+        const {
+            renderedHook: { result },
+        } = reduxedRenderHook(() => useConsents())
+        expect(result.current.enphaseLink).toBeFalsy()
+        act(() => {
+            result.current.getEnphaseLink()
+        })
+        expect(result.current.enphaseLink).toBeUndefined()
+        expect(mockEnqueueSnackbar).toHaveBeenCalledWith("Erreur lors de la récupération du lien d'Enphase", {
+            autoHideDuration: 5000,
+            variant: 'error',
+        })
+    })
 })
