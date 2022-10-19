@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import Divider from '@mui/material/Divider'
 import Card from '@mui/material/Card'
 import IconButton from '@mui/material/IconButton'
@@ -11,6 +11,9 @@ import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyForm
 import CircularProgress from '@mui/material/CircularProgress'
 import { useContractDetails } from 'src/modules/Contracts/contractsHook'
 import { useParams } from 'react-router-dom'
+import Dialog from '@mui/material/Dialog'
+import { addContractDataType } from 'src/modules/Contracts/contractsTypes.d'
+import ContractForm from 'src/modules/Contracts/components/ContractForm'
 
 /**
  * Contract Card component.
@@ -24,7 +27,12 @@ const ContractCard = ({ contract, onAfterDeleteUpdateSuccess }: ContractCardProp
     const openMuiDialog = useConfirm()
     // HouseId extracted from params of the url :houseId/contracts
     const { houseId } = useParams<contractsRouteParam>()
-    const { removeElementDetails: removeContract, loadingInProgress } = useContractDetails(Number(houseId), contract.id)
+    const {
+        removeElementDetails: removeContract,
+        loadingInProgress: isContractsLoading,
+        editElementDetails,
+    } = useContractDetails(parseInt(houseId), contract.id)
+    const [isContractFormOpen, setIsContractFormOpen] = useState(false)
 
     /**
      * Open warning remove popup on delete click.
@@ -63,28 +71,60 @@ const ContractCard = ({ contract, onAfterDeleteUpdateSuccess }: ContractCardProp
         // Catch handles the click on cancel button, But no need for a catch as it closes the dialog no matter what
     }
     return (
-        <Card key={contract.id} className="p-16 overflow-hidden">
-            <div className="flex justify-between items-center">
-                <Typography className="text-16 font-bold md:text-20">{contract.provider}</Typography>
-                <div className="flex items-center">
-                    <IconButton color="primary" size="small">
-                        <EditIcon />
-                    </IconButton>
-                    {/* Because material-ui-confirm package close the dialog whether we click on CONFIRM or CANCEL buttons, for user experience showing the spinner in the card when removing contract. */}
-                    {loadingInProgress ? (
-                        <CircularProgress style={{ color: '#D32F2F', width: '32px', height: '32px' }} />
-                    ) : (
-                        <IconButton color="error" size="small" onClick={onDeleteClick}>
-                            <DeleteIcon />
+        <>
+            <Dialog
+                open={isContractFormOpen}
+                fullWidth={true}
+                maxWidth="sm"
+                onClose={() => setIsContractFormOpen(false)}
+            >
+                <ContractForm
+                    onSubmit={async (input: addContractDataType) => {
+                        await editElementDetails(input)
+                        onAfterDeleteUpdateSuccess && onAfterDeleteUpdateSuccess()
+                        setIsContractFormOpen(false)
+                    }}
+                    isContractsLoading={isContractsLoading}
+                    defaultValues={{
+                        contractTypeId: contract.contractType.id,
+                        offerId: contract.offer.id,
+                        power: contract.power,
+                        providerId: contract.provider.id,
+                        startSubscription: contract.startSubscription,
+                        endSubscription: contract.endSubscription,
+                        tariffTypeId: contract.tariffType.id,
+                    }}
+                />
+            </Dialog>
+            <Card key={contract.id} className="p-16 overflow-hidden">
+                <div className="flex justify-between items-center">
+                    <Typography className="text-16 font-bold md:text-20">{contract.provider.name}</Typography>
+                    <div className="flex items-center">
+                        <IconButton
+                            color="primary"
+                            size="small"
+                            onClick={() => {
+                                setIsContractFormOpen(true)
+                            }}
+                        >
+                            <EditIcon />
                         </IconButton>
-                    )}
+                        {/* Because material-ui-confirm package close the dialog whether we click on CONFIRM or CANCEL buttons, for user experience showing the spinner in the card when removing contract. */}
+                        {isContractsLoading ? (
+                            <CircularProgress style={{ color: '#D32F2F', width: '32px', height: '32px' }} />
+                        ) : (
+                            <IconButton color="error" size="small" onClick={onDeleteClick}>
+                                <DeleteIcon />
+                            </IconButton>
+                        )}
+                    </div>
                 </div>
-            </div>
-            <Divider className="my-8" />
-            <Typography className="text-13 font-medium md:text-16">
-                {contract.offer} - {contract.tariffType} - {contract.power} kVA
-            </Typography>
-        </Card>
+                <Divider className="my-8" />
+                <Typography className="text-13 font-medium md:text-16">
+                    {contract.offer.name} - {contract.tariffType.name} - {contract.power} kVA
+                </Typography>
+            </Card>
+        </>
     )
 }
 

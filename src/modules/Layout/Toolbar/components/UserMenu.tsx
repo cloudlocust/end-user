@@ -96,6 +96,14 @@ function UserMenu() {
                     />
                     <ToolbarMenuItem
                         onMenuItemClick={() => {
+                            history.replace('/installation-requests')
+                        }}
+                        iconLabel="solar_power"
+                        idLabel="Installation"
+                        defaultMessageLabel="Installation"
+                    />
+                    <ToolbarMenuItem
+                        onMenuItemClick={() => {
                             history.push('/FAQ')
                         }}
                         iconLabel="help_center"

@@ -51,3 +51,38 @@ export const convertMetricsDataToApexChartsAxisValues = (data: IMetric[]): ApexC
 
     return { xAxisSeries, yAxisSeries }
 }
+
+/**
+ * Pure Function to convert metrics datapoints format to ApexCharts datapoints format (adapted for datetime xAxis).
+ *
+ * Doc here: https://apexcharts.com/react-chart-demos/area-charts/datetime-x-axis .
+ *
+ * ApexCharts Performance is much faster when using datetime xAxis.
+ *
+ * Example: Metric datapoints (input) [[val1, timestamp1], [val2, timestamp2], ...] => ApexCharts datapoints (output) [[timestamp1, val1], [timestamp2, val2], ...].
+ *
+ * @param data Data of format IMetric[] that will be converted .
+ * @returns ApexCharts datapoints format (adapted for datetime xAxis).
+ */
+export const convertMetricsDataToApexChartsDateTimeAxisValues = (data: IMetric[]): ApexAxisChartSeries => {
+    // We can have multiple yAxisSeries (datapoints), for each target it'll have its own yAxis Series (datapoints).
+    let apexChartsSeries: ApexAxisChartSeries = []
+
+    data.forEach((metric) => {
+        // eslint-disable-next-line jsdoc/require-jsdoc
+        let metricApexChartsDatapoints: ApexAxisChartSerie['data'] = metric.datapoints.map((datapoint) => {
+            // Typing [number, number], because typescript infer [datapoint[1], datapoint[0]] as number[].
+            // Thus typescript will infer metricApexChartsDatapoints as number[][], but we typed metricApexChartsDatapoints: ApexAxisChartSerie['data'].
+            // And ApexAxisChartSerie['data'] type is [number, number][].
+            // We force the typing in order not to let typescript infer and cause typing conflict between ApexAxisChartSerie['data'] which is of type [number, number][], and metricApexChartsDatapoints that'll be infered as number[][] which to typescript number[][] and [number, number][] are conflicting types.
+            return [datapoint[1], datapoint[0]] as [number, number]
+        })
+
+        apexChartsSeries!.push({
+            name: metric.target,
+            data: metricApexChartsDatapoints,
+        })
+    })
+
+    return apexChartsSeries
+}
