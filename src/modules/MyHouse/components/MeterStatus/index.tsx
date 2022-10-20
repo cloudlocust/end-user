@@ -18,6 +18,7 @@ import ModeEditOutlineOutlinedIcon from '@mui/icons-material/ModeEditOutlineOutl
 import { useMeterForHousing } from 'src/modules/Meters/metersHook'
 import { Dispatch } from 'src/redux'
 import { EditMeterFormPopup } from 'src/modules/MyHouse/components/EditMeterFormPopup'
+import { EnphaseConsentPopup } from 'src/modules/MyHouse/components/MeterStatus/EnphaseConsentPopup'
 
 const FORMATTED_DATA = 'DD/MM/YYYY'
 const TEXT_CONNEXION_LE = 'Connexion le'
@@ -40,12 +41,15 @@ export const MeterStatus = () => {
         isCreateEnedisSgeConsentLoading,
         createEnedisSgeConsentError,
         enphaseConsent,
+        enphaseLink,
+        getEnphaseLink,
     } = useConsents()
     const { editMeter, loadingInProgress } = useMeterForHousing()
     const dispatch = useDispatch<Dispatch>()
     const { housingList } = useSelector(({ housingModel }: RootState) => housingModel)
     const [foundHousing, setFoundHousing] = useState<IHousing>()
     const [editMeterOpen, setEditMeterOpen] = useState(false)
+    const [openEnphaseConsentPopup, setOpenEnphaseConsentPopup] = useState(false)
 
     // Retrieving house id from url params /my-houses/:houseId
     // eslint-disable-next-line jsdoc/require-jsdoc
@@ -57,6 +61,13 @@ export const MeterStatus = () => {
     const enedisConsentEndingDate = dayjs(enedisSgeConsent?.createdAt).add(3, 'year').format('DD/MM/YYYY')
     /* Enphase created at date formatted */
     const enphaseConsentCreatedAt = dayjs(enphaseConsent?.createdAt).format(FORMATTED_DATA)
+
+    /**
+     * Function that handle closing the popup.
+     */
+    const handleOnCloseEnphasePopup = () => {
+        setOpenEnphaseConsentPopup(false)
+    }
 
     // UseEffect that find the housing with the house Id from url params.
     useEffect(() => {
@@ -248,8 +259,12 @@ export const MeterStatus = () => {
                         <div className="flex flex-col">
                             <TypographyFormatMessage
                                 color={theme.palette.error.main}
-                                className="underline"
+                                className="underline cursor-pointer"
                                 fontWeight={600}
+                                onClick={() => {
+                                    getEnphaseLink(parseInt(houseId))
+                                    setOpenEnphaseConsentPopup(true)
+                                }}
                             >
                                 Connectez votre onduleur pour visualiser votre production
                             </TypographyFormatMessage>
@@ -387,6 +402,9 @@ export const MeterStatus = () => {
                                 </>
                             )}
                         </div>
+                        {openEnphaseConsentPopup && (
+                            <EnphaseConsentPopup onClose={handleOnCloseEnphasePopup} url={enphaseLink} />
+                        )}
                     </div>
                 </MuiCardContent>
             </Card>
