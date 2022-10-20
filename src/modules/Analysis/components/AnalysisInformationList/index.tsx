@@ -165,7 +165,7 @@ const AnalysisInformationList = ({
                                         </Typography>
                                         {/* Analysis Information Euros Value */}
                                         <Typography className="sm:text-13 font-medium md:text-16">
-                                            {eurosValue.toFixed(4)} €
+                                            {eurosValue.toFixed(2)} €
                                         </Typography>
                                     </>
                                 ) : (

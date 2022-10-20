@@ -61,7 +61,7 @@ describe('AnalysisInformationList test', () => {
 
         // Mean, Min and Maxhave 20 Wh and 20.0000 €
         expect(getAllByText('20 Wh')).toHaveLength(3)
-        expect(getAllByText('20.0000 €')).toHaveLength(3)
+        expect(getAllByText('20.00 €')).toHaveLength(3)
         expect(getAllByText('Saturday 01')).toHaveLength(2)
     })
     test('When no activeInformation is given then no border styling on the information avatar', async () => {

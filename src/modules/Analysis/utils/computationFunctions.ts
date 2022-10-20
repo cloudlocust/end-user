@@ -1,4 +1,4 @@
-import { mean } from 'lodash'
+import { isNil, mean } from 'lodash'
 import { ApexChartsAxisValuesType } from 'src/modules/MyConsumption/myConsumptionTypes'
 import { consumptionWattUnitConversion } from 'src/modules/MyConsumption/utils/unitConversionFunction'
 import { computationFunctionType } from 'src/modules/Analysis/analysisTypes.d'
@@ -136,7 +136,7 @@ export const computeStatisticsMetricsTargetData = (
         case 'mean':
             return mean(values)
         case 'minimum':
-            return Math.min(...values)
+            return Math.min(...values.filter((number) => !isNil(number)))
         case 'maximum':
             return Math.max(...values)
     }
