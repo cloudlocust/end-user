@@ -46,8 +46,8 @@ export const EnphaseConfirmState = () => {
         if (!isStateSucess && !isStateError) {
             enqueueSnackbar(
                 formatMessage({
-                    id: 'Une Erreur est survenue',
-                    defaultMessage: 'Une Erreur est survenue',
+                    id: 'Une érreur est survenue',
+                    defaultMessage: 'Une érreur est survenue',
                 }),
                 {
                     autoHideDuration: 5000,
@@ -64,7 +64,7 @@ export const EnphaseConfirmState = () => {
             setSuccessMessage('Vous avez donné votre consentement Enphase avec succès')
             closeWindow()
         } else if (isStateError) {
-            setErrorMessage("Une érreur s'est produit")
+            setErrorMessage('La procédure pour donner votre consentement à échoué')
             closeWindow()
         }
     }, [isStateError, isStateSucess, state])
