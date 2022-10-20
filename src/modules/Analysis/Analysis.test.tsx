@@ -21,7 +21,9 @@ let mockNrlinkConsent: string
 let mockEnedisConsent: string
 let mockSetRange = jest.fn()
 let mockIsMetricsLoading = false
-const HAS_MISSING_CONTRACTS_WARNING_TEXT = "Ce graphe est un exemple. Renseigner votre contrat d'énergie"
+const HAS_MISSING_CONTRACTS_WARNING_TEXT =
+    'Le coût en euros est basé sur un contrat exemple et votre contrat enregistré.'
+const HAS_MISSING_CONTRACTS_WARNING_REDIRECT_LINK_TEXT = "Renseigner votre contrat d'énergie"
 const MIN_CONSUMPTION_DAY_HIGHLIGHT = 'minConsumptionDay'
 const MIN_CONSUMPTION_DAY_CHART = 'minConsumptionDayChart'
 const MAX_CONSUMPTION_DAY_HIGHLIGHT = 'maxConsumptionDay'
@@ -129,7 +131,7 @@ describe('Analysis test', () => {
         // HasMissingContractsExample Text
         expect(getByText(HAS_MISSING_CONTRACTS_WARNING_TEXT)).toBeTruthy()
         // Contracts Redirection URL
-        expect(getByText(HAS_MISSING_CONTRACTS_WARNING_TEXT).parentElement!.closest('a')).toHaveAttribute(
+        expect(getByText(HAS_MISSING_CONTRACTS_WARNING_REDIRECT_LINK_TEXT).parentElement!.closest('a')).toHaveAttribute(
             'href',
             `${URL_MY_HOUSE}/${LIST_OF_HOUSES[0].id}/contracts`,
         )

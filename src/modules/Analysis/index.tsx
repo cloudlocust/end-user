@@ -27,6 +27,7 @@ import { analysisInformationName } from './analysisTypes'
 import { useSelector } from 'react-redux'
 import { RootState } from 'src/redux'
 import { useHasMissingHousingContracts } from 'src/hooks/HasMissingHousingContracts'
+import { secondaryMainColor } from 'src/modules/utils/muiThemeVariables'
 
 /**
  * InitialMetricsStates for useMetrics.
@@ -168,25 +169,33 @@ const Analysis = () => {
                     />
                 </motion.div>
                 {hasMissingHousingContracts && (
-                    <NavLink
-                        to={`${URL_MY_HOUSE}/${currentHousing?.id}/contracts`}
-                        className="flex items-center flex-col md:flex-row"
-                    >
+                    <div className="flex items-center flex-col md:flex-row">
                         <ErrorOutlineIcon
                             sx={{
-                                color: 'secondary.main',
-                                width: '32px',
-                                height: '32px',
-                                margin: { xs: '0 0 4px 0', md: '0 6px 0 0' },
+                                color: secondaryMainColor,
+                                width: { xs: '24px', md: '32px' },
+                                height: { xs: '24px', md: '32px' },
+                                margin: { xs: '0 0 4px 0', md: '0 8px 0 0' },
                             }}
                         />
-                        <TypographyFormatMessage
-                            className="text-13 underline md:text-16 w-full text-center"
-                            sx={{ color: 'secondary.main' }}
-                        >
-                            Ce graphe est un exemple. Renseigner votre contrat d'énergie
-                        </TypographyFormatMessage>
-                    </NavLink>
+
+                        <div className="w-full">
+                            <TypographyFormatMessage
+                                sx={{ color: secondaryMainColor }}
+                                className="text-13 md:text-16 text-center"
+                            >
+                                {'Le coût en euros est basé sur un contrat exemple et votre contrat enregistré.'}
+                            </TypographyFormatMessage>
+                            <NavLink to={`${URL_MY_HOUSE}/${currentHousing?.id}/contracts`}>
+                                <TypographyFormatMessage
+                                    className="underline text-13 md:text-16 text-center"
+                                    sx={{ color: secondaryMainColor }}
+                                >
+                                    Renseigner votre contrat d'énergie
+                                </TypographyFormatMessage>
+                            </NavLink>
+                        </div>
+                    </div>
                 )}
             </div>
 
