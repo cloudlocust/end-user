@@ -1,10 +1,11 @@
 import { useMemo } from 'react'
-import { IMetric, metricRangeType } from 'src/modules/Metrics/Metrics.d'
+import { IMetric, metricRangeType, metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
 import { Typography, useTheme } from '@mui/material'
 import {
     computeMaxConsumption,
     computeMeanConsumption,
     computeMinConsumption,
+    computeStatisticsMetricsTargetData,
 } from 'src/modules/Analysis/utils/computationFunctions'
 import { analysisInformationName, analysisInformationType } from 'src/modules/Analysis/analysisTypes.d'
 import { convertMetricsDataToApexChartsAxisValues } from 'src/modules/MyConsumption/utils/apexChartsDataConverter'
@@ -26,32 +27,36 @@ const analysisInformationList: analysisInformationType[] = [
         name: 'meanConsumption',
         iconPath: '/assets/images/content/analysis/meanConsumption.svg',
         color: 'palette.primary.main',
-        computationFunction:
-            // eslint-disable-next-line jsdoc/require-jsdoc
-            (consumptionAxisValues: ApexChartsAxisValuesType) =>
-                computeMeanConsumption(
-                    consumptionAxisValues.yAxisSeries.length > 0
-                        ? (consumptionAxisValues.yAxisSeries[0].data as Array<number>)
-                        : [],
-                ),
+        // eslint-disable-next-line jsdoc/require-jsdoc
+        computeConsumption: (consumptionAxisValues: ApexChartsAxisValuesType) =>
+            computeMeanConsumption(consumptionAxisValues),
+        // eslint-disable-next-line jsdoc/require-jsdoc
+        computeEuros: (consumptionAxisValues: ApexChartsAxisValuesType) =>
+            computeStatisticsMetricsTargetData(consumptionAxisValues, metricTargetsEnum.eurosConsumption, 'mean'),
     },
     {
         title: 'Jour de Conso maximale',
         name: 'maxConsumptionDay',
         color: 'palette.primary.dark',
         iconPath: '/assets/images/content/analysis/maxConsumption.svg',
-        computationFunction:
-            // eslint-disable-next-line jsdoc/require-jsdoc
-            (consumptionAxisValues: ApexChartsAxisValuesType) => computeMaxConsumption(consumptionAxisValues),
+        // eslint-disable-next-line jsdoc/require-jsdoc
+        computeConsumption: (consumptionAxisValues: ApexChartsAxisValuesType) =>
+            computeMaxConsumption(consumptionAxisValues),
+        // eslint-disable-next-line jsdoc/require-jsdoc
+        computeEuros: (consumptionAxisValues: ApexChartsAxisValuesType) =>
+            computeStatisticsMetricsTargetData(consumptionAxisValues, metricTargetsEnum.eurosConsumption, 'maximum'),
     },
     {
         title: 'Jour de Conso minimale',
         name: 'minConsumptionDay',
         color: 'palette.primary.light',
         iconPath: '/assets/images/content/analysis/minConsumption.svg',
-        computationFunction:
-            // eslint-disable-next-line jsdoc/require-jsdoc
-            (consumptionAxisValues: ApexChartsAxisValuesType) => computeMinConsumption(consumptionAxisValues),
+        // eslint-disable-next-line jsdoc/require-jsdoc
+        computeConsumption: (consumptionAxisValues: ApexChartsAxisValuesType) =>
+            computeMinConsumption(consumptionAxisValues),
+        // eslint-disable-next-line jsdoc/require-jsdoc
+        computeEuros: (consumptionAxisValues: ApexChartsAxisValuesType) =>
+            computeStatisticsMetricsTargetData(consumptionAxisValues, metricTargetsEnum.eurosConsumption, 'minimum'),
     },
 ]
 
@@ -101,67 +106,78 @@ const AnalysisInformationList = ({
 
     return (
         <div className="w-full flex flex-col md:items-center">
-            {analysisInformationList.map(({ computationFunction, iconPath, title, color, name }, index) => {
-                const { unit, value, timestamp } = computationFunction(ApexChartsAxisValues)
-                return (
-                    <div
-                        className="flex flex-row mb-16"
-                        style={{
-                            // If its active information name, then we put it on top, otherwise we just give index + 2, so that when we have another active information there won't be two 1's which can lead one information at index 1 can be on top of the activeInformation as they have the same order of 1, always 2 3 4 5 ...etc, or 1 2 3 4 5 ...etc.
-                            order: activeInformationName === name ? 1 : index + 2,
-                        }}
-                    >
-                        {/* Analysis Information Icon */}
-                        <Avatar
+            {analysisInformationList.map(
+                ({ computeConsumption, computeEuros, iconPath, title, color, name }, index) => {
+                    const {
+                        unit: consumptionUnit,
+                        value: consumptionValue,
+                        timestamp,
+                    } = computeConsumption(ApexChartsAxisValues)
+                    const eurosValue = computeEuros(ApexChartsAxisValues)
+                    return (
+                        <div
+                            className="flex flex-row mb-16"
                             style={{
-                                backgroundColor: color.startsWith('palette') ? get(theme, color) : color,
-                                width: 64,
-                                height: 64,
-                                // Adding the same styling when selecting an element in analysisChart with filter(150%) and border primary.light.
-                                /**
-                                 * Border of information, if its active it'll have a borderColor theme.primary.light to highlight it, otherwise the border color is not different and based on the background color.
-                                 *
-                                 * @returns Border color.
-                                 */
-                                get border() {
-                                    if (activeInformationName === name)
-                                        return `3px solid ${theme.palette.primary.light}`
-                                    return `3px solid ${this.backgroundColor}`
-                                },
-                                filter: activeInformationName === name ? 'contrast(150%)' : 'none',
+                                // If its active information name, then we put it on top, otherwise we just give index + 2, so that when we have another active information there won't be two 1's which can lead one information at index 1 can be on top of the activeInformation as they have the same order of 1, always 2 3 4 5 ...etc, or 1 2 3 4 5 ...etc.
+                                order: activeInformationName === name ? 1 : index + 2,
                             }}
                         >
-                            <img src={iconPath} alt={title} />
-                        </Avatar>
-                        <div className="ml-8 flex flex-col h-full">
-                            {/* Analysis Information title */}
-                            <TypographyFormatMessage className="sm:text-13 font-bold md:text-16">
-                                {`${title} : `}
-                            </TypographyFormatMessage>
-                            {value ? (
-                                <>
-                                    {/* Analysis Information Day */}
-                                    {timestamp ? (
-                                        <Typography className="sm:text-13 font-medium md:text-16">
-                                            {dayjs(new Date(timestamp)).format('dddd DD')}
-                                        </Typography>
-                                    ) : (
-                                        <></>
-                                    )}
-                                    {/* Analysis Information Value Unit */}
-                                    <Typography className="sm:text-13 font-medium md:text-16">
-                                        {value} {unit}
-                                    </Typography>
-                                </>
-                            ) : (
-                                <TypographyFormatMessage className="sm:text-13 font-medium md:text-16">
-                                    Aucune donnée disponible
+                            {/* Analysis Information Icon */}
+                            <Avatar
+                                style={{
+                                    backgroundColor: color.startsWith('palette') ? get(theme, color) : color,
+                                    width: 64,
+                                    height: 64,
+                                    // Adding the same styling when selecting an element in analysisChart with filter(150%) and border primary.light.
+                                    /**
+                                     * Border of information, if its active it'll have a borderColor theme.primary.light to highlight it, otherwise the border color is not different and based on the background color.
+                                     *
+                                     * @returns Border color.
+                                     */
+                                    get border() {
+                                        if (activeInformationName === name)
+                                            return `3px solid ${theme.palette.primary.light}`
+                                        return `3px solid ${this.backgroundColor}`
+                                    },
+                                    filter: activeInformationName === name ? 'contrast(150%)' : 'none',
+                                }}
+                            >
+                                <img src={iconPath} alt={title} />
+                            </Avatar>
+                            <div className="ml-8 flex flex-col h-full">
+                                {/* Analysis Information title */}
+                                <TypographyFormatMessage className="sm:text-13 font-bold md:text-16">
+                                    {`${title} : `}
                                 </TypographyFormatMessage>
-                            )}
+                                {consumptionValue ? (
+                                    <>
+                                        {/* Analysis Information Day */}
+                                        {timestamp ? (
+                                            <Typography className="sm:text-13 font-medium md:text-16">
+                                                {dayjs(new Date(timestamp)).format('dddd DD')}
+                                            </Typography>
+                                        ) : (
+                                            <></>
+                                        )}
+                                        {/* Analysis Information Consumption Value Unit */}
+                                        <Typography className="sm:text-13 font-medium md:text-16">
+                                            {consumptionValue} {consumptionUnit}
+                                        </Typography>
+                                        {/* Analysis Information Euros Value */}
+                                        <Typography className="sm:text-13 font-medium md:text-16">
+                                            {eurosValue.toFixed(4)} €
+                                        </Typography>
+                                    </>
+                                ) : (
+                                    <TypographyFormatMessage className="sm:text-13 font-medium md:text-16">
+                                        Aucune donnée disponible
+                                    </TypographyFormatMessage>
+                                )}
+                            </div>
                         </div>
-                    </div>
-                )
-            })}
+                    )
+                },
+            )}
         </div>
     )
 }

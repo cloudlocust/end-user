@@ -38,7 +38,11 @@ export type analysisInformationType =
         /**
          * Return Computation Function (min, max, mean) of the analysisInformation which represents (unit, value, timestamp).
          */
-        computationFunction: (consumptionAxisValues: ApexChartsAxisValuesType) => computationFunctionType
+        computeConsumption: (consumptionAxisValues: ApexChartsAxisValuesType) => computationFunctionType
+        /**
+         * Return Euros (min, max, mean) of the analysisInformation.
+         */
+        computeEuros: (consumptionAxisValues: ApexChartsAxisValuesType) => number
         /**
          * Path of Icon of the analysis information.
          */

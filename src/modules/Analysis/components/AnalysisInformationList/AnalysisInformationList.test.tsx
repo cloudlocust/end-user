@@ -19,6 +19,13 @@ const mockMetricsData: IMetric[] = [
             [20, 1640995200000],
         ],
     },
+    {
+        target: metricTargetsEnum.eurosConsumption,
+        datapoints: [
+            // Saturday, 1 January 2022
+            [20, 1640995200000],
+        ],
+    },
 ]
 
 const mockTheme = createTheme()
@@ -52,8 +59,9 @@ describe('AnalysisInformationList test', () => {
             'contrast(150%)',
         )
 
-        // Mean, Min and Maxhave 20 Wh
+        // Mean, Min and Maxhave 20 Wh and 20.0000 €
         expect(getAllByText('20 Wh')).toHaveLength(3)
+        expect(getAllByText('20.0000 €')).toHaveLength(3)
         expect(getAllByText('Saturday 01')).toHaveLength(2)
     })
     test('When no activeInformation is given then no border styling on the information avatar', async () => {
