@@ -169,7 +169,7 @@ const Analysis = () => {
                     />
                 </motion.div>
                 {hasMissingHousingContracts && (
-                    <div className="flex items-center flex-col md:flex-row">
+                    <div className="flex items-center justify-center flex-col">
                         <ErrorOutlineIcon
                             sx={{
                                 color: secondaryMainColor,

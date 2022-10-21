@@ -81,8 +81,8 @@ const HousingDetailsCard = ({
                             >
                                 {isConfigured
                                     ? formatMessage({
-                                          id: 'Modifier',
-                                          defaultMessage: 'Modifier',
+                                          id: 'Detail',
+                                          defaultMessage: 'Detail',
                                       })
                                     : formatMessage({
                                           id: 'Configuration',

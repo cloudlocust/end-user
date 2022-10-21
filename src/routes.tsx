@@ -3,7 +3,6 @@ import { Redirect } from 'react-router-dom'
 import { navbarItemType } from './common/ui-kit/fuse/components/FuseNavigation/FuseNavigation'
 import { MyConsumptionConfig } from './modules/MyConsumption'
 import { AdvicesConfig } from './modules/Advices'
-import { SettingsConfig } from 'src/modules/Settings'
 import { AnalysisConfig } from './modules/Analysis/AnalysisConfig'
 import { LoginConfig } from './modules/User/Login/LoginConfig'
 import { ForgotPasswordConfig } from './modules/User/ForgotPassword/ForgotPasswordConfig'
@@ -28,7 +27,6 @@ export const routes = [
     ...RegisterConfig,
     ...ForgotPasswordConfig,
     ...ResetPasswordConfig,
-    ...SettingsConfig,
     ...AnalysisConfig,
     ...ProfileManagementConfig,
     ...FAQConfig,
@@ -97,4 +95,4 @@ export type IRouteNavigationConfig<T> = IRoute<T> & /**
 export const navigationsConfig: IRouteNavigationConfig</**
  *
  */
-{}>[] = [MyConsumptionConfig[0], AnalysisConfig[0], AdvicesConfig[0], MyHouseConfig[0], SettingsConfig[0]]
+{}>[] = [MyConsumptionConfig[0], AnalysisConfig[0], AdvicesConfig[0], MyHouseConfig[0]]
