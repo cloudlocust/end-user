@@ -184,7 +184,9 @@ const Analysis = () => {
                                 sx={{ color: secondaryMainColor }}
                                 className="text-13 md:text-16 text-center"
                             >
-                                {'Le coût en euros est basé sur un contrat exemple et votre contrat enregistré.'}
+                                {
+                                    "Le coût en euros est un exemple. Vos données contractuelles de fourniture d'énergie ne sont pas disponibles sur toute la période."
+                                }
                             </TypographyFormatMessage>
                             <NavLink to={`${URL_MY_HOUSE}/${currentHousing?.id}/contracts`}>
                                 <TypographyFormatMessage

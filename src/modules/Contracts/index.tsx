@@ -73,10 +73,9 @@ const Contracts = () => {
                     <div className="flex justify-center items-center p-24" style={{ height: '320px' }}>
                         <TypographyFormatMessage
                             className="text-13 font-medium md:text-16 w-full text-center"
-                            sx={{ color: 'secondary.main' }}
+                            sx={{ color: 'primary.main' }}
                         >
-                            Aucun contrat enregistré. Les valeurs de votre consommation exprimées en Euros proviennent
-                            d'un contrat EDF Tarif Bleu Base d'une puissance de 6kVA donnée à titre exemple.
+                            Aucun contrat de fourniture d'énergie enregistré
                         </TypographyFormatMessage>
                     </div>
                 ) : (

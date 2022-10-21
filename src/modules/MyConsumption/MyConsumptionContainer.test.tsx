@@ -23,7 +23,9 @@ let mockIsMetricsLoading = false
 let mockEnedisConsent: string
 const mockSetFilters = jest.fn()
 const circularProgressClassname = '.MuiCircularProgress-root'
-const HAS_MISSING_CONTRACTS_WARNING_TEXT = "Ce graphe est un exemple. Renseigner votre contrat d'énergie"
+const HAS_MISSING_CONTRACTS_WARNING_TEXT =
+    "Ce graphe est un exemple basé sur un tarif Bleu EDF Base. Vos données contractuelles de fourniture d'énergie ne sont pas disponibles sur toute la période."
+const HAS_MISSING_CONTRACTS_WARNING_REDIRECT_LINK_TEXT = "Renseigner votre contrat d'énergie"
 const WEEKLY_PERIOD_BUTTON_TEXT = 'Semaine'
 const MONTHLY_PERIOD_BUTTON_TEXT = 'Mois'
 const YEARLY_PERIOD_BUTTON_TEXT = 'Année'
@@ -184,7 +186,7 @@ describe('MyConsumptionContainer test', () => {
         // HasMissingContractsExample Text
         expect(getByText(HAS_MISSING_CONTRACTS_WARNING_TEXT)).toBeTruthy()
         // Contracts Redirection URL
-        expect(getByText(HAS_MISSING_CONTRACTS_WARNING_TEXT).parentElement!.closest('a')).toHaveAttribute(
+        expect(getByText(HAS_MISSING_CONTRACTS_WARNING_REDIRECT_LINK_TEXT).parentElement!.closest('a')).toHaveAttribute(
             'href',
             `${URL_MY_HOUSE}/${LIST_OF_HOUSES[0].id}/contracts`,
         )

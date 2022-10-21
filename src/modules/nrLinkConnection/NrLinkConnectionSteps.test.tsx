@@ -8,7 +8,7 @@ import { URL_CONSUMPTION } from 'src/modules/MyConsumption'
 
 const BACK_BUTTON_TEXT = 'Précédent'
 const NEXT_BUTTON_TEXT = 'Suivant'
-const SKIP_LINK_TEXT = "Aller vers l'acceuil"
+const SKIP_LINK_TEXT = "Aller vers l'accueil"
 const FINISH_BUTTON_TEXT = 'Terminer'
 const loadingButtonClassName = '.MuiCircularProgress-root '
 const horizontalStepperClassName = '.MuiStep-horizontal'
