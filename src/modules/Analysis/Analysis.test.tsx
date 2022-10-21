@@ -22,7 +22,7 @@ let mockEnedisConsent: string
 let mockSetRange = jest.fn()
 let mockIsMetricsLoading = false
 const HAS_MISSING_CONTRACTS_WARNING_TEXT =
-    'Le coût en euros est basé sur un contrat exemple et votre contrat enregistré.'
+    "Le coût en euros est un exemple. Vos données contractuelles de fourniture d'énergie ne sont pas disponibles sur toute la période."
 const HAS_MISSING_CONTRACTS_WARNING_REDIRECT_LINK_TEXT = "Renseigner votre contrat d'énergie"
 const MIN_CONSUMPTION_DAY_HIGHLIGHT = 'minConsumptionDay'
 const MIN_CONSUMPTION_DAY_CHART = 'minConsumptionDayChart'

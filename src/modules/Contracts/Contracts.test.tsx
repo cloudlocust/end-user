@@ -13,8 +13,7 @@ import { IContract, loadContractResponse } from 'src/modules/Contracts/contracts
 const TEST_CONTRACTS: IContract[] = applyCamelCase(MOCK_CONTRACTS).map((contract: loadContractResponse) =>
     formatLoadContractResponseToIContract(contract),
 )
-const EMPTY_CONTRACT_LIST_MESSAGE_TEXT =
-    "Aucun contrat enregistré. Les valeurs de votre consommation exprimées en Euros proviennent d'un contrat EDF Tarif Bleu Base d'une puissance de 6kVA donnée à titre exemple."
+const EMPTY_CONTRACT_LIST_MESSAGE_TEXT = "Aucun contrat de fourniture d'énergie enregistré"
 const mockHouseId = TEST_HOUSE_ID
 let mockIsContractsLoading = false
 let mockReloadContractList = jest.fn()

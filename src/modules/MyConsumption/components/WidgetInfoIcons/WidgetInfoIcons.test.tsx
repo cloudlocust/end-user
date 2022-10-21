@@ -12,7 +12,7 @@ import { BrowserRouter as Router } from 'react-router-dom'
 // List of houses to add to the redux state
 const LIST_OF_HOUSES: IHousing[] = applyCamelCase(TEST_HOUSES)
 
-const EURO_WIDGET_INFO_TEXT = 'Ce coût est basé sur votre contrat et un contrat exemple.'
+const EURO_WIDGET_INFO_TEXT = 'Ce coût un exemple.'
 const EURO_WIDGET_INFO_REDIRECT_LINK_TEXT = "Renseigner un contrat d'énergie."
 
 describe('WidgetInfoIcon test', () => {

@@ -21,9 +21,7 @@ export const EuroWidgetInfoIcon = () => {
         <Tooltip
             title={
                 <div>
-                    <TypographyFormatMessage className="text-center">
-                        Ce coût est basé sur votre contrat et un contrat exemple.
-                    </TypographyFormatMessage>
+                    <TypographyFormatMessage className="text-center">Ce coût un exemple.</TypographyFormatMessage>
                     <NavLink to={currentHousing ? `${URL_MY_HOUSE}/${currentHousing?.id}/contracts` : URL_MY_HOUSE}>
                         <TypographyFormatMessage sx={{ color: 'secondary.main' }} className="underline text-center">
                             Renseigner un contrat d'énergie.

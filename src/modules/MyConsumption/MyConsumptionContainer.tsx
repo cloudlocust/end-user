@@ -25,6 +25,7 @@ import { URL_MY_HOUSE } from 'src/modules/MyHouse/MyHouseConfig'
 import { useHasMissingHousingContracts } from 'src/hooks/HasMissingHousingContracts'
 import { tempPmaxFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
 import Tooltip from '@mui/material/Tooltip'
+import { secondaryMainColor } from 'src/modules/utils/muiThemeVariables'
 
 /**
  * InitialMetricsStates for useMetrics.
@@ -249,18 +250,35 @@ export const MyConsumptionContainer = () => {
                 )}
                 {memoizedMyConsumptionPeriod}
                 {isEurosConsumptionChart && hasMissingHousingContracts && (
-                    <NavLink
-                        to={`${URL_MY_HOUSE}/${currentHousing?.id}/contracts`}
-                        className="flex flex-col items-center mt-16"
-                    >
-                        <ErrorOutlineIcon sx={{ color: 'secondary.main', width: '32px', height: '32px' }} />
-                        <TypographyFormatMessage
-                            className="text-13 underline md:text-16 w-full text-center"
-                            sx={{ color: 'secondary.main' }}
-                        >
-                            Ce graphe est un exemple. Renseigner votre contrat d'énergie
-                        </TypographyFormatMessage>
-                    </NavLink>
+                    <div className="flex items-center justify-center flex-col mt-12">
+                        <ErrorOutlineIcon
+                            sx={{
+                                color: secondaryMainColor,
+                                width: { xs: '24px', md: '32px' },
+                                height: { xs: '24px', md: '32px' },
+                                margin: { xs: '0 0 4px 0', md: '0 8px 0 0' },
+                            }}
+                        />
+
+                        <div className="w-full">
+                            <TypographyFormatMessage
+                                sx={{ color: secondaryMainColor }}
+                                className="text-13 md:text-16 text-center"
+                            >
+                                {
+                                    "Ce graphe est un exemple basé sur un tarif Bleu EDF Base. Vos données contractuelles de fourniture d'énergie ne sont pas disponibles sur toute la période."
+                                }
+                            </TypographyFormatMessage>
+                            <NavLink to={`${URL_MY_HOUSE}/${currentHousing?.id}/contracts`}>
+                                <TypographyFormatMessage
+                                    className="underline text-13 md:text-16 text-center"
+                                    sx={{ color: secondaryMainColor }}
+                                >
+                                    Renseigner votre contrat d'énergie
+                                </TypographyFormatMessage>
+                            </NavLink>
+                        </div>
+                    </div>
                 )}
             </div>
             {data.length !== 0 && (

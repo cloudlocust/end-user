@@ -170,7 +170,7 @@ const NrLinkConnectionSteps = () => {
             to={URL_CONSUMPTION}
             underline="none"
         >
-            {formatMessage({ id: "Aller vers l'acceuil", defaultMessage: "Aller vers l'acceuil" })}
+            {formatMessage({ id: "Aller vers l'accueil", defaultMessage: "Aller vers l'accueil" })}
         </MuiLink>
     )
 
