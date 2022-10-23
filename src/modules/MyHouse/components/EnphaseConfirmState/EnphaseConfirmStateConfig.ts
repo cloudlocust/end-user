@@ -1,5 +1,5 @@
 import { authTypes, IRoute } from 'src/common/react-platform-components'
-import { EnphaseConfirmState } from 'src/modules/MyHouse/components/MeterStatus/containers/EnphaseConfirmState'
+import { EnphaseConfirmState } from 'src/modules/MyHouse/components/EnphaseConfirmState'
 
 /**
  * Url for my-consumption.

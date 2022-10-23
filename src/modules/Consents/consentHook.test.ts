@@ -46,6 +46,7 @@ describe('useConsents test', () => {
         )
         expect(result.current.nrlinkConsent.nrlinkConsentState).toStrictEqual(connectedState)
         expect(result.current.enedisConsent.enedisConsentState).toStrictEqual(connectedState)
+        expect(result.current.enphaseConsent.enphaseConsentState).toStrictEqual('ACTIVE')
     }, 8000)
     test('when there is server error while fetching consents, snackbar is shown', async () => {
         const { store } = require('src/redux')
@@ -188,7 +189,7 @@ describe('useConsents test', () => {
         act(() => {
             result.current.getEnphaseLink()
         })
-        expect(result.current.enphaseLink).toBeUndefined()
+        expect(result.current.enphaseLink).toBe('')
         expect(mockEnqueueSnackbar).toHaveBeenCalledWith("Erreur lors de la récupération du lien d'Enphase", {
             autoHideDuration: 5000,
             variant: 'error',

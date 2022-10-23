@@ -1,6 +1,6 @@
 import { reduxedRender } from 'src/common/react-platform-components/test'
 import { MemoryRouter } from 'react-router-dom'
-import { EnphaseConfirmState } from 'src/modules/MyHouse/components/MeterStatus/containers/EnphaseConfirmState'
+import { EnphaseConfirmState } from 'src/modules/MyHouse/components/EnphaseConfirmState/'
 
 const mockEnqueueSnackbar = jest.fn()
 
@@ -34,7 +34,7 @@ describe('EnphaseConfirmState component', () => {
                 <EnphaseConfirmState />
             </MemoryRouter>,
         )
-        expect(getByText('La procédure pour donner votre consentement à échoué')).toBeTruthy()
+        expect(getByText('La procédure pour donner votre consentement Enphase à échoué')).toBeTruthy()
     })
     test('when state is neither SUCCESS nor FAILED', async () => {
         reduxedRender(

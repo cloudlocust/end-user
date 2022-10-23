@@ -50,6 +50,9 @@ export const MeterStatus = () => {
     const [foundHousing, setFoundHousing] = useState<IHousing>()
     const [editMeterOpen, setEditMeterOpen] = useState(false)
     const [openEnphaseConsentPopup, setOpenEnphaseConsentPopup] = useState(false)
+    const [enphaseStateFromLocalStorage, setEnphaseStateFromLocalStorage] = useState<string>(
+        localStorage.getItem('enphaseConsentState')!,
+    )
 
     // Retrieving house id from url params /my-houses/:houseId
     // eslint-disable-next-line jsdoc/require-jsdoc
@@ -82,6 +85,37 @@ export const MeterStatus = () => {
             getConsents(foundHousing?.meter?.guid)
         }
     }, [getConsents, foundHousing])
+
+    /**
+     * This useEffect listen to changes in localStorage for enphaseConsentState.
+     *
+     * If there are changes it gets executed.
+     */
+    useEffect(() => {
+        /**
+         * OnStorage function that execute the setter for EnphaseStateFromLocalStorage.
+         */
+        const onStorage = () => {
+            setEnphaseStateFromLocalStorage(localStorage.getItem('enphaseConsentState')!)
+        }
+
+        if (enphaseStateFromLocalStorage === 'SUCCESS') {
+            getConsents(foundHousing!.meter!.guid)
+            window.localStorage.removeItem('enphaseConsentState')
+        }
+
+        /**
+         * Listen to localStorage changes.
+         */
+        window.addEventListener('storage', onStorage)
+
+        /**
+         * Clear up function when the component unmounts.
+         */
+        return () => {
+            window.removeEventListener('storage', onStorage)
+        }
+    }, [enphaseStateFromLocalStorage, foundHousing, getConsents])
 
     /**
      * Function that renders JSX accorrding to nrlink status.
@@ -397,7 +431,7 @@ export const MeterStatus = () => {
                                         Production solaire
                                     </TypographyFormatMessage>
                                     <div className="flex flex-row items-center">
-                                        {renderEnphaseStatus(enphaseConsent?.enphaseConsentStatus)}
+                                        {renderEnphaseStatus(enphaseConsent?.enphaseConsentState)}
                                     </div>
                                 </>
                             )}

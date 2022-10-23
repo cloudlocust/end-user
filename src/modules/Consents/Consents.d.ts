@@ -109,7 +109,7 @@ export interface IEnphaseConsent {
     /**
      * Enphhase consent status.
      */
-    enphaseConsentStatus: enphaseConsentStatus
+    enphaseConsentState: enphaseConsentStatus
     /**
      * When the enedis consent was created.
      */

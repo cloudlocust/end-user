@@ -58,7 +58,7 @@ export function useConsents() {
     const [enedisSgeConsent, setEnedisSgeConsent] = useState<IEnedisSgeConsent>()
     const [isCreateEnedisSgeConsentLoading, setIsCreateEnedisSgeConsentLoading] = useState(false)
     const [createEnedisSgeConsentError, setCreateEnedisSgeConsentError] = useState<boolean>(false)
-    const [enphaseLink, setEnphaseLink] = useState<EnphaseLink['url']>()
+    const [enphaseLink, setEnphaseLink] = useState<EnphaseLink['url']>('')
 
     /**
      * Function that performs HTTP call to get consents.
@@ -77,7 +77,7 @@ export function useConsents() {
             const [nrlinkConsent, enedisConsent, enphaseConsent] = await Promise.allSettled([
                 axios.get<INrlinkConsent>(`${NRLINK_CONSENT_API}/${meterGuid}`),
                 axios.get<IEnedisConsent>(`${ENEDIS_CONSENT_API}/${meterGuid}`),
-                axios.get<IEnphaseConsent>(`${ENEDIS_CONSENT_API}/${meterGuid}`),
+                axios.get<IEnphaseConsent>(`${ENPHASE_CONSENT_API}/${meterGuid}`),
             ])
 
             // Nrlink consent.

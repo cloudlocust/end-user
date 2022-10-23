@@ -15,7 +15,8 @@ import { ContractsConfig } from './modules/Contracts/ContractsConfig'
 import { ProfileManagementConfig } from './modules/User/ProfileManagement/ProfileManagementConfig'
 import { FAQConfig } from './modules/FAQ/FAQConfig'
 import { InstallationsRequestsConfig } from 'src/modules/InstallationRequests/InstallationRequestsConfig'
-import { EnphaseConfirmStateConfig } from 'src/modules/MyHouse/components/MeterStatus/containers/EnphaseConfirmStateConfig'
+import { EnphaseConfirmStateConfig } from 'src/modules/MyHouse/components/EnphaseConfirmState/EnphaseConfirmStateConfig'
+
 /**
  *
  */

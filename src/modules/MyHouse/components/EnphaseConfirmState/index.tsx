@@ -1,6 +1,6 @@
 import { Typography } from '@mui/material'
-import { useEffect, useState } from 'react'
-import { useHistory, useLocation } from 'react-router-dom'
+import { useCallback, useEffect, useState } from 'react'
+import { useLocation } from 'react-router-dom'
 import { useSnackbar } from 'notistack'
 import { useIntl } from 'react-intl'
 import { CheckCircle, Error } from '@mui/icons-material'
@@ -14,7 +14,6 @@ import { CheckCircle, Error } from '@mui/icons-material'
  */
 export const EnphaseConfirmState = () => {
     const location = useLocation()
-    const history = useHistory()
     const { enqueueSnackbar } = useSnackbar()
     const { formatMessage } = useIntl()
 
@@ -33,17 +32,25 @@ export const EnphaseConfirmState = () => {
      * @param ms Milleseconds.
      * @returns SetTimeout callback.
      */
-    const closeWindow = (ms: number = 5000) =>
+    const closeWindow = useCallback((ms: number = 5000) => {
         setTimeout(() => {
             // * This close the current window.
-            window.opener = null
             window.open('', '_self')
             window.close()
         }, ms)
+    }, [])
 
-    // * This useEffect is ran when there is no success or fail state
+    // * This useEffect is ran when there is eithher a SUCCESS or FAILED state.
     useEffect(() => {
-        if (!isStateSucess && !isStateError) {
+        if (isStateSucess) {
+            window.localStorage.setItem('enphaseConsentState', 'SUCCESS')
+            setSuccessMessage('Vous avez donné votre consentement Enphase avec succès')
+            closeWindow()
+        } else if (isStateError) {
+            window.localStorage.setItem('enphaseConsentState', 'FAILED')
+            setErrorMessage('La procédure pour donner votre consentement Enphase à échoué')
+            closeWindow()
+        } else {
             enqueueSnackbar(
                 formatMessage({
                     id: 'Une érreur est survenue',
@@ -54,20 +61,8 @@ export const EnphaseConfirmState = () => {
                     variant: 'error',
                 },
             )
-            closeWindow()
         }
-    }, [enqueueSnackbar, formatMessage, history, isStateError, isStateSucess])
-
-    // * This useEffect is ran when there is eithher a SUCCESS or FAIL state.
-    useEffect(() => {
-        if (isStateSucess) {
-            setSuccessMessage('Vous avez donné votre consentement Enphase avec succès')
-            closeWindow()
-        } else if (isStateError) {
-            setErrorMessage('La procédure pour donner votre consentement à échoué')
-            closeWindow()
-        }
-    }, [isStateError, isStateSucess, state])
+    }, [closeWindow, enqueueSnackbar, formatMessage, isStateError, isStateSucess, state])
 
     return (
         <div className="flex items-center justify-center h-screen">
