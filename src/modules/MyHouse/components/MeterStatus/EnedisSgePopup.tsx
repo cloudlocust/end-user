@@ -72,6 +72,15 @@ export const EnedisSgePopup = ({
         setEnedisConsentCheckbox(event.target.checked)
     }
 
+    /**
+     * Function that resets to the intial step of givinbg SGE consent when user closes the popup.
+     */
+    function resetToInitialStep() {
+        setOpenSgePopup(false)
+        setMeterVerification(MeterVerificationEnum.NOT_VERIFIED)
+        setSgeStep(EnedisSgePopupStepsEnum.METER_VERIFICATION)
+    }
+
     return (
         <>
             <Typography
@@ -84,15 +93,11 @@ export const EnedisSgePopup = ({
             >
                 {openEnedisSgeConsentText}
             </Typography>
+
             {openSgePopup && (
                 <Dialog
                     onClose={(event, reason) => {
-                        // Not allow the user to close the popup when popup is opened
-                        if (reason !== 'backdropClick' && reason !== 'escapeKeyDown') {
-                            setOpenSgePopup(false)
-                            setMeterVerification(MeterVerificationEnum.NOT_VERIFIED)
-                            setSgeStep(EnedisSgePopupStepsEnum.METER_VERIFICATION)
-                        }
+                        resetToInitialStep()
                     }}
                     open={openSgePopup}
                     maxWidth={'sm'}
@@ -103,7 +108,7 @@ export const EnedisSgePopup = ({
                     <DialogContent>
                         {sgeStep === EnedisSgePopupStepsEnum.METER_VERIFICATION && (
                             <>
-                                <div className="flex flex-1 flex-col items-center justify-center p-24">
+                                <div className="flex flex-1 flex-col items-center justify-center p-12 md:p-24">
                                     {isMeterVerifyLoading ? (
                                         <>
                                             <div className="flex flex-row items-center justify-center mb-24">
