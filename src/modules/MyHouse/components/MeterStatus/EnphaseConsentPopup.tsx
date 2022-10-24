@@ -11,7 +11,7 @@ const openWindow = (url: string) => {
     return window.open(
         url,
         'enphaseConsentWindow',
-        'width=' + window.screen.availWidth + ',height=' + window.screen.availHeight,
+        `width=640,height=480,left=${window.screen.availWidth / 2 - 200},top=${window.screen.availHeight / 2 - 150}`,
     )
 }
 
