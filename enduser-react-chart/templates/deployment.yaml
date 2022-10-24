@@ -53,6 +53,31 @@ spec:
             configMapKeyRef:
               name: {{ .Values.name }}
               key: REACT_APP_LOGO_URL
+        - name: REACT_APP_ANALYSIS_FEATURE_STATE
+          valueFrom:
+            configMapKeyRef:
+              name: {{ .Values.name }}
+              key: REACT_APP_ANALYSIS_FEATURE_STATE
+        - name: REACT_APP_ADVICES_FEATURE_STATE
+          valueFrom:
+            configMapKeyRef:
+              name: {{ .Values.name }}
+              key: REACT_APP_ADVICES_FEATURE_STATE
+        - name: REACT_APP_ADD_DELETE_HOUSING_FEATURE_STATE
+          valueFrom:
+            configMapKeyRef:
+              name: {{ .Values.name }}
+              key: REACT_APP_ADD_DELETE_HOUSING_FEATURE_STATE        
+        - name: REACT_APP_EQUIPMENTS_ACCOMODATION_FEATURE_STATE
+          valueFrom:
+            configMapKeyRef:
+              name: {{ .Values.name }}
+              key: REACT_APP_EQUIPMENTS_ACCOMODATION_FEATURE_STATE
+        - name: REACT_APP_TEMP_PMAX_FEATURE_STATE
+          valueFrom:
+            configMapKeyRef:
+              name: {{ .Values.name }}
+              key: REACT_APP_TEMP_PMAX_FEATURE_STATE              
         - name: REACT_APP_GOOGLE_MAPS_API_KEY
           valueFrom:
             secretKeyRef:
