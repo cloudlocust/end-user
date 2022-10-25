@@ -4,6 +4,8 @@ import { MyHouse } from 'src/modules/MyHouse/MyHouse'
 import { HousingDetails } from 'src/modules/MyHouse/components/HousingDetails'
 import Equipments from 'src/modules/MyHouse/components/Equipments'
 import Accomodation from 'src/modules/MyHouse/components/Accomodation'
+import { ReactComponent as HousingIcon } from 'src/assets/images/navbarItems/Housings.svg'
+import SvgIcon from '@mui/material/SvgIcon'
 
 /**
  * Url for myHouse.
@@ -38,6 +40,23 @@ export interface MyHouseProps {
         url: string
     }
 }
+
+/**
+ * Env Variable to know if the delete and add housing feature is enabled.
+ */
+export const deleteAddFeatureState = window._env_.REACT_APP_ADD_DELETE_HOUSING_FEATURE_STATE === 'disabled'
+
+/**
+ * Env Variable to know if the equipments and accomodation feature is enabled.
+ */
+export const equipmentsAccomodationFeatureState =
+    window._env_.REACT_APP_EQUIPMENTS_ACCOMODATION_FEATURE_STATE === 'disabled'
+
+/**
+ * Env Variable to know if the temp and pmax features are enabled.
+ */
+export const tempPmaxFeatureState = window._env_.REACT_APP_TEMP_PMAX_FEATURE_STATE === 'disabled'
+
 /**
  * MyHouseConfig.
  */
@@ -54,7 +73,11 @@ export const MyHouseConfig = [
                         label: 'Logement',
                         labelAbbreviation: 'Logement',
                         type: 'item',
-                        iconLabel: 'home',
+                        icon: (
+                            <SvgIcon>
+                                <HousingIcon />
+                            </SvgIcon>
+                        ),
                         url: URL_MY_HOUSE,
                     },
                 },
@@ -73,7 +96,11 @@ export const MyHouseConfig = [
                         label: 'Logement',
                         labelAbbreviation: 'Logement',
                         type: 'item',
-                        iconLabel: 'home',
+                        icon: (
+                            <SvgIcon>
+                                <HousingIcon />
+                            </SvgIcon>
+                        ),
                         url: URL_MY_HOUSE_DETAILS,
                     },
                 },
@@ -92,11 +119,16 @@ export const MyHouseConfig = [
                         label: 'Logement',
                         labelAbbreviation: 'Logement',
                         type: 'item',
-                        iconLabel: 'home',
+                        icon: (
+                            <SvgIcon>
+                                <HousingIcon />
+                            </SvgIcon>
+                        ),
                         url: URL_HOUSING_EQUIPMENTS,
                     },
                 },
             },
+            disabled: equipmentsAccomodationFeatureState,
         },
     } as IRouteNavigationConfig<MyHouseProps>,
     {
@@ -111,11 +143,16 @@ export const MyHouseConfig = [
                         label: 'Logement',
                         labelAbbreviation: 'Logement',
                         type: 'item',
-                        iconLabel: 'home',
+                        icon: (
+                            <SvgIcon>
+                                <HousingIcon />
+                            </SvgIcon>
+                        ),
                         url: URL_HOUSING_ACCOMODATION,
                     },
                 },
             },
+            disabled: equipmentsAccomodationFeatureState,
         },
     } as IRouteNavigationConfig<MyHouseProps>,
 ]

@@ -8,10 +8,9 @@ import Button from '@mui/material/Button'
 import PostAddIcon from '@mui/icons-material/PostAdd'
 import Icon from '@mui/material/Icon'
 import CircularProgress from '@mui/material/CircularProgress'
-import { NavLink, useParams } from 'react-router-dom'
+import { useHistory, useParams } from 'react-router-dom'
 import { contractsRouteParam, addContractDataType } from 'src/modules/Contracts/contractsTypes.d'
 import { isEmpty, isNull } from 'lodash'
-import { URL_MY_HOUSE } from 'src/modules/MyHouse/MyHouseConfig'
 import { primaryMainColor } from 'src/modules/utils/muiThemeVariables'
 import Dialog from '@mui/material/Dialog'
 import ContractForm from 'src/modules/Contracts/components/ContractForm'
@@ -25,6 +24,7 @@ const Contracts = () => {
     // HouseId extracted from params of the url :houseId/contracts
     const { houseId } = useParams<contractsRouteParam>()
     const [isOpenDialog, setIsOpenDialog] = useState(false)
+    const history = useHistory()
 
     const {
         elementList: contractList,
@@ -49,17 +49,15 @@ const Contracts = () => {
                 />
             </Dialog>
             <div className="p-24">
-                <NavLink to={`${URL_MY_HOUSE}/${houseId}`} className="flex">
-                    <Button className="flex justify-center items-center">
-                        <Icon sx={{ color: primaryMainColor }}>arrow_back</Icon>
-                        <TypographyFormatMessage
-                            sx={{ color: primaryMainColor }}
-                            className="text-13 font-medium md:text-16 ml-4"
-                        >
-                            Retour
-                        </TypographyFormatMessage>
-                    </Button>
-                </NavLink>
+                <Button className="flex justify-center items-center" variant="text" onClick={() => history.goBack()}>
+                    <Icon sx={{ color: primaryMainColor }}>arrow_back</Icon>
+                    <TypographyFormatMessage
+                        sx={{ color: primaryMainColor }}
+                        className="text-13 font-medium md:text-16 ml-4"
+                    >
+                        Retour
+                    </TypographyFormatMessage>
+                </Button>
                 <div className="flex justify-between items-center">
                     <TypographyFormatMessage className="text-16 font-medium md:text-20">
                         Mes Contrats
@@ -73,10 +71,9 @@ const Contracts = () => {
                     <div className="flex justify-center items-center p-24" style={{ height: '320px' }}>
                         <TypographyFormatMessage
                             className="text-13 font-medium md:text-16 w-full text-center"
-                            sx={{ color: 'secondary.main' }}
+                            sx={{ color: 'primary.main' }}
                         >
-                            Aucun contrat enregistré. Les valeurs de votre consommation exprimées en Euros proviennent
-                            d'un contrat EDF Tarif Bleu Base d'une puissance de 6kVA donnée à titre exemple.
+                            Aucun contrat de fourniture d'énergie enregistré
                         </TypographyFormatMessage>
                     </div>
                 ) : (

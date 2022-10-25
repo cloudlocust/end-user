@@ -9,14 +9,16 @@ import { useTheme } from '@mui/material'
 import { useMetrics } from 'src/modules/Metrics/metricsHook'
 import { getMetricType, metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
 import { periodType } from 'src/modules/MyConsumption/myConsumptionTypes'
-import { Link } from 'react-router-dom'
+import { Link, NavLink } from 'react-router-dom'
 import { Icon, Typography } from 'src/common/ui-kit'
+import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline'
+import { URL_MY_HOUSE } from 'src/modules/MyHouse/MyHouseConfig'
 import { useIntl } from 'react-intl'
 import { useConsents } from 'src/modules/Consents/consentsHook'
 import CircularProgress from '@mui/material/CircularProgress'
 import { subMonths, startOfMonth, endOfMonth, subDays } from 'date-fns'
 import MyConsumptionDatePicker from 'src/modules/MyConsumption/components/MyConsumptionDatePicker'
-import { computeTotalConsumption } from 'src/modules/MyConsumption/components/Widget/WidgetFunctions'
+import { computeTotalConsumption, computeTotalEuros } from 'src/modules/MyConsumption/components/Widget/WidgetFunctions'
 import AnalysisInformationList from 'src/modules/Analysis/components/AnalysisInformationList'
 import AnalysisPercentageChangeArrows from 'src/modules/Analysis/components/AnalysisPercentageChangeArrows'
 import convert, { Unit } from 'convert-units'
@@ -24,6 +26,8 @@ import AnalysisChart from 'src/modules/Analysis/components/AnalysisChart'
 import { analysisInformationName } from './analysisTypes'
 import { useSelector } from 'react-redux'
 import { RootState } from 'src/redux'
+import { useHasMissingHousingContracts } from 'src/hooks/HasMissingHousingContracts'
+import { secondaryMainColor } from 'src/modules/utils/muiThemeVariables'
 
 /**
  * InitialMetricsStates for useMetrics.
@@ -37,6 +41,10 @@ export const initialMetricsHookValues: getMetricType = {
     targets: [
         {
             target: metricTargetsEnum.consumption,
+            type: 'timeserie',
+        },
+        {
+            target: metricTargetsEnum.eurosConsumption,
             type: 'timeserie',
         },
     ],
@@ -57,6 +65,7 @@ const Analysis = () => {
     const [activeInformationName, setActiveInformationName] = useState<analysisInformationName | undefined>(undefined)
 
     const { currentHousing } = useSelector(({ housingModel }: RootState) => housingModel)
+    const { hasMissingHousingContracts } = useHasMissingHousingContracts(range, currentHousing?.id)
 
     /**
      * Handler to set the correct information name (min, max, mean) Based on the selected value element fill color in analysisChart.
@@ -130,12 +139,14 @@ const Analysis = () => {
         )
     }
 
-    const totalConsumption = data.length !== 0 ? computeTotalConsumption(data) : { value: 0, unit: 'kWh' }
+    const totalConsumption = data.length ? computeTotalConsumption(data) : { value: 0, unit: 'kWh' }
     const referenceConsumptionValue = Number(
         convert(totalConsumption.value)
             .from(totalConsumption.unit as Unit)
             .to('Wh'),
     )
+    const totalEurosConsumption = data.length ? computeTotalEuros(data) : { value: 0, unit: 'kWh' }
+
     return (
         <div>
             <div
@@ -157,6 +168,37 @@ const Analysis = () => {
                         maxDate={endOfMonth(subMonths(new Date(), 1))}
                     />
                 </motion.div>
+                {hasMissingHousingContracts && (
+                    <div className="flex items-center justify-center flex-col">
+                        <ErrorOutlineIcon
+                            sx={{
+                                color: secondaryMainColor,
+                                width: { xs: '24px', md: '32px' },
+                                height: { xs: '24px', md: '32px' },
+                                margin: { xs: '0 0 4px 0', md: '0 8px 0 0' },
+                            }}
+                        />
+
+                        <div className="w-full">
+                            <TypographyFormatMessage
+                                sx={{ color: secondaryMainColor }}
+                                className="text-13 md:text-16 text-center"
+                            >
+                                {
+                                    "Le coût en euros est un exemple. Vos données contractuelles de fourniture d'énergie ne sont pas disponibles sur toute la période."
+                                }
+                            </TypographyFormatMessage>
+                            <NavLink to={`${URL_MY_HOUSE}/${currentHousing?.id}/contracts`}>
+                                <TypographyFormatMessage
+                                    className="underline text-13 md:text-16 text-center"
+                                    sx={{ color: secondaryMainColor }}
+                                >
+                                    Renseigner votre contrat d'énergie
+                                </TypographyFormatMessage>
+                            </NavLink>
+                        </div>
+                    </div>
+                )}
             </div>
 
             <div style={{ position: 'relative' }}>
@@ -178,6 +220,9 @@ const Analysis = () => {
                                 referenceConsumptionValue={referenceConsumptionValue}
                                 filters={filters}
                             />
+                            <p className="text-16 md:text-20 font-medium">
+                                {Number(totalEurosConsumption.value).toFixed(2)} {totalEurosConsumption.unit}
+                            </p>
                         </div>
                     </AnalysisChart>
                 )}

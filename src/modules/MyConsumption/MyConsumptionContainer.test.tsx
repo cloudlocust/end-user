@@ -6,24 +6,26 @@ import { TEST_SUCCESS_WEEK_METRICS } from 'src/mocks/handlers/metrics'
 import { waitFor } from '@testing-library/react'
 import { formatMetricFilter } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
 import userEvent from '@testing-library/user-event'
-import { URL_CONTRACTS } from 'src/modules/Contracts/ContractsConfig'
 import { store } from 'src/redux'
 import { applyCamelCase } from 'src/common/react-platform-components'
 import { IHousing } from 'src/modules/MyHouse/components/HousingList/housing'
 import { TEST_HOUSES } from 'src/mocks/handlers/houses'
+import { URL_MY_HOUSE } from 'src/modules/MyHouse/MyHouseConfig'
 
 // List of houses to add to the redux state
 const LIST_OF_HOUSES: IHousing[] = applyCamelCase(TEST_HOUSES)
 
 // mock store.
 
-let mockData: IMetric[] = TEST_SUCCESS_WEEK_METRICS(['consumption_metrics'])
+let mockData: IMetric[] = TEST_SUCCESS_WEEK_METRICS(['consumption_metrics', '__euros__consumption_metrics'])
 let mockNrlinkConsent: string
 let mockIsMetricsLoading = false
 let mockEnedisConsent: string
 const mockSetFilters = jest.fn()
 const circularProgressClassname = '.MuiCircularProgress-root'
-const EUROS_CONSUMPTION_EXAMPLE_CHART_WARNING_TEXT = "Ce graphe est un exemple. Renseigner votre contrat d'énergie"
+const HAS_MISSING_CONTRACTS_WARNING_TEXT =
+    "Ce graphe est un exemple basé sur un tarif Bleu EDF Base. Vos données contractuelles de fourniture d'énergie ne sont pas disponibles sur toute la période."
+const HAS_MISSING_CONTRACTS_WARNING_REDIRECT_LINK_TEXT = "Renseigner votre contrat d'énergie"
 const WEEKLY_PERIOD_BUTTON_TEXT = 'Semaine'
 const MONTHLY_PERIOD_BUTTON_TEXT = 'Mois'
 const YEARLY_PERIOD_BUTTON_TEXT = 'Année'
@@ -77,6 +79,14 @@ jest.mock('src/modules/Consents/consentsHook.ts', () => ({
             nrlinkConsentState: mockEnedisConsent,
         },
         getConsents: mockGetConsents,
+    }),
+}))
+
+// Mock useHasMissingHousingContracts
+jest.mock('src/hooks/HasMissingHousingContracts', () => ({
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    useHasMissingHousingContracts: () => ({
+        hasMissingHousingContracts: true,
     }),
 }))
 
@@ -145,6 +155,7 @@ describe('MyConsumptionContainer test', () => {
             <Router>
                 <MyConsumptionContainer />
             </Router>,
+            { initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[0] } } },
         )
         // TOGGLING TO EUROS CONSUMPTION CHART
         userEvent.click(getByTestId(EUROS_CONSUMPTION_ICON_TEST_ID).parentElement as HTMLButtonElement)
@@ -172,12 +183,12 @@ describe('MyConsumptionContainer test', () => {
         await waitFor(() => {
             expect(getByText(EUROS_CONSUMPTION_TITLE_YEARLY)).toBeTruthy()
         })
-        // Example Chart Information Text
-        expect(getByText(EUROS_CONSUMPTION_EXAMPLE_CHART_WARNING_TEXT)).toBeTruthy()
+        // HasMissingContractsExample Text
+        expect(getByText(HAS_MISSING_CONTRACTS_WARNING_TEXT)).toBeTruthy()
         // Contracts Redirection URL
-        expect(getByText(EUROS_CONSUMPTION_EXAMPLE_CHART_WARNING_TEXT).parentElement!.closest('a')).toHaveAttribute(
+        expect(getByText(HAS_MISSING_CONTRACTS_WARNING_REDIRECT_LINK_TEXT).parentElement!.closest('a')).toHaveAttribute(
             'href',
-            URL_CONTRACTS,
+            `${URL_MY_HOUSE}/${LIST_OF_HOUSES[0].id}/contracts`,
         )
 
         // TOGGLING TO CONSUMPTION CHART

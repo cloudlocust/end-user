@@ -6,6 +6,7 @@ import {
     computeMinConsumption,
     computePercentageChange,
     normalizeValues,
+    computeStatisticsMetricsTargetData,
 } from 'src/modules/Analysis/utils/computationFunctions'
 import { IMetric, metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
 
@@ -38,9 +39,7 @@ test('computeMeanConsumption test with different cases', async () => {
     // When data is not empty
     let apexChartsValues = convertMetricsDataToApexChartsAxisValues(mockMetricsData)
 
-    let result = computeMeanConsumption(
-        apexChartsValues.yAxisSeries[0].data as Array<number>,
-    ) as computationFunctionType
+    let result = computeMeanConsumption(apexChartsValues) as computationFunctionType
     expect(result).toEqual({
         value: valueMeanConsumption,
         unit: unitConsumption,
@@ -63,7 +62,7 @@ test('computeMeanConsumption test with different cases', async () => {
     // When metricsData is empty
     apexChartsValues = convertMetricsDataToApexChartsAxisValues([])
 
-    result = computeMeanConsumption([]) as computationFunctionType
+    result = computeMeanConsumption(apexChartsValues) as computationFunctionType
     expect(result).toEqual({
         value: emptyConsumption.value,
         unit: emptyConsumption.unit,
@@ -139,3 +138,22 @@ test('normalizeValues test with different cases', async () => {
         expect(newValues[index]).toStrictEqual(newValue)
     })
 })
+
+test('computeStatisticsMetricsTargetData test with different cases', async () => {
+    // When data is not empty
+    let apexChartsValues = convertMetricsDataToApexChartsAxisValues(mockMetricsData)
+
+    let result = computeStatisticsMetricsTargetData(apexChartsValues, metricTargetsEnum.consumption, 'mean')
+    expect(result).toEqual(valueMeanConsumption)
+
+    result = computeStatisticsMetricsTargetData(apexChartsValues, metricTargetsEnum.consumption, 'maximum')
+    expect(result).toEqual(valueMaxConsumption)
+
+    result = computeStatisticsMetricsTargetData(apexChartsValues, metricTargetsEnum.consumption, 'minimum')
+    expect(result).toEqual(valueMinConsumption)
+
+    // When metricsData is empty
+    apexChartsValues = convertMetricsDataToApexChartsAxisValues([])
+    result = computeStatisticsMetricsTargetData(apexChartsValues, metricTargetsEnum.consumption, 'mean')
+    expect(result).toEqual(emptyConsumption.value)
+}, 20000)

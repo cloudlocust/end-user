@@ -1,6 +1,8 @@
 import { authTypes } from 'src/common/react-platform-components'
 import { IRouteNavigationConfig } from 'src/routes'
 import { Advices } from './Advices'
+import { ReactComponent as AdvicesIcon } from 'src/assets/images/navbarItems/Advices.svg'
+import SvgIcon from '@mui/material/SvgIcon'
 
 /**
  * Url for advices.
@@ -22,6 +24,12 @@ export interface AdvicesProps {
         url: string
     }
 }
+
+/**
+ * Env Variable to know if the feature is enabled.
+ */
+export const advicesFeatureState = window._env_.REACT_APP_ADVICES_FEATURE_STATE === 'disabled'
+
 /**
  * AdvicesConfig.
  */
@@ -38,7 +46,12 @@ export const AdvicesConfig = [
                         label: 'Conseils',
                         labelAbbreviation: 'Conseils',
                         type: 'item',
-                        iconLabel: 'pan_tool',
+                        icon: (
+                            <SvgIcon>
+                                <AdvicesIcon />
+                            </SvgIcon>
+                        ),
+                        disabled: advicesFeatureState,
                         url: URL_ADVICES,
                     },
                 },

@@ -26,7 +26,6 @@ export const LinkRedirection = ({
 }) => {
     const { formatMessage } = useIntl()
     return (
-        // eslint-disable-next-line react/jsx-no-undef
         <MuiLink
             sx={{
                 color: color || 'primary.main',
@@ -39,6 +38,7 @@ export const LinkRedirection = ({
                 e.preventDefault()
                 window.open(url, '_blank')
             }}
+            className="cursor-pointer"
         >
             {formatMessage({
                 id: label,

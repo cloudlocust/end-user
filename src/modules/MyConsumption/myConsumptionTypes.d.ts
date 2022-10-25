@@ -133,3 +133,9 @@ export type ApexChartsAxisValuesType =
          */
         xAxisSeries: number[][]
     }
+
+/**
+ * Response Type of request Get hasMissingHousingContract.
+ */
+// eslint-disable-next-line jsdoc/require-jsdoc
+export type getHasMissingHousingContractsResponse = { hasMissingHousingContracts: boolean }

@@ -19,9 +19,13 @@ import { MyConsumptionPeriod } from 'src/modules/MyConsumption'
 import TargetButtonGroup from 'src/modules/MyConsumption/components/TargetButtonGroup'
 import { NavLink } from 'react-router-dom'
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline'
-import { URL_CONTRACTS } from 'src/modules/Contracts/ContractsConfig'
 import { useSelector } from 'react-redux'
 import { RootState } from 'src/redux'
+import { URL_MY_HOUSE } from 'src/modules/MyHouse/MyHouseConfig'
+import { useHasMissingHousingContracts } from 'src/hooks/HasMissingHousingContracts'
+import { tempPmaxFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
+import Tooltip from '@mui/material/Tooltip'
+import { secondaryMainColor } from 'src/modules/utils/muiThemeVariables'
 
 /**
  * InitialMetricsStates for useMetrics.
@@ -34,11 +38,10 @@ export const initialMetricsHookValues: getMetricType = {
             target: metricTargetsEnum.consumption,
             type: 'timeserie',
         },
-        // TODO Reset euro consumption when backend ready.
-        // {
-        // target: metricTargetsEnum.eurosConsumption,
-        // type: 'timeserie',
-        // },
+        {
+            target: metricTargetsEnum.eurosConsumption,
+            type: 'timeserie',
+        },
         {
             target: metricTargetsEnum.pMax,
             type: 'timeserie',
@@ -70,13 +73,14 @@ export const MyConsumptionContainer = () => {
     const [period, setPeriod] = useState<periodType>('daily')
     const [filteredTargets, setFilteredTargets] = useState<metricTargetType[]>([metricTargetsEnum.consumption])
     const isEurosConsumptionChart = filteredTargets.includes(metricTargetsEnum.eurosConsumption)
-
     const { currentHousing } = useSelector(({ housingModel }: RootState) => housingModel)
 
     useEffect(() => {
         if (!currentHousing) return
         if (currentHousing?.meter) setFilters(formatMetricFilter(currentHousing.meter?.guid))
     }, [currentHousing, setFilters])
+
+    const { hasMissingHousingContracts } = useHasMissingHousingContracts(range, currentHousing?.id)
 
     // UseEffect to check for consent whenever a meter is selected.
     useEffect(() => {
@@ -214,7 +218,19 @@ export const MyConsumptionContainer = () => {
                         addTarget={addTarget}
                         showEurosConsumption={!isEurosConsumptionChart}
                     />
-                    {memoizedTargetButtonGroup}
+                    <Tooltip
+                        arrow
+                        placement="bottom-end"
+                        disableHoverListener={!tempPmaxFeatureState}
+                        title={formatMessage({
+                            id: "Cette fonctionnalitée n'est pas encore disponible",
+                            defaultMessage: "Cette fonctionnalitée n'est pas encore disponible",
+                        })}
+                    >
+                        <div className={`${tempPmaxFeatureState && 'cursor-not-allowed'}`}>
+                            {memoizedTargetButtonGroup}
+                        </div>
+                    </Tooltip>
                 </div>
 
                 {isMetricsLoading ? (
@@ -233,17 +249,36 @@ export const MyConsumptionContainer = () => {
                     />
                 )}
                 {memoizedMyConsumptionPeriod}
-                {isEurosConsumptionChart && (
-                    // TODO Fix URL redirection with the correct housingId.
-                    <NavLink to={`${URL_CONTRACTS}`} className="flex flex-col items-center mt-16">
-                        <ErrorOutlineIcon sx={{ color: 'secondary.main', width: '32px', height: '32px' }} />
-                        <TypographyFormatMessage
-                            className="text-13 underline md:text-16 w-full text-center"
-                            sx={{ color: 'secondary.main' }}
-                        >
-                            Ce graphe est un exemple. Renseigner votre contrat d'énergie
-                        </TypographyFormatMessage>
-                    </NavLink>
+                {isEurosConsumptionChart && hasMissingHousingContracts && (
+                    <div className="flex items-center justify-center flex-col mt-12">
+                        <ErrorOutlineIcon
+                            sx={{
+                                color: secondaryMainColor,
+                                width: { xs: '24px', md: '32px' },
+                                height: { xs: '24px', md: '32px' },
+                                margin: { xs: '0 0 4px 0', md: '0 8px 0 0' },
+                            }}
+                        />
+
+                        <div className="w-full">
+                            <TypographyFormatMessage
+                                sx={{ color: secondaryMainColor }}
+                                className="text-13 md:text-16 text-center"
+                            >
+                                {
+                                    "Ce graphe est un exemple basé sur un tarif Bleu EDF Base. Vos données contractuelles de fourniture d'énergie ne sont pas disponibles sur toute la période."
+                                }
+                            </TypographyFormatMessage>
+                            <NavLink to={`${URL_MY_HOUSE}/${currentHousing?.id}/contracts`}>
+                                <TypographyFormatMessage
+                                    className="underline text-13 md:text-16 text-center"
+                                    sx={{ color: secondaryMainColor }}
+                                >
+                                    Renseigner votre contrat d'énergie
+                                </TypographyFormatMessage>
+                            </NavLink>
+                        </div>
+                    </div>
                 )}
             </div>
             {data.length !== 0 && (
@@ -254,10 +289,8 @@ export const MyConsumptionContainer = () => {
                         </TypographyFormatMessage>
                     </div>
                     <WidgetList
-                        data={
-                            // TODO Fix when getting to the story of widget consumptionEuros
-                            data.filter((metric) => metric.target !== metricTargetsEnum.eurosConsumption)
-                        }
+                        data={data}
+                        hasMissingHousingContracts={hasMissingHousingContracts}
                         isMetricsLoading={isMetricsLoading}
                     />
                 </div>
