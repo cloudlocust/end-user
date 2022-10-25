@@ -102,10 +102,10 @@ const ContractCard = ({ contract, onAfterDeleteUpdateSuccess }: ContractCardProp
             <Card key={contract.id} className="p-16 overflow-hidden h-full contract-card">
                 <div className="flex justify-between items-center">
                     <Typography className="text-16 font-bold md:text-20">{contract.provider.name}</Typography>{' '}
-                    <Typography className="text-12 font-light">
+                    <Typography className="text-12 font-bold">
                         {dayjs(contract.startSubscription).format('DD/MM/YYYY')} -{' '}
                         {contract.endSubscription
-                            ? dayjs(contract.startSubscription).format('DD/MM/YYYY')
+                            ? dayjs(contract.endSubscription).format('DD/MM/YYYY')
                             : formatMessage({ id: 'En cours', defaultMessage: 'En cours' })}
                     </Typography>
                     <div className="flex items-center">
