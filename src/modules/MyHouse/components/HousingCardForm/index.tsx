@@ -46,8 +46,8 @@ export const HousingCardForm = ({ housing, onAfterDeleteUpdateSuccess }: Housing
         } catch (err) {}
     }
     return (
-        <>
-            <IconButton color="primary" size="small" onClick={() => setIsOpenHousingCardForm(true)} className="p-0">
+        <div>
+            <IconButton color="primary" size="medium" onClick={() => setIsOpenHousingCardForm(true)}>
                 <EditIcon />
             </IconButton>
             <Modal open={isOpenHousingCardForm} onClose={closeHousingCardFormModal}>
@@ -97,6 +97,6 @@ export const HousingCardForm = ({ housing, onAfterDeleteUpdateSuccess }: Housing
                     </div>
                 </Form>
             </Modal>
-        </>
+        </div>
     )
 }

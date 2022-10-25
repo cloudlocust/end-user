@@ -88,7 +88,10 @@ const HousingList = () => {
     const HousingCardElement = ({
         element,
     }: //eslint-disable-next-line
-        { element: IHousing }) => <HousingCard element={element} reloadHousings={reloadHousings} />
+    {
+        //eslint-disable-next-line
+        element: IHousing
+    }) => <HousingCard element={element} reloadHousings={reloadHousings} />
 
     // TODO - Refacto this component.
     return (
@@ -105,8 +108,8 @@ const HousingList = () => {
             }
             content={
                 <>
-                    <div className="flex-col justify-center w-full">
-                        <div className="w-full mt-10">
+                    <div className="flex-col justify-center w-full p-24 housing-list">
+                        <div className="w-full">
                             {isEmpty(housingList) && !isHousingInProgress ? (
                                 <EmptyTableMessage
                                     message={formatMessage({

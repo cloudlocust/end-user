@@ -17,4 +17,12 @@ module.exports = {
     // https://stackoverflow.com/a/50863753/13145536
     modulePaths: ['<rootDir>'],
     verbose: true,
+    // Config help makes unit test running faster
+    // https://stackoverflow.com/a/60905543
+    testEnvironment: 'node',
+    globals: {
+        'ts-jest': {
+            isolatedModules: true,
+        },
+    },
 }
