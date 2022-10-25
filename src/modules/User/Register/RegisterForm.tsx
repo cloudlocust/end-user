@@ -65,10 +65,7 @@ export const RegisterForm = ({
     }
 
     return (
-        <Form
-            // eslint-disable-next-line jsdoc/require-jsdoc
-            onSubmit={onSubmitWrapper}
-        >
+        <Form onSubmit={onSubmitWrapper}>
             {/* register your input into the hook by invoking the "register" function */}
             <div className="flex flex-col justify-center w-full">
                 <TextField name="firstName" label="Prénom" validateFunctions={[requiredBuilder()]} variant="outlined" />

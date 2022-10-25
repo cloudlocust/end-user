@@ -79,7 +79,7 @@ export const Login: FC<LoginProps> = ({
                                             // eslint-disable-next-line jsdoc/require-jsdoc
                                             (theme) => theme.palette.primary.light,
                                     }}
-                                    to="/Register"
+                                    to="/register"
                                     underline="none"
                                 >
                                     {formatMessage({ id: 'Inscription', defaultMessage: 'Inscription' })}
