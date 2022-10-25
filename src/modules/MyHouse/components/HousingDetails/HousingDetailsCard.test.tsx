@@ -88,14 +88,14 @@ describe('Test HousingDetailsCard', () => {
         expect(getByText(OCCUPANT_TEXT)).toBeTruthy()
         expect(getByText(MAIN_TEXT)).toBeTruthy()
     })
-    test('When isConfigured is true the button modify should appear', async () => {
+    test('When isConfigured is true the button detail should appear', async () => {
         const { getByText } = reduxedRender(
             <BrowserRouter>
                 <HousingDetailsCard {...mockHousingDetailsCardProps} />
             </BrowserRouter>,
         )
 
-        expect(getByText('Modifier')).toBeTruthy()
+        expect(getByText('Detail')).toBeTruthy()
     })
     test('When isConfigured is false the button configuration should appear', async () => {
         mockHousingDetailsCardProps.isConfigured = false

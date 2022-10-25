@@ -14,6 +14,8 @@ import { useParams } from 'react-router-dom'
 import Dialog from '@mui/material/Dialog'
 import { addContractDataType } from 'src/modules/Contracts/contractsTypes.d'
 import ContractForm from 'src/modules/Contracts/components/ContractForm'
+import dayjs from 'dayjs'
+import { useIntl } from 'react-intl'
 
 /**
  * Contract Card component.
@@ -33,6 +35,7 @@ const ContractCard = ({ contract, onAfterDeleteUpdateSuccess }: ContractCardProp
         editElementDetails,
     } = useContractDetails(parseInt(houseId), contract.id)
     const [isContractFormOpen, setIsContractFormOpen] = useState(false)
+    const { formatMessage } = useIntl()
 
     /**
      * Open warning remove popup on delete click.
@@ -96,9 +99,15 @@ const ContractCard = ({ contract, onAfterDeleteUpdateSuccess }: ContractCardProp
                     }}
                 />
             </Dialog>
-            <Card key={contract.id} className="p-16 overflow-hidden">
+            <Card key={contract.id} className="p-16 overflow-hidden ContractCard">
                 <div className="flex justify-between items-center">
-                    <Typography className="text-16 font-bold md:text-20">{contract.provider.name}</Typography>
+                    <Typography className="text-16 font-bold md:text-20">{contract.provider.name}</Typography>{' '}
+                    <Typography className="text-12 font-light">
+                        {dayjs(contract.startSubscription).format('DD/MM/YYYY')} -{' '}
+                        {contract.endSubscription
+                            ? dayjs(contract.startSubscription).format('DD/MM/YYYY')
+                            : formatMessage({ id: 'En cours', defaultMessage: 'En cours' })}
+                    </Typography>
                     <div className="flex items-center">
                         <IconButton
                             color="primary"
@@ -119,6 +128,7 @@ const ContractCard = ({ contract, onAfterDeleteUpdateSuccess }: ContractCardProp
                         )}
                     </div>
                 </div>
+
                 <Divider className="my-8" />
                 <Typography className="text-13 font-medium md:text-16">
                     {contract.offer.name} - {contract.tariffType.name} - {contract.power} kVA

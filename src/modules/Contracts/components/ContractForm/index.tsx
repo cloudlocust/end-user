@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react'
+import React, { useCallback } from 'react'
 import { useIntl } from 'react-intl'
 import { requiredBuilder } from 'src/common/react-platform-components'
 import {
@@ -38,17 +38,9 @@ const defaultContractFormValues: contractFormValuesType = {
  * @returns Contract Form component.
  */
 const ContractForm = ({ onSubmit, isContractsLoading, defaultValues }: ContractFormProps) => {
-    // The ContractForm can add new contract, or edit an existing one (in the edition the existing contract will have edition and presentation mode).
-    // The default state of isEdit When giving an existing contract through defaultValues prop, will be false.
-    const [isEdit, setIsEdit] = useState(!Boolean(defaultValues))
     return (
         <Form
             onSubmit={(data: contractFormValuesType) => {
-                // This Change the presentation mode to edition mode when giving an existing contract.
-                if (!isEdit) {
-                    setIsEdit(true)
-                    return
-                }
                 const { providerId, startSubscription, endSubscription, ...restData } = data
                 // Format the start subscription to ISO Datetime.
                 let cleanData: addContractDataType = {
@@ -72,7 +64,7 @@ const ContractForm = ({ onSubmit, isContractsLoading, defaultValues }: ContractF
                     Toutes les informations demandées sont disponibles sur votre facture ou votre contrat d'énergie
                 </TypographyFormatMessage>
                 <div className="flex flex-col justify-center w-full">
-                    <ContractFormFields isContractsLoading={isContractsLoading} disabled={!isEdit} />
+                    <ContractFormFields isContractsLoading={isContractsLoading} />
                 </div>
             </div>
         </Form>
@@ -86,10 +78,9 @@ export default ContractForm
  *
  * @param props N/A.
  * @param props.isContractsLoading Loading state when addContract request.
- * @param props.disabled Indicate if contractFormFields are disabled and thus in edit mode.
  * @returns Contract Form Fields component.
  */
-const ContractFormFields = ({ isContractsLoading, disabled }: ContractFormFieldsProps) => {
+const ContractFormFields = ({ isContractsLoading }: ContractFormFieldsProps) => {
     const formData = useWatch<contractFormValuesType>({})
     const { reset, getValues } = useFormContext<contractFormValuesType>()
     const {
@@ -164,7 +155,6 @@ const ContractFormFields = ({ isContractsLoading, disabled }: ContractFormFields
                 name="contractTypeId"
                 label="Type"
                 validateFunctions={[requiredBuilder()]}
-                disabled={disabled}
                 onChange={(e) => onSelectChange(e, [])}
             />
             {Boolean(formData.contractTypeId) && (
@@ -177,7 +167,6 @@ const ContractFormFields = ({ isContractsLoading, disabled }: ContractFormFields
                     name="providerId"
                     label="Fournisseur"
                     validateFunctions={[requiredBuilder()]}
-                    disabled={disabled}
                     onChange={(e) => onSelectChange(e, ['contractTypeId'])}
                 />
             )}
@@ -191,7 +180,6 @@ const ContractFormFields = ({ isContractsLoading, disabled }: ContractFormFields
                     name="offerId"
                     label="Offre"
                     validateFunctions={[requiredBuilder()]}
-                    disabled={disabled}
                     onChange={(e) => onSelectChange(e, ['providerId', 'contractTypeId'])}
                 />
             )}
@@ -206,7 +194,6 @@ const ContractFormFields = ({ isContractsLoading, disabled }: ContractFormFields
                     name="tariffTypeId"
                     label="Type de contrat"
                     validateFunctions={[requiredBuilder()]}
-                    disabled={disabled}
                     onChange={(e) => onSelectChange(e, ['providerId', 'contractTypeId', 'offerId'])}
                 />
             )}
@@ -221,7 +208,6 @@ const ContractFormFields = ({ isContractsLoading, disabled }: ContractFormFields
                     name="power"
                     label="Puissance"
                     validateFunctions={[requiredBuilder()]}
-                    disabled={disabled}
                     onChange={(e) => onSelectChange(e, ['providerId', 'contractTypeId', 'offerId', 'tariffTypeId'])}
                 />
             )}
@@ -234,7 +220,6 @@ const ContractFormFields = ({ isContractsLoading, disabled }: ContractFormFields
                         defaultMessage: 'Date de début',
                     })}
                     validateFunctions={[requiredBuilder()]}
-                    disabled={disabled}
                 />
             )}
             {formData.startSubscription && (
@@ -244,13 +229,12 @@ const ContractFormFields = ({ isContractsLoading, disabled }: ContractFormFields
                         id: 'Date de fin',
                         defaultMessage: 'Date de fin',
                     })}
-                    disabled={disabled}
                 />
             )}
             <ButtonLoader
                 variant="contained"
                 color="primary"
-                className="w-224 mx-auto"
+                className="w-full mx-auto mt-20"
                 type="submit"
                 inProgress={isContractsLoading}
                 disabled={
@@ -267,8 +251,8 @@ const ContractFormFields = ({ isContractsLoading, disabled }: ContractFormFields
                 }
             >
                 {formatMessage({
-                    id: disabled ? 'Modifier' : 'Enregistrer',
-                    defaultMessage: disabled ? 'Modifier' : 'Enregistrer',
+                    id: 'Enregistrer',
+                    defaultMessage: 'Enregistrer',
                 })}
             </ButtonLoader>
         </>

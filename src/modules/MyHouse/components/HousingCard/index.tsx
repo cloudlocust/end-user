@@ -131,7 +131,7 @@ const HousingCard = ({
     return (
         <>
             <Card
-                className="relative cursor-pointer flex-wrap rounded-16"
+                className="relative cursor-pointer flex-wrap rounded-16 w-full"
                 onMouseOver={() => setRaisedState(true)}
                 onMouseOut={() => setRaisedState(false)}
                 raised={raisedState}
