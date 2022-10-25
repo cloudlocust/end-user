@@ -14,6 +14,11 @@ export type enedisConsentStatus = 'NONEXISTENT' | 'CONNECTED' | 'EXPIRED'
 export type enedisSgeConsentStatus = 'NONEXISTENT' | 'CONNECTED' | 'EXPIRED' | 'REVOKED'
 
 /**
+ * Enphhase consent status.
+ */
+export type enphaseConsentStatus = 'NONEXISTENT' | 'ACTIVE' | 'PENDING' | 'EXPIRED'
+
+/**
  * Nrlink consent model.
  */
 export interface INrlinkConsent {
@@ -91,4 +96,22 @@ export interface IEnedisSgeConsent {
      * Expired at date.
      */
     expiredAt: string
+}
+
+/**
+ * Interface for Enphase consent.
+ */
+export interface IEnphaseConsent {
+    /**
+     * Meter guid.
+     */
+    meterGuid: string
+    /**
+     * Enphhase consent status.
+     */
+    enphaseConsentStatus: enphaseConsentStatus
+    /**
+     * When the enedis consent was created.
+     */
+    createdAt?: string
 }

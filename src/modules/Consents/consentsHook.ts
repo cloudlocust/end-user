@@ -2,6 +2,7 @@ import { useCallback, useState } from 'react'
 import {
     IEnedisConsent,
     IEnedisSgeConsent,
+    IEnphaseConsent,
     INrlinkConsent,
     MeterVerificationEnum,
 } from 'src/modules/Consents/Consents.d'
@@ -26,6 +27,11 @@ export const ENEDIS_CONSENT_API = `${API_RESOURCES_URL}/enedis/consent`
 export const ENEDIS_SGE_CONSENT_API = `${API_RESOURCES_URL}/enedis-sge/consent`
 
 /**
+ * Enphase consent endpoint.
+ */
+export const ENPHASE_CONSENT_API = `${API_RESOURCES_URL}/enphase/consent`
+
+/**
  * Consents hook.
  *
  * @returns Consents hook.
@@ -36,6 +42,7 @@ export function useConsents() {
     const [consentsLoading, setConsentsLoading] = useState(false)
     const [nrlinkConsent, setNrlinkConsent] = useState<INrlinkConsent>()
     const [enedisConsent, setEnedisConsent] = useState<IEnedisConsent>()
+    const [enphaseConsent, setEnphaseConsent] = useState<IEnphaseConsent>()
     const [meterVerification, setMeterVerification] = useState<MeterVerificationEnum>(
         MeterVerificationEnum.NOT_VERIFIED,
     )
@@ -58,10 +65,12 @@ export function useConsents() {
             // If the promise status is "fulfilled" it returns "value"
             // If it's "rejetected" it returns "reason"
             // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/allSettled
-            const [nrlinkConsent, enedisConsent] = await Promise.allSettled([
+            const [nrlinkConsent, enedisConsent, enphaseConsent] = await Promise.allSettled([
                 axios.get<INrlinkConsent>(`${NRLINK_CONSENT_API}/${meterGuid}`),
                 axios.get<IEnedisConsent>(`${ENEDIS_CONSENT_API}/${meterGuid}`),
+                axios.get<IEnphaseConsent>(`${ENEDIS_CONSENT_API}/${meterGuid}`),
             ])
+
             // Nrlink consent.
             if (nrlinkConsent.status === 'fulfilled') {
                 setNrlinkConsent(nrlinkConsent.value?.data)
@@ -85,6 +94,21 @@ export function useConsents() {
                     formatMessage({
                         id: 'Erreur lors de la récupération du consentement Enedis',
                         defaultMessage: 'Erreur lors de la récupération du consentement Enedis',
+                    }),
+                    {
+                        variant: 'error',
+                        autoHideDuration: 5000,
+                    },
+                )
+            }
+
+            if (enphaseConsent.status === 'fulfilled') {
+                setEnphaseConsent(enphaseConsent.value.data)
+            } else if (enedisConsent.status === 'rejected') {
+                enqueueSnackbar(
+                    formatMessage({
+                        id: 'Erreur lors de la récupération du consentement Enphase',
+                        defaultMessage: 'Erreur lors de la récupération du consentement Enphase',
                     }),
                     {
                         variant: 'error',
@@ -183,5 +207,6 @@ export function useConsents() {
         setEnedisSgeConsent,
         isCreateEnedisSgeConsentLoading,
         createEnedisSgeConsentError,
+        enphaseConsent,
     }
 }

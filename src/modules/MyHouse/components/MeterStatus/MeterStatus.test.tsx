@@ -1,7 +1,12 @@
 import { reduxedRender } from 'src/common/react-platform-components/test'
 import { BrowserRouter as Router } from 'react-router-dom'
 import { MeterStatus } from 'src/modules/MyHouse/components/MeterStatus'
-import { enedisSgeConsentStatus, MeterVerificationEnum, nrlinkConsentStatus } from 'src/modules/Consents/Consents.d'
+import {
+    enedisSgeConsentStatus,
+    MeterVerificationEnum,
+    nrlinkConsentStatus,
+    enphaseConsentStatus,
+} from 'src/modules/Consents/Consents.d'
 import { URL_NRLINK_CONNECTION_STEPS } from 'src/modules/nrLinkConnection'
 import dayjs from 'dayjs'
 import userEvent from '@testing-library/user-event'
@@ -40,15 +45,17 @@ const CREATION_ENEDIS_SGE_CONSENT_TEXT =
 
 const EDIT_METER_NAME_PLACEHOLDER = 'Modifier le nom de votre compteur'
 const EDIT_METER_NUMBER_PLACEHOLDER = 'Modifier le numéro de votre compteur'
+const ERROR_ENPHASE_MESSAGE = 'Connectez votre onduleur pour visualiser votre production'
+
+const CREATED_AT = '2022-09-02T08:06:08Z'
 
 let mockNrlinkConsent: nrlinkConsentStatus
 let mockEnedisSgeConsent: enedisSgeConsentStatus
+let mockEnphaseConsent: enphaseConsentStatus
 let mockGetConsent = jest.fn()
 let mockVerifyMeter = jest.fn()
-let mockNrlinkCreatedAt = '2022-09-02T08:06:08Z'
 let mockNrlinkGuid = 'ABCD1234'
-let mockEnedisCreatedAt = mockNrlinkCreatedAt
-let enedisFormatedEndingDate = dayjs(mockNrlinkCreatedAt).add(3, 'year').format('DD/MM/YYYY')
+let enedisFormatedEndingDate = dayjs(CREATED_AT).add(3, 'year').format('DD/MM/YYYY')
 let mockWindowOpen = jest.fn()
 window.open = mockWindowOpen
 let mockSetIsMeterVerifyLoading = jest.fn()
@@ -58,6 +65,10 @@ let mockHouseId = TEST_MOCKED_HOUSES[0].id
 let mockCreateEnedisSgeConsent = jest.fn()
 let mockSetMeterVerification = jest.fn()
 let mockEditMeter = jest.fn()
+// eslint-disable-next-line sonarjs/no-duplicate-string
+const STATUS_ON_SRC = '/assets/images/content/housing/consent-status/meter-on.svg'
+// eslint-disable-next-line sonarjs/no-duplicate-string
+const STATUS_OFF_SRC = '/assets/images/content/housing/consent-status/meter-off.svg'
 
 jest.mock('src/modules/Meters/metersHook', () => ({
     // eslint-disable-next-line jsdoc/require-jsdoc
@@ -90,13 +101,18 @@ jest.mock('src/modules/Consents/consentsHook', () => ({
         enedisSgeConsent: {
             meterGuid: '133456',
             enedisSgeConsentState: mockEnedisSgeConsent,
-            createdAt: mockEnedisCreatedAt,
+            createdAt: CREATED_AT,
         },
         nrlinkConsent: {
             meterGuid: '133456',
             nrlinkConsentState: mockNrlinkConsent,
-            creratedAt: mockNrlinkCreatedAt,
+            creratedAt: CREATED_AT,
             nrlinkGuid: mockNrlinkGuid,
+        },
+        enphaseConsent: {
+            meterGuid: '12345',
+            enphaseConsentStatus: mockEnphaseConsent,
+            createdAt: CREATED_AT,
         },
         getConsents: mockGetConsent,
         verifyMeter: mockVerifyMeter,
@@ -173,7 +189,7 @@ describe('MeterStatus component test', () => {
             expect(getByText(COMPTEUR_TITLE)).toBeTruthy()
             expect(getByText(`n° ${foundHouse?.meter?.guid}`)).toBeTruthy()
             expect(getByText(NRLINK_TITLE)).toBeTruthy()
-            expect(image).toHaveAttribute('src', '/assets/images/content/housing/consent-status/meter-on.svg')
+            expect(image).toHaveAttribute('src', STATUS_ON_SRC)
             expect(getByText(`nrLink n° ${mockNrlinkGuid}`)).toBeTruthy()
         })
         test('when nrlink status is disconnected', async () => {
@@ -262,6 +278,32 @@ describe('MeterStatus component test', () => {
             expect(image).toHaveAttribute('src', '/assets/images/content/housing/consent-status/meter-off.svg')
         })
     })
+    describe('enphase status', () => {
+        test('when enphase status is ACTIVE', async () => {
+            foundHouse!.meter!.guid = '12345Her'
+            mockEnphaseConsent = 'ACTIVE'
+            const { getByText, getByAltText } = reduxedRender(
+                <Router>
+                    <MeterStatus />
+                </Router>,
+            )
+            expect(getByText(`Connexion le ${dayjs(CREATED_AT).format('DD/MM/YYYY')}`)).toBeTruthy()
+            const activeIcon = getByAltText('enphase-active-icon')
+            expect(activeIcon).toHaveAttribute('src', STATUS_ON_SRC)
+        })
+        test('when enphase status is NOT ACTIVE', async () => {
+            foundHouse!.meter!.guid = '12345Her'
+            mockEnphaseConsent = 'NONEXISTENT'
+            const { getByText, getByAltText } = reduxedRender(
+                <Router>
+                    <MeterStatus />
+                </Router>,
+            )
+            expect(getByText(ERROR_ENPHASE_MESSAGE)).toBeTruthy()
+            const activeIcon = getByAltText('enphase-off-icon')
+            expect(activeIcon).toHaveAttribute('src', STATUS_OFF_SRC)
+        })
+    })
     describe('test implementation of EnedisSgePopup', () => {
         test('when clicked on error message, verify meter popup is shown with loading', async () => {
             foundHouse!.meter!.guid = '12345Her'
@@ -335,7 +377,7 @@ describe('MeterStatus component test', () => {
             expect(getByText('Annuler')).toBeTruthy()
             expect(getByText('Modifier')).toBeTruthy()
         })
-        test('when user edit a meter a submit it', async () => {
+        test('when user edit a meter and submit it', async () => {
             const { getByText, getByTestId, getByPlaceholderText } = reduxedRender(
                 <Router>
                     <MeterStatus />

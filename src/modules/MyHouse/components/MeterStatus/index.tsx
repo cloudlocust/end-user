@@ -1,4 +1,4 @@
-import { Card, useTheme, Icon, CircularProgress, IconButton } from '@mui/material'
+import { Card, useTheme, Icon, CircularProgress, IconButton, useMediaQuery, Divider } from '@mui/material'
 import { NavLink, useParams } from 'react-router-dom'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import { ReactComponent as ContractIcon } from 'src/assets/images/content/housing/contract.svg'
@@ -6,7 +6,7 @@ import { URL_MY_HOUSE } from 'src/modules/MyHouse/MyHouseConfig'
 import { MuiCardContent } from 'src/common/ui-kit'
 import { useConsents } from 'src/modules/Consents/consentsHook'
 import { useEffect, useState } from 'react'
-import { enedisSgeConsentStatus, nrlinkConsentStatus } from 'src/modules/Consents/Consents'
+import { enedisSgeConsentStatus, enphaseConsentStatus, nrlinkConsentStatus } from 'src/modules/Consents/Consents'
 import dayjs from 'dayjs'
 import { useIntl } from 'react-intl'
 import { NrlinkConnectionStepsEnum } from 'src/modules/nrLinkConnection/nrlinkConnectionSteps.d'
@@ -19,6 +19,9 @@ import { useMeterForHousing } from 'src/modules/Meters/metersHook'
 import { Dispatch } from 'src/redux'
 import { EditMeterFormPopup } from 'src/modules/MyHouse/components/EditMeterFormPopup'
 
+const FORMATTED_DATA = 'DD/MM/YYYY'
+const TEXT_CONNEXION_LE = 'Connexion le'
+
 /**
  * Meter Status Component.
  *
@@ -27,6 +30,7 @@ import { EditMeterFormPopup } from 'src/modules/MyHouse/components/EditMeterForm
 export const MeterStatus = () => {
     const theme = useTheme()
     const { formatMessage } = useIntl()
+    const mdDown = useMediaQuery(theme.breakpoints.down('md'))
     const {
         getConsents,
         consentsLoading,
@@ -35,6 +39,7 @@ export const MeterStatus = () => {
         createEnedisSgeConsent,
         isCreateEnedisSgeConsentLoading,
         createEnedisSgeConsentError,
+        enphaseConsent,
     } = useConsents()
     const { editMeter, loadingInProgress } = useMeterForHousing()
     const dispatch = useDispatch<Dispatch>()
@@ -46,9 +51,12 @@ export const MeterStatus = () => {
     // eslint-disable-next-line jsdoc/require-jsdoc
     const { houseId }: { houseId: string } = useParams()
 
-    const nrlinkConsentCreatedAt = dayjs(nrlinkConsent?.createdAt).format('DD/MM/YYYY')
+    /*  Nrlink created at date formatted */
+    const nrlinkConsentCreatedAt = dayjs(nrlinkConsent?.createdAt).format(FORMATTED_DATA)
     /* To have the ending date of the consent, we add 3 years to the date the consent was made */
     const enedisConsentEndingDate = dayjs(enedisSgeConsent?.createdAt).add(3, 'year').format('DD/MM/YYYY')
+    /* Enphase created at date formatted */
+    const enphaseConsentCreatedAt = dayjs(enphaseConsent?.createdAt).format(FORMATTED_DATA)
 
     // UseEffect that find the housing with the house Id from url params.
     useEffect(() => {
@@ -87,8 +95,8 @@ export const MeterStatus = () => {
                                 defaultMessage: 'nrLink n°',
                             })} ${nrlinkConsent?.nrlinkGuid}`}</span>
                             <span className="text-grey-600">{`${formatMessage({
-                                id: 'Connexion le',
-                                defaultMessage: 'Connexion le',
+                                id: TEXT_CONNEXION_LE,
+                                defaultMessage: TEXT_CONNEXION_LE,
                             })} ${nrlinkConsentCreatedAt}`}</span>
                         </div>
                     </>
@@ -198,11 +206,64 @@ export const MeterStatus = () => {
         }
     }
 
+    /**
+     * Function that renders enphase statuses.
+     *
+     * @param enphaseStatus Enphase statuses.
+     * @returns JSX according to enphase status.
+     */
+    function renderEnphaseStatus(enphaseStatus?: enphaseConsentStatus) {
+        switch (enphaseStatus) {
+            case 'ACTIVE':
+                return (
+                    <>
+                        <Icon className="mr-12">
+                            <img
+                                src="/assets/images/content/housing/consent-status/meter-on.svg"
+                                alt="enphase-active-icon"
+                            />
+                        </Icon>
+                        <div className="flex flex-col">
+                            <span className="text-grey-600">
+                                <span className="text-grey-600">{`${formatMessage({
+                                    id: TEXT_CONNEXION_LE,
+                                    defaultMessage: TEXT_CONNEXION_LE,
+                                })} ${enphaseConsentCreatedAt}`}</span>
+                            </span>
+                        </div>
+                    </>
+                )
+            case 'EXPIRED':
+            case 'NONEXISTENT':
+            case 'PENDING':
+            default:
+                return (
+                    <>
+                        <Icon className="mr-12">
+                            <img
+                                src="/assets/images/content/housing/consent-status/meter-off.svg"
+                                alt="enphase-off-icon"
+                            />
+                        </Icon>
+                        <div className="flex flex-col">
+                            <TypographyFormatMessage
+                                color={theme.palette.error.main}
+                                className="underline"
+                                fontWeight={600}
+                            >
+                                Connectez votre onduleur pour visualiser votre production
+                            </TypographyFormatMessage>
+                        </div>
+                    </>
+                )
+        }
+    }
+
     return (
         <>
             <Card className="my-12 md:mx-16" variant="outlined">
                 <MuiCardContent sx={{ p: 0, '&:last-child': { pb: 0 } }}>
-                    <div className="flex flex-row justify-between bg-grey-200 p-12 border-b-1 border-grey-300">
+                    <div className={`flex flex-row justify-between bg-grey-200 p-12 border-b-1 border-grey-300`}>
                         <div className="flex flex-col justify-between">
                             <div className="flex flex-row items-center">
                                 <TypographyFormatMessage className="text-base font-medium mr-8">
@@ -251,12 +312,12 @@ export const MeterStatus = () => {
                             </Card>
                         </NavLink>
                     </div>
-                    <div className="flex flex-col md:flex-row justify-evenly items-center">
+                    <div className="flex flex-col md:flex-row justify-between items-center">
                         {/* Nrlink Consent Status */}
-                        <div className="w-full md:w-1/3 p-12 border-b-1 border-grey-300 md:border-b-0">
+                        <div className="w-full md:w-1/3 p-12">
                             {!foundHousing ? (
                                 <>
-                                    <TypographyFormatMessage className="text-xs md:text-sm font-semibold">
+                                    <TypographyFormatMessage className="text-xs md:text-sm font-semibold mb-6">
                                         Consommation en temps réel
                                     </TypographyFormatMessage>
                                     <div className="flex flex-row items-center">
@@ -267,7 +328,7 @@ export const MeterStatus = () => {
                                 <CircularProgress size={25} />
                             ) : (
                                 <>
-                                    <TypographyFormatMessage className="text-xs md:text-sm font-semibold">
+                                    <TypographyFormatMessage className="text-xs md:text-sm font-semibold mb-6">
                                         Consommation en temps réel
                                     </TypographyFormatMessage>
                                     <div className="flex flex-row items-center">
@@ -276,11 +337,12 @@ export const MeterStatus = () => {
                                 </>
                             )}
                         </div>
+                        <Divider orientation={mdDown ? 'horizontal' : undefined} flexItem variant="fullWidth" />
                         {/* Enedis Consent Status */}
-                        <div className="w-full md:w-1/3 p-12 border-b-1 border-grey-300">
+                        <div className="w-full md:w-1/3 p-12">
                             {!foundHousing ? (
                                 <>
-                                    <TypographyFormatMessage className="text-xs md:text-sm font-semibold">
+                                    <TypographyFormatMessage className="text-xs md:text-sm font-semibold mb-6">
                                         Historique de consommation
                                     </TypographyFormatMessage>
                                     <div className="flex flex-row items-center">
@@ -291,11 +353,36 @@ export const MeterStatus = () => {
                                 <CircularProgress size={25} />
                             ) : (
                                 <>
-                                    <TypographyFormatMessage className="text-xs md:text-sm font-semibold">
+                                    <TypographyFormatMessage className="text-xs md:text-sm font-semibold mb-6">
                                         Historique de consommation
                                     </TypographyFormatMessage>
                                     <div className="flex flex-row items-center">
                                         {renderEnedisStatus(enedisSgeConsent?.enedisSgeConsentState)}
+                                    </div>
+                                </>
+                            )}
+                        </div>
+                        <Divider orientation={mdDown ? 'horizontal' : undefined} flexItem variant="fullWidth" />
+                        {/* Enphase Consent Status */}
+                        <div className="w-full md:w-1/3 p-12">
+                            {!foundHousing ? (
+                                <>
+                                    <TypographyFormatMessage className="text-xs md:text-sm font-semibold mb-6">
+                                        Production solaire
+                                    </TypographyFormatMessage>
+                                    <div className="flex flex-row items-center">
+                                        {renderEnphaseStatus('NONEXISTENT')}
+                                    </div>
+                                </>
+                            ) : consentsLoading ? (
+                                <CircularProgress size={25} />
+                            ) : (
+                                <>
+                                    <TypographyFormatMessage className="text-xs md:text-sm font-semibold mb-6">
+                                        Production solaire
+                                    </TypographyFormatMessage>
+                                    <div className="flex flex-row items-center">
+                                        {renderEnphaseStatus(enphaseConsent?.enphaseConsentStatus)}
                                     </div>
                                 </>
                             )}
