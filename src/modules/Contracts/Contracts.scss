@@ -7,10 +7,9 @@
     justify-content: space-evenly;
     gap: 24px;
     @include md {
-        justify-content: center;
         grid-template-columns: repeat(auto-fit, 400px);
     }
-    .ContractCard {
+    .contract-card {
         min-height: 120px;
         @include md {
             min-height: 150px;

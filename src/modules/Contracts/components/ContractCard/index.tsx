@@ -99,7 +99,7 @@ const ContractCard = ({ contract, onAfterDeleteUpdateSuccess }: ContractCardProp
                     }}
                 />
             </Dialog>
-            <Card key={contract.id} className="p-16 overflow-hidden ContractCard">
+            <Card key={contract.id} className="p-16 overflow-hidden h-full contract-card">
                 <div className="flex justify-between items-center">
                     <Typography className="text-16 font-bold md:text-20">{contract.provider.name}</Typography>{' '}
                     <Typography className="text-12 font-light">
