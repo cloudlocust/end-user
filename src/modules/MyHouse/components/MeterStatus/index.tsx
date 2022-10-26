@@ -427,7 +427,7 @@ export const MeterStatus = () => {
                                         Production solaire
                                     </TypographyFormatMessage>
                                     <div className="flex flex-row items-center">
-                                        {renderEnphaseStatus('NONEXISTENT')}
+                                        {renderEnphaseStatus(enphaseConsent?.enphaseConsentState)}
                                     </div>
                                 </>
                             )}
