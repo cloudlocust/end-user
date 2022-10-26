@@ -50,9 +50,6 @@ export const MeterStatus = () => {
     const [foundHousing, setFoundHousing] = useState<IHousing>()
     const [editMeterOpen, setEditMeterOpen] = useState(false)
     const [openEnphaseConsentPopup, setOpenEnphaseConsentPopup] = useState(false)
-    const [enphaseStateFromLocalStorage, setEnphaseStateFromLocalStorage] = useState<string>(
-        localStorage.getItem('enphaseConsentState')!,
-    )
 
     // Retrieving house id from url params /my-houses/:houseId
     // eslint-disable-next-line jsdoc/require-jsdoc
@@ -96,12 +93,11 @@ export const MeterStatus = () => {
          * OnStorage function that execute the setter for EnphaseStateFromLocalStorage.
          */
         const onStorage = () => {
-            setEnphaseStateFromLocalStorage(localStorage.getItem('enphaseConsentState')!)
-        }
-
-        if (enphaseStateFromLocalStorage === 'SUCCESS') {
-            getConsents(foundHousing!.meter!.guid)
-            window.localStorage.removeItem('enphaseConsentState')
+            const enphaseConfirmConsentState = localStorage.getItem('enphaseConfirmState')
+            if (enphaseConfirmConsentState === 'SUCCESS' && foundHousing?.meter?.guid) {
+                localStorage.removeItem('enphaseConfirmState')
+                getConsents(foundHousing.meter.guid)
+            }
         }
 
         /**
@@ -115,7 +111,7 @@ export const MeterStatus = () => {
         return () => {
             window.removeEventListener('storage', onStorage)
         }
-    }, [enphaseStateFromLocalStorage, foundHousing, getConsents])
+    }, [foundHousing, getConsents])
 
     /**
      * Function that renders JSX accorrding to nrlink status.
@@ -431,7 +427,7 @@ export const MeterStatus = () => {
                                         Production solaire
                                     </TypographyFormatMessage>
                                     <div className="flex flex-row items-center">
-                                        {renderEnphaseStatus(enphaseConsent?.enphaseConsentState)}
+                                        {renderEnphaseStatus('NONEXISTENT')}
                                     </div>
                                 </>
                             )}

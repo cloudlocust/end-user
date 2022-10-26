@@ -43,14 +43,15 @@ export const EnphaseConfirmState = () => {
     // * This useEffect is ran when there is eithher a SUCCESS or FAILED state.
     useEffect(() => {
         if (isStateSucess) {
-            window.localStorage.setItem('enphaseConsentState', 'SUCCESS')
+            localStorage.setItem('enphaseConfirmState', 'SUCCESS')
             setSuccessMessage('Vous avez donné votre consentement Enphase avec succès')
             closeWindow()
         } else if (isStateError) {
-            window.localStorage.setItem('enphaseConsentState', 'FAILED')
+            localStorage.setItem('enphaseConfirmState', 'FAILED')
             setErrorMessage('La procédure pour donner votre consentement Enphase à échoué')
             closeWindow()
         } else {
+            localStorage.removeItem('enphaseConfirmState')
             enqueueSnackbar(
                 formatMessage({
                     id: 'Une érreur est survenue',
