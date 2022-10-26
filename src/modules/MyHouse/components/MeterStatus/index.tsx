@@ -18,6 +18,7 @@ import ModeEditOutlineOutlinedIcon from '@mui/icons-material/ModeEditOutlineOutl
 import { useMeterForHousing } from 'src/modules/Meters/metersHook'
 import { Dispatch } from 'src/redux'
 import { EditMeterFormPopup } from 'src/modules/MyHouse/components/EditMeterFormPopup'
+import { EnphaseConsentPopup } from 'src/modules/MyHouse/components/MeterStatus/EnphaseConsentPopup'
 
 const FORMATTED_DATA = 'DD/MM/YYYY'
 const TEXT_CONNEXION_LE = 'Connexion le'
@@ -40,12 +41,15 @@ export const MeterStatus = () => {
         isCreateEnedisSgeConsentLoading,
         createEnedisSgeConsentError,
         enphaseConsent,
+        enphaseLink,
+        getEnphaseLink,
     } = useConsents()
     const { editMeter, loadingInProgress } = useMeterForHousing()
     const dispatch = useDispatch<Dispatch>()
     const { housingList } = useSelector(({ housingModel }: RootState) => housingModel)
     const [foundHousing, setFoundHousing] = useState<IHousing>()
     const [editMeterOpen, setEditMeterOpen] = useState(false)
+    const [openEnphaseConsentPopup, setOpenEnphaseConsentPopup] = useState(false)
 
     // Retrieving house id from url params /my-houses/:houseId
     // eslint-disable-next-line jsdoc/require-jsdoc
@@ -58,6 +62,13 @@ export const MeterStatus = () => {
     /* Enphase created at date formatted */
     const enphaseConsentCreatedAt = dayjs(enphaseConsent?.createdAt).format(FORMATTED_DATA)
 
+    /**
+     * Function that handle closing the popup.
+     */
+    const handleOnCloseEnphasePopup = () => {
+        setOpenEnphaseConsentPopup(false)
+    }
+
     // UseEffect that find the housing with the house Id from url params.
     useEffect(() => {
         if (housingList) {
@@ -65,12 +76,40 @@ export const MeterStatus = () => {
         }
     }, [houseId, housingList])
 
-    // UseEffect that fetches the consents with the found housing meter
+    /**
+     * This useEffect listen to changes in localStorage for enphaseConsentState.
+     *
+     * It also listen to changes in foundHousing that triggers getConsents.
+     *
+     */
     useEffect(() => {
         if (foundHousing?.meter?.guid) {
             getConsents(foundHousing?.meter?.guid)
         }
-    }, [getConsents, foundHousing])
+
+        /**
+         * OnStorage function that execute the setter for EnphaseStateFromLocalStorage.
+         */
+        const onStorage = () => {
+            const enphaseConfirmConsentState = localStorage.getItem('enphaseConfirmState')
+            if (enphaseConfirmConsentState === 'SUCCESS' && foundHousing?.meter?.guid) {
+                localStorage.removeItem('enphaseConfirmState')
+                getConsents(foundHousing.meter.guid)
+            }
+        }
+
+        /**
+         * Listen to localStorage changes.
+         */
+        window.addEventListener('storage', onStorage)
+
+        /**
+         * Clear up function when the component unmounts.
+         */
+        return () => {
+            window.removeEventListener('storage', onStorage)
+        }
+    }, [foundHousing?.meter?.guid, getConsents])
 
     /**
      * Function that renders JSX accorrding to nrlink status.
@@ -248,8 +287,12 @@ export const MeterStatus = () => {
                         <div className="flex flex-col">
                             <TypographyFormatMessage
                                 color={theme.palette.error.main}
-                                className="underline"
+                                className="underline cursor-pointer"
                                 fontWeight={600}
+                                onClick={() => {
+                                    getEnphaseLink(parseInt(houseId))
+                                    setOpenEnphaseConsentPopup(true)
+                                }}
                             >
                                 Connectez votre onduleur pour visualiser votre production
                             </TypographyFormatMessage>
@@ -382,11 +425,14 @@ export const MeterStatus = () => {
                                         Production solaire
                                     </TypographyFormatMessage>
                                     <div className="flex flex-row items-center">
-                                        {renderEnphaseStatus(enphaseConsent?.enphaseConsentStatus)}
+                                        {renderEnphaseStatus(enphaseConsent?.enphaseConsentState)}
                                     </div>
                                 </>
                             )}
                         </div>
+                        {openEnphaseConsentPopup && (
+                            <EnphaseConsentPopup onClose={handleOnCloseEnphasePopup} url={enphaseLink} />
+                        )}
                     </div>
                 </MuiCardContent>
             </Card>

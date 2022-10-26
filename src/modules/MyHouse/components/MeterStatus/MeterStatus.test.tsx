@@ -110,8 +110,8 @@ jest.mock('src/modules/Consents/consentsHook', () => ({
             nrlinkGuid: mockNrlinkGuid,
         },
         enphaseConsent: {
-            meterGuid: '12345',
-            enphaseConsentStatus: mockEnphaseConsent,
+            meterGuid: '123456',
+            enphaseConsentState: mockEnphaseConsent,
             createdAt: CREATED_AT,
         },
         getConsents: mockGetConsent,
@@ -293,14 +293,14 @@ describe('MeterStatus component test', () => {
         })
         test('when enphase status is NOT ACTIVE', async () => {
             foundHouse!.meter!.guid = '12345Her'
-            mockEnphaseConsent = 'NONEXISTENT'
+            mockEnphaseConsent = 'EXPIRED' || 'NONEXISTENT'
             const { getByText, getByAltText } = reduxedRender(
                 <Router>
                     <MeterStatus />
                 </Router>,
             )
-            expect(getByText(ERROR_ENPHASE_MESSAGE)).toBeTruthy()
             const activeIcon = getByAltText('enphase-off-icon')
+            expect(getByText(ERROR_ENPHASE_MESSAGE)).toBeTruthy()
             expect(activeIcon).toHaveAttribute('src', STATUS_OFF_SRC)
         })
     })
