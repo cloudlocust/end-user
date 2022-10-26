@@ -76,19 +76,17 @@ export const MeterStatus = () => {
         }
     }, [houseId, housingList])
 
-    // UseEffect that fetches the consents with the found housing meter
+    /**
+     * This useEffect listen to changes in localStorage for enphaseConsentState.
+     *
+     * It also listen to changes in foundHousing that triggers getConsents.
+     *
+     */
     useEffect(() => {
         if (foundHousing?.meter?.guid) {
             getConsents(foundHousing?.meter?.guid)
         }
-    }, [getConsents, foundHousing])
 
-    /**
-     * This useEffect listen to changes in localStorage for enphaseConsentState.
-     *
-     * If there are changes it gets executed.
-     */
-    useEffect(() => {
         /**
          * OnStorage function that execute the setter for EnphaseStateFromLocalStorage.
          */
@@ -111,7 +109,7 @@ export const MeterStatus = () => {
         return () => {
             window.removeEventListener('storage', onStorage)
         }
-    }, [foundHousing, getConsents])
+    }, [foundHousing?.meter?.guid, getConsents])
 
     /**
      * Function that renders JSX accorrding to nrlink status.
