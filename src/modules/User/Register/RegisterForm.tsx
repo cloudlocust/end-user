@@ -13,7 +13,7 @@ import { FormHelperText } from '@mui/material'
 import { LinkRedirection } from 'src/modules/utils/LinkRedirection'
 
 const urlLegalNotice = 'https://www.myem.fr/mentions-legales/'
-
+const urlPolitiqueConfidentialité = 'https://drive.google.com/uc?export=download&id=18agpXAw89RX5Zk87EQ9ev5LOeMU3GtnP'
 /**
  * Form used for user registration. This is a component based on form hooks.
  *
@@ -101,7 +101,11 @@ export const RegisterForm = ({
                                     plateforme et suivre votre consommation. Vous pouvez retrouver plus d'informations sur vos droits
                                     via notre `,
                     })}
-                    <LinkRedirection url={urlLegalNotice} label="Politique de Confidentialité" color="primary.light" />
+                    <LinkRedirection
+                        url={urlPolitiqueConfidentialité}
+                        label="Politique de Confidentialité"
+                        color="primary.light"
+                    />
                 </span>
                 {/* TODO Create a checkbox reusable component */}
                 <FormControl required error={rgpdCheckboxState === ''}>
