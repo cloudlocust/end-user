@@ -74,3 +74,8 @@ export const GOOGLE_MAPS_API_KEY = window._env_.REACT_APP_GOOGLE_MAPS_API_KEY
  * API GATEWAY ENDPOINT.
  */
 export const API_RESOURCES_URL = window._env_.REACT_APP_API_RESOURCES_URL
+
+/**
+ * ENV var for NED features, whether they are active or not.
+ */
+export const NED_FEATURES_ACTIVE_STATE = window._env_.REACT_APP_NED_FEATURES_ACTIVE_STATE === 'disabled'

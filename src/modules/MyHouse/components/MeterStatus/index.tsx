@@ -19,6 +19,7 @@ import { useMeterForHousing } from 'src/modules/Meters/metersHook'
 import { Dispatch } from 'src/redux'
 import { EditMeterFormPopup } from 'src/modules/MyHouse/components/EditMeterFormPopup'
 import { EnphaseConsentPopup } from 'src/modules/MyHouse/components/MeterStatus/EnphaseConsentPopup'
+import { NED_FEATURES_ACTIVE_STATE } from 'src/configs'
 
 const FORMATTED_DATA = 'DD/MM/YYYY'
 const TEXT_CONNEXION_LE = 'Connexion le'
@@ -28,6 +29,7 @@ const TEXT_CONNEXION_LE = 'Connexion le'
  *
  * @returns Meter Status component with different status for Nrlibk & Enedis.
  */
+// eslint-disable-next-line sonarjs/cognitive-complexity
 export const MeterStatus = () => {
     const theme = useTheme()
     const { formatMessage } = useIntl()
@@ -364,7 +366,11 @@ export const MeterStatus = () => {
                             </Card>
                         </NavLink>
                     </div>
-                    <div className="flex flex-col md:flex-row justify-between items-center">
+                    <div
+                        className={`flex flex-col md:flex-row ${
+                            NED_FEATURES_ACTIVE_STATE ? 'justify-between' : 'justify-evenly'
+                        } items-center`}
+                    >
                         {/* Nrlink Consent Status */}
                         <div className="w-full md:w-1/3 p-12">
                             {!foundHousing ? (
@@ -427,7 +433,7 @@ export const MeterStatus = () => {
                         </Tooltip>
                         <Divider orientation={mdDown ? 'horizontal' : undefined} flexItem variant="fullWidth" />
                         {/* Enphase Consent Status */}
-                        <div className="w-full md:w-1/3 p-12">
+                        <div className={`w-full md:w-1/3 p-12 ${!NED_FEATURES_ACTIVE_STATE && 'hidden'}`}>
                             {!foundHousing ? (
                                 <>
                                     <TypographyFormatMessage className="text-xs md:text-sm font-semibold mb-6">

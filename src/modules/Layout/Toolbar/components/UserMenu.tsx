@@ -9,6 +9,7 @@ import { Dispatch, RootState } from 'src/redux'
 import { useHistory } from 'react-router-dom'
 import { useIntl } from 'react-intl'
 import ToolbarMenuItem from './ToolbarMenuItem'
+import { NED_FEATURES_ACTIVE_STATE } from 'src/configs'
 
 // TODO This is not a generic component to share with medialem, to update.
 /**
@@ -94,14 +95,16 @@ function UserMenu() {
                         idLabel="Gestion de Profil"
                         defaultMessageLabel="Gestion de Profil"
                     />
-                    <ToolbarMenuItem
-                        onMenuItemClick={() => {
-                            history.replace('/installation-requests')
-                        }}
-                        iconLabel="solar_power"
-                        idLabel="Installation"
-                        defaultMessageLabel="Installation"
-                    />
+                    {NED_FEATURES_ACTIVE_STATE && (
+                        <ToolbarMenuItem
+                            onMenuItemClick={() => {
+                                history.replace('/installation-requests')
+                            }}
+                            iconLabel="solar_power"
+                            idLabel="Installation"
+                            defaultMessageLabel="Installation"
+                        />
+                    )}
                     <ToolbarMenuItem
                         onMenuItemClick={() => {
                             history.push('/FAQ')
