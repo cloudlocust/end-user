@@ -75,20 +75,29 @@ const colorThemes: colorThemesType = {
     ned: {
         palette: {
             mode: 'light',
-            text: lightText,
+            text: {
+                primary: '#000000',
+                secondary: lightText.secondary,
+                disabled: '#C4C7C7',
+            },
             primary: {
-                light: '#dcdbdf',
+                light: '#beecdb',
                 main: '#3e3d40',
-                dark: '#1d1d1f',
+                dark: '#3c6659',
             },
             secondary: {
-                light: '#eff1bd',
-                main: '#C8D210',
-                dark: '#aaab00',
+                light: '#e1ec2f',
+                main: '#c9d200',
+                dark: '#303300',
+            },
+            common: {
+                white: '#ffffff',
+                black: '#000000',
+                disabled: '#91918A',
             },
             background: {
                 paper: '#FFFFFF',
-                default: '#FAFCFC',
+                default: '#EFF1F1',
             },
             error: red,
         },
@@ -101,20 +110,25 @@ const colorThemes: colorThemesType = {
                 secondary: lightText.secondary,
                 disabled: '#C4C7C7',
             },
-            background: {
-                paper: '#FFFFFF',
-                default: '#f6f7f9',
-            },
             primary: {
-                light: '#1EBDC7',
-                main: '#006970',
-                dark: '#004F55',
+                light: '#BFDFDF',
+                main: '#00817C',
+                dark: '#00201F',
                 contrastText: '#CCE7E9',
             },
             secondary: {
                 light: '#ffe182',
                 main: '#FFC200',
                 dark: '#ffa200',
+            },
+            common: {
+                white: '#ffffff',
+                black: '#000000',
+                disabled: '#91918A',
+            },
+            background: {
+                paper: '#FFFFFF',
+                default: '#EFF1F1',
             },
         },
     },

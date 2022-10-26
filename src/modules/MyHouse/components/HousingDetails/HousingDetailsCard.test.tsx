@@ -95,7 +95,7 @@ describe('Test HousingDetailsCard', () => {
             </BrowserRouter>,
         )
 
-        expect(getByText('Detail')).toBeTruthy()
+        expect(getByText('Détail')).toBeTruthy()
     })
     test('When isConfigured is false the button configuration should appear', async () => {
         mockHousingDetailsCardProps.isConfigured = false
