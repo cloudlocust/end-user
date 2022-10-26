@@ -10,6 +10,7 @@ import {
     EnedisSgePopupProps,
     EnedisSgePopupStepsEnum,
 } from 'src/modules/MyHouse/components/MeterStatus/enedisSgePopup.d'
+import { sgeConsentState } from 'src/modules/MyHouse/MyHouseConfig'
 import { RootState } from 'src/redux'
 
 /**
@@ -84,10 +85,11 @@ export const EnedisSgePopup = ({
     return (
         <>
             <Typography
-                className="underline cursor-pointer"
+                className={`underline cursor-pointer ${sgeConsentState && 'cursor-not-allowed text-grey-600'}`}
                 fontWeight={600}
                 onClick={() => {
-                    setOpenSgePopup(true)
+                    if (sgeConsentState) return
+                    else setOpenSgePopup(true)
                 }}
                 {...TypographyProps}
             >
