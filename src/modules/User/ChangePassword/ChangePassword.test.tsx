@@ -13,7 +13,7 @@ jest.mock('src/modules/User/ProfileManagement/ProfileManagementHooks', () => ({
     ...jest.requireActual('src/modules/User/ProfileManagement/ProfileManagementHooks'),
     // eslint-disable-next-line jsdoc/require-jsdoc
     useProfileManagement: () => ({
-        isUpdateInProgress: mockIsUpdateInProgress,
+        isLoadingInProgress: mockIsUpdateInProgress,
         updatePassword: mockUpdatePassword,
     }),
 }))

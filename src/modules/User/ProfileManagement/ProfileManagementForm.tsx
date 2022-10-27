@@ -19,7 +19,7 @@ import { ChangePassword } from 'src/modules/User/ChangePassword/ChangePassword'
  */
 export const ProfileManagementForm = () => {
     const { user } = useSelector(({ userModel }: RootState) => userModel)
-    const { isUpdateInProgress, updateProfile } = useProfileManagement()
+    const { isLoadingInProgress, updateProfile } = useProfileManagement()
     const { formatMessage } = useIntl()
     const [isEdit, setIsEdit] = useState(false)
     const disabledField = !isEdit
@@ -92,7 +92,7 @@ export const ProfileManagementForm = () => {
                                     onClickButtonReset={toggleEditFormDisable}
                                 />
                                 <ButtonLoader
-                                    inProgress={isUpdateInProgress}
+                                    inProgress={isLoadingInProgress}
                                     variant="contained"
                                     type="submit"
                                     className=" w-128 ml-8 mb-4 sm:mr-8 sm:mb-0"
