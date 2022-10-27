@@ -9,7 +9,7 @@ import { Dispatch, RootState } from 'src/redux'
 import { useHistory } from 'react-router-dom'
 import { useIntl } from 'react-intl'
 import ToolbarMenuItem from './ToolbarMenuItem'
-import { NED_FEATURES_ACTIVE_STATE } from 'src/configs'
+import { installationRequestsFeatureState } from 'src/modules/InstallationRequests/InstallationRequestsConfig'
 
 // TODO This is not a generic component to share with medialem, to update.
 /**
@@ -95,7 +95,7 @@ function UserMenu() {
                         idLabel="Gestion de Profil"
                         defaultMessageLabel="Gestion de Profil"
                     />
-                    {NED_FEATURES_ACTIVE_STATE && (
+                    {!installationRequestsFeatureState && (
                         <ToolbarMenuItem
                             onMenuItemClick={() => {
                                 history.replace('/installation-requests')

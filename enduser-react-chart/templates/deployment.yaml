@@ -78,16 +78,21 @@ spec:
             configMapKeyRef:
               name: {{ .Values.name }}
               key: REACT_APP_TEMP_PMAX_FEATURE_STATE   
-        - name: REACT_APP_NED_FEATURES_ACTIVE_STATE
+        - name: REACT_APP_INSTALLATION_REQUESTS_FEATURE_STATE
           valueFrom:
             configMapKeyRef:
               name: {{ .Values.name }}
-              key: REACT_APP_NED_FEATURES_ACTIVE_STATE 
-        - name: REACT_APP_SGE_CONSENT_STATE
+              key: REACT_APP_INSTALLATION_REQUESTS_FEATURE_STATE 
+        - name: REACT_APP_SGE_CONSENT_FEATURE_STATE
           valueFrom:
             configMapKeyRef:
               name: {{ .Values.name }}
-              key: REACT_APP_SGE_CONSENT_STATE               
+              key: REACT_APP_SGE_CONSENT_FEATURE_STATE
+        - name: REACT_APP_ENPHASE_CONSENT_FEATURE_STATE
+          valueFrom:
+            configMapKeyRef:
+              name: {{ .Values.name }}
+              key: REACT_APP_ENPHASE_CONSENT_FEATURE_STATE             
         - name: REACT_APP_GOOGLE_MAPS_API_KEY
           valueFrom:
             secretKeyRef:
