@@ -2,7 +2,7 @@ import { Card, useTheme, Icon, CircularProgress, IconButton, useMediaQuery, Divi
 import { NavLink, useParams } from 'react-router-dom'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import { ReactComponent as ContractIcon } from 'src/assets/images/content/housing/contract.svg'
-import { sgeConsentState, URL_MY_HOUSE } from 'src/modules/MyHouse/MyHouseConfig'
+import { sgeConsentFeatureState, enphaseConsentFeatureState, URL_MY_HOUSE } from 'src/modules/MyHouse/MyHouseConfig'
 import { MuiCardContent } from 'src/common/ui-kit'
 import { useConsents } from 'src/modules/Consents/consentsHook'
 import { useEffect, useState } from 'react'
@@ -19,7 +19,6 @@ import { useMeterForHousing } from 'src/modules/Meters/metersHook'
 import { Dispatch } from 'src/redux'
 import { EditMeterFormPopup } from 'src/modules/MyHouse/components/EditMeterFormPopup'
 import { EnphaseConsentPopup } from 'src/modules/MyHouse/components/MeterStatus/EnphaseConsentPopup'
-import { NED_FEATURES_ACTIVE_STATE } from 'src/configs'
 
 const FORMATTED_DATA = 'DD/MM/YYYY'
 const TEXT_CONNEXION_LE = 'Connexion le'
@@ -223,7 +222,7 @@ export const MeterStatus = () => {
             default:
                 return (
                     <>
-                        {sgeConsentState ? (
+                        {sgeConsentFeatureState ? (
                             <Icon className="mr-12 text-grey-600">
                                 <img
                                     src="/assets/images/content/housing/consent-status/meter-disabled.svg"
@@ -368,7 +367,7 @@ export const MeterStatus = () => {
                     </div>
                     <div
                         className={`flex flex-col md:flex-row ${
-                            NED_FEATURES_ACTIVE_STATE ? 'justify-between' : 'justify-evenly'
+                            enphaseConsentFeatureState ? 'justify-between' : 'justify-evenly'
                         } items-center`}
                     >
                         {/* Nrlink Consent Status */}
@@ -401,13 +400,13 @@ export const MeterStatus = () => {
                         <Tooltip
                             arrow
                             placement="top"
-                            disableHoverListener={!sgeConsentState}
+                            disableHoverListener={!sgeConsentFeatureState}
                             title={formatMessage({
                                 id: "Cette fonctionnalité n'est pas encore disponible",
                                 defaultMessage: "Cette fonctionnalité n'est pas encore disponible",
                             })}
                         >
-                            <div className={`w-full md:w-1/3 p-12 ${sgeConsentState && 'cursor-not-allowed'}`}>
+                            <div className={`w-full md:w-1/3 p-12 ${sgeConsentFeatureState && 'cursor-not-allowed'}`}>
                                 {!foundHousing ? (
                                     <>
                                         <TypographyFormatMessage className="text-xs md:text-sm font-semibold mb-6">
@@ -433,7 +432,7 @@ export const MeterStatus = () => {
                         </Tooltip>
                         <Divider orientation={mdDown ? 'horizontal' : undefined} flexItem variant="fullWidth" />
                         {/* Enphase Consent Status */}
-                        <div className={`w-full md:w-1/3 p-12 ${!NED_FEATURES_ACTIVE_STATE && 'hidden'}`}>
+                        <div className={`w-full md:w-1/3 p-12 ${enphaseConsentFeatureState && 'hidden'}`}>
                             {!foundHousing ? (
                                 <>
                                     <TypographyFormatMessage className="text-xs md:text-sm font-semibold mb-6">

@@ -1,6 +1,5 @@
 import { authTypes } from 'src/common/react-platform-components'
 import { InstallationRequests } from 'src/modules/InstallationRequests'
-import { NED_FEATURES_ACTIVE_STATE } from 'src/configs'
 import { IRouteNavigationConfig } from 'src/routes'
 
 /**
@@ -21,6 +20,12 @@ export interface InstallationRequestsConfigProps {
 
 const URL_INSTALLATIONS_REQUESTS = '/installation-requests'
 
+/**
+ * Env variable to know if the installation requests feature is enabled.
+ */
+export const installationRequestsFeatureState =
+    window._env_.REACT_APP_INSTALLATION_REQUESTS_FEATURE_STATE === 'disabled'
+
 const InstallationsRequestsConfig = [
     {
         path: URL_INSTALLATIONS_REQUESTS,
@@ -32,7 +37,7 @@ const InstallationsRequestsConfig = [
                     UINavbarItem: {},
                 },
             },
-            disabled: NED_FEATURES_ACTIVE_STATE,
+            disabled: installationRequestsFeatureState,
         },
     } as IRouteNavigationConfig<InstallationRequestsConfigProps>,
 ]
