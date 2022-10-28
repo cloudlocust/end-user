@@ -49,11 +49,11 @@ const DeleteProfile = () => {
         await deleteProfile()
     }
 
-    if (isLoadingInProgress) return <CircularProgress size={30} color="inherit" />
+    if (isLoadingInProgress) return <CircularProgress size={30} color="error" />
 
     return (
         <Tooltip title="Supprimer votre compte">
-            <IconButton color="inherit" onClick={onProfileDelete} className="mx-12">
+            <IconButton color="error" onClick={onProfileDelete} className="mx-12">
                 <Icon>delete</Icon>
             </IconButton>
         </Tooltip>
