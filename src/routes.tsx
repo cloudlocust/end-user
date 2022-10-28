@@ -15,6 +15,7 @@ import { ProfileManagementConfig } from './modules/User/ProfileManagement/Profil
 import { FAQConfig } from './modules/FAQ/FAQConfig'
 import { InstallationsRequestsConfig } from 'src/modules/InstallationRequests/InstallationRequestsConfig'
 import { EnphaseConfirmStateConfig } from 'src/modules/MyHouse/components/EnphaseConfirmState/EnphaseConfirmStateConfig'
+import { MentionsConfig } from 'src/modules/Mentions/MentionsConfig'
 
 /**
  *
@@ -34,6 +35,7 @@ export const routes = [
     ...FAQConfig,
     ...InstallationsRequestsConfig,
     ...EnphaseConfirmStateConfig,
+    ...MentionsConfig,
     {
         /**
          * TODO Document.
