@@ -223,8 +223,8 @@ export const MyConsumptionContainer = () => {
                         placement="bottom-end"
                         disableHoverListener={!tempPmaxFeatureState}
                         title={formatMessage({
-                            id: "Cette fonctionnalitée n'est pas encore disponible",
-                            defaultMessage: "Cette fonctionnalitée n'est pas encore disponible",
+                            id: "Cette fonctionnalité n'est pas disponible sur cette version",
+                            defaultMessage: "Cette fonctionnalité n'est pas disponible sur cette version",
                         })}
                     >
                         <div className={`${tempPmaxFeatureState && 'cursor-not-allowed'}`}>

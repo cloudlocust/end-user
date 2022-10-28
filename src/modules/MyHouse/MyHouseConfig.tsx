@@ -135,10 +135,10 @@ export const MyHouseConfig = [
                             </SvgIcon>
                         ),
                         url: URL_HOUSING_EQUIPMENTS,
+                        disabled: equipmentsAccomodationFeatureState,
                     },
                 },
             },
-            disabled: equipmentsAccomodationFeatureState,
         },
     } as IRouteNavigationConfig<MyHouseProps>,
     {
@@ -159,10 +159,10 @@ export const MyHouseConfig = [
                             </SvgIcon>
                         ),
                         url: URL_HOUSING_ACCOMODATION,
+                        disabled: equipmentsAccomodationFeatureState,
                     },
                 },
             },
-            disabled: equipmentsAccomodationFeatureState,
         },
     } as IRouteNavigationConfig<MyHouseProps>,
 ]
