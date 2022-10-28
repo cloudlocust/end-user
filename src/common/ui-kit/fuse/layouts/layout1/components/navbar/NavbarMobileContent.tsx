@@ -192,8 +192,8 @@ function NavbarMobileContent(props: /**
                                 placement="bottom-end"
                                 disableHoverListener={!item.disabled}
                                 title={formatMessage({
-                                    id: "Cette fonctionnalitée n'est pas encore disponible",
-                                    defaultMessage: "Cette fonctionnalitée n'est pas encore disponible",
+                                    id: "Cette fonctionnalité n'est pas disponible sur cette version",
+                                    defaultMessage: "Cette fonctionnalité n'est pas disponible sur cette version",
                                 })}
                             >
                                 <div className={`${item?.disabled && 'cursor-not-allowed'}`}>
