@@ -95,6 +95,14 @@ function UserMenu() {
                         idLabel="Gestion de Profil"
                         defaultMessageLabel="Gestion de Profil"
                     />
+                    <ToolbarMenuItem
+                        onMenuItemClick={() => {
+                            history.push('/mentions')
+                        }}
+                        iconLabel="gavel"
+                        idLabel="Mentions"
+                        defaultMessageLabel="Mentions"
+                    />
                     {!installationRequestsFeatureState && (
                         <ToolbarMenuItem
                             onMenuItemClick={() => {
