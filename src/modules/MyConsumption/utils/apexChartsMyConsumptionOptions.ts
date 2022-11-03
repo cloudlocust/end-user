@@ -181,9 +181,8 @@ export const getApexChartMyConsumptionProps = ({
                     yAxisSerie.name === metricTargetsEnum.enedisConsumption) &&
                 period === 'daily'
                     ? 'area'
-                    : (yAxisSerie.name === metricTargetsEnum.externalTemperature ||
-                          yAxisSerie.name === metricTargetsEnum.internalTemperature) &&
-                      period !== 'daily'
+                    : yAxisSerie.name === metricTargetsEnum.externalTemperature ||
+                      yAxisSerie.name === metricTargetsEnum.internalTemperature
                     ? 'line'
                     : yAxisSerie.name === metricTargetsEnum.consumption
                     ? ''
