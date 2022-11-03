@@ -55,6 +55,7 @@ const mockYAxis: ApexYAxis[] = [
     },
 ]
 
+// eslint-disable-next-line sonarjs/no-unused-collection
 const mockyAxisSeries: ApexAxisChartSeries = [
     {
         data: [mockDatapoints[0][0]],
@@ -64,7 +65,7 @@ const mockyAxisSeries: ApexAxisChartSeries = [
     },
 ]
 
-// eslint-disable-next-line jsdoc/require-jsdoc
+// eslint-disable-next-line jsdoc/require-jsdoc, @typescript-eslint/no-unused-vars
 const mockOptions: (theme: Theme, period: periodType) => ApexOptions = (theme, period) => ({
     ...defaultApexChartOptions(theme),
     xaxis: {
