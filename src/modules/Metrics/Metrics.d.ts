@@ -7,6 +7,8 @@ export type metricTargetType =
     | 'external_temperature_metrics'
     | 'nrlink_internal_temperature_metrics'
     | 'enedis_max_power'
+    | 'auto_consumption_metrics'
+    | 'only_ned_unified_consumption_metrics'
 
 /**
  * Enum representing the metricTarget without exposing the backend naming.
@@ -32,11 +34,19 @@ export enum metricTargetsEnum {
      * Enum value for enedis_max_power.
      */
     pMax = 'enedis_max_power',
+    /**
+     * Enum value for target of Autoconsommation.
+     */
+    autoconsumption = 'auto_consumption_metrics',
+    /**
+     * Enum value for target of Electricité achetée sur le réseau.
+     */
+    enedisConsumption = 'only_ned_unified_consumption_metrics',
 }
 /**
  * Metrics intervals.
  */
-export type metricIntervalType = '2m' | '1d' | '1M'
+export type metricIntervalType = '2m' | '1d' | '1M' | '30m'
 
 /**
  * Metric range.

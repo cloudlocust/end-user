@@ -10,7 +10,7 @@ import convert, { Unit } from 'convert-units'
 export const dataConsumptionPeriod = [
     {
         name: 'Jour',
-        interval: '2m',
+        interval: '30m',
         period: 'daily' as periodType,
     },
     {
@@ -94,6 +94,16 @@ export const chartSpecifities: {
     [metricTargetsEnum.consumption]: {
         label: 'Consommation',
     },
+    [metricTargetsEnum.autoconsumption]: {
+        label: 'Autoconsommation',
+        seriesName: 'Autoconsommation',
+        show: false,
+    },
+    [metricTargetsEnum.enedisConsumption]: {
+        label: 'Electricité achetée sur le réseau',
+        seriesName: 'Autoconsommation',
+        show: false,
+    },
     [metricTargetsEnum.eurosConsumption]: {
         label: 'Consommation Euros',
     },
@@ -131,6 +141,8 @@ export const getChartColor = (chartName: metricTargetsEnum, theme: Theme) => {
             return '#FF7A00'
         case metricTargetsEnum.eurosConsumption:
             return '#ABCFA8'
+        case metricTargetsEnum.autoconsumption:
+            return '#B8E1D9'
         default:
             return theme.palette.primary.light
     }
