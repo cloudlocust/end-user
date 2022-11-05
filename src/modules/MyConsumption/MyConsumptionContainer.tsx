@@ -58,19 +58,11 @@ export const initialMetricsHookValues: getMetricType = {
             target: metricTargetsEnum.autoconsumption,
             type: 'timeserie',
         },
-        {
-            target: metricTargetsEnum.enedisConsumption,
-            type: 'timeserie',
-        },
     ],
     filters: [],
 }
 
-const defaultFilteredTargetsValues = [
-    metricTargetsEnum.consumption,
-    metricTargetsEnum.autoconsumption,
-    metricTargetsEnum.enedisConsumption,
-]
+const defaultFilteredTargetsValues = [metricTargetsEnum.consumption, metricTargetsEnum.autoconsumption]
 
 /**
  * MyConsumptionContainer.
@@ -110,12 +102,7 @@ export const MyConsumptionContainer = () => {
     )
 
     const widgetsData = useMemo(
-        () =>
-            data.filter(
-                (metric) =>
-                    metric.target !== metricTargetsEnum.autoconsumption &&
-                    metric.target !== metricTargetsEnum.enedisConsumption,
-            ),
+        () => data.filter((metric) => metric.target !== metricTargetsEnum.autoconsumption),
         [data],
     )
 

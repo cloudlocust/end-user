@@ -96,12 +96,7 @@ export const chartSpecifities: {
     },
     [metricTargetsEnum.autoconsumption]: {
         label: 'Autoconsommation',
-        seriesName: 'Autoconsommation',
-        show: false,
-    },
-    [metricTargetsEnum.enedisConsumption]: {
-        label: 'Electricité achetée sur le réseau',
-        seriesName: 'Autoconsommation',
+        seriesName: 'Consommation',
         show: false,
     },
     [metricTargetsEnum.eurosConsumption]: {
@@ -143,6 +138,7 @@ export const getChartColor = (chartName: metricTargetsEnum, theme: Theme) => {
             return '#ABCFA8'
         case metricTargetsEnum.autoconsumption:
             return '#B8E1D9'
+
         default:
             return theme.palette.primary.light
     }

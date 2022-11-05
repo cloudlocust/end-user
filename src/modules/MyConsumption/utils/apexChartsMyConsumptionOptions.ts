@@ -9,8 +9,9 @@ import {
     getChartColor,
     getYPointValueLabel,
 } from 'src/modules/MyConsumption/utils/myConsumptionVariables'
-import { metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
+import { metricTargetsEnum, metricTargetType } from 'src/modules/Metrics/Metrics.d'
 import { consumptionWattUnitConversion } from 'src/modules/MyConsumption/utils/unitConversionFunction'
+import { getChartType } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
 
 /**
  * Default ApexChart Options, represent the general options related to the overall look of the MyConsumptionChart.
@@ -174,32 +175,13 @@ export const getApexChartMyConsumptionProps = ({
                 id: label,
                 defaultMessage: label,
             }),
-            type:
-                (yAxisSerie.name === metricTargetsEnum.consumption ||
-                    yAxisSerie.name === metricTargetsEnum.eurosConsumption ||
-                    yAxisSerie.name === metricTargetsEnum.autoconsumption ||
-                    yAxisSerie.name === metricTargetsEnum.enedisConsumption) &&
-                period === 'daily'
-                    ? 'area'
-                    : yAxisSerie.name === metricTargetsEnum.externalTemperature ||
-                      yAxisSerie.name === metricTargetsEnum.internalTemperature
-                    ? 'line'
-                    : yAxisSerie.name === metricTargetsEnum.consumption
-                    ? ''
-                    : 'bar',
-            // type:
-            //     period !== 'daily'
-            //         ? yAxisSerie.name === metricTargetsEnum.consumption ||
-            //           yAxisSerie.name === metricTargetsEnum.eurosConsumption
-            //             ? ''
-            //             : 'bar'
-            //         : period === "daily" ? yAxisSerie.name === ,
+            type: getChartType(yAxisSerie.name as metricTargetType, period),
         })
 
-        // // We compute the consumption chart maximum y value, so that we can indicate the correct unit on the chart, and we do it only one time with this condition.
-        // // data.length !== 720 is added because there can be case where period is not daily, and yAxisSerie.data didn't updated and still express data of daily.
-        // // TODO Fix find a better way to reender period and data at same time, instead of doing yAxisSerie.data.length !== 720
-        if (period !== 'daily' && yAxisSerie.data.length !== 720) {
+        // We compute the consumption chart maximum y value, so that we can indicate the correct unit on the chart, and we do it only one time with this condition.
+        // data.length !== 720 is added because there can be case where period is not daily, and yAxisSerie.data didn't updated and still express data of daily.
+        // TODO Fix find a better way to reender period and data at same time, instead of doing yAxisSerie.data.length !== 720
+        if (period !== 'daily' && (yAxisSerie.data.length !== 48 || 720)) {
             maxYValue = Math.max(
                 ...(yAxisSerie.data.map((datapoint) => (datapoint as [number, number])[1]) as Array<number>),
             )
@@ -252,7 +234,6 @@ export const getApexChartMyConsumptionProps = ({
     }
 
     options.tooltip = {
-        shared: true,
         x: {
             /**
              * Formatter function for showing label in the tooltip.
@@ -264,9 +245,11 @@ export const getApexChartMyConsumptionProps = ({
                 return dayjs.utc(new Date(timestamp).toUTCString()).format(getXAxisLabelFormatFromPeriod(period, true))
             },
         },
+        // TODO To be tested when Backend timestamps are fixed.
+        // custom: customSharedTooltip,
     }
 
-    options.chart!.stacked = period !== 'daily'
+    options.chart!.stacked = true
     options!.markers!.size = markerSizeList
     options!.stroke!.width = strokeWidthList
     options.yaxis = yAxisOptions
