@@ -87,7 +87,7 @@ export const defaultApexChartOptions: (theme: Theme) => Props['options'] = (them
         curve: 'smooth',
         lineCap: 'butt',
         colors: [theme.palette.primary.contrastText],
-        width: 1.5,
+        width: 0.5,
         dashArray: 0,
     },
     markers: {
@@ -217,7 +217,9 @@ export const getApexChartMyConsumptionProps = ({
         markerSizeList.push(0)
         // When chart is consumption or eurosConsumption then we show no stroke cause the area chart is enough otherwise it'll be too cumbersome.
         strokeWidthList.push(
-            yAxisSerie.name === metricTargetsEnum.consumption || yAxisSerie.name === metricTargetsEnum.eurosConsumption
+            yAxisSerie.name === metricTargetsEnum.consumption ||
+                yAxisSerie.name === metricTargetsEnum.eurosConsumption ||
+                yAxisSerie.name === metricTargetsEnum.autoconsumption
                 ? 0
                 : 1.5,
         )
