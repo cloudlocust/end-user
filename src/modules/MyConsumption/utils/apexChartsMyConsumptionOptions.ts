@@ -249,7 +249,7 @@ export const getApexChartMyConsumptionProps = ({
         },
     }
 
-    options.chart!.stacked = period !== 'daily' && isStackedEnabled
+    options.chart!.stacked = isStackedEnabled
     options!.markers!.size = markerSizeList
     options!.stroke!.width = strokeWidthList
     options.yaxis = yAxisOptions

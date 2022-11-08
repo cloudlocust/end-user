@@ -132,18 +132,16 @@ export const MyConsumptionContainer = () => {
      *
      * @param target Metric target.
      */
-    const removeTarget = useCallback(
-        (target: metricTargetType) => {
-            if (
-                period !== 'daily' &&
-                (target === metricTargetsEnum.externalTemperature || target === metricTargetsEnum.internalTemperature)
-            ) {
-                setIsStackedEnabled(true)
-            }
-            setFilteredTargets((prevState) => prevState.filter((filteredTargetsEl) => filteredTargetsEl !== target))
-        },
-        [period],
-    )
+    const removeTarget = useCallback((target: metricTargetType) => {
+        if (
+            target === metricTargetsEnum.externalTemperature ||
+            target === metricTargetsEnum.internalTemperature ||
+            target !== metricTargetsEnum.pMax
+        ) {
+            setIsStackedEnabled(true)
+        }
+        setFilteredTargets((prevState) => prevState.filter((filteredTargetsEl) => filteredTargetsEl !== target))
+    }, [])
 
     /**
      * Function that adds target to the graph.
@@ -154,9 +152,9 @@ export const MyConsumptionContainer = () => {
         (target: metricTargetType) => {
             if (!filteredTargets.find((filteredTargetsEl) => filteredTargetsEl === target)) {
                 if (
-                    period !== 'daily' &&
-                    (target === metricTargetsEnum.externalTemperature ||
-                        target === metricTargetsEnum.internalTemperature)
+                    target === metricTargetsEnum.externalTemperature ||
+                    target === metricTargetsEnum.internalTemperature ||
+                    target !== metricTargetsEnum.pMax
                 ) {
                     setIsStackedEnabled(false)
                 }
@@ -165,7 +163,7 @@ export const MyConsumptionContainer = () => {
                 })
             }
         },
-        [filteredTargets, period],
+        [filteredTargets],
     )
 
     const memoizedTargetButtonGroup = useMemo(() => {
