@@ -399,51 +399,6 @@ export const isEqualDates = (date1: number, date2: number, period: periodType) =
 }
 
 /**
- * Draw a custom html tooltip instead of the default one based on the values provided in the function arguments.
- *
- * @param param0 N/A.
- * @param param0.series Charts series.
- * @param param0.seriesIndex Series index.
- * @param param0.dataPointIndex Datapoint index.
- * @param param0.w Global context of the entire chart.
- * @see https://github.com/apexcharts/apexcharts.js/issues/420#issuecomment-1047056648
- * @returns N/A.
- */
-// eslint-disable-next-line jsdoc/require-jsdoc
-export const customSharedTooltip = ({ series, seriesIndex, dataPointIndex, w }: any) => {
-    const hoverXaxis = w.globals.seriesX[seriesIndex][dataPointIndex]
-    const hoverIndexes = w.globals.seriesX.map((seriesX: any) => {
-        return seriesX.findIndex((xData: number) => xData === hoverXaxis)
-    })
-
-    let hoverList = ''
-    hoverIndexes.forEach((hoverIndex: number, seriesEachIndex: number) => {
-        if (hoverIndex >= 0) {
-            hoverList += `
-                <div class="apexcharts-tooltip-series-group apexcharts-active" style="order: 1; display: flex;">
-                    <span class="apexcharts-tooltip-marker" style="background-color: ${
-                        w.globals.markers.colors[seriesEachIndex]
-                    };"></span>
-                    <div class="apexcharts-tooltip-text" style="font-family: Helvetica, Arial, sans-serif; font-size: 12px;">
-                        <div class="apexcharts-tooltip-y-group">
-                            <span class="apexcharts-tooltip-text-y-label">${
-                                w.globals.seriesNames[seriesEachIndex]
-                            }: </span>
-                            <span class="apexcharts-tooltip-text-y-value">${w.globals.yLabelFormatters[0](
-                                series[seriesEachIndex][hoverIndex],
-                            )}</span>
-                        </div>
-                    </div>
-                </div>`
-        }
-    })
-    const parsed = new Date(hoverXaxis).toDateString().split(' ').slice(1)
-    return `<div class="apexcharts-tooltip-title" style="font-family: Helvetica, Arial, sans-serif; font-size: 12px;">${
-        parsed[1] + ' ' + parsed[0] + ' ' + parsed[2]
-    }</div>${hoverList}`
-}
-
-/**
  * Function that gets the chart type.
  *
  * @param metricTarget Metric target.

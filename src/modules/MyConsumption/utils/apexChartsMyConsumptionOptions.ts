@@ -247,8 +247,6 @@ export const getApexChartMyConsumptionProps = ({
                 return dayjs.utc(new Date(timestamp).toUTCString()).format(getXAxisLabelFormatFromPeriod(period, true))
             },
         },
-        // TODO To be tested when Backend timestamps are fixed.
-        // custom: customSharedTooltip,
     }
 
     options.chart!.stacked = true
