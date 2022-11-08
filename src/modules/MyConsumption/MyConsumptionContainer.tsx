@@ -78,6 +78,7 @@ export const MyConsumptionContainer = () => {
         useMetrics(initialMetricsHookValues)
     const [period, setPeriod] = useState<periodType>('daily')
     const [filteredTargets, setFilteredTargets] = useState<metricTargetType[]>(defaultFilteredTargetsValues)
+    const [isStackedEnabled, setIsStackedEnabled] = useState<boolean>(true)
     const isEurosConsumptionChart = filteredTargets.includes(metricTargetsEnum.eurosConsumption)
     const { currentHousing } = useSelector(({ housingModel }: RootState) => housingModel)
 
@@ -131,9 +132,18 @@ export const MyConsumptionContainer = () => {
      *
      * @param target Metric target.
      */
-    const removeTarget = (target: metricTargetType) => {
-        setFilteredTargets((prevState) => prevState.filter((filteredTargetsEl) => filteredTargetsEl !== target))
-    }
+    const removeTarget = useCallback(
+        (target: metricTargetType) => {
+            if (
+                period !== 'daily' &&
+                (target === metricTargetsEnum.externalTemperature || target === metricTargetsEnum.internalTemperature)
+            ) {
+                setIsStackedEnabled(true)
+            }
+            setFilteredTargets((prevState) => prevState.filter((filteredTargetsEl) => filteredTargetsEl !== target))
+        },
+        [period],
+    )
 
     /**
      * Function that adds target to the graph.
@@ -143,12 +153,19 @@ export const MyConsumptionContainer = () => {
     const addTarget = useCallback(
         (target: metricTargetType) => {
             if (!filteredTargets.find((filteredTargetsEl) => filteredTargetsEl === target)) {
+                if (
+                    period !== 'daily' &&
+                    (target === metricTargetsEnum.externalTemperature ||
+                        target === metricTargetsEnum.internalTemperature)
+                ) {
+                    setIsStackedEnabled(false)
+                }
                 setFilteredTargets((prevState) => {
                     return [...prevState, target]
                 })
             }
         },
-        [filteredTargets],
+        [filteredTargets, period],
     )
 
     const memoizedTargetButtonGroup = useMemo(() => {
@@ -159,7 +176,7 @@ export const MyConsumptionContainer = () => {
                 hidePmax={period === 'daily' || enedisConsent?.enedisConsentState === 'NONEXISTENT'}
             />
         )
-    }, [addTarget, enedisConsent?.enedisConsentState, period])
+    }, [addTarget, enedisConsent?.enedisConsentState, period, removeTarget])
 
     const memoizedMyConsumptionPeriod = useMemo(() => {
         return (
@@ -254,9 +271,9 @@ export const MyConsumptionContainer = () => {
                 ) : (
                     <MyConsumptionChart
                         data={chartData}
-                        chartType={period === 'daily' ? 'area' : 'bar'}
                         period={period}
                         range={range}
+                        isStackedEnabled={isStackedEnabled}
                     />
                 )}
                 {memoizedMyConsumptionPeriod}

@@ -31,7 +31,7 @@ const EurosConsumptionButtonToggler = ({
                         backgroundColor: getChartColor(metricTargetsEnum.eurosConsumption, theme),
                     }}
                     onClick={() => {
-                        removeTarget(metricTargetsEnum.consumption)
+                        removeTarget(metricTargetsEnum.autoconsumption)
                         addTarget(metricTargetsEnum.eurosConsumption)
                     }}
                 >
@@ -45,7 +45,7 @@ const EurosConsumptionButtonToggler = ({
                     }}
                     onClick={() => {
                         removeTarget(metricTargetsEnum.eurosConsumption)
-                        addTarget(metricTargetsEnum.consumption)
+                        addTarget(metricTargetsEnum.autoconsumption)
                     }}
                 >
                     <BoltIcon sx={{ width: 24, height: 24 }} />

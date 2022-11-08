@@ -131,7 +131,7 @@ const getXAxisLabelFormatFromPeriod = (period: periodType, isTooltipLabel?: bool
  * @param params.theme Represents the current theme as it is needed to set apexCharts options to fit MyConsumptionChart, for example the colors of the grid should be theme.palette.primary.contrastText.
  * @param params.period Represents the current period ('daily', 'weekly', 'monthly', 'yearly' ...etc), which will be used to handle xAxis values format (for example when yearly we should show values as 'January', 'February', ...etc).
  * @param params.formatMessage Represents the formatMessage from useIntl to handle translation of yAxis names.
- * @param params.chartType Represents the type of the consumption Chart (type has the format of ApexChart['type']).
+ * @param params.isStackedEnabled Boolean state to know whether the stacked option is true or false.
  * @returns Props of apexCharts in MyConsumptionChart.
  */
 export const getApexChartMyConsumptionProps = ({
@@ -139,7 +139,7 @@ export const getApexChartMyConsumptionProps = ({
     theme,
     period,
     formatMessage,
-    chartType,
+    isStackedEnabled,
 }: // eslint-disable-next-line jsdoc/require-jsdoc
 {
     // eslint-disable-next-line jsdoc/require-jsdoc
@@ -151,7 +151,7 @@ export const getApexChartMyConsumptionProps = ({
     // eslint-disable-next-line jsdoc/require-jsdoc
     formatMessage: formatMessageType
     // eslint-disable-next-line jsdoc/require-jsdoc
-    chartType: ApexChart['type']
+    isStackedEnabled: boolean
 }) => {
     let options: Props['options'] = defaultApexChartOptions(theme)!
     let myConsumptionApexChartSeries: ApexAxisChartSeries = []
@@ -249,7 +249,7 @@ export const getApexChartMyConsumptionProps = ({
         },
     }
 
-    options.chart!.stacked = true
+    options.chart!.stacked = period !== 'daily' && isStackedEnabled
     options!.markers!.size = markerSizeList
     options!.stroke!.width = strokeWidthList
     options.yaxis = yAxisOptions
