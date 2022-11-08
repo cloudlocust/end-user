@@ -101,6 +101,7 @@ export const chartSpecifities: {
     },
     [metricTargetsEnum.eurosConsumption]: {
         label: 'Consommation Euros',
+        seriesName: 'Consommation Euros',
     },
     [metricTargetsEnum.internalTemperature]: {
         label: 'Température Intérieure',

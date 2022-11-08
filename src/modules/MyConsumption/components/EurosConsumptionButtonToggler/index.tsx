@@ -30,7 +30,9 @@ const EurosConsumptionButtonToggler = ({
                         color: 'white',
                         backgroundColor: getChartColor(metricTargetsEnum.eurosConsumption, theme),
                     }}
+                    // TODO Remove target should take an array of targets
                     onClick={() => {
+                        removeTarget(metricTargetsEnum.consumption)
                         removeTarget(metricTargetsEnum.autoconsumption)
                         addTarget(metricTargetsEnum.eurosConsumption)
                     }}
@@ -44,7 +46,9 @@ const EurosConsumptionButtonToggler = ({
                         backgroundColor: 'primary.light',
                     }}
                     onClick={() => {
+                        // TODO Remove target should take an array of targets
                         removeTarget(metricTargetsEnum.eurosConsumption)
+                        addTarget(metricTargetsEnum.consumption)
                         addTarget(metricTargetsEnum.autoconsumption)
                     }}
                 >
