@@ -103,7 +103,6 @@ describe('Test MeterStepNrLinkConnectionForm', () => {
                     TEST_ADD_METER,
                 )
             })
-            expect(mockHandleNext).toHaveBeenCalled()
         }, 20000)
         test('when meter option is selected and submit, guid field is disabled with meterGuid value, handleNext should be called, and addMeter not be called', async () => {
             const mockHandleNext = jest.fn()

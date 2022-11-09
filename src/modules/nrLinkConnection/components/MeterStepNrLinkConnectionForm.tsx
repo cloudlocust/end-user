@@ -61,8 +61,10 @@ const MeterStepNrLinkConnectionForm = ({
             if (housingId) {
                 // if it does not exist and there is a valid housing id (if the user has no housing and access to this page by the url)
                 const newMeter = await addMeter(housingId, data)
-                setMeter(newMeter)
-                handleNext()
+                if (newMeter) {
+                    setMeter(newMeter)
+                    handleNext()
+                }
             }
             // Catch error so that don't crash the application when response error.
         } catch (error) {}
