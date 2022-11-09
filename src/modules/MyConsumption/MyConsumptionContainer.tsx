@@ -58,6 +58,14 @@ export const initialMetricsHookValues: getMetricType = {
             target: metricTargetsEnum.autoconsumption,
             type: 'timeserie',
         },
+        {
+            target: metricTargetsEnum.totalProduction,
+            type: 'timeserie',
+        },
+        {
+            target: metricTargetsEnum.injectedProduction,
+            type: 'timeserie',
+        },
     ],
     filters: [],
 }
@@ -97,13 +105,40 @@ export const MyConsumptionContainer = () => {
     }, [filters, getConsents])
 
     // Storing the chartData with useMemo, so that we don't compute data.filter on every state change (period, range ...etc), and thus we won't reender heavy computation inside MyConsumptionChart because chartData will be stable.
-    const chartData = useMemo(
-        () => data.filter((metric) => filteredTargets.includes(metric.target)),
+    const consumptionChartData = useMemo(
+        () =>
+            data
+                .filter((metric) => filteredTargets.includes(metric.target))
+                .filter(
+                    (metric) =>
+                        metric.target !== metricTargetsEnum.injectedProduction &&
+                        metric.target !== metricTargetsEnum.totalProduction,
+                ),
         [data, filteredTargets],
     )
 
+    const productionChartData = useMemo(
+        () =>
+            data.filter(
+                (metric) =>
+                    metric.target !== metricTargetsEnum.consumption &&
+                    metric.target !== metricTargetsEnum.internalTemperature &&
+                    metric.target !== metricTargetsEnum.externalTemperature &&
+                    metric.target !== metricTargetsEnum.pMax &&
+                    metric.target !== metricTargetsEnum.eurosConsumption,
+            ),
+        [data],
+    )
+
+    // TODO: Remove filter when the widget version of those targets are ready.
     const widgetsData = useMemo(
-        () => data.filter((metric) => metric.target !== metricTargetsEnum.autoconsumption),
+        () =>
+            data.filter(
+                (metric) =>
+                    metric.target !== metricTargetsEnum.autoconsumption &&
+                    metric.target !== metricTargetsEnum.totalProduction &&
+                    metric.target !== metricTargetsEnum.injectedProduction,
+            ),
         [data],
     )
 
@@ -219,93 +254,143 @@ export const MyConsumptionContainer = () => {
     return (
         <>
             <div style={{ background: theme.palette.primary.main }} className="p-24">
-                <div className="relative flex flex-col md:flex-row justify-between items-center">
-                    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mb-16 md:mb-0">
-                        <div className="flex flex-col md:flex-row items-center">
-                            <TypographyFormatMessage
-                                variant="h5"
-                                className="sm:mr-8"
-                                style={{ color: theme.palette.primary.contrastText }}
-                            >
-                                Ma Consommation
-                            </TypographyFormatMessage>
-                            {/* Consommation Wh par Jour / Semaine / Mois / Année */}
-                            <TypographyFormatMessage variant="h5" style={{ color: theme.palette.primary.contrastText }}>
-                                {showPerPeriodText()}
-                            </TypographyFormatMessage>
-                            <MyConsumptionDatePicker period={period} setRange={setRange} range={range} />
-                        </div>
-                    </motion.div>
+                <div className="mb-24">
+                    {memoizedMyConsumptionPeriod}
+                    <MyConsumptionDatePicker period={period} setRange={setRange} range={range} />
                 </div>
 
-                <div className="my-16 flex justify-between">
-                    <EurosConsumptionButtonToggler
-                        removeTarget={removeTarget}
-                        addTarget={addTarget}
-                        showEurosConsumption={!isEurosConsumptionChart}
-                    />
-                    <Tooltip
-                        arrow
-                        placement="bottom-end"
-                        disableHoverListener={!tempPmaxFeatureState}
-                        title={formatMessage({
-                            id: "Cette fonctionnalité n'est pas disponible sur cette version",
-                            defaultMessage: "Cette fonctionnalité n'est pas disponible sur cette version",
-                        })}
-                    >
-                        <div className={`${tempPmaxFeatureState && 'cursor-not-allowed'}`}>
-                            {memoizedTargetButtonGroup}
-                        </div>
-                    </Tooltip>
-                </div>
-
-                {isMetricsLoading ? (
-                    <div
-                        className="flex flex-col justify-center items-center w-full h-full"
-                        style={{ height: '320px' }}
-                    >
-                        <CircularProgress style={{ color: theme.palette.background.paper }} />
-                    </div>
-                ) : (
-                    <MyConsumptionChart
-                        data={chartData}
-                        period={period}
-                        range={range}
-                        isStackedEnabled={isStackedEnabled}
-                    />
-                )}
-                {memoizedMyConsumptionPeriod}
-                {isEurosConsumptionChart && hasMissingHousingContracts && (
-                    <div className="flex items-center justify-center flex-col mt-12">
-                        <ErrorOutlineIcon
-                            sx={{
-                                color: secondaryMainColor,
-                                width: { xs: '24px', md: '32px' },
-                                height: { xs: '24px', md: '32px' },
-                                margin: { xs: '0 0 4px 0', md: '0 8px 0 0' },
-                            }}
-                        />
-
-                        <div className="w-full">
-                            <TypographyFormatMessage
-                                sx={{ color: secondaryMainColor }}
-                                className="text-13 md:text-16 text-center"
-                            >
-                                {
-                                    "Ce graphe est un exemple basé sur un tarif Bleu EDF Base. Vos données contractuelles de fourniture d'énergie ne sont pas disponibles sur toute la période."
-                                }
-                            </TypographyFormatMessage>
-                            <NavLink to={`${URL_MY_HOUSE}/${currentHousing?.id}/contracts`}>
+                {/* Consumption Chart */}
+                <div className="mb-12">
+                    <div className="relative flex flex-col md:flex-row justify-between items-center">
+                        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mb-16 md:mb-0">
+                            <div className="flex flex-col md:flex-row items-center">
                                 <TypographyFormatMessage
-                                    className="underline text-13 md:text-16 text-center"
-                                    sx={{ color: secondaryMainColor }}
+                                    variant="h5"
+                                    className="sm:mr-8"
+                                    style={{ color: theme.palette.primary.contrastText }}
                                 >
-                                    Renseigner votre contrat d'énergie
+                                    Ma Consommation
                                 </TypographyFormatMessage>
-                            </NavLink>
-                        </div>
+                                {/* Consommation Wh par Jour / Semaine / Mois / Année */}
+                                <TypographyFormatMessage
+                                    variant="h5"
+                                    style={{ color: theme.palette.primary.contrastText }}
+                                >
+                                    {showPerPeriodText()}
+                                </TypographyFormatMessage>
+                            </div>
+                        </motion.div>
                     </div>
-                )}
+
+                    <div className="my-16 flex justify-between">
+                        <EurosConsumptionButtonToggler
+                            removeTarget={removeTarget}
+                            addTarget={addTarget}
+                            showEurosConsumption={!isEurosConsumptionChart}
+                        />
+                        <Tooltip
+                            arrow
+                            placement="bottom-end"
+                            disableHoverListener={!tempPmaxFeatureState}
+                            title={formatMessage({
+                                id: "Cette fonctionnalité n'est pas disponible sur cette version",
+                                defaultMessage: "Cette fonctionnalité n'est pas disponible sur cette version",
+                            })}
+                        >
+                            <div className={`${tempPmaxFeatureState && 'cursor-not-allowed'}`}>
+                                {memoizedTargetButtonGroup}
+                            </div>
+                        </Tooltip>
+                    </div>
+
+                    {isMetricsLoading ? (
+                        <div
+                            className="flex flex-col justify-center items-center w-full h-full"
+                            style={{ height: '320px' }}
+                        >
+                            <CircularProgress style={{ color: theme.palette.background.paper }} />
+                        </div>
+                    ) : (
+                        <MyConsumptionChart
+                            data={consumptionChartData}
+                            period={period}
+                            range={range}
+                            isStackedEnabled={isStackedEnabled}
+                            chartType="consumption"
+                        />
+                    )}
+
+                    {isEurosConsumptionChart && hasMissingHousingContracts && (
+                        <div className="flex items-center justify-center flex-col mt-12">
+                            <ErrorOutlineIcon
+                                sx={{
+                                    color: secondaryMainColor,
+                                    width: { xs: '24px', md: '32px' },
+                                    height: { xs: '24px', md: '32px' },
+                                    margin: { xs: '0 0 4px 0', md: '0 8px 0 0' },
+                                }}
+                            />
+
+                            <div className="w-full">
+                                <TypographyFormatMessage
+                                    sx={{ color: secondaryMainColor }}
+                                    className="text-13 md:text-16 text-center"
+                                >
+                                    {
+                                        "Ce graphe est un exemple basé sur un tarif Bleu EDF Base. Vos données contractuelles de fourniture d'énergie ne sont pas disponibles sur toute la période."
+                                    }
+                                </TypographyFormatMessage>
+                                <NavLink to={`${URL_MY_HOUSE}/${currentHousing?.id}/contracts`}>
+                                    <TypographyFormatMessage
+                                        className="underline text-13 md:text-16 text-center"
+                                        sx={{ color: secondaryMainColor }}
+                                    >
+                                        Renseigner votre contrat d'énergie
+                                    </TypographyFormatMessage>
+                                </NavLink>
+                            </div>
+                        </div>
+                    )}
+                </div>
+
+                {/* Production Chart */}
+                <div className="mb-12">
+                    <div className="relative flex flex-col md:flex-row justify-between items-center">
+                        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mb-16 md:mb-0">
+                            <div className="flex flex-col md:flex-row items-center">
+                                <TypographyFormatMessage
+                                    variant="h5"
+                                    className="sm:mr-8"
+                                    style={{ color: theme.palette.primary.contrastText }}
+                                >
+                                    Ma Production
+                                </TypographyFormatMessage>
+                                {/* Consommation Wh par Jour / Semaine / Mois / Année */}
+                                <TypographyFormatMessage
+                                    variant="h5"
+                                    style={{ color: theme.palette.primary.contrastText }}
+                                >
+                                    {showPerPeriodText()}
+                                </TypographyFormatMessage>
+                            </div>
+                        </motion.div>
+                    </div>
+                    {isMetricsLoading ? (
+                        <div
+                            className="flex flex-col justify-center items-center w-full h-full"
+                            style={{ height: '320px' }}
+                        >
+                            <CircularProgress style={{ color: theme.palette.background.paper }} />
+                        </div>
+                    ) : (
+                        <MyConsumptionChart
+                            data={productionChartData}
+                            period={period}
+                            range={range}
+                            chartType="production"
+                        />
+                    )}
+                </div>
             </div>
             {data.length !== 0 && (
                 <div className="p-12 sm:p-24 ">

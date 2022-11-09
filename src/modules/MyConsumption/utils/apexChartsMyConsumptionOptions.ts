@@ -132,6 +132,7 @@ const getXAxisLabelFormatFromPeriod = (period: periodType, isTooltipLabel?: bool
  * @param params.period Represents the current period ('daily', 'weekly', 'monthly', 'yearly' ...etc), which will be used to handle xAxis values format (for example when yearly we should show values as 'January', 'February', ...etc).
  * @param params.formatMessage Represents the formatMessage from useIntl to handle translation of yAxis names.
  * @param params.isStackedEnabled Boolean state to know whether the stacked option is true or false.
+ * @param params.chartType Consumption or production type.
  * @returns Props of apexCharts in MyConsumptionChart.
  */
 export const getApexChartMyConsumptionProps = ({
@@ -140,6 +141,7 @@ export const getApexChartMyConsumptionProps = ({
     period,
     formatMessage,
     isStackedEnabled,
+    chartType,
 }: // eslint-disable-next-line jsdoc/require-jsdoc
 {
     // eslint-disable-next-line jsdoc/require-jsdoc
@@ -151,7 +153,10 @@ export const getApexChartMyConsumptionProps = ({
     // eslint-disable-next-line jsdoc/require-jsdoc
     formatMessage: formatMessageType
     // eslint-disable-next-line jsdoc/require-jsdoc
-    isStackedEnabled: boolean
+    isStackedEnabled?: boolean
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    chartType: 'consumption' | 'production'
+    // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
     let options: Props['options'] = defaultApexChartOptions(theme)!
     let myConsumptionApexChartSeries: ApexAxisChartSeries = []
@@ -181,18 +186,24 @@ export const getApexChartMyConsumptionProps = ({
         // We compute the consumption chart maximum y value, so that we can indicate the correct unit on the chart, and we do it only one time with this condition.
         // data.length !== 720 is added because there can be case where period is not daily, and yAxisSerie.data didn't updated and still express data of daily.
         // TODO Fix find a better way to reender period and data at same time, instead of doing yAxisSerie.data.length !== 720
-        if (period !== 'daily' && (yAxisSerie.data.length !== 48 || 720)) {
+        if (
+            yAxisSerie.name === metricTargetsEnum.consumption &&
+            period !== 'daily' &&
+            (yAxisSerie.data.length !== 48 || 720)
+        ) {
             maxYValue = Math.max(
                 ...(yAxisSerie.data.map((datapoint) => (datapoint as [number, number])[1]) as Array<number>),
             )
         }
 
-        // maxYValue = Math.max(...(yAxisSerie.data as Array<number>), maxYValue)
         yAxisOptions.push({
             ...restChartSpecifities,
             opposite:
                 yAxisSerie.name !== metricTargetsEnum.consumption &&
-                yAxisSerie.name !== metricTargetsEnum.eurosConsumption,
+                yAxisSerie.name !== metricTargetsEnum.eurosConsumption &&
+                yAxisSerie.name !== metricTargetsEnum.totalProduction &&
+                yAxisSerie.name !== metricTargetsEnum.injectedProduction,
+
             labels: {
                 /**
                  * Represent the label shown in the yAxis for each value (this also is take as yAxis label in tooltip).
@@ -201,9 +212,18 @@ export const getApexChartMyConsumptionProps = ({
                  * @returns Desired label to be shown for values in the yAxis.
                  */
                 formatter: (value: number) => {
-                    // Consumption unit shown in the chart will be W if its daily, or it'll be the unit of the maximum y value.
-                    const consumptionUnit = period === 'daily' ? 'Wh' : consumptionWattUnitConversion(maxYValue).unit
-                    return getYPointValueLabel(value, yAxisSerie.name as metricTargetsEnum, consumptionUnit)
+                    if (
+                        yAxisSerie.name === metricTargetsEnum.consumption ||
+                        yAxisSerie.name === metricTargetsEnum.autoconsumption ||
+                        yAxisSerie.name === metricTargetsEnum.totalProduction ||
+                        yAxisSerie.name === metricTargetsEnum.injectedProduction
+                    ) {
+                        // Consumption unit shown in the chart will be W if its daily, or it'll be the unit of the maximum y value.
+                        const consumptionUnit =
+                            period === 'daily' ? 'Wh' : consumptionWattUnitConversion(maxYValue).unit
+                        return getYPointValueLabel(value, yAxisSerie.name as metricTargetsEnum, consumptionUnit)
+                    }
+                    return getYPointValueLabel(value, yAxisSerie.name as metricTargetsEnum)
                 },
             },
             axisBorder: {
@@ -219,7 +239,8 @@ export const getApexChartMyConsumptionProps = ({
         strokeWidthList.push(
             yAxisSerie.name === metricTargetsEnum.consumption ||
                 yAxisSerie.name === metricTargetsEnum.eurosConsumption ||
-                yAxisSerie.name === metricTargetsEnum.autoconsumption
+                yAxisSerie.name === metricTargetsEnum.autoconsumption ||
+                yAxisSerie.name === metricTargetsEnum.totalProduction
                 ? 0
                 : 1.5,
         )
@@ -249,7 +270,7 @@ export const getApexChartMyConsumptionProps = ({
         },
     }
 
-    options.chart!.stacked = isStackedEnabled
+    options.chart!.stacked = chartType === 'consumption' ? isStackedEnabled : true
     options!.markers!.size = markerSizeList
     options!.stroke!.width = strokeWidthList
     options.yaxis = yAxisOptions

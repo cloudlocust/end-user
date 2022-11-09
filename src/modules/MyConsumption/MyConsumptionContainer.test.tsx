@@ -124,34 +124,34 @@ describe('MyConsumptionContainer test', () => {
         expect(() => getByText('Chiffres clés')).toThrow()
     })
     test('Clicking on different period changes the Consumption Title', async () => {
-        const { getByText } = reduxedRender(
+        const { getAllByText } = reduxedRender(
             <Router>
                 <MyConsumptionContainer />
             </Router>,
         )
         // Daily CONSUMPTION Text
-        expect(getByText(CONSUMPTION_TITLE_DAILY)).toBeTruthy()
+        expect(getAllByText(CONSUMPTION_TITLE_DAILY)[0]).toBeTruthy()
 
         // Weekly CONSUMPTION Text
-        userEvent.click(getByText(WEEKLY_PERIOD_BUTTON_TEXT))
+        userEvent.click(getAllByText(WEEKLY_PERIOD_BUTTON_TEXT)[0])
         await waitFor(() => {
-            expect(getByText(CONSUMPTION_TITLE_WEEKLY)).toBeTruthy()
+            expect(getAllByText(CONSUMPTION_TITLE_WEEKLY)[0]).toBeTruthy()
         })
 
         // Monthly CONSUMPTION Text
-        userEvent.click(getByText(MONTHLY_PERIOD_BUTTON_TEXT))
+        userEvent.click(getAllByText(MONTHLY_PERIOD_BUTTON_TEXT)[0])
         await waitFor(() => {
-            expect(getByText(CONSUMPTION_TITLE_MONTHLY)).toBeTruthy()
+            expect(getAllByText(CONSUMPTION_TITLE_MONTHLY)[0]).toBeTruthy()
         })
 
         // Yearly CONSUMPTION Text
-        userEvent.click(getByText(YEARLY_PERIOD_BUTTON_TEXT))
+        userEvent.click(getAllByText(YEARLY_PERIOD_BUTTON_TEXT)[0])
         await waitFor(() => {
-            expect(getByText(CONSUMPTION_TITLE_YEARLY)).toBeTruthy()
+            expect(getAllByText(CONSUMPTION_TITLE_YEARLY)[0]).toBeTruthy()
         })
     })
     test('Toggling to EurosConsumption on different period changes the ConsumptionEuros Title', async () => {
-        const { getByText, getByTestId } = reduxedRender(
+        const { getByText, getByTestId, getAllByText } = reduxedRender(
             <Router>
                 <MyConsumptionContainer />
             </Router>,
@@ -164,24 +164,24 @@ describe('MyConsumptionContainer test', () => {
             expect(getByTestId(CONSUMPTION_ICON_TEST_ID)).toBeTruthy()
         })
         // Daily EUROS CONSUMPTION Text
-        expect(getByText(EUROS_CONSUMPTION_TITLE_DAILY)).toBeTruthy()
+        expect(getAllByText(EUROS_CONSUMPTION_TITLE_DAILY)[0]).toBeTruthy()
 
         // Weekly EUROS CONSUMPTION Text
-        userEvent.click(getByText(WEEKLY_PERIOD_BUTTON_TEXT))
+        userEvent.click(getAllByText(WEEKLY_PERIOD_BUTTON_TEXT)[0])
         await waitFor(() => {
-            expect(getByText(EUROS_CONSUMPTION_TITLE_WEEKLY)).toBeTruthy()
+            expect(getAllByText(EUROS_CONSUMPTION_TITLE_WEEKLY)[0]).toBeTruthy()
         })
 
         // Monthly EUROS CONSUMPTION Text
         userEvent.click(getByText(MONTHLY_PERIOD_BUTTON_TEXT))
         await waitFor(() => {
-            expect(getByText(EUROS_CONSUMPTION_TITLE_MONTHLY)).toBeTruthy()
+            expect(getAllByText(EUROS_CONSUMPTION_TITLE_MONTHLY)[0]).toBeTruthy()
         })
 
         // Yearly EUROS CONSUMPTION Text
-        userEvent.click(getByText(YEARLY_PERIOD_BUTTON_TEXT))
+        userEvent.click(getAllByText(YEARLY_PERIOD_BUTTON_TEXT)[0])
         await waitFor(() => {
-            expect(getByText(EUROS_CONSUMPTION_TITLE_YEARLY)).toBeTruthy()
+            expect(getAllByText(EUROS_CONSUMPTION_TITLE_YEARLY)[0]).toBeTruthy()
         })
         // HasMissingContractsExample Text
         expect(getByText(HAS_MISSING_CONTRACTS_WARNING_TEXT)).toBeTruthy()

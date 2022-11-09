@@ -419,8 +419,13 @@ export const getChartType = (metricTarget: metricTargetType, period: periodType)
         metricTarget === metricTargetsEnum.pMax
     ) {
         return 'line'
-        // } else if (metricTarget === metricTargetsEnum.consumption) {
-        //     return ''
+    } else if (
+        (metricTarget === metricTargetsEnum.totalProduction ||
+            metricTarget === metricTargetsEnum.autoconsumption ||
+            metricTargetsEnum.injectedProduction) &&
+        period === 'daily'
+    ) {
+        return 'area'
     } else {
         return 'bar'
     }
