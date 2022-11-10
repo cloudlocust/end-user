@@ -228,7 +228,7 @@ const NrLinkConnectionSteps = () => {
                         activeStep={activeStep}
                         sx={{
                             '& .MuiStepConnector-root.Mui-active': {
-                                '& > *': {
+                                '& .MuiStepConnector-line': {
                                     borderColor: primaryMainColor, // Step Connector (ACTIVE)
                                 },
                             },
