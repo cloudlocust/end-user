@@ -23,6 +23,7 @@ import { URL_CONSUMPTION } from 'src/modules/MyConsumption'
 import { NrlinkConnectionStepsEnum } from 'src/modules/nrLinkConnection/nrlinkConnectionSteps.d'
 import { useSelector } from 'react-redux'
 import { RootState } from 'src/redux'
+import { primaryContrastTextColor, primaryMainColor } from 'src/modules/utils/muiThemeVariables'
 
 /**
  * Component representing the action buttons in the Stepper (Previous, Next), Next Button will be of type Submit.
@@ -164,7 +165,7 @@ const NrLinkConnectionSteps = () => {
             sx={{
                 color:
                     // eslint-disable-next-line jsdoc/require-jsdoc
-                    (theme) => theme.palette.primary.light,
+                    (theme) => theme.palette.primary.main,
             }}
             className="md:text-14"
             to={URL_CONSUMPTION}
@@ -225,10 +226,44 @@ const NrLinkConnectionSteps = () => {
                     <Stepper
                         className="NrLinkConnectionStepsStepper w-full"
                         activeStep={activeStep}
+                        sx={{
+                            '& .MuiStepConnector-root.Mui-active': {
+                                '& > *': {
+                                    borderColor: primaryMainColor, // Step Connector (ACTIVE)
+                                },
+                            },
+                            '& .MuiStepConnector-root.Mui-completed': {
+                                '& .MuiStepConnector-line': {
+                                    borderColor: primaryMainColor, // Step Connector (COMPLETED)
+                                },
+                            },
+                        }}
                         orientation={isMobile && screenOrientation === 'portrait' ? 'vertical' : 'horizontal'}
                     >
                         {stepsLabels.map((label, index) => (
-                            <Step key={label}>
+                            <Step
+                                key={label}
+                                sx={{
+                                    '& .MuiStepContent-root': {
+                                        borderLeftColor: primaryMainColor, // Step Content Indicator Line (ACTIVE)
+                                    },
+                                    '& .MuiStepLabel-root .Mui-completed': {
+                                        color: primaryMainColor, // circle color (COMPLETED)
+                                    },
+                                    '& .MuiStepLabel-label.Mui-completed.MuiStepLabel-alternativeLabel': {
+                                        color: primaryContrastTextColor, // Just text label (COMPLETED)
+                                    },
+                                    '& .MuiStepLabel-root .Mui-active': {
+                                        color: primaryMainColor, // circle color (ACTIVE)
+                                    },
+                                    '& .MuiStepLabel-label.Mui-active.MuiStepLabel-alternativeLabel': {
+                                        color: primaryContrastTextColor, // Just text label (ACTIVE)
+                                    },
+                                    '& .MuiStepLabel-root .Mui-active .MuiStepIcon-text': {
+                                        fill: primaryContrastTextColor, // circle's number (ACTIVE)
+                                    },
+                                }}
+                            >
                                 <StepLabel>{label}</StepLabel>
                                 {isMobile && screenOrientation === 'portrait' && (
                                     // Vertical stepper content
