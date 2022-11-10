@@ -46,6 +46,7 @@ const CREATION_ENEDIS_SGE_CONSENT_TEXT =
 const EDIT_METER_NAME_PLACEHOLDER = 'Modifier le nom de votre compteur'
 const EDIT_METER_NUMBER_PLACEHOLDER = 'Modifier le numéro de votre compteur'
 const ERROR_ENPHASE_MESSAGE = 'Connectez votre onduleur pour visualiser votre production'
+const PENDING_ENPHASE_MESSAGE = 'Votre connexion est en cours et sera active dans les plus brefs délais'
 
 const CREATED_AT = '2022-09-02T08:06:08Z'
 
@@ -302,6 +303,20 @@ describe('MeterStatus component test', () => {
             const activeIcon = getByAltText('enphase-off-icon')
             expect(getByText(ERROR_ENPHASE_MESSAGE)).toBeTruthy()
             expect(activeIcon).toHaveAttribute('src', STATUS_OFF_SRC)
+        })
+        test('when enphase status is PENDING', async () => {
+            foundHouse!.meter!.guid = '12345Her'
+            mockEnphaseConsent = 'PENDING'
+
+            const { getByText } = reduxedRender(
+                <Router>
+                    <MeterStatus />
+                </Router>,
+            )
+
+            // Children of <Icon> </Icon>
+            expect(getByText('replay')).toBeTruthy()
+            expect(getByText(PENDING_ENPHASE_MESSAGE)).toBeTruthy()
         })
     })
     describe('test implementation of EnedisSgePopup', () => {

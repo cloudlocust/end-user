@@ -282,9 +282,21 @@ export const MeterStatus = () => {
                         </div>
                     </>
                 )
+            case 'PENDING':
+                return (
+                    <>
+                        <Icon className="mr-12" color="warning">
+                            replay
+                        </Icon>
+                        <div className="flex flex-col">
+                            <TypographyFormatMessage color={theme.palette.warning.main} fontWeight={600}>
+                                Votre connexion est en cours et sera active dans les plus brefs délais
+                            </TypographyFormatMessage>
+                        </div>
+                    </>
+                )
             case 'EXPIRED':
             case 'NONEXISTENT':
-            case 'PENDING':
             default:
                 return (
                     <>
