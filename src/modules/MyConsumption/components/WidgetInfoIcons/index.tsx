@@ -8,6 +8,7 @@ import Tooltip from '@mui/material/Tooltip'
 import { URL_MY_HOUSE } from 'src/modules/MyHouse/MyHouseConfig'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import { metricTargetsEnum, metricTargetType } from 'src/modules/Metrics/Metrics.d'
+import { warningMainHashColor } from 'src/modules/utils/muiThemeVariables'
 
 /**
  * EuroWidgetInfoIcon Component.
@@ -31,7 +32,7 @@ export const EuroWidgetInfoIcon = () => {
             }
         >
             <IconButton sx={{ p: 0 }}>
-                <ErrorOutlineIcon sx={{ color: 'warning.main', width: '32px', height: '32px' }} />
+                <ErrorOutlineIcon sx={{ color: warningMainHashColor, width: '32px', height: '32px' }} />
             </IconButton>
         </Tooltip>
     )
