@@ -23,7 +23,7 @@ export const EuroWidgetInfoIcon = () => {
                 <div>
                     <TypographyFormatMessage className="text-center">Ce coût est un exemple.</TypographyFormatMessage>
                     <NavLink to={currentHousing ? `${URL_MY_HOUSE}/${currentHousing?.id}/contracts` : URL_MY_HOUSE}>
-                        <TypographyFormatMessage sx={{ color: 'secondary.main' }} className="underline text-center">
+                        <TypographyFormatMessage sx={{ color: '#FFFFFF' }} className="underline text-center">
                             Renseigner un contrat d'énergie.
                         </TypographyFormatMessage>
                     </NavLink>
@@ -31,7 +31,7 @@ export const EuroWidgetInfoIcon = () => {
             }
         >
             <IconButton sx={{ p: 0 }}>
-                <ErrorOutlineIcon sx={{ color: 'secondary.main', width: '32px', height: '32px' }} />
+                <ErrorOutlineIcon sx={{ color: 'warning.main', width: '32px', height: '32px' }} />
             </IconButton>
         </Tooltip>
     )
