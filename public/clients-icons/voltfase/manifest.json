@@ -1,7 +1,7 @@
 {
     "name": "Volt Fase",
     "short_name": "VOLTFASE",
-    "theme_color": "#9AC32B",
+    "theme_color": "#00A19B",
     "background_color": "#FFFFFF",
     "display": "standalone",
     "scope": "/",

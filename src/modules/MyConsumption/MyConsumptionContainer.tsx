@@ -204,7 +204,10 @@ export const MyConsumptionContainer = () => {
                                 Ma Consommation
                             </TypographyFormatMessage>
                             {/* Consommation Wh par Jour / Semaine / Mois / Année */}
-                            <TypographyFormatMessage variant="h5" style={{ color: theme.palette.primary.contrastText }}>
+                            <TypographyFormatMessage
+                                variant="h5"
+                                style={{ marginRight: '8px', color: theme.palette.primary.contrastText }}
+                            >
                                 {showPerPeriodText()}
                             </TypographyFormatMessage>
                             <MyConsumptionDatePicker period={period} setRange={setRange} range={range} />

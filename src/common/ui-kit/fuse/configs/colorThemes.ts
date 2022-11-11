@@ -77,20 +77,19 @@ const colorThemes: colorThemesType = {
             mode: 'light',
             text: lightText,
             primary: {
-                light: '#dcdbdf',
+                light: '#B2B1B3',
                 main: '#3e3d40',
-                dark: '#1d1d1f',
+                dark: '#19181A',
             },
             secondary: {
-                light: '#eff1bd',
-                main: '#C8D210',
-                dark: '#aaab00',
+                light: '#E1EC2F',
+                main: '#C9D200',
+                dark: '#303300',
             },
             background: {
                 paper: '#FFFFFF',
                 default: '#FAFCFC',
             },
-            error: red,
         },
     },
     myem: {
@@ -127,15 +126,14 @@ const colorThemes: colorThemesType = {
                 disabled: '#C4C7C7',
             },
             primary: {
-                light: '#BFDFDF',
-                main: '#00817C',
-                dark: '#00201F',
-                contrastText: '#CCE7E9',
+                light: '#99D9D7',
+                main: '#00A19B',
+                dark: '#00817C',
             },
             secondary: {
-                light: '#ffe182',
-                main: '#FFC200',
-                dark: '#ffa200',
+                light: '#C6F257',
+                main: '#9AC32B',
+                dark: '#273500',
             },
             common: {
                 white: '#ffffff',
