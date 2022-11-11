@@ -16,9 +16,7 @@ const SUBMIT_BUTTON_TEXT = 'Suivant'
 const REQUIRED_ERROR_TEXT = 'Champ obligatoire non renseigné'
 
 const guidMeterInputQuerySelector = 'input[name="guid"]'
-const nameMeterInputQuerySelector = 'input[name="name"]'
 const disabledQuerySelector = '.Mui-disabled'
-const nameMeterInputLabelText = 'Nommer mon compteur'
 
 /**
  * Mocking props of AddCustomerPopup.
@@ -56,25 +54,10 @@ jest.mock('src/modules/Meters/metersHook', () => ({
 describe('Test MeterStepNrLinkConnectionForm', () => {
     describe('form validation', () => {
         test('all fields required required', async () => {
-            const { container, getAllByText, getByText } = reduxedRender(
+            const { getAllByText, getByText } = reduxedRender(
                 <MeterStepNrLinkConnectionForm {...mockMeterStepNrLinkConnectionFormProps} />,
             )
-            // When name on blur
-            userEvent.click(getByText(nameMeterInputLabelText))
-            userEvent.click(getByText(SUBMIT_BUTTON_TEXT))
-            await waitFor(() => {
-                expect(getAllByText(REQUIRED_ERROR_TEXT).length).toBe(2)
-            })
-
-            // When name and guid are both empty
-            userEvent.type(getByText(nameMeterInputLabelText), '')
-            userEvent.click(getByText(SUBMIT_BUTTON_TEXT))
-            await waitFor(() => {
-                expect(getAllByText(REQUIRED_ERROR_TEXT).length).toBe(2)
-            })
-
-            // //  When only name is empty
-            userEvent.type(container.querySelector(guidMeterInputQuerySelector)!, '12345123451234')
+            // When guid is empty
             userEvent.click(getByText(SUBMIT_BUTTON_TEXT))
             await waitFor(() => {
                 expect(getAllByText(REQUIRED_ERROR_TEXT).length).toBe(1)
@@ -109,12 +92,8 @@ describe('Test MeterStepNrLinkConnectionForm', () => {
             fireEvent.change(container.querySelector(guidMeterInputQuerySelector)! as HTMLInputElement, {
                 target: { value: TEST_ADD_METER.guid },
             })
-            fireEvent.change(container.querySelector(nameMeterInputQuerySelector)! as HTMLInputElement, {
-                target: { value: TEST_ADD_METER.name },
-            })
 
             expect(container.querySelector(guidMeterInputQuerySelector)!).toHaveValue(TEST_ADD_METER.guid)
-            expect(container.querySelector(nameMeterInputQuerySelector)!).toHaveValue(TEST_ADD_METER.name)
 
             userEvent.click(getByText(SUBMIT_BUTTON_TEXT))
 
@@ -124,7 +103,6 @@ describe('Test MeterStepNrLinkConnectionForm', () => {
                     TEST_ADD_METER,
                 )
             })
-            expect(mockHandleNext).toHaveBeenCalled()
         }, 20000)
         test('when meter option is selected and submit, guid field is disabled with meterGuid value, handleNext should be called, and addMeter not be called', async () => {
             const mockHandleNext = jest.fn()

@@ -167,7 +167,9 @@ export const MeterStatus = () => {
                                 to={{
                                     pathname: `/nrlink-connection-steps/${parseInt(houseId)}`,
                                     state: {
-                                        activeStep: NrlinkConnectionStepsEnum.secondStep,
+                                        activeStep: foundHousing?.meter?.guid
+                                            ? NrlinkConnectionStepsEnum.thirdStep
+                                            : NrlinkConnectionStepsEnum.secondStep,
                                     },
                                 }}
                             >

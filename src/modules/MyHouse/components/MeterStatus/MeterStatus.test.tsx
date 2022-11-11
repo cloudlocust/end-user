@@ -43,7 +43,6 @@ const VERIFY_METER_MESSAGE = "Vérification de l'existence de votre compteur"
 const CREATION_ENEDIS_SGE_CONSENT_TEXT =
     "J'autorise My Energy Manager à la récolte de mon historique de données de consommation auprès d'Enedis."
 
-const EDIT_METER_NAME_PLACEHOLDER = 'Modifier le nom de votre compteur'
 const EDIT_METER_NUMBER_PLACEHOLDER = 'Modifier le numéro de votre compteur'
 const ERROR_ENPHASE_MESSAGE = 'Connectez votre onduleur pour visualiser votre production'
 const PENDING_ENPHASE_MESSAGE = 'Votre connexion est en cours et sera active dans les plus brefs délais'
@@ -387,7 +386,6 @@ describe('MeterStatus component test', () => {
 
             expect(editButton).toBeTruthy()
             userEvent.click(editButton)
-            expect(getByPlaceholderText('Modifier le nom de votre compteur')).toBeTruthy()
             expect(getByPlaceholderText('Modifier le numéro de votre compteur')).toBeTruthy()
             expect(getByText('Annuler')).toBeTruthy()
             expect(getByText('Modifier')).toBeTruthy()
@@ -400,32 +398,25 @@ describe('MeterStatus component test', () => {
             )
 
             const TEST_METER_NUMBER_INPUT = '11223344556677'
-            const TEST_METER_NAME_INPUT = 'this is my meter'
             const editButton = getByTestId('ModeEditOutlineOutlinedIcon')
 
             expect(editButton).toBeTruthy()
             userEvent.click(editButton)
-            const nameInput = getByPlaceholderText(EDIT_METER_NAME_PLACEHOLDER)
             const numberInput = getByPlaceholderText(EDIT_METER_NUMBER_PLACEHOLDER)
 
             // Clear inputs
-            userEvent.clear(nameInput)
             userEvent.clear(numberInput)
 
             // Type inputs
-            userEvent.type(nameInput, TEST_METER_NAME_INPUT)
             userEvent.type(numberInput, TEST_METER_NUMBER_INPUT)
 
             userEvent.click(getByText('Modifier'))
 
             await waitFor(() => {
                 expect(mockEditMeter).toHaveBeenCalledWith(mockHouseId, {
-                    name: TEST_METER_NAME_INPUT,
                     guid: TEST_METER_NUMBER_INPUT,
                 })
             })
-
-            expect(() => getByPlaceholderText(EDIT_METER_NAME_PLACEHOLDER)).toThrow()
         })
     })
 })

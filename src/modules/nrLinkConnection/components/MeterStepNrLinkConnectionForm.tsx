@@ -47,12 +47,11 @@ const MeterStepNrLinkConnectionForm = ({
      * On Submit function which calls addMeter and handleNext on success.
      *
      * @param data Name and Guid of the new meter.
-     * @param data.name Name.
      * @param data.guid Guid.
      * @returns New Meter.
      */
     // eslint-disable-next-line jsdoc/require-jsdoc
-    const onSubmit = async (data: { name: string; guid: string }) => {
+    const onSubmit = async (data: { guid: string }) => {
         try {
             if (meter) {
                 // this means that the meter is already existing.
@@ -62,8 +61,10 @@ const MeterStepNrLinkConnectionForm = ({
             if (housingId) {
                 // if it does not exist and there is a valid housing id (if the user has no housing and access to this page by the url)
                 const newMeter = await addMeter(housingId, data)
-                setMeter(newMeter)
-                handleNext()
+                if (newMeter) {
+                    setMeter(newMeter)
+                    handleNext()
+                }
             }
             // Catch error so that don't crash the application when response error.
         } catch (error) {}
@@ -74,39 +75,21 @@ const MeterStepNrLinkConnectionForm = ({
                 <div className="portrait:flex-col landscape:flex-row h-full flex justify-center items-center w-full">
                     <div className="w-full mx-32 ">
                         {meter ? (
-                            <>
-                                <TextFieldMui
-                                    value={meter.name}
-                                    disabled
-                                    name="name"
-                                    style={{ marginBottom: '20px' }}
-                                    fullWidth
-                                    label="Nommer mon compteur"
-                                    variant="outlined"
-                                />
-                                <TextFieldMui
-                                    value={meter.guid}
-                                    disabled
-                                    name="guid"
-                                    style={{ marginBottom: '20px' }}
-                                    fullWidth
-                                    label="Numéro de mon compteur"
-                                    variant="outlined"
-                                />
-                            </>
+                            <TextFieldMui
+                                value={meter.guid}
+                                disabled
+                                name="guid"
+                                style={{ marginBottom: '20px' }}
+                                fullWidth
+                                label="Numéro de mon compteur"
+                                variant="outlined"
+                            />
                         ) : (
-                            <>
-                                <TextField
-                                    name="name"
-                                    label="Nommer mon compteur"
-                                    validateFunctions={[requiredBuilder()]}
-                                />
-                                <TextField
-                                    name="guid"
-                                    label="Numéro de mon compteur"
-                                    validateFunctions={[requiredBuilder(), min(14), max(14)]}
-                                />
-                            </>
+                            <TextField
+                                name="guid"
+                                label="Numéro de mon compteur"
+                                validateFunctions={[requiredBuilder(), min(14), max(14)]}
+                            />
                         )}
                     </div>
                     <div className="w-full">

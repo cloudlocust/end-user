@@ -23,7 +23,6 @@ export const EditMeterFormPopup = (props: EditMeterFormPopupProps) => {
                     onClose()
                 }}
                 defaultValues={{
-                    name: foundHousing?.meter?.name,
                     guid: foundHousing?.meter?.guid,
                 }}
             >
@@ -33,15 +32,6 @@ export const EditMeterFormPopup = (props: EditMeterFormPopupProps) => {
                 >
                     <Card className="relative cursor-pointer flex-wrap rounded-16">
                         <CardContent className="mt-10">
-                            <TextField
-                                name="name"
-                                label="Nom de mon compteur"
-                                placeholder={formatMessage({
-                                    id: 'Modifier le nom de votre compteur',
-                                    defaultMessage: 'Modifier le nom de votre compteur',
-                                })}
-                                validateFunctions={[requiredBuilder()]}
-                            />
                             <TextField
                                 name="guid"
                                 label="Numéro de mon compteur"

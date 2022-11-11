@@ -15,7 +15,6 @@ export const TEST_HOUSES: SnakeCasedPropertiesDeep<IHousing>[] = [
         id: 1,
         meter: {
             id: 1,
-            name: 'my nrlink',
             guid: '12345678911234',
         },
         address: {
@@ -122,7 +121,7 @@ export const housingEndpoints = [
     }),
     // add meter to housing.
     rest.post<addMeterInputType>(`${HOUSING_API}/:housingId/meter`, (req, res, ctx) => {
-        const { name, guid } = req.body
+        const { guid } = req.body
         const { housingId } = req.params
         const houseId = parseInt(housingId)
 
@@ -135,7 +134,7 @@ export const housingEndpoints = [
                 // already exist
                 return res(ctx.status(409), ctx.delay(1000))
             } else {
-                const newMeter = { name, guid, id: Math.random() }
+                const newMeter = { guid, id: Math.random() }
                 housingToUpdate.meter = newMeter
 
                 return res(ctx.status(200), ctx.delay(1000), ctx.json(newMeter))
@@ -147,7 +146,7 @@ export const housingEndpoints = [
 
     // Edit meter
     rest.patch<editMeterInputType>(`${HOUSING_API}/:housingId/meter`, (req, res, ctx) => {
-        const { name, guid } = req.body
+        const { guid } = req.body
         const { housingId } = req.params
         const houseId = parseInt(housingId)
 
@@ -159,7 +158,7 @@ export const housingEndpoints = [
             return res(ctx.status(400), ctx.delay(1000))
         }
 
-        return res(ctx.status(200), ctx.delay(1000), ctx.json({ ...TEST_HOUSES[0].meter, ...{ name, guid } }))
+        return res(ctx.status(200), ctx.delay(1000), ctx.json({ ...TEST_HOUSES[0].meter, ...{ guid } }))
     }),
 
     // Get Has Missing Housing Contracts Api
