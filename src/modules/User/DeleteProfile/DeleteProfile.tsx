@@ -1,7 +1,9 @@
 import { Icon, IconButton, Tooltip } from '@mui/material'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import { useConfirm } from 'material-ui-confirm'
-import { useTheme } from '@mui/material/styles'
+import { useProfileManagement } from 'src/modules/User/ProfileManagement/ProfileManagementHooks'
+import CircularProgress from '@mui/material/CircularProgress'
+import { errorMainHashColor } from 'src/modules/utils/muiThemeVariables'
 
 /**
  * Pop-up component "Delete profile" with the ability to delete a profile.
@@ -9,8 +11,8 @@ import { useTheme } from '@mui/material/styles'
  * @returns Delete profile pop up.
  */
 const DeleteProfile = () => {
-    const confirm = useConfirm()
-    const theme = useTheme()
+    const openMuiDialog = useConfirm()
+    const { isLoadingInProgress, deleteProfile } = useProfileManagement()
 
     /**
      * Function that handles on profite delete.
@@ -18,12 +20,12 @@ const DeleteProfile = () => {
      * It opens a popup.
      */
     const onProfileDelete = async () => {
-        await confirm({
+        await openMuiDialog({
             title: '',
             dialogProps: {
                 PaperProps: {
-                    style: {
-                        background: theme.palette.error.main,
+                    sx: {
+                        backgroundColor: 'error.main',
                     },
                 },
             },
@@ -44,16 +46,15 @@ const DeleteProfile = () => {
                 </TypographyFormatMessage>
             ),
         })
+        // Then handle the click on confirmation button
+        await deleteProfile()
     }
+
+    if (isLoadingInProgress) return <CircularProgress size={30} sx={{ color: errorMainHashColor }} />
 
     return (
         <Tooltip title="Supprimer votre compte">
-            <IconButton
-                color="error"
-                onClick={onProfileDelete}
-                className="mx-12"
-                sx={{ outlined: theme.palette.secondary.main }}
-            >
+            <IconButton sx={{ color: errorMainHashColor }} onClick={onProfileDelete} className="mx-12">
                 <Icon>delete</Icon>
             </IconButton>
         </Tooltip>

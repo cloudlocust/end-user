@@ -9,6 +9,7 @@ import { Dispatch, RootState } from 'src/redux'
 import { useHistory } from 'react-router-dom'
 import { useIntl } from 'react-intl'
 import ToolbarMenuItem from './ToolbarMenuItem'
+import { installationRequestsFeatureState } from 'src/modules/InstallationRequests/InstallationRequestsConfig'
 
 // TODO This is not a generic component to share with medialem, to update.
 /**
@@ -96,12 +97,22 @@ function UserMenu() {
                     />
                     <ToolbarMenuItem
                         onMenuItemClick={() => {
-                            history.replace('/installation-requests')
+                            history.push('/mentions')
                         }}
-                        iconLabel="solar_power"
-                        idLabel="Installation"
-                        defaultMessageLabel="Installation"
+                        iconLabel="gavel"
+                        idLabel="Mentions"
+                        defaultMessageLabel="Mentions"
                     />
+                    {!installationRequestsFeatureState && (
+                        <ToolbarMenuItem
+                            onMenuItemClick={() => {
+                                history.replace('/installation-requests')
+                            }}
+                            iconLabel="solar_power"
+                            idLabel="Installation"
+                            defaultMessageLabel="Installation"
+                        />
+                    )}
                     <ToolbarMenuItem
                         onMenuItemClick={() => {
                             history.push('/FAQ')

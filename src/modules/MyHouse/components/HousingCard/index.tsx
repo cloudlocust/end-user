@@ -26,6 +26,7 @@ import Tooltip from '@mui/material/Tooltip'
 import { useDispatch } from 'react-redux'
 import { Dispatch } from 'src/redux'
 import { HousingCardForm } from 'src/modules/MyHouse/components/HousingCardForm'
+import { warningMainHashColor } from 'src/modules/utils/muiThemeVariables'
 
 /**
  * This is a card for the display of a logement item.
@@ -154,8 +155,8 @@ const HousingCard = ({
                                 placement="bottom-end"
                                 disableHoverListener={!deleteAddFeatureState}
                                 title={formatMessage({
-                                    id: "Cette fonctionnalitée n'est pas encore disponible",
-                                    defaultMessage: "Cette fonctionnalitée n'est pas encore disponible",
+                                    id: "Cette fonctionnalité n'est pas disponible sur cette version",
+                                    defaultMessage: "Cette fonctionnalité n'est pas disponible sur cette version",
                                 })}
                             >
                                 <div className={`${deleteAddFeatureState && 'cursor-not-allowed'}`}>
@@ -182,7 +183,8 @@ const HousingCard = ({
                             ) : (
                                 <div
                                     onClick={handleOpenAddMeterOpen}
-                                    className="underline text-blue hover:text-blue-900"
+                                    className="underline opacity-100 hover:opacity-70"
+                                    style={{ color: warningMainHashColor }}
                                 >
                                     {formatMessage({
                                         id: 'Veuillez renseigner votre compteur',

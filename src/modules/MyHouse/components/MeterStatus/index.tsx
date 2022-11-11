@@ -1,8 +1,8 @@
-import { Card, useTheme, Icon, CircularProgress, IconButton, useMediaQuery, Divider } from '@mui/material'
+import { Card, useTheme, Icon, CircularProgress, IconButton, useMediaQuery, Divider, Tooltip } from '@mui/material'
 import { NavLink, useParams } from 'react-router-dom'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import { ReactComponent as ContractIcon } from 'src/assets/images/content/housing/contract.svg'
-import { URL_MY_HOUSE } from 'src/modules/MyHouse/MyHouseConfig'
+import { sgeConsentFeatureState, enphaseConsentFeatureState, URL_MY_HOUSE } from 'src/modules/MyHouse/MyHouseConfig'
 import { MuiCardContent } from 'src/common/ui-kit'
 import { useConsents } from 'src/modules/Consents/consentsHook'
 import { useEffect, useState } from 'react'
@@ -18,6 +18,7 @@ import ModeEditOutlineOutlinedIcon from '@mui/icons-material/ModeEditOutlineOutl
 import { useMeterForHousing } from 'src/modules/Meters/metersHook'
 import { Dispatch } from 'src/redux'
 import { EditMeterFormPopup } from 'src/modules/MyHouse/components/EditMeterFormPopup'
+import { EnphaseConsentPopup } from 'src/modules/MyHouse/components/MeterStatus/EnphaseConsentPopup'
 
 const FORMATTED_DATA = 'DD/MM/YYYY'
 const TEXT_CONNEXION_LE = 'Connexion le'
@@ -27,6 +28,7 @@ const TEXT_CONNEXION_LE = 'Connexion le'
  *
  * @returns Meter Status component with different status for Nrlibk & Enedis.
  */
+// eslint-disable-next-line sonarjs/cognitive-complexity
 export const MeterStatus = () => {
     const theme = useTheme()
     const { formatMessage } = useIntl()
@@ -40,12 +42,15 @@ export const MeterStatus = () => {
         isCreateEnedisSgeConsentLoading,
         createEnedisSgeConsentError,
         enphaseConsent,
+        enphaseLink,
+        getEnphaseLink,
     } = useConsents()
     const { editMeter, loadingInProgress } = useMeterForHousing()
     const dispatch = useDispatch<Dispatch>()
     const { housingList } = useSelector(({ housingModel }: RootState) => housingModel)
     const [foundHousing, setFoundHousing] = useState<IHousing>()
     const [editMeterOpen, setEditMeterOpen] = useState(false)
+    const [openEnphaseConsentPopup, setOpenEnphaseConsentPopup] = useState(false)
 
     // Retrieving house id from url params /my-houses/:houseId
     // eslint-disable-next-line jsdoc/require-jsdoc
@@ -58,6 +63,13 @@ export const MeterStatus = () => {
     /* Enphase created at date formatted */
     const enphaseConsentCreatedAt = dayjs(enphaseConsent?.createdAt).format(FORMATTED_DATA)
 
+    /**
+     * Function that handle closing the popup.
+     */
+    const handleOnCloseEnphasePopup = () => {
+        setOpenEnphaseConsentPopup(false)
+    }
+
     // UseEffect that find the housing with the house Id from url params.
     useEffect(() => {
         if (housingList) {
@@ -65,12 +77,40 @@ export const MeterStatus = () => {
         }
     }, [houseId, housingList])
 
-    // UseEffect that fetches the consents with the found housing meter
+    /**
+     * This useEffect listen to changes in localStorage for enphaseConsentState.
+     *
+     * It also listen to changes in foundHousing that triggers getConsents.
+     *
+     */
     useEffect(() => {
         if (foundHousing?.meter?.guid) {
             getConsents(foundHousing?.meter?.guid)
         }
-    }, [getConsents, foundHousing])
+
+        /**
+         * OnStorage function that execute the setter for EnphaseStateFromLocalStorage.
+         */
+        const onStorage = () => {
+            const enphaseConfirmConsentState = localStorage.getItem('enphaseConfirmState')
+            if (enphaseConfirmConsentState === 'SUCCESS' && foundHousing?.meter?.guid) {
+                localStorage.removeItem('enphaseConfirmState')
+                getConsents(foundHousing.meter.guid)
+            }
+        }
+
+        /**
+         * Listen to localStorage changes.
+         */
+        window.addEventListener('storage', onStorage)
+
+        /**
+         * Clear up function when the component unmounts.
+         */
+        return () => {
+            window.removeEventListener('storage', onStorage)
+        }
+    }, [foundHousing?.meter?.guid, getConsents])
 
     /**
      * Function that renders JSX accorrding to nrlink status.
@@ -182,9 +222,18 @@ export const MeterStatus = () => {
             default:
                 return (
                     <>
-                        <Icon className="mr-12">
-                            <img src="/assets/images/content/housing/consent-status/meter-off.svg" alt="off-icon" />
-                        </Icon>
+                        {sgeConsentFeatureState ? (
+                            <Icon className="mr-12 text-grey-600">
+                                <img
+                                    src="/assets/images/content/housing/consent-status/meter-disabled.svg"
+                                    alt="off-icon"
+                                />
+                            </Icon>
+                        ) : (
+                            <Icon className="mr-12 text-grey-600">
+                                <img src="/assets/images/content/housing/consent-status/meter-off.svg" alt="off-icon" />
+                            </Icon>
+                        )}
                         <div className="flex flex-col">
                             <EnedisSgePopup
                                 openEnedisSgeConsentText={formatMessage({
@@ -248,8 +297,12 @@ export const MeterStatus = () => {
                         <div className="flex flex-col">
                             <TypographyFormatMessage
                                 color={theme.palette.error.main}
-                                className="underline"
+                                className="underline cursor-pointer"
                                 fontWeight={600}
+                                onClick={() => {
+                                    getEnphaseLink(parseInt(houseId))
+                                    setOpenEnphaseConsentPopup(true)
+                                }}
                             >
                                 Connectez votre onduleur pour visualiser votre production
                             </TypographyFormatMessage>
@@ -312,7 +365,11 @@ export const MeterStatus = () => {
                             </Card>
                         </NavLink>
                     </div>
-                    <div className="flex flex-col md:flex-row justify-between items-center">
+                    <div
+                        className={`flex flex-col md:flex-row ${
+                            enphaseConsentFeatureState ? 'justify-between' : 'justify-evenly'
+                        } items-center`}
+                    >
                         {/* Nrlink Consent Status */}
                         <div className="w-full md:w-1/3 p-12">
                             {!foundHousing ? (
@@ -338,33 +395,44 @@ export const MeterStatus = () => {
                             )}
                         </div>
                         <Divider orientation={mdDown ? 'horizontal' : undefined} flexItem variant="fullWidth" />
+
                         {/* Enedis Consent Status */}
-                        <div className="w-full md:w-1/3 p-12">
-                            {!foundHousing ? (
-                                <>
-                                    <TypographyFormatMessage className="text-xs md:text-sm font-semibold mb-6">
-                                        Historique de consommation
-                                    </TypographyFormatMessage>
-                                    <div className="flex flex-row items-center">
-                                        {renderEnedisStatus('NONEXISTENT')}
-                                    </div>
-                                </>
-                            ) : consentsLoading ? (
-                                <CircularProgress size={25} />
-                            ) : (
-                                <>
-                                    <TypographyFormatMessage className="text-xs md:text-sm font-semibold mb-6">
-                                        Historique de consommation
-                                    </TypographyFormatMessage>
-                                    <div className="flex flex-row items-center">
-                                        {renderEnedisStatus(enedisSgeConsent?.enedisSgeConsentState)}
-                                    </div>
-                                </>
-                            )}
-                        </div>
+                        <Tooltip
+                            arrow
+                            placement="top"
+                            disableHoverListener={!sgeConsentFeatureState}
+                            title={formatMessage({
+                                id: "Cette fonctionnalité n'est pas encore disponible",
+                                defaultMessage: "Cette fonctionnalité n'est pas encore disponible",
+                            })}
+                        >
+                            <div className={`w-full md:w-1/3 p-12 ${sgeConsentFeatureState && 'cursor-not-allowed'}`}>
+                                {!foundHousing ? (
+                                    <>
+                                        <TypographyFormatMessage className="text-xs md:text-sm font-semibold mb-6">
+                                            Historique de consommation
+                                        </TypographyFormatMessage>
+                                        <div className="flex flex-row items-center">
+                                            {renderEnedisStatus('NONEXISTENT')}
+                                        </div>
+                                    </>
+                                ) : consentsLoading ? (
+                                    <CircularProgress size={25} />
+                                ) : (
+                                    <>
+                                        <TypographyFormatMessage className="text-xs md:text-sm font-semibold mb-6">
+                                            Historique de consommation
+                                        </TypographyFormatMessage>
+                                        <div className="flex flex-row items-center">
+                                            {renderEnedisStatus(enedisSgeConsent?.enedisSgeConsentState)}
+                                        </div>
+                                    </>
+                                )}
+                            </div>
+                        </Tooltip>
                         <Divider orientation={mdDown ? 'horizontal' : undefined} flexItem variant="fullWidth" />
                         {/* Enphase Consent Status */}
-                        <div className="w-full md:w-1/3 p-12">
+                        <div className={`w-full md:w-1/3 p-12 ${enphaseConsentFeatureState && 'hidden'}`}>
                             {!foundHousing ? (
                                 <>
                                     <TypographyFormatMessage className="text-xs md:text-sm font-semibold mb-6">
@@ -382,11 +450,14 @@ export const MeterStatus = () => {
                                         Production solaire
                                     </TypographyFormatMessage>
                                     <div className="flex flex-row items-center">
-                                        {renderEnphaseStatus(enphaseConsent?.enphaseConsentStatus)}
+                                        {renderEnphaseStatus(enphaseConsent?.enphaseConsentState)}
                                     </div>
                                 </>
                             )}
                         </div>
+                        {openEnphaseConsentPopup && (
+                            <EnphaseConsentPopup onClose={handleOnCloseEnphasePopup} url={enphaseLink} />
+                        )}
                     </div>
                 </MuiCardContent>
             </Card>

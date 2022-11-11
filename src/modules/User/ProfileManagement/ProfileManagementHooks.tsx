@@ -18,7 +18,7 @@ export const EMAIL_ALREADY_EXIST_SNACKBAR_MESSAGE = "L'email inséré existe dé
  */
 export const useProfileManagement = () => {
     const dispatch = useDispatch<Dispatch>()
-    const [isUpdateInProgress, setIsUpdateInProgress] = useState(false)
+    const [isLoadingInProgress, setIsLoadingInProgress] = useState(false)
     const { enqueueSnackbar } = useSnackbar()
     const { formatMessage } = useIntl()
     const { user } = useSelector(({ userModel }: RootState) => userModel)
@@ -40,10 +40,10 @@ export const useProfileManagement = () => {
     ) => {
         const dataIsNotModified = isMatch(user as IUser, data)
         if (dataIsNotModified) return
-        setIsUpdateInProgress(true)
+        setIsLoadingInProgress(true)
         try {
             await dispatch.userModel.updateCurrentUser({ data })
-            setIsUpdateInProgress(false)
+            setIsLoadingInProgress(false)
             enqueueSnackbar(
                 formatMessage({
                     id: successUpdateMsg || 'Profil modifié avec succès',
@@ -52,7 +52,7 @@ export const useProfileManagement = () => {
                 { variant: 'success', autoHideDuration: 8000 },
             )
         } catch (error) {
-            setIsUpdateInProgress(false)
+            setIsLoadingInProgress(false)
             const errorMessage = handleUpdateUserError(error)
             enqueueSnackbar(formatMessage({ id: errorMessage, defaultMessage: errorMessage }), { variant: 'error' })
             throw error
@@ -68,7 +68,30 @@ export const useProfileManagement = () => {
         await updateProfile({ ...user!, password }, 'Mot de passe modifié avec succès')
     }
 
-    return { isUpdateInProgress, updateProfile, updatePassword }
+    /**
+     * DeleteProfile function.
+     */
+    const deleteProfile = async () => {
+        setIsLoadingInProgress(true)
+        try {
+            await dispatch.userModel.deleteCurrentUser()
+            setIsLoadingInProgress(false)
+            enqueueSnackbar(
+                formatMessage({
+                    id: 'Votre profil a été supprimé avec succès',
+                    defaultMessage: 'Votre profil a été supprimé avec succès',
+                }),
+                { variant: 'success', autoHideDuration: 8000 },
+            )
+        } catch (error) {
+            setIsLoadingInProgress(false)
+            const errorMessage = handleUpdateUserError(error)
+            enqueueSnackbar(formatMessage({ id: errorMessage, defaultMessage: errorMessage }), { variant: 'error' })
+            throw error
+        }
+    }
+
+    return { isLoadingInProgress, updateProfile, updatePassword, deleteProfile }
 }
 /**
  * Handle message to show in snackbar when update is wrong.

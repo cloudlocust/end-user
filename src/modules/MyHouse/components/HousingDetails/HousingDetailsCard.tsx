@@ -62,8 +62,8 @@ const HousingDetailsCard = ({
                     placement="top"
                     disableHoverListener={!equipmentsAccomodationFeatureState}
                     title={formatMessage({
-                        id: "Cette fonctionnalitée n'est pas encore disponible",
-                        defaultMessage: "Cette fonctionnalitée n'est pas encore disponible",
+                        id: "Cette fonctionnalité n'est pas disponible sur cette version",
+                        defaultMessage: "Cette fonctionnalité n'est pas disponible sur cette version",
                     })}
                 >
                     <div className={`${equipmentsAccomodationFeatureState && 'cursor-not-allowed'}`}>

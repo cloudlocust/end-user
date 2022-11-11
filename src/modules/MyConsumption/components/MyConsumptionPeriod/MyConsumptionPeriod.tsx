@@ -36,7 +36,7 @@ export const MyConsumptionPeriod = ({ setRange, setPeriod, setMetricsInterval, r
                     setMetricsInterval(dataConsumptionPeriod[value].interval)
                     setPeriod(dataConsumptionPeriod[value].period)
                 }}
-                indicatorColor="primary"
+                indicatorColor="secondary"
                 textColor="inherit"
                 variant="scrollable"
                 scrollButtons={false}
@@ -47,7 +47,7 @@ export const MyConsumptionPeriod = ({ setRange, setPeriod, setMetricsInterval, r
                 }}
                 TabIndicatorProps={{
                     children: (
-                        <Box sx={{ bgcolor: theme.palette.primary.dark }} className="w-full h-full rounded-full " />
+                        <Box sx={{ bgcolor: theme.palette.secondary.main }} className="w-full h-full rounded-full " />
                     ),
                 }}
             >
@@ -57,11 +57,15 @@ export const MyConsumptionPeriod = ({ setRange, setPeriod, setMetricsInterval, r
                         className="text-14 font-semibold min-h-40 min-w-64 mx-4 px-12 capitalize opacity-50"
                         disableRipple
                         label={item.name}
-                        style={{
-                            color: theme.palette.background.paper,
+                        sx={{
+                            color: theme.palette.primary.contrastText,
                             zIndex: 1,
-                            backgroundColor: theme.palette.primary.dark,
+                            backgroundColor: theme.palette.primary.main,
                             borderRadius: '35px',
+                            '&.Mui-selected': {
+                                backgroundColor: theme.palette.secondary.main,
+                                color: theme.palette.secondary.contrastText,
+                            },
                         }}
                     />
                 ))}

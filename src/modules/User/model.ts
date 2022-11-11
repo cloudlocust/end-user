@@ -179,6 +179,16 @@ export const userModel = createModel<RootModel>()({
             dispatch.userModel.setUser(user)
         },
         /**
+         * Delete user data.
+         */
+        // eslint-disable-next-line jsdoc/require-jsdoc
+        async deleteCurrentUser() {
+            const response = await axios.delete<IUser>(`${AUTH_BASE_URL}/users/delete-me`)
+            // Set user to null and localStorage to null.
+            dispatch.userModel.logout()
+            return response.data
+        },
+        /**
          * Get current user data.
          *
          * @param payload N/A.

@@ -97,7 +97,10 @@ const HousingList = () => {
     return (
         <Root
             header={
-                <div className="w-full relative flex flex-col justify-center items-center p-16">
+                <div
+                    className="w-full relative flex flex-col justify-center items-center p-16 h-full"
+                    style={{ backgroundColor: theme.palette.primary.dark }}
+                >
                     <TypographyFormatMessage
                         className="text-18 md:text-24"
                         style={{ color: theme.palette.primary.contrastText }}

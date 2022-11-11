@@ -109,9 +109,20 @@ export interface IEnphaseConsent {
     /**
      * Enphhase consent status.
      */
-    enphaseConsentStatus: enphaseConsentStatus
+    enphaseConsentState: enphaseConsentStatus
     /**
      * When the enedis consent was created.
      */
     createdAt?: string
+}
+
+/**
+ * Enphase link type.
+ */
+// eslint-disable-next-line jsdoc/require-jsdoc
+export type EnphaseLink = {
+    /**
+     * Enphase url.
+     */
+    url: string
 }

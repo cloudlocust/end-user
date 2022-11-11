@@ -1,5 +1,6 @@
 import { useCallback, useState } from 'react'
 import {
+    EnphaseLink,
     IEnedisConsent,
     IEnedisSgeConsent,
     IEnphaseConsent,
@@ -10,6 +11,8 @@ import { useSnackbar } from 'notistack'
 import { useIntl } from 'react-intl'
 import { axios } from 'src/common/react-platform-components'
 import { API_RESOURCES_URL } from 'src/configs'
+
+const NO_HOUSING_ID_ERROR_TEXT = 'No housing id provided'
 
 /**
  * Nrlink consent endpoint.
@@ -32,6 +35,11 @@ export const ENEDIS_SGE_CONSENT_API = `${API_RESOURCES_URL}/enedis-sge/consent`
 export const ENPHASE_CONSENT_API = `${API_RESOURCES_URL}/enphase/consent`
 
 /**
+ * Get Enphase URL.
+ */
+export const ENPHASE_URL = `${API_RESOURCES_URL}/enphase/consent/link`
+
+/**
  * Consents hook.
  *
  * @returns Consents hook.
@@ -50,6 +58,7 @@ export function useConsents() {
     const [enedisSgeConsent, setEnedisSgeConsent] = useState<IEnedisSgeConsent>()
     const [isCreateEnedisSgeConsentLoading, setIsCreateEnedisSgeConsentLoading] = useState(false)
     const [createEnedisSgeConsentError, setCreateEnedisSgeConsentError] = useState<boolean>(false)
+    const [enphaseLink, setEnphaseLink] = useState<EnphaseLink['url']>('')
 
     /**
      * Function that performs HTTP call to get consents.
@@ -68,7 +77,7 @@ export function useConsents() {
             const [nrlinkConsent, enedisConsent, enphaseConsent] = await Promise.allSettled([
                 axios.get<INrlinkConsent>(`${NRLINK_CONSENT_API}/${meterGuid}`),
                 axios.get<IEnedisConsent>(`${ENEDIS_CONSENT_API}/${meterGuid}`),
-                axios.get<IEnphaseConsent>(`${ENEDIS_CONSENT_API}/${meterGuid}`),
+                axios.get<IEnphaseConsent>(`${ENPHASE_CONSENT_API}/${meterGuid}`),
             ])
 
             // Nrlink consent.
@@ -162,7 +171,7 @@ export function useConsents() {
     const createEnedisSgeConsent = useCallback(
         async (housingId: number) => {
             try {
-                if (!housingId) throw new Error('No housing id provided')
+                if (!housingId) throw new Error(NO_HOUSING_ID_ERROR_TEXT)
                 setIsCreateEnedisSgeConsentLoading(true)
                 const { status, data } = await axios.post<IEnedisSgeConsent>(
                     `${API_RESOURCES_URL}/enedis-sge/consent/${housingId}`,
@@ -192,6 +201,28 @@ export function useConsents() {
         [enqueueSnackbar, formatMessage],
     )
 
+    const getEnphaseLink = useCallback(
+        async (housingId: number) => {
+            try {
+                if (!housingId) throw new Error(NO_HOUSING_ID_ERROR_TEXT)
+                const { data: responseData } = await axios.get<EnphaseLink>(`${ENPHASE_URL}/${housingId}`)
+                setEnphaseLink(responseData.url)
+            } catch (error) {
+                enqueueSnackbar(
+                    formatMessage({
+                        id: "Erreur lors de la récupération du lien d'Enphase",
+                        defaultMessage: "Erreur lors de la récupération du lien d'Enphase",
+                    }),
+                    {
+                        autoHideDuration: 5000,
+                        variant: 'error',
+                    },
+                )
+            }
+        },
+        [enqueueSnackbar, formatMessage],
+    )
+
     return {
         nrlinkConsent,
         enedisConsent,
@@ -208,5 +239,8 @@ export function useConsents() {
         isCreateEnedisSgeConsentLoading,
         createEnedisSgeConsentError,
         enphaseConsent,
+        getEnphaseLink,
+        enphaseLink,
+        setEnphaseLink,
     }
 }
