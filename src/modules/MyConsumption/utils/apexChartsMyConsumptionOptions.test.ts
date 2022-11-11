@@ -11,7 +11,6 @@ import { MessageDescriptor } from 'react-intl'
 import { metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
 import dayjs from 'dayjs'
 
-const nrlinkConsumptionMetricsText = 'Consommation'
 // eslint-disable-next-line jsdoc/require-jsdoc
 const mockFormatMessage: any = (input: MessageDescriptor) => input.id
 let mockChartType: ApexChart['type'] | '' = '' || 'area' || 'bar'
@@ -59,7 +58,7 @@ const mockYAxis: ApexYAxis[] = [
 let mockyAxisSeries: ApexAxisChartSeries = [
     {
         data: [mockDatapoints[0][0]],
-        name: nrlinkConsumptionMetricsText,
+        name: 'Electricité achetée sur le réseau',
         type: mockChartType,
         color: 'rgb(255, 241, 215)',
     },

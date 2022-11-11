@@ -92,11 +92,11 @@ export const chartSpecifities: {
     [key in metricTargetsEnum]: ApexYAxis & { label?: string }
 } = {
     [metricTargetsEnum.consumption]: {
-        label: 'Consommation',
+        label: 'Electricité achetée sur le réseau',
     },
     [metricTargetsEnum.autoconsumption]: {
         label: 'Autoconsommation',
-        seriesName: 'Consommation',
+        seriesName: 'Electricité achetée sur le réseau',
         show: false,
     },
     [metricTargetsEnum.eurosConsumption]: {
