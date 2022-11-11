@@ -180,7 +180,7 @@ describe('MeterStatus component test', () => {
                 </Router>,
             )
 
-            expect(mockGetConsent).toBeCalledWith(foundHouse?.meter?.guid)
+            expect(mockGetConsent).toBeCalledWith(foundHouse?.meter?.guid, mockHouseId)
             // Retrieve image alt attribute
             // eslint-disable-next-line sonarjs/no-duplicate-string
             const image = getByAltText('connected-icon')
@@ -200,7 +200,7 @@ describe('MeterStatus component test', () => {
                     <MeterStatus />
                 </Router>,
             )
-            expect(mockGetConsent).toBeCalledWith(foundHouse?.meter?.guid)
+            expect(mockGetConsent).toBeCalledWith(foundHouse?.meter?.guid, mockHouseId)
             // Retrieve image alt attribute
             const image = getByAltText('error-icon')
             expect(getByText(COMPTEUR_TITLE)).toBeTruthy()
@@ -217,7 +217,7 @@ describe('MeterStatus component test', () => {
                     <MeterStatus />
                 </Router>,
             )
-            expect(mockGetConsent).toBeCalledWith(foundHouse?.meter?.guid)
+            expect(mockGetConsent).toBeCalledWith(foundHouse?.meter?.guid, mockHouseId)
             // Retrieve image alt attribute
             const image = getAllByAltText('off-icon')[0]
             expect(getByText(COMPTEUR_TITLE)).toBeTruthy()
@@ -254,7 +254,7 @@ describe('MeterStatus component test', () => {
                     <MeterStatus />
                 </Router>,
             )
-            expect(mockGetConsent).toBeCalledWith(foundHouse?.meter?.guid)
+            expect(mockGetConsent).toBeCalledWith(foundHouse?.meter?.guid, mockHouseId)
             expect(getByText(COMPTEUR_TITLE)).toBeTruthy()
             expect(getByText(`n° ${foundHouse?.meter?.guid}`)).toBeTruthy()
             expect(getByText(ENEDIS_CONNECTED_MESSAGE)).toBeTruthy()

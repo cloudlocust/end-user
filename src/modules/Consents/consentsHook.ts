@@ -1,7 +1,6 @@
 import { useCallback, useState } from 'react'
 import {
     EnphaseLink,
-    IEnedisConsent,
     IEnedisSgeConsent,
     IEnphaseConsent,
     INrlinkConsent,
@@ -18,11 +17,6 @@ const NO_HOUSING_ID_ERROR_TEXT = 'No housing id provided'
  * Nrlink consent endpoint.
  */
 export const NRLINK_CONSENT_API = `${API_RESOURCES_URL}/nrlink/consent`
-
-/**
- * Nrlink consent endpoint.
- */
-export const ENEDIS_CONSENT_API = `${API_RESOURCES_URL}/enedis/consent`
 
 /**
  * Enedis Sge consent endpoint.
@@ -49,7 +43,6 @@ export function useConsents() {
     const { formatMessage } = useIntl()
     const [consentsLoading, setConsentsLoading] = useState(false)
     const [nrlinkConsent, setNrlinkConsent] = useState<INrlinkConsent>()
-    const [enedisConsent, setEnedisConsent] = useState<IEnedisConsent>()
     const [enphaseConsent, setEnphaseConsent] = useState<IEnphaseConsent>()
     const [meterVerification, setMeterVerification] = useState<MeterVerificationEnum>(
         MeterVerificationEnum.NOT_VERIFIED,
@@ -66,17 +59,17 @@ export function useConsents() {
      * @param meterGuid MeterGuid.
      */
     const getConsents = useCallback(
-        async (meterGuid: string) => {
+        async (meterGuid: string, houseId?: number) => {
             setConsentsLoading(true)
-            if (!meterGuid) return
+            if (!meterGuid) throw Error('Meter guid missing!')
             // Used Promise.allSettled() instead of Promise.all to return a promise that resolves after all of the given requests have either been fulfilled or rejected.
             // Because Promise.all() throws only when the first promise is rejected and it returns only that rejection.
             // If the promise status is "fulfilled" it returns "value"
             // If it's "rejetected" it returns "reason"
             // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/allSettled
-            const [nrlinkConsent, enedisConsent, enphaseConsent] = await Promise.allSettled([
+            const [nrlinkConsent, enedisSgeConsent, enphaseConsent] = await Promise.allSettled([
                 axios.get<INrlinkConsent>(`${NRLINK_CONSENT_API}/${meterGuid}`),
-                axios.get<IEnedisConsent>(`${ENEDIS_CONSENT_API}/${meterGuid}`),
+                axios.get<IEnedisSgeConsent>(`${ENEDIS_SGE_CONSENT_API}/${houseId}`),
                 axios.get<IEnphaseConsent>(`${ENPHASE_CONSENT_API}/${meterGuid}`),
             ])
 
@@ -96,9 +89,9 @@ export function useConsents() {
                 )
             }
             // Enedis consent.
-            if (enedisConsent.status === 'fulfilled') {
-                setEnedisConsent(enedisConsent.value?.data)
-            } else if (enedisConsent.status === 'rejected') {
+            if (enedisSgeConsent.status === 'fulfilled') {
+                setEnedisSgeConsent(enedisSgeConsent.value?.data)
+            } else if (enedisSgeConsent.status === 'rejected') {
                 enqueueSnackbar(
                     formatMessage({
                         id: 'Erreur lors de la récupération du consentement Enedis',
@@ -113,7 +106,7 @@ export function useConsents() {
 
             if (enphaseConsent.status === 'fulfilled') {
                 setEnphaseConsent(enphaseConsent.value.data)
-            } else if (enedisConsent.status === 'rejected') {
+            } else if (enphaseConsent.status === 'rejected') {
                 enqueueSnackbar(
                     formatMessage({
                         id: 'Erreur lors de la récupération du consentement Enphase',
@@ -225,7 +218,6 @@ export function useConsents() {
 
     return {
         nrlinkConsent,
-        enedisConsent,
         consentsLoading,
         getConsents,
         verifyMeter,
