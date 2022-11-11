@@ -85,7 +85,7 @@ export const MeterStatus = () => {
      */
     useEffect(() => {
         if (foundHousing?.meter?.guid) {
-            getConsents(foundHousing?.meter?.guid)
+            getConsents(foundHousing?.meter?.guid, parseInt(houseId))
         }
 
         /**
@@ -110,7 +110,7 @@ export const MeterStatus = () => {
         return () => {
             window.removeEventListener('storage', onStorage)
         }
-    }, [foundHousing?.meter?.guid, getConsents])
+    }, [foundHousing?.meter?.guid, getConsents, houseId])
 
     /**
      * Function that renders JSX accorrding to nrlink status.

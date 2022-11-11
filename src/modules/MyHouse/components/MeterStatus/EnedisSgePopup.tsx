@@ -218,7 +218,7 @@ export const EnedisSgePopup = ({
                                             data-testid="sge-message"
                                             onClick={() =>
                                                 window.open(
-                                                    'https://www.myem.fr/politique-de-confidentialite/',
+                                                    'https://drive.google.com/uc?export=download&id=15QHX14AWoKepWuEJBxscijK5IIHPnCbl',
                                                     '_blank',
                                                 )
                                             }

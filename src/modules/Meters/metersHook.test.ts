@@ -46,7 +46,7 @@ describe('addMeter test', () => {
             () => {
                 return result.current.loadingInProgress
             },
-            { timeout: 2000 },
+            { timeout: 4000 },
         )
 
         expect(result.current.loadingInProgress).toBe(false)
