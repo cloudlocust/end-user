@@ -42,8 +42,8 @@ export const useHasMissingHousingContracts = (range: metricRangeType, housingId?
         } catch (error) {
             enqueueSnackbar(
                 formatMessage({
-                    id: 'Erreur lors de la récupération du méssage du contrat example',
-                    defaultMessage: 'Erreur lors de la récupération du méssage du contrat example',
+                    id: 'Erreur lors de la récupération du message du contrat example',
+                    defaultMessage: 'Erreur lors de la récupération du message du contrat example',
                 }),
                 { variant: 'error' },
             )

@@ -43,9 +43,9 @@ const VERIFY_METER_MESSAGE = "Vérification de l'existence de votre compteur"
 const CREATION_ENEDIS_SGE_CONSENT_TEXT =
     "J'autorise My Energy Manager à la récolte de mon historique de données de consommation auprès d'Enedis."
 
-const EDIT_METER_NAME_PLACEHOLDER = 'Modifier le nom de votre compteur'
 const EDIT_METER_NUMBER_PLACEHOLDER = 'Modifier le numéro de votre compteur'
 const ERROR_ENPHASE_MESSAGE = 'Connectez votre onduleur pour visualiser votre production'
+const PENDING_ENPHASE_MESSAGE = 'Votre connexion est en cours et sera active dans les plus brefs délais'
 
 const CREATED_AT = '2022-09-02T08:06:08Z'
 
@@ -180,7 +180,7 @@ describe('MeterStatus component test', () => {
                 </Router>,
             )
 
-            expect(mockGetConsent).toBeCalledWith(foundHouse?.meter?.guid)
+            expect(mockGetConsent).toBeCalledWith(foundHouse?.meter?.guid, mockHouseId)
             // Retrieve image alt attribute
             // eslint-disable-next-line sonarjs/no-duplicate-string
             const image = getByAltText('connected-icon')
@@ -200,7 +200,7 @@ describe('MeterStatus component test', () => {
                     <MeterStatus />
                 </Router>,
             )
-            expect(mockGetConsent).toBeCalledWith(foundHouse?.meter?.guid)
+            expect(mockGetConsent).toBeCalledWith(foundHouse?.meter?.guid, mockHouseId)
             // Retrieve image alt attribute
             const image = getByAltText('error-icon')
             expect(getByText(COMPTEUR_TITLE)).toBeTruthy()
@@ -217,7 +217,7 @@ describe('MeterStatus component test', () => {
                     <MeterStatus />
                 </Router>,
             )
-            expect(mockGetConsent).toBeCalledWith(foundHouse?.meter?.guid)
+            expect(mockGetConsent).toBeCalledWith(foundHouse?.meter?.guid, mockHouseId)
             // Retrieve image alt attribute
             const image = getAllByAltText('off-icon')[0]
             expect(getByText(COMPTEUR_TITLE)).toBeTruthy()
@@ -254,7 +254,7 @@ describe('MeterStatus component test', () => {
                     <MeterStatus />
                 </Router>,
             )
-            expect(mockGetConsent).toBeCalledWith(foundHouse?.meter?.guid)
+            expect(mockGetConsent).toBeCalledWith(foundHouse?.meter?.guid, mockHouseId)
             expect(getByText(COMPTEUR_TITLE)).toBeTruthy()
             expect(getByText(`n° ${foundHouse?.meter?.guid}`)).toBeTruthy()
             expect(getByText(ENEDIS_CONNECTED_MESSAGE)).toBeTruthy()
@@ -302,6 +302,20 @@ describe('MeterStatus component test', () => {
             const activeIcon = getByAltText('enphase-off-icon')
             expect(getByText(ERROR_ENPHASE_MESSAGE)).toBeTruthy()
             expect(activeIcon).toHaveAttribute('src', STATUS_OFF_SRC)
+        })
+        test('when enphase status is PENDING', async () => {
+            foundHouse!.meter!.guid = '12345Her'
+            mockEnphaseConsent = 'PENDING'
+
+            const { getByText } = reduxedRender(
+                <Router>
+                    <MeterStatus />
+                </Router>,
+            )
+
+            // Children of <Icon> </Icon>
+            expect(getByText('replay')).toBeTruthy()
+            expect(getByText(PENDING_ENPHASE_MESSAGE)).toBeTruthy()
         })
     })
     describe('test implementation of EnedisSgePopup', () => {
@@ -372,7 +386,6 @@ describe('MeterStatus component test', () => {
 
             expect(editButton).toBeTruthy()
             userEvent.click(editButton)
-            expect(getByPlaceholderText('Modifier le nom de votre compteur')).toBeTruthy()
             expect(getByPlaceholderText('Modifier le numéro de votre compteur')).toBeTruthy()
             expect(getByText('Annuler')).toBeTruthy()
             expect(getByText('Modifier')).toBeTruthy()
@@ -385,32 +398,25 @@ describe('MeterStatus component test', () => {
             )
 
             const TEST_METER_NUMBER_INPUT = '11223344556677'
-            const TEST_METER_NAME_INPUT = 'this is my meter'
             const editButton = getByTestId('ModeEditOutlineOutlinedIcon')
 
             expect(editButton).toBeTruthy()
             userEvent.click(editButton)
-            const nameInput = getByPlaceholderText(EDIT_METER_NAME_PLACEHOLDER)
             const numberInput = getByPlaceholderText(EDIT_METER_NUMBER_PLACEHOLDER)
 
             // Clear inputs
-            userEvent.clear(nameInput)
             userEvent.clear(numberInput)
 
             // Type inputs
-            userEvent.type(nameInput, TEST_METER_NAME_INPUT)
             userEvent.type(numberInput, TEST_METER_NUMBER_INPUT)
 
             userEvent.click(getByText('Modifier'))
 
             await waitFor(() => {
                 expect(mockEditMeter).toHaveBeenCalledWith(mockHouseId, {
-                    name: TEST_METER_NAME_INPUT,
                     guid: TEST_METER_NUMBER_INPUT,
                 })
             })
-
-            expect(() => getByPlaceholderText(EDIT_METER_NAME_PLACEHOLDER)).toThrow()
         })
     })
 })
