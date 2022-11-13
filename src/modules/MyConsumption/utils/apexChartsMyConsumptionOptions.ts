@@ -187,7 +187,8 @@ export const getApexChartMyConsumptionProps = ({
         // data.length !== 720 is added because there can be case where period is not daily, and yAxisSerie.data didn't updated and still express data of daily.
         // TODO Fix find a better way to reender period and data at same time, instead of doing yAxisSerie.data.length !== 720
         if (
-            yAxisSerie.name === metricTargetsEnum.consumption &&
+            (yAxisSerie.name === metricTargetsEnum.consumption ||
+                yAxisSerie.name === metricTargetsEnum.autoconsumption) &&
             period !== 'daily' &&
             (yAxisSerie.data.length !== 48 || 720)
         ) {
@@ -240,7 +241,8 @@ export const getApexChartMyConsumptionProps = ({
             yAxisSerie.name === metricTargetsEnum.consumption ||
                 yAxisSerie.name === metricTargetsEnum.eurosConsumption ||
                 yAxisSerie.name === metricTargetsEnum.autoconsumption ||
-                yAxisSerie.name === metricTargetsEnum.totalProduction
+                yAxisSerie.name === metricTargetsEnum.totalProduction ||
+                yAxisSerie.name === metricTargetsEnum.injectedProduction
                 ? 0
                 : 1.5,
         )
