@@ -146,10 +146,13 @@ export const MyConsumptionContainer = () => {
     /**
      * Show text according to interval.
      *
+     * @param chartType Chart type: consumption or production.
      * @returns Text that represents the interval.
      */
-    const showPerPeriodText = () => {
-        let textUnit = `en ${isEurosConsumptionChart ? '€' : period === 'daily' ? 'Wh' : 'kWh'}`
+    const showPerPeriodText = (chartType: 'consumption' | 'production') => {
+        let textUnit = `en ${
+            chartType === 'consumption' && isEurosConsumptionChart ? '€' : period === 'daily' ? 'Wh' : 'kWh'
+        }`
         if (period === 'daily') {
             return `${textUnit} par jour`
         } else if (period === 'weekly') {
@@ -278,7 +281,7 @@ export const MyConsumptionContainer = () => {
                                     variant="h5"
                                     style={{ color: theme.palette.primary.contrastText }}
                                 >
-                                    {showPerPeriodText()}
+                                    {showPerPeriodText('consumption')}
                                 </TypographyFormatMessage>
                             </div>
                         </motion.div>
@@ -372,7 +375,7 @@ export const MyConsumptionContainer = () => {
                                     variant="h5"
                                     style={{ color: theme.palette.primary.contrastText }}
                                 >
-                                    {showPerPeriodText()}
+                                    {showPerPeriodText('production')}
                                 </TypographyFormatMessage>
                             </div>
                         </motion.div>
