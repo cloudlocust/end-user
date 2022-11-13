@@ -70,13 +70,13 @@ jest.mock('src/modules/Metrics/metricsHook.ts', () => ({
 jest.mock('src/modules/Consents/consentsHook.ts', () => ({
     // eslint-disable-next-line jsdoc/require-jsdoc
     useConsents: () => ({
-        enedisConsent: {
+        enedisSgeConsent: {
             meterGuid: '133456',
-            enedisConsentState: mockNrlinkConsent,
+            enedisSgeConsentState: mockEnedisConsent,
         },
         nrlinkConsent: {
             meterGuid: '133456',
-            nrlinkConsentState: mockEnedisConsent,
+            nrlinkConsentState: mockNrlinkConsent,
         },
         getConsents: mockGetConsents,
     }),

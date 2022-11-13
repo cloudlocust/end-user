@@ -85,7 +85,7 @@ export const MeterStatus = () => {
      */
     useEffect(() => {
         if (foundHousing?.meter?.guid) {
-            getConsents(foundHousing?.meter?.guid)
+            getConsents(foundHousing?.meter?.guid, parseInt(houseId))
         }
 
         /**
@@ -110,7 +110,7 @@ export const MeterStatus = () => {
         return () => {
             window.removeEventListener('storage', onStorage)
         }
-    }, [foundHousing?.meter?.guid, getConsents])
+    }, [foundHousing?.meter?.guid, getConsents, houseId])
 
     /**
      * Function that renders JSX accorrding to nrlink status.
@@ -167,7 +167,9 @@ export const MeterStatus = () => {
                                 to={{
                                     pathname: `/nrlink-connection-steps/${parseInt(houseId)}`,
                                     state: {
-                                        activeStep: NrlinkConnectionStepsEnum.secondStep,
+                                        activeStep: foundHousing?.meter?.guid
+                                            ? NrlinkConnectionStepsEnum.thirdStep
+                                            : NrlinkConnectionStepsEnum.secondStep,
                                     },
                                 }}
                             >
@@ -282,9 +284,21 @@ export const MeterStatus = () => {
                         </div>
                     </>
                 )
+            case 'PENDING':
+                return (
+                    <>
+                        <Icon className="mr-12" color="warning">
+                            replay
+                        </Icon>
+                        <div className="flex flex-col">
+                            <TypographyFormatMessage color={theme.palette.warning.main} fontWeight={600}>
+                                Votre connexion est en cours et sera active dans les plus brefs délais
+                            </TypographyFormatMessage>
+                        </div>
+                    </>
+                )
             case 'EXPIRED':
             case 'NONEXISTENT':
-            case 'PENDING':
             default:
                 return (
                     <>

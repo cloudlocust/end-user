@@ -81,7 +81,7 @@ const defaultFilteredTargetsValues = [metricTargetsEnum.consumption, metricTarge
 export const MyConsumptionContainer = () => {
     const theme = useTheme()
     const { formatMessage } = useIntl()
-    const { getConsents, nrlinkConsent, enedisConsent } = useConsents()
+    const { getConsents, nrlinkConsent, enedisSgeConsent } = useConsents()
     const { setMetricsInterval, setRange, setFilters, isMetricsLoading, data, filters, range } =
         useMetrics(initialMetricsHookValues)
     const [period, setPeriod] = useState<periodType>('daily')
@@ -100,9 +100,9 @@ export const MyConsumptionContainer = () => {
     // UseEffect to check for consent whenever a meter is selected.
     useEffect(() => {
         if (filters.length > 0) {
-            getConsents(filters[0].value)
+            getConsents(filters[0].value, currentHousing?.id)
         }
-    }, [filters, getConsents])
+    }, [currentHousing?.id, filters, getConsents])
 
     // Storing the chartData with useMemo, so that we don't compute data.filter on every state change (period, range ...etc), and thus we won't reender heavy computation inside MyConsumptionChart because chartData will be stable.
     const consumptionChartData = useMemo(
@@ -206,10 +206,10 @@ export const MyConsumptionContainer = () => {
             <TargetButtonGroup
                 removeTarget={removeTarget}
                 addTarget={addTarget}
-                hidePmax={period === 'daily' || enedisConsent?.enedisConsentState === 'NONEXISTENT'}
+                hidePmax={period === 'daily' || enedisSgeConsent?.enedisSgeConsentState === 'NONEXISTENT'}
             />
         )
-    }, [addTarget, enedisConsent?.enedisConsentState, period, removeTarget])
+    }, [addTarget, enedisSgeConsent?.enedisSgeConsentState, period, removeTarget])
 
     const memoizedMyConsumptionPeriod = useMemo(() => {
         return (
@@ -225,7 +225,8 @@ export const MyConsumptionContainer = () => {
     // By checking if the metersList is true we make sure that if someone has skipped the step of connecting their PDL, they will see this error message.
     // Else if they have a PDL, we check its consent.
     if (
-        (nrlinkConsent?.nrlinkConsentState === 'NONEXISTENT' && enedisConsent?.enedisConsentState === 'NONEXISTENT') ||
+        (nrlinkConsent?.nrlinkConsentState === 'NONEXISTENT' &&
+            enedisSgeConsent?.enedisSgeConsentState === 'NONEXISTENT') ||
         (currentHousing && !currentHousing?.meter)
     ) {
         return (

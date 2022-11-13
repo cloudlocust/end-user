@@ -76,7 +76,7 @@ export const useMeterForHousing = () => {
         try {
             setLoadingInProgress(true)
             // eslint-disable-next-line jsdoc/require-jsdoc
-            const { data: responseData } = await axios.patch<{ id: number; name: string; guild: string }>(
+            const { data: responseData } = await axios.patch<editMeterInputType>(
                 `${HOUSING_API}/${houseId}/meter`,
                 body,
             )

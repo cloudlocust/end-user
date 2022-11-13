@@ -46,15 +46,13 @@ const LastStepNrLinkConnection = ({
      *
      * @param formData FormData.
      * @param formData.meterGuid Meter GUID.
-     * @param formData.meterName Meter Name.
      * @param formData.nrlinkGuid NrLink GUID.
      */
     // eslint-disable-next-line jsdoc/require-jsdoc
-    const onSubmit = async (formData: { meterGuid: string; meterName: string; nrlinkGuid: string }) => {
+    const onSubmit = async (formData: { meterGuid: string; nrlinkGuid: string }) => {
         try {
-            const { meterName, ...data } = formData
             setIsNrLinkAuthorizeInProgress(true)
-            await axios.post(`${API_RESOURCES_URL}/nrlink/authorize`, data)
+            await axios.post(`${API_RESOURCES_URL}/nrlink/authorize`, formData)
             // Set Show NrLinkPopup when last step is done
             // eslint-disable-next-line jsdoc/require-jsdoc
             await axios.patch<{ showNrlinkPopup: boolean }>(`${SET_SHOW_NRLINK_POPUP_ENDPOINT}`, {
@@ -63,11 +61,11 @@ const LastStepNrLinkConnection = ({
             enqueueSnackbar(
                 formatMessage(
                     {
-                        id: 'Votre nrLINK a bien été connecté au compteur {meterName}, vous pouvez maintenant visualiser votre consommation en direct',
+                        id: 'Votre nrLINK a bien été connecté au compteur {meterGuid}, vous pouvez maintenant visualiser votre consommation en direct',
                         defaultMessage:
-                            'Votre nrLINK a bien été connecté au compteur {meterName}, vous pouvez maintenant visualiser votre consommation en direct',
+                            'Votre nrLINK a bien été connecté au compteur {meterGuid}, vous pouvez maintenant visualiser votre consommation en direct',
                     },
-                    { meterName: meter?.name },
+                    { meterGuid: meter?.guid },
                 ),
                 { autoHideDuration: 10000, variant: 'success' },
             )
@@ -94,17 +92,13 @@ const LastStepNrLinkConnection = ({
         }
     }
     return (
-        <Form
-            onSubmit={onSubmit}
-            defaultValues={meter ? { meterGuid: meter!.guid, meterName: meter!.name, nrlinkGuid: '' } : {}}
-        >
+        <Form onSubmit={onSubmit} defaultValues={meter ? { meterGuid: meter!.guid, nrlinkGuid: '' } : {}}>
             <div className="w-full flex justify-between items-center landscape:mt-10">
                 <div className="portrait:flex-col landscape:flex-row h-full flex justify-center items-center w-full">
                     <div className="w-full mx-32">
                         <div className="hidden">
                             <TextField name="meterGuid" disabled label="Numéro de mon compteur" />
                         </div>
-                        <TextField name="meterName" disabled label="Mon compteur" />
                         <TextField
                             name="nrlinkGuid"
                             label="№ d'identification nrLink"

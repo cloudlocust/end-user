@@ -278,15 +278,6 @@ const HousingCard = ({
                         <Card className="relative cursor-pointer flex-wrap rounded-16">
                             <CardContent className="mt-10">
                                 <TextField
-                                    name="name"
-                                    label="Nom de mon compteur"
-                                    placeholder={formatMessage({
-                                        id: 'Donnez un nom à votre compteur',
-                                        defaultMessage: 'Donnez un nom à votre compteur',
-                                    })}
-                                    validateFunctions={[requiredBuilder()]}
-                                />
-                                <TextField
                                     name="guid"
                                     label="Numéro de mon compteur"
                                     placeholder={formatMessage({

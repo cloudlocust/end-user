@@ -6,6 +6,7 @@ import MuiLink from '@mui/material/Link'
 import { useHistory, useLocation } from 'react-router-dom'
 import './ForgotPasswordSuccess.scss'
 import { URL_LOGIN } from 'src/modules/User/Login/LoginConfig'
+import { useTheme } from '@mui/material/styles'
 import { motion } from 'framer-motion'
 
 // We must keep this interface because its needed in the config.
@@ -34,6 +35,7 @@ const ForgotPasswordSuccess: FC = (): JSX.Element => {
             history.replace('/login')
         }
     }, [history, resettedEmail])
+    const theme = useTheme()
 
     if (!resettedEmail) return <React.Fragment />
 
@@ -47,7 +49,7 @@ const ForgotPasswordSuccess: FC = (): JSX.Element => {
                                 <Icon className="icon">email</Icon>
                             </div>
 
-                            <Typography variant="h5" className="title">
+                            <Typography variant="h5" className="text-20 md:text-22 mb-24">
                                 {formatMessage({ id: 'Email envoyé !', defaultMessage: 'Email envoyé !' })}
                             </Typography>
 
@@ -56,7 +58,14 @@ const ForgotPasswordSuccess: FC = (): JSX.Element => {
                                     id: 'Un e-mail contenant des instructions a été envoyé à',
                                     defaultMessage: 'Un e-mail contenant des instructions a été envoyé à',
                                 })}{' '}
-                                <b>{resettedEmail}</b>.
+                                <b
+                                    style={{
+                                        color: theme.palette.primary.dark,
+                                    }}
+                                >
+                                    {resettedEmail}
+                                </b>
+                                .
                             </Typography>
 
                             <div className="login-container">

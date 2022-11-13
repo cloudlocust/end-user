@@ -7,10 +7,6 @@ export interface IMeter {
      */
     id: number
     /**
-     * Name of Meter.
-     */
-    name: string
-    /**
      * GUID of Meter.
      */
     guid: string
@@ -21,9 +17,6 @@ export interface IMeter {
  */
 //eslint-disable-next-line jsdoc/require-jsdoc
 export type addMeterInputType = {
-    //eslint-disable-next-line jsdoc/require-jsdoc
-    name: string
-
     //eslint-disable-next-line jsdoc/require-jsdoc
     guid: string
 }
