@@ -86,6 +86,7 @@ export const MyConsumptionContainer = () => {
         useMetrics(initialMetricsHookValues)
     const [period, setPeriod] = useState<periodType>('daily')
     const [filteredTargets, setFilteredTargets] = useState<metricTargetType[]>(defaultFilteredTargetsValues)
+    // This state represents whether or not the chart is stacked: true.
     const [isStackedEnabled, setIsStackedEnabled] = useState<boolean>(true)
     const isEurosConsumptionChart = filteredTargets.includes(metricTargetsEnum.eurosConsumption)
     const { currentHousing } = useSelector(({ housingModel }: RootState) => housingModel)
