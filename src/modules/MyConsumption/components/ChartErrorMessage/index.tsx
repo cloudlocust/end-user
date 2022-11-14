@@ -23,7 +23,7 @@ export const ChartErrorMessage = ({
     const theme = useTheme()
 
     return (
-        <div style={{ background: theme.palette.primary.main }} className="p-16">
+        <div style={{ background: theme.palette.primary.dark }} className="p-16">
             <div className="container relative  p-16 sm:p-24 flex-col text-center flex items-center justify-center">
                 <Icon style={{ fontSize: '4rem', marginBottom: '1rem', color: theme.palette.warning.light }}>
                     error_outline_outlined
