@@ -60,7 +60,7 @@ const mockyAxisSeries: ApexAxisChartSeries = [
         data: [mockDatapoints[0][0]],
         name: nrlinkConsumptionMetricsText,
         type: mockChartType,
-        color: 'rgb(255, 241, 215)',
+        color: '#FFEECD',
     },
 ]
 
@@ -103,9 +103,11 @@ describe('test pure function', () => {
             primary: {
                 main: '#FFEECD',
             },
+            secondary: {
+                main: '#FFEECD',
+            },
         },
     })
-    mockyAxisSeries[0].color = theme.palette.primary.light
     test('getApexChartMyConsumptionProps test with valid data', async () => {
         let period = 'daily' as periodType
         // ApexChart Props
@@ -217,7 +219,7 @@ describe('test pure function', () => {
             data: mockYAxisSeriesConvertedData[0].data,
             name: 'Température Extérieure',
             type: 'line',
-            color: theme.palette.secondary.main,
+            color: '#FFC200',
         })
 
         // Internal Temperature

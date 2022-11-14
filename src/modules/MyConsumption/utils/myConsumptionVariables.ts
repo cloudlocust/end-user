@@ -124,15 +124,15 @@ export const chartSpecifities: {
 export const getChartColor = (chartName: metricTargetsEnum, theme: Theme) => {
     switch (chartName) {
         case metricTargetsEnum.externalTemperature:
-            return theme.palette.secondary.main
+            return '#FFC200'
         case metricTargetsEnum.internalTemperature:
             return '#BA1B1B'
         case metricTargetsEnum.pMax:
             return '#FF7A00'
         case metricTargetsEnum.eurosConsumption:
-            return '#ABCFA8'
-        default:
             return theme.palette.primary.light
+        default:
+            return theme.palette.secondary.main
     }
 }
 

@@ -21,7 +21,7 @@ import { consumptionWattUnitConversion } from 'src/modules/MyConsumption/utils/u
 export const defaultApexChartOptions: (theme: Theme) => Props['options'] = (theme) => ({
     chart: {
         fontFamily: theme.typography.fontFamily,
-        background: theme.palette.primary.main,
+        background: theme.palette.primary.dark,
         stacked: false,
         locales: [fr],
         defaultLocale: 'fr',
