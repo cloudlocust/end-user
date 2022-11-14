@@ -3,6 +3,7 @@ import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyForm
 import { useConfirm } from 'material-ui-confirm'
 import { useProfileManagement } from 'src/modules/User/ProfileManagement/ProfileManagementHooks'
 import CircularProgress from '@mui/material/CircularProgress'
+import { errorMainHashColor } from 'src/modules/utils/muiThemeVariables'
 
 /**
  * Pop-up component "Delete profile" with the ability to delete a profile.
@@ -49,11 +50,11 @@ const DeleteProfile = () => {
         await deleteProfile()
     }
 
-    if (isLoadingInProgress) return <CircularProgress size={30} color="error" />
+    if (isLoadingInProgress) return <CircularProgress size={30} sx={{ color: errorMainHashColor }} />
 
     return (
         <Tooltip title="Supprimer votre compte">
-            <IconButton color="error" onClick={onProfileDelete} className="mx-12">
+            <IconButton sx={{ color: errorMainHashColor }} onClick={onProfileDelete} className="mx-12">
                 <Icon>delete</Icon>
             </IconButton>
         </Tooltip>

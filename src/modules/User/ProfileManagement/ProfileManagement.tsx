@@ -23,8 +23,13 @@ const ProfileManagement = () => {
         <PageSimple
             header={
                 <ThemeProvider theme={theme}>
-                    <div className="w-full px-10">
-                        <Button onClick={history.goBack} className="text-12 md:text-16 mt-10" color="inherit">
+                    <div className="w-full h-full px-10" style={{ backgroundColor: theme.palette.primary.dark }}>
+                        <Button
+                            sx={{ color: 'primary.contrastText' }}
+                            onClick={history.goBack}
+                            className="text-12 md:text-16 mt-10"
+                            color="inherit"
+                        >
                             <Icon
                                 component={motion.span}
                                 initial={{ scale: 0 }}
