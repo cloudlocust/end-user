@@ -266,7 +266,8 @@ export const MyConsumptionContainer = () => {
                         linkTo={`/my-houses/${currentHousing?.id}`}
                     />
                 ) : (
-                    nrlinkConsent?.nrlinkConsentState === 'CONNECTED' && (
+                    (nrlinkConsent?.nrlinkConsentState === 'CONNECTED' ||
+                        enedisSgeConsent?.enedisSgeConsentState === 'CONNECTED') && (
                         <>
                             <div className="mb-24">
                                 {memoizedMyConsumptionPeriod}
