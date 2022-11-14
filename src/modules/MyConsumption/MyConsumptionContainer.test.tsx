@@ -124,10 +124,13 @@ describe('MyConsumptionContainer test', () => {
         expect(() => getByText('Chiffres clés')).toThrow()
     })
     test('Clicking on different period changes the Consumption Title', async () => {
+        mockNrlinkConsent = 'CONNECTED'
+        mockEnedisConsent = 'CONNECTED'
         const { getAllByText } = reduxedRender(
             <Router>
                 <MyConsumptionContainer />
             </Router>,
+            { initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[0] } } },
         )
         // Daily CONSUMPTION Text
         expect(getAllByText(CONSUMPTION_TITLE_DAILY)[0]).toBeTruthy()
