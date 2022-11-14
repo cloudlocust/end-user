@@ -11,6 +11,7 @@ import {
     EnedisSgePopupStepsEnum,
 } from 'src/modules/MyHouse/components/MeterStatus/enedisSgePopup.d'
 import { sgeConsentFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
+import { warningMainHashColor } from 'src/modules/utils/muiThemeVariables'
 import { RootState } from 'src/redux'
 
 /**
@@ -135,7 +136,7 @@ export const EnedisSgePopup = ({
                                                 </Icon>
                                                 <Typography
                                                     sx={(theme) => ({
-                                                        color: theme.palette.warning.main,
+                                                        color: warningMainHashColor,
                                                     })}
                                                     className="text-center"
                                                     fontWeight={500}
@@ -183,7 +184,7 @@ export const EnedisSgePopup = ({
                                         </Icon>
                                         <Typography
                                             sx={(theme) => ({
-                                                color: theme.palette.warning.main,
+                                                color: warningMainHashColor,
                                             })}
                                             className="text-center"
                                             fontWeight={500}

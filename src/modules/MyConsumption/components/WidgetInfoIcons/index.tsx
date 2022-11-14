@@ -8,6 +8,7 @@ import Tooltip from '@mui/material/Tooltip'
 import { URL_MY_HOUSE } from 'src/modules/MyHouse/MyHouseConfig'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import { metricTargetsEnum, metricTargetType } from 'src/modules/Metrics/Metrics.d'
+import { warningMainHashColor } from 'src/modules/utils/muiThemeVariables'
 
 /**
  * EuroWidgetInfoIcon Component.
@@ -23,7 +24,7 @@ export const EuroWidgetInfoIcon = () => {
                 <div>
                     <TypographyFormatMessage className="text-center">Ce coût est un exemple.</TypographyFormatMessage>
                     <NavLink to={currentHousing ? `${URL_MY_HOUSE}/${currentHousing?.id}/contracts` : URL_MY_HOUSE}>
-                        <TypographyFormatMessage sx={{ color: 'secondary.main' }} className="underline text-center">
+                        <TypographyFormatMessage sx={{ color: '#FFFFFF' }} className="underline text-center">
                             Renseigner un contrat d'énergie.
                         </TypographyFormatMessage>
                     </NavLink>
@@ -31,7 +32,7 @@ export const EuroWidgetInfoIcon = () => {
             }
         >
             <IconButton sx={{ p: 0 }}>
-                <ErrorOutlineIcon sx={{ color: 'secondary.main', width: '32px', height: '32px' }} />
+                <ErrorOutlineIcon sx={{ color: warningMainHashColor, width: '32px', height: '32px' }} />
             </IconButton>
         </Tooltip>
     )

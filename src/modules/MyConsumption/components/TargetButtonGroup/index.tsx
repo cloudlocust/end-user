@@ -40,8 +40,10 @@ const TargetButtonGroup = ({ removeTarget, addTarget, hidePmax }: ITargetButtonG
                 const disabledFeature =
                     tempPmaxFeatureState && (option.value === 'Pmax' || option.value === 'temperature')
                 const activeField = activeButton === option.value
-                const activeBackgroundColor = activeField ? theme.palette.primary.light : theme.palette.primary.dark
-                const activeColor = activeField ? theme.palette.primary.dark : theme.palette.primary.contrastText
+                const activeBackgroundColor = activeField ? theme.palette.secondary.main : theme.palette.primary.main
+                const activeColor = activeField
+                    ? theme.palette.secondary.contrastText
+                    : theme.palette.primary.contrastText
                 return (
                     <Button
                         value={option.value}
@@ -53,7 +55,7 @@ const TargetButtonGroup = ({ removeTarget, addTarget, hidePmax }: ITargetButtonG
                             backgroundColor:
                                 disabledField || disabledFeature ? theme.palette.grey[600] : activeBackgroundColor,
                             color: disabledField ? theme.palette.text.disabled : activeColor,
-                            fontWeight: option.value === 'reset' ? '600' : '500',
+                            fontWeight: '500',
                         }}
                         disabled={disabledFeature || disabledField}
                     >

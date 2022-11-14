@@ -77,20 +77,19 @@ const colorThemes: colorThemesType = {
             mode: 'light',
             text: lightText,
             primary: {
-                light: '#dcdbdf',
+                light: '#B2B1B3',
                 main: '#3e3d40',
-                dark: '#1d1d1f',
+                dark: '#19181A',
             },
             secondary: {
-                light: '#eff1bd',
-                main: '#C8D210',
-                dark: '#aaab00',
+                light: '#E1EC2F',
+                main: '#C9D200',
+                dark: '#303300',
             },
             background: {
                 paper: '#FFFFFF',
                 default: '#FAFCFC',
             },
-            error: red,
         },
     },
     myem: {
@@ -115,6 +114,35 @@ const colorThemes: colorThemesType = {
                 light: '#ffe182',
                 main: '#FFC200',
                 dark: '#ffa200',
+            },
+        },
+    },
+    voltfase: {
+        palette: {
+            mode: 'light',
+            text: {
+                primary: '#000000',
+                secondary: lightText.secondary,
+                disabled: '#C4C7C7',
+            },
+            primary: {
+                light: '#99D9D7',
+                main: '#00A19B',
+                dark: '#00817C',
+            },
+            secondary: {
+                light: '#C6F257',
+                main: '#9AC32B',
+                dark: '#273500',
+            },
+            common: {
+                white: '#ffffff',
+                black: '#000000',
+                disabled: '#91918A',
+            },
+            background: {
+                paper: '#FFFFFF',
+                default: '#EFF1F1',
             },
         },
     },
