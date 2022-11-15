@@ -1,7 +1,7 @@
 import React, { FC } from 'react'
 import './register.scss'
 import { Card, Typography } from 'src/common/ui-kit'
-import { API_BASE_URL, LOGO_URL } from 'src/configs'
+import { API_BASE_URL, CLIENT_ICON_FOLDER, LOGO_URL } from 'src/configs'
 import { useIntl } from 'react-intl'
 import { Link } from 'react-router-dom'
 import MuiLink from '@mui/material/Link'
@@ -54,7 +54,7 @@ const Register: FC<RegisterProps> = ({
                         <CardContent className="flex flex-col items-center justify-center p-16 sm:p-24 md:p-32">
                             <img
                                 className="w-128 m-32"
-                                src={`assets/images/logos/${window._env_.REACT_APP_CLIENT_ICON_FOLDER}.svg`}
+                                src={`assets/images/logos/${CLIENT_ICON_FOLDER}.svg`}
                                 alt="logo"
                             />
                             <Typography variant="h6" className="mt-16 mb-24 font-semibold text-18 sm:text-24">

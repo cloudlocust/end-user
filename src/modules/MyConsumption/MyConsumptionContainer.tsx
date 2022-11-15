@@ -25,7 +25,7 @@ import { URL_MY_HOUSE } from 'src/modules/MyHouse/MyHouseConfig'
 import { useHasMissingHousingContracts } from 'src/hooks/HasMissingHousingContracts'
 import { tempPmaxFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
 import Tooltip from '@mui/material/Tooltip'
-import { secondaryMainColor } from 'src/modules/utils/muiThemeVariables'
+import { warningMainHashColor } from 'src/modules/utils/muiThemeVariables'
 
 /**
  * InitialMetricsStates for useMetrics.
@@ -204,7 +204,7 @@ export const MyConsumptionContainer = () => {
 
     return (
         <>
-            <div style={{ background: theme.palette.primary.main }} className="p-24">
+            <div style={{ background: theme.palette.primary.dark }} className="p-24">
                 <div className="relative flex flex-col md:flex-row justify-between items-center">
                     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mb-16 md:mb-0">
                         <div className="flex flex-col md:flex-row items-center">
@@ -216,7 +216,10 @@ export const MyConsumptionContainer = () => {
                                 Ma Consommation
                             </TypographyFormatMessage>
                             {/* Consommation Wh par Jour / Semaine / Mois / Année */}
-                            <TypographyFormatMessage variant="h5" style={{ color: theme.palette.primary.contrastText }}>
+                            <TypographyFormatMessage
+                                variant="h5"
+                                style={{ marginRight: '8px', color: theme.palette.primary.contrastText }}
+                            >
                                 {showPerPeriodText()}
                             </TypographyFormatMessage>
                             <MyConsumptionDatePicker period={period} setRange={setRange} range={range} />
@@ -265,7 +268,7 @@ export const MyConsumptionContainer = () => {
                     <div className="flex items-center justify-center flex-col mt-12">
                         <ErrorOutlineIcon
                             sx={{
-                                color: secondaryMainColor,
+                                color: warningMainHashColor,
                                 width: { xs: '24px', md: '32px' },
                                 height: { xs: '24px', md: '32px' },
                                 margin: { xs: '0 0 4px 0', md: '0 8px 0 0' },
@@ -274,7 +277,7 @@ export const MyConsumptionContainer = () => {
 
                         <div className="w-full">
                             <TypographyFormatMessage
-                                sx={{ color: secondaryMainColor }}
+                                sx={{ color: warningMainHashColor }}
                                 className="text-13 md:text-16 text-center"
                             >
                                 {
@@ -284,7 +287,7 @@ export const MyConsumptionContainer = () => {
                             <NavLink to={`${URL_MY_HOUSE}/${currentHousing?.id}/contracts`}>
                                 <TypographyFormatMessage
                                     className="underline text-13 md:text-16 text-center"
-                                    sx={{ color: secondaryMainColor }}
+                                    sx={{ color: warningMainHashColor }}
                                 >
                                     Renseigner votre contrat d'énergie
                                 </TypographyFormatMessage>
