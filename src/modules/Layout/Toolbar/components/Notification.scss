@@ -1,0 +1,13 @@
+@import 'src/common/ui-kit/styles/media.scss';
+
+.mantine-Popover-wrapper {
+    div[data-test-id='layout-wrapper'] {
+        width: 100vw;
+        @include md {
+            width: auto;
+        }
+    }
+    img[alt='logo'] {
+        object-position: 0 20px;
+    }
+}

@@ -1,5 +1,5 @@
 import React from 'react'
-import { NovuProvider, PopoverNotificationCenter, NotificationBell } from '@novu/notification-center'
+import { NovuProvider, useNotifications, PopoverNotificationCenter, NotificationBell } from '@novu/notification-center'
 import {
     REACT_APP_NOVU_APPLICATION_IDENTIFIER,
     REACT_APP_NOVU_BACKEND_URL,
@@ -7,6 +7,9 @@ import {
 } from 'src/configs'
 import { useSelector } from 'react-redux'
 import { RootState } from 'src/redux'
+import EmptyTableMessage from 'src/common/ui-kit/components/Table/EmptyTableMessage'
+import './Notification.scss'
+import { useIntl } from 'src/common/react-platform-translation'
 
 /**
  * Notification Component using novu library.
@@ -24,11 +27,41 @@ const Notification = () => {
             socketUrl={REACT_APP_NOVU_SOCKET_URL}
             i18n="fr"
         >
-            <PopoverNotificationCenter onNotificationClick={() => {}} colorScheme="light" showUserPreferences={false}>
-                {({ unseenCount }) => <NotificationBell unseenCount={unseenCount} />}
-            </PopoverNotificationCenter>
+            <CustomNotification />
         </NovuProvider>
     )
 }
 
 export default Notification
+
+/**
+ * Customer Notification Footer component when notifications empty it shows an empty message, otherwise it hides the default "power by novu".
+ *
+ * @returns CustomNotification component.
+ */
+const CustomNotification = () => {
+    const { notifications, fetching } = useNotifications()
+    const { formatMessage } = useIntl()
+
+    return (
+        <PopoverNotificationCenter
+            onNotificationClick={() => {}}
+            colorScheme="light"
+            showUserPreferences={false}
+            footer={() =>
+                fetching || notifications.length ? (
+                    <></>
+                ) : (
+                    <EmptyTableMessage
+                        message={formatMessage({
+                            id: 'La liste est vide',
+                            defaultMessage: 'La liste est vide',
+                        })}
+                    />
+                )
+            }
+        >
+            {({ unseenCount }) => <NotificationBell unseenCount={unseenCount} />}
+        </PopoverNotificationCenter>
+    )
+}
