@@ -413,14 +413,19 @@ export const getChartType = (metricTarget: metricTargetType, period: periodType)
         period === 'daily'
     ) {
         return 'area'
+    } else if (metricTarget === metricTargetsEnum.totalProduction) {
+        return ''
     } else if (
         metricTarget === metricTargetsEnum.externalTemperature ||
         metricTarget === metricTargetsEnum.internalTemperature ||
         metricTarget === metricTargetsEnum.pMax
     ) {
         return 'line'
-        // } else if (metricTarget === metricTargetsEnum.consumption) {
-        //     return ''
+    } else if (
+        (metricTarget === metricTargetsEnum.autoconsumption || metricTargetsEnum.injectedProduction) &&
+        period === 'daily'
+    ) {
+        return 'area'
     } else {
         return 'bar'
     }

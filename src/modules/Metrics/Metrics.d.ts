@@ -8,6 +8,8 @@ export type metricTargetType =
     | 'nrlink_internal_temperature_metrics'
     | 'enedis_max_power'
     | 'auto_consumption_metrics'
+    | 'enphase_production_metrics'
+    | 'production_metrics'
 
 /**
  * Enum representing the metricTarget without exposing the backend naming.
@@ -37,6 +39,14 @@ export enum metricTargetsEnum {
      * Enum value for target of Autoconsommation.
      */
     autoconsumption = 'auto_consumption_metrics',
+    /**
+     * Enum value for enphase_production_metrics.
+     */
+    totalProduction = 'enphase_production_metrics',
+    /**
+     * Enum value for production_metrics.
+     */
+    injectedProduction = 'production_metrics',
 }
 /**
  * Metrics intervals.

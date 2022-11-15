@@ -16,26 +16,30 @@ import useMediaQuery from '@mui/material/useMediaQuery'
  *
  * @param props N/A.
  * @param props.data Data received from backend of format IMetric[].
- * @param props.chartType Indicates the type of the Consumption Chart.
  * @param props.period Indicates the current selected Period if it's monthly or daily or yearly or weekly so that we format tooltip and xAxis of chart according to the period.
  * @param props.range Current range so that we handle the xAxis values according to period and range selected.
+ * @param props.isStackedEnabled Boolean state to know whether the stacked option is true or false.
+ * @param props.chartType Consumption or production chart type.
  * @returns MyConsumptionChart Component.
  */
 const MyConsumptionChart = ({
     data,
-    chartType,
     period,
     range,
+    isStackedEnabled,
+    chartType,
 }: // eslint-disable-next-line jsdoc/require-jsdoc
 {
     // eslint-disable-next-line jsdoc/require-jsdoc
     data: IMetric[]
     // eslint-disable-next-line jsdoc/require-jsdoc
-    chartType: ApexChart['type']
-    // eslint-disable-next-line jsdoc/require-jsdoc
     period: periodType
     // eslint-disable-next-line jsdoc/require-jsdoc
     range: metricRangeType
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    isStackedEnabled?: boolean
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    chartType: 'consumption' | 'production'
 }) => {
     const { formatMessage } = useIntl()
     const theme = useTheme()
@@ -61,11 +65,12 @@ const MyConsumptionChart = ({
         return getApexChartMyConsumptionProps({
             yAxisSeries: ApexChartsAxisValues,
             period,
-            chartType,
             formatMessage,
             theme,
+            isStackedEnabled,
+            chartType,
         })
-    }, [ApexChartsAxisValues, period, chartType, formatMessage, theme])
+    }, [ApexChartsAxisValues, period, formatMessage, theme, isStackedEnabled, chartType])
 
     reactApexChartsProps.options!.chart!.events = {
         /**
