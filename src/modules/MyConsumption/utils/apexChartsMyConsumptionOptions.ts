@@ -22,7 +22,7 @@ import { getChartType } from 'src/modules/MyConsumption/utils/MyConsumptionFunct
 export const defaultApexChartOptions: (theme: Theme) => Props['options'] = (theme) => ({
     chart: {
         fontFamily: theme.typography.fontFamily,
-        background: theme.palette.primary.main,
+        background: theme.palette.primary.dark,
         stacked: false,
         locales: [fr],
         defaultLocale: 'fr',
@@ -199,13 +199,17 @@ export const getApexChartMyConsumptionProps = ({
         // We compute the consumption chart maximum y value, so that we can indicate the correct unit on the chart, and we do it only one time with this condition.
         // data.length !== 720 is added because there can be case where period is not daily, and yAxisSerie.data didn't updated and still express data of daily.
         // TODO Fix find a better way to reender period and data at same time, instead of doing yAxisSerie.data.length !== 720
+        // TODO Clean this in a function.
         if (
             (yAxisSerie.name === metricTargetsEnum.consumption ||
-                yAxisSerie.name === metricTargetsEnum.autoconsumption) &&
+                yAxisSerie.name === metricTargetsEnum.autoconsumption ||
+                yAxisSerie.name === metricTargetsEnum.injectedProduction ||
+                yAxisSerie.name === metricTargetsEnum.totalProduction) &&
             period !== 'daily' &&
             (yAxisSerie.data.length !== 48 || 720)
         ) {
             maxYValue = Math.max(
+                maxYValue,
                 ...(yAxisSerie.data.map((datapoint) => (datapoint as [number, number])[1]) as Array<number>),
             )
         }

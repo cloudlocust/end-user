@@ -5,7 +5,7 @@ import { ForgotPasswordForm as DefaultForgotPasswordForm } from './ForgotPasswor
 import { Link } from 'react-router-dom'
 import MuiLink from '@mui/material/Link'
 import './ForgotPassword.scss'
-import { LOGO_URL, API_BASE_URL } from 'src/configs'
+import { LOGO_URL, API_BASE_URL, CLIENT_ICON_FOLDER } from 'src/configs'
 import CardContent from '@mui/material/CardContent'
 import { motion } from 'framer-motion'
 import { URL_LOGIN } from 'src/modules/User/Login/LoginConfig'
@@ -55,7 +55,7 @@ export const ForgotPassword: FC<ForgotPasswordProps> = ({
                         <CardContent className="flex flex-col items-center justify-center p-16 sm:p-24 md:p-32">
                             <img
                                 className="w-128 m-32"
-                                src={`assets/images/logos/${window._env_.REACT_APP_CLIENT_ICON_FOLDER}.svg`}
+                                src={`assets/images/logos/${CLIENT_ICON_FOLDER}.svg`}
                                 alt="logo"
                             />
                             <Typography variant="h6" className="mt-16 mb-24 text-center font-semibold sm:text-20">
