@@ -191,3 +191,14 @@ export const getYPointValueLabel = (yValue: number | null | undefined, chartName
             return ` ${unit}`
     }
 }
+
+/**
+ * Nrlink & Enedis Off message.
+ */
+export const NRLINK_ENEDIS_OFF_MESSAGE =
+    'Pour voir vos données de consommation, veuillez connecter votre nrLINK ou Enedis'
+
+/**
+ * Enphase off message.
+ */
+export const ENPHASE_OFF_MESSAGE = 'Pour voir vos données de production veuillez connecter votre onduleur'
