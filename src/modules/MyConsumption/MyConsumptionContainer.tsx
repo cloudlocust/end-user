@@ -25,7 +25,7 @@ import { URL_MY_HOUSE } from 'src/modules/MyHouse/MyHouseConfig'
 import { useHasMissingHousingContracts } from 'src/hooks/HasMissingHousingContracts'
 import { tempPmaxFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
 import Tooltip from '@mui/material/Tooltip'
-import { secondaryMainColor } from 'src/modules/utils/muiThemeVariables'
+import { warningMainHashColor } from 'src/modules/utils/muiThemeVariables'
 
 /**
  * InitialMetricsStates for useMetrics.
@@ -107,14 +107,7 @@ export const MyConsumptionContainer = () => {
 
     // Storing the chartData with useMemo, so that we don't compute data.filter on every state change (period, range ...etc), and thus we won't reender heavy computation inside MyConsumptionChart because chartData will be stable.
     const consumptionChartData = useMemo(
-        () =>
-            data
-                .filter((metric) => filteredTargets.includes(metric.target))
-                .filter(
-                    (metric) =>
-                        metric.target !== metricTargetsEnum.injectedProduction &&
-                        metric.target !== metricTargetsEnum.totalProduction,
-                ),
+        () => data.filter((metric) => filteredTargets.includes(metric.target)),
         [data, filteredTargets],
     )
 
@@ -329,7 +322,7 @@ export const MyConsumptionContainer = () => {
                         <div className="flex items-center justify-center flex-col mt-12">
                             <ErrorOutlineIcon
                                 sx={{
-                                    color: secondaryMainColor,
+                                    color: warningMainHashColor,
                                     width: { xs: '24px', md: '32px' },
                                     height: { xs: '24px', md: '32px' },
                                     margin: { xs: '0 0 4px 0', md: '0 8px 0 0' },
@@ -338,7 +331,7 @@ export const MyConsumptionContainer = () => {
 
                             <div className="w-full">
                                 <TypographyFormatMessage
-                                    sx={{ color: secondaryMainColor }}
+                                    sx={{ color: warningMainHashColor }}
                                     className="text-13 md:text-16 text-center"
                                 >
                                     {
@@ -348,7 +341,7 @@ export const MyConsumptionContainer = () => {
                                 <NavLink to={`${URL_MY_HOUSE}/${currentHousing?.id}/contracts`}>
                                     <TypographyFormatMessage
                                         className="underline text-13 md:text-16 text-center"
-                                        sx={{ color: secondaryMainColor }}
+                                        sx={{ color: warningMainHashColor }}
                                     >
                                         Renseigner votre contrat d'énergie
                                     </TypographyFormatMessage>
@@ -360,7 +353,7 @@ export const MyConsumptionContainer = () => {
 
                 {/* Production Chart */}
                 <div className="mb-12">
-                    <div className="relative flex flex-col md:flex-row justify-between items-center">
+                    <div className="relative flex flex-col md:flex-row justify-between items-center mb-12">
                         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mb-16 md:mb-0">
                             <div className="flex flex-col md:flex-row items-center">
                                 <TypographyFormatMessage

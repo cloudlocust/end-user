@@ -18,7 +18,7 @@ import { ReactComponent as VitroceramicIcon } from 'src/assets/images/content/ho
 import { ReactComponent as InductionIcon } from 'src/assets/images/content/housing/Induction.svg'
 import { ReactComponent as OtherIcon } from 'src/assets/images/content/housing/Other.svg'
 import SvgIcon from '@mui/material/SvgIcon'
-import { useTheme } from '@mui/material'
+import { useTheme, ThemeProvider } from '@mui/material/styles'
 import { useAccomodation } from 'src/modules/MyHouse/components/Accomodation/AccomodationHooks'
 import { useEquipmentList } from 'src/modules/MyHouse/components/Equipments/equipmentHooks'
 import { equipmentNameType } from 'src/modules/MyHouse/components/Equipments/EquipmentsType'
@@ -162,17 +162,23 @@ export const HousingDetails = () => {
     return (
         <Root
             header={
-                <Button color="primary" onClick={() => history.push(URL_MY_HOUSE)} className="text-16 ml-12">
-                    <Icon
-                        component={motion.span}
-                        initial={{ scale: 0 }}
-                        animate={{ scale: 1, transition: { delay: 0.2 } }}
-                        className="text-24 mr-2 text"
+                <ThemeProvider theme={theme}>
+                    <Button
+                        sx={{ color: 'primary.contrastText' }}
+                        onClick={() => history.push(URL_MY_HOUSE)}
+                        className="text-16 ml-12"
                     >
-                        arrow_back
-                    </Icon>
-                    {formatMessage({ id: 'Retour', defaultMessage: 'Retour' })}
-                </Button>
+                        <Icon
+                            component={motion.span}
+                            initial={{ scale: 0 }}
+                            animate={{ scale: 1, transition: { delay: 0.2 } }}
+                            className="text-24 mr-2 text"
+                        >
+                            arrow_back
+                        </Icon>
+                        {formatMessage({ id: 'Retour', defaultMessage: 'Retour' })}
+                    </Button>
+                </ThemeProvider>
             }
             content={
                 <>
