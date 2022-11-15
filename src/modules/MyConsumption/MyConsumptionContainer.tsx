@@ -266,114 +266,106 @@ export const MyConsumptionContainer = () => {
                         linkTo={`/my-houses/${currentHousing?.id}`}
                     />
                 ) : (
-                    (nrlinkConsent?.nrlinkConsentState === 'CONNECTED' ||
-                        enedisSgeConsent?.enedisSgeConsentState === 'CONNECTED') && (
-                        <>
-                            <div className="mb-24">
-                                {memoizedMyConsumptionPeriod}
-                                <MyConsumptionDatePicker period={period} setRange={setRange} range={range} />
+                    <>
+                        <div className="mb-24">
+                            {memoizedMyConsumptionPeriod}
+                            <MyConsumptionDatePicker period={period} setRange={setRange} range={range} />
+                        </div>
+
+                        {/* Consumption Chart */}
+                        <div className="mb-12">
+                            <div className="relative flex flex-col md:flex-row justify-between items-center">
+                                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mb-16 md:mb-0">
+                                    <div className="flex flex-col md:flex-row items-center">
+                                        <TypographyFormatMessage
+                                            variant="h5"
+                                            className="sm:mr-8"
+                                            style={{ color: theme.palette.primary.contrastText }}
+                                        >
+                                            Ma Consommation
+                                        </TypographyFormatMessage>
+                                        {/* Consommation Wh par Jour / Semaine / Mois / Année */}
+                                        <TypographyFormatMessage
+                                            variant="h5"
+                                            style={{ color: theme.palette.primary.contrastText }}
+                                        >
+                                            {showPerPeriodText('consumption')}
+                                        </TypographyFormatMessage>
+                                    </div>
+                                </motion.div>
                             </div>
 
-                            {/* Consumption Chart */}
-                            <div className="mb-12">
-                                <div className="relative flex flex-col md:flex-row justify-between items-center">
-                                    <motion.div
-                                        initial={{ opacity: 0 }}
-                                        animate={{ opacity: 1 }}
-                                        className="mb-16 md:mb-0"
-                                    >
-                                        <div className="flex flex-col md:flex-row items-center">
-                                            <TypographyFormatMessage
-                                                variant="h5"
-                                                className="sm:mr-8"
-                                                style={{ color: theme.palette.primary.contrastText }}
-                                            >
-                                                Ma Consommation
-                                            </TypographyFormatMessage>
-                                            {/* Consommation Wh par Jour / Semaine / Mois / Année */}
-                                            <TypographyFormatMessage
-                                                variant="h5"
-                                                style={{ color: theme.palette.primary.contrastText }}
-                                            >
-                                                {showPerPeriodText('consumption')}
-                                            </TypographyFormatMessage>
-                                        </div>
-                                    </motion.div>
-                                </div>
-
-                                <div className="my-16 flex justify-between">
-                                    <EurosConsumptionButtonToggler
-                                        removeTarget={removeTarget}
-                                        addTarget={addTarget}
-                                        showEurosConsumption={!isEurosConsumptionChart}
-                                    />
-                                    <Tooltip
-                                        arrow
-                                        placement="bottom-end"
-                                        disableHoverListener={!tempPmaxFeatureState}
-                                        title={formatMessage({
-                                            id: "Cette fonctionnalité n'est pas disponible sur cette version",
-                                            defaultMessage:
-                                                "Cette fonctionnalité n'est pas disponible sur cette version",
-                                        })}
-                                    >
-                                        <div className={`${tempPmaxFeatureState && 'cursor-not-allowed'}`}>
-                                            {memoizedTargetButtonGroup}
-                                        </div>
-                                    </Tooltip>
-                                </div>
-
-                                {isMetricsLoading ? (
-                                    <div
-                                        className="flex flex-col justify-center items-center w-full h-full"
-                                        style={{ height: '320px' }}
-                                    >
-                                        <CircularProgress style={{ color: theme.palette.background.paper }} />
+                            <div className="my-16 flex justify-between">
+                                <EurosConsumptionButtonToggler
+                                    removeTarget={removeTarget}
+                                    addTarget={addTarget}
+                                    showEurosConsumption={!isEurosConsumptionChart}
+                                />
+                                <Tooltip
+                                    arrow
+                                    placement="bottom-end"
+                                    disableHoverListener={!tempPmaxFeatureState}
+                                    title={formatMessage({
+                                        id: "Cette fonctionnalité n'est pas disponible sur cette version",
+                                        defaultMessage: "Cette fonctionnalité n'est pas disponible sur cette version",
+                                    })}
+                                >
+                                    <div className={`${tempPmaxFeatureState && 'cursor-not-allowed'}`}>
+                                        {memoizedTargetButtonGroup}
                                     </div>
-                                ) : (
-                                    <MyConsumptionChart
-                                        data={consumptionChartData}
-                                        period={period}
-                                        range={range}
-                                        isStackedEnabled={isStackedEnabled}
-                                        chartType="consumption"
+                                </Tooltip>
+                            </div>
+
+                            {isMetricsLoading ? (
+                                <div
+                                    className="flex flex-col justify-center items-center w-full h-full"
+                                    style={{ height: '320px' }}
+                                >
+                                    <CircularProgress style={{ color: theme.palette.background.paper }} />
+                                </div>
+                            ) : (
+                                <MyConsumptionChart
+                                    data={consumptionChartData}
+                                    period={period}
+                                    range={range}
+                                    isStackedEnabled={isStackedEnabled}
+                                    chartType="consumption"
+                                />
+                            )}
+
+                            {isEurosConsumptionChart && hasMissingHousingContracts && (
+                                <div className="flex items-center justify-center flex-col mt-12">
+                                    <ErrorOutlineIcon
+                                        sx={{
+                                            color: secondaryMainColor,
+                                            width: { xs: '24px', md: '32px' },
+                                            height: { xs: '24px', md: '32px' },
+                                            margin: { xs: '0 0 4px 0', md: '0 8px 0 0' },
+                                        }}
                                     />
-                                )}
 
-                                {isEurosConsumptionChart && hasMissingHousingContracts && (
-                                    <div className="flex items-center justify-center flex-col mt-12">
-                                        <ErrorOutlineIcon
-                                            sx={{
-                                                color: secondaryMainColor,
-                                                width: { xs: '24px', md: '32px' },
-                                                height: { xs: '24px', md: '32px' },
-                                                margin: { xs: '0 0 4px 0', md: '0 8px 0 0' },
-                                            }}
-                                        />
-
-                                        <div className="w-full">
+                                    <div className="w-full">
+                                        <TypographyFormatMessage
+                                            sx={{ color: secondaryMainColor }}
+                                            className="text-13 md:text-16 text-center"
+                                        >
+                                            {
+                                                "Ce graphe est un exemple basé sur un tarif Bleu EDF Base. Vos données contractuelles de fourniture d'énergie ne sont pas disponibles sur toute la période."
+                                            }
+                                        </TypographyFormatMessage>
+                                        <NavLink to={`${URL_MY_HOUSE}/${currentHousing?.id}/contracts`}>
                                             <TypographyFormatMessage
+                                                className="underline text-13 md:text-16 text-center"
                                                 sx={{ color: secondaryMainColor }}
-                                                className="text-13 md:text-16 text-center"
                                             >
-                                                {
-                                                    "Ce graphe est un exemple basé sur un tarif Bleu EDF Base. Vos données contractuelles de fourniture d'énergie ne sont pas disponibles sur toute la période."
-                                                }
+                                                Renseigner votre contrat d'énergie
                                             </TypographyFormatMessage>
-                                            <NavLink to={`${URL_MY_HOUSE}/${currentHousing?.id}/contracts`}>
-                                                <TypographyFormatMessage
-                                                    className="underline text-13 md:text-16 text-center"
-                                                    sx={{ color: secondaryMainColor }}
-                                                >
-                                                    Renseigner votre contrat d'énergie
-                                                </TypographyFormatMessage>
-                                            </NavLink>
-                                        </div>
+                                        </NavLink>
                                     </div>
-                                )}
-                            </div>
-                        </>
-                    )
+                                </div>
+                            )}
+                        </div>
+                    </>
                 )}
 
                 {/* Production Chart */}

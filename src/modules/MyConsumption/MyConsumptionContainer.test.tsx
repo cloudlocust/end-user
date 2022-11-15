@@ -11,6 +11,7 @@ import { applyCamelCase } from 'src/common/react-platform-components'
 import { IHousing } from 'src/modules/MyHouse/components/HousingList/housing'
 import { TEST_HOUSES } from 'src/mocks/handlers/houses'
 import { URL_MY_HOUSE } from 'src/modules/MyHouse/MyHouseConfig'
+import { ENPHASE_OFF_MESSAGE, NRLINK_ENEDIS_OFF_MESSAGE } from 'src/modules/MyConsumption/utils/myConsumptionVariables'
 
 // List of houses to add to the redux state
 const LIST_OF_HOUSES: IHousing[] = applyCamelCase(TEST_HOUSES)
@@ -21,6 +22,7 @@ let mockData: IMetric[] = TEST_SUCCESS_WEEK_METRICS(['consumption_metrics', '__e
 let mockNrlinkConsent: string
 let mockIsMetricsLoading = false
 let mockEnedisConsent: string
+let mockEnphaseConsent: string
 const mockSetFilters = jest.fn()
 const circularProgressClassname = '.MuiCircularProgress-root'
 const HAS_MISSING_CONTRACTS_WARNING_TEXT =
@@ -78,6 +80,10 @@ jest.mock('src/modules/Consents/consentsHook.ts', () => ({
             meterGuid: '133456',
             nrlinkConsentState: mockNrlinkConsent,
         },
+        enphaseConsent: {
+            meterGuid: '133456',
+            enphaseConsentState: mockEnphaseConsent,
+        },
         getConsents: mockGetConsents,
     }),
 }))
@@ -98,14 +104,13 @@ jest.mock(
 )
 
 describe('MyConsumptionContainer test', () => {
-    test('when there is no nrlinkConsent and no enedisConsent, a message is shown', async () => {
+    test('when there is no meter, a message is shown', async () => {
         mockData = []
-        mockNrlinkConsent = 'NONEXISTENT'
-        mockEnedisConsent = 'NONEXISTENT'
         const { getByText } = reduxedRender(
             <Router>
                 <MyConsumptionContainer />
             </Router>,
+            { initialState: { housingModel: { currentHousing: null } } },
         )
         await waitFor(() => {
             expect(mockGetConsents).toHaveBeenCalled()
@@ -233,5 +238,53 @@ describe('MyConsumptionContainer test', () => {
         )
         expect(container.querySelector(circularProgressClassname)).toBeInTheDocument()
         expect(container.querySelector(`.${apexchartsClassName}`)).not.toBeInTheDocument()
+    })
+    test('when nrLINK is off & enedisSge is off, an error message is shown', async () => {
+        mockNrlinkConsent = 'NONEXISTENT'
+        mockEnedisConsent = 'NONEXISTENT'
+        const { getByText } = reduxedRender(
+            <Router>
+                <MyConsumptionContainer />
+            </Router>,
+            { initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[0] } } },
+        )
+        await waitFor(() => {
+            expect(mockGetConsents).toHaveBeenCalled()
+        })
+
+        expect(getByText(NRLINK_ENEDIS_OFF_MESSAGE)).toBeTruthy()
+    })
+    test('when enphaseConsent is ACTIVE, production chart is shown', async () => {
+        mockNrlinkConsent = 'CONNECTED'
+        mockEnedisConsent = 'CONNECTED'
+        mockEnphaseConsent = 'ACTIVE'
+
+        const { getByText } = reduxedRender(
+            <Router>
+                <MyConsumptionContainer />
+            </Router>,
+            { initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[0] } } },
+        )
+
+        await waitFor(() => {
+            expect(mockGetConsents).toHaveBeenCalled()
+        })
+        expect(getByText('Ma Production')).toBeTruthy()
+    })
+    test('when enphase is Off, a message is shown', async () => {
+        mockEnphaseConsent = 'NONEXISTANT'
+
+        const { getByText } = reduxedRender(
+            <Router>
+                <MyConsumptionContainer />
+            </Router>,
+            { initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[0] } } },
+        )
+
+        await waitFor(() => {
+            expect(mockGetConsents).toHaveBeenCalled()
+        })
+
+        expect(getByText(ENPHASE_OFF_MESSAGE)).toBeTruthy()
     })
 })
