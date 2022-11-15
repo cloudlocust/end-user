@@ -31,7 +31,7 @@ import { warningMainHashColor } from 'src/modules/utils/muiThemeVariables'
  * InitialMetricsStates for useMetrics.
  */
 export const initialMetricsHookValues: getMetricType = {
-    interval: '2m',
+    interval: '30m',
     range: getRange('day'),
     targets: [
         {
@@ -54,9 +54,15 @@ export const initialMetricsHookValues: getMetricType = {
             target: metricTargetsEnum.internalTemperature,
             type: 'timeserie',
         },
+        {
+            target: metricTargetsEnum.autoconsumption,
+            type: 'timeserie',
+        },
     ],
     filters: [],
 }
+
+const defaultFilteredTargetsValues = [metricTargetsEnum.consumption, metricTargetsEnum.autoconsumption]
 
 /**
  * MyConsumptionContainer.
@@ -71,7 +77,7 @@ export const MyConsumptionContainer = () => {
     const { setMetricsInterval, setRange, setFilters, isMetricsLoading, data, filters, range } =
         useMetrics(initialMetricsHookValues)
     const [period, setPeriod] = useState<periodType>('daily')
-    const [filteredTargets, setFilteredTargets] = useState<metricTargetType[]>([metricTargetsEnum.consumption])
+    const [filteredTargets, setFilteredTargets] = useState<metricTargetType[]>(defaultFilteredTargetsValues)
     const isEurosConsumptionChart = filteredTargets.includes(metricTargetsEnum.eurosConsumption)
     const { currentHousing } = useSelector(({ housingModel }: RootState) => housingModel)
 
@@ -93,6 +99,11 @@ export const MyConsumptionContainer = () => {
     const chartData = useMemo(
         () => data.filter((metric) => filteredTargets.includes(metric.target)),
         [data, filteredTargets],
+    )
+
+    const widgetsData = useMemo(
+        () => data.filter((metric) => metric.target !== metricTargetsEnum.autoconsumption),
+        [data],
     )
 
     /**
@@ -293,7 +304,7 @@ export const MyConsumptionContainer = () => {
                         </TypographyFormatMessage>
                     </div>
                     <WidgetList
-                        data={data}
+                        data={widgetsData}
                         hasMissingHousingContracts={hasMissingHousingContracts}
                         isMetricsLoading={isMetricsLoading}
                     />

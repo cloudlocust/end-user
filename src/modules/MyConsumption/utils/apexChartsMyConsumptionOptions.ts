@@ -9,8 +9,9 @@ import {
     getChartColor,
     getYPointValueLabel,
 } from 'src/modules/MyConsumption/utils/myConsumptionVariables'
-import { metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
+import { metricTargetsEnum, metricTargetType } from 'src/modules/Metrics/Metrics.d'
 import { consumptionWattUnitConversion } from 'src/modules/MyConsumption/utils/unitConversionFunction'
+import { getChartType } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
 
 /**
  * Default ApexChart Options, represent the general options related to the overall look of the MyConsumptionChart.
@@ -93,7 +94,7 @@ export const defaultApexChartOptions: (theme: Theme) => Props['options'] = (them
         curve: 'smooth',
         lineCap: 'butt',
         colors: [theme.palette.primary.contrastText],
-        width: 1.5,
+        width: 0.5,
         dashArray: 0,
     },
     markers: {
@@ -170,7 +171,8 @@ export const getApexChartMyConsumptionProps = ({
     let strokeWidthList: number[] = []
 
     // We save the maximum value, so that it'll indicate the unit of the chart, For Consumption (W, kWh or MWh will be indicated according to the max value unit).
-    let consumptionMaxYValue = 0
+    let maxYValue = 0
+    // eslint-disable-next-line sonarjs/cognitive-complexity
     yAxisSeries.forEach((yAxisSerie) => {
         // If this Serie doesn't have any data we don't show it on the chart thus we do return, and if this is true for all series then we'll show an empty chart.
         if (yAxisSerie.data.length === 0) return
@@ -187,22 +189,19 @@ export const getApexChartMyConsumptionProps = ({
                 id: label,
                 defaultMessage: label,
             }),
-            type:
-                yAxisSerie.name === metricTargetsEnum.consumption ||
-                yAxisSerie.name === metricTargetsEnum.eurosConsumption
-                    ? chartType
-                    : 'line',
+            type: getChartType(yAxisSerie.name as metricTargetType, period),
         })
 
         // We compute the consumption chart maximum y value, so that we can indicate the correct unit on the chart, and we do it only one time with this condition.
         // data.length !== 720 is added because there can be case where period is not daily, and yAxisSerie.data didn't updated and still express data of daily.
         // TODO Fix find a better way to reender period and data at same time, instead of doing yAxisSerie.data.length !== 720
-        if (yAxisSerie.name === metricTargetsEnum.consumption && period !== 'daily' && yAxisSerie.data.length !== 720) {
-            consumptionMaxYValue = Math.max(
+        if (period !== 'daily' && (yAxisSerie.data.length !== 48 || 720)) {
+            maxYValue = Math.max(
                 ...(yAxisSerie.data.map((datapoint) => (datapoint as [number, number])[1]) as Array<number>),
             )
         }
 
+        // maxYValue = Math.max(...(yAxisSerie.data as Array<number>), maxYValue)
         yAxisOptions.push({
             ...restChartSpecifities,
             opposite:
@@ -216,13 +215,9 @@ export const getApexChartMyConsumptionProps = ({
                  * @returns Desired label to be shown for values in the yAxis.
                  */
                 formatter: (value: number) => {
-                    if (yAxisSerie.name === metricTargetsEnum.consumption) {
-                        // Consumption unit shown in the chart will be W if its daily, or it'll be the unit of the maximum y value.
-                        const consumptionUnit =
-                            period === 'daily' ? 'Wh' : consumptionWattUnitConversion(consumptionMaxYValue).unit
-                        return getYPointValueLabel(value, yAxisSerie.name as metricTargetsEnum, consumptionUnit)
-                    }
-                    return getYPointValueLabel(value, yAxisSerie.name as metricTargetsEnum)
+                    // Consumption unit shown in the chart will be W if its daily, or it'll be the unit of the maximum y value.
+                    const consumptionUnit = period === 'daily' ? 'Wh' : consumptionWattUnitConversion(maxYValue).unit
+                    return getYPointValueLabel(value, yAxisSerie.name as metricTargetsEnum, consumptionUnit)
                 },
             },
             axisBorder: {
@@ -236,7 +231,9 @@ export const getApexChartMyConsumptionProps = ({
         markerSizeList.push(0)
         // When chart is consumption or eurosConsumption then we show no stroke cause the area chart is enough otherwise it'll be too cumbersome.
         strokeWidthList.push(
-            yAxisSerie.name === metricTargetsEnum.consumption || yAxisSerie.name === metricTargetsEnum.eurosConsumption
+            yAxisSerie.name === metricTargetsEnum.consumption ||
+                yAxisSerie.name === metricTargetsEnum.eurosConsumption ||
+                yAxisSerie.name === metricTargetsEnum.autoconsumption
                 ? 0
                 : 1.5,
         )
@@ -279,6 +276,8 @@ export const getApexChartMyConsumptionProps = ({
             dayjs.utc(new Date(value!).toUTCString()).format('ddd D')
         options.xaxis!.labels!.rotate = 0
     }
+
+    options.chart!.stacked = true
     options!.markers!.size = markerSizeList
     options!.stroke!.width = strokeWidthList
     options.yaxis = yAxisOptions
