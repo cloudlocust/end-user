@@ -86,10 +86,10 @@ export const EnedisSgePopup = ({
     return (
         <>
             <Typography
-                className={`underline cursor-pointer ${sgeConsentFeatureState && 'cursor-not-allowed text-grey-600'}`}
+                className={`underline cursor-pointer ${!sgeConsentFeatureState && 'cursor-not-allowed text-grey-600'}`}
                 fontWeight={600}
                 onClick={() => {
-                    if (sgeConsentFeatureState) return
+                    if (!sgeConsentFeatureState) return
                     else setOpenSgePopup(true)
                 }}
                 {...TypographyProps}

@@ -19,7 +19,7 @@ import { Link, NavLink } from 'react-router-dom'
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline'
 import { useSelector } from 'react-redux'
 import { RootState } from 'src/redux'
-import { URL_MY_HOUSE } from 'src/modules/MyHouse/MyHouseConfig'
+import { enphaseConsentFeatureState, URL_MY_HOUSE } from 'src/modules/MyHouse/MyHouseConfig'
 import { useHasMissingHousingContracts } from 'src/hooks/HasMissingHousingContracts'
 import { tempPmaxFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
 import Tooltip from '@mui/material/Tooltip'
@@ -31,7 +31,7 @@ import { warningMainHashColor } from 'src/modules/utils/muiThemeVariables'
  * InitialMetricsStates for useMetrics.
  */
 export const initialMetricsHookValues: getMetricType = {
-    interval: '30m',
+    interval: enphaseConsentFeatureState ? '30m' : '2m',
     range: getRange('day'),
     targets: [
         {
@@ -362,7 +362,7 @@ export const MyConsumptionContainer = () => {
                 )}
 
                 {/* Production Chart */}
-                {enphaseConsent?.enphaseConsentState !== 'ACTIVE' ? (
+                {!enphaseConsentFeatureState ? null : enphaseConsent?.enphaseConsentState !== 'ACTIVE' ? (
                     <ChartErrorMessage
                         enphaseOff={enphaseOff}
                         enphaseOffMessage={ENPHASE_OFF_MESSAGE}

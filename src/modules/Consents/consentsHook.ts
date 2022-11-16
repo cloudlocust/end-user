@@ -10,7 +10,7 @@ import { useSnackbar } from 'notistack'
 import { useIntl } from 'react-intl'
 import { axios } from 'src/common/react-platform-components'
 import { API_RESOURCES_URL } from 'src/configs'
-import { sgeConsentFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
+import { enphaseConsentFeatureState, sgeConsentFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
 
 const NO_HOUSING_ID_ERROR_TEXT = 'No housing id provided'
 
@@ -63,15 +63,17 @@ export function useConsents() {
         async (meterGuid: string, houseId?: number) => {
             setConsentsLoading(true)
             if (!meterGuid) throw Error('Meter guid missing!')
-            // Used Promise.allSettled() instead of Promise.all to return a promise that resolves after all of the given requests have either been fulfilled or rejected.
-            // Because Promise.all() throws only when the first promise is rejected and it returns only that rejection.
-            // If the promise status is "fulfilled" it returns "value"
-            // If it's "rejetected" it returns "reason"
-            // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/allSettled
+            /**
+             * Used Promise.allSettled() instead of Promise.all to return a promise that resolves after all of the given requests have either been fulfilled or rejected.
+             * Because Promise.all() throws only when the first promise is rejected and it returns only that rejection.
+             * If the promise status is "fulfilled" it returns "value", If it's "rejetected" it returns "reason".
+             *
+             * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/allSettled .
+             */
             const [nrlinkConsent, enedisSgeConsent, enphaseConsent] = await Promise.allSettled([
                 axios.get<INrlinkConsent>(`${NRLINK_CONSENT_API}/${meterGuid}`),
-                !sgeConsentFeatureState ? axios.get<IEnedisSgeConsent>(`${ENEDIS_SGE_CONSENT_API}/${houseId}`) : null, // If env is disabled, the request for SgeConsent won't be performed.
-                axios.get<IEnphaseConsent>(`${ENPHASE_CONSENT_API}/${meterGuid}`),
+                sgeConsentFeatureState ? axios.get<IEnedisSgeConsent>(`${ENEDIS_SGE_CONSENT_API}/${houseId}`) : null, // If env is disabled, the request for SgeConsent won't be performed.
+                enphaseConsentFeatureState ? axios.get<IEnphaseConsent>(`${ENPHASE_CONSENT_API}/${meterGuid}`) : null,
             ])
 
             // Nrlink consent.
@@ -106,7 +108,7 @@ export function useConsents() {
             }
 
             if (enphaseConsent.status === 'fulfilled') {
-                setEnphaseConsent(enphaseConsent.value.data)
+                setEnphaseConsent(enphaseConsent.value?.data)
             } else if (enphaseConsent.status === 'rejected') {
                 enqueueSnackbar(
                     formatMessage({
