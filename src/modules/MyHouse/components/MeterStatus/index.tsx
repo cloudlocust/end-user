@@ -1,4 +1,4 @@
-import { Card, useTheme, Icon, CircularProgress, IconButton, useMediaQuery, Divider, Tooltip } from '@mui/material'
+import { Card, useTheme, Icon, CircularProgress, useMediaQuery, Divider, Tooltip } from '@mui/material'
 import { NavLink, useParams } from 'react-router-dom'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import { ReactComponent as ContractIcon } from 'src/assets/images/content/housing/contract.svg'
@@ -11,13 +11,9 @@ import dayjs from 'dayjs'
 import { useIntl } from 'react-intl'
 import { NrlinkConnectionStepsEnum } from 'src/modules/nrLinkConnection/nrlinkConnectionSteps.d'
 import { EnedisSgePopup } from 'src/modules/MyHouse/components/MeterStatus/EnedisSgePopup'
-import { useDispatch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { RootState } from 'src/redux'
 import { IHousing } from 'src/modules/MyHouse/components/HousingList/housing'
-import ModeEditOutlineOutlinedIcon from '@mui/icons-material/ModeEditOutlineOutlined'
-import { useMeterForHousing } from 'src/modules/Meters/metersHook'
-import { Dispatch } from 'src/redux'
-import { EditMeterFormPopup } from 'src/modules/MyHouse/components/EditMeterFormPopup'
 import { EnphaseConsentPopup } from 'src/modules/MyHouse/components/MeterStatus/EnphaseConsentPopup'
 
 const FORMATTED_DATA = 'DD/MM/YYYY'
@@ -45,11 +41,8 @@ export const MeterStatus = () => {
         enphaseLink,
         getEnphaseLink,
     } = useConsents()
-    const { editMeter, loadingInProgress } = useMeterForHousing()
-    const dispatch = useDispatch<Dispatch>()
     const { housingList } = useSelector(({ housingModel }: RootState) => housingModel)
     const [foundHousing, setFoundHousing] = useState<IHousing>()
-    const [editMeterOpen, setEditMeterOpen] = useState(false)
     const [openEnphaseConsentPopup, setOpenEnphaseConsentPopup] = useState(false)
 
     // Retrieving house id from url params /my-houses/:houseId
@@ -336,24 +329,6 @@ export const MeterStatus = () => {
                                 <TypographyFormatMessage className="text-base font-medium mr-8">
                                     Compteur
                                 </TypographyFormatMessage>
-                                {/* If the meter exist, we show the edit icon that opens the popup for meter editing */}
-                                {foundHousing?.meter?.guid && (
-                                    <>
-                                        <IconButton onClick={() => setEditMeterOpen(true)}>
-                                            <ModeEditOutlineOutlinedIcon color="primary" />
-                                        </IconButton>
-
-                                        <EditMeterFormPopup
-                                            open={editMeterOpen}
-                                            onClose={() => setEditMeterOpen(false)}
-                                            houseId={houseId}
-                                            editMeter={editMeter}
-                                            loadingInProgress={loadingInProgress}
-                                            loadHousinglist={dispatch.housingModel.loadHousingsList}
-                                            foundHousing={foundHousing}
-                                        />
-                                    </>
-                                )}
                             </div>
                             {foundHousing?.meter?.guid ? (
                                 <span className="text-grey-600 text-base">{`n° ${foundHousing?.meter?.guid}`}</span>
