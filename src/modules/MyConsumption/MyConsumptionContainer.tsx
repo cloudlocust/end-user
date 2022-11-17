@@ -19,7 +19,7 @@ import { Link, NavLink } from 'react-router-dom'
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline'
 import { useSelector } from 'react-redux'
 import { RootState } from 'src/redux'
-import { enphaseConsentFeatureState, URL_MY_HOUSE } from 'src/modules/MyHouse/MyHouseConfig'
+import { URL_MY_HOUSE } from 'src/modules/MyHouse/MyHouseConfig'
 import { useHasMissingHousingContracts } from 'src/hooks/HasMissingHousingContracts'
 import { tempPmaxFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
 import Tooltip from '@mui/material/Tooltip'
@@ -34,7 +34,7 @@ import { productionChartErrorState } from 'src/modules/MyConsumption/MyConsumpti
  * ! The order of the targets matters because it set the order in which apexchart will display the graphs.
  */
 export const initialMetricsHookValues: getMetricType = {
-    interval: enphaseConsentFeatureState ? '30m' : '2m',
+    interval: '2m',
     range: getRange('day'),
     targets: [
         {
@@ -105,6 +105,14 @@ export const MyConsumptionContainer = () => {
     }, [currentHousing, setFilters])
 
     const { hasMissingHousingContracts } = useHasMissingHousingContracts(range, currentHousing?.id)
+
+    useEffect(() => {
+        if (period === 'daily' && enphaseConsent?.enphaseConsentState === 'ACTIVE') {
+            setMetricsInterval('30m')
+        } else if (period === 'daily' && enphaseConsent?.enphaseConsentState !== 'ACTIVE') {
+            setMetricsInterval('2m')
+        }
+    }, [enphaseConsent?.enphaseConsentState, period, setMetricsInterval])
 
     // UseEffect to check for consent whenever a meter is selected.
     useEffect(() => {
