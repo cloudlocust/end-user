@@ -31,7 +31,6 @@ const Notification = () => {
         </NovuProvider>
     )
 }
-
 export default Notification
 
 /**
