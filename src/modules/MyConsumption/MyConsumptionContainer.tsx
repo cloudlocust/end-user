@@ -374,7 +374,7 @@ export const MyConsumptionContainer = () => {
                 )}
 
                 {/* Production Chart */}
-                {productionChartErrorState && enphaseConsent?.enphaseConsentState === 'ACTIVE' ? (
+                {enphaseConsent?.enphaseConsentState === 'ACTIVE' ? (
                     <div className="mb-12">
                         <div className="relative flex flex-col md:flex-row justify-between items-center">
                             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mb-16 md:mb-0">
@@ -412,51 +412,13 @@ export const MyConsumptionContainer = () => {
                             />
                         )}
                     </div>
-                ) : productionChartErrorState && enphaseConsent?.enphaseConsentState !== 'ACTIVE' ? (
-                    <ChartErrorMessage
-                        enphaseOff={enphaseOff}
-                        enphaseOffMessage={ENPHASE_OFF_MESSAGE}
-                        linkTo={`/my-houses/${currentHousing?.id}`}
-                    />
                 ) : (
-                    enphaseConsent?.enphaseConsentState === 'ACTIVE' && (
-                        <div className="mb-12">
-                            <div className="relative flex flex-col md:flex-row justify-between items-center">
-                                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mb-16 md:mb-0">
-                                    <div className="flex flex-col md:flex-row items-center">
-                                        <TypographyFormatMessage
-                                            variant="h5"
-                                            className="sm:mr-8"
-                                            style={{ color: theme.palette.primary.contrastText }}
-                                        >
-                                            Ma Production
-                                        </TypographyFormatMessage>
-                                        {/* Consommation Wh par Jour / Semaine / Mois / Année */}
-                                        <TypographyFormatMessage
-                                            variant="h5"
-                                            style={{ color: theme.palette.primary.contrastText }}
-                                        >
-                                            {showPerPeriodText('production')}
-                                        </TypographyFormatMessage>
-                                    </div>
-                                </motion.div>
-                            </div>
-                            {isMetricsLoading ? (
-                                <div
-                                    className="flex flex-col justify-center items-center w-full h-full"
-                                    style={{ height: '320px' }}
-                                >
-                                    <CircularProgress style={{ color: theme.palette.background.paper }} />
-                                </div>
-                            ) : (
-                                <MyConsumptionChart
-                                    data={productionChartData}
-                                    period={period}
-                                    range={range}
-                                    chartType="production"
-                                />
-                            )}
-                        </div>
+                    productionChartErrorState && (
+                        <ChartErrorMessage
+                            enphaseOff={enphaseOff}
+                            enphaseOffMessage={ENPHASE_OFF_MESSAGE}
+                            linkTo={`/my-houses/${currentHousing?.id}`}
+                        />
                     )
                 )}
             </div>
