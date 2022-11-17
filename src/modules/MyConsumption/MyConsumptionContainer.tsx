@@ -29,11 +29,17 @@ import { warningMainHashColor } from 'src/modules/utils/muiThemeVariables'
 
 /**
  * InitialMetricsStates for useMetrics.
+ *
+ * ! The order of the targets matters because it set the order in which apexchart will display the graphs.
  */
 export const initialMetricsHookValues: getMetricType = {
     interval: enphaseConsentFeatureState ? '30m' : '2m',
     range: getRange('day'),
     targets: [
+        {
+            target: metricTargetsEnum.autoconsumption,
+            type: 'timeserie',
+        },
         {
             target: metricTargetsEnum.consumption,
             type: 'timeserie',
@@ -52,10 +58,6 @@ export const initialMetricsHookValues: getMetricType = {
         },
         {
             target: metricTargetsEnum.internalTemperature,
-            type: 'timeserie',
-        },
-        {
-            target: metricTargetsEnum.autoconsumption,
             type: 'timeserie',
         },
         {
