@@ -26,6 +26,7 @@ import Tooltip from '@mui/material/Tooltip'
 import { ChartErrorMessage } from 'src/modules/MyConsumption/components/ChartErrorMessage'
 import { ENPHASE_OFF_MESSAGE, NRLINK_ENEDIS_OFF_MESSAGE } from 'src/modules/MyConsumption/utils/myConsumptionVariables'
 import { warningMainHashColor } from 'src/modules/utils/muiThemeVariables'
+import { productionChartErrorState } from 'src/modules/MyConsumption/MyConsumptionConfig'
 
 /**
  * InitialMetricsStates for useMetrics.
@@ -33,7 +34,7 @@ import { warningMainHashColor } from 'src/modules/utils/muiThemeVariables'
  * ! The order of the targets matters because it set the order in which apexchart will display the graphs.
  */
 export const initialMetricsHookValues: getMetricType = {
-    interval: '30m',
+    interval: '2m',
     range: getRange('day'),
     targets: [
         {
@@ -80,6 +81,7 @@ const defaultFilteredTargetsValues = [metricTargetsEnum.consumption, metricTarge
  *
  * @returns MyConsumptionContainer and its children.
  */
+// eslint-disable-next-line sonarjs/cognitive-complexity
 export const MyConsumptionContainer = () => {
     const theme = useTheme()
     const { formatMessage } = useIntl()
@@ -103,6 +105,14 @@ export const MyConsumptionContainer = () => {
     }, [currentHousing, setFilters])
 
     const { hasMissingHousingContracts } = useHasMissingHousingContracts(range, currentHousing?.id)
+
+    useEffect(() => {
+        if (period === 'daily' && enphaseConsent?.enphaseConsentState === 'ACTIVE') {
+            setMetricsInterval('30m')
+        } else if (period === 'daily' && enphaseConsent?.enphaseConsentState !== 'ACTIVE') {
+            setMetricsInterval('2m')
+        }
+    }, [enphaseConsent?.enphaseConsentState, period, setMetricsInterval])
 
     // UseEffect to check for consent whenever a meter is selected.
     useEffect(() => {
@@ -364,13 +374,7 @@ export const MyConsumptionContainer = () => {
                 )}
 
                 {/* Production Chart */}
-                {enphaseConsent?.enphaseConsentState !== 'ACTIVE' ? (
-                    <ChartErrorMessage
-                        enphaseOff={enphaseOff}
-                        enphaseOffMessage={ENPHASE_OFF_MESSAGE}
-                        linkTo={`/my-houses/${currentHousing?.id}`}
-                    />
-                ) : (
+                {enphaseConsent?.enphaseConsentState === 'ACTIVE' ? (
                     <div className="mb-12">
                         <div className="relative flex flex-col md:flex-row justify-between items-center">
                             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mb-16 md:mb-0">
@@ -408,6 +412,14 @@ export const MyConsumptionContainer = () => {
                             />
                         )}
                     </div>
+                ) : (
+                    productionChartErrorState && (
+                        <ChartErrorMessage
+                            enphaseOff={enphaseOff}
+                            enphaseOffMessage={ENPHASE_OFF_MESSAGE}
+                            linkTo={`/my-houses/${currentHousing?.id}`}
+                        />
+                    )
                 )}
             </div>
             {data.length !== 0 && (

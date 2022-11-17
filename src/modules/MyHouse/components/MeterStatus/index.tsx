@@ -217,7 +217,7 @@ export const MeterStatus = () => {
             default:
                 return (
                     <>
-                        {sgeConsentFeatureState ? (
+                        {!sgeConsentFeatureState ? (
                             <Icon className="mr-12 text-grey-600">
                                 <img
                                     src="/assets/images/content/housing/consent-status/meter-disabled.svg"
@@ -356,7 +356,7 @@ export const MeterStatus = () => {
                     </div>
                     <div
                         className={`flex flex-col md:flex-row ${
-                            enphaseConsentFeatureState ? 'justify-between' : 'justify-evenly'
+                            !enphaseConsentFeatureState ? 'justify-between' : 'justify-evenly'
                         } items-center`}
                     >
                         {/* Nrlink Consent Status */}
@@ -389,13 +389,13 @@ export const MeterStatus = () => {
                         <Tooltip
                             arrow
                             placement="top"
-                            disableHoverListener={!sgeConsentFeatureState}
+                            disableHoverListener={sgeConsentFeatureState}
                             title={formatMessage({
                                 id: "Cette fonctionnalité n'est pas encore disponible",
                                 defaultMessage: "Cette fonctionnalité n'est pas encore disponible",
                             })}
                         >
-                            <div className={`w-full md:w-1/3 p-12 ${sgeConsentFeatureState && 'cursor-not-allowed'}`}>
+                            <div className={`w-full md:w-1/3 p-12 ${!sgeConsentFeatureState && 'cursor-not-allowed'}`}>
                                 {!foundHousing ? (
                                     <>
                                         <TypographyFormatMessage className="text-xs md:text-sm font-semibold mb-6">
@@ -421,7 +421,7 @@ export const MeterStatus = () => {
                         </Tooltip>
                         <Divider orientation={mdDown ? 'horizontal' : undefined} flexItem variant="fullWidth" />
                         {/* Enphase Consent Status */}
-                        <div className={`w-full md:w-1/3 p-12 ${enphaseConsentFeatureState && 'hidden'}`}>
+                        <div className={`w-full md:w-1/3 p-12 ${!enphaseConsentFeatureState && 'hidden'}`}>
                             {!foundHousing ? (
                                 <>
                                     <TypographyFormatMessage className="text-xs md:text-sm font-semibold mb-6">

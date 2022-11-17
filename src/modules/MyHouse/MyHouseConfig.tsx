@@ -60,12 +60,12 @@ export const tempPmaxFeatureState = window._env_.REACT_APP_TEMP_PMAX_FEATURE_STA
 /**
  * Env Variable to know if SGE consent feature is enabled.
  */
-export const sgeConsentFeatureState = window._env_.REACT_APP_SGE_CONSENT_FEATURE_STATE === 'disabled'
+export const sgeConsentFeatureState = window._env_.REACT_APP_SGE_CONSENT_FEATURE_STATE === 'enabled'
 
 /**
  * Env variable to know if enphase consent feature is enabled.
  */
-export const enphaseConsentFeatureState = window._env_.REACT_APP_ENPHASE_CONSENT_FEATURE_STATE === 'disabled'
+export const enphaseConsentFeatureState = window._env_.REACT_APP_ENPHASE_CONSENT_FEATURE_STATE === 'enabled'
 
 /**
  * MyHouseConfig.
