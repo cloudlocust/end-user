@@ -95,8 +95,8 @@ export const MyConsumptionContainer = () => {
     const isEurosConsumptionChart = filteredTargets.includes(metricTargetsEnum.eurosConsumption)
     const { currentHousing } = useSelector(({ housingModel }: RootState) => housingModel)
 
-    const nrlinkOff = nrlinkConsent?.nrlinkConsentState !== 'CONNECTED'
-    const enedisOff = enedisSgeConsent?.enedisSgeConsentState !== 'CONNECTED'
+    const nrlinkOff = nrlinkConsent?.nrlinkConsentState === 'NONEXISTENT'
+    const enedisOff = enedisSgeConsent?.enedisSgeConsentState === 'NONEXISTENT'
     const enphaseOff = enphaseConsent?.enphaseConsentState !== 'ACTIVE'
 
     useEffect(() => {
