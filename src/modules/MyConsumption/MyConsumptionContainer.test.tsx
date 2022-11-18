@@ -272,7 +272,7 @@ describe('MyConsumptionContainer test', () => {
         expect(getByText('Ma Production')).toBeTruthy()
     })
     test('when enphase is Off, a message is shown', async () => {
-        mockEnphaseConsent = 'NONEXISTANT'
+        mockEnphaseConsent = 'EXPIRED' || 'NONEXISTANT' || 'PENDING'
 
         const { getByText } = reduxedRender(
             <Router>
