@@ -122,21 +122,6 @@ spec:
           valueFrom:
             configMapKeyRef:
               name: {{ .Values.name }}
-              key: ENVIRONMENT
-        - name: REACT_APP_NOVU_BACKEND_URL
-          valueFrom:
-            configMapKeyRef:
-              name: {{ .Values.name }}
-              key: REACT_APP_NOVU_BACKEND_URL
-        - name: REACT_APP_NOVU_SOCKET_URL
-          valueFrom:
-            configMapKeyRef:
-              name: {{ .Values.name }}
-              key: REACT_APP_NOVU_SOCKET_URL
-        - name: REACT_APP_NOVU_APPLICATION_IDENTIFIER
-          valueFrom:
-            configMapKeyRef:
-              name: {{ .Values.name }}
-              key: REACT_APP_NOVU_APPLICATION_IDENTIFIER                                          
+              key: ENVIRONMENT                                    
       imagePullSecrets:
       - name: dockersecret  
