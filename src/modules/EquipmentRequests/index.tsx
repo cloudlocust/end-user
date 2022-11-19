@@ -11,6 +11,7 @@ import { EquipmentRequestsHeader } from 'src/modules/EquipmentRequests/Equipment
 import { useEquipmentRequestsList } from 'src/modules/EquipmentRequests/EquipmentRequestsHook'
 import { motion } from 'framer-motion'
 import Table from 'src/common/ui-kit/components/Table/Table'
+import { EquipmentnRequestCreatePopup } from 'src/modules/EquipmentRequests/EquipmentRequestsCreatePopup'
 
 const Root = styled(FusePageCarded)(({ theme }) => ({
     '& .FusePageCarded-header': {
@@ -144,7 +145,7 @@ export const EquipmentRequests = () => {
     const { formatMessage } = useIntl()
     const [, setEquipmentRequestDetails] = useState<IEquipmentRequest | null>(null)
     const [, setIsUpdateEquipmentRequestsPopup] = useState(false)
-    const [, setIsCreateEquipmentRequestPopup] = useState(false)
+    const [isCreateEquipmentRequestPopup, setIsCreateEquipmentRequestPopup] = useState(false)
 
     const equipmentRequestsCells = [
         {
@@ -193,33 +194,45 @@ export const EquipmentRequests = () => {
         <Root
             header={<EquipmentRequestsHeader setIsCreateEquipmentRequestPopup={setIsCreateEquipmentRequestPopup} />}
             content={
-                isEquipmentRequestsLoading || !equipmentRequestsList ? (
-                    <FuseLoading />
-                ) : equipmentRequestsList.length === 0 ? (
-                    <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1, transition: { delay: 0.1 } }}
-                        className="flex flex-1 items-center justify-center h-full"
-                    >
-                        <Typography color="textSecondary" variant="h5">
-                            {formatMessage({
-                                id: "Aucune demandes d'installations!",
-                                defaultMessage: "Aucune demandes d'installations!",
-                            })}
-                        </Typography>
-                    </motion.div>
-                ) : (
-                    <div className="w-full flex flex-col">
-                        <Table<IEquipmentRequest>
-                            cells={equipmentRequestsCells}
-                            totalRows={totalEquipmentRequests}
-                            onPageChange={loadPage}
-                            rows={equipmentRequestsList}
-                            pageProps={page}
+                <>
+                    {isCreateEquipmentRequestPopup && (
+                        <EquipmentnRequestCreatePopup
+                            open={isCreateEquipmentRequestPopup}
+                            handleClosePopup={() => {
+                                setIsCreateEquipmentRequestPopup(false)
+                            }}
+                            onAfterCreateUpdateDeleteSuccess={reloadEquipmentRequests}
                         />
-                    </div>
-                )
+                    )}
+                    {isEquipmentRequestsLoading || !equipmentRequestsList ? (
+                        <FuseLoading />
+                    ) : equipmentRequestsList.length === 0 ? (
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1, transition: { delay: 0.1 } }}
+                            className="flex flex-1 items-center justify-center h-full"
+                        >
+                            <Typography color="textSecondary" variant="h5">
+                                {formatMessage({
+                                    id: "Aucune demandes d'installations!",
+                                    defaultMessage: "Aucune demandes d'installations!",
+                                })}
+                            </Typography>
+                        </motion.div>
+                    ) : (
+                        <div className="w-full flex flex-col">
+                            <Table<IEquipmentRequest>
+                                cells={equipmentRequestsCells}
+                                totalRows={totalEquipmentRequests}
+                                onPageChange={loadPage}
+                                rows={equipmentRequestsList}
+                                pageProps={page}
+                            />
+                        </div>
+                    )}
+                </>
             }
-        ></Root>
+            innerScroll
+        />
     )
 }

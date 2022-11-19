@@ -4,6 +4,7 @@ import { BrowserRouter as Router } from 'react-router-dom'
 import { IEquipmentRequest } from 'src/modules/EquipmentRequests/equipmentRequests'
 import { TEST_EQUIPMENT_REQUESTS } from 'src/mocks/handlers/equipmentRequests'
 import { EquipmentRequests } from 'src/modules/EquipmentRequests'
+import userEvent from '@testing-library/user-event'
 
 let mockEquipmentRequestList: IEquipmentRequest | null = applyCamelCase(TEST_EQUIPMENT_REQUESTS[0])
 let mockLoadingInProgress = false
@@ -57,5 +58,27 @@ describe('Equipment requests', () => {
         )
         expect(mockLoadingInProgress).toBeTruthy()
         expect(getByText(LOADING_TEXT)).toBeTruthy()
+    })
+    test('when EquipmentRequestCreatePopup is shown when clicked on Ajouter', async () => {
+        const { getByText, getByTestId } = reduxedRender(
+            <Router>
+                <EquipmentRequests />
+            </Router>,
+        )
+
+        userEvent.click(getByText(AJOUTER_DEMANDE_TEXT))
+
+        expect(getByText("Demande d'équipement")).toBeTruthy()
+        expect(getByTestId('EquipmentRequestsPopupCloseIcon')).toBeTruthy()
+    })
+    test('when EquipmentRequestCreatePopup is closed', async () => {
+        const { getByTestId, getByText } = reduxedRender(
+            <Router>
+                <EquipmentRequests />
+            </Router>,
+        )
+        userEvent.click(getByText(AJOUTER_DEMANDE_TEXT))
+        userEvent.click(getByTestId('EquipmentRequestsPopupCloseIcon'))
+        expect(() => getByText("Demande d'équipement")).toThrow()
     })
 })

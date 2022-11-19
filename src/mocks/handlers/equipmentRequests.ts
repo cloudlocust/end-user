@@ -1,8 +1,9 @@
-import { IEquipmentRequest } from 'src/modules/EquipmentRequests/equipmentRequests'
+import { createEquipmentRequestType, IEquipmentRequest } from 'src/modules/EquipmentRequests/equipmentRequests'
 import { SnakeCasedPropertiesDeep } from 'type-fest'
 import { rest } from 'msw'
 import { getPaginationFromElementList } from 'src/mocks/utils'
 import { EQUIPMENTS_REQUESTS_API } from 'src/modules/EquipmentRequests/EquipmentRequestsHook'
+import dayjs from 'dayjs'
 
 const CREATED_AT_DATA = '2021-12-15T14:07:38.138000'
 
@@ -56,5 +57,21 @@ export const equipmentRequestsEndpoints = [
             SnakeCasedPropertiesDeep<IEquipmentRequest>
         >(req, TEST_EQUIPMENT_REQUESTS as [])
         return res(ctx.status(200), ctx.delay(1000), ctx.json(TEST_EQUIPMENT_REQUESTS_RESPONSE))
+    }),
+
+    rest.post<createEquipmentRequestType>(EQUIPMENTS_REQUESTS_API, (req, res, ctx) => {
+        const { brand, installedAt, reference, type } = req.body
+        if (Object.values(req.body)) {
+            const newId = TEST_EQUIPMENT_REQUESTS.length + 1
+            const newEquipmentRequest: SnakeCasedPropertiesDeep<createEquipmentRequestType> = {
+                brand,
+                installed_at: dayjs(installedAt).toISOString(),
+                reference,
+                type,
+            }
+            TEST_EQUIPMENT_REQUESTS.push({ id: newId, ...newEquipmentRequest })
+            return res(ctx.status(201), ctx.delay(1000), ctx.json(req.body))
+        }
+        return res(ctx.status(400), ctx.delay(1000))
     }),
 ]
