@@ -137,7 +137,7 @@ export const max: MaxValidator =
 /**
  * TODO Document.
  */
-export type AcceptValidator = (errorMsg?: JSX.Element) => CustomValidate
+export type AcceptValidator = (errorMsg?: JSX.Element | string) => CustomValidate
 
 /**
  *  TODO Document.
@@ -146,8 +146,8 @@ export type AcceptValidator = (errorMsg?: JSX.Element) => CustomValidate
  * @returns TODO Document.
  */
 export const accept: AcceptValidator =
-    (errorMsg?: JSX.Element) =>
-    (value: boolean): JSX.Element | undefined => {
+    (errorMsg?: JSX.Element | string) =>
+    (value: boolean): JSX.Element | undefined | string => {
         if (!yup.boolean().isValidSync(value) || value === false) {
             return errorMsg ? (
                 errorMsg

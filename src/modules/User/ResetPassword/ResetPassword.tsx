@@ -7,7 +7,6 @@ import { ResetPasswordForm } from 'src/modules/User/ResetPassword/ResetPasswordF
 import { useLocation, useHistory } from 'react-router-dom'
 import { URL_LOGIN } from 'src/modules/User/Login/LoginConfig'
 import { ResetPasswordProps } from 'src/modules/User/ResetPassword/ResetPasswordTypes'
-import { URL_SET_PASSWORD } from 'src/modules/User/ResetPassword/ResetPasswordConfig'
 
 /**
  * Reset password component.
@@ -23,8 +22,6 @@ export const ResetPassword: FC<ResetPasswordProps> = ({
     const { search } = useLocation()
     const query = new URLSearchParams(search)
     const token = query.get('token') as string
-
-    const isSetPassword = URL_SET_PASSWORD === history.location.pathname
 
     useEffect(() => {
         if (!token) history.push(URL_LOGIN)
@@ -45,7 +42,7 @@ export const ResetPassword: FC<ResetPasswordProps> = ({
                                 variant="h6"
                                 className="mt-16 mb-24 text-center font-semibold sm:text-20"
                             >
-                                {isSetPassword ? "Création d'un mot de passe" : 'Modifier votre mot de passe'}
+                                Modifier votre mot de passe
                             </TypographyFormatMessage>
                             <ResetPasswordForm token={token} />
                         </CardContent>

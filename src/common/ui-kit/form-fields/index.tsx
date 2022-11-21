@@ -1,15 +1,16 @@
 import _ from 'lodash'
 import {
     TextField as MaterialUiNativeTextField,
-    // Checkbox as CheckboxUI,
-    // FormControl,
-    // FormControlLabel,
+    Checkbox as CheckboxUI,
+    FormControl,
+    FormControlLabel,
+    FormControlLabelProps,
     FormControlProps,
-    // FormHelperText,
+    FormHelperText,
 } from '@mui/material'
 import { CustomValidateResult, FieldValidate, validators } from 'src/common/react-platform-components'
-import React, { /*ChangeEvent,*/ FC, useState } from 'react'
-import { /*RegisterOptions,*/ useFormContext } from 'react-hook-form'
+import React, { ChangeEvent, FC, useState, useMemo } from 'react'
+import { RegisterOptions, useFormContext } from 'react-hook-form'
 import { Controller } from 'react-hook-form'
 import { TextFieldProps as MaterialUiTextFieldProps } from '@mui/material/TextField'
 import { Icon, IconButton, InputAdornment } from '@mui/material'
@@ -139,7 +140,7 @@ export interface CheckboxProps {
     /**
      * Label.
      */
-    label: string
+    label: FormControlLabelProps['label']
     /**
      * Name of the field.
      */
@@ -152,6 +153,10 @@ export interface CheckboxProps {
      * Material UI specific field, should be removed.
      */
     formControlProps?: FormControlProps
+    /**
+     * Material UI specific field, should be removed.
+     */
+    formControlLabelProps?: Partial<FormControlLabelProps>
     /**
      * Require information of the field (this is duplcated with the validate, should be removed).
      */
@@ -173,46 +178,61 @@ export interface CheckboxProps {
      */
     defaultValue?: boolean
 }
+// TODO test Checkox Component.
+/**
+ * Material UI Checkbox reusable component.
+ *
+ * @param props Checkbox Props.
+ * @returns Checkbox field.
+ */
+export const Checkbox: FC<CheckboxProps> = function (props): JSX.Element {
+    const { color, disabled, formControlProps, fullWidth, label, name, required, validate, formControlLabelProps } =
+        props
 
-// /**
-//  * @param props
-//  * ui shared checkbox field adapted to materialui
-//  * @returns checkbox field
-//  */
-// export const Checkbox: FC<CheckboxProps> = function (props): JSX.Element {
-//     const { color, disabled, formControlProps, fullWidth, label, name, required, validate } = props
-//     const registerOptions: RegisterOptions = {}
-//     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-//     registerOptions.validate = _.isArray(validate) ? (validators(validate) as any) : {}
+    const {
+        formState: { errors },
+        register,
+        setValue,
+    } = useFormContext()
 
-//     const { errors, register, setValue } = useFormContext()
+    /**
+     * Handle changes in the field.
+     *
+     * @param event Change event.
+     */
+    const handleChange = function (event: ChangeEvent<HTMLInputElement>) {
+        setValue(name, event.target.checked)
+    }
 
-//     /**
-//      * @param event change event
-//      * handle changes in the field
-//      */
-//     const handleChange = function (event: ChangeEvent<HTMLInputElement>) {
-//         setValue(name, event.target.checked)
-//     }
+    const registerOptions: RegisterOptions = useMemo(() => {
+        let options: RegisterOptions = {}
+        options.validate = _.isArray(validate) ? (validators(validate) as any) : {}
+        return options
+    }, [validate])
 
-//     React.useEffect(() => {
-//         register(name, registerOptions)
-//     }, [register])
+    React.useEffect(() => {
+        register(name, registerOptions)
+    }, [register, name, registerOptions])
 
-//     return (
-//         <FormControl
-//             required={required}
-//             disabled={disabled}
-//             fullWidth={fullWidth}
-//             color={color}
-//             {...formControlProps}
-//             error={_.has(errors, name)}
-//         >
-//             <FormControlLabel
-//                 label={label}
-//                 control={<CheckboxUI color="primary" id={name} onChange={handleChange} />}
-//             />
-//             {_.has(errors, name) && <FormHelperText id={name}>{_.get(errors, `${name}.message`)}</FormHelperText>}
-//         </FormControl>
-//     )
-// }
+    return (
+        <FormControl
+            required={required}
+            disabled={disabled}
+            fullWidth={fullWidth}
+            color={color}
+            {...formControlProps}
+            error={_.has(errors, name)}
+        >
+            <FormControlLabel
+                label={label}
+                control={
+                    <CheckboxUI color="primary" id={name} onChange={handleChange} sx={{ pointerEvents: 'auto' }} />
+                }
+                sx={{ marginLeft: '0px', pointerEvents: 'none', marginTop: '10px' }}
+                labelPlacement="end"
+                {...formControlLabelProps}
+            />
+            {_.has(errors, name) && <FormHelperText id={name}>{_.get(errors, `${name}.message`)}</FormHelperText>}
+        </FormControl>
+    )
+}

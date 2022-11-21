@@ -1,12 +1,12 @@
 import { authTypes, IRoute } from 'src/common/react-platform-components'
-import { ResetPassword } from './ResetPassword'
+import { SetPassword } from './SetPassword'
 
-const URL_RESET_PASSWORD = '/reset-password'
+const URL_SET_PASSWORD = '/set-password'
 
-const ResetPasswordConfig = [
+const SetPasswordConfig = [
     {
-        path: URL_RESET_PASSWORD,
-        component: ResetPassword,
+        path: URL_SET_PASSWORD,
+        component: SetPassword,
         auth: { authType: authTypes.anonymousRequired },
         settings: {
             layout: {
@@ -24,4 +24,4 @@ const ResetPasswordConfig = [
     {}>,
 ]
 
-export { ResetPasswordConfig, URL_RESET_PASSWORD }
+export { SetPasswordConfig, URL_SET_PASSWORD }
