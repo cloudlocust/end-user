@@ -5,20 +5,20 @@ import { ISolarEquipment } from 'src/modules/SolarEquipments/solarEquipments'
 import { TEST_SOLAR_EQUIPMENTS } from 'src/mocks/handlers/solarEquipments'
 import { SolarEquipments } from 'src/modules/SolarEquipments'
 
-let mockEquipmentRequestList: ISolarEquipment | null = applyCamelCase(TEST_SOLAR_EQUIPMENTS[0])
+let mockSolarEquipmentsList: ISolarEquipment | null = applyCamelCase(TEST_SOLAR_EQUIPMENTS[0])
 let mockLoadingInProgress = false
 let mockReloadEquipmentRequestList = jest.fn()
-let mockTotalEquipmentRequests = 0
+let mockTotalSolarEquipments = 0
 
 // Mock useInstallationRequestsList hook
 jest.mock('src/modules/SolarEquipments/solarEquipmentsHook', () => ({
     ...jest.requireActual('src/modules/SolarEquipments/solarEquipmentsHook'),
     // eslint-disable-next-line jsdoc/require-jsdoc
     useInstallationRequestsList: () => ({
-        elementList: mockEquipmentRequestList,
+        elementList: mockSolarEquipmentsList,
         loadingInProgress: mockLoadingInProgress,
         reloadElements: mockReloadEquipmentRequestList,
-        totalElementList: mockTotalEquipmentRequests,
+        totalElementList: mockTotalSolarEquipments,
     }),
 }))
 
@@ -38,7 +38,7 @@ describe('Solar Equipments', () => {
         expect(getByText(AJOUTER_DEMANDE_TEXT)).toBeTruthy()
     })
     test('when solar equipments list is null', async () => {
-        mockEquipmentRequestList = null
+        mockSolarEquipmentsList = null
         const { getByText } = reduxedRender(
             <Router>
                 <SolarEquipments />
@@ -49,7 +49,7 @@ describe('Solar Equipments', () => {
     })
     test('when loading is true', async () => {
         mockLoadingInProgress = true
-        mockEquipmentRequestList = applyCamelCase(TEST_SOLAR_EQUIPMENTS[0])
+        mockTotalSolarEquipments = applyCamelCase(TEST_SOLAR_EQUIPMENTS[0])
         const { getByText } = reduxedRender(
             <Router>
                 <SolarEquipments />
