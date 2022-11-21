@@ -29,9 +29,16 @@ const EurosConsumptionButtonToggler = ({
                     sx={{
                         color: 'white',
                         backgroundColor: getChartColor(metricTargetsEnum.eurosConsumption, theme),
+                        opacity: 1,
+                        '&:hover': {
+                            backgroundColor: getChartColor(metricTargetsEnum.eurosConsumption, theme),
+                            opacity: 0.7,
+                        },
                     }}
+                    // TODO Remove target should take an array of targets
                     onClick={() => {
                         removeTarget(metricTargetsEnum.consumption)
+                        removeTarget(metricTargetsEnum.autoconsumption)
                         addTarget(metricTargetsEnum.eurosConsumption)
                     }}
                 >
@@ -40,12 +47,19 @@ const EurosConsumptionButtonToggler = ({
             ) : (
                 <IconButton
                     sx={{
-                        color: 'primary.contrastText',
-                        backgroundColor: 'primary.light',
+                        color: 'secondary.contrastText',
+                        backgroundColor: 'secondary.main',
+                        opacity: 1,
+                        '&:hover': {
+                            backgroundColor: 'secondary.main',
+                            opacity: 0.7,
+                        },
                     }}
                     onClick={() => {
+                        // TODO Remove target should take an array of targets
                         removeTarget(metricTargetsEnum.eurosConsumption)
                         addTarget(metricTargetsEnum.consumption)
+                        addTarget(metricTargetsEnum.autoconsumption)
                     }}
                 >
                     <BoltIcon sx={{ width: 24, height: 24 }} />

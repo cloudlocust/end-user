@@ -11,6 +11,7 @@ import { applyCamelCase } from 'src/common/react-platform-components'
 import { IHousing } from 'src/modules/MyHouse/components/HousingList/housing'
 import { TEST_HOUSES } from 'src/mocks/handlers/houses'
 import { URL_MY_HOUSE } from 'src/modules/MyHouse/MyHouseConfig'
+import { ENPHASE_OFF_MESSAGE, NRLINK_ENEDIS_OFF_MESSAGE } from 'src/modules/MyConsumption/utils/myConsumptionVariables'
 
 // List of houses to add to the redux state
 const LIST_OF_HOUSES: IHousing[] = applyCamelCase(TEST_HOUSES)
@@ -21,6 +22,7 @@ let mockData: IMetric[] = TEST_SUCCESS_WEEK_METRICS(['consumption_metrics', '__e
 let mockNrlinkConsent: string
 let mockIsMetricsLoading = false
 let mockEnedisConsent: string
+let mockEnphaseConsent: string
 const mockSetFilters = jest.fn()
 const circularProgressClassname = '.MuiCircularProgress-root'
 const HAS_MISSING_CONTRACTS_WARNING_TEXT =
@@ -70,13 +72,17 @@ jest.mock('src/modules/Metrics/metricsHook.ts', () => ({
 jest.mock('src/modules/Consents/consentsHook.ts', () => ({
     // eslint-disable-next-line jsdoc/require-jsdoc
     useConsents: () => ({
-        enedisConsent: {
+        enedisSgeConsent: {
             meterGuid: '133456',
-            enedisConsentState: mockNrlinkConsent,
+            enedisSgeConsentState: mockEnedisConsent,
         },
         nrlinkConsent: {
             meterGuid: '133456',
-            nrlinkConsentState: mockEnedisConsent,
+            nrlinkConsentState: mockNrlinkConsent,
+        },
+        enphaseConsent: {
+            meterGuid: '133456',
+            enphaseConsentState: mockEnphaseConsent,
         },
         getConsents: mockGetConsents,
     }),
@@ -98,14 +104,13 @@ jest.mock(
 )
 
 describe('MyConsumptionContainer test', () => {
-    test('when there is no nrlinkConsent and no enedisConsent, a message is shown', async () => {
+    test('when there is no meter, a message is shown', async () => {
         mockData = []
-        mockNrlinkConsent = 'NONEXISTENT'
-        mockEnedisConsent = 'NONEXISTENT'
         const { getByText } = reduxedRender(
             <Router>
                 <MyConsumptionContainer />
             </Router>,
+            { initialState: { housingModel: { currentHousing: null } } },
         )
         await waitFor(() => {
             expect(mockGetConsents).toHaveBeenCalled()
@@ -124,34 +129,37 @@ describe('MyConsumptionContainer test', () => {
         expect(() => getByText('Chiffres clés')).toThrow()
     })
     test('Clicking on different period changes the Consumption Title', async () => {
-        const { getByText } = reduxedRender(
+        mockNrlinkConsent = 'CONNECTED'
+        mockEnedisConsent = 'CONNECTED'
+        const { getAllByText } = reduxedRender(
             <Router>
                 <MyConsumptionContainer />
             </Router>,
+            { initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[0] } } },
         )
         // Daily CONSUMPTION Text
-        expect(getByText(CONSUMPTION_TITLE_DAILY)).toBeTruthy()
+        expect(getAllByText(CONSUMPTION_TITLE_DAILY)[0]).toBeTruthy()
 
         // Weekly CONSUMPTION Text
-        userEvent.click(getByText(WEEKLY_PERIOD_BUTTON_TEXT))
+        userEvent.click(getAllByText(WEEKLY_PERIOD_BUTTON_TEXT)[0])
         await waitFor(() => {
-            expect(getByText(CONSUMPTION_TITLE_WEEKLY)).toBeTruthy()
+            expect(getAllByText(CONSUMPTION_TITLE_WEEKLY)[0]).toBeTruthy()
         })
 
         // Monthly CONSUMPTION Text
-        userEvent.click(getByText(MONTHLY_PERIOD_BUTTON_TEXT))
+        userEvent.click(getAllByText(MONTHLY_PERIOD_BUTTON_TEXT)[0])
         await waitFor(() => {
-            expect(getByText(CONSUMPTION_TITLE_MONTHLY)).toBeTruthy()
+            expect(getAllByText(CONSUMPTION_TITLE_MONTHLY)[0]).toBeTruthy()
         })
 
         // Yearly CONSUMPTION Text
-        userEvent.click(getByText(YEARLY_PERIOD_BUTTON_TEXT))
+        userEvent.click(getAllByText(YEARLY_PERIOD_BUTTON_TEXT)[0])
         await waitFor(() => {
-            expect(getByText(CONSUMPTION_TITLE_YEARLY)).toBeTruthy()
+            expect(getAllByText(CONSUMPTION_TITLE_YEARLY)[0]).toBeTruthy()
         })
     })
     test('Toggling to EurosConsumption on different period changes the ConsumptionEuros Title', async () => {
-        const { getByText, getByTestId } = reduxedRender(
+        const { getByText, getByTestId, getAllByText } = reduxedRender(
             <Router>
                 <MyConsumptionContainer />
             </Router>,
@@ -164,24 +172,24 @@ describe('MyConsumptionContainer test', () => {
             expect(getByTestId(CONSUMPTION_ICON_TEST_ID)).toBeTruthy()
         })
         // Daily EUROS CONSUMPTION Text
-        expect(getByText(EUROS_CONSUMPTION_TITLE_DAILY)).toBeTruthy()
+        expect(getAllByText(EUROS_CONSUMPTION_TITLE_DAILY)[0]).toBeTruthy()
 
         // Weekly EUROS CONSUMPTION Text
-        userEvent.click(getByText(WEEKLY_PERIOD_BUTTON_TEXT))
+        userEvent.click(getAllByText(WEEKLY_PERIOD_BUTTON_TEXT)[0])
         await waitFor(() => {
-            expect(getByText(EUROS_CONSUMPTION_TITLE_WEEKLY)).toBeTruthy()
+            expect(getAllByText(EUROS_CONSUMPTION_TITLE_WEEKLY)[0]).toBeTruthy()
         })
 
         // Monthly EUROS CONSUMPTION Text
         userEvent.click(getByText(MONTHLY_PERIOD_BUTTON_TEXT))
         await waitFor(() => {
-            expect(getByText(EUROS_CONSUMPTION_TITLE_MONTHLY)).toBeTruthy()
+            expect(getAllByText(EUROS_CONSUMPTION_TITLE_MONTHLY)[0]).toBeTruthy()
         })
 
         // Yearly EUROS CONSUMPTION Text
-        userEvent.click(getByText(YEARLY_PERIOD_BUTTON_TEXT))
+        userEvent.click(getAllByText(YEARLY_PERIOD_BUTTON_TEXT)[0])
         await waitFor(() => {
-            expect(getByText(EUROS_CONSUMPTION_TITLE_YEARLY)).toBeTruthy()
+            expect(getAllByText(EUROS_CONSUMPTION_TITLE_YEARLY)[0]).toBeTruthy()
         })
         // HasMissingContractsExample Text
         expect(getByText(HAS_MISSING_CONTRACTS_WARNING_TEXT)).toBeTruthy()
@@ -230,5 +238,53 @@ describe('MyConsumptionContainer test', () => {
         )
         expect(container.querySelector(circularProgressClassname)).toBeInTheDocument()
         expect(container.querySelector(`.${apexchartsClassName}`)).not.toBeInTheDocument()
+    })
+    test('when nrLINK is off & enedisSge is off, an error message is shown', async () => {
+        mockNrlinkConsent = 'NONEXISTENT'
+        mockEnedisConsent = 'NONEXISTENT'
+        const { getByText } = reduxedRender(
+            <Router>
+                <MyConsumptionContainer />
+            </Router>,
+            { initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[0] } } },
+        )
+        await waitFor(() => {
+            expect(mockGetConsents).toHaveBeenCalled()
+        })
+
+        expect(getByText(NRLINK_ENEDIS_OFF_MESSAGE)).toBeTruthy()
+    })
+    test('when enphaseConsent is ACTIVE, production chart is shown', async () => {
+        mockNrlinkConsent = 'CONNECTED'
+        mockEnedisConsent = 'CONNECTED'
+        mockEnphaseConsent = 'ACTIVE'
+
+        const { getByText } = reduxedRender(
+            <Router>
+                <MyConsumptionContainer />
+            </Router>,
+            { initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[0] } } },
+        )
+
+        await waitFor(() => {
+            expect(mockGetConsents).toHaveBeenCalled()
+        })
+        expect(getByText('Ma Production')).toBeTruthy()
+    })
+    test('when enphase is Off, a message is shown', async () => {
+        mockEnphaseConsent = 'EXPIRED' || 'NONEXISTANT' || 'PENDING'
+
+        const { getByText } = reduxedRender(
+            <Router>
+                <MyConsumptionContainer />
+            </Router>,
+            { initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[0] } } },
+        )
+
+        await waitFor(() => {
+            expect(mockGetConsents).toHaveBeenCalled()
+        })
+
+        expect(getByText(ENPHASE_OFF_MESSAGE)).toBeTruthy()
     })
 })

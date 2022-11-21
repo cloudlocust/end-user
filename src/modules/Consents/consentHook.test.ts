@@ -45,7 +45,7 @@ describe('useConsents test', () => {
             { timeout: 6000 },
         )
         expect(result.current.nrlinkConsent.nrlinkConsentState).toStrictEqual(connectedState)
-        expect(result.current.enedisConsent.enedisConsentState).toStrictEqual(connectedState)
+        expect(result.current.enedisSgeConsent.enedisSgeConsentState).toStrictEqual(connectedState)
         expect(result.current.enphaseConsent.enphaseConsentState).toStrictEqual('ACTIVE')
     }, 8000)
     test('when there is server error while fetching consents, snackbar is shown', async () => {
@@ -114,7 +114,7 @@ describe('useConsents test', () => {
             variant: 'error',
         })
     }, 10000)
-    test('when createEnedisSgeConsent requestt is performed successfully', async () => {
+    test('when createEnedisSgeConsent request is performed successfully', async () => {
         const { store } = require('src/redux')
         await store.dispatch.userModel.setAuthenticationToken(TEST_SUCCESS)
         const {

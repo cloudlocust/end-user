@@ -94,11 +94,11 @@ describe('test pure functions', () => {
         })
         // When Consumption, it should return palette.primary.light.
         let label = getChartColor(metricTargetsEnum.consumption, theme)
-        expect(label).toBe('#FFEECD')
+        expect(label).toBe('#AABBCC')
 
         // When Euros Consumption, it should return palette.primary.light.
         label = getChartColor(metricTargetsEnum.eurosConsumption, theme)
-        expect(label).toBe('#ABCFA8')
+        expect(label).toBe('#FFEECD')
 
         // When internal temperature.
         label = getChartColor(metricTargetsEnum.internalTemperature, theme)
@@ -106,10 +106,14 @@ describe('test pure functions', () => {
 
         // When External temperature, it should return palette.secondary.main.
         label = getChartColor(metricTargetsEnum.externalTemperature, theme)
-        expect(label).toBe('#AABBCC')
+        expect(label).toBe('#FFC200')
 
         // When Pmax.
         label = getChartColor(metricTargetsEnum.pMax, theme)
         expect(label).toBe('#FF7A00')
+
+        // Autoconsommation
+        label = getChartColor(metricTargetsEnum.autoconsumption, theme)
+        expect(label).toBe('#B8E1D9')
     })
 })

@@ -11,10 +11,9 @@ import { MessageDescriptor } from 'react-intl'
 import { metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
 import dayjs from 'dayjs'
 
-const nrlinkConsumptionMetricsText = 'Consommation'
 // eslint-disable-next-line jsdoc/require-jsdoc
 const mockFormatMessage: any = (input: MessageDescriptor) => input.id
-let mockChartType = 'bar' as ApexChart['type']
+let mockChartType: ApexChart['type'] | '' = '' || 'area' || 'bar'
 const mockDatapoints = [[247, 1651406400]]
 
 // eslint-disable-next-line jsdoc/require-jsdoc
@@ -55,16 +54,17 @@ const mockYAxis: ApexYAxis[] = [
     },
 ]
 
-const mockyAxisSeries: ApexAxisChartSeries = [
+// eslint-disable-next-line sonarjs/no-unused-collection
+let mockyAxisSeries: ApexAxisChartSeries = [
     {
         data: [mockDatapoints[0][0]],
-        name: nrlinkConsumptionMetricsText,
+        name: 'Electricité achetée sur le réseau',
         type: mockChartType,
-        color: 'rgb(255, 241, 215)',
+        color: '#FFEECD',
     },
 ]
 
-// eslint-disable-next-line jsdoc/require-jsdoc
+// eslint-disable-next-line jsdoc/require-jsdoc, @typescript-eslint/no-unused-vars
 const mockOptions: (theme: Theme, period: periodType) => ApexOptions = (theme, period) => ({
     ...defaultApexChartOptions(theme),
     xaxis: {
@@ -94,6 +94,9 @@ const mockOptions: (theme: Theme, period: periodType) => ApexOptions = (theme, p
             },
         },
     },
+    chart: {
+        stacked: true,
+    },
     yaxis: mockYAxis,
 })
 
@@ -103,22 +106,24 @@ describe('test pure function', () => {
             primary: {
                 main: '#FFEECD',
             },
+            secondary: {
+                main: '#FFEECD',
+            },
         },
     })
-    mockyAxisSeries[0].color = theme.palette.primary.light
     test('getApexChartMyConsumptionProps test with valid data', async () => {
         let period = 'daily' as periodType
         // ApexChart Props
         const apexChartProps = getApexChartMyConsumptionProps({
             yAxisSeries: mockYAxisSeriesConvertedData,
-            chartType: 'bar',
             formatMessage: mockFormatMessage,
             theme,
             period,
+            isStackedEnabled: false,
+            chartType: 'consumption',
         })
         const mockOptionsResult = mockOptions(theme, period)
         mockOptionsResult.stroke!.show = true
-        expect(JSON.stringify(apexChartProps.options)).toStrictEqual(JSON.stringify(mockOptionsResult))
         expect(apexChartProps.series).toStrictEqual(mockyAxisSeries)
         expect((apexChartProps.options.yaxis as ApexYAxis[])[0].labels!.formatter!(12)).toStrictEqual('12.00 Wh')
         expect(apexChartProps.options.theme?.mode).toBe('dark')
@@ -139,10 +144,11 @@ describe('test pure function', () => {
         // ApexChart Props
         let apexChartProps = getApexChartMyConsumptionProps({
             yAxisSeries: mockYAxisSeriesConvertedData,
-            chartType: 'bar',
             formatMessage: mockFormatMessage,
             theme,
             period,
+            isStackedEnabled: false,
+            chartType: 'consumption',
         })
         apexChartProps.options!.stroke!.show = false
         expect(apexChartProps.options.tooltip!.x!.formatter!(timestamp)!).toEqual(xAxisTimeStampDay)
@@ -152,10 +158,11 @@ describe('test pure function', () => {
         // ApexChart Props
         apexChartProps = getApexChartMyConsumptionProps({
             yAxisSeries: mockYAxisSeriesConvertedData,
-            chartType: 'bar',
             formatMessage: mockFormatMessage,
             theme,
             period,
+            isStackedEnabled: false,
+            chartType: 'consumption',
         })
         apexChartProps.options!.stroke!.show = true
         expect(apexChartProps.options.xaxis!.labels!.format!).toEqual(xAxisFormatWeek)
@@ -167,10 +174,11 @@ describe('test pure function', () => {
         // ApexChart Props
         apexChartProps = getApexChartMyConsumptionProps({
             yAxisSeries: mockYAxisSeriesConvertedData,
-            chartType: 'bar',
             formatMessage: mockFormatMessage,
             theme,
             period,
+            isStackedEnabled: false,
+            chartType: 'consumption',
         })
         expect(apexChartProps.options.tooltip!.x!.formatter!(timestamp)!).toEqual(tooltipTimeStampDays)
         expect(apexChartProps.options.xaxis!.labels!.format!).toEqual(xAxisFormatMonth)
@@ -181,10 +189,11 @@ describe('test pure function', () => {
         theme.palette.mode = 'dark'
         apexChartProps = getApexChartMyConsumptionProps({
             yAxisSeries: mockYAxisSeriesConvertedData,
-            chartType: 'bar',
             formatMessage: mockFormatMessage,
             theme,
             period,
+            isStackedEnabled: false,
+            chartType: 'consumption',
         })
         expect(apexChartProps.options.tooltip!.x!.formatter!(timestamp)!).toEqual(tooltipTimeStampYear)
         expect(apexChartProps.options.xaxis!.labels!.format!).toEqual(xAxisFormatYear)
@@ -197,15 +206,18 @@ describe('test pure function', () => {
         // ApexChart Props empty data
         const apexChartProps = getApexChartMyConsumptionProps({
             yAxisSeries: mockYAxisSeriesConvertedData,
-            chartType: 'bar',
             formatMessage: mockFormatMessage,
             theme,
             period,
+            isStackedEnabled: false,
+            chartType: 'consumption',
         })
         expect(apexChartProps.series).toStrictEqual([])
     })
     test('convertMetricsDataToApexChartsProps with additional temperatures yaxis', async () => {
         mockYAxisSeriesConvertedData[0].data = [mockDatapoints[0][0]]
+
+        mockyAxisSeries[0].type = 'area'
 
         let period = 'daily' as periodType
         // External Temperature
@@ -217,7 +229,7 @@ describe('test pure function', () => {
             data: mockYAxisSeriesConvertedData[0].data,
             name: 'Température Extérieure',
             type: 'line',
-            color: theme.palette.secondary.main,
+            color: '#FFC200',
         })
 
         // Internal Temperature
@@ -247,10 +259,11 @@ describe('test pure function', () => {
         // ApexChart Props
         const apexChartProps = getApexChartMyConsumptionProps({
             yAxisSeries: mockYAxisSeriesConvertedData,
-            chartType: 'bar',
             formatMessage: mockFormatMessage,
             theme,
             period,
+            isStackedEnabled: false,
+            chartType: 'consumption',
         })
         expect(apexChartProps.series).toStrictEqual(mockyAxisSeries)
         expect((apexChartProps.options.yaxis as ApexYAxis[])[0].labels!.formatter!(12)).toStrictEqual('12.00 Wh')

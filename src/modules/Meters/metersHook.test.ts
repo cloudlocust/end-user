@@ -7,7 +7,6 @@ import { EDIT_ERROR_MESSAGE, EDIT_SUCCESS_MESSAGE, useMeterForHousing } from './
 
 const TEST_MOCKED_HOUSES: IHousing[] = applyCamelCase(TEST_HOUSES)
 
-const TEST_NAME_METER = 'HELLO 101'
 const TEST_NUMBER_METER = '23215654321'
 
 const SUCCESS_ADD_MESSAGE = 'Compteur ajouté avec succès'
@@ -38,7 +37,7 @@ describe('addMeter test', () => {
         expect(result.current.loadingInProgress).toBe(false)
         // add new meter
         act(() => {
-            result.current.addMeter(TEST_MOCKED_HOUSES[1].id, { name: TEST_NAME_METER, guid: TEST_NUMBER_METER })
+            result.current.addMeter(TEST_MOCKED_HOUSES[1].id, { guid: TEST_NUMBER_METER })
         })
 
         expect(result.current.loadingInProgress).toBe(true)
@@ -46,7 +45,7 @@ describe('addMeter test', () => {
             () => {
                 return result.current.loadingInProgress
             },
-            { timeout: 2000 },
+            { timeout: 4000 },
         )
 
         expect(result.current.loadingInProgress).toBe(false)
@@ -61,7 +60,7 @@ describe('addMeter test', () => {
         expect(result.current.loadingInProgress).toBe(false)
         // first meter of the list already has a meter so it will give us back an error
         act(() => {
-            result.current.addMeter(TEST_MOCKED_HOUSES[0].id, { name: TEST_NAME_METER, guid: TEST_NUMBER_METER })
+            result.current.addMeter(TEST_MOCKED_HOUSES[0].id, { guid: TEST_NUMBER_METER })
         })
 
         expect(result.current.loadingInProgress).toBe(true)
@@ -86,7 +85,7 @@ describe('editMeter test', () => {
         expect(result.current.loadingInProgress).toBe(false)
 
         act(() => {
-            result.current.editMeter(TEST_MOCKED_HOUSES[0].id, { name: TEST_NAME_METER, guid: TEST_NUMBER_METER })
+            result.current.editMeter(TEST_MOCKED_HOUSES[0].id, { guid: TEST_NUMBER_METER })
         })
 
         expect(result.current.loadingInProgress).toBe(true)

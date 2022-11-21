@@ -11,6 +11,7 @@ import {
     EnedisSgePopupStepsEnum,
 } from 'src/modules/MyHouse/components/MeterStatus/enedisSgePopup.d'
 import { sgeConsentFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
+import { warningMainHashColor } from 'src/modules/utils/muiThemeVariables'
 import { RootState } from 'src/redux'
 
 /**
@@ -85,10 +86,10 @@ export const EnedisSgePopup = ({
     return (
         <>
             <Typography
-                className={`underline cursor-pointer ${sgeConsentFeatureState && 'cursor-not-allowed text-grey-600'}`}
+                className={`underline cursor-pointer ${!sgeConsentFeatureState && 'cursor-not-allowed text-grey-600'}`}
                 fontWeight={600}
                 onClick={() => {
-                    if (sgeConsentFeatureState) return
+                    if (!sgeConsentFeatureState) return
                     else setOpenSgePopup(true)
                 }}
                 {...TypographyProps}
@@ -135,7 +136,7 @@ export const EnedisSgePopup = ({
                                                 </Icon>
                                                 <Typography
                                                     sx={(theme) => ({
-                                                        color: theme.palette.warning.main,
+                                                        color: warningMainHashColor,
                                                     })}
                                                     className="text-center"
                                                     fontWeight={500}
@@ -183,7 +184,7 @@ export const EnedisSgePopup = ({
                                         </Icon>
                                         <Typography
                                             sx={(theme) => ({
-                                                color: theme.palette.warning.main,
+                                                color: warningMainHashColor,
                                             })}
                                             className="text-center"
                                             fontWeight={500}
@@ -218,7 +219,7 @@ export const EnedisSgePopup = ({
                                             data-testid="sge-message"
                                             onClick={() =>
                                                 window.open(
-                                                    'https://www.myem.fr/politique-de-confidentialite/',
+                                                    'https://drive.google.com/uc?export=download&id=15QHX14AWoKepWuEJBxscijK5IIHPnCbl',
                                                     '_blank',
                                                 )
                                             }

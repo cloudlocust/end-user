@@ -22,7 +22,7 @@ jest.mock('notistack', () => ({
 }))
 
 const TEST_GET_HAS_MISSING_HOUSING_CONTRACTS_ERROR_MESSAGE =
-    'Erreur lors de la récupération du méssage du contrat example'
+    'Erreur lors de la récupération du message du contrat example'
 describe('useHasMissingHousingContracts test', () => {
     describe('getHasMissingHousingContracts', () => {
         test('When load error snackbar should be called with error message', async () => {

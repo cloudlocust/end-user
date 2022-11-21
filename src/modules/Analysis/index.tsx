@@ -27,7 +27,7 @@ import { analysisInformationName } from './analysisTypes'
 import { useSelector } from 'react-redux'
 import { RootState } from 'src/redux'
 import { useHasMissingHousingContracts } from 'src/hooks/HasMissingHousingContracts'
-import { secondaryMainColor } from 'src/modules/utils/muiThemeVariables'
+import { warningMainHashColor } from 'src/modules/utils/muiThemeVariables'
 
 /**
  * InitialMetricsStates for useMetrics.
@@ -60,7 +60,7 @@ export const initialMetricsHookValues: getMetricType = {
 const Analysis = () => {
     const theme = useTheme()
     const { formatMessage } = useIntl()
-    const { getConsents, nrlinkConsent, enedisConsent } = useConsents()
+    const { getConsents, nrlinkConsent, enedisSgeConsent } = useConsents()
     const { data, setRange, setFilters, isMetricsLoading, filters, range } = useMetrics(initialMetricsHookValues)
     const [activeInformationName, setActiveInformationName] = useState<analysisInformationName | undefined>(undefined)
 
@@ -92,9 +92,9 @@ const Analysis = () => {
     // UseEffect to check for consent whenever a meter is selected.
     useEffect(() => {
         if (filters.length > 0) {
-            getConsents(filters[0].value)
+            getConsents(filters[0].value, currentHousing?.id)
         }
-    }, [filters, getConsents])
+    }, [currentHousing?.id, filters, getConsents])
 
     /**
      * Handler when DatePicker change, to apply the range related to Analysis Component and overwrites the default ConsumptionDatePicker.
@@ -113,13 +113,14 @@ const Analysis = () => {
     // By checking if the metersList is true we make sure that if someone has skipped the step of connecting their PDL, they will see this error message.
     // Else if they have a PDL, we check its consent.
     if (
-        (nrlinkConsent?.nrlinkConsentState === 'NONEXISTENT' && enedisConsent?.enedisConsentState === 'NONEXISTENT') ||
+        (nrlinkConsent?.nrlinkConsentState === 'NONEXISTENT' &&
+            enedisSgeConsent?.enedisSgeConsentState === 'NONEXISTENT') ||
         (currentHousing && !currentHousing.meter)
     ) {
         return (
             <div className="container relative h-200 sm:h-256 p-16 sm:p-24 flex-col text-center flex items-center justify-center">
                 <>
-                    <Icon style={{ fontSize: '4rem', marginBottom: '1rem', color: theme.palette.secondary.main }}>
+                    <Icon style={{ fontSize: '4rem', marginBottom: '1rem', color: warningMainHashColor }}>
                         error_outline_outlined
                     </Icon>
                 </>
@@ -150,7 +151,7 @@ const Analysis = () => {
     return (
         <div>
             <div
-                style={{ background: theme.palette.primary.main, minHeight: '64px' }}
+                style={{ background: theme.palette.primary.dark, minHeight: '64px' }}
                 className="w-full relative flex flex-col justify-center items-center p-16"
             >
                 <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
@@ -172,7 +173,7 @@ const Analysis = () => {
                     <div className="flex items-center justify-center flex-col">
                         <ErrorOutlineIcon
                             sx={{
-                                color: secondaryMainColor,
+                                color: warningMainHashColor,
                                 width: { xs: '24px', md: '32px' },
                                 height: { xs: '24px', md: '32px' },
                                 margin: { xs: '0 0 4px 0', md: '0 8px 0 0' },
@@ -181,7 +182,7 @@ const Analysis = () => {
 
                         <div className="w-full">
                             <TypographyFormatMessage
-                                sx={{ color: secondaryMainColor }}
+                                sx={{ color: warningMainHashColor }}
                                 className="text-13 md:text-16 text-center"
                             >
                                 {
@@ -191,7 +192,7 @@ const Analysis = () => {
                             <NavLink to={`${URL_MY_HOUSE}/${currentHousing?.id}/contracts`}>
                                 <TypographyFormatMessage
                                     className="underline text-13 md:text-16 text-center"
-                                    sx={{ color: secondaryMainColor }}
+                                    sx={{ color: warningMainHashColor }}
                                 >
                                     Renseigner votre contrat d'énergie
                                 </TypographyFormatMessage>

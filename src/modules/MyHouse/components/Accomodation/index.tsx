@@ -8,6 +8,7 @@ import Icon from '@mui/material/Icon'
 import { useIntl } from 'src/common/react-platform-translation'
 import { Button } from '@mui/material'
 import { URL_MY_HOUSE } from 'src/modules/MyHouse/MyHouseConfig'
+import { useTheme, ThemeProvider } from '@mui/material/styles'
 
 const Root = styled(FusePageCarded)(({ theme }) => ({
     '& .FusePageCarded-header': {
@@ -33,6 +34,7 @@ const Root = styled(FusePageCarded)(({ theme }) => ({
  */
 const Accomodation = () => {
     const { formatMessage } = useIntl()
+    const theme = useTheme()
 
     const { houseId } = useParams</**
      *
@@ -48,21 +50,23 @@ const Accomodation = () => {
     return (
         <Root
             header={
-                <Button
-                    color="primary"
-                    onClick={() => history.push(`${URL_MY_HOUSE}/${housingId}`)}
-                    className="text-16 ml-12"
-                >
-                    <Icon
-                        component={motion.span}
-                        initial={{ scale: 0 }}
-                        animate={{ scale: 1, transition: { delay: 0.2 } }}
-                        className="text-24 mr-2 text"
+                <ThemeProvider theme={theme}>
+                    <Button
+                        sx={{ color: 'primary.contrastText' }}
+                        onClick={() => history.push(`${URL_MY_HOUSE}/${housingId}`)}
+                        className="text-16 ml-12"
                     >
-                        arrow_back
-                    </Icon>
-                    {formatMessage({ id: 'Retour', defaultMessage: 'Retour' })}
-                </Button>
+                        <Icon
+                            component={motion.span}
+                            initial={{ scale: 0 }}
+                            animate={{ scale: 1, transition: { delay: 0.2 } }}
+                            className="text-24 mr-2 text"
+                        >
+                            arrow_back
+                        </Icon>
+                        {formatMessage({ id: 'Retour', defaultMessage: 'Retour' })}
+                    </Button>
+                </ThemeProvider>
             }
             content={<AccomodationForm />}
         />
