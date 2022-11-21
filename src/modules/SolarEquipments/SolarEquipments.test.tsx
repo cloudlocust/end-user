@@ -22,8 +22,8 @@ jest.mock('src/modules/SolarEquipments/solarEquipmentsHook', () => ({
     }),
 }))
 
-const EQUIPMENT_INSTALLATION_TEXT = "Demandes d'équipements"
-const AJOUTER_DEMANDE_TEXT = 'Ajouter une demande'
+const SOLAR_EQUIPMENTS_TEXT = 'Mes équipements'
+const AJOUTER_EQUIPMENT_TEXT = 'Ajouter un équipement'
 const LOADING_TEXT = 'Chargement...'
 
 describe('Solar Equipments', () => {
@@ -34,8 +34,8 @@ describe('Solar Equipments', () => {
                 <SolarEquipments />
             </Router>,
         )
-        expect(getByText(EQUIPMENT_INSTALLATION_TEXT)).toBeTruthy()
-        expect(getByText(AJOUTER_DEMANDE_TEXT)).toBeTruthy()
+        expect(getByText(SOLAR_EQUIPMENTS_TEXT)).toBeTruthy()
+        expect(getByText(AJOUTER_EQUIPMENT_TEXT)).toBeTruthy()
     })
     test('when solar equipments list is null', async () => {
         mockSolarEquipmentsList = null
