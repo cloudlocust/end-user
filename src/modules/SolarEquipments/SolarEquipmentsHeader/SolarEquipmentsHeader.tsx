@@ -8,15 +8,15 @@ import { Dispatch, SetStateAction } from 'react'
  * Equipment Requests header element.
  *
  * @param root0 N/A.
- * @param root0.setIsCreateEquipmentRequestPopup Setter function to open popup for adding equipment request.
+ * @param root0.setIsCreateSolarEquipmentPopup Setter function to open popup for adding equipment request.
  * @returns EquipmentRequestsHeader component.
  */
-export const EquipmentRequestsHeader = ({
-    setIsCreateEquipmentRequestPopup,
+export const SolarEquipmentHeader = ({
+    setIsCreateSolarEquipmentPopup,
 }: // eslint-disable-next-line jsdoc/require-jsdoc
 {
     // eslint-disable-next-line jsdoc/require-jsdoc
-    setIsCreateEquipmentRequestPopup: Dispatch<SetStateAction<boolean>>
+    setIsCreateSolarEquipmentPopup: Dispatch<SetStateAction<boolean>>
 }) => {
     const mainTheme = selectTheme()
     const { formatMessage } = useIntl()
@@ -64,7 +64,7 @@ export const EquipmentRequestsHeader = ({
                             variant="contained"
                             color="secondary"
                             onClick={() => {
-                                setIsCreateEquipmentRequestPopup(true)
+                                setIsCreateSolarEquipmentPopup(true)
                             }}
                         >
                             <span className="hidden sm:flex">

@@ -115,7 +115,7 @@ function UserMenu() {
                     )}
                     <ToolbarMenuItem
                         onMenuItemClick={() => {
-                            history.replace('/equipment-requests')
+                            history.replace('/solar-equipments')
                         }}
                         iconLabel="construction"
                         idLabel="Equipement"

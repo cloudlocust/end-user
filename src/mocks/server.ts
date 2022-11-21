@@ -12,8 +12,7 @@ import { contractsEndpoints } from 'src/mocks/handlers/contracts'
 import { commercialOfferEndpoints } from 'src/mocks/handlers/commercialOffer'
 import { faqEndpoints } from 'src/mocks/handlers/faq'
 import { installationRequestsEndpoints } from 'src/mocks/handlers/installationRequests'
-import { equipmentRequestsEndpoints } from 'src/mocks/handlers/equipmentRequests'
-
+import { solarEquipmentsEndpoints } from 'src/mocks/handlers/solarEquipments'
 /**
  * Handlers to mock urls for tests.
  */
@@ -42,8 +41,8 @@ const handlers = [
     ...faqEndpoints,
     /******Installation Requests *****/
     ...installationRequestsEndpoints,
-    /*** Equipment requets */
-    ...equipmentRequestsEndpoints,
+    /*** Solar Equipment requets */
+    ...solarEquipmentsEndpoints,
 ]
 
 // This configures a request mocking server with the given request handlers.

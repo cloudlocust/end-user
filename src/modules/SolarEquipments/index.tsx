@@ -6,11 +6,11 @@ import { useIntl } from 'react-intl'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import FuseLoading from 'src/common/ui-kit/fuse/components/FuseLoading'
 import FusePageCarded from 'src/common/ui-kit/fuse/components/FusePageCarded'
-import { IEquipmentRequest } from 'src/modules/EquipmentRequests/equipmentRequests'
-import { EquipmentRequestsHeader } from 'src/modules/EquipmentRequests/EquipmentRequestsHeader'
-import { useEquipmentRequestsList } from 'src/modules/EquipmentRequests/EquipmentRequestsHook'
 import { motion } from 'framer-motion'
 import Table from 'src/common/ui-kit/components/Table/Table'
+import { ISolarEquipment } from 'src/modules/SolarEquipments/solarEquipments'
+import { SolarEquipmentHeader } from 'src/modules/SolarEquipments/SolarEquipmentsHeader'
+import { useSolarEquipmentsList } from 'src/modules/SolarEquipments/solarEquipmentsHook'
 
 const Root = styled(FusePageCarded)(({ theme }) => ({
     '& .FusePageCarded-header': {
@@ -34,27 +34,27 @@ const Root = styled(FusePageCarded)(({ theme }) => ({
  * Component ActionsCell that will be rendered as content of the ActionButtons Cell.
  *
  * @param props N/A.
- * @param props.row Represent the installer information of the current row (current row represent the row when clicking on Accept or Refuse).
+ * @param props.row Represent the equipment information of the current row (current row represent the row when clicking on Accept or Refuse).
  * @param props.onAfterCreateUpdateDeleteSuccess Callback function when activation succeeded.
- * @param props.setIsUpdateEquipmentRequestsPopup Setter function to trigger update popup.
- * @param props.setEquipmentRequestDetails Setter function to be passed in the row data.
+ * @param props.setIsUpdateSolarEquipmentPopup Setter function to trigger update popup.
+ * @param props.setSolarEquipmentDetails Setter function to be passed in the row data.
  * @returns ActionsCell Component.
  */
 const ActionsCell = ({
     row,
     onAfterCreateUpdateDeleteSuccess,
-    setIsUpdateEquipmentRequestsPopup,
-    setEquipmentRequestDetails,
+    setIsUpdateSolarEquipmentPopup,
+    setSolarEquipmentDetails,
 }: //eslint-disable-next-line jsdoc/require-jsdoc
 {
     //eslint-disable-next-line jsdoc/require-jsdoc
-    row: IEquipmentRequest
+    row: ISolarEquipment
     //eslint-disable-next-line jsdoc/require-jsdoc
     onAfterCreateUpdateDeleteSuccess: () => void
     //eslint-disable-next-line jsdoc/require-jsdoc
-    setIsUpdateEquipmentRequestsPopup: Dispatch<SetStateAction<boolean>>
+    setIsUpdateSolarEquipmentPopup: Dispatch<SetStateAction<boolean>>
     //eslint-disable-next-line jsdoc/require-jsdoc
-    setEquipmentRequestDetails: Dispatch<SetStateAction<IEquipmentRequest | null>>
+    setSolarEquipmentDetails: Dispatch<SetStateAction<ISolarEquipment | null>>
 }): JSX.Element => {
     const theme = useTheme()
     const { formatMessage } = useIntl()
@@ -76,7 +76,7 @@ const ActionsCell = ({
             },
             description: (
                 <TypographyFormatMessage className="text-16 md:text-20 text-center text-white">
-                    Vous êtes sur le point de supprimer cette demande d'équipement. Ëtes-vous sûr de vouloir continuer ?
+                    Vous êtes sur le point de supprimer cet équipement. Ëtes-vous sûr de vouloir continuer ?
                 </TypographyFormatMessage>
             ),
             confirmationText: (
@@ -105,8 +105,8 @@ const ActionsCell = ({
                     <IconButton
                         color="success"
                         onClickCapture={() => {
-                            setIsUpdateEquipmentRequestsPopup(true)
-                            setEquipmentRequestDetails(row)
+                            setIsUpdateSolarEquipmentPopup(true)
+                            setSolarEquipmentDetails(row)
                         }}
                     >
                         <Icon>edit</Icon>
@@ -128,30 +128,30 @@ const ActionsCell = ({
 }
 
 /**
- * EquipmentRequests page component.
+ * SolarEquipments page component.
  *
- * @returns EquipmentRequests JSX.
+ * @returns SolarEquipments JSX.
  */
-export const EquipmentRequests = () => {
+export const SolarEquipments = () => {
     const {
-        elementList: equipmentRequestsList,
-        loadingInProgress: isEquipmentRequestsLoading,
-        totalElementList: totalEquipmentRequests,
-        reloadElements: reloadEquipmentRequests,
+        elementList: solarEquipmentsList,
+        loadingInProgress: isSolarEquipmentsLoading,
+        totalElementList: totalSolarEquipmentsList,
+        reloadElements: reloadSolarEquipmentsList,
         loadPage,
         page,
-    } = useEquipmentRequestsList()
+    } = useSolarEquipmentsList()
     const { formatMessage } = useIntl()
-    const [, setEquipmentRequestDetails] = useState<IEquipmentRequest | null>(null)
-    const [, setIsUpdateEquipmentRequestsPopup] = useState(false)
-    const [, setIsCreateEquipmentRequestPopup] = useState(false)
+    const [, setSolarEquipmentDetails] = useState<ISolarEquipment | null>(null)
+    const [, setIsUpdateolarEquipmentPopup] = useState(false)
+    const [, setIsCreateSolarEquipmentPopup] = useState(false)
 
-    const equipmentRequestsCells = [
+    const solarEquipmentCells = [
         {
             id: 'type',
             headCellLabel: formatMessage({ id: 'Type', defaultMessage: 'Type' }),
             // eslint-disable-next-line jsdoc/require-jsdoc
-            rowCell: (row: IEquipmentRequest) => row.type,
+            rowCell: (row: ISolarEquipment) => row.type,
         },
         {
             id: 'brand',
@@ -160,30 +160,30 @@ export const EquipmentRequests = () => {
                 defaultMessage: 'Marque',
             }),
             // eslint-disable-next-line jsdoc/require-jsdoc
-            rowCell: (row: IEquipmentRequest) => row.brand,
+            rowCell: (row: ISolarEquipment) => row.brand,
         },
         {
             id: 'reference',
             headCellLabel: formatMessage({ id: 'Modèle', defaultMessage: 'Modèle' }),
             // eslint-disable-next-line jsdoc/require-jsdoc
-            rowCell: (row: IEquipmentRequest) => row.reference,
+            rowCell: (row: ISolarEquipment) => row.reference,
         },
         {
             id: 'installedAt',
             headCellLabel: formatMessage({ id: "Date d'installation", defaultMessage: "Date d'installation" }),
             // eslint-disable-next-line jsdoc/require-jsdoc
-            rowCell: (row: IEquipmentRequest) => row.installedAt,
+            rowCell: (row: ISolarEquipment) => row.installedAt,
         },
         {
             id: '',
             headCellLabel: '',
             // eslint-disable-next-line jsdoc/require-jsdoc
-            rowCell: (row: IEquipmentRequest) => (
+            rowCell: (row: ISolarEquipment) => (
                 <ActionsCell
                     row={row}
-                    setIsUpdateEquipmentRequestsPopup={setIsUpdateEquipmentRequestsPopup}
-                    setEquipmentRequestDetails={setEquipmentRequestDetails}
-                    onAfterCreateUpdateDeleteSuccess={reloadEquipmentRequests}
+                    setIsUpdateSolarEquipmentPopup={setIsUpdateolarEquipmentPopup}
+                    setSolarEquipmentDetails={setSolarEquipmentDetails}
+                    onAfterCreateUpdateDeleteSuccess={reloadSolarEquipmentsList}
                 />
             ),
         },
@@ -191,11 +191,11 @@ export const EquipmentRequests = () => {
 
     return (
         <Root
-            header={<EquipmentRequestsHeader setIsCreateEquipmentRequestPopup={setIsCreateEquipmentRequestPopup} />}
+            header={<SolarEquipmentHeader setIsCreateSolarEquipmentPopup={setIsCreateSolarEquipmentPopup} />}
             content={
-                isEquipmentRequestsLoading || !equipmentRequestsList ? (
+                isSolarEquipmentsLoading || !solarEquipmentsList ? (
                     <FuseLoading />
-                ) : equipmentRequestsList.length === 0 ? (
+                ) : solarEquipmentsList.length === 0 ? (
                     <motion.div
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1, transition: { delay: 0.1 } }}
@@ -210,11 +210,11 @@ export const EquipmentRequests = () => {
                     </motion.div>
                 ) : (
                     <div className="w-full flex flex-col">
-                        <Table<IEquipmentRequest>
-                            cells={equipmentRequestsCells}
-                            totalRows={totalEquipmentRequests}
+                        <Table<ISolarEquipment>
+                            cells={solarEquipmentCells}
+                            totalRows={totalSolarEquipmentsList}
                             onPageChange={loadPage}
-                            rows={equipmentRequestsList}
+                            rows={solarEquipmentsList}
                             pageProps={page}
                         />
                     </div>

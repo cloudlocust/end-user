@@ -1,15 +1,15 @@
-import { IEquipmentRequest } from 'src/modules/EquipmentRequests/equipmentRequests'
 import { SnakeCasedPropertiesDeep } from 'type-fest'
 import { rest } from 'msw'
 import { getPaginationFromElementList } from 'src/mocks/utils'
-import { EQUIPMENTS_REQUESTS_API } from 'src/modules/EquipmentRequests/EquipmentRequestsHook'
+import { ISolarEquipment } from 'src/modules/SolarEquipments/solarEquipments'
+import { SOLAR_EQUIPMENTS_API } from 'src/modules/SolarEquipments/solarEquipmentsHook'
 
 const CREATED_AT_DATA = '2021-12-15T14:07:38.138000'
 
 /**
  * Mocked data for Installation Requests.
  */
-export var TEST_EQUIPMENT_REQUESTS: SnakeCasedPropertiesDeep<IEquipmentRequest[]> = [
+export var TEST_SOLAR_EQUIPMENTS: SnakeCasedPropertiesDeep<ISolarEquipment[]> = [
     {
         id: 1,
         brand: 'brand1',
@@ -50,11 +50,12 @@ export var TEST_EQUIPMENT_REQUESTS: SnakeCasedPropertiesDeep<IEquipmentRequest[]
 /**
  * Equipment requests endpoints.
  */
-export const equipmentRequestsEndpoints = [
-    rest.get(EQUIPMENTS_REQUESTS_API, (req, res, ctx) => {
-        const TEST_EQUIPMENT_REQUESTS_RESPONSE = getPaginationFromElementList<
-            SnakeCasedPropertiesDeep<IEquipmentRequest>
-        >(req, TEST_EQUIPMENT_REQUESTS as [])
-        return res(ctx.status(200), ctx.delay(1000), ctx.json(TEST_EQUIPMENT_REQUESTS_RESPONSE))
+export const solarEquipmentsEndpoints = [
+    rest.get(SOLAR_EQUIPMENTS_API, (req, res, ctx) => {
+        const TEST_SOLAR_EQUIPMENTS_RESPONSE = getPaginationFromElementList<SnakeCasedPropertiesDeep<ISolarEquipment>>(
+            req,
+            TEST_SOLAR_EQUIPMENTS as [],
+        )
+        return res(ctx.status(200), ctx.delay(1000), ctx.json(TEST_SOLAR_EQUIPMENTS_RESPONSE))
     }),
 ]

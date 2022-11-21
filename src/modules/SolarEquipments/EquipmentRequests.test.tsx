@@ -1,18 +1,18 @@
 import { applyCamelCase } from 'src/common/react-platform-components'
 import { reduxedRender } from 'src/common/react-platform-components/test'
 import { BrowserRouter as Router } from 'react-router-dom'
-import { IEquipmentRequest } from 'src/modules/EquipmentRequests/equipmentRequests'
-import { TEST_EQUIPMENT_REQUESTS } from 'src/mocks/handlers/equipmentRequests'
-import { EquipmentRequests } from 'src/modules/EquipmentRequests'
+import { ISolarEquipment } from 'src/modules/SolarEquipments/solarEquipments'
+import { TEST_SOLAR_EQUIPMENTS } from 'src/mocks/handlers/solarEquipments'
+import { SolarEquipments } from 'src/modules/SolarEquipments'
 
-let mockEquipmentRequestList: IEquipmentRequest | null = applyCamelCase(TEST_EQUIPMENT_REQUESTS[0])
+let mockEquipmentRequestList: ISolarEquipment | null = applyCamelCase(TEST_SOLAR_EQUIPMENTS[0])
 let mockLoadingInProgress = false
 let mockReloadEquipmentRequestList = jest.fn()
 let mockTotalEquipmentRequests = 0
 
 // Mock useInstallationRequestsList hook
-jest.mock('src/modules/EquipmentRequests/EquipmentRequestsHook', () => ({
-    ...jest.requireActual('src/modules/EquipmentRequests/EquipmentRequestsHook'),
+jest.mock('src/modules/SolarEquipments/solarEquipmentsHook', () => ({
+    ...jest.requireActual('src/modules/SolarEquipments/solarEquipmentsHook'),
     // eslint-disable-next-line jsdoc/require-jsdoc
     useInstallationRequestsList: () => ({
         elementList: mockEquipmentRequestList,
@@ -31,7 +31,7 @@ describe('Equipment requests', () => {
         mockLoadingInProgress = true
         const { getByText } = reduxedRender(
             <Router>
-                <EquipmentRequests />
+                <SolarEquipments />
             </Router>,
         )
         expect(getByText(EQUIPMENT_INSTALLATION_TEXT)).toBeTruthy()
@@ -41,7 +41,7 @@ describe('Equipment requests', () => {
         mockEquipmentRequestList = null
         const { getByText } = reduxedRender(
             <Router>
-                <EquipmentRequests />
+                <SolarEquipments />
             </Router>,
         )
         expect(mockLoadingInProgress).toBeTruthy()
@@ -49,10 +49,10 @@ describe('Equipment requests', () => {
     })
     test('when loading is true', async () => {
         mockLoadingInProgress = true
-        mockEquipmentRequestList = applyCamelCase(TEST_EQUIPMENT_REQUESTS[0])
+        mockEquipmentRequestList = applyCamelCase(TEST_SOLAR_EQUIPMENTS[0])
         const { getByText } = reduxedRender(
             <Router>
-                <EquipmentRequests />
+                <SolarEquipments />
             </Router>,
         )
         expect(mockLoadingInProgress).toBeTruthy()
