@@ -206,7 +206,8 @@ export const InstallationRequests = (): JSX.Element => {
             id: 'type',
             headCellLabel: formatMessage({ id: 'Type', defaultMessage: 'Type' }),
             // eslint-disable-next-line jsdoc/require-jsdoc
-            rowCell: (row: IInstallationRequest) => row.equipmentType,
+            rowCell: (row: IInstallationRequest) =>
+                equipmentsTypeList[row.equipmentType as keyof typeof equipmentsTypeList].label,
         },
         {
             id: 'createdAt',

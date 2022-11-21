@@ -86,9 +86,9 @@ export const InstallationRequestCreatePopup = (props: InstallationRequestCreateP
                         </div>
 
                         <Form
-                            onSubmit={(data: createInstallationRequestType) => {
+                            onSubmit={async (data: createInstallationRequestType) => {
                                 const { equipmentType, ...restOfData } = data
-                                addElement({
+                                await addElement({
                                     ...restOfData,
                                     equipmentType: activeEquipmentButton!,
                                 })
@@ -186,7 +186,11 @@ export const InstallationRequestCreatePopup = (props: InstallationRequestCreateP
                                     <ButtonResetForm initialValues={() => {}} />
                                 </div>
                                 <div className="px-16">
-                                    <ButtonLoader inProgress={loadingInProgress} type="submit">
+                                    <ButtonLoader
+                                        inProgress={loadingInProgress}
+                                        disabled={!Boolean(activeEquipmentButton)}
+                                        type="submit"
+                                    >
                                         <TypographyFormatMessage>Valider</TypographyFormatMessage>
                                     </ButtonLoader>
                                 </div>

@@ -33,7 +33,9 @@ export const InstallationRequestDetailsPopup = (props: InstallationRequestDetail
     const { handleClosePopup, open, installationRequestDetails, onAfterCreateUpdateDeleteSuccess } = props
     const selectedTheme = selectTheme()
     const { formatMessage } = useIntl()
-    const { editElementDetails: editInstallationRequest } = useInstallationRequestDetails(installationRequestDetails.id)
+    const { editElementDetails: editInstallationRequest, loadingInProgress } = useInstallationRequestDetails(
+        installationRequestDetails.id,
+    )
 
     const [activeEquipmentButton, setActiveEquipmentButton] = useState<equipmentTypeT>(
         installationRequestDetails.equipmentType,
@@ -99,9 +101,9 @@ export const InstallationRequestDetailsPopup = (props: InstallationRequestDetail
                         </div>
 
                         <Form
-                            onSubmit={(data: Omit<IInstallationRequest, 'updatedAt'>) => {
-                                const { equipmentType, id, ...restOfData } = data
-                                editInstallationRequest({
+                            onSubmit={async (data: Omit<IInstallationRequest, 'updatedAt'>) => {
+                                const { equipmentType, id, createdAt, ...restOfData } = data
+                                await editInstallationRequest({
                                     ...restOfData,
                                     equipmentType: activeEquipmentButton,
                                 })
@@ -217,7 +219,7 @@ export const InstallationRequestDetailsPopup = (props: InstallationRequestDetail
                                     <ButtonResetForm initialValues={defaultFormValues} />
                                 </div>
                                 <div className="px-16">
-                                    <ButtonLoader type="submit">
+                                    <ButtonLoader type="submit" inProgress={loadingInProgress}>
                                         <TypographyFormatMessage>Valider</TypographyFormatMessage>
                                     </ButtonLoader>
                                 </div>
