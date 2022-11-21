@@ -1,11 +1,11 @@
 import { authTypes } from 'src/common/react-platform-components'
-import { EquipmentRequests } from 'src/modules/EquipmentRequests/'
+import { SolarEquipments } from 'src/modules/SolarEquipments'
 import { IRouteNavigationConfig } from 'src/routes'
 
 /**
  *
  */
-export interface EquipmentRequestsConfigProps {
+export interface SolarEquipmentsProps {
     /**
      * Logo to dislay.
      */
@@ -18,12 +18,12 @@ export interface EquipmentRequestsConfigProps {
     }
 }
 
-const URL_EQUIPMENT_REQUESTS = '/equipment-requests'
+const URL_SOLAR_EQUIPMENTS = '/solar-equipments'
 
-const EquipmentRequestsConfig = [
+const SolarEquipmentsConfig = [
     {
-        path: URL_EQUIPMENT_REQUESTS,
-        component: EquipmentRequests,
+        path: URL_SOLAR_EQUIPMENTS,
+        component: SolarEquipments,
         auth: { authType: authTypes.loginRequired },
         settings: {
             layout: {
@@ -32,7 +32,7 @@ const EquipmentRequestsConfig = [
                 },
             },
         },
-    } as IRouteNavigationConfig<EquipmentRequestsConfigProps>,
+    } as IRouteNavigationConfig<SolarEquipmentsProps>,
 ]
 
-export { EquipmentRequestsConfig, URL_EQUIPMENT_REQUESTS }
+export { SolarEquipmentsConfig, URL_SOLAR_EQUIPMENTS }

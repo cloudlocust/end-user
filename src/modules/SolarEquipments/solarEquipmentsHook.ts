@@ -1,13 +1,13 @@
 import { formatMessageType } from 'src/common/react-platform-translation'
 import { API_RESOURCES_URL } from 'src/configs'
-import { createEquipmentRequestType, IEquipmentRequest } from 'src/modules/EquipmentRequests/equipmentRequests'
+import { createSolarEquipmentType, ISolarEquipment } from 'src/modules/SolarEquipments/solarEquipments'
 import { searchFilterType } from 'src/modules/utils'
 import { BuilderUseElementList } from 'src/modules/utils/useElementHookBuilder'
 
 /**
  * Equipment requests API.
  */
-export const EQUIPMENTS_REQUESTS_API = `${API_RESOURCES_URL}/solar-energy-equipments`
+export const SOLAR_EQUIPMENTS_API = `${API_RESOURCES_URL}/solar-energy-equipments`
 
 /**
  * Error message add contract.
@@ -18,8 +18,8 @@ export const EQUIPMENTS_REQUESTS_API = `${API_RESOURCES_URL}/solar-energy-equipm
  */
 const addElementError = (error: any, formatMessage: formatMessageType) => {
     return formatMessage({
-        id: "Erreur lors de l'ajout de la demande",
-        defaultMessage: "Erreur lors de l'ajout de la demande",
+        id: "Erreur lors de l'ajout d'un équipement",
+        defaultMessage: "Erreur lors de l'ajout d'un équipement",
     })
 }
 
@@ -30,10 +30,10 @@ const addElementError = (error: any, formatMessage: formatMessageType) => {
  * @param formatMessage FormatMessage intl object from (react-intl package).
  * @returns {string} Success message.
  */
-const addElementSuccess = (responseData: IEquipmentRequest, formatMessage: formatMessageType) => {
+const addElementSuccess = (responseData: ISolarEquipment, formatMessage: formatMessageType) => {
     return formatMessage({
-        id: "Succès lors de l'ajout de la demande",
-        defaultMessage: "Succès lors de l'ajout de la demande",
+        id: "Succès lors de l'ajout d'un équipement",
+        defaultMessage: "Succès lors de l'ajout d'un équipement",
     })
 }
 
@@ -46,8 +46,8 @@ const addElementSuccess = (responseData: IEquipmentRequest, formatMessage: forma
  */
 export const loadElementListError = (error: any, formatMessage: formatMessageType) => {
     return formatMessage({
-        id: 'Erreur lors du chargement des demandes',
-        defaultMessage: 'Erreur lors du chargement des demandes',
+        id: 'Erreur lors du chargement des équipements',
+        defaultMessage: 'Erreur lors du chargement des équipements',
     })
 }
 
@@ -57,9 +57,9 @@ export const loadElementListError = (error: any, formatMessage: formatMessageTyp
  * @param sizeParam Indicates the default sizeParam for loadElementList.
  * @returns UseEquipmentRequestsList.
  */
-export const useEquipmentRequestsList = (sizeParam?: number) =>
-    BuilderUseElementList<IEquipmentRequest, createEquipmentRequestType, searchFilterType>({
-        API_ENDPOINT: EQUIPMENTS_REQUESTS_API,
+export const useSolarEquipmentsList = (sizeParam?: number) =>
+    BuilderUseElementList<ISolarEquipment, createSolarEquipmentType, searchFilterType>({
+        API_ENDPOINT: SOLAR_EQUIPMENTS_API,
         sizeParam,
         snackBarMessage0verride: { loadElementListError, addElementSuccess, addElementError },
     })(true)

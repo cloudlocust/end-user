@@ -1,9 +1,9 @@
 import { reduxedRenderHook } from 'src/common/react-platform-components/test'
-import { useEquipmentRequestsList } from 'src/modules/EquipmentRequests/EquipmentRequestsHook'
+import { useSolarEquipmentsList } from 'src/modules/SolarEquipments/solarEquipmentsHook'
 
 const mockEnqueueSnackbar = jest.fn()
 
-const ERROR_SNACKBAR_GET_MESSAGE = 'Erreur lors du chargement des demandes'
+const ERROR_SNACKBAR_GET_MESSAGE = 'Erreur lors du chargement des équipements'
 
 /**
  * Mocking the useSnackbar.
@@ -27,14 +27,14 @@ describe('EquipmentRequestsList hook test', () => {
             const {
                 renderedHook: { result, waitForValueToChange },
                 // Giving negative size to fake an error in the msw.
-            } = reduxedRenderHook(() => useEquipmentRequestsList(-1), { initialState: {} })
+            } = reduxedRenderHook(() => useSolarEquipmentsList(-1), { initialState: {} })
 
             expect(result.current.loadingInProgress).toBe(true)
             await waitForValueToChange(
                 () => {
                     return result.current.loadingInProgress
                 },
-                { timeout: 4000 },
+                { timeout: 6000 },
             )
             expect(result.current.loadingInProgress).toBe(false)
             expect(mockEnqueueSnackbar).toHaveBeenCalledWith(ERROR_SNACKBAR_GET_MESSAGE, {
@@ -45,13 +45,13 @@ describe('EquipmentRequestsList hook test', () => {
             const {
                 renderedHook: { result, waitForValueToChange },
                 // Giving negative size to fake an error in the msw.
-            } = reduxedRenderHook(() => useEquipmentRequestsList(), { initialState: {} })
+            } = reduxedRenderHook(() => useSolarEquipmentsList(), { initialState: {} })
             expect(result.current.loadingInProgress).toBe(true)
             await waitForValueToChange(
                 () => {
                     return result.current.loadingInProgress
                 },
-                { timeout: 4000 },
+                { timeout: 6000 },
             )
             expect(result.current.loadingInProgress).toBe(false)
             expect(result.current.elementList).toBeTruthy()

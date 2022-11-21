@@ -1,8 +1,8 @@
-import { createEquipmentRequestType, IEquipmentRequest } from 'src/modules/EquipmentRequests/equipmentRequests'
 import { SnakeCasedPropertiesDeep } from 'type-fest'
 import { rest } from 'msw'
 import { getPaginationFromElementList } from 'src/mocks/utils'
-import { EQUIPMENTS_REQUESTS_API } from 'src/modules/EquipmentRequests/EquipmentRequestsHook'
+import { createSolarEquipmentType, ISolarEquipment } from 'src/modules/SolarEquipments/solarEquipments'
+import { SOLAR_EQUIPMENTS_API } from 'src/modules/SolarEquipments/solarEquipmentsHook'
 import dayjs from 'dayjs'
 
 const CREATED_AT_DATA = '2021-12-15T14:07:38.138000'
@@ -10,7 +10,7 @@ const CREATED_AT_DATA = '2021-12-15T14:07:38.138000'
 /**
  * Mocked data for Installation Requests.
  */
-export var TEST_EQUIPMENT_REQUESTS: SnakeCasedPropertiesDeep<IEquipmentRequest[]> = [
+export var TEST_SOLAR_EQUIPMENTS: SnakeCasedPropertiesDeep<ISolarEquipment[]> = [
     {
         id: 1,
         brand: 'brand1',
@@ -51,25 +51,26 @@ export var TEST_EQUIPMENT_REQUESTS: SnakeCasedPropertiesDeep<IEquipmentRequest[]
 /**
  * Equipment requests endpoints.
  */
-export const equipmentRequestsEndpoints = [
-    rest.get(EQUIPMENTS_REQUESTS_API, (req, res, ctx) => {
-        const TEST_EQUIPMENT_REQUESTS_RESPONSE = getPaginationFromElementList<
-            SnakeCasedPropertiesDeep<IEquipmentRequest>
-        >(req, TEST_EQUIPMENT_REQUESTS as [])
-        return res(ctx.status(200), ctx.delay(1000), ctx.json(TEST_EQUIPMENT_REQUESTS_RESPONSE))
+export const solarEquipmentsEndpoints = [
+    rest.get(SOLAR_EQUIPMENTS_API, (req, res, ctx) => {
+        const TEST_SOLAR_EQUIPMENTS_RESPONSE = getPaginationFromElementList<SnakeCasedPropertiesDeep<ISolarEquipment>>(
+            req,
+            TEST_SOLAR_EQUIPMENTS as [],
+        )
+        return res(ctx.status(200), ctx.delay(1000), ctx.json(TEST_SOLAR_EQUIPMENTS_RESPONSE))
     }),
 
-    rest.post<createEquipmentRequestType>(EQUIPMENTS_REQUESTS_API, (req, res, ctx) => {
+    rest.post<createSolarEquipmentType>(SOLAR_EQUIPMENTS_API, (req, res, ctx) => {
         const { brand, installedAt, reference, type } = req.body
         if (Object.values(req.body)) {
-            const newId = TEST_EQUIPMENT_REQUESTS.length + 1
-            const newEquipmentRequest: SnakeCasedPropertiesDeep<createEquipmentRequestType> = {
+            const newId = TEST_SOLAR_EQUIPMENTS.length + 1
+            const newEquipmentRequest: SnakeCasedPropertiesDeep<createSolarEquipmentType> = {
                 brand,
                 installed_at: dayjs(installedAt).toISOString(),
                 reference,
                 type,
             }
-            TEST_EQUIPMENT_REQUESTS.push({ id: newId, ...newEquipmentRequest })
+            TEST_SOLAR_EQUIPMENTS.push({ id: newId, ...newEquipmentRequest })
             return res(ctx.status(201), ctx.delay(1000), ctx.json(req.body))
         }
         return res(ctx.status(400), ctx.delay(1000))

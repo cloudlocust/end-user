@@ -3,12 +3,12 @@ import { equipmentTypeT } from 'src/modules/InstallationRequests/installationReq
 /**
  * Equipment requests type.
  */
-export type IEquipmentRequests = IEquipmentRequest[] | []
+export type ISolarEquipments = ISolarEquipment[] | []
 
 /**
  * Model for one Equipment request.
  */
-export interface IEquipmentRequest {
+export interface ISolarEquipment {
     /**
      * Equipment request's id.
      */
@@ -34,9 +34,9 @@ export interface IEquipmentRequest {
 /**
  * Type for create installation request.
  */
-export type createEquipmentRequestType = Omit<IEquipmentRequest, 'id' | 'createdAt' | 'updatedAt'>
+export type createSolarEquipmentType = Omit<ISolarEquipment, 'id'>
 
 /**
  * Type for update installation request.
  */
-export type updateEquipmentRequestType = Omit<IInstallationRequest, 'createdAt' | 'updatedAt' | 'id'>
+export type updateSolarEquipmentType = Omit<ISolarEquipment, 'id'>
