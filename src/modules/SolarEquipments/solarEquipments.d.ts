@@ -32,11 +32,6 @@ export interface ISolarEquipment {
 }
 
 /**
- * Type for create installation request.
- */
-export type createSolarEquipmentType = Omit<ISolarEquipment, 'id'>
-
-/**
  * Type for update installation request.
  */
-export type updateSolarEquipmentType = Omit<ISolarEquipment, 'id'>
+export type solarEquipmentInputType = Omit<ISolarEquipment, 'id'>

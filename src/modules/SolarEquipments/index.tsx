@@ -12,6 +12,7 @@ import { ISolarEquipment } from 'src/modules/SolarEquipments/solarEquipments'
 import { SolarEquipmentHeader } from 'src/modules/SolarEquipments/SolarEquipmentsHeader'
 import { useSolarEquipmentsList } from 'src/modules/SolarEquipments/solarEquipmentsHook'
 import { equipmentsTypeList } from 'src/modules/InstallationRequests'
+import { SolarEquipmentCreateUpdate } from 'src/modules/SolarEquipments/components/SolarEquipmentCreateUpdate'
 
 const Root = styled(FusePageCarded)(({ theme }) => ({
     '& .FusePageCarded-header': {
@@ -64,7 +65,7 @@ const ActionsCell = ({
     /**
      * Open warning remove popup on delete click.
      */
-    const onDeleteInstallationRequestHandler = async () => {
+    const onDeleteSolarEquipmentHandler = async () => {
         await openMuiDialog({
             title: '',
             dialogProps: {
@@ -106,8 +107,8 @@ const ActionsCell = ({
                     <IconButton
                         color="success"
                         onClickCapture={() => {
-                            setIsSolarEquipmentCreateUpdatePopupOpen(true)
                             setSolarEquipmentDetails(row)
+                            setIsSolarEquipmentCreateUpdatePopupOpen(true)
                         }}
                     >
                         <Icon>edit</Icon>
@@ -119,7 +120,7 @@ const ActionsCell = ({
                         defaultMessage: 'Supprimer',
                     })}
                 >
-                    <IconButton color="error" onClick={onDeleteInstallationRequestHandler}>
+                    <IconButton color="error" onClick={onDeleteSolarEquipmentHandler}>
                         <Icon>delete</Icon>
                     </IconButton>
                 </Tooltip>
@@ -143,8 +144,8 @@ export const SolarEquipments = () => {
         page,
     } = useSolarEquipmentsList()
     const { formatMessage } = useIntl()
-    const [, setSolarEquipmentDetails] = useState<ISolarEquipment | null>(null)
-    const [, setIsSolarEquipmentCreateUpdatePopupOpen] = useState(false)
+    const [solarEquipmentDetails, setSolarEquipmentDetails] = useState<ISolarEquipment | null>(null)
+    const [isSolarEquipmentCreateUpdatePopupOpen, setIsSolarEquipmentCreateUpdatePopupOpen] = useState(false)
 
     const solarEquipmentCells = [
         {
@@ -198,6 +199,17 @@ export const SolarEquipments = () => {
             }
             content={
                 <>
+                    {isSolarEquipmentCreateUpdatePopupOpen && (
+                        <SolarEquipmentCreateUpdate
+                            solarEquipmentDetails={solarEquipmentDetails}
+                            open={isSolarEquipmentCreateUpdatePopupOpen}
+                            onClose={() => {
+                                setIsSolarEquipmentCreateUpdatePopupOpen(false)
+                                setSolarEquipmentDetails(null)
+                            }}
+                            reloadSolarEquipmentsList={reloadSolarEquipmentsList}
+                        />
+                    )}
                     {isSolarEquipmentsLoading || !solarEquipmentsList ? (
                         <FuseLoading />
                     ) : solarEquipmentsList.length === 0 ? (

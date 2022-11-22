@@ -1,7 +1,7 @@
 import { SnakeCasedPropertiesDeep } from 'type-fest'
 import { rest } from 'msw'
 import { getPaginationFromElementList } from 'src/mocks/utils'
-import { createSolarEquipmentType, ISolarEquipment } from 'src/modules/SolarEquipments/solarEquipments'
+import { ISolarEquipment, solarEquipmentInputType } from 'src/modules/SolarEquipments/solarEquipments'
 import { SOLAR_EQUIPMENTS_API } from 'src/modules/SolarEquipments/solarEquipmentsHook'
 import dayjs from 'dayjs'
 
@@ -60,11 +60,11 @@ export const solarEquipmentsEndpoints = [
         return res(ctx.status(200), ctx.delay(1000), ctx.json(TEST_SOLAR_EQUIPMENTS_RESPONSE))
     }),
 
-    rest.post<createSolarEquipmentType>(SOLAR_EQUIPMENTS_API, (req, res, ctx) => {
+    rest.post<solarEquipmentInputType>(SOLAR_EQUIPMENTS_API, (req, res, ctx) => {
         const { brand, installedAt, reference, type } = req.body
         if (Object.values(req.body)) {
             const newId = TEST_SOLAR_EQUIPMENTS.length + 1
-            const newEquipmentRequest: SnakeCasedPropertiesDeep<createSolarEquipmentType> = {
+            const newEquipmentRequest: SnakeCasedPropertiesDeep<solarEquipmentInputType> = {
                 brand,
                 installed_at: dayjs(installedAt).toISOString(),
                 reference,
