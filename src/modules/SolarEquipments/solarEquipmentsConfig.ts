@@ -20,6 +20,11 @@ export interface SolarEquipmentsProps {
 
 const URL_SOLAR_EQUIPMENTS = '/solar-equipments'
 
+/**
+ * Env var for equipment feature state.
+ */
+export const equipmentFeatureState = window._env_.REACT_APP_SOLAR_EQUIPMENTS_FEATURE_STATE === 'enabled'
+
 const SolarEquipmentsConfig = [
     {
         path: URL_SOLAR_EQUIPMENTS,
