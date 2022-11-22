@@ -17,6 +17,18 @@ const LIST_OF_HOUSES: IHousing[] = applyCamelCase(TEST_HOUSES)
 const NO_ELEMENT_AVAILABLE = 'Aucun logement disponible'
 
 /**
+ * Mocking the src/firebase to make unit test work.
+ */
+jest.mock('src/firebase', () => ({
+    /**
+     * Mock the getTokenFromFirebase to pass unit test.
+     *
+     * @returns The mocked getTokenFromFirebase.
+     */
+    getTokenFromFirebase: jest.fn(),
+}))
+
+/**
  * Housing Model State.
  */
 let mockHousingModelState: IHousingState = {

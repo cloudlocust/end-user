@@ -10,6 +10,7 @@
         "apexcharts": "3.35",
         "convert-units": "^2.3.4",
         "date-fns": "^2.28.0",
+        "firebase": "^9.14.0",
         "material-ui-confirm": "^3.0.4",
         "react-apexcharts": "^1.4.0",
         "react-scripts": "4.0.3",
