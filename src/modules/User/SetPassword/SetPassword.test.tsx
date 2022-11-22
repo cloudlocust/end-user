@@ -13,7 +13,6 @@ const CREATE_PASSWORD_TITLE_TEXT = "Création d'un mot de passe"
 
 const mockHistoryPush = jest.fn()
 let mockPathname = ''
-let mockSetPasswordAccess = 'enabled'
 
 jest.mock('react-router', () => ({
     ...jest.requireActual('react-router'),
@@ -24,14 +23,6 @@ jest.mock('react-router', () => ({
             pathname: mockPathname,
         },
     }),
-}))
-
-jest.mock('src/configs', () => ({
-    ...jest.requireActual('src/configs'),
-    // eslint-disable-next-line jsdoc/require-jsdoc
-    get SET_PASSWORD_PAGE_ACCESS() {
-        return mockSetPasswordAccess
-    },
 }))
 
 // UserInfo decoded object.

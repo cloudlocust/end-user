@@ -1,5 +1,5 @@
 import React, { FC, useEffect } from 'react'
-import { LOGO_URL, API_BASE_URL, SET_PASSWORD_PAGE_ACCESS } from 'src/configs'
+import { LOGO_URL, API_BASE_URL } from 'src/configs'
 import { motion } from 'framer-motion'
 import { Card, CardContent } from '@mui/material'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
@@ -30,7 +30,7 @@ export const SetPassword: FC<ResetPasswordProps> = ({ logo = { href: API_BASE_UR
         : ''
 
     useEffect(() => {
-        if (!token || !userInfo || SET_PASSWORD_PAGE_ACCESS !== 'enabled') history.push(URL_LOGIN)
+        if (!token || !userInfo) history.push(URL_LOGIN)
     }, [history, token, userInfo])
 
     return (
