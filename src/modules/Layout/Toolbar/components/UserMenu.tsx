@@ -115,6 +115,14 @@ function UserMenu() {
                     )}
                     <ToolbarMenuItem
                         onMenuItemClick={() => {
+                            history.replace('/solar-equipments')
+                        }}
+                        iconLabel="construction"
+                        idLabel="Equipement"
+                        defaultMessageLabel="Equipement"
+                    />
+                    <ToolbarMenuItem
+                        onMenuItemClick={() => {
                             history.push('/FAQ')
                         }}
                         iconLabel="help_center"
