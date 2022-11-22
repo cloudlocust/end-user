@@ -118,6 +118,11 @@ spec:
             configMapKeyRef:
               name: {{ .Values.name }}
               key: REACT_APP_PRODUCTION_CHART_ERROR_STATE
+        - name: REACT_APP_DELETE_ACCOUNT_FEATURE_STATE
+           valueFrom:
+            configMapKeyRef:
+              name: {{ .Values.name }}
+              key: REACT_APP_DELETE_ACCOUNT_FEATURE_STATE
         - name: ENVIRONMENT
           valueFrom:
             configMapKeyRef:
