@@ -8,15 +8,15 @@ import { Dispatch, SetStateAction } from 'react'
  * Equipment Requests header element.
  *
  * @param root0 N/A.
- * @param root0.setIsCreateSolarEquipmentPopup Setter function to open popup for adding equipment request.
+ * @param root0.setIsSolarEquipmentCreateUpdatePopupOpen Setter function to open popup for adding equipment request.
  * @returns EquipmentRequestsHeader component.
  */
 export const SolarEquipmentHeader = ({
-    setIsCreateSolarEquipmentPopup,
+    setIsSolarEquipmentCreateUpdatePopupOpen,
 }: // eslint-disable-next-line jsdoc/require-jsdoc
 {
     // eslint-disable-next-line jsdoc/require-jsdoc
-    setIsCreateSolarEquipmentPopup: Dispatch<SetStateAction<boolean>>
+    setIsSolarEquipmentCreateUpdatePopupOpen: Dispatch<SetStateAction<boolean>>
 }) => {
     const mainTheme = selectTheme()
     const { formatMessage } = useIntl()
@@ -40,14 +40,14 @@ export const SolarEquipmentHeader = ({
                 >
                     <span className="hidden sm:flex">
                         {formatMessage({
-                            id: "Demandes d'équipements",
-                            defaultMessage: "Demandes d'équipements",
+                            id: 'Mes équipements',
+                            defaultMessage: 'Mes équipements',
                         })}
                     </span>
                     <span className="flex sm:hidden">
                         {formatMessage({
-                            id: 'Demandes',
-                            defaultMessage: 'Demandes',
+                            id: 'Equipements',
+                            defaultMessage: 'Equipements',
                         })}
                     </span>
                 </Typography>
@@ -64,13 +64,13 @@ export const SolarEquipmentHeader = ({
                             variant="contained"
                             color="secondary"
                             onClick={() => {
-                                setIsCreateSolarEquipmentPopup(true)
+                                setIsSolarEquipmentCreateUpdatePopupOpen(true)
                             }}
                         >
                             <span className="hidden sm:flex">
                                 {formatMessage({
-                                    id: 'Ajouter une demande',
-                                    defaultMessage: 'Ajouter une demande',
+                                    id: 'Ajouter un équipement',
+                                    defaultMessage: 'Ajouter un équipement',
                                 })}
                             </span>
                             <span className="flex sm:hidden">

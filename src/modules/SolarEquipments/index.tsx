@@ -10,7 +10,9 @@ import { motion } from 'framer-motion'
 import Table from 'src/common/ui-kit/components/Table/Table'
 import { ISolarEquipment } from 'src/modules/SolarEquipments/solarEquipments'
 import { SolarEquipmentHeader } from 'src/modules/SolarEquipments/SolarEquipmentsHeader'
-import { useSolarEquipmentsList } from 'src/modules/SolarEquipments/solarEquipmentsHook'
+import { useSolarEquipmentsDetails, useSolarEquipmentsList } from 'src/modules/SolarEquipments/solarEquipmentsHook'
+import { equipmentsTypeList } from 'src/modules/InstallationRequests'
+import { SolarEquipmentCreateUpdate } from 'src/modules/SolarEquipments/components/SolarEquipmentCreateUpdate'
 
 const Root = styled(FusePageCarded)(({ theme }) => ({
     '& .FusePageCarded-header': {
@@ -36,14 +38,14 @@ const Root = styled(FusePageCarded)(({ theme }) => ({
  * @param props N/A.
  * @param props.row Represent the equipment information of the current row (current row represent the row when clicking on Accept or Refuse).
  * @param props.onAfterCreateUpdateDeleteSuccess Callback function when activation succeeded.
- * @param props.setIsUpdateSolarEquipmentPopup Setter function to trigger update popup.
+ * @param props.setIsSolarEquipmentCreateUpdatePopupOpen Setter function to trigger create/update popup.
  * @param props.setSolarEquipmentDetails Setter function to be passed in the row data.
  * @returns ActionsCell Component.
  */
 const ActionsCell = ({
     row,
     onAfterCreateUpdateDeleteSuccess,
-    setIsUpdateSolarEquipmentPopup,
+    setIsSolarEquipmentCreateUpdatePopupOpen,
     setSolarEquipmentDetails,
 }: //eslint-disable-next-line jsdoc/require-jsdoc
 {
@@ -52,18 +54,19 @@ const ActionsCell = ({
     //eslint-disable-next-line jsdoc/require-jsdoc
     onAfterCreateUpdateDeleteSuccess: () => void
     //eslint-disable-next-line jsdoc/require-jsdoc
-    setIsUpdateSolarEquipmentPopup: Dispatch<SetStateAction<boolean>>
+    setIsSolarEquipmentCreateUpdatePopupOpen: Dispatch<SetStateAction<boolean>>
     //eslint-disable-next-line jsdoc/require-jsdoc
     setSolarEquipmentDetails: Dispatch<SetStateAction<ISolarEquipment | null>>
 }): JSX.Element => {
     const theme = useTheme()
     const { formatMessage } = useIntl()
     const openMuiDialog = useConfirm()
+    const { removeElementDetails } = useSolarEquipmentsDetails(row.id)
 
     /**
      * Open warning remove popup on delete click.
      */
-    const onDeleteInstallationRequestHandler = async () => {
+    const onDeleteSolarEquipmentHandler = async () => {
         await openMuiDialog({
             title: '',
             dialogProps: {
@@ -90,6 +93,7 @@ const ActionsCell = ({
                 </TypographyFormatMessage>
             ),
         })
+        await removeElementDetails()
         onAfterCreateUpdateDeleteSuccess()
     }
 
@@ -105,8 +109,8 @@ const ActionsCell = ({
                     <IconButton
                         color="success"
                         onClickCapture={() => {
-                            setIsUpdateSolarEquipmentPopup(true)
                             setSolarEquipmentDetails(row)
+                            setIsSolarEquipmentCreateUpdatePopupOpen(true)
                         }}
                     >
                         <Icon>edit</Icon>
@@ -118,7 +122,7 @@ const ActionsCell = ({
                         defaultMessage: 'Supprimer',
                     })}
                 >
-                    <IconButton color="error" onClick={onDeleteInstallationRequestHandler}>
+                    <IconButton color="error" onClick={onDeleteSolarEquipmentHandler}>
                         <Icon>delete</Icon>
                     </IconButton>
                 </Tooltip>
@@ -142,16 +146,15 @@ export const SolarEquipments = () => {
         page,
     } = useSolarEquipmentsList()
     const { formatMessage } = useIntl()
-    const [, setSolarEquipmentDetails] = useState<ISolarEquipment | null>(null)
-    const [, setIsUpdateolarEquipmentPopup] = useState(false)
-    const [, setIsCreateSolarEquipmentPopup] = useState(false)
+    const [solarEquipmentDetails, setSolarEquipmentDetails] = useState<ISolarEquipment | null>(null)
+    const [isSolarEquipmentCreateUpdatePopupOpen, setIsSolarEquipmentCreateUpdatePopupOpen] = useState(false)
 
     const solarEquipmentCells = [
         {
             id: 'type',
             headCellLabel: formatMessage({ id: 'Type', defaultMessage: 'Type' }),
             // eslint-disable-next-line jsdoc/require-jsdoc
-            rowCell: (row: ISolarEquipment) => row.type,
+            rowCell: (row: ISolarEquipment) => equipmentsTypeList[row.type as keyof typeof equipmentsTypeList].label,
         },
         {
             id: 'brand',
@@ -181,7 +184,7 @@ export const SolarEquipments = () => {
             rowCell: (row: ISolarEquipment) => (
                 <ActionsCell
                     row={row}
-                    setIsUpdateSolarEquipmentPopup={setIsUpdateolarEquipmentPopup}
+                    setIsSolarEquipmentCreateUpdatePopupOpen={setIsSolarEquipmentCreateUpdatePopupOpen}
                     setSolarEquipmentDetails={setSolarEquipmentDetails}
                     onAfterCreateUpdateDeleteSuccess={reloadSolarEquipmentsList}
                 />
@@ -191,35 +194,53 @@ export const SolarEquipments = () => {
 
     return (
         <Root
-            header={<SolarEquipmentHeader setIsCreateSolarEquipmentPopup={setIsCreateSolarEquipmentPopup} />}
-            content={
-                isSolarEquipmentsLoading || !solarEquipmentsList ? (
-                    <FuseLoading />
-                ) : solarEquipmentsList.length === 0 ? (
-                    <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1, transition: { delay: 0.1 } }}
-                        className="flex flex-1 items-center justify-center h-full"
-                    >
-                        <Typography color="textSecondary" variant="h5">
-                            {formatMessage({
-                                id: "Aucune demandes d'installations!",
-                                defaultMessage: "Aucune demandes d'installations!",
-                            })}
-                        </Typography>
-                    </motion.div>
-                ) : (
-                    <div className="w-full flex flex-col">
-                        <Table<ISolarEquipment>
-                            cells={solarEquipmentCells}
-                            totalRows={totalSolarEquipmentsList}
-                            onPageChange={loadPage}
-                            rows={solarEquipmentsList}
-                            pageProps={page}
-                        />
-                    </div>
-                )
+            header={
+                <SolarEquipmentHeader
+                    setIsSolarEquipmentCreateUpdatePopupOpen={setIsSolarEquipmentCreateUpdatePopupOpen}
+                />
             }
-        ></Root>
+            content={
+                <>
+                    {isSolarEquipmentCreateUpdatePopupOpen && (
+                        <SolarEquipmentCreateUpdate
+                            solarEquipmentDetails={solarEquipmentDetails}
+                            open={isSolarEquipmentCreateUpdatePopupOpen}
+                            onClose={() => {
+                                setIsSolarEquipmentCreateUpdatePopupOpen(false)
+                                setSolarEquipmentDetails(null)
+                            }}
+                            reloadSolarEquipmentsList={reloadSolarEquipmentsList}
+                        />
+                    )}
+                    {isSolarEquipmentsLoading || !solarEquipmentsList ? (
+                        <FuseLoading />
+                    ) : solarEquipmentsList.length === 0 ? (
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1, transition: { delay: 0.1 } }}
+                            className="flex flex-1 items-center justify-center h-full"
+                        >
+                            <Typography color="textSecondary" variant="h5">
+                                {formatMessage({
+                                    id: 'Aucune équipements !',
+                                    defaultMessage: 'Aucune équipements !',
+                                })}
+                            </Typography>
+                        </motion.div>
+                    ) : (
+                        <div className="w-full flex flex-col">
+                            <Table<ISolarEquipment>
+                                cells={solarEquipmentCells}
+                                totalRows={totalSolarEquipmentsList}
+                                onPageChange={loadPage}
+                                rows={solarEquipmentsList}
+                                pageProps={page}
+                            />
+                        </div>
+                    )}
+                </>
+            }
+            innerScroll
+        />
     )
 }
