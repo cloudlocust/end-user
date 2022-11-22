@@ -75,4 +75,21 @@ export const solarEquipmentsEndpoints = [
         }
         return res(ctx.status(400), ctx.delay(1000))
     }),
+
+    rest.put<solarEquipmentInputType>(`${SOLAR_EQUIPMENTS_API}/:id`, (req, res, ctx) => {
+        if (parseInt(req.params.id) !== -1) {
+            return res(ctx.status(200), ctx.delay(1000), ctx.json(req.body))
+        }
+
+        return res(ctx.status(400), ctx.delay(1000))
+    }),
+
+    rest.delete(`${SOLAR_EQUIPMENTS_API}/:id`, (req, res, ctx) => {
+        const { id: solarEquipment } = req.params
+        if (parseInt(solarEquipment) !== -1) {
+            return res(ctx.status(200), ctx.delay(1000))
+        }
+
+        return res(ctx.status(400), ctx.delay(1000))
+    }),
 ]

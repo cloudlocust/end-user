@@ -10,7 +10,7 @@ import { motion } from 'framer-motion'
 import Table from 'src/common/ui-kit/components/Table/Table'
 import { ISolarEquipment } from 'src/modules/SolarEquipments/solarEquipments'
 import { SolarEquipmentHeader } from 'src/modules/SolarEquipments/SolarEquipmentsHeader'
-import { useSolarEquipmentsList } from 'src/modules/SolarEquipments/solarEquipmentsHook'
+import { useSolarEquipmentsDetails, useSolarEquipmentsList } from 'src/modules/SolarEquipments/solarEquipmentsHook'
 import { equipmentsTypeList } from 'src/modules/InstallationRequests'
 import { SolarEquipmentCreateUpdate } from 'src/modules/SolarEquipments/components/SolarEquipmentCreateUpdate'
 
@@ -61,6 +61,7 @@ const ActionsCell = ({
     const theme = useTheme()
     const { formatMessage } = useIntl()
     const openMuiDialog = useConfirm()
+    const { removeElementDetails } = useSolarEquipmentsDetails(row.id)
 
     /**
      * Open warning remove popup on delete click.
@@ -92,6 +93,7 @@ const ActionsCell = ({
                 </TypographyFormatMessage>
             ),
         })
+        await removeElementDetails()
         onAfterCreateUpdateDeleteSuccess()
     }
 
