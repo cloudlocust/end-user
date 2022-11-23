@@ -9,7 +9,7 @@ pipeline{
     stages{
         stage ('Install deps') {
             steps {
-                sh 'npm install -g yarn && yarn install && export NODE_OPTIONS="--max-old-space-size=8192"'
+                sh 'npm install -g yarn && yarn install --ignore-engines && export NODE_OPTIONS="--max-old-space-size=8192"'
             }
         }
         stage ('Eslint') {

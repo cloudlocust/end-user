@@ -1,5 +1,7 @@
 import { initializeApp } from 'firebase/app'
 import { getMessaging, getToken } from 'firebase/messaging'
+import { axios } from 'src/common/react-platform-components'
+import { API_RESOURCES_URL } from './configs'
 
 const firebaseConfig = {
     apiKey: 'AIzaSyClMER8hwr4e5l-br7DFKTGTZUnxwY42eg',
@@ -26,16 +28,14 @@ const messaging = getMessaging(firebaseApp)
 export const getTokenFromFirebase = (onPermissionGranted?: () => void) => {
     return getToken(messaging, {
         vapidKey: 'BJ2NTIROqDzc1nJzKAVJ-F9BABD-qlnjCp2bjHT5Bq2SzWJJkVH-5CCtsMHxnYGSiOGWoI6UUMOPx10HfdSuVCQ',
-    }).then((currentToken) => {
-        if (currentToken) {
-            // SEND TO BACKEND.
-            // console.log('current token for client: ', currentToken)
-        }
-        // else {
-        // console.log('No registration token available. Request permission to generate one.')
-        // }
+    }).then(async (currentToken) => {
+        if (currentToken)
+            // eslint-disable-next-line jsdoc/require-jsdoc
+            await axios.post<{
+                /**
+                 * Firebase device token.
+                 */
+                deviceToken: string
+            }>(`${API_RESOURCES_URL}/add_subscriber_device_token`, { deviceToken: currentToken })
     })
-    // .catch((err) => {
-    // console.error('An error occurred while retrieving token. ', err)
-    // })
 }
