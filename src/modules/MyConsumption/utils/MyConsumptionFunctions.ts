@@ -6,7 +6,7 @@ import {
     metricTargetType,
 } from 'src/modules/Metrics/Metrics.d'
 import dayjs from 'dayjs'
-import { dateFnsPeriod, periodType } from 'src/modules/MyConsumption/myConsumptionTypes.d'
+import { dateFnsPeriod, getChartSpecifitiesType, periodType } from 'src/modules/MyConsumption/myConsumptionTypes.d'
 import { ApexChartsAxisValuesType } from 'src/modules/MyConsumption/myConsumptionTypes'
 import {
     add,
@@ -21,6 +21,7 @@ import {
     differenceInCalendarDays,
 } from 'date-fns'
 import { cloneDeep } from 'lodash'
+import { enphaseConsentStatus } from 'src/modules/Consents/Consents'
 
 /**
  * FormatMetricFilter function converts the data to the required format.
@@ -428,5 +429,70 @@ export const getChartType = (metricTarget: metricTargetType, period: periodType)
         return 'area'
     } else {
         return 'bar'
+    }
+}
+
+/**
+ * Function to get chart specifities.
+ *
+ * @param target Metric target.
+ * @param enphaseStatus Enphase status.
+ * @returns Specifity according to metric target.
+ */
+export const getChartSpecifities = (
+    target: metricTargetsEnum,
+    enphaseStatus?: enphaseConsentStatus,
+): getChartSpecifitiesType => {
+    if (target === metricTargetsEnum.consumption && enphaseStatus !== 'ACTIVE') {
+        return {
+            label: 'Consommation',
+        }
+    } else if (target === metricTargetsEnum.consumption && enphaseStatus === 'ACTIVE') {
+        return {
+            label: 'Electricité achetée sur le réseau',
+        }
+    } else if (target === metricTargetsEnum.autoconsumption) {
+        return {
+            label: 'Autoconsommation',
+            seriesName: 'Electricité achetée sur le réseau',
+            show: false,
+        }
+    } else if (target === metricTargetsEnum.eurosConsumption) {
+        return {
+            label: 'Consommation Euros',
+            seriesName: 'Consommation Euros',
+        }
+    } else if (target === metricTargetsEnum.externalTemperature) {
+        return {
+            label: 'Température Extérieure',
+            // We put seriesName the same as internal temperature so that internal and external temperature charts will show their values in the same YAxis, instead of having 2 YAxis for each chart.
+            seriesName: 'Température Intérieure',
+            // Show is false here so that we don't show external temperature YAxis because its values will be shown on internal Temperature YAxis
+            show: false,
+        }
+    } else if (target === metricTargetsEnum.internalTemperature) {
+        return {
+            label: 'Température Intérieure',
+            // We put seriesName the same as internal temperature so that internal and external temperature charts will show their values in the same YAxis, instead of having 2 YAxis for each chart.
+            seriesName: 'Température Extérieure',
+        }
+    } else if (target === metricTargetsEnum.pMax) {
+        return {
+            label: 'Pmax',
+        }
+    } else if (target === metricTargetsEnum.totalProduction) {
+        return {
+            label: 'Production totale',
+            seriesName: 'Autoconsommation',
+            show: true,
+        }
+    } else if (target === metricTargetsEnum.injectedProduction) {
+        return {
+            label: 'Electricité redistribuée sur le réseau',
+            seriesName: 'Autoconsommation',
+            show: false,
+        }
+    } else {
+        throw Error('Wrong target')
     }
 }

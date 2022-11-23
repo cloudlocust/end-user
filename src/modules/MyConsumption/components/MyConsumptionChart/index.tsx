@@ -10,6 +10,7 @@ import { periodType } from 'src/modules/MyConsumption/myConsumptionTypes'
 import { fillApexChartsDatetimeSeriesMissingValues } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
 import { CircularProgress } from '@mui/material'
 import useMediaQuery from '@mui/material/useMediaQuery'
+import { enphaseConsentStatus } from 'src/modules/Consents/Consents'
 
 /**
  * MyConsumptionChart Component.
@@ -20,6 +21,7 @@ import useMediaQuery from '@mui/material/useMediaQuery'
  * @param props.range Current range so that we handle the xAxis values according to period and range selected.
  * @param props.isStackedEnabled Boolean state to know whether the stacked option is true or false.
  * @param props.chartType Consumption or production chart type.
+ * @param props.enphaseState Enphase state.
  * @returns MyConsumptionChart Component.
  */
 const MyConsumptionChart = ({
@@ -28,6 +30,7 @@ const MyConsumptionChart = ({
     range,
     isStackedEnabled,
     chartType,
+    enphaseState,
 }: // eslint-disable-next-line jsdoc/require-jsdoc
 {
     // eslint-disable-next-line jsdoc/require-jsdoc
@@ -40,6 +43,8 @@ const MyConsumptionChart = ({
     isStackedEnabled?: boolean
     // eslint-disable-next-line jsdoc/require-jsdoc
     chartType: 'consumption' | 'production'
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    enphaseState?: enphaseConsentStatus
 }) => {
     const { formatMessage } = useIntl()
     const theme = useTheme()
@@ -69,8 +74,9 @@ const MyConsumptionChart = ({
             theme,
             isStackedEnabled,
             chartType,
+            enphaseState,
         })
-    }, [ApexChartsAxisValues, period, formatMessage, theme, isStackedEnabled, chartType])
+    }, [ApexChartsAxisValues, period, formatMessage, theme, isStackedEnabled, chartType, enphaseState])
 
     reactApexChartsProps.options!.chart!.events = {
         /**

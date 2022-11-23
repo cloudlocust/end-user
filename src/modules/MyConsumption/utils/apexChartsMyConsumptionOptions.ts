@@ -4,14 +4,11 @@ import { Props } from 'react-apexcharts'
 import { periodType } from 'src/modules/MyConsumption/myConsumptionTypes'
 import dayjs from 'dayjs'
 import fr from 'apexcharts/dist/locales/fr.json'
-import {
-    chartSpecifities,
-    getChartColor,
-    getYPointValueLabel,
-} from 'src/modules/MyConsumption/utils/myConsumptionVariables'
+import { getChartColor, getYPointValueLabel } from 'src/modules/MyConsumption/utils/myConsumptionVariables'
 import { metricTargetsEnum, metricTargetType } from 'src/modules/Metrics/Metrics.d'
 import { consumptionWattUnitConversion } from 'src/modules/MyConsumption/utils/unitConversionFunction'
-import { getChartType } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
+import { getChartSpecifities, getChartType } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
+import { enphaseConsentStatus } from 'src/modules/Consents/Consents'
 
 /**
  * Default ApexChart Options, represent the general options related to the overall look of the MyConsumptionChart.
@@ -140,6 +137,7 @@ const getXAxisLabelFormatFromPeriod = (period: periodType, isTooltipLabel?: bool
  * @param params.formatMessage Represents the formatMessage from useIntl to handle translation of yAxis names.
  * @param params.isStackedEnabled Boolean state to know whether the stacked option is true or false.
  * @param params.chartType Consumption or production type.
+ * @param params.enphaseState Enphase state.
  * @returns Props of apexCharts in MyConsumptionChart.
  */
 export const getApexChartMyConsumptionProps = ({
@@ -149,6 +147,7 @@ export const getApexChartMyConsumptionProps = ({
     formatMessage,
     isStackedEnabled,
     chartType,
+    enphaseState,
 }: // eslint-disable-next-line jsdoc/require-jsdoc
 {
     // eslint-disable-next-line jsdoc/require-jsdoc
@@ -163,6 +162,8 @@ export const getApexChartMyConsumptionProps = ({
     isStackedEnabled?: boolean
     // eslint-disable-next-line jsdoc/require-jsdoc
     chartType: 'consumption' | 'production'
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    enphaseState?: enphaseConsentStatus
     // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
     let options: Props['options'] = defaultApexChartOptions(theme)!
@@ -180,7 +181,11 @@ export const getApexChartMyConsumptionProps = ({
     yAxisSeries.forEach((yAxisSerie) => {
         // If this Serie doesn't have any data we don't show it on the chart thus we do return, and if this is true for all series then we'll show an empty chart.
         if (yAxisSerie.data.length === 0) return
-        const { label, ...restChartSpecifities } = chartSpecifities[yAxisSerie.name as metricTargetsEnum]
+        // Get specifity of each chart.
+        const { label, ...restChartSpecifities } = getChartSpecifities(
+            yAxisSerie.name as metricTargetsEnum,
+            enphaseState,
+        )
 
         // Changing type to category instead of datetime, because apexcharts when period monthly which has at least 30 elements, it takes control of showing the xaxis labels, which the visual is not according to our need.
         // That's why change in it to category makes apexcharts gives us the full control for xaxis labels, and thus we can have xaxis visual according to our need

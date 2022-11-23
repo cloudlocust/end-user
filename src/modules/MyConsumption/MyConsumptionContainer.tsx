@@ -100,9 +100,9 @@ export const MyConsumptionContainer = () => {
     const enphaseOff = enphaseConsent?.enphaseConsentState !== 'ACTIVE'
 
     useEffect(() => {
-        if (!currentHousing) return
-        if (currentHousing?.meter) setFilters(formatMetricFilter(currentHousing.meter?.guid))
-    }, [currentHousing, setFilters])
+        if (!currentHousing?.meter?.guid) return
+        setFilters(formatMetricFilter(currentHousing.meter?.guid))
+    }, [currentHousing?.meter?.guid, setFilters])
 
     const { hasMissingHousingContracts } = useHasMissingHousingContracts(range, currentHousing?.id)
 
@@ -335,6 +335,7 @@ export const MyConsumptionContainer = () => {
                                     range={range}
                                     isStackedEnabled={isStackedEnabled}
                                     chartType="consumption"
+                                    enphaseState={enphaseConsent?.enphaseConsentState}
                                 />
                             )}
 

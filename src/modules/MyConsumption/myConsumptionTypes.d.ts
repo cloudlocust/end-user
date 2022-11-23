@@ -155,3 +155,9 @@ export interface MyConsumptionChartProps {
     // eslint-disable-next-line jsdoc/require-jsdoc
     chartType: 'consumption' | 'production'
 }
+
+/**
+ * Type for getChartSpecifities function return.
+ */
+// eslint-disable-next-line jsdoc/require-jsdoc
+export type getChartSpecifitiesType = ApexYAxis & { label?: string }
