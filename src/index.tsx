@@ -35,7 +35,7 @@ const Application: FC<any> = () => {
                 <Provider store={store}>
                     <PersistGate persistor={getPersistor()}>
                         <TranslatitonProvider>
-                            <Router>
+                            <Router basename="/app">
                                 <SnackbarProvider>
                                     <App />
                                 </SnackbarProvider>
