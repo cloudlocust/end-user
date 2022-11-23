@@ -10,6 +10,7 @@ import { useHistory } from 'react-router-dom'
 import { useIntl } from 'react-intl'
 import ToolbarMenuItem from './ToolbarMenuItem'
 import { installationRequestsFeatureState } from 'src/modules/InstallationRequests/InstallationRequestsConfig'
+import { equipmentFeatureState, URL_SOLAR_EQUIPMENTS } from 'src/modules/SolarEquipments/solarEquipmentsConfig'
 
 // TODO This is not a generic component to share with medialem, to update.
 /**
@@ -111,6 +112,16 @@ function UserMenu() {
                             iconLabel="solar_power"
                             idLabel="Installation"
                             defaultMessageLabel="Installation"
+                        />
+                    )}
+                    {equipmentFeatureState && (
+                        <ToolbarMenuItem
+                            onMenuItemClick={() => {
+                                history.replace(URL_SOLAR_EQUIPMENTS)
+                            }}
+                            iconLabel="construction"
+                            idLabel="Equipement"
+                            defaultMessageLabel="Equipement"
                         />
                     )}
                     <ToolbarMenuItem
