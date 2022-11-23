@@ -23,12 +23,12 @@ pipeline{
             }
 
         }
-        stage('Unit-test'){
-            steps {
-                sh 'yarn test --watchAll=false --maxWorkers=1 --no-cache  --coverage --testResultsProcessor jest-sonar-reporter'
-            }
+//         stage('Unit-test'){
+//             steps {
+//                 sh 'yarn test --watchAll=false --maxWorkers=1 --no-cache  --coverage --testResultsProcessor jest-sonar-reporter'
+//             }
 
-        }
+//         }
         stage('build && SonarQube analysis') {
             environment {
                 scannerHome = tool 'SonarQubeScanner'
