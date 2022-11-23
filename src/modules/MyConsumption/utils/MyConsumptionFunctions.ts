@@ -1,5 +1,6 @@
 import {
     ApexAxisChartSerie,
+    getMetricType,
     metricFiltersType,
     metricRangeType,
     metricTargetsEnum,
@@ -22,6 +23,8 @@ import {
 } from 'date-fns'
 import { cloneDeep } from 'lodash'
 import { enphaseConsentStatus } from 'src/modules/Consents/Consents'
+import { metricTargetsHook } from 'src/modules/MyConsumption/utils/myConsumptionVariables'
+import { enphaseConsentFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
 
 /**
  * FormatMetricFilter function converts the data to the required format.
@@ -445,7 +448,7 @@ export const getChartSpecifities = (
 ): getChartSpecifitiesType => {
     if (target === metricTargetsEnum.consumption && enphaseStatus !== 'ACTIVE') {
         return {
-            label: 'Consommation',
+            label: 'Consommation totale',
         }
     } else if (target === metricTargetsEnum.consumption && enphaseStatus === 'ACTIVE') {
         return {
@@ -494,5 +497,36 @@ export const getChartSpecifities = (
         }
     } else {
         throw Error('Wrong target')
+    }
+}
+
+/**
+ * Functuon that returns initial values used for useMetrics hook for MyConsumption page.
+ *
+ * @returns Initial metrics hook values.
+ */
+export const getInitialMetricsHookValues = (): getMetricType => {
+    let targetsWithoutEnphase = []
+
+    if (!enphaseConsentFeatureState) {
+        targetsWithoutEnphase = metricTargetsHook.filter(
+            (metric) =>
+                metric.target !== metricTargetsEnum.autoconsumption &&
+                metric.target !== metricTargetsEnum.injectedProduction &&
+                metric.target !== metricTargetsEnum.totalProduction,
+        )
+        return {
+            interval: '2m',
+            range: getRange('day'),
+            targets: targetsWithoutEnphase,
+            filters: [],
+        }
+    } else {
+        return {
+            interval: '2m',
+            range: getRange('day'),
+            targets: metricTargetsHook,
+            filters: [],
+        }
     }
 }

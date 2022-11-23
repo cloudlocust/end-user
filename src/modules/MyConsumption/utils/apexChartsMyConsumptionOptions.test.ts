@@ -58,7 +58,7 @@ const mockYAxis: ApexYAxis[] = [
 let mockyAxisSeries: ApexAxisChartSeries = [
     {
         data: [mockDatapoints[0][0]],
-        name: 'Consommation',
+        name: 'Consommation totale',
         type: mockChartType,
         color: '#FFEECD',
     },
