@@ -7,7 +7,7 @@ const URL_PROFILE_MANAGEMENT = '/profile-management'
 /**
  * State for delete user feature. (Concerns only NED).
  */
-export const deleteUserFeatureState = window._env_.REACT_APP_DELETE_ACCOUNT_FEATURE_STATE === 'enabled'
+export const deleteAcountFeatureState = window._env_.REACT_APP_DELETE_ACCOUNT_FEATURE_STATE === 'enabled'
 
 const ProfileManagementConfig = [
     {
