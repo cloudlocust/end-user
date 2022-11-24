@@ -111,5 +111,9 @@ describe('test pure functions', () => {
         // When Pmax.
         label = getChartColor(metricTargetsEnum.pMax, theme)
         expect(label).toBe('#FF7A00')
+
+        // Autoconsommation
+        label = getChartColor(metricTargetsEnum.autoconsumption, theme)
+        expect(label).toBe('#B8E1D9')
     })
 })

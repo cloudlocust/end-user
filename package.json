@@ -5,6 +5,7 @@
     "workspaces": [
         "src/common"
     ],
+    "homepage": ".",
     "dependencies": {
         "@novu/notification-center": "^0.9.1",
         "apexcharts": "3.35",

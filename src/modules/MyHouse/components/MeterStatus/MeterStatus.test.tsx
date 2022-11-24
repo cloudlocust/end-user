@@ -19,7 +19,6 @@ import { models } from 'src/models'
 import { TEST_HOUSES } from 'src/mocks/handlers/houses'
 import { applyCamelCase } from 'src/common/react-platform-components'
 import * as reactRedux from 'react-redux'
-import { waitFor } from '@testing-library/react'
 
 const LIST_OF_HOUSES: IHousing[] = applyCamelCase(TEST_HOUSES)
 /**
@@ -43,7 +42,6 @@ const VERIFY_METER_MESSAGE = "Vérification de l'existence de votre compteur"
 const CREATION_ENEDIS_SGE_CONSENT_TEXT =
     "J'autorise My Energy Manager à la récolte de mon historique de données de consommation auprès d'Enedis."
 
-const EDIT_METER_NUMBER_PLACEHOLDER = 'Modifier le numéro de votre compteur'
 const ERROR_ENPHASE_MESSAGE = 'Connectez votre onduleur pour visualiser votre production'
 const PENDING_ENPHASE_MESSAGE = 'Votre connexion est en cours et sera active dans les plus brefs délais'
 
@@ -371,52 +369,6 @@ describe('MeterStatus component test', () => {
             expect(checkbox).toHaveProperty('checked', false)
             userEvent.click(checkbox)
             expect(mockCreateEnedisSgeConsent).toBeCalled()
-        })
-    })
-
-    describe('edit meter test', () => {
-        test('when edit icon is clicked, a modal is shown', async () => {
-            const { getByText, getByTestId, getByPlaceholderText } = reduxedRender(
-                <Router>
-                    <MeterStatus />
-                </Router>,
-            )
-
-            const editButton = getByTestId('ModeEditOutlineOutlinedIcon')
-
-            expect(editButton).toBeTruthy()
-            userEvent.click(editButton)
-            expect(getByPlaceholderText('Modifier le numéro de votre compteur')).toBeTruthy()
-            expect(getByText('Annuler')).toBeTruthy()
-            expect(getByText('Modifier')).toBeTruthy()
-        })
-        test('when user edit a meter and submit it', async () => {
-            const { getByText, getByTestId, getByPlaceholderText } = reduxedRender(
-                <Router>
-                    <MeterStatus />
-                </Router>,
-            )
-
-            const TEST_METER_NUMBER_INPUT = '11223344556677'
-            const editButton = getByTestId('ModeEditOutlineOutlinedIcon')
-
-            expect(editButton).toBeTruthy()
-            userEvent.click(editButton)
-            const numberInput = getByPlaceholderText(EDIT_METER_NUMBER_PLACEHOLDER)
-
-            // Clear inputs
-            userEvent.clear(numberInput)
-
-            // Type inputs
-            userEvent.type(numberInput, TEST_METER_NUMBER_INPUT)
-
-            userEvent.click(getByText('Modifier'))
-
-            await waitFor(() => {
-                expect(mockEditMeter).toHaveBeenCalledWith(mockHouseId, {
-                    guid: TEST_METER_NUMBER_INPUT,
-                })
-            })
         })
     })
 })

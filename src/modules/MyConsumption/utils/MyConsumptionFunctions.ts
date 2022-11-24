@@ -1,4 +1,10 @@
-import { ApexAxisChartSerie, metricFiltersType, metricRangeType } from 'src/modules/Metrics/Metrics.d'
+import {
+    ApexAxisChartSerie,
+    metricFiltersType,
+    metricRangeType,
+    metricTargetsEnum,
+    metricTargetType,
+} from 'src/modules/Metrics/Metrics.d'
 import dayjs from 'dayjs'
 import { dateFnsPeriod, periodType } from 'src/modules/MyConsumption/myConsumptionTypes.d'
 import { ApexChartsAxisValuesType } from 'src/modules/MyConsumption/myConsumptionTypes'
@@ -390,4 +396,37 @@ export const isEqualDates = (date1: number, date2: number, period: periodType) =
         dayjs.utc(new Date(date1).toUTCString()).format('DD/MM/YYYY') ===
         dayjs.utc(new Date(date2).toUTCString()).format('DD/MM/YYYY')
     )
+}
+
+/**
+ * Function that gets the chart type.
+ *
+ * @param metricTarget Metric target.
+ * @param period Period type.
+ * @returns Apexchart type.
+ */
+export const getChartType = (metricTarget: metricTargetType, period: periodType): ApexChart['type'] | '' => {
+    if (
+        (metricTarget === metricTargetsEnum.consumption ||
+            metricTarget === metricTargetsEnum.eurosConsumption ||
+            metricTarget === metricTargetsEnum.autoconsumption) &&
+        period === 'daily'
+    ) {
+        return 'area'
+    } else if (metricTarget === metricTargetsEnum.totalProduction) {
+        return ''
+    } else if (
+        metricTarget === metricTargetsEnum.externalTemperature ||
+        metricTarget === metricTargetsEnum.internalTemperature ||
+        metricTarget === metricTargetsEnum.pMax
+    ) {
+        return 'line'
+    } else if (
+        (metricTarget === metricTargetsEnum.autoconsumption || metricTargetsEnum.injectedProduction) &&
+        period === 'daily'
+    ) {
+        return 'area'
+    } else {
+        return 'bar'
+    }
 }

@@ -16,6 +16,7 @@ import { FAQConfig } from './modules/FAQ/FAQConfig'
 import { InstallationsRequestsConfig } from 'src/modules/InstallationRequests/InstallationRequestsConfig'
 import { EnphaseConfirmStateConfig } from 'src/modules/MyHouse/components/EnphaseConfirmState/EnphaseConfirmStateConfig'
 import { MentionsConfig } from 'src/modules/Mentions/MentionsConfig'
+import { SolarEquipmentsConfig } from 'src/modules/SolarEquipments/solarEquipmentsConfig'
 
 /**
  *
@@ -36,6 +37,7 @@ export const routes = [
     ...InstallationsRequestsConfig,
     ...EnphaseConfirmStateConfig,
     ...MentionsConfig,
+    ...SolarEquipmentsConfig,
     {
         /**
          * TODO Document.
