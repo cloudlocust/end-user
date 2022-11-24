@@ -1,0 +1,86 @@
+import { SetPasswordForm } from 'src/modules/User/SetPassword/SetPasswordForm'
+import { fireEvent, waitFor } from '@testing-library/react'
+import { reduxedRender } from 'src/common/react-platform-components/test'
+import userEvent from '@testing-library/user-event'
+import { getPasswordMinErrorText, passwordQuerySelector } from 'src/modules/User/Register/RegisterForm.test'
+
+const fakeToken = '123456ABCD'
+
+const mockOnSubmitResetPassword = jest.fn()
+const SUBMIT_TEXT = 'Confirmer'
+
+jest.mock('src/modules/User/ResetPassword/hooks', () => ({
+    ...jest.requireActual('src/modules/User/ResetPassword/hooks'),
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    useResetPassword: () => ({ isResetPasswordProgress: false, onSubmitResetPassword: mockOnSubmitResetPassword }),
+}))
+
+describe('RestPasswordForm component test', () => {
+    test('when password fields are empty, a validator error should appear', async () => {
+        const { getByText, container } = reduxedRender(<SetPasswordForm token={fakeToken} />)
+
+        // eslint-disable-next-line sonarjs/no-duplicate-string
+        const passwordField = container.querySelector('input[name="password"]') as Element
+        userEvent.type(passwordField, '')
+        // eslint-disable-next-line sonarjs/no-duplicate-string
+        const repeatPasswordField = container.querySelector('input[name="repeatPwd"]') as Element
+        userEvent.type(repeatPasswordField, '')
+
+        await waitFor(() => {
+            expect(mockOnSubmitResetPassword).not.toHaveBeenCalled()
+        })
+
+        await waitFor(() => {
+            expect(getByText('Champ obligatoire non renseigné')).toBeTruthy()
+        })
+    })
+    test('Password Length minimum character validation', async () => {
+        const { container, getByText, getAllByText } = reduxedRender(<SetPasswordForm token={fakeToken} />)
+        const passwordField = container.querySelector(passwordQuerySelector) as Element
+        userEvent.type(passwordField, '123')
+        userEvent.click(getByText(SUBMIT_TEXT))
+        await waitFor(() => expect(getAllByText(getPasswordMinErrorText(8)).length).toBe(1))
+    })
+    test('when entering unmatched passwords, a validation error should appear', async () => {
+        const { getByText, container } = reduxedRender(<SetPasswordForm token={fakeToken} />)
+
+        const passwordField = container.querySelector('input[name="password"]') as Element
+        userEvent.type(passwordField, '12345678')
+        const repeatPasswordField = container.querySelector('input[name="repeatPwd"]') as Element
+        userEvent.type(repeatPasswordField, '123')
+
+        await waitFor(() => {
+            expect(mockOnSubmitResetPassword).not.toHaveBeenCalled()
+        })
+
+        await waitFor(() => {
+            expect(getByText('Les mot de passes ne correspondent pas.')).toBeTruthy()
+        })
+    })
+    test('when filling both passwords and clicking Confirmer, a function is called', async () => {
+        const { getByText, container } = reduxedRender(<SetPasswordForm token={fakeToken} />)
+
+        const passwordField = container.querySelector('input[name="password"]') as Element
+        userEvent.type(passwordField, '12345678')
+        const repeatPasswordField = container.querySelector('input[name="repeatPwd"]') as Element
+        userEvent.type(repeatPasswordField, '12345678')
+
+        // expect(getByText('Les mot de passes ne correspondent pas.')).toBeTruthy()
+        const sgeConsentCheckbox = container.querySelectorAll("input[id='sgeConsentCheckbox']")[0] as HTMLInputElement
+        fireEvent.click(sgeConsentCheckbox)
+        expect(sgeConsentCheckbox.checked).toBe(true)
+
+        const rgpdCheckbox = container.querySelectorAll("input[id='rgpdCheckbox']")[0] as HTMLInputElement
+        fireEvent.click(rgpdCheckbox)
+        expect(rgpdCheckbox.checked).toBe(true)
+
+        userEvent.click(getByText(SUBMIT_TEXT))
+
+        await waitFor(() => {
+            expect(mockOnSubmitResetPassword).toHaveBeenCalledWith({
+                password: '12345678',
+                token: fakeToken,
+            })
+        })
+    }, 50000)
+})

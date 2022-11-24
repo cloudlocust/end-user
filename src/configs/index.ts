@@ -79,3 +79,8 @@ export const API_RESOURCES_URL = window._env_.REACT_APP_API_RESOURCES_URL
  * Current Client Environment Folder.
  */
 export const CLIENT_ICON_FOLDER = window._env_.REACT_APP_CLIENT_ICON_FOLDER
+
+/**
+ * Access To Set Password Page.
+ */
+export const SET_PASSWORD_PAGE_ACCESS = window._env_.REACT_APP_SET_PASSWORD_PAGE_ACCESS
