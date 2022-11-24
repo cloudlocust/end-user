@@ -86,3 +86,9 @@ export const CLIENT_ICON_FOLDER = window._env_.REACT_APP_CLIENT_ICON_FOLDER
  * @example  "/" or "/app"
  */
 export const BASENAME_URL = window._env_.REACT_APP_BASENAME_URL
+
+/**
+ * Access To Set Password Page.
+ *
+ */
+export const SET_PASSWORD_PAGE_ACCESS = window._env_.REACT_APP_SET_PASSWORD_PAGE_ACCESS
