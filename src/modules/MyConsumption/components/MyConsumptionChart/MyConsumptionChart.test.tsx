@@ -17,6 +17,7 @@ const propsMyConsumptionChart = {
     period: 'daily' as periodType,
     range: getRange('day'),
     isStackedEnabled: false,
+    chartLabel: 'Consommation totale',
 } as MyConsumptionChartProps
 
 const apexChartsDailyPeriodWrapper = '.apexChartsDailyPeriodWrapper'
