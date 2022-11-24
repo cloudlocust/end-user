@@ -154,6 +154,8 @@ export interface MyConsumptionChartProps {
     isStackedEnabled?: boolean
     // eslint-disable-next-line jsdoc/require-jsdoc
     chartType: 'consumption' | 'production'
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    chartLabel?: 'Consommation totale' | 'Electricité achetée sur le réseau'
 }
 
 /**

@@ -340,7 +340,11 @@ export const MyConsumptionContainer = () => {
                                     range={range}
                                     isStackedEnabled={isStackedEnabled}
                                     chartType="consumption"
-                                    enphaseState={enphaseConsent?.enphaseConsentState}
+                                    chartLabel={
+                                        enphaseConsent?.enphaseConsentState !== 'ACTIVE'
+                                            ? 'Consommation totale'
+                                            : 'Electricité achetée sur le réseau'
+                                    }
                                 />
                             )}
 

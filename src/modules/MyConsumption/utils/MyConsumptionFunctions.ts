@@ -22,7 +22,6 @@ import {
     differenceInCalendarDays,
 } from 'date-fns'
 import { cloneDeep } from 'lodash'
-import { enphaseConsentStatus } from 'src/modules/Consents/Consents'
 import { metricTargetsHook } from 'src/modules/MyConsumption/utils/myConsumptionVariables'
 import { enphaseConsentFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
 
@@ -439,25 +438,26 @@ export const getChartType = (metricTarget: metricTargetType, period: periodType)
  * Function to get chart specifities.
  *
  * @param target Metric target.
- * @param enphaseStatus Enphase status.
+ * @param chartLabel Chart label according to enphase state.
  * @returns Specifity according to metric target.
  */
 export const getChartSpecifities = (
     target: metricTargetsEnum,
-    enphaseStatus?: enphaseConsentStatus,
+    chartLabel?: 'Consommation totale' | 'Electricité achetée sur le réseau',
 ): getChartSpecifitiesType => {
-    if (target === metricTargetsEnum.consumption && enphaseStatus !== 'ACTIVE') {
+    if (target === metricTargetsEnum.consumption && chartLabel === 'Consommation totale') {
         return {
-            label: 'Consommation totale',
+            label: chartLabel,
         }
-    } else if (target === metricTargetsEnum.consumption && enphaseStatus === 'ACTIVE') {
+        // eslint-disable-next-line sonarjs/no-duplicated-branches
+    } else if (target === metricTargetsEnum.consumption && chartLabel === 'Electricité achetée sur le réseau') {
         return {
-            label: 'Electricité achetée sur le réseau',
+            label: chartLabel,
         }
     } else if (target === metricTargetsEnum.autoconsumption) {
         return {
             label: 'Autoconsommation',
-            seriesName: 'Electricité achetée sur le réseau',
+            seriesName: chartLabel,
             show: false,
         }
     } else if (target === metricTargetsEnum.eurosConsumption) {
