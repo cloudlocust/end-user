@@ -161,7 +161,7 @@ function NavbarStyle3Content(props: /**
                     <div id="fuse-navbar-side-panel" className="flex flex-shrink-0 flex-col items-center">
                         <img
                             className="my-32"
-                            src={`/assets/images/logos/${window._env_.REACT_APP_CLIENT_ICON_FOLDER}-on-primary.svg`}
+                            src={`./assets/images/logos/${window._env_.REACT_APP_CLIENT_ICON_FOLDER}-on-primary.svg`}
                             width="60"
                             alt="logo"
                         />

@@ -1,6 +1,6 @@
 import React, { FC } from 'react'
 import ReactDOM from 'react-dom'
-import { MSW_MOCK } from './configs'
+import { BASENAME_URL, MSW_MOCK } from './configs'
 import { Provider } from 'react-redux'
 import reportWebVitals from './reportWebVitals'
 import 'typeface-poppins'
@@ -35,7 +35,7 @@ const Application: FC<any> = () => {
                 <Provider store={store}>
                     <PersistGate persistor={getPersistor()}>
                         <TranslatitonProvider>
-                            <Router>
+                            <Router basename={BASENAME_URL}>
                                 <SnackbarProvider>
                                     <App />
                                 </SnackbarProvider>

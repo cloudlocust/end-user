@@ -2,7 +2,11 @@ import { useState, useEffect, useMemo, useCallback } from 'react'
 import { motion } from 'framer-motion'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import MyConsumptionChart from 'src/modules/MyConsumption/components/MyConsumptionChart'
-import { formatMetricFilter, getRange } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
+import {
+    formatMetricFilter,
+    getInitialMetricsHookValues,
+    getRange,
+} from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
 import { useTheme, Typography, Icon } from '@mui/material'
 import { useMetrics } from 'src/modules/Metrics/metricsHook'
 import { getMetricType, metricTargetsEnum, metricTargetType } from 'src/modules/Metrics/Metrics.d'
@@ -86,8 +90,9 @@ export const MyConsumptionContainer = () => {
     const theme = useTheme()
     const { formatMessage } = useIntl()
     const { getConsents, nrlinkConsent, enedisSgeConsent, enphaseConsent } = useConsents()
-    const { setMetricsInterval, setRange, setFilters, isMetricsLoading, data, filters, range } =
-        useMetrics(initialMetricsHookValues)
+    const { setMetricsInterval, setRange, setFilters, isMetricsLoading, data, filters, range } = useMetrics(
+        getInitialMetricsHookValues(),
+    )
     const [period, setPeriod] = useState<periodType>('daily')
     const [filteredTargets, setFilteredTargets] = useState<metricTargetType[]>(defaultFilteredTargetsValues)
     // This state represents whether or not the chart is stacked: true.
@@ -100,9 +105,9 @@ export const MyConsumptionContainer = () => {
     const enphaseOff = enphaseConsent?.enphaseConsentState !== 'ACTIVE'
 
     useEffect(() => {
-        if (!currentHousing) return
-        if (currentHousing?.meter) setFilters(formatMetricFilter(currentHousing.meter?.guid))
-    }, [currentHousing, setFilters])
+        if (!currentHousing?.meter?.guid) return
+        setFilters(formatMetricFilter(currentHousing.meter?.guid))
+    }, [currentHousing?.meter?.guid, setFilters])
 
     const { hasMissingHousingContracts } = useHasMissingHousingContracts(range, currentHousing?.id)
 
@@ -335,6 +340,11 @@ export const MyConsumptionContainer = () => {
                                     range={range}
                                     isStackedEnabled={isStackedEnabled}
                                     chartType="consumption"
+                                    chartLabel={
+                                        enphaseConsent?.enphaseConsentState !== 'ACTIVE'
+                                            ? 'Consommation totale'
+                                            : 'Electricité achetée sur le réseau'
+                                    }
                                 />
                             )}
 

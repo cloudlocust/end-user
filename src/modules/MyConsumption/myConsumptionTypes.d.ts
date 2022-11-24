@@ -154,4 +154,12 @@ export interface MyConsumptionChartProps {
     isStackedEnabled?: boolean
     // eslint-disable-next-line jsdoc/require-jsdoc
     chartType: 'consumption' | 'production'
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    chartLabel?: 'Consommation totale' | 'Electricité achetée sur le réseau'
 }
+
+/**
+ * Type for getChartSpecifities function return.
+ */
+// eslint-disable-next-line jsdoc/require-jsdoc
+export type getChartSpecifitiesType = ApexYAxis & { label?: string }

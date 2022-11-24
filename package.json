@@ -5,6 +5,7 @@
     "workspaces": [
         "src/common"
     ],
+    "homepage": ".",
     "dependencies": {
         "apexcharts": "3.35",
         "convert-units": "^2.3.4",

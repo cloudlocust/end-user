@@ -64,9 +64,9 @@ let mockCreateEnedisSgeConsent = jest.fn()
 let mockSetMeterVerification = jest.fn()
 let mockEditMeter = jest.fn()
 // eslint-disable-next-line sonarjs/no-duplicate-string
-const STATUS_ON_SRC = '/assets/images/content/housing/consent-status/meter-on.svg'
+const STATUS_ON_SRC = './assets/images/content/housing/consent-status/meter-on.svg'
 // eslint-disable-next-line sonarjs/no-duplicate-string
-const STATUS_OFF_SRC = '/assets/images/content/housing/consent-status/meter-off.svg'
+const STATUS_OFF_SRC = './assets/images/content/housing/consent-status/meter-off.svg'
 
 jest.mock('src/modules/Meters/metersHook', () => ({
     // eslint-disable-next-line jsdoc/require-jsdoc
@@ -205,7 +205,7 @@ describe('MeterStatus component test', () => {
             expect(getByText(`n° ${foundHouse?.meter?.guid}`)).toBeTruthy()
             expect(getByText(NRLINK_TITLE)).toBeTruthy()
             expect(getByText(NRLINK_DISCONNECTED_MESSAGE)).toBeTruthy()
-            expect(image).toHaveAttribute('src', '/assets/images/content/housing/consent-status/meter-error.svg')
+            expect(image).toHaveAttribute('src', './assets/images/content/housing/consent-status/meter-error.svg')
         })
         test('when nrlink status is expired or nonexistant', async () => {
             mockNrlinkConsent = 'EXPIRED' || 'NONEXISTENT'
@@ -222,7 +222,7 @@ describe('MeterStatus component test', () => {
             expect(getByText(`n° ${foundHouse?.meter?.guid}`)).toBeTruthy()
             expect(getByText(NRLINK_TITLE)).toBeTruthy()
             expect(getByText(NRLINK_NONEXISTANT_EXPIRED_MESSAGE)).toBeTruthy()
-            expect(image).toHaveAttribute('src', '/assets/images/content/housing/consent-status/meter-off.svg')
+            expect(image).toHaveAttribute('src', './assets/images/content/housing/consent-status/meter-off.svg')
             expect(getByText(NRLINK_NONEXISTANT_EXPIRED_MESSAGE).closest('a')).toHaveAttribute(
                 'href',
                 `${URL_NRLINK_CONNECTION_STEPS}/${mockHouseId}`,
@@ -257,7 +257,7 @@ describe('MeterStatus component test', () => {
             expect(getByText(`n° ${foundHouse?.meter?.guid}`)).toBeTruthy()
             expect(getByText(ENEDIS_CONNECTED_MESSAGE)).toBeTruthy()
             const image = getByAltText('connected-icon')
-            expect(image).toHaveAttribute('src', '/assets/images/content/housing/consent-status/meter-on.svg')
+            expect(image).toHaveAttribute('src', './assets/images/content/housing/consent-status/meter-on.svg')
             expect(getByText(enedisFormatedEndingDate)).toBeTruthy()
         })
         test('when enedis status is expired or nonexistant', async () => {
