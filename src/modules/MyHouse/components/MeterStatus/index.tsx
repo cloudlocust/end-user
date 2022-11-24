@@ -118,7 +118,7 @@ export const MeterStatus = () => {
                     <>
                         <Icon className="mr-12">
                             <img
-                                src="/assets/images/content/housing/consent-status/meter-on.svg"
+                                src="./assets/images/content/housing/consent-status/meter-on.svg"
                                 alt="connected-icon"
                             />
                         </Icon>
@@ -138,7 +138,10 @@ export const MeterStatus = () => {
                 return (
                     <>
                         <Icon className="mr-12">
-                            <img src="/assets/images/content/housing/consent-status/meter-error.svg" alt="error-icon" />
+                            <img
+                                src="./assets/images/content/housing/consent-status/meter-error.svg"
+                                alt="error-icon"
+                            />
                         </Icon>
                         <div className="flex flex-col">
                             <TypographyFormatMessage color={theme.palette.warning.main} fontWeight={600}>
@@ -153,7 +156,7 @@ export const MeterStatus = () => {
                 return (
                     <>
                         <Icon className="mr-12">
-                            <img src="/assets/images/content/housing/consent-status/meter-off.svg" alt="off-icon" />
+                            <img src="./assets/images/content/housing/consent-status/meter-off.svg" alt="off-icon" />
                         </Icon>
                         <div className="flex flex-col">
                             <NavLink
@@ -193,7 +196,7 @@ export const MeterStatus = () => {
                     <>
                         <Icon className="mr-12">
                             <img
-                                src="/assets/images/content/housing/consent-status/meter-on.svg"
+                                src="./assets/images/content/housing/consent-status/meter-on.svg"
                                 alt="connected-icon"
                             />
                         </Icon>
@@ -220,7 +223,7 @@ export const MeterStatus = () => {
                         {!sgeConsentFeatureState ? (
                             <Icon className="mr-12 text-grey-600">
                                 <img
-                                    src="/assets/images/content/housing/consent-status/meter-disabled.svg"
+                                    src="./assets/images/content/housing/consent-status/meter-disabled.svg"
                                     alt="off-icon"
                                 />
                             </Icon>
@@ -263,7 +266,7 @@ export const MeterStatus = () => {
                     <>
                         <Icon className="mr-12">
                             <img
-                                src="/assets/images/content/housing/consent-status/meter-on.svg"
+                                src="./assets/images/content/housing/consent-status/meter-on.svg"
                                 alt="enphase-active-icon"
                             />
                         </Icon>
@@ -297,7 +300,7 @@ export const MeterStatus = () => {
                     <>
                         <Icon className="mr-12">
                             <img
-                                src="/assets/images/content/housing/consent-status/meter-off.svg"
+                                src="./assets/images/content/housing/consent-status/meter-off.svg"
                                 alt="enphase-off-icon"
                             />
                         </Icon>

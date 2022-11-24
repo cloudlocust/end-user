@@ -150,14 +150,14 @@ export const AccomodationForm = () => {
                         formOptions={[
                             {
                                 label: accomodationLabelOptions.house,
-                                iconPath: '/assets/images/content/accomodation/logementMaison.svg',
+                                iconPath: './assets/images/content/accomodation/logementMaison.svg',
                                 iconStyles: 'my-20',
                                 buttonStyle: 'w-240 mt-16 flex flex-col mr-16',
                                 value: accomodationLabelOptions.house,
                             },
                             {
                                 label: accomodationLabelOptions.apartment,
-                                iconPath: '/assets/images/content/accomodation/logementAppartement.svg',
+                                iconPath: './assets/images/content/accomodation/logementAppartement.svg',
                                 iconStyles: 'my-20',
                                 buttonStyle: 'w-240 mt-16 flex flex-col',
                                 value: accomodationLabelOptions.apartment,
