@@ -25,7 +25,7 @@ const analysisInformationList: analysisInformationType[] = [
     {
         title: 'Conso moyenne par jour',
         name: 'meanConsumption',
-        iconPath: '/assets/images/content/analysis/meanConsumption.svg',
+        iconPath: './assets/images/content/analysis/meanConsumption.svg',
         color: 'palette.primary.main',
         // eslint-disable-next-line jsdoc/require-jsdoc
         computeConsumption: (consumptionAxisValues: ApexChartsAxisValuesType) =>
@@ -38,7 +38,7 @@ const analysisInformationList: analysisInformationType[] = [
         title: 'Jour de Conso maximale',
         name: 'maxConsumptionDay',
         color: 'palette.primary.dark',
-        iconPath: '/assets/images/content/analysis/maxConsumption.svg',
+        iconPath: './assets/images/content/analysis/maxConsumption.svg',
         // eslint-disable-next-line jsdoc/require-jsdoc
         computeConsumption: (consumptionAxisValues: ApexChartsAxisValuesType) =>
             computeMaxConsumption(consumptionAxisValues),
@@ -50,7 +50,7 @@ const analysisInformationList: analysisInformationType[] = [
         title: 'Jour de Conso minimale',
         name: 'minConsumptionDay',
         color: 'palette.primary.light',
-        iconPath: '/assets/images/content/analysis/minConsumption.svg',
+        iconPath: './assets/images/content/analysis/minConsumption.svg',
         // eslint-disable-next-line jsdoc/require-jsdoc
         computeConsumption: (consumptionAxisValues: ApexChartsAxisValuesType) =>
             computeMinConsumption(consumptionAxisValues),
