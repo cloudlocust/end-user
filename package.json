@@ -2,10 +2,10 @@
     "name": "react-base",
     "version": "0.1.0",
     "private": true,
-    "homepage": ".",
     "workspaces": [
         "src/common"
     ],
+    "homepage": ".",
     "dependencies": {
         "apexcharts": "3.35",
         "convert-units": "^2.3.4",
