@@ -63,7 +63,7 @@ const ProfileManagement = () => {
                                     })}
                                 </Typography>
                             </div>
-                            {deleteAcountFeatureState && <DeleteProfile />}
+                            {!deleteAcountFeatureState && <DeleteProfile />}
                         </div>
                     </div>
                 </ThemeProvider>
