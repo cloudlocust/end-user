@@ -1,7 +1,7 @@
 import { initializeApp } from 'firebase/app'
 import { getMessaging, getToken } from 'firebase/messaging'
 import { axios } from 'src/common/react-platform-components'
-import { API_RESOURCES_URL } from './configs'
+import { AUTH_BASE_URL } from './modules/User/configs'
 
 const firebaseConfig = {
     apiKey: 'AIzaSyClMER8hwr4e5l-br7DFKTGTZUnxwY42eg',
@@ -36,6 +36,6 @@ export const getTokenFromFirebase = (onPermissionGranted?: () => void) => {
                  * Firebase device token.
                  */
                 deviceToken: string
-            }>(`${API_RESOURCES_URL}/add_subscriber_device_token`, { deviceToken: currentToken })
+            }>(`${AUTH_BASE_URL}/users/add_subscriber_device_token`, { deviceToken: currentToken })
     })
 }
