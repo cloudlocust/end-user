@@ -8,6 +8,7 @@ import { motion } from 'framer-motion'
 import { ProfileManagementForm } from 'src/modules/User/ProfileManagement/ProfileManagementForm'
 import DeleteProfile from 'src/modules/User/DeleteProfile/DeleteProfile'
 import { ThemeProvider, useTheme } from '@mui/material/styles'
+import { deleteAcountFeatureState } from 'src/modules/User/ProfileManagement/ProfileManagementConfig'
 
 /**
  * Modify Profile component with the possibility to modify the profile.
@@ -62,7 +63,7 @@ const ProfileManagement = () => {
                                     })}
                                 </Typography>
                             </div>
-                            <DeleteProfile />
+                            {!deleteAcountFeatureState && <DeleteProfile />}
                         </div>
                     </div>
                 </ThemeProvider>
