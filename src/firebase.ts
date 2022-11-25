@@ -1,15 +1,24 @@
 import { initializeApp } from 'firebase/app'
 import { getMessaging, getToken } from 'firebase/messaging'
 import { axios } from 'src/common/react-platform-components'
+import {
+    REACT_APP_FIREBASE_API_KEY,
+    REACT_APP_FIREBASE_APP_ID,
+    REACT_APP_FIREBASE_AUTH_DOMAIN,
+    REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
+    REACT_APP_FIREBASE_PROJECT_ID,
+    REACT_APP_FIREBASE_STORAGE_BUCKET,
+    REACT_APP_FIREBASE_VAPID_KEY,
+} from 'src/configs'
 import { AUTH_BASE_URL } from './modules/User/configs'
 
 const firebaseConfig = {
-    apiKey: 'AIzaSyClMER8hwr4e5l-br7DFKTGTZUnxwY42eg',
-    authDomain: 'novu-push-notification.firebaseapp.com',
-    projectId: 'novu-push-notification',
-    storageBucket: 'novu-push-notification.appspot.com',
-    messagingSenderId: '967242899838',
-    appId: '1:967242899838:web:736824780e23ba1c17d32f',
+    apiKey: REACT_APP_FIREBASE_API_KEY,
+    authDomain: REACT_APP_FIREBASE_AUTH_DOMAIN,
+    projectId: REACT_APP_FIREBASE_PROJECT_ID,
+    storageBucket: REACT_APP_FIREBASE_STORAGE_BUCKET,
+    messagingSenderId: REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
+    appId: REACT_APP_FIREBASE_APP_ID,
 }
 
 // Initialize Firebase
@@ -27,7 +36,7 @@ const messaging = getMessaging(firebaseApp)
  */
 export const getTokenFromFirebase = (onPermissionGranted?: () => void) => {
     return getToken(messaging, {
-        vapidKey: 'BJ2NTIROqDzc1nJzKAVJ-F9BABD-qlnjCp2bjHT5Bq2SzWJJkVH-5CCtsMHxnYGSiOGWoI6UUMOPx10HfdSuVCQ',
+        vapidKey: REACT_APP_FIREBASE_VAPID_KEY,
     }).then(async (currentToken) => {
         if (currentToken)
             // eslint-disable-next-line jsdoc/require-jsdoc
@@ -36,6 +45,6 @@ export const getTokenFromFirebase = (onPermissionGranted?: () => void) => {
                  * Firebase device token.
                  */
                 deviceToken: string
-            }>(`${AUTH_BASE_URL}/users/add_subscriber_device_token`, { deviceToken: currentToken })
+            }>(`${AUTH_BASE_URL}/users/add-subscriber-device-token`, { deviceToken: currentToken })
     })
 }
