@@ -9,6 +9,7 @@ import { EditButtonsGroup } from 'src/modules/MyHouse/EditButtonsGroup'
 import {
     myEquipmentOptions,
     heaterEquipment,
+    sanitaryEquipment,
     hotPlateEquipment,
     groupedCards,
     mappingEquipmentNameToType,
@@ -20,23 +21,26 @@ import {
     equipmentMeterType,
     IEquipmentMeter,
 } from 'src/modules/MyHouse/components/Equipments/EquipmentsType'
+import { useParams } from 'react-router-dom'
 
 /**
  * EquipmentForm Component.
  *
- * @param props N/A.
- * @param props.meterId Id of the meter.
  * @returns Equipment Form equipment.
  */
-export const EquipmentForm = ({
-    meterId,
-}: // eslint-disable-next-line jsdoc/require-jsdoc
-{
-    // eslint-disable-next-line jsdoc/require-jsdoc
-    meterId: number
-}) => {
+export const EquipmentForm = () => {
+    const { houseId } = useParams</**
+     *
+     */
+    {
+        // eslint-disable-next-line jsdoc/require-jsdoc
+        houseId: string
+    }>()
+
+    const housingId = parseInt(houseId)
+
     const { equipmentList, saveEquipment, loadingEquipmentInProgress, isEquipmentMeterListEmpty } =
-        useEquipmentList(meterId)
+        useEquipmentList(housingId)
 
     const [isEdit, setIsEdit] = useState(false)
 
@@ -126,6 +130,9 @@ export const EquipmentForm = ({
                     </div>
                     <div className="text-13">
                         <SelectButtons isDisabled={!isEquipmentMeterListEmpty && !isEdit} {...heaterEquipment} />
+                    </div>
+                    <div className="text-13">
+                        <SelectButtons isDisabled={!isEquipmentMeterListEmpty && !isEdit} {...sanitaryEquipment} />
                     </div>
                     <div className="text-13">
                         <SelectButtons isDisabled={!isEquipmentMeterListEmpty && !isEdit} {...hotPlateEquipment} />

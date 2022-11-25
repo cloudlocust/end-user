@@ -18,8 +18,12 @@ import 'src/modules/nrLinkConnection/NrLinkConnectionSteps.scss'
 import { ButtonLoader } from 'src/common/ui-kit'
 import { IMeter } from 'src/modules/Meters/Meters'
 import MuiLink from '@mui/material/Link'
-import { Link } from 'react-router-dom'
+import { Link, useLocation, useParams } from 'react-router-dom'
 import { URL_CONSUMPTION } from 'src/modules/MyConsumption'
+import { NrlinkConnectionStepsEnum } from 'src/modules/nrLinkConnection/nrlinkConnectionSteps.d'
+import { useSelector } from 'react-redux'
+import { RootState } from 'src/redux'
+import { primaryContrastTextColor, primaryMainColor } from 'src/modules/utils/muiThemeVariables'
 
 /**
  * Component representing the action buttons in the Stepper (Previous, Next), Next Button will be of type Submit.
@@ -92,26 +96,82 @@ const stepsLabels = ['Je branche mon capteur', 'Je configure mon compteur Linky'
  */
 const NrLinkConnectionSteps = () => {
     const theme = useTheme()
-    const isMobile = useMediaQuery(theme.breakpoints.down('md'))
-    const [activeStep, setActiveStep] = React.useState(0)
+
+    // this ones are for handling the housing id's and their speceif meters
+    const { currentHousing, housingList } = useSelector(({ housingModel }: RootState) => housingModel)
+    const { houseId } = useParams</**
+     *
+     */
+    {
+        // eslint-disable-next-line jsdoc/require-jsdoc
+        houseId: string
+    }>()
+    const parsedHouseId = parseInt(houseId)
+    const [housingId, setHousingId] = useState<number | undefined>(parsedHouseId)
+
+    // to keep the housing and meter updated depending on which house we are updating.
+    // by default this page is for the current housing, if
+    useEffect(() => {
+        // if no house id in the url, we set it to the current housing
+        !parsedHouseId && setHousingId(currentHousing?.id)
+
+        // once we have wich house we are using, we search for it in the housing list to get the meter
+        const handledHousing = housingList?.find((housing) => housing.id === housingId)
+        handledHousing && setMeter(handledHousing.meter)
+    }, [currentHousing, parsedHouseId, housingList, housingId])
+
     const [meter, setMeter] = useState<IMeter | null>(null)
+
+    /**
+     * ActiveStep state is received from MeterStatus.tsx component.
+     * When the user doesn't have either a meter nor nrlink, we redirect them to the second step.
+     * When the user does have a meter but doesn't have nrlink assigned in the app. We redirect them to the third step.
+     */
+    const {
+        state: locationState,
+    }: // eslint-disable-next-line jsdoc/require-jsdoc
+    {
+        /**
+         * Route state.
+         */
+        // eslint-disable-next-line jsdoc/require-jsdoc
+        state: {
+            /**
+             * Activate step that we want the stepper to be in.
+             */
+            activeStep: NrlinkConnectionStepsEnum.secondStep | NrlinkConnectionStepsEnum.thirdStep
+        }
+    } = useLocation()
+
+    const isMobile = useMediaQuery(theme.breakpoints.down('md'))
+    const [activeStep, setActiveStep] = React.useState(NrlinkConnectionStepsEnum.firstStep)
     const [screenOrientation, setScreenOrientation] = React.useState(
         window.matchMedia('(orientation: portrait)').matches ? 'portrait' : 'landscape',
     )
     const { formatMessage } = useIntl()
+
+    /**
+     * If we receive activateStep from useLocation we set ActiveStep to 1 or 2 depending on the value that was passed.
+     */
+    useEffect(() => {
+        if (locationState) {
+            setActiveStep(locationState.activeStep)
+        }
+    }, [locationState])
+
     const skipStepperLink = (
         <MuiLink
             component={Link}
             sx={{
                 color:
                     // eslint-disable-next-line jsdoc/require-jsdoc
-                    (theme) => theme.palette.primary.light,
+                    (theme) => theme.palette.primary.main,
             }}
             className="md:text-14"
             to={URL_CONSUMPTION}
             underline="none"
         >
-            {formatMessage({ id: "Aller vers l'acceuil", defaultMessage: "Aller vers l'acceuil" })}
+            {formatMessage({ id: "Aller vers l'accueil", defaultMessage: "Aller vers l'accueil" })}
         </MuiLink>
     )
 
@@ -136,8 +196,6 @@ const NrLinkConnectionSteps = () => {
      * Previous Step callback.
      */
     const handleBack = () => {
-        // Reset the selected meter when going to any previous step
-        setMeter(null)
         setActiveStep((prevActiveStep) => prevActiveStep - 1)
     }
 
@@ -152,6 +210,7 @@ const NrLinkConnectionSteps = () => {
             handleNext={handleNext}
             setMeter={setMeter}
             meter={meter}
+            housingId={housingId}
         />,
         <LastStepNrLinkConnection
             handleBack={handleBack}
@@ -167,14 +226,48 @@ const NrLinkConnectionSteps = () => {
                     <Stepper
                         className="NrLinkConnectionStepsStepper w-full"
                         activeStep={activeStep}
+                        sx={{
+                            '& .MuiStepConnector-root.Mui-active': {
+                                '& .MuiStepConnector-line': {
+                                    borderColor: primaryMainColor, // Step Connector (ACTIVE)
+                                },
+                            },
+                            '& .MuiStepConnector-root.Mui-completed': {
+                                '& .MuiStepConnector-line': {
+                                    borderColor: primaryMainColor, // Step Connector (COMPLETED)
+                                },
+                            },
+                        }}
                         orientation={isMobile && screenOrientation === 'portrait' ? 'vertical' : 'horizontal'}
                     >
                         {stepsLabels.map((label, index) => (
-                            <Step key={label}>
+                            <Step
+                                key={label}
+                                sx={{
+                                    '& .MuiStepContent-root': {
+                                        borderLeftColor: primaryMainColor, // Step Content Indicator Line (ACTIVE)
+                                    },
+                                    '& .MuiStepLabel-root .Mui-completed': {
+                                        color: primaryMainColor, // circle color (COMPLETED)
+                                    },
+                                    '& .MuiStepLabel-label.Mui-completed.MuiStepLabel-alternativeLabel': {
+                                        color: primaryContrastTextColor, // Just text label (COMPLETED)
+                                    },
+                                    '& .MuiStepLabel-root .Mui-active': {
+                                        color: primaryMainColor, // circle color (ACTIVE)
+                                    },
+                                    '& .MuiStepLabel-label.Mui-active.MuiStepLabel-alternativeLabel': {
+                                        color: primaryContrastTextColor, // Just text label (ACTIVE)
+                                    },
+                                    '& .MuiStepLabel-root .Mui-active .MuiStepIcon-text': {
+                                        fill: primaryContrastTextColor, // circle's number (ACTIVE)
+                                    },
+                                }}
+                            >
                                 <StepLabel>{label}</StepLabel>
                                 {isMobile && screenOrientation === 'portrait' && (
                                     // Vertical stepper content
-                                    <StepContent className="px-48" sx={{ paddingRight: '0' }}>
+                                    <StepContent className="px-20" sx={{ paddingRight: '0' }}>
                                         {stepsContent[index]}
                                     </StepContent>
                                 )}

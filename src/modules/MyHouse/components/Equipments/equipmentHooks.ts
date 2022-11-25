@@ -8,22 +8,27 @@ import { AxiosResponse } from 'axios'
 import { axios } from 'src/common/react-platform-components'
 import { useIntl } from 'src/common/react-platform-translation'
 import { useSnackbar } from 'notistack'
-import { METERS_API } from 'src/modules/Meters/metersHook'
+import { HOUSING_API } from 'src/modules/MyHouse/components/HousingList/HousingsHooks'
+import { API_RESOURCES_URL } from 'src/configs'
+import { equipmentsAccomodationFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
 
-// Meter Equipments API
+// Housing Equipments API
+
 // eslint-disable-next-line jsdoc/require-jsdoc
-export const METER_EQUIPMENTS_API = (meterId: number) => `${METERS_API}/${meterId}/equipments`
-// Equipments API
+export const HOUSING_EQUIPMENTS_API = (housingId: number) => `${HOUSING_API}/${housingId}/equipments`
+
+// All Equipments API
+
 // eslint-disable-next-line jsdoc/require-jsdoc
-export const EQUIPMENTS_API = `${METERS_API}/equipments`
+export const ALL_EQUIPMENTS_API = `${API_RESOURCES_URL}/equipments`
 
 /**
 `* Hooks for equipmentList.
  *
- * @param meterId Indicate the id of the meter.
+ * @param housingId Indicate the id of the meter.
  * @returns UseEquipment Hook.
  */
-export const useEquipmentList = (meterId: number) => {
+export const useEquipmentList = (housingId: number) => {
     const { enqueueSnackbar } = useSnackbar()
     const { formatMessage } = useIntl()
     const isInitialMount = useRef(true)
@@ -40,12 +45,12 @@ export const useEquipmentList = (meterId: number) => {
         setLoadingEquipmentInProgress(true)
         setIsEquipmentMeterListEmpty(false)
         try {
-            const { data: meterEquipments } = await axios.get<IEquipmentMeter[]>(METER_EQUIPMENTS_API(meterId))
-            const { data: equipments } = await axios.get<equipmentType[]>(EQUIPMENTS_API)
-            if (!meterEquipments || meterEquipments.length === 0) setIsEquipmentMeterListEmpty(true)
+            const { data: housingEquipments } = await axios.get<IEquipmentMeter[]>(HOUSING_EQUIPMENTS_API(housingId))
+            const { data: equipments } = await axios.get<equipmentType[]>(ALL_EQUIPMENTS_API)
+            if (!housingEquipments || housingEquipments.length === 0) setIsEquipmentMeterListEmpty(true)
             const responseData = equipments.map((equipment) => {
-                const foundEquipment = meterEquipments.find(
-                    (meterEquipment) => meterEquipment.equipmentId === equipment.id,
+                const foundEquipment = housingEquipments.find(
+                    (housingEquipments) => housingEquipments.equipmentId === equipment.id,
                 )
                 if (foundEquipment) return foundEquipment
                 return {
@@ -65,10 +70,10 @@ export const useEquipmentList = (meterId: number) => {
             )
         }
         setLoadingEquipmentInProgress(false)
-    }, [meterId, formatMessage, enqueueSnackbar])
+    }, [housingId, formatMessage, enqueueSnackbar])
     // UseEffect executes on initial intantiation of useEquipmentList, responsible for loadEquipmentList on initialLoad.
     useEffect(() => {
-        if (isInitialMount.current) {
+        if (isInitialMount.current && !equipmentsAccomodationFeatureState) {
             isInitialMount.current = false
             loadEquipmentList()
         }
@@ -86,7 +91,7 @@ export const useEquipmentList = (meterId: number) => {
             const { data: responseData } = await axios.post<
                 postEquipmentInputType,
                 AxiosResponse<postEquipmentInputType>
-            >(METER_EQUIPMENTS_API(meterId), body)
+            >(HOUSING_EQUIPMENTS_API(housingId), body)
 
             await loadEquipmentList()
             enqueueSnackbar(

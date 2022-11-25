@@ -1,6 +1,6 @@
 import { rest } from 'msw'
 import { AUTH_BASE_URL } from 'src/modules/User/configs'
-import { IUserRegister } from 'src/modules/User/model'
+import { IUser, IUserRegister } from 'src/modules/User/model'
 
 /**
  * Success mail to send for login.
@@ -14,6 +14,16 @@ export const TEST_AUTOVALIDATION_PASSWORD = 'authToken'
 export const showNrLinkPopupTrue = 'showNrLinkPopupTrue'
 // eslint-disable-next-line jsdoc/require-jsdoc
 export const showNrLinkPopupFalse = 'showNrLinkPopupFalse'
+
+// eslint-disable-next-line jsdoc/require-jsdoc
+/**
+ * Variable used in test for delete profile error.
+ */
+export const TEST_AUTHORIZATION_DELETE_PROFILE_ERROR = 'deleteError'
+/**
+ * Variable used for return message when delete profile error.
+ */
+export const TEST_MESSAGE_DELETE_PROFILE_ERROR = "L'utilisateur est introuvable."
 
 /**
  *
@@ -85,10 +95,25 @@ export const userEndpoints = [
     //             return res(ctx.status(401))
     //         }
     //     }),
+    rest.patch<IUser>(`${AUTH_BASE_URL}/users/me`, (req, res, ctx) => {
+        const { email } = req.body
+        if (email === TEST_SUCCESS_USER.email) {
+            return res(ctx.status(200), ctx.json({ ...TEST_SUCCESS_USER, ...req.body }))
+        } else {
+            return res(ctx.status(400), ctx.delay(1000), ctx.json({ detail: 'UPDATE_USER_EMAIL_ALREADY_EXISTS' }))
+        }
+    }),
+    // ser delete profile
+    rest.delete<IUser>(`${AUTH_BASE_URL}/users/delete-me`, (req, res, ctx) => {
+        const authorization = req.headers.get('authorization')
+        if (authorization && authorization === TEST_AUTHORIZATION_DELETE_PROFILE_ERROR)
+            return res(ctx.status(400), ctx.delay(1000), ctx.json({ detail: TEST_MESSAGE_DELETE_PROFILE_ERROR }))
+        return res(ctx.status(200), ctx.delay(1000), ctx.json(TEST_SUCCESS_USER))
+    }),
 
-    //     rest.get<string>(`${AUTH_BASE_URL}/users/me`, (req, res, ctx) => {
-    //         return res(ctx.status(200), ctx.json(TEST_SUCCESS_USER))
-    //     }),
+    rest.get<string>(`${AUTH_BASE_URL}/users/me`, (req, res, ctx) => {
+        return res(ctx.status(200), ctx.json(TEST_SUCCESS_USER))
+    }),
 
     // Get selected user by id.
     rest.get(`${AUTH_BASE_URL}/users/:id`, (req, res, ctx) => {

@@ -1,0 +1,17 @@
+@import 'src/common/ui-kit/styles/media.scss';
+
+.Contracts {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    justify-content: space-evenly;
+    gap: 24px;
+    @include md {
+        grid-template-columns: repeat(auto-fit, 400px);
+    }
+    .contract-card {
+        min-height: 120px;
+        @include md {
+            min-height: 150px;
+        }
+    }
+}

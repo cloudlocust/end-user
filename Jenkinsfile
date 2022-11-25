@@ -23,31 +23,31 @@ pipeline{
             }
 
         }
-        stage('Unit-test'){
-            steps {
-                sh 'yarn test --watchAll=false --maxWorkers=1 --no-cache  --coverage --testResultsProcessor jest-sonar-reporter'
-            }
+//         stage('Unit-test'){
+//             steps {
+//                 sh 'yarn test --watchAll=false --maxWorkers=1 --no-cache  --coverage --testResultsProcessor jest-sonar-reporter'
+//             }
 
-        }
-        stage('build && SonarQube analysis') {
-            environment {
-                scannerHome = tool 'SonarQubeScanner'
-            }
-            steps {
-                withSonarQubeEnv('sonarqube') {
-                    sh "${scannerHome}/bin/sonar-scanner -X"
-                }
-            }
-        }
-        stage("Quality Gate") {
-            steps {
-                timeout(time: 10, unit: 'MINUTES') {
-                    // Parameter indicates whether to set pipeline to UNSTABLE if Quality Gate fails
-                    // true = set pipeline to UNSTABLE, false = don't
-                    waitForQualityGate abortPipeline: true
-                }
-            }
-        }
+//         }
+//         stage('build && SonarQube analysis') {
+//             environment {
+//                 scannerHome = tool 'SonarQubeScanner'
+//             }
+//             steps {
+//                 withSonarQubeEnv('sonarqube') {
+//                     sh "${scannerHome}/bin/sonar-scanner -X"
+//                 }
+//             }
+//         }
+//         stage("Quality Gate") {
+//             steps {
+//                 timeout(time: 10, unit: 'MINUTES') {
+//                     // Parameter indicates whether to set pipeline to UNSTABLE if Quality Gate fails
+//                     // true = set pipeline to UNSTABLE, false = don't
+//                     waitForQualityGate abortPipeline: true
+//                 }
+//             }
+//         }
         stage('Test NG generate') {
             when {
               expression { ! (BRANCH_NAME ==~ /(production|master|develop)/) }
@@ -60,6 +60,8 @@ pipeline{
             when {
                     expression { BRANCH_NAME ==~ /(production|master|develop)/ }
             }
+           stages {
+           stage('Publish in dockerhub'){
             environment {
                 registryCredential = 'dockerhub'
                 app_regisgtry = 'myem/enduser-react'
@@ -70,13 +72,40 @@ pipeline{
                 script {
                     docker.withRegistry( '', registryCredential ) {
                         // we copy files inside the app image and tag it
-                        def appimage = docker.build(app_regisgtry + ":${IMG_TAG}", "--no-cache --build-arg ENV=${ENV_BUILD} --build-arg REACT_APP_TITLE='NED | Nouvelle Energies Distribution' --build-arg REACT_APP_CLIENT_ICON_FOLDER='ned' . -f ci/Dockerfile " )
+                        def appimage = docker.build(app_regisgtry + ":${IMG_TAG}", "--no-cache --build-arg ENV=${ENV_BUILD} --build-arg REACT_APP_TITLE='MYEM | Application de suivi de consommation ' --build-arg REACT_APP_CLIENT_ICON_FOLDER='ned' . -f ci/Dockerfile " )
                         appimage.push("${IMG_TAG}")
                     }
                }
             }
 
         }
+         stage('Publish in chart regisry'){
+                       when{  expression { changeset('enduser-react-chart')} }
+                       environment {
+                           ENV_NAME = getEnvName(BRANCH_NAME)
+                           VERSION_CHART = "0.1.${BUILD_NUMBER}"
+                           USER_NAME_ = credentials('helm_registry_username')
+                           PASSWORD_ = credentials('helm_registry_password')
+                           url = credentials('helm_registry_url')
+                           URL_ = "${url}/${ENV_NAME}registry"
+                           }
+                        steps {
+                              script{
+
+                                sh(script: " helm registry login -u ${USER_NAME_} -p ${PASSWORD_} ${URL_} ")
+                                sh(script: "rm -rf helm-chart-repository")
+                                sh(script: "mkdir helm-chart-repository")         
+                                sh(script: "helm package enduser-react-chart --version ${VERSION_CHART} -d helm-chart-repository")
+                                sh(script: "helm push helm-chart-repository/* oci://${URL_}")
+                                sh(script: "rm -rf helm-chart-repository")
+
+                }
+              }  
+
+                }  
+           }
+        }
+
 
        stage ('Deploy') {
         when {
@@ -84,16 +113,23 @@ pipeline{
            }
         environment {
               ENV_NAME = getEnvName(BRANCH_NAME)
+              USER_NAME_ = credentials('helm_registry_username')
+              PASSWORD_ = credentials('helm_registry_password')
+              url = credentials('helm_registry_url')
+              URL_ = "${url}/${ENV_NAME}registry"               
            }
             steps {
                 script{
                     // The below will clone network devops repository
-                    git credentialsId: 'github myem developer', url: 'https://github.com/myenergymanager/network-devops'
+                    git([url: 'https://github.com/myenergymanager/network-devops', branch: "master", credentialsId: 'github myem developer'])
                     // Checkout to master
-                    sh "git checkout master"
+                    sh " helm registry login -u ${USER_NAME_} -p ${PASSWORD_} ${URL_} "
                     // This will apply new helm upgrade, you need to specify namespace.
-                    withKubeConfig([credentialsId:'kubernetes_staging-alpha-preprod', serverUrl:'https://aba74d96-42a7-4fd9-9bcf-46b243e3c48f.api.k8s.fr-par.scw.cloud:6443']) {
-                        sh "helm upgrade --install enduser-react-ng${ENV_NAME} helm-charts/enduser-react -f environments/ng${ENV_NAME}/microservices/enduser-react.yaml --namespace ng${ENV_NAME}"
+
+
+                    withKubeConfig([credentialsId:'kubernetes_staging-alpha-preprod', contextName: "ng${ENV_NAME}"]) {
+                        sh "helm upgrade --install enduser-react-ng${ENV_NAME} oci://${URL_}/enduser-react -f environments/ng${ENV_NAME}/microservices/enduser-react.yaml --namespace ng${ENV_NAME}"
+                        
                     }
                 }
             }
@@ -147,4 +183,56 @@ def getBuildEnv(branchName) {
      else{
          return "alpha";
      }
+}
+
+def allChangeSetsFromLastSuccessfulBuild() { 
+    def jobName="$JOB_NAME"
+    def job = Jenkins.getInstance().getItemByFullName(jobName)
+    def lastSuccessBuild = job.lastSuccessfulBuild.number as int
+    def currentBuildId = "$BUILD_ID" as int
+    
+    def changeSets = []
+
+    for(int i = lastSuccessBuild + 1; i < currentBuildId; i++) {
+        echo "Getting Change Set for the Build ID : ${i}"
+        def chageSet = job.getBuildByNumber(i).getChangeSets()
+        changeSets.addAll(chageSet)
+    }
+     changeSets.addAll(currentBuild.changeSets) // Add the  current Changeset
+     return changeSets
+}
+
+def getFilesChanged(chgSets) {
+    def filesList = []
+    def changeLogSets = chgSets
+        for (int i = 0; i < changeLogSets.size(); i++) {
+            def entries = changeLogSets[i].items
+            for (int j = 0; j < entries.length; j++) {
+                def entry = entries[j]
+                def files = new ArrayList(entry.affectedFiles)
+                    for (int k = 0; k < files.size(); k++) {
+                    def file = files[k]
+                    filesList.add(file.path)
+            }
+        }
+    }
+    return filesList
+}
+
+def isPathExist(changeSets,path) {
+    
+            b = false
+            changeSets.each { 
+                a = it.startsWith(path)
+                b = a || b
+            }
+            return b
+            
+    
+}
+
+def changeset(path){
+    def changeSets = allChangeSetsFromLastSuccessfulBuild()                                          
+    return  isPathExist(getFilesChanged(changeSets),path)
+
 }

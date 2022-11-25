@@ -19,30 +19,50 @@ import { useAccomodation } from 'src/modules/MyHouse/components/Accomodation/Acc
 import { AccomodationDataType } from 'src/modules/MyHouse/components/Accomodation/AccomodationType'
 import { CircularProgress } from '@mui/material'
 import { isMatch } from 'lodash'
+import { useParams } from 'react-router-dom'
+import HelpOutlineIcon from '@mui/icons-material/HelpOutline'
+import Tooltip, { tooltipClasses, TooltipProps } from '@mui/material/Tooltip'
+import { styled } from '@mui/material/styles'
+import { Icon } from '@mui/material'
+import { useTheme } from '@mui/material'
+
+//eslint-disable-next-line
+const CustomTooltip = styled(({ className, ...props }: TooltipProps) => (
+    <Tooltip {...props} classes={{ popper: className }} />
+))(({ theme }) => ({
+    [`& .${tooltipClasses.tooltip}`]: {
+        backgroundColor: theme.palette.primary.main,
+        color: 'rgba(0, 0, 0, 0.87)',
+        boxShadow: theme.shadows[1],
+        fontSize: 11,
+    },
+}))
 
 /**
  * AccomodationForm .
  *
- * @param root0 N/A.
- * @param root0.meterId MeterId.
  * @returns AccomodationForm.
  */
-export const AccomodationForm = ({
-    meterId,
-}: /**
- * AccomodationForm props.
- */ {
-    /**
-     * MeterId.
+export const AccomodationForm = () => {
+    const { houseId } = useParams</**
+     *
      */
-    meterId: number
-}) => {
+    {
+        // eslint-disable-next-line jsdoc/require-jsdoc
+        houseId: string
+    }>()
+
+    const housingId = parseInt(houseId)
+
     const { formatMessage } = useIntl()
     const [isDPE, setIsDPE] = useState(true)
     const { loadAccomodation, updateAccomodation, accomodation, isLoadingInProgress, isAccomodationMeterListEmpty } =
-        useAccomodation(meterId)
+        useAccomodation(housingId)
     const [isEditAccomodation, setIdEditAccomodation] = useState(false)
     const disabledField = !isAccomodationMeterListEmpty && !isEditAccomodation
+
+    const [isAccomodationInfoConsentmentOpen, setIsAccomodationInfoConsentmentOpen] = useState(false)
+    const theme = useTheme()
 
     const accomodationData = {
         houseType: accomodation?.houseType,
@@ -78,191 +98,232 @@ export const AccomodationForm = ({
             </div>
         )
     return (
-        <div className="flex flex-col justify-center w-full md:w-3/4 ">
-            <Form
-                onSubmit={async (data: AccomodationDataType) => {
-                    const dataAccomodation = setSelectFields(data)
-                    const dataIsNotModified = isMatch(accomodationData as AccomodationDataType, dataAccomodation)
-                    if (dataIsNotModified) return
-                    await updateAccomodation(dataAccomodation)
-                    loadAccomodation()
-                    setIdEditAccomodation(false)
-                }}
-                defaultValues={accomodationData}
-            >
-                <div className="flex justify-center font-semibold text-sm mb-4 mt-16">
-                    {formatMessage({
-                        id: 'Informations Logements',
-                        defaultMessage: 'Informations Logements',
-                    })}
-                </div>
-                <SelectButtons
-                    name={accomodationNames.houseType}
-                    wrapperStyles="flex flex-row  justify-center"
-                    titleLabel="Type de logement :"
-                    isDisabled={disabledField}
-                    formOptions={[
-                        {
-                            label: accomodationLabelOptions.house,
-                            iconPath: '/assets/images/content/accomodation/logementMaison.svg',
-                            iconStyles: 'my-20',
-                            buttonStyle: 'w-240 mt-16 flex flex-col mr-16',
-                            value: accomodationLabelOptions.house,
-                        },
-                        {
-                            label: accomodationLabelOptions.apartment,
-                            iconPath: '/assets/images/content/accomodation/logementAppartement.svg',
-                            iconStyles: 'my-20',
-                            buttonStyle: 'w-240 mt-16 flex flex-col',
-                            value: accomodationLabelOptions.apartment,
-                        },
-                    ]}
-                />
-                <SelectButtons
-                    name={accomodationNames.houseYear}
-                    wrapperStyles="flex flex-row  justify-center"
-                    titleLabel="Année de construction :"
-                    isDisabled={disabledField}
-                    formOptions={[
-                        {
-                            label: accomodationLabelOptions.before1950,
-                            buttonStyle: 'w-224 mt-16 flex flex-col mr-16 text-xs pt-10 pb-10',
-                            value: 'Avant_1950',
-                        },
-                        {
-                            label: accomodationLabelOptions.from1950to1975,
-                            buttonStyle: 'w-224 mt-16 flex flex-col mr-16 text-xs pt-10 pb-10',
-                            value: 'Entre_1950_1975',
-                        },
-                        {
-                            label: accomodationLabelOptions.after1975,
-                            buttonStyle: 'w-224 mt-16 flex flex-col text-xs pt-10 pb-10',
-                            value: 'Apres_1975',
-                        },
-                    ]}
-                />
-                <SelectButtons
-                    wrapperStyles="flex flex-row justify-center"
-                    titleLabel="Type de résidence :"
-                    name={accomodationNames.residenceType}
-                    isDisabled={disabledField}
-                    formOptions={[
-                        {
-                            label: accomodationLabelOptions.main,
-                            iconLabel: 'flag',
-                            iconStyles: 'mr-5',
-                            buttonStyle: 'w-224 max-h-40 mt-16 mr-16 text-xs pt-12 pb-12',
-                            value: accomodationLabelOptions.main,
-                        },
-                        {
-                            label: accomodationLabelOptions.secondary,
-                            iconLabel: 'golf_course',
-                            iconStyles: 'mr-5',
-                            buttonStyle: 'w-224 max-h-40 mt-16 text-xs',
-                            value: accomodationLabelOptions.secondary,
-                        },
-                    ]}
-                />
-                <div className="flex flex-row select flex justify-between  mt-10">
-                    <div className="mt-14 mr-10">
+        <div className="flex flex-col items-center justify-center w-full md:w-3/4 ml-5 mr-5">
+            {isAccomodationInfoConsentmentOpen && (
+                <div
+                    className="flex items-center justify-center w-screen min-h-56"
+                    style={{ background: theme.palette.primary.main }}
+                >
+                    <div className="max-w-xs text-white text-center">
                         {formatMessage({
-                            id: 'Je connais mon DPE :',
-                            defaultMessage: 'Je connais mon DPE :',
+                            id: 'En renseignant votre logement nous pourrons vous apporter une analyse plus précise de votre consommation',
+                            defaultMessage:
+                                'En renseignant votre logement nous pourrons vous apporter une analyse plus précise de votre consommation',
                         })}
                     </div>
-                    <RadioGroup row name="isDPE">
-                        <FormControlLabel
-                            value="oui"
-                            control={<Radio color="primary" />}
-                            label="Oui"
-                            onClick={() => !disabledField && setIsDPE(true)}
-                            checked={isDPE}
-                            disabled={disabledField}
-                        />
-                        <FormControlLabel
-                            value="non"
-                            control={<Radio color="primary" />}
-                            label="Non"
-                            onClick={() => !disabledField && setIsDPE(false)}
-                            checked={!isDPE}
-                            disabled={disabledField}
-                        />
-                    </RadioGroup>
                 </div>
-                {isDPE ? (
-                    <Select
-                        name={accomodationNames.energyPerformanceIndex}
-                        label={accomodationLabelOptions.energeticPerformance}
-                        children={performanceOptions.map((performance) => {
-                            return <MenuItem value={performance}>{performance}</MenuItem>
+            )}
+            <div className="flex flex-col justify-center w-full md:w-3/4 ">
+                <Form
+                    onSubmit={async (data: AccomodationDataType) => {
+                        const dataAccomodation = setSelectFields(data)
+                        const dataIsNotModified = isMatch(accomodationData as AccomodationDataType, dataAccomodation)
+                        if (dataIsNotModified) return
+                        await updateAccomodation(dataAccomodation)
+                        loadAccomodation()
+                        setIdEditAccomodation(false)
+                    }}
+                    defaultValues={accomodationData}
+                >
+                    <div className="flex justify-center font-semibold text-sm mb-4 mt-16">
+                        {formatMessage({
+                            id: 'Informations Logements',
+                            defaultMessage: 'Informations Logements',
                         })}
-                        defaultValue={null}
-                        disabled={disabledField}
+                        {isAccomodationMeterListEmpty && (
+                            <Icon
+                                className="ml-12 cursor-pointer"
+                                onClick={() => setIsAccomodationInfoConsentmentOpen(!isAccomodationInfoConsentmentOpen)}
+                            >
+                                <img
+                                    src="/assets/images/content/housing/consent-status/meter-error.svg "
+                                    alt="meter-status"
+                                />
+                            </Icon>
+                        )}
+                    </div>
+                    <SelectButtons
+                        name={accomodationNames.houseType}
+                        wrapperStyles="flex flex-row  justify-center"
+                        titleLabel="Type de logement :"
+                        isDisabled={disabledField}
+                        formOptions={[
+                            {
+                                label: accomodationLabelOptions.house,
+                                iconPath: './assets/images/content/accomodation/logementMaison.svg',
+                                iconStyles: 'my-20',
+                                buttonStyle: 'w-240 mt-16 flex flex-col mr-16',
+                                value: accomodationLabelOptions.house,
+                            },
+                            {
+                                label: accomodationLabelOptions.apartment,
+                                iconPath: './assets/images/content/accomodation/logementAppartement.svg',
+                                iconStyles: 'my-20',
+                                buttonStyle: 'w-240 mt-16 flex flex-col',
+                                value: accomodationLabelOptions.apartment,
+                            },
+                        ]}
                     />
-                ) : (
-                    <Select
-                        name={accomodationNames.isolationLevel}
-                        label={accomodationLabelOptions.isolation}
-                        children={isolationOptions.map((isolation) => {
-                            return <MenuItem value={isolation}>{isolation}</MenuItem>
-                        })}
-                        defaultValue={null}
-                        disabled={disabledField}
+                    <SelectButtons
+                        name={accomodationNames.houseYear}
+                        wrapperStyles="flex flex-row  justify-center"
+                        titleLabel="Année de construction :"
+                        isDisabled={disabledField}
+                        formOptions={[
+                            {
+                                label: accomodationLabelOptions.before1950,
+                                buttonStyle: 'w-224 mt-16 flex flex-col mr-16 text-xs pt-10 pb-10',
+                                value: 'Avant_1950',
+                            },
+                            {
+                                label: accomodationLabelOptions.from1950to1975,
+                                buttonStyle: 'w-224 mt-16 flex flex-col mr-16 text-xs pt-10 pb-10',
+                                value: 'Entre_1950_1975',
+                            },
+                            {
+                                label: accomodationLabelOptions.after1975,
+                                buttonStyle: 'w-224 mt-16 flex flex-col text-xs pt-10 pb-10',
+                                value: 'Apres_1975',
+                            },
+                        ]}
                     />
-                )}
-                <div className="flex flex-row flex justify-between mt-16 mr-24">
-                    <div className="mt-16 mr-10 w-full ">
-                        {formatMessage({
-                            id: 'Nombre d’habitants :',
-                            defaultMessage: 'Nombre d’habitants :',
-                        })}
+                    <SelectButtons
+                        wrapperStyles="flex flex-row justify-center"
+                        titleLabel="Type de résidence :"
+                        name={accomodationNames.residenceType}
+                        isDisabled={disabledField}
+                        formOptions={[
+                            {
+                                label: accomodationLabelOptions.main,
+                                iconLabel: 'flag',
+                                iconStyles: 'mr-5',
+                                buttonStyle: 'w-224 max-h-40 mt-16 mr-16 text-xs pt-12 pb-12',
+                                value: accomodationLabelOptions.main,
+                            },
+                            {
+                                label: accomodationLabelOptions.secondary,
+                                iconLabel: 'golf_course',
+                                iconStyles: 'mr-5',
+                                buttonStyle: 'w-224 max-h-40 mt-16 text-xs',
+                                value: accomodationLabelOptions.secondary,
+                            },
+                        ]}
+                    />
+                    <div className="flex flex-col md:flex-row mt-16 mr-24 content-center items-end md:items-center justify-end">
+                        <div className="w-full flex flex-row justify-between content-center items-center">
+                            <div>
+                                {formatMessage({
+                                    id: 'Je connais mon DPE :',
+                                    defaultMessage: 'Je connais mon DPE :',
+                                })}
+                                <Tooltip
+                                    title={formatMessage({
+                                        id: 'Diagnostic de performance énergétique',
+                                        defaultMessage: 'Diagnostic de performance énergétique',
+                                    })}
+                                    placement="top"
+                                    color="primary"
+                                >
+                                    <HelpOutlineIcon className="cursor-pointer ml-5" />
+                                </Tooltip>
+                            </div>
+                            <RadioGroup row name="isDPE">
+                                <FormControlLabel
+                                    value="oui"
+                                    control={<Radio color="primary" />}
+                                    label="Oui"
+                                    onClick={() => !disabledField && setIsDPE(true)}
+                                    checked={isDPE}
+                                    disabled={disabledField}
+                                />
+                                <FormControlLabel
+                                    value="non"
+                                    control={<Radio color="primary" />}
+                                    label="Non"
+                                    onClick={() => !disabledField && setIsDPE(false)}
+                                    checked={!isDPE}
+                                    disabled={disabledField}
+                                />
+                            </RadioGroup>
+                        </div>
+                        <div className="w-4/6 md:mt-20">
+                            {isDPE ? (
+                                <Select
+                                    name={accomodationNames.energyPerformanceIndex}
+                                    label={accomodationLabelOptions.energeticPerformance}
+                                    children={performanceOptions.map((performance) => {
+                                        return <MenuItem value={performance}>{performance}</MenuItem>
+                                    })}
+                                    defaultValue={null}
+                                    disabled={disabledField}
+                                />
+                            ) : (
+                                <Select
+                                    name={accomodationNames.isolationLevel}
+                                    label={accomodationLabelOptions.isolation}
+                                    children={isolationOptions.map((isolation) => {
+                                        return <MenuItem value={isolation}>{isolation}</MenuItem>
+                                    })}
+                                    defaultValue={null}
+                                    disabled={disabledField}
+                                />
+                            )}
+                        </div>
                     </div>
-                    <div className="w-4/6">
-                        <TextField
-                            type="number"
-                            name={accomodationNames.numberOfInhabitants}
-                            label={formatMessage({
-                                id: 'Habitants',
-                                defaultMessage: 'Habitants',
+                    <div className="flex flex-row flex justify-between mt-16 mr-24">
+                        <div className="mt-16 mr-10 w-full ">
+                            {formatMessage({
+                                id: "Nombre d'occupants :",
+                                defaultMessage: "Nombre d'occupants :",
                             })}
-                            disabled={disabledField}
-                            inputProps={{ min: 0 }}
-                        />
+                        </div>
+                        <div className="w-4/6">
+                            <TextField
+                                type="number"
+                                name={accomodationNames.numberOfInhabitants}
+                                label={formatMessage({
+                                    id: 'Occupants',
+                                    defaultMessage: 'Occupants',
+                                })}
+                                disabled={disabledField}
+                                inputProps={{ min: 0 }}
+                            />
+                        </div>
                     </div>
-                </div>
-                <div className="flex flex-row flex justify-between mb-10">
-                    <div className="mt-16 mr-10 w-full ">
-                        {formatMessage({
-                            id: 'Superficie du logements :',
-                            defaultMessage: 'Superficie du logements :',
-                        })}
-                    </div>
-                    <div className="w-4/6 ">
-                        <TextField
-                            type="number"
-                            name={accomodationNames.houseArea}
-                            label={formatMessage({
-                                id: 'Superficie',
-                                defaultMessage: 'Superficie',
+                    <div className="flex flex-row flex justify-between mb-10">
+                        <div className="mt-16 mr-10 w-full ">
+                            {formatMessage({
+                                id: 'Superficie du logement :',
+                                defaultMessage: 'Superficie du logement :',
                             })}
-                            disabled={disabledField}
-                            inputProps={{ min: 0 }}
-                        />
+                        </div>
+                        <div className="w-4/6 ">
+                            <TextField
+                                type="number"
+                                name={accomodationNames.houseArea}
+                                label={formatMessage({
+                                    id: 'Superficie',
+                                    defaultMessage: 'Superficie',
+                                })}
+                                disabled={disabledField}
+                                inputProps={{ min: 0 }}
+                            />
+                        </div>
+                        <div className="mt-16 ml-6  ">
+                            {formatMessage({
+                                id: 'm²',
+                                defaultMessage: 'm²',
+                            })}
+                        </div>
                     </div>
-                    <div className="mt-16 ml-6  ">
-                        {formatMessage({
-                            id: 'm²',
-                            defaultMessage: 'm²',
-                        })}
-                    </div>
-                </div>
-                <EditButtonsGroup
-                    isEdit={isEditAccomodation || isAccomodationMeterListEmpty}
-                    enableForm={() => setIdEditAccomodation(true)}
-                    formInitialValues={accomodationData}
-                    disableEdit={() => setIdEditAccomodation(false)}
-                />
-            </Form>
+                    <EditButtonsGroup
+                        isEdit={isEditAccomodation || isAccomodationMeterListEmpty}
+                        enableForm={() => setIdEditAccomodation(true)}
+                        formInitialValues={accomodationData}
+                        disableEdit={() => setIdEditAccomodation(false)}
+                    />
+                </Form>
+            </div>
         </div>
     )
 }

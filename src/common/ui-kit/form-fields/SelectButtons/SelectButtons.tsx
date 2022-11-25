@@ -58,7 +58,7 @@ export const SelectButtons = ({
                                     disabled={isDisabled}
                                     value={option.value}
                                 >
-                                    {(option.iconPath || option.iconLabel) && (
+                                    {option.iconPath || option.iconLabel ? (
                                         <div>
                                             {option.iconLabel ? (
                                                 <Icon color="inherit" className={option.iconStyles}>
@@ -72,6 +72,8 @@ export const SelectButtons = ({
                                                 />
                                             )}
                                         </div>
+                                    ) : (
+                                        <>{option.icon}</>
                                     )}
                                     {formatMessage({
                                         id: option.label,

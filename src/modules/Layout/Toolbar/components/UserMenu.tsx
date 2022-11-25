@@ -9,6 +9,8 @@ import { Dispatch, RootState } from 'src/redux'
 import { useHistory } from 'react-router-dom'
 import { useIntl } from 'react-intl'
 import ToolbarMenuItem from './ToolbarMenuItem'
+import { installationRequestsFeatureState } from 'src/modules/InstallationRequests/InstallationRequestsConfig'
+import { equipmentFeatureState, URL_SOLAR_EQUIPMENTS } from 'src/modules/SolarEquipments/solarEquipmentsConfig'
 
 // TODO This is not a generic component to share with medialem, to update.
 /**
@@ -86,6 +88,50 @@ function UserMenu() {
                 }}
             >
                 <>
+                    <ToolbarMenuItem
+                        onMenuItemClick={() => {
+                            history.push('/profile-management')
+                        }}
+                        iconLabel="account_box"
+                        idLabel="Gestion de Profil"
+                        defaultMessageLabel="Gestion de Profil"
+                    />
+                    <ToolbarMenuItem
+                        onMenuItemClick={() => {
+                            history.push('/mentions')
+                        }}
+                        iconLabel="gavel"
+                        idLabel="Mentions"
+                        defaultMessageLabel="Mentions"
+                    />
+                    {!installationRequestsFeatureState && (
+                        <ToolbarMenuItem
+                            onMenuItemClick={() => {
+                                history.replace('/installation-requests')
+                            }}
+                            iconLabel="solar_power"
+                            idLabel="Installation"
+                            defaultMessageLabel="Installation"
+                        />
+                    )}
+                    {equipmentFeatureState && (
+                        <ToolbarMenuItem
+                            onMenuItemClick={() => {
+                                history.replace(URL_SOLAR_EQUIPMENTS)
+                            }}
+                            iconLabel="construction"
+                            idLabel="Equipement"
+                            defaultMessageLabel="Equipement"
+                        />
+                    )}
+                    <ToolbarMenuItem
+                        onMenuItemClick={() => {
+                            history.push('/FAQ')
+                        }}
+                        iconLabel="help_center"
+                        idLabel="FAQ"
+                        defaultMessageLabel="FAQ"
+                    />
                     <ToolbarMenuItem
                         onMenuItemClick={() => {
                             dispatch.userModel.logout()

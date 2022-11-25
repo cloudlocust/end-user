@@ -1,3 +1,4 @@
+import { memo } from 'react'
 import { Typography, Grid, Card, CircularProgress, useTheme } from '@mui/material'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import { IWidgetProps } from 'src/modules/MyConsumption/components/Widget/Widget'
@@ -10,28 +11,33 @@ import { IWidgetProps } from 'src/modules/MyConsumption/components/Widget/Widget
  * @param root0.title Widget title.
  * @param root0.unit Widget unit.
  * @param root0.value Widget value.
+ * @param root0.infoIcon Widget infoIcon.
  * @returns Single Widget component.
  */
-export const Widget = ({ isMetricsLoading, title, unit, value }: IWidgetProps) => {
+export const Widget = memo(({ isMetricsLoading, title, unit, infoIcon, value }: IWidgetProps) => {
     const theme = useTheme()
 
     return (
         <Grid item xs={6} sm={6} md={4} lg={3} xl={3} className="flex">
             <Card className="w-full rounded-20 shadow sm:m-4" variant="outlined" style={{ minHeight: '170px' }}>
-                {isMetricsLoading ? (
-                    <div
-                        className="flex flex-col justify-center items-center w-full h-full"
-                        style={{ height: '170px' }}
-                    >
-                        <CircularProgress style={{ color: theme.palette.primary.main }} />
-                    </div>
-                ) : (
-                    <>
+                <>
+                    {isMetricsLoading ? (
+                        <div
+                            className="flex flex-col justify-center items-center w-full h-full"
+                            style={{ height: '170px' }}
+                        >
+                            <CircularProgress style={{ color: theme.palette.primary.main }} />
+                        </div>
+                    ) : (
                         <div className="p-16 flex flex-col justify-between h-full">
-                            {/* Widget title */}
-                            <TypographyFormatMessage className="sm:text-16 font-medium md:text-17">
-                                {title}
-                            </TypographyFormatMessage>
+                            <div className="flex justify-between">
+                                {/* Widget title */}
+                                <TypographyFormatMessage className="sm:text-16 font-medium md:text-17">
+                                    {title}
+                                </TypographyFormatMessage>
+                                {/* Widget infoIcon */}
+                                {infoIcon}
+                            </div>
                             {/* If onError returns true, it will display an error message for the widget type */}
                             {!value ? (
                                 <div className="mb-44 text-center">
@@ -54,9 +60,9 @@ export const Widget = ({ isMetricsLoading, title, unit, value }: IWidgetProps) =
                                 </div>
                             )}
                         </div>
-                    </>
-                )}
+                    )}
+                </>
             </Card>
         </Grid>
     )
-}
+})

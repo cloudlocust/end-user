@@ -1,9 +1,16 @@
 import { userModel } from 'src/modules/User/model'
 import { init } from '@rematch/core'
 import { models } from 'src/models'
-import { TEST_AUTOVALIDATION_PASSWORD, TEST_SUCCESS_MAIL, TEST_SUCCESS_USER } from 'src/mocks/handlers/user'
+import {
+    TEST_AUTHORIZATION_DELETE_PROFILE_ERROR,
+    TEST_AUTOVALIDATION_PASSWORD,
+    TEST_MESSAGE_DELETE_PROFILE_ERROR,
+    TEST_SUCCESS_MAIL,
+    TEST_SUCCESS_USER,
+} from 'src/mocks/handlers/user'
 import { handleRegisterErrors, defaultRequestErrorMessage, handleAddressFieldError, handleLoginErrors } from '.'
 import { applyCamelCase } from 'src/common/react-platform-components'
+import { handleUpdateUserError } from 'src/modules/User/ProfileManagement/ProfileManagementHooks'
 const userData = applyCamelCase(TEST_SUCCESS_USER)
 describe('test models', () => {
     describe('test pure function', () => {
@@ -46,41 +53,73 @@ describe('test models', () => {
                     }),
             ).rejects.toBe(defaultRequestErrorMessage)
         })
-        // test('updateCurrentUser test ok', async () => {
-        //     const store = init({
-        //         models,
-        //     })
-        //     store.dispatch.userModel.setUser(userData)
+        test('updateCurrentUser test ok', async () => {
+            const store = init({
+                models,
+            })
+            store.dispatch.userModel.setUser(userData)
 
-        //     const result = await store.dispatch.userModel.updateCurrentUser({
-        //         data: { ...userData, firstName: 'updated first name' },
-        //     })
-        //     expect(result).toBeUndefined()
-        //     // Lets get the state and check if it has been modified
-        //     const { userModel } = store.getState()
-        //     expect(userModel.user).not.toBeNull()
-        //     // @ts-ignore nullable tested above
-        //     expect(userModel.user.firstName).toBe('updated first name')
-        // })
-        // test('updateCurrentUser test error', async () => {
-        //     const store = init({
-        //         models,
-        //     })
-        //     store.dispatch.userModel.setUser(userData)
-        //     let result
-        //     try {
-        //         result = await store.dispatch.userModel.updateCurrentUser({
-        //             data: { ...userData, email: 'error@gmail.com' },
-        //         })
-        //     } catch (error) {}
-        //     expect(result).toBeUndefined()
-        //     // Lets get the state and check if it has been modified
-        //     const { userModel } = store.getState()
-        //     expect(userModel.user).not.toBeNull()
-        //     // @ts-ignore nullable tested above
-        //     expect(userModel.user.firstName).toBe(userData.firstName)
-        // })
-        // test('fetchCurrentUser test', async () => {
+            const result = await store.dispatch.userModel.updateCurrentUser({
+                data: { ...userData, firstName: 'updated first name' },
+            })
+            expect(result).toBeUndefined()
+            // Lets get the state and check if it has been modified
+            const { userModel } = store.getState()
+            expect(userModel.user).not.toBeNull()
+            // @ts-ignore nullable tested above
+            expect(userModel.user.firstName).toBe('updated first name')
+        })
+        test('updateCurrentUser test error', async () => {
+            const store = init({
+                models,
+            })
+            store.dispatch.userModel.setUser(userData)
+            let result
+            try {
+                result = await store.dispatch.userModel.updateCurrentUser({
+                    data: { ...userData, email: 'error@gmail.com' },
+                })
+            } catch (error) {}
+            expect(result).toBeUndefined()
+            // Lets get the state and check if it has been modified
+            const { userModel } = store.getState()
+            expect(userModel.user).not.toBeNull()
+            // @ts-ignore nullable tested above
+            expect(userModel.user.firstName).toBe(userData.firstName)
+        })
+
+        describe('deleteCurrentUser test ok', () => {
+            test('success', async () => {
+                const store = init({
+                    models,
+                })
+                store.dispatch.userModel.setUser(userData)
+
+                const result = await store.dispatch.userModel.deleteCurrentUser()
+                expect(result).toStrictEqual(userData)
+                // Lets get the state and check if it has been deleted
+                const { userModel } = store.getState()
+                expect(userModel.user).toBeNull()
+                expect(userModel.authenticationToken).toBeNull()
+            })
+            test('error', async () => {
+                const { store } = require('src/redux')
+                store.dispatch.userModel.setAuthenticationToken(TEST_AUTHORIZATION_DELETE_PROFILE_ERROR)
+                store.dispatch.userModel.setUser(userData)
+                let result
+                try {
+                    result = await store.dispatch.userModel.deleteCurrentUser()
+                } catch (error) {
+                    result = error
+                }
+                expect(handleUpdateUserError(result)).toBe(TEST_MESSAGE_DELETE_PROFILE_ERROR)
+                // Lets get the state and check if it has been deleted
+                const { userModel } = store.getState()
+                expect(userModel.user).not.toBeNull()
+                expect(userModel.authenticationToken).toBe(TEST_AUTHORIZATION_DELETE_PROFILE_ERROR)
+            })
+        })
+        // test('fhCurrentUser test', async () => {
         //     const store = init({
         //         models,
         //     })

@@ -7,6 +7,7 @@ import { useIntl } from 'react-intl'
 import { buttonOptions, targetOptions } from 'src/modules/MyConsumption/utils/myConsumptionVariables'
 import { ITargetButtonGroup } from 'src/modules/MyConsumption/myConsumptionTypes'
 import { metricTargetsEnum } from 'src/modules/Metrics/Metrics'
+import { tempPmaxFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
 
 /**
  * TargetButtonGroup component.
@@ -36,9 +37,13 @@ const TargetButtonGroup = ({ removeTarget, addTarget, hidePmax }: ITargetButtonG
         <ButtonGroup variant="contained">
             {buttonOptions.map((option) => {
                 const disabledField = hidePmax && option.value === 'Pmax'
+                const disabledFeature =
+                    tempPmaxFeatureState && (option.value === 'Pmax' || option.value === 'temperature')
                 const activeField = activeButton === option.value
-                const activeBackgroundColor = activeField ? theme.palette.primary.light : theme.palette.primary.dark
-                const activeColor = activeField ? theme.palette.primary.dark : theme.palette.primary.contrastText
+                const activeBackgroundColor = activeField ? theme.palette.secondary.main : theme.palette.primary.main
+                const activeColor = activeField
+                    ? theme.palette.secondary.contrastText
+                    : theme.palette.primary.contrastText
                 return (
                     <Button
                         value={option.value}
@@ -47,11 +52,12 @@ const TargetButtonGroup = ({ removeTarget, addTarget, hidePmax }: ITargetButtonG
                             handleTarget(option.targets)
                         }}
                         style={{
-                            backgroundColor: disabledField ? theme.palette.grey[600] : activeBackgroundColor,
+                            backgroundColor:
+                                disabledField || disabledFeature ? theme.palette.grey[600] : activeBackgroundColor,
                             color: disabledField ? theme.palette.text.disabled : activeColor,
-                            fontWeight: option.value === 'reset' ? '600' : '500',
+                            fontWeight: '500',
                         }}
-                        disabled={disabledField}
+                        disabled={disabledFeature || disabledField}
                     >
                         {formatMessage({
                             id: option.label,

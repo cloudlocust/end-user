@@ -17,3 +17,47 @@ export type computationFunctionType =
          */
         timestamp?: number
     }
+
+/**
+ * Title of the analysisInformation.
+ */
+export type titleAnalysisInformationType =
+    | 'Conso moyenne par jour'
+    | 'Jour de Conso maximale'
+    | 'Jour de Conso minimale'
+/**
+ * Type of element of analysisInformationList.
+ */
+export type analysisInformationType =
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    {
+        /**
+         * Title of the analysisInformation.
+         */
+        title: titleAnalysisInformationType
+        /**
+         * Return Computation Function (min, max, mean) of the analysisInformation which represents (unit, value, timestamp).
+         */
+        computeConsumption: (consumptionAxisValues: ApexChartsAxisValuesType) => computationFunctionType
+        /**
+         * Return Euros (min, max, mean) of the analysisInformation.
+         */
+        computeEuros: (consumptionAxisValues: ApexChartsAxisValuesType) => number
+        /**
+         * Path of Icon of the analysis information.
+         */
+        iconPath?: string
+        /**
+         * Color of the Icon analysis information.
+         */
+        color: string
+        /**
+         * Name of the analysis Information.
+         */
+        name: analysisInformationName
+    }
+
+/**
+ * Name of the Analysis Information Element, used to retrieve the active information name.
+ */
+export type analysisInformationName = 'meanConsumption' | 'minConsumptionDay' | 'maxConsumptionDay'

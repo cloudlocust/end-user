@@ -5,7 +5,7 @@ import { LoginForm as DefaultLoginForm } from './LoginForm'
 import { Link } from 'react-router-dom'
 import MuiLink from '@mui/material/Link'
 import './Login.scss'
-import { LOGO_URL, API_BASE_URL } from 'src/configs'
+import { LOGO_URL, API_BASE_URL, CLIENT_ICON_FOLDER } from 'src/configs'
 import { motion } from 'framer-motion'
 import CardContent from '@mui/material/CardContent'
 
@@ -55,7 +55,7 @@ export const Login: FC<LoginProps> = ({
                         <CardContent className="flex flex-col items-center justify-center p-16 sm:p-24 md:p-32">
                             <img
                                 className="w-128 m-32"
-                                src={`assets/images/logos/${window._env_.REACT_APP_CLIENT_ICON_FOLDER}.svg`}
+                                src={`./assets/images/logos/${CLIENT_ICON_FOLDER}.svg`}
                                 alt="logo"
                             />
 
@@ -79,7 +79,7 @@ export const Login: FC<LoginProps> = ({
                                             // eslint-disable-next-line jsdoc/require-jsdoc
                                             (theme) => theme.palette.primary.light,
                                     }}
-                                    to="/Register"
+                                    to="/register"
                                     underline="none"
                                 >
                                     {formatMessage({ id: 'Inscription', defaultMessage: 'Inscription' })}

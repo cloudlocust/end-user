@@ -11,8 +11,7 @@ const REQUIRED_ERROR_TEXT = 'Champ obligatoire non renseigné'
 const TEST_NRLINK_GUID = '12345123451234'
 
 const guidNrlinkInputQuerySelector = 'input[name="nrlinkGuid"]'
-const nameMeterInputQuerySelector = 'input[name="meterName"]'
-const SUCCESS_NRLINK_AUTHORIZE_MESSAGE = `Votre nrLINK a bien été connecté au compteur ${TEST_METERS[0].name}, vous pouvez maintenant visualiser votre consommation en direct`
+const SUCCESS_NRLINK_AUTHORIZE_MESSAGE = `Votre nrLINK a bien été connecté au compteur ${TEST_METERS[0].guid}, vous pouvez maintenant visualiser votre consommation en direct`
 const ERRROR_NRLINK_NO_DATA_MESSAGE = "Votre nrLINK ne reçoit pas de données vérifier qu'il est connecté au Wifi"
 const ERRROR_NRLINK_ALREADY_CONNECTED_MESSAGE =
     'Votre nrLINK est déjà connecté à un autre compteur, veuillez réessayer ou contacter votre Boucle Locale'
@@ -64,7 +63,6 @@ describe('Test LastStepNrLinkConnection', () => {
         test('when no meter, defaultValues are empty', () => {
             const { container } = reduxedRender(<LastStepNrLinkConnection {...mockLastStepNrLinkConnectionProps} />)
             // Initially meter is field and nrlink_empty
-            expect(container.querySelector(nameMeterInputQuerySelector)).toHaveValue('')
             expect(container.querySelector(guidNrlinkInputQuerySelector)).toHaveValue('')
         })
         test('all fields required required', async () => {
@@ -73,7 +71,6 @@ describe('Test LastStepNrLinkConnection', () => {
                 <LastStepNrLinkConnection {...mockLastStepNrLinkConnectionProps} />,
             )
             // Initially meter is field and nrlink_empty
-            expect(container.querySelector(nameMeterInputQuerySelector)).toHaveValue(TEST_METERS[0].name)
             expect(container.querySelector(guidNrlinkInputQuerySelector)).toHaveValue('')
 
             userEvent.click(getByText(SUBMIT_BUTTON_TEXT))
@@ -180,7 +177,7 @@ describe('Test LastStepNrLinkConnection', () => {
                 { timeout: 10000 },
             )
             expect(mockEnqueueSnackbar).toHaveBeenCalledWith(SUCCESS_NRLINK_AUTHORIZE_MESSAGE, {
-                autoHideDuration: 5000,
+                autoHideDuration: 10000,
                 variant: 'success',
             })
             expect(mockSetIsNrLinkAuthorizeInProgress).toHaveBeenCalledWith(false)

@@ -90,6 +90,18 @@ export const computeInternallTemperature = (data: IMetric[]): { value: number; u
 }
 
 /**
+ * Function that computes total euros.
+ *
+ * @param data Metrics data.
+ * @returns Total Euros rounded.
+ */
+// eslint-disable-next-line jsdoc/require-jsdoc
+export const computeTotalEuros = (data: IMetric[]): { value: number | string; unit: '€' } => {
+    const values = getDataFromYAxis(data, metricTargetsEnum.eurosConsumption)
+    return { value: sum(values).toFixed(4), unit: '€' }
+}
+
+/**
  * Function that compute widget assets from metric type.
  *
  * @param data Metrics data.
@@ -106,6 +118,8 @@ export const computeWidgetAssets = (data: IMetric[], type: metricTargetType) => 
             return computeExternalTemperature(data)!
         case metricTargetsEnum.internalTemperature:
             return computeInternallTemperature(data)!
+        case metricTargetsEnum.eurosConsumption:
+            return computeTotalEuros(data)!
         default:
             throw Error('Wrong target')
     }

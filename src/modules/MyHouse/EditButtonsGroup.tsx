@@ -4,6 +4,7 @@ import { useIntl } from 'react-intl'
 import { ButtonLoader } from 'src/common/ui-kit'
 import { ButtonResetForm } from 'src/common/ui-kit/components/ButtonResetForm/ButtonResetForm'
 import { FieldValues } from 'react-hook-form'
+import EditIcon from '@mui/icons-material/Edit'
 /**
  * Interface for Edit Button Group.
  */
@@ -42,20 +43,18 @@ interface IEditButtonsGroup {
 export const EditButtonsGroup = ({ isEdit, enableForm, formInitialValues, disableEdit }: IEditButtonsGroup) => {
     const { formatMessage } = useIntl()
     return (
-        <div className="flex justify-center mt-10">
+        <div className="flex my-10 justify-end w-full">
             {isEdit ? (
-                <div className=" w-full ">
+                <>
                     <ButtonResetForm initialValues={formInitialValues} onClickButtonReset={disableEdit} />
                     <ButtonLoader variant="contained" type="submit" className="ml-16">
                         {formatMessage({ id: 'Enregistrer', defaultMessage: 'Enregistrer' })}
                     </ButtonLoader>
-                </div>
+                </>
             ) : (
-                <div className="w-full ">
-                    <Button variant="contained" onClick={enableForm}>
-                        {formatMessage({ id: 'Modifier', defaultMessage: 'Modifier' })}
-                    </Button>
-                </div>
+                <Button variant="contained" onClick={enableForm} endIcon={<EditIcon />}>
+                    {formatMessage({ id: 'Modifier', defaultMessage: 'Modifier' })}
+                </Button>
             )}
         </div>
     )

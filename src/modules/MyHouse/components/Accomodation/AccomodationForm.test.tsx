@@ -2,17 +2,20 @@ import { fireEvent, act, waitFor } from '@testing-library/react'
 import { BrowserRouter } from 'react-router-dom'
 import { reduxedRender } from 'src/common/react-platform-components/test'
 import { AccomodationForm } from 'src/modules/MyHouse/components/Accomodation/AccomodationForm'
-import { IMeter } from 'src/modules/Meters/Meters'
-import { TEST_METERS } from 'src/mocks/handlers/meters'
 import { TEST_ACCOMODATION_RESPONSE as MOCK_TEST_ACCOMODATION_RESPONSE } from 'src/mocks/handlers/accomodation'
 import { AccomodationDataType } from './AccomodationType'
 import { applyCamelCase } from 'src/common/react-platform-components'
 import userEvent from '@testing-library/user-event'
+import { TEST_HOUSES } from 'src/mocks/handlers/houses'
+import { IHousing } from 'src/modules/MyHouse/components/HousingList/housing'
+
+const TEST_MOCKED_HOUSES: IHousing[] = applyCamelCase(TEST_HOUSES)
+
+let mockHouseId = TEST_MOCKED_HOUSES[0].id
 
 let mockIsLoadingInProgress = false
 const mockUpdateAccomodation = jest.fn()
 const mockLoadAccomodation = jest.fn()
-let mockMeterList: IMeter[] | null = TEST_METERS
 const MODIFIER_BUTTON_TEXT = 'Modifier'
 const DISABLED_CLASS = 'Mui-disabled'
 const INPUT_DISABLED_ELEMENT = `input.${DISABLED_CLASS}`
@@ -47,12 +50,19 @@ jest.mock('src/modules/MyHouse/components/Accomodation/AccomodationHooks', () =>
         accomodation: mockAccomodation,
     }),
 }))
-// Mock metersHook
-jest.mock('src/modules/Meters/metersHook', () => ({
-    ...jest.requireActual('src/modules/Meters/metersHook'),
-    // eslint-disable-next-line jsdoc/require-jsdoc
-    useMeterList: () => ({
-        elementList: mockMeterList,
+
+/**
+ * Mocking the useParams used in "accomodationForm" to get the house id based on url /houses/:houseId/accomodation {houseId} params.
+ */
+jest.mock('react-router-dom', () => ({
+    ...jest.requireActual('react-router-dom'),
+    /**
+     * Mock the react-router useParams hooks.
+     *
+     * @returns The react-router useParams hook.
+     */
+    useParams: () => ({
+        houseId: mockHouseId,
     }),
 }))
 
@@ -60,7 +70,7 @@ describe('Test AccomodationForm', () => {
     test('When clicking on Modifier form should not be disabled', async () => {
         const { getByText, container } = reduxedRender(
             <BrowserRouter>
-                <AccomodationForm meterId={1} />
+                <AccomodationForm />
             </BrowserRouter>,
         )
         expect(container.querySelectorAll(INPUT_DISABLED_ELEMENT)!.length).toBe(2)
@@ -86,7 +96,7 @@ describe('Test AccomodationForm', () => {
     test('When we select the data, after confirmation they are saved in the form', async () => {
         const { getByText } = reduxedRender(
             <BrowserRouter>
-                <AccomodationForm meterId={1} />
+                <AccomodationForm />
             </BrowserRouter>,
         )
         act(() => {
@@ -115,7 +125,7 @@ describe('Test AccomodationForm', () => {
     test('when we click on the radio button, the data changes', async () => {
         const { getByText, getByRole } = reduxedRender(
             <BrowserRouter>
-                <AccomodationForm meterId={1} />
+                <AccomodationForm />
             </BrowserRouter>,
         )
         act(() => {
@@ -138,7 +148,7 @@ describe('Test AccomodationForm', () => {
     test('When clicking on Cancel Edit it should disableEdit', async () => {
         const { getByText } = reduxedRender(
             <BrowserRouter>
-                <AccomodationForm meterId={TEST_METERS[0].id} />
+                <AccomodationForm />
             </BrowserRouter>,
         )
         expect(() => getByText(ANNULER_BUTTON_TEXT)).toThrow()
@@ -159,7 +169,7 @@ describe('Test AccomodationForm', () => {
         mockIsLoadingInProgress = true
         const { getByText } = reduxedRender(
             <BrowserRouter>
-                <AccomodationForm meterId={TEST_METERS[0].id} />
+                <AccomodationForm />
             </BrowserRouter>,
         )
         expect(() => getByText(MODIFIER_BUTTON_TEXT)).toThrow()

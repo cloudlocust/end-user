@@ -1,9 +1,12 @@
-import { IMetric } from 'src/modules/Metrics/Metrics'
+import { IMetric, metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
 import {
     computeTotalConsumption,
     getDataFromYAxis,
     computePMax,
     computeInternallTemperature,
+    computeTotalEuros,
+    computeExternalTemperature,
+    computeWidgetAssets,
 } from 'src/modules/MyConsumption/components/Widget/WidgetFunctions'
 
 describe('Test widget functions', () => {
@@ -130,9 +133,88 @@ describe('Test widget functions', () => {
                     ],
                     target: 'nrlink_internal_temperature_metrics',
                 },
+                {
+                    datapoints: [
+                        [25.1, 1640995200000],
+                        [50.1, 1641081600000],
+                        [NaN, 1641081600000],
+                        [NaN, 1641081600000],
+                    ],
+                    target: metricTargetsEnum.externalTemperature,
+                },
             ]
-            const result = computeInternallTemperature(data)
+            const resultInternalTemperature = computeInternallTemperature(data)
+            expect(resultInternalTemperature).toStrictEqual(expectedResult)
+            const resultExternalTemperature = computeExternalTemperature(data)
+            expect(resultExternalTemperature).toStrictEqual(expectedResult)
+        })
+    })
+
+    describe('test computeTotalEuros', () => {
+        test('when it returns € unit', () => {
+            const val = 70
+            const expectedResult = {
+                value: val.toFixed(4),
+                unit: '€',
+            }
+            const data: IMetric[] = [
+                {
+                    datapoints: [
+                        [20, 1640995200000],
+                        [50, 1641081600000],
+                        [0, 1641081600000],
+                    ],
+                    target: metricTargetsEnum.eurosConsumption,
+                },
+            ]
+            const result = computeTotalEuros(data)
             expect(result).toStrictEqual(expectedResult)
+        })
+    })
+
+    describe('test computeWidgetAssets', () => {
+        test('when it returns € unit', () => {
+            const val = 70
+            const cases = [
+                {
+                    target: metricTargetsEnum.eurosConsumption,
+                    unit: '€',
+                    value: val.toFixed(4),
+                },
+                {
+                    target: metricTargetsEnum.consumption,
+                    unit: 'Wh',
+                    value: val,
+                },
+                {
+                    target: metricTargetsEnum.internalTemperature,
+                    unit: '°C',
+                    value: val,
+                },
+                {
+                    target: metricTargetsEnum.externalTemperature,
+                    unit: '°C',
+                    value: val,
+                },
+                {
+                    target: metricTargetsEnum.pMax,
+                    unit: 'VA',
+                    value: val,
+                },
+            ]
+            const datapoints = [[val, 1640995200000]]
+            const data: IMetric[] = [
+                {
+                    datapoints,
+                    target: metricTargetsEnum.eurosConsumption,
+                },
+            ]
+
+            cases.forEach((testCase) => {
+                data[0].target = testCase.target
+                const result = computeWidgetAssets(data, testCase.target)
+                expect(result).toStrictEqual({ value: testCase.value, unit: testCase.unit })
+            })
         })
     })
 })

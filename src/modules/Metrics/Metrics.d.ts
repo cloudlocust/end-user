@@ -3,9 +3,13 @@
  */
 export type metricTargetType =
     | 'consumption_metrics'
+    | '__euros__consumption_metrics'
     | 'external_temperature_metrics'
     | 'nrlink_internal_temperature_metrics'
     | 'enedis_max_power'
+    | 'auto_consumption_metrics'
+    | 'enphase_production_metrics'
+    | 'production_metrics'
 
 /**
  * Enum representing the metricTarget without exposing the backend naming.
@@ -15,6 +19,10 @@ export enum metricTargetsEnum {
      * Enum value for consumption_metrics.
      */
     consumption = 'consumption_metrics',
+    /**
+     * Enum value for eurosConsumption.
+     */
+    eurosConsumption = '__euros__consumption_metrics',
     /**
      * Enum value for nrlink_internal_temperature_metrics.
      */
@@ -27,11 +35,23 @@ export enum metricTargetsEnum {
      * Enum value for enedis_max_power.
      */
     pMax = 'enedis_max_power',
+    /**
+     * Enum value for target of Autoconsommation.
+     */
+    autoconsumption = 'auto_consumption_metrics',
+    /**
+     * Enum value for enphase_production_metrics.
+     */
+    totalProduction = 'enphase_production_metrics',
+    /**
+     * Enum value for production_metrics.
+     */
+    injectedProduction = 'production_metrics',
 }
 /**
  * Metrics intervals.
  */
-export type metricIntervalType = '2min' | '1d' | '1 month'
+export type metricIntervalType = '2m' | '1d' | '1M' | '30m'
 
 /**
  * Metric range.

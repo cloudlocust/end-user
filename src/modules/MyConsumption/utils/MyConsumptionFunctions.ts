@@ -1,11 +1,13 @@
 import {
     ApexAxisChartSerie,
+    getMetricType,
     metricFiltersType,
     metricRangeType,
     metricTargetsEnum,
+    metricTargetType,
 } from 'src/modules/Metrics/Metrics.d'
 import dayjs from 'dayjs'
-import { dateFnsPeriod, periodType } from 'src/modules/MyConsumption/myConsumptionTypes.d'
+import { dateFnsPeriod, getChartSpecifitiesType, periodType } from 'src/modules/MyConsumption/myConsumptionTypes.d'
 import { ApexChartsAxisValuesType } from 'src/modules/MyConsumption/myConsumptionTypes'
 import {
     add,
@@ -19,6 +21,9 @@ import {
     addMinutes,
     differenceInCalendarDays,
 } from 'date-fns'
+import { cloneDeep } from 'lodash'
+import { metricTargetsHook } from 'src/modules/MyConsumption/utils/myConsumptionVariables'
+import { enphaseConsentFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
 
 /**
  * FormatMetricFilter function converts the data to the required format.
@@ -102,7 +107,7 @@ export const addPeriod = (date: Date, period: dateFnsPeriod) => {
  */
 export const subPeriod = (date: Date, period: dateFnsPeriod) => {
     if (period === 'days') return startOfDay(date)
-    if (period === 'weeks') return subDays(date, 6)
+    if (period === 'weeks') return startOfDay(subDays(date, 6))
     return sub(period === 'years' ? startOfMonth(date) : startOfDay(date), {
         [period]: 1,
     })
@@ -210,18 +215,12 @@ export const generateXAxisValues = (period: periodType, range: metricRangeType) 
 }
 
 /**
- * Function that fills missing values from backend response (which will have ordered xAxis), and returns the Values depending on range and period (for 'daily' list of every 2 minutes 720 entries, 'weekly' and 'mothly' list of everyday (7 or 30 entries), 'yearly' list of every year (12enries)).
+ * Function that map and fills gap values from backend response (which will have ordered xAxis), and returns the Values depending on range and when period is 'yearly', it will return list of every month (13entries)).
  *
- * Filling the missing values, so that we can show its xAxis label, otherwise if ApexCharts finds xAxis[i] and doesn't find yAxis[i] of the same index it'll hide the xAxis label, however even if yAxis[i] === null ApexCharts will show its xAxis[i], and that's why we're doing this so that we can show xAxis labels.
- *
- * For example: period === 'weekly', xAxis will be [Saturday, Sunday, Monday, Tuesday, Wednesday, Thursday, Friday], and if yValus in Monday doesn't exist in ApexCharts it'll hide Tuesday, thus it'll show only 6 entries on the graph instead of 7, but by giving null to yValue it'll show all days including Tuesday but with no value on the chart).
- *
- * We have to do a maping also because, from the example [Saturday, Sunday, Monday, Tuesday, Wednesday, Thursday, Friday] xAxisLabels that we generate front side, backend can response with gap ie, backend can give values for only [Saturday, Friday] and no data is given for days in between Saturday and Friay, thus we're using an alogirthm where we will map through [Saturday, Sunday, Monday, Tuesday, Wednesday, Thursday, Friday] and we construct a new yAxisValues that will have length of 7, where don't lose the indexing of Saturday and Friday given by back which will be respectively index 0 and 6  and still fill yAxisValues[indexes: 1, 2, 3, 4, 5, 6 representing the missing data from back], if there is no mapping yAxisValues will have the index 0 representing data for Saturday and index 1 representing data for Friday, which will be a wrong chart.
- *
- * @param ApexChartsMissingAxisValues ApexChartsAxisValues with the missing values for the indicated period.
+ * @param ApexChartsMissingAxisValues Filled datapoints with the when yearly.
  * @param period Period of the chart ('daily', 'weekly', 'montly', 'yearly').
  * @param range Range represents the first day and last day.
- * @returns ApexChartsAxisValues for the given range and period.
+ * @returns ApexChartsMissingAxisValues with filled gap datapoints.
  */
 export const fillApexChartsAxisMissingValues = (
     ApexChartsMissingAxisValues: ApexChartsAxisValuesType,
@@ -229,44 +228,32 @@ export const fillApexChartsAxisMissingValues = (
     range: metricRangeType,
 ) => {
     // Checking if AxisValues are empty no need to feel anything, because there is no response data.
-    if (ApexChartsMissingAxisValues.yAxisSeries.length === 0 || ApexChartsMissingAxisValues.xAxisSeries.length === 0)
+    if (
+        ApexChartsMissingAxisValues.yAxisSeries.length === 0 ||
+        ApexChartsMissingAxisValues.xAxisSeries.length === 0 ||
+        period !== 'yearly'
+    )
         return ApexChartsMissingAxisValues
-    const xAxisExpectedValues = generateXAxisValues(period, range)
 
     // Filling the missing values for all data targets happens only when period is yearly, otherwise the check is only for consumption target.
-    if (period === 'yearly')
-        ApexChartsMissingAxisValues.yAxisSeries.forEach((yAxisSerie: ApexAxisChartSerie, serieIndex: number) => {
-            // fillTargetYAxisValues check also if there are missing values.
-            yAxisSerie.data = fillTargetYAxisValues(
-                yAxisSerie.data,
-                ApexChartsMissingAxisValues.xAxisSeries[serieIndex],
-                xAxisExpectedValues,
-                period,
-            ) as ApexAxisChartSerie['data']
-        })
-    else {
-        let consumptionSerieIndex = 0
-        // When period not yearly the missing values is only in the consumption target.
-        const consumptionSeries: ApexAxisChartSerie = ApexChartsMissingAxisValues.yAxisSeries.find(
-            (serie: ApexAxisChartSerie, serieIndex: number) => {
-                if (serie.name === metricTargetsEnum.consumption) {
-                    consumptionSerieIndex = serieIndex
-                    return true
-                }
-                return false
-            },
-        )!
-        consumptionSeries.data = fillTargetYAxisValues(
-            consumptionSeries.data,
-            ApexChartsMissingAxisValues.xAxisSeries[consumptionSerieIndex],
+    let xAxisExpectedValues: number[] = []
+    xAxisExpectedValues = generateXAxisValues(period, range)
+    ApexChartsMissingAxisValues.yAxisSeries.forEach((yAxisSerie: ApexAxisChartSerie, serieIndex: number) => {
+        if (!isMissingYAxisValues(yAxisSerie.data, period))
+            // Checking if there are missing axis values to fill them.
+            return
+        // fillTargetYAxisValues check also if there are missing values.
+        yAxisSerie.data = fillTargetYAxisValues(
+            yAxisSerie.data,
+            ApexChartsMissingAxisValues.xAxisSeries[serieIndex],
             xAxisExpectedValues,
             period,
         ) as ApexAxisChartSerie['data']
-    }
-
+    })
     ApexChartsMissingAxisValues.xAxisSeries[0] = xAxisExpectedValues
     return ApexChartsMissingAxisValues
 }
+
 /**
  * Function that map and fills missing values for given yAxisMissingValues.
  *
@@ -282,9 +269,6 @@ const fillTargetYAxisValues = (
     xAxisExpectedValues: number[],
     period: periodType,
 ) => {
-    // Checking if there are missing axis values to fill them.
-    if (!isMissingYAxisValues(yAxisMissingValues, period)) return yAxisMissingValues
-
     // This index will help to go through backend xAxis because there is a gap, the length of xAxis backend will not be the same of expected xAxis length, thus they'll not have the same idnexing.
     let missAxisValuesIndex = 0
 
@@ -305,6 +289,54 @@ const fillTargetYAxisValues = (
         missAxisValuesIndex += 1
         return yAxisMissingValues[missAxisValuesIndex - 1]
     })
+}
+
+/**
+ * Filling missing values of datapoints when period is yearly, because response from metrics can send missing elements when target is temperature for period yearly, so they are filled in the frontend side.
+ *
+ * Datapoints are already formatted as ApexAxisChartsSeries that has format [ [timestamp1, value1], [timestamp2, value2], ....etc].
+ *
+ * @param ApexChartsSeriesDatetime ApexChartsAxisValues with potential missing values for the indicated period.
+ * @param period Period of the chart ('daily', 'weekly', 'montly', 'yearly').
+ * @param range Range represents the first day and last day.
+ * @returns Filled datapoints when yearly.
+ */
+export const fillApexChartsDatetimeSeriesMissingValues = (
+    ApexChartsSeriesDatetime: ApexAxisChartSeries,
+    period: periodType,
+    range: metricRangeType,
+) => {
+    // Checking if AxisValues are empty or period is not yearly no need to feel anything.
+    if (ApexChartsSeriesDatetime.length === 0 || period !== 'yearly') return ApexChartsSeriesDatetime
+
+    const MissingApexChartsSeriesDatetime = cloneDeep(ApexChartsSeriesDatetime)
+    // Filling the missing values for all data targets can happen only when period is yearly.
+    let expectedTimestampList: number[] = []
+    expectedTimestampList = generateXAxisValues(period, range)
+    MissingApexChartsSeriesDatetime.forEach((yAxisSerie: ApexAxisChartSerie) => {
+        // TODO Find a better way rather than hard code the number.
+        // Checking if there are missing datapoints.
+        // If period is yearly then yAxisValues chart has 13 elements, representing all the months starting from the year preceding the current month with duplicating the current month.
+        if (yAxisSerie.data.length >= 13) return
+        // Fill datapoints missing values.
+        // This index will help to go through datapoints and map between missing value and its timestamp counterpart.
+        let missingDatapointIndex = 0
+        yAxisSerie.data = expectedTimestampList.map((xAxisValue) => {
+            // Check for gap of current expected timestamp and current datapoint timestamp, otherwise check if we covered all given datapoints then we just fill the remaining datapoints.
+            if (
+                missingDatapointIndex === yAxisSerie.data.length ||
+                !isEqualDates(xAxisValue, (yAxisSerie.data[missingDatapointIndex] as [number, number])[0], period)
+            ) {
+                // Fill the missing ones with null.
+                return [xAxisValue, null]
+            }
+
+            // Map the current given datapoint in its right index following timestamp ascending oder.
+            missingDatapointIndex += 1
+            return [xAxisValue, (yAxisSerie.data[missingDatapointIndex - 1] as [number, number])[1]]
+        }) as ApexAxisChartSerie['data']
+    })
+    return MissingApexChartsSeriesDatetime
 }
 
 /**
@@ -367,4 +399,134 @@ export const isEqualDates = (date1: number, date2: number, period: periodType) =
         dayjs.utc(new Date(date1).toUTCString()).format('DD/MM/YYYY') ===
         dayjs.utc(new Date(date2).toUTCString()).format('DD/MM/YYYY')
     )
+}
+
+/**
+ * Function that gets the chart type.
+ *
+ * @param metricTarget Metric target.
+ * @param period Period type.
+ * @returns Apexchart type.
+ */
+export const getChartType = (metricTarget: metricTargetType, period: periodType): ApexChart['type'] | '' => {
+    if (
+        (metricTarget === metricTargetsEnum.consumption ||
+            metricTarget === metricTargetsEnum.eurosConsumption ||
+            metricTarget === metricTargetsEnum.autoconsumption) &&
+        period === 'daily'
+    ) {
+        return 'area'
+    } else if (metricTarget === metricTargetsEnum.totalProduction) {
+        return ''
+    } else if (
+        metricTarget === metricTargetsEnum.externalTemperature ||
+        metricTarget === metricTargetsEnum.internalTemperature ||
+        metricTarget === metricTargetsEnum.pMax
+    ) {
+        return 'line'
+    } else if (
+        (metricTarget === metricTargetsEnum.autoconsumption || metricTargetsEnum.injectedProduction) &&
+        period === 'daily'
+    ) {
+        return 'area'
+    } else {
+        return 'bar'
+    }
+}
+
+/**
+ * Function to get chart specifities.
+ *
+ * @param target Metric target.
+ * @param chartLabel Chart label according to enphase state.
+ * @returns Specifity according to metric target.
+ */
+export const getChartSpecifities = (
+    target: metricTargetsEnum,
+    chartLabel?: 'Consommation totale' | 'Electricité achetée sur le réseau',
+): getChartSpecifitiesType => {
+    if (target === metricTargetsEnum.consumption && chartLabel === 'Consommation totale') {
+        return {
+            label: chartLabel,
+        }
+        // eslint-disable-next-line sonarjs/no-duplicated-branches
+    } else if (target === metricTargetsEnum.consumption && chartLabel === 'Electricité achetée sur le réseau') {
+        return {
+            label: chartLabel,
+        }
+    } else if (target === metricTargetsEnum.autoconsumption) {
+        return {
+            label: 'Autoconsommation',
+            seriesName: chartLabel,
+            show: false,
+        }
+    } else if (target === metricTargetsEnum.eurosConsumption) {
+        return {
+            label: 'Consommation Euros',
+            seriesName: 'Consommation Euros',
+        }
+    } else if (target === metricTargetsEnum.externalTemperature) {
+        return {
+            label: 'Température Extérieure',
+            // We put seriesName the same as internal temperature so that internal and external temperature charts will show their values in the same YAxis, instead of having 2 YAxis for each chart.
+            seriesName: 'Température Intérieure',
+            // Show is false here so that we don't show external temperature YAxis because its values will be shown on internal Temperature YAxis
+            show: false,
+        }
+    } else if (target === metricTargetsEnum.internalTemperature) {
+        return {
+            label: 'Température Intérieure',
+            // We put seriesName the same as internal temperature so that internal and external temperature charts will show their values in the same YAxis, instead of having 2 YAxis for each chart.
+            seriesName: 'Température Extérieure',
+        }
+    } else if (target === metricTargetsEnum.pMax) {
+        return {
+            label: 'Pmax',
+        }
+    } else if (target === metricTargetsEnum.totalProduction) {
+        return {
+            label: 'Production totale',
+            seriesName: 'Autoconsommation',
+            show: true,
+        }
+    } else if (target === metricTargetsEnum.injectedProduction) {
+        return {
+            label: 'Electricité redistribuée sur le réseau',
+            seriesName: 'Autoconsommation',
+            show: false,
+        }
+    } else {
+        throw Error('Wrong target')
+    }
+}
+
+/**
+ * Functuon that returns initial values used for useMetrics hook for MyConsumption page.
+ *
+ * @returns Initial metrics hook values.
+ */
+export const getInitialMetricsHookValues = (): getMetricType => {
+    let targetsWithoutEnphase = []
+
+    if (!enphaseConsentFeatureState) {
+        targetsWithoutEnphase = metricTargetsHook.filter(
+            (metric) =>
+                metric.target !== metricTargetsEnum.autoconsumption &&
+                metric.target !== metricTargetsEnum.injectedProduction &&
+                metric.target !== metricTargetsEnum.totalProduction,
+        )
+        return {
+            interval: '2m',
+            range: getRange('day'),
+            targets: targetsWithoutEnphase,
+            filters: [],
+        }
+    } else {
+        return {
+            interval: '2m',
+            range: getRange('day'),
+            targets: metricTargetsHook,
+            filters: [],
+        }
+    }
 }

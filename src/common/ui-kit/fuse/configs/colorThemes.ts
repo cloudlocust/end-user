@@ -77,20 +77,19 @@ const colorThemes: colorThemesType = {
             mode: 'light',
             text: lightText,
             primary: {
-                light: '#dcdbdf',
-                main: '#3e3d40',
-                dark: '#1d1d1f',
+                light: '#C5C2CC',
+                main: '#59575B',
+                dark: '#3E3D40',
             },
             secondary: {
-                light: '#eff1bd',
-                main: '#C8D210',
-                dark: '#aaab00',
+                light: '#E1EC2F',
+                main: '#C9D200',
+                dark: '#4E5207',
             },
             background: {
                 paper: '#FFFFFF',
                 default: '#FAFCFC',
             },
-            error: red,
         },
     },
     myem: {
@@ -109,12 +108,41 @@ const colorThemes: colorThemesType = {
                 light: '#1EBDC7',
                 main: '#006970',
                 dark: '#004F55',
-                contrastText: '#CCE7E9',
+                contrastText: '#FFFFFF',
             },
             secondary: {
                 light: '#ffe182',
                 main: '#FFC200',
                 dark: '#ffa200',
+            },
+        },
+    },
+    voltfase: {
+        palette: {
+            mode: 'light',
+            text: {
+                primary: '#000000',
+                secondary: lightText.secondary,
+                disabled: '#C4C7C7',
+            },
+            primary: {
+                light: '#99D9D7',
+                main: '#00A19B',
+                dark: '#00817C',
+            },
+            secondary: {
+                light: '#C6F257',
+                main: '#9AC32B',
+                dark: '#273500',
+            },
+            common: {
+                white: '#ffffff',
+                black: '#000000',
+                disabled: '#91918A',
+            },
+            background: {
+                paper: '#FFFFFF',
+                default: '#EFF1F1',
             },
         },
     },

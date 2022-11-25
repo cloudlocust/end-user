@@ -116,7 +116,7 @@ function FuseNavVerticalCollapse(props: IFuseNavigationComponentProps) {
                         className={clsx('fuse-list-item-icon text-20 flex-shrink-0', item?.iconClassName)}
                         color="action"
                     >
-                        {item?.iconLabel}
+                        {item?.icon}
                     </Icon>
                 )}
 

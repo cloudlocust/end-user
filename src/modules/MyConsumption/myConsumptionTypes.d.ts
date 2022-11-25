@@ -99,6 +99,26 @@ interface ITargetButtonGroup {
 }
 
 /**
+ * Interface for EurosConsumptionButtonTogglerProps.
+ */
+export type EurosConsumptionButtonTogglerProps =
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    {
+        /**
+         * RemoveTarget.
+         */
+        removeTarget: (target: metricTarget) => void
+        /**
+         * AddTarget.
+         */
+        addTarget: (target: metricTarget) => void
+        /**
+         * Indicate eurosConsumption or consumption IconButton to be shown.
+         */
+        showEurosConsumption?: boolean
+    }
+
+/**
  * Represent the type return by apexChartsDataConverter.
  */
 export type ApexChartsAxisValuesType =
@@ -113,3 +133,33 @@ export type ApexChartsAxisValuesType =
          */
         xAxisSeries: number[][]
     }
+
+/**
+ * Response Type of request Get hasMissingHousingContract.
+ */
+// eslint-disable-next-line jsdoc/require-jsdoc
+export type getHasMissingHousingContractsResponse = { hasMissingHousingContracts: boolean }
+
+/**
+ * MyConsumptionChart Props.
+ */
+export interface MyConsumptionChartProps {
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    data: IMetric[]
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    period: periodType
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    range: metricRangeType
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    isStackedEnabled?: boolean
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    chartType: 'consumption' | 'production'
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    chartLabel?: 'Consommation totale' | 'Electricité achetée sur le réseau'
+}
+
+/**
+ * Type for getChartSpecifities function return.
+ */
+// eslint-disable-next-line jsdoc/require-jsdoc
+export type getChartSpecifitiesType = ApexYAxis & { label?: string }

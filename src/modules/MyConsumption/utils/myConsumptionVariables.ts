@@ -1,8 +1,9 @@
-import { metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
+import { metricTargetsEnum, metricTargetsType } from 'src/modules/Metrics/Metrics.d'
 import { periodType } from 'src/modules/MyConsumption/myConsumptionTypes'
 import { Theme } from '@mui/material/styles/createTheme'
 import { isNil } from 'lodash'
 import convert, { Unit } from 'convert-units'
+import { enphaseConsentFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
 
 /**
  * Data Consumption Period.
@@ -10,7 +11,7 @@ import convert, { Unit } from 'convert-units'
 export const dataConsumptionPeriod = [
     {
         name: 'Jour',
-        interval: '2min',
+        interval: enphaseConsentFeatureState ? '30m' : '2m',
         period: 'daily' as periodType,
     },
     {
@@ -26,7 +27,7 @@ export const dataConsumptionPeriod = [
 
     {
         name: 'Année',
-        interval: '1 month',
+        interval: '1M',
         period: 'yearly' as periodType,
     },
 ]
@@ -37,13 +38,13 @@ export const mobileDatePickerPeriodProps = [
     {
         period: 'daily',
         views: ['day'],
-        width: '90px',
+        width: '95px',
         inputFormat: 'dd/MM/yyyy',
     },
     {
         period: 'weekly',
         views: ['day'],
-        width: '90px',
+        width: '95px',
         inputFormat: 'dd/MM/yyyy',
     },
     {
@@ -92,7 +93,16 @@ export const chartSpecifities: {
     [key in metricTargetsEnum]: ApexYAxis & { label?: string }
 } = {
     [metricTargetsEnum.consumption]: {
-        label: 'Consommation',
+        label: 'Electricité achetée sur le réseau',
+    },
+    [metricTargetsEnum.autoconsumption]: {
+        label: 'Autoconsommation',
+        seriesName: 'Electricité achetée sur le réseau',
+        show: false,
+    },
+    [metricTargetsEnum.eurosConsumption]: {
+        label: 'Consommation Euros',
+        seriesName: 'Consommation Euros',
     },
     [metricTargetsEnum.internalTemperature]: {
         label: 'Température Intérieure',
@@ -109,6 +119,16 @@ export const chartSpecifities: {
     [metricTargetsEnum.pMax]: {
         label: 'Pmax',
     },
+    [metricTargetsEnum.totalProduction]: {
+        label: 'Production totale',
+        seriesName: 'Autoconsommation',
+        show: true,
+    },
+    [metricTargetsEnum.injectedProduction]: {
+        label: 'Electricité redistribuée sur le réseau',
+        seriesName: 'Autoconsommation',
+        show: false,
+    },
 }
 
 /**
@@ -121,13 +141,21 @@ export const chartSpecifities: {
 export const getChartColor = (chartName: metricTargetsEnum, theme: Theme) => {
     switch (chartName) {
         case metricTargetsEnum.externalTemperature:
-            return theme.palette.secondary.main
+            return '#FFC200'
         case metricTargetsEnum.internalTemperature:
             return '#BA1B1B'
         case metricTargetsEnum.pMax:
             return '#FF7A00'
-        default:
+        case metricTargetsEnum.eurosConsumption:
             return theme.palette.primary.light
+        case metricTargetsEnum.autoconsumption:
+            return '#BEECDB'
+        case metricTargetsEnum.totalProduction:
+            return '#C8D210'
+        case metricTargetsEnum.injectedProduction:
+            return '#6E9A8B'
+        default:
+            return theme.palette.secondary.main
     }
 }
 
@@ -147,14 +175,69 @@ export const getYPointValueLabel = (yValue: number | null | undefined, chartName
     // IsNill check that value is undefined or null.
     const value = isNil(yValue) ? '' : yValue
     switch (chartName) {
+        case metricTargetsEnum.eurosConsumption:
+            return `${value === '' ? value : value.toFixed(4)} €`
         case metricTargetsEnum.externalTemperature:
         case metricTargetsEnum.internalTemperature:
             return `${value} °C`
         case metricTargetsEnum.pMax:
             // Value given by backend is in Va and thus convert it to kVA.
             return `${value === '' ? value : convert(value).from('VA').to('kVA'!).toFixed(2)} kVA`
+        case metricTargetsEnum.consumption:
+        case metricTargetsEnum.autoconsumption:
+        case metricTargetsEnum.totalProduction:
+        case metricTargetsEnum.injectedProduction:
+            return `${value === '' ? value : convert(value).from('Wh').to(unit!).toFixed(2)} ${unit}`
         default:
-            if (value === '') return ` ${unit}`
-            return `${convert(value).from('Wh').to(unit!).toFixed(2)} ${unit}`
+            return ` ${unit}`
     }
 }
+
+/**
+ * Nrlink & Enedis Off message.
+ */
+export const NRLINK_ENEDIS_OFF_MESSAGE =
+    'Pour voir vos données de consommation, veuillez connecter votre nrLINK ou Enedis'
+
+/**
+ * Enphase off message.
+ */
+export const ENPHASE_OFF_MESSAGE = 'Pour voir vos données de production veuillez connecter votre onduleur'
+
+/**
+ * Targets for initialMetricHook for MyConsumption page.
+ */
+export const metricTargetsHook: metricTargetsType = [
+    {
+        target: metricTargetsEnum.autoconsumption,
+        type: 'timeserie',
+    },
+    {
+        target: metricTargetsEnum.consumption,
+        type: 'timeserie',
+    },
+    {
+        target: metricTargetsEnum.eurosConsumption,
+        type: 'timeserie',
+    },
+    {
+        target: metricTargetsEnum.pMax,
+        type: 'timeserie',
+    },
+    {
+        target: metricTargetsEnum.externalTemperature,
+        type: 'timeserie',
+    },
+    {
+        target: metricTargetsEnum.internalTemperature,
+        type: 'timeserie',
+    },
+    {
+        target: metricTargetsEnum.totalProduction,
+        type: 'timeserie',
+    },
+    {
+        target: metricTargetsEnum.injectedProduction,
+        type: 'timeserie',
+    },
+]

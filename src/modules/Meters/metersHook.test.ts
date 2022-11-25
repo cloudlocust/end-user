@@ -1,7 +1,16 @@
 import { reduxedRenderHook } from 'src/common/react-platform-components/test'
 import { act } from '@testing-library/react-hooks'
-import { useMeterList } from 'src/modules/Meters/metersHook'
-import { TEST_ADD_METER, TEST_ERROR_METER_GUID, TEST_ERROR_METER_NAME } from 'src/mocks/handlers/meters'
+import { TEST_HOUSES } from 'src/mocks/handlers/houses'
+import { applyCamelCase } from 'src/common/react-platform-components'
+import { IHousing } from 'src/modules/MyHouse/components/HousingList/housing'
+import { EDIT_ERROR_MESSAGE, EDIT_SUCCESS_MESSAGE, useMeterForHousing } from './metersHook'
+
+const TEST_MOCKED_HOUSES: IHousing[] = applyCamelCase(TEST_HOUSES)
+
+const TEST_NUMBER_METER = '23215654321'
+
+const SUCCESS_ADD_MESSAGE = 'Compteur ajouté avec succès'
+const ERROR_ADD_MESSAGE = "Erreur lors de l'ajout du compteur"
 
 const mockEnqueueSnackbar = jest.fn()
 /**
@@ -19,151 +28,95 @@ jest.mock('notistack', () => ({
     }),
 }))
 
-const TEST_LOAD_METERS_ERROR_MESSAGE = 'Erreur lors du chargement des compteurs'
-const TEST_ADD_METER_DUPLICATE_GUID_ERROR_MESSAGE = 'Le numéro de compteur existe déjà'
-const TEST_ADD_METER_DUPLICATE_NAME_ERROR_MESSAGE = 'Le nom de compteur existe déjà'
-const TEST_ADD_METER_ERROR_MESSAGE = "Erreur lors de l'ajout du compteur"
-const TEST_ADD_METER_SUCCESS_MESSAGE = 'Succès lors de la configuration du compteur'
-describe('MetersListHook test', () => {
-    describe('Load Meters', () => {
-        test('When load error snackbar should be called with error message', async () => {
-            const {
-                renderedHook: { result, waitForValueToChange },
-            } = reduxedRenderHook(() => useMeterList(-1), { initialState: {} })
-            expect(result.current.loadingInProgress).toBe(true)
+describe('addMeter test', () => {
+    test('success adding, when adding new it send back correct values.', async () => {
+        const {
+            renderedHook: { result, waitForValueToChange },
+        } = reduxedRenderHook(() => useMeterForHousing(), { initialState: {} })
 
-            await waitForValueToChange(
-                () => {
-                    return result.current.loadingInProgress
-                },
-                { timeout: 4000 },
-            )
-            expect(result.current.loadingInProgress).toBe(false)
-            expect(mockEnqueueSnackbar).toHaveBeenCalledWith(TEST_LOAD_METERS_ERROR_MESSAGE, {
-                variant: 'error',
-            })
+        expect(result.current.loadingInProgress).toBe(false)
+        // add new meter
+        act(() => {
+            result.current.addMeter(TEST_MOCKED_HOUSES[1].id, { guid: TEST_NUMBER_METER })
         })
+
+        expect(result.current.loadingInProgress).toBe(true)
+        await waitForValueToChange(
+            () => {
+                return result.current.loadingInProgress
+            },
+            { timeout: 4000 },
+        )
+
+        expect(result.current.loadingInProgress).toBe(false)
+
+        expect(mockEnqueueSnackbar).toHaveBeenCalledWith(SUCCESS_ADD_MESSAGE, { variant: 'success' })
     })
-    describe('add Meter when', () => {
-        test('fail, duplicate guid addElementError function should be called with function message', async () => {
-            const {
-                renderedHook: { result, waitForValueToChange },
-            } = reduxedRenderHook(() => useMeterList(10), { initialState: {} })
+    test('fail adding, when trying to add to a house that already has a meter should be an error.', async () => {
+        const {
+            renderedHook: { result, waitForValueToChange },
+        } = reduxedRenderHook(() => useMeterForHousing(), { initialState: {} })
 
-            await waitForValueToChange(
-                () => {
-                    return result.current.elementList
-                },
-                { timeout: 4000 },
-            )
-            expect(result.current.loadingInProgress).toBe(false)
-            // Element is added at the beginning of the elementList.
-            act(async () => {
-                try {
-                    await result.current.addElement({ ...TEST_ADD_METER, guid: TEST_ERROR_METER_GUID })
-                } catch (err) {}
-            })
-            expect(result.current.loadingInProgress).toBe(true)
-            await waitForValueToChange(
-                () => {
-                    return result.current.loadingInProgress
-                },
-                { timeout: 2000 },
-            )
-            expect(result.current.loadingInProgress).toBe(false)
-            expect(mockEnqueueSnackbar).toHaveBeenCalledWith(TEST_ADD_METER_DUPLICATE_GUID_ERROR_MESSAGE, {
-                variant: 'error',
-            })
-        }, 10000)
-        test('fail, duplicate name addElementError function should be called with function message', async () => {
-            const {
-                renderedHook: { result, waitForValueToChange },
-            } = reduxedRenderHook(() => useMeterList(10), { initialState: {} })
-
-            await waitForValueToChange(
-                () => {
-                    return result.current.elementList
-                },
-                { timeout: 4000 },
-            )
-            expect(result.current.loadingInProgress).toBe(false)
-            // Element is added at the beginning of the elementList.
-            act(async () => {
-                try {
-                    await result.current.addElement({ ...TEST_ADD_METER, name: TEST_ERROR_METER_NAME })
-                } catch (err) {}
-            })
-            expect(result.current.loadingInProgress).toBe(true)
-            await waitForValueToChange(
-                () => {
-                    return result.current.loadingInProgress
-                },
-                { timeout: 2000 },
-            )
-            expect(result.current.loadingInProgress).toBe(false)
-            expect(mockEnqueueSnackbar).toHaveBeenCalledWith(TEST_ADD_METER_DUPLICATE_NAME_ERROR_MESSAGE, {
-                variant: 'error',
-            })
-        }, 20000)
-        test('fail, other addElementError function should be called with function message', async () => {
-            const {
-                renderedHook: { result, waitForValueToChange },
-            } = reduxedRenderHook(() => useMeterList(10), { initialState: {} })
-
-            await waitForValueToChange(
-                () => {
-                    return result.current.elementList
-                },
-                { timeout: 4000 },
-            )
-            expect(result.current.loadingInProgress).toBe(false)
-            // Element is added at the beginning of the elementList.
-            act(async () => {
-                try {
-                    await result.current.addElement({ ...TEST_ADD_METER, name: TEST_ERROR_METER_GUID })
-                } catch (err) {}
-            })
-            expect(result.current.loadingInProgress).toBe(true)
-            await waitForValueToChange(
-                () => {
-                    return result.current.loadingInProgress
-                },
-                { timeout: 2000 },
-            )
-            expect(result.current.loadingInProgress).toBe(false)
-            expect(mockEnqueueSnackbar).toHaveBeenCalledWith(TEST_ADD_METER_ERROR_MESSAGE, {
-                variant: 'error',
-            })
-        }, 20000)
-        test('success, meter should be added', async () => {
-            const {
-                renderedHook: { result, waitForValueToChange },
-            } = reduxedRenderHook(() => useMeterList(10), { initialState: {} })
-
-            await waitForValueToChange(
-                () => {
-                    return result.current.elementList
-                },
-                { timeout: 4000 },
-            )
-            expect(result.current.loadingInProgress).toBe(false)
-            // Element is added.
-            act(async () => {
-                try {
-                    await result.current.addElement({ ...TEST_ADD_METER })
-                } catch (err) {}
-            })
-            expect(result.current.loadingInProgress).toBe(true)
-            await waitForValueToChange(
-                () => {
-                    return result.current.loadingInProgress
-                },
-                { timeout: 2000 },
-            )
-            expect(result.current.loadingInProgress).toBe(false)
-            expect(mockEnqueueSnackbar).toHaveBeenCalledWith(TEST_ADD_METER_SUCCESS_MESSAGE, {
-                variant: 'success',
-            })
+        expect(result.current.loadingInProgress).toBe(false)
+        // first meter of the list already has a meter so it will give us back an error
+        act(() => {
+            result.current.addMeter(TEST_MOCKED_HOUSES[0].id, { guid: TEST_NUMBER_METER })
         })
+
+        expect(result.current.loadingInProgress).toBe(true)
+        await waitForValueToChange(
+            () => {
+                return result.current.loadingInProgress
+            },
+            { timeout: 2000 },
+        )
+
+        expect(result.current.loadingInProgress).toBe(false)
+
+        expect(mockEnqueueSnackbar).toHaveBeenCalledWith(ERROR_ADD_MESSAGE, { variant: 'error' })
+    })
+})
+
+describe('editMeter test', () => {
+    test('when editMeter, it sends back the correct response', async () => {
+        const {
+            renderedHook: { result, waitForValueToChange },
+        } = reduxedRenderHook(() => useMeterForHousing(), { initialState: {} })
+        expect(result.current.loadingInProgress).toBe(false)
+
+        act(() => {
+            result.current.editMeter(TEST_MOCKED_HOUSES[0].id, { guid: TEST_NUMBER_METER })
+        })
+
+        expect(result.current.loadingInProgress).toBe(true)
+        await waitForValueToChange(
+            () => {
+                return result.current.loadingInProgress
+            },
+            { timeout: 2000 },
+        )
+
+        expect(result.current.loadingInProgress).toBe(false)
+        expect(mockEnqueueSnackbar).toBeCalledWith(EDIT_SUCCESS_MESSAGE, { variant: 'success', autoHideDuration: 5000 })
+    })
+    test('when editMeter fails', async () => {
+        const {
+            renderedHook: { result, waitForValueToChange },
+        } = reduxedRenderHook(() => useMeterForHousing(), { initialState: {} })
+        expect(result.current.loadingInProgress).toBe(false)
+
+        act(() => {
+            result.current.editMeter()
+        })
+
+        await waitForValueToChange(
+            () => {
+                return result.current.loadingInProgress
+            },
+            { timeout: 2000 },
+        )
+
+        expect(result.current.loadingInProgress).toBe(false)
+        expect(mockEnqueueSnackbar).toBeCalledWith(EDIT_ERROR_MESSAGE, { variant: 'error' })
     })
 })

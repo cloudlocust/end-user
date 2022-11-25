@@ -160,8 +160,9 @@ function NavbarStyle3Content(props: /**
                 <ThemeProvider theme={contrastTheme}>
                     <div id="fuse-navbar-side-panel" className="flex flex-shrink-0 flex-col items-center">
                         <img
-                            className="w-44 my-32"
-                            src={`/assets/images/logos/${window._env_.REACT_APP_CLIENT_ICON_FOLDER}-on-primary.svg`}
+                            className="my-32"
+                            src={`./assets/images/logos/${window._env_.REACT_APP_CLIENT_ICON_FOLDER}-on-primary.svg`}
+                            width="60"
                             alt="logo"
                         />
                         <FuseScrollbars
