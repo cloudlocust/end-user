@@ -66,6 +66,12 @@ export const SolarEquipmentHeader = ({
                             onClick={() => {
                                 setIsSolarEquipmentCreateUpdatePopupOpen(true)
                             }}
+                            sx={{
+                                '&:hover': {
+                                    backgroundColor: 'secondary.main',
+                                    opacity: '.7',
+                                },
+                            }}
                         >
                             <span className="hidden sm:flex">
                                 {formatMessage({

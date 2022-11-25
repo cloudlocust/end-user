@@ -77,14 +77,14 @@ const colorThemes: colorThemesType = {
             mode: 'light',
             text: lightText,
             primary: {
-                light: '#B2B1B3',
-                main: '#3e3d40',
-                dark: '#19181A',
+                light: '#C5C2CC',
+                main: '#59575B',
+                dark: '#3E3D40',
             },
             secondary: {
                 light: '#E1EC2F',
                 main: '#C9D200',
-                dark: '#303300',
+                dark: '#4E5207',
             },
             background: {
                 paper: '#FFFFFF',

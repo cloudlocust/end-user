@@ -69,6 +69,12 @@ export const InstallationRequestsHeader = ({
                             onClick={() => {
                                 setIsCreateInstallationRequestPopup(true)
                             }}
+                            sx={{
+                                '&:hover': {
+                                    backgroundColor: 'secondary.main',
+                                    opacity: '.7',
+                                },
+                            }}
                         >
                             <span className="hidden sm:flex">
                                 {formatMessage({

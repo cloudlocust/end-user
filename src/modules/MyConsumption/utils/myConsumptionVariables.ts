@@ -149,7 +149,7 @@ export const getChartColor = (chartName: metricTargetsEnum, theme: Theme) => {
         case metricTargetsEnum.eurosConsumption:
             return theme.palette.primary.light
         case metricTargetsEnum.autoconsumption:
-            return '#B8E1D9'
+            return '#BEECDB'
         case metricTargetsEnum.totalProduction:
             return '#C8D210'
         case metricTargetsEnum.injectedProduction:
