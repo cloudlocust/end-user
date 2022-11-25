@@ -94,3 +94,9 @@ export const REACT_APP_NOVU_BACKEND_URL = window._env_.REACT_APP_NOVU_BACKEND_UR
  * REACT_APP_NOVU_APPLICATION_IDENTIFIER.
  */
 export const REACT_APP_NOVU_APPLICATION_IDENTIFIER = window._env_.REACT_APP_NOVU_APPLICATION_IDENTIFIER
+/**
+ * Env var for router basename.
+ *
+ * @example  "/" or "/app"
+ */
+export const BASENAME_URL = window._env_.REACT_APP_BASENAME_URL

@@ -123,10 +123,30 @@ spec:
             configMapKeyRef:
               name: {{ .Values.name }}
               key: REACT_APP_SOLAR_EQUIPMENTS_FEATURE_STATE
+        - name: REACT_APP_BASENAME_URL
+          valueFrom:
+            configMapKeyRef:
+              name: {{ .Values.name }}
+              key: REACT_APP_BASENAME_URL
         - name: ENVIRONMENT
           valueFrom:
             configMapKeyRef:
               name: {{ .Values.name }}
-              key: ENVIRONMENT                                    
+              key: ENVIRONMENT       
+        - name: REACT_APP_NOVU_BACKEND_URL
+          valueFrom:
+            configMapKeyRef:
+              name: {{ .Values.name }}
+              key: REACT_APP_NOVU_BACKEND_URL
+        - name: REACT_APP_NOVU_SOCKET_URL
+          valueFrom:
+            configMapKeyRef:
+              name: {{ .Values.name }}
+              key: REACT_APP_NOVU_SOCKET_URL
+        - name: REACT_APP_NOVU_APPLICATION_IDENTIFIER
+          valueFrom:
+            configMapKeyRef:
+              name: {{ .Values.name }}
+              key: REACT_APP_NOVU_APPLICATION_IDENTIFIER                
       imagePullSecrets:
       - name: dockersecret  

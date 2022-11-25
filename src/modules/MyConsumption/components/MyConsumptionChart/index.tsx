@@ -1,12 +1,11 @@
 import React from 'react'
 import ReactApexChart from 'react-apexcharts'
-import { IMetric, metricRangeType } from 'src/modules/Metrics/Metrics'
 import { useTheme } from '@mui/material/styles'
 import { useIntl } from 'react-intl'
 import 'src/modules/MyConsumption/components/MyConsumptionChart/MyConsumptionChart.scss'
 import { convertMetricsDataToApexChartsDateTimeAxisValues } from 'src/modules/MyConsumption/utils/apexChartsDataConverter'
 import { getApexChartMyConsumptionProps } from 'src/modules/MyConsumption/utils/apexChartsMyConsumptionOptions'
-import { periodType } from 'src/modules/MyConsumption/myConsumptionTypes'
+import { MyConsumptionChartProps } from 'src/modules/MyConsumption/myConsumptionTypes'
 import { fillApexChartsDatetimeSeriesMissingValues } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
 import { CircularProgress } from '@mui/material'
 import useMediaQuery from '@mui/material/useMediaQuery'
@@ -20,6 +19,7 @@ import useMediaQuery from '@mui/material/useMediaQuery'
  * @param props.range Current range so that we handle the xAxis values according to period and range selected.
  * @param props.isStackedEnabled Boolean state to know whether the stacked option is true or false.
  * @param props.chartType Consumption or production chart type.
+ * @param props.chartLabel Chart label according to enphase state.
  * @returns MyConsumptionChart Component.
  */
 const MyConsumptionChart = ({
@@ -28,19 +28,8 @@ const MyConsumptionChart = ({
     range,
     isStackedEnabled,
     chartType,
-}: // eslint-disable-next-line jsdoc/require-jsdoc
-{
-    // eslint-disable-next-line jsdoc/require-jsdoc
-    data: IMetric[]
-    // eslint-disable-next-line jsdoc/require-jsdoc
-    period: periodType
-    // eslint-disable-next-line jsdoc/require-jsdoc
-    range: metricRangeType
-    // eslint-disable-next-line jsdoc/require-jsdoc
-    isStackedEnabled?: boolean
-    // eslint-disable-next-line jsdoc/require-jsdoc
-    chartType: 'consumption' | 'production'
-}) => {
+    chartLabel,
+}: MyConsumptionChartProps) => {
     const { formatMessage } = useIntl()
     const theme = useTheme()
     //To improve user experience by showing a spinner when chart mount and start drawing, until the chart is completely shown and drawn. Instead of showing an empty chart while while the chart is drawing heavy computations (Because of the length of categories given and labels, tooltip.labels especially when period === 'daily', and when options.xaxis.type === 'category' chart performance in drawing is slower).
@@ -69,8 +58,9 @@ const MyConsumptionChart = ({
             theme,
             isStackedEnabled,
             chartType,
+            chartLabel,
         })
-    }, [ApexChartsAxisValues, period, formatMessage, theme, isStackedEnabled, chartType])
+    }, [ApexChartsAxisValues, period, formatMessage, theme, isStackedEnabled, chartType, chartLabel])
 
     reactApexChartsProps.options!.chart!.events = {
         /**

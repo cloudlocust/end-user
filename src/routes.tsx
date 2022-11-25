@@ -16,6 +16,7 @@ import { FAQConfig } from './modules/FAQ/FAQConfig'
 import { InstallationsRequestsConfig } from 'src/modules/InstallationRequests/InstallationRequestsConfig'
 import { EnphaseConfirmStateConfig } from 'src/modules/MyHouse/components/EnphaseConfirmState/EnphaseConfirmStateConfig'
 import { MentionsConfig } from 'src/modules/Mentions/MentionsConfig'
+import { SetPasswordConfig } from 'src/modules/User/SetPassword/SetPasswordConfig'
 import { SolarEquipmentsConfig } from 'src/modules/SolarEquipments/solarEquipmentsConfig'
 
 /**
@@ -31,6 +32,7 @@ export const routes = [
     ...RegisterConfig,
     ...ForgotPasswordConfig,
     ...ResetPasswordConfig,
+    ...SetPasswordConfig,
     ...AnalysisConfig,
     ...ProfileManagementConfig,
     ...FAQConfig,

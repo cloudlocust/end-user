@@ -1,4 +1,4 @@
-import { metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
+import { metricTargetsEnum, metricTargetsType } from 'src/modules/Metrics/Metrics.d'
 import { periodType } from 'src/modules/MyConsumption/myConsumptionTypes'
 import { Theme } from '@mui/material/styles/createTheme'
 import { isNil } from 'lodash'
@@ -149,7 +149,7 @@ export const getChartColor = (chartName: metricTargetsEnum, theme: Theme) => {
         case metricTargetsEnum.eurosConsumption:
             return theme.palette.primary.light
         case metricTargetsEnum.autoconsumption:
-            return '#B8E1D9'
+            return '#BEECDB'
         case metricTargetsEnum.totalProduction:
             return '#C8D210'
         case metricTargetsEnum.injectedProduction:
@@ -203,3 +203,41 @@ export const NRLINK_ENEDIS_OFF_MESSAGE =
  * Enphase off message.
  */
 export const ENPHASE_OFF_MESSAGE = 'Pour voir vos données de production veuillez connecter votre onduleur'
+
+/**
+ * Targets for initialMetricHook for MyConsumption page.
+ */
+export const metricTargetsHook: metricTargetsType = [
+    {
+        target: metricTargetsEnum.autoconsumption,
+        type: 'timeserie',
+    },
+    {
+        target: metricTargetsEnum.consumption,
+        type: 'timeserie',
+    },
+    {
+        target: metricTargetsEnum.eurosConsumption,
+        type: 'timeserie',
+    },
+    {
+        target: metricTargetsEnum.pMax,
+        type: 'timeserie',
+    },
+    {
+        target: metricTargetsEnum.externalTemperature,
+        type: 'timeserie',
+    },
+    {
+        target: metricTargetsEnum.internalTemperature,
+        type: 'timeserie',
+    },
+    {
+        target: metricTargetsEnum.totalProduction,
+        type: 'timeserie',
+    },
+    {
+        target: metricTargetsEnum.injectedProduction,
+        type: 'timeserie',
+    },
+]

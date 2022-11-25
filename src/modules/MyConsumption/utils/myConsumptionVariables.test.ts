@@ -114,6 +114,6 @@ describe('test pure functions', () => {
 
         // Autoconsommation
         label = getChartColor(metricTargetsEnum.autoconsumption, theme)
-        expect(label).toBe('#B8E1D9')
+        expect(label).toBe('#BEECDB')
     })
 })
