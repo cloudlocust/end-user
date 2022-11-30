@@ -45,6 +45,6 @@ export const getTokenFromFirebase = (onPermissionGranted?: () => void) => {
                  * Firebase device token.
                  */
                 deviceToken: string
-            }>(`${AUTH_BASE_URL}/users/add-subscriber-device-token`, { deviceToken: currentToken })
+            }>(`${AUTH_BASE_URL}/add-subscriber-device-token`, { deviceToken: currentToken })
     })
 }
