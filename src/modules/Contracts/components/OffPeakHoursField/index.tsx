@@ -1,13 +1,17 @@
-import React, { FC } from 'react'
+import React, { FC, useState } from 'react'
 import InputLabel, { InputLabelProps } from '@mui/material/InputLabel'
 import FormControl, { FormControlProps } from '@mui/material/FormControl'
 import FormHelperText from '@mui/material/FormHelperText'
-import SelectUI, { SelectProps } from '@mui/material/Select'
+import { SelectProps } from '@mui/material/Select'
 import { CustomValidateResult, validators } from 'src/common/react-platform-components'
 import { Controller, useFormContext } from 'react-hook-form'
 import find from 'lodash/find'
 import { TimePicker } from '@mui/x-date-pickers/TimePicker'
+import { useIntl } from 'src/common/react-platform-translation'
 import TextField from '@mui/material/TextField'
+import { cloneDeep } from 'lodash'
+import { Typography } from '@mui/material'
+import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 
 /**
  * Common Ui Select field interface between different ui kits.
@@ -26,15 +30,10 @@ export interface SelectFieldProps extends SelectProps {
      */
     label: string
     /**
-     * We use formControlProps for pass the some props to FormControl component,
-     * and we remove required because we take it from requiredBuilder validator.
-     */
-    formControlProps?: Omit<FormControlProps, 'required'>
-    /**
      * We use inputLabelProps for pass the some props to InputLabel component,
      * and we remove children from the props because we use label of the selelct.
      */
-    inputLabelProps?: Omit<InputLabelProps, 'children'>
+    labelProps?: Omit<Typog, 'children'>
 }
 /**
  * Select component wrapped by react-hook-form.
@@ -45,8 +44,7 @@ export interface SelectFieldProps extends SelectProps {
  * @param param0.children The array options of the select.
  * @param param0.validateFunctions  Validators of the field, when required is sent, we add some extra params in the field.
  * @param param0.defaultValue The default value of the field.
- * @param param0.formControlProps The props of the FormControl.
- * @param param0.inputLabelProps The props of the InputLabel.
+ * @param param0.labelProps The props of the InputLabel.
  * @returns Material UI Select field wrapped.
  */
 const OffPeakHoursField: FC<SelectFieldProps> = function ({
@@ -55,12 +53,29 @@ const OffPeakHoursField: FC<SelectFieldProps> = function ({
     children,
     validateFunctions = [],
     defaultValue = '',
-    formControlProps,
-    inputLabelProps,
+    labelProps,
     ...otherProps
 }) {
-    const { control } = useFormContext()
+    const { control, setValue, watch } = useFormContext()
+    const { formatMessage } = useIntl()
+    const offPeakHours: any = watch(name)
 
+    const onTimePickerChange = (timePickerName: string, val: string | null) => {
+        const offPeakHoursClone = cloneDeep(offPeakHours)
+        console.log('🚀 ~ file: index.tsx:61 ~ onTimePickerChange ~ timePickerName', timePickerName)
+        console.log('🚀 ~ file: index.tsx:59 ~ offPeakHours', offPeakHours)
+        offPeakHoursClone[timePickerName] = val
+        console.log('🚀 ~ file: index.tsx:65 ~ onTimePickerChange ~ offPeakHoursClone', offPeakHoursClone)
+    }
+    const startTimePickerLabel = formatMessage({
+        id: 'Début',
+        defaultMessage: 'Début',
+    })
+
+    const endTimePickerLabel = formatMessage({
+        id: 'Fin',
+        defaultMessage: 'Fin',
+    })
     return (
         <Controller
             name={name}
@@ -70,28 +85,34 @@ const OffPeakHoursField: FC<SelectFieldProps> = function ({
             // https://github.com/react-hook-form/react-hook-form/pull/5574 waiting for PR.
             rules={{ validate: validators(validateFunctions) }}
             render={({ field, fieldState }) => (
-                <FormControl
-                    // by default we set fullWidth true because we use it on 80% of our cases
-                    fullWidth={true}
-                    margin="normal"
-                    error={fieldState.invalid}
-                    {...formControlProps}
-                    required={Boolean(find(validateFunctions, { name: 'required' }))}
-                >
-                    <InputLabel id={`${name}-label`} {...inputLabelProps}>
+                <>
+                    <TypographyFormatMessage className="mb-10 text-13" {...labelProps}>
                         {label}
-                    </InputLabel>
-                    <SelectUI labelId={`${name}-label`} id={name} displayEmpty label={label} {...field} {...otherProps}>
-                        {children}
-                    </SelectUI>
-                    {fieldState.invalid && <FormHelperText>{fieldState.error?.message}</FormHelperText>}
-                    <TimePicker
-                        label="Time"
-                        value={''}
-                        onChange={(val) => console.log(val)}
-                        renderInput={(params) => <TextField {...params} />}
-                    />
-                </FormControl>
+                    </TypographyFormatMessage>
+                    <FormControl
+                        // by default we set fullWidth true because we use it on 80% of our cases
+                        fullWidth={true}
+                        margin="normal"
+                        error={fieldState.invalid}
+                        required={Boolean(find(validateFunctions, { name: 'required' }))}
+                    >
+                        <div className="flex justify-center gap-[8px]">
+                            <TimePicker
+                                label={startTimePickerLabel}
+                                value={''}
+                                onChange={(val) => onTimePickerChange('0.start', val)}
+                                renderInput={(params) => <TextField {...params} />}
+                            />
+                            <TimePicker
+                                label={endTimePickerLabel}
+                                value={''}
+                                onChange={(val) => onTimePickerChange('0.end', val)}
+                                renderInput={(params) => <TextField {...params} name="0.end" />}
+                            />
+                        </div>
+                        {fieldState.invalid && <FormHelperText>{fieldState.error?.message}</FormHelperText>}
+                    </FormControl>
+                </>
             )}
         />
     )
