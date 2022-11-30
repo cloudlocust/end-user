@@ -17,6 +17,7 @@ import { IContractType, IOffer, IPower, IProvider, ITariffType } from 'src/hooks
 import { ButtonLoader } from 'src/common/ui-kit'
 import { isNull, pick } from 'lodash'
 import { SelectChangeEvent } from '@mui/material/Select'
+import OffPeakHoursField from '../OffPeakHoursField'
 
 const defaultContractFormValues: contractFormValuesType = {
     contractTypeId: 0,
@@ -64,6 +65,10 @@ const ContractForm = ({ onSubmit, isContractsLoading, defaultValues }: ContractF
                     Toutes les informations demandées sont disponibles sur votre facture ou votre contrat d'énergie
                 </TypographyFormatMessage>
                 <div className="flex flex-col justify-center w-full">
+                    <OffPeakHoursField name="offPeakHours" label="offPeakHours" defaultValue={null} />
+                    <ButtonLoader type="submit" inProgress={false}>
+                        Enregistr
+                    </ButtonLoader>
                     <ContractFormFields isContractsLoading={isContractsLoading} />
                 </div>
             </div>
