@@ -23,31 +23,31 @@ pipeline{
             }
 
         }
-//         stage('Unit-test'){
-//             steps {
-//                 sh 'yarn test --watchAll=false --maxWorkers=1 --no-cache  --coverage --testResultsProcessor jest-sonar-reporter'
-//             }
+        stage('Unit-test'){
+            steps {
+                sh 'yarn test --watchAll=false --maxWorkers=1 --no-cache  --coverage --testResultsProcessor jest-sonar-reporter'
+            }
 
-//         }
-//         stage('build && SonarQube analysis') {
-//             environment {
-//                 scannerHome = tool 'SonarQubeScanner'
-//             }
-//             steps {
-//                 withSonarQubeEnv('sonarqube') {
-//                     sh "${scannerHome}/bin/sonar-scanner -X"
-//                 }
-//             }
-//         }
-//         stage("Quality Gate") {
-//             steps {
-//                 timeout(time: 10, unit: 'MINUTES') {
-//                     // Parameter indicates whether to set pipeline to UNSTABLE if Quality Gate fails
-//                     // true = set pipeline to UNSTABLE, false = don't
-//                     waitForQualityGate abortPipeline: true
-//                 }
-//             }
-//         }
+        }
+        stage('build && SonarQube analysis') {
+            environment {
+                scannerHome = tool 'SonarQubeScanner'
+            }
+            steps {
+                withSonarQubeEnv('sonarqube') {
+                    sh "${scannerHome}/bin/sonar-scanner -X"
+                }
+            }
+        }
+        stage("Quality Gate") {
+            steps {
+                timeout(time: 10, unit: 'MINUTES') {
+                    // Parameter indicates whether to set pipeline to UNSTABLE if Quality Gate fails
+                    // true = set pipeline to UNSTABLE, false = don't
+                    waitForQualityGate abortPipeline: true
+                }
+            }
+        }
         stage('Test NG generate') {
             when {
               expression { ! (BRANCH_NAME ==~ /(production|master|develop)/) }
