@@ -1,5 +1,4 @@
 import React, { FC, useState } from 'react'
-import InputLabel, { InputLabelProps } from '@mui/material/InputLabel'
 import FormControl, { FormControlProps } from '@mui/material/FormControl'
 import FormHelperText from '@mui/material/FormHelperText'
 import { SelectProps } from '@mui/material/Select'
@@ -9,9 +8,9 @@ import find from 'lodash/find'
 import { TimePicker } from '@mui/x-date-pickers/TimePicker'
 import { useIntl } from 'src/common/react-platform-translation'
 import TextField from '@mui/material/TextField'
-import { cloneDeep } from 'lodash'
-import { Typography } from '@mui/material'
+import { cloneDeep, get, set } from 'lodash'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
+import { TypographyProps } from '@mui/material/Typography'
 
 /**
  * Common Ui Select field interface between different ui kits.
@@ -33,7 +32,7 @@ export interface SelectFieldProps extends SelectProps {
      * We use inputLabelProps for pass the some props to InputLabel component,
      * and we remove children from the props because we use label of the selelct.
      */
-    labelProps?: Omit<Typog, 'children'>
+    labelProps?: Omit<TypographyProps, 'children'>
 }
 /**
  * Select component wrapped by react-hook-form.
@@ -58,13 +57,16 @@ const OffPeakHoursField: FC<SelectFieldProps> = function ({
 }) {
     const { control, setValue, watch } = useFormContext()
     const { formatMessage } = useIntl()
-    const offPeakHours: any = watch(name)
+    console.log('🚀 ~ file: index.tsx:61 ~ name', name)
+    const offPeakHours: any = watch(name, [{ start: '', end: '' }])
+    const allFields: any = watch()
+    console.log('🚀 ~ file: index.tsx:63 ~ allFields', allFields)
 
-    const onTimePickerChange = (timePickerName: string, val: string | null) => {
+    const onTimePickerChange = (timePickerKey: string, val: string | null) => {
         const offPeakHoursClone = cloneDeep(offPeakHours)
-        console.log('🚀 ~ file: index.tsx:61 ~ onTimePickerChange ~ timePickerName', timePickerName)
+        console.log('🚀 ~ file: index.tsx:61 ~ onTimePickerChange ~ timePickerKey', timePickerKey)
         console.log('🚀 ~ file: index.tsx:59 ~ offPeakHours', offPeakHours)
-        offPeakHoursClone[timePickerName] = val
+        set(offPeakHoursClone, timePickerKey, val)
         console.log('🚀 ~ file: index.tsx:65 ~ onTimePickerChange ~ offPeakHoursClone', offPeakHoursClone)
     }
     const startTimePickerLabel = formatMessage({
@@ -99,13 +101,13 @@ const OffPeakHoursField: FC<SelectFieldProps> = function ({
                         <div className="flex justify-center gap-[8px]">
                             <TimePicker
                                 label={startTimePickerLabel}
-                                value={''}
+                                value={get(offPeakHours, '0.start')}
                                 onChange={(val) => onTimePickerChange('0.start', val)}
                                 renderInput={(params) => <TextField {...params} />}
                             />
                             <TimePicker
                                 label={endTimePickerLabel}
-                                value={''}
+                                value={get(offPeakHours, '0.end')}
                                 onChange={(val) => onTimePickerChange('0.end', val)}
                                 renderInput={(params) => <TextField {...params} name="0.end" />}
                             />
