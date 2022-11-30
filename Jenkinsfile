@@ -1,5 +1,5 @@
 pipeline{
-    agent any
+    agent { label 'worker-2' }
     tools {nodejs "node14"}
     environment{
         GITHUB_CREDENTIALS = credentials('github myem developer')
