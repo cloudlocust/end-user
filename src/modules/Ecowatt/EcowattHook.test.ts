@@ -25,9 +25,7 @@ describe('useEcowatt hook', () => {
         const {
             renderedHook: { result, waitForValueToChange },
         } = reduxedRenderHook(() => useEcowatt())
-
         expect(result.current.isLoadingInProgress).toBeTruthy()
-
         await waitForValueToChange(
             () => {
                 return result.current.isLoadingInProgress
@@ -42,14 +40,12 @@ describe('useEcowatt hook', () => {
         const {
             renderedHook: { result, waitForValueToChange },
         } = reduxedRenderHook(() => useEcowatt(), { store })
-
         await waitForValueToChange(
             () => {
                 return result.current.isLoadingInProgress
             },
             { timeout: 6000 },
         )
-
         expect(mockEnqueueSnackbar).toHaveBeenCalledWith(SNACKBAR_ECOWATT_ERROR, {
             autoHideDuration: 5000,
             variant: 'error',
