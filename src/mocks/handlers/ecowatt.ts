@@ -609,7 +609,7 @@ export const TEST_ECOWATT_DATA: SnakeCasedPropertiesDeep<IEcowattData> = [
  * Ecowatt endpoints.
  */
 export const ecowattEndpoints = [
-    rest.get<SnakeCasedPropertiesDeep<IEcowattData>>(ECOWATT_ENDPOINT, (req, res, ctx) => {
+    rest.get<IEcowattData>(ECOWATT_ENDPOINT, (req, res, ctx) => {
         const authorization = req.headers.get('authorization')
         if (authorization === TEST_ECOWATT_EROOR) {
             return res(ctx.status(400), ctx.delay(1000))

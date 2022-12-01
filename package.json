@@ -78,6 +78,7 @@
         "@types/react-router-config": "^5.0.2",
         "@types/react-router-dom": "^5.1.6",
         "autoprefixer": "^9",
+        "axios-mock-adapter": "^1.21.2",
         "babel-loader": "8.1.0",
         "chance": "^1.1.8",
         "copyfiles": "^2.4.1",
