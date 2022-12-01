@@ -57,10 +57,15 @@ describe('Ecowatt Widget tests', () => {
         expect(getAllByTestId(OFFLINEBOLT_ICON)).toBeTruthy()
     })
     test('when there is no ecowatt data', async () => {
-        mockIsLoadingInProgress = false
-        mockEcowattData = []
-        const { getByText } = reduxedRender(<EcowattWidget />)
+        mockIsLoadingInProgress = true
+        const { getByTestId, rerender, getByText } = reduxedRender(<EcowattWidget />)
+        await waitFor(() => {
+            expect(getByTestId(LOADING_CIRCLE_TEST_ID)).toBeTruthy()
+        })
 
+        mockEcowattData = []
+        mockIsLoadingInProgress = false
+        rerender(<EcowattWidget />)
         expect(getByText('Aucune donnée disponible')).toBeTruthy()
     })
 })
