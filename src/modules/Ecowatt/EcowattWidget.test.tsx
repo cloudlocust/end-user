@@ -56,4 +56,11 @@ describe('Ecowatt Widget tests', () => {
         mockDays.forEach((day) => expect(day).toBeTruthy())
         expect(getAllByTestId(OFFLINEBOLT_ICON)).toBeTruthy()
     })
+    test('when there is no ecowatt data', async () => {
+        mockIsLoadingInProgress = false
+        mockEcowattData = []
+        const { getByText } = reduxedRender(<EcowattWidget />)
+
+        expect(getByText('Aucune donnée disponible')).toBeTruthy()
+    })
 })

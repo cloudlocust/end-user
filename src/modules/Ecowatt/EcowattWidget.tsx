@@ -19,7 +19,7 @@ import { EcowattConsumptionLevelListType, EcowattConsumptionValue, IEcowatt } fr
 import { useEcowatt } from 'src/modules/Ecowatt/EcowattHook'
 import { styled } from '@mui/material/styles'
 import dayjs from 'dayjs'
-import { capitalize } from 'lodash'
+import { capitalize, isEmpty } from 'lodash'
 
 const consumptionLevelList: EcowattConsumptionLevelListType = [
     {
@@ -82,7 +82,7 @@ export const EcowattWidget = () => {
         justifyContent: 'space-evenly',
         alignItems: 'center',
         marginBottom: mdDown ? '0.75rem' : 0,
-        flexGrow: '1 wrap',
+        flexGrow: '1',
         filter: 'drop-shadow(0 1px 2px rgb(0 0 0 / 0.1)) drop-shadow(0 1px 1px rgb(0 0 0 / 0.06))',
     }))
 
@@ -140,6 +140,10 @@ export const EcowattWidget = () => {
                     {isLoadingInProgress ? (
                         <div className="flex flex-col justify-center items-center w-full mb-8">
                             <CircularProgress data-testid="circular-progress" size={25} />
+                        </div>
+                    ) : isEmpty(ecowattData) ? (
+                        <div className="w-full flex justify-center items-center">
+                            <TypographyFormatMessage>Aucune donnée disponible</TypographyFormatMessage>
                         </div>
                     ) : (
                         <div className="w-full flex justify-evenly items-center flex-grow md:flex-grow-0">
