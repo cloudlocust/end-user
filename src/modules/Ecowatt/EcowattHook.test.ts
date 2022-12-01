@@ -2,7 +2,7 @@ import { reduxedRenderHook } from 'src/common/react-platform-components/test'
 import { TEST_ECOWATT_DATA } from 'src/mocks/handlers/ecowatt'
 import { ECOWATT_ENDPOINT, useEcowatt } from 'src/modules/Ecowatt/EcowattHook'
 import MockAdapter from 'axios-mock-adapter'
-import { axios } from 'src/common/react-platform-components'
+import axios from 'axios'
 
 const mockEnqueueSnackbar = jest.fn()
 const SNACKBAR_ECOWATT_ERROR = 'Erreur lors de la récupération des données de Ecowatt'
