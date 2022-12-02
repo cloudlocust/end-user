@@ -1,9 +1,9 @@
-import axios from 'axios'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { API_RESOURCES_URL } from 'src/configs'
 import { IEcowattData } from 'src/modules/Ecowatt/ecowatt'
 import { useSnackbar } from 'notistack'
 import { useIntl } from 'react-intl'
+import { axios } from 'src/common/react-platform-components'
 
 /**
  * Ecowatt endpoint.

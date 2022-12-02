@@ -1,8 +1,6 @@
 import { reduxedRenderHook } from 'src/common/react-platform-components/test'
-import { TEST_ECOWATT_DATA } from 'src/mocks/handlers/ecowatt'
-import { ECOWATT_ENDPOINT, useEcowatt } from 'src/modules/Ecowatt/EcowattHook'
-import MockAdapter from 'axios-mock-adapter'
-import axios from 'axios'
+import { TEST_ECOWATT_EROOR } from 'src/mocks/handlers/ecowatt'
+import { useEcowatt } from 'src/modules/Ecowatt/EcowattHook'
 
 const mockEnqueueSnackbar = jest.fn()
 const SNACKBAR_ECOWATT_ERROR = 'Erreur lors de la récupération des données de Ecowatt'
@@ -24,10 +22,6 @@ jest.mock('notistack', () => ({
 
 describe('useEcowatt hook', () => {
     test('when getEcowattSignals request passes succesfully', async () => {
-        const mock = new MockAdapter(axios)
-
-        mock.onGet(ECOWATT_ENDPOINT).reply(200, TEST_ECOWATT_DATA)
-
         const {
             renderedHook: { result, waitForValueToChange },
         } = reduxedRenderHook(() => useEcowatt())
@@ -42,8 +36,8 @@ describe('useEcowatt hook', () => {
         expect(result.current.ecowattData.length).toBeGreaterThan(0)
     })
     test('when getEcowattSignals request fails', async () => {
-        const mock = new MockAdapter(axios)
-        mock.onGet(ECOWATT_ENDPOINT).reply(400)
+        const { store } = require('src/redux')
+        await store.dispatch.userModel.setAuthenticationToken(TEST_ECOWATT_EROOR)
 
         const {
             renderedHook: { result, waitForValueToChange },
