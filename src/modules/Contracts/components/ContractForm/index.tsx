@@ -64,9 +64,6 @@ const ContractForm = ({ onSubmit, isContractsLoading, defaultValues }: ContractF
                     Toutes les informations demandées sont disponibles sur votre facture ou votre contrat d'énergie
                 </TypographyFormatMessage>
                 <div className="flex flex-col justify-center w-full">
-                    <ButtonLoader type="submit" inProgress={false}>
-                        Enregistr
-                    </ButtonLoader>
                     <ContractFormFields isContractsLoading={isContractsLoading} />
                 </div>
             </div>
