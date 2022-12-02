@@ -98,7 +98,7 @@ describe('Test Toolbar Widget.', () => {
         // other options should appear on the screen.
 
         expect(getByText(LIST_OF_HOUSES[1].address.name)).toBeTruthy()
-        expect(getAllByRole('option').length).toBe(2)
+        expect(getAllByRole('option').length).toBe(LIST_OF_HOUSES.length)
     })
 
     test('When widget mount and housing list is empty.', () => {

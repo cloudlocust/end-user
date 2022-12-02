@@ -1,12 +1,15 @@
 import { reduxedRender } from 'src/common/react-platform-components/test'
 import { MeterStepNrLinkConnectionForm } from 'src/modules/nrLinkConnection'
 import { fireEvent, waitFor } from '@testing-library/react'
-import { TEST_ADD_METER, TEST_METERS } from 'src/mocks/handlers/meters'
+import { TEST_ADD_METER, TEST_METERS as MOCK_METERS } from 'src/mocks/handlers/meters'
 import userEvent from '@testing-library/user-event'
 import { IMeter } from 'src/modules/Meters/Meters'
 import { TEST_HOUSES } from 'src/mocks/handlers/houses'
 import { applyCamelCase } from 'src/common/react-platform-components/utils/mm'
 import { IHousing } from 'src/modules/MyHouse/components/HousingList/housing'
+
+const mockHistoryPush = jest.fn()
+const TEST_METERS: IMeter[] = applyCamelCase(MOCK_METERS)
 
 const TEST_MOCKED_HOUSES: IHousing[] = applyCamelCase(TEST_HOUSES)
 
