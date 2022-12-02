@@ -9,7 +9,8 @@ pipeline{
     stages{
         stage ('Install deps') {
             steps {
-                sh 'npm install -g yarn && yarn install && export NODE_OPTIONS="--max-old-space-size=8192"'
+                // Using ignore-engines, will fix the error "engine node incompatible with this module", when using yarn install which happens on jenkins after installing firebase package.
+                sh 'npm install -g yarn && yarn install --ignore-engines && export NODE_OPTIONS="--max-old-space-size=8192"'
             }
         }
         stage ('Eslint') {
