@@ -3,7 +3,7 @@ import { act } from '@testing-library/react-hooks'
 import { TEST_HOUSES } from 'src/mocks/handlers/houses'
 import { applyCamelCase } from 'src/common/react-platform-components'
 import { IHousing } from 'src/modules/MyHouse/components/HousingList/housing'
-import { EDIT_ERROR_MESSAGE, EDIT_SUCCESS_MESSAGE, useMeterForHousing } from './metersHook'
+import { EDIT_ERROR_MESSAGE, EDIT_SUCCESS_MESSAGE, useHousingMeterDetails, useMeterForHousing } from './metersHook'
 
 const TEST_MOCKED_HOUSES: IHousing[] = applyCamelCase(TEST_HOUSES)
 
@@ -11,6 +11,7 @@ const TEST_NUMBER_METER = '23215654321'
 
 const SUCCESS_ADD_MESSAGE = 'Compteur ajouté avec succès'
 const ERROR_ADD_MESSAGE = "Erreur lors de l'ajout du compteur"
+const ERROR_LOAD_MESSAGE = 'Erreur lors du chargement du compteur'
 
 const mockEnqueueSnackbar = jest.fn()
 /**
@@ -118,5 +119,29 @@ describe('editMeter test', () => {
 
         expect(result.current.loadingInProgress).toBe(false)
         expect(mockEnqueueSnackbar).toBeCalledWith(EDIT_ERROR_MESSAGE, { variant: 'error' })
+    })
+})
+
+describe('HousingMeter', () => {
+    describe('loadElementDetails test', () => {
+        test('Error', async () => {
+            const {
+                renderedHook: { result, waitForValueToChange },
+            } = reduxedRenderHook(() => useHousingMeterDetails(-1), { initialState: {} })
+            act(() => {
+                try {
+                    result.current.loadElementDetails()
+                } catch (err) {}
+            })
+            expect(result.current.loadingInProgress).toBe(true)
+            await waitForValueToChange(
+                () => {
+                    return result.current.loadingInProgress
+                },
+                { timeout: 4000 },
+            )
+            expect(result.current.loadingInProgress).toBe(false)
+            expect(mockEnqueueSnackbar).toHaveBeenCalledWith(ERROR_LOAD_MESSAGE, { variant: 'error' })
+        }, 8000)
     })
 })
