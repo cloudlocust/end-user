@@ -22,6 +22,7 @@ import { styled } from '@mui/material/styles'
 import dayjs from 'dayjs'
 import { capitalize, isEmpty } from 'lodash'
 import { useToggle } from 'react-use'
+import { EcowattTimeline } from 'src/modules/Ecowatt/components/EcowattTimeline'
 
 const consumptionLevelList: EcowattConsumptionLevelListType = [
     {
@@ -89,7 +90,6 @@ export const EcowattWidget = () => {
         flexGrow: '1',
         filter: 'drop-shadow(0 1px 2px rgb(0 0 0 / 0.1)) drop-shadow(0 1px 1px rgb(0 0 0 / 0.06))',
         alignSelf: expendDetails ? 'flex-start' : 'center',
-        transition: expendDetails ? 'linear 3s' : 'none',
     }))
 
     /**
@@ -104,7 +104,7 @@ export const EcowattWidget = () => {
 
     return (
         <div className="w-full">
-            <Card className="w-full rounded-20 shadow sm:m-4" variant="outlined">
+            <Card className="w-full rounded-20 shadow sm:m-4 pb-8" variant="outlined">
                 <div className="p-16 flex flex-row justify-center h-full">
                     <TypographyFormatMessage className="text-13 font-medium md:text-17 flex items-center">
                         {ECOWATT_TITLE}
@@ -212,8 +212,8 @@ export const EcowattWidget = () => {
 
                     {/* Signal Timeline */}
                     {/* TODO: MYEM-3500 */}
-                    <Collapse className="mt-8 mb-6" in={expendDetails}>
-                        {dayDetails?.readingAt}
+                    <Collapse className="mt-8 mb-6 w-full" in={expendDetails}>
+                        <EcowattTimeline hourlyValues={dayDetails?.hourlyValues} />
                     </Collapse>
                 </div>
             </Card>
