@@ -70,4 +70,4 @@ export type addMeterInputType = {
 /**
  * Information to be passed when editing a meter.
  */
-export type editMeterInputType = addMeterInputType
+export type editMeterInputType = Partial<Omit<IMeter, 'id'>>

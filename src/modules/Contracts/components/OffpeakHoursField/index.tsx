@@ -1,7 +1,7 @@
 import React, { FC, useEffect } from 'react'
 import FormControl from '@mui/material/FormControl'
 import FormHelperText from '@mui/material/FormHelperText'
-import { Controller, useFormContext } from 'react-hook-form'
+import { Controller, useFormContext, useWatch } from 'react-hook-form'
 import { TimePicker } from '@mui/x-date-pickers/TimePicker'
 import { useIntl } from 'src/common/react-platform-translation'
 import TextField from '@mui/material/TextField'
@@ -65,10 +65,10 @@ const OffpeakHoursField: FC<offpeakHoursFieldProps> = function ({
         houseId: string
     }>()
 
-    const { control, setValue, watch } = useFormContext()
+    const { control, setValue } = useFormContext()
     const { formatMessage } = useIntl()
     const { elementDetails: housingMeter, loadingInProgress } = useHousingMeterDetails(parseInt(houseId), true)
-    const meterFeatures: IMeterFeatures = watch(name, initialMeterFeatures)
+    const meterFeatures: IMeterFeatures = useWatch({ name, defaultValue: initialMeterFeatures })
 
     /**
      * Handler when an offpeak hour changes.
@@ -156,7 +156,7 @@ const OffpeakHoursField: FC<offpeakHoursFieldProps> = function ({
             }}
             render={({ field, fieldState }) => (
                 <>
-                    <TypographyFormatMessage className="mb-8 text-13 md:text-16 text-center" {...labelProps}>
+                    <TypographyFormatMessage className="my-8 text-13 md:text-16 text-center" {...labelProps}>
                         {label}
                     </TypographyFormatMessage>
                     <FormControl
@@ -164,6 +164,7 @@ const OffpeakHoursField: FC<offpeakHoursFieldProps> = function ({
                         fullWidth={true}
                         margin="normal"
                         error={fieldState.invalid}
+                        style={{ marginTop: '0' }}
                     >
                         {meterFeatures.offpeak.offpeakHours.map((offpeakHour, index) => (
                             <div

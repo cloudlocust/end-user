@@ -1,6 +1,7 @@
 import { SelectFieldProps } from 'src/common/ui-kit/form-fields/Select'
 import { IOffer, IContractType, IPower, IProvider, ITariffType } from 'src/hooks/CommercialOffer/CommercialOffers'
 import { TypographyProps } from '@mui/material/Typography'
+import { IMeterFeatures } from 'src/modules/Meters/Meters'
 
 /**
  * Type contracts route param.
@@ -191,6 +192,10 @@ export type addContractDataType = {
      * ContractType Id.
      */
     contractTypeId: number
+    /**
+     * Meter Features information (offpeakHours ...etc).
+     */
+    meterFeatures?: IMeterFeatures
     /**
      * Power of the offer.
      */

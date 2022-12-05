@@ -116,6 +116,33 @@ export const useMeterForHousing = () => {
 }
 
 /**
+ * Error message editElementDetailsError.
+ *
+ * @param error Error.
+ * @param formatMessage FormatMessage intl object from (react-intl package).
+ * @returns {string} Error message.
+ */
+export const editElementDetailsError = (error: any, formatMessage: formatMessageType) => {
+    return formatMessage({
+        id: EDIT_ERROR_MESSAGE,
+        defaultMessage: EDIT_ERROR_MESSAGE,
+    })
+}
+
+/**
+ * Success message editElementDetailsSuccess.
+ *
+ * @param responseData Edited Installation Request.
+ * @param formatMessage FormatMessage intl object from (react-intl package).
+ * @returns {string} Success message.
+ */
+const editElementDetailsSuccess = (responseData: IMeter, formatMessage: formatMessageType) => {
+    return formatMessage({
+        id: EDIT_SUCCESS_MESSAGE,
+        defaultMessage: EDIT_SUCCESS_MESSAGE,
+    })
+}
+/**
  * Error message loadElementDetailsError.
  *
  * @param error Error.
@@ -138,8 +165,8 @@ export const loadElementDetailsError = (error: any, formatMessage: formatMessage
  */
 export const useHousingMeterDetails = (housingId: number, loadOnInstanciation: boolean = false) =>
     // eslint-disable-next-line jsdoc/require-jsdoc
-    BuilderUseElementDetails<IMeter, {}, IMeter>({
+    BuilderUseElementDetails<IMeter, editMeterInputType, IMeter>({
         API_ENDPOINT: `${HOUSING_API}/${housingId}/meter`,
         isLoadElementDetailsOnHookInstanciation: loadOnInstanciation,
-        snackBarMessage0verride: { loadElementDetailsError },
+        snackBarMessage0verride: { loadElementDetailsError, editElementDetailsError, editElementDetailsSuccess },
     })()

@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react'
+import React, { useCallback, useMemo } from 'react'
 import { useIntl } from 'react-intl'
 import { requiredBuilder } from 'src/common/react-platform-components'
 import {
@@ -6,6 +6,7 @@ import {
     ContractFormFieldsProps,
     ContractFormProps,
     contractFormValuesType,
+    contractsRouteParam,
 } from 'src/modules/Contracts/contractsTypes'
 import { useFormContext, useWatch } from 'react-hook-form'
 import { Form } from 'src/common/react-platform-components'
@@ -17,6 +18,9 @@ import { IContractType, IOffer, IPower, IProvider, ITariffType } from 'src/hooks
 import { ButtonLoader } from 'src/common/ui-kit'
 import { isNull, pick } from 'lodash'
 import { SelectChangeEvent } from '@mui/material/Select'
+import OffpeakHoursField from 'src/modules/Contracts/components/OffpeakHoursField'
+import { useParams } from 'react-router-dom'
+import { useMeterForHousing } from 'src/modules/Meters/metersHook'
 
 const defaultContractFormValues: contractFormValuesType = {
     contractTypeId: 0,
@@ -38,10 +42,13 @@ const defaultContractFormValues: contractFormValuesType = {
  * @returns Contract Form component.
  */
 const ContractForm = ({ onSubmit, isContractsLoading, defaultValues }: ContractFormProps) => {
+    // HouseId extracted from params of the url :houseId/contracts
+    const { houseId } = useParams<contractsRouteParam>()
+    const { editMeter } = useMeterForHousing()
     return (
         <Form
-            onSubmit={(data: contractFormValuesType) => {
-                const { providerId, startSubscription, endSubscription, ...restData } = data
+            onSubmit={async (data: contractFormValuesType) => {
+                const { providerId, startSubscription, endSubscription, meterFeatures, ...restData } = data
                 // Format the start subscription to ISO Datetime.
                 let cleanData: addContractDataType = {
                     ...restData,
@@ -49,6 +56,10 @@ const ContractForm = ({ onSubmit, isContractsLoading, defaultValues }: ContractF
                 }
                 // Format the end subscription to ISO Datetime.
                 if (endSubscription) cleanData.endSubscription = new Date(endSubscription).toISOString()
+                // Update meterFeatures if offPeakhours have been set.
+                if (meterFeatures && !meterFeatures.offpeak.readOnly) {
+                    await editMeter(parseInt(houseId), { features: meterFeatures })
+                }
                 onSubmit(cleanData)
             }}
             defaultValues={defaultValues ?? defaultContractFormValues}
@@ -101,6 +112,16 @@ const ContractFormFields = ({ isContractsLoading }: ContractFormFieldsProps) => 
         isTariffTypesLoading,
     } = useCommercialOffer()
     const { formatMessage } = useIntl()
+
+    // Check that offPeakHours tariff type is selected.
+    const isOffpeakHoursSelected = useMemo(
+        () =>
+            tariffTypeList?.some(
+                (tariffType) =>
+                    tariffType.id === formData.tariffTypeId && tariffType.name === 'Heures Pleines / Heures Creuses',
+            ),
+        [formData.tariffTypeId, tariffTypeList],
+    )
 
     /**
      * Handler when the Select field change, it resets the fields that comes after the changed select.
@@ -198,20 +219,49 @@ const ContractFormFields = ({ isContractsLoading }: ContractFormFieldsProps) => 
                 />
             )}
 
-            {Boolean(formData.tariffTypeId) && (
-                <ContractFormSelect<IPower>
-                    formatOptionLabel={(option) => `${option} kVA`}
-                    formatOptionValue={(option) => option}
-                    isOptionsInProgress={isPowersLoading}
-                    loadOptions={loadPowerOptions}
-                    optionList={powerList}
-                    name="power"
-                    label="Puissance"
-                    validateFunctions={[requiredBuilder()]}
-                    onChange={(e) => onSelectChange(e, ['providerId', 'contractTypeId', 'offerId', 'tariffTypeId'])}
-                />
-            )}
-            {/* When doing formData.power && there is a weird unexpected 0 showing in the UI, that's why doing formData.power !== 0 &&  */}
+            {isOffpeakHoursSelected && <OffpeakHoursField name="meterFeatures" label="Plages heures creuses :" />}
+            {isOffpeakHoursSelected
+                ? Boolean(formData.meterFeatures) &&
+                  // Before showing the power check that start and end has been filled
+                  formData.meterFeatures!.offpeak!.offpeakHours!.some(
+                      (offpeakHour) => offpeakHour.start && offpeakHour.end,
+                  ) && (
+                      <ContractFormSelect<IPower>
+                          formatOptionLabel={(option) => `${option} kVA`}
+                          formatOptionValue={(option) => option}
+                          isOptionsInProgress={isPowersLoading}
+                          loadOptions={loadPowerOptions}
+                          optionList={powerList}
+                          name="power"
+                          label="Puissance"
+                          validateFunctions={[requiredBuilder()]}
+                          onChange={(e) =>
+                              onSelectChange(e, [
+                                  'providerId',
+                                  'contractTypeId',
+                                  'offerId',
+                                  'tariffTypeId',
+                                  'meterFeatures',
+                              ])
+                          }
+                      />
+                  )
+                : Boolean(formData.tariffTypeId) && (
+                      <ContractFormSelect<IPower>
+                          formatOptionLabel={(option) => `${option} kVA`}
+                          formatOptionValue={(option) => option}
+                          isOptionsInProgress={isPowersLoading}
+                          loadOptions={loadPowerOptions}
+                          optionList={powerList}
+                          name="power"
+                          label="Puissance"
+                          validateFunctions={[requiredBuilder()]}
+                          onChange={(e) =>
+                              onSelectChange(e, ['providerId', 'contractTypeId', 'offerId', 'tariffTypeId'])
+                          }
+                      />
+                  )}
+
             {Boolean(formData.power) && (
                 <DatePicker
                     name="startSubscription"
@@ -247,7 +297,8 @@ const ContractFormFields = ({ isContractsLoading }: ContractFormFieldsProps) => 
                     isNull(providerList) ||
                     isNull(offerList) ||
                     isNull(tariffTypeList) ||
-                    isNull(powerList)
+                    isNull(powerList) ||
+                    !Boolean(formData.startSubscription)
                 }
             >
                 {formatMessage({
