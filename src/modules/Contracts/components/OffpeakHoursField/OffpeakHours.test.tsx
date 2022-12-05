@@ -7,7 +7,7 @@ import { TEST_HOUSES as MOCK_HOUSES } from 'src/mocks/handlers/houses'
 import { IHousing } from 'src/modules/MyHouse/components/HousingList/housing'
 import { BrowserRouter as Router } from 'react-router-dom'
 import OffPeakHoursField from 'src/modules/Contracts/components/OffpeakHoursField'
-import { IMeterFeatures } from 'src/modules/Meters/Meters'
+import { IMeter, IMeterFeatures } from 'src/modules/Meters/Meters'
 import { TimePickerProps } from '@mui/x-date-pickers/TimePicker'
 import dayjs from 'dayjs'
 
@@ -21,7 +21,14 @@ const END_OFFPEAK_HOUR_TEXT = 'Fin'
 const TIMEPICKER_DISABLED_TEXT = 'Disabled'
 const ADD_OFFPEAK_ICON_DATA_TESTID = 'AddCircleOutlineIcon'
 const circularProgressClassname = '.MuiCircularProgress-root'
-let mockHousingMeter = TEST_HOUSES[0].meter
+const TEST_OFFPEAK_HOURS = { start: '00:00', end: '08:00' }
+const TEST_METER_FEATURES_DATA: IMeterFeatures = {
+    offpeak: {
+        offpeakHours: [TEST_OFFPEAK_HOURS],
+        readOnly: false,
+    },
+}
+let mockHousingMeter: IMeter | null = { ...TEST_HOUSES[2].meter!, features: TEST_METER_FEATURES_DATA }
 const mockHandleSubmit = jest.fn()
 const OFFPEAK_HOURS_NAME = 'offpeakHours'
 const OFFPEAK_HOURS_LABEL = 'OFFPEAK Hours'
@@ -95,13 +102,6 @@ jest.mock('src/modules/Meters/metersHook', () => ({
 
 describe('Test OffPeakHours Component', () => {
     test('When filling offHourPeakHour, value should be shown and valid data sent when submitting', async () => {
-        const TEST_OFFPEAK_HOURS = { start: '00:00', end: '08:00' }
-        const TEST_VALID_DATA: IMeterFeatures = {
-            offpeak: {
-                offpeakHours: [TEST_OFFPEAK_HOURS],
-                readOnly: false,
-            },
-        }
         const { getByText } = reduxedRender(
             <Router>
                 <Form onSubmit={(data) => mockHandleSubmit(data)}>
@@ -126,30 +126,9 @@ describe('Test OffPeakHours Component', () => {
         userEvent.click(getByText(SUBMIT_BUTTON_TEXT))
 
         await waitFor(() => {
-            expect(mockHandleSubmit).toHaveBeenCalledWith({ [OFFPEAK_HOURS_NAME]: TEST_VALID_DATA })
+            expect(mockHandleSubmit).toHaveBeenCalledWith({ [OFFPEAK_HOURS_NAME]: TEST_METER_FEATURES_DATA })
         })
     }, 8000)
-
-    test('When mounting offPeakHours should show initialValues, and when submitting validation is shown', async () => {
-        const { getByText, getAllByText } = reduxedRender(
-            <Router>
-                <Form onSubmit={mockHandleSubmit}>
-                    <OffPeakHoursField {...mockOffpeakHoursProps} />
-                    <button type="submit">{SUBMIT_BUTTON_TEXT}</button>
-                </Form>
-            </Router>,
-        )
-
-        expect(getByText(OFFPEAK_HOURS_LABEL)).toBeTruthy()
-        expect(getAllByText(START_OFFPEAK_HOUR_TEXT)).toHaveLength(1)
-        expect(getAllByText(END_OFFPEAK_HOUR_TEXT)).toHaveLength(1)
-
-        userEvent.click(getByText(SUBMIT_BUTTON_TEXT))
-        await waitFor(() => {
-            expect(getByText(REQUIRED_FIELD_TEXT)).toBeTruthy()
-        })
-        expect(mockHandleSubmit).not.toHaveBeenCalled()
-    })
 
     test('When adding offHourPeakHour, entry should be shown and button is not shown', async () => {
         const { getByText, getAllByText, getByTestId } = reduxedRender(
@@ -171,6 +150,28 @@ describe('Test OffPeakHours Component', () => {
         })
         expect(getAllByText(END_OFFPEAK_HOUR_TEXT)).toHaveLength(2)
         expect(() => getByTestId(ADD_OFFPEAK_ICON_DATA_TESTID)).toThrow()
+    })
+
+    test('When mounting offPeakHours should show initialValues, and when submitting validation is shown', async () => {
+        mockHousingMeter!.features = undefined
+        const { getByText, getAllByText } = reduxedRender(
+            <Router>
+                <Form onSubmit={mockHandleSubmit}>
+                    <OffPeakHoursField {...mockOffpeakHoursProps} />
+                    <button type="submit">{SUBMIT_BUTTON_TEXT}</button>
+                </Form>
+            </Router>,
+        )
+
+        expect(getByText(OFFPEAK_HOURS_LABEL)).toBeTruthy()
+        expect(getAllByText(START_OFFPEAK_HOUR_TEXT)).toHaveLength(1)
+        expect(getAllByText(END_OFFPEAK_HOUR_TEXT)).toHaveLength(1)
+
+        userEvent.click(getByText(SUBMIT_BUTTON_TEXT))
+        await waitFor(() => {
+            expect(getByText(REQUIRED_FIELD_TEXT)).toBeTruthy()
+        })
+        expect(mockHandleSubmit).not.toHaveBeenCalled()
     })
 
     test('When housingMeter is loading, spinner should be shown', async () => {
