@@ -95,7 +95,7 @@ spec:
               key: REACT_APP_ENPHASE_CONSENT_FEATURE_STATE             
         - name: REACT_APP_GOOGLE_MAPS_API_KEY
           valueFrom:
-            secretKeyRef:
+            configMapKeyRef:
               name: {{ .Values.name }}
               key: REACT_APP_GOOGLE_MAPS_API_KEY
         - name: REACT_APP_TITLE
