@@ -8,7 +8,6 @@ import { TEST_HOUSES } from 'src/mocks/handlers/houses'
 import { applyCamelCase } from 'src/common/react-platform-components/utils/mm'
 import { IHousing } from 'src/modules/MyHouse/components/HousingList/housing'
 
-const mockHistoryPush = jest.fn()
 const TEST_METERS: IMeter[] = applyCamelCase(MOCK_METERS)
 
 const TEST_MOCKED_HOUSES: IHousing[] = applyCamelCase(TEST_HOUSES)
