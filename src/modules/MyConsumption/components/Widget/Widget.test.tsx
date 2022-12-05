@@ -19,7 +19,7 @@ const INTERNAL_TEMPERATURE_TEXT = 'Température Intérieure'
 const EXTERNAL_TEMPERATURE_TEXT = 'Température Extérieure'
 const TEMPERATURE_UNIT = '°C'
 
-const NO_DATA_MESSAGE = 'Aucune donnée disponnible'
+const NO_DATA_MESSAGE = 'Aucune donnée disponible'
 const circularProgressClassname = '	.MuiCircularProgress-root'
 
 describe('Widget component test', () => {

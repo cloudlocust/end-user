@@ -299,8 +299,8 @@ export const InstallationRequests = (): JSX.Element => {
                         >
                             <Typography color="textSecondary" variant="h5">
                                 {formatMessage({
-                                    id: "Aucune demandes d'installations!",
-                                    defaultMessage: "Aucune demandes d'installations!",
+                                    id: "Aucune demande d'installation !",
+                                    defaultMessage: "Aucune demande d'installation !",
                                 })}
                             </Typography>
                         </motion.div>
