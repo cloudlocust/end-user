@@ -96,11 +96,12 @@ export const useMeterForHousing = () => {
                 )
                 return responseData
             }
-        } catch (error) {
+        } catch (error: any) {
+            const errorEditMeterMsg = error?.response?.data?.detail || EDIT_ERROR_MESSAGE
             enqueueSnackbar(
                 formatMessage({
-                    id: EDIT_ERROR_MESSAGE,
-                    defaultMessage: EDIT_ERROR_MESSAGE,
+                    id: errorEditMeterMsg,
+                    defaultMessage: errorEditMeterMsg,
                 }),
                 { variant: 'error' },
             )

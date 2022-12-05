@@ -44,7 +44,7 @@ const defaultContractFormValues: contractFormValuesType = {
 const ContractForm = ({ onSubmit, isContractsLoading, defaultValues }: ContractFormProps) => {
     // HouseId extracted from params of the url :houseId/contracts
     const { houseId } = useParams<contractsRouteParam>()
-    const { editMeter } = useMeterForHousing()
+    const { editMeter, loadingInProgress } = useMeterForHousing()
     return (
         <Form
             onSubmit={async (data: contractFormValuesType) => {
@@ -75,7 +75,7 @@ const ContractForm = ({ onSubmit, isContractsLoading, defaultValues }: ContractF
                     Toutes les informations demandées sont disponibles sur votre facture ou votre contrat d'énergie
                 </TypographyFormatMessage>
                 <div className="flex flex-col justify-center w-full">
-                    <ContractFormFields isContractsLoading={isContractsLoading} />
+                    <ContractFormFields isContractsLoading={isContractsLoading || loadingInProgress} />
                 </div>
             </div>
         </Form>
