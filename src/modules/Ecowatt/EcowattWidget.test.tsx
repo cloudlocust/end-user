@@ -12,7 +12,7 @@ const LOADING_CIRCLE_TEST_ID = 'circular-progress'
 let mockIsLoadingInProgress: boolean = false
 let mockEcowattData = TEST_ECOWATT_DATA
 
-const mockDays = ['Jeudi', 'Vendredi', 'Samedi', 'Dimanche']
+const mockDays = ['Mercredi', 'Jeudi', 'Vendredi', 'Samedi']
 
 jest.mock('src/modules/Ecowatt/EcowattHook', () => ({
     // eslint-disable-next-line jsdoc/require-jsdoc
