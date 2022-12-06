@@ -1,4 +1,4 @@
-import axios from 'axios'
+import { axios } from 'src/common/react-platform-components'
 import { useCallback, useEffect, useState } from 'react'
 import { useSnackbar } from 'notistack'
 import { useIntl } from 'react-intl'

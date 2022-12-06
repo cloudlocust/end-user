@@ -41,7 +41,7 @@ export const Widget = memo(({ isMetricsLoading, title, unit, infoIcon, value }: 
                             {/* If onError returns true, it will display an error message for the widget type */}
                             {!value ? (
                                 <div className="mb-44 text-center">
-                                    <TypographyFormatMessage>Aucune donnée disponnible</TypographyFormatMessage>
+                                    <TypographyFormatMessage>Aucune donnée disponible</TypographyFormatMessage>
                                 </div>
                             ) : (
                                 <div className="flex flex-row flex-wrap mt-12 items-end">

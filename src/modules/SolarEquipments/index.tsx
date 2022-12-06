@@ -222,8 +222,8 @@ export const SolarEquipments = () => {
                         >
                             <Typography color="textSecondary" variant="h5">
                                 {formatMessage({
-                                    id: 'Aucune équipements !',
-                                    defaultMessage: 'Aucune équipements !',
+                                    id: 'Aucun équipement !',
+                                    defaultMessage: 'Aucun équipement !',
                                 })}
                             </Typography>
                         </motion.div>
