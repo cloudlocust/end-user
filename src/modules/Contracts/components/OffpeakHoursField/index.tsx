@@ -189,19 +189,21 @@ const OffpeakHoursField: FC<offpeakHoursFieldProps> = function ({
                                 />
                             </div>
                         ))}
-                        {meterFeatures && meterFeatures.offpeak.offpeakHours.length < 2 && (
-                            <div className={`flex justify-center`}>
-                                <Tooltip title={addOffpeakButtonTitle}>
-                                    <IconButton
-                                        className="w-4/5 sm:w-auto"
-                                        size="large"
-                                        onClick={addOffPeakHourInterval}
-                                    >
-                                        <AddCircleOutlineIcon />
-                                    </IconButton>
-                                </Tooltip>
-                            </div>
-                        )}
+                        {meterFeatures &&
+                            !meterFeatures.offpeak.readOnly &&
+                            meterFeatures.offpeak.offpeakHours.length < 2 && (
+                                <div className={`flex justify-center`}>
+                                    <Tooltip title={addOffpeakButtonTitle}>
+                                        <IconButton
+                                            className="w-4/5 sm:w-auto"
+                                            size="large"
+                                            onClick={addOffPeakHourInterval}
+                                        >
+                                            <AddCircleOutlineIcon />
+                                        </IconButton>
+                                    </Tooltip>
+                                </div>
+                            )}
                         {fieldState.invalid && <FormHelperText>{fieldState.error?.message}</FormHelperText>}
                     </FormControl>
                 </>

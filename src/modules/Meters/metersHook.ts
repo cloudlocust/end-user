@@ -5,7 +5,7 @@ import { API_RESOURCES_URL } from 'src/configs'
 import { useIntl } from 'src/common/react-platform-translation'
 import { useSnackbar } from 'notistack'
 import { HOUSING_API } from 'src/modules/MyHouse/components/HousingList/HousingsHooks'
-import { BuilderUseElementDetails } from '../utils/useElementHookBuilder'
+import { BuilderUseElementDetails } from 'src/modules/utils/useElementHookBuilder'
 
 import { formatMessageType } from 'src/common/react-platform-translation'
 /**
