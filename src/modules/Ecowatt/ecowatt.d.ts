@@ -15,15 +15,15 @@ export enum EcowattConsumptionValue {
     /**
      * Consommation Normal.
      */
-    GREEN = 1,
+    OK = 1,
     /**
      * Système électrique tendu.
      */
-    ORANGE = 2,
+    SEVERE = 2,
     /**
      * Système électrique très tendu.
      */
-    RED = 3,
+    CRITICAL = 3,
 }
 
 /**

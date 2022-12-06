@@ -6,19 +6,12 @@ import 'src/modules/Ecowatt/components/EcowattTimeline/ecowattTimeline.scss'
 /**
  * Function that return every 4 values number.
  *
- * @param pas Pas d'heure. Represent every hour of the day.
+ * @param pas Pas d'heure. Represents every hour of the day.
  * @returns Every 4 values number.
  */
 function filterHourlyPas(pas: IHourlyValues['pas']) {
     let pasPlusOne = pas + 1
-    if (
-        pasPlusOne === 4 ||
-        pasPlusOne === 8 ||
-        pasPlusOne === 12 ||
-        pasPlusOne === 16 ||
-        pasPlusOne === 20 ||
-        pasPlusOne === 24
-    ) {
+    if (pasPlusOne % 4 === 0) {
         return pasPlusOne
     } else {
         return
@@ -44,11 +37,11 @@ export const EcowattTimeline = ({ hourlyValues }: { hourlyValues?: IHourlyValues
      */
     function getBackgroundColor(hourlyValues: IHourlyValues['value']) {
         switch (hourlyValues) {
-            case EcowattConsumptionValue.GREEN:
+            case EcowattConsumptionValue.OK:
                 return theme.palette.success.main
-            case EcowattConsumptionValue.ORANGE:
+            case EcowattConsumptionValue.SEVERE:
                 return theme.palette.warning.main
-            case EcowattConsumptionValue.RED:
+            case EcowattConsumptionValue.CRITICAL:
                 return theme.palette.error.main
             default:
                 throw new Error('No hourly value')
