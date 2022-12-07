@@ -31,6 +31,7 @@ import { ChartErrorMessage } from 'src/modules/MyConsumption/components/ChartErr
 import { ENPHASE_OFF_MESSAGE, NRLINK_ENEDIS_OFF_MESSAGE } from 'src/modules/MyConsumption/utils/myConsumptionVariables'
 import { warningMainHashColor } from 'src/modules/utils/muiThemeVariables'
 import { productionChartErrorState } from 'src/modules/MyConsumption/MyConsumptionConfig'
+import { EcowattWidget } from 'src/modules/Ecowatt/EcowattWidget'
 
 /**
  * InitialMetricsStates for useMetrics.
@@ -431,6 +432,10 @@ export const MyConsumptionContainer = () => {
                         />
                     )
                 )}
+            </div>
+            {/* Ecowatt Widget */}
+            <div className="p-12 sm:p-24 ">
+                <EcowattWidget />
             </div>
             {data.length !== 0 && (
                 <div className="p-12 sm:p-24 ">
