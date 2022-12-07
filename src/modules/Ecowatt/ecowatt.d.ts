@@ -15,15 +15,15 @@ export enum EcowattConsumptionValue {
     /**
      * Consommation Normal.
      */
-    GREEN = 1,
+    OK = 1,
     /**
      * Système électrique tendu.
      */
-    ORANGE = 2,
+    SEVERE = 2,
     /**
      * Système électrique très tendu.
      */
-    RED = 3,
+    CRITICAL = 3,
 }
 
 /**
@@ -51,11 +51,11 @@ export interface IHourlyValues {
     /**
      * Time step. 24 hours.
      */
-    pas: Range<0, 24>
+    readingAt: Range<0, 24>
     /**
      * Signal value of the hour. (1 green, 2 orange, 3 red).
      */
-    value: 1 | 2 | 3
+    reading: 1 | 2 | 3
 }
 
 // eslint-disable-next-line jsdoc/require-jsdoc
