@@ -13,7 +13,7 @@ export const TEST_ECOWATT_EROOR = 'error'
  */
 export const TEST_ECOWATT_DATA: SnakeCasedPropertiesDeep<IEcowattData> = [
     {
-        reading_at: '2022-11-30T14:38:22.000Z',
+        reading_at: '2022-11-30T01:00:48+0000',
         reading: 1,
         hourly_values: [
             {
@@ -160,7 +160,7 @@ export const TEST_ECOWATT_DATA: SnakeCasedPropertiesDeep<IEcowattData> = [
         ],
     },
     {
-        reading_at: '2022-12-01T14:38:22.000Z',
+        reading_at: '2022-12-01T01:00:48+0000',
         reading: 2,
         hourly_values: [
             {
@@ -308,7 +308,7 @@ export const TEST_ECOWATT_DATA: SnakeCasedPropertiesDeep<IEcowattData> = [
         ],
     },
     {
-        reading_at: '2022-12-02T14:38:22.000Z',
+        reading_at: '2022-12-02T01:00:48+0000',
         reading: 1,
         hourly_values: [
             {
@@ -456,7 +456,7 @@ export const TEST_ECOWATT_DATA: SnakeCasedPropertiesDeep<IEcowattData> = [
         ],
     },
     {
-        reading_at: '2022-12-03T14:38:22.000Z',
+        reading_at: '2022-12-03T01:00:48+0000',
         reading: 3,
         hourly_values: [
             {

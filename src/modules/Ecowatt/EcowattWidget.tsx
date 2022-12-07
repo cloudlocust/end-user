@@ -10,6 +10,7 @@ import {
     CircularProgress,
     useMediaQuery,
     useTheme,
+    Collapse,
 } from '@mui/material'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import { InfoOutlined, Circle, Close, OfflineBolt } from '@mui/icons-material/'
@@ -20,6 +21,7 @@ import { useEcowatt } from 'src/modules/Ecowatt/EcowattHook'
 import { styled } from '@mui/material/styles'
 import dayjs from 'dayjs'
 import { capitalize, isEmpty } from 'lodash'
+import { useToggle } from 'react-use'
 
 const consumptionLevelList: EcowattConsumptionLevelListType = [
     {
@@ -68,23 +70,37 @@ function getSignalIcon(signalValue: IEcowatt['reading']) {
 export const EcowattWidget = () => {
     const theme = useTheme()
     const mdDown = useMediaQuery(theme.breakpoints.down('md'))
-    const [openTooltip, setOpenTooltip] = useState(false)
+    const [openTooltip, setOpenTooltip] = useState<boolean>(false)
+    const [expendDetails, setExpendDetails] = useToggle(false)
+    const [dayDetails, setDayDetails] = useState<IEcowatt | null>(null)
     const { ecowattData, isLoadingInProgress } = useEcowatt()
 
-    const StyledDiv = styled('div')(() => ({
+    const StyledDiv = styled('div')(({ theme }) => ({
         padding: `${mdDown ? '5px' : '1rem'} ${mdDown ? '3px' : '1.5rem'}`,
         margin: `0 ${mdDown ? '0.5rem' : '1.5rem'}`,
         backgroundColor: theme.palette.background.default,
         borderRadius: '2rem',
         cursor: 'pointer',
         display: 'flex',
-        flexDirection: 'row',
-        justifyContent: 'space-evenly',
+        flexDirection: 'column',
+        justifyContent: 'space-between',
         alignItems: 'center',
         marginBottom: mdDown ? '0.75rem' : 0,
         flexGrow: '1',
         filter: 'drop-shadow(0 1px 2px rgb(0 0 0 / 0.1)) drop-shadow(0 1px 1px rgb(0 0 0 / 0.06))',
+        alignSelf: expendDetails ? 'flex-start' : 'center',
+        transition: expendDetails ? 'linear 3s' : 'none',
     }))
+
+    /**
+     * Function that handles collapse comopnent.
+     *
+     * @param ecowatt Ecowatt day data.
+     */
+    const handleExpendDetails = (ecowatt: IEcowatt) => {
+        setDayDetails(ecowatt)
+        setExpendDetails(true)
+    }
 
     return (
         <div className="w-full">
@@ -136,7 +152,7 @@ export const EcowattWidget = () => {
                         />
                     </Tooltip>
                 </div>
-                <div className="py-16 px-8 w-full flex justify-between items-center">
+                <div className="py-16 px-8 w-full flex flex-col justify-between items-center">
                     {isLoadingInProgress ? (
                         <div className="flex flex-col justify-center items-center w-full mb-8">
                             <CircularProgress data-testid="circular-progress" size={25} />
@@ -146,19 +162,59 @@ export const EcowattWidget = () => {
                             <TypographyFormatMessage>Aucune donnée disponible</TypographyFormatMessage>
                         </div>
                     ) : (
-                        <div className="w-full flex justify-evenly items-center flex-grow md:flex-grow-0">
-                            {ecowattData?.map((day) => (
-                                <StyledDiv>
-                                    <div className="mr-8">{getSignalIcon(day.reading)}</div>
-                                    <TypographyFormatMessage fontWeight={500} className="text-12 md:text-15">
-                                        {mdDown
-                                            ? capitalize(dayjs(day.readingAt).format('ddd'))
-                                            : capitalize(dayjs(day.readingAt).format('dddd'))}
-                                    </TypographyFormatMessage>
-                                </StyledDiv>
-                            ))}
+                        <div className="flex flex-col w-full">
+                            <div className="w-full flex justify-evenly flex-grow md:flex-grow-0">
+                                {ecowattData?.map((day, index) => (
+                                    <>
+                                        <StyledDiv
+                                            onClick={() => handleExpendDetails(day)}
+                                            key={index}
+                                            sx={{
+                                                border:
+                                                    dayDetails?.readingAt === day.readingAt
+                                                        ? `2px solid ${theme.palette.primary.main}`
+                                                        : 0,
+                                            }}
+                                        >
+                                            <div className="flex flex-row items-center">
+                                                <div className="mr-8">{getSignalIcon(day.reading)}</div>
+                                                <TypographyFormatMessage
+                                                    fontWeight={500}
+                                                    className="text-12 md:text-15"
+                                                >
+                                                    {mdDown
+                                                        ? capitalize(dayjs(day.readingAt).format('ddd'))
+                                                        : capitalize(dayjs(day.readingAt).format('dddd'))}
+                                                </TypographyFormatMessage>
+                                            </div>
+
+                                            {dayDetails?.readingAt === day.readingAt && (
+                                                <Collapse
+                                                    in={dayDetails?.readingAt === day.readingAt}
+                                                    className="mt-12 mb-6"
+                                                >
+                                                    <TypographyFormatMessage
+                                                        fontWeight={500}
+                                                        className="text-12 md:text-15"
+                                                    >
+                                                        {`${capitalize(dayjs(day.readingAt).format('d'))} ${capitalize(
+                                                            dayjs(day.readingAt).format('MMM'),
+                                                        )}`}
+                                                    </TypographyFormatMessage>
+                                                </Collapse>
+                                            )}
+                                        </StyledDiv>
+                                    </>
+                                ))}
+                            </div>
                         </div>
                     )}
+
+                    {/* Signal Timeline */}
+                    {/* TODO: MYEM-3500 */}
+                    <Collapse className="mt-8 mb-6" in={expendDetails}>
+                        {dayDetails?.readingAt}
+                    </Collapse>
                 </div>
             </Card>
         </div>
