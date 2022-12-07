@@ -51,11 +51,11 @@ export interface IHourlyValues {
     /**
      * Time step. 24 hours.
      */
-    pas: Range<0, 24>
+    readingAt: Range<0, 24>
     /**
      * Signal value of the hour. (1 green, 2 orange, 3 red).
      */
-    value: 1 | 2 | 3
+    reading: 1 | 2 | 3
 }
 
 // eslint-disable-next-line jsdoc/require-jsdoc

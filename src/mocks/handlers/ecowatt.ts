@@ -17,145 +17,145 @@ export const TEST_ECOWATT_DATA: SnakeCasedPropertiesDeep<IEcowattData> = [
         reading: 1,
         hourly_values: [
             {
-                pas: 0,
-                value: 1,
+                reading_at: 0,
+                reading: 1,
             },
 
             {
-                pas: 1,
+                reading_at: 1,
 
-                value: 1,
+                reading: 1,
             },
 
             {
-                pas: 2,
+                reading_at: 2,
 
-                value: 1,
+                reading: 1,
             },
 
             {
-                pas: 3,
+                reading_at: 3,
 
-                value: 1,
+                reading: 1,
             },
 
             {
-                pas: 4,
+                reading_at: 4,
 
-                value: 1,
+                reading: 1,
             },
 
             {
-                pas: 5,
+                reading_at: 5,
 
-                value: 1,
+                reading: 1,
             },
 
             {
-                pas: 6,
+                reading_at: 6,
 
-                value: 2,
+                reading: 2,
             },
 
             {
-                pas: 7,
+                reading_at: 7,
 
-                value: 1,
+                reading: 1,
             },
 
             {
-                pas: 8,
+                reading_at: 8,
 
-                value: 2,
+                reading: 2,
             },
 
             {
-                pas: 9,
+                reading_at: 9,
 
-                value: 2,
+                reading: 2,
             },
 
             {
-                pas: 10,
+                reading_at: 10,
 
-                value: 1,
+                reading: 1,
             },
 
             {
-                pas: 11,
+                reading_at: 11,
 
-                value: 1,
+                reading: 1,
             },
 
             {
-                pas: 12,
+                reading_at: 12,
 
-                value: 1,
+                reading: 1,
             },
 
             {
-                pas: 13,
+                reading_at: 13,
 
-                value: 1,
+                reading: 1,
             },
 
             {
-                pas: 14,
+                reading_at: 14,
 
-                value: 2,
+                reading: 2,
             },
 
             {
-                pas: 15,
+                reading_at: 15,
 
-                value: 2,
+                reading: 2,
             },
 
             {
-                pas: 16,
+                reading_at: 16,
 
-                value: 1,
+                reading: 1,
             },
 
             {
-                pas: 17,
+                reading_at: 17,
 
-                value: 1,
+                reading: 1,
             },
 
             {
-                pas: 18,
+                reading_at: 18,
 
-                value: 2,
+                reading: 2,
             },
             {
-                pas: 19,
+                reading_at: 19,
 
-                value: 2,
-            },
-
-            {
-                pas: 20,
-
-                value: 2,
+                reading: 2,
             },
 
             {
-                pas: 21,
+                reading_at: 20,
 
-                value: 2,
+                reading: 2,
             },
 
             {
-                pas: 22,
+                reading_at: 21,
 
-                value: 3,
+                reading: 2,
             },
 
             {
-                pas: 23,
+                reading_at: 22,
 
-                value: 3,
+                reading: 3,
+            },
+
+            {
+                reading_at: 23,
+
+                reading: 3,
             },
         ],
     },
@@ -164,146 +164,146 @@ export const TEST_ECOWATT_DATA: SnakeCasedPropertiesDeep<IEcowattData> = [
         reading: 2,
         hourly_values: [
             {
-                pas: 0,
-                value: 1,
+                reading_at: 0,
+                reading: 1,
             },
 
             {
-                pas: 1,
+                reading_at: 1,
 
-                value: 1,
+                reading: 1,
             },
 
             {
-                pas: 2,
+                reading_at: 2,
 
-                value: 1,
+                reading: 1,
             },
 
             {
-                pas: 3,
+                reading_at: 3,
 
-                value: 1,
+                reading: 1,
             },
 
             {
-                pas: 4,
+                reading_at: 4,
 
-                value: 1,
+                reading: 1,
             },
 
             {
-                pas: 5,
+                reading_at: 5,
 
-                value: 1,
+                reading: 1,
             },
 
             {
-                pas: 6,
+                reading_at: 6,
 
-                value: 1,
+                reading: 1,
             },
 
             {
-                pas: 7,
+                reading_at: 7,
 
-                value: 2,
+                reading: 2,
             },
 
             {
-                pas: 8,
+                reading_at: 8,
 
-                value: 2,
+                reading: 2,
             },
 
             {
-                pas: 9,
+                reading_at: 9,
 
-                value: 1,
+                reading: 1,
             },
 
             {
-                pas: 10,
+                reading_at: 10,
 
-                value: 1,
+                reading: 1,
             },
 
             {
-                pas: 11,
+                reading_at: 11,
 
-                value: 1,
+                reading: 1,
             },
 
             {
-                pas: 12,
+                reading_at: 12,
 
-                value: 2,
+                reading: 2,
             },
 
             {
-                pas: 13,
+                reading_at: 13,
 
-                value: 2,
+                reading: 2,
             },
 
             {
-                pas: 14,
+                reading_at: 14,
 
-                value: 1,
+                reading: 1,
             },
 
             {
-                pas: 15,
+                reading_at: 15,
 
-                value: 1,
+                reading: 1,
             },
 
             {
-                pas: 16,
+                reading_at: 16,
 
-                value: 1,
+                reading: 1,
             },
 
             {
-                pas: 17,
+                reading_at: 17,
 
-                value: 1,
+                reading: 1,
             },
 
             {
-                pas: 18,
+                reading_at: 18,
 
-                value: 3,
+                reading: 3,
             },
 
             {
-                pas: 19,
+                reading_at: 19,
 
-                value: 3,
+                reading: 3,
             },
 
             {
-                pas: 20,
+                reading_at: 20,
 
-                value: 2,
+                reading: 2,
             },
 
             {
-                pas: 21,
+                reading_at: 21,
 
-                value: 2,
+                reading: 2,
             },
 
             {
-                pas: 22,
+                reading_at: 22,
 
-                value: 1,
+                reading: 1,
             },
 
             {
-                pas: 23,
+                reading_at: 23,
 
-                value: 2,
+                reading: 2,
             },
         ],
     },
@@ -312,146 +312,146 @@ export const TEST_ECOWATT_DATA: SnakeCasedPropertiesDeep<IEcowattData> = [
         reading: 1,
         hourly_values: [
             {
-                pas: 0,
-                value: 1,
+                reading_at: 0,
+                reading: 1,
             },
 
             {
-                pas: 1,
+                reading_at: 1,
 
-                value: 1,
+                reading: 1,
             },
 
             {
-                pas: 2,
+                reading_at: 2,
 
-                value: 1,
+                reading: 1,
             },
 
             {
-                pas: 3,
+                reading_at: 3,
 
-                value: 1,
+                reading: 1,
             },
 
             {
-                pas: 4,
+                reading_at: 4,
 
-                value: 1,
+                reading: 1,
             },
 
             {
-                pas: 5,
+                reading_at: 5,
 
-                value: 1,
+                reading: 1,
             },
 
             {
-                pas: 6,
+                reading_at: 6,
 
-                value: 1,
+                reading: 1,
             },
 
             {
-                pas: 7,
+                reading_at: 7,
 
-                value: 2,
+                reading: 2,
             },
 
             {
-                pas: 8,
+                reading_at: 8,
 
-                value: 2,
+                reading: 2,
             },
 
             {
-                pas: 9,
+                reading_at: 9,
 
-                value: 1,
+                reading: 1,
             },
 
             {
-                pas: 10,
+                reading_at: 10,
 
-                value: 1,
+                reading: 1,
             },
 
             {
-                pas: 11,
+                reading_at: 11,
 
-                value: 1,
+                reading: 1,
             },
 
             {
-                pas: 12,
+                reading_at: 12,
 
-                value: 2,
+                reading: 2,
             },
 
             {
-                pas: 13,
+                reading_at: 13,
 
-                value: 2,
+                reading: 2,
             },
 
             {
-                pas: 14,
+                reading_at: 14,
 
-                value: 1,
+                reading: 1,
             },
 
             {
-                pas: 15,
+                reading_at: 15,
 
-                value: 1,
+                reading: 1,
             },
 
             {
-                pas: 16,
+                reading_at: 16,
 
-                value: 1,
+                reading: 1,
             },
 
             {
-                pas: 17,
+                reading_at: 17,
 
-                value: 1,
+                reading: 1,
             },
 
             {
-                pas: 18,
+                reading_at: 18,
 
-                value: 3,
+                reading: 3,
             },
 
             {
-                pas: 19,
+                reading_at: 19,
 
-                value: 3,
+                reading: 3,
             },
 
             {
-                pas: 20,
+                reading_at: 20,
 
-                value: 2,
+                reading: 2,
             },
 
             {
-                pas: 21,
+                reading_at: 21,
 
-                value: 2,
+                reading: 2,
             },
 
             {
-                pas: 22,
+                reading_at: 22,
 
-                value: 1,
+                reading: 1,
             },
 
             {
-                pas: 23,
+                reading_at: 23,
 
-                value: 2,
+                reading: 2,
             },
         ],
     },
@@ -460,146 +460,146 @@ export const TEST_ECOWATT_DATA: SnakeCasedPropertiesDeep<IEcowattData> = [
         reading: 3,
         hourly_values: [
             {
-                pas: 0,
-                value: 1,
+                reading_at: 0,
+                reading: 1,
             },
 
             {
-                pas: 1,
+                reading_at: 1,
 
-                value: 1,
+                reading: 1,
             },
 
             {
-                pas: 2,
+                reading_at: 2,
 
-                value: 1,
+                reading: 1,
             },
 
             {
-                pas: 3,
+                reading_at: 3,
 
-                value: 3,
+                reading: 3,
             },
 
             {
-                pas: 4,
+                reading_at: 4,
 
-                value: 3,
+                reading: 3,
             },
 
             {
-                pas: 5,
+                reading_at: 5,
 
-                value: 3,
+                reading: 3,
             },
 
             {
-                pas: 6,
+                reading_at: 6,
 
-                value: 3,
+                reading: 3,
             },
 
             {
-                pas: 7,
+                reading_at: 7,
 
-                value: 2,
+                reading: 2,
             },
 
             {
-                pas: 8,
+                reading_at: 8,
 
-                value: 2,
+                reading: 2,
             },
 
             {
-                pas: 9,
+                reading_at: 9,
 
-                value: 3,
+                reading: 3,
             },
 
             {
-                pas: 10,
+                reading_at: 10,
 
-                value: 2,
+                reading: 2,
             },
 
             {
-                pas: 11,
+                reading_at: 11,
 
-                value: 2,
+                reading: 2,
             },
 
             {
-                pas: 12,
+                reading_at: 12,
 
-                value: 2,
+                reading: 2,
             },
 
             {
-                pas: 13,
+                reading_at: 13,
 
-                value: 2,
+                reading: 2,
             },
 
             {
-                pas: 14,
+                reading_at: 14,
 
-                value: 3,
+                reading: 3,
             },
 
             {
-                pas: 15,
+                reading_at: 15,
 
-                value: 3,
+                reading: 3,
             },
 
             {
-                pas: 16,
+                reading_at: 16,
 
-                value: 1,
+                reading: 1,
             },
 
             {
-                pas: 17,
+                reading_at: 17,
 
-                value: 1,
+                reading: 1,
             },
 
             {
-                pas: 18,
+                reading_at: 18,
 
-                value: 3,
+                reading: 3,
             },
 
             {
-                pas: 19,
+                reading_at: 19,
 
-                value: 3,
+                reading: 3,
             },
 
             {
-                pas: 20,
+                reading_at: 20,
 
-                value: 2,
+                reading: 2,
             },
 
             {
-                pas: 21,
+                reading_at: 21,
 
-                value: 2,
+                reading: 2,
             },
 
             {
-                pas: 22,
+                reading_at: 22,
 
-                value: 1,
+                reading: 1,
             },
 
             {
-                pas: 23,
+                reading_at: 23,
 
-                value: 2,
+                reading: 2,
             },
         ],
     },

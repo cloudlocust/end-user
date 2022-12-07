@@ -9,7 +9,7 @@ import 'src/modules/Ecowatt/components/EcowattTimeline/ecowattTimeline.scss'
  * @param pas Pas d'heure. Represents every hour of the day.
  * @returns Every 4 values number.
  */
-function filterHourlyPas(pas: IHourlyValues['pas']) {
+function filterHourlyPas(pas: IHourlyValues['readingAt']) {
     let pasPlusOne = pas + 1
     if (pasPlusOne % 4 === 0) {
         return pasPlusOne
@@ -35,7 +35,7 @@ export const EcowattTimeline = ({ hourlyValues }: { hourlyValues?: IHourlyValues
      * @param hourlyValues Hourly value.
      * @returns Color according to the value.
      */
-    function getBackgroundColor(hourlyValues: IHourlyValues['value']) {
+    function getBackgroundColor(hourlyValues: IHourlyValues['reading']) {
         switch (hourlyValues) {
             case EcowattConsumptionValue.OK:
                 return theme.palette.success.main
@@ -53,16 +53,16 @@ export const EcowattTimeline = ({ hourlyValues }: { hourlyValues?: IHourlyValues
             <div className="flex flex-row w-full justify-center items-center">
                 {hourlyValues?.map((hour) => (
                     <div
-                        key={hour.pas}
-                        style={{ backgroundColor: getBackgroundColor(hour.value) }}
+                        key={hour.readingAt}
+                        style={{ backgroundColor: getBackgroundColor(hour.reading) }}
                         className="flex-1 hour h-20"
                     ></div>
                 ))}
             </div>
             <div className="flex flex-row w-full justify-center items-center">
                 {hourlyValues?.map((hour) => (
-                    <div className="flex-1 h-20" key={hour.pas}>
-                        {isUndefined(filterHourlyPas(hour.pas)) ? '' : `${filterHourlyPas(hour.pas)}h`}
+                    <div className="flex-1 h-20" key={hour.readingAt}>
+                        {isUndefined(filterHourlyPas(hour.readingAt)) ? '' : `${filterHourlyPas(hour.readingAt)}h`}
                     </div>
                 ))}
             </div>
