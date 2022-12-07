@@ -1,6 +1,6 @@
 pipeline{
     agent { label 'worker-2' }
-    tools {nodejs "node14"}
+    tools {nodejs "node16"}
     environment{
         GITHUB_CREDENTIALS = credentials('github myem developer')
         DISCORD_WEBHOOK_URL = credentials('discord-webhook')
