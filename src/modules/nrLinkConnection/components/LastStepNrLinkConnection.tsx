@@ -1,6 +1,6 @@
 import { useIntl } from 'react-intl'
 import { ActionsNrLinkConnectionSteps } from 'src/modules/nrLinkConnection'
-import { Form, requiredBuilder } from 'src/common/react-platform-components'
+import { Form, regex, requiredBuilder } from 'src/common/react-platform-components'
 import { useSnackbar } from 'notistack'
 import { TextField } from 'src/common/ui-kit'
 import { IMeter } from 'src/modules/Meters/Meters'
@@ -102,7 +102,13 @@ const LastStepNrLinkConnection = ({
                         <TextField
                             name="nrlinkGuid"
                             label="№ d'identification nrLink"
-                            validateFunctions={[requiredBuilder()]}
+                            validateFunctions={[
+                                requiredBuilder(),
+                                regex(
+                                    /^[0-9a-fA-F]{16}$/,
+                                    'Veuillez entrer un N° GUID valide (16 caractères, chiffre de 0 à 9, lettre de A à F, pas d’espace ni de tiret)',
+                                ),
+                            ]}
                         />
                     </div>
                     <div className="w-full flex flex-col">
