@@ -59,7 +59,7 @@ export const EcowattTimeline = ({
     }
 
     return (
-        <div className="px-8 py-6 flex w-full flex-col">
+        <div className="px-8 py-6 flex w-full flex-col" data-testid="timeline">
             <div className="flex flex-row w-full justify-center items-center">
                 {hourlyValues?.map((hour) => (
                     <div
