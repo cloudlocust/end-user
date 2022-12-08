@@ -135,3 +135,26 @@ export const REACT_APP_FIREBASE_APP_ID = window._env_.REACT_APP_FIREBASE_APP_ID
  * REACT_APP_FIREBASE_VAPID_KEY.
  */
 export const REACT_APP_FIREBASE_VAPID_KEY = window._env_.REACT_APP_FIREBASE_VAPID_KEY
+
+/**
+ * All firebase config in one variable.
+ */
+export const FIREBASE_CONFIG = {
+    apiKey: REACT_APP_FIREBASE_API_KEY,
+    authDomain: REACT_APP_FIREBASE_AUTH_DOMAIN,
+    projectId: REACT_APP_FIREBASE_PROJECT_ID,
+    storageBucket: REACT_APP_FIREBASE_STORAGE_BUCKET,
+    messagingSenderId: REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
+    appId: REACT_APP_FIREBASE_APP_ID,
+}
+
+/**
+ * Firebase Messaging Service worker URL w/config variables.
+ *
+ * In order for firebase-messaging-sw.js to use environment variables, it needs to do some workaround.
+ * Reference: https://stackoverflow.com/a/64961858 .
+ *
+ */
+export const FIREBASE_MESSAGING_SW_URL = `${process.env.PUBLIC_URL}/firebase-messaging-sw.js?${new URLSearchParams(
+    FIREBASE_CONFIG,
+).toString()}`
