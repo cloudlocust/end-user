@@ -245,7 +245,7 @@ export const url: UrlValidator =
 /**
  * Regex Validator type.
  */
-export type regexValidator = (pattern: RegExp, errorMsg?: string) => CustomValidate
+export type regexValidator = (pattern: string, errorMsg?: string) => CustomValidate
 
 /**
  * Validates that the value matches the regex.
@@ -257,11 +257,11 @@ export type regexValidator = (pattern: RegExp, errorMsg?: string) => CustomValid
 export const regex: regexValidator =
     (pattern, errorMsg) =>
     (value: string): JSX.Element | undefined => {
-        if (!yup.string().matches(pattern).isValidSync(value)) {
+        if (!yup.string().matches(new RegExp(pattern)).isValidSync(value)) {
             return errorMsg ? (
                 <FormattedMessage id={errorMsg} defaultMessage={errorMsg} />
             ) : (
-                <FormattedMessage id="L'url indiqué est invalide" defaultMessage="L'url indiqué est invalide" />
+                <FormattedMessage id="Le champ est invalide" defaultMessage="Le champ est invalide" />
             )
         }
         return undefined

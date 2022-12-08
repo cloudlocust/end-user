@@ -74,9 +74,7 @@ describe('Test LastStepNrLinkConnection', () => {
             const { container, getByText } = reduxedRender(
                 <LastStepNrLinkConnection {...mockLastStepNrLinkConnectionProps} />,
             )
-            // Initially meter is field and nrlink_empty
             expect(container.querySelector(guidNrlinkInputQuerySelector)).toHaveValue('')
-
             userEvent.click(getByText(SUBMIT_BUTTON_TEXT))
 
             await waitFor(() => {

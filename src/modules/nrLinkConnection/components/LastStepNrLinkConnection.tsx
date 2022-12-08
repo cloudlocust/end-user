@@ -105,7 +105,7 @@ const LastStepNrLinkConnection = ({
                             validateFunctions={[
                                 requiredBuilder(),
                                 regex(
-                                    /^[0-9a-fA-F]{16}$/,
+                                    '^[0-9a-fA-F]{16}$',
                                     'Veuillez entrer un N° GUID valide (16 caractères, chiffre de 0 à 9, lettre de A à F, pas d’espace ni de tiret)',
                                 ),
                             ]}
