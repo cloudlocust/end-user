@@ -18,7 +18,7 @@ export const TEST_HOUSES: SnakeCasedPropertiesDeep<IHousing>[] = [
             guid: '12345678911234',
             features: {
                 offpeak: {
-                    read_only: false,
+                    read_only: true,
                     offpeak_hours: [
                         {
                             start: '08:00',
@@ -221,7 +221,7 @@ export const housingEndpoints = [
 
     // Edit meter
     rest.patch<editMeterInputType>(`${HOUSING_API}/:housingId/meter`, (req, res, ctx) => {
-        const { guid } = req.body
+        const { guid, features } = req.body
         const { housingId } = req.params
         const houseId = parseInt(housingId)
 
@@ -232,8 +232,12 @@ export const housingEndpoints = [
         if (!housingToUpdate) {
             return res(ctx.status(400), ctx.delay(1000))
         }
-
-        return res(ctx.status(200), ctx.delay(1000), ctx.json({ ...TEST_HOUSES[0].meter, ...{ guid } }))
+        const newMeterHousing = {
+            ...housingToUpdate.meter,
+            guid: guid || housingToUpdate.meter!.guid,
+            features: features || housingToUpdate.meter!.features,
+        }
+        return res(ctx.status(200), ctx.delay(1000), ctx.json(newMeterHousing))
     }),
 
     // Get one meter
