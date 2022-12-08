@@ -51,3 +51,8 @@ export type searchFilterType =
          */
         search?: string
     }
+
+/**
+ * Regex that matches Minimum eight characters, at least one uppercase letter, one lowercase letter and on special character (@$!%*?&), for stronger passwords.
+ */
+export const passwordFieldValidationSecurity1 = '^(?=.*[a-z])(?=.*[A-Z])(?=.*[@$!%*?&])[A-Za-z@$!%*?&]{8,}$'

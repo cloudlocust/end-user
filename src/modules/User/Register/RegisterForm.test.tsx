@@ -90,6 +90,8 @@ const mockSetValue = jest.fn((data) => null)
 const mockInit = jest.fn(() => null)
 const formatted_addr_data = 'normal formatted_address'
 const formatted_test_locality = 'test locality'
+const INVALID_PASSWORD_FIELD_ERROR =
+    'Votre mot de passe doit contenir au moins 8 caractères dont 1 Maj, 1 min et un caractère spécial'
 const formatted_test_country = 'test country'
 // eslint-disable-next-line jsdoc/require-jsdoc
 export const getPasswordMinErrorText = (min: number) => `Le champ doit avoir au minimum ${min} caractères`
@@ -159,9 +161,9 @@ const fillFormWithData = async (getByRole: Function, container: HTMLElement, get
     // https://github.com/testing-library/dom-testing-library/issues/567
     // To get the element password you can use this: const getByLabelText(/password/i)
     const passwordField = container.querySelector(passwordQuerySelector) as Element
-    userEvent.type(passwordField, '12345678')
+    userEvent.type(passwordField, 'P@ssword')
     const repeatPasswordField = container.querySelector('input[name="repeatPwd"]') as Element
-    userEvent.type(repeatPasswordField, '12345678')
+    userEvent.type(repeatPasswordField, 'P@ssword')
     const addressField = within(getByTestId(ADDRESS_TESTID)).getByRole('textbox') as HTMLInputElement
     await waitFor(
         () => {
@@ -223,6 +225,14 @@ describe('test registerForm', () => {
         userEvent.click(screen.getByText(VALIDER_TEXT))
         await waitFor(() => expect(getAllByText(getPasswordMinErrorText(8)).length).toBe(1))
     })
+
+    test('Password field is invalid', async () => {
+        const { container, getAllByText } = reduxedRender(<RegisterForm />)
+        const passwordField = container.querySelector(passwordQuerySelector) as Element
+        userEvent.type(passwordField, '12345678')
+        userEvent.click(screen.getByText(VALIDER_TEXT))
+        await waitFor(() => expect(getAllByText(INVALID_PASSWORD_FIELD_ERROR).length).toBe(1))
+    })
     test('Repeat password validation', async () => {
         const { container, getAllByText } = reduxedRender(<RegisterForm />)
         await act(async () => {
@@ -259,7 +269,7 @@ describe('test registerForm', () => {
                     firstName: 'test prénom',
                     lastName: 'test nom',
                     phone: TEST_SUCCESS_USER.phone,
-                    password: '12345678',
+                    password: 'P@ssword',
                     address: {
                         city: 'test locality',
                         country: 'test country',
