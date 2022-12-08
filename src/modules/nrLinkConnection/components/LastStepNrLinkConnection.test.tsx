@@ -1,11 +1,13 @@
 import { reduxedRender } from 'src/common/react-platform-components/test'
 import { LastStepNrLinkConnection } from 'src/modules/nrLinkConnection'
 import { waitFor } from '@testing-library/react'
-import { TEST_METERS } from 'src/mocks/handlers/meters'
+import { TEST_METERS as MOCK_METERS } from 'src/mocks/handlers/meters'
 import userEvent from '@testing-library/user-event'
 import { IMeter } from 'src/modules/Meters/Meters'
 import { URL_CONSUMPTION } from 'src/modules/MyConsumption'
+import { applyCamelCase } from 'src/common/react-platform-components'
 
+const TEST_METERS: IMeter[] = applyCamelCase(MOCK_METERS)
 const SUBMIT_BUTTON_TEXT = 'Terminer'
 const REQUIRED_ERROR_TEXT = 'Champ obligatoire non renseigné'
 const TEST_NRLINK_GUID = '12345123451234'

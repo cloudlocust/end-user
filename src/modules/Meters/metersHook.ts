@@ -1,11 +1,13 @@
 import { useState } from 'react'
-import { addMeterInputType, editMeterInputType } from 'src/modules/Meters/Meters'
+import { addMeterInputType, editMeterInputType, IMeter } from 'src/modules/Meters/Meters'
 import { axios } from 'src/common/react-platform-components'
 import { API_RESOURCES_URL } from 'src/configs'
 import { useIntl } from 'src/common/react-platform-translation'
 import { useSnackbar } from 'notistack'
 import { HOUSING_API } from 'src/modules/MyHouse/components/HousingList/HousingsHooks'
+import { BuilderUseElementDetails } from 'src/modules/utils/useElementHookBuilder'
 
+import { formatMessageType } from 'src/common/react-platform-translation'
 /**
  * Meters microservice endpoint.
  */
@@ -112,3 +114,32 @@ export const useMeterForHousing = () => {
         loadingInProgress,
     }
 }
+
+/**
+ * Error message loadElementDetailsError.
+ *
+ * @param error Error.
+ * @param formatMessage FormatMessage intl object from (react-intl package).
+ * @returns {string} Success message.
+ */
+export const loadElementDetailsError = (error: any, formatMessage: formatMessageType) => {
+    return formatMessage({
+        id: 'Erreur lors du chargement du compteur',
+        defaultMessage: 'Erreur lors du chargement du compteur',
+    })
+}
+
+/**
+`* Hooks for Housing Meter Details.
+ *
+ * @param housingId Housing Id of the Housing.
+ * @param loadOnInstanciation Indicate if load housingMeter is executed on instanciation of the hoook.
+ * @returns Hook useHousingMeterDetails.
+ */
+export const useHousingMeterDetails = (housingId: number, loadOnInstanciation: boolean = false) =>
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    BuilderUseElementDetails<IMeter, {}, IMeter>({
+        API_ENDPOINT: `${HOUSING_API}/${housingId}/meter`,
+        isLoadElementDetailsOnHookInstanciation: loadOnInstanciation,
+        snackBarMessage0verride: { loadElementDetailsError },
+    })()
