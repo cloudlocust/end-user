@@ -4,7 +4,6 @@ import { OfflineBolt } from '@mui/icons-material/'
 import 'dayjs/locale/fr'
 import { useState } from 'react'
 import { EcowattConsumptionValue, IEcowatt } from 'src/modules/Ecowatt/ecowatt.d'
-import { useEcowatt } from 'src/modules/Ecowatt/EcowattHook'
 import { styled } from '@mui/material/styles'
 import dayjs from 'dayjs'
 import { capitalize, isEmpty } from 'lodash'
@@ -39,15 +38,26 @@ function getSignalIcon(signalValue: IEcowatt['reading']) {
 /**
  * Component for Ecowatt Widget.
  *
+ * @param root0 N/A.
+ * @param root0.ecowattData Ecowatt data coming from useEcowatt hook.
+ * @param root0.isEcowattDataInProgress Progress state.
  * @returns EcowattWidget JSX.
  */
-export const EcowattWidget = () => {
+export const EcowattWidget = ({
+    ecowattData,
+    isEcowattDataInProgress,
+}: // eslint-disable-next-line jsdoc/require-jsdoc
+{
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    ecowattData: IEcowatt[] | null
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    isEcowattDataInProgress: boolean
+}) => {
     const theme = useTheme()
     const mdDown = useMediaQuery(theme.breakpoints.down('md'))
     const [openTooltip, setOpenTooltip] = useState<boolean>(false)
     const [expendDetails, setExpendDetails] = useToggle(false)
     const [dayDetails, setDayDetails] = useState<IEcowatt | null>(null)
-    const { ecowattData, isLoadingInProgress } = useEcowatt()
 
     const StyledDiv = styled('div')(({ theme }) => ({
         padding: `${mdDown ? '5px' : '1rem'} ${mdDown ? '3px' : '1.5rem'}`,
@@ -89,7 +99,7 @@ export const EcowattWidget = () => {
                     />
                 </div>
                 <div className="py-16 px-8 w-full flex flex-col justify-between items-center">
-                    {isLoadingInProgress ? (
+                    {isEcowattDataInProgress ? (
                         <div className="flex flex-col justify-center items-center w-full mb-8">
                             <CircularProgress data-testid="circular-progress" size={25} />
                         </div>
@@ -147,9 +157,8 @@ export const EcowattWidget = () => {
                     )}
 
                     {/* Signal Timeline */}
-                    {/* TODO: MYEM-3500 */}
                     <Collapse className="mt-8 mb-6 w-full" in={expendDetails}>
-                        <EcowattTimeline hourlyValues={dayDetails?.hourlyValues} />
+                        <EcowattTimeline hourlyValues={dayDetails?.hourlyValues} showHourReadingAt />
                     </Collapse>
                 </div>
             </Card>

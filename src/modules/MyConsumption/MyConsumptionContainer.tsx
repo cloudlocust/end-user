@@ -32,6 +32,8 @@ import { ENPHASE_OFF_MESSAGE, NRLINK_ENEDIS_OFF_MESSAGE } from 'src/modules/MyCo
 import { warningMainHashColor } from 'src/modules/utils/muiThemeVariables'
 import { productionChartErrorState } from 'src/modules/MyConsumption/MyConsumptionConfig'
 import { EcowattWidget } from 'src/modules/Ecowatt/EcowattWidget'
+import { useEcowatt } from 'src/modules/Ecowatt/EcowattHook'
+import { EcowattTimeline } from 'src/modules/Ecowatt/components/EcowattTimeline'
 
 /**
  * InitialMetricsStates for useMetrics.
@@ -94,6 +96,7 @@ export const MyConsumptionContainer = () => {
     const { setMetricsInterval, setRange, setFilters, isMetricsLoading, data, filters, range } = useMetrics(
         getInitialMetricsHookValues(),
     )
+    const { ecowattData, isLoadingInProgress: isEcowattDataInProgress } = useEcowatt()
     const [period, setPeriod] = useState<periodType>('daily')
     const [filteredTargets, setFilteredTargets] = useState<metricTargetType[]>(defaultFilteredTargetsValues)
     // This state represents whether or not the chart is stacked: true.
@@ -269,7 +272,7 @@ export const MyConsumptionContainer = () => {
 
     return (
         <>
-            <div style={{ background: theme.palette.primary.dark }} className="p-24">
+            <div style={{ background: theme.palette.primary.dark }} className="p-16 md:p-24">
                 {nrlinkOff && enedisOff ? (
                     <ChartErrorMessage
                         nrLinkEnedisOff={nrlinkOff && enedisOff}
@@ -335,18 +338,21 @@ export const MyConsumptionContainer = () => {
                                     <CircularProgress style={{ color: theme.palette.background.paper }} />
                                 </div>
                             ) : (
-                                <MyConsumptionChart
-                                    data={consumptionChartData}
-                                    period={period}
-                                    range={range}
-                                    isStackedEnabled={isStackedEnabled}
-                                    chartType="consumption"
-                                    chartLabel={
-                                        enphaseConsent?.enphaseConsentState !== 'ACTIVE'
-                                            ? 'Consommation totale'
-                                            : 'Electricité achetée sur le réseau'
-                                    }
-                                />
+                                <div className="flex flex-col">
+                                    <MyConsumptionChart
+                                        data={consumptionChartData}
+                                        period={period}
+                                        range={range}
+                                        isStackedEnabled={isStackedEnabled}
+                                        chartType="consumption"
+                                        chartLabel={
+                                            enphaseConsent?.enphaseConsentState !== 'ACTIVE'
+                                                ? 'Consommation totale'
+                                                : 'Electricité achetée sur le réseau'
+                                        }
+                                    />
+                                    <EcowattTimeline hourlyValues={ecowattData?.[0].hourlyValues} />
+                                </div>
                             )}
 
                             {isEurosConsumptionChart && hasMissingHousingContracts && (
@@ -435,7 +441,7 @@ export const MyConsumptionContainer = () => {
             </div>
             {/* Ecowatt Widget */}
             <div className="p-12 sm:p-24 ">
-                <EcowattWidget />
+                <EcowattWidget ecowattData={ecowattData} isEcowattDataInProgress={isEcowattDataInProgress} />
             </div>
             {data.length !== 0 && (
                 <div className="p-12 sm:p-24 ">
