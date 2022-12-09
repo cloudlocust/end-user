@@ -243,6 +243,31 @@ export const url: UrlValidator =
     }
 
 /**
+ * Regex Validator type.
+ */
+export type regexValidator = (pattern: string, errorMsg?: string) => CustomValidate
+
+/**
+ * Validates that the value matches the regex.
+ *
+ * @param {string} pattern Pattern to match the regular expression.
+ * @param {string} errorMsg Error message as a string.
+ * @returns  TODO Document.
+ */
+export const regex: regexValidator =
+    (pattern, errorMsg) =>
+    (value: string): JSX.Element | undefined => {
+        if (!yup.string().matches(new RegExp(pattern)).isValidSync(value)) {
+            return errorMsg ? (
+                <FormattedMessage id={errorMsg} defaultMessage={errorMsg} />
+            ) : (
+                <FormattedMessage id="Le champ est invalide" defaultMessage="Le champ est invalide" />
+            )
+        }
+        return undefined
+    }
+
+/**
  * DateFormatValidator type.
  */
 export type DateFormatValidator = (format?: string, errorMsg?: JSX.Element) => CustomValidate
