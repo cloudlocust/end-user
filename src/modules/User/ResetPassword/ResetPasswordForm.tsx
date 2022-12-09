@@ -1,9 +1,10 @@
 import React, { useRef } from 'react'
-import { requiredBuilder, Form, repeatPassword, min } from 'src/common/react-platform-components'
+import { requiredBuilder, Form, repeatPassword, regex } from 'src/common/react-platform-components'
 import { useIntl } from 'src/common/react-platform-translation'
 import { ButtonLoader, PasswordField } from 'src/common/ui-kit'
 import { useResetPassword } from 'src/modules/User/ResetPassword/hooks'
 import { ResetPasswordData, ResetPasswordFormProps } from 'src/modules/User/ResetPassword/ResetPasswordFormTypes'
+import { passwordFieldValidationSecurity1 } from 'src/modules/utils'
 
 /**
  * Reset password form.
@@ -31,7 +32,13 @@ export const ResetPasswordForm = ({ token }: ResetPasswordFormProps) => {
                     name="password"
                     label="Mot de passe"
                     inputRef={passwordRef}
-                    validateFunctions={[requiredBuilder(), min(8)]}
+                    validateFunctions={[
+                        requiredBuilder(),
+                        regex(
+                            passwordFieldValidationSecurity1,
+                            'Votre mot de passe doit contenir au moins 8 caractères dont 1 Maj, 1 min et un caractère spécial',
+                        ),
+                    ]}
                 />
                 <PasswordField
                     name="repeatPwd"

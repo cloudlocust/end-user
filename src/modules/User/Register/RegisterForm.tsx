@@ -1,6 +1,6 @@
 import React, { useRef } from 'react'
 import { useIntl } from 'react-intl'
-import { email, requiredBuilder, repeatPassword, Form, min, regex } from 'src/common/react-platform-components'
+import { email, requiredBuilder, repeatPassword, Form, regex } from 'src/common/react-platform-components'
 import { TextField, PasswordField, ButtonLoader } from 'src/common/ui-kit'
 import { GoogleMapsAddressAutoCompleteField } from 'src/common/ui-kit/form-fields/GoogleMapsAddressAutoComplete/GoogleMapsAddressAutoCompleteField'
 import { useRegister } from 'src/modules/User/Register/hooks'
