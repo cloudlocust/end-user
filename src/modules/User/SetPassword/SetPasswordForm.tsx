@@ -1,5 +1,5 @@
 import React, { useRef } from 'react'
-import { requiredBuilder, Form, repeatPassword, min, accept, regex } from 'src/common/react-platform-components'
+import { requiredBuilder, Form, repeatPassword, accept, regex } from 'src/common/react-platform-components'
 import { useIntl } from 'src/common/react-platform-translation'
 import { ButtonLoader, PasswordField, Checkbox } from 'src/common/ui-kit'
 import { useResetPassword } from 'src/modules/User/ResetPassword/hooks'

@@ -2,12 +2,14 @@ import { ResetPasswordForm } from 'src/modules/User/ResetPassword/ResetPasswordF
 import { waitFor } from '@testing-library/react'
 import { reduxedRender } from 'src/common/react-platform-components/test'
 import userEvent from '@testing-library/user-event'
-import { getPasswordMinErrorText, passwordQuerySelector } from 'src/modules/User/Register/RegisterForm.test'
+import { passwordQuerySelector } from 'src/modules/User/Register/RegisterForm.test'
 
 const fakeToken = '123456ABCD'
 
 const mockOnSubmitResetPassword = jest.fn()
 const SUBMIT_TEXT = 'Confirmer'
+const INVALID_PASSWORD_FIELD_ERROR =
+    'Votre mot de passe doit contenir au moins 8 caractères dont 1 Maj, 1 min et un caractère spécial'
 
 jest.mock('src/modules/User/ResetPassword/hooks', () => ({
     ...jest.requireActual('src/modules/User/ResetPassword/hooks'),
@@ -34,18 +36,20 @@ describe('RestPasswordForm component test', () => {
             expect(getByText('Champ obligatoire non renseigné')).toBeTruthy()
         })
     })
-    test('Password Length minimum character validation', async () => {
+
+    test('when password field is invalid', async () => {
         const { container, getByText, getAllByText } = reduxedRender(<ResetPasswordForm token={fakeToken} />)
         const passwordField = container.querySelector(passwordQuerySelector) as Element
         userEvent.type(passwordField, '123')
         userEvent.click(getByText(SUBMIT_TEXT))
-        await waitFor(() => expect(getAllByText(getPasswordMinErrorText(8)).length).toBe(1))
+        await waitFor(() => expect(getAllByText(INVALID_PASSWORD_FIELD_ERROR).length).toBe(1))
     })
+
     test('when entering unmatched passwords, a validation error should appear', async () => {
         const { getByText, container } = reduxedRender(<ResetPasswordForm token={fakeToken} />)
 
         const passwordField = container.querySelector('input[name="password"]') as Element
-        userEvent.type(passwordField, '12345678')
+        userEvent.type(passwordField, 'P@ssword')
         const repeatPasswordField = container.querySelector('input[name="repeatPwd"]') as Element
         userEvent.type(repeatPasswordField, '123')
 
@@ -61,15 +65,15 @@ describe('RestPasswordForm component test', () => {
         const { getByText, container } = reduxedRender(<ResetPasswordForm token={fakeToken} />)
 
         const passwordField = container.querySelector('input[name="password"]') as Element
-        userEvent.type(passwordField, '12345678')
+        userEvent.type(passwordField, 'P@ssword')
         const repeatPasswordField = container.querySelector('input[name="repeatPwd"]') as Element
-        userEvent.type(repeatPasswordField, '12345678')
+        userEvent.type(repeatPasswordField, 'P@ssword')
 
         userEvent.click(getByText(SUBMIT_TEXT))
 
         await waitFor(() => {
             expect(mockOnSubmitResetPassword).toHaveBeenCalledWith({
-                password: '12345678',
+                password: 'P@ssword',
                 token: fakeToken,
             })
         })
