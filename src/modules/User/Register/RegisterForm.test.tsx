@@ -93,8 +93,6 @@ const formatted_test_locality = 'test locality'
 const INVALID_PASSWORD_FIELD_ERROR =
     'Votre mot de passe doit contenir au moins 8 caractères dont 1 Maj, 1 min et un caractère spécial'
 const formatted_test_country = 'test country'
-// eslint-disable-next-line jsdoc/require-jsdoc
-export const getPasswordMinErrorText = (min: number) => `Le champ doit avoir au minimum ${min} caractères`
 const CHECKBOX_RGPD_ERROR_TEXT = 'Ce champ est obligatoire'
 // eslint-disable-next-line jsdoc/require-jsdoc
 export const passwordQuerySelector = 'input[name="password"]'
@@ -217,13 +215,6 @@ describe('test registerForm', () => {
         })
         expect(mockOnSubmit).not.toHaveBeenCalled()
         expect(getAllByText("L'email indiqué est invalide.").length).toBe(1)
-    })
-    test('Password Length minimum character validation', async () => {
-        const { container, getAllByText } = reduxedRender(<RegisterForm />)
-        const passwordField = container.querySelector(passwordQuerySelector) as Element
-        userEvent.type(passwordField, '123')
-        userEvent.click(screen.getByText(VALIDER_TEXT))
-        await waitFor(() => expect(getAllByText(getPasswordMinErrorText(8)).length).toBe(1))
     })
 
     test('Password field is invalid', async () => {

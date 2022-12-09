@@ -73,7 +73,6 @@ export const ChangePassword = () => {
                                     inputRef={passwordRef}
                                     validateFunctions={[
                                         requiredBuilder(),
-                                        min(8),
                                         regex(
                                             passwordFieldValidationSecurity1,
                                             'Votre mot de passe doit contenir au moins 8 caractères dont 1 Maj, 1 min et un caractère spécial',

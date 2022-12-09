@@ -2,7 +2,7 @@ import { SetPasswordForm } from 'src/modules/User/SetPassword/SetPasswordForm'
 import { fireEvent, waitFor } from '@testing-library/react'
 import { reduxedRender } from 'src/common/react-platform-components/test'
 import userEvent from '@testing-library/user-event'
-import { getPasswordMinErrorText, passwordQuerySelector } from 'src/modules/User/Register/RegisterForm.test'
+import { passwordQuerySelector } from 'src/modules/User/Register/RegisterForm.test'
 
 const fakeToken = '123456ABCD'
 
@@ -53,13 +53,6 @@ describe('RestPasswordForm component test', () => {
         })
     })
 
-    test('Password Length minimum character validation', async () => {
-        const { container, getByText, getAllByText } = reduxedRender(<SetPasswordForm token={fakeToken} />)
-        const passwordField = container.querySelector(passwordQuerySelector) as Element
-        userEvent.type(passwordField, '123')
-        userEvent.click(getByText(SUBMIT_TEXT))
-        await waitFor(() => expect(getAllByText(getPasswordMinErrorText(8)).length).toBe(1))
-    })
     test('when entering unmatched passwords, a validation error should appear', async () => {
         const { getByText, container } = reduxedRender(<SetPasswordForm token={fakeToken} />)
 
