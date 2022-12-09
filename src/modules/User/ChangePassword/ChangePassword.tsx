@@ -4,7 +4,7 @@ import DialogContent from '@mui/material/DialogContent'
 import DialogTitle from '@mui/material/DialogTitle'
 import { Icon } from 'src/common/ui-kit'
 import { useIntl } from 'src/common/react-platform-translation'
-import { requiredBuilder, Form, repeatPassword, min } from 'src/common/react-platform-components'
+import { requiredBuilder, Form, repeatPassword, min, regex } from 'src/common/react-platform-components'
 import { ButtonLoader, PasswordField } from 'src/common/ui-kit'
 import 'src/modules/User/ForgotPassword/ForgotPassword.scss'
 import { motion } from 'framer-motion'
@@ -13,6 +13,7 @@ import { useRef, useState } from 'react'
 import { useProfileManagement } from 'src/modules/User/ProfileManagement/ProfileManagementHooks'
 import Button from '@mui/material/Button'
 import { IChangePasswordData } from 'src/modules/User/ChangePassword/changePassword.d'
+import { passwordFieldValidationSecurity1 } from 'src/modules/utils'
 
 /**
  * Change password form, this form is based on react hooks.
@@ -70,7 +71,13 @@ export const ChangePassword = () => {
                                     name="password"
                                     label="Nouveau mot de passe"
                                     inputRef={passwordRef}
-                                    validateFunctions={[requiredBuilder(), min(8)]}
+                                    validateFunctions={[
+                                        requiredBuilder(),
+                                        regex(
+                                            passwordFieldValidationSecurity1,
+                                            'Votre mot de passe doit contenir au moins 8 caractères dont 1 Maj, 1 min et un caractère spécial',
+                                        ),
+                                    ]}
                                 />
                                 <TypographyFormatMessage variant="subtitle2" className="font-semibold mb-10">
                                     Confirmer mot de passe
