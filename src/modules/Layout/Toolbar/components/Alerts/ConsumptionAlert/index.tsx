@@ -36,8 +36,8 @@ const ConsumptionAlert = ({
                         {ConsumptionAlertTitle[interval]}
                     </TypographyFormatMessage>
                     <div className="flex justify-around content-center mb-16">
-                        <CustomTextFieldInput endSymbol="kWh" />
-                        <CustomTextFieldInput endSymbol="€" />
+                        <CustomTextFieldInput endSymbol="kWh" disabled={!isEdit} />
+                        <CustomTextFieldInput endSymbol="€" disabled={!isEdit} />
                     </div>
                     <ButtonsGroup
                         isEdit={isEdit}
@@ -55,20 +55,32 @@ const ConsumptionAlert = ({
  *
  * @param props N/A.
  * @param props.endSymbol Is the input a consumption or price.
+ * @param props.disabled Is the field disabled.
  * @returns JSX.
  */
 const CustomTextFieldInput = ({
     endSymbol,
+    disabled,
 }: //eslint-disable-next-line
 {
     /**
      * Text Field Input Type.
      */
     endSymbol: String
+    /**
+     * If field is Disabled.
+     */
+    disabled: boolean
 }) => {
     return (
         <div className="flex justify-center content-center">
-            <TextField variant="outlined" sx={{ maxWidth: '75px' }} />
+            <TextField
+                variant="outlined"
+                sx={{ maxWidth: '75px' }}
+                disabled={disabled}
+                type="number"
+                defaultValue={0}
+            />
             <div
                 className="bg-gray-400 flex items-center justify-center float-left rounded"
                 style={{ width: 30, height: 51.69, marginLeft: -5, zIndex: 0 }}
