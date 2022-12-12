@@ -11,6 +11,7 @@ const INFO_ICON = 'InfoOutlinedIcon'
 const CLOSE_ICON = 'CloseIcon'
 const OFFLINEBOLT_ICON = 'OfflineBoltIcon'
 const LOADING_CIRCLE_TEST_ID = 'circular-progress'
+const BUTTON_TEXT = 'Configurer des alertes'
 
 let mockEcowattData = applyCamelCase(TEST_ECOWATT_DATA)
 
@@ -76,7 +77,7 @@ describe('Ecowatt Widget tests', () => {
 
         mockEcowattWidgetProps.isEcoowattWidgetScrolledAt = true
         mockEcowattWidgetProps.ecowattData = mockEcowattData
-        const { getByTestId } = reduxedRender(
+        const { getByTestId, getByText } = reduxedRender(
             <ThemeProvider theme={theme}>
                 <EcowattWidget {...mockEcowattWidgetProps} />
             </ThemeProvider>,
@@ -84,5 +85,6 @@ describe('Ecowatt Widget tests', () => {
 
         expect(getByTestId('timeline')).toBeTruthy()
         expect(getByTestId('day-widget-0')).toHaveStyle(`border: 2px solid ${theme.palette.primary.main}`)
+        expect(getByText(BUTTON_TEXT)).toBeTruthy()
     })
 })
