@@ -57,5 +57,6 @@ export type searchFilterType =
  *
  * RegExp.source return the string pattern, Instead of storing the string directly in the variable because Jenkins SonarQ thinks the string is a password and thus sonarQ fails, and reports as a Security Hotspots Rank E.
  */
-export const passwordFieldValidationSecurity1 = new RegExp('^(?=.*[a-z])(?=.*[A-Z])(?=.*[@$!%*?&])[A-Za-z@$!%*?&]{8,}$')
-    .source
+export const passwordFieldValidationSecurity1 = new RegExp(
+    '^(?=.*[A-Za-z])(?=.*\\d)(?=.*[@$!%*#?&])[A-Za-z\\d@$!%*#?&]{8,}$',
+).source

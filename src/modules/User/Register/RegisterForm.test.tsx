@@ -91,7 +91,7 @@ const mockInit = jest.fn(() => null)
 const formatted_addr_data = 'normal formatted_address'
 const formatted_test_locality = 'test locality'
 const INVALID_PASSWORD_FIELD_ERROR =
-    'Votre mot de passe doit contenir au moins 8 caractères dont 1 Maj, 1 min et un caractère spécial'
+    'Votre mot de passe doit contenir au moins 8 caractères dont 1 Maj, 1 min, 1 chiffre et un caractère spécial'
 const formatted_test_country = 'test country'
 const CHECKBOX_RGPD_ERROR_TEXT = 'Ce champ est obligatoire'
 // eslint-disable-next-line jsdoc/require-jsdoc
@@ -159,9 +159,9 @@ const fillFormWithData = async (getByRole: Function, container: HTMLElement, get
     // https://github.com/testing-library/dom-testing-library/issues/567
     // To get the element password you can use this: const getByLabelText(/password/i)
     const passwordField = container.querySelector(passwordQuerySelector) as Element
-    userEvent.type(passwordField, 'P@ssword')
+    userEvent.type(passwordField, 'P@ssword1')
     const repeatPasswordField = container.querySelector('input[name="repeatPwd"]') as Element
-    userEvent.type(repeatPasswordField, 'P@ssword')
+    userEvent.type(repeatPasswordField, 'P@ssword1')
     const addressField = within(getByTestId(ADDRESS_TESTID)).getByRole('textbox') as HTMLInputElement
     await waitFor(
         () => {
@@ -260,7 +260,7 @@ describe('test registerForm', () => {
                     firstName: 'test prénom',
                     lastName: 'test nom',
                     phone: TEST_SUCCESS_USER.phone,
-                    password: 'P@ssword',
+                    password: 'P@ssword1',
                     address: {
                         city: 'test locality',
                         country: 'test country',

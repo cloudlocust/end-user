@@ -8,7 +8,7 @@ const fakeToken = '123456ABCD'
 const mockOnSubmitResetPassword = jest.fn()
 const SUBMIT_TEXT = 'Confirmer'
 const INVALID_PASSWORD_FIELD_ERROR =
-    'Votre mot de passe doit contenir au moins 8 caractères dont 1 Maj, 1 min et un caractère spécial'
+    'Votre mot de passe doit contenir au moins 8 caractères dont 1 Maj, 1 min, 1 chiffre et un caractère spécial'
 
 jest.mock('src/modules/User/ResetPassword/hooks', () => ({
     ...jest.requireActual('src/modules/User/ResetPassword/hooks'),
@@ -72,9 +72,9 @@ describe('RestPasswordForm component test', () => {
         const { getByText, container } = reduxedRender(<SetPasswordForm token={fakeToken} />)
 
         const passwordField = container.querySelector('input[name="password"]') as Element
-        userEvent.type(passwordField, 'P@ssword')
+        userEvent.type(passwordField, 'P@ssword1')
         const repeatPasswordField = container.querySelector('input[name="repeatPwd"]') as Element
-        userEvent.type(repeatPasswordField, 'P@ssword')
+        userEvent.type(repeatPasswordField, 'P@ssword1')
 
         // expect(getByText('Les mot de passes ne correspondent pas.')).toBeTruthy()
         const sgeConsentCheckbox = container.querySelectorAll("input[id='sgeConsentCheckbox']")[0] as HTMLInputElement
@@ -89,7 +89,7 @@ describe('RestPasswordForm component test', () => {
 
         await waitFor(() => {
             expect(mockOnSubmitResetPassword).toHaveBeenCalledWith({
-                password: 'P@ssword',
+                password: 'P@ssword1',
                 token: fakeToken,
             })
         })
