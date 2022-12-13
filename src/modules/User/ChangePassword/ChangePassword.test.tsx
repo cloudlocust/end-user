@@ -9,7 +9,7 @@ const mockUpdatePassword = jest.fn()
 const mockEnqueueSnackbar = jest.fn()
 const POPUP_TITLE = 'Changer mon mot de passe'
 const INVALID_PASSWORD_FIELD_ERROR =
-    'Votre mot de passe doit contenir au moins 8 caractères dont 1 Maj, 1 min et un caractère spécial'
+    'Votre mot de passe doit contenir au moins 8 caractères dont 1 Maj, 1 min, 1 chiffre et un caractère spécial'
 
 jest.mock('src/modules/User/ProfileManagement/ProfileManagementHooks', () => ({
     ...jest.requireActual('src/modules/User/ProfileManagement/ProfileManagementHooks'),
@@ -82,12 +82,12 @@ describe('ChangePasswordForm component test', () => {
         const { getByText, getByTestId } = reduxedRender(<ChangePassword />)
         userEvent.click(getByText(POPUP_TITLE))
         const passwordField = within(getByTestId('password'))
-        userEvent.type(passwordField.getByText('Nouveau mot de passe'), 'P@ssword')
+        userEvent.type(passwordField.getByText('Nouveau mot de passe'), 'P@ssword1')
         const repeatPwdField = within(getByTestId('repeatPwd'))
-        userEvent.type(repeatPwdField.getByText('Confirmer mot de passe'), 'P@ssword')
+        userEvent.type(repeatPwdField.getByText('Confirmer mot de passe'), 'P@ssword1')
         userEvent.click(getByText('Enregistrer'))
         await waitFor(() => {
-            expect(mockUpdatePassword).toHaveBeenCalledWith('P@ssword')
+            expect(mockUpdatePassword).toHaveBeenCalledWith('P@ssword1')
         })
         await waitFor(() => {
             expect(() => getByText(POPUP_TITLE)).toThrow()

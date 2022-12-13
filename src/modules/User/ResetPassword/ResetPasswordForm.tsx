@@ -36,7 +36,7 @@ export const ResetPasswordForm = ({ token }: ResetPasswordFormProps) => {
                         requiredBuilder(),
                         regex(
                             passwordFieldValidationSecurity1,
-                            'Votre mot de passe doit contenir au moins 8 caractères dont 1 Maj, 1 min et un caractère spécial',
+                            'Votre mot de passe doit contenir au moins 8 caractères dont 1 Maj, 1 min, 1 chiffre et un caractère spécial',
                         ),
                     ]}
                 />
