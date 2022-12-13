@@ -3,10 +3,8 @@ import { Card, Button } from '@mui/material'
 import { useIntl } from 'react-intl'
 import TextField from '@mui/material/TextField'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
-import {
-    ConsumptionAlertData,
-    ConsumptionAlertIntervalsType,
-} from 'src/modules/Layout/Toolbar/components/Alerts/ConsumptionAlert/consumptionAlert'
+import { ConsumptionAlertIntervalsType, ConsumptionAlertData } from './consumptionAlert'
+import { ConsumptionAlertTitle } from './consumptionAlertsVariables'
 
 /**
  * Consumption Alert Component.
@@ -30,15 +28,6 @@ const ConsumptionAlert = ({
      */
     initialValues?: ConsumptionAlertData | undefined
 }) => {
-    /**
-     * Constant to have titles for each interval for the consumptions.
-     */
-    const ConsumptionAlertTitle = {
-        day: "Seuil d'alerte journalier",
-        week: "Seuil d'alerte hebdomadaire",
-        month: "Seuil d'alerte mensuel",
-    }
-
     const [isEdit, setIsEdit] = useState(false)
 
     return (
@@ -49,16 +38,36 @@ const ConsumptionAlert = ({
                         {ConsumptionAlertTitle[interval]}
                     </TypographyFormatMessage>
                     <div className="flex justify-around content-center mb-16">
-                        <CustomTextFieldInput
-                            endSymbol="kWh"
-                            disabled={!isEdit}
-                            initialValue={initialValues ? initialValues['consumption'] : 0}
-                        />
-                        <CustomTextFieldInput
-                            endSymbol="€"
-                            disabled={!isEdit}
-                            initialValue={initialValues ? initialValues['price'] : 0}
-                        />
+                        <div className="flex justify-center content-center">
+                            <TextField
+                                variant="outlined"
+                                sx={{ maxWidth: '75px' }}
+                                disabled={!isEdit}
+                                type="number"
+                                defaultValue={0}
+                            />
+                            <div
+                                className="bg-gray-400 flex items-center justify-center float-left rounded"
+                                style={{ width: 30, height: 51.69, marginLeft: -5, zIndex: 0 }}
+                            >
+                                <span>kWh</span>
+                            </div>
+                        </div>
+                        <div className="flex justify-center content-center">
+                            <TextField
+                                variant="outlined"
+                                sx={{ maxWidth: '75px' }}
+                                disabled={!isEdit}
+                                type="number"
+                                defaultValue={0}
+                            />
+                            <div
+                                className="bg-gray-400 flex items-center justify-center float-left rounded"
+                                style={{ width: 30, height: 51.69, marginLeft: -5, zIndex: 0 }}
+                            >
+                                <span>€</span>
+                            </div>
+                        </div>
                     </div>
                     <ButtonsGroup
                         isEdit={isEdit}
@@ -67,53 +76,6 @@ const ConsumptionAlert = ({
                     />
                 </div>
             </Card>
-        </div>
-    )
-}
-
-/**
- * Component for input field € and kWh.
- *
- * @param props N/A.
- * @param props.endSymbol Is the input a consumption or price.
- * @param props.disabled Is the field disabled.
- * @param props.initialValue Initial textfield value.
- * @returns JSX.
- */
-const CustomTextFieldInput = ({
-    endSymbol,
-    disabled,
-    initialValue,
-}: //eslint-disable-next-line
-{
-    /**
-     * Text Field Input Type.
-     */
-    endSymbol: String
-    /**
-     * If field is Disabled.
-     */
-    disabled: boolean
-    /**
-     * Initial text fiel value.
-     */
-    initialValue: Number
-}) => {
-    return (
-        <div className="flex justify-center content-center">
-            <TextField
-                variant="outlined"
-                sx={{ maxWidth: '75px' }}
-                disabled={disabled}
-                type="number"
-                defaultValue={initialValue}
-            />
-            <div
-                className="bg-gray-400 flex items-center justify-center float-left rounded"
-                style={{ width: 30, height: 51.69, marginLeft: -5, zIndex: 0 }}
-            >
-                <span>{endSymbol}</span>
-            </div>
         </div>
     )
 }
