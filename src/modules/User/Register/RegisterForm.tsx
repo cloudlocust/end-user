@@ -1,6 +1,6 @@
 import React, { useRef } from 'react'
 import { useIntl } from 'react-intl'
-import { email, requiredBuilder, repeatPassword, Form, min } from 'src/common/react-platform-components'
+import { email, requiredBuilder, repeatPassword, Form, regex } from 'src/common/react-platform-components'
 import { TextField, PasswordField, ButtonLoader } from 'src/common/ui-kit'
 import { GoogleMapsAddressAutoCompleteField } from 'src/common/ui-kit/form-fields/GoogleMapsAddressAutoComplete/GoogleMapsAddressAutoCompleteField'
 import { useRegister } from 'src/modules/User/Register/hooks'
@@ -11,6 +11,7 @@ import Checkbox from '@mui/material/Checkbox'
 import FormControl from '@mui/material/FormControl'
 import { FormHelperText } from '@mui/material'
 import { LinkRedirection } from 'src/modules/utils/LinkRedirection'
+import { passwordFieldValidationSecurity1 } from 'src/modules/utils'
 
 const urlLegalNotice = 'https://www.myem.fr/mentions-legales/'
 const urlPolitiqueConfidentialité = 'https://drive.google.com/uc?export=download&id=18agpXAw89RX5Zk87EQ9ev5LOeMU3GtnP'
@@ -84,7 +85,13 @@ export const RegisterForm = ({
                     name="password"
                     label="Mot de passe"
                     inputRef={passwordRef}
-                    validateFunctions={[requiredBuilder(), min(8)]}
+                    validateFunctions={[
+                        requiredBuilder(),
+                        regex(
+                            passwordFieldValidationSecurity1,
+                            'Votre mot de passe doit contenir au moins 8 caractères dont 1 Maj, 1 min et un caractère spécial',
+                        ),
+                    ]}
                 />
                 <PasswordField
                     name="repeatPwd"
