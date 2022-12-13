@@ -50,7 +50,13 @@ export const ChangePassword = () => {
                     defaultMessage: 'Changer mon mot de passe',
                 })}
             </Button>
-            <Dialog open={openChangePassword} onClose={handleClose} aria-labelledby="alert-dialog-title">
+            <Dialog
+                open={openChangePassword}
+                onClose={handleClose}
+                aria-labelledby="alert-dialog-title"
+                maxWidth="sm"
+                fullWidth
+            >
                 <DialogTitle id="alert-dialog-title" sx={{ color: 'primary.main' }}>
                     Changer mon mot de passe
                 </DialogTitle>
