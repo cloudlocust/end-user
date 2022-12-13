@@ -3,19 +3,32 @@ import { Card, Button } from '@mui/material'
 import { useIntl } from 'react-intl'
 import TextField from '@mui/material/TextField'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
-import { ConsumptionAlertIntervalsType } from 'src/modules/Layout/Toolbar/components/Alerts/ConsumptionAlert/consumptionAlert'
+import {
+    ConsumptionAlertData,
+    ConsumptionAlertIntervalsType,
+} from 'src/modules/Layout/Toolbar/components/Alerts/ConsumptionAlert/consumptionAlert'
 
 /**
  * Consumption Alert Component.
  *
  * @param props Props.
  * @param props.interval Interval of the consumption alert.
+ * @param props.initialValues Initial value for the text fields.
  * @returns Consumption Alert Component.
  */
 const ConsumptionAlert = ({
     interval,
+    initialValues,
 }: //eslint-disable-next-line
-{ interval: ConsumptionAlertIntervalsType
+{
+    /**
+     * Interval for the consumption alert.
+     */
+    interval: ConsumptionAlertIntervalsType
+    /**
+     * Initial value for the text fields.
+     */
+    initialValues?: ConsumptionAlertData | undefined
 }) => {
     /**
      * Constant to have titles for each interval for the consumptions.
@@ -36,8 +49,16 @@ const ConsumptionAlert = ({
                         {ConsumptionAlertTitle[interval]}
                     </TypographyFormatMessage>
                     <div className="flex justify-around content-center mb-16">
-                        <CustomTextFieldInput endSymbol="kWh" disabled={!isEdit} />
-                        <CustomTextFieldInput endSymbol="€" disabled={!isEdit} />
+                        <CustomTextFieldInput
+                            endSymbol="kWh"
+                            disabled={!isEdit}
+                            initialValue={initialValues ? initialValues['consumption'] : 0}
+                        />
+                        <CustomTextFieldInput
+                            endSymbol="€"
+                            disabled={!isEdit}
+                            initialValue={initialValues ? initialValues['price'] : 0}
+                        />
                     </div>
                     <ButtonsGroup
                         isEdit={isEdit}
@@ -56,11 +77,13 @@ const ConsumptionAlert = ({
  * @param props N/A.
  * @param props.endSymbol Is the input a consumption or price.
  * @param props.disabled Is the field disabled.
+ * @param props.initialValue Initial textfield value.
  * @returns JSX.
  */
 const CustomTextFieldInput = ({
     endSymbol,
     disabled,
+    initialValue,
 }: //eslint-disable-next-line
 {
     /**
@@ -71,6 +94,10 @@ const CustomTextFieldInput = ({
      * If field is Disabled.
      */
     disabled: boolean
+    /**
+     * Initial text fiel value.
+     */
+    initialValue: Number
 }) => {
     return (
         <div className="flex justify-center content-center">
@@ -79,7 +106,7 @@ const CustomTextFieldInput = ({
                 sx={{ maxWidth: '75px' }}
                 disabled={disabled}
                 type="number"
-                defaultValue={0}
+                defaultValue={initialValue}
             />
             <div
                 className="bg-gray-400 flex items-center justify-center float-left rounded"
