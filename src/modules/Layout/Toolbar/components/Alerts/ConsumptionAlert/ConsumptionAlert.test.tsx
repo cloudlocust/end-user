@@ -17,11 +17,23 @@ const BUTTON_ANNULER = 'Annuler'
 const MUI_TEXTFIELD = 'MuiOutlinedInput-input'
 const MUI_DISABLED = 'Mui-disabled'
 
+const mockInitialValue = {
+    price: 0,
+    consumption: 0,
+}
+const mockSaveConsumptionAlert = jest.fn()
+const PRICE_PER_KWH = 3
+
 describe('Test Consumption Alert component.', () => {
     test('When consumption alert mount, component is with correct values.', () => {
         const { getByText, container } = reduxedRender(
             <BrowserRouter>
-                <ConsumptionAlert interval="day" />
+                <ConsumptionAlert
+                    interval="day"
+                    initialValues={mockInitialValue}
+                    pricePerKwh={PRICE_PER_KWH}
+                    saveConsumptionAlert={mockSaveConsumptionAlert}
+                />
             </BrowserRouter>,
         )
 
@@ -49,7 +61,12 @@ describe('Test Consumption Alert component.', () => {
     test('When consumption alert mount, correct title value for week.', () => {
         const { getByText } = reduxedRender(
             <BrowserRouter>
-                <ConsumptionAlert interval="week" />
+                <ConsumptionAlert
+                    interval="week"
+                    initialValues={mockInitialValue}
+                    pricePerKwh={PRICE_PER_KWH}
+                    saveConsumptionAlert={mockSaveConsumptionAlert}
+                />
             </BrowserRouter>,
         )
 
@@ -59,7 +76,12 @@ describe('Test Consumption Alert component.', () => {
     test('When consumption alert mount, correct title value for month.', () => {
         const { getByText } = reduxedRender(
             <BrowserRouter>
-                <ConsumptionAlert interval="month" />
+                <ConsumptionAlert
+                    interval="month"
+                    initialValues={mockInitialValue}
+                    pricePerKwh={PRICE_PER_KWH}
+                    saveConsumptionAlert={mockSaveConsumptionAlert}
+                />
             </BrowserRouter>,
         )
 
@@ -69,7 +91,12 @@ describe('Test Consumption Alert component.', () => {
     test('Clicking on Modify change input state and buttons', async () => {
         const { getByText, container } = reduxedRender(
             <BrowserRouter>
-                <ConsumptionAlert interval="week" />
+                <ConsumptionAlert
+                    interval="week"
+                    initialValues={mockInitialValue}
+                    pricePerKwh={PRICE_PER_KWH}
+                    saveConsumptionAlert={mockSaveConsumptionAlert}
+                />
             </BrowserRouter>,
         )
 

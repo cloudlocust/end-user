@@ -1,4 +1,12 @@
-import { Float } from 'type-fest'
+/**
+ * Response object when gitting price per kwh.
+ */
+export interface IPricePerKwhDataType {
+    /**
+     * Price per kwh.
+     */
+    pricePerKwh: number
+}
 
 /**
  * The types of intervals that exists for the consumption alerts.
@@ -12,11 +20,11 @@ export interface ConsumptionAlertData {
     /**
      * Price.
      */
-    price: Float | null
+    price: number | null
     /**
      * Consumption.
      */
-    consumption: Float | null
+    consumption: number | null
 }
 
 /**
