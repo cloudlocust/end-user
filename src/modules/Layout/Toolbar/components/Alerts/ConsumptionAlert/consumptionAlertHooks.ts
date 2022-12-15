@@ -9,7 +9,6 @@ import {
 import { useSnackbar } from 'notistack'
 import { useIntl } from 'src/common/react-platform-translation'
 import { axios } from 'src/common/react-platform-components'
-import { getMsgFromAxiosError } from 'src/modules/utils'
 
 /**
  * Consumption alert url.
@@ -23,9 +22,10 @@ export const CONSUMPTION_ALERT_API = (housingId: number) => `${HOUSING_API}/${ho
  * Hooks for Consumption alerts.
  *
  * @param housingId HousingId.
+ * @param disabledOnMunt Disable auto loading when on mount hook.
  * @returns UseAccomodation.
  */
-export function useConsumptionAlerts(housingId: number | null) {
+export function useConsumptionAlerts(housingId: number | null, disabledOnMunt?: boolean) {
     const [consumptionAlerts, setConsumptionAlerts] = useState<ConsumptionAlertData[]>([])
     const { enqueueSnackbar } = useSnackbar()
     const [isLoadingInProgress, setIsLoadingInProgress] = useState(false)
@@ -36,6 +36,7 @@ export function useConsumptionAlerts(housingId: number | null) {
 
     const NO_HOUSING_MESSAGE = 'Aucun logement.'
     const DEFAULT_GET_ALERTS_ERROR_MESSAGE = 'Une erreur est survenue lors du chargement des alerts.'
+    const DEFAULT_ASSERTION_ERROR_MESSAGE = "Une erreur est survenue lors de l'insertion des alerts."
 
     /**
      * Function hook responsible for fetching Consumption Alerts.
@@ -44,27 +45,28 @@ export function useConsumptionAlerts(housingId: number | null) {
      */
     const getPricePerKwh = useCallback(async () => {
         setIsLoadingInProgress(true)
-        try {
-            if (housingId) {
+        if (housingId) {
+            try {
                 const { data: responseData } = await axios.get<IPricePerKwhDataType>(
                     `${CONSUMPTION_ALERT_API(housingId)}/price-per-kwh`,
                 )
                 setIsLoadingInProgress(false)
                 return responseData.pricePerKwh
-            } else {
+            } catch (error: any) {
                 enqueueSnackbar(
                     formatMessage({
-                        id: NO_HOUSING_MESSAGE,
-                        defaultMessage: NO_HOUSING_MESSAGE,
+                        id: error.response?.data?.detail ?? DEFAULT_GET_ALERTS_ERROR_MESSAGE,
+                        defaultMessage: error.response?.data?.detail ?? DEFAULT_GET_ALERTS_ERROR_MESSAGE,
                     }),
                     { variant: 'error' },
                 )
+                setIsLoadingInProgress(false)
             }
-        } catch (error: any) {
+        } else {
             enqueueSnackbar(
                 formatMessage({
-                    id: error.response?.data?.detail ?? DEFAULT_GET_ALERTS_ERROR_MESSAGE,
-                    defaultMessage: error.response?.data?.detail ?? DEFAULT_GET_ALERTS_ERROR_MESSAGE,
+                    id: NO_HOUSING_MESSAGE,
+                    defaultMessage: NO_HOUSING_MESSAGE,
                 }),
                 { variant: 'error' },
             )
@@ -80,32 +82,32 @@ export function useConsumptionAlerts(housingId: number | null) {
     const loadConsumptionAlerts = useCallback(async () => {
         setIsLoadingInProgress(true)
         setIsConsumptionAlertsListEmpty(false)
-        try {
-            if (housingId) {
+        if (housingId) {
+            try {
                 const { data: responseData } = await axios.get<IConsumptionAlert[]>(CONSUMPTION_ALERT_API(housingId))
                 setConsumptionAlerts(responseData)
-                setIsLoadingInProgress(false)
-            } else {
+            } catch (error: any) {
                 enqueueSnackbar(
                     formatMessage({
-                        id: NO_HOUSING_MESSAGE,
-                        defaultMessage: NO_HOUSING_MESSAGE,
+                        id: error.response?.data?.detail ?? DEFAULT_GET_ALERTS_ERROR_MESSAGE,
+                        defaultMessage: error.response?.data?.detail ?? DEFAULT_GET_ALERTS_ERROR_MESSAGE,
                     }),
                     { variant: 'error' },
                 )
+
+                setIsConsumptionAlertsListEmpty(true)
+                setIsLoadingInProgress(false)
             }
-        } catch (error: any) {
+        } else {
             enqueueSnackbar(
                 formatMessage({
-                    id: error.response?.data?.detail ?? DEFAULT_GET_ALERTS_ERROR_MESSAGE,
-                    defaultMessage: error.response?.data?.detail ?? DEFAULT_GET_ALERTS_ERROR_MESSAGE,
+                    id: NO_HOUSING_MESSAGE,
+                    defaultMessage: NO_HOUSING_MESSAGE,
                 }),
                 { variant: 'error' },
             )
-
-            setIsConsumptionAlertsListEmpty(true)
-            setIsLoadingInProgress(false)
         }
+        setIsLoadingInProgress(false)
     }, [enqueueSnackbar, formatMessage, housingId])
 
     /**
@@ -116,8 +118,8 @@ export function useConsumptionAlerts(housingId: number | null) {
      */
     const saveConsumptionAlert = async (body: ConsumptionAlertData, interval: ConsumptionAlertIntervalsType) => {
         setIsLoadingInProgress(true)
-        try {
-            if (housingId) {
+        if (housingId) {
+            try {
                 await axios.post<ConsumptionAlertData>(`${CONSUMPTION_ALERT_API(housingId)}/${interval}`, body)
                 enqueueSnackbar(
                     formatMessage({
@@ -126,32 +128,36 @@ export function useConsumptionAlerts(housingId: number | null) {
                     }),
                     { variant: 'success' },
                 )
-            } else {
+            } catch (error: any) {
                 enqueueSnackbar(
                     formatMessage({
-                        id: NO_HOUSING_MESSAGE,
-                        defaultMessage: NO_HOUSING_MESSAGE,
+                        id: error.response?.data?.detail ?? DEFAULT_ASSERTION_ERROR_MESSAGE,
+                        defaultMessage: error.response?.data?.detail ?? DEFAULT_ASSERTION_ERROR_MESSAGE,
                     }),
                     { variant: 'error' },
                 )
+                setIsLoadingInProgress(false)
             }
-
-            setIsLoadingInProgress(false)
-        } catch (error) {
-            const message = getMsgFromAxiosError(error)
-            enqueueSnackbar(message, { variant: 'error' })
-            setIsLoadingInProgress(false)
-            throw message
+        } else {
+            enqueueSnackbar(
+                formatMessage({
+                    id: NO_HOUSING_MESSAGE,
+                    defaultMessage: NO_HOUSING_MESSAGE,
+                }),
+                { variant: 'error' },
+            )
         }
+
+        setIsLoadingInProgress(false)
     }
 
     // UseEffect executes on initial intantiation of consumption alert.
     useEffect(() => {
-        if (isInitialMount.current && housingId) {
+        if (isInitialMount.current && housingId && !disabledOnMunt) {
             isInitialMount.current = false
             loadConsumptionAlerts()
         }
-    }, [loadConsumptionAlerts, housingId])
+    }, [loadConsumptionAlerts, housingId, disabledOnMunt])
 
     return {
         isLoadingInProgress,

@@ -21,6 +21,7 @@ import { faqEndpoints } from 'src/mocks/handlers/faq'
 import { installationRequestsEndpoints } from 'src/mocks/handlers/installationRequests'
 import { solarEquipmentsEndpoints } from 'src/mocks/handlers/solarEquipments'
 import { ecowattEndpoints } from 'src/mocks/handlers/ecowatt'
+import { consumptionAlertsEndpoints } from 'src/mocks/handlers/consumptionAlerts'
 
 /**
  * Handlers to mock urls for tests.
@@ -54,6 +55,8 @@ const handlers = [
     ...solarEquipmentsEndpoints,
     /** Ecowatt requests. */
     ...ecowattEndpoints,
+    /** Consumption Alerts. */
+    ...consumptionAlertsEndpoints,
 ]
 
 /**
