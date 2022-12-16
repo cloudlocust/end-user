@@ -4,6 +4,7 @@ import { IEcowattData } from 'src/modules/Ecowatt/ecowatt'
 import { useSnackbar } from 'notistack'
 import { useIntl } from 'react-intl'
 import { axios } from 'src/common/react-platform-components'
+import { useAxiosCancelToken } from 'src/hooks/AxiosCancelToken/'
 
 /**
  * Ecowatt endpoint.
@@ -21,6 +22,7 @@ export function useEcowatt() {
     const [ecowattData, setEcowattData] = useState<IEcowattData | null>(null)
     const [isLoadingInProgress, setIsLoadingInProgress] = useState(false)
     const isInitialMount = useRef(true)
+    const { isCancel, source } = useAxiosCancelToken()
 
     /**
      * Get ecowatt signals.
@@ -28,12 +30,15 @@ export function useEcowatt() {
     const getEcowattSignals = useCallback(async () => {
         try {
             setIsLoadingInProgress(true)
-            const { data: responseData } = await axios.get<IEcowattData>(ECOWATT_ENDPOINT)
+            const { data: responseData } = await axios.get<IEcowattData>(ECOWATT_ENDPOINT, {
+                cancelToken: source.current.token,
+            })
             if (responseData) {
                 setEcowattData(responseData)
             }
             setIsLoadingInProgress(false)
         } catch (error) {
+            if (isCancel(error)) return
             setIsLoadingInProgress(false)
             enqueueSnackbar(
                 formatMessage({
@@ -43,7 +48,7 @@ export function useEcowatt() {
                 { variant: 'error', autoHideDuration: 5000 },
             )
         }
-    }, [enqueueSnackbar, formatMessage])
+    }, [enqueueSnackbar, formatMessage, isCancel, source])
 
     useEffect(() => {
         if (isInitialMount.current) {

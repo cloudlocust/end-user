@@ -12,6 +12,7 @@ import {
 import { useSnackbar } from 'notistack'
 import { useIntl } from 'react-intl'
 import { axios } from 'src/common/react-platform-components'
+import { useAxiosCancelToken } from 'src/hooks/AxiosCancelToken'
 
 /**
  * Metrics endpoint.
@@ -25,6 +26,7 @@ export const METRICS_API = `${API_RESOURCES_URL}/query`
  * @param immediate Indicates if getMetrics will execute when useMetrics instanciated, by default its false because usually the filters meterGuid param is empty thus the getMetrics will always show an error on instaciation of the hook when filters meterGuid is not set.
  * @returns Consumption metrics hook.
  */
+// eslint-disable-next-line sonarjs/cognitive-complexity
 export function useMetrics(initialState: getMetricType, immediate: boolean = false) {
     const { enqueueSnackbar } = useSnackbar()
     const { formatMessage } = useIntl()
@@ -35,6 +37,7 @@ export function useMetrics(initialState: getMetricType, immediate: boolean = fal
     const [targets, setTargets] = useState<metricTargetsType>(initialState.targets)
     const [filters, setFilters] = useState<metricFiltersType>(initialState.filters ? initialState.filters : [])
     const isInitialMount = useRef(true)
+    const { isCancel, source } = useAxiosCancelToken()
 
     /**
      * Get Metrics function: Everytime filters or range or targets or metricsInterval has changed, it triggers the function call.
@@ -42,14 +45,21 @@ export function useMetrics(initialState: getMetricType, immediate: boolean = fal
     const getMetrics = useCallback(async () => {
         setIsMetricsLoading(true)
         try {
-            const response = await axios.post(METRICS_API, {
-                interval: metricsInterval,
-                range,
-                targets,
-                adhocFilters: filters,
-            })
+            const response = await axios.post(
+                METRICS_API,
+                {
+                    interval: metricsInterval,
+                    range,
+                    targets,
+                    adhocFilters: filters,
+                },
+                {
+                    cancelToken: source.current.token,
+                },
+            )
             setData(response.data)
         } catch (error) {
+            if (isCancel(error)) return
             setIsMetricsLoading(false)
             enqueueSnackbar(
                 formatMessage({
@@ -63,7 +73,7 @@ export function useMetrics(initialState: getMetricType, immediate: boolean = fal
             )
         }
         setIsMetricsLoading(false)
-    }, [enqueueSnackbar, filters, formatMessage, metricsInterval, range, targets])
+    }, [enqueueSnackbar, filters, formatMessage, isCancel, metricsInterval, range, source, targets])
 
     // Happens everytime getMetrics dependencies change, doesn't happen first time hook is instanciated.
     useEffect(() => {
