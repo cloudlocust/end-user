@@ -60,7 +60,7 @@ export const ToolbarWidget = () => {
             <FormControl
                 sx={{
                     '&.MuiFormControl-root': { marginBottom: '0px' },
-                    width: { xs: 210, md: 250 },
+                    width: { xs: 160, md: 250 },
                 }}
             >
                 <InputLabel id="select-housing-label">
