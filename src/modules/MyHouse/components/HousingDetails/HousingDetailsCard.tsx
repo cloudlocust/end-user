@@ -7,7 +7,6 @@ import { HousingDetailsCardProps } from 'src/modules/MyHouse/components/HousingD
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import { NavLink, useParams } from 'react-router-dom'
 import { URL_MY_HOUSE } from 'src/modules/MyHouse/MyHouseConfig'
-import EditIcon from '@mui/icons-material/Edit'
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined'
 import { ButtonLoader } from 'src/common/ui-kit'
 import { equipmentsAccomodationFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
@@ -76,7 +75,7 @@ const HousingDetailsCard = ({
                                 color="primary"
                                 className="text-white"
                                 disabled={equipmentsAccomodationFeatureState}
-                                endIcon={isConfigured ? <EditIcon /> : <SettingsOutlinedIcon />}
+                                endIcon={isConfigured && <SettingsOutlinedIcon />}
                                 inProgress={loadingInProgress}
                             >
                                 {isConfigured
