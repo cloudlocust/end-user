@@ -369,7 +369,7 @@ export const MyConsumptionContainer = () => {
                                                 : 'Electricité achetée sur le réseau'
                                         }
                                     />
-                                    <div className="w-full cursor-pointer" onClick={scrollToEcowattWidget}>
+                                    <div className="w-full cursor-pointer pl-64" onClick={scrollToEcowattWidget}>
                                         <EcowattTimeline hourlyValues={ecowattData?.[0].hourlyValues} />
                                     </div>
                                 </div>

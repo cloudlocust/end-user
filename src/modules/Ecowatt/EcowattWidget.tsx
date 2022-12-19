@@ -1,8 +1,8 @@
-import { Card, CircularProgress, useMediaQuery, useTheme, Collapse } from '@mui/material'
+import { Card, CircularProgress, useMediaQuery, useTheme, Collapse, Button } from '@mui/material'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import { OfflineBolt } from '@mui/icons-material/'
 import 'dayjs/locale/fr'
-import { useEffect, useState, useCallback } from 'react'
+import { useEffect, useState, useCallback, useContext } from 'react'
 import { EcowattConsumptionValue, IEcowatt } from 'src/modules/Ecowatt/ecowatt.d'
 import { styled } from '@mui/material/styles'
 import dayjs from 'dayjs'
@@ -10,6 +10,8 @@ import { capitalize, isEmpty } from 'lodash'
 import { useToggle } from 'react-use'
 import { EcowattTimeline } from 'src/modules/Ecowatt/components/EcowattTimeline'
 import { EcowattTooltip } from 'src/modules/Ecowatt/components/EcowattTooltip'
+import { Report } from '@mui/icons-material/'
+import { AlertsDrawerContext } from 'src/modules/shared/AlertsDrawerContext'
 
 /**
  * Ecowatt widget title.
@@ -62,6 +64,7 @@ export const EcowattWidget = ({
     const [openTooltip, setOpenTooltip] = useState<boolean>(false)
     const [expendDetails, setExpendDetails] = useToggle(false)
     const [dayDetails, setDayDetails] = useState<IEcowatt | null>(null)
+    const { handleOpenAlertsDrawer } = useContext(AlertsDrawerContext)
 
     const StyledDiv = styled('div')(({ theme }) => ({
         padding: `${mdDown ? '5px' : '1rem'} ${mdDown ? '3px' : '1.5rem'}`,
@@ -178,6 +181,11 @@ export const EcowattWidget = ({
                     {/* Signal Timeline */}
                     <Collapse className="mt-8 mb-6 w-full" in={expendDetails}>
                         <EcowattTimeline hourlyValues={dayDetails?.hourlyValues} showHourReadingAt />
+                        <div className="flex flex-row justify-center items-center mt-6">
+                            <Button variant="contained" startIcon={<Report />} onClick={handleOpenAlertsDrawer}>
+                                Configurer des alertes
+                            </Button>
+                        </div>
                     </Collapse>
                 </div>
             </Card>
