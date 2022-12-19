@@ -75,7 +75,7 @@ const HousingDetailsCard = ({
                                 color="primary"
                                 className="text-white"
                                 disabled={equipmentsAccomodationFeatureState}
-                                endIcon={isConfigured ? '' : <SettingsOutlinedIcon />}
+                                endIcon={isConfigured && <SettingsOutlinedIcon />}
                                 inProgress={loadingInProgress}
                             >
                                 {isConfigured
