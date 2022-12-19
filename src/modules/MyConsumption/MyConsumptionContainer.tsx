@@ -97,6 +97,10 @@ export const MyConsumptionContainer = () => {
         getInitialMetricsHookValues(),
     )
     const { ecowattData, isLoadingInProgress: isEcowattDataInProgress } = useEcowatt()
+
+    // State when scroll is at EcowattWidget component.
+    const [isEcoowattWidgetScrolledAt, setIsEcowattWidgetScrolledAt] = useState<boolean>(false)
+
     const [period, setPeriod] = useState<periodType>('daily')
     const [filteredTargets, setFilteredTargets] = useState<metricTargetType[]>(defaultFilteredTargetsValues)
     // This state represents whether or not the chart is stacked: true.
@@ -244,6 +248,20 @@ export const MyConsumptionContainer = () => {
         )
     }, [range, setMetricsInterval, setRange])
 
+    /**
+     * Function to scroll to Ecowatt Widget component.
+     */
+    const scrollToEcowattWidget = () => {
+        const element = document.getElementById('ecowatt-widget')
+        element?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+        const observer = new IntersectionObserver((entries) => {
+            const entry = entries[0]
+            setIsEcowattWidgetScrolledAt(entry.isIntersecting)
+        })
+        observer.observe(element!)
+        setIsEcowattWidgetScrolledAt(false)
+    }
+
     // By checking if the metersList is true we make sure that if someone has skipped the step of connecting their PDL, they will see this error message.
     // Else if they have a PDL, we check its consent.
     if (!currentHousing?.meter?.guid) {
@@ -351,7 +369,9 @@ export const MyConsumptionContainer = () => {
                                                 : 'Electricité achetée sur le réseau'
                                         }
                                     />
-                                    <EcowattTimeline hourlyValues={ecowattData?.[0].hourlyValues} />
+                                    <div className="w-full cursor-pointer" onClick={scrollToEcowattWidget}>
+                                        <EcowattTimeline hourlyValues={ecowattData?.[0].hourlyValues} />
+                                    </div>
                                 </div>
                             )}
 
@@ -440,8 +460,12 @@ export const MyConsumptionContainer = () => {
                 )}
             </div>
             {/* Ecowatt Widget */}
-            <div className="p-12 sm:p-24 ">
-                <EcowattWidget ecowattData={ecowattData} isEcowattDataInProgress={isEcowattDataInProgress} />
+            <div className="p-12 sm:p-24" id="ecowatt-widget">
+                <EcowattWidget
+                    ecowattData={ecowattData}
+                    isEcowattDataInProgress={isEcowattDataInProgress}
+                    isEcoowattWidgetScrolledAt={isEcoowattWidgetScrolledAt}
+                />
             </div>
             {data.length !== 0 && (
                 <div className="p-12 sm:p-24 ">

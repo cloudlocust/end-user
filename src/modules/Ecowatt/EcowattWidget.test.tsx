@@ -5,6 +5,7 @@ import { reduxedRender } from 'src/common/react-platform-components/test'
 import { TEST_ECOWATT_DATA } from 'src/mocks/handlers/ecowatt'
 import { IEcowattData } from 'src/modules/Ecowatt/ecowatt'
 import { EcowattWidget, ECOWATT_TITLE } from 'src/modules/Ecowatt/EcowattWidget'
+import { createTheme, ThemeProvider } from '@mui/material/styles'
 
 const INFO_ICON = 'InfoOutlinedIcon'
 const CLOSE_ICON = 'CloseIcon'
@@ -18,6 +19,7 @@ const mockDays = ['Mercredi', 'Jeudi', 'Vendredi', 'Samedi']
 let mockEcowattWidgetProps = {
     ecowattData: mockEcowattData as IEcowattData,
     isEcowattDataInProgress: false,
+    isEcoowattWidgetScrolledAt: false,
 }
 
 describe('Ecowatt Widget tests', () => {
@@ -62,5 +64,25 @@ describe('Ecowatt Widget tests', () => {
         mockEcowattWidgetProps.isEcowattDataInProgress = false
         rerender(<EcowattWidget {...mockEcowattWidgetProps} />)
         expect(getByText('Aucune donnée disponible')).toBeTruthy()
+    })
+    test('when component is scrolled at, the first widget day is highlighted', async () => {
+        const theme = createTheme({
+            palette: {
+                primary: {
+                    main: '#FFFFFF',
+                },
+            },
+        })
+
+        mockEcowattWidgetProps.isEcoowattWidgetScrolledAt = true
+        mockEcowattWidgetProps.ecowattData = mockEcowattData
+        const { getByTestId } = reduxedRender(
+            <ThemeProvider theme={theme}>
+                <EcowattWidget {...mockEcowattWidgetProps} />
+            </ThemeProvider>,
+        )
+
+        expect(getByTestId('timeline')).toBeTruthy()
+        expect(getByTestId('day-widget-0')).toHaveStyle(`border: 2px solid ${theme.palette.primary.main}`)
     })
 })
