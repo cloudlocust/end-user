@@ -6,7 +6,7 @@ import { ECOWATT_TITLE } from 'src/modules/Ecowatt/EcowattWidget'
 
 const consumptionLevelList: EcowattConsumptionLevelListType = [
     {
-        text: 'Consommation normal',
+        text: 'Consommation normale',
         bulletColor: 'success',
     },
     {

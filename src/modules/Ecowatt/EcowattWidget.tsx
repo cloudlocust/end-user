@@ -2,7 +2,7 @@ import { Card, CircularProgress, useMediaQuery, useTheme, Collapse, Button } fro
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import { OfflineBolt } from '@mui/icons-material/'
 import 'dayjs/locale/fr'
-import { useEffect, useState, useCallback, useContext } from 'react'
+import { useState, useContext } from 'react'
 import { EcowattConsumptionValue, IEcowatt } from 'src/modules/Ecowatt/ecowatt.d'
 import { styled } from '@mui/material/styles'
 import dayjs from 'dayjs'
@@ -43,21 +43,17 @@ function getSignalIcon(signalValue: IEcowatt['reading']) {
  * @param root0 N/A.
  * @param root0.ecowattData Ecowatt data coming from useEcowatt hook.
  * @param root0.isEcowattDataInProgress Progress state.
- * @param root0.isEcoowattWidgetScrolledAt Boolean state when the scroll reaches the component.
  * @returns EcowattWidget JSX.
  */
 export const EcowattWidget = ({
     ecowattData,
     isEcowattDataInProgress,
-    isEcoowattWidgetScrolledAt,
 }: // eslint-disable-next-line jsdoc/require-jsdoc
 {
     // eslint-disable-next-line jsdoc/require-jsdoc
     ecowattData: IEcowatt[] | null
     // eslint-disable-next-line jsdoc/require-jsdoc
     isEcowattDataInProgress: boolean
-    // eslint-disable-next-line jsdoc/require-jsdoc
-    isEcoowattWidgetScrolledAt?: boolean
 }) => {
     const theme = useTheme()
     const mdDown = useMediaQuery(theme.breakpoints.down('md'))
@@ -91,20 +87,6 @@ export const EcowattWidget = ({
         setDayDetails(ecowatt)
         setExpendDetails(true)
     }
-
-    /**
-     * Function that add CSS to the first widget (current day) when isEcoowattWidgetScrolledAt is true.
-     */
-    const expendCurrentDayWidgetSignal = useCallback(() => {
-        setDayDetails(ecowattData![0])
-        setExpendDetails(true)
-    }, [ecowattData, setExpendDetails])
-
-    useEffect(() => {
-        if (isEcoowattWidgetScrolledAt) {
-            expendCurrentDayWidgetSignal()
-        }
-    }, [expendCurrentDayWidgetSignal, isEcoowattWidgetScrolledAt])
 
     return (
         <div className="w-full">
