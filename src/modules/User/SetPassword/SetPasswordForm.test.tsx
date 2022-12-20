@@ -2,12 +2,13 @@ import { SetPasswordForm } from 'src/modules/User/SetPassword/SetPasswordForm'
 import { fireEvent, waitFor } from '@testing-library/react'
 import { reduxedRender } from 'src/common/react-platform-components/test'
 import userEvent from '@testing-library/user-event'
-import { getPasswordMinErrorText, passwordQuerySelector } from 'src/modules/User/Register/RegisterForm.test'
 
 const fakeToken = '123456ABCD'
 
 const mockOnSubmitResetPassword = jest.fn()
 const SUBMIT_TEXT = 'Confirmer'
+const INVALID_PASSWORD_FIELD_ERROR =
+    'Votre mot de passe doit contenir au moins 8 caractères dont 1 Maj, 1 min, 1 chiffre et un caractère spécial'
 
 jest.mock('src/modules/User/ResetPassword/hooks', () => ({
     ...jest.requireActual('src/modules/User/ResetPassword/hooks'),
@@ -34,13 +35,23 @@ describe('RestPasswordForm component test', () => {
             expect(getByText('Champ obligatoire non renseigné')).toBeTruthy()
         })
     })
-    test('Password Length minimum character validation', async () => {
-        const { container, getByText, getAllByText } = reduxedRender(<SetPasswordForm token={fakeToken} />)
-        const passwordField = container.querySelector(passwordQuerySelector) as Element
-        userEvent.type(passwordField, '123')
-        userEvent.click(getByText(SUBMIT_TEXT))
-        await waitFor(() => expect(getAllByText(getPasswordMinErrorText(8)).length).toBe(1))
+
+    test('when password field is invalid', async () => {
+        const { getByText, container } = reduxedRender(<SetPasswordForm token={fakeToken} />)
+
+        // eslint-disable-next-line sonarjs/no-duplicate-string
+        const passwordField = container.querySelector('input[name="password"]') as Element
+        userEvent.type(passwordField, 'password')
+
+        await waitFor(() => {
+            expect(mockOnSubmitResetPassword).not.toHaveBeenCalled()
+        })
+
+        await waitFor(() => {
+            expect(getByText(INVALID_PASSWORD_FIELD_ERROR)).toBeTruthy()
+        })
     })
+
     test('when entering unmatched passwords, a validation error should appear', async () => {
         const { getByText, container } = reduxedRender(<SetPasswordForm token={fakeToken} />)
 
@@ -61,9 +72,9 @@ describe('RestPasswordForm component test', () => {
         const { getByText, container } = reduxedRender(<SetPasswordForm token={fakeToken} />)
 
         const passwordField = container.querySelector('input[name="password"]') as Element
-        userEvent.type(passwordField, '12345678')
+        userEvent.type(passwordField, 'P@ssword1')
         const repeatPasswordField = container.querySelector('input[name="repeatPwd"]') as Element
-        userEvent.type(repeatPasswordField, '12345678')
+        userEvent.type(repeatPasswordField, 'P@ssword1')
 
         // expect(getByText('Les mot de passes ne correspondent pas.')).toBeTruthy()
         const sgeConsentCheckbox = container.querySelectorAll("input[id='sgeConsentCheckbox']")[0] as HTMLInputElement
@@ -78,7 +89,7 @@ describe('RestPasswordForm component test', () => {
 
         await waitFor(() => {
             expect(mockOnSubmitResetPassword).toHaveBeenCalledWith({
-                password: '12345678',
+                password: 'P@ssword1',
                 token: fakeToken,
             })
         })
