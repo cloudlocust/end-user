@@ -1,10 +1,10 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo, useCallback } from 'react'
 import { motion } from 'framer-motion'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import MyConsumptionChart from 'src/modules/MyConsumption/components/MyConsumptionChart'
 import { useTheme } from '@mui/material'
 import { useMetrics } from 'src/modules/Metrics/metricsHook'
-import { metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
+import { IMetric, metricTargetsEnum, metricTargetType } from 'src/modules/Metrics/Metrics.d'
 import { ConsumptionChartContainerProps } from 'src/modules/MyConsumption/myConsumptionTypes'
 import { useIntl } from 'react-intl'
 import CircularProgress from '@mui/material/CircularProgress'
@@ -19,6 +19,7 @@ import { URL_MY_HOUSE } from 'src/modules/MyHouse/MyHouseConfig'
 import { NavLink } from 'react-router-dom'
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline'
 import { showPerPeriodText } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
+import { ConsumptionChartTargets } from 'src/modules/MyConsumption/utils/myConsumptionVariables'
 
 /**
  * MyConsumptionChart Component.
@@ -44,66 +45,83 @@ export const ConsumptionChartContainer = ({
 }: ConsumptionChartContainerProps) => {
     const theme = useTheme()
     const { formatMessage } = useIntl()
-    const { isMetricsLoading, data, addTarget, removeTarget, setFilters, setRange, setMetricsInterval } = useMetrics({
-        interval: metricsInterval,
-        range: range,
-        targets: [
-            {
-                target: metricTargetsEnum.autoconsumption,
-                type: 'timeserie',
-            },
-            {
-                target: metricTargetsEnum.consumption,
-                type: 'timeserie',
-            },
-        ],
-        filters,
-    })
-    // This state represents whether or not the chart is stacked: true.
-    const isEurosConsumptionChart = data.some((datapoint) =>
-        datapoint.target.includes(metricTargetsEnum.eurosConsumption),
+    const { data, getMetricsWithParams } = useMetrics(
+        {
+            interval: metricsInterval,
+            range: range,
+            targets: [
+                {
+                    target: metricTargetsEnum.autoconsumption,
+                    type: 'timeserie',
+                },
+                {
+                    target: metricTargetsEnum.consumption,
+                    type: 'timeserie',
+                },
+            ],
+            filters,
+        },
+        false,
     )
+
     const { currentHousing } = useSelector(({ housingModel }: RootState) => housingModel)
     // This state represents whether or not the chart is stacked: true.
     const [isStackedEnabled, setIsStackedEnabled] = useState<boolean>(true)
+    // Indicates the Charts visible in MyConsumptionChart.
+    const [visibleTargetCharts, setVisibleTargetsCharts] = useState<metricTargetType[]>([
+        metricTargetsEnum.autoconsumption,
+        metricTargetsEnum.consumption,
+    ])
+    // This state represents whether or not the chart is showing .
+    const [isConsumptionChartLoading, setIsConsumptionChartLoading] = useState<boolean>(false)
+    // This state represents whether or not the chart is stacked: true.
+    const isEurosConsumptionChart = useMemo(
+        () => visibleTargetCharts.includes(metricTargetsEnum.eurosConsumption),
+        [visibleTargetCharts],
+    )
+    // This state represents whether or not the chart is stacked: true.
+    const consumptionChartData: IMetric[] = useMemo(
+        () => data.filter((datapoint) => visibleTargetCharts.includes(datapoint.target)),
+        [data, visibleTargetCharts],
+    )
 
-    // Desire behaviour is to focus on consumption and autoconsumption, this handles the spinner state only for the focused targets.
-    // Because initially we load consumption and autoconsumption thus data is empty. Once those fetched.
-    // Then fetching other target (€) will not show a spinner and will be done without any user experience knowing it.
-    const isMetricsConsumptionTargetLoading = isMetricsLoading && !data.length
+    // Desire behaviour is to focus on calling getMetrics on the active target show in MyConsumptionChart, and handle the spinner only for those targets.
+    // Then in the background fetching the remaining targets, and will not show a spinner and will be done without any user experience knowing it.
+    const getMetrics = useCallback(async () => {
+        setIsConsumptionChartLoading(true)
+        await getMetricsWithParams({ interval: metricsInterval, range, targets: visibleTargetCharts, filters })
+        setIsConsumptionChartLoading(false)
+        getMetricsWithParams({ interval: metricsInterval, range, targets: ConsumptionChartTargets, filters })
+    }, [filters, range, metricsInterval, getMetricsWithParams, visibleTargetCharts])
 
-    // Once data changes for consumption and autoConsumption, Fetch remaining targets.
+    // Happens everytime getMetrics dependencies change, and happen first time hook is instanciated.
     useEffect(() => {
-        // Check that useEffect triggers only when we have consumption and autoconsumption.
+        getMetrics()
+    }, [getMetrics])
+
+    /**
+     * Show given metric target chart.
+     *
+     * @param target Indicated target.
+     */
+    const showMetricTargetChart = (target: metricTargetType) => {
         if (
-            data.filter((datapoint) =>
-                [metricTargetsEnum.consumption, metricTargetsEnum.autoconsumption].includes(
-                    datapoint.target as metricTargetsEnum,
-                ),
+            [metricTargetsEnum.internalTemperature, metricTargetsEnum.externalTemperature].includes(
+                target as metricTargetsEnum,
             )
         )
-            addTarget(metric)
-        // data.forEach((datapoint) => {
-        //     if (
-        //         datapoint.target === metricTargetsEnum.externalTemperature ||
-        //         datapoint.target === metricTargetsEnum.internalTemperature ||
-        //         datapoint.target !== metricTargetsEnum.pMax
-        //     )
-        //         setIsStackedEnabled(true)
-        // })
-    }, [data])
+            setIsStackedEnabled(true)
+        setVisibleTargetsCharts((prevState) => [...prevState, target])
+    }
 
-    useEffect(() => {
-        setFilters(filters)
-    }, [filters, setFilters])
-
-    useEffect(() => {
-        setRange(range)
-    }, [range, setRange])
-
-    useEffect(() => {
-        setMetricsInterval(metricsInterval)
-    }, [metricsInterval, setMetricsInterval])
+    /**
+     * Hide given metric target chart.
+     *
+     * @param target Indicated target.
+     */
+    const hideMetricTargetChart = (target: metricTargetType) => {
+        setVisibleTargetsCharts((prevState) => prevState.filter((visibleTarget) => visibleTarget !== target))
+    }
 
     return (
         <div className="mb-12">
@@ -127,8 +145,8 @@ export const ConsumptionChartContainer = ({
 
             <div className="my-16 flex justify-between">
                 <EurosConsumptionButtonToggler
-                    removeTarget={removeTarget}
-                    addTarget={addTarget}
+                    removeTarget={hideMetricTargetChart}
+                    addTarget={showMetricTargetChart}
                     showEurosConsumption={!isEurosConsumptionChart}
                 />
                 <Tooltip
@@ -142,21 +160,21 @@ export const ConsumptionChartContainer = ({
                 >
                     <div className={`${tempPmaxFeatureState && 'cursor-not-allowed'}`}>
                         <TargetButtonGroup
-                            removeTarget={removeTarget}
-                            addTarget={addTarget}
+                            removeTarget={hideMetricTargetChart}
+                            addTarget={showMetricTargetChart}
                             hidePmax={period === 'daily' || enedisSgeConsent?.enedisSgeConsentState === 'NONEXISTENT'}
                         />
                     </div>
                 </Tooltip>
             </div>
 
-            {isMetricsConsumptionTargetLoading ? (
+            {isConsumptionChartLoading ? (
                 <div className="flex flex-col justify-center items-center w-full h-full" style={{ height: '320px' }}>
                     <CircularProgress style={{ color: theme.palette.background.paper }} />
                 </div>
             ) : (
                 <MyConsumptionChart
-                    data={data}
+                    data={consumptionChartData}
                     period={period}
                     range={range}
                     isStackedEnabled={isStackedEnabled}

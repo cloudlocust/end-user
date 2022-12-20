@@ -142,6 +142,29 @@ export type getMetricType = {
 }
 
 /**
+ * Params of getMetricsWithParamsType hook function.
+ */
+//eslint-disable-next-line jsdoc/require-jsdoc
+export type getMetricsWithParamsType = {
+    /**
+     * Range.
+     */
+    range: metricRangeType
+    /**
+     * Metric interval.
+     */
+    interval: metricIntervalType
+    /**
+     * Metrics targets.
+     */
+    targets: metricTargetType[]
+    /**
+     * Metric filters.
+     */
+    filters: metricFiltersType
+}
+
+/**
  * Type of ApexAxisChartSerie.
  */
 declare type ApexAxisChartSerie = ApexAxisChartSeries[0]
