@@ -179,6 +179,14 @@ export interface ConsumptionChartContainerProps {
 }
 
 /**
+ * ProductionChartContainer Props.
+ */
+export type ProductionChartContainerProps = Omit<
+    ConsumptionChartContainerProps,
+    'enedisSgeConsent' | 'hasMissingHousingContracts'
+>
+
+/**
  * Type for getChartSpecifities function return.
  */
 // eslint-disable-next-line jsdoc/require-jsdoc
