@@ -1,33 +1,14 @@
 import { initializeApp } from 'firebase/app'
 import { getMessaging, getToken } from 'firebase/messaging'
 import { axios } from 'src/common/react-platform-components'
-import {
-    REACT_APP_FIREBASE_API_KEY,
-    REACT_APP_FIREBASE_APP_ID,
-    REACT_APP_FIREBASE_AUTH_DOMAIN,
-    REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
-    REACT_APP_FIREBASE_PROJECT_ID,
-    REACT_APP_FIREBASE_STORAGE_BUCKET,
-    REACT_APP_FIREBASE_VAPID_KEY,
-} from 'src/configs'
+import { REACT_APP_FIREBASE_VAPID_KEY, FIREBASE_CONFIG } from 'src/configs'
 import { AUTH_BASE_URL } from './modules/User/configs'
 
-const firebaseConfig = {
-    apiKey: REACT_APP_FIREBASE_API_KEY,
-    authDomain: REACT_APP_FIREBASE_AUTH_DOMAIN,
-    projectId: REACT_APP_FIREBASE_PROJECT_ID,
-    storageBucket: REACT_APP_FIREBASE_STORAGE_BUCKET,
-    messagingSenderId: REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
-    appId: REACT_APP_FIREBASE_APP_ID,
-}
-
 // Initialize Firebase
-const firebaseApp = initializeApp(firebaseConfig)
+const firebaseApp = initializeApp(FIREBASE_CONFIG)
 //Access Firebase cloud messaging
 const messaging = getMessaging(firebaseApp)
 
-/*
- */
 /**
  * This function allows us to get your device token from Firebase, which is required for sending Push notifications to your device.
  *

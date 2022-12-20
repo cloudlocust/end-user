@@ -11,6 +11,7 @@ const INFO_ICON = 'InfoOutlinedIcon'
 const CLOSE_ICON = 'CloseIcon'
 const OFFLINEBOLT_ICON = 'OfflineBoltIcon'
 const LOADING_CIRCLE_TEST_ID = 'circular-progress'
+const BUTTON_TEXT = 'Configurer des alertes'
 
 let mockEcowattData = applyCamelCase(TEST_ECOWATT_DATA)
 
@@ -19,7 +20,6 @@ const mockDays = ['Mercredi', 'Jeudi', 'Vendredi', 'Samedi']
 let mockEcowattWidgetProps = {
     ecowattData: mockEcowattData as IEcowattData,
     isEcowattDataInProgress: false,
-    isEcoowattWidgetScrolledAt: false,
 }
 
 describe('Ecowatt Widget tests', () => {
@@ -65,7 +65,7 @@ describe('Ecowatt Widget tests', () => {
         rerender(<EcowattWidget {...mockEcowattWidgetProps} />)
         expect(getByText('Aucune donnée disponible')).toBeTruthy()
     })
-    test('when component is scrolled at, the first widget day is highlighted', async () => {
+    test('when one widget signal is clicked at, it should have a border', async () => {
         const theme = createTheme({
             palette: {
                 primary: {
@@ -74,15 +74,14 @@ describe('Ecowatt Widget tests', () => {
             },
         })
 
-        mockEcowattWidgetProps.isEcoowattWidgetScrolledAt = true
         mockEcowattWidgetProps.ecowattData = mockEcowattData
-        const { getByTestId } = reduxedRender(
+        const { getByTestId, getByText } = reduxedRender(
             <ThemeProvider theme={theme}>
                 <EcowattWidget {...mockEcowattWidgetProps} />
             </ThemeProvider>,
         )
-
-        expect(getByTestId('timeline')).toBeTruthy()
+        userEvent.click(getByTestId('day-widget-0'))
         expect(getByTestId('day-widget-0')).toHaveStyle(`border: 2px solid ${theme.palette.primary.main}`)
+        expect(getByText(BUTTON_TEXT)).toBeTruthy()
     })
 })

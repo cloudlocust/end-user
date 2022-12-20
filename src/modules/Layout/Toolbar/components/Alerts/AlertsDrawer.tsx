@@ -2,6 +2,7 @@ import { SwipeableDrawer, IconButton, Icon } from '@mui/material/'
 import { styled } from '@mui/material/styles'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import ConsumptionAlert from 'src/modules/Layout/Toolbar/components/Alerts/ConsumptionAlert'
+// import { EcowattAlerts } from 'src/modules/Layout/Toolbar/components/Alerts/EcowattAlerts'
 
 const StyledSwipeableDrawer = styled(SwipeableDrawer)(({ theme }) => ({
     '& .MuiDrawer-paper': {
@@ -28,7 +29,7 @@ export const AlertsDrawer = ({ closeAlertsDrawer }: { closeAlertsDrawer: () => v
             onClose={closeAlertsDrawer}
             disableSwipeToOpen
         >
-            <IconButton className="m-4 absolute top-0 right-0 z-999" onClick={closeAlertsDrawer} size="large">
+            <IconButton className="m-4 absolute top-0 right-0" onClick={closeAlertsDrawer} size="large">
                 <Icon color="action">close</Icon>
             </IconButton>
             <div className="flex-col mt-40 mx-8">
@@ -38,6 +39,7 @@ export const AlertsDrawer = ({ closeAlertsDrawer }: { closeAlertsDrawer: () => v
                 <ConsumptionAlert interval="day" />
                 <ConsumptionAlert interval="week" />
                 <ConsumptionAlert interval="month" />
+                {/* <EcowattAlerts /> */}
             </div>
         </StyledSwipeableDrawer>
     )

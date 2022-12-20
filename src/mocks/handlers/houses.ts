@@ -16,6 +16,21 @@ export const TEST_HOUSES: SnakeCasedPropertiesDeep<IHousing>[] = [
         meter: {
             id: 1,
             guid: '12345678911234',
+            features: {
+                offpeak: {
+                    read_only: true,
+                    offpeak_hours: [
+                        {
+                            start: '08:00',
+                            end: '16:00',
+                        },
+                        {
+                            start: '20:00',
+                            end: '04:00',
+                        },
+                    ],
+                },
+            },
         },
         address: {
             city: 'monaco',
@@ -37,7 +52,67 @@ export const TEST_HOUSES: SnakeCasedPropertiesDeep<IHousing>[] = [
             country: 'france',
             lat: 23,
             lng: 23,
+            name: 'the name of something 03',
+            place_id: 'xyzab',
+            address_addition: undefined,
+        },
+    },
+    {
+        id: 3,
+        meter: {
+            id: 1,
+            guid: '12345678911234',
+            features: {
+                offpeak: {
+                    read_only: false,
+                    offpeak_hours: [
+                        {
+                            start: '08:00',
+                            end: '16:00',
+                        },
+                        {
+                            start: '20:00',
+                            end: '04:00',
+                        },
+                    ],
+                },
+            },
+        },
+        address: {
+            city: 'monaco',
+            zip_code: '3333',
+            country: 'france',
+            lat: 23,
+            lng: 23,
             name: 'the name of something 02',
+            place_id: 'xyzab',
+            address_addition: undefined,
+        },
+    },
+    {
+        id: 4,
+        meter: {
+            id: 1,
+            guid: '12345678911234',
+            features: {
+                offpeak: {
+                    read_only: false,
+                    offpeak_hours: [
+                        {
+                            start: '08:00',
+                            end: '16:00',
+                        },
+                    ],
+                },
+            },
+        },
+        address: {
+            city: 'monaco',
+            zip_code: '3333',
+            country: 'france',
+            lat: 23,
+            lng: 23,
+            name: 'the name of something 04',
             place_id: 'xyzab',
             address_addition: undefined,
         },
@@ -146,7 +221,7 @@ export const housingEndpoints = [
 
     // Edit meter
     rest.patch<editMeterInputType>(`${HOUSING_API}/:housingId/meter`, (req, res, ctx) => {
-        const { guid } = req.body
+        const { guid, features } = req.body
         const { housingId } = req.params
         const houseId = parseInt(housingId)
 
@@ -157,8 +232,26 @@ export const housingEndpoints = [
         if (!housingToUpdate) {
             return res(ctx.status(400), ctx.delay(1000))
         }
+        const newMeterHousing = {
+            ...housingToUpdate.meter,
+            guid: guid || housingToUpdate.meter!.guid,
+            features: features || housingToUpdate.meter!.features,
+        }
+        return res(ctx.status(200), ctx.delay(1000), ctx.json(newMeterHousing))
+    }),
 
-        return res(ctx.status(200), ctx.delay(1000), ctx.json({ ...TEST_HOUSES[0].meter, ...{ guid } }))
+    // Get one meter
+    rest.get<editMeterInputType>(`${HOUSING_API}/:housingId/meter`, (req, res, ctx) => {
+        const { housingId } = req.params
+        const houseId = parseInt(housingId)
+
+        const foundHousing = TEST_HOUSES.find((housing: SnakeCasedPropertiesDeep<IHousing>) => housing.id === houseId)
+
+        if (!foundHousing) {
+            return res(ctx.status(400), ctx.delay(1000))
+        }
+
+        return res(ctx.status(200), ctx.delay(1000), ctx.json(foundHousing.meter))
     }),
 
     // Get Has Missing Housing Contracts Api
