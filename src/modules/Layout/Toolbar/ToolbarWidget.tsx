@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import { useDispatch } from 'react-redux'
 import { Dispatch } from 'src/redux'
 import UserMenu from 'src/modules/Layout/Toolbar/components/UserMenu'
-import Notification from 'src/modules/Layout/Toolbar/components/Notification'
+import Notification from 'src/modules/Layout/Toolbar/components/Novu/Notification'
 import InputLabel from '@mui/material/InputLabel'
 import MenuItem from '@mui/material/MenuItem'
 import Select, { SelectChangeEvent } from '@mui/material/Select'
@@ -12,6 +12,7 @@ import OutlinedInput from '@mui/material/OutlinedInput'
 import { FormControl } from '@mui/material'
 import { useIntl } from 'react-intl'
 import './ToolbarWidget.scss'
+import { Alerts } from 'src/modules/Layout/Toolbar/components/Alerts'
 
 const ITEM_HEIGHT = 48
 const ITEM_PADDING_TOP = 8
@@ -91,6 +92,7 @@ export const ToolbarWidget = () => {
             </FormControl>
             <div className="flex align-center">
                 <Notification />
+                <Alerts />
                 <UserMenu />
             </div>
         </div>

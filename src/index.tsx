@@ -16,6 +16,7 @@ import { getPersistor } from '@rematch/persist'
 import { TranslatitonProvider, LOAD_TRANSLATIONS } from 'src/common/react-platform-translation'
 import { SnackbarProvider } from 'src/common/react-platform-components/alerts/SnackbarProvider'
 import { pwaTrackingListeners } from './pwaEventlisteners'
+import { AlertsDrawerProvider } from 'src/modules/shared/AlertsDrawerContext'
 
 const isBrowser = typeof window !== 'undefined'
 
@@ -37,7 +38,9 @@ const Application: FC<any> = () => {
                         <TranslatitonProvider>
                             <Router basename={BASENAME_URL}>
                                 <SnackbarProvider>
-                                    <App />
+                                    <AlertsDrawerProvider>
+                                        <App />
+                                    </AlertsDrawerProvider>
                                 </SnackbarProvider>
                             </Router>
                         </TranslatitonProvider>
