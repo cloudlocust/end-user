@@ -1,5 +1,6 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Card, Button } from '@mui/material'
+import { LoadingButton } from '@mui/lab'
 import { useIntl } from 'react-intl'
 import TextField from '@mui/material/TextField'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
@@ -15,6 +16,8 @@ import { Form } from 'src/common/react-platform-components'
  * @param props.initialValues Initial value for the text fields.
  * @param props.pricePerKwh Price per kwh.
  * @param props.saveConsumptionAlert Save Consumption alert.
+ * @param props.isConsumptionAlertsLoading Is consumption alerts loading.
+ * @param props.isSavingAlertLoading Is saving alert loading.
  * @returns Consumption Alert Component.
  */
 const ConsumptionAlert = ({
@@ -22,6 +25,8 @@ const ConsumptionAlert = ({
     initialValues,
     pricePerKwh,
     saveConsumptionAlert,
+    isConsumptionAlertsLoading,
+    isSavingAlertLoading,
 }: //eslint-disable-next-line
 {
     /**
@@ -40,14 +45,29 @@ const ConsumptionAlert = ({
      * Save consumption alert.
      */
     saveConsumptionAlert: (data: ConsumptionAlertData, interval: ConsumptionAlertIntervalsType) => void
+    /**
+     * Is consumption alerts values loading.
+     */
+    isConsumptionAlertsLoading: boolean
+    /**
+     * Is saving alert loading.
+     */
+    isSavingAlertLoading: boolean
 }) => {
     const [isEdit, setIsEdit] = useState(false)
-    const [price, setPrice] = useState(initialValues?.price ?? null)
-    const [consumption, setConsumption] = useState(initialValues?.consumption ?? null)
+    const [price, setPrice] = useState<number | null>(initialValues?.price ?? null)
+    const [consumption, setConsumption] = useState<number | null>(initialValues?.consumption ?? null)
 
     // this state is to keep the fields updated in case we save new data and did not close the drawer
     // tihs will mean that the initial values would be wrong
-    const [formValues, setFormValues] = useState<ConsumptionAlertData>({ price, consumption })
+    const [formValues, setFormValues] = useState<ConsumptionAlertData | undefined>(initialValues)
+
+    // component render multiple times because of fetchs, we have to handle it
+    useEffect(() => {
+        setPrice(initialValues?.price ?? null)
+        setConsumption(initialValues?.consumption ?? null)
+        setFormValues(initialValues)
+    }, [initialValues])
 
     // to keep the last used one, it's the one that will be saved in database
     const [toDeleteBeforeSend, setToDeleteBeforeSend] = useState<'price' | 'consumption' | null>(null)
@@ -70,8 +90,8 @@ const ConsumptionAlert = ({
             setPrice(null)
             setConsumption(NaN)
         } else {
-            setPrice(priceOnChange)
-            pricePerKwh && setConsumption(priceOnChange / pricePerKwh)
+            setPrice(parseFloat(priceOnChange.toFixed(6)))
+            pricePerKwh && setConsumption(parseFloat((priceOnChange / pricePerKwh).toFixed(5)))
         }
     }
 
@@ -91,8 +111,8 @@ const ConsumptionAlert = ({
             setConsumption(null)
             setPrice(NaN)
         } else {
-            setConsumption(consumptionOnChange)
-            pricePerKwh && setPrice(consumptionOnChange * pricePerKwh)
+            setConsumption(parseFloat(consumptionOnChange.toFixed(5)))
+            pricePerKwh && setPrice(parseFloat((consumptionOnChange * pricePerKwh).toFixed(5)))
         }
     }
 
@@ -174,6 +194,8 @@ const ConsumptionAlert = ({
                             isEdit={isEdit}
                             enableForm={() => setIsEdit(true)}
                             disableForm={() => handleOnDisable()}
+                            isConsumptionAlertsLoading={isConsumptionAlertsLoading}
+                            isSavingAlertLoading={isSavingAlertLoading}
                         />
                     </div>
                 </Card>
@@ -189,12 +211,16 @@ const ConsumptionAlert = ({
  * @param props.isEdit Is form in edit mode.
  * @param props.enableForm Change state of edit mode to enable.
  * @param props.disableForm Change state of edit mode to disable.
+ * @param props.isConsumptionAlertsLoading Is button loading.
+ * @param props.isSavingAlertLoading Is saving alert loading.
  * @returns Jsx.
  */
 const ButtonsGroup = ({
     isEdit,
     enableForm,
     disableForm,
+    isConsumptionAlertsLoading,
+    isSavingAlertLoading,
 }: //eslint-disable-next-line
 {
     /**
@@ -209,6 +235,14 @@ const ButtonsGroup = ({
      * Function to enable form.
      */
     disableForm: () => void
+    /**
+     * Is button loading.
+     */
+    isConsumptionAlertsLoading: boolean
+    /**
+     * Is button loading.
+     */
+    isSavingAlertLoading: boolean
 }) => {
     const { formatMessage } = useIntl()
 
@@ -222,20 +256,20 @@ const ButtonsGroup = ({
                             defaultMessage: 'Annuler',
                         })}
                     </Button>
-                    <Button variant="contained" type="submit" className="ml-8">
+                    <LoadingButton loading={isSavingAlertLoading} type="submit" variant="contained" className="ml-8">
                         {formatMessage({
                             id: 'Enregistrer',
                             defaultMessage: 'Enregistrer',
                         })}
-                    </Button>
+                    </LoadingButton>
                 </div>
             ) : (
-                <Button variant="contained" onClick={enableForm}>
+                <LoadingButton loading={isConsumptionAlertsLoading} variant="contained" onClick={enableForm}>
                     {formatMessage({
                         id: 'Modifier',
                         defaultMessage: 'Modifier',
                     })}
-                </Button>
+                </LoadingButton>
             )}
         </div>
     )

@@ -22,6 +22,8 @@ const mockInitialValue = {
     consumption: 0,
 }
 const mockSaveConsumptionAlert = jest.fn()
+let mockIsConsumptionAlertsLoading = false
+let mockIsSavingAlertLoading = false
 const PRICE_PER_KWH = 3
 
 describe('Test Consumption Alert component.', () => {
@@ -34,6 +36,8 @@ describe('Test Consumption Alert component.', () => {
                         initialValues={mockInitialValue}
                         pricePerKwh={PRICE_PER_KWH}
                         saveConsumptionAlert={mockSaveConsumptionAlert}
+                        isConsumptionAlertsLoading={mockIsConsumptionAlertsLoading}
+                        isSavingAlertLoading={mockIsSavingAlertLoading}
                     />
                 </BrowserRouter>,
             )
@@ -67,6 +71,8 @@ describe('Test Consumption Alert component.', () => {
                         initialValues={mockInitialValue}
                         pricePerKwh={PRICE_PER_KWH}
                         saveConsumptionAlert={mockSaveConsumptionAlert}
+                        isConsumptionAlertsLoading={mockIsConsumptionAlertsLoading}
+                        isSavingAlertLoading={mockIsSavingAlertLoading}
                     />
                 </BrowserRouter>,
             )
@@ -82,6 +88,8 @@ describe('Test Consumption Alert component.', () => {
                         initialValues={mockInitialValue}
                         pricePerKwh={PRICE_PER_KWH}
                         saveConsumptionAlert={mockSaveConsumptionAlert}
+                        isConsumptionAlertsLoading={mockIsConsumptionAlertsLoading}
+                        isSavingAlertLoading={mockIsSavingAlertLoading}
                     />
                 </BrowserRouter>,
             )
@@ -97,6 +105,8 @@ describe('Test Consumption Alert component.', () => {
                         initialValues={mockInitialValue}
                         pricePerKwh={PRICE_PER_KWH}
                         saveConsumptionAlert={mockSaveConsumptionAlert}
+                        isConsumptionAlertsLoading={mockIsConsumptionAlertsLoading}
+                        isSavingAlertLoading={mockIsSavingAlertLoading}
                     />
                 </BrowserRouter>,
             )
@@ -133,6 +143,8 @@ describe('Test Consumption Alert component.', () => {
                         initialValues={mockInitialValue}
                         pricePerKwh={PRICE_PER_KWH}
                         saveConsumptionAlert={mockSaveConsumptionAlert}
+                        isConsumptionAlertsLoading={mockIsConsumptionAlertsLoading}
+                        isSavingAlertLoading={mockIsSavingAlertLoading}
                     />
                 </BrowserRouter>,
             )
@@ -161,6 +173,8 @@ describe('Test Consumption Alert component.', () => {
                         initialValues={mockInitialValue}
                         pricePerKwh={PRICE_PER_KWH}
                         saveConsumptionAlert={mockSaveConsumptionAlert}
+                        isConsumptionAlertsLoading={mockIsConsumptionAlertsLoading}
+                        isSavingAlertLoading={mockIsSavingAlertLoading}
                     />
                 </BrowserRouter>,
             )
@@ -174,7 +188,7 @@ describe('Test Consumption Alert component.', () => {
 
             userEvent.type(textFieldMuiElements[1], `${testPrice}`)
             expect(textFieldMuiElements[1]).toHaveValue(testPrice)
-            expect(textFieldMuiElements[0]).toHaveValue(testPrice / PRICE_PER_KWH)
+            expect(textFieldMuiElements[0]).toHaveValue(parseFloat((testPrice / PRICE_PER_KWH).toFixed(5)))
 
             // then try to delete what we were writing
             userEvent.type(textFieldMuiElements[1], '{Delete}')
@@ -189,6 +203,8 @@ describe('Test Consumption Alert component.', () => {
                         initialValues={mockInitialValue}
                         pricePerKwh={PRICE_PER_KWH}
                         saveConsumptionAlert={mockSaveConsumptionAlert}
+                        isConsumptionAlertsLoading={mockIsConsumptionAlertsLoading}
+                        isSavingAlertLoading={mockIsSavingAlertLoading}
                     />
                 </BrowserRouter>,
             )
@@ -202,7 +218,7 @@ describe('Test Consumption Alert component.', () => {
 
             userEvent.type(textFieldMuiElements[1], `${testPrice}`)
             expect(textFieldMuiElements[1]).toHaveValue(testPrice)
-            expect(textFieldMuiElements[0]).toHaveValue(testPrice / PRICE_PER_KWH)
+            expect(textFieldMuiElements[0]).toHaveValue(parseFloat((testPrice / PRICE_PER_KWH).toFixed(5)))
 
             // cancel changes
             userEvent.click(getByText(BUTTON_ANNULER))
@@ -219,6 +235,8 @@ describe('Test Consumption Alert component.', () => {
                         initialValues={mockInitialValue}
                         pricePerKwh={PRICE_PER_KWH}
                         saveConsumptionAlert={mockSaveConsumptionAlert}
+                        isConsumptionAlertsLoading={mockIsConsumptionAlertsLoading}
+                        isSavingAlertLoading={mockIsSavingAlertLoading}
                     />
                 </BrowserRouter>,
             )
@@ -232,7 +250,7 @@ describe('Test Consumption Alert component.', () => {
 
             userEvent.type(textFieldMuiElements[1], `${testPrice}`)
             expect(textFieldMuiElements[1]).toHaveValue(testPrice)
-            expect(textFieldMuiElements[0]).toHaveValue(testPrice / PRICE_PER_KWH)
+            expect(textFieldMuiElements[0]).toHaveValue(parseFloat((testPrice / PRICE_PER_KWH).toFixed(5)))
 
             // save changes
             userEvent.click(getByText(BUTTON_ENREGISTRER))
@@ -244,7 +262,7 @@ describe('Test Consumption Alert component.', () => {
 
             // price and consumption should have values registered
             expect(textFieldMuiElements[1]).toHaveValue(testPrice)
-            expect(textFieldMuiElements[0]).toHaveValue(testPrice / PRICE_PER_KWH)
+            expect(textFieldMuiElements[0]).toHaveValue(parseFloat((testPrice / PRICE_PER_KWH).toFixed(5)))
 
             // both inputs are disabled
             expect(textFieldMuiElements[0].classList.contains(MUI_DISABLED)).toBeTruthy()
@@ -254,7 +272,7 @@ describe('Test Consumption Alert component.', () => {
             // ( it should have the last ones of course )
             userEvent.click(getByText(BUTTON_MODIFIER))
             expect(textFieldMuiElements[1]).toHaveValue(testPrice)
-            expect(textFieldMuiElements[0]).toHaveValue(testPrice / PRICE_PER_KWH)
+            expect(textFieldMuiElements[0]).toHaveValue(parseFloat((testPrice / PRICE_PER_KWH).toFixed(5)))
         })
     })
 })

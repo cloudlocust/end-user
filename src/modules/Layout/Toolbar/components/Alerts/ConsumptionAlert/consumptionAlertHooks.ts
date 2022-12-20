@@ -26,9 +26,13 @@ export const CONSUMPTION_ALERT_API = (housingId: number) => `${HOUSING_API}/${ho
  * @returns UseAccomodation.
  */
 export function useConsumptionAlerts(housingId: number | null, disabledOnMunt?: boolean) {
-    const [consumptionAlerts, setConsumptionAlerts] = useState<ConsumptionAlertData[]>([])
+    const [consumptionAlerts, setConsumptionAlerts] = useState<IConsumptionAlert[]>([])
+    const [pricePerKwh, setPricePerKwh] = useState<number | null>(null)
+
     const { enqueueSnackbar } = useSnackbar()
-    const [isLoadingInProgress, setIsLoadingInProgress] = useState(false)
+    const [isAlertsLoadingInProgress, setIsAlertsLoadingInProgress] = useState(false)
+    const [isSavingInProgress, setIsSavingInProgress] = useState(false)
+    const [isPricePerKwhLoadingInProgress, setIsPricePerKwhLoadingInProgress] = useState(false)
 
     const { formatMessage } = useIntl()
     const isInitialMount = useRef(true)
@@ -39,19 +43,18 @@ export function useConsumptionAlerts(housingId: number | null, disabledOnMunt?: 
     const DEFAULT_ASSERTION_ERROR_MESSAGE = "Une erreur est survenue lors de l'insertion des alerts."
 
     /**
-     * Function hook responsible for fetching Consumption Alerts.
+     * Function hook responsible for fetching price per kwh.
      *
      * @returns The function throw an error, and show snackbar message containing successful and errors message.
      */
-    const getPricePerKwh = useCallback(async () => {
-        setIsLoadingInProgress(true)
+    const loadPricePerKwh = useCallback(async () => {
+        setIsPricePerKwhLoadingInProgress(true)
         if (housingId) {
             try {
                 const { data: responseData } = await axios.get<IPricePerKwhDataType>(
                     `${CONSUMPTION_ALERT_API(housingId)}/price-per-kwh`,
                 )
-                setIsLoadingInProgress(false)
-                return responseData.pricePerKwh
+                setPricePerKwh(responseData.pricePerKwh)
             } catch (error: any) {
                 enqueueSnackbar(
                     formatMessage({
@@ -60,7 +63,6 @@ export function useConsumptionAlerts(housingId: number | null, disabledOnMunt?: 
                     }),
                     { variant: 'error' },
                 )
-                setIsLoadingInProgress(false)
             }
         } else {
             enqueueSnackbar(
@@ -70,8 +72,8 @@ export function useConsumptionAlerts(housingId: number | null, disabledOnMunt?: 
                 }),
                 { variant: 'error' },
             )
-            setIsLoadingInProgress(false)
         }
+        setIsPricePerKwhLoadingInProgress(false)
     }, [enqueueSnackbar, formatMessage, housingId])
 
     /**
@@ -80,11 +82,11 @@ export function useConsumptionAlerts(housingId: number | null, disabledOnMunt?: 
      * @returns The function throw an error, and show snackbar message containing successful and errors message.
      */
     const loadConsumptionAlerts = useCallback(async () => {
-        setIsLoadingInProgress(true)
-        setIsConsumptionAlertsListEmpty(false)
+        setIsAlertsLoadingInProgress(true)
         if (housingId) {
             try {
                 const { data: responseData } = await axios.get<IConsumptionAlert[]>(CONSUMPTION_ALERT_API(housingId))
+                setIsConsumptionAlertsListEmpty(false)
                 setConsumptionAlerts(responseData)
             } catch (error: any) {
                 enqueueSnackbar(
@@ -94,9 +96,6 @@ export function useConsumptionAlerts(housingId: number | null, disabledOnMunt?: 
                     }),
                     { variant: 'error' },
                 )
-
-                setIsConsumptionAlertsListEmpty(true)
-                setIsLoadingInProgress(false)
             }
         } else {
             enqueueSnackbar(
@@ -107,7 +106,7 @@ export function useConsumptionAlerts(housingId: number | null, disabledOnMunt?: 
                 { variant: 'error' },
             )
         }
-        setIsLoadingInProgress(false)
+        setIsAlertsLoadingInProgress(false)
     }, [enqueueSnackbar, formatMessage, housingId])
 
     /**
@@ -117,7 +116,7 @@ export function useConsumptionAlerts(housingId: number | null, disabledOnMunt?: 
      * @param interval Interval of the consumption alert.
      */
     const saveConsumptionAlert = async (body: ConsumptionAlertData, interval: ConsumptionAlertIntervalsType) => {
-        setIsLoadingInProgress(true)
+        setIsSavingInProgress(true)
         if (housingId) {
             try {
                 await axios.post<ConsumptionAlertData>(`${CONSUMPTION_ALERT_API(housingId)}/${interval}`, body)
@@ -136,7 +135,6 @@ export function useConsumptionAlerts(housingId: number | null, disabledOnMunt?: 
                     }),
                     { variant: 'error' },
                 )
-                setIsLoadingInProgress(false)
             }
         } else {
             enqueueSnackbar(
@@ -148,22 +146,32 @@ export function useConsumptionAlerts(housingId: number | null, disabledOnMunt?: 
             )
         }
 
-        setIsLoadingInProgress(false)
+        setIsSavingInProgress(false)
     }
 
     // UseEffect executes on initial intantiation of consumption alert.
     useEffect(() => {
+        /**
+         * Load what we need when component mounts.
+         */
+        const loadEssentials = async () => {
+            await loadConsumptionAlerts()
+            await loadPricePerKwh()
+        }
         if (isInitialMount.current && housingId && !disabledOnMunt) {
             isInitialMount.current = false
-            loadConsumptionAlerts()
+            loadEssentials()
         }
-    }, [loadConsumptionAlerts, housingId, disabledOnMunt])
+    }, [loadConsumptionAlerts, housingId, disabledOnMunt, loadPricePerKwh])
 
     return {
-        isLoadingInProgress,
+        isSavingInProgress,
+        isAlertsLoadingInProgress,
+        isPricePerKwhLoadingInProgress,
         consumptionAlerts,
+        pricePerKwh,
         loadConsumptionAlerts,
-        getPricePerKwh,
+        loadPricePerKwh,
         saveConsumptionAlert,
         isConsumptionAlertsListEmpty,
     }
