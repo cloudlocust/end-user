@@ -147,7 +147,7 @@ export const EcowattWidget = ({
                                                         fontWeight={500}
                                                         className="text-12 md:text-15"
                                                     >
-                                                        {`${capitalize(dayjs(day.readingAt).format('d'))} ${capitalize(
+                                                        {`${capitalize(dayjs(day.readingAt).format('D'))} ${capitalize(
                                                             dayjs(day.readingAt).format('MMM'),
                                                         )}`}
                                                     </TypographyFormatMessage>
