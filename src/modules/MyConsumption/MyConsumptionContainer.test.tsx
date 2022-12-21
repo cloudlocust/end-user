@@ -1,8 +1,6 @@
 import { reduxedRender } from 'src/common/react-platform-components/test'
 import { MyConsumptionContainer } from 'src/modules/MyConsumption/MyConsumptionContainer'
 import { BrowserRouter as Router } from 'react-router-dom'
-import { IMetric } from 'src/modules/Metrics/Metrics.d'
-import { TEST_SUCCESS_WEEK_METRICS } from 'src/mocks/handlers/metrics'
 import { waitFor } from '@testing-library/react'
 import { formatMetricFilter } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
 import userEvent from '@testing-library/user-event'
@@ -10,80 +8,58 @@ import { store } from 'src/redux'
 import { applyCamelCase } from 'src/common/react-platform-components'
 import { IHousing } from 'src/modules/MyHouse/components/HousingList/housing'
 import { TEST_HOUSES } from 'src/mocks/handlers/houses'
-import { URL_MY_HOUSE } from 'src/modules/MyHouse/MyHouseConfig'
-import { ENPHASE_OFF_MESSAGE, NRLINK_ENEDIS_OFF_MESSAGE } from 'src/modules/MyConsumption/utils/myConsumptionVariables'
+import { NRLINK_ENEDIS_OFF_MESSAGE } from 'src/modules/MyConsumption/utils/myConsumptionVariables'
+import { ConsumptionChartContainerProps } from 'src/modules/MyConsumption/myConsumptionTypes'
+import { IEnedisSgeConsent, INrlinkConsent, IEnphaseConsent } from 'src/modules/Consents/Consents'
 
 // List of houses to add to the redux state
 const LIST_OF_HOUSES: IHousing[] = applyCamelCase(TEST_HOUSES)
 
-// mock store.
+// Nrlink Consent format
+const nrLinkConsent: INrlinkConsent = {
+    meterGuid: '133456',
+    nrlinkConsentState: 'CONNECTED',
+    nrlinkGuid: '12',
+}
 
-let mockData: IMetric[] = TEST_SUCCESS_WEEK_METRICS(['consumption_metrics', '__euros__consumption_metrics'])
-let mockNrlinkConsent: string
-let mockIsMetricsLoading = false
-let mockEnedisConsent: string
-let mockEnphaseConsent: string
-const mockSetFilters = jest.fn()
-const circularProgressClassname = '.MuiCircularProgress-root'
-const HAS_MISSING_CONTRACTS_WARNING_TEXT =
-    "Ce graphe est un exemple basé sur un tarif Bleu EDF Base. Vos données contractuelles de fourniture d'énergie ne sont pas disponibles sur toute la période."
-const HAS_MISSING_CONTRACTS_WARNING_REDIRECT_LINK_TEXT = "Renseigner votre contrat d'énergie"
-const WEEKLY_PERIOD_BUTTON_TEXT = 'Semaine'
-const MONTHLY_PERIOD_BUTTON_TEXT = 'Mois'
-const YEARLY_PERIOD_BUTTON_TEXT = 'Année'
-const CONSUMPTION_TITLE_DAILY = 'en Wh par jour'
-const CONSUMPTION_TITLE_WEEKLY = 'en kWh par semaine'
-const CONSUMPTION_TITLE_MONTHLY = 'en kWh par mois'
-const CONSUMPTION_TITLE_YEARLY = 'en kWh par année'
-const EUROS_CONSUMPTION_TITLE_DAILY = 'en € par jour'
-const EUROS_CONSUMPTION_TITLE_WEEKLY = 'en € par semaine'
-const EUROS_CONSUMPTION_TITLE_MONTHLY = 'en € par mois'
-const EUROS_CONSUMPTION_TITLE_YEARLY = 'en € par année'
-const CONSUMPTION_ICON_TEST_ID = 'BoltIcon'
-const EUROS_CONSUMPTION_ICON_TEST_ID = 'EuroIcon'
-const apexchartsClassName = 'apexcharts-svg'
+// Enedis Consent format
+const enedisSGeConsent: IEnedisSgeConsent = {
+    meterGuid: '133456',
+    enedisSgeConsentState: 'CONNECTED',
+    expiredAt: '',
+}
+
+// Enphase Consent default
+const enphaseConsent: IEnphaseConsent = {
+    meterGuid: '133456',
+    enphaseConsentState: 'ACTIVE',
+}
+
+let mockNrlinkConsent: INrlinkConsent | undefined = nrLinkConsent
+let mockEnedisConsent: IEnedisSgeConsent | undefined = enedisSGeConsent
+let mockEnphaseConsent: IEnphaseConsent | undefined = enphaseConsent
+const MISSING_CURRENT_HOUSING_METER_ERROR_TEXT1 = "Pour voir votre consommation vous devez d'abord"
+const MISSING_CURRENT_HOUSING_METER_ERROR_TEXT2 = 'enregistrer votre compteur et votre nrLink'
+
 const mockGetConsents = jest.fn()
-
-// Mock metricsHook
-jest.mock('src/modules/Metrics/metricsHook.ts', () => ({
-    // eslint-disable-next-line jsdoc/require-jsdoc
-    useMetrics: () => ({
-        data: mockData,
-        filters: [
-            {
-                key: 'meter_guid',
-                operator: '=',
-                value: '123456789',
-            },
-        ],
-        range: {
-            from: '2022-06-04T00:00:00.000Z',
-            to: '2022-06-04T23:59:59.999Z',
-        },
-        isMetricsLoading: mockIsMetricsLoading,
-        setRange: jest.fn(),
-        setMetricsInterval: jest.fn(),
-        interval: '2min',
-        setFilters: mockSetFilters,
-    }),
-}))
+// Mock function to check the value of filters state in MyConsumptionContainer.
+const mockSetFilters = jest.fn()
+const FILTERS_TEXT = 'Filters'
+// Mock function to check the value of range state in MyConsumptionContainer.
+const mockSetRange = jest.fn()
+const RANGE_TEXT = 'Range'
+// Mock function to check the value of period state in MyConsumptionContainer.
+const mockSetPeriod = jest.fn()
+const PERIOD_TEXT = 'Period'
+const METRICS_INTERVAL_ENPHASE_ACTIVE = '30m'
 
 // Mock consentsHook
 jest.mock('src/modules/Consents/consentsHook.ts', () => ({
     // eslint-disable-next-line jsdoc/require-jsdoc
     useConsents: () => ({
-        enedisSgeConsent: {
-            meterGuid: '133456',
-            enedisSgeConsentState: mockEnedisConsent,
-        },
-        nrlinkConsent: {
-            meterGuid: '133456',
-            nrlinkConsentState: mockNrlinkConsent,
-        },
-        enphaseConsent: {
-            meterGuid: '133456',
-            enphaseConsentState: mockEnphaseConsent,
-        },
+        enedisSgeConsent: mockEnedisConsent,
+        nrlinkConsent: mockNrlinkConsent,
+        enphaseConsent: mockEnphaseConsent,
         getConsents: mockGetConsents,
     }),
 }))
@@ -98,150 +74,78 @@ jest.mock('src/hooks/HasMissingHousingContracts', () => ({
 
 // MyConsumptionContainer cannot render if we don't mock react-apexcharts
 jest.mock(
-    'react-apexcharts',
+    'src/modules/MyConsumption/components/MyConsumptionChart/ConsumptionChartContainer',
     // eslint-disable-next-line jsdoc/require-jsdoc
-    () => (props: any) => <div className={`${apexchartsClassName}`} {...props}></div>,
+    () => ({
+        ...jest.requireActual('src/modules/MyConsumption/components/MyConsumptionChart/ConsumptionChartContainer'),
+        // eslint-disable-next-line jsdoc/require-jsdoc
+        ConsumptionChartContainer: (props: ConsumptionChartContainerProps) => (
+            <div>
+                <p onClick={() => mockSetFilters(props.filters)}>{FILTERS_TEXT}</p>
+                <p onClick={() => mockSetRange(props.range)}>{RANGE_TEXT}</p>
+                <p onClick={() => mockSetPeriod(props.period)}>{PERIOD_TEXT}</p>
+                <p>{props.metricsInterval}</p>
+            </div>
+        ),
+    }),
 )
 
+// ApexCharts cannot render if we don't mock react-apexcharts
+jest.mock(
+    'react-apexcharts',
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    () => (props: any) => <div className="apexcharts-svg" {...props}></div>,
+)
 describe('MyConsumptionContainer test', () => {
     test('when there is no meter, a message is shown', async () => {
-        mockData = []
         const { getByText } = reduxedRender(
             <Router>
                 <MyConsumptionContainer />
             </Router>,
             { initialState: { housingModel: { currentHousing: null } } },
         )
-        await waitFor(() => {
-            expect(mockGetConsents).toHaveBeenCalled()
-        })
-        expect(getByText("Pour voir votre consommation vous devez d'abord")).toBeTruthy()
-        expect(getByText('enregistrer votre compteur et votre nrLink')).toBeTruthy()
+        expect(getByText(MISSING_CURRENT_HOUSING_METER_ERROR_TEXT1)).toBeTruthy()
+        expect(getByText(MISSING_CURRENT_HOUSING_METER_ERROR_TEXT2)).toBeTruthy()
     })
-    test("when data from useMetrics is empty, widget section isn't shown", async () => {
-        mockNrlinkConsent = 'CONNECTED'
-        mockEnedisConsent = 'CONNECTED'
+
+    test('housesList not empty, then filters should have currentHousing of houseList, and getConsent should be called', async () => {
+        // we initiate the store by adding the housing list - by default current state will be the first element
+        await store.dispatch.housingModel.setHousingModelState(LIST_OF_HOUSES)
+
         const { getByText } = reduxedRender(
             <Router>
                 <MyConsumptionContainer />
             </Router>,
-        )
-        expect(() => getByText('Chiffres clés')).toThrow()
-    })
-    test('Clicking on different period changes the Consumption Title', async () => {
-        mockNrlinkConsent = 'CONNECTED'
-        mockEnedisConsent = 'CONNECTED'
-        const { getAllByText } = reduxedRender(
-            <Router>
-                <MyConsumptionContainer />
-            </Router>,
-            { initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[0] } } },
-        )
-        // Daily CONSUMPTION Text
-        expect(getAllByText(CONSUMPTION_TITLE_DAILY)[0]).toBeTruthy()
-
-        // Weekly CONSUMPTION Text
-        userEvent.click(getAllByText(WEEKLY_PERIOD_BUTTON_TEXT)[0])
-        await waitFor(() => {
-            expect(getAllByText(CONSUMPTION_TITLE_WEEKLY)[0]).toBeTruthy()
-        })
-
-        // Monthly CONSUMPTION Text
-        userEvent.click(getAllByText(MONTHLY_PERIOD_BUTTON_TEXT)[0])
-        await waitFor(() => {
-            expect(getAllByText(CONSUMPTION_TITLE_MONTHLY)[0]).toBeTruthy()
-        })
-
-        // Yearly CONSUMPTION Text
-        userEvent.click(getAllByText(YEARLY_PERIOD_BUTTON_TEXT)[0])
-        await waitFor(() => {
-            expect(getAllByText(CONSUMPTION_TITLE_YEARLY)[0]).toBeTruthy()
-        })
-    })
-    test('Toggling to EurosConsumption on different period changes the ConsumptionEuros Title', async () => {
-        const { getByText, getByTestId, getAllByText } = reduxedRender(
-            <Router>
-                <MyConsumptionContainer />
-            </Router>,
-            { initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[0] } } },
-        )
-        // TOGGLING TO EUROS CONSUMPTION CHART
-        userEvent.click(getByTestId(EUROS_CONSUMPTION_ICON_TEST_ID).parentElement as HTMLButtonElement)
-        // CONSUMPTION ICON should be shown
-        await waitFor(() => {
-            expect(getByTestId(CONSUMPTION_ICON_TEST_ID)).toBeTruthy()
-        })
-        // Daily EUROS CONSUMPTION Text
-        expect(getAllByText(EUROS_CONSUMPTION_TITLE_DAILY)[0]).toBeTruthy()
-
-        // Weekly EUROS CONSUMPTION Text
-        userEvent.click(getAllByText(WEEKLY_PERIOD_BUTTON_TEXT)[0])
-        await waitFor(() => {
-            expect(getAllByText(EUROS_CONSUMPTION_TITLE_WEEKLY)[0]).toBeTruthy()
-        })
-
-        // Monthly EUROS CONSUMPTION Text
-        userEvent.click(getByText(MONTHLY_PERIOD_BUTTON_TEXT))
-        await waitFor(() => {
-            expect(getAllByText(EUROS_CONSUMPTION_TITLE_MONTHLY)[0]).toBeTruthy()
-        })
-
-        // Yearly EUROS CONSUMPTION Text
-        userEvent.click(getAllByText(YEARLY_PERIOD_BUTTON_TEXT)[0])
-        await waitFor(() => {
-            expect(getAllByText(EUROS_CONSUMPTION_TITLE_YEARLY)[0]).toBeTruthy()
-        })
-        // HasMissingContractsExample Text
-        expect(getByText(HAS_MISSING_CONTRACTS_WARNING_TEXT)).toBeTruthy()
-        // Contracts Redirection URL
-        expect(getByText(HAS_MISSING_CONTRACTS_WARNING_REDIRECT_LINK_TEXT).parentElement!.closest('a')).toHaveAttribute(
-            'href',
-            `${URL_MY_HOUSE}/${LIST_OF_HOUSES[0].id}/contracts`,
-        )
-
-        // TOGGLING TO CONSUMPTION CHART
-        userEvent.click(getByTestId(CONSUMPTION_ICON_TEST_ID).parentElement as HTMLButtonElement)
-        // EUROS CONSUMPTION ICON should be shown
-        await waitFor(() => {
-            expect(getByTestId(EUROS_CONSUMPTION_ICON_TEST_ID)).toBeTruthy()
-        })
-    })
-    test('housesList not empty, then filters metrics should have currentHousing of houseList, otherwise setFilters is not called', async () => {
-        // we initiate the store by adding the housing list - by default current state will be the first element
-        await store.dispatch.housingModel.setHousingModelState(LIST_OF_HOUSES)
-
-        reduxedRender(
-            <Router>
-                <MyConsumptionContainer />
-            </Router>,
             { store },
         )
+
+        userEvent.click(getByText(FILTERS_TEXT))
         await waitFor(() => {
             expect(mockSetFilters).toHaveBeenCalledWith(formatMetricFilter(LIST_OF_HOUSES[0]!.meter!.guid))
         })
 
-        await store.dispatch.housingModel.setHousingModelState([])
         await waitFor(() => {
-            expect(mockSetFilters).toHaveBeenCalledTimes(1)
+            expect(mockGetConsents).toHaveBeenCalledWith(LIST_OF_HOUSES[0]!.meter!.guid, LIST_OF_HOUSES[0]!.meter!.id)
         })
     })
-    test('housing list is filled and isMetricsLoading true, Spinner is shown', async () => {
-        // initiate the store by adding housing list - by default current state will be the first element
-        await store.dispatch.housingModel.setHousingModelState(LIST_OF_HOUSES)
-        mockIsMetricsLoading = true
-        mockData = []
-        const { container } = reduxedRender(
+
+    test('when enphaseConsentState is Active, metricsIterval is related to it', async () => {
+        mockEnphaseConsent!.enphaseConsentState = 'ACTIVE'
+        const { getByText } = reduxedRender(
             <Router>
                 <MyConsumptionContainer />
             </Router>,
-            { store },
+            { initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[0] } } },
         )
-        expect(container.querySelector(circularProgressClassname)).toBeInTheDocument()
-        expect(container.querySelector(`.${apexchartsClassName}`)).not.toBeInTheDocument()
+        // Period EnphaseConsent Active
+        await waitFor(() => {
+            expect(getByText(METRICS_INTERVAL_ENPHASE_ACTIVE)).toBeTruthy()
+        })
     })
+
     test('when nrLINK is off & enedisSge is off, an error message is shown', async () => {
-        mockNrlinkConsent = 'NONEXISTENT'
-        mockEnedisConsent = 'NONEXISTENT'
+        mockNrlinkConsent!.nrlinkConsentState = 'NONEXISTENT'
+        mockEnedisConsent!.enedisSgeConsentState = 'NONEXISTENT'
         const { getByText } = reduxedRender(
             <Router>
                 <MyConsumptionContainer />
@@ -254,37 +158,18 @@ describe('MyConsumptionContainer test', () => {
 
         expect(getByText(NRLINK_ENEDIS_OFF_MESSAGE)).toBeTruthy()
     })
-    test('when enphaseConsent is ACTIVE, production chart is shown', async () => {
-        mockNrlinkConsent = 'CONNECTED'
-        mockEnedisConsent = 'CONNECTED'
-        mockEnphaseConsent = 'ACTIVE'
 
+    test('when getConsent request fail then no charts is shown', async () => {
+        mockNrlinkConsent = undefined
+        mockEnedisConsent = undefined
         const { getByText } = reduxedRender(
             <Router>
                 <MyConsumptionContainer />
             </Router>,
             { initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[0] } } },
         )
-
         await waitFor(() => {
-            expect(mockGetConsents).toHaveBeenCalled()
+            expect(() => getByText(FILTERS_TEXT)).toThrow()
         })
-        expect(getByText('Ma Production')).toBeTruthy()
-    })
-    test('when enphase is Off, a message is shown', async () => {
-        mockEnphaseConsent = 'EXPIRED' || 'NONEXISTANT' || 'PENDING'
-
-        const { getByText } = reduxedRender(
-            <Router>
-                <MyConsumptionContainer />
-            </Router>,
-            { initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[0] } } },
-        )
-
-        await waitFor(() => {
-            expect(mockGetConsents).toHaveBeenCalled()
-        })
-
-        expect(getByText(ENPHASE_OFF_MESSAGE)).toBeTruthy()
     })
 })

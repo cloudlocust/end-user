@@ -22,7 +22,7 @@ import { Typography } from '@mui/material'
  * @param props.datePercentageChange Date shown related to the percentage change and it has format string.
  * @returns PercentageChangeLine, represents the line that shows percentage change , icon up or down, and the date of percentage change.
  */
-const PercentageChangeLine = ({
+export const PercentageChangeLine = ({
     percentageChange,
     datePercentageChange,
 }: // eslint-disable-next-line jsdoc/require-jsdoc
