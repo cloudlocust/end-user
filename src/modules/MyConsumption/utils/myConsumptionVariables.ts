@@ -1,4 +1,4 @@
-import { metricTargetsEnum, metricTargetsType } from 'src/modules/Metrics/Metrics.d'
+import { metricTargetsEnum, metricTargetsType, metricTargetType } from 'src/modules/Metrics/Metrics.d'
 import { periodType } from 'src/modules/MyConsumption/myConsumptionTypes'
 import { Theme } from '@mui/material/styles/createTheme'
 import { isNil } from 'lodash'
@@ -240,4 +240,16 @@ export const metricTargetsHook: metricTargetsType = [
         target: metricTargetsEnum.injectedProduction,
         type: 'timeserie',
     },
+]
+
+/**
+ * Targets shown in ConsumptionChart.
+ */
+export const ConsumptionChartTargets: metricTargetType[] = [
+    metricTargetsEnum.autoconsumption,
+    metricTargetsEnum.consumption,
+    metricTargetsEnum.eurosConsumption,
+    metricTargetsEnum.pMax,
+    metricTargetsEnum.externalTemperature,
+    metricTargetsEnum.internalTemperature,
 ]

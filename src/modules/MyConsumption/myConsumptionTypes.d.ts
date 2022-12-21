@@ -159,6 +159,34 @@ export interface MyConsumptionChartProps {
 }
 
 /**
+ * ConsumptionChartContainer Props.
+ */
+export interface ConsumptionChartContainerProps {
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    period: periodType
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    range: metricRangeType
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    metricsInterval: metricIntervalType
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    filters: metricFiltersType
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    hasMissingHousingContracts: boolean | null
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    enphaseConsent: IEnphaseConsent
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    enedisSgeConsent: IEnedisSgeConsent
+}
+
+/**
+ * ProductionChartContainer Props.
+ */
+export type ProductionChartContainerProps = Omit<
+    ConsumptionChartContainerProps,
+    'enedisSgeConsent' | 'hasMissingHousingContracts'
+>
+
+/**
  * Type for getChartSpecifities function return.
  */
 // eslint-disable-next-line jsdoc/require-jsdoc

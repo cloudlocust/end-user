@@ -530,3 +530,26 @@ export const getInitialMetricsHookValues = (): getMetricType => {
         }
     }
 }
+
+/**
+ * Show text according to interval.
+ *
+ * @param chartType Chart type: consumption or production.
+ * @param period Period indicating the text related to it.
+ * @param isEuroUnit Indicate if its € unit.
+ * @returns Text that represents the interval.
+ */
+export const showPerPeriodText = (chartType: 'consumption' | 'production', period: periodType, isEuroUnit = false) => {
+    let textUnit = `en ${chartType === 'consumption' && isEuroUnit ? '€' : period === 'daily' ? 'Wh' : 'kWh'}`
+    if (period === 'daily') {
+        return `${textUnit} par jour`
+    } else if (period === 'weekly') {
+        return `${textUnit} par semaine`
+    } else if (period === 'monthly') {
+        return `${textUnit} par mois`
+    } else if (period === 'yearly') {
+        return `${textUnit} par année`
+    } else {
+        throw Error('PeriodValue not set')
+    }
+}

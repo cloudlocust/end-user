@@ -8,11 +8,16 @@ import {
     metricRangeType,
     metricFiltersType,
     metricTargetType,
+    getMetricsWithParamsType,
 } from 'src/modules/Metrics/Metrics'
 import { useSnackbar } from 'notistack'
 import { useIntl } from 'react-intl'
 import { axios } from 'src/common/react-platform-components'
 
+/**
+ * Get Metrics Error Message.
+ */
+export const GET_METRICS_ERROR_MESSAGE = 'Erreur de chargement de vos données de consommation'
 /**
  * Metrics endpoint.
  */
@@ -53,8 +58,8 @@ export function useMetrics(initialState: getMetricType, immediate: boolean = fal
             setIsMetricsLoading(false)
             enqueueSnackbar(
                 formatMessage({
-                    id: 'Erreur de chargement de vos données de consommation',
-                    defaultMessage: 'Erreur de chargement de vos données de consommation',
+                    id: GET_METRICS_ERROR_MESSAGE,
+                    defaultMessage: GET_METRICS_ERROR_MESSAGE,
                 }),
                 {
                     variant: 'error',
@@ -102,6 +107,45 @@ export function useMetrics(initialState: getMetricType, immediate: boolean = fal
         setTargets((prevState) => prevState.filter((targetEl) => targetEl.target !== target))
     }
 
+    /**
+     * Get Metrics function with params to make the /query request by calling this function.
+     *
+     * @param params Params of getMetricsWithParams.
+     * @param params.interval Interval metrics request.
+     * @param params.range Range metrics request.
+     * @param params.targets Targets metrics request.
+     * @param params.filters Adhoc Filters request.
+     */
+    const getMetricsWithParams = useCallback(
+        async (params: getMetricsWithParamsType) => {
+            setIsMetricsLoading(true)
+            const targetsBody: metricTargetsType = params.targets.map((target) => ({ target, type: 'timeserie' }))
+            try {
+                const response = await axios.post(METRICS_API, {
+                    interval: params.interval,
+                    range: params.range,
+                    targets: targetsBody,
+                    adhocFilters: params.filters,
+                })
+                setData(response.data)
+            } catch (error) {
+                setIsMetricsLoading(false)
+                enqueueSnackbar(
+                    formatMessage({
+                        id: GET_METRICS_ERROR_MESSAGE,
+                        defaultMessage: GET_METRICS_ERROR_MESSAGE,
+                    }),
+                    {
+                        variant: 'error',
+                        autoHideDuration: 5000,
+                    },
+                )
+            }
+            setIsMetricsLoading(false)
+        },
+        [enqueueSnackbar, formatMessage],
+    )
+
     return {
         isMetricsLoading,
         data,
@@ -116,5 +160,6 @@ export function useMetrics(initialState: getMetricType, immediate: boolean = fal
         setTargets,
         addTarget,
         removeTarget,
+        getMetricsWithParams,
     }
 }

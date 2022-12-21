@@ -1,0 +1,223 @@
+import { useState, useEffect, useMemo, useCallback } from 'react'
+import { motion } from 'framer-motion'
+import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
+import MyConsumptionChart from 'src/modules/MyConsumption/components/MyConsumptionChart'
+import { useTheme } from '@mui/material'
+import { useMetrics } from 'src/modules/Metrics/metricsHook'
+import { IMetric, metricTargetsEnum, metricTargetType } from 'src/modules/Metrics/Metrics.d'
+import { ConsumptionChartContainerProps } from 'src/modules/MyConsumption/myConsumptionTypes'
+import { useIntl } from 'react-intl'
+import CircularProgress from '@mui/material/CircularProgress'
+import TargetButtonGroup from 'src/modules/MyConsumption/components/TargetButtonGroup'
+import { useSelector } from 'react-redux'
+import { RootState } from 'src/redux'
+import EurosConsumptionButtonToggler from 'src/modules/MyConsumption/components/EurosConsumptionButtonToggler'
+import Tooltip from '@mui/material/Tooltip'
+import { tempPmaxFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
+import { warningMainHashColor } from 'src/modules/utils/muiThemeVariables'
+import { URL_MY_HOUSE } from 'src/modules/MyHouse/MyHouseConfig'
+import { NavLink } from 'react-router-dom'
+import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline'
+import { showPerPeriodText } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
+import { ConsumptionChartTargets } from 'src/modules/MyConsumption/utils/myConsumptionVariables'
+
+/**
+ * MyConsumptionChart Component.
+ *
+ * @param props N/A.
+ * @param props.period Indicates the current selected Period if it's monthly or daily or yearly or weekly so that we format tooltip and xAxis of chart according to the period.
+ * @param props.range Current range so that we handle the xAxis values according to period and range selected.
+ * @param props.metricsInterval Boolean state to know whether the stacked option is true or false.
+ * @param props.filters Consumption or production chart type.
+ * @param props.hasMissingHousingContracts Consumption or production chart type.
+ * @param props.enedisSgeConsent Consumption or production chart type.
+ * @param props.enphaseConsent Consumption or production chart type.
+ * @returns MyConsumptionChart Component.
+ */
+export const ConsumptionChartContainer = ({
+    period,
+    range,
+    metricsInterval,
+    filters,
+    hasMissingHousingContracts,
+    enedisSgeConsent,
+    enphaseConsent,
+}: ConsumptionChartContainerProps) => {
+    const theme = useTheme()
+    const { formatMessage } = useIntl()
+    const { data, getMetricsWithParams } = useMetrics(
+        {
+            interval: metricsInterval,
+            range: range,
+            targets: [
+                {
+                    target: metricTargetsEnum.autoconsumption,
+                    type: 'timeserie',
+                },
+                {
+                    target: metricTargetsEnum.consumption,
+                    type: 'timeserie',
+                },
+            ],
+            filters,
+        },
+        false,
+    )
+
+    const { currentHousing } = useSelector(({ housingModel }: RootState) => housingModel)
+    // This state represents whether or not the chart is stacked: true.
+    const [isStackedEnabled, setIsStackedEnabled] = useState<boolean>(true)
+    // Indicates the Charts visible in MyConsumptionChart.
+    const [visibleTargetCharts, setVisibleTargetsCharts] = useState<metricTargetType[]>([
+        metricTargetsEnum.autoconsumption,
+        metricTargetsEnum.consumption,
+    ])
+    // This state represents whether or not the chart is showing .
+    const [isConsumptionChartLoading, setIsConsumptionChartLoading] = useState<boolean>(false)
+    // This state represents whether or not the chart is stacked: true.
+    const isEurosConsumptionChart = useMemo(
+        () => visibleTargetCharts.includes(metricTargetsEnum.eurosConsumption),
+        [visibleTargetCharts],
+    )
+    // This state represents whether or not the chart is stacked: true.
+    const consumptionChartData: IMetric[] = useMemo(
+        () => data.filter((datapoint) => visibleTargetCharts.includes(datapoint.target)),
+        [data, visibleTargetCharts],
+    )
+
+    // Desire behaviour is to focus on calling getMetrics on the active target show in MyConsumptionChart, and handle the spinner only for those targets.
+    // Then in the background fetching the remaining targets, and will not show a spinner and will be done without any user experience knowing it.
+    const getMetrics = useCallback(async () => {
+        setIsConsumptionChartLoading(true)
+        await getMetricsWithParams({ interval: metricsInterval, range, targets: visibleTargetCharts, filters })
+        setIsConsumptionChartLoading(false)
+        getMetricsWithParams({ interval: metricsInterval, range, targets: ConsumptionChartTargets, filters })
+    }, [filters, range, metricsInterval, getMetricsWithParams, visibleTargetCharts])
+
+    // Happens everytime getMetrics dependencies change, and happen first time hook is instanciated.
+    useEffect(() => {
+        getMetrics()
+    }, [getMetrics])
+
+    /**
+     * Show given metric target chart.
+     *
+     * @param target Indicated target.
+     */
+    const showMetricTargetChart = (target: metricTargetType) => {
+        if (
+            [metricTargetsEnum.internalTemperature, metricTargetsEnum.externalTemperature].includes(
+                target as metricTargetsEnum,
+            )
+        )
+            setIsStackedEnabled(true)
+        setVisibleTargetsCharts((prevState) => [...prevState, target])
+    }
+
+    /**
+     * Hide given metric target chart.
+     *
+     * @param target Indicated target.
+     */
+    const hideMetricTargetChart = (target: metricTargetType) => {
+        setVisibleTargetsCharts((prevState) => prevState.filter((visibleTarget) => visibleTarget !== target))
+    }
+
+    return (
+        <div className="mb-12">
+            <div className="relative flex flex-col md:flex-row justify-between items-center">
+                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mb-16 md:mb-0">
+                    <div className="flex flex-col md:flex-row items-center">
+                        <TypographyFormatMessage
+                            variant="h5"
+                            className="sm:mr-8"
+                            style={{ color: theme.palette.primary.contrastText }}
+                        >
+                            Ma Consommation
+                        </TypographyFormatMessage>
+                        {/* Consommation Wh par Jour / Semaine / Mois / Année */}
+                        <TypographyFormatMessage variant="h5" style={{ color: theme.palette.primary.contrastText }}>
+                            {showPerPeriodText('consumption', period, isEurosConsumptionChart)}
+                        </TypographyFormatMessage>
+                    </div>
+                </motion.div>
+            </div>
+
+            <div className="my-16 flex justify-between">
+                <EurosConsumptionButtonToggler
+                    removeTarget={hideMetricTargetChart}
+                    addTarget={showMetricTargetChart}
+                    showEurosConsumption={!isEurosConsumptionChart}
+                />
+                <Tooltip
+                    arrow
+                    placement="bottom-end"
+                    disableHoverListener={!tempPmaxFeatureState}
+                    title={formatMessage({
+                        id: "Cette fonctionnalité n'est pas disponible sur cette version",
+                        defaultMessage: "Cette fonctionnalité n'est pas disponible sur cette version",
+                    })}
+                >
+                    <div className={`${tempPmaxFeatureState && 'cursor-not-allowed'}`}>
+                        <TargetButtonGroup
+                            removeTarget={hideMetricTargetChart}
+                            addTarget={showMetricTargetChart}
+                            hidePmax={period === 'daily' || enedisSgeConsent?.enedisSgeConsentState === 'NONEXISTENT'}
+                        />
+                    </div>
+                </Tooltip>
+            </div>
+
+            {isConsumptionChartLoading ? (
+                <div className="flex flex-col justify-center items-center w-full h-full" style={{ height: '320px' }}>
+                    <CircularProgress style={{ color: theme.palette.background.paper }} />
+                </div>
+            ) : (
+                <MyConsumptionChart
+                    data={consumptionChartData}
+                    period={period}
+                    range={range}
+                    isStackedEnabled={isStackedEnabled}
+                    chartType="consumption"
+                    chartLabel={
+                        enphaseConsent?.enphaseConsentState !== 'ACTIVE'
+                            ? 'Consommation totale'
+                            : 'Electricité achetée sur le réseau'
+                    }
+                />
+            )}
+
+            {isEurosConsumptionChart && hasMissingHousingContracts && (
+                <div className="flex items-center justify-center flex-col mt-12">
+                    <ErrorOutlineIcon
+                        sx={{
+                            color: warningMainHashColor,
+                            width: { xs: '24px', md: '32px' },
+                            height: { xs: '24px', md: '32px' },
+                            margin: { xs: '0 0 4px 0', md: '0 8px 0 0' },
+                        }}
+                    />
+
+                    <div className="w-full">
+                        <TypographyFormatMessage
+                            sx={{ color: warningMainHashColor }}
+                            className="text-13 md:text-16 text-center"
+                        >
+                            {
+                                "Ce graphe est un exemple basé sur un tarif Bleu EDF Base. Vos données contractuelles de fourniture d'énergie ne sont pas disponibles sur toute la période."
+                            }
+                        </TypographyFormatMessage>
+                        <NavLink to={`${URL_MY_HOUSE}/${currentHousing?.id}/contracts`}>
+                            <TypographyFormatMessage
+                                className="underline text-13 md:text-16 text-center"
+                                sx={{ color: warningMainHashColor }}
+                            >
+                                Renseigner votre contrat d'énergie
+                            </TypographyFormatMessage>
+                        </NavLink>
+                    </div>
+                </div>
+            )}
+        </div>
+    )
+}
