@@ -154,7 +154,7 @@ describe('Test widget functions', () => {
         test('when it returns € unit', () => {
             const val = 70
             const expectedResult = {
-                value: val.toFixed(4),
+                value: val.toFixed(2),
                 unit: '€',
             }
             const data: IMetric[] = [
@@ -179,7 +179,7 @@ describe('Test widget functions', () => {
                 {
                     target: metricTargetsEnum.eurosConsumption,
                     unit: '€',
-                    value: val.toFixed(4),
+                    value: val.toFixed(2),
                 },
                 {
                     target: metricTargetsEnum.consumption,

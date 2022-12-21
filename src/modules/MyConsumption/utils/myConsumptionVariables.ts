@@ -176,7 +176,7 @@ export const getYPointValueLabel = (yValue: number | null | undefined, chartName
     const value = isNil(yValue) ? '' : yValue
     switch (chartName) {
         case metricTargetsEnum.eurosConsumption:
-            return `${value === '' ? value : value.toFixed(4)} €`
+            return `${value === '' ? value : value.toFixed(2)} €`
         case metricTargetsEnum.externalTemperature:
         case metricTargetsEnum.internalTemperature:
             return `${value} °C`

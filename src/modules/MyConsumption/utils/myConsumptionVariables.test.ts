@@ -43,7 +43,7 @@ describe('test pure functions', () => {
          */
         // When Euros Consumption it'll show the value given in €.
         label = getYPointValueLabel(yValue, metricTargetsEnum.eurosConsumption)
-        expect(label).toBe(`${yValue.toFixed(4)} €`)
+        expect(label).toBe(`${yValue.toFixed(2)} €`)
 
         // When value is null and External temperature it'll show only the unit.
         label = getYPointValueLabel(null, metricTargetsEnum.eurosConsumption)
