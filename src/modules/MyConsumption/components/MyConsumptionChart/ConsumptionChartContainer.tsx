@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, useCallback } from 'react'
+import { useState, useEffect, useMemo, useCallback, useRef } from 'react'
 import { motion } from 'framer-motion'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import MyConsumptionChart from 'src/modules/MyConsumption/components/MyConsumptionChart'
@@ -84,14 +84,23 @@ export const ConsumptionChartContainer = ({
         () => data.filter((datapoint) => visibleTargetCharts.includes(datapoint.target)),
         [data, visibleTargetCharts],
     )
+    // Track the change of visibleTargetCharts, so that we don't call getMetrics when visibleTargetCharts change (and thus no request when showing / hiding target in MyConsumptionChart).
+    const isVisibleTargetChartsChanged = useRef(false)
+
+    useEffect(() => {
+        // Resetting isVisibleTargetChartsChanged when range, filters or metricsInterval change so that we can call getMetrics only when these change.
+        isVisibleTargetChartsChanged.current = false
+    }, [filters, range, metricsInterval])
 
     // Desire behaviour is to focus on calling getMetrics on the active target show in MyConsumptionChart, and handle the spinner only for those targets.
     // Then in the background fetching the remaining targets, and will not show a spinner and will be done without any user experience knowing it.
     const getMetrics = useCallback(async () => {
-        setIsConsumptionChartLoading(true)
-        await getMetricsWithParams({ interval: metricsInterval, range, targets: visibleTargetCharts, filters })
-        setIsConsumptionChartLoading(false)
-        getMetricsWithParams({ interval: metricsInterval, range, targets: ConsumptionChartTargets, filters })
+        if (!isVisibleTargetChartsChanged.current) {
+            setIsConsumptionChartLoading(true)
+            await getMetricsWithParams({ interval: metricsInterval, range, targets: visibleTargetCharts, filters })
+            setIsConsumptionChartLoading(false)
+            getMetricsWithParams({ interval: metricsInterval, range, targets: ConsumptionChartTargets, filters })
+        }
     }, [filters, range, metricsInterval, getMetricsWithParams, visibleTargetCharts])
 
     // Happens everytime getMetrics dependencies change, and happen first time hook is instanciated.
@@ -111,6 +120,7 @@ export const ConsumptionChartContainer = ({
             )
         )
             setIsStackedEnabled(true)
+        isVisibleTargetChartsChanged.current = true
         setVisibleTargetsCharts((prevState) => [...prevState, target])
     }
 
@@ -120,6 +130,7 @@ export const ConsumptionChartContainer = ({
      * @param target Indicated target.
      */
     const hideMetricTargetChart = (target: metricTargetType) => {
+        isVisibleTargetChartsChanged.current = true
         setVisibleTargetsCharts((prevState) => prevState.filter((visibleTarget) => visibleTarget !== target))
     }
 
