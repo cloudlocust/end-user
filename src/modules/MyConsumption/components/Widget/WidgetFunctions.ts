@@ -1,8 +1,29 @@
-import { ApexAxisChartSerie, IMetric, metricTargetsEnum, metricTargetType } from 'src/modules/Metrics/Metrics.d'
+import {
+    ApexAxisChartSerie,
+    IMetric,
+    metricRangeType,
+    metricTargetsEnum,
+    metricTargetType,
+} from 'src/modules/Metrics/Metrics.d'
 import { convertMetricsDataToApexChartsAxisValues } from 'src/modules/MyConsumption/utils/apexChartsDataConverter'
 import { sum, max, mean, round } from 'lodash'
 import { consumptionWattUnitConversion } from 'src/modules/MyConsumption/utils/unitConversionFunction'
 import convert from 'convert-units'
+import { widgetTitleType } from 'src/modules/MyConsumption/components/Widget/Widget'
+import {
+    endOfDay,
+    startOfDay,
+    subDays,
+    startOfMonth,
+    subMonths,
+    endOfMonth,
+    startOfYear,
+    endOfYear,
+    subYears,
+    getMonth,
+} from 'date-fns'
+import { periodType } from 'src/modules/MyConsumption/myConsumptionTypes'
+import { getDateWithoutTimezoneOffset } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
 
 /**
  * Function that returns values from yAxis of the graph.
@@ -122,5 +143,102 @@ export const computeWidgetAssets = (data: IMetric[], type: metricTargetType) => 
             return computeTotalEuros(data)!
         default:
             throw Error('Wrong target')
+    }
+}
+
+/**
+ * Function that returns title according to metric target.
+ *
+ * @param target Metric Target.
+ * @returns Widget title.
+ */
+export const renderWidgetTitle = (target: metricTargetType): widgetTitleType => {
+    switch (target) {
+        case metricTargetsEnum.consumption:
+            return 'Consommation Totale'
+        case metricTargetsEnum.pMax:
+            return 'Puissance Maximale'
+        case metricTargetsEnum.externalTemperature:
+            return 'Température Extérieure'
+        case metricTargetsEnum.internalTemperature:
+            return 'Température Intérieure'
+        case metricTargetsEnum.eurosConsumption:
+            return 'Coût Total'
+        default:
+            throw Error('Wrong target')
+    }
+}
+
+/**
+ * Get range of previous period for widget.
+ *
+ * @param range Range from metrics.
+ * @param period Period give.
+ * @returns Previous range according from period, if "daily" returns range (startOf: fromDate-1, endOf: fromDate-1). If "weekly" returns range (startOf: fromDate week-1, endOf: fromDate-1). If "monthly" returns range (startOf: fromDate month-1, endOf: fromDate month-1). If "yearly" returns range (startOf: fromDate year-1, endOf: fromDate year-1).
+ */
+export const getWidgetPreviousRange = (range: metricRangeType, period: periodType) => {
+    // Extract only the date, so that new Date don't create a date including the timezone.
+    const fromDate = new Date(range.from.split('T')[0])
+    switch (period) {
+        case 'daily':
+            return {
+                from: getDateWithoutTimezoneOffset(startOfDay(subDays(fromDate, 1))),
+                to: getDateWithoutTimezoneOffset(endOfDay(subDays(fromDate, 1))),
+            }
+
+        case 'weekly':
+            return {
+                from: getDateWithoutTimezoneOffset(startOfDay(subDays(fromDate, 7))),
+                to: getDateWithoutTimezoneOffset(endOfDay(subDays(fromDate, 1))),
+            }
+        case 'monthly':
+            return {
+                from: getDateWithoutTimezoneOffset(startOfMonth(subMonths(fromDate, 1))),
+                to: getDateWithoutTimezoneOffset(endOfMonth(subMonths(fromDate, 1))),
+            }
+        case 'yearly':
+            return {
+                from: getDateWithoutTimezoneOffset(startOfYear(subYears(fromDate, 1))),
+                to: getDateWithoutTimezoneOffset(endOfYear(subYears(fromDate, 1))),
+            }
+    }
+}
+
+/**
+ * Get range for widget, because given range can be incorrect and delayed from the wanted Widget range.
+ *
+ * @param range Range from metrics.
+ * @param period Period give.
+ * @returns Range according to period, if "daily" returns range (startOf: toDate, endOf: toDate). If "weekly" returns range (startOf: toDate week-1, endOf: toDate day). If "monthly" returns range (startOf: toDate month, endOf: toDate day). If "yearly" returns range (startOf: toDate year, endOf: toDate month-1).
+ */
+export const getWidgetRange = (range: metricRangeType, period: periodType) => {
+    // Extract only the date, so that new Date don't create a date including the timezone.
+    const toDate = new Date(range.to.split('T')[0])
+    switch (period) {
+        case 'daily':
+            return {
+                from: getDateWithoutTimezoneOffset(startOfDay(toDate)),
+                to: getDateWithoutTimezoneOffset(endOfDay(toDate)),
+            }
+
+        case 'weekly':
+            return {
+                from: getDateWithoutTimezoneOffset(startOfDay(subDays(toDate, 6))),
+                to: getDateWithoutTimezoneOffset(endOfDay(toDate)),
+            }
+        case 'monthly':
+            return {
+                from: getDateWithoutTimezoneOffset(startOfMonth(toDate)),
+                to: getDateWithoutTimezoneOffset(endOfDay(toDate)),
+            }
+        case 'yearly':
+            return {
+                from: getDateWithoutTimezoneOffset(startOfYear(toDate)),
+                to:
+                    // If toDate is january.
+                    getMonth(startOfYear(toDate)) === getMonth(toDate)
+                        ? getDateWithoutTimezoneOffset(endOfDay(toDate))
+                        : getDateWithoutTimezoneOffset(endOfDay(subMonths(toDate, 1))),
+            }
     }
 }

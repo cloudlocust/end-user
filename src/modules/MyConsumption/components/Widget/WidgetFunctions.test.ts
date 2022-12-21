@@ -7,7 +7,11 @@ import {
     computeTotalEuros,
     computeExternalTemperature,
     computeWidgetAssets,
+    renderWidgetTitle,
+    getWidgetPreviousRange,
+    getWidgetRange,
 } from 'src/modules/MyConsumption/components/Widget/WidgetFunctions'
+import { periodType } from 'src/modules/MyConsumption/myConsumptionTypes'
 
 describe('Test widget functions', () => {
     describe('test getDataFromYAxis function', () => {
@@ -214,6 +218,109 @@ describe('Test widget functions', () => {
                 data[0].target = testCase.target
                 const result = computeWidgetAssets(data, testCase.target)
                 expect(result).toStrictEqual({ value: testCase.value, unit: testCase.unit })
+            })
+        })
+    })
+
+    describe('test renderWidgetTitle', () => {
+        test('returns the different metric targets title', () => {
+            const cases = [
+                {
+                    target: metricTargetsEnum.eurosConsumption,
+                    value: 'Coût Total',
+                },
+                {
+                    target: metricTargetsEnum.consumption,
+                    value: 'Consommation Totale',
+                },
+                {
+                    target: metricTargetsEnum.internalTemperature,
+                    value: 'Température Intérieure',
+                },
+                {
+                    target: metricTargetsEnum.externalTemperature,
+                    value: 'Température Extérieure',
+                },
+                {
+                    target: metricTargetsEnum.pMax,
+                    value: 'Puissance Maximale',
+                },
+                {
+                    target: metricTargetsEnum.pMax,
+                    value: 'Puissance Maximale',
+                },
+            ]
+
+            cases.forEach(({ value, target }) => {
+                const result = renderWidgetTitle(target)
+                expect(result).toBe(value)
+            })
+        })
+    })
+    describe('test getWidgetPreviousRange', () => {
+        test('returns the different values', () => {
+            const cases = [
+                {
+                    range: { from: '2022-12-03T00:00:00.000Z', to: '2022-12-03T23:59:59.999Z' },
+                    value: { from: '2022-12-02T00:00:00.000Z', to: '2022-12-02T23:59:59.999Z' },
+                    period: 'daily',
+                },
+                {
+                    range: { from: '2022-12-14T00:00:00.000Z', to: '2022-12-20T23:59:59.999Z' },
+                    value: { from: '2022-12-07T00:00:00.000Z', to: '2022-12-13T23:59:59.999Z' },
+                    period: 'weekly',
+                },
+                {
+                    range: { from: '2021-12-01T00:00:00.000Z', to: '2022-12-15T23:59:59.999Z' },
+                    value: { from: '2021-11-01T00:00:00.000Z', to: '2021-11-30T23:59:59.999Z' },
+                    period: 'monthly',
+                },
+                {
+                    range: { from: '2022-12-01T00:00:00.000Z', to: '2022-12-22T23:59:59.999Z' },
+                    value: { from: '2021-01-01T00:00:00.000Z', to: '2021-12-31T23:59:59.999Z' },
+                    period: 'yearly',
+                },
+            ]
+
+            cases.forEach(({ range, period, value }) => {
+                const result = getWidgetPreviousRange(range, period as periodType)
+                expect(result).toStrictEqual(value)
+            })
+        })
+    })
+    describe('test getWidgetRange', () => {
+        test('correct values', () => {
+            const cases = [
+                {
+                    range: { from: '2022-12-04T10:00:00.000Z', to: '2022-12-04T23:59:59.999Z' },
+                    value: { from: '2022-12-04T00:00:00.000Z', to: '2022-12-04T23:59:59.999Z' },
+                    period: 'daily',
+                },
+                {
+                    range: { from: '2022-12-18T00:00:00.000Z', to: '2022-12-21T23:59:59.999Z' },
+                    value: { from: '2022-12-15T00:00:00.000Z', to: '2022-12-21T23:59:59.999Z' },
+                    period: 'weekly',
+                },
+                {
+                    range: { from: '2022-11-08T00:00:00.000Z', to: '2022-11-15T23:59:59.999Z' },
+                    value: { from: '2022-11-01T00:00:00.000Z', to: '2022-11-15T23:59:59.999Z' },
+                    period: 'monthly',
+                },
+                {
+                    range: { from: '2022-06-01T00:00:00.000Z', to: '2022-12-20T23:59:59.999Z' },
+                    value: { from: '2022-01-01T00:00:00.000Z', to: '2022-11-20T23:59:59.999Z' },
+                    period: 'yearly',
+                },
+                {
+                    range: { from: '2022-01-02T00:00:00.000Z', to: '2022-01-20T23:59:59.999Z' },
+                    value: { from: '2022-01-01T00:00:00.000Z', to: '2022-01-20T23:59:59.999Z' },
+                    period: 'yearly',
+                },
+            ]
+
+            cases.forEach(({ range, period, value }) => {
+                const result = getWidgetRange(range, period as periodType)
+                expect(result).toStrictEqual(value)
             })
         })
     })
