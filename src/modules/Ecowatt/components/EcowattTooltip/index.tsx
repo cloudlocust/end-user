@@ -56,8 +56,8 @@ export const EcowattTooltip = ({
                         </AppBar>
                     </div>
                     <TypographyFormatMessage>
-                        Mis en place par RTE (entreprise public qui gère le réseau de transport d'électricité), EcoWatt
-                        indique le niveau de consommation électrique en France
+                        Mis en place par RTE (entreprise publique qui gère le réseau de transport d'électricité),
+                        EcoWatt indique le niveau de consommation électrique en France
                     </TypographyFormatMessage>
                     <List>
                         {consumptionLevelList.map((element) => (
