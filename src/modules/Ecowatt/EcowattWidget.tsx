@@ -84,8 +84,13 @@ export const EcowattWidget = ({
      * @param ecowatt Ecowatt day data.
      */
     const handleExpendDetails = (ecowatt: IEcowatt) => {
-        setDayDetails(ecowatt)
-        setExpendDetails(true)
+        // If it's already open, we close it.
+        if (expendDetails && ecowatt === dayDetails) {
+            setExpendDetails(false)
+        } else {
+            setDayDetails(ecowatt)
+            setExpendDetails(true)
+        }
     }
 
     return (
@@ -120,7 +125,7 @@ export const EcowattWidget = ({
                                             key={index}
                                             sx={{
                                                 border:
-                                                    dayDetails?.readingAt === day.readingAt
+                                                    dayDetails?.readingAt === day.readingAt && expendDetails
                                                         ? `2px solid ${theme.palette.primary.main}`
                                                         : 0,
                                             }}
@@ -138,7 +143,7 @@ export const EcowattWidget = ({
                                                 </TypographyFormatMessage>
                                             </div>
 
-                                            {dayDetails?.readingAt === day.readingAt && (
+                                            {dayDetails?.readingAt === day.readingAt && expendDetails && (
                                                 <Collapse
                                                     in={dayDetails?.readingAt === day.readingAt}
                                                     className="mt-12 mb-6"
