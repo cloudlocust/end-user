@@ -67,7 +67,7 @@ export const Login: FC<LoginProps> = ({
                             {LoginForm}
 
                             <div className="flex flex-col items-center justify-center pt-32 pb-24">
-                                {userRegistrationFeatureState && (
+                                {!userRegistrationFeatureState && (
                                     <>
                                         <span className="font-normal">
                                             {formatMessage({
