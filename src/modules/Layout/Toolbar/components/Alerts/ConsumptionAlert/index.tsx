@@ -1,12 +1,13 @@
 import { useEffect, useState } from 'react'
-import { Card, Button } from '@mui/material'
+import { Card, Button, Divider } from '@mui/material'
 import { LoadingButton } from '@mui/lab'
 import { useIntl } from 'react-intl'
-import TextField from '@mui/material/TextField'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import { ConsumptionAlertIntervalsType, ConsumptionAlertData } from './consumptionAlert'
 import { ConsumptionAlertTitle } from './consumptionAlertsVariables'
 import { Form } from 'src/common/react-platform-components'
+import { TextField } from 'src/common/ui-kit'
+import { useFormContext } from 'react-hook-form'
 
 /**
  * Consumption Alert Component.
@@ -27,7 +28,8 @@ const ConsumptionAlert = ({
     saveConsumptionAlert,
     isConsumptionAlertsLoading,
     isSavingAlertLoading,
-}: //eslint-disable-next-line
+}: /**
+ */
 {
     /**
      * Interval for the consumption alert.
@@ -55,91 +57,38 @@ const ConsumptionAlert = ({
     isSavingAlertLoading: boolean
 }) => {
     const [isEdit, setIsEdit] = useState(false)
-    const [price, setPrice] = useState<number | null>(initialValues?.price ?? null)
-    const [consumption, setConsumption] = useState<number | null>(initialValues?.consumption ?? null)
 
     // this state is to keep the fields updated in case we save new data and did not close the drawer
     // tihs will mean that the initial values would be wrong
     const [formValues, setFormValues] = useState<ConsumptionAlertData | undefined>(initialValues)
 
-    // component render multiple times because of fetchs, we have to handle it
-    useEffect(() => {
-        setPrice(initialValues?.price ?? null)
-        setConsumption(initialValues?.consumption ?? null)
-        setFormValues(initialValues)
-    }, [initialValues])
-
     // to keep the last used one, it's the one that will be saved in database
     const [toDeleteBeforeSend, setToDeleteBeforeSend] = useState<'price' | 'consumption' | null>(null)
 
+    useEffect(() => {
+        // component render multiple times because of fetchs, we have to handle the initialisation
+        setFormValues(initialValues)
+    }, [initialValues])
+
+    useEffect(() => {
+        // for when component is disabled
+        !isEdit && setToDeleteBeforeSend(null)
+    }, [isEdit])
+
     /**
-     * Handle changes in price textfield.
+     * Handle submit.
      *
-     * @param priceOnChange Price on the onChange in textField.
+     * @param data Data comming from the form on submit.
+     * @returns N/A.
      */
-    const handlePriceChange = (
-        /**
-         * Price to convert.
-         */
-        priceOnChange: number,
-    ) => {
-        setToDeleteBeforeSend('consumption')
-
-        // NaN is for when the input is empty
-        if ([0, NaN].includes(priceOnChange)) {
-            setPrice(null)
-            setConsumption(NaN)
-        } else {
-            setPrice(parseFloat(priceOnChange.toFixed(6)))
-            pricePerKwh && setConsumption(parseFloat((priceOnChange / pricePerKwh).toFixed(5)))
-        }
-    }
-
-    /**
-     * Handle changes in Consumption textfield.
-     *
-     * @param consumptionOnChange Consumption on the onChange in textField.
-     */
-    const handleConsumptionChange = (
-        /**
-         * Price to convert.
-         */
-        consumptionOnChange: number,
-    ) => {
-        setToDeleteBeforeSend('price')
-        if ([0, NaN].includes(consumptionOnChange)) {
-            setConsumption(null)
-            setPrice(NaN)
-        } else {
-            setConsumption(parseFloat(consumptionOnChange.toFixed(5)))
-            pricePerKwh && setPrice(parseFloat((consumptionOnChange * pricePerKwh).toFixed(5)))
-        }
-    }
-
-    /**
-     * Handle disable form.
-     */
-    const handleOnDisable = () => {
-        setIsEdit(false)
-        setPrice(formValues?.price ?? NaN) // Nan is equivalent to empty field.
-        setConsumption(formValues?.consumption ?? NaN)
-        setToDeleteBeforeSend(null)
-    }
-
-    /**
-     * Handle On Submit.
-     */
-    const handleOnSubmit = async () => {
-        let finalData: ConsumptionAlertData = {
-            consumption,
-            price,
-        }
+    const handleOnSubmit = async (data: ConsumptionAlertData) => {
+        let finalData: ConsumptionAlertData = data
 
         // if the user changed on of them we make to null the second before sending to server (one of them is saved)
         if (toDeleteBeforeSend) {
             finalData[toDeleteBeforeSend] = null
             setToDeleteBeforeSend(null)
-            setFormValues({ price, consumption })
+            setFormValues(data)
             await saveConsumptionAlert(finalData, interval)
         }
         // else we do nothing because the user did not change anything
@@ -147,53 +96,24 @@ const ConsumptionAlert = ({
     }
 
     return (
-        <Form onSubmit={() => handleOnSubmit()}>
+        <Form onSubmit={(data: ConsumptionAlertData) => handleOnSubmit(data)}>
             <div className="mb-8">
                 <Card className="w-full rounded-20 shadow sm:m-4 pb-8" variant="outlined">
-                    <div className="flex-col justify-center my-10">
+                    <div className="flex-col justify-center mt-10">
                         <TypographyFormatMessage className="flex justify-center mb-8">
                             {ConsumptionAlertTitle[interval]}
                         </TypographyFormatMessage>
-                        <div className="flex justify-around content-center mb-16">
-                            <div className="flex justify-center content-center">
-                                <TextField
-                                    variant="outlined"
-                                    name="Consumption"
-                                    sx={{ maxWidth: '85px' }}
-                                    disabled={!isEdit}
-                                    type="number"
-                                    value={consumption}
-                                    onChange={(value) => handleConsumptionChange(parseFloat(value.target.value))}
-                                />
-                                <div
-                                    className="bg-gray-400 flex items-center justify-center float-left rounded"
-                                    style={{ width: 30, height: 51.69, marginLeft: -5, zIndex: 0 }}
-                                >
-                                    <span>kWh</span>
-                                </div>
-                            </div>
-                            <div className="flex justify-center content-center">
-                                <TextField
-                                    variant="outlined"
-                                    name="price"
-                                    sx={{ maxWidth: '85px' }}
-                                    disabled={!isEdit}
-                                    type="number"
-                                    value={price}
-                                    onChange={(value) => handlePriceChange(parseFloat(value.target.value))}
-                                />
-                                <div
-                                    className="bg-gray-400 flex items-center justify-center float-left rounded"
-                                    style={{ width: 30, height: 51.69, marginLeft: -5, zIndex: 0 }}
-                                >
-                                    <span>€</span>
-                                </div>
-                            </div>
-                        </div>
+                        <ConsumptionAlertsInputFields
+                            formValues={formValues}
+                            pricePerKwh={pricePerKwh}
+                            setToDeleteBeforeSend={setToDeleteBeforeSend}
+                            isEdit={isEdit}
+                        />
+                        <Divider className="mx-20 mb-12" />
                         <ButtonsGroup
                             isEdit={isEdit}
                             enableForm={() => setIsEdit(true)}
-                            disableForm={() => handleOnDisable()}
+                            disableForm={() => setIsEdit(false)}
                             isConsumptionAlertsLoading={isConsumptionAlertsLoading}
                             isSavingAlertLoading={isSavingAlertLoading}
                         />
@@ -201,6 +121,131 @@ const ConsumptionAlert = ({
                 </Card>
             </div>
         </Form>
+    )
+}
+
+/**
+ * Consumption alerts input fields.
+ *
+ * @param props Props.
+ * @param props.isEdit Is Form Edit.
+ * @param props.pricePerKwh Price per Kwh.
+ * @param props.setToDeleteBeforeSend Function that sets the variable that know which attribute to delete before send to backend.
+ * @param props.formValues Variable that keeps form values updated (not to mistake with initial values that loads with components).
+ * @returns JSX.
+ */
+const ConsumptionAlertsInputFields = ({
+    isEdit,
+    pricePerKwh,
+    setToDeleteBeforeSend,
+    formValues,
+}: /**
+ */
+{
+    /**
+     * Is form Edit.
+     */
+    isEdit: boolean
+    /**
+     * Price per Kwh.
+     */
+    pricePerKwh: number | null | undefined
+    /**
+     * Set to delete Before send.
+     */
+    setToDeleteBeforeSend: (value: 'price' | 'consumption' | null) => void
+    /**
+     * Form values that keeps variables updated.
+     */
+    formValues: ConsumptionAlertData | undefined
+}) => {
+    const { setValue, watch } = useFormContext()
+
+    const watchPrice = watch('price')
+    const watchConsumption = watch('consumption')
+
+    const [typedInput, setTypedInput] = useState<'price' | 'consumption' | null>(null)
+
+    // reset form values if they change or if form is disabled
+    useEffect(() => {
+        setValue('price', formValues?.price ?? NaN)
+        setValue('consumption', formValues?.consumption ?? NaN)
+    }, [setValue, formValues, isEdit])
+
+    // watch price changes
+    useEffect(() => {
+        if (typedInput === 'price') {
+            // if the user is changing the price, we don't send the consumption
+            setToDeleteBeforeSend('consumption')
+
+            // NaN is for when the input is empty
+            if ([0, NaN, null, undefined].includes(watchPrice) || watchPrice < 0) {
+                setValue('price', NaN)
+                setValue('consumption', NaN)
+            } else {
+                setValue('price', parseFloat(parseFloat(watchPrice).toFixed(2)))
+                pricePerKwh && setValue('consumption', parseFloat((parseFloat(watchPrice) / pricePerKwh).toFixed(2)))
+            }
+        }
+        if (typedInput === 'consumption') {
+            // if the user is changing the consumption, we don't send the price
+            setToDeleteBeforeSend('price')
+
+            if ([0, NaN, null, undefined].includes(watchConsumption) || watchConsumption < 0) {
+                setValue('consumption', NaN)
+                setValue('price', NaN)
+            } else {
+                setValue('consumption', parseFloat(parseFloat(watchConsumption).toFixed(2)))
+                pricePerKwh && setValue('price', parseFloat((parseFloat(watchConsumption) * pricePerKwh).toFixed(2)))
+            }
+        }
+    }, [watchPrice, watchConsumption, pricePerKwh, setToDeleteBeforeSend, setValue, typedInput])
+
+    return (
+        <div className="flex justify-around content-center mb-16">
+            <div className="flex justify-center content-center">
+                <TextField
+                    name="consumption"
+                    style={{ maxWidth: '76px' }}
+                    label=""
+                    placeholder=""
+                    type="number"
+                    disabled={!isEdit}
+                    variant="outlined"
+                    inputProps={{
+                        //eslint-disable-next-line
+                        onChange: () => setTypedInput('consumption'),
+                    }}
+                />
+                <div
+                    className="bg-gray-300 flex items-center justify-center float-left rounded"
+                    style={{ width: 40, height: 51.69, marginLeft: -5, zIndex: 0 }}
+                >
+                    <span>kWh</span>
+                </div>
+            </div>
+            <div className="flex justify-center content-center">
+                <TextField
+                    name="price"
+                    style={{ maxWidth: '76px' }}
+                    label=""
+                    placeholder=""
+                    disabled={!isEdit}
+                    type="number"
+                    variant="outlined"
+                    inputProps={{
+                        //eslint-disable-next-line
+                        onChange: () => setTypedInput('price'),
+                    }}
+                />
+                <div
+                    className="bg-gray-300 flex items-center justify-center float-left rounded"
+                    style={{ width: 40, height: 51.69, marginLeft: -5, zIndex: 0 }}
+                >
+                    <span>€</span>
+                </div>
+            </div>
+        </div>
     )
 }
 
@@ -221,7 +266,8 @@ const ButtonsGroup = ({
     disableForm,
     isConsumptionAlertsLoading,
     isSavingAlertLoading,
-}: //eslint-disable-next-line
+}: /**
+ */
 {
     /**
      * Is form editable.

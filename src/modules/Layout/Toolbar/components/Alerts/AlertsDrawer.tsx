@@ -10,9 +10,9 @@ import { RootState } from 'src/redux'
 import { ConsumptionAlertData } from './ConsumptionAlert/consumptionAlert'
 import { useConsumptionAlerts } from './ConsumptionAlert/consumptionAlertHooks'
 import { URL_MY_HOUSE } from 'src/modules/MyHouse'
-import { getDateWithoutTimezoneOffset } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
-import { subMonths, startOfMonth, endOfMonth } from 'date-fns'
+
 import { useHasMissingHousingContracts } from 'src/hooks/HasMissingHousingContracts'
+import { rangeOfCurrentMonth } from './AlertsDrawerVariables'
 // import { EcowattAlerts } from 'src/modules/Layout/Toolbar/components/Alerts/EcowattAlerts'
 
 const StyledSwipeableDrawer = styled(SwipeableDrawer)(({ theme }) => ({
@@ -36,11 +36,26 @@ export const AlertsDrawer = ({ closeAlertsDrawer }: { closeAlertsDrawer: () => v
     const { consumptionAlerts, pricePerKwh, saveConsumptionAlert, isAlertsLoadingInProgress, isSavingInProgress } =
         useConsumptionAlerts(currentHousing?.id ?? null)
 
+    // Save consumptions alerts data in this format:
+    // {
+    //     day: {
+    //         consumption: 10.36,
+    //         price: 0.1
+    //     },
+    //     week: {
+    //         consumption: 30,
+    //         price: 2
+    //     }
+    //     month: {
+    //         consumption: 20,
+    //         price: 1.5
+    //     }
+    // }
     //eslint-disable-next-line
     const [formData, setFormData] = useState<{ [key: string]: ConsumptionAlertData }>({})
 
-    // formate data for easier usage
     useEffect(() => {
+        // convert data to wanted format
         const formatedData = _.chain(consumptionAlerts)
             .keyBy('interval')
             .mapValues((v) => _.omit(v, 'interval'))
@@ -48,12 +63,6 @@ export const AlertsDrawer = ({ closeAlertsDrawer }: { closeAlertsDrawer: () => v
 
         setFormData(formatedData)
     }, [consumptionAlerts])
-
-    // set new range for this mounth to see if user has contract
-    const rangeOfCurrentMonth = {
-        from: getDateWithoutTimezoneOffset(startOfMonth(subMonths(new Date(), 1))),
-        to: getDateWithoutTimezoneOffset(endOfMonth(subMonths(new Date(), 1))),
-    }
 
     const { hasMissingHousingContracts } = useHasMissingHousingContracts(rangeOfCurrentMonth, currentHousing?.id)
 

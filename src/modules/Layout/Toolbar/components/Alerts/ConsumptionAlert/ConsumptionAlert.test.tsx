@@ -188,7 +188,7 @@ describe('Test Consumption Alert component.', () => {
 
             userEvent.type(textFieldMuiElements[1], `${testPrice}`)
             expect(textFieldMuiElements[1]).toHaveValue(testPrice)
-            expect(textFieldMuiElements[0]).toHaveValue(parseFloat((testPrice / PRICE_PER_KWH).toFixed(5)))
+            expect(textFieldMuiElements[0]).toHaveValue(parseFloat((testPrice / PRICE_PER_KWH).toFixed(2)))
 
             // then try to delete what we were writing
             userEvent.type(textFieldMuiElements[1], '{Delete}')
@@ -218,14 +218,14 @@ describe('Test Consumption Alert component.', () => {
 
             userEvent.type(textFieldMuiElements[1], `${testPrice}`)
             expect(textFieldMuiElements[1]).toHaveValue(testPrice)
-            expect(textFieldMuiElements[0]).toHaveValue(parseFloat((testPrice / PRICE_PER_KWH).toFixed(5)))
+            expect(textFieldMuiElements[0]).toHaveValue(parseFloat((testPrice / PRICE_PER_KWH).toFixed(2)))
 
             // cancel changes
             userEvent.click(getByText(BUTTON_ANNULER))
 
             // see if changes were cancel
-            expect(textFieldMuiElements[1]).toHaveValue(0)
-            expect(textFieldMuiElements[0]).toHaveValue(0)
+            expect(textFieldMuiElements[1]).toHaveValue(null)
+            expect(textFieldMuiElements[0]).toHaveValue(null)
         })
         test('When tayping values and save, save hooko should be call with correct values and fields disabled.', async () => {
             const { getByText, container } = reduxedRender(
@@ -250,7 +250,7 @@ describe('Test Consumption Alert component.', () => {
 
             userEvent.type(textFieldMuiElements[1], `${testPrice}`)
             expect(textFieldMuiElements[1]).toHaveValue(testPrice)
-            expect(textFieldMuiElements[0]).toHaveValue(parseFloat((testPrice / PRICE_PER_KWH).toFixed(5)))
+            expect(textFieldMuiElements[0]).toHaveValue(parseFloat((testPrice / PRICE_PER_KWH).toFixed(2)))
 
             // save changes
             userEvent.click(getByText(BUTTON_ENREGISTRER))
@@ -262,7 +262,7 @@ describe('Test Consumption Alert component.', () => {
 
             // price and consumption should have values registered
             expect(textFieldMuiElements[1]).toHaveValue(testPrice)
-            expect(textFieldMuiElements[0]).toHaveValue(parseFloat((testPrice / PRICE_PER_KWH).toFixed(5)))
+            expect(textFieldMuiElements[0]).toHaveValue(parseFloat((testPrice / PRICE_PER_KWH).toFixed(2)))
 
             // both inputs are disabled
             expect(textFieldMuiElements[0].classList.contains(MUI_DISABLED)).toBeTruthy()
@@ -272,7 +272,7 @@ describe('Test Consumption Alert component.', () => {
             // ( it should have the last ones of course )
             userEvent.click(getByText(BUTTON_MODIFIER))
             expect(textFieldMuiElements[1]).toHaveValue(testPrice)
-            expect(textFieldMuiElements[0]).toHaveValue(parseFloat((testPrice / PRICE_PER_KWH).toFixed(5)))
+            expect(textFieldMuiElements[0]).toHaveValue(parseFloat((testPrice / PRICE_PER_KWH).toFixed(2)))
         })
     })
 })

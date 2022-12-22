@@ -117,7 +117,7 @@ export const consumptionAlertsEndpoints = [
             })
 
             if (isUpdate) {
-                return res(ctx.status(400), ctx.delay(1000))
+                return res(ctx.status(200), ctx.delay(1000))
             }
 
             // if not found, then it's a create
