@@ -8,6 +8,7 @@ import './Login.scss'
 import { LOGO_URL, API_BASE_URL, CLIENT_ICON_FOLDER } from 'src/configs'
 import { motion } from 'framer-motion'
 import CardContent from '@mui/material/CardContent'
+import { userRegistrationFeatureState } from 'src/modules/User/Register/RegisterConfig'
 
 /**
  * Props of login component.
@@ -66,24 +67,28 @@ export const Login: FC<LoginProps> = ({
                             {LoginForm}
 
                             <div className="flex flex-col items-center justify-center pt-32 pb-24">
-                                <span className="font-normal">
-                                    {formatMessage({
-                                        id: "Vous n'avez pas de compte ?",
-                                        defaultMessage: "Vous n'avez pas de compte ?",
-                                    })}
-                                </span>
-                                <MuiLink
-                                    component={Link}
-                                    sx={{
-                                        color:
-                                            // eslint-disable-next-line jsdoc/require-jsdoc
-                                            (theme) => theme.palette.primary.light,
-                                    }}
-                                    to="/register"
-                                    underline="none"
-                                >
-                                    {formatMessage({ id: 'Inscription', defaultMessage: 'Inscription' })}
-                                </MuiLink>
+                                {!userRegistrationFeatureState && (
+                                    <>
+                                        <span className="font-normal">
+                                            {formatMessage({
+                                                id: "Vous n'avez pas de compte ?",
+                                                defaultMessage: "Vous n'avez pas de compte ?",
+                                            })}
+                                        </span>
+                                        <MuiLink
+                                            component={Link}
+                                            sx={{
+                                                color:
+                                                    // eslint-disable-next-line jsdoc/require-jsdoc
+                                                    (theme) => theme.palette.primary.light,
+                                            }}
+                                            to="/register"
+                                            underline="none"
+                                        >
+                                            {formatMessage({ id: 'Inscription', defaultMessage: 'Inscription' })}
+                                        </MuiLink>
+                                    </>
+                                )}
                             </div>
                         </CardContent>
                     </Card>
