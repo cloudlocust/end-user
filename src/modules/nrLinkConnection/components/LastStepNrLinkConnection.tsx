@@ -101,7 +101,7 @@ const LastStepNrLinkConnection = ({
                         </div>
                         <TextField
                             name="nrlinkGuid"
-                            label="№ d'identification nrLink"
+                            label="№ d'identification nrLINK"
                             validateFunctions={[requiredBuilder()]}
                         />
                     </div>
