@@ -69,7 +69,7 @@ export const MyConsumptionContainer = () => {
 
     return (
         <>
-            <div style={{ background: theme.palette.primary.dark }} className="p-24">
+            <div style={{ background: theme.palette.primary.dark }} className="p-12 sm:p-24">
                 {nrlinkOff && enedisOff ? (
                     <ChartErrorMessage
                         nrLinkEnedisOff={nrlinkOff && enedisOff}
