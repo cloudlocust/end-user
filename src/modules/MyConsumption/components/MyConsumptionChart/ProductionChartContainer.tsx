@@ -58,20 +58,10 @@ export const ProductionChartContainer = ({
 
     const enphaseOff = enphaseConsent?.enphaseConsentState !== 'ACTIVE'
 
-    // get metrics when interval change.
-    useEffect(() => {
-        setMetricsInterval(metricsInterval)
-    }, [metricsInterval, setMetricsInterval])
-
-    // get metrics when range change.
+    // get metrics when range, interval or filters change.
     useEffect(() => {
         setRange(range)
-    }, [range, setRange])
-
-    // get metrics when filters change.
-    useEffect(() => {
-        setFilters(filters)
-    }, [filters, setFilters])
+    }, [range, setRange, filters, setFilters, metricsInterval, setMetricsInterval])
 
     return (
         <>
