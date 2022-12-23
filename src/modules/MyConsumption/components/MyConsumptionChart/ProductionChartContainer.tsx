@@ -33,25 +33,28 @@ export const ProductionChartContainer = ({
     enphaseConsent,
 }: ProductionChartContainerProps) => {
     const theme = useTheme()
-    const { data, setFilters, setMetricsInterval, setRange, isMetricsLoading } = useMetrics({
-        interval: metricsInterval,
-        range: range,
-        targets: [
-            {
-                target: metricTargetsEnum.autoconsumption,
-                type: 'timeserie',
-            },
-            {
-                target: metricTargetsEnum.injectedProduction,
-                type: 'timeserie',
-            },
-            {
-                target: metricTargetsEnum.totalProduction,
-                type: 'timeserie',
-            },
-        ],
-        filters,
-    })
+    const { data, setFilters, setMetricsInterval, setRange, isMetricsLoading } = useMetrics(
+        {
+            interval: metricsInterval,
+            range: range,
+            targets: [
+                {
+                    target: metricTargetsEnum.autoconsumption,
+                    type: 'timeserie',
+                },
+                {
+                    target: metricTargetsEnum.injectedProduction,
+                    type: 'timeserie',
+                },
+                {
+                    target: metricTargetsEnum.totalProduction,
+                    type: 'timeserie',
+                },
+            ],
+            filters,
+        },
+        false,
+    )
 
     // This state represents whether or not the chart is stacked: true.
     const { currentHousing } = useSelector(({ housingModel }: RootState) => housingModel)
