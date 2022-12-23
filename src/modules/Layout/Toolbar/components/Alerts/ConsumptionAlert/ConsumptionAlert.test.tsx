@@ -224,8 +224,8 @@ describe('Test Consumption Alert component.', () => {
             userEvent.click(getByText(BUTTON_ANNULER))
 
             // see if changes were cancel
-            expect(textFieldMuiElements[1]).toHaveValue(null)
-            expect(textFieldMuiElements[0]).toHaveValue(null)
+            expect(textFieldMuiElements[1]).toHaveValue(0)
+            expect(textFieldMuiElements[0]).toHaveValue(0)
         })
         test('When tayping values and save, save hooko should be call with correct values and fields disabled.', async () => {
             const { getByText, container } = reduxedRender(

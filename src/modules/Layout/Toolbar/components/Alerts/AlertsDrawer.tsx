@@ -2,12 +2,12 @@ import { SwipeableDrawer, IconButton, Icon } from '@mui/material'
 import { styled } from '@mui/material/styles'
 import { NavLink } from 'react-router-dom'
 import _ from 'lodash'
-import { useEffect, useState } from 'react'
+import { useMemo } from 'react'
 import { useSelector } from 'react-redux'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import ConsumptionAlert from 'src/modules/Layout/Toolbar/components/Alerts/ConsumptionAlert'
 import { RootState } from 'src/redux'
-import { ConsumptionAlertData } from './ConsumptionAlert/consumptionAlert'
+import { IConsumptionAlert } from './ConsumptionAlert/consumptionAlert'
 import { useConsumptionAlerts } from './ConsumptionAlert/consumptionAlertHooks'
 import { URL_MY_HOUSE } from 'src/modules/MyHouse'
 
@@ -36,33 +36,19 @@ export const AlertsDrawer = ({ closeAlertsDrawer }: { closeAlertsDrawer: () => v
     const { consumptionAlerts, pricePerKwh, saveConsumptionAlert, isAlertsLoadingInProgress, isSavingInProgress } =
         useConsumptionAlerts(currentHousing?.id ?? null)
 
-    // Save consumptions alerts data in this format:
-    // {
-    //     day: {
-    //         consumption: 10.36,
-    //         price: 0.1
-    //     },
-    //     week: {
-    //         consumption: 30,
-    //         price: 2
-    //     }
-    //     month: {
-    //         consumption: 20,
-    //         price: 1.5
-    //     }
-    // }
-    //eslint-disable-next-line
-    const [formData, setFormData] = useState<{ [key: string]: ConsumptionAlertData }>({})
-
-    useEffect(() => {
-        // convert data to wanted format
-        const formatedData = _.chain(consumptionAlerts)
+    /**
+     * Formate consumption alerts format to wanted format.
+     *
+     * @param consumptionAlerts Consumption alert.
+     * @returns Formated consumption alerts to wanted format.
+     */
+    const formatAlertConsumptionsDataByinterval = (consumptionAlerts: IConsumptionAlert[]) =>
+        _.chain(consumptionAlerts)
             .keyBy('interval')
             .mapValues((v) => _.omit(v, 'interval'))
             .value()
 
-        setFormData(formatedData)
-    }, [consumptionAlerts])
+    const formatedData = useMemo(() => formatAlertConsumptionsDataByinterval(consumptionAlerts), [consumptionAlerts])
 
     const { hasMissingHousingContracts } = useHasMissingHousingContracts(rangeOfCurrentMonth, currentHousing?.id)
 
@@ -102,7 +88,7 @@ export const AlertsDrawer = ({ closeAlertsDrawer }: { closeAlertsDrawer: () => v
                 )}
                 <ConsumptionAlert
                     interval="day"
-                    initialValues={formData['day']}
+                    initialValues={formatedData['day']}
                     pricePerKwh={pricePerKwh}
                     saveConsumptionAlert={saveConsumptionAlert}
                     isConsumptionAlertsLoading={isAlertsLoadingInProgress}
@@ -110,7 +96,7 @@ export const AlertsDrawer = ({ closeAlertsDrawer }: { closeAlertsDrawer: () => v
                 />
                 <ConsumptionAlert
                     interval="week"
-                    initialValues={formData['week']}
+                    initialValues={formatedData['week']}
                     pricePerKwh={pricePerKwh}
                     saveConsumptionAlert={saveConsumptionAlert}
                     isConsumptionAlertsLoading={isAlertsLoadingInProgress}
@@ -118,7 +104,7 @@ export const AlertsDrawer = ({ closeAlertsDrawer }: { closeAlertsDrawer: () => v
                 />
                 <ConsumptionAlert
                     interval="month"
-                    initialValues={formData['month']}
+                    initialValues={formatedData['month']}
                     pricePerKwh={pricePerKwh}
                     saveConsumptionAlert={saveConsumptionAlert}
                     isConsumptionAlertsLoading={isAlertsLoadingInProgress}

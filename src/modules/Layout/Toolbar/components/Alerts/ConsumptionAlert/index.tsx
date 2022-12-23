@@ -1,9 +1,14 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { Card, Button, Divider } from '@mui/material'
 import { LoadingButton } from '@mui/lab'
 import { useIntl } from 'react-intl'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
-import { ConsumptionAlertIntervalsType, ConsumptionAlertData } from './consumptionAlert'
+import {
+    ConsumptionAlertButtonGroupPropsType,
+    ConsumptionAlertData,
+    ConsumptionAlertInputFieldsComponentPropsType,
+    ConsumptionAlertPropsType,
+} from './consumptionAlert'
 import { ConsumptionAlertTitle } from './consumptionAlertsVariables'
 import { Form } from 'src/common/react-platform-components'
 import { TextField } from 'src/common/ui-kit'
@@ -28,34 +33,7 @@ const ConsumptionAlert = ({
     saveConsumptionAlert,
     isConsumptionAlertsLoading,
     isSavingAlertLoading,
-}: /**
- */
-{
-    /**
-     * Interval for the consumption alert.
-     */
-    interval: ConsumptionAlertIntervalsType
-    /**
-     * Initial value for the text fields.
-     */
-    initialValues: ConsumptionAlertData | undefined
-    /**
-     * Price per Kwh.
-     */
-    pricePerKwh?: number | null
-    /**
-     * Save consumption alert.
-     */
-    saveConsumptionAlert: (data: ConsumptionAlertData, interval: ConsumptionAlertIntervalsType) => void
-    /**
-     * Is consumption alerts values loading.
-     */
-    isConsumptionAlertsLoading: boolean
-    /**
-     * Is saving alert loading.
-     */
-    isSavingAlertLoading: boolean
-}) => {
+}: ConsumptionAlertPropsType) => {
     const [isEdit, setIsEdit] = useState(false)
 
     // this state is to keep the fields updated in case we save new data and did not close the drawer
@@ -82,7 +60,7 @@ const ConsumptionAlert = ({
      * @returns N/A.
      */
     const handleOnSubmit = async (data: ConsumptionAlertData) => {
-        let finalData: ConsumptionAlertData = data
+        let finalData: ConsumptionAlertData = { consumption: data.consumption, price: data.price }
 
         // if the user changed on of them we make to null the second before sending to server (one of them is saved)
         if (toDeleteBeforeSend) {
@@ -96,7 +74,7 @@ const ConsumptionAlert = ({
     }
 
     return (
-        <Form onSubmit={(data: ConsumptionAlertData) => handleOnSubmit(data)}>
+        <Form onSubmit={handleOnSubmit}>
             <div className="mb-8">
                 <Card className="w-full rounded-20 shadow sm:m-4 pb-8" variant="outlined">
                     <div className="flex-col justify-center mt-10">
@@ -139,32 +117,8 @@ const ConsumptionAlertsInputFields = ({
     pricePerKwh,
     setToDeleteBeforeSend,
     formValues,
-}: /**
- */
-{
-    /**
-     * Is form Edit.
-     */
-    isEdit: boolean
-    /**
-     * Price per Kwh.
-     */
-    pricePerKwh: number | null | undefined
-    /**
-     * Set to delete Before send.
-     */
-    setToDeleteBeforeSend: (value: 'price' | 'consumption' | null) => void
-    /**
-     * Form values that keeps variables updated.
-     */
-    formValues: ConsumptionAlertData | undefined
-}) => {
+}: ConsumptionAlertInputFieldsComponentPropsType) => {
     const { setValue, watch } = useFormContext()
-
-    const watchPrice = watch('price')
-    const watchConsumption = watch('consumption')
-
-    const [typedInput, setTypedInput] = useState<'price' | 'consumption' | null>(null)
 
     // reset form values if they change or if form is disabled
     useEffect(() => {
@@ -172,34 +126,66 @@ const ConsumptionAlertsInputFields = ({
         setValue('consumption', formValues?.consumption ?? NaN)
     }, [setValue, formValues, isEdit])
 
-    // watch price changes
-    useEffect(() => {
-        if (typedInput === 'price') {
+    /**
+     * Handle price on change (typing).
+     *
+     * @param value Value from input fields.
+     */
+    const handlePriceChange = useCallback(
+        (value: //eslint-disable-next-line
+        { [x: string]: string }) => {
             // if the user is changing the price, we don't send the consumption
             setToDeleteBeforeSend('consumption')
 
             // NaN is for when the input is empty
-            if ([0, NaN, null, undefined].includes(watchPrice) || watchPrice < 0) {
+            if (value.price && parseFloat(value.price) > 0) {
+                setValue('price', parseFloat(parseFloat(value.price).toFixed(2)))
+                pricePerKwh && setValue('consumption', parseFloat((parseFloat(value.price) / pricePerKwh).toFixed(2)))
+            } else {
                 setValue('price', NaN)
                 setValue('consumption', NaN)
-            } else {
-                setValue('price', parseFloat(parseFloat(watchPrice).toFixed(2)))
-                pricePerKwh && setValue('consumption', parseFloat((parseFloat(watchPrice) / pricePerKwh).toFixed(2)))
             }
-        }
-        if (typedInput === 'consumption') {
+        },
+        [setToDeleteBeforeSend, setValue, pricePerKwh],
+    )
+
+    /**
+     * Handle Consumption on change (typing).
+     *
+     * @param value Value from input fields.
+     */
+    const handleConsumptionChange = useCallback(
+        (value: //eslint-disable-next-line
+            { [x: string]: string }) => {
             // if the user is changing the consumption, we don't send the price
             setToDeleteBeforeSend('price')
 
-            if ([0, NaN, null, undefined].includes(watchConsumption) || watchConsumption < 0) {
+            if (value.consumption && parseFloat(value.consumption) > 0) {
+                setValue('consumption', parseFloat(parseFloat(value.consumption).toFixed(2)))
+                pricePerKwh && setValue('price', parseFloat((parseFloat(value.consumption) * pricePerKwh).toFixed(2)))
+            } else {
                 setValue('consumption', NaN)
                 setValue('price', NaN)
-            } else {
-                setValue('consumption', parseFloat(parseFloat(watchConsumption).toFixed(2)))
-                pricePerKwh && setValue('price', parseFloat((parseFloat(watchConsumption) * pricePerKwh).toFixed(2)))
             }
+        },
+        [pricePerKwh, setValue, setToDeleteBeforeSend],
+    )
+
+    useEffect(() => {
+        const subscription = watch((value, { name, type }) => {
+            if (type === 'change') {
+                if (name === 'price') {
+                    handlePriceChange(value)
+                }
+                if (name === 'consumption') {
+                    handleConsumptionChange(value)
+                }
+            }
+        })
+        return () => {
+            subscription.unsubscribe()
         }
-    }, [watchPrice, watchConsumption, pricePerKwh, setToDeleteBeforeSend, setValue, typedInput])
+    }, [watch, handleConsumptionChange, handlePriceChange])
 
     return (
         <div className="flex justify-around content-center mb-16">
@@ -212,10 +198,6 @@ const ConsumptionAlertsInputFields = ({
                     type="number"
                     disabled={!isEdit}
                     variant="outlined"
-                    inputProps={{
-                        //eslint-disable-next-line
-                        onChange: () => setTypedInput('consumption'),
-                    }}
                 />
                 <div
                     className="bg-gray-300 flex items-center justify-center float-left rounded"
@@ -233,10 +215,6 @@ const ConsumptionAlertsInputFields = ({
                     disabled={!isEdit}
                     type="number"
                     variant="outlined"
-                    inputProps={{
-                        //eslint-disable-next-line
-                        onChange: () => setTypedInput('price'),
-                    }}
                 />
                 <div
                     className="bg-gray-300 flex items-center justify-center float-left rounded"
@@ -266,30 +244,7 @@ const ButtonsGroup = ({
     disableForm,
     isConsumptionAlertsLoading,
     isSavingAlertLoading,
-}: /**
- */
-{
-    /**
-     * Is form editable.
-     */
-    isEdit: boolean
-    /**
-     * Function to enable form.
-     */
-    enableForm: () => void
-    /**
-     * Function to enable form.
-     */
-    disableForm: () => void
-    /**
-     * Is button loading.
-     */
-    isConsumptionAlertsLoading: boolean
-    /**
-     * Is button loading.
-     */
-    isSavingAlertLoading: boolean
-}) => {
+}: ConsumptionAlertButtonGroupPropsType) => {
     const { formatMessage } = useIntl()
 
     return (
