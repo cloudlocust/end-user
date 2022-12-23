@@ -33,45 +33,38 @@ export const ProductionChartContainer = ({
     enphaseConsent,
 }: ProductionChartContainerProps) => {
     const theme = useTheme()
-    const { data, setFilters, setMetricsInterval, setRange, isMetricsLoading } = useMetrics({
-        interval: metricsInterval,
-        range: range,
-        targets: [
-            {
-                target: metricTargetsEnum.autoconsumption,
-                type: 'timeserie',
-            },
-            {
-                target: metricTargetsEnum.injectedProduction,
-                type: 'timeserie',
-            },
-            {
-                target: metricTargetsEnum.totalProduction,
-                type: 'timeserie',
-            },
-        ],
-        filters,
-    })
+    const { data, setFilters, setMetricsInterval, setRange, isMetricsLoading } = useMetrics(
+        {
+            interval: metricsInterval,
+            range: range,
+            targets: [
+                {
+                    target: metricTargetsEnum.autoconsumption,
+                    type: 'timeserie',
+                },
+                {
+                    target: metricTargetsEnum.injectedProduction,
+                    type: 'timeserie',
+                },
+                {
+                    target: metricTargetsEnum.totalProduction,
+                    type: 'timeserie',
+                },
+            ],
+            filters,
+        },
+        false,
+    )
 
     // This state represents whether or not the chart is stacked: true.
     const { currentHousing } = useSelector(({ housingModel }: RootState) => housingModel)
 
     const enphaseOff = enphaseConsent?.enphaseConsentState !== 'ACTIVE'
 
-    // get metrics when interval change.
-    useEffect(() => {
-        setMetricsInterval(metricsInterval)
-    }, [metricsInterval, setMetricsInterval])
-
-    // get metrics when range change.
+    // get metrics when range, interval or filters change.
     useEffect(() => {
         setRange(range)
-    }, [range, setRange])
-
-    // get metrics when filters change.
-    useEffect(() => {
-        setFilters(filters)
-    }, [filters, setFilters])
+    }, [range, setRange, filters, setFilters, metricsInterval, setMetricsInterval])
 
     return (
         <>
