@@ -7,10 +7,10 @@ import { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Dispatch, RootState } from 'src/redux'
 import { useHistory } from 'react-router-dom'
-import { useIntl } from 'react-intl'
 import ToolbarMenuItem from './ToolbarMenuItem'
 import { installationRequestsFeatureState } from 'src/modules/InstallationRequests/InstallationRequestsConfig'
 import { equipmentFeatureState, URL_SOLAR_EQUIPMENTS } from 'src/modules/SolarEquipments/solarEquipmentsConfig'
+import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 
 // TODO This is not a generic component to share with medialem, to update.
 /**
@@ -26,7 +26,6 @@ function UserMenu() {
     const [userMenu, setUserMenu] = useState<Element | null>(null)
     const dispatch = useDispatch<Dispatch>()
     const history = useHistory()
-    const { formatMessage } = useIntl()
 
     /**
      * Handler for opening the UserMenu when clicking on UserProfile.
@@ -63,9 +62,11 @@ function UserMenu() {
                     <Typography component="span" className="font-semibold flex">
                         {`${user?.firstName} ${user?.lastName}`}
                     </Typography>
-                    <Typography className="text-11 font-medium capitalize" color="textSecondary">
-                        {user?.role !== undefined ? formatMessage({ id: user?.role, defaultMessage: user?.role }) : ''}
-                    </Typography>
+                    {user?.role === 'enduser' && (
+                        <TypographyFormatMessage className="text-11 font-medium capitalize" color="textSecondary">
+                            Utilisateur
+                        </TypographyFormatMessage>
+                    )}
                 </div>
 
                 <Avatar className="md:mx-4">{user?.firstName !== undefined ? user?.firstName[0] : 'W'}</Avatar>

@@ -4,6 +4,7 @@ import { IEcowattData } from 'src/modules/Ecowatt/ecowatt'
 import { useSnackbar } from 'notistack'
 import { useIntl } from 'react-intl'
 import { axios } from 'src/common/react-platform-components'
+import { orderBy } from 'lodash'
 
 /**
  * Ecowatt endpoint.
@@ -30,7 +31,9 @@ export function useEcowatt() {
             setIsLoadingInProgress(true)
             const { data: responseData } = await axios.get<IEcowattData>(ECOWATT_ENDPOINT)
             if (responseData) {
-                setEcowattData(responseData)
+                // Sort ecowatt data asc.
+                const sortedData = orderBy(responseData, [(obj) => new Date(obj.readingAt)], ['asc'])
+                setEcowattData(sortedData)
             }
             setIsLoadingInProgress(false)
         } catch (error) {
