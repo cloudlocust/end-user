@@ -39,8 +39,8 @@ export function useConsumptionAlerts(housingId: number | null, disabledOnMunt?: 
     const [isConsumptionAlertsListEmpty, setIsConsumptionAlertsListEmpty] = useState(true)
 
     const NO_HOUSING_MESSAGE = 'Aucun logement.'
-    const DEFAULT_GET_ALERTS_ERROR_MESSAGE = 'Une erreur est survenue lors du chargement des alerts.'
-    const DEFAULT_ASSERTION_ERROR_MESSAGE = "Une erreur est survenue lors de l'insertion des alerts."
+    const DEFAULT_GET_ALERTS_ERROR_MESSAGE = 'Une erreur est survenue lors du chargement des alertes.'
+    const DEFAULT_ASSERTION_ERROR_MESSAGE = "Une erreur est survenue lors de l'insertion des alertes."
 
     /**
      * Function hook responsible for fetching price per kwh.

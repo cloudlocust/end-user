@@ -76,14 +76,26 @@ export const AlertsDrawer = ({ closeAlertsDrawer }: { closeAlertsDrawer: () => v
                                 alt="missing-contract"
                             />
                         </Icon>
-                        <NavLink
-                            to={currentHousing ? `${URL_MY_HOUSE}/${currentHousing?.id}/contracts` : `${URL_MY_HOUSE}`}
-                        >
-                            <TypographyFormatMessage className="text-13 text-orange-600 font-medium underline">
-                                Prix basé sur le tarif bleu d'EDF. Renseignez votre contrat de fourniture pour une
-                                estimation plus précise.
+                        <div>
+                            <TypographyFormatMessage className="text-13 text-orange-500 font-medium">
+                                Prix basé sur le tarif bleu d'EDF.
                             </TypographyFormatMessage>
-                        </NavLink>
+                            <NavLink
+                                onClick={closeAlertsDrawer}
+                                to={
+                                    currentHousing
+                                        ? `${URL_MY_HOUSE}/${currentHousing?.id}/contracts`
+                                        : `${URL_MY_HOUSE}`
+                                }
+                            >
+                                <TypographyFormatMessage className="text-13 text-orange-500 font-medium underline">
+                                    Renseignez votre contrat de fourniture
+                                </TypographyFormatMessage>
+                            </NavLink>
+                            <TypographyFormatMessage className="text-13 text-orange-500 font-medium">
+                                pour une estimation plus précise.
+                            </TypographyFormatMessage>
+                        </div>
                     </div>
                 )}
                 <ConsumptionAlert

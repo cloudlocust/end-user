@@ -15,8 +15,8 @@ const mockEnqueueSnackbar = jest.fn()
 
 const NO_HOUSING_MESSAGE = 'Aucun logement.'
 const MODIFICATION_DONE = 'Vos modifications ont été sauvegardées'
-const DEFAULT_GET_ALERTS_ERROR_MESSAGE = 'Une erreur est survenue lors du chargement des alerts.'
-const DEFAULT_ASSERTION_ALERTS_ERROR_MESSAGE = "Une erreur est survenue lors de l'insertion des alerts."
+const DEFAULT_GET_ALERTS_ERROR_MESSAGE = 'Une erreur est survenue lors du chargement des alertes.'
+const DEFAULT_ASSERTION_ALERTS_ERROR_MESSAGE = "Une erreur est survenue lors de l'insertion des alertes."
 
 /**
  * Mocking the useSnackbar used in CustomerDetails to load the customerDetails based on url /customers/:id {id} params.
