@@ -77,6 +77,7 @@ export const AlertsDrawer = ({ closeAlertsDrawer }: { closeAlertsDrawer: () => v
                             />
                         </Icon>
                         <NavLink
+                            onClick={closeAlertsDrawer}
                             to={currentHousing ? `${URL_MY_HOUSE}/${currentHousing?.id}/contracts` : `${URL_MY_HOUSE}`}
                         >
                             <TypographyFormatMessage className="text-13 text-orange-600 font-medium underline">
