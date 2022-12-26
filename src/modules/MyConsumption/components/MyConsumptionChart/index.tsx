@@ -104,7 +104,7 @@ const MyConsumptionChart = ({
              }`}
             // When there is more than one curve on the graph, then it is necessary to increase its width (on Mobile version),
             // without this, the width increase will only apply to the consumption chart
-            style={{ width: `${isMobile && reactApexChartsProps.series.length > 1 ? '105%' : '100%'}` }}
+            style={{ width: `${isMobile && reactApexChartsProps.series.length > 1 ? '101%' : '100%'}` }}
         >
             {!isApexChartsFinishDrawing && (
                 <div className="flex flex-col justify-center items-center w-full h-full" style={{ height: '320px' }}>
@@ -115,7 +115,7 @@ const MyConsumptionChart = ({
                 <ReactApexChart
                     {...reactApexChartsProps}
                     data-testid="apexcharts"
-                    width={isMobile ? '105%' : '100%'}
+                    width={isMobile ? '101%' : '100%'}
                     height={320}
                 />
             </div>

@@ -124,8 +124,8 @@ export const MeterStatus = () => {
                         </Icon>
                         <div className="flex flex-col">
                             <span className="text-grey-600">{`${formatMessage({
-                                id: 'nrLink n°',
-                                defaultMessage: 'nrLink n°',
+                                id: 'nrLINK',
+                                defaultMessage: 'nrLINK',
                             })} ${nrlinkConsent?.nrlinkGuid}`}</span>
                             <span className="text-grey-600">{`${formatMessage({
                                 id: TEXT_CONNEXION_LE,
