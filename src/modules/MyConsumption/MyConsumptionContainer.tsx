@@ -261,8 +261,8 @@ export const MyConsumptionContainer = () => {
                     })}
                     <Link to={`/nrlink-connection-steps/${currentHousing?.id}`} className="underline">
                         {formatMessage({
-                            id: 'enregistrer votre compteur et votre nrLink',
-                            defaultMessage: 'enregistrer votre compteur et votre nrLink',
+                            id: 'enregistrer votre compteur et votre nrLINK',
+                            defaultMessage: 'enregistrer votre compteur et votre nrLINK',
                         })}
                     </Link>
                 </Typography>
