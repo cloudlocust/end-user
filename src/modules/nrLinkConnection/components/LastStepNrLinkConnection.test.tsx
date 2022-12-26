@@ -82,7 +82,7 @@ describe('Test LastStepNrLinkConnection', () => {
     })
 
     describe('Submit form', () => {
-        test('when submitForm and nrLink no data received error, snackbar error should be shown, and setNrLinkAuthorizeInProgress should be called accordingly', async () => {
+        test('when submitForm and nrLINK no data received error, snackbar error should be shown, and setNrLinkAuthorizeInProgress should be called accordingly', async () => {
             const mockSetIsNrLinkAuthorizeInProgress = jest.fn()
             mockLastStepNrLinkConnectionProps.setIsNrLinkAuthorizeInProgress = mockSetIsNrLinkAuthorizeInProgress
             const { container, getByText } = reduxedRender(
@@ -107,7 +107,7 @@ describe('Test LastStepNrLinkConnection', () => {
                 variant: 'error',
             })
         }, 20000)
-        test('when submitForm and nrLink already connected error, snackbar error should be shown, and setNrLinkAuthorizeInProgress should be called accordingly', async () => {
+        test('when submitForm and nrLINK already connected error, snackbar error should be shown, and setNrLinkAuthorizeInProgress should be called accordingly', async () => {
             const mockSetIsNrLinkAuthorizeInProgress = jest.fn()
             mockLastStepNrLinkConnectionProps.setIsNrLinkAuthorizeInProgress = mockSetIsNrLinkAuthorizeInProgress
             const { container, getByText } = reduxedRender(
@@ -131,7 +131,7 @@ describe('Test LastStepNrLinkConnection', () => {
                 variant: 'error',
             })
         }, 20000)
-        test('when submitForm and nrLink generic error, snackbar error should be shown, and setNrLinkAuthorizeInProgress should be called accordingly', async () => {
+        test('when submitForm and nrLINK generic error, snackbar error should be shown, and setNrLinkAuthorizeInProgress should be called accordingly', async () => {
             const mockSetIsNrLinkAuthorizeInProgress = jest.fn()
             mockLastStepNrLinkConnectionProps.setIsNrLinkAuthorizeInProgress = mockSetIsNrLinkAuthorizeInProgress
             const { container, getByText } = reduxedRender(
@@ -156,7 +156,7 @@ describe('Test LastStepNrLinkConnection', () => {
                 variant: 'error',
             })
         }, 20000)
-        test('when submitForm and nrLink authorize success, snackbar error should be shown, and setNrLinkAuthorizeInProgress should be called accordingly', async () => {
+        test('when submitForm and nrLINK authorize success, snackbar error should be shown, and setNrLinkAuthorizeInProgress should be called accordingly', async () => {
             const mockSetIsNrLinkAuthorizeInProgress = jest.fn()
             mockLastStepNrLinkConnectionProps.setIsNrLinkAuthorizeInProgress = mockSetIsNrLinkAuthorizeInProgress
             const { container, getByText } = reduxedRender(

@@ -8,7 +8,7 @@ let mockNrLinkEnedisOff = true
 let mockEnphaseOff = true
 
 describe('load ConsumptionPeriod', () => {
-    test('Error message if nrLink, enedis and enphase are Off.', async () => {
+    test('Error message if nrLINK, enedis and enphase are Off.', async () => {
         const { getByText } = reduxedRender(
             <Router>
                 <ChartErrorMessage
@@ -37,7 +37,7 @@ describe('load ConsumptionPeriod', () => {
         )
         expect(getByText(ENPHASE_OFF_MESSAGE)).toBeTruthy()
     })
-    test('Error message if nrLink, enedis are Off', async () => {
+    test('Error message if nrLINK, enedis are Off', async () => {
         mockNrLinkEnedisOff = true
         mockEnphaseOff = false
         const { getByText } = reduxedRender(

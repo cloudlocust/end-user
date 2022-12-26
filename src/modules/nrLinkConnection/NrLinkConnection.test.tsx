@@ -64,7 +64,7 @@ describe('Test NrLinkConnection Page', () => {
             { timeout: 5000 },
         )
     }, 10000)
-    test('When clicking on CTA button connect nrLink, it should redirect to nrLinkConnectionStep', async () => {
+    test('When clicking on CTA button connect nrLINK, it should redirect to nrLinkConnectionStep', async () => {
         const { getByText } = reduxedRender(<NrLinkConnectionRouter />, {
             initialState: { userModel: { user: userData } },
         })

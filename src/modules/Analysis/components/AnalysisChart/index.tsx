@@ -76,7 +76,7 @@ const AnalysisChart = ({
             analysisChartContainerRef.current.style!.height = `${apexchartsContainerRect.height}px`
             // Additionally the apexcharts will be shifted a bit from top of apexchartsContainer so we need to shift our content with the same amount to our div container in order to finally center it according to apexcharts.
             analysisChartCircleContentRef.current.style!.bottom = `calc(50% - ${
-                apexchartsRect.top - apexchartsContainerRect.top
+                (apexchartsRect.top - apexchartsContainerRect.top) / 2
             }px)`
         }
     }

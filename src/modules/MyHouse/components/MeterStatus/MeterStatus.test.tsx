@@ -188,7 +188,7 @@ describe('MeterStatus component test', () => {
             expect(getByText(`n° ${foundHouse?.meter?.guid}`)).toBeTruthy()
             expect(getByText(NRLINK_TITLE)).toBeTruthy()
             expect(image).toHaveAttribute('src', STATUS_ON_SRC)
-            expect(getByText(`nrLINK ${mockNrlinkGuid}`)).toBeTruthy()
+            expect(getByText(`nrLINK n° ${mockNrlinkGuid}`)).toBeTruthy()
         })
         test('when nrlink status is disconnected', async () => {
             mockNrlinkConsent = 'DISCONNECTED'

@@ -116,7 +116,7 @@ describe('MyConsumptionContainer test', () => {
             expect(mockGetConsents).toHaveBeenCalled()
         })
         expect(getByText("Pour voir votre consommation vous devez d'abord")).toBeTruthy()
-        expect(getByText('enregistrer votre compteur et votre nrLink')).toBeTruthy()
+        expect(getByText('enregistrer votre compteur et votre nrLINK')).toBeTruthy()
     })
     test("when data from useMetrics is empty, widget section isn't shown", async () => {
         mockNrlinkConsent = 'CONNECTED'
