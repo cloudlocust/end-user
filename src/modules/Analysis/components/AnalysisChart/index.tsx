@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useRef } from 'react'
 import ReactApexChart from 'react-apexcharts'
 import { useTheme } from '@mui/material/styles'
 import useMediaQuery from '@mui/material/useMediaQuery'
@@ -14,7 +14,9 @@ import {
 import { convertMetricsDataToApexChartsAxisValues } from 'src/modules/MyConsumption/utils/apexChartsDataConverter'
 import { ApexChartsAxisValuesType } from 'src/modules/MyConsumption/myConsumptionTypes'
 
-const analysisChartClassname = 'apexcharts-inner apexcharts-graphical'
+// In order to center the content in apexcharts, we need to get the apexcharts container height, and then center our content, additionally the apexcharts will be shifted a bit from top so we need to shift our content with the same amount in order to finally center it according to apexcharts.
+const apexchartsContainerClassname = 'apexcharts-inner apexcharts-graphical'
+const apexchartsClassname = 'apexcharts-pie'
 
 /**
  * Analysis Polar Area Chart.
@@ -49,21 +51,35 @@ const AnalysisChart = ({
         ? [yAxisSeries[0].data as ApexNonAxisChartSeries, xAxisSeries[0]]
         : [[], []]
 
-    useEffect(() => {
-        // This UseEffect is used to do some styling, in order to dynamically style the CircleContent in the middle of the analysisChart.
+    /**
+     * This function is used to do some styling, in order to dynamically style the CircleContent in the middle of the analysisChart, whenever apexcharts graphical is updated.
+     */
+    const centerCircleContentInApexcharts = () => {
         if (
+            data.length &&
             analysisChartContainerRef.current &&
-            analysisChartContainerRef.current.getElementsByClassName(analysisChartClassname)[0] &&
-            analysisChartContainerRef.current.getElementsByClassName(analysisChartClassname)[0].getBoundingClientRect()
-                .height !== 0
+            analysisChartCircleContentRef.current &&
+            analysisChartContainerRef.current.getElementsByClassName(apexchartsContainerClassname)[0] &&
+            analysisChartContainerRef.current
+                .getElementsByClassName(apexchartsContainerClassname)[0]
+                .getBoundingClientRect().height !== 0 &&
+            analysisChartContainerRef.current.getElementsByClassName(apexchartsClassname)[0] &&
+            analysisChartContainerRef.current.getElementsByClassName(apexchartsClassname)[0].getBoundingClientRect()
         ) {
-            const analysisPolarAreaChartRec = analysisChartContainerRef.current
-                .getElementsByClassName(analysisChartClassname)[0]
+            const apexchartsContainerRect = analysisChartContainerRef.current
+                .getElementsByClassName(apexchartsContainerClassname)[0]
                 .getBoundingClientRect()
-            // Because ApexChart PolarArea div will have a height different from the container, the CircleContent won't be centered in the polarArea chart unless the container have the same height as the PolarArea div.
-            analysisChartContainerRef.current.style!.height = `${analysisPolarAreaChartRec.height}px`
+            const apexchartsRect = analysisChartContainerRef.current
+                .getElementsByClassName(apexchartsClassname)[0]
+                .getBoundingClientRect()
+            // The CircleContent won't be centered in apexcharts unless our div container have the same height as the apexcharts container.
+            analysisChartContainerRef.current.style!.height = `${apexchartsContainerRect.height}px`
+            // Additionally the apexcharts will be shifted a bit from top of apexchartsContainer so we need to shift our content with the same amount to our div container in order to finally center it according to apexcharts.
+            analysisChartCircleContentRef.current.style!.bottom = `calc(50% - ${
+                apexchartsRect.top - apexchartsContainerRect.top
+            }px)`
         }
-    })
+    }
 
     if (values.length === 0) {
         return (
@@ -114,6 +130,15 @@ const AnalysisChart = ({
          */
         dataPointMouseEnter(e, chartContext, config) {
             this.dataPointSelection!(e, chartContext, config)
+        },
+        /**
+         * Center circle content whenever apexcharts finishes drawing on the map.
+         *
+         * @param chart Chart context.
+         * @param options Config options.
+         */
+        animationEnd(chart, options) {
+            centerCircleContentInApexcharts()
         },
     }
 
