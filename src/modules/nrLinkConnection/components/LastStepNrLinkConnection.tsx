@@ -165,7 +165,7 @@ const LastStepNrLinkConnection = ({
                                     className="w-full text-center md:text-12"
                                     sx={{ color: textNrlinkColor }}
                                 >
-                                    Dans Menu/IHD
+                                    Dans Menu/nrLINK
                                 </TypographyFormatMessage>
                             </div>
                         </div>
