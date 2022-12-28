@@ -59,12 +59,23 @@ export const ProductionChartContainer = ({
     // This state represents whether or not the chart is stacked: true.
     const { currentHousing } = useSelector(({ housingModel }: RootState) => housingModel)
 
+    // TODO put different consentStates in an enum.
     const enphaseOff = enphaseConsent?.enphaseConsentState !== 'ACTIVE'
 
-    // get metrics when range, interval or filters change.
+    // get metrics when range change.
     useEffect(() => {
         setRange(range)
-    }, [range, setRange, filters, setFilters, metricsInterval, setMetricsInterval])
+    }, [range, setRange])
+
+    // get metrics when filters change.
+    useEffect(() => {
+        setFilters(filters)
+    }, [filters, setFilters])
+
+    // get metrics when interval change.
+    useEffect(() => {
+        setMetricsInterval(metricsInterval)
+    }, [metricsInterval, setMetricsInterval])
 
     return (
         <>

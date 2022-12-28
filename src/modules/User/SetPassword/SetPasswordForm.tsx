@@ -9,7 +9,7 @@ import { onSubmitSetPasswordData } from 'src/modules/User/SetPassword/SetPasswor
 import { passwordFieldValidationSecurity1 } from 'src/modules/utils'
 
 const checkoxRequiredErrorText = 'Ce champ est obligatoire'
-const urlPolitiqueConfidentialité = 'https://drive.google.com/uc?export=download&id=18agpXAw89RX5Zk87EQ9ev5LOeMU3GtnP'
+const urlPolitiqueConfidentialité = 'https://drive.google.com/uc?export=download&id=1sMFMizrEPZ4ZHhe6Zf-PTJGRUQBFGUEv'
 
 /**
  * Reset password form.

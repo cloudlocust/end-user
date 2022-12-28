@@ -1,4 +1,4 @@
-import { authTypes, IRoute } from 'src/common/react-platform-components'
+import { authTypes, IPageSettings, IRoute } from 'src/common/react-platform-components'
 import { Redirect } from 'react-router-dom'
 import { navbarItemType } from './common/ui-kit/fuse/components/FuseNavigation/FuseNavigation'
 import { MyConsumptionConfig } from './modules/MyConsumption'
@@ -97,6 +97,33 @@ export type IRouteNavigationConfig<T> = IRoute<T> & /**
      */
     settings: IAdditionnalSettings
 }
+
+// TODO Type better in IRoute and update IPageSettings
+/**
+ * Represent the route with disabled boolean setting for redirecting when its true.
+ */
+// eslint-lint-disable-next-line jsdoc/require-jsdoc
+export type IRouteDisabled<T> = IRoute<T> & /**
+ */ {
+    /**
+     *
+     */
+    // eslint-lint-disable-next-line jsdoc/require-jsdoc
+    settings: IPageSettingsDisabled
+}
+
+/**
+ * Type of IPageSettings with disabled field.
+ */
+export type IPageSettingsDisabled = IPageSettings & /**
+ *
+ */ {
+    /**
+     * Indicate if the route is disabled.
+     */
+    disabled: boolean
+}
+
 /**
  * NavigationConfig Represent all the routes that are going to be displayed in the first level of the navbar, they potentially have children which are going to be IRouteNavigationConfig.
  */

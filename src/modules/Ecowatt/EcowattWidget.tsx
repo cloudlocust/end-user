@@ -169,7 +169,12 @@ export const EcowattWidget = ({
                     <Collapse className="mt-8 mb-6 w-full" in={expendDetails}>
                         <EcowattTimeline hourlyValues={dayDetails?.hourlyValues} showHourReadingAt />
                         <div className="flex flex-row justify-center items-center mt-6">
-                            <Button variant="contained" startIcon={<Report />} onClick={handleOpenAlertsDrawer}>
+                            <Button
+                                variant="contained"
+                                startIcon={<Report />}
+                                onClick={handleOpenAlertsDrawer}
+                                disabled
+                            >
                                 Configurer des alertes
                             </Button>
                         </div>

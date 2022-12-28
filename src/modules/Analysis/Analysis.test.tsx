@@ -38,7 +38,7 @@ const mockRange = {
     from: '2022-05-01T00:00:00.000Z',
     to: '2022-05-31T23:59:59.999Z',
 }
-const REDIRECT_TEXT = 'enregistrer votre compteur et votre nrLink'
+const REDIRECT_TEXT = 'enregistrer votre compteur et votre nrLINK'
 const INCREMENT_DATE_ARROW_TEXT = 'chevron_right'
 const mockTheme = createTheme()
 
