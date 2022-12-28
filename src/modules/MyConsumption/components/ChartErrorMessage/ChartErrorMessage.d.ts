@@ -3,7 +3,7 @@
  */
 export interface ChartErrorMessageProps {
     /**
-     * If nrLink and Enedis are off.
+     * If nrLINK and Enedis are off.
      */
     nrLinkEnedisOff?: boolean
     /**

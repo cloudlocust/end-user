@@ -1,4 +1,116 @@
 /**
+ * Response object when gitting price per kwh.
+ */
+export interface IPricePerKwhDataType {
+    /**
+     * Price per kwh.
+     */
+    pricePerKwh: number
+}
+
+/**
  * The types of intervals that exists for the consumption alerts.
  */
 export type ConsumptionAlertIntervalsType = 'day' | 'week' | 'month'
+
+/**
+ * Consumption alert data.
+ */
+export interface ConsumptionAlertData {
+    /**
+     * Price.
+     */
+    price: number | null
+    /**
+     * Consumption.
+     */
+    consumption: number | null
+}
+
+/**
+ * Consumption Alert.
+ */
+export interface IConsumptionAlert extends ConsumptionAlertData {
+    /**
+     * Interval of consumption.
+     */
+    interval: ConsumptionAlertIntervalsType
+}
+
+/**
+ * Consumption Alert component prop Type.
+ */
+export interface ConsumptionAlertPropsType {
+    /**
+     * Interval for the consumption alert.
+     */
+    interval: ConsumptionAlertIntervalsType
+    /**
+     * Initial value for the text fields.
+     */
+    initialValues: ConsumptionAlertData | undefined
+    /**
+     * Price per Kwh.
+     */
+    pricePerKwh?: number | null
+    /**
+     * Save consumption alert.
+     */
+    saveConsumptionAlert: (data: ConsumptionAlertData, interval: ConsumptionAlertIntervalsType) => void
+    /**
+     * Is consumption alerts values loading.
+     */
+    isConsumptionAlertsLoading: boolean
+    /**
+     * Is saving alert loading.
+     */
+    isSavingAlertLoading: boolean
+}
+
+/**
+ * Consumption Alert inputs fields component props Type.
+ */
+export interface ConsumptionAlertInputFieldsComponentPropsType {
+    /**
+     * Is form Edit.
+     */
+    isEdit: boolean
+    /**
+     * Price per Kwh.
+     */
+    pricePerKwh: number | null | undefined
+    /**
+     * Set to delete Before send.
+     */
+    setToDeleteBeforeSend: (value: 'price' | 'consumption' | null) => void
+    /**
+     * Form values that keeps variables updated.
+     */
+    formValues: ConsumptionAlertData | undefined
+}
+
+/**
+ * Consumption Alert buttons group props type.
+ */
+export interface ConsumptionAlertButtonGroupPropsType {
+    /**
+     * Is form editable.
+     */
+    isEdit: boolean
+    /**
+     * Function to enable form.
+     */
+    enableForm: () => void
+    /**
+     * Function to enable form.
+     */
+    disableForm: () => void
+    /**
+     * Is button loading.
+     */
+    isConsumptionAlertsLoading: boolean
+    /**
+     * Is button loading.
+     */
+    isSavingAlertLoading: boolean
+}
