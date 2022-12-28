@@ -1,4 +1,5 @@
-import { authTypes, IRoute } from 'src/common/react-platform-components'
+import { authTypes } from 'src/common/react-platform-components'
+import { IRouteDisabled } from 'src/routes'
 import Register, { RegisterProps } from './Register'
 
 /**
@@ -29,6 +30,7 @@ export const RegisterConfig = [
                     display: false,
                 },
             },
+            disabled: userRegistrationFeatureState,
         },
-    } as IRoute<RegisterProps>,
+    } as IRouteDisabled<RegisterProps>,
 ]
