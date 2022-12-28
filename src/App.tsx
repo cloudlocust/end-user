@@ -1,7 +1,7 @@
 import React from 'react'
 import { Switch, Route, Redirect } from 'react-router-dom'
 import { useAuth } from 'src/modules/User/authentication/useAuth'
-import { routes, navigationsConfig, IAdditionnalSettings } from 'src/routes'
+import { routes, navigationsConfig, IAdditionnalSettings, IPageSettingsDisabled } from 'src/routes'
 import Layout1 from 'src/common/ui-kit/fuse/layouts/layout1/Layout1'
 import ThemingProvider from 'src/common/ui-kit/fuse/components/ThemingProvider'
 import { navbarItemType } from 'src/common/ui-kit/fuse/components/FuseNavigation/FuseNavigation'
@@ -16,9 +16,13 @@ import { IPageSettings } from 'src/common/react-platform-components'
  * @param settings Route.settings.
  * @returns Return true if it's disabled, false if not disabled or does not contain the property.
  */
-const isRouteDisabled = (settings: (IPageSettings & IAdditionnalSettings) | IPageSettings | undefined) => {
-    if (settings && settings?.layout?.navbar?.UINavbarItem?.hasOwnProperty('disabled')) {
-        return (settings as IPageSettings & IAdditionnalSettings)?.layout?.navbar?.UINavbarItem?.disabled
+const isRouteDisabled = (
+    settings: (IPageSettings & IAdditionnalSettings) | IPageSettings | IPageSettingsDisabled | undefined,
+) => {
+    if (settings) {
+        if (settings?.hasOwnProperty('disabled')) return (settings as IPageSettingsDisabled).disabled
+        if (settings?.layout?.navbar?.UINavbarItem?.hasOwnProperty('disabled'))
+            return (settings as IPageSettings & IAdditionnalSettings)?.layout?.navbar?.UINavbarItem?.disabled
     } else {
         return false
     }
