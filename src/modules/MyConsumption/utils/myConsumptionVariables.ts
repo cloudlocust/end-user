@@ -253,3 +253,14 @@ export const ConsumptionChartTargets: metricTargetType[] = [
     metricTargetsEnum.externalTemperature,
     metricTargetsEnum.internalTemperature,
 ]
+
+/**
+ * Widget Targets.
+ */
+export const WidgetTargets: metricTargetType[] = [
+    metricTargetsEnum.consumption,
+    metricTargetsEnum.eurosConsumption,
+    metricTargetsEnum.pMax,
+    metricTargetsEnum.externalTemperature,
+    metricTargetsEnum.internalTemperature,
+]
