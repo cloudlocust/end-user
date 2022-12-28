@@ -8,7 +8,7 @@ import { LinkRedirection } from 'src/modules/utils/LinkRedirection'
 import { onSubmitSetPasswordData } from 'src/modules/User/SetPassword/SetPasswordFormTypes'
 
 const checkoxRequiredErrorText = 'Ce champ est obligatoire'
-const urlPolitiqueConfidentialité = 'https://drive.google.com/uc?export=download&id=18agpXAw89RX5Zk87EQ9ev5LOeMU3GtnP'
+const urlPolitiqueConfidentialité = 'https://drive.google.com/uc?export=download&id=1sMFMizrEPZ4ZHhe6Zf-PTJGRUQBFGUEv'
 
 /**
  * Reset password form.
