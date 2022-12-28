@@ -1,4 +1,5 @@
-import { IMetric } from 'src/modules/Metrics/Metrics.d'
+import { metricTargetType } from 'src/modules/Metrics/Metrics.d'
+import { periodType } from 'sr/modules/MyConsumption/myConsumptionTypes'
 
 /**
  * Widget Title type.
@@ -16,45 +17,31 @@ export type widgetTitleType =
 export type totalConsumptionUnits = 'Wh' | 'kWh' | 'MWh'
 
 /**
- * Widget Props.
- */
-export interface IWidgetProps {
-    /**
-     * Metrics loading state.
-     */
-    isMetricsLoading: boolean
-    /**
-     * Widget unit.
-     */
-    unit: 'Wh' | 'kWh' | 'MWh' | 'VA' | 'kVa' | '°C' | '€'
-    /**
-     * Widget value.
-     */
-    value: number | string
-    /**
-     * Widget title.
-     */
-    title: widgetTitleType
-    /**
-     * Widget infoIcon.
-     */
-    infoIcon?: JSX.Element
-}
-
-/**
  * WidgetList Props.
  */
-export interface IWidgetListProps {
-    /**
-     * Metrics data.
-     */
-    data: IMetric[]
-    /**
-     * Loading state from useMetrics hook.
-     */
-    isMetricsLoading: boolean
+export interface IWidgetProps {
     /**
      * HasMissingHousingContracts come from metrics when euroConsumption, responsible for showing an info icon in EuroWidget.
      */
     hasMissingHousingContracts: boolean | null
+    /**
+     * Metrics range.
+     */
+    range: metricRangeType
+    /**
+     * Metrics interval.
+     */
+    metricsInterval: metricIntervalType
+    /**
+     * Metrics filters.
+     */
+    filters: metricFiltersType
+    /**
+     * Target of the Widget.
+     */
+    target: metricTargetType
+    /**
+     * Period of the Widget.
+     */
+    period: periodType
 }

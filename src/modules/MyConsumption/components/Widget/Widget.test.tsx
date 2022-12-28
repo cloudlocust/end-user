@@ -1,93 +1,81 @@
 import { reduxedRender } from 'src/common/react-platform-components/test'
 import { Widget } from 'src/modules/MyConsumption/components/Widget'
 import { IWidgetProps } from 'src/modules/MyConsumption/components/Widget/Widget'
+import { IMetric, metricFiltersType, metricIntervalType, metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
+import { TEST_SUCCESS_WEEK_METRICS } from 'src/mocks/handlers/metrics'
+import { periodType } from 'src/modules/MyConsumption/myConsumptionTypes'
 
-let mockWidgetProps: IWidgetProps = {
-    title: 'Consommation Totale',
-    isMetricsLoading: false,
-    unit: 'kWh',
-    value: 0,
-}
+const TEST_WEEK_DATA: IMetric[] = TEST_SUCCESS_WEEK_METRICS([metricTargetsEnum.consumption])
+let mockData: IMetric[] = TEST_WEEK_DATA
 
 const CONSOMMATION_TOTALE_TEXT = 'Consommation Totale'
 const CONSOMMATION_TOTALE_UNIT = 'kWh'
 
-const PUISSANCE_MAX_TEXT = 'Puissance Maximale'
-const PUISSANCE_MAX_UNIT = 'kVa'
-
-const INTERNAL_TEMPERATURE_TEXT = 'Température Intérieure'
-const EXTERNAL_TEMPERATURE_TEXT = 'Température Extérieure'
-const TEMPERATURE_UNIT = '°C'
-
 const NO_DATA_MESSAGE = 'Aucune donnée disponible'
 const circularProgressClassname = '	.MuiCircularProgress-root'
 
+const mockGetMetricsWithParams = jest.fn()
+let mockFilters: metricFiltersType = [
+    {
+        key: 'meter_guid',
+        operator: '=',
+        value: '123456789',
+    },
+]
+let mockRange = {
+    from: '2022-06-01T00:00:00.000Z',
+    to: '2022-06-04T23:59:59.999Z',
+}
+let mockIsMetricsLoading = false
+const mockSetFilters = jest.fn()
+let mockPeriod: periodType = 'weekly'
+let mockMetricsInterval: metricIntervalType = '1d'
+
+let mockWidgetProps: IWidgetProps = {
+    period: mockPeriod,
+    filters: mockFilters,
+    hasMissingHousingContracts: false,
+    metricsInterval: mockMetricsInterval,
+    range: mockRange,
+    target: metricTargetsEnum.consumption,
+}
+
+// Mock metricsHook
+jest.mock('src/modules/Metrics/metricsHook.ts', () => ({
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    useMetrics: () => ({
+        data: mockData,
+        filters: mockFilters,
+        range: mockRange,
+        isMetricsLoading: mockIsMetricsLoading,
+        setRange: jest.fn(),
+        setMetricsInterval: jest.fn(),
+        interval: mockMetricsInterval,
+        setFilters: mockSetFilters,
+        getMetricsWithParams: mockGetMetricsWithParams,
+    }),
+}))
+
 describe('Widget component test', () => {
     test('when isMetricLoading is true, a spinner is shown', async () => {
-        mockWidgetProps = {
-            ...mockWidgetProps,
-            isMetricsLoading: true,
-        }
+        mockIsMetricsLoading = true
         const { container } = reduxedRender(<Widget {...mockWidgetProps} />)
 
         expect(container.querySelector(circularProgressClassname)).toBeInTheDocument()
     })
-    test('when the widget is rendered with consommation totale', async () => {
-        mockWidgetProps = {
-            isMetricsLoading: false,
-            title: CONSOMMATION_TOTALE_TEXT,
-            unit: CONSOMMATION_TOTALE_UNIT,
-            value: 1000,
-        }
-
+    test('When widget getMetrics, value should be shown', async () => {
+        mockIsMetricsLoading = false
+        mockData[0].datapoints = [[1000, 1651406400]]
         const { getByText } = reduxedRender(<Widget {...mockWidgetProps} />)
 
         expect(getByText(CONSOMMATION_TOTALE_TEXT)).toBeInTheDocument()
         expect(getByText(CONSOMMATION_TOTALE_UNIT)).toBeInTheDocument()
-        expect(getByText(1000)).toBeInTheDocument()
+        // Data is converted to kWh
+        expect(getByText(1)).toBeInTheDocument()
     })
-    test('when the widget is rendered with puissance max', async () => {
-        mockWidgetProps = {
-            isMetricsLoading: false,
-            title: PUISSANCE_MAX_TEXT,
-            unit: PUISSANCE_MAX_UNIT,
-            value: 1000,
-        }
 
-        const { getByText } = reduxedRender(<Widget {...mockWidgetProps} />)
-
-        expect(getByText(PUISSANCE_MAX_TEXT)).toBeInTheDocument()
-        expect(getByText(PUISSANCE_MAX_UNIT)).toBeInTheDocument()
-        expect(getByText(1000)).toBeInTheDocument()
-    })
-    test('when the widget is rendered with internal temperature', async () => {
-        mockWidgetProps = {
-            isMetricsLoading: false,
-            title: INTERNAL_TEMPERATURE_TEXT,
-            unit: TEMPERATURE_UNIT,
-            value: 50,
-        }
-        const { getByText } = reduxedRender(<Widget {...mockWidgetProps} />)
-
-        expect(getByText(INTERNAL_TEMPERATURE_TEXT)).toBeInTheDocument()
-        expect(getByText(TEMPERATURE_UNIT)).toBeInTheDocument()
-        expect(getByText(50)).toBeInTheDocument()
-    })
-    test('when the widget is rendered with external temperature', async () => {
-        mockWidgetProps = {
-            isMetricsLoading: false,
-            title: EXTERNAL_TEMPERATURE_TEXT,
-            unit: TEMPERATURE_UNIT,
-            value: 50,
-        }
-        const { getByText } = reduxedRender(<Widget {...mockWidgetProps} />)
-
-        expect(getByText(EXTERNAL_TEMPERATURE_TEXT)).toBeInTheDocument()
-        expect(getByText(TEMPERATURE_UNIT)).toBeInTheDocument()
-        expect(getByText(50)).toBeInTheDocument()
-    })
     test('when there is no data, an error message is shown', async () => {
-        mockWidgetProps.value = NaN
+        mockData = []
         const { getByText } = reduxedRender(<Widget {...mockWidgetProps} />)
 
         expect(getByText(NO_DATA_MESSAGE)).toBeTruthy()
