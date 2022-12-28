@@ -127,4 +127,50 @@ describe('useMetrics hook test', () => {
         )
         expect(result.current.data.length).toBe(0)
     }, 30000)
+    describe('Test getMetricsWithParams', () => {
+        test('success', async () => {
+            const {
+                renderedHook: { result, waitForValueToChange },
+            } = reduxedRenderHook(() => useMetrics(mockHookArguments, false))
+            expect(result.current.isMetricsLoading).toBeFalsy()
+
+            // GetMetricsWithParams
+            act(() => {
+                result.current.getMetricsWithParams({ ...mockHookArguments, targets: [FAKE_TARGETS[0].target] })
+            })
+            await waitForValueToChange(
+                () => {
+                    return result.current.isMetricsLoading
+                },
+                { timeout: 10000 },
+            )
+            expect(result.current.isMetricsLoading).toBeFalsy()
+            expect(result.current.data.length).toBeGreaterThan(0)
+        }, 30000)
+
+        test('fail', async () => {
+            mockHookArguments.range.to = '2022-06-06T23:59:59.999Z'
+            const {
+                renderedHook: { result, waitForValueToChange },
+            } = reduxedRenderHook(() => useMetrics(mockHookArguments, false))
+            expect(result.current.isMetricsLoading).toBeFalsy()
+            // GetMetricsWithParams
+            act(() => {
+                try {
+                    result.current.getMetricsWithParams({ ...mockHookArguments, targets: [FAKE_TARGETS[0].target] })
+                } catch (err) {}
+            })
+            await waitForValueToChange(
+                () => {
+                    return result.current.isMetricsLoading
+                },
+                { timeout: 10000 },
+            )
+            expect(result.current.isMetricsLoading).toBeFalsy()
+            expect(mockEnqueueSnackbar).toHaveBeenCalledWith('Erreur de chargement de vos données de consommation', {
+                variant: 'error',
+                autoHideDuration: 5000,
+            })
+        }, 30000)
+    })
 })
