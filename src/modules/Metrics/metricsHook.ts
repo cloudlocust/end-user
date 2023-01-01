@@ -81,7 +81,7 @@ export function useMetrics(initialState: getMetricType, immediate: boolean = fal
     // Otherwise execute can be called later, such as when filters change
     useEffect(() => {
         if (isInitialMount.current) {
-            immediate && getMetrics()
+            if (immediate) getMetrics()
             isInitialMount.current = false
         }
     }, [immediate, getMetrics])

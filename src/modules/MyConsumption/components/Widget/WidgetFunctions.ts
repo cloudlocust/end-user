@@ -49,7 +49,9 @@ export const getDataFromYAxis = (data: IMetric[], target: metricTargetType) => {
  */
 export const computeTotalConsumption = (data: IMetric[]) => {
     const values = getDataFromYAxis(data, metricTargetsEnum.consumption)
-    const totalConsumptionValueInWatts = sum(values)
+    // Lodash sum when array is [null] returns null, weird library behaviour however when its sum([null, null, ...etc]) returns 0, so for the case where values are [null], 0 is assigned.
+    // https://github.com/lodash/lodash/issues/4110#issuecomment-463725975
+    const totalConsumptionValueInWatts = sum(values) || 0
     return consumptionWattUnitConversion(totalConsumptionValueInWatts)
 }
 
@@ -119,7 +121,10 @@ export const computeInternallTemperature = (data: IMetric[]): { value: number; u
 // eslint-disable-next-line jsdoc/require-jsdoc
 export const computeTotalEuros = (data: IMetric[]): { value: number | string; unit: '€' } => {
     const values = getDataFromYAxis(data, metricTargetsEnum.eurosConsumption)
-    return { value: sum(values).toFixed(2), unit: '€' }
+    // Lodash sum when array is [null] returns null, weird library behaviour however when its sum([null, null, ...etc]) returns 0, so for the case where values are [null], 0 is assigned.
+    // https://github.com/lodash/lodash/issues/4110#issuecomment-463725975
+    const totalEuros = sum(values) ? sum(values).toFixed(2) : 0
+    return { value: totalEuros, unit: '€' }
 }
 
 /**

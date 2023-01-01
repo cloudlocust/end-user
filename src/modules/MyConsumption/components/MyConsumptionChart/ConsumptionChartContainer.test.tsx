@@ -266,18 +266,4 @@ describe('MyConsumptionContainer test', () => {
             `${URL_MY_HOUSE}/${LIST_OF_HOUSES[0].id}/contracts`,
         )
     })
-    // test('housing list is filled and isMetricsLoading true, Spinner is shown', async () => {
-    //     // initiate the store by adding housing list - by default current state will be the first element
-    //     await store.dispatch.housingModel.setHousingModelState(LIST_OF_HOUSES)
-    //     mockIsMetricsLoading = true
-    //     mockData = []
-    //     const { container } = reduxedRender(
-    //         <Router>
-    //             <MyConsumptionContainer />
-    //         </Router>,
-    //         { store },
-    //     )
-    //     expect(container.querySelector(circularProgressClassname)).toBeInTheDocument()
-    //     expect(container.querySelector(`.${apexchartsClassName}`)).not.toBeInTheDocument()
-    // })
 })

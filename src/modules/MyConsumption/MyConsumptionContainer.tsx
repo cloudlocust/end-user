@@ -18,6 +18,8 @@ import { MissingHousingMeterErrorMessage } from './utils/ErrorMessages'
 import { ProductionChartContainer } from 'src/modules/MyConsumption/components/MyConsumptionChart/ProductionChartContainer'
 import { useEcowatt } from 'src/modules/Ecowatt/EcowattHook'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
+import CircularProgress from '@mui/material/CircularProgress'
+import Box from '@mui/material/Box'
 import { Widget } from 'src/modules/MyConsumption/components/Widget'
 
 /**
@@ -33,36 +35,55 @@ export const MyConsumptionContainer = () => {
     const { currentHousing } = useSelector(({ housingModel }: RootState) => housingModel)
     const [range, setRange] = useState<metricRangeType>(getRange('day'))
     const [filters, setFilters] = useState<metricFiltersType>([])
+
+    // metricsInterval is initialized this way, so that its value is different from 2m or 30m, because it'll be set to 2m or 30m once consent request has finished.
+    // This won't create a problem even if metricIntervalType doesn't include undefined, because this will affect only on mount of MyConsumptionContainer and all children component that useMetrics, won't execute getMetrics on mount.
     const [metricsInterval, setMetricsInterval] = useState<metricIntervalType>('2m')
     const { ecowattData, isLoadingInProgress: isEcowattDataInProgress } = useEcowatt()
 
     const nrlinkOff = nrlinkConsent?.nrlinkConsentState === 'NONEXISTENT'
     const enedisOff = enedisSgeConsent?.enedisSgeConsentState === 'NONEXISTENT'
 
+    // UseEffect to check for consent whenever a meter is selected.
     useEffect(() => {
         if (!currentHousing?.meter?.guid) return
-        setFilters(formatMetricFilter(currentHousing.meter?.guid))
-    }, [currentHousing?.meter?.guid, setFilters])
+        setFilters(formatMetricFilter(currentHousing?.meter.guid))
+        getConsents(currentHousing?.meter.guid, currentHousing?.id)
+    }, [currentHousing?.meter?.guid, setFilters, getConsents, currentHousing?.id])
+
+    /**
+     * Callback when MyConsumptionPeriod components change metrics Interval.
+     *
+     * @param interval Metric Interval selected.
+     */
+    const setMyConsumptionPeriodMetricsInterval = (interval: metricIntervalType) => {
+        if (interval === '2m')
+            setMetricsInterval(enphaseConsent && enphaseConsent.enphaseConsentState === 'ACTIVE' ? '30m' : '2m')
+        else setMetricsInterval(interval)
+    }
+
+    useEffect(() => {
+        setMetricsInterval((prevState) => {
+            if (prevState === '2m' || prevState === '30m')
+                return enphaseConsent && enphaseConsent.enphaseConsentState === 'ACTIVE' ? '30m' : '2m'
+            else return prevState
+        })
+    }, [enphaseConsent])
 
     const { hasMissingHousingContracts } = useHasMissingHousingContracts(range, currentHousing?.id)
 
-    useEffect(() => {
-        if (period === 'daily' && enphaseConsent?.enphaseConsentState === 'ACTIVE') {
-            setMetricsInterval('30m')
-        } else if (period === 'daily' && enphaseConsent?.enphaseConsentState !== 'ACTIVE') {
-            setMetricsInterval('2m')
-        }
-    }, [enphaseConsent?.enphaseConsentState, period])
-
-    // UseEffect to check for consent whenever a meter is selected.
-    useEffect(() => {
-        if (filters.length > 0) {
-            getConsents(filters[0].value, currentHousing?.id)
-        }
-    }, [currentHousing?.id, filters, getConsents])
-
+    // if (consentsLoading) return <div>Loading Consent...</div>
+    if (consentsLoading)
+        return (
+            <Box
+                sx={{ height: { xs: '424px', md: '584px' } }}
+                className="p-24 CircularProgress flex flex-col justify-center items-center "
+            >
+                <CircularProgress style={{ color: theme.palette.primary.main }} />
+            </Box>
+        )
     // When getConsent fail.
-    if (!consentsLoading && !nrlinkConsent && !enedisSgeConsent) return <></>
+    if (!nrlinkConsent && !enedisSgeConsent) return <></>
     // By checking if the metersList is true we make sure that if someone has skipped the step of connecting their PDL, they will see this error message.
     // Else if they have a PDL, we check its consent.
     if (!currentHousing?.meter?.guid) return <MissingHousingMeterErrorMessage />
@@ -82,7 +103,7 @@ export const MyConsumptionContainer = () => {
                             <MyConsumptionPeriod
                                 setPeriod={setPeriod}
                                 setRange={setRange}
-                                setMetricsInterval={setMetricsInterval}
+                                setMetricsInterval={setMyConsumptionPeriodMetricsInterval}
                                 range={range}
                             />
                             <MyConsumptionDatePicker period={period} setRange={setRange} range={range} />
