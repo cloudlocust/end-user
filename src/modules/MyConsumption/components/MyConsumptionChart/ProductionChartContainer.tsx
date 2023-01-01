@@ -33,7 +33,7 @@ export const ProductionChartContainer = ({
     enphaseConsent,
 }: ProductionChartContainerProps) => {
     const theme = useTheme()
-    const { data, setFilters, setMetricsInterval, setRange, isMetricsLoading } = useMetrics(
+    const { data, setMetricsInterval, setRange, isMetricsLoading } = useMetrics(
         {
             interval: metricsInterval,
             range: range,
@@ -53,7 +53,7 @@ export const ProductionChartContainer = ({
             ],
             filters,
         },
-        false,
+        true,
     )
 
     // This state represents whether or not the chart is stacked: true.
@@ -66,11 +66,6 @@ export const ProductionChartContainer = ({
     useEffect(() => {
         setRange(range)
     }, [range, setRange])
-
-    // get metrics when filters change.
-    useEffect(() => {
-        setFilters(filters)
-    }, [filters, setFilters])
 
     // get metrics when interval change.
     useEffect(() => {

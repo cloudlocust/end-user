@@ -45,25 +45,21 @@ export const ConsumptionChartContainer = ({
 }: ConsumptionChartContainerProps) => {
     const theme = useTheme()
     const { formatMessage } = useIntl()
-    const { data, getMetricsWithParams } = useMetrics(
-        {
-            interval: metricsInterval,
-            range: range,
-            targets: [
-                {
-                    target: metricTargetsEnum.autoconsumption,
-                    type: 'timeserie',
-                },
-                {
-                    target: metricTargetsEnum.consumption,
-                    type: 'timeserie',
-                },
-            ],
-            filters,
-        },
-        false,
-    )
-
+    const { data, getMetricsWithParams } = useMetrics({
+        interval: metricsInterval,
+        range: range,
+        targets: [
+            {
+                target: metricTargetsEnum.autoconsumption,
+                type: 'timeserie',
+            },
+            {
+                target: metricTargetsEnum.consumption,
+                type: 'timeserie',
+            },
+        ],
+        filters,
+    })
     const { currentHousing } = useSelector(({ housingModel }: RootState) => housingModel)
     // This state represents whether or not the chart is stacked: true.
     const [isStackedEnabled, setIsStackedEnabled] = useState<boolean>(true)
@@ -73,17 +69,14 @@ export const ConsumptionChartContainer = ({
         metricTargetsEnum.consumption,
     ])
     // This state represents whether or not the chart is showing .
-    const [isConsumptionChartLoading, setIsConsumptionChartLoading] = useState<boolean>(false)
+    const [isConsumptionChartLoading, setIsConsumptionChartLoading] = useState<boolean>(true)
     // This state represents whether or not the chart is stacked: true.
     const isEurosConsumptionChart = useMemo(
         () => visibleTargetCharts.includes(metricTargetsEnum.eurosConsumption),
         [visibleTargetCharts],
     )
-    // This state represents whether or not the chart is stacked: true.
-    const consumptionChartData: IMetric[] = useMemo(
-        () => data.filter((datapoint) => visibleTargetCharts.includes(datapoint.target)),
-        [data, visibleTargetCharts],
-    )
+    const [consumptionChartData, setConsumptionChartData] = useState<IMetric[]>(data)
+
     // Track the change of visibleTargetCharts, so that we don't call getMetrics when visibleTargetCharts change (and thus no request when showing / hiding target in MyConsumptionChart).
     const isVisibleTargetChartsChanged = useRef(false)
 
@@ -99,7 +92,12 @@ export const ConsumptionChartContainer = ({
             setIsConsumptionChartLoading(true)
             await getMetricsWithParams({ interval: metricsInterval, range, targets: visibleTargetCharts, filters })
             setIsConsumptionChartLoading(false)
-            getMetricsWithParams({ interval: metricsInterval, range, targets: ConsumptionChartTargets, filters })
+            getMetricsWithParams({
+                interval: metricsInterval,
+                range,
+                targets: ConsumptionChartTargets,
+                filters,
+            })
         }
     }, [filters, range, metricsInterval, getMetricsWithParams, visibleTargetCharts])
 
@@ -107,6 +105,12 @@ export const ConsumptionChartContainer = ({
     useEffect(() => {
         getMetrics()
     }, [getMetrics])
+
+    useEffect(() => {
+        // To avoid multiple rerendering and thus calculation in MyConsumptionChart, CosnumptionChartData change only once, when visibleTargetChart change or when the first getMetrics targets is loaded, thus avoiding to rerender when the second getMetrics is loaded with all targets which should only happen in the background.
+        if (isVisibleTargetChartsChanged.current || data.length < ConsumptionChartTargets.length)
+            setConsumptionChartData(data.filter((datapoint) => visibleTargetCharts.includes(datapoint.target)))
+    }, [data, visibleTargetCharts])
 
     /**
      * Show given metric target chart.
