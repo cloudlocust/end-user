@@ -13,6 +13,7 @@ import { URL_MY_HOUSE } from 'src/modules/MyHouse'
 
 import { useHasMissingHousingContracts } from 'src/hooks/HasMissingHousingContracts'
 import { rangeOfCurrentMonth } from './AlertsDrawerVariables'
+import { EcowattAlerts } from 'src/modules/Layout/Toolbar/components/Alerts/EcowattAlerts'
 // import { EcowattAlerts } from 'src/modules/Layout/Toolbar/components/Alerts/EcowattAlerts'
 
 const StyledSwipeableDrawer = styled(SwipeableDrawer)(({ theme }) => ({
@@ -122,7 +123,7 @@ export const AlertsDrawer = ({ closeAlertsDrawer }: { closeAlertsDrawer: () => v
                     isConsumptionAlertsLoading={isAlertsLoadingInProgress}
                     isSavingAlertLoading={isSavingInProgress}
                 />
-                {/* <EcowattAlerts /> */}
+                <EcowattAlerts />
             </div>
         </StyledSwipeableDrawer>
     )

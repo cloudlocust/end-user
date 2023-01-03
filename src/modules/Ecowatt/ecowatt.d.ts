@@ -27,9 +27,9 @@ export enum EcowattConsumptionValue {
 }
 
 /**
- * Model for Ecowatt data.
+ * Model for Ecowatt signal data.
  */
-export interface IEcowatt {
+export interface IEcowattSignals {
     /**
      * Reading at date type.
      */
@@ -59,4 +59,26 @@ export interface IHourlyValues {
 }
 
 // eslint-disable-next-line jsdoc/require-jsdoc
-export type IEcowattData = IEcowatt[]
+export type IEcowattSignalsData = IEcowattSignals[]
+
+/**
+ * Model for ecowatt alerts.
+ */
+export interface IEcowattAlerts {
+    /**
+     * State of push notification for 3 days.
+     */
+    isPushSignalThreeDays?: boolean
+    /**
+     * State of email notification for 3 days.
+     */
+    isEmailSignalThreeDays?: boolean
+    /**
+     * State of push notification for one day.
+     */
+    isPushSignalOneDay?: boolean
+    /**
+     * State of email notification for one day.
+     */
+    isEmailSignalOneDay?: boolean
+}

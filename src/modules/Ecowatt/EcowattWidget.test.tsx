@@ -2,8 +2,8 @@ import { waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { applyCamelCase } from 'src/common/react-platform-components'
 import { reduxedRender } from 'src/common/react-platform-components/test'
-import { TEST_ECOWATT_DATA } from 'src/mocks/handlers/ecowatt'
-import { IEcowattData } from 'src/modules/Ecowatt/ecowatt'
+import { TEST_ECOWATT_SIGNAL_DATA } from 'src/mocks/handlers/ecowatt'
+import { IEcowattSignals } from 'src/modules/Ecowatt/ecowatt'
 import { EcowattWidget, ECOWATT_TITLE } from 'src/modules/Ecowatt/EcowattWidget'
 import { createTheme, ThemeProvider } from '@mui/material/styles'
 
@@ -13,12 +13,12 @@ const OFFLINEBOLT_ICON = 'OfflineBoltIcon'
 const LOADING_CIRCLE_TEST_ID = 'circular-progress'
 const BUTTON_TEXT = 'Configurer des alertes'
 
-let mockEcowattData = applyCamelCase(TEST_ECOWATT_DATA)
+let mockEcowattSignalsData = applyCamelCase(TEST_ECOWATT_SIGNAL_DATA)
 
 const mockDays = ['Mercredi', 'Jeudi', 'Vendredi', 'Samedi']
 
 let mockEcowattWidgetProps = {
-    ecowattData: mockEcowattData as IEcowattData,
+    ecowattSignalsData: mockEcowattSignalsData as IEcowattSignals[],
     isEcowattDataInProgress: false,
 }
 
@@ -60,7 +60,7 @@ describe('Ecowatt Widget tests', () => {
             expect(getByTestId(LOADING_CIRCLE_TEST_ID)).toBeTruthy()
         })
 
-        mockEcowattWidgetProps.ecowattData = []
+        mockEcowattWidgetProps.ecowattSignalsData = []
         mockEcowattWidgetProps.isEcowattDataInProgress = false
         rerender(<EcowattWidget {...mockEcowattWidgetProps} />)
         expect(getByText('Aucune donnée disponible')).toBeTruthy()
@@ -74,7 +74,7 @@ describe('Ecowatt Widget tests', () => {
             },
         })
 
-        mockEcowattWidgetProps.ecowattData = mockEcowattData
+        mockEcowattWidgetProps.ecowattSignalsData = mockEcowattSignalsData
         const { getByTestId, getByText } = reduxedRender(
             <ThemeProvider theme={theme}>
                 <EcowattWidget {...mockEcowattWidgetProps} />

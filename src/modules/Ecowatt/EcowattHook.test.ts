@@ -24,7 +24,7 @@ describe('useEcowatt hook', () => {
     test('when getEcowattSignals request passes succesfully', async () => {
         const {
             renderedHook: { result, waitForValueToChange },
-        } = reduxedRenderHook(() => useEcowatt())
+        } = reduxedRenderHook(() => useEcowatt(true))
 
         expect(result.current.isLoadingInProgress).toBeTruthy()
         await waitForValueToChange(
@@ -33,7 +33,7 @@ describe('useEcowatt hook', () => {
             },
             { timeout: 6000 },
         )
-        expect(result.current.ecowattData.length).toBeGreaterThan(0)
+        expect(result.current.ecowattSignalsData.length).toBeGreaterThan(0)
     })
     test('when getEcowattSignals request fails', async () => {
         const { store } = require('src/redux')
@@ -41,7 +41,7 @@ describe('useEcowatt hook', () => {
 
         const {
             renderedHook: { result, waitForValueToChange },
-        } = reduxedRenderHook(() => useEcowatt())
+        } = reduxedRenderHook(() => useEcowatt(true))
 
         expect(result.current.isLoadingInProgress).toBeTruthy()
         await waitForValueToChange(

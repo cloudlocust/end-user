@@ -34,7 +34,7 @@ export const MyConsumptionContainer = () => {
     const [range, setRange] = useState<metricRangeType>(getRange('day'))
     const [filters, setFilters] = useState<metricFiltersType>([])
     const [metricsInterval, setMetricsInterval] = useState<metricIntervalType>('2m')
-    const { ecowattData, isLoadingInProgress: isEcowattDataInProgress } = useEcowatt()
+    const { ecowattSignalsData, isLoadingInProgress: isEcowattDataInProgress } = useEcowatt(true)
 
     const nrlinkOff = nrlinkConsent?.nrlinkConsentState === 'NONEXISTENT'
     const enedisOff = enedisSgeConsent?.enedisSgeConsentState === 'NONEXISTENT'
@@ -111,7 +111,10 @@ export const MyConsumptionContainer = () => {
             </div>
             {/* Ecowatt Widget */}
             <div className="p-12 sm:p-24" id="ecowatt-widget">
-                <EcowattWidget ecowattData={ecowattData} isEcowattDataInProgress={isEcowattDataInProgress} />
+                <EcowattWidget
+                    ecowattSignalsData={ecowattSignalsData}
+                    isEcowattDataInProgress={isEcowattDataInProgress}
+                />
             </div>
 
             {/* Widget List */}
