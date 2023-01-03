@@ -1,13 +1,12 @@
-import { Card, useTheme, Switch, CircularProgress } from '@mui/material'
+import { useTheme, CircularProgress } from '@mui/material'
 import { useEffect, useState } from 'react'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import { EcowattTooltip } from 'src/modules/Ecowatt/components/EcowattTooltip/'
-import { Controller, useForm } from 'react-hook-form'
 import { useEcowatt } from 'src/modules/Ecowatt/EcowattHook'
 import { useSelector } from 'react-redux'
 import { RootState } from 'src/redux'
+import { EcowattAlertsForm } from 'src/modules/Layout/Toolbar/components/Alerts/EcowattAlerts/EcowattAlertsForm'
 
-// TODO: To be worked on in another PR when contract front/back is ready.
 /**
  * Ecowatt Alerts component.
  *
@@ -16,9 +15,8 @@ import { RootState } from 'src/redux'
 export const EcowattAlerts = () => {
     const theme = useTheme()
     const { currentHousing } = useSelector(({ housingModel }: RootState) => housingModel)
-    const { isLoadingInProgress, getEcowattAlerts, ecowattAlerts } = useEcowatt()
+    const { isLoadingInProgress, getEcowattAlerts, ecowattAlerts, updateEcowattAlert } = useEcowatt()
     const [openTooltip, setOpenTooltip] = useState<boolean>(false)
-    const { control, register } = useForm({ defaultValues: ecowattAlerts! })
 
     useEffect(() => {
         if (currentHousing?.id) {
@@ -53,49 +51,14 @@ export const EcowattAlerts = () => {
                 La météo de l'électricité
             </TypographyFormatMessage>
 
-            <Card className="rounded-20 shadow m-6 p-12" variant="outlined">
-                <div className="flex flex-col">
-                    <div className="flex flex-row justify-between items-center">
-                        <TypographyFormatMessage fontWeight={500} sx={{ flexBasis: '65%', pr: 2 }}>
-                            Signal orange ou rouge prévu dans les 2 prochains jours
-                        </TypographyFormatMessage>
-                        <div className="flex flex-col justify-evenly items-center" style={{ flexBasis: '35%' }}>
-                            <div className="flex flex-row justify-evenly items-center w-full">
-                                <span>Push</span>
-                                <Controller
-                                    control={control}
-                                    name="isPushSignalThreeDays"
-                                    render={() => {
-                                        return <Switch {...register('isPushSignalThreeDays')} />
-                                    }}
-                                />
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </Card>
-
-            <Card className="rounded-20 shadow m-6 p-12" variant="outlined">
-                <div className="flex flex-col">
-                    <div className="flex flex-row justify-between items-center">
-                        <TypographyFormatMessage fontWeight={500} sx={{ flexBasis: '65%', pr: 2 }}>
-                            A l'approche d'un créneau orange ou rouge dans la journée
-                        </TypographyFormatMessage>
-                        <div className="flex flex-col justify-evenly items-center" style={{ flexBasis: '35%' }}>
-                            <div className="flex flex-row justify-evenly items-center w-full">
-                                <span>Push</span>
-                                <Controller
-                                    control={control}
-                                    name="isPushSignalOneDay"
-                                    render={() => {
-                                        return <Switch {...register('isPushSignalOneDay')} />
-                                    }}
-                                />
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </Card>
+            {currentHousing?.id && ecowattAlerts && (
+                <EcowattAlertsForm
+                    isLoadingInProgress={isLoadingInProgress}
+                    houseId={currentHousing?.id}
+                    ecowattAlerts={ecowattAlerts}
+                    updateEcowattAlert={updateEcowattAlert}
+                />
+            )}
         </div>
     )
 }

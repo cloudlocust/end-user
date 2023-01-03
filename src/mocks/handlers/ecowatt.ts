@@ -613,7 +613,7 @@ export const TEST_ECOWATT_SIGNAL_DATA: SnakeCasedPropertiesDeep<IEcowattSignalsD
 export const TEST_ECOWATT_ALERTS_DATA: SnakeCasedPropertiesDeep<IEcowattAlerts> = {
     is_email_signal_one_day: true,
     is_email_signal_three_days: true,
-    is_push_signal_one_day: false,
+    is_push_signal_one_day: true,
     is_push_signal_three_days: true,
 }
 
@@ -630,6 +630,15 @@ export const ecowattEndpoints = [
         }
     }),
     rest.get<IEcowattAlerts>(MOCK_ECOWATT_ALERTS_ENDPOINT, (req, res, ctx) => {
+        const authorization = req.headers.get('authorization')
+        if (authorization === TEST_ECOWATT_EROOR) {
+            return res(ctx.status(400), ctx.delay(1000))
+        } else {
+            return res(ctx.status(200), ctx.delay(1000), ctx.json(TEST_ECOWATT_ALERTS_DATA))
+        }
+    }),
+    // eslint-disable-next-line sonarjs/no-identical-functions
+    rest.post<IEcowattAlerts>(MOCK_ECOWATT_ALERTS_ENDPOINT, (req, res, ctx) => {
         const authorization = req.headers.get('authorization')
         if (authorization === TEST_ECOWATT_EROOR) {
             return res(ctx.status(400), ctx.delay(1000))
