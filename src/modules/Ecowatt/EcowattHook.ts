@@ -81,28 +81,28 @@ export function useEcowatt(immediate: boolean = false) {
         [enqueueSnackbar, formatMessage],
     )
 
-    const updateEcowattAlert = useCallback(
-        async (houseId: number, alerts: IEcowattAlerts) => {
-            try {
-                const { data: responseData } = await axios.post<IEcowattAlerts>(
-                    ECOWATT_ALERTS_ENDPOINT(houseId),
-                    alerts,
-                )
-                if (responseData) {
-                    setEcowattAlerts(responseData)
-                }
-            } catch (error) {
-                enqueueSnackbar(
-                    formatMessage({
-                        id: "Erreur lors de la modification d'une alerte Ecowatts",
-                        defaultMessage: "Erreur lors de la modification d'une alerte Ecowatts",
-                    }),
-                    { variant: 'error', autoHideDuration: 5000 },
-                )
-            }
-        },
-        [enqueueSnackbar, formatMessage],
-    )
+    // const updateEcowattAlert = useCallback(
+    //     async (houseId: number, alerts: IEcowattAlerts) => {
+    //         try {
+    //             const { data: responseData } = await axios.post<IEcowattAlerts>(
+    //                 ECOWATT_ALERTS_ENDPOINT(houseId),
+    //                 alerts,
+    //             )
+    //             if (responseData) {
+    //                 setEcowattAlerts(responseData)
+    //             }
+    //         } catch (error) {
+    //             enqueueSnackbar(
+    //                 formatMessage({
+    //                     id: "Erreur lors de la modification d'une alerte Ecowatts",
+    //                     defaultMessage: "Erreur lors de la modification d'une alerte Ecowatts",
+    //                 }),
+    //                 { variant: 'error', autoHideDuration: 5000 },
+    //             )
+    //         }
+    //     },
+    //     [enqueueSnackbar, formatMessage],
+    // )
 
     useEffect(() => {
         if (isInitialMount.current) {
@@ -118,6 +118,5 @@ export function useEcowatt(immediate: boolean = false) {
         setEcowattSignalsData,
         ecowattAlerts,
         getEcowattAlerts,
-        updateEcowattAlert,
     }
 }
