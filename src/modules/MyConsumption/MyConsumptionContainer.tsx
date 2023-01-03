@@ -122,13 +122,13 @@ export const MyConsumptionContainer = () => {
                 )}
 
                 {/* Production Chart */}
-                <ProductionChartContainer
+                {/* <ProductionChartContainer
                     period={period}
                     range={range}
                     filters={filters}
                     enphaseConsent={enphaseConsent}
                     metricsInterval={metricsInterval}
-                />
+                /> */}
             </div>
             {/* Ecowatt Widget */}
             <div className="p-12 sm:p-24" id="ecowatt-widget">
@@ -136,7 +136,7 @@ export const MyConsumptionContainer = () => {
             </div>
 
             {/* Widget List */}
-            {(!nrlinkOff || !enedisOff) && (
+            {/* {(!nrlinkOff || !enedisOff) && (
                 <div className="p-12 sm:p-24 ">
                     <div className="flex justify-center items-center md:justify-start">
                         <TypographyFormatMessage variant="h5" className="sm:mr-8 text-black font-medium">
@@ -161,7 +161,7 @@ export const MyConsumptionContainer = () => {
                         </Grid>
                     </div>
                 </div>
-            )}
+            )} */}
         </>
     )
 }

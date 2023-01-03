@@ -14,12 +14,14 @@ import { EurosConsumptionButtonTogglerProps } from 'src/modules/MyConsumption/my
  * @param props.removeTarget Remove Target prop.
  * @param props.addTarget Add Target prop.
  * @param props.showEurosConsumption Indicate eurosConsumption or consumption IconButton to be shown.
+ * @param props.disabled Indicated if EurosConsumptionButton is disabled.
  * @returns EurosConsumptionButtonToggler Component.
  */
 const EurosConsumptionButtonToggler = ({
     removeTarget,
     addTarget,
     showEurosConsumption,
+    disabled,
 }: EurosConsumptionButtonTogglerProps) => {
     const theme = useTheme()
     return (
@@ -34,7 +36,12 @@ const EurosConsumptionButtonToggler = ({
                             backgroundColor: getChartColor(metricTargetsEnum.eurosConsumption, theme),
                             opacity: 0.7,
                         },
+                        '&:disabled': {
+                            backgroundColor: 'grey.600',
+                            color: 'text.disabled',
+                        },
                     }}
+                    disabled={disabled}
                     // TODO Remove target should take an array of targets
                     onClick={() => {
                         removeTarget(metricTargetsEnum.consumption)
@@ -55,6 +62,7 @@ const EurosConsumptionButtonToggler = ({
                             opacity: 0.7,
                         },
                     }}
+                    disabled={disabled}
                     onClick={() => {
                         // TODO Remove target should take an array of targets
                         removeTarget(metricTargetsEnum.eurosConsumption)

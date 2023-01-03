@@ -76,11 +76,29 @@ export const ConsumptionChartContainer = ({
         [visibleTargetCharts],
     )
     const [consumptionChartData, setConsumptionChartData] = useState<IMetric[]>(data)
+    const isEurosDisabled = !isEurosConsumptionChart && period === 'daily'
+    const hidePmax = period === 'daily' || enedisSgeConsent?.enedisSgeConsentState === 'NONEXISTENT'
 
     // Track the change of visibleTargetCharts, so that we don't call getMetrics when visibleTargetCharts change (and thus no request when showing / hiding target in MyConsumptionChart).
     const isVisibleTargetChartsChanged = useRef(false)
 
     useEffect(() => {
+        // Resetting isVisibleTargetChartsChanged when range, filters or metricsInterval change so that we can call getMetrics only when these change.
+        if (period === 'daily') {
+            console.log('PERIOD CHANGED')
+            setVisibleTargetsCharts((prevState) => {
+                if (
+                    prevState.includes(metricTargetsEnum.eurosConsumption) ||
+                    prevState.includes(metricTargetsEnum.pMax)
+                )
+                    return [metricTargetsEnum.autoconsumption, metricTargetsEnum.consumption]
+                return prevState
+            })
+        }
+    }, [period])
+
+    useEffect(() => {
+        console.log('RANGE CHANGED')
         // Resetting isVisibleTargetChartsChanged when range, filters or metricsInterval change so that we can call getMetrics only when these change.
         isVisibleTargetChartsChanged.current = false
     }, [filters, range, metricsInterval])
@@ -89,6 +107,9 @@ export const ConsumptionChartContainer = ({
     // Then in the background fetching the remaining targets, and will not show a spinner and will be done without any user experience knowing it.
     const getMetrics = useCallback(async () => {
         if (!isVisibleTargetChartsChanged.current) {
+            console.log('GET METRICS')
+            console.log('🚀 ~ file: ConsumptionChartContainer.tsx:112 ~ visibleTargetCharts', visibleTargetCharts)
+
             setIsConsumptionChartLoading(true)
             await getMetricsWithParams({ interval: metricsInterval, range, targets: visibleTargetCharts, filters })
             setIsConsumptionChartLoading(false)
@@ -138,6 +159,23 @@ export const ConsumptionChartContainer = ({
         setVisibleTargetsCharts((prevState) => prevState.filter((visibleTarget) => visibleTarget !== target))
     }
 
+    useEffect(() => {
+        if (period === 'daily') {
+            if (hidePmax && visibleTargetCharts.includes(metricTargetsEnum.pMax)) {
+                isVisibleTargetChartsChanged.current = true
+                setVisibleTargetsCharts((prevState) =>
+                    prevState.filter((visibleTarget) => visibleTarget !== metricTargetsEnum.pMax),
+                )
+            }
+            if (isEurosDisabled && visibleTargetCharts.includes(metricTargetsEnum.eurosConsumption)) {
+                isVisibleTargetChartsChanged.current = true
+                setVisibleTargetsCharts((prevState) =>
+                    prevState.filter((visibleTarget) => visibleTarget !== metricTargetsEnum.eurosConsumption),
+                )
+            }
+        }
+    }, [period, hidePmax, isEurosConsumptionChart, isEurosDisabled, visibleTargetCharts])
+
     return (
         <div className="mb-12">
             <div className="relative flex flex-col md:flex-row justify-between items-center">
@@ -163,6 +201,7 @@ export const ConsumptionChartContainer = ({
                     removeTarget={hideMetricTargetChart}
                     addTarget={showMetricTargetChart}
                     showEurosConsumption={!isEurosConsumptionChart}
+                    disabled={isEurosDisabled}
                 />
                 <Tooltip
                     arrow
@@ -177,7 +216,7 @@ export const ConsumptionChartContainer = ({
                         <TargetButtonGroup
                             removeTarget={hideMetricTargetChart}
                             addTarget={showMetricTargetChart}
-                            hidePmax={period === 'daily' || enedisSgeConsent?.enedisSgeConsentState === 'NONEXISTENT'}
+                            hidePmax={hidePmax}
                         />
                     </div>
                 </Tooltip>
