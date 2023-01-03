@@ -1,9 +1,13 @@
+import { act } from '@testing-library/react-hooks'
 import { reduxedRenderHook } from 'src/common/react-platform-components/test'
-import { TEST_ECOWATT_EROOR } from 'src/mocks/handlers/ecowatt'
+import { TEST_HOUSE_ID } from 'src/mocks/handlers/contracts'
+import { TEST_ECOWATT_ALERTS_DATA, TEST_ECOWATT_EROOR } from 'src/mocks/handlers/ecowatt'
 import { useEcowatt } from 'src/modules/Ecowatt/EcowattHook'
 
 const mockEnqueueSnackbar = jest.fn()
 const SNACKBAR_ECOWATT_ERROR = 'Erreur lors de la récupération des données de Ecowatt'
+const SNACKBAR_GET_ECOWATT_ALERTS_ERRPR = 'Erreur lors de la récupération des alertes Ecowatts'
+const SNACKBAR_UPDATE_ECOWATT_ALERTS_ERRPR = "Erreur lors de la modification d'une alerte Ecowatts"
 
 /**
  * Mocking the useSnackbar.
@@ -52,6 +56,69 @@ describe('useEcowatt hook', () => {
         )
         expect(result.current.isLoadingInProgress).toBeFalsy()
         expect(mockEnqueueSnackbar).toHaveBeenCalledWith(SNACKBAR_ECOWATT_ERROR, {
+            autoHideDuration: 5000,
+            variant: 'error',
+        })
+    })
+    test('when getEcowattAlerts resolves', async () => {
+        const {
+            renderedHook: { result, waitForValueToChange },
+        } = reduxedRenderHook(() => useEcowatt())
+        expect(result.current.isLoadingInProgress).toBeFalsy()
+        act(() => {
+            result.current.getEcowattAlerts(TEST_HOUSE_ID)
+        })
+        expect(result.current.isLoadingInProgress).toBeTruthy()
+        await waitForValueToChange(
+            () => {
+                return result.current.isLoadingInProgress
+            },
+            { timeout: 6000 },
+        )
+        expect(result.current.isLoadingInProgress).toBeFalsy()
+        expect(result.current.ecowattAlerts).toBeTruthy()
+    })
+    test('when getEcowattAlerts fails', async () => {
+        const {
+            renderedHook: { result },
+        } = reduxedRenderHook(() => useEcowatt())
+        expect(result.current.isLoadingInProgress).toBeFalsy()
+        act(() => {
+            result.current.getEcowattAlerts()
+        })
+        expect(result.current.isLoadingInProgress).toBeFalsy()
+        expect(mockEnqueueSnackbar).toHaveBeenCalledWith(SNACKBAR_GET_ECOWATT_ALERTS_ERRPR, {
+            autoHideDuration: 5000,
+            variant: 'error',
+        })
+    })
+    test('when updateEcowattAlert resolves', async () => {
+        const {
+            renderedHook: { result, waitForValueToChange },
+        } = reduxedRenderHook(() => useEcowatt())
+        expect(result.current.isLoadingInProgress).toBeFalsy()
+        act(() => {
+            result.current.updateEcowattAlert(TEST_HOUSE_ID, TEST_ECOWATT_ALERTS_DATA)
+        })
+        expect(result.current.isLoadingInProgress).toBeTruthy()
+        await waitForValueToChange(
+            () => {
+                return result.current.isLoadingInProgress
+            },
+            { timeout: 6000 },
+        )
+        expect(result.current.isLoadingInProgress).toBeFalsy()
+    })
+    test('when updateEcowattAlerts fails', async () => {
+        const {
+            renderedHook: { result },
+        } = reduxedRenderHook(() => useEcowatt())
+        expect(result.current.isLoadingInProgress).toBeFalsy()
+        act(() => {
+            result.current.updateEcowattAlert()
+        })
+        expect(result.current.isLoadingInProgress).toBeFalsy()
+        expect(mockEnqueueSnackbar).toHaveBeenCalledWith(SNACKBAR_UPDATE_ECOWATT_ALERTS_ERRPR, {
             autoHideDuration: 5000,
             variant: 'error',
         })

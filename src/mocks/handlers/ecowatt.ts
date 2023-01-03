@@ -630,20 +630,14 @@ export const ecowattEndpoints = [
         }
     }),
     rest.get<IEcowattAlerts>(MOCK_ECOWATT_ALERTS_ENDPOINT, (req, res, ctx) => {
-        const authorization = req.headers.get('authorization')
-        if (authorization === TEST_ECOWATT_EROOR) {
-            return res(ctx.status(400), ctx.delay(1000))
-        } else {
-            return res(ctx.status(200), ctx.delay(1000), ctx.json(TEST_ECOWATT_ALERTS_DATA))
-        }
+        const houseId = req.params.housing_id
+        if (!houseId) return res(ctx.status(400), ctx.delay(1000))
+        return res(ctx.status(200), ctx.delay(1000), ctx.json(TEST_ECOWATT_ALERTS_DATA))
     }),
     // eslint-disable-next-line sonarjs/no-identical-functions
     rest.post<IEcowattAlerts>(MOCK_ECOWATT_ALERTS_ENDPOINT, (req, res, ctx) => {
-        const authorization = req.headers.get('authorization')
-        if (authorization === TEST_ECOWATT_EROOR) {
-            return res(ctx.status(400), ctx.delay(1000))
-        } else {
-            return res(ctx.status(200), ctx.delay(1000), ctx.json(TEST_ECOWATT_ALERTS_DATA))
-        }
+        const houseId = req.params.housing_id
+        if (!houseId) return res(ctx.status(400), ctx.delay(1000))
+        return res(ctx.status(200), ctx.delay(1000), ctx.json(TEST_ECOWATT_ALERTS_DATA))
     }),
 ]

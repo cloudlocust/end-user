@@ -61,6 +61,7 @@ export function useEcowatt(immediate: boolean = false) {
     const getEcowattAlerts = useCallback(
         async (houseId: number) => {
             try {
+                if (!houseId) throw Error('No housing id privided')
                 setIsLoadingInProgress(true)
                 const { data: responseData } = await axios.get<IEcowattAlerts>(ECOWATT_ALERTS_ENDPOINT(houseId))
                 if (responseData) {
@@ -84,6 +85,7 @@ export function useEcowatt(immediate: boolean = false) {
     const updateEcowattAlert = useCallback(
         async (houseId: number, alerts: IEcowattAlerts) => {
             try {
+                if (!houseId) throw Error('No housing id privided')
                 setIsLoadingInProgress(true)
                 await axios.post<IEcowattAlerts>(ECOWATT_ALERTS_ENDPOINT(houseId), alerts)
                 setIsLoadingInProgress(false)
