@@ -84,12 +84,11 @@ export function useEcowatt(immediate: boolean = false) {
     const updateEcowattAlert = useCallback(
         async (houseId: number, alerts: IEcowattAlerts) => {
             try {
-                const { data: responseData } = await axios.post<IEcowattAlerts>(
-                    ECOWATT_ALERTS_ENDPOINT(houseId),
-                    alerts,
-                )
-                if (responseData) return
+                setIsLoadingInProgress(true)
+                await axios.post<IEcowattAlerts>(ECOWATT_ALERTS_ENDPOINT(houseId), alerts)
+                setIsLoadingInProgress(false)
             } catch (error) {
+                setIsLoadingInProgress(false)
                 enqueueSnackbar(
                     formatMessage({
                         id: "Erreur lors de la modification d'une alerte Ecowatts",
