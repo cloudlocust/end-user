@@ -53,7 +53,6 @@ export const EcowattAlerts = () => {
 
             {currentHousing?.id && ecowattAlerts && (
                 <EcowattAlertsForm
-                    reloadAlerts={getEcowattAlerts}
                     houseId={currentHousing?.id}
                     ecowattAlerts={ecowattAlerts}
                     updateEcowattAlert={updateEcowattAlert}

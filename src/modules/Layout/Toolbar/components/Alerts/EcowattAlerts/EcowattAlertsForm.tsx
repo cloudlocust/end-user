@@ -13,14 +13,12 @@ import { useIntl } from 'react-intl'
  * @param root0.houseId House id of current housing.
  * @param root0.ecowattAlerts Ecowatt alerts state data.
  * @param root0.updateEcowattAlert Callback function that update alerts.
- * @param root0.reloadAlerts Callback to reload alerts.
  * @returns Ecowatt alerts form JSX.
  */
 export const EcowattAlertsForm = ({
     houseId,
     ecowattAlerts,
     updateEcowattAlert,
-    reloadAlerts,
 }: // eslint-disable-next-line jsdoc/require-jsdoc
 {
     /**
@@ -35,10 +33,6 @@ export const EcowattAlertsForm = ({
      * Callback function that update alerts.
      */
     updateEcowattAlert: (houseId: number, alerts: IEcowattAlerts) => void
-    /**
-     * Loading state.
-     */
-    reloadAlerts: (houseId: number) => void
 }) => {
     const [isPushSignalThreeDaysState, setIsPushSignalThreeDaysState] = useToggle(ecowattAlerts.isPushSignalThreeDays!)
     const [isPushSignalOneDayState, setIsPushSignalOneDayState] = useToggle(ecowattAlerts.isPushSignalOneDay!)
@@ -53,7 +47,6 @@ export const EcowattAlertsForm = ({
             isPushSignalThreeDays: isPushSignalThreeDaysState,
             isPushSignalOneDay: isPushSignalOneDayState,
         })
-        reloadAlerts(houseId)
     }
 
     /**
