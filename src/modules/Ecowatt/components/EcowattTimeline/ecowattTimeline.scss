@@ -1,0 +1,14 @@
+.hour:first-child {
+    border-top-left-radius: 1.5rem;
+    border-bottom-left-radius: 1.5rem;
+}
+
+.hour:last-child {
+    border-top-right-radius: 1.5rem;
+    border-bottom-right-radius: 1.5rem;
+}
+
+.hour:not(:first-child):not(:last-child) {
+    border-right: 1px solid white;
+    border-left: 1px solid white;
+}

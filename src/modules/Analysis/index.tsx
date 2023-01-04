@@ -28,6 +28,7 @@ import { useSelector } from 'react-redux'
 import { RootState } from 'src/redux'
 import { useHasMissingHousingContracts } from 'src/hooks/HasMissingHousingContracts'
 import { warningMainHashColor } from 'src/modules/utils/muiThemeVariables'
+import useMediaQuery from '@mui/material/useMediaQuery'
 
 /**
  * InitialMetricsStates for useMetrics.
@@ -63,6 +64,7 @@ const Analysis = () => {
     const { getConsents, nrlinkConsent, enedisSgeConsent } = useConsents()
     const { data, setRange, setFilters, isMetricsLoading, filters, range } = useMetrics(initialMetricsHookValues)
     const [activeInformationName, setActiveInformationName] = useState<analysisInformationName | undefined>(undefined)
+    const isMobile = useMediaQuery(theme.breakpoints.down('lg'))
 
     const { currentHousing } = useSelector(({ housingModel }: RootState) => housingModel)
     const { hasMissingHousingContracts } = useHasMissingHousingContracts(range, currentHousing?.id)
@@ -131,8 +133,8 @@ const Analysis = () => {
                     })}
                     <Link to={`/nrlink-connection-steps/${currentHousing?.id}`} className="underline">
                         {formatMessage({
-                            id: 'enregistrer votre compteur et votre nrLink',
-                            defaultMessage: 'enregistrer votre compteur et votre nrLink',
+                            id: 'enregistrer votre compteur et votre nrLINK',
+                            defaultMessage: 'enregistrer votre compteur et votre nrLINK',
                         })}
                     </Link>
                 </Typography>
@@ -205,7 +207,7 @@ const Analysis = () => {
             <div style={{ position: 'relative' }}>
                 {isMetricsLoading ? (
                     <div
-                        style={{ height: '300px' }}
+                        style={{ height: isMobile ? '360px' : '520px' }}
                         className="p-24 CircularProgress flex flex-col justify-center items-center "
                     >
                         <CircularProgress style={{ color: theme.palette.primary.main }} />

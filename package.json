@@ -7,9 +7,11 @@
     ],
     "homepage": ".",
     "dependencies": {
+        "@novu/notification-center": "^0.9.1",
         "apexcharts": "3.35",
         "convert-units": "^2.3.4",
         "date-fns": "^2.28.0",
+        "firebase": "^9.14.0",
         "material-ui-confirm": "^3.0.4",
         "react-apexcharts": "^1.4.0",
         "react-scripts": "4.0.3",
@@ -109,5 +111,9 @@
         "reportPath": "reports",
         "reportFile": "test-report.xml",
         "indent": 4
+    },
+    "resolutions": {
+        "//": "See https://github.com/facebook/create-react-app/issues/11773",
+        "react-error-overlay": "6.0.9"
     }
 }

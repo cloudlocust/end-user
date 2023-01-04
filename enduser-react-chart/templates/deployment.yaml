@@ -152,7 +152,45 @@ spec:
           valueFrom:
             configMapKeyRef:
               name: enduser-react
-              key: REACT_APP_NOVU_APPLICATION_IDENTIFIER
+              key: REACT_APP_NOVU_APPLICATION_IDENTIFIER                
+
+              name: enduser-react
+              key: REACT_APP_NOVU_APPLICATION_IDENTIFIER  
+        - name: REACT_APP_FIREBASE_API_KEY
+          valueFrom:
+            configMapKeyRef:
+              name: enduser-react
+              key: REACT_APP_FIREBASE_API_KEY 
+        - name: REACT_APP_FIREBASE_AUTH_DOMAIN
+          valueFrom:
+            configMapKeyRef:
+              name: enduser-react
+              key: REACT_APP_FIREBASE_AUTH_DOMAIN 
+        - name: REACT_APP_FIREBASE_PROJECT_ID
+          valueFrom:
+            configMapKeyRef:
+              name: enduser-react
+              key: REACT_APP_FIREBASE_PROJECT_ID 
+        - name: REACT_APP_FIREBASE_STORAGE_BUCKET
+          valueFrom:
+            configMapKeyRef:
+              name: enduser-react
+              key: REACT_APP_FIREBASE_STORAGE_BUCKET 
+        - name: REACT_APP_FIREBASE_MESSAGING_SENDER_ID
+          valueFrom:
+            configMapKeyRef:
+              name: enduser-react
+              key: REACT_APP_FIREBASE_MESSAGING_SENDER_ID 
+        - name: REACT_APP_FIREBASE_APP_ID
+          valueFrom:
+            configMapKeyRef:
+              name: enduser-react
+              key: REACT_APP_FIREBASE_APP_ID 
+        - name: REACT_APP_FIREBASE_VAPID_KEY
+          valueFrom:
+            configMapKeyRef:
+              name: enduser-react
+              key: REACT_APP_FIREBASE_VAPID_KEY                                                                                     
         - name: REACT_APP_USER_REGISTRATION_FEATURE_STATE
           valueFrom:
             configMapKeyRef:

@@ -1,14 +1,15 @@
 import React, { useRef } from 'react'
-import { requiredBuilder, Form, repeatPassword, min, accept } from 'src/common/react-platform-components'
+import { requiredBuilder, Form, repeatPassword, accept, regex } from 'src/common/react-platform-components'
 import { useIntl } from 'src/common/react-platform-translation'
 import { ButtonLoader, PasswordField, Checkbox } from 'src/common/ui-kit'
 import { useResetPassword } from 'src/modules/User/ResetPassword/hooks'
 import { ResetPasswordFormProps } from 'src/modules/User/ResetPassword/ResetPasswordFormTypes'
 import { LinkRedirection } from 'src/modules/utils/LinkRedirection'
 import { onSubmitSetPasswordData } from 'src/modules/User/SetPassword/SetPasswordFormTypes'
+import { passwordFieldValidationSecurity1 } from 'src/modules/utils'
 
 const checkoxRequiredErrorText = 'Ce champ est obligatoire'
-const urlPolitiqueConfidentialité = 'https://drive.google.com/uc?export=download&id=18agpXAw89RX5Zk87EQ9ev5LOeMU3GtnP'
+const urlPolitiqueConfidentialité = 'https://drive.google.com/uc?export=download&id=1sMFMizrEPZ4ZHhe6Zf-PTJGRUQBFGUEv'
 
 /**
  * Reset password form.
@@ -34,7 +35,13 @@ export const SetPasswordForm = ({ token }: ResetPasswordFormProps) => {
                     name="password"
                     label="Mot de passe"
                     inputRef={passwordRef}
-                    validateFunctions={[requiredBuilder(), min(8)]}
+                    validateFunctions={[
+                        requiredBuilder(),
+                        regex(
+                            passwordFieldValidationSecurity1,
+                            'Votre mot de passe doit contenir au moins 8 caractères dont 1 Maj, 1 min, 1 chiffre et un caractère spécial',
+                        ),
+                    ]}
                 />
                 <PasswordField
                     name="repeatPwd"

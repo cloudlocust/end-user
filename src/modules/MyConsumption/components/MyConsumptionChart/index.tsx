@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useRef, useEffect, useMemo } from 'react'
 import ReactApexChart from 'react-apexcharts'
 import { useTheme } from '@mui/material/styles'
 import { useIntl } from 'react-intl'
@@ -35,55 +35,60 @@ const MyConsumptionChart = ({
     //To improve user experience by showing a spinner when chart mount and start drawing, until the chart is completely shown and drawn. Instead of showing an empty chart while while the chart is drawing heavy computations (Because of the length of categories given and labels, tooltip.labels especially when period === 'daily', and when options.xaxis.type === 'category' chart performance in drawing is slower).
     const [isApexChartsFinishDrawing, setIsApexChartsFinishDrawing] = React.useState(false)
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
-    // Wrap in useMemo for better performance, as we save the result of convertMetricsData function and we don't call it again on every reender, until data changes.
-    let ApexChartsAxisValues: ApexAxisChartSeries = React.useMemo(
-        () => convertMetricsDataToApexChartsDateTimeAxisValues(data),
-        [data],
-    )
+    // Is DataChanged responsible for tracking the change of data and thus optimize apexchartsProps computation only when data changes.
+    const isDataChanged = useRef(true)
 
-    // Wrap in useMemo for better performance, as we save the heavy computational result of fillApexChartsAxisMissingValues function and we don't call it again on every reender, until period, range or ApexChartsAxisValues from convertMetricsDataToApexChartsAxisValues changes.
+    useEffect(() => {
+        // Reset isDataChanged when its not data change.
+        isDataChanged.current = false
+    }, [isStackedEnabled, period, chartType, chartLabel, range])
+
+    useEffect(() => {
+        // Set isDataChanged when data changes.
+        isDataChanged.current = true
+    }, [data])
+
+    // Wrap in useMemo for better performance, as we save the heavy computational result of getApexChartMyConsumptionProps function and we don't call it again on every reender only when data change.
     // The fillApexChartsDatetimeSeriesMissingValues checks if there are missing datapoints.
-    ApexChartsAxisValues = React.useMemo(
-        // Because of ApexCharts to show the right amount of xAxis even If there are missing values according to the period (for example for 'weekly' we expect seven values), we fill the missing values with null.
-        () => fillApexChartsDatetimeSeriesMissingValues(ApexChartsAxisValues, period, range),
-        [ApexChartsAxisValues, period, range],
-    )
+    const reactApexChartsProps = useMemo(() => {
+        if (isDataChanged.current) {
+            let ApexChartsAxisValues: ApexAxisChartSeries = convertMetricsDataToApexChartsDateTimeAxisValues(data)
+            ApexChartsAxisValues = fillApexChartsDatetimeSeriesMissingValues(ApexChartsAxisValues, period, range)
+            const apexChartsProps = getApexChartMyConsumptionProps({
+                yAxisSeries: ApexChartsAxisValues,
+                period,
+                formatMessage,
+                theme,
+                isStackedEnabled,
+                chartType,
+                chartLabel,
+            })
+            apexChartsProps.options!.chart!.events = {
+                /**
+                 * Fires before the chart has been drawn on screen, so that to improve user experience by showing a spinner, instead of showing an empty chart while while the chart is drawing heavy computations (Because of the length of categories given and labels, tooltip.labels especially when period === 'daily', and when options.xaxis.type === 'category' chart performance in drawing is slower).
+                 * Reference: https://apexcharts.com/docs/options/chart/events/ .
+                 *
+                 * @param chart ChartContext.
+                 * @param options Config.
+                 */
+                beforeMount(chart, options?) {
+                    setIsApexChartsFinishDrawing(false)
+                },
+                /**
+                 * Fires after the chart has been drawn on screen, so that we stop the spinner and show the chart instead because it's being drawn.
+                 * Reference: https://apexcharts.com/docs/options/chart/events/ .
+                 *
+                 * @param chart ChartContext.
+                 * @param options Config.
+                 */
+                mounted(chart, options?) {
+                    setIsApexChartsFinishDrawing(true)
+                },
+            }
+            return apexChartsProps
+        }
+    }, [data, period, range, formatMessage, theme, isStackedEnabled, chartType, chartLabel])
 
-    // Wrap in useMemo for better performance, as we save the heavy computational result of getApexChartMyConsumptionProps function and we don't call it again on every reender, untli its dependencies change.
-    const reactApexChartsProps = React.useMemo(() => {
-        return getApexChartMyConsumptionProps({
-            yAxisSeries: ApexChartsAxisValues,
-            period,
-            formatMessage,
-            theme,
-            isStackedEnabled,
-            chartType,
-            chartLabel,
-        })
-    }, [ApexChartsAxisValues, period, formatMessage, theme, isStackedEnabled, chartType, chartLabel])
-
-    reactApexChartsProps.options!.chart!.events = {
-        /**
-         * Fires before the chart has been drawn on screen, so that to improve user experience by showing a spinner, instead of showing an empty chart while while the chart is drawing heavy computations (Because of the length of categories given and labels, tooltip.labels especially when period === 'daily', and when options.xaxis.type === 'category' chart performance in drawing is slower).
-         * Reference: https://apexcharts.com/docs/options/chart/events/ .
-         *
-         * @param chart ChartContext.
-         * @param options Config.
-         */
-        beforeMount(chart, options?) {
-            setIsApexChartsFinishDrawing(false)
-        },
-        /**
-         * Fires after the chart has been drawn on screen, so that we stop the spinner and show the chart instead because it's being drawn.
-         * Reference: https://apexcharts.com/docs/options/chart/events/ .
-         *
-         * @param chart ChartContext.
-         * @param options Config.
-         */
-        mounted(chart, options?) {
-            setIsApexChartsFinishDrawing(true)
-        },
-    }
     return (
         <div
             className={`${
@@ -104,7 +109,9 @@ const MyConsumptionChart = ({
              }`}
             // When there is more than one curve on the graph, then it is necessary to increase its width (on Mobile version),
             // without this, the width increase will only apply to the consumption chart
-            style={{ width: `${isMobile && reactApexChartsProps.series.length > 1 ? '105%' : '100%'}` }}
+            style={{
+                width: `${isMobile && reactApexChartsProps!.series.length > 1 ? '101%' : '100%'}`,
+            }}
         >
             {!isApexChartsFinishDrawing && (
                 <div className="flex flex-col justify-center items-center w-full h-full" style={{ height: '320px' }}>
@@ -115,7 +122,7 @@ const MyConsumptionChart = ({
                 <ReactApexChart
                     {...reactApexChartsProps}
                     data-testid="apexcharts"
-                    width={isMobile ? '105%' : '100%'}
+                    width={isMobile ? '101%' : '100%'}
                     height={320}
                 />
             </div>

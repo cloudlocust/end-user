@@ -1,5 +1,7 @@
 import { SelectFieldProps } from 'src/common/ui-kit/form-fields/Select'
 import { IOffer, IContractType, IPower, IProvider, ITariffType } from 'src/hooks/CommercialOffer/CommercialOffers'
+import { TypographyProps } from '@mui/material/Typography'
+import { IMeterFeatures } from 'src/modules/Meters/Meters'
 
 /**
  * Type contracts route param.
@@ -191,6 +193,10 @@ export type addContractDataType = {
      */
     contractTypeId: number
     /**
+     * Meter Features information (offpeakHours ...etc).
+     */
+    meterFeatures?: IMeterFeatures
+    /**
      * Power of the offer.
      */
     power: number
@@ -229,4 +235,27 @@ export interface ContractFormSelectProps<T> extends SelectFieldProps {
      * Function to format the option label.
      */
     formatOptionLabel: (option: T) => string
+}
+
+/**
+ * Props Type of OffPeakHoursField Component.
+ */
+export interface offpeakHoursFieldProps {
+    /**
+     * List of validators.
+     */
+    validateFunctions?: ((data: any) => CustomValidateResult)[]
+    /**
+     * Override the default name of material ui to make it required.
+     */
+    name: string
+    /**
+     * Override the default label of material ui to make it required.
+     */
+    label: string
+    /**
+     * We use inputLabelProps for pass the some props to label of offpeakHoursField,
+     * and we remove children from the props because.
+     */
+    labelProps?: TypographyProps
 }

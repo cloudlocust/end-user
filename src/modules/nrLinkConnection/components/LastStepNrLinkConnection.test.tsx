@@ -1,18 +1,22 @@
 import { reduxedRender } from 'src/common/react-platform-components/test'
 import { LastStepNrLinkConnection } from 'src/modules/nrLinkConnection'
 import { waitFor } from '@testing-library/react'
-import { TEST_METERS } from 'src/mocks/handlers/meters'
+import { TEST_METERS as MOCK_METERS } from 'src/mocks/handlers/meters'
 import userEvent from '@testing-library/user-event'
 import { IMeter } from 'src/modules/Meters/Meters'
 import { URL_CONSUMPTION } from 'src/modules/MyConsumption'
+import { applyCamelCase } from 'src/common/react-platform-components'
 
+const TEST_METERS: IMeter[] = applyCamelCase(MOCK_METERS)
 const SUBMIT_BUTTON_TEXT = 'Terminer'
 const REQUIRED_ERROR_TEXT = 'Champ obligatoire non renseigné'
-const TEST_NRLINK_GUID = '12345123451234'
+const TEST_NRLINK_GUID = '12345123451234AB'
 
 const guidNrlinkInputQuerySelector = 'input[name="nrlinkGuid"]'
 const SUCCESS_NRLINK_AUTHORIZE_MESSAGE = `Votre nrLINK a bien été connecté au compteur ${TEST_METERS[0].guid}, vous pouvez maintenant visualiser votre consommation en direct`
 const ERRROR_NRLINK_NO_DATA_MESSAGE = "Votre nrLINK ne reçoit pas de données vérifier qu'il est connecté au Wifi"
+const INVALID_NRLINK_GUID_FIELD_ERROR =
+    'Veuillez entrer un N° GUID valide (16 caractères, chiffre de 0 à 9, lettre de A à F, pas d’espace ni de tiret)'
 const ERRROR_NRLINK_ALREADY_CONNECTED_MESSAGE =
     'Votre nrLINK est déjà connecté à un autre compteur, veuillez réessayer ou contacter votre Boucle Locale'
 const GENERIC_ERRROR_NRLINK_AUTHORIZE_MESSAGE = 'Erreur lors de la connection de votre compteur'
@@ -70,26 +74,40 @@ describe('Test LastStepNrLinkConnection', () => {
             const { container, getByText } = reduxedRender(
                 <LastStepNrLinkConnection {...mockLastStepNrLinkConnectionProps} />,
             )
-            // Initially meter is field and nrlink_empty
             expect(container.querySelector(guidNrlinkInputQuerySelector)).toHaveValue('')
-
             userEvent.click(getByText(SUBMIT_BUTTON_TEXT))
 
             await waitFor(() => {
                 expect(getByText(REQUIRED_ERROR_TEXT)).toBeTruthy()
             })
         })
+
+        test('Invalid nrlink guid', async () => {
+            mockLastStepNrLinkConnectionProps.meter = TEST_METERS[0]
+            const { container, getByText } = reduxedRender(
+                <LastStepNrLinkConnection {...mockLastStepNrLinkConnectionProps} />,
+            )
+            // Initially meter is field and nrlink_empty
+            userEvent.type(container.querySelector(guidNrlinkInputQuerySelector)!, 'ZFAAAABBBBCCCCDDDD')
+            expect(container.querySelector(guidNrlinkInputQuerySelector)).toHaveValue('ZFAAAABBBBCCCCDDDD')
+
+            userEvent.click(getByText(SUBMIT_BUTTON_TEXT))
+
+            await waitFor(() => {
+                expect(getByText(INVALID_NRLINK_GUID_FIELD_ERROR)).toBeTruthy()
+            })
+        })
     })
 
     describe('Submit form', () => {
-        test('when submitForm and nrLink no data received error, snackbar error should be shown, and setNrLinkAuthorizeInProgress should be called accordingly', async () => {
+        test('when submitForm and nrLINK no data received error, snackbar error should be shown, and setNrLinkAuthorizeInProgress should be called accordingly', async () => {
             const mockSetIsNrLinkAuthorizeInProgress = jest.fn()
             mockLastStepNrLinkConnectionProps.setIsNrLinkAuthorizeInProgress = mockSetIsNrLinkAuthorizeInProgress
             const { container, getByText } = reduxedRender(
                 <LastStepNrLinkConnection {...mockLastStepNrLinkConnectionProps} />,
             )
-            userEvent.type(container.querySelector(guidNrlinkInputQuerySelector)!, 'error1')
-            expect(container.querySelector(guidNrlinkInputQuerySelector)).toHaveValue('error1')
+            userEvent.type(container.querySelector(guidNrlinkInputQuerySelector)!, 'aaaaa1aaaaa1aaaa')
+            expect(container.querySelector(guidNrlinkInputQuerySelector)).toHaveValue('aaaaa1aaaaa1aaaa')
 
             userEvent.click(getByText(SUBMIT_BUTTON_TEXT))
             // Test that
@@ -107,14 +125,14 @@ describe('Test LastStepNrLinkConnection', () => {
                 variant: 'error',
             })
         }, 20000)
-        test('when submitForm and nrLink already connected error, snackbar error should be shown, and setNrLinkAuthorizeInProgress should be called accordingly', async () => {
+        test('when submitForm and nrLINK already connected error, snackbar error should be shown, and setNrLinkAuthorizeInProgress should be called accordingly', async () => {
             const mockSetIsNrLinkAuthorizeInProgress = jest.fn()
             mockLastStepNrLinkConnectionProps.setIsNrLinkAuthorizeInProgress = mockSetIsNrLinkAuthorizeInProgress
             const { container, getByText } = reduxedRender(
                 <LastStepNrLinkConnection {...mockLastStepNrLinkConnectionProps} />,
             )
-            userEvent.type(container.querySelector(guidNrlinkInputQuerySelector)!, 'error2')
-            expect(container.querySelector(guidNrlinkInputQuerySelector)).toHaveValue('error2')
+            userEvent.type(container.querySelector(guidNrlinkInputQuerySelector)!, 'bbbbb2bbbbb2bbbb')
+            expect(container.querySelector(guidNrlinkInputQuerySelector)).toHaveValue('bbbbb2bbbbb2bbbb')
 
             userEvent.click(getByText(SUBMIT_BUTTON_TEXT))
             await waitFor(() => {
@@ -131,14 +149,14 @@ describe('Test LastStepNrLinkConnection', () => {
                 variant: 'error',
             })
         }, 20000)
-        test('when submitForm and nrLink generic error, snackbar error should be shown, and setNrLinkAuthorizeInProgress should be called accordingly', async () => {
+        test('when submitForm and nrLINK generic error, snackbar error should be shown, and setNrLinkAuthorizeInProgress should be called accordingly', async () => {
             const mockSetIsNrLinkAuthorizeInProgress = jest.fn()
             mockLastStepNrLinkConnectionProps.setIsNrLinkAuthorizeInProgress = mockSetIsNrLinkAuthorizeInProgress
             const { container, getByText } = reduxedRender(
                 <LastStepNrLinkConnection {...mockLastStepNrLinkConnectionProps} />,
             )
-            userEvent.type(container.querySelector(guidNrlinkInputQuerySelector)!, 'error3')
-            expect(container.querySelector(guidNrlinkInputQuerySelector)).toHaveValue('error3')
+            userEvent.type(container.querySelector(guidNrlinkInputQuerySelector)!, 'ccccc3ccccc3cccc')
+            expect(container.querySelector(guidNrlinkInputQuerySelector)).toHaveValue('ccccc3ccccc3cccc')
 
             userEvent.click(getByText(SUBMIT_BUTTON_TEXT))
 
@@ -156,7 +174,7 @@ describe('Test LastStepNrLinkConnection', () => {
                 variant: 'error',
             })
         }, 20000)
-        test('when submitForm and nrLink authorize success, snackbar error should be shown, and setNrLinkAuthorizeInProgress should be called accordingly', async () => {
+        test('when submitForm and nrLINK authorize success, snackbar error should be shown, and setNrLinkAuthorizeInProgress should be called accordingly', async () => {
             const mockSetIsNrLinkAuthorizeInProgress = jest.fn()
             mockLastStepNrLinkConnectionProps.setIsNrLinkAuthorizeInProgress = mockSetIsNrLinkAuthorizeInProgress
             const { container, getByText } = reduxedRender(

@@ -2,6 +2,7 @@ import React, { useEffect } from 'react'
 import { useDispatch } from 'react-redux'
 import { Dispatch } from 'src/redux'
 import UserMenu from 'src/modules/Layout/Toolbar/components/UserMenu'
+import Notification from 'src/modules/Layout/Toolbar/components/Novu/Notification'
 import InputLabel from '@mui/material/InputLabel'
 import MenuItem from '@mui/material/MenuItem'
 import Select, { SelectChangeEvent } from '@mui/material/Select'
@@ -10,6 +11,8 @@ import { RootState } from 'src/redux'
 import OutlinedInput from '@mui/material/OutlinedInput'
 import { FormControl } from '@mui/material'
 import { useIntl } from 'react-intl'
+import './ToolbarWidget.scss'
+import { Alerts } from 'src/modules/Layout/Toolbar/components/Alerts'
 
 const ITEM_HEIGHT = 48
 const ITEM_PADDING_TOP = 8
@@ -19,9 +22,9 @@ const ITEM_PADDING_TOP = 8
  */
 const MenuProps = {
     PaperProps: {
-        style: {
+        sx: {
             maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-            width: 250,
+            width: { xs: 210, md: 250 },
         },
     },
 }
@@ -53,11 +56,11 @@ export const ToolbarWidget = () => {
     }
 
     return (
-        <div className="flex flex-1 my-20 justify-between">
+        <div className="flex flex-1 my-20 justify-between toolbar-widget">
             <FormControl
                 sx={{
                     '&.MuiFormControl-root': { marginBottom: '0px' },
-                    width: 240,
+                    width: { xs: 160, md: 250 },
                 }}
             >
                 <InputLabel id="select-housing-label">
@@ -87,7 +90,11 @@ export const ToolbarWidget = () => {
                     ))}
                 </Select>
             </FormControl>
-            <UserMenu />
+            <div className="flex align-center">
+                <Notification />
+                <Alerts />
+                <UserMenu />
+            </div>
         </div>
     )
 }
