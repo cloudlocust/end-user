@@ -78,7 +78,7 @@ export const ConsumptionChartContainer = ({
         () => visibleTargetCharts.includes(metricTargetsEnum.eurosConsumption),
         [visibleTargetCharts],
     )
-    // State that stores if visibleTargetCharts contains pMax or eurosConsumption when period is euros, so that when period is "daily" if this variable we prevent getMetrics to execute until we remove € and pMax targets.
+    // State that stores if visibleTargetCharts contains pMax or eurosConsumption when period is euros, so that when period is "daily". With this variable we prevent getMetrics to execute until we remove € and pMax targets.
     const isEurosConsumptionOrPmaxVisibleTargetChartOnPeriodDaily = useMemo(() => {
         return (
             period === 'daily' &&
@@ -87,7 +87,7 @@ export const ConsumptionChartContainer = ({
         )
     }, [period, visibleTargetCharts])
     const [consumptionChartData, setConsumptionChartData] = useState<IMetric[]>(data)
-    const isEurosDisabled = !isEurosConsumptionChart && period === 'daily'
+    const isEurosConsumptionDisabled = !isEurosConsumptionChart && period === 'daily'
     const hidePmax = period === 'daily' || enedisSgeConsent?.enedisSgeConsentState === 'NONEXISTENT'
 
     // Track the change of visibleTargetCharts, so that we don't call getMetrics when visibleTargetCharts change (and thus no request when showing / hiding target in MyConsumptionChart).
@@ -194,7 +194,7 @@ export const ConsumptionChartContainer = ({
                     removeTarget={hideMetricTargetChart}
                     addTarget={showMetricTargetChart}
                     showEurosConsumption={!isEurosConsumptionChart}
-                    disabled={isEurosDisabled}
+                    disabled={isEurosConsumptionDisabled}
                 />
                 <Tooltip
                     arrow
