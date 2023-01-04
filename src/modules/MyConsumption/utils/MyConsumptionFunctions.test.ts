@@ -9,8 +9,9 @@ import {
     getDateWithoutTimezoneOffset,
     addPeriod,
     subPeriod,
+    filterPmaxAndEurosConsumptionTargetFromVisibleChartTargets,
 } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
-import { IMetric, metricIntervalType } from 'src/modules/Metrics/Metrics'
+import { IMetric, metricIntervalType, metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
 import { FAKE_WEEK_DATA, FAKE_DAY_DATA, FAKE_MONTH_DATA, FAKE_YEAR_DATA } from 'src/mocks/handlers/metrics'
 import { getRange } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
 import {
@@ -18,7 +19,7 @@ import {
     convertMetricsDataToApexChartsDateTimeAxisValues,
 } from 'src/modules/MyConsumption/utils/apexChartsDataConverter'
 import dayjs from 'dayjs'
-import { dateFnsPeriod, periodType } from 'src/modules/MyConsumption/myConsumptionTypes'
+import { dateFnsPeriod, periodType } from 'src/modules/MyConsumption/myConsumptionTypes.d'
 
 // eslint-disable-next-line jsdoc/require-jsdoc
 let interval: metricIntervalType = '2m'
@@ -308,6 +309,44 @@ describe('test pure functions', () => {
         caseList.forEach(({ period, resultDate }) => {
             const result = subPeriod(date, period as dateFnsPeriod)
             expect(getDateWithoutTimezoneOffset(result)).toEqual(resultDate)
+        })
+    })
+
+    test('filterPmaxAndEurosConsumptionTargetFromVisibleChartTargets test with different cases', async () => {
+        const caseList = [
+            // Filtering eurosConsumption Target.
+            {
+                visibleTargetsChart: [metricTargetsEnum.eurosConsumption, metricTargetsEnum.internalTemperature],
+                expectedResult: [
+                    metricTargetsEnum.consumption,
+                    metricTargetsEnum.autoconsumption,
+                    metricTargetsEnum.internalTemperature,
+                ],
+            },
+            // Filtering pMax Target.
+            {
+                visibleTargetsChart: [metricTargetsEnum.eurosConsumption, metricTargetsEnum.pMax],
+                expectedResult: [metricTargetsEnum.consumption, metricTargetsEnum.autoconsumption],
+            },
+            // Everything's alright.
+            {
+                visibleTargetsChart: [
+                    metricTargetsEnum.consumption,
+                    metricTargetsEnum.autoconsumption,
+                    metricTargetsEnum.internalTemperature,
+                    metricTargetsEnum.externalTemperature,
+                ],
+                expectedResult: [
+                    metricTargetsEnum.consumption,
+                    metricTargetsEnum.autoconsumption,
+                    metricTargetsEnum.internalTemperature,
+                    metricTargetsEnum.externalTemperature,
+                ],
+            },
+        ]
+        caseList.forEach(({ visibleTargetsChart, expectedResult }) => {
+            const result = filterPmaxAndEurosConsumptionTargetFromVisibleChartTargets(visibleTargetsChart)
+            expect(result).toEqual(expectedResult)
         })
     })
 })

@@ -553,3 +553,28 @@ export const showPerPeriodText = (chartType: 'consumption' | 'production', perio
         throw Error('PeriodValue not set')
     }
 }
+
+/**
+ * Utility function used to filter pMax and EurosConsumption targets from given visibleChartTargets.
+ *
+ * @param visibleChartTargets Given Targets may contain pMax and eurosConsumption and other targets.
+ * @returns New visibleChartTargets without eurosConsumption and pMax.
+ */
+export const filterPmaxAndEurosConsumptionTargetFromVisibleChartTargets = (visibleChartTargets: metricTargetType[]) => {
+    if (
+        visibleChartTargets.includes(metricTargetsEnum.eurosConsumption) ||
+        visibleChartTargets.includes(metricTargetsEnum.pMax)
+    ) {
+        const savedVisibleTargetCharts = visibleChartTargets.filter(
+            (target) =>
+                ![
+                    metricTargetsEnum.autoconsumption,
+                    metricTargetsEnum.consumption,
+                    metricTargetsEnum.pMax,
+                    metricTargetsEnum.eurosConsumption,
+                ].includes(target as metricTargetsEnum),
+        )
+        return [metricTargetsEnum.consumption, metricTargetsEnum.autoconsumption, ...savedVisibleTargetCharts]
+    }
+    return visibleChartTargets
+}

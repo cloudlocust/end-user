@@ -18,7 +18,10 @@ import { warningMainHashColor } from 'src/modules/utils/muiThemeVariables'
 import { URL_MY_HOUSE } from 'src/modules/MyHouse/MyHouseConfig'
 import { NavLink } from 'react-router-dom'
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline'
-import { showPerPeriodText } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
+import {
+    filterPmaxAndEurosConsumptionTargetFromVisibleChartTargets,
+    showPerPeriodText,
+} from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
 import { ConsumptionChartTargets } from 'src/modules/MyConsumption/utils/myConsumptionVariables'
 
 /**
@@ -75,6 +78,14 @@ export const ConsumptionChartContainer = ({
         () => visibleTargetCharts.includes(metricTargetsEnum.eurosConsumption),
         [visibleTargetCharts],
     )
+    // State that stores if visibleTargetCharts contains pMax or eurosConsumption when period is euros, so that when period is "daily" if this variable we prevent getMetrics to execute until we remove € and pMax targets.
+    const isEurosConsumptionOrPmaxVisibleTargetChartOnPeriodDaily = useMemo(() => {
+        return (
+            period === 'daily' &&
+            (visibleTargetCharts.includes(metricTargetsEnum.eurosConsumption) ||
+                visibleTargetCharts.includes(metricTargetsEnum.pMax))
+        )
+    }, [period, visibleTargetCharts])
     const [consumptionChartData, setConsumptionChartData] = useState<IMetric[]>(data)
     const isEurosDisabled = !isEurosConsumptionChart && period === 'daily'
     const hidePmax = period === 'daily' || enedisSgeConsent?.enedisSgeConsentState === 'NONEXISTENT'
@@ -83,22 +94,15 @@ export const ConsumptionChartContainer = ({
     const isVisibleTargetChartsChanged = useRef(false)
 
     useEffect(() => {
-        // Resetting isVisibleTargetChartsChanged when range, filters or metricsInterval change so that we can call getMetrics only when these change.
+        // When period is daily, remove target pMax or eurosConsumption from visibleTargetCharts and thus when calling getMetrics it won't have these targets.
         if (period === 'daily') {
-            console.log('PERIOD CHANGED')
-            setVisibleTargetsCharts((prevState) => {
-                if (
-                    prevState.includes(metricTargetsEnum.eurosConsumption) ||
-                    prevState.includes(metricTargetsEnum.pMax)
-                )
-                    return [metricTargetsEnum.autoconsumption, metricTargetsEnum.consumption]
-                return prevState
-            })
+            setVisibleTargetsCharts((prevState) =>
+                filterPmaxAndEurosConsumptionTargetFromVisibleChartTargets(prevState),
+            )
         }
     }, [period])
 
     useEffect(() => {
-        console.log('RANGE CHANGED')
         // Resetting isVisibleTargetChartsChanged when range, filters or metricsInterval change so that we can call getMetrics only when these change.
         isVisibleTargetChartsChanged.current = false
     }, [filters, range, metricsInterval])
@@ -106,10 +110,9 @@ export const ConsumptionChartContainer = ({
     // Desire behaviour is to focus on calling getMetrics on the active target show in MyConsumptionChart, and handle the spinner only for those targets.
     // Then in the background fetching the remaining targets, and will not show a spinner and will be done without any user experience knowing it.
     const getMetrics = useCallback(async () => {
-        if (!isVisibleTargetChartsChanged.current) {
-            console.log('GET METRICS')
-            console.log('🚀 ~ file: ConsumptionChartContainer.tsx:112 ~ visibleTargetCharts', visibleTargetCharts)
-
+        // Condition !isVisibleTargetCharts responsible for not calling getMetrics when toggling between targets through UI Buttons (€ consumption, Temperature, pMax)
+        // Condition !isEurosConsumptionOrPmaxVisibleTargetCharts responsible for preventing getMetrics to be called when period changes to daily and there'll is pMax or eurosConsumption targets in the request. Those will be removed in a useEffect and getMetrics will be called.
+        if (!isVisibleTargetChartsChanged.current && !isEurosConsumptionOrPmaxVisibleTargetChartOnPeriodDaily) {
             setIsConsumptionChartLoading(true)
             await getMetricsWithParams({ interval: metricsInterval, range, targets: visibleTargetCharts, filters })
             setIsConsumptionChartLoading(false)
@@ -120,7 +123,14 @@ export const ConsumptionChartContainer = ({
                 filters,
             })
         }
-    }, [filters, range, metricsInterval, getMetricsWithParams, visibleTargetCharts])
+    }, [
+        filters,
+        range,
+        metricsInterval,
+        getMetricsWithParams,
+        visibleTargetCharts,
+        isEurosConsumptionOrPmaxVisibleTargetChartOnPeriodDaily,
+    ])
 
     // Happens everytime getMetrics dependencies change, and happen first time hook is instanciated.
     useEffect(() => {
@@ -158,23 +168,6 @@ export const ConsumptionChartContainer = ({
         isVisibleTargetChartsChanged.current = true
         setVisibleTargetsCharts((prevState) => prevState.filter((visibleTarget) => visibleTarget !== target))
     }
-
-    useEffect(() => {
-        if (period === 'daily') {
-            if (hidePmax && visibleTargetCharts.includes(metricTargetsEnum.pMax)) {
-                isVisibleTargetChartsChanged.current = true
-                setVisibleTargetsCharts((prevState) =>
-                    prevState.filter((visibleTarget) => visibleTarget !== metricTargetsEnum.pMax),
-                )
-            }
-            if (isEurosDisabled && visibleTargetCharts.includes(metricTargetsEnum.eurosConsumption)) {
-                isVisibleTargetChartsChanged.current = true
-                setVisibleTargetsCharts((prevState) =>
-                    prevState.filter((visibleTarget) => visibleTarget !== metricTargetsEnum.eurosConsumption),
-                )
-            }
-        }
-    }, [period, hidePmax, isEurosConsumptionChart, isEurosDisabled, visibleTargetCharts])
 
     return (
         <div className="mb-12">

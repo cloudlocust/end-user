@@ -1,4 +1,4 @@
-import * as React from 'react'
+import React, { useEffect } from 'react'
 import Button from '@mui/material/Button'
 import ButtonGroup from '@mui/material/ButtonGroup'
 import { useState } from 'react'
@@ -32,6 +32,10 @@ const TargetButtonGroup = ({ removeTarget, addTarget, hidePmax }: ITargetButtonG
             targets.includes(target) ? addTarget(target) : removeTarget(target)
         })
     }
+
+    useEffect(() => {
+        if (hidePmax && activeButton === 'Pmax') setActiveButton('reset')
+    }, [hidePmax, activeButton])
 
     return (
         <ButtonGroup variant="contained">
