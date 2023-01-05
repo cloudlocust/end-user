@@ -117,7 +117,8 @@ pipeline{
               USER_NAME_ = credentials('helm_registry_username')
               PASSWORD_ = credentials('helm_registry_password')
               url = credentials('helm_registry_url')
-              URL_ = "${url}/${ENV_NAME}registry"               
+              URL_ = "${url}/${ENV_NAME}registry"
+              APP_NAME = "enduser-react"               
            }
             steps {
                 script{
