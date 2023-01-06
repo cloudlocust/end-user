@@ -59,13 +59,14 @@ const CONSUMPTION_TITLE_DAILY = 'en Wh par jour'
 const CONSUMPTION_TITLE_WEEKLY = 'en kWh par semaine'
 const CONSUMPTION_TITLE_MONTHLY = 'en kWh par mois'
 const CONSUMPTION_TITLE_YEARLY = 'en kWh par année'
-const EUROS_CONSUMPTION_TITLE_DAILY = 'en € par jour'
 const EUROS_CONSUMPTION_TITLE_WEEKLY = 'en € par semaine'
 const EUROS_CONSUMPTION_TITLE_MONTHLY = 'en € par mois'
 const EUROS_CONSUMPTION_TITLE_YEARLY = 'en € par année'
 const CONSUMPTION_ICON_TEST_ID = 'BoltIcon'
 const EUROS_CONSUMPTION_ICON_TEST_ID = 'EuroIcon'
+const PMAX_BUTTON_TEXT = 'Pmax'
 const apexchartsClassName = 'apexcharts-svg'
+const disabledClassName = 'Mui-disabled'
 const mockGetConsents = jest.fn()
 const mockGetMetricsWithParams = jest.fn()
 
@@ -206,10 +207,6 @@ describe('MyConsumptionContainer test', () => {
     test('Different period props, When euros consumption chart.', async () => {
         const consumptionTitleCases = [
             {
-                period: 'daily' as periodType,
-                text: EUROS_CONSUMPTION_TITLE_DAILY,
-            },
-            {
                 period: 'weekly' as periodType,
                 text: EUROS_CONSUMPTION_TITLE_WEEKLY,
             },
@@ -242,7 +239,7 @@ describe('MyConsumptionContainer test', () => {
         })
     })
     test('When hasMissingHousingContracts and isEurosConsumptin, message is shown', async () => {
-        consumptionChartContainerProps.period = mockPeriod
+        consumptionChartContainerProps.period = 'weekly'
         consumptionChartContainerProps.hasMissingHousingContracts = true
         const { getByText, getByTestId } = reduxedRender(
             <Router>
@@ -265,5 +262,29 @@ describe('MyConsumptionContainer test', () => {
             'href',
             `${URL_MY_HOUSE}/${LIST_OF_HOUSES[0].id}/contracts`,
         )
+
+        // TOGGLING BACK TO CONSUMPTION, AUTOCONSUMPTION CHART, for coverage of EurosConsumptionButtonToggler.
+        userEvent.click(getByTestId(CONSUMPTION_ICON_TEST_ID))
+        // EUROS ICON Should be shown
+        await waitFor(() => {
+            expect(getByTestId(EUROS_CONSUMPTION_ICON_TEST_ID)).toBeTruthy()
+        })
+        expect(() => getByText(HAS_MISSING_CONTRACTS_WARNING_TEXT)).toThrow()
+    })
+    test('When period is daily, EurosConsumption and pMax button should be disabled', async () => {
+        consumptionChartContainerProps.period = 'daily'
+        const { getByText, getByTestId } = reduxedRender(
+            <Router>
+                <ConsumptionChartContainer {...consumptionChartContainerProps} />
+            </Router>,
+            { initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[0] } } },
+        )
+
+        expect(
+            (getByTestId(EUROS_CONSUMPTION_ICON_TEST_ID).parentElement as HTMLButtonElement).classList.contains(
+                disabledClassName,
+            ),
+        ).toBeTruthy()
+        expect(getByText(PMAX_BUTTON_TEXT).classList.contains(disabledClassName)).toBeTruthy()
     })
 })

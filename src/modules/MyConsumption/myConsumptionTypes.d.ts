@@ -116,6 +116,10 @@ export type EurosConsumptionButtonTogglerProps =
          * Indicate eurosConsumption or consumption IconButton to be shown.
          */
         showEurosConsumption?: boolean
+        /**
+         * Indicate if EurosConsumptionButton is disabled.
+         */
+        disabled?: boolean
     }
 
 /**
