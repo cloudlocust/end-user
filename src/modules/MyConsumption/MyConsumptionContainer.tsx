@@ -38,7 +38,7 @@ export const MyConsumptionContainer = () => {
 
     // metricsInterval is initialized this way, so that its value is different from 2m or 30m, because it'll be set to 2m or 30m once consent request has finished.
     // This won't create a problem even if metricIntervalType doesn't include undefined, because this will affect only on mount of MyConsumptionContainer and all children component that useMetrics, won't execute getMetrics on mount.
-    const [metricsInterval, setMetricsInterval] = useState<metricIntervalType>('2m')
+    const [metricsInterval, setMetricsInterval] = useState<metricIntervalType>('1m')
     const { ecowattData, isLoadingInProgress: isEcowattDataInProgress } = useEcowatt()
 
     const nrlinkOff = nrlinkConsent?.nrlinkConsentState === 'NONEXISTENT'
@@ -57,15 +57,15 @@ export const MyConsumptionContainer = () => {
      * @param interval Metric Interval selected.
      */
     const setMyConsumptionPeriodMetricsInterval = (interval: metricIntervalType) => {
-        if (interval === '2m')
-            setMetricsInterval(enphaseConsent && enphaseConsent.enphaseConsentState === 'ACTIVE' ? '30m' : '2m')
+        if (interval === '1m')
+            setMetricsInterval(enphaseConsent && enphaseConsent.enphaseConsentState === 'ACTIVE' ? '30m' : '1m')
         else setMetricsInterval(interval)
     }
 
     useEffect(() => {
         setMetricsInterval((prevState) => {
-            if (prevState === '2m' || prevState === '30m')
-                return enphaseConsent && enphaseConsent.enphaseConsentState === 'ACTIVE' ? '30m' : '2m'
+            if (prevState === '1m' || prevState === '30m')
+                return enphaseConsent && enphaseConsent.enphaseConsentState === 'ACTIVE' ? '30m' : '1m'
             else return prevState
         })
     }, [enphaseConsent])
