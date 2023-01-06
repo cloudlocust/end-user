@@ -12,13 +12,15 @@ import { useIntl } from 'react-intl'
  * @param root0 N/A.
  * @param root0.houseId House id of current housing.
  * @param root0.ecowattAlerts Ecowatt alerts state data.
- * @param root0.updateEcowattAlert Callback function that update alerts.
+ * @param root0.updateEcowattAlerts Callback function that update alerts.
+ * @param root0.reloadAlerts Callback function that reloads alerts.
  * @returns Ecowatt alerts form JSX.
  */
 export const EcowattAlertsForm = ({
     houseId,
     ecowattAlerts,
-    updateEcowattAlert,
+    updateEcowattAlerts,
+    reloadAlerts,
 }: // eslint-disable-next-line jsdoc/require-jsdoc
 {
     /**
@@ -32,7 +34,11 @@ export const EcowattAlertsForm = ({
     /**
      * Callback function that update alerts.
      */
-    updateEcowattAlert: (houseId: number, alerts: IEcowattAlerts) => void
+    updateEcowattAlerts: (houseId: number, alerts: IEcowattAlerts) => void
+    /**
+     * Refresh callback.
+     */
+    reloadAlerts: (houseId: number) => void
 }) => {
     const [isPushSignalThreeDaysState, setIsPushSignalThreeDaysState] = useToggle(ecowattAlerts.isPushSignalThreeDays!)
     const [isPushSignalOneDayState, setIsPushSignalOneDayState] = useToggle(ecowattAlerts.isPushSignalOneDay!)
@@ -43,10 +49,11 @@ export const EcowattAlertsForm = ({
      * Handle submit function for EcowaattAlerts.
      */
     const handleSubmitEcowattAlerts = async () => {
-        await updateEcowattAlert(houseId, {
+        await updateEcowattAlerts(houseId, {
             isPushSignalThreeDays: isPushSignalThreeDaysState,
             isPushSignalOneDay: isPushSignalOneDayState,
         })
+        reloadAlerts(houseId)
     }
 
     /**
@@ -74,6 +81,7 @@ export const EcowattAlertsForm = ({
                                     name="isPushSignalThreeDays"
                                     checked={isPushSignalThreeDaysState}
                                     onChange={(e) => setIsPushSignalThreeDaysState(!isPushSignalThreeDaysState)}
+                                    data-testid="isPushSignalThreeDays-switch"
                                 />
                             </div>
                         </div>
@@ -95,6 +103,7 @@ export const EcowattAlertsForm = ({
                                     name="isPushSignalOneDay"
                                     checked={isPushSignalOneDayState}
                                     onChange={(e) => setIsPushSignalOneDayState(!isPushSignalOneDayState)}
+                                    data-testid="isPushSignalOneDay-switch"
                                 />
                             </div>
                         </div>
@@ -110,7 +119,7 @@ export const EcowattAlertsForm = ({
                             defaultMessage: 'Annuler',
                         })}
                     </Button>
-                    <ButtonLoader type="submit" variant="contained" disabled={!isEdit}>
+                    <ButtonLoader variant="contained" disabled={!isEdit} onClick={() => handleSubmitEcowattAlerts()}>
                         {formatMessage({
                             id: 'Enregistrer',
                             defaultMessage: 'Enregistrer',

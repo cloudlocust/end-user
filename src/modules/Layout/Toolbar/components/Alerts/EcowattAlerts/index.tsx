@@ -15,7 +15,7 @@ import { EcowattAlertsForm } from 'src/modules/Layout/Toolbar/components/Alerts/
 export const EcowattAlerts = () => {
     const theme = useTheme()
     const { currentHousing } = useSelector(({ housingModel }: RootState) => housingModel)
-    const { isLoadingInProgress, getEcowattAlerts, ecowattAlerts, updateEcowattAlert } = useEcowatt()
+    const { isLoadingInProgress, getEcowattAlerts, ecowattAlerts, updateEcowattAlerts } = useEcowatt()
     const [openTooltip, setOpenTooltip] = useState<boolean>(false)
 
     useEffect(() => {
@@ -55,7 +55,8 @@ export const EcowattAlerts = () => {
                 <EcowattAlertsForm
                     houseId={currentHousing?.id}
                     ecowattAlerts={ecowattAlerts}
-                    updateEcowattAlert={updateEcowattAlert}
+                    updateEcowattAlerts={updateEcowattAlerts}
+                    reloadAlerts={getEcowattAlerts}
                 />
             )}
         </div>

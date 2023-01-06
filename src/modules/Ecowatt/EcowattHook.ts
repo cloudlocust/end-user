@@ -17,7 +17,7 @@ export const ECOWATT_SIGNALS_ENDPOINT = `${API_RESOURCES_URL}/rte/ecowatt/signal
  * @param houseId House id of the current housing.
  * @returns Endpoint.
  */
-export const ECOWATT_ALERTS_ENDPOINT = (houseId: number) => `/housings/${houseId}/ecowatt-alerts`
+export const ECOWATT_ALERTS_ENDPOINT = (houseId: number) => `${API_RESOURCES_URL}/housings/${houseId}/ecowatt-alerts`
 
 /**
  * UseEcowatt hook.
@@ -82,16 +82,12 @@ export function useEcowatt(immediate: boolean = false) {
         [enqueueSnackbar, formatMessage],
     )
 
-    const updateEcowattAlert = useCallback(
+    const updateEcowattAlerts = useCallback(
         async (houseId: number, alerts: IEcowattAlerts) => {
             try {
                 if (!houseId) throw Error('No housing id privided')
                 setIsLoadingInProgress(true)
-                const { data: responseData } = await axios.post<IEcowattAlerts>(
-                    ECOWATT_ALERTS_ENDPOINT(houseId),
-                    alerts,
-                )
-                if (responseData) setEcowattAlerts(responseData)
+                axios.post<IEcowattAlerts>(ECOWATT_ALERTS_ENDPOINT(houseId), alerts)
                 setIsLoadingInProgress(false)
             } catch (error) {
                 setIsLoadingInProgress(false)
@@ -121,6 +117,6 @@ export function useEcowatt(immediate: boolean = false) {
         setEcowattSignalsData,
         ecowattAlerts,
         getEcowattAlerts,
-        updateEcowattAlert,
+        updateEcowattAlerts,
     }
 }
