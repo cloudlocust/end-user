@@ -96,12 +96,18 @@ describe('useEcowatt hook', () => {
     })
     test('when updateEcowattAlerts resolves', async () => {
         const {
-            renderedHook: { result },
+            renderedHook: { result, waitForValueToChange },
         } = reduxedRenderHook(() => useEcowatt())
         expect(result.current.isLoadingInProgress).toBeFalsy()
         act(() => {
             result.current.updateEcowattAlerts(TEST_HOUSE_ID, ecowattAlertsData)
         })
+        await waitForValueToChange(
+            () => {
+                return result.current.isLoadingInProgress
+            },
+            { timeout: 6000 },
+        )
         expect(result.current.isLoadingInProgress).toBeFalsy()
     })
     test('when updateEcowattAlerts fails', async () => {
