@@ -1,6 +1,6 @@
 import { rest } from 'msw'
-import { IEcowattData } from 'src/modules/Ecowatt/ecowatt'
-import { ECOWATT_ENDPOINT } from 'src/modules/Ecowatt/EcowattHook'
+import { IEcowattAlerts, IEcowattSignalsData } from 'src/modules/Ecowatt/ecowatt.d'
+import { ECOWATT_SIGNALS_ENDPOINT } from 'src/modules/Ecowatt/EcowattHook'
 import { SnakeCasedPropertiesDeep } from 'type-fest'
 
 /**
@@ -8,10 +8,12 @@ import { SnakeCasedPropertiesDeep } from 'type-fest'
  */
 export const TEST_ECOWATT_EROOR = 'error'
 
+const MOCK_ECOWATT_ALERTS_ENDPOINT = '/housings/:housing_id/ecowatt-alerts'
+
 /**
- * Ecowatt test data.
+ * Ecowatt signal test data.
  */
-export const TEST_ECOWATT_DATA: SnakeCasedPropertiesDeep<IEcowattData> = [
+export const TEST_ECOWATT_SIGNAL_DATA: SnakeCasedPropertiesDeep<IEcowattSignalsData> = [
     {
         reading_at: '2022-11-30T01:00:48+0000',
         reading: 1,
@@ -606,15 +608,33 @@ export const TEST_ECOWATT_DATA: SnakeCasedPropertiesDeep<IEcowattData> = [
 ]
 
 /**
+ * Ecowatt alerts test data.
+ */
+export const TEST_ECOWATT_ALERTS_DATA: SnakeCasedPropertiesDeep<IEcowattAlerts> = {
+    is_email_signal_one_day: true,
+    is_email_signal_three_days: true,
+    is_push_signal_one_day: false,
+    is_push_signal_three_days: true,
+}
+
+/**
  * Ecowatt endpoints.
  */
 export const ecowattEndpoints = [
-    rest.get<IEcowattData>(ECOWATT_ENDPOINT, (req, res, ctx) => {
+    rest.get<IEcowattSignalsData>(ECOWATT_SIGNALS_ENDPOINT, (req, res, ctx) => {
         const authorization = req.headers.get('authorization')
         if (authorization === TEST_ECOWATT_EROOR) {
             return res(ctx.status(400), ctx.delay(1000))
         } else {
-            return res(ctx.status(200), ctx.delay(1000), ctx.json(TEST_ECOWATT_DATA))
+            return res(ctx.status(200), ctx.delay(1000), ctx.json(TEST_ECOWATT_SIGNAL_DATA))
+        }
+    }),
+    rest.get<IEcowattAlerts>(MOCK_ECOWATT_ALERTS_ENDPOINT, (req, res, ctx) => {
+        const authorization = req.headers.get('authorization')
+        if (authorization === TEST_ECOWATT_EROOR) {
+            return res(ctx.status(400), ctx.delay(1000))
+        } else {
+            return res(ctx.status(200), ctx.delay(1000), ctx.json(TEST_ECOWATT_ALERTS_DATA))
         }
     }),
 ]
