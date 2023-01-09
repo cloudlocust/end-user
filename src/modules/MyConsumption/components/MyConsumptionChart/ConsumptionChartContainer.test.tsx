@@ -66,7 +66,8 @@ const CONSUMPTION_ICON_TEST_ID = 'BoltIcon'
 const EUROS_CONSUMPTION_ICON_TEST_ID = 'EuroIcon'
 const PMAX_BUTTON_TEXT = 'Pmax'
 const apexchartsClassName = 'apexcharts-svg'
-const disabledClassName = 'Mui-disabled'
+const buttonGroupdDisabledClassname = 'disabledField'
+const buttonDisabledClassname = 'Mui-disabled'
 const mockGetConsents = jest.fn()
 const mockGetMetricsWithParams = jest.fn()
 
@@ -282,9 +283,9 @@ describe('MyConsumptionContainer test', () => {
 
         expect(
             (getByTestId(EUROS_CONSUMPTION_ICON_TEST_ID).parentElement as HTMLButtonElement).classList.contains(
-                disabledClassName,
+                buttonDisabledClassname,
             ),
         ).toBeTruthy()
-        expect(getByText(PMAX_BUTTON_TEXT).classList.contains(disabledClassName)).toBeTruthy()
+        expect(getByText(PMAX_BUTTON_TEXT).classList.contains(buttonGroupdDisabledClassname)).toBeTruthy()
     })
 })
