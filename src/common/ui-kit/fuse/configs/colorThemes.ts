@@ -117,7 +117,7 @@ const colorThemes: colorThemesType = {
             },
         },
     },
-    customer: {
+    consumer: {
         palette: {
             mode: 'light',
             text: {
