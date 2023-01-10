@@ -508,7 +508,7 @@ export const getChartSpecifities = (
 export const convertConsumptionToWatt = (yValue: number | null | undefined) => {
     // IsNill check that value is undefined or null.
     const value = isNil(yValue) ? '' : yValue
-    const result = value ? value.toFixed(2) : 0
+    const result = value ? (60 * value).toFixed(2) : 0
     return result + ' Watt'
 }
 
