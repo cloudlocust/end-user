@@ -117,6 +117,31 @@ const colorThemes: colorThemesType = {
             },
         },
     },
+    consumer: {
+        palette: {
+            mode: 'light',
+            text: {
+                primary: '#000000',
+                secondary: lightText.secondary,
+                disabled: '#C4C7C7',
+            },
+            background: {
+                paper: '#FFFFFF',
+                default: '#f6f7f9',
+            },
+            primary: {
+                light: '#1EBDC7',
+                main: '#006970',
+                dark: '#004F55',
+                contrastText: '#FFFFFF',
+            },
+            secondary: {
+                light: '#ffe182',
+                main: '#FFC200',
+                dark: '#ffa200',
+            },
+        },
+    },
     voltfase: {
         palette: {
             mode: 'light',
