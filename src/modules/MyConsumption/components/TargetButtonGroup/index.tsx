@@ -77,7 +77,7 @@ const TargetButtonGroup = ({ removeTarget, addTarget, hidePmax }: ITargetButtonG
                                 backgroundColor: disabledField ? theme.palette.grey[600] : activeBackgroundColor,
                                 color: disabledField ? theme.palette.text.disabled : activeColor,
                                 fontWeight: '500',
-                                cursor: disabledField ? 'not-allowed' : 'pointer',
+                                cursor: disabledField ? 'default' : 'pointer',
                             }}
                         >
                             {formatMessage({
