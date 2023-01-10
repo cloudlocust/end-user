@@ -109,10 +109,23 @@ export interface IUser extends IBaseUser {
  */
 export interface IUserRegister extends IBaseUser {
     /**
+     * Civility of the user.
+     */
+    civility: civilityEnum
+    /**
      * Password of the user.
      */
     password: string
 }
+
+/**
+ * Civility enumeration
+ */
+export enum civilityEnum {
+    MONSIEUR = 'Mr',
+    MADAME = 'Mrs',
+}
+
 /**
  * User state.
  */

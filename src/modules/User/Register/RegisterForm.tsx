@@ -4,7 +4,7 @@ import { email, requiredBuilder, repeatPassword, Form, regex } from 'src/common/
 import { TextField, PasswordField, ButtonLoader } from 'src/common/ui-kit'
 import { GoogleMapsAddressAutoCompleteField } from 'src/common/ui-kit/form-fields/GoogleMapsAddressAutoComplete/GoogleMapsAddressAutoCompleteField'
 import { useRegister } from 'src/modules/User/Register/hooks'
-import { IUserRegister } from '../model'
+import { civilityEnum, IUserRegister } from '../model'
 import { PhoneNumber } from 'src/common/ui-kit/form-fields/phoneNumber/PhoneNumber'
 import FormControlLabel from '@mui/material/FormControlLabel'
 import Checkbox from '@mui/material/Checkbox'
@@ -75,8 +75,8 @@ export const RegisterForm = ({
                     name="civility"
                     label="Civilité"
                     validateFunctions={[requiredBuilder()]}
-                    children={['Mr', 'Mrs'].map((civilité) => {
-                        return <MenuItem value={civilité}>{civilité}</MenuItem>
+                    children={Object.values(civilityEnum).map((civility) => {
+                        return <MenuItem value={civility}>{civility}</MenuItem>
                     })}
                 />
                 <TextField name="firstName" label="Prénom" validateFunctions={[requiredBuilder()]} variant="outlined" />
