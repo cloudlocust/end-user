@@ -14,6 +14,8 @@ import { LinkRedirection } from 'src/modules/utils/LinkRedirection'
 import { passwordFieldValidationSecurity1 } from 'src/modules/utils'
 
 const urlLegalNotice = 'https://www.myem.fr/mentions-legales/'
+// Condition Général de Vente
+const urlCGV = 'https://www.myem.fr/particuliers-cgv/'
 const urlPolitiqueConfidentialité = 'https://drive.google.com/uc?export=download&id=1sMFMizrEPZ4ZHhe6Zf-PTJGRUQBFGUEv'
 /**
  * Form used for user registration. This is a component based on form hooks.
@@ -143,7 +145,7 @@ export const RegisterForm = ({
                                     id: ` et de `,
                                     defaultMessage: ` et de `,
                                 })}
-                                <LinkRedirection url={urlLegalNotice} label="Vente" color="primary.light" />
+                                <LinkRedirection url={urlCGV} label="Vente" color="primary.light" />
                                 {formatMessage({
                                     id: ` de la plateforme`,
                                     defaultMessage: ` de la plateforme`,
