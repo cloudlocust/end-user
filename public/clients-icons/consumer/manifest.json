@@ -1,6 +1,6 @@
 {
-    "name": "My Energy Manager",
-    "short_name": "MYEM",
+    "name": "nrLINK",
+    "short_name": "nrLINK",
     "theme_color": "#006970",
     "background_color": "#FFFFFF",
     "display": "standalone",
