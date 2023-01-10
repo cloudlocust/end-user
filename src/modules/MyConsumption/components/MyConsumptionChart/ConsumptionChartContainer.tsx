@@ -177,7 +177,7 @@ export const ConsumptionChartContainer = ({
                         >
                             Ma Consommation
                         </TypographyFormatMessage>
-                        {/* Consommation Wh par Jour / Semaine / Mois / Année */}
+                        {/* Consommation Watt par jour / Semaine / Mois / Année */}
                         <TypographyFormatMessage variant="h5" style={{ color: theme.palette.primary.contrastText }}>
                             {showPerPeriodText('consumption', period, isEurosConsumptionChart)}
                         </TypographyFormatMessage>

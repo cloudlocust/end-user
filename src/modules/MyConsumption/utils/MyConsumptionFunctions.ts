@@ -24,6 +24,7 @@ import {
 import { cloneDeep } from 'lodash'
 import { metricTargetsHook } from 'src/modules/MyConsumption/utils/myConsumptionVariables'
 import { enphaseConsentFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
+import { isNil } from 'lodash'
 
 /**
  * FormatMetricFilter function converts the data to the required format.
@@ -140,13 +141,13 @@ export const getRange = (rangePeriod: string, toDate?: Date, operation: 'sub' | 
 }
 
 /**
- * Function that returns list of dates representing every 2 minutes for the given day.
+ * Function that returns list of dates representing every minutes for the given day.
  *
  * @param range Range represents start date and end date.
- * @returns List of dates representing every 2 minutes for the given day.
+ * @returns List of dates representing every minutes for the given day.
  */
 const getMinutesValues = (range: metricRangeType) => {
-    return getAddedDates(720, range.from, 'minute')
+    return getAddedDates(1440, range.from, 'minute')
 }
 
 /**
@@ -193,9 +194,7 @@ const getMonthValues = (range: metricRangeType) => {
 const getAddedDates = (amount: number, startDate: string | number | Date, dayjsPeriod: dayjs.ManipulateType) => {
     const dates: number[] = []
     for (let i = 0; i < amount; i++) {
-        const currentDate = dayjs(startDate)
-            .add(dayjsPeriod === 'minute' ? 2 * i : i, dayjsPeriod)
-            .format()
+        const currentDate = dayjs(startDate).add(i, dayjsPeriod).format()
         dates.push(dayjs(currentDate).unix() * 1000)
     }
     return dates
@@ -363,11 +362,11 @@ export const isMissingYAxisValues = (yAxisValues: ApexAxisChartSerie['data'], pe
      */
     if (period === 'yearly') return yAxisValues.length !== 13
     /**
-     * Default is daily, Data should have 30 * 24 elements.
-     * 30 Represents 1h, because interval each 2min.
+     * Default is daily, Data should have 60 * 24 elements.
+     * 60 Represents 1h, because interval each 1min.
      * 24 Because there is 24 hours a day.
      */
-    return yAxisValues.length !== 30 * 24
+    return yAxisValues.length !== 60 * 24
 }
 
 /**
@@ -501,6 +500,19 @@ export const getChartSpecifities = (
 }
 
 /**
+ * Function that converts consumption from Wh to Watt.
+ *
+ * @param yValue Value in Wh.
+ * @returns Consumption from Wh to Watt.
+ */
+export const convertConsumptionToWatt = (yValue: number | null | undefined) => {
+    // IsNill check that value is undefined or null.
+    const value = isNil(yValue) ? '' : yValue
+    const result = value ? value.toFixed(2) : 0
+    return result + ' Watt'
+}
+
+/**
  * Functuon that returns initial values used for useMetrics hook for MyConsumption page.
  *
  * @returns Initial metrics hook values.
@@ -516,14 +528,14 @@ export const getInitialMetricsHookValues = (): getMetricType => {
                 metric.target !== metricTargetsEnum.totalProduction,
         )
         return {
-            interval: '2m',
+            interval: '1m',
             range: getRange('day'),
             targets: targetsWithoutEnphase,
             filters: [],
         }
     } else {
         return {
-            interval: '2m',
+            interval: '1m',
             range: getRange('day'),
             targets: metricTargetsHook,
             filters: [],
@@ -540,7 +552,7 @@ export const getInitialMetricsHookValues = (): getMetricType => {
  * @returns Text that represents the interval.
  */
 export const showPerPeriodText = (chartType: 'consumption' | 'production', period: periodType, isEuroUnit = false) => {
-    let textUnit = `en ${chartType === 'consumption' && isEuroUnit ? '€' : period === 'daily' ? 'Wh' : 'kWh'}`
+    let textUnit = `en ${chartType === 'consumption' && isEuroUnit ? '€' : period === 'daily' ? 'Watt' : 'kWh'}`
     if (period === 'daily') {
         return `${textUnit} par jour`
     } else if (period === 'weekly') {

@@ -21,7 +21,7 @@ const enphaseConsent: IEnphaseConsent = {
 
 let mockIsMetricsLoading = false
 const mockSetFilters = jest.fn()
-const PRODUCTION_TITLE_DAILY = 'en Wh par jour'
+const PRODUCTION_TITLE_DAILY = 'en Watt par jour'
 const PRODUCTION_TITLE_WEEKLY = 'en kWh par semaine'
 const PRODUCTION_TITLE_MONTHLY = 'en kWh par mois'
 const PRODUCTION_TITLE_YEARLY = 'en kWh par année'
@@ -43,7 +43,7 @@ let mockRange = {
 }
 
 let mockPeriod: periodType = 'daily'
-let mockMetricsInterval: metricIntervalType = '2m'
+let mockMetricsInterval: metricIntervalType = '1m'
 
 const productionChartContainerProps: ProductionChartContainerProps = {
     filters: mockFilters,
@@ -63,7 +63,7 @@ jest.mock('src/modules/Metrics/metricsHook.ts', () => ({
         isMetricsLoading: mockIsMetricsLoading,
         setRange: jest.fn(),
         setMetricsInterval: jest.fn(),
-        interval: '2m',
+        interval: '1m',
         setFilters: mockSetFilters,
         getMetricsWithParams: mockGetMetricsWithParams,
     }),
