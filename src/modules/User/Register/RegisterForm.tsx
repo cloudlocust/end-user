@@ -12,6 +12,8 @@ import FormControl from '@mui/material/FormControl'
 import { FormHelperText } from '@mui/material'
 import { LinkRedirection } from 'src/modules/utils/LinkRedirection'
 import { passwordFieldValidationSecurity1 } from 'src/modules/utils'
+import { Select } from 'src/common/ui-kit/form-fields/Select'
+import MenuItem from '@mui/material/MenuItem'
 
 const urlLegalNotice = 'https://www.myem.fr/mentions-legales/'
 const urlPolitiqueConfidentialité = 'https://drive.google.com/uc?export=download&id=1sMFMizrEPZ4ZHhe6Zf-PTJGRUQBFGUEv'
@@ -69,6 +71,14 @@ export const RegisterForm = ({
         <Form onSubmit={onSubmitWrapper}>
             {/* register your input into the hook by invoking the "register" function */}
             <div className="flex flex-col justify-center w-full">
+                <Select
+                    name="civility"
+                    label="Civilité"
+                    validateFunctions={[requiredBuilder()]}
+                    children={['Mr', 'Mrs'].map((civilité) => {
+                        return <MenuItem value={civilité}>{civilité}</MenuItem>
+                    })}
+                />
                 <TextField name="firstName" label="Prénom" validateFunctions={[requiredBuilder()]} variant="outlined" />
                 <TextField name="lastName" label="Nom" validateFunctions={[requiredBuilder()]} />
                 <TextField name="email" label="Email" validateFunctions={[requiredBuilder(), email()]} />
