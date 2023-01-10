@@ -42,7 +42,8 @@ const TargetButtonGroup = ({ removeTarget, addTarget, hidePmax }: ITargetButtonG
         <ButtonGroup variant="contained">
             {buttonOptions.map((option) => {
                 const disabledPmax = hidePmax && option.value === 'Pmax'
-                const disabledTemperature = tempPmaxFeatureState && option.value === 'temperature'
+                const disabledTemperature =
+                    tempPmaxFeatureState && (option.value === 'temperature' || option.value === 'Pmax')
                 const disabledField = disabledPmax || disabledTemperature
                 const activeField = activeButton === option.value
                 const activeBackgroundColor = activeField ? theme.palette.secondary.main : theme.palette.primary.main
@@ -55,12 +56,12 @@ const TargetButtonGroup = ({ removeTarget, addTarget, hidePmax }: ITargetButtonG
                         placement="top"
                         disableHoverListener={!disabledField}
                         title={formatMessage({
-                            id: disabledTemperature
-                                ? "Cette fonctionnalité n'est pas encore disponible"
-                                : 'Cette fonctionnalité n’est pas disponible sur cette période',
-                            defaultMessage: disabledTemperature
-                                ? "Cette fonctionnalité n'est pas encore disponible"
-                                : 'Cette fonctionnalité n’est pas disponible sur cette période',
+                            id: disabledPmax
+                                ? 'Cette fonctionnalité n’est pas disponible sur cette période'
+                                : "Cette fonctionnalité n'est pas encore disponible",
+                            defaultMessage: disabledPmax
+                                ? 'Cette fonctionnalité n’est pas disponible sur cette période'
+                                : "Cette fonctionnalité n'est pas encore disponible",
                         })}
                     >
                         <Button
@@ -74,7 +75,7 @@ const TargetButtonGroup = ({ removeTarget, addTarget, hidePmax }: ITargetButtonG
                             disableRipple={disabledField}
                             style={{
                                 backgroundColor: disabledField ? theme.palette.grey[600] : activeBackgroundColor,
-                                color: disabledPmax ? theme.palette.text.disabled : activeColor,
+                                color: disabledField ? theme.palette.text.disabled : activeColor,
                                 fontWeight: '500',
                                 cursor: disabledField ? 'not-allowed' : 'pointer',
                             }}
