@@ -12,7 +12,7 @@ const listUrl = [
     },
     {
         title: 'Conditions Générales de Vente',
-        link: 'https://www.myem.fr/mentions-legales/',
+        link: 'https://www.myem.fr/particuliers-cgv/',
     },
     {
         title: 'Politique de Confidentialité',

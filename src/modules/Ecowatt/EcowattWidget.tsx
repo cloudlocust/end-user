@@ -3,7 +3,7 @@ import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyForm
 import { OfflineBolt } from '@mui/icons-material/'
 import 'dayjs/locale/fr'
 import { useState, useContext } from 'react'
-import { EcowattConsumptionValue, IEcowatt } from 'src/modules/Ecowatt/ecowatt.d'
+import { EcowattConsumptionValue, IEcowattSignals } from 'src/modules/Ecowatt/ecowatt.d'
 import { styled } from '@mui/material/styles'
 import dayjs from 'dayjs'
 import { capitalize, isEmpty } from 'lodash'
@@ -24,7 +24,7 @@ export const ECOWATT_TITLE = "Ecowatt : La météo de l'électricité"
  * @param signalValue Signal value representing the level of consumption.
  * @returns Mui icon OfflineBolt.
  */
-function getSignalIcon(signalValue: IEcowatt['reading']) {
+function getSignalIcon(signalValue: IEcowattSignals['reading']) {
     switch (signalValue) {
         case EcowattConsumptionValue.OK:
             return <OfflineBolt color="success" fontSize="large" />
@@ -41,17 +41,17 @@ function getSignalIcon(signalValue: IEcowatt['reading']) {
  * Component for Ecowatt Widget.
  *
  * @param root0 N/A.
- * @param root0.ecowattData Ecowatt data coming from useEcowatt hook.
+ * @param root0.ecowattSignalsData Ecowatt data coming from useEcowatt hook.
  * @param root0.isEcowattDataInProgress Progress state.
  * @returns EcowattWidget JSX.
  */
 export const EcowattWidget = ({
-    ecowattData,
+    ecowattSignalsData,
     isEcowattDataInProgress,
 }: // eslint-disable-next-line jsdoc/require-jsdoc
 {
     // eslint-disable-next-line jsdoc/require-jsdoc
-    ecowattData: IEcowatt[] | null
+    ecowattSignalsData: IEcowattSignals[] | null
     // eslint-disable-next-line jsdoc/require-jsdoc
     isEcowattDataInProgress: boolean
 }) => {
@@ -59,7 +59,7 @@ export const EcowattWidget = ({
     const mdDown = useMediaQuery(theme.breakpoints.down('md'))
     const [openTooltip, setOpenTooltip] = useState<boolean>(false)
     const [expendDetails, setExpendDetails] = useToggle(false)
-    const [dayDetails, setDayDetails] = useState<IEcowatt | null>(null)
+    const [dayDetails, setDayDetails] = useState<IEcowattSignals | null>(null)
     const { handleOpenAlertsDrawer } = useContext(AlertsDrawerContext)
 
     const StyledDiv = styled('div')(({ theme }) => ({
@@ -83,7 +83,7 @@ export const EcowattWidget = ({
      *
      * @param ecowatt Ecowatt day data.
      */
-    const handleExpendDetails = (ecowatt: IEcowatt) => {
+    const handleExpendDetails = (ecowatt: IEcowattSignals) => {
         // If it's already open, we close it.
         if (expendDetails && ecowatt === dayDetails) {
             setExpendDetails(false)
@@ -111,14 +111,14 @@ export const EcowattWidget = ({
                         <div className="flex flex-col justify-center items-center w-full mb-8">
                             <CircularProgress data-testid="circular-progress" size={25} />
                         </div>
-                    ) : isEmpty(ecowattData) ? (
+                    ) : isEmpty(ecowattSignalsData) ? (
                         <div className="w-full flex justify-center items-center">
                             <TypographyFormatMessage>Aucune donnée disponible</TypographyFormatMessage>
                         </div>
                     ) : (
                         <div className="flex flex-col w-full">
                             <div className="w-full flex justify-evenly flex-grow md:flex-grow-0">
-                                {ecowattData?.map((day, index) => (
+                                {ecowattSignalsData?.map((day, index) => (
                                     <>
                                         <StyledDiv
                                             onClick={() => handleExpendDetails(day)}

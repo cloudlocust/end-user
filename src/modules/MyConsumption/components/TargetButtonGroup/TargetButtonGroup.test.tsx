@@ -8,7 +8,7 @@ import { metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
 const mockRemoveTarget = jest.fn()
 const mockAddTarget = jest.fn()
 let mockHidePMax = false
-const DISABLED_CLASSNAME = 'Mui-disabled'
+const DISABLED_CLASSNAME = 'disabledField'
 const pmaxTarget = metricTargetsEnum.pMax
 const internalTemperatureTarget = metricTargetsEnum.internalTemperature
 const externalTemperatureTarget = metricTargetsEnum.externalTemperature
@@ -39,5 +39,8 @@ describe('<TargetButtonGroup /> props', () => {
             <TargetButtonGroup removeTarget={mockRemoveTarget} addTarget={mockAddTarget} hidePmax={mockHidePMax} />,
         )
         expect(getByText(buttonOptions[2].label).classList.contains(DISABLED_CLASSNAME)).toBeTruthy()
+        userEvent.click(getByText(buttonOptions[2].label))
+        expect(mockRemoveTarget).not.toHaveBeenCalled()
+        expect(mockRemoveTarget).not.toHaveBeenCalled()
     })
 })

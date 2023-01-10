@@ -39,7 +39,7 @@ export const MyConsumptionContainer = () => {
     // metricsInterval is initialized this way, so that its value is different from 2m or 30m, because it'll be set to 2m or 30m once consent request has finished.
     // This won't create a problem even if metricIntervalType doesn't include undefined, because this will affect only on mount of MyConsumptionContainer and all children component that useMetrics, won't execute getMetrics on mount.
     const [metricsInterval, setMetricsInterval] = useState<metricIntervalType>('1m')
-    const { ecowattData, isLoadingInProgress: isEcowattDataInProgress } = useEcowatt()
+    const { ecowattSignalsData, isLoadingInProgress: isEcowattDataInProgress } = useEcowatt(true)
 
     const nrlinkOff = nrlinkConsent?.nrlinkConsentState === 'NONEXISTENT'
     const enedisOff = enedisSgeConsent?.enedisSgeConsentState === 'NONEXISTENT'
@@ -132,7 +132,10 @@ export const MyConsumptionContainer = () => {
             </div>
             {/* Ecowatt Widget */}
             <div className="p-12 sm:p-24" id="ecowatt-widget">
-                <EcowattWidget ecowattData={ecowattData} isEcowattDataInProgress={isEcowattDataInProgress} />
+                <EcowattWidget
+                    ecowattSignalsData={ecowattSignalsData}
+                    isEcowattDataInProgress={isEcowattDataInProgress}
+                />
             </div>
 
             {/* Widget List */}
