@@ -102,5 +102,5 @@ export const REACT_APP_GTM_ID = window._env_.REACT_APP_GTM_ID
  * Tag Manager Config.
  */
 export const TAG_MANAGER_CONFIG = {
-    gtmId: 'GTM-N5PKTLB',
+    gtmId: REACT_APP_GTM_ID,
 }
