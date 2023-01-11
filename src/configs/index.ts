@@ -92,3 +92,15 @@ export const BASENAME_URL = window._env_.REACT_APP_BASENAME_URL
  *
  */
 export const SET_PASSWORD_PAGE_ACCESS = window._env_.REACT_APP_SET_PASSWORD_PAGE_ACCESS
+
+/**
+ * GTM ID environment variable.
+ */
+export const REACT_APP_GTM_ID = window._env_.REACT_APP_GTM_ID
+
+/**
+ * Tag Manager Config.
+ */
+export const TAG_MANAGER_CONFIG = {
+    gtmId: 'GTM-N5PKTLB',
+}

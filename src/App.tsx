@@ -9,6 +9,8 @@ import { ToolbarWidget as ToolbarContent } from 'src/modules/Layout'
 import { ConfirmProvider } from 'material-ui-confirm'
 import ToolbarIcon from 'src/modules/Layout/Toolbar/components/ToolbarIcon'
 import { IPageSettings } from 'src/common/react-platform-components'
+import TagManager from 'react-gtm-module'
+import { TAG_MANAGER_CONFIG } from 'src/configs'
 
 /**
  * Check if the route is enabled or not.
@@ -27,6 +29,9 @@ const isRouteDisabled = (
         return false
     }
 }
+
+// Initialize google tag manager
+TagManager.initialize(TAG_MANAGER_CONFIG)
 
 /**
  * Routes accessible to the app wrapped by access hook.
