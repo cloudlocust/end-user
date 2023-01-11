@@ -147,9 +147,12 @@ jest.mock('src/modules/User/Register/hooks', () => ({
  * @param getByTestId GetByTestId Jest.
  */
 const fillFormWithData = async (getByRole: Function, container: HTMLElement, getByTestId: Function) => {
+    /**
+     * select civility is a select element that should be selected with getByLabelText
+     */
     const civilitySelectField = screen.getByLabelText('Civilité *')
     userEvent.click(civilitySelectField)
-    await waitFor(() => userEvent.click(screen.getByText('Mr')))
+    userEvent.click(screen.getByText('Mr'))
 
     const firstNameField = getByRole('textbox', { name: 'Prénom' })
     userEvent.type(firstNameField, 'test prénom')
