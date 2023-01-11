@@ -147,6 +147,10 @@ jest.mock('src/modules/User/Register/hooks', () => ({
  * @param getByTestId GetByTestId Jest.
  */
 const fillFormWithData = async (getByRole: Function, container: HTMLElement, getByTestId: Function) => {
+    const civilitySelectField = screen.getByLabelText('Civilité *')
+    userEvent.click(civilitySelectField)
+    await waitFor(() => userEvent.click(screen.getByText('Mr')))
+
     const firstNameField = getByRole('textbox', { name: 'Prénom' })
     userEvent.type(firstNameField, 'test prénom')
     const lastNameField = getByRole('textbox', { name: 'Nom' })
@@ -196,7 +200,7 @@ describe('test registerForm', () => {
         await act(async () => {
             fireEvent.click(screen.getByText('Valider'))
         })
-        expect(getAllByText('Champ obligatoire non renseigné').length).toBe(7)
+        expect(getAllByText('Champ obligatoire non renseigné').length).toBe(8)
     })
     test('RGPD checkbox required', async () => {
         const { getAllByText, getByRole, container, getByTestId } = reduxedRender(<RegisterForm />)
@@ -256,6 +260,7 @@ describe('test registerForm', () => {
         await waitFor(
             () => {
                 expect(mockOnSubmit).toHaveBeenCalledWith({
+                    civility: 'Mr',
                     email: TEST_EMAIL,
                     firstName: 'test prénom',
                     lastName: 'test nom',
