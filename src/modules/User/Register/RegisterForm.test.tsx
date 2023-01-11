@@ -126,6 +126,7 @@ jest.mock('use-places-autocomplete', () => ({
 }))
 // ============================================  ===============
 
+const TEST_CIVILITY_OPTION = 'Mr'
 const TEST_EMAIL = 'email@email.com'
 
 const mockOnSubmit = jest.fn((data) => null)
@@ -150,7 +151,9 @@ const fillFormWithData = async (getByRole: Function, container: HTMLElement, get
     // select civility is a select element that should be selected with getByLabelText
     const civilitySelectField = screen.getByLabelText('Civilité *')
     userEvent.click(civilitySelectField)
-    userEvent.click(screen.getByText('Mr'))
+    expect(screen.getAllByRole('option').length).toBe(2)
+    userEvent.click(screen.getByText(TEST_CIVILITY_OPTION))
+    expect(civilitySelectField.innerHTML).toBe(TEST_CIVILITY_OPTION)
 
     const firstNameField = getByRole('textbox', { name: 'Prénom' })
     userEvent.type(firstNameField, 'test prénom')
@@ -261,7 +264,7 @@ describe('test registerForm', () => {
         await waitFor(
             () => {
                 expect(mockOnSubmit).toHaveBeenCalledWith({
-                    civility: 'Mr',
+                    civility: TEST_CIVILITY_OPTION,
                     email: TEST_EMAIL,
                     firstName: 'test prénom',
                     lastName: 'test nom',
