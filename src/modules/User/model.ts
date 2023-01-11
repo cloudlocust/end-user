@@ -119,10 +119,16 @@ export interface IUserRegister extends IBaseUser {
 }
 
 /**
- * Civility enumeration
+ * Civility enumeration.
  */
 export enum civilityEnum {
+    /**
+     * Monsieur.
+     */
     MONSIEUR = 'Mr',
+    /**
+     * Madame.
+     */
     MADAME = 'Mrs',
 }
 
