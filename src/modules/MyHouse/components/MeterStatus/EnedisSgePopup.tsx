@@ -223,9 +223,7 @@ export const EnedisSgePopup = ({
                                                     '_blank',
                                                 )
                                             }
-                                        >
-                                            {sgeConsentMessage}
-                                        </TypographyFormatMessage>
+                                        >{`${sgeConsentMessage}`}</TypographyFormatMessage>
                                     </>
                                 )}
                             </div>
