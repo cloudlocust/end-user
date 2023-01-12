@@ -224,9 +224,7 @@ export const EnedisSgePopup = ({
                                                 )
                                             }
                                         >
-                                            {/* {sgeConsentMessage} */}
-                                            J'autorise My Energy Manager à la récolte de mon historique de données de
-                                            consommation auprès d'Enedis.
+                                            {sgeConsentMessage}
                                         </TypographyFormatMessage>
                                     </>
                                 )}
