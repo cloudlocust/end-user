@@ -35,6 +35,7 @@ export const TEST_FAIL_ID = 23
  */
 export const TEST_SUCCESS_USER = {
     id: '1',
+    civility: 'Mr',
     first_name: 'Orlando',
     last_name: 'Jackson',
     email: TEST_SUCCESS_MAIL,
