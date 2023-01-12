@@ -119,7 +119,7 @@ export const EcowattAlertsForm = ({
                             defaultMessage: 'Annuler',
                         })}
                     </Button>
-                    <ButtonLoader variant="contained" disabled={!isEdit} onClick={() => handleSubmitEcowattAlerts()}>
+                    <ButtonLoader variant="contained" disabled={!isEdit} onClick={handleSubmitEcowattAlerts}>
                         {formatMessage({
                             id: 'Enregistrer',
                             defaultMessage: 'Enregistrer',
