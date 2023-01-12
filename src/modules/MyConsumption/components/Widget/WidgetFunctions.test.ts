@@ -174,6 +174,21 @@ describe('Test widget functions', () => {
             const result = computeTotalEuros(data)
             expect(result).toStrictEqual(expectedResult)
         })
+        test('when it returns 0 €', () => {
+            const val = 0
+            const expectedResult = {
+                value: val,
+                unit: '€',
+            }
+            const data: IMetric[] = [
+                {
+                    datapoints: [[null, 1640995200000]] as number[][],
+                    target: metricTargetsEnum.eurosConsumption,
+                },
+            ]
+            const result = computeTotalEuros(data)
+            expect(result).toStrictEqual(expectedResult)
+        })
     })
 
     describe('test computeWidgetAssets', () => {

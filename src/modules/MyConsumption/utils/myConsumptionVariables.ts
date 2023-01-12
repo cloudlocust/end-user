@@ -3,7 +3,6 @@ import { periodType } from 'src/modules/MyConsumption/myConsumptionTypes'
 import { Theme } from '@mui/material/styles/createTheme'
 import { isNil } from 'lodash'
 import convert, { Unit } from 'convert-units'
-import { enphaseConsentFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
 
 /**
  * Data Consumption Period.
@@ -11,7 +10,7 @@ import { enphaseConsentFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
 export const dataConsumptionPeriod = [
     {
         name: 'Jour',
-        interval: enphaseConsentFeatureState ? '30m' : '2m',
+        interval: '1m',
         period: 'daily' as periodType,
     },
     {
@@ -192,7 +191,6 @@ export const getYPointValueLabel = (yValue: number | null | undefined, chartName
             return ` ${unit}`
     }
 }
-
 /**
  * Nrlink & Enedis Off message.
  */

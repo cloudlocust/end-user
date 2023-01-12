@@ -3,7 +3,7 @@ import { reduxedRender } from 'src/common/react-platform-components/test'
 import { MeterVerificationEnum } from 'src/modules/Consents/Consents.d'
 import { EnedisSgePopup } from 'src/modules/MyHouse/components/MeterStatus/EnedisSgePopup'
 import { BrowserRouter as Router } from 'react-router-dom'
-import { EnedisSgePopupProps } from 'src/modules/MyHouse/components/MeterStatus/enedisSgePopup'
+import { EnedisSgePopupProps } from 'src/modules/MyHouse/components/MeterStatus/enedisSgePopup.d'
 import { TEST_HOUSES } from 'src/mocks/handlers/houses'
 
 const SGE_MESSAGE = 'Example text'

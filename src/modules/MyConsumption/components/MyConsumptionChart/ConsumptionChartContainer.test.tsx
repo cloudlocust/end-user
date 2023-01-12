@@ -55,17 +55,19 @@ const mockSetFilters = jest.fn()
 const HAS_MISSING_CONTRACTS_WARNING_TEXT =
     "Ce graphe est un exemple basé sur un tarif Bleu EDF Base. Vos données contractuelles de fourniture d'énergie ne sont pas disponibles sur toute la période."
 const HAS_MISSING_CONTRACTS_WARNING_REDIRECT_LINK_TEXT = "Renseigner votre contrat d'énergie"
-const CONSUMPTION_TITLE_DAILY = 'en Wh par jour'
+const CONSUMPTION_TITLE_DAILY = 'en Watt par jour'
 const CONSUMPTION_TITLE_WEEKLY = 'en kWh par semaine'
 const CONSUMPTION_TITLE_MONTHLY = 'en kWh par mois'
 const CONSUMPTION_TITLE_YEARLY = 'en kWh par année'
-const EUROS_CONSUMPTION_TITLE_DAILY = 'en € par jour'
 const EUROS_CONSUMPTION_TITLE_WEEKLY = 'en € par semaine'
 const EUROS_CONSUMPTION_TITLE_MONTHLY = 'en € par mois'
 const EUROS_CONSUMPTION_TITLE_YEARLY = 'en € par année'
 const CONSUMPTION_ICON_TEST_ID = 'BoltIcon'
 const EUROS_CONSUMPTION_ICON_TEST_ID = 'EuroIcon'
+const PMAX_BUTTON_TEXT = 'Pmax'
 const apexchartsClassName = 'apexcharts-svg'
+const buttonGroupdDisabledClassname = 'disabledField'
+const buttonDisabledClassname = 'Mui-disabled'
 const mockGetConsents = jest.fn()
 const mockGetMetricsWithParams = jest.fn()
 
@@ -82,7 +84,7 @@ let mockRange = {
 }
 
 let mockPeriod: periodType = 'daily'
-let mockMetricsInterval: metricIntervalType = '2m'
+let mockMetricsInterval: metricIntervalType = '1m'
 
 const consumptionChartContainerProps: ConsumptionChartContainerProps = {
     filters: mockFilters,
@@ -110,7 +112,7 @@ jest.mock('src/modules/Metrics/metricsHook.ts', () => ({
         isMetricsLoading: mockIsMetricsLoading,
         setRange: jest.fn(),
         setMetricsInterval: jest.fn(),
-        interval: '2m',
+        interval: '1m',
         setFilters: mockSetFilters,
         getMetricsWithParams: mockGetMetricsWithParams,
     }),
@@ -206,10 +208,6 @@ describe('MyConsumptionContainer test', () => {
     test('Different period props, When euros consumption chart.', async () => {
         const consumptionTitleCases = [
             {
-                period: 'daily' as periodType,
-                text: EUROS_CONSUMPTION_TITLE_DAILY,
-            },
-            {
                 period: 'weekly' as periodType,
                 text: EUROS_CONSUMPTION_TITLE_WEEKLY,
             },
@@ -242,7 +240,7 @@ describe('MyConsumptionContainer test', () => {
         })
     })
     test('When hasMissingHousingContracts and isEurosConsumptin, message is shown', async () => {
-        consumptionChartContainerProps.period = mockPeriod
+        consumptionChartContainerProps.period = 'weekly'
         consumptionChartContainerProps.hasMissingHousingContracts = true
         const { getByText, getByTestId } = reduxedRender(
             <Router>
@@ -265,19 +263,29 @@ describe('MyConsumptionContainer test', () => {
             'href',
             `${URL_MY_HOUSE}/${LIST_OF_HOUSES[0].id}/contracts`,
         )
+
+        // TOGGLING BACK TO CONSUMPTION, AUTOCONSUMPTION CHART, for coverage of EurosConsumptionButtonToggler.
+        userEvent.click(getByTestId(CONSUMPTION_ICON_TEST_ID))
+        // EUROS ICON Should be shown
+        await waitFor(() => {
+            expect(getByTestId(EUROS_CONSUMPTION_ICON_TEST_ID)).toBeTruthy()
+        })
+        expect(() => getByText(HAS_MISSING_CONTRACTS_WARNING_TEXT)).toThrow()
     })
-    // test('housing list is filled and isMetricsLoading true, Spinner is shown', async () => {
-    //     // initiate the store by adding housing list - by default current state will be the first element
-    //     await store.dispatch.housingModel.setHousingModelState(LIST_OF_HOUSES)
-    //     mockIsMetricsLoading = true
-    //     mockData = []
-    //     const { container } = reduxedRender(
-    //         <Router>
-    //             <MyConsumptionContainer />
-    //         </Router>,
-    //         { store },
-    //     )
-    //     expect(container.querySelector(circularProgressClassname)).toBeInTheDocument()
-    //     expect(container.querySelector(`.${apexchartsClassName}`)).not.toBeInTheDocument()
-    // })
+    test('When period is daily, EurosConsumption and pMax button should be disabled', async () => {
+        consumptionChartContainerProps.period = 'daily'
+        const { getByText, getByTestId } = reduxedRender(
+            <Router>
+                <ConsumptionChartContainer {...consumptionChartContainerProps} />
+            </Router>,
+            { initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[0] } } },
+        )
+
+        expect(
+            (getByTestId(EUROS_CONSUMPTION_ICON_TEST_ID).parentElement as HTMLButtonElement).classList.contains(
+                buttonDisabledClassname,
+            ),
+        ).toBeTruthy()
+        expect(getByText(PMAX_BUTTON_TEXT).classList.contains(buttonGroupdDisabledClassname)).toBeTruthy()
+    })
 })

@@ -13,12 +13,12 @@ import { getWidgetInfoIcon } from 'src/modules/MyConsumption/components/WidgetIn
 import { computePercentageChange } from 'src/modules/Analysis/utils/computationFunctions'
 import Icon from '@mui/material/Icon'
 
+const emptyValueUnit = { value: 0, unit: '' }
 /**
  * Widget Component.
  *
  * @param props N/A.
  * @param props.range Current range so that we handle the xAxis values according to period and range selected.
- * @param props.metricsInterval Boolean state to know whether the stacked option is true or false.
  * @param props.filters Metrics Filters.
  * @param props.hasMissingHousingContracts HasMissingHousingContracts result.
  * @param props.target Target of the widget.
@@ -27,7 +27,7 @@ import Icon from '@mui/material/Icon'
  */
 export const Widget = memo(
     ({ filters, range, hasMissingHousingContracts, metricsInterval, target, period }: IWidgetProps) => {
-        const { data, setFilters, setMetricsInterval, setRange, isMetricsLoading } = useMetrics({
+        const { data, setMetricsInterval, setRange, isMetricsLoading } = useMetrics({
             interval: metricsInterval,
             range: getWidgetRange(range, period),
             targets: [
@@ -40,7 +40,6 @@ export const Widget = memo(
         })
         const {
             data: oldData,
-            setFilters: setFiltersPrevious,
             setMetricsInterval: setMetricsIntervalPrevious,
             setRange: setRangePrevious,
         } = useMetrics({
@@ -57,32 +56,26 @@ export const Widget = memo(
 
         const theme = useTheme()
         const { unit, value } = useMemo(
-            () => (!data.length ? { value: 0, unit: '' } : computeWidgetAssets(data, target)),
+            () => (!data.length ? emptyValueUnit : computeWidgetAssets(data, target)),
             [data, target],
         )
         const { value: oldDataValue } = useMemo(
-            () => (!oldData.length ? { value: 0, unit: '' } : computeWidgetAssets(oldData, target)),
+            () => (!oldData.length ? emptyValueUnit : computeWidgetAssets(oldData, target)),
             [oldData, target],
         )
         const percentageChange = useMemo(
             () => computePercentageChange(oldDataValue as number, value as number),
             [value, oldDataValue],
         )
-        // Props to track the change of period change, so that we call getMetrics only when range change, instead of when both range and period change.
-        const isPeriodPropsChanged = useRef(false)
+        // Props to track the change of range change, so that we call getMetrics only when range change, instead of when both range and period change.
+        const isRangeChanged = useRef(false)
 
-        // When period change
+        // When range change, set isRangedChanged
         useEffect(() => {
-            isPeriodPropsChanged.current = true
-        }, [period])
-
-        // When period change
-        useEffect(() => {
-            // When range changes reset isPeriodPropsChange to default value.
-            isPeriodPropsChanged.current = false
+            isRangeChanged.current = true
         }, [range])
 
-        // get metrics when range change.
+        // get metrics when metricsInterval change.
         useEffect(() => {
             setMetricsInterval(metricsInterval)
             setMetricsIntervalPrevious(metricsInterval)
@@ -92,18 +85,14 @@ export const Widget = memo(
         useEffect(() => {
             // If period just changed block the call of getMetrics, because period and range changes at the same time, so to avoid two call of getMetrics
             // 1 call when range change and the other when period change, then only focus on when range changes.
-            if (isPeriodPropsChanged.current === false) {
+            if (isRangeChanged.current) {
                 const widgetRange = getWidgetRange(range, period)
                 setRange(widgetRange)
                 setRangePrevious(getWidgetPreviousRange(widgetRange, period))
+                // reset isRangdChanged
+                isRangeChanged.current = false
             }
         }, [period, range, setRange, setRangePrevious])
-
-        // get metrics when filters change.
-        useEffect(() => {
-            setFilters(filters)
-            setFiltersPrevious(filters)
-        }, [filters, setFilters, setFiltersPrevious])
 
         const infoIcon = getWidgetInfoIcon(target, hasMissingHousingContracts)
 
@@ -128,7 +117,6 @@ export const Widget = memo(
                                     {/* Widget infoIcon */}
                                     {infoIcon}
                                 </div>
-                                {/* If onError returns true, it will display an error message for the widget type */}
                                 {!value ? (
                                     <div className="mb-44 text-center">
                                         <TypographyFormatMessage>Aucune donnée disponible</TypographyFormatMessage>

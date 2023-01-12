@@ -40,6 +40,8 @@ let mockEnedisConsent: IEnedisSgeConsent | undefined = enedisSGeConsent
 let mockEnphaseConsent: IEnphaseConsent | undefined = enphaseConsent
 const MISSING_CURRENT_HOUSING_METER_ERROR_TEXT1 = "Pour voir votre consommation vous devez d'abord"
 const MISSING_CURRENT_HOUSING_METER_ERROR_TEXT2 = 'enregistrer votre compteur et votre nrLink'
+let mockConsentsLoading = false
+const circularProgressClassname = '.MuiCircularProgress-root'
 
 const mockGetConsents = jest.fn()
 // Mock function to check the value of filters state in MyConsumptionContainer.
@@ -61,6 +63,7 @@ jest.mock('src/modules/Consents/consentsHook.ts', () => ({
         nrlinkConsent: mockNrlinkConsent,
         enphaseConsent: mockEnphaseConsent,
         getConsents: mockGetConsents,
+        consentsLoading: mockConsentsLoading,
     }),
 }))
 
@@ -171,5 +174,18 @@ describe('MyConsumptionContainer test', () => {
         await waitFor(() => {
             expect(() => getByText(FILTERS_TEXT)).toThrow()
         })
+    })
+
+    test('when consentLoading Spinner is shown', async () => {
+        // initiate the store by adding housing list - by default current state will be the first element
+        await store.dispatch.housingModel.setHousingModelState(LIST_OF_HOUSES)
+        mockConsentsLoading = true
+        const { container } = reduxedRender(
+            <Router>
+                <MyConsumptionContainer />
+            </Router>,
+            { initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[0] } } },
+        )
+        expect(container.querySelector(circularProgressClassname)).toBeInTheDocument()
     })
 })
