@@ -22,7 +22,7 @@ import dayjs from 'dayjs'
 import { dateFnsPeriod, periodType } from 'src/modules/MyConsumption/myConsumptionTypes.d'
 
 // eslint-disable-next-line jsdoc/require-jsdoc
-let interval: metricIntervalType = '2m'
+let interval: metricIntervalType = '1m'
 
 // GMT: Thursday, 23 June 2022 00:00:00
 const timestamp1 = 1655942400000
@@ -201,7 +201,7 @@ describe('test pure functions', () => {
         ])
     })
     test('isMissingYAxisValues test', async () => {
-        interval = '2m'
+        interval = '1m'
         // When day period, and data doesn't contains all day values.
         mockMetricsData[0].datapoints = FAKE_DAY_DATA
         let ApexChartsFilledAxisValues = convertMetricsDataToApexChartsAxisValues(mockMetricsData)
