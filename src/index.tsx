@@ -17,6 +17,8 @@ import { TranslatitonProvider, LOAD_TRANSLATIONS } from 'src/common/react-platfo
 import { SnackbarProvider } from 'src/common/react-platform-components/alerts/SnackbarProvider'
 import { pwaTrackingListeners } from './pwaEventlisteners'
 import { AlertsDrawerProvider } from 'src/modules/shared/AlertsDrawerContext'
+import TagManager from 'react-gtm-module'
+import { TAG_MANAGER_CONFIG } from 'src/configs'
 
 const isBrowser = typeof window !== 'undefined'
 
@@ -62,6 +64,9 @@ async function bootstrapApplication() {
     } catch (error) {}
     return <Application />
 }
+
+// Initialize google tag manager
+TagManager.initialize(TAG_MANAGER_CONFIG)
 
 bootstrapApplication().then((app) => {
     ReactDOM.render(app, document.getElementById('root'))
