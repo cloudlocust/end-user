@@ -7,7 +7,11 @@ import fr from 'apexcharts/dist/locales/fr.json'
 import { getChartColor, getYPointValueLabel } from 'src/modules/MyConsumption/utils/myConsumptionVariables'
 import { metricTargetsEnum, metricTargetType } from 'src/modules/Metrics/Metrics.d'
 import { consumptionWattUnitConversion } from 'src/modules/MyConsumption/utils/unitConversionFunction'
-import { getChartSpecifities, getChartType } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
+import {
+    convertConsumptionToWatt,
+    getChartSpecifities,
+    getChartType,
+} from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
 
 /**
  * Default ApexChart Options, represent the general options related to the overall look of the MyConsumptionChart.
@@ -198,8 +202,8 @@ export const getApexChartMyConsumptionProps = ({
         })
 
         // We compute the consumption chart maximum y value, so that we can indicate the correct unit on the chart, and we do it only one time with this condition.
-        // data.length !== 720 is added because there can be case where period is not daily, and yAxisSerie.data didn't updated and still express data of daily.
-        // TODO Fix find a better way to reender period and data at same time, instead of doing yAxisSerie.data.length !== 720
+        // data.length !== 1440 is added because there can be case where period is not daily, and yAxisSerie.data didn't updated and still express data of daily.
+        // TODO Fix find a better way to reender period and data at same time, instead of doing yAxisSerie.data.length !== 1440
         // TODO Clean this in a function.
         if (
             (yAxisSerie.name === metricTargetsEnum.consumption ||
@@ -207,7 +211,7 @@ export const getApexChartMyConsumptionProps = ({
                 yAxisSerie.name === metricTargetsEnum.injectedProduction ||
                 yAxisSerie.name === metricTargetsEnum.totalProduction) &&
             period !== 'daily' &&
-            (yAxisSerie.data.length !== 48 || 720)
+            (yAxisSerie.data.length !== 48 || 1440)
         ) {
             maxYValue = Math.max(
                 maxYValue,
@@ -238,9 +242,13 @@ export const getApexChartMyConsumptionProps = ({
                         yAxisSerie.name === metricTargetsEnum.injectedProduction
                     ) {
                         // Consumption unit shown in the chart will be W if its daily, or it'll be the unit of the maximum y value.
-                        const consumptionUnit =
-                            period === 'daily' ? 'Wh' : consumptionWattUnitConversion(maxYValue).unit
-                        return getYPointValueLabel(value, yAxisSerie.name as metricTargetsEnum, consumptionUnit)
+                        return period === 'daily'
+                            ? convertConsumptionToWatt(value)
+                            : getYPointValueLabel(
+                                  value,
+                                  yAxisSerie.name as metricTargetsEnum,
+                                  consumptionWattUnitConversion(maxYValue).unit,
+                              )
                     }
                     return getYPointValueLabel(value, yAxisSerie.name as metricTargetsEnum)
                 },

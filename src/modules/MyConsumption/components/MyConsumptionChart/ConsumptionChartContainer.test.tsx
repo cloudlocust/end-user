@@ -55,7 +55,7 @@ const mockSetFilters = jest.fn()
 const HAS_MISSING_CONTRACTS_WARNING_TEXT =
     "Ce graphe est un exemple basé sur un tarif Bleu EDF Base. Vos données contractuelles de fourniture d'énergie ne sont pas disponibles sur toute la période."
 const HAS_MISSING_CONTRACTS_WARNING_REDIRECT_LINK_TEXT = "Renseigner votre contrat d'énergie"
-const CONSUMPTION_TITLE_DAILY = 'en Wh par jour'
+const CONSUMPTION_TITLE_DAILY = 'en Watt par jour'
 const CONSUMPTION_TITLE_WEEKLY = 'en kWh par semaine'
 const CONSUMPTION_TITLE_MONTHLY = 'en kWh par mois'
 const CONSUMPTION_TITLE_YEARLY = 'en kWh par année'
@@ -66,7 +66,8 @@ const CONSUMPTION_ICON_TEST_ID = 'BoltIcon'
 const EUROS_CONSUMPTION_ICON_TEST_ID = 'EuroIcon'
 const PMAX_BUTTON_TEXT = 'Pmax'
 const apexchartsClassName = 'apexcharts-svg'
-const disabledClassName = 'Mui-disabled'
+const buttonGroupdDisabledClassname = 'disabledField'
+const buttonDisabledClassname = 'Mui-disabled'
 const mockGetConsents = jest.fn()
 const mockGetMetricsWithParams = jest.fn()
 
@@ -83,7 +84,7 @@ let mockRange = {
 }
 
 let mockPeriod: periodType = 'daily'
-let mockMetricsInterval: metricIntervalType = '2m'
+let mockMetricsInterval: metricIntervalType = '1m'
 
 const consumptionChartContainerProps: ConsumptionChartContainerProps = {
     filters: mockFilters,
@@ -111,7 +112,7 @@ jest.mock('src/modules/Metrics/metricsHook.ts', () => ({
         isMetricsLoading: mockIsMetricsLoading,
         setRange: jest.fn(),
         setMetricsInterval: jest.fn(),
-        interval: '2m',
+        interval: '1m',
         setFilters: mockSetFilters,
         getMetricsWithParams: mockGetMetricsWithParams,
     }),
@@ -282,9 +283,9 @@ describe('MyConsumptionContainer test', () => {
 
         expect(
             (getByTestId(EUROS_CONSUMPTION_ICON_TEST_ID).parentElement as HTMLButtonElement).classList.contains(
-                disabledClassName,
+                buttonDisabledClassname,
             ),
         ).toBeTruthy()
-        expect(getByText(PMAX_BUTTON_TEXT).classList.contains(disabledClassName)).toBeTruthy()
+        expect(getByText(PMAX_BUTTON_TEXT).classList.contains(buttonGroupdDisabledClassname)).toBeTruthy()
     })
 })

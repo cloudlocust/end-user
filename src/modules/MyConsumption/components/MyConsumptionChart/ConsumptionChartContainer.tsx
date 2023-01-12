@@ -6,14 +6,11 @@ import { useTheme } from '@mui/material'
 import { useMetrics } from 'src/modules/Metrics/metricsHook'
 import { IMetric, metricTargetsEnum, metricTargetType } from 'src/modules/Metrics/Metrics.d'
 import { ConsumptionChartContainerProps } from 'src/modules/MyConsumption/myConsumptionTypes'
-import { useIntl } from 'react-intl'
 import CircularProgress from '@mui/material/CircularProgress'
 import TargetButtonGroup from 'src/modules/MyConsumption/components/TargetButtonGroup'
 import { useSelector } from 'react-redux'
 import { RootState } from 'src/redux'
 import EurosConsumptionButtonToggler from 'src/modules/MyConsumption/components/EurosConsumptionButtonToggler'
-import Tooltip from '@mui/material/Tooltip'
-import { tempPmaxFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
 import { warningMainHashColor } from 'src/modules/utils/muiThemeVariables'
 import { URL_MY_HOUSE } from 'src/modules/MyHouse/MyHouseConfig'
 import { NavLink } from 'react-router-dom'
@@ -47,7 +44,6 @@ export const ConsumptionChartContainer = ({
     enphaseConsent,
 }: ConsumptionChartContainerProps) => {
     const theme = useTheme()
-    const { formatMessage } = useIntl()
     const { data, getMetricsWithParams } = useMetrics({
         interval: metricsInterval,
         range: range,
@@ -181,7 +177,7 @@ export const ConsumptionChartContainer = ({
                         >
                             Ma Consommation
                         </TypographyFormatMessage>
-                        {/* Consommation Wh par Jour / Semaine / Mois / Année */}
+                        {/* Consommation Watt par jour / Semaine / Mois / Année */}
                         <TypographyFormatMessage variant="h5" style={{ color: theme.palette.primary.contrastText }}>
                             {showPerPeriodText('consumption', period, isEurosConsumptionChart)}
                         </TypographyFormatMessage>
@@ -196,23 +192,11 @@ export const ConsumptionChartContainer = ({
                     showEurosConsumption={!isEurosConsumptionChart}
                     disabled={isEurosConsumptionDisabled}
                 />
-                <Tooltip
-                    arrow
-                    placement="bottom-end"
-                    disableHoverListener={!tempPmaxFeatureState}
-                    title={formatMessage({
-                        id: "Cette fonctionnalité n'est pas disponible sur cette version",
-                        defaultMessage: "Cette fonctionnalité n'est pas disponible sur cette version",
-                    })}
-                >
-                    <div className={`${tempPmaxFeatureState && 'cursor-not-allowed'}`}>
-                        <TargetButtonGroup
-                            removeTarget={hideMetricTargetChart}
-                            addTarget={showMetricTargetChart}
-                            hidePmax={hidePmax}
-                        />
-                    </div>
-                </Tooltip>
+                <TargetButtonGroup
+                    removeTarget={hideMetricTargetChart}
+                    addTarget={showMetricTargetChart}
+                    hidePmax={hidePmax}
+                />
             </div>
 
             {isConsumptionChartLoading ? (

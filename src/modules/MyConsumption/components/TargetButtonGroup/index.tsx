@@ -8,6 +8,7 @@ import { buttonOptions, targetOptions } from 'src/modules/MyConsumption/utils/my
 import { ITargetButtonGroup } from 'src/modules/MyConsumption/myConsumptionTypes'
 import { metricTargetsEnum } from 'src/modules/Metrics/Metrics'
 import { tempPmaxFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
+import Tooltip from '@mui/material/Tooltip'
 
 /**
  * TargetButtonGroup component.
@@ -40,34 +41,51 @@ const TargetButtonGroup = ({ removeTarget, addTarget, hidePmax }: ITargetButtonG
     return (
         <ButtonGroup variant="contained">
             {buttonOptions.map((option) => {
-                const disabledField = hidePmax && option.value === 'Pmax'
-                const disabledFeature =
-                    tempPmaxFeatureState && (option.value === 'Pmax' || option.value === 'temperature')
+                const disabledPmax = hidePmax && option.value === 'Pmax'
+                const disabledTemperature =
+                    tempPmaxFeatureState && (option.value === 'temperature' || option.value === 'Pmax')
+                const disabledField = disabledPmax || disabledTemperature
                 const activeField = activeButton === option.value
                 const activeBackgroundColor = activeField ? theme.palette.secondary.main : theme.palette.primary.main
                 const activeColor = activeField
                     ? theme.palette.secondary.contrastText
                     : theme.palette.primary.contrastText
                 return (
-                    <Button
-                        value={option.value}
-                        onClick={() => {
-                            setActiveButton(option.value)
-                            handleTarget(option.targets)
-                        }}
-                        style={{
-                            backgroundColor:
-                                disabledField || disabledFeature ? theme.palette.grey[600] : activeBackgroundColor,
-                            color: disabledField ? theme.palette.text.disabled : activeColor,
-                            fontWeight: '500',
-                        }}
-                        disabled={disabledFeature || disabledField}
-                    >
-                        {formatMessage({
-                            id: option.label,
-                            defaultMessage: option.label,
+                    <Tooltip
+                        arrow
+                        placement="top"
+                        disableHoverListener={!disabledField}
+                        title={formatMessage({
+                            id: disabledPmax
+                                ? 'Cette fonctionnalité n’est pas disponible sur cette période'
+                                : "Cette fonctionnalité n'est pas encore disponible",
+                            defaultMessage: disabledPmax
+                                ? 'Cette fonctionnalité n’est pas disponible sur cette période'
+                                : "Cette fonctionnalité n'est pas encore disponible",
                         })}
-                    </Button>
+                    >
+                        <Button
+                            value={option.value}
+                            onClick={() => {
+                                if (disabledField) return
+                                setActiveButton(option.value)
+                                handleTarget(option.targets)
+                            }}
+                            className={`${disabledField && 'disabledField'}`}
+                            disableRipple={disabledField}
+                            style={{
+                                backgroundColor: disabledField ? theme.palette.grey[600] : activeBackgroundColor,
+                                color: disabledField ? theme.palette.text.disabled : activeColor,
+                                fontWeight: '500',
+                                cursor: disabledField ? 'default' : 'pointer',
+                            }}
+                        >
+                            {formatMessage({
+                                id: option.label,
+                                defaultMessage: option.label,
+                            })}
+                        </Button>
+                    </Tooltip>
                 )
             })}
         </ButtonGroup>

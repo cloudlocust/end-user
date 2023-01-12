@@ -10,7 +10,7 @@ import convert, { Unit } from 'convert-units'
 export const dataConsumptionPeriod = [
     {
         name: 'Jour',
-        interval: '2m',
+        interval: '1m',
         period: 'daily' as periodType,
     },
     {
@@ -191,7 +191,6 @@ export const getYPointValueLabel = (yValue: number | null | undefined, chartName
             return ` ${unit}`
     }
 }
-
 /**
  * Nrlink & Enedis Off message.
  */
