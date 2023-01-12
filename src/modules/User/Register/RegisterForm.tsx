@@ -1,10 +1,10 @@
-import React, { useRef } from 'react'
+import React, { useEffect, useRef } from 'react'
 import { useIntl } from 'react-intl'
 import { email, requiredBuilder, repeatPassword, Form, regex } from 'src/common/react-platform-components'
 import { TextField, PasswordField, ButtonLoader } from 'src/common/ui-kit'
 import { GoogleMapsAddressAutoCompleteField } from 'src/common/ui-kit/form-fields/GoogleMapsAddressAutoComplete/GoogleMapsAddressAutoCompleteField'
 import { useRegister } from 'src/modules/User/Register/hooks'
-import { IUserRegister } from '../model'
+import { IUser, IUserRegister } from '../model'
 import { PhoneNumber } from 'src/common/ui-kit/form-fields/phoneNumber/PhoneNumber'
 import FormControlLabel from '@mui/material/FormControlLabel'
 import Checkbox from '@mui/material/Checkbox'
@@ -12,11 +12,14 @@ import FormControl from '@mui/material/FormControl'
 import { FormHelperText } from '@mui/material'
 import { LinkRedirection } from 'src/modules/utils/LinkRedirection'
 import { passwordFieldValidationSecurity1 } from 'src/modules/utils'
+import { popupAfterRegistration } from 'src/modules/User/Register/RegisterConfig'
+import { convertUserDataToQueryString } from 'src/modules/User/Register/utils'
 
 const urlLegalNotice = 'https://www.myem.fr/mentions-legales/'
 // Condition Général de Vente
 const urlCGV = 'https://www.myem.fr/particuliers-cgv/'
 const urlPolitiqueConfidentialité = 'https://drive.google.com/uc?export=download&id=1sMFMizrEPZ4ZHhe6Zf-PTJGRUQBFGUEv'
+
 /**
  * Form used for user registration. This is a component based on form hooks.
  *
@@ -45,6 +48,10 @@ export const RegisterForm = ({
     const passwordRef = useRef()
     const [rgpdCheckboxState, setRgpdCheckboxState] = React.useState<Boolean | string>('false')
     const { formatMessage } = useIntl()
+    const newWindow = useRef<null | Window>(null)
+    const userData = useRef<null | IUserRegister>(null)
+
+    console.log('userData', userData.current)
 
     /**
      * Handle Change of the checkbox.
@@ -54,17 +61,43 @@ export const RegisterForm = ({
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setRgpdCheckboxState(event.target.checked)
     }
+
+    /**
+     * Function that submit the user registration data.
+     *
+     * @param cleanData Data to be submitted for user registration.
+     */
+    function onSubmitUserRegistrationForm(cleanData: IUserRegister) {
+        if (defaultRole !== undefined) {
+            onSubmit({ ...cleanData, role: defaultRole })
+        } else {
+            onSubmit(cleanData)
+        }
+    }
+
     // eslint-disable-next-line jsdoc/require-jsdoc
     const onSubmitWrapper = async ({ repeatPwd, ...cleanData }: { repeatPwd: string } & IUserRegister) => {
         if (rgpdCheckboxState !== true) {
             setRgpdCheckboxState('')
             return
         }
-        if (defaultRole !== undefined) {
-            onSubmit({ ...cleanData, role: defaultRole })
-        } else {
-            onSubmit(cleanData)
+
+        // If popupAfterRegistration is true
+        if (popupAfterRegistration) {
+            userData.current = cleanData
+            const queryString = convertUserDataToQueryString(cleanData)
+            if (queryString) {
+                newWindow.current = window.open(
+                    `https://particuliers.alpiq.fr/souscription-bowatts${queryString}`,
+                    '_blank',
+                    `width=1024,height=768,left=${window.screen.availWidth / 2 - 200},top=${
+                        window.screen.availHeight / 2 - 150
+                    }`,
+                )
+            }
         }
+
+        onSubmitUserRegistrationForm(cleanData)
     }
 
     return (
@@ -97,7 +130,11 @@ export const RegisterForm = ({
                 />
                 <PasswordField
                     name="repeatPwd"
-                    label="Confirmation de mot de passe"
+                    label="Confirmation de mo if (defaultRole !== undefined) {
+                        onSubmit({ ...cleanData, role: defaultRole })
+                    } else {
+                        onSubmit(cleanData)
+                    }t de passe"
                     validateFunctions={[requiredBuilder(), repeatPassword(passwordRef)]}
                 />
 

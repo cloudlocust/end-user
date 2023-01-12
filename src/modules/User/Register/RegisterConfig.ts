@@ -14,6 +14,11 @@ export const URL_REGISTER = '/register'
 export const userRegistrationFeatureState = window._env_.REACT_APP_USER_REGISTRATION_FEATURE_STATE === 'disabled'
 
 /**
+ * Popup after registration state.
+ */
+export const popupAfterRegistration: boolean = window._env_.REACT_APP_POPUP_AFTER_REGISTRATION
+
+/**
  * Configuration object for the register page. It contains, url, component and its props, and authentication level needed.
  */
 export const RegisterConfig = [
