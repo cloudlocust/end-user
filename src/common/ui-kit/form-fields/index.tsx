@@ -17,7 +17,7 @@ import { Icon, IconButton, InputAdornment } from '@mui/material'
 import { textFieldCommonTypes } from 'src/common/react-platform-components/ui-kit-interface'
 
 /**
- * Common Ui text field interface between different ui kits. We pick common text field from basic ui kit, and add validate functions
+ * Common Ui text field interface between different ui kits. We pick common text field from basic ui kit, and add validatefunctions
  * We also override the name to make it required.
  */
 export interface UiTextFieldProps extends Pick<MaterialUiTextFieldProps, textFieldCommonTypes> {
