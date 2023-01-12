@@ -101,7 +101,7 @@ const LastStepNrLinkConnection = ({
                         </div>
                         <TextField
                             name="nrlinkGuid"
-                            label="№ d'identification nrLink"
+                            label="№ d'identification nrLINK"
                             validateFunctions={[
                                 requiredBuilder(),
                                 regex(
@@ -165,7 +165,7 @@ const LastStepNrLinkConnection = ({
                                     className="w-full text-center md:text-12"
                                     sx={{ color: textNrlinkColor }}
                                 >
-                                    Dans Menu/IHD
+                                    Dans Menu/nrLINK
                                 </TypographyFormatMessage>
                             </div>
                         </div>

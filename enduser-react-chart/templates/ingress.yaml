@@ -13,7 +13,7 @@ spec:
   - host: {{ .Values.ingress.host }}
     http:
       paths:
-      - path: {{ .Values.configmap.REACT_APP_BASENAME_URL }}(|$)(.*)
+      - path: {{ .Values.REACT_APP_BASENAME_URL }}(|$)(.*)
         pathType: Prefix
         backend:
             service:

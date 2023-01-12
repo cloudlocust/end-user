@@ -116,6 +116,10 @@ export type EurosConsumptionButtonTogglerProps =
          * Indicate eurosConsumption or consumption IconButton to be shown.
          */
         showEurosConsumption?: boolean
+        /**
+         * Indicate if EurosConsumptionButton is disabled.
+         */
+        disabled?: boolean
     }
 
 /**
@@ -157,6 +161,34 @@ export interface MyConsumptionChartProps {
     // eslint-disable-next-line jsdoc/require-jsdoc
     chartLabel?: 'Consommation totale' | 'Electricité achetée sur le réseau'
 }
+
+/**
+ * ConsumptionChartContainer Props.
+ */
+export interface ConsumptionChartContainerProps {
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    period: periodType
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    range: metricRangeType
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    metricsInterval: metricIntervalType
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    filters: metricFiltersType
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    hasMissingHousingContracts: boolean | null
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    enphaseConsent: IEnphaseConsent
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    enedisSgeConsent: IEnedisSgeConsent
+}
+
+/**
+ * ProductionChartContainer Props.
+ */
+export type ProductionChartContainerProps = Omit<
+    ConsumptionChartContainerProps,
+    'enedisSgeConsent' | 'hasMissingHousingContracts'
+>
 
 /**
  * Type for getChartSpecifities function return.

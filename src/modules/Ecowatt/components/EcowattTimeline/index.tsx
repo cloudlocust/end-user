@@ -23,10 +23,20 @@ function filterHourlyPas(pas: IHourlyValues['readingAt']) {
  *
  * @param param0 N/A.
  * @param param0.hourlyValues Hourly values of the day.
+ * @param param0.showHourReadingAt Boolean state to show or not readingAt values below timeline.
  * @returns EcowattTimeline JSX.
  */
 // eslint-disable-next-line jsdoc/require-jsdoc
-export const EcowattTimeline = ({ hourlyValues }: { hourlyValues?: IHourlyValues[] }) => {
+export const EcowattTimeline = ({
+    hourlyValues,
+    showHourReadingAt,
+}: // eslint-disable-next-line jsdoc/require-jsdoc
+{
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    hourlyValues?: IHourlyValues[]
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    showHourReadingAt?: boolean
+}) => {
     const theme = useTheme()
 
     /**
@@ -49,7 +59,7 @@ export const EcowattTimeline = ({ hourlyValues }: { hourlyValues?: IHourlyValues
     }
 
     return (
-        <div className="px-8 py-6 flex w-full flex-col">
+        <div className="px-8 py-6 flex w-full flex-col" data-testid="timeline">
             <div className="flex flex-row w-full justify-center items-center">
                 {hourlyValues?.map((hour) => (
                     <div
@@ -59,13 +69,15 @@ export const EcowattTimeline = ({ hourlyValues }: { hourlyValues?: IHourlyValues
                     ></div>
                 ))}
             </div>
-            <div className="flex flex-row w-full justify-center items-center">
-                {hourlyValues?.map((hour) => (
-                    <div className="flex-1 h-20" key={hour.readingAt}>
-                        {isUndefined(filterHourlyPas(hour.readingAt)) ? '' : `${filterHourlyPas(hour.readingAt)}h`}
-                    </div>
-                ))}
-            </div>
+            {showHourReadingAt && (
+                <div className="flex flex-row w-full justify-center items-center">
+                    {hourlyValues?.map((hour) => (
+                        <div className="flex-1 h-20" key={hour.readingAt}>
+                            {isUndefined(filterHourlyPas(hour.readingAt)) ? '' : `${filterHourlyPas(hour.readingAt)}h`}
+                        </div>
+                    ))}
+                </div>
+            )}
         </div>
     )
 }

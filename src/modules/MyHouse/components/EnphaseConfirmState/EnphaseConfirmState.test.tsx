@@ -26,7 +26,7 @@ describe('EnphaseConfirmState component', () => {
                 <EnphaseConfirmState />
             </MemoryRouter>,
         )
-        expect(getByText('Vous avez donné votre consentement Enphase avec succès')).toBeTruthy()
+        expect(getByText('Vous avez donné votre consentement Enphase avec succès !')).toBeTruthy()
     })
     test('when state=FAILED', async () => {
         const { getByText } = reduxedRender(
@@ -34,7 +34,7 @@ describe('EnphaseConfirmState component', () => {
                 <EnphaseConfirmState />
             </MemoryRouter>,
         )
-        expect(getByText('La procédure pour donner votre consentement Enphase à échoué')).toBeTruthy()
+        expect(getByText('La procédure pour donner votre consentement Enphase à échoué !')).toBeTruthy()
     })
     test('when state is neither SUCCESS nor FAILED', async () => {
         reduxedRender(

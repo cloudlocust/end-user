@@ -1,10 +1,17 @@
-import { authTypes, IRoute } from 'src/common/react-platform-components'
+import { authTypes } from 'src/common/react-platform-components'
+import { IRouteDisabled } from 'src/routes'
 import Register, { RegisterProps } from './Register'
 
 /**
  * Register url.
  */
 export const URL_REGISTER = '/register'
+
+/**
+ * User registration state.
+ *
+ */
+export const userRegistrationFeatureState = window._env_.REACT_APP_USER_REGISTRATION_FEATURE_STATE === 'disabled'
 
 /**
  * Configuration object for the register page. It contains, url, component and its props, and authentication level needed.
@@ -23,6 +30,7 @@ export const RegisterConfig = [
                     display: false,
                 },
             },
+            disabled: userRegistrationFeatureState,
         },
-    } as IRoute<RegisterProps>,
+    } as IRouteDisabled<RegisterProps>,
 ]

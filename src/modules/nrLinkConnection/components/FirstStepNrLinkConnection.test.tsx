@@ -12,7 +12,7 @@ const mockHandleBack = jest.fn()
 const mockHandleNext = jest.fn()
 
 describe('Test NrLinkConnection Page', () => {
-    test('When clicking on CTA button connect nrLink, it should redirect to nrLinkConnectionStep', async () => {
+    test('When clicking on CTA button connect nrLINK, it should redirect to nrLinkConnectionStep', async () => {
         userData.firstLogin = true
         const { getByText } = reduxedRender(
             <FirstStepNrLinkConnection handleBack={mockHandleBack} handleNext={mockHandleNext} />,

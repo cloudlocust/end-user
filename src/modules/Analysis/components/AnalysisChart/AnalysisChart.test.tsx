@@ -47,6 +47,7 @@ let mockEventSelected = {
     },
     type: '',
 }
+const APEXCHARTS_LOAD_BUTTON_TEXT = 'UseEffect'
 
 // AnalysisChart component cannot render if we don't mock react-apexcharts
 jest.mock(
@@ -61,47 +62,50 @@ jest.mock(
                 {...props}
             >
                 <div className="apexcharts-canvas">
-                    <div className="analysisChartValuesContainer apexcharts-slices">
-                        <div>
-                            <div
-                                style={{}}
-                                className={analysisChartValueClasslist.join(' ')}
-                                onClick={() => {
-                                    // When clicking calling the dataPointSelection given, to be tested.
-                                    props.options.chart!.events!.dataPointSelection(
-                                        mockEventSelected,
-                                        {},
-                                        { dataPointIndex: 0, w: { config: { colors: ['', '', ''] } } },
-                                    )
-                                }}
-                            >
-                                {mockValueSelected}
+                    <div className="apexcharts-pie">
+                        <div className="analysisChartValuesContainer apexcharts-slices">
+                            <div>
+                                <div
+                                    style={{}}
+                                    className={analysisChartValueClasslist.join(' ')}
+                                    onClick={() => {
+                                        // When clicking calling the dataPointSelection given, to be tested.
+                                        props.options.chart!.events!.dataPointSelection(
+                                            mockEventSelected,
+                                            {},
+                                            { dataPointIndex: 0, w: { config: { colors: ['', '', ''] } } },
+                                        )
+                                    }}
+                                >
+                                    {mockValueSelected}
+                                </div>
                             </div>
-                        </div>
-                        <div>
-                            <div style={{}} className="apexcharts-polararea-slice-1">
-                                {1}
+                            <div>
+                                <div style={{}} className="apexcharts-polararea-slice-1">
+                                    {1}
+                                </div>
                             </div>
-                        </div>
-                        <div>
-                            <div
-                                style={{}}
-                                className="apexcharts-polararea-slice-2"
-                                onMouseEnter={() => {
-                                    // When hovering There won't be any order change.
-                                    props.options.chart!.events!.dataPointMouseEnter(
-                                        mockEventSelected,
-                                        {},
-                                        { dataPointIndex: 2, w: { config: { colors: ['', '', ''] } } },
-                                    )
-                                }}
-                            >
-                                {2}
+                            <div>
+                                <div
+                                    style={{}}
+                                    className="apexcharts-polararea-slice-2"
+                                    onMouseEnter={() => {
+                                        // When hovering There won't be any order change.
+                                        props.options.chart!.events!.dataPointMouseEnter(
+                                            mockEventSelected,
+                                            {},
+                                            { dataPointIndex: 2, w: { config: { colors: ['', '', ''] } } },
+                                        )
+                                    }}
+                                >
+                                    {2}
+                                </div>
                             </div>
                         </div>
                     </div>
                     <div className="tooltipContainer apexcharts-tooltip"></div>
                 </div>
+                <button onClick={() => props.options.chart!.events!.animationEnd()}>UseEffect</button>
             </div>
         )
     },
@@ -122,16 +126,20 @@ describe('AnalysisChart test', () => {
                 toJSON: jest.fn(),
             }
         })
-        const { container: containerMobile } = reduxedRender(
+        const { getByText: getByTextMobile, container: containerMobile } = reduxedRender(
             <Router>
                 <AnalysisChart {...mockAnalysisChartProps} />
             </Router>,
         )
 
         // When mobile
-        expect(
-            (containerMobile.getElementsByClassName(analysisChartContainerClassname)[0] as HTMLDivElement).style.height,
-        ).toBe(`${heightAnalaysisChartMobile}px`)
+        userEvent.click(getByTextMobile(APEXCHARTS_LOAD_BUTTON_TEXT))
+        await waitFor(() => {
+            expect(
+                (containerMobile.getElementsByClassName(analysisChartContainerClassname)[0] as HTMLDivElement).style
+                    .height,
+            ).toBe(`${heightAnalaysisChartMobile}px`)
+        })
         expect((containerMobile.getElementsByClassName(analysisChartClassname)[0] as HTMLDivElement).style.height).toBe(
             `${heightAnalaysisChartMobile}px`,
         )
@@ -151,16 +159,19 @@ describe('AnalysisChart test', () => {
                 toJSON: jest.fn(),
             }
         })
-        const { container: containerDesktop } = reduxedRender(
+        const { getAllByText: getAllByTextDesktop, container: containerDesktop } = reduxedRender(
             <Router>
                 <AnalysisChart {...mockAnalysisChartProps} />
             </Router>,
         )
 
-        expect(
-            (containerDesktop.getElementsByClassName(analysisChartContainerClassname)[0] as HTMLDivElement).style
-                .height,
-        ).toBe(`${heightAnalaysisChartDesktop}px`)
+        userEvent.click(getAllByTextDesktop(APEXCHARTS_LOAD_BUTTON_TEXT)[1])
+        await waitFor(() => {
+            expect(
+                (containerDesktop.getElementsByClassName(analysisChartContainerClassname)[0] as HTMLDivElement).style
+                    .height,
+            ).toBe(`${heightAnalaysisChartDesktop}px`)
+        })
         expect(
             (containerDesktop.getElementsByClassName(analysisChartClassname)[0] as HTMLDivElement).style.height,
         ).toBe(`${heightAnalaysisChartDesktop}px`)

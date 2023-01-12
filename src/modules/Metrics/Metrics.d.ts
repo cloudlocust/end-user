@@ -51,7 +51,7 @@ export enum metricTargetsEnum {
 /**
  * Metrics intervals.
  */
-export type metricIntervalType = '2m' | '1d' | '1M' | '30m'
+export type metricIntervalType = '1m' | '1d' | '1M' | '30m'
 
 /**
  * Metric range.
@@ -139,6 +139,29 @@ export type getMetricType = {
      * Metric filters.
      */
     filters?: metricFiltersType
+}
+
+/**
+ * Params of getMetricsWithParamsType hook function.
+ */
+//eslint-disable-next-line jsdoc/require-jsdoc
+export type getMetricsWithParamsType = {
+    /**
+     * Range.
+     */
+    range: metricRangeType
+    /**
+     * Metric interval.
+     */
+    interval: metricIntervalType
+    /**
+     * Metrics targets.
+     */
+    targets: metricTargetType[]
+    /**
+     * Metric filters.
+     */
+    filters: metricFiltersType
 }
 
 /**

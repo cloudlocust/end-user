@@ -1,9 +1,9 @@
 import { applyCamelCase } from 'src/common/react-platform-components'
 import { reduxedRender } from 'src/common/react-platform-components/test'
-import { TEST_ECOWATT_DATA } from 'src/mocks/handlers/ecowatt'
+import { TEST_ECOWATT_SIGNAL_DATA } from 'src/mocks/handlers/ecowatt'
 import { EcowattTimeline } from 'src/modules/Ecowatt/components/EcowattTimeline'
 
-let HOURLY_VALUES = applyCamelCase(TEST_ECOWATT_DATA[0].hourly_values)
+let HOURLY_VALUES = applyCamelCase(TEST_ECOWATT_SIGNAL_DATA[0].hourly_values)
 
 let mockEcowattTimelineProps = {
     hourlyValues: HOURLY_VALUES,

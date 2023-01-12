@@ -12,11 +12,11 @@ const listUrl = [
     },
     {
         title: 'Conditions Générales de Vente',
-        link: 'https://www.myem.fr/mentions-legales/',
+        link: 'https://www.myem.fr/particuliers-cgv/',
     },
     {
         title: 'Politique de Confidentialité',
-        link: 'https://drive.google.com/uc?export=download&id=18agpXAw89RX5Zk87EQ9ev5LOeMU3GtnP',
+        link: 'https://drive.google.com/uc?export=download&id=1sMFMizrEPZ4ZHhe6Zf-PTJGRUQBFGUEv',
     },
     {
         title: 'Consentement à la récolte des données de consommation',

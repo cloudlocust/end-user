@@ -1,9 +1,9 @@
-import { Typography } from '@mui/material'
 import { useCallback, useEffect, useState } from 'react'
 import { useLocation } from 'react-router-dom'
 import { useSnackbar } from 'notistack'
 import { useIntl } from 'react-intl'
 import { CheckCircle, Error } from '@mui/icons-material'
+import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 
 /**
  * EnphaseConfirmState component.
@@ -44,11 +44,11 @@ export const EnphaseConfirmState = () => {
     useEffect(() => {
         if (isStateSucess) {
             localStorage.setItem('enphaseConfirmState', 'SUCCESS')
-            setSuccessMessage('Vous avez donné votre consentement Enphase avec succès')
+            setSuccessMessage('Vous avez donné votre consentement Enphase avec succès !')
             closeWindow()
         } else if (isStateError) {
             localStorage.setItem('enphaseConfirmState', 'FAILED')
-            setErrorMessage('La procédure pour donner votre consentement Enphase à échoué')
+            setErrorMessage('La procédure pour donner votre consentement Enphase à échoué !')
             closeWindow()
         } else {
             localStorage.removeItem('enphaseConfirmState')
@@ -68,15 +68,15 @@ export const EnphaseConfirmState = () => {
     return (
         <div className="flex items-center justify-center h-screen">
             {successMessage && (
-                <div className="flex flex-col items-center">
-                    <CheckCircle color="success" className="text-52 mb-12" />
-                    <Typography className="text-24">{successMessage}</Typography>
+                <div className="flex flex-col items-center justify-center p-14">
+                    <CheckCircle color="success" className="text-40 mb-12" />
+                    <TypographyFormatMessage className="text-24 text-center">{successMessage}</TypographyFormatMessage>
                 </div>
             )}
             {errorMessage && (
-                <div className="flex flex-col items-center">
-                    <Error color="error" className="text-52 mb-12" />
-                    <Typography className="text-24">{errorMessage}</Typography>
+                <div className="flex flex-col items-center justify-center p-14">
+                    <Error color="error" className="text-40 mb-12" />
+                    <TypographyFormatMessage className="text-24 text-center">{errorMessage}</TypographyFormatMessage>
                 </div>
             )}
         </div>

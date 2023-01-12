@@ -1,6 +1,6 @@
 import { useIntl } from 'react-intl'
 import { selectTheme } from 'src/common/ui-kit/fuse/utils/theming-generator'
-import { InstallationRequestDetailsPopupProps } from 'src/modules/InstallationRequests/components/InstallationRequestDetailsPopup/installationRequestDetailsPopup'
+import { InstallationRequestDetailsPopupProps } from 'src/modules/InstallationRequests/components/InstallationRequestDetailsPopup/installationRequestDetailsPopup.d'
 import { ThemeProvider } from '@mui/material/styles'
 import {
     AppBar,
