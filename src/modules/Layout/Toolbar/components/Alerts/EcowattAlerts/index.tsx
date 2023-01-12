@@ -1,0 +1,64 @@
+import { useTheme, CircularProgress } from '@mui/material'
+import { useEffect, useState } from 'react'
+import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
+import { EcowattTooltip } from 'src/modules/Ecowatt/components/EcowattTooltip/'
+import { useEcowatt } from 'src/modules/Ecowatt/EcowattHook'
+import { useSelector } from 'react-redux'
+import { RootState } from 'src/redux'
+import { EcowattAlertsForm } from 'src/modules/Layout/Toolbar/components/Alerts/EcowattAlerts/EcowattAlertsForm'
+
+/**
+ * Ecowatt Alerts component.
+ *
+ * @returns EcowattAlerts JSX.
+ */
+export const EcowattAlerts = () => {
+    const theme = useTheme()
+    const { currentHousing } = useSelector(({ housingModel }: RootState) => housingModel)
+    const { isLoadingInProgress, getEcowattAlerts, ecowattAlerts, updateEcowattAlerts } = useEcowatt()
+    const [openTooltip, setOpenTooltip] = useState<boolean>(false)
+
+    useEffect(() => {
+        if (currentHousing?.id) {
+            getEcowattAlerts(currentHousing.id)
+        }
+    }, [currentHousing?.id, getEcowattAlerts])
+
+    if (isLoadingInProgress) {
+        return (
+            <div className="flex flex-col justify-center items-center w-full h-192">
+                <CircularProgress style={{ color: theme.palette.primary.main }} />
+            </div>
+        )
+    }
+
+    return (
+        <div className="flex-col my-48">
+            <div className="flex flex-row items-center">
+                <TypographyFormatMessage
+                    color={theme.palette.primary.main}
+                    className="text-17 font-medium flex items-center"
+                >
+                    EcoWatt :
+                </TypographyFormatMessage>
+                <EcowattTooltip
+                    openState={openTooltip}
+                    onOpen={() => setOpenTooltip(true)}
+                    onClose={() => setOpenTooltip(false)}
+                />
+            </div>
+            <TypographyFormatMessage className="text-13 font-medium md:text-15 flex items-center">
+                La météo de l'électricité
+            </TypographyFormatMessage>
+
+            {currentHousing?.id && ecowattAlerts && (
+                <EcowattAlertsForm
+                    houseId={currentHousing?.id}
+                    ecowattAlerts={ecowattAlerts}
+                    updateEcowattAlerts={updateEcowattAlerts}
+                    reloadAlerts={getEcowattAlerts}
+                />
+            )}
+        </div>
+    )
+}

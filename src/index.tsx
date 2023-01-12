@@ -1,6 +1,6 @@
 import React, { FC } from 'react'
 import ReactDOM from 'react-dom'
-import { BASENAME_URL, MSW_MOCK } from './configs'
+import { BASENAME_URL, FIREBASE_MESSAGING_SW_URL, MSW_MOCK } from './configs'
 import { Provider } from 'react-redux'
 import reportWebVitals from './reportWebVitals'
 import 'typeface-poppins'
@@ -16,6 +16,7 @@ import { getPersistor } from '@rematch/persist'
 import { TranslatitonProvider, LOAD_TRANSLATIONS } from 'src/common/react-platform-translation'
 import { SnackbarProvider } from 'src/common/react-platform-components/alerts/SnackbarProvider'
 import { pwaTrackingListeners } from './pwaEventlisteners'
+import { AlertsDrawerProvider } from 'src/modules/shared/AlertsDrawerContext'
 import TagManager from 'react-gtm-module'
 import { TAG_MANAGER_CONFIG } from 'src/configs'
 
@@ -39,7 +40,9 @@ const Application: FC<any> = () => {
                         <TranslatitonProvider>
                             <Router basename={BASENAME_URL}>
                                 <SnackbarProvider>
-                                    <App />
+                                    <AlertsDrawerProvider>
+                                        <App />
+                                    </AlertsDrawerProvider>
                                 </SnackbarProvider>
                             </Router>
                         </TranslatitonProvider>
@@ -80,6 +83,13 @@ if ('serviceWorker' in navigator && process.env.NODE_ENV === 'development' && MS
 if (isBrowser && 'serviceWorker' in navigator && process.env.NODE_ENV === 'production') {
     window.addEventListener('load', async () => {
         await navigator.serviceWorker.register(`${process.env.PUBLIC_URL}/pwaSW.js`)
+    })
+}
+
+// Fireabse messaging Service worker.
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', async () => {
+        await navigator.serviceWorker.register(`${FIREBASE_MESSAGING_SW_URL}`)
     })
 }
 

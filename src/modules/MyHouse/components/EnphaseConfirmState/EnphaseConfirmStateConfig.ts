@@ -4,7 +4,7 @@ import { EnphaseConfirmState } from 'src/modules/MyHouse/components/EnphaseConfi
 /**
  * Url for my-consumption.
  */
-export const URL_ENPHASE_CONFIRM_STATE = '/enphase/redirect'
+export const URL_ENPHASE_CONFIRM_STATE = '/enphase'
 /**
  * Interface .
  *

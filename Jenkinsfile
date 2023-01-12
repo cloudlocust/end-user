@@ -9,7 +9,8 @@ pipeline{
     stages{
         stage ('Install deps') {
             steps {
-                sh 'npm install -g yarn && yarn install && export NODE_OPTIONS="--max-old-space-size=8192"'
+                // Using ignore-engines, will fix the error "engine node incompatible with this module", when using yarn install which happens on jenkins after installing firebase package.
+                sh 'npm install -g yarn && yarn install --ignore-engines && export NODE_OPTIONS="--max-old-space-size=8192"'
             }
         }
         stage ('Eslint') {
@@ -23,31 +24,31 @@ pipeline{
             }
 
         }
-//         stage('Unit-test'){
-//             steps {
-//                 sh 'yarn test --watchAll=false --maxWorkers=1 --no-cache  --coverage --testResultsProcessor jest-sonar-reporter'
-//             }
+        stage('Unit-test'){
+            steps {
+                sh 'yarn test --watchAll=false --maxWorkers=1 --no-cache  --coverage --testResultsProcessor jest-sonar-reporter'
+            }
 
-//         }
-//         stage('build && SonarQube analysis') {
-//             environment {
-//                 scannerHome = tool 'SonarQubeScanner'
-//             }
-//             steps {
-//                 withSonarQubeEnv('sonarqube') {
-//                     sh "${scannerHome}/bin/sonar-scanner -X"
-//                 }
-//             }
-//         }
-//         stage("Quality Gate") {
-//             steps {
-//                 timeout(time: 10, unit: 'MINUTES') {
-//                     // Parameter indicates whether to set pipeline to UNSTABLE if Quality Gate fails
-//                     // true = set pipeline to UNSTABLE, false = don't
-//                     waitForQualityGate abortPipeline: true
-//                 }
-//             }
-//         }
+        }
+        stage('build && SonarQube analysis') {
+            environment {
+                scannerHome = tool 'SonarQubeScanner'
+            }
+            steps {
+                withSonarQubeEnv('sonarqube') {
+                    sh "${scannerHome}/bin/sonar-scanner -X"
+                }
+            }
+        }
+        stage("Quality Gate") {
+            steps {
+                timeout(time: 10, unit: 'MINUTES') {
+                    // Parameter indicates whether to set pipeline to UNSTABLE if Quality Gate fails
+                    // true = set pipeline to UNSTABLE, false = don't
+                    waitForQualityGate abortPipeline: true
+                }
+            }
+        }
         stage('Test NG generate') {
             when {
               expression { ! (BRANCH_NAME ==~ /(production|master|develop)/) }
@@ -116,7 +117,8 @@ pipeline{
               USER_NAME_ = credentials('helm_registry_username')
               PASSWORD_ = credentials('helm_registry_password')
               url = credentials('helm_registry_url')
-              URL_ = "${url}/${ENV_NAME}registry"               
+              URL_ = "${url}/${ENV_NAME}registry"
+                            
            }
             steps {
                 script{
@@ -128,7 +130,7 @@ pipeline{
 
 
                     withKubeConfig([credentialsId:'kubernetes_staging-alpha-preprod', contextName: "ng${ENV_NAME}"]) {
-                        sh "helm upgrade --install enduser-react-ng${ENV_NAME} oci://${URL_}/enduser-react -f environments/ng${ENV_NAME}/microservices/enduser-react.yaml --namespace ng${ENV_NAME}"
+                        sh "sh ./deployments-scripts/deploy.sh enduser-react ${ENV_NAME} oci://${URL_}/enduser-react"
                         
                     }
                 }

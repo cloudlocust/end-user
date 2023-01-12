@@ -1,9 +1,8 @@
-import { metricTargetsEnum, metricTargetsType } from 'src/modules/Metrics/Metrics.d'
+import { metricTargetsEnum, metricTargetsType, metricTargetType } from 'src/modules/Metrics/Metrics.d'
 import { periodType } from 'src/modules/MyConsumption/myConsumptionTypes'
 import { Theme } from '@mui/material/styles/createTheme'
 import { isNil } from 'lodash'
 import convert, { Unit } from 'convert-units'
-import { enphaseConsentFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
 
 /**
  * Data Consumption Period.
@@ -11,7 +10,7 @@ import { enphaseConsentFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
 export const dataConsumptionPeriod = [
     {
         name: 'Jour',
-        interval: enphaseConsentFeatureState ? '30m' : '2m',
+        interval: '1m',
         period: 'daily' as periodType,
     },
     {
@@ -176,7 +175,7 @@ export const getYPointValueLabel = (yValue: number | null | undefined, chartName
     const value = isNil(yValue) ? '' : yValue
     switch (chartName) {
         case metricTargetsEnum.eurosConsumption:
-            return `${value === '' ? value : value.toFixed(4)} €`
+            return `${value === '' ? value : value.toFixed(2)} €`
         case metricTargetsEnum.externalTemperature:
         case metricTargetsEnum.internalTemperature:
             return `${value} °C`
@@ -192,7 +191,6 @@ export const getYPointValueLabel = (yValue: number | null | undefined, chartName
             return ` ${unit}`
     }
 }
-
 /**
  * Nrlink & Enedis Off message.
  */
@@ -240,4 +238,27 @@ export const metricTargetsHook: metricTargetsType = [
         target: metricTargetsEnum.injectedProduction,
         type: 'timeserie',
     },
+]
+
+/**
+ * Targets shown in ConsumptionChart.
+ */
+export const ConsumptionChartTargets: metricTargetType[] = [
+    metricTargetsEnum.autoconsumption,
+    metricTargetsEnum.consumption,
+    metricTargetsEnum.eurosConsumption,
+    metricTargetsEnum.pMax,
+    metricTargetsEnum.externalTemperature,
+    metricTargetsEnum.internalTemperature,
+]
+
+/**
+ * Widget Targets.
+ */
+export const WidgetTargets: metricTargetType[] = [
+    metricTargetsEnum.consumption,
+    metricTargetsEnum.eurosConsumption,
+    metricTargetsEnum.pMax,
+    metricTargetsEnum.externalTemperature,
+    metricTargetsEnum.internalTemperature,
 ]
