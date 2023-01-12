@@ -18,7 +18,7 @@ export const ECOWATT_SIGNALS_ENDPOINT = `${API_RESOURCES_URL}/rte/ecowatt/signal
  * @param houseId House id of the current housing.
  * @returns Endpoint.
  */
-export const ECOWATT_ALERTS_ENDPOINT = (houseId: number) => `/housings/${houseId}/ecowatt-alerts`
+export const ECOWATT_ALERTS_ENDPOINT = (houseId: number) => `${API_RESOURCES_URL}/housings/${houseId}/ecowatt-alerts`
 
 /**
  * UseEcowatt hook.
@@ -66,6 +66,7 @@ export function useEcowatt(immediate: boolean = false) {
     const getEcowattAlerts = useCallback(
         async (houseId: number) => {
             try {
+                if (!houseId) throw Error('No housing id privided')
                 setIsLoadingInProgress(true)
                 const { data: responseData } = await axios.get<IEcowattAlerts>(ECOWATT_ALERTS_ENDPOINT(houseId))
                 if (responseData) {
@@ -86,28 +87,26 @@ export function useEcowatt(immediate: boolean = false) {
         [enqueueSnackbar, formatMessage],
     )
 
-    // const updateEcowattAlert = useCallback(
-    //     async (houseId: number, alerts: IEcowattAlerts) => {
-    //         try {
-    //             const { data: responseData } = await axios.post<IEcowattAlerts>(
-    //                 ECOWATT_ALERTS_ENDPOINT(houseId),
-    //                 alerts,
-    //             )
-    //             if (responseData) {
-    //                 setEcowattAlerts(responseData)
-    //             }
-    //         } catch (error) {
-    //             enqueueSnackbar(
-    //                 formatMessage({
-    //                     id: "Erreur lors de la modification d'une alerte Ecowatts",
-    //                     defaultMessage: "Erreur lors de la modification d'une alerte Ecowatts",
-    //                 }),
-    //                 { variant: 'error', autoHideDuration: 5000 },
-    //             )
-    //         }
-    //     },
-    //     [enqueueSnackbar, formatMessage],
-    // )
+    const updateEcowattAlerts = useCallback(
+        async (houseId: number, alerts: IEcowattAlerts) => {
+            try {
+                if (!houseId) throw Error('No housing id privided')
+                setIsLoadingInProgress(true)
+                await axios.post<IEcowattAlerts>(ECOWATT_ALERTS_ENDPOINT(houseId), alerts)
+                setIsLoadingInProgress(false)
+            } catch (error) {
+                setIsLoadingInProgress(false)
+                enqueueSnackbar(
+                    formatMessage({
+                        id: "Erreur lors de la modification d'une alerte Ecowatts",
+                        defaultMessage: "Erreur lors de la modification d'une alerte Ecowatts",
+                    }),
+                    { variant: 'error', autoHideDuration: 5000 },
+                )
+            }
+        },
+        [enqueueSnackbar, formatMessage],
+    )
 
     useEffect(() => {
         if (isInitialMount.current) {
@@ -123,5 +122,6 @@ export function useEcowatt(immediate: boolean = false) {
         setEcowattSignalsData,
         ecowattAlerts,
         getEcowattAlerts,
+        updateEcowattAlerts,
     }
 }
