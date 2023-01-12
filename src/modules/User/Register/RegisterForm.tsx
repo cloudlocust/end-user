@@ -1,10 +1,10 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useRef } from 'react'
 import { useIntl } from 'react-intl'
 import { email, requiredBuilder, repeatPassword, Form, regex } from 'src/common/react-platform-components'
 import { TextField, PasswordField, ButtonLoader } from 'src/common/ui-kit'
 import { GoogleMapsAddressAutoCompleteField } from 'src/common/ui-kit/form-fields/GoogleMapsAddressAutoComplete/GoogleMapsAddressAutoCompleteField'
 import { useRegister } from 'src/modules/User/Register/hooks'
-import { IUser, IUserRegister } from '../model'
+import { IUserRegister } from '../model'
 import { PhoneNumber } from 'src/common/ui-kit/form-fields/phoneNumber/PhoneNumber'
 import FormControlLabel from '@mui/material/FormControlLabel'
 import Checkbox from '@mui/material/Checkbox'
@@ -12,7 +12,7 @@ import FormControl from '@mui/material/FormControl'
 import { FormHelperText } from '@mui/material'
 import { LinkRedirection } from 'src/modules/utils/LinkRedirection'
 import { passwordFieldValidationSecurity1 } from 'src/modules/utils'
-import { popupAfterRegistration } from 'src/modules/User/Register/RegisterConfig'
+import { energyProviderPopupLink, popupAfterRegistration } from 'src/modules/User/Register/RegisterConfig'
 import { convertUserDataToQueryString } from 'src/modules/User/Register/utils'
 
 const urlLegalNotice = 'https://www.myem.fr/mentions-legales/'
@@ -48,10 +48,6 @@ export const RegisterForm = ({
     const passwordRef = useRef()
     const [rgpdCheckboxState, setRgpdCheckboxState] = React.useState<Boolean | string>('false')
     const { formatMessage } = useIntl()
-    const newWindow = useRef<null | Window>(null)
-    const userData = useRef<null | IUserRegister>(null)
-
-    console.log('userData', userData.current)
 
     /**
      * Handle Change of the checkbox.
@@ -82,21 +78,20 @@ export const RegisterForm = ({
             return
         }
 
-        // If popupAfterRegistration is true
-        if (popupAfterRegistration) {
-            userData.current = cleanData
+        // When it's not true => it's enabled.
+        if (!popupAfterRegistration) {
             const queryString = convertUserDataToQueryString(cleanData)
             if (queryString) {
-                newWindow.current = window.open(
-                    `https://particuliers.alpiq.fr/souscription-bowatts${queryString}`,
+                window.open(
+                    `${energyProviderPopupLink}?${queryString}`,
                     '_blank',
                     `width=1024,height=768,left=${window.screen.availWidth / 2 - 200},top=${
                         window.screen.availHeight / 2 - 150
                     }`,
                 )
             }
+            // Add history.push to the succes page.
         }
-
         onSubmitUserRegistrationForm(cleanData)
     }
 
@@ -130,11 +125,7 @@ export const RegisterForm = ({
                 />
                 <PasswordField
                     name="repeatPwd"
-                    label="Confirmation de mo if (defaultRole !== undefined) {
-                        onSubmit({ ...cleanData, role: defaultRole })
-                    } else {
-                        onSubmit(cleanData)
-                    }t de passe"
+                    label="Confirmation de mot de passe"
                     validateFunctions={[requiredBuilder(), repeatPassword(passwordRef)]}
                 />
 

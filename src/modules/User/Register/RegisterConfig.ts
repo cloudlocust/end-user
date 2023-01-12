@@ -16,7 +16,12 @@ export const userRegistrationFeatureState = window._env_.REACT_APP_USER_REGISTRA
 /**
  * Popup after registration state.
  */
-export const popupAfterRegistration: boolean = window._env_.REACT_APP_POPUP_AFTER_REGISTRATION
+export const popupAfterRegistration = window._env_.REACT_APP_POPUP_AFTER_REGISTRATION === 'disabled'
+
+/**
+ * Energy provider popup link.
+ */
+export const energyProviderPopupLink = window._env_.REACT_APP_ENERGY_PROVIDER_POPUP_LINK
 
 /**
  * Configuration object for the register page. It contains, url, component and its props, and authentication level needed.

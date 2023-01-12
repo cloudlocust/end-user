@@ -28,31 +28,19 @@ export function convertUserDataToQueryString(data: IUserRegister) {
             case 'address':
                 // Address should be : Lyon Part Dieu, 5 Pl. Charles Béraudier
                 const { city, zipCode, name, country } = data['address']
-                // const formattedAddress = name
-                //     // Replace dot, comma, apostroph, dash, with empty string
-                //     // eslint-disable-next-line no-useless-escape
-                //     .replaceAll(/_|'|-|\.|\,/g, '')
-                //     // Replace city by empty string
-                //     .replaceAll(city, '')
-                //     // Replace country by empty string
-                //     .replace(country, '')
-                //     // Replace zip code by empty string
-                //     .replace(zipCode, '')
-                //     // Replace white space
-                //     .replaceAll(/\s/g, '%20')
                 const formattedAddress = name
                     .replace(city, '')
                     .replace(zipCode, '')
                     .replace(country, '')
                     .replaceAll(',', '')
                     .replaceAll('.', '')
+                    // Remove space from the start and end of string
                     .replaceAll(/^\s+|\s+$/g, '')
                     .replaceAll(' ', '%20')
                 const formattedCity = city.replaceAll(/\s/g, '%20')
                 url = { ...url, adresse: formattedAddress, code: zipCode, ville: formattedCity }
                 break
         }
-        console.log(url)
     }
-    return `?${new URLSearchParams(url).toString()}`
+    return `${new URLSearchParams(url).toString()}`
 }
