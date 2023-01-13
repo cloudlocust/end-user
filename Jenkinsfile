@@ -130,7 +130,7 @@ pipeline{
 
 
                     withKubeConfig([credentialsId:'kubernetes_staging-alpha-preprod', contextName: "ng${ENV_NAME}"]) {
-                        sh "sh ./deployments-scripts/deploy.sh enduser-react ${ENV_NAME} oci://${URL_}/enduser-react"
+                        sh "sh ./deployments-scripts/deploy.sh enduser-react ng${ENV_NAME} ${URL_}"
                         
                     }
                 }
