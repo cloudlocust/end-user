@@ -12,8 +12,13 @@ import FormControl from '@mui/material/FormControl'
 import { FormHelperText } from '@mui/material'
 import { LinkRedirection } from 'src/modules/utils/LinkRedirection'
 import { passwordFieldValidationSecurity1 } from 'src/modules/utils'
-import { energyProviderPopupLink, popupAfterRegistration } from 'src/modules/User/Register/RegisterConfig'
+import {
+    energyProviderPopupLink,
+    popupAfterRegistration,
+    URL_REGISTER_ENERGY_PROVIDER_SUCCESS,
+} from 'src/modules/User/Register/RegisterConfig'
 import { convertUserDataToQueryString } from 'src/modules/User/Register/utils'
+import { useHistory } from 'react-router-dom'
 
 const urlLegalNotice = 'https://www.myem.fr/mentions-legales/'
 // Condition Général de Vente
@@ -48,6 +53,7 @@ export const RegisterForm = ({
     const passwordRef = useRef()
     const [rgpdCheckboxState, setRgpdCheckboxState] = React.useState<Boolean | string>('false')
     const { formatMessage } = useIntl()
+    const history = useHistory()
 
     /**
      * Handle Change of the checkbox.
@@ -90,7 +96,7 @@ export const RegisterForm = ({
                     }`,
                 )
             }
-            // Add history.push to the succes page.
+            history.push(URL_REGISTER_ENERGY_PROVIDER_SUCCESS)
         }
         onSubmitUserRegistrationForm(cleanData)
     }

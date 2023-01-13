@@ -205,6 +205,11 @@ spec:
           valueFrom:
             configMapKeyRef:
               name: enduser-react
-              key: REACT_APP_ENERGY_PROVIDER_POPUP_LINK         
+              key: REACT_APP_ENERGY_PROVIDER_POPUP_LINK
+        - name: REACT_APP_REGISTER_ENERGY_PROVIDER_SUCCESS_MESSAGE
+          valueFrom:
+            configMapKeyRef:
+              name: enduser-react
+              key: REACT_APP_REGISTER_ENERGY_PROVIDER_SUCCESS_MESSAGE           
       imagePullSecrets:
       - name: dockersecret  
