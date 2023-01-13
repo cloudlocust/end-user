@@ -1,4 +1,5 @@
-import { Card, useTheme, Icon, CircularProgress, useMediaQuery, Divider, Tooltip } from '@mui/material'
+import { Card, useTheme, Icon, CircularProgress, useMediaQuery, Divider, Tooltip, styled } from '@mui/material'
+import { TooltipProps, tooltipClasses } from '@mui/material/Tooltip'
 import { NavLink, useParams } from 'react-router-dom'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import { ReactComponent as ContractIcon } from 'src/assets/images/content/housing/contract.svg'
@@ -18,6 +19,24 @@ import { EnphaseConsentPopup } from 'src/modules/MyHouse/components/MeterStatus/
 
 const FORMATTED_DATA = 'DD/MM/YYYY'
 const TEXT_CONNEXION_LE = 'Connexion le'
+
+/**
+ * GreyTooltip: Styled tooltip with Grey background.
+ * TODO: Add reusable Styled tooltip.
+ */
+const GreyTooltip = styled(({ className, ...props }: TooltipProps) => (
+    <Tooltip {...props} classes={{ popper: className }} />
+))(({ theme }) => ({
+    [`& .${tooltipClasses.arrow}`]: {
+        color: theme.palette.grey.A400,
+    },
+    [`& .${tooltipClasses.tooltip}`]: {
+        backgroundColor: theme.palette.grey.A400,
+        color: 'rgba(0, 0, 0, 0.87)',
+        padding: 10,
+        fontSize: 11,
+    },
+}))
 
 /**
  * Meter Status Component.
@@ -205,7 +224,7 @@ export const MeterStatus = () => {
                                 Date de fin de consentement
                             </TypographyFormatMessage>
                             <span className="text-grey-600">{enedisConsentEndingDate}</span>
-                            <Tooltip
+                            <GreyTooltip
                                 arrow
                                 placement="top-end"
                                 title={formatMessage({
@@ -222,7 +241,7 @@ export const MeterStatus = () => {
                                         Annuler la récolte de mes données
                                     </TypographyFormatMessage>
                                 </div>
-                            </Tooltip>
+                            </GreyTooltip>
                         </div>
                     </>
                 )
