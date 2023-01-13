@@ -126,6 +126,7 @@ jest.mock('use-places-autocomplete', () => ({
 }))
 // ============================================  ===============
 
+const TEST_CIVILITY_OPTION = 'Mr'
 const TEST_EMAIL = 'email@email.com'
 
 const mockOnSubmit = jest.fn((data) => null)
@@ -147,6 +148,13 @@ jest.mock('src/modules/User/Register/hooks', () => ({
  * @param getByTestId GetByTestId Jest.
  */
 const fillFormWithData = async (getByRole: Function, container: HTMLElement, getByTestId: Function) => {
+    // select civility is a select element that should be selected with getByLabelText
+    const civilitySelectField = screen.getByLabelText('Civilité *')
+    userEvent.click(civilitySelectField)
+    expect(screen.getAllByRole('option').length).toBe(2)
+    userEvent.click(screen.getByText(TEST_CIVILITY_OPTION))
+    expect(civilitySelectField.innerHTML).toBe(TEST_CIVILITY_OPTION)
+
     const firstNameField = getByRole('textbox', { name: 'Prénom' })
     userEvent.type(firstNameField, 'test prénom')
     const lastNameField = getByRole('textbox', { name: 'Nom' })
@@ -196,7 +204,7 @@ describe('test registerForm', () => {
         await act(async () => {
             fireEvent.click(screen.getByText('Valider'))
         })
-        expect(getAllByText('Champ obligatoire non renseigné').length).toBe(7)
+        expect(getAllByText('Champ obligatoire non renseigné').length).toBe(8)
     })
     test('RGPD checkbox required', async () => {
         const { getAllByText, getByRole, container, getByTestId } = reduxedRender(<RegisterForm />)
@@ -256,6 +264,7 @@ describe('test registerForm', () => {
         await waitFor(
             () => {
                 expect(mockOnSubmit).toHaveBeenCalledWith({
+                    civility: TEST_CIVILITY_OPTION,
                     email: TEST_EMAIL,
                     firstName: 'test prénom',
                     lastName: 'test nom',
