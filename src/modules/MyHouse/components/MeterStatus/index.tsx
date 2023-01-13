@@ -205,13 +205,24 @@ export const MeterStatus = () => {
                                 Date de fin de consentement
                             </TypographyFormatMessage>
                             <span className="text-grey-600">{enedisConsentEndingDate}</span>
-                            <TypographyFormatMessage
-                                className="underline cursor-pointer"
-                                color={theme.palette.primary.main}
-                                fontWeight={500}
+                            <Tooltip
+                                arrow
+                                placement="top-end"
+                                title={formatMessage({
+                                    id: 'Contacter support@myem.fr',
+                                    defaultMessage: 'Contacter support@myem.fr',
+                                })}
                             >
-                                Annuler la récolte de mes données
-                            </TypographyFormatMessage>
+                                <div>
+                                    <TypographyFormatMessage
+                                        className="underline cursor-pointer"
+                                        color={theme.palette.primary.main}
+                                        fontWeight={500}
+                                    >
+                                        Annuler la récolte de mes données
+                                    </TypographyFormatMessage>
+                                </div>
+                            </Tooltip>
                         </div>
                     </>
                 )
