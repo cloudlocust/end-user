@@ -63,6 +63,7 @@ export const MeterStatus = () => {
     const { housingList } = useSelector(({ housingModel }: RootState) => housingModel)
     const [foundHousing, setFoundHousing] = useState<IHousing>()
     const [openEnphaseConsentPopup, setOpenEnphaseConsentPopup] = useState(false)
+    const [openCancelCollectionDataTooltip, setOpenCancelCollectionDataTooltip] = useState(false)
 
     // Retrieving house id from url params /my-houses/:houseId
     // eslint-disable-next-line jsdoc/require-jsdoc
@@ -227,6 +228,9 @@ export const MeterStatus = () => {
                             <GreyTooltip
                                 arrow
                                 placement="top-end"
+                                open={openCancelCollectionDataTooltip}
+                                onClose={() => setOpenCancelCollectionDataTooltip(false)}
+                                onClick={() => setOpenCancelCollectionDataTooltip((prevState) => !prevState)}
                                 title={formatMessage({
                                     id: 'Contacter support@myem.fr',
                                     defaultMessage: 'Contacter support@myem.fr',
