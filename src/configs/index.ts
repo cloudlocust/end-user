@@ -158,3 +158,15 @@ export const FIREBASE_CONFIG = {
 export const FIREBASE_MESSAGING_SW_URL = `${process.env.PUBLIC_URL}/firebase-messaging-sw.js?${new URLSearchParams(
     FIREBASE_CONFIG,
 ).toString()}`
+
+/**
+ * GTM ID environment variable.
+ */
+export const REACT_APP_GTM_ID = window._env_.REACT_APP_GTM_ID
+
+/**
+ * Tag Manager Config.
+ */
+export const TAG_MANAGER_CONFIG = {
+    gtmId: REACT_APP_GTM_ID,
+}

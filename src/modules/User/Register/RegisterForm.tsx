@@ -4,7 +4,7 @@ import { email, requiredBuilder, repeatPassword, Form, regex } from 'src/common/
 import { TextField, PasswordField, ButtonLoader } from 'src/common/ui-kit'
 import { GoogleMapsAddressAutoCompleteField } from 'src/common/ui-kit/form-fields/GoogleMapsAddressAutoComplete/GoogleMapsAddressAutoCompleteField'
 import { useRegister } from 'src/modules/User/Register/hooks'
-import { IUserRegister } from '../model'
+import { civilityEnum, IUserRegister } from 'src/modules/User/model'
 import { PhoneNumber } from 'src/common/ui-kit/form-fields/phoneNumber/PhoneNumber'
 import FormControlLabel from '@mui/material/FormControlLabel'
 import Checkbox from '@mui/material/Checkbox'
@@ -14,6 +14,8 @@ import { LinkRedirection } from 'src/modules/utils/LinkRedirection'
 import { passwordFieldValidationSecurity1 } from 'src/modules/utils'
 import { energyProviderPopupLink, popupAfterRegistration } from 'src/modules/User/Register/RegisterConfig'
 import { convertUserDataToQueryString } from 'src/modules/User/Register/utils'
+import { Select } from 'src/common/ui-kit/form-fields/Select'
+import MenuItem from '@mui/material/MenuItem'
 
 const urlLegalNotice = 'https://www.myem.fr/mentions-legales/'
 // Condition Général de Vente
@@ -99,6 +101,14 @@ export const RegisterForm = ({
         <Form onSubmit={onSubmitWrapper}>
             {/* register your input into the hook by invoking the "register" function */}
             <div className="flex flex-col justify-center w-full">
+                <Select
+                    name="civility"
+                    label="Civilité"
+                    validateFunctions={[requiredBuilder()]}
+                    children={Object.values(civilityEnum).map((civility) => {
+                        return <MenuItem value={civility}>{civility}</MenuItem>
+                    })}
+                />
                 <TextField name="firstName" label="Prénom" validateFunctions={[requiredBuilder()]} variant="outlined" />
                 <TextField name="lastName" label="Nom" validateFunctions={[requiredBuilder()]} />
                 <TextField name="email" label="Email" validateFunctions={[requiredBuilder(), email()]} />
