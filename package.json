@@ -102,7 +102,6 @@
         "prettier": "^2.2.1",
         "prop-types": "^15.8.0",
         "sb": "^6.3.12",
-        "string.prototype.replaceall": "^1.0.7",
         "tailwindcss": "npm:@tailwindcss/postcss7-compat",
         "tailwindcss-dir": "4.0.0",
         "ts-jest": "26.5.6",
