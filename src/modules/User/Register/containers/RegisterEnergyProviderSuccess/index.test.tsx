@@ -1,15 +1,27 @@
-import userEvent from '@testing-library/user-event'
 import { reduxedRender } from 'src/common/react-platform-components/test'
 import { RegisterEnergyProviderSuccess } from 'src/modules/User/Register/containers/RegisterEnergyProviderSuccess'
-import { Router } from 'react-router-dom'
-import { createMemoryHistory } from 'history'
+import { BrowserRouter as Router } from 'react-router-dom'
+import { waitFor } from '@testing-library/react'
 
-const history = createMemoryHistory()
+const mockPushHistory = jest.fn()
+let mockIsAllowed: boolean = true
+
+jest.mock('react-router', () => ({
+    ...jest.requireActual('react-router'),
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    useLocation: () => ({
+        state: { isAllowed: mockIsAllowed },
+    }),
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    useHistory: () => ({
+        push: mockPushHistory,
+    }),
+}))
 
 describe('test RegisterEnergyProviderSuccess page', () => {
     test('when message is shown after user enters the page', async () => {
         const { getByText } = reduxedRender(
-            <Router history={history}>
+            <Router>
                 <RegisterEnergyProviderSuccess />
             </Router>,
         )
@@ -22,19 +34,16 @@ describe('test RegisterEnergyProviderSuccess page', () => {
     })
 
     test('when user click on Revenir a la connexion', async () => {
+        mockIsAllowed = false
         const { getByText } = reduxedRender(
-            <Router history={history}>
+            <Router>
                 <RegisterEnergyProviderSuccess />
             </Router>,
         )
 
-        userEvent.click(getByText('Revenir à la connexion'))
-
         expect(getByText('Revenir à la connexion').closest('a')).toHaveAttribute('href', '/login')
-
-        /**
-         * @see https://stackoverflow.com/a/67573449/14005627
-         */
-        expect(history.location.pathname).toBe('/login')
+        await waitFor(() => {
+            expect(mockPushHistory).toHaveBeenCalledWith('/login')
+        })
     })
 })

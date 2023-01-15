@@ -14,7 +14,7 @@ import { LinkRedirection } from 'src/modules/utils/LinkRedirection'
 import { passwordFieldValidationSecurity1 } from 'src/modules/utils'
 import {
     energyProviderPopupLink,
-    popupAfterRegistration,
+    isPopupAfterRegistration,
     URL_REGISTER_ENERGY_PROVIDER_SUCCESS,
 } from 'src/modules/User/Register/RegisterConfig'
 import { convertUserDataToQueryString } from 'src/modules/User/Register/utils'
@@ -84,8 +84,7 @@ export const RegisterForm = ({
             return
         }
 
-        // When it's not true => it's enabled.
-        if (!popupAfterRegistration) {
+        if (!isPopupAfterRegistration) {
             const queryString = convertUserDataToQueryString(cleanData)
             if (queryString) {
                 window.open(
@@ -96,7 +95,10 @@ export const RegisterForm = ({
                     }`,
                 )
             }
-            history.push(URL_REGISTER_ENERGY_PROVIDER_SUCCESS)
+            history.push({
+                pathname: URL_REGISTER_ENERGY_PROVIDER_SUCCESS,
+                state: { isAllowed: true },
+            })
         }
         onSubmitUserRegistrationForm(cleanData)
     }

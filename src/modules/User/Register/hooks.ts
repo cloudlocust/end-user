@@ -4,7 +4,7 @@ import { useHistory } from 'react-router-dom'
 import { Dispatch } from 'src/redux'
 import { IUserRegister } from '../model'
 import { useSnackbar } from 'notistack'
-import { popupAfterRegistration } from 'src/modules/User/Register/RegisterConfig'
+import { isPopupAfterRegistration } from 'src/modules/User/Register/RegisterConfig'
 
 /**
  * Builder to create userRegister hooks. We use a build to easily modify redirect url after register. This function returns a function.
@@ -43,7 +43,7 @@ export const BuilderUseRegister = ({
             try {
                 await dispatch.userModel.register({ data })
                 setIsRegisterInProgress(false)
-                if (popupAfterRegistration) history.replace(redirect())
+                if (isPopupAfterRegistration) history.replace(redirect())
                 enqueueSnackbar(
                     "Votre inscription a bien été prise en compte, vous pourrez vous connecter une fois celle-ci validée par l'administrateur.",
                     { variant: 'success', autoHideDuration: 8000 },

@@ -1,7 +1,7 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Card, Icon, MuiCardContent } from 'src/common/ui-kit'
 import { useIntl } from 'src/common/react-platform-translation'
-import { Link } from 'react-router-dom'
+import { Link, useHistory, useLocation } from 'react-router-dom'
 import MuiLink from '@mui/material/Link'
 import { URL_LOGIN } from 'src/modules/User/Login/LoginConfig'
 import { motion } from 'framer-motion'
@@ -10,12 +10,32 @@ import './registerEnergyProviderSuccess.scss'
 import { registerEnergyProviderSuccessMessage } from 'src/modules/User/Register/RegisterConfig'
 
 /**
+ * Interface type for RegisterEnergyProviderSuccessLocation.
+ */
+export interface RegisterEnergyProviderSuccessLocation {
+    /**
+     * State to be checked to allow or not user in the route.
+     */
+    isAllowed: boolean
+}
+
+/**
  * Component that shows register energy provider success.
  *
  * @returns Register Energy provider success JSX.
  */
 export const RegisterEnergyProviderSuccess = () => {
     const { formatMessage } = useIntl()
+    const history = useHistory()
+    const {
+        state: { isAllowed },
+    } = useLocation<RegisterEnergyProviderSuccessLocation>()
+
+    useEffect(() => {
+        if (!isAllowed) {
+            history.push(URL_LOGIN)
+        }
+    }, [history, isAllowed])
 
     return (
         <div className="register-energy-provider-success-container">
