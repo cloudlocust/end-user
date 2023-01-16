@@ -45,7 +45,7 @@ export const BuilderUseRegister = ({
                 setIsRegisterInProgress(false)
                 history.replace(redirect())
                 enqueueSnackbar(
-                    USER_REGISTRATION_AUTO_VALIDATE
+                    Boolean(USER_REGISTRATION_AUTO_VALIDATE)
                         ? 'Votre inscription a bien été prise en compte. Vous allez reçevoir un lien de confirmation sur votre adresse email.'
                         : "Votre inscription a bien été prise en compte, vous pourrez vous connecter une fois celle-ci validée par l'administrateur.",
                     { variant: 'success', autoHideDuration: 8000 },

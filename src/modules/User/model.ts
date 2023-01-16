@@ -403,7 +403,7 @@ export const handleLoginErrors = (error: any) => {
                     return "Vérifiez l'email et/ou le mot de passe"
                 }
                 if (error.response.data.detail === 'LOGIN_USER_NOT_VERIFIED') {
-                    return USER_REGISTRATION_AUTO_VALIDATE
+                    return Boolean(USER_REGISTRATION_AUTO_VALIDATE)
                         ? "Votre addresse email n'a pas encore été confirmée, merci de vérifier votre messagerie."
                         : "Votre email n'a pas encore été validé par l'administrateur."
                 }
