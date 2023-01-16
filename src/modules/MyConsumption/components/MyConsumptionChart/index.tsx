@@ -41,7 +41,7 @@ const MyConsumptionChart = ({
     useEffect(() => {
         // Reset isDataChanged when its not data change.
         isDataChanged.current = false
-    }, [isStackedEnabled, period, chartType, chartLabel, range])
+    }, [period, chartType, chartLabel, range])
 
     useEffect(() => {
         // Set isDataChanged when data changes.
