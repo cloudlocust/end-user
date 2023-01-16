@@ -14,11 +14,8 @@ import { LinkRedirection } from 'src/modules/utils/LinkRedirection'
 import { passwordFieldValidationSecurity1 } from 'src/modules/utils'
 import { Select } from 'src/common/ui-kit/form-fields/Select'
 import MenuItem from '@mui/material/MenuItem'
+import { generalTermsOfUse, privacyPolicy } from 'src/modules/Mentions/MentionsConfig'
 
-const urlLegalNotice = 'https://www.myem.fr/mentions-legales/'
-// Condition Général de Vente
-const urlCGV = 'https://www.myem.fr/particuliers-cgv/'
-const urlPolitiqueConfidentialité = 'https://drive.google.com/uc?export=download&id=1sMFMizrEPZ4ZHhe6Zf-PTJGRUQBFGUEv'
 /**
  * Form used for user registration. This is a component based on form hooks.
  *
@@ -120,11 +117,7 @@ export const RegisterForm = ({
                                     plateforme et suivre votre consommation. Vous pouvez retrouver plus d'informations sur vos droits
                                     via notre `,
                     })}
-                    <LinkRedirection
-                        url={urlPolitiqueConfidentialité}
-                        label="Politique de Confidentialité"
-                        color="primary.light"
-                    />
+                    <LinkRedirection url={privacyPolicy} label="Politique de Confidentialité" color="primary.light" />
                 </span>
                 {/* TODO Create a checkbox reusable component */}
                 <FormControl required error={rgpdCheckboxState === ''}>
@@ -147,19 +140,10 @@ export const RegisterForm = ({
                                     defaultMessage: `J’ai lu et j’accepte les `,
                                 })}
                                 <LinkRedirection
-                                    url={urlLegalNotice}
+                                    url={generalTermsOfUse}
                                     label="Conditions Générales d’Utilisation"
                                     color="primary.light"
                                 />
-                                {formatMessage({
-                                    id: ` et de `,
-                                    defaultMessage: ` et de `,
-                                })}
-                                <LinkRedirection url={urlCGV} label="Vente" color="primary.light" />
-                                {formatMessage({
-                                    id: ` de la plateforme`,
-                                    defaultMessage: ` de la plateforme`,
-                                })}
                             </span>
                         }
                         labelPlacement="end"

@@ -195,6 +195,16 @@ spec:
           valueFrom:
             configMapKeyRef:
               name: enduser-react
-              key: REACT_APP_USER_REGISTRATION_FEATURE_STATE            
+              key: REACT_APP_USER_REGISTRATION_FEATURE_STATE
+        - name: REACT_APP_REACT_APP_GENERAL_TERMS_OF_USE
+          valueFrom:
+            configMapKeyRef:
+              name: enduser-react
+              key: REACT_APP_REACT_APP_GENERAL_TERMS_OF_USE
+        - name: REACT_APP_REACT_APP_PRIVACY_POLICY
+          valueFrom:
+            configMapKeyRef:
+              name: enduser-react
+              key: REACT_APP_REACT_APP_PRIVACY_POLICY          
       imagePullSecrets:
       - name: dockersecret  
