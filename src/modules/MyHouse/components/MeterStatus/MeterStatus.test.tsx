@@ -41,7 +41,6 @@ const NO_METER_MESSAGE = 'Aucun compteur renseigné'
 
 const VERIFY_METER_MESSAGE = "Vérification de l'existence de votre compteur"
 const CREATION_ENEDIS_SGE_CONSENT_TEXT = `${sgeConsentMessage}`
-//     "J'autorise My Energy Manager à la récolte de mon historique de données de consommation auprès d'Enedis."
 
 const ERROR_ENPHASE_MESSAGE = 'Connectez votre onduleur pour visualiser votre production'
 const PENDING_ENPHASE_MESSAGE = 'Votre connexion est en cours et sera active dans les plus brefs délais'

@@ -21,7 +21,7 @@ spec:
         imagePullPolicy: Always
         ports:
         - containerPort: 80
-          port: 
+          port:
         env:
         - name: NGINX_HOST
           valueFrom:
@@ -67,7 +67,7 @@ spec:
           valueFrom:
             configMapKeyRef:
               name: enduser-react
-              key: REACT_APP_ADD_DELETE_HOUSING_FEATURE_STATE        
+              key: REACT_APP_ADD_DELETE_HOUSING_FEATURE_STATE
         - name: REACT_APP_EQUIPMENTS_ACCOMODATION_FEATURE_STATE
           valueFrom:
             configMapKeyRef:
@@ -77,22 +77,27 @@ spec:
           valueFrom:
             configMapKeyRef:
               name: enduser-react
-              key: REACT_APP_TEMP_PMAX_FEATURE_STATE   
+              key: REACT_APP_TEMP_PMAX_FEATURE_STATE
         - name: REACT_APP_INSTALLATION_REQUESTS_FEATURE_STATE
           valueFrom:
             configMapKeyRef:
               name: enduser-react
-              key: REACT_APP_INSTALLATION_REQUESTS_FEATURE_STATE 
+              key: REACT_APP_INSTALLATION_REQUESTS_FEATURE_STATE
         - name: REACT_APP_SGE_CONSENT_FEATURE_STATE
           valueFrom:
             configMapKeyRef:
               name: enduser-react
               key: REACT_APP_SGE_CONSENT_FEATURE_STATE
+        - name: REACT_APP_SGE_CONSENT_POPUP_MESSAGE
+          valueFrom:
+            configMapKeyRef:
+              name: enduser-react
+              key: REACT_APP_SGE_CONSENT_POPUP_MESSAGE
         - name: REACT_APP_ENPHASE_CONSENT_FEATURE_STATE
           valueFrom:
             configMapKeyRef:
               name: enduser-react
-              key: REACT_APP_ENPHASE_CONSENT_FEATURE_STATE             
+              key: REACT_APP_ENPHASE_CONSENT_FEATURE_STATE
         - name: REACT_APP_GOOGLE_MAPS_API_KEY
           valueFrom:
             configMapKeyRef:
@@ -137,7 +142,7 @@ spec:
           valueFrom:
             configMapKeyRef:
               name: enduser-react
-              key: ENVIRONMENT       
+              key: ENVIRONMENT
         - name: REACT_APP_NOVU_BACKEND_URL
           valueFrom:
             configMapKeyRef:
@@ -152,49 +157,49 @@ spec:
           valueFrom:
             configMapKeyRef:
               name: enduser-react
-              key: REACT_APP_NOVU_APPLICATION_IDENTIFIER                
+              key: REACT_APP_NOVU_APPLICATION_IDENTIFIER
 
               name: enduser-react
-              key: REACT_APP_NOVU_APPLICATION_IDENTIFIER  
+              key: REACT_APP_NOVU_APPLICATION_IDENTIFIER
         - name: REACT_APP_FIREBASE_API_KEY
           valueFrom:
             configMapKeyRef:
               name: enduser-react
-              key: REACT_APP_FIREBASE_API_KEY 
+              key: REACT_APP_FIREBASE_API_KEY
         - name: REACT_APP_FIREBASE_AUTH_DOMAIN
           valueFrom:
             configMapKeyRef:
               name: enduser-react
-              key: REACT_APP_FIREBASE_AUTH_DOMAIN 
+              key: REACT_APP_FIREBASE_AUTH_DOMAIN
         - name: REACT_APP_FIREBASE_PROJECT_ID
           valueFrom:
             configMapKeyRef:
               name: enduser-react
-              key: REACT_APP_FIREBASE_PROJECT_ID 
+              key: REACT_APP_FIREBASE_PROJECT_ID
         - name: REACT_APP_FIREBASE_STORAGE_BUCKET
           valueFrom:
             configMapKeyRef:
               name: enduser-react
-              key: REACT_APP_FIREBASE_STORAGE_BUCKET 
+              key: REACT_APP_FIREBASE_STORAGE_BUCKET
         - name: REACT_APP_FIREBASE_MESSAGING_SENDER_ID
           valueFrom:
             configMapKeyRef:
               name: enduser-react
-              key: REACT_APP_FIREBASE_MESSAGING_SENDER_ID 
+              key: REACT_APP_FIREBASE_MESSAGING_SENDER_ID
         - name: REACT_APP_FIREBASE_APP_ID
           valueFrom:
             configMapKeyRef:
               name: enduser-react
-              key: REACT_APP_FIREBASE_APP_ID 
+              key: REACT_APP_FIREBASE_APP_ID
         - name: REACT_APP_FIREBASE_VAPID_KEY
           valueFrom:
             configMapKeyRef:
               name: enduser-react
-              key: REACT_APP_FIREBASE_VAPID_KEY                                                                                     
+              key: REACT_APP_FIREBASE_VAPID_KEY
         - name: REACT_APP_USER_REGISTRATION_FEATURE_STATE
           valueFrom:
             configMapKeyRef:
               name: enduser-react
-              key: REACT_APP_USER_REGISTRATION_FEATURE_STATE            
+              key: REACT_APP_USER_REGISTRATION_FEATURE_STATE
       imagePullSecrets:
-      - name: dockersecret  
+      - name: dockersecret
