@@ -4,6 +4,7 @@ import { useHistory } from 'react-router-dom'
 import { Dispatch } from 'src/redux'
 import { IUserRegister } from '../model'
 import { useSnackbar } from 'notistack'
+import { USER_REGISTRATION_AUTO_VALIDATE } from 'src/modules/User/configs'
 
 /**
  * Builder to create userRegister hooks. We use a build to easily modify redirect url after register. This function returns a function.
@@ -44,7 +45,9 @@ export const BuilderUseRegister = ({
                 setIsRegisterInProgress(false)
                 history.replace(redirect())
                 enqueueSnackbar(
-                    "Votre inscription a bien été prise en compte, vous pourrez vous connecter une fois celle-ci validée par l'administrateur.",
+                    USER_REGISTRATION_AUTO_VALIDATE
+                        ? 'Votre inscription a bien été prise en compte. Vous allez reçevoir un lien de confirmation sur votre adresse email.'
+                        : "Votre inscription a bien été prise en compte, vous pourrez vous connecter une fois celle-ci validée par l'administrateur.",
                     { variant: 'success', autoHideDuration: 8000 },
                 )
             } catch (error) {
