@@ -20,6 +20,7 @@ import {
     showPerPeriodText,
 } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
 import { ConsumptionChartTargets } from 'src/modules/MyConsumption/utils/myConsumptionVariables'
+import { targetOptions } from 'src/modules/MyConsumption/utils/myConsumptionVariables'
 
 /**
  * MyConsumptionChart Component.
@@ -60,13 +61,21 @@ export const ConsumptionChartContainer = ({
         filters,
     })
     const { currentHousing } = useSelector(({ housingModel }: RootState) => housingModel)
-    // This state represents whether or not the chart is stacked: true.
-    const [isStackedEnabled, setIsStackedEnabled] = useState<boolean>(true)
+
     // Indicates the Charts visible in MyConsumptionChart.
     const [visibleTargetCharts, setVisibleTargetsCharts] = useState<metricTargetType[]>([
         metricTargetsEnum.autoconsumption,
         metricTargetsEnum.consumption,
     ])
+    // This state represents whether or not the chart is stacked: true.
+    const isStackedEnabled = useMemo(
+        () =>
+            !visibleTargetCharts.some((visibleTargetChart) =>
+                targetOptions.includes(visibleTargetChart as metricTargetsEnum),
+            ),
+        [visibleTargetCharts],
+    )
+
     // This state represents whether or not the chart is showing .
     const [isConsumptionChartLoading, setIsConsumptionChartLoading] = useState<boolean>(true)
     // This state represents whether or not the chart is stacked: true.
@@ -145,12 +154,6 @@ export const ConsumptionChartContainer = ({
      * @param target Indicated target.
      */
     const showMetricTargetChart = (target: metricTargetType) => {
-        if (
-            [metricTargetsEnum.internalTemperature, metricTargetsEnum.externalTemperature].includes(
-                target as metricTargetsEnum,
-            )
-        )
-            setIsStackedEnabled(true)
         isVisibleTargetChartsChanged.current = true
         setVisibleTargetsCharts((prevState) => [...prevState, target])
     }
