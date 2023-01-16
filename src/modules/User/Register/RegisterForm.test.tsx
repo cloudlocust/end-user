@@ -126,7 +126,12 @@ jest.mock('use-places-autocomplete', () => ({
 }))
 // ============================================  ===============
 
-const TEST_CIVILITY_OPTION = 'Mr'
+/**
+ * Civility Option has two properties: (label that shown in the front visual) and (value that goes to the backend).
+ * For Monsieur (label="Mr" and value="Mr").
+ * For Madame (label="Mme" and value="Mrs").
+ */
+const TEST_CIVILITY_OPTION = { label: 'Mr', value: 'Mr' }
 const TEST_EMAIL = 'email@email.com'
 
 const mockOnSubmit = jest.fn((data) => null)
@@ -152,8 +157,8 @@ const fillFormWithData = async (getByRole: Function, container: HTMLElement, get
     const civilitySelectField = screen.getByLabelText('Civilité *')
     userEvent.click(civilitySelectField)
     expect(screen.getAllByRole('option').length).toBe(2)
-    userEvent.click(screen.getByText(TEST_CIVILITY_OPTION))
-    expect(civilitySelectField.innerHTML).toBe(TEST_CIVILITY_OPTION)
+    userEvent.click(screen.getByText(TEST_CIVILITY_OPTION.label))
+    expect(civilitySelectField.innerHTML).toBe(TEST_CIVILITY_OPTION.label)
 
     const firstNameField = getByRole('textbox', { name: 'Prénom' })
     userEvent.type(firstNameField, 'test prénom')
@@ -264,7 +269,7 @@ describe('test registerForm', () => {
         await waitFor(
             () => {
                 expect(mockOnSubmit).toHaveBeenCalledWith({
-                    civility: TEST_CIVILITY_OPTION,
+                    civility: TEST_CIVILITY_OPTION.value,
                     email: TEST_EMAIL,
                     firstName: 'test prénom',
                     lastName: 'test nom',
