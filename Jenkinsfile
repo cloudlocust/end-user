@@ -26,7 +26,7 @@ pipeline{
         }
         stage('Unit-test'){
             steps {
-                sh 'yarn test --watchAll=false --maxWorkers=1 --no-cache  --coverage --testResultsProcessor jest-sonar-reporter'
+                sh 'yarn test --watchAll=false --maxWorkers=2 --no-cache  --coverage --testResultsProcessor jest-sonar-reporter'
             }
 
         }
