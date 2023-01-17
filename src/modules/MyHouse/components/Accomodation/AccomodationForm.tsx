@@ -136,7 +136,7 @@ export const AccomodationForm = () => {
                                 onClick={() => setIsAccomodationInfoConsentmentOpen(!isAccomodationInfoConsentmentOpen)}
                             >
                                 <img
-                                    src="/assets/images/content/housing/consent-status/meter-error.svg "
+                                    src="./assets/images/content/housing/consent-status/meter-error.svg "
                                     alt="meter-status"
                                 />
                             </Icon>

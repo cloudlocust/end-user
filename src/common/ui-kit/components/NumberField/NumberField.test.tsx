@@ -8,7 +8,7 @@ const labelTitle = 'PC de bureau'
 
 const propsNumberField = {
     labelTitle: labelTitle,
-    iconPath: '/assets/images/content/equipment/aspirator.svg',
+    iconPath: './assets/images/content/equipment/aspirator.svg',
     disableDecrement: true,
     value: 1,
 }

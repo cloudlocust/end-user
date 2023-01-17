@@ -273,7 +273,7 @@ describe('MeterStatus component test', () => {
             expect(getByText(`n° ${foundHouse?.meter?.guid}`)).toBeTruthy()
             expect(getByText(ENEDIS_NONEXISTANT_EXPIRED_MESSAGE)).toBeTruthy()
             const image = getByAltText('off-icon')
-            expect(image).toHaveAttribute('src', '/assets/images/content/housing/consent-status/meter-off.svg')
+            expect(image).toHaveAttribute('src', './assets/images/content/housing/consent-status/meter-off.svg')
         })
     })
     describe('enphase status', () => {

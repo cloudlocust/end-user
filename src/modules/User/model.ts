@@ -1,5 +1,5 @@
 import { axios, handleErrors } from 'src/common/react-platform-components'
-import { AUTH_BASE_URL } from './configs'
+import { AUTH_BASE_URL, USER_REGISTRATION_AUTO_VALIDATE } from './configs'
 import { createModel } from '@rematch/core'
 import { RootModel } from 'src/models'
 import { isArray } from 'lodash'
@@ -403,7 +403,9 @@ export const handleLoginErrors = (error: any) => {
                     return "Vérifiez l'email et/ou le mot de passe"
                 }
                 if (error.response.data.detail === 'LOGIN_USER_NOT_VERIFIED') {
-                    return "Votre email n'a pas encore été validé par l'administrateur."
+                    return Boolean(USER_REGISTRATION_AUTO_VALIDATE)
+                        ? "Votre addresse email n'a pas encore été confirmée, merci de vérifier votre messagerie."
+                        : "Votre email n'a pas encore été validé par l'administrateur."
                 }
                 break
             case 401:
