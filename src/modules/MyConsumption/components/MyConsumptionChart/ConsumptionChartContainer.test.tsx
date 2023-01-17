@@ -16,7 +16,12 @@ import { TEST_HOUSES } from 'src/mocks/handlers/houses'
 import { URL_MY_HOUSE } from 'src/modules/MyHouse/MyHouseConfig'
 import { ConsumptionChartTargets } from 'src/modules/MyConsumption/utils/myConsumptionVariables'
 import { ConsumptionChartContainerProps, periodType } from 'src/modules/MyConsumption/myConsumptionTypes'
-import { IEnedisSgeConsent, INrlinkConsent, IEnphaseConsent } from 'src/modules/Consents/Consents'
+import {
+    IEnedisSgeConsent,
+    INrlinkConsent,
+    IEnphaseConsent,
+    enedisSgeConsentStatus,
+} from 'src/modules/Consents/Consents'
 import { ConsumptionChartContainer } from 'src/modules/MyConsumption/components/MyConsumptionChart/ConsumptionChartContainer'
 
 // List of houses to add to the redux state
@@ -34,12 +39,18 @@ const nrLinkConsent: INrlinkConsent = {
 }
 
 // Enedis Consent format
-const enedisSgeConsent: IEnedisSgeConsent = {
+const enedisSgeConsentConnected: IEnedisSgeConsent = {
     meterGuid: '133456',
     enedisSgeConsentState: 'CONNECTED',
     expiredAt: '',
 }
 
+// Enedis Consent format
+const enedisSgeConsentOff: IEnedisSgeConsent = {
+    meterGuid: '133456',
+    enedisSgeConsentState: 'NONEXISTENT',
+    expiredAt: '',
+}
 // Enphase Consent default
 const enphaseConsent: IEnphaseConsent = {
     meterGuid: '133456',
@@ -47,7 +58,7 @@ const enphaseConsent: IEnphaseConsent = {
 }
 
 let mockNrlinkConsent: INrlinkConsent | undefined = nrLinkConsent
-let mockEnedisConsent: IEnedisSgeConsent | undefined = enedisSgeConsent
+let mockEnedisConsent: IEnedisSgeConsent | undefined = enedisSgeConsentConnected
 let mockEnphaseConsent: IEnphaseConsent | undefined = enphaseConsent
 
 let mockIsMetricsLoading = false
@@ -55,6 +66,7 @@ const mockSetFilters = jest.fn()
 const HAS_MISSING_CONTRACTS_WARNING_TEXT =
     "Ce graphe est un exemple basé sur un tarif Bleu EDF Base. Vos données contractuelles de fourniture d'énergie ne sont pas disponibles sur toute la période."
 const HAS_MISSING_CONTRACTS_WARNING_REDIRECT_LINK_TEXT = "Renseigner votre contrat d'énergie"
+const CONSUMPTION_ENEDIS_SGE_WARNING_TEXT = 'Accéder à votre historique de consommation'
 const CONSUMPTION_TITLE_DAILY = 'en Watt par jour'
 const CONSUMPTION_TITLE_WEEKLY = 'en kWh par semaine'
 const CONSUMPTION_TITLE_MONTHLY = 'en kWh par mois'
@@ -70,6 +82,7 @@ const buttonGroupdDisabledClassname = 'disabledField'
 const buttonDisabledClassname = 'Mui-disabled'
 const mockGetConsents = jest.fn()
 const mockGetMetricsWithParams = jest.fn()
+let mockSgeConsentFeatureState = true
 
 let mockFilters: metricFiltersType = [
     {
@@ -88,7 +101,7 @@ let mockMetricsInterval: metricIntervalType = '1m'
 
 const consumptionChartContainerProps: ConsumptionChartContainerProps = {
     filters: mockFilters,
-    enedisSgeConsent,
+    enedisSgeConsentConnected,
     enphaseConsent,
     hasMissingHousingContracts: false,
     metricsInterval: mockMetricsInterval,
@@ -122,7 +135,7 @@ jest.mock('src/modules/Metrics/metricsHook.ts', () => ({
 jest.mock('src/modules/Consents/consentsHook.ts', () => ({
     // eslint-disable-next-line jsdoc/require-jsdoc
     useConsents: () => ({
-        enedisSgeConsent: {
+        enedisSgeConsentConnected: {
             meterGuid: '133456',
             enedisSgeConsentState: mockEnedisConsent,
         },
@@ -153,10 +166,18 @@ jest.mock(
     () => (props: any) => <div className={`${apexchartsClassName}`} {...props}></div>,
 )
 
+jest.mock('src/modules/MyHouse/MyHouseConfig', () => ({
+    ...jest.requireActual('src/modules/MyHouse/MyHouseConfig'),
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    get sgeConsentFeatureState() {
+        return mockSgeConsentFeatureState
+    },
+}))
+
 describe('MyConsumptionContainer test', () => {
     test('onLoad getMetrics is called two times, one with default targets and then all targets.', async () => {
         consumptionChartContainerProps.period = mockPeriod
-        reduxedRender(
+        const { getByText } = reduxedRender(
             <Router>
                 <ConsumptionChartContainer {...consumptionChartContainerProps} />
             </Router>,
@@ -174,6 +195,8 @@ describe('MyConsumptionContainer test', () => {
                 targets: ConsumptionChartTargets,
             })
         })
+
+        expect(() => getByText(CONSUMPTION_ENEDIS_SGE_WARNING_TEXT)).toThrow()
     })
     test('Different period props, When consumption chart.', async () => {
         const consumptionTitleCases = [
@@ -201,6 +224,7 @@ describe('MyConsumptionContainer test', () => {
                 <Router>
                     <ConsumptionChartContainer {...consumptionChartContainerProps} />
                 </Router>,
+                { initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[0] } } },
             )
             expect(getByText(text)).toBeTruthy()
         })
@@ -227,6 +251,7 @@ describe('MyConsumptionContainer test', () => {
                 <Router>
                     <ConsumptionChartContainer {...consumptionChartContainerProps} />
                 </Router>,
+                { initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[0] } } },
             )
             // TOGGLING TO EUROS CONSUMPTION CHART
             userEvent.click(getByTestId(EUROS_CONSUMPTION_ICON_TEST_ID).parentElement as HTMLButtonElement)
@@ -287,5 +312,16 @@ describe('MyConsumptionContainer test', () => {
             ),
         ).toBeTruthy()
         expect(getByText(PMAX_BUTTON_TEXT).classList.contains(buttonGroupdDisabledClassname)).toBeTruthy()
+    })
+    test('When enedisSgeConsent Off, warning is shown', async () => {
+        consumptionChartContainerProps.enedisSgeConsent = enedisSgeConsentOff
+        const { getByText } = reduxedRender(
+            <Router>
+                <ConsumptionChartContainer {...consumptionChartContainerProps} />
+            </Router>,
+            { initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[0] } } },
+        )
+
+        expect(getByText(CONSUMPTION_ENEDIS_SGE_WARNING_TEXT)).toBeTruthy()
     })
 })

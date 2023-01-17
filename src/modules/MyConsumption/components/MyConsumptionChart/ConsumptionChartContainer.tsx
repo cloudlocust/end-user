@@ -15,7 +15,11 @@ import {
 } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
 import { ConsumptionChartTargets } from 'src/modules/MyConsumption/utils/myConsumptionVariables'
 import { targetOptions } from 'src/modules/MyConsumption/utils/myConsumptionVariables'
-import { DefaultContractWarning } from 'src/modules/MyConsumption/components/MyConsumptionChart/ConsumptionChartWarnings'
+import {
+    DefaultContractWarning,
+    ConsumptionEnedisSgeWarning,
+} from 'src/modules/MyConsumption/components/MyConsumptionChart/ConsumptionChartWarnings'
+import { sgeConsentFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
 
 /**
  * MyConsumptionChart Component.
@@ -87,7 +91,8 @@ export const ConsumptionChartContainer = ({
     }, [period, visibleTargetCharts])
     const [consumptionChartData, setConsumptionChartData] = useState<IMetric[]>(data)
     const isEurosConsumptionDisabled = !isEurosConsumptionChart && period === 'daily'
-    const hidePmax = period === 'daily' || enedisSgeConsent?.enedisSgeConsentState === 'NONEXISTENT'
+    const enedisSgeOff = enedisSgeConsent?.enedisSgeConsentState === 'NONEXISTENT'
+    const hidePmax = period === 'daily' || enedisSgeOff
 
     // Track the change of visibleTargetCharts, so that we don't call getMetrics when visibleTargetCharts change (and thus no request when showing / hiding target in MyConsumptionChart).
     const isVisibleTargetChartsChanged = useRef(false)
@@ -215,6 +220,7 @@ export const ConsumptionChartContainer = ({
                 />
             )}
             <DefaultContractWarning isShowWarning={isEurosConsumptionChart && hasMissingHousingContracts} />
+            <ConsumptionEnedisSgeWarning isShowWarning={enedisSgeOff && sgeConsentFeatureState} />
         </div>
     )
 }

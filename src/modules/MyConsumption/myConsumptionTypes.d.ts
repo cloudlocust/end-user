@@ -185,12 +185,19 @@ export interface ConsumptionChartContainerProps {
 /**
  * Component rendering default contract warning message, when consumption data comes from default contract.
  */
-export interface DefaultContractWarningProps {
-    /**
-     * Indicates if the warning should be shown.
-     */
-    isShowWarning
-}
+export type DefaultContractWarningProps =
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    {
+        /**
+         * Indicates if the warning should be shown.
+         */
+        isShowWarning
+    }
+
+/**
+ * Component rendering consumption enedis sge warning message, with opening the sge popup consent, when consumption data comes from default contract.
+ */
+export type ConsumptionEnedisSgeWarningProps = DefaultContractWarningProps
 
 /**
  * ProductionChartContainer Props.

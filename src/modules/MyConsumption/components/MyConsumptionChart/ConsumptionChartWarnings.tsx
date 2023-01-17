@@ -1,7 +1,9 @@
-import { useState, useEffect, useMemo, useCallback, useRef } from 'react'
+import React from 'react'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
-import { useTheme } from '@mui/material'
-import { DefaultContractWarningProps } from 'src/modules/MyConsumption/myConsumptionTypes.d'
+import {
+    DefaultContractWarningProps,
+    ConsumptionEnedisSgeWarningProps,
+} from 'src/modules/MyConsumption/myConsumptionTypes.d'
 import { useSelector } from 'react-redux'
 import { RootState } from 'src/redux'
 import { warningMainHashColor } from 'src/modules/utils/muiThemeVariables'
@@ -10,6 +12,7 @@ import { NavLink } from 'react-router-dom'
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline'
 import { useIntl } from 'react-intl'
 import { EnedisSgePopup } from 'src/modules/MyHouse/components/MeterStatus/EnedisSgePopup'
+import { useConsents } from 'src/modules/Consents/consentsHook'
 
 /**
  * Default Contract Warning message component.
@@ -20,37 +23,35 @@ import { EnedisSgePopup } from 'src/modules/MyHouse/components/MeterStatus/Enedi
  */
 export const DefaultContractWarning = ({ isShowWarning }: DefaultContractWarningProps) => {
     const { currentHousing } = useSelector(({ housingModel }: RootState) => housingModel)
-    if (!isShowWarning) return
+    if (!isShowWarning) return <></>
     return (
-        <div className="mb-12">
-            <div className="flex items-center justify-center flex-col mt-12">
-                <ErrorOutlineIcon
-                    sx={{
-                        color: warningMainHashColor,
-                        width: { xs: '24px', md: '32px' },
-                        height: { xs: '24px', md: '32px' },
-                        margin: { xs: '0 0 4px 0', md: '0 8px 0 0' },
-                    }}
-                />
+        <div className="flex items-center justify-center flex-col mt-12">
+            <ErrorOutlineIcon
+                sx={{
+                    color: warningMainHashColor,
+                    width: { xs: '24px', md: '32px' },
+                    height: { xs: '24px', md: '32px' },
+                    margin: { xs: '0 0 4px 0', md: '0 8px 0 0' },
+                }}
+            />
 
-                <div className="w-full">
+            <div className="w-full">
+                <TypographyFormatMessage
+                    sx={{ color: warningMainHashColor }}
+                    className="text-13 md:text-16 text-center"
+                >
+                    {
+                        "Ce graphe est un exemple basé sur un tarif Bleu EDF Base. Vos données contractuelles de fourniture d'énergie ne sont pas disponibles sur toute la période."
+                    }
+                </TypographyFormatMessage>
+                <NavLink to={`${URL_MY_HOUSE}/${currentHousing?.id}/contracts`}>
                     <TypographyFormatMessage
+                        className="underline text-13 md:text-16 text-center"
                         sx={{ color: warningMainHashColor }}
-                        className="text-13 md:text-16 text-center"
                     >
-                        {
-                            "Ce graphe est un exemple basé sur un tarif Bleu EDF Base. Vos données contractuelles de fourniture d'énergie ne sont pas disponibles sur toute la période."
-                        }
+                        Renseigner votre contrat d'énergie
                     </TypographyFormatMessage>
-                    <NavLink to={`${URL_MY_HOUSE}/${currentHousing?.id}/contracts`}>
-                        <TypographyFormatMessage
-                            className="underline text-13 md:text-16 text-center"
-                            sx={{ color: warningMainHashColor }}
-                        >
-                            Renseigner votre contrat d'énergie
-                        </TypographyFormatMessage>
-                    </NavLink>
-                </div>
+                </NavLink>
             </div>
         </div>
     )
@@ -63,23 +64,38 @@ export const DefaultContractWarning = ({ isShowWarning }: DefaultContractWarning
  * @param props.isShowWarning Indicates if the Consumption History Warning should be shown.
  * @returns Consumption History Warning message component.
  */
-export const ConsumptionHistoryWarning = ({ isShowWarning }: ConsumptionHistoryWarning) => {
-    const theme = useTheme()
+export const ConsumptionEnedisSgeWarning = ({ isShowWarning }: ConsumptionEnedisSgeWarningProps) => {
+    const { currentHousing } = useSelector(({ housingModel }: RootState) => housingModel)
     const { formatMessage } = useIntl()
+    const { createEnedisSgeConsent, isCreateEnedisSgeConsentLoading, createEnedisSgeConsentError } = useConsents()
 
-    if (!isShowWarning) return
+    if (!isShowWarning) return <></>
     return (
-        <div className="mb-12">
+        <div className="flex items-center justify-center flex-col mt-12">
+            <ErrorOutlineIcon
+                sx={{
+                    color: warningMainHashColor,
+                    width: { xs: '24px', md: '32px' },
+                    height: { xs: '24px', md: '32px' },
+                    margin: { xs: '0 0 4px 0', md: '0 8px 0 0' },
+                }}
+            />
+
             <EnedisSgePopup
                 openEnedisSgeConsentText={formatMessage({
-                    id: 'Autorisez la récupération de vos données de consommation pour avoir accès à votre historique.',
-                    defaultMessage:
-                        'Autorisez la récupération de vos données de consommation pour avoir accès à votre historique.',
+                    id: 'Accéder à votre historique de consommation',
+                    defaultMessage: 'Accéder à votre historique de consommation',
                 })}
                 TypographyProps={{
-                    color: theme.palette.error.main,
+                    sx: {
+                        color: warningMainHashColor,
+                        cursor: 'pointer',
+                        fontWeight: '400',
+                        textAlign: 'center',
+                        fontSize: { xs: '13px', md: '16px' },
+                    },
                 }}
-                houseId={parseInt(houseId)}
+                houseId={currentHousing!.id}
                 createEnedisSgeConsent={createEnedisSgeConsent}
                 createEnedisSgeConsentError={createEnedisSgeConsentError}
                 isCreateEnedisSgeConsentLoading={isCreateEnedisSgeConsentLoading}
