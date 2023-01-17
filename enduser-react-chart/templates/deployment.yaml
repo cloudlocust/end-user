@@ -88,6 +88,11 @@ spec:
             configMapKeyRef:
               name: enduser-react
               key: REACT_APP_SGE_CONSENT_FEATURE_STATE
+        - name: REACT_APP_SGE_CONSENT_POPUP_MESSAGE
+          valueFrom:
+            configMapKeyRef:
+              name: enduser-react
+              key: REACT_APP_SGE_CONSENT_POPUP_MESSAGE
         - name: REACT_APP_ENPHASE_CONSENT_FEATURE_STATE
           valueFrom:
             configMapKeyRef:
