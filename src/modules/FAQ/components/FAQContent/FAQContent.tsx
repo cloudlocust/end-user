@@ -6,7 +6,7 @@ import { useIntl } from 'react-intl'
 /**
  * Contact email address.
  */
-export const mailtoUrl = 'mailto:laurence@myem.fr'
+export const mailtoUrl = `mailto:${window._env_.REACT_APP_TECH_SUPPORT_ADDRESS}`
 /**
  * FAQContent component.
  *
