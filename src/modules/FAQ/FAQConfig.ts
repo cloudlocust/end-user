@@ -4,6 +4,11 @@ import FAQContainer from 'src/modules/FAQ/FAQContainer'
 
 const URL_FAQ = '/FAQ'
 
+/**
+ * Env Variable that tech support address mail.
+ */
+export const techSupportAddress = window._env_.REACT_APP_TECH_SUPPORT_ADDRESS
+
 const FAQConfig = [
     {
         path: URL_FAQ,

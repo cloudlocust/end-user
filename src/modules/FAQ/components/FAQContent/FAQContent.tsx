@@ -3,10 +3,11 @@ import { useFAQ } from 'src/modules/FAQ/FAQHook/FAQhook'
 import { FAQField } from 'src/modules/FAQ/components/FAQFileld/FAQField'
 import { Button, CircularProgress } from '@mui/material'
 import { useIntl } from 'react-intl'
+import { techSupportAddress } from 'src/modules/FAQ/FAQConfig'
 /**
  * Contact email address.
  */
-export const mailtoUrl = `mailto:${window._env_.REACT_APP_TECH_SUPPORT_ADDRESS}`
+export const mailtoUrl = `mailto:${techSupportAddress}`
 /**
  * FAQContent component.
  *
