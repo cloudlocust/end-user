@@ -16,8 +16,6 @@ import { Select } from 'src/common/ui-kit/form-fields/Select'
 import MenuItem from '@mui/material/MenuItem'
 import { generalTermsOfUse, privacyPolicy } from 'src/modules/Mentions/MentionsConfig'
 
-
-
 /**
  * Civility Option has two properties: (label that shown in the front visual) and (value that goes to the backend).
  */
