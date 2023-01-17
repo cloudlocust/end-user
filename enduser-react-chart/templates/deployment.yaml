@@ -88,6 +88,11 @@ spec:
             configMapKeyRef:
               name: enduser-react
               key: REACT_APP_SGE_CONSENT_FEATURE_STATE
+        - name: REACT_APP_SGE_CONSENT_POPUP_MESSAGE
+          valueFrom:
+            configMapKeyRef:
+              name: enduser-react
+              key: REACT_APP_SGE_CONSENT_POPUP_MESSAGE
         - name: REACT_APP_ENPHASE_CONSENT_FEATURE_STATE
           valueFrom:
             configMapKeyRef:
@@ -206,5 +211,12 @@ spec:
             configMapKeyRef:
               name: enduser-react
               key: REACT_APP_ENERGY_PROVIDER_POPUP_LINK         
+
+              key: REACT_APP_USER_REGISTRATION_FEATURE_STATE            
+        - name: REACT_APP_USER_REGISTRATION_AUTO_VALIDATE
+          valueFrom:
+            configMapKeyRef:
+              name: enduser-react
+              key: REACT_APP_USER_REGISTRATION_AUTO_VALIDATE            
       imagePullSecrets:
       - name: dockersecret  
