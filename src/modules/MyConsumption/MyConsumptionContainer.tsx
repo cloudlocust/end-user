@@ -83,7 +83,14 @@ export const MyConsumptionContainer = () => {
             </Box>
         )
     // When getConsent fail.
-    if (!nrlinkConsent && !enedisSgeConsent) return <></>
+    if (!nrlinkConsent && !enedisSgeConsent)
+        return (
+            <ChartErrorMessage
+                nrLinkEnedisOff={true}
+                nrlinkEnedisOffMessage={NRLINK_ENEDIS_OFF_MESSAGE}
+                linkTo={`/my-houses/${currentHousing?.id}`}
+            />
+        )
     // By checking if the metersList is true we make sure that if someone has skipped the step of connecting their PDL, they will see this error message.
     // Else if they have a PDL, we check its consent.
     if (!currentHousing?.meter?.guid) return <MissingHousingMeterErrorMessage />
