@@ -58,7 +58,6 @@ export const DefaultContractWarning = ({ isShowWarning }: DefaultContractWarning
 /**
  * Consumption History Warning message component.
  *
- * @param props N/A.
  * @returns Consumption History Warning message component.
  */
 export const ConsumptionEnedisSgeWarning = () => {

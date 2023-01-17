@@ -16,12 +16,7 @@ import { TEST_HOUSES } from 'src/mocks/handlers/houses'
 import { URL_MY_HOUSE } from 'src/modules/MyHouse/MyHouseConfig'
 import { ConsumptionChartTargets } from 'src/modules/MyConsumption/utils/myConsumptionVariables'
 import { ConsumptionChartContainerProps, periodType } from 'src/modules/MyConsumption/myConsumptionTypes'
-import {
-    IEnedisSgeConsent,
-    INrlinkConsent,
-    IEnphaseConsent,
-    enedisSgeConsentStatus,
-} from 'src/modules/Consents/Consents'
+import { IEnedisSgeConsent, INrlinkConsent, IEnphaseConsent } from 'src/modules/Consents/Consents'
 import { ConsumptionChartContainer } from 'src/modules/MyConsumption/components/MyConsumptionChart/ConsumptionChartContainer'
 
 // List of houses to add to the redux state
