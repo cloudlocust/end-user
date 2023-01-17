@@ -19,7 +19,7 @@ const propsSelectButtons = {
             isDisabled: false,
         },
         {
-            iconPath: '/assets/images/content/equipment/heatingOther.svg',
+            iconPath: './assets/images/content/equipment/heatingOther.svg',
             label: 'induction',
             value: 'induction',
             buttonStyle: 'mt-16 flex flex-col mr-10',

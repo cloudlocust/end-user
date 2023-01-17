@@ -93,6 +93,13 @@ export function useEcowatt(immediate: boolean = false) {
                 if (!houseId) throw Error('No housing id privided')
                 setIsLoadingInProgress(true)
                 await axios.post<IEcowattAlerts>(ECOWATT_ALERTS_ENDPOINT(houseId), alerts)
+                enqueueSnackbar(
+                    formatMessage({
+                        id: 'Les alertes écowatt ont été modifié avec succès',
+                        defaultMessage: 'Les alertes écowatt ont été modifié avec succès',
+                    }),
+                    { variant: 'success', autoHideDuration: 5000 },
+                )
                 setIsLoadingInProgress(false)
             } catch (error) {
                 setIsLoadingInProgress(false)

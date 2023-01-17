@@ -6,3 +6,8 @@ if (process.env.NODE_ENV === 'test' && !window._env_) {
  * Authentication url.
  */
 export const AUTH_BASE_URL = window._env_.REACT_APP_AUTH_BASE_URL
+
+/**
+ * Registration variable indicating if register, is auto validate or not.
+ */
+export const USER_REGISTRATION_AUTO_VALIDATE = window._env_.REACT_APP_USER_REGISTRATION_AUTO_VALIDATE
