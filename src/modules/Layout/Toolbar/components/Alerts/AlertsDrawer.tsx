@@ -73,7 +73,7 @@ export const AlertsDrawer = ({ closeAlertsDrawer }: { closeAlertsDrawer: () => v
                     <div className="flex justify-left items-center mb-20 ml-8">
                         <Icon className="mr-8">
                             <img
-                                src="/assets/images/content/housing/consent-status/meter-error.svg "
+                                src="./assets/images/content/housing/consent-status/meter-error.svg "
                                 alt="missing-contract"
                             />
                         </Icon>

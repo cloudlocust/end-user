@@ -130,7 +130,7 @@ export const EnedisSgePopup = ({
                                             <div className="flex flex-col items-center">
                                                 <Icon className="mb-10">
                                                     <img
-                                                        src="/assets/images/content/housing/consent-status/meter-error.svg"
+                                                        src="./assets/images/content/housing/consent-status/meter-error.svg"
                                                         alt="error-icon"
                                                     />
                                                 </Icon>
@@ -178,7 +178,7 @@ export const EnedisSgePopup = ({
                                     <div className="flex flex-col items-center">
                                         <Icon className="mb-10">
                                             <img
-                                                src="/assets/images/content/housing/consent-status/meter-error.svg"
+                                                src="./assets/images/content/housing/consent-status/meter-error.svg"
                                                 alt="error-icon"
                                             />
                                         </Icon>
