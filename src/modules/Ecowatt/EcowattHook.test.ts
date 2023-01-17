@@ -9,6 +9,7 @@ const mockEnqueueSnackbar = jest.fn()
 const SNACKBAR_ECOWATT_ERROR = 'Erreur lors de la récupération des données de Ecowatt'
 const SNACKBAR_GET_ECOWATT_ALERTS_ERRPR = 'Erreur lors de la récupération des alertes Ecowatts'
 const SNACKBAR_UPDATE_ECOWATT_ALERTS_ERRPR = "Erreur lors de la modification d'une alerte Ecowatts"
+const SNACKBAR_UPDATE_ECOWATT_ALERTS_SUCCESS = 'Les alertes écowatt ont été modifié avec succès'
 
 const ecowattAlertsData = applyCamelCase(TEST_ECOWATT_ALERTS_DATA)
 
@@ -109,6 +110,10 @@ describe('useEcowatt hook', () => {
             { timeout: 6000 },
         )
         expect(result.current.isLoadingInProgress).toBeFalsy()
+        expect(mockEnqueueSnackbar).toHaveBeenCalledWith(SNACKBAR_UPDATE_ECOWATT_ALERTS_SUCCESS, {
+            autoHideDuration: 5000,
+            variant: 'success',
+        })
     })
     test('when updateEcowattAlerts fails', async () => {
         const {

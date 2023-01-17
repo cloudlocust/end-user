@@ -16,6 +16,16 @@ import { Select } from 'src/common/ui-kit/form-fields/Select'
 import MenuItem from '@mui/material/MenuItem'
 import { generalTermsOfUse, privacyPolicy } from 'src/modules/Mentions/MentionsConfig'
 
+
+
+/**
+ * Civility Option has two properties: (label that shown in the front visual) and (value that goes to the backend).
+ */
+const civilityOptionsList = [
+    { label: 'Mr', value: civilityEnum.MONSIEUR },
+    { label: 'Mme', value: civilityEnum.MADAME },
+]
+
 /**
  * Form used for user registration. This is a component based on form hooks.
  *
@@ -74,8 +84,9 @@ export const RegisterForm = ({
                     name="civility"
                     label="Civilité"
                     validateFunctions={[requiredBuilder()]}
-                    children={Object.values(civilityEnum).map((civility) => {
-                        return <MenuItem value={civility}>{civility}</MenuItem>
+                    sx={{ margin: '0 0 1.25rem 0' }}
+                    children={civilityOptionsList.map((civility) => {
+                        return <MenuItem value={civility.value}>{civility.label}</MenuItem>
                     })}
                 />
                 <TextField name="firstName" label="Prénom" validateFunctions={[requiredBuilder()]} variant="outlined" />
