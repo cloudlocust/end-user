@@ -195,11 +195,6 @@ export type DefaultContractWarningProps =
     }
 
 /**
- * Component rendering consumption enedis sge warning message, with opening the sge popup consent, when consumption data comes from default contract.
- */
-export type ConsumptionEnedisSgeWarningProps = DefaultContractWarningProps
-
-/**
  * ProductionChartContainer Props.
  */
 export type ProductionChartContainerProps = Omit<

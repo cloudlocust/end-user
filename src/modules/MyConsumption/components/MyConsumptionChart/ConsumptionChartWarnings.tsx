@@ -1,9 +1,6 @@
 import React from 'react'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
-import {
-    DefaultContractWarningProps,
-    ConsumptionEnedisSgeWarningProps,
-} from 'src/modules/MyConsumption/myConsumptionTypes.d'
+import { DefaultContractWarningProps } from 'src/modules/MyConsumption/myConsumptionTypes.d'
 import { useSelector } from 'react-redux'
 import { RootState } from 'src/redux'
 import { warningMainHashColor } from 'src/modules/utils/muiThemeVariables'
@@ -13,6 +10,7 @@ import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline'
 import { useIntl } from 'react-intl'
 import { EnedisSgePopup } from 'src/modules/MyHouse/components/MeterStatus/EnedisSgePopup'
 import { useConsents } from 'src/modules/Consents/consentsHook'
+import { sgeConsentFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
 
 /**
  * Default Contract Warning message component.
@@ -61,14 +59,16 @@ export const DefaultContractWarning = ({ isShowWarning }: DefaultContractWarning
  * Consumption History Warning message component.
  *
  * @param props N/A.
- * @param props.isShowWarning Indicates if the Consumption History Warning should be shown.
  * @returns Consumption History Warning message component.
  */
-export const ConsumptionEnedisSgeWarning = ({ isShowWarning }: ConsumptionEnedisSgeWarningProps) => {
+export const ConsumptionEnedisSgeWarning = () => {
     const { currentHousing } = useSelector(({ housingModel }: RootState) => housingModel)
     const { formatMessage } = useIntl()
-    const { createEnedisSgeConsent, isCreateEnedisSgeConsentLoading, createEnedisSgeConsentError } = useConsents()
+    const { createEnedisSgeConsent, isCreateEnedisSgeConsentLoading, createEnedisSgeConsentError, enedisSgeConsent } =
+        useConsents()
 
+    const enedisSgeOff = enedisSgeConsent?.enedisSgeConsentState === 'NONEXISTENT'
+    const isShowWarning = enedisSgeOff && sgeConsentFeatureState
     if (!isShowWarning) return <></>
     return (
         <div className="flex items-center justify-center flex-col mt-12">

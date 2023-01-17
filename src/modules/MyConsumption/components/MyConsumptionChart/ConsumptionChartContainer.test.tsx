@@ -39,14 +39,14 @@ const nrLinkConsent: INrlinkConsent = {
 }
 
 // Enedis Consent format
-const enedisSgeConsentConnected: IEnedisSgeConsent = {
+const mockEnedisSgeConsentConnected: IEnedisSgeConsent = {
     meterGuid: '133456',
     enedisSgeConsentState: 'CONNECTED',
     expiredAt: '',
 }
 
 // Enedis Consent format
-const enedisSgeConsentOff: IEnedisSgeConsent = {
+const mockEnedisSgeConsentOff: IEnedisSgeConsent = {
     meterGuid: '133456',
     enedisSgeConsentState: 'NONEXISTENT',
     expiredAt: '',
@@ -58,7 +58,7 @@ const enphaseConsent: IEnphaseConsent = {
 }
 
 let mockNrlinkConsent: INrlinkConsent | undefined = nrLinkConsent
-let mockEnedisConsent: IEnedisSgeConsent | undefined = enedisSgeConsentConnected
+let mockEnedisConsent: IEnedisSgeConsent | undefined = mockEnedisSgeConsentConnected
 let mockEnphaseConsent: IEnphaseConsent | undefined = enphaseConsent
 
 let mockIsMetricsLoading = false
@@ -101,7 +101,7 @@ let mockMetricsInterval: metricIntervalType = '1m'
 
 const consumptionChartContainerProps: ConsumptionChartContainerProps = {
     filters: mockFilters,
-    enedisSgeConsentConnected,
+    enedisSgeConsent: mockEnedisConsent,
     enphaseConsent,
     hasMissingHousingContracts: false,
     metricsInterval: mockMetricsInterval,
@@ -135,10 +135,7 @@ jest.mock('src/modules/Metrics/metricsHook.ts', () => ({
 jest.mock('src/modules/Consents/consentsHook.ts', () => ({
     // eslint-disable-next-line jsdoc/require-jsdoc
     useConsents: () => ({
-        enedisSgeConsentConnected: {
-            meterGuid: '133456',
-            enedisSgeConsentState: mockEnedisConsent,
-        },
+        enedisSgeConsent: mockEnedisConsent,
         nrlinkConsent: {
             meterGuid: '133456',
             nrlinkConsentState: mockNrlinkConsent,
@@ -314,7 +311,7 @@ describe('MyConsumptionContainer test', () => {
         expect(getByText(PMAX_BUTTON_TEXT).classList.contains(buttonGroupdDisabledClassname)).toBeTruthy()
     })
     test('When enedisSgeConsent Off, warning is shown', async () => {
-        consumptionChartContainerProps.enedisSgeConsent = enedisSgeConsentOff
+        mockEnedisConsent = mockEnedisSgeConsentOff
         const { getByText } = reduxedRender(
             <Router>
                 <ConsumptionChartContainer {...consumptionChartContainerProps} />

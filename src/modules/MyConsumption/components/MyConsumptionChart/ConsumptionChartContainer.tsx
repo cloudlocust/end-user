@@ -19,7 +19,6 @@ import {
     DefaultContractWarning,
     ConsumptionEnedisSgeWarning,
 } from 'src/modules/MyConsumption/components/MyConsumptionChart/ConsumptionChartWarnings'
-import { sgeConsentFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
 
 /**
  * MyConsumptionChart Component.
@@ -220,7 +219,7 @@ export const ConsumptionChartContainer = ({
                 />
             )}
             <DefaultContractWarning isShowWarning={isEurosConsumptionChart && hasMissingHousingContracts} />
-            <ConsumptionEnedisSgeWarning isShowWarning={enedisSgeOff && sgeConsentFeatureState} />
+            <ConsumptionEnedisSgeWarning />
         </div>
     )
 }
