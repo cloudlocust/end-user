@@ -37,6 +37,7 @@ const Root = styled(BottomNavigation)(({ theme }) => ({
         },
         '& > .MuiIcon-root': {
             color: theme.palette.primary.main,
+            height: 'auto',
         },
         '&.active': {
             '& > .MuiBottomNavigationAction-label': {
