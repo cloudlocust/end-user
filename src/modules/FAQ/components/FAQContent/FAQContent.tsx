@@ -3,10 +3,15 @@ import { useFAQ } from 'src/modules/FAQ/FAQHook/FAQhook'
 import { FAQField } from 'src/modules/FAQ/components/FAQFileld/FAQField'
 import { Button, CircularProgress } from '@mui/material'
 import { useIntl } from 'react-intl'
+import { techSupportAddress } from 'src/modules/FAQ/FAQConfig'
+
 /**
- * Contact email address.
+ * convert the Contact tech support email address to Url. 
+ * That's should be a function to avoid a problem of `accesses to a variable before initialisation`.
+ * @returns email-Url 
  */
-export const mailtoUrl = `mailto:${window._env_.REACT_APP_TECH_SUPPORT_ADDRESS}`
+export const mailtoUrl = () => `mailto:${techSupportAddress}`
+
 /**
  * FAQContent component.
  *
@@ -29,7 +34,7 @@ export const FAQContent = () => {
                 <FAQField content={item.content} title={item.title} key={item.id} />
             ))}
             <div className="m-16 md:ml-36">
-                <Button variant="contained" href={mailtoUrl}>
+                <Button variant="contained" href={mailtoUrl()}>
                     {formatMessage({
                         id: 'Contacter le Support Technique',
                         defaultMessage: 'Contacter le Support Technique',
