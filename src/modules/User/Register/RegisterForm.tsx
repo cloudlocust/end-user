@@ -94,7 +94,7 @@ export const RegisterForm = ({
             return
         }
 
-        if (!isPopupAfterRegistration) {
+        if (isPopupAfterRegistration) {
             const queryString = convertUserDataToQueryString(cleanData)
             if (queryString) {
                 window.open(

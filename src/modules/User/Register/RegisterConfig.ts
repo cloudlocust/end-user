@@ -22,7 +22,7 @@ export const userRegistrationFeatureState = window._env_.REACT_APP_USER_REGISTRA
 /**
  * Popup after registration state.
  */
-export const isPopupAfterRegistration = window._env_.REACT_APP_POPUP_AFTER_REGISTRATION === 'disabled'
+export const isPopupAfterRegistration = window._env_.REACT_APP_POPUP_AFTER_REGISTRATION === 'enabled'
 
 /**
  * Energy provider popup link.
@@ -56,7 +56,7 @@ export const RegisterConfig = [
     } as IRouteDisabled<RegisterProps>,
     {
         path: URL_REGISTER_ENERGY_PROVIDER_SUCCESS,
-        component: !isPopupAfterRegistration && RegisterEnergyProviderSuccess,
+        component: RegisterEnergyProviderSuccess,
         auth: { authType: authTypes.anonymousRequired },
         settings: {
             layout: {
@@ -67,7 +67,7 @@ export const RegisterConfig = [
                     display: false,
                 },
             },
-            disabled: userRegistrationFeatureState,
+            disabled: isPopupAfterRegistration,
         },
     } as IRoute</**
      *

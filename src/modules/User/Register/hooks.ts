@@ -44,7 +44,7 @@ export const BuilderUseRegister = ({
             try {
                 await dispatch.userModel.register({ data })
                 setIsRegisterInProgress(false)
-                if (isPopupAfterRegistration) history.replace(redirect())
+                if (!isPopupAfterRegistration) history.replace(redirect())
                 enqueueSnackbar(
                     Boolean(USER_REGISTRATION_AUTO_VALIDATE)
                         ? 'Votre inscription a bien été prise en compte. Vous allez reçevoir un lien de confirmation sur votre adresse email.'
