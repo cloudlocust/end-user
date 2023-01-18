@@ -3,11 +3,23 @@ import { IRouteNavigationConfig } from 'src/routes'
 import { Advices } from './Advices'
 import { ReactComponent as AdvicesIcon } from 'src/assets/images/navbarItems/Advices.svg'
 import SvgIcon from '@mui/material/SvgIcon'
+import EcogestesList from './components/ecogestesList'
 
 /**
  * Url for advices.
  */
 export const URL_ADVICES = '/advices'
+
+/**
+ * Url for ecogestes.
+ */
+export const URL_ECOGESTES = `/ecogestes`
+
+/**
+ * Url for ecogestes by category.
+ */
+export const URL_ECOGESTES_BY_CATEGORY = `${URL_ECOGESTES}/byCategory/:categoryId`
+
 /**
  * Interface .
  *
@@ -38,6 +50,30 @@ export const AdvicesConfig = [
         path: URL_ADVICES,
         component: Advices,
         auth: { authType: authTypes.freeAccess }, // TODO CHANGE
+        settings: {
+            layout: {
+                navbar: {
+                    UINavbarItem: {
+                        id: 'Conseils',
+                        label: 'Conseils',
+                        labelAbbreviation: 'Conseils',
+                        type: 'item',
+                        icon: (
+                            <SvgIcon>
+                                <AdvicesIcon />
+                            </SvgIcon>
+                        ),
+                        disabled: advicesFeatureState,
+                        url: URL_ADVICES,
+                    },
+                },
+            },
+        },
+    } as IRouteNavigationConfig<AdvicesProps>,
+    {
+        path: URL_ECOGESTES_BY_CATEGORY,
+        component: EcogestesList,
+        auth: { authType: authTypes.freeAccess },
         settings: {
             layout: {
                 navbar: {
