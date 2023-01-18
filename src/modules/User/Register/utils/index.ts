@@ -11,6 +11,9 @@ export function convertUserDataToQueryString(data: IUserRegister) {
     // Remaaping const names.
     for (const key in data) {
         switch (key as keyof IUserRegister) {
+            case 'civility':
+                url = { ...url, civilite: data['civility'] }
+                break
             case 'firstName':
                 url = { ...url, nom: data['firstName'] }
                 break
@@ -32,12 +35,12 @@ export function convertUserDataToQueryString(data: IUserRegister) {
                     .replace(city, '')
                     .replace(zipCode, '')
                     .replace(country, '')
-                    .replaceAll(',', '')
-                    .replaceAll('.', '')
+                    .replace(/\s*,\s*/g, '')
+                    .replace(/\./g, '')
                     // Remove space from the start and end of string
-                    .replaceAll(/^\s+|\s+$/g, '')
-                    .replaceAll(' ', '%20')
-                const formattedCity = city.replaceAll(/\s/g, '%20')
+                    .replace(/^\s+|\s+$/g, '')
+                    .replace(/\s/g, '%20')
+                const formattedCity = city.replace(/\s/g, '%20')
                 url = { ...url, adresse: formattedAddress, code: zipCode, ville: formattedCity }
                 break
         }

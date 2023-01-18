@@ -12,8 +12,13 @@ import FormControl from '@mui/material/FormControl'
 import { FormHelperText } from '@mui/material'
 import { LinkRedirection } from 'src/modules/utils/LinkRedirection'
 import { passwordFieldValidationSecurity1 } from 'src/modules/utils'
-import { energyProviderPopupLink, popupAfterRegistration } from 'src/modules/User/Register/RegisterConfig'
+import {
+    energyProviderPopupLink,
+    isPopupAfterRegistration,
+    URL_REGISTER_ENERGY_PROVIDER_SUCCESS,
+} from 'src/modules/User/Register/RegisterConfig'
 import { convertUserDataToQueryString } from 'src/modules/User/Register/utils'
+import { useHistory } from 'react-router-dom'
 import { Select } from 'src/common/ui-kit/form-fields/Select'
 import MenuItem from '@mui/material/MenuItem'
 
@@ -58,6 +63,7 @@ export const RegisterForm = ({
     const passwordRef = useRef()
     const [rgpdCheckboxState, setRgpdCheckboxState] = React.useState<Boolean | string>('false')
     const { formatMessage } = useIntl()
+    const history = useHistory()
 
     /**
      * Handle Change of the checkbox.
@@ -88,8 +94,7 @@ export const RegisterForm = ({
             return
         }
 
-        // When it's not true => it's enabled.
-        if (!popupAfterRegistration) {
+        if (isPopupAfterRegistration) {
             const queryString = convertUserDataToQueryString(cleanData)
             if (queryString) {
                 window.open(
@@ -100,7 +105,10 @@ export const RegisterForm = ({
                     }`,
                 )
             }
-            // Add history.push to the succes page.
+            history.push({
+                pathname: URL_REGISTER_ENERGY_PROVIDER_SUCCESS,
+                state: { isAllowed: true },
+            })
         }
         onSubmitUserRegistrationForm(cleanData)
     }
