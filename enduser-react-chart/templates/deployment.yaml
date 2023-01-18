@@ -211,12 +211,26 @@ spec:
             configMapKeyRef:
               name: enduser-react
               key: REACT_APP_REACT_APP_PRIVACY_POLICY          
-
-
+        - name: REACT_APP_POPUP_AFTER_REGISTRATION
+          valueFrom:
+            configMapKeyRef:
+              name: enduser-react
+              key: REACT_APP_POPUP_AFTER_REGISTRATION
+        - name: REACT_APP_ENERGY_PROVIDER_POPUP_LINK
+          valueFrom:
+            configMapKeyRef:
+              name: enduser-react
+              key: REACT_APP_ENERGY_PROVIDER_POPUP_LINK
+        - name: REACT_APP_REGISTER_ENERGY_PROVIDER_SUCCESS_MESSAGE
+          valueFrom:
+            configMapKeyRef:
+              name: enduser-react
+              key: REACT_APP_REGISTER_ENERGY_PROVIDER_SUCCESS_MESSAGE                         
         - name: REACT_APP_USER_REGISTRATION_AUTO_VALIDATE
           valueFrom:
             configMapKeyRef:
               name: enduser-react
               key: REACT_APP_USER_REGISTRATION_AUTO_VALIDATE            
+
       imagePullSecrets:
       - name: dockersecret  
