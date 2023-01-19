@@ -12,8 +12,16 @@ import FormControl from '@mui/material/FormControl'
 import { FormHelperText } from '@mui/material'
 import { LinkRedirection } from 'src/modules/utils/LinkRedirection'
 import { passwordFieldValidationSecurity1 } from 'src/modules/utils'
+import {
+    energyProviderPopupLink,
+    isPopupAfterRegistration,
+    URL_REGISTER_ENERGY_PROVIDER_SUCCESS,
+} from 'src/modules/User/Register/RegisterConfig'
+import { convertUserDataToQueryString } from 'src/modules/User/Register/utils'
+import { useHistory } from 'react-router-dom'
 import { Select } from 'src/common/ui-kit/form-fields/Select'
 import MenuItem from '@mui/material/MenuItem'
+import { generalTermsOfUse, privacyPolicy } from 'src/modules/Mentions/MentionsConfig'
 
 /**
  * Civility Option has two properties: (label that shown in the front visual) and (value that goes to the backend).
@@ -23,10 +31,6 @@ const civilityOptionsList = [
     { label: 'Mme', value: civilityEnum.MADAME },
 ]
 
-const urlLegalNotice = 'https://www.myem.fr/mentions-legales/'
-// Condition Général de Vente
-const urlCGV = 'https://www.myem.fr/particuliers-cgv/'
-const urlPolitiqueConfidentialité = 'https://drive.google.com/uc?export=download&id=1sMFMizrEPZ4ZHhe6Zf-PTJGRUQBFGUEv'
 /**
  * Form used for user registration. This is a component based on form hooks.
  *
@@ -55,6 +59,7 @@ export const RegisterForm = ({
     const passwordRef = useRef()
     const [rgpdCheckboxState, setRgpdCheckboxState] = React.useState<Boolean | string>('false')
     const { formatMessage } = useIntl()
+    const history = useHistory()
 
     /**
      * Handle Change of the checkbox.
@@ -64,17 +69,44 @@ export const RegisterForm = ({
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setRgpdCheckboxState(event.target.checked)
     }
+
+    /**
+     * Function that submit the user registration data.
+     *
+     * @param cleanData Data to be submitted for user registration.
+     */
+    function onSubmitUserRegistrationForm(cleanData: IUserRegister) {
+        if (defaultRole !== undefined) {
+            onSubmit({ ...cleanData, role: defaultRole })
+        } else {
+            onSubmit(cleanData)
+        }
+    }
+
     // eslint-disable-next-line jsdoc/require-jsdoc
     const onSubmitWrapper = async ({ repeatPwd, ...cleanData }: { repeatPwd: string } & IUserRegister) => {
         if (rgpdCheckboxState !== true) {
             setRgpdCheckboxState('')
             return
         }
-        if (defaultRole !== undefined) {
-            onSubmit({ ...cleanData, role: defaultRole })
-        } else {
-            onSubmit(cleanData)
+
+        if (isPopupAfterRegistration) {
+            const queryString = convertUserDataToQueryString(cleanData)
+            if (queryString) {
+                window.open(
+                    `${energyProviderPopupLink}?${queryString}`,
+                    '_blank',
+                    `width=1024,height=768,left=${window.screen.availWidth / 2 - 200},top=${
+                        window.screen.availHeight / 2 - 150
+                    }`,
+                )
+            }
+            history.push({
+                pathname: URL_REGISTER_ENERGY_PROVIDER_SUCCESS,
+                state: { isAllowed: true },
+            })
         }
+        onSubmitUserRegistrationForm(cleanData)
     }
 
     return (
@@ -129,11 +161,7 @@ export const RegisterForm = ({
                                     plateforme et suivre votre consommation. Vous pouvez retrouver plus d'informations sur vos droits
                                     via notre `,
                     })}
-                    <LinkRedirection
-                        url={urlPolitiqueConfidentialité}
-                        label="Politique de Confidentialité"
-                        color="primary.light"
-                    />
+                    <LinkRedirection url={privacyPolicy} label="Politique de Confidentialité" color="primary.light" />
                 </span>
                 {/* TODO Create a checkbox reusable component */}
                 <FormControl required error={rgpdCheckboxState === ''}>
@@ -156,19 +184,10 @@ export const RegisterForm = ({
                                     defaultMessage: `J’ai lu et j’accepte les `,
                                 })}
                                 <LinkRedirection
-                                    url={urlLegalNotice}
+                                    url={generalTermsOfUse}
                                     label="Conditions Générales d’Utilisation"
                                     color="primary.light"
                                 />
-                                {formatMessage({
-                                    id: ` et de `,
-                                    defaultMessage: ` et de `,
-                                })}
-                                <LinkRedirection url={urlCGV} label="Vente" color="primary.light" />
-                                {formatMessage({
-                                    id: ` de la plateforme`,
-                                    defaultMessage: ` de la plateforme`,
-                                })}
                             </span>
                         }
                         labelPlacement="end"

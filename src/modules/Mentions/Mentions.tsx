@@ -5,14 +5,13 @@ import PageSimple from 'src/common/ui-kit/fuse/components/PageSimple'
 import { motion } from 'framer-motion'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 
-const listUrl = [
+/**
+ * Mentions list.
+ */
+export const listUrl = [
     {
         title: 'Conditions Générales d’Utilisations',
         link: 'https://www.myem.fr/mentions-legales/',
-    },
-    {
-        title: 'Conditions Générales de Vente',
-        link: 'https://www.myem.fr/particuliers-cgv/',
     },
     {
         title: 'Politique de Confidentialité',
