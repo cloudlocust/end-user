@@ -88,6 +88,11 @@ spec:
             configMapKeyRef:
               name: enduser-react
               key: REACT_APP_SGE_CONSENT_FEATURE_STATE
+        - name: REACT_APP_SGE_CONSENT_POPUP_MESSAGE
+          valueFrom:
+            configMapKeyRef:
+              name: enduser-react
+              key: REACT_APP_SGE_CONSENT_POPUP_MESSAGE
         - name: REACT_APP_ENPHASE_CONSENT_FEATURE_STATE
           valueFrom:
             configMapKeyRef:
@@ -195,11 +200,42 @@ spec:
           valueFrom:
             configMapKeyRef:
               name: enduser-react
-              key: REACT_APP_USER_REGISTRATION_FEATURE_STATE            
+              key: REACT_APP_USER_REGISTRATION_FEATURE_STATE
+        - name: REACT_APP_REACT_APP_GENERAL_TERMS_OF_USE
+          valueFrom:
+            configMapKeyRef:
+              name: enduser-react
+              key: REACT_APP_REACT_APP_GENERAL_TERMS_OF_USE
+        - name: REACT_APP_REACT_APP_PRIVACY_POLICY
+          valueFrom:
+            configMapKeyRef:
+              name: enduser-react
+              key: REACT_APP_REACT_APP_PRIVACY_POLICY          
+        - name: REACT_APP_POPUP_AFTER_REGISTRATION
+          valueFrom:
+            configMapKeyRef:
+              name: enduser-react
+              key: REACT_APP_POPUP_AFTER_REGISTRATION
+        - name: REACT_APP_ENERGY_PROVIDER_POPUP_LINK
+          valueFrom:
+            configMapKeyRef:
+              name: enduser-react
+              key: REACT_APP_ENERGY_PROVIDER_POPUP_LINK
+        - name: REACT_APP_REGISTER_ENERGY_PROVIDER_SUCCESS_MESSAGE
+          valueFrom:
+            configMapKeyRef:
+              name: enduser-react
+              key: REACT_APP_REGISTER_ENERGY_PROVIDER_SUCCESS_MESSAGE                         
         - name: REACT_APP_USER_REGISTRATION_AUTO_VALIDATE
           valueFrom:
             configMapKeyRef:
               name: enduser-react
               key: REACT_APP_USER_REGISTRATION_AUTO_VALIDATE            
+        - name: REACT_APP_TECH_SUPPORT_ADDRESS
+          valueFrom:
+            configMapKeyRef:
+              name: enduser-react
+              key: REACT_APP_TECH_SUPPORT_ADDRESS            
+
       imagePullSecrets:
       - name: dockersecret  

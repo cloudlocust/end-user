@@ -82,6 +82,10 @@ export const MyConsumptionContainer = () => {
                 <CircularProgress style={{ color: theme.palette.primary.main }} />
             </Box>
         )
+    // By checking if the metersList is true we make sure that if someone has skipped the step of connecting their PDL, they will see this error message.
+    // Else if they have a PDL, we check its consent.
+    if (!currentHousing?.meter?.guid) return <MissingHousingMeterErrorMessage />
+
     // When getConsent fail.
     if (!nrlinkConsent && !enedisSgeConsent)
         return (
@@ -91,9 +95,6 @@ export const MyConsumptionContainer = () => {
                 linkTo={`/my-houses/${currentHousing?.id}`}
             />
         )
-    // By checking if the metersList is true we make sure that if someone has skipped the step of connecting their PDL, they will see this error message.
-    // Else if they have a PDL, we check its consent.
-    if (!currentHousing?.meter?.guid) return <MissingHousingMeterErrorMessage />
 
     return (
         <>
