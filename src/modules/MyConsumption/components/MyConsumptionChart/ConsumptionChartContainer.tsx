@@ -19,7 +19,10 @@ import {
     filterPmaxAndEurosConsumptionTargetFromVisibleChartTargets,
     showPerPeriodText,
 } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
-import { ConsumptionChartTargets } from 'src/modules/MyConsumption/utils/myConsumptionVariables'
+import {
+    ConsumptionChartTargets,
+    EnphaseOffConsumptionChartTargets,
+} from 'src/modules/MyConsumption/utils/myConsumptionVariables'
 import { targetOptions } from 'src/modules/MyConsumption/utils/myConsumptionVariables'
 
 /**
@@ -45,28 +48,38 @@ export const ConsumptionChartContainer = ({
     enphaseConsent,
 }: ConsumptionChartContainerProps) => {
     const theme = useTheme()
+    // This state represents whether or not the chart is displaying a spinner, which should happen only when we request the current metrics, not the request of all metrics that happens in the background.
+    const [isConsumptionChartLoading, setIsConsumptionChartLoading] = useState<boolean>(true)
+    // Indicates the Charts visible in MyConsumptionChart.
+    const enphaseOff = enphaseConsent.enphaseConsentState !== 'ACTIVE'
+    // Visible Targets will influence k
+    const [visibleTargetCharts, setVisibleTargetsCharts] = useState<metricTargetType[]>(
+        enphaseOff
+            ? [metricTargetsEnum.consumption]
+            : [metricTargetsEnum.autoconsumption, metricTargetsEnum.consumption],
+    )
+    const hidePmax = period === 'daily' || enphaseOff
+    // Track the change of visibleTargetCharts, so that we don't call getMetrics when visibleTargetCharts change (and thus no request when showing / hiding target in MyConsumptionChart).
+    const isVisibleTargetChartsChanged = useRef(false)
     const { data, getMetricsWithParams } = useMetrics({
         interval: metricsInterval,
         range: range,
         targets: [
             {
-                target: metricTargetsEnum.autoconsumption,
+                target: metricTargetsEnum.consumption,
                 type: 'timeserie',
             },
             {
-                target: metricTargetsEnum.consumption,
+                target: metricTargetsEnum.autoconsumption,
                 type: 'timeserie',
             },
         ],
         filters,
     })
+    const [consumptionChartData, setConsumptionChartData] = useState<IMetric[]>(data)
+
     const { currentHousing } = useSelector(({ housingModel }: RootState) => housingModel)
 
-    // Indicates the Charts visible in MyConsumptionChart.
-    const [visibleTargetCharts, setVisibleTargetsCharts] = useState<metricTargetType[]>([
-        metricTargetsEnum.autoconsumption,
-        metricTargetsEnum.consumption,
-    ])
     // This state represents whether or not the chart is stacked: true.
     const isStackedEnabled = useMemo(
         () =>
@@ -76,13 +89,13 @@ export const ConsumptionChartContainer = ({
         [visibleTargetCharts],
     )
 
-    // This state represents whether or not the chart is showing .
-    const [isConsumptionChartLoading, setIsConsumptionChartLoading] = useState<boolean>(true)
     // This state represents whether or not the chart is stacked: true.
     const isEurosConsumptionChart = useMemo(
         () => visibleTargetCharts.includes(metricTargetsEnum.eurosConsumption),
         [visibleTargetCharts],
     )
+    const isEurosConsumptionDisabled = !isEurosConsumptionChart && period === 'daily'
+
     // State that stores if visibleTargetCharts contains pMax or eurosConsumption when period is euros, so that when period is "daily". With this variable we prevent getMetrics to execute until we remove € and pMax targets.
     const isEurosConsumptionOrPmaxVisibleTargetChartOnPeriodDaily = useMemo(() => {
         return (
@@ -91,12 +104,6 @@ export const ConsumptionChartContainer = ({
                 visibleTargetCharts.includes(metricTargetsEnum.pMax))
         )
     }, [period, visibleTargetCharts])
-    const [consumptionChartData, setConsumptionChartData] = useState<IMetric[]>(data)
-    const isEurosConsumptionDisabled = !isEurosConsumptionChart && period === 'daily'
-    const hidePmax = period === 'daily' || enedisSgeConsent?.enedisSgeConsentState === 'NONEXISTENT'
-
-    // Track the change of visibleTargetCharts, so that we don't call getMetrics when visibleTargetCharts change (and thus no request when showing / hiding target in MyConsumptionChart).
-    const isVisibleTargetChartsChanged = useRef(false)
 
     useEffect(() => {
         // When period is daily, remove target pMax or eurosConsumption from visibleTargetCharts and thus when calling getMetrics it won't have these targets.
@@ -124,7 +131,7 @@ export const ConsumptionChartContainer = ({
             getMetricsWithParams({
                 interval: metricsInterval,
                 range,
-                targets: ConsumptionChartTargets,
+                targets: enphaseOff ? EnphaseOffConsumptionChartTargets : ConsumptionChartTargets,
                 filters,
             })
         }
@@ -135,16 +142,17 @@ export const ConsumptionChartContainer = ({
         getMetricsWithParams,
         visibleTargetCharts,
         isEurosConsumptionOrPmaxVisibleTargetChartOnPeriodDaily,
+        enphaseOff,
     ])
 
-    // Happens everytime getMetrics dependencies change, and happen first time hook is instanciated.
+    // Happens everytime getMetrics dependencies change, and doesn't execute when hook is instanciated.
     useEffect(() => {
         getMetrics()
     }, [getMetrics])
 
     useEffect(() => {
         // To avoid multiple rerendering and thus calculation in MyConsumptionChart, CosnumptionChartData change only once, when visibleTargetChart change or when the first getMetrics targets is loaded, thus avoiding to rerender when the second getMetrics is loaded with all targets which should only happen in the background.
-        if (isVisibleTargetChartsChanged.current || data.length < ConsumptionChartTargets.length)
+        if (isVisibleTargetChartsChanged.current || data.length < EnphaseOffConsumptionChartTargets.length)
             setConsumptionChartData(data.filter((datapoint) => visibleTargetCharts.includes(datapoint.target)))
     }, [data, visibleTargetCharts])
 
@@ -154,6 +162,7 @@ export const ConsumptionChartContainer = ({
      * @param target Indicated target.
      */
     const showMetricTargetChart = (target: metricTargetType) => {
+        if (enphaseOff && target === metricTargetsEnum.autoconsumption) return
         isVisibleTargetChartsChanged.current = true
         setVisibleTargetsCharts((prevState) => [...prevState, target])
     }
@@ -213,11 +222,7 @@ export const ConsumptionChartContainer = ({
                     range={range}
                     isStackedEnabled={isStackedEnabled}
                     chartType="consumption"
-                    chartLabel={
-                        enphaseConsent?.enphaseConsentState !== 'ACTIVE'
-                            ? 'Consommation totale'
-                            : 'Electricité achetée sur le réseau'
-                    }
+                    chartLabel={enphaseOff ? 'Consommation totale' : 'Electricité achetée sur le réseau'}
                 />
             )}
 
