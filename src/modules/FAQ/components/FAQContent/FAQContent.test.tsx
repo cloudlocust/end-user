@@ -35,6 +35,6 @@ describe('<FAQContent />', () => {
         })
         expect(getByText(BUTTON_TEXT_CONTACT)).toBeTruthy()
         userEvent.click(getByText(BUTTON_TEXT_CONTACT))
-        expect(getByText(BUTTON_TEXT_CONTACT)).toHaveAttribute('href', mailtoUrl)
+        expect(getByText(BUTTON_TEXT_CONTACT)).toHaveAttribute('href', mailtoUrl())
     })
 })

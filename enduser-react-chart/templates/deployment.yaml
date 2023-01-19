@@ -231,6 +231,11 @@ spec:
             configMapKeyRef:
               name: enduser-react
               key: REACT_APP_USER_REGISTRATION_AUTO_VALIDATE            
+        - name: REACT_APP_TECH_SUPPORT_ADDRESS
+          valueFrom:
+            configMapKeyRef:
+              name: enduser-react
+              key: REACT_APP_TECH_SUPPORT_ADDRESS            
 
       imagePullSecrets:
       - name: dockersecret  
