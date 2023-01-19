@@ -162,7 +162,7 @@ describe('MyConsumptionContainer test', () => {
         expect(getByText(NRLINK_ENEDIS_OFF_MESSAGE)).toBeTruthy()
     })
 
-    test('when getConsent request fail then no charts is shown', async () => {
+    test('when getConsent request fail then error message is shown', async () => {
         mockNrlinkConsent = undefined
         mockEnedisConsent = undefined
         const { getByText } = reduxedRender(
@@ -172,7 +172,7 @@ describe('MyConsumptionContainer test', () => {
             { initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[0] } } },
         )
         await waitFor(() => {
-            expect(() => getByText(FILTERS_TEXT)).toThrow()
+            expect(getByText(NRLINK_ENEDIS_OFF_MESSAGE)).toBeTruthy()
         })
     })
 

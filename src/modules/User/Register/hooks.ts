@@ -4,6 +4,7 @@ import { useHistory } from 'react-router-dom'
 import { Dispatch } from 'src/redux'
 import { IUserRegister } from '../model'
 import { useSnackbar } from 'notistack'
+import { isPopupAfterRegistration } from 'src/modules/User/Register/RegisterConfig'
 import { USER_REGISTRATION_AUTO_VALIDATE } from 'src/modules/User/configs'
 
 /**
@@ -43,7 +44,7 @@ export const BuilderUseRegister = ({
             try {
                 await dispatch.userModel.register({ data })
                 setIsRegisterInProgress(false)
-                history.replace(redirect())
+                if (!isPopupAfterRegistration) history.replace(redirect())
                 enqueueSnackbar(
                     Boolean(USER_REGISTRATION_AUTO_VALIDATE)
                         ? 'Votre inscription a bien été prise en compte. Vous allez reçevoir un lien de confirmation sur votre adresse email.'
