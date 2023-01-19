@@ -6,9 +6,10 @@ import { useIntl } from 'react-intl'
 import { techSupportAddress } from 'src/modules/FAQ/FAQConfig'
 
 /**
- * convert the Contact tech support email address to Url. 
+ * Convert the Contact tech support email address to Url.
  * That's should be a function to avoid a problem of `accesses to a variable before initialisation`.
- * @returns email-Url 
+ *
+ * @returns Email-Url.
  */
 export const mailtoUrl = () => `mailto:${techSupportAddress}`
 
