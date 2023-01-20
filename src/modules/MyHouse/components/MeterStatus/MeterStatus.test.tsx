@@ -37,6 +37,8 @@ const ENEDIS_CONNECTED_MESSAGE = 'Historique de consommation'
 const ENEDIS_NONEXISTANT_EXPIRED_MESSAGE =
     'Autorisez la récupération de vos données de consommation pour avoir accès à votre historique.'
 const NO_METER_MESSAGE = 'Aucun compteur renseigné'
+const ENEDIS_CANCEL_COLLECTION_DATA_MESSAGE = 'Annuler la récolte de mes données'
+const CONTACT_MAIL_MESSAGE = 'Contacter support@myem.fr'
 
 const VERIFY_METER_MESSAGE = "Vérification de l'existence de votre compteur"
 const CREATION_ENEDIS_SGE_CONSENT_TEXT =
@@ -259,6 +261,10 @@ describe('MeterStatus component test', () => {
             const image = getByAltText('connected-icon')
             expect(image).toHaveAttribute('src', './assets/images/content/housing/consent-status/meter-on.svg')
             expect(getByText(enedisFormatedEndingDate)).toBeTruthy()
+            const cancelMessage = getByText(ENEDIS_CANCEL_COLLECTION_DATA_MESSAGE)
+            expect(cancelMessage).toBeTruthy()
+            userEvent.click(cancelMessage)
+            expect(getByText(CONTACT_MAIL_MESSAGE)).toBeInTheDocument()
         })
         test('when enedis status is expired or nonexistant', async () => {
             foundHouse!.meter!.guid = '12345Her'
