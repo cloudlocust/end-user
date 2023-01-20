@@ -263,7 +263,10 @@ export const MeterStatus = () => {
                             </Icon>
                         ) : (
                             <Icon className="mr-12 text-grey-600">
-                                <img src="/assets/images/content/housing/consent-status/meter-off.svg" alt="off-icon" />
+                                <img
+                                    src="./assets/images/content/housing/consent-status/meter-off.svg"
+                                    alt="off-icon"
+                                />
                             </Icon>
                         )}
                         <div className="flex flex-col">
