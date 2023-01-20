@@ -25,10 +25,9 @@ export const Advices = () => {
             }
             content={
                 <>
-                    <div className="flex flex-col w-full">
+                    <div className="flex flex-col w-full pl-20 pt-20">
                         {/* Ecogestes header + All... link */}
                         {/* Ecogestes carousel w/ dots */}
-                        <p>Here will be a carousel. Meanwhile, have a link: insert_link_here</p>
                         <EcogestesList></EcogestesList>
                     </div>
                     <Divider variant="middle" role="presentation" />

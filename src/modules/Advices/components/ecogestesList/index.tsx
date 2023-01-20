@@ -1,3 +1,4 @@
+import { Typography } from '@mui/material'
 import { isEmpty, isNull } from 'lodash'
 import React from 'react'
 import { useParams } from 'react-router'
@@ -45,7 +46,9 @@ const EcogestesList = () => {
 
     return (
         <>
-            <div>Category: {categoryIdInt}</div>
+            <Typography variant="h2" className="text-20 mb-20 font-bold">
+                {categoryIdInt ? <div>Categorie: {categoryIdInt}</div> : <div>Liste de tout les écogestes: </div>}
+            </Typography>
             <div className="flex flex-wrap gap-5 flex-col md:flex-row  w-full h-full ">
                 {isEmpty(ecogestesList) || isNull(ecogestesList) ? (
                     <div>Hewwwooo</div>

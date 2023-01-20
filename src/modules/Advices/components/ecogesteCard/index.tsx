@@ -40,29 +40,26 @@ const EcogesteCard = ({ ecogeste }: { ecogeste: IEcogeste }) => {
                 style={{
                     background: viewed ? theme.palette.background.default : theme.palette.secondary.light,
                     maxHeight: '12rem',
+                    maxWidth: '60rem',
                 }}
             >
                 <CardContent className="flex grow flex-row justify-start gap-5 h-full min-h-0 w-full p-10">
                     <div className="flex flex-col place-content-center grow basis-1/5 gap-5">
                         {/* Icon stack */}
-                        {ecogeste.savings && ecogeste.savings > 0 ? (
-                            <IconButton
-                                className="grow p-0 text-5xl aspect-square"
-                                style={{ aspectRatio: '1/1' }}
-                                color="primary"
-                                size="large"
+                        <IconButton
+                            className="grow p-0 text-5xl aspect-square"
+                            style={{ aspectRatio: '1/1' }}
+                            color="primary"
+                            size="large"
+                        >
+                            <SavingsIcon className="p-2" fontSize="inherit"></SavingsIcon>
+                            <span
+                                className="absolute m-auto text-xs pt-7"
+                                style={{ color: theme.palette.primary.contrastText }}
                             >
-                                <SavingsIcon className="p-2" fontSize="inherit"></SavingsIcon>
-                                <span
-                                    className="absolute m-auto text-xs pt-7"
-                                    style={{ color: theme.palette.primary.contrastText }}
-                                >
-                                    {ecogeste.savings}%
-                                </span>
-                            </IconButton>
-                        ) : (
-                            <></>
-                        )}
+                                {ecogeste.savings && ecogeste.savings > 0 ? ecogeste.savings + '%' : ''}
+                            </span>
+                        </IconButton>
 
                         <IconButton
                             className="grow p-0 text-4xl rounded-lg aspect-square"
@@ -101,7 +98,7 @@ const EcogesteCard = ({ ecogeste }: { ecogeste: IEcogeste }) => {
                                 <InfoIcon fontSize="inherit" />{' '}
                             </IconButton>
                         </div>
-                        <Typography className="text-12">
+                        <Typography className="text-13">
                             {/* TODO: Proper multiline ellipsis
                             Maybe use: https://hackingui.com/a-pure-css-solution-for-multiline-text-truncation/ ?
                              */}
