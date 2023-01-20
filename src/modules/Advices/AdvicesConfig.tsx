@@ -3,7 +3,7 @@ import { IRouteNavigationConfig } from 'src/routes'
 import { Advices } from './Advices'
 import { ReactComponent as AdvicesIcon } from 'src/assets/images/navbarItems/Advices.svg'
 import SvgIcon from '@mui/material/SvgIcon'
-import EcogestesList from './components/ecogestesList'
+import { EcogestesList } from 'src/modules/Ecogestes'
 
 /**
  * Url for advices.
@@ -73,7 +73,7 @@ export const AdvicesConfig = [
     {
         path: URL_ECOGESTES_BY_CATEGORY,
         component: EcogestesList,
-        auth: { authType: authTypes.freeAccess },
+        auth: { authType: authTypes.freeAccess }, //TODO: CHANGE
         settings: {
             layout: {
                 navbar: {

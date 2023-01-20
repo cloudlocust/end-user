@@ -1,8 +1,8 @@
 import { rest } from 'msw'
-import { ECOGESTES_ENDPOINT } from 'src/modules/Advices/components/ecogestesList'
+import { ECOGESTES_ENDPOINT } from 'src/modules/Ecogestes/'
 import { getPaginationFromElementList } from '../utils'
 
-const MOCK_ECOGESTES_ENDPOINT = `${ECOGESTES_ENDPOINT}`
+// const MOCK_ECOGESTES_ENDPOINT = `${ECOGESTES_ENDPOINT}`
 const MOCK_ECOGESTES_BY_CATEGORY_ENDPOINT = `${ECOGESTES_ENDPOINT}/byCategory/:categoryId`
 
 const TEST_ECOGESTES = [

@@ -1,4 +1,32 @@
+import { Divider, styled, useTheme } from '@mui/material'
 import React from 'react'
+import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
+import PageSimple from 'src/common/ui-kit/fuse/components/PageSimple'
+import { EcogestesList } from 'src/modules/Ecogestes'
+
+const Root = styled(PageSimple)(({ theme }) => ({
+    '& .PageSimple-header': {
+        minHeight: 72,
+        height: 72,
+        alignItems: 'center',
+        [theme.breakpoints.up('sm')]: {
+            minHeight: 136,
+            height: 136,
+        },
+    },
+    '& .PageSimple-content': {
+        display: 'flex',
+        position: 'relative',
+    },
+    '& .PageSimple-contentCard': {
+        overflow: 'hidden',
+    },
+    [theme.breakpoints.down('md')]: {
+        '& .PageSimple-toolbar': {
+            height: 'auto',
+        },
+    },
+}))
 
 /**
  * Form used for modify user Advices.
@@ -28,7 +56,7 @@ export const Advices = () => {
                     <div className="flex flex-col w-full pl-20 pt-20">
                         {/* Ecogestes header + All... link */}
                         {/* Ecogestes carousel w/ dots */}
-                        <EcogestesList></EcogestesList>
+                        <EcogestesList />
                     </div>
                     <Divider variant="middle" role="presentation" />
                     <div>{/* Challenge list */}</div>
