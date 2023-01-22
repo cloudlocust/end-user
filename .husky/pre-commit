@@ -5,4 +5,4 @@
 #npx eslint . --fix --max-warnings=0
 yarn pre-commit
 npx tsc --skipLibCheck
-yarn test --watchAll=false --no-cache --maxWorkers=50%
+yarn test --watchAll=false --no-cache
