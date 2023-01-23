@@ -68,6 +68,7 @@ pipeline{
                 app_regisgtry = 'myem/enduser-react'
                 IMG_TAG = getImgTag(BRANCH_NAME)
                 ENV_BUILD = getBuildEnv(BRANCH_NAME)
+                DOCKER_BUILDKIT='1'
             }
             steps{
                 script {
