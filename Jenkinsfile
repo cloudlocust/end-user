@@ -73,7 +73,7 @@ pipeline{
                 script {
                     docker.withRegistry( '', registryCredential ) {
                         // we copy files inside the app image and tag it
-                        def appimage = docker.build(app_regisgtry + ":${IMG_TAG}", "--no-cache --build-arg ENV=${ENV_BUILD} --build-arg REACT_APP_TITLE='MYEM | Application de suivi de consommation ' --build-arg REACT_APP_CLIENT_ICON_FOLDER='ned' . -f ci/Dockerfile " )
+                        def appimage = docker.build(app_regisgtry + ":${IMG_TAG}", "--build-arg ENV=${ENV_BUILD} --build-arg REACT_APP_TITLE='MYEM | Application de suivi de consommation ' --build-arg REACT_APP_CLIENT_ICON_FOLDER='ned' . -f ci/Dockerfile " )
                         appimage.push("${IMG_TAG}")
                     }
                }
