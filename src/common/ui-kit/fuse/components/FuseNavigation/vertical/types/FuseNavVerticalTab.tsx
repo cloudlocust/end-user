@@ -54,7 +54,6 @@ const Root = styled('div')(({ theme }) => ({
         },
         '& .fuse-list-item-icon': {
             color: 'inherit',
-            height: 'auto',
         },
         '& .fuse-list-item-text': {},
     },
