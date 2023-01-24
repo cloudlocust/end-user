@@ -147,7 +147,7 @@ export const computeWidgetAssets = (data: IMetric[], type: metricTargetType) => 
         case metricTargetsEnum.eurosConsumption:
             return computeTotalEuros(data)!
         case metricTargetsEnum.totalProduction:
-            return { value: 5, unit: 'kWh' }
+            return { value: 70, unit: 'Wh' }
         default:
             throw Error('Wrong target')
     }

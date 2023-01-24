@@ -220,6 +220,11 @@ describe('Test widget functions', () => {
                     unit: 'VA',
                     value: val,
                 },
+                {
+                    target: metricTargetsEnum.totalProduction,
+                    unit: 'Wh',
+                    value: val,
+                },
             ]
             const datapoints = [[val, 1640995200000]]
             const data: IMetric[] = [
@@ -263,6 +268,10 @@ describe('Test widget functions', () => {
                 {
                     target: metricTargetsEnum.pMax,
                     value: 'Puissance Maximale',
+                },
+                {
+                    target: metricTargetsEnum.totalProduction,
+                    value: 'Production Totale',
                 },
             ]
 
