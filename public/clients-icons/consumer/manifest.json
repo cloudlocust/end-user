@@ -1,11 +1,12 @@
 {
+    "id": "nrLINK",
     "name": "nrLINK",
     "short_name": "nrLINK",
     "theme_color": "#006970",
     "background_color": "#FFFFFF",
     "display": "standalone",
-    "scope": "/",
-    "start_url": "/",
+    "scope": "/services/",
+    "start_url": "/services/",
     "icons": [
         { "src": "favicon.ico", "sizes": "64x64 32x32 24x24 16x16", "type": "image/x-icon", "purpose": "any maskable" },
         { "src": "logo192x192.png", "type": "image/png", "sizes": "192x192", "purpose": "any maskable" },
