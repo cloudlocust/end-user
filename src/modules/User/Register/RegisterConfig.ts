@@ -67,7 +67,7 @@ export const RegisterConfig = [
                     display: false,
                 },
             },
-            disabled: isPopupAfterRegistration,
+            disabled: !isPopupAfterRegistration,
         },
     } as IRoute</**
      *

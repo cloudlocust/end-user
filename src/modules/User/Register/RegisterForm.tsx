@@ -41,7 +41,7 @@ const civilityOptionsList = [
  */
 export const RegisterForm = ({
     registerHook = useRegister,
-    defaultRole,
+    defaultRole = 'enduser',
 }: /**
  *
  */
@@ -59,7 +59,6 @@ export const RegisterForm = ({
     const passwordRef = useRef()
     const [rgpdCheckboxState, setRgpdCheckboxState] = React.useState<Boolean | string>('false')
     const { formatMessage } = useIntl()
-    const history = useHistory()
 
     /**
      * Handle Change of the checkbox.
@@ -73,14 +72,11 @@ export const RegisterForm = ({
     /**
      * Function that submit the user registration data.
      *
-     * @param cleanData Data to be submitted for user registration.
+     * @param cleanData CleanData Data to be submitted for user registration.
+     * @returns User.
      */
     function onSubmitUserRegistrationForm(cleanData: IUserRegister) {
-        if (defaultRole !== undefined) {
-            onSubmit({ ...cleanData, role: defaultRole })
-        } else {
-            onSubmit(cleanData)
-        }
+        return onSubmit({ ...cleanData, role: defaultRole })
     }
 
     // eslint-disable-next-line jsdoc/require-jsdoc
@@ -90,22 +86,6 @@ export const RegisterForm = ({
             return
         }
 
-        if (isPopupAfterRegistration) {
-            const queryString = convertUserDataToQueryString(cleanData)
-            if (queryString) {
-                window.open(
-                    `${energyProviderPopupLink}?${queryString}`,
-                    '_blank',
-                    `width=1024,height=768,left=${window.screen.availWidth / 2 - 200},top=${
-                        window.screen.availHeight / 2 - 150
-                    }`,
-                )
-            }
-            history.push({
-                pathname: URL_REGISTER_ENERGY_PROVIDER_SUCCESS,
-                state: { isAllowed: true },
-            })
-        }
         onSubmitUserRegistrationForm(cleanData)
     }
 
