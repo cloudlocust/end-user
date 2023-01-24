@@ -1,5 +1,5 @@
-import { metricTargetType } from 'src/modules/Metrics/Metrics.d'
-import { periodType } from 'sr/modules/MyConsumption/myConsumptionTypes'
+import { metricTargetType, metricRangeType, metricIntervalType, metricFiltersType } from 'src/modules/Metrics/Metrics.d'
+import { periodType } from 'src/modules/MyConsumption/myConsumptionTypes'
 
 /**
  * Widget Title type.
@@ -10,6 +10,7 @@ export type widgetTitleType =
     | 'Température Intérieure'
     | 'Température Extérieure'
     | 'Coût Total'
+    | 'Production Totale'
 
 /**
  * Total Consumption Units types.

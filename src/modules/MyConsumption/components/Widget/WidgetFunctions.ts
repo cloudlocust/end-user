@@ -146,6 +146,8 @@ export const computeWidgetAssets = (data: IMetric[], type: metricTargetType) => 
             return computeInternallTemperature(data)!
         case metricTargetsEnum.eurosConsumption:
             return computeTotalEuros(data)!
+        case metricTargetsEnum.totalProduction:
+            return { value: 5, unit: 'kWh' }
         default:
             throw Error('Wrong target')
     }
@@ -169,6 +171,8 @@ export const renderWidgetTitle = (target: metricTargetType): widgetTitleType => 
             return 'Température Intérieure'
         case metricTargetsEnum.eurosConsumption:
             return 'Coût Total'
+        case metricTargetsEnum.totalProduction:
+            return 'Production Totale'
         default:
             throw Error('Wrong target')
     }
