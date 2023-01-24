@@ -4,7 +4,7 @@ import { IEcogeste } from '../ecogeste'
 import VisibilityIcon from '@mui/icons-material/Visibility'
 import SavingsIcon from '@mui/icons-material/Savings'
 import InfoIcon from '@mui/icons-material/Info'
-import { useTheme, Dialog, DialogContent } from '@mui/material'
+import { useTheme, Dialog, DialogContent, DialogTitle } from '@mui/material'
 import { ReactComponent as NotViewIcon } from './NotRead.svg'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 
@@ -19,9 +19,11 @@ import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyForm
 export const EcogesteCard = ({ ecogeste }: { ecogeste: IEcogeste }) => {
     const theme = useTheme()
 
-    const [viewed, setViewed] = useState(false)
     const [isOpenDialog, setIsOpenDialog] = useState(false)
 
+    // Viewed feature, not yet implemented:
+    // be sure to remove the display:none on the eye too.
+    const [viewed, setViewed] = useState(false)
     const onVisbilityClick = () => {
         setViewed(!viewed)
         // TODO: Poke an API to get/set this?
@@ -30,15 +32,20 @@ export const EcogesteCard = ({ ecogeste }: { ecogeste: IEcogeste }) => {
     return (
         <>
             <Dialog open={isOpenDialog} fullWidth={true} maxWidth="sm" onClose={() => setIsOpenDialog(false)}>
+                {/* Dialog feels a bit bare, might need a rework. */}
+                <DialogTitle>
+                    <TypographyFormatMessage className="text-bold text-15">{ecogeste.title}</TypographyFormatMessage>
+                </DialogTitle>
                 <DialogContent>
-                    <div className="p-10">
-                        <TypographyFormatMessage>{ecogeste.description}</TypographyFormatMessage>
-                    </div>
+                    <TypographyFormatMessage className="text-13">{ecogeste.description}</TypographyFormatMessage>
                 </DialogContent>
             </Dialog>
             <Card
                 className="h-full w-full md:w-1/3"
                 style={{
+                    // Background color does not match, but best effort has been done.
+                    // Can't hard-code any lightness change, or it might break other themes.
+                    // Maybe a rework of the palette would help ?
                     background: viewed ? theme.palette.background.default : theme.palette.secondary.light,
                     maxHeight: '12rem',
                     maxWidth: '60rem',
@@ -64,7 +71,7 @@ export const EcogesteCard = ({ ecogeste }: { ecogeste: IEcogeste }) => {
 
                         <IconButton
                             className="grow p-0 text-4xl rounded-lg aspect-square"
-                            style={{ background: theme.palette.background.paper, aspectRatio: '1/1' }}
+                            style={{ background: theme.palette.background.paper, aspectRatio: '1/1', display: 'none' }}
                             color="primary"
                             size="large"
                             aria-label="mark as read"
