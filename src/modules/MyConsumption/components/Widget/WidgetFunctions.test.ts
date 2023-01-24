@@ -10,6 +10,7 @@ import {
     renderWidgetTitle,
     getWidgetPreviousRange,
     getWidgetRange,
+    computeTotalProduction,
 } from 'src/modules/MyConsumption/components/Widget/WidgetFunctions'
 import { periodType } from 'src/modules/MyConsumption/myConsumptionTypes'
 
@@ -187,6 +188,60 @@ describe('Test widget functions', () => {
                 },
             ]
             const result = computeTotalEuros(data)
+            expect(result).toStrictEqual(expectedResult)
+        })
+    })
+
+    describe('test computeTotalProduction function', () => {
+        test('when it returns W unit', () => {
+            const expectedResult = {
+                value: 50,
+                unit: 'Wh',
+            }
+            const data: IMetric[] = [
+                {
+                    datapoints: [
+                        [25, 1640995200000],
+                        [25, 1641081600000],
+                    ],
+                    target: 'enphase_production_metrics',
+                },
+            ]
+            const result = computeTotalProduction(data)
+            expect(result).toStrictEqual(expectedResult)
+        })
+        test('when it returns kWh unit', () => {
+            const expectedResult = {
+                value: 1,
+                unit: 'kWh',
+            }
+            const data: IMetric[] = [
+                {
+                    datapoints: [
+                        [500, 1640995200000],
+                        [500, 1641081600000],
+                    ],
+                    target: 'enphase_production_metrics',
+                },
+            ]
+            const result = computeTotalProduction(data)
+            expect(result).toStrictEqual(expectedResult)
+        })
+        test('when it returns MWh unit', () => {
+            const expectedResult = {
+                value: 1,
+                unit: 'MWh',
+            }
+            const data: IMetric[] = [
+                {
+                    datapoints: [
+                        [500_000, 1640995200000],
+                        [500_000, 1641081600000],
+                    ],
+                    target: 'enphase_production_metrics',
+                },
+            ]
+            const result = computeTotalProduction(data)
             expect(result).toStrictEqual(expectedResult)
         })
     })
