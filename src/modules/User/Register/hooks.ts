@@ -11,7 +11,6 @@ import {
 } from 'src/modules/User/Register/RegisterConfig'
 import { USER_REGISTRATION_AUTO_VALIDATE } from 'src/modules/User/configs'
 import { convertUserDataToQueryString } from 'src/modules/User/Register/utils'
-import { useEffect } from 'react'
 
 /**
  * Builder to create userRegister hooks. We use a build to easily modify redirect url after register. This function returns a function.

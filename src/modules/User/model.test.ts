@@ -3,7 +3,6 @@ import { init } from '@rematch/core'
 import { models } from 'src/models'
 import {
     TEST_AUTHORIZATION_DELETE_PROFILE_ERROR,
-    TEST_AUTOVALIDATION_PASSWORD,
     TEST_MESSAGE_DELETE_PROFILE_ERROR,
     TEST_SUCCESS_MAIL,
     TEST_SUCCESS_USER,

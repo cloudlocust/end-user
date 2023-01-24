@@ -39,11 +39,10 @@ export function convertUserDataToQueryString(data: IUserRegister) {
                     .replace(/\./g, '')
                     // Remove space from the start and end of string
                     .replace(/^\s+|\s+$/g, '')
-                    .replace(/\s/g, '%20')
-                const formattedCity = city.replace(/\s/g, '%20')
-                url = { ...url, adresse: formattedAddress, code: zipCode, ville: formattedCity }
+                url = { ...url, adresse: formattedAddress, code: zipCode, ville: city }
                 break
         }
     }
+
     return `${new URLSearchParams(url).toString()}`
 }

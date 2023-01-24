@@ -12,13 +12,6 @@ import FormControl from '@mui/material/FormControl'
 import { FormHelperText } from '@mui/material'
 import { LinkRedirection } from 'src/modules/utils/LinkRedirection'
 import { passwordFieldValidationSecurity1 } from 'src/modules/utils'
-import {
-    energyProviderPopupLink,
-    isPopupAfterRegistration,
-    URL_REGISTER_ENERGY_PROVIDER_SUCCESS,
-} from 'src/modules/User/Register/RegisterConfig'
-import { convertUserDataToQueryString } from 'src/modules/User/Register/utils'
-import { useHistory } from 'react-router-dom'
 import { Select } from 'src/common/ui-kit/form-fields/Select'
 import MenuItem from '@mui/material/MenuItem'
 import { generalTermsOfUse, privacyPolicy } from 'src/modules/Mentions/MentionsConfig'
