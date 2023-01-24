@@ -1,9 +1,9 @@
 import { Typography } from '@mui/material'
 import { isEmpty, isNull } from 'lodash'
+import useEcogestesByCategory from 'src/modules/Ecogestes/ecogestesHook'
 import { useParams } from 'react-router'
 import { ImageCardLoader } from 'src/common/ui-kit/components/MapElementList/components/ContentLoader/ContentLoader'
-import useEcogestesByCategory from '../../../Ecogestes/ecogestesHook'
-import EcogesteCard from '../ecogesteCard'
+import { EcogesteCard } from 'src/modules/Ecogestes'
 
 /* eslint-disable jsdoc/require-jsdoc -- enough doc for now */
 

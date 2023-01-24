@@ -1,11 +1,12 @@
 import { useState } from 'react'
-import { Card, CardContent, Typography, IconButton, SvgIcon } from '@mui/material'
+import { Card, CardContent, IconButton, SvgIcon } from '@mui/material'
 import { IEcogeste } from '../ecogeste'
 import VisibilityIcon from '@mui/icons-material/Visibility'
 import SavingsIcon from '@mui/icons-material/Savings'
 import InfoIcon from '@mui/icons-material/Info'
 import { useTheme, Dialog, DialogContent } from '@mui/material'
 import { ReactComponent as NotViewIcon } from './NotRead.svg'
+import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 
 /* eslint-disable jsdoc/require-jsdoc -- enough doc for now */
 /**
@@ -31,7 +32,7 @@ export const EcogesteCard = ({ ecogeste }: { ecogeste: IEcogeste }) => {
             <Dialog open={isOpenDialog} fullWidth={true} maxWidth="sm" onClose={() => setIsOpenDialog(false)}>
                 <DialogContent>
                     <div className="p-10">
-                        <Typography>{ecogeste.description}</Typography>
+                        <TypographyFormatMessage>{ecogeste.description}</TypographyFormatMessage>
                     </div>
                 </DialogContent>
             </Dialog>
@@ -83,9 +84,9 @@ export const EcogesteCard = ({ ecogeste }: { ecogeste: IEcogeste }) => {
 
                         <div className="w-full flex flex-row place-content-between">
                             <div className="mt-auto mb-auto">
-                                <Typography className="font-bold text-15 whitespace-normal">
+                                <TypographyFormatMessage className="font-bold text-15 whitespace-normal">
                                     {ecogeste.title}
-                                </Typography>
+                                </TypographyFormatMessage>
                             </div>
                             <IconButton
                                 color="primary"
@@ -98,12 +99,12 @@ export const EcogesteCard = ({ ecogeste }: { ecogeste: IEcogeste }) => {
                                 <InfoIcon fontSize="inherit" />{' '}
                             </IconButton>
                         </div>
-                        <Typography className="text-13">
+                        <TypographyFormatMessage className="text-13">
                             {/* TODO: Proper multiline ellipsis
                             Maybe use: https://hackingui.com/a-pure-css-solution-for-multiline-text-truncation/ ?
                              */}
                             {ecogeste.shortdescription}
-                        </Typography>
+                        </TypographyFormatMessage>
                     </div>
                 </CardContent>
             </Card>
