@@ -25,6 +25,7 @@ const TEST_ECOGESTES = [
  */
 export const ecogestesEndpoints = [
     rest.get<any>(MOCK_ECOGESTES_BY_CATEGORY_ENDPOINT, (req, res, ctx) => {
+        if (req.params.categoryId < 0) throw new Error('WRONG BAD')
         const ECOGESTE_RESPONSE = getPaginationFromElementList(req, TEST_ECOGESTES as [])
 
         return res(ctx.status(200), ctx.delay(1000), ctx.json(ECOGESTE_RESPONSE))

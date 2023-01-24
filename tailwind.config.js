@@ -6,7 +6,6 @@ module.exports = {
       safelist: ['pl-24', 'pl-40', 'pl-56', 'pl-72', 'pl-80'],
     },
   },
-  important: '#root',
   darkMode: false, // or 'media' or 'class'
   theme: {
     screens: {
