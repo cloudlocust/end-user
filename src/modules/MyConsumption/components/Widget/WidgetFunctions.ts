@@ -128,6 +128,20 @@ export const computeTotalEuros = (data: IMetric[]): { value: number | string; un
 }
 
 /**
+ * Function that computes total production.
+ *
+ * @param data Metrics data.
+ * @returns Total production rounded.
+ */
+export const computeTotalProduction = (data: IMetric[]) => {
+    const values = getDataFromYAxis(data, metricTargetsEnum.totalProduction)
+    // Lodash sum when array is [null] returns null, weird library behaviour however when its sum([null, null, ...etc]) returns 0, so for the case where values are [null], 0 is assigned.
+    // https://github.com/lodash/lodash/issues/4110#issuecomment-463725975
+    const totalProductionValueInWatts = sum(values) || 0
+    return consumptionWattUnitConversion(totalProductionValueInWatts)
+}
+
+/**
  * Function that compute widget assets from metric type.
  *
  * @param data Metrics data.
@@ -147,7 +161,7 @@ export const computeWidgetAssets = (data: IMetric[], type: metricTargetType) => 
         case metricTargetsEnum.eurosConsumption:
             return computeTotalEuros(data)!
         case metricTargetsEnum.totalProduction:
-            return { value: 70, unit: 'Wh' }
+            return computeTotalProduction(data)!
         default:
             throw Error('Wrong target')
     }
