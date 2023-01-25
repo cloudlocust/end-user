@@ -60,7 +60,7 @@ export const EcogesteCard = ({ ecogeste }: { ecogeste: IEcogeste }) => {
                             color="primary"
                             size="large"
                         >
-                            <SavingsIcon className="p-2" fontSize="inherit"></SavingsIcon>
+                            <SavingsIcon className="p-2" fontSize="inherit" />
                             <span
                                 className="absolute m-auto text-xs pt-7"
                                 style={{ color: theme.palette.primary.contrastText }}
@@ -82,7 +82,7 @@ export const EcogesteCard = ({ ecogeste }: { ecogeste: IEcogeste }) => {
                                     <NotViewIcon />
                                 </SvgIcon>
                             ) : (
-                                <VisibilityIcon className="p-2" fontSize="inherit"></VisibilityIcon>
+                                <VisibilityIcon className="p-2" fontSize="inherit" />
                             )}
                         </IconButton>
                     </div>
@@ -102,8 +102,7 @@ export const EcogesteCard = ({ ecogeste }: { ecogeste: IEcogeste }) => {
                                     setIsOpenDialog(true)
                                 }}
                             >
-                                {' '}
-                                <InfoIcon fontSize="inherit" />{' '}
+                                <InfoIcon fontSize="inherit" />
                             </IconButton>
                         </div>
                         <TypographyFormatMessage className="text-13">

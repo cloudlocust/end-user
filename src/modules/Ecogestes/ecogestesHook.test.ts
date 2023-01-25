@@ -18,7 +18,6 @@ jest.mock('notistack', () => ({
     }),
 }))
 
-
 describe('EcogesteHook test', () => {
     describe('Get By Category', () => {
         test('getByCategory error, snackbar should be called with error message', async () => {

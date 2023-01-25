@@ -14,7 +14,7 @@ export const URL_ECOGESTES = `/ecogestes`
 /**
  * Url for ecogestes by category.
  */
-export const URL_ECOGESTES_BY_CATEGORY = `${URL_ECOGESTES}/byCategory/:categoryId`
+export const URL_ECOGESTES_BY_CATEGORY = `${URL_ECOGESTES}/by-category/:categoryId`
 
 /**
  * Endpoint Configuration for Ecogestes view.

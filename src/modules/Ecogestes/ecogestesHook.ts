@@ -4,7 +4,6 @@ import { searchFilterType } from 'src/modules/utils'
 import { BuilderUseElementList } from 'src/modules/utils/useElementHookBuilder'
 import { IEcogeste } from './components/ecogeste'
 
-
 /**
  * Ecogestes API  global endpoint.
  */
@@ -16,7 +15,7 @@ export const ECOGESTES_ENDPOINT = `${API_RESOURCES_URL}/ecogestes`
  * @param categoryId The id of the category.
  * @returns A URL.
  */
-export const ECOGESTES_BY_CATEGORY = (categoryId: number) => `${ECOGESTES_ENDPOINT}/byCategory/${categoryId}`
+export const ECOGESTES_BY_CATEGORY = (categoryId: number) => `${ECOGESTES_ENDPOINT}/by-category/${categoryId}`
 
 // eslint-disable-next-line jsdoc/require-jsdoc
 export const loadElementListError = (error: any, formatMessage: formatMessageType) => {
