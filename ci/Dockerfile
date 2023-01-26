@@ -1,23 +1,24 @@
 # build environment
-FROM node:14-alpine as build
-RUN apk add --no-cache git
-WORKDIR /app
-COPY . ./
-RUN rm -rf node_modules && rm package-lock.json
-RUN npm cache clean --force
-RUN npm install yarn
+FROM node:16-alpine as builder
+# declaring environemnt variables
 ARG ENV
 ARG REACT_APP_TITLE
 ARG REACT_APP_CLIENT_ICON_FOLDER
-RUN yarn install --network-timeout 600000
+# build
+WORKDIR /app
+COPY package.json yarn.lock ./
+COPY src/common/package.json ./src/common/package.json
+RUN --mount=type=cache,target=/root/.yarn YARN_CACHE_FOLDER=/root/.yarn yarn install
+COPY . ./
 RUN yarn build
+
 FROM nginx:stable-alpine
-COPY --from=build /app/build /usr/share/nginx/html
+COPY --from=builder /app/build /usr/share/nginx/html
 
 COPY ./ci/default.conf /etc/nginx/templates/default.conf.template
 COPY .env.template /usr/share/nginx/html
 
-# Add bash
+# Add bash, needed below do not remove
 RUN apk add --no-cache bash
 
 # Make our shell script executable

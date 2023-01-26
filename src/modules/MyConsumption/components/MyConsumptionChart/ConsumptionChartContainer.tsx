@@ -51,7 +51,7 @@ export const ConsumptionChartContainer = ({
     // This state represents whether or not the chart is displaying a spinner, which should happen only when we request the current metrics, not the request of all metrics that happens in the background.
     const [isConsumptionChartLoading, setIsConsumptionChartLoading] = useState<boolean>(true)
     // Indicates the Charts visible in MyConsumptionChart.
-    const enphaseOff = enphaseConsent.enphaseConsentState !== 'ACTIVE'
+    const enphaseOff = enphaseConsent?.enphaseConsentState !== 'ACTIVE'
     // Visible Targets will influence k
     const [visibleTargetCharts, setVisibleTargetsCharts] = useState<metricTargetType[]>(
         enphaseOff
