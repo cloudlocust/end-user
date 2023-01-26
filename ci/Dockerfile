@@ -18,6 +18,9 @@ COPY --from=builder /app/build /usr/share/nginx/html
 COPY ./ci/default.conf /etc/nginx/templates/default.conf.template
 COPY .env.template /usr/share/nginx/html
 
+# Add bash, needed below do not remove
+RUN apk add --no-cache bash
+
 # Make our shell script executable
 COPY ./ci/process-env.sh /docker-entrypoint.d/100-process-env.sh
 RUN chmod u+x /docker-entrypoint.d/100-process-env.sh
