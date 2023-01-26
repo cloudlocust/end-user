@@ -130,13 +130,14 @@ describe('Widget component test', () => {
                 <Widget {...mockWidgetProps} />
             </Router>,
         )
-        /*
-          Be careful not to use getByTestId -getBy functions in general- when we want to test the non-existence of an element,
-          because getByTestId throw and error if the element isn't found,
-          causing the test to fail before the expect function fires
-          @see https://testing-library.com/docs/guide-disappearance/#asserting-elements-are-not-present.
-        */
-        expect(queryByTestId('ErrorOutlineIcon')).toBeFalsy()
+        /**
+         * Be careful not to use getByTestId -getBy functions in general- when we want to test the non-existence of an element,
+         * because getByTestId throw and error if the element isn't found,
+         * causing the test to fail before the expect function fires.
+         *
+         * @see https://testing-library.com/docs/guide-disappearance/#asserting-elements-are-not-present.
+         */
+        expect(queryByTestId('ErrorOutlineIcon')).not.toBeInTheDocument()
     })
     test('when the target is not "enphase_production_metrics" and the enphaseConsent is inactive, an error icon does not be shown in the widget.', async () => {
         mockData = []
@@ -149,13 +150,14 @@ describe('Widget component test', () => {
                 <Widget {...mockWidgetProps} />
             </Router>,
         )
-        /*
-          Be careful not to use getByTestId -getBy functions in general- when we want to test the non-existence of an element,
-          because getByTestId throw and error if the element isn't found,
-          causing the test to fail before the expect function fires
-          @see https://testing-library.com/docs/guide-disappearance/#asserting-elements-are-not-present.
-        */
-        expect(queryByTestId('ErrorOutlineIcon')).toBeNull()
+        /**
+         * Be careful not to use getByTestId -getBy functions in general- when we want to test the non-existence of an element,
+         * because getByTestId throw and error if the element isn't found,
+         * causing the test to fail before the expect function fires.
+         *
+         * @see https://testing-library.com/docs/guide-disappearance/#asserting-elements-are-not-present.
+         */
+        expect(queryByTestId('ErrorOutlineIcon')).not.toBeInTheDocument()
     })
 
     // TODO: Add test for error icon for the __euros__consumption_metrics target

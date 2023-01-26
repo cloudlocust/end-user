@@ -49,5 +49,5 @@ export interface IWidgetProps {
     /**
      * Enphhase consent.
      */
-    enphaseConsent?: IEnphaseConsent | null
+    enphaseConsent?: IEnphaseConsent
 }
