@@ -13,6 +13,24 @@ const fullEcogeste: IEcogeste = {
 }
 let mockEcogestePropsFull = {}
 
+/**
+ * Mock the ResizeObserverAPI.
+ */
+class ResizeObserver {
+    /* eslint-disable jsdoc/require-jsdoc -- enough doc for now */
+    observe() {
+        // do nothing
+    }
+    unobserve() {
+        // do nothing
+    }
+    disconnect() {
+        // do nothing
+    }
+}
+
+window.ResizeObserver = ResizeObserver
+
 describe('Test EcogesteCard', () => {
     test('When passing elements to ecogeste card they show correctly', async () => {
         const { queryByTestId, queryByLabelText, queryByText, queryByRole } = reduxedRender(

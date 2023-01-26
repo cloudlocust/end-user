@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { RefObject, useState, useCallback, useLayoutEffect, useRef } from 'react'
 import { Card, CardContent, IconButton, SvgIcon } from '@mui/material'
 import { IEcogeste } from '../ecogeste'
 import VisibilityIcon from '@mui/icons-material/Visibility'
@@ -7,8 +7,42 @@ import InfoIcon from '@mui/icons-material/Info'
 import { useTheme, Dialog, DialogContent, DialogTitle } from '@mui/material'
 import { ReactComponent as NotViewIcon } from './NotRead.svg'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
+import { debounce } from 'lodash'
+import 'src/modules/Ecogestes/components/ecogesteCard/ecogesteCard.scss'
 
 /* eslint-disable jsdoc/require-jsdoc -- enough doc for now */
+/* eslint-disable sonarjs/no-duplicate-string -- Styles literals :s */
+
+const useResizeObserver = (ref: RefObject<HTMLElement>, callback: (entry: ResizeObserverEntry) => void) => {
+    const notifyResize = useCallback(
+        (entries: ResizeObserverEntry[]) => {
+            if (!Array.isArray(entries)) {
+                return
+            }
+
+            callback(entries[0])
+        },
+        [callback],
+    )
+
+    useLayoutEffect(() => {
+        if (!ref.current) {
+            return
+        }
+        let RO: ResizeObserver | undefined = new ResizeObserver((entries: ResizeObserverEntry[]) => {
+            notifyResize(entries)
+        })
+
+        RO.observe(ref.current)
+
+        return () => {
+            RO!.disconnect()
+            RO = undefined
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [ref])
+}
+
 /**
  * A card that renders a given ecogeste.
  *
@@ -20,6 +54,20 @@ export const EcogesteCard = ({ ecogeste }: { ecogeste: IEcogeste }) => {
     const theme = useTheme()
 
     const [isOpenDialog, setIsOpenDialog] = useState(false)
+    const [shouldEllipse, setShouldEllipse] = useState(false)
+    const [seeFull, setSeeFull] = useState(false)
+
+    const ref = useRef(null)
+
+    useResizeObserver(
+        ref,
+        debounce((e: ResizeObserverEntry) => {
+            const elementHeight = e.target.getBoundingClientRect().height
+            const scrollHeight = e.target.scrollHeight
+            const change = elementHeight < scrollHeight - 1
+            setShouldEllipse(change)
+        }, 100),
+    )
 
     // Viewed feature, not yet implemented:
     // be sure to remove the display:none on the eye too.
@@ -41,21 +89,23 @@ export const EcogesteCard = ({ ecogeste }: { ecogeste: IEcogeste }) => {
                 </DialogContent>
             </Dialog>
             <Card
-                className="h-full w-full md:w-1/3"
+                className="h-[12rem]"
                 style={{
                     // Background color does not match, but best effort has been done.
                     // Can't hard-code any lightness change, or it might break other themes.
                     // Maybe a rework of the palette would help ?
                     background: viewed ? theme.palette.background.default : theme.palette.secondary.light,
-                    maxHeight: '12rem',
+                    maxHeight: seeFull ? 'min-content' : '12rem',
                     maxWidth: '60rem',
+                    minWidth: '30%',
+                    flex: '1 1 30%',
                 }}
             >
-                <CardContent className="flex grow flex-row justify-start gap-5 h-full min-h-0 w-full p-10">
-                    <div className="flex flex-col place-content-center grow basis-1/5 gap-5">
+                <CardContent className="flex flex-row justify-start gap-5 min-h-0 w-full max-h-full h-full px-10 pt-10 pb-15 relative">
+                    <div className="flex flex-col place-content-center flex-auto basis-1/5 gap-5">
                         {/* Icon stack */}
                         <IconButton
-                            className="grow p-0 text-5xl aspect-square"
+                            className="p-0 text-5xl aspect-square"
                             style={{ aspectRatio: '1/1' }}
                             color="primary"
                             size="large"
@@ -70,7 +120,7 @@ export const EcogesteCard = ({ ecogeste }: { ecogeste: IEcogeste }) => {
                         </IconButton>
 
                         <IconButton
-                            className="grow p-0 text-4xl rounded-lg aspect-square"
+                            className="p-0 text-4xl rounded-lg aspect-square"
                             style={{ background: theme.palette.background.paper, aspectRatio: '1/1', display: 'none' }}
                             color="primary"
                             size="large"
@@ -86,7 +136,13 @@ export const EcogesteCard = ({ ecogeste }: { ecogeste: IEcogeste }) => {
                             )}
                         </IconButton>
                     </div>
-                    <div className="w-full basis-4/5 overflow-hidden grow  flex flex-col gap-5 pt-4">
+                    <div
+                        className={
+                            'w-full h-full basis-4/5 flex-auto  flex flex-col gap-1 pt-1 overflow-hidden ' +
+                            (shouldEllipse ? 'ellipsis' : '')
+                        }
+                        ref={ref}
+                    >
                         {/* Text Content */}
 
                         <div className="w-full flex flex-row place-content-between">
@@ -105,12 +161,32 @@ export const EcogesteCard = ({ ecogeste }: { ecogeste: IEcogeste }) => {
                                 <InfoIcon fontSize="inherit" />
                             </IconButton>
                         </div>
-                        <TypographyFormatMessage className="text-13">
+                        <TypographyFormatMessage className="text-13 text-justify pr-10">
                             {/* TODO: Proper multiline ellipsis
                             Maybe use: https://hackingui.com/a-pure-css-solution-for-multiline-text-truncation/ ?
                              */}
                             {ecogeste.shortdescription}
                         </TypographyFormatMessage>
+                    </div>
+
+                    <div className="absolute bottom-2 w-full">
+                        {shouldEllipse ? (
+                            <div
+                                className="mx-auto w-fit"
+                                style={{ width: 'fit-content' }}
+                                onClick={() => setSeeFull(true)}
+                            >
+                                Voir plus
+                            </div>
+                        ) : seeFull ? (
+                            <div
+                                className="mx-auto w-fit"
+                                style={{ width: 'fit-content' }}
+                                onClick={() => setSeeFull(false)}
+                            >
+                                Voir moins
+                            </div>
+                        ) : null}
                     </div>
                 </CardContent>
             </Card>

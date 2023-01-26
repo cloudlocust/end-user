@@ -23,7 +23,7 @@ export const EcogestesConfig = [
     {
         path: URL_ECOGESTES_BY_CATEGORY,
         component: EcogestesList,
-        auth: { authType: authTypes.freeAccess }, //TODO: CHANGE
+        auth: { authType: authTypes.loginRequired },
         settings: {
             layout: {
                 navbar: {

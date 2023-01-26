@@ -18,6 +18,26 @@ const TEST_ECOGESTES = [
             'Un volet fermé pendant la nuit peut réduire la déperdition de chaleur de la fenêtre jusqu’à 60 %. Le soir, fermez les rideaux et les volets. À l’inverse, en journée pendant l’hiver, favorisez au maximum les apports solaires. La sensation de confort sera améliorée, et vous pourrez alors baisser votre température intérieure d’un degré. Les volets et protections solaires conservent le logement frais en été et chaud en hiver.',
         savings: 15,
     },
+    {
+        title: 'Régler son thermostat',
+        shortdescription: 'Je règle le thermostat en fonction de mes besoins.',
+        description:
+            'Le corps a besoin d’environ une semaine pour s’acclimater à une nouvelle température : alors, ne vous précipitez pas sur le chauffage dès la première baisse de température mais attendez plutôt de voir si vous vous habituez. L’humidité et les infiltrations d’air peuvent aussi amplifier la sensation d’inconfort. Avec un thermostat à 20 °C, vous pouvez avoir un ressenti de 17 °C si la maison est humide, que l’air s’infiltre ou que la température n’est pas la même partout (effet paroi froide). Des solutions de rénovation existent pour améliorer votre confort.',
+        savings: 8,
+    },
+    {
+        title: 'Couper l’eau pendant le savonnage',
+        shortdescription: 'Je coupe l’eau de la douche pendant le savonnage	',
+        description: 'Couper l’eau pendant le savonnage permet de réaliser une économie sur votre consommation.',
+        savings: 37,
+    },
+    {
+        title: 'Ouvrir en journée',
+        shortdescription: 'J’ouvre les rideaux et les volets en journée	',
+        description:
+            'Privilégiez toujours les apports de l’éclairage naturel : la lumière du jour est la meilleure pour l’oeil humain.',
+        savings: 1,
+    },
 ]
 
 /**
