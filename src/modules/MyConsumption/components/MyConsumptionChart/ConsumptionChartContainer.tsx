@@ -50,7 +50,7 @@ export const ConsumptionChartContainer = ({
     const theme = useTheme()
     // This state represents whether or not the chart is displaying a spinner, which should happen only when we request the current metrics, not the request of all metrics that happens in the background.
     const [isConsumptionChartLoading, setIsConsumptionChartLoading] = useState<boolean>(true)
-    // Indicates the Charts visible in MyConsumptionChart.
+    // Indicates if enphaseConsentState is not ACTIVE
     const enphaseOff = enphaseConsent?.enphaseConsentState !== 'ACTIVE'
     // Visible Targets will influence k
     const [visibleTargetCharts, setVisibleTargetsCharts] = useState<metricTargetType[]>(
@@ -58,7 +58,9 @@ export const ConsumptionChartContainer = ({
             ? [metricTargetsEnum.consumption]
             : [metricTargetsEnum.autoconsumption, metricTargetsEnum.consumption],
     )
-    const hidePmax = period === 'daily' || enphaseOff
+    // Indicates if enedisSgeConsent is not Connected
+    const enedisSgeOff = enedisSgeConsent?.enedisSgeConsentState !== 'CONNECTED'
+    const hidePmax = period === 'daily' || enedisSgeOff
     // Track the change of visibleTargetCharts, so that we don't call getMetrics when visibleTargetCharts change (and thus no request when showing / hiding target in MyConsumptionChart).
     const isVisibleTargetChartsChanged = useRef(false)
     const { data, getMetricsWithParams } = useMetrics({
