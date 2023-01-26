@@ -63,15 +63,12 @@ export const RegisterForm = ({
     }
 
     /**
-     * Function that submit the user registration data.
+     * OnSubmit wrapper for register form.
      *
-     * @param cleanData CleanData Data to be submitted for user registration.
-     * @returns User.
+     * @param param0 N/A.
+     * @param param0.repeatPwd Repeated password.
+     * @returns OnSubmit.
      */
-    function onSubmitUserRegistrationForm(cleanData: IUserRegister) {
-        return onSubmit({ ...cleanData, role: defaultRole })
-    }
-
     // eslint-disable-next-line jsdoc/require-jsdoc
     const onSubmitWrapper = async ({ repeatPwd, ...cleanData }: { repeatPwd: string } & IUserRegister) => {
         if (rgpdCheckboxState !== true) {
@@ -79,7 +76,7 @@ export const RegisterForm = ({
             return
         }
 
-        onSubmitUserRegistrationForm(cleanData)
+        onSubmit({ ...cleanData, role: defaultRole })
     }
 
     return (

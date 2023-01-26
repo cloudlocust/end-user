@@ -33,7 +33,6 @@ export const BuilderUseRegister = ({
      *
      * @returns UseRegister hook.
      */
-    // eslint-disable-next-line sonarjs/cognitive-complexity
     function useRegister() {
         const dispatch = useDispatch<Dispatch>()
         const [isRegisterInProgress, setIsRegisterInProgress] = useToggle(false)
@@ -41,9 +40,32 @@ export const BuilderUseRegister = ({
         const { enqueueSnackbar } = useSnackbar()
 
         /**
+         * Function that handles what comes after when user has succesfully registered.
+         *
+         * @param data User registration data.
+         */
+        function handleOnAfterSubmit(data: IUserRegister) {
+            if (isPopupAfterRegistration) {
+                window.open(
+                    `${energyProviderPopupLink}?${convertUserDataToQueryString(data)}`,
+                    '_blank',
+                    `width=1024,height=768,left=${window.screen.availWidth / 2 - 200},top=${
+                        window.screen.availHeight / 2 - 150
+                    }`,
+                )
+                history.push({
+                    pathname: URL_REGISTER_ENERGY_PROVIDER_SUCCESS,
+                    state: { isAllowed: true },
+                })
+            } else {
+                history.replace(redirect())
+            }
+        }
+
+        /**
          * Submit function.
          *
-         * @param data TODO Should be detailed.
+         * @param data User registration data from form.
          */
         const onSubmit = async (data: IUserRegister) => {
             setIsRegisterInProgress(true)
@@ -57,22 +79,7 @@ export const BuilderUseRegister = ({
                             : "Votre inscription a bien été prise en compte, vous pourrez vous connecter une fois celle-ci validée par l'administrateur.",
                         { variant: 'success', autoHideDuration: 8000 },
                     )
-
-                    if (isPopupAfterRegistration) {
-                        window.open(
-                            `${energyProviderPopupLink}?${convertUserDataToQueryString(data)}`,
-                            '_blank',
-                            `width=1024,height=768,left=${window.screen.availWidth / 2 - 200},top=${
-                                window.screen.availHeight / 2 - 150
-                            }`,
-                        )
-                        history.push({
-                            pathname: URL_REGISTER_ENERGY_PROVIDER_SUCCESS,
-                            state: { isAllowed: true },
-                        })
-                    } else {
-                        history.replace(redirect())
-                    }
+                    handleOnAfterSubmit(data)
                 }
             } catch (error) {
                 // eslint-disable-next-line no-console
