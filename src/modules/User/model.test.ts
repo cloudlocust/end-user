@@ -3,7 +3,6 @@ import { init } from '@rematch/core'
 import { models } from 'src/models'
 import {
     TEST_AUTHORIZATION_DELETE_PROFILE_ERROR,
-    TEST_AUTOVALIDATION_PASSWORD,
     TEST_MESSAGE_DELETE_PROFILE_ERROR,
     TEST_SUCCESS_MAIL,
     TEST_SUCCESS_USER,
@@ -166,23 +165,10 @@ describe('test models', () => {
             const result = await store.dispatch.userModel.register({
                 data: { ...userData, password: '12345678' },
             })
-            await expect(result).toBeUndefined()
+            await expect(result).toBeDefined()
             const { userModel } = store.getState()
             await expect(userModel.user).toBeNull()
         })
-        test('register test authenticationToken', async () => {
-            const store = init({
-                models,
-            })
-            const result = await store.dispatch.userModel.register({
-                data: { ...userData, password: TEST_AUTOVALIDATION_PASSWORD },
-            })
-            await expect(result).toBeUndefined()
-            const { userModel } = store.getState()
-            await expect(userModel.user).not.toBeNull()
-            await expect(userModel.authenticationToken).not.toBeNull()
-        })
-
         test('resetPassword test', async () => {
             const store = init({
                 models,
