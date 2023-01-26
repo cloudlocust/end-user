@@ -1,3 +1,4 @@
+import { IEnphaseConsent } from 'src/modules/Consents/Consents.d'
 import { metricTargetType, metricRangeType, metricIntervalType, metricFiltersType } from 'src/modules/Metrics/Metrics.d'
 import { periodType } from 'src/modules/MyConsumption/myConsumptionTypes'
 
@@ -45,4 +46,8 @@ export interface IWidgetProps {
      * Period of the Widget.
      */
     period: periodType
+    /**
+     * Enphhase consent.
+     */
+    enphaseConsent?: IEnphaseConsent | null
 }

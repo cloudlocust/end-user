@@ -12,6 +12,7 @@ import {
 import { getWidgetInfoIcon } from 'src/modules/MyConsumption/components/WidgetInfoIcons'
 import { computePercentageChange } from 'src/modules/Analysis/utils/computationFunctions'
 import Icon from '@mui/material/Icon'
+import { getWidgetEnphaseErrorIcon } from 'src/modules/MyConsumption/components/WidgetErrorIcons'
 
 const emptyValueUnit = { value: 0, unit: '' }
 /**
@@ -23,10 +24,11 @@ const emptyValueUnit = { value: 0, unit: '' }
  * @param props.hasMissingHousingContracts HasMissingHousingContracts result.
  * @param props.target Target of the widget.
  * @param props.period Current Period.
+ * @param props.enphaseConsent Enphase Consent.
  * @returns Widget Component.
  */
 export const Widget = memo(
-    ({ filters, range, hasMissingHousingContracts, metricsInterval, target, period }: IWidgetProps) => {
+    ({ filters, range, hasMissingHousingContracts, metricsInterval, target, period, enphaseConsent }: IWidgetProps) => {
         const { data, setMetricsInterval, setRange, isMetricsLoading } = useMetrics({
             interval: metricsInterval,
             range: getWidgetRange(range, period),
@@ -70,6 +72,8 @@ export const Widget = memo(
         // Props to track the change of range change, so that we call getMetrics only when range change, instead of when both range and period change.
         const isRangeChanged = useRef(false)
 
+        const enphaseOff = enphaseConsent?.enphaseConsentState !== 'ACTIVE'
+
         // When range change, set isRangedChanged
         useEffect(() => {
             isRangeChanged.current = true
@@ -96,6 +100,8 @@ export const Widget = memo(
 
         const infoIcon = getWidgetInfoIcon(target, hasMissingHousingContracts)
 
+        const errorIcon = getWidgetEnphaseErrorIcon(target, enphaseOff)
+
         return (
             <Grid item xs={6} sm={6} md={4} lg={3} xl={3} className="flex">
                 <Card className="w-full rounded-20 shadow sm:m-4" variant="outlined" style={{ minHeight: '170px' }}>
@@ -116,6 +122,8 @@ export const Widget = memo(
                                     </TypographyFormatMessage>
                                     {/* Widget infoIcon */}
                                     {infoIcon}
+                                    {/* Widget ErrorIcon */}
+                                    {errorIcon}
                                 </div>
                                 {!value ? (
                                     <div className="mb-44 text-center">
