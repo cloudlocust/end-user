@@ -32,7 +32,7 @@ export const EcogestesList = () => {
             ) : (
                 <></>
             )}
-            <div className="flex flex-wrap gap-5 flex-col sm:flex-row  w-full h-fit ">
+            <div className="flex flex-wrap gap-5 flex-col sm:flex-row  w-full h-full sm:h-auto">
                 {isEcogestesLoadingInProgress || isNull(ecogestesList)
                     ? limits.map(() => <ImageCardLoader></ImageCardLoader>)
                     : ecogestesList.map((ecogeste) => <EcogesteCard ecogeste={ecogeste} />)}
