@@ -307,7 +307,7 @@ describe('MyConsumptionContainer test', () => {
         expect(getByText(PMAX_BUTTON_TEXT).classList.contains(buttonGroupdDisabledClassname)).toBeTruthy()
     })
     test('When consent enphaseOff, autoconsumption target is not shown, getMetrics is called two times, one with default targets and then all targets both without autoconsumption target', async () => {
-        consumptionChartContainerProps.enphaseConsent.enphaseConsentState = 'NONEXISTENT'
+        consumptionChartContainerProps.enphaseConsent!.enphaseConsentState = 'NONEXISTENT'
         mockGetMetricsWithParamsValues.targets = [metricTargetsEnum.consumption]
         const { getByText } = reduxedRender(
             <Router>
