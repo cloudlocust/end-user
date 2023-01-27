@@ -15,7 +15,7 @@ import { installationRequestsEndpoints } from 'src/mocks/handlers/installationRe
 import { solarEquipmentsEndpoints } from 'src/mocks/handlers/solarEquipments'
 import { ecowattEndpoints } from 'src/mocks/handlers/ecowatt'
 import { consumptionAlertsEndpoints } from 'src/mocks/handlers/consumptionAlerts'
-import { ecogestesEndpoints } from './handlers/ecogestes'
+import { ecogestesEndpoints } from 'src/mocks/handlers/ecogestes'
 
 /**
  * Handlers to mock urls for tests.

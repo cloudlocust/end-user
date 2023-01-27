@@ -53,13 +53,11 @@ export const Advices = () => {
             }
             content={
                 <>
-                    <div className="flex flex-col w-full pl-20 pt-20">
-                        {/* Ecogestes header + All... link */}
-                        {/* Ecogestes carousel w/ dots */}
+                    <div className="w-full pl-20 pt-20">
                         <EcogestesList />
                     </div>
                     <Divider variant="middle" role="presentation" />
-                    <div>{/* Challenge list */}</div>
+                    <div>{/* Challenge list -- Later */}</div>
                 </>
             }
         />

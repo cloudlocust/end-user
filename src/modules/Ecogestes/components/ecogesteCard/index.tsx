@@ -1,6 +1,5 @@
-import { RefObject, useState, useCallback, useLayoutEffect, useRef } from 'react'
+import { useState, useRef } from 'react'
 import { Card, CardContent, IconButton, SvgIcon } from '@mui/material'
-import { IEcogeste } from '../ecogeste'
 import VisibilityIcon from '@mui/icons-material/Visibility'
 import SavingsIcon from '@mui/icons-material/Savings'
 import InfoIcon from '@mui/icons-material/Info'
@@ -9,39 +8,8 @@ import { ReactComponent as NotViewIcon } from './NotRead.svg'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import { debounce } from 'lodash'
 import 'src/modules/Ecogestes/components/ecogesteCard/ecogesteCard.scss'
-
-/* eslint-disable jsdoc/require-jsdoc -- enough doc for now */
-/* eslint-disable sonarjs/no-duplicate-string -- Styles literals :s */
-
-const useResizeObserver = (ref: RefObject<HTMLElement>, callback: (entry: ResizeObserverEntry) => void) => {
-    const notifyResize = useCallback(
-        (entries: ResizeObserverEntry[]) => {
-            if (!Array.isArray(entries)) {
-                return
-            }
-
-            callback(entries[0])
-        },
-        [callback],
-    )
-
-    useLayoutEffect(() => {
-        if (!ref.current) {
-            return
-        }
-        let RO: ResizeObserver | undefined = new ResizeObserver((entries: ResizeObserverEntry[]) => {
-            notifyResize(entries)
-        })
-
-        RO.observe(ref.current)
-
-        return () => {
-            RO!.disconnect()
-            RO = undefined
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [ref])
-}
+import { IEcogeste } from 'src/modules/Ecogestes/components/ecogeste'
+import useResizeObserver from 'src/modules/utils/useResizeObserver'
 
 /**
  * A card that renders a given ecogeste.
@@ -50,7 +18,17 @@ const useResizeObserver = (ref: RefObject<HTMLElement>, callback: (entry: Resize
  * @param root0.ecogeste The ecogeste to display.
  * @returns Ecogeste component.
  */
-export const EcogesteCard = ({ ecogeste }: { ecogeste: IEcogeste }) => {
+export const EcogesteCard = ({
+    ecogeste,
+}: /**
+ * Prams object.
+ */
+{
+    /**
+     * Ecogeste object to display. Cannot be null.
+     */
+    ecogeste: IEcogeste
+}) => {
     const theme = useTheme()
 
     const [isOpenDialog, setIsOpenDialog] = useState(false)
@@ -72,6 +50,11 @@ export const EcogesteCard = ({ ecogeste }: { ecogeste: IEcogeste }) => {
     // Viewed feature, not yet implemented:
     // be sure to remove the display:none on the eye too.
     const [viewed, setViewed] = useState(false)
+    /**
+     * Change ecogeste visibility status.
+     * Placeholder for now.
+     * TODO: MYEM-3077, MYEM-3079.
+     */
     const onVisbilityClick = () => {
         setViewed(!viewed)
         // TODO: Poke an API to get/set this?
@@ -95,7 +78,7 @@ export const EcogesteCard = ({ ecogeste }: { ecogeste: IEcogeste }) => {
                     // Can't hard-code any lightness change, or it might break other themes.
                     // Maybe a rework of the palette would help ?
                     background: viewed ? theme.palette.background.default : theme.palette.secondary.light,
-                    maxHeight: seeFull ? 'min-content' : '12rem',
+                    maxHeight: seeFull ? 'max-content' : '12rem',
                     maxWidth: '60rem',
                     minWidth: '30%',
                     flex: '1 1 30%',
@@ -115,7 +98,7 @@ export const EcogesteCard = ({ ecogeste }: { ecogeste: IEcogeste }) => {
                                 className="absolute m-auto text-xs pt-7"
                                 style={{ color: theme.palette.primary.contrastText }}
                             >
-                                {ecogeste.savings && ecogeste.savings > 0 ? ecogeste.savings + '%' : ''}
+                                {ecogeste?.savings && ecogeste.savings > 0 && `${ecogeste.savings}%`}
                             </span>
                         </IconButton>
 
@@ -137,10 +120,9 @@ export const EcogesteCard = ({ ecogeste }: { ecogeste: IEcogeste }) => {
                         </IconButton>
                     </div>
                     <div
-                        className={
-                            'w-full h-full basis-4/5 flex-auto  flex flex-col gap-1 pt-1 overflow-hidden ' +
-                            (shouldEllipse ? 'ellipsis' : '')
-                        }
+                        className={`w-full h-full basis-4/5 flex-auto  flex flex-col gap-1 pt-1 overflow-hidden ${
+                            shouldEllipse && 'ellipsis'
+                        }`}
                         ref={ref}
                     >
                         {/* Text Content */}
@@ -178,15 +160,17 @@ export const EcogesteCard = ({ ecogeste }: { ecogeste: IEcogeste }) => {
                             >
                                 Voir plus
                             </div>
-                        ) : seeFull ? (
-                            <div
-                                className="mx-auto w-fit"
-                                style={{ width: 'fit-content' }}
-                                onClick={() => setSeeFull(false)}
-                            >
-                                Voir moins
-                            </div>
-                        ) : null}
+                        ) : (
+                            seeFull && (
+                                <div
+                                    className="mx-auto w-fit"
+                                    style={{ width: 'fit-content' }}
+                                    onClick={() => setSeeFull(false)}
+                                >
+                                    Voir moins
+                                </div>
+                            )
+                        )}
                     </div>
                 </CardContent>
             </Card>

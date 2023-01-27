@@ -1,5 +1,5 @@
 import { reduxedRenderHook } from 'src/common/react-platform-components/test'
-import useEcogestesByCategory from './ecogestesHook'
+import useEcogestesByCategory from 'src/modules/Ecogestes/ecogestesHook'
 
 const mockEnqueueSnackbar = jest.fn()
 
@@ -45,7 +45,6 @@ describe('EcogesteHook test', () => {
         test('getByCategory with correct ID should return ecogestes array', async () => {
             const {
                 renderedHook: { result, waitForValueToChange },
-                // Giving negative size to fake an error in the msw.
             } = reduxedRenderHook(() => useEcogestesByCategory(1), { initialState: {} })
 
             expect(result.current.loadingInProgress).toBe(true)

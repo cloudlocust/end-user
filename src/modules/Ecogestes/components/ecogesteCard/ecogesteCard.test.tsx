@@ -1,8 +1,8 @@
 import { BrowserRouter } from 'react-router-dom'
 import { reduxedRender } from 'src/common/react-platform-components/test'
-import EcogesteCard from '.'
-import { IEcogeste } from '../ecogeste'
 import { fireEvent } from '@testing-library/react'
+import EcogesteCard from 'src/modules/Ecogestes/components/ecogesteCard'
+import { IEcogeste } from 'src/modules/Ecogestes/components/ecogeste'
 
 // Grab the test data from router, so we keep it DRY.
 const fullEcogeste: IEcogeste = {
