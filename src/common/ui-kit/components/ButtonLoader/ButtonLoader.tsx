@@ -48,7 +48,11 @@ export const ButtonLoader: FC<ButtonLoaderProps> = (
 
     return (
         <LoadingButton variant="contained" loading={inProgress} color="primary" disabled={!!inProgress} {...rest}>
-            {children}
+            {/**
+             * Issue: .==> https://github.com/facebook/react/issues/11538#issuecomment-390386520  <==.
+             * There is conflict with google translate and ReactDOM elements, thus wrapping Text Elements with span is the easiest way to solve the issue.
+             */}
+            <span>{children}</span>
         </LoadingButton>
     )
 }

@@ -30,7 +30,7 @@ describe('AlertsDrawer Context test', () => {
 
     test('when clicked on openAlertsDrawers, the state should changhe', async () => {
         const { getByTestId } = renderTestComponent()
-        userEvent.click(getByTestId('ReportIcon'))
+        userEvent.click(getByTestId('alerts-icon'))
         expect(mockOpenAlertsDrawer).toBeCalled()
     })
 

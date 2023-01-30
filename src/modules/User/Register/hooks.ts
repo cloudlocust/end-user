@@ -4,8 +4,13 @@ import { useHistory } from 'react-router-dom'
 import { Dispatch } from 'src/redux'
 import { IUserRegister } from '../model'
 import { useSnackbar } from 'notistack'
-import { isPopupAfterRegistration } from 'src/modules/User/Register/RegisterConfig'
+import {
+    energyProviderPopupLink,
+    isPopupAfterRegistration,
+    URL_REGISTER_ENERGY_PROVIDER_SUCCESS,
+} from 'src/modules/User/Register/RegisterConfig'
 import { USER_REGISTRATION_AUTO_VALIDATE } from 'src/modules/User/configs'
+import { convertUserDataToQueryString } from 'src/modules/User/Register/utils'
 
 /**
  * Builder to create userRegister hooks. We use a build to easily modify redirect url after register. This function returns a function.
@@ -35,22 +40,47 @@ export const BuilderUseRegister = ({
         const { enqueueSnackbar } = useSnackbar()
 
         /**
+         * Function that handles what comes after when user has succesfully registered.
+         *
+         * @param data User registration data.
+         */
+        function handleOnAfterSubmit(data: IUserRegister) {
+            if (isPopupAfterRegistration) {
+                window.open(
+                    `${energyProviderPopupLink}?${convertUserDataToQueryString(data)}`,
+                    '_blank',
+                    `width=1024,height=768,left=${window.screen.availWidth / 2 - 200},top=${
+                        window.screen.availHeight / 2 - 150
+                    }`,
+                )
+                history.push({
+                    pathname: URL_REGISTER_ENERGY_PROVIDER_SUCCESS,
+                    state: { isAllowed: true },
+                })
+            } else {
+                history.replace(redirect())
+            }
+        }
+
+        /**
          * Submit function.
          *
-         * @param data TODO Should be detailed.
+         * @param data User registration data from form.
          */
         const onSubmit = async (data: IUserRegister) => {
             setIsRegisterInProgress(true)
             try {
-                await dispatch.userModel.register({ data })
+                const { user: userResponse } = await dispatch.userModel.register({ data })
                 setIsRegisterInProgress(false)
-                if (!isPopupAfterRegistration) history.replace(redirect())
-                enqueueSnackbar(
-                    Boolean(USER_REGISTRATION_AUTO_VALIDATE)
-                        ? 'Votre inscription a bien été prise en compte. Vous allez reçevoir un lien de confirmation sur votre adresse email.'
-                        : "Votre inscription a bien été prise en compte, vous pourrez vous connecter une fois celle-ci validée par l'administrateur.",
-                    { variant: 'success', autoHideDuration: 8000 },
-                )
+                if (userResponse) {
+                    enqueueSnackbar(
+                        Boolean(USER_REGISTRATION_AUTO_VALIDATE)
+                            ? 'Votre inscription a bien été prise en compte. Vous allez reçevoir un lien de confirmation sur votre adresse email.'
+                            : "Votre inscription a bien été prise en compte, vous pourrez vous connecter une fois celle-ci validée par l'administrateur.",
+                        { variant: 'success', autoHideDuration: 8000 },
+                    )
+                    handleOnAfterSubmit(data)
+                }
             } catch (error) {
                 // eslint-disable-next-line no-console
                 setIsRegisterInProgress(false)
