@@ -218,7 +218,7 @@ export const ConsumptionChartContainer = ({
                     }
                 />
             )}
-            <DefaultContractWarning isShowWarning={isEurosConsumptionChart && hasMissingHousingContracts} />
+            <DefaultContractWarning isShowWarning={isEurosConsumptionChart && Boolean(hasMissingHousingContracts)} />
             <ConsumptionEnedisSgeWarning />
         </div>
     )

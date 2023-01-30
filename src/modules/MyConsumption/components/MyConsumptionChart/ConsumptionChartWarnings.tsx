@@ -21,7 +21,7 @@ import { sgeConsentFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
  */
 export const DefaultContractWarning = ({ isShowWarning }: DefaultContractWarningProps) => {
     const { currentHousing } = useSelector(({ housingModel }: RootState) => housingModel)
-    if (!isShowWarning) return <></>
+    if (!isShowWarning) return null
     return (
         <div className="flex items-center justify-center flex-col mt-12">
             <ErrorOutlineIcon
@@ -38,9 +38,8 @@ export const DefaultContractWarning = ({ isShowWarning }: DefaultContractWarning
                     sx={{ color: warningMainHashColor }}
                     className="text-13 md:text-16 text-center"
                 >
-                    {
-                        "Ce graphe est un exemple basé sur un tarif Bleu EDF Base. Vos données contractuelles de fourniture d'énergie ne sont pas disponibles sur toute la période."
-                    }
+                    Ce graphe est un exemple basé sur un tarif Bleu EDF Base. Vos données contractuelles de fourniture
+                    d'énergie ne sont pas disponibles sur toute la période.
                 </TypographyFormatMessage>
                 <NavLink to={`${URL_MY_HOUSE}/${currentHousing?.id}/contracts`}>
                     <TypographyFormatMessage
@@ -68,7 +67,7 @@ export const ConsumptionEnedisSgeWarning = () => {
 
     const enedisSgeOff = enedisSgeConsent?.enedisSgeConsentState === 'NONEXISTENT'
     const isShowWarning = enedisSgeOff && sgeConsentFeatureState
-    if (!isShowWarning) return <></>
+    if (!isShowWarning) return null
     return (
         <div className="flex items-center justify-center flex-col mt-12">
             <ErrorOutlineIcon

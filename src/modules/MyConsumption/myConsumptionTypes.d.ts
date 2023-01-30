@@ -191,7 +191,7 @@ export type DefaultContractWarningProps =
         /**
          * Indicates if the warning should be shown.
          */
-        isShowWarning
+        isShowWarning: Boolean
     }
 
 /**
