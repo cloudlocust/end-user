@@ -12,7 +12,6 @@ import {
 import { getWidgetInfoIcon } from 'src/modules/MyConsumption/components/WidgetInfoIcons'
 import { computePercentageChange } from 'src/modules/Analysis/utils/computationFunctions'
 import Icon from '@mui/material/Icon'
-import { getWidgetEnphaseErrorIcon } from 'src/modules/MyConsumption/components/WidgetErrorIcons'
 
 const emptyValueUnit = { value: 0, unit: '' }
 /**
@@ -98,9 +97,7 @@ export const Widget = memo(
             }
         }, [period, range, setRange, setRangePrevious])
 
-        const infoIcon = getWidgetInfoIcon(target, hasMissingHousingContracts)
-
-        const errorIcon = getWidgetEnphaseErrorIcon(target, enphaseOff)
+        const infoIcon = getWidgetInfoIcon(target, hasMissingHousingContracts, enphaseOff)
 
         return (
             <Grid item xs={6} sm={6} md={4} lg={3} xl={3} className="flex">
@@ -122,8 +119,6 @@ export const Widget = memo(
                                     </TypographyFormatMessage>
                                     {/* Widget infoIcon */}
                                     {infoIcon}
-                                    {/* Widget ErrorIcon */}
-                                    {errorIcon}
                                 </div>
                                 {!value ? (
                                     <div className="mb-44 text-center">

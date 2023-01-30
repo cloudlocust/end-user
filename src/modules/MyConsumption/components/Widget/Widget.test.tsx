@@ -24,6 +24,8 @@ const CONSOMMATION_TOTALE_UNIT = 'kWh'
 const NO_DATA_MESSAGE = 'Aucune donnée disponible'
 const circularProgressClassname = '	.MuiCircularProgress-root'
 
+const ENPHASE_CONSENT_INACTIVE_ERROR_ICON = 'ErrorOutlineIcon'
+
 const mockGetMetricsWithParams = jest.fn()
 let mockFilters: metricFiltersType = [
     {
@@ -114,8 +116,8 @@ describe('Widget component test', () => {
             },
         )
 
-        expect(getByTestId('ErrorOutlineIcon')).toBeTruthy()
-        userEvent.click(getByTestId('ErrorOutlineIcon'))
+        expect(getByTestId(ENPHASE_CONSENT_INACTIVE_ERROR_ICON)).toBeTruthy()
+        userEvent.click(getByTestId(ENPHASE_CONSENT_INACTIVE_ERROR_ICON))
         expect(window.location.pathname).toBe(`${URL_MY_HOUSE}/${LIST_OF_HOUSES[0].id}`)
     })
 
@@ -137,7 +139,7 @@ describe('Widget component test', () => {
          *
          * @see https://testing-library.com/docs/guide-disappearance/#asserting-elements-are-not-present.
          */
-        expect(queryByTestId('ErrorOutlineIcon')).not.toBeInTheDocument()
+        expect(queryByTestId(ENPHASE_CONSENT_INACTIVE_ERROR_ICON)).not.toBeInTheDocument()
     })
     test('when the target is not "enphase_production_metrics" and the enphaseConsent is inactive, an error icon does not be shown in the widget.', async () => {
         mockData = []
@@ -157,7 +159,7 @@ describe('Widget component test', () => {
          *
          * @see https://testing-library.com/docs/guide-disappearance/#asserting-elements-are-not-present.
          */
-        expect(queryByTestId('ErrorOutlineIcon')).not.toBeInTheDocument()
+        expect(queryByTestId(ENPHASE_CONSENT_INACTIVE_ERROR_ICON)).not.toBeInTheDocument()
     })
 
     // TODO: Add test for error icon for the __euros__consumption_metrics target
