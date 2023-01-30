@@ -42,21 +42,30 @@ export const getDataFromYAxis = (data: IMetric[], target: metricTargetType) => {
 }
 
 /**
- * Function that computes total comsumption.
+ * Function that computes total energy for a target type.
  *
  * @param data Metrics data.
- * @returns Total consumption rounded.
+ * @param target Metric target.
+ * @returns Total energy rounded.
  */
-export const computeTotalConsumption = (data: IMetric[]) => {
-    const values = getDataFromYAxis(data, metricTargetsEnum.consumption)
+const computeTotalEnergy = (data: IMetric[], target: metricTargetType) => {
+    const values = getDataFromYAxis(data, target)
     /**
      * Lodash sum when array is [null] returns null, weird library behaviour however when its sum([null, null, ...etc]) returns 0, so for the case where values are [null], 0 is assigned.
      *
      * @see https://github.com/lodash/lodash/issues/4110#issuecomment-463725975
      */
-    const totalConsumptionValueInWatts = sum(values) || 0
-    return consumptionWattUnitConversion(totalConsumptionValueInWatts)
+    const totalEnergyValueInWatts = sum(values) || 0
+    return consumptionWattUnitConversion(totalEnergyValueInWatts)
 }
+
+/**
+ * Function that computes total comsumption.
+ *
+ * @param data Metrics data.
+ * @returns Total consumption rounded.
+ */
+export const computeTotalConsumption = (data: IMetric[]) => computeTotalEnergy(data, metricTargetsEnum.consumption)
 
 /**
  * Function that computes maximum power.
@@ -139,16 +148,7 @@ export const computeTotalEuros = (data: IMetric[]): { value: number | string; un
  * @param data Metrics data.
  * @returns Total production rounded.
  */
-export const computeTotalProduction = (data: IMetric[]) => {
-    const values = getDataFromYAxis(data, metricTargetsEnum.totalProduction)
-    /**
-     * Lodash sum when array is [null] returns null, weird library behaviour however when its sum([null, null, ...etc]) returns 0, so for the case where values are [null], 0 is assigned.
-     *
-     * @see https://github.com/lodash/lodash/issues/4110#issuecomment-463725975
-     */
-    const totalProductionValueInWatts = sum(values) || 0
-    return consumptionWattUnitConversion(totalProductionValueInWatts)
-}
+export const computeTotalProduction = (data: IMetric[]) => computeTotalEnergy(data, metricTargetsEnum.totalProduction)
 
 /**
  * Function that compute widget assets from metric type.
