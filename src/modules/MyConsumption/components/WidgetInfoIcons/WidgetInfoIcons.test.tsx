@@ -1,5 +1,9 @@
 import { reduxedRender } from 'src/common/react-platform-components/test'
-import { EuroWidgetInfoIcon, getWidgetInfoIcon } from 'src/modules/MyConsumption/components/WidgetInfoIcons'
+import {
+    EuroWidgetInfoIcon,
+    getWidgetInfoIcon,
+    ProductionWidgetErrorIcon,
+} from 'src/modules/MyConsumption/components/WidgetInfoIcons'
 import { TEST_HOUSES } from 'src/mocks/handlers/houses'
 import { applyCamelCase } from 'src/common/react-platform-components'
 import { IHousing } from 'src/modules/MyHouse/components/HousingList/housing'
@@ -38,28 +42,86 @@ describe('WidgetInfoIcon test', () => {
         )
     })
 
+    test('ProductionWidgetErrorInfoIcon component', async () => {
+        const { getByTestId } = reduxedRender(
+            <Router>
+                <ProductionWidgetErrorIcon />
+            </Router>,
+            {
+                initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[0] } },
+            },
+        )
+
+        // House Redirection URL
+        expect(getByTestId('ErrorOutlineIcon').parentElement!.closest('a')).toHaveAttribute(
+            'href',
+            `${URL_MY_HOUSE}/${LIST_OF_HOUSES[0].id}`,
+        )
+    })
+
     test('getWidgetInfoIcon with different case', async () => {
+        const defaultInput = {
+            target: metricTargetsEnum.consumption,
+            hasMissingHousingContracts: false,
+            enphaseOff: false,
+        }
+
         const cases = [
             // When target is euroConsumption and not hasMissingHousingContracts, then no EurodWidgetInfoIcon
             {
-                input: { target: metricTargetsEnum.eurosConsumption, hasMissingHousingContracts: false },
+                input: {
+                    ...defaultInput,
+                    target: metricTargetsEnum.eurosConsumption,
+                    hasMissingHousingContracts: false,
+                },
                 expectedResult: undefined,
             },
             // When target is not euroConsumption and hasMissingHousingContracts, then no EurodWidgetInfoIcon
             {
-                input: { target: metricTargetsEnum.consumption, hasMissingHousingContracts: true },
+                input: { ...defaultInput, hasMissingHousingContracts: true },
                 expectedResult: undefined,
             },
             // When target is euroConsumption and hasMissingHousingContracts, then EurodWidgetInfoIcon
             {
-                input: { target: metricTargetsEnum.eurosConsumption, hasMissingHousingContracts: true },
+                input: {
+                    ...defaultInput,
+                    target: metricTargetsEnum.eurosConsumption,
+                    hasMissingHousingContracts: true,
+                },
                 expectedResult: <EuroWidgetInfoIcon />,
+            },
+            // When target is totalProduction and not enphaseOff, then no ProductionWidgetErrorIcon
+            {
+                input: {
+                    ...defaultInput,
+                    target: metricTargetsEnum.totalProduction,
+                    enphaseOff: false,
+                },
+                expectedResult: undefined,
+            },
+            // When target is not totalProduction and enphaseOff, then no ProductionWidgetErrorIcon
+            {
+                input: { ...defaultInput, enphaseOff: true },
+                expectedResult: undefined,
+            },
+            // When target is totalProduction and enphaseOff, then ProductionWidgetErrorIcon
+            {
+                input: {
+                    ...defaultInput,
+                    target: metricTargetsEnum.totalProduction,
+                    enphaseOff: true,
+                },
+                expectedResult: <ProductionWidgetErrorIcon />,
             },
         ]
         cases.forEach((testCase) => {
-            expect(getWidgetInfoIcon(testCase.input.target, testCase.input.hasMissingHousingContracts)).toStrictEqual(
-                testCase.expectedResult,
-            )
+            expect(
+                getWidgetInfoIcon(
+                    testCase.input.target,
+                    testCase.input.hasMissingHousingContracts,
+                    testCase.input.enphaseOff,
+                ),
+            ).toStrictEqual(testCase.expectedResult)
         })
     })
 })
