@@ -267,19 +267,8 @@ export const userModel = createModel<RootModel>()({
         // eslint-disable-next-line jsdoc/require-jsdoc
         async register({ data }: { data: IUserRegister }) {
             try {
-                const {
-                    data: { authenticationToken, id },
-                    // eslint-disable-next-line jsdoc/require-jsdoc
-                } = await axios.post<{ authenticationToken?: string; id: number }>(
-                    `${AUTH_BASE_URL}/auth/register`,
-                    data,
-                )
-                if (authenticationToken) {
-                    dispatch.userModel.setAuthenticationToken(authenticationToken)
-                    const userResponse = await axios.get<IUser>(`${AUTH_BASE_URL}/users/${id}`)
-                    const user = userResponse.data
-                    dispatch.userModel.setUser(user)
-                }
+                const { data: user } = await axios.post<IUser>(`${AUTH_BASE_URL}/auth/register`, data)
+                return { user }
             } catch (error) {
                 throw handleRegisterErrors(error)
             }

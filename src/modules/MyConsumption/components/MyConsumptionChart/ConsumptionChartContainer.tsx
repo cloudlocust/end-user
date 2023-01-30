@@ -8,13 +8,7 @@ import { IMetric, metricTargetsEnum, metricTargetType } from 'src/modules/Metric
 import { ConsumptionChartContainerProps } from 'src/modules/MyConsumption/myConsumptionTypes'
 import CircularProgress from '@mui/material/CircularProgress'
 import TargetButtonGroup from 'src/modules/MyConsumption/components/TargetButtonGroup'
-import { useSelector } from 'react-redux'
-import { RootState } from 'src/redux'
 import EurosConsumptionButtonToggler from 'src/modules/MyConsumption/components/EurosConsumptionButtonToggler'
-import { warningMainHashColor } from 'src/modules/utils/muiThemeVariables'
-import { URL_MY_HOUSE } from 'src/modules/MyHouse/MyHouseConfig'
-import { NavLink } from 'react-router-dom'
-import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline'
 import {
     filterPmaxAndEurosConsumptionTargetFromVisibleChartTargets,
     showPerPeriodText,
@@ -24,6 +18,10 @@ import {
     EnphaseOffConsumptionChartTargets,
 } from 'src/modules/MyConsumption/utils/myConsumptionVariables'
 import { targetOptions } from 'src/modules/MyConsumption/utils/myConsumptionVariables'
+import {
+    DefaultContractWarning,
+    ConsumptionEnedisSgeWarning,
+} from 'src/modules/MyConsumption/components/MyConsumptionChart/ConsumptionChartWarnings'
 
 /**
  * MyConsumptionChart Component.
@@ -50,7 +48,7 @@ export const ConsumptionChartContainer = ({
     const theme = useTheme()
     // This state represents whether or not the chart is displaying a spinner, which should happen only when we request the current metrics, not the request of all metrics that happens in the background.
     const [isConsumptionChartLoading, setIsConsumptionChartLoading] = useState<boolean>(true)
-    // Indicates the Charts visible in MyConsumptionChart.
+    // Indicates if enphaseConsentState is not ACTIVE
     const enphaseOff = enphaseConsent?.enphaseConsentState !== 'ACTIVE'
     // Visible Targets will influence k
     const [visibleTargetCharts, setVisibleTargetsCharts] = useState<metricTargetType[]>(
@@ -58,7 +56,9 @@ export const ConsumptionChartContainer = ({
             ? [metricTargetsEnum.consumption]
             : [metricTargetsEnum.autoconsumption, metricTargetsEnum.consumption],
     )
-    const hidePmax = period === 'daily' || enphaseOff
+    // Indicates if enedisSgeConsent is not Connected
+    const enedisSgeOff = enedisSgeConsent?.enedisSgeConsentState !== 'CONNECTED'
+    const hidePmax = period === 'daily' || enedisSgeOff
     // Track the change of visibleTargetCharts, so that we don't call getMetrics when visibleTargetCharts change (and thus no request when showing / hiding target in MyConsumptionChart).
     const isVisibleTargetChartsChanged = useRef(false)
     const { data, getMetricsWithParams } = useMetrics({
@@ -77,8 +77,6 @@ export const ConsumptionChartContainer = ({
         filters,
     })
     const [consumptionChartData, setConsumptionChartData] = useState<IMetric[]>(data)
-
-    const { currentHousing } = useSelector(({ housingModel }: RootState) => housingModel)
 
     // This state represents whether or not the chart is stacked: true.
     const isStackedEnabled = useMemo(
@@ -225,38 +223,8 @@ export const ConsumptionChartContainer = ({
                     chartLabel={enphaseOff ? 'Consommation totale' : 'Electricité achetée sur le réseau'}
                 />
             )}
-
-            {isEurosConsumptionChart && hasMissingHousingContracts && (
-                <div className="flex items-center justify-center flex-col mt-12">
-                    <ErrorOutlineIcon
-                        sx={{
-                            color: warningMainHashColor,
-                            width: { xs: '24px', md: '32px' },
-                            height: { xs: '24px', md: '32px' },
-                            margin: { xs: '0 0 4px 0', md: '0 8px 0 0' },
-                        }}
-                    />
-
-                    <div className="w-full">
-                        <TypographyFormatMessage
-                            sx={{ color: warningMainHashColor }}
-                            className="text-13 md:text-16 text-center"
-                        >
-                            {
-                                "Ce graphe est un exemple basé sur un tarif Bleu EDF Base. Vos données contractuelles de fourniture d'énergie ne sont pas disponibles sur toute la période."
-                            }
-                        </TypographyFormatMessage>
-                        <NavLink to={`${URL_MY_HOUSE}/${currentHousing?.id}/contracts`}>
-                            <TypographyFormatMessage
-                                className="underline text-13 md:text-16 text-center"
-                                sx={{ color: warningMainHashColor }}
-                            >
-                                Renseigner votre contrat d'énergie
-                            </TypographyFormatMessage>
-                        </NavLink>
-                    </div>
-                </div>
-            )}
+            <DefaultContractWarning isShowWarning={isEurosConsumptionChart && Boolean(hasMissingHousingContracts)} />
+            <ConsumptionEnedisSgeWarning />
         </div>
     )
 }
