@@ -184,6 +184,18 @@ export interface ConsumptionChartContainerProps {
 }
 
 /**
+ * Component rendering default contract warning message, when consumption data comes from default contract.
+ */
+export type DefaultContractWarningProps =
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    {
+        /**
+         * Indicates if the warning should be shown.
+         */
+        isShowWarning: Boolean
+    }
+
+/**
  * ProductionChartContainer Props.
  */
 export type ProductionChartContainerProps = Omit<
