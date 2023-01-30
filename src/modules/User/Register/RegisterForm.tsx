@@ -12,13 +12,6 @@ import FormControl from '@mui/material/FormControl'
 import { FormHelperText } from '@mui/material'
 import { LinkRedirection } from 'src/modules/utils/LinkRedirection'
 import { passwordFieldValidationSecurity1 } from 'src/modules/utils'
-import {
-    energyProviderPopupLink,
-    isPopupAfterRegistration,
-    URL_REGISTER_ENERGY_PROVIDER_SUCCESS,
-} from 'src/modules/User/Register/RegisterConfig'
-import { convertUserDataToQueryString } from 'src/modules/User/Register/utils'
-import { useHistory } from 'react-router-dom'
 import { Select } from 'src/common/ui-kit/form-fields/Select'
 import MenuItem from '@mui/material/MenuItem'
 import { generalTermsOfUse, privacyPolicy } from 'src/modules/Mentions/MentionsConfig'
@@ -41,7 +34,7 @@ const civilityOptionsList = [
  */
 export const RegisterForm = ({
     registerHook = useRegister,
-    defaultRole,
+    defaultRole = 'enduser',
 }: /**
  *
  */
@@ -59,7 +52,6 @@ export const RegisterForm = ({
     const passwordRef = useRef()
     const [rgpdCheckboxState, setRgpdCheckboxState] = React.useState<Boolean | string>('false')
     const { formatMessage } = useIntl()
-    const history = useHistory()
 
     /**
      * Handle Change of the checkbox.
@@ -71,18 +63,12 @@ export const RegisterForm = ({
     }
 
     /**
-     * Function that submit the user registration data.
+     * OnSubmit wrapper for register form.
      *
-     * @param cleanData Data to be submitted for user registration.
+     * @param param0 N/A.
+     * @param param0.repeatPwd Repeated password.
+     * @returns OnSubmit.
      */
-    function onSubmitUserRegistrationForm(cleanData: IUserRegister) {
-        if (defaultRole !== undefined) {
-            onSubmit({ ...cleanData, role: defaultRole })
-        } else {
-            onSubmit(cleanData)
-        }
-    }
-
     // eslint-disable-next-line jsdoc/require-jsdoc
     const onSubmitWrapper = async ({ repeatPwd, ...cleanData }: { repeatPwd: string } & IUserRegister) => {
         if (rgpdCheckboxState !== true) {
@@ -90,23 +76,7 @@ export const RegisterForm = ({
             return
         }
 
-        if (isPopupAfterRegistration) {
-            const queryString = convertUserDataToQueryString(cleanData)
-            if (queryString) {
-                window.open(
-                    `${energyProviderPopupLink}?${queryString}`,
-                    '_blank',
-                    `width=1024,height=768,left=${window.screen.availWidth / 2 - 200},top=${
-                        window.screen.availHeight / 2 - 150
-                    }`,
-                )
-            }
-            history.push({
-                pathname: URL_REGISTER_ENERGY_PROVIDER_SUCCESS,
-                state: { isAllowed: true },
-            })
-        }
-        onSubmitUserRegistrationForm(cleanData)
+        onSubmit({ ...cleanData, role: defaultRole })
     }
 
     return (

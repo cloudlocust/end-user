@@ -69,6 +69,7 @@ pipeline{
                 IMG_TAG = getImgTag(BRANCH_NAME)
                 ENV_BUILD = getBuildEnv(BRANCH_NAME)
                 DOCKER_BUILDKIT='1'
+                VERSION= "${BUILD_NUMBER}"                
             }
             steps{
                 script {
@@ -76,6 +77,9 @@ pipeline{
                         // we copy files inside the app image and tag it
                         def appimage = docker.build(app_regisgtry + ":${IMG_TAG}", "--build-arg ENV=${ENV_BUILD} --build-arg REACT_APP_TITLE='MYEM | Application de suivi de consommation ' --build-arg REACT_APP_CLIENT_ICON_FOLDER='ned' . -f ci/Dockerfile " )
                         appimage.push("${IMG_TAG}")
+                        if (env.BRANCH_NAME == "production") {                                          
+                        appimage.push("${IMG_TAG}-${VERSION}")   
+                        }                         
                     }
                }
             }

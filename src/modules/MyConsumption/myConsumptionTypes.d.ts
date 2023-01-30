@@ -1,3 +1,4 @@
+import { IEnedisSgeConsent, IEnphaseConsent } from 'src/modules/Consents/Consents.d'
 /**
  * Interface MyConsumptionPeriod.
  */
@@ -177,9 +178,9 @@ export interface ConsumptionChartContainerProps {
     // eslint-disable-next-line jsdoc/require-jsdoc
     hasMissingHousingContracts: boolean | null
     // eslint-disable-next-line jsdoc/require-jsdoc
-    enphaseConsent: IEnphaseConsent
+    enphaseConsent?: IEnphaseConsent
     // eslint-disable-next-line jsdoc/require-jsdoc
-    enedisSgeConsent: IEnedisSgeConsent
+    enedisSgeConsent?: IEnedisSgeConsent
 }
 
 /**
