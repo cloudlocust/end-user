@@ -1,0 +1,7 @@
+**/node_modules/**
+enduser-react-chart
+Jenkinsfile
+.github
+.husky
+.storybook
+.vscode

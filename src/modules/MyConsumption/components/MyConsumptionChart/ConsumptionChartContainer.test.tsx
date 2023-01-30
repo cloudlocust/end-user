@@ -1,6 +1,7 @@
 import { reduxedRender } from 'src/common/react-platform-components/test'
 import { BrowserRouter as Router } from 'react-router-dom'
 import {
+    ApexAxisChartSerie,
     getMetricsWithParamsType,
     IMetric,
     metricFiltersType,
@@ -14,7 +15,10 @@ import { applyCamelCase } from 'src/common/react-platform-components'
 import { IHousing } from 'src/modules/MyHouse/components/HousingList/housing'
 import { TEST_HOUSES } from 'src/mocks/handlers/houses'
 import { URL_MY_HOUSE } from 'src/modules/MyHouse/MyHouseConfig'
-import { ConsumptionChartTargets } from 'src/modules/MyConsumption/utils/myConsumptionVariables'
+import {
+    ConsumptionChartTargets,
+    EnphaseOffConsumptionChartTargets,
+} from 'src/modules/MyConsumption/utils/myConsumptionVariables'
 import { ConsumptionChartContainerProps, periodType } from 'src/modules/MyConsumption/myConsumptionTypes'
 import { IEnedisSgeConsent, INrlinkConsent, IEnphaseConsent } from 'src/modules/Consents/Consents'
 import { ConsumptionChartContainer } from 'src/modules/MyConsumption/components/MyConsumptionChart/ConsumptionChartContainer'
@@ -24,7 +28,7 @@ const LIST_OF_HOUSES: IHousing[] = applyCamelCase(TEST_HOUSES)
 
 // mock store.
 
-let mockData: IMetric[] = TEST_SUCCESS_WEEK_METRICS(['consumption_metrics', '__euros__consumption_metrics'])
+let mockData: IMetric[] = TEST_SUCCESS_WEEK_METRICS([metricTargetsEnum.consumption, metricTargetsEnum.autoconsumption])
 
 // Nrlink Consent format
 const nrLinkConsent: INrlinkConsent = {
@@ -54,7 +58,7 @@ const enphaseConsent: IEnphaseConsent = {
 
 let mockNrlinkConsent: INrlinkConsent | undefined = nrLinkConsent
 let mockEnedisConsent: IEnedisSgeConsent | undefined = mockEnedisSgeConsentConnected
-let mockEnphaseConsent: IEnphaseConsent | undefined = enphaseConsent
+let mockEnphaseConsent: IEnphaseConsent | undefined = enphaseConsent as IEnphaseConsent
 
 let mockIsMetricsLoading = false
 const mockSetFilters = jest.fn()
@@ -104,7 +108,7 @@ const consumptionChartContainerProps: ConsumptionChartContainerProps = {
     range: mockRange,
 }
 
-const mockGetWithMetricsParamsValues: getMetricsWithParamsType = {
+const mockGetMetricsWithParamsValues: getMetricsWithParamsType = {
     filters: mockFilters,
     interval: mockMetricsInterval,
     range: mockRange,
@@ -126,6 +130,9 @@ jest.mock('src/modules/Metrics/metricsHook.ts', () => ({
     }),
 }))
 
+const AUTO_CONSUMPTION_TOOLTIP_TEXT = 'Autoconsommation'
+const TOTAL_CONSUMPTION_TOOLTIP_TEXT = 'Consommation totale'
+const BOUGHT_CONSUMPTION_NETWORK_TOOLTIP_TEXT = 'Electricité achetée sur le réseau'
 // Mock consentsHook
 jest.mock('src/modules/Consents/consentsHook.ts', () => ({
     // eslint-disable-next-line jsdoc/require-jsdoc
@@ -155,7 +162,15 @@ jest.mock('src/hooks/HasMissingHousingContracts', () => ({
 jest.mock(
     'react-apexcharts',
     // eslint-disable-next-line jsdoc/require-jsdoc
-    () => (props: any) => <div className={`${apexchartsClassName}`} {...props}></div>,
+    () => (props: any) =>
+        (
+            <div className={`${apexchartsClassName}`} {...props}>
+                {/* Show all chart targets, passed a data props */}
+                {props.series.map((serie: ApexAxisChartSerie) => (
+                    <h1 id={serie.name}>{serie.name}</h1>
+                ))}
+            </div>
+        ),
 )
 
 jest.mock('src/modules/MyHouse/MyHouseConfig', () => ({
@@ -178,17 +193,20 @@ describe('MyConsumptionContainer test', () => {
 
         // First time, getMetrics is called with only two targets
         await waitFor(() => {
-            expect(mockGetMetricsWithParams).toHaveBeenCalledWith(mockGetWithMetricsParamsValues)
+            expect(mockGetMetricsWithParams).toHaveBeenCalledWith(mockGetMetricsWithParamsValues)
         })
         // Second time, getMetrics is called with only all targets
         await waitFor(() => {
             expect(mockGetMetricsWithParams).toHaveBeenCalledWith({
-                ...mockGetWithMetricsParamsValues,
+                ...mockGetMetricsWithParamsValues,
                 targets: ConsumptionChartTargets,
             })
         })
 
         expect(() => getByText(CONSUMPTION_ENEDIS_SGE_WARNING_TEXT)).toThrow()
+        // Consent enphase is Active Bought network consumption and AutoConsumption tooltip texts are shown
+        expect(getByText(BOUGHT_CONSUMPTION_NETWORK_TOOLTIP_TEXT)).toBeTruthy()
+        expect(getByText(AUTO_CONSUMPTION_TOOLTIP_TEXT)).toBeTruthy()
     })
     test('Different period props, When consumption chart.', async () => {
         const consumptionTitleCases = [
@@ -305,8 +323,12 @@ describe('MyConsumptionContainer test', () => {
         ).toBeTruthy()
         expect(getByText(PMAX_BUTTON_TEXT).classList.contains(buttonGroupdDisabledClassname)).toBeTruthy()
     })
-    test('When enedisSgeConsent Off, warning is shown', async () => {
+
+    test('When period is not daily and enedisSgeConsent is not Connected, pMax button should be disabled, enedisSgeConsent warning is shown', async () => {
+        consumptionChartContainerProps.period = 'weekly'
+        consumptionChartContainerProps.enedisSgeConsent = mockEnedisSgeConsentOff
         mockEnedisConsent = mockEnedisSgeConsentOff
+
         const { getByText } = reduxedRender(
             <Router>
                 <ConsumptionChartContainer {...consumptionChartContainerProps} />
@@ -315,5 +337,33 @@ describe('MyConsumptionContainer test', () => {
         )
 
         expect(getByText(CONSUMPTION_ENEDIS_SGE_WARNING_TEXT)).toBeTruthy()
+        expect(getByText(PMAX_BUTTON_TEXT).classList.contains(buttonGroupdDisabledClassname)).toBeTruthy()
+    })
+
+    test('When consent enphaseOff, autoconsumption target is not shown, getMetrics is called two times, one with default targets and then all targets both without autoconsumption target', async () => {
+        consumptionChartContainerProps.enphaseConsent!.enphaseConsentState = 'NONEXISTENT'
+        mockGetMetricsWithParamsValues.targets = [metricTargetsEnum.consumption]
+        const { getByText } = reduxedRender(
+            <Router>
+                <ConsumptionChartContainer {...consumptionChartContainerProps} />
+            </Router>,
+            { initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[0] } } },
+        )
+
+        // First time, getMetrics is called with only two targets
+        await waitFor(() => {
+            expect(mockGetMetricsWithParams).toHaveBeenCalledWith(mockGetMetricsWithParamsValues)
+        })
+        // Second time, getMetrics is called with only all targets
+        await waitFor(() => {
+            expect(mockGetMetricsWithParams).toHaveBeenCalledWith({
+                ...mockGetMetricsWithParamsValues,
+                targets: EnphaseOffConsumptionChartTargets,
+            })
+        })
+        // Consent enphase is off AutoConsumption tooltip texts is not shown, and Total consumption is shown
+        expect(getByText(TOTAL_CONSUMPTION_TOOLTIP_TEXT)).toBeTruthy()
+        expect(() => getByText(AUTO_CONSUMPTION_TOOLTIP_TEXT)).toThrow()
+        expect(() => getByText(BOUGHT_CONSUMPTION_NETWORK_TOOLTIP_TEXT)).toThrow()
     })
 })

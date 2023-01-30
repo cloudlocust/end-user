@@ -90,6 +90,8 @@ describe('Test HousingCardForm Component', () => {
         await waitFor(() => {
             expect(getByText(EDIT_HOUSE_CARD_FORM_TITLE)).toBeTruthy()
         })
-        expect(getByText(SUBMIT_HOUSE_FORM_BUTTON_TEXT).querySelector(loadingButtonClassname)).not.toBeNull()
+        expect(
+            getByText(SUBMIT_HOUSE_FORM_BUTTON_TEXT).parentElement!.querySelector(loadingButtonClassname),
+        ).not.toBeNull()
     })
 })
