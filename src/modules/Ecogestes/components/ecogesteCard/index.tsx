@@ -77,6 +77,7 @@ export const EcogesteCard = ({
                     // Background color does not match, but best effort has been done.
                     // Can't hard-code any lightness change, or it might break other themes.
                     // Maybe a rework of the palette would help ?
+                    // TODO: rework palette to match figma wireframes
                     background: viewed ? theme.palette.background.default : theme.palette.secondary.light,
                     maxHeight: seeFull ? 'max-content' : '12rem',
                     maxWidth: '60rem',
