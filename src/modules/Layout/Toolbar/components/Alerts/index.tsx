@@ -1,8 +1,8 @@
-import { Badge, IconButton } from '@mui/material'
+import { Badge, IconButton, SvgIcon } from '@mui/material'
 import { useContext } from 'react'
-import ReportIcon from '@mui/icons-material/Report'
 import { AlertsDrawer } from 'src/modules/Layout/Toolbar/components/Alerts/AlertsDrawer'
 import { AlertsDrawerContext } from 'src/modules/shared/AlertsDrawerContext'
+import { ReactComponent as AlertsIcon } from 'src/assets/images/alerts/alertIcon.svg'
 
 /**
  * Alerts component. Place in the top navbar. ToolbarWidget.
@@ -16,7 +16,9 @@ export const Alerts = () => {
         <>
             <IconButton onClick={handleOpenAlertsDrawer} size="large">
                 <Badge color="error">
-                    <ReportIcon />
+                    <SvgIcon>
+                        <AlertsIcon data-testid="alerts-icon" />
+                    </SvgIcon>
                 </Badge>
             </IconButton>
             {isAlertsDrawerOpen && <AlertsDrawer closeAlertsDrawer={handleCloseAlertsDrawer!} />}

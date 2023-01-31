@@ -166,6 +166,7 @@ export const MyConsumptionContainer = () => {
                                         metricsInterval={metricsInterval}
                                         period={period}
                                         hasMissingHousingContracts={hasMissingHousingContracts}
+                                        enphaseConsent={enphaseConsent}
                                     />
                                 )
                             })}
