@@ -10,6 +10,7 @@ import { applyCamelCase } from 'src/common/react-platform-components'
 import { IHousing } from 'src/modules/MyHouse/components/HousingList/housing'
 import { TEST_HOUSES } from 'src/mocks/handlers/houses'
 import { URL_MY_HOUSE } from 'src/modules/MyHouse/MyHouseConfig'
+import { IEnedisSgeConsent } from 'src/modules/Consents/Consents'
 
 // List of houses to add to the redux state
 const LIST_OF_HOUSES: IHousing[] = applyCamelCase(TEST_HOUSES)
@@ -18,7 +19,6 @@ let mockData: IMetric[] = TEST_SUCCESS_MONTH_METRICS([
     metricTargetsEnum.eurosConsumption,
 ])
 let mockNrlinkConsent: string
-let mockEnedisConsent: string
 let mockSetRange = jest.fn()
 let mockIsMetricsLoading = false
 const HAS_MISSING_CONTRACTS_WARNING_TEXT =
@@ -41,6 +41,22 @@ const mockRange = {
 const REDIRECT_TEXT = 'enregistrer votre compteur et votre nrLINK'
 const INCREMENT_DATE_ARROW_TEXT = 'chevron_right'
 const mockTheme = createTheme()
+const ANALYSIS_ENEDIS_SGE_WARNING_TEXT = 'Accéder à votre historique de consommation'
+
+// Enedis Consent format
+const mockEnedisSgeConsentConnected: IEnedisSgeConsent = {
+    meterGuid: '133456',
+    enedisSgeConsentState: 'CONNECTED',
+    expiredAt: '',
+}
+
+// Enedis Consent format
+const mockEnedisSgeConsentOff: IEnedisSgeConsent = {
+    meterGuid: '133456',
+    enedisSgeConsentState: 'NONEXISTENT',
+    expiredAt: '',
+}
+let mockEnedisConsent: IEnedisSgeConsent | undefined = mockEnedisSgeConsentConnected
 
 // Mock metricsHook
 jest.mock('src/modules/Metrics/metricsHook.ts', () => ({
@@ -66,10 +82,7 @@ jest.mock('src/modules/Metrics/metricsHook.ts', () => ({
 jest.mock('src/modules/Consents/consentsHook.ts', () => ({
     // eslint-disable-next-line jsdoc/require-jsdoc
     useConsents: () => ({
-        enedisSgeConsent: {
-            meterGuid: '133456',
-            enedisSgeConsentState: mockEnedisConsent,
-        },
+        enedisSgeConsent: mockEnedisConsent,
         nrlinkConsent: {
             meterGuid: '133456',
             nrlinkConsentState: mockNrlinkConsent,
@@ -148,18 +161,19 @@ describe('Analysis test', () => {
     })
     test('when there is no nrlinkConsent and no enedisConsent, awarening text is shown', async () => {
         mockNrlinkConsent = 'NONEXISTENT'
-        mockEnedisConsent = 'NONEXISTENT'
+        mockEnedisConsent = mockEnedisSgeConsentOff
         const { getByText } = reduxedRender(
             <Router>
                 <Analysis />
             </Router>,
+            { initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[0] } } },
         )
         expect(getByText(CONSENT_TEXT)).toBeTruthy()
         expect(getByText(REDIRECT_TEXT)).toBeTruthy()
     })
     test('when data is not empty total consumption should be shown', async () => {
         mockNrlinkConsent = 'CONNECTED'
-        mockEnedisConsent = 'CONNECTED'
+        mockEnedisConsent = mockEnedisSgeConsentConnected
         const totalDataPoints = 1000
         const TOTAL_CONSUMPTION_TEXT = `1 kWh`
         const TOTAL_EUROS_CONSUMPTION_TEXT = `1000.00 €`
@@ -170,6 +184,7 @@ describe('Analysis test', () => {
             <Router>
                 <Analysis />
             </Router>,
+            { initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[0] } } },
         )
         expect(getByText(TOTAL_CONSUMPTION_TEXT)).toBeTruthy()
         expect(getByText(TOTAL_EUROS_CONSUMPTION_TEXT)).toBeTruthy()
@@ -181,6 +196,7 @@ describe('Analysis test', () => {
             <Router>
                 <Analysis />
             </Router>,
+            { initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[0] } } },
         )
 
         // Selecting MinConsumptionDay in analysisChart.
@@ -205,14 +221,28 @@ describe('Analysis test', () => {
         })
     }, 50000)
 
+    test('When enedisSgeConsent is not Connected, enedisSgeConsent warning is shown', async () => {
+        mockEnedisConsent = mockEnedisSgeConsentOff
+
+        const { getByText } = reduxedRender(
+            <Router>
+                <Analysis />
+            </Router>,
+            { initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[0] } } },
+        )
+
+        expect(getByText(ANALYSIS_ENEDIS_SGE_WARNING_TEXT)).toBeTruthy()
+    })
+
     test('when isMetricsLoading, Spinner is shown, AnalysisChart and AnalysisInformationList are hidden', async () => {
         mockIsMetricsLoading = true
         mockNrlinkConsent = 'CONNECTED'
-        mockEnedisConsent = 'CONNECTED'
+        mockEnedisConsent = mockEnedisSgeConsentConnected
         const { container } = reduxedRender(
             <Router>
                 <Analysis />
             </Router>,
+            { initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[0] } } },
         )
         expect(container.querySelector(circularProgressClassname)).toBeInTheDocument()
         expect(container.querySelector(analysisChartClassname)).not.toBeInTheDocument()
