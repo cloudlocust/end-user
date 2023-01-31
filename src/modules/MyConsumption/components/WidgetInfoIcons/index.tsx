@@ -39,14 +39,37 @@ export const EuroWidgetInfoIcon = () => {
 }
 
 /**
+ * ProductionWidgetErrorInfoIcon Component.
+ *
+ * @returns ProductionWidgetErrorInfoIcon Component.
+ */
+export const ProductionWidgetErrorIcon = () => {
+    const { currentHousing } = useSelector(({ housingModel }: RootState) => housingModel)
+
+    return (
+        <NavLink to={currentHousing ? `${URL_MY_HOUSE}/${currentHousing?.id}` : URL_MY_HOUSE}>
+            <IconButton sx={{ p: 0 }}>
+                <ErrorOutlineIcon sx={{ color: warningMainHashColor, width: '32px', height: '32px' }} />
+            </IconButton>
+        </NavLink>
+    )
+}
+
+/**
  * Function that returns the Icon element used in the widget.
  *
  * @param widgetTarget Target of the widget.
  * @param hasMissingContracts Flag HasMissingContracts, that'll influence which widget icon will be shown.
+ * @param enphaseOff Enphase Consent is inactive.
  * @returns Icon of the widget or undefined.
  */
-export const getWidgetInfoIcon = (widgetTarget: metricTargetType, hasMissingContracts: boolean | null) => {
+export const getWidgetInfoIcon = (
+    widgetTarget: metricTargetType,
+    hasMissingContracts: boolean | null,
+    enphaseOff?: boolean | null,
+) => {
     if (hasMissingContracts && widgetTarget === metricTargetsEnum.eurosConsumption) return <EuroWidgetInfoIcon />
-    // When hasMissingContracts is not given and widgetTarget is not eurosConsumption then no icon is in the Widget.
+    if (enphaseOff && widgetTarget === metricTargetsEnum.totalProduction) return <ProductionWidgetErrorIcon />
+    // Otherwise any icon doesn't be shown in the Widget.
     return undefined
 }

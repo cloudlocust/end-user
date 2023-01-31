@@ -1,4 +1,5 @@
 import { IEnedisSgeConsent, IEnphaseConsent } from 'src/modules/Consents/Consents.d'
+
 /**
  * Interface MyConsumptionPeriod.
  */
