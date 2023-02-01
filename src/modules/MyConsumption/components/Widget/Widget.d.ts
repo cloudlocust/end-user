@@ -1,5 +1,6 @@
-import { metricTargetType } from 'src/modules/Metrics/Metrics.d'
-import { periodType } from 'sr/modules/MyConsumption/myConsumptionTypes'
+import { IEnphaseConsent } from 'src/modules/Consents/Consents.d'
+import { metricTargetType, metricRangeType, metricIntervalType, metricFiltersType } from 'src/modules/Metrics/Metrics.d'
+import { periodType } from 'src/modules/MyConsumption/myConsumptionTypes'
 
 /**
  * Widget Title type.
@@ -10,6 +11,7 @@ export type widgetTitleType =
     | 'Température Intérieure'
     | 'Température Extérieure'
     | 'Coût Total'
+    | 'Production Totale'
 
 /**
  * Total Consumption Units types.
@@ -44,4 +46,8 @@ export interface IWidgetProps {
      * Period of the Widget.
      */
     period: periodType
+    /**
+     * Enphhase consent.
+     */
+    enphaseConsent?: IEnphaseConsent
 }

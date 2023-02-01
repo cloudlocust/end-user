@@ -268,6 +268,7 @@ export const EnphaseOffConsumptionChartTargets: metricTargetType[] = [
  */
 export const WidgetTargets: metricTargetType[] = [
     metricTargetsEnum.consumption,
+    metricTargetsEnum.totalProduction,
     metricTargetsEnum.eurosConsumption,
     metricTargetsEnum.pMax,
     metricTargetsEnum.externalTemperature,
