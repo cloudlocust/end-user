@@ -4,14 +4,13 @@ import { IWidgetProps } from 'src/modules/MyConsumption/components/Widget/Widget
 import { IMetric, metricFiltersType, metricIntervalType, metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
 import { TEST_SUCCESS_WEEK_METRICS } from 'src/mocks/handlers/metrics'
 import { periodType } from 'src/modules/MyConsumption/myConsumptionTypes'
-import { IEnphaseConsent } from 'src/modules/Consents/Consents'
 import { BrowserRouter as Router } from 'react-router-dom'
 import userEvent from '@testing-library/user-event'
 import { IHousing } from 'src/modules/MyHouse/components/HousingList/housing'
 import { applyCamelCase } from 'src/common/react-platform-components'
 import { TEST_HOUSES } from 'src/mocks/handlers/houses'
 import { URL_MY_HOUSE } from 'src/modules/MyHouse'
-
+import { ProductionWidgetErrorIcon } from 'src/modules/MyConsumption/components/WidgetInfoIcons'
 const TEST_WEEK_DATA: IMetric[] = TEST_SUCCESS_WEEK_METRICS([metricTargetsEnum.consumption])
 let mockData: IMetric[] = TEST_WEEK_DATA
 
@@ -43,20 +42,12 @@ const mockSetFilters = jest.fn()
 let mockPeriod: periodType = 'weekly'
 let mockMetricsInterval: metricIntervalType = '1d'
 
-// Enphase Consent default.
-const enphaseConsent: IEnphaseConsent = {
-    meterGuid: '133456',
-    enphaseConsentState: 'ACTIVE',
-}
-
 let mockWidgetPropsDefault: IWidgetProps = {
     period: mockPeriod,
     filters: mockFilters,
-    hasMissingHousingContracts: false,
     metricsInterval: mockMetricsInterval,
     range: mockRange,
     target: metricTargetsEnum.consumption,
-    enphaseConsent,
 }
 
 // Mock metricsHook
@@ -100,12 +91,11 @@ describe('Widget component test', () => {
         expect(getByText(NO_DATA_MESSAGE)).toBeTruthy()
     })
 
-    test('when the target is "enphase_production_metrics" and the enphaseConsent is inactive, an error icon is shown in the widget.', async () => {
+    test('when the infoIcon is given, icon is shown in the widget.', async () => {
         mockData = []
         const mockWidgetProps: IWidgetProps = {
             ...mockWidgetPropsDefault,
-            target: metricTargetsEnum.totalProduction,
-            enphaseConsent: { ...enphaseConsent, enphaseConsentState: 'NONEXISTENT' },
+            infoIcon: <ProductionWidgetErrorIcon />,
         }
         const { getByTestId } = reduxedRender(
             <Router>
@@ -120,47 +110,4 @@ describe('Widget component test', () => {
         userEvent.click(getByTestId(ENPHASE_CONSENT_INACTIVE_ERROR_ICON))
         expect(window.location.pathname).toBe(`${URL_MY_HOUSE}/${LIST_OF_HOUSES[0].id}`)
     })
-
-    test('when the target is "enphase_production_metrics" and the enphaseConsent is active, an error icon does not be shown in the widget.', async () => {
-        mockData = []
-        const mockWidgetProps: IWidgetProps = {
-            ...mockWidgetPropsDefault,
-            target: metricTargetsEnum.totalProduction,
-        }
-        const { queryByTestId } = reduxedRender(
-            <Router>
-                <Widget {...mockWidgetProps} />
-            </Router>,
-        )
-        /**
-         * Be careful not to use getByTestId -getBy functions in general- when we want to test the non-existence of an element,
-         * because getByTestId throw and error if the element isn't found,
-         * causing the test to fail before the expect function fires.
-         *
-         * @see https://testing-library.com/docs/guide-disappearance/#asserting-elements-are-not-present.
-         */
-        expect(queryByTestId(ENPHASE_CONSENT_INACTIVE_ERROR_ICON)).not.toBeInTheDocument()
-    })
-    test('when the target is not "enphase_production_metrics" and the enphaseConsent is inactive, an error icon does not be shown in the widget.', async () => {
-        mockData = []
-        const mockWidgetProps: IWidgetProps = {
-            ...mockWidgetPropsDefault,
-            enphaseConsent: { ...enphaseConsent, enphaseConsentState: 'NONEXISTENT' },
-        }
-        const { queryByTestId } = reduxedRender(
-            <Router>
-                <Widget {...mockWidgetProps} />
-            </Router>,
-        )
-        /**
-         * Be careful not to use getByTestId -getBy functions in general- when we want to test the non-existence of an element,
-         * because getByTestId throw and error if the element isn't found,
-         * causing the test to fail before the expect function fires.
-         *
-         * @see https://testing-library.com/docs/guide-disappearance/#asserting-elements-are-not-present.
-         */
-        expect(queryByTestId(ENPHASE_CONSENT_INACTIVE_ERROR_ICON)).not.toBeInTheDocument()
-    })
-
-    // TODO: Add test for error icon for the __euros__consumption_metrics target
 })
