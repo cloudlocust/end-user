@@ -5,13 +5,14 @@ import { useSnackbar } from 'notistack'
 import { TextField } from 'src/common/ui-kit'
 import { IMeter } from 'src/modules/Meters/Meters'
 import { API_RESOURCES_URL } from 'src/configs'
-import { URL_CONSUMPTION } from 'src/modules/MyConsumption'
 import { axios } from 'src/common/react-platform-components'
 import { useHistory } from 'react-router-dom'
 import { SET_SHOW_NRLINK_POPUP_ENDPOINT } from 'src/modules/nrLinkConnection/NrLinkConnection'
 import { motion } from 'framer-motion'
 import { nrLinkGUID, nrLinkInfo, nrLinkMain } from 'src/modules/nrLinkConnection'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
+import { RootState } from 'src/redux'
+import { useSelector } from 'react-redux'
 
 const textNrlinkColor = 'text.secondary'
 
@@ -40,6 +41,7 @@ const LastStepNrLinkConnection = ({
     const { formatMessage } = useIntl()
     const history = useHistory()
     const { enqueueSnackbar } = useSnackbar()
+    const { currentHousing } = useSelector(({ housingModel }: RootState) => housingModel)
 
     /**
      * On Submit function which calls addMeter and handleNext on success.
@@ -59,18 +61,15 @@ const LastStepNrLinkConnection = ({
                 showNrlinkPopup: false,
             })
             enqueueSnackbar(
-                formatMessage(
-                    {
-                        id: 'Votre nrLINK a bien été connecté au compteur {meterGuid}, vous pouvez maintenant visualiser votre consommation en direct',
-                        defaultMessage:
-                            'Votre nrLINK a bien été connecté au compteur {meterGuid}, vous pouvez maintenant visualiser votre consommation en direct',
-                    },
-                    { meterGuid: meter?.guid },
-                ),
+                formatMessage({
+                    id: 'Votre nrLINK a été configuré avec succès. Merci de renseigner votre contrat de fourniture pour visualiser votre consommation en euros',
+                    defaultMessage:
+                        'Votre nrLINK a été configuré avec succès. Merci de renseigner votre contrat de fourniture pour visualiser votre consommation en euros',
+                }),
                 { autoHideDuration: 10000, variant: 'success' },
             )
             setIsNrLinkAuthorizeInProgress(false)
-            history.push(URL_CONSUMPTION)
+            history.push(`/my-houses/${currentHousing?.id}/contracts`)
         } catch (error: any) {
             if (error.response && error.response.data && error.response.data.detail)
                 enqueueSnackbar(
