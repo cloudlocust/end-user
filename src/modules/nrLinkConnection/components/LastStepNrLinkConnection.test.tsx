@@ -4,16 +4,19 @@ import { waitFor } from '@testing-library/react'
 import { TEST_METERS as MOCK_METERS } from 'src/mocks/handlers/meters'
 import userEvent from '@testing-library/user-event'
 import { IMeter } from 'src/modules/Meters/Meters'
-import { URL_CONSUMPTION } from 'src/modules/MyConsumption'
 import { applyCamelCase } from 'src/common/react-platform-components'
+import { IHousing } from 'src/modules/MyHouse/components/HousingList/housing'
+import { TEST_HOUSES } from 'src/mocks/handlers/houses'
 
 const TEST_METERS: IMeter[] = applyCamelCase(MOCK_METERS)
+// List of houses to add to the redux state
+const LIST_OF_HOUSES: IHousing[] = applyCamelCase(TEST_HOUSES)
 const SUBMIT_BUTTON_TEXT = 'Terminer'
 const REQUIRED_ERROR_TEXT = 'Champ obligatoire non renseigné'
 const TEST_NRLINK_GUID = '12345123451234AB'
 
 const guidNrlinkInputQuerySelector = 'input[name="nrlinkGuid"]'
-const SUCCESS_NRLINK_AUTHORIZE_MESSAGE = `Votre nrLINK a bien été connecté au compteur ${TEST_METERS[0].guid}, vous pouvez maintenant visualiser votre consommation en direct`
+const SUCCESS_NRLINK_AUTHORIZE_MESSAGE = `Votre nrLINK a été configuré avec succès. Merci de renseigner votre contrat de fourniture pour visualiser votre consommation en euros`
 const ERRROR_NRLINK_NO_DATA_MESSAGE = "Votre nrLINK ne reçoit pas de données vérifier qu'il est connecté au Wifi"
 const INVALID_NRLINK_GUID_FIELD_ERROR =
     'Veuillez entrer un N° GUID valide (16 caractères, chiffre de 0 à 9, lettre de A à F, pas d’espace ni de tiret)'
@@ -179,6 +182,7 @@ describe('Test LastStepNrLinkConnection', () => {
             mockLastStepNrLinkConnectionProps.setIsNrLinkAuthorizeInProgress = mockSetIsNrLinkAuthorizeInProgress
             const { container, getByText } = reduxedRender(
                 <LastStepNrLinkConnection {...mockLastStepNrLinkConnectionProps} />,
+                { initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[0] } } },
             )
             userEvent.type(container.querySelector(guidNrlinkInputQuerySelector)!, TEST_NRLINK_GUID)
             expect(container.querySelector(guidNrlinkInputQuerySelector)).toHaveValue(TEST_NRLINK_GUID)
@@ -190,7 +194,7 @@ describe('Test LastStepNrLinkConnection', () => {
             })
             await waitFor(
                 () => {
-                    expect(mockHistoryPush).toHaveBeenCalledWith(URL_CONSUMPTION)
+                    expect(mockHistoryPush).toHaveBeenCalledWith(`/my-houses/${LIST_OF_HOUSES[0].id}/contracts`)
                 },
                 { timeout: 10000 },
             )
