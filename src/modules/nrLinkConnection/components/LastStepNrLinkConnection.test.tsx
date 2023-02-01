@@ -7,6 +7,7 @@ import { IMeter } from 'src/modules/Meters/Meters'
 import { applyCamelCase } from 'src/common/react-platform-components'
 import { IHousing } from 'src/modules/MyHouse/components/HousingList/housing'
 import { TEST_HOUSES } from 'src/mocks/handlers/houses'
+import { NRLINK_SUCCESS_SETUP_MESSAGE } from 'src/modules/nrLinkConnection/components/LastStepNrLinkConnection'
 
 const TEST_METERS: IMeter[] = applyCamelCase(MOCK_METERS)
 // List of houses to add to the redux state
@@ -16,7 +17,6 @@ const REQUIRED_ERROR_TEXT = 'Champ obligatoire non renseigné'
 const TEST_NRLINK_GUID = '12345123451234AB'
 
 const guidNrlinkInputQuerySelector = 'input[name="nrlinkGuid"]'
-const SUCCESS_NRLINK_AUTHORIZE_MESSAGE = `Votre nrLINK a été configuré avec succès. Merci de renseigner votre contrat de fourniture pour visualiser votre consommation en euros`
 const ERRROR_NRLINK_NO_DATA_MESSAGE = "Votre nrLINK ne reçoit pas de données vérifier qu'il est connecté au Wifi"
 const INVALID_NRLINK_GUID_FIELD_ERROR =
     'Veuillez entrer un N° GUID valide (16 caractères, chiffre de 0 à 9, lettre de A à F, pas d’espace ni de tiret)'
@@ -198,7 +198,7 @@ describe('Test LastStepNrLinkConnection', () => {
                 },
                 { timeout: 10000 },
             )
-            expect(mockEnqueueSnackbar).toHaveBeenCalledWith(SUCCESS_NRLINK_AUTHORIZE_MESSAGE, {
+            expect(mockEnqueueSnackbar).toHaveBeenCalledWith(NRLINK_SUCCESS_SETUP_MESSAGE, {
                 autoHideDuration: 10000,
                 variant: 'success',
             })

@@ -17,6 +17,12 @@ import { useSelector } from 'react-redux'
 const textNrlinkColor = 'text.secondary'
 
 /**
+ * Snackbar message when nrlink is setup.
+ */
+export const NRLINK_SUCCESS_SETUP_MESSAGE =
+    'Votre nrLINK a été configuré avec succès. Merci de renseigner votre contrat de fourniture pour visualiser la consommation en euros sur votre nrLINK'
+
+/**
  * Component showing the first step in the nrLinkConnection Stepper.
  *
  * @param props N/A.
@@ -62,9 +68,8 @@ const LastStepNrLinkConnection = ({
             })
             enqueueSnackbar(
                 formatMessage({
-                    id: 'Votre nrLINK a été configuré avec succès. Merci de renseigner votre contrat de fourniture pour visualiser votre consommation en euros',
-                    defaultMessage:
-                        'Votre nrLINK a été configuré avec succès. Merci de renseigner votre contrat de fourniture pour visualiser votre consommation en euros',
+                    id: NRLINK_SUCCESS_SETUP_MESSAGE,
+                    defaultMessage: NRLINK_SUCCESS_SETUP_MESSAGE,
                 }),
                 { autoHideDuration: 10000, variant: 'success' },
             )
