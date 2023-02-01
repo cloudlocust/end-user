@@ -37,7 +37,7 @@ export const registerEnergyProviderSuccessMessage = window._env_.REACT_APP_REGIS
 /**
  * Professional register feature.
  */
-export const professionalRegisterFeature = window._env_.REACT_APP_PROFESSIONAL_REGISTER_FEATURE === 'enabled'
+export const isProfessionalRegisterFeature = window._env_.REACT_APP_PROFESSIONAL_REGISTER_FEATURE === 'enabled'
 
 /**
  * Configuration object for the register page. It contains, url, component and its props, and authentication level needed.

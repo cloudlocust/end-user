@@ -15,7 +15,7 @@ import { passwordFieldValidationSecurity1 } from 'src/modules/utils'
 import { Select } from 'src/common/ui-kit/form-fields/Select'
 import MenuItem from '@mui/material/MenuItem'
 import { generalTermsOfUse, privacyPolicy } from 'src/modules/Mentions/MentionsConfig'
-import { professionalRegisterFeature } from 'src/modules/User/Register/RegisterConfig'
+import { isProfessionalRegisterFeature } from 'src/modules/User/Register/RegisterConfig'
 import { sirenFieldRegex } from 'src/modules/User/Register/utils'
 
 /**
@@ -85,7 +85,7 @@ export const RegisterForm = ({
         <Form onSubmit={onSubmitWrapper}>
             {/* register your input into the hook by invoking the "register" function */}
             <div className="flex flex-col justify-center w-full">
-                {professionalRegisterFeature && (
+                {isProfessionalRegisterFeature && (
                     <>
                         <TextField
                             name="companyName"

@@ -296,4 +296,14 @@ describe('test registerForm', () => {
             { timeout: 3000 },
         )
     }, 20000)
+    test('if siren field is invalid', async () => {
+        const { getByRole, getByText } = reduxedRender(<RegisterForm />)
+
+        const siren = getByRole('textbox', { name: 'Siren' })
+        userEvent.type(siren, '123')
+
+        await waitFor(() => {
+            expect(getByText('Le numéro Siren doit être composé de 9 chiffres')).toBeTruthy()
+        })
+    }, 6000)
 })
