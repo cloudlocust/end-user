@@ -7,7 +7,7 @@ import { IEcogeste } from './components/ecogeste'
 /**
  * Ecogestes API  global endpoint.
  */
-export const ECOGESTES_ENDPOINT = `${API_RESOURCES_URL}/ecogestes`
+export const ECOGESTES_ENDPOINT = `${API_RESOURCES_URL}/ecogeste`
 
 /**
  * Return a URL to query encogestes by category.
@@ -15,7 +15,7 @@ export const ECOGESTES_ENDPOINT = `${API_RESOURCES_URL}/ecogestes`
  * @param categoryId The id of the category.
  * @returns A URL.
  */
-export const ECOGESTES_BY_CATEGORY = (categoryId: number) => `${ECOGESTES_ENDPOINT}/by-category/${categoryId}`
+export const ECOGESTES_BY_CATEGORY = (categoryId: number) => `${ECOGESTES_ENDPOINT}?category=${categoryId}`
 
 // eslint-disable-next-line jsdoc/require-jsdoc
 export const loadElementListError = (error: any, formatMessage: formatMessageType) => {
@@ -49,7 +49,8 @@ export const addElementError = (error: any, formatMessage: formatMessageType) =>
  */
 export const useEcogestesByCategory = (categoryId: number) =>
     BuilderUseElementList<IEcogeste, IEcogeste, searchFilterType>({
-        API_ENDPOINT: ECOGESTES_BY_CATEGORY(categoryId),
+        // API_ENDPOINT: ECOGESTES_BY_CATEGORY(categoryId),
+        API_ENDPOINT: ECOGESTES_ENDPOINT,
         snackBarMessage0verride: { loadElementListError, addElementSuccess, addElementError },
     })()
 
