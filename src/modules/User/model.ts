@@ -49,6 +49,14 @@ export interface UserAddressType {
  */
 interface IBaseUser {
     /**
+     * Raison social.
+     */
+    companyName?: string
+    /**
+     * Siren. Represent a 9 digits number that identifies the company.
+     */
+    siren?: string
+    /**
      * Email of the user.
      */
     email: string

@@ -160,6 +160,10 @@ const fillFormWithData = async (getByRole: Function, container: HTMLElement, get
     userEvent.click(screen.getByText(TEST_CIVILITY_OPTION.label))
     expect(civilitySelectField.innerHTML).toBe(TEST_CIVILITY_OPTION.label)
 
+    const companyName = getByRole('textbox', { name: 'Raison sociale' })
+    userEvent.type(companyName, TEST_SUCCESS_USER.company_name)
+    const siren = getByRole('textbox', { name: 'Siren' })
+    userEvent.type(siren, TEST_SUCCESS_USER.siren)
     const firstNameField = getByRole('textbox', { name: 'Prénom' })
     userEvent.type(firstNameField, 'test prénom')
     const lastNameField = getByRole('textbox', { name: 'Nom' })
@@ -209,7 +213,7 @@ describe('test registerForm', () => {
         await act(async () => {
             fireEvent.click(screen.getByText('Valider'))
         })
-        expect(getAllByText('Champ obligatoire non renseigné').length).toBe(8)
+        expect(getAllByText('Champ obligatoire non renseigné').length).toBe(10)
     })
     test('RGPD checkbox required', async () => {
         const { getAllByText, getByRole, container, getByTestId } = reduxedRender(<RegisterForm />)
@@ -269,6 +273,8 @@ describe('test registerForm', () => {
         await waitFor(
             () => {
                 expect(mockOnSubmit).toHaveBeenCalledWith({
+                    companyName: TEST_SUCCESS_USER.company_name,
+                    siren: TEST_SUCCESS_USER.siren,
                     civility: TEST_CIVILITY_OPTION.value,
                     email: TEST_EMAIL,
                     firstName: 'test prénom',
@@ -290,4 +296,14 @@ describe('test registerForm', () => {
             { timeout: 3000 },
         )
     }, 20000)
+    test('if siren field is invalid', async () => {
+        const { getByRole, getByText } = reduxedRender(<RegisterForm />)
+
+        const siren = getByRole('textbox', { name: 'Siren' })
+        userEvent.type(siren, '123')
+
+        await waitFor(() => {
+            expect(getByText('Le numéro Siren doit être composé de 9 chiffres')).toBeTruthy()
+        })
+    }, 6000)
 })

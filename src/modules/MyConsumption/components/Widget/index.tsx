@@ -9,7 +9,6 @@ import {
     getWidgetRange,
     renderWidgetTitle,
 } from 'src/modules/MyConsumption/components/Widget/WidgetFunctions'
-import { getWidgetInfoIcon } from 'src/modules/MyConsumption/components/WidgetInfoIcons'
 import { computePercentageChange } from 'src/modules/Analysis/utils/computationFunctions'
 import Icon from '@mui/material/Icon'
 
@@ -20,145 +19,138 @@ const emptyValueUnit = { value: 0, unit: '' }
  * @param props N/A.
  * @param props.range Current range so that we handle the xAxis values according to period and range selected.
  * @param props.filters Metrics Filters.
- * @param props.hasMissingHousingContracts HasMissingHousingContracts result.
+ * @param props.infoIcon InfoIcon showed in top right of widget.
  * @param props.target Target of the widget.
  * @param props.period Current Period.
- * @param props.enphaseConsent Enphase Consent.
  * @returns Widget Component.
  */
-export const Widget = memo(
-    ({ filters, range, hasMissingHousingContracts, metricsInterval, target, period, enphaseConsent }: IWidgetProps) => {
-        const { data, setMetricsInterval, setRange, isMetricsLoading } = useMetrics({
-            interval: metricsInterval,
-            range: getWidgetRange(range, period),
-            targets: [
-                {
-                    target: target,
-                    type: 'timeserie',
-                },
-            ],
-            filters,
-        })
-        const {
-            data: oldData,
-            setMetricsInterval: setMetricsIntervalPrevious,
-            setRange: setRangePrevious,
-        } = useMetrics({
-            interval: metricsInterval,
-            range: getWidgetPreviousRange(getWidgetRange(range, period), period),
-            targets: [
-                {
-                    target: target,
-                    type: 'timeserie',
-                },
-            ],
-            filters,
-        })
+export const Widget = memo(({ filters, range, infoIcon, metricsInterval, target, period }: IWidgetProps) => {
+    const { data, setMetricsInterval, setRange, isMetricsLoading } = useMetrics({
+        interval: metricsInterval,
+        range: getWidgetRange(range, period),
+        targets: [
+            {
+                target: target,
+                type: 'timeserie',
+            },
+        ],
+        filters,
+    })
+    const {
+        data: oldData,
+        setMetricsInterval: setMetricsIntervalPrevious,
+        setRange: setRangePrevious,
+    } = useMetrics({
+        interval: metricsInterval,
+        range: getWidgetPreviousRange(getWidgetRange(range, period), period),
+        targets: [
+            {
+                target: target,
+                type: 'timeserie',
+            },
+        ],
+        filters,
+    })
 
-        const theme = useTheme()
-        const { unit, value } = useMemo(
-            () => (!data.length ? emptyValueUnit : computeWidgetAssets(data, target)),
-            [data, target],
-        )
-        const { value: oldDataValue } = useMemo(
-            () => (!oldData.length ? emptyValueUnit : computeWidgetAssets(oldData, target)),
-            [oldData, target],
-        )
-        const percentageChange = useMemo(
-            () => computePercentageChange(oldDataValue as number, value as number),
-            [value, oldDataValue],
-        )
-        // Props to track the change of range change, so that we call getMetrics only when range change, instead of when both range and period change.
-        const isRangeChanged = useRef(false)
+    const theme = useTheme()
+    const { unit, value } = useMemo(
+        () => (!data.length ? emptyValueUnit : computeWidgetAssets(data, target)),
+        [data, target],
+    )
+    const { value: oldDataValue } = useMemo(
+        () => (!oldData.length ? emptyValueUnit : computeWidgetAssets(oldData, target)),
+        [oldData, target],
+    )
+    const percentageChange = useMemo(
+        () => computePercentageChange(oldDataValue as number, value as number),
+        [value, oldDataValue],
+    )
+    // Props to track the change of range change, so that we call getMetrics only when range change, instead of when both range and period change.
+    const isRangeChanged = useRef(false)
 
-        const enphaseOff = enphaseConsent?.enphaseConsentState !== 'ACTIVE'
+    // When range change, set isRangedChanged
+    useEffect(() => {
+        isRangeChanged.current = true
+    }, [range])
 
-        // When range change, set isRangedChanged
-        useEffect(() => {
-            isRangeChanged.current = true
-        }, [range])
+    // get metrics when metricsInterval change.
+    useEffect(() => {
+        setMetricsInterval(metricsInterval)
+        setMetricsIntervalPrevious(metricsInterval)
+    }, [metricsInterval, setMetricsInterval, setMetricsIntervalPrevious])
 
-        // get metrics when metricsInterval change.
-        useEffect(() => {
-            setMetricsInterval(metricsInterval)
-            setMetricsIntervalPrevious(metricsInterval)
-        }, [metricsInterval, setMetricsInterval, setMetricsIntervalPrevious])
+    // When period or range changes
+    useEffect(() => {
+        // If period just changed block the call of getMetrics, because period and range changes at the same time, so to avoid two call of getMetrics
+        // 1 call when range change and the other when period change, then only focus on when range changes.
+        if (isRangeChanged.current) {
+            const widgetRange = getWidgetRange(range, period)
+            setRange(widgetRange)
+            setRangePrevious(getWidgetPreviousRange(widgetRange, period))
+            // reset isRangdChanged
+            isRangeChanged.current = false
+        }
+    }, [period, range, setRange, setRangePrevious])
 
-        // When period or range changes
-        useEffect(() => {
-            // If period just changed block the call of getMetrics, because period and range changes at the same time, so to avoid two call of getMetrics
-            // 1 call when range change and the other when period change, then only focus on when range changes.
-            if (isRangeChanged.current) {
-                const widgetRange = getWidgetRange(range, period)
-                setRange(widgetRange)
-                setRangePrevious(getWidgetPreviousRange(widgetRange, period))
-                // reset isRangdChanged
-                isRangeChanged.current = false
-            }
-        }, [period, range, setRange, setRangePrevious])
-
-        const infoIcon = getWidgetInfoIcon(target, hasMissingHousingContracts, enphaseOff)
-
-        return (
-            <Grid item xs={6} sm={6} md={4} lg={3} xl={3} className="flex">
-                <Card className="w-full rounded-20 shadow sm:m-4" variant="outlined" style={{ minHeight: '170px' }}>
-                    <>
-                        {isMetricsLoading ? (
-                            <div
-                                className="flex flex-col justify-center items-center w-full h-full"
-                                style={{ height: '170px' }}
-                            >
-                                <CircularProgress style={{ color: theme.palette.primary.main }} />
+    return (
+        <Grid item xs={6} sm={6} md={4} lg={3} xl={3} className="flex">
+            <Card className="w-full rounded-20 shadow sm:m-4" variant="outlined" style={{ minHeight: '170px' }}>
+                <>
+                    {isMetricsLoading ? (
+                        <div
+                            className="flex flex-col justify-center items-center w-full h-full"
+                            style={{ height: '170px' }}
+                        >
+                            <CircularProgress style={{ color: theme.palette.primary.main }} />
+                        </div>
+                    ) : (
+                        <div className="p-16 flex flex-col justify-between h-full">
+                            <div className="flex justify-between">
+                                {/* Widget title */}
+                                <TypographyFormatMessage className="sm:text-16 font-medium md:text-17">
+                                    {renderWidgetTitle(target)}
+                                </TypographyFormatMessage>
+                                {/* Widget infoIcon */}
+                                {infoIcon}
                             </div>
-                        ) : (
-                            <div className="p-16 flex flex-col justify-between h-full">
-                                <div className="flex justify-between">
-                                    {/* Widget title */}
-                                    <TypographyFormatMessage className="sm:text-16 font-medium md:text-17">
-                                        {renderWidgetTitle(target)}
-                                    </TypographyFormatMessage>
-                                    {/* Widget infoIcon */}
-                                    {infoIcon}
+                            {!value ? (
+                                <div className="mb-44 text-center">
+                                    <TypographyFormatMessage>Aucune donnée disponible</TypographyFormatMessage>
                                 </div>
-                                {!value ? (
-                                    <div className="mb-44 text-center">
-                                        <TypographyFormatMessage>Aucune donnée disponible</TypographyFormatMessage>
-                                    </div>
-                                ) : (
-                                    <div className="flex flex-row flex-wrap mt-12 items-end">
-                                        {/* Widget value */}
-                                        <Typography className="text-2xl sm:text-3xl md:text-4xl font-normal tracking-tighter items-end mr-auto">
-                                            {value}
+                            ) : (
+                                <div className="flex flex-row flex-wrap mt-12 items-end">
+                                    {/* Widget value */}
+                                    <Typography className="text-2xl sm:text-3xl md:text-4xl font-normal tracking-tighter items-end mr-auto">
+                                        {value}
+                                    </Typography>
+                                    <div className="flex flex-col">
+                                        {/* Widget unit */}
+                                        <Typography
+                                            className="text-16 md:text-20 font-medium mb-24"
+                                            color="textSecondary"
+                                        >
+                                            {unit}
                                         </Typography>
-                                        <div className="flex flex-col">
-                                            {/* Widget unit */}
-                                            <Typography
-                                                className="text-16 md:text-20 font-medium mb-24"
-                                                color="textSecondary"
-                                            >
-                                                {unit}
-                                            </Typography>
-                                            {/* Widget arrow */}
-                                            {percentageChange !== 0 &&
-                                                // Negative means decrease
-                                                (percentageChange < 0 ? (
-                                                    <Icon color="success" sx={{ fontSize: { xs: '24px', md: '32px' } }}>
-                                                        trending_down
-                                                    </Icon>
-                                                ) : (
-                                                    // Positive means increase
-                                                    <Icon color="error" sx={{ fontSize: { xs: '24px', md: '32px' } }}>
-                                                        trending_up
-                                                    </Icon>
-                                                ))}
-                                        </div>
+                                        {/* Widget arrow */}
+                                        {percentageChange !== 0 &&
+                                            // Negative means decrease
+                                            (percentageChange < 0 ? (
+                                                <Icon color="success" sx={{ fontSize: { xs: '24px', md: '32px' } }}>
+                                                    trending_down
+                                                </Icon>
+                                            ) : (
+                                                // Positive means increase
+                                                <Icon color="error" sx={{ fontSize: { xs: '24px', md: '32px' } }}>
+                                                    trending_up
+                                                </Icon>
+                                            ))}
                                     </div>
-                                )}
-                            </div>
-                        )}
-                    </>
-                </Card>
-            </Grid>
-        )
-    },
-)
+                                </div>
+                            )}
+                        </div>
+                    )}
+                </>
+            </Card>
+        </Grid>
+    )
+})
