@@ -39,9 +39,11 @@ export const EcogestesList = () => {
                 !isEcogestesLoadingInProgress &&
                 "Pas d'ecogestes a charger"}
             <div className="flex flex-nowrap gap-5 flex-col sm:flex-row  w-full sm:flex-wrap h-full sm:h-auto">
-                {isEcogestesLoadingInProgress || isNull(ecogestesList)
+                {isEcogestesLoadingInProgress
                     ? limits.map(() => <ImageCardLoader></ImageCardLoader>)
-                    : ecogestesList.map((ecogeste) => <EcogesteCard ecogeste={ecogeste} />)}
+                    : !isNull(ecogestesList) &&
+                      !isEmpty(EcogestesList) &&
+                      ecogestesList.map((ecogeste) => <EcogesteCard ecogeste={ecogeste} />)}
             </div>
         </>
     )
