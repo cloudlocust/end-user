@@ -105,7 +105,7 @@ export const Widget = memo(({ filters, range, infoIcon, metricsInterval, target,
                         </div>
                     ) : (
                         <div className="p-16 flex flex-col justify-between h-full">
-                            <div className="flex justify-between">
+                            <div className="flex flex-row justify-between">
                                 {/* Widget title */}
                                 <TypographyFormatMessage className="sm:text-16 font-medium md:text-17">
                                     {renderWidgetTitle(target)}
@@ -118,23 +118,22 @@ export const Widget = memo(({ filters, range, infoIcon, metricsInterval, target,
                                     <TypographyFormatMessage>Aucune donnée disponible</TypographyFormatMessage>
                                 </div>
                             ) : (
-                                <div className="flex flex-row flex-wrap mt-12 items-end">
-                                    {/* Widget value */}
-                                    <Typography className="text-2xl sm:text-3xl md:text-4xl font-normal tracking-tighter items-end mr-auto">
-                                        {value}
-                                    </Typography>
-                                    <div className="flex flex-col">
+                                <div className="flex flex-row justify-between items-center gap-3">
+                                    <div className="flex flex-row items-end gap-3">
+                                        {/* Widget value */}
+                                        <Typography className="text-2xl sm:text-3xl md:text-4xl font-normal tracking-tighter">
+                                            {value}
+                                        </Typography>
                                         {/* Widget unit */}
-                                        <Typography
-                                            className="text-16 md:text-20 font-medium mb-24"
-                                            color="textSecondary"
-                                        >
+                                        <Typography className="text-16 md:text-20 font-medium" color="textSecondary">
                                             {unit}
                                         </Typography>
-                                        {/* Widget arrow */}
-                                        {percentageChange !== 0 &&
-                                            // Negative means decrease
-                                            (percentageChange < 0 ? (
+                                    </div>
+                                    {/* Widget arrow */}
+                                    {percentageChange !== 0 && (
+                                        // Negative means decrease
+                                        <div className="h-full flex items-center">
+                                            {percentageChange < 0 ? (
                                                 <Icon color="success" sx={{ fontSize: { xs: '24px', md: '32px' } }}>
                                                     trending_down
                                                 </Icon>
@@ -143,8 +142,9 @@ export const Widget = memo(({ filters, range, infoIcon, metricsInterval, target,
                                                 <Icon color="error" sx={{ fontSize: { xs: '24px', md: '32px' } }}>
                                                     trending_up
                                                 </Icon>
-                                            ))}
-                                    </div>
+                                            )}
+                                        </div>
+                                    )}
                                 </div>
                             )}
                         </div>
