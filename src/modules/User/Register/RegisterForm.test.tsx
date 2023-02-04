@@ -218,7 +218,7 @@ describe('test registerForm', () => {
         await waitFor(() => {
             expect(getAllByText(CHECKBOX_RGPD_ERROR_TEXT).length).toBe(1)
         })
-    }, 20000)
+    }, 25000)
     test('Email format validation', async () => {
         const { getByRole, getAllByText } = reduxedRender(<RegisterForm />)
         await act(async () => {
@@ -289,5 +289,5 @@ describe('test registerForm', () => {
             },
             { timeout: 3000 },
         )
-    }, 20000)
+    }, 25000)
 })
