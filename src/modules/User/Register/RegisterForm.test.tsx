@@ -214,7 +214,11 @@ const fillFormWithData = async (getByRole: Function, container: HTMLElement, get
  * @param getByText GetByText Jest.
  * @param getByLabelText GetByLabelText Jest.
  */
-const handleProfessionalRegistrationType = (getAllByRole: Function, getByText: Function, getByLabelText: Function) => {
+const handleProfessionalRegistrationType = (
+    getAllByRole: typeof screen.getAllByRole,
+    getByText: typeof screen.getByText,
+    getByLabelText: typeof screen.getByLabelText,
+) => {
     const registrationTypeField = getByLabelText('Vous êtes')
     userEvent.click(registrationTypeField)
     expect(getAllByRole('option').length).toBe(2)
@@ -233,10 +237,7 @@ describe('test registerForm', () => {
     test('RGPD checkbox required', async () => {
         const { getAllByText, getByRole, container, getByTestId, getByLabelText, getAllByRole, getByText } =
             reduxedRender(<RegisterForm />)
-        const registrationTypeField = getByLabelText('Vous êtes')
-        userEvent.click(registrationTypeField)
-        expect(getAllByRole('option').length).toBe(2)
-        userEvent.click(getByText('Professionnel'))
+        handleProfessionalRegistrationType(getAllByRole, getByText, getByLabelText)
         await fillFormWithData(getByRole as Function, container, getByTestId as Function)
         userEvent.click(screen.getByText('Valider'))
         await waitFor(() => {
