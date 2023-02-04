@@ -46,3 +46,8 @@ export function convertUserDataToQueryString(data: IUserRegister) {
 
     return `${new URLSearchParams(url).toString()}`
 }
+
+/**
+ * Siren regex that allow only digits and up to maximum 9.
+ */
+export const sirenFieldRegex = /^\d{9}$/.source

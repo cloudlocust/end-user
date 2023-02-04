@@ -35,6 +35,8 @@ export const TEST_FAIL_ID = 23
  */
 export const TEST_SUCCESS_USER = {
     id: '1',
+    company_name: 'company name 1',
+    siren: '123456789',
     civility: 'Mr',
     first_name: 'Orlando',
     last_name: 'Jackson',
