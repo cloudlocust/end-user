@@ -22,6 +22,18 @@ const Root = styled('div')(({ theme }) => ({
             height: 'auto',
         },
     },
+    '& .MuiToolbar-root': {
+        // Styling the container of the Navbar toggle button.
+        '& > div:nth-of-type(1)': {
+            [theme.breakpoints.down('sm')]: {
+                padding: 0,
+            },
+        },
+        // Styling the toolbarContent.
+        '& > div:nth-of-type(2)': {
+            overflowX: 'hidden',
+        },
+    },
 }))
 
 /**
