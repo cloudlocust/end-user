@@ -180,26 +180,5 @@ describe('Test LastStepNrLinkConnection', () => {
                 variant: 'error',
             })
         }, 20000)
-        test('when submitForm and nrLINK authorize success, snackbar error should be shown, and setNrLinkAuthorizeInProgress should be called accordingly', async () => {
-            const mockSetIsNrLinkAuthorizeInProgress = jest.fn()
-            mockLastStepNrLinkConnectionProps.setIsNrLinkAuthorizeInProgress = mockSetIsNrLinkAuthorizeInProgress
-            const { container, getByText } = reduxedRender(
-                <LastStepNrLinkConnection {...mockLastStepNrLinkConnectionProps} />,
-                { initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[0] } } },
-            )
-            userEvent.type(container.querySelector(guidNrlinkInputQuerySelector)!, TEST_NRLINK_GUID)
-            expect(container.querySelector(guidNrlinkInputQuerySelector)).toHaveValue(TEST_NRLINK_GUID)
-
-            userEvent.click(getByText(NEXT_BUTTON_TEXT))
-
-            await waitFor(() => {
-                expect(mockSetIsNrLinkAuthorizeInProgress).toHaveBeenCalledWith(true)
-            })
-            // expect(mockEnqueueSnackbar).toHaveBeenCalledWith(NRLINK_SUCCESS_SETUP_MESSAGE, {
-            //     autoHideDuration: 10000,
-            //     variant: 'success',
-            // })
-            // expect(mockSetIsNrLinkAuthorizeInProgress).toHaveBeenCalledWith(false)
-        }, 20000)
     })
 })

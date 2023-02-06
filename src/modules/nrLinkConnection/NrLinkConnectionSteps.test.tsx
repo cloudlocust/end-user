@@ -206,7 +206,7 @@ describe('Test NrLinkConnection Page', () => {
                 expect(handleNext).toHaveBeenCalled()
             })
         })
-        test('When activeStep equals last index, Finish boutton should be hidden, and when clicking on previous handleBack should be called, and when clicking on finish nothing is called', async () => {
+        test('When activeStep equals last index, and clicking on Suivant, the contract setup step is shown', async () => {
             const handleNext = jest.fn()
             const handleBack = jest.fn()
             actionsNrLinkConnectionStepsProps.handleNext = handleNext
@@ -214,16 +214,11 @@ describe('Test NrLinkConnection Page', () => {
             actionsNrLinkConnectionStepsProps.handleBack = handleBack
             const { getByText } = reduxedRender(<ActionsNrLinkConnectionSteps {...actionsNrLinkConnectionStepsProps} />)
 
-            expect(() => getByText(NEXT_BUTTON_TEXT)).toThrow()
+            expect(getByText(NEXT_BUTTON_TEXT)).toBeTruthy()
             expect(getByText(BACK_BUTTON_TEXT)).toBeTruthy()
-            expect(getByText(FINISH_BUTTON_TEXT)).toBeTruthy()
-            userEvent.click(getByText(FINISH_BUTTON_TEXT))
-            userEvent.click(getByText(BACK_BUTTON_TEXT))
 
-            await waitFor(() => {
-                expect(handleBack).toHaveBeenCalled()
-            })
-            expect(handleNext).not.toHaveBeenCalled()
+            userEvent.click(getByText(NEXT_BUTTON_TEXT))
+            expect(handleNext).toHaveBeenCalled()
         })
 
         test('When inProgress props, spinner should be shown', async () => {

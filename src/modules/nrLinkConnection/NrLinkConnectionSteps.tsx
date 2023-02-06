@@ -20,6 +20,7 @@ import { NrlinkConnectionStepsEnum } from 'src/modules/nrLinkConnection/nrlinkCo
 import { useSelector } from 'react-redux'
 import { RootState } from 'src/redux'
 import { primaryContrastTextColor, primaryMainColor } from 'src/modules/utils/muiThemeVariables'
+import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 
 /**
  * Component representing the action buttons in the Stepper (Previous, Next), Next Button will be of type Submit.
@@ -149,7 +150,6 @@ const NrLinkConnectionSteps = () => {
     const [screenOrientation, setScreenOrientation] = React.useState(
         window.matchMedia('(orientation: portrait)').matches ? 'portrait' : 'landscape',
     )
-    const { formatMessage } = useIntl()
 
     /**
      * If we receive activateStep from useLocation we set ActiveStep to 1 or 2 depending on the value that was passed.
@@ -172,7 +172,9 @@ const NrLinkConnectionSteps = () => {
             to={URL_CONSUMPTION}
             underline="none"
         >
-            {formatMessage({ id: "Aller vers l'accueil", defaultMessage: "Aller vers l'accueil" })}
+            {activeStep === NrlinkConnectionStepsEnum.fourthStep ? null : (
+                <TypographyFormatMessage>Aller vers l'accueil</TypographyFormatMessage>
+            )}
         </MuiLink>
     )
 
@@ -219,7 +221,7 @@ const NrLinkConnectionSteps = () => {
             meter={meter}
             setIsNrLinkAuthorizeInProgress={setIsNrLinkAuthorizeInProgress}
         />,
-        <ContractStepNrLinkConnection handleNext={handleNext} />,
+        <ContractStepNrLinkConnection housingId={housingId} />,
     ]
 
     return (
@@ -285,7 +287,6 @@ const NrLinkConnectionSteps = () => {
                             {stepsContent[activeStep]}
                             <div className="flex justify-between items-center mt-24 text-center">
                                 <div className="w-full">{skipStepperLink}</div>
-                                <div className="w-full"></div>
                             </div>
                         </div>
                     </div>
