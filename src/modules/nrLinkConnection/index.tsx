@@ -13,4 +13,3 @@ export { default as FirstStepNrLinkConnection } from './components/FirstStepNrLi
 export { default as LastStepNrLinkConnection } from './components/LastStepNrLinkConnection/LastStepNrLinkConnection'
 export { default as LoadingNrLinkConnectionSteps } from './components/LoadingNrLinkConnectionSteps/LoadingNrLinkConnectionSteps'
 export { default as MeterStepNrLinkConnectionForm } from './components/MeterStepNrLinkConnectionForm/MeterStepNrLinkConnectionForm'
-export { default as ContractStepNrLinkConnection } from 'src/modules/nrLinkConnection/components/ContractStepNrLinkConnection/ContractStepNrLinkConnection'

@@ -8,7 +8,6 @@ import {
     MeterStepNrLinkConnectionForm,
     LastStepNrLinkConnection,
     LoadingNrLinkConnectionSteps,
-    ContractStepNrLinkConnection,
 } from 'src/modules/nrLinkConnection'
 import 'src/modules/nrLinkConnection/NrLinkConnectionSteps.scss'
 import { ButtonLoader } from 'src/common/ui-kit'
@@ -219,7 +218,6 @@ const NrLinkConnectionSteps = () => {
             meter={meter}
             setIsNrLinkAuthorizeInProgress={setIsNrLinkAuthorizeInProgress}
         />,
-        <ContractStepNrLinkConnection handleNext={handleNext} />,
     ]
 
     return (
