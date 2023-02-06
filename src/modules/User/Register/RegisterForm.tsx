@@ -13,8 +13,11 @@ import { FormHelperText } from '@mui/material'
 import { LinkRedirection } from 'src/modules/utils/LinkRedirection'
 import { passwordFieldValidationSecurity1 } from 'src/modules/utils'
 import { Select } from 'src/common/ui-kit/form-fields/Select'
-import MenuItem from '@mui/material/MenuItem'
+import { MenuItem, TextField as MuiTextFieldSelect } from '@mui/material'
 import { generalTermsOfUse, privacyPolicy } from 'src/modules/Mentions/MentionsConfig'
+import { isProfessionalRegisterFeature } from 'src/modules/User/Register/RegisterConfig'
+import { sirenFieldRegex } from 'src/modules/User/Register/utils'
+import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 
 /**
  * Civility Option has two properties: (label that shown in the front visual) and (value that goes to the backend).
@@ -51,6 +54,7 @@ export const RegisterForm = ({
     const { isRegisterInProgress, onSubmit } = registerHook()
     const passwordRef = useRef()
     const [rgpdCheckboxState, setRgpdCheckboxState] = React.useState<Boolean | string>('false')
+    const [isProfessionelFields, setIsProfessionalFields] = React.useState(false)
     const { formatMessage } = useIntl()
 
     /**
@@ -83,6 +87,44 @@ export const RegisterForm = ({
         <Form onSubmit={onSubmitWrapper}>
             {/* register your input into the hook by invoking the "register" function */}
             <div className="flex flex-col justify-center w-full">
+                {isProfessionalRegisterFeature && (
+                    <>
+                        <MuiTextFieldSelect
+                            select
+                            label="Vous êtes"
+                            sx={{ marginBottom: '0' }}
+                            defaultValue={'Particulier'}
+                        >
+                            <MenuItem value="Particulier" onClick={() => setIsProfessionalFields(false)}>
+                                <TypographyFormatMessage>Particulier</TypographyFormatMessage>
+                            </MenuItem>
+                            <MenuItem value="Professionnel" onClick={() => setIsProfessionalFields(true)}>
+                                <TypographyFormatMessage>Professionnel</TypographyFormatMessage>
+                            </MenuItem>
+                        </MuiTextFieldSelect>
+                        {isProfessionelFields && (
+                            <>
+                                <TextField
+                                    name="companyName"
+                                    label="Raison sociale"
+                                    validateFunctions={[requiredBuilder()]}
+                                    variant="outlined"
+                                    style={{ margin: isProfessionelFields && '1.25rem 0' }}
+                                />
+                                <TextField
+                                    name="siren"
+                                    label="Siren"
+                                    validateFunctions={[
+                                        requiredBuilder(),
+                                        regex(sirenFieldRegex, 'Le numéro Siren doit être composé de 9 chiffres'),
+                                    ]}
+                                    variant="outlined"
+                                    style={{ marginBottom: '0' }}
+                                />
+                            </>
+                        )}
+                    </>
+                )}
                 <Select
                     name="civility"
                     label="Civilité"

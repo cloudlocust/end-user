@@ -4,15 +4,26 @@ import { IWidgetProps } from 'src/modules/MyConsumption/components/Widget/Widget
 import { IMetric, metricFiltersType, metricIntervalType, metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
 import { TEST_SUCCESS_WEEK_METRICS } from 'src/mocks/handlers/metrics'
 import { periodType } from 'src/modules/MyConsumption/myConsumptionTypes'
-
+import { BrowserRouter as Router } from 'react-router-dom'
+import userEvent from '@testing-library/user-event'
+import { IHousing } from 'src/modules/MyHouse/components/HousingList/housing'
+import { applyCamelCase } from 'src/common/react-platform-components'
+import { TEST_HOUSES } from 'src/mocks/handlers/houses'
+import { URL_MY_HOUSE } from 'src/modules/MyHouse'
+import { ProductionWidgetErrorIcon } from 'src/modules/MyConsumption/components/WidgetInfoIcons'
 const TEST_WEEK_DATA: IMetric[] = TEST_SUCCESS_WEEK_METRICS([metricTargetsEnum.consumption])
 let mockData: IMetric[] = TEST_WEEK_DATA
+
+// List of houses to add to the redux state
+const LIST_OF_HOUSES: IHousing[] = applyCamelCase(TEST_HOUSES)
 
 const CONSOMMATION_TOTALE_TEXT = 'Consommation Totale'
 const CONSOMMATION_TOTALE_UNIT = 'kWh'
 
 const NO_DATA_MESSAGE = 'Aucune donnée disponible'
 const circularProgressClassname = '	.MuiCircularProgress-root'
+
+const ENPHASE_CONSENT_INACTIVE_ERROR_ICON = 'ErrorOutlineIcon'
 
 const mockGetMetricsWithParams = jest.fn()
 let mockFilters: metricFiltersType = [
@@ -31,10 +42,9 @@ const mockSetFilters = jest.fn()
 let mockPeriod: periodType = 'weekly'
 let mockMetricsInterval: metricIntervalType = '1d'
 
-let mockWidgetProps: IWidgetProps = {
+let mockWidgetPropsDefault: IWidgetProps = {
     period: mockPeriod,
     filters: mockFilters,
-    hasMissingHousingContracts: false,
     metricsInterval: mockMetricsInterval,
     range: mockRange,
     target: metricTargetsEnum.consumption,
@@ -59,14 +69,14 @@ jest.mock('src/modules/Metrics/metricsHook.ts', () => ({
 describe('Widget component test', () => {
     test('when isMetricLoading is true, a spinner is shown', async () => {
         mockIsMetricsLoading = true
-        const { container } = reduxedRender(<Widget {...mockWidgetProps} />)
+        const { container } = reduxedRender(<Widget {...mockWidgetPropsDefault} />)
 
         expect(container.querySelector(circularProgressClassname)).toBeInTheDocument()
     })
     test('When widget getMetrics, value should be shown', async () => {
         mockIsMetricsLoading = false
         mockData[0].datapoints = [[1000, 1651406400]]
-        const { getByText } = reduxedRender(<Widget {...mockWidgetProps} />)
+        const { getByText } = reduxedRender(<Widget {...mockWidgetPropsDefault} />)
 
         expect(getByText(CONSOMMATION_TOTALE_TEXT)).toBeInTheDocument()
         expect(getByText(CONSOMMATION_TOTALE_UNIT)).toBeInTheDocument()
@@ -76,8 +86,28 @@ describe('Widget component test', () => {
 
     test('when there is no data, an error message is shown', async () => {
         mockData = []
-        const { getByText } = reduxedRender(<Widget {...mockWidgetProps} />)
+        const { getByText } = reduxedRender(<Widget {...mockWidgetPropsDefault} />)
 
         expect(getByText(NO_DATA_MESSAGE)).toBeTruthy()
+    })
+
+    test('when the infoIcon is given, icon is shown in the widget.', async () => {
+        mockData = []
+        const mockWidgetProps: IWidgetProps = {
+            ...mockWidgetPropsDefault,
+            infoIcon: <ProductionWidgetErrorIcon />,
+        }
+        const { getByTestId } = reduxedRender(
+            <Router>
+                <Widget {...mockWidgetProps} />
+            </Router>,
+            {
+                initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[0] } },
+            },
+        )
+
+        expect(getByTestId(ENPHASE_CONSENT_INACTIVE_ERROR_ICON)).toBeTruthy()
+        userEvent.click(getByTestId(ENPHASE_CONSENT_INACTIVE_ERROR_ICON))
+        expect(window.location.pathname).toBe(`${URL_MY_HOUSE}/${LIST_OF_HOUSES[0].id}`)
     })
 })
