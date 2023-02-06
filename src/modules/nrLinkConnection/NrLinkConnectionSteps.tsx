@@ -220,13 +220,18 @@ const NrLinkConnectionSteps = () => {
     ]
 
     return (
-        <div className="p-24 h-full relative md:mx-auto NrLinkConnectionSteps">
+        <div className="p-16 h-full relative md:mx-auto NrLinkConnectionSteps">
             {!isNrLinkAuthorizeInProgress ? (
                 <div className="h-full flex flex-col items-center justify-between">
                     <Stepper
                         className="NrLinkConnectionStepsStepper w-full"
                         activeStep={activeStep}
                         sx={{
+                            '& .MuiStepConnector-root': {
+                                '& .MuiStepConnector-line': {
+                                    minHeight: '10px',
+                                },
+                            },
                             '& .MuiStepConnector-root.Mui-active': {
                                 '& .MuiStepConnector-line': {
                                     borderColor: primaryMainColor, // Step Connector (ACTIVE)

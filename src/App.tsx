@@ -12,6 +12,17 @@ import { IPageSettings } from 'src/common/react-platform-components'
 import { styled } from '@mui/material/styles'
 
 const Root = styled('div')(({ theme }) => ({
+    '& #fuse-main': {
+        [theme.breakpoints.down('md')]: {
+            marginBottom: '0px !important',
+            paddingBottom: '20px',
+        },
+        '& > div': {
+            [theme.breakpoints.down('lg')]: {
+                marginBottom: '5.6rem',
+            },
+        },
+    },
     '& .fuse-list-item': {
         '& .fuse-list-item-icon': {
             height: 'auto',
