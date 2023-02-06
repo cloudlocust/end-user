@@ -146,39 +146,6 @@ export const MyConsumptionContainer = () => {
             </div>
 
             {/* Widget List */}
-            {/* {(!nrlinkOff || !enedisOff) && (
-                <div className="p-12 sm:p-24 ">
-                    <div className="flex justify-center items-center md:justify-start">
-                        <TypographyFormatMessage variant="h5" className="sm:mr-8 text-black font-medium">
-                            Chiffres clés
-                        </TypographyFormatMessage>
-                    </div>
-                    <div style={{ background: theme.palette.grey[100] }} className="w-full my-8">
-                        <Grid container spacing={{ xs: 1, md: 2 }}>
-                            {WidgetTargets.map((target) => {
-                                return (
-                                    <Widget
-                                        key={target}
-                                        target={target}
-                                        range={range}
-                                        filters={filters}
-                                        metricsInterval={metricsInterval}
-                                        period={period}
-                                        infoIcon={getWidgetInfoIcon({
-                                            widgetTarget: target,
-                                            hasMissingContracts: hasMissingHousingContracts,
-                                            enphaseOff,
-                                            enedisSgeOff: enedisOff,
-                                        })}
-                                    />
-                                )
-                            })}
-                        </Grid>
-                    </div>
-                </div>
-            )} */}
-
-            {/* Widget List */}
             {(!nrlinkOff || !enedisOff) && (
                 <ConsumptionWidgetsContainer
                     period={period}
