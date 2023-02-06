@@ -1,10 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import Box from '@mui/material/Box'
-import Stepper from '@mui/material/Stepper'
-import Step from '@mui/material/Step'
-import StepLabel from '@mui/material/StepLabel'
-import StepContent from '@mui/material/StepContent'
-import Button from '@mui/material/Button'
+import { Dialog, DialogContent, Box, Stepper, Step, StepLabel, StepContent, Button } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
 import { useMediaQuery } from '@mui/material'
 import { useIntl } from 'react-intl'
@@ -13,6 +8,7 @@ import {
     MeterStepNrLinkConnectionForm,
     LastStepNrLinkConnection,
     LoadingNrLinkConnectionSteps,
+    ContractStepNrLinkConnection,
 } from 'src/modules/nrLinkConnection'
 import 'src/modules/nrLinkConnection/NrLinkConnectionSteps.scss'
 import { ButtonLoader } from 'src/common/ui-kit'
@@ -87,7 +83,12 @@ export const ActionsNrLinkConnectionSteps = ({
     )
 }
 
-const stepsLabels = ['Je branche mon capteur', 'Je configure mon compteur Linky', 'Je configure mon capteur']
+const stepsLabels = [
+    'Je branche mon capteur',
+    'Je configure mon compteur Linky',
+    'Je configure mon capteur',
+    "Je configure mon contract de fourniture d'énergie",
+]
 
 /**
  * NrLinkConnectionStep Component.
@@ -214,84 +215,88 @@ const NrLinkConnectionSteps = () => {
         />,
         <LastStepNrLinkConnection
             handleBack={handleBack}
+            handleNext={handleNext}
             meter={meter}
             setIsNrLinkAuthorizeInProgress={setIsNrLinkAuthorizeInProgress}
         />,
+        <ContractStepNrLinkConnection handleNext={handleNext} />,
     ]
 
     return (
         <div className="p-24 h-full relative md:mx-auto NrLinkConnectionSteps">
-            {!isNrLinkAuthorizeInProgress ? (
-                <div className="h-full flex flex-col items-center justify-between">
-                    <Stepper
-                        className="NrLinkConnectionStepsStepper w-full"
-                        activeStep={activeStep}
-                        sx={{
-                            '& .MuiStepConnector-root.Mui-active': {
-                                '& .MuiStepConnector-line': {
-                                    borderColor: primaryMainColor, // Step Connector (ACTIVE)
-                                },
+            <div className="h-full flex flex-col items-center justify-between">
+                <Stepper
+                    className="NrLinkConnectionStepsStepper w-full"
+                    activeStep={activeStep}
+                    sx={{
+                        '& .MuiStepConnector-root.Mui-active': {
+                            '& .MuiStepConnector-line': {
+                                borderColor: primaryMainColor, // Step Connector (ACTIVE)
                             },
-                            '& .MuiStepConnector-root.Mui-completed': {
-                                '& .MuiStepConnector-line': {
-                                    borderColor: primaryMainColor, // Step Connector (COMPLETED)
-                                },
+                        },
+                        '& .MuiStepConnector-root.Mui-completed': {
+                            '& .MuiStepConnector-line': {
+                                borderColor: primaryMainColor, // Step Connector (COMPLETED)
                             },
-                        }}
-                        orientation={isMobile && screenOrientation === 'portrait' ? 'vertical' : 'horizontal'}
-                    >
-                        {stepsLabels.map((label, index) => (
-                            <Step
-                                key={label}
-                                sx={{
-                                    '& .MuiStepContent-root': {
-                                        borderLeftColor: primaryMainColor, // Step Content Indicator Line (ACTIVE)
-                                    },
-                                    '& .MuiStepLabel-root .Mui-completed': {
-                                        color: primaryMainColor, // circle color (COMPLETED)
-                                    },
-                                    '& .MuiStepLabel-label.Mui-completed.MuiStepLabel-alternativeLabel': {
-                                        color: primaryContrastTextColor, // Just text label (COMPLETED)
-                                    },
-                                    '& .MuiStepLabel-root .Mui-active': {
-                                        color: primaryMainColor, // circle color (ACTIVE)
-                                    },
-                                    '& .MuiStepLabel-label.Mui-active.MuiStepLabel-alternativeLabel': {
-                                        color: primaryContrastTextColor, // Just text label (ACTIVE)
-                                    },
-                                    '& .MuiStepLabel-root .Mui-active .MuiStepIcon-text': {
-                                        fill: primaryContrastTextColor, // circle's number (ACTIVE)
-                                    },
-                                }}
-                            >
-                                <StepLabel>{label}</StepLabel>
-                                {isMobile && screenOrientation === 'portrait' && (
-                                    // Vertical stepper content
-                                    <StepContent className="px-20" sx={{ paddingRight: '0' }}>
-                                        {stepsContent[index]}
-                                    </StepContent>
-                                )}
-                            </Step>
-                        ))}
-                    </Stepper>
-                    {isMobile && screenOrientation === 'portrait' ? (
-                        <div className="w-full text-right">{skipStepperLink}</div>
-                    ) : (
-                        // Horizontal stepper content
-                        <div className="h-full flex mt-32 md:mt-0 items-center">
-                            <div className="w-full px-48 StepperContent">
-                                {stepsContent[activeStep]}
-                                <div className="flex justify-between items-center mt-24 text-center">
-                                    <div className="w-full">{skipStepperLink}</div>
-                                    <div className="w-full"></div>
-                                </div>
+                        },
+                    }}
+                    orientation={isMobile && screenOrientation === 'portrait' ? 'vertical' : 'horizontal'}
+                >
+                    {stepsLabels.map((label, index) => (
+                        <Step
+                            key={label}
+                            sx={{
+                                '& .MuiStepContent-root': {
+                                    borderLeftColor: primaryMainColor, // Step Content Indicator Line (ACTIVE)
+                                },
+                                '& .MuiStepLabel-root .Mui-completed': {
+                                    color: primaryMainColor, // circle color (COMPLETED)
+                                },
+                                '& .MuiStepLabel-label.Mui-completed.MuiStepLabel-alternativeLabel': {
+                                    color: primaryContrastTextColor, // Just text label (COMPLETED)
+                                },
+                                '& .MuiStepLabel-root .Mui-active': {
+                                    color: primaryMainColor, // circle color (ACTIVE)
+                                },
+                                '& .MuiStepLabel-label.Mui-active.MuiStepLabel-alternativeLabel': {
+                                    color: primaryContrastTextColor, // Just text label (ACTIVE)
+                                },
+                                '& .MuiStepLabel-root .Mui-active .MuiStepIcon-text': {
+                                    fill: primaryContrastTextColor, // circle's number (ACTIVE)
+                                },
+                            }}
+                        >
+                            <StepLabel>{label}</StepLabel>
+                            {isMobile && screenOrientation === 'portrait' && (
+                                // Vertical stepper content
+                                <StepContent className="px-20" sx={{ paddingRight: '0' }}>
+                                    {stepsContent[index]}
+                                </StepContent>
+                            )}
+                        </Step>
+                    ))}
+                </Stepper>
+                {isMobile && screenOrientation === 'portrait' ? (
+                    <div className="w-full text-right">{skipStepperLink}</div>
+                ) : (
+                    // Horizontal stepper content
+                    <div className="h-full flex mt-32 md:mt-0 items-center">
+                        <div className="w-full px-48 StepperContent">
+                            {stepsContent[activeStep]}
+                            <div className="flex justify-between items-center mt-24 text-center">
+                                <div className="w-full">{skipStepperLink}</div>
+                                <div className="w-full"></div>
                             </div>
                         </div>
-                    )}
-                </div>
-            ) : (
-                <LoadingNrLinkConnectionSteps {...meter!} />
-            )}
+                    </div>
+                )}
+            </div>
+
+            <Dialog open={isNrLinkAuthorizeInProgress}>
+                <DialogContent>
+                    <LoadingNrLinkConnectionSteps {...meter!} />
+                </DialogContent>
+            </Dialog>
         </div>
     )
 }

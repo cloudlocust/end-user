@@ -110,8 +110,8 @@ const MeterStepNrLinkConnectionForm = ({
                                 </motion.div>
                                 <Typography variant="caption" className="text-center md:text-12">
                                     {formatMessage({
-                                        id: 'Vos Factures',
-                                        defaultMessage: 'Vos Factures',
+                                        id: 'Vos factures',
+                                        defaultMessage: 'Vos factures',
                                     })}
                                 </Typography>
                             </div>

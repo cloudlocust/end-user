@@ -6,13 +6,10 @@ import { TextField } from 'src/common/ui-kit'
 import { IMeter } from 'src/modules/Meters/Meters'
 import { API_RESOURCES_URL } from 'src/configs'
 import { axios } from 'src/common/react-platform-components'
-import { useHistory } from 'react-router-dom'
 import { SET_SHOW_NRLINK_POPUP_ENDPOINT } from 'src/modules/nrLinkConnection/NrLinkConnection'
 import { motion } from 'framer-motion'
 import { nrLinkGUID, nrLinkInfo, nrLinkMain } from 'src/modules/nrLinkConnection'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
-import { RootState } from 'src/redux'
-import { useSelector } from 'react-redux'
 
 const textNrlinkColor = 'text.secondary'
 
@@ -29,12 +26,14 @@ export const NRLINK_SUCCESS_SETUP_MESSAGE =
  * @param props.handleBack HandleBack.
  * @param props.meter The selectedMeter.
  * @param props.setIsNrLinkAuthorizeInProgress Handler to set the nrLinkAutorhizeInProgress.
+ * @param props.handleNext HandleNext.
  * @returns LastStepNrLinkConnection.
  */
 const LastStepNrLinkConnection = ({
     handleBack,
     meter,
     setIsNrLinkAuthorizeInProgress,
+    handleNext,
 }: // eslint-disable-next-line jsdoc/require-jsdoc
 {
     // eslint-disable-next-line jsdoc/require-jsdoc
@@ -43,11 +42,11 @@ const LastStepNrLinkConnection = ({
     meter: IMeter | null
     // eslint-disable-next-line jsdoc/require-jsdoc
     setIsNrLinkAuthorizeInProgress: React.Dispatch<React.SetStateAction<boolean>>
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    handleNext: () => void
 }) => {
     const { formatMessage } = useIntl()
-    const history = useHistory()
     const { enqueueSnackbar } = useSnackbar()
-    const { currentHousing } = useSelector(({ housingModel }: RootState) => housingModel)
 
     /**
      * On Submit function which calls addMeter and handleNext on success.
@@ -74,7 +73,7 @@ const LastStepNrLinkConnection = ({
                 { autoHideDuration: 10000, variant: 'success' },
             )
             setIsNrLinkAuthorizeInProgress(false)
-            history.push(`/my-houses/${currentHousing?.id}/contracts`)
+            handleNext()
         } catch (error: any) {
             if (error.response && error.response.data && error.response.data.detail)
                 enqueueSnackbar(
