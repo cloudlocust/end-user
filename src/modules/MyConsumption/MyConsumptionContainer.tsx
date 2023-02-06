@@ -5,23 +5,20 @@ import { useTheme } from '@mui/material'
 import { metricRangeType, metricFiltersType, metricIntervalType } from 'src/modules/Metrics/Metrics.d'
 import { periodType } from 'src/modules/MyConsumption/myConsumptionTypes'
 import { useConsents } from 'src/modules/Consents/consentsHook'
-import Grid from '@mui/material/Grid'
 import MyConsumptionDatePicker from 'src/modules/MyConsumption/components/MyConsumptionDatePicker'
 import { MyConsumptionPeriod } from 'src/modules/MyConsumption'
 import { useSelector } from 'react-redux'
 import { RootState } from 'src/redux'
 import { useHasMissingHousingContracts } from 'src/hooks/HasMissingHousingContracts'
 import { ChartErrorMessage } from 'src/modules/MyConsumption/components/ChartErrorMessage'
-import { NRLINK_ENEDIS_OFF_MESSAGE, WidgetTargets } from 'src/modules/MyConsumption/utils/myConsumptionVariables'
+import { NRLINK_ENEDIS_OFF_MESSAGE } from 'src/modules/MyConsumption/utils/myConsumptionVariables'
 import { EcowattWidget } from 'src/modules/Ecowatt/EcowattWidget'
 import { MissingHousingMeterErrorMessage } from './utils/ErrorMessages'
 import { ProductionChartContainer } from 'src/modules/MyConsumption/components/MyConsumptionChart/ProductionChartContainer'
 import { useEcowatt } from 'src/modules/Ecowatt/EcowattHook'
-import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import CircularProgress from '@mui/material/CircularProgress'
 import Box from '@mui/material/Box'
-import { Widget } from 'src/modules/MyConsumption/components/Widget'
-import { getWidgetInfoIcon } from 'src/modules/MyConsumption/components/WidgetInfoIcons'
+import ConsumptionWidgetsContainer from 'src/modules/MyConsumption/components/ConsumptionWidgetsContainer'
 
 /**
  * MyConsumptionContainer.
@@ -149,7 +146,7 @@ export const MyConsumptionContainer = () => {
             </div>
 
             {/* Widget List */}
-            {(!nrlinkOff || !enedisOff) && (
+            {/* {(!nrlinkOff || !enedisOff) && (
                 <div className="p-12 sm:p-24 ">
                     <div className="flex justify-center items-center md:justify-start">
                         <TypographyFormatMessage variant="h5" className="sm:mr-8 text-black font-medium">
@@ -179,6 +176,19 @@ export const MyConsumptionContainer = () => {
                         </Grid>
                     </div>
                 </div>
+            )} */}
+
+            {/* Widget List */}
+            {(!nrlinkOff || !enedisOff) && (
+                <ConsumptionWidgetsContainer
+                    period={period}
+                    range={range}
+                    filters={filters}
+                    hasMissingHousingContracts={hasMissingHousingContracts}
+                    metricsInterval={metricsInterval}
+                    enphaseOff={enphaseOff}
+                    enedisOff={enedisOff}
+                />
             )}
         </>
     )
