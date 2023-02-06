@@ -49,7 +49,6 @@ export const addElementError = (error: any, formatMessage: formatMessageType) =>
  */
 export const useEcogestesByCategory = (categoryId: number) =>
     BuilderUseElementList<IEcogeste, IEcogeste, searchFilterType>({
-        // API_ENDPOINT: ECOGESTES_BY_CATEGORY(categoryId),
         API_ENDPOINT: ECOGESTES_ENDPOINT,
         snackBarMessage0verride: { loadElementListError, addElementSuccess, addElementError },
     })()
