@@ -8,7 +8,6 @@ import {
     MeterStepNrLinkConnectionForm,
     LastStepNrLinkConnection,
     LoadingNrLinkConnectionSteps,
-    ContractStepNrLinkConnection,
 } from 'src/modules/nrLinkConnection'
 import 'src/modules/nrLinkConnection/NrLinkConnectionSteps.scss'
 import { ButtonLoader } from 'src/common/ui-kit'
@@ -21,6 +20,7 @@ import { useSelector } from 'react-redux'
 import { RootState } from 'src/redux'
 import { primaryContrastTextColor, primaryMainColor } from 'src/modules/utils/muiThemeVariables'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
+import ContractStepNrLinkConnection from 'src/modules/nrLinkConnection/components/ContractStepNrLinkConnection/ContractStepNrLinkConnection'
 
 /**
  * Component representing the action buttons in the Stepper (Previous, Next), Next Button will be of type Submit.

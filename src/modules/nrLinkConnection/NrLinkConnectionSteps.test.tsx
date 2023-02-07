@@ -216,8 +216,12 @@ describe('Test NrLinkConnection Page', () => {
 
             expect(getByText(NEXT_BUTTON_TEXT)).toBeTruthy()
             expect(getByText(BACK_BUTTON_TEXT)).toBeTruthy()
-
+            userEvent.click(getByText(BACK_BUTTON_TEXT))
             userEvent.click(getByText(NEXT_BUTTON_TEXT))
+
+            await waitFor(() => {
+                expect(handleBack).toHaveBeenCalled()
+            })
             expect(handleNext).toHaveBeenCalled()
         })
 

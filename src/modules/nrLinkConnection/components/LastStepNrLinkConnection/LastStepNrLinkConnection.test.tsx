@@ -7,7 +7,6 @@ import { IMeter } from 'src/modules/Meters/Meters'
 import { applyCamelCase } from 'src/common/react-platform-components'
 import { IHousing } from 'src/modules/MyHouse/components/HousingList/housing'
 import { TEST_HOUSES } from 'src/mocks/handlers/houses'
-import { NRLINK_SUCCESS_SETUP_MESSAGE } from 'src/modules/nrLinkConnection/components/LastStepNrLinkConnection/LastStepNrLinkConnection'
 
 const TEST_METERS: IMeter[] = applyCamelCase(MOCK_METERS)
 // List of houses to add to the redux state
