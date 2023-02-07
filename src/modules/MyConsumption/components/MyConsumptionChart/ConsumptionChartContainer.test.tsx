@@ -38,12 +38,18 @@ const nrLinkConsent: INrlinkConsent = {
 }
 
 // Enedis Consent format
-const enedisSgeConsent: IEnedisSgeConsent = {
+const mockEnedisSgeConsentConnected: IEnedisSgeConsent = {
     meterGuid: '133456',
     enedisSgeConsentState: 'CONNECTED',
     expiredAt: '',
 }
 
+// Enedis Consent format
+const mockEnedisSgeConsentOff: IEnedisSgeConsent = {
+    meterGuid: '133456',
+    enedisSgeConsentState: 'NONEXISTENT',
+    expiredAt: '',
+}
 // Enphase Consent default
 const enphaseConsent: IEnphaseConsent = {
     meterGuid: '133456',
@@ -51,7 +57,7 @@ const enphaseConsent: IEnphaseConsent = {
 }
 
 let mockNrlinkConsent: INrlinkConsent | undefined = nrLinkConsent
-let mockEnedisConsent: IEnedisSgeConsent | undefined = enedisSgeConsent
+let mockEnedisConsent: IEnedisSgeConsent | undefined = mockEnedisSgeConsentConnected
 let mockEnphaseConsent: IEnphaseConsent | undefined = enphaseConsent as IEnphaseConsent
 
 let mockIsMetricsLoading = false
@@ -59,6 +65,7 @@ const mockSetFilters = jest.fn()
 const HAS_MISSING_CONTRACTS_WARNING_TEXT =
     "Ce graphe est un exemple basé sur un tarif Bleu EDF Base. Vos données contractuelles de fourniture d'énergie ne sont pas disponibles sur toute la période."
 const HAS_MISSING_CONTRACTS_WARNING_REDIRECT_LINK_TEXT = "Renseigner votre contrat d'énergie"
+const CONSUMPTION_ENEDIS_SGE_WARNING_TEXT = 'Accéder à votre historique de consommation'
 const CONSUMPTION_TITLE_DAILY = 'en Watt par jour'
 const CONSUMPTION_TITLE_WEEKLY = 'en kWh par semaine'
 const CONSUMPTION_TITLE_MONTHLY = 'en kWh par mois'
@@ -74,6 +81,7 @@ const buttonGroupdDisabledClassname = 'disabledField'
 const buttonDisabledClassname = 'Mui-disabled'
 const mockGetConsents = jest.fn()
 const mockGetMetricsWithParams = jest.fn()
+let mockSgeConsentFeatureState = true
 
 let mockFilters: metricFiltersType = [
     {
@@ -92,7 +100,7 @@ let mockMetricsInterval: metricIntervalType = '1m'
 
 const consumptionChartContainerProps: ConsumptionChartContainerProps = {
     filters: mockFilters,
-    enedisSgeConsent,
+    enedisSgeConsent: mockEnedisConsent,
     enphaseConsent,
     hasMissingHousingContracts: false,
     metricsInterval: mockMetricsInterval,
@@ -129,10 +137,7 @@ const BOUGHT_CONSUMPTION_NETWORK_TOOLTIP_TEXT = 'Electricité achetée sur le r�
 jest.mock('src/modules/Consents/consentsHook.ts', () => ({
     // eslint-disable-next-line jsdoc/require-jsdoc
     useConsents: () => ({
-        enedisSgeConsent: {
-            meterGuid: '133456',
-            enedisSgeConsentState: mockEnedisConsent,
-        },
+        enedisSgeConsent: mockEnedisConsent,
         nrlinkConsent: {
             meterGuid: '133456',
             nrlinkConsentState: mockNrlinkConsent,
@@ -168,6 +173,14 @@ jest.mock(
         ),
 )
 
+jest.mock('src/modules/MyHouse/MyHouseConfig', () => ({
+    ...jest.requireActual('src/modules/MyHouse/MyHouseConfig'),
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    get sgeConsentFeatureState() {
+        return mockSgeConsentFeatureState
+    },
+}))
+
 describe('MyConsumptionContainer test', () => {
     test('onLoad getMetrics is called two times, one with default targets and then all targets.', async () => {
         consumptionChartContainerProps.period = mockPeriod
@@ -189,6 +202,8 @@ describe('MyConsumptionContainer test', () => {
                 targets: ConsumptionChartTargets,
             })
         })
+
+        expect(() => getByText(CONSUMPTION_ENEDIS_SGE_WARNING_TEXT)).toThrow()
         // Consent enphase is Active Bought network consumption and AutoConsumption tooltip texts are shown
         expect(getByText(BOUGHT_CONSUMPTION_NETWORK_TOOLTIP_TEXT)).toBeTruthy()
         expect(getByText(AUTO_CONSUMPTION_TOOLTIP_TEXT)).toBeTruthy()
@@ -219,6 +234,7 @@ describe('MyConsumptionContainer test', () => {
                 <Router>
                     <ConsumptionChartContainer {...consumptionChartContainerProps} />
                 </Router>,
+                { initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[0] } } },
             )
             expect(getByText(text)).toBeTruthy()
         })
@@ -245,6 +261,7 @@ describe('MyConsumptionContainer test', () => {
                 <Router>
                     <ConsumptionChartContainer {...consumptionChartContainerProps} />
                 </Router>,
+                { initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[0] } } },
             )
             // TOGGLING TO EUROS CONSUMPTION CHART
             userEvent.click(getByTestId(EUROS_CONSUMPTION_ICON_TEST_ID).parentElement as HTMLButtonElement)
@@ -306,9 +323,11 @@ describe('MyConsumptionContainer test', () => {
         ).toBeTruthy()
         expect(getByText(PMAX_BUTTON_TEXT).classList.contains(buttonGroupdDisabledClassname)).toBeTruthy()
     })
-    test('When period is not daily and enedisSgeConsent is not Connected, pMax button should be disabled', async () => {
+
+    test('When period is not daily and enedisSgeConsent is not Connected, pMax button should be disabled, enedisSgeConsent warning is shown', async () => {
         consumptionChartContainerProps.period = 'weekly'
-        consumptionChartContainerProps.enedisSgeConsent!.enedisSgeConsentState = 'NONEXISTENT'
+        consumptionChartContainerProps.enedisSgeConsent = mockEnedisSgeConsentOff
+        mockEnedisConsent = mockEnedisSgeConsentOff
 
         const { getByText } = reduxedRender(
             <Router>
@@ -317,8 +336,10 @@ describe('MyConsumptionContainer test', () => {
             { initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[0] } } },
         )
 
+        expect(getByText(CONSUMPTION_ENEDIS_SGE_WARNING_TEXT)).toBeTruthy()
         expect(getByText(PMAX_BUTTON_TEXT).classList.contains(buttonGroupdDisabledClassname)).toBeTruthy()
     })
+
     test('When consent enphaseOff, autoconsumption target is not shown, getMetrics is called two times, one with default targets and then all targets both without autoconsumption target', async () => {
         consumptionChartContainerProps.enphaseConsent!.enphaseConsentState = 'NONEXISTENT'
         mockGetMetricsWithParamsValues.targets = [metricTargetsEnum.consumption]

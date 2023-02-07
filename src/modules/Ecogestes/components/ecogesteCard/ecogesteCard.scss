@@ -1,0 +1,11 @@
+.ellipsis {
+    position: relative
+}
+
+.ellipsis::after {
+    content: '...';
+    position: absolute;
+    display: inline-block;
+    bottom: 0;
+    right: 0;
+}

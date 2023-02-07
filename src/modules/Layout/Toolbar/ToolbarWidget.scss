@@ -1,9 +1,41 @@
+@import 'src/common/ui-kit/styles/media.scss';
+
 .toolbar-widget {
-    // Style the notification icon to be centered vertically
+    width: 100%;
+    // Style the select house form had a responsive width.
+    .MuiFormControl-root {
+        margin-bottom: 0px;
+        flex: 1 1 50%;
+        max-width: fit-content;
+        min-width: 120px;
+
+        /*
+         If the screen is large and the content is large enough
+          then we prevent the select form to take a width more than 50%.
+        */
+        @include sm {
+            flex: none;
+            width: 50%;
+        }
+    }
+    // Style the notification icon to be centered vertically.
     .mantine-Popover-root {
         display: flex;
         align-items: center;
         height: 100%;
-        margin: 0 8px;
+        margin: 0 0 0 0.5rem;
+
+        @include sm {
+            margin: 0 8px;
+        }
+    }
+
+    // Reduce the padding of the icons of the header for the mobile devices.
+    .MuiButtonBase-root {
+        padding: 0.5rem;
+
+        @include sm {
+            padding: 12px;
+        }
     }
 }
