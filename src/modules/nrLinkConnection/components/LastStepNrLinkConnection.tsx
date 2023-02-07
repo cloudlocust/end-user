@@ -101,7 +101,12 @@ const LastStepNrLinkConnection = ({
                 <div className="portrait:flex-col landscape:flex-row h-full flex justify-center items-center w-full">
                     <div className="w-full mx-32">
                         <div className="hidden">
-                            <TextField name="meterGuid" disabled label="Numéro de mon compteur" />
+                            <TextField
+                                name="meterGuid"
+                                disabled
+                                label="Numéro de mon compteur"
+                                placeholder="Ex: 12345678912345"
+                            />
                         </div>
                         <TextField
                             name="nrlinkGuid"
@@ -113,6 +118,7 @@ const LastStepNrLinkConnection = ({
                                     'Veuillez entrer un N° GUID valide (16 caractères, chiffre de 0 à 9, lettre de A à F, pas d’espace ni de tiret)',
                                 ),
                             ]}
+                            placeholder="Ex: 0CA2F400008A4F86"
                         />
                     </div>
                     <div className="w-full flex flex-col">
