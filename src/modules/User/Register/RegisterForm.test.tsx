@@ -207,22 +207,43 @@ const fillFormWithData = async (getByRole: Function, container: HTMLElement, get
     )
 }
 
+/**
+ * Function that enable professional fields.
+ *
+ * @param getAllByRole GetAllByRole Jest.
+ * @param getByText GetByText Jest.
+ * @param getByLabelText GetByLabelText Jest.
+ */
+const handleProfessionalRegistrationType = (
+    getAllByRole: typeof screen.getAllByRole,
+    getByText: typeof screen.getByText,
+    getByLabelText: typeof screen.getByLabelText,
+) => {
+    const registrationTypeField = getByLabelText('Vous êtes')
+    userEvent.click(registrationTypeField)
+    expect(getAllByRole('option').length).toBe(2)
+    userEvent.click(getByText('Professionnel'))
+}
+
 describe('test registerForm', () => {
     test('all fields required', async () => {
-        const { getAllByText } = reduxedRender(<RegisterForm />)
+        const { getAllByText, getAllByRole, getByText, getByLabelText } = reduxedRender(<RegisterForm />)
+        handleProfessionalRegistrationType(getAllByRole, getByText, getByLabelText)
         await act(async () => {
             fireEvent.click(screen.getByText('Valider'))
         })
         expect(getAllByText('Champ obligatoire non renseigné').length).toBe(10)
     })
     test('RGPD checkbox required', async () => {
-        const { getAllByText, getByRole, container, getByTestId } = reduxedRender(<RegisterForm />)
+        const { getAllByText, getByRole, container, getByTestId, getByLabelText, getAllByRole, getByText } =
+            reduxedRender(<RegisterForm />)
+        handleProfessionalRegistrationType(getAllByRole, getByText, getByLabelText)
         await fillFormWithData(getByRole as Function, container, getByTestId as Function)
         userEvent.click(screen.getByText('Valider'))
         await waitFor(() => {
             expect(getAllByText(CHECKBOX_RGPD_ERROR_TEXT).length).toBe(1)
         })
-    }, 20000)
+    }, 25000)
     test('Email format validation', async () => {
         const { getByRole, getAllByText } = reduxedRender(<RegisterForm />)
         await act(async () => {
@@ -262,7 +283,13 @@ describe('test registerForm', () => {
         expect(getAllByText('Les mot de passes ne correspondent pas.').length).toBe(1)
     })
     test('Normal case with call to submit', async () => {
-        const { getByRole, getByTestId, container } = reduxedRender(<RegisterForm defaultRole="defaultRle" />)
+        const { getByRole, getByTestId, container, getByLabelText, getAllByRole, getByText } = reduxedRender(
+            <RegisterForm defaultRole="defaultRle" />,
+        )
+        const registrationTypeField = getByLabelText('Vous êtes')
+        userEvent.click(registrationTypeField)
+        expect(getAllByRole('option').length).toBe(2)
+        userEvent.click(getByText('Professionnel'))
 
         await fillFormWithData(getByRole as Function, container, getByTestId as Function)
         const checkboxRGPD = container.querySelector('input[name="rgpdCheckbox"]') as Element
@@ -295,10 +322,10 @@ describe('test registerForm', () => {
             },
             { timeout: 3000 },
         )
-    }, 20000)
+    }, 25000)
     test('if siren field is invalid', async () => {
-        const { getByRole, getByText } = reduxedRender(<RegisterForm />)
-
+        const { getByRole, getByText, getAllByRole, getByLabelText } = reduxedRender(<RegisterForm />)
+        handleProfessionalRegistrationType(getAllByRole, getByText, getByLabelText)
         const siren = getByRole('textbox', { name: 'Siren' })
         userEvent.type(siren, '123')
 

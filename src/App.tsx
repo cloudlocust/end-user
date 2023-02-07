@@ -12,6 +12,17 @@ import { IPageSettings } from 'src/common/react-platform-components'
 import { styled } from '@mui/material/styles'
 
 const Root = styled('div')(({ theme }) => ({
+    '& #fuse-main': {
+        [theme.breakpoints.down('md')]: {
+            marginBottom: '0px !important',
+            paddingBottom: '20px',
+        },
+        '& > div': {
+            [theme.breakpoints.down('lg')]: {
+                marginBottom: '5.6rem',
+            },
+        },
+    },
     '& .fuse-list-item': {
         '& .fuse-list-item-icon': {
             height: 'auto',
@@ -20,6 +31,18 @@ const Root = styled('div')(({ theme }) => ({
     '& .fuse-bottom-navigation-item': {
         '& .MuiIcon-root': {
             height: 'auto',
+        },
+    },
+    '& .MuiToolbar-root': {
+        // Styling the container of the Navbar toggle button.
+        '& > div:nth-of-type(1)': {
+            [theme.breakpoints.down('sm')]: {
+                padding: 0,
+            },
+        },
+        // Styling the toolbarContent.
+        '& > div:nth-of-type(2)': {
+            overflowX: 'hidden',
         },
     },
 }))
