@@ -81,13 +81,13 @@ const MeterStepNrLinkConnectionForm = ({
                                 name="guid"
                                 style={{ marginBottom: '20px' }}
                                 fullWidth
-                                label="Numéro de mon compteur"
+                                label="Numéro de mon compteur (PDL ou PRM)"
                                 variant="outlined"
                             />
                         ) : (
                             <TextField
                                 name="guid"
-                                label="Numéro de mon compteur"
+                                label="Numéro de mon compteur (PDL ou PRM)"
                                 validateFunctions={[requiredBuilder(), min(14), max(14)]}
                             />
                         )}
@@ -126,8 +126,8 @@ const MeterStepNrLinkConnectionForm = ({
 
                                 <Typography variant="caption" className="text-center md:text-12">
                                     {formatMessage({
-                                        id: 'Votre compteur Linky en appuyant sur “+” (n°PRM)',
-                                        defaultMessage: 'Votre compteur Linky en appuyant sur “+” (n°PRM)',
+                                        id: 'Votre compteur Linky en appuyant sur “+” (n° PDL ou PRM)',
+                                        defaultMessage: 'Votre compteur Linky en appuyant sur “+” (n° PDL ou PRM)',
                                     })}
                                 </Typography>
                             </div>
