@@ -57,12 +57,7 @@ export const ToolbarWidget = () => {
 
     return (
         <div className="flex flex-1 my-20 justify-between toolbar-widget">
-            <FormControl
-                sx={{
-                    '&.MuiFormControl-root': { marginBottom: '0px' },
-                    width: { xs: 160, md: 250 },
-                }}
-            >
+            <FormControl>
                 <InputLabel id="select-housing-label">
                     {currentHousing?.id
                         ? formatMessage({
