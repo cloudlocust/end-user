@@ -116,7 +116,6 @@ describe('Test HousingCard', () => {
 
             // Test that delete warning popup is open.
             await waitFor(() => {
-                // expect(getByText(MODAL_POPUP_TEXT_VERIFICATION)).toBeTruthy()
                 expect(getByText(MODAL_POPUP_TEXT_VERIFICATION)).toBeTruthy()
             })
             // Close delete warning popup.
