@@ -276,8 +276,8 @@ const ContractFormFields = ({ isContractsLoading }: ContractFormFieldsProps) => 
                 <DatePicker
                     name="endSubscription"
                     label={formatMessage({
-                        id: 'Date de fin',
-                        defaultMessage: 'Date de fin',
+                        id: 'Date de fin (Si terminé)',
+                        defaultMessage: 'Date de fin (Si terminé)',
                     })}
                 />
             )}
