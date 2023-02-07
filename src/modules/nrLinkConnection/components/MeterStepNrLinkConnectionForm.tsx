@@ -82,12 +82,14 @@ const MeterStepNrLinkConnectionForm = ({
                                 style={{ marginBottom: '20px' }}
                                 fullWidth
                                 label="Numéro de mon compteur (PDL ou PRM)"
+                                placeholder="Ex: 12345678912345"
                                 variant="outlined"
                             />
                         ) : (
                             <TextField
                                 name="guid"
                                 label="Numéro de mon compteur (PDL ou PRM)"
+                                placeholder="Ex: 12345678912345"
                                 validateFunctions={[requiredBuilder(), min(14), max(14)]}
                             />
                         )}

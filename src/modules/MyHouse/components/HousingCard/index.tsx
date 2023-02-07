@@ -283,8 +283,8 @@ const HousingCard = ({
                                     name="guid"
                                     label="Numéro de mon compteur"
                                     placeholder={formatMessage({
-                                        id: 'Donnez le numéro de votre compteur',
-                                        defaultMessage: 'Donnez le numéro de votre compteur',
+                                        id: 'Ex: 12345678912345',
+                                        defaultMessage: 'Ex: 12345678912345',
                                     })}
                                     validateFunctions={[requiredBuilder(), min(14), max(14)]}
                                 />
