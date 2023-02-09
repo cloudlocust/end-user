@@ -118,7 +118,8 @@ const ContractFormFields = ({ isContractsLoading }: ContractFormFieldsProps) => 
         () =>
             tariffTypeList?.some(
                 (tariffType) =>
-                    tariffType.id === formData.tariffTypeId && tariffType.name === 'Heures Pleines / Heures Creuses',
+                    tariffType.id === formData.tariffTypeId &&
+                    ['Heures Pleines / Heures Creuses', 'Heures Creuses et Week-End'].includes(tariffType.name),
             ),
         [formData.tariffTypeId, tariffTypeList],
     )
