@@ -60,7 +60,7 @@ export const Widget = memo(({ filters, range, infoIcon, metricsInterval, target,
     }, [data, target, metricsContext])
 
     useEffect(() => {
-        metricsContext?.saveOldMetricsData(target, oldData)
+        metricsContext?.saveMetricsData(target, oldData, true)
     }, [oldData, target, metricsContext])
 
     const theme = useTheme()

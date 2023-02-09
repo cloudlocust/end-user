@@ -22,29 +22,22 @@ export const ConsumptionWidgetsMetricsProvider = ({ children }: ConsumptionWidge
     const oldMetricsData = new Map<metricTargetType, IMetric[]>()
 
     /**
-     * Function to save current metrics data {key:target, value:data} in (metricsData) Map.
+     * Function to save metrics data {key:target, value:data} in (metricsData) Map or in (oldMetricsData) if isOld is true.
      *
      * @param target Target type.
      * @param data Metrics data.
+     * @param isOldData Boolean var for know if the data metrics is the current data or the previous data.
      */
-    const saveMetricsData = (target: metricTargetType, data: IMetric[]) => {
-        metricsData.set(target, data)
-    }
-
-    /**
-     * Function to save current metrics data {key:target, value:data} in (oldMetricsData) Map.
-     *
-     * @param target Target type.
-     * @param data Metrics data.
-     */
-    const saveOldMetricsData = (target: metricTargetType, data: IMetric[]) => {
-        oldMetricsData.set(target, data)
+    const saveMetricsData = (target: metricTargetType, data: IMetric[], isOldData: boolean = false) => {
+        if (isOldData) {
+            oldMetricsData.set(target, data)
+        } else {
+            metricsData.set(target, data)
+        }
     }
 
     return (
-        <ConsumptionWidgetsMetricsContext.Provider
-            value={{ metricsData, oldMetricsData, saveMetricsData, saveOldMetricsData }}
-        >
+        <ConsumptionWidgetsMetricsContext.Provider value={{ metricsData, oldMetricsData, saveMetricsData }}>
             {children}
         </ConsumptionWidgetsMetricsContext.Provider>
     )

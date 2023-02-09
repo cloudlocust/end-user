@@ -16,13 +16,9 @@ export type ConsumptionWidgetsMetricsContextType = /**
      */
     metricsData: Map<metricTargetType, IMetric[]>
     /**
-     * Function for save the previous metrics (save the data with the target key in oldMetricsData Map).
+     * Function to save metrics data {key:target, value:data} in (metricsData) Map or in (oldMetricsData) if isOld is true.
      */
-    saveOldMetricsData: (target: metricTargetType, data: IMetric[]) => void
-    /**
-     * Function for save the current metrics (save the data value with the target key in metricsData Map).
-     */
-    saveMetricsData: (target: metricTargetType, data: IMetric[]) => void
+    saveMetricsData: (target: metricTargetType, data: IMetric[], isOldData?: boolean = false) => void
 }
 
 /**
