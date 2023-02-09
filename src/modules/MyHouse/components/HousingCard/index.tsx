@@ -281,7 +281,7 @@ const HousingCard = ({
                             <CardContent className="mt-10">
                                 <TextField
                                     name="guid"
-                                    label="Numéro de mon compteur"
+                                    label="Numéro de PDL ou PRM"
                                     placeholder={formatMessage({
                                         id: 'Ex: 12345678912345',
                                         defaultMessage: 'Ex: 12345678912345',
