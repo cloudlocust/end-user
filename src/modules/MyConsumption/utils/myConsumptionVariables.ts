@@ -270,6 +270,7 @@ export const WidgetTargets: metricTargetType[] = [
     metricTargetsEnum.consumption,
     metricTargetsEnum.totalProduction,
     metricTargetsEnum.eurosConsumption,
+    metricTargetsEnum.autoconsumption,
     metricTargetsEnum.pMax,
     metricTargetsEnum.externalTemperature,
     metricTargetsEnum.internalTemperature,
