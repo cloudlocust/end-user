@@ -118,7 +118,8 @@ const ContractFormFields = ({ isContractsLoading }: ContractFormFieldsProps) => 
         () =>
             tariffTypeList?.some(
                 (tariffType) =>
-                    tariffType.id === formData.tariffTypeId && tariffType.name === 'Heures Pleines / Heures Creuses',
+                    tariffType.id === formData.tariffTypeId &&
+                    ['Heures Pleines / Heures Creuses', 'Heures Creuses et Week-End'].includes(tariffType.name),
             ),
         [formData.tariffTypeId, tariffTypeList],
     )
@@ -276,8 +277,8 @@ const ContractFormFields = ({ isContractsLoading }: ContractFormFieldsProps) => 
                 <DatePicker
                     name="endSubscription"
                     label={formatMessage({
-                        id: 'Date de fin',
-                        defaultMessage: 'Date de fin',
+                        id: 'Date de fin (Si terminé)',
+                        defaultMessage: 'Date de fin (Si terminé)',
                     })}
                 />
             )}

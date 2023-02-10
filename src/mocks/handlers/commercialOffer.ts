@@ -115,6 +115,10 @@ export var TEST_TARIFF_TYPES: SnakeCasedPropertiesDeep<ITariffType>[] = [
         id: 3,
         name: 'super heures creuses',
     },
+    {
+        id: 4,
+        name: 'Heures Creuses et Week-End',
+    },
 ]
 
 /**
