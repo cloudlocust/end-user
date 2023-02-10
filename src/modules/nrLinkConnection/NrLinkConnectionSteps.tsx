@@ -172,7 +172,7 @@ const NrLinkConnectionSteps = () => {
             to={URL_CONSUMPTION}
             underline="none"
         >
-            {activeStep === NrlinkConnectionStepsEnum.fourthStep ? null : (
+            {activeStep !== NrlinkConnectionStepsEnum.fourthStep && (
                 <TypographyFormatMessage>Aller vers l'accueil</TypographyFormatMessage>
             )}
         </MuiLink>

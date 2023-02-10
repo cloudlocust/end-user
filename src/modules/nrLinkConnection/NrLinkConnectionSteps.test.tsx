@@ -9,7 +9,6 @@ import { URL_CONSUMPTION } from 'src/modules/MyConsumption'
 const BACK_BUTTON_TEXT = 'Précédent'
 const NEXT_BUTTON_TEXT = 'Suivant'
 const SKIP_LINK_TEXT = "Aller vers l'accueil"
-const FINISH_BUTTON_TEXT = 'Terminer'
 const loadingButtonClassName = '.MuiCircularProgress-root '
 const horizontalStepperClassName = '.MuiStep-horizontal'
 const verticalStepperClassName = '.MuiStep-vertical'
@@ -229,6 +228,11 @@ describe('Test NrLinkConnection Page', () => {
             actionsNrLinkConnectionStepsProps.inProgress = true
             const { container } = reduxedRender(<ActionsNrLinkConnectionSteps {...actionsNrLinkConnectionStepsProps} />)
             expect(container.querySelector(loadingButtonClassName)).toBeInTheDocument()
+        })
+        test("when activeStep is 4th, Aller vers l'accueil message isn't shown", async () => {
+            actionsNrLinkConnectionStepsProps.activeStep = 3
+            const { getByText } = reduxedRender(<ActionsNrLinkConnectionSteps {...actionsNrLinkConnectionStepsProps} />)
+            expect(() => getByText("Aller vers l'accueil")).toThrow()
         })
     })
 })
