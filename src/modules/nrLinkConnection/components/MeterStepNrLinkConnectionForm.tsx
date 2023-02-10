@@ -81,14 +81,14 @@ const MeterStepNrLinkConnectionForm = ({
                                 name="guid"
                                 style={{ marginBottom: '20px' }}
                                 fullWidth
-                                label="Numéro de mon compteur"
+                                label="Numéro de PDL ou PRM"
                                 placeholder="Ex: 12345678912345"
                                 variant="outlined"
                             />
                         ) : (
                             <TextField
                                 name="guid"
-                                label="Numéro de mon compteur"
+                                label="Numéro de PDL ou PRM"
                                 placeholder="Ex: 12345678912345"
                                 validateFunctions={[requiredBuilder(), min(14), max(14)]}
                             />
@@ -97,8 +97,8 @@ const MeterStepNrLinkConnectionForm = ({
                     <div className="w-full">
                         <Typography variant="caption" className="w-full text-center">
                             {formatMessage({
-                                id: 'Vous pouvez trouver votre numéro de compteur sur :',
-                                defaultMessage: 'Vous pouvez trouver votre numéro de compteur sur :',
+                                id: 'Vous pouvez trouver votre numéro de PDL/PRM :',
+                                defaultMessage: 'Vous pouvez trouver votre numéro de PDL/PRM :',
                             })}
                         </Typography>
                         <div className="flex justify-between items-start mt-7 mb-5">
@@ -128,8 +128,8 @@ const MeterStepNrLinkConnectionForm = ({
 
                                 <Typography variant="caption" className="text-center md:text-12">
                                     {formatMessage({
-                                        id: 'Votre compteur Linky en appuyant sur “+” (n°PRM)',
-                                        defaultMessage: 'Votre compteur Linky en appuyant sur “+” (n°PRM)',
+                                        id: 'Votre compteur Linky en appuyant sur “+” (n° PDL ou PRM)',
+                                        defaultMessage: 'Votre compteur Linky en appuyant sur “+” (n° PDL ou PRM)',
                                     })}
                                 </Typography>
                             </div>

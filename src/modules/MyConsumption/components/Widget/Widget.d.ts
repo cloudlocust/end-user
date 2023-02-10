@@ -11,6 +11,7 @@ export type widgetTitleType =
     | 'Température Extérieure'
     | 'Coût Total'
     | 'Production Totale'
+    | 'Autoconsommation'
 
 /**
  * Total Consumption Units types.

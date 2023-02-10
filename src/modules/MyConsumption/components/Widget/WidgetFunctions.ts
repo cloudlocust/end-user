@@ -151,6 +151,15 @@ export const computeTotalEuros = (data: IMetric[]): { value: number | string; un
 export const computeTotalProduction = (data: IMetric[]) => computeTotalEnergy(data, metricTargetsEnum.totalProduction)
 
 /**
+ * Function that computes total Autoconsumption.
+ *
+ * @param data Metrics data.
+ * @returns Total autoconsumption rounded.
+ */
+export const computeTotalAutoconsumption = (data: IMetric[]) =>
+    computeTotalEnergy(data, metricTargetsEnum.autoconsumption)
+
+/**
  * Function that compute widget assets from metric type.
  *
  * @param data Metrics data.
@@ -171,6 +180,8 @@ export const computeWidgetAssets = (data: IMetric[], type: metricTargetType) => 
             return computeTotalEuros(data)!
         case metricTargetsEnum.totalProduction:
             return computeTotalProduction(data)!
+        case metricTargetsEnum.autoconsumption:
+            return computeTotalAutoconsumption(data)!
         default:
             throw Error('Wrong target')
     }
@@ -196,6 +207,8 @@ export const renderWidgetTitle = (target: metricTargetType): widgetTitleType => 
             return 'Coût Total'
         case metricTargetsEnum.totalProduction:
             return 'Production Totale'
+        case metricTargetsEnum.autoconsumption:
+            return 'Autoconsommation'
         default:
             throw Error('Wrong target')
     }
