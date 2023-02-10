@@ -98,6 +98,7 @@ const stepsLabels = [
  */
 const NrLinkConnectionSteps = () => {
     const theme = useTheme()
+    const { formatMessage } = useIntl()
 
     // this ones are for handling the housing id's and their speceif meters
     const { currentHousing, housingList } = useSelector(({ housingModel }: RootState) => housingModel)
@@ -133,7 +134,8 @@ const NrLinkConnectionSteps = () => {
         state: locationState,
     }: // eslint-disable-next-line jsdoc/require-jsdoc
     {
-        /**
+        /**import { IHousing } from 'src/modules/MyHouse/components/HousingList/housing'
+import { TEST_HOUSES } from 'src/mocks/handlers/houses'
          * Route state.
          */
         // eslint-disable-next-line jsdoc/require-jsdoc
@@ -268,7 +270,12 @@ const NrLinkConnectionSteps = () => {
                                 },
                             }}
                         >
-                            <StepLabel>{label}</StepLabel>
+                            <StepLabel>
+                                {formatMessage({
+                                    id: label,
+                                    defaultMessage: label,
+                                })}
+                            </StepLabel>
                             {isMobile && screenOrientation === 'portrait' && (
                                 // Vertical stepper content
                                 <StepContent className="px-20" sx={{ paddingRight: '0' }}>
