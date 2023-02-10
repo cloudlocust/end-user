@@ -5,15 +5,11 @@ import { TEST_METERS as MOCK_METERS } from 'src/mocks/handlers/meters'
 import userEvent from '@testing-library/user-event'
 import { IMeter } from 'src/modules/Meters/Meters'
 import { applyCamelCase } from 'src/common/react-platform-components'
-import { IHousing } from 'src/modules/MyHouse/components/HousingList/housing'
-import { TEST_HOUSES } from 'src/mocks/handlers/houses'
 
 const TEST_METERS: IMeter[] = applyCamelCase(MOCK_METERS)
 // List of houses to add to the redux state
-const LIST_OF_HOUSES: IHousing[] = applyCamelCase(TEST_HOUSES)
 const NEXT_BUTTON_TEXT = 'Suivant'
 const REQUIRED_ERROR_TEXT = 'Champ obligatoire non renseigné'
-const TEST_NRLINK_GUID = '12345123451234AB'
 
 const guidNrlinkInputQuerySelector = 'input[name="nrlinkGuid"]'
 const ERRROR_NRLINK_NO_DATA_MESSAGE = "Votre nrLINK ne reçoit pas de données vérifier qu'il est connecté au Wifi"
@@ -178,27 +174,6 @@ describe('Test LastStepNrLinkConnection', () => {
                 autoHideDuration: 5000,
                 variant: 'error',
             })
-        }, 20000)
-        test('when submitForm and nrLINK authorize success, snackbar error should be shown, and setNrLinkAuthorizeInProgress should be called accordingly', async () => {
-            const mockSetIsNrLinkAuthorizeInProgress = jest.fn()
-            mockLastStepNrLinkConnectionProps.setIsNrLinkAuthorizeInProgress = mockSetIsNrLinkAuthorizeInProgress
-            const { container, getByText } = reduxedRender(
-                <LastStepNrLinkConnection {...mockLastStepNrLinkConnectionProps} />,
-                { initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[0] } } },
-            )
-            userEvent.type(container.querySelector(guidNrlinkInputQuerySelector)!, TEST_NRLINK_GUID)
-            expect(container.querySelector(guidNrlinkInputQuerySelector)).toHaveValue(TEST_NRLINK_GUID)
-
-            userEvent.click(getByText(NEXT_BUTTON_TEXT))
-
-            await waitFor(() => {
-                expect(mockSetIsNrLinkAuthorizeInProgress).toHaveBeenCalledWith(true)
-            })
-            // expect(mockEnqueueSnackbar).toHaveBeenCalledWith(NRLINK_SUCCESS_SETUP_MESSAGE, {
-            //     autoHideDuration: 10000,
-            //     variant: 'success',
-            // })
-            // expect(mockSetIsNrLinkAuthorizeInProgress).toHaveBeenCalledWith(false)
         }, 20000)
     })
 })

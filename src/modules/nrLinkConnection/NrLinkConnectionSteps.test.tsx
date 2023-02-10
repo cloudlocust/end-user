@@ -205,7 +205,7 @@ describe('Test NrLinkConnection Page', () => {
                 expect(handleNext).toHaveBeenCalled()
             })
         })
-        test('When activeStep equals last index, Finish boutton should be hidden, and when clicking on previous handleBack should be called, and when clicking on finish nothing is called', async () => {
+        test('When activeStep equals last index, and clicking on Suivant, the contract setup step is shown', async () => {
             const handleNext = jest.fn()
             const handleBack = jest.fn()
             actionsNrLinkConnectionStepsProps.handleNext = handleNext
@@ -228,6 +228,11 @@ describe('Test NrLinkConnection Page', () => {
             actionsNrLinkConnectionStepsProps.inProgress = true
             const { container } = reduxedRender(<ActionsNrLinkConnectionSteps {...actionsNrLinkConnectionStepsProps} />)
             expect(container.querySelector(loadingButtonClassName)).toBeInTheDocument()
+        })
+        test("when activeStep is 4th, Aller vers l'accueil message isn't shown", async () => {
+            actionsNrLinkConnectionStepsProps.activeStep = 3
+            const { getByText } = reduxedRender(<ActionsNrLinkConnectionSteps {...actionsNrLinkConnectionStepsProps} />)
+            expect(() => getByText("Aller vers l'accueil")).toThrow()
         })
     })
 })
