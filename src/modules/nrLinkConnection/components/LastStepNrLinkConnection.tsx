@@ -5,15 +5,22 @@ import { useSnackbar } from 'notistack'
 import { TextField } from 'src/common/ui-kit'
 import { IMeter } from 'src/modules/Meters/Meters'
 import { API_RESOURCES_URL } from 'src/configs'
-import { URL_CONSUMPTION } from 'src/modules/MyConsumption'
 import { axios } from 'src/common/react-platform-components'
 import { useHistory } from 'react-router-dom'
 import { SET_SHOW_NRLINK_POPUP_ENDPOINT } from 'src/modules/nrLinkConnection/NrLinkConnection'
 import { motion } from 'framer-motion'
 import { nrLinkGUID, nrLinkInfo, nrLinkMain } from 'src/modules/nrLinkConnection'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
+import { RootState } from 'src/redux'
+import { useSelector } from 'react-redux'
 
 const textNrlinkColor = 'text.secondary'
+
+/**
+ * Snackbar message when nrlink is setup.
+ */
+export const NRLINK_SUCCESS_SETUP_MESSAGE =
+    'Votre nrLINK a été configuré avec succès. Merci de renseigner votre contrat de fourniture pour visualiser la consommation en euros sur votre nrLINK'
 
 /**
  * Component showing the first step in the nrLinkConnection Stepper.
@@ -40,6 +47,7 @@ const LastStepNrLinkConnection = ({
     const { formatMessage } = useIntl()
     const history = useHistory()
     const { enqueueSnackbar } = useSnackbar()
+    const { currentHousing } = useSelector(({ housingModel }: RootState) => housingModel)
 
     /**
      * On Submit function which calls addMeter and handleNext on success.
@@ -59,18 +67,14 @@ const LastStepNrLinkConnection = ({
                 showNrlinkPopup: false,
             })
             enqueueSnackbar(
-                formatMessage(
-                    {
-                        id: 'Votre nrLINK a bien été connecté au compteur {meterGuid}, vous pouvez maintenant visualiser votre consommation en direct',
-                        defaultMessage:
-                            'Votre nrLINK a bien été connecté au compteur {meterGuid}, vous pouvez maintenant visualiser votre consommation en direct',
-                    },
-                    { meterGuid: meter?.guid },
-                ),
+                formatMessage({
+                    id: NRLINK_SUCCESS_SETUP_MESSAGE,
+                    defaultMessage: NRLINK_SUCCESS_SETUP_MESSAGE,
+                }),
                 { autoHideDuration: 10000, variant: 'success' },
             )
             setIsNrLinkAuthorizeInProgress(false)
-            history.push(URL_CONSUMPTION)
+            history.push(`/my-houses/${currentHousing?.id}/contracts`)
         } catch (error: any) {
             if (error.response && error.response.data && error.response.data.detail)
                 enqueueSnackbar(
@@ -97,7 +101,12 @@ const LastStepNrLinkConnection = ({
                 <div className="portrait:flex-col landscape:flex-row h-full flex justify-center items-center w-full">
                     <div className="w-full mx-32">
                         <div className="hidden">
-                            <TextField name="meterGuid" disabled label="Numéro de mon compteur" />
+                            <TextField
+                                name="meterGuid"
+                                disabled
+                                label="Numéro de mon compteur"
+                                placeholder="Ex: 12345678912345"
+                            />
                         </div>
                         <TextField
                             name="nrlinkGuid"
@@ -109,6 +118,7 @@ const LastStepNrLinkConnection = ({
                                     'Veuillez entrer un N° GUID valide (16 caractères, chiffre de 0 à 9, lettre de A à F, pas d’espace ni de tiret)',
                                 ),
                             ]}
+                            placeholder="Ex: 0CA2F400008A4F86"
                         />
                     </div>
                     <div className="w-full flex flex-col">

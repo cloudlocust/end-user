@@ -16,7 +16,7 @@ const mockReloadHousings = jest.fn()
 
 const DEFAULT_GUID_TEXT = 'Veuillez renseigner votre compteur'
 const DEFAULT_ADD_METER_NUMBER_TEXT = 'Numéro de mon compteur'
-const ADD_METER_NUMBER_PLACEHOLDER = 'Donnez le numéro de votre compteur'
+const ADD_METER_NUMBER_PLACEHOLDER = 'Ex: 12345678912345'
 const MODAL_POPUP_TEXT_VERIFICATION = 'Êtes-vous sûr de vouloir continuer ?'
 
 const NUMBER_OF_MY_METER = '12345XRC8g5r9f'
