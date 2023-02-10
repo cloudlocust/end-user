@@ -5,15 +5,11 @@ import { TEST_METERS as MOCK_METERS } from 'src/mocks/handlers/meters'
 import userEvent from '@testing-library/user-event'
 import { IMeter } from 'src/modules/Meters/Meters'
 import { applyCamelCase } from 'src/common/react-platform-components'
-import { IHousing } from 'src/modules/MyHouse/components/HousingList/housing'
-import { TEST_HOUSES } from 'src/mocks/handlers/houses'
 
 const TEST_METERS: IMeter[] = applyCamelCase(MOCK_METERS)
 // List of houses to add to the redux state
-const LIST_OF_HOUSES: IHousing[] = applyCamelCase(TEST_HOUSES)
 const NEXT_BUTTON_TEXT = 'Suivant'
 const REQUIRED_ERROR_TEXT = 'Champ obligatoire non renseigné'
-const TEST_NRLINK_GUID = '12345123451234AB'
 
 const guidNrlinkInputQuerySelector = 'input[name="nrlinkGuid"]'
 const ERRROR_NRLINK_NO_DATA_MESSAGE = "Votre nrLINK ne reçoit pas de données vérifier qu'il est connecté au Wifi"
