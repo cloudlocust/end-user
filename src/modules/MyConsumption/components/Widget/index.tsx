@@ -1,4 +1,4 @@
-import React, { memo, useMemo, useEffect, useRef, useContext } from 'react'
+import React, { memo, useMemo, useEffect, useRef } from 'react'
 import { Typography, Grid, Card, CircularProgress, useTheme } from '@mui/material'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import { IWidgetProps } from 'src/modules/MyConsumption/components/Widget/Widget'
@@ -11,7 +11,7 @@ import {
 } from 'src/modules/MyConsumption/components/Widget/WidgetFunctions'
 import { computePercentageChange } from 'src/modules/Analysis/utils/computationFunctions'
 import Icon from '@mui/material/Icon'
-import { ConsumptionWidgetsMetricsContext } from 'src/modules/MyConsumption/components/ConsumptionWidgetsContainer/ConsumptionWidgetsMetricsContext'
+import { useWidgetsMetricsContext } from 'src/modules/MyConsumption/components/ConsumptionWidgetsContainer/ConsumptionWidgetsMetricsContext/useWidgetsMetricsContext'
 
 const emptyValueUnit = { value: 0, unit: '' }
 /**
@@ -53,14 +53,14 @@ export const Widget = memo(({ filters, range, infoIcon, metricsInterval, target,
         filters,
     })
 
-    const metricsContext = useContext(ConsumptionWidgetsMetricsContext)
+    const metricsContext = useWidgetsMetricsContext()
 
     useEffect(() => {
-        metricsContext?.saveMetricsData(target, data)
+        metricsContext?.addMetrics(data)
     }, [data, target, metricsContext])
 
     useEffect(() => {
-        metricsContext?.saveMetricsData(target, oldData, true)
+        metricsContext?.addMetrics(oldData, true)
     }, [oldData, target, metricsContext])
 
     const theme = useTheme()
