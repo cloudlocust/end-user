@@ -76,8 +76,8 @@ function FuseNavVerticalTab(props: IFuseNavigationComponentProps) {
             disableHoverListener={!item?.disabled}
             className={`${item?.disabled && 'cursor-not-allowed'}`}
             title={formatMessage({
-                id: "Cette fonctionnalité n'est pas disponible sur cette version",
-                defaultMessage: "Cette fonctionnalité n'est pas disponible sur cette version",
+                id: 'Cette fonctionnalité arrive prochainement.',
+                defaultMessage: 'Cette fonctionnalité arrive prochainement.',
             })}
         >
             <Root>

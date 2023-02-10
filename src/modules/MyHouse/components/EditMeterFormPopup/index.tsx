@@ -34,10 +34,10 @@ export const EditMeterFormPopup = (props: EditMeterFormPopupProps) => {
                         <CardContent className="mt-10">
                             <TextField
                                 name="guid"
-                                label="Numéro de mon compteur"
+                                label="Numéro du PDL ou PRM"
                                 placeholder={formatMessage({
-                                    id: 'Modifier le numéro de votre compteur',
-                                    defaultMessage: 'Modifier le numéro de votre compteur',
+                                    id: 'Ex: 12345678912345',
+                                    defaultMessage: 'Ex: 12345678912345',
                                 })}
                                 validateFunctions={[requiredBuilder(), min(14), max(14)]}
                                 inputProps={{ maxLength: 14 }}
