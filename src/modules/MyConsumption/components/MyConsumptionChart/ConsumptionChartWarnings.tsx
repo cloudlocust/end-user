@@ -10,7 +10,6 @@ import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline'
 import { useIntl } from 'react-intl'
 import { EnedisSgePopup } from 'src/modules/MyHouse/components/MeterStatus/EnedisSgePopup'
 import { useConsents } from 'src/modules/Consents/consentsHook'
-import { sgeConsentFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
 
 /**
  * Default Contract Warning message component.
@@ -57,16 +56,15 @@ export const DefaultContractWarning = ({ isShowWarning }: DefaultContractWarning
 /**
  * Consumption History Warning message component.
  *
+ * @param props N/A.
+ * @param props.isShowWarning Indicates if consumptionEnedisWarning should be shown.
  * @returns Consumption History Warning message component.
  */
-export const ConsumptionEnedisSgeWarning = () => {
+export const ConsumptionEnedisSgeWarning = ({ isShowWarning }: DefaultContractWarningProps) => {
     const { currentHousing } = useSelector(({ housingModel }: RootState) => housingModel)
     const { formatMessage } = useIntl()
-    const { createEnedisSgeConsent, isCreateEnedisSgeConsentLoading, createEnedisSgeConsentError, enedisSgeConsent } =
-        useConsents()
+    const { createEnedisSgeConsent, isCreateEnedisSgeConsentLoading, createEnedisSgeConsentError } = useConsents()
 
-    const enedisSgeOff = enedisSgeConsent?.enedisSgeConsentState === 'NONEXISTENT'
-    const isShowWarning = enedisSgeOff && sgeConsentFeatureState
     if (!isShowWarning) return null
     return (
         <div className="flex items-center justify-center flex-col mt-12">
