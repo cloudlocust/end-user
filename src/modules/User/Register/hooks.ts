@@ -82,7 +82,6 @@ export const BuilderUseRegister = ({
                     handleOnAfterSubmit(data)
                 }
             } catch (error) {
-                // eslint-disable-next-line no-console
                 setIsRegisterInProgress(false)
                 if (typeof error === 'string') {
                     enqueueSnackbar(error, { variant: 'error' })

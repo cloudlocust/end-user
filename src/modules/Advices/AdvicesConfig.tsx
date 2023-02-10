@@ -8,6 +8,7 @@ import SvgIcon from '@mui/material/SvgIcon'
  * Url for advices.
  */
 export const URL_ADVICES = '/advices'
+
 /**
  * Interface .
  *
