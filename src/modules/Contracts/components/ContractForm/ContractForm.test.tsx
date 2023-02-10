@@ -26,7 +26,7 @@ const TARRIF_TYPE_LABEL_TEXT = 'Type de contrat *'
 const POWER_LABEL_TEXT = 'Puissance *'
 const OFFPEAK_HOURS_LABEL_TEXT = 'Plages heures creuses :'
 const START_SUBSCRIPTION_LABEL_TEXT = 'Date de début'
-const END_SUBSCRIPTION_LABEL_TEXT = 'Date de fin'
+const END_SUBSCRIPTION_LABEL_TEXT = 'Date de fin (Si terminé)'
 let CONTRACT_FORM_FIELDS_LABELS = [
     TYPE_LABEL_TEXT,
     PROVIDER_LABEL_TEXT,
@@ -216,13 +216,13 @@ describe('Test ContractFormSelect Component', () => {
         })
 
         // Fill endSubscription
-        userEvent.click(getByLabelText(END_SUBSCRIPTION_LABEL_TEXT))
+        userEvent.click(getByLabelText(END_SUBSCRIPTION_LABEL_TEXT, { exact: true }))
         userEvent.click(getByText('1'))
         userEvent.click(getByText('OK'))
         await waitFor(() => {
             expect(() => getByText('OK')).toThrow()
         })
-        expect(getByLabelText(END_SUBSCRIPTION_LABEL_TEXT)).toBeTruthy()
+        expect(getByLabelText(END_SUBSCRIPTION_LABEL_TEXT, { exact: true })).toBeTruthy()
 
         userEvent.click(getByText(SUBMIT_BUTTON_TEXT))
 
@@ -326,13 +326,13 @@ describe('Test ContractFormSelect Component', () => {
         })
 
         // Fill endSubscription
-        userEvent.click(getByLabelText(END_SUBSCRIPTION_LABEL_TEXT))
+        userEvent.click(getByLabelText(END_SUBSCRIPTION_LABEL_TEXT, { exact: true }))
         userEvent.click(getByText('1'))
         userEvent.click(getByText('OK'))
         await waitFor(() => {
             expect(() => getByText('OK')).toThrow()
         })
-        expect(getByLabelText(END_SUBSCRIPTION_LABEL_TEXT)).toBeTruthy()
+        expect(getByLabelText(END_SUBSCRIPTION_LABEL_TEXT, { exact: true })).toBeTruthy()
 
         userEvent.click(getByText(SUBMIT_BUTTON_TEXT))
 
