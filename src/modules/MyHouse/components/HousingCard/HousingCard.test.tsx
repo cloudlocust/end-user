@@ -15,7 +15,7 @@ const mockAddMeter = jest.fn()
 const mockReloadHousings = jest.fn()
 
 const DEFAULT_GUID_TEXT = 'Veuillez renseigner votre compteur'
-const DEFAULT_ADD_METER_NUMBER_TEXT = 'Numéro de mon compteur'
+const DEFAULT_ADD_METER_NUMBER_TEXT = 'Numéro de PDL ou PRM'
 const ADD_METER_NUMBER_PLACEHOLDER = 'Ex: 12345678912345'
 const MODAL_POPUP_TEXT_VERIFICATION = 'Êtes-vous sûr de vouloir continuer ?'
 
@@ -116,6 +116,7 @@ describe('Test HousingCard', () => {
 
             // Test that delete warning popup is open.
             await waitFor(() => {
+                // expect(getByText(MODAL_POPUP_TEXT_VERIFICATION)).toBeTruthy()
                 expect(getByText(MODAL_POPUP_TEXT_VERIFICATION)).toBeTruthy()
             })
             // Close delete warning popup.
