@@ -1,6 +1,5 @@
 import React, { memo, useMemo, useEffect, useRef } from 'react'
-import { Typography, Grid, Card, CircularProgress, useTheme } from '@mui/material'
-import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
+import { Grid, Card, CircularProgress, useTheme } from '@mui/material'
 import { IWidgetProps } from 'src/modules/MyConsumption/components/Widget/Widget'
 import { useMetrics } from 'src/modules/Metrics/metricsHook'
 import {
@@ -10,8 +9,8 @@ import {
     renderWidgetTitle,
 } from 'src/modules/MyConsumption/components/Widget/WidgetFunctions'
 import { computePercentageChange } from 'src/modules/Analysis/utils/computationFunctions'
-import Icon from '@mui/material/Icon'
 import { useWidgetsMetricsContext } from 'src/modules/MyConsumption/components/ConsumptionWidgetsContainer/ConsumptionWidgetsMetricsContext/useWidgetsMetricsContext'
+import { WidgetItem } from 'src/modules/MyConsumption/components/WidgetItem'
 
 const emptyValueUnit = { value: 0, unit: '' }
 /**
@@ -57,11 +56,11 @@ export const Widget = memo(({ filters, range, infoIcon, metricsInterval, target,
 
     useEffect(() => {
         metricsContext?.addMetrics(data)
-    }, [data, target, metricsContext])
+    }, [data, metricsContext])
 
     useEffect(() => {
         metricsContext?.addMetrics(oldData, true)
-    }, [oldData, target, metricsContext])
+    }, [oldData, metricsContext])
 
     const theme = useTheme()
     const { unit, value } = useMemo(
@@ -115,49 +114,15 @@ export const Widget = memo(({ filters, range, infoIcon, metricsInterval, target,
                             <CircularProgress style={{ color: theme.palette.primary.main }} />
                         </div>
                     ) : (
-                        <div className="p-16 flex flex-col justify-between h-full">
-                            <div className="flex flex-row justify-between">
-                                {/* Widget title */}
-                                <TypographyFormatMessage className="sm:text-16 font-medium md:text-17">
-                                    {renderWidgetTitle(target)}
-                                </TypographyFormatMessage>
-                                {/* Widget infoIcon */}
-                                {infoIcon}
-                            </div>
-                            {!value ? (
-                                <div className="mb-44 text-center">
-                                    <TypographyFormatMessage>Aucune donnée disponible</TypographyFormatMessage>
-                                </div>
-                            ) : (
-                                <div className="flex flex-row justify-between items-center gap-3">
-                                    <div className="flex flex-row items-end gap-3">
-                                        {/* Widget value */}
-                                        <Typography className="text-2xl sm:text-3xl md:text-4xl font-normal tracking-tighter">
-                                            {value}
-                                        </Typography>
-                                        {/* Widget unit */}
-                                        <Typography className="text-16 md:text-20 font-medium" color="textSecondary">
-                                            {unit}
-                                        </Typography>
-                                    </div>
-                                    {/* Widget arrow */}
-                                    {percentageChange !== 0 && (
-                                        // Negative means decrease
-                                        <div className="h-full flex items-center">
-                                            {percentageChange < 0 ? (
-                                                <Icon color="success" sx={{ fontSize: { xs: '24px', md: '32px' } }}>
-                                                    trending_down
-                                                </Icon>
-                                            ) : (
-                                                // Positive means increase
-                                                <Icon color="error" sx={{ fontSize: { xs: '24px', md: '32px' } }}>
-                                                    trending_up
-                                                </Icon>
-                                            )}
-                                        </div>
-                                    )}
-                                </div>
-                            )}
+                        <div className="h-full flex flex-col">
+                            <WidgetItem
+                                target={target}
+                                title={renderWidgetTitle(target)}
+                                infoIcon={infoIcon}
+                                value={value}
+                                unit={unit}
+                                percentageChange={percentageChange}
+                            />
                         </div>
                     )}
                 </>
