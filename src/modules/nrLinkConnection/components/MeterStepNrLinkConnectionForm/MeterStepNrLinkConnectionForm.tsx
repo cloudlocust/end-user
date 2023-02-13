@@ -97,8 +97,8 @@ const MeterStepNrLinkConnectionForm = ({
                     <div className="w-full">
                         <Typography variant="caption" className="w-full text-center">
                             {formatMessage({
-                                id: 'Vous pouvez trouver votre numéro de compteur sur :',
-                                defaultMessage: 'Vous pouvez trouver votre numéro de compteur sur :',
+                                id: 'Vous pouvez trouver votre numéro de PDL/PRM :',
+                                defaultMessage: 'Vous pouvez trouver votre numéro de PDL/PRM :',
                             })}
                         </Typography>
                         <div className="flex justify-between items-start mt-7 mb-5">
@@ -112,8 +112,8 @@ const MeterStepNrLinkConnectionForm = ({
                                 </motion.div>
                                 <Typography variant="caption" className="text-center md:text-12">
                                     {formatMessage({
-                                        id: 'Vos Factures',
-                                        defaultMessage: 'Vos Factures',
+                                        id: 'Vos factures',
+                                        defaultMessage: 'Vos factures',
                                     })}
                                 </Typography>
                             </div>

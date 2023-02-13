@@ -5,16 +5,11 @@ import { TEST_METERS as MOCK_METERS } from 'src/mocks/handlers/meters'
 import userEvent from '@testing-library/user-event'
 import { IMeter } from 'src/modules/Meters/Meters'
 import { applyCamelCase } from 'src/common/react-platform-components'
-import { IHousing } from 'src/modules/MyHouse/components/HousingList/housing'
-import { TEST_HOUSES } from 'src/mocks/handlers/houses'
-import { NRLINK_SUCCESS_SETUP_MESSAGE } from 'src/modules/nrLinkConnection/components/LastStepNrLinkConnection'
 
 const TEST_METERS: IMeter[] = applyCamelCase(MOCK_METERS)
 // List of houses to add to the redux state
-const LIST_OF_HOUSES: IHousing[] = applyCamelCase(TEST_HOUSES)
-const SUBMIT_BUTTON_TEXT = 'Terminer'
+const NEXT_BUTTON_TEXT = 'Suivant'
 const REQUIRED_ERROR_TEXT = 'Champ obligatoire non renseigné'
-const TEST_NRLINK_GUID = '12345123451234AB'
 
 const guidNrlinkInputQuerySelector = 'input[name="nrlinkGuid"]'
 const ERRROR_NRLINK_NO_DATA_MESSAGE = "Votre nrLINK ne reçoit pas de données vérifier qu'il est connecté au Wifi"
@@ -59,10 +54,13 @@ const mockLastStepNrLinkConnectionProps: {
     meter: IMeter | null
     // eslint-disable-next-line jsdoc/require-jsdoc
     setIsNrLinkAuthorizeInProgress: React.Dispatch<React.SetStateAction<boolean>>
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    handleNext: () => void
 } = {
     handleBack: jest.fn(),
     meter: null,
     setIsNrLinkAuthorizeInProgress: jest.fn(),
+    handleNext: jest.fn(),
 }
 
 describe('Test LastStepNrLinkConnection', () => {
@@ -78,7 +76,7 @@ describe('Test LastStepNrLinkConnection', () => {
                 <LastStepNrLinkConnection {...mockLastStepNrLinkConnectionProps} />,
             )
             expect(container.querySelector(guidNrlinkInputQuerySelector)).toHaveValue('')
-            userEvent.click(getByText(SUBMIT_BUTTON_TEXT))
+            userEvent.click(getByText(NEXT_BUTTON_TEXT))
 
             await waitFor(() => {
                 expect(getByText(REQUIRED_ERROR_TEXT)).toBeTruthy()
@@ -94,7 +92,7 @@ describe('Test LastStepNrLinkConnection', () => {
             userEvent.type(container.querySelector(guidNrlinkInputQuerySelector)!, 'ZFAAAABBBBCCCCDDDD')
             expect(container.querySelector(guidNrlinkInputQuerySelector)).toHaveValue('ZFAAAABBBBCCCCDDDD')
 
-            userEvent.click(getByText(SUBMIT_BUTTON_TEXT))
+            userEvent.click(getByText(NEXT_BUTTON_TEXT))
 
             await waitFor(() => {
                 expect(getByText(INVALID_NRLINK_GUID_FIELD_ERROR)).toBeTruthy()
@@ -112,7 +110,7 @@ describe('Test LastStepNrLinkConnection', () => {
             userEvent.type(container.querySelector(guidNrlinkInputQuerySelector)!, 'aaaaa1aaaaa1aaaa')
             expect(container.querySelector(guidNrlinkInputQuerySelector)).toHaveValue('aaaaa1aaaaa1aaaa')
 
-            userEvent.click(getByText(SUBMIT_BUTTON_TEXT))
+            userEvent.click(getByText(NEXT_BUTTON_TEXT))
             // Test that
             await waitFor(() => {
                 expect(mockSetIsNrLinkAuthorizeInProgress).toHaveBeenCalledWith(true)
@@ -137,7 +135,7 @@ describe('Test LastStepNrLinkConnection', () => {
             userEvent.type(container.querySelector(guidNrlinkInputQuerySelector)!, 'bbbbb2bbbbb2bbbb')
             expect(container.querySelector(guidNrlinkInputQuerySelector)).toHaveValue('bbbbb2bbbbb2bbbb')
 
-            userEvent.click(getByText(SUBMIT_BUTTON_TEXT))
+            userEvent.click(getByText(NEXT_BUTTON_TEXT))
             await waitFor(() => {
                 expect(mockSetIsNrLinkAuthorizeInProgress).toHaveBeenCalledWith(true)
             })
@@ -161,7 +159,7 @@ describe('Test LastStepNrLinkConnection', () => {
             userEvent.type(container.querySelector(guidNrlinkInputQuerySelector)!, 'ccccc3ccccc3cccc')
             expect(container.querySelector(guidNrlinkInputQuerySelector)).toHaveValue('ccccc3ccccc3cccc')
 
-            userEvent.click(getByText(SUBMIT_BUTTON_TEXT))
+            userEvent.click(getByText(NEXT_BUTTON_TEXT))
 
             await waitFor(() => {
                 expect(mockSetIsNrLinkAuthorizeInProgress).toHaveBeenCalledWith(true)
@@ -176,33 +174,6 @@ describe('Test LastStepNrLinkConnection', () => {
                 autoHideDuration: 5000,
                 variant: 'error',
             })
-        }, 20000)
-        test('when submitForm and nrLINK authorize success, snackbar error should be shown, and setNrLinkAuthorizeInProgress should be called accordingly', async () => {
-            const mockSetIsNrLinkAuthorizeInProgress = jest.fn()
-            mockLastStepNrLinkConnectionProps.setIsNrLinkAuthorizeInProgress = mockSetIsNrLinkAuthorizeInProgress
-            const { container, getByText } = reduxedRender(
-                <LastStepNrLinkConnection {...mockLastStepNrLinkConnectionProps} />,
-                { initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[0] } } },
-            )
-            userEvent.type(container.querySelector(guidNrlinkInputQuerySelector)!, TEST_NRLINK_GUID)
-            expect(container.querySelector(guidNrlinkInputQuerySelector)).toHaveValue(TEST_NRLINK_GUID)
-
-            userEvent.click(getByText(SUBMIT_BUTTON_TEXT))
-
-            await waitFor(() => {
-                expect(mockSetIsNrLinkAuthorizeInProgress).toHaveBeenCalledWith(true)
-            })
-            await waitFor(
-                () => {
-                    expect(mockHistoryPush).toHaveBeenCalledWith(`/my-houses/${LIST_OF_HOUSES[0].id}/contracts`)
-                },
-                { timeout: 10000 },
-            )
-            expect(mockEnqueueSnackbar).toHaveBeenCalledWith(NRLINK_SUCCESS_SETUP_MESSAGE, {
-                autoHideDuration: 10000,
-                variant: 'success',
-            })
-            expect(mockSetIsNrLinkAuthorizeInProgress).toHaveBeenCalledWith(false)
         }, 20000)
     })
 })

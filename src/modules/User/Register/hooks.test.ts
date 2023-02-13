@@ -8,7 +8,7 @@ const mockHistoryReplace = jest.fn()
 const mockEnqueueSnackbar = jest.fn()
 let mockUserRegistrationAutoValidate = false
 const REGISTRATION_AUTO_VALIDATE_SUCCESS_MESSAGE =
-    'Votre inscription a bien été prise en compte. Vous pouvez maintenant accéder à la plateforme.'
+    'Votre inscription a bien été prise en compte. Vous allez reçevoir un lien de confirmation sur votre adresse email.'
 const REGISTRATION_SUCCESS_MESSAGE =
     "Votre inscription a bien été prise en compte, vous pourrez vous connecter une fois celle-ci validée par l'administrateur."
 

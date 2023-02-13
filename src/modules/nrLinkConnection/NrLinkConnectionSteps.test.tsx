@@ -9,7 +9,6 @@ import { URL_CONSUMPTION } from 'src/modules/MyConsumption'
 const BACK_BUTTON_TEXT = 'Précédent'
 const NEXT_BUTTON_TEXT = 'Suivant'
 const SKIP_LINK_TEXT = "Aller vers l'accueil"
-const FINISH_BUTTON_TEXT = 'Terminer'
 const loadingButtonClassName = '.MuiCircularProgress-root '
 const horizontalStepperClassName = '.MuiStep-horizontal'
 const verticalStepperClassName = '.MuiStep-vertical'
@@ -206,7 +205,7 @@ describe('Test NrLinkConnection Page', () => {
                 expect(handleNext).toHaveBeenCalled()
             })
         })
-        test('When activeStep equals last index, Finish boutton should be hidden, and when clicking on previous handleBack should be called, and when clicking on finish nothing is called', async () => {
+        test('When activeStep equals last index, and clicking on Suivant, the contract setup step is shown', async () => {
             const handleNext = jest.fn()
             const handleBack = jest.fn()
             actionsNrLinkConnectionStepsProps.handleNext = handleNext
@@ -214,22 +213,26 @@ describe('Test NrLinkConnection Page', () => {
             actionsNrLinkConnectionStepsProps.handleBack = handleBack
             const { getByText } = reduxedRender(<ActionsNrLinkConnectionSteps {...actionsNrLinkConnectionStepsProps} />)
 
-            expect(() => getByText(NEXT_BUTTON_TEXT)).toThrow()
+            expect(getByText(NEXT_BUTTON_TEXT)).toBeTruthy()
             expect(getByText(BACK_BUTTON_TEXT)).toBeTruthy()
-            expect(getByText(FINISH_BUTTON_TEXT)).toBeTruthy()
-            userEvent.click(getByText(FINISH_BUTTON_TEXT))
             userEvent.click(getByText(BACK_BUTTON_TEXT))
+            userEvent.click(getByText(NEXT_BUTTON_TEXT))
 
             await waitFor(() => {
                 expect(handleBack).toHaveBeenCalled()
             })
-            expect(handleNext).not.toHaveBeenCalled()
+            expect(handleNext).toHaveBeenCalled()
         })
 
         test('When inProgress props, spinner should be shown', async () => {
             actionsNrLinkConnectionStepsProps.inProgress = true
             const { container } = reduxedRender(<ActionsNrLinkConnectionSteps {...actionsNrLinkConnectionStepsProps} />)
             expect(container.querySelector(loadingButtonClassName)).toBeInTheDocument()
+        })
+        test("when activeStep is 4th, Aller vers l'accueil message isn't shown", async () => {
+            actionsNrLinkConnectionStepsProps.activeStep = 3
+            const { getByText } = reduxedRender(<ActionsNrLinkConnectionSteps {...actionsNrLinkConnectionStepsProps} />)
+            expect(() => getByText("Aller vers l'accueil")).toThrow()
         })
     })
 })
