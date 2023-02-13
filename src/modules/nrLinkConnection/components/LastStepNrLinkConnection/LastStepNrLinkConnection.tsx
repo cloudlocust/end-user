@@ -11,7 +11,10 @@ import { motion } from 'framer-motion'
 import { nrLinkGUID, nrLinkInfo, nrLinkMain } from 'src/modules/nrLinkConnection'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 
-const textNrlinkColor = 'text.secondary'
+/**
+ * Secondary text.
+ */
+export const textNrlinkColor = 'text.secondary'
 
 /**
  * Snackbar message when nrlink is setup.
