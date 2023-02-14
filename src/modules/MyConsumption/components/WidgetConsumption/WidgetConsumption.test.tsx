@@ -1,5 +1,5 @@
 import { reduxedRender } from 'src/common/react-platform-components/test'
-import { metricFiltersType, metricIntervalType, metricTargetsEnum } from 'src/modules/Metrics/Metrics'
+import { metricFiltersType, metricIntervalType, metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
 import { IWidgetProps } from 'src/modules/MyConsumption/components/Widget/Widget'
 import WidgetConsumption from 'src/modules/MyConsumption/components/WidgetConsumption'
 import { periodType } from 'src/modules/MyConsumption/myConsumptionTypes'

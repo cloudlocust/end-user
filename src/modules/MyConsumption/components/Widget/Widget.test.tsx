@@ -17,7 +17,7 @@ let mockData: IMetric[] = TEST_WEEK_DATA
 // List of houses to add to the redux state
 const LIST_OF_HOUSES: IHousing[] = applyCamelCase(TEST_HOUSES)
 
-const CONSOMMATION_TOTALE_TEXT = 'Consommation Totale'
+const CONSOMMATION_TOTALE_TEXT = 'Achetée'
 const CONSOMMATION_TOTALE_UNIT = 'kWh'
 
 const NO_DATA_MESSAGE = 'Aucune donnée disponible'

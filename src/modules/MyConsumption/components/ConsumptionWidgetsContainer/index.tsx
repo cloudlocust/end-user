@@ -6,7 +6,6 @@ import { WidgetTargets } from 'src/modules/MyConsumption/utils/myConsumptionVari
 import { Widget } from 'src/modules/MyConsumption/components/Widget'
 import { ConsumptionWidgetsContainerProps } from 'src/modules/MyConsumption/components/ConsumptionWidgetsContainer/WidgetContainer'
 import { getWidgetInfoIcon } from 'src/modules/MyConsumption/components/WidgetInfoIcons'
-import { metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
 import WidgetConsumption from 'src/modules/MyConsumption/components/WidgetConsumption'
 import { useWidgetsMetricsContext } from 'src/modules/MyConsumption/Context/ConsumptionWidgetsMetricsContext/useWidgetsMetricsContext'
 
@@ -49,20 +48,22 @@ const ConsumptionWidgetsContainer = ({
             </div>
             <div style={{ background: theme.palette.grey[100] }} className="w-full my-8">
                 <Grid container spacing={{ xs: 1, md: 2 }}>
+                    {/** Display consumption target (first_target in WidgetTargets) with a specific WidgetConsumption Component. */}
                     <WidgetConsumption
-                        target={metricTargetsEnum.consumption}
+                        target={WidgetTargets[0]}
                         range={range}
                         filters={filters}
                         metricsInterval={metricsInterval}
                         period={period}
                         infoIcon={getWidgetInfoIcon({
-                            widgetTarget: metricTargetsEnum.consumption,
+                            widgetTarget: WidgetTargets[0],
                             hasMissingContracts: hasMissingHousingContracts,
                             enphaseOff,
                             enedisSgeOff: enedisOff,
                         })}
                     />
-                    {WidgetTargets.map((target) => {
+                    {/** Display the other targets with Widget Component. */}
+                    {WidgetTargets.slice(1).map((target) => {
                         return (
                             <Widget
                                 key={target}
