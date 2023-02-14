@@ -113,28 +113,28 @@ export type authT = {
 }
 
 /**
- * TODO Document.
+ * Type for a given route to be passed to router.
  */
 // eslint-disable-next-line jsdoc/require-jsdoc
 export type IRoute<T> = {
     /**
-     * TODO Document.
+     * Path, relative to BASE_URL of the page.
      */
     path: string
     /**
-     * TODO Document.
+     * React Component to display, will use the <T> type given.
      */
     component: FC<T>
     /**
-     * TODO Document.
+     * Auth scheme to use.
      */
     auth: authT
     /**
-     * TODO Document.
+     * Optional settings relative to page display.
      */
     settings?: IPageSettings
     /**
-     * TODO Document.
+     * Props to give to the instantiated component.
      */
     props?: T
 }
