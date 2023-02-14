@@ -14,4 +14,8 @@ export enum NrlinkConnectionStepsEnum {
      * 3rd step.
      */
     thirdStep = 2,
+    /**
+     * 4th step.
+     */
+    fourthStep = 3,
 }

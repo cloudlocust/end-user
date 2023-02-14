@@ -9,10 +9,11 @@ import {
     renderWidgetTitle,
 } from 'src/modules/MyConsumption/components/Widget/WidgetFunctions'
 import { computePercentageChange } from 'src/modules/Analysis/utils/computationFunctions'
-import { useWidgetsMetricsContext } from 'src/modules/MyConsumption/components/ConsumptionWidgetsContainer/ConsumptionWidgetsMetricsContext/useWidgetsMetricsContext'
+import { useWidgetsMetricsContext } from 'src/modules/MyConsumption/Context/ConsumptionWidgetsMetricsContext/useWidgetsMetricsContext'
 import { WidgetItem } from 'src/modules/MyConsumption/components/WidgetItem'
 
 const emptyValueUnit = { value: 0, unit: '' }
+
 /**
  * Widget Component.
  *
@@ -52,15 +53,19 @@ export const Widget = memo(({ filters, range, infoIcon, metricsInterval, target,
         filters,
     })
 
-    const metricsContext = useWidgetsMetricsContext()
+    const { addMetrics } = useWidgetsMetricsContext()
 
     useEffect(() => {
-        metricsContext?.addMetrics(data)
-    }, [data, metricsContext])
+        data.length && addMetrics(data)
+        // disable eslint because we don't want to add addMetrics as a dependency.
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [data])
 
     useEffect(() => {
-        metricsContext?.addMetrics(oldData, true)
-    }, [oldData, metricsContext])
+        oldData.length && addMetrics(oldData, true)
+        // disable eslint because we don't want to add addMetrics as a dependency.
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [oldData])
 
     const theme = useTheme()
     const { unit, value } = useMemo(

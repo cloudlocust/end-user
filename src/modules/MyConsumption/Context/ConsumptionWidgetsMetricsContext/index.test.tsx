@@ -1,6 +1,6 @@
 import { reduxedRender } from 'src/common/react-platform-components/test'
 import { IMetric, metricFiltersType, metricIntervalType, metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
-import { ConsumptionWidgetsMetricsContext } from 'src/modules/MyConsumption/components/ConsumptionWidgetsContainer/ConsumptionWidgetsMetricsContext'
+import { ConsumptionWidgetsMetricsContext } from 'src/modules/MyConsumption/Context/ConsumptionWidgetsMetricsContext'
 import { Widget } from 'src/modules/MyConsumption/components/Widget'
 import { IWidgetProps } from 'src/modules/MyConsumption/components/Widget/Widget'
 import { periodType } from 'src/modules/MyConsumption/myConsumptionTypes'
@@ -9,12 +9,14 @@ let mockCurrentMetricsWidgets: IMetric[] = []
 let mockOldMetricsWidgets: IMetric[] = []
 let mockAddMetrics = jest.fn()
 let mockGetMetrics = jest.fn()
+let mockResetMetrics = jest.fn()
 
 let mockProviderValueProp = {
     currentMetricsWidgets: mockCurrentMetricsWidgets,
     oldMetricsWidgets: mockOldMetricsWidgets,
     addMetrics: mockAddMetrics,
     getMetrics: mockGetMetrics,
+    resetMetrics: mockResetMetrics,
 }
 
 let mockFilters: metricFiltersType = [
@@ -57,6 +59,5 @@ describe('ConsumptionWidgetsMetrics Context test', () => {
         renderTestComponent()
         expect(mockCurrentMetricsWidgets).toEqual([])
         expect(mockOldMetricsWidgets).toEqual([])
-        expect(mockAddMetrics).toBeCalledTimes(2)
     })
 })

@@ -19,6 +19,7 @@ import { useEcowatt } from 'src/modules/Ecowatt/EcowattHook'
 import CircularProgress from '@mui/material/CircularProgress'
 import Box from '@mui/material/Box'
 import ConsumptionWidgetsContainer from 'src/modules/MyConsumption/components/ConsumptionWidgetsContainer'
+import { ConsumptionWidgetsMetricsProvider } from 'src/modules/MyConsumption/Context/ConsumptionWidgetsMetricsContext'
 
 /**
  * MyConsumptionContainer.
@@ -147,15 +148,17 @@ export const MyConsumptionContainer = () => {
 
             {/* Widget List */}
             {(!nrlinkOff || !enedisOff) && (
-                <ConsumptionWidgetsContainer
-                    period={period}
-                    range={range}
-                    filters={filters}
-                    hasMissingHousingContracts={hasMissingHousingContracts}
-                    metricsInterval={metricsInterval}
-                    enphaseOff={enphaseOff}
-                    enedisOff={enedisOff}
-                />
+                <ConsumptionWidgetsMetricsProvider>
+                    <ConsumptionWidgetsContainer
+                        period={period}
+                        range={range}
+                        filters={filters}
+                        hasMissingHousingContracts={hasMissingHousingContracts}
+                        metricsInterval={metricsInterval}
+                        enphaseOff={enphaseOff}
+                        enedisOff={enedisOff}
+                    />
+                </ConsumptionWidgetsMetricsProvider>
             )}
         </>
     )
