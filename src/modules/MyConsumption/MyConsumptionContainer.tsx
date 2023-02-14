@@ -21,6 +21,7 @@ import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyForm
 import CircularProgress from '@mui/material/CircularProgress'
 import Box from '@mui/material/Box'
 import { Widget } from 'src/modules/MyConsumption/components/Widget'
+import { getWidgetInfoIcon } from 'src/modules/MyConsumption/components/WidgetInfoIcons'
 
 /**
  * MyConsumptionContainer.
@@ -42,7 +43,8 @@ export const MyConsumptionContainer = () => {
     const { ecowattSignalsData, isLoadingInProgress: isEcowattDataInProgress } = useEcowatt(true)
 
     const nrlinkOff = nrlinkConsent?.nrlinkConsentState === 'NONEXISTENT'
-    const enedisOff = enedisSgeConsent?.enedisSgeConsentState === 'NONEXISTENT'
+    const enedisOff = enedisSgeConsent?.enedisSgeConsentState !== 'CONNECTED'
+    const enphaseOff = enphaseConsent?.enphaseConsentState !== 'ACTIVE'
 
     // UseEffect to check for consent whenever a meter is selected.
     useEffect(() => {
@@ -82,7 +84,6 @@ export const MyConsumptionContainer = () => {
                 <CircularProgress style={{ color: theme.palette.primary.main }} />
             </Box>
         )
-
     // By checking if the metersList is true we make sure that if someone has skipped the step of connecting their PDL, they will see this error message.
     // Else if they have a PDL, we check its consent.
     if (!currentHousing?.meter?.guid) return <MissingHousingMeterErrorMessage />
@@ -166,7 +167,12 @@ export const MyConsumptionContainer = () => {
                                         filters={filters}
                                         metricsInterval={metricsInterval}
                                         period={period}
-                                        hasMissingHousingContracts={hasMissingHousingContracts}
+                                        infoIcon={getWidgetInfoIcon({
+                                            widgetTarget: target,
+                                            hasMissingContracts: hasMissingHousingContracts,
+                                            enphaseOff,
+                                            enedisSgeOff: enedisOff,
+                                        })}
                                     />
                                 )
                             })}
