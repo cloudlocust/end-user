@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Grid } from '@mui/material'
 import { useTheme } from '@mui/material'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
@@ -6,7 +6,7 @@ import { WidgetTargets } from 'src/modules/MyConsumption/utils/myConsumptionVari
 import { Widget } from 'src/modules/MyConsumption/components/Widget'
 import { ConsumptionWidgetsContainerProps } from 'src/modules/MyConsumption/components/ConsumptionWidgetsContainer/WidgetContainer'
 import { getWidgetInfoIcon } from 'src/modules/MyConsumption/components/WidgetInfoIcons'
-import { ConsumptionWidgetsMetricsProvider } from 'src/modules/MyConsumption/components/ConsumptionWidgetsContainer/ConsumptionWidgetsMetricsContext'
+import { useWidgetsMetricsContext } from 'src/modules/MyConsumption/components/ConsumptionWidgetsContainer/ConsumptionWidgetsMetricsContext/useWidgetsMetricsContext'
 
 /**
  * MyConsumptionWidgets Component (it's Wrapper of the list of Widgets).
@@ -31,38 +31,43 @@ const ConsumptionWidgetsContainer = ({
     enedisOff,
 }: ConsumptionWidgetsContainerProps) => {
     const theme = useTheme()
+    const { resetMetrics } = useWidgetsMetricsContext()
+
+    // We should reset the metrics context when the range, filters, metricsInterval or period changes.
+    useEffect(() => {
+        resetMetrics()
+    }, [range, filters, metricsInterval, period, resetMetrics])
+
     return (
-        <ConsumptionWidgetsMetricsProvider>
-            <div className="p-12 sm:p-24 ">
-                <div className="flex justify-center items-center md:justify-start">
-                    <TypographyFormatMessage variant="h5" className="sm:mr-8 text-black font-medium">
-                        Chiffres clés
-                    </TypographyFormatMessage>
-                </div>
-                <div style={{ background: theme.palette.grey[100] }} className="w-full my-8">
-                    <Grid container spacing={{ xs: 1, md: 2 }}>
-                        {WidgetTargets.map((target) => {
-                            return (
-                                <Widget
-                                    key={target}
-                                    target={target}
-                                    range={range}
-                                    filters={filters}
-                                    metricsInterval={metricsInterval}
-                                    period={period}
-                                    infoIcon={getWidgetInfoIcon({
-                                        widgetTarget: target,
-                                        hasMissingContracts: hasMissingHousingContracts,
-                                        enphaseOff,
-                                        enedisSgeOff: enedisOff,
-                                    })}
-                                />
-                            )
-                        })}
-                    </Grid>
-                </div>
+        <div className="p-12 sm:p-24 ">
+            <div className="flex justify-center items-center md:justify-start">
+                <TypographyFormatMessage variant="h5" className="sm:mr-8 text-black font-medium">
+                    Chiffres clés
+                </TypographyFormatMessage>
             </div>
-        </ConsumptionWidgetsMetricsProvider>
+            <div style={{ background: theme.palette.grey[100] }} className="w-full my-8">
+                <Grid container spacing={{ xs: 1, md: 2 }}>
+                    {WidgetTargets.map((target) => {
+                        return (
+                            <Widget
+                                key={target}
+                                target={target}
+                                range={range}
+                                filters={filters}
+                                metricsInterval={metricsInterval}
+                                period={period}
+                                infoIcon={getWidgetInfoIcon({
+                                    widgetTarget: target,
+                                    hasMissingContracts: hasMissingHousingContracts,
+                                    enphaseOff,
+                                    enedisSgeOff: enedisOff,
+                                })}
+                            />
+                        )
+                    })}
+                </Grid>
+            </div>
+        </div>
     )
 }
 

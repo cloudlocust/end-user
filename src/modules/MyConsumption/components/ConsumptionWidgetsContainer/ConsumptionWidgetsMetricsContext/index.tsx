@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useCallback, useState } from 'react'
 import { IMetric, metricTargetType } from 'src/modules/Metrics/Metrics'
 import {
     ConsumptionWidgetsMetricsContextType,
@@ -8,7 +8,24 @@ import {
 /**
  * Consumption Metrics Widgets Context.
  */
-export const ConsumptionWidgetsMetricsContext = React.createContext<ConsumptionWidgetsMetricsContextType | null>(null)
+export const ConsumptionWidgetsMetricsContext = React.createContext<ConsumptionWidgetsMetricsContextType>({
+    currentMetricsWidgets: [],
+    oldMetricsWidgets: [],
+    /**
+     * Default addMetrics function.
+     */
+    addMetrics: () => {},
+    /**
+     * Default getMetrics function.
+     *
+     * @returns [].
+     */
+    getMetrics: () => [],
+    /**
+     * Default resetMetrics function.
+     */
+    resetMetrics: () => {},
+})
 
 /**
  * ConsumptionWidgetsMetrics Provider.
@@ -18,8 +35,8 @@ export const ConsumptionWidgetsMetricsContext = React.createContext<ConsumptionW
  * @returns Context values/functions.
  */
 export const ConsumptionWidgetsMetricsProvider = ({ children }: ConsumptionWidgetsMetricsProviderProps) => {
-    const currentMetricsWidgets: IMetric[] = []
-    const oldMetricsWidgets: IMetric[] = []
+    const [currentMetricsWidgets, setCurrentMetricsWidgets] = useState<IMetric[]>([])
+    const [oldMetricsWidgets, setOldMetricsWidgets] = useState<IMetric[]>([])
 
     /**
      * Function to save metrics (data) in (currentMetricsWidgets) or in (oldMetricsWidgets) if isOld is true.
@@ -28,15 +45,16 @@ export const ConsumptionWidgetsMetricsProvider = ({ children }: ConsumptionWidge
      * @param data Metrics data.
      * @param isOldData Boolean var for know if the data metrics is the current data or the previous data. Default value is false.
      */
-    const addMetrics = (data: IMetric[], isOldData: boolean = false) => {
-        if (data.length > 0) {
+    const addMetrics = useCallback(
+        (data: IMetric[], isOldData: boolean = false) => {
             if (isOldData) {
-                saveDataInCorrectArray(oldMetricsWidgets, data)
+                saveDataInCorrectArray(oldMetricsWidgets, setOldMetricsWidgets, data)
             } else {
-                saveDataInCorrectArray(currentMetricsWidgets, data)
+                saveDataInCorrectArray(currentMetricsWidgets, setCurrentMetricsWidgets, data)
             }
-        }
-    }
+        },
+        [currentMetricsWidgets, oldMetricsWidgets],
+    )
 
     /**
      * Function to get metrics of the widgets targets from (currentMetricsWidgets) or from (oldMetricsWidgets) if fromOldData is true.
@@ -46,30 +64,43 @@ export const ConsumptionWidgetsMetricsProvider = ({ children }: ConsumptionWidge
      * @param fromOldData Boolean to specifies where we get our data.
      * @returns Metrics data.
      */
-    const getMetrics = (targets: metricTargetType[], fromOldData: boolean = false): IMetric[] => {
-        if (fromOldData) {
-            return oldMetricsWidgets.filter((item) => targets.includes(item.target))
-        } else {
-            return currentMetricsWidgets.filter((item) => targets.includes(item.target))
-        }
-    }
+    const getMetrics = useCallback(
+        (targets: metricTargetType[], fromOldData: boolean = false): IMetric[] => {
+            if (fromOldData) {
+                return oldMetricsWidgets.filter((item) => targets.includes(item.target))
+            } else {
+                return currentMetricsWidgets.filter((item) => targets.includes(item.target))
+            }
+        },
+        [currentMetricsWidgets, oldMetricsWidgets],
+    )
+
+    /**
+     * Function to reset the metrics data - reset (currentMetricsWidgets & oldMetricsWidgets) to [] -.
+     */
+    const resetMetrics = useCallback(() => {
+        setCurrentMetricsWidgets([])
+        setOldMetricsWidgets([])
+    }, [])
 
     /**
      * Function to save all the metrics data (metric) in the correct (metricsData) Array.
-     * If the metric data exists in the Array, it will be replaced. Otherwise, it will be added.
+     * If the metric data doesn't exists in the Array, it will be added. Otherwise, it will be ignored.
      *
      * @param metricsData MetricsData Array.
+     * @param setMetricsData Set Function to update the metricsData.
      * @param data Metrics data.
      */
-    const saveDataInCorrectArray = (metricsData: IMetric[], data: IMetric[]) => {
-        for (const metric of data) {
-            const indexOfMetric = metricsData.findIndex((item) => item.target === metric.target)
-            if (indexOfMetric !== -1) {
-                metricsData[indexOfMetric] = metric
-            } else {
-                metricsData.push(metric)
+    const saveDataInCorrectArray = (
+        metricsData: IMetric[],
+        setMetricsData: typeof setOldMetricsWidgets,
+        data: IMetric[],
+    ) => {
+        data.forEach((metric) => {
+            if (metricsData.every((item) => item.target !== metric.target)) {
+                setMetricsData((prevMetrics) => [...prevMetrics, metric])
             }
-        }
+        })
     }
 
     return (
@@ -79,6 +110,7 @@ export const ConsumptionWidgetsMetricsProvider = ({ children }: ConsumptionWidge
                 oldMetricsWidgets,
                 addMetrics,
                 getMetrics,
+                resetMetrics,
             }}
         >
             {children}

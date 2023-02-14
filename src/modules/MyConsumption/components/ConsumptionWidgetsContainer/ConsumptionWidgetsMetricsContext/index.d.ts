@@ -22,7 +22,11 @@ export type ConsumptionWidgetsMetricsContextType = /**
     /**
      * Function to get metrics of the widgets targets from (currentMetricsWidgets) or from (oldMetricsWidgets) if fromOldData is true.
      */
-    getMetrics: (targets: metricTargetType[], fromOldData: boolean = false) => IMetric[]
+    getMetrics: (targets: metricTargetType[], fromOldData?: boolean = false) => IMetric[]
+    /**
+     * Function to reset the metrics context.
+     */
+    resetMetrics: () => void
 }
 
 /**
