@@ -196,7 +196,7 @@ export const computeWidgetAssets = (data: IMetric[], type: metricTargetType) => 
 export const renderWidgetTitle = (target: metricTargetType): widgetTitleType => {
     switch (target) {
         case metricTargetsEnum.consumption:
-            return 'Consommation Totale'
+            return 'Achetée'
         case metricTargetsEnum.pMax:
             return 'Puissance Maximale'
         case metricTargetsEnum.externalTemperature:

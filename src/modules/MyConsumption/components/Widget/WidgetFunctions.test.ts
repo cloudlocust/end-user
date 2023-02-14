@@ -294,7 +294,7 @@ describe('Test widget functions', () => {
                 },
                 {
                     target: metricTargetsEnum.consumption,
-                    value: 'Consommation Totale',
+                    value: 'Achetée',
                 },
                 {
                     target: metricTargetsEnum.internalTemperature,

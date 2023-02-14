@@ -6,6 +6,8 @@ import { WidgetTargets } from 'src/modules/MyConsumption/utils/myConsumptionVari
 import { Widget } from 'src/modules/MyConsumption/components/Widget'
 import { ConsumptionWidgetsContainerProps } from 'src/modules/MyConsumption/components/ConsumptionWidgetsContainer/WidgetContainer'
 import { getWidgetInfoIcon } from 'src/modules/MyConsumption/components/WidgetInfoIcons'
+import { metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
+import WidgetConsumption from 'src/modules/MyConsumption/components/WidgetConsumption'
 import { useWidgetsMetricsContext } from 'src/modules/MyConsumption/Context/ConsumptionWidgetsMetricsContext/useWidgetsMetricsContext'
 
 /**
@@ -47,6 +49,19 @@ const ConsumptionWidgetsContainer = ({
             </div>
             <div style={{ background: theme.palette.grey[100] }} className="w-full my-8">
                 <Grid container spacing={{ xs: 1, md: 2 }}>
+                    <WidgetConsumption
+                        target={metricTargetsEnum.consumption}
+                        range={range}
+                        filters={filters}
+                        metricsInterval={metricsInterval}
+                        period={period}
+                        infoIcon={getWidgetInfoIcon({
+                            widgetTarget: metricTargetsEnum.consumption,
+                            hasMissingContracts: hasMissingHousingContracts,
+                            enphaseOff,
+                            enedisSgeOff: enedisOff,
+                        })}
+                    />
                     {WidgetTargets.map((target) => {
                         return (
                             <Widget

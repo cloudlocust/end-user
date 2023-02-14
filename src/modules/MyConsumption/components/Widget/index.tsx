@@ -25,7 +25,7 @@ const emptyValueUnit = { value: 0, unit: '' }
  * @param props.period Current Period.
  * @returns Widget Component.
  */
-export const Widget = memo(({ filters, range, infoIcon, metricsInterval, target, period }: IWidgetProps) => {
+export const Widget = memo(({ filters, range, infoIcon, metricsInterval, target, period, children }: IWidgetProps) => {
     const { data, setMetricsInterval, setRange, isMetricsLoading } = useMetrics({
         interval: metricsInterval,
         range: getWidgetRange(range, period),
@@ -120,6 +120,7 @@ export const Widget = memo(({ filters, range, infoIcon, metricsInterval, target,
                         </div>
                     ) : (
                         <div className="h-full flex flex-col">
+                            {children}
                             <WidgetItem
                                 target={target}
                                 title={renderWidgetTitle(target)}
