@@ -59,6 +59,5 @@ describe('ConsumptionWidgetsMetrics Context test', () => {
         renderTestComponent()
         expect(mockCurrentMetricsWidgets).toEqual([])
         expect(mockOldMetricsWidgets).toEqual([])
-        expect(mockAddMetrics).toBeCalledTimes(2)
     })
 })

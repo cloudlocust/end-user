@@ -19,7 +19,7 @@ import { useEcowatt } from 'src/modules/Ecowatt/EcowattHook'
 import CircularProgress from '@mui/material/CircularProgress'
 import Box from '@mui/material/Box'
 import ConsumptionWidgetsContainer from 'src/modules/MyConsumption/components/ConsumptionWidgetsContainer'
-import { ConsumptionWidgetsMetricsProvider } from 'src/modules/MyConsumption/components/ConsumptionWidgetsContainer/ConsumptionWidgetsMetricsContext'
+import { ConsumptionWidgetsMetricsProvider } from 'src/modules/MyConsumption/Context/ConsumptionWidgetsMetricsContext'
 
 /**
  * MyConsumptionContainer.

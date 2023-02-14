@@ -3,7 +3,7 @@ import { IMetric, metricTargetType } from 'src/modules/Metrics/Metrics'
 import {
     ConsumptionWidgetsMetricsContextType,
     ConsumptionWidgetsMetricsProviderProps,
-} from 'src/modules/MyConsumption/components/ConsumptionWidgetsContainer/ConsumptionWidgetsMetricsContext/index.d'
+} from 'src/modules/MyConsumption/Context/ConsumptionWidgetsMetricsContext/index.d'
 
 /**
  * Consumption Metrics Widgets Context.

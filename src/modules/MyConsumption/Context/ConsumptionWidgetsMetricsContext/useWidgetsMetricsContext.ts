@@ -1,5 +1,5 @@
 import { useContext } from 'react'
-import { ConsumptionWidgetsMetricsContext } from 'src/modules/MyConsumption/components/ConsumptionWidgetsContainer/ConsumptionWidgetsMetricsContext'
+import { ConsumptionWidgetsMetricsContext } from 'src/modules/MyConsumption/Context/ConsumptionWidgetsMetricsContext'
 
 /**
  * Custom hook to use WidgetsMetricsContext.
