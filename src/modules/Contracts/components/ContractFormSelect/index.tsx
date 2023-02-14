@@ -17,6 +17,7 @@ import { isNull } from 'lodash'
  * @param props.formatOptionLabel Function that returns the option label format.
  * @param props.formatOptionValue Function that returns the option value format.
  * @param props.label Label of the select.
+ * @param props.otherOptionLabel Label for Additional "other" option.
  * @param props.validateFunctions Validate functions passed in the Select.
  * @returns ContractFormSelect component.
  */
@@ -28,6 +29,7 @@ const ContractFormSelect = <T extends unknown>({
     formatOptionLabel,
     formatOptionValue,
     label,
+    otherOptionLabel,
     validateFunctions,
     ...otherSelectProps
 }: ContractFormSelectProps<T>): JSX.Element => {
@@ -61,6 +63,11 @@ const ContractFormSelect = <T extends unknown>({
                         {formatOptionLabel(option)}
                     </MenuItem>
                 ))}
+                {otherOptionLabel && (
+                    <MenuItem key={otherOptionLabel} value={-1}>
+                        {otherOptionLabel}
+                    </MenuItem>
+                )}
             </Select>
         </>
     )

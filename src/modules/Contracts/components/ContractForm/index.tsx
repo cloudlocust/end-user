@@ -21,6 +21,7 @@ import { SelectChangeEvent } from '@mui/material/Select'
 import OffpeakHoursField from 'src/modules/Contracts/components/OffpeakHoursField'
 import { useParams } from 'react-router-dom'
 import { useMeterForHousing } from 'src/modules/Meters/metersHook'
+import { OtherProviderOfferOptionMessage } from 'src/modules/Contracts/components/ContractFormMessages'
 
 const defaultContractFormValues: contractFormValuesType = {
     contractTypeId: 0,
@@ -180,33 +181,41 @@ const ContractFormFields = ({ isContractsLoading }: ContractFormFieldsProps) => 
                 onChange={(e) => onSelectChange(e, [])}
             />
             {Boolean(formData.contractTypeId) && (
-                <ContractFormSelect<IProvider>
-                    formatOptionLabel={(option) => option.name}
-                    formatOptionValue={(option) => option.id}
-                    isOptionsInProgress={isProvidersLoading}
-                    loadOptions={loadProviderOptions}
-                    optionList={providerList}
-                    name="providerId"
-                    label="Fournisseur"
-                    validateFunctions={[requiredBuilder()]}
-                    onChange={(e) => onSelectChange(e, ['contractTypeId'])}
-                />
+                <>
+                    <ContractFormSelect<IProvider>
+                        formatOptionLabel={(option) => option.name}
+                        formatOptionValue={(option) => option.id}
+                        isOptionsInProgress={isProvidersLoading}
+                        loadOptions={loadProviderOptions}
+                        optionList={providerList}
+                        otherOptionLabel="Autre fournisseur"
+                        name="providerId"
+                        label="Fournisseur"
+                        validateFunctions={[requiredBuilder()]}
+                        onChange={(e) => onSelectChange(e, ['contractTypeId'])}
+                    />
+                    <OtherProviderOfferOptionMessage isShowMessage={formData.providerId === -1} />
+                </>
             )}
-            {Boolean(formData.providerId) && (
-                <ContractFormSelect<IOffer>
-                    formatOptionLabel={(option) => option.name}
-                    formatOptionValue={(option) => option.id}
-                    isOptionsInProgress={isOffersLoading}
-                    loadOptions={loadOfferOptions}
-                    optionList={offerList}
-                    name="offerId"
-                    label="Offre"
-                    validateFunctions={[requiredBuilder()]}
-                    onChange={(e) => onSelectChange(e, ['providerId', 'contractTypeId'])}
-                />
+            {Number(formData.providerId) > 0 && (
+                <>
+                    <ContractFormSelect<IOffer>
+                        formatOptionLabel={(option) => option.name}
+                        formatOptionValue={(option) => option.id}
+                        isOptionsInProgress={isOffersLoading}
+                        loadOptions={loadOfferOptions}
+                        otherOptionLabel="Autre offre"
+                        optionList={offerList}
+                        name="offerId"
+                        label="Offre"
+                        validateFunctions={[requiredBuilder()]}
+                        onChange={(e) => onSelectChange(e, ['providerId', 'contractTypeId'])}
+                    />
+                    <OtherProviderOfferOptionMessage isShowMessage={formData.offerId === -1} />
+                </>
             )}
 
-            {Boolean(formData.offerId) && (
+            {Number(formData.offerId) > 0 && (
                 <ContractFormSelect<ITariffType>
                     formatOptionLabel={(option) => option.name}
                     formatOptionValue={(option) => option.id}
