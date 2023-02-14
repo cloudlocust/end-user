@@ -235,6 +235,10 @@ export interface ContractFormSelectProps<T> extends SelectFieldProps {
      * Function to format the option label.
      */
     formatOptionLabel: (option: T) => string
+    /**
+     * Label for additional "other" option, that can be options for some contract form fields.
+     */
+    otherOptionLabel?: string
 }
 
 /**
@@ -259,3 +263,15 @@ export interface offpeakHoursFieldProps {
      */
     labelProps?: TypographyProps
 }
+
+/**
+ * Message when selecting "other" provider and offer option.
+ */
+export type OtherProviderOfferOptionMessageProps =
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    {
+        /**
+         * Indicates if message should be shown.
+         */
+        isShowMessage: Boolean
+    }
