@@ -11,13 +11,14 @@ import { applyCamelCase } from 'src/common/react-platform-components'
 import { TEST_HOUSES } from 'src/mocks/handlers/houses'
 import { URL_MY_HOUSE } from 'src/modules/MyHouse'
 import { ProductionWidgetErrorIcon } from 'src/modules/MyConsumption/components/WidgetInfoIcons'
+import { isEnphaseConsentFeatureEnabled } from 'src/modules/MyConsumption/MyConsumptionConfig'
 const TEST_WEEK_DATA: IMetric[] = TEST_SUCCESS_WEEK_METRICS([metricTargetsEnum.consumption])
 let mockData: IMetric[] = TEST_WEEK_DATA
 
 // List of houses to add to the redux state
 const LIST_OF_HOUSES: IHousing[] = applyCamelCase(TEST_HOUSES)
 
-const CONSOMMATION_TOTALE_TEXT = 'Achetée'
+const CONSOMMATION_TOTALE_TEXT = isEnphaseConsentFeatureEnabled() ? 'Achetée' : 'Consommation Totale'
 const CONSOMMATION_TOTALE_UNIT = 'kWh'
 
 const NO_DATA_MESSAGE = 'Aucune donnée disponible'

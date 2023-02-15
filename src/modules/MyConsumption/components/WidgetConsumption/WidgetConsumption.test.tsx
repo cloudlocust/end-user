@@ -6,9 +6,10 @@ import { periodType } from 'src/modules/MyConsumption/myConsumptionTypes'
 import { BrowserRouter as Router } from 'react-router-dom'
 import { TEST_SUCCESS_WEEK_METRICS } from 'src/mocks/handlers/metrics'
 import { ConsumptionWidgetsMetricsProvider } from 'src/modules/MyConsumption/Context/ConsumptionWidgetsMetricsContext'
+import { renderWidgetTitle } from 'src/modules/MyConsumption/components/Widget/WidgetFunctions'
 
 const CONSOMMATION_TOTALE_TEXT = 'Consommation Totale'
-const CONSOMMATION_PURCHASED_TEXT = 'Achetée'
+const CONSOMMATION_PURCHASED_TEXT = renderWidgetTitle(metricTargetsEnum.consumption)
 const WH_UNIT_TEXT = 'Wh'
 const KWH_UNIT_TEXT = 'kWh'
 const NO_DATA_MESSAGE = 'Aucune donnée disponible'
@@ -90,35 +91,35 @@ describe('WidgetConsumption test', () => {
         mockIsMetricsLoading = false
         mockData[0].datapoints = [[500, 1651406400]]
         mockData[1].datapoints = [[500, 1651406400]]
-        const { getByText } = renderTestComponent()
+        const { getByText, queryByText } = renderTestComponent()
 
         // consumption total = (consumption + autoconsumption) = (500Wh + 500Wh) = 1kWh
-        expect(getByText(CONSOMMATION_TOTALE_TEXT)).toBeInTheDocument()
+        expect(queryByText(CONSOMMATION_TOTALE_TEXT)).toBeInTheDocument()
         expect(getByText(1)).toBeInTheDocument()
         expect(getByText(KWH_UNIT_TEXT)).toBeInTheDocument()
 
         // consumption = 500Wh
-        expect(getByText(CONSOMMATION_PURCHASED_TEXT)).toBeInTheDocument()
+        expect(queryByText(CONSOMMATION_PURCHASED_TEXT)).toBeInTheDocument()
         expect(getByText(500)).toBeInTheDocument()
         expect(getByText(WH_UNIT_TEXT)).toBeInTheDocument()
     })
     test('When autoconsumption is null, it show two info with same value (consumption) ie: consumption total = consumption', () => {
         mockData[0].datapoints = [[500, 1651406400]]
         mockData[1].datapoints = [[0, 1651406400]]
-        const { getByText, getAllByText } = renderTestComponent()
+        const { getAllByText, queryByText } = renderTestComponent()
 
         // consumption total = consumption = 500Wh
-        expect(getByText(CONSOMMATION_TOTALE_TEXT)).toBeInTheDocument()
-        expect(getByText(CONSOMMATION_PURCHASED_TEXT)).toBeInTheDocument()
+        expect(queryByText(CONSOMMATION_TOTALE_TEXT)).toBeInTheDocument()
+        expect(queryByText(CONSOMMATION_PURCHASED_TEXT)).toBeInTheDocument()
         expect(getAllByText(500)).toHaveLength(2)
         expect(getAllByText(WH_UNIT_TEXT)).toHaveLength(2)
     })
     test('When there is no data, an error message is shown the two title', () => {
         mockData = []
-        const { getByText, getAllByText } = renderTestComponent()
+        const { queryByText, getAllByText } = renderTestComponent()
 
-        expect(getByText(CONSOMMATION_TOTALE_TEXT)).toBeInTheDocument()
-        expect(getByText(CONSOMMATION_PURCHASED_TEXT)).toBeInTheDocument()
+        expect(queryByText(CONSOMMATION_TOTALE_TEXT)).toBeInTheDocument()
+        expect(queryByText(CONSOMMATION_PURCHASED_TEXT)).toBeInTheDocument()
         expect(getAllByText(NO_DATA_MESSAGE)).toHaveLength(2)
     })
 })
