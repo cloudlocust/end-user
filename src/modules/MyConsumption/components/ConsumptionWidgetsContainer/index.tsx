@@ -8,6 +8,7 @@ import { ConsumptionWidgetsContainerProps } from 'src/modules/MyConsumption/comp
 import { getWidgetInfoIcon } from 'src/modules/MyConsumption/components/WidgetInfoIcons'
 import WidgetConsumption from 'src/modules/MyConsumption/components/WidgetConsumption'
 import { useWidgetsMetricsContext } from 'src/modules/MyConsumption/Context/ConsumptionWidgetsMetricsContext/useWidgetsMetricsContext'
+import { isEnphaseConsentFeatureEnabled } from 'src/modules/MyConsumption/MyConsumptionConfig'
 
 /**
  * MyConsumptionWidgets Component (it's Wrapper of the list of Widgets).
@@ -48,20 +49,43 @@ const ConsumptionWidgetsContainer = ({
             </div>
             <div style={{ background: theme.palette.grey[100] }} className="w-full my-8">
                 <Grid container spacing={{ xs: 1, md: 2 }}>
-                    {/** Display consumption target (first_target in WidgetTargets) with a specific WidgetConsumption Component. */}
-                    <WidgetConsumption
-                        target={WidgetTargets[0]}
-                        range={range}
-                        filters={filters}
-                        metricsInterval={metricsInterval}
-                        period={period}
-                        infoIcon={getWidgetInfoIcon({
-                            widgetTarget: WidgetTargets[0],
-                            hasMissingContracts: hasMissingHousingContracts,
-                            enphaseOff,
-                            enedisSgeOff: enedisOff,
-                        })}
-                    />
+                    {/**
+                     * If enphase consent is enabled, Display consumption target (first_target in WidgetTargets) with a specific WidgetConsumption Component,
+                     *    that displays two info : the consumption total and the purchased consumption,
+                     *   (because in this case consumption total = purchased consumption + auto consumption).
+                     * Otherwise it'll be displayed with then normal Widget component, that displays one info : the consumption total,
+                     *    (because in this case consumption total = purchased consumption).
+                     */}
+                    {isEnphaseConsentFeatureEnabled() ? (
+                        <WidgetConsumption
+                            target={WidgetTargets[0]}
+                            range={range}
+                            filters={filters}
+                            metricsInterval={metricsInterval}
+                            period={period}
+                            infoIcon={getWidgetInfoIcon({
+                                widgetTarget: WidgetTargets[0],
+                                hasMissingContracts: hasMissingHousingContracts,
+                                enphaseOff,
+                                enedisSgeOff: enedisOff,
+                            })}
+                        />
+                    ) : (
+                        <Widget
+                            target={WidgetTargets[0]}
+                            range={range}
+                            filters={filters}
+                            metricsInterval={metricsInterval}
+                            period={period}
+                            infoIcon={getWidgetInfoIcon({
+                                widgetTarget: WidgetTargets[0],
+                                hasMissingContracts: hasMissingHousingContracts,
+                                enphaseOff,
+                                enedisSgeOff: enedisOff,
+                            })}
+                        />
+                    )}
+
                     {/** Display the other targets with Widget Component. */}
                     {WidgetTargets.slice(1).map((target) => {
                         return (
