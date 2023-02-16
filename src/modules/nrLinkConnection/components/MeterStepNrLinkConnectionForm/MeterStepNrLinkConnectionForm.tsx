@@ -8,6 +8,7 @@ import Typography from '@mui/material/Typography'
 import { Form, max, min, requiredBuilder } from 'src/common/react-platform-components'
 import { useMeterForHousing } from 'src/modules/Meters/metersHook'
 import { IMeter } from 'src/modules/Meters/Meters'
+import { textNrlinkColor } from 'src/modules/nrLinkConnection/components/LastStepNrLinkConnection/LastStepNrLinkConnection'
 
 /**
  * Component showing the first step in the nrLinkConnection Stepper.
@@ -81,21 +82,21 @@ const MeterStepNrLinkConnectionForm = ({
                                 name="guid"
                                 style={{ marginBottom: '20px' }}
                                 fullWidth
-                                label="Numéro de PDL ou PRM"
+                                label="Numéro de mon compteur (PDL ou PRM)"
                                 placeholder="Ex: 12345678912345"
                                 variant="outlined"
                             />
                         ) : (
                             <TextField
                                 name="guid"
-                                label="Numéro de PDL ou PRM"
+                                label="Numéro de mon compteur (PDL ou PRM)"
                                 placeholder="Ex: 12345678912345"
                                 validateFunctions={[requiredBuilder(), min(14), max(14)]}
                             />
                         )}
                     </div>
                     <div className="w-full">
-                        <Typography variant="caption" className="w-full text-center">
+                        <Typography variant="caption" className="w-full text-center" sx={{ color: textNrlinkColor }}>
                             {formatMessage({
                                 id: 'Vous pouvez trouver votre numéro de PDL/PRM :',
                                 defaultMessage: 'Vous pouvez trouver votre numéro de PDL/PRM :',
@@ -110,7 +111,11 @@ const MeterStepNrLinkConnectionForm = ({
                                 >
                                     <img src={electricityPath} alt="electricity-img" className="border p-5" />
                                 </motion.div>
-                                <Typography variant="caption" className="text-center md:text-12">
+                                <Typography
+                                    variant="caption"
+                                    className="text-center md:text-12"
+                                    sx={{ color: textNrlinkColor }}
+                                >
                                     {formatMessage({
                                         id: 'Vos factures',
                                         defaultMessage: 'Vos factures',
@@ -126,7 +131,11 @@ const MeterStepNrLinkConnectionForm = ({
                                     <img src={linkyPath} alt="electricity-img" className="border p-6" />
                                 </motion.div>
 
-                                <Typography variant="caption" className="text-center md:text-12">
+                                <Typography
+                                    variant="caption"
+                                    className="text-center md:text-12"
+                                    sx={{ color: textNrlinkColor }}
+                                >
                                     {formatMessage({
                                         id: 'Votre compteur Linky en appuyant sur “+” (n° PDL ou PRM)',
                                         defaultMessage: 'Votre compteur Linky en appuyant sur “+” (n° PDL ou PRM)',
@@ -141,7 +150,11 @@ const MeterStepNrLinkConnectionForm = ({
                                 >
                                     <img src={contractPath} alt="electricity-img" className="border p-5" />
                                 </motion.div>
-                                <Typography variant="caption" className="w-full text-center md:text-12">
+                                <Typography
+                                    variant="caption"
+                                    className="w-full text-center md:text-12"
+                                    sx={{ color: textNrlinkColor }}
+                                >
                                     {formatMessage({
                                         id: 'Votre contrat d’électricité',
                                         defaultMessage: 'Votre contrat d’électricité',

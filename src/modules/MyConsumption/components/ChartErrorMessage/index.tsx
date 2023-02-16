@@ -1,6 +1,8 @@
-import { useTheme, Icon, Typography } from '@mui/material'
+import { useTheme, Typography } from '@mui/material'
 import { Link } from 'react-router-dom'
 import { ChartErrorMessageProps } from 'src/modules/MyConsumption/components/ChartErrorMessage/ChartErrorMessage'
+import { warningMainHashColor } from 'src/modules/utils/muiThemeVariables'
+import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline'
 
 /**
  * ConsumptionErrorMessage component shows an error message depending on the received parameters nrLinkEnedisOff and enphaseOff.
@@ -23,17 +25,27 @@ export const ChartErrorMessage = ({
     const theme = useTheme()
 
     return (
-        <div style={{ background: theme.palette.primary.dark }} className="p-16">
-            <div className="container relative  p-16 sm:p-24 flex-col text-center flex items-center justify-center">
-                <Icon style={{ fontSize: '4rem', marginBottom: '1rem', color: theme.palette.warning.light }}>
-                    error_outline_outlined
-                </Icon>
+        <div style={{ background: theme.palette.primary.dark }}>
+            <div className="container relative p-16 sm:p-24 flex-col text-center flex items-center justify-center">
+                <ErrorOutlineIcon
+                    sx={{
+                        color: warningMainHashColor,
+                        width: { xs: '24px', md: '32px' },
+                        height: { xs: '24px', md: '32px' },
+                        margin: { xs: '0 0 4px 0', md: '0 8px 0 0' },
+                    }}
+                />
                 {nrLinkEnedisOff && (
                     <Link to={linkTo!}>
                         <Typography
-                            style={{ color: theme.palette.warning.light }}
-                            fontWeight={600}
                             className="underline"
+                            sx={{
+                                color: warningMainHashColor,
+                                cursor: 'pointer',
+                                fontWeight: '400',
+                                textAlign: 'center',
+                                fontSize: { xs: '13px', md: '16px' },
+                            }}
                         >
                             {nrlinkEnedisOffMessage}
                         </Typography>
@@ -42,9 +54,14 @@ export const ChartErrorMessage = ({
                 {enphaseOff && (
                     <Link to={linkTo!}>
                         <Typography
-                            style={{ color: theme.palette.warning.light }}
-                            fontWeight={600}
                             className="underline"
+                            sx={{
+                                color: warningMainHashColor,
+                                cursor: 'pointer',
+                                fontWeight: '400',
+                                textAlign: 'center',
+                                fontSize: { xs: '13px', md: '16px' },
+                            }}
                         >
                             {enphaseOffMessage}
                         </Typography>
