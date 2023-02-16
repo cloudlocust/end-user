@@ -3,6 +3,7 @@ import { reduxedRender } from 'src/common/react-platform-components/test'
 import { metricFiltersType, metricIntervalType } from 'src/modules/Metrics/Metrics'
 import ConsumptionWidgetsContainer from 'src/modules/MyConsumption/components/ConsumptionWidgetsContainer'
 import { ConsumptionWidgetsContainerProps } from 'src/modules/MyConsumption/components/ConsumptionWidgetsContainer/WidgetContainer'
+import { ConsumptionWidgetsMetricsProvider } from 'src/modules/MyConsumption/Context/ConsumptionWidgetsMetricsContext'
 import { periodType } from 'src/modules/MyConsumption/myConsumptionTypes'
 import { WidgetTargets } from 'src/modules/MyConsumption/utils/myConsumptionVariables'
 
@@ -38,7 +39,9 @@ describe('ConsumptionWidgetsContainer test', () => {
     test('the widgets is showing correctly', async () => {
         const { container, getByText } = reduxedRender(
             <Router>
-                <ConsumptionWidgetsContainer {...consumptionWidgetsContainerProps} />
+                <ConsumptionWidgetsMetricsProvider>
+                    <ConsumptionWidgetsContainer {...consumptionWidgetsContainerProps} />
+                </ConsumptionWidgetsMetricsProvider>
             </Router>,
         )
         expect(getByText(LIST_WIDGETS_TEXT)).toBeTruthy()

@@ -54,17 +54,17 @@ export const Widget = memo(({ filters, range, infoIcon, metricsInterval, target,
         filters,
     })
 
-    const { addMetrics } = useWidgetsMetricsContext()
+    const { storeWidgetMetricsData } = useWidgetsMetricsContext()
 
     useEffect(() => {
-        data.length && addMetrics(data)
-        // disable eslint because we don't want to add addMetrics as a dependency.
+        data.length && storeWidgetMetricsData(data)
+        // disable eslint because we don't want to add storeWidgetMetricsData as a dependency.
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [data])
 
     useEffect(() => {
-        oldData.length && addMetrics(oldData, true)
-        // disable eslint because we don't want to add addMetrics as a dependency.
+        oldData.length && storeWidgetMetricsData(oldData, true)
+        // disable eslint because we don't want to add storeWidgetMetricsData as a dependency.
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [oldData])
 

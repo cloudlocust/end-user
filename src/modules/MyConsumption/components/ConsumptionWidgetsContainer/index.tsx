@@ -31,12 +31,12 @@ const ConsumptionWidgetsContainer = ({
     enedisOff,
 }: ConsumptionWidgetsContainerProps) => {
     const theme = useTheme()
-    const { resetMetrics } = useWidgetsMetricsContext()
+    const { resetMetricsWidgetData } = useWidgetsMetricsContext()
 
     // We should reset the metrics context when the range, filters, metricsInterval or period changes.
     useEffect(() => {
-        resetMetrics()
-    }, [range, filters, metricsInterval, period, resetMetrics])
+        resetMetricsWidgetData()
+    }, [range, filters, metricsInterval, period, resetMetricsWidgetData])
 
     return (
         <div className="p-12 sm:p-24 ">

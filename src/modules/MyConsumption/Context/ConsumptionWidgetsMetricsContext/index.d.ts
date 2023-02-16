@@ -1,32 +1,30 @@
-import { ReactChildren, ReactElement, ReactNode } from 'react'
+import { ReactElement, ReactNode } from 'react'
 import { IMetric, metricTargetType } from 'src/modules/Metrics/Metrics'
 
 /**
  * Type of consumption widgets metrics context for saving the metrics of the widgets.
  */
-export type ConsumptionWidgetsMetricsContextType = /**
- *
- */ {
+export interface ConsumptionWidgetsMetricsContextType {
     /**
      * Track the previous metrics of the widgets that are according to the previous range.
      */
-    oldMetricsWidgets: IMetric[]
+    oldRangeMetricWidgetsData: IMetric[]
     /**
      * Track the current metrics of the widgets.
      */
-    currentMetricsWidgets: IMetric[]
+    currentRangeMetricWidgetsData: IMetric[]
     /**
-     * Function to save metrics (data) in (currentMetricsData) or in (oldMetricsData) if isOld is true.
+     * Function to save metrics (data) in (currentRangeMetricWidgetsData) or in (oldRangeMetricWidgetsData) if isOld is true.
      */
-    addMetrics: (data: IMetric[], isOldData?: boolean = false) => void
+    storeWidgetMetricsData: (data: IMetric[], isOldData?: boolean = false) => void
     /**
-     * Function to get metrics of the widgets targets from (currentMetricsWidgets) or from (oldMetricsWidgets) if fromOldData is true.
+     * Function to get metrics of the widgets targets from (currentRangeMetricWidgetsData) or from (oldRangeMetricWidgetsData) if fromOldData is true.
      */
-    getMetrics: (targets: metricTargetType[], fromOldData?: boolean = false) => IMetric[]
+    getMetricsWidgetsData: (targets: metricTargetType[], fromOldData?: boolean = false) => IMetric[]
     /**
      * Function to reset the metrics context.
      */
-    resetMetrics: () => void
+    resetMetricsWidgetData: () => void
 }
 
 /**
@@ -38,5 +36,5 @@ export type ConsumptionWidgetsMetricsProviderProps = /**
     /**
      * Children.
      */
-    children: ReactNode | ReactChildren | ReactElement
+    children: ReactNode | ReactElement
 }

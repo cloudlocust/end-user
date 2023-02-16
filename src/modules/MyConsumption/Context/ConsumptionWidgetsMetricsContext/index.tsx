@@ -8,24 +8,9 @@ import {
 /**
  * Consumption Metrics Widgets Context.
  */
-export const ConsumptionWidgetsMetricsContext = React.createContext<ConsumptionWidgetsMetricsContextType>({
-    currentMetricsWidgets: [],
-    oldMetricsWidgets: [],
-    /**
-     * Default addMetrics function.
-     */
-    addMetrics: () => {},
-    /**
-     * Default getMetrics function.
-     *
-     * @returns [].
-     */
-    getMetrics: () => [],
-    /**
-     * Default resetMetrics function.
-     */
-    resetMetrics: () => {},
-})
+export const ConsumptionWidgetsMetricsContext = React.createContext<ConsumptionWidgetsMetricsContextType>(
+    {} as ConsumptionWidgetsMetricsContextType,
+)
 
 /**
  * ConsumptionWidgetsMetrics Provider.
@@ -35,52 +20,52 @@ export const ConsumptionWidgetsMetricsContext = React.createContext<ConsumptionW
  * @returns Context values/functions.
  */
 export const ConsumptionWidgetsMetricsProvider = ({ children }: ConsumptionWidgetsMetricsProviderProps) => {
-    const [currentMetricsWidgets, setCurrentMetricsWidgets] = useState<IMetric[]>([])
-    const [oldMetricsWidgets, setOldMetricsWidgets] = useState<IMetric[]>([])
+    const [currentRangeMetricWidgetsData, setCurrentRangeMetricWidgetsData] = useState<IMetric[]>([])
+    const [oldRangeMetricWidgetsData, setOldRangeMetricWidgetsData] = useState<IMetric[]>([])
 
     /**
-     * Function to save metrics (data) in (currentMetricsWidgets) or in (oldMetricsWidgets) if isOld is true.
-     * If isOld is false then it witt save the metrics in (currentMetricsWidgets), otherwise it will save the metrics in (oldMetricsWidgets).
+     * Function to save metrics (data) in (currentRangeMetricWidgetsData) or in (oldRangeMetricWidgetsData) if isOld is true.
+     * If isOld is false then it witt save the metrics in (currentRangeMetricWidgetsData), otherwise it will save the metrics in (oldRangeMetricWidgetsData).
      *
      * @param data Metrics data.
      * @param isOldData Boolean var for know if the data metrics is the current data or the previous data. Default value is false.
      */
-    const addMetrics = useCallback(
+    const storeWidgetMetricsData = useCallback(
         (data: IMetric[], isOldData: boolean = false) => {
             if (isOldData) {
-                saveDataInCorrectArray(oldMetricsWidgets, setOldMetricsWidgets, data)
+                saveDataInCorrectArray(oldRangeMetricWidgetsData, setOldRangeMetricWidgetsData, data)
             } else {
-                saveDataInCorrectArray(currentMetricsWidgets, setCurrentMetricsWidgets, data)
+                saveDataInCorrectArray(currentRangeMetricWidgetsData, setCurrentRangeMetricWidgetsData, data)
             }
         },
-        [currentMetricsWidgets, oldMetricsWidgets],
+        [currentRangeMetricWidgetsData, oldRangeMetricWidgetsData],
     )
 
     /**
-     * Function to get metrics of the widgets targets from (currentMetricsWidgets) or from (oldMetricsWidgets) if fromOldData is true.
-     * If fromOldData is false then it witt get the metrics from (oldMetricsWidgets), otherwise it will get the metrics from (currentMetricsWidgets).
+     * Function to get metrics of the widgets targets from (currentRangeMetricWidgetsData) or from (oldRangeMetricWidgetsData) if fromOldData is true.
+     * If fromOldData is false then it witt get the metrics from (oldRangeMetricWidgetsData), otherwise it will get the metrics from (currentRangeMetricWidgetsData).
      *
      * @param targets Targets widgets types.
      * @param fromOldData Boolean to specifies where we get our data.
      * @returns Metrics data.
      */
-    const getMetrics = useCallback(
+    const getMetricsWidgetsData = useCallback(
         (targets: metricTargetType[], fromOldData: boolean = false): IMetric[] => {
             if (fromOldData) {
-                return oldMetricsWidgets.filter((item) => targets.includes(item.target))
+                return oldRangeMetricWidgetsData.filter((item) => targets.includes(item.target))
             } else {
-                return currentMetricsWidgets.filter((item) => targets.includes(item.target))
+                return currentRangeMetricWidgetsData.filter((item) => targets.includes(item.target))
             }
         },
-        [currentMetricsWidgets, oldMetricsWidgets],
+        [currentRangeMetricWidgetsData, oldRangeMetricWidgetsData],
     )
 
     /**
-     * Function to reset the metrics data - reset (currentMetricsWidgets & oldMetricsWidgets) to [] -.
+     * Function to reset the metrics data - reset (currentRangeMetricWidgetsData & oldRangeMetricWidgetsData) to [] -.
      */
-    const resetMetrics = useCallback(() => {
-        setCurrentMetricsWidgets([])
-        setOldMetricsWidgets([])
+    const resetMetricsWidgetData = useCallback(() => {
+        setCurrentRangeMetricWidgetsData([])
+        setOldRangeMetricWidgetsData([])
     }, [])
 
     /**
@@ -93,7 +78,7 @@ export const ConsumptionWidgetsMetricsProvider = ({ children }: ConsumptionWidge
      */
     const saveDataInCorrectArray = (
         metricsData: IMetric[],
-        setMetricsData: typeof setOldMetricsWidgets,
+        setMetricsData: typeof setOldRangeMetricWidgetsData,
         data: IMetric[],
     ) => {
         data.forEach((metric) => {
@@ -106,11 +91,11 @@ export const ConsumptionWidgetsMetricsProvider = ({ children }: ConsumptionWidge
     return (
         <ConsumptionWidgetsMetricsContext.Provider
             value={{
-                currentMetricsWidgets,
-                oldMetricsWidgets,
-                addMetrics,
-                getMetrics,
-                resetMetrics,
+                currentRangeMetricWidgetsData,
+                oldRangeMetricWidgetsData,
+                storeWidgetMetricsData,
+                getMetricsWidgetsData,
+                resetMetricsWidgetData,
             }}
         >
             {children}
