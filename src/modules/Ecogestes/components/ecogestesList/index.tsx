@@ -41,9 +41,7 @@ export const EcogestesList = () => {
             <div className="flex flex-nowrap gap-5 flex-col sm:flex-row  w-full sm:flex-wrap h-full sm:h-auto">
                 {isEcogestesLoadingInProgress
                     ? limits.map(() => <ImageCardLoader></ImageCardLoader>)
-                    : !isNull(ecogestesList) &&
-                      !isEmpty(EcogestesList) &&
-                      ecogestesList.map((ecogeste) => <EcogesteCard ecogeste={ecogeste} />)}
+                    : ecogestesList?.map((ecogeste) => <EcogesteCard ecogeste={ecogeste} />)}
             </div>
         </>
     )
