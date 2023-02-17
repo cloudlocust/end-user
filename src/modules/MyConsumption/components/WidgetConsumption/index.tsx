@@ -1,14 +1,9 @@
-import convert from 'convert-units'
 import React, { useContext, useMemo } from 'react'
-import { IMetric, metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
+import { metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
 import { Widget } from 'src/modules/MyConsumption/components/Widget'
 import { IWidgetProps } from 'src/modules/MyConsumption/components/Widget/Widget'
 import { WidgetItem } from 'src/modules/MyConsumption/components/WidgetItem'
-import {
-    computeTotalConsumption,
-    computeTotalAutoconsumption,
-} from 'src/modules/MyConsumption/components/Widget/WidgetFunctions'
-import { consumptionWattUnitConversion } from 'src/modules/MyConsumption/utils/unitConversionFunction'
+import { computeTotalOfAllConsumptions } from 'src/modules/MyConsumption/components/Widget/WidgetFunctions'
 import { computePercentageChange } from 'src/modules/Analysis/utils/computationFunctions'
 import { ConsumptionWidgetsMetricsContext } from 'src/modules/MyConsumption/components/ConsumptionWidgetsContainer/ConsumptionWidgetsMetricsContext'
 
@@ -33,35 +28,21 @@ const WidgetConsumption = (props: IWidgetProps) => {
         [props.target, getMetricsWidgetsData],
     )
 
-    /**
-     * Compute the total consumption of the current and old metrics.
-     *
-     * @param data The current metrics.
-     * @returns The total consumption.
-     */
-    const computeConsumptionTotal = (data: IMetric[]) => {
-        const { value: consumptionValue, unit: consumptionUnit } = computeTotalConsumption(data)
-        const { value: AutoConsumptionValue, unit: AutoConsumptionUnit } = computeTotalAutoconsumption(data)
-
-        const totalProduction =
-            convert(consumptionValue).from(consumptionUnit).to('Wh') +
-            convert(AutoConsumptionValue).from(AutoConsumptionUnit).to('Wh')
-
-        return consumptionWattUnitConversion(totalProduction)
-    }
-
     const { unit, value } = useMemo(
         // we should wait for all metrics needed to be loaded, in this case, 2 (consumption and autoconsumption)
         () =>
             currentRangeConsumptionData.length < 2
                 ? emptyValueUnit
-                : computeConsumptionTotal(currentRangeConsumptionData),
+                : computeTotalOfAllConsumptions(currentRangeConsumptionData),
         [currentRangeConsumptionData],
     )
 
     const { value: oldValue } = useMemo(
         // we should wait for all metrics needed to be loaded, in this case, 2 (consumption and autoconsumption)
-        () => (oldRangeConsumptionData.length < 2 ? emptyValueUnit : computeConsumptionTotal(oldRangeConsumptionData)),
+        () =>
+            oldRangeConsumptionData.length < 2
+                ? emptyValueUnit
+                : computeTotalOfAllConsumptions(oldRangeConsumptionData),
         [oldRangeConsumptionData],
     )
 
