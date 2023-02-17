@@ -5,8 +5,8 @@ import WidgetConsumption from 'src/modules/MyConsumption/components/WidgetConsum
 import { periodType } from 'src/modules/MyConsumption/myConsumptionTypes'
 import { BrowserRouter as Router } from 'react-router-dom'
 import { TEST_SUCCESS_WEEK_METRICS } from 'src/mocks/handlers/metrics'
-import { ConsumptionWidgetsMetricsProvider } from 'src/modules/MyConsumption/Context/ConsumptionWidgetsMetricsContext'
 import { renderWidgetTitle } from 'src/modules/MyConsumption/components/Widget/WidgetFunctions'
+import { ConsumptionWidgetsMetricsProvider } from 'src/modules/MyConsumption/components/ConsumptionWidgetsContainer/ConsumptionWidgetsMetricsContext'
 
 const CONSOMMATION_TOTALE_TEXT = 'Consommation Totale'
 const CONSOMMATION_PURCHASED_TEXT = renderWidgetTitle(metricTargetsEnum.consumption)
