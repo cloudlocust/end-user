@@ -1,7 +1,6 @@
 import convert from 'convert-units'
-import React, { useMemo } from 'react'
+import React, { useContext, useMemo } from 'react'
 import { IMetric, metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
-// import { useWidgetsMetricsContext } from 'src/modules/MyConsumption/components/ConsumptionWidgetsContainer/ConsumptionWidgetsMetricsContext/useWidgetsMetricsContext'
 import { Widget } from 'src/modules/MyConsumption/components/Widget'
 import { IWidgetProps } from 'src/modules/MyConsumption/components/Widget/Widget'
 import { WidgetItem } from 'src/modules/MyConsumption/components/WidgetItem'
@@ -11,8 +10,7 @@ import {
 } from 'src/modules/MyConsumption/components/Widget/WidgetFunctions'
 import { consumptionWattUnitConversion } from 'src/modules/MyConsumption/utils/unitConversionFunction'
 import { computePercentageChange } from 'src/modules/Analysis/utils/computationFunctions'
-import { useWidgetsMetricsContext } from 'src/modules/MyConsumption/Context/ConsumptionWidgetsMetricsContext/useWidgetsMetricsContext'
-// import { ConsumptionWidgetsMetricsContext } from 'src/modules/MyConsumption/components/ConsumptionWidgetsContainer/ConsumptionWidgetsMetricsContext'
+import { ConsumptionWidgetsMetricsContext } from 'src/modules/MyConsumption/components/ConsumptionWidgetsContainer/ConsumptionWidgetsMetricsContext'
 
 const emptyValueUnit = { value: 0, unit: '' }
 
@@ -23,16 +21,16 @@ const emptyValueUnit = { value: 0, unit: '' }
  * @returns WidgetConsumption Component.
  */
 const WidgetConsumption = (props: IWidgetProps) => {
-    const { getMetrics } = useWidgetsMetricsContext()
+    const { getMetricsWidgetsData } = useContext(ConsumptionWidgetsMetricsContext)
 
     const currentHelpfulMetrics = useMemo(
-        () => getMetrics([props.target, metricTargetsEnum.autoconsumption]),
-        [props.target, getMetrics],
+        () => getMetricsWidgetsData([props.target, metricTargetsEnum.autoconsumption]),
+        [props.target, getMetricsWidgetsData],
     )
 
     const oldHelpfulMetrics = useMemo(
-        () => getMetrics([props.target, metricTargetsEnum.autoconsumption], true),
-        [props.target, getMetrics],
+        () => getMetricsWidgetsData([props.target, metricTargetsEnum.autoconsumption], true),
+        [props.target, getMetricsWidgetsData],
     )
 
     /**
