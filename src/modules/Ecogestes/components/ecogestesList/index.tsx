@@ -33,17 +33,15 @@ export const EcogestesList = () => {
     return (
         <>
             <TypographyFormatMessage variant="h2" className="text-20 mb-20 font-bold">
-                {categoryIdInt > 0 ? `Categorie: ${categoryIdInt}` : 'Liste de tout les écogestes:'}
+                {categoryIdInt > 0 ? `Categorie: ${categoryIdInt}` : 'Liste de tous les écogestes:'}
             </TypographyFormatMessage>
             {(isEmpty(ecogestesList) || isNull(ecogestesList)) &&
                 !isEcogestesLoadingInProgress &&
-                "Pas d'ecogestes a charger"}
+                "Aucun écogeste n'est disponible pour le moment."}
             <div className="flex flex-nowrap gap-5 flex-col sm:flex-row  w-full sm:flex-wrap h-full sm:h-auto">
                 {isEcogestesLoadingInProgress
                     ? limits.map(() => <ImageCardLoader></ImageCardLoader>)
-                    : !isNull(ecogestesList) &&
-                      !isEmpty(EcogestesList) &&
-                      ecogestesList.map((ecogeste) => <EcogesteCard ecogeste={ecogeste} />)}
+                    : ecogestesList?.map((ecogeste) => <EcogesteCard ecogeste={ecogeste} />)}
             </div>
         </>
     )

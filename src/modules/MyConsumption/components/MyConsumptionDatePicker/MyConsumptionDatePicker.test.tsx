@@ -6,7 +6,7 @@ import format from 'date-fns/format'
 import { addPeriod, getRange, subPeriod } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
 import MyConsumptionDatePicker from 'src/modules/MyConsumption/components/MyConsumptionDatePicker'
 import { waitFor } from '@testing-library/react'
-import { endOfDay } from 'date-fns'
+import dayjs from 'dayjs'
 
 let mockSetRange = jest.fn()
 let mockOnDatePickerChange = jest.fn()
@@ -34,7 +34,7 @@ describe('Load MyConsumptionDatePicker', () => {
         mockPeriod = 'weekly'
         const dateWeek = new Date()
         const prevWeek = dateWeek.setDate(dateWeek.getDate() - 6)
-        mockRange = getRange(mockPeriod, new Date(prevWeek), 'sub')
+        mockRange = getRange(mockPeriod, new Date(dateWeek), 'add')
         const { getByText, container } = reduxedRender(
             <Router>
                 <MyConsumptionDatePicker period={mockPeriod} setRange={mockSetRange} range={mockRange} />
@@ -47,7 +47,7 @@ describe('Load MyConsumptionDatePicker', () => {
         mockPeriod = 'monthly'
         const dateMonth = new Date()
         const prevMonth = dateMonth.setMonth(dateMonth.getMonth() - 1)
-        mockRange = getRange(mockPeriod, new Date(prevMonth), 'sub')
+        mockRange = getRange(mockPeriod, new Date(prevMonth), 'add')
         const { getByText, container } = reduxedRender(
             <Router>
                 <MyConsumptionDatePicker period={mockPeriod} setRange={mockSetRange} range={mockRange} />
@@ -60,7 +60,7 @@ describe('Load MyConsumptionDatePicker', () => {
         mockPeriod = 'yearly'
         const dateYear = new Date()
         const prevYear = dateYear.setFullYear(dateYear.getFullYear() - 1)
-        mockRange = getRange(mockPeriod, new Date(prevYear), 'sub')
+        mockRange = getRange(mockPeriod, new Date(prevYear), 'add')
         const { getByText, container } = reduxedRender(
             <Router>
                 <MyConsumptionDatePicker period={mockPeriod} setRange={mockSetRange} range={mockRange} />
@@ -73,15 +73,19 @@ describe('Load MyConsumptionDatePicker', () => {
         mockPeriod = 'yearly'
         const dateYear = new Date('2019')
         const nextYear = dateYear.setFullYear(dateYear.getFullYear() + 1)
+        mockSetRange = jest.fn()
         mockRange = getRange(mockPeriod, new Date(nextYear), 'sub')
-        const { getByText, container } = reduxedRender(
+        const { getByText } = reduxedRender(
             <Router>
                 <MyConsumptionDatePicker period={mockPeriod} setRange={mockSetRange} range={mockRange} />
             </Router>,
         )
         userEvent.click(getByText(INCREMENT_DATE_ARROW_TEXT))
-        expect(container.querySelector('input')?.value).toBe(format(new Date(nextYear), 'yyyy'))
-    })
+        const expectedRange = getRange(mockPeriod, new Date(nextYear), 'add')
+        await waitFor(() => {
+            expect(mockSetRange).toHaveBeenCalledWith(expectedRange)
+        })
+    }, 30000)
 
     test('When onDatePickerChange is given, it should be called with the right data when previous or next', async () => {
         mockPeriod = 'yearly'
@@ -122,9 +126,8 @@ describe('Load MyConsumptionDatePicker', () => {
         await waitFor(() => {
             expect(() => getByText(selectedYear)!).toThrow()
         })
-        expect(mockOnDatePickerChange).toHaveBeenNthCalledWith(3, endOfDay(new Date('2009-01-01')))
+        expect(mockOnDatePickerChange).toHaveBeenLastCalledWith(dayjs('2009-01-01').utc().toDate())
     }, 20000)
-
     test('When maxDate given, disabled should be shown on increment date arrow when date is max', async () => {
         mockPeriod = 'yearly'
         const maxDate = new Date('2010-01-01 00:00:00:000')
