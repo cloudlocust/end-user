@@ -50,7 +50,7 @@ export interface IWidgetProps {
     /**
      * Children of the Widget.
      */
-    children?: ReactNode | ReactChildren | ReactElement
+    children?: ReactNode | ReactElement
 }
 
 /**

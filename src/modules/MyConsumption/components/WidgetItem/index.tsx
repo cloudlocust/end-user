@@ -25,7 +25,7 @@ export function WidgetItem({ target, title, infoIcon, value, unit, percentageCha
                 {infoIcon}
             </div>
             {!value ? (
-                <div className="mb-44 text-center">
+                <div className="text-center flex flex-1 justify-center items-center py-4">
                     <TypographyFormatMessage>Aucune donnée disponible</TypographyFormatMessage>
                 </div>
             ) : (

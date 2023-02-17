@@ -1,22 +1,22 @@
 import { reduxedRender } from 'src/common/react-platform-components/test'
 import { IMetric, metricFiltersType, metricIntervalType, metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
-import { ConsumptionWidgetsMetricsContext } from 'src/modules/MyConsumption/Context/ConsumptionWidgetsMetricsContext'
+import { ConsumptionWidgetsMetricsContext } from 'src/modules/MyConsumption/components/ConsumptionWidgetsContainer/ConsumptionWidgetsMetricsContext'
 import { Widget } from 'src/modules/MyConsumption/components/Widget'
 import { IWidgetProps } from 'src/modules/MyConsumption/components/Widget/Widget'
 import { periodType } from 'src/modules/MyConsumption/myConsumptionTypes'
 
-let mockCurrentMetricsWidgets: IMetric[] = []
-let mockOldMetricsWidgets: IMetric[] = []
-let mockAddMetrics = jest.fn()
-let mockGetMetrics = jest.fn()
-let mockResetMetrics = jest.fn()
+let mockCurrentRangeMetricWidgetsData: IMetric[] = []
+let mockOldRangeMetricWidgetsData: IMetric[] = []
+let mockStoreWidgetMetricsData = jest.fn()
+let mockGetMetricsWidgetsData = jest.fn()
+let mockResetMetricsWidgetData = jest.fn()
 
 let mockProviderValueProp = {
-    currentMetricsWidgets: mockCurrentMetricsWidgets,
-    oldMetricsWidgets: mockOldMetricsWidgets,
-    addMetrics: mockAddMetrics,
-    getMetrics: mockGetMetrics,
-    resetMetrics: mockResetMetrics,
+    currentRangeMetricWidgetsData: mockCurrentRangeMetricWidgetsData,
+    oldRangeMetricWidgetsData: mockOldRangeMetricWidgetsData,
+    storeWidgetMetricsData: mockStoreWidgetMetricsData,
+    getMetricsWidgetsData: mockGetMetricsWidgetsData,
+    resetMetricsWidgetData: mockResetMetricsWidgetData,
 }
 
 let mockFilters: metricFiltersType = [
@@ -55,9 +55,9 @@ const renderTestComponent = () => {
 }
 
 describe('ConsumptionWidgetsMetrics Context test', () => {
-    test('when ConsumptionWidgetsMetrics is rendered with default values and addMetrics is called', async () => {
+    test('when ConsumptionWidgetsMetrics is rendered with default values', async () => {
         renderTestComponent()
-        expect(mockCurrentMetricsWidgets).toEqual([])
-        expect(mockOldMetricsWidgets).toEqual([])
+        expect(mockCurrentRangeMetricWidgetsData).toEqual([])
+        expect(mockOldRangeMetricWidgetsData).toEqual([])
     })
 })
