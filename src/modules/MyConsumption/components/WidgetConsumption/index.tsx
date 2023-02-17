@@ -23,12 +23,12 @@ const emptyValueUnit = { value: 0, unit: '' }
 const WidgetConsumption = (props: IWidgetProps) => {
     const { getMetricsWidgetsData } = useContext(ConsumptionWidgetsMetricsContext)
 
-    const currentHelpfulMetrics = useMemo(
+    const currentRangeConsumptionData = useMemo(
         () => getMetricsWidgetsData([props.target, metricTargetsEnum.autoconsumption]),
         [props.target, getMetricsWidgetsData],
     )
 
-    const oldHelpfulMetrics = useMemo(
+    const oldRangeConsumptionData = useMemo(
         () => getMetricsWidgetsData([props.target, metricTargetsEnum.autoconsumption], true),
         [props.target, getMetricsWidgetsData],
     )
@@ -52,14 +52,17 @@ const WidgetConsumption = (props: IWidgetProps) => {
 
     const { unit, value } = useMemo(
         // we should wait for all metrics needed to be loaded, in this case, 2 (consumption and autoconsumption)
-        () => (currentHelpfulMetrics.length < 2 ? emptyValueUnit : computeConsumptionTotal(currentHelpfulMetrics)),
-        [currentHelpfulMetrics],
+        () =>
+            currentRangeConsumptionData.length < 2
+                ? emptyValueUnit
+                : computeConsumptionTotal(currentRangeConsumptionData),
+        [currentRangeConsumptionData],
     )
 
     const { value: oldValue } = useMemo(
         // we should wait for all metrics needed to be loaded, in this case, 2 (consumption and autoconsumption)
-        () => (oldHelpfulMetrics.length < 2 ? emptyValueUnit : computeConsumptionTotal(oldHelpfulMetrics)),
-        [oldHelpfulMetrics],
+        () => (oldRangeConsumptionData.length < 2 ? emptyValueUnit : computeConsumptionTotal(oldRangeConsumptionData)),
+        [oldRangeConsumptionData],
     )
 
     const percentageChange = useMemo(

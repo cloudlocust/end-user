@@ -8,6 +8,7 @@ import { ConsumptionWidgetsContainerProps } from 'src/modules/MyConsumption/comp
 import { getWidgetInfoIcon } from 'src/modules/MyConsumption/components/WidgetInfoIcons'
 import WidgetConsumption from 'src/modules/MyConsumption/components/WidgetConsumption'
 import { ConsumptionWidgetsMetricsContext } from 'src/modules/MyConsumption/components/ConsumptionWidgetsContainer/ConsumptionWidgetsMetricsContext'
+import { metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
 
 /**
  * MyConsumptionWidgets Component (it's Wrapper of the list of Widgets).
@@ -53,20 +54,20 @@ const ConsumptionWidgetsContainer = ({
                 <Grid container spacing={{ xs: 1, md: 2 }}>
                     {/** Display consumption target (first_target in WidgetTargets) with a specific WidgetConsumption Component. */}
                     <WidgetConsumption
-                        target={WidgetTargets[0]}
+                        target={metricTargetsEnum.consumption}
                         range={range}
                         filters={filters}
                         metricsInterval={metricsInterval}
                         period={period}
                         infoIcon={getWidgetInfoIcon({
-                            widgetTarget: WidgetTargets[0],
+                            widgetTarget: metricTargetsEnum.consumption,
                             hasMissingContracts: hasMissingHousingContracts,
                             enphaseOff,
                             enedisSgeOff: enedisOff,
                         })}
                     />
                     {/** Display the other targets with Widget Component. */}
-                    {WidgetTargets.slice(1).map((target) => {
+                    {WidgetTargets.filter((target) => target !== metricTargetsEnum.consumption).map((target) => {
                         return (
                             <Widget
                                 key={target}
