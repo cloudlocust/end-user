@@ -3,7 +3,7 @@ import { reduxedRender } from 'src/common/react-platform-components/test'
 import { metricFiltersType, metricIntervalType } from 'src/modules/Metrics/Metrics'
 import ConsumptionWidgetsContainer from 'src/modules/MyConsumption/components/ConsumptionWidgetsContainer'
 import { ConsumptionWidgetsContainerProps } from 'src/modules/MyConsumption/components/ConsumptionWidgetsContainer/WidgetContainer'
-import { ConsumptionWidgetsMetricsProvider } from 'src/modules/MyConsumption/Context/ConsumptionWidgetsMetricsContext'
+import { ConsumptionWidgetsMetricsProvider } from 'src/modules/MyConsumption/components/ConsumptionWidgetsContainer/ConsumptionWidgetsMetricsContext'
 import { periodType } from 'src/modules/MyConsumption/myConsumptionTypes'
 import { WidgetTargets } from 'src/modules/MyConsumption/utils/myConsumptionVariables'
 

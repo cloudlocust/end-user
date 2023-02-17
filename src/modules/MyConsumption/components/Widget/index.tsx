@@ -11,7 +11,7 @@ import {
 } from 'src/modules/MyConsumption/components/Widget/WidgetFunctions'
 import { computePercentageChange } from 'src/modules/Analysis/utils/computationFunctions'
 import Icon from '@mui/material/Icon'
-import { ConsumptionWidgetsMetricsContext } from 'src/modules/MyConsumption/Context/ConsumptionWidgetsMetricsContext'
+import { ConsumptionWidgetsMetricsContext } from 'src/modules/MyConsumption/components/ConsumptionWidgetsContainer/ConsumptionWidgetsMetricsContext'
 
 const emptyValueUnit = { value: 0, unit: '' }
 

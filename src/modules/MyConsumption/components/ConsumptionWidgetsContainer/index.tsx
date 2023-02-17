@@ -6,7 +6,7 @@ import { WidgetTargets } from 'src/modules/MyConsumption/utils/myConsumptionVari
 import { Widget } from 'src/modules/MyConsumption/components/Widget'
 import { ConsumptionWidgetsContainerProps } from 'src/modules/MyConsumption/components/ConsumptionWidgetsContainer/WidgetContainer'
 import { getWidgetInfoIcon } from 'src/modules/MyConsumption/components/WidgetInfoIcons'
-import { ConsumptionWidgetsMetricsContext } from 'src/modules/MyConsumption/Context/ConsumptionWidgetsMetricsContext'
+import { ConsumptionWidgetsMetricsContext } from 'src/modules/MyConsumption/components/ConsumptionWidgetsContainer/ConsumptionWidgetsMetricsContext'
 
 /**
  * MyConsumptionWidgets Component (it's Wrapper of the list of Widgets).

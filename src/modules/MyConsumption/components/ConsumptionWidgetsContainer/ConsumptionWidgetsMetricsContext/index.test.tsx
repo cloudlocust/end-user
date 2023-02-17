@@ -1,6 +1,6 @@
 import { reduxedRender } from 'src/common/react-platform-components/test'
 import { IMetric, metricFiltersType, metricIntervalType, metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
-import { ConsumptionWidgetsMetricsContext } from 'src/modules/MyConsumption/Context/ConsumptionWidgetsMetricsContext'
+import { ConsumptionWidgetsMetricsContext } from 'src/modules/MyConsumption/components/ConsumptionWidgetsContainer/ConsumptionWidgetsMetricsContext'
 import { Widget } from 'src/modules/MyConsumption/components/Widget'
 import { IWidgetProps } from 'src/modules/MyConsumption/components/Widget/Widget'
 import { periodType } from 'src/modules/MyConsumption/myConsumptionTypes'
