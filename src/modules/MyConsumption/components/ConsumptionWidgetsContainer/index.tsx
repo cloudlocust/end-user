@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useContext, useEffect } from 'react'
 import { Grid } from '@mui/material'
 import { useTheme } from '@mui/material'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
@@ -6,7 +6,7 @@ import { WidgetTargets } from 'src/modules/MyConsumption/utils/myConsumptionVari
 import { Widget } from 'src/modules/MyConsumption/components/Widget'
 import { ConsumptionWidgetsContainerProps } from 'src/modules/MyConsumption/components/ConsumptionWidgetsContainer/WidgetContainer'
 import { getWidgetInfoIcon } from 'src/modules/MyConsumption/components/WidgetInfoIcons'
-import { useWidgetsMetricsContext } from 'src/modules/MyConsumption/Context/ConsumptionWidgetsMetricsContext/useWidgetsMetricsContext'
+import { ConsumptionWidgetsMetricsContext } from 'src/modules/MyConsumption/Context/ConsumptionWidgetsMetricsContext'
 
 /**
  * MyConsumptionWidgets Component (it's Wrapper of the list of Widgets).
@@ -31,9 +31,12 @@ const ConsumptionWidgetsContainer = ({
     enedisOff,
 }: ConsumptionWidgetsContainerProps) => {
     const theme = useTheme()
-    const { resetMetricsWidgetData } = useWidgetsMetricsContext()
+    const { resetMetricsWidgetData } = useContext(ConsumptionWidgetsMetricsContext)
 
-    // We should reset the metrics context when the range, filters, metricsInterval or period changes.
+    /**
+     *   We should reset the metrics context when the range, filters, metricsInterval or period changes,
+     * because we have a completely new metrics when one of those dependencies changes.
+     */
     useEffect(() => {
         resetMetricsWidgetData()
     }, [range, filters, metricsInterval, period, resetMetricsWidgetData])

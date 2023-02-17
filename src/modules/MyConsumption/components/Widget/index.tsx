@@ -1,4 +1,4 @@
-import React, { memo, useMemo, useEffect, useRef } from 'react'
+import React, { memo, useMemo, useEffect, useRef, useContext } from 'react'
 import { Typography, Grid, Card, CircularProgress, useTheme } from '@mui/material'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import { IWidgetProps } from 'src/modules/MyConsumption/components/Widget/Widget'
@@ -11,7 +11,7 @@ import {
 } from 'src/modules/MyConsumption/components/Widget/WidgetFunctions'
 import { computePercentageChange } from 'src/modules/Analysis/utils/computationFunctions'
 import Icon from '@mui/material/Icon'
-import { useWidgetsMetricsContext } from 'src/modules/MyConsumption/Context/ConsumptionWidgetsMetricsContext/useWidgetsMetricsContext'
+import { ConsumptionWidgetsMetricsContext } from 'src/modules/MyConsumption/Context/ConsumptionWidgetsMetricsContext'
 
 const emptyValueUnit = { value: 0, unit: '' }
 
@@ -54,19 +54,15 @@ export const Widget = memo(({ filters, range, infoIcon, metricsInterval, target,
         filters,
     })
 
-    const { storeWidgetMetricsData } = useWidgetsMetricsContext()
+    const { storeWidgetMetricsData } = useContext(ConsumptionWidgetsMetricsContext)
 
     useEffect(() => {
-        data.length && storeWidgetMetricsData(data)
-        // disable eslint because we don't want to add storeWidgetMetricsData as a dependency.
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [data])
+        storeWidgetMetricsData(data)
+    }, [data, storeWidgetMetricsData])
 
     useEffect(() => {
-        oldData.length && storeWidgetMetricsData(oldData, true)
-        // disable eslint because we don't want to add storeWidgetMetricsData as a dependency.
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [oldData])
+        storeWidgetMetricsData(oldData, true)
+    }, [oldData, storeWidgetMetricsData])
 
     const theme = useTheme()
     const { unit, value } = useMemo(

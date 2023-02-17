@@ -30,16 +30,16 @@ export const ConsumptionWidgetsMetricsProvider = ({ children }: ConsumptionWidge
      * @param data Metrics data.
      * @param isOldData Boolean var for know if the data metrics is the current data or the previous data. Default value is false.
      */
-    const storeWidgetMetricsData = useCallback(
-        (data: IMetric[], isOldData: boolean = false) => {
+    const storeWidgetMetricsData = useCallback((data: IMetric[], isOldData: boolean = false) => {
+        if (data.length) {
             if (isOldData) {
-                saveDataInCorrectArray(oldRangeMetricWidgetsData, setOldRangeMetricWidgetsData, data)
+                saveDataInCorrectArray(setOldRangeMetricWidgetsData, data)
             } else {
-                saveDataInCorrectArray(currentRangeMetricWidgetsData, setCurrentRangeMetricWidgetsData, data)
+                saveDataInCorrectArray(setCurrentRangeMetricWidgetsData, data)
             }
-        },
-        [currentRangeMetricWidgetsData, oldRangeMetricWidgetsData],
-    )
+        }
+        // This functions should be created only in the first render and shouldn't have any dependencies, because we don't want to have a new function every time the state changes.
+    }, [])
 
     /**
      * Function to get metrics of the widgets targets from (currentRangeMetricWidgetsData) or from (oldRangeMetricWidgetsData) if fromOldData is true.
@@ -69,22 +69,16 @@ export const ConsumptionWidgetsMetricsProvider = ({ children }: ConsumptionWidge
     }, [])
 
     /**
-     * Function to save all the metrics data (metric) in the correct (metricsData) Array.
-     * If the metric data doesn't exists in the Array, it will be added. Otherwise, it will be ignored.
+     * Function to save all the metrics data (metric) in the correct (currentRangeMetricWidgetsData / oldRangeMetricWidgetsData) Array using setMetricsData.
+     * If the metric data doesn't exists in the Array, it will be added. Otherwise, it will be replaced.
      *
-     * @param metricsData MetricsData Array.
      * @param setMetricsData Set Function to update the metricsData.
      * @param data Metrics data.
      */
-    const saveDataInCorrectArray = (
-        metricsData: IMetric[],
-        setMetricsData: typeof setOldRangeMetricWidgetsData,
-        data: IMetric[],
-    ) => {
+    const saveDataInCorrectArray = (setMetricsData: typeof setOldRangeMetricWidgetsData, data: IMetric[]) => {
         data.forEach((metric) => {
-            if (metricsData.every((item) => item.target !== metric.target)) {
-                setMetricsData((prevMetrics) => [...prevMetrics, metric])
-            }
+            // Replace the old metric of target with the new one.
+            setMetricsData((prevMetrics) => [...prevMetrics.filter((item) => item.target !== metric.target), metric])
         })
     }
 
