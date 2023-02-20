@@ -1,6 +1,5 @@
 import { rest } from 'msw'
-import { API_RESOURCES_URL } from 'src/configs'
-import { IEcowattAlerts, IEcowattSignalsData } from 'src/modules/Ecowatt/ecowatt.d'
+import { IEcowattSignalsData } from 'src/modules/Ecowatt/ecowatt.d'
 import { ECOWATT_SIGNALS_ENDPOINT } from 'src/modules/Ecowatt/EcowattHook'
 import { SnakeCasedPropertiesDeep } from 'type-fest'
 
@@ -8,8 +7,6 @@ import { SnakeCasedPropertiesDeep } from 'type-fest'
  * Test error case of Ecowatt.
  */
 export const TEST_ECOWATT_EROOR = 'error'
-
-const MOCK_ECOWATT_ALERTS_ENDPOINT = `${API_RESOURCES_URL}/housings/:houseId/ecowatt-alerts`
 
 /**
  * Ecowatt signal test data.
@@ -609,16 +606,6 @@ export const TEST_ECOWATT_SIGNAL_DATA: SnakeCasedPropertiesDeep<IEcowattSignalsD
 ]
 
 /**
- * Ecowatt alerts test data.
- */
-export const TEST_ECOWATT_ALERTS_DATA: SnakeCasedPropertiesDeep<IEcowattAlerts> = {
-    is_email_signal_one_day: true,
-    is_email_signal_three_days: true,
-    is_push_signal_one_day: true,
-    is_push_signal_three_days: true,
-}
-
-/**
  * Ecowatt endpoints.
  */
 export const ecowattEndpoints = [
@@ -629,16 +616,5 @@ export const ecowattEndpoints = [
         } else {
             return res(ctx.status(200), ctx.delay(1000), ctx.json(TEST_ECOWATT_SIGNAL_DATA))
         }
-    }),
-    rest.get<IEcowattAlerts>(MOCK_ECOWATT_ALERTS_ENDPOINT, (req, res, ctx) => {
-        const houseId = req.params.houseId
-        if (!houseId) return res(ctx.status(400), ctx.delay(1000))
-        return res(ctx.status(200), ctx.delay(1000), ctx.json(TEST_ECOWATT_ALERTS_DATA))
-    }),
-    // eslint-disable-next-line sonarjs/no-identical-functions
-    rest.post<IEcowattAlerts>(MOCK_ECOWATT_ALERTS_ENDPOINT, (req, res, ctx) => {
-        const houseId = req.params.houseId
-        if (!houseId) return res(ctx.status(400), ctx.delay(1000))
-        return res(ctx.status(200), ctx.delay(1000), ctx.json(TEST_ECOWATT_ALERTS_DATA))
     }),
 ]
