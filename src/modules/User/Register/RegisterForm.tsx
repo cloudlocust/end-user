@@ -132,7 +132,7 @@ export const RegisterForm = ({
                     <LinkRedirection
                         url={urlPolitiqueConfidentialité}
                         label="Politique de Confidentialité"
-                        color="primary.light"
+                        color="primary.main"
                     />
                 </span>
                 {/* TODO Create a checkbox reusable component */}
@@ -158,13 +158,13 @@ export const RegisterForm = ({
                                 <LinkRedirection
                                     url={urlLegalNotice}
                                     label="Conditions Générales d’Utilisation"
-                                    color="primary.light"
+                                    color="primary.main"
                                 />
                                 {formatMessage({
                                     id: ` et de `,
                                     defaultMessage: ` et de `,
                                 })}
-                                <LinkRedirection url={urlCGV} label="Vente" color="primary.light" />
+                                <LinkRedirection url={urlCGV} label="Vente" color="primary.main" />
                                 {formatMessage({
                                     id: ` de la plateforme`,
                                     defaultMessage: ` de la plateforme`,
