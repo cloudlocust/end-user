@@ -1,4 +1,5 @@
-import { Card, useTheme, Icon, CircularProgress, useMediaQuery, Divider, Tooltip } from '@mui/material'
+import { Card, useTheme, Icon, CircularProgress, useMediaQuery, Divider, Tooltip, styled } from '@mui/material'
+import { TooltipProps, tooltipClasses } from '@mui/material/Tooltip'
 import { NavLink, useParams } from 'react-router-dom'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import { ReactComponent as ContractIcon } from 'src/assets/images/content/housing/contract.svg'
@@ -18,6 +19,24 @@ import { EnphaseConsentPopup } from 'src/modules/MyHouse/components/MeterStatus/
 
 const FORMATTED_DATA = 'DD/MM/YYYY'
 const TEXT_CONNEXION_LE = 'Connexion le'
+
+/**
+ * GreyTooltip: Styled tooltip with Grey background.
+ * TODO: Add reusable Styled tooltip.
+ */
+const GreyTooltip = styled(({ className, ...props }: TooltipProps) => (
+    <Tooltip {...props} classes={{ popper: className }} />
+))(({ theme }) => ({
+    [`& .${tooltipClasses.arrow}`]: {
+        color: theme.palette.grey.A400,
+    },
+    [`& .${tooltipClasses.tooltip}`]: {
+        backgroundColor: theme.palette.grey.A400,
+        color: 'rgba(0, 0, 0, 0.87)',
+        padding: 10,
+        fontSize: 11,
+    },
+}))
 
 /**
  * Meter Status Component.
@@ -44,6 +63,7 @@ export const MeterStatus = () => {
     const { housingList } = useSelector(({ housingModel }: RootState) => housingModel)
     const [foundHousing, setFoundHousing] = useState<IHousing>()
     const [openEnphaseConsentPopup, setOpenEnphaseConsentPopup] = useState(false)
+    const [openCancelCollectionDataTooltip, setOpenCancelCollectionDataTooltip] = useState(false)
 
     // Retrieving house id from url params /my-houses/:houseId
     // eslint-disable-next-line jsdoc/require-jsdoc
@@ -205,13 +225,27 @@ export const MeterStatus = () => {
                                 Date de fin de consentement
                             </TypographyFormatMessage>
                             <span className="text-grey-600">{enedisConsentEndingDate}</span>
-                            <TypographyFormatMessage
-                                className="underline cursor-pointer"
-                                color={theme.palette.primary.main}
-                                fontWeight={500}
+                            <GreyTooltip
+                                arrow
+                                placement="top-end"
+                                open={openCancelCollectionDataTooltip}
+                                onClose={() => setOpenCancelCollectionDataTooltip(false)}
+                                onClick={() => setOpenCancelCollectionDataTooltip((prevState) => !prevState)}
+                                title={formatMessage({
+                                    id: 'Contacter support@myem.fr',
+                                    defaultMessage: 'Contacter support@myem.fr',
+                                })}
                             >
-                                Annuler la récolte de mes données
-                            </TypographyFormatMessage>
+                                <div>
+                                    <TypographyFormatMessage
+                                        className="underline cursor-pointer"
+                                        color={theme.palette.primary.main}
+                                        fontWeight={500}
+                                    >
+                                        Annuler la récolte de mes données
+                                    </TypographyFormatMessage>
+                                </div>
+                            </GreyTooltip>
                         </div>
                     </>
                 )

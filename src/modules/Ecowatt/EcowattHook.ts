@@ -4,6 +4,7 @@ import { IEcowattAlerts, IEcowattSignalsData } from 'src/modules/Ecowatt/ecowatt
 import { useSnackbar } from 'notistack'
 import { useIntl } from 'react-intl'
 import { axios } from 'src/common/react-platform-components'
+import { useAxiosCancelToken } from 'src/hooks/AxiosCancelToken/'
 import { orderBy } from 'lodash'
 
 /**
@@ -32,6 +33,7 @@ export function useEcowatt(immediate: boolean = false) {
     const [ecowattAlerts, setEcowattAlerts] = useState<IEcowattAlerts | null>(null)
     const [isLoadingInProgress, setIsLoadingInProgress] = useState(false)
     const isInitialMount = useRef(true)
+    const { isCancel, source } = useAxiosCancelToken()
 
     /**
      * Get ecowatt signals.
@@ -39,7 +41,9 @@ export function useEcowatt(immediate: boolean = false) {
     const getEcowattSignals = useCallback(async () => {
         try {
             setIsLoadingInProgress(true)
-            const { data: responseData } = await axios.get<IEcowattSignalsData>(ECOWATT_SIGNALS_ENDPOINT)
+            const { data: responseData } = await axios.get<IEcowattSignalsData>(ECOWATT_SIGNALS_ENDPOINT, {
+                cancelToken: source.current.token,
+            })
             if (responseData) {
                 // Sort ecowatt data asc.
                 const sortedData = orderBy(responseData, [(obj) => new Date(obj.readingAt)], ['asc'])
@@ -47,6 +51,7 @@ export function useEcowatt(immediate: boolean = false) {
             }
             setIsLoadingInProgress(false)
         } catch (error) {
+            if (isCancel(error)) return
             setIsLoadingInProgress(false)
             enqueueSnackbar(
                 formatMessage({
@@ -56,7 +61,7 @@ export function useEcowatt(immediate: boolean = false) {
                 { variant: 'error', autoHideDuration: 5000 },
             )
         }
-    }, [enqueueSnackbar, formatMessage])
+    }, [enqueueSnackbar, formatMessage, isCancel, source])
 
     const getEcowattAlerts = useCallback(
         async (houseId: number) => {
