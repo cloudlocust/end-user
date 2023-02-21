@@ -61,7 +61,7 @@ export const Login: FC<LoginProps> = ({
                             />
 
                             <Typography variant="h6" className="mt-16 mb-24 font-semibold text-18 sm:text-24">
-                                {formatMessage({ id: 'Login', defaultMessage: 'Login' })}
+                                {formatMessage({ id: 'Connexion', defaultMessage: 'Connexion' })}
                             </Typography>
 
                             {LoginForm}

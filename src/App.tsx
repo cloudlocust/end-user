@@ -9,6 +9,43 @@ import { ToolbarWidget as ToolbarContent } from 'src/modules/Layout'
 import { ConfirmProvider } from 'material-ui-confirm'
 import ToolbarIcon from 'src/modules/Layout/Toolbar/components/ToolbarIcon'
 import { IPageSettings } from 'src/common/react-platform-components'
+import { styled } from '@mui/material/styles'
+
+const Root = styled('div')(({ theme }) => ({
+    '& #fuse-main': {
+        [theme.breakpoints.down('md')]: {
+            marginBottom: '0px !important',
+            paddingBottom: '20px',
+        },
+        '& > div': {
+            [theme.breakpoints.down('lg')]: {
+                marginBottom: '5.6rem',
+            },
+        },
+    },
+    '& .fuse-list-item': {
+        '& .fuse-list-item-icon': {
+            height: 'auto',
+        },
+    },
+    '& .fuse-bottom-navigation-item': {
+        '& .MuiIcon-root': {
+            height: 'auto',
+        },
+    },
+    '& .MuiToolbar-root': {
+        // Styling the container of the Navbar toggle button.
+        '& > div:nth-of-type(1)': {
+            [theme.breakpoints.down('sm')]: {
+                padding: 0,
+            },
+        },
+        // Styling the toolbarContent.
+        '& > div:nth-of-type(2)': {
+            overflowX: 'hidden',
+        },
+    },
+}))
 
 /**
  * Check if the route is enabled or not.
@@ -58,15 +95,17 @@ const Routes = () => {
                                         {/* Wrap your app inside the ConfirmProvider component. */}
                                         {/* Note: If you're using Material UI ThemeProvider, make sure ConfirmProvider is a child of it. */}
                                         <ConfirmProvider>
-                                            <Layout1
-                                                navbarContent={navbarContent}
-                                                displayToolbar={route.settings?.layout?.toolbar?.display}
-                                                displayNavbar={route.settings?.layout?.navbar?.display}
-                                                toolbarContent={<ToolbarContent />}
-                                                toolbarIcon={<ToolbarIcon />}
-                                            >
-                                                <route.component {...route.props} />
-                                            </Layout1>
+                                            <Root>
+                                                <Layout1
+                                                    navbarContent={navbarContent}
+                                                    displayToolbar={route.settings?.layout?.toolbar?.display}
+                                                    displayNavbar={route.settings?.layout?.navbar?.display}
+                                                    toolbarContent={<ToolbarContent />}
+                                                    toolbarIcon={<ToolbarIcon />}
+                                                >
+                                                    <route.component {...route.props} />
+                                                </Layout1>
+                                            </Root>
                                         </ConfirmProvider>
                                     </ThemingProvider>
                                 )

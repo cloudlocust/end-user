@@ -186,7 +186,7 @@ export const getYPointValueLabel = (yValue: number | null | undefined, chartName
         case metricTargetsEnum.autoconsumption:
         case metricTargetsEnum.totalProduction:
         case metricTargetsEnum.injectedProduction:
-            return `${value === '' ? value : convert(value).from('Wh').to(unit!).toFixed(2)} ${unit}`
+            return `${value === '' ? value : Math.round(convert(value).from('Wh').to(unit!))} ${unit}`
         default:
             return ` ${unit}`
     }
@@ -268,7 +268,9 @@ export const EnphaseOffConsumptionChartTargets: metricTargetType[] = [
  */
 export const WidgetTargets: metricTargetType[] = [
     metricTargetsEnum.consumption,
+    metricTargetsEnum.totalProduction,
     metricTargetsEnum.eurosConsumption,
+    metricTargetsEnum.autoconsumption,
     metricTargetsEnum.pMax,
     metricTargetsEnum.externalTemperature,
     metricTargetsEnum.internalTemperature,
