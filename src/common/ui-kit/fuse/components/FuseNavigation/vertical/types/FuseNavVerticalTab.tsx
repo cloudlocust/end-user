@@ -15,7 +15,7 @@ const Root = styled('div')(({ theme }) => ({
         width: 100,
         borderRadius: 12,
         margin: '0 0 4px 0',
-        color: alpha(theme.palette.text.primary, 0.7),
+        color: alpha(theme.palette.primary.contrastText, 0.7),
         cursor: 'pointer',
         textDecoration: 'none!important',
         padding: 0,
@@ -34,12 +34,12 @@ const Root = styled('div')(({ theme }) => ({
             pointerEvents: 'none',
         },
         '&:hover': {
-            color: theme.palette.text.primary,
+            color: theme.palette.primary.contrastText,
         },
         '&.active': {
-            color: theme.palette.text.primary,
+            color: theme.palette.primary.contrastText,
             backgroundColor:
-                theme.palette.mode === 'light' ? 'rgba(0, 0, 0, .05)!important' : 'rgba(255, 255, 255, .1)!important',
+                theme.palette.mode === 'dark' ? 'rgba(0, 0, 0, .05)!important' : 'rgba(255, 255, 255, .1)!important',
             // pointerEvents: 'none',
             transition: 'border-radius .15s cubic-bezier(0.4,0.0,0.2,1)',
             '& .fuse-list-item-text-primary': {
