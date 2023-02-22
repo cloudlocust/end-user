@@ -2,10 +2,10 @@ import { useTheme, CircularProgress } from '@mui/material'
 import { useEffect, useState } from 'react'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import { EcowattTooltip } from 'src/modules/Ecowatt/components/EcowattTooltip/'
-import { useEcowatt } from 'src/modules/Ecowatt/EcowattHook'
 import { useSelector } from 'react-redux'
 import { RootState } from 'src/redux'
 import { EcowattAlertsForm } from 'src/modules/Layout/Toolbar/components/Alerts/EcowattAlerts/EcowattAlertsForm'
+import { useNovuAlertPreferences } from '../NovuAlertPreferencesHook'
 
 /**
  * Ecowatt Alerts component.
@@ -15,14 +15,15 @@ import { EcowattAlertsForm } from 'src/modules/Layout/Toolbar/components/Alerts/
 export const EcowattAlerts = () => {
     const theme = useTheme()
     const { currentHousing } = useSelector(({ housingModel }: RootState) => housingModel)
-    const { isLoadingInProgress, getEcowattAlerts, ecowattAlerts, updateEcowattAlerts } = useEcowatt()
+    const { isLoadingInProgress, getNovuAlertPreferences, novuAlertPreferences, updateNovuAlertPreferences } =
+        useNovuAlertPreferences()
     const [openTooltip, setOpenTooltip] = useState<boolean>(false)
 
     useEffect(() => {
         if (currentHousing?.id) {
-            getEcowattAlerts(currentHousing.id)
+            getNovuAlertPreferences(currentHousing.id)
         }
-    }, [currentHousing?.id, getEcowattAlerts])
+    }, [currentHousing?.id, getNovuAlertPreferences])
 
     if (isLoadingInProgress) {
         return (
@@ -51,12 +52,12 @@ export const EcowattAlerts = () => {
                 La météo de l'électricité
             </TypographyFormatMessage>
 
-            {currentHousing?.id && ecowattAlerts && (
+            {currentHousing?.id && novuAlertPreferences && (
                 <EcowattAlertsForm
                     houseId={currentHousing?.id}
-                    ecowattAlerts={ecowattAlerts}
-                    updateEcowattAlerts={updateEcowattAlerts}
-                    reloadAlerts={getEcowattAlerts}
+                    novuAlertPreferences={novuAlertPreferences}
+                    updateEcowattAlerts={updateNovuAlertPreferences}
+                    reloadAlerts={getNovuAlertPreferences}
                 />
             )}
         </div>

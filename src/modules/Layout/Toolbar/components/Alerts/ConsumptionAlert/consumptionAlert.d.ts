@@ -114,3 +114,33 @@ export interface ConsumptionAlertButtonGroupPropsType {
      */
     isSavingAlertLoading: boolean
 }
+
+/**
+ * Model for Consumption alerts Novu preferences.
+ */
+export interface ConsumptionNovuAlertPreferencesType {
+    /**
+     * State of push notification for daily consumption.
+     */
+    isPushDailyConsumption?: boolean
+    /**
+     * State of email notification for daily consumption.
+     */
+    isEmailDailyConsumption?: boolean
+    /**
+     * State of push notification for weekly consumption.
+     */
+    isPushWeeklyConsumption?: boolean
+    /**
+     * State of email notification for weekly consumption.
+     */
+    isEmailhWeeklyConsumption?: boolean
+    /**
+     * State of push notification for monthly consumption.
+     */
+    isPushMonthlyConsumption?: boolean
+    /**
+     * State of email notification for monthly consumption.
+     */
+    isEmailMonthlyConsumption?: boolean
+}
