@@ -1,3 +1,5 @@
+import { INovuAlertPreferences } from 'src/modules/Layout/Toolbar/components/Alerts'
+
 /**
  * Response object when gitting price per kwh.
  */
@@ -38,6 +40,33 @@ export interface IConsumptionAlert extends ConsumptionAlertData {
 }
 
 /**
+ * Novu Available channels.
+ */
+export type NovuChannels = 'push' | 'email'
+
+/**
+ * Novu value and key.
+ */
+type NovuChannelValueAndKeyName = /**
+ */ {
+    /**
+     * Value of channel.
+     */
+    value: boolean
+    /**
+     * Name of the correspondant key.
+     */
+    key: keyof ConsumptionNovuAlertPreferencesType
+}
+
+/**
+ * For Novu channels with the name of the key for the template.
+ */
+export type NovuChannelsWithValueAndKey = {
+    [keys in NovuChannels]: NovuChannelValueAndKeyName
+}
+
+/**
  * Consumption Alert component prop Type.
  */
 export interface ConsumptionAlertPropsType {
@@ -48,7 +77,7 @@ export interface ConsumptionAlertPropsType {
     /**
      * Initial value for the text fields.
      */
-    initialValues: ConsumptionAlertData | undefined
+    initialConsumptionDataValues: ConsumptionAlertData | undefined
     /**
      * Price per Kwh.
      */
@@ -65,6 +94,18 @@ export interface ConsumptionAlertPropsType {
      * Is saving alert loading.
      */
     isSavingAlertLoading: boolean
+    /**
+     * Is Novu Alert Preferences loading.
+     */
+    isNovuAlertPreferencesLoading: boolean
+    /**
+     * Novu alert preferences state.
+     */
+    initialAlertPreferencesValues: NovuChannelsWithValueAndKey | undefined
+    /**
+     * Update Novu alert preferences.
+     */
+    updateNovuAlertPreferences: (alerts: INovuAlertPreferences) => void
 }
 
 /**
@@ -134,7 +175,7 @@ export interface ConsumptionNovuAlertPreferencesType {
     /**
      * State of email notification for weekly consumption.
      */
-    isEmailhWeeklyConsumption?: boolean
+    isEmailWeeklyConsumption?: boolean
     /**
      * State of push notification for monthly consumption.
      */

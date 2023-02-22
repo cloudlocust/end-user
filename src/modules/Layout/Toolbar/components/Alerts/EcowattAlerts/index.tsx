@@ -16,12 +16,12 @@ export const EcowattAlerts = () => {
     const theme = useTheme()
     const { currentHousing } = useSelector(({ housingModel }: RootState) => housingModel)
     const { isLoadingInProgress, getNovuAlertPreferences, novuAlertPreferences, updateNovuAlertPreferences } =
-        useNovuAlertPreferences()
+        useNovuAlertPreferences(currentHousing?.id ?? null)
     const [openTooltip, setOpenTooltip] = useState<boolean>(false)
 
     useEffect(() => {
         if (currentHousing?.id) {
-            getNovuAlertPreferences(currentHousing.id)
+            getNovuAlertPreferences()
         }
     }, [currentHousing?.id, getNovuAlertPreferences])
 

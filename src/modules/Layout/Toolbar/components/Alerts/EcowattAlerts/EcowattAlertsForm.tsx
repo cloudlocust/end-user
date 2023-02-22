@@ -36,7 +36,7 @@ export const EcowattAlertsForm = ({
     /**
      * Callback function that update alerts.
      */
-    updateEcowattAlerts: (houseId: number, alerts: EcowattAlertsNovuPreferencesType) => void
+    updateEcowattAlerts: (alerts: EcowattAlertsNovuPreferencesType) => void
     /**
      * Refresh callback.
      */
@@ -53,7 +53,7 @@ export const EcowattAlertsForm = ({
      * Handle submit function for EcowaattAlerts.
      */
     const handleSubmitEcowattAlerts = async () => {
-        await updateEcowattAlerts(houseId, {
+        await updateEcowattAlerts({
             isPushSignalThreeDays: isPushSignalThreeDaysState,
             isPushSignalOneDay: isPushSignalOneDayState,
         })
