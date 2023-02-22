@@ -1,5 +1,5 @@
-import React from 'react'
-import { Switch, Route, Redirect } from 'react-router-dom'
+import React, { useEffect } from 'react'
+import { Switch, Route, Redirect, useLocation } from 'react-router-dom'
 import { useAuth } from 'src/modules/User/authentication/useAuth'
 import { routes, navigationsConfig, IAdditionnalSettings, IPageSettingsDisabled } from 'src/routes'
 import Layout1 from 'src/common/ui-kit/fuse/layouts/layout1/Layout1'
@@ -10,6 +10,10 @@ import { ConfirmProvider } from 'material-ui-confirm'
 import ToolbarIcon from 'src/modules/Layout/Toolbar/components/ToolbarIcon'
 import { IPageSettings } from 'src/common/react-platform-components'
 import { styled } from '@mui/material/styles'
+import { useLastVisit } from 'src/modules/User/LastVisit/LastVisitHook'
+import { RootState } from 'src/redux'
+import { useSelector } from 'react-redux'
+import dayjs from 'dayjs'
 
 const Root = styled('div')(({ theme }) => ({
     '& #fuse-main': {
@@ -71,6 +75,14 @@ const isRouteDisabled = (
  * @returns List of routes accessible to the app wrapped by access hook.
  */
 const Routes = () => {
+    const location = useLocation()
+    const { user } = useSelector(({ userModel }: RootState) => userModel)
+    const { updateLastVisitTime } = useLastVisit(user?.id ?? null, dayjs().toISOString())
+
+    useEffect(() => {
+        updateLastVisitTime()
+    }, [location.pathname, updateLastVisitTime, user])
+
     const { hasAccess, getUrlRedirection } = useAuth()
     const navbarContent: navbarItemType[] = []
     navigationsConfig.forEach((navigationConfig) => {
