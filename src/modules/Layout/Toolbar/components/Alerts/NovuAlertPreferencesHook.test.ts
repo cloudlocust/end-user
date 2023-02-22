@@ -28,13 +28,26 @@ jest.mock('notistack', () => ({
 }))
 
 describe('useNovuAlertPreferences hook', () => {
+    test('when disable on mount is false, getNovuAlertPreferences resolves on mount', async () => {
+        const {
+            renderedHook: { result, waitForValueToChange },
+        } = reduxedRenderHook(() => useNovuAlertPreferences(TEST_HOUSE_ID, false))
+        expect(result.current.isLoadingInProgress).toBeTruthy()
+        await waitForValueToChange(
+            () => {
+                return result.current.isLoadingInProgress
+            },
+            { timeout: 6000 },
+        )
+        expect(result.current.novuAlertPreferences).toBeTruthy()
+    }, 6000)
     test('when getNovuAlertPreferences resolves', async () => {
         const {
             renderedHook: { result, waitForValueToChange },
-        } = reduxedRenderHook(() => useNovuAlertPreferences())
+        } = reduxedRenderHook(() => useNovuAlertPreferences(TEST_HOUSE_ID, true))
         expect(result.current.isLoadingInProgress).toBeFalsy()
         act(() => {
-            result.current.getNovuAlertPreferences(TEST_HOUSE_ID)
+            result.current.getNovuAlertPreferences()
         })
         expect(result.current.isLoadingInProgress).toBeTruthy()
         await waitForValueToChange(
@@ -48,7 +61,7 @@ describe('useNovuAlertPreferences hook', () => {
     test('when getNovuAlertPreferences fails', async () => {
         const {
             renderedHook: { result },
-        } = reduxedRenderHook(() => useNovuAlertPreferences())
+        } = reduxedRenderHook(() => useNovuAlertPreferences(null))
         expect(result.current.isLoadingInProgress).toBeFalsy()
         act(() => {
             result.current.getNovuAlertPreferences()
@@ -62,10 +75,10 @@ describe('useNovuAlertPreferences hook', () => {
     test('when updateNovuAlertPreferences resolves', async () => {
         const {
             renderedHook: { result, waitForValueToChange },
-        } = reduxedRenderHook(() => useNovuAlertPreferences())
+        } = reduxedRenderHook(() => useNovuAlertPreferences(TEST_HOUSE_ID, true))
         expect(result.current.isLoadingInProgress).toBeFalsy()
         act(() => {
-            result.current.updateNovuAlertPreferences(TEST_HOUSE_ID, novuAlertsData)
+            result.current.updateNovuAlertPreferences(novuAlertsData)
         })
         await waitForValueToChange(
             () => {
@@ -82,7 +95,7 @@ describe('useNovuAlertPreferences hook', () => {
     test('when updateNovuAlertPreferences fails', async () => {
         const {
             renderedHook: { result },
-        } = reduxedRenderHook(() => useNovuAlertPreferences())
+        } = reduxedRenderHook(() => useNovuAlertPreferences(null))
         expect(result.current.isLoadingInProgress).toBeFalsy()
         act(() => {
             result.current.updateNovuAlertPreferences()

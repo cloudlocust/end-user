@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { API_RESOURCES_URL } from 'src/configs'
 import { useSnackbar } from 'notistack'
 import { useIntl } from 'react-intl'
@@ -17,46 +17,46 @@ export const NOVU_ALERT_PREFERENCES_ENDPOINT = (houseId: number) =>
 /**.
  * UseNovuAlertPreferences hook.
  *
+ * @param housingId HousingId.
+ * @param disabledOnMunt Disable auto loading when on mount hook.
  * @returns useNovuAlertPreferences.
  */
-export function useNovuAlertPreferences() {
+export function useNovuAlertPreferences(housingId: number | null, disabledOnMunt?: boolean) {
     const { enqueueSnackbar } = useSnackbar()
     const { formatMessage } = useIntl()
+    const isInitialMount = useRef(true)
     const [novuAlertPreferences, setNovuAlertPreferences] = useState<INovuAlertPreferences | null>(null)
     const [isLoadingInProgress, setIsLoadingInProgress] = useState(false)
 
-    const getNovuAlertPreferences = useCallback(
-        async (houseId: number) => {
-            try {
-                if (!houseId) throw Error('No housing id privided')
-                setIsLoadingInProgress(true)
-                const { data: responseData } = await axios.get<INovuAlertPreferences>(
-                    NOVU_ALERT_PREFERENCES_ENDPOINT(houseId),
-                )
-                if (responseData) {
-                    setNovuAlertPreferences(responseData)
-                }
-                setIsLoadingInProgress(false)
-            } catch (error) {
-                setIsLoadingInProgress(false)
-                enqueueSnackbar(
-                    formatMessage({
-                        id: 'Erreur lors de la récupération des alertes',
-                        defaultMessage: 'Erreur lors de la récupération des alertes',
-                    }),
-                    { variant: 'error', autoHideDuration: 5000 },
-                )
+    const getNovuAlertPreferences = useCallback(async () => {
+        try {
+            if (!housingId) throw Error('No housing id privided')
+            setIsLoadingInProgress(true)
+            const { data: responseData } = await axios.get<Required<INovuAlertPreferences>>(
+                NOVU_ALERT_PREFERENCES_ENDPOINT(housingId),
+            )
+            if (responseData) {
+                setNovuAlertPreferences(responseData)
             }
-        },
-        [enqueueSnackbar, formatMessage],
-    )
+            setIsLoadingInProgress(false)
+        } catch (error) {
+            setIsLoadingInProgress(false)
+            enqueueSnackbar(
+                formatMessage({
+                    id: 'Erreur lors de la récupération des alertes',
+                    defaultMessage: 'Erreur lors de la récupération des alertes',
+                }),
+                { variant: 'error', autoHideDuration: 5000 },
+            )
+        }
+    }, [enqueueSnackbar, formatMessage, housingId])
 
     const updateNovuAlertPreferences = useCallback(
-        async (houseId: number, alerts: INovuAlertPreferences) => {
+        async (alerts: INovuAlertPreferences) => {
             try {
-                if (!houseId) throw Error('No housing id privided')
+                if (!housingId) throw Error('No housing id privided')
                 setIsLoadingInProgress(true)
-                await axios.post<INovuAlertPreferences>(NOVU_ALERT_PREFERENCES_ENDPOINT(houseId), alerts)
+                await axios.post<Required<INovuAlertPreferences>>(NOVU_ALERT_PREFERENCES_ENDPOINT(housingId), alerts)
                 enqueueSnackbar(
                     formatMessage({
                         id: 'Les alertes ont été modifiés avec succès',
@@ -76,8 +76,16 @@ export function useNovuAlertPreferences() {
                 )
             }
         },
-        [enqueueSnackbar, formatMessage],
+        [enqueueSnackbar, formatMessage, housingId],
     )
+
+    // UseEffect executes on initial intantiation of consumption alert.
+    useEffect(() => {
+        if (isInitialMount.current && housingId && !disabledOnMunt) {
+            isInitialMount.current = false
+            getNovuAlertPreferences()
+        }
+    }, [housingId, disabledOnMunt, getNovuAlertPreferences])
 
     return {
         isLoadingInProgress,
