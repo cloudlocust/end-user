@@ -1,7 +1,13 @@
 import { IUserRegister } from 'src/modules/User/model'
 
-const mappedKeys = JSON.parse(process.env.REACT_APP_ENERGY_PROVIDER_REGISTER_MAPPING_KEYS as string)
+const energyProviderRegisterMapping = process.env.REACT_APP_ENERGY_PROVIDER_REGISTER_MAPPING_KEYS as string
 
+const result = energyProviderRegisterMapping
+    ?.split('|')
+    .map((e) => e.split('='))
+    .map(([key, value]) => ({ [key]: value }))
+
+const mappedKeys = Object.assign({}, ...(result as []))
 /**
  * Function that convert user registration data to query string.
  *
