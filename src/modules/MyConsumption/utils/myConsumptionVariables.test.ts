@@ -15,17 +15,31 @@ describe('test pure functions', () => {
         /**
          * CONSUMPTION TEST.
          */
+        /* Format ROUNDED VALUES */
         // When unit is Wh and consumption it'll show the value given in Wh.
-        let label = getYPointValueLabel(yValue, metricTargetsEnum.consumption, 'Wh')
+        let label = getYPointValueLabel(yValue, metricTargetsEnum.consumption, 'Wh', true)
         expect(label).toBe(`${roundedYValue} Wh`)
 
         // When period is not daily and unit is kWh consumption it'll convert the value in kWh.
-        label = getYPointValueLabel(yValuekWh, metricTargetsEnum.consumption, 'kWh')
+        label = getYPointValueLabel(yValuekWh, metricTargetsEnum.consumption, 'kWh', true)
         expect(label).toBe(`${roundedYValue} kWh`)
 
         // When period is not daily and unit is MWh consumption it'll convert the value in MWh.
-        label = getYPointValueLabel(yValueMWh, metricTargetsEnum.consumption, 'MWh')
+        label = getYPointValueLabel(yValueMWh, metricTargetsEnum.consumption, 'MWh', true)
         expect(label).toBe(`${roundedYValue} MWh`)
+
+        /* FLOATED VALUES */
+        // When unit is Wh and consumption it'll show the value given in Wh.
+        label = getYPointValueLabel(yValue, metricTargetsEnum.consumption, 'Wh')
+        expect(label).toBe(`${yValueConverted} Wh`)
+
+        // When period is not daily and unit is kWh consumption it'll convert the value in kWh.
+        label = getYPointValueLabel(yValuekWh, metricTargetsEnum.consumption, 'kWh')
+        expect(label).toBe(`${yValueConverted} kWh`)
+
+        // When period is not daily and unit is MWh consumption it'll convert the value in MWh.
+        label = getYPointValueLabel(yValueMWh, metricTargetsEnum.consumption, 'MWh')
+        expect(label).toBe(`${yValueConverted} MWh`)
 
         // When value is null and unit Wh consumption it'll show only the unit.
         label = getYPointValueLabel(null, metricTargetsEnum.consumption, 'Wh')
