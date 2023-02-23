@@ -1,13 +1,7 @@
 import { IUserRegister } from 'src/modules/User/model'
 
-const energyProviderRegisterMapping = process.env.REACT_APP_ENERGY_PROVIDER_REGISTER_MAPPING_KEYS as string
+const energyProviderRegisterMapping: string | undefined = window._env_.REACT_APP_ENERGY_PROVIDER_REGISTER_MAPPING_KEYS
 
-const result = energyProviderRegisterMapping
-    ?.split('|')
-    .map((e) => e.split('='))
-    .map(([key, value]) => ({ [key]: value }))
-
-const mappedKeys = Object.assign({}, ...(result as []))
 /**
  * Function that convert user registration data to query string.
  *
@@ -15,6 +9,16 @@ const mappedKeys = Object.assign({}, ...(result as []))
  * @returns Query string.
  */
 export function convertUserDataToQueryString(data?: IUserRegister) {
+    let mappedKeys: any
+    if (energyProviderRegisterMapping) {
+        const mappingResult = energyProviderRegisterMapping
+            .split('|')
+            .map((e) => e.split('='))
+            .map(([key, value]) => ({ [key]: value }))
+
+        mappedKeys = Object.assign({}, ...(mappingResult as []))
+    }
+
     let url = {}
     // Remaaping const names.
     for (const key in data) {
