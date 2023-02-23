@@ -1,41 +1,59 @@
 import { rest } from 'msw'
 import { ECOGESTES_ENDPOINT } from 'src/modules/Ecogestes/'
 import { getPaginationFromElementList } from 'src/mocks/utils'
+import { IEcogeste } from 'src/modules/Ecogestes/components/ecogeste'
+import { SnakeCasedPropertiesDeep } from 'type-fest'
 
-const MOCK_ECOGESTES_BY_CATEGORY_ENDPOINT = `${ECOGESTES_ENDPOINT}?category=:categoryId`
-
-const TEST_ECOGESTES = [
+/**
+ * Path used for mock icons.
+ */
+export const EXAMPLE_ICON = 'https://www.example.com/icon'
+/**
+ * Object holding a bunch of mocked ecogests.
+ */
+export const TEST_ECOGESTES: SnakeCasedPropertiesDeep<IEcogeste>[] = [
     {
-        title: 'bob',
-        description: 'A description',
-        shortdescription: 'A short description',
+        id: 1,
+        title: 'A viewed Ecogest',
+        description: 'This is an ecogest that the customer has already seen.',
+        percentage_saved: 10,
+        url_icon: EXAMPLE_ICON,
+        seen_by_customer: true,
     },
     {
+        id: 2,
         title: 'Installer des rideaux aux fenêtres',
-        shortdescription: 'J’installe des rideaux épais et/ou des volets à toutes les fenêtres des pièces chauffées.',
         description:
             'Un volet fermé pendant la nuit peut réduire la déperdition de chaleur de la fenêtre jusqu’à 60 %. Le soir, fermez les rideaux et les volets. À l’inverse, en journée pendant l’hiver, favorisez au maximum les apports solaires. La sensation de confort sera améliorée, et vous pourrez alors baisser votre température intérieure d’un degré. Les volets et protections solaires conservent le logement frais en été et chaud en hiver.',
-        savings: 15,
+        percentage_saved: 15,
+        url_icon: EXAMPLE_ICON,
+        seen_by_customer: false,
     },
     {
+        id: 3,
         title: 'Régler son thermostat',
-        shortdescription: 'Je règle le thermostat en fonction de mes besoins.',
         description:
             'Le corps a besoin d’environ une semaine pour s’acclimater à une nouvelle température : alors, ne vous précipitez pas sur le chauffage dès la première baisse de température mais attendez plutôt de voir si vous vous habituez. L’humidité et les infiltrations d’air peuvent aussi amplifier la sensation d’inconfort. Avec un thermostat à 20 °C, vous pouvez avoir un ressenti de 17 °C si la maison est humide, que l’air s’infiltre ou que la température n’est pas la même partout (effet paroi froide). Des solutions de rénovation existent pour améliorer votre confort.',
-        savings: 8,
+        percentage_saved: 8,
+        url_icon: EXAMPLE_ICON,
+        seen_by_customer: false,
     },
     {
+        id: 4,
         title: 'Couper l’eau pendant le savonnage',
-        shortdescription: 'Je coupe l’eau de la douche pendant le savonnage	',
         description: 'Couper l’eau pendant le savonnage permet de réaliser une économie sur votre consommation.',
-        savings: 37,
+        percentage_saved: 37,
+        url_icon: EXAMPLE_ICON,
+        seen_by_customer: false,
     },
     {
+        id: 5,
         title: 'Ouvrir en journée',
-        shortdescription: 'J’ouvre les rideaux et les volets en journée	',
         description:
             'Privilégiez toujours les apports de l’éclairage naturel : la lumière du jour est la meilleure pour l’oeil humain.',
-        savings: 1,
+        percentage_saved: 1,
+        url_icon: EXAMPLE_ICON,
+        seen_by_customer: true,
     },
 ]
 
@@ -43,7 +61,7 @@ const TEST_ECOGESTES = [
  * Ecogeste and categories of ecogeste endpoints.
  */
 export const ecogestesEndpoints = [
-    rest.get<any>(MOCK_ECOGESTES_BY_CATEGORY_ENDPOINT, (req, res, ctx) => {
+    rest.get(ECOGESTES_ENDPOINT, (req, res, ctx) => {
         if (req.params.categoryId < 0) throw new Error('WRONG BAD')
         const ECOGESTE_RESPONSE = getPaginationFromElementList(req, TEST_ECOGESTES as [])
 

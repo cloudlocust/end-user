@@ -62,9 +62,9 @@ export interface IHourlyValues {
 export type IEcowattSignalsData = IEcowattSignals[]
 
 /**
- * Model for ecowatt alerts.
+ * Model for Novu ecowatt alerts preferences.
  */
-export interface IEcowattAlerts {
+export interface EcowattAlertsNovuPreferencesType {
     /**
      * State of push notification for 3 days.
      */

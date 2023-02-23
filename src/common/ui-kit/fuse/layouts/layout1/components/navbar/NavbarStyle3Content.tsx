@@ -6,7 +6,6 @@ import FuseNavigation, { navbarItemType } from 'src/common/ui-kit/fuse/component
 import FuseScrollbars from 'src/common/ui-kit/fuse/components/FuseScrollbars'
 import { useLocation } from 'react-router-dom'
 import { Location } from 'history'
-import { selectContrastMainTheme } from 'src/common/ui-kit/fuse/utils/theming-generator'
 import useMediaQuery from '@mui/material/useMediaQuery'
 
 const Root = styled('div')(({ theme }) => ({
@@ -102,7 +101,6 @@ function NavbarStyle3Content(props: /**
     const [panelOpen, setPanelOpen] = useState(false)
     const { navbarContent, navbarCloseMobile } = props
 
-    const contrastTheme = selectContrastMainTheme(theme.palette.primary.main)
     const location = useLocation()
 
     useEffect(() => {
@@ -157,11 +155,11 @@ function NavbarStyle3Content(props: /**
     return (
         <ClickAwayListener onClickAway={() => setPanelOpen(false)}>
             <Root className={'flex flex-auto flex h-full'}>
-                <ThemeProvider theme={contrastTheme}>
+                <ThemeProvider theme={theme}>
                     <div id="fuse-navbar-side-panel" className="flex flex-shrink-0 flex-col items-center">
                         <img
                             className="my-32"
-                            src={`./assets/images/logos/${window._env_.REACT_APP_CLIENT_ICON_FOLDER}-on-primary.svg`}
+                            src={`./clients-icons/${window._env_.REACT_APP_CLIENT_ICON_FOLDER}/${window._env_.REACT_APP_CLIENT_ICON_FOLDER}-on-primary.svg`}
                             width="60"
                             alt="logo"
                         />
