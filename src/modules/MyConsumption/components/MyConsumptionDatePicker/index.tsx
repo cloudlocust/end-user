@@ -105,7 +105,7 @@ const MyConsumptionDatePicker = ({
                             <MobileDatePicker
                                 date-testid="date-picker"
                                 views={item.views as ViewsType[]}
-                                value={rangeDateFormat.to}
+                                value={rangeDateFormat.from}
                                 inputFormat={item.inputFormat}
                                 maxDate={maxDate || new Date()}
                                 onChange={() => {

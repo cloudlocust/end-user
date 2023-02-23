@@ -9,7 +9,12 @@ import { CLIENT_ICON_FOLDER } from 'src/configs'
 const ToolbarIcon = () => {
     return (
         <Hidden lgUp>
-            <img className="ml-8" src={`./assets/images/logos/${CLIENT_ICON_FOLDER}.svg`} alt="logo" width="45" />
+            <img
+                className="ml-8"
+                src={`./clients-icons/${CLIENT_ICON_FOLDER}/${CLIENT_ICON_FOLDER}.svg`}
+                alt="logo"
+                width="45"
+            />
         </Hidden>
     )
 }

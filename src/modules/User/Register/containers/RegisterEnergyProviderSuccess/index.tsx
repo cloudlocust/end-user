@@ -7,7 +7,7 @@ import { URL_LOGIN } from 'src/modules/User/Login/LoginConfig'
 import { motion } from 'framer-motion'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import './registerEnergyProviderSuccess.scss'
-import { registerEnergyProviderSuccessMessage } from 'src/modules/User/Register/RegisterConfig'
+import { energyProviderRegisterSuccessMessage } from 'src/modules/User/Register/RegisterConfig'
 
 /**
  * Interface type for RegisterEnergyProviderSuccessLocation.
@@ -50,7 +50,7 @@ export const RegisterEnergyProviderSuccess = () => {
                             </div>
 
                             <TypographyFormatMessage className="description">
-                                {registerEnergyProviderSuccessMessage}
+                                {energyProviderRegisterSuccessMessage}
                             </TypographyFormatMessage>
 
                             <div className="login-container">

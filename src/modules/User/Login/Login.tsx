@@ -56,12 +56,12 @@ export const Login: FC<LoginProps> = ({
                         <CardContent className="flex flex-col items-center justify-center p-16 sm:p-24 md:p-32">
                             <img
                                 className="w-128 m-32"
-                                src={`./assets/images/logos/${CLIENT_ICON_FOLDER}.svg`}
+                                src={`./clients-icons/${CLIENT_ICON_FOLDER}/${CLIENT_ICON_FOLDER}.svg`}
                                 alt="logo"
                             />
 
                             <Typography variant="h6" className="mt-16 mb-24 font-semibold text-18 sm:text-24">
-                                {formatMessage({ id: 'Login', defaultMessage: 'Login' })}
+                                {formatMessage({ id: 'Connexion', defaultMessage: 'Connexion' })}
                             </Typography>
 
                             {LoginForm}
@@ -80,7 +80,7 @@ export const Login: FC<LoginProps> = ({
                                             sx={{
                                                 color:
                                                     // eslint-disable-next-line jsdoc/require-jsdoc
-                                                    (theme) => theme.palette.primary.light,
+                                                    (theme) => theme.palette.primary.main,
                                             }}
                                             to="/register"
                                             underline="none"
