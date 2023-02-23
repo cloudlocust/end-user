@@ -503,12 +503,13 @@ export const getChartSpecifities = (
  * Function that converts consumption from Wh to Watt.
  *
  * @param yValue Value in Wh.
+ * @param isYValueRounded Indicate if Math.round should be applied to the value.
  * @returns Consumption from Wh to Watt.
  */
-export const convertConsumptionToWatt = (yValue: number | null | undefined) => {
+export const convertConsumptionToWatt = (yValue: number | null | undefined, isYValueRounded?: boolean) => {
     // IsNill check that value is undefined or null.
     const value = isNil(yValue) ? '' : yValue
-    const result = value ? Math.round(60 * value) : 0
+    const result = value ? (isYValueRounded ? Math.round(60 * value) : (60 * value).toFixed(2)) : 0
     return result + ' W'
 }
 
