@@ -40,6 +40,7 @@ let mockEnedisConsent: IEnedisSgeConsent | undefined = enedisSGeConsent
 let mockEnphaseConsent: IEnphaseConsent | undefined = enphaseConsent
 const MISSING_CURRENT_HOUSING_METER_ERROR_TEXT1 = "Pour voir votre consommation vous devez d'abord"
 const MISSING_CURRENT_HOUSING_METER_ERROR_TEXT2 = 'enregistrer votre compteur et votre nrLink'
+const LIST_WIDGETS_TEXT = 'Chiffres clés'
 let mockConsentsLoading = false
 const circularProgressClassname = '.MuiCircularProgress-root'
 
@@ -187,5 +188,20 @@ describe('MyConsumptionContainer test', () => {
             { initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[0] } } },
         )
         expect(container.querySelector(circularProgressClassname)).toBeInTheDocument()
+    })
+
+    test('when there nrlink is EXISTENT or endisSge is connected, the parts of widgets is shown', async () => {
+        mockNrlinkConsent = { ...nrLinkConsent, nrlinkConsentState: 'CONNECTED' }
+        mockEnedisConsent = { ...enedisSGeConsent, enedisSgeConsentState: 'CONNECTED' }
+        mockConsentsLoading = false
+        const { getByText } = reduxedRender(
+            <Router>
+                <MyConsumptionContainer />
+            </Router>,
+            { initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[0] } } },
+        )
+        await waitFor(() => {
+            expect(getByText(LIST_WIDGETS_TEXT)).toBeTruthy()
+        })
     })
 })
