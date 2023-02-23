@@ -5,22 +5,20 @@ import { useTheme } from '@mui/material'
 import { metricRangeType, metricFiltersType, metricIntervalType } from 'src/modules/Metrics/Metrics.d'
 import { periodType } from 'src/modules/MyConsumption/myConsumptionTypes'
 import { useConsents } from 'src/modules/Consents/consentsHook'
-import Grid from '@mui/material/Grid'
 import MyConsumptionDatePicker from 'src/modules/MyConsumption/components/MyConsumptionDatePicker'
 import { MyConsumptionPeriod } from 'src/modules/MyConsumption'
 import { useSelector } from 'react-redux'
 import { RootState } from 'src/redux'
 import { useHasMissingHousingContracts } from 'src/hooks/HasMissingHousingContracts'
 import { ChartErrorMessage } from 'src/modules/MyConsumption/components/ChartErrorMessage'
-import { NRLINK_ENEDIS_OFF_MESSAGE, WidgetTargets } from 'src/modules/MyConsumption/utils/myConsumptionVariables'
+import { NRLINK_ENEDIS_OFF_MESSAGE } from 'src/modules/MyConsumption/utils/myConsumptionVariables'
 import { EcowattWidget } from 'src/modules/Ecowatt/EcowattWidget'
 import { MissingHousingMeterErrorMessage } from './utils/ErrorMessages'
 import { ProductionChartContainer } from 'src/modules/MyConsumption/components/MyConsumptionChart/ProductionChartContainer'
 import { useEcowatt } from 'src/modules/Ecowatt/EcowattHook'
-import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import CircularProgress from '@mui/material/CircularProgress'
 import Box from '@mui/material/Box'
-import { Widget } from 'src/modules/MyConsumption/components/Widget'
+import ConsumptionWidgetsContainer from 'src/modules/MyConsumption/components/ConsumptionWidgetsContainer'
 
 /**
  * MyConsumptionContainer.
@@ -42,7 +40,8 @@ export const MyConsumptionContainer = () => {
     const { ecowattSignalsData, isLoadingInProgress: isEcowattDataInProgress } = useEcowatt(true)
 
     const nrlinkOff = nrlinkConsent?.nrlinkConsentState === 'NONEXISTENT'
-    const enedisOff = enedisSgeConsent?.enedisSgeConsentState === 'NONEXISTENT'
+    const enedisOff = enedisSgeConsent?.enedisSgeConsentState !== 'CONNECTED'
+    const enphaseOff = enphaseConsent?.enphaseConsentState !== 'ACTIVE'
 
     // UseEffect to check for consent whenever a meter is selected.
     useEffect(() => {
@@ -82,7 +81,6 @@ export const MyConsumptionContainer = () => {
                 <CircularProgress style={{ color: theme.palette.primary.main }} />
             </Box>
         )
-
     // By checking if the metersList is true we make sure that if someone has skipped the step of connecting their PDL, they will see this error message.
     // Else if they have a PDL, we check its consent.
     if (!currentHousing?.meter?.guid) return <MissingHousingMeterErrorMessage />
@@ -149,30 +147,15 @@ export const MyConsumptionContainer = () => {
 
             {/* Widget List */}
             {(!nrlinkOff || !enedisOff) && (
-                <div className="p-12 sm:p-24 ">
-                    <div className="flex justify-center items-center md:justify-start">
-                        <TypographyFormatMessage variant="h5" className="sm:mr-8 text-black font-medium">
-                            Chiffres clés
-                        </TypographyFormatMessage>
-                    </div>
-                    <div style={{ background: theme.palette.grey[100] }} className="w-full my-8">
-                        <Grid container spacing={{ xs: 1, md: 2 }}>
-                            {WidgetTargets.map((target) => {
-                                return (
-                                    <Widget
-                                        key={target}
-                                        target={target}
-                                        range={range}
-                                        filters={filters}
-                                        metricsInterval={metricsInterval}
-                                        period={period}
-                                        hasMissingHousingContracts={hasMissingHousingContracts}
-                                    />
-                                )
-                            })}
-                        </Grid>
-                    </div>
-                </div>
+                <ConsumptionWidgetsContainer
+                    period={period}
+                    range={range}
+                    filters={filters}
+                    hasMissingHousingContracts={hasMissingHousingContracts}
+                    metricsInterval={metricsInterval}
+                    enphaseOff={enphaseOff}
+                    enedisOff={enedisOff}
+                />
             )}
         </>
     )
