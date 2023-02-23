@@ -246,5 +246,10 @@ spec:
             configMapKeyRef:
               name: enduser-react
               key: REACT_APP_PROFESSIONAL_REGISTER_FEATURE            
+        - name: REACT_APP_ENERGY_PROVIDER_REGISTER_MAPPING_KEYS
+          valueFrom:
+            configMapKeyRef:
+              name: enduser-react
+              key: REACT_APP_ENERGY_PROVIDER_REGISTER_MAPPING_KEYS            
       imagePullSecrets:
       - name: dockersecret  
