@@ -1,4 +1,5 @@
-import { IMetric, metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
+import { IMetric, metricTargetsEnum, metricTargetType } from 'src/modules/Metrics/Metrics.d'
+import { totalConsumptionUnits } from 'src/modules/MyConsumption/components/Widget/Widget'
 import {
     computeTotalConsumption,
     getDataFromYAxis,
@@ -10,11 +11,91 @@ import {
     renderWidgetTitle,
     getWidgetPreviousRange,
     getWidgetRange,
+    computeTotalProduction,
+    computeTotalAutoconsumption,
+    computeTotalOfAllConsumptions,
 } from 'src/modules/MyConsumption/components/Widget/WidgetFunctions'
 import { periodType } from 'src/modules/MyConsumption/myConsumptionTypes'
 
+/**
+ * Reusable test function that used to test multiple compute total function.
+ * Like (computeTotalConsumption, computeTotalProduction, computeTotalAutoconsumption).
+ * Exp: testComputeTotalFunction('consumption_metrics', computeTotalConsumption).
+ *
+ * @param target Type of target.
+ * @param computeTotalFunction Function that we want to test.
+ */
+const testComputeTotalEnergyFunction = (
+    target: metricTargetType,
+    computeTotalFunction: (data: IMetric[]) => /**
+     * Compute function to test (it should have only the functions that compute Total Energy).
+     */
+    {
+        /**
+         * Sum of Values.
+         */
+        value: number
+        /**
+         * Unit ("Wh" | "kWh" | "MWh").
+         */
+        unit: totalConsumptionUnits
+    },
+) => {
+    test('when it returns Wh unit', () => {
+        const expectedResult = {
+            value: 50,
+            unit: 'Wh',
+        }
+        const data: IMetric[] = [
+            {
+                datapoints: [
+                    [25, 1640995200000],
+                    [25, 1641081600000],
+                ],
+                target: target,
+            },
+        ]
+        const result = computeTotalFunction(data)
+        expect(result).toStrictEqual(expectedResult)
+    })
+    test('when it returns kWh unit', () => {
+        const expectedResult = {
+            value: 1,
+            unit: 'kWh',
+        }
+        const data: IMetric[] = [
+            {
+                datapoints: [
+                    [500, 1640995200000],
+                    [500, 1641081600000],
+                ],
+                target: target,
+            },
+        ]
+        const result = computeTotalFunction(data)
+        expect(result).toStrictEqual(expectedResult)
+    })
+    test('when it returns MWh unit', () => {
+        const expectedResult = {
+            value: 1,
+            unit: 'MWh',
+        }
+        const data: IMetric[] = [
+            {
+                datapoints: [
+                    [500_000, 1640995200000],
+                    [500_000, 1641081600000],
+                ],
+                target: target,
+            },
+        ]
+        const result = computeTotalFunction(data)
+        expect(result).toStrictEqual(expectedResult)
+    })
+}
+
 describe('Test widget functions', () => {
-    describe('test getDataFromYAxis function', () => {
+    test('getDataFromYAxis function', () => {
         const expectedResult = [50, 50, 50]
         const data: IMetric[] = [
             {
@@ -23,65 +104,15 @@ describe('Test widget functions', () => {
                     [50, 1641081600000],
                     [50, 1641168000000],
                 ],
-                target: 'consumption_metrics',
+                target: metricTargetsEnum.consumption,
             },
         ]
-        const result = getDataFromYAxis(data, 'consumption_metrics')
+        const result = getDataFromYAxis(data, metricTargetsEnum.consumption)
         expect(result).toStrictEqual(expectedResult)
     })
 
     describe('test computeTotalConsumption function', () => {
-        test('when it returns W unit', () => {
-            const expectedResult = {
-                value: 50,
-                unit: 'Wh',
-            }
-            const data: IMetric[] = [
-                {
-                    datapoints: [
-                        [25, 1640995200000],
-                        [25, 1641081600000],
-                    ],
-                    target: 'consumption_metrics',
-                },
-            ]
-            const result = computeTotalConsumption(data)
-            expect(result).toStrictEqual(expectedResult)
-        })
-        test('when it returns kVa unit', () => {
-            const expectedResult = {
-                value: 1,
-                unit: 'kWh',
-            }
-            const data: IMetric[] = [
-                {
-                    datapoints: [
-                        [500, 1640995200000],
-                        [500, 1641081600000],
-                    ],
-                    target: 'consumption_metrics',
-                },
-            ]
-            const result = computeTotalConsumption(data)
-            expect(result).toStrictEqual(expectedResult)
-        })
-        test('when it returns MWh unit', () => {
-            const expectedResult = {
-                value: 1,
-                unit: 'MWh',
-            }
-            const data: IMetric[] = [
-                {
-                    datapoints: [
-                        [500_000, 1640995200000],
-                        [500_000, 1641081600000],
-                    ],
-                    target: 'consumption_metrics',
-                },
-            ]
-            const result = computeTotalConsumption(data)
-            expect(result).toStrictEqual(expectedResult)
-        })
+        testComputeTotalEnergyFunction(metricTargetsEnum.consumption, computeTotalConsumption)
     })
 
     describe('test computePMax function', () => {
@@ -96,7 +127,7 @@ describe('Test widget functions', () => {
                         [20, 1640995200000],
                         [50.5, 1641081600000],
                     ],
-                    target: 'enedis_max_power',
+                    target: metricTargetsEnum.pMax,
                 },
             ]
             const result = computePMax(data)
@@ -113,7 +144,7 @@ describe('Test widget functions', () => {
                         [500, 1640995200000],
                         [5000, 1641081600000],
                     ],
-                    target: 'enedis_max_power',
+                    target: metricTargetsEnum.pMax,
                 },
             ]
             const result = computePMax(data)
@@ -135,7 +166,7 @@ describe('Test widget functions', () => {
                         [NaN, 1641081600000],
                         [NaN, 1641081600000],
                     ],
-                    target: 'nrlink_internal_temperature_metrics',
+                    target: metricTargetsEnum.internalTemperature,
                 },
                 {
                     datapoints: [
@@ -191,6 +222,14 @@ describe('Test widget functions', () => {
         })
     })
 
+    describe('test computeTotalProduction function', () => {
+        testComputeTotalEnergyFunction(metricTargetsEnum.totalProduction, computeTotalProduction)
+    })
+
+    describe('test computeTotalAutoconsumption function', () => {
+        testComputeTotalEnergyFunction(metricTargetsEnum.autoconsumption, computeTotalAutoconsumption)
+    })
+
     describe('test computeWidgetAssets', () => {
         test('when it returns € unit', () => {
             const val = 70
@@ -220,6 +259,16 @@ describe('Test widget functions', () => {
                     unit: 'VA',
                     value: val,
                 },
+                {
+                    target: metricTargetsEnum.totalProduction,
+                    unit: 'Wh',
+                    value: val,
+                },
+                {
+                    target: metricTargetsEnum.autoconsumption,
+                    unit: 'Wh',
+                    value: val,
+                },
             ]
             const datapoints = [[val, 1640995200000]]
             const data: IMetric[] = [
@@ -246,7 +295,7 @@ describe('Test widget functions', () => {
                 },
                 {
                     target: metricTargetsEnum.consumption,
-                    value: 'Consommation Totale',
+                    value: 'Achetée',
                 },
                 {
                     target: metricTargetsEnum.internalTemperature,
@@ -263,6 +312,14 @@ describe('Test widget functions', () => {
                 {
                     target: metricTargetsEnum.pMax,
                     value: 'Puissance Maximale',
+                },
+                {
+                    target: metricTargetsEnum.totalProduction,
+                    value: 'Production Totale',
+                },
+                {
+                    target: metricTargetsEnum.autoconsumption,
+                    value: 'Autoconsommation',
                 },
             ]
 
@@ -337,6 +394,81 @@ describe('Test widget functions', () => {
                 const result = getWidgetRange(range, period as periodType)
                 expect(result).toStrictEqual(value)
             })
+        })
+    })
+
+    describe('test computeTotalOfAllConsumptions', () => {
+        test('when it returns Wh unit', () => {
+            const expectedResult = {
+                value: 100,
+                unit: 'Wh',
+            }
+            const data: IMetric[] = [
+                {
+                    datapoints: [
+                        [25, 1640995200000],
+                        [25, 1641081600000],
+                    ],
+                    target: metricTargetsEnum.consumption,
+                },
+                {
+                    datapoints: [
+                        [25, 1640995200000],
+                        [25, 1641081600000],
+                    ],
+                    target: metricTargetsEnum.autoconsumption,
+                },
+            ]
+            const result = computeTotalOfAllConsumptions(data)
+            expect(result).toStrictEqual(expectedResult)
+        })
+        test('when it returns kWh unit', () => {
+            const expectedResult = {
+                value: 2,
+                unit: 'kWh',
+            }
+            const data: IMetric[] = [
+                {
+                    datapoints: [
+                        [500, 1640995200000],
+                        [500, 1641081600000],
+                    ],
+                    target: metricTargetsEnum.consumption,
+                },
+                {
+                    datapoints: [
+                        [500, 1640995200000],
+                        [500, 1641081600000],
+                    ],
+                    target: metricTargetsEnum.autoconsumption,
+                },
+            ]
+            const result = computeTotalOfAllConsumptions(data)
+            expect(result).toStrictEqual(expectedResult)
+        })
+        test('when it returns MWh unit', () => {
+            const expectedResult = {
+                value: 2,
+                unit: 'MWh',
+            }
+            const data: IMetric[] = [
+                {
+                    datapoints: [
+                        [500_000, 1640995200000],
+                        [500_000, 1641081600000],
+                    ],
+                    target: metricTargetsEnum.consumption,
+                },
+                {
+                    datapoints: [
+                        [500_000, 1640995200000],
+                        [500_000, 1641081600000],
+                    ],
+                    target: metricTargetsEnum.autoconsumption,
+                },
+            ]
+            const result = computeTotalOfAllConsumptions(data)
+            expect(result).toStrictEqual(expectedResult)
         })
     })
 })

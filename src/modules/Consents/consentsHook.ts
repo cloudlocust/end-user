@@ -11,6 +11,7 @@ import { useIntl } from 'react-intl'
 import { axios } from 'src/common/react-platform-components'
 import { API_RESOURCES_URL } from 'src/configs'
 import { enphaseConsentFeatureState, sgeConsentFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
+import { useAxiosCancelToken } from 'src/hooks/AxiosCancelToken'
 
 const NO_HOUSING_ID_ERROR_TEXT = 'No housing id provided'
 
@@ -53,6 +54,7 @@ export function useConsents() {
     const [isCreateEnedisSgeConsentLoading, setIsCreateEnedisSgeConsentLoading] = useState(false)
     const [createEnedisSgeConsentError, setCreateEnedisSgeConsentError] = useState<boolean>(false)
     const [enphaseLink, setEnphaseLink] = useState<EnphaseLink['url']>('')
+    const { isCancel, source } = useAxiosCancelToken()
 
     /**
      * Function that performs HTTP call to get consents.
@@ -71,15 +73,24 @@ export function useConsents() {
              * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/allSettled .
              */
             const [nrlinkConsent, enedisSgeConsent, enphaseConsent] = await Promise.allSettled([
-                axios.get<INrlinkConsent>(`${NRLINK_CONSENT_API}/${meterGuid}`),
-                sgeConsentFeatureState ? axios.get<IEnedisSgeConsent>(`${ENEDIS_SGE_CONSENT_API}/${houseId}`) : null, // If env is disabled, the request for SgeConsent won't be performed.
-                enphaseConsentFeatureState ? axios.get<IEnphaseConsent>(`${ENPHASE_CONSENT_API}/${meterGuid}`) : null,
+                axios.get<INrlinkConsent>(`${NRLINK_CONSENT_API}/${meterGuid}`, { cancelToken: source.current.token }),
+                sgeConsentFeatureState
+                    ? axios.get<IEnedisSgeConsent>(`${ENEDIS_SGE_CONSENT_API}/${houseId}`, {
+                          cancelToken: source.current.token,
+                      })
+                    : null, // If env is disabled, the request for SgeConsent won't be performed.
+                enphaseConsentFeatureState
+                    ? axios.get<IEnphaseConsent>(`${ENPHASE_CONSENT_API}/${meterGuid}`, {
+                          cancelToken: source.current.token,
+                      })
+                    : null,
             ])
 
             // Nrlink consent.
             if (nrlinkConsent.status === 'fulfilled') {
                 setNrlinkConsent(nrlinkConsent.value?.data)
             } else if (nrlinkConsent.status === 'rejected') {
+                if (isCancel(nrlinkConsent.reason)) return
                 enqueueSnackbar(
                     formatMessage({
                         id: 'Erreur lors de la récupération du consentement Nrlink',
@@ -95,6 +106,7 @@ export function useConsents() {
             if (enedisSgeConsent.status === 'fulfilled') {
                 setEnedisSgeConsent(enedisSgeConsent.value?.data)
             } else if (enedisSgeConsent.status === 'rejected') {
+                if (isCancel(enedisSgeConsent.reason)) return
                 enqueueSnackbar(
                     formatMessage({
                         id: 'Erreur lors de la récupération du consentement Enedis',
@@ -110,6 +122,7 @@ export function useConsents() {
             if (enphaseConsent.status === 'fulfilled') {
                 setEnphaseConsent(enphaseConsent.value?.data)
             } else if (enphaseConsent.status === 'rejected') {
+                if (isCancel(enphaseConsent.reason)) return
                 enqueueSnackbar(
                     formatMessage({
                         id: 'Erreur lors de la récupération du consentement Enphase',
@@ -123,7 +136,7 @@ export function useConsents() {
             }
             setConsentsLoading(false)
         },
-        [enqueueSnackbar, formatMessage],
+        [enqueueSnackbar, formatMessage, isCancel, source],
     )
 
     /**
