@@ -3,6 +3,7 @@ import { BrowserRouter } from 'react-router-dom'
 import ConsumptionAlert from '.'
 import userEvent from '@testing-library/user-event'
 import { waitFor } from '@testing-library/react'
+import { NovuChannelsWithValueAndKey } from './consumptionAlert'
 
 const INTERVAL_TITLE_DAY = "Seuil d'alerte journalier"
 const INTERVAL_TITLE_WEEK = "Seuil d'alerte hebdomadaire"
@@ -16,28 +17,46 @@ const BUTTON_ANNULER = 'Annuler'
 
 const MUI_TEXTFIELD = 'MuiOutlinedInput-input'
 const MUI_DISABLED = 'Mui-disabled'
+const PUSH_SWITCH_TEST_ID = 'pushConsumptionAlert-switch'
+const EMAIL_SWITCH_TEST_ID = 'emailConsumptionAlert-switch'
 
 const mockInitialValue = {
     price: 0,
     consumption: 0,
 }
 const mockSaveConsumptionAlert = jest.fn()
+const mockUpdateNovuAlertPreferences = jest.fn()
 let mockIsConsumptionAlertsLoading = false
 let mockIsSavingAlertLoading = false
+let mockIsNovuAlertPreferencesLoading = false
 const PRICE_PER_KWH = 3
+
+let mockInitialAlertPreferencesValues: NovuChannelsWithValueAndKey = {
+    push: {
+        key: 'isPushDailyConsumption',
+        value: false,
+    },
+    email: {
+        key: 'isEmailDailyConsumption',
+        value: false,
+    },
+}
 
 describe('Test Consumption Alert component.', () => {
     describe('Test the UI.', () => {
         test('When consumption alert mount, component is with correct values.', () => {
-            const { getByText, container } = reduxedRender(
+            const { getByText, container, getByTestId } = reduxedRender(
                 <BrowserRouter>
                     <ConsumptionAlert
                         interval="day"
-                        initialValues={mockInitialValue}
+                        initialConsumptionDataValues={mockInitialValue}
                         pricePerKwh={PRICE_PER_KWH}
                         saveConsumptionAlert={mockSaveConsumptionAlert}
                         isConsumptionAlertsLoading={mockIsConsumptionAlertsLoading}
                         isSavingAlertLoading={mockIsSavingAlertLoading}
+                        isNovuAlertPreferencesLoading={mockIsNovuAlertPreferencesLoading}
+                        initialAlertPreferencesValues={mockInitialAlertPreferencesValues}
+                        updateNovuAlertPreferences={mockUpdateNovuAlertPreferences}
                     />
                 </BrowserRouter>,
             )
@@ -60,6 +79,13 @@ describe('Test Consumption Alert component.', () => {
             const secondInputValue = textFieldMuiElements[1].getAttribute('value') ?? ''
             expect(parseInt(secondInputValue)).toBe(INPUT_DEFAULT_VALUE)
 
+            // switchs show correctly
+            const pushSwitch = getByTestId(PUSH_SWITCH_TEST_ID)
+            const emailSwitch = getByTestId(EMAIL_SWITCH_TEST_ID)
+
+            expect(pushSwitch).toHaveClass(MUI_DISABLED)
+            expect(emailSwitch).toHaveClass(MUI_DISABLED)
+
             // The button modifier show correctly
             expect(() => getByText(BUTTON_MODIFIER)).toBeTruthy()
         })
@@ -68,11 +94,14 @@ describe('Test Consumption Alert component.', () => {
                 <BrowserRouter>
                     <ConsumptionAlert
                         interval="week"
-                        initialValues={mockInitialValue}
+                        initialConsumptionDataValues={mockInitialValue}
                         pricePerKwh={PRICE_PER_KWH}
                         saveConsumptionAlert={mockSaveConsumptionAlert}
                         isConsumptionAlertsLoading={mockIsConsumptionAlertsLoading}
                         isSavingAlertLoading={mockIsSavingAlertLoading}
+                        isNovuAlertPreferencesLoading={mockIsNovuAlertPreferencesLoading}
+                        initialAlertPreferencesValues={mockInitialAlertPreferencesValues}
+                        updateNovuAlertPreferences={mockUpdateNovuAlertPreferences}
                     />
                 </BrowserRouter>,
             )
@@ -85,11 +114,14 @@ describe('Test Consumption Alert component.', () => {
                 <BrowserRouter>
                     <ConsumptionAlert
                         interval="month"
-                        initialValues={mockInitialValue}
+                        initialConsumptionDataValues={mockInitialValue}
                         pricePerKwh={PRICE_PER_KWH}
                         saveConsumptionAlert={mockSaveConsumptionAlert}
                         isConsumptionAlertsLoading={mockIsConsumptionAlertsLoading}
                         isSavingAlertLoading={mockIsSavingAlertLoading}
+                        isNovuAlertPreferencesLoading={mockIsNovuAlertPreferencesLoading}
+                        initialAlertPreferencesValues={mockInitialAlertPreferencesValues}
+                        updateNovuAlertPreferences={mockUpdateNovuAlertPreferences}
                     />
                 </BrowserRouter>,
             )
@@ -98,15 +130,18 @@ describe('Test Consumption Alert component.', () => {
             expect(() => getByText(INTERVAL_TITLE_MONTH)).toBeTruthy()
         })
         test('Clicking on Modify change input state and buttons', async () => {
-            const { getByText, container } = reduxedRender(
+            const { getByText, container, getByTestId } = reduxedRender(
                 <BrowserRouter>
                     <ConsumptionAlert
                         interval="week"
-                        initialValues={mockInitialValue}
+                        initialConsumptionDataValues={mockInitialValue}
                         pricePerKwh={PRICE_PER_KWH}
                         saveConsumptionAlert={mockSaveConsumptionAlert}
                         isConsumptionAlertsLoading={mockIsConsumptionAlertsLoading}
                         isSavingAlertLoading={mockIsSavingAlertLoading}
+                        isNovuAlertPreferencesLoading={mockIsNovuAlertPreferencesLoading}
+                        initialAlertPreferencesValues={mockInitialAlertPreferencesValues}
+                        updateNovuAlertPreferences={mockUpdateNovuAlertPreferences}
                     />
                 </BrowserRouter>,
             )
@@ -132,6 +167,16 @@ describe('Test Consumption Alert component.', () => {
             // both inputs are enabled
             const textFieldMuiElementsAfterEnable = container.getElementsByClassName(MUI_DISABLED)
             expect(textFieldMuiElementsAfterEnable.length).toBe(0)
+
+            // switch are not disabled
+            const pushSwitch = getByTestId(PUSH_SWITCH_TEST_ID)
+            const emailSwitch = getByTestId(EMAIL_SWITCH_TEST_ID)
+
+            expect(pushSwitch).not.toHaveClass(MUI_DISABLED)
+            expect(emailSwitch).not.toHaveClass(MUI_DISABLED)
+
+            // The button modifier show correctly
+            expect(() => getByText(BUTTON_MODIFIER)).toBeTruthy()
         }, 2000)
     })
     describe('Test form manipulation.', () => {
@@ -140,11 +185,14 @@ describe('Test Consumption Alert component.', () => {
                 <BrowserRouter>
                     <ConsumptionAlert
                         interval="day"
-                        initialValues={mockInitialValue}
+                        initialConsumptionDataValues={mockInitialValue}
                         pricePerKwh={PRICE_PER_KWH}
                         saveConsumptionAlert={mockSaveConsumptionAlert}
                         isConsumptionAlertsLoading={mockIsConsumptionAlertsLoading}
                         isSavingAlertLoading={mockIsSavingAlertLoading}
+                        isNovuAlertPreferencesLoading={mockIsNovuAlertPreferencesLoading}
+                        initialAlertPreferencesValues={mockInitialAlertPreferencesValues}
+                        updateNovuAlertPreferences={mockUpdateNovuAlertPreferences}
                     />
                 </BrowserRouter>,
             )
@@ -170,11 +218,14 @@ describe('Test Consumption Alert component.', () => {
                 <BrowserRouter>
                     <ConsumptionAlert
                         interval="day"
-                        initialValues={mockInitialValue}
+                        initialConsumptionDataValues={mockInitialValue}
                         pricePerKwh={PRICE_PER_KWH}
                         saveConsumptionAlert={mockSaveConsumptionAlert}
                         isConsumptionAlertsLoading={mockIsConsumptionAlertsLoading}
                         isSavingAlertLoading={mockIsSavingAlertLoading}
+                        isNovuAlertPreferencesLoading={mockIsNovuAlertPreferencesLoading}
+                        initialAlertPreferencesValues={mockInitialAlertPreferencesValues}
+                        updateNovuAlertPreferences={mockUpdateNovuAlertPreferences}
                     />
                 </BrowserRouter>,
             )
@@ -200,11 +251,14 @@ describe('Test Consumption Alert component.', () => {
                 <BrowserRouter>
                     <ConsumptionAlert
                         interval="day"
-                        initialValues={mockInitialValue}
+                        initialConsumptionDataValues={mockInitialValue}
                         pricePerKwh={PRICE_PER_KWH}
                         saveConsumptionAlert={mockSaveConsumptionAlert}
                         isConsumptionAlertsLoading={mockIsConsumptionAlertsLoading}
                         isSavingAlertLoading={mockIsSavingAlertLoading}
+                        isNovuAlertPreferencesLoading={mockIsNovuAlertPreferencesLoading}
+                        initialAlertPreferencesValues={mockInitialAlertPreferencesValues}
+                        updateNovuAlertPreferences={mockUpdateNovuAlertPreferences}
                     />
                 </BrowserRouter>,
             )
@@ -232,11 +286,14 @@ describe('Test Consumption Alert component.', () => {
                 <BrowserRouter>
                     <ConsumptionAlert
                         interval="day"
-                        initialValues={mockInitialValue}
+                        initialConsumptionDataValues={mockInitialValue}
                         pricePerKwh={PRICE_PER_KWH}
                         saveConsumptionAlert={mockSaveConsumptionAlert}
                         isConsumptionAlertsLoading={mockIsConsumptionAlertsLoading}
                         isSavingAlertLoading={mockIsSavingAlertLoading}
+                        isNovuAlertPreferencesLoading={mockIsNovuAlertPreferencesLoading}
+                        initialAlertPreferencesValues={mockInitialAlertPreferencesValues}
+                        updateNovuAlertPreferences={mockUpdateNovuAlertPreferences}
                     />
                 </BrowserRouter>,
             )

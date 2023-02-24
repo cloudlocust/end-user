@@ -6,6 +6,13 @@ export type IEcogeste =
     // eslint-disable-next-line jsdoc/require-jsdoc -- JSDoc is confused, false-positive
     {
         /**
+         * Database-like id of the ecogest.
+         * Used to poke REST endpoints, like when we want to update
+         * the view status.
+         */
+        id: number
+
+        /**
          * The title of the Ecogeste.
          */
         title: string
@@ -16,15 +23,18 @@ export type IEcogeste =
          */
         description: string
         /**
-         * The short description of the Ecogeste.
-         * This is a sort of abridged version that is shown on the card.
-         */
-        shortdescription: string
-        /**
          * The savings of the Ecogeste.
          * Abstract percentile number that should give the user
          * an idea about how much money they are going to save by
          * doing the geste.
          */
-        savings: number | undefined
+        percentageSaved: number
+        /**
+         * Url of an icon that might be display on an ecogest card.
+         */
+        urlIcon?: string
+        /**
+         * Wheter or not the currently active customer has seen this Ecogeste.
+         */
+        seenByCustomer: boolean
     }

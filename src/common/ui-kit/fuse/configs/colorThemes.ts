@@ -171,6 +171,36 @@ const colorThemes: colorThemesType = {
             },
         },
     },
+    ccsb: {
+        palette: {
+            mode: 'light',
+            text: {
+                primary: '#000000',
+                secondary: lightText.secondary,
+                disabled: '#C4C7C7',
+            },
+            primary: {
+                light: '#BDF9F4',
+                main: '#71AD98',
+                dark: '#4A7572',
+                contrastText: '#FFFFFF',
+            },
+            secondary: {
+                light: '#E5FFC4',
+                main: '#C2E498',
+                dark: '#556343',
+            },
+            common: {
+                white: '#ffffff',
+                black: '#000000',
+                disabled: '#C4C7C7',
+            },
+            background: {
+                paper: '#FFFFFF',
+                default: '#EFF1F1',
+            },
+        },
+    },
     mainThemeDark: {
         palette: {
             mode: 'dark',

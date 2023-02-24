@@ -59,7 +59,7 @@ export const SetPasswordForm = ({ token }: ResetPasswordFormProps) => {
                             <LinkRedirection
                                 url={urlPolitiqueConfidentialité}
                                 label="la politique de confidentialité"
-                                color="primary.light"
+                                color="primary.main"
                             />
                             {formatMessage({
                                 id: ` et de l'utilisation de la plateforme`,

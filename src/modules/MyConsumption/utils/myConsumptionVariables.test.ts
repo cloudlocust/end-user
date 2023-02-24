@@ -7,6 +7,7 @@ const yValuekWh = 1_200
 const yValueMWh = 1_200_000
 const yValueVA = 1_200
 const yValueConverted = '1.20'
+const roundedYValue = 1
 
 // eslint-disable-next-line jsdoc/require-jsdoc
 describe('test pure functions', () => {
@@ -14,9 +15,23 @@ describe('test pure functions', () => {
         /**
          * CONSUMPTION TEST.
          */
+        /* Format ROUNDED VALUES */
         // When unit is Wh and consumption it'll show the value given in Wh.
-        let label = getYPointValueLabel(yValue, metricTargetsEnum.consumption, 'Wh')
-        expect(label).toBe(`${yValue.toFixed(2)} Wh`)
+        let label = getYPointValueLabel(yValue, metricTargetsEnum.consumption, 'Wh', true)
+        expect(label).toBe(`${roundedYValue} Wh`)
+
+        // When period is not daily and unit is kWh consumption it'll convert the value in kWh.
+        label = getYPointValueLabel(yValuekWh, metricTargetsEnum.consumption, 'kWh', true)
+        expect(label).toBe(`${roundedYValue} kWh`)
+
+        // When period is not daily and unit is MWh consumption it'll convert the value in MWh.
+        label = getYPointValueLabel(yValueMWh, metricTargetsEnum.consumption, 'MWh', true)
+        expect(label).toBe(`${roundedYValue} MWh`)
+
+        /* FLOATED VALUES */
+        // When unit is Wh and consumption it'll show the value given in Wh.
+        label = getYPointValueLabel(yValue, metricTargetsEnum.consumption, 'Wh')
+        expect(label).toBe(`${yValueConverted} Wh`)
 
         // When period is not daily and unit is kWh consumption it'll convert the value in kWh.
         label = getYPointValueLabel(yValuekWh, metricTargetsEnum.consumption, 'kWh')

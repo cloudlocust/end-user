@@ -88,7 +88,7 @@ const stepsLabels = [
     'Je branche mon capteur',
     'Je configure mon compteur Linky',
     'Je configure mon capteur',
-    "Je configure mon contract de fourniture d'énergie",
+    "Je configure mon contrat de fourniture d'énergie",
 ]
 
 /**
