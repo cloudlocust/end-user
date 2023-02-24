@@ -6,6 +6,17 @@ import { HOUSING_API } from 'src/modules/MyHouse/components/HousingList/Housings
 import { SnakeCasedPropertiesDeep } from 'type-fest'
 import { defaultValueType } from 'src/common/ui-kit/form-fields/GoogleMapsAddressAutoComplete/utils'
 import { addMeterInputType, editMeterInputType } from 'src/modules/Meters/Meters'
+import { TEST_DETAIL_ERROR_MESSAGE, TEST_DETAIL_ERROR_METER_GUID } from 'src/mocks/handlers/meters'
+
+/**
+ * Variable that Handles the case of offpeak error in response.
+ *
+ */
+export const TEST_OFFPEAK_HOURS_ERROR = 'offpeakHoursError'
+/**
+ * The offpeak hours message error.
+ */
+export const TEST_OFFPEAK_HOURS_ERROR_MESSAGE = 'Erreur heures creuses'
 
 /**
  * Array of houses (logements) for test.
@@ -225,13 +236,24 @@ export const housingEndpoints = [
         const { housingId } = req.params
         const houseId = parseInt(housingId)
 
+        const authorization = req.headers.get('authorization')
+        if (authorization === TEST_DETAIL_ERROR_METER_GUID)
+            return res(ctx.status(400), ctx.delay(1000), ctx.json({ detail: TEST_DETAIL_ERROR_MESSAGE }))
+        if (authorization === TEST_OFFPEAK_HOURS_ERROR)
+            return res(
+                ctx.status(400),
+                ctx.delay(1000),
+                ctx.json({ errors: [{ features: { offpeak: { root: TEST_OFFPEAK_HOURS_ERROR_MESSAGE } } }] }),
+            )
+
         const housingToUpdate = TEST_HOUSES.find(
             (housing: SnakeCasedPropertiesDeep<IHousing>) => housing.id === houseId,
         )
-
+        // Duplicated guid
         if (!housingToUpdate) {
             return res(ctx.status(400), ctx.delay(1000))
         }
+
         const newMeterHousing = {
             ...housingToUpdate.meter,
             guid: guid || housingToUpdate.meter!.guid,

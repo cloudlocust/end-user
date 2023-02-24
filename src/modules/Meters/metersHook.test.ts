@@ -1,9 +1,14 @@
 import { reduxedRenderHook } from 'src/common/react-platform-components/test'
 import { act } from '@testing-library/react-hooks'
-import { TEST_HOUSES } from 'src/mocks/handlers/houses'
+import { TEST_HOUSES, TEST_OFFPEAK_HOURS_ERROR_MESSAGE, TEST_OFFPEAK_HOURS_ERROR } from 'src/mocks/handlers/houses'
 import { applyCamelCase } from 'src/common/react-platform-components'
 import { IHousing } from 'src/modules/MyHouse/components/HousingList/housing'
 import { EDIT_ERROR_MESSAGE, EDIT_SUCCESS_MESSAGE, useHousingMeterDetails, useMeterForHousing } from './metersHook'
+import {
+    TEST_ERROR_METER_GUID,
+    TEST_DETAIL_ERROR_METER_GUID,
+    TEST_DETAIL_ERROR_MESSAGE,
+} from 'src/mocks/handlers/meters'
 
 const TEST_MOCKED_HOUSES: IHousing[] = applyCamelCase(TEST_HOUSES)
 
@@ -14,6 +19,20 @@ const ERROR_ADD_MESSAGE = "Erreur lors de l'ajout du compteur"
 const ERROR_LOAD_MESSAGE = 'Erreur lors du chargement du compteur'
 
 const mockEnqueueSnackbar = jest.fn()
+
+const editMeterOffPeakHourFeatures = {
+    features: {
+        offpeak: {
+            read_only: false,
+            offpeak_hours: [
+                {
+                    start: '08:00',
+                    end: '16:00',
+                },
+            ],
+        },
+    },
+}
 /**
  * Mocking the useSnackbar used in CustomerDetails to load the customerDetails based on url /customers/:id {id} params.
  */
@@ -100,25 +119,82 @@ describe('editMeter test', () => {
         expect(result.current.loadingInProgress).toBe(false)
         expect(mockEnqueueSnackbar).toBeCalledWith(EDIT_SUCCESS_MESSAGE, { variant: 'success', autoHideDuration: 5000 })
     })
-    test('when editMeter fails', async () => {
-        const {
-            renderedHook: { result, waitForValueToChange },
-        } = reduxedRenderHook(() => useMeterForHousing(), { initialState: {} })
-        expect(result.current.loadingInProgress).toBe(false)
 
-        act(() => {
-            result.current.editMeter()
+    describe('when editMeter fails with différent cases', () => {
+        test('When generic error response', async () => {
+            const { store } = require('src/redux')
+            await store.dispatch.userModel.setAuthenticationToken(TEST_ERROR_METER_GUID)
+            const {
+                renderedHook: { result, waitForValueToChange },
+            } = reduxedRenderHook(() => useMeterForHousing(), { initialState: {} })
+            expect(result.current.loadingInProgress).toBe(false)
+
+            act(async () => {
+                try {
+                    await result.current.editMeter()
+                } catch (err) {}
+            })
+
+            await waitForValueToChange(
+                () => {
+                    return result.current.loadingInProgress
+                },
+                { timeout: 2000 },
+            )
+
+            expect(result.current.loadingInProgress).toBe(false)
+            expect(mockEnqueueSnackbar).toBeCalledWith(EDIT_ERROR_MESSAGE, { variant: 'error' })
         })
+        test('When error response with detail message', async () => {
+            const { store } = require('src/redux')
+            await store.dispatch.userModel.setAuthenticationToken(TEST_DETAIL_ERROR_METER_GUID)
+            const {
+                renderedHook: { result, waitForValueToChange },
+            } = reduxedRenderHook(() => useMeterForHousing(), { initialState: {} })
+            expect(result.current.loadingInProgress).toBe(false)
 
-        await waitForValueToChange(
-            () => {
-                return result.current.loadingInProgress
-            },
-            { timeout: 2000 },
-        )
+            act(async () => {
+                try {
+                    await result.current.editMeter(TEST_MOCKED_HOUSES[0].id, { features: editMeterOffPeakHourFeatures })
+                } catch (err) {}
+            })
 
-        expect(result.current.loadingInProgress).toBe(false)
-        expect(mockEnqueueSnackbar).toBeCalledWith(EDIT_ERROR_MESSAGE, { variant: 'error' })
+            await waitForValueToChange(
+                () => {
+                    return result.current.loadingInProgress
+                },
+                { timeout: 2000 },
+            )
+
+            expect(result.current.loadingInProgress).toBe(false)
+            expect(mockEnqueueSnackbar).toBeCalledWith(TEST_DETAIL_ERROR_MESSAGE, { variant: 'error' })
+        })
+        test('When error response with offpeak hours error message', async () => {
+            const { store } = require('src/redux')
+            await store.dispatch.userModel.setAuthenticationToken(TEST_OFFPEAK_HOURS_ERROR)
+            const {
+                renderedHook: { result, waitForValueToChange },
+            } = reduxedRenderHook(() => useMeterForHousing(), { initialState: {} })
+            expect(result.current.loadingInProgress).toBe(false)
+
+            act(async () => {
+                try {
+                    await result.current.editMeter(TEST_MOCKED_HOUSES[0].id, {
+                        features: { ...editMeterOffPeakHourFeatures },
+                    })
+                } catch (err) {}
+            })
+
+            await waitForValueToChange(
+                () => {
+                    return result.current.loadingInProgress
+                },
+                { timeout: 2000 },
+            )
+
+            expect(result.current.loadingInProgress).toBe(false)
+            expect(mockEnqueueSnackbar).toBeCalledWith(TEST_OFFPEAK_HOURS_ERROR_MESSAGE, { variant: 'error' })
+        })
     })
 })
 

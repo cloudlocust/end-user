@@ -59,7 +59,12 @@ const ContractForm = ({ onSubmit, isContractsLoading, defaultValues }: ContractF
                 if (endSubscription) cleanData.endSubscription = new Date(endSubscription).toISOString()
                 // Update meterFeatures if offPeakhours have been set.
                 if (meterFeatures && !meterFeatures.offpeak.readOnly) {
-                    await editMeter(parseInt(houseId), { features: meterFeatures })
+                    try {
+                        await editMeter(parseInt(houseId), { features: meterFeatures })
+                    } catch (error) {
+                        // Stop the execution of onSubmit when editMeter fails.
+                        return
+                    }
                 }
                 onSubmit(cleanData)
             }}
