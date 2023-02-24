@@ -2,7 +2,7 @@ import { rest } from 'msw'
 import { getPaginationFromElementList } from 'src/mocks/utils'
 import { SnakeCasedPropertiesDeep } from 'type-fest'
 import { METERS_API } from 'src/modules/Meters/metersHook'
-import { addMeterInputType, editMeterInputType, IMeter } from 'src/modules/Meters/Meters'
+import { addMeterInputType, IMeter } from 'src/modules/Meters/Meters'
 
 /**
  * Mock for meter data to be added.
@@ -91,17 +91,6 @@ export const metersEndpoints = [
             id: lengthBefore + 1,
         }
         TEST_METERS.unshift(newMeter)
-        return res(ctx.status(200), ctx.delay(1000), ctx.json(newMeter))
-    }),
-
-    // Edit Metr Patch request
-    rest.patch<SnakeCasedPropertiesDeep<editMeterInputType>>(METERS_API, (req, res, ctx) => {
-        // Success
-        const newMeter = {
-            ...TEST_METERS[0],
-            ...req.body,
-        }
-        TEST_METERS[0] = newMeter
         return res(ctx.status(200), ctx.delay(1000), ctx.json(newMeter))
     }),
 ]

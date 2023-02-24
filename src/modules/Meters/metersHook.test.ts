@@ -1,6 +1,10 @@
 import { reduxedRenderHook } from 'src/common/react-platform-components/test'
 import { act } from '@testing-library/react-hooks'
-import { TEST_HOUSES, TEST_OFFPEAK_HOURS_ERROR_MESSAGE, TEST_OFFPEAK_HOURS_ERROR } from 'src/mocks/handlers/houses'
+import {
+    TEST_HOUSES,
+    TEST_OFFPEAK_HOURS_ERROR_MESSAGE,
+    TEST_OFFPEAK_HOURS_ERROR_AUTHORIZATION,
+} from 'src/mocks/handlers/houses'
 import { applyCamelCase } from 'src/common/react-platform-components'
 import { IHousing } from 'src/modules/MyHouse/components/HousingList/housing'
 import { EDIT_ERROR_MESSAGE, EDIT_SUCCESS_MESSAGE, useHousingMeterDetails, useMeterForHousing } from './metersHook'
@@ -171,7 +175,7 @@ describe('editMeter test', () => {
         })
         test('When error response with offpeak hours error message', async () => {
             const { store } = require('src/redux')
-            await store.dispatch.userModel.setAuthenticationToken(TEST_OFFPEAK_HOURS_ERROR)
+            await store.dispatch.userModel.setAuthenticationToken(TEST_OFFPEAK_HOURS_ERROR_AUTHORIZATION)
             const {
                 renderedHook: { result, waitForValueToChange },
             } = reduxedRenderHook(() => useMeterForHousing(), { initialState: {} })

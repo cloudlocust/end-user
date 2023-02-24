@@ -62,7 +62,7 @@ const ContractForm = ({ onSubmit, isContractsLoading, defaultValues }: ContractF
                     try {
                         await editMeter(parseInt(houseId), { features: meterFeatures })
                     } catch (error) {
-                        // Stop the execution of onSubmit when editMeter fails.
+                        // Stop the execution of onSubmit when editMeter fails, and prevent the stop of the app with try/catch block.
                         return
                     }
                 }

@@ -29,10 +29,10 @@ export const EDIT_ERROR_MESSAGE = 'Erreur lors de la modification du compteur'
 export const EDIT_SUCCESS_MESSAGE = 'Votre compteur à été modifier avec succées'
 
 /**
- * Handle Meter error response message when adding/editing a meter.
+ * Handle Meter error response message when editing a meter.
  *
- * @param error Error Response from add/edit meter request.
- * @returns Add/Edit Meter Error Message.
+ * @param error Error Response from edit meter request.
+ * @returns Edit Meter Error Message.
  */
 const handlMeterErrorResponse = (error: any) => {
     // Detail Error
