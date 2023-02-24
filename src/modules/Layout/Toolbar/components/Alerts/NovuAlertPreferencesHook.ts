@@ -53,6 +53,7 @@ export function useNovuAlertPreferences(housingId: number | null, disabledOnMunt
 
     const updateNovuAlertPreferences = useCallback(
         async (alerts: INovuAlertPreferences) => {
+            // we added return values that corresponde to weither the update have been successful or not
             try {
                 if (!housingId) throw Error('No housing id privided')
                 setIsLoadingInProgress(true)
@@ -65,6 +66,7 @@ export function useNovuAlertPreferences(housingId: number | null, disabledOnMunt
                     { variant: 'success', autoHideDuration: 5000 },
                 )
                 setIsLoadingInProgress(false)
+                return true
             } catch (error) {
                 setIsLoadingInProgress(false)
                 enqueueSnackbar(
@@ -74,6 +76,8 @@ export function useNovuAlertPreferences(housingId: number | null, disabledOnMunt
                     }),
                     { variant: 'error', autoHideDuration: 5000 },
                 )
+
+                return false
             }
         },
         [enqueueSnackbar, formatMessage, housingId],

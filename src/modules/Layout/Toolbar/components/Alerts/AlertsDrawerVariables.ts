@@ -46,7 +46,7 @@ export const getChannelPreferencesByInterval = (
             response.push.key = 'isPushDailyConsumption'
             response.push.value = novuAlertPreferences.isPushDailyConsumption ?? false
 
-            response.email.key = 'isPushDailyConsumption'
+            response.email.key = 'isEmailDailyConsumption'
             response.email.value = novuAlertPreferences.isEmailDailyConsumption ?? false
 
             return response

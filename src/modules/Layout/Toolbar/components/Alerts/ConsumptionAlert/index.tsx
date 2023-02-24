@@ -85,14 +85,18 @@ const ConsumptionAlert = ({
 
         // if user changed the switchs we send the modifications
         if (
-            isPush !== initialAlertPreferencesValues?.push.value &&
+            isPush !== initialAlertPreferencesValues?.push.value ||
             isEmail !== initialAlertPreferencesValues?.email.value
         ) {
             if (initialAlertPreferencesValues) {
-                updateNovuAlertPreferences({
+                const didUpdate = await updateNovuAlertPreferences({
                     [initialAlertPreferencesValues.push.key]: isPush,
                     [initialAlertPreferencesValues.email.key]: isEmail,
                 })
+                if (!didUpdate) {
+                    setIsPush(initialAlertPreferencesValues?.push.value)
+                    setIsEmail(initialAlertPreferencesValues?.email.value)
+                }
             } else {
                 // if the initialAlertPreferencesValues is undefined this means either we had an error loading or it did not load yet
                 // we put the switchs to default value (false since we have no data)
