@@ -46,6 +46,10 @@ export interface IWidgetProps {
      * Period of the Widget.
      */
     period: periodType
+    /**
+     * Children of the Widget.
+     */
+    children?: ReactNode | ReactElement
 }
 
 /**

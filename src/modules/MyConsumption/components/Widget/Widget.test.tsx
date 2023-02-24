@@ -11,6 +11,7 @@ import { applyCamelCase } from 'src/common/react-platform-components'
 import { TEST_HOUSES } from 'src/mocks/handlers/houses'
 import { URL_MY_HOUSE } from 'src/modules/MyHouse'
 import { ProductionWidgetErrorIcon } from 'src/modules/MyConsumption/components/WidgetInfoIcons'
+import { ConsumptionWidgetsMetricsProvider } from 'src/modules/MyConsumption/components/ConsumptionWidgetsContainer/ConsumptionWidgetsMetricsContext'
 const TEST_WEEK_DATA: IMetric[] = TEST_SUCCESS_WEEK_METRICS([metricTargetsEnum.consumption])
 let mockData: IMetric[] = TEST_WEEK_DATA
 
@@ -66,17 +67,31 @@ jest.mock('src/modules/Metrics/metricsHook.ts', () => ({
     }),
 }))
 
+/**
+ * Render the widget with the given props.
+ *
+ * @param props The props to pass to the widget.
+ * @returns The render result.
+ */
+const renderTestComponent = (props: IWidgetProps) => {
+    return reduxedRender(
+        <ConsumptionWidgetsMetricsProvider>
+            <Widget {...props} />
+        </ConsumptionWidgetsMetricsProvider>,
+    )
+}
+
 describe('Widget component test', () => {
     test('when isMetricLoading is true, a spinner is shown', async () => {
         mockIsMetricsLoading = true
-        const { container } = reduxedRender(<Widget {...mockWidgetPropsDefault} />)
+        const { container } = renderTestComponent(mockWidgetPropsDefault)
 
         expect(container.querySelector(circularProgressClassname)).toBeInTheDocument()
     })
     test('When widget getMetrics, value should be shown', async () => {
         mockIsMetricsLoading = false
         mockData[0].datapoints = [[1000, 1651406400]]
-        const { getByText } = reduxedRender(<Widget {...mockWidgetPropsDefault} />)
+        const { getByText } = renderTestComponent(mockWidgetPropsDefault)
 
         expect(getByText(CONSOMMATION_TOTALE_TEXT)).toBeInTheDocument()
         expect(getByText(CONSOMMATION_TOTALE_UNIT)).toBeInTheDocument()
@@ -86,7 +101,7 @@ describe('Widget component test', () => {
 
     test('when there is no data, an error message is shown', async () => {
         mockData = []
-        const { getByText } = reduxedRender(<Widget {...mockWidgetPropsDefault} />)
+        const { getByText } = renderTestComponent(mockWidgetPropsDefault)
 
         expect(getByText(NO_DATA_MESSAGE)).toBeTruthy()
     })
@@ -99,7 +114,9 @@ describe('Widget component test', () => {
         }
         const { getByTestId } = reduxedRender(
             <Router>
-                <Widget {...mockWidgetProps} />
+                <ConsumptionWidgetsMetricsProvider>
+                    <Widget {...mockWidgetProps} />
+                </ConsumptionWidgetsMetricsProvider>
             </Router>,
             {
                 initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[0] } },
