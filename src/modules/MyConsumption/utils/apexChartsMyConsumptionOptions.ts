@@ -183,7 +183,7 @@ export const getApexChartMyConsumptionProps = ({
     // eslint-disable-next-line sonarjs/cognitive-complexity
     yAxisSeries.forEach((yAxisSerie) => {
         // Keep track of the labels that have already been rendered (for consumption and production charts, values are rounded and this causes duplication).
-        const labelsRendered: string[] = []
+        let labelsRendered: string[] = []
         // If this Serie doesn't have any data we don't show it on the chart thus we do return, and if this is true for all series then we'll show an empty chart.
         if (yAxisSerie.data.length === 0) return
         // Get specifity of each chart.
@@ -258,7 +258,7 @@ export const getApexChartMyConsumptionProps = ({
 
                         // Keep track of the labels that have already been rendered
                         // If the type is number means it is printing the y-axis labels.
-                        if (typeof isTooltipOrYaxisLineIndex === 'number') {
+                        if (!isTooltipValue) {
                             // Case: When there are multiple values rounded to 0, we keep only the one shown at the bottom of the y-axis.
                             if (parseInt(label) === 0 && isTooltipOrYaxisLineIndex !== 0) return ''
                             // If it's not rendered hide the value.
@@ -266,6 +266,9 @@ export const getApexChartMyConsumptionProps = ({
                             // Add the current label to the list of rendered labels
                             labelsRendered.push(label)
                         }
+                        // Reset labelsRendered for next yAxis labels filling
+                        else labelsRendered = []
+
                         return label
                     }
                     return getYPointValueLabel(value, yAxisSerie.name as metricTargetsEnum)
