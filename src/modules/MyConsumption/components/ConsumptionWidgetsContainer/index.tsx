@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useContext, useEffect } from 'react'
 import { Grid } from '@mui/material'
 import { useTheme } from '@mui/material'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
@@ -6,6 +6,7 @@ import { WidgetTargets } from 'src/modules/MyConsumption/utils/myConsumptionVari
 import { Widget } from 'src/modules/MyConsumption/components/Widget'
 import { ConsumptionWidgetsContainerProps } from 'src/modules/MyConsumption/components/ConsumptionWidgetsContainer/WidgetContainer'
 import { getWidgetInfoIcon } from 'src/modules/MyConsumption/components/WidgetInfoIcons'
+import { ConsumptionWidgetsMetricsContext } from 'src/modules/MyConsumption/components/ConsumptionWidgetsContainer/ConsumptionWidgetsMetricsContext'
 
 /**
  * MyConsumptionWidgets Component (it's Wrapper of the list of Widgets).
@@ -30,6 +31,16 @@ const ConsumptionWidgetsContainer = ({
     enedisOff,
 }: ConsumptionWidgetsContainerProps) => {
     const theme = useTheme()
+    const { resetMetricsWidgetData } = useContext(ConsumptionWidgetsMetricsContext)
+
+    /**
+     *   We should reset the metrics context when the range, filters, metricsInterval or period changes,
+     * because we have a completely new metrics when one of those dependencies changes.
+     */
+    useEffect(() => {
+        resetMetricsWidgetData()
+    }, [range, filters, metricsInterval, period, resetMetricsWidgetData])
+
     return (
         <div className="p-12 sm:p-24 ">
             <div className="flex justify-center items-center md:justify-start">
