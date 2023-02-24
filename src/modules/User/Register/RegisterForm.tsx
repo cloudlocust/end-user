@@ -173,7 +173,7 @@ export const RegisterForm = ({
                                     plateforme et suivre votre consommation. Vous pouvez retrouver plus d'informations sur vos droits
                                     via notre `,
                     })}
-                    <LinkRedirection url={privacyPolicy} label="Politique de Confidentialité" color="primary.light" />
+                    <LinkRedirection url={privacyPolicy} label="Politique de Confidentialité" color="primary.main" />
                 </span>
                 {/* TODO Create a checkbox reusable component */}
                 <FormControl required error={rgpdCheckboxState === ''}>
@@ -198,7 +198,7 @@ export const RegisterForm = ({
                                 <LinkRedirection
                                     url={generalTermsOfUse}
                                     label="Conditions Générales d’Utilisation"
-                                    color="primary.light"
+                                    color="primary.main"
                                 />
                             </span>
                         }

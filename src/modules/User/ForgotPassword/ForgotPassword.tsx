@@ -55,7 +55,7 @@ export const ForgotPassword: FC<ForgotPasswordProps> = ({
                         <CardContent className="flex flex-col items-center justify-center p-16 sm:p-24 md:p-32">
                             <img
                                 className="w-128 m-32"
-                                src={`assets/images/logos/${CLIENT_ICON_FOLDER}.svg`}
+                                src={`./clients-icons/${CLIENT_ICON_FOLDER}/${CLIENT_ICON_FOLDER}.svg`}
                                 alt="logo"
                             />
                             <Typography variant="h6" className="mt-16 mb-24 text-center font-semibold sm:text-20">
@@ -72,7 +72,7 @@ export const ForgotPassword: FC<ForgotPasswordProps> = ({
                                     sx={{
                                         color:
                                             // eslint-disable-next-line jsdoc/require-jsdoc
-                                            (theme) => theme.palette.primary.light,
+                                            (theme) => theme.palette.primary.main,
                                     }}
                                     to={URL_LOGIN}
                                     underline="none"

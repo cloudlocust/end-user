@@ -32,7 +32,7 @@ export const energyProviderPopupLink = window._env_.REACT_APP_ENERGY_PROVIDER_PO
 /**
  * Register energy provider success message.
  */
-export const registerEnergyProviderSuccessMessage = window._env_.REACT_APP_REGISTER_ENERGY_PROVIDER_SUCCESS_MESSAGE
+export const energyProviderRegisterSuccessMessage = window._env_.REACT_APP_ENERGY_PROVIDER_REGISTER_SUCCESS_MESSAGE
 
 /**
  * Professional register feature.
