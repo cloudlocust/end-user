@@ -6,8 +6,8 @@ import { useIntl } from 'src/common/react-platform-translation'
 import { useSnackbar } from 'notistack'
 import { HOUSING_API } from 'src/modules/MyHouse/components/HousingList/HousingsHooks'
 import { BuilderUseElementDetails } from 'src/modules/utils/useElementHookBuilder'
-
 import { formatMessageType } from 'src/common/react-platform-translation'
+
 /**
  * Meters microservice endpoint.
  */
@@ -27,6 +27,20 @@ export const EDIT_ERROR_MESSAGE = 'Erreur lors de la modification du compteur'
  * Edit success message.
  */
 export const EDIT_SUCCESS_MESSAGE = 'Votre compteur à été modifier avec succées'
+
+/**
+ * Handle Meter error response message when editing a meter.
+ *
+ * @param error Error Response from edit meter request.
+ * @returns Edit Meter Error Message.
+ */
+const handlMeterErrorResponse = (error: any) => {
+    // Detail Error
+    if (error.detail) return error.detail
+    // Offpeak Error
+    if (error.errors[0]?.features?.offpeak?.root) return error.errors[0]?.features?.offpeak?.root
+    return EDIT_ERROR_MESSAGE
+}
 
 /**
  * Handle meters for a housing in particular.
@@ -94,10 +108,13 @@ export const useMeterForHousing = () => {
                         autoHideDuration: 5000,
                     },
                 )
+
                 return responseData
             }
         } catch (error: any) {
-            const errorEditMeterMsg = error?.response?.data?.detail || EDIT_ERROR_MESSAGE
+            const errorEditMeterMsg = error?.response?.data
+                ? handlMeterErrorResponse(error?.response?.data)
+                : EDIT_ERROR_MESSAGE
             enqueueSnackbar(
                 formatMessage({
                     id: errorEditMeterMsg,
@@ -106,6 +123,7 @@ export const useMeterForHousing = () => {
                 { variant: 'error' },
             )
             setLoadingInProgress(false)
+            throw errorEditMeterMsg
         }
     }
 

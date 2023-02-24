@@ -16,6 +16,15 @@ export const TEST_ADD_METER = {
  */
 export const TEST_ERROR_METER_GUID = 'fakeId'
 
+/**
+ * Meter Guid that Handles the case when response error is in detail object.
+ */
+export const TEST_DETAIL_ERROR_METER_GUID = 'detailError'
+/**
+ * The detail message error.
+ */
+export const TEST_DETAIL_ERROR_MESSAGE = 'Le numéro de compteur existe déjà'
+
 // eslint-disable-next-line jsdoc/require-jsdoc
 export const CREATED_AT_DATA = '2021-12-15T14:07:38.138000'
 
@@ -72,8 +81,9 @@ export const metersEndpoints = [
     // Add Metr Post request
     rest.post<SnakeCasedPropertiesDeep<addMeterInputType>>(METERS_API, (req, res, ctx) => {
         // Duplicated guid
-        if (req.body.guid === TEST_ERROR_METER_GUID)
-            return res(ctx.status(400), ctx.delay(1000), ctx.json({ detail: 'Le numéro de compteur existe déjà' }))
+        if (req.body.guid === TEST_DETAIL_ERROR_METER_GUID)
+            return res(ctx.status(400), ctx.delay(1000), ctx.json({ detail: TEST_DETAIL_ERROR_MESSAGE }))
+
         // Success
         const lengthBefore = TEST_METERS.length
         const newMeter = {
