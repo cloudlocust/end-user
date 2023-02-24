@@ -196,7 +196,7 @@ export const computeWidgetAssets = (data: IMetric[], type: metricTargetType) => 
 export const renderWidgetTitle = (target: metricTargetType): widgetTitleType => {
     switch (target) {
         case metricTargetsEnum.consumption:
-            return 'Consommation Totale'
+            return 'Achetée'
         case metricTargetsEnum.pMax:
             return 'Puissance Maximale'
         case metricTargetsEnum.externalTemperature:
@@ -286,4 +286,21 @@ export const getWidgetRange = (range: metricRangeType, period: periodType) => {
                         : getDateWithoutTimezoneOffset(endOfDay(subMonths(toDate, 1))),
             }
     }
+}
+
+/**
+ * Compute the total consumption of the current and old metrics.
+ *
+ * @param data The current metrics.
+ * @returns The total consumption (consumption + autoconsumption).
+ */
+export const computeTotalOfAllConsumptions = (data: IMetric[]) => {
+    const { value: consumptionValue, unit: consumptionUnit } = computeTotalConsumption(data)
+    const { value: AutoConsumptionValue, unit: AutoConsumptionUnit } = computeTotalAutoconsumption(data)
+
+    const totalOfAllConsumptions =
+        convert(consumptionValue).from(consumptionUnit).to('Wh') +
+        convert(AutoConsumptionValue).from(AutoConsumptionUnit).to('Wh')
+
+    return consumptionWattUnitConversion(totalOfAllConsumptions)
 }
