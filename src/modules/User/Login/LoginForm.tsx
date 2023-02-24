@@ -30,7 +30,7 @@ export const LoginForm = ({ loginHook = useLogin }) => {
                         sx={{
                             color:
                                 // eslint-disable-next-line jsdoc/require-jsdoc
-                                (theme) => theme.palette.primary.light,
+                                (theme) => theme.palette.primary.main,
                         }}
                         underline="none"
                         to="/forgot-password"

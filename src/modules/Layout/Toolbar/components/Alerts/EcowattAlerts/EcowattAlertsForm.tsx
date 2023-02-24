@@ -1,27 +1,29 @@
 import { Card, Switch, Button } from '@mui/material'
 import { Form } from 'src/common/react-platform-components'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
-import { IEcowattAlerts } from 'src/modules/Ecowatt/ecowatt'
+import { EcowattAlertsNovuPreferencesType } from 'src/modules/Ecowatt/ecowatt'
 import { useToggle } from 'react-use'
 import { ButtonLoader } from 'src/common/ui-kit'
 import { useIntl } from 'react-intl'
+import { INovuAlertPreferences } from 'src/modules/Layout/Toolbar/components/Alerts/Alerts'
 
 /**
  * Ecowatt Alerts Form.
  *
  * @param root0 N/A.
  * @param root0.houseId House id of current housing.
- * @param root0.ecowattAlerts Ecowatt alerts state data.
+ * @param root0.novuAlertPreferences Novu alert preferences state data.
  * @param root0.updateEcowattAlerts Callback function that update alerts.
  * @param root0.reloadAlerts Callback function that reloads alerts.
  * @returns Ecowatt alerts form JSX.
  */
 export const EcowattAlertsForm = ({
     houseId,
-    ecowattAlerts,
+    novuAlertPreferences,
     updateEcowattAlerts,
     reloadAlerts,
-}: // eslint-disable-next-line jsdoc/require-jsdoc
+}: /**
+ */
 {
     /**
      * House id of current housing.
@@ -30,18 +32,20 @@ export const EcowattAlertsForm = ({
     /**
      * Ecowatt alerts state data.
      */
-    ecowattAlerts: IEcowattAlerts
+    novuAlertPreferences: INovuAlertPreferences
     /**
      * Callback function that update alerts.
      */
-    updateEcowattAlerts: (houseId: number, alerts: IEcowattAlerts) => void
+    updateEcowattAlerts: (alerts: EcowattAlertsNovuPreferencesType) => void
     /**
      * Refresh callback.
      */
     reloadAlerts: (houseId: number) => void
 }) => {
-    const [isPushSignalThreeDaysState, setIsPushSignalThreeDaysState] = useToggle(ecowattAlerts.isPushSignalThreeDays!)
-    const [isPushSignalOneDayState, setIsPushSignalOneDayState] = useToggle(ecowattAlerts.isPushSignalOneDay!)
+    const [isPushSignalThreeDaysState, setIsPushSignalThreeDaysState] = useToggle(
+        novuAlertPreferences.isPushSignalThreeDays!,
+    )
+    const [isPushSignalOneDayState, setIsPushSignalOneDayState] = useToggle(novuAlertPreferences.isPushSignalOneDay!)
     const [isEdit, setIsEdit] = useToggle(false)
     const { formatMessage } = useIntl()
 
@@ -49,7 +53,7 @@ export const EcowattAlertsForm = ({
      * Handle submit function for EcowaattAlerts.
      */
     const handleSubmitEcowattAlerts = async () => {
-        await updateEcowattAlerts(houseId, {
+        await updateEcowattAlerts({
             isPushSignalThreeDays: isPushSignalThreeDaysState,
             isPushSignalOneDay: isPushSignalOneDayState,
         })
@@ -60,8 +64,8 @@ export const EcowattAlertsForm = ({
      * Handle reset form to initial values.
      */
     const onFormReset = () => {
-        setIsPushSignalThreeDaysState(ecowattAlerts.isPushSignalThreeDays!)
-        setIsPushSignalOneDayState(ecowattAlerts.isPushSignalOneDay!)
+        setIsPushSignalThreeDaysState(novuAlertPreferences.isPushSignalThreeDays!)
+        setIsPushSignalOneDayState(novuAlertPreferences.isPushSignalOneDay!)
         setIsEdit(false)
     }
 
