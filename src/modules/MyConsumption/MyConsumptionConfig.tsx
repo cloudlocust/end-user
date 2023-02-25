@@ -31,16 +31,6 @@ export interface MyConsumptionProps {
 export const productionChartErrorState = window._env_.REACT_APP_PRODUCTION_CHART_ERROR_STATE === 'enabled'
 
 /**
- * Enphase consent feature state.
- * Be careful: We should declare this as function to avoid access to a variable before it's initialized.
- *
- * @returns Boolean, true if enabled, false otherwise.
- */
-export function isEnphaseConsentFeatureEnabled() {
-    return window._env_.REACT_APP_ENPHASE_CONSENT_FEATURE_STATE === 'enabled'
-}
-
-/**
  * MyConsumptionConfig.
  */
 export const MyConsumptionConfig = [

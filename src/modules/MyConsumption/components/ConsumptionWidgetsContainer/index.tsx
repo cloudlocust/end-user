@@ -1,4 +1,5 @@
 import React, { useContext, useEffect } from 'react'
+import { enphaseConsentFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
 import { Grid } from '@mui/material'
 import { useTheme } from '@mui/material'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
@@ -7,7 +8,6 @@ import { Widget } from 'src/modules/MyConsumption/components/Widget'
 import { ConsumptionWidgetsContainerProps } from 'src/modules/MyConsumption/components/ConsumptionWidgetsContainer/WidgetContainer'
 import { getWidgetInfoIcon } from 'src/modules/MyConsumption/components/WidgetInfoIcons'
 import WidgetConsumption from 'src/modules/MyConsumption/components/WidgetConsumption'
-import { isEnphaseConsentFeatureEnabled } from 'src/modules/MyConsumption/MyConsumptionConfig'
 import { ConsumptionWidgetsMetricsContext } from 'src/modules/MyConsumption/components/ConsumptionWidgetsContainer/ConsumptionWidgetsMetricsContext'
 import { metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
 
@@ -60,7 +60,7 @@ const ConsumptionWidgetsContainer = ({
                      * Otherwise it'll be displayed with then normal Widget component, that displays one info : the consumption total,
                      *    (because in this case consumption total = purchased consumption).
                      */}
-                    {isEnphaseConsentFeatureEnabled() ? (
+                    {enphaseConsentFeatureState ? (
                         <WidgetConsumption
                             target={metricTargetsEnum.consumption}
                             range={range}

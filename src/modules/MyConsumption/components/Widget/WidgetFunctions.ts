@@ -5,6 +5,7 @@ import {
     metricTargetsEnum,
     metricTargetType,
 } from 'src/modules/Metrics/Metrics.d'
+import { enphaseConsentFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
 import { convertMetricsDataToApexChartsAxisValues } from 'src/modules/MyConsumption/utils/apexChartsDataConverter'
 import { sum, max, mean, round } from 'lodash'
 import { consumptionWattUnitConversion } from 'src/modules/MyConsumption/utils/unitConversionFunction'
@@ -24,7 +25,6 @@ import {
 } from 'date-fns'
 import { periodType } from 'src/modules/MyConsumption/myConsumptionTypes'
 import { getDateWithoutTimezoneOffset } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
-import { isEnphaseConsentFeatureEnabled } from 'src/modules/MyConsumption/MyConsumptionConfig'
 
 /**
  * Function that returns values from yAxis of the graph.
@@ -197,7 +197,7 @@ export const computeWidgetAssets = (data: IMetric[], type: metricTargetType) => 
 export const renderWidgetTitle = (target: metricTargetType): widgetTitleType => {
     switch (target) {
         case metricTargetsEnum.consumption:
-            return isEnphaseConsentFeatureEnabled() ? 'Achetée' : 'Consommation Totale'
+            return enphaseConsentFeatureState ? 'Achetée' : 'Consommation Totale'
         case metricTargetsEnum.pMax:
             return 'Puissance Maximale'
         case metricTargetsEnum.externalTemperature:
