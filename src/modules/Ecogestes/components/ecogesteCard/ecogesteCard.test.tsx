@@ -3,14 +3,10 @@ import { reduxedRender } from 'src/common/react-platform-components/test'
 import { fireEvent } from '@testing-library/react'
 import EcogesteCard from 'src/modules/Ecogestes/components/ecogesteCard'
 import { IEcogeste } from 'src/modules/Ecogestes/components/ecogeste'
+import { applyCamelCase } from 'src/common/react-platform-components'
+import { TEST_ECOGESTES } from 'src/mocks/handlers/ecogestes'
 
-// Grab the test data from router, so we keep it DRY.
-const fullEcogeste: IEcogeste = {
-    title: 'Test Ecogeste',
-    description: 'Test Description',
-    savings: 20,
-    shortdescription: 'Test short description',
-}
+const fullEcogeste: IEcogeste = applyCamelCase(TEST_ECOGESTES[0])
 let mockEcogestePropsFull = {}
 
 /**
@@ -41,22 +37,20 @@ describe('Test EcogesteCard', () => {
 
         // Check savings here
         expect(queryByTestId('SavingsIcon')).toBeTruthy()
-        expect(queryByText(fullEcogeste.savings + '%')).toBeTruthy()
+        expect(queryByText(fullEcogeste.percentageSaved + '%')).toBeTruthy()
 
         // Check text present
         expect(queryByText(fullEcogeste.title)).toBeTruthy()
-        expect(queryByText(fullEcogeste.shortdescription)).toBeTruthy()
+        expect(queryByText(fullEcogeste.description)).toBeTruthy()
 
         // Check for dialog
         const infoBtn = queryByLabelText('more information')
         expect(infoBtn).toBeTruthy()
 
         expect(queryByRole('dialog')).toBeFalsy()
-        expect(queryByText(fullEcogeste.description)).toBeFalsy()
 
         fireEvent.click(infoBtn!)
 
         expect(queryByRole('dialog')).toBeTruthy()
-        expect(queryByText(fullEcogeste.description)).toBeTruthy()
     })
 })

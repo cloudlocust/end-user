@@ -12,8 +12,9 @@ import { useConsumptionAlerts } from './ConsumptionAlert/consumptionAlertHooks'
 import { URL_MY_HOUSE } from 'src/modules/MyHouse'
 
 import { useHasMissingHousingContracts } from 'src/hooks/HasMissingHousingContracts'
-import { rangeOfCurrentMonth } from './AlertsDrawerVariables'
+import { getChannelPreferencesByInterval, rangeOfCurrentMonth } from './AlertsDrawerVariables'
 import { EcowattAlerts } from 'src/modules/Layout/Toolbar/components/Alerts/EcowattAlerts'
+import { useNovuAlertPreferences } from './NovuAlertPreferencesHook'
 // import { EcowattAlerts } from 'src/modules/Layout/Toolbar/components/Alerts/EcowattAlerts'
 
 const StyledSwipeableDrawer = styled(SwipeableDrawer)(({ theme }) => ({
@@ -36,6 +37,12 @@ export const AlertsDrawer = ({ closeAlertsDrawer }: { closeAlertsDrawer: () => v
 
     const { consumptionAlerts, pricePerKwh, saveConsumptionAlert, isAlertsLoadingInProgress, isSavingInProgress } =
         useConsumptionAlerts(currentHousing?.id ?? null)
+
+    const {
+        novuAlertPreferences,
+        isLoadingInProgress: isNovuAlertPreferencesLoading,
+        updateNovuAlertPreferences,
+    } = useNovuAlertPreferences(currentHousing?.id ?? null)
 
     /**
      * Formate consumption alerts format to wanted format.
@@ -101,27 +108,36 @@ export const AlertsDrawer = ({ closeAlertsDrawer }: { closeAlertsDrawer: () => v
                 )}
                 <ConsumptionAlert
                     interval="day"
-                    initialValues={formatedData['day']}
+                    initialConsumptionDataValues={formatedData['day']}
                     pricePerKwh={pricePerKwh}
                     saveConsumptionAlert={saveConsumptionAlert}
                     isConsumptionAlertsLoading={isAlertsLoadingInProgress}
                     isSavingAlertLoading={isSavingInProgress}
+                    initialAlertPreferencesValues={getChannelPreferencesByInterval('day', novuAlertPreferences)}
+                    updateNovuAlertPreferences={updateNovuAlertPreferences}
+                    isNovuAlertPreferencesLoading={isNovuAlertPreferencesLoading}
                 />
                 <ConsumptionAlert
                     interval="week"
-                    initialValues={formatedData['week']}
+                    initialConsumptionDataValues={formatedData['week']}
                     pricePerKwh={pricePerKwh}
                     saveConsumptionAlert={saveConsumptionAlert}
                     isConsumptionAlertsLoading={isAlertsLoadingInProgress}
                     isSavingAlertLoading={isSavingInProgress}
+                    initialAlertPreferencesValues={getChannelPreferencesByInterval('week', novuAlertPreferences)}
+                    updateNovuAlertPreferences={updateNovuAlertPreferences}
+                    isNovuAlertPreferencesLoading={isNovuAlertPreferencesLoading}
                 />
                 <ConsumptionAlert
                     interval="month"
-                    initialValues={formatedData['month']}
+                    initialConsumptionDataValues={formatedData['month']}
                     pricePerKwh={pricePerKwh}
                     saveConsumptionAlert={saveConsumptionAlert}
                     isConsumptionAlertsLoading={isAlertsLoadingInProgress}
                     isSavingAlertLoading={isSavingInProgress}
+                    initialAlertPreferencesValues={getChannelPreferencesByInterval('month', novuAlertPreferences)}
+                    updateNovuAlertPreferences={updateNovuAlertPreferences}
+                    isNovuAlertPreferencesLoading={isNovuAlertPreferencesLoading}
                 />
                 <EcowattAlerts />
             </div>

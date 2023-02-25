@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from 'react'
-import { IMetric, metricTargetType } from 'src/modules/Metrics/Metrics'
+import { IMetric, metricTargetsEnum, metricTargetType } from 'src/modules/Metrics/Metrics.d'
 import {
     ConsumptionWidgetsMetricsContextType,
     ConsumptionWidgetsMetricsProviderProps,
@@ -77,8 +77,13 @@ export const ConsumptionWidgetsMetricsProvider = ({ children }: ConsumptionWidge
      */
     const saveDataInCorrectArray = (setMetricsData: typeof setOldRangeMetricWidgetsData, data: IMetric[]) => {
         data.forEach((metric) => {
-            // Replace the old metric of target with the new one.
-            setMetricsData((prevMetrics) => [...prevMetrics.filter((item) => item.target !== metric.target), metric])
+            //* Save only the consumption metric & autoconsumption metric data.
+            if (metric.target === metricTargetsEnum.consumption || metric.target === metricTargetsEnum.autoconsumption)
+                // Replace the old metric of target with the new one.
+                setMetricsData((prevMetrics) => [
+                    ...prevMetrics.filter((item) => item.target !== metric.target),
+                    metric,
+                ])
         })
     }
 

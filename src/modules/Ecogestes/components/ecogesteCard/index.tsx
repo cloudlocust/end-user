@@ -99,7 +99,7 @@ export const EcogesteCard = ({
                                 className="absolute m-auto text-xs pt-7"
                                 style={{ color: theme.palette.primary.contrastText }}
                             >
-                                {ecogeste?.savings && ecogeste.savings > 0 && `${ecogeste.savings}%`}
+                                {`${ecogeste.percentageSaved}%`}
                             </span>
                         </IconButton>
 
@@ -145,10 +145,7 @@ export const EcogesteCard = ({
                             </IconButton>
                         </div>
                         <TypographyFormatMessage className="text-13 text-justify pr-10">
-                            {/* TODO: Proper multiline ellipsis
-                            Maybe use: https://hackingui.com/a-pure-css-solution-for-multiline-text-truncation/ ?
-                             */}
-                            {ecogeste.shortdescription}
+                            {ecogeste.description}
                         </TypographyFormatMessage>
                     </div>
 

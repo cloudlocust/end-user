@@ -127,7 +127,9 @@ describe('test pure function', () => {
         const mockOptionsResult = mockOptions(theme, period)
         mockOptionsResult.stroke!.show = true
         expect(apexChartProps.series).toStrictEqual(mockyAxisSeries)
-        // 12 Wh = 720 Watt
+        // When it's first yAxis Line, it shows rounded value 12 Wh = 720 Watt
+        expect((apexChartProps.options.yaxis as ApexYAxis[])[0].labels!.formatter!(12, 0)).toStrictEqual('720 W')
+        // When it's tooltip, it shows floated value
         expect((apexChartProps.options.yaxis as ApexYAxis[])[0].labels!.formatter!(12)).toStrictEqual('720.00 W')
         expect(apexChartProps.options.theme?.mode).toBe('dark')
     })
@@ -276,6 +278,9 @@ describe('test pure function', () => {
         })
         expect(apexChartProps.series).toStrictEqual(mockyAxisSeries)
         // 12 Wh = 720 Watt
+        // When it's first yAxis Line, it shows rounded value 12 Wh = 720 Watt
+        expect((apexChartProps.options.yaxis as ApexYAxis[])[0].labels!.formatter!(12, 0)).toStrictEqual('720 W')
+        // When it's tooltip, it shows floated value
         expect((apexChartProps.options.yaxis as ApexYAxis[])[0].labels!.formatter!(12)).toStrictEqual('720.00 W')
         expect((apexChartProps.options.yaxis as ApexYAxis[])[1].labels!.formatter!(12)).toStrictEqual('12 °C')
         expect((apexChartProps.options.yaxis as ApexYAxis[])[2].labels!.formatter!(12)).toStrictEqual('12 °C')

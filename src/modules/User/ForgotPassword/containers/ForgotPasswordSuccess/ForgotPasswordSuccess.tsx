@@ -74,7 +74,7 @@ const ForgotPasswordSuccess: FC = (): JSX.Element => {
                                     sx={{
                                         color:
                                             // eslint-disable-next-line jsdoc/require-jsdoc
-                                            (theme) => theme.palette.primary.light,
+                                            (theme) => theme.palette.primary.main,
                                     }}
                                     to={URL_LOGIN}
                                     underline="none"
