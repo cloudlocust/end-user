@@ -26,6 +26,8 @@ import {
 import { periodType } from 'src/modules/MyConsumption/myConsumptionTypes'
 import { getDateWithoutTimezoneOffset } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
 
+const WRONG_TARGET_TEXT = 'Wrong target'
+
 /**
  * Function that returns values from yAxis of the graph.
  *
@@ -184,7 +186,7 @@ export const computeWidgetAssets = (data: IMetric[], type: metricTargetType) => 
         case metricTargetsEnum.autoconsumption:
             return computeTotalAutoconsumption(data)!
         default:
-            throw Error('Wrong target')
+            throw Error(WRONG_TARGET_TEXT)
     }
 }
 
@@ -211,7 +213,7 @@ export const renderWidgetTitle = (target: metricTargetType): widgetTitleType => 
         case metricTargetsEnum.autoconsumption:
             return 'Autoconsommation'
         default:
-            throw Error('Wrong target')
+            throw Error(WRONG_TARGET_TEXT)
     }
 }
 
@@ -286,6 +288,30 @@ export const getWidgetRange = (range: metricRangeType, period: periodType) => {
                         ? getDateWithoutTimezoneOffset(endOfDay(toDate))
                         : getDateWithoutTimezoneOffset(endOfDay(subMonths(toDate, 1))),
             }
+    }
+}
+
+/**
+ * Get color type for increase indicator or decrease indicator according to the target type.
+ *
+ * @param target Target type.
+ * @param percentageChange Percentage change (positive or negative).
+ * @returns Color type (success / error).
+ */
+export const getWidgetIndicatorColor = (target: metricTargetType, percentageChange: number) => {
+    switch (target) {
+        case metricTargetsEnum.totalProduction:
+        case metricTargetsEnum.injectedProduction:
+        case metricTargetsEnum.autoconsumption:
+            return percentageChange > 0 ? 'success' : 'error'
+        case metricTargetsEnum.consumption:
+        case metricTargetsEnum.pMax:
+        case metricTargetsEnum.externalTemperature:
+        case metricTargetsEnum.internalTemperature:
+        case metricTargetsEnum.eurosConsumption:
+            return percentageChange > 0 ? 'error' : 'success'
+        default:
+            throw Error(WRONG_TARGET_TEXT)
     }
 }
 

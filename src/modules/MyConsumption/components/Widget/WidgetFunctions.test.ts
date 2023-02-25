@@ -13,6 +13,7 @@ import {
     getWidgetRange,
     computeTotalProduction,
     computeTotalAutoconsumption,
+    getWidgetIndicatorColor,
     computeTotalOfAllConsumptions,
 } from 'src/modules/MyConsumption/components/Widget/WidgetFunctions'
 import { periodType } from 'src/modules/MyConsumption/myConsumptionTypes'
@@ -393,6 +394,71 @@ describe('Test widget functions', () => {
             cases.forEach(({ range, period, value }) => {
                 const result = getWidgetRange(range, period as periodType)
                 expect(result).toStrictEqual(value)
+            })
+        })
+    })
+    describe('test getWidgetIndicatorColor', () => {
+        test('return the correct color', () => {
+            let percentageChange = 50
+            let cases = [
+                {
+                    target: metricTargetsEnum.eurosConsumption,
+                    percentageChange,
+                    color: 'error',
+                },
+                {
+                    target: metricTargetsEnum.consumption,
+                    percentageChange,
+                    color: 'error',
+                },
+                {
+                    target: metricTargetsEnum.internalTemperature,
+                    percentageChange,
+                    color: 'error',
+                },
+                {
+                    target: metricTargetsEnum.externalTemperature,
+                    percentageChange,
+                    color: 'error',
+                },
+                {
+                    target: metricTargetsEnum.pMax,
+                    percentageChange,
+                    color: 'error',
+                },
+                {
+                    target: metricTargetsEnum.totalProduction,
+                    percentageChange,
+                    color: 'success',
+                },
+                {
+                    target: metricTargetsEnum.injectedProduction,
+                    percentageChange,
+                    color: 'success',
+                },
+                {
+                    target: metricTargetsEnum.autoconsumption,
+                    percentageChange,
+                    color: 'success',
+                },
+            ]
+            // test all the cases when percentageChange is positive
+            cases.forEach(({ color, percentageChange, target }) => {
+                const result = getWidgetIndicatorColor(target, percentageChange)
+                expect(result).toBe(color)
+            })
+
+            // rebuild cases with negative percentageChange and reverse the colors
+            percentageChange = -50
+            cases = cases.map((item) =>
+                item.color === 'error'
+                    ? { ...item, percentageChange, color: 'success' }
+                    : { ...item, percentageChange, color: 'error' },
+            )
+            // test all the cases when percentageChange is negative
+            cases.forEach(({ color, percentageChange, target }) => {
+                const result = getWidgetIndicatorColor(target, percentageChange)
+                expect(result).toBe(color)
             })
         })
     })
