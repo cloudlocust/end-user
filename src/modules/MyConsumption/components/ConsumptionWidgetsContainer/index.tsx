@@ -1,4 +1,5 @@
 import React, { useContext, useEffect } from 'react'
+import { enphaseConsentFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
 import { Grid } from '@mui/material'
 import { useTheme } from '@mui/material'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
@@ -52,20 +53,43 @@ const ConsumptionWidgetsContainer = ({
             </div>
             <div style={{ background: theme.palette.grey[100] }} className="w-full my-8">
                 <Grid container spacing={{ xs: 1, md: 2 }}>
-                    {/** Display consumption target (first_target in WidgetTargets) with a specific WidgetConsumption Component. */}
-                    <WidgetConsumption
-                        target={metricTargetsEnum.consumption}
-                        range={range}
-                        filters={filters}
-                        metricsInterval={metricsInterval}
-                        period={period}
-                        infoIcon={getWidgetInfoIcon({
-                            widgetTarget: metricTargetsEnum.consumption,
-                            hasMissingContracts: hasMissingHousingContracts,
-                            enphaseOff,
-                            enedisSgeOff: enedisOff,
-                        })}
-                    />
+                    {/**
+                     * If enphase consent is enabled, Display consumption target (first_target in WidgetTargets) with a specific WidgetConsumption Component,
+                     *    that displays two info : the consumption total and the purchased consumption,
+                     *   (because in this case consumption total = purchased consumption + auto consumption).
+                     * Otherwise it'll be displayed with then normal Widget component, that displays one info : the consumption total,
+                     *    (because in this case consumption total = purchased consumption).
+                     */}
+                    {enphaseConsentFeatureState ? (
+                        <WidgetConsumption
+                            target={metricTargetsEnum.consumption}
+                            range={range}
+                            filters={filters}
+                            metricsInterval={metricsInterval}
+                            period={period}
+                            infoIcon={getWidgetInfoIcon({
+                                widgetTarget: metricTargetsEnum.consumption,
+                                hasMissingContracts: hasMissingHousingContracts,
+                                enphaseOff,
+                                enedisSgeOff: enedisOff,
+                            })}
+                        />
+                    ) : (
+                        <Widget
+                            target={metricTargetsEnum.consumption}
+                            range={range}
+                            filters={filters}
+                            metricsInterval={metricsInterval}
+                            period={period}
+                            infoIcon={getWidgetInfoIcon({
+                                widgetTarget: metricTargetsEnum.consumption,
+                                hasMissingContracts: hasMissingHousingContracts,
+                                enphaseOff,
+                                enedisSgeOff: enedisOff,
+                            })}
+                        />
+                    )}
+
                     {/** Display the other targets with Widget Component. */}
                     {WidgetTargets.filter((target) => target !== metricTargetsEnum.consumption).map((target) => {
                         return (
