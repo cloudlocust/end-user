@@ -5,6 +5,7 @@ import {
     metricTargetsEnum,
     metricTargetType,
 } from 'src/modules/Metrics/Metrics.d'
+import { enphaseConsentFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
 import { convertMetricsDataToApexChartsAxisValues } from 'src/modules/MyConsumption/utils/apexChartsDataConverter'
 import { sum, max, mean, round } from 'lodash'
 import { consumptionWattUnitConversion } from 'src/modules/MyConsumption/utils/unitConversionFunction'
@@ -24,6 +25,8 @@ import {
 } from 'date-fns'
 import { periodType } from 'src/modules/MyConsumption/myConsumptionTypes'
 import { getDateWithoutTimezoneOffset } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
+
+const WRONG_TARGET_TEXT = 'Wrong target'
 
 /**
  * Function that returns values from yAxis of the graph.
@@ -183,7 +186,7 @@ export const computeWidgetAssets = (data: IMetric[], type: metricTargetType) => 
         case metricTargetsEnum.autoconsumption:
             return computeTotalAutoconsumption(data)!
         default:
-            throw Error('Wrong target')
+            throw Error(WRONG_TARGET_TEXT)
     }
 }
 
@@ -196,7 +199,7 @@ export const computeWidgetAssets = (data: IMetric[], type: metricTargetType) => 
 export const renderWidgetTitle = (target: metricTargetType): widgetTitleType => {
     switch (target) {
         case metricTargetsEnum.consumption:
-            return 'Achetée'
+            return enphaseConsentFeatureState ? 'Achetée' : 'Consommation Totale'
         case metricTargetsEnum.pMax:
             return 'Puissance Maximale'
         case metricTargetsEnum.externalTemperature:
@@ -210,7 +213,7 @@ export const renderWidgetTitle = (target: metricTargetType): widgetTitleType => 
         case metricTargetsEnum.autoconsumption:
             return 'Autoconsommation'
         default:
-            throw Error('Wrong target')
+            throw Error(WRONG_TARGET_TEXT)
     }
 }
 
@@ -285,6 +288,30 @@ export const getWidgetRange = (range: metricRangeType, period: periodType) => {
                         ? getDateWithoutTimezoneOffset(endOfDay(toDate))
                         : getDateWithoutTimezoneOffset(endOfDay(subMonths(toDate, 1))),
             }
+    }
+}
+
+/**
+ * Get color type for increase indicator or decrease indicator according to the target type.
+ *
+ * @param target Target type.
+ * @param percentageChange Percentage change (positive or negative).
+ * @returns Color type (success / error).
+ */
+export const getWidgetIndicatorColor = (target: metricTargetType, percentageChange: number) => {
+    switch (target) {
+        case metricTargetsEnum.totalProduction:
+        case metricTargetsEnum.injectedProduction:
+        case metricTargetsEnum.autoconsumption:
+            return percentageChange > 0 ? 'success' : 'error'
+        case metricTargetsEnum.consumption:
+        case metricTargetsEnum.pMax:
+        case metricTargetsEnum.externalTemperature:
+        case metricTargetsEnum.internalTemperature:
+        case metricTargetsEnum.eurosConsumption:
+            return percentageChange > 0 ? 'error' : 'success'
+        default:
+            throw Error(WRONG_TARGET_TEXT)
     }
 }
 

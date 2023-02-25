@@ -1,5 +1,6 @@
 import { Icon, Typography } from '@mui/material'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
+import { getWidgetIndicatorColor } from 'src/modules/MyConsumption/components/Widget/WidgetFunctions'
 import { IWidgetItemProps } from 'src/modules/MyConsumption/components/WidgetItem/WidgetItem'
 
 /**
@@ -44,12 +45,18 @@ export function WidgetItem({ target, title, infoIcon, value, unit, percentageCha
                         // Negative means decrease
                         <div className="h-full flex items-center">
                             {percentageChange < 0 ? (
-                                <Icon color="success" sx={{ fontSize: { xs: '24px', md: '32px' } }}>
+                                <Icon
+                                    color={getWidgetIndicatorColor(target, percentageChange)}
+                                    sx={{ fontSize: { xs: '24px', md: '32px' } }}
+                                >
                                     trending_down
                                 </Icon>
                             ) : (
                                 // Positive means increase
-                                <Icon color="error" sx={{ fontSize: { xs: '24px', md: '32px' } }}>
+                                <Icon
+                                    color={getWidgetIndicatorColor(target, percentageChange)}
+                                    sx={{ fontSize: { xs: '24px', md: '32px' } }}
+                                >
                                     trending_up
                                 </Icon>
                             )}
