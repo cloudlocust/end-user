@@ -105,7 +105,7 @@ export interface ConsumptionAlertPropsType {
     /**
      * Update Novu alert preferences.
      */
-    updateNovuAlertPreferences: (alerts: INovuAlertPreferences) => Promise<boolean>
+    updateNovuAlertPreferences: (alerts: INovuAlertPreferences, resetValues?: () => void) => void
 }
 
 /**
