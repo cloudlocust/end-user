@@ -67,6 +67,14 @@ const ConsumptionAlert = ({
     }, [isEdit])
 
     /**
+     * Reset switch values.
+     */
+    const resetSwitchValues = () => {
+        setIsPush(initialAlertPreferencesValues?.push.value)
+        setIsEmail(initialAlertPreferencesValues?.email.value)
+    }
+
+    /**
      * Handle submit.
      *
      * @param data Data comming from the form on submit.
@@ -85,14 +93,17 @@ const ConsumptionAlert = ({
 
         // if user changed the switchs we send the modifications
         if (
-            isPush !== initialAlertPreferencesValues?.push.value &&
+            isPush !== initialAlertPreferencesValues?.push.value ||
             isEmail !== initialAlertPreferencesValues?.email.value
         ) {
             if (initialAlertPreferencesValues) {
-                updateNovuAlertPreferences({
-                    [initialAlertPreferencesValues.push.key]: isPush,
-                    [initialAlertPreferencesValues.email.key]: isEmail,
-                })
+                await updateNovuAlertPreferences(
+                    {
+                        [initialAlertPreferencesValues.push.key]: isPush,
+                        [initialAlertPreferencesValues.email.key]: isEmail,
+                    },
+                    resetSwitchValues,
+                )
             } else {
                 // if the initialAlertPreferencesValues is undefined this means either we had an error loading or it did not load yet
                 // we put the switchs to default value (false since we have no data)
