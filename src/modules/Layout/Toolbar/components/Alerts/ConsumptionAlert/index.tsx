@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { Card, Button, Divider, Switch } from '@mui/material'
 import { LoadingButton } from '@mui/lab'
 import { useIntl } from 'react-intl'
@@ -53,8 +53,9 @@ const ConsumptionAlert = ({
     // to keep the last used one, it's the one that will be saved in database
     const [toDeleteBeforeSend, setToDeleteBeforeSend] = useState<'price' | 'consumption' | null>(null)
 
-    const [isPush, setIsPush] = useToggle(initialAlertPreferencesValues?.push.value ?? false)
-    const [isEmail, setIsEmail] = useToggle(initialAlertPreferencesValues?.email.value ?? false)
+    const isSwitchSet = useRef(false)
+    const [isPush, setIsPush] = useToggle(false)
+    const [isEmail, setIsEmail] = useToggle(false)
 
     useEffect(() => {
         // component render multiple times because of fetchs, we have to handle the initialisation
@@ -65,6 +66,14 @@ const ConsumptionAlert = ({
         // for when component is disabled
         !isEdit && setToDeleteBeforeSend(null)
     }, [isEdit])
+
+    useEffect(() => {
+        if (!isSwitchSet.current && initialAlertPreferencesValues) {
+            setIsPush(initialAlertPreferencesValues.push.value)
+            setIsEmail(initialAlertPreferencesValues.email.value)
+            isSwitchSet.current = true
+        }
+    }, [initialAlertPreferencesValues, setIsEmail, setIsPush, isPush])
 
     /**
      * Reset switch values.
@@ -83,7 +92,7 @@ const ConsumptionAlert = ({
     const handleOnSubmit = async (data: ConsumptionAlertData) => {
         let finalData: ConsumptionAlertData = { consumption: data.consumption, price: data.price }
 
-        // if the user changed on of them we make to null the second before sending to server (one of them is saved)
+        // if the user changeduseToggle on of them we make to null the second before sending to server (one of them is saved)
         if (toDeleteBeforeSend) {
             finalData[toDeleteBeforeSend] = null
             setToDeleteBeforeSend(null)
