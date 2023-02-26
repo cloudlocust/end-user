@@ -8,26 +8,26 @@ import useAxios from 'src/hooks/useAxios'
  * @param userId User's id.
  * @returns Endpoint.
  */
-export const LAST_VISIT_ENDPOINT = (userId?: string) => `${API_RESOURCES_URL}/users/${userId}/last-visit`
+export const LAST_VISIT_ENDPOINT = `${API_RESOURCES_URL}/users/last-visit`
 
 /**
  * Hook that performs request about user's last visit.
  *
- * @param userId Current id of the connected user.
  * @param currentTime Current time.
  * @returns UseLastVisit hook.
  */
-export const useLastVisit = (userId: string | null, currentTime: string) => {
+export const useLastVisit = (currentTime: string) => {
     const { axios, isCancel } = useAxios()
 
     const updateLastVisitTime = useCallback(async () => {
         try {
-            if (!userId) return
-            await axios.patch(LAST_VISIT_ENDPOINT(userId), { lastVisitedAt: currentTime })
+            await axios.patch(LAST_VISIT_ENDPOINT, { lastVisitedAt: currentTime })
         } catch (error) {
             if (isCancel(error)) return
+            // A snackbar isn't necessary because this request is being performed at every page load.
+            throw Error('Erreur during last visit request')
         }
-    }, [axios, currentTime, isCancel, userId])
+    }, [axios, currentTime, isCancel])
 
     return { updateLastVisitTime }
 }

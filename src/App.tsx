@@ -11,8 +11,6 @@ import ToolbarIcon from 'src/modules/Layout/Toolbar/components/ToolbarIcon'
 import { IPageSettings } from 'src/common/react-platform-components'
 import { styled } from '@mui/material/styles'
 import { useLastVisit } from 'src/modules/User/LastVisit/LastVisitHook'
-import { RootState } from 'src/redux'
-import { useSelector } from 'react-redux'
 import dayjs from 'dayjs'
 
 const Root = styled('div')(({ theme }) => ({
@@ -76,12 +74,11 @@ const isRouteDisabled = (
  */
 const Routes = () => {
     const location = useLocation()
-    const { user } = useSelector(({ userModel }: RootState) => userModel)
-    const { updateLastVisitTime } = useLastVisit(user?.id ?? null, dayjs().toISOString())
+    const { updateLastVisitTime } = useLastVisit(dayjs().toISOString())
 
     useEffect(() => {
         updateLastVisitTime()
-    }, [location.pathname, updateLastVisitTime, user])
+    }, [location.pathname, updateLastVisitTime])
 
     const { hasAccess, getUrlRedirection } = useAuth()
     const navbarContent: navbarItemType[] = []
