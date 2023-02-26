@@ -13,6 +13,8 @@ import {
     getWidgetRange,
     computeTotalProduction,
     computeTotalAutoconsumption,
+    getWidgetIndicatorColor,
+    computeTotalOfAllConsumptions,
 } from 'src/modules/MyConsumption/components/Widget/WidgetFunctions'
 import { periodType } from 'src/modules/MyConsumption/myConsumptionTypes'
 
@@ -294,7 +296,7 @@ describe('Test widget functions', () => {
                 },
                 {
                     target: metricTargetsEnum.consumption,
-                    value: 'Consommation Totale',
+                    value: 'Achetée',
                 },
                 {
                     target: metricTargetsEnum.internalTemperature,
@@ -393,6 +395,146 @@ describe('Test widget functions', () => {
                 const result = getWidgetRange(range, period as periodType)
                 expect(result).toStrictEqual(value)
             })
+        })
+    })
+    describe('test getWidgetIndicatorColor', () => {
+        test('return the correct color', () => {
+            let percentageChange = 50
+            let cases = [
+                {
+                    target: metricTargetsEnum.eurosConsumption,
+                    percentageChange,
+                    color: 'error',
+                },
+                {
+                    target: metricTargetsEnum.consumption,
+                    percentageChange,
+                    color: 'error',
+                },
+                {
+                    target: metricTargetsEnum.internalTemperature,
+                    percentageChange,
+                    color: 'error',
+                },
+                {
+                    target: metricTargetsEnum.externalTemperature,
+                    percentageChange,
+                    color: 'error',
+                },
+                {
+                    target: metricTargetsEnum.pMax,
+                    percentageChange,
+                    color: 'error',
+                },
+                {
+                    target: metricTargetsEnum.totalProduction,
+                    percentageChange,
+                    color: 'success',
+                },
+                {
+                    target: metricTargetsEnum.injectedProduction,
+                    percentageChange,
+                    color: 'success',
+                },
+                {
+                    target: metricTargetsEnum.autoconsumption,
+                    percentageChange,
+                    color: 'success',
+                },
+            ]
+            // test all the cases when percentageChange is positive
+            cases.forEach(({ color, percentageChange, target }) => {
+                const result = getWidgetIndicatorColor(target, percentageChange)
+                expect(result).toBe(color)
+            })
+
+            // rebuild cases with negative percentageChange and reverse the colors
+            percentageChange = -50
+            cases = cases.map((item) =>
+                item.color === 'error'
+                    ? { ...item, percentageChange, color: 'success' }
+                    : { ...item, percentageChange, color: 'error' },
+            )
+            // test all the cases when percentageChange is negative
+            cases.forEach(({ color, percentageChange, target }) => {
+                const result = getWidgetIndicatorColor(target, percentageChange)
+                expect(result).toBe(color)
+            })
+        })
+    })
+
+    describe('test computeTotalOfAllConsumptions', () => {
+        test('when it returns Wh unit', () => {
+            const expectedResult = {
+                value: 100,
+                unit: 'Wh',
+            }
+            const data: IMetric[] = [
+                {
+                    datapoints: [
+                        [25, 1640995200000],
+                        [25, 1641081600000],
+                    ],
+                    target: metricTargetsEnum.consumption,
+                },
+                {
+                    datapoints: [
+                        [25, 1640995200000],
+                        [25, 1641081600000],
+                    ],
+                    target: metricTargetsEnum.autoconsumption,
+                },
+            ]
+            const result = computeTotalOfAllConsumptions(data)
+            expect(result).toStrictEqual(expectedResult)
+        })
+        test('when it returns kWh unit', () => {
+            const expectedResult = {
+                value: 2,
+                unit: 'kWh',
+            }
+            const data: IMetric[] = [
+                {
+                    datapoints: [
+                        [500, 1640995200000],
+                        [500, 1641081600000],
+                    ],
+                    target: metricTargetsEnum.consumption,
+                },
+                {
+                    datapoints: [
+                        [500, 1640995200000],
+                        [500, 1641081600000],
+                    ],
+                    target: metricTargetsEnum.autoconsumption,
+                },
+            ]
+            const result = computeTotalOfAllConsumptions(data)
+            expect(result).toStrictEqual(expectedResult)
+        })
+        test('when it returns MWh unit', () => {
+            const expectedResult = {
+                value: 2,
+                unit: 'MWh',
+            }
+            const data: IMetric[] = [
+                {
+                    datapoints: [
+                        [500_000, 1640995200000],
+                        [500_000, 1641081600000],
+                    ],
+                    target: metricTargetsEnum.consumption,
+                },
+                {
+                    datapoints: [
+                        [500_000, 1640995200000],
+                        [500_000, 1641081600000],
+                    ],
+                    target: metricTargetsEnum.autoconsumption,
+                },
+            ]
+            const result = computeTotalOfAllConsumptions(data)
+            expect(result).toStrictEqual(expectedResult)
         })
     })
 })

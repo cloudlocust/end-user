@@ -12,6 +12,7 @@ export type widgetTitleType =
     | 'Coût Total'
     | 'Production Totale'
     | 'Autoconsommation'
+    | 'Achetée'
 
 /**
  * Total Consumption Units types.
@@ -46,6 +47,10 @@ export interface IWidgetProps {
      * Period of the Widget.
      */
     period: periodType
+    /**
+     * Children of the Widget.
+     */
+    children?: ReactNode | ReactElement
 }
 
 /**

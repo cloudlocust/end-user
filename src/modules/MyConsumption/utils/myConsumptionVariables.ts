@@ -1,4 +1,5 @@
 import { metricTargetsEnum, metricTargetsType, metricTargetType } from 'src/modules/Metrics/Metrics.d'
+import { enphaseConsentFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
 import { periodType } from 'src/modules/MyConsumption/myConsumptionTypes'
 import { Theme } from '@mui/material/styles/createTheme'
 import { isNil } from 'lodash'
@@ -168,9 +169,15 @@ export const getChartColor = (chartName: metricTargetsEnum, theme: Theme) => {
  * @param yValue Given Y value datapoint in the chart (we'll go through all the y values).
  * @param chartName MetricTarget Chart.
  * @param unit The unit for consumption, it's given outside as its related with the unit of maximum value to have one unit for all values in consumption chart.
+ * @param isYValueRounded Indicate if Math.round should be applied to the value.
  * @returns Text shown for each y value datapoint.
  */
-export const getYPointValueLabel = (yValue: number | null | undefined, chartName: metricTargetsEnum, unit?: Unit) => {
+export const getYPointValueLabel = (
+    yValue: number | null | undefined,
+    chartName: metricTargetsEnum,
+    unit?: Unit,
+    isYValueRounded?: boolean,
+) => {
     // IsNill check that value is undefined or null.
     const value = isNil(yValue) ? '' : yValue
     switch (chartName) {
@@ -186,7 +193,13 @@ export const getYPointValueLabel = (yValue: number | null | undefined, chartName
         case metricTargetsEnum.autoconsumption:
         case metricTargetsEnum.totalProduction:
         case metricTargetsEnum.injectedProduction:
-            return `${value === '' ? value : Math.round(convert(value).from('Wh').to(unit!))} ${unit}`
+            return `${
+                value === ''
+                    ? value
+                    : isYValueRounded
+                    ? Math.round(convert(value).from('Wh').to(unit!))
+                    : convert(value).from('Wh').to(unit!).toFixed(2)
+            } ${unit}`
         default:
             return ` ${unit}`
     }
@@ -265,13 +278,23 @@ export const EnphaseOffConsumptionChartTargets: metricTargetType[] = [
 
 /**
  * Widget Targets.
+ *
+ * If enphaseConsentFeature is enabled, then we show totalProduction, injectedProduction and autoconsumption widgets.
  */
-export const WidgetTargets: metricTargetType[] = [
-    metricTargetsEnum.consumption,
-    metricTargetsEnum.totalProduction,
-    metricTargetsEnum.eurosConsumption,
-    metricTargetsEnum.autoconsumption,
-    metricTargetsEnum.pMax,
-    metricTargetsEnum.externalTemperature,
-    metricTargetsEnum.internalTemperature,
-]
+export const WidgetTargets: metricTargetType[] = enphaseConsentFeatureState
+    ? [
+          metricTargetsEnum.consumption,
+          metricTargetsEnum.totalProduction,
+          metricTargetsEnum.eurosConsumption,
+          metricTargetsEnum.autoconsumption,
+          metricTargetsEnum.pMax,
+          metricTargetsEnum.externalTemperature,
+          metricTargetsEnum.internalTemperature,
+      ]
+    : [
+          metricTargetsEnum.consumption,
+          metricTargetsEnum.eurosConsumption,
+          metricTargetsEnum.pMax,
+          metricTargetsEnum.externalTemperature,
+          metricTargetsEnum.internalTemperature,
+      ]

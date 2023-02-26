@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
-import { Card, Button, Divider } from '@mui/material'
+import { Card, Button, Divider, Switch } from '@mui/material'
 import { LoadingButton } from '@mui/lab'
 import { useIntl } from 'react-intl'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
@@ -10,6 +10,8 @@ import {
     ConsumptionAlertPropsType,
 } from './consumptionAlert'
 import { ConsumptionAlertTitle } from './consumptionAlertsVariables'
+import { useToggle } from 'react-use'
+import { useSnackbar } from 'notistack'
 import { Form } from 'src/common/react-platform-components'
 import { TextField } from 'src/common/ui-kit'
 import { useFormContext } from 'react-hook-form'
@@ -19,39 +21,58 @@ import { useFormContext } from 'react-hook-form'
  *
  * @param props Props.
  * @param props.interval Interval of the consumption alert.
- * @param props.initialValues Initial value for the text fields.
+ * @param props.initialConsumptionDataValues Initial value for the text fields (consumption and price).
  * @param props.pricePerKwh Price per kwh.
  * @param props.saveConsumptionAlert Save Consumption alert.
  * @param props.isConsumptionAlertsLoading Is consumption alerts loading.
  * @param props.isSavingAlertLoading Is saving alert loading.
+ * @param props.isNovuAlertPreferencesLoading Is novu alert preferences loading.
+ * @param props.initialAlertPreferencesValues Novu alert Preferences State.
+ * @param props.updateNovuAlertPreferences Function that updates novu alerts preferences.
  * @returns Consumption Alert Component.
  */
 const ConsumptionAlert = ({
     interval,
-    initialValues,
+    initialConsumptionDataValues,
     pricePerKwh,
     saveConsumptionAlert,
     isConsumptionAlertsLoading,
     isSavingAlertLoading,
+    isNovuAlertPreferencesLoading,
+    initialAlertPreferencesValues,
+    updateNovuAlertPreferences,
 }: ConsumptionAlertPropsType) => {
+    const { enqueueSnackbar } = useSnackbar()
+    const { formatMessage } = useIntl()
     const [isEdit, setIsEdit] = useState(false)
 
     // this state is to keep the fields updated in case we save new data and did not close the drawer
     // tihs will mean that the initial values would be wrong
-    const [formValues, setFormValues] = useState<ConsumptionAlertData | undefined>(initialValues)
+    const [formValues, setFormValues] = useState<ConsumptionAlertData | undefined>(initialConsumptionDataValues)
 
     // to keep the last used one, it's the one that will be saved in database
     const [toDeleteBeforeSend, setToDeleteBeforeSend] = useState<'price' | 'consumption' | null>(null)
 
+    const [isPush, setIsPush] = useToggle(initialAlertPreferencesValues?.push.value ?? false)
+    const [isEmail, setIsEmail] = useToggle(initialAlertPreferencesValues?.email.value ?? false)
+
     useEffect(() => {
         // component render multiple times because of fetchs, we have to handle the initialisation
-        setFormValues(initialValues)
-    }, [initialValues])
+        setFormValues(initialConsumptionDataValues)
+    }, [initialConsumptionDataValues])
 
     useEffect(() => {
         // for when component is disabled
         !isEdit && setToDeleteBeforeSend(null)
     }, [isEdit])
+
+    /**
+     * Reset switch values.
+     */
+    const resetSwitchValues = () => {
+        setIsPush(initialAlertPreferencesValues?.push.value)
+        setIsEmail(initialAlertPreferencesValues?.email.value)
+    }
 
     /**
      * Handle submit.
@@ -68,6 +89,35 @@ const ConsumptionAlert = ({
             setToDeleteBeforeSend(null)
             setFormValues(data)
             await saveConsumptionAlert(finalData, interval)
+        }
+
+        // if user changed the switchs we send the modifications
+        if (
+            isPush !== initialAlertPreferencesValues?.push.value ||
+            isEmail !== initialAlertPreferencesValues?.email.value
+        ) {
+            if (initialAlertPreferencesValues) {
+                await updateNovuAlertPreferences(
+                    {
+                        [initialAlertPreferencesValues.push.key]: isPush,
+                        [initialAlertPreferencesValues.email.key]: isEmail,
+                    },
+                    resetSwitchValues,
+                )
+            } else {
+                // if the initialAlertPreferencesValues is undefined this means either we had an error loading or it did not load yet
+                // we put the switchs to default value (false since we have no data)
+                setIsPush(false)
+                setIsEmail(false)
+                // we notify the user that he can't update the notifications
+                enqueueSnackbar(
+                    formatMessage({
+                        id: 'Erreur lors de la modification des alertes',
+                        defaultMessage: 'Erreur lors de la modification des alertes',
+                    }),
+                    { variant: 'error', autoHideDuration: 5000 },
+                )
+            }
         }
         // else we do nothing because the user did not change anything
         setIsEdit(false)
@@ -87,13 +137,36 @@ const ConsumptionAlert = ({
                             setToDeleteBeforeSend={setToDeleteBeforeSend}
                             isEdit={isEdit}
                         />
+                        <TypographyFormatMessage className="flex ml-8">Notifications :</TypographyFormatMessage>
+                        <div className="flex justify-around content-center">
+                            <div className="flex items-center justify-center">
+                                <Switch
+                                    disabled={!isEdit}
+                                    name={initialAlertPreferencesValues?.push.key}
+                                    checked={isPush}
+                                    onChange={() => setIsPush(!isPush)}
+                                    data-testid="pushConsumptionAlert-switch"
+                                />
+                                <span>Push</span>
+                            </div>
+                            <div className="flex items-center justify-center">
+                                <Switch
+                                    disabled={!isEdit}
+                                    name={initialAlertPreferencesValues?.email.key}
+                                    checked={isEmail}
+                                    onChange={() => setIsEmail(!isEmail)}
+                                    data-testid="emailConsumptionAlert-switch"
+                                />
+                                <span>Mail</span>
+                            </div>
+                        </div>
                         <Divider className="mx-20 mb-12" />
                         <ButtonsGroup
                             isEdit={isEdit}
                             enableForm={() => setIsEdit(true)}
                             disableForm={() => setIsEdit(false)}
-                            isConsumptionAlertsLoading={isConsumptionAlertsLoading}
-                            isSavingAlertLoading={isSavingAlertLoading}
+                            isConsumptionAlertsLoading={isConsumptionAlertsLoading && isNovuAlertPreferencesLoading}
+                            isSavingAlertLoading={isSavingAlertLoading && isNovuAlertPreferencesLoading}
                         />
                     </div>
                 </Card>
