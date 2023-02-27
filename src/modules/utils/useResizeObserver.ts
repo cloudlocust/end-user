@@ -1,5 +1,4 @@
 import { RefObject, useCallback, useLayoutEffect } from 'react'
-import 'src/modules/Ecogestes/components/ecogesteCard/ecogesteCard.scss'
 
 /**
  * Use ResizeObserver Hook. This hook fires the callback when the ref object is resized.

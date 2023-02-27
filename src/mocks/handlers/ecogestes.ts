@@ -7,7 +7,7 @@ import { SnakeCasedPropertiesDeep } from 'type-fest'
 /**
  * Path used for mock icons.
  */
-export const EXAMPLE_ICON = 'https://www.example.com/icon'
+export const EXAMPLE_ICON = 'https://drive.google.com/uc?export=download&id=1K4K5jLP6ucnqqfsO3zOayulCYMmYTWYb'
 /**
  * Object holding a bunch of mocked ecogests.
  */
