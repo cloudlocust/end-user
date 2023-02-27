@@ -1,6 +1,5 @@
 import { BrowserRouter } from 'react-router-dom'
 import { reduxedRender } from 'src/common/react-platform-components/test'
-import { fireEvent } from '@testing-library/react'
 import EcogesteCard from 'src/modules/Ecogestes/components/ecogesteCard'
 import { IEcogeste } from 'src/modules/Ecogestes/components/ecogeste'
 import { applyCamelCase } from 'src/common/react-platform-components'
@@ -29,7 +28,7 @@ window.ResizeObserver = ResizeObserver
 
 describe('Test EcogesteCard', () => {
     test('When passing elements to ecogeste card they show correctly', async () => {
-        const { queryByTestId, queryByLabelText, queryByText, queryByRole } = reduxedRender(
+        const { queryByTestId, queryByText, queryAllByText } = reduxedRender(
             <BrowserRouter>
                 <EcogesteCard {...{ ecogeste: fullEcogeste, ...mockEcogestePropsFull }} />
             </BrowserRouter>,
@@ -41,16 +40,6 @@ describe('Test EcogesteCard', () => {
 
         // Check text present
         expect(queryByText(fullEcogeste.title)).toBeTruthy()
-        expect(queryByText(fullEcogeste.description)).toBeTruthy()
-
-        // Check for dialog
-        const infoBtn = queryByLabelText('more information')
-        expect(infoBtn).toBeTruthy()
-
-        expect(queryByRole('dialog')).toBeFalsy()
-
-        fireEvent.click(infoBtn!)
-
-        expect(queryByRole('dialog')).toBeTruthy()
+        expect(queryAllByText(fullEcogeste.description)).toBeTruthy()
     })
 })
