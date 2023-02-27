@@ -16,7 +16,7 @@ import ContractFormSelect from 'src/modules/Contracts/components/ContractFormSel
 import { useCommercialOffer } from 'src/hooks/CommercialOffer/CommercialOfferHooks'
 import { IContractType, IOffer, IPower, IProvider, ITariffType } from 'src/hooks/CommercialOffer/CommercialOffers'
 import { ButtonLoader } from 'src/common/ui-kit'
-import { isNull, pick } from 'lodash'
+import { isNull, orderBy, pick } from 'lodash'
 import { SelectChangeEvent } from '@mui/material/Select'
 import OffpeakHoursField from 'src/modules/Contracts/components/OffpeakHoursField'
 import { useParams } from 'react-router-dom'
@@ -192,7 +192,7 @@ const ContractFormFields = ({ isContractsLoading }: ContractFormFieldsProps) => 
                         formatOptionValue={(option) => option.id}
                         isOptionsInProgress={isProvidersLoading}
                         loadOptions={loadProviderOptions}
-                        optionList={providerList}
+                        optionList={orderBy(providerList, 'name', 'asc')}
                         otherOptionLabel="Autre fournisseur"
                         name="providerId"
                         label="Fournisseur"
@@ -210,7 +210,7 @@ const ContractFormFields = ({ isContractsLoading }: ContractFormFieldsProps) => 
                         isOptionsInProgress={isOffersLoading}
                         loadOptions={loadOfferOptions}
                         otherOptionLabel="Autre offre"
-                        optionList={offerList}
+                        optionList={orderBy(offerList, 'name', 'asc')}
                         name="offerId"
                         label="Offre"
                         validateFunctions={[requiredBuilder()]}

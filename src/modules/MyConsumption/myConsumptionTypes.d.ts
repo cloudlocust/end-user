@@ -1,4 +1,5 @@
 import { IEnedisSgeConsent, IEnphaseConsent } from 'src/modules/Consents/Consents.d'
+
 /**
  * Interface MyConsumptionPeriod.
  */
@@ -182,6 +183,18 @@ export interface ConsumptionChartContainerProps {
     // eslint-disable-next-line jsdoc/require-jsdoc
     enedisSgeConsent?: IEnedisSgeConsent
 }
+
+/**
+ * Component rendering default contract warning message, when consumption data comes from default contract.
+ */
+export type DefaultContractWarningProps =
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    {
+        /**
+         * Indicates if the warning should be shown.
+         */
+        isShowWarning: Boolean
+    }
 
 /**
  * ProductionChartContainer Props.

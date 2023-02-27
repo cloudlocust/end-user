@@ -11,6 +11,9 @@
     .apexcharts-tooltip-title {
         text-transform: capitalize;
     }
+    .apexcharts-tooltip-marker {
+        display: flex !important;
+    }
     .apexcharts-gridline {
         opacity: 0.2;
     }

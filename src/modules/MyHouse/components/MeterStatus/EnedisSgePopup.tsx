@@ -10,7 +10,7 @@ import {
     EnedisSgePopupProps,
     EnedisSgePopupStepsEnum,
 } from 'src/modules/MyHouse/components/MeterStatus/enedisSgePopup.d'
-import { sgeConsentFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
+import { sgeConsentFeatureState, sgeConsentMessage } from 'src/modules/MyHouse/MyHouseConfig'
 import { warningMainHashColor } from 'src/modules/utils/muiThemeVariables'
 import { RootState } from 'src/redux'
 
@@ -223,10 +223,7 @@ export const EnedisSgePopup = ({
                                                     '_blank',
                                                 )
                                             }
-                                        >
-                                            J'autorise My Energy Manager à la récolte de mon historique de données de
-                                            consommation auprès d'Enedis.
-                                        </TypographyFormatMessage>
+                                        >{`${sgeConsentMessage}`}</TypographyFormatMessage>
                                     </>
                                 )}
                             </div>

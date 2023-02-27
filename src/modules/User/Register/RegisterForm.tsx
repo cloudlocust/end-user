@@ -13,7 +13,11 @@ import { FormHelperText } from '@mui/material'
 import { LinkRedirection } from 'src/modules/utils/LinkRedirection'
 import { passwordFieldValidationSecurity1 } from 'src/modules/utils'
 import { Select } from 'src/common/ui-kit/form-fields/Select'
-import MenuItem from '@mui/material/MenuItem'
+import { MenuItem, TextField as MuiTextFieldSelect } from '@mui/material'
+import { generalTermsOfUse, privacyPolicy } from 'src/modules/Mentions/MentionsConfig'
+import { isProfessionalRegisterFeature } from 'src/modules/User/Register/RegisterConfig'
+import { sirenFieldRegex } from 'src/modules/User/Register/utils'
+import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 
 /**
  * Civility Option has two properties: (label that shown in the front visual) and (value that goes to the backend).
@@ -23,10 +27,6 @@ const civilityOptionsList = [
     { label: 'Mme', value: civilityEnum.MADAME },
 ]
 
-const urlLegalNotice = 'https://www.myem.fr/mentions-legales/'
-// Condition Général de Vente
-const urlCGV = 'https://www.myem.fr/particuliers-cgv/'
-const urlPolitiqueConfidentialité = 'https://drive.google.com/uc?export=download&id=1sMFMizrEPZ4ZHhe6Zf-PTJGRUQBFGUEv'
 /**
  * Form used for user registration. This is a component based on form hooks.
  *
@@ -37,7 +37,7 @@ const urlPolitiqueConfidentialité = 'https://drive.google.com/uc?export=downloa
  */
 export const RegisterForm = ({
     registerHook = useRegister,
-    defaultRole,
+    defaultRole = 'enduser',
 }: /**
  *
  */
@@ -54,6 +54,7 @@ export const RegisterForm = ({
     const { isRegisterInProgress, onSubmit } = registerHook()
     const passwordRef = useRef()
     const [rgpdCheckboxState, setRgpdCheckboxState] = React.useState<Boolean | string>('false')
+    const [isProfessionelFields, setIsProfessionalFields] = React.useState(false)
     const { formatMessage } = useIntl()
 
     /**
@@ -64,23 +65,66 @@ export const RegisterForm = ({
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setRgpdCheckboxState(event.target.checked)
     }
+
+    /**
+     * OnSubmit wrapper for register form.
+     *
+     * @param param0 N/A.
+     * @param param0.repeatPwd Repeated password.
+     * @returns OnSubmit.
+     */
     // eslint-disable-next-line jsdoc/require-jsdoc
     const onSubmitWrapper = async ({ repeatPwd, ...cleanData }: { repeatPwd: string } & IUserRegister) => {
         if (rgpdCheckboxState !== true) {
             setRgpdCheckboxState('')
             return
         }
-        if (defaultRole !== undefined) {
-            onSubmit({ ...cleanData, role: defaultRole })
-        } else {
-            onSubmit(cleanData)
-        }
+
+        onSubmit({ ...cleanData, role: defaultRole })
     }
 
     return (
         <Form onSubmit={onSubmitWrapper}>
             {/* register your input into the hook by invoking the "register" function */}
             <div className="flex flex-col justify-center w-full">
+                {isProfessionalRegisterFeature && (
+                    <>
+                        <MuiTextFieldSelect
+                            select
+                            label="Vous êtes"
+                            sx={{ marginBottom: '0' }}
+                            defaultValue={'Particulier'}
+                        >
+                            <MenuItem value="Particulier" onClick={() => setIsProfessionalFields(false)}>
+                                <TypographyFormatMessage>Particulier</TypographyFormatMessage>
+                            </MenuItem>
+                            <MenuItem value="Professionnel" onClick={() => setIsProfessionalFields(true)}>
+                                <TypographyFormatMessage>Professionnel</TypographyFormatMessage>
+                            </MenuItem>
+                        </MuiTextFieldSelect>
+                        {isProfessionelFields && (
+                            <>
+                                <TextField
+                                    name="companyName"
+                                    label="Raison sociale"
+                                    validateFunctions={[requiredBuilder()]}
+                                    variant="outlined"
+                                    style={{ margin: isProfessionelFields && '1.25rem 0' }}
+                                />
+                                <TextField
+                                    name="siren"
+                                    label="Siren"
+                                    validateFunctions={[
+                                        requiredBuilder(),
+                                        regex(sirenFieldRegex, 'Le numéro Siren doit être composé de 9 chiffres'),
+                                    ]}
+                                    variant="outlined"
+                                    style={{ marginBottom: '0' }}
+                                />
+                            </>
+                        )}
+                    </>
+                )}
                 <Select
                     name="civility"
                     label="Civilité"
@@ -129,11 +173,7 @@ export const RegisterForm = ({
                                     plateforme et suivre votre consommation. Vous pouvez retrouver plus d'informations sur vos droits
                                     via notre `,
                     })}
-                    <LinkRedirection
-                        url={urlPolitiqueConfidentialité}
-                        label="Politique de Confidentialité"
-                        color="primary.main"
-                    />
+                    <LinkRedirection url={privacyPolicy} label="Politique de Confidentialité" color="primary.main" />
                 </span>
                 {/* TODO Create a checkbox reusable component */}
                 <FormControl required error={rgpdCheckboxState === ''}>
@@ -156,19 +196,10 @@ export const RegisterForm = ({
                                     defaultMessage: `J’ai lu et j’accepte les `,
                                 })}
                                 <LinkRedirection
-                                    url={urlLegalNotice}
+                                    url={generalTermsOfUse}
                                     label="Conditions Générales d’Utilisation"
                                     color="primary.main"
                                 />
-                                {formatMessage({
-                                    id: ` et de `,
-                                    defaultMessage: ` et de `,
-                                })}
-                                <LinkRedirection url={urlCGV} label="Vente" color="primary.main" />
-                                {formatMessage({
-                                    id: ` de la plateforme`,
-                                    defaultMessage: ` de la plateforme`,
-                                })}
                             </span>
                         }
                         labelPlacement="end"
