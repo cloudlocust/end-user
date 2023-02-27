@@ -5,6 +5,7 @@ import { useIntl, formatMessageType } from 'src/common/react-platform-translatio
 import { useSnackbar } from 'notistack'
 import { ILoadDataPagination } from 'src/common/react-platform-components/utils/mm'
 import { getQueryParamsFromFiltersObject } from 'src/modules/utils'
+import { useAxiosCancelToken } from 'src/hooks/AxiosCancelToken'
 
 /**
  * T: Type one element in the elementList (model of data basically).
@@ -160,6 +161,7 @@ export function BuilderUseElementList<T, U, K>({
         const { enqueueSnackbar } = useSnackbar()
         const { formatMessage } = useIntl()
         const isInitialMount = useRef(true)
+        const { source, isCancel } = useAxiosCancelToken()
 
         /**
          * Load Customers function responsing for fetching customersList.
@@ -174,7 +176,9 @@ export function BuilderUseElementList<T, U, K>({
             )}`
 
             try {
-                const { data: responseData } = await axios.get<ILoadDataPagination<T[]>>(`${endpointUrl}`)
+                const { data: responseData } = await axios.get<ILoadDataPagination<T[]>>(`${endpointUrl}`, {
+                    cancelToken: source.current.token,
+                })
                 if (isTablePagination || page === 1) {
                     setElementList(responseData.items)
                 } else {
@@ -186,6 +190,7 @@ export function BuilderUseElementList<T, U, K>({
                 setTotalElementList(responseData.total)
                 setNoMoreElementToLoad(responseData.page * responseData.size >= responseData.total ? true : false)
             } catch (error) {
+                if (isCancel(error)) return
                 enqueueSnackbar(
                     snackBarMessage0verride && snackBarMessage0verride.loadElementListError
                         ? snackBarMessage0verride.loadElementListError(error, formatMessage)
@@ -197,7 +202,7 @@ export function BuilderUseElementList<T, U, K>({
                 )
             }
             setLoadingInProgress(false)
-        }, [formatMessage, enqueueSnackbar, page, isTablePagination])
+        }, [page, source, isTablePagination, isCancel, enqueueSnackbar, formatMessage])
 
         // UseEffect to trigger loadElement List on every page change, besides it won't trigger when hook isInstiantiated.
         useEffect(() => {
@@ -250,7 +255,9 @@ export function BuilderUseElementList<T, U, K>({
         const addElement = async (body: U) => {
             setLoadingInProgress(true)
             try {
-                const { data: responseData } = await axios.post<U, AxiosResponse<T>>(`${API_ENDPOINT}`, body)
+                const { data: responseData } = await axios.post<U, AxiosResponse<T>>(`${API_ENDPOINT}`, body, {
+                    cancelToken: source.current.token,
+                })
 
                 enqueueSnackbar(
                     snackBarMessage0verride && snackBarMessage0verride.addElementSuccess
@@ -264,6 +271,7 @@ export function BuilderUseElementList<T, U, K>({
                 setLoadingInProgress(false)
                 return responseData
             } catch (error) {
+                if (isCancel(error)) return
                 enqueueSnackbar(
                     snackBarMessage0verride && snackBarMessage0verride.addElementError
                         ? snackBarMessage0verride.addElementError(error, formatMessage)
@@ -363,6 +371,7 @@ export function BuilderUseElementDetails<T, U, K>({
         const { enqueueSnackbar } = useSnackbar()
         const { formatMessage } = useIntl()
         const isInitialMount = useRef(true)
+        const { source, isCancel } = useAxiosCancelToken()
 
         /**
          * Load Element Details function.
@@ -371,9 +380,12 @@ export function BuilderUseElementDetails<T, U, K>({
             setLoadingInProgress(true)
 
             try {
-                const { data: responseData } = await axios.get<T>(`${API_ENDPOINT}`)
+                const { data: responseData } = await axios.get<T>(`${API_ENDPOINT}`, {
+                    cancelToken: source.current.token,
+                })
                 setElementDetails(responseData)
             } catch (error) {
+                if (isCancel(error)) return
                 enqueueSnackbar(
                     snackBarMessage0verride && snackBarMessage0verride.loadElementDetailsError
                         ? snackBarMessage0verride.loadElementDetailsError(error, formatMessage)
@@ -385,7 +397,7 @@ export function BuilderUseElementDetails<T, U, K>({
                 )
             }
             setLoadingInProgress(false)
-        }, [formatMessage, enqueueSnackbar])
+        }, [source, isCancel, enqueueSnackbar, formatMessage])
 
         // UseEffect executes on initial intantiation of useElementDetails, responsible for loadElementDetails on initial instanciation of hook.
         useEffect(() => {
@@ -404,7 +416,9 @@ export function BuilderUseElementDetails<T, U, K>({
         const editElementDetails = async (body: U) => {
             setLoadingInProgress(true)
             try {
-                const { data: responseData } = await axios.put<T, AxiosResponse<T>>(`${API_ENDPOINT}`, body)
+                const { data: responseData } = await axios.put<T, AxiosResponse<T>>(`${API_ENDPOINT}`, body, {
+                    cancelToken: source.current.token,
+                })
 
                 enqueueSnackbar(
                     snackBarMessage0verride && snackBarMessage0verride.editElementDetailsSuccess
@@ -419,6 +433,7 @@ export function BuilderUseElementDetails<T, U, K>({
                 setElementDetails(responseData)
                 return responseData
             } catch (error) {
+                if (isCancel(error)) return
                 enqueueSnackbar(
                     snackBarMessage0verride && snackBarMessage0verride.editElementDetailsError
                         ? snackBarMessage0verride.editElementDetailsError(error, formatMessage)
@@ -440,7 +455,9 @@ export function BuilderUseElementDetails<T, U, K>({
         const removeElementDetails = async () => {
             setLoadingInProgress(true)
             try {
-                const { data: responseData } = await axios.delete<K, AxiosResponse<K>>(`${API_ENDPOINT}`)
+                const { data: responseData } = await axios.delete<K, AxiosResponse<K>>(`${API_ENDPOINT}`, {
+                    cancelToken: source.current.token,
+                })
                 enqueueSnackbar(
                     snackBarMessage0verride && snackBarMessage0verride.removeElementDetailsSuccess
                         ? snackBarMessage0verride.removeElementDetailsSuccess(responseData, formatMessage)
@@ -454,6 +471,7 @@ export function BuilderUseElementDetails<T, U, K>({
                 setElementDetails(null)
                 return responseData
             } catch (error) {
+                if (isCancel(error)) return
                 enqueueSnackbar(
                     snackBarMessage0verride && snackBarMessage0verride.removeElementDetailsError
                         ? snackBarMessage0verride.removeElementDetailsError(error, formatMessage)

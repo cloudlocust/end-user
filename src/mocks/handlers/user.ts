@@ -9,7 +9,7 @@ export const TEST_SUCCESS_MAIL = 'user@success.com'
 /**
  *
  */
-export const TEST_AUTOVALIDATION_PASSWORD = 'authToken'
+export const TEST_AUTOVALIDATION_PASSWORD = 'authToken@123'
 // eslint-disable-next-line jsdoc/require-jsdoc
 export const showNrLinkPopupTrue = 'showNrLinkPopupTrue'
 // eslint-disable-next-line jsdoc/require-jsdoc
@@ -35,6 +35,8 @@ export const TEST_FAIL_ID = 23
  */
 export const TEST_SUCCESS_USER = {
     id: '1',
+    company_name: 'company name 1',
+    siren: '123456789',
     civility: 'Mr',
     first_name: 'Orlando',
     last_name: 'Jackson',
@@ -82,7 +84,7 @@ export const userEndpoints = [
         if (email === TEST_SUCCESS_MAIL) {
             if (password === TEST_AUTOVALIDATION_PASSWORD)
                 return res(ctx.status(200), ctx.json({ ...TEST_SUCCESS_USER, authentication_token: '123456' }))
-            else return res(ctx.status(200), ctx.json(TEST_SUCCESS_USER))
+            else return res(ctx.status(200), ctx.delay(2000), ctx.json(TEST_SUCCESS_USER))
         } else {
             return res(ctx.status(400))
         }
