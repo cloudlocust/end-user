@@ -1,5 +1,6 @@
 import { rest } from 'msw'
 import { AUTH_BASE_URL } from 'src/modules/User/configs'
+import { LAST_VISIT_ENDPOINT } from 'src/modules/User/LastVisit/LastVisitHook'
 import { IUser, IUserRegister } from 'src/modules/User/model'
 
 /**
@@ -147,6 +148,17 @@ export const userEndpoints = [
             return res(ctx.status(200), ctx.delay(1000))
         } else {
             return res(ctx.status(404), ctx.delay(1000))
+        }
+    }),
+
+    // Last visit request.
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    rest.patch<{ last_visited_at: string }>(LAST_VISIT_ENDPOINT, (req, res, ctx) => {
+        const { last_visited_at } = req.body
+        if (last_visited_at) {
+            return res(ctx.status(200), ctx.delay(2000))
+        } else {
+            return res(ctx.status(400), ctx.delay(2000))
         }
     }),
 ]
