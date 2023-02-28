@@ -12,6 +12,8 @@ import { IPageSettings } from 'src/common/react-platform-components'
 import { styled } from '@mui/material/styles'
 import { useLastVisit } from 'src/modules/User/LastVisit/LastVisitHook'
 import dayjs from 'dayjs'
+import { RootState } from 'src/redux'
+import { useSelector } from 'react-redux'
 
 const Root = styled('div')(({ theme }) => ({
     '& #fuse-main': {
@@ -74,11 +76,17 @@ const isRouteDisabled = (
  */
 const Routes = () => {
     const location = useLocation()
+    const { user } = useSelector(({ userModel }: RootState) => userModel)
     const { updateLastVisitTime } = useLastVisit(dayjs().toISOString())
 
     useEffect(() => {
+        /**
+         * If there is no user in redux, it means that the user isn't logged in.
+         * Therefore we don't need to perform updateLastVisitTime().
+         */
+        if (!user) return
         updateLastVisitTime()
-    }, [location.pathname, updateLastVisitTime])
+    }, [location.pathname, updateLastVisitTime, user])
 
     const { hasAccess, getUrlRedirection } = useAuth()
     const navbarContent: navbarItemType[] = []
