@@ -38,11 +38,17 @@ export const EcogesteCard = ({
     useResizeObserver(
         ref,
         debounce((e: ResizeObserverEntry) => {
+            // On each resize, check if the ellipse should be shown.
+            // We check the height of the element on screen
+            // Against the height the the element _should_ take (srcollHeigth)
             const elementHeight = e.target.getBoundingClientRect().height
             const scrollHeight = e.target.scrollHeight
-            const change = elementHeight < scrollHeight - 1
+            // Check if the element would overflow
+            // The "5" at the end is necessary to make it a bit more lenient, unsure why.
+            const change = elementHeight < scrollHeight - 5
             setShouldEllipse(change)
         }, 100),
+        // Debounce the function, so that it does not fire _while_ we resize the element.
     )
 
     // Viewed feature, not yet implemented:
@@ -71,7 +77,6 @@ export const EcogesteCard = ({
                     minHeight: '15rem',
                     maxWidth: '60rem',
                     minWidth: '30rem',
-                    flex: '1 0 30%',
                 }}
             >
                 <CardContent className="flex flex-row justify-start gap-5 min-h-0 w-full max-h-full h-full px-10 pt-10 pb-15 relative">
