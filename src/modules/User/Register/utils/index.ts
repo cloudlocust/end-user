@@ -9,7 +9,12 @@ const energyProviderRegisterMapping: string | undefined = window._env_.REACT_APP
  * @returns Query string.
  */
 export function convertUserDataToQueryString(data?: IUserRegister) {
-    let mappedKeys: any
+    /**
+     * Mapped keys object.
+     */
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    let mappedKeys: { [key: string]: string } = {}
+
     if (energyProviderRegisterMapping) {
         const mappingResult = energyProviderRegisterMapping
             .split('|')
@@ -33,8 +38,7 @@ export function convertUserDataToQueryString(data?: IUserRegister) {
                 url = { ...url, [mappedKeys['lastName']]: data['lastName'] }
                 break
             case 'email':
-                const formattedEmail = data['email'].replace('@', '%40')
-                url = { ...url, [mappedKeys['email']]: formattedEmail }
+                url = { ...url, [mappedKeys['email']]: data['email'] }
                 break
             case 'phone':
                 const formattedPhone = data['phone'].replace(/\+33 /, '0').replace(/\s/g, '')

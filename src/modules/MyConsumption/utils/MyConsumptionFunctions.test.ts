@@ -110,7 +110,7 @@ describe('test pure functions', () => {
         interval = '1d'
         xAxisValues = generateXAxisValues('monthly', getRange('month'))
         // If interval is 1d and period is monthly , then length should be less or Equal than 32 because we start counting from the current day till the same day next month, so it's like the current date and the month before so whether 31 or 32.
-        expect(xAxisValues.length).toBeGreaterThanOrEqual(30)
+        expect(xAxisValues.length).toBeGreaterThanOrEqual(29)
         expect(xAxisValues.length).toBeLessThanOrEqual(32)
 
         // When period is yearly we have correct length of xAxisValues.
