@@ -98,7 +98,7 @@ export const AccomodationForm = () => {
             </div>
         )
     return (
-        <div className="flex flex-col items-center justify-center w-full md:w-3/4 ml-5 mr-5">
+        <div className="flex flex-col items-center justify-center w-full md:w-3/4 ml-5 mr-5 overflow-y-scroll">
             {isAccomodationInfoConsentmentOpen && (
                 <div
                     className="flex items-center justify-center w-screen min-h-56"
@@ -113,7 +113,7 @@ export const AccomodationForm = () => {
                     </div>
                 </div>
             )}
-            <div className="flex flex-col justify-center w-full md:w-3/4 ">
+            <div className="flex flex-col justify-center w-full md:w-3/4">
                 <Form
                     onSubmit={async (data: AccomodationDataType) => {
                         const dataAccomodation = setSelectFields(data)
