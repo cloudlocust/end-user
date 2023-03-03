@@ -29,6 +29,8 @@ import { RootState } from 'src/redux'
 import { useHasMissingHousingContracts } from 'src/hooks/HasMissingHousingContracts'
 import { warningMainHashColor } from 'src/modules/utils/muiThemeVariables'
 import useMediaQuery from '@mui/material/useMediaQuery'
+import { ConsumptionEnedisSgeWarning } from 'src/modules/MyConsumption/components/MyConsumptionChart/ConsumptionChartWarnings'
+import { sgeConsentFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
 
 /**
  * InitialMetricsStates for useMetrics.
@@ -68,6 +70,8 @@ const Analysis = () => {
 
     const { currentHousing } = useSelector(({ housingModel }: RootState) => housingModel)
     const { hasMissingHousingContracts } = useHasMissingHousingContracts(range, currentHousing?.id)
+    // Indicates if enedisSgeConsent is not Connected
+    const enedisSgeOff = enedisSgeConsent?.enedisSgeConsentState !== 'CONNECTED'
 
     /**
      * Handler to set the correct information name (min, max, mean) Based on the selected value element fill color in analysisChart.
@@ -170,6 +174,7 @@ const Analysis = () => {
                         onDatePickerChange={handleDatePickerOnChange}
                         maxDate={endOfMonth(subMonths(new Date(), 1))}
                     />
+                    <ConsumptionEnedisSgeWarning isShowWarning={enedisSgeOff && sgeConsentFeatureState} />
                 </motion.div>
                 {hasMissingHousingContracts && (
                     <div className="flex items-center justify-center flex-col">

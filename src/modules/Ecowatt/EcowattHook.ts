@@ -1,9 +1,10 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { API_RESOURCES_URL } from 'src/configs'
-import { IEcowattAlerts, IEcowattSignalsData } from 'src/modules/Ecowatt/ecowatt'
+import { IEcowattSignalsData } from 'src/modules/Ecowatt/ecowatt'
 import { useSnackbar } from 'notistack'
 import { useIntl } from 'react-intl'
 import { axios } from 'src/common/react-platform-components'
+import { useAxiosCancelToken } from 'src/hooks/AxiosCancelToken/'
 import { orderBy } from 'lodash'
 
 /**
@@ -29,9 +30,9 @@ export function useEcowatt(immediate: boolean = false) {
     const { enqueueSnackbar } = useSnackbar()
     const { formatMessage } = useIntl()
     const [ecowattSignalsData, setEcowattSignalsData] = useState<IEcowattSignalsData | null>(null)
-    const [ecowattAlerts, setEcowattAlerts] = useState<IEcowattAlerts | null>(null)
     const [isLoadingInProgress, setIsLoadingInProgress] = useState(false)
     const isInitialMount = useRef(true)
+    const { isCancel, source } = useAxiosCancelToken()
 
     /**
      * Get ecowatt signals.
@@ -39,7 +40,9 @@ export function useEcowatt(immediate: boolean = false) {
     const getEcowattSignals = useCallback(async () => {
         try {
             setIsLoadingInProgress(true)
-            const { data: responseData } = await axios.get<IEcowattSignalsData>(ECOWATT_SIGNALS_ENDPOINT)
+            const { data: responseData } = await axios.get<IEcowattSignalsData>(ECOWATT_SIGNALS_ENDPOINT, {
+                cancelToken: source.current.token,
+            })
             if (responseData) {
                 // Sort ecowatt data asc.
                 const sortedData = orderBy(responseData, [(obj) => new Date(obj.readingAt)], ['asc'])
@@ -47,6 +50,7 @@ export function useEcowatt(immediate: boolean = false) {
             }
             setIsLoadingInProgress(false)
         } catch (error) {
+            if (isCancel(error)) return
             setIsLoadingInProgress(false)
             enqueueSnackbar(
                 formatMessage({
@@ -56,59 +60,7 @@ export function useEcowatt(immediate: boolean = false) {
                 { variant: 'error', autoHideDuration: 5000 },
             )
         }
-    }, [enqueueSnackbar, formatMessage])
-
-    const getEcowattAlerts = useCallback(
-        async (houseId: number) => {
-            try {
-                if (!houseId) throw Error('No housing id privided')
-                setIsLoadingInProgress(true)
-                const { data: responseData } = await axios.get<IEcowattAlerts>(ECOWATT_ALERTS_ENDPOINT(houseId))
-                if (responseData) {
-                    setEcowattAlerts(responseData)
-                }
-                setIsLoadingInProgress(false)
-            } catch (error) {
-                setIsLoadingInProgress(false)
-                enqueueSnackbar(
-                    formatMessage({
-                        id: 'Erreur lors de la récupération des alertes Ecowatts',
-                        defaultMessage: 'Erreur lors de la récupération des alertes Ecowatts',
-                    }),
-                    { variant: 'error', autoHideDuration: 5000 },
-                )
-            }
-        },
-        [enqueueSnackbar, formatMessage],
-    )
-
-    const updateEcowattAlerts = useCallback(
-        async (houseId: number, alerts: IEcowattAlerts) => {
-            try {
-                if (!houseId) throw Error('No housing id privided')
-                setIsLoadingInProgress(true)
-                await axios.post<IEcowattAlerts>(ECOWATT_ALERTS_ENDPOINT(houseId), alerts)
-                enqueueSnackbar(
-                    formatMessage({
-                        id: 'Les alertes écowatt ont été modifié avec succès',
-                        defaultMessage: 'Les alertes écowatt ont été modifié avec succès',
-                    }),
-                    { variant: 'success', autoHideDuration: 5000 },
-                )
-                setIsLoadingInProgress(false)
-            } catch (error) {
-                setIsLoadingInProgress(false)
-                enqueueSnackbar(
-                    formatMessage({
-                        id: "Erreur lors de la modification d'une alerte Ecowatts",
-                        defaultMessage: "Erreur lors de la modification d'une alerte Ecowatts",
-                    }),
-                    { variant: 'error', autoHideDuration: 5000 },
-                )
-            }
-        },
-        [enqueueSnackbar, formatMessage],
-    )
+    }, [enqueueSnackbar, formatMessage, isCancel, source])
 
     useEffect(() => {
         if (isInitialMount.current) {
@@ -122,8 +74,5 @@ export function useEcowatt(immediate: boolean = false) {
         setIsLoadingInProgress,
         ecowattSignalsData,
         setEcowattSignalsData,
-        ecowattAlerts,
-        getEcowattAlerts,
-        updateEcowattAlerts,
     }
 }

@@ -1,5 +1,5 @@
-import { metricTargetType } from 'src/modules/Metrics/Metrics.d'
-import { periodType } from 'sr/modules/MyConsumption/myConsumptionTypes'
+import { metricTargetType, metricRangeType, metricIntervalType, metricFiltersType } from 'src/modules/Metrics/Metrics.d'
+import { periodType } from 'src/modules/MyConsumption/myConsumptionTypes'
 
 /**
  * Widget Title type.
@@ -10,6 +10,9 @@ export type widgetTitleType =
     | 'Température Intérieure'
     | 'Température Extérieure'
     | 'Coût Total'
+    | 'Production Totale'
+    | 'Autoconsommation'
+    | 'Achetée'
 
 /**
  * Total Consumption Units types.
@@ -23,7 +26,7 @@ export interface IWidgetProps {
     /**
      * HasMissingHousingContracts come from metrics when euroConsumption, responsible for showing an info icon in EuroWidget.
      */
-    hasMissingHousingContracts: boolean | null
+    infoIcon?: JSX.Element | null
     /**
      * Metrics range.
      */
@@ -44,4 +47,32 @@ export interface IWidgetProps {
      * Period of the Widget.
      */
     period: periodType
+    /**
+     * Children of the Widget.
+     */
+    children?: ReactNode | ReactElement
 }
+
+/**
+ * Params of getWidgetInfoIcon Function that returns the Icon element used in the widget.
+ */
+export type getWidgetInfoIconParamsType =
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    {
+        /**
+         * WidgetTarget Target of the widget.
+         */
+        widgetTarget: metricTargetType
+        /**
+         * HasMissingContracts Flag HasMissingContracts, that'll influence which widget icon will be shown.
+         */
+        hasMissingContracts: boolean | null
+        /**
+         * Enphase Consent is inactive.
+         */
+        enphaseOff?: boolean | null
+        /**
+         * EnedisSgeConsent is inactive.
+         */
+        enedisSgeOff?: boolean | null
+    }
