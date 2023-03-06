@@ -48,7 +48,7 @@ export const TEST_ECOGESTES: SnakeCasedPropertiesDeep<IEcogeste>[] = [
     },
     {
         id: 5,
-        title: 'Ouvrir en journée',
+        title: 'Ecogest which should fail when view status changes',
         description:
             'Privilégiez toujours les apports de l’éclairage naturel : la lumière du jour est la meilleure pour l’oeil humain.',
         percentage_saved: 1,
@@ -66,5 +66,12 @@ export const ecogestesEndpoints = [
         const ECOGESTE_RESPONSE = getPaginationFromElementList(req, TEST_ECOGESTES as [])
 
         return res(ctx.status(200), ctx.delay(1000), ctx.json(ECOGESTE_RESPONSE))
+    }),
+    rest.patch(`${ECOGESTES_ENDPOINT}/:gestId`, (req, res, ctx) => {
+        const { gestId } = req.params
+        if (gestId === '5' || req.headers.get('X-TEST') === 'bad-patch') {
+            return res(ctx.status(400), ctx.delay(1000))
+        }
+        return res(ctx.status(200), ctx.delay(1000))
     }),
 ]

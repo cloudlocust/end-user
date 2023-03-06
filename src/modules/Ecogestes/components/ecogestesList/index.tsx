@@ -1,5 +1,5 @@
 import { isEmpty, isNull } from 'lodash'
-import useEcogestesByCategory from 'src/modules/Ecogestes/ecogestesHook'
+import useEcogestes from 'src/modules/Ecogestes/ecogestesHook'
 import { useParams } from 'react-router'
 import { ImageCardLoader } from 'src/common/ui-kit/components/MapElementList/components/ContentLoader/ContentLoader'
 import { EcogesteCard } from 'src/modules/Ecogestes'
@@ -26,8 +26,7 @@ export const EcogestesList = () => {
 
     const categoryIdInt = categoryId ? parseInt(categoryId) : 0
 
-    const { elementList: ecogestesList, loadingInProgress: isEcogestesLoadingInProgress } =
-        useEcogestesByCategory(categoryIdInt)
+    const { elementList: ecogestesList, loadingInProgress: isEcogestesLoadingInProgress } = useEcogestes()
     const limits = Array(10).fill(0)
 
     return (
@@ -40,8 +39,8 @@ export const EcogestesList = () => {
                 "Aucun écogeste n'est disponible pour le moment."}
             <div className="flex flex-nowrap gap-5 flex-col sm:flex-row  w-full sm:flex-wrap h-full sm:h-auto">
                 {isEcogestesLoadingInProgress
-                    ? limits.map(() => <ImageCardLoader></ImageCardLoader>)
-                    : ecogestesList?.map((ecogeste) => <EcogesteCard ecogeste={ecogeste} />)}
+                    ? limits.map((_, index) => <ImageCardLoader key={index} />)
+                    : ecogestesList?.map((ecogeste) => <EcogesteCard key={ecogeste.id} ecogeste={ecogeste} />)}
             </div>
         </>
     )

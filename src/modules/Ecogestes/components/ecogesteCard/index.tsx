@@ -8,6 +8,7 @@ import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyForm
 import { debounce, truncate } from 'lodash'
 import { IEcogeste } from 'src/modules/Ecogestes/components/ecogeste'
 import useResizeObserver from 'src/modules/utils/useResizeObserver'
+import useEcogestes from 'src/modules/Ecogestes/ecogestesHook'
 import { Icon } from 'src/common/ui-kit'
 
 /**
@@ -32,6 +33,7 @@ export const EcogesteCard = ({
 
     const [shouldEllipse, setShouldEllipse] = useState(false)
     const [seeFull, setSeeFull] = useState(false)
+    const { setViewStatus } = useEcogestes()
 
     const ref = useRef(null)
 
@@ -51,17 +53,22 @@ export const EcogesteCard = ({
         // Debounce the function, so that it does not fire _while_ we resize the element.
     )
 
-    // Viewed feature, not yet implemented:
-    // be sure to remove the display:none on the eye too.
-    const [viewed, setViewed] = useState(false)
+    const [viewed, setViewed] = useState(ecogeste.seenByCustomer)
     /**
      * Change ecogeste visibility status.
-     * Placeholder for now.
-     * TODO: MYEM-3077, MYEM-3079.
      */
     const onVisbilityClick = () => {
-        setViewed(!viewed)
-        // TODO: Poke an API to get/set this?
+        /**
+         * We want the change to feel immediate to the user, so we update our
+         * internal state immediately while we make the (async) request to the server.
+         * Most of the time, it's going to be alright, so there's nothing more to do.
+         * But if we have any errors in the request (on the `.catch()`) we want to
+         * rollback the changes we made, so that the displayed state is consistent
+         * with the server's state.
+         */
+        const newViewStatus = !viewed
+        setViewed(newViewStatus)
+        setViewStatus(ecogeste.id, newViewStatus).catch(() => setViewed(!newViewStatus))
     }
 
     return (
@@ -84,9 +91,11 @@ export const EcogesteCard = ({
                         {/* Icon stack */}
                         <IconButton
                             className="p-0 text-5xl aspect-square"
-                            style={{ aspectRatio: '1/1' }}
+                            style={{ aspectRatio: '1/1', cursor: 'inherit' }}
                             color="primary"
                             size="large"
+                            disableRipple={true}
+                            aria-label="savings amount"
                         >
                             <SavingsIcon className="p-2" fontSize="inherit" />
                             <span
@@ -99,18 +108,26 @@ export const EcogesteCard = ({
 
                         <IconButton
                             className="p-0 text-4xl rounded-lg aspect-square"
-                            style={{ background: theme.palette.background.paper, aspectRatio: '1/1', display: 'none' }}
+                            style={{
+                                background: viewed ? theme.palette.secondary.light : theme.palette.background.default,
+                                aspectRatio: '1/1',
+                            }}
                             color="primary"
                             size="large"
-                            aria-label="mark as read"
+                            aria-label="toggle, read"
                             onClick={onVisbilityClick}
                         >
                             {viewed ? (
-                                <SvgIcon className="p-2" inheritViewBox fontSize="inherit">
+                                <VisibilityIcon className="p-2" fontSize="inherit" aria-label="gest is read" />
+                            ) : (
+                                <SvgIcon
+                                    className="mt-10"
+                                    inheritViewBox
+                                    fontSize="inherit"
+                                    aria-label="gest is not read"
+                                >
                                     <NotViewIcon />
                                 </SvgIcon>
-                            ) : (
-                                <VisibilityIcon className="p-2" fontSize="inherit" />
                             )}
                         </IconButton>
                     </div>

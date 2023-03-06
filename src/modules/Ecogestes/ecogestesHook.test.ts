@@ -1,5 +1,9 @@
+import { act } from '@testing-library/react-hooks'
+import { applyCamelCase } from 'src/common/react-platform-components'
 import { reduxedRenderHook } from 'src/common/react-platform-components/test'
-import useEcogestesByCategory from 'src/modules/Ecogestes/ecogestesHook'
+import { TEST_ECOGESTES } from 'src/mocks/handlers/ecogestes'
+import { IEcogeste } from 'src/modules/Ecogestes/components/ecogeste'
+import useEcogestes from 'src/modules/Ecogestes/ecogestesHook'
 
 const mockEnqueueSnackbar = jest.fn()
 
@@ -18,35 +22,39 @@ jest.mock('notistack', () => ({
     }),
 }))
 
+const fullEcogestList: IEcogeste[] = applyCamelCase(TEST_ECOGESTES)
+
 describe('EcogesteHook test', () => {
-    describe('Get By Category', () => {
-        // TODO: When categories are added, uncomment.
-        // test('getByCategory error, snackbar should be called with error message', async () => {
-        //     const {
-        //         renderedHook: { result, waitForValueToChange },
-        //         // Giving negative category to fake an error in the msw.
-        //         // See Handler for more details.
-        //     } = reduxedRenderHook(() => useEcogestesByCategory(-1), { initialState: {} })
+    test('useEcogestes should return ecogestes array', async () => {
+        const {
+            renderedHook: { result, waitForValueToChange },
+        } = reduxedRenderHook(() => useEcogestes(), { initialState: {} })
 
-        //     expect(result.current.loadingInProgress).toBe(true)
+        expect(result.current.loadingInProgress).toBe(true)
+        await waitForValueToChange(
+            () => {
+                return result.current.loadingInProgress
+            },
+            { timeout: 4000 },
+        )
 
-        //     await waitForValueToChange(
-        //         () => {
-        //             return result.current.loadingInProgress
-        //         },
-        //         { timeout: 4000 },
-        //     )
+        expect(result.current.loadingInProgress).toBe(false)
 
-        //     expect(result.current.loadingInProgress).toBe(false)
+        expect(result.current.elementList).toBeTruthy()
+        expect(result.current.elementList.length).toBe(fullEcogestList.length)
+    })
 
-        //     expect(mockEnqueueSnackbar).toHaveBeenCalledWith(expect.any(String), {
-        //         variant: 'error',
-        //     })
-        // })
-        test('getByCategory with correct ID should return ecogestes array', async () => {
+    describe('Patch Ecogeste', () => {
+        test('patchEcogeste with correct ID and payload returns 200', async () => {
             const {
                 renderedHook: { result, waitForValueToChange },
-            } = reduxedRenderHook(() => useEcogestesByCategory(1), { initialState: {} })
+            } = reduxedRenderHook(() => useEcogestes(), {
+                initialState: {},
+            })
+
+            act(async () => {
+                await result.current.updateEcogeste(1, { seen_by_customer: true })
+            })
 
             expect(result.current.loadingInProgress).toBe(true)
             await waitForValueToChange(
@@ -57,9 +65,32 @@ describe('EcogesteHook test', () => {
             )
 
             expect(result.current.loadingInProgress).toBe(false)
+            expect(mockEnqueueSnackbar).not.toHaveBeenCalledWith(expect.any(String), {
+                variant: 'error',
+            })
+        })
+        test('patchEcogeste with unavailable endpoint create error', async () => {
+            const {
+                renderedHook: { result, waitForValueToChange },
+                // ecogest 5 is specifically made to throw an error.
+            } = reduxedRenderHook(() => useEcogestes(), { initialState: {} })
 
-            expect(result.current.elementList).toBeTruthy()
-            expect(result.current.elementList.length).toBeGreaterThanOrEqual(2)
+            act(async () => {
+                try {
+                    await result.current.updateEcogeste(5, { seen_by_customer: true })
+                } catch (err) {}
+            })
+
+            await waitForValueToChange(
+                () => {
+                    return result.current.elementList
+                },
+                { timeout: 4000 },
+            )
+
+            expect(mockEnqueueSnackbar).toHaveBeenCalledWith(expect.any(String), {
+                variant: 'error',
+            })
         })
     })
 })
