@@ -128,6 +128,34 @@ describe('Load MyConsumptionDatePicker', () => {
         })
         expect(mockOnDatePickerChange).toHaveBeenLastCalledWith(dayjs('2009-01-01').utc().toDate())
     }, 20000)
+
+    test('When Selecting a date in the datePicker, it should represents the range.from', async () => {
+        mockPeriod = 'yearly'
+        const date = new Date('2018-01-01 00:00:00:000')
+        mockRange = getRange(mockPeriod, date, 'add')
+        mockSetRange = jest.fn()
+        const { getByText, container } = reduxedRender(
+            <Router>
+                <MyConsumptionDatePicker period={mockPeriod} setRange={mockSetRange} range={mockRange} />
+            </Router>,
+        )
+
+        // SELECTING DATE IN DATE PICKER
+        // Opening the DatePicker
+        userEvent.click(container.querySelector('input')!)
+
+        // Selecting a year
+        const selectedYear = '2009'
+        userEvent.click(getByText(selectedYear)!)
+        userEvent.click(getByText(CONFIRM_DATE_PICKER_TEXT)!)
+        await waitFor(() => {
+            expect(() => getByText(selectedYear)!).toThrow()
+        })
+        expect(mockSetRange).toHaveBeenLastCalledWith({
+            from: '2009-01-01T00:00:00.000Z',
+            to: expect.anything(),
+        })
+    }, 20000)
     test('When maxDate given, disabled should be shown on increment date arrow when date is max', async () => {
         mockPeriod = 'yearly'
         const maxDate = new Date('2010-01-01 00:00:00:000')
