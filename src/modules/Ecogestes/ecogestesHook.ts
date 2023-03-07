@@ -1,0 +1,90 @@
+import { API_RESOURCES_URL } from 'src/configs'
+import { searchFilterType } from 'src/modules/utils'
+import { BuilderUseElementList } from 'src/modules/utils/useElementHookBuilder'
+import { IEcogeste } from './components/ecogeste'
+import { axios, catchError } from 'src/common/react-platform-components'
+import { useIntl, formatMessageType } from 'src/common/react-platform-translation'
+import { useSnackbar } from 'notistack'
+/**
+ * Ecogestes API  global endpoint.
+ */
+export const ECOGESTES_ENDPOINT = `${API_RESOURCES_URL}/ecogeste`
+
+// eslint-disable-next-line jsdoc/require-jsdoc
+export const loadElementListError = (error: any, formatMessage: formatMessageType) => {
+    return formatMessage({
+        id: 'Erreur lors du chargement des ecogestes',
+        defaultMessage: 'Erreur lors du chargement des ecogestes',
+    })
+}
+
+// eslint-disable-next-line jsdoc/require-jsdoc
+export const addElementSuccess = (error: any, formatMessage: formatMessageType) => {
+    return formatMessage({
+        id: "L'ecogeste a été ajouté",
+        defaultMessage: "L'ecogeste a été ajouté",
+    })
+}
+
+// eslint-disable-next-line jsdoc/require-jsdoc
+export const addElementError = (error: any, formatMessage: formatMessageType) => {
+    return formatMessage({
+        id: "Erreur lors de l'ajout de l'ecogeste",
+        defaultMessage: "Erreur lors de l'ajout de l'ecogeste",
+    })
+}
+
+/**
+ * Hook to get a list of ecogestes by category.
+ *
+ * @returns A hook to get the ecogestes.
+ */
+export const useEcogestes = () => {
+    const { enqueueSnackbar } = useSnackbar()
+    const { formatMessage } = useIntl()
+
+    /**
+     * Generic patch-ing method for ecogest.
+     *
+     * @param ecogesteId ID of the ecogest to patch.
+     * @param body Object that will be sent as patch body using axios.patch .
+     */
+    const updateEcogeste = async (ecogesteId: number, body: Partial<IEcogeste>) => {
+        try {
+            await axios.patch(`${ECOGESTES_ENDPOINT}/${ecogesteId}`, body)
+        } catch (error) {
+            enqueueSnackbar(
+                formatMessage({
+                    id: "Erreur lors de la modification de l'ecogeste",
+                    defaultMessage: "Erreur lors de la modification de l'ecogeste",
+                }),
+                { variant: 'error' },
+            )
+            throw catchError(error)
+        }
+    }
+
+    /**
+     * Specific method that uses a patch to update an ecogest's view status.
+     * Shortcut for patchEcogeste(ecogeste_id, { seenByCustomer: status }).
+     *
+     * @param ecogesteId ID of the ecogest to set view status of.
+     * @param status The new view status of the ecogest. True is seen, False is not seen.
+     */
+    const setViewStatus = async (ecogesteId: number, status: boolean) => {
+        await updateEcogeste(ecogesteId, { seenByCustomer: status })
+    }
+
+    const { elementList, loadingInProgress } = BuilderUseElementList<IEcogeste, IEcogeste, searchFilterType>({
+        API_ENDPOINT: ECOGESTES_ENDPOINT,
+        snackBarMessage0verride: { loadElementListError, addElementSuccess, addElementError },
+    })()
+    return {
+        elementList,
+        loadingInProgress,
+        setViewStatus,
+        updateEcogeste,
+    }
+}
+
+export default useEcogestes

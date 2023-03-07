@@ -1,4 +1,4 @@
-import { createContext, ReactChildren, ReactElement, ReactNode } from 'react'
+import { createContext, ReactElement, ReactNode } from 'react'
 import { AlertsDrawerContextType } from 'src/modules/shared/AlertsDrawerContext/index.d'
 import { useToggle } from 'react-use'
 
@@ -17,7 +17,7 @@ export const AlertsDrawerContext = createContext<AlertsDrawerContextType>({
  * @returns Context values/functions.
  */
 // eslint-disable-next-line jsdoc/require-jsdoc
-export const AlertsDrawerProvider = ({ children }: { children: ReactNode | ReactChildren | ReactElement }) => {
+export const AlertsDrawerProvider = ({ children }: { children: ReactNode | ReactElement }) => {
     const [isAlertsDrawerOpen, setIsOpenDrawerOpen] = useToggle(false)
 
     /**
