@@ -23,6 +23,11 @@ export type IEcogeste =
          */
         description: string
         /**
+         * The Extended description of the ecogest that is shown
+         * upon clicking on the info button.
+         */
+        infos: string
+        /**
          * The savings of the Ecogeste.
          * Abstract percentile number that should give the user
          * an idea about how much money they are going to save by

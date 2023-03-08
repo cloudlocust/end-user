@@ -1,7 +1,18 @@
 import { useState, useRef } from 'react'
-import { Card, CardContent, IconButton, SvgIcon } from '@mui/material'
+import {
+    Card,
+    CardContent,
+    IconButton,
+    SvgIcon,
+    Dialog,
+    DialogTitle,
+    DialogContent,
+    DialogActions,
+    Button,
+} from '@mui/material'
 import VisibilityIcon from '@mui/icons-material/Visibility'
 import SavingsIcon from '@mui/icons-material/Savings'
+import InfoIcon from '@mui/icons-material/Info'
 import { useTheme } from '@mui/material'
 import { ReactComponent as NotViewIcon } from './NotRead.svg'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
@@ -34,6 +45,7 @@ export const EcogesteCard = ({
     const [shouldEllipse, setShouldEllipse] = useState(false)
     const [seeFull, setSeeFull] = useState(false)
     const { setViewStatus } = useEcogestes()
+    const [infoModalOpen, setInfoModalOpen] = useState(false)
 
     const ref = useRef(null)
 
@@ -69,6 +81,20 @@ export const EcogesteCard = ({
         const newViewStatus = !viewed
         setViewed(newViewStatus)
         setViewStatus(ecogeste.id, newViewStatus).catch(() => setViewed(!newViewStatus))
+    }
+
+    /**
+     * Handles a click on the info button.
+     */
+    const onInfoClick = () => {
+        setInfoModalOpen(true)
+        // Open modal with info about ecogeste
+    }
+    /**
+     * Handles a click on the close button within the modal.
+     */
+    const onCloseInfoModal = () => {
+        setInfoModalOpen(false)
     }
 
     return (
@@ -143,6 +169,20 @@ export const EcogesteCard = ({
                                     {ecogeste.title}
                                 </TypographyFormatMessage>
                             </div>
+                            <div>
+                                <IconButton
+                                    className="p-0 text-4xl rounded-lg aspect-square"
+                                    style={{
+                                        aspectRatio: '1/1',
+                                    }}
+                                    color="primary"
+                                    size="large"
+                                    onClick={onInfoClick}
+                                    aria-label="button, more information about gest"
+                                >
+                                    <InfoIcon />
+                                </IconButton>
+                            </div>
                         </div>
                         <Icon aria-hidden="true" color="primary" style={{ height: '1.5rem', alignSelf: 'center' }}>
                             <img
@@ -200,6 +240,29 @@ export const EcogesteCard = ({
                     </div>
                 </CardContent>
             </Card>
+            <Dialog
+                open={infoModalOpen}
+                onClose={onCloseInfoModal}
+                aria-labelledby="modal-modal-title"
+                aria-describedby="modal-modal-description"
+                scroll="paper"
+            >
+                <DialogTitle>
+                    <TypographyFormatMessage id="modal-modal-title" fontWeight={500} variant="h6">
+                        Pour en savoir plus...
+                    </TypographyFormatMessage>
+                </DialogTitle>
+                <DialogContent>
+                    <TypographyFormatMessage id="modal-modal-description" variant="body1">
+                        {ecogeste.infos}
+                    </TypographyFormatMessage>
+                </DialogContent>
+                <DialogActions>
+                    <Button aria-label="button, close modal" onClick={onCloseInfoModal} color="primary">
+                        <TypographyFormatMessage>Fermer</TypographyFormatMessage>
+                    </Button>
+                </DialogActions>
+            </Dialog>
         </>
     )
 }
