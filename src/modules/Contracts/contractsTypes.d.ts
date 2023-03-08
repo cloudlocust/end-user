@@ -53,6 +53,10 @@ export type ContractFormProps =
          * Default values  request.
          */
         defaultValues?: contractFormValuesType
+        /**
+         * Tariffs of contract.
+         */
+        tariffs?: tariffContract[]
     }
 
 /**
@@ -72,9 +76,9 @@ export type ContractFormFieldsProps =
     }
 
 /**
- * TariffItem Props.
+ * Tariff Contract type.
  */
-export type TariffItemProps =
+export type tariffContract =
     /**
      *
      */
@@ -87,11 +91,22 @@ export type TariffItemProps =
          * Price.
          */
         price: number
-        /**
-         * Unit.
-         */
-        unit: string
     }
+
+/**
+ * Tariff Contract units type.
+ */
+export type tariffContractUnits = '€/mois' | '€/kWh'
+
+/**
+ * TariffContractItem Props.
+ */
+export interface TariffContractItemProps extends tariffContract {
+    /**
+     * Unit.
+     */
+    unit: tariffContractUnits
+}
 
 /**
  * Type of request response of load contract.
@@ -184,6 +199,10 @@ export type IContract = {
      * End contract subscription (ISO datetime format).
      */
     endSubscription: string
+    /**
+     * Tariffs.
+     */
+    tariffs?: tariffContract[]
 }
 
 /**

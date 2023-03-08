@@ -7,7 +7,7 @@ import {
     ContractFormProps,
     contractFormValuesType,
     contractsRouteParam,
-    TariffItemProps,
+    TariffContractItemProps,
 } from 'src/modules/Contracts/contractsTypes'
 import { useFormContext, useWatch } from 'react-hook-form'
 import { Form } from 'src/common/react-platform-components'
@@ -23,7 +23,7 @@ import OffpeakHoursField from 'src/modules/Contracts/components/OffpeakHoursFiel
 import { useParams } from 'react-router-dom'
 import { useMeterForHousing } from 'src/modules/Meters/metersHook'
 import { OtherProviderOfferOptionMessage } from 'src/modules/Contracts/components/ContractFormMessages'
-import { getTariffUnit } from 'src/modules/Contracts/utils/contractsFunctions'
+import { getTariffContractUnit } from 'src/modules/Contracts/utils/contractsFunctions'
 
 const defaultContractFormValues: contractFormValuesType = {
     contractTypeId: 0,
@@ -35,17 +35,6 @@ const defaultContractFormValues: contractFormValuesType = {
     tariffTypeId: 0,
 }
 
-const tariffs = [
-    {
-        label: 'Abonnement',
-        price: 21.89,
-    },
-    {
-        label: 'Prix kWh',
-        price: 0.3224,
-    },
-]
-
 /**
  * Contract form component, for adding contract or editing an existing one (the existing contract will be sent as props defaultValues for the form).
  *
@@ -53,9 +42,10 @@ const tariffs = [
  * @param props.onSubmit Callback when submitting form.
  * @param props.isContractsLoading Loading state when addContract request.
  * @param props.defaultValues Indicate if contractForm has defaultValues and thus in edit mode.
+ * @param props.tariffs Tariffs of contract.
  * @returns Contract Form component.
  */
-const ContractForm = ({ onSubmit, isContractsLoading, defaultValues }: ContractFormProps) => {
+const ContractForm = ({ onSubmit, isContractsLoading, defaultValues, tariffs }: ContractFormProps) => {
     // HouseId extracted from params of the url :houseId/contracts
     const { houseId } = useParams<contractsRouteParam>()
     const { editMeter, loadingInProgress } = useMeterForHousing()
@@ -95,16 +85,15 @@ const ContractForm = ({ onSubmit, isContractsLoading, defaultValues }: ContractF
                 </TypographyFormatMessage>
                 <div className="flex flex-col justify-center w-full">
                     <ContractFormFields isContractsLoading={isContractsLoading || loadingInProgress} />
-                </div>
-                <div className="flex flex-col justify-center w-full pt-12">
-                    {tariffs.map((tariff) => (
-                        <TariffItem
-                            key={tariff.label}
-                            label={tariff.label}
-                            price={tariff.price}
-                            unit={getTariffUnit(tariff.label)}
-                        />
-                    ))}
+                    {tariffs?.length &&
+                        tariffs.map((tariff) => (
+                            <TariffContractItem
+                                key={tariff.label}
+                                label={tariff.label}
+                                price={tariff.price}
+                                unit={getTariffContractUnit(tariff)}
+                            />
+                        ))}
                 </div>
             </div>
         </Form>
@@ -357,7 +346,7 @@ const ContractFormFields = ({ isContractsLoading }: ContractFormFieldsProps) => 
  * @param props.unit Unit.
  * @returns Tariff Item component.
  */
-const TariffItem = ({ label, price, unit }: TariffItemProps) => (
+const TariffContractItem = ({ label, price, unit }: TariffContractItemProps) => (
     <div className="flex flex-col justify-center items-center w-full py-6">
         <TypographyFormatMessage className="text-13 font-medium text-center md:text-14" sx={{ color: 'grey.600' }}>
             {`${label}: ${price} ${unit}`}

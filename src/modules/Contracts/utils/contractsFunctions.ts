@@ -1,5 +1,10 @@
 import { cloneDeep } from 'lodash'
-import { IContract, loadContractResponse } from 'src/modules/Contracts/contractsTypes'
+import {
+    IContract,
+    loadContractResponse,
+    tariffContract,
+    tariffContractUnits,
+} from 'src/modules/Contracts/contractsTypes'
 
 /**
  * Function that formats the contract object from loadContract request, to a more handy format which is IContract (which consists to get out the provider from the offer, as provider is nested inside offer).
@@ -21,12 +26,12 @@ export const formatLoadContractResponseToIContract = (contract: loadContractResp
 }
 
 /**
- * Get unit //TODO.
+ * Get the correct unit for tariff contract according to its label.
  *
- * @param label Kila //TODO.
- * @returns Unit //TODO.
+ * @param tariff Tariff Contract.
+ * @returns Unit of the tariffContract.
  */
-export const getTariffUnit = (label: string): string => {
-    if (label === 'Abonnement') return '€/mois'
+export const getTariffContractUnit = (tariff: tariffContract): tariffContractUnits => {
+    if (tariff.label === 'Abonnement') return '€/mois'
     return '€/kWh'
 }
