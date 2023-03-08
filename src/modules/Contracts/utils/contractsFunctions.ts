@@ -19,3 +19,14 @@ export const formatLoadContractResponseToIContract = (contract: loadContractResp
         ...restHousingContractCopy,
     }
 }
+
+/**
+ * Get unit //TODO.
+ *
+ * @param label Kila //TODO.
+ * @returns Unit //TODO.
+ */
+export const getTariffUnit = (label: string): string => {
+    if (label === 'Abonnement') return '€/mois'
+    return '€/kWh'
+}

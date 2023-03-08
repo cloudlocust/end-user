@@ -72,6 +72,28 @@ export type ContractFormFieldsProps =
     }
 
 /**
+ * TariffItem Props.
+ */
+export type TariffItemProps =
+    /**
+     *
+     */
+    {
+        /**
+         * Label.
+         */
+        label: string
+        /**
+         * Price.
+         */
+        price: number
+        /**
+         * Unit.
+         */
+        unit: string
+    }
+
+/**
  * Type of request response of load contract.
  */
 export type loadContractResponse =
