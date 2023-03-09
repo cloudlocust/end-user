@@ -100,6 +100,7 @@ export const EcogesteCard = ({
     return (
         <>
             <Card
+                aria-label="ecogeste-card"
                 style={{
                     // Background color does not match, but best effort has been done.
                     // Can't hard-code any lightness change, or it might break other themes.

@@ -68,8 +68,14 @@ export const TEST_ECOGESTES: SnakeCasedPropertiesDeep<IEcogeste>[] = [
 export const ecogestesEndpoints = [
     rest.get(ECOGESTES_ENDPOINT, (req, res, ctx) => {
         if (req.params.categoryId < 0) throw new Error('WRONG BAD')
-        const ECOGESTE_RESPONSE = getPaginationFromElementList(req, TEST_ECOGESTES as [])
+        let gests = TEST_ECOGESTES
 
+        const viewed = req.url.searchParams.get('viewed')
+        if (viewed !== null) {
+            gests = gests.filter((gest) => gest.seen_by_customer === (viewed === 'true'))
+        }
+
+        const ECOGESTE_RESPONSE = getPaginationFromElementList(req, gests as [any])
         return res(ctx.status(200), ctx.delay(1000), ctx.json(ECOGESTE_RESPONSE))
     }),
     rest.patch(`${ECOGESTES_ENDPOINT}/:gestId`, (req, res, ctx) => {

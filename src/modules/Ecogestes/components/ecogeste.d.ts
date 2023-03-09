@@ -43,3 +43,36 @@ export type IEcogeste =
          */
         seenByCustomer: boolean
     }
+
+/**
+ * Enum for all the viewed states handled by Ecogestes get API.
+ */
+export enum EcogestViewedEnum {
+    /**
+     * Get all Ecogests, regardless of whether they have been seen or not.
+     */
+    ALL = undefined,
+    /**
+     *
+     * Get only the Ecogests the the current customer has already read/seen.
+     */
+    READ = true,
+    /**
+     * Get only the Ecogests the the current customer has not already read/seen.
+     */
+    UNREAD = false,
+}
+
+/**
+ * Filter object representing all the possible filtering states
+ * for the Ecogest GET API.
+ */
+export type IEcogestGetAllFilter =
+    // eslint-disable-next-line jsdoc/require-jsdoc -- JSDoc is confused, false-positive
+    {
+        /**
+         * Wheter the Ecogest should be filter based on if the
+         * customer has seen the Ecogest.
+         */
+        viewed?: EcogestViewedEnum
+    }
