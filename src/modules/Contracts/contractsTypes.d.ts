@@ -76,6 +76,44 @@ export type ContractFormFieldsProps =
     }
 
 /**
+ * Range value type.
+ *
+ */
+export type frequencyType = 'SECONDLY' | 'MINUTELY' | 'HOURLY' | 'DAILY' | 'WEEKLY' | 'MONTHLY' | 'YEARLY'
+
+// eslint-disable-next-line jsdoc/require-jsdoc
+export enum frequencyEnum {
+    /**
+     *
+     */
+    SECONDLY = 'SECONDLY',
+    /**
+     *
+     */
+    MINUTELY = 'MINUTELY',
+    /**
+     *
+     */
+    HOURLY = 'HOURLY',
+    /**
+     *
+     */
+    DAILY = 'DAILY',
+    /**
+     *
+     */
+    WEEKLY = 'WEEKLY',
+    /**
+     *
+     */
+    MONTHLY = 'MONTHLY',
+    /**
+     *
+     */
+    YEARLY = 'YEARLY',
+}
+
+/**
  * Tariff Contract type.
  */
 export type tariffContract =
@@ -91,6 +129,10 @@ export type tariffContract =
          * Price.
          */
         price: number
+        /**
+         * Frequency.
+         */
+        freq: frequencyType
     }
 
 /**
@@ -101,7 +143,15 @@ export type tariffContractUnits = '€/mois' | '€/kWh'
 /**
  * TariffContractItem Props.
  */
-export interface TariffContractItemProps extends tariffContract {
+export interface TariffContractItemProps {
+    /**
+     * Label.
+     */
+    label: string
+    /**
+     * Price.
+     */
+    price: number
     /**
      * Unit.
      */
@@ -159,6 +209,10 @@ export type loadContractResponse =
          * End contract subscription.
          */
         endSubscription: string
+        /**
+         * Tariffs.
+         */
+        tariffs?: tariffContract[]
     }
 
 /**

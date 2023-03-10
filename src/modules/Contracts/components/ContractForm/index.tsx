@@ -83,17 +83,19 @@ const ContractForm = ({ onSubmit, isContractsLoading, defaultValues, tariffs }: 
                 >
                     Toutes les informations demandées sont disponibles sur votre facture ou votre contrat d'énergie
                 </TypographyFormatMessage>
-                <div className="flex flex-col justify-center w-full">
+                <div className="flex flex-col justify-center w-full gap-10">
                     <ContractFormFields isContractsLoading={isContractsLoading || loadingInProgress} />
-                    {tariffs?.length &&
-                        tariffs.map((tariff) => (
-                            <TariffContractItem
-                                key={tariff.label}
-                                label={tariff.label}
-                                price={tariff.price}
-                                unit={getTariffContractUnit(tariff)}
-                            />
-                        ))}
+                    <div>
+                        {tariffs?.length &&
+                            tariffs.map((tariff) => (
+                                <TariffContractItem
+                                    key={tariff.label}
+                                    label={tariff.label}
+                                    price={tariff.price}
+                                    unit={getTariffContractUnit(tariff)}
+                                />
+                            ))}
+                    </div>
                 </div>
             </div>
         </Form>
@@ -347,7 +349,7 @@ const ContractFormFields = ({ isContractsLoading }: ContractFormFieldsProps) => 
  * @returns Tariff Item component.
  */
 const TariffContractItem = ({ label, price, unit }: TariffContractItemProps) => (
-    <div className="flex flex-col justify-center items-center w-full py-6">
+    <div className="flex flex-col justify-center items-center w-full py-4">
         <TypographyFormatMessage className="text-13 font-medium text-center md:text-14" sx={{ color: 'grey.600' }}>
             {`${label}: ${price} ${unit}`}
         </TypographyFormatMessage>

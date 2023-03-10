@@ -1,10 +1,11 @@
 import { cloneDeep } from 'lodash'
 import {
+    frequencyEnum,
     IContract,
     loadContractResponse,
     tariffContract,
     tariffContractUnits,
-} from 'src/modules/Contracts/contractsTypes'
+} from 'src/modules/Contracts/contractsTypes.d'
 
 /**
  * Function that formats the contract object from loadContract request, to a more handy format which is IContract (which consists to get out the provider from the offer, as provider is nested inside offer).
@@ -32,6 +33,12 @@ export const formatLoadContractResponseToIContract = (contract: loadContractResp
  * @returns Unit of the tariffContract.
  */
 export const getTariffContractUnit = (tariff: tariffContract): tariffContractUnits => {
-    if (tariff.label === 'Abonnement') return '€/mois'
-    return '€/kWh'
+    switch (tariff.freq) {
+        case frequencyEnum.MONTHLY:
+            return '€/mois'
+        case frequencyEnum.DAILY:
+            return '€/kWh'
+        default:
+            throw Error('Wrong frequency')
+    }
 }
