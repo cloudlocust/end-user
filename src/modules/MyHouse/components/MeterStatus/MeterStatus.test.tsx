@@ -19,6 +19,7 @@ import { models } from 'src/models'
 import { TEST_HOUSES } from 'src/mocks/handlers/houses'
 import { applyCamelCase } from 'src/common/react-platform-components'
 import * as reactRedux from 'react-redux'
+import { sgeConsentMessage } from 'src/modules/MyHouse/MyHouseConfig'
 
 const LIST_OF_HOUSES: IHousing[] = applyCamelCase(TEST_HOUSES)
 /**
@@ -37,10 +38,11 @@ const ENEDIS_CONNECTED_MESSAGE = 'Historique de consommation'
 const ENEDIS_NONEXISTANT_EXPIRED_MESSAGE =
     'Autorisez la récupération de vos données de consommation pour avoir accès à votre historique.'
 const NO_METER_MESSAGE = 'Aucun compteur renseigné'
+const ENEDIS_CANCEL_COLLECTION_DATA_MESSAGE = 'Annuler la récolte de mes données'
+const CONTACT_MAIL_MESSAGE = 'Contacter support@myem.fr'
 
 const VERIFY_METER_MESSAGE = "Vérification de l'existence de votre compteur"
-const CREATION_ENEDIS_SGE_CONSENT_TEXT =
-    "J'autorise My Energy Manager à la récolte de mon historique de données de consommation auprès d'Enedis."
+const CREATION_ENEDIS_SGE_CONSENT_TEXT = `${sgeConsentMessage}`
 
 const ERROR_ENPHASE_MESSAGE = 'Connectez votre onduleur pour visualiser votre production'
 const PENDING_ENPHASE_MESSAGE = 'Votre connexion est en cours et sera active dans les plus brefs délais'
@@ -259,6 +261,10 @@ describe('MeterStatus component test', () => {
             const image = getByAltText('connected-icon')
             expect(image).toHaveAttribute('src', './assets/images/content/housing/consent-status/meter-on.svg')
             expect(getByText(enedisFormatedEndingDate)).toBeTruthy()
+            const cancelMessage = getByText(ENEDIS_CANCEL_COLLECTION_DATA_MESSAGE)
+            expect(cancelMessage).toBeTruthy()
+            userEvent.click(cancelMessage)
+            expect(getByText(CONTACT_MAIL_MESSAGE)).toBeInTheDocument()
         })
         test('when enedis status is expired or nonexistant', async () => {
             foundHouse!.meter!.guid = '12345Her'

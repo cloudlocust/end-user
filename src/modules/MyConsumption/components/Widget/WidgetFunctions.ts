@@ -5,6 +5,7 @@ import {
     metricTargetsEnum,
     metricTargetType,
 } from 'src/modules/Metrics/Metrics.d'
+import { enphaseConsentFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
 import { convertMetricsDataToApexChartsAxisValues } from 'src/modules/MyConsumption/utils/apexChartsDataConverter'
 import { sum, max, mean, round } from 'lodash'
 import { consumptionWattUnitConversion } from 'src/modules/MyConsumption/utils/unitConversionFunction'
@@ -25,6 +26,8 @@ import {
 import { periodType } from 'src/modules/MyConsumption/myConsumptionTypes'
 import { getDateWithoutTimezoneOffset } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
 
+const WRONG_TARGET_TEXT = 'Wrong target'
+
 /**
  * Function that returns values from yAxis of the graph.
  *
@@ -42,18 +45,30 @@ export const getDataFromYAxis = (data: IMetric[], target: metricTargetType) => {
 }
 
 /**
+ * Function that computes total energy for a target type.
+ *
+ * @param data Metrics data.
+ * @param target Metric target.
+ * @returns Total energy rounded.
+ */
+const computeTotalEnergy = (data: IMetric[], target: metricTargetType) => {
+    const values = getDataFromYAxis(data, target)
+    /**
+     * Lodash sum when array is [null] returns null, weird library behaviour however when its sum([null, null, ...etc]) returns 0, so for the case where values are [null], 0 is assigned.
+     *
+     * @see https://github.com/lodash/lodash/issues/4110#issuecomment-463725975
+     */
+    const totalEnergyValueInWatts = sum(values) || 0
+    return consumptionWattUnitConversion(totalEnergyValueInWatts)
+}
+
+/**
  * Function that computes total comsumption.
  *
  * @param data Metrics data.
  * @returns Total consumption rounded.
  */
-export const computeTotalConsumption = (data: IMetric[]) => {
-    const values = getDataFromYAxis(data, metricTargetsEnum.consumption)
-    // Lodash sum when array is [null] returns null, weird library behaviour however when its sum([null, null, ...etc]) returns 0, so for the case where values are [null], 0 is assigned.
-    // https://github.com/lodash/lodash/issues/4110#issuecomment-463725975
-    const totalConsumptionValueInWatts = sum(values) || 0
-    return consumptionWattUnitConversion(totalConsumptionValueInWatts)
-}
+export const computeTotalConsumption = (data: IMetric[]) => computeTotalEnergy(data, metricTargetsEnum.consumption)
 
 /**
  * Function that computes maximum power.
@@ -121,11 +136,31 @@ export const computeInternallTemperature = (data: IMetric[]): { value: number; u
 // eslint-disable-next-line jsdoc/require-jsdoc
 export const computeTotalEuros = (data: IMetric[]): { value: number | string; unit: '€' } => {
     const values = getDataFromYAxis(data, metricTargetsEnum.eurosConsumption)
-    // Lodash sum when array is [null] returns null, weird library behaviour however when its sum([null, null, ...etc]) returns 0, so for the case where values are [null], 0 is assigned.
-    // https://github.com/lodash/lodash/issues/4110#issuecomment-463725975
+    /**
+     * Lodash sum when array is [null] returns null, weird library behaviour however when its sum([null, null, ...etc]) returns 0, so for the case where values are [null], 0 is assigned.
+     *
+     * @see https://github.com/lodash/lodash/issues/4110#issuecomment-463725975
+     */
     const totalEuros = sum(values) ? sum(values).toFixed(2) : 0
     return { value: totalEuros, unit: '€' }
 }
+
+/**
+ * Function that computes total production.
+ *
+ * @param data Metrics data.
+ * @returns Total production rounded.
+ */
+export const computeTotalProduction = (data: IMetric[]) => computeTotalEnergy(data, metricTargetsEnum.totalProduction)
+
+/**
+ * Function that computes total Autoconsumption.
+ *
+ * @param data Metrics data.
+ * @returns Total autoconsumption rounded.
+ */
+export const computeTotalAutoconsumption = (data: IMetric[]) =>
+    computeTotalEnergy(data, metricTargetsEnum.autoconsumption)
 
 /**
  * Function that compute widget assets from metric type.
@@ -146,8 +181,12 @@ export const computeWidgetAssets = (data: IMetric[], type: metricTargetType) => 
             return computeInternallTemperature(data)!
         case metricTargetsEnum.eurosConsumption:
             return computeTotalEuros(data)!
+        case metricTargetsEnum.totalProduction:
+            return computeTotalProduction(data)!
+        case metricTargetsEnum.autoconsumption:
+            return computeTotalAutoconsumption(data)!
         default:
-            throw Error('Wrong target')
+            throw Error(WRONG_TARGET_TEXT)
     }
 }
 
@@ -160,7 +199,7 @@ export const computeWidgetAssets = (data: IMetric[], type: metricTargetType) => 
 export const renderWidgetTitle = (target: metricTargetType): widgetTitleType => {
     switch (target) {
         case metricTargetsEnum.consumption:
-            return 'Consommation Totale'
+            return enphaseConsentFeatureState ? 'Achetée' : 'Consommation Totale'
         case metricTargetsEnum.pMax:
             return 'Puissance Maximale'
         case metricTargetsEnum.externalTemperature:
@@ -169,8 +208,12 @@ export const renderWidgetTitle = (target: metricTargetType): widgetTitleType => 
             return 'Température Intérieure'
         case metricTargetsEnum.eurosConsumption:
             return 'Coût Total'
+        case metricTargetsEnum.totalProduction:
+            return 'Production Totale'
+        case metricTargetsEnum.autoconsumption:
+            return 'Autoconsommation'
         default:
-            throw Error('Wrong target')
+            throw Error(WRONG_TARGET_TEXT)
     }
 }
 
@@ -246,4 +289,45 @@ export const getWidgetRange = (range: metricRangeType, period: periodType) => {
                         : getDateWithoutTimezoneOffset(endOfDay(subMonths(toDate, 1))),
             }
     }
+}
+
+/**
+ * Get color type for increase indicator or decrease indicator according to the target type.
+ *
+ * @param target Target type.
+ * @param percentageChange Percentage change (positive or negative).
+ * @returns Color type (success / error).
+ */
+export const getWidgetIndicatorColor = (target: metricTargetType, percentageChange: number) => {
+    switch (target) {
+        case metricTargetsEnum.totalProduction:
+        case metricTargetsEnum.injectedProduction:
+        case metricTargetsEnum.autoconsumption:
+            return percentageChange > 0 ? 'success' : 'error'
+        case metricTargetsEnum.consumption:
+        case metricTargetsEnum.pMax:
+        case metricTargetsEnum.externalTemperature:
+        case metricTargetsEnum.internalTemperature:
+        case metricTargetsEnum.eurosConsumption:
+            return percentageChange > 0 ? 'error' : 'success'
+        default:
+            throw Error(WRONG_TARGET_TEXT)
+    }
+}
+
+/**
+ * Compute the total consumption of the current and old metrics.
+ *
+ * @param data The current metrics.
+ * @returns The total consumption (consumption + autoconsumption).
+ */
+export const computeTotalOfAllConsumptions = (data: IMetric[]) => {
+    const { value: consumptionValue, unit: consumptionUnit } = computeTotalConsumption(data)
+    const { value: AutoConsumptionValue, unit: AutoConsumptionUnit } = computeTotalAutoconsumption(data)
+
+    const totalOfAllConsumptions =
+        convert(consumptionValue).from(consumptionUnit).to('Wh') +
+        convert(AutoConsumptionValue).from(AutoConsumptionUnit).to('Wh')
+
+    return consumptionWattUnitConversion(totalOfAllConsumptions)
 }

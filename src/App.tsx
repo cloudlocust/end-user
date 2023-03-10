@@ -1,5 +1,5 @@
-import React from 'react'
-import { Switch, Route, Redirect } from 'react-router-dom'
+import React, { useEffect } from 'react'
+import { Switch, Route, Redirect, useLocation } from 'react-router-dom'
 import { useAuth } from 'src/modules/User/authentication/useAuth'
 import { routes, navigationsConfig, IAdditionnalSettings, IPageSettingsDisabled } from 'src/routes'
 import Layout1 from 'src/common/ui-kit/fuse/layouts/layout1/Layout1'
@@ -9,6 +9,47 @@ import { ToolbarWidget as ToolbarContent } from 'src/modules/Layout'
 import { ConfirmProvider } from 'material-ui-confirm'
 import ToolbarIcon from 'src/modules/Layout/Toolbar/components/ToolbarIcon'
 import { IPageSettings } from 'src/common/react-platform-components'
+import { styled } from '@mui/material/styles'
+import { useLastVisit } from 'src/modules/User/LastVisit/LastVisitHook'
+import dayjs from 'dayjs'
+import { RootState } from 'src/redux'
+import { useSelector } from 'react-redux'
+
+const Root = styled('div')(({ theme }) => ({
+    '& #fuse-main': {
+        [theme.breakpoints.down('md')]: {
+            marginBottom: '0px !important',
+            paddingBottom: '20px',
+        },
+        '& > div': {
+            [theme.breakpoints.down('lg')]: {
+                marginBottom: '5.6rem',
+            },
+        },
+    },
+    '& .fuse-list-item': {
+        '& .fuse-list-item-icon': {
+            height: 'auto',
+        },
+    },
+    '& .fuse-bottom-navigation-item': {
+        '& .MuiIcon-root': {
+            height: 'auto',
+        },
+    },
+    '& .MuiToolbar-root': {
+        // Styling the container of the Navbar toggle button.
+        '& > div:nth-of-type(1)': {
+            [theme.breakpoints.down('sm')]: {
+                padding: 0,
+            },
+        },
+        // Styling the toolbarContent.
+        '& > div:nth-of-type(2)': {
+            overflowX: 'hidden',
+        },
+    },
+}))
 
 /**
  * Check if the route is enabled or not.
@@ -34,6 +75,19 @@ const isRouteDisabled = (
  * @returns List of routes accessible to the app wrapped by access hook.
  */
 const Routes = () => {
+    const location = useLocation()
+    const { user } = useSelector(({ userModel }: RootState) => userModel)
+    const { updateLastVisitTime } = useLastVisit(dayjs().toISOString())
+
+    useEffect(() => {
+        /**
+         * If there is no user in redux, it means that the user isn't logged in.
+         * Therefore we don't need to perform updateLastVisitTime().
+         */
+        if (!user) return
+        updateLastVisitTime()
+    }, [location.pathname, updateLastVisitTime, user])
+
     const { hasAccess, getUrlRedirection } = useAuth()
     const navbarContent: navbarItemType[] = []
     navigationsConfig.forEach((navigationConfig) => {
@@ -58,15 +112,17 @@ const Routes = () => {
                                         {/* Wrap your app inside the ConfirmProvider component. */}
                                         {/* Note: If you're using Material UI ThemeProvider, make sure ConfirmProvider is a child of it. */}
                                         <ConfirmProvider>
-                                            <Layout1
-                                                navbarContent={navbarContent}
-                                                displayToolbar={route.settings?.layout?.toolbar?.display}
-                                                displayNavbar={route.settings?.layout?.navbar?.display}
-                                                toolbarContent={<ToolbarContent />}
-                                                toolbarIcon={<ToolbarIcon />}
-                                            >
-                                                <route.component {...route.props} />
-                                            </Layout1>
+                                            <Root>
+                                                <Layout1
+                                                    navbarContent={navbarContent}
+                                                    displayToolbar={route.settings?.layout?.toolbar?.display}
+                                                    displayNavbar={route.settings?.layout?.navbar?.display}
+                                                    toolbarContent={<ToolbarContent />}
+                                                    toolbarIcon={<ToolbarIcon />}
+                                                >
+                                                    <route.component {...route.props} />
+                                                </Layout1>
+                                            </Root>
                                         </ConfirmProvider>
                                     </ThemingProvider>
                                 )

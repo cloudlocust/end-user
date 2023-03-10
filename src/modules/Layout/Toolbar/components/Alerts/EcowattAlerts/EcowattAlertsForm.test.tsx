@@ -2,18 +2,18 @@ import userEvent from '@testing-library/user-event'
 import { applyCamelCase } from 'src/common/react-platform-components'
 import { reduxedRender } from 'src/common/react-platform-components/test'
 import { TEST_HOUSE_ID } from 'src/mocks/handlers/contracts'
-import { TEST_ECOWATT_ALERTS_DATA } from 'src/mocks/handlers/ecowatt'
+import { TEST_NOVU_ALERTS_DATA } from 'src/mocks/handlers/novuAlertPreferences'
 import { EcowattAlertsForm } from 'src/modules/Layout/Toolbar/components/Alerts/EcowattAlerts/EcowattAlertsForm'
 
 const DISABLED_CLASS = 'Mui-disabled'
 const PUSH_SIGNAL_THREE_DAYS_SWITCH_TEST_ID = 'isPushSignalThreeDays-switch'
 const PUSH_SIGNAL_ONE_DAY_SWITCH_TEST_ID = 'isPushSignalOneDay-switch'
 
-let ecowattAlertsData = applyCamelCase(TEST_ECOWATT_ALERTS_DATA)
+let novuAlertsData = applyCamelCase(TEST_NOVU_ALERTS_DATA)
 
 let mockEcowattAlertsFormProps = {
     houseId: TEST_HOUSE_ID,
-    ecowattAlerts: ecowattAlertsData,
+    novuAlertPreferences: novuAlertsData,
     updateEcowattAlerts: jest.fn(),
     reloadAlerts: jest.fn(),
 }
