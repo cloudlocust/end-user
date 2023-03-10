@@ -1,21 +1,13 @@
-import { formatMessageType } from 'src/common/react-platform-translation'
 import { API_RESOURCES_URL } from 'src/configs'
-import { searchFilterType } from 'src/modules/utils'
 import { BuilderUseElementList } from 'src/modules/utils/useElementHookBuilder'
-import { IEcogeste } from './components/ecogeste'
-
+import { IEcogeste, IEcogestGetAllFilter } from './components/ecogeste'
+import { axios, catchError } from 'src/common/react-platform-components'
+import { useIntl, formatMessageType } from 'src/common/react-platform-translation'
+import { useSnackbar } from 'notistack'
 /**
  * Ecogestes API  global endpoint.
  */
 export const ECOGESTES_ENDPOINT = `${API_RESOURCES_URL}/ecogeste`
-
-/**
- * Return a URL to query encogestes by category.
- *
- * @param categoryId The id of the category.
- * @returns A URL.
- */
-export const ECOGESTES_BY_CATEGORY = (categoryId: number) => `${ECOGESTES_ENDPOINT}?category=${categoryId}`
 
 // eslint-disable-next-line jsdoc/require-jsdoc
 export const loadElementListError = (error: any, formatMessage: formatMessageType) => {
@@ -44,13 +36,70 @@ export const addElementError = (error: any, formatMessage: formatMessageType) =>
 /**
  * Hook to get a list of ecogestes by category.
  *
- * @param categoryId IDs of the categories.
  * @returns A hook to get the ecogestes.
  */
-export const useEcogestesByCategory = (categoryId: number) =>
-    BuilderUseElementList<IEcogeste, IEcogeste, searchFilterType>({
+export const useEcogestes = () => {
+    const { enqueueSnackbar } = useSnackbar()
+    const { formatMessage } = useIntl()
+
+    /**
+     * Generic patch-ing method for ecogest.
+     *
+     * @param ecogesteId ID of the ecogest to patch.
+     * @param body Object that will be sent as patch body using axios.patch .
+     */
+    const updateEcogeste = async (ecogesteId: number, body: Partial<IEcogeste>) => {
+        try {
+            await axios.patch(`${ECOGESTES_ENDPOINT}/${ecogesteId}`, body)
+        } catch (error) {
+            enqueueSnackbar(
+                formatMessage({
+                    id: "Erreur lors de la modification de l'ecogeste",
+                    defaultMessage: "Erreur lors de la modification de l'ecogeste",
+                }),
+                { variant: 'error' },
+            )
+            throw catchError(error)
+        }
+    }
+
+    /**
+     * Specific method that uses a patch to update an ecogest's view status.
+     * Shortcut for patchEcogeste(ecogeste_id, { seenByCustomer: status }).
+     *
+     * @param ecogesteId ID of the ecogest to set view status of.
+     * @param status The new view status of the ecogest. True is seen, False is not seen.
+     */
+    const setViewStatus = async (ecogesteId: number, status: boolean) => {
+        await updateEcogeste(ecogesteId, { seenByCustomer: status })
+    }
+
+    const { elementList, loadingInProgress, updateFilters } = BuilderUseElementList<
+        IEcogeste,
+        IEcogeste,
+        IEcogestGetAllFilter
+    >({
         API_ENDPOINT: ECOGESTES_ENDPOINT,
         snackBarMessage0verride: { loadElementListError, addElementSuccess, addElementError },
-    })()
+    })(undefined, { viewed: undefined })
 
-export default useEcogestesByCategory
+    /**
+     * Filters the ecogest element list from this hook according to the given filter.
+     * Filtering is done server-side via a request to API.
+     *
+     * @param filter The filter object to apply.
+     */
+    const filterEcogestes = (filter: IEcogestGetAllFilter) => {
+        updateFilters(filter)
+    }
+
+    return {
+        elementList,
+        loadingInProgress,
+        setViewStatus,
+        updateEcogeste,
+        filterEcogestes,
+    }
+}
+
+export default useEcogestes

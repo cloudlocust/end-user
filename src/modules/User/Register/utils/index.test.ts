@@ -4,7 +4,7 @@ import { convertUserDataToQueryString } from 'src/modules/User/Register/utils'
 
 const data = applyCamelCase(TEST_SUCCESS_USER)
 const mockedResult =
-    'civilite=Mr&nom=Orlando&prenom=Jackson&email=user%2540success.com&phone=0123456789&adresse=Apt+556&code=92998-3874&ville=Gwenborough'
+    'civilite=Mr&nom=Orlando&prenom=Jackson&email=user%40success.com&phone=0123456789&adresse=Apt+556&code=92998-3874&ville=Gwenborough'
 
 describe('Test convertUserDataToQueryString', () => {
     test('when convertUserDataToQueryString returns data', async () => {

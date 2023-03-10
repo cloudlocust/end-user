@@ -57,7 +57,7 @@ const MyConsumptionDatePicker = ({
     const handleDateChange = (newDate: Date | null) => {
         if (newDate) {
             if (onDatePickerChange) onDatePickerChange(newDate)
-            else setRange(getRange(period, newDate, 'sub'))
+            else setRange(getRange(period, newDate, 'add'))
         }
     }
 
@@ -107,7 +107,9 @@ const MyConsumptionDatePicker = ({
                                 views={item.views as ViewsType[]}
                                 value={rangeDateFormat.from}
                                 inputFormat={item.inputFormat}
-                                maxDate={maxDate || new Date()}
+                                maxDate={
+                                    maxDate || subPeriod(new Date(), convertToDateFnsPeriod(period) as dateFnsPeriod)
+                                }
                                 onChange={() => {
                                     return null
                                 }}
