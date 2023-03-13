@@ -9,7 +9,7 @@ import PostAddIcon from '@mui/icons-material/PostAdd'
 import Icon from '@mui/material/Icon'
 import CircularProgress from '@mui/material/CircularProgress'
 import { useHistory, useParams } from 'react-router-dom'
-import { contractsRouteParam, addContractDataType } from 'src/modules/Contracts/contractsTypes.d'
+import { contractsRouteParam, addContractDataType, loadContractResponse } from 'src/modules/Contracts/contractsTypes.d'
 import { isEmpty, isNull } from 'lodash'
 import { primaryMainColor } from 'src/modules/utils/muiThemeVariables'
 import Dialog from '@mui/material/Dialog'
@@ -37,13 +37,18 @@ const Contracts = () => {
         <>
             <Dialog open={isOpenDialog} fullWidth={true} maxWidth="sm" onClose={() => setIsOpenDialog(false)}>
                 <ContractForm
-                    onSubmit={async (input: addContractDataType) => {
+                    onSubmit={async (input: addContractDataType): Promise<loadContractResponse> => {
                         try {
-                            await addContract(input)
-                            setIsOpenDialog(false)
+                            const response = await addContract(input)
+                            setTimeout(() => {
+                                setIsOpenDialog(false)
+                            }, 1000)
                             reloadContractList()
+                            return response
                             // Catching the error to avoir application crash and stops working.
-                        } catch (error) {}
+                        } catch (error) {
+                            return {} as Promise<loadContractResponse>
+                        }
                     }}
                     isContractsLoading={isContractsLoading}
                 />

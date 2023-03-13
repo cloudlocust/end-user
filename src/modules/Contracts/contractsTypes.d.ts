@@ -44,7 +44,7 @@ export type ContractFormProps =
         /**
          * Callback when submitting contract form.
          */
-        onSubmit: (data: addContractDataType) => void
+        onSubmit: (data: addContractDataType) => Promise<loadContractResponse | void>
         /**
          * Loading state when addContract request.
          */
@@ -79,38 +79,38 @@ export type ContractFormFieldsProps =
  * Range value type.
  *
  */
-export type frequencyType = 'SECONDLY' | 'MINUTELY' | 'HOURLY' | 'DAILY' | 'WEEKLY' | 'MONTHLY' | 'YEARLY'
+export type frequencyType = 'secondly' | 'minutely' | 'hourly' | 'daily' | 'weekly' | 'monthly' | 'yearly'
 
 // eslint-disable-next-line jsdoc/require-jsdoc
 export enum frequencyEnum {
     /**
      *
      */
-    SECONDLY = 'SECONDLY',
+    SECONDLY = 'secondly',
     /**
      *
      */
-    MINUTELY = 'MINUTELY',
+    MINUTELY = 'minutely',
     /**
      *
      */
-    HOURLY = 'HOURLY',
+    HOURLY = 'hourly',
     /**
      *
      */
-    DAILY = 'DAILY',
+    DAILY = 'daily',
     /**
      *
      */
-    WEEKLY = 'WEEKLY',
+    WEEKLY = 'weekly',
     /**
      *
      */
-    MONTHLY = 'MONTHLY',
+    MONTHLY = 'monthly',
     /**
      *
      */
-    YEARLY = 'YEARLY',
+    YEARLY = 'yearly',
 }
 
 /**

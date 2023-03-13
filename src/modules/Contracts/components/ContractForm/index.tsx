@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from 'react'
+import React, { useCallback, useMemo, useState } from 'react'
 import { useIntl } from 'react-intl'
 import { requiredBuilder } from 'src/common/react-platform-components'
 import {
@@ -49,6 +49,8 @@ const ContractForm = ({ onSubmit, isContractsLoading, defaultValues, tariffs }: 
     // HouseId extracted from params of the url :houseId/contracts
     const { houseId } = useParams<contractsRouteParam>()
     const { editMeter, loadingInProgress } = useMeterForHousing()
+    const [tariffsContract, setTariffsContract] = useState(tariffs ?? [])
+
     return (
         <Form
             onSubmit={async (data: contractFormValuesType) => {
@@ -69,7 +71,8 @@ const ContractForm = ({ onSubmit, isContractsLoading, defaultValues, tariffs }: 
                         return
                     }
                 }
-                onSubmit(cleanData)
+                const response = await onSubmit(cleanData)
+                setTariffsContract(response?.tariffs || [])
             }}
             defaultValues={defaultValues ?? defaultContractFormValues}
         >
@@ -86,15 +89,16 @@ const ContractForm = ({ onSubmit, isContractsLoading, defaultValues, tariffs }: 
                 <div className="flex flex-col justify-center w-full gap-10">
                     <ContractFormFields isContractsLoading={isContractsLoading || loadingInProgress} />
                     <div>
-                        {tariffs?.length &&
-                            tariffs.map((tariff) => (
-                                <TariffContractItem
-                                    key={tariff.label}
-                                    label={tariff.label}
-                                    price={tariff.price}
-                                    unit={getTariffContractUnit(tariff)}
-                                />
-                            ))}
+                        {tariffsContract?.length > 0
+                            ? tariffsContract.map((tariff) => (
+                                  <TariffContractItem
+                                      key={tariff.label}
+                                      label={tariff.label}
+                                      price={tariff.price}
+                                      unit={getTariffContractUnit(tariff)}
+                                  />
+                              ))
+                            : null}
                     </div>
                 </div>
             </div>

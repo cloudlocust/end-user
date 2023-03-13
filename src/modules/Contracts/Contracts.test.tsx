@@ -161,8 +161,11 @@ describe('Test Contracts Component', () => {
         })
         expect(mockAddContract).toHaveBeenCalled()
         // Modal should be closed
-        await waitFor(() => {
-            expect(() => getByText(CONTRACT_FORM_MODAL_TEXT)).toThrow()
-        })
+        await waitFor(
+            () => {
+                expect(() => getByText(CONTRACT_FORM_MODAL_TEXT)).toThrow()
+            },
+            { timeout: 2000 },
+        )
     })
 })
