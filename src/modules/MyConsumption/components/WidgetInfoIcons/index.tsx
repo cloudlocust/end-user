@@ -101,8 +101,9 @@ export const PMaxWidgetInfoIcon = () => {
                         })}
                         TypographyProps={{
                             sx: {
-                                color: warningMainHashColor,
                                 cursor: 'pointer',
+                                color: '#FFFFFF',
+                                padding: '12px',
                             },
                         }}
                         houseId={currentHousing!.id}
