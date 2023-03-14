@@ -23,6 +23,11 @@ export type IEcogeste =
          */
         description: string
         /**
+         * The Extended description of the ecogest that is shown
+         * upon clicking on the info button.
+         */
+        infos: string
+        /**
          * The savings of the Ecogeste.
          * Abstract percentile number that should give the user
          * an idea about how much money they are going to save by
@@ -37,4 +42,37 @@ export type IEcogeste =
          * Wheter or not the currently active customer has seen this Ecogeste.
          */
         seenByCustomer: boolean
+    }
+
+/**
+ * Enum for all the viewed states handled by Ecogestes get API.
+ */
+export enum EcogestViewedEnum {
+    /**
+     * Get all Ecogests, regardless of whether they have been seen or not.
+     */
+    ALL = undefined,
+    /**
+     *
+     * Get only the Ecogests the the current customer has already read/seen.
+     */
+    READ = true,
+    /**
+     * Get only the Ecogests the the current customer has not already read/seen.
+     */
+    UNREAD = false,
+}
+
+/**
+ * Filter object representing all the possible filtering states
+ * for the Ecogest GET API.
+ */
+export type IEcogestGetAllFilter =
+    // eslint-disable-next-line jsdoc/require-jsdoc -- JSDoc is confused, false-positive
+    {
+        /**
+         * Wheter the Ecogest should be filter based on if the
+         * customer has seen the Ecogest.
+         */
+        viewed?: EcogestViewedEnum
     }

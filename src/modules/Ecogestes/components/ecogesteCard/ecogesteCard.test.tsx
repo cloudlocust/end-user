@@ -12,6 +12,7 @@ let mockEcogestePropsFull = {}
 
 const gestReadAriaLabel = 'gest is read'
 const gestNotReadAriaLabel = 'gest is not read'
+const infoboxBtnAriaLabel = 'button, more information about gest'
 
 jest.mock('src/modules/utils/useResizeObserver')
 
@@ -88,6 +89,24 @@ describe('Test EcogesteCard', () => {
                 },
                 { timeout: 2000 },
             )
+        })
+    })
+    describe('Test interactions with the infobox button', () => {
+        test('When info button is clicked, it opens the info dialog', async () => {
+            const { queryByLabelText, queryByRole } = reduxedRender(
+                <BrowserRouter>
+                    <EcogesteCard {...{ ecogeste: fullEcogeste_working_already_read, ...mockEcogestePropsFull }} />
+                </BrowserRouter>,
+            )
+
+            const infoboxBtn = queryByLabelText(infoboxBtnAriaLabel)
+            expect(infoboxBtn).toBeTruthy()
+
+            expect(queryByRole('dialog')).toBeFalsy()
+
+            fireEvent.click(infoboxBtn!)
+
+            expect(queryByRole('dialog')).toBeTruthy()
         })
     })
 })

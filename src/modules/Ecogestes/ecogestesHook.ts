@@ -1,7 +1,6 @@
 import { API_RESOURCES_URL } from 'src/configs'
-import { searchFilterType } from 'src/modules/utils'
 import { BuilderUseElementList } from 'src/modules/utils/useElementHookBuilder'
-import { IEcogeste } from './components/ecogeste'
+import { IEcogeste, IEcogestGetAllFilter } from './components/ecogeste'
 import { axios, catchError } from 'src/common/react-platform-components'
 import { useIntl, formatMessageType } from 'src/common/react-platform-translation'
 import { useSnackbar } from 'notistack'
@@ -75,15 +74,31 @@ export const useEcogestes = () => {
         await updateEcogeste(ecogesteId, { seenByCustomer: status })
     }
 
-    const { elementList, loadingInProgress } = BuilderUseElementList<IEcogeste, IEcogeste, searchFilterType>({
+    const { elementList, loadingInProgress, updateFilters } = BuilderUseElementList<
+        IEcogeste,
+        IEcogeste,
+        IEcogestGetAllFilter
+    >({
         API_ENDPOINT: ECOGESTES_ENDPOINT,
         snackBarMessage0verride: { loadElementListError, addElementSuccess, addElementError },
-    })()
+    })(undefined, { viewed: undefined })
+
+    /**
+     * Filters the ecogest element list from this hook according to the given filter.
+     * Filtering is done server-side via a request to API.
+     *
+     * @param filter The filter object to apply.
+     */
+    const filterEcogestes = (filter: IEcogestGetAllFilter) => {
+        updateFilters(filter)
+    }
+
     return {
         elementList,
         loadingInProgress,
         setViewStatus,
         updateEcogeste,
+        filterEcogestes,
     }
 }
 
