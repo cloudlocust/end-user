@@ -7,9 +7,9 @@ import { ResetPasswordFormProps } from 'src/modules/User/ResetPassword/ResetPass
 import { LinkRedirection } from 'src/modules/utils/LinkRedirection'
 import { onSubmitSetPasswordData } from 'src/modules/User/SetPassword/SetPasswordFormTypes'
 import { passwordFieldValidationSecurity1 } from 'src/modules/utils'
+import { privacyPolicy } from 'src/modules/Mentions/MentionsConfig'
 
 const checkoxRequiredErrorText = 'Ce champ est obligatoire'
-const urlPolitiqueConfidentialité = 'https://drive.google.com/uc?export=download&id=1sMFMizrEPZ4ZHhe6Zf-PTJGRUQBFGUEv'
 
 /**
  * Reset password form.
@@ -57,7 +57,7 @@ export const SetPasswordForm = ({ token }: ResetPasswordFormProps) => {
                                 defaultMessage: `J’ai lu et j’accepte `,
                             })}
                             <LinkRedirection
-                                url={urlPolitiqueConfidentialité}
+                                url={privacyPolicy}
                                 label="la politique de confidentialité"
                                 color="primary.main"
                             />
