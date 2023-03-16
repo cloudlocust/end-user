@@ -97,6 +97,7 @@ const ContractCard = ({ contract, onAfterDeleteUpdateSuccess }: ContractCardProp
                         endSubscription: contract.endSubscription,
                         tariffTypeId: contract.tariffType.id,
                     }}
+                    tariffs={contract.tariffs}
                 />
             </Dialog>
             <Card key={contract.id} className="p-16 overflow-hidden h-full contract-card">
