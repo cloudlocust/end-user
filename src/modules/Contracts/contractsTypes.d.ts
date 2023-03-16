@@ -44,7 +44,7 @@ export type ContractFormProps =
         /**
          * Callback when submitting contract form.
          */
-        onSubmit: (data: addContractDataType) => Promise<loadContractResponse | void>
+        onSubmit: (data: addContractDataType) => void
         /**
          * Loading state when addContract request.
          */
@@ -156,6 +156,16 @@ export interface TariffContractItemProps {
      * Unit.
      */
     unit: tariffContractUnits
+}
+
+/**
+ * TariffContractItem Props.
+ */
+export interface TariffsContractProps {
+    /**
+     * List of tariffs.
+     */
+    tariffs?: tariffContract[]
 }
 
 /**

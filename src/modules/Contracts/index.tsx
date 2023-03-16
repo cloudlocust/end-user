@@ -9,7 +9,7 @@ import PostAddIcon from '@mui/icons-material/PostAdd'
 import Icon from '@mui/material/Icon'
 import CircularProgress from '@mui/material/CircularProgress'
 import { useHistory, useParams } from 'react-router-dom'
-import { contractsRouteParam, addContractDataType, loadContractResponse } from 'src/modules/Contracts/contractsTypes.d'
+import { contractsRouteParam, addContractDataType, tariffContract } from 'src/modules/Contracts/contractsTypes.d'
 import { isEmpty, isNull } from 'lodash'
 import { primaryMainColor } from 'src/modules/utils/muiThemeVariables'
 import Dialog from '@mui/material/Dialog'
@@ -26,6 +26,9 @@ const Contracts = () => {
     const [isOpenDialog, setIsOpenDialog] = useState(false)
     const history = useHistory()
 
+    // ce state is used to display tariffs in the contract form.
+    const [tariffsContractForm, setTariffsContractForm] = useState<tariffContract[]>([])
+
     const {
         elementList: contractList,
         loadingInProgress: isContractsLoading,
@@ -37,20 +40,22 @@ const Contracts = () => {
         <>
             <Dialog open={isOpenDialog} fullWidth={true} maxWidth="sm" onClose={() => setIsOpenDialog(false)}>
                 <ContractForm
-                    onSubmit={async (input: addContractDataType): Promise<loadContractResponse> => {
+                    onSubmit={async (input: addContractDataType) => {
                         try {
                             const response = await addContract(input)
+                            setTariffsContractForm(response?.tariffs ?? [])
+                            // we wait 1 second to let the user see the tariffs of the contract.
                             setTimeout(() => {
                                 setIsOpenDialog(false)
+                                reloadContractList()
+                                // we reset the tariffs to avoid displaying them in the next contract form.
+                                setTariffsContractForm([])
                             }, 1000)
-                            reloadContractList()
-                            return response
                             // Catching the error to avoir application crash and stops working.
-                        } catch (error) {
-                            return {} as Promise<loadContractResponse>
-                        }
+                        } catch (error) {}
                     }}
                     isContractsLoading={isContractsLoading}
+                    tariffs={tariffsContractForm}
                 />
             </Dialog>
             <div className="p-24">

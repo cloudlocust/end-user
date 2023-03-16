@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react'
+import React, { useCallback, useMemo } from 'react'
 import { useIntl } from 'react-intl'
 import { requiredBuilder } from 'src/common/react-platform-components'
 import {
@@ -8,6 +8,7 @@ import {
     contractFormValuesType,
     contractsRouteParam,
     TariffContractItemProps,
+    TariffsContractProps,
 } from 'src/modules/Contracts/contractsTypes'
 import { useFormContext, useWatch } from 'react-hook-form'
 import { Form } from 'src/common/react-platform-components'
@@ -49,7 +50,6 @@ const ContractForm = ({ onSubmit, isContractsLoading, defaultValues, tariffs }: 
     // HouseId extracted from params of the url :houseId/contracts
     const { houseId } = useParams<contractsRouteParam>()
     const { editMeter, loadingInProgress } = useMeterForHousing()
-    const [tariffsContract, setTariffsContract] = useState(tariffs ?? [])
 
     return (
         <Form
@@ -71,8 +71,7 @@ const ContractForm = ({ onSubmit, isContractsLoading, defaultValues, tariffs }: 
                         return
                     }
                 }
-                const response = await onSubmit(cleanData)
-                setTariffsContract(response?.tariffs || [])
+                onSubmit(cleanData)
             }}
             defaultValues={defaultValues ?? defaultContractFormValues}
         >
@@ -88,18 +87,7 @@ const ContractForm = ({ onSubmit, isContractsLoading, defaultValues, tariffs }: 
                 </TypographyFormatMessage>
                 <div className="flex flex-col justify-center w-full gap-10">
                     <ContractFormFields isContractsLoading={isContractsLoading || loadingInProgress} />
-                    <div>
-                        {tariffsContract?.length > 0
-                            ? tariffsContract.map((tariff) => (
-                                  <TariffContractItem
-                                      key={tariff.label}
-                                      label={tariff.label}
-                                      price={tariff.price}
-                                      unit={getTariffContractUnit(tariff)}
-                                  />
-                              ))
-                            : null}
-                    </div>
+                    <TariffsContract tariffs={tariffs} />
                 </div>
             </div>
         </Form>
@@ -359,3 +347,24 @@ const TariffContractItem = ({ label, price, unit }: TariffContractItemProps) => 
         </TypographyFormatMessage>
     </div>
 )
+
+/**
+ * Tariffs Contract Component.
+ *
+ * @param props N/A.
+ * @param props.tariffs List of tariff contract.
+ * @returns Tariffs Contract Component.
+ */
+const TariffsContract = ({ tariffs }: TariffsContractProps) =>
+    tariffs && tariffs.length > 0 ? (
+        <div>
+            {tariffs.map((tariff) => (
+                <TariffContractItem
+                    key={tariff.label}
+                    label={tariff.label}
+                    price={tariff.price}
+                    unit={getTariffContractUnit(tariff)}
+                />
+            ))}
+        </div>
+    ) : null
