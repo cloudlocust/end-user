@@ -1,5 +1,5 @@
 import React, { FC, useEffect } from 'react'
-import { LOGO_URL, API_BASE_URL } from 'src/configs'
+import { LOGO_URL, API_BASE_URL, CLIENT_ICON_FOLDER } from 'src/configs'
 import { motion } from 'framer-motion'
 import { Card, CardContent } from '@mui/material'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
@@ -41,7 +41,7 @@ export const SetPassword: FC<ResetPasswordProps> = ({ logo = { href: API_BASE_UR
                         <CardContent className="flex flex-col items-center justify-center p-16 sm:p-24 md:p-32">
                             <img
                                 className="w-128 m-32"
-                                src={`assets/images/logos/${window._env_.REACT_APP_CLIENT_ICON_FOLDER}.svg`}
+                                src={`./clients-icons/${CLIENT_ICON_FOLDER}/${CLIENT_ICON_FOLDER}.svg`}
                                 alt="logo"
                             />
                             <TypographyFormatMessage
