@@ -75,4 +75,37 @@ export type IEcogestGetAllFilter =
          * customer has seen the Ecogest.
          */
         viewed?: EcogestViewedEnum
+        /**
+         * If present, will return all ecogest that have this tag_id.
+         */
+        tag_id?: number
+    }
+
+/**
+ * Model representing a tag on an Ecogest.
+ */
+export type IEcogestTag =
+    // eslint-disable-next-line jsdoc/require-jsdoc -- JSDoc is confused, false-positive
+    {
+        /**
+         * Unique ID for this tag. Used to poke REST endpoints or in filtering requests.
+         */
+        id: number
+        /**
+         * The title of the Ecogest tag.
+         */
+        name: string
+        /**
+         * The icon of the Ecogest tag.
+         */
+        icon: string
+        /**
+         * The type of the Ecogest tag.
+         * Technically an enum: 'POLE' or 'ROOM'.
+         */
+        type: string
+        /**
+         * The amount of ecogest that have this given tag.
+         */
+        ecogestAmount: number
     }

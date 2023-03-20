@@ -1,7 +1,7 @@
 import { rest } from 'msw'
 import { ECOGESTES_ENDPOINT } from 'src/modules/Ecogestes/'
 import { getPaginationFromElementList } from 'src/mocks/utils'
-import { IEcogeste } from 'src/modules/Ecogestes/components/ecogeste'
+import { IEcogeste, IEcogestTag } from 'src/modules/Ecogestes/components/ecogeste'
 import { SnakeCasedPropertiesDeep } from 'type-fest'
 
 /**
@@ -62,6 +62,23 @@ export const TEST_ECOGESTES: SnakeCasedPropertiesDeep<IEcogeste>[] = [
     },
 ]
 
+export const TEST_ECOGESTES_TAGS: SnakeCasedPropertiesDeep<IEcogestTag>[] = [
+    {
+        id: 1,
+        name: 'Chauffage',
+        ecogest_amount: 2,
+        icon: 'https://drive.google.com/uc?export=view&id=10NPb2PC1bWaKDZJXuwWly7_b11W-S46O',
+        type: 'POLE',
+    },
+    {
+        id: 2,
+        name: 'Electricité',
+        ecogest_amount: 1,
+        icon: 'icon2',
+        type: 'POLE',
+    },
+]
+
 /**
  * Ecogeste and categories of ecogeste endpoints.
  */
@@ -73,6 +90,20 @@ export const ecogestesEndpoints = [
         const viewed = req.url.searchParams.get('viewed')
         if (viewed !== null) {
             gests = gests.filter((gest) => gest.seen_by_customer === (viewed === 'true'))
+        }
+        const tag_id = req.url.searchParams.get('tag_id')
+        if (tag_id !== null) {
+            switch (tag_id) {
+                case '1':
+                    gests = gests.slice(0, 2)
+                    break
+                case '2':
+                    gests = gests.slice(2, 3)
+                    break
+                default:
+                    gests = []
+                    break
+            }
         }
 
         const ECOGESTE_RESPONSE = getPaginationFromElementList(req, gests as [any])
