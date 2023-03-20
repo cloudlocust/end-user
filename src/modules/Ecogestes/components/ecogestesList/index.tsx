@@ -5,7 +5,7 @@ import { ImageCardLoader } from 'src/common/ui-kit/components/MapElementList/com
 import { EcogesteCard } from 'src/modules/Ecogestes'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import { Button, Menu, MenuItem, MenuList, SvgIcon } from '@mui/material'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import FilterListIcon from '@mui/icons-material/FilterList'
 import VisibilityIcon from '@mui/icons-material/Visibility'
 import { ReactComponent as NotViewIcon } from 'src/modules/Ecogestes/components/ecogesteCard/NotRead.svg'
@@ -41,17 +41,18 @@ const getFilterIcon = (filter: EcogestViewedEnum) => {
  * @returns A Component which displays and filter a list of ecogestes.
  */
 export const EcogestesList = () => {
-    const { categoryId } = useParams</**
+    const { tagId } = useParams</**
      * Params object.
      */
     {
         /**
          * The category id of the ecogestes. Use 0 for all.
          */
-        categoryId: string
+        tagId: string
     }>()
 
-    const categoryIdInt = categoryId ? parseInt(categoryId) : 0
+    // unparseable tagid is undefined, and undefined is all ecogests.
+    const categoryIdInt = tagId ? parseInt(tagId) : undefined
 
     const {
         elementList: ecogestesList,
@@ -86,15 +87,24 @@ export const EcogestesList = () => {
      */
     const handleFilterClick = (viewed: EcogestViewedEnum) => {
         setCurrentViewFilter(viewed)
-        filterEcogestes({ viewed })
+        filterEcogestes({ viewed, tag_id: categoryIdInt })
         handleClose()
     }
+
+    useEffect(() => {
+        if (categoryIdInt) {
+            filterEcogestes({ viewed: currentViewFilter, tag_id: categoryIdInt })
+        }
+        // We don't want an update for every change in our deps, only at mount.
+        // Hence why we have empty deps array.
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])
 
     return (
         <>
             <div className="flex justify-between w-full">
                 <TypographyFormatMessage variant="h2" className="text-20 mb-20 font-bold">
-                    {categoryIdInt > 0 ? `Categorie: ${categoryIdInt}` : 'Liste de tous les écogestes:'}
+                    {categoryIdInt ? `Categorie: ${categoryIdInt}` : 'Liste de tous les écogestes:'}
                 </TypographyFormatMessage>
                 <div>
                     <Button
