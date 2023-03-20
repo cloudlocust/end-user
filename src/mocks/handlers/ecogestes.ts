@@ -62,6 +62,9 @@ export const TEST_ECOGESTES: SnakeCasedPropertiesDeep<IEcogeste>[] = [
     },
 ]
 
+/**
+ * Mock list of tags.
+ */
 export const TEST_ECOGESTES_TAGS: SnakeCasedPropertiesDeep<IEcogestTag>[] = [
     {
         id: 1,

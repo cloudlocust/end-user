@@ -2,7 +2,7 @@ import { Divider, styled, useTheme } from '@mui/material'
 import React from 'react'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import PageSimple from 'src/common/ui-kit/fuse/components/PageSimple'
-import { EcogestesList } from 'src/modules/Ecogestes'
+import { EcogestTagCard } from 'src/modules/Ecogestes/components/ecogesteTagsCard'
 
 const Root = styled(PageSimple)(({ theme }) => ({
     '& .PageSimple-header': {
@@ -53,8 +53,16 @@ export const Advices = () => {
             }
             content={
                 <>
-                    <div className="w-full pl-20 pt-20">
-                        <EcogestesList />
+                    <div>
+                        <EcogestTagCard
+                            ecogestTag={{
+                                id: 1,
+                                name: 'Isolation et Ventilation',
+                                ecogestAmount: 220,
+                                icon: 'https://drive.google.com/uc?export=view&id=10NPb2PC1bWaKDZJXuwWly7_b11W-S46O',
+                                type: 'POLE',
+                            }}
+                        ></EcogestTagCard>
                     </div>
                     <Divider variant="middle" role="presentation" />
                     <div>{/* Challenge list -- Later */}</div>
