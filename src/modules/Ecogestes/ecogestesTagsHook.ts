@@ -25,7 +25,7 @@ export const useEcogesteTags = () => {
     const { elementList, loadingInProgress } = BuilderUseElementList<IEcogestTag, IEcogestTag, undefined>({
         API_ENDPOINT: ECOGESTES_TAGS_ENDPOINT,
         snackBarMessage0verride: { loadElementListError },
-    })(undefined, { viewed: undefined })
+    })(undefined, {})
 
     return {
         elementList,

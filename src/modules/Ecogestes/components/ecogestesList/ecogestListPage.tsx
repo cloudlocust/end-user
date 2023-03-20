@@ -7,6 +7,15 @@ import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyForm
 import { useParams } from 'react-router-dom'
 import useEcogesteTags from 'src/modules/Ecogestes/ecogestesTagsHook'
 import { IEcogestTag } from 'src/modules/Ecogestes/components/ecogeste'
+import { EcogestTagCard } from 'src/modules/Ecogestes/components/ecogesteTagsCard'
+
+const PLACEHOLDER_ALL_TAGS_HEADER: IEcogestTag = {
+    ecogestAmount: 0,
+    id: 0,
+    name: 'Toutes les catégories',
+    type: '',
+    icon: 'an icon',
+}
 
 /**
  * Ecogest List, but the page itself.
@@ -30,10 +39,11 @@ const EcogestListPage = () => {
 
     const { loadingInProgress, elementList } = useEcogesteTags()
 
-    const [curr_tag, setCurrTag] = useState<null | undefined | IEcogestTag>(null)
+    const [curr_tag, setCurrTag] = useState<null | undefined | IEcogestTag>(PLACEHOLDER_ALL_TAGS_HEADER)
 
     useEffect(() => {
-        setCurrTag(elementList ? elementList.find((element) => element.id === tagIdInt) : null)
+        let tag = elementList?.find((element) => element.id === tagIdInt)
+        setCurrTag(tag ? tag : PLACEHOLDER_ALL_TAGS_HEADER)
     }, [elementList, tagIdInt])
 
     return (
@@ -81,9 +91,17 @@ const EcogestListPage = () => {
                 </ThemeProvider>
             }
             content={
-                <div className="m-10 p-10">
-                    <EcogestesList />
-                </div>
+                curr_tag?.id && curr_tag.id > 0 && elementList ? (
+                    <div className="m-10 p-10">
+                        <EcogestesList />
+                    </div>
+                ) : (
+                    <div className="m-10 p-10 flex flex-1 gap-9">
+                        {elementList?.map((element) => (
+                            <EcogestTagCard ecogestTag={element} />
+                        ))}
+                    </div>
+                )
             }
         />
     )

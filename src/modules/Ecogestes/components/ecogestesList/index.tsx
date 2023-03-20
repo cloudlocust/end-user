@@ -104,7 +104,7 @@ export const EcogestesList = () => {
         <>
             <div className="flex justify-between w-full">
                 <TypographyFormatMessage variant="h2" className="text-20 mb-20 font-bold">
-                    {categoryIdInt ? `Categorie: ${categoryIdInt}` : 'Liste de tous les écogestes:'}
+                    {categoryIdInt ? `Les écogestes associés` : 'Liste de tous les écogestes:'}
                 </TypographyFormatMessage>
                 <div>
                     <Button
