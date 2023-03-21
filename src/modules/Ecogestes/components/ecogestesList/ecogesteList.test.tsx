@@ -63,7 +63,7 @@ describe('EcogestesList tests', () => {
                 </BrowserRouter>,
             )
 
-            expect(queryByLabelText('ecogeste-listing')).toBeTruthy()
+            expect(queryByLabelText('list, ecogests, cards')).toBeTruthy()
             expect(queryAllByLabelText('ecogeste-card')).toHaveLength(TEST_ECOGESTES.length)
         })
 
@@ -76,7 +76,7 @@ describe('EcogestesList tests', () => {
                 </BrowserRouter>,
             )
 
-            expect(queryByLabelText('ecogeste-listing')).toBeTruthy()
+            expect(queryByLabelText('list, ecogests, cards')).toBeTruthy()
             expect(queryAllByLabelText('ecogeste-card')).toHaveLength(0)
             expect(queryByText("Aucun écogeste n'est disponible pour le moment.")).toBeTruthy()
         })

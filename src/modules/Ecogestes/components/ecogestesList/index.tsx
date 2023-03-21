@@ -162,7 +162,7 @@ export const EcogestesList = () => {
                 "Aucun écogeste n'est disponible pour le moment."}
             <div
                 className="flex flex-nowrap gap-5 flex-col sm:flex-row  w-full sm:flex-wrap h-full sm:h-auto"
-                aria-label="ecogeste-listing"
+                aria-label="list, ecogests, cards"
             >
                 {isEcogestesLoadingInProgress
                     ? limits.map((_, index) => <ImageCardLoader key={index} />)

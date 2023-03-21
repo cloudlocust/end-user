@@ -36,7 +36,7 @@ export const EcogestTagCard = ({
 
     return (
         <>
-            <Card style={{ width: '20rem', height: '23rem' }}>
+            <Card style={{ width: '20rem', height: '23rem' }} aria-label="ecogest-tag, card">
                 <CardActionArea className="w-full h-full" onClick={handleClick}>
                     <CardContent className="flex flex-col flex-nowrap justify-around h-full w-full">
                         <Icon

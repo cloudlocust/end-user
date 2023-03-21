@@ -96,7 +96,7 @@ const EcogestListPage = () => {
                         <EcogestesList />
                     </div>
                 ) : (
-                    <div className="m-10 p-10 flex flex-1 gap-9">
+                    <div className="m-10 p-10 flex flex-1 gap-9" aria-label="list, tags, cards">
                         {elementList?.map((element) => (
                             <EcogestTagCard ecogestTag={element} />
                         ))}
