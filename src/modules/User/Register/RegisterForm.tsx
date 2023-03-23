@@ -18,7 +18,7 @@ import { generalTermsOfUse, privacyPolicy } from 'src/modules/Mentions/MentionsC
 import { isProfessionalRegisterFeature } from 'src/modules/User/Register/RegisterConfig'
 import { sirenFieldRegex } from 'src/modules/User/Register/utils'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
-
+import { DatePicker } from 'src/common/ui-kit/form-fields/DatePicker'
 /**
  * Civility Option has two properties: (label that shown in the front visual) and (value that goes to the backend).
  */
@@ -146,6 +146,18 @@ export const RegisterForm = ({
                     validateFunctions={[requiredBuilder()]}
                 />
                 <GoogleMapsAddressAutoCompleteField name="address" validateFunctions={[requiredBuilder()]} />
+                <DatePicker
+                    name="birthdate"
+                    label={formatMessage({
+                        id: 'Date de naissance',
+                        defaultMessage: 'Date de naissance',
+                    })}
+                    textFieldProps={{
+                        style: {
+                            margin: '0 0 20px 0',
+                        },
+                    }}
+                />
                 <PasswordField
                     name="password"
                     label="Mot de passe"

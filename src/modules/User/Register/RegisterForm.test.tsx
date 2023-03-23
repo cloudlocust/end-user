@@ -97,6 +97,7 @@ const CHECKBOX_RGPD_ERROR_TEXT = 'Ce champ est obligatoire'
 // eslint-disable-next-line jsdoc/require-jsdoc
 export const passwordQuerySelector = 'input[name="password"]'
 const VALIDER_TEXT = 'Valider'
+const BIRTHDATE_lABEL = 'Date de naissance'
 
 jest.mock('use-places-autocomplete', () => ({
     ...jest.requireActual('use-places-autocomplete'),
@@ -295,6 +296,10 @@ describe('test registerForm', () => {
         const checkboxRGPD = container.querySelector('input[name="rgpdCheckbox"]') as Element
         userEvent.click(checkboxRGPD)
         userEvent.click(screen.getByText(VALIDER_TEXT))
+
+        //! not finding a way to test when the input value is filled.
+        userEvent.click(getByLabelText(BIRTHDATE_lABEL))
+        await waitFor(() => expect(screen.getByRole('dialog')).toBeTruthy())
 
         expect(screen.getByText('Valider')).toBeTruthy()
         await waitFor(

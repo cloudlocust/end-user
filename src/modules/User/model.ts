@@ -57,6 +57,10 @@ interface IBaseUser {
      */
     siren?: string
     /**
+     * Birthdate.
+     */
+    birthdate?: string
+    /**
      * Email of the user.
      */
     email: string
