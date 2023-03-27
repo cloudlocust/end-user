@@ -31,6 +31,7 @@ import { warningMainHashColor } from 'src/modules/utils/muiThemeVariables'
 import useMediaQuery from '@mui/material/useMediaQuery'
 import { ConsumptionEnedisSgeWarning } from 'src/modules/MyConsumption/components/MyConsumptionChart/ConsumptionChartWarnings'
 import { sgeConsentFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
+import { AnalysisMaxPower } from 'src/modules/Analysis/components/AnalysisMaxPower'
 
 /**
  * InitialMetricsStates for useMetrics.
@@ -50,6 +51,10 @@ export const initialMetricsHookValues: getMetricType = {
             target: metricTargetsEnum.eurosConsumption,
             type: 'timeserie',
         },
+        {
+            target: metricTargetsEnum.pMax,
+            type: 'timeserie',
+        },
     ],
     filters: [],
 }
@@ -67,7 +72,6 @@ const Analysis = () => {
     const { data, setRange, setFilters, isMetricsLoading, filters, range } = useMetrics(initialMetricsHookValues)
     const [activeInformationName, setActiveInformationName] = useState<analysisInformationName | undefined>(undefined)
     const isMobile = useMediaQuery(theme.breakpoints.down('lg'))
-
     const { currentHousing } = useSelector(({ housingModel }: RootState) => housingModel)
     const { hasMissingHousingContracts } = useHasMissingHousingContracts(range, currentHousing?.id)
     // Indicates if enedisSgeConsent is not Connected
@@ -92,15 +96,21 @@ const Analysis = () => {
     }
 
     useEffect(() => {
-        if (currentHousing && currentHousing.meter) setFilters(formatMetricFilter(currentHousing.meter.guid))
-    }, [currentHousing, setFilters])
+        if (!currentHousing?.meter?.guid) return
+        setFilters(formatMetricFilter(currentHousing?.meter.guid))
+        getConsents(currentHousing?.meter?.guid, currentHousing?.id)
+    }, [currentHousing?.meter?.guid, setFilters, getConsents, currentHousing?.id])
 
-    // UseEffect to check for consent whenever a meter is selected.
-    useEffect(() => {
-        if (filters.length > 0) {
-            getConsents(filters[0].value, currentHousing?.id)
-        }
-    }, [currentHousing?.id, filters, getConsents])
+    // useEffect(() => {
+    //     if (currentHousing && currentHousing.meter?.guid) setFilters(formatMetricFilter(currentHousing.meter.guid))
+    // }, [currentHousing, setFilters])
+
+    // // UseEffect to check for consent whenever a meter is selected.
+    // useEffect(() => {
+    //     if (filters.length > 0) {
+    //         getConsents(filters[0].value, currentHousing?.id)
+    //     }
+    // }, [currentHousing?.id, filters, getConsents])
 
     /**
      * Handler when DatePicker change, to apply the range related to Analysis Component and overwrites the default ConsumptionDatePicker.
@@ -238,6 +248,7 @@ const Analysis = () => {
             {!isMetricsLoading && (
                 <div className="p-24 analysis-information-list">
                     <AnalysisInformationList activeInformationName={activeInformationName} data={data} range={range} />
+                    {!enedisSgeOff && <AnalysisMaxPower data={data} housingId={currentHousing!.id} />}
                 </div>
             )}
         </div>
