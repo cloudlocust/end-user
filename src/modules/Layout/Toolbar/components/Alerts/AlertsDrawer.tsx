@@ -15,7 +15,7 @@ import { useHasMissingHousingContracts } from 'src/hooks/HasMissingHousingContra
 import { getChannelPreferencesByInterval, rangeOfCurrentMonth } from './AlertsDrawerVariables'
 import { EcowattAlerts } from 'src/modules/Layout/Toolbar/components/Alerts/EcowattAlerts'
 import { useNovuAlertPreferences } from './NovuAlertPreferencesHook'
-// import { EcowattAlerts } from 'src/modules/Layout/Toolbar/components/Alerts/EcowattAlerts'
+import { TempoAlerts } from 'src/modules/Layout/Toolbar/components/Alerts/TempoAlerts'
 
 const StyledSwipeableDrawer = styled(SwipeableDrawer)(({ theme }) => ({
     '& .MuiDrawer-paper': {
@@ -113,7 +113,7 @@ export const AlertsDrawer = ({ closeAlertsDrawer }: { closeAlertsDrawer: () => v
                     saveConsumptionAlert={saveConsumptionAlert}
                     isConsumptionAlertsLoading={isAlertsLoadingInProgress}
                     isSavingAlertLoading={isSavingInProgress}
-                    initialAlertPreferencesValues={getChannelPreferencesByInterval('day', novuAlertPreferences)}
+                    initialAlertPreferencesValues={getChannelPreferencesByInterval('day', novuAlertPreferences!)}
                     updateNovuAlertPreferences={updateNovuAlertPreferences}
                     isNovuAlertPreferencesLoading={isNovuAlertPreferencesLoading}
                 />
@@ -124,7 +124,7 @@ export const AlertsDrawer = ({ closeAlertsDrawer }: { closeAlertsDrawer: () => v
                     saveConsumptionAlert={saveConsumptionAlert}
                     isConsumptionAlertsLoading={isAlertsLoadingInProgress}
                     isSavingAlertLoading={isSavingInProgress}
-                    initialAlertPreferencesValues={getChannelPreferencesByInterval('week', novuAlertPreferences)}
+                    initialAlertPreferencesValues={getChannelPreferencesByInterval('week', novuAlertPreferences!)}
                     updateNovuAlertPreferences={updateNovuAlertPreferences}
                     isNovuAlertPreferencesLoading={isNovuAlertPreferencesLoading}
                 />
@@ -135,11 +135,12 @@ export const AlertsDrawer = ({ closeAlertsDrawer }: { closeAlertsDrawer: () => v
                     saveConsumptionAlert={saveConsumptionAlert}
                     isConsumptionAlertsLoading={isAlertsLoadingInProgress}
                     isSavingAlertLoading={isSavingInProgress}
-                    initialAlertPreferencesValues={getChannelPreferencesByInterval('month', novuAlertPreferences)}
+                    initialAlertPreferencesValues={getChannelPreferencesByInterval('month', novuAlertPreferences!)}
                     updateNovuAlertPreferences={updateNovuAlertPreferences}
                     isNovuAlertPreferencesLoading={isNovuAlertPreferencesLoading}
                 />
                 <EcowattAlerts />
+                <TempoAlerts />
             </div>
         </StyledSwipeableDrawer>
     )

@@ -4,24 +4,7 @@ import { useHistory } from 'react-router-dom'
 import PageSimple from 'src/common/ui-kit/fuse/components/PageSimple'
 import { motion } from 'framer-motion'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
-
-/**
- * Mentions list.
- */
-export const listUrl = [
-    {
-        title: 'Conditions Générales d’Utilisations',
-        link: 'https://www.myem.fr/mentions-legales/',
-    },
-    {
-        title: 'Politique de Confidentialité',
-        link: 'https://drive.google.com/uc?export=download&id=1sMFMizrEPZ4ZHhe6Zf-PTJGRUQBFGUEv',
-    },
-    {
-        title: 'Consentement à la récolte des données de consommation',
-        link: 'https://drive.google.com/uc?export=download&id=15QHX14AWoKepWuEJBxscijK5IIHPnCbl',
-    },
-]
+import { generalTermsOfUse, privacyPolicy } from 'src/modules/Mentions/MentionsConfig'
 
 /**
  * Mentions page.
@@ -31,6 +14,24 @@ export const listUrl = [
 export const Mentions = (): JSX.Element => {
     const { formatMessage } = useIntl()
     const history = useHistory()
+
+    /**
+     * Mentions list.
+     */
+    const listUrl = [
+        {
+            title: 'Conditions Générales d’Utilisations',
+            link: `${generalTermsOfUse}`,
+        },
+        {
+            title: 'Politique de Confidentialité',
+            link: `${privacyPolicy}`,
+        },
+        {
+            title: 'Consentement à la récolte des données de consommation',
+            link: 'https://drive.google.com/uc?export=download&id=15QHX14AWoKepWuEJBxscijK5IIHPnCbl',
+        },
+    ]
 
     return (
         <PageSimple
