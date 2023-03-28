@@ -111,7 +111,7 @@ export const DatePicker: FC<DatePickerFieldProps> = function ({
                     // note: you must not use undefined because it display current date
                     value={field.value || null}
                     onChange={(date) => {
-                        if (date.isValid()) {
+                        if (date && dayjs(date).isValid()) {
                             setValue(name, date.format(valueFormat), { shouldValidate: true })
                         } else {
                             setValue(name, date, { shouldValidate: true })

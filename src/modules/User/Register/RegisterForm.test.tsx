@@ -6,6 +6,7 @@ import { act } from 'react-dom/test-utils'
 import { ADDRESS_TESTID } from 'src/common/ui-kit/form-fields/GoogleMapsAddressAutoComplete/GoogleMapsAddressAutoCompleteField.test'
 import userEvent from '@testing-library/user-event'
 import { TEST_SUCCESS_USER } from 'src/mocks/handlers/user'
+import dayjs from 'dayjs'
 
 // ============================================ this part is for required data to mock the address field ===============
 /**
@@ -312,6 +313,13 @@ describe('test registerForm', () => {
                     firstName: 'test prénom',
                     lastName: 'test nom',
                     phone: TEST_SUCCESS_USER.phone,
+                    /**
+                     * TODO: Rewrite the birthdate test.
+                     * There is a difficult in simulating the datepicker.
+                     * When it's clicked using userEvent.click
+                     * It takes the current date.
+                     */
+                    birthdate: dayjs().format('DD/MM/YYYY'),
                     password: 'P@ssword1',
                     address: {
                         city: 'test locality',
