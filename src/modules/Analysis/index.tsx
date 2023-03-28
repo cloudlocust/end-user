@@ -96,21 +96,15 @@ const Analysis = () => {
     }
 
     useEffect(() => {
-        if (!currentHousing?.meter?.guid) return
-        setFilters(formatMetricFilter(currentHousing?.meter.guid))
-        getConsents(currentHousing?.meter?.guid, currentHousing?.id)
-    }, [currentHousing?.meter?.guid, setFilters, getConsents, currentHousing?.id])
+        if (currentHousing && currentHousing.meter?.guid) setFilters(formatMetricFilter(currentHousing.meter.guid))
+    }, [currentHousing, setFilters])
 
-    // useEffect(() => {
-    //     if (currentHousing && currentHousing.meter?.guid) setFilters(formatMetricFilter(currentHousing.meter.guid))
-    // }, [currentHousing, setFilters])
-
-    // // UseEffect to check for consent whenever a meter is selected.
-    // useEffect(() => {
-    //     if (filters.length > 0) {
-    //         getConsents(filters[0].value, currentHousing?.id)
-    //     }
-    // }, [currentHousing?.id, filters, getConsents])
+    // UseEffect to check for consent whenever a meter is selected.
+    useEffect(() => {
+        if (filters.length > 0) {
+            getConsents(filters[0].value, currentHousing?.id)
+        }
+    }, [currentHousing?.id, filters, getConsents])
 
     /**
      * Handler when DatePicker change, to apply the range related to Analysis Component and overwrites the default ConsumptionDatePicker.
