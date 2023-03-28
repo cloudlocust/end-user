@@ -98,7 +98,7 @@ const CHECKBOX_RGPD_ERROR_TEXT = 'Ce champ est obligatoire'
 // eslint-disable-next-line jsdoc/require-jsdoc
 export const passwordQuerySelector = 'input[name="password"]'
 const VALIDER_TEXT = 'Valider'
-const BIRTHDATE_lABEL = 'Date de naissance'
+const BIRTHDATE_lABEL = 'Votre Anniversaire'
 
 jest.mock('use-places-autocomplete', () => ({
     ...jest.requireActual('use-places-autocomplete'),
