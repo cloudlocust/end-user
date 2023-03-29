@@ -103,7 +103,8 @@ export const PMaxWidgetInfoIcon = () => {
                             sx: {
                                 cursor: 'pointer',
                                 color: '#FFFFFF',
-                                padding: '12px',
+                                padding: '4px',
+                                fontWeight: 'normal',
                             },
                         }}
                         houseId={currentHousing!.id}
