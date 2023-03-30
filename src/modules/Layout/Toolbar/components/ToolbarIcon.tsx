@@ -1,5 +1,5 @@
 import Hidden from '@mui/material/Hidden'
-import { CLIENT_ICON_FOLDER } from 'src/configs'
+import NavbarLogoComponent from 'src/common/ui-kit/fuse/layouts/layout1/components/navbar/logo/NavbarLogoComponent'
 
 /**
  * Component displays the icon.
@@ -9,12 +9,7 @@ import { CLIENT_ICON_FOLDER } from 'src/configs'
 const ToolbarIcon = () => {
     return (
         <Hidden lgUp>
-            <img
-                className="ml-8"
-                src={`./clients-icons/${CLIENT_ICON_FOLDER}/${CLIENT_ICON_FOLDER}.svg`}
-                alt="logo"
-                width="45"
-            />
+            <NavbarLogoComponent />
         </Hidden>
     )
 }

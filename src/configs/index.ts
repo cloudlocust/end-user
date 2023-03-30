@@ -81,6 +81,11 @@ export const API_RESOURCES_URL = window._env_.REACT_APP_API_RESOURCES_URL
 export const CLIENT_ICON_FOLDER = window._env_.REACT_APP_CLIENT_ICON_FOLDER
 
 /**
+ * Current Client website Application URL.
+ */
+export const CLIENT_WEBSITE_URL = window._env_.REACT_APP_CLIENT_WEBSITE_URL
+
+/**
  * REACT_APP_NOVU_SOCKET_URL.
  */
 export const REACT_APP_NOVU_SOCKET_URL = window._env_.REACT_APP_NOVU_SOCKET_URL
