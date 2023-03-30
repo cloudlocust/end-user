@@ -24,6 +24,7 @@ import OffpeakHoursField from 'src/modules/Contracts/components/OffpeakHoursFiel
 import { useParams } from 'react-router-dom'
 import { useMeterForHousing } from 'src/modules/Meters/metersHook'
 import { OtherProviderOfferOptionMessage } from 'src/modules/Contracts/components/ContractFormMessages'
+import { isActivateOtherOffersAndProviders } from 'src/modules/Contracts/ContractsConfig'
 import { getTariffContractUnit } from 'src/modules/Contracts/utils/contractsFunctions'
 
 const defaultContractFormValues: contractFormValuesType = {
@@ -199,7 +200,7 @@ const ContractFormFields = ({ isContractsLoading }: ContractFormFieldsProps) => 
                         isOptionsInProgress={isProvidersLoading}
                         loadOptions={loadProviderOptions}
                         optionList={orderBy(providerList, 'name', 'asc')}
-                        otherOptionLabel="Autre fournisseur"
+                        otherOptionLabel={isActivateOtherOffersAndProviders ? 'Autre fournisseur' : undefined}
                         name="providerId"
                         label="Fournisseur"
                         validateFunctions={[requiredBuilder()]}
@@ -215,7 +216,7 @@ const ContractFormFields = ({ isContractsLoading }: ContractFormFieldsProps) => 
                         formatOptionValue={(option) => option.id}
                         isOptionsInProgress={isOffersLoading}
                         loadOptions={loadOfferOptions}
-                        otherOptionLabel="Autre offre"
+                        otherOptionLabel={isActivateOtherOffersAndProviders ? 'Autre offre' : undefined}
                         optionList={orderBy(offerList, 'name', 'asc')}
                         name="offerId"
                         label="Offre"
