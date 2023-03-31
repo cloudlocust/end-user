@@ -107,9 +107,7 @@ export const EcogestesList = () => {
                         aria-haspopup="true"
                         aria-expanded={open ? 'true' : undefined}
                     >
-                        <TypographyFormatMessage className="font-semibold text-center" color="ButtonText">
-                            Filtrer
-                        </TypographyFormatMessage>
+                        <TypographyFormatMessage className="font-semibold text-center">Filtrer</TypographyFormatMessage>
                     </Button>
                     <Menu
                         id="basic-menu"

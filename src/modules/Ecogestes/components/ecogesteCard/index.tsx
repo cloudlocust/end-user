@@ -12,16 +12,15 @@ import {
 } from '@mui/material'
 import VisibilityIcon from '@mui/icons-material/Visibility'
 import SavingsIcon from '@mui/icons-material/Savings'
-import InfoIcon from '@mui/icons-material/Info'
 import { useTheme } from '@mui/material'
 import { ReactComponent as NotViewIcon } from './NotRead.svg'
+import { ReactComponent as InfoIcon } from './lightbulb.svg'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import { debounce, truncate } from 'lodash'
 import { IEcogeste } from 'src/modules/Ecogestes/components/ecogeste'
 import useResizeObserver from 'src/modules/utils/useResizeObserver'
 import useEcogestes from 'src/modules/Ecogestes/ecogestesHook'
 import { Icon } from 'src/common/ui-kit'
-import { linksColor } from 'src/modules/utils/muiThemeVariables'
 
 /**
  * A card that renders a given ecogeste.
@@ -173,16 +172,22 @@ export const EcogesteCard = ({
                             </div>
                             <div>
                                 <IconButton
-                                    className="p-0 text-4xl rounded-lg aspect-square"
+                                    className="p-5 text-lg aspect-square rounded-full"
                                     style={{
                                         aspectRatio: '1/1',
+                                        background: theme.palette.primary.main,
                                     }}
-                                    color="primary"
                                     size="large"
                                     onClick={onInfoClick}
                                     aria-label="button, more information about gest"
                                 >
-                                    <InfoIcon />
+                                    <SvgIcon
+                                        inheritViewBox
+                                        sx={{ color: theme.palette.primary.contrastText }}
+                                        fontSize="inherit"
+                                    >
+                                        <InfoIcon />
+                                    </SvgIcon>
                                 </IconButton>
                             </div>
                         </div>
@@ -218,7 +223,7 @@ export const EcogesteCard = ({
                     <div className="absolute bottom-2" style={{ width: '90%', cursor: 'pointer' }}>
                         {shouldEllipse && !seeFull ? (
                             <TypographyFormatMessage
-                                color={linksColor || theme.palette.primary.main}
+                                color={theme.palette.primary.main}
                                 fontWeight={500}
                                 className="w-fit text-right mr-0 ml-auto underline cursor-pointer"
                                 style={{ width: 'fit-content' }}
@@ -229,7 +234,7 @@ export const EcogesteCard = ({
                         ) : (
                             seeFull && (
                                 <TypographyFormatMessage
-                                    color={linksColor || theme.palette.primary.main}
+                                    color={theme.palette.primary.main}
                                     fontWeight={500}
                                     className="mx-auto w-fit text-center underline cursor-pointer"
                                     style={{ width: 'fit-content' }}

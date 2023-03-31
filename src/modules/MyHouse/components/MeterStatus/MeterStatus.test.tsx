@@ -68,7 +68,7 @@ let mockEditMeter = jest.fn()
 // eslint-disable-next-line sonarjs/no-duplicate-string
 const STATUS_ON_SRC = './assets/images/content/housing/consent-status/meter-on.svg'
 // eslint-disable-next-line sonarjs/no-duplicate-string
-const STATUS_OFF_SRC = 'meter-off.svg'
+const STATUS_OFF_SRC = './assets/images/content/housing/consent-status/meter-off.svg'
 
 jest.mock('src/modules/Meters/metersHook', () => ({
     // eslint-disable-next-line jsdoc/require-jsdoc
@@ -195,34 +195,36 @@ describe('MeterStatus component test', () => {
         test('when nrlink status is disconnected', async () => {
             mockNrlinkConsent = 'DISCONNECTED'
 
-            const { getByText, getAllByText } = reduxedRender(
+            const { getByText, getByAltText } = reduxedRender(
                 <Router>
                     <MeterStatus />
                 </Router>,
             )
             expect(mockGetConsent).toBeCalledWith(foundHouse?.meter?.guid, mockHouseId)
             // Retrieve image alt attribute
+            const image = getByAltText('error-icon')
             expect(getByText(COMPTEUR_TITLE)).toBeTruthy()
             expect(getByText(`n° ${foundHouse?.meter?.guid}`)).toBeTruthy()
             expect(getByText(NRLINK_TITLE)).toBeTruthy()
-            expect(getAllByText(STATUS_OFF_SRC)[0]).toBeTruthy()
             expect(getByText(NRLINK_DISCONNECTED_MESSAGE)).toBeTruthy()
+            expect(image).toHaveAttribute('src', './assets/images/content/housing/consent-status/meter-error.svg')
         })
         test('when nrlink status is expired or nonexistant', async () => {
             mockNrlinkConsent = 'EXPIRED' || 'NONEXISTENT'
 
-            const { getByText, getAllByText } = reduxedRender(
+            const { getByText, getAllByAltText } = reduxedRender(
                 <Router>
                     <MeterStatus />
                 </Router>,
             )
             expect(mockGetConsent).toBeCalledWith(foundHouse?.meter?.guid, mockHouseId)
             // Retrieve image alt attribute
+            const image = getAllByAltText('off-icon')[0]
             expect(getByText(COMPTEUR_TITLE)).toBeTruthy()
             expect(getByText(`n° ${foundHouse?.meter?.guid}`)).toBeTruthy()
             expect(getByText(NRLINK_TITLE)).toBeTruthy()
             expect(getByText(NRLINK_NONEXISTANT_EXPIRED_MESSAGE)).toBeTruthy()
-            expect(getAllByText(STATUS_OFF_SRC)[0]).toBeTruthy()
+            expect(image).toHaveAttribute('src', './assets/images/content/housing/consent-status/meter-off.svg')
             expect(getByText(NRLINK_NONEXISTANT_EXPIRED_MESSAGE).closest('a')).toHaveAttribute(
                 'href',
                 `${URL_NRLINK_CONNECTION_STEPS}/${mockHouseId}`,
@@ -268,7 +270,7 @@ describe('MeterStatus component test', () => {
             foundHouse!.meter!.guid = '12345Her'
             mockNrlinkConsent = 'DISCONNECTED'
             mockEnedisSgeConsent = 'EXPIRED' || 'NONEXISTENT'
-            const { getByText, getAllByText } = reduxedRender(
+            const { getByText, getByAltText } = reduxedRender(
                 <Router>
                     <MeterStatus />
                 </Router>,
@@ -276,7 +278,8 @@ describe('MeterStatus component test', () => {
             expect(getByText(COMPTEUR_TITLE)).toBeTruthy()
             expect(getByText(`n° ${foundHouse?.meter?.guid}`)).toBeTruthy()
             expect(getByText(ENEDIS_NONEXISTANT_EXPIRED_MESSAGE)).toBeTruthy()
-            expect(getAllByText(STATUS_OFF_SRC)[0]).toBeTruthy()
+            const image = getByAltText('off-icon')
+            expect(image).toHaveAttribute('src', './assets/images/content/housing/consent-status/meter-off.svg')
         })
     })
     describe('enphase status', () => {
@@ -295,13 +298,14 @@ describe('MeterStatus component test', () => {
         test('when enphase status is NOT ACTIVE', async () => {
             foundHouse!.meter!.guid = '12345Her'
             mockEnphaseConsent = 'EXPIRED' || 'NONEXISTENT'
-            const { getByText, getAllByText } = reduxedRender(
+            const { getByText, getByAltText } = reduxedRender(
                 <Router>
                     <MeterStatus />
                 </Router>,
             )
+            const activeIcon = getByAltText('enphase-off-icon')
             expect(getByText(ERROR_ENPHASE_MESSAGE)).toBeTruthy()
-            expect(getAllByText(STATUS_OFF_SRC)[0]).toBeTruthy()
+            expect(activeIcon).toHaveAttribute('src', STATUS_OFF_SRC)
         })
         test('when enphase status is PENDING', async () => {
             foundHouse!.meter!.guid = '12345Her'

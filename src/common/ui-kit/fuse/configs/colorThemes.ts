@@ -86,7 +86,7 @@ const colorThemes: colorThemesType = {
     myem: {
         // TODO REMOVE ONCE THERE IS A NEW THEME NEED to OVERRIDE ALL LINKS.
         // extendedColors: {
-        //     links: 'green',
+        //     links: '#ff674a',
         // },
         MUI: {
             palette: {
@@ -116,10 +116,18 @@ const colorThemes: colorThemesType = {
             // components: {
             //     MuiButton: {
             //         styleOverrides: {
-            //             containedPrimary: {
-            //                 backgroundColor: 'blue',
+            //             outlinedPrimary: {
+            //                 borderColor: '#ff674a',
+            //                 color: '#ff674a',
             //                 '&:hover': {
-            //                     backgroundColor: 'purple',
+            //                     borderColor: '#ff674a',
+            //                 },
+            //             },
+            //             containedPrimary: {
+            //                 backgroundColor: '#ff674a',
+            //                 '&:hover': {
+            //                     backgroundColor: '#FFFFFF',
+            //                     color: '#ff674a',
             //                 },
             //             },
             //         },
