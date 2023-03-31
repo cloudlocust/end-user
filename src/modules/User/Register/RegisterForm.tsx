@@ -18,6 +18,7 @@ import { generalTermsOfUse, privacyPolicy } from 'src/modules/Mentions/MentionsC
 import { isProfessionalRegisterFeature } from 'src/modules/User/Register/RegisterConfig'
 import { sirenFieldRegex } from 'src/modules/User/Register/utils'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
+import { linksColor } from 'src/modules/utils/muiThemeVariables'
 
 /**
  * Civility Option has two properties: (label that shown in the front visual) and (value that goes to the backend).
@@ -173,7 +174,11 @@ export const RegisterForm = ({
                                     plateforme et suivre votre consommation. Vous pouvez retrouver plus d'informations sur vos droits
                                     via notre `,
                     })}
-                    <LinkRedirection url={privacyPolicy} label="Politique de Confidentialité" color="primary.main" />
+                    <LinkRedirection
+                        url={privacyPolicy}
+                        label="Politique de Confidentialité"
+                        color={linksColor || 'primary.main'}
+                    />
                 </span>
                 {/* TODO Create a checkbox reusable component */}
                 <FormControl required error={rgpdCheckboxState === ''}>
@@ -198,7 +203,7 @@ export const RegisterForm = ({
                                 <LinkRedirection
                                     url={generalTermsOfUse}
                                     label="Conditions Générales d’Utilisation"
-                                    color="primary.main"
+                                    color={linksColor || 'primary.main'}
                                 />
                             </span>
                         }

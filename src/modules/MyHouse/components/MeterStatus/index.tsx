@@ -16,6 +16,8 @@ import { useSelector } from 'react-redux'
 import { RootState } from 'src/redux'
 import { IHousing } from 'src/modules/MyHouse/components/HousingList/housing'
 import { EnphaseConsentPopup } from 'src/modules/MyHouse/components/MeterStatus/EnphaseConsentPopup'
+import { linksColor } from 'src/modules/utils/muiThemeVariables'
+import { ReactComponent as MeterOffIcon } from 'src/assets/images/content/housing/meter-off.svg'
 
 const FORMATTED_DATA = 'DD/MM/YYYY'
 const TEXT_CONNEXION_LE = 'Connexion le'
@@ -175,9 +177,14 @@ export const MeterStatus = () => {
             default:
                 return (
                     <>
-                        <Icon className="mr-12">
-                            <img src="./assets/images/content/housing/consent-status/meter-off.svg" alt="off-icon" />
-                        </Icon>
+                        <MeterOffIcon
+                            style={{
+                                width: '24px',
+                                height: '24px',
+                                color: linksColor || theme.palette.primary.main,
+                                marginRight: '12px',
+                            }}
+                        />
                         <div className="flex flex-col">
                             <NavLink
                                 to={{
@@ -190,7 +197,7 @@ export const MeterStatus = () => {
                                 }}
                             >
                                 <TypographyFormatMessage
-                                    color={theme.palette.error.main}
+                                    color={linksColor || theme.palette.error.main}
                                     className="underline"
                                     fontWeight={600}
                                 >
@@ -239,7 +246,7 @@ export const MeterStatus = () => {
                                 <div>
                                     <TypographyFormatMessage
                                         className="underline cursor-pointer"
-                                        color={theme.palette.primary.main}
+                                        color={linksColor || theme.palette.primary.main}
                                         fontWeight={500}
                                     >
                                         Annuler la récolte de mes données
@@ -262,12 +269,14 @@ export const MeterStatus = () => {
                                 />
                             </Icon>
                         ) : (
-                            <Icon className="mr-12 text-grey-600">
-                                <img
-                                    src="./assets/images/content/housing/consent-status/meter-off.svg"
-                                    alt="off-icon"
-                                />
-                            </Icon>
+                            <MeterOffIcon
+                                className="mr-12"
+                                style={{
+                                    width: '35.5px',
+                                    height: '24px',
+                                    color: linksColor || theme.palette.primary.main,
+                                }}
+                            />
                         )}
                         <div className="flex flex-col">
                             <EnedisSgePopup
@@ -277,7 +286,7 @@ export const MeterStatus = () => {
                                         'Autorisez la récupération de vos données de consommation pour avoir accès à votre historique.',
                                 })}
                                 TypographyProps={{
-                                    color: theme.palette.error.main,
+                                    color: linksColor || theme.palette.error.main,
                                 }}
                                 houseId={parseInt(houseId)}
                                 createEnedisSgeConsent={createEnedisSgeConsent}
@@ -343,7 +352,7 @@ export const MeterStatus = () => {
                         </Icon>
                         <div className="flex flex-col">
                             <TypographyFormatMessage
-                                color={theme.palette.error.main}
+                                color={linksColor || theme.palette.error.main}
                                 className="underline cursor-pointer"
                                 fontWeight={600}
                                 onClick={() => {

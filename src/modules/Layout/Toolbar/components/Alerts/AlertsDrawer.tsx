@@ -15,7 +15,9 @@ import { useHasMissingHousingContracts } from 'src/hooks/HasMissingHousingContra
 import { getChannelPreferencesByInterval, rangeOfCurrentMonth } from './AlertsDrawerVariables'
 import { EcowattAlerts } from 'src/modules/Layout/Toolbar/components/Alerts/EcowattAlerts'
 import { useNovuAlertPreferences } from './NovuAlertPreferencesHook'
+import { linksColor, warningMainHashColor } from 'src/modules/utils/muiThemeVariables'
 // import { EcowattAlerts } from 'src/modules/Layout/Toolbar/components/Alerts/EcowattAlerts'
+import { ReactComponent as MeterErrorIcon } from 'src/assets/images/content/housing/meter-error.svg'
 
 const StyledSwipeableDrawer = styled(SwipeableDrawer)(({ theme }) => ({
     '& .MuiDrawer-paper': {
@@ -78,14 +80,21 @@ export const AlertsDrawer = ({ closeAlertsDrawer }: { closeAlertsDrawer: () => v
                 </TypographyFormatMessage>
                 {hasMissingHousingContracts && (
                     <div className="flex justify-left items-center mb-20 ml-8">
-                        <Icon className="mr-8">
-                            <img
-                                src="./assets/images/content/housing/consent-status/meter-error.svg "
-                                alt="missing-contract"
-                            />
-                        </Icon>
+                        <MeterErrorIcon
+                            className="mr-8"
+                            style={{
+                                width: '24px',
+                                height: '24px',
+                                color: linksColor || warningMainHashColor,
+                            }}
+                        />
                         <div>
-                            <TypographyFormatMessage className="text-13 text-orange-500 font-medium">
+                            <TypographyFormatMessage
+                                className="text-13 font-medium"
+                                style={{
+                                    color: linksColor || warningMainHashColor,
+                                }}
+                            >
                                 Prix basé sur le tarif bleu d'EDF.
                             </TypographyFormatMessage>
                             <NavLink
@@ -96,11 +105,21 @@ export const AlertsDrawer = ({ closeAlertsDrawer }: { closeAlertsDrawer: () => v
                                         : `${URL_MY_HOUSE}`
                                 }
                             >
-                                <TypographyFormatMessage className="text-13 text-orange-500 font-medium underline">
+                                <TypographyFormatMessage
+                                    className="text-13 font-medium underline"
+                                    style={{
+                                        color: linksColor || warningMainHashColor,
+                                    }}
+                                >
                                     Renseignez votre contrat de fourniture
                                 </TypographyFormatMessage>
                             </NavLink>
-                            <TypographyFormatMessage className="text-13 text-orange-500 font-medium">
+                            <TypographyFormatMessage
+                                className="text-13 font-medium"
+                                style={{
+                                    color: linksColor || warningMainHashColor,
+                                }}
+                            >
                                 pour une estimation plus précise.
                             </TypographyFormatMessage>
                         </div>

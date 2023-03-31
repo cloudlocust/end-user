@@ -9,7 +9,7 @@ import { LOGO_URL, API_BASE_URL, CLIENT_ICON_FOLDER } from 'src/configs'
 import CardContent from '@mui/material/CardContent'
 import { motion } from 'framer-motion'
 import { URL_LOGIN } from 'src/modules/User/Login/LoginConfig'
-
+import { linksColor } from 'src/modules/utils/muiThemeVariables'
 /**
  * Props of the forget password component.
  */
@@ -72,7 +72,7 @@ export const ForgotPassword: FC<ForgotPasswordProps> = ({
                                     sx={{
                                         color:
                                             // eslint-disable-next-line jsdoc/require-jsdoc
-                                            (theme) => theme.palette.primary.main,
+                                            (theme) => linksColor || theme.palette.primary.main,
                                     }}
                                     to={URL_LOGIN}
                                     underline="none"

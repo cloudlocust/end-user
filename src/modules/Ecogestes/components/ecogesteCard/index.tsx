@@ -21,6 +21,7 @@ import { IEcogeste } from 'src/modules/Ecogestes/components/ecogeste'
 import useResizeObserver from 'src/modules/utils/useResizeObserver'
 import useEcogestes from 'src/modules/Ecogestes/ecogestesHook'
 import { Icon } from 'src/common/ui-kit'
+import { linksColor } from 'src/modules/utils/muiThemeVariables'
 
 /**
  * A card that renders a given ecogeste.
@@ -217,7 +218,7 @@ export const EcogesteCard = ({
                     <div className="absolute bottom-2" style={{ width: '90%', cursor: 'pointer' }}>
                         {shouldEllipse && !seeFull ? (
                             <TypographyFormatMessage
-                                color={theme.palette.primary.main}
+                                color={linksColor || theme.palette.primary.main}
                                 fontWeight={500}
                                 className="w-fit text-right mr-0 ml-auto underline cursor-pointer"
                                 style={{ width: 'fit-content' }}
@@ -228,7 +229,7 @@ export const EcogesteCard = ({
                         ) : (
                             seeFull && (
                                 <TypographyFormatMessage
-                                    color={theme.palette.primary.main}
+                                    color={linksColor || theme.palette.primary.main}
                                     fontWeight={500}
                                     className="mx-auto w-fit text-center underline cursor-pointer"
                                     style={{ width: 'fit-content' }}
