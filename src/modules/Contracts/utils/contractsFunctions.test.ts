@@ -1,6 +1,6 @@
 import { formatLoadContractResponseToIContract } from 'src/modules/Contracts/utils/contractsFunctions'
 import { TEST_DATETIME } from 'src/mocks/handlers/contracts'
-import { IContract, loadContractResponse } from 'src/modules/Contracts/contractsTypes'
+import { IContract, loadContractResponse } from 'src/modules/Contracts/contractsTypes.d'
 
 const value: loadContractResponse = {
     contract: {
@@ -50,6 +50,7 @@ const expectedValue: IContract = {
     endSubscription: TEST_DATETIME,
     startSubscription: TEST_DATETIME,
 }
+
 describe('contractFunctions', () => {
     test('formatLoadContractResponseToIContract', async () => {
         const result = formatLoadContractResponseToIContract(value)

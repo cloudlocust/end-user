@@ -24,6 +24,8 @@ export const TEST_NOVU_ALERTS_DATA: SnakeCasedPropertiesDeep<INovuAlertPreferenc
     is_email_weekly_consumption: true,
     is_push_monthly_consumption: true,
     is_email_monthly_consumption: true,
+    is_push_tempo: true,
+    is_email_tempo: true,
 }
 
 /**
