@@ -1,30 +1,43 @@
 import React, { SyntheticEvent, useState } from 'react'
 import { useHistory, useLocation } from 'react-router'
-import { styled } from '@mui/material/styles'
+import { styled, Theme } from '@mui/material/styles'
 import FusePageCarded from 'src/common/ui-kit/fuse/components/FusePageCarded'
 import { useIntl } from 'src/common/react-platform-translation'
 import Tabs from '@mui/material/Tabs'
 import Tab, { TabTypeMap } from '@mui/material/Tab'
 import { keyBy, mapValues } from 'lodash'
 import { TabsTypeMap } from '@mui/material/Tabs'
+import { CSSProperties } from '@mui/styled-engine'
 
-const Root = styled(FusePageCarded)(({ theme }) => ({
-    '& .FusePageCarded-header': {
-        minHeight: 72,
-        height: 72,
-        alignItems: 'center',
-        [theme.breakpoints.up('sm')]: {
-            minHeight: 136,
-            height: 136,
+const Root = styled(FusePageCarded)(
+    ({
+        theme,
+        rootCss,
+    }: // eslint-disable-next-line jsdoc/require-jsdoc
+    {
+        // eslint-disable-next-line jsdoc/require-jsdoc
+        theme?: Theme
+        // eslint-disable-next-line jsdoc/require-jsdoc
+        rootCss: CSSProperties
+    }) => ({
+        '& .FusePageCarded-header': {
+            minHeight: rootCss['minHeight'] || 136,
+            height: rootCss['height'] || 136,
+            alignItems: 'center',
+            [theme!.breakpoints.up('sm')]: {
+                minHeight: 136,
+                height: 136,
+            },
+            margin: rootCss['margin'],
         },
-    },
-    '& .FusePageCarded-content': {
-        display: 'flex',
-    },
-    '& .FusePageCarded-contentCard': {
-        overflow: 'hidden',
-    },
-}))
+        '& .FusePageCarded-content': {
+            display: 'flex',
+        },
+        '& .FusePageCarded-contentCard': {
+            overflow: 'hidden',
+        },
+    }),
+)
 
 /**
  * MuiTabProps.
@@ -60,6 +73,7 @@ export interface IMultiTab {
  * @param props.innerScroll Indicates if there is an innerScroll inside the tabs.
  * @param props.TabsProps Rest of Tabs props.
  * @param props.TabProps Rest of Tab props.
+ * @param props.rootCss Root component css.
  * @returns  Element Details Tabs.
  */
 const MultiTab = ({
@@ -68,6 +82,7 @@ const MultiTab = ({
     innerScroll,
     TabsProps,
     TabProps,
+    rootCss,
 }: /**
  *
  */
@@ -92,6 +107,10 @@ const MultiTab = ({
      * Rest of tab props.
      */
     TabProps?: TabTypeMap['props']
+    /**
+     * Css targeting the root component.
+     */
+    rootCss?: CSSProperties
 }) => {
     const { formatMessage } = useIntl()
 
@@ -137,6 +156,7 @@ const MultiTab = ({
 
     return (
         <Root
+            rootCss={rootCss!}
             header={header}
             contentToolbar={
                 <Tabs
