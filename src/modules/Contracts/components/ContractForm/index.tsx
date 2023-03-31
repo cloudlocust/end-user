@@ -7,8 +7,6 @@ import {
     ContractFormProps,
     contractFormValuesType,
     contractsRouteParam,
-    TariffContractItemProps,
-    TariffsContractProps,
 } from 'src/modules/Contracts/contractsTypes'
 import { useFormContext, useWatch } from 'react-hook-form'
 import { Form } from 'src/common/react-platform-components'
@@ -25,7 +23,6 @@ import { useParams } from 'react-router-dom'
 import { useMeterForHousing } from 'src/modules/Meters/metersHook'
 import { OtherProviderOfferOptionMessage } from 'src/modules/Contracts/components/ContractFormMessages'
 import { isActivateOtherOffersAndProviders } from 'src/modules/Contracts/ContractsConfig'
-import { getTariffContractUnit } from 'src/modules/Contracts/utils/contractsFunctions'
 
 const defaultContractFormValues: contractFormValuesType = {
     contractTypeId: 0,
@@ -44,10 +41,9 @@ const defaultContractFormValues: contractFormValuesType = {
  * @param props.onSubmit Callback when submitting form.
  * @param props.isContractsLoading Loading state when addContract request.
  * @param props.defaultValues Indicate if contractForm has defaultValues and thus in edit mode.
- * @param props.tariffs Tariffs of contract.
  * @returns Contract Form component.
  */
-const ContractForm = ({ onSubmit, isContractsLoading, defaultValues, tariffs }: ContractFormProps) => {
+const ContractForm = ({ onSubmit, isContractsLoading, defaultValues }: ContractFormProps) => {
     // HouseId extracted from params of the url :houseId/contracts
     const { houseId } = useParams<contractsRouteParam>()
     const { editMeter, loadingInProgress } = useMeterForHousing()
@@ -86,9 +82,8 @@ const ContractForm = ({ onSubmit, isContractsLoading, defaultValues, tariffs }: 
                 >
                     Toutes les informations demandées sont disponibles sur votre facture ou votre contrat d'énergie
                 </TypographyFormatMessage>
-                <div className="flex flex-col justify-center w-full gap-10">
+                <div className="flex flex-col justify-center w-full">
                     <ContractFormFields isContractsLoading={isContractsLoading || loadingInProgress} />
-                    <TariffsContract tariffs={tariffs} />
                 </div>
             </div>
         </Form>
@@ -331,41 +326,3 @@ const ContractFormFields = ({ isContractsLoading }: ContractFormFieldsProps) => 
         </>
     )
 }
-
-/**
- * Tariff Item component.
- *
- * @param props N/A.
- * @param props.label Name of tariff.
- * @param props.price Price of tariff.
- * @param props.unit Unit.
- * @returns Tariff Item component.
- */
-const TariffContractItem = ({ label, price, unit }: TariffContractItemProps) => (
-    <div className="flex flex-col justify-center items-center w-full py-4">
-        <TypographyFormatMessage className="text-13 font-medium text-center md:text-14" sx={{ color: 'grey.600' }}>
-            {`${label}: ${price} ${unit}`}
-        </TypographyFormatMessage>
-    </div>
-)
-
-/**
- * Tariffs Contract Component.
- *
- * @param props N/A.
- * @param props.tariffs List of tariff contract.
- * @returns Tariffs Contract Component.
- */
-const TariffsContract = ({ tariffs }: TariffsContractProps) =>
-    tariffs && tariffs.length > 0 ? (
-        <div>
-            {tariffs.map((tariff) => (
-                <TariffContractItem
-                    key={tariff.label}
-                    label={tariff.label}
-                    price={tariff.price}
-                    unit={getTariffContractUnit(tariff)}
-                />
-            ))}
-        </div>
-    ) : null
