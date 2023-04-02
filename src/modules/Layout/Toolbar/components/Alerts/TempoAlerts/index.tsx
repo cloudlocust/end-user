@@ -5,6 +5,7 @@ import { useSelector } from 'react-redux'
 import { useNovuAlertPreferences } from 'src/modules/Layout/Toolbar/components/Alerts/NovuAlertPreferencesHook'
 import { useEffect } from 'react'
 import { TempoAlertsForm } from 'src/modules/Layout/Toolbar/components/Alerts/TempoAlerts/TempoAlertsForm'
+import { useContractList } from 'src/modules/Contracts/contractsHook'
 
 /**
  *  Tempo Alerts component.
@@ -17,11 +18,17 @@ export const TempoAlerts = () => {
     const { isLoadingInProgress, getNovuAlertPreferences, novuAlertPreferences, updateNovuAlertPreferences } =
         useNovuAlertPreferences(currentHousing?.id ?? null)
 
+    const { elementList: contractList } = useContractList(currentHousing!.id)
+
+    const currentContract = contractList?.find((contract) => !contract.endSubscription)
+
     useEffect(() => {
         if (currentHousing?.id) {
             getNovuAlertPreferences()
         }
     }, [currentHousing?.id, getNovuAlertPreferences])
+
+    if (currentContract?.tariffType.name !== 'Jour Tempo') return null
 
     if (isLoadingInProgress) {
         return (
