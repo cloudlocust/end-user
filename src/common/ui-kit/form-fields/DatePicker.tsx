@@ -37,6 +37,18 @@ export interface DatePickerFieldProps extends Partial<DatePickerProps> {
         TextFieldProps,
         'name' | 'value' | 'onChange' | 'disabled' | 'inputRef' | 'select' | 'SelectProps' | 'label'
     >
+    /**
+     * Override DatePicker icons.
+     */
+    icons?: /**
+     *
+     */
+    {
+        /**
+         * Left icon in the input. The one that opens the date picker.
+         */
+        OpenPickerIcon?: React.ElementType
+    }
 }
 
 /**
@@ -49,6 +61,7 @@ export interface DatePickerFieldProps extends Partial<DatePickerProps> {
  * @param root0.maxDate Minimum date with YYYY-MM-DD format.
  * @param root0.minDate Maximum date with YYYY-MM-DD format.
  * @param root0.textFieldProps The props of the TextField.
+ * @param root0.icons Override DatePicker icons.
  * @param root0.valueFormat Returned date format, by default YYYY-MM-DD.
  * @returns Material UI datepicker field wrapped.
  */
@@ -59,6 +72,7 @@ export const DatePicker: FC<DatePickerFieldProps> = function ({
     maxDate: maxDateStringValue = '2099-12-31',
     minDate: minDateStringValue = '1900-01-01',
     textFieldProps,
+    icons,
     ...otherProps
 }) {
     useEffect(() => {
@@ -111,11 +125,14 @@ export const DatePicker: FC<DatePickerFieldProps> = function ({
                     // note: you must not use undefined because it display current date
                     value={field.value || null}
                     onChange={(date) => {
-                        if (date.isValid()) {
+                        if (date && dayjs(date).isValid()) {
                             setValue(name, date.format(valueFormat), { shouldValidate: true })
                         } else {
                             setValue(name, date, { shouldValidate: true })
                         }
+                    }}
+                    components={{
+                        OpenPickerIcon: icons?.OpenPickerIcon,
                     }}
                 />
             )}
