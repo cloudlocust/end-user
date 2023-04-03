@@ -1,4 +1,4 @@
-import { INrlinkConsent } from 'src/modules/Consents/Consents'
+import { IEnedisSgeConsent, INrlinkConsent } from 'src/modules/Consents/Consents'
 import { IMetric, metricFiltersType, metricRangeType } from 'src/modules/Metrics/Metrics'
 import { IHousing } from 'src/modules/MyHouse/components/HousingList/housing'
 
