@@ -1,6 +1,6 @@
 import './navbarLogo.style.scss'
 
-import { CLIENT_ICON_FOLDER, CLIENT_WEBSITE_URL } from 'src/configs'
+import { CLIENT_ICON_FOLDER, CLIENT_LOGO_REDIRECT_LINK } from 'src/configs'
 import { useMediaQuery, useTheme } from '@mui/material'
 
 /**
@@ -8,11 +8,11 @@ import { useMediaQuery, useTheme } from '@mui/material'
  *
  * @returns Navbar Logo Component.
  */
-const NavbarLogoComponent = () => {
+const NavbarLogo = () => {
     const theme = useTheme()
     const lgUp = useMediaQuery(theme.breakpoints.up('lg'))
 
-    const clientApplicationURL: string | undefined = CLIENT_WEBSITE_URL
+    const clientApplicationURL: string | undefined = CLIENT_LOGO_REDIRECT_LINK
 
     const logoPath = lgUp
         ? `./clients-icons/${CLIENT_ICON_FOLDER}/${CLIENT_ICON_FOLDER}-on-primary.svg`
@@ -28,4 +28,4 @@ const NavbarLogoComponent = () => {
     )
 }
 
-export default NavbarLogoComponent
+export default NavbarLogo

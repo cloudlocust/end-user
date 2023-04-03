@@ -7,7 +7,7 @@ import FuseScrollbars from 'src/common/ui-kit/fuse/components/FuseScrollbars'
 import { useLocation } from 'react-router-dom'
 import { Location } from 'history'
 import useMediaQuery from '@mui/material/useMediaQuery'
-import NavbarLogoComponent from './logo/NavbarLogoComponent'
+import NavbarLogo from 'src/common/ui-kit/fuse/layouts/layout1/components/navbar/logo/NavbarLogo'
 
 const Root = styled('div')(({ theme }) => ({
     backgroundColor: theme.palette.primary.main,
@@ -158,7 +158,7 @@ function NavbarStyle3Content(props: /**
             <Root className={'flex flex-auto flex h-full'}>
                 <ThemeProvider theme={theme}>
                     <div id="fuse-navbar-side-panel" className="flex flex-shrink-0 flex-col items-center">
-                        <NavbarLogoComponent />
+                        <NavbarLogo />
                         <FuseScrollbars
                             className="flex flex-1 min-h-0 justify-center w-full overflow-y-auto overflow-x-hidden"
                             option={{ suppressScrollX: true, wheelPropagation: false }}

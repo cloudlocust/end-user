@@ -1,5 +1,5 @@
 import Hidden from '@mui/material/Hidden'
-import NavbarLogoComponent from 'src/common/ui-kit/fuse/layouts/layout1/components/navbar/logo/NavbarLogoComponent'
+import NavbarLogo from 'src/common/ui-kit/fuse/layouts/layout1/components/navbar/logo/NavbarLogo'
 
 /**
  * Component displays the icon.
@@ -9,7 +9,7 @@ import NavbarLogoComponent from 'src/common/ui-kit/fuse/layouts/layout1/componen
 const ToolbarIcon = () => {
     return (
         <Hidden lgUp>
-            <NavbarLogoComponent />
+            <NavbarLogo />
         </Hidden>
     )
 }

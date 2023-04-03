@@ -1,19 +1,18 @@
 import { render } from '@testing-library/react'
 
-import NavbarLogoComponent from './NavbarLogoComponent'
+import NavbarLogo from 'src/common/ui-kit/fuse/layouts/layout1/components/navbar/logo/NavbarLogo'
 
-const MOCKED_CLIENT_WEBSITE_URL = 'https://www.myem.fr'
+var MOCKED_CLIENT_WEBSITE_URL: string | undefined = undefined
 
 jest.mock('src/configs', () => ({
     ...jest.requireActual('src/configs'),
-    CLIENT_WEBSITE_URL: 'https://www.myem.fr',
+    CLIENT_LOGO_REDIRECT_LINK: MOCKED_CLIENT_WEBSITE_URL,
 }))
 
-describe('NavbarLogoComponent', () => {
-    test('should have a valid href', async () => {
-        const { getByRole } = render(<NavbarLogoComponent />)
+describe('NavbarLogo', () => {
+    test('should not have an href', async () => {
+        const { getByRole } = render(<NavbarLogo />)
 
-        const logoImage = getByRole('link')
-        expect(logoImage).toHaveAttribute('href', MOCKED_CLIENT_WEBSITE_URL)
+        expect(() => getByRole('link')).toThrow()
     })
 })
