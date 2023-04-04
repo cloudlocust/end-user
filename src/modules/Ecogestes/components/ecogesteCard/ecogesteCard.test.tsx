@@ -26,7 +26,7 @@ describe('Test EcogesteCard', () => {
 
         // Check savings here
         expect(queryByTestId('SavingsIcon')).toBeTruthy()
-        expect(queryByText(fullEcogeste_working_already_read.percentageSaved + '%')).toBeTruthy()
+        expect(queryByText(fullEcogeste_working_already_read.percentageSaved)).toBeTruthy()
 
         // Check text present
         expect(queryByText(fullEcogeste_working_already_read.title)).toBeTruthy()
