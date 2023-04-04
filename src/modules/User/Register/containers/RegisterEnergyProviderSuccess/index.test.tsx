@@ -5,12 +5,13 @@ import { waitFor } from '@testing-library/react'
 
 const mockPushHistory = jest.fn()
 let mockIsAllowed: boolean = true
+let mockEnergyProviderSubscribeFormLink: string | undefined = undefined
 
 jest.mock('react-router', () => ({
     ...jest.requireActual('react-router'),
     // eslint-disable-next-line jsdoc/require-jsdoc
     useLocation: () => ({
-        state: { isAllowed: mockIsAllowed },
+        state: { isAllowed: mockIsAllowed, energyProviderFormLink: mockEnergyProviderSubscribeFormLink },
     }),
     // eslint-disable-next-line jsdoc/require-jsdoc
     useHistory: () => ({
@@ -45,5 +46,25 @@ describe('test RegisterEnergyProviderSuccess page', () => {
         await waitFor(() => {
             expect(mockPushHistory).toHaveBeenCalledWith('/login')
         })
+    })
+
+    test('should not show subscribe button', async () => {
+        const { queryByText } = reduxedRender(
+            <Router>
+                <RegisterEnergyProviderSuccess />
+            </Router>,
+        )
+        expect(queryByText('REGISTER')).toBeNull()
+        // expect(getByRole('button')).toBeNull()
+    })
+
+    test('should show subscribe button', async () => {
+        mockEnergyProviderSubscribeFormLink = 'https://energy.myem.fr'
+        const { getByRole } = reduxedRender(
+            <Router>
+                <RegisterEnergyProviderSuccess />
+            </Router>,
+        )
+        expect(getByRole('button')).toBeDefined()
     })
 })
