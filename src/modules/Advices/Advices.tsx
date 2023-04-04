@@ -37,7 +37,7 @@ const Root = styled(PageSimple)(({ theme }) => ({
 export const Advices = () => {
     const theme = useTheme()
 
-    const { loadingInProgress, elementList } = useEcogesteTags()
+    const { elementList } = useEcogesteTags()
 
     /* TODO:
     - Add some way to get to all categories
