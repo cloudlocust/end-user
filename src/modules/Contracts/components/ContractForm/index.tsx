@@ -47,6 +47,7 @@ const ContractForm = ({ onSubmit, isContractsLoading, defaultValues }: ContractF
     // HouseId extracted from params of the url :houseId/contracts
     const { houseId } = useParams<contractsRouteParam>()
     const { editMeter, loadingInProgress } = useMeterForHousing()
+
     return (
         <Form
             onSubmit={async (data: contractFormValuesType) => {

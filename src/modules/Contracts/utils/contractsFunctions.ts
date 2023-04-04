@@ -1,5 +1,5 @@
 import { cloneDeep } from 'lodash'
-import { IContract, loadContractResponse } from 'src/modules/Contracts/contractsTypes'
+import { IContract, loadContractResponse } from 'src/modules/Contracts/contractsTypes.d'
 
 /**
  * Function that formats the contract object from loadContract request, to a more handy format which is IContract (which consists to get out the provider from the offer, as provider is nested inside offer).

@@ -1,7 +1,7 @@
 import { rest } from 'msw'
 import { getPaginationFromElementList } from 'src/mocks/utils'
 import { SnakeCasedPropertiesDeep } from 'type-fest'
-import { addContractDataType, IContract, loadContractResponse } from 'src/modules/Contracts/contractsTypes'
+import { addContractDataType, IContract, loadContractResponse } from 'src/modules/Contracts/contractsTypes.d'
 import { HOUSING_API } from 'src/modules/MyHouse/components/HousingList/HousingsHooks'
 import { TEST_OFFERS, TEST_CONTRACT_TYPES, TEST_PROVIDERS, TEST_TARIFF_TYPES } from 'src/mocks/handlers/commercialOffer'
 /**

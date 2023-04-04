@@ -15,7 +15,8 @@ import { useHasMissingHousingContracts } from 'src/hooks/HasMissingHousingContra
 import { getChannelPreferencesByInterval, rangeOfCurrentMonth } from './AlertsDrawerVariables'
 import { EcowattAlerts } from 'src/modules/Layout/Toolbar/components/Alerts/EcowattAlerts'
 import { useNovuAlertPreferences } from './NovuAlertPreferencesHook'
-// import { EcowattAlerts } from 'src/modules/Layout/Toolbar/components/Alerts/EcowattAlerts'
+import { TempoAlerts } from 'src/modules/Layout/Toolbar/components/Alerts/TempoAlerts'
+import { useContractList } from 'src/modules/Contracts/contractsHook'
 
 const StyledSwipeableDrawer = styled(SwipeableDrawer)(({ theme }) => ({
     '& .MuiDrawer-paper': {
@@ -34,6 +35,9 @@ const StyledSwipeableDrawer = styled(SwipeableDrawer)(({ theme }) => ({
 // eslint-disable-next-line jsdoc/require-jsdoc
 export const AlertsDrawer = ({ closeAlertsDrawer }: { closeAlertsDrawer: () => void }) => {
     const { currentHousing } = useSelector(({ housingModel }: RootState) => housingModel)
+    const { elementList: contractList } = useContractList(currentHousing!.id)
+
+    const currentContract = contractList?.find((contract) => !contract.endSubscription)
 
     const { consumptionAlerts, pricePerKwh, saveConsumptionAlert, isAlertsLoadingInProgress, isSavingInProgress } =
         useConsumptionAlerts(currentHousing?.id ?? null)
@@ -113,7 +117,7 @@ export const AlertsDrawer = ({ closeAlertsDrawer }: { closeAlertsDrawer: () => v
                     saveConsumptionAlert={saveConsumptionAlert}
                     isConsumptionAlertsLoading={isAlertsLoadingInProgress}
                     isSavingAlertLoading={isSavingInProgress}
-                    initialAlertPreferencesValues={getChannelPreferencesByInterval('day', novuAlertPreferences)}
+                    initialAlertPreferencesValues={getChannelPreferencesByInterval('day', novuAlertPreferences!)}
                     updateNovuAlertPreferences={updateNovuAlertPreferences}
                     isNovuAlertPreferencesLoading={isNovuAlertPreferencesLoading}
                 />
@@ -124,7 +128,7 @@ export const AlertsDrawer = ({ closeAlertsDrawer }: { closeAlertsDrawer: () => v
                     saveConsumptionAlert={saveConsumptionAlert}
                     isConsumptionAlertsLoading={isAlertsLoadingInProgress}
                     isSavingAlertLoading={isSavingInProgress}
-                    initialAlertPreferencesValues={getChannelPreferencesByInterval('week', novuAlertPreferences)}
+                    initialAlertPreferencesValues={getChannelPreferencesByInterval('week', novuAlertPreferences!)}
                     updateNovuAlertPreferences={updateNovuAlertPreferences}
                     isNovuAlertPreferencesLoading={isNovuAlertPreferencesLoading}
                 />
@@ -135,11 +139,12 @@ export const AlertsDrawer = ({ closeAlertsDrawer }: { closeAlertsDrawer: () => v
                     saveConsumptionAlert={saveConsumptionAlert}
                     isConsumptionAlertsLoading={isAlertsLoadingInProgress}
                     isSavingAlertLoading={isSavingInProgress}
-                    initialAlertPreferencesValues={getChannelPreferencesByInterval('month', novuAlertPreferences)}
+                    initialAlertPreferencesValues={getChannelPreferencesByInterval('month', novuAlertPreferences!)}
                     updateNovuAlertPreferences={updateNovuAlertPreferences}
                     isNovuAlertPreferencesLoading={isNovuAlertPreferencesLoading}
                 />
                 <EcowattAlerts />
+                {currentContract?.tariffType.name === 'Jour Tempo' && <TempoAlerts />}
             </div>
         </StyledSwipeableDrawer>
     )
