@@ -35,6 +35,11 @@ export const energyProviderPopupLink = window._env_.REACT_APP_ENERGY_PROVIDER_PO
 export const energyProviderRegisterSuccessMessage = window._env_.REACT_APP_ENERGY_PROVIDER_REGISTER_SUCCESS_MESSAGE
 
 /**
+ * Text for the Call To Action in Register Form when User should register a Energy Provider.
+ */
+export const energyProviderRegisterBtnText = window._env_.REACT_APP_ENERGY_PROVIDER_REGISTER_BTN_TEXT
+
+/**
  * Professional register feature.
  */
 export const isProfessionalRegisterFeature = window._env_.REACT_APP_PROFESSIONAL_REGISTER_FEATURE === 'enabled'

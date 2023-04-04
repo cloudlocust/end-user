@@ -46,16 +46,12 @@ export const BuilderUseRegister = ({
          */
         function handleOnAfterSubmit(data: IUserRegister) {
             if (isPopupAfterRegistration) {
-                window.open(
-                    `${energyProviderPopupLink}?${convertUserDataToQueryString(data)}`,
-                    '_blank',
-                    `width=1024,height=768,left=${window.screen.availWidth / 2 - 200},top=${
-                        window.screen.availHeight / 2 - 150
-                    }`,
-                )
                 history.push({
                     pathname: URL_REGISTER_ENERGY_PROVIDER_SUCCESS,
-                    state: { isAllowed: true },
+                    state: {
+                        isAllowed: true,
+                        energyProviderFormLink: `${energyProviderPopupLink}?${convertUserDataToQueryString(data)}`,
+                    },
                 })
             } else {
                 history.replace(redirect())
@@ -88,7 +84,6 @@ export const BuilderUseRegister = ({
                 } else {
                     enqueueSnackbar('Une erreur est survenue', { variant: 'error' })
                 }
-                throw error
             }
         }
 

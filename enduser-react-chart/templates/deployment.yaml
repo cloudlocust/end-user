@@ -225,7 +225,12 @@ spec:
           valueFrom:
             configMapKeyRef:
               name: enduser-react
-              key: REACT_APP_ENERGY_PROVIDER_REGISTER_SUCCESS_MESSAGE                         
+              key: REACT_APP_ENERGY_PROVIDER_REGISTER_SUCCESS_MESSAGE  
+        - name: REACT_APP_ENERGY_PROVIDER_REGISTER_BTN_TEXT
+          valueFrom:
+            configMapKeyRef:
+              name: enduser-react
+              key: REACT_APP_ENERGY_PROVIDER_REGISTER_BTN_TEXT                        
         - name: REACT_APP_USER_REGISTRATION_AUTO_VALIDATE
           valueFrom:
             configMapKeyRef:
