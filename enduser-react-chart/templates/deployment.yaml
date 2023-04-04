@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: enduser-react
 spec:
-  replicas: {{ .Values.replicaCount }}
+  replicas: {{ .Values.replicaCount | default 1 }}
   selector:
     matchLabels:
       app: enduser-react
@@ -251,5 +251,10 @@ spec:
             configMapKeyRef:
               name: enduser-react
               key: REACT_APP_ENERGY_PROVIDER_REGISTER_MAPPING_KEYS            
+        - name: REACT_APP_ACTIVATE_CONTRACT_OTHER_PROVIDERS_AND_OFFERS
+          valueFrom:
+            configMapKeyRef:
+              name: enduser-react
+              key: REACT_APP_ACTIVATE_CONTRACT_OTHER_PROVIDERS_AND_OFFERS            
       imagePullSecrets:
       - name: dockersecret  

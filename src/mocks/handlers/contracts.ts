@@ -1,13 +1,7 @@
 import { rest } from 'msw'
 import { getPaginationFromElementList } from 'src/mocks/utils'
 import { SnakeCasedPropertiesDeep } from 'type-fest'
-import {
-    addContractDataType,
-    frequencyEnum,
-    IContract,
-    loadContractResponse,
-    tariffContract,
-} from 'src/modules/Contracts/contractsTypes.d'
+import { addContractDataType, IContract, loadContractResponse } from 'src/modules/Contracts/contractsTypes.d'
 import { HOUSING_API } from 'src/modules/MyHouse/components/HousingList/HousingsHooks'
 import { TEST_OFFERS, TEST_CONTRACT_TYPES, TEST_PROVIDERS, TEST_TARIFF_TYPES } from 'src/mocks/handlers/commercialOffer'
 /**
@@ -32,23 +26,6 @@ export const TEST_ERROR_OFFER = -1
  * TEST DATE TIME.
  */
 export const TEST_DATETIME = '2021-12-15T14:07:38.138000'
-
-/**
- * TEST Tariffs base_contract.
- */
-export const TEST_BASE_TARIFFS: tariffContract[] = [
-    { label: 'abonnement', price: 36.0, freq: frequencyEnum.MONTHLY },
-    { label: 'prix kwh', price: 0.125, freq: frequencyEnum.DAILY },
-]
-
-/**
- * TEST Tariffs HP_HC_contract.
- */
-export const TEST_HP_HC_TARIFFS: tariffContract[] = [
-    { label: 'abonnement', price: 36.0, freq: frequencyEnum.MONTHLY },
-    { label: 'prix kwh heures creuses', price: 0.16, freq: frequencyEnum.DAILY },
-    { label: 'prix kwh heures pleines', price: 0.123, freq: frequencyEnum.DAILY },
-]
 
 /**
  * MOCK Success Add Contract Object.
@@ -76,7 +53,6 @@ export var TEST_CONTRACTS: SnakeCasedPropertiesDeep<loadContractResponse>[] = [
         power: 6,
         end_subscription: TEST_DATETIME,
         start_subscription: TEST_DATETIME,
-        tariffs: TEST_BASE_TARIFFS,
     },
     {
         contract: {
@@ -89,7 +65,6 @@ export var TEST_CONTRACTS: SnakeCasedPropertiesDeep<loadContractResponse>[] = [
         id: 11069265931234,
         end_subscription: TEST_DATETIME,
         start_subscription: TEST_DATETIME,
-        tariffs: TEST_BASE_TARIFFS,
     },
     {
         contract: {
@@ -102,7 +77,6 @@ export var TEST_CONTRACTS: SnakeCasedPropertiesDeep<loadContractResponse>[] = [
         id: 14631234471234,
         end_subscription: TEST_DATETIME,
         start_subscription: TEST_DATETIME,
-        tariffs: TEST_HP_HC_TARIFFS,
     },
     {
         contract: {
@@ -115,7 +89,6 @@ export var TEST_CONTRACTS: SnakeCasedPropertiesDeep<loadContractResponse>[] = [
         id: 49317096231234,
         end_subscription: TEST_DATETIME,
         start_subscription: TEST_DATETIME,
-        tariffs: TEST_HP_HC_TARIFFS,
     },
     {
         contract: {
@@ -128,7 +101,6 @@ export var TEST_CONTRACTS: SnakeCasedPropertiesDeep<loadContractResponse>[] = [
         id: 25495412891234,
         end_subscription: TEST_DATETIME,
         start_subscription: TEST_DATETIME,
-        tariffs: TEST_HP_HC_TARIFFS,
     },
     {
         contract: {
@@ -141,7 +113,6 @@ export var TEST_CONTRACTS: SnakeCasedPropertiesDeep<loadContractResponse>[] = [
         id: 14779354781234,
         end_subscription: TEST_DATETIME,
         start_subscription: TEST_DATETIME,
-        tariffs: TEST_HP_HC_TARIFFS,
     },
     {
         contract: {
@@ -154,7 +125,6 @@ export var TEST_CONTRACTS: SnakeCasedPropertiesDeep<loadContractResponse>[] = [
         id: 21006761321234,
         end_subscription: TEST_DATETIME,
         start_subscription: TEST_DATETIME,
-        tariffs: TEST_HP_HC_TARIFFS,
     },
     {
         contract: {
@@ -167,7 +137,6 @@ export var TEST_CONTRACTS: SnakeCasedPropertiesDeep<loadContractResponse>[] = [
         id: 58649369431234,
         end_subscription: TEST_DATETIME,
         start_subscription: TEST_DATETIME,
-        tariffs: TEST_BASE_TARIFFS,
     },
 ]
 

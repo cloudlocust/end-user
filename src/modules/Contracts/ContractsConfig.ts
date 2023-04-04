@@ -7,6 +7,13 @@ import { URL_MY_HOUSE_DETAILS } from 'src/modules/MyHouse/MyHouseConfig'
  * Url for contracts.
  */
 export const URL_CONTRACTS = URL_MY_HOUSE_DETAILS + '/contracts'
+
+/**
+ * State in which we enable or not "other providers" & "other offers".
+ */
+export const isActivateOtherOffersAndProviders =
+    window._env_.REACT_APP_ACTIVATE_CONTRACT_OTHER_PROVIDERS_AND_OFFERS === 'enabled'
+
 /**
  * Interface .
  *
