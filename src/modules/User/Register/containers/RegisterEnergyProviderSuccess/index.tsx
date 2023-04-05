@@ -34,7 +34,7 @@ export const RegisterEnergyProviderSuccess = () => {
     } = useLocation<RegisterEnergyProviderSuccessLocation>()
 
     useEffect(() => {
-        if (energyProviderFormLink === undefined || energyProviderFormLink.length === 0) {
+        if (!energyProviderFormLink) {
             history.push(URL_LOGIN)
         }
     }, [history, energyProviderFormLink])
@@ -45,7 +45,7 @@ export const RegisterEnergyProviderSuccess = () => {
      *  Subscribe to Energy Provider button handler.
      */
     const displayEnergyProviderFormHandler = () => {
-        if (energyProviderFormLink !== undefined) {
+        if (energyProviderFormLink) {
             displayEnergyProviderSubscribeForm(energyProviderFormLink)
         }
     }
@@ -75,7 +75,7 @@ export const RegisterEnergyProviderSuccess = () => {
                                     type="submit"
                                 >
                                     {formatMessage({
-                                        id: 'Souscrire a notre fournisseur',
+                                        id: `Souscrire à ${energyProviderName}`,
                                         defaultMessage: `Souscrire à ${energyProviderName}`,
                                     })}
                                 </ButtonLoader>
