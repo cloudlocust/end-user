@@ -49,7 +49,6 @@ export const BuilderUseRegister = ({
                 history.push({
                     pathname: URL_REGISTER_ENERGY_PROVIDER_SUCCESS,
                     state: {
-                        isAllowed: true,
                         energyProviderFormLink: `${energyProviderPopupLink}?${convertUserDataToQueryString(data)}`,
                     },
                 })

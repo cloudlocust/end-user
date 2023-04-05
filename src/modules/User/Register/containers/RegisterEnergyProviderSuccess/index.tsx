@@ -1,4 +1,3 @@
-import { useEffect } from 'react'
 import { ButtonLoader, Card, Icon, MuiCardContent } from 'src/common/ui-kit'
 import { useIntl } from 'src/common/react-platform-translation'
 import { Link, useHistory, useLocation } from 'react-router-dom'
@@ -7,24 +6,18 @@ import { URL_LOGIN } from 'src/modules/User/Login/LoginConfig'
 import { motion } from 'framer-motion'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import './registerEnergyProviderSuccess.scss'
-import {
-    energyProviderRegisterSuccessMessage,
-    energyProviderRegisterBtnText,
-} from 'src/modules/User/Register/RegisterConfig'
+import { energyProviderName } from 'src/modules/User/Register/RegisterConfig'
 import { useRegisterToEnergyProvider } from 'src/modules/User/Register/containers/RegisterEnergyProviderSuccess/hooks'
+import { useEffect } from 'react'
 
 /**
  * Interface type for RegisterEnergyProviderSuccessLocation.
  */
 export interface RegisterEnergyProviderSuccessLocation {
     /**
-     * State to be checked to allow or not user in the route.
-     */
-    isAllowed: boolean
-    /**
      * Link to Energy Provider subscribe Form.
      */
-    energyProviderFormLink: string
+    energyProviderFormLink: string | undefined
 }
 
 /**
@@ -33,24 +26,26 @@ export interface RegisterEnergyProviderSuccessLocation {
  * @returns Register Energy provider success JSX.
  */
 export const RegisterEnergyProviderSuccess = () => {
-    const { formatMessage } = useIntl()
     const history = useHistory()
+    const { formatMessage } = useIntl()
     const { displayEnergyProviderSubscribeForm } = useRegisterToEnergyProvider()
     const {
-        state: { isAllowed, energyProviderFormLink },
+        state: { energyProviderFormLink },
     } = useLocation<RegisterEnergyProviderSuccessLocation>()
 
     useEffect(() => {
-        if (!isAllowed) {
+        if (energyProviderFormLink === undefined || energyProviderFormLink.length === 0) {
             history.push(URL_LOGIN)
         }
-    }, [history, isAllowed])
+    }, [history, energyProviderFormLink])
+
+    const registerSuccessMessage = `Votre inscription a bien été prise en compte. Sous réserve que votre souscription chez ${energyProviderName} est complète, vous recevrez prochainement un mail de validation de votre inscription à la plateforme`
 
     /**
      *  Subscribe to Energy Provider button handler.
      */
     const displayEnergyProviderFormHandler = () => {
-        if (energyProviderFormLink) {
+        if (energyProviderFormLink !== undefined) {
             displayEnergyProviderSubscribeForm(energyProviderFormLink)
         }
     }
@@ -67,25 +62,23 @@ export const RegisterEnergyProviderSuccess = () => {
                                 </Icon>
                             </div>
                             <TypographyFormatMessage className="description">
-                                {energyProviderRegisterSuccessMessage}
+                                {registerSuccessMessage}
                             </TypographyFormatMessage>
 
                             <div className="login-container">
-                                {energyProviderFormLink ? (
-                                    <ButtonLoader
-                                        variant="contained"
-                                        color="primary"
-                                        className="w-224 mx-auto mb-16 mt-16"
-                                        aria-label="REGISTER"
-                                        onClick={displayEnergyProviderFormHandler}
-                                        type="submit"
-                                    >
-                                        {formatMessage({
-                                            id: 'REGISTER',
-                                            defaultMessage: energyProviderRegisterBtnText,
-                                        })}
-                                    </ButtonLoader>
-                                ) : null}
+                                <ButtonLoader
+                                    variant="contained"
+                                    color="primary"
+                                    className="w-224 mx-auto mb-16 mt-16"
+                                    aria-label="REGISTER"
+                                    onClick={displayEnergyProviderFormHandler}
+                                    type="submit"
+                                >
+                                    {formatMessage({
+                                        id: 'Souscrire a notre fournisseur',
+                                        defaultMessage: `Souscrire à ${energyProviderName}`,
+                                    })}
+                                </ButtonLoader>
                                 <MuiLink
                                     component={Link}
                                     sx={{
