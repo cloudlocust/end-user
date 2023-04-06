@@ -12,17 +12,20 @@ const NavbarLogo = () => {
     const theme = useTheme()
     const lgUp = useMediaQuery(theme.breakpoints.up('lg'))
 
-    const clientApplicationURL: string | undefined = CLIENT_LOGO_REDIRECT_LINK
+    const clientApplicationURL: string = CLIENT_LOGO_REDIRECT_LINK
+
+    const isValidRedirectLink = clientApplicationURL && clientApplicationURL.startsWith('http')
 
     const logoPath = lgUp
         ? `./clients-icons/${CLIENT_ICON_FOLDER}/${CLIENT_ICON_FOLDER}-on-primary.svg`
         : `./clients-icons/${CLIENT_ICON_FOLDER}/${CLIENT_ICON_FOLDER}.svg`
 
+    if (!isValidRedirectLink) {
+        return <img className={lgUp ? 'my-32' : 'ml-8'} src={logoPath} width={lgUp ? '60' : '45'} alt="logo" />
+    }
+
     return (
-        <a
-            className={clientApplicationURL ? 'hoverableLogoLink' : ''}
-            href={clientApplicationURL ? clientApplicationURL : undefined}
-        >
+        <a className="hoverableLogoLink" href={clientApplicationURL}>
             <img className={lgUp ? 'my-32' : 'ml-8'} src={logoPath} width={lgUp ? '60' : '45'} alt="logo" />
         </a>
     )
