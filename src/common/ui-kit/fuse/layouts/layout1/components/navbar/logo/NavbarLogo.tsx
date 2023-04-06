@@ -25,10 +25,7 @@ const NavbarLogo = () => {
     }
 
     return (
-        <a
-            className={isValidRedirectLink ? 'hoverableLogoLink' : ''}
-            href={isValidRedirectLink ? clientApplicationURL : ''}
-        >
+        <a className="hoverableLogoLink" href={clientApplicationURL}>
             <img className={lgUp ? 'my-32' : 'ml-8'} src={logoPath} width={lgUp ? '60' : '45'} alt="logo" />
         </a>
     )
