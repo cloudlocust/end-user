@@ -1,5 +1,5 @@
 import { reduxedRender } from 'src/common/react-platform-components/test'
-import ContractForm from 'src/modules/Contracts/components/ContractForm'
+import ContractForm, { TariffsContract } from 'src/modules/Contracts/components/ContractForm'
 import userEvent from '@testing-library/user-event'
 import { ContractFormProps } from 'src/modules/Contracts/contractsTypes'
 import {
@@ -7,6 +7,7 @@ import {
     TEST_OFFERS,
     TEST_POWERS,
     TEST_PROVIDERS,
+    TEST_TARIFFS_CONTRACT,
     TEST_TARIFF_TYPES,
 } from 'src/mocks/handlers/commercialOffer'
 import { waitFor } from '@testing-library/react'
@@ -14,6 +15,8 @@ import { TEST_HOUSE_ID } from 'src/mocks/handlers/contracts'
 import { TEST_HOUSES as MOCK_HOUSES } from 'src/mocks/handlers/houses'
 import { applyCamelCase } from 'src/common/react-platform-components'
 import { IHousing } from 'src/modules/MyHouse/components/HousingList/housing'
+
+const LoadingIndicatorClass = '.MuiCircularProgress-root'
 
 // List of houses to add to the redux state
 const TEST_HOUSES: IHousing[] = applyCamelCase(MOCK_HOUSES)
@@ -27,6 +30,8 @@ const POWER_LABEL_TEXT = 'Puissance *'
 const OFFPEAK_HOURS_LABEL_TEXT = 'Plages heures creuses :'
 const START_SUBSCRIPTION_LABEL_TEXT = 'Date de début'
 const END_SUBSCRIPTION_LABEL_TEXT = 'Date de fin (Si terminé)'
+const TARIFFS_SUBSCRIPTION_TEXT = 'abonnement: 36 €/mois'
+const TARIFFS_KWH_PRICE_TEXT = 'prix kwh: 0.125 €/kWh'
 const CONTRACT_FORM_FIELDS_LABEL_LIST = [
     TYPE_LABEL_TEXT,
     PROVIDER_LABEL_TEXT,
@@ -48,6 +53,8 @@ const CONTRACT_FORM_OFFPEAK_HOURS_LABEL_LIST = [
     START_SUBSCRIPTION_LABEL_TEXT,
     END_SUBSCRIPTION_LABEL_TEXT,
 ]
+
+const NO_TARIFFS_MESSAGE = 'Aucun tarif disponible'
 
 /**
  * Function that asserts that contract form fields are hidden, when previous field is not selected.
@@ -84,18 +91,21 @@ let mockProviderList = TEST_PROVIDERS
 let mockPowerList = TEST_POWERS
 let mockTariffTypeList = TEST_TARIFF_TYPES
 let mockMeterDetails = TEST_HOUSES[2].meter
+let mockTariffs = TEST_TARIFFS_CONTRACT
 const mockLoadContractTypes = jest.fn()
 const mockLoadPowers = jest.fn()
 const mockLoadProviders = jest.fn()
 const mockLoadOffers = jest.fn()
 const mockLoadTariffTypes = jest.fn()
 const mockEditMeter = jest.fn()
+const mockLoadTariffsHousingContract = jest.fn()
 let mockIsTariffTypesLoading = false
 let mockIsPowersLoading = false
 let mockIsProvidersLoading = false
 let mockIsOffersLoading = false
 let mockIsContractTypesLoading = false
 let mockIsMeterLoading = false
+let mockIsTariffsLoading = false
 const mockHouseId = TEST_HOUSE_ID
 
 /**
@@ -111,15 +121,19 @@ jest.mock('src/hooks/CommercialOffer/CommercialOfferHooks', () => ({
         providerList: mockProviderList,
         powerList: mockPowerList,
         tariffTypeList: mockTariffTypeList,
+        tariffs: mockTariffs,
         loadContractTypes: mockLoadContractTypes,
         loadPowers: mockLoadPowers,
         loadProviders: mockLoadProviders,
         loadTariffTypes: mockLoadTariffTypes,
+        loadTariffsHousingContract: mockLoadTariffsHousingContract,
+        setTariffs: jest.fn(),
         isContractTypesLoading: mockIsContractTypesLoading,
         isOffersLoading: mockIsOffersLoading,
         isPowersLoading: mockIsPowersLoading,
         isProvidersLoading: mockIsProvidersLoading,
         isTariffTypesLoading: mockIsTariffTypesLoading,
+        isTariffsLoading: mockIsTariffsLoading,
     }),
 }))
 
@@ -221,13 +235,16 @@ describe('Test ContractFormSelect Component', () => {
         // Other fields are not shown
         LabelsNotToBeInDocument(CONTRACT_FORM_FIELDS_LABELS, getByText)
 
-        // When selecting startSubscription, endSubscription is shown
+        // When selecting startSubscription, tariffs & endSubscription is shown
         userEvent.click(getByLabelText(START_SUBSCRIPTION_LABEL_TEXT))
         userEvent.click(getByText('1'))
         userEvent.click(getByText('OK'))
         await waitFor(() => {
             expect(() => getByText('OK')).toThrow()
+            expect(mockLoadTariffsHousingContract).toHaveBeenCalled()
         })
+        expect(getByText(TARIFFS_SUBSCRIPTION_TEXT)).toBeTruthy()
+        expect(getByText(TARIFFS_KWH_PRICE_TEXT)).toBeTruthy()
 
         // Fill endSubscription
         userEvent.click(getByLabelText(END_SUBSCRIPTION_LABEL_TEXT, { exact: true }))
@@ -409,13 +426,16 @@ describe('Test ContractFormSelect Component', () => {
         // Other fields are not shown
         LabelsNotToBeInDocument(CONTRACT_FORM_OFFPEAK_HOURS_FIELDS_LABELS, getByText)
 
-        // When selecting startSubscription, endSubscription is shown
+        // When selecting startSubscription, tariffs & endSubscription is shown
         userEvent.click(getByLabelText(START_SUBSCRIPTION_LABEL_TEXT))
         userEvent.click(getByText('1'))
         userEvent.click(getByText('OK'))
         await waitFor(() => {
             expect(() => getByText('OK')).toThrow()
+            expect(mockLoadTariffsHousingContract).toHaveBeenCalled()
         })
+        expect(getByText(TARIFFS_SUBSCRIPTION_TEXT)).toBeTruthy()
+        expect(getByText(TARIFFS_KWH_PRICE_TEXT)).toBeTruthy()
 
         // Fill endSubscription
         userEvent.click(getByLabelText(END_SUBSCRIPTION_LABEL_TEXT, { exact: true }))
@@ -438,4 +458,36 @@ describe('Test ContractFormSelect Component', () => {
         )
         expect(mockEditMeter).toHaveBeenCalled()
     }, 35000)
+})
+
+describe('Test TariffsContract Component', () => {
+    test('When IsTariffsLoading is true, the spinner should be shown', async () => {
+        mockIsTariffsLoading = true
+        const { container } = reduxedRender(
+            <TariffsContract tariffs={mockTariffs} isTariffsLoading={mockIsTariffsLoading} />,
+        )
+        expect(container.querySelector(LoadingIndicatorClass)).toBeInTheDocument()
+    })
+
+    test('When tariffs is null, nothing is shown', async () => {
+        mockIsTariffsLoading = false
+        const { queryByText } = reduxedRender(
+            <TariffsContract tariffs={null} isTariffsLoading={mockIsTariffsLoading} />,
+        )
+        expect(queryByText(TARIFFS_SUBSCRIPTION_TEXT)).not.toBeInTheDocument()
+        expect(queryByText(TARIFFS_KWH_PRICE_TEXT)).not.toBeInTheDocument()
+    })
+
+    test('When tariffs is empty, an error message is shown', async () => {
+        const { getByText } = reduxedRender(<TariffsContract tariffs={[]} isTariffsLoading={mockIsTariffsLoading} />)
+        expect(getByText(NO_TARIFFS_MESSAGE)).toBeInTheDocument()
+    })
+
+    test('When tariffs is not empty, it should be shown correctly', async () => {
+        const { getByText } = reduxedRender(
+            <TariffsContract tariffs={mockTariffs} isTariffsLoading={mockIsTariffsLoading} />,
+        )
+        expect(getByText(TARIFFS_SUBSCRIPTION_TEXT)).toBeInTheDocument()
+        expect(getByText(TARIFFS_KWH_PRICE_TEXT)).toBeInTheDocument()
+    })
 })

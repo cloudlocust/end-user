@@ -242,6 +242,83 @@ export interface ContractFormSelectProps<T> extends SelectFieldProps {
 }
 
 /**
+ * Range value type.
+ *
+ */
+export type frequencyType = 'daily' | 'monthly'
+
+// eslint-disable-next-line jsdoc/require-jsdoc
+export enum frequencyEnum {
+    /**
+     *
+     */
+    DAILY = 'daily',
+    /**
+     *
+     */
+    MONTHLY = 'monthly',
+}
+
+/**
+ * Tariff Contract type.
+ */
+export type tariffContract =
+    /**
+     *
+     */
+    {
+        /**
+         * Label.
+         */
+        label: string
+        /**
+         * Price.
+         */
+        price: number
+        /**
+         * Frequency.
+         */
+        freq: frequencyType
+    }
+
+/**
+ * Tariff Contract units type.
+ */
+export type tariffContractUnits = '€/mois' | '€/kWh'
+
+/**
+ * TariffContractItem Props.
+ */
+export interface TariffContractItemProps {
+    /**
+     * Label.
+     */
+    label: string
+    /**
+     * Price.
+     */
+    price: number
+    /**
+     * Unit.
+     */
+    unit: tariffContractUnits
+}
+
+/**
+ * TariffContractItem Props.
+ */
+export interface TariffsContractProps {
+    /**
+     * List of tariffs.
+     */
+    tariffs: tariffContract[] | null
+    /**
+     * Is request Tariffs Loading.
+     */
+    isTariffsLoading: boolean
+}
+
+/**
  * Props Type of OffPeakHoursField Component.
  */
 export interface offpeakHoursFieldProps {

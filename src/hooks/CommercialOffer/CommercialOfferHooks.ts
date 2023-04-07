@@ -4,6 +4,7 @@ import { useIntl } from 'src/common/react-platform-translation'
 import { useSnackbar } from 'notistack'
 import { API_RESOURCES_URL } from 'src/configs'
 import { IContractType, IProvider, ITariffType, IPower, IOffer } from './CommercialOffers.d'
+import { tariffContract } from 'src/modules/Contracts/contractsTypes'
 
 /**
  * Contract Type API.
@@ -25,6 +26,10 @@ export const TARIFF_TYPES_API = `${API_RESOURCES_URL}/tariff_types`
  * Powers API.
  */
 export const POWERS_API = `${API_RESOURCES_URL}/powers`
+/**
+ * Powers API.
+ */
+export const TARIFFS_CONTRACT_API = `${API_RESOURCES_URL}/tariffs_contracts`
 
 /**
 `* Hooks for commercialOffer different fetch requests (Providers, TariffType, Power, contractType).
@@ -39,11 +44,13 @@ export const useCommercialOffer = () => {
     const [isOffersLoading, setIsOffersLoading] = useState(false)
     const [isTariffTypesLoading, setIsTariffTypesLoading] = useState(false)
     const [isPowersLoading, setIsPowersLoading] = useState(false)
+    const [isTariffsLoading, setIsTariffsLoading] = useState(false)
     const [providerList, setProviderList] = useState<IProvider[] | null>(null)
     const [offerList, setOfferList] = useState<IProvider[] | null>(null)
     const [contractTypeList, setContractTypeList] = useState<IContractType[] | null>(null)
     const [tariffTypeList, setTariffTypeList] = useState<ITariffType[] | null>(null)
     const [powerList, setPowerList] = useState<IPower[] | null>(null)
+    const [tariffs, setTariffs] = useState<tariffContract[] | null>(null)
 
     /**
      * Fetching Contract Types function.
@@ -163,12 +170,44 @@ export const useCommercialOffer = () => {
         [formatMessage, enqueueSnackbar],
     )
 
+    /**
+     * Fetching tariffs function.
+     */
+    const loadTariffsHousingContract = useCallback(
+        async (
+            offerId: IOffer['id'],
+            tariffTypeId: ITariffType['id'],
+            contractTypeId: IContractType['id'],
+            power: number,
+            startSubscription: string,
+        ) => {
+            setIsTariffsLoading(true)
+            try {
+                const { data: responseData } = await axios.get<tariffContract[]>(
+                    `${TARIFFS_CONTRACT_API}?offer_id=${offerId}&tariff_type_id=${tariffTypeId}&contract_type_id=${contractTypeId}&power=${power}&start_subscription=${startSubscription}`,
+                )
+                setTariffs(responseData)
+            } catch (error) {
+                enqueueSnackbar(
+                    formatMessage({
+                        id: 'Erreur lors du chargement des tariffs de contrat',
+                        defaultMessage: 'Erreur lors du chargement des tariffs de contrat',
+                    }),
+                    { variant: 'error' },
+                )
+            }
+            setIsTariffsLoading(false)
+        },
+        [enqueueSnackbar, formatMessage],
+    )
+
     return {
         isProvidersLoading,
         isContractTypesLoading,
         isTariffTypesLoading,
         isOffersLoading,
         isPowersLoading,
+        isTariffsLoading,
         loadContractTypes,
         contractTypeList,
         loadProviders,
@@ -179,5 +218,8 @@ export const useCommercialOffer = () => {
         tariffTypeList,
         loadPowers,
         powerList,
+        loadTariffsHousingContract,
+        setTariffs,
+        tariffs,
     }
 }
