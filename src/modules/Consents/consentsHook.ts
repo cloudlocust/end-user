@@ -93,8 +93,8 @@ export function useConsents() {
                 if (isCancel(nrlinkConsent.reason)) return
                 enqueueSnackbar(
                     formatMessage({
-                        id: 'Erreur lors de la récupération du consentement Nrlink',
-                        defaultMessage: 'Erreur lors de la récupération du consentement Nrlink',
+                        id: 'Erreur lors de la récupération du consentement nrLINK',
+                        defaultMessage: 'Erreur lors de la récupération du consentement nrLINK',
                     }),
                     {
                         variant: 'error',

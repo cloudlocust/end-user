@@ -27,7 +27,7 @@ jest.mock('notistack', () => ({
 
 const TEST_METER_GUID = '123456'
 const connectedState = 'CONNECTED'
-const TEST_NRLINK_ERROR = 'Erreur lors de la récupération du consentement Nrlink'
+const TEST_NRLINK_ERROR = 'Erreur lors de la récupération du consentement nrLINK'
 const TEST_ENEDIS_ERROR = 'Erreur lors de la récupération du consentement Enedis'
 
 describe('useConsents test', () => {
