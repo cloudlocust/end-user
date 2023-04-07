@@ -1,4 +1,4 @@
-import React, { useRef } from 'react'
+import { useRef } from 'react'
 import { requiredBuilder, Form, repeatPassword, accept, regex } from 'src/common/react-platform-components'
 import { useIntl } from 'src/common/react-platform-translation'
 import { ButtonLoader, PasswordField, Checkbox } from 'src/common/ui-kit'
@@ -24,7 +24,7 @@ export const SetPasswordForm = ({ token }: ResetPasswordFormProps) => {
     const { isResetPasswordProgress, onSubmitResetPassword } = useResetPassword()
 
     // eslint-disable-next-line jsdoc/require-jsdoc
-    const onSubmitSetPassword = ({ password, ...restData }: onSubmitSetPasswordData) => {
+    const onSubmitSetPassword = ({ password }: onSubmitSetPasswordData) => {
         onSubmitResetPassword({ password, token })
     }
 

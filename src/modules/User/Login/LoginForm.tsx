@@ -1,4 +1,3 @@
-import React from 'react'
 import { useIntl } from 'react-intl'
 import { email, requiredBuilder, Form } from 'src/common/react-platform-components'
 import { TextField, PasswordField, ButtonLoader } from 'src/common/ui-kit'

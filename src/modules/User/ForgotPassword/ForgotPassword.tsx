@@ -1,11 +1,11 @@
-import React, { FC } from 'react'
+import { FC } from 'react'
 import { Card, Typography } from 'src/common/ui-kit'
 import { useIntl } from 'src/common/react-platform-translation'
 import { ForgotPasswordForm as DefaultForgotPasswordForm } from './ForgotPasswordForm'
 import { Link } from 'react-router-dom'
 import MuiLink from '@mui/material/Link'
 import './ForgotPassword.scss'
-import { LOGO_URL, API_BASE_URL, CLIENT_ICON_FOLDER } from 'src/configs'
+import { CLIENT_ICON_FOLDER } from 'src/configs'
 import CardContent from '@mui/material/CardContent'
 import { motion } from 'framer-motion'
 import { URL_LOGIN } from 'src/modules/User/Login/LoginConfig'
@@ -14,20 +14,6 @@ import { URL_LOGIN } from 'src/modules/User/Login/LoginConfig'
  * Props of the forget password component.
  */
 export interface ForgotPasswordProps {
-    /**
-     * Logo of the company. This field is not required.
-     */
-    logo?: // eslint-disable-next-line jsdoc/require-jsdoc
-    {
-        /**
-         * Destination link if the logo is clickable.
-         */
-        href?: string
-        /**
-         * Url of the logo.
-         */
-        url: string
-    }
     /**
      * Forget password component. This is a rendered component.
      */
@@ -39,12 +25,10 @@ export interface ForgotPasswordProps {
  *
  * @param props N/A.
  * @param props.forgotPasswordForm Forget password form. This field has a default value.
- * @param props.logo Logo of the company. This field has a default value.
  * @returns Forget password component.
  */
 export const ForgotPassword: FC<ForgotPasswordProps> = ({
     forgotPasswordForm = <DefaultForgotPasswordForm />,
-    logo = { href: API_BASE_URL, url: LOGO_URL },
 }): JSX.Element => {
     const { formatMessage } = useIntl()
     return (

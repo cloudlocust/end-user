@@ -12,11 +12,11 @@ export const SOLAR_EQUIPMENTS_API = `${API_RESOURCES_URL}/solar-energy-equipment
 /**
  * Error message add contract.
  *
- * @param error Axios error object.
+ * @param _error Axios error object.
  * @param formatMessage FormatMessage intl object from (react-intl package).
  * @returns {string} Error message.
  */
-const addElementError = (error: any, formatMessage: formatMessageType) => {
+const addElementError = (_error: any, formatMessage: formatMessageType) => {
     return formatMessage({
         id: "Erreur lors de l'ajout d'un équipement",
         defaultMessage: "Erreur lors de l'ajout d'un équipement",
@@ -26,11 +26,11 @@ const addElementError = (error: any, formatMessage: formatMessageType) => {
 /**
  * Success message addElement.
  *
- * @param responseData Added Contract.
+ * @param _responseData Added Contract.
  * @param formatMessage FormatMessage intl object from (react-intl package).
  * @returns {string} Success message.
  */
-const addElementSuccess = (responseData: ISolarEquipment, formatMessage: formatMessageType) => {
+const addElementSuccess = (_responseData: ISolarEquipment, formatMessage: formatMessageType) => {
     return formatMessage({
         id: "Succès lors de l'ajout d'un équipement",
         defaultMessage: "Succès lors de l'ajout d'un équipement",
@@ -40,11 +40,11 @@ const addElementSuccess = (responseData: ISolarEquipment, formatMessage: formatM
 /**
  * Error message loadElementListError.
  *
- * @param error Error.
+ * @param _error Error.
  * @param formatMessage FormatMessage intl object from (react-intl package).
  * @returns {string} Success message.
  */
-export const loadElementListError = (error: any, formatMessage: formatMessageType) => {
+export const loadElementListError = (_error: any, formatMessage: formatMessageType) => {
     return formatMessage({
         id: 'Erreur lors du chargement des équipements',
         defaultMessage: 'Erreur lors du chargement des équipements',
@@ -54,11 +54,11 @@ export const loadElementListError = (error: any, formatMessage: formatMessageTyp
 /**
  * Error message removeElementDetails.
  *
- * @param error Axios error object.
+ * @param _error Axios error object.
  * @param formatMessage FormatMessage intl object from (react-intl package).
  * @returns {string} Error message.
  */
-const removeElementDetailsError = (error: any, formatMessage: formatMessageType) => {
+const removeElementDetailsError = (_error: any, formatMessage: formatMessageType) => {
     return formatMessage({
         id: "Erreur lors de la suppression de l'équipement",
         defaultMessage: "Erreur lors de la suppression de l'équipement",
@@ -68,11 +68,11 @@ const removeElementDetailsError = (error: any, formatMessage: formatMessageType)
 /**
  * Success message removeElementDetails.
  *
- * @param responseData Removed Installation Request.
+ * @param _responseData Removed Installation Request.
  * @param formatMessage FormatMessage intl object from (react-intl package).
  * @returns {string} Success message.
  */
-const removeElementDetailsSuccess = (responseData: ISolarEquipment, formatMessage: formatMessageType) => {
+const removeElementDetailsSuccess = (_responseData: ISolarEquipment, formatMessage: formatMessageType) => {
     return formatMessage({
         id: "Succès lors de la suppression de l'équipement",
         defaultMessage: "Succès lors de la suppression de l'équipement",
@@ -82,11 +82,11 @@ const removeElementDetailsSuccess = (responseData: ISolarEquipment, formatMessag
 /**
  * Error message editElementDetailsError.
  *
- * @param responseData Edited Installation Request.
+ * @param _responseData Edited Installation Request.
  * @param formatMessage FormatMessage intl object from (react-intl package).
  * @returns {string} Success message.
  */
-const editElementDetailsError = (responseData: ISolarEquipment, formatMessage: formatMessageType) => {
+const editElementDetailsError = (_responseData: ISolarEquipment, formatMessage: formatMessageType) => {
     return formatMessage({
         id: "Erreur lors de la modification de l'équipement",
         defaultMessage: "Erreur lors de la modification de l'équipement",
@@ -96,11 +96,11 @@ const editElementDetailsError = (responseData: ISolarEquipment, formatMessage: f
 /**
  * Success message editElementDetailsSuccess.
  *
- * @param responseData Edited Installation Request.
+ * @param _responseData Edited Installation Request.
  * @param formatMessage FormatMessage intl object from (react-intl package).
  * @returns {string} Success message.
  */
-const editElementDetailsSuccess = (responseData: ISolarEquipment, formatMessage: formatMessageType) => {
+const editElementDetailsSuccess = (_responseData: ISolarEquipment, formatMessage: formatMessageType) => {
     return formatMessage({
         id: "Succcès lors de la modification de l'équipement",
         defaultMessage: "Succès lors de la modification de l'équipement",

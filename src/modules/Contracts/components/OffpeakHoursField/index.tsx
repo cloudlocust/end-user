@@ -1,4 +1,4 @@
-import React, { FC, useEffect } from 'react'
+import { FC, useEffect } from 'react'
 import FormControl from '@mui/material/FormControl'
 import FormHelperText from '@mui/material/FormHelperText'
 import { Controller, useFormContext, useWatch } from 'react-hook-form'
@@ -43,20 +43,10 @@ const initialMeterFeatures: IMeterFeatures = {
  * @param param0 Diffeent props of material ui select field.
  * @param param0.name The name of the field.
  * @param param0.label The label of the field.
- * @param param0.children The array options of the select.
- * @param param0.validateFunctions  Validators of the field, when required is sent, we add some extra params in the field.
- * @param param0.defaultValue The default value of the field.
  * @param param0.labelProps The props of the InputLabel.
  * @returns Material UI Select field wrapped.
  */
-const OffpeakHoursField: FC<offpeakHoursFieldProps> = function ({
-    name,
-    label,
-    children,
-    validateFunctions = [],
-    labelProps,
-    ...otherProps
-}) {
+const OffpeakHoursField: FC<offpeakHoursFieldProps> = function ({ name, label, labelProps }) {
     const { houseId } = useParams</**
      *
      */
@@ -154,7 +144,7 @@ const OffpeakHoursField: FC<offpeakHoursFieldProps> = function ({
                         : undefined
                 },
             }}
-            render={({ field, fieldState }) => (
+            render={({ fieldState }) => (
                 <>
                     <TypographyFormatMessage className="my-8 text-13 md:text-16 text-center" {...labelProps}>
                         {label}
@@ -166,7 +156,7 @@ const OffpeakHoursField: FC<offpeakHoursFieldProps> = function ({
                         error={fieldState.invalid}
                         style={{ marginTop: '0' }}
                     >
-                        {meterFeatures.offpeak.offpeakHours.map((offpeakHour, index) => (
+                        {meterFeatures.offpeak.offpeakHours.map((_offpeakHour, index) => (
                             <div
                                 style={{ display: 'flex', alignItems: 'center', gap: '24px', marginBottom: '12px' }}
                                 key={index}

@@ -1,4 +1,3 @@
-import React from 'react'
 import { reduxedRender } from 'src/common/react-platform-components/test'
 import { FirstStepNrLinkConnection } from 'src/modules/nrLinkConnection'
 import { TEST_SUCCESS_USER } from 'src/mocks/handlers/user'

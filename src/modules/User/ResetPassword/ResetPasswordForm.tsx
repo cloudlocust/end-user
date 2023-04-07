@@ -1,4 +1,4 @@
-import React, { useRef } from 'react'
+import { useRef } from 'react'
 import { requiredBuilder, Form, repeatPassword, regex } from 'src/common/react-platform-components'
 import { useIntl } from 'src/common/react-platform-translation'
 import { ButtonLoader, PasswordField } from 'src/common/ui-kit'

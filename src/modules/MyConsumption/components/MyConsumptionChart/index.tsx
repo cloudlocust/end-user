@@ -68,20 +68,20 @@ const MyConsumptionChart = ({
                  * Fires before the chart has been drawn on screen, so that to improve user experience by showing a spinner, instead of showing an empty chart while while the chart is drawing heavy computations (Because of the length of categories given and labels, tooltip.labels especially when period === 'daily', and when options.xaxis.type === 'category' chart performance in drawing is slower).
                  * Reference: https://apexcharts.com/docs/options/chart/events/ .
                  *
-                 * @param chart ChartContext.
-                 * @param options Config.
+                 * @param _chart ChartContext.
+                 * @param _options Config.
                  */
-                beforeMount(chart, options?) {
+                beforeMount(_chart, _options?) {
                     setIsApexChartsFinishDrawing(false)
                 },
                 /**
                  * Fires after the chart has been drawn on screen, so that we stop the spinner and show the chart instead because it's being drawn.
                  * Reference: https://apexcharts.com/docs/options/chart/events/ .
                  *
-                 * @param chart ChartContext.
-                 * @param options Config.
+                 * @param _chart ChartContext.
+                 * @param _options Config.
                  */
-                mounted(chart, options?) {
+                mounted(_chart, _options?) {
                     setIsApexChartsFinishDrawing(true)
                 },
             }

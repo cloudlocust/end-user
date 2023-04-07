@@ -1,4 +1,4 @@
-import React, { FC } from 'react'
+import { FC } from 'react'
 import { fireEvent, waitFor, within } from '@testing-library/react'
 import { act } from 'react-dom/test-utils'
 import { reduxedRender } from 'src/common/react-platform-components/test'
@@ -17,9 +17,9 @@ import { GeocodeResult } from 'use-places-autocomplete'
  */
 export const ADDRESS_TESTID = 'AddressAutoCompleteField'
 const ADDRESS_ADDITION_TESTID = 'AddressAdditionAutoCompleteField'
-const mockSetValue = jest.fn((data) => null)
+const mockSetValue = jest.fn((_data) => null)
 const mockInit = jest.fn(() => null)
-const mockOnSubmit = jest.fn((data) => {})
+const mockOnSubmit = jest.fn((_data) => {})
 const suggestionData = [
     {
         description: 'Rue Général Lotz 37, Uccle, Belgique',
@@ -121,9 +121,9 @@ jest.mock('use-places-autocomplete', () => ({
         return [data]
     },
     // eslint-disable-next-line jsdoc/require-jsdoc
-    getLatLng: (data: any) => ({ lat: 1, lng: 2 }),
+    getLatLng: (_data: any) => ({ lat: 1, lng: 2 }),
     // eslint-disable-next-line jsdoc/require-jsdoc
-    getZipCode: (data: any, boolean: boolean) => '1234',
+    getZipCode: (_data: any, _boolean: boolean) => '1234',
 }))
 
 /**

@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback } from 'react'
+import { useEffect, useCallback } from 'react'
 import 'src/modules/User/Register/register.scss'
 import { Typography } from 'src/common/ui-kit'
 import { useIntl } from 'react-intl'

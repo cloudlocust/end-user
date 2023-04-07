@@ -215,7 +215,7 @@ describe('test pure functions', () => {
         expect(isMissingValues).toBeFalsy()
 
         // When week period, and data doesn't contains all week values.
-        mockMetricsData[0].datapoints = FAKE_WEEK_DATA.filter((v, i) => i !== 0)
+        mockMetricsData[0].datapoints = FAKE_WEEK_DATA.filter((_v, i) => i !== 0)
         ApexChartsFilledAxisValues = convertMetricsDataToApexChartsAxisValues(mockMetricsData)
         isMissingValues = isMissingYAxisValues(ApexChartsFilledAxisValues.yAxisSeries[0].data, 'weekly')
         expect(isMissingValues).toBeTruthy()
@@ -227,7 +227,7 @@ describe('test pure functions', () => {
         expect(isMissingValues).toBeFalsy()
 
         // When month period, and data doesn't contains all month values.
-        mockMetricsData[0].datapoints = FAKE_MONTH_DATA.filter((v, i) => i !== 0)
+        mockMetricsData[0].datapoints = FAKE_MONTH_DATA.filter((_v, i) => i !== 0)
         ApexChartsFilledAxisValues = convertMetricsDataToApexChartsAxisValues(mockMetricsData)
         isMissingValues = isMissingYAxisValues(ApexChartsFilledAxisValues.yAxisSeries[0].data, 'yearly')
         expect(isMissingValues).toBeTruthy()
@@ -240,7 +240,7 @@ describe('test pure functions', () => {
         expect(isMissingValues).toBeFalsy()
 
         // When year period, and data doesn't contains all week values.
-        mockMetricsData[0].datapoints = FAKE_YEAR_DATA.filter((v, i) => i !== 0)
+        mockMetricsData[0].datapoints = FAKE_YEAR_DATA.filter((_v, i) => i !== 0)
         ApexChartsFilledAxisValues = convertMetricsDataToApexChartsAxisValues(mockMetricsData)
         isMissingValues = isMissingYAxisValues(ApexChartsFilledAxisValues.yAxisSeries[0].data, 'yearly')
         expect(isMissingValues).toBeTruthy()

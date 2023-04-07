@@ -1,4 +1,3 @@
-import React from 'react'
 import { OtherProviderOfferOptionMessageProps } from 'src/modules/Contracts/contractsTypes.d'
 import { Typography } from '@mui/material'
 

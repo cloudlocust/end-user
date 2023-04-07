@@ -1,4 +1,3 @@
-import React from 'react'
 import { waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { Form } from 'src/common/react-platform-components'

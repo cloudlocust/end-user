@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import { useEffect } from 'react'
 import { NovuProvider, useNotifications, PopoverNotificationCenter, NotificationBell } from '@novu/notification-center'
 import {
     REACT_APP_NOVU_APPLICATION_IDENTIFIER,

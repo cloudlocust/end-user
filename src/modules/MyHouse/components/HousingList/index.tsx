@@ -1,4 +1,4 @@
-import React, { SyntheticEvent, useState } from 'react'
+import { useState } from 'react'
 import { PostPlaceholder } from 'src/common/ui-kit/components/MapElementList/components/ContentLoader/ContentLoader'
 import { useHousingList } from 'src/modules/MyHouse/components/HousingList/HousingsHooks'
 import HousingCard from 'src/modules/MyHouse/components/HousingCard'
@@ -134,7 +134,7 @@ const HousingList = () => {
                                             <ButtonLoader
                                                 inProgress={isHousingInProgress}
                                                 type="button"
-                                                onClick={(e: SyntheticEvent) => loadMoreHousings()}
+                                                onClick={() => loadMoreHousings()}
                                             >
                                                 {formatMessage({
                                                     id: 'Afficher plus',

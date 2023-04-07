@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { useIntl } from 'src/common/react-platform-translation'
 import Radio from '@mui/material/Radio'
 import RadioGroup from '@mui/material/RadioGroup'
@@ -21,22 +21,9 @@ import { CircularProgress } from '@mui/material'
 import { isMatch } from 'lodash'
 import { useParams } from 'react-router-dom'
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline'
-import Tooltip, { tooltipClasses, TooltipProps } from '@mui/material/Tooltip'
-import { styled } from '@mui/material/styles'
+import Tooltip from '@mui/material/Tooltip'
 import { Icon } from '@mui/material'
 import { useTheme } from '@mui/material'
-
-//eslint-disable-next-line
-const CustomTooltip = styled(({ className, ...props }: TooltipProps) => (
-    <Tooltip {...props} classes={{ popper: className }} />
-))(({ theme }) => ({
-    [`& .${tooltipClasses.tooltip}`]: {
-        backgroundColor: theme.palette.primary.main,
-        color: 'rgba(0, 0, 0, 0.87)',
-        boxShadow: theme.shadows[1],
-        fontSize: 11,
-    },
-}))
 
 /**
  * AccomodationForm .

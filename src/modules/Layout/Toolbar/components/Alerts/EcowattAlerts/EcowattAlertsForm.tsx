@@ -84,7 +84,7 @@ export const EcowattAlertsForm = ({
                                     disabled={!isEdit}
                                     name="isPushSignalThreeDays"
                                     checked={isPushSignalThreeDaysState}
-                                    onChange={(e) => setIsPushSignalThreeDaysState(!isPushSignalThreeDaysState)}
+                                    onChange={() => setIsPushSignalThreeDaysState(!isPushSignalThreeDaysState)}
                                     data-testid="isPushSignalThreeDays-switch"
                                 />
                             </div>
@@ -106,7 +106,7 @@ export const EcowattAlertsForm = ({
                                     disabled={!isEdit}
                                     name="isPushSignalOneDay"
                                     checked={isPushSignalOneDayState}
-                                    onChange={(e) => setIsPushSignalOneDayState(!isPushSignalOneDayState)}
+                                    onChange={() => setIsPushSignalOneDayState(!isPushSignalOneDayState)}
                                     data-testid="isPushSignalOneDay-switch"
                                 />
                             </div>

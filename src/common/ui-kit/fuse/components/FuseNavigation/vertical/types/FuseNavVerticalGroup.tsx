@@ -5,7 +5,7 @@ import ListSubheader from '@mui/material/ListSubheader'
 import FuseNavItem from 'src/common/ui-kit/fuse/components/FuseNavigation/FuseNavItem'
 import { IFuseNavigationComponentProps } from 'src/common/ui-kit/fuse/components/FuseNavigation/FuseNavigation'
 
-const Root = styled('div')(({ theme, ...props }) => ({
+const Root = styled('div')(({ theme }) => ({
     height: 40,
     width: '100%',
     borderRadius: '6px',

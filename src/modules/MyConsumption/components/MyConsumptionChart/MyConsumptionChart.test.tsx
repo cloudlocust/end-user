@@ -1,4 +1,3 @@
-import React from 'react'
 import { reduxedRender } from 'src/common/react-platform-components/test'
 import MyConsumptionChart from 'src/modules/MyConsumption/components/MyConsumptionChart'
 import { createTheme } from '@mui/material/styles'

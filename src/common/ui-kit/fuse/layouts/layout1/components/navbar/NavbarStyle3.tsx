@@ -1,4 +1,3 @@
-import React from 'react'
 import Hidden from '@mui/material/Hidden'
 import { Theme, styled, useTheme } from '@mui/material/styles'
 import GlobalStyles from '@mui/material/GlobalStyles'
@@ -59,8 +58,6 @@ const StyledNavBar = styled('div')</**
  */
 function NavbarStyle3({
     navbarOpen,
-    mobileNavbarOpen,
-    navbarCloseMobile,
     navbarContent,
 }: // eslint-disable-next-line jsdoc/require-jsdoc
 {

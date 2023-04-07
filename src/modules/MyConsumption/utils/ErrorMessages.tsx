@@ -1,4 +1,3 @@
-import React from 'react'
 import { Link } from 'react-router-dom'
 import { Typography, Icon } from '@mui/material'
 import { useSelector } from 'react-redux'

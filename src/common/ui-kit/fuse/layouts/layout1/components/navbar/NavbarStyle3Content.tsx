@@ -143,9 +143,9 @@ function NavbarStyle3Content(props: /**
     /**
      *  Handler for when we click on an item in the navbar.
      *
-     * @param selected SelectedItem.
+     * @param _selected SelectedItem.
      */
-    function handleChildItemClick(selected: navbarItemType) {
+    function handleChildItemClick(_selected: navbarItemType) {
         setPanelOpen(false)
         if (mdDown && navbarCloseMobile) {
             navbarCloseMobile()

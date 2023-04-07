@@ -16,11 +16,11 @@ export const INSTALLATION_REQUESTS_API = `${API_RESOURCES_URL}/installation-requ
 /**
  * Error message add contract.
  *
- * @param error Axios error object.
+ * @param _error Axios error object.
  * @param formatMessage FormatMessage intl object from (react-intl package).
  * @returns {string} Error message.
  */
-const addElementError = (error: any, formatMessage: formatMessageType) => {
+const addElementError = (_error: any, formatMessage: formatMessageType) => {
     return formatMessage({
         id: "Erreur lors de l'ajout de la demande",
         defaultMessage: "Erreur lors de l'ajout de la demande",
@@ -30,11 +30,11 @@ const addElementError = (error: any, formatMessage: formatMessageType) => {
 /**
  * Success message addElement.
  *
- * @param responseData Added Contract.
+ * @param _responseData Added Contract.
  * @param formatMessage FormatMessage intl object from (react-intl package).
  * @returns {string} Success message.
  */
-const addElementSuccess = (responseData: IInstallationRequest, formatMessage: formatMessageType) => {
+const addElementSuccess = (_responseData: IInstallationRequest, formatMessage: formatMessageType) => {
     return formatMessage({
         id: "Succès lors de l'ajout de la demande",
         defaultMessage: "Succès lors de l'ajout de la demande",
@@ -44,11 +44,11 @@ const addElementSuccess = (responseData: IInstallationRequest, formatMessage: fo
 /**
  * Error message removeElementDetails.
  *
- * @param error Axios error object.
+ * @param _error Axios error object.
  * @param formatMessage FormatMessage intl object from (react-intl package).
  * @returns {string} Error message.
  */
-const removeElementDetailsError = (error: any, formatMessage: formatMessageType) => {
+const removeElementDetailsError = (_error: any, formatMessage: formatMessageType) => {
     return formatMessage({
         id: 'Erreur lors de la suppression de la demande',
         defaultMessage: 'Erreur lors de la suppression de la demande',
@@ -58,11 +58,11 @@ const removeElementDetailsError = (error: any, formatMessage: formatMessageType)
 /**
  * Success message removeElementDetails.
  *
- * @param responseData Removed Installation Request.
+ * @param _responseData Removed Installation Request.
  * @param formatMessage FormatMessage intl object from (react-intl package).
  * @returns {string} Success message.
  */
-const removeElementDetailsSuccess = (responseData: IInstallationRequest, formatMessage: formatMessageType) => {
+const removeElementDetailsSuccess = (_responseData: IInstallationRequest, formatMessage: formatMessageType) => {
     return formatMessage({
         id: 'Succès lors de la suppression de la demande',
         defaultMessage: 'Succès lors de la suppression de la demande',
@@ -72,11 +72,11 @@ const removeElementDetailsSuccess = (responseData: IInstallationRequest, formatM
 /**
  * Error message editElementDetailsError.
  *
- * @param responseData Edited Installation Request.
+ * @param _responseData Edited Installation Request.
  * @param formatMessage FormatMessage intl object from (react-intl package).
  * @returns {string} Success message.
  */
-const editElementDetailsError = (responseData: IInstallationRequest, formatMessage: formatMessageType) => {
+const editElementDetailsError = (_responseData: IInstallationRequest, formatMessage: formatMessageType) => {
     return formatMessage({
         id: 'Erreur lors de la modification de la demande',
         defaultMessage: 'Erreur lors de la modification de la demande',
@@ -86,11 +86,11 @@ const editElementDetailsError = (responseData: IInstallationRequest, formatMessa
 /**
  * Success message editElementDetailsSuccess.
  *
- * @param responseData Edited Installation Request.
+ * @param _responseData Edited Installation Request.
  * @param formatMessage FormatMessage intl object from (react-intl package).
  * @returns {string} Success message.
  */
-const editElementDetailsSuccess = (responseData: IInstallationRequest, formatMessage: formatMessageType) => {
+const editElementDetailsSuccess = (_responseData: IInstallationRequest, formatMessage: formatMessageType) => {
     return formatMessage({
         id: 'Succcès lors de la modification de la demande',
         defaultMessage: 'Succès lors de la modification de la demande',
@@ -100,11 +100,11 @@ const editElementDetailsSuccess = (responseData: IInstallationRequest, formatMes
 /**
  * Error message loadElementListError.
  *
- * @param error Error.
+ * @param _error Error.
  * @param formatMessage FormatMessage intl object from (react-intl package).
  * @returns {string} Success message.
  */
-export const loadElementListError = (error: any, formatMessage: formatMessageType) => {
+export const loadElementListError = (_error: any, formatMessage: formatMessageType) => {
     return formatMessage({
         id: 'Erreur lors du chargement des demandes',
         defaultMessage: 'Erreur lors du chargement des demandes',

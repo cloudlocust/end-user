@@ -1,4 +1,3 @@
-import React from 'react'
 import { BrowserRouter } from 'react-router-dom'
 import { fireEvent, waitFor, act } from '@testing-library/react'
 import { reduxedRender } from 'src/common/react-platform-components/test'

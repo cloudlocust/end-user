@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import { useEffect } from 'react'
 import { Card, Icon, MuiCardContent } from 'src/common/ui-kit'
 import { useIntl } from 'src/common/react-platform-translation'
 import { Link, useHistory, useLocation } from 'react-router-dom'
