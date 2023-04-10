@@ -42,3 +42,15 @@ export const getTariffContractUnit = (tariff: tariffContract): tariffContractUni
             throw Error('Wrong frequency')
     }
 }
+
+/**
+ * Verify if dateString is a valid date.
+ *
+ * @param dateString Date in string type.
+ * @returns Is it valid date ?.
+ */
+export const isValidDate = (dateString: string): boolean => {
+    if (dateString === '0') return false
+    const date = new Date(dateString)
+    return !isNaN(date.getTime())
+}

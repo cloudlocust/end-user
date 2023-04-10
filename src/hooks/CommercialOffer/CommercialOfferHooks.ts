@@ -27,7 +27,7 @@ export const TARIFF_TYPES_API = `${API_RESOURCES_URL}/tariff_types`
  */
 export const POWERS_API = `${API_RESOURCES_URL}/powers`
 /**
- * Powers API.
+ * Tariffs Contract API.
  */
 export const TARIFFS_CONTRACT_API = `${API_RESOURCES_URL}/tariffs_contracts`
 

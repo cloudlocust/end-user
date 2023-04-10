@@ -25,7 +25,7 @@ import { useParams } from 'react-router-dom'
 import { useMeterForHousing } from 'src/modules/Meters/metersHook'
 import { OtherProviderOfferOptionMessage } from 'src/modules/Contracts/components/ContractFormMessages'
 import { isActivateOtherOffersAndProviders } from 'src/modules/Contracts/ContractsConfig'
-import { getTariffContractUnit } from 'src/modules/Contracts/utils/contractsFunctions'
+import { getTariffContractUnit, isValidDate } from 'src/modules/Contracts/utils/contractsFunctions'
 import CircularProgress from '@mui/material/CircularProgress'
 
 const defaultContractFormValues: contractFormValuesType = {
@@ -183,7 +183,7 @@ const ContractFormFields = ({ isContractsLoading }: ContractFormFieldsProps) => 
     }, [loadPowers, formData.offerId, formData.tariffTypeId])
 
     /**
-     * LoadPowerOptions useCallback.
+     * LoadTariffsContract useCallback.
      */
     const loadTariffsContract = useCallback(() => {
         loadTariffsHousingContract(
@@ -208,7 +208,7 @@ const ContractFormFields = ({ isContractsLoading }: ContractFormFieldsProps) => 
          * We check if the date is valid to avoid problem of invalid date,
          when the user set the date by the keyboard instead of using the picker.
         */
-        if (!isNaN(new Date(formData.startSubscription!).getTime())) loadTariffsContract()
+        if (isValidDate(formData.startSubscription!)) loadTariffsContract()
         else setTariffs(null)
     }, [formData.startSubscription, loadTariffsContract, setTariffs])
 
@@ -332,7 +332,7 @@ const ContractFormFields = ({ isContractsLoading }: ContractFormFieldsProps) => 
                  * We check if the date is valid to avoid problem of invalid date,
                  * when the user set the date by the keyboard instead of using the picker.
                  */
-                formData.startSubscription && !isNaN(new Date(formData.startSubscription!).getTime()) && (
+                formData.startSubscription && isValidDate(formData.startSubscription!) && (
                     <DatePicker
                         name="endSubscription"
                         label={formatMessage({
