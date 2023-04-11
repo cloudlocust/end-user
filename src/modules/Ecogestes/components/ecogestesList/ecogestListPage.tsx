@@ -18,6 +18,46 @@ const PLACEHOLDER_ALL_TAGS_HEADER: IEcogestTag = {
 }
 
 /**
+ * Props to pass to <EcogesteListContent.
+ */
+type IEcogestListContentProps =
+    /**
+     * Props to pass to <EcogesteListContent.
+     */
+    {
+        /**
+         * Current EcogesteTag used.
+         */
+        currentTag: IEcogestTag | null | undefined
+        /**
+         * Current List of Ecogeste Tags.
+         */
+        elementList: IEcogestTag[] | null
+    }
+
+/**
+ * EcogestListContent Component.
+ *
+ * @param root0 Props.
+ * @param root0.currentTag Current Ecogest Tag.
+ * @param root0.elementList Current List of Ecogeste Tags.
+ * @returns JSX.Element.
+ */
+const EcogestListContent = ({ currentTag, elementList }: IEcogestListContentProps): JSX.Element => {
+    return currentTag?.id && currentTag.id > 0 && elementList ? (
+        <div className="m-10 p-10">
+            <EcogestesList />
+        </div>
+    ) : (
+        <div className="m-10 p-10 flex flex-1 gap-9" aria-label="list, tags, cards">
+            {elementList?.map((element) => (
+                <EcogestTagCard ecogestTag={element} />
+            ))}
+        </div>
+    )
+}
+
+/**
  * Ecogest List, but the page itself.
  *
  * @returns A page with a list of ecogestes.
@@ -90,19 +130,7 @@ const EcogestListPage = () => {
                     </div>
                 </ThemeProvider>
             }
-            content={
-                curr_tag?.id && curr_tag.id > 0 && elementList ? (
-                    <div className="m-10 p-10">
-                        <EcogestesList />
-                    </div>
-                ) : (
-                    <div className="m-10 p-10 flex flex-1 gap-9" aria-label="list, tags, cards">
-                        {elementList?.map((element) => (
-                            <EcogestTagCard ecogestTag={element} />
-                        ))}
-                    </div>
-                )
-            }
+            content={<EcogestListContent currentTag={curr_tag} elementList={elementList} />}
         />
     )
 }
