@@ -287,38 +287,6 @@ export type tariffContract =
 export type tariffContractUnits = '€/mois' | '€/kWh'
 
 /**
- * TariffContractItem Props.
- */
-export interface TariffContractItemProps {
-    /**
-     * Label.
-     */
-    label: string
-    /**
-     * Price.
-     */
-    price: number
-    /**
-     * Unit.
-     */
-    unit: tariffContractUnits
-}
-
-/**
- * TariffContractItem Props.
- */
-export interface TariffsContractProps {
-    /**
-     * List of tariffs.
-     */
-    tariffs: tariffContract[] | null
-    /**
-     * Is request Tariffs Loading.
-     */
-    isTariffsLoading: boolean
-}
-
-/**
  * Props Type of OffPeakHoursField Component.
  */
 export interface offpeakHoursFieldProps {

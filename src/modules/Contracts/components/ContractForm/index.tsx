@@ -7,8 +7,6 @@ import {
     ContractFormProps,
     contractFormValuesType,
     contractsRouteParam,
-    TariffContractItemProps,
-    TariffsContractProps,
 } from 'src/modules/Contracts/contractsTypes'
 import { useFormContext, useWatch } from 'react-hook-form'
 import { Form } from 'src/common/react-platform-components'
@@ -18,7 +16,7 @@ import ContractFormSelect from 'src/modules/Contracts/components/ContractFormSel
 import { useCommercialOffer } from 'src/hooks/CommercialOffer/CommercialOfferHooks'
 import { IContractType, IOffer, IPower, IProvider, ITariffType } from 'src/hooks/CommercialOffer/CommercialOffers'
 import { ButtonLoader } from 'src/common/ui-kit'
-import { isNull, orderBy, pick } from 'lodash'
+import { isEmpty, isNull, orderBy, pick } from 'lodash'
 import { SelectChangeEvent } from '@mui/material/Select'
 import OffpeakHoursField from 'src/modules/Contracts/components/OffpeakHoursField'
 import { useParams } from 'react-router-dom'
@@ -112,20 +110,16 @@ const ContractFormFields = ({ isContractsLoading }: ContractFormFieldsProps) => 
         providerList,
         powerList,
         tariffTypeList,
-        tariffs,
         loadContractTypes,
         loadOffers,
         loadPowers,
         loadProviders,
         loadTariffTypes,
-        loadTariffsHousingContract,
-        setTariffs,
         isContractTypesLoading,
         isOffersLoading,
         isPowersLoading,
         isProvidersLoading,
         isTariffTypesLoading,
-        isTariffsLoading,
     } = useCommercialOffer()
     const { formatMessage } = useIntl()
 
@@ -181,36 +175,6 @@ const ContractFormFields = ({ isContractsLoading }: ContractFormFieldsProps) => 
     const loadPowerOptions = useCallback(() => {
         loadPowers(formData.offerId!, formData.tariffTypeId!)
     }, [loadPowers, formData.offerId, formData.tariffTypeId])
-
-    /**
-     * LoadTariffsContract useCallback.
-     */
-    const loadTariffsContract = useCallback(() => {
-        loadTariffsHousingContract(
-            formData.offerId!,
-            formData.tariffTypeId!,
-            formData.contractTypeId!,
-            formData.power!,
-            new Date(formData.startSubscription!).toISOString(),
-        )
-    }, [
-        formData.contractTypeId,
-        formData.offerId,
-        formData.power,
-        formData.startSubscription,
-        formData.tariffTypeId,
-        loadTariffsHousingContract,
-    ])
-
-    useEffect(() => {
-        /**
-         * When the user set the start subscription date then we retrieve the tariffs from the back.
-         * We check if the date is valid to avoid problem of invalid date,
-         when the user set the date by the keyboard instead of using the picker.
-        */
-        if (isValidDate(formData.startSubscription!)) loadTariffsContract()
-        else setTariffs(null)
-    }, [formData.startSubscription, loadTariffsContract, setTariffs])
 
     return (
         <>
@@ -367,70 +331,88 @@ const ContractFormFields = ({ isContractsLoading }: ContractFormFieldsProps) => 
                     defaultMessage: 'Enregistrer',
                 })}
             </ButtonLoader>
-            <TariffsContract tariffs={tariffs} isTariffsLoading={isTariffsLoading} />
+            <TariffsContract />
         </>
     )
 }
 
 /**
- * Tariff Item component.
- *
- * @param props N/A.
- * @param props.label Name of tariff.
- * @param props.price Price of tariff.
- * @param props.unit Unit.
- * @returns Tariff Item component.
- */
-const TariffContractItem = ({ label, price, unit }: TariffContractItemProps) => (
-    <div className="flex flex-col justify-center items-center w-full py-4">
-        <TypographyFormatMessage className="text-13 font-medium text-center md:text-14" sx={{ color: 'grey.600' }}>
-            {`${label}: ${price} ${unit}`}
-        </TypographyFormatMessage>
-    </div>
-)
-
-/**
  * Tariffs Contract Component.
  *
- * @param props N/A.
- * @param props.tariffs List of tariff contract.
- * @param props.isTariffsLoading Is tariffs request is loading from the backend.
  * @returns Tariffs Contract Component.
  */
-export const TariffsContract = ({ tariffs, isTariffsLoading }: TariffsContractProps) => {
+export const TariffsContract = () => {
     const { formatMessage } = useIntl()
+    const formData = useWatch<contractFormValuesType>({})
+    const { tariffs, loadTariffsHousingContract, setTariffs, isTariffsLoading } = useCommercialOffer()
 
-    if (!tariffs) return null
+    /**
+     * LoadTariffsContract useCallback.
+     */
+    const loadTariffsContract = useCallback(() => {
+        loadTariffsHousingContract(
+            formData.offerId!,
+            formData.tariffTypeId!,
+            formData.contractTypeId!,
+            formData.power!,
+            new Date(formData.startSubscription!).toISOString(),
+        )
+    }, [
+        formData.contractTypeId,
+        formData.offerId,
+        formData.power,
+        formData.startSubscription,
+        formData.tariffTypeId,
+        loadTariffsHousingContract,
+    ])
+
+    useEffect(() => {
+        /**
+         * When the user set the start subscription date then we retrieve the tariffs from the back.
+         * We check if the date is valid to avoid problem of invalid date,
+         when the user set the date by the keyboard instead of using the picker.
+        */
+        if (isValidDate(formData.startSubscription!)) loadTariffsContract()
+        else setTariffs(null)
+    }, [formData.startSubscription, loadTariffsContract, setTariffs])
+
+    if (isNull(tariffs)) return null
+
+    if (isTariffsLoading)
+        return (
+            <div style={{ display: 'flex', justifyContent: 'center', padding: '1.6rem' }}>
+                <CircularProgress size={32} />
+            </div>
+        )
+
+    if (isEmpty(tariffs))
+        return (
+            <TypographyFormatMessage
+                className="pt-16 text-13 font-medium text-center md:text-14"
+                sx={{ color: 'grey.600' }}
+            >
+                {formatMessage({
+                    id: 'Aucun tarif disponible',
+                    defaultMessage: 'Aucun tarif disponible',
+                })}
+            </TypographyFormatMessage>
+        )
 
     return (
         <div className="flex flex-col justify-center w-full p-8 pt-16">
-            {isTariffsLoading ? (
-                <div style={{ display: 'flex', justifyContent: 'center', padding: '16px' }}>
-                    <CircularProgress size={32} />
-                </div>
-            ) : tariffs.length > 0 ? (
-                tariffs
-                    // Sort the tariffs to show it alphabetically by label.
-                    .sort((a, b) => a.label.localeCompare(b.label))
-                    .map((tariff) => (
-                        <TariffContractItem
-                            key={tariff.label}
-                            label={tariff.label}
-                            price={tariff.price}
-                            unit={getTariffContractUnit(tariff)}
-                        />
-                    ))
-            ) : (
-                <TypographyFormatMessage
-                    className="text-13 font-medium text-center md:text-14"
-                    sx={{ color: 'grey.600' }}
-                >
-                    {formatMessage({
-                        id: 'Aucun tarif disponible',
-                        defaultMessage: 'Aucun tarif disponible',
-                    })}
-                </TypographyFormatMessage>
-            )}
+            {tariffs
+                // Sort the tariffs to show it alphabetically by label.
+                .sort((a, b) => a.label.localeCompare(b.label))
+                .map((tariff) => (
+                    <div className="flex flex-col justify-center items-center w-full py-4" key={tariff.label}>
+                        <TypographyFormatMessage
+                            className="text-13 font-medium text-center md:text-14"
+                            sx={{ color: 'grey.600' }}
+                        >
+                            {`${tariff.label}: ${tariff.price} ${getTariffContractUnit(tariff)}`}
+                        </TypographyFormatMessage>
+                    </div>
+                ))}
         </div>
     )
 }

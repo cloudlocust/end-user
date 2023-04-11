@@ -1,7 +1,7 @@
 import { reduxedRender } from 'src/common/react-platform-components/test'
 import ContractForm, { TariffsContract } from 'src/modules/Contracts/components/ContractForm'
 import userEvent from '@testing-library/user-event'
-import { ContractFormProps } from 'src/modules/Contracts/contractsTypes'
+import { ContractFormProps, tariffContract } from 'src/modules/Contracts/contractsTypes'
 import {
     TEST_CONTRACT_TYPES,
     TEST_OFFERS,
@@ -13,7 +13,7 @@ import {
 import { waitFor } from '@testing-library/react'
 import { TEST_HOUSE_ID } from 'src/mocks/handlers/contracts'
 import { TEST_HOUSES as MOCK_HOUSES } from 'src/mocks/handlers/houses'
-import { applyCamelCase } from 'src/common/react-platform-components'
+import { Form, applyCamelCase } from 'src/common/react-platform-components'
 import { IHousing } from 'src/modules/MyHouse/components/HousingList/housing'
 
 const LoadingIndicatorClass = '.MuiCircularProgress-root'
@@ -91,7 +91,7 @@ let mockProviderList = TEST_PROVIDERS
 let mockPowerList = TEST_POWERS
 let mockTariffTypeList = TEST_TARIFF_TYPES
 let mockMeterDetails = TEST_HOUSES[2].meter
-let mockTariffs = TEST_TARIFFS_CONTRACT
+let mockTariffs: tariffContract[] | null = TEST_TARIFFS_CONTRACT
 const mockLoadContractTypes = jest.fn()
 const mockLoadPowers = jest.fn()
 const mockLoadProviders = jest.fn()
@@ -461,33 +461,45 @@ describe('Test ContractFormSelect Component', () => {
 })
 
 describe('Test TariffsContract Component', () => {
+    test('When tariffs is not empty, it should be shown correctly', async () => {
+        const { getByText } = reduxedRender(
+            <Form onSubmit={() => {}}>
+                <TariffsContract />
+            </Form>,
+        )
+        expect(getByText(TARIFFS_SUBSCRIPTION_TEXT)).toBeInTheDocument()
+        expect(getByText(TARIFFS_KWH_PRICE_TEXT)).toBeInTheDocument()
+    })
+
     test('When IsTariffsLoading is true, the spinner should be shown', async () => {
         mockIsTariffsLoading = true
         const { container } = reduxedRender(
-            <TariffsContract tariffs={mockTariffs} isTariffsLoading={mockIsTariffsLoading} />,
+            <Form onSubmit={() => {}}>
+                <TariffsContract />
+            </Form>,
         )
         expect(container.querySelector(LoadingIndicatorClass)).toBeInTheDocument()
     })
 
     test('When tariffs is null, nothing is shown', async () => {
         mockIsTariffsLoading = false
+        mockTariffs = null
         const { queryByText } = reduxedRender(
-            <TariffsContract tariffs={null} isTariffsLoading={mockIsTariffsLoading} />,
+            <Form onSubmit={() => {}}>
+                <TariffsContract />
+            </Form>,
         )
         expect(queryByText(TARIFFS_SUBSCRIPTION_TEXT)).not.toBeInTheDocument()
         expect(queryByText(TARIFFS_KWH_PRICE_TEXT)).not.toBeInTheDocument()
     })
 
     test('When tariffs is empty, an error message is shown', async () => {
-        const { getByText } = reduxedRender(<TariffsContract tariffs={[]} isTariffsLoading={mockIsTariffsLoading} />)
-        expect(getByText(NO_TARIFFS_MESSAGE)).toBeInTheDocument()
-    })
-
-    test('When tariffs is not empty, it should be shown correctly', async () => {
+        mockTariffs = []
         const { getByText } = reduxedRender(
-            <TariffsContract tariffs={mockTariffs} isTariffsLoading={mockIsTariffsLoading} />,
+            <Form onSubmit={() => {}}>
+                <TariffsContract />
+            </Form>,
         )
-        expect(getByText(TARIFFS_SUBSCRIPTION_TEXT)).toBeInTheDocument()
-        expect(getByText(TARIFFS_KWH_PRICE_TEXT)).toBeInTheDocument()
+        expect(getByText(NO_TARIFFS_MESSAGE)).toBeInTheDocument()
     })
 })
