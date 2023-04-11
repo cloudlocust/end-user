@@ -62,7 +62,7 @@ export const EcogestTagCard = ({
                             {ecogestTag.name}
                         </TypographyFormatMessage>
                         <TypographyFormatMessage className="text-center">
-                            {ecogestTag.ecogestAmount + ' Écogestes'}
+                            {`${ecogestTag.ecogestAmount} Écogestes`}
                         </TypographyFormatMessage>
                     </CardContent>
                 </CardActionArea>
