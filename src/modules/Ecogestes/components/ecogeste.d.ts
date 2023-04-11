@@ -75,9 +75,9 @@ export type IEcogestGetAllFilter =
          */
         viewed?: EcogestViewedEnum
         /**
-         * If present, will return all ecogest that have this tag_id.
+         * If present, will return all ecogest that have this tagId.
          */
-        tag_id?: number
+        tagId?: number
     }
 
 /**

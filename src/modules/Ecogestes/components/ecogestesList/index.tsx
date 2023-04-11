@@ -87,13 +87,13 @@ export const EcogestesList = () => {
      */
     const handleFilterClick = (viewed: EcogestViewedEnum) => {
         setCurrentViewFilter(viewed)
-        filterEcogestes({ viewed, tag_id: categoryIdInt })
+        filterEcogestes({ viewed, tagId: categoryIdInt })
         handleClose()
     }
 
     useEffect(() => {
         if (categoryIdInt) {
-            filterEcogestes({ viewed: currentViewFilter, tag_id: categoryIdInt })
+            filterEcogestes({ viewed: currentViewFilter, tagId: categoryIdInt })
         }
         // We don't want an update for every change in our deps, only at mount.
         // Hence why we have empty deps array.
