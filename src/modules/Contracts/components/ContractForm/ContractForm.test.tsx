@@ -1,5 +1,5 @@
 import { reduxedRender } from 'src/common/react-platform-components/test'
-import ContractForm, { TariffsContract } from 'src/modules/Contracts/components/ContractForm'
+import ContractForm from 'src/modules/Contracts/components/ContractForm'
 import userEvent from '@testing-library/user-event'
 import { ContractFormProps, tariffContract } from 'src/modules/Contracts/contractsTypes'
 import {
@@ -13,10 +13,8 @@ import {
 import { waitFor } from '@testing-library/react'
 import { TEST_HOUSE_ID } from 'src/mocks/handlers/contracts'
 import { TEST_HOUSES as MOCK_HOUSES } from 'src/mocks/handlers/houses'
-import { Form, applyCamelCase } from 'src/common/react-platform-components'
+import { applyCamelCase } from 'src/common/react-platform-components'
 import { IHousing } from 'src/modules/MyHouse/components/HousingList/housing'
-
-const LoadingIndicatorClass = '.MuiCircularProgress-root'
 
 // List of houses to add to the redux state
 const TEST_HOUSES: IHousing[] = applyCamelCase(MOCK_HOUSES)
@@ -53,8 +51,6 @@ const CONTRACT_FORM_OFFPEAK_HOURS_LABEL_LIST = [
     START_SUBSCRIPTION_LABEL_TEXT,
     END_SUBSCRIPTION_LABEL_TEXT,
 ]
-
-const NO_TARIFFS_MESSAGE = 'Aucun tarif disponible'
 
 /**
  * Function that asserts that contract form fields are hidden, when previous field is not selected.
@@ -458,48 +454,4 @@ describe('Test ContractFormSelect Component', () => {
         )
         expect(mockEditMeter).toHaveBeenCalled()
     }, 35000)
-})
-
-describe('Test TariffsContract Component', () => {
-    test('When tariffs is not empty, it should be shown correctly', async () => {
-        const { getByText } = reduxedRender(
-            <Form onSubmit={() => {}}>
-                <TariffsContract />
-            </Form>,
-        )
-        expect(getByText(TARIFFS_SUBSCRIPTION_TEXT)).toBeInTheDocument()
-        expect(getByText(TARIFFS_KWH_PRICE_TEXT)).toBeInTheDocument()
-    })
-
-    test('When IsTariffsLoading is true, the spinner should be shown', async () => {
-        mockIsTariffsLoading = true
-        const { container } = reduxedRender(
-            <Form onSubmit={() => {}}>
-                <TariffsContract />
-            </Form>,
-        )
-        expect(container.querySelector(LoadingIndicatorClass)).toBeInTheDocument()
-    })
-
-    test('When tariffs is null, nothing is shown', async () => {
-        mockIsTariffsLoading = false
-        mockTariffs = null
-        const { queryByText } = reduxedRender(
-            <Form onSubmit={() => {}}>
-                <TariffsContract />
-            </Form>,
-        )
-        expect(queryByText(TARIFFS_SUBSCRIPTION_TEXT)).not.toBeInTheDocument()
-        expect(queryByText(TARIFFS_KWH_PRICE_TEXT)).not.toBeInTheDocument()
-    })
-
-    test('When tariffs is empty, an error message is shown', async () => {
-        mockTariffs = []
-        const { getByText } = reduxedRender(
-            <Form onSubmit={() => {}}>
-                <TariffsContract />
-            </Form>,
-        )
-        expect(getByText(NO_TARIFFS_MESSAGE)).toBeInTheDocument()
-    })
 })
