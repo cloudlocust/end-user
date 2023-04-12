@@ -7,7 +7,7 @@ import EcogestListPage from 'src/modules/Ecogestes/components/ecogestesList/ecog
 export const URL_ECOGESTES = `/ecogestes`
 
 /**
- * Get all the tags.
+ * Get all the sstags.
  */
 export const URL_ECOGESTES_TAGS = `${URL_ECOGESTES}/tags`
 
