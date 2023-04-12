@@ -1,13 +1,14 @@
 import { authTypes, IRoute } from 'src/common/react-platform-components'
 import EcogestListPage from 'src/modules/Ecogestes/components/ecogestesList/ecogestListPage'
+import { Advices, URL_ADVICES } from '../Advices'
 
 /**
  * Url for ecogestes.
  */
-export const URL_ECOGESTES = `/ecogestes`
+export const URL_ECOGESTES = URL_ADVICES + `/ecogestes`
 
 /**
- * Get all the sstags.
+ * Get all the tags.
  */
 export const URL_ECOGESTES_TAGS = `${URL_ECOGESTES}/tags`
 
@@ -21,8 +22,8 @@ export const URL_ECOGESTES_TAGS_DETAILS = `${URL_ECOGESTES_TAGS}/:tagId`
  */
 export const EcogestesConfig = [
     {
-        path: URL_ECOGESTES_TAGS,
-        component: EcogestListPage,
+        path: '/advices/:selectedItem',
+        component: Advices,
         auth: { authType: authTypes.loginRequired },
         // eslint-disable-next-line jsdoc/require-jsdoc -- jsdoc is confused.
     } as IRoute<{}>,
@@ -33,3 +34,30 @@ export const EcogestesConfig = [
         // eslint-disable-next-line jsdoc/require-jsdoc -- jsdoc is confused.
     } as IRoute<{}>,
 ]
+
+/**
+ * PillSwitcherComponent Configuration for Ecogestes.
+ */
+export const EcogestePillSwitcherProps = {
+    actualRoute: '/advices',
+    defaultComponent: {
+        btnText: 'Postes de conso',
+    },
+    otherComponent: {
+        btnText: 'Pièces',
+        paramKey: 'rooms',
+    },
+}
+/**
+ * Enum listing all Ecogestes Categories.
+ */
+export enum IEcogesteCategoryTypes {
+    /**
+     * Poles de consommations (par default).
+     */
+    CONSUMPTION = 'consumption',
+    /**
+     * Pieces.
+     */
+    ROOMS = 'rooms',
+}
