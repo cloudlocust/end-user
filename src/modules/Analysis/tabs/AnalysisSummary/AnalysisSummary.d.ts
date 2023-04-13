@@ -6,20 +6,36 @@ import { IHousing } from 'src/modules/MyHouse/components/HousingList/housing'
  * AnalysisSummary component Props.
  */
 export interface AnalysisSummaryProps {
-    // eslint-disable-next-line jsdoc/require-jsdoc
+    /**
+     * Metrics data.
+     */
     data: IMetric[] | []
-    // eslint-disable-next-line jsdoc/require-jsdoc
+    /**
+     * Metrics range.
+     */
     range: metricRangeType
-    // eslint-disable-next-line jsdoc/require-jsdoc
+    /**
+     * Metrics filters.
+     */
     filters: metricFiltersType
-    // eslint-disable-next-line jsdoc/require-jsdoc
+    /**
+     * Current housing from redux state.
+     */
     currentHousing: IHousing | null
-    // eslint-disable-next-line jsdoc/require-jsdoc
+    /**
+     * Nrlink consent state.
+     */
     nrlinkConsent?: INrlinkConsent
-    // eslint-disable-next-line jsdoc/require-jsdoc
+    /**
+     * Enedis consent state.
+     */
     enedisSgeConsent?: IEnedisSgeConsent
-    // eslint-disable-next-line jsdoc/require-jsdoc
+    /**
+     * MissingHousingContracts state.
+     */
     hasMissingHousingContracts: boolean | null
-    // eslint-disable-next-line jsdoc/require-jsdoc
+    /**
+     * Metrics loading state.
+     */
     isMetricsLoading: boolean
 }

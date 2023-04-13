@@ -1,13 +1,12 @@
-import React, { SyntheticEvent, useState } from 'react'
+import { CSSProperties, SyntheticEvent, useState } from 'react'
 import { useHistory, useLocation } from 'react-router'
 import { styled, Theme } from '@mui/material/styles'
 import FusePageCarded from 'src/common/ui-kit/fuse/components/FusePageCarded'
 import { useIntl } from 'src/common/react-platform-translation'
 import Tabs from '@mui/material/Tabs'
-import Tab, { TabTypeMap } from '@mui/material/Tab'
+import Tab from '@mui/material/Tab'
 import { keyBy, mapValues } from 'lodash'
-import { TabsTypeMap } from '@mui/material/Tabs'
-import { CSSProperties } from '@mui/styled-engine'
+import { MultiTabProps } from 'src/common/ui-kit/components/MultiTab/multiTab.d'
 
 const Root = styled(FusePageCarded)(
     ({
@@ -40,30 +39,6 @@ const Root = styled(FusePageCarded)(
 )
 
 /**
- * MuiTabProps.
- */
-export interface IMultiTab {
-    /**
-     * Tab title.
-     */
-    tabTitle: string
-    /**
-     * Tab slug.
-     *
-     * @example "/this-is-a-slug"
-     */
-    tabSlug: string
-    /**
-     * Tab content.
-     */
-    tabContent: JSX.Element
-    /**
-     * Tab icon.
-     */
-    icon?: string | React.ReactElement<any, string | React.JSXElementConstructor<any>>
-}
-
-/**
  *  The Element Details let you control tabs.
  *  To Use this component, you have to passe in these props..
  *
@@ -76,42 +51,7 @@ export interface IMultiTab {
  * @param props.rootCss Root component css.
  * @returns  Element Details Tabs.
  */
-const MultiTab = ({
-    header,
-    content,
-    innerScroll,
-    TabsProps,
-    TabProps,
-    rootCss,
-}: /**
- *
- */
-{
-    /**
-     * The header above the tabs.
-     */
-    header?: JSX.Element
-    /**
-     *  All components supposed to be in the tabs (with there title, slug, content).
-     */
-    content: IMultiTab[]
-    /**
-     * Boolean for innerScroll.
-     */
-    innerScroll?: boolean
-    /**
-     * Rest of tabs props.
-     */
-    TabsProps?: TabsTypeMap['props']
-    /**
-     * Rest of tab props.
-     */
-    TabProps?: TabTypeMap['props']
-    /**
-     * Css targeting the root component.
-     */
-    rootCss?: CSSProperties
-}) => {
+const MultiTab = ({ header, content, innerScroll, TabsProps, TabProps, rootCss }: MultiTabProps) => {
     const { formatMessage } = useIntl()
 
     // Add KeyContent to access slugs more easly
