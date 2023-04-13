@@ -5,10 +5,16 @@ import { metricRangeType } from 'src/modules/Metrics/Metrics'
  * Analysis header props.
  */
 export interface AnalysisHeaderProps {
-    // eslint-disable-next-line jsdoc/require-jsdoc
+    /**
+     * Set range setter function.
+     */
     setRange: Dispatch<SetStateAction<metricRangeType>>
-    // eslint-disable-next-line jsdoc/require-jsdoc
+    /**
+     * Metric range.
+     */
     range: metricRangeType
-    // eslint-disable-next-line jsdoc/require-jsdoc
+    /**
+     * Endis off state.
+     */
     enedisSgeOff: boolean
 }
