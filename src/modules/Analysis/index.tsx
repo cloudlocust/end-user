@@ -3,21 +3,42 @@ import AnalysisSummary from 'src/modules/Analysis/tabs/AnalysisSummary'
 import AnalysisComparison from 'src/modules/Analysis/tabs/AnalysisComparison'
 import { ReactComponent as AnalyzeSummaryIcon } from 'src/assets/images/summary.svg'
 import { ReactComponent as AnalyzeComparisonIcon } from 'src/assets/images/comparison.svg'
+import AnalysisHeader from 'src/modules/Analysis/components/AnalysisHeader'
+import { getMetricType, metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
+import { endOfMonth, startOfMonth, subMonths } from 'date-fns'
+import {
+    formatMetricFilter,
+    getDateWithoutTimezoneOffset,
+} from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
+import { useConsents } from 'src/modules/Consents/consentsHook'
+import { useMetrics } from 'src/modules/Metrics/metricsHook'
+import { useHasMissingHousingContracts } from 'src/hooks/HasMissingHousingContracts'
+import { RootState } from 'src/redux'
+import { useSelector } from 'react-redux'
+import { useEffect } from 'react'
+import { ThemeProvider, useTheme } from '@mui/material'
 
-const tabsContent = [
-    {
-        tabTitle: 'Bilan',
-        tabSlug: 'summary',
-        tabContent: <AnalysisSummary />,
-        icon: <AnalyzeSummaryIcon />,
+/**
+ * InitialMetricsStates for useMetrics.
+ */
+export const initialMetricsHookValues: getMetricType = {
+    interval: '1d',
+    range: {
+        from: getDateWithoutTimezoneOffset(startOfMonth(subMonths(new Date(), 1))),
+        to: getDateWithoutTimezoneOffset(endOfMonth(subMonths(new Date(), 1))),
     },
-    {
-        tabTitle: 'Comparaison',
-        tabSlug: 'comparison',
-        tabContent: <AnalysisComparison />,
-        icon: <AnalyzeComparisonIcon />,
-    },
-]
+    targets: [
+        {
+            target: metricTargetsEnum.consumption,
+            type: 'timeserie',
+        },
+        {
+            target: metricTargetsEnum.eurosConsumption,
+            type: 'timeserie',
+        },
+    ],
+    filters: [],
+}
 
 /**
  * Analysis component.
@@ -25,5 +46,68 @@ const tabsContent = [
  * @returns Analysis JSX.
  */
 export default function Analysis() {
-    return <MultiTab header={<>Header</>} content={tabsContent} innerScroll TabsProps={{ variant: 'fullWidth' }} />
+    const theme = useTheme()
+    const { currentHousing } = useSelector(({ housingModel }: RootState) => housingModel)
+    const { getConsents, nrlinkConsent, enedisSgeConsent } = useConsents()
+    const { range, setFilters, filters, data, isMetricsLoading, setRange } = useMetrics(initialMetricsHookValues)
+    const { hasMissingHousingContracts } = useHasMissingHousingContracts(range, currentHousing?.id)
+
+    // Indicates if enedisSgeConsent is not Connected
+    const enedisSgeOff = enedisSgeConsent?.enedisSgeConsentState !== 'CONNECTED'
+
+    useEffect(() => {
+        if (currentHousing && currentHousing.meter) setFilters(formatMetricFilter(currentHousing.meter.guid))
+    }, [currentHousing, setFilters])
+
+    // UseEffect to check for consent whenever a meter is selected.
+    useEffect(() => {
+        if (filters.length > 0) {
+            getConsents(filters[0].value, currentHousing?.id)
+        }
+    }, [currentHousing?.id, filters, getConsents])
+
+    const tabsContent = [
+        {
+            tabTitle: 'Bilan',
+            tabSlug: 'summary',
+            tabContent: (
+                <AnalysisSummary
+                    {...{
+                        data,
+                        range,
+                        setFilters,
+                        filters,
+                        isMetricsLoading,
+                        nrlinkConsent,
+                        enedisSgeConsent,
+                        currentHousing,
+                        hasMissingHousingContracts,
+                    }}
+                />
+            ),
+            icon: <AnalyzeSummaryIcon />,
+        },
+        {
+            tabTitle: 'Comparaison',
+            tabSlug: 'comparison',
+            tabContent: <AnalysisComparison />,
+            icon: <AnalyzeComparisonIcon />,
+        },
+    ]
+
+    return (
+        <ThemeProvider theme={theme}>
+            <MultiTab
+                header={<AnalysisHeader {...{ enedisSgeOff, range, setRange }} />}
+                content={tabsContent}
+                innerScroll
+                TabsProps={{ variant: 'fullWidth' }}
+                rootCss={{
+                    height: 'auto',
+                    minHeight: 'auto',
+                    margin: '2rem 0',
+                }}
+            />
+        </ThemeProvider>
+    )
 }

@@ -48,4 +48,8 @@ export interface MultiTabProps {
      * Rest of tab props.
      */
     TabProps?: TabTypeMap['props']
+    /**
+     * Css targeting the root component.
+     */
+    rootCss?: CSSProperties
 }

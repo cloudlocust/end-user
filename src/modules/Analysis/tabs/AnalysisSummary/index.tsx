@@ -1,77 +1,45 @@
-import { useEffect, useState } from 'react'
-import { motion } from 'framer-motion'
+import { useState } from 'react'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
-import {
-    formatMetricFilter,
-    getDateWithoutTimezoneOffset,
-} from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
 import { useTheme } from '@mui/material'
-import { useMetrics } from 'src/modules/Metrics/metricsHook'
-import { getMetricType, metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
-import { periodType } from 'src/modules/MyConsumption/myConsumptionTypes'
 import { Link, NavLink } from 'react-router-dom'
 import { Icon, Typography } from 'src/common/ui-kit'
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline'
 import { URL_MY_HOUSE } from 'src/modules/MyHouse/MyHouseConfig'
 import { useIntl } from 'react-intl'
-import { useConsents } from 'src/modules/Consents/consentsHook'
 import CircularProgress from '@mui/material/CircularProgress'
-import { subMonths, startOfMonth, endOfMonth, subDays } from 'date-fns'
-import MyConsumptionDatePicker from 'src/modules/MyConsumption/components/MyConsumptionDatePicker'
+import { subDays } from 'date-fns'
 import { computeTotalConsumption, computeTotalEuros } from 'src/modules/MyConsumption/components/Widget/WidgetFunctions'
 import AnalysisInformationList from 'src/modules/Analysis/components/AnalysisInformationList'
 import AnalysisPercentageChangeArrows from 'src/modules/Analysis/components/AnalysisPercentageChangeArrows'
 import convert, { Unit } from 'convert-units'
 import AnalysisChart from 'src/modules/Analysis/components/AnalysisChart'
 import { analysisInformationName } from 'src/modules/Analysis/analysisTypes.d'
-import { useSelector } from 'react-redux'
-import { RootState } from 'src/redux'
-import { useHasMissingHousingContracts } from 'src/hooks/HasMissingHousingContracts'
 import { warningMainHashColor } from 'src/modules/utils/muiThemeVariables'
 import useMediaQuery from '@mui/material/useMediaQuery'
-import { ConsumptionEnedisSgeWarning } from 'src/modules/MyConsumption/components/MyConsumptionChart/ConsumptionChartWarnings'
-import { sgeConsentFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
-
-/**
- * InitialMetricsStates for useMetrics.
- */
-export const initialMetricsHookValues: getMetricType = {
-    interval: '1d',
-    range: {
-        from: getDateWithoutTimezoneOffset(startOfMonth(subMonths(new Date(), 1))),
-        to: getDateWithoutTimezoneOffset(endOfMonth(subMonths(new Date(), 1))),
-    },
-    targets: [
-        {
-            target: metricTargetsEnum.consumption,
-            type: 'timeserie',
-        },
-        {
-            target: metricTargetsEnum.eurosConsumption,
-            type: 'timeserie',
-        },
-    ],
-    filters: [],
-}
+import { AnalysisSummaryProps } from 'src/modules/Analysis/tabs/AnalysisSummary/AnalysisSummary'
 
 /**
  * Analysis.
  * Parent component.
  *
+ * @param props Props.
  * @returns Analysis and its children.
  */
-export default function AnalysisSummary() {
+export default function AnalysisSummary(props: AnalysisSummaryProps) {
+    const {
+        data,
+        range,
+        filters,
+        currentHousing,
+        nrlinkConsent,
+        enedisSgeConsent,
+        hasMissingHousingContracts,
+        isMetricsLoading,
+    } = props
     const theme = useTheme()
     const { formatMessage } = useIntl()
-    const { getConsents, nrlinkConsent, enedisSgeConsent } = useConsents()
-    const { data, setRange, setFilters, isMetricsLoading, filters, range } = useMetrics(initialMetricsHookValues)
     const [activeInformationName, setActiveInformationName] = useState<analysisInformationName | undefined>(undefined)
     const isMobile = useMediaQuery(theme.breakpoints.down('lg'))
-
-    const { currentHousing } = useSelector(({ housingModel }: RootState) => housingModel)
-    const { hasMissingHousingContracts } = useHasMissingHousingContracts(range, currentHousing?.id)
-    // Indicates if enedisSgeConsent is not Connected
-    const enedisSgeOff = enedisSgeConsent?.enedisSgeConsentState !== 'CONNECTED'
 
     /**
      * Handler to set the correct information name (min, max, mean) Based on the selected value element fill color in analysisChart.
@@ -89,31 +57,6 @@ export default function AnalysisSummary() {
             default:
                 setActiveInformationName('meanConsumption')
         }
-    }
-
-    useEffect(() => {
-        if (currentHousing && currentHousing.meter) setFilters(formatMetricFilter(currentHousing.meter.guid))
-    }, [currentHousing, setFilters])
-
-    // UseEffect to check for consent whenever a meter is selected.
-    useEffect(() => {
-        if (filters.length > 0) {
-            getConsents(filters[0].value, currentHousing?.id)
-        }
-    }, [currentHousing?.id, filters, getConsents])
-
-    /**
-     * Handler when DatePicker change, to apply the range related to Analysis Component and overwrites the default ConsumptionDatePicker.
-     * In Analysis range always go from: start month of a given date, to: end of same month for the same given date.
-     *
-     * @param newDate Represent the new picked date on DatePicker.
-     */
-    const handleDatePickerOnChange = (newDate: Date) => {
-        const newRange = {
-            from: getDateWithoutTimezoneOffset(startOfMonth(newDate)),
-            to: getDateWithoutTimezoneOffset(endOfMonth(newDate)),
-        }
-        setRange(newRange)
     }
 
     // By checking if the metersList is true we make sure that if someone has skipped the step of connecting their PDL, they will see this error message.
@@ -155,28 +98,12 @@ export default function AnalysisSummary() {
     const totalEurosConsumption = data.length ? computeTotalEuros(data) : { value: 0, unit: 'kWh' }
 
     return (
-        <div>
-            <div
-                style={{ background: theme.palette.primary.dark, minHeight: '64px' }}
-                className="w-full relative flex flex-col justify-center items-center p-16"
-            >
-                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-                    <TypographyFormatMessage
-                        className="text-18 md:text-24"
-                        style={{ color: theme.palette.primary.contrastText }}
-                    >
-                        Consommation Quotidienne pour
-                    </TypographyFormatMessage>
-                    <MyConsumptionDatePicker
-                        period={'monthly' as periodType}
-                        setRange={setRange}
-                        range={range}
-                        onDatePickerChange={handleDatePickerOnChange}
-                        maxDate={endOfMonth(subMonths(new Date(), 1))}
-                    />
-                    <ConsumptionEnedisSgeWarning isShowWarning={enedisSgeOff && sgeConsentFeatureState} />
-                </motion.div>
-                {hasMissingHousingContracts && (
+        <>
+            {hasMissingHousingContracts && (
+                <div
+                    style={{ background: theme.palette.primary.dark, minHeight: '64px' }}
+                    className="w-full relative flex sflex-col justify-center items-center p-16"
+                >
                     <div className="flex items-center justify-center flex-col">
                         <ErrorOutlineIcon
                             sx={{
@@ -192,9 +119,8 @@ export default function AnalysisSummary() {
                                 sx={{ color: warningMainHashColor }}
                                 className="text-13 md:text-16 text-center"
                             >
-                                {
-                                    "Le coût en euros est un exemple. Vos données contractuelles de fourniture d'énergie ne sont pas disponibles sur toute la période."
-                                }
+                                Le coût en euros est un exemple. Vos données contractuelles de fourniture d'énergie ne
+                                sont pas disponibles sur toute la période.
                             </TypographyFormatMessage>
                             <NavLink to={`${URL_MY_HOUSE}/${currentHousing?.id}/contracts`}>
                                 <TypographyFormatMessage
@@ -206,8 +132,8 @@ export default function AnalysisSummary() {
                             </NavLink>
                         </div>
                     </div>
-                )}
-            </div>
+                </div>
+            )}
 
             <div style={{ position: 'relative' }}>
                 {isMetricsLoading ? (
@@ -240,6 +166,6 @@ export default function AnalysisSummary() {
                     <AnalysisInformationList activeInformationName={activeInformationName} data={data} range={range} />
                 </div>
             )}
-        </div>
+        </>
     )
 }
