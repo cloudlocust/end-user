@@ -19,7 +19,7 @@ export const textNrlinkColor = 'text.secondary'
 /**
  * Snackbar message when nrlink is setup.
  */
-export const NRLINK_SUCCESS_SETUP_MESSAGE = 'Votre NrLink a été configuré avec succès.'
+export const NRLINK_SUCCESS_SETUP_MESSAGE = 'Votre nrLINK a été configuré avec succès.'
 
 /**
  * Component showing the first step in the nrLinkConnection Stepper.

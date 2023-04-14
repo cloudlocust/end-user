@@ -118,6 +118,11 @@ spec:
             configMapKeyRef:
               name: enduser-react
               key: REACT_APP_CLIENT_RGPD_REDIRECT
+        - name: REACT_APP_CLIENT_LOGO_REDIRECT_LINK
+          valueFrom:
+            configMapKeyRef:
+              name: enduser-react
+              key: REACT_APP_CLIENT_LOGO_REDIRECT_LINK
         - name: REACT_APP_PRODUCTION_CHART_ERROR_STATE
           valueFrom:
             configMapKeyRef:
@@ -221,11 +226,11 @@ spec:
             configMapKeyRef:
               name: enduser-react
               key: REACT_APP_ENERGY_PROVIDER_POPUP_LINK
-        - name: REACT_APP_ENERGY_PROVIDER_REGISTER_SUCCESS_MESSAGE
+        - name: REACT_APP_ENERGY_PROVIDER_NAME
           valueFrom:
             configMapKeyRef:
               name: enduser-react
-              key: REACT_APP_ENERGY_PROVIDER_REGISTER_SUCCESS_MESSAGE                         
+              key: REACT_APP_ENERGY_PROVIDER_NAME                        
         - name: REACT_APP_USER_REGISTRATION_AUTO_VALIDATE
           valueFrom:
             configMapKeyRef:

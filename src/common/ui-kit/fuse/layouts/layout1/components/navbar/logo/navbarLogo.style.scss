@@ -1,0 +1,9 @@
+.hoverableLogoLink {
+    cursor: pointer;
+    transition: all ease 0.5s;
+
+    &:hover {
+        transition: all ease 0.5s;
+        scale: 1.2;
+    }
+}

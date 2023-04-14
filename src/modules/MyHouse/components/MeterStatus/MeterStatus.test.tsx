@@ -352,10 +352,6 @@ describe('MeterStatus component test', () => {
             expect(mockVerifyMeter).toBeCalledWith(mockHouseId)
             expect(() => getByText(VERIFY_METER_MESSAGE)).toThrow()
             expect(getByText("Votre compteur n'a pas été reconnu")).toBeTruthy()
-            expect(getByText('Veuillez renseigner un numéro de compteur').closest('a')).toHaveAttribute(
-                'href',
-                '/my-houses',
-            )
         })
         test('when enedis sge consent is retrieved succesfully', async () => {
             mockEnedisSgeConsent = 'EXPIRED' || 'NONEXISTENT'

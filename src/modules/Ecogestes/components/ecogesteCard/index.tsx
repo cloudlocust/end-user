@@ -129,7 +129,7 @@ export const EcogesteCard = ({
                                 className="absolute m-auto text-xs pt-7"
                                 style={{ color: theme.palette.primary.contrastText }}
                             >
-                                {`${ecogeste.percentageSaved}%`}
+                                {`${ecogeste.percentageSaved}`}
                             </span>
                         </IconButton>
 
