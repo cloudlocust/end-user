@@ -1,10 +1,10 @@
 import { FC, useEffect, useState } from 'react'
 import PageSimple from 'src/common/ui-kit/fuse/components/PageSimple'
-import { ThemeProvider, useTheme } from '@mui/material/styles'
+import { useTheme } from '@mui/material/styles'
 import EcogestesList from 'src/modules/Ecogestes/components/ecogestesList'
 import { Icon } from '@mui/material'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
-import { useParams } from 'react-router-dom'
+import { useHistory, useParams } from 'react-router-dom'
 import {
     IEcogestCategory,
     IEcogestHeaderProps,
@@ -14,6 +14,7 @@ import {
 import useEcogestePoles from '../../hooks/polesHooks'
 import { IEcogesteCategoryTypes } from '../../EcogestesConfig'
 import CircularProgress from '@mui/material/CircularProgress'
+import IconButton from '@mui/material/IconButton'
 
 /**
  * EcogestList Header Component.
@@ -25,45 +26,49 @@ import CircularProgress from '@mui/material/CircularProgress'
  */
 const EcogestListHeader = ({ isLoading, currentCategory }: IEcogestHeaderProps): JSX.Element => {
     const theme = useTheme()
+    const history = useHistory()
 
     return (
-        <ThemeProvider theme={theme}>
-            <div
-                className="w-full h-full p-10 flex flex-nowrap flex-col gap-1 justify-around"
-                style={{ backgroundColor: theme.palette.primary.dark }}
-            >
-                {!isLoading && currentCategory && currentCategory.name && currentCategory.icon ? (
-                    <>
-                        <Icon
-                            sx={{ color: 'primary.contrastText' }}
-                            aria-hidden="true"
-                            color="inherit"
-                            style={{ height: '75%', alignSelf: 'center', width: '100%', margin: 'auto' }}
-                        >
-                            <img
-                                style={{
-                                    filter: `opacity(0.1) drop-shadow(0 0 0 ${theme.palette.primary.contrastText}) drop-shadow(0 0 0 ${theme.palette.primary.contrastText}) drop-shadow(0 0 0 ${theme.palette.primary.contrastText}) drop-shadow(0 0 0 ${theme.palette.primary.contrastText}) drop-shadow(0 0 0 ${theme.palette.primary.contrastText})`,
-                                    height: '100%',
-                                    margin: 'auto',
-                                }}
-                                src={currentCategory!.icon}
-                                alt=""
-                            ></img>
-                        </Icon>
+        <div className="w-full h-full p-10 flex flex-nowrap flex-col gap-1 justify-around">
+            {!isLoading && currentCategory && currentCategory.name && currentCategory.icon ? (
+                <>
+                    <IconButton
+                        aria-label="Previous"
+                        onClick={() => history.goBack()}
+                        size="large"
+                        style={{ color: theme.palette.secondary.light, position: 'absolute' }}
+                    >
+                        <Icon>chevron_left </Icon>
+                    </IconButton>
+                    <Icon
+                        sx={{ color: theme.palette.secondary.light }}
+                        aria-hidden="true"
+                        color="inherit"
+                        style={{ height: '75%', alignSelf: 'center', width: '100%', margin: 'auto' }}
+                    >
+                        <img
+                            style={{
+                                filter: `opacity(0.1) drop-shadow(0 0 0 ${theme.palette.primary.light}) drop-shadow(0 0 0 ${theme.palette.primary.light}) drop-shadow(0 0 0 ${theme.palette.primary.light}) drop-shadow(0 0 0 ${theme.palette.primary.light}) drop-shadow(0 0 0 ${theme.palette.primary.light})`,
+                                height: '100%',
+                                margin: 'auto',
+                            }}
+                            src={currentCategory!.icon}
+                            alt=""
+                        ></img>
+                    </Icon>
 
-                        <TypographyFormatMessage className="text-center text-20 font-semibold">
-                            {currentCategory!.name}
-                        </TypographyFormatMessage>
-                    </>
-                ) : (
-                    <div className="w-full h-full justify-center relative flex flex-col items-center align-center p-16">
-                        <div style={{ display: 'flex', justifyContent: 'center', padding: '16px' }}>
-                            <CircularProgress size={32} />
-                        </div>
+                    <TypographyFormatMessage className="text-center text-20 font-semibold">
+                        {currentCategory!.name}
+                    </TypographyFormatMessage>
+                </>
+            ) : (
+                <div className="w-full h-full justify-center relative flex flex-col items-center align-center p-16">
+                    <div style={{ display: 'flex', justifyContent: 'center', padding: '16px' }}>
+                        <CircularProgress size={32} />
                     </div>
-                )}
-            </div>
-        </ThemeProvider>
+                </div>
+            )}
+        </div>
     )
 }
 
@@ -81,7 +86,11 @@ const EcogestListContent = ({ currentCategory, elementList }: IEcogestPageCompon
             <EcogestesList />
         </div>
     ) : (
-        <div className="m-10 p-10 flex flex-1 gap-9">Aucun écogeste n'est disponible pour le moment.</div>
+        <div className="w-full h-full justify-center relative flex flex-col items-center align-center p-16">
+            <div style={{ display: 'flex', justifyContent: 'center', padding: '16px' }}>
+                <CircularProgress size={32} />
+            </div>
+        </div>
     )
 }
 
