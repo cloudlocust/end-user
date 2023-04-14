@@ -1,8 +1,7 @@
 import { useTheme } from '@mui/material'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import AnalysisComparisonChart from 'src/modules/Analysis/components/AnalysisComparisonChart'
-import { IEnedisSgeConsent } from 'src/modules/Consents/Consents'
-import { IMetric, metricRangeType } from 'src/modules/Metrics/Metrics.d'
+import { AnalysisComparisonProps } from 'src/modules/Analysis/tabs/AnalysisComparison/analysisComparison'
 
 /**
  * Analyse comparison tab component.
@@ -13,27 +12,7 @@ import { IMetric, metricRangeType } from 'src/modules/Metrics/Metrics.d'
  * @param root0.range Metric range.
  * @returns Analuse Comparison JSX.
  */
-export default function AnalysisComparison({
-    data,
-    enedisSgeConsent,
-    range,
-}: /**
- *
- */
-{
-    /**
-     *
-     */
-    data: IMetric[]
-    /**
-     *
-     */
-    enedisSgeConsent?: IEnedisSgeConsent
-    /**
-     *
-     */
-    range: metricRangeType
-}) {
+export default function AnalysisComparison({ data, enedisSgeConsent, range }: AnalysisComparisonProps) {
     const theme = useTheme()
 
     return (
