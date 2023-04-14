@@ -6,6 +6,7 @@ import { useIntl } from 'src/common/react-platform-translation'
 import Tabs from '@mui/material/Tabs'
 import Tab from '@mui/material/Tab'
 import { keyBy, mapValues } from 'lodash'
+import { MultiTabProps } from 'src/common/ui-kit/components/MultiTab/multiTab.d'
 
 const Root = styled(FusePageCarded)(({ theme }) => ({
     '& .FusePageCarded-header': {
@@ -25,16 +26,6 @@ const Root = styled(FusePageCarded)(({ theme }) => ({
     },
 }))
 
-//eslint-disable-next-line jsdoc/require-jsdoc
-export interface IMultiTab {
-    //eslint-disable-next-line jsdoc/require-jsdoc
-    tabTitle: string
-    //eslint-disable-next-line jsdoc/require-jsdoc
-    tabSlug: string
-    //eslint-disable-next-line jsdoc/require-jsdoc
-    tabContent: JSX.Element
-}
-
 /**
  *  The Element Details let you control tabs.
  *  To Use this component, you have to passe in these props..
@@ -43,30 +34,11 @@ export interface IMultiTab {
  * @param props.header The Header Component of the Tab.
  * @param props.content Content that will be displayed (format : IMultiTab).
  * @param props.innerScroll Indicates if there is an innerScroll inside the tabs.
+ * @param props.TabsProps Rest of Tabs props.
+ * @param props.TabProps Rest of Tab props.
  * @returns  Element Details Tabs.
  */
-const MultiTab = ({
-    /**
-     * The header above the tabs.
-     */
-    header,
-    /**
-     *  All components supposed to be in the tabs (with there title, slug, content).
-     */
-    content,
-    // eslint-disable-next-line jsdoc/require-jsdoc
-    innerScroll,
-}: /**
- *
- */
-{
-    //eslint-disable-next-line jsdoc/require-jsdoc
-    header?: JSX.Element
-    //eslint-disable-next-line jsdoc/require-jsdoc
-    content: Array<IMultiTab>
-    //eslint-disable-next-line jsdoc/require-jsdoc
-    innerScroll?: boolean
-}) => {
+const MultiTab = ({ header, content, innerScroll, TabsProps, TabProps }: MultiTabProps) => {
     const { formatMessage } = useIntl()
 
     // Add KeyContent to access slugs more easly
@@ -79,6 +51,19 @@ const MultiTab = ({
     // Initialise Base path and entry Tab.
     let entryTab = location.pop()
     let basePath = location.join('/')
+
+    /**
+     * @description With this modification, if the location array is empty after the split() method,
+     * the entryTab variable will be set to the tabSlug of the first tab in the content array,
+     * and the basePath variable will be set to the original pathname.
+     * This will allow the component to handle the /route/child-route URL as well
+     * instead of handling only /route/first-child/second-child.
+     */
+    if (!entryTab) {
+        entryTab = content[0].tabSlug
+        basePath = pathname
+    }
+
     // UseHistory, and tab Handle
     const tabSlugList = content.filter((item) => item.tabSlug === entryTab)
     const isInvalidValue = !tabSlugList.length || !entryTab?.length
@@ -108,6 +93,7 @@ const MultiTab = ({
                     variant="scrollable"
                     scrollButtons="auto"
                     classes={{ root: 'w-full h-64' }}
+                    {...TabsProps}
                 >
                     {content.map((element, index) => (
                         <Tab
@@ -115,6 +101,8 @@ const MultiTab = ({
                             value={element.tabSlug}
                             label={formatMessage({ id: element.tabTitle, defaultMessage: element.tabTitle })}
                             className="h-64"
+                            icon={element.icon}
+                            {...TabProps}
                         />
                     ))}
                 </Tabs>
