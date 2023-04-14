@@ -1,36 +1,56 @@
 import { authTypes, IRoute } from 'src/common/react-platform-components'
-import EcogestListPage from 'src/modules/Ecogestes/components/ecogestesList/ecogestListPage'
-import { Advices, URL_ADVICES } from '../Advices'
+import { EcogestesList } from '.'
+import EcogestListPage from './components/ecogestesList/ecogestListPage'
 
 /**
- * Url for ecogestes.
+ * Enum listing all Ecogestes Category Type.
  */
-export const URL_ECOGESTES = URL_ADVICES + `/ecogestes`
+export enum IEcogesteCategoryTypes {
+    /**
+     * Poles de consommations (par default).
+     */
+    CONSUMPTION = 'consumptions',
+    /**
+     * Pieces.
+     */
+    ROOMS = 'rooms',
+}
 
 /**
- * Get all the tags.
+ * Root URL of the Ecogeste Module.
  */
-export const URL_ECOGESTES_TAGS = `${URL_ECOGESTES}/tags`
+export const URL_ROOT_ECOGESTES = `/advices`
 
 /**
- * Get only one of the tags, and see its ecogestes.
+ * URL to get Ecogestes related to Poles of Consumptions.
  */
-export const URL_ECOGESTES_TAGS_DETAILS = `${URL_ECOGESTES_TAGS}/:tagId`
+export const URL_CONSUMPTION_ECOGESTES = `${URL_ROOT_ECOGESTES}/consumptions/:categoryId`
+
+/**
+ * URL to get Ecogestes related to Rooms.
+ */
+export const URL_ROOMS_ECOGESTES = `${URL_ROOT_ECOGESTES}/rooms/:categoryId`
 
 /**
  * Endpoint Configuration for Ecogestes view.
  */
 export const EcogestesConfig = [
     {
-        path: '/advices/:selectedItem',
-        component: Advices,
+        path: URL_CONSUMPTION_ECOGESTES,
+        component: EcogestListPage,
         auth: { authType: authTypes.loginRequired },
         // eslint-disable-next-line jsdoc/require-jsdoc -- jsdoc is confused.
     } as IRoute<{}>,
     {
-        path: URL_ECOGESTES_TAGS_DETAILS,
-        component: EcogestListPage,
+        path: URL_ROOMS_ECOGESTES,
+        component: EcogestesList,
         auth: { authType: authTypes.loginRequired },
+        /**
+         * We pass props only when we're using Rooms cause as default we use Poles of Consumption.
+         */
+        props: {
+            categoryType: IEcogesteCategoryTypes.ROOMS,
+        },
         // eslint-disable-next-line jsdoc/require-jsdoc -- jsdoc is confused.
     } as IRoute<{}>,
 ]
@@ -42,22 +62,11 @@ export const EcogestePillSwitcherProps = {
     actualRoute: '/advices',
     defaultComponent: {
         btnText: 'Postes de conso',
+        disabled: true,
     },
     otherComponent: {
         btnText: 'Pièces',
         paramKey: 'rooms',
+        disabled: true,
     },
-}
-/**
- * Enum listing all Ecogestes Categories.
- */
-export enum IEcogesteCategoryTypes {
-    /**
-     * Poles de consommations (par default).
-     */
-    CONSUMPTION = 'consumption',
-    /**
-     * Pieces.
-     */
-    ROOMS = 'rooms',
 }

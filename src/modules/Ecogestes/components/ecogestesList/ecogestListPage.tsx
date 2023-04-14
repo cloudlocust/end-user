@@ -1,59 +1,29 @@
-import { useEffect, useState } from 'react'
+import { FC, useEffect, useState } from 'react'
 import PageSimple from 'src/common/ui-kit/fuse/components/PageSimple'
 import { ThemeProvider, useTheme } from '@mui/material/styles'
 import EcogestesList from 'src/modules/Ecogestes/components/ecogestesList'
-import { Icon, Skeleton } from '@mui/material'
+import { Icon } from '@mui/material'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import { useParams } from 'react-router-dom'
-import useEcogesteTags from 'src/modules/Ecogestes/ecogestesTagsHook'
-import { IEcogestTag } from 'src/modules/Ecogestes/components/ecogeste'
-import { EcogestTagCard } from 'src/modules/Ecogestes/components/ecogesteTagsCard'
-
-const PLACEHOLDER_ALL_TAGS_HEADER: IEcogestTag = {
-    ecogestAmount: 0,
-    id: 0,
-    name: 'Toutes les catégories',
-    type: '',
-    icon: 'an icon',
-}
-
-/**
- * Default Props for the EcogestPage Components.
- */
-type IEcogestPageComponentProps =
-    /**
-     * Default Props for the EcogestPage Components.
-     */
-    {
-        /**
-         * Current EcogesteTag used.
-         */
-        currentTag: IEcogestTag | null | undefined
-        /**
-         * Current List of Ecogeste Tags.
-         */
-        elementList?: IEcogestTag[] | null | undefined
-    }
-
-/**
- * Props for Ecogest Header Component.
- */
-interface IEcogestHeaderProps extends IEcogestPageComponentProps {
-    /**
-     * Loading state of @useEcogestTags Hooks.
-     */
-    isLoading: boolean
-}
+import {
+    IEcogestCategory,
+    IEcogestHeaderProps,
+    IEcogestPageComponentProps,
+    IEcogesteListPageProps,
+} from 'src/modules/Ecogestes/components/ecogeste'
+import useEcogestePoles from '../../hooks/polesHooks'
+import { IEcogesteCategoryTypes } from '../../EcogestesConfig'
+import CircularProgress from '@mui/material/CircularProgress'
 
 /**
  * EcogestList Header Component.
  *
  * @param root0 Props (extend default component Props).
- * @param root0.isLoading Loading State of @useEcogestTags Hooks.
- * @param root0.currentTag Current Ecogest Tag.
+ * @param root0.isLoading Loading State of @useEcogestPoles Hooks.
+ * @param root0.currentCategory Current Ecogest Category.
  * @returns HeaderComponent.
  */
-const EcogestListHeader = ({ isLoading, currentTag }: IEcogestHeaderProps): JSX.Element => {
+const EcogestListHeader = ({ isLoading, currentCategory }: IEcogestHeaderProps): JSX.Element => {
     const theme = useTheme()
 
     return (
@@ -62,7 +32,7 @@ const EcogestListHeader = ({ isLoading, currentTag }: IEcogestHeaderProps): JSX.
                 className="w-full h-full p-10 flex flex-nowrap flex-col gap-1 justify-around"
                 style={{ backgroundColor: theme.palette.primary.dark }}
             >
-                {!isLoading && currentTag && currentTag.name && currentTag.icon ? (
+                {!isLoading && currentCategory && currentCategory.name && currentCategory.icon ? (
                     <>
                         <Icon
                             sx={{ color: 'primary.contrastText' }}
@@ -71,29 +41,26 @@ const EcogestListHeader = ({ isLoading, currentTag }: IEcogestHeaderProps): JSX.
                             style={{ height: '75%', alignSelf: 'center', width: '100%', margin: 'auto' }}
                         >
                             <img
-                                // A note about the filter shenanigans under here:
-                                // It works.
-                                // If you have a better idea, that still allows for dynamic icons to be given, please, do make a PR for it.
-                                // Until then, it works with black images :v
                                 style={{
                                     filter: `opacity(0.1) drop-shadow(0 0 0 ${theme.palette.primary.contrastText}) drop-shadow(0 0 0 ${theme.palette.primary.contrastText}) drop-shadow(0 0 0 ${theme.palette.primary.contrastText}) drop-shadow(0 0 0 ${theme.palette.primary.contrastText}) drop-shadow(0 0 0 ${theme.palette.primary.contrastText})`,
                                     height: '100%',
                                     margin: 'auto',
                                 }}
-                                src={currentTag!.icon}
+                                src={currentCategory!.icon}
                                 alt=""
                             ></img>
                         </Icon>
 
                         <TypographyFormatMessage className="text-center text-20 font-semibold">
-                            {currentTag!.name}
+                            {currentCategory!.name}
                         </TypographyFormatMessage>
                     </>
                 ) : (
-                    <>
-                        <Skeleton variant="rectangular" width={'30%'} height={'75%'} sx={{ margin: 'auto' }} />
-                        <Skeleton variant="text" sx={{ fontSize: '2rem', margin: 'auto' }} width={'40%'} />
-                    </>
+                    <div className="w-full h-full justify-center relative flex flex-col items-center align-center p-16">
+                        <div style={{ display: 'flex', justifyContent: 'center', padding: '16px' }}>
+                            <CircularProgress size={32} />
+                        </div>
+                    </div>
                 )}
             </div>
         </ThemeProvider>
@@ -104,55 +71,54 @@ const EcogestListHeader = ({ isLoading, currentTag }: IEcogestHeaderProps): JSX.
  * EcogestList Content Component.
  *
  * @param root0 Props.
- * @param root0.currentTag Current Ecogest Tag.
- * @param root0.elementList Current List of Ecogeste Tags.
+ * @param root0.currentCategory Current Ecogeste Category.
+ * @param root0.elementList Current List of Ecogeste filtered by Ecogeste Category.
  * @returns JSX.Element.
  */
-const EcogestListContent = ({ currentTag, elementList }: IEcogestPageComponentProps): JSX.Element => {
-    return currentTag?.id && currentTag.id > 0 && elementList ? (
+const EcogestListContent = ({ currentCategory, elementList }: IEcogestPageComponentProps): JSX.Element => {
+    return currentCategory?.id && elementList ? (
         <div className="m-10 p-10">
             <EcogestesList />
         </div>
     ) : (
-        <div className="m-10 p-10 flex flex-1 gap-9" aria-label="list, tags, cards">
-            {elementList?.map((element) => (
-                <EcogestTagCard ecogestTag={element} />
-            ))}
-        </div>
+        <div className="m-10 p-10 flex flex-1 gap-9">Aucun écogeste n'est disponible pour le moment.</div>
     )
 }
 
 /**
- * Ecogest List, but the page itself.
+ * EcogestListPage.
  *
- * @returns A page with a list of ecogestes.
+ * @param root0 Props.
+ * @param root0.categoryType Category of the Ecogeste.
+ * @returns EcogestPage.
  */
-const EcogestListPage = () => {
-    const { tagId } = useParams</**
+const EcogestListPage: FC<IEcogesteListPageProps> = ({
+    categoryType = IEcogesteCategoryTypes.CONSUMPTION,
+}): JSX.Element => {
+    const { categoryId } = useParams</**
      * Params object.
      */
     {
         /**
-         * The category id of the ecogestes. Use 0 for all.
+         * The category id of the ecogestes.
          */
-        tagId: string
+        categoryId: string
     }>()
 
-    const tagIdInt = tagId ? parseInt(tagId) : 0
+    const categoryIdInt = categoryId ? parseInt(categoryId) : undefined
+    const { loadingInProgress, elementList } = useEcogestePoles()
 
-    const { loadingInProgress, elementList } = useEcogesteTags()
-
-    const [currentTag, setCurrentTag] = useState<null | undefined | IEcogestTag>(PLACEHOLDER_ALL_TAGS_HEADER)
+    const [currentCategory, setCurrentCategory] = useState<IEcogestCategory | undefined | null>()
 
     useEffect(() => {
-        let tag = elementList?.find((element) => element.id === tagIdInt)
-        setCurrentTag(tag ? tag : PLACEHOLDER_ALL_TAGS_HEADER)
-    }, [elementList, tagIdInt])
+        let _category = elementList?.find((element) => element.id === categoryIdInt)
+        setCurrentCategory(_category ? _category : null)
+    }, [elementList, categoryIdInt])
 
     return (
         <PageSimple
-            header={<EcogestListHeader isLoading={loadingInProgress} currentTag={currentTag} />}
-            content={<EcogestListContent currentTag={currentTag} elementList={elementList} />}
+            header={<EcogestListHeader isLoading={loadingInProgress} currentCategory={currentCategory} />}
+            content={<EcogestListContent currentCategory={currentCategory} elementList={elementList} />}
         />
     )
 }

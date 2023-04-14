@@ -53,9 +53,9 @@ jest.mock('src/modules/Ecogestes/ecogestesHook', () => {
 })
 
 describe('EcogestesList tests', () => {
-    describe('Test proper rendering for categores', () => {
-        test('When magic "all" category is selected, all ecogestes are displayed', async () => {
-            mockCategoryId = '0'
+    describe('Test proper rendering for categories', () => {
+        test('When rendering, should render correctly ecogestes', async () => {
+            mockCategoryId = '2'
             mockEcogestes = TEST_ECOGESTES
             const { queryByLabelText, queryAllByLabelText } = reduxedRender(
                 <BrowserRouter>

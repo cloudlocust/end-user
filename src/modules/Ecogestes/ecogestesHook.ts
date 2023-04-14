@@ -4,13 +4,14 @@ import { IEcogeste, IEcogestGetAllFilter } from './components/ecogeste'
 import { axios, catchError } from 'src/common/react-platform-components'
 import { useIntl, formatMessageType } from 'src/common/react-platform-translation'
 import { useSnackbar } from 'notistack'
+import { useParams } from 'react-router-dom'
 /**
  * Ecogestes API  global endpoint.
  */
 export const ECOGESTES_ENDPOINT = `${API_RESOURCES_URL}/ecogeste`
 
 // eslint-disable-next-line jsdoc/require-jsdoc
-export const loadElementListError = (error: any, formatMessage: formatMessageType) => {
+export const loadElementListError = (_error: any, formatMessage: formatMessageType) => {
     return formatMessage({
         id: 'Erreur lors du chargement des ecogestes',
         defaultMessage: 'Erreur lors du chargement des ecogestes',
@@ -18,7 +19,7 @@ export const loadElementListError = (error: any, formatMessage: formatMessageTyp
 }
 
 // eslint-disable-next-line jsdoc/require-jsdoc
-export const addElementSuccess = (error: any, formatMessage: formatMessageType) => {
+export const addElementSuccess = (_error: any, formatMessage: formatMessageType) => {
     return formatMessage({
         id: "L'ecogeste a été ajouté",
         defaultMessage: "L'ecogeste a été ajouté",
@@ -26,7 +27,7 @@ export const addElementSuccess = (error: any, formatMessage: formatMessageType) 
 }
 
 // eslint-disable-next-line jsdoc/require-jsdoc
-export const addElementError = (error: any, formatMessage: formatMessageType) => {
+export const addElementError = (_error: any, formatMessage: formatMessageType) => {
     return formatMessage({
         id: "Erreur lors de l'ajout de l'ecogeste",
         defaultMessage: "Erreur lors de l'ajout de l'ecogeste",
@@ -41,6 +42,18 @@ export const addElementError = (error: any, formatMessage: formatMessageType) =>
 export const useEcogestes = () => {
     const { enqueueSnackbar } = useSnackbar()
     const { formatMessage } = useIntl()
+
+    const { categoryId } = useParams</**
+     * Params object.
+     */
+    {
+        /**
+         * The category id of the ecogestes. Use 0 for all.
+         */
+        categoryId: string
+    }>()
+
+    const parsedCategoryTargetted = categoryId ? parseInt(categoryId) : undefined
 
     /**
      * Generic patch-ing method for ecogest.
@@ -81,7 +94,7 @@ export const useEcogestes = () => {
     >({
         API_ENDPOINT: ECOGESTES_ENDPOINT,
         snackBarMessage0verride: { loadElementListError, addElementSuccess, addElementError },
-    })(undefined, { viewed: undefined })
+    })(undefined, { viewed: undefined, tag_id: parsedCategoryTargetted })
 
     /**
      * Filters the ecogest element list from this hook according to the given filter.

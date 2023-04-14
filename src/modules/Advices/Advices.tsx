@@ -46,7 +46,7 @@ export const Advices = () => {
                         className="text-18 md:text-24"
                         style={{ color: theme.palette.primary.contrastText }}
                     >
-                        Conseils
+                        Ecogestes
                     </TypographyFormatMessage>
                 </div>
             }

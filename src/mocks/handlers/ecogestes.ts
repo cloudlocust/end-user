@@ -1,9 +1,9 @@
 import { rest } from 'msw'
 import { ECOGESTES_ENDPOINT } from 'src/modules/Ecogestes/'
 import { getPaginationFromElementList } from 'src/mocks/utils'
-import { IEcogeste, IEcogestTag } from 'src/modules/Ecogestes/components/ecogeste'
+import { IEcogeste, IEcogestCategory } from 'src/modules/Ecogestes/components/ecogeste'
 import { SnakeCasedPropertiesDeep } from 'type-fest'
-import { ECOGESTES_TAGS_ENDPOINT } from 'src/modules/Ecogestes/ecogestesTagsHook'
+import { ECOGESTES_POLES_ENDPOINT } from 'src/modules/Ecogestes/hooks/polesHooks'
 
 /**
  * Path used for mock icons.
@@ -64,22 +64,20 @@ export const TEST_ECOGESTES: SnakeCasedPropertiesDeep<IEcogeste>[] = [
 ]
 
 /**
- * Mock list of tags.
+ * Mock list of Consumption Poles.
  */
-export const TEST_ECOGESTES_TAGS: SnakeCasedPropertiesDeep<IEcogestTag>[] = [
+export const TEST_ECOGESTES_POLES_CATEGORY: SnakeCasedPropertiesDeep<IEcogestCategory>[] = [
     {
         id: 1,
         name: 'Chauffage',
-        ecogest_amount: 2,
+        nb_ecogeste: 2,
         icon: 'https://drive.google.com/uc?export=view&id=10NPb2PC1bWaKDZJXuwWly7_b11W-S46O',
-        type: 'POLE',
     },
     {
         id: 2,
         name: 'Electricité',
-        ecogest_amount: 1,
+        nb_ecogeste: 1,
         icon: 'https://drive.google.com/uc?export=view&id=10NPb2PC1bWaKDZJXuwWly7_b11W-S46O',
-        type: 'POLE',
     },
 ]
 
@@ -119,8 +117,8 @@ export const ecogestesEndpoints = [
         }
         return res(ctx.status(200), ctx.delay(1000))
     }),
-    rest.get(`${ECOGESTES_TAGS_ENDPOINT}`, (req, res, ctx) => {
-        const tag_response = getPaginationFromElementList(req, TEST_ECOGESTES_TAGS)
+    rest.get(`${ECOGESTES_POLES_ENDPOINT}`, (req, res, ctx) => {
+        const tag_response = getPaginationFromElementList(req, TEST_ECOGESTES_POLES_CATEGORY)
         return res(ctx.status(200), ctx.delay(1000), ctx.json(tag_response))
     }),
 ]

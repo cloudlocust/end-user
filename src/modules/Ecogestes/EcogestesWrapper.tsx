@@ -1,9 +1,44 @@
-import { useEffect, useState } from 'react'
+import CircularProgress from '@mui/material/CircularProgress'
 
-import { useParams } from 'react-router-dom'
-import { IPillSwitcherParams, PillSwitcherMenuComponent } from './components/PillSwitcher/pillSwitcherComponent'
+import PillSwitcherMenuComponent from './components/PillSwitcher/pillSwitcherComponent'
 import { EcogestePillSwitcherProps, IEcogesteCategoryTypes } from './EcogestesConfig'
+import useEcogestePoles from './hooks/polesHooks'
+import { EcogesteCategoryList } from './components/shared/EcogesteCategory/EcogesteCategoryList'
 
+/**
+ * This component will handle the logic part for Ecogeste Consumption Poles.
+ *
+ * @returns JSX.Element - Consumption Poles Module.
+ */
+const ConsumptionPolesComponent = () => {
+    const { elementList, loadingInProgress } = useEcogestePoles()
+
+    if (loadingInProgress) {
+        return (
+            <div className="w-full h-full justify-center relative flex flex-col items-center align-center p-16">
+                <div style={{ display: 'flex', justifyContent: 'center', padding: '16px' }}>
+                    <CircularProgress size={32} />
+                </div>
+            </div>
+        )
+    }
+
+    /**
+     * TODO: Make a better handler for this state.
+     * IMO, is Admin ?
+     * True -> show "CTA -> backbone to add Poles"
+     * false -> show "No Ecogest found" or show every ecogests.
+     */
+    if (elementList === null || elementList.length === 0) {
+        return (
+            <div className="w-full h-full justify-center relative flex flex-col items-center align-center p-16">
+                Aucune catégorie d'ecogeste n'as été trouver...
+            </div>
+        )
+    }
+
+    return <EcogesteCategoryList categoryType={IEcogesteCategoryTypes.CONSUMPTION} categories={elementList} />
+}
 /**.
  * Pieces Component.
  * !! This component is only to say Its disabled.
@@ -19,25 +54,24 @@ const RoomsComponent = () => {
 }
 /**
  *  Ecogestes Wrapper.
+ *  I've maked it dynamic, so when we will implement Rooms we don't need to struggle on it.
  *
  *  @returns JSX.Element.
  */
 export const EcogestesWrapper = () => {
-    const { selectedItem } = useParams<IPillSwitcherParams>()
-    const [ecogestesCategory, setEcogestesCategory] = useState<IEcogesteCategoryTypes>(
-        IEcogesteCategoryTypes.CONSUMPTION,
-    )
-
-    useEffect(() => {
-        if (selectedItem && selectedItem === IEcogesteCategoryTypes.ROOMS) {
-            setEcogestesCategory(IEcogesteCategoryTypes.ROOMS)
-        }
-    }, [selectedItem])
+    const ecogestesCategory = IEcogesteCategoryTypes.CONSUMPTION
+    // const [ecogestesCategory, setEcogestesCategory] = useState<IEcogesteCategoryTypes>(
+    //     IEcogesteCategoryTypes.CONSUMPTION,
+    // )
 
     return (
         <div className="w-full relative flex flex-col items-center p-16">
             <PillSwitcherMenuComponent {...EcogestePillSwitcherProps} />
-            {ecogestesCategory === IEcogesteCategoryTypes.CONSUMPTION ? 'conso' : <RoomsComponent />}
+            {ecogestesCategory === IEcogesteCategoryTypes.CONSUMPTION ? (
+                <ConsumptionPolesComponent />
+            ) : (
+                <RoomsComponent />
+            )}
         </div>
     )
 }
