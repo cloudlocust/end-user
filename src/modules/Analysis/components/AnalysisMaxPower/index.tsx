@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { AnalysisMaxPowerProps } from 'src/modules/Analysis/components/AnalysisMaxPower/props.d'
+import { AnalysisMaxPowerProps } from 'src/modules/Analysis/components/AnalysisMaxPower/analysisMaxPower.d'
 import { ReactComponent as AdvicesIcon } from 'src/assets/images/pmax.svg'
 import { Avatar, Typography } from '@mui/material'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
@@ -16,9 +16,6 @@ import { computePMaxWithTimestamp } from 'src/modules/Analysis/components/Analys
  * @returns AnalysisMaxPower JSX.
  */
 export const AnalysisMaxPower = ({ data, housingId }: AnalysisMaxPowerProps) => {
-    // const [pmaxValue, setPmaxValue] = useState<number>()
-    // const [pmaxTimestamp, setPmaxTimestamp] = useState<number>()
-    // const [pmaxUnit, setPmaxUnit] = useState<string>()
     const { elementList: contractList } = useContractList(housingId)
 
     const inProgressContract = contractList?.find((contract) => contract.endSubscription)

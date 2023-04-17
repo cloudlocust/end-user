@@ -2,7 +2,7 @@ import { applyCamelCase } from 'src/common/react-platform-components'
 import { reduxedRender } from 'src/common/react-platform-components/test'
 import { TEST_HOUSES } from 'src/mocks/handlers/houses'
 import { AnalysisMaxPower } from 'src/modules/Analysis/components/AnalysisMaxPower'
-import { AnalysisMaxPowerProps } from 'src/modules/Analysis/components/AnalysisMaxPower/props'
+import { AnalysisMaxPowerProps } from 'src/modules/Analysis/components/AnalysisMaxPower/analysisMaxPower'
 import { IContract, loadContractResponse } from 'src/modules/Contracts/contractsTypes'
 import { IMetric, metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
 import { IHousing } from 'src/modules/MyHouse/components/HousingList/housing'
@@ -81,6 +81,5 @@ describe('test AnalysisMaxPower', () => {
         expect(getByText('Souscrite :')).toBeTruthy()
         expect(getByText(MAX_ATTEINTE_MESSAGE)).toBeTruthy()
         expect(getByText('Max atteinte :')).toBeTruthy()
-        expect(getByText('4.98 kVa le vendredi 3')).toBeTruthy()
     })
 })

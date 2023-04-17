@@ -167,7 +167,7 @@ export default function AnalysisSummary(props: AnalysisSummaryProps) {
                     <AnalysisInformationList activeInformationName={activeInformationName} data={data} range={range} />
                 </div>
             )}
-            {enedisSgeConsent?.enedisSgeConsentState !== 'CONNECTED' && (
+            {enedisSgeConsent?.enedisSgeConsentState === 'CONNECTED' && (
                 <AnalysisMaxPower data={data} housingId={currentHousing!.id} />
             )}
         </>
