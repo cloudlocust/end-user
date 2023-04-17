@@ -43,6 +43,7 @@ export const TEST_SUCCESS_USER = {
     last_name: 'Jackson',
     email: TEST_SUCCESS_MAIL,
     phone: '+33 1 23 45 67 89',
+    birthdate: '09/12/1995',
     address: {
         name: 'Apt. 556, Gwenborough. 92998-3874',
         city: 'Gwenborough',

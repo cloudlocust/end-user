@@ -1,11 +1,16 @@
 import userEvent from '@testing-library/user-event'
+import { applyCamelCase } from 'src/common/react-platform-components'
 import { reduxedRender } from 'src/common/react-platform-components/test'
+import { TEST_HOUSES } from 'src/mocks/handlers/houses'
 import { Alerts } from 'src/modules/Layout/Toolbar/components/Alerts'
+import { IHousing } from 'src/modules/MyHouse/components/HousingList/housing'
 import { AlertsDrawerContext } from 'src/modules/shared/AlertsDrawerContext'
 
 let mockIsAlertDrawerOpen = false
 let mockOpenAlertsDrawer = jest.fn()
 let mockCloseAlertsDrawer = jest.fn()
+
+const LIST_OF_HOUSES: IHousing[] = applyCamelCase(TEST_HOUSES)
 
 let mockProviderValueProp = {
     isAlertsDrawerOpen: mockIsAlertDrawerOpen,
@@ -36,7 +41,14 @@ describe('AlertsDrawer Context test', () => {
 
     test('AlertsDrawer should be open if isAlertsDrawerOpen is true', async () => {
         mockProviderValueProp.isAlertsDrawerOpen = true
-        const { container } = renderTestComponent()
+        const { container } = reduxedRender(
+            <AlertsDrawerContext.Provider value={mockProviderValueProp}>
+                <Alerts />
+            </AlertsDrawerContext.Provider>,
+            {
+                initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[0] } },
+            },
+        )
         expect(container.getElementsByClassName('MuiDrawer-paperAnchorRight')).toBeTruthy()
     })
 })

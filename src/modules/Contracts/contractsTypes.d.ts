@@ -53,10 +53,6 @@ export type ContractFormProps =
          * Default values  request.
          */
         defaultValues?: contractFormValuesType
-        /**
-         * Tariffs of contract.
-         */
-        tariffs?: tariffContract[]
     }
 
 /**
@@ -74,99 +70,6 @@ export type ContractFormFieldsProps =
          */
         disabled?: boolean
     }
-
-/**
- * Range value type.
- *
- */
-export type frequencyType = 'secondly' | 'minutely' | 'hourly' | 'daily' | 'weekly' | 'monthly' | 'yearly'
-
-// eslint-disable-next-line jsdoc/require-jsdoc
-export enum frequencyEnum {
-    /**
-     *
-     */
-    SECONDLY = 'secondly',
-    /**
-     *
-     */
-    MINUTELY = 'minutely',
-    /**
-     *
-     */
-    HOURLY = 'hourly',
-    /**
-     *
-     */
-    DAILY = 'daily',
-    /**
-     *
-     */
-    WEEKLY = 'weekly',
-    /**
-     *
-     */
-    MONTHLY = 'monthly',
-    /**
-     *
-     */
-    YEARLY = 'yearly',
-}
-
-/**
- * Tariff Contract type.
- */
-export type tariffContract =
-    /**
-     *
-     */
-    {
-        /**
-         * Label.
-         */
-        label: string
-        /**
-         * Price.
-         */
-        price: number
-        /**
-         * Frequency.
-         */
-        freq: frequencyType
-    }
-
-/**
- * Tariff Contract units type.
- */
-export type tariffContractUnits = '€/mois' | '€/kWh'
-
-/**
- * TariffContractItem Props.
- */
-export interface TariffContractItemProps {
-    /**
-     * Label.
-     */
-    label: string
-    /**
-     * Price.
-     */
-    price: number
-    /**
-     * Unit.
-     */
-    unit: tariffContractUnits
-}
-
-/**
- * TariffContractItem Props.
- */
-export interface TariffsContractProps {
-    /**
-     * List of tariffs.
-     */
-    tariffs?: tariffContract[]
-}
 
 /**
  * Type of request response of load contract.
@@ -219,10 +122,6 @@ export type loadContractResponse =
          * End contract subscription.
          */
         endSubscription: string
-        /**
-         * Tariffs.
-         */
-        tariffs?: tariffContract[]
     }
 
 /**
@@ -263,10 +162,6 @@ export type IContract = {
      * End contract subscription (ISO datetime format).
      */
     endSubscription: string
-    /**
-     * Tariffs.
-     */
-    tariffs?: tariffContract[]
 }
 
 /**
@@ -345,6 +240,51 @@ export interface ContractFormSelectProps<T> extends SelectFieldProps {
      */
     otherOptionLabel?: string
 }
+
+/**
+ * Range value type.
+ *
+ */
+export type frequencyType = 'daily' | 'monthly'
+
+// eslint-disable-next-line jsdoc/require-jsdoc
+export enum frequencyEnum {
+    /**
+     *
+     */
+    DAILY = 'daily',
+    /**
+     *
+     */
+    MONTHLY = 'monthly',
+}
+
+/**
+ * Tariff Contract type.
+ */
+export type tariffContract =
+    /**
+     *
+     */
+    {
+        /**
+         * Label.
+         */
+        label: string
+        /**
+         * Price.
+         */
+        price: number
+        /**
+         * Frequency.
+         */
+        freq: frequencyType
+    }
+
+/**
+ * Tariff Contract units type.
+ */
+export type tariffContractUnits = '€/mois' | '€/kWh'
 
 /**
  * Props Type of OffPeakHoursField Component.

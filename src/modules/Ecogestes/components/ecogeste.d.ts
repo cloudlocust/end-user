@@ -29,11 +29,10 @@ export type IEcogeste =
         infos: string
         /**
          * The savings of the Ecogeste.
-         * Abstract percentile number that should give the user
-         * an idea about how much money they are going to save by
-         * doing the geste.
+         * Abstract string that describes the savings of the Ecogeste.
+         * Usually formatted as '20%' but can be anything.
          */
-        percentageSaved: number
+        percentageSaved: string
         /**
          * Url of an icon that might be display on an ecogest card.
          */

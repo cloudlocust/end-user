@@ -81,6 +81,11 @@ export const API_RESOURCES_URL = window._env_.REACT_APP_API_RESOURCES_URL
 export const CLIENT_ICON_FOLDER = window._env_.REACT_APP_CLIENT_ICON_FOLDER
 
 /**
+ * Current Client redirect link when clicking on his Logo.
+ */
+export const CLIENT_LOGO_REDIRECT_LINK = window._env_.REACT_APP_CLIENT_LOGO_REDIRECT_LINK || ''
+
+/**
  * REACT_APP_NOVU_SOCKET_URL.
  */
 export const REACT_APP_NOVU_SOCKET_URL = window._env_.REACT_APP_NOVU_SOCKET_URL
@@ -155,9 +160,9 @@ export const FIREBASE_CONFIG = {
  * Reference: https://stackoverflow.com/a/64961858 .
  *
  */
-export const FIREBASE_MESSAGING_SW_URL = `${process.env.PUBLIC_URL}/firebase-messaging-sw.js?${new URLSearchParams(
-    FIREBASE_CONFIG,
-).toString()}`
+export const FIREBASE_MESSAGING_SW_URL = `${
+    window._env_.REACT_APP_BASENAME_URL
+}/firebase-messaging-sw.js?${new URLSearchParams(FIREBASE_CONFIG).toString()}`
 
 /**
  * GTM ID environment variable.

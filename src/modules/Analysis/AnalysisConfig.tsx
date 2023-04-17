@@ -7,7 +7,7 @@ import SvgIcon from '@mui/material/SvgIcon'
 /**
  * Url for analysis.
  */
-export const URL_ANALYSIS = '/analysis'
+export const URL_ANALYSIS = '/analysis/:tab'
 /**
  * Interface .
  *

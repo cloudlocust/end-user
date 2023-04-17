@@ -18,6 +18,8 @@ import { generalTermsOfUse, privacyPolicy } from 'src/modules/Mentions/MentionsC
 import { isProfessionalRegisterFeature } from 'src/modules/User/Register/RegisterConfig'
 import { sirenFieldRegex } from 'src/modules/User/Register/utils'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
+import { DatePicker } from 'src/common/ui-kit/form-fields/DatePicker'
+import dayjs from 'dayjs'
 
 /**
  * Civility Option has two properties: (label that shown in the front visual) and (value that goes to the backend).
@@ -71,16 +73,20 @@ export const RegisterForm = ({
      *
      * @param param0 N/A.
      * @param param0.repeatPwd Repeated password.
+     * @param param0.birthdate Birthdate.
      * @returns OnSubmit.
      */
     // eslint-disable-next-line jsdoc/require-jsdoc
-    const onSubmitWrapper = async ({ repeatPwd, ...cleanData }: { repeatPwd: string } & IUserRegister) => {
+    const onSubmitWrapper = async ({ repeatPwd, birthdate, ...cleanData }: { repeatPwd: string } & IUserRegister) => {
         if (rgpdCheckboxState !== true) {
             setRgpdCheckboxState('')
             return
         }
 
-        onSubmit({ ...cleanData, role: defaultRole })
+        // ! DatePicker throws an error when passing DD/MM/YYYY format to valideFormat props.
+        const formattedBirthdate = dayjs(birthdate).format('DD/MM/YYYY')
+
+        onSubmit({ ...cleanData, birthdate: formattedBirthdate, role: defaultRole })
     }
 
     return (
@@ -146,6 +152,18 @@ export const RegisterForm = ({
                     validateFunctions={[requiredBuilder()]}
                 />
                 <GoogleMapsAddressAutoCompleteField name="address" validateFunctions={[requiredBuilder()]} />
+                <DatePicker
+                    name="birthdate"
+                    label={formatMessage({
+                        id: 'Date de naissance (optionnel)',
+                        defaultMessage: 'Date de naissance (optionnel)',
+                    })}
+                    textFieldProps={{
+                        style: {
+                            margin: '0 0 20px 0',
+                        },
+                    }}
+                />
                 <PasswordField
                     name="password"
                     label="Mot de passe"

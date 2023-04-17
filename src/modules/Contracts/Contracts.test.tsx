@@ -156,16 +156,13 @@ describe('Test Contracts Component', () => {
         })
         // Mock ContractForm
         userEvent.click(getByText(SUBMIT_CONTRACT_FORM_BUTTON_TEXT))
-        // AddContract should be called.
+        await waitFor(() => {
+            expect(mockReloadContractList).toHaveBeenCalled()
+        })
         expect(mockAddContract).toHaveBeenCalled()
-
-        // Modal should be closed & reloadContractList should be called.
-        await waitFor(
-            () => {
-                expect(() => getByText(CONTRACT_FORM_MODAL_TEXT)).toThrow()
-                expect(mockReloadContractList).toHaveBeenCalled()
-            },
-            { timeout: 2000 },
-        )
-    }, 10000)
+        // Modal should be closed
+        await waitFor(() => {
+            expect(() => getByText(CONTRACT_FORM_MODAL_TEXT)).toThrow()
+        })
+    })
 })

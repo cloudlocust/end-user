@@ -1,9 +1,10 @@
 import {
     formatLoadContractResponseToIContract,
     getTariffContractUnit,
+    isValidDate,
 } from 'src/modules/Contracts/utils/contractsFunctions'
 import { TEST_DATETIME } from 'src/mocks/handlers/contracts'
-import { frequencyEnum, IContract, loadContractResponse } from 'src/modules/Contracts/contractsTypes.d'
+import { IContract, frequencyEnum, loadContractResponse } from 'src/modules/Contracts/contractsTypes.d'
 
 const value: loadContractResponse = {
     contract: {
@@ -74,6 +75,31 @@ describe('contractFunctions', () => {
         cases.forEach(({ tariff, expectedUnit }) => {
             const result = getTariffContractUnit(tariff)
             expect(result).toBe(expectedUnit)
+        })
+    })
+
+    test('isValidDate', async () => {
+        const cases = [
+            {
+                date: '2023-04-07',
+                expectedResult: true,
+            },
+            {
+                date: '2023-04-31',
+                expectedResult: true,
+            },
+            {
+                date: 'not a date',
+                expectedResult: false,
+            },
+            {
+                date: '0',
+                expectedResult: false,
+            },
+        ]
+        cases.forEach(({ date, expectedResult }) => {
+            const result = isValidDate(date)
+            expect(result).toBe(expectedResult)
         })
     })
 })
