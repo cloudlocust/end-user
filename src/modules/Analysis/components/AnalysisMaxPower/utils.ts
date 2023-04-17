@@ -1,5 +1,5 @@
 import convert from 'convert-units'
-import { IMetric } from 'src/modules/Metrics/Metrics.d'
+import { IMetric, metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
 
 /**
  * Function that compute Pmax value and its corresponding timestamp.
@@ -7,24 +7,36 @@ import { IMetric } from 'src/modules/Metrics/Metrics.d'
  * @param data Metric data.
  * @returns MaxValue and maxValueTimestamp.
  */
-export const conputePMaxWithTimestamp = (data: IMetric) => {
-    let maxValue = 0
-    let maxValueTimestamp = 0
+export const computePMaxWithTimestamp = (data: IMetric[]) => {
+    let pmaxValue = 0
+    let pmaxValueTimestamp = 0
+    let datapoints: number[][] = []
 
-    data['datapoints'].forEach(([value, timestamp]) => {
-        if (value > maxValue) {
-            maxValue = value
-            maxValueTimestamp = timestamp
+    const pmaxMetric = data.filter((elem) => elem.target === metricTargetsEnum.pMax)
+
+    if (pmaxMetric[0]) {
+        const entries = Object.entries(pmaxMetric[0])
+        for (const [key, objValue] of entries) {
+            if (key === 'datapoints' && typeof objValue === 'object') {
+                datapoints = objValue
+            }
+        }
+    }
+
+    datapoints.forEach(([value, timestamp]) => {
+        if (value > pmaxValue) {
+            pmaxValue = value
+            pmaxValueTimestamp = timestamp
         }
     })
 
-    if (maxValue > 999) {
+    if (pmaxValue > 999) {
         return {
-            maxValue: Number(convert(maxValue).from('VA').to('kVA').toFixed(2)),
-            maxValueTimestamp,
+            maxValue: Number(convert(pmaxValue).from('VA').to('kVA').toFixed(2)),
+            pmaxValueTimestamp,
             unit: 'kVa',
         }
     }
 
-    return { maxValue, maxValueTimestamp, unit: 'VA' }
+    return { pmaxValue, pmaxValueTimestamp, pmaxUnit: 'VA' }
 }
