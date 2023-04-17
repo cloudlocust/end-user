@@ -17,6 +17,7 @@ import { analysisInformationName } from 'src/modules/Analysis/analysisTypes.d'
 import { warningMainHashColor } from 'src/modules/utils/muiThemeVariables'
 import useMediaQuery from '@mui/material/useMediaQuery'
 import { AnalysisSummaryProps } from 'src/modules/Analysis/tabs/AnalysisSummary/AnalysisSummary'
+import { AnalysisMaxPower } from 'src/modules/Analysis/components/AnalysisMaxPower'
 
 /**
  * Analysis.
@@ -165,6 +166,9 @@ export default function AnalysisSummary(props: AnalysisSummaryProps) {
                 <div className="p-24 analysis-information-list">
                     <AnalysisInformationList activeInformationName={activeInformationName} data={data} range={range} />
                 </div>
+            )}
+            {enedisSgeConsent?.enedisSgeConsentState === 'CONNECTED' && (
+                <AnalysisMaxPower data={data} housingId={currentHousing!.id} />
             )}
         </>
     )

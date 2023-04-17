@@ -248,4 +248,28 @@ describe('Analysis test', () => {
         expect(container.querySelector(analysisChartClassname)).not.toBeInTheDocument()
         expect(container.querySelector(analysisInformationListClassname)).not.toBeInTheDocument()
     })
+    test("when enedis is off, AnalysisMaxPower isn't shown", async () => {
+        mockIsMetricsLoading = false
+        mockEnedisConsent = mockEnedisSgeConsentOff
+        const { getByText } = reduxedRender(
+            <Router>
+                <Analysis />
+            </Router>,
+            { initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[0] } } },
+        )
+
+        expect(() => getByText('Pmax :')).toThrow()
+    })
+    test('when enedis is on, AnalysisMaxPower is shown', async () => {
+        mockIsMetricsLoading = false
+        mockEnedisConsent = mockEnedisSgeConsentConnected
+        const { getByText } = reduxedRender(
+            <Router>
+                <Analysis />
+            </Router>,
+            { initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[0] } } },
+        )
+
+        expect(getByText('Pmax :')).toBeTruthy()
+    })
 })

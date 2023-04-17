@@ -39,6 +39,10 @@ export const initialMetricsHookValues: getMetricType = {
             target: metricTargetsEnum.eurosConsumption,
             type: 'timeserie',
         },
+        {
+            target: metricTargetsEnum.pMax,
+            type: 'timeserie',
+        },
     ],
     filters: [],
 }
@@ -59,7 +63,7 @@ export default function Analysis() {
     const enedisSgeOff = enedisSgeConsent?.enedisSgeConsentState !== 'CONNECTED'
 
     useEffect(() => {
-        if (currentHousing && currentHousing.meter) setFilters(formatMetricFilter(currentHousing.meter.guid))
+        if (currentHousing && currentHousing.meter?.guid) setFilters(formatMetricFilter(currentHousing.meter.guid))
     }, [currentHousing, setFilters])
 
     // UseEffect to check for consent whenever a meter is selected.
