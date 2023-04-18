@@ -18,10 +18,9 @@ import { URL_CONSUMPTION } from 'src/modules/MyConsumption'
 import { NrlinkConnectionStepsEnum } from 'src/modules/nrLinkConnection/nrlinkConnectionSteps.d'
 import { useSelector } from 'react-redux'
 import { RootState } from 'src/redux'
-import { primaryContrastTextColor, primaryMainColor } from 'src/modules/utils/muiThemeVariables'
+import { linksColor, primaryContrastTextColor, primaryMainColor } from 'src/modules/utils/muiThemeVariables'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import ContractStepNrLinkConnection from 'src/modules/nrLinkConnection/components/ContractStepNrLinkConnection/ContractStepNrLinkConnection'
-
 /**
  * Component representing the action buttons in the Stepper (Previous, Next), Next Button will be of type Submit.
  *
@@ -168,7 +167,7 @@ import { TEST_HOUSES } from 'src/mocks/handlers/houses'
             sx={{
                 color:
                     // eslint-disable-next-line jsdoc/require-jsdoc
-                    (theme) => theme.palette.primary.main,
+                    (theme) => linksColor || theme.palette.primary.main,
             }}
             className="md:text-14"
             to={URL_CONSUMPTION}
