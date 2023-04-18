@@ -26,7 +26,7 @@ import Tooltip from '@mui/material/Tooltip'
 import { useDispatch } from 'react-redux'
 import { Dispatch } from 'src/redux'
 import { HousingCardForm } from 'src/modules/MyHouse/components/HousingCardForm'
-import { warningMainHashColor } from 'src/modules/utils/muiThemeVariables'
+import { linksColor, warningMainHashColor } from 'src/modules/utils/muiThemeVariables'
 
 /**
  * This is a card for the display of a logement item.
@@ -184,7 +184,7 @@ const HousingCard = ({
                                 <div
                                     onClick={handleOpenAddMeterOpen}
                                     className="underline opacity-100 hover:opacity-70"
-                                    style={{ color: warningMainHashColor }}
+                                    style={{ color: linksColor || warningMainHashColor }}
                                 >
                                     {formatMessage({
                                         id: 'Veuillez renseigner votre compteur',

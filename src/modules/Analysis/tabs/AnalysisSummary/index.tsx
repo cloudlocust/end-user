@@ -14,10 +14,12 @@ import AnalysisPercentageChangeArrows from 'src/modules/Analysis/components/Anal
 import convert, { Unit } from 'convert-units'
 import AnalysisChart from 'src/modules/Analysis/components/AnalysisChart'
 import { analysisInformationName } from 'src/modules/Analysis/analysisTypes.d'
-import { warningMainHashColor } from 'src/modules/utils/muiThemeVariables'
 import useMediaQuery from '@mui/material/useMediaQuery'
 import { AnalysisSummaryProps } from 'src/modules/Analysis/tabs/AnalysisSummary/AnalysisSummary'
 import { AnalysisMaxPower } from 'src/modules/Analysis/components/AnalysisMaxPower'
+import { linksColor, warningMainHashColor } from 'src/modules/utils/muiThemeVariables'
+
+const AnalysisCTAColor = linksColor || warningMainHashColor
 
 /**
  * Analysis.
@@ -70,7 +72,7 @@ export default function AnalysisSummary(props: AnalysisSummaryProps) {
         return (
             <div className="container relative h-200 sm:h-256 p-16 sm:p-24 flex-col text-center flex items-center justify-center">
                 <>
-                    <Icon style={{ fontSize: '4rem', marginBottom: '1rem', color: warningMainHashColor }}>
+                    <Icon style={{ fontSize: '4rem', marginBottom: '1rem', color: AnalysisCTAColor }}>
                         error_outline_outlined
                     </Icon>
                 </>
@@ -79,7 +81,13 @@ export default function AnalysisSummary(props: AnalysisSummaryProps) {
                         id: "Pour voir votre consommation vous devez d'abord ",
                         defaultMessage: "Pour voir votre consommation vous devez d'abord ",
                     })}
-                    <Link to={`/nrlink-connection-steps/${currentHousing?.id}`} className="underline">
+                    <Link
+                        to={`/nrlink-connection-steps/${currentHousing?.id}`}
+                        className="underline"
+                        style={{
+                            color: linksColor || theme.palette.primary.main,
+                        }}
+                    >
                         {formatMessage({
                             id: 'enregistrer votre compteur et votre nrLINK',
                             defaultMessage: 'enregistrer votre compteur et votre nrLINK',
@@ -108,7 +116,7 @@ export default function AnalysisSummary(props: AnalysisSummaryProps) {
                     <div className="flex items-center justify-center flex-col">
                         <ErrorOutlineIcon
                             sx={{
-                                color: warningMainHashColor,
+                                color: AnalysisCTAColor,
                                 width: { xs: '24px', md: '32px' },
                                 height: { xs: '24px', md: '32px' },
                                 margin: { xs: '0 0 4px 0', md: '0 8px 0 0' },
@@ -117,7 +125,7 @@ export default function AnalysisSummary(props: AnalysisSummaryProps) {
 
                         <div className="w-full">
                             <TypographyFormatMessage
-                                sx={{ color: warningMainHashColor }}
+                                sx={{ color: AnalysisCTAColor }}
                                 className="text-13 md:text-16 text-center"
                             >
                                 Le coût en euros est un exemple. Vos données contractuelles de fourniture d'énergie ne
@@ -126,7 +134,7 @@ export default function AnalysisSummary(props: AnalysisSummaryProps) {
                             <NavLink to={`${URL_MY_HOUSE}/${currentHousing?.id}/contracts`}>
                                 <TypographyFormatMessage
                                     className="underline text-13 md:text-16 text-center"
-                                    sx={{ color: warningMainHashColor }}
+                                    sx={{ color: AnalysisCTAColor }}
                                 >
                                     Renseigner votre contrat d'énergie
                                 </TypographyFormatMessage>

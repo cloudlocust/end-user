@@ -3,7 +3,7 @@ import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyForm
 import { DefaultContractWarningProps } from 'src/modules/MyConsumption/myConsumptionTypes.d'
 import { useSelector } from 'react-redux'
 import { RootState } from 'src/redux'
-import { warningMainHashColor } from 'src/modules/utils/muiThemeVariables'
+import { linksColor, warningMainHashColor } from 'src/modules/utils/muiThemeVariables'
 import { URL_MY_HOUSE } from 'src/modules/MyHouse/MyHouseConfig'
 import { NavLink } from 'react-router-dom'
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline'
@@ -25,7 +25,7 @@ export const DefaultContractWarning = ({ isShowWarning }: DefaultContractWarning
         <div className="flex items-center justify-center flex-col mt-12">
             <ErrorOutlineIcon
                 sx={{
-                    color: warningMainHashColor,
+                    color: linksColor || warningMainHashColor,
                     width: { xs: '24px', md: '32px' },
                     height: { xs: '24px', md: '32px' },
                     margin: { xs: '0 0 4px 0', md: '0 8px 0 0' },
@@ -34,7 +34,7 @@ export const DefaultContractWarning = ({ isShowWarning }: DefaultContractWarning
 
             <div className="w-full">
                 <TypographyFormatMessage
-                    sx={{ color: warningMainHashColor }}
+                    sx={{ color: linksColor || warningMainHashColor }}
                     className="text-13 md:text-16 text-center"
                 >
                     Ce graphe est un exemple basé sur un tarif Bleu EDF Base. Vos données contractuelles de fourniture
@@ -43,7 +43,7 @@ export const DefaultContractWarning = ({ isShowWarning }: DefaultContractWarning
                 <NavLink to={`${URL_MY_HOUSE}/${currentHousing?.id}/contracts`}>
                     <TypographyFormatMessage
                         className="underline text-13 md:text-16 text-center"
-                        sx={{ color: warningMainHashColor }}
+                        sx={{ color: linksColor || warningMainHashColor }}
                     >
                         Renseigner votre contrat d'énergie
                     </TypographyFormatMessage>
@@ -70,7 +70,7 @@ export const ConsumptionEnedisSgeWarning = ({ isShowWarning }: DefaultContractWa
         <div className="flex items-center justify-center flex-col mt-12">
             <ErrorOutlineIcon
                 sx={{
-                    color: warningMainHashColor,
+                    color: linksColor || warningMainHashColor,
                     width: { xs: '24px', md: '32px' },
                     height: { xs: '24px', md: '32px' },
                     margin: { xs: '0 0 4px 0', md: '0 8px 0 0' },
@@ -84,7 +84,7 @@ export const ConsumptionEnedisSgeWarning = ({ isShowWarning }: DefaultContractWa
                 })}
                 TypographyProps={{
                     sx: {
-                        color: warningMainHashColor,
+                        color: linksColor || warningMainHashColor,
                         cursor: 'pointer',
                         fontWeight: '400',
                         textAlign: 'center',

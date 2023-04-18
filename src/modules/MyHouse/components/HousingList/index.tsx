@@ -164,7 +164,7 @@ const HousingList = () => {
                                     size="large"
                                     disabled={deleteAddFeatureState}
                                     startIcon={
-                                        <SvgIcon color={deleteAddFeatureState ? 'disabled' : 'primary'}>
+                                        <SvgIcon color={deleteAddFeatureState ? 'disabled' : 'inherit'}>
                                             <HouseIcon />
                                         </SvgIcon>
                                     }

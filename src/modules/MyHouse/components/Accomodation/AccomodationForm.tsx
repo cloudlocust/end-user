@@ -23,8 +23,9 @@ import { useParams } from 'react-router-dom'
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline'
 import Tooltip, { tooltipClasses, TooltipProps } from '@mui/material/Tooltip'
 import { styled } from '@mui/material/styles'
-import { Icon } from '@mui/material'
 import { useTheme } from '@mui/material'
+import { linksColor } from 'src/modules/utils/muiThemeVariables'
+import { ReactComponent as MeterErrorIcon } from 'src/assets/images/content/housing/meter-error.svg'
 
 //eslint-disable-next-line
 const CustomTooltip = styled(({ className, ...props }: TooltipProps) => (
@@ -131,15 +132,16 @@ export const AccomodationForm = () => {
                             defaultMessage: 'Informations Logements',
                         })}
                         {isAccomodationMeterListEmpty && (
-                            <Icon
-                                className="ml-12 cursor-pointer"
+                            <MeterErrorIcon
+                                style={{
+                                    width: '24px',
+                                    height: '24px',
+                                    color: linksColor || theme.palette.primary.main,
+                                    marginLeft: '12px',
+                                    cursor: 'pointer',
+                                }}
                                 onClick={() => setIsAccomodationInfoConsentmentOpen(!isAccomodationInfoConsentmentOpen)}
-                            >
-                                <img
-                                    src="./assets/images/content/housing/consent-status/meter-error.svg "
-                                    alt="meter-status"
-                                />
-                            </Icon>
+                            />
                         )}
                     </div>
                     <SelectButtons
