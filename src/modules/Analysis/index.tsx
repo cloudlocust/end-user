@@ -27,11 +27,12 @@ import { analysisInformationName } from './analysisTypes'
 import { useSelector } from 'react-redux'
 import { RootState } from 'src/redux'
 import { useHasMissingHousingContracts } from 'src/hooks/HasMissingHousingContracts'
-import { warningMainHashColor } from 'src/modules/utils/muiThemeVariables'
+import { linksColor, warningMainHashColor } from 'src/modules/utils/muiThemeVariables'
 import useMediaQuery from '@mui/material/useMediaQuery'
 import { ConsumptionEnedisSgeWarning } from 'src/modules/MyConsumption/components/MyConsumptionChart/ConsumptionChartWarnings'
 import { sgeConsentFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
 
+const AnalysisCTAColor = linksColor || warningMainHashColor
 /**
  * InitialMetricsStates for useMetrics.
  */
@@ -126,7 +127,7 @@ const Analysis = () => {
         return (
             <div className="container relative h-200 sm:h-256 p-16 sm:p-24 flex-col text-center flex items-center justify-center">
                 <>
-                    <Icon style={{ fontSize: '4rem', marginBottom: '1rem', color: warningMainHashColor }}>
+                    <Icon style={{ fontSize: '4rem', marginBottom: '1rem', color: AnalysisCTAColor }}>
                         error_outline_outlined
                     </Icon>
                 </>
@@ -135,7 +136,13 @@ const Analysis = () => {
                         id: "Pour voir votre consommation vous devez d'abord ",
                         defaultMessage: "Pour voir votre consommation vous devez d'abord ",
                     })}
-                    <Link to={`/nrlink-connection-steps/${currentHousing?.id}`} className="underline">
+                    <Link
+                        to={`/nrlink-connection-steps/${currentHousing?.id}`}
+                        className="underline"
+                        style={{
+                            color: linksColor || theme.palette.primary.main,
+                        }}
+                    >
                         {formatMessage({
                             id: 'enregistrer votre compteur et votre nrLINK',
                             defaultMessage: 'enregistrer votre compteur et votre nrLINK',
@@ -180,7 +187,7 @@ const Analysis = () => {
                     <div className="flex items-center justify-center flex-col">
                         <ErrorOutlineIcon
                             sx={{
-                                color: warningMainHashColor,
+                                color: AnalysisCTAColor,
                                 width: { xs: '24px', md: '32px' },
                                 height: { xs: '24px', md: '32px' },
                                 margin: { xs: '0 0 4px 0', md: '0 8px 0 0' },
@@ -189,7 +196,7 @@ const Analysis = () => {
 
                         <div className="w-full">
                             <TypographyFormatMessage
-                                sx={{ color: warningMainHashColor }}
+                                sx={{ color: AnalysisCTAColor }}
                                 className="text-13 md:text-16 text-center"
                             >
                                 {
@@ -199,7 +206,7 @@ const Analysis = () => {
                             <NavLink to={`${URL_MY_HOUSE}/${currentHousing?.id}/contracts`}>
                                 <TypographyFormatMessage
                                     className="underline text-13 md:text-16 text-center"
-                                    sx={{ color: warningMainHashColor }}
+                                    sx={{ color: AnalysisCTAColor }}
                                 >
                                     Renseigner votre contrat d'énergie
                                 </TypographyFormatMessage>
