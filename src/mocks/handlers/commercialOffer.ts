@@ -5,9 +5,11 @@ import {
     OFFERS_API,
     POWERS_API,
     PROVIDERS_API,
+    TARIFFS_CONTRACT_API,
     TARIFF_TYPES_API,
 } from 'src/hooks/CommercialOffer/CommercialOfferHooks'
 import { IContractType, IOffer, IPower, IProvider, ITariffType } from 'src/hooks/CommercialOffer/CommercialOffers'
+import { frequencyEnum, tariffContract } from 'src/modules/Contracts/contractsTypes.d'
 
 /**
  * ID That generates error when loading (providers, offers, tariffTypes, powers).
@@ -141,6 +143,14 @@ export var TEST_CONTRACT_TYPES: SnakeCasedPropertiesDeep<IContractType>[] = [
 export var TEST_POWERS: IPower[] = [1, 2, 3, 4, 5]
 
 /**
+ * Mock of Tariffs Contract.
+ */
+export var TEST_TARIFFS_CONTRACT: tariffContract[] = [
+    { label: 'abonnement', price: 36.0, freq: frequencyEnum.MONTHLY },
+    { label: 'prix kwh', price: 0.125, freq: frequencyEnum.DAILY },
+]
+
+/**
  * Mock Endpoints of Commercial Offer.
  */
 export const commercialOfferEndpoints = [
@@ -186,6 +196,26 @@ export const commercialOfferEndpoints = [
 
         if (parseInt(tariffType) !== TEST_LOAD_ERROR_ID && parseInt(offerId) !== TEST_LOAD_ERROR_ID) {
             return res(ctx.status(200), ctx.delay(1000), ctx.json(TEST_POWERS))
+        }
+        return res(ctx.status(404), ctx.delay(1000), ctx.json('error'))
+    }),
+
+    // GET TARIFFS_CONTRACT /tariffs_contract?offer_id=X&tariff_type_id=X&contract_type_id=X&power=X&start_subscription=X
+    rest.get(TARIFFS_CONTRACT_API, (req, res, ctx) => {
+        const tariffType = req.url.searchParams.get('tariff_type_id')!
+        const offerId = req.url.searchParams.get('offer_id')!
+        const contractTypeId = req.url.searchParams.get('contract_type_id')!
+        const power = req.url.searchParams.get('power')!
+        const startSubscription = req.url.searchParams.get('start_subscription')!
+
+        if (
+            parseInt(tariffType) !== TEST_LOAD_ERROR_ID &&
+            parseInt(offerId) !== TEST_LOAD_ERROR_ID &&
+            parseInt(contractTypeId) !== TEST_LOAD_ERROR_ID &&
+            parseInt(power) !== TEST_LOAD_ERROR_ID &&
+            !isNaN(new Date(startSubscription).getTime())
+        ) {
+            return res(ctx.status(200), ctx.delay(1000), ctx.json(TEST_TARIFFS_CONTRACT))
         }
         return res(ctx.status(404), ctx.delay(1000), ctx.json('error'))
     }),

@@ -79,3 +79,11 @@ export function convertUserDataToQueryString(data?: IUserRegister) {
  * Siren regex that allow only digits and up to maximum 9.
  */
 export const sirenFieldRegex = /^\d{9}$/.source
+
+/**
+ * Sleep zzz...
+ *
+ * @param ms MilliSeconds (1000 => 1s).
+ * @returns Promise to await for.
+ */
+export const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms))

@@ -18,6 +18,7 @@ import { useNovuAlertPreferences } from './NovuAlertPreferencesHook'
 import { linksColor, warningMainHashColor } from 'src/modules/utils/muiThemeVariables'
 import { ReactComponent as MeterErrorIcon } from 'src/assets/images/content/housing/meter-error.svg'
 import { TempoAlerts } from 'src/modules/Layout/Toolbar/components/Alerts/TempoAlerts'
+import { useContractList } from 'src/modules/Contracts/contractsHook'
 
 const StyledSwipeableDrawer = styled(SwipeableDrawer)(({ theme }) => ({
     '& .MuiDrawer-paper': {
@@ -36,6 +37,9 @@ const StyledSwipeableDrawer = styled(SwipeableDrawer)(({ theme }) => ({
 // eslint-disable-next-line jsdoc/require-jsdoc
 export const AlertsDrawer = ({ closeAlertsDrawer }: { closeAlertsDrawer: () => void }) => {
     const { currentHousing } = useSelector(({ housingModel }: RootState) => housingModel)
+    const { elementList: contractList } = useContractList(currentHousing!.id)
+
+    const currentContract = contractList?.find((contract) => !contract.endSubscription)
 
     const { consumptionAlerts, pricePerKwh, saveConsumptionAlert, isAlertsLoadingInProgress, isSavingInProgress } =
         useConsumptionAlerts(currentHousing?.id ?? null)
@@ -159,7 +163,7 @@ export const AlertsDrawer = ({ closeAlertsDrawer }: { closeAlertsDrawer: () => v
                     isNovuAlertPreferencesLoading={isNovuAlertPreferencesLoading}
                 />
                 <EcowattAlerts />
-                <TempoAlerts />
+                {currentContract?.tariffType.name === 'Jour Tempo' && <TempoAlerts />}
             </div>
         </StyledSwipeableDrawer>
     )

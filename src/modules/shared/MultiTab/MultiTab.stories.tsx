@@ -3,7 +3,7 @@ import { Meta, Story } from '@storybook/react/types-6-0'
 import MultiTab from './MultiTab'
 import { MemoryRouter, Route } from 'react-router'
 import { INITIAL_VIEWPORTS } from '@storybook/addon-viewport'
-import { IMultiTab } from 'src/common/ui-kit/components/MultiTab/MultiTab'
+import { IMultiTab } from 'src/common/ui-kit/components/MultiTab/multiTab.d'
 
 export default {
     title: 'MultiTab',
