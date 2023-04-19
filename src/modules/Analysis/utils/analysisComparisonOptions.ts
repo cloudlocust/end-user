@@ -25,34 +25,40 @@ export const getApexChartAnalysisComparisonProps = ({
     let options: Props['options'] = defaultApexChartOptions(theme)!
     let analysisComparisonApexChartSeries: ApexAxisChartSeries = []
     let yAxisOptions: ApexYAxis[] = []
-
     let consumptionValuesWithoutTimestamps = yAxisSeries.map((serie) => serie['data'].map((d: any) => d[1]))
 
     yAxisOptions.push({
-        axisBorder: {
-            show: true,
-        },
+        show: true,
         axisTicks: {
             show: true,
         },
+        axisBorder: {
+            show: true,
+        },
+        labels: {
+            show: true,
+            // eslint-disable-next-line jsdoc/require-jsdoc
+            formatter: (value: number, opts: any) => {
+                return `${value} kWh`
+            },
+        },
     })
 
-    analysisComparisonApexChartSeries.push(
+    analysisComparisonApexChartSeries = [
         {
             data: [convert(sum(consumptionValuesWithoutTimestamps[0])).from('Wh').to('kWh')],
             name: 'Ma Consommation',
-            type: 'bar',
             color: theme.palette.secondary.main,
         },
         {
             data: [round(4792 / 12)],
             name: "Consommation moyenne globale d'un foyer selon l'ADEME",
-            type: 'bar',
             color: theme.palette.secondary.light,
         },
-    )
+    ]
 
     options.legend! = {
+        position: 'top',
         show: true,
         onItemClick: {
             toggleDataSeries: false,
@@ -63,31 +69,28 @@ export const getApexChartAnalysisComparisonProps = ({
     options.xaxis = {
         ...options.xaxis,
         type: 'category',
+        tickPlacement: 'between',
+        categories: [''],
         labels: {
-            show: false,
+            show: false, // hide the x-axis category labels
         },
-        axisBorder: {
-            show: false,
-        },
-        axisTicks: {
-            show: false,
-        },
-        categories: ['Ma Consommation', "Consommation moyenne globale d'un foyer selon l'ADEME"],
     }
 
-    options.yaxis = {
-        show: false,
-        axisTicks: {
-            show: false,
-        },
-        axisBorder: {
-            show: false,
-        },
-        labels: {
-            show: false,
-        },
-    }
     options!.stroke!.width = 0
     options.yaxis = yAxisOptions
+    options!.tooltip = {
+        intersect: false,
+        shared: true,
+        x: {
+            /**
+             * Formatter function for xaxis.
+             *
+             * @returns {string}.
+             */
+            formatter(): string {
+                return ''
+            },
+        },
+    }
     return { series: analysisComparisonApexChartSeries, options }
 }
