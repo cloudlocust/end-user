@@ -11,6 +11,9 @@ import WidgetConsumption from 'src/modules/MyConsumption/components/WidgetConsum
 import { ConsumptionWidgetsMetricsContext } from 'src/modules/MyConsumption/components/ConsumptionWidgetsContainer/ConsumptionWidgetsMetricsContext'
 import { metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
 
+const renderedWidgets = enphaseConsentFeatureState
+    ? WidgetTargets.filter((target) => target !== metricTargetsEnum.consumption)
+    : WidgetTargets
 /**
  * MyConsumptionWidgets Component (it's Wrapper of the list of Widgets).
  *
@@ -77,9 +80,7 @@ const ConsumptionWidgetsContainer = ({
                     )}
 
                     {/** Display the other targets with Widget Component. */}
-                    {WidgetTargets.filter(
-                        (target) => enphaseConsentFeatureState && target !== metricTargetsEnum.consumption,
-                    ).map((target) => {
+                    {renderedWidgets.map((target) => {
                         return (
                             <Widget
                                 key={target}

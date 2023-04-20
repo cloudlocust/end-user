@@ -257,7 +257,11 @@ export const getWidgetPreviousRange = (range: metricRangeType, period: periodTyp
  *
  * @param range Range from metrics.
  * @param period Period give.
- * @returns Range according to period, when "monthly" range should be [start, end] of same month, when "yearly" range should be [start, end] of same year.
+ * @returns Range according to period.
+ * - When "daily" range should be [start, end] of same day.
+ * - When "weekly" range should be a week starting with the fromDate day of given range.
+ * - When "monthly" range should be [start, end] of same month.
+ * - When "yearly" range should be [start, end] of same year.
  */
 export const getWidgetRange = (range: metricRangeType, period: periodType) => {
     // Extract only the date, so that new Date don't create a date including the timezone.
