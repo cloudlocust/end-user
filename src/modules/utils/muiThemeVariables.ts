@@ -29,4 +29,4 @@ export const errorMainHashColor = '#FF6600'
 /**
  * Color of all links if indicated.
  */
-export const linksColor = colorThemes[CLIENT_ICON_FOLDER].extendedColors?.links
+export const linksColor = colorThemes[CLIENT_ICON_FOLDER]?.extendedColors?.links
