@@ -138,13 +138,6 @@ export const MyConsumptionContainer = () => {
                     metricsInterval={metricsInterval}
                 />
             </div>
-            {/* Ecowatt Widget */}
-            <div className="p-12 sm:p-24" id="ecowatt-widget">
-                <EcowattWidget
-                    ecowattSignalsData={ecowattSignalsData}
-                    isEcowattDataInProgress={isEcowattDataInProgress}
-                />
-            </div>
 
             {/* Widget List */}
             {(!nrlinkOff || !enedisOff) && (
@@ -160,6 +153,14 @@ export const MyConsumptionContainer = () => {
                     />
                 </ConsumptionWidgetsMetricsProvider>
             )}
+
+            {/* Ecowatt Widget */}
+            <div className="p-12 sm:p-24" id="ecowatt-widget">
+                <EcowattWidget
+                    ecowattSignalsData={ecowattSignalsData}
+                    isEcowattDataInProgress={isEcowattDataInProgress}
+                />
+            </div>
         </>
     )
 }
