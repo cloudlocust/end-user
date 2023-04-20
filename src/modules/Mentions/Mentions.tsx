@@ -1,10 +1,10 @@
 import { Button, Icon, Typography, List, ListItem, ListItemText, Card } from '@mui/material'
+import { generalTermsOfUse, privacyPolicy } from 'src/modules/Mentions/MentionsConfig'
 import { useIntl } from 'react-intl'
 import { useHistory } from 'react-router-dom'
 import PageSimple from 'src/common/ui-kit/fuse/components/PageSimple'
 import { motion } from 'framer-motion'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
-import { generalTermsOfUse, privacyPolicy } from 'src/modules/Mentions/MentionsConfig'
 
 /**
  * Mentions page.
