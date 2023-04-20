@@ -58,8 +58,9 @@ export const getApexChartAnalysisComparisonProps = ({
     ]
 
     options.legend! = {
-        position: 'top',
         show: true,
+        position: 'bottom',
+        horizontalAlign: 'center',
         onItemClick: {
             toggleDataSeries: false,
         },
@@ -92,5 +93,27 @@ export const getApexChartAnalysisComparisonProps = ({
             },
         },
     }
+    options.plotOptions = {
+        bar: {
+            horizontal: false,
+            columnWidth: '15%',
+            distributed: true, // enable dynamic column width
+        },
+    }
+    options.responsive = [
+        {
+            breakpoint: 768, // adjust width at this breakpoint
+            options: {
+                plotOptions: {
+                    bar: {
+                        columnWidth: '80%', // adjust column width
+                    },
+                },
+                legend: {
+                    horizontalAlign: 'left',
+                },
+            },
+        },
+    ]
     return { series: analysisComparisonApexChartSeries, options }
 }

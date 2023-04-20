@@ -19,9 +19,8 @@ export default function AnalysisComparison({ data, enedisSgeConsent, range }: An
         <div className="flex flex-col w-full">
             <div className="flex justify-center md:justify-start w-full text-center md:text-left mb-20">
                 <TypographyFormatMessage
-                    className="text-15 md:text-18"
+                    className="sm:text-16 font-medium md:text-20"
                     style={{ color: theme.palette.common.black }}
-                    fontWeight={500}
                 >
                     Comparaison de ma consommation globale à un même type de foyer
                 </TypographyFormatMessage>
