@@ -20,7 +20,10 @@ export default function AnalysisComparisonChart({ data }: AnalysisComparisonChar
         [data],
     )
 
-    const isDataPresentInAllDaysOfMonth = consumptionData?.datapoints.every((subArray) => !subArray[0])
+    // Check if every day of the month has data
+    const isDataPresentInAllDaysOfMonth = consumptionData?.datapoints.every(
+        (subArray) => subArray[0] !== undefined && subArray[0] !== null,
+    )
 
     const theme = useTheme()
     const apexchartProps = useMemo(() => {
