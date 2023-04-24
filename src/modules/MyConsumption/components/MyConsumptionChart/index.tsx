@@ -20,6 +20,7 @@ import useMediaQuery from '@mui/material/useMediaQuery'
  * @param props.isStackedEnabled Boolean state to know whether the stacked option is true or false.
  * @param props.chartType Consumption or production chart type.
  * @param props.chartLabel Chart label according to enphase state.
+ * @param props.metricsInterval Metrics intervals.
  * @returns MyConsumptionChart Component.
  */
 const MyConsumptionChart = ({
@@ -29,6 +30,7 @@ const MyConsumptionChart = ({
     isStackedEnabled,
     chartType,
     chartLabel,
+    metricsInterval,
 }: MyConsumptionChartProps) => {
     const { formatMessage } = useIntl()
     const theme = useTheme()
@@ -62,6 +64,7 @@ const MyConsumptionChart = ({
                 isStackedEnabled,
                 chartType,
                 chartLabel,
+                metricsInterval,
             })
             apexChartsProps.options!.chart!.events = {
                 /**
@@ -87,7 +90,7 @@ const MyConsumptionChart = ({
             }
             return apexChartsProps
         }
-    }, [data, period, range, formatMessage, theme, isStackedEnabled, chartType, chartLabel])
+    }, [data, period, range, formatMessage, theme, isStackedEnabled, chartType, chartLabel, metricsInterval])
 
     return (
         <div
