@@ -110,7 +110,7 @@ export default function AnalysisSummary(props: AnalysisSummaryProps) {
         <>
             {hasMissingHousingContracts && (
                 <div
-                    style={{ background: theme.palette.primary.dark, minHeight: '64px' }}
+                    style={{ minHeight: '64px' }}
                     className="w-full relative flex sflex-col justify-center items-center p-16"
                 >
                     <div className="flex items-center justify-center flex-col">
