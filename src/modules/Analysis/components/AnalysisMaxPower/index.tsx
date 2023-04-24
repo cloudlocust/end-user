@@ -23,7 +23,7 @@ export const AnalysisMaxPower = ({ data, housingId }: AnalysisMaxPowerProps) => 
     const { pmaxValue, pmaxValueTimestamp, pmaxUnit } = useMemo(() => computePMaxWithTimestamp(data), [data])
 
     return (
-        <div className="w-full flex flex-col md:items-center">
+        <div className="w-full flex flex-col items-center">
             <div className="flex flex-row mb-16" style={{ width: '280px' }}>
                 <Avatar style={{ width: 64, height: 64, backgroundColor: '#F6C327' }}>
                     <AdvicesIcon data-testid="pmax-svg" />

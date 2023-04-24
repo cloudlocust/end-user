@@ -143,7 +143,7 @@ const AnalysisChart = ({
     }
 
     return (
-        <div className="analysisChartContainer px-24" ref={analysisChartContainerRef}>
+        <div className="analysisChartContainer md:px-24" ref={analysisChartContainerRef}>
             <ReactApexChart
                 {...analysisApexChartProps}
                 type={'polarArea'}

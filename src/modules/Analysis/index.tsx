@@ -17,6 +17,9 @@ import { RootState } from 'src/redux'
 import { useSelector } from 'react-redux'
 import { useEffect } from 'react'
 import { ThemeProvider, useTheme } from '@mui/material'
+import dayjs from 'dayjs'
+import duration from 'dayjs/plugin/duration'
+dayjs.extend(duration)
 
 /**
  * InitialMetricsStates for useMetrics.
@@ -94,7 +97,7 @@ export default function Analysis() {
         {
             tabTitle: 'Comparaison',
             tabSlug: 'comparison',
-            tabContent: <AnalysisComparison />,
+            tabContent: <AnalysisComparison {...{ data, enedisSgeConsent, range }} />,
             icon: <AnalyzeComparisonIcon />,
         },
     ]
