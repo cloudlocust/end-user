@@ -1,4 +1,3 @@
-import React from 'react'
 import { MyConsumptionContainer } from 'src/modules/MyConsumption/MyConsumptionContainer'
 
 /**

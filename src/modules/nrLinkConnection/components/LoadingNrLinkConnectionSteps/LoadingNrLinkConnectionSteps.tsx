@@ -1,16 +1,13 @@
-import React from 'react'
 import { CircularProgress } from '@mui/material'
 import { useIntl } from 'react-intl'
 import Typography from '@mui/material/Typography'
-import { IMeter } from 'src/modules/Meters/Meters'
 
 /**
  *  Loading Spinner NrLinkConnection Component.
  *
- * @param meter The selectedMeter.
  * @returns LoadingNrLinkConnectionSteps.
  */
-const LoadingNrLinkConnectionSteps = (meter: IMeter | null) => {
+const LoadingNrLinkConnectionSteps = () => {
     const { formatMessage } = useIntl()
 
     return (

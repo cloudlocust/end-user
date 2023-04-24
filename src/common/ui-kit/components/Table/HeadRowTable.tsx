@@ -1,4 +1,4 @@
-import React, { SyntheticEvent } from 'react'
+import { SyntheticEvent } from 'react'
 import TableRow from '@mui/material/TableRow'
 import TableCell from '@mui/material/TableCell'
 import TableSortLabel from '@mui/material/TableSortLabel'

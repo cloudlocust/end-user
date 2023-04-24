@@ -1,4 +1,3 @@
-import React from 'react'
 import { reduxedRender } from 'src/common/react-platform-components/test'
 import { FAQContent, mailtoUrl } from 'src/modules/FAQ/components/FAQContent/FAQContent'
 import { TEST_FAQ } from 'src/mocks/handlers/faq'

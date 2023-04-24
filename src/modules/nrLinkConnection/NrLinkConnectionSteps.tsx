@@ -301,7 +301,7 @@ import { TEST_HOUSES } from 'src/mocks/handlers/houses'
 
             <Dialog open={isNrLinkAuthorizeInProgress}>
                 <DialogContent>
-                    <LoadingNrLinkConnectionSteps {...meter!} />
+                    <LoadingNrLinkConnectionSteps />
                 </DialogContent>
             </Dialog>
         </div>

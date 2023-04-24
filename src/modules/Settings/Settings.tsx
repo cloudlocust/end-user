@@ -1,5 +1,3 @@
-import React from 'react'
-
 /**
  * Form used for modify user Settings.
  *

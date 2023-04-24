@@ -1,4 +1,3 @@
-import React from 'react'
 import IconButton from '@mui/material/IconButton'
 import BoltIcon from '@mui/icons-material/Bolt'
 import EuroIcon from '@mui/icons-material/Euro'

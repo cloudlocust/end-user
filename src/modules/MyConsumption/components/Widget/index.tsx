@@ -1,4 +1,4 @@
-import React, { memo, useMemo, useEffect, useRef, useContext } from 'react'
+import { memo, useMemo, useEffect, useRef, useContext } from 'react'
 import { Grid, Card, CircularProgress, useTheme } from '@mui/material'
 import { IWidgetProps } from 'src/modules/MyConsumption/components/Widget/Widget'
 import { useMetrics } from 'src/modules/Metrics/metricsHook'

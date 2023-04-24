@@ -1,4 +1,3 @@
-import React from 'react'
 import { useIntl } from 'src/common/react-platform-translation'
 import Typography, { TypographyProps } from '@mui/material/Typography'
 

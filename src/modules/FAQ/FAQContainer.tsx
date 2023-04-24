@@ -1,4 +1,3 @@
-import React from 'react'
 import { Icon, Typography } from 'src/common/ui-kit'
 import PageSimple from 'src/common/ui-kit/fuse/components/PageSimple'
 import { useIntl } from 'src/common/react-platform-translation'

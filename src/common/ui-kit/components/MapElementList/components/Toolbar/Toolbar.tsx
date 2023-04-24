@@ -80,7 +80,7 @@ export default function Toolbar<T>({
                                 className="flex items-center w-full max-w-512 px-8 py-8 rounded-16 shadow"
                             >
                                 <IconButton
-                                    onClick={(e: SyntheticEvent) => {
+                                    onClick={() => {
                                         onConfirmFilter?.({ search: searchInputValue })
                                     }}
                                     className="p-1 sm:p-4"

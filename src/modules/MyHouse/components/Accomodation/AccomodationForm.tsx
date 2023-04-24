@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { useIntl } from 'src/common/react-platform-translation'
 import Radio from '@mui/material/Radio'
 import RadioGroup from '@mui/material/RadioGroup'
@@ -21,23 +21,10 @@ import { CircularProgress } from '@mui/material'
 import { isMatch } from 'lodash'
 import { useParams } from 'react-router-dom'
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline'
-import Tooltip, { tooltipClasses, TooltipProps } from '@mui/material/Tooltip'
-import { styled } from '@mui/material/styles'
+import Tooltip from '@mui/material/Tooltip'
 import { useTheme } from '@mui/material'
 import { linksColor } from 'src/modules/utils/muiThemeVariables'
 import { ReactComponent as MeterErrorIcon } from 'src/assets/images/content/housing/meter-error.svg'
-
-//eslint-disable-next-line
-const CustomTooltip = styled(({ className, ...props }: TooltipProps) => (
-    <Tooltip {...props} classes={{ popper: className }} />
-))(({ theme }) => ({
-    [`& .${tooltipClasses.tooltip}`]: {
-        backgroundColor: theme.palette.primary.main,
-        color: 'rgba(0, 0, 0, 0.87)',
-        boxShadow: theme.shadows[1],
-        fontSize: 11,
-    },
-}))
 
 /**
  * AccomodationForm .
@@ -272,7 +259,7 @@ export const AccomodationForm = () => {
                             )}
                         </div>
                     </div>
-                    <div className="flex flex-row flex justify-between mt-16 mr-24">
+                    <div className="flex flex-row justify-between mt-16 mr-24">
                         <div className="mt-16 mr-10 w-full ">
                             {formatMessage({
                                 id: "Nombre d'occupants :",
@@ -292,7 +279,7 @@ export const AccomodationForm = () => {
                             />
                         </div>
                     </div>
-                    <div className="flex flex-row flex justify-between mb-10">
+                    <div className="flex flex-row justify-between mb-10">
                         <div className="mt-16 mr-10 w-full ">
                             {formatMessage({
                                 id: 'Superficie du logement :',

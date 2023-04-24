@@ -1,4 +1,3 @@
-import React from 'react'
 import { Button, Icon, useTheme } from '@mui/material'
 import 'src/common/ui-kit/components/NumberField/NumberFieldForm.scss'
 import { INumberField } from './NumberFieldTypes'

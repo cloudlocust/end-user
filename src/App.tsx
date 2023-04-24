@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import { useEffect } from 'react'
 import { Switch, Route, Redirect, useLocation } from 'react-router-dom'
 import { useAuth } from 'src/modules/User/authentication/useAuth'
 import { routes, navigationsConfig, IAdditionnalSettings, IPageSettingsDisabled } from 'src/routes'
