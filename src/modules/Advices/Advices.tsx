@@ -1,5 +1,4 @@
 import { Divider, styled, useTheme } from '@mui/material'
-import React from 'react'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import PageSimple from 'src/common/ui-kit/fuse/components/PageSimple'
 import { EcogestesList } from 'src/modules/Ecogestes'

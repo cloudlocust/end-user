@@ -1,4 +1,3 @@
-import React from 'react'
 import { reduxedRender } from 'src/common/react-platform-components/test'
 import { BrowserRouter as Router } from 'react-router-dom'
 import MultiTab from 'src/common/ui-kit/components/MultiTab/MultiTab'

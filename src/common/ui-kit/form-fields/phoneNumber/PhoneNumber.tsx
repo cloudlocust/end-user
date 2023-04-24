@@ -1,4 +1,4 @@
-import React, { FC } from 'react'
+import { FC } from 'react'
 import { Controller, useFormContext } from 'react-hook-form'
 // Firefox and Safari bug from material-ui-phone-number that's why material-ui-phone-number-2 is better.
 // https://github.com/alexplumb/material-ui-phone-number/issues/110#issuecomment-1022674548

@@ -84,7 +84,7 @@ export const TempoAlertsForm = ({
                                         disabled={!isEdit}
                                         name="isPushTempo"
                                         checked={isPushTempoAlert}
-                                        onChange={(e) => setIsPushTempoAlert(!isPushTempoAlert)}
+                                        onChange={() => setIsPushTempoAlert(!isPushTempoAlert)}
                                         data-testid="isPushTempoAlert-switch"
                                     />
                                 </div>
@@ -96,7 +96,7 @@ export const TempoAlertsForm = ({
                                         disabled={!isEdit}
                                         name="isMailTempo"
                                         checked={isEmailTempoAlert}
-                                        onChange={(e) => setIsEmailTempoAlert(!isEmailTempoAlert)}
+                                        onChange={() => setIsEmailTempoAlert(!isEmailTempoAlert)}
                                         data-testid="isMailTempoAlert-switch"
                                     />
                                 </div>

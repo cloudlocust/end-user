@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import Divider from '@mui/material/Divider'
 import Card from '@mui/material/Card'
 import IconButton from '@mui/material/IconButton'

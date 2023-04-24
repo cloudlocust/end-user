@@ -1,4 +1,3 @@
-import React from 'react'
 import { useHistory, useParams } from 'react-router'
 import { styled } from '@mui/material/styles'
 import { EquipmentForm } from 'src/modules/MyHouse/components/Equipments/EquipmentForm'
@@ -10,7 +9,7 @@ import { Button } from '@mui/material'
 import { useTheme, ThemeProvider } from '@mui/material/styles'
 import { URL_MY_HOUSE } from 'src/modules/MyHouse/MyHouseConfig'
 
-const Root = styled(FusePageCarded)(({ theme }) => ({
+const Root = styled(FusePageCarded)(() => ({
     '& .FusePageCarded-header': {
         minHeight: 90,
         height: 90,

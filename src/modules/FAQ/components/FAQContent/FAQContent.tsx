@@ -1,4 +1,3 @@
-import React from 'react'
 import { useFAQ } from 'src/modules/FAQ/FAQHook/FAQhook'
 import { FAQField } from 'src/modules/FAQ/components/FAQFileld/FAQField'
 import { Button, CircularProgress } from '@mui/material'

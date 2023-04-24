@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import NavLinkAdapter from 'src/common/ui-kit/fuse/utils/NavLinkAdapter'
 import { styled, ThemeProvider, useTheme } from '@mui/material/styles'
 import FuseNavigation, { navbarItemType } from 'src/common/ui-kit/fuse/components/FuseNavigation/FuseNavigation'
@@ -54,7 +54,7 @@ const Root = styled(BottomNavigation)(({ theme }) => ({
     },
 }))
 
-const StyledNavBarMobile = styled(SwipeableDrawer)(({ theme }) => ({
+const StyledNavBarMobile = styled(SwipeableDrawer)(() => ({
     '& .MuiDrawer-paper': {
         '& #fuse-navbar-side-panel': {
             minWidth: 'auto',
@@ -166,9 +166,9 @@ function NavbarMobileContent(props: /**
     /**
      *  Handler for when we click on an item in the navbar.
      *
-     * @param selected SelectedItem.
+     * @param _selected SelectedItem.
      */
-    function handleChildItemClick(selected: navbarItemType) {
+    function handleChildItemClick(_selected: navbarItemType) {
         setPanelOpen(false)
     }
 
@@ -184,7 +184,7 @@ function NavbarMobileContent(props: /**
                             backgroundColor: theme.palette.background.default,
                         }}
                         value={selectedNavigation}
-                        onChange={(event, item) => handleParentItemClick(item)}
+                        onChange={(_event, item) => handleParentItemClick(item)}
                     >
                         {navbarContent.map((item) => (
                             <Tooltip

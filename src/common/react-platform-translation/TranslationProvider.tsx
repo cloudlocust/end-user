@@ -1,6 +1,6 @@
 import { IntlProvider, IntlConfig } from 'react-intl'
 import { useSelector } from 'react-redux'
-import React, { FC, ReactNode, useEffect } from 'react'
+import { FC, ReactNode, useEffect } from 'react'
 import LocalizationProvider from '@mui/lab/LocalizationProvider'
 import AdapterDayjs from '@mui/lab/AdapterDayjs'
 import dayjs from 'dayjs'
@@ -10,11 +10,11 @@ import dayjs from 'dayjs'
  * because we have a problem in the validation of date when we using AdapterDayjs
  * and we waiting of.
  *
- * @param o Dayjs object.
+ * @param _o Dayjs object.
  * @param c Dayjs class.
- * @param d N/A.
+ * @param _d N/A.
  */
-const strictParseDatePlugin = (o: any, c: any, d: any) => {
+const strictParseDatePlugin = (_o: any, c: any, _d: any) => {
     const proto = c.prototype
     const oldParse = proto.parse
     /**

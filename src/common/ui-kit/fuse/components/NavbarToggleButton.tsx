@@ -53,7 +53,7 @@ function NavbarToggleButton(props: TypeNavbarToggleButtonProps) {
             className={props.className}
             color="inherit"
             size="small"
-            onClick={(ev: React.SyntheticEvent) => {
+            onClick={() => {
                 if (mdDown) {
                     if (props.toggleMobileNavbarOpen) props.toggleMobileNavbarOpen()
                 } else {

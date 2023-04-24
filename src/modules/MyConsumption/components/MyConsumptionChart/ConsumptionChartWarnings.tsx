@@ -1,4 +1,3 @@
-import React from 'react'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import { DefaultContractWarningProps } from 'src/modules/MyConsumption/myConsumptionTypes.d'
 import { useSelector } from 'react-redux'

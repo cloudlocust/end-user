@@ -1,4 +1,4 @@
-import React, { FC } from 'react'
+import { FC } from 'react'
 import { email, requiredBuilder, Form } from 'src/common/react-platform-components'
 import { useIntl } from 'src/common/react-platform-translation'
 import { TextField, ButtonLoader } from 'src/common/ui-kit'

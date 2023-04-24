@@ -325,10 +325,10 @@ export const getApexChartMyConsumptionProps = ({
          * Formatter function for showing label in the xAxis when period is monthly because datetime hides as he pleasès xaxis labels and it gives us unwanted visuals and there is nothing to do about it.
          *
          * @param value Represent the timestamp in the xAxisValues.
-         * @param timestamp Represent the timestamp in the xAxisValues.
+         * @param _timestamp Represent the timestamp in the xAxisValues.
          * @returns Label xaxis.
          */
-        options.xaxis!.labels!.formatter = (value, timestamp) =>
+        options.xaxis!.labels!.formatter = (value, _timestamp) =>
             dayjs.utc(new Date(value!).toUTCString()).format('ddd D')
         options.xaxis!.labels!.rotate = 0
     }

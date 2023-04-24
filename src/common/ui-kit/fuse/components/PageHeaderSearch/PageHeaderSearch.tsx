@@ -1,4 +1,4 @@
-import React, { useState, SyntheticEvent } from 'react'
+import { useState, SyntheticEvent } from 'react'
 import Button from '@mui/material/Button'
 import Icon from '@mui/material/Icon'
 import Input from '@mui/material/Input'
@@ -80,7 +80,7 @@ function PageHeaderSearch(props: PageHeaderSearchProps) {
                             className="flex items-center w-full max-w-512 px-8 py-8 rounded-16 shadow"
                         >
                             <IconButton
-                                onClick={(e: SyntheticEvent) => {
+                                onClick={() => {
                                     onSearchClick({ search: searchInputValue })
                                 }}
                                 className="p-1 sm:p-4"

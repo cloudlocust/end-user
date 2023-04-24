@@ -1,4 +1,3 @@
-import React from 'react'
 import { reduxedRender } from 'src/common/react-platform-components/test'
 import Map from 'src/common/ui-kit/components/MapElementList/components/Map/Map'
 import { TEST_ELEMENT_LIST, testElementType } from 'src/common/ui-kit/components/MapElementList/MapElementList.test'
