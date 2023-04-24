@@ -146,12 +146,6 @@ export const EnedisSgePopup = ({
                                                         defaultMessage: "Votre compteur n'a pas été reconnu",
                                                     })}
                                                     <br />
-                                                    <NavLink to={`/my-houses`} className="underline">
-                                                        {formatMessage({
-                                                            id: 'Veuillez renseigner un numéro de compteur',
-                                                            defaultMessage: 'Veuillez renseigner un numéro de compteur',
-                                                        })}
-                                                    </NavLink>
                                                 </Typography>
                                             </div>
                                         )

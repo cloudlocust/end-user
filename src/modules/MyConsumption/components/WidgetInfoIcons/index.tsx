@@ -8,7 +8,7 @@ import Tooltip from '@mui/material/Tooltip'
 import { URL_MY_HOUSE } from 'src/modules/MyHouse/MyHouseConfig'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import { metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
-import { warningMainHashColor } from 'src/modules/utils/muiThemeVariables'
+import { linksColor, warningMainHashColor } from 'src/modules/utils/muiThemeVariables'
 import { sgeConsentFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
 import { EnedisSgePopup } from 'src/modules/MyHouse/components/MeterStatus/EnedisSgePopup'
 import { getWidgetInfoIconParamsType } from 'src/modules/MyConsumption/components/Widget/Widget.d'
@@ -29,7 +29,10 @@ export const EuroWidgetInfoIcon = () => {
                 <div>
                     <TypographyFormatMessage className="text-center">Ce coût est un exemple.</TypographyFormatMessage>
                     <NavLink to={currentHousing ? `${URL_MY_HOUSE}/${currentHousing?.id}/contracts` : URL_MY_HOUSE}>
-                        <TypographyFormatMessage sx={{ color: '#FFFFFF' }} className="underline text-center">
+                        <TypographyFormatMessage
+                            sx={{ color: linksColor || '#FFFFFF' }}
+                            className="underline text-center"
+                        >
                             Renseigner un contrat d'énergie.
                         </TypographyFormatMessage>
                     </NavLink>
@@ -37,7 +40,7 @@ export const EuroWidgetInfoIcon = () => {
             }
         >
             <IconButton sx={{ p: 0 }}>
-                <ErrorOutlineIcon sx={{ color: warningMainHashColor, width: '32px', height: '32px' }} />
+                <ErrorOutlineIcon sx={{ color: linksColor || warningMainHashColor, width: '32px', height: '32px' }} />
             </IconButton>
         </Tooltip>
     )
@@ -54,7 +57,7 @@ export const ProductionWidgetErrorIcon = () => {
     return (
         <NavLink to={currentHousing ? `${URL_MY_HOUSE}/${currentHousing?.id}` : URL_MY_HOUSE}>
             <IconButton sx={{ p: 0 }}>
-                <ErrorOutlineIcon sx={{ color: warningMainHashColor, width: '32px', height: '32px' }} />
+                <ErrorOutlineIcon sx={{ color: linksColor || warningMainHashColor, width: '32px', height: '32px' }} />
             </IconButton>
         </NavLink>
     )
@@ -101,8 +104,8 @@ export const PMaxWidgetInfoIcon = () => {
                         })}
                         TypographyProps={{
                             sx: {
+                                color: linksColor || '#FFFFFF',
                                 cursor: 'pointer',
-                                color: '#FFFFFF',
                                 padding: '4px',
                                 fontWeight: 'normal',
                             },
@@ -115,7 +118,7 @@ export const PMaxWidgetInfoIcon = () => {
                 </div>
             }
         >
-            <ErrorOutlineIcon sx={{ color: warningMainHashColor, width: '32px', height: '32px' }} />
+            <ErrorOutlineIcon sx={{ color: linksColor || warningMainHashColor, width: '32px', height: '32px' }} />
         </Tooltip>
     )
 }

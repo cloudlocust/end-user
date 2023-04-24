@@ -9,6 +9,7 @@ import { CLIENT_ICON_FOLDER } from 'src/configs'
 import { motion } from 'framer-motion'
 import CardContent from '@mui/material/CardContent'
 import { userRegistrationFeatureState } from 'src/modules/User/Register/RegisterConfig'
+import { linksColor } from 'src/modules/utils/muiThemeVariables'
 
 /**
  * Props of login component.
@@ -62,7 +63,7 @@ export const Login: FC<LoginProps> = ({ LoginForm = <DefaultLoginForm /> }): JSX
                                             sx={{
                                                 color:
                                                     // eslint-disable-next-line jsdoc/require-jsdoc
-                                                    (theme) => theme.palette.primary.main,
+                                                    (theme) => linksColor || theme.palette.primary.main,
                                             }}
                                             to="/register"
                                             underline="none"

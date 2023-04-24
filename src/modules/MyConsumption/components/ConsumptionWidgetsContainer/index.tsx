@@ -11,6 +11,9 @@ import WidgetConsumption from 'src/modules/MyConsumption/components/WidgetConsum
 import { ConsumptionWidgetsMetricsContext } from 'src/modules/MyConsumption/components/ConsumptionWidgetsContainer/ConsumptionWidgetsMetricsContext'
 import { metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
 
+const renderedWidgets = enphaseConsentFeatureState
+    ? WidgetTargets.filter((target) => target !== metricTargetsEnum.consumption)
+    : WidgetTargets
 /**
  * MyConsumptionWidgets Component (it's Wrapper of the list of Widgets).
  *
@@ -60,22 +63,8 @@ const ConsumptionWidgetsContainer = ({
                      * Otherwise it'll be displayed with then normal Widget component, that displays one info : the consumption total,
                      *    (because in this case consumption total = purchased consumption).
                      */}
-                    {enphaseConsentFeatureState ? (
+                    {enphaseConsentFeatureState && (
                         <WidgetConsumption
-                            target={metricTargetsEnum.consumption}
-                            range={range}
-                            filters={filters}
-                            metricsInterval={metricsInterval}
-                            period={period}
-                            infoIcon={getWidgetInfoIcon({
-                                widgetTarget: metricTargetsEnum.consumption,
-                                hasMissingContracts: hasMissingHousingContracts,
-                                enphaseOff,
-                                enedisSgeOff: enedisOff,
-                            })}
-                        />
-                    ) : (
-                        <Widget
                             target={metricTargetsEnum.consumption}
                             range={range}
                             filters={filters}
@@ -91,7 +80,7 @@ const ConsumptionWidgetsContainer = ({
                     )}
 
                     {/** Display the other targets with Widget Component. */}
-                    {WidgetTargets.filter((target) => target !== metricTargetsEnum.consumption).map((target) => {
+                    {renderedWidgets.map((target) => {
                         return (
                             <Widget
                                 key={target}

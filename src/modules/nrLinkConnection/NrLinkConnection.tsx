@@ -11,7 +11,7 @@ import { URL_NRLINK_CONNECTION_STEPS, linkyNrLinkPath } from 'src/modules/nrLink
 import { URL_CONSUMPTION } from 'src/modules/MyConsumption'
 import { axios } from 'src/common/react-platform-components'
 import { API_RESOURCES_URL } from 'src/configs'
-
+import { linksColor } from 'src/modules/utils/muiThemeVariables'
 /**
  * Get Show NrLink Popup Endpoint.
  */
@@ -88,7 +88,7 @@ const NrLinkConnection = () => {
                             sx={{
                                 color:
                                     // eslint-disable-next-line jsdoc/require-jsdoc
-                                    (theme) => theme.palette.primary.main,
+                                    (theme) => linksColor || theme.palette.primary.main,
                             }}
                             to={URL_CONSUMPTION}
                             underline="none"

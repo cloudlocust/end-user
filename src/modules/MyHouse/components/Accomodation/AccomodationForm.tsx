@@ -22,8 +22,9 @@ import { isMatch } from 'lodash'
 import { useParams } from 'react-router-dom'
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline'
 import Tooltip from '@mui/material/Tooltip'
-import { Icon } from '@mui/material'
 import { useTheme } from '@mui/material'
+import { linksColor } from 'src/modules/utils/muiThemeVariables'
+import { ReactComponent as MeterErrorIcon } from 'src/assets/images/content/housing/meter-error.svg'
 
 /**
  * AccomodationForm .
@@ -118,15 +119,16 @@ export const AccomodationForm = () => {
                             defaultMessage: 'Informations Logements',
                         })}
                         {isAccomodationMeterListEmpty && (
-                            <Icon
-                                className="ml-12 cursor-pointer"
+                            <MeterErrorIcon
+                                style={{
+                                    width: '24px',
+                                    height: '24px',
+                                    color: linksColor || theme.palette.primary.main,
+                                    marginLeft: '12px',
+                                    cursor: 'pointer',
+                                }}
                                 onClick={() => setIsAccomodationInfoConsentmentOpen(!isAccomodationInfoConsentmentOpen)}
-                            >
-                                <img
-                                    src="./assets/images/content/housing/consent-status/meter-error.svg "
-                                    alt="meter-status"
-                                />
-                            </Icon>
+                            />
                         )}
                     </div>
                     <SelectButtons
@@ -257,7 +259,7 @@ export const AccomodationForm = () => {
                             )}
                         </div>
                     </div>
-                    <div className="flex flex-row flex justify-between mt-16 mr-24">
+                    <div className="flex flex-row justify-between mt-16 mr-24">
                         <div className="mt-16 mr-10 w-full ">
                             {formatMessage({
                                 id: "Nombre d'occupants :",
@@ -277,7 +279,7 @@ export const AccomodationForm = () => {
                             />
                         </div>
                     </div>
-                    <div className="flex flex-row flex justify-between mb-10">
+                    <div className="flex flex-row justify-between mb-10">
                         <div className="mt-16 mr-10 w-full ">
                             {formatMessage({
                                 id: 'Superficie du logement :',

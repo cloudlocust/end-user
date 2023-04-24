@@ -3,7 +3,7 @@ import { Form } from 'src/common/react-platform-components'
 import { useToggle } from 'react-use'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import { INovuAlertPreferences } from 'src/modules/Layout/Toolbar/components/Alerts/Alerts'
-import { TempoAlertPreferencesType } from 'src/modules/Layout/Toolbar/components/Alerts/TempoAlerts/TempoAlerts'
+import { TempoAlertPreferencesType } from 'src/modules/Layout/Toolbar/components/Alerts/TempoAlerts/TempoAlerts.d'
 import { ButtonLoader } from 'src/common/ui-kit'
 import { useIntl } from 'react-intl'
 

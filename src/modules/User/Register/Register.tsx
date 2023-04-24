@@ -9,6 +9,7 @@ import { URL_LOGIN } from 'src/modules/User/Login/LoginConfig'
 import { RegisterForm as DefaultRegisterForm } from './RegisterForm'
 import { motion } from 'framer-motion'
 import CardContent from '@mui/material/CardContent'
+import { linksColor } from 'src/modules/utils/muiThemeVariables'
 
 /**
  * Props of the register component.
@@ -55,7 +56,7 @@ const Register: FC<RegisterProps> = ({ registerForm = <DefaultRegisterForm defau
                                     sx={{
                                         color:
                                             // eslint-disable-next-line jsdoc/require-jsdoc
-                                            (theme) => theme.palette.primary.main,
+                                            (theme) => linksColor || theme.palette.primary.main,
                                     }}
                                     to={URL_LOGIN}
                                     underline="none"

@@ -1,5 +1,4 @@
-import { useEffect } from 'react'
-import { Card, Icon, MuiCardContent } from 'src/common/ui-kit'
+import { ButtonLoader, Card, Icon, MuiCardContent } from 'src/common/ui-kit'
 import { useIntl } from 'src/common/react-platform-translation'
 import { Link, useHistory, useLocation } from 'react-router-dom'
 import MuiLink from '@mui/material/Link'
@@ -7,16 +6,18 @@ import { URL_LOGIN } from 'src/modules/User/Login/LoginConfig'
 import { motion } from 'framer-motion'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import './registerEnergyProviderSuccess.scss'
-import { energyProviderRegisterSuccessMessage } from 'src/modules/User/Register/RegisterConfig'
+import { energyProviderName } from 'src/modules/User/Register/RegisterConfig'
+import { useRegisterToEnergyProvider } from 'src/modules/User/Register/containers/RegisterEnergyProviderSuccess/hooks'
+import { useEffect } from 'react'
 
 /**
  * Interface type for RegisterEnergyProviderSuccessLocation.
  */
 export interface RegisterEnergyProviderSuccessLocation {
     /**
-     * State to be checked to allow or not user in the route.
+     * Link to Energy Provider subscribe Form.
      */
-    isAllowed: boolean
+    energyProviderFormLink: string | undefined
 }
 
 /**
@@ -25,17 +26,29 @@ export interface RegisterEnergyProviderSuccessLocation {
  * @returns Register Energy provider success JSX.
  */
 export const RegisterEnergyProviderSuccess = () => {
-    const { formatMessage } = useIntl()
     const history = useHistory()
+    const { formatMessage } = useIntl()
+    const { displayEnergyProviderSubscribeForm } = useRegisterToEnergyProvider()
     const {
-        state: { isAllowed },
+        state: { energyProviderFormLink },
     } = useLocation<RegisterEnergyProviderSuccessLocation>()
 
     useEffect(() => {
-        if (!isAllowed) {
+        if (!energyProviderFormLink) {
             history.push(URL_LOGIN)
         }
-    }, [history, isAllowed])
+    }, [history, energyProviderFormLink])
+
+    const registerSuccessMessage = `Votre inscription a bien été prise en compte. Sous réserve que votre souscription chez ${energyProviderName} est complète, vous recevrez prochainement un mail de validation de votre inscription à la plateforme`
+
+    /**
+     *  Subscribe to Energy Provider button handler.
+     */
+    const displayEnergyProviderFormHandler = () => {
+        if (energyProviderFormLink) {
+            displayEnergyProviderSubscribeForm(energyProviderFormLink)
+        }
+    }
 
     return (
         <div className="register-energy-provider-success-container">
@@ -48,12 +61,24 @@ export const RegisterEnergyProviderSuccess = () => {
                                     check_circle_outlined
                                 </Icon>
                             </div>
-
                             <TypographyFormatMessage className="description">
-                                {energyProviderRegisterSuccessMessage}
+                                {registerSuccessMessage}
                             </TypographyFormatMessage>
 
                             <div className="login-container">
+                                <ButtonLoader
+                                    variant="contained"
+                                    color="primary"
+                                    className="w-224 mx-auto mb-16 mt-16"
+                                    aria-label="REGISTER"
+                                    onClick={displayEnergyProviderFormHandler}
+                                    type="submit"
+                                >
+                                    {formatMessage({
+                                        id: `Souscrire à ${energyProviderName}`,
+                                        defaultMessage: `Souscrire à ${energyProviderName}`,
+                                    })}
+                                </ButtonLoader>
                                 <MuiLink
                                     component={Link}
                                     sx={{

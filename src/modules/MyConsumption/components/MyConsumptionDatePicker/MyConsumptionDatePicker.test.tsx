@@ -6,6 +6,7 @@ import { addPeriod, getRange, subPeriod } from 'src/modules/MyConsumption/utils/
 import MyConsumptionDatePicker from 'src/modules/MyConsumption/components/MyConsumptionDatePicker'
 import { waitFor } from '@testing-library/react'
 import dayjs from 'dayjs'
+import { startOfDay, subMonths } from 'date-fns'
 
 let mockSetRange = jest.fn()
 let mockOnDatePickerChange = jest.fn()
@@ -42,19 +43,19 @@ describe('Load MyConsumptionDatePicker', () => {
         userEvent.click(getByText(DECREMENT_DATE_ARROW_TEXT))
         expect(container.querySelector('input')?.value).toBe(format(new Date(prevWeek), dateFormat))
     })
-    // test('when the user clicks on the left arrow, the previous month is shown', async () => {
-    //     mockPeriod = 'monthly'
-    //     const dateMonth = new Date()
-    //     const prevMonth = dateMonth.setMonth(dateMonth.getMonth() - 1)
-    //     mockRange = getRange(mockPeriod, new Date(prevMonth), 'add')
-    //     const { getByText, container } = reduxedRender(
-    //         <Router>
-    //             <MyConsumptionDatePicker period={mockPeriod} setRange={mockSetRange} range={mockRange} />
-    //         </Router>,
-    //     )
-    //     userEvent.click(getByText(DECREMENT_DATE_ARROW_TEXT))
-    //     expect(container.querySelector('input')?.value).toBe(format(new Date(prevMonth), 'MM/yyyy'))
-    // })
+    test('when the user clicks on the left arrow, the previous month is shown', async () => {
+        mockPeriod = 'monthly'
+        const dateMonth = startOfDay(new Date())
+        const prevMonthDate = subMonths(dateMonth, 1)
+        mockRange = getRange(mockPeriod, prevMonthDate, 'add')
+        const { getByText, container } = reduxedRender(
+            <Router>
+                <MyConsumptionDatePicker period={mockPeriod} setRange={mockSetRange} range={mockRange} />
+            </Router>,
+        )
+        userEvent.click(getByText(DECREMENT_DATE_ARROW_TEXT))
+        expect(container.querySelector('input')?.value).toBe(format(prevMonthDate, 'MM/yyyy'))
+    })
     test('when the user clicks on the left arrow, the previous year is shown', async () => {
         mockPeriod = 'yearly'
         const dateYear = new Date()

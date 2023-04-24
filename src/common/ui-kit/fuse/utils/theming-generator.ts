@@ -19,7 +19,7 @@ const idColorTheme = CLIENT_ICON_FOLDER
  * @returns MUI complete theme object based on idColorTheme.
  */
 export function generateMuiTheme(id = idColorTheme, direction = 'ltr', contrast = null) {
-    let colorTheme = colorThemes[id]
+    let colorTheme: ThemeOptions = colorThemes[id].MUI
     if (contrast) {
         colorTheme = _.merge({}, colorTheme, colorThemes[contrast])
     }
