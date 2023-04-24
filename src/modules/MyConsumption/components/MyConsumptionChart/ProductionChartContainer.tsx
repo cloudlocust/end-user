@@ -104,7 +104,13 @@ export const ProductionChartContainer = ({
                             <CircularProgress style={{ color: theme.palette.background.paper }} />
                         </div>
                     ) : (
-                        <MyConsumptionChart data={data} period={period} range={range} chartType="production" />
+                        <MyConsumptionChart
+                            data={data}
+                            period={period}
+                            range={range}
+                            chartType="production"
+                            metricsInterval={metricsInterval}
+                        />
                     )}
                 </div>
             ) : (

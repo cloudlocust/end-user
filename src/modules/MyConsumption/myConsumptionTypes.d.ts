@@ -162,6 +162,8 @@ export interface MyConsumptionChartProps {
     chartType: 'consumption' | 'production'
     // eslint-disable-next-line jsdoc/require-jsdoc
     chartLabel?: 'Consommation totale' | 'Electricité achetée sur le réseau'
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    metricsInterval?: metricIntervalType
 }
 
 /**
