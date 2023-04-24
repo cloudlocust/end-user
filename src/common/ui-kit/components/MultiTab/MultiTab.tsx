@@ -86,10 +86,10 @@ const MultiTab = ({ header, content, innerScroll, TabsProps, TabProps, rootCss }
     /**
      * Handler for tab change.
      *
-     * @param event Event of the onChange.
+     * @param _event Event of the onChange.
      * @param newTabSlug Slug tab selected.
      */
-    const handleTabChange = (event: SyntheticEvent, newTabSlug: string) => {
+    const handleTabChange = (_event: SyntheticEvent, newTabSlug: string) => {
         setTabSlug(newTabSlug)
         history.replace({ pathname: `${basePath}/${newTabSlug}`, ...restLocationState })
     }

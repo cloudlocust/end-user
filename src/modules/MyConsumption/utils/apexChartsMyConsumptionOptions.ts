@@ -141,6 +141,7 @@ const getXAxisLabelFormatFromPeriod = (period: periodType, isTooltipLabel?: bool
  * @param params.isStackedEnabled Boolean state to know whether the stacked option is true or false.
  * @param params.chartType Consumption or production type.
  * @param params.chartLabel Chart label according to enphase state.
+ * @param params.metricsInterval Active metrics interval.
  * @returns Props of apexCharts in MyConsumptionChart.
  */
 export const getApexChartMyConsumptionProps = ({
@@ -151,6 +152,7 @@ export const getApexChartMyConsumptionProps = ({
     isStackedEnabled,
     chartType,
     chartLabel,
+    metricsInterval,
 }: // eslint-disable-next-line jsdoc/require-jsdoc
 {
     // eslint-disable-next-line jsdoc/require-jsdoc
@@ -167,6 +169,8 @@ export const getApexChartMyConsumptionProps = ({
     chartType: 'consumption' | 'production'
     // eslint-disable-next-line jsdoc/require-jsdoc
     chartLabel?: 'Consommation totale' | 'Electricité achetée sur le réseau'
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    metricsInterval?: '1m' | '30m'
     // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
     let options: Props['options'] = defaultApexChartOptions(theme)!
@@ -248,7 +252,7 @@ export const getApexChartMyConsumptionProps = ({
                         // Consumption unit shown in the chart will be W if its daily, or it'll be the unit of the maximum y value.
                         const label =
                             period === 'daily'
-                                ? convertConsumptionToWatt(value, !isTooltipValue)
+                                ? convertConsumptionToWatt(value, !isTooltipValue, metricsInterval)
                                 : getYPointValueLabel(
                                       value,
                                       yAxisSerie.name as metricTargetsEnum,
@@ -325,10 +329,10 @@ export const getApexChartMyConsumptionProps = ({
          * Formatter function for showing label in the xAxis when period is monthly because datetime hides as he pleasès xaxis labels and it gives us unwanted visuals and there is nothing to do about it.
          *
          * @param value Represent the timestamp in the xAxisValues.
-         * @param timestamp Represent the timestamp in the xAxisValues.
+         * @param _timestamp Represent the timestamp in the xAxisValues.
          * @returns Label xaxis.
          */
-        options.xaxis!.labels!.formatter = (value, timestamp) =>
+        options.xaxis!.labels!.formatter = (value, _timestamp) =>
             dayjs.utc(new Date(value!).toUTCString()).format('ddd D')
         options.xaxis!.labels!.rotate = 0
     }

@@ -224,7 +224,6 @@ const colorThemes: colorThemesType = {
         },
     },
     enerdici: {
-        // TODO REMOVE ONCE THERE IS A NEW THEME NEED to OVERRIDE ALL LINKS.
         extendedColors: {
             links: '#008DB8',
         },
@@ -252,7 +251,6 @@ const colorThemes: colorThemesType = {
                     dark: '#037768',
                 },
             },
-            // TODO REMOVE ONCE THERE IS A NEW THEME NEED to OVERRIDE ALL BUTTONS.
             components: {
                 MuiButton: {
                     styleOverrides: {

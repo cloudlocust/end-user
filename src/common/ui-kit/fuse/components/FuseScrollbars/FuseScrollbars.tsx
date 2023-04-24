@@ -5,7 +5,7 @@ import PerfectScrollbar from 'perfect-scrollbar'
 import 'perfect-scrollbar/css/perfect-scrollbar.css'
 import { useHistory } from 'react-router'
 
-const Root = styled('div')(({ theme }) => ({
+const Root = styled('div')(() => ({
     overscrollBehavior: 'contain',
 }))
 

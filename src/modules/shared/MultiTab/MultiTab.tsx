@@ -1,4 +1,4 @@
-import React, { SyntheticEvent, useState } from 'react'
+import { SyntheticEvent, useState } from 'react'
 import { useHistory, useLocation } from 'react-router'
 import { styled } from '@mui/material/styles'
 import { useIntl } from 'src/common/react-platform-translation'
@@ -118,10 +118,10 @@ const MultiTab = ({
     /**
      * Handler for tab change.
      *
-     * @param event Event of the onChange.
+     * @param _event Event of the onChange.
      * @param newTabSlug Slug tab selected.
      */
-    const handleTabChange = (event: SyntheticEvent, newTabSlug: string) => {
+    const handleTabChange = (_event: SyntheticEvent, newTabSlug: string) => {
         setTabSlug(newTabSlug)
         history.replace({ pathname: `${basePath}/${newTabSlug}`, ...restLocationState })
     }

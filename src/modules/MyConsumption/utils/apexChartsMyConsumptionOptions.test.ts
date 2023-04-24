@@ -74,7 +74,7 @@ const mockOptions: (theme: Theme, period: periodType) => ApexOptions = (theme, p
             format: 'HH:mm',
             hideOverlappingLabels: false,
             // eslint-disable-next-line jsdoc/require-jsdoc
-            formatter(value, timestamp) {
+            formatter(value, _timestamp) {
                 return dayjsUTC(new Date(value!)).format(getXAxisLabelFormatFromPeriod(period))
             },
         },
@@ -90,7 +90,7 @@ const mockOptions: (theme: Theme, period: periodType) => ApexOptions = (theme, p
     tooltip: {
         x: {
             // eslint-disable-next-line jsdoc/require-jsdoc
-            formatter: (index: number) => {
+            formatter: (_index: number) => {
                 return dayjsUTC(mockDatapoints[0][1]).format(getXAxisLabelFormatFromPeriod(period, true))
             },
         },

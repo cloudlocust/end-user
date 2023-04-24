@@ -1,7 +1,7 @@
 import { ButtonProps } from '@mui/material'
 import LoadingButton from '@mui/lab/LoadingButton'
 
-import React, { FC } from 'react'
+import { FC } from 'react'
 
 /**
  * TODO Documents.

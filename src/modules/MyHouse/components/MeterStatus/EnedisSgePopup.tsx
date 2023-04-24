@@ -102,7 +102,7 @@ export const EnedisSgePopup = ({
 
             {openSgePopup && (
                 <Dialog
-                    onClose={(event, reason) => {
+                    onClose={(_event, _reason) => {
                         resetToInitialStep()
                     }}
                     open={openSgePopup}
@@ -138,7 +138,7 @@ export const EnedisSgePopup = ({
                                                     />
                                                 </Icon>
                                                 <Typography
-                                                    sx={(theme) => ({
+                                                    sx={() => ({
                                                         color: warningMainHashColor,
                                                     })}
                                                     className="text-center"
@@ -180,7 +180,7 @@ export const EnedisSgePopup = ({
                                             />
                                         </Icon>
                                         <Typography
-                                            sx={(theme) => ({
+                                            sx={() => ({
                                                 color: warningMainHashColor,
                                             })}
                                             className="text-center"

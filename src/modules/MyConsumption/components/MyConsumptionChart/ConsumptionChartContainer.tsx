@@ -222,6 +222,7 @@ export const ConsumptionChartContainer = ({
                     isStackedEnabled={isStackedEnabled}
                     chartType="consumption"
                     chartLabel={enphaseOff ? 'Consommation totale' : 'Electricité achetée sur le réseau'}
+                    metricsInterval={metricsInterval}
                 />
             )}
             <DefaultContractWarning isShowWarning={isEurosConsumptionChart && Boolean(hasMissingHousingContracts)} />

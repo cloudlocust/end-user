@@ -17,11 +17,11 @@ export const CONTRACTS_API = (houseId: number) => `${HOUSING_API}/${houseId}/hou
 /**
  * Error message fetch contracts request.
  *
- * @param error Axios error object.
+ * @param _error Axios error object.
  * @param formatMessage FormatMessage intl object from (react-intl package).
  * @returns {string} Error message.
  */
-const loadContractListError = (error: any, formatMessage: formatMessageType) => {
+const loadContractListError = (_error: any, formatMessage: formatMessageType) => {
     return formatMessage({
         id: 'Erreur lors du chargement des contrats',
         defaultMessage: 'Erreur lors du chargement des contrats',
@@ -46,11 +46,11 @@ const addContractError = (error: AxiosError, formatMessage: formatMessageType) =
 /**
  * Success message add Contract.
  *
- * @param responseData Added Contract.
+ * @param _responseData Added Contract.
  * @param formatMessage FormatMessage intl object from (react-intl package).
  * @returns {string} Success message.
  */
-const addContractSuccess = (responseData: loadContractResponse, formatMessage: formatMessageType) => {
+const addContractSuccess = (_responseData: loadContractResponse, formatMessage: formatMessageType) => {
     return formatMessage({
         id: "Succès lors de l'ajout du contrat",
         defaultMessage: "Succès lors de l'ajout du contrat",
@@ -75,11 +75,11 @@ const editContractError = (error: AxiosError, formatMessage: formatMessageType) 
 /**
  * Success message editContract.
  *
- * @param responseData Edit Contract.
+ * @param _responseData Edit Contract.
  * @param formatMessage FormatMessage intl object from (react-intl package).
  * @returns {string} Success message.
  */
-const editContractSuccess = (responseData: loadContractResponse, formatMessage: formatMessageType) => {
+const editContractSuccess = (_responseData: loadContractResponse, formatMessage: formatMessageType) => {
     return formatMessage({
         id: 'Succès lors de la modification du contrat',
         defaultMessage: 'Succès lors de la modification du contrat',
@@ -89,11 +89,11 @@ const editContractSuccess = (responseData: loadContractResponse, formatMessage: 
 /**
  * Error message removeContract.
  *
- * @param error Axios error object.
+ * @param _error Axios error object.
  * @param formatMessage FormatMessage intl object from (react-intl package).
  * @returns {string} Error message.
  */
-const removeContractError = (error: any, formatMessage: formatMessageType) => {
+const removeContractError = (_error: any, formatMessage: formatMessageType) => {
     return formatMessage({
         id: 'Erreur lors de la suppression du contrat',
         defaultMessage: 'Erreur lors de la suppression du contrat',
@@ -103,11 +103,11 @@ const removeContractError = (error: any, formatMessage: formatMessageType) => {
 /**
  * Success message removeContract.
  *
- * @param responseData Removed Contract.
+ * @param _responseData Removed Contract.
  * @param formatMessage FormatMessage intl object from (react-intl package).
  * @returns {string} Success message.
  */
-const removeContractSuccess = (responseData: IContract, formatMessage: formatMessageType) => {
+const removeContractSuccess = (_responseData: IContract, formatMessage: formatMessageType) => {
     return formatMessage({
         id: 'Succès lors de la suppression du contrat',
         defaultMessage: 'Succès lors de la suppression du contrat',

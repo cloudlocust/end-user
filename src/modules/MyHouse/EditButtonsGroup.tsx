@@ -1,4 +1,3 @@
-import React from 'react'
 import { Button } from '@mui/material'
 import { useIntl } from 'react-intl'
 import { ButtonLoader } from 'src/common/ui-kit'

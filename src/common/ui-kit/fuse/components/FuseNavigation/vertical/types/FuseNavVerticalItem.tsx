@@ -6,7 +6,7 @@ import ListItemButton from '@mui/material/ListItemButton'
 import clsx from 'clsx'
 import { IFuseNavigationComponentProps } from 'src/common/ui-kit/fuse/components/FuseNavigation/FuseNavigation'
 
-const Root = styled('div')(({ theme, ...props }) => ({
+const Root = styled('div')(({ theme }) => ({
     '& > .fuse-list-item': {
         height: 40,
         width: '100%',

@@ -1,5 +1,5 @@
 import { CustomValidateResult, validators } from 'src/common/react-platform-components'
-import React, { FC } from 'react'
+import { FC } from 'react'
 import { Controller, useFormContext } from 'react-hook-form'
 import _ from 'lodash'
 import { MutableRefObject, SyntheticEvent, useRef, useEffect } from 'react'
@@ -205,7 +205,7 @@ export const GoogleMapsAddressAutoCompleteFieldBuilder = <T extends any>(): FC<U
                                 // Seems like onChange TextField inside renderInput props in Autocomplete control can not be used to set options dynamically, As we did in earlier versions.
                                 // So we have to use filterOptions props to update the options dynamically.
                                 // https://github.com/mui/material-ui/issues/21288
-                                (options: Suggestion[], state) => data
+                                (_options: Suggestion[], _state) => data
                             }
                             options={data}
                             autoComplete
@@ -214,7 +214,7 @@ export const GoogleMapsAddressAutoCompleteFieldBuilder = <T extends any>(): FC<U
                                 id: 'Adresse non trouvée',
                                 defaultMessage: 'Adresse non trouvée',
                             })}
-                            onChange={async (event: SyntheticEvent, newValue: Suggestion | null) => {
+                            onChange={async (_event: SyntheticEvent, newValue: Suggestion | null) => {
                                 if (!newValue) {
                                     onChange(null)
                                     return

@@ -116,7 +116,7 @@ export const userEndpoints = [
         return res(ctx.status(200), ctx.delay(1000), ctx.json(TEST_SUCCESS_USER))
     }),
 
-    rest.get<string>(`${AUTH_BASE_URL}/users/me`, (req, res, ctx) => {
+    rest.get<string>(`${AUTH_BASE_URL}/users/me`, (_req, res, ctx) => {
         return res(ctx.status(200), ctx.json(TEST_SUCCESS_USER))
     }),
 

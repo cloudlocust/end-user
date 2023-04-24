@@ -1,4 +1,3 @@
-import React from 'react'
 import { Meta, Story } from '@storybook/react/types-6-0'
 import MultiTab from 'src/common/ui-kit/components/MultiTab/MultiTab'
 import { IMultiTab } from 'src/common/ui-kit/components/MultiTab/multiTab.d'

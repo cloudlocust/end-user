@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import { useEffect } from 'react'
 import { useIntl } from 'react-intl'
 import { Select } from 'src/common/ui-kit/form-fields/Select'
 import { ContractFormSelectProps } from 'src/modules/Contracts/contractsTypes.d'
@@ -58,7 +58,7 @@ const ContractFormSelect = <T extends unknown>({
                 validateFunctions={validateFunctions}
                 {...otherSelectProps}
             >
-                {optionList.map((option, index) => (
+                {optionList.map((option, _index) => (
                     <MenuItem key={formatOptionValue(option)} value={formatOptionValue(option)}>
                         {formatOptionLabel(option)}
                     </MenuItem>

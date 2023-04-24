@@ -1,6 +1,5 @@
 import { Theme } from '@mui/material/styles/createTheme'
 import { capitalize, isNull } from 'lodash'
-import React from 'react'
 import dayjs from 'dayjs'
 
 /**

@@ -27,7 +27,7 @@ let mockIsMobile = true
 // testing for mobile as default
 jest.mock(
     '@mui/material/useMediaQuery',
-    () => (params: any) =>
+    () => (_params: any) =>
         // eslint-disable-next-line jsdoc/require-jsdoc
         mockIsMobile,
 )

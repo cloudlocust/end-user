@@ -33,10 +33,10 @@ function Table<rowType>(props: ITable<rowType>) {
     /**
      * HandleRequest Sort function by Material UI.
      *
-     * @param event Click Event.
+     * @param _ Click Event.
      * @param property The column head id.
      */
-    const handleRequestSort = (event: SyntheticEvent, property: string) => {
+    const handleRequestSort = (_: SyntheticEvent, property: string) => {
         const isAsc = orderBy === property && order === 'asc'
         setOrder(isAsc ? 'desc' : 'asc')
         setOrderBy(property)
@@ -45,10 +45,10 @@ function Table<rowType>(props: ITable<rowType>) {
     /**
      * Handle change page table.
      *
-     * @param event Event.
+     * @param _event Event.
      * @param newPage NewPage index value.
      */
-    const handleChangePage = (event: React.MouseEvent<HTMLButtonElement, MouseEvent> | null, newPage: number) => {
+    const handleChangePage = (_event: React.MouseEvent<HTMLButtonElement, MouseEvent> | null, newPage: number) => {
         setPage(newPage)
         if (onPageChange) onPageChange(newPage + 1)
     }
@@ -63,7 +63,7 @@ function Table<rowType>(props: ITable<rowType>) {
                     headCells={cells}
                 />
                 <TableBody>
-                    {stableSort(rows, getComparator(order, orderBy)).map((row, index) => (
+                    {stableSort(rows, getComparator(order, orderBy)).map((row, _index) => (
                         <TableRow
                             hover
                             role="checkbox"

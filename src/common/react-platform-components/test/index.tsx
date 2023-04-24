@@ -54,7 +54,7 @@ export function reduxedRender(
                 <Provider store={store}>
                     {/* We override onError because we don't need translation text in the test
                         and for avoid the "Message messing" error of react-intl */}
-                    <TranslatitonProvider onError={(err) => {}}>
+                    <TranslatitonProvider>
                         <SnackbarProvider>{children}</SnackbarProvider>
                     </TranslatitonProvider>
                 </Provider>
