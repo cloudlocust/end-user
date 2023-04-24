@@ -5,7 +5,7 @@
     "workspaces": [
         "src/common"
     ],
-    "homepage": ".",
+    "homepage": "%REACT_APP_BASENAME_URL%",
     "dependencies": {
         "@novu/notification-center": "^0.9.1",
         "apexcharts": "3.35",
