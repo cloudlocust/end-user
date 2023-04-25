@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import { useMemo } from 'react'
 import { endOfMonth, startOfMonth, subDays, subMonths, subYears } from 'date-fns'
 import { getMetricType, metricFiltersType, metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
 import { useMetrics } from 'src/modules/Metrics/metricsHook'

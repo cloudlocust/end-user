@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react'
+import { useContext, useEffect } from 'react'
 import { enphaseConsentFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
 import { Grid } from '@mui/material'
 import { useTheme } from '@mui/material'

@@ -1,23 +1,18 @@
-import React, { FC, useEffect } from 'react'
-import { LOGO_URL, API_BASE_URL, CLIENT_ICON_FOLDER } from 'src/configs'
+import { FC, useEffect } from 'react'
+import { CLIENT_ICON_FOLDER } from 'src/configs'
 import { motion } from 'framer-motion'
 import { Card, CardContent } from '@mui/material'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import { ResetPasswordForm } from 'src/modules/User/ResetPassword/ResetPasswordForm'
 import { useLocation, useHistory } from 'react-router-dom'
 import { URL_LOGIN } from 'src/modules/User/Login/LoginConfig'
-import { ResetPasswordProps } from 'src/modules/User/ResetPassword/ResetPasswordTypes'
 
 /**
  * Reset password component.
  *
- * @param props N/A.
- * @param props.logo Logo of the company. This field has a default value.
  * @returns Reset Password Component.
  */
-export const ResetPassword: FC<ResetPasswordProps> = ({
-    logo = { href: API_BASE_URL, url: LOGO_URL },
-}): JSX.Element => {
+export const ResetPassword: FC = (): JSX.Element => {
     const history = useHistory()
     const { search } = useLocation()
     const query = new URLSearchParams(search)

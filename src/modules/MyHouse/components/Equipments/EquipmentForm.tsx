@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { CircularProgress, useMediaQuery, useTheme } from '@mui/material'
 import { Form } from 'src/common/react-platform-components'
 import { useIntl } from 'src/common/react-platform-translation'

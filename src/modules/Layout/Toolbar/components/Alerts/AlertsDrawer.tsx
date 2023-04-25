@@ -71,7 +71,7 @@ export const AlertsDrawer = ({ closeAlertsDrawer }: { closeAlertsDrawer: () => v
             open={true}
             anchor="right"
             // onOpen is a required prop to add in SwipeableDrawer even if it's empty.
-            onOpen={(ev) => {}}
+            onOpen={(_ev) => {}}
             onClose={closeAlertsDrawer}
             disableSwipeToOpen
         >

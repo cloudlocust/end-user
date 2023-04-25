@@ -1,4 +1,3 @@
-import React from 'react'
 import { BrowserRouter as Router } from 'react-router-dom'
 import { reduxedRender } from 'src/common/react-platform-components/test'
 import { Mentions } from 'src/modules/Mentions/Mentions'

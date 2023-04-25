@@ -14,7 +14,7 @@ import {
     navbarItemType,
 } from 'src/common/ui-kit/fuse/components/FuseNavigation/FuseNavigation'
 
-const Root = styled('ul')(({ theme, ...props }) => ({
+const Root = styled('ul')(({ theme }) => ({
     padding: 0,
     '&.open': {},
     '& > .fuse-list-item': {

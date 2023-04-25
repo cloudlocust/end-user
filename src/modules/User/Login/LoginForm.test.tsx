@@ -1,4 +1,3 @@
-import React from 'react'
 import { BrowserRouter } from 'react-router-dom'
 import { ByRoleMatcher, ByRoleOptions, fireEvent, screen, waitFor, act } from '@testing-library/react'
 import { reduxedRender } from 'src/common/react-platform-components/test'
@@ -44,7 +43,7 @@ function submitWithValidData(
     }
 }
 
-const mockOnSubmit = jest.fn((data) => null)
+const mockOnSubmit = jest.fn((_data) => null)
 
 jest.mock('src/modules/User/Login/hooks', () => ({
     ...jest.requireActual('src/modules/User/Login/hooks'),
@@ -91,7 +90,7 @@ describe('test loginForm', () => {
         expect(mockOnSubmit).toHaveBeenCalledWith({ email: TEST_EMAIL, password: '123456' }, expect.anything())
     })
     test('Custom hook', async () => {
-        const mockCustomOnSubmit = jest.fn(async (data) => {})
+        const mockCustomOnSubmit = jest.fn(async (_data) => {})
 
         const { getByRole, container } = reduxedRender(
             <BrowserRouter>

@@ -1,4 +1,3 @@
-import React from 'react'
 import { useEffect, useState } from 'react'
 import { useHistory, useParams } from 'react-router'
 import { motion } from 'framer-motion'
@@ -26,7 +25,7 @@ import { MeterStatus } from 'src/modules/MyHouse/components/MeterStatus'
 import { ReactComponent as ElectricityIcon } from 'src/assets/images/content/housing/Electricity.svg'
 import { ReactComponent as GazIcon } from 'src/assets/images/content/housing/Gaz.svg'
 
-const Root = styled(FusePageCarded)(({ theme }) => ({
+const Root = styled(FusePageCarded)(() => ({
     '& .FusePageCarded-header': {
         minHeight: 90,
         height: 90,

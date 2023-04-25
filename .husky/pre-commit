@@ -4,5 +4,5 @@
 #yarn run test -- --watchAll=false
 #npx eslint . --fix --max-warnings=0
 yarn pre-commit
-npx tsc --skipLibCheck
+npx tsc --skipLibCheck --noUnusedLocals --noUnusedParameters
 yarn test --bail --watchAll=false --maxWorkers=3 --no-cache

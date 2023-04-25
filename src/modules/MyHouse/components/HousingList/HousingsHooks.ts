@@ -16,7 +16,7 @@ import { housingCardFormValuesType } from '../HousingCardForm/HousingCardFormPro
 export const HOUSING_API = `${API_RESOURCES_URL}/housings`
 
 // eslint-disable-next-line jsdoc/require-jsdoc
-export const loadElementListError = (error: any, formatMessage: formatMessageType) => {
+export const loadElementListError = (_error: any, formatMessage: formatMessageType) => {
     return formatMessage({
         id: 'Erreur lors du chargement des logements',
         defaultMessage: 'Erreur lors du chargement des logements',
@@ -24,7 +24,7 @@ export const loadElementListError = (error: any, formatMessage: formatMessageTyp
 }
 
 // eslint-disable-next-line jsdoc/require-jsdoc
-export const addElementSuccess = (error: any, formatMessage: formatMessageType) => {
+export const addElementSuccess = (_error: any, formatMessage: formatMessageType) => {
     return formatMessage({
         id: 'Le logement a été ajouté',
         defaultMessage: 'Le logement a été ajouté',
@@ -32,7 +32,7 @@ export const addElementSuccess = (error: any, formatMessage: formatMessageType) 
 }
 
 // eslint-disable-next-line jsdoc/require-jsdoc
-export const addElementError = (error: any, formatMessage: formatMessageType) => {
+export const addElementError = (_error: any, formatMessage: formatMessageType) => {
     return formatMessage({
         id: "Erreur lors de l'ajout du logement",
         defaultMessage: "Erreur lors de l'ajout du logement",

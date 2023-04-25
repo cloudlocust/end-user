@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { Icon } from 'src/common/ui-kit'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import { IFAQField } from 'src/modules/FAQ/components/FAQFileld/FAQField.d'

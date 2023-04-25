@@ -504,12 +504,28 @@ export const getChartSpecifities = (
  *
  * @param yValue Value in Wh.
  * @param isYValueRounded Indicate if Math.round should be applied to the value.
+ * @param metricsInterval Active metrics interval.
  * @returns Consumption from Wh to Watt.
  */
-export const convertConsumptionToWatt = (yValue: number | null | undefined, isYValueRounded?: boolean) => {
-    // IsNill check that value is undefined or null.
+export const convertConsumptionToWatt = (
+    yValue: number | null | undefined,
+    isYValueRounded?: boolean,
+    metricsInterval: '1m' | '30m' = '1m',
+) => {
+    /**
+     * To convert watt hours to watts for a time interval of one minute, you would divide the watt hour value by 1/60th of an hour,
+     * since there are 60 minutes in an hour. So the conversion factor for one minute would be 60.
+     *
+     * To convert watt hours to watts for a time interval of 30 minutes, you would divide the watt hour value by 0.5 (which is 30/60th of an hour,
+     * since there are 60 minutes in an hour and 30 minutes is half an hour). So the conversion factor for 30 minutes would be 2.
+     */
     const value = isNil(yValue) ? '' : yValue
-    const result = value ? (isYValueRounded ? Math.round(60 * value) : (60 * value).toFixed(2)) : 0
+    const conversionFactor = metricsInterval === '1m' ? 60 : 2
+    const result = value
+        ? isYValueRounded
+            ? Math.round(conversionFactor * value)
+            : (conversionFactor * value).toFixed(2)
+        : 0
     return result + ' W'
 }
 

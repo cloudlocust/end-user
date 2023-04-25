@@ -1,4 +1,3 @@
-import React from 'react'
 import Button from '@mui/material/Button'
 import { useIntl } from 'src/common/react-platform-translation'
 import { Icon } from '@mui/material'
