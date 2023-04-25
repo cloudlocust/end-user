@@ -36,4 +36,4 @@ done < /usr/share/nginx/html/.env.template
 echo "}" >> /usr/share/nginx/html/env-config.js
 
 # Replace %REACT_APP_BASENAME_URL% variable in index.html file with value of REACT_APP_BASENAME_URL
-sed -i "s|%REACT_APP_BASENAME_URL%|${basename_url}|g" /usr/share/nginx/html/index.html
+sed -i "s|%REACT_APP_BASENAME_URL%|${basename_url}/|g" /usr/share/nginx/html/index.html
