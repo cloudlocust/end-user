@@ -35,5 +35,17 @@ done < /usr/share/nginx/html/.env.template
 
 echo "}" >> /usr/share/nginx/html/env-config.js
 
-# Replace %REACT_APP_BASENAME_URL% variable in index.html file with value of REACT_APP_BASENAME_URL
-sed -i "s|%REACT_APP_BASENAME_URL%|${basename_url}/|g" /usr/share/nginx/html/index.html
+# Check if the basename_url variable is non-empty
+if [[ -n "${basename_url}" ]]; then
+  # Check if basename_url does not end with a slash. In the case of "/app"
+  if [[ ! "${basename_url}" = */ ]]; then
+    # If it doesn't, append a slash to the end of basename_url. It will be like "/app/"
+    basename_url="${basename_url}/"
+  fi
+  # Replace all occurrences of %REACT_APP_BASENAME_URL% with basename_url in /usr/share/nginx/html/index.html
+  sed -i "s|%REACT_APP_BASENAME_URL%|${basename_url}|g" /usr/share/nginx/html/index.html
+else
+  # In this case, it's empty, then the default value is an "/"
+  basename_url="/"
+  sed -i "s|%REACT_APP_BASENAME_URL%|${basename_url}|g" /usr/share/nginx/html/index.html
+fi
