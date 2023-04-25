@@ -4,9 +4,11 @@
 rm -rf /usr/share/nginx/html/env-config.js
 touch /usr/share/nginx/html/env-config.js
 
+# Store value of REACT_APP_BASENAME_URL in a separate variable
+basename_url=""
+
 # Add assignment
 echo "window._env_ = {" >> /usr/share/nginx/html/env-config.js
-
 # Read each line in .env file
 # Each line represents key=value pairs
 while read -r line || [[ -n "$line" ]];
@@ -22,13 +24,16 @@ do
   # Otherwise use value from .env file
   [[ -z $value ]] && value=${varvalue}
 
-  # Replace %REACT_APP_BASENAME_URL% variable in index.html file with value from .env.template
+  # Store value of REACT_APP_BASENAME_URL
   if [ "$varname" = "REACT_APP_BASENAME_URL" ]; then
-    sed -i "s/%REACT_APP_BASENAME_URL%/$value/g" /usr/share/nginx/html/index.html
+    basename_url="$value"
   fi
-  
+
   # Append configuration property to JS file
   echo "  $varname: \"$value\"," >> /usr/share/nginx/html/env-config.js
 done < /usr/share/nginx/html/.env.template
 
 echo "}" >> /usr/share/nginx/html/env-config.js
+
+# Replace %REACT_APP_BASENAME_URL% variable in env-config.js file with value of REACT_APP_BASENAME_URL
+sed -i "s/%REACT_APP_BASENAME_URL%/$basename_url/g" /usr/share/nginx/html/env-config.js
