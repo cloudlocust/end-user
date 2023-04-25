@@ -225,7 +225,7 @@ const colorThemes: colorThemesType = {
     },
     enerdici: {
         extendedColors: {
-            links: '#008DB8',
+            links: '#00BAF2',
         },
         MUI: {
             palette: {
