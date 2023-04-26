@@ -223,6 +223,56 @@ const colorThemes: colorThemesType = {
             },
         },
     },
+    enerdici: {
+        extendedColors: {
+            links: '#00BAF2',
+        },
+        MUI: {
+            palette: {
+                mode: 'light',
+                text: {
+                    primary: '#000000',
+                    secondary: lightText.secondary,
+                    disabled: '#C4C7C7',
+                },
+                background: {
+                    paper: '#FFFFFF',
+                    default: '#f6f7f9',
+                },
+                primary: {
+                    light: '#00BAF2',
+                    main: '#05B59D',
+                    dark: '#005E7A',
+                    contrastText: '#FFFFFF',
+                },
+                secondary: {
+                    light: '#06EFD0',
+                    main: '#00BAF2',
+                    dark: '#037768',
+                },
+            },
+            components: {
+                MuiButton: {
+                    styleOverrides: {
+                        outlinedPrimary: {
+                            borderColor: '#008DB8',
+                            color: '#008DB8',
+                            '&:hover': {
+                                borderColor: '#008DB8',
+                            },
+                        },
+                        containedPrimary: {
+                            backgroundColor: '#008DB8',
+                            '&:hover': {
+                                backgroundColor: '#FFFFFF',
+                                color: '#008DB8',
+                            },
+                        },
+                    },
+                },
+            },
+        },
+    },
     labelen: {
         extendedColors: {
             links: '#FF674A',
