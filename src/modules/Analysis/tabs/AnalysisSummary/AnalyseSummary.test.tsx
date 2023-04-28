@@ -17,6 +17,8 @@ const LIST_OF_HOUSES: IHousing[] = applyCamelCase(TEST_HOUSES)
 let mockData: IMetric[] = TEST_SUCCESS_MONTH_METRICS([
     metricTargetsEnum.consumption,
     metricTargetsEnum.eurosConsumption,
+    metricTargetsEnum.idleConsumption,
+    metricTargetsEnum.pMax,
 ])
 let mockNrlinkConsent: string
 let mockSetRange = jest.fn()
@@ -271,5 +273,15 @@ describe('Analysis test', () => {
         )
 
         expect(getByText('Pmax :')).toBeTruthy()
+    })
+    test('when there is idle consumption data', async () => {
+        const { getByText } = reduxedRender(
+            <Router>
+                <Analysis />
+            </Router>,
+            { initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[0] } } },
+        )
+
+        expect(getByText('Consommation de veille :')).toBeTruthy()
     })
 })

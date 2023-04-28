@@ -13,11 +13,9 @@ const AnalysisCTAColor = linksColor || warningMainHashColor
  *
  * @param root0 N/A.
  * @param root0.data Metrics data.
- * @param root0.enedisSgeConsent Enedis sge consent status.
- * @param root0.range Metric range.
  * @returns Analuse Comparison JSX.
  */
-export default function AnalysisComparison({ data, enedisSgeConsent, range }: AnalysisComparisonProps) {
+export default function AnalysisComparison({ data }: AnalysisComparisonProps) {
     const theme = useTheme()
 
     const consumptionData = useMemo(
