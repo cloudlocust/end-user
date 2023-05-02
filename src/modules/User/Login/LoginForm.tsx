@@ -1,10 +1,10 @@
-import React from 'react'
 import { useIntl } from 'react-intl'
 import { email, requiredBuilder, Form } from 'src/common/react-platform-components'
 import { TextField, PasswordField, ButtonLoader } from 'src/common/ui-kit'
 import { Link } from 'react-router-dom'
 import { useLogin } from 'src/modules/User/Login/hooks'
 import MuiLink from '@mui/material/Link'
+import { linksColor } from 'src/modules/utils/muiThemeVariables'
 
 /**
  * Form used for user login. This component is based on form hooks.
@@ -30,7 +30,7 @@ export const LoginForm = ({ loginHook = useLogin }) => {
                         sx={{
                             color:
                                 // eslint-disable-next-line jsdoc/require-jsdoc
-                                (theme) => theme.palette.primary.main,
+                                (theme) => linksColor || theme.palette.primary.main,
                         }}
                         underline="none"
                         to="/forgot-password"

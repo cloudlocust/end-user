@@ -1,4 +1,4 @@
-import React, { FC } from 'react'
+import { FC } from 'react'
 import InputLabel, { InputLabelProps } from '@mui/material/InputLabel'
 import FormControl, { FormControlProps } from '@mui/material/FormControl'
 import FormHelperText from '@mui/material/FormHelperText'

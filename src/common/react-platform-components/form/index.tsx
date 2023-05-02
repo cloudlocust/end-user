@@ -1,5 +1,5 @@
 import { FormProvider, useForm, FieldValues } from 'react-hook-form'
-import React, { FC } from 'react'
+import { FC } from 'react'
 
 /**
  * Form wrapper props.

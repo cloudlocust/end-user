@@ -1,33 +1,20 @@
-import React, { FC } from 'react'
+import { FC } from 'react'
 import { Card, Typography } from 'src/common/ui-kit'
 import { useIntl } from 'src/common/react-platform-translation'
 import { LoginForm as DefaultLoginForm } from './LoginForm'
 import { Link } from 'react-router-dom'
 import MuiLink from '@mui/material/Link'
 import './Login.scss'
-import { LOGO_URL, API_BASE_URL, CLIENT_ICON_FOLDER } from 'src/configs'
+import { CLIENT_ICON_FOLDER } from 'src/configs'
 import { motion } from 'framer-motion'
 import CardContent from '@mui/material/CardContent'
 import { userRegistrationFeatureState } from 'src/modules/User/Register/RegisterConfig'
+import { linksColor } from 'src/modules/utils/muiThemeVariables'
 
 /**
  * Props of login component.
  */
 export interface LoginProps {
-    /**
-     * Logo of the company. This field is not required.
-     */
-    logo?: // eslint-disable-next-line jsdoc/require-jsdoc
-    {
-        /**
-         * Destination link if the logo is clickable.
-         */
-        href?: string
-        /**
-         * Url of the logo.
-         */
-        url: string
-    }
     /**
      * Login form component. This is a rendered component. This field is not required.
      */
@@ -39,13 +26,9 @@ export interface LoginProps {
  *
  * @param props N/A.
  * @param props.LoginForm Login form of the component. This field has a default value.
- * @param props.logo Logo of the company. This field has a default value.
  * @returns Login component.
  */
-export const Login: FC<LoginProps> = ({
-    LoginForm = <DefaultLoginForm />,
-    logo = { href: API_BASE_URL, url: LOGO_URL },
-}): JSX.Element => {
+export const Login: FC<LoginProps> = ({ LoginForm = <DefaultLoginForm /> }): JSX.Element => {
     const { formatMessage } = useIntl()
 
     return (
@@ -80,7 +63,7 @@ export const Login: FC<LoginProps> = ({
                                             sx={{
                                                 color:
                                                     // eslint-disable-next-line jsdoc/require-jsdoc
-                                                    (theme) => theme.palette.primary.main,
+                                                    (theme) => linksColor || theme.palette.primary.main,
                                             }}
                                             to="/register"
                                             underline="none"

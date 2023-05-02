@@ -1,4 +1,4 @@
-import React, { useRef } from 'react'
+import { useRef } from 'react'
 import ReactApexChart from 'react-apexcharts'
 import { useTheme } from '@mui/material/styles'
 import useMediaQuery from '@mui/material/useMediaQuery'
@@ -101,10 +101,10 @@ const AnalysisChart = ({
          * Generating and showin a tooltip on Mobile, when selecting an element because Apexcharts in its default behaviour, it doesn't show tooltip onClick only on hover which doesn't exist on mobile.
          *
          * @param e Event of selected value.
-         * @param chartContext Chart context.
+         * @param _chartContext Chart context.
          * @param configs Current chart configs options, with information about the index of selected value in (dataPointIndex).
          */
-        dataPointSelection(e, chartContext, configs) {
+        dataPointSelection(e, _chartContext, configs) {
             const indexSelectedValue = configs.dataPointIndex
             showAnalysisChartTooltipOnValueSelected(e, values, timeStampValues, indexSelectedValue, theme)
             addAnalysisChartSelectedValueStroke(
@@ -134,16 +134,16 @@ const AnalysisChart = ({
         /**
          * Center circle content whenever apexcharts finishes drawing on the map.
          *
-         * @param chart Chart context.
-         * @param options Config options.
+         * @param _chart Chart context.
+         * @param _options Config options.
          */
-        animationEnd(chart, options) {
+        animationEnd(_chart, _options) {
             centerCircleContentInApexcharts()
         },
     }
 
     return (
-        <div className="analysisChartContainer px-24" ref={analysisChartContainerRef}>
+        <div className="analysisChartContainer md:px-24" ref={analysisChartContainerRef}>
             <ReactApexChart
                 {...analysisApexChartProps}
                 type={'polarArea'}

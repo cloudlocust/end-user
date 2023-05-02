@@ -1,4 +1,3 @@
-import React from 'react'
 import { authTypes, IRoute } from 'src/common/react-platform-components'
 import { Login, LoginProps } from './Login'
 import { LoginForm as DefaultLoginForm } from 'src/modules/User/Login/LoginForm'

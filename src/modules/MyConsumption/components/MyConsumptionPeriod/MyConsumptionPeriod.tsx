@@ -1,7 +1,7 @@
 import { useTheme } from '@mui/material/styles'
 import Tab from '@mui/material/Tab'
 import Tabs from '@mui/material/Tabs'
-import React, { useState } from 'react'
+import { useState } from 'react'
 import Box from '@mui/material/Box'
 import { dataConsumptionPeriod } from 'src/modules/MyConsumption/utils/myConsumptionVariables'
 import { IMyConsumptionPeriod } from 'src/modules/MyConsumption/myConsumptionTypes'
@@ -24,7 +24,7 @@ export const MyConsumptionPeriod = ({ setRange, setPeriod, setMetricsInterval, r
         <div className="flex flex-row items-center">
             <Tabs
                 value={tabValue}
-                onChange={(event, value) => {
+                onChange={(_event, value) => {
                     setTabValue(value)
                     setRange(
                         getRange(

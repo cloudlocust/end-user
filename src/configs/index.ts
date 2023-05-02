@@ -83,7 +83,7 @@ export const CLIENT_ICON_FOLDER = window._env_.REACT_APP_CLIENT_ICON_FOLDER
 /**
  * Current Client redirect link when clicking on his Logo.
  */
-export const CLIENT_LOGO_REDIRECT_LINK = window._env_.REACT_APP_CLIENT_LOGO_REDIRECT_LINK
+export const CLIENT_LOGO_REDIRECT_LINK = window._env_.REACT_APP_CLIENT_LOGO_REDIRECT_LINK || ''
 
 /**
  * REACT_APP_NOVU_SOCKET_URL.

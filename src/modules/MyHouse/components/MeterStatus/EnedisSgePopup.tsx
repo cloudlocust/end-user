@@ -13,6 +13,8 @@ import {
 import { sgeConsentFeatureState, sgeConsentMessage } from 'src/modules/MyHouse/MyHouseConfig'
 import { warningMainHashColor } from 'src/modules/utils/muiThemeVariables'
 import { RootState } from 'src/redux'
+import { ThemeProvider } from '@mui/material/styles'
+import { selectTheme } from 'src/common/ui-kit/fuse/utils/theming-generator'
 
 /**
  * Enedis Sge consent popup component.
@@ -34,6 +36,7 @@ export const EnedisSgePopup = ({
     isCreateEnedisSgeConsentLoading,
     createEnedisSgeConsentError,
 }: EnedisSgePopupProps): JSX.Element => {
+    const selectedTheme = selectTheme()
     const { formatMessage } = useIntl()
     const [sgeStep, setSgeStep] = useState<EnedisSgePopupStepsEnum>(EnedisSgePopupStepsEnum.METER_VERIFICATION)
     const [openSgePopup, setOpenSgePopup] = useState<boolean>(false)
@@ -84,7 +87,7 @@ export const EnedisSgePopup = ({
     }
 
     return (
-        <>
+        <ThemeProvider theme={selectedTheme}>
             <Typography
                 className={`underline cursor-pointer ${!sgeConsentFeatureState && 'cursor-not-allowed text-grey-600'}`}
                 fontWeight={600}
@@ -99,7 +102,7 @@ export const EnedisSgePopup = ({
 
             {openSgePopup && (
                 <Dialog
-                    onClose={(event, reason) => {
+                    onClose={(_event, _reason) => {
                         resetToInitialStep()
                     }}
                     open={openSgePopup}
@@ -135,7 +138,7 @@ export const EnedisSgePopup = ({
                                                     />
                                                 </Icon>
                                                 <Typography
-                                                    sx={(theme) => ({
+                                                    sx={() => ({
                                                         color: warningMainHashColor,
                                                     })}
                                                     className="text-center"
@@ -146,12 +149,6 @@ export const EnedisSgePopup = ({
                                                         defaultMessage: "Votre compteur n'a pas été reconnu",
                                                     })}
                                                     <br />
-                                                    <NavLink to={`/my-houses`} className="underline">
-                                                        {formatMessage({
-                                                            id: 'Veuillez renseigner un numéro de compteur',
-                                                            defaultMessage: 'Veuillez renseigner un numéro de compteur',
-                                                        })}
-                                                    </NavLink>
                                                 </Typography>
                                             </div>
                                         )
@@ -183,7 +180,7 @@ export const EnedisSgePopup = ({
                                             />
                                         </Icon>
                                         <Typography
-                                            sx={(theme) => ({
+                                            sx={() => ({
                                                 color: warningMainHashColor,
                                             })}
                                             className="text-center"
@@ -231,6 +228,6 @@ export const EnedisSgePopup = ({
                     </DialogContent>
                 </Dialog>
             )}
-        </>
+        </ThemeProvider>
     )
 }

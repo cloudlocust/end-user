@@ -10,6 +10,7 @@ import {
     addPeriod,
     subPeriod,
     filterPmaxAndEurosConsumptionTargetFromVisibleChartTargets,
+    convertConsumptionToWatt,
 } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
 import { IMetric, metricIntervalType, metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
 import { FAKE_WEEK_DATA, FAKE_DAY_DATA, FAKE_MONTH_DATA, FAKE_YEAR_DATA } from 'src/mocks/handlers/metrics'
@@ -215,7 +216,7 @@ describe('test pure functions', () => {
         expect(isMissingValues).toBeFalsy()
 
         // When week period, and data doesn't contains all week values.
-        mockMetricsData[0].datapoints = FAKE_WEEK_DATA.filter((v, i) => i !== 0)
+        mockMetricsData[0].datapoints = FAKE_WEEK_DATA.filter((_v, i) => i !== 0)
         ApexChartsFilledAxisValues = convertMetricsDataToApexChartsAxisValues(mockMetricsData)
         isMissingValues = isMissingYAxisValues(ApexChartsFilledAxisValues.yAxisSeries[0].data, 'weekly')
         expect(isMissingValues).toBeTruthy()
@@ -227,7 +228,7 @@ describe('test pure functions', () => {
         expect(isMissingValues).toBeFalsy()
 
         // When month period, and data doesn't contains all month values.
-        mockMetricsData[0].datapoints = FAKE_MONTH_DATA.filter((v, i) => i !== 0)
+        mockMetricsData[0].datapoints = FAKE_MONTH_DATA.filter((_v, i) => i !== 0)
         ApexChartsFilledAxisValues = convertMetricsDataToApexChartsAxisValues(mockMetricsData)
         isMissingValues = isMissingYAxisValues(ApexChartsFilledAxisValues.yAxisSeries[0].data, 'yearly')
         expect(isMissingValues).toBeTruthy()
@@ -240,7 +241,7 @@ describe('test pure functions', () => {
         expect(isMissingValues).toBeFalsy()
 
         // When year period, and data doesn't contains all week values.
-        mockMetricsData[0].datapoints = FAKE_YEAR_DATA.filter((v, i) => i !== 0)
+        mockMetricsData[0].datapoints = FAKE_YEAR_DATA.filter((_v, i) => i !== 0)
         ApexChartsFilledAxisValues = convertMetricsDataToApexChartsAxisValues(mockMetricsData)
         isMissingValues = isMissingYAxisValues(ApexChartsFilledAxisValues.yAxisSeries[0].data, 'yearly')
         expect(isMissingValues).toBeTruthy()
@@ -347,6 +348,63 @@ describe('test pure functions', () => {
         caseList.forEach(({ visibleTargetsChart, expectedResult }) => {
             const result = filterPmaxAndEurosConsumptionTargetFromVisibleChartTargets(visibleTargetsChart)
             expect(result).toEqual(expectedResult)
+        })
+    })
+    describe('convertConsumptionToWatt', () => {
+        it('should round 104 watt hours to 208 watts for 30 minute interval', () => {
+            const yValue = 104
+            const isYValueRounded = true
+            const metricsInterval = '30m'
+            const result = convertConsumptionToWatt(yValue, isYValueRounded, metricsInterval)
+            expect(result).toEqual('208 W')
+        })
+
+        it('should handle null yValue', () => {
+            const yValue = null
+            const isYValueRounded = false
+            const metricsInterval = '30m'
+            const result = convertConsumptionToWatt(yValue, isYValueRounded, metricsInterval)
+            expect(result).toEqual('0 W')
+        })
+
+        it('should handle undefined yValue', () => {
+            const yValue = undefined
+            const isYValueRounded = false
+            const metricsInterval = '30m'
+            const result = convertConsumptionToWatt(yValue, isYValueRounded, metricsInterval)
+            expect(result).toEqual('0 W')
+        })
+
+        it('should handle undefined isYValueRounded', () => {
+            const yValue = 104
+            const isYValueRounded = undefined
+            const metricsInterval = '30m'
+            const result = convertConsumptionToWatt(yValue, isYValueRounded, metricsInterval)
+            expect(result).toEqual('208.00 W')
+        })
+
+        it('should default to 2 conversion factor for 30m metricsInterval', () => {
+            const yValue = 104
+            const isYValueRounded = false
+            const metricsInterval = '30m'
+            const result = convertConsumptionToWatt(yValue, isYValueRounded, metricsInterval)
+            expect(result).toEqual('208.00 W')
+        })
+
+        it('should default to 60 conversion factor for 1m metricsInterval', () => {
+            const yValue = 104
+            const isYValueRounded = false
+            const metricsInterval = '1m'
+            const result = convertConsumptionToWatt(yValue, isYValueRounded, metricsInterval)
+            expect(result).toEqual('6240.00 W')
+        })
+
+        it('should default to 60 conversion factor for undefined metricsInterval', () => {
+            const yValue = 104
+            const isYValueRounded = false
+            const metricsInterval = undefined // default is "1m"
+            const result = convertConsumptionToWatt(yValue, isYValueRounded, metricsInterval)
+            expect(result).toEqual('6240.00 W')
         })
     })
 })

@@ -1,4 +1,3 @@
-import React from 'react'
 import { fireEvent, screen, waitFor, within } from '@testing-library/react'
 import { reduxedRender } from 'src/common/react-platform-components/test'
 import { RegisterForm } from 'src/modules/User/Register/RegisterForm'
@@ -87,7 +86,7 @@ export const suggestionData = [
     },
 ]
 
-const mockSetValue = jest.fn((data) => null)
+const mockSetValue = jest.fn((_data) => null)
 const mockInit = jest.fn(() => null)
 const formatted_addr_data = 'normal formatted_address'
 const formatted_test_locality = 'test locality'
@@ -122,9 +121,9 @@ jest.mock('use-places-autocomplete', () => ({
         return [data]
     },
     // eslint-disable-next-line jsdoc/require-jsdoc
-    getLatLng: (data: any) => ({ lat: 1, lng: 2 }),
+    getLatLng: (_data: any) => ({ lat: 1, lng: 2 }),
     // eslint-disable-next-line jsdoc/require-jsdoc
-    getZipCode: (data: any, boolean: boolean) => '1234',
+    getZipCode: (_data: any, _boolean: boolean) => '1234',
 }))
 // ============================================  ===============
 
@@ -136,7 +135,7 @@ jest.mock('use-places-autocomplete', () => ({
 const TEST_CIVILITY_OPTION = { label: 'Mr', value: 'Mr' }
 const TEST_EMAIL = 'email@email.com'
 
-const mockOnSubmit = jest.fn((data) => null)
+const mockOnSubmit = jest.fn((_data) => null)
 
 jest.mock('src/modules/User/Register/hooks', () => ({
     ...jest.requireActual('src/modules/User/Register/hooks'),

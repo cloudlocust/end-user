@@ -1,7 +1,7 @@
 import { useTheme, Typography } from '@mui/material'
 import { Link } from 'react-router-dom'
 import { ChartErrorMessageProps } from 'src/modules/MyConsumption/components/ChartErrorMessage/ChartErrorMessage'
-import { warningMainHashColor } from 'src/modules/utils/muiThemeVariables'
+import { linksColor, warningMainHashColor } from 'src/modules/utils/muiThemeVariables'
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline'
 
 /**
@@ -29,7 +29,7 @@ export const ChartErrorMessage = ({
             <div className="container relative p-16 sm:p-24 flex-col text-center flex items-center justify-center">
                 <ErrorOutlineIcon
                     sx={{
-                        color: warningMainHashColor,
+                        color: linksColor || warningMainHashColor,
                         width: { xs: '24px', md: '32px' },
                         height: { xs: '24px', md: '32px' },
                         margin: { xs: '0 0 4px 0', md: '0 8px 0 0' },
@@ -40,7 +40,7 @@ export const ChartErrorMessage = ({
                         <Typography
                             className="underline"
                             sx={{
-                                color: warningMainHashColor,
+                                color: linksColor || warningMainHashColor,
                                 cursor: 'pointer',
                                 fontWeight: '400',
                                 textAlign: 'center',
@@ -56,7 +56,7 @@ export const ChartErrorMessage = ({
                         <Typography
                             className="underline"
                             sx={{
-                                color: warningMainHashColor,
+                                color: linksColor || warningMainHashColor,
                                 cursor: 'pointer',
                                 fontWeight: '400',
                                 textAlign: 'center',

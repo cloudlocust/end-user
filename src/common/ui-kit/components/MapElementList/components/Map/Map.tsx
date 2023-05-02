@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useRef } from 'react'
+import { useCallback, useState, useRef } from 'react'
 import { GoogleMap, useLoadScript, GoogleMapProps, Marker, MarkerClusterer, InfoWindow } from '@react-google-maps/api'
 import { Clusterer } from '@react-google-maps/marker-clusterer'
 import ReactLoading from 'react-loading'

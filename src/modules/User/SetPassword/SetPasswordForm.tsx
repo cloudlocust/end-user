@@ -1,4 +1,4 @@
-import React, { useRef } from 'react'
+import { useRef } from 'react'
 import { requiredBuilder, Form, repeatPassword, accept, regex } from 'src/common/react-platform-components'
 import { useIntl } from 'src/common/react-platform-translation'
 import { ButtonLoader, PasswordField, Checkbox } from 'src/common/ui-kit'
@@ -8,6 +8,7 @@ import { LinkRedirection } from 'src/modules/utils/LinkRedirection'
 import { onSubmitSetPasswordData } from 'src/modules/User/SetPassword/SetPasswordFormTypes'
 import { passwordFieldValidationSecurity1 } from 'src/modules/utils'
 import { privacyPolicy } from 'src/modules/Mentions/MentionsConfig'
+import { linksColor } from 'src/modules/utils/muiThemeVariables'
 
 const checkoxRequiredErrorText = 'Ce champ est obligatoire'
 
@@ -24,7 +25,7 @@ export const SetPasswordForm = ({ token }: ResetPasswordFormProps) => {
     const { isResetPasswordProgress, onSubmitResetPassword } = useResetPassword()
 
     // eslint-disable-next-line jsdoc/require-jsdoc
-    const onSubmitSetPassword = ({ password, ...restData }: onSubmitSetPasswordData) => {
+    const onSubmitSetPassword = ({ password }: onSubmitSetPasswordData) => {
         onSubmitResetPassword({ password, token })
     }
 
@@ -59,7 +60,7 @@ export const SetPasswordForm = ({ token }: ResetPasswordFormProps) => {
                             <LinkRedirection
                                 url={privacyPolicy}
                                 label="la politique de confidentialité"
-                                color="primary.main"
+                                color={linksColor || 'primary.main'}
                             />
                             {formatMessage({
                                 id: ` et de l'utilisation de la plateforme`,

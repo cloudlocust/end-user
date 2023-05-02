@@ -1,4 +1,4 @@
-import React, { SyntheticEvent, useState } from 'react'
+import { SyntheticEvent, useState } from 'react'
 import { useHistory, useLocation } from 'react-router'
 import { styled } from '@mui/material/styles'
 import { useIntl } from 'src/common/react-platform-translation'
@@ -6,7 +6,7 @@ import Tabs from '@mui/material/Tabs'
 import Tab from '@mui/material/Tab'
 import { keyBy, mapValues } from 'lodash'
 import FusePageCarded from 'src/common/ui-kit/fuse/components/FusePageCarded'
-import { IMultiTab } from 'src/common/ui-kit/components/MultiTab/MultiTab'
+import { IMultiTab } from 'src/common/ui-kit/components/MultiTab/multiTab.d'
 
 const Root = styled(FusePageCarded)(({ theme }) => ({
     '& .FusePageCarded-header': {
@@ -118,10 +118,10 @@ const MultiTab = ({
     /**
      * Handler for tab change.
      *
-     * @param event Event of the onChange.
+     * @param _event Event of the onChange.
      * @param newTabSlug Slug tab selected.
      */
-    const handleTabChange = (event: SyntheticEvent, newTabSlug: string) => {
+    const handleTabChange = (_event: SyntheticEvent, newTabSlug: string) => {
         setTabSlug(newTabSlug)
         history.replace({ pathname: `${basePath}/${newTabSlug}`, ...restLocationState })
     }

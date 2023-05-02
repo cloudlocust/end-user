@@ -8,7 +8,7 @@ import './ForgotPasswordSuccess.scss'
 import { URL_LOGIN } from 'src/modules/User/Login/LoginConfig'
 import { useTheme } from '@mui/material/styles'
 import { motion } from 'framer-motion'
-
+import { linksColor } from 'src/modules/utils/muiThemeVariables'
 // We must keep this interface because its needed in the config.
 // eslint-disable-next-line jsdoc/require-jsdoc, @typescript-eslint/no-empty-interface
 export interface ForgotPasswordSuccessLocationProps {
@@ -74,7 +74,7 @@ const ForgotPasswordSuccess: FC = (): JSX.Element => {
                                     sx={{
                                         color:
                                             // eslint-disable-next-line jsdoc/require-jsdoc
-                                            (theme) => theme.palette.primary.main,
+                                            (theme) => linksColor || theme.palette.primary.main,
                                     }}
                                     to={URL_LOGIN}
                                     underline="none"

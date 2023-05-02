@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect, useRef, SyntheticEvent } from 'react'
+import { useState, useCallback, useEffect, useRef } from 'react'
 import { PostPlaceholder } from 'src/common/ui-kit/components/MapElementList/components/ContentLoader/ContentLoader'
 import 'src/common/ui-kit/components/MapElementList/components/Toolbar/Toolbar'
 import Map from 'src/common/ui-kit/components/MapElementList/components/Map/Map'
@@ -217,7 +217,7 @@ function MapElementList<elementType extends elementConstraintType, T>({
                                 />
 
                                 <IconButton
-                                    onClick={(e: SyntheticEvent) => {
+                                    onClick={() => {
                                         document.getElementById('root')!.scrollTo({
                                             top: 0,
                                             behavior: 'smooth',
@@ -236,7 +236,7 @@ function MapElementList<elementType extends elementConstraintType, T>({
                                         <ButtonLoader
                                             inProgress={loadingData}
                                             type="button"
-                                            onClick={(e: SyntheticEvent) => loadMoreData()}
+                                            onClick={() => loadMoreData()}
                                         >
                                             {formatMessage({ id: 'Afficher plus', defaultMessage: 'Afficher plus' })}
                                         </ButtonLoader>

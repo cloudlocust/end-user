@@ -21,7 +21,7 @@ import {
     startOfYear,
     endOfYear,
     subYears,
-    getMonth,
+    addDays,
 } from 'date-fns'
 import { periodType } from 'src/modules/MyConsumption/myConsumptionTypes'
 import { getDateWithoutTimezoneOffset } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
@@ -253,40 +253,39 @@ export const getWidgetPreviousRange = (range: metricRangeType, period: periodTyp
 }
 
 /**
- * Get range for widget, because given range can be incorrect and delayed from the wanted Widget range.
+ * Get range for widget, because given range comes from MyConsumptionContainer which is not calendar when it comes to monthly and yearly period.
  *
  * @param range Range from metrics.
  * @param period Period give.
- * @returns Range according to period, if "daily" returns range (startOf: toDate, endOf: toDate). If "weekly" returns range (startOf: toDate week-1, endOf: toDate day). If "monthly" returns range (startOf: toDate month, endOf: toDate day). If "yearly" returns range (startOf: toDate year, endOf: toDate month-1).
+ * @returns Range according to period.
+ * - When "daily" range should be [start, end] of same day.
+ * - When "weekly" range should be a week starting with the fromDate day of given range.
+ * - When "monthly" range should be [start, end] of same month.
+ * - When "yearly" range should be [start, end] of same year.
  */
 export const getWidgetRange = (range: metricRangeType, period: periodType) => {
     // Extract only the date, so that new Date don't create a date including the timezone.
-    const toDate = new Date(range.to.split('T')[0])
+    const fromDate = startOfDay(new Date(range.from.split('T')[0]))
     switch (period) {
         case 'daily':
             return {
-                from: getDateWithoutTimezoneOffset(startOfDay(toDate)),
-                to: getDateWithoutTimezoneOffset(endOfDay(toDate)),
+                from: getDateWithoutTimezoneOffset(fromDate),
+                to: getDateWithoutTimezoneOffset(endOfDay(fromDate)),
             }
-
         case 'weekly':
             return {
-                from: getDateWithoutTimezoneOffset(startOfDay(subDays(toDate, 6))),
-                to: getDateWithoutTimezoneOffset(endOfDay(toDate)),
+                from: getDateWithoutTimezoneOffset(fromDate),
+                to: getDateWithoutTimezoneOffset(endOfDay(addDays(fromDate, 6))),
             }
         case 'monthly':
             return {
-                from: getDateWithoutTimezoneOffset(startOfMonth(toDate)),
-                to: getDateWithoutTimezoneOffset(endOfDay(toDate)),
+                from: getDateWithoutTimezoneOffset(startOfMonth(fromDate)),
+                to: getDateWithoutTimezoneOffset(endOfMonth(fromDate)),
             }
         case 'yearly':
             return {
-                from: getDateWithoutTimezoneOffset(startOfYear(toDate)),
-                to:
-                    // If toDate is january.
-                    getMonth(startOfYear(toDate)) === getMonth(toDate)
-                        ? getDateWithoutTimezoneOffset(endOfDay(toDate))
-                        : getDateWithoutTimezoneOffset(endOfDay(subMonths(toDate, 1))),
+                from: getDateWithoutTimezoneOffset(startOfYear(fromDate)),
+                to: getDateWithoutTimezoneOffset(endOfYear(fromDate)),
             }
     }
 }

@@ -1,4 +1,3 @@
-import React from 'react'
 import userEvent from '@testing-library/user-event'
 import { reduxedRender } from 'src/common/react-platform-components/test'
 import { buttonOptions } from 'src/modules/MyConsumption/utils/myConsumptionVariables'
