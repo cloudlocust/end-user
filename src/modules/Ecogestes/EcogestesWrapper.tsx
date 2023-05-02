@@ -30,7 +30,7 @@ const ConsumptionPolesComponent = () => {
      * True -> show "CTA -> backbone to add Poles"
      * false -> show "No Ecogest found" or show every ecogests.
      */
-    if (elementList === null || elementList.length === 0) {
+    if (!elementList) {
         return (
             <div className="w-full h-full justify-center relative flex flex-col items-center align-center p-16">
                 <TypographyFormatMessage>Aucune catégorie d'ecogeste n'as été trouver...</TypographyFormatMessage>
@@ -61,9 +61,6 @@ const RoomsComponent = () => {
  */
 export const EcogestesWrapper = () => {
     const ecogestesCategory = IEcogesteCategoryTypes.CONSUMPTION
-    // const [ecogestesCategory, setEcogestesCategory] = useState<IEcogesteCategoryTypes>(
-    //     IEcogesteCategoryTypes.CONSUMPTION,
-    // )
 
     return (
         <div className="w-full relative flex flex-col items-center p-16">
