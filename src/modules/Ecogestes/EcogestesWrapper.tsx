@@ -4,6 +4,7 @@ import PillSwitcherMenuComponent from './components/PillSwitcher/pillSwitcherCom
 import { EcogestePillSwitcherProps, IEcogesteCategoryTypes } from './EcogestesConfig'
 import useEcogestePoles from './hooks/polesHooks'
 import { EcogesteCategoryList } from './components/shared/EcogesteCategory/EcogesteCategoryList'
+import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 
 /**
  * This component will handle the logic part for Ecogeste Consumption Poles.
@@ -32,7 +33,7 @@ const ConsumptionPolesComponent = () => {
     if (elementList === null || elementList.length === 0) {
         return (
             <div className="w-full h-full justify-center relative flex flex-col items-center align-center p-16">
-                Aucune catégorie d'ecogeste n'as été trouver...
+                <TypographyFormatMessage>Aucune catégorie d'ecogeste n'as été trouver...</TypographyFormatMessage>
             </div>
         )
     }
@@ -48,7 +49,7 @@ const ConsumptionPolesComponent = () => {
 const RoomsComponent = () => {
     return (
         <div className="w-full h-full justify-center relative flex flex-col items-center align-center p-16">
-            Cette fonctionnalité arrive prochainement.
+            <TypographyFormatMessage>Cette fonctionnalité arrive prochainement.</TypographyFormatMessage>
         </div>
     )
 }
