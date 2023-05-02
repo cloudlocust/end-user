@@ -1,10 +1,12 @@
 import CircularProgress from '@mui/material/CircularProgress'
 
 import PillSwitcherMenuComponent from './components/PillSwitcher/pillSwitcherComponent'
-import { EcogestePillSwitcherProps, IEcogesteCategoryTypes } from './EcogestesConfig'
+import { IEcogesteCategoryTypes } from './EcogestesConfig'
 import useEcogestePoles from './hooks/polesHooks'
 import { EcogesteCategoryList } from './components/shared/EcogesteCategory/EcogesteCategoryList'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
+import { useState } from 'react'
+import { IPillSwitcherComponent } from './components/PillSwitcher/pillSwitcher'
 
 /**
  * This component will handle the logic part for Ecogeste Consumption Poles.
@@ -60,11 +62,34 @@ const RoomsComponent = () => {
  *  @returns JSX.Element.
  */
 export const EcogestesWrapper = () => {
-    const ecogestesCategory = IEcogesteCategoryTypes.CONSUMPTION
+    const [ecogestesCategory, changeEcogestesCategory] = useState<IEcogesteCategoryTypes>(
+        IEcogesteCategoryTypes.CONSUMPTION,
+    )
+
+    const menuComponents: IPillSwitcherComponent[] = [
+        {
+            btnText: 'Postes de conso',
+            /**
+             * Switch to Consumption Poles when a User fire a Click.
+             */
+            clickHandler: () => {
+                changeEcogestesCategory(IEcogesteCategoryTypes.CONSUMPTION)
+            },
+        },
+        {
+            btnText: 'Pièces',
+            /**
+             * Switch to Consumption Rooms when a User fire a Click.
+             */
+            clickHandler: () => {
+                changeEcogestesCategory(IEcogesteCategoryTypes.ROOMS)
+            },
+        },
+    ]
 
     return (
         <div className="w-full relative flex flex-col items-center p-16">
-            <PillSwitcherMenuComponent {...EcogestePillSwitcherProps} />
+            <PillSwitcherMenuComponent components={menuComponents} />
             {ecogestesCategory === IEcogesteCategoryTypes.CONSUMPTION ? (
                 <ConsumptionPolesComponent />
             ) : (

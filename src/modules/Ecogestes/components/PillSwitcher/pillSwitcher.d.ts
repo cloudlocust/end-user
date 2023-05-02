@@ -1,16 +1,4 @@
 /**
- * Template used to fetch Params
- * we will use selectedItem everytime for this component.
- */
-// eslint-disable-next-line
-export type IPillSwitcherParams = {
-    /**
-     * The @Object that contain the ParamKey for the Switcher.
-     */
-    selectedItem?: string | undefined
-}
-
-/**
  * Interface for a Component inside the PillSwitch Component.
  */
 // eslint-disable-next-line
@@ -19,17 +7,6 @@ export type IPillSwitcherComponent = {
      * Text displayed on Button.
      */
     btnText: string
-
-    /**
-     * URL Param Key to use for RouteMatcher.
-     * !! Beware : we can set undefined only the default not the @otherComponent !
-     */
-    paramKey?: string | undefined
-
-    /**
-     * The component is enabled or not?
-     */
-    disabled?: Boolean
 
     /**
      * Callback to execute when someone click on it.
@@ -43,20 +20,12 @@ export type IPillSwitcherComponent = {
 // eslint-disable-next-line
 export type IPillSwitcherProps = {
     /**
-     * The Relative URL of the route used atm.
-     * Example: for advices we use /advices as actualRoute
-     * cause by default browsing /advices will show the @defaultComponent
-     * but /advices/${otherComponent.paramKey} will show the @otherComponent.
+     * Default Component index,
+     * use 0 for the first element to be Toggle.
      */
-    actualRoute: string
+    activeComponentIndex?: number | undefined
     /**
-     * The default component Displayed
-     * See @IPillSwitcherComponent.
+     * Components to display.
      */
-    defaultComponent: IPillSwitcherComponent
-    /**
-     * The other component not displayed by default on the Switch
-     * See @IPillSwitcherComponent.
-     */
-    otherComponent: IPillSwitcherComponent
+    components: IPillSwitcherComponent[]
 }

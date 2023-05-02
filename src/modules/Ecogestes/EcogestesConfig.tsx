@@ -54,19 +54,3 @@ export const EcogestesConfig = [
         // eslint-disable-next-line jsdoc/require-jsdoc -- jsdoc is confused.
     } as IRoute<{}>,
 ]
-
-/**
- * PillSwitcherComponent Configuration for Ecogestes.
- */
-export const EcogestePillSwitcherProps = {
-    actualRoute: '/advices',
-    defaultComponent: {
-        btnText: 'Postes de conso',
-        disabled: true,
-    },
-    otherComponent: {
-        btnText: 'Pièces',
-        paramKey: 'rooms',
-        disabled: true,
-    },
-}
