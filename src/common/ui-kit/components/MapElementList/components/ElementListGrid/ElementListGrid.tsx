@@ -1,4 +1,3 @@
-import React from 'react'
 import 'src/common/ui-kit/components/MapElementList/components/ElementListGrid/ElementListGrid.scss'
 import { elementConstraintType } from 'src/common/ui-kit/components/MapElementList'
 

@@ -1,12 +1,13 @@
 import { reduxedRender } from 'src/common/react-platform-components/test'
 import ContractForm from 'src/modules/Contracts/components/ContractForm'
 import userEvent from '@testing-library/user-event'
-import { ContractFormProps } from 'src/modules/Contracts/contractsTypes'
+import { ContractFormProps, tariffContract } from 'src/modules/Contracts/contractsTypes'
 import {
     TEST_CONTRACT_TYPES,
     TEST_OFFERS,
     TEST_POWERS,
     TEST_PROVIDERS,
+    TEST_TARIFFS_CONTRACT,
     TEST_TARIFF_TYPES,
 } from 'src/mocks/handlers/commercialOffer'
 import { waitFor } from '@testing-library/react'
@@ -27,6 +28,8 @@ const POWER_LABEL_TEXT = 'Puissance *'
 const OFFPEAK_HOURS_LABEL_TEXT = 'Plages heures creuses :'
 const START_SUBSCRIPTION_LABEL_TEXT = 'Date de début'
 const END_SUBSCRIPTION_LABEL_TEXT = 'Date de fin (Si terminé)'
+const TARIFFS_SUBSCRIPTION_TEXT = 'abonnement: 36 €/mois'
+const TARIFFS_KWH_PRICE_TEXT = 'prix kwh: 0.125 €/kWh'
 const CONTRACT_FORM_FIELDS_LABEL_LIST = [
     TYPE_LABEL_TEXT,
     PROVIDER_LABEL_TEXT,
@@ -84,18 +87,21 @@ let mockProviderList = TEST_PROVIDERS
 let mockPowerList = TEST_POWERS
 let mockTariffTypeList = TEST_TARIFF_TYPES
 let mockMeterDetails = TEST_HOUSES[2].meter
+let mockTariffs: tariffContract[] | null = TEST_TARIFFS_CONTRACT
 const mockLoadContractTypes = jest.fn()
 const mockLoadPowers = jest.fn()
 const mockLoadProviders = jest.fn()
 const mockLoadOffers = jest.fn()
 const mockLoadTariffTypes = jest.fn()
 const mockEditMeter = jest.fn()
+const mockLoadTariffsHousingContract = jest.fn()
 let mockIsTariffTypesLoading = false
 let mockIsPowersLoading = false
 let mockIsProvidersLoading = false
 let mockIsOffersLoading = false
 let mockIsContractTypesLoading = false
 let mockIsMeterLoading = false
+let mockIsTariffsLoading = false
 const mockHouseId = TEST_HOUSE_ID
 
 /**
@@ -111,15 +117,19 @@ jest.mock('src/hooks/CommercialOffer/CommercialOfferHooks', () => ({
         providerList: mockProviderList,
         powerList: mockPowerList,
         tariffTypeList: mockTariffTypeList,
+        tariffs: mockTariffs,
         loadContractTypes: mockLoadContractTypes,
         loadPowers: mockLoadPowers,
         loadProviders: mockLoadProviders,
         loadTariffTypes: mockLoadTariffTypes,
+        loadTariffsHousingContract: mockLoadTariffsHousingContract,
+        setTariffs: jest.fn(),
         isContractTypesLoading: mockIsContractTypesLoading,
         isOffersLoading: mockIsOffersLoading,
         isPowersLoading: mockIsPowersLoading,
         isProvidersLoading: mockIsProvidersLoading,
         isTariffTypesLoading: mockIsTariffTypesLoading,
+        isTariffsLoading: mockIsTariffsLoading,
     }),
 }))
 
@@ -221,13 +231,16 @@ describe('Test ContractFormSelect Component', () => {
         // Other fields are not shown
         LabelsNotToBeInDocument(CONTRACT_FORM_FIELDS_LABELS, getByText)
 
-        // When selecting startSubscription, endSubscription is shown
+        // When selecting startSubscription, tariffs & endSubscription is shown
         userEvent.click(getByLabelText(START_SUBSCRIPTION_LABEL_TEXT))
         userEvent.click(getByText('1'))
         userEvent.click(getByText('OK'))
         await waitFor(() => {
             expect(() => getByText('OK')).toThrow()
+            expect(mockLoadTariffsHousingContract).toHaveBeenCalled()
         })
+        expect(getByText(TARIFFS_SUBSCRIPTION_TEXT)).toBeTruthy()
+        expect(getByText(TARIFFS_KWH_PRICE_TEXT)).toBeTruthy()
 
         // Fill endSubscription
         userEvent.click(getByLabelText(END_SUBSCRIPTION_LABEL_TEXT, { exact: true }))
@@ -409,13 +422,16 @@ describe('Test ContractFormSelect Component', () => {
         // Other fields are not shown
         LabelsNotToBeInDocument(CONTRACT_FORM_OFFPEAK_HOURS_FIELDS_LABELS, getByText)
 
-        // When selecting startSubscription, endSubscription is shown
+        // When selecting startSubscription, tariffs & endSubscription is shown
         userEvent.click(getByLabelText(START_SUBSCRIPTION_LABEL_TEXT))
         userEvent.click(getByText('1'))
         userEvent.click(getByText('OK'))
         await waitFor(() => {
             expect(() => getByText('OK')).toThrow()
+            expect(mockLoadTariffsHousingContract).toHaveBeenCalled()
         })
+        expect(getByText(TARIFFS_SUBSCRIPTION_TEXT)).toBeTruthy()
+        expect(getByText(TARIFFS_KWH_PRICE_TEXT)).toBeTruthy()
 
         // Fill endSubscription
         userEvent.click(getByLabelText(END_SUBSCRIPTION_LABEL_TEXT, { exact: true }))

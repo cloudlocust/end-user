@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from 'react'
+import { useCallback, useMemo } from 'react'
 import { useIntl } from 'react-intl'
 import { requiredBuilder } from 'src/common/react-platform-components'
 import {
@@ -23,6 +23,8 @@ import { useParams } from 'react-router-dom'
 import { useMeterForHousing } from 'src/modules/Meters/metersHook'
 import { OtherProviderOfferOptionMessage } from 'src/modules/Contracts/components/ContractFormMessages'
 import { isActivateOtherOffersAndProviders } from 'src/modules/Contracts/ContractsConfig'
+import { isValidDate } from 'src/modules/Contracts/utils/contractsFunctions'
+import TariffsContract from 'src/modules/Contracts/components/TariffsContract'
 
 const defaultContractFormValues: contractFormValuesType = {
     contractTypeId: 0,
@@ -105,11 +107,11 @@ const ContractFormFields = ({ isContractsLoading }: ContractFormFieldsProps) => 
     const {
         contractTypeList,
         offerList,
-        loadOffers,
         providerList,
         powerList,
         tariffTypeList,
         loadContractTypes,
+        loadOffers,
         loadPowers,
         loadProviders,
         loadTariffTypes,
@@ -289,15 +291,21 @@ const ContractFormFields = ({ isContractsLoading }: ContractFormFieldsProps) => 
                     validateFunctions={[requiredBuilder()]}
                 />
             )}
-            {formData.startSubscription && (
-                <DatePicker
-                    name="endSubscription"
-                    label={formatMessage({
-                        id: 'Date de fin (Si terminé)',
-                        defaultMessage: 'Date de fin (Si terminé)',
-                    })}
-                />
-            )}
+            {
+                /**
+                 * We check if the date is valid to avoid problem of invalid date,
+                 * when the user set the date by the keyboard instead of using the picker.
+                 */
+                formData.startSubscription && isValidDate(formData.startSubscription!) && (
+                    <DatePicker
+                        name="endSubscription"
+                        label={formatMessage({
+                            id: 'Date de fin (Si terminé)',
+                            defaultMessage: 'Date de fin (Si terminé)',
+                        })}
+                    />
+                )
+            }
             <ButtonLoader
                 variant="contained"
                 color="primary"
@@ -323,6 +331,7 @@ const ContractFormFields = ({ isContractsLoading }: ContractFormFieldsProps) => 
                     defaultMessage: 'Enregistrer',
                 })}
             </ButtonLoader>
+            <TariffsContract />
         </>
     )
 }

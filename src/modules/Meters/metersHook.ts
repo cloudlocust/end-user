@@ -137,11 +137,11 @@ export const useMeterForHousing = () => {
 /**
  * Error message editElementDetailsError.
  *
- * @param error Error.
+ * @param _error Error.
  * @param formatMessage FormatMessage intl object from (react-intl package).
  * @returns {string} Error message.
  */
-export const editElementDetailsError = (error: any, formatMessage: formatMessageType) => {
+export const editElementDetailsError = (_error: any, formatMessage: formatMessageType) => {
     return formatMessage({
         id: EDIT_ERROR_MESSAGE,
         defaultMessage: EDIT_ERROR_MESSAGE,
@@ -151,11 +151,11 @@ export const editElementDetailsError = (error: any, formatMessage: formatMessage
 /**
  * Success message editElementDetailsSuccess.
  *
- * @param responseData Edited Installation Request.
+ * @param _responseData Edited Installation Request.
  * @param formatMessage FormatMessage intl object from (react-intl package).
  * @returns {string} Success message.
  */
-const editElementDetailsSuccess = (responseData: IMeter, formatMessage: formatMessageType) => {
+const editElementDetailsSuccess = (_responseData: IMeter, formatMessage: formatMessageType) => {
     return formatMessage({
         id: EDIT_SUCCESS_MESSAGE,
         defaultMessage: EDIT_SUCCESS_MESSAGE,
@@ -164,11 +164,11 @@ const editElementDetailsSuccess = (responseData: IMeter, formatMessage: formatMe
 /**
  * Error message loadElementDetailsError.
  *
- * @param error Error.
+ * @param _error Error.
  * @param formatMessage FormatMessage intl object from (react-intl package).
  * @returns {string} Success message.
  */
-export const loadElementDetailsError = (error: any, formatMessage: formatMessageType) => {
+export const loadElementDetailsError = (_error: any, formatMessage: formatMessageType) => {
     return formatMessage({
         id: 'Erreur lors du chargement du compteur',
         defaultMessage: 'Erreur lors du chargement du compteur',

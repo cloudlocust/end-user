@@ -3,6 +3,7 @@ import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyForm
 import { EcowattConsumptionLevelListType } from 'src/modules/Ecowatt/ecowatt'
 import { InfoOutlined, Circle, Close } from '@mui/icons-material/'
 import { ECOWATT_TITLE } from 'src/modules/Ecowatt/EcowattWidget'
+import { linksColor } from 'src/modules/utils/muiThemeVariables'
 
 const consumptionLevelList: EcowattConsumptionLevelListType = [
     {
@@ -76,7 +77,7 @@ export const EcowattTooltip = ({
         >
             <InfoOutlined
                 sx={(theme) => ({
-                    color: theme.palette.primary.main,
+                    color: linksColor || theme.palette.primary.main,
                     marginLeft: 'auto',
                     cursor: 'pointer',
                 })}

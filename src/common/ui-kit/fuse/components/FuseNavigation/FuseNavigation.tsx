@@ -146,7 +146,7 @@ export interface IFuseNavigationProps {
 
 const inputGlobalStyles = (
     <GlobalStyles
-        styles={(theme) => ({
+        styles={() => ({
             '.popper-navigation-list': {
                 '& .fuse-list-item': {
                     padding: '8px 12px 8px 12px',

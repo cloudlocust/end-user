@@ -6,7 +6,7 @@ import { matchRoutes } from 'react-router-config'
 import merge from 'lodash/merge'
 import qs from 'qs'
 import axios, { AxiosRequestConfig } from 'axios'
-import React, { FC, useEffect, useState } from 'react'
+import { FC, useEffect, useState } from 'react'
 import { Redirect, useLocation } from 'react-router-dom'
 
 // TODO Is this duplicated ???

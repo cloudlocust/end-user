@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import { useEffect } from 'react'
 import { useDispatch } from 'react-redux'
 import { Dispatch } from 'src/redux'
 import UserMenu from 'src/modules/Layout/Toolbar/components/UserMenu'

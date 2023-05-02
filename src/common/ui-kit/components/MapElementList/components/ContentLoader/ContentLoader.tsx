@@ -1,4 +1,3 @@
-import React from 'react'
 import ContentLoader from 'react-content-loader'
 /**
  * Component that is a placeholder for a single pages loading, it show a fake content loading page.

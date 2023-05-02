@@ -41,7 +41,7 @@ export const TEST_FAQ = [
 // eslint-disable-next-line jsdoc/require-jsdoc
 export const faqEndpoints = [
     // eslint-disable-next-line jsdoc/require-jsdoc
-    rest.get<IFaq[]>(FAQ_API, (req, res, ctx) => {
+    rest.get<IFaq[]>(FAQ_API, (_req, res, ctx) => {
         return res(ctx.status(200), ctx.json(TEST_FAQ))
     }),
 ]

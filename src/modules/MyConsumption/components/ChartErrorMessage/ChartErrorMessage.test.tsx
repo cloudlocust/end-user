@@ -1,4 +1,3 @@
-import React from 'react'
 import { reduxedRender } from 'src/common/react-platform-components/test'
 import { BrowserRouter as Router } from 'react-router-dom'
 import { ChartErrorMessage } from 'src/modules/MyConsumption/components/ChartErrorMessage'

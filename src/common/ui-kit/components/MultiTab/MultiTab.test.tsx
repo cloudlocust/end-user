@@ -1,4 +1,3 @@
-import React from 'react'
 import { reduxedRender } from 'src/common/react-platform-components/test'
 import { BrowserRouter as Router } from 'react-router-dom'
 import MultiTab from 'src/common/ui-kit/components/MultiTab/MultiTab'
@@ -99,6 +98,11 @@ const content = [
 const propsMultiTab = {
     header: <Header />,
     content,
+    rootCss: {
+        minHeight: 136,
+        height: 136,
+        margin: '1rem 0',
+    },
 }
 
 describe('IMultiTab Test', () => {

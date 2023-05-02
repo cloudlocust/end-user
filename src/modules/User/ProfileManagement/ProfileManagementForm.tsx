@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { GoogleMapsAddressAutoCompleteField } from 'src/common/ui-kit/form-fields/GoogleMapsAddressAutoComplete/GoogleMapsAddressAutoCompleteField'
 import { ButtonLoader, MuiTextField as TextField } from 'src/common/ui-kit'
 import { Form, requiredBuilder, email } from 'src/common/react-platform-components'
