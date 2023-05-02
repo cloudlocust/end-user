@@ -16,7 +16,7 @@ import { useHasMissingHousingContracts } from 'src/hooks/HasMissingHousingContra
 import { RootState } from 'src/redux'
 import { useSelector } from 'react-redux'
 import { useEffect } from 'react'
-import { ThemeProvider, useTheme } from '@mui/material'
+import { ThemeProvider, useTheme, useMediaQuery } from '@mui/material'
 import dayjs from 'dayjs'
 import duration from 'dayjs/plugin/duration'
 dayjs.extend(duration)
@@ -54,6 +54,7 @@ export const initialMetricsHookValues: getMetricType = {
  */
 export default function Analysis() {
     const theme = useTheme()
+    const mdDown = useMediaQuery(theme.breakpoints.down('md'))
     const { currentHousing } = useSelector(({ housingModel }: RootState) => housingModel)
     const { getConsents, nrlinkConsent, enedisSgeConsent } = useConsents()
     const { range, setFilters, filters, data, isMetricsLoading, setRange } = useMetrics(initialMetricsHookValues)
@@ -112,7 +113,7 @@ export default function Analysis() {
                 rootCss={{
                     height: 'auto',
                     minHeight: 'auto',
-                    margin: '2rem 0',
+                    margin: `${mdDown ? '0.75rem' : '2rem'} 0`,
                 }}
             />
         </ThemeProvider>

@@ -38,7 +38,7 @@ export const getApexChartAnalysisComparisonProps = ({
         labels: {
             show: true,
             // eslint-disable-next-line jsdoc/require-jsdoc
-            formatter: (value: number, opts: any) => {
+            formatter: (value: number, _opts: any) => {
                 return `${value} kWh`
             },
         },

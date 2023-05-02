@@ -13,11 +13,9 @@ const AnalysisCTAColor = linksColor || warningMainHashColor
  *
  * @param root0 N/A.
  * @param root0.data Metrics data.
- * @param root0.enedisSgeConsent Enedis sge consent status.
- * @param root0.range Metric range.
  * @returns Analuse Comparison JSX.
  */
-export default function AnalysisComparison({ data, enedisSgeConsent, range }: AnalysisComparisonProps) {
+export default function AnalysisComparison({ data }: AnalysisComparisonProps) {
     const theme = useTheme()
 
     const consumptionData = useMemo(
@@ -33,12 +31,12 @@ export default function AnalysisComparison({ data, enedisSgeConsent, range }: An
     if (!isDataPresentInAllDaysOfMonth) {
         return (
             <div style={{ height: '200px' }} className="p-24 flex flex-col justify-center items-center ">
-                <Icon style={{ fontSize: '4rem', marginBottom: '1rem', color: theme.palette.secondary.dark }}>
+                <Icon style={{ fontSize: '4rem', marginBottom: '1rem', color: AnalysisCTAColor }}>
                     error_outline_outlined
                 </Icon>
 
                 <TypographyFormatMessage className="text-center" sx={{ color: AnalysisCTAColor }}>
-                    Aucune donnée de comparison disponible
+                    Aucune donnée de comparaison disponible
                 </TypographyFormatMessage>
             </div>
         )
