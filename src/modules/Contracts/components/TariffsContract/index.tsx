@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from 'react'
+import { useCallback, useEffect } from 'react'
 import { useIntl } from 'react-intl'
 import { useWatch } from 'react-hook-form'
 import { useCommercialOffer } from 'src/hooks/CommercialOffer/CommercialOfferHooks'
