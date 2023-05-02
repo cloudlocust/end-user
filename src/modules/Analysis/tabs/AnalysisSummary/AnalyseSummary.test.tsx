@@ -283,5 +283,7 @@ describe('Analysis test', () => {
         )
 
         expect(getByText('Consommation de veille :')).toBeTruthy()
+        expect(getByText(`Moyenne par jour :`)).toBeTruthy()
+        expect(getByText('Totale sur le mois :')).toBeTruthy()
     })
 })
