@@ -66,13 +66,13 @@ export const ConsumptionEnedisSgeWarning = ({ isShowWarning }: DefaultContractWa
 
     if (!isShowWarning) return null
     return (
-        <div className="flex items-center justify-center flex-col mt-12">
+        <div className="flex items-center justify-center md:flex-col md:mt-12">
             <ErrorOutlineIcon
                 sx={{
                     color: linksColor || warningMainHashColor,
                     width: { xs: '24px', md: '32px' },
                     height: { xs: '24px', md: '32px' },
-                    margin: { xs: '0 0 4px 0', md: '0 8px 0 0' },
+                    margin: { xs: '0 8px 0 0', md: '0 8px 0 0' },
                 }}
             />
 
