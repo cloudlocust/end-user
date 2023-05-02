@@ -1,12 +1,12 @@
 import CircularProgress from '@mui/material/CircularProgress'
 
-import PillSwitcherMenuComponent from './components/PillSwitcher/pillSwitcherComponent'
+import { PillSwitcherMenuComponent } from 'src/modules/shared/PillSwitcher/pillSwitcherComponent'
 import { IEcogesteCategoryTypes } from './EcogestesConfig'
 import useEcogestePoles from './hooks/polesHooks'
-import { EcogesteCategoryList } from './components/shared/EcogesteCategory/EcogesteCategoryList'
+import { EcogesteCategoryList } from 'src/modules/Ecogestes/components/shared/EcogesteCategory/EcogesteCategoryList'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import { useState } from 'react'
-import { IPillSwitcherComponent } from './components/PillSwitcher/pillSwitcher'
+import { IPillSwitcherComponent } from 'src/modules/shared/PillSwitcher/pillSwitcher'
 
 /**
  * This component will handle the logic part for Ecogeste Consumption Poles.
@@ -35,7 +35,7 @@ const ConsumptionPolesComponent = () => {
     if (!elementList) {
         return (
             <div className="w-full h-full justify-center relative flex flex-col items-center align-center p-16">
-                <TypographyFormatMessage>Aucune catégorie d'ecogeste n'as été trouver...</TypographyFormatMessage>
+                <TypographyFormatMessage>Aucun écogestes n'as été trouver...</TypographyFormatMessage>
             </div>
         )
     }
@@ -79,7 +79,7 @@ export const EcogestesWrapper = () => {
         {
             btnText: 'Pièces',
             /**
-             * Switch to Consumption Rooms when a User fire a Click.
+             * Switch to Rooms when a User fire a Click.
              */
             clickHandler: () => {
                 changeEcogestesCategory(IEcogesteCategoryTypes.ROOMS)
