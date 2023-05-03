@@ -2,7 +2,7 @@ import { reduxedRender } from 'src/common/react-platform-components/test'
 import { ToolbarWidget } from 'src/modules/Layout/Toolbar/ToolbarWidget'
 import { BrowserRouter } from 'react-router-dom'
 import * as reactRedux from 'react-redux'
-import { TEST_HOUSES } from 'src/mocks/handlers/houses'
+import { TEST_AUTHORIZATION_ERROR_LOAD_HOUSINGS, TEST_HOUSES } from 'src/mocks/handlers/houses'
 import { applyCamelCase } from 'src/common/react-platform-components'
 import { IHousing, IHousingState } from 'src/modules/MyHouse/components/HousingList/housing'
 import userEvent from '@testing-library/user-event'
@@ -11,11 +11,14 @@ import { IUser } from 'src/modules/User'
 import { DEFAULT_LOCALE } from 'src/configs'
 import { init } from '@rematch/core'
 import { models } from 'src/models'
+import { waitFor } from '@testing-library/react'
+import { URL_ERROR_HOUSING } from 'src/modules/Errors/ErrorsConfig'
 
 const LIST_OF_HOUSES: IHousing[] = applyCamelCase(TEST_HOUSES)
 
 const NO_ELEMENT_AVAILABLE = 'Aucun logement disponible'
 
+const mockHistoryPush = jest.fn()
 /**
  * Mocking the src/firebase to make unit test work.
  */
@@ -28,6 +31,16 @@ jest.mock('src/firebase', () => ({
     getTokenFromFirebase: jest.fn(),
 }))
 
+/**
+ * Mocking the history to make unit test work.
+ */
+jest.mock('react-router', () => ({
+    ...jest.requireActual('react-router'),
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    useHistory: () => ({
+        push: mockHistoryPush,
+    }),
+}))
 /**
  * Housing Model State.
  */
@@ -125,5 +138,22 @@ describe('Test Toolbar Widget.', () => {
 
         // No element appear
         expect(getByText(NO_ELEMENT_AVAILABLE)).toBeTruthy()
+    })
+
+    test('When error fetching housing list, HousingError Page should be shown.', async () => {
+        const { store } = require('src/redux')
+        await store.dispatch.userModel.setAuthenticationToken(TEST_AUTHORIZATION_ERROR_LOAD_HOUSINGS)
+
+        reduxedRender(
+            <BrowserRouter>
+                <ToolbarWidget />
+            </BrowserRouter>,
+            { store },
+        )
+
+        // Should be redirected to ErrorHousing Page when Error page
+        await waitFor(() => {
+            expect(mockHistoryPush).toHaveBeenCalledWith(URL_ERROR_HOUSING)
+        })
     })
 })

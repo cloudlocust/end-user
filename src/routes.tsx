@@ -18,6 +18,7 @@ import { EnphaseConfirmStateConfig } from 'src/modules/MyHouse/components/Enphas
 import { MentionsConfig } from 'src/modules/Mentions/MentionsConfig'
 import { SetPasswordConfig } from 'src/modules/User/SetPassword/SetPasswordConfig'
 import { SolarEquipmentsConfig } from 'src/modules/SolarEquipments/solarEquipmentsConfig'
+import { ErrorsConfig } from 'src/modules/Errors/ErrorsConfig'
 
 /**
  *
@@ -40,6 +41,7 @@ export const routes = [
     ...EnphaseConfirmStateConfig,
     ...MentionsConfig,
     ...SolarEquipmentsConfig,
+    ...ErrorsConfig,
     {
         /**
          * TODO Document.
