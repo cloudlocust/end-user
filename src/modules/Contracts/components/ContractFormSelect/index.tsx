@@ -77,6 +77,7 @@ const ContractFormSelect = <T extends unknown>({
         return (
             <Select
                 name={name}
+                data-testid="formSelectDefaultAndDisabled"
                 label={formatMessage({
                     id: `${label}`,
                     defaultMessage: `${label}`,
