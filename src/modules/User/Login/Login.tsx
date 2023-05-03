@@ -28,7 +28,7 @@ export interface LoginProps {
  */
 export function renderCommonLogo() {
     const commonLogoPath = `./clients-icons/${CLIENT_ICON_FOLDER}/${CLIENT_ICON_FOLDER}-common.svg`
-    return <img className="w-128 m-32" src={commonLogoPath} alt="logo" />
+    return <img className="w-256 m-32" src={commonLogoPath} alt="logo" />
 }
 
 /**
