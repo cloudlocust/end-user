@@ -3,21 +3,23 @@ import PageSimple from 'src/common/ui-kit/fuse/components/PageSimple'
 import { useParams } from 'react-router-dom'
 import { IEcogestCategory, IEcogesteListPageProps } from 'src/modules/Ecogestes/components/ecogeste'
 import useEcogestePoles from '../../hooks/polesHooks'
-import { IEcogesteCategoryTypes } from '../../EcogestesConfig'
 
 import EcogestesListPageContent from './EcogestesListPageContent'
 import EcogestesListPageHeader from './EcogestesListPageHeader'
 
 /**
+ * Don't touch, is for MYEM-3083.
+ * THIS const EcogestesListPage: FC<IEcogesteListPageProps> = ({
+    categoryType = IEcogesteCategoryTypes.CONSUMPTION,
+}): JSX.Element => {.
+ */
+
+/**
  * EcogestListPage.
  *
- * @param root0 Props.
- * @param root0.categoryType Category of the Ecogeste.
  * @returns EcogestPage.
  */
-const EcogestListPage: FC<IEcogesteListPageProps> = ({
-    categoryType = IEcogesteCategoryTypes.CONSUMPTION,
-}): JSX.Element => {
+const EcogestesListPage: FC<IEcogesteListPageProps> = (): JSX.Element => {
     const { categoryId } = useParams</**
      * Params object.
      */
@@ -46,4 +48,4 @@ const EcogestListPage: FC<IEcogesteListPageProps> = ({
     )
 }
 
-export default EcogestListPage
+export default EcogestesListPage

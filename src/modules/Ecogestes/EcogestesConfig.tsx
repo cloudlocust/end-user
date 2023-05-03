@@ -1,6 +1,6 @@
 import { authTypes, IRoute } from 'src/common/react-platform-components'
-import { EcogestesList } from '.'
-import EcogestListPage from './components/ecogestesList/ecogestListPage'
+import { EcogestesList } from 'src/modules/Ecogestes/components/ecogestesList/EcogestesList'
+import EcogestListPage from 'src/modules/Ecogestes/components/ecogestesList/EcogestesListPage'
 
 /**
  * Enum listing all Ecogestes Category Type.

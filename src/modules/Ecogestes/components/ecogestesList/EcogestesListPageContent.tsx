@@ -1,4 +1,4 @@
-import EcogestesList from '.'
+import EcogestesList from './EcogestesList'
 import { IEcogestPageComponentProps } from '../ecogeste'
 import CircularProgress from '@mui/material/CircularProgress'
 

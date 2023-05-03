@@ -40,7 +40,7 @@ export const EcogesteCategoryCard = ({
     }
 
     return (
-        <Card style={{ width: '150px', height: '180px' }} aria-label="ecogest-category, card">
+        <Card style={{ width: '150px', height: '180px' }} aria-label="ecogestCategoryCard">
             <CardActionArea className="w-full h-full" onClick={handleClick}>
                 <CardContent className="flex flex-col flex-nowrap justify-around h-full w-full">
                     <Icon

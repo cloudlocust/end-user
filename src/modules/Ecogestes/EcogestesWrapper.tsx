@@ -3,7 +3,7 @@ import CircularProgress from '@mui/material/CircularProgress'
 import { PillSwitcherMenuComponent } from 'src/modules/shared/PillSwitcher/pillSwitcherComponent'
 import { IEcogesteCategoryTypes } from './EcogestesConfig'
 import useEcogestePoles from './hooks/polesHooks'
-import { EcogesteCategoryList } from 'src/modules/Ecogestes/components/shared/EcogesteCategory/EcogesteCategoryList'
+import { EcogesteCategoriesList } from 'src/modules/Ecogestes/components/ecogesteCategories/EcogesteCategoriesList'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import { useState } from 'react'
 import { IPillSwitcherComponent } from 'src/modules/shared/PillSwitcher/pillSwitcher'
@@ -40,7 +40,7 @@ const ConsumptionPolesComponent = () => {
         )
     }
 
-    return <EcogesteCategoryList categoryType={IEcogesteCategoryTypes.CONSUMPTION} categories={elementList} />
+    return <EcogesteCategoriesList categoryType={IEcogesteCategoryTypes.CONSUMPTION} categories={elementList} />
 }
 /**.
  * Pieces Component.

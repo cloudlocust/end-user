@@ -1,7 +1,8 @@
 import { IEcogestCategory } from 'src/modules/Ecogestes/components/ecogeste'
 import { styled } from '@mui/material/styles'
-import { EcogesteCategoryCard } from 'src/modules/Ecogestes/components/shared/EcogesteCategory/EcogesteCategoryCard'
+import { EcogesteCategoryCard } from 'src/modules/Ecogestes/components/ecogesteCategories/EcogesteCategoryCard'
 import { IEcogesteCategoryTypes } from 'src/modules/Ecogestes/EcogestesConfig'
+import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 
 /**
  * Display the List of Ecogestes that belong to categoryType.
@@ -11,11 +12,11 @@ import { IEcogesteCategoryTypes } from 'src/modules/Ecogestes/EcogestesConfig'
  * @param _elementList.categoryType The type of the Category like Rooms or ConsumptionPools.
  * @returns JSX.Element.
  */
-export const EcogesteCategoryList = ({
+export const EcogesteCategoriesList = ({
     categories,
     categoryType,
 }: /**
- *
+ * Params.
  */
 {
     /**
@@ -34,9 +35,15 @@ export const EcogesteCategoryList = ({
 
     return (
         <CategoriesStyledDiv className="flex gap-9 flex-wrap justify-center" aria-label="list, categories, cards">
-            {categories?.map((category) => (
-                <EcogesteCategoryCard ecogestCategory={category} categoryType={categoryType} />
-            ))}
+            {categories.length > 0 ? (
+                categories?.map((category) => (
+                    <EcogesteCategoryCard key={category.id} ecogestCategory={category} categoryType={categoryType} />
+                ))
+            ) : (
+                <TypographyFormatMessage>
+                    Aucune categorie d'écogeste n'est disponible pour le moment
+                </TypographyFormatMessage>
+            )}
         </CategoriesStyledDiv>
     )
 }

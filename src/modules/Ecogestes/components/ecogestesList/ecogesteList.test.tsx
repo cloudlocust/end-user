@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event'
 import { BrowserRouter } from 'react-router-dom'
 import { reduxedRender } from 'src/common/react-platform-components/test'
 import { TEST_ECOGESTES } from 'src/mocks/handlers/ecogestes'
-import EcogestesList from 'src/modules/Ecogestes/components/ecogestesList'
+import EcogestesList from 'src/modules/Ecogestes/components/ecogestesList/EcogestesList'
 
 let mockCategoryId: string = '0'
 let mockEcogestes: any[] = []
