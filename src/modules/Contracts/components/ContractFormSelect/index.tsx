@@ -40,16 +40,15 @@ const ContractFormSelect = <T extends unknown>({
     }, [loadOptions])
 
     /**
-     * Eyes tears blood...
      * I haven't found any work around that work better than that without a big refactor,
-     * the Form is managed with a logic, when a MenuItem::onChange is fired, its calling all parents onChange untill he call
+     * the Form is managed with this logic, when a MenuItem::onChange is fired, its calling all parents onChange untill he call
      * the onChange inside ContractForm, the thing is I can't touch to this, or the hooks cause its will make a big refactor,
      * this is the best workAround for it.
      * When he has no other option (list of option contain one choice, no otherOptionLabel so no custom fields),
      * I call the onChange myself in the useEffect, the onChange just use target {...} not the ReactNode,
-     * I just listen on optionList, this @var will only have two change
+     * I just listen on isOptionsInProgress, this @var will only have two change
      * render -> where is Empty and dont call useEffect
-     * loaded -> when loadOptions have been a success so it will hidrate optionList once.
+     * loaded -> when loadOptions have been a success.
      */
 
     useEffect(() => {
@@ -64,7 +63,7 @@ const ContractFormSelect = <T extends unknown>({
                 null,
             )
         } // eslint-disable-next-line
-    }, [optionList])
+    }, [isOptionsInProgress])
 
     if (isOptionsInProgress || isNull(optionList))
         return (
