@@ -21,6 +21,9 @@ jest.mock('notistack', () => ({
     }),
 }))
 
+const TEST_METRICS_ERROR_MESSAGE =
+    'Nous rencontrons une erreur lors de la récupération de vos données de consommation. Veuillez réessayer plus tard'
+
 const FAKE_RANGE: metricRangeType = {
     from: '2022-06-04T00:00:00.000Z',
     to: '2022-06-04T23:59:59.999Z',
@@ -81,7 +84,7 @@ describe('useMetrics hook test', () => {
             { timeout: 10000 },
         )
         expect(result.current.isMetricsLoading).toBeFalsy()
-        expect(mockEnqueueSnackbar).toHaveBeenCalledWith('Erreur de chargement de vos données de consommation', {
+        expect(mockEnqueueSnackbar).toHaveBeenCalledWith(TEST_METRICS_ERROR_MESSAGE, {
             variant: 'error',
             autoHideDuration: 5000,
         })
@@ -167,7 +170,7 @@ describe('useMetrics hook test', () => {
                 { timeout: 10000 },
             )
             expect(result.current.isMetricsLoading).toBeFalsy()
-            expect(mockEnqueueSnackbar).toHaveBeenCalledWith('Erreur de chargement de vos données de consommation', {
+            expect(mockEnqueueSnackbar).toHaveBeenCalledWith(TEST_METRICS_ERROR_MESSAGE, {
                 variant: 'error',
                 autoHideDuration: 5000,
             })

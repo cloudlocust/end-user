@@ -86,47 +86,27 @@ export function useConsents() {
                     : null,
             ])
 
-            // Nrlink consent.
-            if (nrlinkConsent.status === 'fulfilled') {
-                setNrlinkConsent(nrlinkConsent.value?.data)
-            } else if (nrlinkConsent.status === 'rejected') {
-                if (isCancel(nrlinkConsent.reason)) return
-                enqueueSnackbar(
-                    formatMessage({
-                        id: 'Erreur lors de la récupération du consentement nrLINK',
-                        defaultMessage: 'Erreur lors de la récupération du consentement nrLINK',
-                    }),
-                    {
-                        variant: 'error',
-                        autoHideDuration: 5000,
-                    },
-                )
-            }
-            // Enedis consent.
-            if (enedisSgeConsent.status === 'fulfilled') {
-                setEnedisSgeConsent(enedisSgeConsent.value?.data)
-            } else if (enedisSgeConsent.status === 'rejected') {
-                if (isCancel(enedisSgeConsent.reason)) return
-                enqueueSnackbar(
-                    formatMessage({
-                        id: 'Erreur lors de la récupération du consentement Enedis',
-                        defaultMessage: 'Erreur lors de la récupération du consentement Enedis',
-                    }),
-                    {
-                        variant: 'error',
-                        autoHideDuration: 5000,
-                    },
-                )
-            }
+            // Cancel previous request.
+            if (enedisSgeConsent.status === 'rejected' && isCancel(enedisSgeConsent.reason)) return
+            if (enphaseConsent.status === 'rejected' && isCancel(enphaseConsent.reason)) return
+            if (nrlinkConsent.status === 'rejected' && isCancel(nrlinkConsent.reason)) return
 
-            if (enphaseConsent.status === 'fulfilled') {
-                setEnphaseConsent(enphaseConsent.value?.data)
-            } else if (enphaseConsent.status === 'rejected') {
-                if (isCancel(enphaseConsent.reason)) return
+            // Set Consents when Fulfilled.
+            if (nrlinkConsent.status === 'fulfilled') setNrlinkConsent(nrlinkConsent.value?.data)
+            if (enedisSgeConsent.status === 'fulfilled') setEnedisSgeConsent(enedisSgeConsent.value?.data)
+            if (enphaseConsent.status === 'fulfilled') setEnphaseConsent(enphaseConsent.value?.data)
+
+            // Show error message when rejeected.
+            if (
+                enedisSgeConsent.status === 'rejected' ||
+                nrlinkConsent.status === 'rejected' ||
+                enphaseConsent.status === 'rejected'
+            ) {
                 enqueueSnackbar(
                     formatMessage({
-                        id: 'Erreur lors de la récupération du consentement Enphase',
-                        defaultMessage: 'Erreur lors de la récupération du consentement Enphase',
+                        id: 'Nous rencontrons une erreur lors de la récupération de votre consentement nrLINK ou et Enedis, ou et Enphase. Veuillez réessayer plus tard',
+                        defaultMessage:
+                            'Nous rencontrons une erreur lors de la récupération de votre consentement nrLINK ou et Enedis, ou et Enphase. Veuillez réessayer plus tard',
                     }),
                     {
                         variant: 'error',
