@@ -2,11 +2,12 @@ import CircularProgress from '@mui/material/CircularProgress'
 
 import { PillSwitcherMenuComponent } from 'src/modules/shared/PillSwitcher/pillSwitcherComponent'
 import { IEcogesteCategoryTypes } from './EcogestesConfig'
-import useEcogestePoles from './hooks/polesHooks'
 import { EcogesteCategoriesList } from 'src/modules/Ecogestes/components/ecogesteCategories/EcogesteCategoriesList'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import { useState } from 'react'
 import { IPillSwitcherComponent } from 'src/modules/shared/PillSwitcher/pillSwitcher'
+import useEcogestesCategories from './hooks/useEcogestesCategories'
+import { isNull } from 'lodash'
 
 /**
  * This component will handle the logic part for Ecogeste Consumption Poles.
@@ -14,7 +15,7 @@ import { IPillSwitcherComponent } from 'src/modules/shared/PillSwitcher/pillSwit
  * @returns JSX.Element - Consumption Poles Module.
  */
 const ConsumptionPolesComponent = () => {
-    const { elementList, loadingInProgress } = useEcogestePoles()
+    const { elementList, loadingInProgress } = useEcogestesCategories(IEcogesteCategoryTypes.CONSUMPTION)
 
     if (loadingInProgress) {
         return (
@@ -32,7 +33,7 @@ const ConsumptionPolesComponent = () => {
      * True -> show "CTA -> backbone to add Poles"
      * false -> show "No Ecogest found" or show every ecogests.
      */
-    if (!elementList) {
+    if (isNull(elementList)) {
         return (
             <div className="w-full h-full justify-center relative flex flex-col items-center align-center p-16">
                 <TypographyFormatMessage>Aucun écogestes n'as été trouver...</TypographyFormatMessage>
@@ -49,15 +50,32 @@ const ConsumptionPolesComponent = () => {
  * @returns JSX.Element.
  */
 const RoomsComponent = () => {
-    return (
-        <div className="w-full h-full justify-center relative flex flex-col items-center align-center p-16">
-            <TypographyFormatMessage>Cette fonctionnalité arrive prochainement.</TypographyFormatMessage>
-        </div>
-    )
+    const { elementList, loadingInProgress } = useEcogestesCategories(IEcogesteCategoryTypes.ROOMS)
+
+    if (loadingInProgress) {
+        return (
+            <div className="w-full h-full justify-center relative flex flex-col items-center align-center p-16">
+                <div style={{ display: 'flex', justifyContent: 'center', padding: '16px' }}>
+                    <CircularProgress size={32} />
+                </div>
+            </div>
+        )
+    }
+
+    if (isNull(elementList)) {
+        return (
+            <div className="w-full h-full justify-center relative flex flex-col items-center align-center p-16">
+                <TypographyFormatMessage>Aucun écogestes n'as été trouver...</TypographyFormatMessage>
+            </div>
+        )
+    }
+
+    return <EcogesteCategoriesList categoryType={IEcogesteCategoryTypes.ROOMS} categories={elementList} />
 }
 /**
  *  Ecogestes Wrapper.
  *  I've maked it dynamic, so when we will implement Rooms we don't need to struggle on it.
+ *  TODO: useMemo / Callback? Optimize this? .
  *
  *  @returns JSX.Element.
  */

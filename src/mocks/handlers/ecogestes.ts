@@ -1,9 +1,9 @@
 import { rest } from 'msw'
-import { ECOGESTES_ENDPOINT } from 'src/modules/Ecogestes/'
+import { ECOGESTES_ENDPOINT, ECOGESTES_ROOMS_ENDPOINT } from 'src/modules/Ecogestes/'
 import { getPaginationFromElementList } from 'src/mocks/utils'
 import { IEcogeste, IEcogestCategory } from 'src/modules/Ecogestes/components/ecogeste'
 import { SnakeCasedPropertiesDeep } from 'type-fest'
-import { ECOGESTES_POLES_ENDPOINT } from 'src/modules/Ecogestes/hooks/polesHooks'
+import { ECOGESTES_POLES_ENDPOINT } from 'src/modules/Ecogestes/'
 
 /**
  * Path used for mock icons.
@@ -71,13 +71,37 @@ export const TEST_ECOGESTES_POLES_CATEGORY: SnakeCasedPropertiesDeep<IEcogestCat
         id: 1,
         name: 'Chauffage',
         nb_ecogeste: 2,
-        icon: 'https://drive.google.com/uc?export=view&id=10NPb2PC1bWaKDZJXuwWly7_b11W-S46O',
+        icon: EXAMPLE_ICON,
     },
     {
         id: 2,
         name: 'Electricité',
         nb_ecogeste: 1,
-        icon: 'https://drive.google.com/uc?export=view&id=10NPb2PC1bWaKDZJXuwWly7_b11W-S46O',
+        icon: EXAMPLE_ICON,
+    },
+]
+
+/**
+ * Mock list of Consumption Poles.
+ */
+export const TEST_ECOGESTES_ROOMS_CATEGORY: SnakeCasedPropertiesDeep<IEcogestCategory>[] = [
+    {
+        id: 1,
+        name: 'Salon',
+        nb_ecogeste: 2,
+        icon: EXAMPLE_ICON,
+    },
+    {
+        id: 2,
+        name: 'Cuisine',
+        nb_ecogeste: 1,
+        icon: EXAMPLE_ICON,
+    },
+    {
+        id: 3,
+        name: 'Cave',
+        nb_ecogeste: 42,
+        icon: EXAMPLE_ICON,
     },
 ]
 
@@ -119,6 +143,10 @@ export const ecogestesEndpoints = [
     }),
     rest.get(`${ECOGESTES_POLES_ENDPOINT}`, (req, res, ctx) => {
         const tag_response = getPaginationFromElementList(req, TEST_ECOGESTES_POLES_CATEGORY)
+        return res(ctx.status(200), ctx.delay(1000), ctx.json(tag_response))
+    }),
+    rest.get(`${ECOGESTES_ROOMS_ENDPOINT}`, (req, res, ctx) => {
+        const tag_response = getPaginationFromElementList(req, TEST_ECOGESTES_ROOMS_CATEGORY)
         return res(ctx.status(200), ctx.delay(1000), ctx.json(tag_response))
     }),
 ]

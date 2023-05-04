@@ -1,5 +1,6 @@
 import { reduxedRenderHook } from 'src/common/react-platform-components/test'
-import useEcogestePoles from './polesHooks'
+import useEcogestesCategories from './useEcogestesCategories'
+import { IEcogesteCategoryTypes } from '../EcogestesConfig'
 
 const mockEnqueueSnackbar = jest.fn()
 let mockTagId: string = '1'
@@ -28,11 +29,13 @@ jest.mock('react-router-dom', () => ({
     }),
 }))
 
-describe('PolesHook test', () => {
-    test('useEcogestePoles should returns Poles of Consumption', async () => {
+describe('useEcogestesCategories test', () => {
+    test('using CONSUMPTIONS as CategoryType', async () => {
         const {
             renderedHook: { result, waitForValueToChange },
-        } = reduxedRenderHook(() => useEcogestePoles(), { initialState: {} })
+        } = reduxedRenderHook(() => useEcogestesCategories(IEcogesteCategoryTypes.CONSUMPTION), {
+            initialState: {},
+        })
 
         expect(result.current.loadingInProgress).toBe(true)
         await waitForValueToChange(
@@ -41,9 +44,27 @@ describe('PolesHook test', () => {
             },
             { timeout: 4000 },
         )
-
         expect(result.current.loadingInProgress).toBe(false)
         expect(result.current.elementList).toBeTruthy()
         expect(result.current.elementList.length).toBe(2)
+    })
+
+    test('using ROOMS as CategoryType', async () => {
+        const {
+            renderedHook: { result, waitForValueToChange },
+        } = reduxedRenderHook(() => useEcogestesCategories(IEcogesteCategoryTypes.ROOMS), {
+            initialState: {},
+        })
+
+        expect(result.current.loadingInProgress).toBe(true)
+        await waitForValueToChange(
+            () => {
+                return result.current.loadingInProgress
+            },
+            { timeout: 4000 },
+        )
+        expect(result.current.loadingInProgress).toBe(false)
+        expect(result.current.elementList).toBeTruthy()
+        expect(result.current.elementList.length).toBe(3)
     })
 })

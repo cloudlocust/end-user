@@ -1,5 +1,5 @@
 import { authTypes, IRoute } from 'src/common/react-platform-components'
-import { EcogestesList } from 'src/modules/Ecogestes/components/ecogestesList/EcogestesList'
+import { API_RESOURCES_URL } from 'src/configs'
 import EcogestListPage from 'src/modules/Ecogestes/components/ecogestesList/EcogestesListPage'
 
 /**
@@ -32,6 +32,21 @@ export const URL_CONSUMPTION_ECOGESTES = `${URL_ROOT_ECOGESTES}/consumptions/:ca
 export const URL_ROOMS_ECOGESTES = `${URL_ROOT_ECOGESTES}/rooms/:categoryId`
 
 /**
+ * Ecogestes API  global endpoint.
+ */
+export const ECOGESTES_ENDPOINT = `${API_RESOURCES_URL}/ecogeste`
+
+/**
+ * API Endpoint to get all Poles of Consumption available.
+ */
+export const ECOGESTES_ROOMS_ENDPOINT = `${ECOGESTES_ENDPOINT}/rooms`
+
+/**
+ * API Endpoint to get all Rooms available.
+ */
+export const ECOGESTES_POLES_ENDPOINT = `${ECOGESTES_ENDPOINT}/consumptions`
+
+/**
  * Endpoint Configuration for Ecogestes view.
  */
 export const EcogestesConfig = [
@@ -43,7 +58,7 @@ export const EcogestesConfig = [
     } as IRoute<{}>,
     {
         path: URL_ROOMS_ECOGESTES,
-        component: EcogestesList,
+        component: EcogestListPage,
         auth: { authType: authTypes.loginRequired },
         /**
          * We pass props only when we're using Rooms cause as default we use Poles of Consumption.
