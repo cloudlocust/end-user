@@ -44,8 +44,7 @@ const ConsumptionPolesComponent = () => {
     return <EcogesteCategoriesList categoryType={IEcogesteCategoryTypes.CONSUMPTION} categories={elementList} />
 }
 /**.
- * Pieces Component.
- * !! This component is only to say Its disabled.
+ * This component will handle the logic part for Ecogeste Rooms.
  *
  * @returns JSX.Element.
  */
@@ -74,8 +73,6 @@ const RoomsComponent = () => {
 }
 /**
  *  Ecogestes Wrapper.
- *  I've maked it dynamic, so when we will implement Rooms we don't need to struggle on it.
- *  TODO: useMemo / Callback? Optimize this? .
  *
  *  @returns JSX.Element.
  */

@@ -43,7 +43,7 @@ const EcogestesListPageHeader = ({ isLoading, currentCategory }: IEcogestHeaderP
                                 margin: 'auto',
                             }}
                             src={currentCategory!.icon}
-                            alt=""
+                            alt={currentCategory.name}
                         ></img>
                     </Icon>
 

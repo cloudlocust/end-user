@@ -4,11 +4,21 @@ import { BrowserRouter } from 'react-router-dom'
 import { reduxedRender } from 'src/common/react-platform-components/test'
 import { TEST_ECOGESTES } from 'src/mocks/handlers/ecogestes'
 import EcogestesList from 'src/modules/Ecogestes/components/ecogestesList/EcogestesList'
+import EcogestesListPageHeader from './EcogestesListPageHeader'
+import { IEcogestCategory } from '../ecogeste'
+import { EXAMPLE_ICON } from 'src/mocks/handlers/ecogestes'
 
 let mockCategoryId: string = '0'
+let mockCurrentCategory: IEcogestCategory = {
+    id: 1,
+    name: 'CATEGORY_NAME',
+    icon: EXAMPLE_ICON,
+    nbEcogeste: 7,
+}
 let mockEcogestes: any[] = []
 
 const mockFilterFn = jest.fn()
+const mockHistoryBackFn = jest.fn()
 
 const MenuItemRoleSelector = '[role="menuitem"]'
 
@@ -24,6 +34,15 @@ jest.mock('react-router-dom', () => ({
      */
     useParams: () => ({
         categoryId: mockCategoryId,
+    }),
+
+    /**
+     * Mock browser History.
+     *
+     * @returns UseHistory.
+     */
+    useHistory: () => ({
+        goBack: mockHistoryBackFn,
     }),
 }))
 
@@ -122,6 +141,23 @@ describe('EcogestesList tests', () => {
 
             userEvent.click(FilterButton!, { bubbles: true })
             expect(container.querySelectorAll(MenuItemRoleSelector)).toHaveLength(0)
+        })
+    })
+
+    describe('Test proper rendering for EcogestesListPage', () => {
+        test('When rendering, should render correctly PageHeader', async () => {
+            mockCategoryId = '2'
+            mockEcogestes = TEST_ECOGESTES
+            const { getByText, getByAltText, getByRole } = reduxedRender(
+                <BrowserRouter>
+                    <EcogestesListPageHeader isLoading={false} currentCategory={mockCurrentCategory} />
+                </BrowserRouter>,
+            )
+
+            expect(getByText(mockCurrentCategory.name)).toBeTruthy()
+            expect(getByAltText(mockCurrentCategory.name)).toHaveAttribute('src', mockCurrentCategory.icon)
+            userEvent.click(getByRole('button'))
+            expect(mockHistoryBackFn).toHaveBeenCalled()
         })
     })
 })
