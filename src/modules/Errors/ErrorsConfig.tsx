@@ -1,5 +1,5 @@
 import { authTypes, IRoute } from 'src/common/react-platform-components'
-import ErrorHousing from 'src/modules/Errors/ErrorHousing'
+import Error500 from 'src/modules/Errors/Error500'
 
 /**
  * Base Url for Errors.
@@ -9,7 +9,7 @@ export const URL_ERRORS = '/errors'
 /**
  * Url for Error 500.
  */
-export const URL_ERROR_HOUSING = `${URL_ERRORS}/housing`
+export const URL_ERROR_HOUSING = `${URL_ERRORS}/500`
 
 /**
  * ErrorsConfig.
@@ -17,7 +17,7 @@ export const URL_ERROR_HOUSING = `${URL_ERRORS}/housing`
 export const ErrorsConfig = [
     {
         path: URL_ERROR_HOUSING,
-        component: ErrorHousing,
+        component: Error500,
         auth: { authType: authTypes.loginRequired },
         settings: {
             layout: {

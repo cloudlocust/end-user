@@ -4,16 +4,16 @@ import { useIntl } from 'react-intl'
 import { Link } from 'react-router-dom'
 import MuiLink from '@mui/material/Link'
 import { motion } from 'framer-motion'
-import energyImg from 'src/assets/images/errors/energy.svg'
+import electricityRepairImg from 'src/assets/images/errors/electricity-repair.png'
 import { URL_CONSUMPTION } from 'src/modules/MyConsumption'
 import { linksColor } from 'src/modules/utils/muiThemeVariables'
 
 /**
- * ErrorHousing Component.
+ * Error500 Component.
  *
  * @returns Modify form component.
  */
-const ErrorHousing = () => {
+const Error500 = () => {
     const { formatMessage } = useIntl()
 
     return (
@@ -26,7 +26,7 @@ const ErrorHousing = () => {
                 animate={{ opacity: 1, scale: 1 }}
                 className="flex justify-center"
             >
-                <img src={energyImg} alt="logo" />
+                <img src={electricityRepairImg} alt="logo" />
             </motion.div>
             <div className="flex justify-center items-center">
                 <Typography
@@ -34,8 +34,8 @@ const ErrorHousing = () => {
                     className="mt-12 sm:mt-20 text-3xl md:text-4xl font-extrabold tracking-tight leading-tight md:leading-none text-center"
                 >
                     {formatMessage({
-                        id: 'Erreur de chargement de vos logements',
-                        defaultMessage: 'Erreur de chargement de vos logements',
+                        id: 'Oops ! Une erreur est survenue !',
+                        defaultMessage: 'Oops ! Une erreur est survenue !',
                     })}
                 </Typography>
             </div>
@@ -45,9 +45,8 @@ const ErrorHousing = () => {
                     className="mt-12 text-lg tracking-tight leading-tight md:leading-none text-center"
                 >
                     {formatMessage({
-                        id: 'Nous rencontrons une erreur lors de la récupération de vos logements. Veuillez réessayer plus tard',
-                        defaultMessage:
-                            'Nous rencontrons une erreur lors de la récupération de vos logements. Veuillez réessayer plus tard',
+                        id: 'Nous rencontrons actuellement une erreur. Veuillez réessayer plus tard',
+                        defaultMessage: 'Nous rencontrons actuellement une erreur. Veuillez réessayer plus tard',
                     })}
                 </Typography>
             </div>
@@ -70,4 +69,4 @@ const ErrorHousing = () => {
     )
 }
 
-export default ErrorHousing
+export default Error500
