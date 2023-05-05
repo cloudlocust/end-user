@@ -37,7 +37,7 @@ export function AnalysisIdleConsumption({ data }: AnalysisIdleConsumptionProps) 
     }, [data])
 
     return (
-        <div className="w-full flex flex-col items-center p-24 pt-0 md:p-0">
+        <div className="w-full flex flex-col items-start md:items-center p-0">
             <div className="flex flex-row mb-16" style={{ width: isMobile ? '100%' : '290px' }}>
                 <Avatar sx={(theme) => ({ width: 64, height: 64, backgroundColor: theme.palette.grey['500'] })}>
                     <IdleIcon data-testid="idle-svg" />
