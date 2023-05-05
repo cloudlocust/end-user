@@ -21,13 +21,9 @@ describe('AnalysisIdleConsumption component test', () => {
         },
     ]
 
-    test('when component has data props and it renders the average idle consumption', () => {
+    test('when component has data props and it renders the average and sum of idle consumption', () => {
         const { getByText } = reduxedRender(<AnalysisIdleConsumption data={mockData} />)
-        expect(getByText('2.00 kWh')).toBeInTheDocument()
-    })
-
-    test('when component has data props and it renders the sum of the idle consumption', () => {
-        const { getByText } = reduxedRender(<AnalysisIdleConsumption data={mockData} />)
+        expect(getByText('2.00 kWh')).toBeTruthy()
         expect(getByText('4.00 kWh & 0 €')).toBeTruthy()
     })
 })

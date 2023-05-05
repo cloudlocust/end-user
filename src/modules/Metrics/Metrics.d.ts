@@ -49,7 +49,7 @@ export enum metricTargetsEnum {
      */
     injectedProduction = 'production_metrics',
     /**
-     * Eneum value for idle_consumption.
+     * Eneum value for consommation de veille.
      */
     idleConsumption = 'idle_consumption',
 }
