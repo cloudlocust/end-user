@@ -59,7 +59,8 @@ const ContractFormSelect = <T extends unknown>({
                         name: name,
                         value: formatOptionValue(optionList[0]),
                     },
-                } as any,
+                    // eslint-disable-next-line jsdoc/require-jsdoc
+                } as Event & { target: { value: T; name: string } },
                 null,
             )
         } // eslint-disable-next-line
