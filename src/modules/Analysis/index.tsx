@@ -17,9 +17,6 @@ import { RootState } from 'src/redux'
 import { useSelector } from 'react-redux'
 import { useEffect } from 'react'
 import { ThemeProvider, useTheme, useMediaQuery } from '@mui/material'
-import dayjs from 'dayjs'
-import duration from 'dayjs/plugin/duration'
-dayjs.extend(duration)
 
 /**
  * InitialMetricsStates for useMetrics.
@@ -43,6 +40,10 @@ export const initialMetricsHookValues: getMetricType = {
             target: metricTargetsEnum.pMax,
             type: 'timeserie',
         },
+        {
+            target: metricTargetsEnum.idleConsumption,
+            type: 'timeserie',
+        },
     ],
     filters: [],
 }
@@ -64,15 +65,10 @@ export default function Analysis() {
     const enedisSgeOff = enedisSgeConsent?.enedisSgeConsentState !== 'CONNECTED'
 
     useEffect(() => {
-        if (currentHousing && currentHousing.meter?.guid) setFilters(formatMetricFilter(currentHousing.meter.guid))
-    }, [currentHousing, setFilters])
-
-    // UseEffect to check for consent whenever a meter is selected.
-    useEffect(() => {
-        if (filters.length > 0) {
-            getConsents(filters[0].value, currentHousing?.id)
-        }
-    }, [currentHousing?.id, filters, getConsents])
+        if (!currentHousing?.meter?.guid) return
+        setFilters(formatMetricFilter(currentHousing?.meter.guid))
+        getConsents(currentHousing?.meter.guid, currentHousing?.id)
+    }, [currentHousing?.meter?.guid, setFilters, getConsents, currentHousing?.id])
 
     const tabsContent = [
         {
