@@ -71,15 +71,21 @@ jest.mock('src/modules/Contracts/contractsHook', () => ({
 const MAX_ATTEINTE_MESSAGE = `${TEST_CONTRACTS[0].power} kVa`
 
 describe('test AnalysisMaxPower', () => {
-    test('When the max value is shown with contract in progress', async () => {
+    test('when the max value is shown', async () => {
         const { getByText, getByTestId } = reduxedRender(<AnalysisMaxPower {...mockAnalysiMaxPowerProps} />)
-
+        mockAnalysiMaxPowerProps.data = mockData
         // Max is [4983, 1677801600000].
-        expect(mockAnalysiMaxPowerProps.data).toBe(mockData)
+        expect(mockAnalysiMaxPowerProps.data).toStrictEqual(mockData)
         expect(getByTestId('pmax-svg')).toBeTruthy()
         expect(getByText('Pmax :')).toBeTruthy()
         expect(getByText('Souscrite :')).toBeTruthy()
         expect(getByText(MAX_ATTEINTE_MESSAGE)).toBeTruthy()
         expect(getByText('Max atteinte :')).toBeTruthy()
+    })
+    test('when no data is available', async () => {
+        mockAnalysiMaxPowerProps.data = []
+        const { getByText } = reduxedRender(<AnalysisMaxPower {...mockAnalysiMaxPowerProps} />)
+        expect(getByText('Pmax :')).toBeTruthy()
+        expect(getByText('Aucune donnée disponible')).toBeTruthy()
     })
 })
