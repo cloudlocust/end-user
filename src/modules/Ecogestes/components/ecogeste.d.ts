@@ -115,10 +115,6 @@ export type IEcogestPageComponentProps =
          * Current EcogesteCategory used.
          */
         currentCategory: IEcogestCategory | null | undefined
-        /**
-         * Current List of Ecogeste Category.
-         */
-        elementList?: IEcogestCategory[] | null | undefined
     }
 
 /**

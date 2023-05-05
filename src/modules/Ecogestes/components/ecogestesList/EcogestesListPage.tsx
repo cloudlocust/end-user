@@ -40,7 +40,7 @@ const EcogestesListPage: FC<IEcogesteListPageProps> = ({
     return (
         <PageSimple
             header={<EcogestesListPageHeader isLoading={loadingInProgress} currentCategory={currentCategory} />}
-            content={<EcogestesListPageContent currentCategory={currentCategory} elementList={elementList} />}
+            content={<EcogestesListPageContent currentCategory={currentCategory} />}
         />
     )
 }
