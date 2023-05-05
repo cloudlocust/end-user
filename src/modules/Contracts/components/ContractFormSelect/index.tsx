@@ -5,6 +5,7 @@ import { ContractFormSelectProps } from 'src/modules/Contracts/contractsTypes.d'
 import MenuItem from '@mui/material/MenuItem'
 import CircularProgress from '@mui/material/CircularProgress'
 import { isNull } from 'lodash'
+import { useFormContext } from 'react-hook-form'
 
 /**
  * ContractFormSelect component that calls the loadOptions on mount, and show the Select with optionList or spinner when loadOptions are still pending.
@@ -34,37 +35,22 @@ const ContractFormSelect = <T extends unknown>({
     ...otherSelectProps
 }: ContractFormSelectProps<T>): JSX.Element => {
     const { formatMessage } = useIntl()
+    const { getValues, setValue } = useFormContext()
+
     useEffect(() => {
         // Load optionList on mount, which will automatically update the optionList
         loadOptions()
     }, [loadOptions])
 
     /**
-     * I haven't found any work around that work better than that without a big refactor,
-     * the Form is managed with this logic, when a MenuItem::onChange is fired, its calling all parents onChange untill he call
-     * the onChange inside ContractForm, the thing is I can't touch to this, or the hooks cause its will make a big refactor,
-     * this is the best workAround for it.
-     * When he has no other option (list of option contain one choice, no otherOptionLabel so no custom fields),
-     * I call the onChange myself in the useEffect, the onChange just use target {...} not the ReactNode,
-     * I just listen on isOptionsInProgress, this @var will only have two change
-     * render -> where is Empty and dont call useEffect
-     * loaded -> when loadOptions have been a success.
+     * If User got only one choice, we choose it by default,
+     * getValues(name) should send "undefined", if undefined we set else, we don't care.
      */
-
     useEffect(() => {
-        if (!otherOptionLabel && optionList && optionList.length === 1 && otherSelectProps.onChange) {
-            otherSelectProps.onChange(
-                {
-                    target: {
-                        name: name,
-                        value: formatOptionValue(optionList[0]),
-                    },
-                    // eslint-disable-next-line jsdoc/require-jsdoc
-                } as Event & { target: { value: T; name: string } },
-                null,
-            )
-        } // eslint-disable-next-line
-    }, [isOptionsInProgress])
+        if (!otherOptionLabel && optionList?.length === 1 && !getValues(name)) {
+            setValue(name, formatOptionValue(optionList[0]))
+        }
+    })
 
     if (isOptionsInProgress || isNull(optionList))
         return (
@@ -73,7 +59,11 @@ const ContractFormSelect = <T extends unknown>({
             </div>
         )
 
-    if (!otherOptionLabel && optionList && optionList.length === 1) {
+    /**
+     * We need to render the Select even if we have disabled it,
+     * cause the user can't see the selected choice.
+     */
+    if (!otherOptionLabel && optionList.length === 1) {
         return (
             <Select
                 name={name}

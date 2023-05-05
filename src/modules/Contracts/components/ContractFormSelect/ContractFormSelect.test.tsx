@@ -11,6 +11,13 @@ const DEFAULT_VALUE_SELECT_TEXT = 'defaultAndDisabledValue'
 const LoadingIndicatorClass = '.MuiCircularProgress-root'
 
 /**
+ * Mock FNs.
+ */
+
+const mockGetValueFn = jest.fn()
+const mockSetValueFn = jest.fn()
+
+/**
  * Mock for ContractForm props.
  */
 const mockContractFormSelectProps: ContractFormSelectProps<string> = {
@@ -52,7 +59,6 @@ const mockContractFormSelectPropsWithDefaultOption: ContractFormSelectProps<ICon
         return option.name
     },
     loadOptions: jest.fn(),
-    onChange: jest.fn(),
     optionList: [
         {
             id: 'optIdentifier',
@@ -62,6 +68,19 @@ const mockContractFormSelectPropsWithDefaultOption: ContractFormSelectProps<ICon
     isOptionsInProgress: false,
     label: LABEL_SELECT_TEXT,
 }
+
+jest.mock('react-hook-form', () => ({
+    ...jest.requireActual('react-hook-form'),
+    /**
+     * Mock the react-hook-form hooks.
+     *
+     * @returns The react-hook-form hook.
+     */
+    useFormContext: () => ({
+        getValues: mockGetValueFn.mockReturnValue(undefined),
+        setValue: mockSetValueFn,
+    }),
+}))
 
 describe('Test ContractFormSelect Component', () => {
     test('When component mount', async () => {
@@ -112,14 +131,12 @@ describe('Test ContractFormSelect Component', () => {
             expect(mockLoadOptions).toHaveBeenCalled()
         })
         await waitFor(() => {
-            expect(mockChangeEvent).toHaveBeenCalledWith(
-                {
-                    target: {
-                        name: mockContractFormSelectPropsWithDefaultOption.name,
-                        value: DEFAULT_VALUE_SELECT_TEXT,
-                    },
-                },
-                null,
+            expect(mockGetValueFn).toHaveBeenCalled()
+        })
+        await waitFor(() => {
+            expect(mockSetValueFn).toHaveBeenCalledWith(
+                mockContractFormSelectPropsWithDefaultOption.name,
+                DEFAULT_VALUE_SELECT_TEXT,
             )
         })
         // field should be disabled, verified using className
