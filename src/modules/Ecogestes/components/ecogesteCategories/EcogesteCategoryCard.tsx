@@ -1,8 +1,9 @@
 import { Card, CardContent, Icon, useTheme, CardActionArea } from '@mui/material'
+import { FC } from 'react'
 import { useHistory } from 'react-router-dom'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
-import { IEcogestCategory } from 'src/modules/Ecogestes/components/ecogeste'
-import { IEcogesteCategoryTypes, URL_ROOT_ECOGESTES } from 'src/modules/Ecogestes/EcogestesConfig'
+import { IEcogesteCategoryCardProps } from 'src/modules/Ecogestes/components/ecogesteCategories/ecogesteCategory'
+import { URL_ROOT_ECOGESTES } from 'src/modules/Ecogestes/EcogestesConfig'
 
 /**
  * Card that will display an Ecogeste Category.
@@ -12,23 +13,10 @@ import { IEcogesteCategoryTypes, URL_ROOT_ECOGESTES } from 'src/modules/Ecogeste
  * @param root0.categoryType The ecogestCategory type.
  * @returns JSX.Element - EcogesteCategory extending mUI Card.
  */
-export const EcogesteCategoryCard = ({
+export const EcogesteCategoryCard: FC<IEcogesteCategoryCardProps> = ({
     ecogestCategory,
     categoryType,
-}: /**
- * Params object.
- */
-{
-    /**
-     * Ecogest Category.
-     */
-    ecogestCategory: IEcogestCategory
-
-    /**
-     * Type of Category.
-     */
-    categoryType: IEcogesteCategoryTypes
-}) => {
+}: IEcogesteCategoryCardProps): JSX.Element => {
     const theme = useTheme()
     const history = useHistory()
 
@@ -55,7 +43,7 @@ export const EcogesteCategoryCard = ({
                                 margin: 'auto',
                             }}
                             src={ecogestCategory.icon}
-                            alt=""
+                            alt={ecogestCategory.name}
                         ></img>
                     </Icon>
                     <TypographyFormatMessage className="font-bold text-15 whitespace-normal text-center">

@@ -3,10 +3,12 @@ import userEvent from '@testing-library/user-event'
 import { BrowserRouter } from 'react-router-dom'
 import { reduxedRender } from 'src/common/react-platform-components/test'
 import { TEST_ECOGESTES } from 'src/mocks/handlers/ecogestes'
+import { IEcogeste } from 'src/modules/Ecogestes/components/ecogeste'
 import EcogestesList from 'src/modules/Ecogestes/components/ecogestesList/EcogestesList'
+import { SnakeCasedPropertiesDeep } from 'type-fest'
 
 let mockCategoryId: string = '0'
-let mockEcogestes: any[] = []
+let mockEcogestes: SnakeCasedPropertiesDeep<IEcogeste>[] = []
 
 const mockFilterFn = jest.fn()
 
