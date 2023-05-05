@@ -1,5 +1,5 @@
-import EcogestesList from './EcogestesList'
-import { IEcogestPageComponentProps } from '../ecogeste'
+import { IEcogestPageComponentProps } from 'src/modules/Ecogestes/components/ecogeste'
+import EcogestesList from 'src/modules/Ecogestes/components/ecogestesList/EcogestesList'
 import CircularProgress from '@mui/material/CircularProgress'
 
 /**
@@ -7,11 +7,10 @@ import CircularProgress from '@mui/material/CircularProgress'
  *
  * @param root0 Props.
  * @param root0.currentCategory Current Ecogeste Category.
- * @param root0.elementList Current List of Ecogeste filtered by Ecogeste Category.
  * @returns JSX.Element.
  */
-const EcogestesListPageContent = ({ currentCategory, elementList }: IEcogestPageComponentProps): JSX.Element => {
-    return currentCategory?.id && elementList ? (
+const EcogestesListPageContent = ({ currentCategory }: IEcogestPageComponentProps): JSX.Element => {
+    return currentCategory?.id ? (
         <div className="m-10 p-10">
             <EcogestesList />
         </div>

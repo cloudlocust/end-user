@@ -2,20 +2,21 @@ import { fireEvent } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { BrowserRouter } from 'react-router-dom'
 import { reduxedRender } from 'src/common/react-platform-components/test'
-import { TEST_ECOGESTES } from 'src/mocks/handlers/ecogestes'
+import { EXAMPLE_ICON, TEST_ECOGESTES } from 'src/mocks/handlers/ecogestes'
+import { IEcogestCategory, IEcogeste } from 'src/modules/Ecogestes/components/ecogeste'
 import EcogestesList from 'src/modules/Ecogestes/components/ecogestesList/EcogestesList'
-import EcogestesListPageHeader from './EcogestesListPageHeader'
-import { IEcogestCategory } from '../ecogeste'
-import { EXAMPLE_ICON } from 'src/mocks/handlers/ecogestes'
+import EcogestesListPageHeader from 'src/modules/Ecogestes/components/ecogestesList/EcogestesListPageHeader'
+import { SnakeCasedPropertiesDeep } from 'type-fest'
 
 let mockCategoryId: string = '0'
+let mockEcogestes: SnakeCasedPropertiesDeep<IEcogeste>[] = []
+
 let mockCurrentCategory: IEcogestCategory = {
     id: 1,
     name: 'CATEGORY_NAME',
     icon: EXAMPLE_ICON,
     nbEcogeste: 7,
 }
-let mockEcogestes: any[] = []
 
 const mockFilterFn = jest.fn()
 const mockHistoryBackFn = jest.fn()

@@ -2,11 +2,10 @@ import { FC, useEffect, useState } from 'react'
 import PageSimple from 'src/common/ui-kit/fuse/components/PageSimple'
 import { useParams } from 'react-router-dom'
 import { IEcogestCategory, IEcogesteListPageProps } from 'src/modules/Ecogestes/components/ecogeste'
-
-import EcogestesListPageContent from './EcogestesListPageContent'
-import EcogestesListPageHeader from './EcogestesListPageHeader'
-import useEcogestesCategories from '../../hooks/useEcogestesCategories'
-import { IEcogesteCategoryTypes } from '../../EcogestesConfig'
+import EcogestesListPageContent from 'src/modules/Ecogestes/components/ecogestesList/EcogestesListPageContent'
+import EcogestesListPageHeader from 'src/modules/Ecogestes/components/ecogestesList/EcogestesListPageHeader'
+import { IEcogesteCategoryTypes } from 'src/modules/Ecogestes/EcogestesConfig'
+import useEcogestesCategories from 'src/modules/Ecogestes/hooks/useEcogestesCategories'
 
 /**
  * EcogestListPage.

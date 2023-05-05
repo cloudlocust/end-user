@@ -1,9 +1,12 @@
 import { rest } from 'msw'
-import { ECOGESTES_ENDPOINT, ECOGESTES_ROOMS_ENDPOINT } from 'src/modules/Ecogestes/'
 import { getPaginationFromElementList } from 'src/mocks/utils'
+import {
+    ECOGESTES_ENDPOINT,
+    ECOGESTES_POLES_ENDPOINT,
+    ECOGESTES_ROOMS_ENDPOINT,
+} from 'src/modules/Ecogestes/EcogestesConfig'
 import { IEcogeste, IEcogestCategory } from 'src/modules/Ecogestes/components/ecogeste'
 import { SnakeCasedPropertiesDeep } from 'type-fest'
-import { ECOGESTES_POLES_ENDPOINT } from 'src/modules/Ecogestes/'
 
 /**
  * Path used for mock icons.

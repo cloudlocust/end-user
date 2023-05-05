@@ -5,7 +5,7 @@ import { useParams } from 'react-router-dom'
 import { EcogesteCard } from 'src/modules/Ecogestes'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import { Button, Menu, MenuItem, MenuList, SvgIcon } from '@mui/material'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import FilterListIcon from '@mui/icons-material/FilterList'
 import VisibilityIcon from '@mui/icons-material/Visibility'
 import { ReactComponent as NotViewIcon } from 'src/modules/Ecogestes/components/ecogesteCard/NotRead.svg'
@@ -107,20 +107,11 @@ export const EcogestesList = () => {
         handleClose()
     }
 
-    useEffect(() => {
-        if (categoryIdInt) {
-            filterEcogestes({ viewed: currentViewFilter, tag_id: categoryIdInt })
-        }
-        // We don't want an update for every change in our deps, only at mount.
-        // Hence why we have empty deps array.
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [])
-
     return (
         <>
             <div className="flex justify-between w-full">
                 <TypographyFormatMessage variant="h2" className="text-20 mb-20 font-bold">
-                    {categoryIdInt ? `Les écogestes associés` : 'Liste de tous les écogestes:'}
+                    Les écogestes associés
                 </TypographyFormatMessage>
                 <div>
                     <Button

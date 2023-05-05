@@ -29,3 +29,13 @@ export type IPillSwitcherProps = {
      */
     components: IPillSwitcherComponent[]
 }
+
+/**
+ * Interface for @StyledComponent to make code more lisible.
+ */
+export interface IStyledPillCellProps {
+    /**
+     * The current Component is selected ?
+     */
+    selected: boolean
+}

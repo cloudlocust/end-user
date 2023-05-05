@@ -1,8 +1,7 @@
 import { BuilderUseElementList } from 'src/modules/utils/useElementHookBuilder'
 import { IEcogestCategory } from 'src/modules/Ecogestes/components/ecogeste'
 import { formatMessageType } from 'src/common/react-platform-translation'
-import { ECOGESTES_ENDPOINT } from 'src/modules/Ecogestes'
-import { IEcogesteCategoryTypes } from '../EcogestesConfig'
+import { ECOGESTES_ENDPOINT, IEcogesteCategoryTypes } from 'src/modules/Ecogestes/EcogestesConfig'
 
 // eslint-disable-next-line jsdoc/require-jsdoc
 export const loadElementListError = (_error: any, formatMessage: formatMessageType) => {

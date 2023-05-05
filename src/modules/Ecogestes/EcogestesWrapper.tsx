@@ -1,13 +1,13 @@
 import CircularProgress from '@mui/material/CircularProgress'
-
-import { PillSwitcherMenuComponent } from 'src/modules/shared/PillSwitcher/pillSwitcherComponent'
-import { IEcogesteCategoryTypes } from './EcogestesConfig'
-import { EcogesteCategoriesList } from 'src/modules/Ecogestes/components/ecogesteCategories/EcogesteCategoriesList'
-import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
-import { useState } from 'react'
-import { IPillSwitcherComponent } from 'src/modules/shared/PillSwitcher/pillSwitcher'
-import useEcogestesCategories from './hooks/useEcogestesCategories'
 import { isNull } from 'lodash'
+
+import { useState } from 'react'
+import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
+import { IEcogesteCategoryTypes } from 'src/modules/Ecogestes/EcogestesConfig'
+import { EcogesteCategoriesList } from 'src/modules/Ecogestes/components/ecogesteCategories/EcogesteCategoriesList'
+import useEcogestesCategories from 'src/modules/Ecogestes/hooks/useEcogestesCategories'
+import { IPillSwitcherComponent } from 'src/modules/shared/PillSwitcher/pillSwitcher'
+import { PillSwitcherMenuComponent } from 'src/modules/shared/PillSwitcher/pillSwitcherComponent'
 
 /**
  * This component will handle the logic part for Ecogeste Consumption Poles.
