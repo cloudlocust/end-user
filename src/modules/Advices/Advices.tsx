@@ -1,7 +1,7 @@
 import { styled, useTheme } from '@mui/material'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import PageSimple from 'src/common/ui-kit/fuse/components/PageSimple'
-import { EcogestesWrapper } from '../Ecogestes/EcogestesWrapper'
+import { EcogestesWrapper } from 'src/modules/Ecogestes/EcogestesWrapper'
 
 const Root = styled(PageSimple)(({ theme }) => ({
     '& .PageSimple-header': {

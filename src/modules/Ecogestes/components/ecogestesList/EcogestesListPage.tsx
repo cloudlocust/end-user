@@ -2,17 +2,9 @@ import { FC, useEffect, useState } from 'react'
 import PageSimple from 'src/common/ui-kit/fuse/components/PageSimple'
 import { useParams } from 'react-router-dom'
 import { IEcogestCategory, IEcogesteListPageProps } from 'src/modules/Ecogestes/components/ecogeste'
-import useEcogestePoles from '../../hooks/polesHooks'
-
-import EcogestesListPageContent from './EcogestesListPageContent'
-import EcogestesListPageHeader from './EcogestesListPageHeader'
-
-/**
- * Don't touch, is for MYEM-3083.
- * THIS const EcogestesListPage: FC<IEcogesteListPageProps> = ({
-    categoryType = IEcogesteCategoryTypes.CONSUMPTION,
-}): JSX.Element => {.
- */
+import { useEcogestePoles } from 'src/modules/Ecogestes/hooks/polesHooks'
+import EcogestesListPageContent from 'src/modules/Ecogestes/components/ecogestesList/EcogestesListPageContent'
+import EcogestesListPageHeader from 'src/modules/Ecogestes/components/ecogestesList/EcogestesListPageHeader'
 
 /**
  * EcogestListPage.

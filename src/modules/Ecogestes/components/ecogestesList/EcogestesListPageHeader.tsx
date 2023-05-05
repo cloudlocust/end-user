@@ -1,10 +1,10 @@
+import CircularProgress from '@mui/material/CircularProgress'
+import IconButton from '@mui/material/IconButton'
+import { useTheme } from '@mui/material/styles'
 import { useHistory } from 'react-router-dom'
 import { Icon } from 'src/common/ui-kit'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
-import { IEcogestHeaderProps } from '../ecogeste'
-import { useTheme } from '@mui/material/styles'
-import CircularProgress from '@mui/material/CircularProgress'
-import IconButton from '@mui/material/IconButton'
+import { IEcogestHeaderProps } from 'src/modules/Ecogestes/components/ecogeste'
 
 /**
  * EcogestList Header Component.

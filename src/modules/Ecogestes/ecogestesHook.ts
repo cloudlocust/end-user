@@ -1,10 +1,11 @@
 import { API_RESOURCES_URL } from 'src/configs'
 import { BuilderUseElementList } from 'src/modules/utils/useElementHookBuilder'
-import { IEcogeste, IEcogestGetAllFilter } from './components/ecogeste'
 import { axios, catchError } from 'src/common/react-platform-components'
 import { useIntl, formatMessageType } from 'src/common/react-platform-translation'
 import { useSnackbar } from 'notistack'
 import { useParams } from 'react-router-dom'
+import { IEcogeste, IEcogestGetAllFilter, EcogestViewedEnum } from 'src/modules/Ecogestes/components/ecogeste.d'
+
 /**
  * Ecogestes API  global endpoint.
  */
@@ -94,7 +95,7 @@ export const useEcogestes = () => {
     >({
         API_ENDPOINT: ECOGESTES_ENDPOINT,
         snackBarMessage0verride: { loadElementListError, addElementSuccess, addElementError },
-    })(undefined, { viewed: undefined, tag_id: parsedCategoryTargetted })
+    })(undefined, { viewed: EcogestViewedEnum.ALL, tag_id: parsedCategoryTargetted })
 
     /**
      * Filters the ecogest element list from this hook according to the given filter.
@@ -102,16 +103,13 @@ export const useEcogestes = () => {
      *
      * @param filter The filter object to apply.
      */
-    const filterEcogestes = (filter: IEcogestGetAllFilter) => {
-        updateFilters(filter)
-    }
 
     return {
         elementList,
         loadingInProgress,
         setViewStatus,
         updateEcogeste,
-        filterEcogestes,
+        filterEcogestes: updateFilters,
     }
 }
 
