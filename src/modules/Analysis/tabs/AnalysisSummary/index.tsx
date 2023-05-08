@@ -20,7 +20,8 @@ import { AnalysisMaxPower } from 'src/modules/Analysis/components/AnalysisMaxPow
 import { linksColor, warningMainHashColor } from 'src/modules/utils/muiThemeVariables'
 import { AnalysisIdleConsumption } from 'src/modules/Analysis/components/AnalysisIdleConsumption'
 
-const AnalysisCTAColor = linksColor || warningMainHashColor
+// eslint-disable-next-line jsdoc/require-jsdoc
+export const AnalysisCTAColor = linksColor || warningMainHashColor
 
 /**
  * Analysis.
