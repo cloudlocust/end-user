@@ -34,6 +34,6 @@ describe('conputePMaxWithTimestamp', () => {
         const result = computePMaxWithTimestamp(dataWithMaxValueGreaterThan999)
         expect(result.pmaxValue).toBe(3)
         expect(result.pmaxValueTimestamp).toBe(1612617800)
-        expect(result.unit).toBe('kVa')
+        expect(result.pmaxUnit).toBe('kVa')
     })
 })

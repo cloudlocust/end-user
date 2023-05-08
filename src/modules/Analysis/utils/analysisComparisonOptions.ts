@@ -27,6 +27,19 @@ export const getApexChartAnalysisComparisonProps = ({
     let yAxisOptions: ApexYAxis[] = []
     let consumptionValuesWithoutTimestamps = yAxisSeries.map((serie) => serie['data'].map((d: any) => d[1]))
 
+    analysisComparisonApexChartSeries = [
+        {
+            data: [convert(sum(consumptionValuesWithoutTimestamps[0])).from('Wh').to('kWh')],
+            name: 'Ma Consommation',
+            color: theme.palette.secondary.main,
+        },
+        {
+            data: [round(4792 / 12)],
+            name: "Consommation moyenne globale d'un foyer selon l'ADEME",
+            color: theme.palette.secondary.light,
+        },
+    ]
+
     yAxisOptions.push({
         show: true,
         axisTicks: {
@@ -43,19 +56,6 @@ export const getApexChartAnalysisComparisonProps = ({
             },
         },
     })
-
-    analysisComparisonApexChartSeries = [
-        {
-            data: [convert(sum(consumptionValuesWithoutTimestamps[0])).from('Wh').to('kWh')],
-            name: 'Ma Consommation',
-            color: theme.palette.secondary.main,
-        },
-        {
-            data: [round(4792 / 12)],
-            name: "Consommation moyenne globale d'un foyer selon l'ADEME",
-            color: theme.palette.secondary.light,
-        },
-    ]
 
     options.legend! = {
         show: true,
@@ -77,7 +77,10 @@ export const getApexChartAnalysisComparisonProps = ({
         },
     }
 
-    options!.stroke!.width = 0
+    options.stroke = {
+        colors: ['transparent'],
+        width: 5,
+    }
     options.yaxis = yAxisOptions
     options!.tooltip = {
         intersect: false,
@@ -96,8 +99,7 @@ export const getApexChartAnalysisComparisonProps = ({
     options.plotOptions = {
         bar: {
             horizontal: false,
-            columnWidth: '15%',
-            distributed: true, // enable dynamic column width
+            columnWidth: '25%',
         },
     }
     options.responsive = [

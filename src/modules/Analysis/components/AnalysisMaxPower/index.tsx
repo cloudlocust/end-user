@@ -48,7 +48,7 @@ export const AnalysisMaxPower = ({ data, housingId }: AnalysisMaxPowerProps) => 
                                 <TypographyFormatMessage className="sm:text-13 text-grey-600 font-bold md:text-16">{`Max atteinte :`}</TypographyFormatMessage>
                                 <Typography className="sm:text-13 font-medium md:text-16">{`${pmaxValue} ${pmaxUnit} le ${dayjs(
                                     pmaxValueTimestamp,
-                                ).format('dddd D')}`}</Typography>
+                                ).format('dddd D MMMM')}`}</Typography>
                             </span>
                         </>
                     ) : (

@@ -24,7 +24,7 @@ export const computePMaxWithTimestamp = (data: IMetric[]) => {
         return {
             pmaxValue: Number(convert(pmaxValue).from('VA').to('kVA').toFixed(2)),
             pmaxValueTimestamp,
-            unit: 'kVa',
+            pmaxUnit: 'kVa',
         }
     }
 

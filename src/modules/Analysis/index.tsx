@@ -94,7 +94,7 @@ export default function Analysis() {
         {
             tabTitle: 'Comparaison',
             tabSlug: 'comparison',
-            tabContent: <AnalysisComparison {...{ data, enedisSgeConsent, range }} />,
+            tabContent: <AnalysisComparison {...{ filters, monthlyRange: range }} />,
             icon: <AnalyzeComparisonIcon />,
         },
     ]
