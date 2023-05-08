@@ -18,6 +18,7 @@ import useMediaQuery from '@mui/material/useMediaQuery'
 import { AnalysisSummaryProps } from 'src/modules/Analysis/tabs/AnalysisSummary/AnalysisSummary'
 import { AnalysisMaxPower } from 'src/modules/Analysis/components/AnalysisMaxPower'
 import { linksColor, warningMainHashColor } from 'src/modules/utils/muiThemeVariables'
+import { AnalysisIdleConsumption } from 'src/modules/Analysis/components/AnalysisIdleConsumption'
 
 const AnalysisCTAColor = linksColor || warningMainHashColor
 
@@ -173,10 +174,12 @@ export default function AnalysisSummary(props: AnalysisSummaryProps) {
             {!isMetricsLoading && (
                 <div className="p-24 analysis-information-list">
                     <AnalysisInformationList activeInformationName={activeInformationName} data={data} range={range} />
+                    {/* Consommation de veille. */}
+                    <AnalysisIdleConsumption data={data} />
+                    {enedisSgeConsent?.enedisSgeConsentState === 'CONNECTED' && (
+                        <AnalysisMaxPower data={data} housingId={currentHousing!.id} />
+                    )}
                 </div>
-            )}
-            {enedisSgeConsent?.enedisSgeConsentState === 'CONNECTED' && (
-                <AnalysisMaxPower data={data} housingId={currentHousing!.id} />
             )}
         </>
     )
