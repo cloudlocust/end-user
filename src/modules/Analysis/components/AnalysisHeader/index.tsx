@@ -2,8 +2,6 @@ import { motion } from 'framer-motion'
 import { ConsumptionEnedisSgeWarning } from 'src/modules/MyConsumption/components/MyConsumptionChart/ConsumptionChartWarnings'
 import { sgeConsentFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
 import MyConsumptionDatePicker from 'src/modules/MyConsumption/components/MyConsumptionDatePicker'
-import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
-import { useTheme } from '@mui/material'
 import { periodType } from 'src/modules/MyConsumption/myConsumptionTypes'
 import { getDateWithoutTimezoneOffset } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
 import { endOfMonth, startOfMonth, subMonths } from 'date-fns'
@@ -19,8 +17,6 @@ import { AnalysisHeaderProps } from 'src/modules/Analysis/components/AnalysisHea
  * @returns Analysis header JSX.
  */
 export default function AnalysisHeader({ setRange, range, enedisSgeOff }: AnalysisHeaderProps) {
-    const theme = useTheme()
-
     /**
      * Handler when DatePicker change, to apply the range related to Analysis Component and overwrites the default ConsumptionDatePicker.
      * In Analysis range always go from: start month of a given date, to: end of same month for the same given date.
@@ -37,9 +33,6 @@ export default function AnalysisHeader({ setRange, range, enedisSgeOff }: Analys
 
     return (
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="w-full flex flex-col items-center">
-            <TypographyFormatMessage className="text-14 md:text-18" style={{ color: theme.palette.primary.light }}>
-                Consommation Quotidienne pour
-            </TypographyFormatMessage>
             <MyConsumptionDatePicker
                 period={'monthly' as periodType}
                 setRange={setRange}

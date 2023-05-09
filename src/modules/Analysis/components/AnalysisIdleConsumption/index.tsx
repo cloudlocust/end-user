@@ -33,7 +33,7 @@ export function AnalysisIdleConsumption({ data }: AnalysisIdleConsumptionProps) 
 
     const totalEuro = useMemo(() => {
         if (data.length) return computeTotalEuros(data).value
-        else return 0
+        else return
     }, [data])
 
     return (
@@ -46,22 +46,30 @@ export function AnalysisIdleConsumption({ data }: AnalysisIdleConsumptionProps) 
                     <TypographyFormatMessage className="sm:text-13 font-bold md:text-16">
                         Consommation de veille :
                     </TypographyFormatMessage>
-                    <span>
-                        <TypographyFormatMessage className="sm:text-13 text-grey-600 font-bold md:text-16">
-                            Moyenne par jour :
+                    {convertedAverageIdleConsumptionDataToKwh && convertedSumIdleConsumptionDataToKwh ? (
+                        <>
+                            <span>
+                                <TypographyFormatMessage className="sm:text-13 text-grey-600 font-bold md:text-16">
+                                    Moyenne par jour :
+                                </TypographyFormatMessage>
+                                <Typography className="sm:text-13 font-medium md:text-16 ml-3">
+                                    {convertedAverageIdleConsumptionDataToKwh.toFixed(2)} kWh
+                                </Typography>
+                            </span>
+                            <span>
+                                <TypographyFormatMessage className="sm:text-13 text-grey-600 font-bold md:text-16">
+                                    Totale sur le mois :
+                                </TypographyFormatMessage>
+                                <Typography className="sm:text-13 font-medium md:text-16 ml-3">
+                                    {convertedSumIdleConsumptionDataToKwh.toFixed(2)} kWh & {totalEuro} €
+                                </Typography>
+                            </span>
+                        </>
+                    ) : (
+                        <TypographyFormatMessage className="sm:text-13 font-medium md:text-16">
+                            Aucune donnée disponible
                         </TypographyFormatMessage>
-                        <Typography className="sm:text-13 font-medium md:text-16 ml-3">
-                            {convertedAverageIdleConsumptionDataToKwh.toFixed(2)} kWh
-                        </Typography>
-                    </span>
-                    <span>
-                        <TypographyFormatMessage className="sm:text-13 text-grey-600 font-bold md:text-16">
-                            Totale sur le mois :
-                        </TypographyFormatMessage>
-                        <Typography className="sm:text-13 font-medium md:text-16 ml-3">
-                            {convertedSumIdleConsumptionDataToKwh.toFixed(2)} kWh & {totalEuro} €
-                        </Typography>
-                    </span>
+                    )}
                 </div>
             </div>
         </div>
