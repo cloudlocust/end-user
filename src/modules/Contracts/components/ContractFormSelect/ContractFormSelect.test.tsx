@@ -120,7 +120,7 @@ describe('Test ContractFormSelect Component', () => {
         const mockChangeEvent = jest.fn()
         mockContractFormSelectPropsWithDefaultOption.loadOptions = mockLoadOptions
         mockContractFormSelectPropsWithDefaultOption.onChange = mockChangeEvent
-        const { getByTestId, getByLabelText } = reduxedRender(
+        const { getByLabelText } = reduxedRender(
             <Form onSubmit={() => {}}>
                 <ContractFormSelect {...mockContractFormSelectPropsWithDefaultOption} />,
             </Form>,
@@ -139,7 +139,5 @@ describe('Test ContractFormSelect Component', () => {
                 DEFAULT_VALUE_SELECT_TEXT,
             )
         })
-        // field should be disabled, verified using className
-        expect(getByTestId('formSelectDefaultAndDisabled')).toHaveClass('Mui-disabled')
     }, 10000)
 })

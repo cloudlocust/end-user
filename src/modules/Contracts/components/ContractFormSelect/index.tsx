@@ -50,7 +50,7 @@ const ContractFormSelect = <T extends unknown>({
         if (!otherOptionLabel && optionList?.length === 1 && !getValues(name)) {
             setValue(name, formatOptionValue(optionList[0]))
         }
-    })
+    }, [getValues, setValue, otherOptionLabel, optionList, formatOptionValue, name])
 
     if (isOptionsInProgress || isNull(optionList))
         return (
@@ -58,28 +58,6 @@ const ContractFormSelect = <T extends unknown>({
                 <CircularProgress size={32} />
             </div>
         )
-
-    /**
-     * We need to render the Select even if we have disabled it,
-     * cause the user can't see the selected choice.
-     */
-    if (!otherOptionLabel && optionList.length === 1) {
-        return (
-            <Select
-                name={name}
-                data-testid="formSelectDefaultAndDisabled"
-                label={formatMessage({
-                    id: `${label}`,
-                    defaultMessage: `${label}`,
-                })}
-                validateFunctions={validateFunctions}
-                disabled={true}
-                {...otherSelectProps}
-            >
-                <MenuItem value={formatOptionValue(optionList[0])}>{formatOptionLabel(optionList[0])}</MenuItem>
-            </Select>
-        )
-    }
 
     return (
         <>
@@ -90,6 +68,7 @@ const ContractFormSelect = <T extends unknown>({
                     defaultMessage: `${label}`,
                 })}
                 defaultValue=""
+                disabled={optionList.length === 1 && !otherOptionLabel}
                 validateFunctions={validateFunctions}
                 {...otherSelectProps}
             >
