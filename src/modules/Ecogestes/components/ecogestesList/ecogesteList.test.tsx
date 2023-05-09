@@ -3,12 +3,19 @@ import userEvent from '@testing-library/user-event'
 import { BrowserRouter } from 'react-router-dom'
 import { reduxedRender } from 'src/common/react-platform-components/test'
 import { TEST_ECOGESTES } from 'src/mocks/handlers/ecogestes'
-import { IEcogeste } from 'src/modules/Ecogestes/components/ecogeste'
+import { IEcogestCategory, IEcogeste } from 'src/modules/Ecogestes/components/ecogeste'
 import EcogestesList from 'src/modules/Ecogestes/components/ecogestesList/EcogestesList'
+import EcogestesListPageHeader from 'src/modules/Ecogestes/components/ecogestesList/EcogestesListPageHeader'
 import { SnakeCasedPropertiesDeep } from 'type-fest'
 
 let mockCategoryId: string = '0'
 let mockEcogestes: SnakeCasedPropertiesDeep<IEcogeste>[] = []
+let mockEcogesteCategory: IEcogestCategory = {
+    id: 42,
+    name: 'ECO_NAME',
+    icon: 'ECO_ICON',
+    nbEcogeste: 7,
+}
 
 const mockFilterFn = jest.fn()
 
@@ -55,6 +62,17 @@ jest.mock('src/modules/Ecogestes/ecogestesHook', () => {
 })
 
 describe('EcogestesList tests', () => {
+    describe('should render correctly component', () => {
+        test('When rendering, should render correctly ecogestes', async () => {
+            const { queryByText } = reduxedRender(
+                <BrowserRouter>
+                    <EcogestesListPageHeader isLoading={false} currentCategory={mockEcogesteCategory} />
+                </BrowserRouter>,
+            )
+
+            expect(queryByText(mockEcogesteCategory.name)).toBeTruthy()
+        })
+    })
     describe('Test proper rendering for categories', () => {
         test('When rendering, should render correctly ecogestes', async () => {
             mockCategoryId = '2'
