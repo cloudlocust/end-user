@@ -1,7 +1,7 @@
 import { isEmpty, isNull } from 'lodash'
+import CircularProgress from '@mui/material/CircularProgress'
 import useEcogestes from 'src/modules/Ecogestes/ecogestesHook'
 import { useParams } from 'react-router-dom'
-import { ImageCardLoader } from 'src/common/ui-kit/components/MapElementList/components/ContentLoader/ContentLoader'
 import { EcogesteCard } from 'src/modules/Ecogestes'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import { Button, Menu, MenuItem, MenuList, SvgIcon } from '@mui/material'
@@ -12,6 +12,20 @@ import { ReactComponent as NotViewIcon } from 'src/modules/Ecogestes/components/
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
 import { EcogestViewedEnum } from 'src/modules/Ecogestes/components/ecogeste.d'
 
+/**
+ * Just a spinner to indicate that we're loading some datas.
+ *
+ * @returns JSX.Element - SpinningLoader.
+ */
+const EcogesteListLoadingComponent = () => {
+    return (
+        <div className="w-full h-full justify-center relative flex flex-col items-center align-center p-16">
+            <div style={{ display: 'flex', justifyContent: 'center', padding: '16px' }}>
+                <CircularProgress size={32} />
+            </div>
+        </div>
+    )
+}
 /**
  * Get an icon elment fragment corresponding to the given filter.
  *
@@ -41,6 +55,10 @@ const getFilterIcon = (filter: EcogestViewedEnum) => {
  * @returns A Component which displays and filter a list of ecogestes.
  */
 export const EcogestesList = () => {
+    /**
+     * Mandatory...
+     * If we don't do that we got a Re-render and some bugs like all ecogeste instead of Ecogeste linked to a Category...
+     */
     const { categoryId } = useParams</**
      * Params object.
      */
@@ -51,7 +69,7 @@ export const EcogestesList = () => {
         categoryId: string
     }>()
 
-    const categoryIdInt = categoryId ? parseInt(categoryId) : 0
+    const categoryIdInt = categoryId ? parseInt(categoryId) : undefined
 
     const {
         elementList: ecogestesList,
@@ -60,7 +78,6 @@ export const EcogestesList = () => {
     } = useEcogestes()
 
     const [currentViewFilter, setCurrentViewFilter] = useState<EcogestViewedEnum>(EcogestViewedEnum.ALL)
-    const limits = Array(10).fill(0)
 
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
     const open = Boolean(anchorEl)
@@ -86,7 +103,7 @@ export const EcogestesList = () => {
      */
     const handleFilterClick = (viewed: EcogestViewedEnum) => {
         setCurrentViewFilter(viewed)
-        filterEcogestes({ viewed })
+        filterEcogestes({ viewed, tag_id: categoryIdInt })
         handleClose()
     }
 
@@ -94,7 +111,7 @@ export const EcogestesList = () => {
         <>
             <div className="flex justify-between w-full">
                 <TypographyFormatMessage variant="h2" className="text-20 mb-20 font-bold">
-                    {categoryIdInt > 0 ? `Categorie: ${categoryIdInt}` : 'Liste de tous les écogestes:'}
+                    Les écogestes associés
                 </TypographyFormatMessage>
                 <div>
                     <Button
@@ -150,11 +167,13 @@ export const EcogestesList = () => {
                 "Aucun écogeste n'est disponible pour le moment."}
             <div
                 className="flex flex-nowrap gap-5 flex-col sm:flex-row  w-full sm:flex-wrap h-full sm:h-auto"
-                aria-label="ecogeste-listing"
+                aria-label="list, ecogests, cards"
             >
-                {isEcogestesLoadingInProgress
-                    ? limits.map((_, index) => <ImageCardLoader key={index} />)
-                    : ecogestesList?.map((ecogeste) => <EcogesteCard key={ecogeste.id} ecogeste={ecogeste} />)}
+                {isEcogestesLoadingInProgress ? (
+                    <EcogesteListLoadingComponent />
+                ) : (
+                    ecogestesList?.map((ecogeste) => <EcogesteCard key={ecogeste.id} ecogeste={ecogeste} />)
+                )}
             </div>
         </>
     )

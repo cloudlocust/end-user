@@ -3,10 +3,12 @@ import userEvent from '@testing-library/user-event'
 import { BrowserRouter } from 'react-router-dom'
 import { reduxedRender } from 'src/common/react-platform-components/test'
 import { TEST_ECOGESTES } from 'src/mocks/handlers/ecogestes'
-import EcogestesList from 'src/modules/Ecogestes/components/ecogestesList'
+import { IEcogeste } from 'src/modules/Ecogestes/components/ecogeste'
+import EcogestesList from 'src/modules/Ecogestes/components/ecogestesList/EcogestesList'
+import { SnakeCasedPropertiesDeep } from 'type-fest'
 
 let mockCategoryId: string = '0'
-let mockEcogestes: any[] = []
+let mockEcogestes: SnakeCasedPropertiesDeep<IEcogeste>[] = []
 
 const mockFilterFn = jest.fn()
 
@@ -53,9 +55,9 @@ jest.mock('src/modules/Ecogestes/ecogestesHook', () => {
 })
 
 describe('EcogestesList tests', () => {
-    describe('Test proper rendering for categores', () => {
-        test('When magic "all" category is selected, all ecogestes are displayed', async () => {
-            mockCategoryId = '0'
+    describe('Test proper rendering for categories', () => {
+        test('When rendering, should render correctly ecogestes', async () => {
+            mockCategoryId = '2'
             mockEcogestes = TEST_ECOGESTES
             const { queryByLabelText, queryAllByLabelText } = reduxedRender(
                 <BrowserRouter>
@@ -63,7 +65,7 @@ describe('EcogestesList tests', () => {
                 </BrowserRouter>,
             )
 
-            expect(queryByLabelText('ecogeste-listing')).toBeTruthy()
+            expect(queryByLabelText('list, ecogests, cards')).toBeTruthy()
             expect(queryAllByLabelText('ecogeste-card')).toHaveLength(TEST_ECOGESTES.length)
         })
 
@@ -76,7 +78,7 @@ describe('EcogestesList tests', () => {
                 </BrowserRouter>,
             )
 
-            expect(queryByLabelText('ecogeste-listing')).toBeTruthy()
+            expect(queryByLabelText('list, ecogests, cards')).toBeTruthy()
             expect(queryAllByLabelText('ecogeste-card')).toHaveLength(0)
             expect(queryByText("Aucun écogeste n'est disponible pour le moment.")).toBeTruthy()
         })

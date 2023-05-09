@@ -1,8 +1,9 @@
 import { rest } from 'msw'
 import { ECOGESTES_ENDPOINT } from 'src/modules/Ecogestes/'
 import { getPaginationFromElementList } from 'src/mocks/utils'
-import { IEcogeste } from 'src/modules/Ecogestes/components/ecogeste'
+import { IEcogeste, IEcogestCategory } from 'src/modules/Ecogestes/components/ecogeste'
 import { SnakeCasedPropertiesDeep } from 'type-fest'
+import { ECOGESTES_POLES_ENDPOINT } from 'src/modules/Ecogestes/hooks/polesHooks'
 
 /**
  * Path used for mock icons.
@@ -63,13 +64,44 @@ export const TEST_ECOGESTES: SnakeCasedPropertiesDeep<IEcogeste>[] = [
 ]
 
 /**
+ * Mock list of Consumption Poles.
+ */
+export const TEST_ECOGESTES_POLES_CATEGORY: SnakeCasedPropertiesDeep<IEcogestCategory>[] = [
+    {
+        id: 1,
+        name: 'Chauffage',
+        nb_ecogeste: 2,
+        icon: 'https://drive.google.com/uc?export=view&id=10NPb2PC1bWaKDZJXuwWly7_b11W-S46O',
+    },
+    {
+        id: 2,
+        name: 'Electricité',
+        nb_ecogeste: 1,
+        icon: 'https://drive.google.com/uc?export=view&id=10NPb2PC1bWaKDZJXuwWly7_b11W-S46O',
+    },
+]
+
+/**
  * Ecogeste and categories of ecogeste endpoints.
  */
 export const ecogestesEndpoints = [
     rest.get(ECOGESTES_ENDPOINT, (req, res, ctx) => {
         if (req.params.categoryId < 0) throw new Error('WRONG BAD')
         let gests = TEST_ECOGESTES
-
+        const tag_id = req.url.searchParams.get('tag_id')
+        if (tag_id !== null) {
+            switch (tag_id) {
+                case '1':
+                    gests = gests.slice(0, 2)
+                    break
+                case '2':
+                    gests = gests.slice(2, 3)
+                    break
+                default:
+                    gests = []
+                    break
+            }
+        }
         const viewed = req.url.searchParams.get('viewed')
         if (viewed !== null) {
             gests = gests.filter((gest) => gest.seen_by_customer === (viewed === 'true'))
@@ -84,5 +116,9 @@ export const ecogestesEndpoints = [
             return res(ctx.status(400), ctx.delay(1000))
         }
         return res(ctx.status(200), ctx.delay(1000))
+    }),
+    rest.get(`${ECOGESTES_POLES_ENDPOINT}`, (req, res, ctx) => {
+        const tag_response = getPaginationFromElementList(req, TEST_ECOGESTES_POLES_CATEGORY)
+        return res(ctx.status(200), ctx.delay(1000), ctx.json(tag_response))
     }),
 ]

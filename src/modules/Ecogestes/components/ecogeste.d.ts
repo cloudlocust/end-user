@@ -74,4 +74,74 @@ export type IEcogestGetAllFilter =
          * customer has seen the Ecogest.
          */
         viewed?: EcogestViewedEnum
+        /**
+         * If present, will return all ecogest that have this tagId.
+         */
+        tag_id?: number
+    }
+
+/**
+ * Model representing a Category of Ecogest
+ * Example: Rooms is a Category, Consumptions Pool is another Category.
+ */
+export type IEcogestCategory =
+    // eslint-disable-next-line jsdoc/require-jsdoc -- JSDoc is confused, false-positive
+    {
+        /**
+         * Unique ID for this category. Used to poke REST endpoints or in filtering requests.
+         */
+        id: number
+        /**
+         * The title of the Ecogest Category.
+         */
+        name: string
+        /**
+         * The icon of the Ecogest Category.
+         */
+        icon: string
+        /**
+         * The amount of ecogest that belong to this Category.
+         */
+        nbEcogeste: number
+    }
+
+/**
+ * EcogestPage Props for Components (Header / Content).
+ */
+export type IEcogestPageComponentProps =
+    // eslint-disable-next-line jsdoc/require-jsdoc -- JSDoc is confused, false-positive
+    {
+        /**
+         * Current EcogesteCategory used.
+         */
+        currentCategory: IEcogestCategory | null | undefined
+        /**
+         * Current List of Ecogeste Category.
+         */
+        elementList?: IEcogestCategory[] | null | undefined
+    }
+
+/**
+ * Props @interface extends EcogestPageProps.
+ */
+export interface IEcogestHeaderProps extends IEcogestPageComponentProps {
+    /**
+     * Loading state of @useEcogestPoles Hooks.
+     */
+    isLoading: boolean
+}
+
+/**
+ * Props to pass to EcogestList.
+ * This is not a mandatory cause, as default these props will use IEcogesteCategoryTypes.CONSUMPTION.
+ * This will be usefull when we will start Rooms tickets.
+ */
+export type IEcogesteListPageProps =
+    // eslint-disable-next-line jsdoc/require-jsdoc -- JSDoc is confused, false-positive
+    {
+        /**
+         * Type of the current Category.
+         * Default: CONSUMPTION (poles de consommation).
+         */
+        categoryType?: IEcogesteCategoryTypes
     }
