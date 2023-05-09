@@ -27,23 +27,6 @@ export const getApexChartAnalysisComparisonProps = ({
     let yAxisOptions: ApexYAxis[] = []
     let consumptionValuesWithoutTimestamps = yAxisSeries.map((serie) => serie['data'].map((d: any) => d[1]))
 
-    yAxisOptions.push({
-        show: true,
-        axisTicks: {
-            show: true,
-        },
-        axisBorder: {
-            show: true,
-        },
-        labels: {
-            show: true,
-            // eslint-disable-next-line jsdoc/require-jsdoc
-            formatter: (value: number, opts: any) => {
-                return `${value} kWh`
-            },
-        },
-    })
-
     analysisComparisonApexChartSeries = [
         {
             data: [convert(sum(consumptionValuesWithoutTimestamps[0])).from('Wh').to('kWh')],
@@ -56,6 +39,23 @@ export const getApexChartAnalysisComparisonProps = ({
             color: theme.palette.secondary.light,
         },
     ]
+
+    yAxisOptions.push({
+        show: true,
+        axisTicks: {
+            show: true,
+        },
+        axisBorder: {
+            show: true,
+        },
+        labels: {
+            show: true,
+            // eslint-disable-next-line jsdoc/require-jsdoc
+            formatter: (value: number, _opts: any) => {
+                return `${value} kWh`
+            },
+        },
+    })
 
     options.legend! = {
         show: true,
@@ -77,7 +77,10 @@ export const getApexChartAnalysisComparisonProps = ({
         },
     }
 
-    options!.stroke!.width = 0
+    options.stroke = {
+        colors: ['transparent'],
+        width: 5,
+    }
     options.yaxis = yAxisOptions
     options!.tooltip = {
         intersect: false,
@@ -96,8 +99,7 @@ export const getApexChartAnalysisComparisonProps = ({
     options.plotOptions = {
         bar: {
             horizontal: false,
-            columnWidth: '15%',
-            distributed: true, // enable dynamic column width
+            columnWidth: '25%',
         },
     }
     options.responsive = [

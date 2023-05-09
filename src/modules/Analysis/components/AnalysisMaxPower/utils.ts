@@ -22,9 +22,9 @@ export const computePMaxWithTimestamp = (data: IMetric[]) => {
 
     if (pmaxValue > 999) {
         return {
-            maxValue: Number(convert(pmaxValue).from('VA').to('kVA').toFixed(2)),
+            pmaxValue: Number(convert(pmaxValue).from('VA').to('kVA').toFixed(2)),
             pmaxValueTimestamp,
-            unit: 'kVa',
+            pmaxUnit: 'kVa',
         }
     }
 

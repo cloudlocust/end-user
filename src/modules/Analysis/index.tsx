@@ -16,10 +16,7 @@ import { useHasMissingHousingContracts } from 'src/hooks/HasMissingHousingContra
 import { RootState } from 'src/redux'
 import { useSelector } from 'react-redux'
 import { useEffect } from 'react'
-import { ThemeProvider, useTheme } from '@mui/material'
-import dayjs from 'dayjs'
-import duration from 'dayjs/plugin/duration'
-dayjs.extend(duration)
+import { ThemeProvider, useTheme, useMediaQuery } from '@mui/material'
 
 /**
  * InitialMetricsStates for useMetrics.
@@ -43,6 +40,10 @@ export const initialMetricsHookValues: getMetricType = {
             target: metricTargetsEnum.pMax,
             type: 'timeserie',
         },
+        {
+            target: metricTargetsEnum.idleConsumption,
+            type: 'timeserie',
+        },
     ],
     filters: [],
 }
@@ -54,6 +55,7 @@ export const initialMetricsHookValues: getMetricType = {
  */
 export default function Analysis() {
     const theme = useTheme()
+    const mdDown = useMediaQuery(theme.breakpoints.down('md'))
     const { currentHousing } = useSelector(({ housingModel }: RootState) => housingModel)
     const { getConsents, nrlinkConsent, enedisSgeConsent } = useConsents()
     const { range, setFilters, filters, data, isMetricsLoading, setRange } = useMetrics(initialMetricsHookValues)
@@ -63,15 +65,10 @@ export default function Analysis() {
     const enedisSgeOff = enedisSgeConsent?.enedisSgeConsentState !== 'CONNECTED'
 
     useEffect(() => {
-        if (currentHousing && currentHousing.meter?.guid) setFilters(formatMetricFilter(currentHousing.meter.guid))
-    }, [currentHousing, setFilters])
-
-    // UseEffect to check for consent whenever a meter is selected.
-    useEffect(() => {
-        if (filters.length > 0) {
-            getConsents(filters[0].value, currentHousing?.id)
-        }
-    }, [currentHousing?.id, filters, getConsents])
+        if (!currentHousing?.meter?.guid) return
+        setFilters(formatMetricFilter(currentHousing?.meter.guid))
+        getConsents(currentHousing?.meter.guid, currentHousing?.id)
+    }, [currentHousing?.meter?.guid, setFilters, getConsents, currentHousing?.id])
 
     const tabsContent = [
         {
@@ -97,7 +94,7 @@ export default function Analysis() {
         {
             tabTitle: 'Comparaison',
             tabSlug: 'comparison',
-            tabContent: <AnalysisComparison {...{ data, enedisSgeConsent, range }} />,
+            tabContent: <AnalysisComparison {...{ filters, monthlyRange: range }} />,
             icon: <AnalyzeComparisonIcon />,
         },
     ]
@@ -112,7 +109,7 @@ export default function Analysis() {
                 rootCss={{
                     height: 'auto',
                     minHeight: 'auto',
-                    margin: '2rem 0',
+                    margin: `${mdDown ? '0.75rem' : '2rem'} 0`,
                 }}
             />
         </ThemeProvider>

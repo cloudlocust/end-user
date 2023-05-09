@@ -1,20 +1,15 @@
-import { IEnedisSgeConsent } from 'src/modules/Consents/Consents'
-import { IMetric, metricRangeType } from 'src/modules/Metrics/Metrics.d'
+import { metricFiltersType } from 'src/modules/Metrics/Metrics.d'
 
 /**
  * Analysis comparison props.
  */
 export interface AnalysisComparisonProps {
     /**
-     * Metrics data.
+     * Monthly metrics raange.
      */
-    data: IMetric[]
+    monthlyRange: monthlyRange
     /**
-     * Enedis sge consent state.
+     * Metrics filters.
      */
-    enedisSgeConsent?: IEnedisSgeConsent
-    /**
-     * Metrics range.
-     */
-    range: metricRangeType
+    filters: metricFiltersType
 }

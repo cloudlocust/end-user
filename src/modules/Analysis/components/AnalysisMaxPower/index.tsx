@@ -23,8 +23,8 @@ export const AnalysisMaxPower = ({ data, housingId }: AnalysisMaxPowerProps) => 
     const { pmaxValue, pmaxValueTimestamp, pmaxUnit } = useMemo(() => computePMaxWithTimestamp(data), [data])
 
     return (
-        <div className="w-full flex flex-col items-center">
-            <div className="flex flex-row mb-16" style={{ width: '280px' }}>
+        <div className="w-full flex flex-col items-start md:items-center p-0">
+            <div className="flex flex-row mb-16 items-center" style={{ width: '290px' }}>
                 <Avatar style={{ width: 64, height: 64, backgroundColor: '#F6C327' }}>
                     <AdvicesIcon data-testid="pmax-svg" />
                 </Avatar>
@@ -32,22 +32,30 @@ export const AnalysisMaxPower = ({ data, housingId }: AnalysisMaxPowerProps) => 
                     <TypographyFormatMessage className="sm:text-13 font-bold md:text-16">
                         Pmax :
                     </TypographyFormatMessage>
-                    {inProgressContract && (
-                        <span>
-                            <TypographyFormatMessage className="sm:text-13 text-grey-600 font-bold md:text-16">
-                                {`Souscrite :`}
-                            </TypographyFormatMessage>
-                            <Typography className="sm:text-13 font-medium md:text-16 ml-3">
-                                {`${inProgressContract.power} kVa`}
-                            </Typography>
-                        </span>
+                    {pmaxValue ? (
+                        <>
+                            {inProgressContract && (
+                                <span>
+                                    <TypographyFormatMessage className="sm:text-13 text-grey-600 font-bold md:text-16">
+                                        {`Souscrite :`}
+                                    </TypographyFormatMessage>
+                                    <Typography className="sm:text-13 font-medium md:text-16 ml-3">
+                                        {`${inProgressContract.power} kVa`}
+                                    </Typography>
+                                </span>
+                            )}
+                            <span>
+                                <TypographyFormatMessage className="sm:text-13 text-grey-600 font-bold md:text-16">{`Max atteinte :`}</TypographyFormatMessage>
+                                <Typography className="sm:text-13 font-medium md:text-16">{`${pmaxValue} ${pmaxUnit} le ${dayjs(
+                                    pmaxValueTimestamp,
+                                ).format('dddd D MMMM')}`}</Typography>
+                            </span>
+                        </>
+                    ) : (
+                        <TypographyFormatMessage className="sm:text-13 font-medium md:text-16">
+                            Aucune donnée disponible
+                        </TypographyFormatMessage>
                     )}
-                    <span>
-                        <TypographyFormatMessage className="sm:text-13 text-grey-600 font-bold md:text-16">{`Max atteinte :`}</TypographyFormatMessage>
-                        <Typography className="sm:text-13 font-medium md:text-16">{`${pmaxValue} ${pmaxUnit} le ${dayjs(
-                            pmaxValueTimestamp,
-                        ).format('dddd D')}`}</Typography>
-                    </span>
                 </div>
             </div>
         </div>
