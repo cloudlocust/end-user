@@ -10,6 +10,12 @@ import { SnakeCasedPropertiesDeep } from 'type-fest'
 
 let mockCategoryId: string = '0'
 let mockEcogestes: SnakeCasedPropertiesDeep<IEcogeste>[] = []
+let mockEcogesteCategory: IEcogestCategory = {
+    id: 42,
+    name: 'ECO_NAME',
+    icon: 'ECO_ICON',
+    nbEcogeste: 7,
+}
 
 let mockCurrentCategory: IEcogestCategory = {
     id: 1,
@@ -73,6 +79,26 @@ jest.mock('src/modules/Ecogestes/ecogestesHook', () => {
 })
 
 describe('EcogestesList tests', () => {
+    describe('should render correctly component', () => {
+        test('When loaded, should render correctly Ecogeste Header', async () => {
+            const { queryByText } = reduxedRender(
+                <BrowserRouter>
+                    <EcogestesListPageHeader isLoading={false} currentCategory={mockEcogesteCategory} />
+                </BrowserRouter>,
+            )
+
+            expect(queryByText(mockEcogesteCategory.name)).toBeTruthy()
+        })
+        test('When loaded, should render correctly Ecogeste Header with Loading State', async () => {
+            const { queryByRole } = reduxedRender(
+                <BrowserRouter>
+                    <EcogestesListPageHeader isLoading={true} currentCategory={mockEcogesteCategory} />
+                </BrowserRouter>,
+            )
+
+            expect(queryByRole('progressbar')).toBeTruthy()
+        })
+    })
     describe('Test proper rendering for categories', () => {
         test('When rendering, should render correctly ecogestes', async () => {
             mockCategoryId = '2'
