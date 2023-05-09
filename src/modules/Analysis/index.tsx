@@ -109,7 +109,7 @@ export default function Analysis() {
                 rootCss={{
                     height: 'auto',
                     minHeight: 'auto',
-                    margin: `${mdDown ? '0.75rem' : '2rem'} 0`,
+                    margin: `${!mdDown ? '0' : '0.5rem'}`,
                 }}
             />
         </ThemeProvider>
