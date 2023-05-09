@@ -63,7 +63,7 @@ jest.mock('src/modules/Ecogestes/ecogestesHook', () => {
 
 describe('EcogestesList tests', () => {
     describe('should render correctly component', () => {
-        test('When rendering, should render correctly ecogestes', async () => {
+        test('When loaded, should render correctly Ecogeste Header', async () => {
             const { queryByText } = reduxedRender(
                 <BrowserRouter>
                     <EcogestesListPageHeader isLoading={false} currentCategory={mockEcogesteCategory} />
@@ -71,6 +71,15 @@ describe('EcogestesList tests', () => {
             )
 
             expect(queryByText(mockEcogesteCategory.name)).toBeTruthy()
+        })
+        test('When loaded, should render correctly Ecogeste Header with Loading State', async () => {
+            const { queryByRole } = reduxedRender(
+                <BrowserRouter>
+                    <EcogestesListPageHeader isLoading={true} currentCategory={mockEcogesteCategory} />
+                </BrowserRouter>,
+            )
+
+            expect(queryByRole('progressbar')).toBeTruthy()
         })
     })
     describe('Test proper rendering for categories', () => {
