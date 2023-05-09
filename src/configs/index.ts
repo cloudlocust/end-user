@@ -160,9 +160,9 @@ export const FIREBASE_CONFIG = {
  * Reference: https://stackoverflow.com/a/64961858 .
  *
  */
-export const FIREBASE_MESSAGING_SW_URL = `${
-    window._env_.REACT_APP_BASENAME_URL
-}/firebase-messaging-sw.js?${new URLSearchParams(FIREBASE_CONFIG).toString()}`
+export const FIREBASE_MESSAGING_SW_URL = `${process.env.PUBLIC_URL}/firebase-messaging-sw.js?${new URLSearchParams(
+    FIREBASE_CONFIG,
+).toString()}`
 
 /**
  * GTM ID environment variable.
