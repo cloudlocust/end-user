@@ -367,8 +367,8 @@ const colorThemes: colorThemesType = {
                         containedPrimary: {
                             backgroundColor: '#025E8D',
                             '&:hover': {
-                                backgroundColor: '#000000',
-                                color: '#FFC200',
+                                backgroundColor: '#FFC200',
+                                color: '#025E8D',
                             },
                         },
                     },
