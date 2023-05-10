@@ -6,8 +6,8 @@ import { ECOGESTES_ENDPOINT, IEcogesteCategoryTypes } from 'src/modules/Ecogeste
 // eslint-disable-next-line jsdoc/require-jsdoc
 export const loadElementListError = (_error: any, formatMessage: formatMessageType) => {
     return formatMessage({
-        id: 'Erreur lors du chargement des Pièces',
-        defaultMessage: 'Erreur lors du chargement des Pièces',
+        id: "Erreur lors du chargement des catégories d'écogeste",
+        defaultMessage: "Erreur lors du chargement des catégories d'écogeste",
     })
 }
 

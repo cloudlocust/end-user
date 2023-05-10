@@ -5,9 +5,11 @@ import { reduxedRender } from 'src/common/react-platform-components/test'
 import { EXAMPLE_ICON, TEST_ECOGESTES } from 'src/mocks/handlers/ecogestes'
 import { IEcogestCategory, IEcogeste } from 'src/modules/Ecogestes/components/ecogeste'
 import EcogestesList from 'src/modules/Ecogestes/components/ecogestesList/EcogestesList'
+import EcogestesListPageContent from 'src/modules/Ecogestes/components/ecogestesList/EcogestesListPageContent'
 import EcogestesListPageHeader from 'src/modules/Ecogestes/components/ecogestesList/EcogestesListPageHeader'
 import { SnakeCasedPropertiesDeep } from 'type-fest'
 
+const TEST_ECOGESTES_ECO_CARD_LABEL = 'ecogeste-card'
 let mockCategoryId: string = '0'
 let mockEcogestes: SnakeCasedPropertiesDeep<IEcogeste>[] = []
 let mockEcogesteCategory: IEcogestCategory = {
@@ -110,7 +112,7 @@ describe('EcogestesList tests', () => {
             )
 
             expect(queryByLabelText('list, ecogests, cards')).toBeTruthy()
-            expect(queryAllByLabelText('ecogeste-card')).toHaveLength(TEST_ECOGESTES.length)
+            expect(queryAllByLabelText(TEST_ECOGESTES_ECO_CARD_LABEL)).toHaveLength(TEST_ECOGESTES.length)
         })
 
         test('When loading fails, do not render list and give message', async () => {
@@ -123,7 +125,7 @@ describe('EcogestesList tests', () => {
             )
 
             expect(queryByLabelText('list, ecogests, cards')).toBeTruthy()
-            expect(queryAllByLabelText('ecogeste-card')).toHaveLength(0)
+            expect(queryAllByLabelText(TEST_ECOGESTES_ECO_CARD_LABEL)).toHaveLength(0)
             expect(queryByText("Aucun écogeste n'est disponible pour le moment.")).toBeTruthy()
         })
     })
@@ -185,6 +187,31 @@ describe('EcogestesList tests', () => {
             expect(getByAltText(mockCurrentCategory.name)).toHaveAttribute('src', mockCurrentCategory.icon)
             userEvent.click(getByRole('button'))
             expect(mockHistoryBackFn).toHaveBeenCalled()
+        })
+
+        describe('should render correctly PageContent', () => {
+            test('When category not existing', async () => {
+                const { getByRole } = reduxedRender(
+                    <BrowserRouter>
+                        <EcogestesListPageContent currentCategory={null} />
+                    </BrowserRouter>,
+                )
+
+                expect(getByRole('progressbar')).toBeTruthy()
+            })
+
+            test('When category have been found', async () => {
+                mockCategoryId = '2'
+                mockEcogestes = TEST_ECOGESTES
+
+                const { queryAllByLabelText } = reduxedRender(
+                    <BrowserRouter>
+                        <EcogestesListPageContent currentCategory={mockCurrentCategory} />
+                    </BrowserRouter>,
+                )
+
+                expect(queryAllByLabelText(TEST_ECOGESTES_ECO_CARD_LABEL)).toHaveLength(TEST_ECOGESTES.length)
+            })
         })
     })
 })

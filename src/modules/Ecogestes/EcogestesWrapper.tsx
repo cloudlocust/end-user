@@ -36,7 +36,10 @@ export const EcogestesWrapper = () => {
     ]
 
     return (
-        <div className="w-full relative flex flex-col items-center p-16">
+        <div
+            className="w-full relative flex flex-col items-center p-16"
+            aria-label={ecogestesCategory.toString() + 'Ecogests'}
+        >
             <PillSwitcherMenuComponent components={menuComponents} />
             {ecogestesCategory === IEcogesteCategoryTypes.CONSUMPTION ? (
                 <ConsumptionPoleEcogestes />

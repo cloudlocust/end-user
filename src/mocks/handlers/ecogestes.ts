@@ -69,17 +69,17 @@ export const TEST_ECOGESTES: SnakeCasedPropertiesDeep<IEcogeste>[] = [
 /**
  * Mock list of Consumption Poles.
  */
-export const TEST_ECOGESTES_POLES_CATEGORY: SnakeCasedPropertiesDeep<IEcogestCategory>[] = [
+export const TEST_ECOGESTES_POLES_CATEGORY: IEcogestCategory[] = [
     {
         id: 1,
         name: 'Chauffage',
-        nb_ecogeste: 2,
+        nbEcogeste: 2,
         icon: EXAMPLE_ICON,
     },
     {
         id: 2,
         name: 'Electricité',
-        nb_ecogeste: 1,
+        nbEcogeste: 1,
         icon: EXAMPLE_ICON,
     },
 ]
@@ -87,23 +87,23 @@ export const TEST_ECOGESTES_POLES_CATEGORY: SnakeCasedPropertiesDeep<IEcogestCat
 /**
  * Mock list of Consumption Poles.
  */
-export const TEST_ECOGESTES_ROOMS_CATEGORY: SnakeCasedPropertiesDeep<IEcogestCategory>[] = [
+export const TEST_ECOGESTES_ROOMS_CATEGORY: IEcogestCategory[] = [
     {
         id: 1,
         name: 'Salon',
-        nb_ecogeste: 2,
+        nbEcogeste: 2,
         icon: EXAMPLE_ICON,
     },
     {
         id: 2,
         name: 'Cuisine',
-        nb_ecogeste: 1,
+        nbEcogeste: 1,
         icon: EXAMPLE_ICON,
     },
     {
         id: 3,
         name: 'Cave',
-        nb_ecogeste: 42,
+        nbEcogeste: 42,
         icon: EXAMPLE_ICON,
     },
 ]

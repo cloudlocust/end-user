@@ -1,6 +1,6 @@
 import { reduxedRenderHook } from 'src/common/react-platform-components/test'
-import useEcogestesCategories from './useEcogestesCategories'
-import { IEcogesteCategoryTypes } from '../EcogestesConfig'
+import { IEcogesteCategoryTypes } from 'src/modules/Ecogestes/EcogestesConfig'
+import useEcogestesCategories from 'src/modules/Ecogestes/hooks/useEcogestesCategories'
 
 const mockEnqueueSnackbar = jest.fn()
 
