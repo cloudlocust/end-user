@@ -27,6 +27,10 @@ export const EcogesteCategoryCard: FC<IEcogesteCategoryCardProps> = ({
         history.push(`${URL_ROOT_ECOGESTES}/${categoryType}/${ecogestCategory.id}`)
     }
 
+    const ecogestsNumberFormatted = `${ecogestCategory.nbEcogeste} Écogeste${
+        ecogestCategory.nbEcogeste === 1 ? '' : 's'
+    }`
+
     return (
         <Card style={{ width: '150px', height: '180px' }} aria-label="ecogestCategoryCard">
             <CardActionArea className="w-full h-full" onClick={handleClick}>
@@ -49,9 +53,7 @@ export const EcogesteCategoryCard: FC<IEcogesteCategoryCardProps> = ({
                     <TypographyFormatMessage className="font-bold text-15 whitespace-normal text-center">
                         {ecogestCategory.name}
                     </TypographyFormatMessage>
-                    <TypographyFormatMessage className="text-center">
-                        {`${ecogestCategory.nbEcogeste} Écogestes`}
-                    </TypographyFormatMessage>
+                    <TypographyFormatMessage className="text-center">{ecogestsNumberFormatted}</TypographyFormatMessage>
                 </CardContent>
             </CardActionArea>
         </Card>

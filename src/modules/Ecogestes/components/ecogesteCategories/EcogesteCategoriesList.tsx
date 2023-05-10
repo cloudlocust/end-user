@@ -35,7 +35,7 @@ export const EcogesteCategoriesList = ({
 
     return (
         <CategoriesStyledDiv className="flex gap-9 flex-wrap justify-center" aria-label="list, categories, cards">
-            {categories.length > 0 ? (
+            {categories?.length > 0 ? (
                 categories?.map((category) => (
                     <EcogesteCategoryCard key={category.id} ecogestCategory={category} categoryType={categoryType} />
                 ))

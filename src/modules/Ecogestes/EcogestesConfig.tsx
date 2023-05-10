@@ -69,3 +69,8 @@ export const EcogestesConfig = [
         // eslint-disable-next-line jsdoc/require-jsdoc -- jsdoc is confused.
     } as IRoute<{}>,
 ]
+
+/**
+ * We can't found any Ecogests of this type / Ecogest.
+ */
+export const ECOGESTES_TEXT_NOT_FOUND = "Aucun écogeste de ce type n'a été trouvé"

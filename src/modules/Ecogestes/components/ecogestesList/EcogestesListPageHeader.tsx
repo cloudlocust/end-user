@@ -1,10 +1,10 @@
-import CircularProgress from '@mui/material/CircularProgress'
 import IconButton from '@mui/material/IconButton'
 import { useTheme } from '@mui/material/styles'
 import { useHistory } from 'react-router-dom'
 import { Icon } from 'src/common/ui-kit'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import { IEcogestHeaderProps } from 'src/modules/Ecogestes/components/ecogeste'
+import { EcogestesLoadingSpinner } from 'src/modules/Ecogestes/components/shared/EcogestesLoadingSpinner'
 
 /**
  * EcogestList Header Component.
@@ -52,11 +52,7 @@ const EcogestesListPageHeader = ({ isLoading, currentCategory }: IEcogestHeaderP
                     </TypographyFormatMessage>
                 </>
             ) : (
-                <div className="w-full h-full justify-center relative flex flex-col items-center align-center p-16">
-                    <div style={{ display: 'flex', justifyContent: 'center', padding: '16px' }}>
-                        <CircularProgress size={32} />
-                    </div>
-                </div>
+                <EcogestesLoadingSpinner />
             )}
         </div>
     )

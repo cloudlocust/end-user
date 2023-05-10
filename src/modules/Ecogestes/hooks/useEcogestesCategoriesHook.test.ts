@@ -3,7 +3,6 @@ import useEcogestesCategories from './useEcogestesCategories'
 import { IEcogesteCategoryTypes } from '../EcogestesConfig'
 
 const mockEnqueueSnackbar = jest.fn()
-let mockTagId: string = '1'
 
 jest.mock('notistack', () => ({
     ...jest.requireActual('notistack'),
@@ -14,18 +13,6 @@ jest.mock('notistack', () => ({
      */
     useSnackbar: () => ({
         enqueueSnackbar: mockEnqueueSnackbar,
-    }),
-}))
-
-jest.mock('react-router-dom', () => ({
-    ...jest.requireActual('react-router-dom'),
-    /**
-     * Mock the useParams.
-     *
-     * @returns UseParams.
-     */
-    useParams: () => ({
-        categoryId: mockTagId,
     }),
 }))
 
