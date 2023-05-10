@@ -35,7 +35,7 @@ export const getApexChartAnalysisComparisonProps = ({
         },
         {
             data: [round(4792 / 12)],
-            name: 'Consommation moyenne ADEM',
+            name: 'Consommation moyenne ADEME',
             color: theme.palette.secondary.light,
         },
     ]
