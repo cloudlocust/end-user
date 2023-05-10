@@ -55,8 +55,8 @@ jest.mock('react-router-dom', () => ({
 
 jest.mock('src/modules/utils/useResizeObserver')
 
-jest.mock('src/modules/Ecogestes/ecogestesHook', () => {
-    const og = jest.requireActual('src/modules/Ecogestes/ecogestesHook')
+jest.mock('src/modules/Ecogestes/hooks/ecogestesHook', () => {
+    const og = jest.requireActual('src/modules/Ecogestes/hooks/ecogestesHook')
     /**
      * Mock the useEcogest hook with some
      * predictible values that we can manipulate
