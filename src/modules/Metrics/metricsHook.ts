@@ -18,7 +18,8 @@ import { useAxiosCancelToken } from 'src/hooks/AxiosCancelToken'
 /**
  * Get Metrics Error Message.
  */
-export const GET_METRICS_ERROR_MESSAGE = 'Erreur de chargement de vos données de consommation'
+export const GET_METRICS_ERROR_MESSAGE =
+    'Nous rencontrons une erreur lors de la récupération de vos données de consommation. Veuillez réessayer plus tard'
 /**
  * Metrics endpoint.
  */
