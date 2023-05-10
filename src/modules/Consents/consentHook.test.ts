@@ -27,8 +27,8 @@ jest.mock('notistack', () => ({
 
 const TEST_METER_GUID = '123456'
 const connectedState = 'CONNECTED'
-const TEST_NRLINK_ERROR = 'Erreur lors de la récupération du consentement nrLINK'
-const TEST_ENEDIS_ERROR = 'Erreur lors de la récupération du consentement Enedis'
+const TEST_ENEDIS_NRLINK_ENPHASE_ERROR =
+    'Nous rencontrons une erreur lors de la récupération de votre consentement nrLINK ou et Enedis, ou et Enphase. Veuillez réessayer plus tard'
 
 describe('useConsents test', () => {
     test('when getConsents is called, state changes', async () => {
@@ -48,7 +48,7 @@ describe('useConsents test', () => {
         expect(result.current.enedisSgeConsent.enedisSgeConsentState).toStrictEqual(connectedState)
         expect(result.current.enphaseConsent.enphaseConsentState).toStrictEqual('ACTIVE')
     }, 8000)
-    test('when there is server error while fetching consents, snackbar is shown', async () => {
+    test('when there is server error while fetching consents, snackbar is shown only once', async () => {
         const { store } = require('src/redux')
         await store.dispatch.userModel.setAuthenticationToken(TEST_ERROR)
 
@@ -65,11 +65,7 @@ describe('useConsents test', () => {
             },
             { timeout: 6000 },
         )
-        expect(mockEnqueueSnackbar).toHaveBeenCalledWith(TEST_NRLINK_ERROR, {
-            autoHideDuration: 5000,
-            variant: 'error',
-        })
-        expect(mockEnqueueSnackbar).toHaveBeenCalledWith(TEST_ENEDIS_ERROR, {
+        expect(mockEnqueueSnackbar).toHaveBeenNthCalledWith(1, TEST_ENEDIS_NRLINK_ENPHASE_ERROR, {
             autoHideDuration: 5000,
             variant: 'error',
         })

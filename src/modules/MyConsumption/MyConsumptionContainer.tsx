@@ -72,7 +72,6 @@ export const MyConsumptionContainer = () => {
 
     const { hasMissingHousingContracts } = useHasMissingHousingContracts(range, currentHousing?.id)
 
-    // if (consentsLoading) return <div>Loading Consent...</div>
     if (consentsLoading)
         return (
             <Box
