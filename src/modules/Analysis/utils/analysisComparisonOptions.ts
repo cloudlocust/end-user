@@ -35,7 +35,7 @@ export const getApexChartAnalysisComparisonProps = ({
         },
         {
             data: [round(4792 / 12)],
-            name: "Consommation moyenne globale d'un foyer selon l'ADEME",
+            name: 'Consommation moyenne ADEM',
             color: theme.palette.secondary.light,
         },
     ]
@@ -83,6 +83,9 @@ export const getApexChartAnalysisComparisonProps = ({
     }
     options.yaxis = yAxisOptions
     options!.tooltip = {
+        style: {
+            fontSize: '10px',
+        },
         intersect: false,
         shared: true,
         x: {
