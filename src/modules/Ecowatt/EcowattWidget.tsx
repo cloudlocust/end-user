@@ -95,7 +95,11 @@ export const EcowattWidget = ({
 
     return (
         <div className="w-full">
-            <Card className="w-full rounded-20 shadow sm:m-4 pb-8" variant="outlined">
+            <Card
+                className="w-full rounded-20 shadow sm:m-4 pb-8"
+                variant="outlined"
+                style={{ maxWidth: '625px', margin: 'auto' }}
+            >
                 <div className="p-16 flex flex-row justify-center h-full">
                     <TypographyFormatMessage className="text-13 font-medium md:text-17 flex items-center">
                         {ECOWATT_TITLE}

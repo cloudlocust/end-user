@@ -25,7 +25,7 @@ export const useLastVisit = (currentTime: string) => {
         } catch (error) {
             if (isCancel(error)) return
             // A snackbar isn't necessary because this request is being performed at every page load.
-            throw Error('Erreur during last visit request')
+            // throw Error('Erreur during last visit request')
         }
     }, [axios, currentTime, isCancel])
 
