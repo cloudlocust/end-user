@@ -16,6 +16,11 @@ import {
  *
  */
 export const TEST_OFFPEAK_HOURS_ERROR_AUTHORIZATION = 'offpeakHoursError'
+
+/**
+ * Variable that Handles the case Load Housings error in response.
+ */
+export const TEST_AUTHORIZATION_ERROR_LOAD_HOUSINGS = 'ErrorHousings'
 /**
  * The offpeak hours message error.
  */
@@ -151,6 +156,8 @@ export const falseAddress: defaultValueType = {
 export const housingEndpoints = [
     // Get All housings
     rest.get(HOUSING_API, (req, res, ctx) => {
+        const authorization = req.headers.get('authorization')
+        if (authorization && authorization === TEST_AUTHORIZATION_ERROR_LOAD_HOUSINGS) return res(ctx.status(500))
         const TEST_CUSTOMERS_RESPONSE = getPaginationFromElementList<SnakeCasedPropertiesDeep<IHousing>>(
             req,
             TEST_HOUSES,
