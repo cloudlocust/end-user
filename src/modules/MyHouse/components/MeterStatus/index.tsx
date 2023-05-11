@@ -185,6 +185,7 @@ export const MeterStatus = () => {
                         <Modal open={displayEditNRLinkModal} onClose={() => setEditNRLinkModalState(false)}>
                             <Box sx={styleModalBox}>
                                 <EditNRLinkConsentForm
+                                    houseId={houseId}
                                     onSuccess={() => {
                                         setNrlinkConsent(undefined)
                                     }}

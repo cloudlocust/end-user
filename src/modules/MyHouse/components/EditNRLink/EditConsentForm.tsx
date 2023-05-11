@@ -5,24 +5,34 @@ import Divider from '@mui/material/Divider'
 import Typography from '@mui/material/Typography'
 import { useIntl } from 'react-intl'
 import CardActions from '@mui/material/CardActions'
-import { Form, requiredBuilder, regex } from 'src/common/react-platform-components'
+import { Form, requiredBuilder, regex, axios } from 'src/common/react-platform-components'
 
-import { useHousingList } from 'src/modules/MyHouse/components/HousingList/HousingsHooks'
+import { useSnackbar } from 'notistack'
+import FormControlLabel from '@mui/material/FormControlLabel'
 import { ButtonLoader, TextField } from 'src/common/ui-kit'
 import { Checkbox } from '@mui/material'
-
-import { defaultValueType } from 'src/common/ui-kit/form-fields/GoogleMapsAddressAutoComplete/utils'
 import Button from '@mui/material/Button'
+import { NRLINK_CONSENT_API } from 'src/modules/Consents/consentsHook'
+
+// eslint-disable-next-line jsdoc/require-jsdoc
+type IFormDatas = {
+    /**
+     * UUID of the new nrLINK.
+     */
+    nrlinkGuid: string
+}
 
 /**
- * This is a card for adding Housing.
+ * Form to replace current nrLINK with another nrLINK.
  *
- * @param props Props.
- * @param props.onSuccess Close Form.
- * @param props.closeModal Close Modal.
- * @returns Form To Add Housing.
+ * @param root0 N/A.
+ * @param root0.houseId ID of the house, where we need to replace the nrLINK.
+ * @param root0.onSuccess Callback when action is done with success.
+ * @param root0.closeModal Callback to close Modal when we click on "Cancel".
+ * @returns JSX.Element - Form.
  */
 export const EditConsentForm = ({
+    houseId,
     onSuccess,
     closeModal,
 }: /**
@@ -30,19 +40,29 @@ export const EditConsentForm = ({
  */
 {
     /**
-     * Function on success.
+     * Callback when action is done with success.
      */
     onSuccess: () => void
 
     /**
-     *
+     * Callback to close Modal when we click on "Cancel".
      */
     closeModal: () => void
+
+    /**
+     * ID of the house, where we need to replace the nrLINK.
+     */
+    houseId: string
 }) => {
+    const { enqueueSnackbar } = useSnackbar()
     const { formatMessage } = useIntl()
     const [raisedState, setRaisedState] = React.useState<boolean>(false)
-    const [revokeConsent, setRevokeConsent] = React.useState<boolean>(false)
+    const [clearOldData, setClearDataStatus] = React.useState<boolean>(false)
+    const [loadingInProgress, setLoadingStatus] = React.useState<boolean>(false)
 
+    /**
+     * Texts Components.
+     */
     const TXT_EDIT_NR_LINK_CONSENT = formatMessage({
         id: 'Numéro de nrLINK',
         defaultMessage: 'Numéro de nrLINK',
@@ -54,20 +74,50 @@ export const EditConsentForm = ({
     })
 
     /**
-     * Handle Checkbox.
-     *
-     * @param event DOM Event.
+     * Handle click on the Checkbox (toggle).
      */
-    function handleCheckboxChange(event: React.ChangeEvent<HTMLInputElement>) {
-        setRevokeConsent(event.target.checked)
+    function handleCheckboxChange() {
+        setClearDataStatus((clearOldData) => !clearOldData)
     }
 
-    const { addElement: addHousing, loadingInProgress } = useHousingList()
+    /**
+     * Replace old nrLINK with new nrLINK.
+     *
+     * @param newNRLinkId The ID of the new nrLINK that will replace the old.
+     */
+    async function updateNRLinkId(newNRLinkId: string) {
+        setLoadingStatus(true)
+        try {
+            let body: any = { id: newNRLinkId }
+            if (clearOldData) body.clear_data = true
+
+            await axios.patch(`${NRLINK_CONSENT_API}/${houseId}`, body)
+
+            enqueueSnackbar(
+                formatMessage({
+                    id: 'nrLINK modifié avec succès',
+                    defaultMessage: 'nrLINK modifié avec succès',
+                }),
+                { variant: 'success' },
+            )
+
+            onSuccess()
+        } catch (error) {
+            enqueueSnackbar(
+                formatMessage({
+                    id: 'Erreur lors de la modification de votre nrLINK',
+                    defaultMessage: 'Erreur lors de la modification de votre nrLINK',
+                }),
+                { variant: 'error' },
+            )
+        }
+        setLoadingStatus(false)
+    }
+
     return (
         <Form
-            onSubmit={async (data: defaultValueType) => {
-                await addHousing(data)
-                onSuccess()
+            onSubmit={async (data: IFormDatas) => {
+                await updateNRLinkId(data.nrlinkGuid)
             }}
         >
             <Card
@@ -84,6 +134,7 @@ export const EditConsentForm = ({
                             </Typography>
                         </div>
                     </div>
+
                     <Divider className="my-16" />
 
                     <TextField
@@ -98,14 +149,15 @@ export const EditConsentForm = ({
                         ]}
                         placeholder="Ex: 0CA2F400008A4F86"
                     />
+
                     <div className="flex flex-row">
-                        <Checkbox
-                            onChange={handleCheckboxChange}
-                            name="revokeConsent"
-                            checked={revokeConsent}
-                            data-testid={`checkbox-revokeConsent`}
+                        <FormControlLabel
+                            control={
+                                <Checkbox defaultChecked={false} onChange={handleCheckboxChange} color="primary" />
+                            }
+                            label={<span className="flex text-13 font-bold">{TXT_CONSENT_CHECKBOX}</span>}
+                            labelPlacement="end"
                         />
-                        <Typography className="whitespace-normal">{TXT_CONSENT_CHECKBOX}</Typography>
                     </div>
                 </CardContent>
                 <CardActions className="flex items-center content-center justify-center">
