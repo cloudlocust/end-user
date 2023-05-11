@@ -98,6 +98,11 @@ const content = [
 const propsMultiTab = {
     header: <Header />,
     content,
+    rootCss: {
+        minHeight: 136,
+        height: 136,
+        margin: '1rem 0',
+    },
 }
 
 describe('IMultiTab Test', () => {

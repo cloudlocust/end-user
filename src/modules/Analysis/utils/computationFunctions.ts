@@ -2,7 +2,14 @@ import { isNil, mean } from 'lodash'
 import { ApexChartsAxisValuesType } from 'src/modules/MyConsumption/myConsumptionTypes'
 import { consumptionWattUnitConversion } from 'src/modules/MyConsumption/utils/unitConversionFunction'
 import { computationFunctionType } from 'src/modules/Analysis/analysisTypes.d'
-import { ApexAxisChartSerie, metricTargetsEnum, metricTargetType } from 'src/modules/Metrics/Metrics.d'
+import {
+    ApexAxisChartSerie,
+    IMetric,
+    metricRangeType,
+    metricTargetsEnum,
+    metricTargetType,
+} from 'src/modules/Metrics/Metrics.d'
+import dayjs from 'dayjs'
 
 /**
  * Compute the MeanConsumption.
@@ -140,4 +147,41 @@ export const computeStatisticsMetricsTargetData = (
         case 'maximum':
             return Math.max(...values)
     }
+}
+
+/**
+ * Function that get the data according to the date range.
+ *
+ * @param data Metrics data.
+ * @param range Metrics data.
+ * @param target Metrics target.
+ * @returns Metrics object with correspending data.
+ */
+export const getDataCorrespendingToRange = (
+    data: IMetric[],
+    range: metricRangeType,
+    target: metricTargetsEnum,
+): IMetric[] => {
+    const metricData = data.find((metric) => metric.target === target)
+    const fromTimestamp = dayjs(range.from).valueOf()
+    const toTimestamp = dayjs(range.to).valueOf()
+
+    let timestampInRange: number | null = null
+    let valueInRange: number | null = null
+
+    metricData?.datapoints.forEach((item) => {
+        // Check if the timestamp is within the given range
+        if (item[1] >= fromTimestamp && item[1] <= toTimestamp) {
+            // If it is, set the timestampInRange variable to the timestamp value, and the valueInRange to the value of that timestamp.
+            timestampInRange = item[1]
+            valueInRange = item[0]
+        }
+    })
+
+    return [
+        {
+            datapoints: [[valueInRange, timestampInRange]] as unknown as number[][],
+            target: target,
+        },
+    ]
 }

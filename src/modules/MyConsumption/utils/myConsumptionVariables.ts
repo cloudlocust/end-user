@@ -82,56 +82,6 @@ export const targetOptions: metricTargetsEnum[] = [
 ]
 
 /**
- * Properties for the different metricTarget apexCharts of MyConsumptionChart.
- */
-// eslint-disable-next-line jsdoc/require-jsdoc
-export const chartSpecifities: {
-    /**
-     * For each metric target, we can store color, label and additional apexCharts ApexYAxis options such as seriesNames, show, ..etc.
-     */
-    // eslint-disable-next-line jsdoc/require-jsdoc
-    [key in metricTargetsEnum]: ApexYAxis & { label?: string }
-} = {
-    [metricTargetsEnum.consumption]: {
-        label: 'Electricité achetée sur le réseau',
-    },
-    [metricTargetsEnum.autoconsumption]: {
-        label: 'Autoconsommation',
-        seriesName: 'Electricité achetée sur le réseau',
-        show: false,
-    },
-    [metricTargetsEnum.eurosConsumption]: {
-        label: 'Consommation Euros',
-        seriesName: 'Consommation Euros',
-    },
-    [metricTargetsEnum.internalTemperature]: {
-        label: 'Température Intérieure',
-        // We put seriesName the same as internal temperature so that internal and external temperature charts will show their values in the same YAxis, instead of having 2 YAxis for each chart.
-        seriesName: 'Température Extérieure',
-    },
-    [metricTargetsEnum.externalTemperature]: {
-        label: 'Température Extérieure',
-        // We put seriesName the same as internal temperature so that internal and external temperature charts will show their values in the same YAxis, instead of having 2 YAxis for each chart.
-        seriesName: 'Température Intérieure',
-        // Show is false here so that we don't show external temperature YAxis because its values will be shown on internal Temperature YAxis
-        show: false,
-    },
-    [metricTargetsEnum.pMax]: {
-        label: 'Pmax',
-    },
-    [metricTargetsEnum.totalProduction]: {
-        label: 'Production totale',
-        seriesName: 'Autoconsommation',
-        show: true,
-    },
-    [metricTargetsEnum.injectedProduction]: {
-        label: 'Electricité redistribuée sur le réseau',
-        seriesName: 'Autoconsommation',
-        show: false,
-    },
-}
-
-/**
  * Function that returns the color for each metricTarget Chart.
  *
  * @param chartName MetricTarget Chart.

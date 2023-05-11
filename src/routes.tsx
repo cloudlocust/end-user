@@ -19,6 +19,7 @@ import { MentionsConfig } from 'src/modules/Mentions/MentionsConfig'
 import { SetPasswordConfig } from 'src/modules/User/SetPassword/SetPasswordConfig'
 import { SolarEquipmentsConfig } from 'src/modules/SolarEquipments/solarEquipmentsConfig'
 import { ErrorsConfig } from 'src/modules/Errors/ErrorsConfig'
+import { EcogestesConfig } from 'src/modules/Ecogestes/EcogestesConfig'
 
 /**
  *
@@ -42,6 +43,7 @@ export const routes = [
     ...MentionsConfig,
     ...SolarEquipmentsConfig,
     ...ErrorsConfig,
+    ...EcogestesConfig,
     {
         /**
          * TODO Document.

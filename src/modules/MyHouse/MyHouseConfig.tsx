@@ -62,7 +62,7 @@ export const tempPmaxFeatureState = window._env_.REACT_APP_TEMP_PMAX_FEATURE_STA
  */
 export const sgeConsentFeatureState = window._env_.REACT_APP_SGE_CONSENT_FEATURE_STATE === 'enabled'
 /**
- * Env Variable to know which message thas shown in the popup.
+ * Env Variable to know which message that shown in sge consent popup.
  */
 export const sgeConsentMessage = window._env_.REACT_APP_SGE_CONSENT_POPUP_MESSAGE
 

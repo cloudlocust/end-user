@@ -5,6 +5,7 @@ import { ContractFormSelectProps } from 'src/modules/Contracts/contractsTypes.d'
 import MenuItem from '@mui/material/MenuItem'
 import CircularProgress from '@mui/material/CircularProgress'
 import { isNull } from 'lodash'
+import { useFormContext } from 'react-hook-form'
 
 /**
  * ContractFormSelect component that calls the loadOptions on mount, and show the Select with optionList or spinner when loadOptions are still pending.
@@ -34,10 +35,22 @@ const ContractFormSelect = <T extends unknown>({
     ...otherSelectProps
 }: ContractFormSelectProps<T>): JSX.Element => {
     const { formatMessage } = useIntl()
+    const { getValues, setValue } = useFormContext()
+
     useEffect(() => {
         // Load optionList on mount, which will automatically update the optionList
         loadOptions()
     }, [loadOptions])
+
+    /**
+     * If User got only one choice, we choose it by default,
+     * getValues(name) should send "undefined", if undefined we set else, we don't care.
+     */
+    useEffect(() => {
+        if (!otherOptionLabel && optionList?.length === 1 && !getValues(name)) {
+            setValue(name, formatOptionValue(optionList[0]))
+        }
+    }, [getValues, setValue, otherOptionLabel, optionList, formatOptionValue, name])
 
     if (isOptionsInProgress || isNull(optionList))
         return (
@@ -55,6 +68,7 @@ const ContractFormSelect = <T extends unknown>({
                     defaultMessage: `${label}`,
                 })}
                 defaultValue=""
+                disabled={optionList.length === 1 && !otherOptionLabel}
                 validateFunctions={validateFunctions}
                 {...otherSelectProps}
             >

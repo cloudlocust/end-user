@@ -5,11 +5,11 @@ import { ForgotPasswordForm as DefaultForgotPasswordForm } from './ForgotPasswor
 import { Link } from 'react-router-dom'
 import MuiLink from '@mui/material/Link'
 import './ForgotPassword.scss'
-import { CLIENT_ICON_FOLDER } from 'src/configs'
 import CardContent from '@mui/material/CardContent'
 import { motion } from 'framer-motion'
 import { URL_LOGIN } from 'src/modules/User/Login/LoginConfig'
 import { linksColor } from 'src/modules/utils/muiThemeVariables'
+import { renderCommonLogo } from 'src/modules/User/Login/Login'
 /**
  * Props of the forget password component.
  */
@@ -37,11 +37,7 @@ export const ForgotPassword: FC<ForgotPasswordProps> = ({
                 <motion.div initial={{ opacity: 0, scale: 0.6 }} animate={{ opacity: 1, scale: 1 }}>
                     <Card>
                         <CardContent className="flex flex-col items-center justify-center p-16 sm:p-24 md:p-32">
-                            <img
-                                className="w-128 m-32"
-                                src={`./clients-icons/${CLIENT_ICON_FOLDER}/${CLIENT_ICON_FOLDER}.svg`}
-                                alt="logo"
-                            />
+                            {renderCommonLogo()}
                             <Typography variant="h6" className="mt-16 mb-24 text-center font-semibold sm:text-20">
                                 {formatMessage({
                                     id: 'Récupérez votre mot de passe',
