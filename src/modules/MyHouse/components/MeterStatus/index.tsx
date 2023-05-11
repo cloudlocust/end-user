@@ -182,7 +182,11 @@ export const MeterStatus = () => {
                                 <EditIcon />
                             </IconButton>
                         </div>
-                        <Modal open={displayEditNRLinkModal} onClose={() => setEditNRLinkModalState(false)}>
+                        <Modal
+                            aria-label="nrLINKEditConsentModal"
+                            open={displayEditNRLinkModal}
+                            onClose={() => setEditNRLinkModalState(false)}
+                        >
                             <Box sx={styleModalBox}>
                                 <EditNRLinkConsentForm
                                     houseId={houseId}

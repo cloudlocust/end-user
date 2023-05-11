@@ -1,5 +1,5 @@
 import React from 'react'
-import { Card } from '@mui/material'
+import { Card, Checkbox } from '@mui/material'
 import CardContent from '@mui/material/CardContent'
 import Divider from '@mui/material/Divider'
 import Typography from '@mui/material/Typography'
@@ -10,7 +10,6 @@ import { Form, requiredBuilder, regex, axios } from 'src/common/react-platform-c
 import { useSnackbar } from 'notistack'
 import FormControlLabel from '@mui/material/FormControlLabel'
 import { ButtonLoader, TextField } from 'src/common/ui-kit'
-import { Checkbox } from '@mui/material'
 import Button from '@mui/material/Button'
 import { NRLINK_CONSENT_API } from 'src/modules/Consents/consentsHook'
 
@@ -116,6 +115,7 @@ export const EditConsentForm = ({
 
     return (
         <Form
+            aria-label="EditConsentForm"
             onSubmit={async (data: IFormDatas) => {
                 await updateNRLinkId(data.nrlinkGuid)
             }}

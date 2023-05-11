@@ -20,6 +20,7 @@ import { TEST_HOUSES } from 'src/mocks/handlers/houses'
 import { applyCamelCase } from 'src/common/react-platform-components'
 import * as reactRedux from 'react-redux'
 import { sgeConsentMessage } from 'src/modules/MyHouse/MyHouseConfig'
+import { waitFor } from '@testing-library/react'
 
 const LIST_OF_HOUSES: IHousing[] = applyCamelCase(TEST_HOUSES)
 /**
@@ -174,7 +175,7 @@ describe('MeterStatus component test', () => {
         test('when nrlink status is connected', async () => {
             mockNrlinkConsent = 'CONNECTED'
 
-            const { getByText, getByAltText } = reduxedRender(
+            const { getByText, getByAltText, getByTestId, queryByAltText } = reduxedRender(
                 <Router>
                     <MeterStatus />
                 </Router>,
@@ -185,12 +186,15 @@ describe('MeterStatus component test', () => {
             // eslint-disable-next-line sonarjs/no-duplicate-string
             const image = getByAltText('connected-icon')
 
+            expect(getByTestId('EditIcon')).toBeTruthy()
             expect(getByAltText('connected-icon')).toBeTruthy()
             expect(getByText(COMPTEUR_TITLE)).toBeTruthy()
             expect(getByText(`n° ${foundHouse?.meter?.guid}`)).toBeTruthy()
             expect(getByText(NRLINK_TITLE)).toBeTruthy()
             expect(image).toHaveAttribute('src', STATUS_ON_SRC)
             expect(getByText(`nrLINK n° ${mockNrlinkGuid}`)).toBeTruthy()
+
+            expect(queryByAltText('EditConsentForm')).not.toBeTruthy()
         })
         test('when nrlink status is disconnected', async () => {
             mockNrlinkConsent = 'DISCONNECTED'
@@ -242,6 +246,26 @@ describe('MeterStatus component test', () => {
 
             expect(mockGetConsent).not.toBeCalledWith()
             expect(getByText(NO_METER_MESSAGE)).toBeTruthy()
+        })
+        test('when clicking on Edit, display EditConsentForm', async () => {
+            mockNrlinkConsent = 'CONNECTED'
+
+            const { getByTestId, getByText, queryByLabelText } = reduxedRender(
+                <Router>
+                    <MeterStatus />
+                </Router>,
+            )
+
+            expect(getByTestId('EditIcon')).toBeTruthy()
+            expect(queryByLabelText('nrLINKEditConsentModal')).not.toBeTruthy()
+
+            userEvent.click(getByTestId('EditIcon'))
+            await waitFor(() => {
+                expect(queryByLabelText('nrLINKEditConsentModal')).toBeTruthy()
+            })
+
+            expect(getByText('Numéro de nrLINK')).toBeTruthy()
+            expect(getByText('Annuler mon ancien consentement nrLINK et effacer ses données')).toBeTruthy()
         })
     })
     describe('enedis status test', () => {
