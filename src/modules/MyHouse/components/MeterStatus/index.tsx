@@ -1,21 +1,35 @@
-import { Card, useTheme, Icon, CircularProgress, useMediaQuery, Divider, Tooltip, styled } from '@mui/material'
+import EditIcon from '@mui/icons-material/Edit'
+import {
+    Card,
+    CircularProgress,
+    Divider,
+    Icon,
+    IconButton,
+    Tooltip,
+    styled,
+    useMediaQuery,
+    useTheme,
+} from '@mui/material'
 import { TooltipProps, tooltipClasses } from '@mui/material/Tooltip'
-import { NavLink, useParams } from 'react-router-dom'
-import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
-import { ReactComponent as ContractIcon } from 'src/assets/images/content/housing/contract.svg'
-import { sgeConsentFeatureState, enphaseConsentFeatureState, URL_MY_HOUSE } from 'src/modules/MyHouse/MyHouseConfig'
-import { MuiCardContent } from 'src/common/ui-kit'
-import { useConsents } from 'src/modules/Consents/consentsHook'
-import { useEffect, useState } from 'react'
-import { enedisSgeConsentStatus, enphaseConsentStatus, nrlinkConsentStatus } from 'src/modules/Consents/Consents'
 import dayjs from 'dayjs'
+import { useEffect, useState } from 'react'
 import { useIntl } from 'react-intl'
-import { NrlinkConnectionStepsEnum } from 'src/modules/nrLinkConnection/nrlinkConnectionSteps.d'
-import { EnedisSgePopup } from 'src/modules/MyHouse/components/MeterStatus/EnedisSgePopup'
 import { useSelector } from 'react-redux'
-import { RootState } from 'src/redux'
+import { NavLink, useParams } from 'react-router-dom'
+import { ReactComponent as ContractIcon } from 'src/assets/images/content/housing/contract.svg'
+import { MuiCardContent } from 'src/common/ui-kit'
+import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
+import { enedisSgeConsentStatus, enphaseConsentStatus, nrlinkConsentStatus } from 'src/modules/Consents/Consents'
+import { useConsents } from 'src/modules/Consents/consentsHook'
+import { URL_MY_HOUSE, enphaseConsentFeatureState, sgeConsentFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
 import { IHousing } from 'src/modules/MyHouse/components/HousingList/housing'
+import { EnedisSgePopup } from 'src/modules/MyHouse/components/MeterStatus/EnedisSgePopup'
 import { EnphaseConsentPopup } from 'src/modules/MyHouse/components/MeterStatus/EnphaseConsentPopup'
+import { NrlinkConnectionStepsEnum } from 'src/modules/nrLinkConnection/nrlinkConnectionSteps.d'
+import { RootState } from 'src/redux'
+import Modal from '@mui/material/Modal'
+import Box from '@mui/material/Box'
+import { EditNRLinkConsentForm } from 'src/modules/MyHouse/components/EditNRLink'
 
 const FORMATTED_DATA = 'DD/MM/YYYY'
 const TEXT_CONNEXION_LE = 'Connexion le'
@@ -59,11 +73,14 @@ export const MeterStatus = () => {
         enphaseConsent,
         enphaseLink,
         getEnphaseLink,
+        setNrlinkConsent,
     } = useConsents()
     const { housingList } = useSelector(({ housingModel }: RootState) => housingModel)
     const [foundHousing, setFoundHousing] = useState<IHousing>()
     const [openEnphaseConsentPopup, setOpenEnphaseConsentPopup] = useState(false)
     const [openCancelCollectionDataTooltip, setOpenCancelCollectionDataTooltip] = useState(false)
+
+    const [displayEditNRLinkModal, setEditNRLinkModalState] = useState(false)
 
     // Retrieving house id from url params /my-houses/:houseId
     // eslint-disable-next-line jsdoc/require-jsdoc
@@ -75,6 +92,14 @@ export const MeterStatus = () => {
     const enedisConsentEndingDate = dayjs(enedisSgeConsent?.createdAt).add(3, 'year').format('DD/MM/YYYY')
     /* Enphase created at date formatted */
     const enphaseConsentCreatedAt = dayjs(enphaseConsent?.createdAt).format(FORMATTED_DATA)
+
+    const styleModalBox = {
+        position: 'absolute' as 'absolute',
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        width: 300,
+    }
 
     /**
      * Function that handle closing the popup.
@@ -152,6 +177,21 @@ export const MeterStatus = () => {
                                 defaultMessage: TEXT_CONNEXION_LE,
                             })} ${nrlinkConsentCreatedAt}`}</span>
                         </div>
+                        <div className="flex flex-1 justify-end">
+                            <IconButton color="primary" size="large" onClick={() => setEditNRLinkModalState(true)}>
+                                <EditIcon />
+                            </IconButton>
+                        </div>
+                        <Modal open={displayEditNRLinkModal} onClose={() => setEditNRLinkModalState(false)}>
+                            <Box sx={styleModalBox}>
+                                <EditNRLinkConsentForm
+                                    onSuccess={() => {
+                                        setNrlinkConsent(undefined)
+                                    }}
+                                    closeModal={() => setEditNRLinkModalState(false)}
+                                />
+                            </Box>
+                        </Modal>
                     </>
                 )
             case 'DISCONNECTED':
