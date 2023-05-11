@@ -240,6 +240,7 @@ export const WidgetTargets: metricTargetType[] = enphaseConsentFeatureState
           metricTargetsEnum.pMax,
           metricTargetsEnum.externalTemperature,
           metricTargetsEnum.internalTemperature,
+          metricTargetsEnum.idleConsumption,
       ]
     : [
           metricTargetsEnum.consumption,
@@ -247,4 +248,5 @@ export const WidgetTargets: metricTargetType[] = enphaseConsentFeatureState
           metricTargetsEnum.pMax,
           metricTargetsEnum.externalTemperature,
           metricTargetsEnum.internalTemperature,
+          metricTargetsEnum.idleConsumption,
       ]

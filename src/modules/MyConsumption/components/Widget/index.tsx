@@ -4,13 +4,17 @@ import { IWidgetProps } from 'src/modules/MyConsumption/components/Widget/Widget
 import { useMetrics } from 'src/modules/Metrics/metricsHook'
 import {
     computeWidgetAssets,
+    getPreviousDayRange,
     getWidgetPreviousRange,
     getWidgetRange,
+    isDateWithinDay,
     renderWidgetTitle,
 } from 'src/modules/MyConsumption/components/Widget/WidgetFunctions'
 import { computePercentageChange } from 'src/modules/Analysis/utils/computationFunctions'
 import { WidgetItem } from 'src/modules/MyConsumption/components/WidgetItem'
 import { ConsumptionWidgetsMetricsContext } from 'src/modules/MyConsumption/components/ConsumptionWidgetsContainer/ConsumptionWidgetsMetricsContext'
+import { metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
+import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 
 const emptyValueUnit = { value: 0, unit: '' }
 
@@ -25,6 +29,7 @@ const emptyValueUnit = { value: 0, unit: '' }
  * @param props.period Current Period.
  * @returns Widget Component.
  */
+// eslint-disable-next-line sonarjs/cognitive-complexity
 export const Widget = memo(({ filters, range, infoIcon, metricsInterval, target, period, children }: IWidgetProps) => {
     const { data, setMetricsInterval, setRange, isMetricsLoading } = useMetrics({
         interval: metricsInterval,
@@ -52,6 +57,8 @@ export const Widget = memo(({ filters, range, infoIcon, metricsInterval, target,
         ],
         filters,
     })
+
+    const isDateWithinDateRange = isDateWithinDay(range.from, range.to)
 
     const { storeWidgetMetricsData } = useContext(ConsumptionWidgetsMetricsContext)
 
@@ -86,22 +93,41 @@ export const Widget = memo(({ filters, range, infoIcon, metricsInterval, target,
 
     // get metrics when metricsInterval change.
     useEffect(() => {
-        setMetricsInterval(metricsInterval)
-        setMetricsIntervalPrevious(metricsInterval)
-    }, [metricsInterval, setMetricsInterval, setMetricsIntervalPrevious])
+        if (period === 'daily' && target === metricTargetsEnum.idleConsumption) {
+            setMetricsInterval('1d')
+            setMetricsIntervalPrevious('1d')
+        } else {
+            setMetricsInterval(metricsInterval)
+            setMetricsIntervalPrevious(metricsInterval)
+        }
+    }, [
+        metricsInterval,
+        period,
+        range,
+        setMetricsInterval,
+        setMetricsIntervalPrevious,
+        setRange,
+        setRangePrevious,
+        target,
+    ])
 
     // When period or range changes
     useEffect(() => {
         // If period just changed block the call of getMetrics, because period and range changes at the same time, so to avoid two call of getMetrics
         // 1 call when range change and the other when period change, then only focus on when range changes.
         if (isRangeChanged.current) {
-            const widgetRange = getWidgetRange(range, period)
-            setRange(widgetRange)
-            setRangePrevious(getWidgetPreviousRange(widgetRange, period))
-            // reset isRangdChanged
+            if (period === 'daily' && target === metricTargetsEnum.idleConsumption) {
+                setRange(getPreviousDayRange(range)!)
+                setRangePrevious(getPreviousDayRange(range, 2)!)
+            } else {
+                const widgetRange = getWidgetRange(range, period)
+                setRange(widgetRange)
+                setRangePrevious(getWidgetPreviousRange(widgetRange, period))
+                // reset isRangdChanged
+            }
             isRangeChanged.current = false
         }
-    }, [period, range, setRange, setRangePrevious])
+    }, [period, range, setRange, setRangePrevious, target])
 
     return (
         <Grid item xs={6} sm={6} md={4} lg={3} xl={3} className="flex">
@@ -113,6 +139,20 @@ export const Widget = memo(({ filters, range, infoIcon, metricsInterval, target,
                             style={{ height: '170px' }}
                         >
                             <CircularProgress style={{ color: theme.palette.primary.main }} />
+                        </div>
+                    ) : isDateWithinDateRange && target === metricTargetsEnum.idleConsumption ? (
+                        <div className="p-16 flex flex-col flex-1 gap-3 justify-between h-full">
+                            <div className="text-center flex flex-1 justify-center items-center py-4">
+                                <TypographyFormatMessage
+                                    sx={(theme) => ({
+                                        color: theme.palette.secondary.main,
+                                    })}
+                                    fontWeight={500}
+                                >
+                                    La moyenne de votre consommation de veille pour aujourd'hui est en cours mais
+                                    disponible sur hier
+                                </TypographyFormatMessage>
+                            </div>
                         </div>
                     ) : (
                         <div className="h-full flex flex-col">
