@@ -182,6 +182,7 @@ function NavbarMobileContent(props: /**
                             width: '100vw',
                             overflowX: 'auto',
                             backgroundColor: theme.palette.background.default,
+                            marginTop: '2rem',
                         }}
                         value={selectedNavigation}
                         onChange={(_event, item) => handleParentItemClick(item)}
