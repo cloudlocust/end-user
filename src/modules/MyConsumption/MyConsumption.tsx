@@ -1,3 +1,4 @@
+import PageSimple from 'src/common/ui-kit/fuse/components/PageSimple/PageSimple'
 import { MyConsumptionContainer } from 'src/modules/MyConsumption/MyConsumptionContainer'
 
 /**
@@ -6,5 +7,5 @@ import { MyConsumptionContainer } from 'src/modules/MyConsumption/MyConsumptionC
  * @returns MyConsumptionContainer.
  */
 export const MyConsumption = () => {
-    return <MyConsumptionContainer />
+    return <PageSimple content={<MyConsumptionContainer />} />
 }

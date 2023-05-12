@@ -31,6 +31,7 @@ import { linksColor, warningMainHashColor } from 'src/modules/utils/muiThemeVari
 import useMediaQuery from '@mui/material/useMediaQuery'
 import { ConsumptionEnedisSgeWarning } from 'src/modules/MyConsumption/components/MyConsumptionChart/ConsumptionChartWarnings'
 import { sgeConsentFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
+import PageSimple from 'src/common/ui-kit/fuse/components/PageSimple/PageSimple'
 
 const AnalysisCTAColor = linksColor || warningMainHashColor
 /**
@@ -162,92 +163,100 @@ const Analysis = () => {
     const totalEurosConsumption = data.length ? computeTotalEuros(data) : { value: 0, unit: 'kWh' }
 
     return (
-        <div>
-            <div
-                style={{ background: theme.palette.primary.dark, minHeight: '64px' }}
-                className="w-full relative flex flex-col justify-center items-center p-16"
-            >
-                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-                    <TypographyFormatMessage
-                        className="text-18 md:text-24"
-                        style={{ color: theme.palette.primary.contrastText }}
-                    >
-                        Consommation Quotidienne pour
-                    </TypographyFormatMessage>
-                    <MyConsumptionDatePicker
-                        period={'monthly' as periodType}
-                        setRange={setRange}
-                        range={range}
-                        onDatePickerChange={handleDatePickerOnChange}
-                        maxDate={endOfMonth(subMonths(new Date(), 1))}
-                    />
-                    <ConsumptionEnedisSgeWarning isShowWarning={enedisSgeOff && sgeConsentFeatureState} />
-                </motion.div>
-                {hasMissingHousingContracts && (
-                    <div className="flex items-center justify-center flex-col">
-                        <ErrorOutlineIcon
-                            sx={{
-                                color: AnalysisCTAColor,
-                                width: { xs: '24px', md: '32px' },
-                                height: { xs: '24px', md: '32px' },
-                                margin: { xs: '0 0 4px 0', md: '0 8px 0 0' },
-                            }}
-                        />
-
-                        <div className="w-full">
-                            <TypographyFormatMessage
-                                sx={{ color: AnalysisCTAColor }}
-                                className="text-13 md:text-16 text-center"
-                            >
-                                {
-                                    "Le coût en euros est un exemple. Vos données contractuelles de fourniture d'énergie ne sont pas disponibles sur toute la période."
-                                }
-                            </TypographyFormatMessage>
-                            <NavLink to={`${URL_MY_HOUSE}/${currentHousing?.id}/contracts`}>
-                                <TypographyFormatMessage
-                                    className="underline text-13 md:text-16 text-center"
-                                    sx={{ color: AnalysisCTAColor }}
-                                >
-                                    Renseigner votre contrat d'énergie
-                                </TypographyFormatMessage>
-                            </NavLink>
-                        </div>
-                    </div>
-                )}
-            </div>
-
-            <div style={{ position: 'relative' }}>
-                {isMetricsLoading ? (
+        <PageSimple
+            content={
+                <div>
                     <div
-                        style={{ height: isMobile ? '360px' : '520px' }}
-                        className="p-24 CircularProgress flex flex-col justify-center items-center "
+                        style={{ background: theme.palette.primary.dark, minHeight: '64px' }}
+                        className="w-full relative flex flex-col justify-center items-center p-16"
                     >
-                        <CircularProgress style={{ color: theme.palette.primary.main }} />
-                    </div>
-                ) : (
-                    <AnalysisChart data={data} getSelectedValueElementColor={getSelectedValueElementColor}>
-                        <div className="flex flex-col justify-center items-center">
-                            <p className="text-16 md:text-20 font-medium mb-8">
-                                {totalConsumption.value} {totalConsumption.unit}
-                            </p>
-                            <AnalysisPercentageChangeArrows
-                                dateReferenceConsumptionValue={subDays(new Date(range.to), 1)}
-                                referenceConsumptionValue={referenceConsumptionValue}
-                                filters={filters}
+                        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+                            <TypographyFormatMessage
+                                className="text-18 md:text-24"
+                                style={{ color: theme.palette.primary.contrastText }}
+                            >
+                                Consommation Quotidienne pour
+                            </TypographyFormatMessage>
+                            <MyConsumptionDatePicker
+                                period={'monthly' as periodType}
+                                setRange={setRange}
+                                range={range}
+                                onDatePickerChange={handleDatePickerOnChange}
+                                maxDate={endOfMonth(subMonths(new Date(), 1))}
                             />
-                            <p className="text-16 md:text-20 font-medium">
-                                {Number(totalEurosConsumption.value).toFixed(2)} {totalEurosConsumption.unit}
-                            </p>
+                            <ConsumptionEnedisSgeWarning isShowWarning={enedisSgeOff && sgeConsentFeatureState} />
+                        </motion.div>
+                        {hasMissingHousingContracts && (
+                            <div className="flex items-center justify-center flex-col">
+                                <ErrorOutlineIcon
+                                    sx={{
+                                        color: AnalysisCTAColor,
+                                        width: { xs: '24px', md: '32px' },
+                                        height: { xs: '24px', md: '32px' },
+                                        margin: { xs: '0 0 4px 0', md: '0 8px 0 0' },
+                                    }}
+                                />
+
+                                <div className="w-full">
+                                    <TypographyFormatMessage
+                                        sx={{ color: AnalysisCTAColor }}
+                                        className="text-13 md:text-16 text-center"
+                                    >
+                                        {
+                                            "Le coût en euros est un exemple. Vos données contractuelles de fourniture d'énergie ne sont pas disponibles sur toute la période."
+                                        }
+                                    </TypographyFormatMessage>
+                                    <NavLink to={`${URL_MY_HOUSE}/${currentHousing?.id}/contracts`}>
+                                        <TypographyFormatMessage
+                                            className="underline text-13 md:text-16 text-center"
+                                            sx={{ color: AnalysisCTAColor }}
+                                        >
+                                            Renseigner votre contrat d'énergie
+                                        </TypographyFormatMessage>
+                                    </NavLink>
+                                </div>
+                            </div>
+                        )}
+                    </div>
+
+                    <div style={{ position: 'relative' }}>
+                        {isMetricsLoading ? (
+                            <div
+                                style={{ height: isMobile ? '360px' : '520px' }}
+                                className="p-24 CircularProgress flex flex-col justify-center items-center "
+                            >
+                                <CircularProgress style={{ color: theme.palette.primary.main }} />
+                            </div>
+                        ) : (
+                            <AnalysisChart data={data} getSelectedValueElementColor={getSelectedValueElementColor}>
+                                <div className="flex flex-col justify-center items-center">
+                                    <p className="text-16 md:text-20 font-medium mb-8">
+                                        {totalConsumption.value} {totalConsumption.unit}
+                                    </p>
+                                    <AnalysisPercentageChangeArrows
+                                        dateReferenceConsumptionValue={subDays(new Date(range.to), 1)}
+                                        referenceConsumptionValue={referenceConsumptionValue}
+                                        filters={filters}
+                                    />
+                                    <p className="text-16 md:text-20 font-medium">
+                                        {Number(totalEurosConsumption.value).toFixed(2)} {totalEurosConsumption.unit}
+                                    </p>
+                                </div>
+                            </AnalysisChart>
+                        )}
+                    </div>
+                    {!isMetricsLoading && (
+                        <div className="p-24 analysis-information-list">
+                            <AnalysisInformationList
+                                activeInformationName={activeInformationName}
+                                data={data}
+                                range={range}
+                            />
                         </div>
-                    </AnalysisChart>
-                )}
-            </div>
-            {!isMetricsLoading && (
-                <div className="p-24 analysis-information-list">
-                    <AnalysisInformationList activeInformationName={activeInformationName} data={data} range={range} />
+                    )}
                 </div>
-            )}
-        </div>
+            }
+        />
     )
 }
 
