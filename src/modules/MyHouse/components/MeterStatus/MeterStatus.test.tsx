@@ -21,6 +21,10 @@ import { applyCamelCase } from 'src/common/react-platform-components'
 import * as reactRedux from 'react-redux'
 import { sgeConsentMessage } from 'src/modules/MyHouse/MyHouseConfig'
 import { waitFor } from '@testing-library/react'
+import {
+    MSG_REPLACE_NRLINK_CLEAR_OLD_DATA,
+    MSG_REPLACE_NRLINK_MODAL_TITLE,
+} from 'src/modules/MyHouse/components/ReplaceNRLinkFormPopup/replaceNrLinkFormPopupConfig'
 
 const LIST_OF_HOUSES: IHousing[] = applyCamelCase(TEST_HOUSES)
 /**
@@ -194,7 +198,7 @@ describe('MeterStatus component test', () => {
             expect(image).toHaveAttribute('src', STATUS_ON_SRC)
             expect(getByText(`nrLINK n° ${mockNrlinkGuid}`)).toBeTruthy()
 
-            expect(queryByAltText('EditConsentForm')).not.toBeTruthy()
+            expect(queryByAltText('ReplaceNRLinkFormPopup')).not.toBeTruthy()
         })
         test('when nrlink status is disconnected', async () => {
             mockNrlinkConsent = 'DISCONNECTED'
@@ -247,7 +251,7 @@ describe('MeterStatus component test', () => {
             expect(mockGetConsent).not.toBeCalledWith()
             expect(getByText(NO_METER_MESSAGE)).toBeTruthy()
         })
-        test('when clicking on Edit, display EditConsentForm', async () => {
+        test('when clicking on Edit, display ReplaceNRLinkForm', async () => {
             mockNrlinkConsent = 'CONNECTED'
 
             const { getByTestId, getByText, queryByLabelText } = reduxedRender(
@@ -257,15 +261,15 @@ describe('MeterStatus component test', () => {
             )
 
             expect(getByTestId('EditIcon')).toBeTruthy()
-            expect(queryByLabelText('nrLINKEditConsentModal')).not.toBeTruthy()
+            expect(queryByLabelText('ReplaceNRLinkFormPopup')).not.toBeTruthy()
 
             userEvent.click(getByTestId('EditIcon'))
             await waitFor(() => {
-                expect(queryByLabelText('nrLINKEditConsentModal')).toBeTruthy()
+                expect(queryByLabelText('ReplaceNRLinkFormPopup')).toBeTruthy()
             })
 
-            expect(getByText('Numéro de nrLINK')).toBeTruthy()
-            expect(getByText('Annuler mon ancien consentement nrLINK et effacer ses données')).toBeTruthy()
+            expect(getByText(MSG_REPLACE_NRLINK_MODAL_TITLE)).toBeTruthy()
+            expect(getByText(MSG_REPLACE_NRLINK_CLEAR_OLD_DATA)).toBeTruthy()
         })
     })
     describe('enedis status test', () => {

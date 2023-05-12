@@ -1,5 +1,7 @@
 import { rest } from 'msw'
 import { API_RESOURCES_URL } from 'src/configs'
+import { NRLINK_CONSENT_API } from 'src/modules/Consents/consentsHook'
+import { IReplaceNRLinkPayload } from 'src/modules/MyHouse/components/ReplaceNRLinkFormPopup/replaceNrLinkFormPopup'
 import {
     GET_SHOW_NRLINK_POPUP_ENDPOINT,
     SET_SHOW_NRLINK_POPUP_ENDPOINT,
@@ -52,6 +54,24 @@ export const nrlinkEndpoints = [
             )
         // Other error
         if (req.body.nrlink_guid === 'ccccc3ccccc3cccc') return res(ctx.status(400), ctx.delay(1000))
+        // Success
+        return res(ctx.status(200), ctx.delay(1000))
+    }),
+
+    rest.patch<IReplaceNRLinkPayload>(`${NRLINK_CONSENT_API}/:houseId`, (req, res, ctx) => {
+        const { houseId } = req.params
+
+        // invalid House Id
+        if (houseId === 'INVALID_HOUSE_ID') return res(ctx.status(404), ctx.delay(1000))
+
+        // using Clear Data payload
+        if (req.body.old === 'aaaaa1aaaaa1aaaa') {
+            if (req.body.clear_data === true) {
+                return res(ctx.status(200), ctx.delay(1000))
+            }
+            return res(ctx.status(500), ctx.delay(1000))
+        }
+
         // Success
         return res(ctx.status(200), ctx.delay(1000))
     }),

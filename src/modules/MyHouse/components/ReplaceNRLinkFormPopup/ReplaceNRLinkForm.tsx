@@ -2,24 +2,23 @@ import React from 'react'
 import { Card, Checkbox } from '@mui/material'
 import CardContent from '@mui/material/CardContent'
 import Divider from '@mui/material/Divider'
-import Typography from '@mui/material/Typography'
 import { useIntl } from 'react-intl'
 import CardActions from '@mui/material/CardActions'
-import { Form, requiredBuilder, regex, axios } from 'src/common/react-platform-components'
+import { Form, requiredBuilder, regex } from 'src/common/react-platform-components'
 
-import { useSnackbar } from 'notistack'
 import FormControlLabel from '@mui/material/FormControlLabel'
 import { ButtonLoader, TextField } from 'src/common/ui-kit'
 import Button from '@mui/material/Button'
-import { NRLINK_CONSENT_API } from 'src/modules/Consents/consentsHook'
-
-// eslint-disable-next-line jsdoc/require-jsdoc
-type IFormDatas = {
-    /**
-     * UUID of the new nrLINK.
-     */
-    nrlinkGuid: string
-}
+import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
+import {
+    MSG_REPLACE_NRLINK_MODAL_TITLE,
+    MSG_REPLACE_NRLINK_CLEAR_OLD_DATA,
+} from 'src/modules/MyHouse/components/ReplaceNRLinkFormPopup/replaceNrLinkFormPopupConfig'
+import useReplaceNRLinkHook from 'src/modules/MyHouse/components/ReplaceNRLinkFormPopup/hooks/replaceNrLinkHook'
+import {
+    IReplaceNRLinkFormProps,
+    IReplaceNRLinkPayload,
+} from 'src/modules/MyHouse/components/ReplaceNRLinkFormPopup/replaceNrLinkFormPopup'
 
 /**
  * Form to replace current nrLINK with another nrLINK.
@@ -28,49 +27,13 @@ type IFormDatas = {
  * @param root0.houseId ID of the house, where we need to replace the nrLINK.
  * @param root0.onSuccess Callback when action is done with success.
  * @param root0.closeModal Callback to close Modal when we click on "Cancel".
+ * @param root0.oldNRLinkGuid Id of the current nrLINK inside the house.
  * @returns JSX.Element - Form.
  */
-export const EditConsentForm = ({
-    houseId,
-    onSuccess,
-    closeModal,
-}: /**
- * Props Typing.
- */
-{
-    /**
-     * Callback when action is done with success.
-     */
-    onSuccess: () => void
-
-    /**
-     * Callback to close Modal when we click on "Cancel".
-     */
-    closeModal: () => void
-
-    /**
-     * ID of the house, where we need to replace the nrLINK.
-     */
-    houseId: string
-}) => {
-    const { enqueueSnackbar } = useSnackbar()
+export const ReplaceNRLinkForm = ({ houseId, onSuccess, closeModal, oldNRLinkGuid }: IReplaceNRLinkFormProps) => {
     const { formatMessage } = useIntl()
-    const [raisedState, setRaisedState] = React.useState<boolean>(false)
+    const { loadingInProgress, replaceNRLink } = useReplaceNRLinkHook(houseId)
     const [clearOldData, setClearDataStatus] = React.useState<boolean>(false)
-    const [loadingInProgress, setLoadingStatus] = React.useState<boolean>(false)
-
-    /**
-     * Texts Components.
-     */
-    const TXT_EDIT_NR_LINK_CONSENT = formatMessage({
-        id: 'Numéro de nrLINK',
-        defaultMessage: 'Numéro de nrLINK',
-    })
-
-    const TXT_CONSENT_CHECKBOX = formatMessage({
-        id: 'Annuler mon ancien consentement nrLINK et effacer ses données',
-        defaultMessage: 'Annuler mon ancien consentement nrLINK et effacer ses données',
-    })
 
     /**
      * Handle click on the Checkbox (toggle).
@@ -82,56 +45,44 @@ export const EditConsentForm = ({
     /**
      * Replace old nrLINK with new nrLINK.
      *
-     * @param newNRLinkId The ID of the new nrLINK that will replace the old.
+     * @param newNRLinkGuid The ID of the new nrLINK that will replace the old.
      */
-    async function updateNRLinkId(newNRLinkId: string) {
-        setLoadingStatus(true)
-        try {
-            let body: any = { id: newNRLinkId }
-            if (clearOldData) body.clear_data = true
-
-            await axios.patch(`${NRLINK_CONSENT_API}/${houseId}`, body)
-
-            enqueueSnackbar(
-                formatMessage({
-                    id: 'nrLINK modifié avec succès',
-                    defaultMessage: 'nrLINK modifié avec succès',
-                }),
-                { variant: 'success' },
-            )
-
-            onSuccess()
-        } catch (error) {
-            enqueueSnackbar(
-                formatMessage({
-                    id: 'Erreur lors de la modification de votre nrLINK',
-                    defaultMessage: 'Erreur lors de la modification de votre nrLINK',
-                }),
-                { variant: 'error' },
-            )
+    async function updateNRLinkId(newNRLinkGuid: string) {
+        let body: IReplaceNRLinkPayload = {
+            old: oldNRLinkGuid,
+            new: newNRLinkGuid,
         }
-        setLoadingStatus(false)
+
+        if (clearOldData) {
+            body.clear_data = true
+        }
+
+        try {
+            await replaceNRLink(body)
+            onSuccess()
+        } catch {}
     }
 
     return (
         <Form
-            aria-label="EditConsentForm"
-            onSubmit={async (data: IFormDatas) => {
+            aria-label="ReplaceNRLinkForm"
+            onSubmit={async (data: // eslint-disable-next-line
+            {
+                /**
+                 * Id of the new nrLINK to use.
+                 */
+                nrlinkGuid: string
+            }) => {
                 await updateNRLinkId(data.nrlinkGuid)
             }}
         >
-            <Card
-                className="relative cursor-pointer flex-wrap rounded-16"
-                onMouseOver={() => setRaisedState(true)}
-                onMouseOut={() => setRaisedState(false)}
-                raised={raisedState}
-            >
+            <Card className="relative cursor-pointer flex-wrap rounded-16">
                 <CardContent>
                     <div className="flex justify-between">
                         <div className="flex items-center jutsify-center">
-                            <Typography className="font-bold text-16 whitespace-normal">
-                                {TXT_EDIT_NR_LINK_CONSENT}
-                            </Typography>
+                            <TypographyFormatMessage className="font-bold text-16 whitespace-normal">
+                                {MSG_REPLACE_NRLINK_MODAL_TITLE}
+                            </TypographyFormatMessage>
                         </div>
                     </div>
 
@@ -155,7 +106,7 @@ export const EditConsentForm = ({
                             control={
                                 <Checkbox defaultChecked={false} onChange={handleCheckboxChange} color="primary" />
                             }
-                            label={<span className="flex text-13 font-bold">{TXT_CONSENT_CHECKBOX}</span>}
+                            label={<span className="flex text-13 font-bold">{MSG_REPLACE_NRLINK_CLEAR_OLD_DATA}</span>}
                             labelPlacement="end"
                         />
                     </div>

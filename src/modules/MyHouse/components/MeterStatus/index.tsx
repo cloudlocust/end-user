@@ -29,7 +29,7 @@ import { NrlinkConnectionStepsEnum } from 'src/modules/nrLinkConnection/nrlinkCo
 import { RootState } from 'src/redux'
 import Modal from '@mui/material/Modal'
 import Box from '@mui/material/Box'
-import { EditNRLinkConsentForm } from 'src/modules/MyHouse/components/EditNRLink'
+import { ReplaceNRLinkForm } from 'src/modules/MyHouse/components/ReplaceNRLinkFormPopup'
 
 const FORMATTED_DATA = 'DD/MM/YYYY'
 const TEXT_CONNEXION_LE = 'Connexion le'
@@ -98,7 +98,7 @@ export const MeterStatus = () => {
         top: '50%',
         left: '50%',
         transform: 'translate(-50%, -50%)',
-        width: 300,
+        width: 350,
     }
 
     /**
@@ -182,21 +182,24 @@ export const MeterStatus = () => {
                                 <EditIcon />
                             </IconButton>
                         </div>
-                        <Modal
-                            aria-label="nrLINKEditConsentModal"
-                            open={displayEditNRLinkModal}
-                            onClose={() => setEditNRLinkModalState(false)}
-                        >
-                            <Box sx={styleModalBox}>
-                                <EditNRLinkConsentForm
-                                    houseId={houseId}
-                                    onSuccess={() => {
-                                        setNrlinkConsent(undefined)
-                                    }}
-                                    closeModal={() => setEditNRLinkModalState(false)}
-                                />
-                            </Box>
-                        </Modal>
+                        {nrlinkConsent?.nrlinkGuid && (
+                            <Modal
+                                aria-label="ReplaceNRLinkFormPopup"
+                                open={displayEditNRLinkModal}
+                                onClose={() => setEditNRLinkModalState(false)}
+                            >
+                                <Box sx={styleModalBox}>
+                                    <ReplaceNRLinkForm
+                                        houseId={houseId}
+                                        oldNRLinkGuid={nrlinkConsent.nrlinkGuid}
+                                        onSuccess={() => {
+                                            setNrlinkConsent(undefined)
+                                        }}
+                                        closeModal={() => setEditNRLinkModalState(false)}
+                                    />
+                                </Box>
+                            </Modal>
+                        )}
                     </>
                 )
             case 'DISCONNECTED':
