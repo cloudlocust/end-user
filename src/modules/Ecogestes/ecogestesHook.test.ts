@@ -1,15 +1,10 @@
 import { act } from '@testing-library/react-hooks'
-import { applyCamelCase } from 'src/common/react-platform-components'
 import { reduxedRenderHook } from 'src/common/react-platform-components/test'
-import { TEST_ECOGESTES } from 'src/mocks/handlers/ecogestes'
-import { IEcogeste } from 'src/modules/Ecogestes/components/ecogeste'
 import useEcogestes from 'src/modules/Ecogestes/ecogestesHook'
 
 const mockEnqueueSnackbar = jest.fn()
+let mockTagId: string = '1'
 
-/**
- * Mocking the useSnackbar used in CustomerDetails to load the customerDetails based on url /customers/:id {id} params.
- */
 jest.mock('notistack', () => ({
     ...jest.requireActual('notistack'),
     /**
@@ -22,10 +17,20 @@ jest.mock('notistack', () => ({
     }),
 }))
 
-const fullEcogestList: IEcogeste[] = applyCamelCase(TEST_ECOGESTES)
+jest.mock('react-router-dom', () => ({
+    ...jest.requireActual('react-router-dom'),
+    /**
+     * Mock the useParams.
+     *
+     * @returns UseParams.
+     */
+    useParams: () => ({
+        categoryId: mockTagId,
+    }),
+}))
 
 describe('EcogesteHook test', () => {
-    test('useEcogestes should return ecogestes array', async () => {
+    test('useEcogestes should return ecogestes array filtered using categoryId', async () => {
         const {
             renderedHook: { result, waitForValueToChange },
         } = reduxedRenderHook(() => useEcogestes(), { initialState: {} })
@@ -39,9 +44,8 @@ describe('EcogesteHook test', () => {
         )
 
         expect(result.current.loadingInProgress).toBe(false)
-
         expect(result.current.elementList).toBeTruthy()
-        expect(result.current.elementList.length).toBe(fullEcogestList.length)
+        expect(result.current.elementList.length).toBe(2)
     })
 
     describe('Patch Ecogeste', () => {

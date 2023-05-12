@@ -1,7 +1,6 @@
 import { FC } from 'react'
 import './register.scss'
 import { Card, Typography } from 'src/common/ui-kit'
-import { CLIENT_ICON_FOLDER } from 'src/configs'
 import { useIntl } from 'react-intl'
 import { Link } from 'react-router-dom'
 import MuiLink from '@mui/material/Link'
@@ -10,6 +9,7 @@ import { RegisterForm as DefaultRegisterForm } from './RegisterForm'
 import { motion } from 'framer-motion'
 import CardContent from '@mui/material/CardContent'
 import { linksColor } from 'src/modules/utils/muiThemeVariables'
+import { renderCommonLogo } from 'src/modules/User/Login/Login'
 
 /**
  * Props of the register component.
@@ -35,11 +35,7 @@ const Register: FC<RegisterProps> = ({ registerForm = <DefaultRegisterForm defau
                 <motion.div initial={{ opacity: 0, scale: 0.6 }} animate={{ opacity: 1, scale: 1 }}>
                     <Card className="w-full max-w-384">
                         <CardContent className="flex flex-col items-center justify-center p-16 sm:p-24 md:p-32">
-                            <img
-                                className="w-128 m-32"
-                                src={`./clients-icons/${CLIENT_ICON_FOLDER}/${CLIENT_ICON_FOLDER}.svg`}
-                                alt="logo"
-                            />
+                            {renderCommonLogo()}
                             <Typography variant="h6" className="mt-16 mb-24 font-semibold text-18 sm:text-24">
                                 {formatMessage({ id: 'Inscription', defaultMessage: 'Inscription' })}
                             </Typography>

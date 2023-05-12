@@ -29,6 +29,7 @@ const TEST_LOAD_PROVIDERS_ERROR_MESSAGE = 'Erreur lors du chargement des fournis
 const TEST_LOAD_OFFERS_ERROR_MESSAGE = 'Erreur lors du chargement des offres'
 const TEST_LOAD_TARIFF_TYPES_ERROR_MESSAGE = 'Erreur lors du chargement des types de tariff'
 const TEST_LOAD_POWERS_ERROR_MESSAGE = 'Erreur lors du chargement des puissances de contrat'
+const TEST_LOAD_TARIF_CONTRACT_ERROR_MESSAGE = 'Erreur lors du chargement des tariffs de contrat'
 
 describe('useCommercialOffer Hook test', () => {
     describe('Load Contract Types', () => {
@@ -236,6 +237,52 @@ describe('useCommercialOffer Hook test', () => {
             )
             expect(result.current.isPowersLoading).toBe(false)
             expect(result.current.powerList.length).toBeGreaterThan(0)
+        }, 10000)
+    })
+    describe('Load Tariffs Contract', () => {
+        test('Tariffs Contract load error', async () => {
+            const {
+                renderedHook: { result, waitForValueToChange },
+            } = reduxedRenderHook(() => useCommercialOffer(), {})
+
+            act(() => {
+                result.current.loadTariffsHousingContract(TEST_LOAD_ERROR_ID)
+            })
+            expect(result.current.isTariffsLoading).toBe(true)
+            await waitForValueToChange(
+                () => {
+                    return result.current.isTariffsLoading
+                },
+                { timeout: 4000 },
+            )
+            expect(result.current.isTariffsLoading).toBe(false)
+            expect(mockEnqueueSnackbar).toHaveBeenCalledWith(TEST_LOAD_TARIF_CONTRACT_ERROR_MESSAGE, {
+                variant: 'error',
+            })
+        })
+
+        test('Tariffs Contract load success', async () => {
+            const {
+                renderedHook: { result, waitForValueToChange },
+            } = reduxedRenderHook(() => useCommercialOffer(), {})
+
+            act(() => {
+                result.current.loadTariffsHousingContract(
+                    TEST_LOAD_SUCCESS_ID,
+                    TEST_LOAD_SUCCESS_ID,
+                    TEST_LOAD_SUCCESS_ID,
+                    6,
+                    '2022-03-01T00:00:00.000Z',
+                )
+            })
+            await waitForValueToChange(
+                () => {
+                    return result.current.tariffs
+                },
+                { timeout: 8000 },
+            )
+            expect(result.current.isTariffsLoading).toBe(false)
+            expect(result.current.tariffs).not.toBeNull()
         }, 10000)
     })
 })
