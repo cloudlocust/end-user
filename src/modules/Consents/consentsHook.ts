@@ -104,9 +104,9 @@ export function useConsents() {
             ) {
                 enqueueSnackbar(
                     formatMessage({
-                        id: 'Nous rencontrons une erreur lors de la récupération de votre consentement nrLINK ou et Enedis, ou et Enphase. Veuillez réessayer plus tard',
+                        id: 'Nous rencontrons une erreur lors de la récupération de vos consentements d’un de vos compteurs ou capteurs. Veuillez réessayer plus tard',
                         defaultMessage:
-                            'Nous rencontrons une erreur lors de la récupération de votre consentement nrLINK ou et Enedis, ou et Enphase. Veuillez réessayer plus tard',
+                            'Nous rencontrons une erreur lors de la récupération de vos consentements d’un de vos compteurs ou capteurs. Veuillez réessayer plus tard',
                     }),
                     {
                         variant: 'error',
