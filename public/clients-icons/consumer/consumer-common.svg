@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Calque_1" data-name="Calque 1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 60 60">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #fcc018;
+      }
+
+      .cls-2 {
+        fill: #1c6c72;
+      }
+
+      .cls-3 {
+        fill: url(#Dégradé_sans_nom_95);
+        opacity: .41;
+      }
+    </style>
+    <radialGradient id="Dégradé_sans_nom_95" data-name="Dégradé sans nom 95" cx="38.09" cy="38.89" fx="38.09" fy="38.89" r="39.82" gradientTransform="translate(6.96) scale(.7 1)" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#84adaf" stop-opacity=".1"/>
+      <stop offset="0" stop-color="#96b9bb" stop-opacity=".13"/>
+      <stop offset="0" stop-color="#bcd3d3" stop-opacity=".18"/>
+      <stop offset="0" stop-color="#d7e4e5" stop-opacity=".22"/>
+      <stop offset="0" stop-color="#e6efef" stop-opacity=".24"/>
+      <stop offset="0" stop-color="#ebf2f2" stop-opacity=".25"/>
+      <stop offset=".08" stop-color="#d6e4e5" stop-opacity=".32"/>
+      <stop offset=".68" stop-color="#4e8c91" stop-opacity=".81"/>
+      <stop offset="1" stop-color="#1b6b71"/>
+    </radialGradient>
+  </defs>
+  <g>
+    <path class="cls-2" d="m58.75,9.37c-.69-3.69-2.72-6.59-5.3-7.58-4.68-1.79-23.44-1.79-23.44-1.79,0,0-18.76,0-23.44,1.79-2.58.99-4.62,3.89-5.3,7.58C0,16.05,0,30,0,30c0,0,0,13.95,1.25,20.63.69,3.69,2.72,6.59,5.3,7.58,4.68,1.79,23.44,1.79,23.44,1.79,0,0,18.76,0,23.44-1.79,2.58-.99,4.61-3.89,5.3-7.58,1.25-6.69,1.25-20.63,1.25-20.63,0,0,0-13.95-1.25-20.63"/>
+    <path class="cls-3" d="m58.75,9.37c-.69-3.69-2.72-6.59-5.3-7.58-4.68-1.79-23.44-1.79-23.44-1.79,0,0-18.76,0-23.44,1.79-2.58.99-4.62,3.89-5.3,7.58C0,16.05,0,30,0,30,0,30,0,43.95,1.25,50.63c.69,3.69,2.72,6.59,5.3,7.58,4.68,1.79,23.44,1.79,23.44,1.79,0,0,18.76,0,23.44-1.79,2.58-.99,4.61-3.89,5.3-7.58,1.25-6.69,1.25-20.63,1.25-20.63,0,0,0-13.95-1.25-20.63"/>
+  </g>
+  <rect class="cls-1" x="14.6" y="4.55" width="7.9" height="23.07" rx="3.95" ry="3.95"/>
+  <rect class="cls-1" x="34.86" y="13.63" width="7.9" height="23.07" rx="3.95" ry="3.95" transform="translate(39.23 -21.09) rotate(57.56)"/>
+  <rect class="cls-1" x="34.86" y="36.29" width="7.9" height="23.07" rx="3.95" ry="3.95" transform="translate(99.45 36.99) rotate(118.93)"/>
+</svg>

@@ -6,7 +6,7 @@ import Tabs from '@mui/material/Tabs'
 import Tab from '@mui/material/Tab'
 import { keyBy, mapValues } from 'lodash'
 import FusePageCarded from 'src/common/ui-kit/fuse/components/FusePageCarded'
-import { IMultiTab } from 'src/common/ui-kit/components/MultiTab/MultiTab'
+import { IMultiTab } from 'src/common/ui-kit/components/MultiTab/multiTab.d'
 
 const Root = styled(FusePageCarded)(({ theme }) => ({
     '& .FusePageCarded-header': {

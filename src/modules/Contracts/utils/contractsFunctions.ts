@@ -1,5 +1,11 @@
 import { cloneDeep } from 'lodash'
-import { IContract, loadContractResponse } from 'src/modules/Contracts/contractsTypes.d'
+import {
+    IContract,
+    frequencyEnum,
+    loadContractResponse,
+    tariffContract,
+    tariffContractUnits,
+} from 'src/modules/Contracts/contractsTypes.d'
 
 /**
  * Function that formats the contract object from loadContract request, to a more handy format which is IContract (which consists to get out the provider from the offer, as provider is nested inside offer).
@@ -18,4 +24,33 @@ export const formatLoadContractResponseToIContract = (contract: loadContractResp
         provider,
         ...restHousingContractCopy,
     }
+}
+
+/**
+ * Get the correct unit for tariff contract according to its label.
+ *
+ * @param tariff Tariff Contract.
+ * @returns Unit of the tariffContract.
+ */
+export const getTariffContractUnit = (tariff: tariffContract): tariffContractUnits => {
+    switch (tariff.freq) {
+        case frequencyEnum.MONTHLY:
+            return '€/mois'
+        case frequencyEnum.DAILY:
+            return '€/kWh'
+        default:
+            throw Error('Wrong frequency')
+    }
+}
+
+/**
+ * Verify if dateString is a valid date.
+ *
+ * @param dateString Date in string type.
+ * @returns Is it valid date ?.
+ */
+export const isValidDate = (dateString: string): boolean => {
+    if (dateString === '0') return false
+    const date = new Date(dateString)
+    return !isNaN(date.getTime())
 }

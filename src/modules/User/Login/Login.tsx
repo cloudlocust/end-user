@@ -22,6 +22,16 @@ export interface LoginProps {
 }
 
 /**
+ * Function that renders common logo.
+ *
+ * @returns Image tag with logo path.
+ */
+export function renderCommonLogo() {
+    const commonLogoPath = `./clients-icons/${CLIENT_ICON_FOLDER}/${CLIENT_ICON_FOLDER}-common.svg`
+    return <img className="w-256 m-32" src={commonLogoPath} alt="logo" />
+}
+
+/**
  * Login component to diplay for user login.
  *
  * @param props N/A.
@@ -37,11 +47,7 @@ export const Login: FC<LoginProps> = ({ LoginForm = <DefaultLoginForm /> }): JSX
                 <motion.div initial={{ opacity: 0, scale: 0.6 }} animate={{ opacity: 1, scale: 1 }}>
                     <Card className="w-full max-w-384">
                         <CardContent className="flex flex-col items-center justify-center p-16 sm:p-24 md:p-32">
-                            <img
-                                className="w-128 m-32"
-                                src={`./clients-icons/${CLIENT_ICON_FOLDER}/${CLIENT_ICON_FOLDER}.svg`}
-                                alt="logo"
-                            />
+                            {renderCommonLogo()}
 
                             <Typography variant="h6" className="mt-16 mb-24 font-semibold text-18 sm:text-24">
                                 {formatMessage({ id: 'Connexion', defaultMessage: 'Connexion' })}

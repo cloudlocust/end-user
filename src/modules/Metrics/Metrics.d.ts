@@ -10,6 +10,7 @@ export type metricTargetType =
     | 'auto_consumption_metrics'
     | 'enphase_production_metrics'
     | 'production_metrics'
+    | 'idle_consumption'
 
 /**
  * Enum representing the metricTarget without exposing the backend naming.
@@ -47,6 +48,10 @@ export enum metricTargetsEnum {
      * Enum value for production_metrics.
      */
     injectedProduction = 'production_metrics',
+    /**
+     * Eneum value for consommation de veille.
+     */
+    idleConsumption = 'idle_consumption',
 }
 /**
  * Metrics intervals.

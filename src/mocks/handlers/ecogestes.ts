@@ -1,8 +1,9 @@
 import { rest } from 'msw'
 import { ECOGESTES_ENDPOINT } from 'src/modules/Ecogestes/'
 import { getPaginationFromElementList } from 'src/mocks/utils'
-import { IEcogeste } from 'src/modules/Ecogestes/components/ecogeste'
+import { IEcogeste, IEcogestCategory } from 'src/modules/Ecogestes/components/ecogeste'
 import { SnakeCasedPropertiesDeep } from 'type-fest'
+import { ECOGESTES_POLES_ENDPOINT } from 'src/modules/Ecogestes/hooks/polesHooks'
 
 /**
  * Path used for mock icons.
@@ -17,7 +18,7 @@ export const TEST_ECOGESTES: SnakeCasedPropertiesDeep<IEcogeste>[] = [
         title: 'A viewed Ecogest',
         description: 'This is an ecogest that the customer has already seen.',
         infos: 'This is an ecogest that the customer has already seen.',
-        percentage_saved: 10,
+        percentage_saved: '10%',
         url_icon: EXAMPLE_ICON,
         seen_by_customer: true,
     },
@@ -27,7 +28,7 @@ export const TEST_ECOGESTES: SnakeCasedPropertiesDeep<IEcogeste>[] = [
         description:
             'Un volet fermé pendant la nuit peut réduire la déperdition de chaleur de la fenêtre jusqu’à 60 %. Le soir, fermez les rideaux et les volets. À l’inverse, en journée pendant l’hiver, favorisez au maximum les apports solaires. La sensation de confort sera améliorée, et vous pourrez alors baisser votre température intérieure d’un degré. Les volets et protections solaires conservent le logement frais en été et chaud en hiver.',
         infos: 'An extended_description1',
-        percentage_saved: 15,
+        percentage_saved: '15%',
         url_icon: EXAMPLE_ICON,
         seen_by_customer: false,
     },
@@ -37,7 +38,7 @@ export const TEST_ECOGESTES: SnakeCasedPropertiesDeep<IEcogeste>[] = [
         description:
             'Le corps a besoin d’environ une semaine pour s’acclimater à une nouvelle température : alors, ne vous précipitez pas sur le chauffage dès la première baisse de température mais attendez plutôt de voir si vous vous habituez. L’humidité et les infiltrations d’air peuvent aussi amplifier la sensation d’inconfort. Avec un thermostat à 20 °C, vous pouvez avoir un ressenti de 17 °C si la maison est humide, que l’air s’infiltre ou que la température n’est pas la même partout (effet paroi froide). Des solutions de rénovation existent pour améliorer votre confort.',
         infos: 'An extended_description2',
-        percentage_saved: 8,
+        percentage_saved: '++',
         url_icon: EXAMPLE_ICON,
         seen_by_customer: false,
     },
@@ -46,7 +47,7 @@ export const TEST_ECOGESTES: SnakeCasedPropertiesDeep<IEcogeste>[] = [
         title: 'Couper l’eau pendant le savonnage',
         description: 'Couper l’eau pendant le savonnage permet de réaliser une économie sur votre consommation.',
         infos: 'An extended_description3',
-        percentage_saved: 37,
+        percentage_saved: '-',
         url_icon: EXAMPLE_ICON,
         seen_by_customer: false,
     },
@@ -56,9 +57,27 @@ export const TEST_ECOGESTES: SnakeCasedPropertiesDeep<IEcogeste>[] = [
         description:
             'Privilégiez toujours les apports de l’éclairage naturel : la lumière du jour est la meilleure pour l’oeil humain.',
         infos: 'An extended_description4',
-        percentage_saved: 1,
+        percentage_saved: '',
         url_icon: EXAMPLE_ICON,
         seen_by_customer: true,
+    },
+]
+
+/**
+ * Mock list of Consumption Poles.
+ */
+export const TEST_ECOGESTES_POLES_CATEGORY: SnakeCasedPropertiesDeep<IEcogestCategory>[] = [
+    {
+        id: 1,
+        name: 'Chauffage',
+        nb_ecogeste: 2,
+        icon: 'https://drive.google.com/uc?export=view&id=10NPb2PC1bWaKDZJXuwWly7_b11W-S46O',
+    },
+    {
+        id: 2,
+        name: 'Electricité',
+        nb_ecogeste: 1,
+        icon: 'https://drive.google.com/uc?export=view&id=10NPb2PC1bWaKDZJXuwWly7_b11W-S46O',
     },
 ]
 
@@ -69,7 +88,20 @@ export const ecogestesEndpoints = [
     rest.get(ECOGESTES_ENDPOINT, (req, res, ctx) => {
         if (req.params.categoryId < 0) throw new Error('WRONG BAD')
         let gests = TEST_ECOGESTES
-
+        const tag_id = req.url.searchParams.get('tag_id')
+        if (tag_id !== null) {
+            switch (tag_id) {
+                case '1':
+                    gests = gests.slice(0, 2)
+                    break
+                case '2':
+                    gests = gests.slice(2, 3)
+                    break
+                default:
+                    gests = []
+                    break
+            }
+        }
         const viewed = req.url.searchParams.get('viewed')
         if (viewed !== null) {
             gests = gests.filter((gest) => gest.seen_by_customer === (viewed === 'true'))
@@ -84,5 +116,9 @@ export const ecogestesEndpoints = [
             return res(ctx.status(400), ctx.delay(1000))
         }
         return res(ctx.status(200), ctx.delay(1000))
+    }),
+    rest.get(`${ECOGESTES_POLES_ENDPOINT}`, (req, res, ctx) => {
+        const tag_response = getPaginationFromElementList(req, TEST_ECOGESTES_POLES_CATEGORY)
+        return res(ctx.status(200), ctx.delay(1000), ctx.json(tag_response))
     }),
 ]

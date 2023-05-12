@@ -223,6 +223,7 @@ const colorThemes: colorThemesType = {
             },
         },
     },
+    // Energie d'ici
     enerdici: {
         extendedColors: {
             links: '#00BAF2',
@@ -273,6 +274,7 @@ const colorThemes: colorThemesType = {
             },
         },
     },
+    // La belle energie
     labelen: {
         extendedColors: {
             links: '#FF674A',
@@ -316,6 +318,57 @@ const colorThemes: colorThemesType = {
                             '&:hover': {
                                 backgroundColor: '#FFFFFF',
                                 color: '#FF674A',
+                            },
+                        },
+                    },
+                },
+            },
+        },
+    },
+    // Electricité de provence
+    edeprov: {
+        extendedColors: {
+            links: '#55B7DB',
+        },
+        MUI: {
+            palette: {
+                mode: 'light',
+                text: {
+                    primary: '#000000',
+                    secondary: lightText.secondary,
+                    disabled: '#C4C7C7',
+                },
+                background: {
+                    paper: '#FFFFFF',
+                    default: '#f6f7f9',
+                },
+                primary: {
+                    light: '#55B7DB',
+                    main: '#0487C8',
+                    dark: '#025E8D',
+                    contrastText: '#FFFFFF',
+                },
+                secondary: {
+                    light: '#FFDF78',
+                    main: '#FFC200',
+                    dark: '#DEAB28',
+                },
+            },
+            components: {
+                MuiButton: {
+                    styleOverrides: {
+                        outlinedPrimary: {
+                            borderColor: '#025E8D',
+                            color: '#025E8D',
+                            '&:hover': {
+                                borderColor: '#025E8D',
+                            },
+                        },
+                        containedPrimary: {
+                            backgroundColor: '#025E8D',
+                            '&:hover': {
+                                backgroundColor: '#FFC200',
+                                color: '#025E8D',
                             },
                         },
                     },
