@@ -15,6 +15,7 @@ const Root = styled('div')(({ theme }) => ({
     width: '100%',
     height: 'auto',
     backgroundColor: theme.palette.background.default,
+    marginBottom: '8rem',
 
     '& .PageSimple-innerScroll': {
         height: '100%',
