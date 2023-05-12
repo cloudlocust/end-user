@@ -14,7 +14,7 @@ import {
     MSG_REPLACE_NRLINK_MODAL_TITLE,
     MSG_REPLACE_NRLINK_CLEAR_OLD_DATA,
 } from 'src/modules/MyHouse/components/ReplaceNRLinkFormPopup/replaceNrLinkFormPopupConfig'
-import useReplaceNRLinkHook from 'src/modules/MyHouse/components/ReplaceNRLinkFormPopup/hooks/replaceNrLinkHook'
+import { useReplaceNRLinkHook } from 'src/modules/MyHouse/components/ReplaceNRLinkFormPopup/hooks/replaceNrLinkHook'
 import {
     IReplaceNRLinkFormProps,
     IReplaceNRLinkPayload,

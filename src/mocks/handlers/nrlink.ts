@@ -67,12 +67,12 @@ export const nrlinkEndpoints = [
         // using Clear Data payload
         if (req.body.old === 'aaaaa1aaaaa1aaaa') {
             if (req.body.clear_data === true) {
-                return res(ctx.status(200), ctx.delay(1000))
+                return res(ctx.status(201), ctx.delay(1000))
             }
             return res(ctx.status(500), ctx.delay(1000))
         }
 
         // Success
-        return res(ctx.status(200), ctx.delay(1000))
+        return res(ctx.status(201), ctx.delay(1000))
     }),
 ]

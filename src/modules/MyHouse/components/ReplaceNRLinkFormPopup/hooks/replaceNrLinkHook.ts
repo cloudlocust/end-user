@@ -38,8 +38,8 @@ export const useReplaceNRLinkHook = (houseId: string) => {
         } catch (error) {
             enqueueSnackbar(
                 formatMessage({
-                    id: 'Erreur lors du remplacement de votre nrLINK',
-                    defaultMessage: 'Erreur lors du remplacement de votre nrLINK',
+                    id: 'Erreur lors de la modification de votre nrLINK',
+                    defaultMessage: 'Erreur lors de la modification de votre nrLINK',
                 }),
                 { variant: 'error' },
             )
@@ -54,5 +54,3 @@ export const useReplaceNRLinkHook = (houseId: string) => {
         replaceNRLink,
     }
 }
-
-export default useReplaceNRLinkHook
