@@ -171,11 +171,10 @@ export const computeTotalAutoconsumption = (data: IMetric[]) =>
  */
 export const computeAverageIdleConsumption = (data: IMetric[]) => {
     const values = getDataFromYAxis(data, metricTargetsEnum.idleConsumption)
+    const roundedValue = round(mean(values.filter(Number)))
+    const convertedValue = Number.isNaN(roundedValue) ? 0 : convert(roundedValue).from('Wh').to('kWh')
     return {
-        value: convert(round(mean(values.filter(Number))))
-            .from('Wh')
-            .to('kWh')
-            .toFixed(2),
+        value: convertedValue,
         unit: 'kWh',
     }
 }
@@ -233,7 +232,7 @@ export const renderWidgetTitle = (target: metricTargetType): widgetTitleType => 
         case metricTargetsEnum.autoconsumption:
             return 'Autoconsommation'
         case metricTargetsEnum.idleConsumption:
-            return 'Moyenne consommation de veille'
+            return 'Consommation de Veille'
         default:
             throw Error(WRONG_TARGET_TEXT)
     }

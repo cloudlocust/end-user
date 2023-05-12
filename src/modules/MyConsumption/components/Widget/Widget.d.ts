@@ -13,7 +13,7 @@ export type widgetTitleType =
     | 'Production Totale'
     | 'Autoconsommation'
     | 'Achetée'
-    | 'Moyenne consommation de veille'
+    | 'Consommation de Veille'
 
 /**
  * Total Consumption Units types.
