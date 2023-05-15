@@ -176,7 +176,7 @@ export default function AnalysisSummary(props: AnalysisSummaryProps) {
                 <div className="p-24 analysis-information-list">
                     <AnalysisInformationList activeInformationName={activeInformationName} data={data} range={range} />
                     {/* Consommation de veille. */}
-                    <AnalysisIdleConsumption data={data} />
+                    <AnalysisIdleConsumption data={data} totalConsumption={totalConsumption} />
                     {enedisSgeConsent?.enedisSgeConsentState === 'CONNECTED' && (
                         <AnalysisMaxPower data={data} housingId={currentHousing!.id} />
                     )}

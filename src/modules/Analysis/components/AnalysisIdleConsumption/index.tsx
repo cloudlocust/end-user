@@ -6,18 +6,18 @@ import {
     computeAverageIdleConssumption,
     computeSumIdleConsumption,
 } from 'src/modules/Analysis/components/AnalysisInformationList/utils'
-import convert from 'convert-units'
+import convert, { Unit } from 'convert-units'
 import { useMemo } from 'react'
-import { computeTotalEuros } from 'src/modules/MyConsumption/components/Widget/WidgetFunctions'
 
 /**
  * AnalysisIdleConsumption component.
  *
  * @param param0 N/A.
  * @param param0.data Metrics data.
+ * @param param0.totalConsumption Total consumption.
  * @returns AnalysisIdleConsumption JSX.
  */
-export function AnalysisIdleConsumption({ data }: AnalysisIdleConsumptionProps) {
+export function AnalysisIdleConsumption({ data, totalConsumption }: AnalysisIdleConsumptionProps) {
     const theme = useTheme()
     const isMobile = useMediaQuery(theme.breakpoints.down('md'))
 
@@ -31,10 +31,17 @@ export function AnalysisIdleConsumption({ data }: AnalysisIdleConsumptionProps) 
         [data],
     )
 
-    const totalEuro = useMemo(() => {
-        if (data.length) return computeTotalEuros(data).value
-        else return
-    }, [data])
+    const pourcentageOfIdleConsumptionFromTotalConsumption = useMemo(
+        () =>
+            (
+                (convertedSumIdleConsumptionDataToKwh /
+                    convert(totalConsumption.value)
+                        .from(totalConsumption.unit as Unit)
+                        .to('kWh')) *
+                100
+            ).toFixed(2),
+        [convertedSumIdleConsumptionDataToKwh, totalConsumption.unit, totalConsumption.value],
+    )
 
     return (
         <div className="w-full flex flex-col items-start md:items-center p-0">
@@ -61,7 +68,10 @@ export function AnalysisIdleConsumption({ data }: AnalysisIdleConsumptionProps) 
                                     Totale sur le mois :
                                 </TypographyFormatMessage>
                                 <Typography className="sm:text-13 font-medium md:text-16 ml-3">
-                                    {convertedSumIdleConsumptionDataToKwh.toFixed(2)} kWh & {totalEuro} €
+                                    {convertedSumIdleConsumptionDataToKwh.toFixed(2)} kWh
+                                </Typography>
+                                <Typography className="sm:text-13 font-medium md:text-16 ml-3">
+                                    Soit {pourcentageOfIdleConsumptionFromTotalConsumption} % de la consommation totale
                                 </Typography>
                             </span>
                         </>
