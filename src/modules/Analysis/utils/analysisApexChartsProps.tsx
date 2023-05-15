@@ -116,7 +116,7 @@ export const defaultAnalysisApexChartsOptions: (theme: Theme) => Props['options'
     },
     stroke: {
         width: 2,
-        colors: [theme.palette.background.default],
+        colors: ['transparent'],
     },
     fill: {
         opacity: 0.8,
