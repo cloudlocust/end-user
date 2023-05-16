@@ -39,7 +39,7 @@ export const RegisterEnergyProviderSuccess = () => {
         }
     }, [history, energyProviderFormLink])
 
-    const registerSuccessMessage = `Votre inscription a bien été prise en compte. Sous réserve que votre souscription chez ${energyProviderName} est complète, vous recevrez prochainement un mail de validation de votre inscription à la plateforme`
+    const registerSuccessMessage = `Votre inscription a bien été prise en compte. Pour finaliser cette dernière, vous devez procéder à la souscription chez ${energyProviderName}`
 
     /**
      *  Subscribe to Energy Provider button handler.
