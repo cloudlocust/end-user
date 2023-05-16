@@ -141,3 +141,25 @@ export type IEcogesteListPageProps =
          */
         categoryType?: IEcogesteCategoryTypes
     }
+
+/**
+ * Props to pass to EcogesteCategoriesList.
+ */
+export type IEcogesteCategoriesListProps =
+    // eslint-disable-next-line jsdoc/require-jsdoc -- JSDoc is confused, false-positive
+    {
+        /**
+         * Ecogest Categories.
+         */
+        categories: IEcogestCategory[] | null
+
+        /**
+         * The type of Ecogest Category we're using now.
+         */
+        categoryType: IEcogesteCategoryTypes
+
+        /**
+         * Is Loading.
+         */
+        loadingInProgress: boolean
+    }

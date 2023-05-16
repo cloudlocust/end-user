@@ -10,7 +10,7 @@ import { EcogestesLoadingSpinner } from 'src/modules/Ecogestes/components/shared
  * @returns JSX.Element.
  */
 const EcogestesListPageContent = ({ currentCategory }: IEcogestPageComponentProps): JSX.Element => {
-    if (!currentCategory || !currentCategory.id) {
+    if (!currentCategory) {
         return <EcogestesLoadingSpinner />
     }
 

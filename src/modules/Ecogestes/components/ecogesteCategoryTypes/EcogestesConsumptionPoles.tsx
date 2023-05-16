@@ -1,6 +1,5 @@
 import { IEcogesteCategoryTypes } from 'src/modules/Ecogestes/EcogestesConfig'
 import { EcogesteCategoriesList } from 'src/modules/Ecogestes/components/ecogesteCategories/EcogesteCategoriesList'
-import { EcogestesLoadingSpinner } from 'src/modules/Ecogestes/components/shared/EcogestesLoadingSpinner'
 import useEcogestesCategories from 'src/modules/Ecogestes/hooks/useEcogestesCategories'
 
 /**
@@ -11,9 +10,12 @@ import useEcogestesCategories from 'src/modules/Ecogestes/hooks/useEcogestesCate
 export const EcogestesConsumptionPoles = () => {
     const { elementList, loadingInProgress } = useEcogestesCategories(IEcogesteCategoryTypes.CONSUMPTION)
 
-    if (loadingInProgress) {
-        return <EcogestesLoadingSpinner />
-    }
-
-    return <EcogesteCategoriesList categoryType={IEcogesteCategoryTypes.CONSUMPTION} categories={elementList} />
+    return (
+        <EcogesteCategoriesList
+            aria-label="ecogestsConsumptions"
+            categoryType={IEcogesteCategoryTypes.CONSUMPTION}
+            loadingInProgress={loadingInProgress}
+            categories={elementList}
+        />
+    )
 }
