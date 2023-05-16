@@ -6,20 +6,22 @@ import {
     computeAverageIdleConssumption,
     computeSumIdleConsumption,
 } from 'src/modules/Analysis/components/AnalysisInformationList/utils'
-import convert, { Unit } from 'convert-units'
+import convert from 'convert-units'
 import { useMemo } from 'react'
+import { useAnalysisStore } from 'src/modules/Analysis/store/analysisStore'
 
 /**
  * AnalysisIdleConsumption component.
  *
  * @param param0 N/A.
  * @param param0.data Metrics data.
- * @param param0.totalConsumption Total consumption.
  * @returns AnalysisIdleConsumption JSX.
  */
-export function AnalysisIdleConsumption({ data, totalConsumption }: AnalysisIdleConsumptionProps) {
+export function AnalysisIdleConsumption({ data }: AnalysisIdleConsumptionProps) {
     const theme = useTheme()
     const isMobile = useMediaQuery(theme.breakpoints.down('md'))
+
+    const totalConsumption = useAnalysisStore((state) => state.totalConsumption)
 
     const convertedAverageIdleConsumptionDataToKwh = useMemo(
         () => convert(computeAverageIdleConssumption(data)!).from('Wh').to('kWh'),
@@ -33,14 +35,8 @@ export function AnalysisIdleConsumption({ data, totalConsumption }: AnalysisIdle
 
     const pourcentageOfIdleConsumptionFromTotalConsumption = useMemo(
         () =>
-            (
-                (convertedSumIdleConsumptionDataToKwh /
-                    convert(totalConsumption.value)
-                        .from(totalConsumption.unit as Unit)
-                        .to('kWh')) *
-                100
-            ).toFixed(2),
-        [convertedSumIdleConsumptionDataToKwh, totalConsumption.unit, totalConsumption.value],
+            ((convertedSumIdleConsumptionDataToKwh / convert(totalConsumption).from('Wh').to('kWh')) * 100).toFixed(2),
+        [convertedSumIdleConsumptionDataToKwh, totalConsumption],
     )
 
     return (
@@ -72,6 +68,9 @@ export function AnalysisIdleConsumption({ data, totalConsumption }: AnalysisIdle
                                 </Typography>
                                 <Typography className="sm:text-13 font-medium md:text-16 ml-3">
                                     Soit {pourcentageOfIdleConsumptionFromTotalConsumption} % de la consommation totale
+                                </Typography>
+                                <Typography className="sm:text-13 font-medium md:text-16 ml-3">
+                                    TOA {Number(totalConsumption)}
                                 </Typography>
                             </span>
                         </>
