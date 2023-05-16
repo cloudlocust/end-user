@@ -1,4 +1,4 @@
-import { ButtonLoader, Card, Icon, MuiCardContent } from 'src/common/ui-kit'
+import { ButtonLoader, Card, MuiCardContent } from 'src/common/ui-kit'
 import { useIntl } from 'src/common/react-platform-translation'
 import { Link, useHistory, useLocation } from 'react-router-dom'
 import MuiLink from '@mui/material/Link'
