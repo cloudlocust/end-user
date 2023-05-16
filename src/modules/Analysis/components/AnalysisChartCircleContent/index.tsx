@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { endOfMonth, startOfMonth, subDays, subMonths, subYears } from 'date-fns'
+import { addMonths, endOfMonth, startOfMonth, subMonths, subYears } from 'date-fns'
 import { getMetricType, metricFiltersType, metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
 import { useMetrics } from 'src/modules/Metrics/metricsHook'
 import {
@@ -13,6 +13,7 @@ import Icon from '@mui/material/Icon'
 import dayjs from 'dayjs'
 import { motion } from 'framer-motion'
 import { Typography } from '@mui/material'
+import { consumptionWattUnitConversion } from 'src/modules/MyConsumption/utils/unitConversionFunction'
 
 /**
  * Component rendering each Line for each analysis percentage change.
@@ -65,39 +66,45 @@ const PercentageChangeLine = ({
         </>
     )
 }
+
 /**
- * Component rendering the consumption analysis comparaison arrows of (previous month for dateReference), and (same month of dateReference but year - 1).
+ * Component rendering the consumption analysis chart circle content.
+ *
+ * Content includes:
+ * - Total Consumption.
+ * - Comparaison arrows of (previous month for dateReference), and (same month of dateReference but year - 1).
+ * - Total Euros.
  *
  * @param props N/A.
  * @param props.dateReferenceConsumptionValue Represent the date of the referenceConsumptionValue, and thus we will compare to (dateReference - 1month) and (same month of dateReference - 1 year).
- * @param props.referenceConsumptionValue The Consumption value reference, that represent the new value when comparing percent change.
  * @param props.filters The Consumption value reference, that represent the new value when comparing percent change.
- * @returns Analysis Comparaison Arrows indicating the percent change for (dateReferenceConsumptionValue - 1month) and (same month of dateReferenceConsumptionValue - 1year).
+ * @returns Analysis Circle Content Including Total Consumption, Total Euros and Comparaison Arrows indicating the percent change for (dateReferenceConsumptionValue - 1month) and (same month of dateReferenceConsumptionValue - 1year).
  */
-const AnalysisPercentageChangeArrows = ({
+const AnalysisChartCircleContent = ({
     dateReferenceConsumptionValue,
-    referenceConsumptionValue,
     filters,
 }: // eslint-disable-next-line jsdoc/require-jsdoc
 {
     // eslint-disable-next-line jsdoc/require-jsdoc
     dateReferenceConsumptionValue: string | Date
     // eslint-disable-next-line jsdoc/require-jsdoc
-    referenceConsumptionValue: number
-    // eslint-disable-next-line jsdoc/require-jsdoc
     filters: metricFiltersType
 }) => {
     const { range, data, isMetricsLoading } = useMetrics(
         {
             range: {
-                // From represent the consumption of
                 from: getDateWithoutTimezoneOffset(startOfMonth(subYears(new Date(dateReferenceConsumptionValue), 1))),
-                to: getDateWithoutTimezoneOffset(endOfMonth(new Date(dateReferenceConsumptionValue))),
+                // Adding one month to the dateReferenceConsumptionValue to make sure the monthly metric request returns data for dateReferenceConsumptionValue (which will be element before last).
+                to: getDateWithoutTimezoneOffset(endOfMonth(addMonths(new Date(dateReferenceConsumptionValue), 1))),
             },
             filters,
             targets: [
                 {
                     target: metricTargetsEnum.consumption,
+                    type: 'timeserie',
+                },
+                {
+                    target: metricTargetsEnum.eurosConsumption,
                     type: 'timeserie',
                 },
             ],
@@ -126,33 +133,49 @@ const AnalysisPercentageChangeArrows = ({
     let previousMonthPercentageChange = 0
     let previousYearPercentageChange = 0
 
-    // Previous Month consumption represent the element before the last, because the last represent the dateReference and thus before it is the previous month of dateReference.
-    const indexPreviousMonthPercentageChange = ApexChartsAxisValues.yAxisSeries[0].data.length - 2
-    // Because example: if dateReference is 01-01-2022, then our range will be {from: "01-12-2021", to: "31-01-2022"}.
-    // Thus we'll have data array showing: [Jan 2021, Feb 2021, Mar 2021, Apr 2021, May 2021, June 2021, July 2021, Aug 2021, Sept 2021, Oct 2021, Nov 2021, Dec 2021, Jan 2022].
+    // Reference consumption value reference represents the last element due to the range we're setting and filliApexChartsMissingValues to only return 13 elements, we add another month to make sure the monthly metric request returns the reference consumption data.
+    const indexReferenceConsumptionValue = ApexChartsAxisValues.yAxisSeries[0].data.length - 1
+    // Previous Month consumption represent the element before consumption value reference, because the last represent the dateReference and thus before it is the previous month of dateReference.
+    const indexPreviousMonthPercentageChange = indexReferenceConsumptionValue - 1
+    // Because example: if dateReference is 01-02-2022, then our range will be {from: "01-01-2021", to: "31-03-2022"}.
+    // But because fillApexChartsMissingValues it'll take only 13 elements that we need.
+    // Thus we'll have data array showing: [Jan 2021, Feb 2021, Mar 2021, Apr 2021, May 2021, June 2021, July 2021, Aug 2021, Sept 2021, Oct 2021, Nov 2021, Dec 2021, Jan 2022, Feb 2022].
     previousMonthPercentageChange = computePercentageChange(
         Number(ApexChartsAxisValues.yAxisSeries[0].data[indexPreviousMonthPercentageChange]),
-        referenceConsumptionValue,
+        Number(ApexChartsAxisValues.yAxisSeries[0].data[indexReferenceConsumptionValue]),
     )
 
     // Previous Year consumption represent the first element for the range given.
     previousYearPercentageChange = computePercentageChange(
         Number(ApexChartsAxisValues.yAxisSeries[0].data[0]),
-        referenceConsumptionValue,
+        Number(ApexChartsAxisValues.yAxisSeries[0].data[indexReferenceConsumptionValue]),
     )
 
+    const totalConsumption = Number(ApexChartsAxisValues.yAxisSeries[0].data[indexReferenceConsumptionValue])
+        ? consumptionWattUnitConversion(
+              Number(ApexChartsAxisValues.yAxisSeries[0].data[indexReferenceConsumptionValue]),
+          )
+        : { value: 0, unit: 'kWh' }
+
     return (
-        <>
+        <div className="flex flex-col justify-center items-center" style={{ backgroundColor: 'transparent' }}>
+            <p className="text-16 md:text-20 font-medium mb-8">
+                {totalConsumption.value} {totalConsumption.unit}
+            </p>
             <PercentageChangeLine
-                datePercentageChange={dayjs(subMonths(subDays(new Date(range.to), 1), 1)).format('MM/YYYY')}
+                datePercentageChange={dayjs(subMonths(new Date(dateReferenceConsumptionValue), 1)).format('MM/YYYY')}
                 percentageChange={previousMonthPercentageChange}
             />
             <PercentageChangeLine
                 datePercentageChange={dayjs(new Date(range.from)).format('MM/YYYY')}
                 percentageChange={previousYearPercentageChange}
             />
-        </>
+            <p className="text-16 md:text-20 font-medium">
+                {Number(ApexChartsAxisValues.yAxisSeries[1].data[indexReferenceConsumptionValue]).toFixed(2)}
+                {' €'}
+            </p>
+        </div>
     )
 }
 
-export default AnalysisPercentageChangeArrows
+export default AnalysisChartCircleContent
