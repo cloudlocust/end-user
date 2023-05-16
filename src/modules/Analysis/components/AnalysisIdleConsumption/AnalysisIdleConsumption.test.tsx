@@ -22,8 +22,10 @@ describe('AnalysisIdleConsumption component test', () => {
     ]
 
     test('when component has data props and it renders the average and sum of idle consumption', () => {
-        const { getByText } = reduxedRender(<AnalysisIdleConsumption data={mockData} />)
+        const { getByText } = reduxedRender(
+            <AnalysisIdleConsumption data={mockData} totalConsumption={{ value: 200, unit: 'Wh' }} />,
+        )
         expect(getByText('2.00 kWh')).toBeTruthy()
-        expect(getByText('4.00 kWh & 0 €')).toBeTruthy()
+        expect(getByText('4.00 kWh')).toBeTruthy()
     })
 })
