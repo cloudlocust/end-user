@@ -49,6 +49,7 @@ describe('ReplaceNRLinkForm tests', () => {
             <BrowserRouter>
                 <ReplaceNRLinkForm
                     houseId="42"
+                    meterGuid="42"
                     oldNRLinkGuid="fakeNRLinkGuid"
                     onSuccess={mockOnSuccessFn}
                     closeModal={mockCloseModalFn}
@@ -70,6 +71,7 @@ describe('ReplaceNRLinkForm tests', () => {
                 <BrowserRouter>
                     <ReplaceNRLinkForm
                         houseId="42"
+                        meterGuid="42"
                         oldNRLinkGuid={TEST_TXT_FAKE_OLD_NRLINK_ID}
                         onSuccess={mockOnSuccessFn}
                         closeModal={mockCloseModalFn}
@@ -84,6 +86,7 @@ describe('ReplaceNRLinkForm tests', () => {
                 expect(mockUseReplaceNRLink).toBeCalledWith({
                     old: TEST_TXT_FAKE_OLD_NRLINK_ID,
                     new: TEST_TXT_FAKE_NEW_NRLINK_ID,
+                    meter_guid: '42',
                 })
             })
 
@@ -96,6 +99,7 @@ describe('ReplaceNRLinkForm tests', () => {
                 <BrowserRouter>
                     <ReplaceNRLinkForm
                         houseId="42"
+                        meterGuid="42"
                         oldNRLinkGuid={TEST_TXT_FAKE_OLD_NRLINK_ID}
                         onSuccess={mockOnSuccessFn}
                         closeModal={mockCloseModalFn}
@@ -111,6 +115,7 @@ describe('ReplaceNRLinkForm tests', () => {
                 expect(mockUseReplaceNRLink).toBeCalledWith({
                     old: TEST_TXT_FAKE_OLD_NRLINK_ID,
                     new: TEST_TXT_FAKE_NEW_NRLINK_ID,
+                    meter_guid: '42',
                     clear_data: true,
                 })
             })
@@ -125,6 +130,7 @@ describe('ReplaceNRLinkForm tests', () => {
                 <BrowserRouter>
                     <ReplaceNRLinkForm
                         houseId="42"
+                        meterGuid="42"
                         oldNRLinkGuid={TEST_TXT_FAKE_OLD_NRLINK_ID}
                         onSuccess={mockOnSuccessFn}
                         closeModal={mockCloseModalFn}

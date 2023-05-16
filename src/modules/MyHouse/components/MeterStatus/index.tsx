@@ -182,7 +182,7 @@ export const MeterStatus = () => {
                                 <EditIcon />
                             </IconButton>
                         </div>
-                        {nrlinkConsent?.nrlinkGuid && (
+                        {nrlinkConsent?.nrlinkGuid && nrlinkConsent?.meterGuid && (
                             <Modal
                                 aria-label="ReplaceNRLinkFormPopup"
                                 open={displayEditNRLinkModal}
@@ -191,6 +191,7 @@ export const MeterStatus = () => {
                                 <Box sx={styleModalBox}>
                                     <ReplaceNRLinkForm
                                         houseId={houseId}
+                                        meterGuid={nrlinkConsent.meterGuid}
                                         oldNRLinkGuid={nrlinkConsent.nrlinkGuid}
                                         onSuccess={() => {
                                             setNrlinkConsent(undefined)

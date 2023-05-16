@@ -10,6 +10,11 @@ export type IReplaceNRLinkFormProps =
         houseId: string
 
         /**
+         * Id of the Meter used to make a new consent on a nrLINK.
+         */
+        meterGuid: string
+
+        /**
          * Id of the current nrLINK used in house.
          */
         oldNRLinkGuid: string
@@ -40,6 +45,11 @@ export type IReplaceNRLinkPayload =
          * Id of the new nrLINK to use instead of nrLINK currently used in House.
          */
         new: string
+
+        /**
+         * Id of the Meter used to make a new consent on a nrLINK.
+         */
+        meter_guid: string
 
         /**
          * Partial, if present we should revoke old consent of old nrLINK and clear all data related to this nrLINK.

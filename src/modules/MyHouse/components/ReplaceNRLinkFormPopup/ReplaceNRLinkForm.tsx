@@ -25,12 +25,19 @@ import {
  *
  * @param root0 N/A.
  * @param root0.houseId ID of the house, where we need to replace the nrLINK.
+ * @param root0.meterGuid Id of the Meter used to make a new consent on a nrLINK.
+ * @param root0.oldNRLinkGuid Id of the current nrLINK inside the house.
  * @param root0.onSuccess Callback when action is done with success.
  * @param root0.closeModal Callback to close Modal when we click on "Cancel".
- * @param root0.oldNRLinkGuid Id of the current nrLINK inside the house.
  * @returns JSX.Element - Form.
  */
-export const ReplaceNRLinkForm = ({ houseId, onSuccess, closeModal, oldNRLinkGuid }: IReplaceNRLinkFormProps) => {
+export const ReplaceNRLinkForm = ({
+    houseId,
+    meterGuid,
+    oldNRLinkGuid,
+    onSuccess,
+    closeModal,
+}: IReplaceNRLinkFormProps) => {
     const { formatMessage } = useIntl()
     const { loadingInProgress, replaceNRLink } = useReplaceNRLinkHook(houseId)
     const [clearOldData, setClearDataStatus] = React.useState<boolean>(false)
@@ -51,6 +58,7 @@ export const ReplaceNRLinkForm = ({ houseId, onSuccess, closeModal, oldNRLinkGui
         let body: IReplaceNRLinkPayload = {
             old: oldNRLinkGuid,
             new: newNRLinkGuid,
+            meter_guid: meterGuid,
         }
 
         if (clearOldData) {

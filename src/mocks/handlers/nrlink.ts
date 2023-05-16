@@ -60,13 +60,13 @@ export const nrlinkEndpoints = [
 
     rest.patch<IReplaceNRLinkPayload>(`${NRLINK_CONSENT_API}/:houseId`, (req, res, ctx) => {
         const { houseId } = req.params
+        const { old, clear_data } = req.body
 
         // invalid House Id
         if (houseId === 'INVALID_HOUSE_ID') return res(ctx.status(404), ctx.delay(1000))
-
         // using Clear Data payload
-        if (req.body.old === 'aaaaa1aaaaa1aaaa') {
-            if (req.body.clear_data === true) {
+        if (old === 'aaaaa1aaaaa1aaaa') {
+            if (clear_data === true) {
                 return res(ctx.status(201), ctx.delay(1000))
             }
             return res(ctx.status(500), ctx.delay(1000))
