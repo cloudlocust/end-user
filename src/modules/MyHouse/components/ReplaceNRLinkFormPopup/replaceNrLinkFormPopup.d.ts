@@ -39,12 +39,12 @@ export type IReplaceNRLinkPayload =
         /**
          * Id of the current nrLINK used in house.
          */
-        old: string
+        old_nrlink_guid: string
 
         /**
          * Id of the new nrLINK to use instead of nrLINK currently used in House.
          */
-        new: string
+        new_nrlink_guid: string
 
         /**
          * Id of the Meter used to make a new consent on a nrLINK.

@@ -56,8 +56,8 @@ export const ReplaceNRLinkForm = ({
      */
     async function updateNRLinkId(newNRLinkGuid: string) {
         let body: IReplaceNRLinkPayload = {
-            old: oldNRLinkGuid,
-            new: newNRLinkGuid,
+            old_nrlink_guid: oldNRLinkGuid,
+            new_nrlink_guid: newNRLinkGuid,
             meter_guid: meterGuid,
         }
 
