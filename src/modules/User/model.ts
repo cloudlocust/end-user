@@ -364,7 +364,7 @@ export const handleRegisterErrors = (error: any) => {
                 // Handle unauthorized error
                 return "Vous n'avez pas le droit d'effectuer cette opération."
             case 422:
-                return handleAddressFieldError(error)
+                return Handle422Errors(error)
             default:
                 return defaultRequestErrorMessage
         }
@@ -380,12 +380,15 @@ export const handleRegisterErrors = (error: any) => {
  * @param error TODO Document.
  * @returns TODO Document.
  */
-export const handleAddressFieldError = (error: any) => {
+export const Handle422Errors = (error: any) => {
     // Errors follow thie follow format "errors": [ {"address": ["zip_code" , "street field required"] } ]
     if (error.response.data && error.response.data.errors && isArray(error.response.data.errors)) {
         for (let errorField of error.response.data.errors) {
             // Handle Address Field Only,
             if (Object.keys(errorField)[0] === 'address') return 'Veuillez entrer une adresse postale valide'
+            if (Object.keys(errorField)[0] === 'birthdate') {
+                return errorField.birthdate
+            }
         }
     }
     return defaultRequestErrorMessage
