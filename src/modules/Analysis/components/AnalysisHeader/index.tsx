@@ -6,6 +6,8 @@ import { periodType } from 'src/modules/MyConsumption/myConsumptionTypes'
 import { getDateWithoutTimezoneOffset } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
 import { endOfMonth, startOfMonth, subMonths } from 'date-fns'
 import { AnalysisHeaderProps } from 'src/modules/Analysis/components/AnalysisHeader/AnalysisHeader.d'
+import { ThemeProvider } from '@mui/material'
+import { selectTheme } from 'src/common/ui-kit/fuse/utils/theming-generator'
 
 /**
  * Analysis header component.
@@ -17,6 +19,7 @@ import { AnalysisHeaderProps } from 'src/modules/Analysis/components/AnalysisHea
  * @returns Analysis header JSX.
  */
 export default function AnalysisHeader({ setRange, range, enedisSgeOff }: AnalysisHeaderProps) {
+    const selectedTheme = selectTheme()
     /**
      * Handler when DatePicker change, to apply the range related to Analysis Component and overwrites the default ConsumptionDatePicker.
      * In Analysis range always go from: start month of a given date, to: end of same month for the same given date.
@@ -32,15 +35,17 @@ export default function AnalysisHeader({ setRange, range, enedisSgeOff }: Analys
     }
 
     return (
-        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="w-full flex flex-col items-center">
-            <MyConsumptionDatePicker
-                period={'monthly' as periodType}
-                setRange={setRange}
-                range={range}
-                onDatePickerChange={handleDatePickerOnChange}
-                maxDate={endOfMonth(subMonths(new Date(), 1))}
-            />
-            <ConsumptionEnedisSgeWarning isShowWarning={enedisSgeOff && sgeConsentFeatureState} />
-        </motion.div>
+        <ThemeProvider theme={selectedTheme}>
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="w-full flex flex-col items-center">
+                <MyConsumptionDatePicker
+                    period={'monthly' as periodType}
+                    setRange={setRange}
+                    range={range}
+                    onDatePickerChange={handleDatePickerOnChange}
+                    maxDate={endOfMonth(subMonths(new Date(), 1))}
+                />
+                <ConsumptionEnedisSgeWarning isShowWarning={enedisSgeOff && sgeConsentFeatureState} />
+            </motion.div>
+        </ThemeProvider>
     )
 }
