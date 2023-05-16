@@ -137,7 +137,7 @@ const AnalysisChartCircleContent = ({
     const indexReferenceConsumptionValue = ApexChartsAxisValues.yAxisSeries[0].data.length - 1
     // Previous Month consumption represent the element before consumption value reference, because the last represent the dateReference and thus before it is the previous month of dateReference.
     const indexPreviousMonthPercentageChange = indexReferenceConsumptionValue - 1
-    // Because example: if dateReference is 01-02-2022, then our range will be {from: "01-01-2021", to: "31-03-2022"}.
+    // Example: if dateReference is 01-02-2022, then our range will be {from: "01-01-2021", to: "31-03-2022"}.
     // But because fillApexChartsMissingValues it'll take only 13 elements that we need.
     // Thus we'll have data array showing: [Jan 2021, Feb 2021, Mar 2021, Apr 2021, May 2021, June 2021, July 2021, Aug 2021, Sept 2021, Oct 2021, Nov 2021, Dec 2021, Jan 2022, Feb 2022].
     previousMonthPercentageChange = computePercentageChange(
