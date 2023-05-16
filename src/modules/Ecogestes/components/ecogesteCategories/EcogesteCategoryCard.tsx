@@ -27,9 +27,7 @@ export const EcogesteCategoryCard: FC<IEcogesteCategoryCardProps> = ({
         history.push(`${URL_ROOT_ECOGESTES}/${categoryType}/${ecogestCategory.id}`)
     }
 
-    const ecogestsNumberFormatted = `${ecogestCategory.nbEcogeste} Écogeste${
-        ecogestCategory.nbEcogeste === 1 ? '' : 's'
-    }`
+    const ecogestsNumberFormatted = `${ecogestCategory.nbEcogeste} Écogeste${ecogestCategory.nbEcogeste > 1 ? 's' : ''}`
 
     return (
         <Card style={{ width: '150px', height: '180px' }} aria-label="ecogestCategoryCard">
