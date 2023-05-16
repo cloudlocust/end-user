@@ -107,7 +107,11 @@ const AnalysisChart = ({
         dataPointSelection(e, _chartContext, configs) {
             const indexSelectedValue = configs.dataPointIndex
             showAnalysisChartTooltipOnValueSelected(e, values, timeStampValues, indexSelectedValue, theme)
-            addAnalysisChartSelectedValueStroke(indexSelectedValue, theme.palette.primary.light, 'transparent')
+            addAnalysisChartSelectedValueStroke(
+                indexSelectedValue,
+                theme.palette.primary.light,
+                theme.palette.background.paper,
+            )
             // The order change of analysisInformationList doesn't happen on hover in chart (mouseenter), but on click and selection.
             // Check that it's not mouse hover.
             if (e.type !== 'mouseenter') {
