@@ -10,6 +10,7 @@ import { getWidgetInfoIcon } from 'src/modules/MyConsumption/components/WidgetIn
 import WidgetConsumption from 'src/modules/MyConsumption/components/WidgetConsumption'
 import { ConsumptionWidgetsMetricsContext } from 'src/modules/MyConsumption/components/ConsumptionWidgetsContainer/ConsumptionWidgetsMetricsContext'
 import { metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
+import WidgetIdleConsumption from 'src/modules/MyConsumption/components/WidgetIdleConsumption'
 
 const renderedWidgets = enphaseConsentFeatureState
     ? WidgetTargets.filter((target) => target !== metricTargetsEnum.consumption)
@@ -78,6 +79,18 @@ const ConsumptionWidgetsContainer = ({
                             })}
                         />
                     )}
+
+                    <WidgetIdleConsumption
+                        target={metricTargetsEnum.idleConsumption}
+                        range={range}
+                        filters={filters}
+                        metricsInterval={metricsInterval}
+                        period={period}
+                        infoIcon={getWidgetInfoIcon({
+                            widgetTarget: metricTargetsEnum.idleConsumption,
+                            hasMissingContracts: hasMissingHousingContracts,
+                        })}
+                    />
 
                     {/** Display the other targets with Widget Component. */}
                     {renderedWidgets.map((target) => {

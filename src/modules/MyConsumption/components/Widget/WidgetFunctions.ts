@@ -360,7 +360,7 @@ export const computeTotalOfAllConsumptions = (data: IMetric[]) => {
  * @param toRange To range.
  * @returns A boolean.
  */
-export const isDateWithinDay = (fromRange: string, toRange: string) => {
+export const isRangeWithinToday = (fromRange: string, toRange: string) => {
     const dayStart = getDateWithoutTimezoneOffset(dayjs().startOf('day').toDate())
     const dayEnd = getDateWithoutTimezoneOffset(dayjs().endOf('day').toDate())
 

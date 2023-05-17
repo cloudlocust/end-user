@@ -15,7 +15,7 @@ import {
     computeTotalAutoconsumption,
     getWidgetIndicatorColor,
     computeTotalOfAllConsumptions,
-    isDateWithinDay,
+    isRangeWithinToday,
     getPreviousDayRange,
 } from 'src/modules/MyConsumption/components/Widget/WidgetFunctions'
 import { periodType } from 'src/modules/MyConsumption/myConsumptionTypes'
@@ -545,14 +545,14 @@ describe('Test widget functions', () => {
         let fromRange = getDateWithoutTimezoneOffset(dayjs().startOf('day').toDate())
         let toRange = getDateWithoutTimezoneOffset(dayjs().endOf('day').toDate())
         test('when it returns true', () => {
-            const boolean = isDateWithinDay(fromRange, toRange)
+            const boolean = isRangeWithinToday(fromRange, toRange)
 
             expect(boolean).toBeTruthy()
         })
         test('when it returns false', () => {
             fromRange = '2023-06-10T00:00:00.000Z'
             toRange = '2023-07-10T23:59:59.999Z'
-            const boolean = isDateWithinDay(fromRange, toRange)
+            const boolean = isRangeWithinToday(fromRange, toRange)
 
             expect(boolean).toBeFalsy()
         })

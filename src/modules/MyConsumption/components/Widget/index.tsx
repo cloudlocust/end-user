@@ -4,17 +4,13 @@ import { IWidgetProps } from 'src/modules/MyConsumption/components/Widget/Widget
 import { useMetrics } from 'src/modules/Metrics/metricsHook'
 import {
     computeWidgetAssets,
-    getPreviousDayRange,
     getWidgetPreviousRange,
     getWidgetRange,
-    isDateWithinDay,
     renderWidgetTitle,
 } from 'src/modules/MyConsumption/components/Widget/WidgetFunctions'
 import { computePercentageChange } from 'src/modules/Analysis/utils/computationFunctions'
 import { WidgetItem } from 'src/modules/MyConsumption/components/WidgetItem'
 import { ConsumptionWidgetsMetricsContext } from 'src/modules/MyConsumption/components/ConsumptionWidgetsContainer/ConsumptionWidgetsMetricsContext'
-import { metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
-import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 
 const emptyValueUnit = { value: 0, unit: '' }
 
@@ -58,8 +54,6 @@ export const Widget = memo(({ filters, range, infoIcon, metricsInterval, target,
         filters,
     })
 
-    const isDateWithinDateRange = isDateWithinDay(range.from, range.to)
-
     const { storeWidgetMetricsData } = useContext(ConsumptionWidgetsMetricsContext)
 
     useEffect(() => {
@@ -93,38 +87,19 @@ export const Widget = memo(({ filters, range, infoIcon, metricsInterval, target,
 
     // get metrics when metricsInterval change.
     useEffect(() => {
-        if (period === 'daily' && target === metricTargetsEnum.idleConsumption) {
-            setMetricsInterval('1d')
-            setMetricsIntervalPrevious('1d')
-        } else {
-            setMetricsInterval(metricsInterval)
-            setMetricsIntervalPrevious(metricsInterval)
-        }
-    }, [
-        metricsInterval,
-        period,
-        range,
-        setMetricsInterval,
-        setMetricsIntervalPrevious,
-        setRange,
-        setRangePrevious,
-        target,
-    ])
+        setMetricsInterval(metricsInterval)
+        setMetricsIntervalPrevious(metricsInterval)
+    }, [metricsInterval, setMetricsInterval, setMetricsIntervalPrevious])
 
     // When period or range changes
     useEffect(() => {
         // If period just changed block the call of getMetrics, because period and range changes at the same time, so to avoid two call of getMetrics
         // 1 call when range change and the other when period change, then only focus on when range changes.
         if (isRangeChanged.current) {
-            if (period === 'daily' && target === metricTargetsEnum.idleConsumption) {
-                setRange(getPreviousDayRange(range)!)
-                setRangePrevious(getPreviousDayRange(range, 2)!)
-            } else {
-                const widgetRange = getWidgetRange(range, period)
-                setRange(widgetRange)
-                setRangePrevious(getWidgetPreviousRange(widgetRange, period))
-                // reset isRangdChanged
-            }
+            const widgetRange = getWidgetRange(range, period)
+            setRange(widgetRange)
+            setRangePrevious(getWidgetPreviousRange(widgetRange, period))
+            // reset isRangdChanged
             isRangeChanged.current = false
         }
     }, [period, range, setRange, setRangePrevious, target])
@@ -139,20 +114,6 @@ export const Widget = memo(({ filters, range, infoIcon, metricsInterval, target,
                             style={{ height: '170px' }}
                         >
                             <CircularProgress style={{ color: theme.palette.primary.main }} />
-                        </div>
-                    ) : isDateWithinDateRange && target === metricTargetsEnum.idleConsumption ? (
-                        <div className="p-16 flex flex-col flex-1 gap-3 justify-between h-full">
-                            <div className="text-center flex flex-1 justify-center items-center py-4">
-                                <TypographyFormatMessage
-                                    sx={(theme) => ({
-                                        color: theme.palette.secondary.main,
-                                    })}
-                                    fontWeight={500}
-                                >
-                                    La moyenne de votre consommation de veille pour aujourd'hui est en cours mais
-                                    disponible sur hier
-                                </TypographyFormatMessage>
-                            </div>
                         </div>
                     ) : (
                         <div className="h-full flex flex-col">
