@@ -4,7 +4,7 @@ import { AnalysisIdleConsumption } from 'src/modules/Analysis/components/Analysi
 import { IMetric, metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
 
 let mockData: IMetric[] = TEST_SUCCESS_MONTH_METRICS([metricTargetsEnum.consumption, metricTargetsEnum.pMax])
-const pourcentageOfIdleConsumptionFromTotalConsumption = '50.00'
+const pourcentageOfIdleConsumptionFromTotalConsumption = '50'
 
 /**
  * Mocking the Zustand Analysis Store.
