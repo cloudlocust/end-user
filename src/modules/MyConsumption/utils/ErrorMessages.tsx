@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux'
 import { RootState } from 'src/redux'
 import { useIntl } from 'react-intl'
 import { useTheme } from '@mui/material'
+import { linksColor } from 'src/modules/utils/muiThemeVariables'
 
 /**
  * MissingHousingMeterErrorMessage Component.
@@ -27,7 +28,13 @@ export const MissingHousingMeterErrorMessage = () => {
                     id: "Pour voir votre consommation vous devez d'abord ",
                     defaultMessage: "Pour voir votre consommation vous devez d'abord ",
                 })}
-                <Link to={`/nrlink-connection-steps/${currentHousing?.id}`} className="underline">
+                <Link
+                    to={`/nrlink-connection-steps/${currentHousing?.id}`}
+                    className="underline"
+                    style={{
+                        color: linksColor || theme.palette.primary.main,
+                    }}
+                >
                     {formatMessage({
                         id: 'enregistrer votre compteur et votre nrLINK',
                         defaultMessage: 'enregistrer votre compteur et votre nrLINK',

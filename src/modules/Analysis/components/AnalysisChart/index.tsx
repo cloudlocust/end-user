@@ -153,7 +153,7 @@ const AnalysisChart = ({
             <div
                 className="analysisChartCircleContent p-4 flex justify-center items-center"
                 ref={analysisChartCircleContentRef}
-                style={{ background: theme.palette.background.default }}
+                style={{ background: theme.palette.background.paper }}
             >
                 {children}
             </div>
