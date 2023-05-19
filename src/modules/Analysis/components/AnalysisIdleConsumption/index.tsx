@@ -8,6 +8,7 @@ import {
 } from 'src/modules/Analysis/components/AnalysisInformationList/utils'
 import convert, { Unit } from 'convert-units'
 import { useMemo } from 'react'
+import { round } from 'lodash'
 
 /**
  * AnalysisIdleConsumption component.
@@ -33,13 +34,13 @@ export function AnalysisIdleConsumption({ data, totalConsumption }: AnalysisIdle
 
     const pourcentageOfIdleConsumptionFromTotalConsumption = useMemo(
         () =>
-            (
+            round(
                 (convertedSumIdleConsumptionDataToKwh /
                     convert(totalConsumption.value)
                         .from(totalConsumption.unit as Unit)
                         .to('kWh')) *
-                100
-            ).toFixed(2),
+                    100,
+            ),
         [convertedSumIdleConsumptionDataToKwh, totalConsumption.unit, totalConsumption.value],
     )
 
@@ -70,8 +71,13 @@ export function AnalysisIdleConsumption({ data, totalConsumption }: AnalysisIdle
                                 <Typography className="sm:text-13 font-medium md:text-16 ml-3">
                                     {convertedSumIdleConsumptionDataToKwh.toFixed(2)} kWh
                                 </Typography>
+                            </span>
+                            <span>
+                                <TypographyFormatMessage className="sm:text-13 text-grey-600 font-bold md:text-16">
+                                    Part de la conso du mois :
+                                </TypographyFormatMessage>
                                 <Typography className="sm:text-13 font-medium md:text-16 ml-3">
-                                    Soit {pourcentageOfIdleConsumptionFromTotalConsumption} % de la consommation totale
+                                    {pourcentageOfIdleConsumptionFromTotalConsumption} %
                                 </Typography>
                             </span>
                         </>
