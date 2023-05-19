@@ -9,6 +9,7 @@ import {
 import convert from 'convert-units'
 import { useMemo } from 'react'
 import { useAnalysisStore } from 'src/modules/Analysis/store/analysisStore'
+import { round } from 'lodash'
 
 /**
  * AnalysisIdleConsumption component.
@@ -35,7 +36,9 @@ export function AnalysisIdleConsumption({ data }: AnalysisIdleConsumptionProps) 
 
     const pourcentageOfIdleConsumptionFromTotalConsumption = useMemo(
         () =>
-            ((convertedSumIdleConsumptionDataToKwh / convert(totalConsumption).from('Wh').to('kWh')) * 100).toFixed(2),
+            round(
+                (convertedSumIdleConsumptionDataToKwh / convert(totalConsumption).from('Wh').to('kWh')) * 100,
+            ).toFixed(2),
         [convertedSumIdleConsumptionDataToKwh, totalConsumption],
     )
 
@@ -66,11 +69,13 @@ export function AnalysisIdleConsumption({ data }: AnalysisIdleConsumptionProps) 
                                 <Typography className="sm:text-13 font-medium md:text-16 ml-3">
                                     {convertedSumIdleConsumptionDataToKwh.toFixed(2)} kWh
                                 </Typography>
+                            </span>
+                            <span>
+                                <TypographyFormatMessage className="sm:text-13 text-grey-600 font-bold md:text-16">
+                                    Part de la conso du mois :
+                                </TypographyFormatMessage>
                                 <Typography className="sm:text-13 font-medium md:text-16 ml-3">
-                                    Soit {pourcentageOfIdleConsumptionFromTotalConsumption} % de la consommation totale
-                                </Typography>
-                                <Typography className="sm:text-13 font-medium md:text-16 ml-3">
-                                    TOA {Number(totalConsumption)}
+                                    {pourcentageOfIdleConsumptionFromTotalConsumption} %
                                 </Typography>
                             </span>
                         </>

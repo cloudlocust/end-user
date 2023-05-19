@@ -29,7 +29,7 @@ describe('test RegisterEnergyProviderSuccess page', () => {
 
         expect(
             getByText(
-                'Votre inscription a bien été prise en compte. Pour finaliser cette dernière, vous devez procéder à la souscription chez ALPIQ',
+                'La première étape de votre inscription a été prise en compte. Pour la poursuivre, procédez à la souscription chez ALPIQ',
             ),
         ).toBeTruthy()
     })

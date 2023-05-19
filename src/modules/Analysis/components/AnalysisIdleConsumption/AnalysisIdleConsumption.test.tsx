@@ -42,8 +42,6 @@ describe('AnalysisIdleConsumption component test', () => {
 
     test('When total consumption from analysisStore, percentage of Idle consumption is shown', () => {
         const { getByText } = reduxedRender(<AnalysisIdleConsumption data={mockData} />)
-        expect(
-            getByText(`Soit ${pourcentageOfIdleConsumptionFromTotalConsumption} % de la consommation totale`),
-        ).toBeTruthy()
+        expect(getByText(`${pourcentageOfIdleConsumptionFromTotalConsumption} %`)).toBeTruthy()
     })
 })
