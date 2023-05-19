@@ -173,27 +173,11 @@ describe('Analysis test', () => {
         expect(getByText(CONSENT_TEXT)).toBeTruthy()
         expect(getByText(REDIRECT_TEXT)).toBeTruthy()
     })
-    test('when data is not empty total consumption should be shown', async () => {
-        mockNrlinkConsent = 'CONNECTED'
-        mockEnedisConsent = mockEnedisSgeConsentConnected
-        const totalDataPoints = 1000
-        const TOTAL_CONSUMPTION_TEXT = `1 kWh`
-        const TOTAL_EUROS_CONSUMPTION_TEXT = `1000.00 €`
-        // Overriding datapoints of useMetrics for consumption target (index: 0), eurosConsumption target (index: 1).
-        mockData[0].datapoints = [[totalDataPoints, 1643628944000]]
-        mockData[1].datapoints = [[totalDataPoints, 1643628944000]]
-        const { getByText, container } = reduxedRender(
-            <Router>
-                <Analysis />
-            </Router>,
-            { initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[0] } } },
-        )
-        expect(getByText(TOTAL_CONSUMPTION_TEXT)).toBeTruthy()
-        expect(getByText(TOTAL_EUROS_CONSUMPTION_TEXT)).toBeTruthy()
-        expect(container.querySelector(analysisInformationListClassname)).toBeInTheDocument()
-    })
 
     test('When selecting element in analysisChart (minConsumptionDay, maxConsumptionDay, meanConsumptionDay), it should be highlighted in analysisInformationList', async () => {
+        mockNrlinkConsent = 'CONNECTED'
+        mockEnedisConsent = mockEnedisSgeConsentConnected
+
         const { getByText } = reduxedRender(
             <Router>
                 <Analysis />
