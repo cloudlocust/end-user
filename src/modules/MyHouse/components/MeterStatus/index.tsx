@@ -249,6 +249,25 @@ export const MeterStatus = () => {
                         </div>
                     </>
                 )
+            case 'UNSYNCHRONIZED':
+                return (
+                    <>
+                        <Icon className="mr-12">
+                            <img
+                                src="./assets/images/content/housing/consent-status/meter-error.svg"
+                                alt="sge-error-icon"
+                            />
+                        </Icon>
+                        <div className="flex flex-col">
+                            <div className="flex flex-col">
+                                <TypographyFormatMessage color={theme.palette.warning.main} fontWeight={600}>
+                                    Les données de votre récolte dhistorique semblent incohérentes par rapport à celle
+                                    de votre nrLINK
+                                </TypographyFormatMessage>
+                            </div>
+                        </div>
+                    </>
+                )
             case 'EXPIRED':
             case 'NONEXISTENT':
             default:
