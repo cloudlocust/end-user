@@ -11,6 +11,7 @@ import WidgetConsumption from 'src/modules/MyConsumption/components/WidgetConsum
 import { ConsumptionWidgetsMetricsContext } from 'src/modules/MyConsumption/components/ConsumptionWidgetsContainer/ConsumptionWidgetsMetricsContext'
 import { metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
 import WidgetIdleConsumption from 'src/modules/MyConsumption/components/WidgetIdleConsumption'
+import { isWidgetMonthlyMetrics } from 'src/modules/MyConsumption/components/Widget/WidgetFunctions'
 
 const renderedWidgets = enphaseConsentFeatureState
     ? WidgetTargets.filter((target) => target !== metricTargetsEnum.consumption)
@@ -69,7 +70,7 @@ const ConsumptionWidgetsContainer = ({
                             target={metricTargetsEnum.consumption}
                             range={range}
                             filters={filters}
-                            metricsInterval={metricsInterval}
+                            metricsInterval={period === 'monthly' ? '1M' : metricsInterval}
                             period={period}
                             infoIcon={getWidgetInfoIcon({
                                 widgetTarget: metricTargetsEnum.consumption,
@@ -100,7 +101,7 @@ const ConsumptionWidgetsContainer = ({
                                 target={target}
                                 range={range}
                                 filters={filters}
-                                metricsInterval={metricsInterval}
+                                metricsInterval={isWidgetMonthlyMetrics(target, period) ? '1M' : metricsInterval}
                                 period={period}
                                 infoIcon={getWidgetInfoIcon({
                                     widgetTarget: target,

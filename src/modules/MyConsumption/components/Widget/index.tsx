@@ -29,7 +29,7 @@ const emptyValueUnit = { value: 0, unit: '' }
 export const Widget = memo(({ filters, range, infoIcon, metricsInterval, target, period, children }: IWidgetProps) => {
     const { data, setMetricsInterval, setRange, isMetricsLoading } = useMetrics({
         interval: metricsInterval,
-        range: getWidgetRange(range, period),
+        range: getWidgetRange(range, period, target),
         targets: [
             {
                 target: target,
@@ -44,7 +44,7 @@ export const Widget = memo(({ filters, range, infoIcon, metricsInterval, target,
         setRange: setRangePrevious,
     } = useMetrics({
         interval: metricsInterval,
-        range: getWidgetPreviousRange(getWidgetRange(range, period), period),
+        range: getWidgetPreviousRange(getWidgetRange(range, period, target), period, target),
         targets: [
             {
                 target: target,
@@ -96,9 +96,9 @@ export const Widget = memo(({ filters, range, infoIcon, metricsInterval, target,
         // If period just changed block the call of getMetrics, because period and range changes at the same time, so to avoid two call of getMetrics
         // 1 call when range change and the other when period change, then only focus on when range changes.
         if (isRangeChanged.current) {
-            const widgetRange = getWidgetRange(range, period)
+            const widgetRange = getWidgetRange(range, period, target)
             setRange(widgetRange)
-            setRangePrevious(getWidgetPreviousRange(widgetRange, period))
+            setRangePrevious(getWidgetPreviousRange(widgetRange, period, target))
             // reset isRangdChanged
             isRangeChanged.current = false
         }
