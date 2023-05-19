@@ -34,13 +34,12 @@ export function AnalysisIdleConsumption({ data }: AnalysisIdleConsumptionProps) 
         [data],
     )
 
-    const pourcentageOfIdleConsumptionFromTotalConsumption = useMemo(
-        () =>
-            round(
-                (convertedSumIdleConsumptionDataToKwh / convert(totalConsumption).from('Wh').to('kWh')) * 100,
-            ).toFixed(2),
-        [convertedSumIdleConsumptionDataToKwh, totalConsumption],
-    )
+    const pourcentageOfIdleConsumptionFromTotalConsumption = useMemo(() => {
+        // To avoid Infinity, you need to make sure that you're not dividing by zero.
+        if (totalConsumption !== 0) {
+            return round((convertedSumIdleConsumptionDataToKwh / convert(totalConsumption).from('Wh').to('kWh')) * 100)
+        }
+    }, [convertedSumIdleConsumptionDataToKwh, totalConsumption])
 
     return (
         <div className="w-full flex flex-col items-start md:items-center p-0">
