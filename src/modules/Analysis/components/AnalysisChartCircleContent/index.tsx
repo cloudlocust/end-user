@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useEffect, useMemo } from 'react'
 import { addMonths, endOfMonth, startOfMonth, subMonths, subYears } from 'date-fns'
 import { getMetricType, metricFiltersType, metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
 import { useMetrics } from 'src/modules/Metrics/metricsHook'
@@ -14,6 +14,7 @@ import dayjs from 'dayjs'
 import { motion } from 'framer-motion'
 import { Typography } from '@mui/material'
 import { consumptionWattUnitConversion } from 'src/modules/MyConsumption/utils/unitConversionFunction'
+import { useAnalysisStore } from 'src/modules/Analysis/store/analysisStore'
 
 /**
  * Component rendering each Line for each analysis percentage change.
@@ -127,6 +128,16 @@ const AnalysisChartCircleContent = ({
         () => fillApexChartsAxisMissingValues(ApexChartsAxisValues, 'yearly', range),
         [range, ApexChartsAxisValues],
     )
+    const setTotalConsumption = useAnalysisStore((state) => state.setTotalConsumption)
+
+    useEffect(() => {
+        if (ApexChartsAxisValues.yAxisSeries.length && !isMetricsLoading) {
+            // Reference consumption value reference represents the last element due to the range we're setting and filliApexChartsMissingValues to only return 13 elements, we add another month to make sure the monthly metric request returns the reference consumption data.
+            setTotalConsumption(
+                Number(ApexChartsAxisValues.yAxisSeries[0].data[ApexChartsAxisValues.yAxisSeries[0].data.length - 1]),
+            )
+        }
+    }, [ApexChartsAxisValues, isMetricsLoading, setTotalConsumption])
 
     if (ApexChartsAxisValues.yAxisSeries.length === 0 || isMetricsLoading) return <></>
 
