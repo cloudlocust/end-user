@@ -29,8 +29,20 @@ jest.mock('notistack', () => ({
     }),
 }))
 
-jest.mock('src/modules/MyHouse/components/ReplaceNRLinkFormPopup/hooks/replaceNrLinkHook', () => ({
-    ...jest.requireActual('src/modules/MyHouse/components/ReplaceNRLinkFormPopup/hooks/replaceNrLinkHook'),
+jest.mock('react-router-dom', () => ({
+    ...jest.requireActual('react-router-dom'),
+    /**
+     * Mock the useParams to get the houseId from url.
+     *
+     * @returns UseParams containing houseId.
+     */
+    useParams: () => ({
+        houseId: `42`,
+    }),
+}))
+
+jest.mock('src/modules/MyHouse/components/ReplaceNRLinkFormPopup/replaceNrLinkHook', () => ({
+    ...jest.requireActual('src/modules/MyHouse/components/ReplaceNRLinkFormPopup/replaceNrLinkHook'),
 
     /**
      * Mock the useReplaceNRLinkHook.
@@ -48,10 +60,9 @@ describe('ReplaceNRLinkForm tests', () => {
         const { getByRole, getAllByRole, getByText } = reduxedRender(
             <BrowserRouter>
                 <ReplaceNRLinkForm
-                    houseId="42"
                     meterGuid="42"
                     oldNRLinkGuid="fakeNRLinkGuid"
-                    onSuccess={mockOnSuccessFn}
+                    onAfterReplaceNRLink={mockOnSuccessFn}
                     closeModal={mockCloseModalFn}
                 />
             </BrowserRouter>,
@@ -70,10 +81,9 @@ describe('ReplaceNRLinkForm tests', () => {
             const { getByRole, getByText } = reduxedRender(
                 <BrowserRouter>
                     <ReplaceNRLinkForm
-                        houseId="42"
                         meterGuid="42"
                         oldNRLinkGuid={TEST_TXT_FAKE_OLD_NRLINK_ID}
-                        onSuccess={mockOnSuccessFn}
+                        onAfterReplaceNRLink={mockOnSuccessFn}
                         closeModal={mockCloseModalFn}
                     />
                 </BrowserRouter>,
@@ -98,10 +108,9 @@ describe('ReplaceNRLinkForm tests', () => {
             const { getByRole, getByText } = reduxedRender(
                 <BrowserRouter>
                     <ReplaceNRLinkForm
-                        houseId="42"
                         meterGuid="42"
                         oldNRLinkGuid={TEST_TXT_FAKE_OLD_NRLINK_ID}
-                        onSuccess={mockOnSuccessFn}
+                        onAfterReplaceNRLink={mockOnSuccessFn}
                         closeModal={mockCloseModalFn}
                     />
                 </BrowserRouter>,
@@ -129,10 +138,9 @@ describe('ReplaceNRLinkForm tests', () => {
             const { getByText } = reduxedRender(
                 <BrowserRouter>
                     <ReplaceNRLinkForm
-                        houseId="42"
                         meterGuid="42"
                         oldNRLinkGuid={TEST_TXT_FAKE_OLD_NRLINK_ID}
-                        onSuccess={mockOnSuccessFn}
+                        onAfterReplaceNRLink={mockOnSuccessFn}
                         closeModal={mockCloseModalFn}
                     />
                 </BrowserRouter>,

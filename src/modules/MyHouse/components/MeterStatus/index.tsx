@@ -73,7 +73,6 @@ export const MeterStatus = () => {
         enphaseConsent,
         enphaseLink,
         getEnphaseLink,
-        setNrlinkConsent,
     } = useConsents()
     const { housingList } = useSelector(({ housingModel }: RootState) => housingModel)
     const [foundHousing, setFoundHousing] = useState<IHousing>()
@@ -190,13 +189,15 @@ export const MeterStatus = () => {
                             >
                                 <Box sx={styleModalBox}>
                                     <ReplaceNRLinkForm
-                                        houseId={houseId}
                                         meterGuid={nrlinkConsent.meterGuid}
                                         oldNRLinkGuid={nrlinkConsent.nrlinkGuid}
-                                        onSuccess={() => {
-                                            setNrlinkConsent(undefined)
-                                        }}
                                         closeModal={() => setEditNRLinkModalState(false)}
+                                        onAfterReplaceNRLink={() => {
+                                            if (foundHousing?.meter?.guid) {
+                                                getConsents(foundHousing?.meter?.guid, parseInt(houseId))
+                                            }
+                                            setEditNRLinkModalState(false)
+                                        }}
                                     />
                                 </Box>
                             </Modal>

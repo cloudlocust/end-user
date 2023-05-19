@@ -14,30 +14,32 @@ import {
     MSG_REPLACE_NRLINK_MODAL_TITLE,
     MSG_REPLACE_NRLINK_CLEAR_OLD_DATA,
 } from 'src/modules/MyHouse/components/ReplaceNRLinkFormPopup/replaceNrLinkFormPopupConfig'
-import { useReplaceNRLinkHook } from 'src/modules/MyHouse/components/ReplaceNRLinkFormPopup/hooks/replaceNrLinkHook'
+import { useReplaceNRLinkHook } from 'src/modules/MyHouse/components/ReplaceNRLinkFormPopup/replaceNrLinkHook'
 import {
     IReplaceNRLinkFormProps,
     IReplaceNRLinkPayload,
 } from 'src/modules/MyHouse/components/ReplaceNRLinkFormPopup/replaceNrLinkFormPopup'
+import { useParams } from 'react-router-dom'
 
 /**
  * Form to replace current nrLINK with another nrLINK.
  *
  * @param root0 N/A.
- * @param root0.houseId ID of the house, where we need to replace the nrLINK.
  * @param root0.meterGuid Id of the Meter used to make a new consent on a nrLINK.
  * @param root0.oldNRLinkGuid Id of the current nrLINK inside the house.
- * @param root0.onSuccess Callback when action is done with success.
+ * @param root0.onAfterReplaceNRLink Callback when action is done with success.
  * @param root0.closeModal Callback to close Modal when we click on "Cancel".
  * @returns JSX.Element - Form.
  */
 export const ReplaceNRLinkForm = ({
-    houseId,
     meterGuid,
     oldNRLinkGuid,
-    onSuccess,
+    onAfterReplaceNRLink,
     closeModal,
 }: IReplaceNRLinkFormProps) => {
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    const { houseId }: { houseId: string } = useParams()
+
     const { formatMessage } = useIntl()
     const { loadingInProgress, replaceNRLink } = useReplaceNRLinkHook(houseId)
     const [clearOldData, setClearDataStatus] = React.useState<boolean>(false)
@@ -67,7 +69,7 @@ export const ReplaceNRLinkForm = ({
 
         try {
             await replaceNRLink(body)
-            onSuccess()
+            onAfterReplaceNRLink()
         } catch {}
     }
 

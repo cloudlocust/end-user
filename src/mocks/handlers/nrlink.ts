@@ -67,12 +67,9 @@ export const nrlinkEndpoints = [
         // no meterGuid -> throw error
         if (!req.body.meter_guid) return res(ctx.status(500), ctx.delay(1000))
 
-        // using Clear Data payload
+        // testing clear_data payload.
         if (old_nrlink_guid === 'aaaaa1aaaaa1aaaa') {
-            if (clear_data === true) {
-                return res(ctx.status(201), ctx.delay(1000))
-            }
-            return res(ctx.status(500), ctx.delay(1000))
+            return res(ctx.status(clear_data ? 201 : 500), ctx.delay(1000))
         }
 
         // Success

@@ -230,6 +230,5 @@ export function useConsents() {
         getEnphaseLink,
         enphaseLink,
         setEnphaseLink,
-        setNrlinkConsent,
     }
 }

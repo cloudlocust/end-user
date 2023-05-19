@@ -5,11 +5,6 @@ export type IReplaceNRLinkFormProps =
     // eslint-disable-next-line jsdoc/require-jsdoc
     {
         /**
-         * ID of the house, where we need to replace the nrLINK.
-         */
-        houseId: string
-
-        /**
          * Id of the Meter used to make a new consent on a nrLINK.
          */
         meterGuid: string
@@ -20,9 +15,9 @@ export type IReplaceNRLinkFormProps =
         oldNRLinkGuid: string
 
         /**
-         * Callback when action is done with success.
+         * Callback when nrLink is successfully replaced.
          */
-        onSuccess: () => void
+        onAfterReplaceNRLink: () => void
 
         /**
          * Callback to close Modal when we click on "Cancel".
