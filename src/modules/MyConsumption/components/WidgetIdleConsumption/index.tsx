@@ -87,6 +87,28 @@ const WidgetIdleConsumption = (props: IWidgetProps) => {
 
     const isMessageShown = isRangeWithinToday(range.from, range.to)
 
+    // When the range period is of Today, we show this message because the Idle Consumption is still on
+    if (isMessageShown)
+        return (
+            <Grid item xs={6} sm={6} md={4} lg={3} xl={3} className="flex">
+                <Card className="w-full rounded-20 shadow sm:m-4" variant="outlined" style={{ minHeight: '170px' }}>
+                    <div className="p-16 flex flex-col flex-1 gap-3 justify-between h-full">
+                        <div className="text-center flex flex-1 justify-center items-center py-4">
+                            <TypographyFormatMessage
+                                sx={(theme) => ({
+                                    color: theme.palette.secondary.main,
+                                })}
+                                fontWeight={500}
+                            >
+                                La moyenne de votre consommation de veille pour aujourd'hui est en cours mais disponible
+                                sur hier
+                            </TypographyFormatMessage>
+                        </div>
+                    </div>
+                </Card>
+            </Grid>
+        )
+
     return (
         <Grid item xs={6} sm={6} md={4} lg={3} xl={3} className="flex">
             <Card className="w-full rounded-20 shadow sm:m-4" variant="outlined" style={{ minHeight: '170px' }}>
@@ -97,20 +119,6 @@ const WidgetIdleConsumption = (props: IWidgetProps) => {
                             style={{ height: '170px' }}
                         >
                             <CircularProgress style={{ color: theme.palette.primary.main }} />
-                        </div>
-                    ) : isMessageShown ? (
-                        <div className="p-16 flex flex-col flex-1 gap-3 justify-between h-full">
-                            <div className="text-center flex flex-1 justify-center items-center py-4">
-                                <TypographyFormatMessage
-                                    sx={(theme) => ({
-                                        color: theme.palette.secondary.main,
-                                    })}
-                                    fontWeight={500}
-                                >
-                                    La moyenne de votre consommation de veille pour aujourd'hui est en cours mais
-                                    disponible sur hier
-                                </TypographyFormatMessage>
-                            </div>
                         </div>
                     ) : (
                         <div className="h-full flex flex-col">
