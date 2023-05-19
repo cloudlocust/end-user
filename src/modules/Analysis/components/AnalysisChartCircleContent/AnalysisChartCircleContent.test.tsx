@@ -1,6 +1,7 @@
 import { reduxedRender } from 'src/common/react-platform-components/test'
 import { IMetric, metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
 import AnalysisChartCircleContent from 'src/modules/Analysis/components/AnalysisChartCircleContent'
+import { waitFor } from '@testing-library/react'
 
 /**
  * Mocking the AnalysisChartCircleContent component props.
@@ -13,6 +14,7 @@ const mockAnalysisChartCircleContent = {
     filters: [],
 }
 
+const totalConsumption = 100
 const PREVIOUS_MONTH_DATE_TEXT = '12/2022'
 const PREVIOUS_YEAR_DATE_TEXT = '01/2022'
 // eslint-disable-next-line jsdoc/require-jsdoc
@@ -45,7 +47,7 @@ const metricsData: IMetric[] = [
             // December 2022, compared to last year its increase of 100%, because 50 represents last month and we have 100 as reference, so from 50 to 100 its 100% increase.
             [50, 1672444800000],
             // January 2023, Represent the reference month (where we are comparing).
-            [100, 1672531200000],
+            [totalConsumption, 1672531200000],
         ],
     },
     {
@@ -108,6 +110,19 @@ jest.mock('src/modules/Metrics/metricsHook.ts', () => ({
     }),
 }))
 
+const mockSetTotalConsumption = jest.fn()
+/**
+ * Mocking the Zustand Analysis Store.
+ */
+jest.mock('src/modules/Analysis/store/analysisStore', () => ({
+    /**
+     * Mock the set total consumption returned from useAnalysisStore.
+     *
+     * @returns Total Consumption Value.
+     */
+    useAnalysisStore: () => mockSetTotalConsumption,
+}))
+
 describe('AnalysisChartCircleContent test', () => {
     test('when data given, it should render all information', async () => {
         const { getByText } = reduxedRender(<AnalysisChartCircleContent {...mockAnalysisChartCircleContent} />)
@@ -129,7 +144,7 @@ describe('AnalysisChartCircleContent test', () => {
             DECREASE_PERCENTAGE_CHANGE,
         )
         expect(getByText('100.0', { exact: false })).toBeTruthy()
-        const TOTAL_CONSUMPTION_TEXT = `100 Wh`
+        const TOTAL_CONSUMPTION_TEXT = `${totalConsumption} Wh`
         const TOTAL_EUROS_CONSUMPTION_TEXT = `75.00 €`
         expect(getByText(TOTAL_CONSUMPTION_TEXT)).toBeTruthy()
         expect(getByText(TOTAL_EUROS_CONSUMPTION_TEXT)).toBeTruthy()
@@ -155,5 +170,14 @@ describe('AnalysisChartCircleContent test', () => {
         const { container } = reduxedRender(<AnalysisChartCircleContent {...mockAnalysisChartCircleContent} />)
         // When Data is empty, there is nothing to be shown empty DOM
         expect(container.innerHTML).toBe('')
+    })
+    test('when data, store setTotalConsumption should be called with totalConsumption', async () => {
+        mockMetricsData = metricsData
+        mockIsMetricsLoading = false
+        reduxedRender(<AnalysisChartCircleContent {...mockAnalysisChartCircleContent} />)
+
+        await waitFor(() => {
+            expect(mockSetTotalConsumption).toHaveBeenCalledWith(totalConsumption)
+        })
     })
 })
