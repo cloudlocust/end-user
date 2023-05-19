@@ -39,6 +39,8 @@ export function AnalysisIdleConsumption({ data }: AnalysisIdleConsumptionProps) 
         if (totalConsumption !== 0) {
             return round((convertedSumIdleConsumptionDataToKwh / convert(totalConsumption).from('Wh').to('kWh')) * 100)
         }
+
+        return 0
     }, [convertedSumIdleConsumptionDataToKwh, totalConsumption])
 
     return (
