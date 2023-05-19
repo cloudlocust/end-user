@@ -9,7 +9,7 @@ import { AnalysisSummaryProps } from 'src/modules/Analysis/tabs/AnalysisSummary/
 import { AnalysisMaxPower } from 'src/modules/Analysis/components/AnalysisMaxPower'
 import { linksColor, warningMainHashColor } from 'src/modules/utils/muiThemeVariables'
 import { AnalysisIdleConsumption } from 'src/modules/Analysis/components/AnalysisIdleConsumption'
-// import AnalysisChartCircleContent from 'src/modules/Analysis/components/AnalysisChartCircleContent'
+import AnalysisChartCircleContent from 'src/modules/Analysis/components/AnalysisChartCircleContent'
 import { MissingHousingMeterErrorMessage } from 'src/modules/MyConsumption/utils/ErrorMessages'
 import { MissingContractsWarning } from 'src/modules/Analysis/utils/ErrorMessages'
 
@@ -27,7 +27,7 @@ export default function AnalysisSummary(props: AnalysisSummaryProps) {
     const {
         data,
         range,
-        // filters,
+        filters,
         currentHousing,
         nrlinkConsent,
         enedisSgeConsent,
@@ -80,12 +80,10 @@ export default function AnalysisSummary(props: AnalysisSummaryProps) {
                     </div>
                 ) : (
                     <AnalysisChart data={data} getSelectedValueElementColor={getSelectedValueElementColor}>
-                        {/* TODO Decomment on next PR */}
-                        {/* <AnalysisChartCircleContent
+                        <AnalysisChartCircleContent
                             dateReferenceConsumptionValue={new Date(range.from)}
                             filters={filters}
-                        /> */}
-                        <></>
+                        />
                     </AnalysisChart>
                 )}
             </div>
