@@ -85,7 +85,7 @@ export type ViewsType = 'day' | 'month' | 'year'
 /**
  * Interface for TargetButtonGroup.
  */
-interface ITargetButtonGroup {
+interface ITargetMenuGroup {
     /**
      * RemoveTarget.
      */
