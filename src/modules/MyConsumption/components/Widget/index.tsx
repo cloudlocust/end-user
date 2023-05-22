@@ -25,6 +25,7 @@ const emptyValueUnit = { value: 0, unit: '' }
  * @param props.period Current Period.
  * @returns Widget Component.
  */
+// eslint-disable-next-line sonarjs/cognitive-complexity
 export const Widget = memo(({ filters, range, infoIcon, metricsInterval, target, period, children }: IWidgetProps) => {
     const { data, setMetricsInterval, setRange, isMetricsLoading } = useMetrics({
         interval: metricsInterval,
@@ -101,7 +102,7 @@ export const Widget = memo(({ filters, range, infoIcon, metricsInterval, target,
             // reset isRangdChanged
             isRangeChanged.current = false
         }
-    }, [period, range, setRange, setRangePrevious])
+    }, [period, range, setRange, setRangePrevious, target])
 
     return (
         <Grid item xs={6} sm={6} md={4} lg={3} xl={3} className="flex">
