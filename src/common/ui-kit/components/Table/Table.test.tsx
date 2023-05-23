@@ -23,13 +23,13 @@ let TEST_CELLS = [
         id: 'id',
         headCellLabel: 'ID',
         // eslint-disable-next-line jsdoc/require-jsdoc
-        rowCell: (row: typeof TEST_ELEMENT_LIST[0]) => `${row.id}`,
+        rowCell: (row: (typeof TEST_ELEMENT_LIST)[0]) => `${row.id}`,
     },
     {
         id: 'label',
         headCellLabel: 'LABEL',
         // eslint-disable-next-line jsdoc/require-jsdoc
-        rowCell: (row: typeof TEST_ELEMENT_LIST[0]) => `${row.label}`,
+        rowCell: (row: (typeof TEST_ELEMENT_LIST)[0]) => `${row.label}`,
     },
 ]
 
