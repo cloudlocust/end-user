@@ -77,6 +77,7 @@ const CONSUMPTION_ICON_TEST_ID = 'BoltIcon'
 const EUROS_CONSUMPTION_ICON_TEST_ID = 'EuroIcon'
 const apexchartsClassName = 'apexcharts-svg'
 const buttonDisabledClassname = 'Mui-disabled'
+let buttonLabelText = 'target-menu'
 const mockGetConsents = jest.fn()
 const mockGetMetricsWithParams = jest.fn()
 let mockSgeConsentFeatureState = true
@@ -307,24 +308,31 @@ describe('MyConsumptionContainer test', () => {
     })
     test('When period is daily, EurosConsumption and pMax button should be disabled', async () => {
         consumptionChartContainerProps.period = 'daily'
-        const { getByText, getByTestId, getAllByRole, container } = reduxedRender(
+        const { getByText, getByTestId, getByLabelText, getAllByRole } = reduxedRender(
             <Router>
                 <ConsumptionChartContainer {...consumptionChartContainerProps} />
             </Router>,
             { initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[0] } } },
         )
 
-        const targetButtonGroup = getAllByRole('button')
+        let button = getByLabelText(buttonLabelText)
 
         expect(
             (getByTestId(EUROS_CONSUMPTION_ICON_TEST_ID).parentElement as HTMLButtonElement).classList.contains(
                 buttonDisabledClassname,
             ),
         ).toBeTruthy()
-        userEvent.click(targetButtonGroup[1])
+
+        expect(button).toBeInTheDocument()
+
+        button.focus()
+        button.click()
 
         expect(getByText('Ajouter un axe sur le graphique :')).toBeTruthy()
-        expect(container.querySelector('.Mui-disabled')).toBeTruthy()
+        let menuItems = getAllByRole('menuitem')
+
+        expect(menuItems[3].classList.contains(buttonDisabledClassname)).toBeTruthy()
+        expect(menuItems[3]).toHaveAttribute('aria-disabled', 'true')
     })
 
     test('When period is not daily and enedisSgeConsent is not Connected, pMax button should be disabled, enedisSgeConsent warning is shown', async () => {
@@ -332,17 +340,24 @@ describe('MyConsumptionContainer test', () => {
         consumptionChartContainerProps.enedisSgeConsent = mockEnedisSgeConsentOff
         mockEnedisConsent = mockEnedisSgeConsentOff
 
-        const { getByText, getAllByRole } = reduxedRender(
+        const { getByText, getAllByRole, getByLabelText } = reduxedRender(
             <Router>
                 <ConsumptionChartContainer {...consumptionChartContainerProps} />
             </Router>,
             { initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[0] } } },
         )
 
-        const targetButtonGroup = getAllByRole('button')
-        userEvent.click(targetButtonGroup[1])
+        let button = getByLabelText(buttonLabelText)
+        expect(button).toBeInTheDocument()
+
+        button.focus()
+        button.click()
+
         expect(getByText('Ajouter un axe sur le graphique :')).toBeTruthy()
-        expect(getByText('Pmax')).toBeTruthy()
+        let menuItems = getAllByRole('menuitem')
+
+        expect(menuItems[3].classList.contains('Mui-disabled')).toBeTruthy()
+        expect(menuItems[3]).toHaveAttribute('aria-disabled', 'true')
         expect(getByText(CONSUMPTION_ENEDIS_SGE_WARNING_TEXT)).toBeTruthy()
     })
 
