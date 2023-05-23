@@ -97,7 +97,7 @@ const TargetMenuGroup = ({ removeTarget, addTarget, hidePmax }: ITargetMenuGroup
                 endIcon={<MoreVertIcon />}
                 className="mx-auto my-0 min-h-auto"
                 style={{ color: theme.palette.common.white }}
-                data-testid="menu-options-button"
+                aria-label="target-menu"
             />
             {Boolean(anchorEl) && (
                 <Menu
