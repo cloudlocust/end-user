@@ -152,7 +152,7 @@ const TargetMenuGroup = ({ removeTarget, addTarget, hidePmax }: ITargetMenuGroup
                                         backgroundColor: disabledField
                                             ? theme.palette.grey[600]
                                             : activeBackgroundColor,
-                                        color: disabledField ? theme.palette.text.disabled : activeColor,
+                                        color: disabledField ? theme.palette.common.black : activeColor,
                                         fontWeight: '500',
                                         cursor: disabledField ? 'default' : 'pointer',
                                     }}
