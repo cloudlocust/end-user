@@ -8,30 +8,46 @@ import {
 } from 'src/modules/Analysis/components/AnalysisInformationList/utils'
 import convert from 'convert-units'
 import { useMemo } from 'react'
-import { useAnalysisStore } from 'src/modules/Analysis/store/analysisStore'
 import { round } from 'lodash'
+import { useMetrics } from 'src/modules/Metrics/metricsHook'
+import { metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
 
 /**
  * AnalysisIdleConsumption component.
  *
  * @param param0 N/A.
- * @param param0.data Metrics data.
+ * @param param0.totalConsumption Total consumption data.
+ * @param param0.range Metrics range from parent.
+ * @param param0.filters Metrics filters from parent.
  * @returns AnalysisIdleConsumption JSX.
  */
-export function AnalysisIdleConsumption({ data }: AnalysisIdleConsumptionProps) {
+export function AnalysisIdleConsumption({ totalConsumption, range, filters }: AnalysisIdleConsumptionProps) {
     const theme = useTheme()
     const isMobile = useMediaQuery(theme.breakpoints.down('md'))
 
-    const totalConsumption = useAnalysisStore((state) => state.totalConsumption)
+    const { data: idleConsumptionData } = useMetrics(
+        {
+            interval: '1d',
+            range: range,
+            targets: [
+                {
+                    target: metricTargetsEnum.idleConsumption,
+                    type: 'timeserie',
+                },
+            ],
+            filters,
+        },
+        Boolean(filters),
+    )
 
     const convertedAverageIdleConsumptionDataToKwh = useMemo(
-        () => convert(computeAverageIdleConssumption(data)!).from('Wh').to('kWh'),
-        [data],
+        () => convert(computeAverageIdleConssumption(idleConsumptionData)!).from('Wh').to('kWh'),
+        [idleConsumptionData],
     )
 
     const convertedSumIdleConsumptionDataToKwh = useMemo(
-        () => convert(computeSumIdleConsumption(data)!).from('Wh').to('kWh'),
-        [data],
+        () => convert(computeSumIdleConsumption(idleConsumptionData)!).from('Wh').to('kWh'),
+        [idleConsumptionData],
     )
 
     const pourcentageOfIdleConsumptionFromTotalConsumption = useMemo(() => {
