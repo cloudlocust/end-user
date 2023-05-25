@@ -12,6 +12,7 @@ import { AnalysisIdleConsumption } from 'src/modules/Analysis/components/Analysi
 import AnalysisChartCircleContent from 'src/modules/Analysis/components/AnalysisChartCircleContent'
 import { MissingHousingMeterErrorMessage } from 'src/modules/MyConsumption/utils/ErrorMessages'
 import { MissingContractsWarning } from 'src/modules/Analysis/utils/ErrorMessages'
+import { useAnalysisStore } from 'src/modules/Analysis/store/analysisStore'
 
 // eslint-disable-next-line jsdoc/require-jsdoc
 export const AnalysisCTAColor = linksColor || warningMainHashColor
@@ -37,6 +38,8 @@ export default function AnalysisSummary(props: AnalysisSummaryProps) {
     const theme = useTheme()
     const [activeInformationName, setActiveInformationName] = useState<analysisInformationName | undefined>(undefined)
     const isMobile = useMediaQuery(theme.breakpoints.down('lg'))
+
+    const totalConsumption = useAnalysisStore((state) => state.totalConsumption)
 
     /**
      * Handler to set the correct information name (min, max, mean) Based on the selected value element fill color in analysisChart.
@@ -90,7 +93,10 @@ export default function AnalysisSummary(props: AnalysisSummaryProps) {
             {!isMetricsLoading && (
                 <div className="p-24 analysis-information-list">
                     <AnalysisInformationList activeInformationName={activeInformationName} data={data} range={range} />
-                    <AnalysisIdleConsumption data={data} />
+                    <AnalysisIdleConsumption
+                        totalConsumption={totalConsumption}
+                        {...{ range, filters, isMetricsLoading }}
+                    />
                     {enedisSgeConsent?.enedisSgeConsentState === 'CONNECTED' && (
                         <AnalysisMaxPower data={data} housingId={currentHousing!.id} />
                     )}
