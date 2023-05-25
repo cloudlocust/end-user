@@ -16,8 +16,4 @@ export interface AnalysisIdleConsumptionProps {
      * Metrics filters.
      */
     filters: metricFiltersType
-    /**
-     * Metrics loading state.
-     */
-    isMetricsLoading?: boolean
 }
