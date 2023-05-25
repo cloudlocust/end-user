@@ -115,10 +115,6 @@ export type IEcogestPageComponentProps =
          * Current EcogesteCategory used.
          */
         currentCategory: IEcogestCategory | null | undefined
-        /**
-         * Current List of Ecogeste Category.
-         */
-        elementList?: IEcogestCategory[] | null | undefined
     }
 
 /**
@@ -144,4 +140,26 @@ export type IEcogesteListPageProps =
          * Default: CONSUMPTION (poles de consommation).
          */
         categoryType?: IEcogesteCategoryTypes
+    }
+
+/**
+ * Props to pass to EcogesteCategoriesList.
+ */
+export type IEcogesteCategoriesListProps =
+    // eslint-disable-next-line jsdoc/require-jsdoc -- JSDoc is confused, false-positive
+    {
+        /**
+         * Ecogest Categories.
+         */
+        categories: IEcogestCategory[] | null
+
+        /**
+         * The type of Ecogest Category we're using now.
+         */
+        categoryType: IEcogesteCategoryTypes
+
+        /**
+         * Is Loading.
+         */
+        loadingInProgress: boolean
     }

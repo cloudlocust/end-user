@@ -1,29 +1,25 @@
 import { BuilderUseElementList } from 'src/modules/utils/useElementHookBuilder'
 import { IEcogestCategory } from 'src/modules/Ecogestes/components/ecogeste'
 import { formatMessageType } from 'src/common/react-platform-translation'
-import { ECOGESTES_ENDPOINT } from 'src/modules/Ecogestes'
-
-/**
- * API Endpoint to get all Poles of Consumption available.
- */
-export const ECOGESTES_POLES_ENDPOINT = `${ECOGESTES_ENDPOINT}/consumptions`
+import { ECOGESTES_ENDPOINT, IEcogesteCategoryTypes } from 'src/modules/Ecogestes/EcogestesConfig'
 
 // eslint-disable-next-line jsdoc/require-jsdoc
 export const loadElementListError = (_error: any, formatMessage: formatMessageType) => {
     return formatMessage({
-        id: 'Erreur lors du chargement des poles de consomations',
-        defaultMessage: 'Erreur lors du chargement des poles de consomations',
+        id: "Erreur lors du chargement des catégories d'écogeste",
+        defaultMessage: "Erreur lors du chargement des catégories d'écogeste",
     })
 }
 
-/**
- * Hook used to fetch all Poles of Consumptions.
+/**.
+ * Hook, to fetch all Categories belonging to a Category Type (Consumptions Poles, Rooms, ...)
  *
- * @returns A hook to get Ecogeste Poles of Consumptions.
+ * @param categoryType Type of Category.
+ * @returns IEcogestCategory[] | undefined
  */
-export const useEcogestePoles = () => {
+export const useEcogestesCategories = (categoryType: IEcogesteCategoryTypes) => {
     const { elementList, loadingInProgress } = BuilderUseElementList<IEcogestCategory, IEcogestCategory, undefined>({
-        API_ENDPOINT: ECOGESTES_POLES_ENDPOINT,
+        API_ENDPOINT: `${ECOGESTES_ENDPOINT}/${categoryType}`,
         snackBarMessage0verride: { loadElementListError },
     })(undefined, {})
 
@@ -33,4 +29,4 @@ export const useEcogestePoles = () => {
     }
 }
 
-export default useEcogestePoles
+export default useEcogestesCategories
