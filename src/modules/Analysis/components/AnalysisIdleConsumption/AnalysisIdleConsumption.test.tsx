@@ -1,7 +1,7 @@
 import { reduxedRender } from 'src/common/react-platform-components/test'
 import { AnalysisIdleConsumption } from 'src/modules/Analysis/components/AnalysisIdleConsumption'
 import { AnalysisIdleConsumptionProps } from 'src/modules/Analysis/components/AnalysisIdleConsumption/analysisIdleConssumption'
-import { metricFiltersType } from 'src/modules/Metrics/Metrics.d'
+import { IMetric, metricFiltersType } from 'src/modules/Metrics/Metrics.d'
 
 // TODO: fix tests
 
@@ -25,25 +25,33 @@ describe('AnalysisIdleConsumption component test', () => {
         filters: mockFilters,
         range: mockRange,
         totalConsumption: 0,
-        isMetricsLoading: mockIsMetricsLoading,
     }
 
     let idleSvg = 'idle-svg'
 
+    let mockData: IMetric[]
+
     jest.mock('src/modules/Metrics/metricsHook.ts', () => ({
         // eslint-disable-next-line jsdoc/require-jsdoc
         useMetrics: () => ({
-            data: [[4000, 1677628800000]],
-            filters: mocknAnalysisIdleConsumptionProps.filters,
-            range: mocknAnalysisIdleConsumptionProps.range,
+            data: mockData,
+            filters: mockFilters,
+            range: mockRange,
             interval: '1d',
+            isMetricsLoading: mockIsMetricsLoading,
         }),
     }))
 
-    test('when component has data props and it renders the average and sum of idle consumption', () => {
-        const { getByTestId } = reduxedRender(<AnalysisIdleConsumption {...mocknAnalysisIdleConsumptionProps} />)
+    const loadingMessage = 'En cours de calcule...'
+
+    test('whhen isMetricsLoading is true, we show a loading message', () => {
+        mockIsMetricsLoading = true
+        const { getByTestId, getByText } = reduxedRender(
+            <AnalysisIdleConsumption {...mocknAnalysisIdleConsumptionProps} />,
+        )
         expect(getByTestId(idleSvg)).toBeInTheDocument()
+        expect(getByText(loadingMessage)).toBeInTheDocument()
     })
 
-    test.todo('When total consumption from analysisStore, percentage of Idle consumption is shown')
+    test.todo('when data is retrieved, we show the average per day and sum in the month')
 })
