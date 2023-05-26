@@ -49,35 +49,32 @@ function needsToBeOpened(location: string | undefined, item: navbarItemType | un
 }
 
 /**
+ *
  * Check if the item's URL is in children.
  *
  * @param parent The parent item.
- * @param url The location (string or string[]).
+ * @param url The location.
  * @returns JSX Element.
  */
-function isUrlInChildren(parent: navbarItemType | undefined, url: string | string[]) {
+function isUrlInChildren(parent: navbarItemType | undefined, url: string) {
     if (!parent?.children) {
         return false
     }
 
-    const urls = Array.isArray(url) ? url : [url]
-
-    for (let i = 0; i < parent.children.length; i += 1) {
-        if (parent.children[i].children && isUrlInChildren(parent.children[i], urls)) {
+    for (let i = 0; i < parent?.children?.length; i += 1) {
+        if (parent?.children[i].children && isUrlInChildren(parent?.children[i], url)) {
             return true
         }
 
-        const currentUrl = parent.children[i].url
+        let isUrlIncluded = false
 
-        if (currentUrl !== undefined) {
-            const isUrlIncluded = urls.some((u) => u.includes(currentUrl! as string))
-            if (isUrlIncluded || urls.includes(currentUrl as string)) {
-                return true
-            }
+        if (parent?.children[i]?.url !== undefined) {
+            isUrlIncluded = url.includes(parent.children[i].url!)
+        }
+        if (isUrlIncluded || parent?.children[i].url === url) {
+            return true
         }
     }
-
-    return false
 }
 
 /**
