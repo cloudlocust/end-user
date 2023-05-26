@@ -376,6 +376,57 @@ const colorThemes: colorThemesType = {
             },
         },
     },
+    // Cd conseils
+    cdconseils: {
+        extendedColors: {
+            links: '#7EBA33',
+        },
+        MUI: {
+            palette: {
+                mode: 'light',
+                text: {
+                    primary: '#000000',
+                    secondary: lightText.secondary,
+                    disabled: '#C4C7C7',
+                },
+                background: {
+                    paper: '#FFFFFF',
+                    default: '#f6f7f9',
+                },
+                primary: {
+                    light: '#96CEEE',
+                    main: '#5BB1E4',
+                    dark: '#17618C',
+                    contrastText: '#FFFFFF',
+                },
+                secondary: {
+                    light: '#F8C9A0',
+                    main: '#F39C50',
+                    dark: '#994D0A',
+                },
+            },
+            components: {
+                MuiButton: {
+                    styleOverrides: {
+                        outlinedPrimary: {
+                            borderColor: '#7EBA33',
+                            color: '#7EBA33',
+                            '&:hover': {
+                                borderColor: '#7EBA33',
+                            },
+                        },
+                        containedPrimary: {
+                            backgroundColor: '#7EBA33',
+                            '&:hover': {
+                                backgroundColor: '#F39C50',
+                                color: '#FFFFFF',
+                            },
+                        },
+                    },
+                },
+            },
+        },
+    },
     mainThemeDark: {
         MUI: {
             palette: {
