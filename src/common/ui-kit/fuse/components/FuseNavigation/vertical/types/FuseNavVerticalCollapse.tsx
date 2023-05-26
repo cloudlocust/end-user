@@ -75,6 +75,8 @@ function isUrlInChildren(parent: navbarItemType | undefined, url: string) {
             return true
         }
     }
+
+    return false
 }
 
 /**
