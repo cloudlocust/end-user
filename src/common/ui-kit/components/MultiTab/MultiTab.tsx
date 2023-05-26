@@ -49,9 +49,18 @@ const Root = styled(FusePageCarded)(
  * @param props.TabsProps Rest of Tabs props.
  * @param props.TabProps Rest of Tab props.
  * @param props.rootCss Root component css.
+ * @param props.isUseRouting Indicates whether to use routing for tab selection.
  * @returns  Element Details Tabs.
  */
-const MultiTab = ({ header, content, innerScroll, TabsProps, TabProps, rootCss }: MultiTabProps) => {
+const MultiTab = ({
+    header,
+    content,
+    innerScroll,
+    TabsProps,
+    TabProps,
+    rootCss,
+    isUseRouting = false,
+}: MultiTabProps) => {
     const { formatMessage } = useIntl()
 
     // Add KeyContent to access slugs more easly
@@ -61,28 +70,16 @@ const MultiTab = ({ header, content, innerScroll, TabsProps, TabProps, rootCss }
     const { pathname, ...restLocationState } = useLocation()
     const location = pathname.split('/')
 
-    // Initialise Base path and entry Tab.
-    let entryTab = location.pop()
     let basePath = location.join('/')
+    let entryTab = location.pop()
 
-    /**
-     * @description With this modification, if the location array is empty after the split() method,
-     * the entryTab variable will be set to the tabSlug of the first tab in the content array,
-     * and the basePath variable will be set to the original pathname.
-     * This will allow the component to handle the /route/child-route URL as well
-     * instead of handling only /route/first-child/second-child.
-     */
-    if (!entryTab) {
-        entryTab = content[0].tabSlug
-        basePath = pathname
-    }
-
-    // UseHistory, and tab Handle
     const tabSlugList = content.filter((item) => item.tabSlug === entryTab)
     const isInvalidValue = !tabSlugList.length || !entryTab?.length
-    const [tabSlug, setTabSlug] = useState(isInvalidValue ? content[0].tabSlug : entryTab)
+
+    // UseHistory, and tab Handle
     const history = useHistory()
-    isInvalidValue && history.replace({ pathname: `${basePath}/${content[0].tabSlug}`, ...restLocationState })
+    const [tabSlug, setTabSlug] = useState(isInvalidValue ? content[0].tabSlug : entryTab)
+
     /**
      * Handler for tab change.
      *
@@ -91,7 +88,10 @@ const MultiTab = ({ header, content, innerScroll, TabsProps, TabProps, rootCss }
      */
     const handleTabChange = (_event: SyntheticEvent, newTabSlug: string) => {
         setTabSlug(newTabSlug)
-        history.replace({ pathname: `${basePath}/${newTabSlug}`, ...restLocationState })
+
+        if (isUseRouting) {
+            history.replace({ pathname: `${basePath}/${newTabSlug}`, ...restLocationState })
+        }
     }
 
     return (

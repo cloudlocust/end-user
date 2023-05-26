@@ -52,4 +52,8 @@ export interface MultiTabProps {
      * Css targeting the root component.
      */
     rootCss?: CSSProperties
+    /**
+     * Indicates whether to use routing for tab selection.
+     */
+    isUseRouting?: boolean
 }
