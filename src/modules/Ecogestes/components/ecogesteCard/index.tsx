@@ -21,7 +21,7 @@ import { IEcogeste } from 'src/modules/Ecogestes/components/ecogeste'
 import useResizeObserver from 'src/modules/utils/useResizeObserver'
 import useEcogestes from 'src/modules/Ecogestes/ecogestesHook'
 import { Icon } from 'src/common/ui-kit'
-
+import { useToggle } from 'react-use'
 /**
  * A card that renders a given ecogeste.
  *
@@ -43,7 +43,7 @@ export const EcogesteCard = ({
     const theme = useTheme()
 
     const [shouldEllipse, setShouldEllipse] = useState(false)
-    const [seeFull, setSeeFull] = useState(false)
+    const [seeFull, setSeeFull] = useToggle(false)
     const { setViewStatus } = useEcogestes()
     const [infoModalOpen, setInfoModalOpen] = useState(false)
 
@@ -106,7 +106,7 @@ export const EcogesteCard = ({
                     // Can't hard-code any lightness change, or it might break other themes.
                     // Maybe a rework of the palette would help ?
                     // TODO: rework palette to match figma wireframes
-                    background: viewed ? theme.palette.background.default : theme.palette.secondary.light,
+                    background: viewed ? theme.palette.background.paper : theme.palette.secondary.light,
                     maxHeight: seeFull ? 'max-content' : '15rem',
                     minHeight: '15rem',
                     maxWidth: '60rem',
@@ -202,7 +202,7 @@ export const EcogesteCard = ({
                                     height: 'inherit',
                                 }}
                                 src={ecogeste.urlIcon}
-                                alt=""
+                                alt="ecogeste-url-icon"
                             ></img>
                         </Icon>
                         <div className="relative text-13 text-justify pr-10 ">
