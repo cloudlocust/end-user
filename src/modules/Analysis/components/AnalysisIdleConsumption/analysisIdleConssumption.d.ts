@@ -1,11 +1,19 @@
-import { IMetric } from 'src/modules/Metrics/Metrics.d'
+import { metricFiltersType } from 'src/modules/Metrics/Metrics.d'
 
 /**
  * AnalysisIdleConsumption Props.
  */
 export interface AnalysisIdleConsumptionProps {
     /**
-     * Metrics data.
+     * Total consumption data.
      */
-    data: IMetric[]
+    totalConsumption: number
+    /**
+     * Metrics range.
+     */
+    range: metricRangeType
+    /**
+     * Metrics filters.
+     */
+    filters: metricFiltersType
 }

@@ -40,10 +40,6 @@ export const initialMetricsHookValues: getMetricType = {
             target: metricTargetsEnum.pMax,
             type: 'timeserie',
         },
-        {
-            target: metricTargetsEnum.idleConsumption,
-            type: 'timeserie',
-        },
     ],
     filters: [],
 }

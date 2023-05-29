@@ -15,8 +15,12 @@ import {
     computeTotalAutoconsumption,
     getWidgetIndicatorColor,
     computeTotalOfAllConsumptions,
+    isRangeWithinToday,
+    getPreviousDayRange,
 } from 'src/modules/MyConsumption/components/Widget/WidgetFunctions'
 import { periodType } from 'src/modules/MyConsumption/myConsumptionTypes'
+import { getDateWithoutTimezoneOffset } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
+import dayjs from 'dayjs'
 
 /**
  * Reusable test function that used to test multiple compute total function.
@@ -535,6 +539,49 @@ describe('Test widget functions', () => {
             ]
             const result = computeTotalOfAllConsumptions(data)
             expect(result).toStrictEqual(expectedResult)
+        })
+    })
+    describe('test isDateWithinDay', () => {
+        let fromRange = getDateWithoutTimezoneOffset(dayjs().startOf('day').toDate())
+        let toRange = getDateWithoutTimezoneOffset(dayjs().endOf('day').toDate())
+        test('when it returns true', () => {
+            const boolean = isRangeWithinToday(fromRange, toRange)
+
+            expect(boolean).toBeTruthy()
+        })
+        test('when it returns false', () => {
+            fromRange = '2023-06-10T00:00:00.000Z'
+            toRange = '2023-07-10T23:59:59.999Z'
+            const boolean = isRangeWithinToday(fromRange, toRange)
+
+            expect(boolean).toBeFalsy()
+        })
+    })
+
+    describe('test getPreviousDayRange', () => {
+        let currentRange = {
+            from: '2023-05-10T00:00:00.000Z',
+            to: '2023-05-10T23:59:59.999Z',
+        }
+        test('when subDay is 1, you should get the previous day range', () => {
+            const range = getPreviousDayRange(currentRange)
+
+            const expectedResult = {
+                from: '2023-05-09T00:00:00.000Z',
+                to: '2023-05-09T23:59:59.999Z',
+            }
+
+            expect(range).toStrictEqual(expectedResult)
+        })
+        test('when subDay is 2, you get the previous day -1', () => {
+            const range = getPreviousDayRange(currentRange, 2)
+
+            const expectedResult = {
+                from: '2023-05-08T00:00:00.000Z',
+                to: '2023-05-08T23:59:59.999Z',
+            }
+
+            expect(range).toStrictEqual(expectedResult)
         })
     })
 })
