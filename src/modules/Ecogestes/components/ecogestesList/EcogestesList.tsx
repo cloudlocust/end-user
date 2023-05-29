@@ -163,7 +163,7 @@ export const EcogestesList = () => {
                 </div>
             </div>
             {(isEmpty(ecogestesList) || isNull(ecogestesList)) && !isEcogestesLoadingInProgress && (
-                <TypographyFormatMessage>Aucun écogeste n'est disponible pour le moment</TypographyFormatMessage>
+                <TypographyFormatMessage>Aucun écogeste n'est disponible pour le moment.</TypographyFormatMessage>
             )}
             <div
                 className="flex flex-nowrap gap-5 flex-col sm:flex-row  w-full sm:flex-wrap h-full sm:h-auto"
