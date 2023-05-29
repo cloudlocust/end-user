@@ -1,5 +1,5 @@
 pipeline{
-    agent { label 'worker-2' }
+    agent { label 'jenkins-jenkins-react' }
     tools {nodejs "node16"}
     environment{
         GITHUB_CREDENTIALS = credentials('github myem developer')
@@ -33,10 +33,19 @@ pipeline{
         stage('build && SonarQube analysis') {
             environment {
                 scannerHome = tool 'SonarQubeScanner'
+                sonarqube_Token = credentials('sonarq-token')
+                sonar_host = credentials('sonarq-host')
             }
             steps {
                 withSonarQubeEnv('sonarqube') {
-                    sh "${scannerHome}/bin/sonar-scanner -X"
+                script {
+                    // Execute shell command to set directory variable
+                    directory = sh(returnStdout: true, script: 'pwd').trim()
+
+                    sh "kubectl exec -it \$NODE_NAME -n jenkins -- /bin/bash -c ' cd ${directory} && export SONAR_HOST_URL=${sonar_host} && ${scannerHome}/bin/sonar-scanner -Dsonar.login=${sonarqube_Token} -X ' "
+
+                }
+
                 }
             }
         }
