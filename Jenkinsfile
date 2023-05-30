@@ -248,6 +248,9 @@ def isPathExist(changeSets,path) {
 }
 
 def changeset(path){
+    def jobName="$JOB_NAME"
+    def job = Jenkins.getInstance().getItemByFullName(jobName)
+    if ( job.lastSuccessfulBuild == null) { return true }    
     def changeSets = allChangeSetsFromLastSuccessfulBuild()                                          
     return  isPathExist(getFilesChanged(changeSets),path)
 
