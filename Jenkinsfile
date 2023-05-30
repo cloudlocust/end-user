@@ -41,7 +41,7 @@ pipeline{
                 script {
                     // Execute shell command to set directory variable
                     directory = sh(returnStdout: true, script: 'pwd').trim()
-
+                    // execute sonarqube command directly in the agent pod using kubectl exec command
                     sh "kubectl exec -it \$NODE_NAME -n jenkins -- /bin/bash -c ' cd ${directory} && export SONAR_HOST_URL=${sonar_host} && ${scannerHome}/bin/sonar-scanner -Dsonar.login=${sonarqube_Token} -X ' "
 
                 }
