@@ -1,5 +1,5 @@
 import { useEffect, useMemo } from 'react'
-import { addMonths, endOfMonth, startOfMonth, subMonths, subYears } from 'date-fns'
+import { endOfMonth, startOfMonth, subMonths, subYears } from 'date-fns'
 import { getMetricType, metricFiltersType, metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
 import { useMetrics } from 'src/modules/Metrics/metricsHook'
 import {
@@ -98,7 +98,7 @@ const AnalysisChartCircleContent = ({
             range: {
                 from: getDateWithoutTimezoneOffset(startOfMonth(subYears(new Date(dateReferenceConsumptionValue), 1))),
                 // Adding one month to the dateReferenceConsumptionValue to make sure the monthly metric request returns data for dateReferenceConsumptionValue (which will be element before last).
-                to: getDateWithoutTimezoneOffset(endOfMonth(addMonths(new Date(dateReferenceConsumptionValue), 1))),
+                to: getDateWithoutTimezoneOffset(endOfMonth(new Date(dateReferenceConsumptionValue))),
             },
             filters,
             targets: [
@@ -130,6 +130,7 @@ const AnalysisChartCircleContent = ({
         () => fillApexChartsAxisMissingValues(ApexChartsAxisValues, 'yearly', range),
         [range, ApexChartsAxisValues],
     )
+
     const setTotalConsumption = useAnalysisStore((state) => state.setTotalConsumption)
 
     useEffect(() => {
@@ -146,17 +147,12 @@ const AnalysisChartCircleContent = ({
     let previousMonthPercentageChange = 0
     let previousYearPercentageChange = 0
 
-    // eslint-disable-next-line
-    console.log('🚀 ~ file: index.tsx:153 ~ ApexChartsAxisValues:', ApexChartsAxisValues)
     // Reference consumption value reference represents the last element due to the range we're setting and filliApexChartsMissingValues to only return 13 elements, we add another month to make sure the monthly metric request returns the reference consumption data.
     const indexReferenceConsumptionValue = ApexChartsAxisValues.yAxisSeries[0].data.length - 1
 
-    // eslint-disable-next-line
-    console.log('🚀 ~ file: index.tsx:153 ~ indexReferenceConsumptionValue:', indexReferenceConsumptionValue)
-
     // Previous Month consumption represent the element before consumption value reference, because the last represent the dateReference and thus before it is the previous month of dateReference.
     const indexPreviousMonthPercentageChange = indexReferenceConsumptionValue - 1
-    // Example: if dateReference is 01-02-2022, then our range will be {from: "01-01-2021", to: "31-03-2022"}.
+    // Example: if dateReference is 01-02-2022, then our range will be {from: "01-01-2021", to: "31-02-2022"}.
     // But because fillApexChartsMissingValues it'll take only 13 elements that we need.
     // Thus we'll have data array showing: [Jan 2021, Feb 2021, Mar 2021, Apr 2021, May 2021, June 2021, July 2021, Aug 2021, Sept 2021, Oct 2021, Nov 2021, Dec 2021, Jan 2022, Feb 2022].
     previousMonthPercentageChange = computePercentageChange(
@@ -182,9 +178,6 @@ const AnalysisChartCircleContent = ({
               Number(ApexChartsAxisValues.yAxisSeries[0].data[indexReferenceConsumptionValue]),
           )
         : { value: 0, unit: 'kWh' }
-
-    // eslint-disable-next-line
-    console.log('🚀 ~ file: index.tsx:178 ~ totalConsumption:', totalConsumption)
 
     return (
         <div className="flex flex-col justify-center items-center" style={{ backgroundColor: 'transparent' }}>
