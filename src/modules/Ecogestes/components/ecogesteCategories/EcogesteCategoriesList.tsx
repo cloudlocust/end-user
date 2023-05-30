@@ -1,5 +1,4 @@
 import { IEcogestCategory } from 'src/modules/Ecogestes/components/ecogeste'
-import { styled } from '@mui/material/styles'
 import { EcogesteCategoryCard } from 'src/modules/Ecogestes/components/ecogesteCategories/EcogesteCategoryCard'
 import { IEcogesteCategoryTypes } from 'src/modules/Ecogestes/EcogestesConfig'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
@@ -29,21 +28,19 @@ export const EcogesteCategoriesList = ({
      */
     categoryType: IEcogesteCategoryTypes
 }) => {
-    const CategoriesStyledDiv = styled('div')(() => ({
-        marginTop: `15px`,
-    }))
+    if (!categories.length) {
+        return (
+            <TypographyFormatMessage>
+                Aucune categorie d'écogeste n'est disponible pour le moment
+            </TypographyFormatMessage>
+        )
+    }
 
     return (
-        <CategoriesStyledDiv className="flex gap-9 flex-wrap justify-center" aria-label="list, categories, cards">
-            {categories.length > 0 ? (
-                categories?.map((category) => (
-                    <EcogesteCategoryCard key={category.id} ecogestCategory={category} categoryType={categoryType} />
-                ))
-            ) : (
-                <TypographyFormatMessage>
-                    Aucune categorie d'écogeste n'est disponible pour le moment
-                </TypographyFormatMessage>
-            )}
-        </CategoriesStyledDiv>
+        <div className="flex gap-9 flex-wrap justify-center mt-10" aria-label="list, categories, cards">
+            {categories?.map((category) => (
+                <EcogesteCategoryCard key={category.id} ecogestCategory={category} categoryType={categoryType} />
+            ))}
+        </div>
     )
 }
