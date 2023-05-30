@@ -14,7 +14,7 @@ import { FormControl } from '@mui/material'
 import { useIntl } from 'react-intl'
 import './ToolbarWidget.scss'
 import { Alerts } from 'src/modules/Layout/Toolbar/components/Alerts'
-import { URL_ERROR_HOUSING } from 'src/modules/Errors/ErrorsConfig'
+import { URL_ERROR_500 } from 'src/modules/Errors/ErrorsConfig'
 
 const ITEM_HEIGHT = 48
 const ITEM_PADDING_TOP = 8
@@ -53,7 +53,7 @@ export const ToolbarWidget = () => {
             try {
                 await dispatch.housingModel.loadHousingsList()
             } catch (error) {
-                history.push(URL_ERROR_HOUSING)
+                history.push(URL_ERROR_500)
             }
         }
         loadHousings()
