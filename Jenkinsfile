@@ -98,11 +98,12 @@ pipeline{
                        when{  expression { changeset('enduser-react-chart')} }
                        environment {
                            ENV_NAME = getEnvName(BRANCH_NAME)
+                           IMG_TAG = getImgTag(BRANCH_NAME)
                            VERSION_CHART = "0.1.${BUILD_NUMBER}"
                            USER_NAME_ = credentials('helm_registry_username')
                            PASSWORD_ = credentials('helm_registry_password')
                            url = credentials('helm_registry_url')
-                           URL_ = "${url}/${ENV_NAME}registry"
+                           URL_ = "${url}/${IMG_TAG}registry"
                            }
                         steps {
                               script{
@@ -128,10 +129,11 @@ pipeline{
            }
         environment {
               ENV_NAME = getEnvName(BRANCH_NAME)
+              IMG_TAG = getImgTag(BRANCH_NAME)
               USER_NAME_ = credentials('helm_registry_username')
               PASSWORD_ = credentials('helm_registry_password')
               url = credentials('helm_registry_url')
-              URL_ = "${url}/${ENV_NAME}registry"
+              URL_ = "${url}/${IMG_TAG}registry"
                             
            }
             steps {
@@ -248,6 +250,9 @@ def isPathExist(changeSets,path) {
 }
 
 def changeset(path){
+    def jobName="$JOB_NAME"
+    def job = Jenkins.getInstance().getItemByFullName(jobName)
+    if ( job.lastSuccessfulBuild == null) { return true }    
     def changeSets = allChangeSetsFromLastSuccessfulBuild()                                          
     return  isPathExist(getFilesChanged(changeSets),path)
 
