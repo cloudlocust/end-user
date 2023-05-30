@@ -25,7 +25,7 @@ export function AnalysisIdleConsumption({ totalConsumption, range, filters }: An
     const theme = useTheme()
     const isMobile = useMediaQuery(theme.breakpoints.down('md'))
 
-    const { data: idleConsumptionData } = useMetrics(
+    const { data: idleConsumptionData, isMetricsLoading: isIdleConsumptionDataLoading } = useMetrics(
         {
             interval: '1d',
             range: range,
@@ -69,7 +69,9 @@ export function AnalysisIdleConsumption({ totalConsumption, range, filters }: An
                     <TypographyFormatMessage className="sm:text-13 font-bold md:text-16">
                         Consommation de veille :
                     </TypographyFormatMessage>
-                    {convertedAverageIdleConsumptionDataToKwh && convertedSumIdleConsumptionDataToKwh ? (
+                    {isIdleConsumptionDataLoading ? (
+                        <TypographyFormatMessage>En cours de calcule...</TypographyFormatMessage>
+                    ) : convertedAverageIdleConsumptionDataToKwh && convertedSumIdleConsumptionDataToKwh ? (
                         <>
                             <span>
                                 <TypographyFormatMessage className="sm:text-13 text-grey-600 font-bold md:text-16">
