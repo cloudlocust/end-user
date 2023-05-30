@@ -1,11 +1,8 @@
 import { useEffect, useMemo } from 'react'
-import { endOfMonth, startOfMonth, subMonths, subYears } from 'date-fns'
+import { addMonths, endOfMonth, startOfMonth, subMonths, subYears } from 'date-fns'
 import { getMetricType, metricFiltersType, metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
 import { useMetrics } from 'src/modules/Metrics/metricsHook'
-import {
-    fillApexChartsAxisMissingValues,
-    getDateWithoutTimezoneOffset,
-} from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
+import { getDateWithoutTimezoneOffset } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
 import { ApexChartsAxisValuesType } from 'src/modules/MyConsumption/myConsumptionTypes'
 import { convertMetricsDataToApexChartsAxisValues } from 'src/modules/MyConsumption/utils/apexChartsDataConverter'
 import { computePercentageChange } from 'src/modules/Analysis/utils/computationFunctions'
@@ -93,11 +90,11 @@ const AnalysisChartCircleContent = ({
     // eslint-disable-next-line jsdoc/require-jsdoc
     filters: metricFiltersType
 }) => {
+    // This Metrics Request Gets the data of wanted current month and previous month for comparaison.
     const { range, data, isMetricsLoading } = useMetrics(
         {
             range: {
-                from: getDateWithoutTimezoneOffset(startOfMonth(subYears(new Date(dateReferenceConsumptionValue), 1))),
-                // Adding one month to the dateReferenceConsumptionValue to make sure the monthly metric request returns data for dateReferenceConsumptionValue (which will be element before last).
+                from: getDateWithoutTimezoneOffset(startOfMonth(subMonths(new Date(dateReferenceConsumptionValue), 1))),
                 to: getDateWithoutTimezoneOffset(endOfMonth(new Date(dateReferenceConsumptionValue))),
             },
             filters,
@@ -117,54 +114,75 @@ const AnalysisChartCircleContent = ({
         Boolean(filters.length),
     )
 
+    // This Metrics Request Gets the data of previous year month for comparaison.
+    const { data: dataPreviousYear, isMetricsLoading: isPreviousYearMetricsLoading } = useMetrics(
+        {
+            range: {
+                from: getDateWithoutTimezoneOffset(startOfMonth(subYears(new Date(dateReferenceConsumptionValue), 1))),
+                // Adding one month to the dateReferenceConsumptionValue to make sure the monthly metric request returns data for dateReferenceConsumptionValue (which will be element before last).
+                to: getDateWithoutTimezoneOffset(
+                    endOfMonth(addMonths(subYears(new Date(dateReferenceConsumptionValue), 1), 1)),
+                ),
+            },
+            filters,
+            targets: [
+                {
+                    target: metricTargetsEnum.consumption,
+                    type: 'timeserie',
+                },
+            ],
+            interval: '1M',
+        } as getMetricType,
+        // execute getMetrics on instanciation only if filters meterGuid is not empty, because the filters props error will already be handled in the parent.
+        Boolean(filters.length),
+    )
     // Wrap in useMemo for better performance, as we save the result of convertMetricsData function and we don't call it again on every reender, until data changes.
     let ApexChartsAxisValues: ApexChartsAxisValuesType = useMemo(
         () => convertMetricsDataToApexChartsAxisValues(data),
         [data],
     )
 
-    // Wrap in useMemo for better performance, as we save the heavy computational result of fillApexChartsAxisMissingValues function and we don't call it again on every reender, until period, range or ApexChartsAxisValues from convertMetricsDataToApexChartsAxisValues changes.
-    // The fillApexChartsAxisMissingValues checks if there are missing axis values.
-    ApexChartsAxisValues = useMemo(
-        // Because of ApexCharts to show the right amount of xAxis even If there are missing values according to the period (for example for 'weekly' we expect seven values), we fill the missing values with null.
-        () => fillApexChartsAxisMissingValues(ApexChartsAxisValues, 'yearly', range),
-        [range, ApexChartsAxisValues],
+    // Wrap in useMemo for better performance, as we save the result of convertMetricsData function and we don't call it again on every reender, until data changes.
+    let ApexChartsAxisPreviousYearValues: ApexChartsAxisValuesType = useMemo(
+        () => convertMetricsDataToApexChartsAxisValues(dataPreviousYear),
+        [dataPreviousYear],
     )
 
     const setTotalConsumption = useAnalysisStore((state) => state.setTotalConsumption)
 
     useEffect(() => {
         if (ApexChartsAxisValues.yAxisSeries.length && !isMetricsLoading) {
-            // Reference consumption value reference represents the last element due to the range we're setting and filliApexChartsMissingValues to only return 13 elements, we add another month to make sure the monthly metric request returns the reference consumption data.
+            // Reference consumption value reference represents the last element due to the range we're setting.
             setTotalConsumption(
                 Number(ApexChartsAxisValues.yAxisSeries[0].data[ApexChartsAxisValues.yAxisSeries[0].data.length - 1]),
             )
         }
     }, [ApexChartsAxisValues, isMetricsLoading, setTotalConsumption])
 
-    if (ApexChartsAxisValues.yAxisSeries.length === 0 || isMetricsLoading) return <></>
+    if (ApexChartsAxisValues.yAxisSeries.length === 0 || isMetricsLoading || isPreviousYearMetricsLoading) return <></>
 
     let previousMonthPercentageChange = 0
     let previousYearPercentageChange = 0
 
-    // Reference consumption value reference represents the last element due to the range we're setting and filliApexChartsMissingValues to only return 13 elements, we add another month to make sure the monthly metric request returns the reference consumption data.
+    // Reference consumption value reference represents the last element due to the range we're setting.
     const indexReferenceConsumptionValue = ApexChartsAxisValues.yAxisSeries[0].data.length - 1
 
     // Previous Month consumption represent the element before consumption value reference, because the last represent the dateReference and thus before it is the previous month of dateReference.
     const indexPreviousMonthPercentageChange = indexReferenceConsumptionValue - 1
-    // Example: if dateReference is 01-02-2022, then our range will be {from: "01-01-2021", to: "31-02-2022"}.
-    // But because fillApexChartsMissingValues it'll take only 13 elements that we need.
-    // Thus we'll have data array showing: [Jan 2021, Feb 2021, Mar 2021, Apr 2021, May 2021, June 2021, July 2021, Aug 2021, Sept 2021, Oct 2021, Nov 2021, Dec 2021, Jan 2022, Feb 2022].
+    // Example: if dateReference is 01-02-2022, then our range will be {from: "01-01-2022", to: "31-02-2022"}.
+    // Thus we'll have data array showing: [Jan 2022, Feb 2022].
     previousMonthPercentageChange = computePercentageChange(
         Number(ApexChartsAxisValues.yAxisSeries[0].data[indexPreviousMonthPercentageChange]),
         Number(ApexChartsAxisValues.yAxisSeries[0].data[indexReferenceConsumptionValue]),
     )
 
-    // Previous Year consumption represent the first element for the range given.
-    previousYearPercentageChange = computePercentageChange(
-        Number(ApexChartsAxisValues.yAxisSeries[0].data[0]),
-        Number(ApexChartsAxisValues.yAxisSeries[0].data[indexReferenceConsumptionValue]),
-    )
+    // Previous Year consumption represent the first element for the range given in previousYear Metric Request.
+    previousYearPercentageChange = ApexChartsAxisPreviousYearValues.yAxisSeries.length
+        ? computePercentageChange(
+              Number(ApexChartsAxisPreviousYearValues.yAxisSeries[0].data[0]),
+              Number(ApexChartsAxisValues.yAxisSeries[0].data[indexReferenceConsumptionValue]),
+          )
+        : 0
 
     if (isNull(ApexChartsAxisValues.yAxisSeries[0].data[indexReferenceConsumptionValue]))
         return (
