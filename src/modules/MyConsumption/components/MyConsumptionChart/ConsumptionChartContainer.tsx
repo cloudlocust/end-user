@@ -7,7 +7,6 @@ import { useMetrics } from 'src/modules/Metrics/metricsHook'
 import { IMetric, metricTargetsEnum, metricTargetType } from 'src/modules/Metrics/Metrics.d'
 import { ConsumptionChartContainerProps } from 'src/modules/MyConsumption/myConsumptionTypes'
 import CircularProgress from '@mui/material/CircularProgress'
-import TargetButtonGroup from 'src/modules/MyConsumption/components/TargetButtonGroup'
 import EurosConsumptionButtonToggler from 'src/modules/MyConsumption/components/EurosConsumptionButtonToggler'
 import {
     filterPmaxAndEurosConsumptionTargetFromVisibleChartTargets,
@@ -23,6 +22,7 @@ import {
     ConsumptionEnedisSgeWarning,
 } from 'src/modules/MyConsumption/components/MyConsumptionChart/ConsumptionChartWarnings'
 import { sgeConsentFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
+import TargetMenuGroup from 'src/modules/MyConsumption/components/TargetMenuGroup'
 
 /**
  * MyConsumptionChart Component.
@@ -178,9 +178,9 @@ export const ConsumptionChartContainer = ({
 
     return (
         <div className="mb-12">
-            <div className="relative flex flex-col md:flex-row justify-between items-center">
+            <div className="relative flex flex-col items-center justify-between md:flex-row">
                 <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mb-16 md:mb-0">
-                    <div className="flex flex-col md:flex-row items-center">
+                    <div className="flex flex-col items-center md:flex-row">
                         <TypographyFormatMessage
                             variant="h5"
                             className="sm:mr-8"
@@ -203,7 +203,7 @@ export const ConsumptionChartContainer = ({
                     showEurosConsumption={!isEurosConsumptionChart}
                     disabled={isEurosConsumptionDisabled}
                 />
-                <TargetButtonGroup
+                <TargetMenuGroup
                     removeTarget={hideMetricTargetChart}
                     addTarget={showMetricTargetChart}
                     hidePmax={hidePmax}
@@ -211,7 +211,7 @@ export const ConsumptionChartContainer = ({
             </div>
 
             {isConsumptionChartLoading ? (
-                <div className="flex flex-col justify-center items-center w-full h-full" style={{ height: '320px' }}>
+                <div className="flex h-full w-full flex-col items-center justify-center" style={{ height: '320px' }}>
                     <CircularProgress style={{ color: theme.palette.background.paper }} />
                 </div>
             ) : (
