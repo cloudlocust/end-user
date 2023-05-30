@@ -15,6 +15,8 @@ import { motion } from 'framer-motion'
 import { Typography } from '@mui/material'
 import { consumptionWattUnitConversion } from 'src/modules/MyConsumption/utils/unitConversionFunction'
 import { useAnalysisStore } from 'src/modules/Analysis/store/analysisStore'
+import { isNull } from 'lodash'
+import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 
 /**
  * Component rendering each Line for each analysis percentage change.
@@ -144,8 +146,14 @@ const AnalysisChartCircleContent = ({
     let previousMonthPercentageChange = 0
     let previousYearPercentageChange = 0
 
+    // eslint-disable-next-line
+    console.log('🚀 ~ file: index.tsx:153 ~ ApexChartsAxisValues:', ApexChartsAxisValues)
     // Reference consumption value reference represents the last element due to the range we're setting and filliApexChartsMissingValues to only return 13 elements, we add another month to make sure the monthly metric request returns the reference consumption data.
     const indexReferenceConsumptionValue = ApexChartsAxisValues.yAxisSeries[0].data.length - 1
+
+    // eslint-disable-next-line
+    console.log('🚀 ~ file: index.tsx:153 ~ indexReferenceConsumptionValue:', indexReferenceConsumptionValue)
+
     // Previous Month consumption represent the element before consumption value reference, because the last represent the dateReference and thus before it is the previous month of dateReference.
     const indexPreviousMonthPercentageChange = indexReferenceConsumptionValue - 1
     // Example: if dateReference is 01-02-2022, then our range will be {from: "01-01-2021", to: "31-03-2022"}.
@@ -162,11 +170,21 @@ const AnalysisChartCircleContent = ({
         Number(ApexChartsAxisValues.yAxisSeries[0].data[indexReferenceConsumptionValue]),
     )
 
+    if (isNull(ApexChartsAxisValues.yAxisSeries[0].data[indexReferenceConsumptionValue]))
+        return (
+            <TypographyFormatMessage className="sm:text-16 font-medium md:text-20 text-center">
+                Aucune donnée disponible
+            </TypographyFormatMessage>
+        )
+
     const totalConsumption = Number(ApexChartsAxisValues.yAxisSeries[0].data[indexReferenceConsumptionValue])
         ? consumptionWattUnitConversion(
               Number(ApexChartsAxisValues.yAxisSeries[0].data[indexReferenceConsumptionValue]),
           )
         : { value: 0, unit: 'kWh' }
+
+    // eslint-disable-next-line
+    console.log('🚀 ~ file: index.tsx:178 ~ totalConsumption:', totalConsumption)
 
     return (
         <div className="flex flex-col justify-center items-center" style={{ backgroundColor: 'transparent' }}>
