@@ -59,7 +59,7 @@ const MultiTab = ({
     TabsProps,
     TabProps,
     rootCss,
-    isUseRouting = false,
+    isUseRouting = true,
 }: MultiTabProps) => {
     const { formatMessage } = useIntl()
 
