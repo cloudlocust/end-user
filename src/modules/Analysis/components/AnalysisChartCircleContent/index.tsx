@@ -119,7 +119,7 @@ const AnalysisChartCircleContent = ({
         {
             range: {
                 from: getDateWithoutTimezoneOffset(startOfMonth(subYears(new Date(dateReferenceConsumptionValue), 1))),
-                // Adding one month to the dateReferenceConsumptionValue to make sure the monthly metric request returns data for dateReferenceConsumptionValue (which will be element before last).
+                // Adding one month to the previous year month of referenceConsumptionValue to make sure the metrics request returns data for the previous year month.
                 to: getDateWithoutTimezoneOffset(
                     endOfMonth(addMonths(subYears(new Date(dateReferenceConsumptionValue), 1), 1)),
                 ),
