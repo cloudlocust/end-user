@@ -37,6 +37,9 @@ const NRLINK_NONEXISTANT_EXPIRED_MESSAGE = 'Connectez votre nrLINK pour visualis
 const ENEDIS_CONNECTED_MESSAGE = 'Historique de consommation'
 const ENEDIS_NONEXISTANT_EXPIRED_MESSAGE =
     'Autorisez la récupération de vos données de consommation pour avoir accès à votre historique.'
+const ENEDIS_UNSYNCHRONIZED_MESSAGE =
+    'Les données de votre récolte dhistorique semblent incohérentes par rapport à celle de votre nrLINK'
+
 const NO_METER_MESSAGE = 'Aucun compteur renseigné'
 const ENEDIS_CANCEL_COLLECTION_DATA_MESSAGE = 'Annuler la récolte de mes données'
 const CONTACT_MAIL_MESSAGE = 'Contacter support@myem.fr'
@@ -280,6 +283,20 @@ describe('MeterStatus component test', () => {
             expect(getByText(ENEDIS_NONEXISTANT_EXPIRED_MESSAGE)).toBeTruthy()
             const image = getByAltText('off-icon')
             expect(image).toHaveAttribute('src', './assets/images/content/housing/consent-status/meter-off.svg')
+        })
+        test('when enedis sge consent is UNSYNCHRONIZED', async () => {
+            mockEnedisSgeConsent = 'UNSYNCHRONIZED'
+            mockisMeterVerifyLoading = false
+
+            const { getByAltText } = reduxedRender(
+                <Router>
+                    <MeterStatus />
+                </Router>,
+            )
+
+            const image = getByAltText('sge-error-icon')
+            expect(image).toHaveAttribute('src', './assets/images/content/housing/consent-status/meter-error.svg')
+            expect(ENEDIS_UNSYNCHRONIZED_MESSAGE).toBeTruthy()
         })
     })
     describe('enphase status', () => {
