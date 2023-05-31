@@ -337,6 +337,18 @@ export const getApexChartMyConsumptionProps = ({
         options.xaxis!.labels!.rotate = 0
     }
 
+    if (period === 'daily') {
+        options.chart = {
+            ...options.chart,
+            toolbar: {
+                show: true,
+            },
+            zoom: {
+                enabled: true,
+            },
+        }
+    }
+
     options.chart!.stacked = chartType === 'consumption' ? isStackedEnabled : true
     options!.markers!.size = markerSizeList
     options!.stroke!.width = strokeWidthList
