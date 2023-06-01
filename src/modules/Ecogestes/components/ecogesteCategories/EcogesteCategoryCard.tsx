@@ -34,7 +34,7 @@ export const EcogesteCategoryCard: FC<IEcogesteCategoryCardProps> = ({
                     <Icon
                         aria-hidden="true"
                         color="primary"
-                        style={{ height: '10rem', alignSelf: 'center', width: '100%', margin: 'auto' }}
+                        style={{ height: '8rem', alignSelf: 'center', width: '100%', margin: '0 0 0.5rem 0' }}
                     >
                         <img
                             style={{
@@ -46,12 +46,14 @@ export const EcogesteCategoryCard: FC<IEcogesteCategoryCardProps> = ({
                             alt={ecogestCategory.name}
                         ></img>
                     </Icon>
-                    <TypographyFormatMessage className="font-bold text-15 whitespace-normal text-center">
-                        {ecogestCategory.name}
-                    </TypographyFormatMessage>
-                    <TypographyFormatMessage className="text-center">
-                        {`${ecogestCategory.nbEcogeste} Écogestes`}
-                    </TypographyFormatMessage>
+                    <div className="flex flex-col justify-evenly items-center">
+                        <TypographyFormatMessage className="font-bold text-12 md:text-13 whitespace-normal text-center mb-4">
+                            {ecogestCategory.name}
+                        </TypographyFormatMessage>
+                        <TypographyFormatMessage className="text-center text-12 md:text-13">
+                            {`${ecogestCategory.nbEcogeste} Écogestes`}
+                        </TypographyFormatMessage>
+                    </div>
                 </CardContent>
             </CardActionArea>
         </Card>

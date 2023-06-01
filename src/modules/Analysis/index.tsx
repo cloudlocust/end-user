@@ -107,6 +107,7 @@ export default function Analysis() {
                     minHeight: 'auto',
                     margin: `${!mdDown ? '0' : '0.5rem'}`,
                 }}
+                isUseRouting={false}
             />
         </ThemeProvider>
     )

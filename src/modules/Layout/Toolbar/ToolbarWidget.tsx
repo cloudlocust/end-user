@@ -6,7 +6,7 @@ import UserMenu from 'src/modules/Layout/Toolbar/components/UserMenu'
 import Notification from 'src/modules/Layout/Toolbar/components/Novu/Notification'
 import './ToolbarWidget.scss'
 import { Alerts } from 'src/modules/Layout/Toolbar/components/Alerts'
-import { URL_ERROR_HOUSING } from 'src/modules/Errors/ErrorsConfig'
+import { URL_ERROR_500 } from 'src/modules/Errors/ErrorsConfig'
 import { SelectHousing } from 'src/modules/Layout/Toolbar/components/SelectHousing'
 
 /**
@@ -29,7 +29,7 @@ export const ToolbarWidget = () => {
             try {
                 await dispatch.housingModel.loadHousingsList()
             } catch (error) {
-                history.push(URL_ERROR_HOUSING)
+                history.push(URL_ERROR_500)
             }
         }
         loadHousings()

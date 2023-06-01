@@ -26,12 +26,6 @@ const ConsumptionPolesComponent = () => {
         )
     }
 
-    /**
-     * TODO: Make a better handler for this state.
-     * IMO, is Admin ?
-     * True -> show "CTA -> backbone to add Poles"
-     * false -> show "No Ecogest found" or show every ecogests.
-     */
     if (!elementList) {
         return (
             <div className="w-full h-full justify-center relative flex flex-col items-center align-center p-16">
@@ -44,7 +38,7 @@ const ConsumptionPolesComponent = () => {
 }
 /**.
  * Pieces Component.
- * !! This component is only to say Its disabled.
+ * !! This component is only to say the functionality is disabled.
  *
  * @returns JSX.Element.
  */

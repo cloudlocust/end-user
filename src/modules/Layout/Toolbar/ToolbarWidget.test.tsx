@@ -3,7 +3,7 @@ import { ToolbarWidget } from 'src/modules/Layout/Toolbar/ToolbarWidget'
 import { BrowserRouter } from 'react-router-dom'
 import { TEST_AUTHORIZATION_ERROR_LOAD_HOUSINGS } from 'src/mocks/handlers/houses'
 import { waitFor } from '@testing-library/react'
-import { URL_ERROR_HOUSING } from 'src/modules/Errors/ErrorsConfig'
+import { URL_ERROR_500 } from 'src/modules/Errors/ErrorsConfig'
 
 const mockHistoryPush = jest.fn()
 /**
@@ -43,7 +43,7 @@ describe('Test Toolbar Widget.', () => {
 
         // Should be redirected to ErrorHousing Page when Error page
         await waitFor(() => {
-            expect(mockHistoryPush).toHaveBeenCalledWith(URL_ERROR_HOUSING)
+            expect(mockHistoryPush).toHaveBeenCalledWith(URL_ERROR_500)
         })
     })
 })

@@ -1,5 +1,5 @@
 pipeline{
-    agent { label 'worker-2' }
+    agent { label 'jenkins-jenkins-react' }
     tools {nodejs "node16"}
     environment{
         GITHUB_CREDENTIALS = credentials('github myem developer')
@@ -30,25 +30,34 @@ pipeline{
             }
 
         }
-        // stage('build && SonarQube analysis') {
-        //     environment {
-        //         scannerHome = tool 'SonarQubeScanner'
-        //     }
-        //     steps {
-        //         withSonarQubeEnv('sonarqube') {
-        //             sh "${scannerHome}/bin/sonar-scanner -X"
-        //         }
-        //     }
-        // }
-        // stage("Quality Gate") {
-        //     steps {
-        //         timeout(time: 10, unit: 'MINUTES') {
-        //             // Parameter indicates whether to set pipeline to UNSTABLE if Quality Gate fails
-        //             // true = set pipeline to UNSTABLE, false = don't
-        //             waitForQualityGate abortPipeline: true
-        //         }
-        //     }
-        // }
+        stage('build && SonarQube analysis') {
+            environment {
+                scannerHome = tool 'SonarQubeScanner'
+                sonarqube_Token = credentials('sonarq-token')
+                sonar_host = credentials('sonarq-host')
+            }
+            steps {
+                withSonarQubeEnv('sonarqube') {
+                script {
+                    // Execute shell command to set directory variable
+                    directory = sh(returnStdout: true, script: 'pwd').trim()
+                    // execute sonarqube command directly in the agent pod using kubectl exec command
+                    sh "kubectl exec -it \$NODE_NAME -n jenkins -- /bin/bash -c ' cd ${directory} && export SONAR_HOST_URL=${sonar_host} && ${scannerHome}/bin/sonar-scanner -Dsonar.login=${sonarqube_Token} -X ' "
+
+                }
+
+                }
+            }
+        }
+        stage("Quality Gate") {
+            steps {
+                timeout(time: 10, unit: 'MINUTES') {
+                    // Parameter indicates whether to set pipeline to UNSTABLE if Quality Gate fails
+                    // true = set pipeline to UNSTABLE, false = don't
+                    waitForQualityGate abortPipeline: true
+                }
+            }
+        }
         stage('Test NG generate') {
             when {
               expression { ! (BRANCH_NAME ==~ /(production|master|develop)/) }
@@ -89,11 +98,12 @@ pipeline{
                        when{  expression { changeset('enduser-react-chart')} }
                        environment {
                            ENV_NAME = getEnvName(BRANCH_NAME)
+                           IMG_TAG = getImgTag(BRANCH_NAME)
                            VERSION_CHART = "0.1.${BUILD_NUMBER}"
                            USER_NAME_ = credentials('helm_registry_username')
                            PASSWORD_ = credentials('helm_registry_password')
                            url = credentials('helm_registry_url')
-                           URL_ = "${url}/${ENV_NAME}registry"
+                           URL_ = "${url}/${IMG_TAG}registry"
                            }
                         steps {
                               script{
@@ -119,10 +129,11 @@ pipeline{
            }
         environment {
               ENV_NAME = getEnvName(BRANCH_NAME)
+              IMG_TAG = getImgTag(BRANCH_NAME)
               USER_NAME_ = credentials('helm_registry_username')
               PASSWORD_ = credentials('helm_registry_password')
               url = credentials('helm_registry_url')
-              URL_ = "${url}/${ENV_NAME}registry"
+              URL_ = "${url}/${IMG_TAG}registry"
                             
            }
             steps {
@@ -239,6 +250,9 @@ def isPathExist(changeSets,path) {
 }
 
 def changeset(path){
+    def jobName="$JOB_NAME"
+    def job = Jenkins.getInstance().getItemByFullName(jobName)
+    if ( job.lastSuccessfulBuild == null) { return true }    
     def changeSets = allChangeSetsFromLastSuccessfulBuild()                                          
     return  isPathExist(getFilesChanged(changeSets),path)
 
