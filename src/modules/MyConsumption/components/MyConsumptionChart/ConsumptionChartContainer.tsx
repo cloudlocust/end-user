@@ -178,21 +178,23 @@ export const ConsumptionChartContainer = ({
 
     return (
         <div className="mb-12">
-            <div className="relative flex flex-col items-center justify-between md:flex-row">
-                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mb-16 md:mb-0">
-                    <div className="flex flex-col items-center md:flex-row">
-                        <TypographyFormatMessage
-                            variant="h5"
-                            className="sm:mr-8"
-                            style={{ color: theme.palette.primary.contrastText }}
-                        >
-                            Ma Consommation
-                        </TypographyFormatMessage>
-                        {/* Consommation Watt par jour / Semaine / Mois / Année */}
-                        <TypographyFormatMessage variant="h5" style={{ color: theme.palette.primary.contrastText }}>
-                            {showPerPeriodText('consumption', period, isEurosConsumptionChart)}
-                        </TypographyFormatMessage>
-                    </div>
+            <div className="relative flex flex-col md:flex-row items-center justify-center">
+                <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    className="mb-10 md:mb-0 flex flex-col items-center md:flex-row text-center"
+                >
+                    <TypographyFormatMessage
+                        variant="h5"
+                        className="sm:mr-8"
+                        style={{ color: theme.palette.primary.contrastText }}
+                    >
+                        Ma Consommation
+                    </TypographyFormatMessage>
+                    {/* Consommation Watt par jour / Semaine / Mois / Année */}
+                    <TypographyFormatMessage variant="h5" style={{ color: theme.palette.primary.contrastText }}>
+                        {showPerPeriodText('consumption', period, isEurosConsumptionChart)}
+                    </TypographyFormatMessage>
                 </motion.div>
             </div>
 

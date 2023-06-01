@@ -109,11 +109,11 @@ export const EcogestesList = () => {
 
     return (
         <>
-            <div className="flex justify-between w-full">
-                <TypographyFormatMessage variant="h2" className="text-20 mb-20 font-bold">
+            <div className="flex justify-between w-full mb-20">
+                <TypographyFormatMessage variant="h2" className="text-20 font-bold mx-auto">
                     Les écogestes associés
                 </TypographyFormatMessage>
-                <div>
+                <>
                     <Button
                         variant="outlined"
                         startIcon={getFilterIcon(currentViewFilter)}
@@ -160,7 +160,7 @@ export const EcogestesList = () => {
                             </MenuItem>
                         </MenuList>
                     </Menu>
-                </div>
+                </>
             </div>
             {(isEmpty(ecogestesList) || isNull(ecogestesList)) && !isEcogestesLoadingInProgress && (
                 <TypographyFormatMessage>Aucun écogeste n'est disponible pour le moment.</TypographyFormatMessage>
