@@ -12,7 +12,7 @@ import { DEFAULT_LOCALE } from 'src/configs'
 import { init } from '@rematch/core'
 import { models } from 'src/models'
 import { waitFor } from '@testing-library/react'
-import { URL_ERROR_HOUSING } from 'src/modules/Errors/ErrorsConfig'
+import { URL_ERROR_500 } from 'src/modules/Errors/ErrorsConfig'
 
 const LIST_OF_HOUSES: IHousing[] = applyCamelCase(TEST_HOUSES)
 
@@ -153,7 +153,7 @@ describe('Test Toolbar Widget.', () => {
 
         // Should be redirected to ErrorHousing Page when Error page
         await waitFor(() => {
-            expect(mockHistoryPush).toHaveBeenCalledWith(URL_ERROR_HOUSING)
+            expect(mockHistoryPush).toHaveBeenCalledWith(URL_ERROR_500)
         })
     })
 })
