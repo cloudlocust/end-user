@@ -19,7 +19,7 @@ import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyForm
 import { debounce, truncate } from 'lodash'
 import { IEcogeste } from 'src/modules/Ecogestes/components/ecogeste'
 import useResizeObserver from 'src/modules/utils/useResizeObserver'
-import useEcogestes from 'src/modules/Ecogestes/ecogestesHook'
+import useEcogestes from 'src/modules/Ecogestes/hooks/ecogestesHook'
 import { Icon } from 'src/common/ui-kit'
 import { useToggle } from 'react-use'
 /**

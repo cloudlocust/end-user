@@ -2,16 +2,21 @@ import { FC, useEffect, useState } from 'react'
 import PageSimple from 'src/common/ui-kit/fuse/components/PageSimple'
 import { useParams } from 'react-router-dom'
 import { IEcogestCategory, IEcogesteListPageProps } from 'src/modules/Ecogestes/components/ecogeste'
-import { useEcogestePoles } from 'src/modules/Ecogestes/hooks/polesHooks'
 import EcogestesListPageContent from 'src/modules/Ecogestes/components/ecogestesList/EcogestesListPageContent'
 import EcogestesListPageHeader from 'src/modules/Ecogestes/components/ecogestesList/EcogestesListPageHeader'
+import { IEcogesteCategoryTypes } from 'src/modules/Ecogestes/EcogestesConfig'
+import useEcogestesCategories from 'src/modules/Ecogestes/hooks/useEcogestesCategories'
 
 /**
  * EcogestListPage.
  *
+ * @param root0 N/A.
+ * @param root0.categoryType The type of the Category of Ecogestes that we want to load.
  * @returns EcogestPage.
  */
-const EcogestesListPage: FC<IEcogesteListPageProps> = (): JSX.Element => {
+const EcogestesListPage: FC<IEcogesteListPageProps> = ({
+    categoryType = IEcogesteCategoryTypes.CONSUMPTION,
+}): JSX.Element => {
     const { categoryId } = useParams</**
      * Params object.
      */
@@ -23,7 +28,7 @@ const EcogestesListPage: FC<IEcogesteListPageProps> = (): JSX.Element => {
     }>()
 
     const categoryIdInt = categoryId ? parseInt(categoryId) : undefined
-    const { loadingInProgress, elementList } = useEcogestePoles()
+    const { loadingInProgress, elementList } = useEcogestesCategories(categoryType)
 
     const [currentCategory, setCurrentCategory] = useState<IEcogestCategory | undefined | null>()
 
@@ -35,7 +40,7 @@ const EcogestesListPage: FC<IEcogesteListPageProps> = (): JSX.Element => {
     return (
         <PageSimple
             header={<EcogestesListPageHeader isLoading={loadingInProgress} currentCategory={currentCategory} />}
-            content={<EcogestesListPageContent currentCategory={currentCategory} elementList={elementList} />}
+            content={<EcogestesListPageContent currentCategory={currentCategory} />}
         />
     )
 }
