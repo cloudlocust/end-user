@@ -8,14 +8,16 @@ import useEcogestesCategories from 'src/modules/Ecogestes/hooks/useEcogestesCate
  * @returns JSX.Element.
  */
 export const EcogestesRooms = () => {
-    const { elementList, loadingInProgress } = useEcogestesCategories(IEcogesteCategoryTypes.ROOMS)
+    const { elementList: ecogestCategoriesList, loadingInProgress } = useEcogestesCategories(
+        IEcogesteCategoryTypes.ROOMS,
+    )
 
     return (
         <EcogesteCategoriesList
             aria-label="ecogestsRooms"
             loadingInProgress={loadingInProgress}
             categoryType={IEcogesteCategoryTypes.ROOMS}
-            categories={elementList}
+            categories={ecogestCategoriesList}
         />
     )
 }

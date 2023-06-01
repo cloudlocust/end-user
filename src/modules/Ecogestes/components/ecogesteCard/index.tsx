@@ -21,7 +21,7 @@ import { IEcogeste } from 'src/modules/Ecogestes/components/ecogeste'
 import useResizeObserver from 'src/modules/utils/useResizeObserver'
 import useEcogestes from 'src/modules/Ecogestes/hooks/ecogestesHook'
 import { Icon } from 'src/common/ui-kit'
-
+import { useToggle } from 'react-use'
 /**
  * A card that renders a given ecogeste.
  *
@@ -41,9 +41,8 @@ export const EcogesteCard = ({
     ecogeste: IEcogeste
 }) => {
     const theme = useTheme()
-
     const [shouldEllipse, setShouldEllipse] = useState(false)
-    const [seeFull, setSeeFull] = useState(false)
+    const [seeFull, setSeeFull] = useToggle(false)
     const { setViewStatus } = useEcogestes()
     const [infoModalOpen, setInfoModalOpen] = useState(false)
 
@@ -59,7 +58,7 @@ export const EcogesteCard = ({
             const scrollHeight = e.target.scrollHeight
             // Check if the element would overflow
             // The "5" at the end is necessary to make it a bit more lenient, unsure why.
-            const change = elementHeight < scrollHeight - 5
+            const change = elementHeight < scrollHeight + 50
             setShouldEllipse(change)
         }, 100),
         // Debounce the function, so that it does not fire _while_ we resize the element.
@@ -106,14 +105,14 @@ export const EcogesteCard = ({
                     // Can't hard-code any lightness change, or it might break other themes.
                     // Maybe a rework of the palette would help ?
                     // TODO: rework palette to match figma wireframes
-                    background: viewed ? theme.palette.background.default : theme.palette.secondary.light,
-                    maxHeight: seeFull ? 'max-content' : '15rem',
-                    minHeight: '15rem',
+                    background: viewed ? theme.palette.background.paper : theme.palette.secondary.light,
+                    height: seeFull ? 'max-content' : '15rem',
                     maxWidth: '60rem',
                     minWidth: '30rem',
+                    overflow: 'visible',
                 }}
             >
-                <CardContent className="flex flex-row justify-start gap-5 min-h-0 w-full max-h-full h-full px-10 pt-10 pb-15 relative">
+                <CardContent className="flex flex-row justify-start gap-5 min-h-0 w-full max-h-full h-full px-10 py-10 relative">
                     <div className="flex flex-col place-content-center flex-auto basis-1/5 gap-5">
                         {/* Icon stack */}
                         <IconButton
@@ -158,12 +157,8 @@ export const EcogesteCard = ({
                             )}
                         </IconButton>
                     </div>
-                    <div
-                        className={`w-full h-full basis-4/5 flex-auto  flex flex-col gap-1 pt-1 overflow-hidden`}
-                        ref={ref}
-                    >
+                    <div className="w-full h-full basis-4/5 flex-auto flex flex-col gap-1 pt-1 relative" ref={ref}>
                         {/* Text Content */}
-
                         <div className="w-full flex flex-row place-content-between">
                             <div className="mt-auto mb-auto flex-grow">
                                 <TypographyFormatMessage className="font-bold text-15 whitespace-normal text-center">
@@ -202,10 +197,10 @@ export const EcogesteCard = ({
                                     height: 'inherit',
                                 }}
                                 src={ecogeste.urlIcon}
-                                alt=""
-                            ></img>
+                                alt="ecogeste-url-icon"
+                            />
                         </Icon>
-                        <div className="relative text-13 text-justify pr-10 ">
+                        <div className="relative text-13 text-justify pr-10">
                             <TypographyFormatMessage className="opacity-0" aria-hidden="true">
                                 {/* Shadow-element used to know if we should ellipse or not */}
                                 {ecogeste.description}
@@ -219,30 +214,17 @@ export const EcogesteCard = ({
                             </TypographyFormatMessage>
                         </div>
                     </div>
-
-                    <div className="absolute bottom-2" style={{ width: '90%', cursor: 'pointer' }}>
-                        {shouldEllipse && !seeFull ? (
+                    <div className="cursor-pointer absolute bottom-0 left-0 right-0 mb-6">
+                        {shouldEllipse && (
                             <TypographyFormatMessage
                                 color={theme.palette.primary.main}
                                 fontWeight={500}
-                                className="w-fit text-right mr-0 ml-auto underline cursor-pointer"
+                                className="mx-auto w-fit text-center underline cursor-pointer"
                                 style={{ width: 'fit-content' }}
-                                onClick={() => setSeeFull(true)}
+                                onClick={() => setSeeFull(!seeFull)}
                             >
-                                Voir plus...
+                                {seeFull ? 'Voir moins' : 'Voir plus...'}
                             </TypographyFormatMessage>
-                        ) : (
-                            seeFull && (
-                                <TypographyFormatMessage
-                                    color={theme.palette.primary.main}
-                                    fontWeight={500}
-                                    className="mx-auto w-fit text-center underline cursor-pointer"
-                                    style={{ width: 'fit-content' }}
-                                    onClick={() => setSeeFull(false)}
-                                >
-                                    Voir moins
-                                </TypographyFormatMessage>
-                            )
                         )}
                     </div>
                 </CardContent>

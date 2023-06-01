@@ -148,9 +148,11 @@ export const EcogestesList = () => {
                     </Menu>
                 </div>
             </div>
-            {(isEmpty(ecogestesList) || isNull(ecogestesList)) &&
-                !isEcogestesLoadingInProgress &&
-                "Aucun écogeste n'est disponible pour le moment."}
+            {(isEmpty(ecogestesList) || isNull(ecogestesList)) && !isEcogestesLoadingInProgress && (
+                <div className="flex flex-row justify-center items-start w-full h-full">
+                    <TypographyFormatMessage>Aucun écogeste n'est disponible pour le moment.</TypographyFormatMessage>
+                </div>
+            )}
             <div
                 className="flex flex-nowrap gap-5 flex-col sm:flex-row  w-full sm:flex-wrap h-full sm:h-auto"
                 aria-label="list, ecogests, cards"
