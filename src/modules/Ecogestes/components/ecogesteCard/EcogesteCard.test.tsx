@@ -109,4 +109,17 @@ describe('Test EcogesteCard', () => {
             expect(queryByRole('dialog')).toBeTruthy()
         })
     })
+    describe('Text elipsing', () => {
+        test('when when text is Elipsed', async () => {
+            const { getByTestId } = reduxedRender(
+                <BrowserRouter>
+                    <EcogesteCard {...{ ecogeste: fullEcogeste_working_already_read, ...mockEcogestePropsFull }} />
+                </BrowserRouter>,
+            )
+
+            const seeMoreButton = getByTestId('should-ellipse-text')
+
+            expect(seeMoreButton).toBeInTheDocument()
+        })
+    })
 })

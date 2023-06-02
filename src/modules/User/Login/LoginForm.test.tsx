@@ -8,7 +8,8 @@ import { Router } from 'react-router-dom'
 const history = createMemoryHistory()
 
 const TEST_EMAIL = 'email@email.com'
-const FORGOT_PASSWORD_TEXT = 'Mot de passe oublié?'
+const FORGOT_PASSWORD_TEXT = 'Mot de passe oublié ?'
+const LOGIN_MESSAGE = 'Se connecter'
 
 /**
  * This function return a function that trigger a submit using valid data.
@@ -39,7 +40,7 @@ function submitWithValidData(
         if (passwordField !== null) {
             fireEvent.input(passwordField, { target: { value: '123456' } })
         }
-        fireEvent.click(screen.getByText('Valider'))
+        fireEvent.click(screen.getByText(LOGIN_MESSAGE))
     }
 }
 
@@ -61,7 +62,7 @@ describe('test loginForm', () => {
             </BrowserRouter>,
         )
         await act(async () => {
-            fireEvent.click(getByText('Valider'))
+            fireEvent.click(getByText(LOGIN_MESSAGE))
         })
         expect(mockOnSubmit).not.toHaveBeenCalled()
         expect(getAllByText('Champ obligatoire non renseigné').length).toBe(2)
@@ -75,7 +76,7 @@ describe('test loginForm', () => {
         await act(async () => {
             const emailField = getByRole('textbox')
             fireEvent.input(emailField, { target: { value: '123456' } })
-            fireEvent.click(screen.getByText('Valider'))
+            fireEvent.click(screen.getByText(LOGIN_MESSAGE))
         })
         expect(mockOnSubmit).not.toHaveBeenCalled()
         expect(getAllByText("L'email indiqué est invalide.").length).toBe(1)
