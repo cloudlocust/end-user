@@ -54,7 +54,7 @@ export default function AnalysisComparison({ filters, monthlyRange }: AnalysisCo
 
     return (
         <div className="flex flex-col w-full">
-            <div className="flex justify-center md:justify-start w-full text-center md:text-left mb-20">
+            <div className="flex justify-center w-full text-center md:text-left mb-20">
                 <TypographyFormatMessage
                     className="sm:text-16 font-medium md:text-20"
                     style={{ color: 'theme.palette.common.black' }}
