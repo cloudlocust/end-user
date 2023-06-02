@@ -26,7 +26,7 @@ export const TEST_ELEMENT_LIST = [
 /**
  * This represent the type of the element in data given to the MapElementList.
  */
-export type testElementType = typeof TEST_ELEMENT_LIST[0]
+export type testElementType = (typeof TEST_ELEMENT_LIST)[0]
 let mockNoMoreDataToLoad = false
 // TEXT
 const LOAD_MORE_BUTTON_TEXT = 'Afficher plus'
