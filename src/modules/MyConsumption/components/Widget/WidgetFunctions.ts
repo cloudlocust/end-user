@@ -171,12 +171,8 @@ export const computeTotalAutoconsumption = (data: IMetric[]) =>
  */
 export const computeAverageIdleConsumption = (data: IMetric[]) => {
     const values = getDataFromYAxis(data, metricTargetsEnum.idleConsumption)
-    const roundedValue = round(mean(values.filter(Number)))
-    const convertedValue = Number.isNaN(roundedValue) ? 0 : convert(roundedValue).from('Wh').to('kWh')
-    return {
-        value: convertedValue,
-        unit: 'kWh',
-    }
+    const averageIdleConsumption = round(mean(values.filter(Number)))
+    return consumptionWattUnitConversion(averageIdleConsumption)
 }
 
 /**
