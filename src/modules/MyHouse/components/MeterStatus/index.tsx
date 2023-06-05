@@ -1,15 +1,4 @@
-import EditIcon from '@mui/icons-material/Edit'
-import {
-    Card,
-    CircularProgress,
-    Divider,
-    Icon,
-    IconButton,
-    Tooltip,
-    styled,
-    useMediaQuery,
-    useTheme,
-} from '@mui/material'
+import { Card, CircularProgress, Divider, Icon, Tooltip, styled, useMediaQuery, useTheme } from '@mui/material'
 import { TooltipProps, tooltipClasses } from '@mui/material/Tooltip'
 import dayjs from 'dayjs'
 import { useEffect, useState } from 'react'
@@ -27,9 +16,7 @@ import { EnedisSgePopup } from 'src/modules/MyHouse/components/MeterStatus/Enedi
 import { EnphaseConsentPopup } from 'src/modules/MyHouse/components/MeterStatus/EnphaseConsentPopup'
 import { NrlinkConnectionStepsEnum } from 'src/modules/nrLinkConnection/nrlinkConnectionSteps.d'
 import { RootState } from 'src/redux'
-import Modal from '@mui/material/Modal'
-import Box from '@mui/material/Box'
-import { ReplaceNRLinkForm } from 'src/modules/MyHouse/components/ReplaceNRLinkFormPopup'
+import { ReplaceNRLinkModule } from 'src/modules/MyHouse/components/ReplaceNRLinkFormPopup/ReplaceNRLinkModule'
 
 const FORMATTED_DATA = 'DD/MM/YYYY'
 const TEXT_CONNEXION_LE = 'Connexion le'
@@ -79,8 +66,6 @@ export const MeterStatus = () => {
     const [openEnphaseConsentPopup, setOpenEnphaseConsentPopup] = useState(false)
     const [openCancelCollectionDataTooltip, setOpenCancelCollectionDataTooltip] = useState(false)
 
-    const [displayEditNRLinkModal, setEditNRLinkModalState] = useState(false)
-
     // Retrieving house id from url params /my-houses/:houseId
     // eslint-disable-next-line jsdoc/require-jsdoc
     const { houseId }: { houseId: string } = useParams()
@@ -91,14 +76,6 @@ export const MeterStatus = () => {
     const enedisConsentEndingDate = dayjs(enedisSgeConsent?.createdAt).add(3, 'year').format('DD/MM/YYYY')
     /* Enphase created at date formatted */
     const enphaseConsentCreatedAt = dayjs(enphaseConsent?.createdAt).format(FORMATTED_DATA)
-
-    const styleModalBox = {
-        position: 'absolute' as 'absolute',
-        top: '50%',
-        left: '50%',
-        transform: 'translate(-50%, -50%)',
-        width: 350,
-    }
 
     /**
      * Function that handle closing the popup.
@@ -176,32 +153,14 @@ export const MeterStatus = () => {
                                 defaultMessage: TEXT_CONNEXION_LE,
                             })} ${nrlinkConsentCreatedAt}`}</span>
                         </div>
-                        <div className="flex flex-1 justify-end">
-                            <IconButton color="primary" size="large" onClick={() => setEditNRLinkModalState(true)}>
-                                <EditIcon />
-                            </IconButton>
-                        </div>
-                        {nrlinkConsent?.nrlinkGuid && nrlinkConsent?.meterGuid && (
-                            <Modal
-                                aria-label="ReplaceNRLinkFormPopup"
-                                open={displayEditNRLinkModal}
-                                onClose={() => setEditNRLinkModalState(false)}
-                            >
-                                <Box sx={styleModalBox}>
-                                    <ReplaceNRLinkForm
-                                        meterGuid={nrlinkConsent.meterGuid}
-                                        oldNRLinkGuid={nrlinkConsent.nrlinkGuid}
-                                        closeModal={() => setEditNRLinkModalState(false)}
-                                        onAfterReplaceNRLink={() => {
-                                            if (foundHousing?.meter?.guid) {
-                                                getConsents(foundHousing?.meter?.guid, parseInt(houseId))
-                                            }
-                                            setEditNRLinkModalState(false)
-                                        }}
-                                    />
-                                </Box>
-                            </Modal>
-                        )}
+                        <ReplaceNRLinkModule
+                            nrLinkConsent={nrlinkConsent}
+                            onAfterReplaceNRLink={() => {
+                                if (foundHousing?.meter?.guid) {
+                                    getConsents(foundHousing?.meter?.guid, parseInt(houseId))
+                                }
+                            }}
+                        />
                     </>
                 )
             case 'DISCONNECTED':
