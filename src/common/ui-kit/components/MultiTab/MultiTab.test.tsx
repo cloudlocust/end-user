@@ -2,6 +2,8 @@ import { reduxedRender } from 'src/common/react-platform-components/test'
 import { BrowserRouter as Router } from 'react-router-dom'
 import MultiTab from 'src/common/ui-kit/components/MultiTab/MultiTab'
 import { fireEvent, act, waitFor } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
+import { createMemoryHistory } from 'history'
 
 /*
  * We will test This component if he render and switch content correctly.
@@ -95,7 +97,8 @@ const content = [
         tabContent: <Tab3 />,
     },
 ]
-const propsMultiTab = {
+
+let propsMultiTab = {
     header: <Header />,
     content,
     rootCss: {
@@ -103,6 +106,7 @@ const propsMultiTab = {
         height: 136,
         margin: '1rem 0',
     },
+    isUseRouting: false,
 }
 
 describe('IMultiTab Test', () => {
@@ -189,6 +193,34 @@ describe('IMultiTab Test', () => {
                 </Router>,
             )
             expect(getByText(TITLE_TAB_1)).toBeTruthy()
+        })
+    })
+    describe('Routing', () => {
+        test('when isUseRouting is true', async () => {
+            const history = createMemoryHistory()
+            propsMultiTab.isUseRouting = true
+            const { getByText } = reduxedRender(
+                <Router>
+                    <MultiTab {...propsMultiTab} />
+                </Router>,
+            )
+            userEvent.click(getByText(TITLE_TAB_2))
+
+            expect(getByText('This is content of tab number two')).toBeInTheDocument()
+            expect(history.location.pathname).toBe('/')
+        })
+        test('when isUseRouting is false', async () => {
+            const history = createMemoryHistory()
+            propsMultiTab.isUseRouting = false
+            const { getByText } = reduxedRender(
+                <Router>
+                    <MultiTab {...propsMultiTab} />
+                </Router>,
+            )
+            userEvent.click(getByText(TITLE_TAB_3))
+
+            expect(getByText('This is content of tab number three')).toBeInTheDocument()
+            expect(history.location.pathname).toBe('/')
         })
     })
 })

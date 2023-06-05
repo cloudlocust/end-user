@@ -214,7 +214,10 @@ export const EcogesteCard = ({
                             </TypographyFormatMessage>
                         </div>
                     </div>
-                    <div className="cursor-pointer absolute bottom-0 left-0 right-0 mb-6">
+                    <div
+                        className="cursor-pointer absolute bottom-0 left-0 right-0 mb-6"
+                        data-testid="should-ellipse-text"
+                    >
                         {shouldEllipse && (
                             <TypographyFormatMessage
                                 color={theme.palette.primary.main}
