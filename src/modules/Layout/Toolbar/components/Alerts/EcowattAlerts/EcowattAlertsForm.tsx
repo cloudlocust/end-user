@@ -1,4 +1,4 @@
-import { Card, Switch, Button } from '@mui/material'
+import { Card, Switch } from '@mui/material'
 import { Form } from 'src/common/react-platform-components'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import { EcowattAlertsNovuPreferencesType } from 'src/modules/Ecowatt/ecowatt'
@@ -46,7 +46,6 @@ export const EcowattAlertsForm = ({
         novuAlertPreferences.isPushSignalThreeDays!,
     )
     const [isPushSignalOneDayState, setIsPushSignalOneDayState] = useToggle(novuAlertPreferences.isPushSignalOneDay!)
-    const [isEdit, setIsEdit] = useToggle(false)
     const { formatMessage } = useIntl()
 
     /**
@@ -58,15 +57,6 @@ export const EcowattAlertsForm = ({
             isPushSignalOneDay: isPushSignalOneDayState,
         })
         reloadAlerts(houseId)
-    }
-
-    /**
-     * Handle reset form to initial values.
-     */
-    const onFormReset = () => {
-        setIsPushSignalThreeDaysState(novuAlertPreferences.isPushSignalThreeDays!)
-        setIsPushSignalOneDayState(novuAlertPreferences.isPushSignalOneDay!)
-        setIsEdit(false)
     }
 
     return (
@@ -81,7 +71,6 @@ export const EcowattAlertsForm = ({
                             <div className="flex flex-row justify-evenly items-center w-full">
                                 <span>Push</span>
                                 <Switch
-                                    disabled={!isEdit}
                                     name="isPushSignalThreeDays"
                                     checked={isPushSignalThreeDaysState}
                                     onChange={() => setIsPushSignalThreeDaysState(!isPushSignalThreeDaysState)}
@@ -103,7 +92,6 @@ export const EcowattAlertsForm = ({
                             <div className="flex flex-row justify-evenly items-center w-full">
                                 <span>Push</span>
                                 <Switch
-                                    disabled={!isEdit}
                                     name="isPushSignalOneDay"
                                     checked={isPushSignalOneDayState}
                                     onChange={() => setIsPushSignalOneDayState(!isPushSignalOneDayState)}
@@ -115,31 +103,14 @@ export const EcowattAlertsForm = ({
                 </div>
             </Card>
 
-            {isEdit ? (
-                <div className="flex justify-center mt-16">
-                    <Button variant="outlined" onClick={onFormReset} className="mr-12" disabled={!isEdit}>
-                        {formatMessage({
-                            id: 'Annuler',
-                            defaultMessage: 'Annuler',
-                        })}
-                    </Button>
-                    <ButtonLoader variant="contained" disabled={!isEdit} onClick={handleSubmitEcowattAlerts}>
-                        {formatMessage({
-                            id: 'Enregistrer',
-                            defaultMessage: 'Enregistrer',
-                        })}
-                    </ButtonLoader>
-                </div>
-            ) : (
-                <div className="flex justify-center mt-16">
-                    <Button variant="contained" onClick={() => setIsEdit(true)}>
-                        {formatMessage({
-                            id: 'Modifier',
-                            defaultMessage: 'Modifier',
-                        })}
-                    </Button>
-                </div>
-            )}
+            <div className="flex justify-center mt-16">
+                <ButtonLoader variant="contained" onClick={handleSubmitEcowattAlerts}>
+                    {formatMessage({
+                        id: 'Enregistrer',
+                        defaultMessage: 'Enregistrer',
+                    })}
+                </ButtonLoader>
+            </div>
         </Form>
     )
 }

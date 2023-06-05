@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { Card, Button, Divider, Switch } from '@mui/material'
+import { Card, Divider, Switch } from '@mui/material'
 import { LoadingButton } from '@mui/lab'
 import { useIntl } from 'react-intl'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
@@ -64,8 +64,8 @@ const ConsumptionAlert = ({
 
     useEffect(() => {
         // for when component is disabled
-        !isEdit && setToDeleteBeforeSend(null)
-    }, [isEdit])
+        setToDeleteBeforeSend(null)
+    }, [])
 
     useEffect(() => {
         if (!isSwitchSet.current && initialAlertPreferencesValues) {
@@ -152,7 +152,6 @@ const ConsumptionAlert = ({
                         <div className="flex justify-around content-center">
                             <div className="flex items-center justify-center">
                                 <Switch
-                                    disabled={!isEdit}
                                     name={initialAlertPreferencesValues?.push.key}
                                     checked={isPush}
                                     onChange={() => setIsPush(!isPush)}
@@ -162,7 +161,6 @@ const ConsumptionAlert = ({
                             </div>
                             <div className="flex items-center justify-center">
                                 <Switch
-                                    disabled={!isEdit}
                                     name={initialAlertPreferencesValues?.email.key}
                                     checked={isEmail}
                                     onChange={() => setIsEmail(!isEmail)}
@@ -173,9 +171,6 @@ const ConsumptionAlert = ({
                         </div>
                         <Divider className="mx-20 mb-12" />
                         <ButtonsGroup
-                            isEdit={isEdit}
-                            enableForm={() => setIsEdit(true)}
-                            disableForm={() => setIsEdit(false)}
                             isConsumptionAlertsLoading={isConsumptionAlertsLoading && isNovuAlertPreferencesLoading}
                             isSavingAlertLoading={isSavingAlertLoading && isNovuAlertPreferencesLoading}
                         />
@@ -284,7 +279,6 @@ const ConsumptionAlertsInputFields = ({
                     label=""
                     placeholder=""
                     type="number"
-                    disabled={!isEdit}
                     variant="outlined"
                 />
                 <div
@@ -300,7 +294,6 @@ const ConsumptionAlertsInputFields = ({
                     style={{ maxWidth: '76px' }}
                     label=""
                     placeholder=""
-                    disabled={!isEdit}
                     type="number"
                     variant="outlined"
                 />
@@ -319,47 +312,28 @@ const ConsumptionAlertsInputFields = ({
  * Group of action buttons.
  *
  * @param props Props.
- * @param props.isEdit Is form in edit mode.
- * @param props.enableForm Change state of edit mode to enable.
- * @param props.disableForm Change state of edit mode to disable.
  * @param props.isConsumptionAlertsLoading Is button loading.
  * @param props.isSavingAlertLoading Is saving alert loading.
  * @returns Jsx.
  */
-const ButtonsGroup = ({
-    isEdit,
-    enableForm,
-    disableForm,
-    isConsumptionAlertsLoading,
-    isSavingAlertLoading,
-}: ConsumptionAlertButtonGroupPropsType) => {
+const ButtonsGroup = ({ isConsumptionAlertsLoading, isSavingAlertLoading }: ConsumptionAlertButtonGroupPropsType) => {
     const { formatMessage } = useIntl()
 
     return (
         <div className="flex justify-center content-center">
-            {isEdit ? (
-                <div className="ml-24">
-                    <Button variant="outlined" onClick={disableForm}>
-                        {formatMessage({
-                            id: 'Annuler',
-                            defaultMessage: 'Annuler',
-                        })}
-                    </Button>
-                    <LoadingButton loading={isSavingAlertLoading} type="submit" variant="contained" className="ml-8">
-                        {formatMessage({
-                            id: 'Enregistrer',
-                            defaultMessage: 'Enregistrer',
-                        })}
-                    </LoadingButton>
-                </div>
-            ) : (
-                <LoadingButton loading={isConsumptionAlertsLoading} variant="contained" onClick={enableForm}>
+            <div className="ml-24">
+                <LoadingButton
+                    loading={isConsumptionAlertsLoading || isSavingAlertLoading}
+                    type="submit"
+                    variant="contained"
+                    className="ml-8"
+                >
                     {formatMessage({
-                        id: 'Modifier',
-                        defaultMessage: 'Modifier',
+                        id: 'Enregistrer',
+                        defaultMessage: 'Enregistrer',
                     })}
                 </LoadingButton>
-            )}
+            </div>
         </div>
     )
 }

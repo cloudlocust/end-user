@@ -1,4 +1,4 @@
-import { Card, Switch, Button } from '@mui/material'
+import { Card, Switch } from '@mui/material'
 import { Form } from 'src/common/react-platform-components'
 import { useToggle } from 'react-use'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
@@ -45,7 +45,6 @@ export const TempoAlertsForm = ({
 }) => {
     const [isPushTempoAlert, setIsPushTempoAlert] = useToggle(novuAlertPreferences.isPushTempo!)
     const [isEmailTempoAlert, setIsEmailTempoAlert] = useToggle(novuAlertPreferences.isEmailTempo!)
-    const [isEdit, setIsEdit] = useToggle(false)
     const { formatMessage } = useIntl()
 
     /**
@@ -57,15 +56,6 @@ export const TempoAlertsForm = ({
             isPushTempo: isPushTempoAlert,
         })
         reloadAlerts(houseId)
-    }
-
-    /**
-     * Handle reset form to initial values.
-     */
-    const onFormReset = () => {
-        setIsPushTempoAlert(novuAlertPreferences.isPushTempo!)
-        setIsEmailTempoAlert(novuAlertPreferences.isEmailTempo!)
-        setIsEdit(false)
     }
 
     return (
@@ -81,7 +71,6 @@ export const TempoAlertsForm = ({
                                 <div className="flex flex-row justify-evenly items-center w-full">
                                     <span>Push</span>
                                     <Switch
-                                        disabled={!isEdit}
                                         name="isPushTempo"
                                         checked={isPushTempoAlert}
                                         onChange={() => setIsPushTempoAlert(!isPushTempoAlert)}
@@ -93,7 +82,6 @@ export const TempoAlertsForm = ({
                                 <div className="flex flex-row justify-evenly items-center w-full">
                                     <span>Mail</span>
                                     <Switch
-                                        disabled={!isEdit}
                                         name="isMailTempo"
                                         checked={isEmailTempoAlert}
                                         onChange={() => setIsEmailTempoAlert(!isEmailTempoAlert)}
@@ -105,31 +93,14 @@ export const TempoAlertsForm = ({
                     </div>
                 </div>
             </Card>
-            {isEdit ? (
-                <div className="flex justify-center mt-16">
-                    <Button variant="outlined" onClick={onFormReset} className="mr-12" disabled={!isEdit}>
-                        {formatMessage({
-                            id: 'Annuler',
-                            defaultMessage: 'Annuler',
-                        })}
-                    </Button>
-                    <ButtonLoader variant="contained" disabled={!isEdit} onClick={handleSubmitTempoAlerts}>
-                        {formatMessage({
-                            id: 'Enregistrer',
-                            defaultMessage: 'Enregistrer',
-                        })}
-                    </ButtonLoader>
-                </div>
-            ) : (
-                <div className="flex justify-center mt-16">
-                    <Button variant="contained" onClick={() => setIsEdit(true)}>
-                        {formatMessage({
-                            id: 'Modifier',
-                            defaultMessage: 'Modifier',
-                        })}
-                    </Button>
-                </div>
-            )}
+            <div className="flex justify-center mt-16">
+                <ButtonLoader variant="contained" onClick={handleSubmitTempoAlerts}>
+                    {formatMessage({
+                        id: 'Enregistrer',
+                        defaultMessage: 'Enregistrer',
+                    })}
+                </ButtonLoader>
+            </div>
         </Form>
     )
 }
