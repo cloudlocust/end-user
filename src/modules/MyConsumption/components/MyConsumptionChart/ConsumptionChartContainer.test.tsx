@@ -229,12 +229,13 @@ describe('MyConsumptionContainer test', () => {
 
         consumptionTitleCases.forEach(({ period, text }) => {
             consumptionChartContainerProps.period = period
-            const { getByText } = reduxedRender(
+            const { getByText, queryAllByText } = reduxedRender(
                 <Router>
                     <ConsumptionChartContainer {...consumptionChartContainerProps} />
                 </Router>,
                 { initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[0] } } },
             )
+            expect(queryAllByText('Ma puissance')).toBeTruthy()
             expect(getByText(text)).toBeTruthy()
         })
     })
