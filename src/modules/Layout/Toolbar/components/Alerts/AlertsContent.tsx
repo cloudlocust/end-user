@@ -1,5 +1,3 @@
-import { SwipeableDrawer, IconButton, Icon } from '@mui/material'
-import { styled } from '@mui/material/styles'
 import { NavLink } from 'react-router-dom'
 import _ from 'lodash'
 import { useMemo } from 'react'
@@ -10,7 +8,6 @@ import { RootState } from 'src/redux'
 import { IConsumptionAlert } from './ConsumptionAlert/consumptionAlert'
 import { useConsumptionAlerts } from './ConsumptionAlert/consumptionAlertHooks'
 import { URL_MY_HOUSE } from 'src/modules/MyHouse'
-
 import { useHasMissingHousingContracts } from 'src/hooks/HasMissingHousingContracts'
 import { getChannelPreferencesByInterval, rangeOfCurrentMonth } from './AlertsDrawerVariables'
 import { EcowattAlerts } from 'src/modules/Layout/Toolbar/components/Alerts/EcowattAlerts'
@@ -19,23 +16,15 @@ import { linksColor, warningMainHashColor } from 'src/modules/utils/muiThemeVari
 import { ReactComponent as MeterErrorIcon } from 'src/assets/images/content/housing/meter-error.svg'
 import { TempoAlerts } from 'src/modules/Layout/Toolbar/components/Alerts/TempoAlerts'
 import { useContractList } from 'src/modules/Contracts/contractsHook'
-
-const StyledSwipeableDrawer = styled(SwipeableDrawer)(({ theme }) => ({
-    '& .MuiDrawer-paper': {
-        backgroundColor: theme.palette.background.default,
-        width: 320,
-    },
-}))
+import SvgIcon from '@mui/material/SvgIcon'
 
 /**
  * Alerts Drawer component contains all the alerts.
  *
- * @param param0 N/A.
- * @param param0.closeAlertsDrawer CloseAlertDrawer callback function to close the drawer.
  * @returns Alerts Drawer JSX.
  */
 // eslint-disable-next-line jsdoc/require-jsdoc
-export const AlertsDrawer = ({ closeAlertsDrawer }: { closeAlertsDrawer: () => void }) => {
+export const AlertsContent = () => {
     const { currentHousing } = useSelector(({ housingModel }: RootState) => housingModel)
     const { elementList: contractList } = useContractList(currentHousing!.id)
 
@@ -67,34 +56,26 @@ export const AlertsDrawer = ({ closeAlertsDrawer }: { closeAlertsDrawer: () => v
     const { hasMissingHousingContracts } = useHasMissingHousingContracts(rangeOfCurrentMonth, currentHousing?.id)
 
     return (
-        <StyledSwipeableDrawer
-            open={true}
-            anchor="right"
-            // onOpen is a required prop to add in SwipeableDrawer even if it's empty.
-            onOpen={(_ev) => {}}
-            onClose={closeAlertsDrawer}
-            disableSwipeToOpen
-        >
-            <IconButton className="m-4 absolute top-0 right-0" onClick={closeAlertsDrawer} size="large">
-                <Icon color="action">close</Icon>
-            </IconButton>
-            <div className="flex-col mt-40 mx-8">
-                <TypographyFormatMessage className="text-17 mb-20 ml-8 font-medium">
+        <div>
+            <div className="flex-col mt-40 px-24">
+                <TypographyFormatMessage className="text-16 md:text-20 mb-20 font-medium">
                     Alertes Seuil de Consommation
                 </TypographyFormatMessage>
                 {hasMissingHousingContracts && (
-                    <div className="flex justify-left items-center mb-20 ml-8">
-                        <MeterErrorIcon
-                            className="mr-8"
-                            style={{
-                                width: '24px',
-                                height: '24px',
-                                color: linksColor || warningMainHashColor,
-                            }}
-                        />
-                        <div>
+                    <div className="flex justify-left items-center mb-20 gap-8">
+                        <SvgIcon>
+                            <MeterErrorIcon
+                                width="24"
+                                height="24"
+                                style={{
+                                    color: linksColor || warningMainHashColor,
+                                }}
+                            />
+                        </SvgIcon>
+                        {/* <div className="flex flex-col md:flex-row wrap gap-2"> */}
+                        <div className="flex flex-wrap gap-4">
                             <TypographyFormatMessage
-                                className="text-13 font-medium"
+                                className="text-13 md:text-16 font-medium"
                                 style={{
                                     color: linksColor || warningMainHashColor,
                                 }}
@@ -102,7 +83,6 @@ export const AlertsDrawer = ({ closeAlertsDrawer }: { closeAlertsDrawer: () => v
                                 Prix basé sur le tarif bleu d'EDF.
                             </TypographyFormatMessage>
                             <NavLink
-                                onClick={closeAlertsDrawer}
                                 to={
                                     currentHousing
                                         ? `${URL_MY_HOUSE}/${currentHousing?.id}/contracts`
@@ -110,7 +90,7 @@ export const AlertsDrawer = ({ closeAlertsDrawer }: { closeAlertsDrawer: () => v
                                 }
                             >
                                 <TypographyFormatMessage
-                                    className="text-13 font-medium underline"
+                                    className="text-13 md:text-16 font-medium underline"
                                     style={{
                                         color: linksColor || warningMainHashColor,
                                     }}
@@ -119,7 +99,7 @@ export const AlertsDrawer = ({ closeAlertsDrawer }: { closeAlertsDrawer: () => v
                                 </TypographyFormatMessage>
                             </NavLink>
                             <TypographyFormatMessage
-                                className="text-13 font-medium"
+                                className="text-13 md:text-16 font-medium"
                                 style={{
                                     color: linksColor || warningMainHashColor,
                                 }}
@@ -165,6 +145,6 @@ export const AlertsDrawer = ({ closeAlertsDrawer }: { closeAlertsDrawer: () => v
                 <EcowattAlerts />
                 {currentContract?.tariffType.name === 'Jour Tempo' && <TempoAlerts />}
             </div>
-        </StyledSwipeableDrawer>
+        </div>
     )
 }

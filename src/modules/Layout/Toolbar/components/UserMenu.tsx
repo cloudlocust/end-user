@@ -12,6 +12,8 @@ import { installationRequestsFeatureState } from 'src/modules/InstallationReques
 import { equipmentFeatureState, URL_SOLAR_EQUIPMENTS } from 'src/modules/SolarEquipments/solarEquipmentsConfig'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import { REACT_FAQ_REDIRECT_LINK } from 'src/configs'
+import { URL_ALERTS } from 'src/modules/Layout/Toolbar/components/Alerts/AlertsConfig'
+
 // TODO This is not a generic component to share with medialem, to update.
 /**
  * UserMenu UI Component placed usually in Toolbar.
@@ -99,6 +101,14 @@ function UserMenu() {
                     />
                     <ToolbarMenuItem
                         onMenuItemClick={() => {
+                            history.push(URL_ALERTS)
+                        }}
+                        iconLabel="edit_notifications"
+                        idLabel="Gestion des alertes"
+                        defaultMessageLabel="Gestion des alertes"
+                    />{' '}
+                    <ToolbarMenuItem
+                        onMenuItemClick={() => {
                             history.push('/mentions')
                         }}
                         iconLabel="gavel"
@@ -111,6 +121,7 @@ function UserMenu() {
                                 history.replace('/installation-requests')
                             }}
                             iconLabel="solar_power"
+                            e
                             idLabel="Installation"
                             defaultMessageLabel="Installation"
                         />

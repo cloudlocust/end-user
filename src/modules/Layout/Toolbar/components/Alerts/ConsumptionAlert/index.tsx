@@ -137,7 +137,7 @@ const ConsumptionAlert = ({
             <div className="mb-8">
                 <Card className="w-full rounded-20 shadow sm:m-4 pb-8" variant="outlined">
                     <div className="flex-col justify-center mt-10">
-                        <TypographyFormatMessage className="flex justify-center mb-8">
+                        <TypographyFormatMessage className="flex justify-center mb-8 text-13 md:text-16">
                             {ConsumptionAlertTitle[interval]}
                         </TypographyFormatMessage>
                         <ConsumptionAlertsInputFields
@@ -146,7 +146,9 @@ const ConsumptionAlert = ({
                             setToDeleteBeforeSend={setToDeleteBeforeSend}
                             isEdit={isEdit}
                         />
-                        <TypographyFormatMessage className="flex ml-8">Notifications :</TypographyFormatMessage>
+                        <TypographyFormatMessage className="flex ml-8 text-13 md:text-16">
+                            Notifications :
+                        </TypographyFormatMessage>
                         <div className="flex justify-around content-center">
                             <div className="flex items-center justify-center">
                                 <Switch
@@ -215,7 +217,9 @@ const ConsumptionAlertsInputFields = ({
      */
     const handlePriceChange = useCallback(
         (value: //eslint-disable-next-line
-        { [x: string]: string }) => {
+        {
+            [x: string]: string
+        }) => {
             // if the user is changing the price, we don't send the consumption
             setToDeleteBeforeSend('consumption')
 
@@ -238,7 +242,9 @@ const ConsumptionAlertsInputFields = ({
      */
     const handleConsumptionChange = useCallback(
         (value: //eslint-disable-next-line
-            { [x: string]: string }) => {
+        {
+            [x: string]: string
+        }) => {
             // if the user is changing the consumption, we don't send the price
             setToDeleteBeforeSend('price')
 

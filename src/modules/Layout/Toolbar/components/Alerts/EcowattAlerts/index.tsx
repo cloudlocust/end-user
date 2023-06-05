@@ -38,7 +38,7 @@ export const EcowattAlerts = () => {
             <div className="flex flex-row items-center">
                 <TypographyFormatMessage
                     color={theme.palette.primary.main}
-                    className="text-17 font-medium flex items-center"
+                    className="text-16 md:text-20 font-medium flex items-center"
                 >
                     EcoWatt :
                 </TypographyFormatMessage>
@@ -48,7 +48,7 @@ export const EcowattAlerts = () => {
                     onClose={() => setOpenTooltip(false)}
                 />
             </div>
-            <TypographyFormatMessage className="text-13 font-medium md:text-15 flex items-center">
+            <TypographyFormatMessage className="text-13 md:text-16 font-medium md:text-15 flex items-center">
                 La météo de l'électricité
             </TypographyFormatMessage>
 
