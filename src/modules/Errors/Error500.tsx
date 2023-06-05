@@ -18,6 +18,7 @@ const Error500 = () => {
         <div className="p-24 h-full flex flex-col items-center justify-center relative" style={{ flexGrow: 1 }}>
             <div className="flex justify-center w-full h-auto">
                 <ReactSVG
+                    data-testid="react-svg"
                     src={ServerDownSvg}
                     beforeInjection={(svg) => {
                         const paths = svg.querySelectorAll('path')
