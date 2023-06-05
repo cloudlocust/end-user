@@ -4,6 +4,7 @@ import { reduxedRender } from 'src/common/react-platform-components/test'
 import { TEST_SUCCESS_USER as MOCK_TEST_SUCCESS_USER } from 'src/mocks/handlers/user'
 import { ProfileManagementForm } from 'src/modules/User/ProfileManagement/ProfileManagementForm'
 import { applyCamelCase } from 'src/common/react-platform-components'
+import userEvent from '@testing-library/user-event'
 
 let mockIsModifyInProgress = false
 const mockUpdateProfile = jest.fn()
@@ -33,7 +34,7 @@ describe('Test ProfileManagementForm', () => {
             </BrowserRouter>,
         )
         // Modifier button
-        expect(container.querySelectorAll(INPUT_DISABLED_ELEMENT)!.length).toBe(6)
+        expect(container.querySelectorAll(INPUT_DISABLED_ELEMENT)!.length).toBe(8) // Including Modifier button
         expect(getByText(MODIFIER_BUTTON_TEXT)).toBeTruthy()
         expect(() => getByText(ANNULER_BUTTON_TEXT)).toThrow()
         expect(() => getByText(ENREGISTRER_BUTTON_TEXT)).toThrow()
@@ -66,7 +67,7 @@ describe('Test ProfileManagementForm', () => {
             fireEvent.click(getByText(ENREGISTRER_BUTTON_TEXT))
         })
         await waitFor(() => {
-            expect(getAllByText('Champ obligatoire non renseigné').length).toBe(5)
+            expect(getAllByText('Champ obligatoire non renseigné').length).toBe(7)
         })
         expect(mockUpdateProfile).not.toHaveBeenCalled()
     })
@@ -125,6 +126,8 @@ describe('Test ProfileManagementForm', () => {
         })
         await waitFor(() => {
             expect(mockUpdateProfile).toHaveBeenCalledWith({
+                companyName: TEST_SUCCESS_USER.companyName,
+                siren: TEST_SUCCESS_USER.siren,
                 firstName: CHANGED_FIRSTNAME_INPUT,
                 lastName: TEST_SUCCESS_USER.lastName,
                 email: TEST_SUCCESS_USER.email,
@@ -132,5 +135,20 @@ describe('Test ProfileManagementForm', () => {
                 address: TEST_SUCCESS_USER.address,
             })
         })
+    })
+    test('when siren field in invalid', async () => {
+        const { getByText, getByRole } = reduxedRender(
+            <BrowserRouter>
+                <ProfileManagementForm />
+            </BrowserRouter>,
+            {
+                initialState: { userModel: { user: TEST_SUCCESS_USER } },
+            },
+        )
+
+        userEvent.click(getByText(MODIFIER_BUTTON_TEXT))
+        const siren = getByRole('textbox', { name: 'Siren' })
+        userEvent.type(siren, '12356')
+        await waitFor(() => [expect(getByText('Le numéro Siren doit être composé de 9 chiffres')).toBeTruthy()])
     })
 })
