@@ -135,18 +135,6 @@ export interface ConsumptionAlertInputFieldsComponentPropsType {
  */
 export interface ConsumptionAlertButtonGroupPropsType {
     /**
-     * Is form editable.
-     */
-    isEdit: boolean
-    /**
-     * Function to enable form.
-     */
-    enableForm: () => void
-    /**
-     * Function to enable form.
-     */
-    disableForm: () => void
-    /**
      * Is button loading.
      */
     isConsumptionAlertsLoading: boolean

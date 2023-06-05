@@ -19,46 +19,19 @@ let mockEcowattAlertsFormProps = {
 }
 
 describe('EcowattAlertsForm tests', () => {
-    test('when switch buttons are disabled initially', async () => {
+    test('when mount initially', async () => {
         const { getByTestId } = reduxedRender(<EcowattAlertsForm {...mockEcowattAlertsFormProps} />)
 
         const isPushSignalThreeDaysSwitch = getByTestId(PUSH_SIGNAL_THREE_DAYS_SWITCH_TEST_ID)
         const isPushSignalOneDaySwitch = getByTestId(PUSH_SIGNAL_ONE_DAY_SWITCH_TEST_ID)
 
-        expect(isPushSignalThreeDaysSwitch).toHaveClass(DISABLED_CLASS)
-        expect(isPushSignalOneDaySwitch).toHaveClass(DISABLED_CLASS)
-    })
-    test('when clicked on Modifier button, switch buttons are not disabled', async () => {
-        const { getByTestId, getByText } = reduxedRender(<EcowattAlertsForm {...mockEcowattAlertsFormProps} />)
-        const isPushSignalThreeDaysSwitch = getByTestId(PUSH_SIGNAL_THREE_DAYS_SWITCH_TEST_ID)
-        const isPushSignalOneDaySwitch = getByTestId(PUSH_SIGNAL_ONE_DAY_SWITCH_TEST_ID)
-
-        userEvent.click(getByText('Modifier'))
-
         expect(isPushSignalThreeDaysSwitch).not.toHaveClass(DISABLED_CLASS)
         expect(isPushSignalOneDaySwitch).not.toHaveClass(DISABLED_CLASS)
     })
-    test('when clicked on reset, values are reset to the initial ones', async () => {
-        const { getByTestId, getByText } = reduxedRender(<EcowattAlertsForm {...mockEcowattAlertsFormProps} />)
-        const isPushSignalThreeDaysSwitch = getByTestId(PUSH_SIGNAL_THREE_DAYS_SWITCH_TEST_ID)
-        const isPushSignalOneDaySwitch = getByTestId(PUSH_SIGNAL_ONE_DAY_SWITCH_TEST_ID)
 
-        expect(isPushSignalThreeDaysSwitch).toHaveClass(DISABLED_CLASS)
-        expect(isPushSignalOneDaySwitch).toHaveClass(DISABLED_CLASS)
-
-        userEvent.click(getByText('Modifier'))
-        expect(getByText('Enregistrer')).toBeTruthy()
-        expect(isPushSignalThreeDaysSwitch).not.toHaveClass(DISABLED_CLASS)
-        expect(isPushSignalOneDaySwitch).not.toHaveClass(DISABLED_CLASS)
-
-        userEvent.click(getByText('Annuler'))
-        expect(isPushSignalThreeDaysSwitch).toHaveClass(DISABLED_CLASS)
-        expect(isPushSignalOneDaySwitch).toHaveClass(DISABLED_CLASS)
-    })
     test('when clicked on Enregistrer, updateEcowattAlerts  functions are called', async () => {
         const { getByText } = reduxedRender(<EcowattAlertsForm {...mockEcowattAlertsFormProps} />)
 
-        userEvent.click(getByText('Modifier'))
         userEvent.click(getByText('Enregistrer'))
 
         expect(mockEcowattAlertsFormProps.updateEcowattAlerts).toBeCalled()
