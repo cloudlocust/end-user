@@ -282,7 +282,7 @@ export const getWidgetPreviousRange = (range: metricRangeType, period: periodTyp
  */
 export const getWidgetRange = (range: metricRangeType, period: periodType) => {
     // Extract only the date, so that new Date don't create a date including the timezone.
-    const fromDate = startOfDay(new Date(range.from.split('T')[0]))
+    const fromDate = startOfDay(new Date(range.from))
     switch (period) {
         case 'daily':
             return {

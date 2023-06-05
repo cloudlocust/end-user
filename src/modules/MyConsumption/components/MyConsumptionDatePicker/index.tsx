@@ -10,6 +10,7 @@ import 'src/modules/MyConsumption/components/MyConsumptionDatePicker/MyConsumpti
 import {
     addPeriod,
     convertToDateFnsPeriod,
+    getCalendarDates,
     getDateWithTimezoneOffset,
     getRange,
     subPeriod,
@@ -49,6 +50,7 @@ const MyConsumptionDatePicker = ({
     }
 
     const isFutureDate = differenceInCalendarDays(rangeDateFormat.to, maxDate || new Date()) >= 0
+
     /**
      * Handle data change.
      *
@@ -72,16 +74,18 @@ const MyConsumptionDatePicker = ({
     const handleClick = (
         calculateDays: (date: number | Date, amount: number) => Date,
         date: Date,
-        operator: 'add' | 'sub',
+        operator: 'add' | 'sub' | 'none',
     ) => {
         const toDate = period === 'daily' ? calculateDays(date, 1) : date
-        if (onDatePickerChange)
+        if (onDatePickerChange) {
             onDatePickerChange(
                 operator === 'sub'
                     ? subPeriod(toDate, convertToDateFnsPeriod(period) as dateFnsPeriod)
                     : addPeriod(toDate, convertToDateFnsPeriod(period) as dateFnsPeriod),
             )
-        else setRange(getRange(period, toDate, operator))
+        } else {
+            setRange(getCalendarDates(range, operator, period))
+        }
     }
 
     return (

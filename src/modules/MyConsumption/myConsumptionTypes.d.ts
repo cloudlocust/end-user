@@ -26,6 +26,29 @@ export interface IMyConsumptionPeriod {
  *
  */
 export type periodType = 'daily' | 'weekly' | 'monthly' | 'yearly'
+
+/**
+ * Period type enum.
+ */
+export enum PeriodEnum {
+    /**
+     * Daily period.
+     */
+    DAILY = 'daily',
+    /**
+     * Weekly period.
+     */
+    WEEKLY = 'weekly',
+    /**
+     * Monthly period.
+     */
+    MONTHLY = 'monthly',
+    /**
+     * Yearly period.
+     */
+    YEARLY = 'yearly',
+}
+
 /**
  * Interface ISelectMeters.
  */
@@ -54,7 +77,7 @@ export interface IMyConsumptionDatePicker {
     /**
      * Period range.
      */
-    period: periodValueType
+    period: PeriodEnum
     /**
      * SetRange function.
      */

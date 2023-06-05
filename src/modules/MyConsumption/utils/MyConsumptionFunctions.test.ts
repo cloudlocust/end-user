@@ -11,6 +11,9 @@ import {
     subPeriod,
     filterPmaxAndEurosConsumptionTargetFromVisibleChartTargets,
     convertConsumptionToWatt,
+    getRangeV2,
+    subtractTime,
+    addTime,
 } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
 import { IMetric, metricIntervalType, metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
 import { FAKE_WEEK_DATA, FAKE_DAY_DATA, FAKE_MONTH_DATA, FAKE_YEAR_DATA } from 'src/mocks/handlers/metrics'
@@ -20,7 +23,26 @@ import {
     convertMetricsDataToApexChartsDateTimeAxisValues,
 } from 'src/modules/MyConsumption/utils/apexChartsDataConverter'
 import dayjs from 'dayjs'
-import { dateFnsPeriod, periodType } from 'src/modules/MyConsumption/myConsumptionTypes.d'
+import { PeriodEnum, dateFnsPeriod, periodType } from 'src/modules/MyConsumption/myConsumptionTypes.d'
+import {
+    addDays,
+    addMonths,
+    addWeeks,
+    addYears,
+    endOfDay,
+    endOfMonth,
+    endOfWeek,
+    endOfYear,
+    startOfDay,
+    startOfMonth,
+    startOfWeek,
+    startOfYear,
+    subDays,
+    subMonths,
+    subWeeks,
+    subYears,
+} from 'date-fns'
+import fr from 'date-fns/locale/fr'
 
 // eslint-disable-next-line jsdoc/require-jsdoc
 let interval: metricIntervalType = '1m'
@@ -406,5 +428,101 @@ describe('test pure functions', () => {
             const result = convertConsumptionToWatt(yValue, isYValueRounded, metricsInterval)
             expect(result).toEqual('6240.00 W')
         })
+    })
+})
+
+describe('getRangeV2', () => {
+    const currentDate = new Date()
+
+    it('should return the correct range for DAILY period', () => {
+        const expectedRange = {
+            from: getDateWithoutTimezoneOffset(startOfDay(currentDate)),
+            to: getDateWithoutTimezoneOffset(endOfDay(currentDate)),
+        }
+        const actualRange = getRangeV2(PeriodEnum.DAILY)
+        expect(actualRange).toEqual(expectedRange)
+    })
+
+    it('should return the correct range for WEEKLY period', () => {
+        const expectedRange = {
+            from: getDateWithoutTimezoneOffset(startOfWeek(currentDate, { locale: fr })),
+            to: getDateWithoutTimezoneOffset(endOfWeek(currentDate, { locale: fr })),
+        }
+        const actualRange = getRangeV2(PeriodEnum.WEEKLY)
+        expect(actualRange).toEqual(expectedRange)
+    })
+
+    it('should return the correct range for MONTHLY period', () => {
+        const expectedRange = {
+            from: getDateWithoutTimezoneOffset(startOfMonth(currentDate)),
+            to: getDateWithoutTimezoneOffset(endOfMonth(currentDate)),
+        }
+        const actualRange = getRangeV2(PeriodEnum.MONTHLY)
+        expect(actualRange).toEqual(expectedRange)
+    })
+
+    it('should return the correct range for YEARLY period', () => {
+        const expectedRange = {
+            from: getDateWithoutTimezoneOffset(startOfYear(currentDate)),
+            to: getDateWithoutTimezoneOffset(endOfYear(currentDate)),
+        }
+        const actualRange = getRangeV2(PeriodEnum.YEARLY)
+        expect(actualRange).toEqual(expectedRange)
+    })
+})
+
+describe('subtractTime', () => {
+    const currentDate = new Date()
+
+    it('should subtract the correct time for DAILY period', () => {
+        const expectedDate = subDays(currentDate, 1)
+        const actualDate = subtractTime(currentDate, PeriodEnum.DAILY)
+        expect(actualDate).toEqual(expectedDate)
+    })
+
+    it('should subtract the correct time for WEEKLY period', () => {
+        const expectedDate = subWeeks(startOfWeek(currentDate, { locale: fr }), 1)
+        const actualDate = subtractTime(currentDate, PeriodEnum.WEEKLY)
+        expect(actualDate).toEqual(expectedDate)
+    })
+
+    it('should subtract the correct time for MONTHLY period', () => {
+        const expectedDate = subMonths(startOfMonth(currentDate), 1)
+        const actualDate = subtractTime(currentDate, PeriodEnum.MONTHLY)
+        expect(actualDate).toEqual(expectedDate)
+    })
+
+    it('should subtract the correct time for YEARLY period', () => {
+        const expectedDate = subYears(startOfYear(currentDate), 1)
+        const actualDate = subtractTime(currentDate, PeriodEnum.YEARLY)
+        expect(actualDate).toEqual(expectedDate)
+    })
+})
+
+describe('addTime', () => {
+    const currentDate = new Date()
+
+    it('should add the correct time for DAILY period', () => {
+        const expectedDate = addDays(startOfDay(currentDate), 1)
+        const actualDate = addTime(currentDate, PeriodEnum.DAILY)
+        expect(actualDate).toEqual(expectedDate)
+    })
+
+    it('should add the correct time for WEEKLY period', () => {
+        const expectedDate = addWeeks(startOfWeek(currentDate, { locale: fr }), 1)
+        const actualDate = addTime(currentDate, PeriodEnum.WEEKLY)
+        expect(actualDate).toEqual(expectedDate)
+    })
+
+    it('should add the correct time for MONTHLY period', () => {
+        const expectedDate = addMonths(startOfMonth(currentDate), 1)
+        const actualDate = addTime(currentDate, PeriodEnum.MONTHLY)
+        expect(actualDate).toEqual(expectedDate)
+    })
+
+    it('should add the correct time for YEARLY period', () => {
+        const expectedDate = addYears(startOfYear(currentDate), 1)
+        const actualDate = addTime(currentDate, PeriodEnum.YEARLY)
+        expect(actualDate).toEqual(expectedDate)
     })
 })

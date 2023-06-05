@@ -7,7 +7,12 @@ import {
     metricTargetType,
 } from 'src/modules/Metrics/Metrics.d'
 import dayjs from 'dayjs'
-import { dateFnsPeriod, getChartSpecifitiesType, periodType } from 'src/modules/MyConsumption/myConsumptionTypes.d'
+import {
+    dateFnsPeriod,
+    getChartSpecifitiesType,
+    PeriodEnum,
+    periodType,
+} from 'src/modules/MyConsumption/myConsumptionTypes.d'
 import { ApexChartsAxisValuesType } from 'src/modules/MyConsumption/myConsumptionTypes'
 import {
     add,
@@ -20,11 +25,23 @@ import {
     startOfMonth,
     addMinutes,
     differenceInCalendarDays,
+    subWeeks,
+    startOfWeek,
+    subMonths,
+    startOfYear,
+    subYears,
+    addWeeks,
+    addMonths,
+    addYears,
+    endOfWeek,
+    endOfMonth,
+    endOfYear,
 } from 'date-fns'
 import { cloneDeep } from 'lodash'
 import { metricTargetsHook } from 'src/modules/MyConsumption/utils/myConsumptionVariables'
 import { enphaseConsentFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
 import { isNil } from 'lodash'
+import fr from 'date-fns/locale/fr'
 
 /**
  * FormatMetricFilter function converts the data to the required format.
@@ -606,4 +623,121 @@ export const filterPmaxAndEurosConsumptionTargetFromVisibleChartTargets = (visib
         return [metricTargetsEnum.consumption, metricTargetsEnum.autoconsumption, ...savedVisibleTargetCharts]
     }
     return visibleChartTargets
+}
+
+/**
+ * Function that gets calendar dates.
+ *
+ * Période semaine du lundi au dimanche.
+ *
+ * Période mois du 1er au 28/29/30/31.
+ *
+ * Période année de janvier à décembre.
+ *
+ * @param range Metrics range.
+ * @param operator Operator. "sub", "add", or "none".
+ * @param period Metric period.
+ * @returns Range accordingly.
+ */
+export function getCalendarDates(
+    range: metricRangeType,
+    operator: 'sub' | 'add' | 'none' = 'none',
+    period: PeriodEnum,
+) {
+    const { from, to } = range
+
+    switch (operator) {
+        case 'sub':
+            return {
+                from: getDateWithoutTimezoneOffset(subtractTime(new Date(from), period)),
+                to: getDateWithoutTimezoneOffset(subtractTime(new Date(to), period)),
+            }
+        case 'add':
+            return {
+                from: getDateWithoutTimezoneOffset(addTime(new Date(from), period)),
+                to: getDateWithoutTimezoneOffset(addTime(new Date(to), period)),
+            }
+        case 'none':
+        default:
+            return {
+                from: getDateWithoutTimezoneOffset(new Date(from)),
+                to: getDateWithoutTimezoneOffset(new Date(to)),
+            }
+    }
+}
+
+/**
+ * Function that subtracts time from date.
+ *
+ * @param date Date from which you subtract.
+ * @param period Metric period.
+ * @returns Substracted date.
+ */
+export function subtractTime(date: Date, period: PeriodEnum) {
+    switch (period) {
+        case PeriodEnum.DAILY:
+            return subDays(date, 1)
+        case PeriodEnum.WEEKLY:
+            return subWeeks(startOfWeek(date, { locale: fr }), 1)
+        case PeriodEnum.MONTHLY:
+            return subMonths(startOfMonth(date), 1)
+        case PeriodEnum.YEARLY:
+            return subYears(startOfYear(date), 1)
+    }
+}
+
+/**
+ * Function that adds time to date.
+ *
+ * @param date Date from which you subtract.
+ * @param period Metric period.
+ * @returns Added date.
+ */
+export function addTime(date: Date, period: PeriodEnum) {
+    switch (period) {
+        case PeriodEnum.DAILY:
+            return addDays(startOfDay(date), 1)
+        case PeriodEnum.WEEKLY:
+            return addWeeks(startOfWeek(date, { locale: fr }), 1)
+        case PeriodEnum.MONTHLY:
+            return addMonths(startOfMonth(date), 1)
+        case PeriodEnum.YEARLY:
+            return addYears(startOfYear(date), 1)
+    }
+}
+
+/**
+ * Function that gets the range according the period.
+ *
+ * @param period Metric period.
+ * @returns Range according to the period.
+ */
+export function getRangeV2(period: PeriodEnum) {
+    const currentDate = new Date()
+    const isFuture = currentDate > new Date()
+
+    const currentEndDay = getDateWithoutTimezoneOffset(endOfDay(currentDate))
+
+    switch (period) {
+        case PeriodEnum.DAILY:
+            return {
+                from: getDateWithoutTimezoneOffset(startOfDay(currentDate)),
+                to: currentEndDay,
+            }
+        case PeriodEnum.WEEKLY:
+            return {
+                from: getDateWithoutTimezoneOffset(startOfWeek(currentDate, { locale: fr })),
+                to: isFuture ? currentEndDay : getDateWithoutTimezoneOffset(endOfWeek(currentDate, { locale: fr })),
+            }
+        case PeriodEnum.MONTHLY:
+            return {
+                from: getDateWithoutTimezoneOffset(startOfMonth(currentDate)),
+                to: isFuture ? currentEndDay : getDateWithoutTimezoneOffset(endOfMonth(currentDate)),
+            }
+        case PeriodEnum.YEARLY:
+            return {
+                from: getDateWithoutTimezoneOffset(startOfYear(currentDate)),
+                to: isFuture ? currentEndDay : getDateWithoutTimezoneOffset(endOfYear(currentDate)),
+            }
+    }
 }
