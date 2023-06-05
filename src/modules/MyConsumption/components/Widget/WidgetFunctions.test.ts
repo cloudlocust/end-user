@@ -17,6 +17,8 @@ import {
     computeTotalOfAllConsumptions,
     isRangeWithinToday,
     getPreviousDayRange,
+    WRONG_TARGET_TEXT,
+    computeAverageIdleConsumption,
 } from 'src/modules/MyConsumption/components/Widget/WidgetFunctions'
 import { periodType } from 'src/modules/MyConsumption/myConsumptionTypes'
 import { getDateWithoutTimezoneOffset } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
@@ -274,6 +276,11 @@ describe('Test widget functions', () => {
                     unit: 'Wh',
                     value: val,
                 },
+                {
+                    target: metricTargetsEnum.idleConsumption,
+                    unit: 'Wh',
+                    value: val,
+                },
             ]
             const datapoints = [[val, 1640995200000]]
             const data: IMetric[] = [
@@ -288,6 +295,21 @@ describe('Test widget functions', () => {
                 const result = computeWidgetAssets(data, testCase.target)
                 expect(result).toStrictEqual({ value: testCase.value, unit: testCase.unit })
             })
+        })
+        test('when computeWidgetAssets throws', () => {
+            const wrongTarget = {
+                target: 'wrong target',
+            }
+            const dummyData = [
+                {
+                    datapoints: [[0, 1640995200000]],
+                    target: metricTargetsEnum.eurosConsumption,
+                },
+            ]
+
+            expect(() => computeWidgetAssets(dummyData, wrongTarget as unknown as metricTargetType)).toThrow(
+                new Error(WRONG_TARGET_TEXT),
+            )
         })
     })
 
@@ -332,6 +354,11 @@ describe('Test widget functions', () => {
                 const result = renderWidgetTitle(target)
                 expect(result).toBe(value)
             })
+        })
+        test('when it throws', () => {
+            expect(() => renderWidgetTitle('error target' as unknown as metricTargetType)).toThrow(
+                new Error(WRONG_TARGET_TEXT),
+            )
         })
     })
     describe('test getWidgetPreviousRange', () => {
@@ -465,6 +492,11 @@ describe('Test widget functions', () => {
                 expect(result).toBe(color)
             })
         })
+        test('when it throws', () => {
+            expect(() => renderWidgetTitle('errorr target' as unknown as metricTargetType)).toThrow(
+                new Error(WRONG_TARGET_TEXT),
+            )
+        })
     })
 
     describe('test computeTotalOfAllConsumptions', () => {
@@ -582,6 +614,59 @@ describe('Test widget functions', () => {
             }
 
             expect(range).toStrictEqual(expectedResult)
+        })
+    })
+    describe('test computeAverageIdleConsumption', () => {
+        test('when result returns Wh value', () => {
+            const data: IMetric[] = [
+                {
+                    datapoints: [
+                        [50, 1640995200000],
+                        [25, 1641081600000],
+                    ],
+                    target: metricTargetsEnum.idleConsumption,
+                },
+            ]
+            const expectedResult = {
+                value: 38,
+                unit: 'Wh',
+            }
+            const result = computeAverageIdleConsumption(data)
+            expect(result).toStrictEqual(expectedResult)
+        })
+        test('when result returns kWh', () => {
+            const data: IMetric[] = [
+                {
+                    datapoints: [
+                        [5000, 1640995200000],
+                        [2500, 1641081600000],
+                    ],
+                    target: metricTargetsEnum.idleConsumption,
+                },
+            ]
+            const expectedResult = {
+                value: 3.75,
+                unit: 'kWh',
+            }
+            const result = computeAverageIdleConsumption(data)
+            expect(result).toStrictEqual(expectedResult)
+        })
+        test('when result returns Mwh', () => {
+            const data: IMetric[] = [
+                {
+                    datapoints: [
+                        [50000000, 1640995200000],
+                        [25000000, 1641081600000],
+                    ],
+                    target: metricTargetsEnum.idleConsumption,
+                },
+            ]
+            const expectedResult = {
+                value: 37.5,
+                unit: 'MWh',
+            }
+            const result = computeAverageIdleConsumption(data)
+            expect(result).toStrictEqual(expectedResult)
         })
     })
 })

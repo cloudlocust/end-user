@@ -16,6 +16,7 @@ const ENREGISTRER_BUTTON_TEXT = 'Enregistrer'
 const PRENOM_INPUT = 'Prénom'
 const CHANGED_FIRSTNAME_INPUT = 'Bob'
 const TEST_SUCCESS_USER = applyCamelCase(MOCK_TEST_SUCCESS_USER)
+const INVALID_SIREN_FIELD_MESSAGE = 'Le numéro Siren doit être composé de 9 chiffres'
 
 jest.mock('src/modules/User/ProfileManagement/ProfileManagementHooks', () => ({
     ...jest.requireActual('src/modules/User/ProfileManagement/ProfileManagementHooks'),
@@ -149,6 +150,6 @@ describe('Test ProfileManagementForm', () => {
         userEvent.click(getByText(MODIFIER_BUTTON_TEXT))
         const siren = getByRole('textbox', { name: 'Siren' })
         userEvent.type(siren, '12356')
-        await waitFor(() => [expect(getByText('Le numéro Siren doit être composé de 9 chiffres')).toBeTruthy()])
+        await waitFor(() => [expect(getByText(INVALID_SIREN_FIELD_MESSAGE)).toBeTruthy()])
     })
 })

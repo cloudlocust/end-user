@@ -27,7 +27,10 @@ import { periodType } from 'src/modules/MyConsumption/myConsumptionTypes'
 import { getDateWithoutTimezoneOffset } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
 import dayjs from 'dayjs'
 
-const WRONG_TARGET_TEXT = 'Wrong target'
+/**
+ * Wrong target error text.
+ */
+export const WRONG_TARGET_TEXT = 'Wrong target'
 
 /**
  * Function that returns values from yAxis of the graph.
