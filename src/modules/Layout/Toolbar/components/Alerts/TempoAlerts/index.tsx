@@ -36,7 +36,7 @@ export const TempoAlerts = () => {
             <div className="flex flex-row items-center">
                 <TypographyFormatMessage
                     color={theme.palette.primary.main}
-                    className="text-17 font-medium flex items-center"
+                    className="text-16 md:text-20 font-medium flex items-center"
                 >
                     Tempo :
                 </TypographyFormatMessage>

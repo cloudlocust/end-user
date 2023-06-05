@@ -13,7 +13,6 @@ import OutlinedInput from '@mui/material/OutlinedInput'
 import { FormControl } from '@mui/material'
 import { useIntl } from 'react-intl'
 import './ToolbarWidget.scss'
-import { Alerts } from 'src/modules/Layout/Toolbar/components/Alerts'
 import { URL_ERROR_500 } from 'src/modules/Errors/ErrorsConfig'
 
 const ITEM_HEIGHT = 48
@@ -101,7 +100,6 @@ export const ToolbarWidget = () => {
             </FormControl>
             <div className="flex align-center">
                 <Notification />
-                <Alerts />
                 <UserMenu />
             </div>
         </div>
