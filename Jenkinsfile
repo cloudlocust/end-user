@@ -1,6 +1,6 @@
 pipeline{
-    agent { label "jenkins-jenkins-python3-11" }
-    tools { nodejs "node16"}
+    agent { label 'jenkins-jenkins-react' }
+    tools {nodejs "node16"}
     environment{
         GITHUB_CREDENTIALS = credentials('github myem developer')
         DISCORD_WEBHOOK_URL = credentials('discord-webhook')
