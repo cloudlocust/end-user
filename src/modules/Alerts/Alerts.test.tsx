@@ -4,7 +4,7 @@ import { applyCamelCase } from 'src/common/react-platform-components'
 import { IHousing } from 'src/modules/MyHouse/components/HousingList/housing'
 import { TEST_HOUSES } from 'src/mocks/handlers/houses'
 import { URL_MY_HOUSE } from 'src/modules/MyHouse/MyHouseConfig'
-import Alerts from 'src/modules/Layout/Toolbar/components/Alerts'
+import Alerts from 'src/modules/Alerts'
 import { TEST_DATETIME } from 'src/mocks/handlers/contracts'
 import { TEST_OFFERS } from 'src/mocks/handlers/commercialOffer'
 import { TEST_PROVIDERS } from 'src/mocks/handlers/commercialOffer'
@@ -48,8 +48,8 @@ jest.mock('src/hooks/HasMissingHousingContracts', () => ({
     }),
 }))
 
-jest.mock('src/modules/Layout/Toolbar/components/Alerts/NovuAlertPreferencesHook', () => ({
-    ...jest.requireActual('src/modules/Layout/Toolbar/components/Alerts/NovuAlertPreferencesHook'),
+jest.mock('src/modules/Alerts/NovuAlertPreferencesHook', () => ({
+    ...jest.requireActual('src/modules/Alerts/NovuAlertPreferencesHook'),
     // eslint-disable-next-line jsdoc/require-jsdoc
     useNovuAlertPreferences: () => ({
         isLoadingInProgress: mockUseNovuAlertPreferences,

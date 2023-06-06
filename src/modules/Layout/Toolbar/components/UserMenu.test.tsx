@@ -9,6 +9,7 @@ import { TEST_SUCCESS_USER } from 'src/mocks/handlers/user'
 import { applyCamelCase } from 'src/common/react-platform-components'
 import { IUser } from 'src/modules/User'
 import { act } from 'react-dom/test-utils'
+import { URL_ALERTS } from 'src/modules/Alerts/AlertsConfig'
 
 /**
  * Mock user model state.
@@ -22,6 +23,8 @@ const PROFILE_MENU_ITEM_TEXT = 'Gestion de Profil'
 const PROFILE_REDIRECT_URL = '/profile-management'
 const MENTIONS_MENU_ITEM_TEXT = 'Mentions'
 const MENTIONS_REDIRECT_URL = '/mentions'
+const ALERTS_MENU_ITEM_TEXT = 'Gestion des alertes'
+const ALERTS_REDIRECT_URL = URL_ALERTS
 const LOGOUT_MENU_ITEM_TEXT = 'Déconnexion'
 const LOGOUT_REDIRECT_URL = '/login'
 /**
@@ -156,6 +159,12 @@ describe('test UserMenu component', () => {
         userEvent.click(getByText(MENTIONS_MENU_ITEM_TEXT))
         await waitFor(() => {
             expect(mockPushHistory).toHaveBeenCalledWith(MENTIONS_REDIRECT_URL)
+        })
+
+        // Clicking on Alerts Menu ITem
+        userEvent.click(getByText(ALERTS_MENU_ITEM_TEXT))
+        await waitFor(() => {
+            expect(mockPushHistory).toHaveBeenCalledWith(ALERTS_REDIRECT_URL)
         })
     })
 })

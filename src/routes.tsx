@@ -19,7 +19,7 @@ import { SetPasswordConfig } from 'src/modules/User/SetPassword/SetPasswordConfi
 import { SolarEquipmentsConfig } from 'src/modules/SolarEquipments/solarEquipmentsConfig'
 import { ErrorsConfig } from 'src/modules/Errors/ErrorsConfig'
 import { EcogestesConfig } from 'src/modules/Ecogestes/EcogestesConfig'
-import { AlertsConfig } from 'src/modules/Layout/Toolbar/components/Alerts/AlertsConfig'
+import { AlertsConfig } from 'src/modules/Alerts/AlertsConfig'
 
 /**
  *

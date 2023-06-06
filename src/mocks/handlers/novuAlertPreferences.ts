@@ -1,6 +1,6 @@
 import { rest } from 'msw'
 import { API_RESOURCES_URL } from 'src/configs'
-import { INovuAlertPreferences } from 'src/modules/Layout/Toolbar/components/Alerts/Alerts'
+import { INovuAlertPreferences } from 'src/modules/Alerts/Alerts.d'
 import { SnakeCasedPropertiesDeep } from 'type-fest'
 
 /**

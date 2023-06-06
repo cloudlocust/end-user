@@ -1,7 +1,7 @@
 import { applyCamelCase } from 'src/common/react-platform-components'
 import { reduxedRender } from 'src/common/react-platform-components/test'
 import { TEST_HOUSES } from 'src/mocks/handlers/houses'
-import { TempoAlerts } from 'src/modules/Layout/Toolbar/components/Alerts/TempoAlerts'
+import { TempoAlerts } from 'src/modules/Alerts/components/TempoAlerts'
 import { IHousing } from 'src/modules/MyHouse/components/HousingList/housing'
 
 const LIST_OF_HOUSES: IHousing[] = applyCamelCase(TEST_HOUSES)
@@ -9,8 +9,8 @@ const LIST_OF_HOUSES: IHousing[] = applyCamelCase(TEST_HOUSES)
 let mockIsLoadingInProgress = false
 const circularProgressClassname = '.MuiCircularProgress-root'
 
-jest.mock('src/modules/Layout/Toolbar/components/Alerts/NovuAlertPreferencesHook', () => ({
-    ...jest.requireActual('src/modules/Layout/Toolbar/components/Alerts/NovuAlertPreferencesHook'),
+jest.mock('src/modules/Alerts/NovuAlertPreferencesHook', () => ({
+    ...jest.requireActual('src/modules/Alerts/NovuAlertPreferencesHook'),
     // eslint-disable-next-line jsdoc/require-jsdoc
     useNovuAlertPreferences: () => ({
         isLoadingInProgress: mockIsLoadingInProgress,

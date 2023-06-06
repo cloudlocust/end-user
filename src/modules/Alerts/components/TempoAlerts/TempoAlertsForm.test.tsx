@@ -3,7 +3,7 @@ import { applyCamelCase } from 'src/common/react-platform-components'
 import { reduxedRender } from 'src/common/react-platform-components/test'
 import { TEST_HOUSE_ID } from 'src/mocks/handlers/contracts'
 import { TEST_NOVU_ALERTS_DATA } from 'src/mocks/handlers/novuAlertPreferences'
-import { TempoAlertsForm } from 'src/modules/Layout/Toolbar/components/Alerts/TempoAlerts/TempoAlertsForm'
+import { TempoAlertsForm } from 'src/modules/Alerts/components/TempoAlerts/TempoAlertsForm'
 
 const DISABLED_CLASS = 'Mui-disabled'
 const PUSH_TEMPO_ALERT_TEST_ID = 'isPushTempoAlert-switch'

@@ -3,7 +3,7 @@ import { applyCamelCase } from 'src/common/react-platform-components'
 import { reduxedRender } from 'src/common/react-platform-components/test'
 import { TEST_HOUSE_ID } from 'src/mocks/handlers/contracts'
 import { TEST_NOVU_ALERTS_DATA } from 'src/mocks/handlers/novuAlertPreferences'
-import { EcowattAlertsForm } from 'src/modules/Layout/Toolbar/components/Alerts/EcowattAlerts/EcowattAlertsForm'
+import { EcowattAlertsForm } from 'src/modules/Alerts/components/EcowattAlerts/EcowattAlertsForm'
 
 const DISABLED_CLASS = 'Mui-disabled'
 const PUSH_SIGNAL_THREE_DAYS_SWITCH_TEST_ID = 'isPushSignalThreeDays-switch'

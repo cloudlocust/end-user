@@ -5,7 +5,7 @@ import { EcowattAlertsNovuPreferencesType } from 'src/modules/Ecowatt/ecowatt'
 import { useToggle } from 'react-use'
 import { ButtonLoader } from 'src/common/ui-kit'
 import { useIntl } from 'react-intl'
-import { INovuAlertPreferences } from 'src/modules/Layout/Toolbar/components/Alerts/Alerts'
+import { INovuAlertPreferences } from 'src/modules/Alerts/Alerts.d'
 
 /**
  * Ecowatt Alerts Form.

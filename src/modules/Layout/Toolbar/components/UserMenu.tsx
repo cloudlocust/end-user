@@ -12,7 +12,7 @@ import { installationRequestsFeatureState } from 'src/modules/InstallationReques
 import { equipmentFeatureState, URL_SOLAR_EQUIPMENTS } from 'src/modules/SolarEquipments/solarEquipmentsConfig'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import { REACT_FAQ_REDIRECT_LINK } from 'src/configs'
-import { URL_ALERTS } from 'src/modules/Layout/Toolbar/components/Alerts/AlertsConfig'
+import { URL_ALERTS } from 'src/modules/Alerts/AlertsConfig'
 
 // TODO This is not a generic component to share with medialem, to update.
 /**
