@@ -1,23 +1,21 @@
-import { useTheme, CircularProgress } from '@mui/material'
-import { useEffect, useState } from 'react'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
-import { EcowattTooltip } from 'src/modules/Ecowatt/components/EcowattTooltip/'
-import { useSelector } from 'react-redux'
+import { useTheme, CircularProgress } from '@mui/material'
 import { RootState } from 'src/redux'
-import { EcowattAlertsForm } from 'src/modules/Layout/Toolbar/components/Alerts/EcowattAlerts/EcowattAlertsForm'
-import { useNovuAlertPreferences } from '../NovuAlertPreferencesHook'
+import { useSelector } from 'react-redux'
+import { useNovuAlertPreferences } from 'src/modules/Alerts/NovuAlertPreferencesHook'
+import { useEffect } from 'react'
+import { TempoAlertsForm } from 'src/modules/Alerts/components/TempoAlerts/TempoAlertsForm'
 
 /**
- * Ecowatt Alerts component.
+ *  Tempo Alerts component.
  *
- * @returns EcowattAlerts JSX.
+ * @returns Tempo alerts JSX.
  */
-export const EcowattAlerts = () => {
+export const TempoAlerts = () => {
     const theme = useTheme()
     const { currentHousing } = useSelector(({ housingModel }: RootState) => housingModel)
     const { isLoadingInProgress, getNovuAlertPreferences, novuAlertPreferences, updateNovuAlertPreferences } =
         useNovuAlertPreferences(currentHousing?.id ?? null)
-    const [openTooltip, setOpenTooltip] = useState<boolean>(false)
 
     useEffect(() => {
         if (currentHousing?.id) {
@@ -38,25 +36,16 @@ export const EcowattAlerts = () => {
             <div className="flex flex-row items-center">
                 <TypographyFormatMessage
                     color={theme.palette.primary.main}
-                    className="text-17 font-medium flex items-center"
+                    className="text-16 md:text-20 font-medium flex items-center"
                 >
-                    EcoWatt :
+                    Tempo :
                 </TypographyFormatMessage>
-                <EcowattTooltip
-                    openState={openTooltip}
-                    onOpen={() => setOpenTooltip(true)}
-                    onClose={() => setOpenTooltip(false)}
-                />
             </div>
-            <TypographyFormatMessage className="text-13 font-medium md:text-15 flex items-center">
-                La météo de l'électricité
-            </TypographyFormatMessage>
-
             {currentHousing?.id && novuAlertPreferences && (
-                <EcowattAlertsForm
-                    houseId={currentHousing?.id}
+                <TempoAlertsForm
+                    houseId={currentHousing.id}
                     novuAlertPreferences={novuAlertPreferences}
-                    updateEcowattAlerts={updateNovuAlertPreferences}
+                    updateTempoAlerts={updateNovuAlertPreferences}
                     reloadAlerts={getNovuAlertPreferences}
                 />
             )}

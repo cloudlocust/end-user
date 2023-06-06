@@ -11,9 +11,7 @@ const INTERVAL_TITLE_MONTH = "Seuil d'alerte mensuel"
 
 const INPUT_DEFAULT_VALUE = 0
 
-const BUTTON_MODIFIER = 'Modifier'
 const BUTTON_ENREGISTRER = 'Enregistrer'
-const BUTTON_ANNULER = 'Annuler'
 
 const MUI_TEXTFIELD = 'MuiOutlinedInput-input'
 const MUI_DISABLED = 'Mui-disabled'
@@ -68,26 +66,23 @@ describe('Test Consumption Alert component.', () => {
             const textFieldMuiElements = container.getElementsByClassName(MUI_TEXTFIELD)
             expect(textFieldMuiElements.length).toBe(2)
 
-            // both inputs are disabled
-            expect(textFieldMuiElements[0].classList.contains(MUI_DISABLED)).toBeTruthy()
-            expect(textFieldMuiElements[1].classList.contains(MUI_DISABLED)).toBeTruthy()
-
             // both inputs have default value
             const firstInputValue = textFieldMuiElements[0].getAttribute('value') ?? ''
             expect(parseInt(firstInputValue)).toBe(INPUT_DEFAULT_VALUE)
 
             const secondInputValue = textFieldMuiElements[1].getAttribute('value') ?? ''
             expect(parseInt(secondInputValue)).toBe(INPUT_DEFAULT_VALUE)
+            expect(container.getElementsByClassName(MUI_DISABLED).length).toBe(0)
 
-            // switchs show correctly
+            // switch are not disabled
             const pushSwitch = getByTestId(PUSH_SWITCH_TEST_ID)
             const emailSwitch = getByTestId(EMAIL_SWITCH_TEST_ID)
 
-            expect(pushSwitch).toHaveClass(MUI_DISABLED)
-            expect(emailSwitch).toHaveClass(MUI_DISABLED)
+            expect(pushSwitch).not.toHaveClass(MUI_DISABLED)
+            expect(emailSwitch).not.toHaveClass(MUI_DISABLED)
 
             // The button modifier show correctly
-            expect(() => getByText(BUTTON_MODIFIER)).toBeTruthy()
+            expect(() => getByText(BUTTON_ENREGISTRER)).toBeTruthy()
         })
         test('When consumption alert mount, correct title value for week.', () => {
             const { getByText } = reduxedRender(
@@ -129,59 +124,10 @@ describe('Test Consumption Alert component.', () => {
             // The title is correct based on the interval
             expect(() => getByText(INTERVAL_TITLE_MONTH)).toBeTruthy()
         })
-        test('Clicking on Modify change input state and buttons', async () => {
-            const { getByText, container, getByTestId } = reduxedRender(
-                <BrowserRouter>
-                    <ConsumptionAlert
-                        interval="week"
-                        initialConsumptionDataValues={mockInitialValue}
-                        pricePerKwh={PRICE_PER_KWH}
-                        saveConsumptionAlert={mockSaveConsumptionAlert}
-                        isConsumptionAlertsLoading={mockIsConsumptionAlertsLoading}
-                        isSavingAlertLoading={mockIsSavingAlertLoading}
-                        isNovuAlertPreferencesLoading={mockIsNovuAlertPreferencesLoading}
-                        initialAlertPreferencesValues={mockInitialAlertPreferencesValues}
-                        updateNovuAlertPreferences={mockUpdateNovuAlertPreferences}
-                    />
-                </BrowserRouter>,
-            )
-
-            // two inputs
-            const textFieldMuiElements = container.getElementsByClassName(MUI_TEXTFIELD)
-            expect(textFieldMuiElements.length).toBe(2)
-
-            // both inputs are disabled
-            expect(textFieldMuiElements[0].classList.contains(MUI_DISABLED)).toBeTruthy()
-            expect(textFieldMuiElements[1].classList.contains(MUI_DISABLED)).toBeTruthy()
-
-            // The button modifier show correctly
-            expect(() => getByText(BUTTON_MODIFIER)).toBeTruthy()
-
-            // Click on modify button
-
-            userEvent.click(getByText(BUTTON_MODIFIER))
-
-            expect(() => getByText(BUTTON_ENREGISTRER)).toBeTruthy()
-            expect(() => getByText(BUTTON_ANNULER)).toBeTruthy()
-
-            // both inputs are enabled
-            const textFieldMuiElementsAfterEnable = container.getElementsByClassName(MUI_DISABLED)
-            expect(textFieldMuiElementsAfterEnable.length).toBe(0)
-
-            // switch are not disabled
-            const pushSwitch = getByTestId(PUSH_SWITCH_TEST_ID)
-            const emailSwitch = getByTestId(EMAIL_SWITCH_TEST_ID)
-
-            expect(pushSwitch).not.toHaveClass(MUI_DISABLED)
-            expect(emailSwitch).not.toHaveClass(MUI_DISABLED)
-
-            // The button modifier show correctly
-            expect(() => getByText(BUTTON_MODIFIER)).toBeTruthy()
-        }, 2000)
     })
     describe('Test form manipulation.', () => {
         test('When tayping consumption value of price changes based on price per kwh.', () => {
-            const { getByText, container } = reduxedRender(
+            const { container } = reduxedRender(
                 <BrowserRouter>
                     <ConsumptionAlert
                         interval="day"
@@ -196,9 +142,6 @@ describe('Test Consumption Alert component.', () => {
                     />
                 </BrowserRouter>,
             )
-
-            // enable form
-            userEvent.click(getByText(BUTTON_MODIFIER))
 
             // two inputs
             const textFieldMuiElements = container.getElementsByClassName(MUI_TEXTFIELD)
@@ -214,7 +157,7 @@ describe('Test Consumption Alert component.', () => {
             expect(textFieldMuiElements[1]).toHaveValue(null)
         })
         test('When tayping price value of consumption changes based on price per kwh.', () => {
-            const { getByText, container } = reduxedRender(
+            const { container } = reduxedRender(
                 <BrowserRouter>
                     <ConsumptionAlert
                         interval="day"
@@ -229,9 +172,6 @@ describe('Test Consumption Alert component.', () => {
                     />
                 </BrowserRouter>,
             )
-
-            // enable form
-            userEvent.click(getByText(BUTTON_MODIFIER))
 
             // two inputs
             const textFieldMuiElements = container.getElementsByClassName(MUI_TEXTFIELD)
@@ -246,41 +186,7 @@ describe('Test Consumption Alert component.', () => {
             expect(textFieldMuiElements[1]).toHaveValue(null)
             expect(textFieldMuiElements[0]).toHaveValue(null)
         })
-        test('When tayping values and cancel, initial values should appear.', () => {
-            const { getByText, container } = reduxedRender(
-                <BrowserRouter>
-                    <ConsumptionAlert
-                        interval="day"
-                        initialConsumptionDataValues={mockInitialValue}
-                        pricePerKwh={PRICE_PER_KWH}
-                        saveConsumptionAlert={mockSaveConsumptionAlert}
-                        isConsumptionAlertsLoading={mockIsConsumptionAlertsLoading}
-                        isSavingAlertLoading={mockIsSavingAlertLoading}
-                        isNovuAlertPreferencesLoading={mockIsNovuAlertPreferencesLoading}
-                        initialAlertPreferencesValues={mockInitialAlertPreferencesValues}
-                        updateNovuAlertPreferences={mockUpdateNovuAlertPreferences}
-                    />
-                </BrowserRouter>,
-            )
 
-            // enable form
-            userEvent.click(getByText(BUTTON_MODIFIER))
-
-            // two inputs
-            const textFieldMuiElements = container.getElementsByClassName(MUI_TEXTFIELD)
-            const testPrice = 20
-
-            userEvent.type(textFieldMuiElements[1], `${testPrice}`)
-            expect(textFieldMuiElements[1]).toHaveValue(testPrice)
-            expect(textFieldMuiElements[0]).toHaveValue(parseFloat((testPrice / PRICE_PER_KWH).toFixed(2)))
-
-            // cancel changes
-            userEvent.click(getByText(BUTTON_ANNULER))
-
-            // see if changes were cancel
-            expect(textFieldMuiElements[1]).toHaveValue(0)
-            expect(textFieldMuiElements[0]).toHaveValue(0)
-        })
         test('When tayping values and save, save hooko should be call with correct values and fields disabled.', async () => {
             const { getByText, container } = reduxedRender(
                 <BrowserRouter>
@@ -297,9 +203,6 @@ describe('Test Consumption Alert component.', () => {
                     />
                 </BrowserRouter>,
             )
-
-            // enable form
-            userEvent.click(getByText(BUTTON_MODIFIER))
 
             // two inputs
             const textFieldMuiElements = container.getElementsByClassName(MUI_TEXTFIELD)
@@ -318,16 +221,6 @@ describe('Test Consumption Alert component.', () => {
             })
 
             // price and consumption should have values registered
-            expect(textFieldMuiElements[1]).toHaveValue(testPrice)
-            expect(textFieldMuiElements[0]).toHaveValue(parseFloat((testPrice / PRICE_PER_KWH).toFixed(2)))
-
-            // both inputs are disabled
-            expect(textFieldMuiElements[0].classList.contains(MUI_DISABLED)).toBeTruthy()
-            expect(textFieldMuiElements[1].classList.contains(MUI_DISABLED)).toBeTruthy()
-
-            // try to click again on modify to see if the component take this last values or the first ones ( in the init )
-            // ( it should have the last ones of course )
-            userEvent.click(getByText(BUTTON_MODIFIER))
             expect(textFieldMuiElements[1]).toHaveValue(testPrice)
             expect(textFieldMuiElements[0]).toHaveValue(parseFloat((testPrice / PRICE_PER_KWH).toFixed(2)))
         })

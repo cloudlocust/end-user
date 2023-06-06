@@ -1,4 +1,4 @@
-import { INovuAlertPreferences } from 'src/modules/Layout/Toolbar/components/Alerts'
+import { INovuAlertPreferences } from 'src/modules/Alerts'
 
 /**
  * Response object when gitting price per kwh.
@@ -134,18 +134,6 @@ export interface ConsumptionAlertInputFieldsComponentPropsType {
  * Consumption Alert buttons group props type.
  */
 export interface ConsumptionAlertButtonGroupPropsType {
-    /**
-     * Is form editable.
-     */
-    isEdit: boolean
-    /**
-     * Function to enable form.
-     */
-    enableForm: () => void
-    /**
-     * Function to enable form.
-     */
-    disableForm: () => void
     /**
      * Is button loading.
      */
