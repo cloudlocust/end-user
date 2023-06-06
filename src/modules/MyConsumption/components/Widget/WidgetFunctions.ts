@@ -208,7 +208,7 @@ export const computeWidgetAssets = (data: IMetric[], type: metricTargetType) => 
 /**
  * Utility Function helps not to break previous logic.
  * This function makes sure that Consumption, EurosConsumption, AutoConsumption Widgets fetches the monthly metrics when period is monthly.
- * In order to show widget value (which is the total Consumption) from monthly metrics,
+ * In order to show widget value (which is the total Consumption) from monthly metrics.
  * Instead of making a daily metrics request for that month and suming the values which doesn't give the same as the value from monthly request (which is more accurate).
  *
  * @param type Metric target.
