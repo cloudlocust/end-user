@@ -16,6 +16,7 @@ import { useSelector } from 'react-redux'
 import { RootState } from 'src/redux'
 import { IHousing } from 'src/modules/MyHouse/components/HousingList/housing'
 import { EnphaseConsentPopup } from 'src/modules/MyHouse/components/MeterStatus/EnphaseConsentPopup'
+import MeterInfos from 'src/modules/MyHouse/components/MeterInfo'
 
 const FORMATTED_DATA = 'DD/MM/YYYY'
 const TEXT_CONNEXION_LE = 'Connexion le'
@@ -381,20 +382,7 @@ export const MeterStatus = () => {
             <Card className="my-12 md:mx-16" variant="outlined">
                 <MuiCardContent sx={{ p: 0, '&:last-child': { pb: 0 } }}>
                     <div className={`flex flex-row justify-between bg-grey-200 p-12 border-b-1 border-grey-300`}>
-                        <div className="flex flex-col justify-between">
-                            <div className="flex flex-row items-center">
-                                <TypographyFormatMessage className="text-base font-medium mr-8">
-                                    Compteur
-                                </TypographyFormatMessage>
-                            </div>
-                            {foundHousing?.meter?.guid ? (
-                                <span className="text-grey-600 text-base">{`n° ${foundHousing?.meter?.guid}`}</span>
-                            ) : (
-                                <TypographyFormatMessage className="text-grey-600 text-base">
-                                    Aucun compteur renseigné
-                                </TypographyFormatMessage>
-                            )}
-                        </div>
+                        <MeterInfos element={foundHousing} />
                         <NavLink to={`${URL_MY_HOUSE}/${houseId}/contracts`} className="flex">
                             <Card className="flex flex-col items-center rounded p-8">
                                 <ContractIcon
