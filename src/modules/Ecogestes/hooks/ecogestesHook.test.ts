@@ -1,6 +1,6 @@
 import { act } from '@testing-library/react-hooks'
 import { reduxedRenderHook } from 'src/common/react-platform-components/test'
-import useEcogestes from 'src/modules/Ecogestes/ecogestesHook'
+import useEcogestes from 'src/modules/Ecogestes/hooks/ecogestesHook'
 
 const mockEnqueueSnackbar = jest.fn()
 let mockTagId: string = '1'

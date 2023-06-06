@@ -189,7 +189,7 @@ export const ConsumptionChartContainer = ({
                         className="sm:mr-8"
                         style={{ color: theme.palette.primary.contrastText }}
                     >
-                        Ma puissance
+                        {period === 'daily' ? 'Ma puissance' : 'Ma consommation'}
                     </TypographyFormatMessage>
                     {/* Consommation Watt par jour / Semaine / Mois / Année */}
                     <TypographyFormatMessage variant="h5" style={{ color: theme.palette.primary.contrastText }}>

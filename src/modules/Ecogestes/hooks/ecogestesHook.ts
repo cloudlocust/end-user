@@ -1,15 +1,10 @@
-import { API_RESOURCES_URL } from 'src/configs'
 import { BuilderUseElementList } from 'src/modules/utils/useElementHookBuilder'
 import { axios, catchError } from 'src/common/react-platform-components'
 import { useIntl, formatMessageType } from 'src/common/react-platform-translation'
 import { useSnackbar } from 'notistack'
 import { useParams } from 'react-router-dom'
 import { IEcogeste, IEcogestGetAllFilter, EcogestViewedEnum } from 'src/modules/Ecogestes/components/ecogeste.d'
-
-/**
- * Ecogestes API  global endpoint.
- */
-export const ECOGESTES_ENDPOINT = `${API_RESOURCES_URL}/ecogeste`
+import { ECOGESTES_ENDPOINT } from 'src/modules/Ecogestes/EcogestesConfig'
 
 // eslint-disable-next-line jsdoc/require-jsdoc
 export const loadElementListError = (_error: any, formatMessage: formatMessageType) => {
