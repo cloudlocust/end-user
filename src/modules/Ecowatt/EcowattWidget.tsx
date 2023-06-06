@@ -12,7 +12,7 @@ import { EcowattTimeline } from 'src/modules/Ecowatt/components/EcowattTimeline'
 import { EcowattTooltip } from 'src/modules/Ecowatt/components/EcowattTooltip'
 import { Report } from '@mui/icons-material/'
 import { useHistory } from 'react-router-dom'
-import { URL_ALERTS } from 'src/modules/Layout/Toolbar/components/Alerts/AlertsConfig'
+import { URL_ALERTS } from 'src/modules/Alerts/AlertsConfig'
 
 /**
  * Ecowatt widget title.

@@ -3,7 +3,7 @@ import { API_RESOURCES_URL } from 'src/configs'
 import { useSnackbar } from 'notistack'
 import { useIntl } from 'react-intl'
 import { axios } from 'src/common/react-platform-components'
-import { INovuAlertPreferences } from 'src/modules/Layout/Toolbar/components/Alerts/Alerts'
+import { INovuAlertPreferences } from 'src/modules/Alerts/Alerts.d'
 
 /**
  * Function that returns endpoint for novu alert prefenrences with housing id.
