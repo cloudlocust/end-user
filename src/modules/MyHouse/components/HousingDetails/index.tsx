@@ -1,12 +1,8 @@
 import { useEffect, useState } from 'react'
-import { useHistory, useParams } from 'react-router'
-import { motion } from 'framer-motion'
-import Icon from '@mui/material/Icon'
 import { styled } from '@mui/material/styles'
+import { useParams } from 'react-router'
+
 import FusePageCarded from 'src/common/ui-kit/fuse/components/FusePageCarded'
-import { useIntl } from 'src/common/react-platform-translation'
-import { Button } from '@mui/material'
-import { URL_MY_HOUSE } from 'src/modules/MyHouse/MyHouseConfig'
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz'
 import HousingDetailsCard from 'src/modules/MyHouse/components/HousingDetails/HousingDetailsCard'
 import { HouseDetailsElementType } from 'src/modules/MyHouse/components/HousingDetails/housingDetails'
@@ -24,12 +20,18 @@ import { equipmentNameType } from 'src/modules/MyHouse/components/Equipments/Equ
 import { MeterStatus } from 'src/modules/MyHouse/components/MeterStatus'
 import { ReactComponent as ElectricityIcon } from 'src/assets/images/content/housing/Electricity.svg'
 import { ReactComponent as GazIcon } from 'src/assets/images/content/housing/Gaz.svg'
+import HousingCard from 'src/modules/MyHouse/components/HousingCard'
+import { useSelector } from 'react-redux'
+import CircularProgress from '@mui/material/CircularProgress'
+import { RootState } from 'src/redux'
+import { isEmpty } from 'lodash'
 
 const Root = styled(FusePageCarded)(() => ({
     '& .FusePageCarded-header': {
         minHeight: 90,
-        height: 90,
+        height: 'fit-content',
         alignItems: 'center',
+        margin: '24px 0',
     },
     '& .FusePageCarded-content': {
         margin: 10,
@@ -45,8 +47,7 @@ const Root = styled(FusePageCarded)(() => ({
  * @returns  Element Details Tabs.
  */
 export const HousingDetails = () => {
-    const history = useHistory()
-    const { formatMessage } = useIntl()
+    const { housingList } = useSelector(({ housingModel }: RootState) => housingModel)
 
     const theme = useTheme()
 
@@ -158,25 +159,18 @@ export const HousingDetails = () => {
         },
     ]
 
+    if (!housingList || isEmpty(housingList))
+        return (
+            <div className="flex flex-col justify-center items-center w-full h-full" style={{ height: '320px' }}>
+                <CircularProgress size={32} />
+            </div>
+        )
+    const currentHousing = housingList.find((housing) => housing.id === Number(houseId))
     return (
         <Root
             header={
                 <ThemeProvider theme={theme}>
-                    <Button
-                        sx={{ color: 'primary.contrastText' }}
-                        onClick={() => history.push(URL_MY_HOUSE)}
-                        className="text-16 ml-12"
-                    >
-                        <Icon
-                            component={motion.span}
-                            initial={{ scale: 0 }}
-                            animate={{ scale: 1, transition: { delay: 0.2 } }}
-                            className="text-24 mr-2 text"
-                        >
-                            arrow_back
-                        </Icon>
-                        {formatMessage({ id: 'Retour', defaultMessage: 'Retour' })}
-                    </Button>
+                    <HousingCard element={currentHousing!} />
                 </ThemeProvider>
             }
             content={
