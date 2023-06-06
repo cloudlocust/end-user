@@ -175,3 +175,8 @@ export const REACT_APP_GTM_ID = window._env_.REACT_APP_GTM_ID
 export const TAG_MANAGER_CONFIG = {
     gtmId: REACT_APP_GTM_ID,
 }
+
+/**
+ * FAQ redirect link.
+ */
+export const REACT_FAQ_REDIRECT_LINK = window._env_.REACT_APP_FAQ_REDIRECT_LINK
