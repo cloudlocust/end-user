@@ -12,7 +12,6 @@ import { NrLinkConnectionConfig } from './modules/nrLinkConnection'
 import { MyHouseConfig } from './modules/MyHouse'
 import { ContractsConfig } from './modules/Contracts/ContractsConfig'
 import { ProfileManagementConfig } from './modules/User/ProfileManagement/ProfileManagementConfig'
-import { FAQConfig } from './modules/FAQ/FAQConfig'
 import { InstallationsRequestsConfig } from 'src/modules/InstallationRequests/InstallationRequestsConfig'
 import { EnphaseConfirmStateConfig } from 'src/modules/MyHouse/components/EnphaseConfirmState/EnphaseConfirmStateConfig'
 import { MentionsConfig } from 'src/modules/Mentions/MentionsConfig'
@@ -20,6 +19,7 @@ import { SetPasswordConfig } from 'src/modules/User/SetPassword/SetPasswordConfi
 import { SolarEquipmentsConfig } from 'src/modules/SolarEquipments/solarEquipmentsConfig'
 import { ErrorsConfig } from 'src/modules/Errors/ErrorsConfig'
 import { EcogestesConfig } from 'src/modules/Ecogestes/EcogestesConfig'
+import { AlertsConfig } from 'src/modules/Alerts/AlertsConfig'
 
 /**
  *
@@ -37,13 +37,13 @@ export const routes = [
     ...SetPasswordConfig,
     ...AnalysisConfig,
     ...ProfileManagementConfig,
-    ...FAQConfig,
     ...InstallationsRequestsConfig,
     ...EnphaseConfirmStateConfig,
     ...MentionsConfig,
     ...SolarEquipmentsConfig,
     ...ErrorsConfig,
     ...EcogestesConfig,
+    ...AlertsConfig,
     {
         /**
          * TODO Document.

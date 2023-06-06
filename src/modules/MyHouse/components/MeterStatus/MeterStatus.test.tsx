@@ -37,7 +37,7 @@ const NRLINK_NONEXISTANT_EXPIRED_MESSAGE = 'Connectez votre nrLINK pour visualis
 const ENEDIS_CONNECTED_MESSAGE = 'Historique de consommation'
 const ENEDIS_NONEXISTANT_EXPIRED_MESSAGE =
     'Autorisez la récupération de vos données de consommation pour avoir accès à votre historique.'
-const NO_METER_MESSAGE = 'Aucun compteur renseigné'
+const NO_METER_MESSAGE = 'Veuillez renseigner votre compteur'
 const ENEDIS_CANCEL_COLLECTION_DATA_MESSAGE = 'Annuler la récolte de mes données'
 const CONTACT_MAIL_MESSAGE = 'Contacter support@myem.fr'
 
