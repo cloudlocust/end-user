@@ -12,7 +12,6 @@ import { ConsumptionWidgetsMetricsContext } from 'src/modules/MyConsumption/comp
 import { metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
 import { isWidgetMonthlyMetrics } from 'src/modules/MyConsumption/components/Widget/WidgetFunctions'
 import WidgetIdleConsumption from 'src/modules/MyConsumption/components/WidgetIdleConsumption'
-import { isWidgetMonthlyMetrics } from 'src/modules/MyConsumption/components/Widget/WidgetFunctions'
 
 const renderedWidgets = enphaseConsentFeatureState
     ? WidgetTargets.filter((target) => target !== metricTargetsEnum.consumption)
