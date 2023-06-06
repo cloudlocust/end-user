@@ -140,7 +140,11 @@ export const SolarEquipmentCreateUpdate = (props: SolarEquipmentCreateUpdateProp
                                             })}
                                         </span>
                                     </Typography>
-                                    <DatePicker name="installedAt" validateFunctions={[requiredBuilder()]} />
+                                    <DatePicker
+                                        name="installedAt"
+                                        label="Date d'installation"
+                                        validateFunctions={[requiredBuilder()]}
+                                    />
                                 </div>
                             </div>
 
@@ -155,7 +159,7 @@ export const SolarEquipmentCreateUpdate = (props: SolarEquipmentCreateUpdateProp
                                             })}
                                         </span>
                                     </Typography>
-                                    <TextField name="brand" label="" validateFunctions={[requiredBuilder()]} />
+                                    <TextField name="brand" validateFunctions={[requiredBuilder()]} />
                                 </div>
                             </div>
 
@@ -169,7 +173,7 @@ export const SolarEquipmentCreateUpdate = (props: SolarEquipmentCreateUpdateProp
                                         })}
                                     </span>
                                 </Typography>
-                                <TextField name="reference" label="" validateFunctions={[requiredBuilder()]} />
+                                <TextField name="reference" validateFunctions={[requiredBuilder()]} />
                             </div>
 
                             <DialogActions className="justify-center p-4 pb-16">
