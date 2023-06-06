@@ -342,6 +342,10 @@ export const getApexChartMyConsumptionProps = ({
             ...options.chart,
             toolbar: {
                 show: true,
+                tools: {
+                    download: false,
+                    pan: false,
+                },
             },
             zoom: {
                 enabled: true,
