@@ -11,7 +11,8 @@ import ToolbarMenuItem from './ToolbarMenuItem'
 import { installationRequestsFeatureState } from 'src/modules/InstallationRequests/InstallationRequestsConfig'
 import { equipmentFeatureState, URL_SOLAR_EQUIPMENTS } from 'src/modules/SolarEquipments/solarEquipmentsConfig'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
-import { URL_ALERTS } from '../../../Alerts/AlertsConfig'
+import { REACT_FAQ_REDIRECT_LINK } from 'src/configs'
+import { URL_ALERTS } from 'src/modules/Alerts/AlertsConfig'
 
 // TODO This is not a generic component to share with medialem, to update.
 /**
@@ -134,14 +135,16 @@ function UserMenu() {
                             defaultMessageLabel="Equipement"
                         />
                     )}
-                    <ToolbarMenuItem
-                        onMenuItemClick={() => {
-                            history.push('/FAQ')
-                        }}
-                        iconLabel="help_center"
-                        idLabel="FAQ"
-                        defaultMessageLabel="FAQ"
-                    />
+                    {REACT_FAQ_REDIRECT_LINK && (
+                        <ToolbarMenuItem
+                            onMenuItemClick={() => {
+                                window.open(REACT_FAQ_REDIRECT_LINK, '_blank', 'noopener noreferrer')
+                            }}
+                            iconLabel="help_center"
+                            idLabel="FAQ"
+                            defaultMessageLabel="FAQ"
+                        />
+                    )}
                     <ToolbarMenuItem
                         onMenuItemClick={() => {
                             dispatch.userModel.logout()
