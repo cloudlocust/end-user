@@ -8,39 +8,56 @@ import {
 } from 'src/modules/Analysis/components/AnalysisInformationList/utils'
 import convert from 'convert-units'
 import { useMemo } from 'react'
-import { useAnalysisStore } from 'src/modules/Analysis/store/analysisStore'
 import { round } from 'lodash'
+import { useMetrics } from 'src/modules/Metrics/metricsHook'
+import { metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
 
 /**
  * AnalysisIdleConsumption component.
  *
  * @param param0 N/A.
- * @param param0.data Metrics data.
+ * @param param0.totalConsumption Total consumption data.
+ * @param param0.range Metrics range from parent.
+ * @param param0.filters Metrics filters from parent.
  * @returns AnalysisIdleConsumption JSX.
  */
-export function AnalysisIdleConsumption({ data }: AnalysisIdleConsumptionProps) {
+export function AnalysisIdleConsumption({ totalConsumption, range, filters }: AnalysisIdleConsumptionProps) {
     const theme = useTheme()
     const isMobile = useMediaQuery(theme.breakpoints.down('md'))
 
-    const totalConsumption = useAnalysisStore((state) => state.totalConsumption)
+    const { data: idleConsumptionData, isMetricsLoading: isIdleConsumptionDataLoading } = useMetrics(
+        {
+            interval: '1d',
+            range: range,
+            targets: [
+                {
+                    target: metricTargetsEnum.idleConsumption,
+                    type: 'timeserie',
+                },
+            ],
+            filters,
+        },
+        Boolean(filters),
+    )
 
     const convertedAverageIdleConsumptionDataToKwh = useMemo(
-        () => convert(computeAverageIdleConssumption(data)!).from('Wh').to('kWh'),
-        [data],
+        () => convert(computeAverageIdleConssumption(idleConsumptionData)!).from('Wh').to('kWh'),
+        [idleConsumptionData],
     )
 
     const convertedSumIdleConsumptionDataToKwh = useMemo(
-        () => convert(computeSumIdleConsumption(data)!).from('Wh').to('kWh'),
-        [data],
+        () => convert(computeSumIdleConsumption(idleConsumptionData)!).from('Wh').to('kWh'),
+        [idleConsumptionData],
     )
 
-    const pourcentageOfIdleConsumptionFromTotalConsumption = useMemo(
-        () =>
-            round(
-                (convertedSumIdleConsumptionDataToKwh / convert(totalConsumption).from('Wh').to('kWh')) * 100,
-            ).toFixed(2),
-        [convertedSumIdleConsumptionDataToKwh, totalConsumption],
-    )
+    const pourcentageOfIdleConsumptionFromTotalConsumption = useMemo(() => {
+        // To avoid Infinity, you need to make sure that you're not dividing by zero.
+        if (totalConsumption !== 0) {
+            return round((convertedSumIdleConsumptionDataToKwh / convert(totalConsumption).from('Wh').to('kWh')) * 100)
+        }
+
+        return 0
+    }, [convertedSumIdleConsumptionDataToKwh, totalConsumption])
 
     return (
         <div className="w-full flex flex-col items-start md:items-center p-0">
@@ -52,7 +69,9 @@ export function AnalysisIdleConsumption({ data }: AnalysisIdleConsumptionProps) 
                     <TypographyFormatMessage className="sm:text-13 font-bold md:text-16">
                         Consommation de veille :
                     </TypographyFormatMessage>
-                    {convertedAverageIdleConsumptionDataToKwh && convertedSumIdleConsumptionDataToKwh ? (
+                    {isIdleConsumptionDataLoading ? (
+                        <TypographyFormatMessage>En cours de calcule...</TypographyFormatMessage>
+                    ) : convertedAverageIdleConsumptionDataToKwh && convertedSumIdleConsumptionDataToKwh ? (
                         <>
                             <span>
                                 <TypographyFormatMessage className="sm:text-13 text-grey-600 font-bold md:text-16">

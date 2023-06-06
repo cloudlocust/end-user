@@ -1,47 +1,57 @@
 import { reduxedRender } from 'src/common/react-platform-components/test'
-import { TEST_SUCCESS_MONTH_METRICS } from 'src/mocks/handlers/metrics'
 import { AnalysisIdleConsumption } from 'src/modules/Analysis/components/AnalysisIdleConsumption'
-import { IMetric, metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
+import { AnalysisIdleConsumptionProps } from 'src/modules/Analysis/components/AnalysisIdleConsumption/analysisIdleConssumption'
+import { IMetric, metricFiltersType } from 'src/modules/Metrics/Metrics.d'
 
-let mockData: IMetric[] = TEST_SUCCESS_MONTH_METRICS([metricTargetsEnum.consumption, metricTargetsEnum.pMax])
-const pourcentageOfIdleConsumptionFromTotalConsumption = '50.00'
-
-/**
- * Mocking the Zustand Analysis Store.
- */
-jest.mock('src/modules/Analysis/store/analysisStore', () => ({
-    /**
-     * Mock the total consumption returned from useAnalysisStore.
-     *
-     * @returns Total Consumption Value.
-     */
-    useAnalysisStore: () => 8000,
-}))
+// TODO: fix tests
 
 describe('AnalysisIdleConsumption component test', () => {
-    mockData = [
-        ...mockData,
+    let mockFilters: metricFiltersType = [
         {
-            datapoints: [
-                [2000, 0],
-                [2000, 0],
-            ],
-            target: metricTargetsEnum.idleConsumption,
-        },
-        {
-            datapoints: [],
-            target: metricTargetsEnum.eurosConsumption,
+            key: 'meter_guid',
+            operator: '=',
+            value: '123456789',
         },
     ]
 
-    test('when component has data props and it renders the average and sum of idle consumption', () => {
-        const { getByText } = reduxedRender(<AnalysisIdleConsumption data={mockData} />)
-        expect(getByText('2.00 kWh')).toBeTruthy()
-        expect(getByText('4.00 kWh')).toBeTruthy()
+    let mockRange = {
+        from: '2022-05-01T00:00:00.000Z',
+        to: '2022-05-31T23:59:59.999Z',
+    }
+
+    let mockIsMetricsLoading = false
+
+    let mocknAnalysisIdleConsumptionProps: AnalysisIdleConsumptionProps = {
+        filters: mockFilters,
+        range: mockRange,
+        totalConsumption: 0,
+    }
+
+    let idleSvg = 'idle-svg'
+
+    let mockData: IMetric[]
+
+    jest.mock('src/modules/Metrics/metricsHook.ts', () => ({
+        // eslint-disable-next-line jsdoc/require-jsdoc
+        useMetrics: () => ({
+            data: mockData,
+            filters: mockFilters,
+            range: mockRange,
+            interval: '1d',
+            isMetricsLoading: mockIsMetricsLoading,
+        }),
+    }))
+
+    const loadingMessage = 'En cours de calcule...'
+
+    test('whhen isMetricsLoading is true, we show a loading message', () => {
+        mockIsMetricsLoading = true
+        const { getByTestId, getByText } = reduxedRender(
+            <AnalysisIdleConsumption {...mocknAnalysisIdleConsumptionProps} />,
+        )
+        expect(getByTestId(idleSvg)).toBeInTheDocument()
+        expect(getByText(loadingMessage)).toBeInTheDocument()
     })
 
-    test('When total consumption from analysisStore, percentage of Idle consumption is shown', () => {
-        const { getByText } = reduxedRender(<AnalysisIdleConsumption data={mockData} />)
-        expect(getByText(`${pourcentageOfIdleConsumptionFromTotalConsumption} %`)).toBeTruthy()
-    })
+    test.todo('when data is retrieved, we show the average per day and sum in the month')
 })

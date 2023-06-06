@@ -9,14 +9,14 @@ export const URL_ERRORS = '/errors'
 /**
  * Url for Error 500.
  */
-export const URL_ERROR_HOUSING = `${URL_ERRORS}/500`
+export const URL_ERROR_500 = `${URL_ERRORS}/500`
 
 /**
  * ErrorsConfig.
  */
 export const ErrorsConfig = [
     {
-        path: URL_ERROR_HOUSING,
+        path: URL_ERROR_500,
         component: Error500,
         auth: { authType: authTypes.loginRequired },
         settings: {

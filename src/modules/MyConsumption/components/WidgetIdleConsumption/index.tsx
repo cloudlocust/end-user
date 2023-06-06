@@ -1,0 +1,140 @@
+import { useEffect, useMemo } from 'react'
+import { metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
+import { IWidgetProps } from 'src/modules/MyConsumption/components/Widget/Widget'
+import { WidgetItem } from 'src/modules/MyConsumption/components/WidgetItem'
+import {
+    getPreviousDayRange,
+    getWidgetPreviousRange,
+    isRangeWithinToday,
+    renderWidgetTitle,
+} from 'src/modules/MyConsumption/components/Widget/WidgetFunctions'
+import { computePercentageChange } from 'src/modules/Analysis/utils/computationFunctions'
+import { computeWidgetAssets } from 'src/modules/MyConsumption/components/Widget/WidgetFunctions'
+import { getWidgetRange } from 'src/modules/MyConsumption/components/Widget/WidgetFunctions'
+import { useMetrics } from 'src/modules/Metrics/metricsHook'
+import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
+import { Grid, Card, CircularProgress, useTheme } from '@mui/material'
+
+const emptyValueUnit = { value: 0, unit: '' }
+
+/**
+ * WidgetConsumption Component.
+ *
+ * @param props Same Props as Widget Idle Consumption Component.
+ * @returns WidgetConsumption Component.
+ */
+const WidgetIdleConsumption = (props: IWidgetProps) => {
+    const { filters, period, range, target, metricsInterval } = props
+    const theme = useTheme()
+
+    const { data, setMetricsInterval, setRange, isMetricsLoading } = useMetrics({
+        interval: metricsInterval,
+        range: getWidgetRange(range, period, target),
+        targets: [
+            {
+                target: target,
+                type: 'timeserie',
+            },
+        ],
+        filters,
+    })
+    const {
+        data: oldData,
+        setMetricsInterval: setMetricsIntervalPrevious,
+        setRange: setRangePrevious,
+    } = useMetrics({
+        interval: metricsInterval,
+        range: getWidgetPreviousRange(getWidgetRange(range, period, target), period, target),
+        targets: [
+            {
+                target: target,
+                type: 'timeserie',
+            },
+        ],
+        filters,
+    })
+
+    useEffect(() => {
+        setMetricsInterval('1d')
+        setMetricsIntervalPrevious('1d')
+    }, [setMetricsInterval, period, setMetricsIntervalPrevious])
+
+    useEffect(() => {
+        if (period === 'daily') {
+            setRange(getPreviousDayRange(range)!)
+            setRangePrevious(getPreviousDayRange(range, 2)!)
+        } else {
+            const widgetRange = getWidgetRange(range, period, target)
+            setRange(widgetRange)
+            setRangePrevious(getWidgetPreviousRange(widgetRange, period, target))
+        }
+    }, [period, range, setRange, setRangePrevious, target])
+
+    const { unit, value } = useMemo(
+        () => (!data.length ? emptyValueUnit : computeWidgetAssets(data, metricTargetsEnum.idleConsumption)),
+        [data],
+    )
+
+    const { value: oldDataValue } = useMemo(
+        () => (!oldData.length ? emptyValueUnit : computeWidgetAssets(oldData, metricTargetsEnum.idleConsumption)),
+        [oldData],
+    )
+
+    const percentageChange = useMemo(
+        () => computePercentageChange(oldDataValue as number, value as number),
+        [value, oldDataValue],
+    )
+
+    const isMessageShown = isRangeWithinToday(range.from, range.to)
+
+    // When the range period is of Today, we show this message because the Idle Consumption is still on
+    if (isMessageShown)
+        return (
+            <Grid item xs={6} sm={6} md={4} lg={3} xl={3} className="flex">
+                <Card className="w-full rounded-20 shadow sm:m-4" variant="outlined" style={{ minHeight: '170px' }}>
+                    <div className="p-16 flex flex-col flex-1 gap-3 justify-between h-full">
+                        <div className="text-center flex flex-1 justify-center items-center py-4">
+                            <TypographyFormatMessage
+                                sx={(theme) => ({
+                                    color: theme.palette.secondary.main,
+                                })}
+                                fontWeight={500}
+                            >
+                                La moyenne de votre consommation de veille pour aujourd'hui est en cours mais disponible
+                                sur hier
+                            </TypographyFormatMessage>
+                        </div>
+                    </div>
+                </Card>
+            </Grid>
+        )
+
+    return (
+        <Grid item xs={6} sm={6} md={4} lg={3} xl={3} className="flex">
+            <Card className="w-full rounded-20 shadow sm:m-4" variant="outlined" style={{ minHeight: '170px' }}>
+                <>
+                    {isMetricsLoading ? (
+                        <div
+                            className="flex flex-col justify-center items-center w-full h-full"
+                            style={{ height: '170px' }}
+                        >
+                            <CircularProgress style={{ color: theme.palette.primary.main }} />
+                        </div>
+                    ) : (
+                        <div className="h-full flex flex-col">
+                            <WidgetItem
+                                target={target}
+                                title={renderWidgetTitle(target)}
+                                value={value}
+                                unit={unit}
+                                percentageChange={percentageChange}
+                            />
+                        </div>
+                    )}
+                </>
+            </Card>
+        </Grid>
+    )
+}
+
+export default WidgetIdleConsumption

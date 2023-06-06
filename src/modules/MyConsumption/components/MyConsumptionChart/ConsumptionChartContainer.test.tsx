@@ -75,10 +75,9 @@ const EUROS_CONSUMPTION_TITLE_MONTHLY = 'en € par mois'
 const EUROS_CONSUMPTION_TITLE_YEARLY = 'en € par année'
 const CONSUMPTION_ICON_TEST_ID = 'BoltIcon'
 const EUROS_CONSUMPTION_ICON_TEST_ID = 'EuroIcon'
-const PMAX_BUTTON_TEXT = 'Pmax'
 const apexchartsClassName = 'apexcharts-svg'
-const buttonGroupdDisabledClassname = 'disabledField'
 const buttonDisabledClassname = 'Mui-disabled'
+let buttonLabelText = 'target-menu'
 const mockGetConsents = jest.fn()
 const mockGetMetricsWithParams = jest.fn()
 let mockSgeConsentFeatureState = true
@@ -230,12 +229,13 @@ describe('MyConsumptionContainer test', () => {
 
         consumptionTitleCases.forEach(({ period, text }) => {
             consumptionChartContainerProps.period = period
-            const { getByText } = reduxedRender(
+            const { getByText, queryAllByText } = reduxedRender(
                 <Router>
                     <ConsumptionChartContainer {...consumptionChartContainerProps} />
                 </Router>,
                 { initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[0] } } },
             )
+            expect(queryAllByText('Ma puissance')).toBeTruthy()
             expect(getByText(text)).toBeTruthy()
         })
     })
@@ -309,19 +309,31 @@ describe('MyConsumptionContainer test', () => {
     })
     test('When period is daily, EurosConsumption and pMax button should be disabled', async () => {
         consumptionChartContainerProps.period = 'daily'
-        const { getByText, getByTestId } = reduxedRender(
+        const { getByText, getByTestId, getByLabelText, getAllByRole } = reduxedRender(
             <Router>
                 <ConsumptionChartContainer {...consumptionChartContainerProps} />
             </Router>,
             { initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[0] } } },
         )
 
+        let button = getByLabelText(buttonLabelText)
+
         expect(
             (getByTestId(EUROS_CONSUMPTION_ICON_TEST_ID).parentElement as HTMLButtonElement).classList.contains(
                 buttonDisabledClassname,
             ),
         ).toBeTruthy()
-        expect(getByText(PMAX_BUTTON_TEXT).classList.contains(buttonGroupdDisabledClassname)).toBeTruthy()
+
+        expect(button).toBeInTheDocument()
+
+        button.focus()
+        button.click()
+
+        expect(getByText('Ajouter un axe sur le graphique :')).toBeTruthy()
+        let menuItems = getAllByRole('menuitem')
+
+        expect(menuItems[3].classList.contains(buttonDisabledClassname)).toBeTruthy()
+        expect(menuItems[3]).toHaveAttribute('aria-disabled', 'true')
     })
 
     test('When period is not daily and enedisSgeConsent is not Connected, pMax button should be disabled, enedisSgeConsent warning is shown', async () => {
@@ -329,15 +341,25 @@ describe('MyConsumptionContainer test', () => {
         consumptionChartContainerProps.enedisSgeConsent = mockEnedisSgeConsentOff
         mockEnedisConsent = mockEnedisSgeConsentOff
 
-        const { getByText } = reduxedRender(
+        const { getByText, getAllByRole, getByLabelText } = reduxedRender(
             <Router>
                 <ConsumptionChartContainer {...consumptionChartContainerProps} />
             </Router>,
             { initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[0] } } },
         )
 
+        let button = getByLabelText(buttonLabelText)
+        expect(button).toBeInTheDocument()
+
+        button.focus()
+        button.click()
+
+        expect(getByText('Ajouter un axe sur le graphique :')).toBeTruthy()
+        let menuItems = getAllByRole('menuitem')
+
+        expect(menuItems[3].classList.contains('Mui-disabled')).toBeTruthy()
+        expect(menuItems[3]).toHaveAttribute('aria-disabled', 'true')
         expect(getByText(CONSUMPTION_ENEDIS_SGE_WARNING_TEXT)).toBeTruthy()
-        expect(getByText(PMAX_BUTTON_TEXT).classList.contains(buttonGroupdDisabledClassname)).toBeTruthy()
     })
 
     test('When consent enphaseOff, autoconsumption target is not shown, getMetrics is called two times, one with default targets and then all targets both without autoconsumption target', async () => {

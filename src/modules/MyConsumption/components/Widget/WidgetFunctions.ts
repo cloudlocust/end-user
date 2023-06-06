@@ -25,6 +25,7 @@ import {
 } from 'date-fns'
 import { periodType } from 'src/modules/MyConsumption/myConsumptionTypes'
 import { getDateWithoutTimezoneOffset } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
+import dayjs from 'dayjs'
 
 const WRONG_TARGET_TEXT = 'Wrong target'
 
@@ -163,6 +164,18 @@ export const computeTotalAutoconsumption = (data: IMetric[]) =>
     computeTotalEnergy(data, metricTargetsEnum.autoconsumption)
 
 /**
+ * Function that computes average idle consumption (Consommation de veille).
+ *
+ * @param data Metrics data.
+ * @returns Average idle consumption.
+ */
+export const computeAverageIdleConsumption = (data: IMetric[]) => {
+    const values = getDataFromYAxis(data, metricTargetsEnum.idleConsumption)
+    const averageIdleConsumption = round(mean(values.filter(Number)))
+    return consumptionWattUnitConversion(averageIdleConsumption)
+}
+
+/**
  * Function that compute widget assets from metric type.
  *
  * @param data Metrics data.
@@ -185,6 +198,8 @@ export const computeWidgetAssets = (data: IMetric[], type: metricTargetType) => 
             return computeTotalProduction(data)!
         case metricTargetsEnum.autoconsumption:
             return computeTotalAutoconsumption(data)!
+        case metricTargetsEnum.idleConsumption:
+            return computeAverageIdleConsumption(data)!
         default:
             throw Error(WRONG_TARGET_TEXT)
     }
@@ -233,6 +248,8 @@ export const renderWidgetTitle = (target: metricTargetType): widgetTitleType => 
             return 'Production Totale'
         case metricTargetsEnum.autoconsumption:
             return 'Autoconsommation'
+        case metricTargetsEnum.idleConsumption:
+            return 'Consommation de Veille'
         default:
             throw Error(WRONG_TARGET_TEXT)
     }
@@ -343,6 +360,7 @@ export const getWidgetIndicatorColor = (target: metricTargetType, percentageChan
         case metricTargetsEnum.externalTemperature:
         case metricTargetsEnum.internalTemperature:
         case metricTargetsEnum.eurosConsumption:
+        case metricTargetsEnum.idleConsumption:
             return percentageChange > 0 ? 'error' : 'success'
         default:
             throw Error(WRONG_TARGET_TEXT)
@@ -364,4 +382,36 @@ export const computeTotalOfAllConsumptions = (data: IMetric[]) => {
         convert(AutoConsumptionValue).from(AutoConsumptionUnit).to('Wh')
 
     return consumptionWattUnitConversion(totalOfAllConsumptions)
+}
+
+/**
+ * Function that check if a range is within the current day.
+ *
+ * @param fromRange From range.
+ * @param toRange To range.
+ * @returns A boolean.
+ */
+export const isRangeWithinToday = (fromRange: string, toRange: string) => {
+    const dayStart = getDateWithoutTimezoneOffset(dayjs().startOf('day').toDate())
+    const dayEnd = getDateWithoutTimezoneOffset(dayjs().endOf('day').toDate())
+
+    return fromRange >= dayStart && toRange <= dayEnd
+}
+
+/**
+ * Function that gets the previous day range.
+ *
+ * @param currentRange Current metric range.
+ * @param subDay Default sub day is 1. If we want to get the data of the previous day.
+ * @returns Range of the previous day according to the subDay.
+ */
+export const getPreviousDayRange = (currentRange: metricRangeType, subDay: number = 1) => {
+    const previousDayStart = getDateWithoutTimezoneOffset(
+        dayjs(currentRange.from).subtract(subDay, 'day').startOf('day').toDate(),
+    )
+    const previousDayEnd = getDateWithoutTimezoneOffset(
+        dayjs(currentRange.from).subtract(subDay, 'day').endOf('day').toDate(),
+    )
+
+    return { from: previousDayStart, to: previousDayEnd }
 }
