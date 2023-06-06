@@ -29,7 +29,7 @@ const WidgetIdleConsumption = (props: IWidgetProps) => {
 
     const { data, setMetricsInterval, setRange, isMetricsLoading } = useMetrics({
         interval: metricsInterval,
-        range: getWidgetRange(range, period),
+        range: getWidgetRange(range, period, target),
         targets: [
             {
                 target: target,
@@ -44,7 +44,7 @@ const WidgetIdleConsumption = (props: IWidgetProps) => {
         setRange: setRangePrevious,
     } = useMetrics({
         interval: metricsInterval,
-        range: getWidgetPreviousRange(getWidgetRange(range, period), period),
+        range: getWidgetPreviousRange(getWidgetRange(range, period, target), period, target),
         targets: [
             {
                 target: target,
@@ -64,11 +64,11 @@ const WidgetIdleConsumption = (props: IWidgetProps) => {
             setRange(getPreviousDayRange(range)!)
             setRangePrevious(getPreviousDayRange(range, 2)!)
         } else {
-            const widgetRange = getWidgetRange(range, period)
+            const widgetRange = getWidgetRange(range, period, target)
             setRange(widgetRange)
-            setRangePrevious(getWidgetPreviousRange(widgetRange, period))
+            setRangePrevious(getWidgetPreviousRange(widgetRange, period, target))
         }
-    }, [period, range, setRange, setRangePrevious])
+    }, [period, range, setRange, setRangePrevious, target])
 
     const { unit, value } = useMemo(
         () => (!data.length ? emptyValueUnit : computeWidgetAssets(data, metricTargetsEnum.idleConsumption)),

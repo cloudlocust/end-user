@@ -121,7 +121,6 @@ function UserMenu() {
                                 history.replace('/installation-requests')
                             }}
                             iconLabel="solar_power"
-                            e
                             idLabel="Installation"
                             defaultMessageLabel="Installation"
                         />

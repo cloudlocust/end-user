@@ -161,7 +161,7 @@ describe('test UserMenu component', () => {
             expect(mockPushHistory).toHaveBeenCalledWith(MENTIONS_REDIRECT_URL)
         })
 
-        // Clicking on Alerts Menu ITem
+        // Clicking on Alerts Menu Item.
         userEvent.click(getByText(ALERTS_MENU_ITEM_TEXT))
         await waitFor(() => {
             expect(mockPushHistory).toHaveBeenCalledWith(ALERTS_REDIRECT_URL)
