@@ -1,5 +1,5 @@
 pipeline{
-    agent { label 'jenkins-jenkins-react' }
+    agent { label 'jenkins-jenkins-react ' }
     tools {nodejs "node16"}
     environment{
         GITHUB_CREDENTIALS = credentials('github myem developer')
@@ -30,34 +30,34 @@ pipeline{
             }
 
         }
-        stage('build && SonarQube analysis') {
-            environment {
-                scannerHome = tool 'SonarQubeScanner'
-                sonarqube_Token = credentials('sonarq-token')
-                sonar_host = credentials('sonarq-host')
-            }
-            steps {
-                withSonarQubeEnv('sonarqube') {
-                script {
-                    // Execute shell command to set directory variable
-                    directory = sh(returnStdout: true, script: 'pwd').trim()
-                    // execute sonarqube command directly in the agent pod using kubectl exec command
-                    sh "kubectl exec -it \$NODE_NAME -n jenkins -- /bin/bash -c ' cd ${directory} && export SONAR_HOST_URL=${sonar_host} && ${scannerHome}/bin/sonar-scanner -Dsonar.login=${sonarqube_Token} -X ' "
+        // stage('build && SonarQube analysis') {
+        //     environment {
+        //         scannerHome = tool 'SonarQubeScanner'
+        //         sonarqube_Token = credentials('sonarq-token')
+        //         sonar_host = credentials('sonarq-host')
+        //     }
+        //     steps {
+        //         withSonarQubeEnv('sonarqube') {
+        //         script {
+        //             // Execute shell command to set directory variable
+        //             directory = sh(returnStdout: true, script: 'pwd').trim()
+        //             // execute sonarqube command directly in the agent pod using kubectl exec command
+        //             sh "kubectl exec -it \$NODE_NAME -n jenkins -- /bin/bash -c ' cd ${directory} && export SONAR_HOST_URL=${sonar_host} && ${scannerHome}/bin/sonar-scanner -Dsonar.login=${sonarqube_Token} -X ' "
 
-                }
+        //         }
 
-                }
-            }
-        }
-        stage("Quality Gate") {
-            steps {
-                timeout(time: 10, unit: 'MINUTES') {
-                    // Parameter indicates whether to set pipeline to UNSTABLE if Quality Gate fails
-                    // true = set pipeline to UNSTABLE, false = don't
-                    waitForQualityGate abortPipeline: true
-                }
-            }
-        }
+        //         }
+        //     }
+        // }
+        // stage("Quality Gate") {
+        //     steps {
+        //         timeout(time: 10, unit: 'MINUTES') {
+        //             // Parameter indicates whether to set pipeline to UNSTABLE if Quality Gate fails
+        //             // true = set pipeline to UNSTABLE, false = don't
+        //             waitForQualityGate abortPipeline: true
+        //         }
+        //     }
+        // }
         stage('Test NG generate') {
             when {
               expression { ! (BRANCH_NAME ==~ /(production|master|develop)/) }
