@@ -3,7 +3,7 @@ import { applyCamelCase } from 'src/common/react-platform-components'
 import { reduxedRenderHook } from 'src/common/react-platform-components/test'
 import { TEST_HOUSE_ID } from 'src/mocks/handlers/contracts'
 import { TEST_NOVU_ALERTS_DATA } from 'src/mocks/handlers/novuAlertPreferences'
-import { useNovuAlertPreferences } from 'src/modules/Layout/Toolbar/components/Alerts/NovuAlertPreferencesHook'
+import { useNovuAlertPreferences } from 'src/modules/Alerts/NovuAlertPreferencesHook'
 
 const mockEnqueueSnackbar = jest.fn()
 const SNACKBAR_GET_NOVU_ALERTS_ERROR = 'Erreur lors de la récupération des alertes'

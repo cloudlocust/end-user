@@ -4,7 +4,7 @@ import { useIntl } from 'src/common/react-platform-translation'
 import { useHistory } from 'react-router-dom'
 import Button from '@mui/material/Button'
 import { motion } from 'framer-motion'
-import { AlertsContent } from 'src/modules/Layout/Toolbar/components/Alerts/AlertsContent'
+import { AlertsContent } from 'src/modules/Alerts/AlertsContent'
 
 /**
  * Alerts component. Place in the top navbar. ToolbarWidget.

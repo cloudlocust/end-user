@@ -1,6 +1,6 @@
 import { authTypes } from 'src/common/react-platform-components'
 import { IRouteNavigationConfig } from 'src/routes'
-import Alerts from 'src/modules/Layout/Toolbar/components/Alerts'
+import Alerts from 'src/modules/Alerts'
 
 /**
  * Url for myHouse.

@@ -4,7 +4,7 @@ import {
     ConsumptionAlertIntervalsType,
     ConsumptionNovuAlertPreferencesType,
     NovuChannelsWithValueAndKey,
-} from './ConsumptionAlert/consumptionAlert'
+} from './components/ConsumptionAlert/consumptionAlert'
 
 /**
  * Set new range for this mounth to see if user has contract.
