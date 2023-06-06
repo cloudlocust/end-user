@@ -5,8 +5,13 @@ import { reduxedRender } from 'src/common/react-platform-components/test'
 import Register from 'src/modules/User/Register/Register'
 
 // eslint-disable-next-line jsdoc/require-jsdoc
-const RegisterForm = () => {
-    return <div>Register form</div>
+const RegisterForm = ({ defaultRole }: { defaultRole: string }) => {
+    return (
+        <>
+            <div>{defaultRole}</div>
+            <div>Register form</div>
+        </>
+    )
 }
 
 const REGISTER_TEXT = 'Inscription'
@@ -17,12 +22,13 @@ describe('Register component', () => {
     test('register component text is rendered', async () => {
         const { getByText } = reduxedRender(
             <BrowserRouter>
-                <Register registerForm={<RegisterForm />} />
+                <Register registerForm={<RegisterForm defaultRole="enduser" />} />
             </BrowserRouter>,
         )
 
         expect(getByText(REGISTER_TEXT)).toBeInTheDocument()
         expect(getByText('Register form')).toBeInTheDocument()
+        expect(getByText('enduser')).toBeInTheDocument()
         expect(getByText(HAVE_ALREADY_ACCOUNT_TEXT)).toBeInTheDocument()
         expect(getByText(LOGIN_TEXT)).toBeInTheDocument()
     })
@@ -30,7 +36,7 @@ describe('Register component', () => {
         const { getByText } = reduxedRender(
             <MemoryRouter initialEntries={['/register']}>
                 <BrowserRouter>
-                    <Register registerForm={<RegisterForm />} />
+                    <Register registerForm={<RegisterForm defaultRole="enduser" />} />
                     <Route path="/login" component={() => <div>login</div>} />
                 </BrowserRouter>
             </MemoryRouter>,
