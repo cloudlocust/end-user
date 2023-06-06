@@ -4,8 +4,8 @@ import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyForm
 import { EcowattTooltip } from 'src/modules/Ecowatt/components/EcowattTooltip/'
 import { useSelector } from 'react-redux'
 import { RootState } from 'src/redux'
-import { EcowattAlertsForm } from 'src/modules/Layout/Toolbar/components/Alerts/EcowattAlerts/EcowattAlertsForm'
-import { useNovuAlertPreferences } from '../NovuAlertPreferencesHook'
+import { EcowattAlertsForm } from 'src/modules/Alerts/components/EcowattAlerts/EcowattAlertsForm'
+import { useNovuAlertPreferences } from 'src/modules/Alerts/NovuAlertPreferencesHook'
 
 /**
  * Ecowatt Alerts component.

@@ -2,9 +2,9 @@ import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyForm
 import { useTheme, CircularProgress } from '@mui/material'
 import { RootState } from 'src/redux'
 import { useSelector } from 'react-redux'
-import { useNovuAlertPreferences } from 'src/modules/Layout/Toolbar/components/Alerts/NovuAlertPreferencesHook'
+import { useNovuAlertPreferences } from 'src/modules/Alerts/NovuAlertPreferencesHook'
 import { useEffect } from 'react'
-import { TempoAlertsForm } from 'src/modules/Layout/Toolbar/components/Alerts/TempoAlerts/TempoAlertsForm'
+import { TempoAlertsForm } from 'src/modules/Alerts/components/TempoAlerts/TempoAlertsForm'
 
 /**
  *  Tempo Alerts component.

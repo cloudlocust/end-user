@@ -1,4 +1,4 @@
-import { INovuAlertPreferences } from 'src/modules/Layout/Toolbar/components/Alerts'
+import { INovuAlertPreferences } from 'src/modules/Alerts'
 
 /**
  * Response object when gitting price per kwh.

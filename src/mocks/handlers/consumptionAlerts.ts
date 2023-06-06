@@ -5,7 +5,7 @@ import {
     ConsumptionAlertData,
     IConsumptionAlert,
     IPricePerKwhDataType,
-} from 'src/modules/Layout/Toolbar/components/Alerts/ConsumptionAlert/consumptionAlert'
+} from 'src/modules/Alerts/components/ConsumptionAlert/consumptionAlert'
 
 /**
  * Consumption Alerts Endpoint.
