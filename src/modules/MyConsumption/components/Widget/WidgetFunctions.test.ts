@@ -15,9 +15,9 @@ import {
     computeTotalAutoconsumption,
     getWidgetIndicatorColor,
     computeTotalOfAllConsumptions,
-    isWidgetMonthlyMetrics,
     isRangeWithinToday,
     getPreviousDayRange,
+    isWidgetMonthlyMetrics,
 } from 'src/modules/MyConsumption/components/Widget/WidgetFunctions'
 import { periodType } from 'src/modules/MyConsumption/myConsumptionTypes'
 import { getDateWithoutTimezoneOffset } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
