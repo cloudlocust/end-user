@@ -4,6 +4,7 @@ import { TEST_SOLAR_EQUIPMENTS } from 'src/mocks/handlers/solarEquipments'
 import { SolarEquipmentCreateUpdateProps } from 'src/modules/SolarEquipments/components/SolarEquipmentCreateUpdate/solarEquipmentCreateUpdate'
 import { SolarEquipmentCreateUpdate } from 'src/modules/SolarEquipments/components/SolarEquipmentCreateUpdate'
 import { ISolarEquipment } from 'src/modules/SolarEquipments/solarEquipments'
+import userEvent from '@testing-library/user-event'
 
 const SOLAR_EQUIPMENT: ISolarEquipment[] = applyCamelCase(TEST_SOLAR_EQUIPMENTS)
 
@@ -27,6 +28,16 @@ describe('SolarEquipmentCreateUpdate component', () => {
 
         expect(getByText('Mon équipement')).toBeInTheDocument()
         expect(getByText('Modifier')).toBeInTheDocument()
+    })
+    test('dialog is open and user click on close button', async () => {
+        mockSolarEquipmentCreateUpdateProps.open = true
+        const { getByTestId } = reduxedRender(<SolarEquipmentCreateUpdate {...mockSolarEquipmentCreateUpdateProps} />)
+
+        const closeBtn = getByTestId('solrEquipmentCloseIcon')
+
+        expect(closeBtn).toBeInTheDocument()
+        userEvent.click(closeBtn)
+        expect(mockSolarEquipmentCreateUpdateProps.onClose).toBeCalled()
     })
     test('dialog is open and solarEquipmentDetails is false, Mon équipement title is shown', async () => {
         mockSolarEquipmentCreateUpdateProps.open = true
