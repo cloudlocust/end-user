@@ -59,7 +59,7 @@ export default function AnalysisComparison({ filters, monthlyRange }: AnalysisCo
                     className="sm:text-16 font-medium md:text-20"
                     style={{ color: 'theme.palette.common.black' }}
                 >
-                    Comparaison de ma consommation globale à un même type de foyer
+                    Comparaison de ma consommation globale
                 </TypographyFormatMessage>
             </div>
             <AnalysisComparisonChart data={data} />
