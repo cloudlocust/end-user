@@ -15,6 +15,7 @@ import {
     computeTotalAutoconsumption,
     getWidgetIndicatorColor,
     computeTotalOfAllConsumptions,
+    isWidgetMonthlyMetrics,
     isRangeWithinToday,
     getPreviousDayRange,
     isWidgetMonthlyMetrics,
@@ -573,6 +574,59 @@ describe('Test widget functions', () => {
             ]
             const result = computeTotalOfAllConsumptions(data)
             expect(result).toStrictEqual(expectedResult)
+        })
+    })
+
+    describe('test isWidgetMonthlyMetrics', () => {
+        test('different cases', () => {
+            const cases = [
+                {
+                    type: metricTargetsEnum.consumption,
+                    period: 'daily',
+                    value: false,
+                },
+                {
+                    type: metricTargetsEnum.consumption,
+                    period: 'monthly',
+                    value: true,
+                },
+                {
+                    type: metricTargetsEnum.eurosConsumption,
+                    period: 'yearly',
+                    value: false,
+                },
+                {
+                    type: metricTargetsEnum.eurosConsumption,
+                    period: 'monthly',
+                    value: true,
+                },
+                {
+                    type: metricTargetsEnum.autoconsumption,
+                    period: 'weekly',
+                    value: false,
+                },
+                {
+                    type: metricTargetsEnum.autoconsumption,
+                    period: 'monthly',
+                    value: true,
+                },
+
+                {
+                    type: metricTargetsEnum.externalTemperature,
+                    period: 'monthly',
+                    value: false,
+                },
+                {
+                    type: metricTargetsEnum.pMax,
+                    period: 'monthly',
+                    value: false,
+                },
+            ]
+
+            cases.forEach(({ type, period, value }) => {
+                const result = isWidgetMonthlyMetrics(type as metricTargetsEnum, period as periodType)
+                expect(result).toStrictEqual(value)
+            })
         })
     })
     describe('test isDateWithinDay', () => {
