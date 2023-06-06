@@ -40,7 +40,7 @@ jest.mock('src/modules/Contracts/contractsHook', () => ({
     }),
 }))
 
-// Mock useHasMissingHousingContracts
+// Mock useHasMissingHousingContracts.
 jest.mock('src/hooks/HasMissingHousingContracts', () => ({
     // eslint-disable-next-line jsdoc/require-jsdoc
     useHasMissingHousingContracts: () => ({
