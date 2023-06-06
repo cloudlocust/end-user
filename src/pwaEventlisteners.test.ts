@@ -12,7 +12,7 @@ describe('pwaTrackingListeners', () => {
         window.addEventListener = jest.fn((event, listener) => {
             eventListeners[event] = listener
         })
-        window.removeEventListener = jest.fn((event, listener) => {
+        window.removeEventListener = jest.fn((event, _listener) => {
             delete eventListeners[event]
         })
 
