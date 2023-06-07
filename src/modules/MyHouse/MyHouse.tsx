@@ -4,12 +4,13 @@ import { RootState } from 'src/redux'
 import { Typography } from '@mui/material'
 import { useIntl } from 'react-intl'
 import { useEffect } from 'react'
-import { useHistory } from 'react-router-dom'
-import { URL_MY_HOUSE } from './MyHouseConfig'
+import { useHistory, useParams } from 'react-router-dom'
+import { URL_MY_HOUSE } from 'src/modules/MyHouse/MyHouseConfig'
 import CircularProgress from '@mui/material/CircularProgress'
+import { HousingDetails } from 'src/modules/MyHouse/components/HousingDetails'
 
 /**
- * Form used for modify MyHouse.
+ * MyHouse Component is used for urls that follow /my-houses and /my-houses/:id.
  *
  * @returns MyHouse form component.
  */
@@ -18,7 +19,16 @@ export const MyHouse = () => {
     const { currentHousing } = useSelector(({ housingModel }: RootState) => housingModel)
     const history = useHistory()
 
+    const { houseId } = useParams</**
+     *
+     */
+    {
+        // eslint-disable-next-line jsdoc/require-jsdoc
+        houseId: string
+    }>()
+
     useEffect(() => {
+        // When current housing change, we modify the url.
         if (currentHousing) history.replace(URL_MY_HOUSE + '/' + currentHousing.id)
     }, [currentHousing, history])
 
@@ -34,9 +44,12 @@ export const MyHouse = () => {
             </div>
         )
 
-    return (
-        <div className="flex flex-col justify-center items-center w-full h-full" style={{ height: '320px' }}>
-            <CircularProgress size={32} />
-        </div>
-    )
+    // While waiting for history to change we show loading state.
+    if (!parseInt(houseId))
+        return (
+            <div className="flex flex-col justify-center items-center w-full h-full" style={{ height: '320px' }}>
+                <CircularProgress size={32} />
+            </div>
+        )
+    return <HousingDetails />
 }
