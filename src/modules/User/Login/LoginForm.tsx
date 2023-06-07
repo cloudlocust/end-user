@@ -36,8 +36,8 @@ export const LoginForm = ({ loginHook = useLogin }) => {
                         to="/forgot-password"
                     >
                         {formatMessage({
-                            id: 'Mot de passe oublié?',
-                            defaultMessage: 'Mot de passe oublié?',
+                            id: 'Mot de passe oublié ?',
+                            defaultMessage: 'Mot de passe oublié ?',
                         })}
                     </MuiLink>
                 </div>
@@ -50,8 +50,8 @@ export const LoginForm = ({ loginHook = useLogin }) => {
                     type="submit"
                 >
                     {formatMessage({
-                        id: 'Submit',
-                        defaultMessage: 'Valider',
+                        id: 'Se connecter',
+                        defaultMessage: 'Se connecter',
                     })}
                 </ButtonLoader>
             </div>

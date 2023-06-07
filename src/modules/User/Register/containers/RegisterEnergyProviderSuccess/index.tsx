@@ -1,4 +1,4 @@
-import { ButtonLoader, Card, Icon, MuiCardContent } from 'src/common/ui-kit'
+import { ButtonLoader, Card, MuiCardContent } from 'src/common/ui-kit'
 import { useIntl } from 'src/common/react-platform-translation'
 import { Link, useHistory, useLocation } from 'react-router-dom'
 import MuiLink from '@mui/material/Link'
@@ -39,7 +39,7 @@ export const RegisterEnergyProviderSuccess = () => {
         }
     }, [history, energyProviderFormLink])
 
-    const registerSuccessMessage = `Votre inscription a bien été prise en compte. Sous réserve que votre souscription chez ${energyProviderName} est complète, vous recevrez prochainement un mail de validation de votre inscription à la plateforme`
+    const registerSuccessMessage = `La première étape de votre inscription a été prise en compte. Pour la poursuivre, procédez à la souscription chez ${energyProviderName}`
 
     /**
      *  Subscribe to Energy Provider button handler.
@@ -56,11 +56,6 @@ export const RegisterEnergyProviderSuccess = () => {
                 <motion.div initial={{ opacity: 0, scale: 0.6 }} animate={{ opacity: 1, scale: 1 }}>
                     <Card>
                         <MuiCardContent>
-                            <div className="icon-container">
-                                <Icon className="icon" color="success">
-                                    check_circle_outlined
-                                </Icon>
-                            </div>
                             <TypographyFormatMessage className="description">
                                 {registerSuccessMessage}
                             </TypographyFormatMessage>
@@ -75,8 +70,8 @@ export const RegisterEnergyProviderSuccess = () => {
                                     type="submit"
                                 >
                                     {formatMessage({
-                                        id: `Souscrire à ${energyProviderName}`,
-                                        defaultMessage: `Souscrire à ${energyProviderName}`,
+                                        id: `Étape suivante`,
+                                        defaultMessage: `Étape suivante`,
                                     })}
                                 </ButtonLoader>
                                 <MuiLink

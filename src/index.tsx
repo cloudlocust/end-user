@@ -16,7 +16,6 @@ import { getPersistor } from '@rematch/persist'
 import { TranslatitonProvider, LOAD_TRANSLATIONS } from 'src/common/react-platform-translation'
 import { SnackbarProvider } from 'src/common/react-platform-components/alerts/SnackbarProvider'
 import { pwaTrackingListeners } from './pwaEventlisteners'
-import { AlertsDrawerProvider } from 'src/modules/shared/AlertsDrawerContext'
 import TagManager from 'react-gtm-module'
 import { TAG_MANAGER_CONFIG } from 'src/configs'
 
@@ -40,9 +39,7 @@ const Application: FC<any> = () => {
                         <TranslatitonProvider>
                             <Router basename={BASENAME_URL}>
                                 <SnackbarProvider>
-                                    <AlertsDrawerProvider>
-                                        <App />
-                                    </AlertsDrawerProvider>
+                                    <App />
                                 </SnackbarProvider>
                             </Router>
                         </TranslatitonProvider>

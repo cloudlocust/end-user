@@ -12,6 +12,7 @@ import { offpeakHoursFieldProps } from 'src/modules/Contracts/contractsTypes.d'
 import IconButton from '@mui/material/IconButton'
 import Tooltip from '@mui/material/Tooltip'
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline'
+import RemoveCircleOutline from '@mui/icons-material/RemoveCircleOutline'
 import dayjs from 'dayjs'
 import { useHousingMeterDetails } from 'src/modules/Meters/metersHook'
 import CircularProgress from '@mui/material/CircularProgress'
@@ -86,6 +87,19 @@ const OffpeakHoursField: FC<offpeakHoursFieldProps> = function ({ name, label, l
     }
 
     /**
+     * Remove offpeakHourInterval in meterFeatures.
+     */
+    const removeOffPeakHourInterval = () => {
+        const newMeterFeatures = {
+            offpeak: {
+                ...meterFeatures.offpeak,
+                offpeakHours: meterFeatures.offpeak.offpeakHours.slice(0, -1),
+            },
+        }
+        setValue(name, newMeterFeatures)
+    }
+
+    /**
      * Get Value of meter features offpeakHour key in a date format.
      *
      * @param offpeakHourKey Represents the offpeakHour Key in meterFeatures. Which indicates which offpeakHour changes. For example if the change is start hour of first interval, offpeakHourKey will have value "0.start", so that its possible to use lodash and setValue of meterFeatures through this key.
@@ -113,6 +127,10 @@ const OffpeakHoursField: FC<offpeakHoursFieldProps> = function ({ name, label, l
     const addOffpeakButtonTitle = formatMessage({
         id: 'Ajouter une plage',
         defaultMessage: 'Ajouter une plage',
+    })
+    const removeOffpeakButtonTitle = formatMessage({
+        id: 'Enlever une plage',
+        defaultMessage: 'Enlever une plage',
     })
 
     useEffect(() => {
@@ -179,21 +197,30 @@ const OffpeakHoursField: FC<offpeakHoursFieldProps> = function ({ name, label, l
                                 />
                             </div>
                         ))}
-                        {meterFeatures &&
-                            !meterFeatures.offpeak.readOnly &&
-                            meterFeatures.offpeak.offpeakHours.length < 2 && (
-                                <div className={`flex justify-center`}>
-                                    <Tooltip title={addOffpeakButtonTitle}>
-                                        <IconButton
-                                            className="w-4/5 sm:w-auto"
-                                            size="large"
-                                            onClick={addOffPeakHourInterval}
-                                        >
-                                            <AddCircleOutlineIcon />
-                                        </IconButton>
-                                    </Tooltip>
-                                </div>
-                            )}
+                        {meterFeatures && !meterFeatures.offpeak.readOnly && (
+                            <div className={`flex justify-center`}>
+                                <Tooltip title={addOffpeakButtonTitle}>
+                                    <IconButton
+                                        className="w-4/5 sm:w-auto"
+                                        size="large"
+                                        onClick={addOffPeakHourInterval}
+                                    >
+                                        <AddCircleOutlineIcon />
+                                    </IconButton>
+                                </Tooltip>
+                                <Tooltip title={removeOffpeakButtonTitle}>
+                                    <IconButton
+                                        disabled={meterFeatures.offpeak.offpeakHours.length < 2}
+                                        className="w-4/5 sm:w-auto"
+                                        size="large"
+                                        color="error"
+                                        onClick={removeOffPeakHourInterval}
+                                    >
+                                        <RemoveCircleOutline />
+                                    </IconButton>
+                                </Tooltip>
+                            </div>
+                        )}
                         {fieldState.invalid && <FormHelperText>{fieldState.error?.message}</FormHelperText>}
                     </FormControl>
                 </>

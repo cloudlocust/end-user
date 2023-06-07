@@ -19,7 +19,9 @@ const START_OFFPEAK_HOUR_TEXT = 'Début'
 const REQUIRED_FIELD_TEXT = 'Champ Obligatoire non renseigné'
 const END_OFFPEAK_HOUR_TEXT = 'Fin'
 const TIMEPICKER_DISABLED_TEXT = 'Disabled'
+const DISABLED_BUTTON_CLASS = 'Mui-disabled'
 const ADD_OFFPEAK_ICON_DATA_TESTID = 'AddCircleOutlineIcon'
+const REMOVE_OFFPEAK_ICON_DATA_TESTID = 'RemoveCircleOutlineIcon'
 const circularProgressClassname = '.MuiCircularProgress-root'
 const TEST_OFFPEAK_HOURS = { start: '00:00', end: '08:00' }
 const TEST_METER_FEATURES_DATA: IMeterFeatures = {
@@ -130,7 +132,7 @@ describe('Test OffPeakHours Component', () => {
         })
     }, 8000)
 
-    test('When adding offHourPeakHour, entry should be shown and button is not shown', async () => {
+    test('Adding and removing multiple offHourPeakHour, entry should be shown and button shown', async () => {
         const { getByText, getAllByText, getByTestId } = reduxedRender(
             <Router>
                 <Form onSubmit={mockHandleSubmit}>
@@ -144,17 +146,34 @@ describe('Test OffPeakHours Component', () => {
         expect(getAllByText(START_OFFPEAK_HOUR_TEXT)).toHaveLength(1)
         expect(getAllByText(END_OFFPEAK_HOUR_TEXT)).toHaveLength(1)
 
+        // Adding first interval.
+        userEvent.click(getByTestId(ADD_OFFPEAK_ICON_DATA_TESTID))
+        // Adding second interval.
+        userEvent.click(getByTestId(ADD_OFFPEAK_ICON_DATA_TESTID))
+        // Adding third interval.
         userEvent.click(getByTestId(ADD_OFFPEAK_ICON_DATA_TESTID))
         await waitFor(() => {
-            expect(getAllByText(START_OFFPEAK_HOUR_TEXT)).toHaveLength(2)
+            expect(getAllByText(START_OFFPEAK_HOUR_TEXT)).toHaveLength(4)
         })
-        expect(getAllByText(END_OFFPEAK_HOUR_TEXT)).toHaveLength(2)
-        expect(() => getByTestId(ADD_OFFPEAK_ICON_DATA_TESTID)).toThrow()
+        expect(getAllByText(END_OFFPEAK_HOUR_TEXT)).toHaveLength(4)
+
+        // Remove all intervals.
+        userEvent.click(getByTestId(REMOVE_OFFPEAK_ICON_DATA_TESTID))
+        userEvent.click(getByTestId(REMOVE_OFFPEAK_ICON_DATA_TESTID))
+        userEvent.click(getByTestId(REMOVE_OFFPEAK_ICON_DATA_TESTID))
+        await waitFor(() => {
+            expect(getAllByText(START_OFFPEAK_HOUR_TEXT)).toHaveLength(1)
+        })
+        expect(getAllByText(END_OFFPEAK_HOUR_TEXT)).toHaveLength(1)
+        // When only one interval, remove button is disabled.
+        expect(getByTestId(REMOVE_OFFPEAK_ICON_DATA_TESTID).parentElement?.classList).toContain(DISABLED_BUTTON_CLASS)
+
+        expect(getByTestId(ADD_OFFPEAK_ICON_DATA_TESTID)).toBeTruthy()
     })
 
     test('When mounting offPeakHours should show initialValues, and when submitting validation is shown', async () => {
         mockHousingMeter!.features = undefined
-        const { getByText, getAllByText } = reduxedRender(
+        const { getByText, getAllByText, getByTestId } = reduxedRender(
             <Router>
                 <Form onSubmit={mockHandleSubmit}>
                     <OffPeakHoursField {...mockOffpeakHoursProps} />
@@ -166,6 +185,16 @@ describe('Test OffPeakHours Component', () => {
         expect(getByText(OFFPEAK_HOURS_LABEL)).toBeTruthy()
         expect(getAllByText(START_OFFPEAK_HOUR_TEXT)).toHaveLength(1)
         expect(getAllByText(END_OFFPEAK_HOUR_TEXT)).toHaveLength(1)
+
+        // Adding first interval.
+        userEvent.click(getByTestId(ADD_OFFPEAK_ICON_DATA_TESTID))
+        // Adding second interval.
+        userEvent.click(getByTestId(ADD_OFFPEAK_ICON_DATA_TESTID))
+        // Adding third interval.
+        userEvent.click(getByTestId(ADD_OFFPEAK_ICON_DATA_TESTID))
+        await waitFor(() => {
+            expect(getAllByText(START_OFFPEAK_HOUR_TEXT)).toHaveLength(4)
+        })
 
         userEvent.click(getByText(SUBMIT_BUTTON_TEXT))
         await waitFor(() => {

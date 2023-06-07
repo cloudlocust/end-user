@@ -25,6 +25,7 @@ import {
 } from 'date-fns'
 import { periodType } from 'src/modules/MyConsumption/myConsumptionTypes'
 import { getDateWithoutTimezoneOffset } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
+import dayjs from 'dayjs'
 
 const WRONG_TARGET_TEXT = 'Wrong target'
 
@@ -163,6 +164,18 @@ export const computeTotalAutoconsumption = (data: IMetric[]) =>
     computeTotalEnergy(data, metricTargetsEnum.autoconsumption)
 
 /**
+ * Function that computes average idle consumption (Consommation de veille).
+ *
+ * @param data Metrics data.
+ * @returns Average idle consumption.
+ */
+export const computeAverageIdleConsumption = (data: IMetric[]) => {
+    const values = getDataFromYAxis(data, metricTargetsEnum.idleConsumption)
+    const averageIdleConsumption = round(mean(values.filter(Number)))
+    return consumptionWattUnitConversion(averageIdleConsumption)
+}
+
+/**
  * Function that compute widget assets from metric type.
  *
  * @param data Metrics data.
@@ -185,8 +198,31 @@ export const computeWidgetAssets = (data: IMetric[], type: metricTargetType) => 
             return computeTotalProduction(data)!
         case metricTargetsEnum.autoconsumption:
             return computeTotalAutoconsumption(data)!
+        case metricTargetsEnum.idleConsumption:
+            return computeAverageIdleConsumption(data)!
         default:
             throw Error(WRONG_TARGET_TEXT)
+    }
+}
+
+/**
+ * Utility Function helps not to break previous logic.
+ * This function makes sure that Consumption, EurosConsumption, AutoConsumption Widgets fetches the monthly metrics when period is monthly.
+ * In order to show widget value (which is the total Consumption) from monthly metrics.
+ * Instead of making a daily metrics request for that month and suming the values which doesn't give the same as the value from monthly request (which is more accurate).
+ *
+ * @param type Metric target.
+ * @param period Period.
+ * @returns Returns true if the widget should make monthly metrics request.
+ */
+export const isWidgetMonthlyMetrics = (type: metricTargetType, period: periodType) => {
+    switch (type) {
+        case metricTargetsEnum.consumption:
+        case metricTargetsEnum.eurosConsumption:
+        case metricTargetsEnum.autoconsumption:
+            return period === 'monthly'
+        default:
+            return false
     }
 }
 
@@ -212,6 +248,8 @@ export const renderWidgetTitle = (target: metricTargetType): widgetTitleType => 
             return 'Production Totale'
         case metricTargetsEnum.autoconsumption:
             return 'Autoconsommation'
+        case metricTargetsEnum.idleConsumption:
+            return 'Consommation de Veille'
         default:
             throw Error(WRONG_TARGET_TEXT)
     }
@@ -222,9 +260,10 @@ export const renderWidgetTitle = (target: metricTargetType): widgetTitleType => 
  *
  * @param range Range from metrics.
  * @param period Period give.
+ * @param target Widget Target.
  * @returns Previous range according from period, if "daily" returns range (startOf: fromDate-1, endOf: fromDate-1). If "weekly" returns range (startOf: fromDate week-1, endOf: fromDate-1). If "monthly" returns range (startOf: fromDate month-1, endOf: fromDate month-1). If "yearly" returns range (startOf: fromDate year-1, endOf: fromDate year-1).
  */
-export const getWidgetPreviousRange = (range: metricRangeType, period: periodType) => {
+export const getWidgetPreviousRange = (range: metricRangeType, period: periodType, target: metricTargetType) => {
     // Extract only the date, so that new Date don't create a date including the timezone.
     const fromDate = new Date(range.from.split('T')[0])
     switch (period) {
@@ -233,7 +272,6 @@ export const getWidgetPreviousRange = (range: metricRangeType, period: periodTyp
                 from: getDateWithoutTimezoneOffset(startOfDay(subDays(fromDate, 1))),
                 to: getDateWithoutTimezoneOffset(endOfDay(subDays(fromDate, 1))),
             }
-
         case 'weekly':
             return {
                 from: getDateWithoutTimezoneOffset(startOfDay(subDays(fromDate, 7))),
@@ -242,7 +280,14 @@ export const getWidgetPreviousRange = (range: metricRangeType, period: periodTyp
         case 'monthly':
             return {
                 from: getDateWithoutTimezoneOffset(startOfMonth(subMonths(fromDate, 1))),
-                to: getDateWithoutTimezoneOffset(endOfMonth(subMonths(fromDate, 1))),
+                to: isWidgetMonthlyMetrics(target, period)
+                    ? // Same as getWidgetRange, this gets the previous range, which ensures a correct comparaison with current range and the previous range.
+                      // For the widgets that'll show the sum from the monthly metrics request.
+                      // Adding 15 days will ensure to receive that sum.
+                      // Example: To see consumption of 04/2022, A query request will be made with metricsInterval '1M' and make range [from: 01/04/2022 - to: 15/05/2022]
+                      // This will make sure the response result, contains the metric for 04/2022 as first element, and if there is a second element it'll be null, because we're requesting whole month data when we give only 15/05
+                      getDateWithoutTimezoneOffset(addDays(endOfMonth(subMonths(fromDate, 1)), 15))
+                    : getDateWithoutTimezoneOffset(endOfMonth(subMonths(fromDate, 1))),
             }
         case 'yearly':
             return {
@@ -257,13 +302,14 @@ export const getWidgetPreviousRange = (range: metricRangeType, period: periodTyp
  *
  * @param range Range from metrics.
  * @param period Period give.
+ * @param target Metric Target type.
  * @returns Range according to period.
  * - When "daily" range should be [start, end] of same day.
  * - When "weekly" range should be a week starting with the fromDate day of given range.
  * - When "monthly" range should be [start, end] of same month.
  * - When "yearly" range should be [start, end] of same year.
  */
-export const getWidgetRange = (range: metricRangeType, period: periodType) => {
+export const getWidgetRange = (range: metricRangeType, period: periodType, target: metricTargetType) => {
     // Extract only the date, so that new Date don't create a date including the timezone.
     const fromDate = startOfDay(new Date(range.from.split('T')[0]))
     switch (period) {
@@ -280,7 +326,13 @@ export const getWidgetRange = (range: metricRangeType, period: periodType) => {
         case 'monthly':
             return {
                 from: getDateWithoutTimezoneOffset(startOfMonth(fromDate)),
-                to: getDateWithoutTimezoneOffset(endOfMonth(fromDate)),
+                to: isWidgetMonthlyMetrics(target, period)
+                    ? // For the widgets that'll show the sum from the monthly metrics request.
+                      // Adding 15 days will ensure to receive that sum.
+                      // Example: To see consumption of 04/2022, A query request will be made with metricsInterval '1M' and make range [from: 01/04/2022 - to: 15/05/2022]
+                      // This will make sure the response result, contains the metric for 04/2022 as first element, and if there is a second element it'll be null, because we're requesting whole month data when we give only 15/05
+                      getDateWithoutTimezoneOffset(addDays(endOfMonth(fromDate), 15))
+                    : getDateWithoutTimezoneOffset(endOfMonth(fromDate)),
             }
         case 'yearly':
             return {
@@ -308,6 +360,7 @@ export const getWidgetIndicatorColor = (target: metricTargetType, percentageChan
         case metricTargetsEnum.externalTemperature:
         case metricTargetsEnum.internalTemperature:
         case metricTargetsEnum.eurosConsumption:
+        case metricTargetsEnum.idleConsumption:
             return percentageChange > 0 ? 'error' : 'success'
         default:
             throw Error(WRONG_TARGET_TEXT)
@@ -329,4 +382,36 @@ export const computeTotalOfAllConsumptions = (data: IMetric[]) => {
         convert(AutoConsumptionValue).from(AutoConsumptionUnit).to('Wh')
 
     return consumptionWattUnitConversion(totalOfAllConsumptions)
+}
+
+/**
+ * Function that check if a range is within the current day.
+ *
+ * @param fromRange From range.
+ * @param toRange To range.
+ * @returns A boolean.
+ */
+export const isRangeWithinToday = (fromRange: string, toRange: string) => {
+    const dayStart = getDateWithoutTimezoneOffset(dayjs().startOf('day').toDate())
+    const dayEnd = getDateWithoutTimezoneOffset(dayjs().endOf('day').toDate())
+
+    return fromRange >= dayStart && toRange <= dayEnd
+}
+
+/**
+ * Function that gets the previous day range.
+ *
+ * @param currentRange Current metric range.
+ * @param subDay Default sub day is 1. If we want to get the data of the previous day.
+ * @returns Range of the previous day according to the subDay.
+ */
+export const getPreviousDayRange = (currentRange: metricRangeType, subDay: number = 1) => {
+    const previousDayStart = getDateWithoutTimezoneOffset(
+        dayjs(currentRange.from).subtract(subDay, 'day').startOf('day').toDate(),
+    )
+    const previousDayEnd = getDateWithoutTimezoneOffset(
+        dayjs(currentRange.from).subtract(subDay, 'day').endOf('day').toDate(),
+    )
+
+    return { from: previousDayStart, to: previousDayEnd }
 }

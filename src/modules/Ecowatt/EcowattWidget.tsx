@@ -2,7 +2,7 @@ import { Card, CircularProgress, useMediaQuery, useTheme, Collapse, Button } fro
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import { OfflineBolt } from '@mui/icons-material/'
 import 'dayjs/locale/fr'
-import { useState, useContext } from 'react'
+import { useState } from 'react'
 import { EcowattConsumptionValue, IEcowattSignals } from 'src/modules/Ecowatt/ecowatt.d'
 import { styled } from '@mui/material/styles'
 import dayjs from 'dayjs'
@@ -11,7 +11,8 @@ import { useToggle } from 'react-use'
 import { EcowattTimeline } from 'src/modules/Ecowatt/components/EcowattTimeline'
 import { EcowattTooltip } from 'src/modules/Ecowatt/components/EcowattTooltip'
 import { Report } from '@mui/icons-material/'
-import { AlertsDrawerContext } from 'src/modules/shared/AlertsDrawerContext'
+import { useHistory } from 'react-router-dom'
+import { URL_ALERTS } from 'src/modules/Alerts/AlertsConfig'
 
 /**
  * Ecowatt widget title.
@@ -60,7 +61,7 @@ export const EcowattWidget = ({
     const [openTooltip, setOpenTooltip] = useState<boolean>(false)
     const [expendDetails, setExpendDetails] = useToggle(false)
     const [dayDetails, setDayDetails] = useState<IEcowattSignals | null>(null)
-    const { handleOpenAlertsDrawer } = useContext(AlertsDrawerContext)
+    const history = useHistory()
 
     const StyledDiv = styled('div')(({ theme }) => ({
         padding: `${mdDown ? '5px' : '1rem'} ${mdDown ? '3px' : '1.5rem'}`,
@@ -173,7 +174,13 @@ export const EcowattWidget = ({
                     <Collapse className="mt-8 mb-6 w-full" in={expendDetails}>
                         <EcowattTimeline hourlyValues={dayDetails?.hourlyValues} showHourReadingAt />
                         <div className="flex flex-row justify-center items-center mt-6">
-                            <Button variant="contained" startIcon={<Report />} onClick={handleOpenAlertsDrawer}>
+                            <Button
+                                variant="contained"
+                                startIcon={<Report />}
+                                onClick={() => {
+                                    history.push(URL_ALERTS)
+                                }}
+                            >
                                 Configurer des alertes
                             </Button>
                         </div>

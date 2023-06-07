@@ -5,10 +5,9 @@ import ConsumptionWidgetsContainer from 'src/modules/MyConsumption/components/Co
 import { ConsumptionWidgetsContainerProps } from 'src/modules/MyConsumption/components/ConsumptionWidgetsContainer/WidgetContainer'
 import { ConsumptionWidgetsMetricsProvider } from 'src/modules/MyConsumption/components/ConsumptionWidgetsContainer/ConsumptionWidgetsMetricsContext'
 import { periodType } from 'src/modules/MyConsumption/myConsumptionTypes'
-import { WidgetTargets } from 'src/modules/MyConsumption/utils/myConsumptionVariables'
 
 const widgetClassnameSelector = ' .MuiGrid-root .MuiGrid-item'
-const numbersOfWidgets = WidgetTargets.length
+// const numbersOfWidgets = WidgetTargets.length
 const LIST_WIDGETS_TEXT = 'Chiffres clés'
 
 let mockFilters: metricFiltersType = [
@@ -45,6 +44,6 @@ describe('ConsumptionWidgetsContainer test', () => {
             </Router>,
         )
         expect(getByText(LIST_WIDGETS_TEXT)).toBeTruthy()
-        expect(container.querySelectorAll(widgetClassnameSelector).length).toBe(numbersOfWidgets)
+        expect(container.querySelectorAll(widgetClassnameSelector).length).toBe(8)
     })
 })

@@ -10,7 +10,6 @@ import { metricsEndpoints } from './handlers/metrics'
 import { housingEndpoints } from 'src/mocks/handlers/houses'
 import { contractsEndpoints } from 'src/mocks/handlers/contracts'
 import { commercialOfferEndpoints } from 'src/mocks/handlers/commercialOffer'
-import { faqEndpoints } from 'src/mocks/handlers/faq'
 import { installationRequestsEndpoints } from 'src/mocks/handlers/installationRequests'
 import { solarEquipmentsEndpoints } from 'src/mocks/handlers/solarEquipments'
 import { ecowattEndpoints } from 'src/mocks/handlers/ecowatt'
@@ -42,8 +41,6 @@ const handlers = [
     ...contractsEndpoints,
     /******Commercial Offer REQUEST*****/
     ...commercialOfferEndpoints,
-    /******FAQ REQUESTS*****/
-    ...faqEndpoints,
     /******Installation Requests *****/
     ...installationRequestsEndpoints,
     /*** Solar Equipment requets */

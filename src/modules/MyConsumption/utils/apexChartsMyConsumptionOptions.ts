@@ -195,7 +195,7 @@ export const getApexChartMyConsumptionProps = ({
 
         // Changing type to category instead of datetime, because apexcharts when period monthly which has at least 30 elements, it takes control of showing the xaxis labels, which the visual is not according to our need.
         // That's why change in it to category makes apexcharts gives us the full control for xaxis labels, and thus we can have xaxis visual according to our need
-        if (period === 'monthly') xAxisType = 'category'
+        if (period === 'monthly' || period === 'weekly') xAxisType = 'category'
 
         myConsumptionApexChartSeries!.push({
             ...yAxisSerie,
@@ -335,6 +335,18 @@ export const getApexChartMyConsumptionProps = ({
         options.xaxis!.labels!.formatter = (value, _timestamp) =>
             dayjs.utc(new Date(value!).toUTCString()).format('ddd D')
         options.xaxis!.labels!.rotate = 0
+    }
+
+    if (period === 'daily') {
+        options.chart = {
+            ...options.chart,
+            toolbar: {
+                show: true,
+            },
+            zoom: {
+                enabled: true,
+            },
+        }
     }
 
     options.chart!.stacked = chartType === 'consumption' ? isStackedEnabled : true

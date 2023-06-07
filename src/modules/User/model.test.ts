@@ -7,7 +7,7 @@ import {
     TEST_SUCCESS_MAIL,
     TEST_SUCCESS_USER,
 } from 'src/mocks/handlers/user'
-import { handleRegisterErrors, defaultRequestErrorMessage, handleAddressFieldError, handleLoginErrors } from '.'
+import { handleRegisterErrors, defaultRequestErrorMessage, Handle422Errors, handleLoginErrors } from '.'
 import { applyCamelCase } from 'src/common/react-platform-components'
 import { handleUpdateUserError } from 'src/modules/User/ProfileManagement/ProfileManagementHooks'
 const userData = applyCamelCase(TEST_SUCCESS_USER)
@@ -214,22 +214,36 @@ describe('test models', () => {
             error = handleRegisterErrors({ message: 'test message register' })
             expect(error).toStrictEqual('test message register')
         })
-        test('handleAddressFieldError test', async () => {
+        test('Handle422Errors test', async () => {
             // Address field error
-            let error = handleAddressFieldError({
+            let error = Handle422Errors({
                 response: { status: 422, data: { errors: [{ address: ['zip_code none is not an allowed value'] }] } },
             })
             expect(error).toStrictEqual('Veuillez entrer une adresse postale valide')
             // errors not array
-            error = handleAddressFieldError({
+            error = Handle422Errors({
                 response: { status: 422, data: { errors: {} } },
             })
             expect(error).toStrictEqual(defaultRequestErrorMessage)
             // No Address field error
-            error = handleAddressFieldError({
+            error = Handle422Errors({
                 response: { status: 422, data: { errors: [] } },
             })
             expect(error).toStrictEqual(defaultRequestErrorMessage)
+            error = Handle422Errors({
+                response: {
+                    status: 422,
+                    data: { errors: [{ birthdate: 'Format de la date invalide, DD/MM/YYYY attendu.' }] },
+                },
+            })
+            expect(error).toStrictEqual('Format de la date invalide, DD/MM/YYYY attendu.')
+            error = Handle422Errors({
+                response: {
+                    status: 422,
+                    data: { errors: [{ birthdate: 'La date de naissance ne peut être dans le futur.' }] },
+                },
+            })
+            expect(error).toStrictEqual('La date de naissance ne peut être dans le futur.')
         })
         test('handleLogin test', async () => {
             // Login Bad Credentials

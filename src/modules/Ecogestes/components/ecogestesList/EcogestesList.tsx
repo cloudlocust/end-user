@@ -1,6 +1,5 @@
 import { isEmpty, isNull } from 'lodash'
-import CircularProgress from '@mui/material/CircularProgress'
-import useEcogestes from 'src/modules/Ecogestes/ecogestesHook'
+import useEcogestes from 'src/modules/Ecogestes/hooks/ecogestesHook'
 import { useParams } from 'react-router-dom'
 import { EcogesteCard } from 'src/modules/Ecogestes'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
@@ -10,22 +9,9 @@ import FilterListIcon from '@mui/icons-material/FilterList'
 import VisibilityIcon from '@mui/icons-material/Visibility'
 import { ReactComponent as NotViewIcon } from 'src/modules/Ecogestes/components/ecogesteCard/NotRead.svg'
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
-import { EcogestViewedEnum } from 'src/modules/Ecogestes/components/ecogeste.d'
+import { EcogestViewedEnum, IEcogeste } from 'src/modules/Ecogestes/components/ecogeste.d'
+import { EcogestesLoadingSpinner } from 'src/modules/Ecogestes/components/shared/EcogestesLoadingSpinner'
 
-/**
- * Just a spinner to indicate that we're loading some datas.
- *
- * @returns JSX.Element - SpinningLoader.
- */
-const EcogesteListLoadingComponent = () => {
-    return (
-        <div className="w-full h-full justify-center relative flex flex-col items-center align-center p-16">
-            <div style={{ display: 'flex', justifyContent: 'center', padding: '16px' }}>
-                <CircularProgress size={32} />
-            </div>
-        </div>
-    )
-}
 /**
  * Get an icon elment fragment corresponding to the given filter.
  *
@@ -109,11 +95,11 @@ export const EcogestesList = () => {
 
     return (
         <>
-            <div className="flex justify-between w-full">
-                <TypographyFormatMessage variant="h2" className="text-20 mb-20 font-bold">
+            <div className="flex justify-between w-full mb-20">
+                <TypographyFormatMessage variant="h2" className="text-20 font-bold mx-auto">
                     Les écogestes associés
                 </TypographyFormatMessage>
-                <div>
+                <>
                     <Button
                         variant="outlined"
                         startIcon={getFilterIcon(currentViewFilter)}
@@ -160,19 +146,21 @@ export const EcogestesList = () => {
                             </MenuItem>
                         </MenuList>
                     </Menu>
-                </div>
+                </>
             </div>
-            {(isEmpty(ecogestesList) || isNull(ecogestesList)) &&
-                !isEcogestesLoadingInProgress &&
-                "Aucun écogeste n'est disponible pour le moment."}
+            {(isEmpty(ecogestesList) || isNull(ecogestesList)) && !isEcogestesLoadingInProgress && (
+                <div className="flex flex-row justify-center items-start w-full h-full">
+                    <TypographyFormatMessage>Aucun écogeste n'est disponible pour le moment.</TypographyFormatMessage>
+                </div>
+            )}
             <div
                 className="flex flex-nowrap gap-5 flex-col sm:flex-row  w-full sm:flex-wrap h-full sm:h-auto"
                 aria-label="list, ecogests, cards"
             >
                 {isEcogestesLoadingInProgress ? (
-                    <EcogesteListLoadingComponent />
+                    <EcogestesLoadingSpinner />
                 ) : (
-                    ecogestesList?.map((ecogeste) => <EcogesteCard key={ecogeste.id} ecogeste={ecogeste} />)
+                    ecogestesList?.map((ecogeste: IEcogeste) => <EcogesteCard key={ecogeste.id} ecogeste={ecogeste} />)
                 )}
             </div>
         </>
