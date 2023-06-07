@@ -1,5 +1,4 @@
 pipeline{
-    
     agent { label 'jenkins-jenkins-react ' }
     tools {nodejs "node16"}
     environment{
