@@ -59,7 +59,7 @@ const Contracts = () => {
                     </TypographyFormatMessage>
                 </Button>
                 <div className="flex justify-between items-center">
-                    <TypographyFormatMessage className="text-16 font-medium md:text-20">
+                    <TypographyFormatMessage className="text-16 font-medium md:text-20 mx-auto">
                         Mes Contrats
                     </TypographyFormatMessage>
                     <IconButton color="primary" onClick={() => setIsOpenDialog(true)}>

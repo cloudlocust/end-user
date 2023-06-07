@@ -110,7 +110,7 @@ const AnalysisChart = ({
             addAnalysisChartSelectedValueStroke(
                 indexSelectedValue,
                 theme.palette.primary.light,
-                theme.palette.background.default,
+                theme.palette.background.paper,
             )
             // The order change of analysisInformationList doesn't happen on hover in chart (mouseenter), but on click and selection.
             // Check that it's not mouse hover.
@@ -153,7 +153,7 @@ const AnalysisChart = ({
             <div
                 className="analysisChartCircleContent p-4 flex justify-center items-center"
                 ref={analysisChartCircleContentRef}
-                style={{ background: theme.palette.background.default }}
+                style={{ background: theme.palette.background.paper }}
             >
                 {children}
             </div>

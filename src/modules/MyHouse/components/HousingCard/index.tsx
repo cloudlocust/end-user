@@ -1,44 +1,33 @@
 import React from 'react'
 import { Card } from '@mui/material'
 import CardContent from '@mui/material/CardContent'
-import Divider from '@mui/material/Divider'
 import Typography from '@mui/material/Typography'
-import { NavLink } from 'react-router-dom'
 import { useIntl } from 'react-intl'
 import Button from '@mui/material/Button'
-import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight'
-import CardActions from '@mui/material/CardActions'
 import IconButton from '@mui/material/IconButton'
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined'
 import Modal from '@mui/material/Modal'
 import Box from '@mui/material/Box'
-import { ButtonLoader, TextField } from 'src/common/ui-kit'
-import { Form, max, min, requiredBuilder } from 'src/common/react-platform-components'
-
+import SvgIcon from '@mui/material/SvgIcon'
+import { ReactComponent as HousingIcon } from 'src/assets/images/navbarItems/Housings.svg'
 import { IHousing } from 'src/modules/MyHouse/components/HousingList/housing.d'
 import { useHousingsDetails } from 'src/modules/MyHouse/components/HousingList/HousingsHooks'
-import { URL_MY_HOUSE } from 'src/modules/MyHouse/MyHouseConfig'
-import { useMeterForHousing } from 'src/modules/Meters/metersHook'
-import { addMeterInputType } from 'src/modules/Meters/Meters'
 import { deleteAddFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
 import Tooltip from '@mui/material/Tooltip'
 
 import { useDispatch } from 'react-redux'
 import { Dispatch } from 'src/redux'
 import { HousingCardForm } from 'src/modules/MyHouse/components/HousingCardForm'
-import { linksColor, warningMainHashColor } from 'src/modules/utils/muiThemeVariables'
 
 /**
  * This is a card for the display of a logement item.
  *
  * @param props Props.
  * @param props.element Logement object we cant to display.
- * @param props.reloadHousings Reload elements.
  * @returns Card.
  */
 const HousingCard = ({
     element: logement,
-    reloadHousings,
 }: /**
  * Props Typing.
  */
@@ -47,19 +36,12 @@ const HousingCard = ({
      * The fields required for the display of the logement.
      */
     element: IHousing
-    /**
-     * Reload Elements after an operation.
-     */
-    reloadHousings: () => void
 }) => {
     const { formatMessage } = useIntl()
-    const [raisedState, setRaisedState] = React.useState(false)
 
     const [confirmModalOpen, setConfirmModalOpen] = React.useState(false)
-    const [addMeterOpen, setAddMeterOpen] = React.useState(false)
 
     const { removeHousing } = useHousingsDetails()
-    const { addMeter, loadingInProgress: isMeterInProgress } = useMeterForHousing()
 
     const dispatch = useDispatch<Dispatch>()
 
@@ -80,20 +62,6 @@ const HousingCard = ({
         bgcolor: 'red',
         borderRadius: 10,
         p: 4,
-    }
-
-    /**
-     * What should be done when closing the add meter popup.
-     */
-    const handleCloseAddMeterOpen = () => {
-        setAddMeterOpen(false)
-    }
-
-    /**
-     * What should be done when opening add meter pop up.
-     */
-    const handleOpenAddMeterOpen = () => {
-        setAddMeterOpen(true)
     }
 
     /**
@@ -125,19 +93,13 @@ const HousingCard = ({
      * Handler onAfterDeleteUpdateSuccess function when updating or delete housing.
      */
     const onAfterDeleteUpdateSuccess = () => {
-        reloadHousings()
         dispatch.housingModel.loadHousingsList()
     }
 
     return (
         <>
-            <Card
-                className="relative cursor-pointer flex flex-col justify-between rounded-16 h-full w-full housing-card"
-                onMouseOver={() => setRaisedState(true)}
-                onMouseOut={() => setRaisedState(false)}
-                raised={raisedState}
-            >
-                <CardContent>
+            <Card className="relative cursor-pointer flex flex-col justify-between rounded-16 w-full housing-card">
+                <CardContent className="p-8" style={{ paddingBottom: 8 }}>
                     <div className="flex justify-between">
                         <div className="flex items-center jutsify-center">
                             <Typography className="font-bold text-16 whitespace-normal">
@@ -172,44 +134,15 @@ const HousingCard = ({
                             </Tooltip>
                         </div>
                     </div>
-                    <Divider className="my-16" />
-                    <div className="flex flex-col">
-                        <Typography variant="subtitle1" className="mb-10 text-13 flex">
-                            {`${logement.address.name}`}
-                        </Typography>
+                    <div className="flex gap-8 items-center mt-16">
+                        <SvgIcon color="primary">
+                            <HousingIcon />
+                        </SvgIcon>
                         <Typography variant="subtitle1" className="text-13 flex">
-                            {logement?.meter?.guid ? (
-                                `Compteur n°${logement.meter.guid}`
-                            ) : (
-                                <div
-                                    onClick={handleOpenAddMeterOpen}
-                                    className="underline opacity-100 hover:opacity-70"
-                                    style={{ color: linksColor || warningMainHashColor }}
-                                >
-                                    {formatMessage({
-                                        id: 'Veuillez renseigner votre compteur',
-                                        defaultMessage: 'Veuillez renseigner votre compteur',
-                                    })}
-                                </div>
-                            )}
+                            {`${logement.address.name}`}
                         </Typography>
                     </div>
                 </CardContent>
-                <CardActions className="flex items-center content-center justify-end">
-                    <NavLink
-                        to={{
-                            pathname: `${URL_MY_HOUSE}/${logement?.id}`,
-                            state: { meterGuid: logement.meter?.guid },
-                        }}
-                    >
-                        <Button variant="contained" endIcon={<KeyboardArrowRightIcon />}>
-                            {formatMessage({
-                                id: 'Détails',
-                                defaultMessage: 'Détails',
-                            })}
-                        </Button>
-                    </NavLink>
-                </CardActions>
             </Card>
             <Modal open={confirmModalOpen} onClose={handleCloseConfirmModal}>
                 <Box sx={style} className="flex-col w-2/3 h-2/4 sm:w-1/3 sm:h-2/4">
@@ -259,55 +192,6 @@ const HousingCard = ({
                         </Button>
                     </div>
                 </Box>
-            </Modal>
-            <Modal open={addMeterOpen} onClose={handleCloseAddMeterOpen}>
-                <Form
-                    onSubmit={async (value: addMeterInputType) => {
-                        await addMeter(logement.id, value)
-                        reloadHousings()
-                        handleCloseAddMeterOpen()
-                    }}
-                >
-                    <Box
-                        sx={{
-                            position: 'absolute' as 'absolute',
-                            top: '50%',
-                            left: '50%',
-                            transform: 'translate(-50%, -50%)',
-                            width: 300,
-                        }}
-                    >
-                        <Card className="relative cursor-pointer flex-wrap rounded-16">
-                            <CardContent className="mt-10">
-                                <TextField
-                                    name="guid"
-                                    label="Numéro de PDL ou PRM"
-                                    placeholder={formatMessage({
-                                        id: 'Ex: 12345678912345',
-                                        defaultMessage: 'Ex: 12345678912345',
-                                    })}
-                                    validateFunctions={[requiredBuilder(), min(14), max(14)]}
-                                />
-                            </CardContent>
-                            <CardActions className="flex items-center content-center justify-center mb-10">
-                                <Button variant="outlined" className="mr-4" onClick={handleCloseAddMeterOpen}>
-                                    {formatMessage({
-                                        id: 'Annuler',
-                                        defaultMessage: 'Annuler',
-                                    })}
-                                </Button>
-                                <ButtonLoader
-                                    inProgress={isMeterInProgress}
-                                    variant="contained"
-                                    type="submit"
-                                    className="ml-4"
-                                >
-                                    {formatMessage({ id: 'Enregistrer', defaultMessage: 'Enregistrer' })}
-                                </ButtonLoader>
-                            </CardActions>
-                        </Card>
-                    </Box>
-                </Form>
             </Modal>
         </>
     )

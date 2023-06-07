@@ -11,6 +11,8 @@ import ToolbarMenuItem from './ToolbarMenuItem'
 import { installationRequestsFeatureState } from 'src/modules/InstallationRequests/InstallationRequestsConfig'
 import { equipmentFeatureState, URL_SOLAR_EQUIPMENTS } from 'src/modules/SolarEquipments/solarEquipmentsConfig'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
+import { REACT_FAQ_REDIRECT_LINK } from 'src/configs'
+import { URL_ALERTS } from 'src/modules/Alerts/AlertsConfig'
 
 // TODO This is not a generic component to share with medialem, to update.
 /**
@@ -99,6 +101,14 @@ function UserMenu() {
                     />
                     <ToolbarMenuItem
                         onMenuItemClick={() => {
+                            history.push(URL_ALERTS)
+                        }}
+                        iconLabel="edit_notifications"
+                        idLabel="Gestion des alertes"
+                        defaultMessageLabel="Gestion des alertes"
+                    />{' '}
+                    <ToolbarMenuItem
+                        onMenuItemClick={() => {
                             history.push('/mentions')
                         }}
                         iconLabel="gavel"
@@ -125,14 +135,16 @@ function UserMenu() {
                             defaultMessageLabel="Equipement"
                         />
                     )}
-                    <ToolbarMenuItem
-                        onMenuItemClick={() => {
-                            history.push('/FAQ')
-                        }}
-                        iconLabel="help_center"
-                        idLabel="FAQ"
-                        defaultMessageLabel="FAQ"
-                    />
+                    {REACT_FAQ_REDIRECT_LINK && (
+                        <ToolbarMenuItem
+                            onMenuItemClick={() => {
+                                window.open(REACT_FAQ_REDIRECT_LINK, '_blank', 'noopener noreferrer')
+                            }}
+                            iconLabel="help_center"
+                            idLabel="FAQ"
+                            defaultMessageLabel="FAQ"
+                        />
+                    )}
                     <ToolbarMenuItem
                         onMenuItemClick={() => {
                             dispatch.userModel.logout()

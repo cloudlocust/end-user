@@ -60,18 +60,7 @@ export const mobileDatePickerPeriodProps = [
         inputFormat: 'yyyy',
     },
 ]
-/**
- *  Button options.
- */
-export const buttonOptions = [
-    { value: 'reset', label: '∅', targets: [] },
-    {
-        value: 'temperature',
-        label: 'T°',
-        targets: [metricTargetsEnum.externalTemperature, metricTargetsEnum.internalTemperature],
-    },
-    { value: 'Pmax', label: 'Pmax', targets: [metricTargetsEnum.pMax] },
-]
+
 /**
  * Target options.
  */

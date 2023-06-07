@@ -61,3 +61,19 @@ export type analysisInformationType =
  * Name of the Analysis Information Element, used to retrieve the active information name.
  */
 export type analysisInformationName = 'meanConsumption' | 'minConsumptionDay' | 'maxConsumptionDay'
+
+/**
+ * Analysis Global State.
+ */
+interface IAnalysisState {
+    /**
+     * Total Consumption.
+     */
+    totalConsumption: number
+    /**
+     * Set Total Consumption.
+     *
+     * @param val Value.
+     */
+    setTotalConsumption: (val: number) => void
+}

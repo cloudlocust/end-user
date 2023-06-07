@@ -15,8 +15,13 @@ import {
     computeTotalAutoconsumption,
     getWidgetIndicatorColor,
     computeTotalOfAllConsumptions,
+    isRangeWithinToday,
+    getPreviousDayRange,
+    isWidgetMonthlyMetrics,
 } from 'src/modules/MyConsumption/components/Widget/WidgetFunctions'
 import { periodType } from 'src/modules/MyConsumption/myConsumptionTypes'
+import { getDateWithoutTimezoneOffset } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
+import dayjs from 'dayjs'
 
 /**
  * Reusable test function that used to test multiple compute total function.
@@ -337,26 +342,42 @@ describe('Test widget functions', () => {
                     range: { from: '2022-12-03T00:00:00.000Z', to: '2022-12-03T23:59:59.999Z' },
                     value: { from: '2022-12-02T00:00:00.000Z', to: '2022-12-02T23:59:59.999Z' },
                     period: 'daily',
+                    target: metricTargetsEnum.consumption,
                 },
                 {
                     range: { from: '2022-12-14T00:00:00.000Z', to: '2022-12-20T23:59:59.999Z' },
                     value: { from: '2022-12-07T00:00:00.000Z', to: '2022-12-13T23:59:59.999Z' },
                     period: 'weekly',
+                    target: metricTargetsEnum.consumption,
                 },
                 {
                     range: { from: '2021-12-01T00:00:00.000Z', to: '2022-12-15T23:59:59.999Z' },
                     value: { from: '2021-11-01T00:00:00.000Z', to: '2021-11-30T23:59:59.999Z' },
                     period: 'monthly',
+                    target: metricTargetsEnum.pMax,
+                },
+                {
+                    range: { from: '2021-12-01T00:00:00.000Z', to: '2022-12-25T23:59:59.999Z' },
+                    value: { from: '2021-11-01T00:00:00.000Z', to: '2021-12-15T23:59:59.999Z' },
+                    period: 'monthly',
+                    target: metricTargetsEnum.consumption,
+                },
+                {
+                    range: { from: '2021-10-01T00:00:00.000Z', to: '2022-11-25T23:59:59.999Z' },
+                    value: { from: '2021-09-01T00:00:00.000Z', to: '2021-10-15T23:59:59.999Z' },
+                    period: 'monthly',
+                    target: metricTargetsEnum.eurosConsumption,
                 },
                 {
                     range: { from: '2022-12-01T00:00:00.000Z', to: '2022-12-22T23:59:59.999Z' },
                     value: { from: '2021-01-01T00:00:00.000Z', to: '2021-12-31T23:59:59.999Z' },
                     period: 'yearly',
+                    target: metricTargetsEnum.consumption,
                 },
             ]
 
-            cases.forEach(({ range, period, value }) => {
-                const result = getWidgetPreviousRange(range, period as periodType)
+            cases.forEach(({ range, period, value, target }) => {
+                const result = getWidgetPreviousRange(range, period as periodType, target as metricTargetsEnum)
                 expect(result).toStrictEqual(value)
             })
         })
@@ -368,31 +389,48 @@ describe('Test widget functions', () => {
                     range: { from: '2022-12-04T10:00:00.000Z', to: '2022-12-04T23:59:59.999Z' },
                     value: { from: '2022-12-04T00:00:00.000Z', to: '2022-12-04T23:59:59.999Z' },
                     period: 'daily',
+                    target: metricTargetsEnum.consumption,
                 },
                 {
                     range: { from: '2022-12-15T10:00:00.000Z', to: '2022-12-21T23:59:59.999Z' },
                     value: { from: '2022-12-15T00:00:00.000Z', to: '2022-12-21T23:59:59.999Z' },
                     period: 'weekly',
+                    target: metricTargetsEnum.consumption,
                 },
                 {
                     range: { from: '2022-11-08T00:00:00.000Z', to: '2022-11-15T23:59:59.999Z' },
                     value: { from: '2022-11-01T00:00:00.000Z', to: '2022-11-30T23:59:59.999Z' },
                     period: 'monthly',
+                    target: metricTargetsEnum.internalTemperature,
+                },
+                {
+                    range: { from: '2022-09-08T00:00:00.000Z', to: '2022-09-15T23:59:59.999Z' },
+                    value: { from: '2022-09-01T00:00:00.000Z', to: '2022-10-15T23:59:59.999Z' },
+                    period: 'monthly',
+                    target: metricTargetsEnum.consumption,
+                },
+                {
+                    range: { from: '2022-10-08T00:00:00.000Z', to: '2022-10-15T23:59:59.999Z' },
+                    value: { from: '2022-10-01T00:00:00.000Z', to: '2022-11-15T23:59:59.999Z' },
+                    period: 'monthly',
+                    target: metricTargetsEnum.eurosConsumption,
                 },
                 {
                     range: { from: '2022-06-01T00:00:00.000Z', to: '2022-12-20T23:59:59.999Z' },
                     value: { from: '2022-01-01T00:00:00.000Z', to: '2022-12-31T23:59:59.999Z' },
                     period: 'yearly',
+                    target: metricTargetsEnum.consumption,
                 },
                 {
                     range: { from: '2022-01-02T00:00:00.000Z', to: '2022-01-20T23:59:59.999Z' },
                     value: { from: '2022-01-01T00:00:00.000Z', to: '2022-12-31T23:59:59.999Z' },
                     period: 'yearly',
+                    target: metricTargetsEnum.consumption,
                 },
             ]
 
-            cases.forEach(({ range, period, value }) => {
-                const result = getWidgetRange(range, period as periodType)
+            cases.forEach(({ range, period, value, target }) => {
+                const result = getWidgetRange(range, period as periodType, target as metricTargetsEnum)
                 expect(result).toStrictEqual(value)
             })
         })
@@ -535,6 +573,102 @@ describe('Test widget functions', () => {
             ]
             const result = computeTotalOfAllConsumptions(data)
             expect(result).toStrictEqual(expectedResult)
+        })
+    })
+
+    describe('test isWidgetMonthlyMetrics', () => {
+        test('different cases', () => {
+            const cases = [
+                {
+                    type: metricTargetsEnum.consumption,
+                    period: 'daily',
+                    value: false,
+                },
+                {
+                    type: metricTargetsEnum.consumption,
+                    period: 'monthly',
+                    value: true,
+                },
+                {
+                    type: metricTargetsEnum.eurosConsumption,
+                    period: 'yearly',
+                    value: false,
+                },
+                {
+                    type: metricTargetsEnum.eurosConsumption,
+                    period: 'monthly',
+                    value: true,
+                },
+                {
+                    type: metricTargetsEnum.autoconsumption,
+                    period: 'weekly',
+                    value: false,
+                },
+                {
+                    type: metricTargetsEnum.autoconsumption,
+                    period: 'monthly',
+                    value: true,
+                },
+
+                {
+                    type: metricTargetsEnum.externalTemperature,
+                    period: 'monthly',
+                    value: false,
+                },
+                {
+                    type: metricTargetsEnum.pMax,
+                    period: 'monthly',
+                    value: false,
+                },
+            ]
+
+            cases.forEach(({ type, period, value }) => {
+                const result = isWidgetMonthlyMetrics(type as metricTargetsEnum, period as periodType)
+                expect(result).toStrictEqual(value)
+            })
+        })
+    })
+    describe('test isDateWithinDay', () => {
+        let fromRange = getDateWithoutTimezoneOffset(dayjs().startOf('day').toDate())
+        let toRange = getDateWithoutTimezoneOffset(dayjs().endOf('day').toDate())
+        test('when it returns true', () => {
+            const boolean = isRangeWithinToday(fromRange, toRange)
+
+            expect(boolean).toBeTruthy()
+        })
+        test('when it returns false', () => {
+            fromRange = '2023-06-10T00:00:00.000Z'
+            toRange = '2023-07-10T23:59:59.999Z'
+            const boolean = isRangeWithinToday(fromRange, toRange)
+
+            expect(boolean).toBeFalsy()
+        })
+    })
+
+    describe('test getPreviousDayRange', () => {
+        let currentRange = {
+            from: '2023-05-10T00:00:00.000Z',
+            to: '2023-05-10T23:59:59.999Z',
+        }
+        test('when subDay is 1, you should get the previous day range', () => {
+            const range = getPreviousDayRange(currentRange)
+
+            const expectedResult = {
+                from: '2023-05-09T00:00:00.000Z',
+                to: '2023-05-09T23:59:59.999Z',
+            }
+
+            expect(range).toStrictEqual(expectedResult)
+        })
+        test('when subDay is 2, you get the previous day -1', () => {
+            const range = getPreviousDayRange(currentRange, 2)
+
+            const expectedResult = {
+                from: '2023-05-08T00:00:00.000Z',
+                to: '2023-05-08T23:59:59.999Z',
+            }
+
+            expect(range).toStrictEqual(expectedResult)
         })
     })
 })
