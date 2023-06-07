@@ -91,7 +91,7 @@ const AnalysisChartCircleContent = ({
     filters: metricFiltersType
 }) => {
     // This Metrics Request Gets the data of wanted current month and previous month for comparaison.
-    const { range, data, isMetricsLoading } = useMetrics(
+    const { data, isMetricsLoading } = useMetrics(
         {
             range: {
                 from: getDateWithoutTimezoneOffset(startOfMonth(subMonths(new Date(dateReferenceConsumptionValue), 1))),
@@ -115,7 +115,11 @@ const AnalysisChartCircleContent = ({
     )
 
     // This Metrics Request Gets the data of previous year month for comparaison.
-    const { data: dataPreviousYear, isMetricsLoading: isPreviousYearMetricsLoading } = useMetrics(
+    const {
+        data: dataPreviousYear,
+        isMetricsLoading: isPreviousYearMetricsLoading,
+        range: rangePreviousYear,
+    } = useMetrics(
         {
             range: {
                 from: getDateWithoutTimezoneOffset(startOfMonth(subYears(new Date(dateReferenceConsumptionValue), 1))),
@@ -207,7 +211,7 @@ const AnalysisChartCircleContent = ({
                 percentageChange={previousMonthPercentageChange}
             />
             <PercentageChangeLine
-                datePercentageChange={dayjs(new Date(range.from)).format('MM/YYYY')}
+                datePercentageChange={dayjs(new Date(rangePreviousYear.from)).format('MM/YYYY')}
                 percentageChange={previousYearPercentageChange}
             />
             <p className="text-16 md:text-20 font-medium">
