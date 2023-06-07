@@ -179,4 +179,4 @@ export const TAG_MANAGER_CONFIG = {
 /**
  * FAQ redirect link.
  */
-export const REACT_FAQ_REDIRECT_LINK = window._env_.REACT_APP_FAQ_REDIRECT_LINK
+export const FAQ_REDIRECT_LINK = window._env_.REACT_APP_FAQ_REDIRECT_LINK
