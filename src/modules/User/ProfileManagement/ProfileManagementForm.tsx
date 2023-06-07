@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { GoogleMapsAddressAutoCompleteField } from 'src/common/ui-kit/form-fields/GoogleMapsAddressAutoComplete/GoogleMapsAddressAutoCompleteField'
 import { ButtonLoader, MuiTextField as TextField } from 'src/common/ui-kit'
-import { Form, requiredBuilder, email } from 'src/common/react-platform-components'
+import { Form, requiredBuilder, email, regex } from 'src/common/react-platform-components'
 import { PhoneNumber } from 'src/common/ui-kit/form-fields/phoneNumber/PhoneNumber'
 import { useIntl } from 'src/common/react-platform-translation'
 import { useSelector } from 'react-redux'
@@ -11,6 +11,8 @@ import { ButtonResetForm } from 'src/common/ui-kit/components/ButtonResetForm/Bu
 import { IUser } from 'src/modules/User'
 import { useProfileManagement } from 'src/modules/User/ProfileManagement/ProfileManagementHooks'
 import { ChangePassword } from 'src/modules/User/ChangePassword/ChangePassword'
+import { isProfessionalRegisterFeature } from 'src/modules/User/Register/RegisterConfig'
+import { sirenFieldRegex } from 'src/modules/User/Register/utils'
 
 /**
  * Form used for modify user profile.
@@ -27,6 +29,8 @@ export const ProfileManagementForm = () => {
     const formInitialValues = {
         firstName: user?.firstName,
         lastName: user?.lastName,
+        siren: user?.siren,
+        companyName: user?.companyName,
         email: user?.email,
         phone: user?.phone,
         address: user?.address,
@@ -48,6 +52,29 @@ export const ProfileManagementForm = () => {
                 }}
             >
                 <div className="flex flex-col justify-center p-16 sm:p-24 md:p-32 ">
+                    {isProfessionalRegisterFeature && (
+                        <>
+                            <TextField
+                                name="companyName"
+                                label="Raison sociale"
+                                validateFunctions={[requiredBuilder()]}
+                                variant="outlined"
+                                style={{ margin: '0 0 1.5rem 0' }}
+                                disabled={disabledField}
+                            />
+                            <TextField
+                                name="siren"
+                                label="Siren"
+                                validateFunctions={[
+                                    requiredBuilder(),
+                                    regex(sirenFieldRegex, 'Le numéro Siren doit être composé de 9 chiffres'),
+                                ]}
+                                variant="outlined"
+                                style={{ marginBottom: '1.5rem' }}
+                                disabled={disabledField}
+                            />
+                        </>
+                    )}
                     <TextField
                         name="firstName"
                         label="Prénom"

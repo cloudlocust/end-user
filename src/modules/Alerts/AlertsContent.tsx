@@ -58,9 +58,6 @@ export const AlertsContent = () => {
     return (
         <div>
             <div className="flex-col mt-40 px-24">
-                <TypographyFormatMessage className="text-16 md:text-20 mb-20 font-medium">
-                    Alertes Seuil de Consommation
-                </TypographyFormatMessage>
                 {hasMissingHousingContracts && (
                     <div className="flex justify-left items-center mb-20 gap-8">
                         <SvgIcon>
@@ -98,14 +95,16 @@ export const AlertsContent = () => {
                                     Renseignez votre contrat de fourniture
                                 </TypographyFormatMessage>
                             </NavLink>
-                            <TypographyFormatMessage
-                                className="text-13 md:text-16 font-medium"
-                                style={{
-                                    color: linksColor || warningMainHashColor,
-                                }}
-                            >
-                                pour une estimation plus précise.
-                            </TypographyFormatMessage>
+                            <div className="grow-1">
+                                <TypographyFormatMessage
+                                    className="text-13 md:text-16 md:text-center font-medium"
+                                    style={{
+                                        color: linksColor || warningMainHashColor,
+                                    }}
+                                >
+                                    pour une estimation plus précise.
+                                </TypographyFormatMessage>
+                            </div>
                         </div>
                     </div>
                 )}

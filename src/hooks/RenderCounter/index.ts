@@ -27,5 +27,5 @@ export const useRenderCounter = (componentName: string) => {
         // eslint-disable-next-line no-console
         return console.log(`${componentName}`, renderCount.current)
     }
-    return null
+    return renderCount.current
 }

@@ -53,7 +53,7 @@ const mockFaqRedirectLink = 'url'
  */
 jest.mock('src/configs', () => ({
     __esModule: true,
-    REACT_FAQ_REDIRECT_LINK: 'url',
+    FAQ_REDIRECT_LINK: 'url',
 }))
 
 describe('test UserMenu component', () => {
