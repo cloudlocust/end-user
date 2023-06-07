@@ -18,7 +18,7 @@ const Alerts = () => {
     return (
         <PageSimple
             header={
-                <div>
+                <div className="w-full">
                     <Button onClick={history.goBack} className="text-12 md:text-16 ml-10 mt-8" color="inherit">
                         <Icon
                             component={motion.span}
@@ -30,24 +30,16 @@ const Alerts = () => {
                         </Icon>
                         {formatMessage({ id: 'Retour', defaultMessage: 'Retour' })}
                     </Button>
-                    <div className="flex pl-16 mt-10 md:mt-0">
-                        <Icon
-                            component={motion.span}
-                            initial={{ scale: 0 }}
-                            animate={{ scale: 1, transition: { delay: 0.2 } }}
-                            className="text-24 md:text-32"
-                        >
-                            report
-                        </Icon>
+                    <div className="pl-16 mt-10 md:mt-0">
                         <Typography
                             component={motion.span}
                             initial={{ x: -20 }}
                             animate={{ x: 0, transition: { delay: 0.2 } }}
-                            className="sm:flex text-18 sm:text-20 md:text-24 mx-12 font-semibold"
+                            className="sm:flex text-18 sm:text-20 md:text-24 md:justify-center font-semibold"
                         >
                             {formatMessage({
-                                id: 'Alertes',
-                                defaultMessage: 'Alertes',
+                                id: 'Alertes Seuil de Consommation',
+                                defaultMessage: 'Alertes Seuil de Consommation',
                             })}
                         </Typography>
                     </div>
