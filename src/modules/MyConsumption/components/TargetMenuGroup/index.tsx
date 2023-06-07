@@ -94,11 +94,13 @@ const TargetMenuGroup = ({ removeTarget, addTarget, hidePmax }: ITargetMenuGroup
                 aria-haspopup="true"
                 aria-expanded={Boolean(anchorEl)}
                 onClick={handleClick}
-                endIcon={<MoreVertIcon />}
+                // endIcon={}
                 className="mx-auto my-0 min-h-auto"
                 style={{ color: theme.palette.common.white }}
                 aria-label="target-menu"
-            />
+            >
+                <MoreVertIcon />
+            </Button>
             {Boolean(anchorEl) && (
                 <Menu
                     id="target-menu"
