@@ -1,21 +1,22 @@
-import { Card, useTheme, Icon, CircularProgress, useMediaQuery, Divider, Tooltip, styled } from '@mui/material'
+import { Card, CircularProgress, Divider, Icon, Tooltip, styled, useMediaQuery, useTheme } from '@mui/material'
 import { TooltipProps, tooltipClasses } from '@mui/material/Tooltip'
-import { NavLink, useParams } from 'react-router-dom'
-import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
-import { ReactComponent as ContractIcon } from 'src/assets/images/content/housing/contract.svg'
-import { sgeConsentFeatureState, enphaseConsentFeatureState, URL_MY_HOUSE } from 'src/modules/MyHouse/MyHouseConfig'
-import { MuiCardContent } from 'src/common/ui-kit'
-import { useConsents } from 'src/modules/Consents/consentsHook'
-import { useEffect, useState } from 'react'
-import { enedisSgeConsentStatus, enphaseConsentStatus, nrlinkConsentStatus } from 'src/modules/Consents/Consents'
 import dayjs from 'dayjs'
+import { useEffect, useState } from 'react'
 import { useIntl } from 'react-intl'
-import { NrlinkConnectionStepsEnum } from 'src/modules/nrLinkConnection/nrlinkConnectionSteps.d'
-import { EnedisSgePopup } from 'src/modules/MyHouse/components/MeterStatus/EnedisSgePopup'
 import { useSelector } from 'react-redux'
-import { RootState } from 'src/redux'
+import { NavLink, useParams } from 'react-router-dom'
+import { ReactComponent as ContractIcon } from 'src/assets/images/content/housing/contract.svg'
+import { MuiCardContent } from 'src/common/ui-kit'
+import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
+import { enedisSgeConsentStatus, enphaseConsentStatus, nrlinkConsentStatus } from 'src/modules/Consents/Consents'
+import { useConsents } from 'src/modules/Consents/consentsHook'
+import { URL_MY_HOUSE, enphaseConsentFeatureState, sgeConsentFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
 import { IHousing } from 'src/modules/MyHouse/components/HousingList/housing'
+import { EnedisSgePopup } from 'src/modules/MyHouse/components/MeterStatus/EnedisSgePopup'
 import { EnphaseConsentPopup } from 'src/modules/MyHouse/components/MeterStatus/EnphaseConsentPopup'
+import { NrlinkConnectionStepsEnum } from 'src/modules/nrLinkConnection/nrlinkConnectionSteps.d'
+import { RootState } from 'src/redux'
+import { ReplaceNRLinkModule } from 'src/modules/MyHouse/components/ReplaceNRLinkFormPopup/ReplaceNRLinkModule'
 import MeterInfos from 'src/modules/MyHouse/components/MeterInfo'
 
 const FORMATTED_DATA = 'DD/MM/YYYY'
@@ -153,6 +154,14 @@ export const MeterStatus = () => {
                                 defaultMessage: TEXT_CONNEXION_LE,
                             })} ${nrlinkConsentCreatedAt}`}</span>
                         </div>
+                        <ReplaceNRLinkModule
+                            nrLinkConsent={nrlinkConsent}
+                            onAfterReplaceNRLink={() => {
+                                if (foundHousing?.meter?.guid) {
+                                    getConsents(foundHousing?.meter?.guid, parseInt(houseId))
+                                }
+                            }}
+                        />
                     </>
                 )
             case 'DISCONNECTED':
