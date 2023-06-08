@@ -89,7 +89,7 @@ export const useEcogestes = () => {
         IEcogestGetAllFilter
     >({
         API_ENDPOINT: ECOGESTES_ENDPOINT,
-        sizeParam: 500,
+        sizeParam: 100,
         snackBarMessage0verride: { loadElementListError, addElementSuccess, addElementError },
     })(undefined, { viewed: EcogestViewedEnum.ALL, tag_id: parsedCategoryTargetted })
 

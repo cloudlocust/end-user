@@ -20,7 +20,7 @@ export const loadElementListError = (_error: any, formatMessage: formatMessageTy
 export const useEcogestesCategories = (categoryType: IEcogesteCategoryTypes) => {
     const { elementList, loadingInProgress } = BuilderUseElementList<IEcogestCategory, IEcogestCategory, undefined>({
         API_ENDPOINT: `${ECOGESTES_ENDPOINT}/${categoryType}`,
-        sizeParam: 500,
+        sizeParam: 100,
         snackBarMessage0verride: { loadElementListError },
     })(undefined, {})
 
