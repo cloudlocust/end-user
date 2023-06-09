@@ -20,6 +20,11 @@ import { TEST_HOUSES } from 'src/mocks/handlers/houses'
 import { applyCamelCase } from 'src/common/react-platform-components'
 import * as reactRedux from 'react-redux'
 import { sgeConsentMessage } from 'src/modules/MyHouse/MyHouseConfig'
+import { waitFor } from '@testing-library/react'
+import {
+    MSG_REPLACE_NRLINK_CLEAR_OLD_DATA,
+    MSG_REPLACE_NRLINK_MODAL_TITLE,
+} from 'src/modules/MyHouse/components/ReplaceNRLinkFormPopup/replaceNrLinkFormPopupConfig'
 
 const LIST_OF_HOUSES: IHousing[] = applyCamelCase(TEST_HOUSES)
 /**
@@ -38,6 +43,9 @@ const ENEDIS_CONNECTED_MESSAGE = 'Historique de consommation'
 const ENEDIS_NONEXISTANT_EXPIRED_MESSAGE =
     'Autorisez la récupération de vos données de consommation pour avoir accès à votre historique.'
 const NO_METER_MESSAGE = 'Veuillez renseigner votre compteur'
+const ENEDIS_UNSYNCHRONIZED_MESSAGE =
+    'Les données de votre récolte dhistorique semblent incohérentes par rapport à celle de votre nrLINK'
+
 const ENEDIS_CANCEL_COLLECTION_DATA_MESSAGE = 'Annuler la récolte de mes données'
 const CONTACT_MAIL_MESSAGE = 'Contacter support@myem.fr'
 
@@ -174,7 +182,7 @@ describe('MeterStatus component test', () => {
         test('when nrlink status is connected', async () => {
             mockNrlinkConsent = 'CONNECTED'
 
-            const { getByText, getByAltText } = reduxedRender(
+            const { getByText, getByAltText, getByTestId, queryByAltText } = reduxedRender(
                 <Router>
                     <MeterStatus />
                 </Router>,
@@ -185,12 +193,15 @@ describe('MeterStatus component test', () => {
             // eslint-disable-next-line sonarjs/no-duplicate-string
             const image = getByAltText('connected-icon')
 
+            expect(getByTestId('EditIcon')).toBeTruthy()
             expect(getByAltText('connected-icon')).toBeTruthy()
             expect(getByText(COMPTEUR_TITLE)).toBeTruthy()
             expect(getByText(`n° ${foundHouse?.meter?.guid}`)).toBeTruthy()
             expect(getByText(NRLINK_TITLE)).toBeTruthy()
             expect(image).toHaveAttribute('src', STATUS_ON_SRC)
             expect(getByText(`nrLINK n° ${mockNrlinkGuid}`)).toBeTruthy()
+
+            expect(queryByAltText('ReplaceNRLinkFormPopup')).not.toBeTruthy()
         })
         test('when nrlink status is disconnected', async () => {
             mockNrlinkConsent = 'DISCONNECTED'
@@ -243,6 +254,26 @@ describe('MeterStatus component test', () => {
             expect(mockGetConsent).not.toBeCalledWith()
             expect(getByText(NO_METER_MESSAGE)).toBeTruthy()
         })
+        test('when clicking on Edit, display ReplaceNRLinkForm', async () => {
+            mockNrlinkConsent = 'CONNECTED'
+
+            const { getByTestId, getByText, queryByLabelText } = reduxedRender(
+                <Router>
+                    <MeterStatus />
+                </Router>,
+            )
+
+            expect(getByTestId('EditIcon')).toBeTruthy()
+            expect(queryByLabelText('ReplaceNRLinkFormPopup')).not.toBeTruthy()
+
+            userEvent.click(getByTestId('EditIcon'))
+            await waitFor(() => {
+                expect(queryByLabelText('ReplaceNRLinkFormPopup')).toBeTruthy()
+            })
+
+            expect(getByText(MSG_REPLACE_NRLINK_MODAL_TITLE)).toBeTruthy()
+            expect(getByText(MSG_REPLACE_NRLINK_CLEAR_OLD_DATA)).toBeTruthy()
+        })
     })
     describe('enedis status test', () => {
         test('when enedis status is connected', async () => {
@@ -280,6 +311,20 @@ describe('MeterStatus component test', () => {
             expect(getByText(ENEDIS_NONEXISTANT_EXPIRED_MESSAGE)).toBeTruthy()
             const image = getByAltText('off-icon')
             expect(image).toHaveAttribute('src', './assets/images/content/housing/consent-status/meter-off.svg')
+        })
+        test('when enedis sge consent is UNSYNCHRONIZED', async () => {
+            mockEnedisSgeConsent = 'UNSYNCHRONIZED'
+            mockisMeterVerifyLoading = false
+
+            const { getByAltText } = reduxedRender(
+                <Router>
+                    <MeterStatus />
+                </Router>,
+            )
+
+            const image = getByAltText('sge-error-icon')
+            expect(image).toHaveAttribute('src', './assets/images/content/housing/consent-status/meter-error.svg')
+            expect(ENEDIS_UNSYNCHRONIZED_MESSAGE).toBeTruthy()
         })
     })
     describe('enphase status', () => {
