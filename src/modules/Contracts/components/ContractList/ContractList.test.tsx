@@ -1,11 +1,11 @@
 import { reduxedRender } from 'src/common/react-platform-components/test'
-import Contracts from 'src/modules/Contracts'
+import ContractList from 'src/modules/Contracts/components/ContractList'
 import { BrowserRouter as Router } from 'react-router-dom'
 import { TEST_CONTRACTS as MOCK_CONTRACTS, TEST_HOUSE_ID } from 'src/mocks/handlers/contracts'
 import { applyCamelCase } from 'src/common/react-platform-components'
 import { fireEvent, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { ContractFormProps } from './contractsTypes'
+import { ContractFormProps } from 'src/modules/Contracts/contractsTypes.d'
 import { formatLoadContractResponseToIContract } from 'src/modules/Contracts/utils/contractsFunctions'
 import { IContract, loadContractResponse } from 'src/modules/Contracts/contractsTypes'
 import dayjs from 'dayjs'
@@ -91,7 +91,7 @@ describe('Test Contracts Component', () => {
     test('When contractList is valid, and clicking on goBackArrow it goes back', async () => {
         const { getByText } = reduxedRender(
             <Router>
-                <Contracts />
+                <ContractList />
             </Router>,
         )
 
@@ -108,7 +108,7 @@ describe('Test Contracts Component', () => {
         mockIsContractsLoading = true
         const { container } = reduxedRender(
             <Router>
-                <Contracts />
+                <ContractList />
             </Router>,
         )
         expect(container.querySelector(circularProgressClassname)).toBeInTheDocument()
@@ -118,7 +118,7 @@ describe('Test Contracts Component', () => {
         mockContractList = []
         const { getByText } = reduxedRender(
             <Router>
-                <Contracts />
+                <ContractList />
             </Router>,
         )
         expect(getByText(EMPTY_CONTRACT_LIST_MESSAGE_TEXT)).toBeInTheDocument()
@@ -128,7 +128,7 @@ describe('Test Contracts Component', () => {
         mockContractList = TEST_CONTRACTS
         const { getAllByRole, getByText, getByTestId } = reduxedRender(
             <Router>
-                <Contracts />
+                <ContractList />
             </Router>,
         )
         expect(() => getByText(CONTRACT_FORM_MODAL_TEXT)).toThrow()
@@ -146,7 +146,7 @@ describe('Test Contracts Component', () => {
     test('When Submitting ContractForm, addContract and loadContract hook functions should be called, and modal should be closed', async () => {
         const { getByText, getByTestId } = reduxedRender(
             <Router>
-                <Contracts />
+                <ContractList />
             </Router>,
         )
         // OPEN MODAL

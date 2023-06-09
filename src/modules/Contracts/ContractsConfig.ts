@@ -1,6 +1,6 @@
 import { authTypes } from 'src/common/react-platform-components'
 import { IRouteNavigationConfig } from 'src/routes'
-import Contracts from 'src/modules/Contracts'
+import { Contracts } from 'src/modules/Contracts'
 import { URL_MY_HOUSE_DETAILS } from 'src/modules/MyHouse/MyHouseConfig'
 
 /**
