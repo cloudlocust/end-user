@@ -86,32 +86,4 @@ describe('Test Contracts Component', () => {
         })
         expect(container.querySelector(circularProgressClassname)).toBeInTheDocument()
     })
-
-    // test('When currentHousing is valid, but no redirection yet or houseId is invalid loading is shown', async () => {
-    //     mockHouseId = 'fake'
-    //     const { container } = reduxedRender(
-    //         <Router>
-    //             <Contracts />
-    //         </Router>,
-    //         { store },
-    //     )
-    //     await waitFor(() => {
-    //         expect(mockReplace).toHaveBeenCalledWith(URL_MY_HOUSE + '/' + TEST_HOUSES[0].id)
-    //     })
-    //     expect(container.querySelector(circularProgressClassname)).toBeInTheDocument()
-    // })
-
-    // test('when currentHousing is null, Error message is shown', async () => {
-    //     await store.dispatch.housingModel.setHousingModelState([])
-
-    //     const { getByText } = reduxedRender(
-    //         <Router>
-    //             <Contracts />
-    //         </Router>,
-    //     )
-    //     await waitFor(() => {
-    //         expect(getByText(NO_CURRENT_HOUSING_ERROR)).toBeTruthy()
-    //     })
-    //     expect(mockReplace).not.toHaveBeenCalled()
-    // })
 })
