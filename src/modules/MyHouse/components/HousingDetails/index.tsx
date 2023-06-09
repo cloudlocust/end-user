@@ -25,6 +25,7 @@ import { useSelector } from 'react-redux'
 import CircularProgress from '@mui/material/CircularProgress'
 import { RootState } from 'src/redux'
 import { isEmpty } from 'lodash'
+import { enphaseConsentFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
 
 const Root = styled(FusePageCarded)(() => ({
     '& .FusePageCarded-header': {
@@ -83,6 +84,22 @@ export const HousingDetails = () => {
             label: 'Plaques',
         },
     ])
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const connectedPlugsElements: HouseDetailsElementType[] = [
+        {
+            icon: <MoreHorizIcon color="primary" fontSize="large" />,
+            label: 'Prise 1',
+        },
+        {
+            icon: <MoreHorizIcon color="primary" fontSize="large" />,
+            label: 'Prise 2',
+        },
+        {
+            icon: <MoreHorizIcon color="primary" fontSize="large" />,
+            label: 'Prise 3',
+        },
+    ]
 
     // Then once elements are loaded handle each icon based on it's equipementType.
     useEffect(() => {
@@ -191,6 +208,18 @@ export const HousingDetails = () => {
                             isConfigured={!isEquipmentMeterListEmpty}
                             loadingInProgress={loadingEquipmentInProgress}
                         />
+                        {/**
+                         * TODO: Configure, isLoading? Elements like Equipments (load default at mount then replace by real data).
+                         */}
+                        {enphaseConsentFeatureState ? (
+                            <HousingDetailsCard
+                                title="Mes prises connectées"
+                                elements={connectedPlugsElements}
+                                typeOfDetails="connectedPlugs"
+                                isConfigured={false}
+                                loadingInProgress={false}
+                            />
+                        ) : null}
                     </div>
                 </>
             }

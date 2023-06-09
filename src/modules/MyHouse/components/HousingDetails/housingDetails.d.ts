@@ -17,7 +17,7 @@ export type HouseDetailsElementType =
 /**
  * Housing card types.
  */
-export type HousingCardTypeOfDetails = 'accomodation' | 'equipments'
+export type HousingCardTypeOfDetails = 'accomodation' | 'equipments' | 'connectedPlugs'
 
 /**
  * Housing details card props.
