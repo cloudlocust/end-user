@@ -1,4 +1,4 @@
-import { useHistory, useParams } from 'react-router'
+import { useHistory } from 'react-router'
 import { styled } from '@mui/material/styles'
 import { AccomodationForm } from 'src/modules/MyHouse/components/Accomodation/AccomodationForm'
 import FusePageCarded from 'src/common/ui-kit/fuse/components/FusePageCarded'
@@ -6,7 +6,6 @@ import { motion } from 'framer-motion'
 import Icon from '@mui/material/Icon'
 import { useIntl } from 'src/common/react-platform-translation'
 import { Button } from '@mui/material'
-import { URL_MY_HOUSE } from 'src/modules/MyHouse/MyHouseConfig'
 import { useTheme, ThemeProvider } from '@mui/material/styles'
 
 const Root = styled(FusePageCarded)(() => ({
@@ -34,27 +33,13 @@ const Root = styled(FusePageCarded)(() => ({
 const Accomodation = () => {
     const { formatMessage } = useIntl()
     const theme = useTheme()
-
-    const { houseId } = useParams</**
-     *
-     */
-    {
-        // eslint-disable-next-line jsdoc/require-jsdoc
-        houseId: string
-    }>()
-
-    const housingId = parseInt(houseId)
-
     const history = useHistory()
+
     return (
         <Root
             header={
                 <ThemeProvider theme={theme}>
-                    <Button
-                        sx={{ color: 'primary.contrastText' }}
-                        onClick={() => history.push(`${URL_MY_HOUSE}/${housingId}`)}
-                        className="text-16 ml-12"
-                    >
+                    <Button sx={{ color: 'primary.contrastText' }} onClick={history.goBack} className="text-16 ml-12">
                         <Icon
                             component={motion.span}
                             initial={{ scale: 0 }}
