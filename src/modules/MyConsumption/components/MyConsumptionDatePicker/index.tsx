@@ -20,6 +20,7 @@ import DateFnsUtils from '@date-io/date-fns'
 import { fr } from 'date-fns/locale'
 import { useIntl } from 'src/common/react-platform-translation'
 import { mobileDatePickerPeriodProps } from 'src/modules/MyConsumption/utils/myConsumptionVariables'
+import { useState } from 'react'
 
 /**
  * MyConsumptionDatePicker component allows the user to select a new date and use
@@ -39,9 +40,11 @@ const MyConsumptionDatePicker = ({
     range,
     onDatePickerChange,
     maxDate,
-}: IMyConsumptionDatePicker) => {
+}: IMyConsumptionDatePicker | any) => {
     const theme = useTheme()
     const { formatMessage } = useIntl()
+    const [isRangeLoading, setIsRangeLoading] = useState(false)
+
     const rangeDateFormat = {
         from: getDateWithTimezoneOffset(range.from),
         // Because range is already in local time and ISO String, we convert from string to Date without applying local time.
@@ -74,6 +77,8 @@ const MyConsumptionDatePicker = ({
         date: Date,
         operator: 'add' | 'sub',
     ) => {
+        setIsRangeLoading(true)
+        setTimeout(() => setIsRangeLoading(false), 1500) // This will reset  disabled state of the arrows
         const toDate = period === 'daily' ? calculateDays(date, 1) : date
         if (onDatePickerChange)
             onDatePickerChange(
@@ -94,7 +99,8 @@ const MyConsumptionDatePicker = ({
                 aria-label="Previous"
                 onClick={() => handleClick(subDays, rangeDateFormat.from, 'sub')}
                 size="large"
-                style={{ color: theme.palette.secondary.light }}
+                style={{ color: isRangeLoading ? theme.palette.grey[600] : theme.palette.secondary.light }}
+                disabled={isRangeLoading}
             >
                 <Icon>chevron_left </Icon>
             </IconButton>
@@ -137,9 +143,9 @@ const MyConsumptionDatePicker = ({
                 aria-label="Next"
                 onClick={() => handleClick(addDays, rangeDateFormat.to, 'add')}
                 size="large"
-                disabled={isFutureDate}
+                disabled={isFutureDate || isRangeLoading}
                 style={{
-                    color: isFutureDate ? theme.palette.grey[600] : theme.palette.secondary.light,
+                    color: isFutureDate || isRangeLoading ? theme.palette.grey[600] : theme.palette.secondary.light,
                 }}
             >
                 <Icon>chevron_right</Icon>
