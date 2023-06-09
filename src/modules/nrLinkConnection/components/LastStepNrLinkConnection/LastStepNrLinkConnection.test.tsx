@@ -5,10 +5,13 @@ import { TEST_METERS as MOCK_METERS } from 'src/mocks/handlers/meters'
 import userEvent from '@testing-library/user-event'
 import { IMeter } from 'src/modules/Meters/Meters'
 import { applyCamelCase } from 'src/common/react-platform-components'
+import { manualContractFillingIsEnabled } from 'src/modules/MyHouse/MyHouseConfig'
 
 const TEST_METERS: IMeter[] = applyCamelCase(MOCK_METERS)
 // List of houses to add to the redux state
-const NEXT_BUTTON_TEXT = 'Suivant'
+// if manualContractFilling is enabled so there is also anther step which is Contract step configuration,
+// else we were in the last step.
+const NEXT_BUTTON_TEXT = manualContractFillingIsEnabled ? 'Suivant' : 'Terminer'
 const REQUIRED_ERROR_TEXT = 'Champ obligatoire non renseigné'
 
 const guidNrlinkInputQuerySelector = 'input[name="nrlinkGuid"]'

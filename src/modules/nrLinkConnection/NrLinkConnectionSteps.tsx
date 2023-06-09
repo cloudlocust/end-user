@@ -21,6 +21,8 @@ import { RootState } from 'src/redux'
 import { linksColor, primaryContrastTextColor, primaryMainColor } from 'src/modules/utils/muiThemeVariables'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import ContractStepNrLinkConnection from 'src/modules/nrLinkConnection/components/ContractStepNrLinkConnection/ContractStepNrLinkConnection'
+import { manualContractFillingIsEnabled } from 'src/modules/MyHouse/MyHouseConfig'
+
 /**
  * Component representing the action buttons in the Stepper (Previous, Next), Next Button will be of type Submit.
  *
@@ -87,8 +89,12 @@ const stepsLabels = [
     'Je branche mon capteur',
     'Je configure mon compteur Linky',
     'Je configure mon capteur',
-    "Je configure mon contrat de fourniture d'énergie",
+    // "Je configure mon contrat de fourniture d'énergie",
 ]
+
+if (manualContractFillingIsEnabled) {
+    stepsLabels.push("Je configure mon contrat de fourniture d'énergie")
+}
 
 /**
  * NrLinkConnectionStep Component.
@@ -222,7 +228,7 @@ import { TEST_HOUSES } from 'src/mocks/handlers/houses'
             meter={meter}
             setIsNrLinkAuthorizeInProgress={setIsNrLinkAuthorizeInProgress}
         />,
-        <ContractStepNrLinkConnection housingId={housingId} />,
+        manualContractFillingIsEnabled ? <ContractStepNrLinkConnection housingId={housingId} /> : null,
     ]
 
     return (
