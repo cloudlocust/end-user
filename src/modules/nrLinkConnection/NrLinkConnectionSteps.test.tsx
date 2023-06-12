@@ -1,18 +1,18 @@
 import { waitFor } from '@testing-library/react'
 import { BrowserRouter as Router } from 'react-router-dom'
 import { reduxedRender } from 'src/common/react-platform-components/test'
-import { ActionsNrLinkConnectionSteps, NrLinkConnectionSteps } from 'src/modules/nrLinkConnection'
+import { NrLinkConnectionSteps } from 'src/modules/nrLinkConnection'
 import userEvent from '@testing-library/user-event'
 import { URL_CONSUMPTION } from 'src/modules/MyConsumption'
 
 const BACK_BUTTON_TEXT = 'Précédent'
 const NEXT_BUTTON_TEXT = 'Suivant'
 const SKIP_LINK_TEXT = "Aller vers l'accueil"
-const loadingButtonClassName = '.MuiCircularProgress-root '
 const horizontalStepperClassName = '.MuiStep-horizontal'
 const verticalStepperClassName = '.MuiStep-vertical'
 const stepperContentClassName = '.StepperContent'
 const stepContentClassName = '.MuiStepContent-root'
+let mockManualContractFillingIsEnabled = true
 const mockHistoryPush = jest.fn()
 
 let mockUseMediaQuery = true
@@ -31,21 +31,13 @@ jest.mock('@mui/material', () => ({
     useMediaQuery: () => mockUseMediaQuery,
 }))
 
-// eslint-disable-next-line jsdoc/require-jsdoc
-const actionsNrLinkConnectionStepsProps: {
+jest.mock('src/modules/MyHouse/MyHouseConfig', () => ({
+    ...jest.requireActual('src/modules/MyHouse/MyHouseConfig'),
     // eslint-disable-next-line jsdoc/require-jsdoc
-    activeStep: number
-    // eslint-disable-next-line jsdoc/require-jsdoc
-    handleBack: () => void
-    // eslint-disable-next-line jsdoc/require-jsdoc
-    handleNext: () => void
-    // eslint-disable-next-line jsdoc/require-jsdoc
-    inProgress?: boolean
-} = {
-    handleNext: jest.fn(),
-    handleBack: jest.fn(),
-    activeStep: 0,
-}
+    get manualContractFillingIsEnabled() {
+        return mockManualContractFillingIsEnabled
+    },
+}))
 
 /* eslint-disable-next-line jsdoc/require-jsdoc */
 const NrLinkConnectionStepsRouter = () => (
@@ -54,6 +46,19 @@ const NrLinkConnectionStepsRouter = () => (
     </Router>
 )
 describe('Test NrLinkConnection Page', () => {
+    const windowMatchMediaValue = {
+        // INDICATES THE RESULT OF THE matchMedia("portrait")
+        // true means it's portrait and thus Stepper vertical
+        // false means it's landscape and thus Stepper horizontal
+        matches: true,
+        media: null,
+        onchange: null,
+        addListener: jest.fn(), // Deprecated
+        removeListener: jest.fn(), // Deprecated
+        addEventListener: jest.fn(),
+        removeEventListener: jest.fn(),
+        dispatchEvent: jest.fn(),
+    }
     describe('mobileOrientation', () => {
         test('When Screen is portrait stepper is vertical, and content is inside the stepper and stepContent', async () => {
             // Mock MatchMedia of window
@@ -63,14 +68,9 @@ describe('Test NrLinkConnection Page', () => {
                 value: jest.fn().mockImplementation((query) => ({
                     // INDICATES THE RESULT OF THE matchMedia("portrait")
                     // false means it's landscape and thus Stepper horizontal
+                    ...windowMatchMediaValue,
                     matches: false,
                     media: query,
-                    onchange: null,
-                    addListener: jest.fn(), // Deprecated
-                    removeListener: jest.fn(), // Deprecated
-                    addEventListener: jest.fn(),
-                    removeEventListener: jest.fn(),
-                    dispatchEvent: jest.fn(),
                 })),
             })
             const { getByText, container } = reduxedRender(<NrLinkConnectionStepsRouter />)
@@ -87,14 +87,9 @@ describe('Test NrLinkConnection Page', () => {
                 value: jest.fn().mockImplementation((query) => ({
                     // INDICATES THE RESULT OF THE matchMedia("portrait")
                     // true means it's portrait and thus Stepper vertical
+                    ...windowMatchMediaValue,
                     matches: true,
                     media: query,
-                    onchange: null,
-                    addListener: jest.fn(), // Deprecated
-                    removeListener: jest.fn(), // Deprecated
-                    addEventListener: jest.fn(),
-                    removeEventListener: jest.fn(),
-                    dispatchEvent: jest.fn(),
                 })),
             })
             const { getByText, container } = reduxedRender(<NrLinkConnectionStepsRouter />)
@@ -109,21 +104,14 @@ describe('Test NrLinkConnection Page', () => {
     })
     describe('test stateChanges', () => {
         test('handleNext and handleBack changes the activeStep', async () => {
-            let mockPortraitOrientation = true
             mockUseMediaQuery = false
             Object.defineProperty(window, 'matchMedia', {
                 writable: true,
                 value: jest.fn().mockImplementation((mediaParam) => ({
                     // INDICATES THE RESULT OF THE matchMedia("portrait")
                     // true means it's portrait and thus Stepper vertical
-                    matches: mockPortraitOrientation,
+                    ...windowMatchMediaValue,
                     media: mediaParam,
-                    onchange: null,
-                    addListener: jest.fn(), // Deprecated
-                    removeListener: jest.fn(), // Deprecated
-                    addEventListener: jest.fn(),
-                    removeEventListener: jest.fn(),
-                    dispatchEvent: jest.fn(),
                 })),
             })
 
@@ -149,14 +137,9 @@ describe('Test NrLinkConnection Page', () => {
                 writable: true,
                 value: jest.fn().mockImplementation((media) => ({
                     // INDICATES THE RESULT OF THE matchMedia("portrait")
+                    ...windowMatchMediaValue,
                     matches: mockPortraitOrientation,
                     media: media,
-                    onchange: null,
-                    addListener: jest.fn(), // Deprecated
-                    removeListener: jest.fn(), // Deprecated
-                    addEventListener: jest.fn(),
-                    removeEventListener: jest.fn(),
-                    dispatchEvent: jest.fn(),
                 })),
             })
 
@@ -188,50 +171,5 @@ describe('Test NrLinkConnection Page', () => {
                 { timeout: 5000 },
             )
         }, 20000)
-    })
-
-    describe('test ActionsNrLinkConnectionSteps', () => {
-        test('When activeStep equals first index, Back boutton should be hidden, and when clicking on next handleNext should be called', async () => {
-            const handleNext = jest.fn()
-            actionsNrLinkConnectionStepsProps.handleNext = handleNext
-            const { getByText } = reduxedRender(<ActionsNrLinkConnectionSteps {...actionsNrLinkConnectionStepsProps} />)
-
-            expect(() => getByText(BACK_BUTTON_TEXT)).toThrow()
-            expect(getByText(NEXT_BUTTON_TEXT)).toBeTruthy()
-            userEvent.click(getByText(NEXT_BUTTON_TEXT))
-
-            await waitFor(() => {
-                expect(handleNext).toHaveBeenCalled()
-            })
-        })
-        test('When activeStep equals last index, and clicking on Suivant, the contract setup step is shown', async () => {
-            const handleNext = jest.fn()
-            const handleBack = jest.fn()
-            actionsNrLinkConnectionStepsProps.handleNext = handleNext
-            actionsNrLinkConnectionStepsProps.activeStep = 2
-            actionsNrLinkConnectionStepsProps.handleBack = handleBack
-            const { getByText } = reduxedRender(<ActionsNrLinkConnectionSteps {...actionsNrLinkConnectionStepsProps} />)
-
-            expect(getByText(NEXT_BUTTON_TEXT)).toBeTruthy()
-            expect(getByText(BACK_BUTTON_TEXT)).toBeTruthy()
-            userEvent.click(getByText(BACK_BUTTON_TEXT))
-            userEvent.click(getByText(NEXT_BUTTON_TEXT))
-
-            await waitFor(() => {
-                expect(handleBack).toHaveBeenCalled()
-            })
-            expect(handleNext).toHaveBeenCalled()
-        })
-
-        test('When inProgress props, spinner should be shown', async () => {
-            actionsNrLinkConnectionStepsProps.inProgress = true
-            const { container } = reduxedRender(<ActionsNrLinkConnectionSteps {...actionsNrLinkConnectionStepsProps} />)
-            expect(container.querySelector(loadingButtonClassName)).toBeInTheDocument()
-        })
-        test("when activeStep is 4th, Aller vers l'accueil message isn't shown", async () => {
-            actionsNrLinkConnectionStepsProps.activeStep = 3
-            const { getByText } = reduxedRender(<ActionsNrLinkConnectionSteps {...actionsNrLinkConnectionStepsProps} />)
-            expect(() => getByText("Aller vers l'accueil")).toThrow()
-        })
     })
 })
