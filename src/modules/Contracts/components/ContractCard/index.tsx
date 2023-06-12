@@ -5,6 +5,7 @@ import IconButton from '@mui/material/IconButton'
 import Typography from '@mui/material/Typography'
 import EditIcon from '@mui/icons-material/Edit'
 import DeleteIcon from '@mui/icons-material/Delete'
+import InfoIcon from '@mui/icons-material/Info'
 import { ContractCardProps, contractsRouteParam } from 'src/modules/Contracts/contractsTypes'
 import { useConfirm } from 'material-ui-confirm'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
@@ -16,6 +17,7 @@ import { addContractDataType } from 'src/modules/Contracts/contractsTypes.d'
 import ContractForm from 'src/modules/Contracts/components/ContractForm'
 import dayjs from 'dayjs'
 import { useIntl } from 'react-intl'
+import { manualContractFillingIsEnabled } from 'src/modules/MyHouse/MyHouseConfig'
 
 /**
  * Contract Card component.
@@ -116,16 +118,16 @@ const ContractCard = ({ contract, onAfterDeleteUpdateSuccess }: ContractCardProp
                                 setIsContractFormOpen(true)
                             }}
                         >
-                            <EditIcon />
+                            {manualContractFillingIsEnabled ? <EditIcon /> : <InfoIcon />}
                         </IconButton>
                         {/* Because material-ui-confirm package close the dialog whether we click on CONFIRM or CANCEL buttons, for user experience showing the spinner in the card when removing contract. */}
                         {isContractsLoading ? (
                             <CircularProgress style={{ color: '#D32F2F', width: '32px', height: '32px' }} />
-                        ) : (
+                        ) : manualContractFillingIsEnabled ? (
                             <IconButton color="error" size="small" onClick={onDeleteClick}>
                                 <DeleteIcon />
                             </IconButton>
-                        )}
+                        ) : null}
                     </div>
                 </div>
 

@@ -6,6 +6,7 @@ import MenuItem from '@mui/material/MenuItem'
 import CircularProgress from '@mui/material/CircularProgress'
 import { isNull } from 'lodash'
 import { useFormContext } from 'react-hook-form'
+import { manualContractFillingIsEnabled } from 'src/modules/MyHouse/MyHouseConfig'
 
 /**
  * ContractFormSelect component that calls the loadOptions on mount, and show the Select with optionList or spinner when loadOptions are still pending.
@@ -68,7 +69,7 @@ const ContractFormSelect = <T extends unknown>({
                     defaultMessage: `${label}`,
                 })}
                 defaultValue=""
-                disabled={optionList.length === 1 && !otherOptionLabel}
+                disabled={!manualContractFillingIsEnabled || (optionList.length === 1 && !otherOptionLabel)}
                 validateFunctions={validateFunctions}
                 {...otherSelectProps}
             >

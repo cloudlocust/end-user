@@ -3,7 +3,7 @@ import { DefaultContractWarningProps } from 'src/modules/MyConsumption/myConsump
 import { useSelector } from 'react-redux'
 import { RootState } from 'src/redux'
 import { linksColor, warningMainHashColor } from 'src/modules/utils/muiThemeVariables'
-import { URL_MY_HOUSE } from 'src/modules/MyHouse/MyHouseConfig'
+import { URL_MY_HOUSE, manualContractFillingIsEnabled } from 'src/modules/MyHouse/MyHouseConfig'
 import { NavLink } from 'react-router-dom'
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline'
 import { useIntl } from 'react-intl'
@@ -39,14 +39,16 @@ export const DefaultContractWarning = ({ isShowWarning }: DefaultContractWarning
                     Ce graphe est un exemple basé sur un tarif Bleu EDF Base. Vos données contractuelles de fourniture
                     d'énergie ne sont pas disponibles sur toute la période.
                 </TypographyFormatMessage>
-                <NavLink to={`${URL_MY_HOUSE}/${currentHousing?.id}/contracts`}>
-                    <TypographyFormatMessage
-                        className="underline text-13 md:text-16 text-center"
-                        sx={{ color: linksColor || warningMainHashColor }}
-                    >
-                        Renseigner votre contrat d'énergie
-                    </TypographyFormatMessage>
-                </NavLink>
+                {manualContractFillingIsEnabled ? (
+                    <NavLink to={`${URL_MY_HOUSE}/${currentHousing?.id}/contracts`}>
+                        <TypographyFormatMessage
+                            className="underline text-13 md:text-16 text-center"
+                            sx={{ color: linksColor || warningMainHashColor }}
+                        >
+                            Renseigner votre contrat d'énergie
+                        </TypographyFormatMessage>
+                    </NavLink>
+                ) : null}
             </div>
         </div>
     )

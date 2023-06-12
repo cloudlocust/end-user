@@ -5,7 +5,7 @@ import { NavLink } from 'react-router-dom'
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline'
 import IconButton from '@mui/material/IconButton'
 import Tooltip from '@mui/material/Tooltip'
-import { URL_MY_HOUSE } from 'src/modules/MyHouse/MyHouseConfig'
+import { URL_MY_HOUSE, manualContractFillingIsEnabled } from 'src/modules/MyHouse/MyHouseConfig'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import { metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
 import { linksColor, warningMainHashColor } from 'src/modules/utils/muiThemeVariables'
@@ -28,14 +28,16 @@ export const EuroWidgetInfoIcon = () => {
             title={
                 <div>
                     <TypographyFormatMessage className="text-center">Ce coût est un exemple.</TypographyFormatMessage>
-                    <NavLink to={currentHousing ? `${URL_MY_HOUSE}/${currentHousing?.id}/contracts` : URL_MY_HOUSE}>
-                        <TypographyFormatMessage
-                            sx={{ color: linksColor || '#FFFFFF' }}
-                            className="underline text-center"
-                        >
-                            Renseigner un contrat d'énergie.
-                        </TypographyFormatMessage>
-                    </NavLink>
+                    {manualContractFillingIsEnabled ? (
+                        <NavLink to={currentHousing ? `${URL_MY_HOUSE}/${currentHousing?.id}/contracts` : URL_MY_HOUSE}>
+                            <TypographyFormatMessage
+                                sx={{ color: linksColor || '#FFFFFF' }}
+                                className="underline text-center"
+                            >
+                                Renseigner un contrat d'énergie.
+                            </TypographyFormatMessage>
+                        </NavLink>
+                    ) : null}
                 </div>
             }
         >

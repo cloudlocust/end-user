@@ -14,6 +14,7 @@ import { isEmpty, isNull } from 'lodash'
 import { primaryMainColor } from 'src/modules/utils/muiThemeVariables'
 import Dialog from '@mui/material/Dialog'
 import ContractForm from 'src/modules/Contracts/components/ContractForm'
+import { manualContractFillingIsEnabled } from 'src/modules/MyHouse/MyHouseConfig'
 
 /**
  * ContractsList Page Component.
@@ -73,7 +74,9 @@ const ContractList = () => {
                             className="text-13 font-medium md:text-16 w-full text-center"
                             sx={{ color: 'primary.main' }}
                         >
-                            Aucun contrat de fourniture d'énergie enregistré
+                            {manualContractFillingIsEnabled
+                                ? "Aucun contrat de fourniture d'énergie enregistré"
+                                : 'Grille tarifaire en cours de configuration'}
                         </TypographyFormatMessage>
                     </div>
                 ) : (

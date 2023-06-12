@@ -9,11 +9,14 @@ import { ContractFormProps } from 'src/modules/Contracts/contractsTypes.d'
 import { formatLoadContractResponseToIContract } from 'src/modules/Contracts/utils/contractsFunctions'
 import { IContract, loadContractResponse } from 'src/modules/Contracts/contractsTypes'
 import dayjs from 'dayjs'
+import { manualContractFillingIsEnabled } from 'src/modules/MyHouse/MyHouseConfig'
 
 const TEST_CONTRACTS: IContract[] = applyCamelCase(MOCK_CONTRACTS).map((contract: loadContractResponse) =>
     formatLoadContractResponseToIContract(contract),
 )
-const EMPTY_CONTRACT_LIST_MESSAGE_TEXT = "Aucun contrat de fourniture d'énergie enregistré"
+const EMPTY_CONTRACT_LIST_MESSAGE_TEXT = manualContractFillingIsEnabled
+    ? "Aucun contrat de fourniture d'énergie enregistré"
+    : 'Grille tarifaire en cours de configuration'
 const mockHouseId = TEST_HOUSE_ID
 let mockIsContractsLoading = false
 let mockReloadContractList = jest.fn()
