@@ -474,26 +474,26 @@ describe('getRangeV2', () => {
 describe('subtractTime', () => {
     const currentDate = new Date()
 
-    it('should subtract the correct time for DAILY period', () => {
-        const expectedDate = subDays(currentDate, 1)
+    it('should subtract 1 day from the current date for DAILY period', () => {
+        const expectedDate = getDateWithoutTimezoneOffset(subDays(startOfDay(currentDate), 1))
         const actualDate = subtractTime(currentDate, PeriodEnum.DAILY)
         expect(actualDate).toEqual(expectedDate)
     })
 
-    it('should subtract the correct time for WEEKLY period', () => {
-        const expectedDate = subWeeks(startOfWeek(currentDate, { locale: fr }), 1)
+    it('should subtract 1 week from the current date for WEEKLY period', () => {
+        const expectedDate = getDateWithoutTimezoneOffset(subWeeks(startOfWeek(currentDate, { locale: fr }), 1))
         const actualDate = subtractTime(currentDate, PeriodEnum.WEEKLY)
         expect(actualDate).toEqual(expectedDate)
     })
 
-    it('should subtract the correct time for MONTHLY period', () => {
-        const expectedDate = subMonths(startOfMonth(currentDate), 1)
+    it('should subtract 1 month from the current date for MONTHLY period', () => {
+        const expectedDate = getDateWithoutTimezoneOffset(subMonths(startOfMonth(currentDate), 1))
         const actualDate = subtractTime(currentDate, PeriodEnum.MONTHLY)
         expect(actualDate).toEqual(expectedDate)
     })
 
-    it('should subtract the correct time for YEARLY period', () => {
-        const expectedDate = subYears(startOfYear(currentDate), 1)
+    it('should subtract 1 year from the current date for YEARLY period', () => {
+        const expectedDate = getDateWithoutTimezoneOffset(subYears(startOfYear(currentDate), 1))
         const actualDate = subtractTime(currentDate, PeriodEnum.YEARLY)
         expect(actualDate).toEqual(expectedDate)
     })
@@ -502,26 +502,26 @@ describe('subtractTime', () => {
 describe('addTime', () => {
     const currentDate = new Date()
 
-    it('should add the correct time for DAILY period', () => {
-        const expectedDate = addDays(startOfDay(currentDate), 1)
+    it('should add 1 day to the current date for DAILY period', () => {
+        const expectedDate = getDateWithoutTimezoneOffset(addDays(startOfDay(currentDate), 1))
         const actualDate = addTime(currentDate, PeriodEnum.DAILY)
         expect(actualDate).toEqual(expectedDate)
     })
 
-    it('should add the correct time for WEEKLY period', () => {
-        const expectedDate = addWeeks(startOfWeek(currentDate, { locale: fr }), 1)
+    it('should add 1 week to the current date for WEEKLY period', () => {
+        const expectedDate = getDateWithoutTimezoneOffset(addWeeks(startOfWeek(currentDate, { locale: fr }), 1))
         const actualDate = addTime(currentDate, PeriodEnum.WEEKLY)
         expect(actualDate).toEqual(expectedDate)
     })
 
-    it('should add the correct time for MONTHLY period', () => {
-        const expectedDate = addMonths(startOfMonth(currentDate), 1)
+    it('should add 1 month to the current date for MONTHLY period', () => {
+        const expectedDate = getDateWithoutTimezoneOffset(addMonths(startOfMonth(currentDate), 1))
         const actualDate = addTime(currentDate, PeriodEnum.MONTHLY)
         expect(actualDate).toEqual(expectedDate)
     })
 
-    it('should add the correct time for YEARLY period', () => {
-        const expectedDate = addYears(startOfYear(currentDate), 1)
+    it('should add 1 year to the current date for YEARLY period', () => {
+        const expectedDate = getDateWithoutTimezoneOffset(addYears(startOfYear(currentDate), 1))
         const actualDate = addTime(currentDate, PeriodEnum.YEARLY)
         expect(actualDate).toEqual(expectedDate)
     })

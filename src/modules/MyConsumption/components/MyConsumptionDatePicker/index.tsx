@@ -1,7 +1,7 @@
 import Icon from '@mui/material/Icon'
 import IconButton from '@mui/material/IconButton'
 import { motion } from 'framer-motion'
-import { differenceInCalendarDays, subDays, addDays } from 'date-fns'
+import { subDays, addDays } from 'date-fns'
 import { dateFnsPeriod, IMyConsumptionDatePicker, ViewsType } from 'src/modules/MyConsumption/myConsumptionTypes'
 import { useTheme } from '@mui/material'
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
@@ -49,7 +49,7 @@ const MyConsumptionDatePicker = ({
         to: getDateWithTimezoneOffset(range.to),
     }
 
-    const isFutureDate = differenceInCalendarDays(rangeDateFormat.to, maxDate || new Date()) >= 0
+    const isFutureDate = rangeDateFormat.to >= (maxDate || new Date())
 
     /**
      * Handle data change.

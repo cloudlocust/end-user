@@ -649,19 +649,19 @@ export function getCalendarDates(
     switch (operator) {
         case 'sub':
             return {
-                from: getDateWithoutTimezoneOffset(subtractTime(new Date(from), period)),
-                to: getDateWithoutTimezoneOffset(subtractTime(new Date(to), period)),
+                from: subtractTime(new Date(from), period),
+                to: subtractTime(new Date(to), period),
             }
         case 'add':
             return {
-                from: getDateWithoutTimezoneOffset(addTime(new Date(from), period)),
-                to: getDateWithoutTimezoneOffset(addTime(new Date(to), period)),
+                from: addTime(new Date(from), period),
+                to: addTime(new Date(to), period),
             }
         case 'none':
         default:
             return {
-                from: getDateWithoutTimezoneOffset(new Date(from)),
-                to: getDateWithoutTimezoneOffset(new Date(to)),
+                from: new Date(from),
+                to: new Date(to),
             }
     }
 }
@@ -676,13 +676,13 @@ export function getCalendarDates(
 export function subtractTime(date: Date, period: PeriodEnum) {
     switch (period) {
         case PeriodEnum.DAILY:
-            return subDays(date, 1)
+            return getDateWithoutTimezoneOffset(subDays(startOfDay(date), 1))
         case PeriodEnum.WEEKLY:
-            return subWeeks(startOfWeek(date, { locale: fr }), 1)
+            return getDateWithoutTimezoneOffset(subWeeks(startOfWeek(date, { locale: fr }), 1))
         case PeriodEnum.MONTHLY:
-            return subMonths(startOfMonth(date), 1)
+            return getDateWithoutTimezoneOffset(subMonths(startOfMonth(date), 1))
         case PeriodEnum.YEARLY:
-            return subYears(startOfYear(date), 1)
+            return getDateWithoutTimezoneOffset(subYears(startOfYear(date), 1))
     }
 }
 
@@ -696,13 +696,13 @@ export function subtractTime(date: Date, period: PeriodEnum) {
 export function addTime(date: Date, period: PeriodEnum) {
     switch (period) {
         case PeriodEnum.DAILY:
-            return addDays(startOfDay(date), 1)
+            return getDateWithoutTimezoneOffset(addDays(startOfDay(date), 1))
         case PeriodEnum.WEEKLY:
-            return addWeeks(startOfWeek(date, { locale: fr }), 1)
+            return getDateWithoutTimezoneOffset(addWeeks(startOfWeek(date, { locale: fr }), 1))
         case PeriodEnum.MONTHLY:
-            return addMonths(startOfMonth(date), 1)
+            return getDateWithoutTimezoneOffset(addMonths(startOfMonth(date), 1))
         case PeriodEnum.YEARLY:
-            return addYears(startOfYear(date), 1)
+            return getDateWithoutTimezoneOffset(addYears(startOfYear(date), 1))
     }
 }
 
@@ -714,8 +714,7 @@ export function addTime(date: Date, period: PeriodEnum) {
  */
 export function getRangeV2(period: PeriodEnum) {
     const currentDate = new Date()
-    const isFuture = currentDate > new Date()
-
+    const isFutureDate = currentDate > new Date()
     const currentEndDay = getDateWithoutTimezoneOffset(endOfDay(currentDate))
 
     switch (period) {
@@ -727,17 +726,23 @@ export function getRangeV2(period: PeriodEnum) {
         case PeriodEnum.WEEKLY:
             return {
                 from: getDateWithoutTimezoneOffset(startOfWeek(currentDate, { locale: fr })),
-                to: isFuture ? currentEndDay : getDateWithoutTimezoneOffset(endOfWeek(currentDate, { locale: fr })),
+                to: isFutureDate
+                    ? getDateWithoutTimezoneOffset(currentDate)
+                    : getDateWithoutTimezoneOffset(endOfWeek(currentDate, { locale: fr })),
             }
         case PeriodEnum.MONTHLY:
             return {
                 from: getDateWithoutTimezoneOffset(startOfMonth(currentDate)),
-                to: isFuture ? currentEndDay : getDateWithoutTimezoneOffset(endOfMonth(currentDate)),
+                to: isFutureDate
+                    ? getDateWithoutTimezoneOffset(currentDate)
+                    : getDateWithoutTimezoneOffset(endOfMonth(currentDate)),
             }
         case PeriodEnum.YEARLY:
             return {
                 from: getDateWithoutTimezoneOffset(startOfYear(currentDate)),
-                to: isFuture ? currentEndDay : getDateWithoutTimezoneOffset(endOfYear(currentDate)),
+                to: isFutureDate
+                    ? getDateWithoutTimezoneOffset(currentDate)
+                    : getDateWithoutTimezoneOffset(endOfYear(currentDate)),
             }
     }
 }
