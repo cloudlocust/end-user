@@ -21,10 +21,10 @@ let mockData: IMetric[] = TEST_SUCCESS_MONTH_METRICS([
     metricTargetsEnum.pMax,
 ])
 let mockNrlinkConsent: string
+let mockHasMissingHousingContracts = true
 let mockSetRange = jest.fn()
 let mockIsMetricsLoading = false
-const HAS_MISSING_CONTRACTS_WARNING_TEXT =
-    "Le coût en euros est un exemple. Vos données contractuelles de fourniture d'énergie ne sont pas disponibles sur toute la période."
+const HAS_MISSING_CONTRACTS_WARNING_TEXT = 'Le coût en euros est un exemple. Pour avoir un le coût réel.'
 const HAS_MISSING_CONTRACTS_WARNING_REDIRECT_LINK_TEXT = "Renseigner votre contrat d'énergie"
 const MIN_CONSUMPTION_DAY_HIGHLIGHT = 'minConsumptionDay'
 const MIN_CONSUMPTION_DAY_CHART = 'minConsumptionDayChart'
@@ -44,6 +44,7 @@ const REDIRECT_TEXT = 'enregistrer votre compteur et votre nrLINK'
 const INCREMENT_DATE_ARROW_TEXT = 'chevron_right'
 const mockTheme = createTheme()
 const ANALYSIS_ENEDIS_SGE_WARNING_TEXT = 'Accéder à votre historique de consommation'
+const NO_DATA_TEXT = 'Aucune donnée disponible'
 
 // Enedis Consent format
 const mockEnedisSgeConsentConnected: IEnedisSgeConsent = {
@@ -121,7 +122,7 @@ jest.mock(
 jest.mock('src/hooks/HasMissingHousingContracts', () => ({
     // eslint-disable-next-line jsdoc/require-jsdoc
     useHasMissingHousingContracts: () => ({
-        hasMissingHousingContracts: true,
+        hasMissingHousingContracts: mockHasMissingHousingContracts,
     }),
 }))
 
@@ -269,5 +270,17 @@ describe('Analysis test', () => {
         expect(getByText('Consommation de veille :')).toBeTruthy()
         expect(getByText(`Moyenne par jour :`)).toBeTruthy()
         expect(getByText('Totale sur le mois :')).toBeTruthy()
+    })
+
+    test('when there is no data, an error message is shown', async () => {
+        mockData = []
+        mockHasMissingHousingContracts = false
+        const { getByText } = reduxedRender(
+            <Router>
+                <Analysis />
+            </Router>,
+            { initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[0] } } },
+        )
+        expect(getByText(NO_DATA_TEXT)).toBeTruthy()
     })
 })
