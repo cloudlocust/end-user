@@ -321,19 +321,16 @@ const ButtonsGroup = ({ isConsumptionAlertsLoading, isSavingAlertLoading }: Cons
 
     return (
         <div className="flex justify-center content-center">
-            <div className="ml-24">
-                <LoadingButton
-                    loading={isConsumptionAlertsLoading || isSavingAlertLoading}
-                    type="submit"
-                    variant="contained"
-                    className="ml-8"
-                >
-                    {formatMessage({
-                        id: 'Enregistrer',
-                        defaultMessage: 'Enregistrer',
-                    })}
-                </LoadingButton>
-            </div>
+            <LoadingButton
+                loading={isConsumptionAlertsLoading || isSavingAlertLoading}
+                type="submit"
+                variant="contained"
+            >
+                {formatMessage({
+                    id: 'Enregistrer',
+                    defaultMessage: 'Enregistrer',
+                })}
+            </LoadingButton>
         </div>
     )
 }

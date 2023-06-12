@@ -2,7 +2,8 @@ import { reduxedRender } from 'src/common/react-platform-components/test'
 import { BrowserRouter as Router } from 'react-router-dom'
 import { applyCamelCase } from 'src/common/react-platform-components'
 import { waitFor } from '@testing-library/react'
-import { MyHouse, URL_MY_HOUSE } from 'src/modules/MyHouse'
+import { URL_MY_HOUSE } from 'src/modules/MyHouse'
+import { Contracts } from 'src/modules/Contracts'
 import { DEFAULT_LOCALE } from 'src/configs'
 import { TEST_HOUSES } from 'src/mocks/handlers/houses'
 import { IHousing } from 'src/modules/MyHouse/components/HousingList/housing.d'
@@ -12,9 +13,8 @@ import { models } from 'src/models'
 const LIST_OF_HOUSES: IHousing[] = applyCamelCase(TEST_HOUSES)
 
 let mockReplace = jest.fn()
-const NO_CURRENT_HOUSING_ERROR = 'Veuillez sélectionner un logement pour voir ses détails.'
 const circularProgressClassname = '.MuiCircularProgress-root'
-const HOUSING_DETAILS_TEXT = 'HOUSING_DETAILS_TEXT'
+const CONTRACT_LIST_TEXT = 'CONTRACT_LIST_TEXT'
 let mockHouseId = '' + LIST_OF_HOUSES[0].id
 
 /**
@@ -37,64 +37,53 @@ jest.mock('react-router-dom', () => ({
 }))
 
 /**
- * Mocking the HousingDetails.
+ * Mocking the ContractList.
  */
-jest.mock('src/modules/MyHouse/components/HousingDetails', () => ({
-    ...jest.requireActual('src/modules/MyHouse/components/HousingDetails'),
+jest.mock(
+    'src/modules/Contracts/components/ContractList',
     // eslint-disable-next-line jsdoc/require-jsdoc
-    HousingDetails: () => <h1>{HOUSING_DETAILS_TEXT}</h1>,
-}))
+    () => () => <h1>{CONTRACT_LIST_TEXT}</h1>,
+)
 
 // mock store.
 const store = init({
     models,
 })
 
-describe('Test MyHouse Component', () => {
+describe('Test Contracts Component', () => {
     beforeEach(async () => {
         await store.dispatch.translationModel.setLocale({ locale: DEFAULT_LOCALE, translations: null })
         await store.dispatch.housingModel.setHousingModelState(LIST_OF_HOUSES)
     })
 
-    test('When currentHousing is valid, and redirection happened, HousingDetails should show', async () => {
+    test('When Component mount and no select currentHousing happened, then history shouldnt change', async () => {
         const { getByText } = reduxedRender(
             <Router>
-                <MyHouse />
+                <Contracts />
             </Router>,
             { store },
         )
 
         await waitFor(() => {
-            expect(mockReplace).toHaveBeenCalledWith(URL_MY_HOUSE + '/' + TEST_HOUSES[0].id)
+            expect(mockReplace).not.toHaveBeenCalled()
         })
-        expect(getByText(HOUSING_DETAILS_TEXT)).toBeTruthy()
+        // Contracts rerender
+        expect(getByText(CONTRACT_LIST_TEXT)).toBeTruthy()
     })
 
-    test('When currentHousing is valid, but no redirection yet or houseId is invalid loading is shown', async () => {
-        mockHouseId = 'fake'
+    test('When Component mount and select currentHousing happened, then while history change spinner is shown', async () => {
         const { container } = reduxedRender(
             <Router>
-                <MyHouse />
+                <Contracts />
             </Router>,
             { store },
         )
+
+        // Select the current housing
+        store.dispatch.housingModel.setCurrentHousingState(LIST_OF_HOUSES[1].id)
         await waitFor(() => {
-            expect(mockReplace).toHaveBeenCalledWith(URL_MY_HOUSE + '/' + TEST_HOUSES[0].id)
+            expect(mockReplace).toHaveBeenCalledWith(URL_MY_HOUSE + '/' + TEST_HOUSES[1].id + '/contracts')
         })
         expect(container.querySelector(circularProgressClassname)).toBeInTheDocument()
-    })
-
-    test('when currentHousing is null, Error message is shown', async () => {
-        await store.dispatch.housingModel.setHousingModelState([])
-
-        const { getByText } = reduxedRender(
-            <Router>
-                <MyHouse />
-            </Router>,
-        )
-        await waitFor(() => {
-            expect(getByText(NO_CURRENT_HOUSING_ERROR)).toBeTruthy()
-        })
-        expect(mockReplace).not.toHaveBeenCalled()
     })
 })

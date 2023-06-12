@@ -1,7 +1,6 @@
 import { authTypes } from 'src/common/react-platform-components'
 import { IRouteNavigationConfig } from 'src/routes'
 import { MyHouse } from 'src/modules/MyHouse/MyHouse'
-import { HousingDetails } from 'src/modules/MyHouse/components/HousingDetails'
 import Equipments from 'src/modules/MyHouse/components/Equipments'
 import Accomodation from 'src/modules/MyHouse/components/Accomodation'
 import { ReactComponent as HousingIcon } from 'src/assets/images/navbarItems/Housings.svg'
@@ -100,7 +99,7 @@ export const MyHouseConfig = [
     } as IRouteNavigationConfig<MyHouseProps>,
     {
         path: URL_MY_HOUSE_DETAILS,
-        component: HousingDetails,
+        component: MyHouse,
         auth: { authType: authTypes.loginRequired },
         settings: {
             layout: {
