@@ -6,7 +6,7 @@ export type nrlinkConsentStatus = 'NONEXISTENT' | 'CONNECTED' | 'DISCONNECTED' |
 /**
  * Enedis Sge Consent Status.
  */
-export type enedisSgeConsentStatus = 'NONEXISTENT' | 'CONNECTED' | 'EXPIRED' | 'REVOKED'
+export type enedisSgeConsentStatus = 'NONEXISTENT' | 'CONNECTED' | 'EXPIRED' | 'REVOKED' | 'UNSYNCHRONIZED'
 
 /**
  * Enphhase consent status.
