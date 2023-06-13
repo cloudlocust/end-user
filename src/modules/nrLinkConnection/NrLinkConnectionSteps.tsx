@@ -25,7 +25,7 @@ import { manualContractFillingIsEnabled } from 'src/modules/MyHouse/MyHouseConfi
 /**
  *
  */
-export const stepsLabels = [
+export let stepsLabels = [
     'Je branche mon capteur',
     'Je configure mon compteur Linky',
     'Je configure mon capteur',
@@ -41,9 +41,9 @@ const NrLinkConnectionSteps = () => {
     const theme = useTheme()
     const { formatMessage } = useIntl()
 
-    // if manual contract is disabled, we skip the last step.
+    // if manual contract is disabled, we remove the step to configure the contract.
     if (!manualContractFillingIsEnabled) {
-        stepsLabels.pop()
+        stepsLabels = stepsLabels.filter((step) => step !== "Je configure mon contrat de fourniture d'énergie")
     }
 
     // this ones are for handling the housing id's and their speceif meters
@@ -80,10 +80,6 @@ const NrLinkConnectionSteps = () => {
         state: locationState,
     }: // eslint-disable-next-line jsdoc/require-jsdoc
     {
-        /**import { IHousing } from 'src/modules/MyHouse/components/HousingList/housing'
-import { TEST_HOUSES } from 'src/mocks/handlers/houses'
-         * Route state.
-         */
         // eslint-disable-next-line jsdoc/require-jsdoc
         state: {
             /**
@@ -169,8 +165,11 @@ import { TEST_HOUSES } from 'src/mocks/handlers/houses'
             meter={meter}
             setIsNrLinkAuthorizeInProgress={setIsNrLinkAuthorizeInProgress}
         />,
-        manualContractFillingIsEnabled ? <ContractStepNrLinkConnection housingId={housingId} /> : null,
     ]
+
+    if (!manualContractFillingIsEnabled) {
+        stepsContent.push(<ContractStepNrLinkConnection housingId={housingId} />)
+    }
 
     return (
         <div className="p-24 h-full relative md:mx-auto NrLinkConnectionSteps">

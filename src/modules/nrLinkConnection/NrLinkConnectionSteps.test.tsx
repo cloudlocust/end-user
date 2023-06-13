@@ -114,7 +114,6 @@ describe('Test NrLinkConnection Page', () => {
                     media: mediaParam,
                 })),
             })
-
             const { container, getByText } = reduxedRender(<NrLinkConnectionStepsRouter />)
             // When it's not mobile div StepperContent is shown
             expect(container.querySelector(stepperContentClassName)).toBeTruthy()
@@ -171,5 +170,22 @@ describe('Test NrLinkConnection Page', () => {
                 { timeout: 5000 },
             )
         }, 20000)
+        test('When manual contract filling is disabled, contract step does not show.', async () => {
+            mockManualContractFillingIsEnabled = false
+            mockUseMediaQuery = false
+            Object.defineProperty(window, 'matchMedia', {
+                writable: true,
+                value: jest.fn().mockImplementation((media) => ({
+                    ...windowMatchMediaValue,
+                    matches: false,
+                    media: media,
+                })),
+            })
+            const { queryByText } = reduxedRender(<NrLinkConnectionStepsRouter />)
+
+            expect(queryByText("Je configure mon contrat de fourniture d'énergie")).not.toBeInTheDocument()
+
+            mockManualContractFillingIsEnabled = true
+        })
     })
 })
