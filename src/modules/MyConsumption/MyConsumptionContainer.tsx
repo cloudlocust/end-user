@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react'
 import { ConsumptionChartContainer } from 'src/modules/MyConsumption/components/MyConsumptionChart/ConsumptionChartContainer'
-import { formatMetricFilter, getRange } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
+import { formatMetricFilter, getRangeV2 } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
 import { useTheme } from '@mui/material'
 import { metricRangeType, metricFiltersType, metricIntervalType } from 'src/modules/Metrics/Metrics.d'
-import { periodType } from 'src/modules/MyConsumption/myConsumptionTypes'
+import { PeriodEnum } from 'src/modules/MyConsumption/myConsumptionTypes.d'
 import { useConsents } from 'src/modules/Consents/consentsHook'
 import MyConsumptionDatePicker from 'src/modules/MyConsumption/components/MyConsumptionDatePicker'
 import { MyConsumptionPeriod } from 'src/modules/MyConsumption'
@@ -30,9 +30,9 @@ import { ConsumptionWidgetsMetricsProvider } from 'src/modules/MyConsumption/com
 export const MyConsumptionContainer = () => {
     const theme = useTheme()
     const { getConsents, nrlinkConsent, enedisSgeConsent, enphaseConsent, consentsLoading } = useConsents()
-    const [period, setPeriod] = useState<periodType>('daily')
+    const [period, setPeriod] = useState<PeriodEnum>(PeriodEnum.DAILY)
     const { currentHousing } = useSelector(({ housingModel }: RootState) => housingModel)
-    const [range, setRange] = useState<metricRangeType>(getRange('day'))
+    const [range, setRange] = useState<metricRangeType>(getRangeV2(PeriodEnum.DAILY))
     const [filters, setFilters] = useState<metricFiltersType>([])
 
     // metricsInterval is initialized this way, so that its value is different from 2m or 30m, because it'll be set to 2m or 30m once consent request has finished.
