@@ -400,21 +400,3 @@ export const isRangeWithinToday = (fromRange: string, toRange: string) => {
 
     return fromRange >= dayStart && toRange <= dayEnd
 }
-
-/**
- * Function that gets the previous day range.
- *
- * @param currentRange Current metric range.
- * @param subDay Default sub day is 1. If we want to get the data of the previous day.
- * @returns Range of the previous day according to the subDay.
- */
-export const getPreviousDayRange = (currentRange: metricRangeType, subDay: number = 1) => {
-    const previousDayStart = getDateWithoutTimezoneOffset(
-        dayjs(currentRange.from).subtract(subDay, 'day').startOf('day').toDate(),
-    )
-    const previousDayEnd = getDateWithoutTimezoneOffset(
-        dayjs(currentRange.from).subtract(subDay, 'day').endOf('day').toDate(),
-    )
-
-    return { from: previousDayStart, to: previousDayEnd }
-}

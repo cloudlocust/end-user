@@ -3,7 +3,6 @@ import { metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
 import { IWidgetProps } from 'src/modules/MyConsumption/components/Widget/Widget'
 import { WidgetItem } from 'src/modules/MyConsumption/components/WidgetItem'
 import {
-    getPreviousDayRange,
     getWidgetPreviousRange,
     isRangeWithinToday,
     renderWidgetTitle,
@@ -61,8 +60,8 @@ const WidgetIdleConsumption = (props: IWidgetProps) => {
 
     useEffect(() => {
         if (period === 'daily') {
-            setRange(getPreviousDayRange(range)!)
-            setRangePrevious(getPreviousDayRange(range, 2)!)
+            setRange(getWidgetRange(range, period, target))
+            setRangePrevious(getWidgetPreviousRange(range, period, target))
         } else {
             const widgetRange = getWidgetRange(range, period, target)
             setRange(widgetRange)
