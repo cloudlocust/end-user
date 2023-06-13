@@ -1,5 +1,4 @@
 import { useIntl } from 'react-intl'
-import { ActionsNrLinkConnectionSteps } from 'src/modules/nrLinkConnection'
 import { Form, regex, requiredBuilder } from 'src/common/react-platform-components'
 import { useSnackbar } from 'notistack'
 import { TextField } from 'src/common/ui-kit'
@@ -8,7 +7,7 @@ import { API_RESOURCES_URL } from 'src/configs'
 import { axios } from 'src/common/react-platform-components'
 import { SET_SHOW_NRLINK_POPUP_ENDPOINT } from 'src/modules/nrLinkConnection/NrLinkConnection'
 import { motion } from 'framer-motion'
-import { nrLinkGUID, nrLinkInfo, nrLinkMain } from 'src/modules/nrLinkConnection'
+import { ActionsNrLinkConnectionSteps, nrLinkGUID, nrLinkInfo, nrLinkMain } from 'src/modules/nrLinkConnection'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 
 /**
