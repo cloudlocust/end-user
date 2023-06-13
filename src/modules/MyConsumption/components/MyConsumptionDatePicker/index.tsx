@@ -1,7 +1,7 @@
 import Icon from '@mui/material/Icon'
 import IconButton from '@mui/material/IconButton'
 import { motion } from 'framer-motion'
-import { differenceInCalendarDays, subDays, addDays } from 'date-fns'
+import { subDays, addDays } from 'date-fns'
 import { dateFnsPeriod, IMyConsumptionDatePicker, ViewsType } from 'src/modules/MyConsumption/myConsumptionTypes'
 import { useTheme } from '@mui/material'
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
@@ -10,6 +10,7 @@ import 'src/modules/MyConsumption/components/MyConsumptionDatePicker/MyConsumpti
 import {
     addPeriod,
     convertToDateFnsPeriod,
+    getCalendarDates,
     getDateWithTimezoneOffset,
     getRange,
     subPeriod,
@@ -48,7 +49,8 @@ const MyConsumptionDatePicker = ({
         to: getDateWithTimezoneOffset(range.to),
     }
 
-    const isFutureDate = differenceInCalendarDays(rangeDateFormat.to, maxDate || new Date()) >= 0
+    const isFutureDate = rangeDateFormat.to >= (maxDate || new Date())
+
     /**
      * Handle data change.
      *
@@ -72,16 +74,18 @@ const MyConsumptionDatePicker = ({
     const handleClick = (
         calculateDays: (date: number | Date, amount: number) => Date,
         date: Date,
-        operator: 'add' | 'sub',
+        operator: 'add' | 'sub' | 'none',
     ) => {
         const toDate = period === 'daily' ? calculateDays(date, 1) : date
-        if (onDatePickerChange)
+        if (onDatePickerChange) {
             onDatePickerChange(
                 operator === 'sub'
                     ? subPeriod(toDate, convertToDateFnsPeriod(period) as dateFnsPeriod)
                     : addPeriod(toDate, convertToDateFnsPeriod(period) as dateFnsPeriod),
             )
-        else setRange(getRange(period, toDate, operator))
+        } else {
+            setRange(getCalendarDates(range, operator, period))
+        }
     }
 
     return (
