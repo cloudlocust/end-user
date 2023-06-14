@@ -16,7 +16,6 @@ import {
     getWidgetIndicatorColor,
     computeTotalOfAllConsumptions,
     isRangeWithinToday,
-    getPreviousDayRange,
     WRONG_TARGET_TEXT,
     computeAverageIdleConsumption,
     isWidgetMonthlyMetrics,
@@ -674,33 +673,6 @@ describe('Test widget functions', () => {
             const boolean = isRangeWithinToday(fromRange, toRange)
 
             expect(boolean).toBeFalsy()
-        })
-    })
-
-    describe('test getPreviousDayRange', () => {
-        let currentRange = {
-            from: '2023-05-10T00:00:00.000Z',
-            to: '2023-05-10T23:59:59.999Z',
-        }
-        test('when subDay is 1, you should get the previous day range', () => {
-            const range = getPreviousDayRange(currentRange)
-
-            const expectedResult = {
-                from: '2023-05-09T00:00:00.000Z',
-                to: '2023-05-09T23:59:59.999Z',
-            }
-
-            expect(range).toStrictEqual(expectedResult)
-        })
-        test('when subDay is 2, you get the previous day -1', () => {
-            const range = getPreviousDayRange(currentRange, 2)
-
-            const expectedResult = {
-                from: '2023-05-08T00:00:00.000Z',
-                to: '2023-05-08T23:59:59.999Z',
-            }
-
-            expect(range).toStrictEqual(expectedResult)
         })
     })
     describe('test computeAverageIdleConsumption', () => {
