@@ -39,7 +39,7 @@ export const DefaultContractWarning = ({ isShowWarning }: DefaultContractWarning
                     Ce graphe est un exemple basé sur un tarif Bleu EDF Base. Vos données contractuelles de fourniture
                     d'énergie ne sont pas disponibles sur toute la période.
                 </TypographyFormatMessage>
-                {manualContractFillingIsEnabled ? (
+                {manualContractFillingIsEnabled && (
                     <NavLink to={`${URL_MY_HOUSE}/${currentHousing?.id}/contracts`}>
                         <TypographyFormatMessage
                             className="underline text-13 md:text-16 text-center"
@@ -48,7 +48,7 @@ export const DefaultContractWarning = ({ isShowWarning }: DefaultContractWarning
                             Renseigner votre contrat d'énergie
                         </TypographyFormatMessage>
                     </NavLink>
-                ) : null}
+                )}
             </div>
         </div>
     )

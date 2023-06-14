@@ -34,7 +34,7 @@ export const MissingContractsWarning = () => {
                         Le coût en euros est un exemple. Vos données contractuelles de fourniture d'énergie ne sont pas
                         disponibles sur toute la période.
                     </TypographyFormatMessage>
-                    {manualContractFillingIsEnabled ? (
+                    {manualContractFillingIsEnabled && (
                         <NavLink to={`${URL_MY_HOUSE}/${currentHousing?.id}/contracts`}>
                             <TypographyFormatMessage
                                 className="underline text-13 md:text-16 text-center"
@@ -43,7 +43,7 @@ export const MissingContractsWarning = () => {
                                 Renseigner votre contrat d'énergie
                             </TypographyFormatMessage>
                         </NavLink>
-                    ) : null}
+                    )}
                 </div>
             </div>
         </div>

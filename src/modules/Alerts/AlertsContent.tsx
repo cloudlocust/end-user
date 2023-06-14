@@ -80,7 +80,7 @@ export const AlertsContent = () => {
                             >
                                 Prix basé sur le tarif bleu d'EDF.
                             </TypographyFormatMessage>
-                            {manualContractFillingIsEnabled ? (
+                            {manualContractFillingIsEnabled && (
                                 <>
                                     <NavLink
                                         to={
@@ -109,7 +109,7 @@ export const AlertsContent = () => {
                                         </TypographyFormatMessage>
                                     </div>
                                 </>
-                            ) : null}
+                            )}
                         </div>
                     </div>
                 )}

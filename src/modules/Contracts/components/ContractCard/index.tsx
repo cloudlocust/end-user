@@ -123,11 +123,13 @@ const ContractCard = ({ contract, onAfterDeleteUpdateSuccess }: ContractCardProp
                         {/* Because material-ui-confirm package close the dialog whether we click on CONFIRM or CANCEL buttons, for user experience showing the spinner in the card when removing contract. */}
                         {isContractsLoading ? (
                             <CircularProgress style={{ color: '#D32F2F', width: '32px', height: '32px' }} />
-                        ) : manualContractFillingIsEnabled ? (
-                            <IconButton color="error" size="small" onClick={onDeleteClick}>
-                                <DeleteIcon />
-                            </IconButton>
-                        ) : null}
+                        ) : (
+                            manualContractFillingIsEnabled && (
+                                <IconButton color="error" size="small" onClick={onDeleteClick}>
+                                    <DeleteIcon />
+                                </IconButton>
+                            )
+                        )}
                     </div>
                 </div>
 

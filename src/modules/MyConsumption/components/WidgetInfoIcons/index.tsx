@@ -28,7 +28,7 @@ export const EuroWidgetInfoIcon = () => {
             title={
                 <div>
                     <TypographyFormatMessage className="text-center">Ce coût est un exemple.</TypographyFormatMessage>
-                    {manualContractFillingIsEnabled ? (
+                    {manualContractFillingIsEnabled && (
                         <NavLink to={currentHousing ? `${URL_MY_HOUSE}/${currentHousing?.id}/contracts` : URL_MY_HOUSE}>
                             <TypographyFormatMessage
                                 sx={{ color: linksColor || '#FFFFFF' }}
@@ -37,7 +37,7 @@ export const EuroWidgetInfoIcon = () => {
                                 Renseigner un contrat d'énergie.
                             </TypographyFormatMessage>
                         </NavLink>
-                    ) : null}
+                    )}
                 </div>
             }
         >
