@@ -4,14 +4,15 @@ import { waitFor } from '@testing-library/react'
 import { TEST_METERS as MOCK_METERS } from 'src/mocks/handlers/meters'
 import userEvent from '@testing-library/user-event'
 import { IMeter } from 'src/modules/Meters/Meters'
-import { applyCamelCase } from 'src/common/react-platform-components'
-import { manualContractFillingIsEnabled } from 'src/modules/MyHouse/MyHouseConfig'
+import { applyCamelCase, axios } from 'src/common/react-platform-components'
+import { URL_CONSUMPTION } from 'src/modules/MyConsumption'
+import { API_RESOURCES_URL } from 'src/configs'
+import { SET_SHOW_NRLINK_POPUP_ENDPOINT } from 'src/modules/nrLinkConnection/NrLinkConnection'
+import { LastStepNrLinkConnectionProps } from 'src/modules/nrLinkConnection/components/LastStepNrLinkConnection/LastStepNrLinkConnection.d'
 
 const TEST_METERS: IMeter[] = applyCamelCase(MOCK_METERS)
 // List of houses to add to the redux state
-// if manualContractFilling is enabled so there is also anther step which is Contract step configuration,
-// else we were in the last step.
-const NEXT_BUTTON_TEXT = manualContractFillingIsEnabled ? 'Suivant' : 'Terminer'
+const NEXT_BUTTON_TEXT = 'Suivant'
 const REQUIRED_ERROR_TEXT = 'Champ obligatoire non renseigné'
 
 const guidNrlinkInputQuerySelector = 'input[name="nrlinkGuid"]'
@@ -21,8 +22,15 @@ const INVALID_NRLINK_GUID_FIELD_ERROR =
 const ERRROR_NRLINK_ALREADY_CONNECTED_MESSAGE =
     'Votre nrLINK est déjà connecté à un autre compteur, veuillez réessayer ou contacter votre Boucle Locale'
 const GENERIC_ERRROR_NRLINK_AUTHORIZE_MESSAGE = 'Erreur lors de la connection de votre compteur'
+const VALID_NRLINK_GUID = 'bbbbb2bbbbb2bbbb'
+let mockManualContractFillingIsEnabled = true
 const mockHistoryPush = jest.fn()
 const mockEnqueueSnackbar = jest.fn()
+const mockSetIsNrLinkAuthorizeInProgress = jest.fn()
+const mockHandleNext = jest.fn()
+const mockAxiosPost = jest.fn()
+const mockAxiosPatch = jest.fn()
+
 /**
  * Mocking the useSnackbar.
  */
@@ -46,24 +54,23 @@ jest.mock('react-router', () => ({
     }),
 }))
 
+jest.mock('src/modules/MyHouse/MyHouseConfig', () => ({
+    ...jest.requireActual('src/modules/MyHouse/MyHouseConfig'),
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    get manualContractFillingIsEnabled() {
+        return mockManualContractFillingIsEnabled
+    },
+}))
+
 /**
  * Mocking props of AddCustomerPopup.
  */
 // eslint-disable-next-line jsdoc/require-jsdoc
-const mockLastStepNrLinkConnectionProps: {
-    // eslint-disable-next-line jsdoc/require-jsdoc
-    handleBack: () => void
-    // eslint-disable-next-line jsdoc/require-jsdoc
-    meter: IMeter | null
-    // eslint-disable-next-line jsdoc/require-jsdoc
-    setIsNrLinkAuthorizeInProgress: React.Dispatch<React.SetStateAction<boolean>>
-    // eslint-disable-next-line jsdoc/require-jsdoc
-    handleNext: () => void
-} = {
+const mockLastStepNrLinkConnectionProps: LastStepNrLinkConnectionProps = {
     handleBack: jest.fn(),
     meter: null,
-    setIsNrLinkAuthorizeInProgress: jest.fn(),
-    handleNext: jest.fn(),
+    setIsNrLinkAuthorizeInProgress: mockSetIsNrLinkAuthorizeInProgress,
+    handleNext: mockHandleNext,
 }
 
 describe('Test LastStepNrLinkConnection', () => {
@@ -105,8 +112,6 @@ describe('Test LastStepNrLinkConnection', () => {
 
     describe('Submit form', () => {
         test('when submitForm and nrLINK no data received error, snackbar error should be shown, and setNrLinkAuthorizeInProgress should be called accordingly', async () => {
-            const mockSetIsNrLinkAuthorizeInProgress = jest.fn()
-            mockLastStepNrLinkConnectionProps.setIsNrLinkAuthorizeInProgress = mockSetIsNrLinkAuthorizeInProgress
             const { container, getByText } = reduxedRender(
                 <LastStepNrLinkConnection {...mockLastStepNrLinkConnectionProps} />,
             )
@@ -130,13 +135,11 @@ describe('Test LastStepNrLinkConnection', () => {
             })
         }, 20000)
         test('when submitForm and nrLINK already connected error, snackbar error should be shown, and setNrLinkAuthorizeInProgress should be called accordingly', async () => {
-            const mockSetIsNrLinkAuthorizeInProgress = jest.fn()
-            mockLastStepNrLinkConnectionProps.setIsNrLinkAuthorizeInProgress = mockSetIsNrLinkAuthorizeInProgress
             const { container, getByText } = reduxedRender(
                 <LastStepNrLinkConnection {...mockLastStepNrLinkConnectionProps} />,
             )
-            userEvent.type(container.querySelector(guidNrlinkInputQuerySelector)!, 'bbbbb2bbbbb2bbbb')
-            expect(container.querySelector(guidNrlinkInputQuerySelector)).toHaveValue('bbbbb2bbbbb2bbbb')
+            userEvent.type(container.querySelector(guidNrlinkInputQuerySelector)!, VALID_NRLINK_GUID)
+            expect(container.querySelector(guidNrlinkInputQuerySelector)).toHaveValue(VALID_NRLINK_GUID)
 
             userEvent.click(getByText(NEXT_BUTTON_TEXT))
             await waitFor(() => {
@@ -154,8 +157,6 @@ describe('Test LastStepNrLinkConnection', () => {
             })
         }, 20000)
         test('when submitForm and nrLINK generic error, snackbar error should be shown, and setNrLinkAuthorizeInProgress should be called accordingly', async () => {
-            const mockSetIsNrLinkAuthorizeInProgress = jest.fn()
-            mockLastStepNrLinkConnectionProps.setIsNrLinkAuthorizeInProgress = mockSetIsNrLinkAuthorizeInProgress
             const { container, getByText } = reduxedRender(
                 <LastStepNrLinkConnection {...mockLastStepNrLinkConnectionProps} />,
             )
@@ -178,5 +179,67 @@ describe('Test LastStepNrLinkConnection', () => {
                 variant: 'error',
             })
         }, 20000)
+        test('When submit form works correctly, post nrlink and handle next are called', async () => {
+            const originalAxiosPost = axios.post
+            const originalAxiosPatch = axios.patch
+
+            // mock post & axios Methods
+            axios.post = mockAxiosPost
+            axios.patch = mockAxiosPatch
+
+            mockLastStepNrLinkConnectionProps.meter = TEST_METERS[0]
+            const { container, getByText } = reduxedRender(
+                <LastStepNrLinkConnection {...mockLastStepNrLinkConnectionProps} />,
+            )
+
+            userEvent.type(container.querySelector(guidNrlinkInputQuerySelector)!, VALID_NRLINK_GUID)
+            expect(container.querySelector(guidNrlinkInputQuerySelector)).toHaveValue(VALID_NRLINK_GUID)
+
+            userEvent.click(getByText(NEXT_BUTTON_TEXT))
+
+            await waitFor(() => {
+                expect(mockSetIsNrLinkAuthorizeInProgress).toHaveBeenCalledWith(true)
+            })
+
+            expect(mockAxiosPost).toHaveBeenCalledWith(`${API_RESOURCES_URL}/nrlink/authorize`, {
+                meterGuid: mockLastStepNrLinkConnectionProps.meter?.guid,
+                nrlinkGuid: VALID_NRLINK_GUID,
+            })
+
+            expect(mockAxiosPatch).toHaveBeenCalledWith(`${SET_SHOW_NRLINK_POPUP_ENDPOINT}`, {
+                showNrlinkPopup: false,
+            })
+
+            expect(mockSetIsNrLinkAuthorizeInProgress).toHaveBeenCalledWith(false)
+
+            axios.post = originalAxiosPost
+            axios.patch = originalAxiosPatch
+        })
+        test('When manual contract filling is disabled, redirect to my-consuption page, instead of calling handle next', async () => {
+            mockManualContractFillingIsEnabled = false
+
+            const originalAxiosPost = axios.post
+            const originalAxiosPatch = axios.patch
+
+            // mock post & axios Methods
+            axios.post = jest.fn()
+            axios.patch = jest.fn()
+
+            const { container, getByText } = reduxedRender(
+                <LastStepNrLinkConnection {...mockLastStepNrLinkConnectionProps} />,
+            )
+
+            userEvent.type(container.querySelector(guidNrlinkInputQuerySelector)!, VALID_NRLINK_GUID)
+            expect(container.querySelector(guidNrlinkInputQuerySelector)).toHaveValue(VALID_NRLINK_GUID)
+
+            userEvent.click(getByText(NEXT_BUTTON_TEXT))
+
+            await waitFor(() => {
+                expect(mockHistoryPush).toHaveBeenCalledWith(URL_CONSUMPTION)
+            })
+
+            axios.post = originalAxiosPost
+            axios.patch = originalAxiosPatch
+        })
     })
 })
