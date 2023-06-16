@@ -7,6 +7,7 @@ import { IMeter } from 'src/modules/Meters/Meters'
 import { TEST_HOUSES } from 'src/mocks/handlers/houses'
 import { applyCamelCase } from 'src/common/react-platform-components/utils/mm'
 import { IHousing } from 'src/modules/MyHouse/components/HousingList/housing'
+import { MeterStepNrLinkConnectionFormProps } from 'src/modules/nrLinkConnection/components/MeterStepNrLinkConnectionForm/MeterStepNrLinkConnectionForm.d'
 
 const TEST_METERS: IMeter[] = applyCamelCase(MOCK_METERS)
 
@@ -24,18 +25,7 @@ const disabledQuerySelector = '.Mui-disabled'
  * Mocking props of AddCustomerPopup.
  */
 // eslint-disable-next-line jsdoc/require-jsdoc
-const mockMeterStepNrLinkConnectionFormProps: {
-    // eslint-disable-next-line jsdoc/require-jsdoc
-    handleBack: () => void
-    // eslint-disable-next-line jsdoc/require-jsdoc
-    handleNext: () => void
-    // eslint-disable-next-line jsdoc/require-jsdoc
-    setMeter: React.Dispatch<React.SetStateAction<IMeter | null>>
-    // eslint-disable-next-line jsdoc/require-jsdoc
-    meter: IMeter | null
-    // eslint-disable-next-line jsdoc/require-jsdoc
-    housingId: number | undefined
-} = {
+const mockMeterStepNrLinkConnectionFormProps: MeterStepNrLinkConnectionFormProps = {
     handleBack: jest.fn(),
     handleNext: jest.fn(),
     setMeter: jest.fn(),
