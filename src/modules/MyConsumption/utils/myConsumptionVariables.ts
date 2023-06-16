@@ -1,6 +1,6 @@
 import { metricTargetsEnum, metricTargetsType, metricTargetType } from 'src/modules/Metrics/Metrics.d'
 import { enphaseConsentFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
-import { periodType } from 'src/modules/MyConsumption/myConsumptionTypes'
+import { PeriodEnum } from 'src/modules/MyConsumption/myConsumptionTypes'
 import { Theme } from '@mui/material/styles/createTheme'
 import { isNil } from 'lodash'
 import convert, { Unit } from 'convert-units'
@@ -12,23 +12,23 @@ export const dataConsumptionPeriod = [
     {
         name: 'Jour',
         interval: '1m',
-        period: 'daily' as periodType,
+        period: 'daily' as PeriodEnum,
     },
     {
         name: 'Semaine',
         interval: '1d',
-        period: 'weekly' as periodType,
+        period: 'weekly' as PeriodEnum,
     },
     {
         name: 'Mois',
         interval: '1d',
-        period: 'monthly' as periodType,
+        period: 'monthly' as PeriodEnum,
     },
 
     {
         name: 'Année',
         interval: '1M',
-        period: 'yearly' as periodType,
+        period: 'yearly' as PeriodEnum,
     },
 ]
 /**

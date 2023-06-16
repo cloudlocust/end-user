@@ -13,6 +13,9 @@ import AnalysisChartCircleContent from 'src/modules/Analysis/components/Analysis
 import { MissingHousingMeterErrorMessage } from 'src/modules/MyConsumption/utils/ErrorMessages'
 import { MissingContractsWarning } from 'src/modules/Analysis/utils/ErrorMessages'
 import { useAnalysisStore } from 'src/modules/Analysis/store/analysisStore'
+import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
+import { computeTotalConsumption } from 'src/modules/MyConsumption/components/Widget/WidgetFunctions'
+import Box from '@mui/material/Box'
 
 // eslint-disable-next-line jsdoc/require-jsdoc
 export const AnalysisCTAColor = linksColor || warningMainHashColor
@@ -68,6 +71,16 @@ export default function AnalysisSummary(props: AnalysisSummaryProps) {
     ) {
         return <MissingHousingMeterErrorMessage />
     }
+
+    // Check if there's no consumption Data
+    if (!isMetricsLoading && (data.length === 0 || computeTotalConsumption(data).value === 0))
+        return (
+            <Box className="h-full flex justify-center items-center ">
+                <TypographyFormatMessage className="sm:text-16 font-medium md:text-20">
+                    Aucune donnée disponible
+                </TypographyFormatMessage>
+            </Box>
+        )
 
     return (
         <>

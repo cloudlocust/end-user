@@ -15,8 +15,8 @@ export const MissingContractsWarning = () => {
     const { currentHousing } = useSelector(({ housingModel }: RootState) => housingModel)
 
     return (
-        <div style={{ minHeight: '64px' }} className="w-full relative flex sflex-col justify-center items-center p-16">
-            <div className="flex items-center justify-center flex-col">
+        <div style={{ minHeight: '64px' }} className="w-full relative flex flex-col justify-center items-center">
+            <div className="flex items-center justify-center gap-8">
                 <ErrorOutlineIcon
                     sx={{
                         color: AnalysisCTAColor,
@@ -27,17 +27,13 @@ export const MissingContractsWarning = () => {
                 />
 
                 <div className="w-full">
-                    <TypographyFormatMessage
-                        sx={{ color: AnalysisCTAColor }}
-                        className="text-13 md:text-16 text-center"
-                    >
-                        Le coût en euros est un exemple. Vos données contractuelles de fourniture d'énergie ne sont pas
-                        disponibles sur toute la période.
-                    </TypographyFormatMessage>
+                    <TypographyFormatMessage sx={{ color: AnalysisCTAColor }} className="text-13 md:text-16 inline">
+                        Le coût en euros est un exemple. Pour avoir un le coût réel.
+                    </TypographyFormatMessage>{' '}
                     {manualContractFillingIsEnabled && (
                         <NavLink to={`${URL_MY_HOUSE}/${currentHousing?.id}/contracts`}>
                             <TypographyFormatMessage
-                                className="underline text-13 md:text-16 text-center"
+                                className="underline text-13 md:text-16 inline"
                                 sx={{ color: AnalysisCTAColor }}
                             >
                                 Renseigner votre contrat d'énergie
