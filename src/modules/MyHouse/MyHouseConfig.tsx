@@ -71,6 +71,11 @@ export const sgeConsentMessage = window._env_.REACT_APP_SGE_CONSENT_POPUP_MESSAG
 export const enphaseConsentFeatureState = window._env_.REACT_APP_ENPHASE_CONSENT_FEATURE_STATE === 'enabled'
 
 /**
+ * Env variable to know if the feature to manual filling contracts is enabled.
+ */
+export const manualContractFillingIsEnabled = window._env_.REACT_APP_MANUAL_CONTRACT_FILLING === 'enabled'
+
+/**
  * MyHouseConfig.
  */
 export const MyHouseConfig = [

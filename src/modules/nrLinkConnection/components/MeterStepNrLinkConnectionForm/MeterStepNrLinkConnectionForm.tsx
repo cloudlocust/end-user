@@ -1,4 +1,3 @@
-import React from 'react'
 import { motion } from 'framer-motion'
 import { useIntl } from 'react-intl'
 import { linkyPath, electricityPath, contractPath, ActionsNrLinkConnectionSteps } from 'src/modules/nrLinkConnection'
@@ -7,8 +6,8 @@ import TextFieldMui from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
 import { Form, max, min, requiredBuilder } from 'src/common/react-platform-components'
 import { useMeterForHousing } from 'src/modules/Meters/metersHook'
-import { IMeter } from 'src/modules/Meters/Meters'
 import { textNrlinkColor } from 'src/modules/nrLinkConnection/components/LastStepNrLinkConnection/LastStepNrLinkConnection'
+import { MeterStepNrLinkConnectionFormProps } from './MeterStepNrLinkConnectionForm.d'
 
 /**
  * Component showing the first step in the nrLinkConnection Stepper.
@@ -27,19 +26,7 @@ const MeterStepNrLinkConnectionForm = ({
     setMeter,
     meter,
     housingId,
-}: // eslint-disable-next-line jsdoc/require-jsdoc
-{
-    // eslint-disable-next-line jsdoc/require-jsdoc
-    handleBack: () => void
-    // eslint-disable-next-line jsdoc/require-jsdoc
-    handleNext: () => void
-    // eslint-disable-next-line jsdoc/require-jsdoc
-    setMeter: React.Dispatch<React.SetStateAction<IMeter | null>>
-    // eslint-disable-next-line jsdoc/require-jsdoc
-    meter: IMeter | null
-    // eslint-disable-next-line jsdoc/require-jsdoc
-    housingId: number | undefined
-}) => {
+}: MeterStepNrLinkConnectionFormProps) => {
     const { formatMessage } = useIntl()
 
     const { addMeter, loadingInProgress: loadingMeterInProgress } = useMeterForHousing()
