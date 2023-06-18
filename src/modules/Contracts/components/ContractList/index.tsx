@@ -63,9 +63,11 @@ const ContractList = () => {
                     <TypographyFormatMessage className="text-16 font-medium md:text-20 mx-auto">
                         Mes Contrats
                     </TypographyFormatMessage>
-                    <IconButton color="primary" onClick={() => setIsOpenDialog(true)}>
-                        <PostAddIcon style={{ width: '30px', height: '30px' }} />
-                    </IconButton>
+                    {manualContractFillingIsEnabled && (
+                        <IconButton color="primary" onClick={() => setIsOpenDialog(true)}>
+                            <PostAddIcon style={{ width: '30px', height: '30px' }} />
+                        </IconButton>
+                    )}
                 </div>
 
                 {isEmpty(contractList) && !isContractsLoading ? (
