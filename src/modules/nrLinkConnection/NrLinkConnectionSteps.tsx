@@ -41,7 +41,7 @@ const NrLinkConnectionSteps = () => {
     const theme = useTheme()
     const { formatMessage } = useIntl()
 
-    // if manual contract is disabled, we remove the step to configure the contract.
+    // If manual contract is disabled, we remove the step to configure the contract.
     if (!manualContractFillingIsEnabled) {
         stepsLabels = stepsLabels.filter((step) => step !== "Je configure mon contrat de fourniture d'énergie")
     }
@@ -167,7 +167,8 @@ const NrLinkConnectionSteps = () => {
         />,
     ]
 
-    if (!manualContractFillingIsEnabled) {
+    // If manual contract is enabled, we add the step to configure the contract.
+    if (manualContractFillingIsEnabled) {
         stepsContent.push(<ContractStepNrLinkConnection housingId={housingId} />)
     }
 

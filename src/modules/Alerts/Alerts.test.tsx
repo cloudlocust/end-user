@@ -17,6 +17,7 @@ const HAS_MISSING_CONTRACTS_WARNING_REDIRECT_LINK_TEXT = 'Renseignez votre contr
 const TEMPO_COMPONENT_TEXT = 'Tempo :'
 let mockUseNovuAlertPreferences = false
 const circularProgressClassname = '.MuiCircularProgress-root'
+let mockManualContractFillingIsEnabled = true
 
 const mockContracts = [
     {
@@ -61,6 +62,14 @@ jest.mock('src/modules/Alerts/NovuAlertPreferencesHook', () => ({
     }),
 }))
 
+jest.mock('src/modules/MyHouse/MyHouseConfig', () => ({
+    ...jest.requireActual('src/modules/MyHouse/MyHouseConfig'),
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    get manualContractFillingIsEnabled() {
+        return mockManualContractFillingIsEnabled
+    },
+}))
+
 describe('Alerts test', () => {
     test('When mount component show change, and tempo available', async () => {
         const { getByText } = reduxedRender(
@@ -74,7 +83,7 @@ describe('Alerts test', () => {
         expect(() => getByText(HAS_MISSING_CONTRACTS_WARNING_REDIRECT_LINK_TEXT)).toThrow()
         expect(getByText(TEMPO_COMPONENT_TEXT)).toBeTruthy()
     })
-    test('When hasMissingHousingContracts change', async () => {
+    test('When manual contract filling is enabled and hasMissingHousingContracts change', async () => {
         mockHasMissingHousingContracts = true
         const { getByText } = reduxedRender(
             <Router>
@@ -88,6 +97,19 @@ describe('Alerts test', () => {
             'href',
             `${URL_MY_HOUSE}/${LIST_OF_HOUSES[0].id}/contracts`,
         )
+    })
+    test('When manual contract filling is disabled, Missing housing contract does not show', async () => {
+        mockHasMissingHousingContracts = true
+        mockManualContractFillingIsEnabled = false
+        const { queryByText } = reduxedRender(
+            <Router>
+                <Alerts />
+            </Router>,
+            { initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[0] } } },
+        )
+
+        // HasMissingContractsExample Redirection URL
+        expect(queryByText(HAS_MISSING_CONTRACTS_WARNING_REDIRECT_LINK_TEXT)).not.toBeInTheDocument()
     })
     test('When Ecowatt load, Spinner is shown', async () => {
         mockUseNovuAlertPreferences = true
