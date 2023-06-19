@@ -31,6 +31,7 @@ const CANCEL_BUTTON_TEXT = 'Annuler'
 const DELETE_ICON_DATA_TESTID = 'DeleteIcon'
 const circularProgressClassname = '.MuiCircularProgress-root'
 let mockIsContractsLoading = false
+let mockManualContractFillingIsEnabled = true
 let mockRemoveElementDetails = jest.fn()
 let mockEditElementDetails = jest.fn()
 const mockHouseId = TEST_HOUSE_ID
@@ -130,6 +131,15 @@ jest.mock('src/hooks/CommercialOffer/CommercialOfferHooks', () => ({
         isTariffTypesLoading: false,
     }),
 }))
+
+jest.mock('src/modules/MyHouse/MyHouseConfig', () => ({
+    ...jest.requireActual('src/modules/MyHouse/MyHouseConfig'),
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    get manualContractFillingIsEnabled() {
+        return mockManualContractFillingIsEnabled
+    },
+}))
+
 describe('Test ContractCard Component', () => {
     test('When clicking on delete icon warning popup opens.', async () => {
         const { getByText, getByTestId } = reduxedRender(
@@ -208,6 +218,37 @@ describe('Test ContractCard Component', () => {
         })
         expect(mockEditElementDetails).toHaveBeenCalled()
         // Contract Form should be closed
+        await waitFor(() => {
+            expect(() => getByText(CONTRACT_FORM_MODAL_TEXT)).toThrow()
+        })
+
+        mockIsContractsLoading = false
+    })
+
+    test('only the infoIcon is shown, and when click on it, modal contractForm should be open', async () => {
+        mockManualContractFillingIsEnabled = false
+        const { getByText, getAllByRole, queryByTestId } = reduxedRender(
+            <ConfirmProvider>
+                <ContractCard {...mockContractCardProps} />
+            </ConfirmProvider>,
+        )
+
+        // delete_button & edit_button doesn't show.
+        expect(queryByTestId(DELETE_ICON_DATA_TESTID)).not.toBeInTheDocument()
+        expect(queryByTestId(EDIT_CONTRACT_BUTTON_DATA_TESTID)).not.toBeInTheDocument()
+
+        // info_button is shown and when it is clicked, a modal contractForm is opened.
+        const infoButton = queryByTestId('InfoIcon')
+        expect(infoButton).toBeInTheDocument()
+
+        expect(() => getByText(CONTRACT_FORM_MODAL_TEXT)).toThrow()
+        userEvent.click(infoButton!.parentElement!)
+        await waitFor(() => {
+            expect(getByText(CONTRACT_FORM_MODAL_TEXT)).toBeTruthy()
+        })
+
+        // Click on the backdrop, the modal is closed.
+        fireEvent.click(getAllByRole('presentation')[0].firstChild as HTMLDivElement)
         await waitFor(() => {
             expect(() => getByText(CONTRACT_FORM_MODAL_TEXT)).toThrow()
         })

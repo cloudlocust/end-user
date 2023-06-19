@@ -9,6 +9,7 @@ const NAME_SELECT_TEXT = 'myNameIsName'
 const LABEL_SELECT_TEXT = 'label'
 const DEFAULT_VALUE_SELECT_TEXT = 'defaultAndDisabledValue'
 const LoadingIndicatorClass = '.MuiCircularProgress-root'
+let mockManualContractFillingIsEnabled = true
 
 /**
  * Mock FNs.
@@ -82,6 +83,14 @@ jest.mock('react-hook-form', () => ({
     }),
 }))
 
+jest.mock('src/modules/MyHouse/MyHouseConfig', () => ({
+    ...jest.requireActual('src/modules/MyHouse/MyHouseConfig'),
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    get manualContractFillingIsEnabled() {
+        return mockManualContractFillingIsEnabled
+    },
+}))
+
 describe('Test ContractFormSelect Component', () => {
     test('When component mount', async () => {
         const mockLoadOptions = jest.fn()
@@ -140,4 +149,17 @@ describe('Test ContractFormSelect Component', () => {
             )
         })
     }, 10000)
+
+    test('When manual contract filling is disabled, the field should be disabled', async () => {
+        mockManualContractFillingIsEnabled = false
+        mockContractFormSelectProps.isOptionsInProgress = false
+        const { getByLabelText } = reduxedRender(
+            <Form onSubmit={() => {}}>
+                <ContractFormSelect {...mockContractFormSelectProps} />,
+            </Form>,
+        )
+
+        expect(getByLabelText(LABEL_SELECT_TEXT)).toBeTruthy()
+        expect(getByLabelText(LABEL_SELECT_TEXT)).toHaveClass('Mui-disabled')
+    })
 })
