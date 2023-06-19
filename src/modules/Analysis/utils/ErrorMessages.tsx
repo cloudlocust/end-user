@@ -22,13 +22,12 @@ export const MissingContractsWarning = () => {
                         color: AnalysisCTAColor,
                         width: { xs: '24px', md: '32px' },
                         height: { xs: '24px', md: '32px' },
-                        margin: { xs: '0 0 4px 0', md: '0 8px 0 0' },
                     }}
                 />
 
                 <div className="w-full">
                     <TypographyFormatMessage sx={{ color: AnalysisCTAColor }} className="text-13 md:text-16 inline">
-                        Le coût en euros est un exemple. Pour avoir un le coût réel.
+                        Le coût en euros est un exemple. Pour avoir le coût réel.
                     </TypographyFormatMessage>{' '}
                     <NavLink to={`${URL_MY_HOUSE}/${currentHousing?.id}/contracts`}>
                         <TypographyFormatMessage
