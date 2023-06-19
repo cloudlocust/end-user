@@ -24,8 +24,8 @@ let mockNrlinkConsent: string
 let mockHasMissingHousingContracts = true
 let mockSetRange = jest.fn()
 let mockIsMetricsLoading = false
+const HAS_MISSING_CONTRACTS_WARNING_TEXT = 'Le coût en euros est un exemple. Pour avoir le coût réel.'
 let mockManualContractFillingIsEnabled = true
-const HAS_MISSING_CONTRACTS_WARNING_TEXT = 'Le coût en euros est un exemple. Pour avoir un le coût réel.'
 const HAS_MISSING_CONTRACTS_WARNING_REDIRECT_LINK_TEXT = "Renseigner votre contrat d'énergie"
 const MIN_CONSUMPTION_DAY_HIGHLIGHT = 'minConsumptionDay'
 const MIN_CONSUMPTION_DAY_CHART = 'minConsumptionDayChart'
