@@ -265,6 +265,11 @@ spec:
           valueFrom:
             configMapKeyRef:
               name: enduser-react
-              key: REACT_APP_FAQ_REDIRECT_LINK            
+              key: REACT_APP_FAQ_REDIRECT_LINK 
+        - name: REACT_APP_MANUAL_CONTRACT_FILLING
+          valueFrom:
+            configMapKeyRef:
+              name: enduser-react
+              key: REACT_APP_MANUAL_CONTRACT_FILLING           
       imagePullSecrets:
       - name: dockersecret  
