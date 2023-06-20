@@ -17,6 +17,7 @@ import { ReactComponent as MeterErrorIcon } from 'src/assets/images/content/hous
 import { TempoAlerts } from 'src/modules/Alerts/components/TempoAlerts'
 import { useContractList } from 'src/modules/Contracts/contractsHook'
 import SvgIcon from '@mui/material/SvgIcon'
+import { manualContractFillingIsEnabled } from 'src/modules/MyHouse/MyHouseConfig'
 
 /**
  * Alerts Drawer component contains all the alerts.
@@ -79,32 +80,36 @@ export const AlertsContent = () => {
                             >
                                 Prix basé sur le tarif bleu d'EDF.
                             </TypographyFormatMessage>
-                            <NavLink
-                                to={
-                                    currentHousing
-                                        ? `${URL_MY_HOUSE}/${currentHousing?.id}/contracts`
-                                        : `${URL_MY_HOUSE}`
-                                }
-                            >
-                                <TypographyFormatMessage
-                                    className="text-13 md:text-16 font-medium underline"
-                                    style={{
-                                        color: linksColor || warningMainHashColor,
-                                    }}
-                                >
-                                    Renseignez votre contrat de fourniture
-                                </TypographyFormatMessage>
-                            </NavLink>
-                            <div className="grow-1">
-                                <TypographyFormatMessage
-                                    className="text-13 md:text-16 md:text-center font-medium"
-                                    style={{
-                                        color: linksColor || warningMainHashColor,
-                                    }}
-                                >
-                                    pour une estimation plus précise.
-                                </TypographyFormatMessage>
-                            </div>
+                            {manualContractFillingIsEnabled && (
+                                <>
+                                    <NavLink
+                                        to={
+                                            currentHousing
+                                                ? `${URL_MY_HOUSE}/${currentHousing?.id}/contracts`
+                                                : `${URL_MY_HOUSE}`
+                                        }
+                                    >
+                                        <TypographyFormatMessage
+                                            className="text-13 md:text-16 font-medium underline"
+                                            style={{
+                                                color: linksColor || warningMainHashColor,
+                                            }}
+                                        >
+                                            Renseignez votre contrat de fourniture
+                                        </TypographyFormatMessage>
+                                    </NavLink>
+                                    <div className="grow-1">
+                                        <TypographyFormatMessage
+                                            className="text-13 md:text-16 md:text-center font-medium"
+                                            style={{
+                                                color: linksColor || warningMainHashColor,
+                                            }}
+                                        >
+                                            pour une estimation plus précise.
+                                        </TypographyFormatMessage>
+                                    </div>
+                                </>
+                            )}
                         </div>
                     </div>
                 )}

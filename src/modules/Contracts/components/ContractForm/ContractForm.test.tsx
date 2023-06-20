@@ -30,6 +30,7 @@ const START_SUBSCRIPTION_LABEL_TEXT = 'Date de début'
 const END_SUBSCRIPTION_LABEL_TEXT = 'Date de fin (Si terminé)'
 const TARIFFS_SUBSCRIPTION_TEXT = 'abonnement: 36 €/mois'
 const TARIFFS_KWH_PRICE_TEXT = 'prix kwh: 0.125 €/kWh'
+const MUI_DISABLED = 'Mui-disabled'
 const CONTRACT_FORM_FIELDS_LABEL_LIST = [
     TYPE_LABEL_TEXT,
     PROVIDER_LABEL_TEXT,
@@ -103,6 +104,7 @@ let mockIsContractTypesLoading = false
 let mockIsMeterLoading = false
 let mockIsTariffsLoading = false
 const mockHouseId = TEST_HOUSE_ID
+let mockManualContractFillingIsEnabled = true
 
 /**
  * Mocking the useCommercialOffer.
@@ -163,6 +165,15 @@ jest.mock('react-router-dom', () => ({
         houseId: `${mockHouseId}`,
     }),
 }))
+
+jest.mock('src/modules/MyHouse/MyHouseConfig', () => ({
+    ...jest.requireActual('src/modules/MyHouse/MyHouseConfig'),
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    get manualContractFillingIsEnabled() {
+        return mockManualContractFillingIsEnabled
+    },
+}))
+
 describe('Test ContractFormSelect Component', () => {
     test('Filling fields should show according to the previous one, and submitting works', async () => {
         const CONTRACT_FORM_FIELDS_LABELS = [...CONTRACT_FORM_FIELDS_LABEL_LIST]
@@ -454,4 +465,33 @@ describe('Test ContractFormSelect Component', () => {
         )
         expect(mockEditMeter).toHaveBeenCalled()
     }, 35000)
+
+    test('When manual contract filling is disabled, all the field are disabled', async () => {
+        const mockFilledContractFormProps: ContractFormProps = {
+            ...mockContractFormProps,
+            defaultValues: {
+                contractTypeId: 1,
+                endSubscription: '2023-06-12',
+                offerId: 1,
+                power: 5,
+                providerId: 1,
+                startSubscription: '2023-06-12',
+                tariffTypeId: 1,
+            },
+        }
+        mockManualContractFillingIsEnabled = false
+        const { queryByText, getByLabelText } = reduxedRender(<ContractForm {...mockFilledContractFormProps} />)
+
+        // Check that all the fields are disabled
+        expect(getByLabelText(TYPE_LABEL_TEXT, { exact: false })).toHaveClass(MUI_DISABLED)
+        expect(getByLabelText(PROVIDER_LABEL_TEXT, { exact: false })).toHaveClass(MUI_DISABLED)
+        expect(getByLabelText(OFFER_LABEL_TEXT, { exact: false })).toHaveClass(MUI_DISABLED)
+        expect(getByLabelText(TARRIF_TYPE_LABEL_TEXT, { exact: false })).toHaveClass(MUI_DISABLED)
+        expect(getByLabelText(POWER_LABEL_TEXT, { exact: false })).toHaveClass(MUI_DISABLED)
+        expect(getByLabelText(START_SUBSCRIPTION_LABEL_TEXT)).toHaveClass(MUI_DISABLED)
+        expect(getByLabelText(END_SUBSCRIPTION_LABEL_TEXT, { exact: true })).toHaveClass(MUI_DISABLED)
+
+        // Check that submit button doesn't be shown.
+        expect(queryByText(SUBMIT_BUTTON_TEXT)).not.toBeInTheDocument()
+    })
 })

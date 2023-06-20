@@ -81,6 +81,7 @@ let buttonLabelText = 'target-menu'
 const mockGetConsents = jest.fn()
 const mockGetMetricsWithParams = jest.fn()
 let mockSgeConsentFeatureState = true
+let mockManualContractFillingIsEnabled = true
 
 let mockFilters: metricFiltersType = [
     {
@@ -177,6 +178,10 @@ jest.mock('src/modules/MyHouse/MyHouseConfig', () => ({
     // eslint-disable-next-line jsdoc/require-jsdoc
     get sgeConsentFeatureState() {
         return mockSgeConsentFeatureState
+    },
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    get manualContractFillingIsEnabled() {
+        return mockManualContractFillingIsEnabled
     },
 }))
 
@@ -387,5 +392,19 @@ describe('MyConsumptionContainer test', () => {
         expect(getByText(TOTAL_CONSUMPTION_TOOLTIP_TEXT)).toBeTruthy()
         expect(() => getByText(AUTO_CONSUMPTION_TOOLTIP_TEXT)).toThrow()
         expect(() => getByText(BOUGHT_CONSUMPTION_NETWORK_TOOLTIP_TEXT)).toThrow()
+    })
+
+    test('When manual contract filling is disabled, missing contract link does not show.', () => {
+        mockManualContractFillingIsEnabled = false
+        const { queryByText } = reduxedRender(
+            <Router>
+                <ConsumptionChartContainer {...consumptionChartContainerProps} />
+            </Router>,
+            { initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[0] } } },
+        )
+
+        expect(queryByText(HAS_MISSING_CONTRACTS_WARNING_REDIRECT_LINK_TEXT)).not.toBeInTheDocument()
+
+        mockManualContractFillingIsEnabled = true
     })
 })

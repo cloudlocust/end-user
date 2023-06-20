@@ -22,12 +22,17 @@ const EURO_WIDGET_INFO_TEXT = 'Ce coût est un exemple.'
 const PMAX_TOOLTIP_ICON = 'ErrorOutlineIcon'
 const EURO_WIDGET_INFO_REDIRECT_LINK_TEXT = "Renseigner un contrat d'énergie."
 let mockSgeConsentFeatureState = true
+let mockManualContractFillingIsEnabled = true
 
 jest.mock('src/modules/MyHouse/MyHouseConfig', () => ({
     ...jest.requireActual('src/modules/MyHouse/MyHouseConfig'),
     // eslint-disable-next-line jsdoc/require-jsdoc
     get sgeConsentFeatureState() {
         return mockSgeConsentFeatureState
+    },
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    get manualContractFillingIsEnabled() {
+        return mockManualContractFillingIsEnabled
     },
 }))
 
@@ -47,6 +52,7 @@ jest.mock('src/modules/Consents/consentsHook.ts', () => ({
         enedisSgeConsent: mockEnedisConsent,
     }),
 }))
+
 describe('WidgetInfoIcon test', () => {
     test('EuroWidgetInfoIcon component', async () => {
         const { getByText, getByRole } = reduxedRender(
@@ -68,6 +74,28 @@ describe('WidgetInfoIcon test', () => {
             'href',
             `${URL_MY_HOUSE}/${LIST_OF_HOUSES[0].id}/contracts`,
         )
+    })
+
+    test('When manual contract filling is disabled, the tooltip of EuroWidgetInfoIcon should not show missing contract link', async () => {
+        mockManualContractFillingIsEnabled = false
+        const { getByText, getByRole, queryByText } = reduxedRender(
+            <Router>
+                <EuroWidgetInfoIcon />
+            </Router>,
+            {
+                initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[0] } },
+            },
+        )
+        // Hovering the tooltip
+        userEvent.hover(getByRole('button'))
+        await waitFor(() => {
+            expect(getByText(EURO_WIDGET_INFO_TEXT)).toBeTruthy()
+        })
+
+        // Contracts Redirection URL should not be displayed.
+        expect(queryByText(EURO_WIDGET_INFO_REDIRECT_LINK_TEXT)).not.toBeInTheDocument()
+
+        mockManualContractFillingIsEnabled = true
     })
 
     test('ProductionWidgetErrorInfoIcon component', async () => {
