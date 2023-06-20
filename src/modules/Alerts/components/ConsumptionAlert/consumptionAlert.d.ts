@@ -7,7 +7,7 @@ export interface IPricePerKwhDataType {
     /**
      * Price per kwh.
      */
-    pricePerKwh: number
+    pricePerKwh: number | null
 }
 
 /**
