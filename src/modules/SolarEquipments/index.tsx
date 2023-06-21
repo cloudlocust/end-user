@@ -1,4 +1,4 @@
-import { Icon, IconButton, Tooltip, useTheme, Typography } from '@mui/material'
+import { Icon, IconButton, Tooltip, useTheme } from '@mui/material'
 import { styled } from '@mui/material/styles'
 import { useConfirm } from 'material-ui-confirm'
 import { Dispatch, SetStateAction, useState } from 'react'
@@ -13,6 +13,8 @@ import { SolarEquipmentHeader } from 'src/modules/SolarEquipments/SolarEquipment
 import { useSolarEquipmentsDetails, useSolarEquipmentsList } from 'src/modules/SolarEquipments/solarEquipmentsHook'
 import { equipmentsTypeList } from 'src/modules/InstallationRequests'
 import { SolarEquipmentCreateUpdate } from 'src/modules/SolarEquipments/components/SolarEquipmentCreateUpdate'
+import { ICell } from 'src/common/ui-kit/components/Table/TableT'
+import { SolarEquipmentMobileRowContent } from 'src/modules/SolarEquipments/components/SolarEquipmentMobileRow'
 
 const Root = styled(FusePageCarded)(({ theme }) => ({
     '& .FusePageCarded-header': {
@@ -149,7 +151,7 @@ export const SolarEquipments = () => {
     const [solarEquipmentDetails, setSolarEquipmentDetails] = useState<ISolarEquipment | null>(null)
     const [isSolarEquipmentCreateUpdatePopupOpen, setIsSolarEquipmentCreateUpdatePopupOpen] = useState(false)
 
-    const solarEquipmentCells = [
+    const solarEquipmentCells: ICell<ISolarEquipment>[] = [
         {
             id: 'type',
             headCellLabel: formatMessage({ id: 'Type', defaultMessage: 'Type' }),
@@ -220,12 +222,12 @@ export const SolarEquipments = () => {
                             animate={{ opacity: 1, transition: { delay: 0.1 } }}
                             className="flex flex-1 items-center justify-center h-full"
                         >
-                            <Typography color="textSecondary" variant="h5">
+                            <TypographyFormatMessage color="textSecondary" variant="h5">
                                 {formatMessage({
                                     id: 'Aucun équipement !',
                                     defaultMessage: 'Aucun équipement !',
                                 })}
-                            </Typography>
+                            </TypographyFormatMessage>
                         </motion.div>
                     ) : (
                         <div className="w-full flex flex-col">
@@ -235,6 +237,7 @@ export const SolarEquipments = () => {
                                 onPageChange={loadPage}
                                 rows={solarEquipmentsList}
                                 pageProps={page}
+                                MobileRowContentElement={SolarEquipmentMobileRowContent}
                             />
                         </div>
                     )}

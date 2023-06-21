@@ -19,6 +19,8 @@ import { InstallationRequestsHeader } from 'src/modules/InstallationRequests/com
 import { InstallationRequestCreatePopup } from 'src/modules/InstallationRequests/components/InstallationRequestCreatePopup'
 import { useConfirm } from 'material-ui-confirm'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
+import { ICell } from 'src/common/ui-kit/components/Table/TableT'
+import { InstallationRequestMobileRowContent } from 'src/modules/InstallationRequests/components/InstallationRequestMobileRow'
 
 const Root = styled(FusePageCarded)(({ theme }) => ({
     '& .FusePageCarded-header': {
@@ -201,24 +203,13 @@ export const InstallationRequests = (): JSX.Element => {
     const [isUpdateInstallationsRequestsPopup, setIsUpdateInstallationsRequestsPopup] = useState(false)
     const [isCreateInstallationRequestPopup, setIsCreateInstallationRequestPopup] = useState(false)
 
-    const installerRequestsCells = [
+    const installerRequestsCells: ICell<IInstallationRequest>[] = [
         {
             id: 'type',
             headCellLabel: formatMessage({ id: 'Type', defaultMessage: 'Type' }),
             // eslint-disable-next-line jsdoc/require-jsdoc
             rowCell: (row: IInstallationRequest) =>
                 equipmentsTypeList[row.equipmentType as keyof typeof equipmentsTypeList].label,
-        },
-        {
-            id: 'createdAt',
-            headCellLabel: formatMessage({
-                id: 'Date',
-                defaultMessage: 'Date',
-            }),
-            // eslint-disable-next-line jsdoc/require-jsdoc
-            rowCell: (row: IInstallationRequest) => {
-                return dayjs.utc(row.createdAt).local().format('DD/MM/YYYY')
-            },
         },
         {
             id: 'budget',
@@ -234,6 +225,18 @@ export const InstallationRequests = (): JSX.Element => {
                 }).format(row.budget)
             },
         },
+        {
+            id: 'createdAt',
+            headCellLabel: formatMessage({
+                id: 'Date',
+                defaultMessage: 'Date',
+            }),
+            // eslint-disable-next-line jsdoc/require-jsdoc
+            rowCell: (row: IInstallationRequest) => {
+                return dayjs.utc(row.createdAt).local().format('DD/MM/YYYY')
+            },
+        },
+
         {
             id: 'status',
             headCellLabel: formatMessage({ id: 'Etat', defaultMessage: 'Etat' }),
@@ -312,6 +315,7 @@ export const InstallationRequests = (): JSX.Element => {
                                 onPageChange={loadPage}
                                 rows={installationRequestsList}
                                 pageProps={page}
+                                MobileRowContentElement={InstallationRequestMobileRowContent}
                             />
                         </div>
                     )}

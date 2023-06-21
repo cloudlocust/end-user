@@ -18,7 +18,39 @@ export interface ICell<rowType> {
 }
 
 /**
- *
+ * Mobile Table Props.
+ */
+interface IMobileTableProps<rowType> {
+    /**
+     * JSX Element of Row Content.
+     */
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    RowContentElement: ({ row }: { row: rowType }) => JSX.Element
+    /**
+     * JSX for the Row Actions.
+     */
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    RowActions?: ({ row }: { row: rowType }) => JSX.Element
+    /**
+     * Rows record of the table.
+     */
+    rows: rowType[]
+    /**
+     * Function to be called when load more.
+     */
+    loadMoreElements?: () => void
+    /**
+     * Function to be called when clicking on a row.
+     */
+    onRowClick?: (row: rowType) => void
+    /**
+     * Total of Possible Rows.
+     */
+    totalRows?: number
+}
+
+/**
+ * Table Props.
  */
 interface ITable<rowType> {
     /**
@@ -50,6 +82,11 @@ interface ITable<rowType> {
      * Represent the current page.
      */
     pageProps?: number
+    /**
+     * Row JSX Element on Mobile.
+     */
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    MobileRowContentElement: ({ row }: { row: rowType }) => JSX.Element
 }
 
 /**
