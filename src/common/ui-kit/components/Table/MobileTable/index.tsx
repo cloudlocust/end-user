@@ -1,11 +1,20 @@
+import { useState } from 'react'
 import { Card, styled } from '@mui/material'
 import { IMobileTableProps } from 'src/common/ui-kit/components/Table/TableT'
+import IconButton from '@mui/material/IconButton'
+import Menu from '@mui/material/Menu'
+
+import MoreVertIcon from '@mui/icons-material/MoreVert'
 
 /**
  * Style for the Component.
  */
 const RowCard = styled(Card)(() => ({
     padding: '15px',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: '16px',
     margin: '10px 15px',
     border: '1px solid rgba(0, 0, 0, 0.1)',
     boxShadow: '0px 2px 1px 1px rgba(0, 0, 0, 0.25)',
@@ -13,42 +22,71 @@ const RowCard = styled(Card)(() => ({
 }))
 
 /**
- * Style for the Title part of the Component.
- * The part at the top of the Card (Header).
+ * Style for the RowContent part of Mobile Row Card.
  */
-/* TODO: Remove in last PR */
-// const StyledCardTitleWrapper = styled('div')(() => ({
-//     display: 'flex',
-//     flex: 1,
-//     flexDirection: 'row',
-//     justifyContent: 'space-between',
-//     alignItems: 'center',
-//     flexWrap: 'wrap',
-// }))
+const StyledRowContentElement = styled('div')(() => ({
+    flexGrow: 1,
+}))
 
 /**
- * Style for the Wrapper inside the Component (this wrap only Table content without wrapping ActionsCell).
+ * MobileTableActionsMenu.
+ *
+ * @param props N/A.
+ * @param props.children Children Menu Items.
+ * @returns MobileTableActions Menu.
  */
-/* TODO: Remove in last PR */
-// const StyledCardContentWrapper = styled('div')(() => ({
-// display: 'flex',
-// flexDirection: 'column',
-// flex: 1,
-// }))
+export const MobileTableActionsMenu = ({
+    children,
+}: // eslint-disable-next-line jsdoc/require-jsdoc
+{
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    children: JSX.Element
+}) => {
+    const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null)
+    const open = Boolean(anchorEl)
 
-/**
- * Style for the content of the Card.
- */
-/* TODO: Remove in last PR */
-// const StyledCardCell = styled('div')(() => ({
-// display: 'flex',
-// flexDirection: 'row',
-// justifyContent: 'space-between',
-// alignItems: 'center',
-// margin: '5px 0px',
-// flexWrap: 'wrap',
-// }))
+    /**
+     * Open Menu Handler.
+     *
+     * @param event Event.
+     */
+    const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+        setAnchorEl(event.currentTarget)
+    }
 
+    /**
+     * Close Menu Handler.
+     */
+    const handleClose = () => {
+        setAnchorEl(null)
+    }
+
+    return (
+        <div>
+            <IconButton
+                aria-label="more"
+                id="long-button"
+                aria-controls={open ? 'long-menu' : undefined}
+                aria-expanded={open ? 'true' : undefined}
+                aria-haspopup="true"
+                onClick={handleClick}
+            >
+                <MoreVertIcon />
+            </IconButton>
+            <Menu
+                id="long-menu"
+                MenuListProps={{
+                    'aria-labelledby': 'long-button',
+                }}
+                anchorEl={anchorEl}
+                open={open}
+                onClose={handleClose}
+            >
+                {children}
+            </Menu>
+        </div>
+    )
+}
 /**
  * MobileTable component.
  *
@@ -57,8 +95,8 @@ const RowCard = styled(Card)(() => ({
  */
 function MobileTable<rowType>(props: IMobileTableProps<rowType>) {
     // TODO Fix on next PR
-    // const { loadMoreElements, RowContentElement, RowActions, rows, onRowClick } = props
-    const { RowContentElement, rows, onRowClick } = props
+    // const { loadMoreElements, RowContentElement, RowActionsElement, rows } = props
+    const { RowContentElement, rows, onRowClick, RowActionsElement } = props
     return (
         <>
             {rows.map((row) => (
@@ -68,16 +106,12 @@ function MobileTable<rowType>(props: IMobileTableProps<rowType>) {
                         onRowClick?.(row)
                     }}
                 >
-                    <RowContentElement row={row} />
-                    {/* TODO: Remove in last PR */}
-                    {/* <StyledCardContentWrapper>
-                        <StyledCardTitleWrapper>{cardTitle}</StyledCardTitleWrapper>
-                        {displayableCells.map((cell) =>
-                            cell.mobileRowCell ? (
-                                <StyledCardCell key={cell.id}>{cell.mobileRowCell(row)}</StyledCardCell>
-                            ) : null,
-                        )}
-                    </StyledCardContentWrapper> */}
+                    <StyledRowContentElement>
+                        <RowContentElement row={row} />
+                    </StyledRowContentElement>
+                    <MobileTableActionsMenu>
+                        <RowActionsElement row={row} />
+                    </MobileTableActionsMenu>
                 </RowCard>
             ))}
         </>

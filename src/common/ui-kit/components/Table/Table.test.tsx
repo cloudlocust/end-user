@@ -3,6 +3,8 @@ import { act } from 'react-dom/test-utils'
 import { reduxedRender } from 'src/common/react-platform-components/test'
 import Table from 'src/common/ui-kit/components/Table/Table'
 import { ICell, ITable } from 'src/common/ui-kit/components/Table/TableT'
+import { MenuItem } from '@mui/material'
+import userEvent from '@testing-library/user-event'
 
 // The data that will be displayed in the Table.
 let TEST_ELEMENT_LIST = [
@@ -49,6 +51,20 @@ const MockMobileRowContentElement = ({ row }: { row: cellType }) => (
     </div>
 )
 
+const ACTION_MENU_ITEM_TEXT = 'actionText'
+const MENU_ICON_TEST_ID = 'MoreVertIcon'
+
+// Mobile Row Actions Elemnt
+// eslint-disable-next-line jsdoc/require-jsdoc
+const MockMobileRowActionsElement = ({ row }: { row: cellType }) => (
+    <>
+        <MenuItem>
+            <p>{row.id}</p>
+            <p>{ACTION_MENU_ITEM_TEXT}</p>
+        </MenuItem>
+    </>
+)
+
 // eslint-disable-next-line jsdoc/require-jsdoc
 const propsTable: ITable<cellType> = {
     cells: TEST_CELLS,
@@ -59,6 +75,7 @@ const propsTable: ITable<cellType> = {
     sizeRowsPerPage: 2,
     pageProps: 1,
     MobileRowContentElement: MockMobileRowContentElement,
+    MobileRowActionsElement: MockMobileRowActionsElement,
 }
 // Text
 const ROW1_ID_CELL_CONTENT = '1'
@@ -122,6 +139,21 @@ describe('Testing Table', () => {
             expect(getByText('mobile-Arow1')).toBeTruthy()
             expect(getByText('mobileTitle-2')).toBeTruthy()
             expect(getByText('mobile-Brow2')).toBeTruthy()
+        })
+
+        test('When Table have Actions and open / close menu', async () => {
+            const { getByText, getAllByTestId, getAllByRole } = reduxedRender(<Table {...propsTable} />)
+
+            userEvent.click(getAllByTestId(MENU_ICON_TEST_ID)[0])
+            await waitFor(() => {
+                expect(getByText(ACTION_MENU_ITEM_TEXT)).toBeTruthy()
+            })
+
+            // Click on the backdrop
+            fireEvent.click(getAllByRole('presentation')[0].firstChild as HTMLDivElement)
+            await waitFor(() => {
+                expect(() => getByText(ACTION_MENU_ITEM_TEXT)).toThrow()
+            })
         })
 
         test('When Clicking on a MobileTableRow onRowClick should be called with row data', async () => {

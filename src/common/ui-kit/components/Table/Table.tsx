@@ -23,11 +23,21 @@ import useMediaQuery from '@mui/material/useMediaQuery'
  * @param props.sizeRowsPerPage SizeRowsPerPage Props.
  * @param props.pageProps PageProps Props.
  * @param props.MobileRowContentElement MobileRowContentElement Props.
+ * @param props.MobileRowActionsElement MobileRowActionsElement Props.
  * @returns Table Reusable Component, with row sorting and TablePagination.
  */
 function Table<rowType>(props: ITable<rowType>) {
-    const { onRowClick, rows, cells, totalRows, onPageChange, sizeRowsPerPage, pageProps, MobileRowContentElement } =
-        props
+    const {
+        onRowClick,
+        rows,
+        cells,
+        totalRows,
+        onPageChange,
+        sizeRowsPerPage,
+        pageProps,
+        MobileRowContentElement,
+        MobileRowActionsElement,
+    } = props
     const theme = useTheme()
     const isMobile = useMediaQuery(theme.breakpoints.down('lg'))
 
@@ -63,7 +73,12 @@ function Table<rowType>(props: ITable<rowType>) {
     return (
         <FuseScrollbars className="flex-grow overflow-x-auto">
             {isMobile ? (
-                <MobileTable<rowType> rows={rows} RowContentElement={MobileRowContentElement} onRowClick={onRowClick} />
+                <MobileTable<rowType>
+                    rows={rows}
+                    RowContentElement={MobileRowContentElement}
+                    RowActionsElement={MobileRowActionsElement}
+                    onRowClick={onRowClick}
+                />
             ) : (
                 <>
                     <MuiTable stickyHeader className="min-w-xl" aria-labelledby="tableTitle">

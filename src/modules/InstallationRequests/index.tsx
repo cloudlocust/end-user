@@ -1,11 +1,15 @@
-import { IconButton, Tooltip, Chip, Typography, useTheme } from '@mui/material'
+import { useState } from 'react'
+import { IconButton, Tooltip, MenuItem, Chip, Typography, useTheme, Hidden } from '@mui/material'
 import { styled } from '@mui/material/styles'
 import { useIntl } from 'react-intl'
 import { Icon } from 'src/common/ui-kit'
 import Table from 'src/common/ui-kit/components/Table/Table'
 import FuseLoading from 'src/common/ui-kit/fuse/components/FuseLoading'
 import FusePageCarded from 'src/common/ui-kit/fuse/components/FusePageCarded'
-import { IInstallationRequest } from 'src/modules/InstallationRequests/installationRequests'
+import {
+    IInstallationRequestActionCellProps,
+    IInstallationRequest,
+} from 'src/modules/InstallationRequests/installationRequests'
 import {
     useInstallationRequestsList,
     useInstallationRequestDetails,
@@ -13,7 +17,6 @@ import {
 import { VariantType } from 'notistack'
 import dayjs from 'dayjs'
 import { motion } from 'framer-motion'
-import { Dispatch, SetStateAction, useState } from 'react'
 import { InstallationRequestDetailsPopup } from 'src/modules/InstallationRequests/components/InstallationRequestDetailsPopup'
 import { InstallationRequestsHeader } from 'src/modules/InstallationRequests/components/InstallationRequestsHeader'
 import { InstallationRequestCreatePopup } from 'src/modules/InstallationRequests/components/InstallationRequestCreatePopup'
@@ -99,17 +102,7 @@ const ActionsCell = ({
     onAfterCreateUpdateDeleteSuccess,
     setIsUpdateInstallationsRequestsPopup,
     setInstallationRequestDetails,
-}: //eslint-disable-next-line jsdoc/require-jsdoc
-{
-    //eslint-disable-next-line jsdoc/require-jsdoc
-    row: IInstallationRequest
-    //eslint-disable-next-line jsdoc/require-jsdoc
-    onAfterCreateUpdateDeleteSuccess: () => void
-    //eslint-disable-next-line jsdoc/require-jsdoc
-    setIsUpdateInstallationsRequestsPopup: Dispatch<SetStateAction<boolean>>
-    //eslint-disable-next-line jsdoc/require-jsdoc
-    setInstallationRequestDetails: Dispatch<SetStateAction<IInstallationRequest | null>>
-}): JSX.Element => {
+}: IInstallationRequestActionCellProps): JSX.Element => {
     const theme = useTheme()
     const { formatMessage } = useIntl()
     const openMuiDialog = useConfirm()
@@ -151,8 +144,27 @@ const ActionsCell = ({
     }
 
     return (
-        <div>
-            <>
+        <>
+            <Hidden lgUp>
+                <MenuItem
+                    onClick={() => {
+                        setIsUpdateInstallationsRequestsPopup(true)
+                        setInstallationRequestDetails(row)
+                    }}
+                >
+                    <IconButton color="success">
+                        <Icon>edit</Icon>
+                    </IconButton>
+                    <TypographyFormatMessage>Modifier</TypographyFormatMessage>
+                </MenuItem>
+                <MenuItem onClick={onDeleteInstallationRequestHandler}>
+                    <IconButton color="error">
+                        <Icon>delete</Icon>
+                    </IconButton>
+                    <TypographyFormatMessage>Supprimer</TypographyFormatMessage>
+                </MenuItem>
+            </Hidden>
+            <Hidden lgDown>
                 <Tooltip
                     title={formatMessage({
                         id: 'Modifier',
@@ -179,8 +191,8 @@ const ActionsCell = ({
                         <Icon>delete</Icon>
                     </IconButton>
                 </Tooltip>
-            </>
-        </div>
+            </Hidden>
+        </>
     )
 }
 
@@ -316,6 +328,11 @@ export const InstallationRequests = (): JSX.Element => {
                                 rows={installationRequestsList}
                                 pageProps={page}
                                 MobileRowContentElement={InstallationRequestMobileRowContent}
+                                MobileRowActionsElement={({ row }) =>
+                                    installerRequestsCells[installerRequestsCells.length - 1].rowCell(
+                                        row,
+                                    ) as JSX.Element
+                                }
                             />
                         </div>
                     )}
