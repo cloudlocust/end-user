@@ -1,14 +1,13 @@
-import { Icon, IconButton, Tooltip, useTheme } from '@mui/material'
+import { Icon, MenuItem, IconButton, Tooltip, useTheme, Hidden } from '@mui/material'
 import { styled } from '@mui/material/styles'
 import { useConfirm } from 'material-ui-confirm'
-import { Dispatch, SetStateAction, useState } from 'react'
+import { useState } from 'react'
 import { useIntl } from 'react-intl'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
-import FuseLoading from 'src/common/ui-kit/fuse/components/FuseLoading'
 import FusePageCarded from 'src/common/ui-kit/fuse/components/FusePageCarded'
 import { motion } from 'framer-motion'
 import Table from 'src/common/ui-kit/components/Table/Table'
-import { ISolarEquipment } from 'src/modules/SolarEquipments/solarEquipments'
+import { ISolarEquipmentActionCellProps, ISolarEquipment } from 'src/modules/SolarEquipments/solarEquipments'
 import { SolarEquipmentHeader } from 'src/modules/SolarEquipments/SolarEquipmentsHeader'
 import { useSolarEquipmentsDetails, useSolarEquipmentsList } from 'src/modules/SolarEquipments/solarEquipmentsHook'
 import { equipmentsTypeList } from 'src/modules/InstallationRequests'
@@ -49,17 +48,7 @@ const ActionsCell = ({
     onAfterCreateUpdateDeleteSuccess,
     setIsSolarEquipmentCreateUpdatePopupOpen,
     setSolarEquipmentDetails,
-}: //eslint-disable-next-line jsdoc/require-jsdoc
-{
-    //eslint-disable-next-line jsdoc/require-jsdoc
-    row: ISolarEquipment
-    //eslint-disable-next-line jsdoc/require-jsdoc
-    onAfterCreateUpdateDeleteSuccess: () => void
-    //eslint-disable-next-line jsdoc/require-jsdoc
-    setIsSolarEquipmentCreateUpdatePopupOpen: Dispatch<SetStateAction<boolean>>
-    //eslint-disable-next-line jsdoc/require-jsdoc
-    setSolarEquipmentDetails: Dispatch<SetStateAction<ISolarEquipment | null>>
-}): JSX.Element => {
+}: ISolarEquipmentActionCellProps): JSX.Element => {
     const theme = useTheme()
     const { formatMessage } = useIntl()
     const openMuiDialog = useConfirm()
@@ -98,10 +87,29 @@ const ActionsCell = ({
         await removeElementDetails()
         onAfterCreateUpdateDeleteSuccess()
     }
-
     return (
-        <div>
-            <>
+        <>
+            <Hidden lgUp>
+                <MenuItem
+                    onClick={() => {
+                        setSolarEquipmentDetails(row)
+                        setIsSolarEquipmentCreateUpdatePopupOpen(true)
+                    }}
+                >
+                    <IconButton color="success">
+                        <Icon>edit</Icon>
+                    </IconButton>
+                    <TypographyFormatMessage>Modifier</TypographyFormatMessage>
+                </MenuItem>
+                <MenuItem onClick={onDeleteSolarEquipmentHandler}>
+                    <IconButton color="error">
+                        <Icon>delete</Icon>
+                    </IconButton>
+                    <TypographyFormatMessage>Supprimer</TypographyFormatMessage>
+                </MenuItem>
+            </Hidden>
+
+            <Hidden lgDown>
                 <Tooltip
                     title={formatMessage({
                         id: 'Modifier',
@@ -128,8 +136,8 @@ const ActionsCell = ({
                         <Icon>delete</Icon>
                     </IconButton>
                 </Tooltip>
-            </>
-        </div>
+            </Hidden>
+        </>
     )
 }
 
@@ -214,33 +222,34 @@ export const SolarEquipments = () => {
                             reloadSolarEquipmentsList={reloadSolarEquipmentsList}
                         />
                     )}
-                    {isSolarEquipmentsLoading || !solarEquipmentsList ? (
-                        <FuseLoading />
-                    ) : solarEquipmentsList.length === 0 ? (
-                        <motion.div
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1, transition: { delay: 0.1 } }}
-                            className="flex flex-1 items-center justify-center h-full"
-                        >
-                            <TypographyFormatMessage color="textSecondary" variant="h5">
-                                {formatMessage({
-                                    id: 'Aucun équipement !',
-                                    defaultMessage: 'Aucun équipement !',
-                                })}
-                            </TypographyFormatMessage>
-                        </motion.div>
-                    ) : (
-                        <div className="w-full flex flex-col">
-                            <Table<ISolarEquipment>
-                                cells={solarEquipmentCells}
-                                totalRows={totalSolarEquipmentsList}
-                                onPageChange={loadPage}
-                                rows={solarEquipmentsList}
-                                pageProps={page}
-                                MobileRowContentElement={SolarEquipmentMobileRowContent}
-                            />
-                        </div>
-                    )}
+                    <div className="w-full flex flex-col">
+                        <Table<ISolarEquipment>
+                            cells={solarEquipmentCells}
+                            totalRows={totalSolarEquipmentsList}
+                            onPageChange={loadPage}
+                            isRowsLoadingInProgress={isSolarEquipmentsLoading}
+                            emptyRowsElement={
+                                <motion.div
+                                    initial={{ opacity: 0 }}
+                                    animate={{ opacity: 1, transition: { delay: 0.1 } }}
+                                    className="flex flex-1 items-center justify-center h-full"
+                                >
+                                    <TypographyFormatMessage color="textSecondary" variant="h5">
+                                        {formatMessage({
+                                            id: 'Aucun équipement !',
+                                            defaultMessage: 'Aucun équipement !',
+                                        })}
+                                    </TypographyFormatMessage>
+                                </motion.div>
+                            }
+                            rows={solarEquipmentsList}
+                            pageProps={page}
+                            MobileRowContentElement={SolarEquipmentMobileRowContent}
+                            MobileRowActionsElement={({ row }) =>
+                                solarEquipmentCells[solarEquipmentCells.length - 1].rowCell(row) as JSX.Element
+                            }
+                        />
+                    </div>
                 </>
             }
             innerScroll

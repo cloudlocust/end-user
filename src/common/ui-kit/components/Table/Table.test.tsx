@@ -3,6 +3,8 @@ import { act } from 'react-dom/test-utils'
 import { reduxedRender } from 'src/common/react-platform-components/test'
 import Table from 'src/common/ui-kit/components/Table/Table'
 import { ICell, ITable } from 'src/common/ui-kit/components/Table/TableT'
+import { MenuItem } from '@mui/material'
+import userEvent from '@testing-library/user-event'
 
 // The data that will be displayed in the Table.
 let TEST_ELEMENT_LIST = [
@@ -14,7 +16,13 @@ let TEST_ELEMENT_LIST = [
         id: 2,
         label: 'Brow2',
     },
+    {
+        id: 3,
+        label: 'Crow3',
+    },
 ]
+
+const LOADING_TEXT = 'Chargement...'
 
 /**
  * Prettier issue...
@@ -49,16 +57,38 @@ const MockMobileRowContentElement = ({ row }: { row: cellType }) => (
     </div>
 )
 
+const LOAD_MORE_MOBILE_TABLE_BUTTON_TEXT = 'Afficher Plus'
+const EMPTY_ROWS_CUSTOM_TEXT = 'EMPTY_ROWS_CUSTOM_TEXT'
+const EMPTY_ROWS_DEFAULT_TEXT = 'Liste Vide !'
+// Custom Empty Rows Element.
+// eslint-disable-next-line jsdoc/require-jsdoc
+const mockCustomEmptyRowsElement = <p>{EMPTY_ROWS_CUSTOM_TEXT}</p>
+const ACTION_MENU_ITEM_TEXT = 'actionText'
+const MENU_ICON_TEST_ID = 'MoreVertIcon'
+
+// Mobile Row Actions Elemnt
+// eslint-disable-next-line jsdoc/require-jsdoc
+const MockMobileRowActionsElement = ({ row }: { row: cellType }) => (
+    <>
+        <MenuItem>
+            <p>{row.id}</p>
+            <p>{ACTION_MENU_ITEM_TEXT}</p>
+        </MenuItem>
+    </>
+)
+
 // eslint-disable-next-line jsdoc/require-jsdoc
 const propsTable: ITable<cellType> = {
     cells: TEST_CELLS,
     onRowClick: jest.fn(),
-    rows: TEST_ELEMENT_LIST,
+    rows: TEST_ELEMENT_LIST.slice(0, 2),
     onPageChange: jest.fn(),
     totalRows: TEST_ELEMENT_LIST.length,
     sizeRowsPerPage: 2,
     pageProps: 1,
+    isRowsLoadingInProgress: false,
     MobileRowContentElement: MockMobileRowContentElement,
+    MobileRowActionsElement: MockMobileRowActionsElement,
 }
 // Text
 const ROW1_ID_CELL_CONTENT = '1'
@@ -109,6 +139,25 @@ jest.mock('react-router', () => ({
 }))
 
 describe('Testing Table', () => {
+    describe('Empty Rows', () => {
+        test('When default message should be shown', async () => {
+            const { getByText } = reduxedRender(<Table {...propsTable} rows={[]} />)
+
+            expect(getByText(EMPTY_ROWS_DEFAULT_TEXT)).toBeTruthy()
+        })
+        test('When custom message should be shown', async () => {
+            propsTable.emptyRowsElement = mockCustomEmptyRowsElement
+            const { getByText } = reduxedRender(<Table {...propsTable} rows={[]} />)
+
+            expect(getByText(EMPTY_ROWS_CUSTOM_TEXT)).toBeTruthy()
+        })
+    })
+    test('When Rows are loading, Loading should be shown', async () => {
+        const { getByText } = reduxedRender(<Table {...propsTable} isRowsLoadingInProgress={true} />)
+
+        expect(getByText(LOADING_TEXT)).toBeTruthy()
+    })
+
     describe('Table Mobile', () => {
         beforeAll(() => {
             mockIsMobile = true
@@ -124,6 +173,21 @@ describe('Testing Table', () => {
             expect(getByText('mobile-Brow2')).toBeTruthy()
         })
 
+        test('When Table have Actions and open / close menu', async () => {
+            const { getByText, getAllByTestId, getAllByRole } = reduxedRender(<Table {...propsTable} />)
+
+            userEvent.click(getAllByTestId(MENU_ICON_TEST_ID)[0])
+            await waitFor(() => {
+                expect(getByText(ACTION_MENU_ITEM_TEXT)).toBeTruthy()
+            })
+
+            // Click on the backdrop
+            fireEvent.click(getAllByRole('presentation')[0].firstChild as HTMLDivElement)
+            await waitFor(() => {
+                expect(() => getByText(ACTION_MENU_ITEM_TEXT)).toThrow()
+            })
+        })
+
         test('When Clicking on a MobileTableRow onRowClick should be called with row data', async () => {
             propsTable.onRowClick = mockRowClickMobile
             const { getAllByRole } = reduxedRender(<Table {...propsTable} />)
@@ -137,6 +201,20 @@ describe('Testing Table', () => {
                 expect(mockRowClickMobile).toHaveBeenCalledWith(TEST_ELEMENT_LIST[0])
             })
         })
+        test('When Load More Rows, Load More Rows should be shown, and onPageChange should been called', async () => {
+            const mockOnPageChange = jest.fn()
+            const currentPage = 1
+            propsTable.pageProps = currentPage
+            const { getByText } = reduxedRender(<Table {...propsTable} onPageChange={mockOnPageChange} />)
+            userEvent.click(getByText(LOAD_MORE_MOBILE_TABLE_BUTTON_TEXT))
+            await waitFor(
+                () => {
+                    userEvent.click(getByText(LOADING_TEXT))
+                },
+                { timeout: 8000 },
+            )
+            expect(mockOnPageChange).toHaveBeenCalledWith(currentPage + 1)
+        }, 100000)
 
         afterAll(() => {
             mockIsMobile = false
@@ -198,16 +276,17 @@ describe('Testing Table', () => {
             })
         })
         describe('Table Pagination', () => {
-            test('When giving pagination props and Clicking on nextButton or Previous, onPageChange should be called with page number', async () => {
-                propsTable.sizeRowsPerPage = 1
+            test('When Clicking on nextButton, onPageChange should be called with page number', async () => {
+                propsTable.sizeRowsPerPage = 2
                 propsTable.pageProps = 1
-                propsTable.rows = [TEST_ELEMENT_LIST[0]]
+                propsTable.totalRows = 3
+                propsTable.rows = [TEST_ELEMENT_LIST[0], TEST_ELEMENT_LIST[1]]
                 const mockOnPageChange = jest.fn()
                 propsTable.onPageChange = mockOnPageChange
                 const { getByText, getByTitle } = reduxedRender(<Table {...propsTable} />)
 
                 // Display the number of rows / total Rows
-                let labelDisplayedRows = '1–1 / 2'
+                let labelDisplayedRows = '1–2 / 3'
                 expect(getByText(labelDisplayedRows)).toBeTruthy()
 
                 // When giving first page previous button should be disabled.
@@ -220,10 +299,19 @@ describe('Testing Table', () => {
                 await waitFor(() => {
                     expect(mockOnPageChange).toHaveBeenCalledWith(propsTable.pageProps! + 1)
                 })
+            })
 
+            test('When Previous Button, onPageChange should be called with page number', async () => {
+                propsTable.sizeRowsPerPage = 2
                 propsTable.pageProps = 2
-                propsTable.rows = [TEST_ELEMENT_LIST[1]]
-                labelDisplayedRows = '2–2 / 2'
+                propsTable.rows = [TEST_ELEMENT_LIST[2]]
+                // Display the number of rows / total Rows
+                const labelDisplayedRows = '3–3 / 3'
+
+                const mockOnPageChange = jest.fn()
+                propsTable.onPageChange = mockOnPageChange
+                const { getByText, getByTitle } = reduxedRender(<Table {...propsTable} />)
+
                 expect(getByText(labelDisplayedRows)).toBeTruthy()
 
                 expect(getByTitle(PREVIOUS_PAGE_BUTTON_TITLE).classList.contains(DISABLED_CLASSNAME)).toBeFalsy()
