@@ -36,11 +36,11 @@ export const Contracts = () => {
         // >> Because if currentHousing didn't change through select.
         // >> Then in case where user access the url /../:houseId/contracts the Contracts should fetch :houseId on usepParams even if it's different from currentHousing
         // >> And if select currentHousing happens then Contracts should fetch according to the selected currentHousing
-        if (!initialMount.current && currentHousing) {
+        if (!initialMount.current && currentHousing?.id) {
             setIsCurrentHousingInProgress(true)
-            history.replace(URL_MY_HOUSE + '/' + currentHousing.id + '/contracts')
+            history.replace(`${URL_MY_HOUSE}/${currentHousing.id}/contracts`)
         }
-    }, [currentHousing, history, houseId])
+    }, [currentHousing?.id, history, houseId])
 
     useEffect(() => {
         initialMount.current = false
