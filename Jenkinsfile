@@ -90,6 +90,8 @@ pipeline{
                         appimage.push("${IMG_TAG}-${VERSION}")   
                         }                         
                     }
+                    // Clean up unused Docker resources older than 1 hour
+                    sh 'docker system prune -af --filter "until=1h"'                        
                }
             }
 
