@@ -26,7 +26,7 @@ export const EDIT_ERROR_MESSAGE = 'Erreur lors de la modification du compteur'
 /**
  * Edit success message.
  */
-export const EDIT_SUCCESS_MESSAGE = 'Votre compteur à été modifier avec succées'
+export const EDIT_SUCCESS_MESSAGE = 'Votre compteur à été modifier avec succès'
 
 /**
  * Handle Meter error response message when editing a meter.
