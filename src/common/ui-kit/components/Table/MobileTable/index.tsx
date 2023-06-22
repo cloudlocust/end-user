@@ -129,6 +129,8 @@ function MobileTable<rowType>(props: IMobileTableProps<rowType>) {
                     </Button>
                 </div>
             )}
+            {/* Adding a Row Card as a padding bottom */}
+            <RowCard />
         </div>
     )
 }
