@@ -19,6 +19,7 @@ export const TEST_METER_GUID = '17707368031234'
 export const TEST_SUCCESS_NRLINK_CONSENT: SnakeCasedPropertiesDeep<INrlinkConsent> = {
     meter_guid: TEST_METER_GUID,
     nrlink_consent_state: 'CONNECTED',
+    nrlink_guid: '0x42',
 }
 
 /**
