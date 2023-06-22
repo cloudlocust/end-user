@@ -129,7 +129,7 @@ function MobileTable<rowType>(props: IMobileTableProps<rowType>) {
                     </Button>
                 </div>
             )}
-            {/* Adding a div as a padding bottom */}
+            {/* Adding a div as a spacing at the end of the Table */}
             <div
                 style={{
                     padding: '10px 0',
