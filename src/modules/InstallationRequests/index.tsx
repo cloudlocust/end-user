@@ -4,7 +4,6 @@ import { styled } from '@mui/material/styles'
 import { useIntl } from 'react-intl'
 import { Icon } from 'src/common/ui-kit'
 import Table from 'src/common/ui-kit/components/Table/Table'
-import FuseLoading from 'src/common/ui-kit/fuse/components/FuseLoading'
 import FusePageCarded from 'src/common/ui-kit/fuse/components/FusePageCarded'
 import {
     IInstallationRequestActionCellProps,
@@ -304,38 +303,35 @@ export const InstallationRequests = (): JSX.Element => {
                             onAfterCreateUpdateDeleteSuccess={reloadInstallationRequests}
                         />
                     )}
-                    {isInstallationRequestsLoading || !installationRequestsList ? (
-                        <FuseLoading />
-                    ) : installationRequestsList.length === 0 ? (
-                        <motion.div
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1, transition: { delay: 0.1 } }}
-                            className="flex flex-1 items-center justify-center h-full"
-                        >
-                            <Typography color="textSecondary" variant="h5">
-                                {formatMessage({
-                                    id: "Aucune demande d'installation !",
-                                    defaultMessage: "Aucune demande d'installation !",
-                                })}
-                            </Typography>
-                        </motion.div>
-                    ) : (
-                        <div className="w-full flex flex-col">
-                            <Table<IInstallationRequest>
-                                cells={installerRequestsCells}
-                                totalRows={totalInstallationRequests}
-                                onPageChange={loadPage}
-                                rows={installationRequestsList}
-                                pageProps={page}
-                                MobileRowContentElement={InstallationRequestMobileRowContent}
-                                MobileRowActionsElement={({ row }) =>
-                                    installerRequestsCells[installerRequestsCells.length - 1].rowCell(
-                                        row,
-                                    ) as JSX.Element
-                                }
-                            />
-                        </div>
-                    )}
+                    <div className="w-full flex flex-col">
+                        <Table<IInstallationRequest>
+                            cells={installerRequestsCells}
+                            totalRows={totalInstallationRequests}
+                            onPageChange={loadPage}
+                            rows={installationRequestsList}
+                            pageProps={page}
+                            sizeRowsPerPage={1}
+                            MobileRowContentElement={InstallationRequestMobileRowContent}
+                            MobileRowActionsElement={({ row }) =>
+                                installerRequestsCells[installerRequestsCells.length - 1].rowCell(row) as JSX.Element
+                            }
+                            isRowsLoadingInProgress={isInstallationRequestsLoading}
+                            emptyRowsElement={
+                                <motion.div
+                                    initial={{ opacity: 0 }}
+                                    animate={{ opacity: 1, transition: { delay: 0.1 } }}
+                                    className="flex flex-1 items-center justify-center h-full"
+                                >
+                                    <Typography color="textSecondary" variant="h5">
+                                        {formatMessage({
+                                            id: "Aucune demande d'installation !",
+                                            defaultMessage: "Aucune demande d'installation !",
+                                        })}
+                                    </Typography>
+                                </motion.div>
+                            }
+                        />
+                    </div>
                 </>
             }
             innerScroll

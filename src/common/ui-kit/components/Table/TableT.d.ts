@@ -36,9 +36,14 @@ interface IMobileTableProps<rowType> {
      */
     rows: rowType[]
     /**
-     * Function to be called when load more.
+     * Function to be called when load more rows.
      */
-    loadMoreElements?: () => void
+    loadMoreRows: () => void
+    /**
+     * Boolean indicating if rows are loading.
+     */
+    isRowsLoadingInProgress: boolean
+
     /**
      * Function to be called when clicking on a row.
      */
@@ -46,7 +51,7 @@ interface IMobileTableProps<rowType> {
     /**
      * Total of Possible Rows.
      */
-    totalRows?: number
+    totalRows: number
 }
 
 /**
@@ -62,26 +67,13 @@ interface ITable<rowType> {
      */
     onRowClick?: (row: rowType) => void
     /**
-     *
+     * Rows.
      */
-    rows: rowType[]
-    /**
-     * TODO Fix below optional props so that all those that are not optional won't be optional, because it is called in ChalemeonsTable, MetersTable and EquipmentsTable.
-     * Function to be called when page change.
-     */
-    onPageChange?: (page: number) => void
+    rows: rowType[] | null
     /**
      * Total Possible rows.
      */
-    totalRows?: number
-    /**
-     * Represent the number of rows to be displayed in each page.
-     */
-    sizeRowsPerPage?: number
-    /**
-     * Represent the current page.
-     */
-    pageProps?: number
+    totalRows: number
     /**
      * Row JSX Element on Mobile.
      */
@@ -92,6 +84,60 @@ interface ITable<rowType> {
      */
     // eslint-disable-next-line jsdoc/require-jsdoc
     MobileRowActionsElement: ({ row }: { row: rowType }) => JSX.Element
+    /**
+     * Function to be called when page change.
+     */
+    onPageChange: (page: number) => void
+    /**
+     * Boolean indicating if rows are loading.
+     */
+    isRowsLoadingInProgress: boolean
+    /**
+     * EmptyRows JSX Element.
+     */
+    emptyRowsElement?: JSX.Element
+    /**
+     * Represent the number of rows to be displayed in each page.
+     */
+    sizeRowsPerPage?: number
+    /**
+     * Represent the current page.
+     */
+    pageProps: number
+}
+
+/**
+ * Table Props.
+ */
+interface ITableDesktop<rowType> {
+    /**
+     * Cells represent how data will be shown in each cell, with its header label.
+     */
+    cells: ICell<rowType>[]
+    /**
+     * Function to be called when clicking on a row.
+     */
+    onRowClick?: (row: rowType) => void
+    /**
+     * Rows.
+     */
+    rows: rowType[]
+    /**
+     * Total Possible rows.
+     */
+    totalRows: number
+    /**
+     * Represent the current page.
+     */
+    page: number
+    /**
+     * Function to be called when page change.
+     */
+    onPageChange: (_event: React.MouseEvent<HTMLButtonElement, MouseEvent> | null, newPage: number) => void
+    /**
+     * Represent the number of rows to be displayed in each page.
+     */
+    sizeRowsPerPage?: number
 }
 
 /**
