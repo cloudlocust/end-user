@@ -4,7 +4,6 @@ import { useConfirm } from 'material-ui-confirm'
 import { useState } from 'react'
 import { useIntl } from 'react-intl'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
-import FuseLoading from 'src/common/ui-kit/fuse/components/FuseLoading'
 import FusePageCarded from 'src/common/ui-kit/fuse/components/FusePageCarded'
 import { motion } from 'framer-motion'
 import Table from 'src/common/ui-kit/components/Table/Table'
@@ -223,36 +222,34 @@ export const SolarEquipments = () => {
                             reloadSolarEquipmentsList={reloadSolarEquipmentsList}
                         />
                     )}
-                    {isSolarEquipmentsLoading || !solarEquipmentsList ? (
-                        <FuseLoading />
-                    ) : solarEquipmentsList.length === 0 ? (
-                        <motion.div
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1, transition: { delay: 0.1 } }}
-                            className="flex flex-1 items-center justify-center h-full"
-                        >
-                            <TypographyFormatMessage color="textSecondary" variant="h5">
-                                {formatMessage({
-                                    id: 'Aucun équipement !',
-                                    defaultMessage: 'Aucun équipement !',
-                                })}
-                            </TypographyFormatMessage>
-                        </motion.div>
-                    ) : (
-                        <div className="w-full flex flex-col">
-                            <Table<ISolarEquipment>
-                                cells={solarEquipmentCells}
-                                totalRows={totalSolarEquipmentsList}
-                                onPageChange={loadPage}
-                                rows={solarEquipmentsList}
-                                pageProps={page}
-                                MobileRowContentElement={SolarEquipmentMobileRowContent}
-                                MobileRowActionsElement={({ row }) =>
-                                    solarEquipmentCells[solarEquipmentCells.length - 1].rowCell(row) as JSX.Element
-                                }
-                            />
-                        </div>
-                    )}
+                    <div className="w-full flex flex-col">
+                        <Table<ISolarEquipment>
+                            cells={solarEquipmentCells}
+                            totalRows={totalSolarEquipmentsList}
+                            onPageChange={loadPage}
+                            isRowsLoadingInProgress={isSolarEquipmentsLoading}
+                            emptyRowsElement={
+                                <motion.div
+                                    initial={{ opacity: 0 }}
+                                    animate={{ opacity: 1, transition: { delay: 0.1 } }}
+                                    className="flex flex-1 items-center justify-center h-full"
+                                >
+                                    <TypographyFormatMessage color="textSecondary" variant="h5">
+                                        {formatMessage({
+                                            id: 'Aucun équipement !',
+                                            defaultMessage: 'Aucun équipement !',
+                                        })}
+                                    </TypographyFormatMessage>
+                                </motion.div>
+                            }
+                            rows={solarEquipmentsList}
+                            pageProps={page}
+                            MobileRowContentElement={SolarEquipmentMobileRowContent}
+                            MobileRowActionsElement={({ row }) =>
+                                solarEquipmentCells[solarEquipmentCells.length - 1].rowCell(row) as JSX.Element
+                            }
+                        />
+                    </div>
                 </>
             }
             innerScroll

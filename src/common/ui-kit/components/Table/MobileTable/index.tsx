@@ -1,10 +1,12 @@
 import { useState } from 'react'
-import { Card, styled } from '@mui/material'
+import { Button, Card, styled } from '@mui/material'
 import { IMobileTableProps } from 'src/common/ui-kit/components/Table/TableT'
 import IconButton from '@mui/material/IconButton'
 import Menu from '@mui/material/Menu'
 
 import MoreVertIcon from '@mui/icons-material/MoreVert'
+import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
+import FuseLoading from 'src/common/ui-kit/fuse/components/FuseLoading/FuseLoading'
 
 /**
  * Style for the Component.
@@ -94,11 +96,17 @@ export const MobileTableActionsMenu = ({
  * @returns JSX.Element.
  */
 function MobileTable<rowType>(props: IMobileTableProps<rowType>) {
-    // TODO Fix on next PR
-    // const { loadMoreElements, RowContentElement, RowActionsElement, rows } = props
-    const { RowContentElement, rows, onRowClick, RowActionsElement } = props
+    const { RowContentElement, rows, onRowClick, RowActionsElement, loadMoreRows, isRowsLoadingInProgress, totalRows } =
+        props
+
+    if (isRowsLoadingInProgress)
+        return (
+            <div className="h-full items-center flex">
+                <FuseLoading />
+            </div>
+        )
     return (
-        <>
+        <div className="h-full">
             {rows.map((row) => (
                 <RowCard
                     role="checkbox"
@@ -114,7 +122,14 @@ function MobileTable<rowType>(props: IMobileTableProps<rowType>) {
                     </MobileTableActionsMenu>
                 </RowCard>
             ))}
-        </>
+            {rows.length < totalRows && (
+                <div className="flex justify-center">
+                    <Button onClick={loadMoreRows} variant="contained" className="text-center mt-8">
+                        <TypographyFormatMessage>Afficher Plus</TypographyFormatMessage>
+                    </Button>
+                </div>
+            )}
+        </div>
     )
 }
 

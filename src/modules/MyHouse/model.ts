@@ -95,7 +95,7 @@ const setCurrentHousingOnLoad = (state: IHousingState, housingList: IHousing[]) 
         typeof housingList.find((housing: IHousing) => housing.id === state.currentHousing?.id) !== 'undefined'
     ) {
         // if the current housing has a value and it exist in the new fetched house list then return it
-        return state.currentHousing
+        return housingList.find((housing: IHousing) => housing.id === state.currentHousing?.id) as IHousing
     } else if (housingList![0]) {
         // if it does not exist in the new fetched array then it has been deleted, if the housingList is not empty then return the first value by default
         return housingList[0]
