@@ -31,9 +31,13 @@ export const InstallationRequestsHeader = ({
                     component={motion.span}
                     initial={{ scale: 0 }}
                     animate={{ scale: 1, transition: { delay: 0.2 } }}
-                    className="text-24 md:text-32"
+                    sx={{
+                        width: { xs: 24, lg: 32 },
+                        height: { xs: 24, lg: 32 },
+                        color: mainTheme.palette.primary.contrastText,
+                    }}
                 >
-                    list_alt
+                    <Icon>solar_power</Icon>
                 </Icon>
                 <Typography
                     component={motion.span}
@@ -41,16 +45,16 @@ export const InstallationRequestsHeader = ({
                     animate={{ x: 0, transition: { delay: 0.2 } }}
                     className="text-16 md:text-24 mx-12 font-semibold"
                 >
-                    <span className="hidden sm:flex">
+                    <span className="hidden lg:flex">
                         {formatMessage({
                             id: "Demandes d'installations",
                             defaultMessage: "Demandes d'installations",
                         })}
                     </span>
-                    <span className="flex sm:hidden">
+                    <span className="flex lg:hidden">
                         {formatMessage({
-                            id: 'Demandes',
-                            defaultMessage: 'Demandes',
+                            id: 'Installations',
+                            defaultMessage: 'Installations',
                         })}
                     </span>
                 </Typography>
