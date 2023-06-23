@@ -127,6 +127,10 @@ describe('test UserMenu component', () => {
         await waitFor(() => {
             expect(() => getByText(userFullName)).toThrow()
         })
+
+        await waitFor(() => {
+            expect(store.getState().housingModel.currentHousing).toBeNull()
+        })
         expect(mockReplaceHistory).toHaveBeenCalledWith(LOGOUT_REDIRECT_URL)
     })
 

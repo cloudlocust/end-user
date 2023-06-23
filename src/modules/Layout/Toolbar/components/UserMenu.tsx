@@ -147,6 +147,8 @@ function UserMenu() {
                     )}
                     <ToolbarMenuItem
                         onMenuItemClick={() => {
+                            // Reset Housing Model when logging out.
+                            dispatch.housingModel.setHousingModelState([])
                             dispatch.userModel.logout()
                             history.replace('/login')
                         }}
