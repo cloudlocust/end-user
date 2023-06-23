@@ -27,7 +27,7 @@ interface IMobileTableProps<rowType> {
     // eslint-disable-next-line jsdoc/require-jsdoc
     RowContentElement: ({ row }: { row: rowType }) => JSX.Element
     /**
-     * JSX Element of Row Content.
+     * JSX Element of Row Actions.
      */
     // eslint-disable-next-line jsdoc/require-jsdoc
     RowActionsElement: ({ row }: { row: rowType }) => JSX.Element
