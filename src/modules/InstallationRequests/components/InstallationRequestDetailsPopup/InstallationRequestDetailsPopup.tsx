@@ -93,13 +93,6 @@ export const InstallationRequestDetailsPopup = (props: InstallationRequestDetail
                 {/* Dialog Content here */}
                 <DialogContent>
                     <div className="mb-24">
-                        <div className="flex mb-16">
-                            <Icon className="sm:inline text-20 sm:text-32 mr-8">support</Icon>
-                            <Typography className="text-12 sm:text-18 font-semibold">
-                                {formatMessage({ id: 'Demande', defaultMessage: 'Demande' })}
-                            </Typography>
-                        </div>
-
                         <Form
                             onSubmit={async (data: Omit<IInstallationRequest, 'updatedAt'>) => {
                                 const { equipmentType, id, createdAt, ...restOfData } = data

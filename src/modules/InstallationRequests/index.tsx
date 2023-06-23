@@ -70,11 +70,11 @@ export const statusList = {
 export const equipmentsTypeList = {
     SOLAR: {
         label: 'Panneau Solaire',
-        icon: 'panorama_horizontal_select',
+        icon: 'solar_power',
     },
     INVERTER: {
         label: 'Onduleur',
-        icon: 'autofps_select',
+        icon: 'electric_meter',
     },
     DEMOTIC: {
         label: 'Domotique',
