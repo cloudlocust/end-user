@@ -41,10 +41,8 @@ function Table<rowType>(props: ITable<rowType>) {
     const theme = useTheme()
     const isMobile = useMediaQuery(theme.breakpoints.down('lg'))
 
-    /***** SORTING & Pagination Related state and function. *****/
     const [isInfiniteScrollRowsLoadingInProgress, setInfiniteScrollRowsLoadingInProgress] = React.useState(true)
     const [infiniteScrollRows, setInfiniteScrollRows] = React.useState<rowType[]>([])
-    // TODO Remove useState, when refactoring all the component using Table
     const isReloadInfiniteScrollRows = useRef(true)
 
     /**
