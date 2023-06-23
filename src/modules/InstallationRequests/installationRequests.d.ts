@@ -1,3 +1,5 @@
+import { Dispatch, SetStateAction } from 'react'
+
 /**
  * The type of the equipmentType.
  */
@@ -64,3 +66,25 @@ export type createInstallationRequestType = Omit<IInstallationRequest, 'id' | 'c
  * Type for update installation request.
  */
 export type updateInstallationRequestType = Omit<IInstallationRequest, 'updatedAt' | 'id'>
+
+/**
+ * Interface for ActionCell of @Table used in InstallationRequests.
+ */
+export interface IInstallationRequestActionCellProps {
+    /**
+     * Current row to display.
+     */
+    row: IInstallationRequest
+    /**
+     * Callback to call after User clicked on remove Button.
+     */
+    onAfterCreateUpdateDeleteSuccess: () => void
+    /**
+     * Callback to call after User clicked on update Button. (Display a Popup).
+     */
+    setIsUpdateInstallationsRequestsPopup: Dispatch<SetStateAction<boolean>>
+    /**
+     * Callback to call after User clicked on update Button. (Setup the Informations to pass to Popup).
+     */
+    setInstallationRequestDetails: Dispatch<SetStateAction<IInstallationRequest | null>>
+}
