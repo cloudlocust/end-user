@@ -13,14 +13,14 @@ export const MaintenanceConfig = [
     {
         path: URL_MAINTENANCE,
         component: MaintenancePage,
-        auth: { authType: authTypes.loginRequired },
+        auth: { authType: authTypes.freeAccess },
         settings: {
             layout: {
                 navbar: {
-                    display: true,
+                    display: false,
                 },
                 toolbar: {
-                    display: true,
+                    display: false,
                 },
             },
         },
