@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { Switch, Route, Redirect, useLocation } from 'react-router-dom'
+import { Switch, Route, Redirect, useLocation, useHistory } from 'react-router-dom'
 import { useAuth } from 'src/modules/User/authentication/useAuth'
 import { routes, navigationsConfig, IAdditionnalSettings, IPageSettingsDisabled } from 'src/routes'
 import Layout1 from 'src/common/ui-kit/fuse/layouts/layout1/Layout1'
@@ -14,6 +14,9 @@ import { useLastVisit } from 'src/modules/User/LastVisit/LastVisitHook'
 import dayjs from 'dayjs'
 import { RootState } from 'src/redux'
 import { useSelector } from 'react-redux'
+import { isMaintenanceMode } from 'src/configs'
+import { MaintenancePage } from 'src/modules/Maintenance/Maintenance'
+import { URL_MAINTENANCE } from 'src/modules/Maintenance/MaintenanceConfig'
 
 const Root = styled('div')(({ theme }) => ({
     '& #fuse-main': {
@@ -76,6 +79,7 @@ const isRouteDisabled = (
  */
 const Routes = () => {
     const location = useLocation()
+    const history = useHistory()
     const { user } = useSelector(({ userModel }: RootState) => userModel)
     const { updateLastVisitTime } = useLastVisit(dayjs().toISOString())
 
@@ -94,6 +98,16 @@ const Routes = () => {
         const UINavbarItem = navigationConfig.settings.layout.navbar.UINavbarItem
         hasAccess(navigationConfig.auth) && navbarContent.push(UINavbarItem)
     })
+
+    useEffect(() => {
+        if (isMaintenanceMode) {
+            const { pathname } = location
+            if (pathname !== URL_MAINTENANCE) {
+                history.replace(URL_MAINTENANCE)
+            }
+        }
+    }, [history, location])
+
     return (
         <Switch>
             {routes.map((route, index) => {
@@ -120,7 +134,11 @@ const Routes = () => {
                                                     toolbarContent={<ToolbarContent />}
                                                     toolbarIcon={<ToolbarIcon />}
                                                 >
-                                                    <route.component {...route.props} />
+                                                    {isMaintenanceMode ? (
+                                                        <MaintenancePage />
+                                                    ) : (
+                                                        <route.component {...route.props} />
+                                                    )}
                                                 </Layout1>
                                             </Root>
                                         </ConfirmProvider>
