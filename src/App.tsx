@@ -15,7 +15,7 @@ import dayjs from 'dayjs'
 import { RootState } from 'src/redux'
 import { useSelector } from 'react-redux'
 import { isMaintenanceMode } from 'src/configs'
-import { MaintenancePage } from 'src/modules/Maintenance/Maintenance'
+import { Maintenance } from 'src/modules/Maintenance/Maintenance'
 import { URL_MAINTENANCE } from 'src/modules/Maintenance/MaintenanceConfig'
 
 const Root = styled('div')(({ theme }) => ({
@@ -135,7 +135,7 @@ const Routes = () => {
                                                     toolbarIcon={<ToolbarIcon />}
                                                 >
                                                     {isMaintenanceMode ? (
-                                                        <MaintenancePage />
+                                                        <Maintenance />
                                                     ) : (
                                                         <route.component {...route.props} />
                                                     )}
