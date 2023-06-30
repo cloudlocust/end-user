@@ -49,6 +49,10 @@ export interface IWidgetProps {
      */
     period: periodType
     /**
+     * Boolean for Enphase Consent is inactive.
+     */
+    enphaseOff?: boolean | null
+    /**
      * Children of the Widget.
      */
     children?: ReactNode | ReactElement

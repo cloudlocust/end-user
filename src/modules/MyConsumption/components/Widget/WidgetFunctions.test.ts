@@ -24,6 +24,16 @@ import { periodType } from 'src/modules/MyConsumption/myConsumptionTypes'
 import { getDateWithoutTimezoneOffset } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
 import dayjs from 'dayjs'
 
+let mockEnphaseConsentFeatureState = true
+
+jest.mock('src/modules/MyHouse/MyHouseConfig', () => ({
+    ...jest.requireActual('src/modules/MyHouse/MyHouseConfig'),
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    get enphaseConsentFeatureState() {
+        return mockEnphaseConsentFeatureState
+    },
+}))
+
 /**
  * Reusable test function that used to test multiple compute total function.
  * Like (computeTotalConsumption, computeTotalProduction, computeTotalAutoconsumption).
@@ -354,6 +364,14 @@ describe('Test widget functions', () => {
                 const result = renderWidgetTitle(target)
                 expect(result).toBe(value)
             })
+        })
+        test('when enphaseConsentFeatureState is disabled, it returns `Consommation Totale` title for consumption target', () => {
+            mockEnphaseConsentFeatureState = false
+            expect(renderWidgetTitle(metricTargetsEnum.consumption)).toBe('Consommation Totale')
+        })
+        test('when enphaseConsentFeatureState & enphase is off, it returns `Consommation Totale` title for consumption target', () => {
+            mockEnphaseConsentFeatureState = true
+            expect(renderWidgetTitle(metricTargetsEnum.consumption, true)).toBe('Consommation Totale')
         })
         test('when it throws', () => {
             expect(() => renderWidgetTitle('error target' as unknown as metricTargetType)).toThrow(

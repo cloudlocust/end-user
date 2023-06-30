@@ -6,6 +6,11 @@ import { ConsumptionWidgetsContainerProps } from 'src/modules/MyConsumption/comp
 import { ConsumptionWidgetsMetricsProvider } from 'src/modules/MyConsumption/components/ConsumptionWidgetsContainer/ConsumptionWidgetsMetricsContext'
 import { periodType } from 'src/modules/MyConsumption/myConsumptionTypes'
 
+const CONSOMMATION_TOTAL_TEXT = 'Consommation Totale'
+const CONSOMMATION_PURCHASED_TEXT = 'Achetée'
+const PRODUCTION_TOTAL_TEXT = 'Production Totale'
+const AUTOCONSOMMATION_TEXT = 'Autoconsommation'
+
 const widgetClassnameSelector = ' .MuiGrid-root .MuiGrid-item'
 // const numbersOfWidgets = WidgetTargets.length
 const LIST_WIDGETS_TEXT = 'Chiffres clés'
@@ -54,6 +59,10 @@ jest.mock('src/modules/Metrics/metricsHook.ts', () => ({
 }))
 
 describe('ConsumptionWidgetsContainer test', () => {
+    afterEach(() => {
+        consumptionWidgetsContainerProps.enphaseOff = false
+        mockEnphaseConsentFeatureState = true
+    })
     test('the widgets is showing correctly', async () => {
         const { container, getByText } = reduxedRender(
             <Router>
@@ -64,6 +73,11 @@ describe('ConsumptionWidgetsContainer test', () => {
         )
         expect(getByText(LIST_WIDGETS_TEXT)).toBeTruthy()
         expect(container.querySelectorAll(widgetClassnameSelector).length).toBe(8)
+
+        expect(getByText(CONSOMMATION_TOTAL_TEXT)).toBeInTheDocument()
+        expect(getByText(CONSOMMATION_PURCHASED_TEXT)).toBeInTheDocument()
+        expect(getByText(PRODUCTION_TOTAL_TEXT)).toBeInTheDocument()
+        expect(getByText(AUTOCONSOMMATION_TEXT)).toBeInTheDocument()
     })
     test('when the enphase consent is not active, the widgets of production & autoconsumption should not be showing', async () => {
         consumptionWidgetsContainerProps.enphaseOff = true
@@ -77,10 +91,10 @@ describe('ConsumptionWidgetsContainer test', () => {
         expect(getByText(LIST_WIDGETS_TEXT)).toBeTruthy()
         expect(container.querySelectorAll(widgetClassnameSelector).length).toBe(6)
 
-        expect(queryByText('Production Totale')).not.toBeInTheDocument()
-        expect(queryByText('Autoconsommation')).not.toBeInTheDocument()
-
-        consumptionWidgetsContainerProps.enphaseOff = false
+        expect(getByText(CONSOMMATION_TOTAL_TEXT)).toBeInTheDocument()
+        expect(queryByText(CONSOMMATION_PURCHASED_TEXT)).not.toBeInTheDocument()
+        expect(queryByText(PRODUCTION_TOTAL_TEXT)).not.toBeInTheDocument()
+        expect(queryByText(AUTOCONSOMMATION_TEXT)).not.toBeInTheDocument()
     })
     test('when the enphase feature is disabled, the widgets of production & autoconsumption should not be showing', async () => {
         mockEnphaseConsentFeatureState = false
@@ -94,9 +108,9 @@ describe('ConsumptionWidgetsContainer test', () => {
         expect(getByText(LIST_WIDGETS_TEXT)).toBeTruthy()
         expect(container.querySelectorAll(widgetClassnameSelector).length).toBe(6)
 
-        expect(queryByText('Production Totale')).not.toBeInTheDocument()
-        expect(queryByText('Autoconsommation')).not.toBeInTheDocument()
-
-        mockEnphaseConsentFeatureState = true
+        expect(getByText(CONSOMMATION_TOTAL_TEXT)).toBeInTheDocument()
+        expect(queryByText(CONSOMMATION_PURCHASED_TEXT)).not.toBeInTheDocument()
+        expect(queryByText(PRODUCTION_TOTAL_TEXT)).not.toBeInTheDocument()
+        expect(queryByText(AUTOCONSOMMATION_TEXT)).not.toBeInTheDocument()
     })
 })

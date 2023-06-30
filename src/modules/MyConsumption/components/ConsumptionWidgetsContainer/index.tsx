@@ -37,10 +37,9 @@ const ConsumptionWidgetsContainer = ({
     const theme = useTheme()
     const { resetMetricsWidgetData } = useContext(ConsumptionWidgetsMetricsContext)
 
-    const widgetTargets: metricTargetType[] =
+    const renderedWidgets: metricTargetType[] =
         enphaseConsentFeatureState && !enphaseOff
             ? [
-                  metricTargetsEnum.consumption,
                   metricTargetsEnum.totalProduction,
                   metricTargetsEnum.eurosConsumption,
                   metricTargetsEnum.autoconsumption,
@@ -55,10 +54,6 @@ const ConsumptionWidgetsContainer = ({
                   metricTargetsEnum.externalTemperature,
                   metricTargetsEnum.internalTemperature,
               ]
-
-    const renderedWidgets = enphaseConsentFeatureState
-        ? widgetTargets.filter((target) => target !== metricTargetsEnum.consumption)
-        : widgetTargets
 
     /**
      *   We should reset the metrics context when the range, filters, metricsInterval or period changes,
@@ -84,7 +79,7 @@ const ConsumptionWidgetsContainer = ({
                      * Otherwise it'll be displayed with then normal Widget component, that displays one info : the consumption total,
                      *    (because in this case consumption total = purchased consumption).
                      */}
-                    {enphaseConsentFeatureState && (
+                    {enphaseConsentFeatureState && !enphaseOff && (
                         <WidgetConsumption
                             target={metricTargetsEnum.consumption}
                             range={range}
@@ -97,6 +92,7 @@ const ConsumptionWidgetsContainer = ({
                                 enphaseOff,
                                 enedisSgeOff: enedisOff,
                             })}
+                            enphaseOff={enphaseOff}
                         />
                     )}
 
@@ -128,6 +124,7 @@ const ConsumptionWidgetsContainer = ({
                                     enphaseOff,
                                     enedisSgeOff: enedisOff,
                                 })}
+                                enphaseOff={enphaseOff}
                             />
                         )
                     })}
