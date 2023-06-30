@@ -236,7 +236,7 @@ export const isWidgetMonthlyMetrics = (type: metricTargetType, period: periodTyp
  * @param enphaseOff Enphase Consent is inactive.
  * @returns Widget title.
  */
-export const renderWidgetTitle = (target: metricTargetType, enphaseOff?: boolean | null): widgetTitleType => {
+export const renderWidgetTitle = (target: metricTargetType, enphaseOff?: boolean): widgetTitleType => {
     switch (target) {
         case metricTargetsEnum.consumption:
             return enphaseConsentFeatureState && !enphaseOff ? 'Achetée' : 'Consommation Totale'

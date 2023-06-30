@@ -51,7 +51,7 @@ export interface IWidgetProps {
     /**
      * Boolean for Enphase Consent is inactive.
      */
-    enphaseOff?: boolean | null
+    enphaseOff?: boolean
     /**
      * Children of the Widget.
      */
@@ -75,9 +75,9 @@ export type getWidgetInfoIconParamsType =
         /**
          * Enphase Consent is inactive.
          */
-        enphaseOff?: boolean | null
+        enphaseOff?: boolean
         /**
          * EnedisSgeConsent is inactive.
          */
-        enedisSgeOff?: boolean | null
+        enedisSgeOff?: boolean
     }

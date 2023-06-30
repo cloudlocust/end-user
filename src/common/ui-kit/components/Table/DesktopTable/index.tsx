@@ -6,7 +6,7 @@ import TableCell from '@mui/material/TableCell'
 import TableRow from '@mui/material/TableRow'
 import { stableSort, getComparator } from 'src/modules/utils/tables'
 import HeadRowTable from 'src/common/ui-kit/components/Table/HeadRowTable'
-import { ITableDesktop } from 'src/common/ui-kit/components/Table/TableT'
+import { ITableDesktop } from 'src/common/ui-kit/components/Table/TableT.d'
 
 /**
  * Reusable Table Component with pagination and sorting.
