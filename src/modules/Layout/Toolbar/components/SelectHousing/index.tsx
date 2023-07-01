@@ -19,9 +19,7 @@ import Tooltip from '@mui/material/Tooltip'
 import Button from '@mui/material/Button'
 import SvgIcon from '@mui/material/SvgIcon'
 import AddIcon from '@mui/icons-material/AddCircleOutline'
-import HousingForm from 'src/modules/MyHouse/components/HousingForm'
-import Modal from '@mui/material/Modal'
-import Box from '@mui/material/Box'
+import AddHousingModal from 'src/modules/Layout/Toolbar/components/AddHousingModal'
 
 const ITEM_HEIGHT = 48
 const ITEM_PADDING_TOP = 8
@@ -131,24 +129,7 @@ export const SelectHousing = () => {
                     </ListSubheader>
                 </Select>
             </FormControl>
-            <Modal open={modalAddHousingOpen} onClose={() => setModalAddHousingOpen(false)}>
-                <Box
-                    sx={{
-                        position: 'absolute' as 'absolute',
-                        top: '50%',
-                        left: '50%',
-                        transform: 'translate(-50%, -50%)',
-                        width: 300,
-                    }}
-                >
-                    <HousingForm
-                        onSuccess={() => {
-                            setModalAddHousingOpen(false)
-                            dispatch.housingModel.loadHousingsList()
-                        }}
-                    />
-                </Box>
-            </Modal>
+            <AddHousingModal modalOpen={modalAddHousingOpen} closeModal={() => setModalAddHousingOpen(false)} />
         </>
     )
 }
