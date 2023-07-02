@@ -234,11 +234,8 @@ export const SolarEquipments = () => {
                                     animate={{ opacity: 1, transition: { delay: 0.1 } }}
                                     className="flex flex-1 items-center justify-center h-full"
                                 >
-                                    <TypographyFormatMessage color="textSecondary" variant="h5">
-                                        {formatMessage({
-                                            id: 'Aucun équipement !',
-                                            defaultMessage: 'Aucun équipement !',
-                                        })}
+                                    <TypographyFormatMessage color="textSecondary" variant="h6">
+                                        Aucun équipement
                                     </TypographyFormatMessage>
                                 </motion.div>
                             }

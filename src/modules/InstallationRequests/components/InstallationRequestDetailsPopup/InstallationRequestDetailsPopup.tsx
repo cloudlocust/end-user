@@ -105,36 +105,19 @@ export const InstallationRequestDetailsPopup = (props: InstallationRequestDetail
                             }}
                             defaultValues={defaultFormValues}
                         >
-                            <div className="flex items-center mb-12">
-                                <Typography variant="subtitle1" className="font-semibold mr-4 whitespace-nowrap">
-                                    <span className="hidden font-semibold mr-4 sm:inline">
-                                        {formatMessage({
-                                            id: `Date de la demande:`,
-                                            defaultMessage: `Date de la demande:`,
-                                        })}
-                                    </span>
-                                    <span className="inline font-semibold mr-4 sm:hidden">
-                                        {formatMessage({
-                                            id: `Date:`,
-                                            defaultMessage: `Date:`,
-                                        })}
-                                    </span>
-                                </Typography>
-                                <TextField disabled name="createdAt" label="" />
+                            <div className="flex flex-col">
+                                <TextField disabled name="createdAt" label="Date de la demande" />
                             </div>
                             {/* Matèriel demandé */}
                             <div className="flex flex-col mb-12">
-                                <Typography variant="subtitle1" className="font-semibold mb-8 whitespace-nowrap">
-                                    <span className="hidden font-semibold mr-4 sm:inline">
+                                <Typography
+                                    variant="subtitle1"
+                                    className="text-center md:text-left font-semibold mb-16 whitespace-nowrap"
+                                >
+                                    <span className="font-semibold mr-4">
                                         {formatMessage({
-                                            id: `Matériel demandé:`,
-                                            defaultMessage: `Matériel demandé:`,
-                                        })}
-                                    </span>
-                                    <span className="inline font-semibold mr-4 sm:hidden">
-                                        {formatMessage({
-                                            id: `Matériel:`,
-                                            defaultMessage: `Matériel:`,
+                                            id: `Matériel demandé`,
+                                            defaultMessage: `Matériel demandé`,
                                         })}
                                     </span>
                                 </Typography>
@@ -156,56 +139,23 @@ export const InstallationRequestDetailsPopup = (props: InstallationRequestDetail
                                 </div>
                             </div>
 
-                            {/* Marque & Modèle */}
-                            <div className="flex flex-col sm:flex-row sm:flex-wrap sm:items-center ">
-                                <div className="flex flex-col mr-12 sm:mb-12">
-                                    <Typography variant="subtitle1" className="font-semibold mb-8 whitespace-nowrap">
-                                        <span className="font-semibold mr-4">
-                                            {formatMessage({
-                                                id: `Marque:`,
-                                                defaultMessage: `Marque:`,
-                                            })}
-                                        </span>
-                                    </Typography>
-                                    <TextField name="equipmentBrand" label="" />
-                                </div>
-                                <div className="flex flex-col mr-12 sm:mb-12">
-                                    <Typography variant="subtitle1" className="font-semibold mb-8 whitespace-nowrap">
-                                        <span className="font-semibold mr-4">
-                                            {formatMessage({
-                                                id: `Modèle:`,
-                                                defaultMessage: `Modèle:`,
-                                            })}
-                                        </span>
-                                    </Typography>
-                                    <TextField name="equipmentModel" label="" />
-                                </div>
+                            {/* Marque */}
+                            <div className="flex flex-col">
+                                <TextField name="equipmentBrand" label="Marque" />
+                            </div>
+                            {/* Modèle */}
+                            <div className="flex flex-col">
+                                <TextField name="equipmentModel" label="Modèle" />
                             </div>
 
                             {/* Budget */}
-                            <div className="flex flex-col mb-12">
-                                <Typography variant="subtitle1" className="font-semibold mb-8 whitespace-nowrap">
-                                    <span className="font-semibold mr-4">
-                                        {formatMessage({
-                                            id: `Budget:`,
-                                            defaultMessage: `Budget:`,
-                                        })}
-                                    </span>
-                                </Typography>
-                                <TextField name="budget" label="" />
+                            <div className="flex flex-col">
+                                <TextField name="budget" label="Budget" />
                             </div>
 
                             {/* Commentaire */}
-                            <div className="flex flex-col mb-12">
-                                <Typography variant="subtitle1" className="font-semibold mb-8 whitespace-nowrap">
-                                    <span className="font-semibold mr-4">
-                                        {formatMessage({
-                                            id: `Commentaire`,
-                                            defaultMessage: `Commentaire`,
-                                        })}
-                                    </span>
-                                </Typography>
-                                <TextField name="comment" label="" />
+                            <div className="flex flex-col">
+                                <TextField name="comment" label="Commentaire" />
                             </div>
                             <DialogActions className="justify-center p-4 pb-16">
                                 <div className="px-16">
