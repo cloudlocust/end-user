@@ -12,6 +12,8 @@ import { TEST_ACCOMODATION_RESPONSE as MOCK_TEST_ACCOMODATION_RESPONSE } from 's
 import { TEST_HOUSING_EQUIPMENTS as MOCK_EQUIPMENTS } from 'src/mocks/handlers/equipments'
 import { IEquipmentMeter } from 'src/modules/MyHouse/components/Equipments/EquipmentsType'
 
+import * as houseConfig from 'src/modules/MyHouse/MyHouseConfig'
+
 const LIST_OF_HOUSES: IHousing[] = applyCamelCase(TEST_HOUSES)
 const TEST_METER_EQUIPMENTS = applyCamelCase(MOCK_EQUIPMENTS)
 const TEST_ACCOMODATION_RESPONSE = applyCamelCase(MOCK_TEST_ACCOMODATION_RESPONSE)
@@ -77,6 +79,18 @@ const store = init({
     models,
 })
 
+/**
+ * Mock House Config.
+ */
+
+// eslint-disable-next-line jsdoc/require-jsdoc
+const mockHouseConfig = houseConfig as { enphaseConsentFeatureState: boolean }
+
+jest.mock('src/modules/MyHouse/MyHouseConfig', () => ({
+    __esModule: true,
+    enphaseConsentFeatureState: true,
+}))
+
 describe('Test HousingDetails Component', () => {
     beforeEach(async () => {
         await store.dispatch.translationModel.setLocale({ locale: DEFAULT_LOCALE, translations: null })
@@ -106,5 +120,31 @@ describe('Test HousingDetails Component', () => {
             { store },
         )
         expect(container.querySelector(circularProgressClassname)).toBeInTheDocument()
+    })
+
+    describe('Should display connectedPlugs correctly', () => {
+        test('Should display correctly skeleton data at mount', async () => {
+            const { getByText } = reduxedRender(
+                <Router>
+                    <HousingDetails />
+                </Router>,
+                { store },
+            )
+            expect(getByText('Mes prises connectées')).toBeTruthy()
+            expect(getByText('Prise 1')).toBeTruthy()
+            expect(getByText('Prise 2')).toBeTruthy()
+            expect(getByText('Prise 3')).toBeTruthy()
+        })
+        test('Should not display when Enphase is disabled', async () => {
+            mockHouseConfig.enphaseConsentFeatureState = false
+            const { queryByText } = reduxedRender(
+                <Router>
+                    <HousingDetails />
+                </Router>,
+                { store },
+            )
+            expect(queryByText('Mes prises connectées')).not.toBeInTheDocument()
+            expect(queryByText('Prise 1')).not.toBeInTheDocument()
+        })
     })
 })

@@ -1,7 +1,7 @@
 import { applyCamelCase } from 'src/common/react-platform-components'
 import { reduxedRender } from 'src/common/react-platform-components/test'
 import { TEST_SOLAR_EQUIPMENTS } from 'src/mocks/handlers/solarEquipments'
-import { SolarEquipmentCreateUpdateProps } from 'src/modules/SolarEquipments/components/SolarEquipmentCreateUpdate/solarEquipmentCreateUpdate'
+import { SolarEquipmentCreateUpdateProps } from 'src/modules/SolarEquipments/components/SolarEquipmentCreateUpdate/solarEquipmentCreateUpdate.d'
 import { SolarEquipmentCreateUpdate } from 'src/modules/SolarEquipments/components/SolarEquipmentCreateUpdate'
 import { ISolarEquipment } from 'src/modules/SolarEquipments/solarEquipments'
 import userEvent from '@testing-library/user-event'

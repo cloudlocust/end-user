@@ -1,12 +1,10 @@
-import { useHistory } from 'react-router'
-import { styled } from '@mui/material/styles'
-import { AccomodationForm } from 'src/modules/MyHouse/components/Accomodation/AccomodationForm'
-import FusePageCarded from 'src/common/ui-kit/fuse/components/FusePageCarded'
-import { motion } from 'framer-motion'
-import Icon from '@mui/material/Icon'
-import { useIntl } from 'src/common/react-platform-translation'
 import { Button } from '@mui/material'
-import { useTheme, ThemeProvider } from '@mui/material/styles'
+import Icon from '@mui/material/Icon'
+import { ThemeProvider, styled, useTheme } from '@mui/material/styles'
+import { motion } from 'framer-motion'
+import { useHistory } from 'react-router'
+import { useIntl } from 'src/common/react-platform-translation'
+import FusePageCarded from 'src/common/ui-kit/fuse/components/FusePageCarded'
 
 const Root = styled(FusePageCarded)(() => ({
     '& .FusePageCarded-header': {
@@ -26,11 +24,11 @@ const Root = styled(FusePageCarded)(() => ({
 }))
 
 /**
- * Accomodation Page.
+ * Connected Plugs Page.
  *
  * @returns JSX Element.
  */
-const Accomodation = () => {
+const ConnectedPlugsPage = () => {
     const { formatMessage } = useIntl()
     const theme = useTheme()
     const history = useHistory()
@@ -52,9 +50,9 @@ const Accomodation = () => {
                     </Button>
                 </ThemeProvider>
             }
-            content={<AccomodationForm />}
+            content={<>Cette fonctionnalité arrive prochainement.</>}
         />
     )
 }
 
-export default Accomodation
+export default ConnectedPlugsPage
