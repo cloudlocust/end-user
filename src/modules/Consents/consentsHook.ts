@@ -10,7 +10,7 @@ import { useSnackbar } from 'notistack'
 import { useIntl } from 'react-intl'
 import { axios } from 'src/common/react-platform-components'
 import { API_RESOURCES_URL } from 'src/configs'
-import { enphaseConsentFeatureState, sgeConsentFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
+import { globalProductionFeatureState, sgeConsentFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
 import { useAxiosCancelToken } from 'src/hooks/AxiosCancelToken'
 
 const NO_HOUSING_ID_ERROR_TEXT = 'No housing id provided'
@@ -79,7 +79,7 @@ export function useConsents() {
                           cancelToken: source.current.token,
                       })
                     : null, // If env is disabled, the request for SgeConsent won't be performed.
-                enphaseConsentFeatureState
+                globalProductionFeatureState
                     ? axios.get<IEnphaseConsent>(`${ENPHASE_CONSENT_API}/${meterGuid}`, {
                           cancelToken: source.current.token,
                       })

@@ -84,11 +84,11 @@ const store = init({
  */
 
 // eslint-disable-next-line jsdoc/require-jsdoc
-const mockHouseConfig = houseConfig as { enphaseConsentFeatureState: boolean }
+const mockHouseConfig = houseConfig as { connectedPlugsFeatureState: boolean }
 
 jest.mock('src/modules/MyHouse/MyHouseConfig', () => ({
     __esModule: true,
-    enphaseConsentFeatureState: true,
+    connectedPlugsFeatureState: true,
 }))
 
 describe('Test HousingDetails Component', () => {
@@ -136,7 +136,7 @@ describe('Test HousingDetails Component', () => {
             expect(getByText('Prise 3')).toBeTruthy()
         })
         test('Should not display when Enphase is disabled', async () => {
-            mockHouseConfig.enphaseConsentFeatureState = false
+            mockHouseConfig.connectedPlugsFeatureState = false
             const { queryByText } = reduxedRender(
                 <Router>
                     <HousingDetails />

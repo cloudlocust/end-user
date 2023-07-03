@@ -25,7 +25,7 @@ import { useSelector } from 'react-redux'
 import CircularProgress from '@mui/material/CircularProgress'
 import { RootState } from 'src/redux'
 import { isEmpty } from 'lodash'
-import { enphaseConsentFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
+import { connectedPlugsFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
 
 const Root = styled(FusePageCarded)(() => ({
     '& .FusePageCarded-header': {
@@ -211,7 +211,7 @@ export const HousingDetails = () => {
                         {/**
                          * TODO: Configure, isLoading? Elements like Equipments (load default at mount then replace by real data).
                          */}
-                        {enphaseConsentFeatureState ? (
+                        {connectedPlugsFeatureState ? (
                             <HousingDetailsCard
                                 title="Mes prises connectées"
                                 elements={connectedPlugsElements}

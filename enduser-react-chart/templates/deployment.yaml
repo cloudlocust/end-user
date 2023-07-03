@@ -93,11 +93,11 @@ spec:
             configMapKeyRef:
               name: enduser-react
               key: REACT_APP_SGE_CONSENT_POPUP_MESSAGE
-        - name: REACT_APP_ENPHASE_CONSENT_FEATURE_STATE
+        - name: REACT_APP_GLOBAL_PRODUCTION_FEATURE_STATE
           valueFrom:
             configMapKeyRef:
               name: enduser-react
-              key: REACT_APP_ENPHASE_CONSENT_FEATURE_STATE             
+              key: REACT_APP_GLOBAL_PRODUCTION_FEATURE_STATE             
         - name: REACT_APP_GOOGLE_MAPS_API_KEY
           valueFrom:
             configMapKeyRef:

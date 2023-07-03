@@ -71,9 +71,14 @@ export const sgeConsentFeatureState = window._env_.REACT_APP_SGE_CONSENT_FEATURE
 export const sgeConsentMessage = window._env_.REACT_APP_SGE_CONSENT_POPUP_MESSAGE
 
 /**
- * Env variable to know if enphase consent feature is enabled.
+ * Env variable to know if global production feature is enabled.
  */
-export const enphaseConsentFeatureState = window._env_.REACT_APP_ENPHASE_CONSENT_FEATURE_STATE === 'enabled'
+export const globalProductionFeatureState = window._env_.REACT_APP_GLOBAL_PRODUCTION_FEATURE_STATE === 'enabled'
+
+/**
+ * Env variable to know if connected plugs feature is enabled.
+ */
+export const connectedPlugsFeatureState = window._env_.REACT_APP_CONNECTED_PLUGS_FEATURE_STATE === 'enabled'
 
 /**
  * Env variable to know if the feature to manual filling contracts is enabled.
@@ -196,7 +201,7 @@ export const MyHouseConfig = [
                             </SvgIcon>
                         ),
                         url: URL_HOUSING_EQUIPMENTS,
-                        disabled: !enphaseConsentFeatureState,
+                        disabled: !globalProductionFeatureState,
                     },
                 },
             },
