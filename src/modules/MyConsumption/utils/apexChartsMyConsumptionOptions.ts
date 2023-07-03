@@ -12,8 +12,6 @@ import {
     getChartSpecifities,
     getChartType,
 } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
-// import { toDate } from 'date-fns-tz'
-// import { format } from 'date-fns'
 import timezone from 'dayjs/plugin/timezone'
 dayjs.extend(timezone)
 
