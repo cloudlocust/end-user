@@ -82,7 +82,6 @@ export const SelectHousing = () => {
                     input={<OutlinedInput label="Logement" />}
                     renderValue={() => <>{currentHousing?.address.name}</>}
                     MenuProps={MenuProps}
-                    disabled={!currentHousing?.id}
                 >
                     {housingList?.map((housing) => (
                         <MenuItem key={housing.id} value={housing.id} className="flex justify-between">
