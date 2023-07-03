@@ -1,23 +1,23 @@
 import { useState } from 'react'
-import { useDispatch } from 'react-redux'
-import { Dispatch } from 'src/redux'
-import InputLabel from '@mui/material/InputLabel'
-import MenuItem from '@mui/material/MenuItem'
+import { useDispatch, useSelector } from 'react-redux'
+import { Dispatch, RootState } from 'src/redux'
 import Select, { SelectChangeEvent } from '@mui/material/Select'
-import { useSelector } from 'react-redux'
-import { RootState } from 'src/redux'
-import OutlinedInput from '@mui/material/OutlinedInput'
-import Divider from '@mui/material/Divider'
-import { FormControl } from '@mui/material'
+import {
+    FormControl,
+    InputLabel,
+    MenuItem,
+    OutlinedInput,
+    Divider,
+    Tooltip,
+    Button,
+    SvgIcon,
+    ListSubheader,
+} from '@mui/material'
 import { useIntl } from 'react-intl'
 import { Link } from 'react-router-dom'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
-import ListSubheader from '@mui/material/ListSubheader'
 import SettingsIcon from '@mui/icons-material/Settings'
 import { deleteAddFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
-import Tooltip from '@mui/material/Tooltip'
-import Button from '@mui/material/Button'
-import SvgIcon from '@mui/material/SvgIcon'
 import AddIcon from '@mui/icons-material/AddCircleOutline'
 import AddHousingModal from 'src/modules/Layout/Toolbar/components/AddHousingModal'
 

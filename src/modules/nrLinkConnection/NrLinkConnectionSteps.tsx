@@ -64,7 +64,7 @@ const NrLinkConnectionSteps = () => {
         // if no house id in the url, we set it to the current housing
         !parsedHouseId && setHousingId(currentHousing?.id)
 
-        // once we have wich house we are using, we search for it in the housing list to get the meter
+        // once we have which house we are using, we search for it in the housing list to get the meter
         const handledHousing = housingList?.find((housing) => housing.id === housingId)
         handledHousing && setMeter(handledHousing.meter)
     }, [currentHousing, parsedHouseId, housingList, housingId])

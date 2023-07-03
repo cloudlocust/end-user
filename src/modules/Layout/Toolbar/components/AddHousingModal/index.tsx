@@ -10,13 +10,24 @@ import HousingForm from 'src/modules/MyHouse/components/HousingForm'
  * @param root0 N/A.
  * @param root0.modalOpen Boolean to decide if the modal is open or closed.
  * @param root0.closeModal Callback to close Modal when we click on "Cancel".
+ * @param root0.disableBackdropClick Boolean to prevent closing modal from backdrop.
  * @returns JSX.Element - Modal.
  */
-function AddHousingModal({ modalOpen, closeModal }: AddHousingModalProps) {
+function AddHousingModal({ modalOpen, closeModal, disableBackdropClick = false }: AddHousingModalProps) {
     const dispatch = useDispatch<Dispatch>()
 
+    /**
+     * Callback to handle when the user clicks on the backdrop of the modal.
+     */
+    const handleBackdropClick = () => {
+        // Prevent closing the modal when disableBackdropClick is true
+        if (!disableBackdropClick) {
+            closeModal()
+        }
+    }
+
     return (
-        <Modal open={modalOpen} onClose={closeModal}>
+        <Modal open={modalOpen} BackdropProps={{ onClick: handleBackdropClick }}>
             <Box
                 sx={{
                     position: 'absolute' as 'absolute',
