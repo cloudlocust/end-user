@@ -26,7 +26,7 @@ export const URL_HOUSING_ACCOMODATION = `${URL_MY_HOUSE_DETAILS}/accomodation`
 /**
  * Url for housing connected plugs.
  */
-export const URL_HOUSING_CONNECTED_PLUGS = `${URL_MY_HOUSE_DETAILS}/connectedPlugs`
+export const URL_HOUSING_CONNECTED_PLUGS = `${URL_MY_HOUSE_DETAILS}/connected-plugs`
 
 /**
  * Interface .

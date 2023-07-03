@@ -85,7 +85,6 @@ export const HousingDetails = () => {
         },
     ])
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const connectedPlugsElements: HouseDetailsElementType[] = [
         {
             icon: <MoreHorizIcon color="primary" fontSize="large" />,
