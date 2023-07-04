@@ -50,7 +50,7 @@ describe('SolarEquipmentCreateUpdate component', () => {
     test('when solarEquipmentDetails is true, all fields are filled', async () => {
         mockSolarEquipmentCreateUpdateProps.open = true
         mockSolarEquipmentCreateUpdateProps.solarEquipmentDetails = SOLAR_EQUIPMENT[0]
-        const { getByText, getByLabelText, getByRole } = reduxedRender(
+        const { getByText, getByLabelText } = reduxedRender(
             <SolarEquipmentCreateUpdate {...mockSolarEquipmentCreateUpdateProps} />,
         )
 
@@ -60,25 +60,22 @@ describe('SolarEquipmentCreateUpdate component', () => {
         expect(getByText(equipments[2])).toBeTruthy()
         expect(getByText(equipments[3])).toBeTruthy()
 
-        expect(getByText('Quand votre matériel a été posé ?')).toBeInTheDocument()
         const installedAt = getByLabelText("Date d'installation")
         expect(installedAt).toHaveAttribute('aria-label', 'Choose date, selected date is 15 déc. 2021')
 
-        expect(getByText('Quelle est votre marque ?')).toBeInTheDocument()
-        expect(getByRole('textbox', { name: 'brand' })).toHaveValue(SOLAR_EQUIPMENT[0].brand)
+        expect(getByLabelText('Marque *')).toHaveValue(SOLAR_EQUIPMENT[0].brand)
 
-        expect(getByText('Quel est le modèle ?')).toBeInTheDocument()
-        expect(getByRole('textbox', { name: 'reference' })).toHaveValue(SOLAR_EQUIPMENT[0].reference)
+        expect(getByLabelText('Modèle *')).toHaveValue(SOLAR_EQUIPMENT[0].reference)
     })
     test('when solarEquipment is false, inputs are empty', async () => {
         mockSolarEquipmentCreateUpdateProps.open = true
         mockSolarEquipmentCreateUpdateProps.solarEquipmentDetails = null
-        const { getByLabelText, getByRole } = reduxedRender(
+        const { getByLabelText } = reduxedRender(
             <SolarEquipmentCreateUpdate {...mockSolarEquipmentCreateUpdateProps} />,
         )
 
         expect(getByLabelText("Date d'installation")).toHaveValue('')
-        expect(getByRole('textbox', { name: 'brand' })).toHaveValue('')
-        expect(getByRole('textbox', { name: 'reference' })).toHaveValue('')
+        expect(getByLabelText('Marque *')).toHaveValue('')
+        expect(getByLabelText('Modèle *')).toHaveValue('')
     })
 })
