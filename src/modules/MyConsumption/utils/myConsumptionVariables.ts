@@ -1,5 +1,5 @@
 import { metricTargetsEnum, metricTargetsType, metricTargetType } from 'src/modules/Metrics/Metrics.d'
-import { enphaseConsentFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
+import { globalProductionFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
 import { PeriodEnum } from 'src/modules/MyConsumption/myConsumptionTypes'
 import { Theme } from '@mui/material/styles/createTheme'
 import { isNil } from 'lodash'
@@ -220,7 +220,7 @@ export const EnphaseOffConsumptionChartTargets: metricTargetType[] = [
  *
  * If enphaseConsentFeature is enabled, then we show totalProduction, injectedProduction and autoconsumption widgets.
  */
-export const WidgetTargets: metricTargetType[] = enphaseConsentFeatureState
+export const WidgetTargets: metricTargetType[] = globalProductionFeatureState
     ? [
           metricTargetsEnum.consumption,
           metricTargetsEnum.totalProduction,

@@ -39,7 +39,7 @@ import {
 } from 'date-fns'
 import { cloneDeep } from 'lodash'
 import { metricTargetsHook } from 'src/modules/MyConsumption/utils/myConsumptionVariables'
-import { enphaseConsentFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
+import { globalProductionFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
 import { isNil } from 'lodash'
 import fr from 'date-fns/locale/fr'
 
@@ -554,7 +554,7 @@ export const convertConsumptionToWatt = (
 export const getInitialMetricsHookValues = (): getMetricType => {
     let targetsWithoutEnphase = []
 
-    if (!enphaseConsentFeatureState) {
+    if (!globalProductionFeatureState) {
         targetsWithoutEnphase = metricTargetsHook.filter(
             (metric) =>
                 metric.target !== metricTargetsEnum.autoconsumption &&
