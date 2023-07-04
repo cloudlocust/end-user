@@ -76,24 +76,23 @@ export const ProductionChartContainer = ({
         <>
             {enphaseConsent?.enphaseConsentState === 'ACTIVE' ? (
                 <div className="mb-12">
-                    <div className="relative flex flex-col md:flex-row justify-between items-center">
-                        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mb-16 md:mb-0">
-                            <div className="flex flex-col md:flex-row items-center">
-                                <TypographyFormatMessage
-                                    variant="h5"
-                                    className="sm:mr-8"
-                                    style={{ color: theme.palette.primary.contrastText }}
-                                >
-                                    Ma Production
-                                </TypographyFormatMessage>
-                                {/* Consommation Watt par jour / Semaine / Mois / Année */}
-                                <TypographyFormatMessage
-                                    variant="h5"
-                                    style={{ color: theme.palette.primary.contrastText }}
-                                >
-                                    {showPerPeriodText('production', period)}
-                                </TypographyFormatMessage>
-                            </div>
+                    <div className="relative flex flex-col md:flex-row items-center justify-center">
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            className="mb-10 md:mb-0 flex flex-col items-center md:flex-row text-center"
+                        >
+                            <TypographyFormatMessage
+                                variant="h5"
+                                className="sm:mr-8"
+                                style={{ color: theme.palette.primary.contrastText }}
+                            >
+                                Ma production
+                            </TypographyFormatMessage>
+                            {/* Consommation Watt par jour / Semaine / Mois / Année */}
+                            <TypographyFormatMessage variant="h5" style={{ color: theme.palette.primary.contrastText }}>
+                                {showPerPeriodText('production', period)}
+                            </TypographyFormatMessage>
                         </motion.div>
                     </div>
                     {isMetricsLoading ? (
