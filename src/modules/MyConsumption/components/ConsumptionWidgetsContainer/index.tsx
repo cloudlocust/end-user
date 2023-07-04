@@ -1,5 +1,5 @@
 import { useContext, useEffect } from 'react'
-import { enphaseConsentFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
+import { globalProductionFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
 import { Grid } from '@mui/material'
 import { useTheme } from '@mui/material'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
@@ -13,7 +13,7 @@ import { metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
 import { isWidgetMonthlyMetrics } from 'src/modules/MyConsumption/components/Widget/WidgetFunctions'
 import WidgetIdleConsumption from 'src/modules/MyConsumption/components/WidgetIdleConsumption'
 
-const renderedWidgets = enphaseConsentFeatureState
+const renderedWidgets = globalProductionFeatureState
     ? WidgetTargets.filter((target) => target !== metricTargetsEnum.consumption)
     : WidgetTargets
 /**
@@ -65,7 +65,7 @@ const ConsumptionWidgetsContainer = ({
                      * Otherwise it'll be displayed with then normal Widget component, that displays one info : the consumption total,
                      *    (because in this case consumption total = purchased consumption).
                      */}
-                    {enphaseConsentFeatureState && (
+                    {globalProductionFeatureState && (
                         <WidgetConsumption
                             target={metricTargetsEnum.consumption}
                             range={range}
