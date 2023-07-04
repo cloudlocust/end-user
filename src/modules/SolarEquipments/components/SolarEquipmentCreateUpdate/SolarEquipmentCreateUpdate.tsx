@@ -103,7 +103,10 @@ export const SolarEquipmentCreateUpdate = (props: SolarEquipmentCreateUpdateProp
                         >
                             {/* Matèriel demandé */}
                             <div className="flex flex-col mb-12">
-                                <Typography variant="subtitle1" className="font-semibold mb-8 whitespace-nowrap">
+                                <Typography
+                                    variant="subtitle1"
+                                    className="text-center md:text-left font-semibold mb-16 whitespace-nowrap"
+                                >
                                     <span className="font-semibold mr-4 sm:inline">
                                         {formatMessage({
                                             id: `Quel est votre matériel ?`,
@@ -131,49 +134,21 @@ export const SolarEquipmentCreateUpdate = (props: SolarEquipmentCreateUpdateProp
 
                             {/* Installed At */}
                             <div className="flex flex-col mb-12">
-                                <div className="flex flex-col mr-12 sm:mb-12">
-                                    <Typography variant="subtitle1" className="font-semibold whitespace-nowrap">
-                                        <span className="font-semibold">
-                                            {formatMessage({
-                                                id: `Quand votre matériel a été posé ?`,
-                                                defaultMessage: `Quand votre matériel a été posé ?`,
-                                            })}
-                                        </span>
-                                    </Typography>
-                                    <DatePicker
-                                        name="installedAt"
-                                        label="Date d'installation"
-                                        validateFunctions={[requiredBuilder()]}
-                                    />
-                                </div>
+                                <DatePicker
+                                    name="installedAt"
+                                    label="Date d'installation"
+                                    validateFunctions={[requiredBuilder()]}
+                                />
                             </div>
 
                             {/* Brand */}
-                            <div className="flex flex-col mb-12">
-                                <div className="flex flex-col mr-12 sm:mb-12">
-                                    <Typography variant="subtitle1" className="font-semibold mb-8 whitespace-nowrap">
-                                        <span className="font-semibold mr-4">
-                                            {formatMessage({
-                                                id: `Quelle est votre marque ?`,
-                                                defaultMessage: `Quelle est votre marque ?`,
-                                            })}
-                                        </span>
-                                    </Typography>
-                                    <TextField name="brand" validateFunctions={[requiredBuilder()]} />
-                                </div>
+                            <div className="flex flex-col">
+                                <TextField name="brand" label="Marque" validateFunctions={[requiredBuilder()]} />
                             </div>
 
                             {/* Reference */}
                             <div className="flex flex-col mb-12">
-                                <Typography variant="subtitle1" className="font-semibold mb-8 whitespace-nowrap">
-                                    <span className="font-semibold mr-4">
-                                        {formatMessage({
-                                            id: `Quel est le modèle ?`,
-                                            defaultMessage: `Quel est le modèle ?`,
-                                        })}
-                                    </span>
-                                </Typography>
-                                <TextField name="reference" validateFunctions={[requiredBuilder()]} />
+                                <TextField name="reference" label="Modèle" validateFunctions={[requiredBuilder()]} />
                             </div>
 
                             <DialogActions className="justify-center p-4 pb-16">
