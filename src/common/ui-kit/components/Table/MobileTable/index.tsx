@@ -117,9 +117,11 @@ function MobileTable<rowType>(props: IMobileTableProps<rowType>) {
                     <StyledRowContentElement>
                         <RowContentElement row={row} />
                     </StyledRowContentElement>
-                    <MobileTableActionsMenu>
-                        <RowActionsElement row={row} />
-                    </MobileTableActionsMenu>
+                    {RowActionsElement && (
+                        <MobileTableActionsMenu>
+                            <RowActionsElement row={row} />
+                        </MobileTableActionsMenu>
+                    )}
                 </RowCard>
             ))}
             {rows.length < totalRows && (
