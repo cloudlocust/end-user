@@ -2,12 +2,13 @@ import { reduxedRender } from 'src/common/react-platform-components/test'
 import { IHousing } from 'src/modules/MyHouse/components/HousingList/housing'
 import { applyCamelCase } from 'src/common/react-platform-components'
 import { TEST_HOUSES } from 'src/mocks/handlers/houses'
-import ConnectedPlugsPage from 'src/modules/MyHouse/components/ConnectedPlugs'
+import ConnectedPlugsList from 'src/modules/MyHouse/components/ConnectedPlugs/ConnectedPlugsList'
 import { fireEvent, waitFor } from '@testing-library/react'
 import { act } from '@testing-library/react-hooks'
 import { TEST_CONNECTED_PLUGS } from 'src/mocks/handlers/connectedPlugs'
 import { IConnectedPlug } from 'src/modules/MyHouse/components/ConnectedPlugs/ConnectedPlugs.d'
 import dayjs from 'dayjs'
+import { BrowserRouter as Router } from 'react-router-dom'
 
 const GO_BACK_TEXT = 'Retour'
 const LIST_OF_HOUSES: IHousing[] = applyCamelCase(TEST_HOUSES)
@@ -19,7 +20,7 @@ const CONNECTED_PLUGS_EMPTY_TEXT = 'Prises connectées Shelly'
 const CONNECTED_PLUG_CONSENT_EXIST_TEXT = 'Connectée le'
 const CONNECTED_PLUG_CONSENT_NOT_EXIST_TEXT = 'Non Connectée'
 
-const mockHouseId = 1
+const mockHouseId = LIST_OF_HOUSES[0].meter?.guid
 
 jest.mock('react-router', () => ({
     ...jest.requireActual('react-router'),
@@ -37,16 +38,14 @@ jest.mock('react-router', () => ({
 }))
 
 let mockLoadingInProgress = false
-let mockTotalConnectedPlugs = 0
 
 // Mock useInstallationRequestsList hook
 jest.mock('src/modules/MyHouse/components/ConnectedPlugs/connectedPlugsHook', () => ({
     ...jest.requireActual('src/modules/MyHouse/components/ConnectedPlugs/connectedPlugsHook'),
     // eslint-disable-next-line jsdoc/require-jsdoc
     useConnectedPlugList: () => ({
-        elementList: mockConnectedPlugsList,
+        connectedPlugList: mockConnectedPlugsList,
         loadingInProgress: mockLoadingInProgress,
-        totalElementList: mockTotalConnectedPlugs,
     }),
 }))
 
@@ -55,8 +54,8 @@ const LOADING_TEXT = 'Chargement...'
 describe('ConnectedPlugs component', () => {
     describe('ConnectedPlugsHeader', () => {
         test('Should go back at previous location, when user click on Back Button', async () => {
-            const { getByText } = reduxedRender(<ConnectedPlugsPage />, {
-                initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[0] } },
+            const { getByText } = reduxedRender(<ConnectedPlugsList />, {
+                initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[0], housingList: LIST_OF_HOUSES } },
             })
 
             expect(getByText(CONNECTED_PLUGS_HEADER_TEXT)).toBeTruthy()
@@ -77,9 +76,14 @@ describe('ConnectedPlugs component', () => {
     describe('Connected Plug List Test', () => {
         test('when Connected Plugs List', async () => {
             mockConnectedPlugsList = MOCK_TEST_CONNECTED_plugs.slice(0, 2)
-            const { getByText } = reduxedRender(<ConnectedPlugsPage />, {
-                initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[0] } },
-            })
+            const { getByText } = reduxedRender(
+                <Router>
+                    <ConnectedPlugsList />
+                </Router>,
+                {
+                    initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[0], housingList: LIST_OF_HOUSES } },
+                },
+            )
 
             expect(getByText(mockConnectedPlugsList[0].deviceId)).toBeTruthy()
             expect(getByText(CONNECTED_PLUG_CONSENT_EXIST_TEXT, { exact: false })).toBeTruthy()
@@ -93,17 +97,27 @@ describe('ConnectedPlugs component', () => {
         })
         test('when connected plugs are empty', async () => {
             mockConnectedPlugsList = []
-            const { getByText } = reduxedRender(<ConnectedPlugsPage />, {
-                initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[0] } },
-            })
+            const { getByText } = reduxedRender(
+                <Router>
+                    <ConnectedPlugsList />
+                </Router>,
+                {
+                    initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[0], housingList: LIST_OF_HOUSES } },
+                },
+            )
             expect(getByText(CONNECTED_PLUGS_EMPTY_TEXT)).toBeTruthy()
         })
 
         test('when loading is true', async () => {
             mockLoadingInProgress = true
-            const { getByText } = reduxedRender(<ConnectedPlugsPage />, {
-                initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[0] } },
-            })
+            const { getByText } = reduxedRender(
+                <Router>
+                    <ConnectedPlugsList />
+                </Router>,
+                {
+                    initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[0], housingList: LIST_OF_HOUSES } },
+                },
+            )
             expect(mockLoadingInProgress).toBeTruthy()
             expect(getByText(LOADING_TEXT)).toBeTruthy()
         })

@@ -17,8 +17,8 @@ const ConnectedPlugsInformationMessage = () => {
 
     return (
         <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0, transition: { delay: 0.2 } }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1, transition: { delay: 0.1 } }}
             className="p-16 pb-0 md:p-16"
         >
             {isShowConnectedPlugsInformationMessage && (
@@ -33,8 +33,8 @@ const ConnectedPlugsInformationMessage = () => {
                 >
                     <Typography
                         component={motion.span}
-                        initial={{ x: -20 }}
-                        animate={{ x: 0, transition: { delay: 0.2 } }}
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1, transition: { delay: 0.1 } }}
                         className="text-13 md:text-16 font-semibold"
                     >
                         {formatMessage({

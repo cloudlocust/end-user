@@ -73,6 +73,13 @@ export const connectedPlugsEndpoints = [
             TEST_CONNECTED_PLUGS as [],
         )
         if (TEST_CONNECTED_PLUGS_RESPONSE !== null)
-            return res(ctx.status(200), ctx.delay(1000), ctx.json(TEST_CONNECTED_PLUGS_RESPONSE))
+            return res(
+                ctx.status(200),
+                ctx.delay(1000),
+                ctx.json({
+                    meter_guid: '12341234123',
+                    devices: TEST_CONNECTED_PLUGS_RESPONSE.items,
+                }),
+            )
     }),
 ]

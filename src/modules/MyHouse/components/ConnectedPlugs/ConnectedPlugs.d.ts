@@ -35,3 +35,18 @@ export type IConnectedPlug = {
      */
     createdAt: string
 }
+
+/**
+ * Format of Connected Plug from Api.
+ */
+// eslint-disable-next-line jsdoc/require-jsdoc
+export type IConnectedPlugApiResponse = {
+    /**
+     * Meter Guid.
+     */
+    meterGuid: string
+    /**
+     * Connected Plugs.
+     */
+    devices: IConnectedPlug[]
+}

@@ -56,6 +56,6 @@ describe('Load Connected Plugs Consent test', () => {
             { timeout: 6000 },
         )
         expect(result.current.loadingInProgress).toBe(false)
-        expect(result.current.elementList).toBeTruthy()
+        expect(result.current.connectedPlugList).toBeTruthy()
     }, 8000)
 })

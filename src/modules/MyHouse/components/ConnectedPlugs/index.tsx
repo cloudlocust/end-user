@@ -1,128 +1,62 @@
-import { styled } from '@mui/material/styles'
-import { useIntl } from 'react-intl'
-import { Typography } from '@mui/material'
-import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
-import FusePageCarded from 'src/common/ui-kit/fuse/components/FusePageCarded'
-import { motion } from 'framer-motion'
-import Table from 'src/common/ui-kit/components/Table/Table'
-import ConnectedPlugsHeader from 'src/modules/MyHouse/components/ConnectedPlugs/ConnectedPlugsHeader'
-import ConnectedPlugsMobileRowContent from 'src/modules/MyHouse/components/ConnectedPlugs/ConnectedPlugsMobileRow'
-import { ICell } from 'src/common/ui-kit/components/Table/TableT'
-import { useConnectedPlugList } from 'src/modules/MyHouse/components/ConnectedPlugs/connectedPlugsHook'
-import {
-    IConnectedPlug,
-    connectedPlugConsentStateEnum,
-} from 'src/modules/MyHouse/components/ConnectedPlugs/ConnectedPlugs.d'
-import dayjs from 'dayjs'
-import ConnectedPlugsInformationMessage from 'src/modules/MyHouse/components/ConnectedPlugs/ConnectedPlugsInformationMessage'
-import { RootState } from 'src/redux'
+import 'src/modules/MyHouse/MyHouse.scss'
 import { useSelector } from 'react-redux'
-
-const Root = styled(FusePageCarded)(({ theme }) => ({
-    '& .FusePageCarded-header': {
-        minHeight: 72,
-        height: 72,
-        alignItems: 'center',
-        [theme.breakpoints.up('sm')]: {
-            minHeight: 136,
-            height: 136,
-        },
-    },
-    '& .FusePageCarded-content': {
-        display: 'flex',
-    },
-    '& .FusePageCarded-contentCard': {
-        overflow: 'hidden',
-    },
-}))
+import { RootState } from 'src/redux'
+import { useEffect, useState, useRef } from 'react'
+import { useHistory, useParams } from 'react-router-dom'
+import { URL_MY_HOUSE } from 'src/modules/MyHouse/MyHouseConfig'
+import CircularProgress from '@mui/material/CircularProgress'
+import ConnectedPlugsList from 'src/modules/MyHouse/components/ConnectedPlugs/ConnectedPlugsList'
 
 /**
- * ConnectedPlugsList page component.
+ * ConnectedPlugs Page Component used for handling when currentHousing change, or accessing connected Plugs via /:houseId.
  *
- * @returns ConnectedPlugsList JSX.
+ * @returns MyHouse form component.
  */
 const ConnectedPlugs = () => {
-    const { currentHousing } = useSelector(({ housingModel }: RootState) => housingModel)
-    const {
-        elementList: connectedPlugsList,
-        loadingInProgress: isConnectedPlugsLoading,
-        totalElementList: totalConnectedPlugsList,
-        loadPage,
-        page,
-    } = useConnectedPlugList(currentHousing?.meter?.guid!)
-    const { formatMessage } = useIntl()
+    const [isCurrentHousingInProgress, setIsCurrentHousingInProgress] = useState(false)
+    const { currentHousing, housingList } = useSelector(({ housingModel }: RootState) => housingModel)
+    const history = useHistory()
+    // initialMount will make sure that Contracts will change only when currentHousing changes when it gets selected.
+    // We have two cases:,
+    // Case1: If currentHousing didn't change through select where user access the url /../:houseId/connected-plugs the Contracts should fetch :houseId on usepParams
+    // Case2: if select currentHousing happens then Contracts should fetch according to the new currentHousing
+    const initialMount = useRef(true)
+    const { houseId } = useParams</**
+     *
+     */
+    {
+        // eslint-disable-next-line jsdoc/require-jsdoc
+        houseId: string
+    }>()
 
-    const connectedPlugsCells: ICell<IConnectedPlug>[] = [
-        {
-            id: 'name',
-            headCellLabel: formatMessage({ id: 'Nom', defaultMessage: 'Nom' }),
-            // eslint-disable-next-line jsdoc/require-jsdoc
-            rowCell: (row: IConnectedPlug) => (
-                <div className="flex gap-2">
-                    <TypographyFormatMessage className="text-sm">Prise</TypographyFormatMessage>
-                    <Typography>{row.deviceId}</Typography>
-                </div>
-            ),
-        },
-        {
-            id: 'consent',
-            headCellLabel: formatMessage({ id: 'Connectivité', defaultMessage: 'Connectivité' }),
-            // eslint-disable-next-line jsdoc/require-jsdoc
-            rowCell: (row: IConnectedPlug) => (
-                <>
-                    {row.consentState === connectedPlugConsentStateEnum.APPROVED ? (
-                        <div className="flex gap-2">
-                            <TypographyFormatMessage className="text-sm">Connectée le</TypographyFormatMessage>
-                            <Typography className="text-sm">
-                                : {dayjs.utc(row.createdAt).local().format('DD/MM/YYYY')}
-                            </Typography>
-                        </div>
-                    ) : (
-                        <TypographyFormatMessage color="error" className="text-sm">
-                            Non Connectée
-                        </TypographyFormatMessage>
-                    )}
-                </>
-            ),
-        },
-    ]
+    useEffect(() => {
+        // This condition makes sure only when select on housing changes currentHousing then Contracts should fetch its data according to the new currentHousing
+        // We have two cases, when no select currentHousing happens Contracts should be fetched according to houseId from useParams even if it's different from currentHousing
+        // And if select housing, then we should enforce the Contracts should be fetched according to the selected currentHousing and show its id on the history useParams
+        // >> Because if currentHousing didn't change through select.
+        // >> Then in case where user access the url /../:houseId/connected-plugs the Contracts should fetch :houseId on usepParams even if it's different from currentHousing
+        // >> And if select currentHousing happens then Contracts should fetch according to the selected currentHousing
+        if (!initialMount.current && currentHousing?.id) {
+            setIsCurrentHousingInProgress(true)
+            history.replace(`${URL_MY_HOUSE}/${currentHousing.id}/connected-plugs`)
+        }
+    }, [currentHousing?.id, history, houseId])
 
-    return (
-        <Root
-            header={<ConnectedPlugsHeader />}
-            content={
-                <div className="flex flex-col w-full">
-                    <ConnectedPlugsInformationMessage />
-                    <div className="w-full flex flex-col">
-                        <Table<IConnectedPlug>
-                            cells={connectedPlugsCells}
-                            totalRows={totalConnectedPlugsList}
-                            onPageChange={loadPage}
-                            isRowsLoadingInProgress={isConnectedPlugsLoading}
-                            emptyRowsElement={
-                                <motion.div
-                                    initial={{ opacity: 0 }}
-                                    animate={{ opacity: 1, transition: { delay: 0.1 } }}
-                                    className="flex flex-1 items-center justify-center h-full"
-                                >
-                                    <TypographyFormatMessage color="textSecondary" variant="h5">
-                                        {formatMessage({
-                                            id: 'Aucune Prises !',
-                                            defaultMessage: 'Aucune Prises !',
-                                        })}
-                                    </TypographyFormatMessage>
-                                </motion.div>
-                            }
-                            rows={connectedPlugsList}
-                            pageProps={page}
-                            MobileRowContentElement={ConnectedPlugsMobileRowContent}
-                        />
-                    </div>
-                </div>
-            }
-            innerScroll
-        />
-    )
+    useEffect(() => {
+        initialMount.current = false
+        setIsCurrentHousingInProgress(false)
+    }, [houseId])
+
+    // While waiting for houseId on history params change.
+    // This enforces Contracts component to rerender and fetch data according to the new houseId.
+    if (isCurrentHousingInProgress || !currentHousing || !housingList)
+        return (
+            <div className="flex flex-col justify-center items-center w-full h-full" style={{ height: '320px' }}>
+                <CircularProgress size={32} />
+            </div>
+        )
+
+    return <ConnectedPlugsList />
 }
 
 export default ConnectedPlugs
