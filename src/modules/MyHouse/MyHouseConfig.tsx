@@ -78,7 +78,8 @@ export const globalProductionFeatureState = window._env_.REACT_APP_GLOBAL_PRODUC
 /**
  * Env variable to know if connected plugs feature is enabled.
  */
-export const connectedPlugsFeatureState = window._env_.REACT_APP_CONNECTED_PLUGS_FEATURE_STATE === 'enabled'
+// export const connectedPlugsFeatureState = window._env_.REACT_APP_CONNECTED_PLUGS_FEATURE_STATE === 'enabled'
+export const connectedPlugsFeatureState = false
 
 /**
  * Env variable to know if the feature to manual filling contracts is enabled.
@@ -201,7 +202,7 @@ export const MyHouseConfig = [
                             </SvgIcon>
                         ),
                         url: URL_HOUSING_EQUIPMENTS,
-                        // disabled: !connectedPlugsFeatureState,
+                        disabled: !connectedPlugsFeatureState,
                     },
                 },
             },
