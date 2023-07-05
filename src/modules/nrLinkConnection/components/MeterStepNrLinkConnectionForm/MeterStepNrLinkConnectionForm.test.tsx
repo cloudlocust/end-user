@@ -1,6 +1,6 @@
 import { reduxedRender } from 'src/common/react-platform-components/test'
 import { MeterStepNrLinkConnectionForm } from 'src/modules/nrLinkConnection'
-import { fireEvent, waitFor } from '@testing-library/react'
+import { act, fireEvent, waitFor } from '@testing-library/react'
 import { TEST_ADD_METER, TEST_METERS as MOCK_METERS } from 'src/mocks/handlers/meters'
 import userEvent from '@testing-library/user-event'
 import { IMeter } from 'src/modules/Meters/Meters'
@@ -17,6 +17,10 @@ const mockAddMeter = jest.fn()
 let mockLoadingMeterInProgress = false
 const SUBMIT_BUTTON_TEXT = 'Suivant'
 const REQUIRED_ERROR_TEXT = 'Champ obligatoire non renseigné'
+const MODAL_HOUSING_TEXT = 'Mon Nouveau Logement'
+
+// Role
+const MUI_MODAL_ROLE = 'presentation'
 
 const guidMeterInputQuerySelector = 'input[name="guid"]'
 const disabledQuerySelector = '.Mui-disabled'
@@ -117,6 +121,22 @@ describe('Test MeterStepNrLinkConnectionForm', () => {
                 <MeterStepNrLinkConnectionForm {...mockMeterStepNrLinkConnectionFormProps} />,
             )
             expect(container.querySelector('.MuiLoadingButton-loadingIndicator')).not.toBeNull()
+        })
+        test('when there is no housing, add housing modal should be shown', async () => {
+            mockLoadingMeterInProgress = false
+            mockMeterStepNrLinkConnectionFormProps.meter = null
+            mockMeterStepNrLinkConnectionFormProps.housingId = undefined
+            const { getByText, getByRole } = reduxedRender(
+                <MeterStepNrLinkConnectionForm {...mockMeterStepNrLinkConnectionFormProps} />,
+            )
+
+            expect(getByText(MODAL_HOUSING_TEXT)).toBeInTheDocument()
+
+            // When we Click on the backdrop, the modal should not be closed.
+            act(() => {
+                fireEvent.click(getByRole(MUI_MODAL_ROLE).firstChild as HTMLDivElement)
+            })
+            expect(getByText(MODAL_HOUSING_TEXT)).toBeInTheDocument()
         })
     })
 })

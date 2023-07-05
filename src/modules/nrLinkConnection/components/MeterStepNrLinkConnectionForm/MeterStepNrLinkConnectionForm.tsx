@@ -1,13 +1,16 @@
+import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { useIntl } from 'react-intl'
+import { isUndefined } from 'lodash'
 import { linkyPath, electricityPath, contractPath, ActionsNrLinkConnectionSteps } from 'src/modules/nrLinkConnection'
-import { TextField } from 'src/common/ui-kit'
 import TextFieldMui from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
+import { TextField } from 'src/common/ui-kit'
 import { Form, max, min, requiredBuilder } from 'src/common/react-platform-components'
 import { useMeterForHousing } from 'src/modules/Meters/metersHook'
 import { textNrlinkColor } from 'src/modules/nrLinkConnection/components/LastStepNrLinkConnection/LastStepNrLinkConnection'
 import { MeterStepNrLinkConnectionFormProps } from './MeterStepNrLinkConnectionForm.d'
+import AddHousingModal from 'src/modules/Layout/Toolbar/components/AddHousingModal'
 
 /**
  * Component showing the first step in the nrLinkConnection Stepper.
@@ -28,6 +31,7 @@ const MeterStepNrLinkConnectionForm = ({
     housingId,
 }: MeterStepNrLinkConnectionFormProps) => {
     const { formatMessage } = useIntl()
+    const [modalAddHousingOpen, setModalAddHousingOpen] = useState(isUndefined(housingId))
 
     const { addMeter, loadingInProgress: loadingMeterInProgress } = useMeterForHousing()
 
@@ -59,6 +63,11 @@ const MeterStepNrLinkConnectionForm = ({
     }
     return (
         <Form onSubmit={onSubmit}>
+            <AddHousingModal
+                modalOpen={modalAddHousingOpen}
+                closeModal={() => setModalAddHousingOpen(false)}
+                disableBackdropClick={true}
+            />
             <div className="flex justify-between items-center landscape:mt-10 w-full">
                 <div className="portrait:flex-col landscape:flex-row h-full flex justify-center items-center w-full">
                     <div className="w-full mx-32 ">
