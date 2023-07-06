@@ -10,7 +10,7 @@ import { MuiCardContent } from 'src/common/ui-kit'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import { enedisSgeConsentStatus, enphaseConsentStatus, nrlinkConsentStatus } from 'src/modules/Consents/Consents'
 import { useConsents } from 'src/modules/Consents/consentsHook'
-import { URL_MY_HOUSE, enphaseConsentFeatureState, sgeConsentFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
+import { URL_MY_HOUSE, globalProductionFeatureState, sgeConsentFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
 import { IHousing } from 'src/modules/MyHouse/components/HousingList/housing'
 import { EnedisSgePopup } from 'src/modules/MyHouse/components/MeterStatus/EnedisSgePopup'
 import { EnphaseConsentPopup } from 'src/modules/MyHouse/components/MeterStatus/EnphaseConsentPopup'
@@ -410,7 +410,7 @@ export const MeterStatus = () => {
                     </div>
                     <div
                         className={`flex flex-col md:flex-row ${
-                            !enphaseConsentFeatureState ? 'justify-between' : 'justify-evenly'
+                            !globalProductionFeatureState ? 'justify-between' : 'justify-evenly'
                         } items-center`}
                     >
                         {/* Nrlink Consent Status */}
@@ -475,7 +475,7 @@ export const MeterStatus = () => {
                         </Tooltip>
                         <Divider orientation={mdDown ? 'horizontal' : undefined} flexItem variant="fullWidth" />
                         {/* Enphase Consent Status */}
-                        <div className={`w-full md:w-1/3 p-12 ${!enphaseConsentFeatureState && 'hidden'}`}>
+                        <div className={`w-full md:w-1/3 p-12 ${!globalProductionFeatureState && 'hidden'}`}>
                             {!foundHousing ? (
                                 <>
                                     <TypographyFormatMessage className="text-xs md:text-sm font-semibold mb-6">

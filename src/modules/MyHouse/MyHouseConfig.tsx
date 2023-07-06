@@ -3,6 +3,7 @@ import { IRouteNavigationConfig } from 'src/routes'
 import { MyHouse } from 'src/modules/MyHouse/MyHouse'
 import Equipments from 'src/modules/MyHouse/components/Equipments'
 import Accomodation from 'src/modules/MyHouse/components/Accomodation'
+import ConnectedPlugs from 'src/modules/MyHouse/components/ConnectedPlugs'
 import { ReactComponent as HousingIcon } from 'src/assets/images/navbarItems/Housings.svg'
 import SvgIcon from '@mui/material/SvgIcon'
 
@@ -22,6 +23,10 @@ export const URL_HOUSING_EQUIPMENTS = `${URL_MY_HOUSE_DETAILS}/equipments`
  * Url for housing accomodation.
  */
 export const URL_HOUSING_ACCOMODATION = `${URL_MY_HOUSE_DETAILS}/accomodation`
+/**
+ * Url for housing connected plugs.
+ */
+export const URL_HOUSING_CONNECTED_PLUGS = `${URL_MY_HOUSE_DETAILS}/connected-plugs`
 
 /**
  * Interface .
@@ -66,9 +71,15 @@ export const sgeConsentFeatureState = window._env_.REACT_APP_SGE_CONSENT_FEATURE
 export const sgeConsentMessage = window._env_.REACT_APP_SGE_CONSENT_POPUP_MESSAGE
 
 /**
- * Env variable to know if enphase consent feature is enabled.
+ * Env variable to know if global production feature is enabled.
  */
-export const enphaseConsentFeatureState = window._env_.REACT_APP_ENPHASE_CONSENT_FEATURE_STATE === 'enabled'
+export const globalProductionFeatureState = window._env_.REACT_APP_GLOBAL_PRODUCTION_FEATURE_STATE === 'enabled'
+
+/**
+ * Env variable to know if connected plugs feature is enabled.
+ */
+// export const connectedPlugsFeatureState = window._env_.REACT_APP_CONNECTED_PLUGS_FEATURE_STATE === 'enabled'
+export const connectedPlugsFeatureState = false
 
 /**
  * Env variable to know if the feature to manual filling contracts is enabled.
@@ -168,6 +179,30 @@ export const MyHouseConfig = [
                         ),
                         url: URL_HOUSING_ACCOMODATION,
                         disabled: equipmentsAccomodationFeatureState,
+                    },
+                },
+            },
+        },
+    } as IRouteNavigationConfig<MyHouseProps>,
+    {
+        path: URL_HOUSING_CONNECTED_PLUGS,
+        component: ConnectedPlugs,
+        auth: { authType: authTypes.loginRequired },
+        settings: {
+            layout: {
+                navbar: {
+                    UINavbarItem: {
+                        id: 'myHouses',
+                        label: 'Logement',
+                        labelAbbreviation: 'Logement',
+                        type: 'item',
+                        icon: (
+                            <SvgIcon>
+                                <HousingIcon />
+                            </SvgIcon>
+                        ),
+                        url: URL_HOUSING_EQUIPMENTS,
+                        disabled: !connectedPlugsFeatureState,
                     },
                 },
             },

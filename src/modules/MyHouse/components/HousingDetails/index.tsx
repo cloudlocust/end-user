@@ -5,7 +5,10 @@ import { useParams } from 'react-router'
 import FusePageCarded from 'src/common/ui-kit/fuse/components/FusePageCarded'
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz'
 import HousingDetailsCard from 'src/modules/MyHouse/components/HousingDetails/HousingDetailsCard'
-import { HouseDetailsElementType } from 'src/modules/MyHouse/components/HousingDetails/housingDetails'
+import {
+    HouseDetailsElementType,
+    HousingCardTypeOfDetailsEnum,
+} from 'src/modules/MyHouse/components/HousingDetails/housingDetails.d'
 import { ReactComponent as SuperficieIcon } from 'src/assets/images/content/housing/Superficie.svg'
 import { ReactComponent as OccupantIcon } from 'src/assets/images/content/housing/Occupant.svg'
 import { ReactComponent as MainIcon } from 'src/assets/images/content/housing/Main.svg'
@@ -25,6 +28,7 @@ import { useSelector } from 'react-redux'
 import CircularProgress from '@mui/material/CircularProgress'
 import { RootState } from 'src/redux'
 import { isEmpty } from 'lodash'
+import { connectedPlugsFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
 
 const Root = styled(FusePageCarded)(() => ({
     '& .FusePageCarded-header': {
@@ -83,6 +87,21 @@ export const HousingDetails = () => {
             label: 'Plaques',
         },
     ])
+
+    const connectedPlugsElements: HouseDetailsElementType[] = [
+        {
+            icon: <MoreHorizIcon color="primary" fontSize="large" />,
+            label: 'Prise 1',
+        },
+        {
+            icon: <MoreHorizIcon color="primary" fontSize="large" />,
+            label: 'Prise 2',
+        },
+        {
+            icon: <MoreHorizIcon color="primary" fontSize="large" />,
+            label: 'Prise 3',
+        },
+    ]
 
     // Then once elements are loaded handle each icon based on it's equipementType.
     useEffect(() => {
@@ -180,17 +199,29 @@ export const HousingDetails = () => {
                         <HousingDetailsCard
                             title="Informations logement"
                             elements={housingElements}
-                            typeOfDetails="accomodation"
+                            typeOfDetails={HousingCardTypeOfDetailsEnum.ACCOMODATION}
                             isConfigured={!isAccomodationMeterListEmpty}
                             loadingInProgress={loadingAccomodationInProgress}
                         />
                         <HousingDetailsCard
                             title="Informations équipements"
                             elements={equipementElements}
-                            typeOfDetails="equipments"
+                            typeOfDetails={HousingCardTypeOfDetailsEnum.EQUIPMENTS}
                             isConfigured={!isEquipmentMeterListEmpty}
                             loadingInProgress={loadingEquipmentInProgress}
                         />
+                        {/**
+                         * TODO: Configure, isLoading? Elements like Equipments (load default at mount then replace by real data).
+                         */}
+                        {connectedPlugsFeatureState ? (
+                            <HousingDetailsCard
+                                title="Mes prises connectées"
+                                elements={connectedPlugsElements}
+                                typeOfDetails={HousingCardTypeOfDetailsEnum.CONNECTED_PLUGS}
+                                isConfigured={false}
+                                loadingInProgress={false}
+                            />
+                        ) : null}
                     </div>
                 </>
             }
