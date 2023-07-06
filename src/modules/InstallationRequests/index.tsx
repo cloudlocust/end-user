@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { IconButton, Tooltip, MenuItem, Chip, Typography, useTheme, Hidden } from '@mui/material'
+import { IconButton, Tooltip, MenuItem, Chip, useTheme, Hidden } from '@mui/material'
 import { styled } from '@mui/material/styles'
 import { useIntl } from 'react-intl'
 import { Icon } from 'src/common/ui-kit'
@@ -322,12 +322,9 @@ export const InstallationRequests = (): JSX.Element => {
                                     animate={{ opacity: 1, transition: { delay: 0.1 } }}
                                     className="flex flex-1 items-center justify-center h-full"
                                 >
-                                    <Typography color="textSecondary" variant="h5">
-                                        {formatMessage({
-                                            id: "Aucune demande d'installation !",
-                                            defaultMessage: "Aucune demande d'installation !",
-                                        })}
-                                    </Typography>
+                                    <TypographyFormatMessage color="textSecondary" variant="h6">
+                                        Aucune demande d'installation
+                                    </TypographyFormatMessage>
                                 </motion.div>
                             }
                         />
