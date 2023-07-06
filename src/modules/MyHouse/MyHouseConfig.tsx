@@ -3,7 +3,7 @@ import { IRouteNavigationConfig } from 'src/routes'
 import { MyHouse } from 'src/modules/MyHouse/MyHouse'
 import Equipments from 'src/modules/MyHouse/components/Equipments'
 import Accomodation from 'src/modules/MyHouse/components/Accomodation'
-import ConnectedPlugsPage from 'src/modules/MyHouse/components/ConnectedPlugs'
+import ConnectedPlugs from 'src/modules/MyHouse/components/ConnectedPlugs'
 import { ReactComponent as HousingIcon } from 'src/assets/images/navbarItems/Housings.svg'
 import SvgIcon from '@mui/material/SvgIcon'
 
@@ -78,7 +78,8 @@ export const globalProductionFeatureState = window._env_.REACT_APP_GLOBAL_PRODUC
 /**
  * Env variable to know if connected plugs feature is enabled.
  */
-export const connectedPlugsFeatureState = window._env_.REACT_APP_CONNECTED_PLUGS_FEATURE_STATE === 'enabled'
+// export const connectedPlugsFeatureState = window._env_.REACT_APP_CONNECTED_PLUGS_FEATURE_STATE === 'enabled'
+export const connectedPlugsFeatureState = false
 
 /**
  * Env variable to know if the feature to manual filling contracts is enabled.
@@ -185,7 +186,7 @@ export const MyHouseConfig = [
     } as IRouteNavigationConfig<MyHouseProps>,
     {
         path: URL_HOUSING_CONNECTED_PLUGS,
-        component: ConnectedPlugsPage,
+        component: ConnectedPlugs,
         auth: { authType: authTypes.loginRequired },
         settings: {
             layout: {
@@ -201,7 +202,7 @@ export const MyHouseConfig = [
                             </SvgIcon>
                         ),
                         url: URL_HOUSING_EQUIPMENTS,
-                        disabled: !globalProductionFeatureState,
+                        disabled: !connectedPlugsFeatureState,
                     },
                 },
             },
