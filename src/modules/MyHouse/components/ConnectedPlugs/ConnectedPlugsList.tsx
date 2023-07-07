@@ -51,7 +51,7 @@ const ConnectedPlugs = () => {
     const { houseId } = useParams<contractsRouteParam>()
     const currentHousingMeterGuid = housingList.find((housing) => housing.id === parseInt(houseId))?.meter?.guid
 
-    const { loadingInProgress: isShellyLoadingInProgress, openShellyConnectedPlugs } = useShellyConnectedPlugs(
+    const { loadingInProgress: isShellyLoadingInProgress, openShellyConnectedPlugsWindow } = useShellyConnectedPlugs(
         parseInt(houseId),
     )
 
@@ -102,7 +102,7 @@ const ConnectedPlugs = () => {
             header={
                 <ConnectedPlugsHeader
                     onAddClick={() => {
-                        openShellyConnectedPlugs(loadConnectedPlugList)
+                        openShellyConnectedPlugsWindow(loadConnectedPlugList)
                     }}
                     isConnectedPlugListLoadingInProgress={
                         isConnectedPlugListLoadingInProgress || isShellyLoadingInProgress
@@ -148,7 +148,7 @@ const ConnectedPlugs = () => {
                                         variant="contained"
                                         inProgress={isConnectedPlugListLoadingInProgress || isShellyLoadingInProgress}
                                         onClick={() => {
-                                            openShellyConnectedPlugs(loadConnectedPlugList)
+                                            openShellyConnectedPlugsWindow(loadConnectedPlugList)
                                         }}
                                     >
                                         <TypographyFormatMessage>Configuration</TypographyFormatMessage>{' '}

@@ -14,7 +14,7 @@ const MOCK_TEST_CONNECTED_PLUGS: IConnectedPlug[] = applyCamelCase(TEST_CONNECTE
 const ADD_CONNECTED_PLUG_BUTTON_TEXT = 'Ajouter une prise'
 let mockConnectedPlugsList = MOCK_TEST_CONNECTED_PLUGS
 const mockHistoryGoBack = jest.fn()
-const mockOpenShellyConnectedPlugs = jest.fn()
+const mockOpenShellyConnectedPlugsWindow = jest.fn()
 const CONNECTED_PLUGS_EMPTY_TEXT = `Aucune prise connectée n'a encore été renseignée, cliquez "configuration" pour ouvrir l'onglet de paramètrage des prises connectée.`
 const CONNECTED_PLUG_CONSENT_EXIST_TEXT = 'Connectée le'
 const CONFIGURE_SHELLY_TEXT = 'Configuration'
@@ -50,7 +50,7 @@ jest.mock('src/modules/MyHouse/components/ConnectedPlugs/connectedPlugsHook', ()
 
     // eslint-disable-next-line jsdoc/require-jsdoc
     useShellyConnectedPlugs: () => ({
-        openShellyConnectedPlugs: mockOpenShellyConnectedPlugs,
+        openShellyConnectedPlugsWindow: mockOpenShellyConnectedPlugsWindow,
     }),
 }))
 
@@ -89,7 +89,7 @@ describe('ConnectedPlugList component', () => {
                 },
             )
             userEvent.click(getByText(ADD_CONNECTED_PLUG_BUTTON_TEXT))
-            expect(mockOpenShellyConnectedPlugs).toHaveBeenCalled()
+            expect(mockOpenShellyConnectedPlugsWindow).toHaveBeenCalled()
         })
 
         test('When Connected plug list is empty, Clicking on Configuration', async () => {
@@ -106,7 +106,7 @@ describe('ConnectedPlugList component', () => {
             expect(getByText(CONNECTED_PLUGS_EMPTY_TEXT)).toBeTruthy()
 
             userEvent.click(getByText(CONFIGURE_SHELLY_TEXT))
-            expect(mockOpenShellyConnectedPlugs).toHaveBeenCalled()
+            expect(mockOpenShellyConnectedPlugsWindow).toHaveBeenCalled()
         })
     })
 
