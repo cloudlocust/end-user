@@ -40,7 +40,7 @@ const MyConsumptionDatePicker = ({
     range,
     onDatePickerChange,
     maxDate,
-}: IMyConsumptionDatePicker | any) => {
+}: IMyConsumptionDatePicker) => {
     const theme = useTheme()
     const { formatMessage } = useIntl()
     const [isRangeLoading, setIsRangeLoading] = useState(false)
