@@ -6,6 +6,7 @@ import { isMatch } from 'lodash'
 import { IUser } from 'src/modules/User/model'
 import { getMsgFromAxiosError } from 'src/modules/utils'
 import { useState } from 'react'
+import dayjs from 'dayjs'
 
 //eslint-disable-next-line jsdoc/require-jsdoc
 export const BACKEND_EMAIL_EXIST_ERROR_MESSAGE = 'UPDATE_USER_EMAIL_ALREADY_EXISTS'
@@ -62,10 +63,12 @@ export const useProfileManagement = () => {
     /**
      * UpdateProfile function.
      *
-     * @param password Password for modification in my profile.
+     * @param password Password.
      */
+    // eslint-disable-next-line jsdoc/require-jsdoc
     const updatePassword = async (password: string) => {
-        await updateProfile({ ...user!, password }, 'Mot de passe modifié avec succès')
+        const formattedBirthdate = dayjs(user?.birthdate).format('DD/MM/YYYY')
+        await updateProfile({ ...user!, birthdate: formattedBirthdate, password }, 'Mot de passe modifié avec succès')
     }
 
     /**
