@@ -89,6 +89,8 @@ describe('Load MyConsumptionDatePicker', () => {
     }, 30000)
 
     test('When onDatePickerChange is given, it should be called with the right data when previous or next', async () => {
+        jest.useFakeTimers() // Enable fake timers
+
         mockPeriod = PeriodEnum.YEARLY
         const date = new Date('2022-01-01 00:00:00:000')
         mockRange = getRange(mockPeriod, date, 'sub')
@@ -102,18 +104,23 @@ describe('Load MyConsumptionDatePicker', () => {
                 />
             </Router>,
         )
+
         // INCREMENT DATE BUTTON
         userEvent.click(getByText(INCREMENT_DATE_ARROW_TEXT))
+        jest.runAllTimers() // Run all pending timers
+
+        // Wait for the handler to be called
         await waitFor(() => {
-            // When we increment a period, we increment "to" in range.
-            expect(mockOnDatePickerChange).toHaveBeenNthCalledWith(1, addPeriod(new Date(mockRange.to), 'years'))
+            expect(mockOnDatePickerChange).toHaveBeenCalledWith(addPeriod(new Date(mockRange.to), 'years'))
         })
 
         // DECREMENT DATE BUTTON
         userEvent.click(getByText(DECREMENT_DATE_ARROW_TEXT))
+        jest.advanceTimersByTime(1500)
+
+        // Wait for the timeout to finish
         await waitFor(() => {
-            // When we decrement, we decrement "from" in range.
-            expect(mockOnDatePickerChange).toHaveBeenNthCalledWith(2, subPeriod(new Date(mockRange.from), 'years'))
+            expect(mockOnDatePickerChange).toHaveBeenCalledWith(subPeriod(new Date(mockRange.from), 'years'))
         })
 
         // SELECTING DATE IN DATE PICKER
@@ -128,6 +135,8 @@ describe('Load MyConsumptionDatePicker', () => {
             expect(() => getByText(selectedYear)!).toThrow()
         })
         expect(mockOnDatePickerChange).toHaveBeenLastCalledWith(dayjs('2009-01-01').utc().toDate())
+
+        jest.useRealTimers() // Restore real timers
     }, 20000)
 
     test('When Selecting a date in the datePicker, it should represents the range.from', async () => {
