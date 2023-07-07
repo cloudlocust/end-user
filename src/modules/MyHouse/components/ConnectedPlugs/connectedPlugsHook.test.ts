@@ -78,12 +78,11 @@ describe('useShellyConnectedPlugs test', () => {
 
             const {
                 renderedHook: { result, waitForValueToChange },
-                // Giving Empty GUID to fake an error.
             } = reduxedRenderHook(() => useShellyConnectedPlugs(TEST_HOUSE_ID), { initialState: {} })
 
             expect(result.current.loadingInProgress).toBe(false)
             act(async () => {
-                await result.current.openShellyConnectedPlugs()
+                await result.current.openShellyConnectedPlugsWindow()
             })
 
             expect(result.current.loadingInProgress).toBe(true)
@@ -118,11 +117,10 @@ describe('useShellyConnectedPlugs test', () => {
             const mockOnCloseShellyWindowCallback = jest.fn()
             const {
                 renderedHook: { result, waitForValueToChange },
-                // Giving Empty GUID to fake an error.
             } = reduxedRenderHook(() => useShellyConnectedPlugs(TEST_HOUSE_ID), { initialState: {} })
 
             act(async () => {
-                await result.current.openShellyConnectedPlugs(mockOnCloseShellyWindowCallback)
+                await result.current.openShellyConnectedPlugsWindow(mockOnCloseShellyWindowCallback)
             })
 
             await waitForValueToChange(
@@ -152,12 +150,11 @@ describe('useShellyConnectedPlugs test', () => {
 
             const {
                 renderedHook: { result, waitForValueToChange },
-                // Giving Empty GUID to fake an error.
             } = reduxedRenderHook(() => useShellyConnectedPlugs(TEST_HOUSE_ID), { initialState: {} })
 
             // Opening first shelly window.
             act(async () => {
-                await result.current.openShellyConnectedPlugs()
+                await result.current.openShellyConnectedPlugsWindow()
             })
 
             await waitForValueToChange(
@@ -170,7 +167,7 @@ describe('useShellyConnectedPlugs test', () => {
 
             // Opening a new shelly window, should close the previous one.
             act(async () => {
-                await result.current.openShellyConnectedPlugs()
+                await result.current.openShellyConnectedPlugsWindow()
             })
 
             await waitForValueToChange(
@@ -193,12 +190,12 @@ describe('useShellyConnectedPlugs test', () => {
         test('when request shelly url error', async () => {
             const {
                 renderedHook: { result, waitForValueToChange },
-                // Giving Empty GUID to fake an error.
+                // Giving Error Housing ID to fake an error.
             } = reduxedRenderHook(() => useShellyConnectedPlugs(TEST_ERROR_HOUSING_ID), { initialState: {} })
 
             expect(result.current.loadingInProgress).toBe(false)
             act(async () => {
-                await result.current.openShellyConnectedPlugs()
+                await result.current.openShellyConnectedPlugsWindow()
             })
             expect(result.current.loadingInProgress).toBe(true)
 
@@ -222,7 +219,7 @@ describe('useShellyConnectedPlugs test', () => {
 
             expect(result.current.loadingInProgress).toBe(false)
             act(async () => {
-                await result.current.openShellyConnectedPlugs()
+                await result.current.openShellyConnectedPlugsWindow()
             })
             expect(result.current.loadingInProgress).toBe(true)
 

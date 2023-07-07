@@ -87,7 +87,7 @@ export function useConnectedPlugList(meterGuid: string, immediate: boolean = tru
 }
 
 /**
- * Function to handle shelly connected plugs.
+ * Hook to handle shelly connected plugs functions.
  *
  * @param housingId Housing Id.
  * @returns Shelly Connected Plugs Link & Popup open.
@@ -146,9 +146,9 @@ export const useShellyConnectedPlugs = (housingId: number) => {
     )
 
     /**
-     * Fetching Connected Plug List function.
+     * Open Shelly Connected Plugs Window handler.
      */
-    const openShellyConnectedPlugs = useCallback(
+    const openShellyConnectedPlugsWindow = useCallback(
         async (onCloseShellyWindow?: () => void) => {
             setLoadingInProgress(true)
             try {
@@ -176,6 +176,6 @@ export const useShellyConnectedPlugs = (housingId: number) => {
 
     return {
         loadingInProgress,
-        openShellyConnectedPlugs,
+        openShellyConnectedPlugsWindow,
     }
 }
