@@ -153,10 +153,10 @@ describe('Test SelectHousing Widget.', () => {
         )
     }, 25000)
 
-    test('When widget mount and housing list is empty.', async () => {
+    test('When widget mount and housing list is empty, we can add a new housing', async () => {
         await store.dispatch.housingModel.setHousingModelState([])
 
-        const { getByText } = reduxedRender(
+        const { getByText, container } = reduxedRender(
             <BrowserRouter>
                 <SelectHousing />
             </BrowserRouter>,
@@ -165,5 +165,19 @@ describe('Test SelectHousing Widget.', () => {
 
         // No element appear
         expect(getByText(NO_ELEMENT_AVAILABLE)).toBeTruthy()
+
+        // Get the select element and click on it.
+        const selectMuiElement = container.getElementsByClassName(selectClassName)[0]
+        userEvent.click(selectMuiElement)
+
+        await waitFor(() => {
+            expect(getByText(ADD_HOUSING_BUTTON_TEXT)).toBeTruthy()
+        })
+
+        // Clicking on AddHousing Button
+        userEvent.click(getByText(ADD_HOUSING_BUTTON_TEXT))
+
+        // HousingForm should show
+        expect(getByText(MODAL_HOUSING_TEXT)).toBeTruthy()
     })
 })
