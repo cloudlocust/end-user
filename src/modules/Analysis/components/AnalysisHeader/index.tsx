@@ -2,7 +2,7 @@ import { motion } from 'framer-motion'
 import { ConsumptionEnedisSgeWarning } from 'src/modules/MyConsumption/components/MyConsumptionChart/ConsumptionChartWarnings'
 import { sgeConsentFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
 import MyConsumptionDatePicker from 'src/modules/MyConsumption/components/MyConsumptionDatePicker'
-import { periodType } from 'src/modules/MyConsumption/myConsumptionTypes'
+import { PeriodEnum } from 'src/modules/MyConsumption/myConsumptionTypes.d'
 import { getDateWithoutTimezoneOffset } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
 import { endOfMonth, startOfMonth, subMonths } from 'date-fns'
 import { AnalysisHeaderProps } from 'src/modules/Analysis/components/AnalysisHeader/AnalysisHeader.d'
@@ -38,7 +38,7 @@ export default function AnalysisHeader({ setRange, range, enedisSgeOff }: Analys
         <ThemeProvider theme={selectedTheme}>
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="w-full flex flex-col items-center">
                 <MyConsumptionDatePicker
-                    period={'monthly' as periodType}
+                    period={PeriodEnum.MONTHLY}
                     setRange={setRange}
                     range={range}
                     onDatePickerChange={handleDatePickerOnChange}

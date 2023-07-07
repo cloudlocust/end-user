@@ -1,104 +1,60 @@
-import { useState } from 'react'
-import ContractCard from 'src/modules/Contracts/components/ContractCard'
-import { useContractList } from 'src/modules/Contracts/contractsHook'
-import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
-import './Contracts.scss'
-import IconButton from '@mui/material/IconButton'
-import Button from '@mui/material/Button'
-import PostAddIcon from '@mui/icons-material/PostAdd'
-import Icon from '@mui/material/Icon'
-import CircularProgress from '@mui/material/CircularProgress'
+import 'src/modules/MyHouse/MyHouse.scss'
+import { useSelector } from 'react-redux'
+import { RootState } from 'src/redux'
+import { useEffect, useState, useRef } from 'react'
 import { useHistory, useParams } from 'react-router-dom'
-import { contractsRouteParam, addContractDataType } from 'src/modules/Contracts/contractsTypes.d'
-import { isEmpty, isNull } from 'lodash'
-import { primaryMainColor } from 'src/modules/utils/muiThemeVariables'
-import Dialog from '@mui/material/Dialog'
-import ContractForm from 'src/modules/Contracts/components/ContractForm'
+import { URL_MY_HOUSE } from 'src/modules/MyHouse/MyHouseConfig'
+import CircularProgress from '@mui/material/CircularProgress'
+import ContractList from 'src/modules/Contracts/components/ContractList'
 
 /**
- * Contracts Page Component.
+ * MyHouse Component is used for urls that follow /my-houses and /my-houses/:id.
  *
- * @returns Contracts Page Component.
+ * @returns MyHouse form component.
  */
-const Contracts = () => {
-    // HouseId extracted from params of the url :houseId/contracts
-    const { houseId } = useParams<contractsRouteParam>()
-    const [isOpenDialog, setIsOpenDialog] = useState(false)
+export const Contracts = () => {
+    const [isCurrentHousingInProgress, setIsCurrentHousingInProgress] = useState(false)
+    const { currentHousing } = useSelector(({ housingModel }: RootState) => housingModel)
     const history = useHistory()
+    // initialMount will make sure that Contracts will change only when currentHousing changes when it gets selected.
+    // We have two cases:,
+    // Case1: If currentHousing didn't change through select where user access the url /../:houseId/contracts the Contracts should fetch :houseId on usepParams
+    // Case2: if select currentHousing happens then Contracts should fetch according to the new currentHousing
+    const initialMount = useRef(true)
+    const { houseId } = useParams</**
+     *
+     */
+    {
+        // eslint-disable-next-line jsdoc/require-jsdoc
+        houseId: string
+    }>()
 
-    const {
-        elementList: contractList,
-        loadingInProgress: isContractsLoading,
-        reloadElements: reloadContractList,
-        addElement: addContract,
-    } = useContractList(parseInt(houseId))
+    useEffect(() => {
+        // This condition makes sure only when select on housing changes currentHousing then Contracts should fetch its data according to the new currentHousing
+        // We have two cases, when no select currentHousing happens Contracts should be fetched according to houseId from useParams even if it's different from currentHousing
+        // And if select housing, then we should enforce the Contracts should be fetched according to the selected currentHousing and show its id on the history useParams
+        // >> Because if currentHousing didn't change through select.
+        // >> Then in case where user access the url /../:houseId/contracts the Contracts should fetch :houseId on usepParams even if it's different from currentHousing
+        // >> And if select currentHousing happens then Contracts should fetch according to the selected currentHousing
+        if (!initialMount.current && currentHousing?.id) {
+            setIsCurrentHousingInProgress(true)
+            history.replace(`${URL_MY_HOUSE}/${currentHousing.id}/contracts`)
+        }
+    }, [currentHousing?.id, history, houseId])
 
-    return (
-        <>
-            <Dialog open={isOpenDialog} fullWidth={true} maxWidth="sm" onClose={() => setIsOpenDialog(false)}>
-                <ContractForm
-                    onSubmit={async (input: addContractDataType) => {
-                        try {
-                            await addContract(input)
-                            setIsOpenDialog(false)
-                            reloadContractList()
-                            // Catching the error to avoir application crash and stops working.
-                        } catch (error) {}
-                    }}
-                    isContractsLoading={isContractsLoading}
-                />
-            </Dialog>
-            <div className="p-24">
-                <Button className="flex justify-center items-center" variant="text" onClick={() => history.goBack()}>
-                    <Icon sx={{ color: primaryMainColor }}>arrow_back</Icon>
-                    <TypographyFormatMessage
-                        sx={{ color: primaryMainColor }}
-                        className="text-13 font-medium md:text-16 ml-4"
-                    >
-                        Retour
-                    </TypographyFormatMessage>
-                </Button>
-                <div className="flex justify-between items-center">
-                    <TypographyFormatMessage className="text-16 font-medium md:text-20 mx-auto">
-                        Mes Contrats
-                    </TypographyFormatMessage>
-                    <IconButton color="primary" onClick={() => setIsOpenDialog(true)}>
-                        <PostAddIcon style={{ width: '30px', height: '30px' }} />
-                    </IconButton>
-                </div>
+    useEffect(() => {
+        initialMount.current = false
+        setIsCurrentHousingInProgress(false)
+    }, [houseId])
 
-                {isEmpty(contractList) && !isContractsLoading ? (
-                    <div className="flex justify-center items-center p-24" style={{ height: '320px' }}>
-                        <TypographyFormatMessage
-                            className="text-13 font-medium md:text-16 w-full text-center"
-                            sx={{ color: 'primary.main' }}
-                        >
-                            Aucun contrat de fourniture d'énergie enregistré
-                        </TypographyFormatMessage>
-                    </div>
-                ) : (
-                    <div className="Contracts items-center p-24">
-                        {isNull(contractList) || isContractsLoading ? (
-                            <div
-                                className="flex flex-col justify-center items-center w-full h-full"
-                                style={{ height: '320px' }}
-                            >
-                                <CircularProgress sx={{ color: primaryMainColor }} />
-                            </div>
-                        ) : (
-                            contractList.map((contract) => (
-                                <ContractCard
-                                    key={contract.id}
-                                    contract={contract}
-                                    onAfterDeleteUpdateSuccess={reloadContractList}
-                                />
-                            ))
-                        )}
-                    </div>
-                )}
+    // While waiting for houseId on history params change.
+    // This enforces Contracts component to rerender and fetch data according to the new houseId.
+    if (isCurrentHousingInProgress)
+        return (
+            <div className="flex flex-col justify-center items-center w-full h-full" style={{ height: '320px' }}>
+                <CircularProgress size={32} />
             </div>
-        </>
-    )
-}
+        )
 
-export default Contracts
+    return <ContractList />
+}

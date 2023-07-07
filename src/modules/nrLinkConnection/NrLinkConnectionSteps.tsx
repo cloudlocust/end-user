@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Dialog, DialogContent, Box, Stepper, Step, StepLabel, StepContent, Button } from '@mui/material'
+import { Dialog, DialogContent, Stepper, Step, StepLabel, StepContent } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
 import { useMediaQuery } from '@mui/material'
 import { useIntl } from 'react-intl'
@@ -10,7 +10,6 @@ import {
     LoadingNrLinkConnectionSteps,
 } from 'src/modules/nrLinkConnection'
 import 'src/modules/nrLinkConnection/NrLinkConnectionSteps.scss'
-import { ButtonLoader } from 'src/common/ui-kit'
 import { IMeter } from 'src/modules/Meters/Meters'
 import MuiLink from '@mui/material/Link'
 import { Link, useLocation, useParams } from 'react-router-dom'
@@ -21,69 +20,12 @@ import { RootState } from 'src/redux'
 import { linksColor, primaryContrastTextColor, primaryMainColor } from 'src/modules/utils/muiThemeVariables'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import ContractStepNrLinkConnection from 'src/modules/nrLinkConnection/components/ContractStepNrLinkConnection/ContractStepNrLinkConnection'
+import { manualContractFillingIsEnabled } from 'src/modules/MyHouse/MyHouseConfig'
+
 /**
- * Component representing the action buttons in the Stepper (Previous, Next), Next Button will be of type Submit.
  *
- * @param props N/A.
- * @param props.activeStep Represent the current step in the stepper.
- * @param props.handleBack Callback when clicking on Previous button.
- * @param props.handleNext Callback when clicking on Next button.
- * @param props.inProgress Boolean indicating the loading of the ButtonLoading when submitting forms before next.
- * @returns ActionsNrLinkConnectionSTEPS.
  */
-export const ActionsNrLinkConnectionSteps = ({
-    activeStep,
-    handleBack,
-    handleNext,
-    inProgress,
-}: // eslint-disable-next-line jsdoc/require-jsdoc
-{
-    // eslint-disable-next-line jsdoc/require-jsdoc
-    activeStep: number
-    // eslint-disable-next-line jsdoc/require-jsdoc
-    handleBack: () => void
-    // eslint-disable-next-line jsdoc/require-jsdoc
-    handleNext: () => void
-    // eslint-disable-next-line jsdoc/require-jsdoc
-    inProgress?: boolean
-}) => {
-    const { formatMessage } = useIntl()
-
-    return (
-        <Box className="landscape:flex landscape:justify-between">
-            <div className="my-16 w-full flex justify-center align-center">
-                {activeStep > 0 && (
-                    <Button variant="contained" onClick={handleBack} sx={{ mt: 1, mr: 1 }}>
-                        {formatMessage({
-                            id: 'Précédent',
-                            defaultMessage: 'Précédent',
-                        })}
-                    </Button>
-                )}
-                <ButtonLoader
-                    variant="contained"
-                    type="submit"
-                    onClick={activeStep === stepsLabels.length - 1 ? () => {} : handleNext}
-                    inProgress={Boolean(inProgress)}
-                    sx={{ mt: 1, mr: 1 }}
-                >
-                    {activeStep === stepsLabels.length - 1
-                        ? formatMessage({
-                              id: 'Terminer',
-                              defaultMessage: 'Terminer',
-                          })
-                        : formatMessage({
-                              id: 'Suivant',
-                              defaultMessage: 'Suivant',
-                          })}
-                </ButtonLoader>
-            </div>
-            <div className="w-full"></div>
-        </Box>
-    )
-}
-
-const stepsLabels = [
+export let stepsLabels = [
     'Je branche mon capteur',
     'Je configure mon compteur Linky',
     'Je configure mon capteur',
@@ -98,6 +40,11 @@ const stepsLabels = [
 const NrLinkConnectionSteps = () => {
     const theme = useTheme()
     const { formatMessage } = useIntl()
+
+    // If manual contract is disabled, we remove the step to configure the contract.
+    if (!manualContractFillingIsEnabled) {
+        stepsLabels = stepsLabels.filter((step) => step !== "Je configure mon contrat de fourniture d'énergie")
+    }
 
     // this ones are for handling the housing id's and their speceif meters
     const { currentHousing, housingList } = useSelector(({ housingModel }: RootState) => housingModel)
@@ -133,10 +80,6 @@ const NrLinkConnectionSteps = () => {
         state: locationState,
     }: // eslint-disable-next-line jsdoc/require-jsdoc
     {
-        /**import { IHousing } from 'src/modules/MyHouse/components/HousingList/housing'
-import { TEST_HOUSES } from 'src/mocks/handlers/houses'
-         * Route state.
-         */
         // eslint-disable-next-line jsdoc/require-jsdoc
         state: {
             /**
@@ -222,8 +165,12 @@ import { TEST_HOUSES } from 'src/mocks/handlers/houses'
             meter={meter}
             setIsNrLinkAuthorizeInProgress={setIsNrLinkAuthorizeInProgress}
         />,
-        <ContractStepNrLinkConnection housingId={housingId} />,
     ]
+
+    // If manual contract is enabled, we add the step to configure the contract.
+    if (manualContractFillingIsEnabled) {
+        stepsContent.push(<ContractStepNrLinkConnection housingId={housingId} />)
+    }
 
     return (
         <div className="p-24 h-full relative md:mx-auto NrLinkConnectionSteps">

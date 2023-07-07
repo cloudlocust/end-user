@@ -180,3 +180,10 @@ export const TAG_MANAGER_CONFIG = {
  * FAQ redirect link.
  */
 export const FAQ_REDIRECT_LINK = window._env_.REACT_APP_FAQ_REDIRECT_LINK
+
+/**
+ * Env variable that determines of we are in mauntenance mode.
+ *
+ * All routes should be inaccessible.
+ */
+export const isMaintenanceMode = window._env_.REACT_APP_IS_MAINTENANCE_MODE === 'true'

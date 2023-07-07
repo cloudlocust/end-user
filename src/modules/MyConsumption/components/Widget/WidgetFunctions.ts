@@ -314,7 +314,7 @@ export const getWidgetPreviousRange = (range: metricRangeType, period: periodTyp
  */
 export const getWidgetRange = (range: metricRangeType, period: periodType, target: metricTargetType) => {
     // Extract only the date, so that new Date don't create a date including the timezone.
-    const fromDate = startOfDay(new Date(range.from.split('T')[0]))
+    const fromDate = startOfDay(new Date(range.from))
     switch (period) {
         case 'daily':
             return {
@@ -399,22 +399,4 @@ export const isRangeWithinToday = (fromRange: string, toRange: string) => {
     const dayEnd = getDateWithoutTimezoneOffset(dayjs().endOf('day').toDate())
 
     return fromRange >= dayStart && toRange <= dayEnd
-}
-
-/**
- * Function that gets the previous day range.
- *
- * @param currentRange Current metric range.
- * @param subDay Default sub day is 1. If we want to get the data of the previous day.
- * @returns Range of the previous day according to the subDay.
- */
-export const getPreviousDayRange = (currentRange: metricRangeType, subDay: number = 1) => {
-    const previousDayStart = getDateWithoutTimezoneOffset(
-        dayjs(currentRange.from).subtract(subDay, 'day').startOf('day').toDate(),
-    )
-    const previousDayEnd = getDateWithoutTimezoneOffset(
-        dayjs(currentRange.from).subtract(subDay, 'day').endOf('day').toDate(),
-    )
-
-    return { from: previousDayStart, to: previousDayEnd }
 }

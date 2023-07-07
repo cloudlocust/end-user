@@ -25,6 +25,7 @@ import { OtherProviderOfferOptionMessage } from 'src/modules/Contracts/component
 import { isActivateOtherOffersAndProviders } from 'src/modules/Contracts/ContractsConfig'
 import { isValidDate } from 'src/modules/Contracts/utils/contractsFunctions'
 import TariffsContract from 'src/modules/Contracts/components/TariffsContract'
+import { manualContractFillingIsEnabled } from 'src/modules/MyHouse/MyHouseConfig'
 
 const defaultContractFormValues: contractFormValuesType = {
     contractTypeId: 0,
@@ -289,6 +290,7 @@ const ContractFormFields = ({ isContractsLoading }: ContractFormFieldsProps) => 
                         defaultMessage: 'Date de début',
                     })}
                     validateFunctions={[requiredBuilder()]}
+                    disabled={!manualContractFillingIsEnabled}
                 />
             )}
             {
@@ -303,34 +305,37 @@ const ContractFormFields = ({ isContractsLoading }: ContractFormFieldsProps) => 
                             id: 'Date de fin (Si terminé)',
                             defaultMessage: 'Date de fin (Si terminé)',
                         })}
+                        disabled={!manualContractFillingIsEnabled}
                     />
                 )
             }
-            <ButtonLoader
-                variant="contained"
-                color="primary"
-                className="w-full mx-auto mt-20"
-                type="submit"
-                inProgress={isContractsLoading}
-                disabled={
-                    isContractTypesLoading ||
-                    isProvidersLoading ||
-                    isOffersLoading ||
-                    isTariffTypesLoading ||
-                    isPowersLoading ||
-                    isNull(contractTypeList) ||
-                    isNull(providerList) ||
-                    isNull(offerList) ||
-                    isNull(tariffTypeList) ||
-                    isNull(powerList) ||
-                    !Boolean(formData.startSubscription)
-                }
-            >
-                {formatMessage({
-                    id: 'Enregistrer',
-                    defaultMessage: 'Enregistrer',
-                })}
-            </ButtonLoader>
+            {manualContractFillingIsEnabled && (
+                <ButtonLoader
+                    variant="contained"
+                    color="primary"
+                    className="w-full mx-auto mt-20"
+                    type="submit"
+                    inProgress={isContractsLoading}
+                    disabled={
+                        isContractTypesLoading ||
+                        isProvidersLoading ||
+                        isOffersLoading ||
+                        isTariffTypesLoading ||
+                        isPowersLoading ||
+                        isNull(contractTypeList) ||
+                        isNull(providerList) ||
+                        isNull(offerList) ||
+                        isNull(tariffTypeList) ||
+                        isNull(powerList) ||
+                        !Boolean(formData.startSubscription)
+                    }
+                >
+                    {formatMessage({
+                        id: 'Enregistrer',
+                        defaultMessage: 'Enregistrer',
+                    })}
+                </ButtonLoader>
+            )}
             <TariffsContract />
         </>
     )

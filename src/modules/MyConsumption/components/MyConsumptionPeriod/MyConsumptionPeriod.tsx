@@ -5,7 +5,7 @@ import { useState } from 'react'
 import Box from '@mui/material/Box'
 import { dataConsumptionPeriod } from 'src/modules/MyConsumption/utils/myConsumptionVariables'
 import { IMyConsumptionPeriod } from 'src/modules/MyConsumption/myConsumptionTypes'
-import { getDateWithTimezoneOffset, getRange } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
+import { getRangeV2 } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
 /**
  * MyConsumptionPeriod Component.
  *
@@ -13,10 +13,9 @@ import { getDateWithTimezoneOffset, getRange } from 'src/modules/MyConsumption/u
  * @param param0.setPeriod SetPeriod function.
  * @param param0.setRange SetRange function.
  * @param param0.setMetricsInterval SetMetricsInterval function.
- * @param param0.range Period to range.
  * @returns  MyConsumptionPeriod.
  */
-export const MyConsumptionPeriod = ({ setRange, setPeriod, setMetricsInterval, range }: IMyConsumptionPeriod) => {
+export const MyConsumptionPeriod = ({ setRange, setPeriod, setMetricsInterval }: IMyConsumptionPeriod) => {
     const theme = useTheme()
     const [tabValue, setTabValue] = useState(0)
 
@@ -26,13 +25,7 @@ export const MyConsumptionPeriod = ({ setRange, setPeriod, setMetricsInterval, r
                 value={tabValue}
                 onChange={(_event, value) => {
                     setTabValue(value)
-                    setRange(
-                        getRange(
-                            dataConsumptionPeriod[value].period,
-                            // Because range is already in local time and ISO String, we convert from string to Date without applying local time.
-                            getDateWithTimezoneOffset(range.to),
-                        ),
-                    )
+                    setRange(getRangeV2(dataConsumptionPeriod[value].period))
                     setMetricsInterval(dataConsumptionPeriod[value].interval)
                     setPeriod(dataConsumptionPeriod[value].period)
                 }}

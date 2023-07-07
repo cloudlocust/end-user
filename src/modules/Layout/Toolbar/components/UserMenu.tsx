@@ -111,7 +111,7 @@ function UserMenu() {
                         onMenuItemClick={() => {
                             history.push('/mentions')
                         }}
-                        iconLabel="gavel"
+                        iconLabel="assignment"
                         idLabel="Mentions"
                         defaultMessageLabel="Mentions"
                     />
@@ -121,8 +121,8 @@ function UserMenu() {
                                 history.replace('/installation-requests')
                             }}
                             iconLabel="solar_power"
-                            idLabel="Installation"
-                            defaultMessageLabel="Installation"
+                            idLabel="Installations"
+                            defaultMessageLabel="Installations"
                         />
                     )}
                     {equipmentFeatureState && (
@@ -130,7 +130,7 @@ function UserMenu() {
                             onMenuItemClick={() => {
                                 history.replace(URL_SOLAR_EQUIPMENTS)
                             }}
-                            iconLabel="construction"
+                            iconLabel="gavel"
                             idLabel="Equipement"
                             defaultMessageLabel="Equipement"
                         />
@@ -147,6 +147,8 @@ function UserMenu() {
                     )}
                     <ToolbarMenuItem
                         onMenuItemClick={() => {
+                            // Reset Housing Model when logging out.
+                            dispatch.housingModel.setHousingModelState([])
                             dispatch.userModel.logout()
                             history.replace('/login')
                         }}

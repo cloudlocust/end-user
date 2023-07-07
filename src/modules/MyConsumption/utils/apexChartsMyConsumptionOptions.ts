@@ -12,6 +12,8 @@ import {
     getChartSpecifities,
     getChartType,
 } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
+import timezone from 'dayjs/plugin/timezone'
+dayjs.extend(timezone)
 
 /**
  * Default ApexChart Options, represent the general options related to the overall look of the MyConsumptionChart.
@@ -319,7 +321,16 @@ export const getApexChartMyConsumptionProps = ({
              * @returns Label concerning the xaxis that's going to be shown in the tooltip.
              */
             formatter: (timestamp: number) => {
-                return dayjs.utc(new Date(timestamp).toUTCString()).format(getXAxisLabelFormatFromPeriod(period, true))
+                // !! The condition format the yearly tooltip value to Paris timing to avoid a visual bug due to summer time (GMT+1 / GMT+2)
+                if (period === 'yearly') {
+                    return dayjs(new Date(timestamp).toUTCString())
+                        .tz('Europe/Paris')
+                        .format(getXAxisLabelFormatFromPeriod('yearly', true))
+                } else {
+                    return dayjs
+                        .utc(new Date(timestamp).toUTCString())
+                        .format(getXAxisLabelFormatFromPeriod(period, true))
+                }
             },
         },
     }

@@ -1,11 +1,11 @@
 import { reduxedRender } from 'src/common/react-platform-components/test'
-import Contracts from 'src/modules/Contracts'
+import ContractList from 'src/modules/Contracts/components/ContractList'
 import { BrowserRouter as Router } from 'react-router-dom'
 import { TEST_CONTRACTS as MOCK_CONTRACTS, TEST_HOUSE_ID } from 'src/mocks/handlers/contracts'
 import { applyCamelCase } from 'src/common/react-platform-components'
 import { fireEvent, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { ContractFormProps } from './contractsTypes'
+import { ContractFormProps } from 'src/modules/Contracts/contractsTypes.d'
 import { formatLoadContractResponseToIContract } from 'src/modules/Contracts/utils/contractsFunctions'
 import { IContract, loadContractResponse } from 'src/modules/Contracts/contractsTypes'
 import dayjs from 'dayjs'
@@ -16,6 +16,7 @@ const TEST_CONTRACTS: IContract[] = applyCamelCase(MOCK_CONTRACTS).map((contract
 const EMPTY_CONTRACT_LIST_MESSAGE_TEXT = "Aucun contrat de fourniture d'énergie enregistré"
 const mockHouseId = TEST_HOUSE_ID
 let mockIsContractsLoading = false
+let mockManualContractFillingIsEnabled = true
 let mockReloadContractList = jest.fn()
 let mockAddContract = jest.fn()
 let mockGoBack = jest.fn()
@@ -87,11 +88,19 @@ jest.mock('src/modules/Contracts/components/ContractForm', () => (props: Contrac
     )
 })
 
+jest.mock('src/modules/MyHouse/MyHouseConfig', () => ({
+    ...jest.requireActual('src/modules/MyHouse/MyHouseConfig'),
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    get manualContractFillingIsEnabled() {
+        return mockManualContractFillingIsEnabled
+    },
+}))
+
 describe('Test Contracts Component', () => {
     test('When contractList is valid, and clicking on goBackArrow it goes back', async () => {
         const { getByText } = reduxedRender(
             <Router>
-                <Contracts />
+                <ContractList />
             </Router>,
         )
 
@@ -108,7 +117,7 @@ describe('Test Contracts Component', () => {
         mockIsContractsLoading = true
         const { container } = reduxedRender(
             <Router>
-                <Contracts />
+                <ContractList />
             </Router>,
         )
         expect(container.querySelector(circularProgressClassname)).toBeInTheDocument()
@@ -118,7 +127,7 @@ describe('Test Contracts Component', () => {
         mockContractList = []
         const { getByText } = reduxedRender(
             <Router>
-                <Contracts />
+                <ContractList />
             </Router>,
         )
         expect(getByText(EMPTY_CONTRACT_LIST_MESSAGE_TEXT)).toBeInTheDocument()
@@ -128,7 +137,7 @@ describe('Test Contracts Component', () => {
         mockContractList = TEST_CONTRACTS
         const { getAllByRole, getByText, getByTestId } = reduxedRender(
             <Router>
-                <Contracts />
+                <ContractList />
             </Router>,
         )
         expect(() => getByText(CONTRACT_FORM_MODAL_TEXT)).toThrow()
@@ -146,7 +155,7 @@ describe('Test Contracts Component', () => {
     test('When Submitting ContractForm, addContract and loadContract hook functions should be called, and modal should be closed', async () => {
         const { getByText, getByTestId } = reduxedRender(
             <Router>
-                <Contracts />
+                <ContractList />
             </Router>,
         )
         // OPEN MODAL
@@ -164,5 +173,18 @@ describe('Test Contracts Component', () => {
         await waitFor(() => {
             expect(() => getByText(CONTRACT_FORM_MODAL_TEXT)).toThrow()
         })
+    })
+
+    test('When manual contract filling is disabled, the add icon does not show up', () => {
+        mockManualContractFillingIsEnabled = false
+        mockContractList = []
+        const { getByText, queryByTestId } = reduxedRender(
+            <Router>
+                <ContractList />
+            </Router>,
+        )
+
+        expect(queryByTestId(ADD_CONTRACT_BUTTON_DATA_TESTID)).not.toBeInTheDocument()
+        expect(getByText('Grille tarifaire en cours de configuration')).toBeInTheDocument()
     })
 })

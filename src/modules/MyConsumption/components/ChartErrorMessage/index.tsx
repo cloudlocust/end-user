@@ -26,13 +26,12 @@ export const ChartErrorMessage = ({
 
     return (
         <div style={{ background: theme.palette.primary.dark }}>
-            <div className="container relative p-16 sm:p-24 flex-col text-center flex items-center justify-center">
+            <div className="container relative p-16 sm:p-24 text-center flex items-center justify-center gap-8">
                 <ErrorOutlineIcon
                     sx={{
                         color: linksColor || warningMainHashColor,
                         width: { xs: '24px', md: '32px' },
                         height: { xs: '24px', md: '32px' },
-                        margin: { xs: '0 0 4px 0', md: '0 8px 0 0' },
                     }}
                 />
                 {nrLinkEnedisOff && (

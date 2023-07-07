@@ -1,5 +1,5 @@
 export { default as NrLinkConnection } from './NrLinkConnection'
-export { default as NrLinkConnectionSteps, ActionsNrLinkConnectionSteps } from './NrLinkConnectionSteps'
+export { default as NrLinkConnectionSteps } from './NrLinkConnectionSteps'
 export { URL_NRLINK_CONNECTION_STEPS, URL_NRLINK_CONNECTION, NrLinkConnectionConfig } from './NrLinkConnectionConfig'
 export { default as linkyNrLinkPath } from 'src/assets/images/content/connexionNrLINK/linkyNrLink.png'
 export { default as contractPath } from 'src/assets/images/content/connexionNrLINK/contract.svg'
@@ -13,3 +13,4 @@ export { default as FirstStepNrLinkConnection } from './components/FirstStepNrLi
 export { default as LastStepNrLinkConnection } from './components/LastStepNrLinkConnection/LastStepNrLinkConnection'
 export { default as LoadingNrLinkConnectionSteps } from './components/LoadingNrLinkConnectionSteps/LoadingNrLinkConnectionSteps'
 export { default as MeterStepNrLinkConnectionForm } from './components/MeterStepNrLinkConnectionForm/MeterStepNrLinkConnectionForm'
+export { default as ActionsNrLinkConnectionSteps } from './components/ActionsNrLinkConnectionSteps'

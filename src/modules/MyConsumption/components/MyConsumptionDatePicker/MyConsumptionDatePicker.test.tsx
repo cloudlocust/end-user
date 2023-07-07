@@ -7,6 +7,7 @@ import MyConsumptionDatePicker from 'src/modules/MyConsumption/components/MyCons
 import { waitFor } from '@testing-library/react'
 import dayjs from 'dayjs'
 import { startOfDay, subMonths } from 'date-fns'
+import { PeriodEnum } from 'src/modules/MyConsumption/myConsumptionTypes.d'
 
 let mockSetRange = jest.fn()
 let mockOnDatePickerChange = jest.fn()
@@ -14,7 +15,7 @@ const INCREMENT_DATE_ARROW_TEXT = 'chevron_right'
 const DECREMENT_DATE_ARROW_TEXT = 'chevron_left'
 const disabledClass = 'Mui-disabled'
 const CONFIRM_DATE_PICKER_TEXT = 'OK'
-let mockPeriod = 'daily'
+let mockPeriod = PeriodEnum.DAILY
 const dateFormat = 'dd/MM/yyyy'
 const date = new Date()
 const yesterday = date.setDate(date.getDate() - 1)
@@ -31,7 +32,7 @@ describe('Load MyConsumptionDatePicker', () => {
         expect(container.querySelector('input')?.value).toBe(format(new Date(yesterday), dateFormat))
     })
     test('when the user clicks on the left arrow, the previous week is shown', async () => {
-        mockPeriod = 'weekly'
+        mockPeriod = PeriodEnum.WEEKLY
         const dateWeek = new Date()
         const prevWeek = dateWeek.setDate(dateWeek.getDate() - 6)
         mockRange = getRange(mockPeriod, new Date(dateWeek), 'add')
@@ -44,7 +45,7 @@ describe('Load MyConsumptionDatePicker', () => {
         expect(container.querySelector('input')?.value).toBe(format(new Date(prevWeek), dateFormat))
     })
     test('when the user clicks on the left arrow, the previous month is shown', async () => {
-        mockPeriod = 'monthly'
+        mockPeriod = PeriodEnum.MONTHLY
         const dateMonth = startOfDay(new Date())
         const prevMonthDate = subMonths(dateMonth, 1)
         mockRange = getRange(mockPeriod, prevMonthDate, 'add')
@@ -57,7 +58,7 @@ describe('Load MyConsumptionDatePicker', () => {
         expect(container.querySelector('input')?.value).toBe(format(prevMonthDate, 'MM/yyyy'))
     })
     test('when the user clicks on the left arrow, the previous year is shown', async () => {
-        mockPeriod = 'yearly'
+        mockPeriod = PeriodEnum.YEARLY
         const dateYear = new Date()
         const prevYear = dateYear.setFullYear(dateYear.getFullYear() - 1)
         mockRange = getRange(mockPeriod, new Date(prevYear), 'add')
@@ -70,7 +71,7 @@ describe('Load MyConsumptionDatePicker', () => {
         expect(container.querySelector('input')?.value).toBe(format(new Date(prevYear), 'yyyy'))
     })
     test('when the user clicks on the right arrow, the next year is shown', async () => {
-        mockPeriod = 'yearly'
+        mockPeriod = PeriodEnum.YEARLY
         const dateYear = new Date('2019')
         const nextYear = dateYear.setFullYear(dateYear.getFullYear() + 1)
         mockSetRange = jest.fn()
@@ -90,7 +91,7 @@ describe('Load MyConsumptionDatePicker', () => {
     test('When onDatePickerChange is given, it should be called with the right data when previous or next', async () => {
         jest.useFakeTimers() // Enable fake timers
 
-        mockPeriod = 'yearly'
+        mockPeriod = PeriodEnum.YEARLY
         const date = new Date('2022-01-01 00:00:00:000')
         mockRange = getRange(mockPeriod, date, 'sub')
         const { getByText, container } = reduxedRender(
@@ -139,7 +140,7 @@ describe('Load MyConsumptionDatePicker', () => {
     }, 20000)
 
     test('When Selecting a date in the datePicker, it should represents the range.from', async () => {
-        mockPeriod = 'yearly'
+        mockPeriod = PeriodEnum.YEARLY
         const date = new Date('2018-01-01 00:00:00:000')
         mockRange = getRange(mockPeriod, date, 'add')
         mockSetRange = jest.fn()
@@ -166,7 +167,7 @@ describe('Load MyConsumptionDatePicker', () => {
         })
     }, 20000)
     test('When maxDate given, disabled should be shown on increment date arrow when date is max', async () => {
-        mockPeriod = 'yearly'
+        mockPeriod = PeriodEnum.YEARLY
         const maxDate = new Date('2010-01-01 00:00:00:000')
         const date = new Date('2022-01-01 00:00:00:000')
         mockRange = getRange(mockPeriod, date, 'sub')

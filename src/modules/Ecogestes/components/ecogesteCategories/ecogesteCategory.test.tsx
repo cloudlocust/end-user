@@ -4,6 +4,8 @@ import { EcogesteCategoriesList } from './EcogesteCategoriesList'
 import { IEcogesteCategoryTypes } from '../../EcogestesConfig'
 import { IEcogestCategory } from '../ecogeste'
 
+const TXT_NO_ECOGESTS_AVAILABLE = "Aucune catégorie d'écogeste n'est disponible pour le moment"
+
 const TEST_ECOGESTES_CATEGORIES: IEcogestCategory[] = [
     {
         id: 0,
@@ -21,14 +23,31 @@ const TEST_ECOGESTES_CATEGORIES: IEcogestCategory[] = [
 
 describe('Test EcogesteCategory Components', () => {
     describe('should render component properly', () => {
+        test('When loading, should show a Loading Spinner', async () => {
+            const { queryByText, queryByRole } = reduxedRender(
+                <BrowserRouter>
+                    <EcogesteCategoriesList
+                        categoryType={IEcogesteCategoryTypes.CONSUMPTION}
+                        loadingInProgress={true}
+                        categories={[]}
+                    />
+                </BrowserRouter>,
+            )
+            expect(queryByRole('progressbar')).toBeInTheDocument()
+            expect(queryByText(TXT_NO_ECOGESTS_AVAILABLE)).not.toBeTruthy()
+        })
         test('When loading fail, should show an error message', async () => {
             const { getByText, queryAllByLabelText } = reduxedRender(
                 <BrowserRouter>
-                    <EcogesteCategoriesList categoryType={IEcogesteCategoryTypes.CONSUMPTION} categories={[]} />
+                    <EcogesteCategoriesList
+                        categoryType={IEcogesteCategoryTypes.CONSUMPTION}
+                        loadingInProgress={false}
+                        categories={[]}
+                    />
                 </BrowserRouter>,
             )
             expect(queryAllByLabelText('ecogest-category-card')).toHaveLength(0)
-            expect(getByText("Aucune categorie d'écogeste n'est disponible pour le moment")).toBeDefined()
+            expect(getByText(TXT_NO_ECOGESTS_AVAILABLE)).toBeDefined()
         })
 
         test('When loading correctly, should show categories of a type', async () => {
@@ -36,6 +55,7 @@ describe('Test EcogesteCategory Components', () => {
                 <BrowserRouter>
                     <EcogesteCategoriesList
                         categoryType={IEcogesteCategoryTypes.CONSUMPTION}
+                        loadingInProgress={false}
                         categories={TEST_ECOGESTES_CATEGORIES}
                     />
                 </BrowserRouter>,

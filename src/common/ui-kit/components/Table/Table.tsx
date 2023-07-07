@@ -1,13 +1,13 @@
-import React, { SyntheticEvent } from 'react'
-import MuiTable from '@mui/material/Table'
-import TableBody from '@mui/material/TableBody'
-import TablePagination from '@mui/material/TablePagination'
-import TableCell from '@mui/material/TableCell'
-import TableRow from '@mui/material/TableRow'
+import React, { useEffect, useRef } from 'react'
 import FuseScrollbars from 'src/common/ui-kit/fuse/components/FuseScrollbars'
-import { stableSort, getComparator } from 'src/modules/utils/tables'
-import HeadRowTable from 'src/common/ui-kit/components/Table/HeadRowTable'
 import { ITable } from 'src/common/ui-kit/components/Table/TableT'
+import MobileTable from 'src/common/ui-kit/components/Table/MobileTable'
+import DesktopTable from 'src/common/ui-kit/components/Table/DesktopTable'
+import { useTheme } from '@mui/material/styles'
+import useMediaQuery from '@mui/material/useMediaQuery'
+import FuseLoading from 'src/common/ui-kit/fuse/components/FuseLoading/FuseLoading'
+import { motion } from 'framer-motion'
+import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 
 /**
  * Reusable Table Component with pagination and sorting.
@@ -19,28 +19,64 @@ import { ITable } from 'src/common/ui-kit/components/Table/TableT'
  * @param props.totalRows TotalRows Props.
  * @param props.sizeRowsPerPage SizeRowsPerPage Props.
  * @param props.pageProps PageProps Props.
+ * @param props.isRowsLoadingInProgress IsRowsLoadingInProgress Props.
+ * @param props.emptyRowsElement EmptyRowsElement Props.
+ * @param props.MobileRowActionsElement MobileRowActionsElement Props.
  * @returns Table Reusable Component, with row sorting and TablePagination.
  */
 function Table<rowType>(props: ITable<rowType>) {
-    const { onRowClick, rows, cells, totalRows, onPageChange, sizeRowsPerPage, pageProps } = props
+    const {
+        onRowClick,
+        rows,
+        cells,
+        totalRows,
+        onPageChange,
+        sizeRowsPerPage,
+        pageProps,
+        isRowsLoadingInProgress,
+        emptyRowsElement,
+        MobileRowContentElement,
+        MobileRowActionsElement,
+    } = props
+    const theme = useTheme()
+    const isMobile = useMediaQuery(theme.breakpoints.down('lg'))
 
-    /***** SORTING & Pagination Related state and function. *****/
-    const [order, setOrder] = React.useState<'asc' | 'desc'>('asc')
-    const [orderBy, setOrderBy] = React.useState('id')
-    // TODO Remove useState, when refactoring all the component using Table
-    // The Zero-based index of the page, it is used for now becuz there are components that still don't pass pageProp.
-    const [page, setPage] = React.useState(pageProps ? pageProps - 1 : 0)
+    const [isInfiniteScrollRowsLoadingInProgress, setInfiniteScrollRowsLoadingInProgress] = React.useState(true)
+    const [infiniteScrollRows, setInfiniteScrollRows] = React.useState<rowType[]>([])
+    const isReloadInfiniteScrollRows = useRef(true)
+
     /**
-     * HandleRequest Sort function by Material UI.
-     *
-     * @param _ Click Event.
-     * @param property The column head id.
+     * Handler to handle infinite scroll using table pagination.
      */
-    const handleRequestSort = (_: SyntheticEvent, property: string) => {
-        const isAsc = orderBy === property && order === 'asc'
-        setOrder(isAsc ? 'desc' : 'asc')
-        setOrderBy(property)
+    const loadMoreRows = () => {
+        onPageChange(pageProps + 1)
+        setInfiniteScrollRowsLoadingInProgress(true)
     }
+
+    /**
+     * This useRef is used in case the onAfterDeleteUpdate and infinite scroll reload elements, so that we replace the infiniteScrollRows with the reloaded rows through this ref.
+     */
+    useEffect(() => {
+        if (pageProps === 1) isReloadInfiniteScrollRows.current = true
+        else isReloadInfiniteScrollRows.current = false
+    }, [pageProps])
+
+    /**
+     * UseEffect to handle inifinite scroll when table pagination rows change.
+     */
+    useEffect(() => {
+        if (rows) {
+            if (isReloadInfiniteScrollRows.current) setInfiniteScrollRows(rows)
+            else setInfiniteScrollRows((prevRows) => prevRows.concat(rows))
+        }
+    }, [rows])
+
+    /**
+     * UseEffect to handle infinite scroll loading in progress to be false.
+     */
+    useEffect(() => {
+        setInfiniteScrollRowsLoadingInProgress(false)
+    }, [infiniteScrollRows])
 
     /**
      * Handle change page table.
@@ -48,57 +84,58 @@ function Table<rowType>(props: ITable<rowType>) {
      * @param _event Event.
      * @param newPage NewPage index value.
      */
-    const handleChangePage = (_event: React.MouseEvent<HTMLButtonElement, MouseEvent> | null, newPage: number) => {
-        setPage(newPage)
-        if (onPageChange) onPageChange(newPage + 1)
+    const handleTablePageChange = (_event: React.MouseEvent<HTMLButtonElement, MouseEvent> | null, newPage: number) => {
+        onPageChange(newPage + 1)
     }
 
+    if (!rows || isRowsLoadingInProgress)
+        return (
+            <div className="h-full items-center flex">
+                <FuseLoading />
+            </div>
+        )
+
+    if (rows.length === 0)
+        return (
+            <>
+                {emptyRowsElement ? (
+                    emptyRowsElement
+                ) : (
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1, transition: { delay: 0.1 } }}
+                        className="flex flex-1 items-center justify-center h-full"
+                    >
+                        <TypographyFormatMessage color="textSecondary" variant="h5">
+                            Liste Vide !
+                        </TypographyFormatMessage>
+                    </motion.div>
+                )}
+            </>
+        )
     return (
         <FuseScrollbars className="flex-grow overflow-x-auto">
-            <MuiTable stickyHeader className="min-w-xl" aria-labelledby="tableTitle">
-                <HeadRowTable<rowType>
-                    order={order}
-                    orderBy={orderBy}
-                    onRequestSort={handleRequestSort}
-                    headCells={cells}
+            {isMobile ? (
+                <MobileTable<rowType>
+                    rows={infiniteScrollRows}
+                    isRowsLoadingInProgress={isInfiniteScrollRowsLoadingInProgress}
+                    loadMoreRows={loadMoreRows}
+                    RowContentElement={MobileRowContentElement}
+                    RowActionsElement={MobileRowActionsElement}
+                    onRowClick={onRowClick}
+                    totalRows={totalRows}
                 />
-                <TableBody>
-                    {stableSort(rows, getComparator(order, orderBy)).map((row, _index) => (
-                        <TableRow
-                            hover
-                            role="checkbox"
-                            className="h-72 cursor-pointer"
-                            tabIndex={-1}
-                            onClick={onRowClick ? () => onRowClick(row) : () => {}}
-                        >
-                            {cells.map((cell) => (
-                                <TableCell key={cell.id} className="p-4 md:p-16" component="th" scope="row">
-                                    {cell.rowCell(row)}
-                                </TableCell>
-                            ))}
-                        </TableRow>
-                    ))}
-                </TableBody>
-            </MuiTable>
-            <TablePagination
-                rowsPerPageOptions={[sizeRowsPerPage ? sizeRowsPerPage : 10]}
-                component="div"
-                className="flex-shrink-0 border-t-1"
-                variant="body"
-                backIconButtonProps={{
-                    'aria-label': 'Previous Page',
-                }}
-                nextIconButtonProps={{
-                    'aria-label': 'Next Page',
-                }}
-                labelDisplayedRows={({ from, to, count }) => {
-                    return `${from}–${to} / ${count !== -1 ? count : to}`
-                }}
-                count={totalRows ? totalRows : rows.length}
-                rowsPerPage={sizeRowsPerPage ? sizeRowsPerPage : 10}
-                page={page}
-                onPageChange={handleChangePage}
-            />
+            ) : (
+                <DesktopTable<rowType>
+                    cells={cells}
+                    onPageChange={handleTablePageChange}
+                    rows={rows}
+                    totalRows={totalRows}
+                    onRowClick={onRowClick}
+                    sizeRowsPerPage={sizeRowsPerPage}
+                    page={pageProps - 1}
+                />
+            )}
         </FuseScrollbars>
     )
 }

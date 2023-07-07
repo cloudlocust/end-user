@@ -1,15 +1,17 @@
 import { useIntl } from 'react-intl'
-import { ActionsNrLinkConnectionSteps } from 'src/modules/nrLinkConnection'
 import { Form, regex, requiredBuilder } from 'src/common/react-platform-components'
 import { useSnackbar } from 'notistack'
+import { useHistory } from 'react-router-dom'
 import { TextField } from 'src/common/ui-kit'
-import { IMeter } from 'src/modules/Meters/Meters'
 import { API_RESOURCES_URL } from 'src/configs'
 import { axios } from 'src/common/react-platform-components'
 import { SET_SHOW_NRLINK_POPUP_ENDPOINT } from 'src/modules/nrLinkConnection/NrLinkConnection'
 import { motion } from 'framer-motion'
-import { nrLinkGUID, nrLinkInfo, nrLinkMain } from 'src/modules/nrLinkConnection'
+import { ActionsNrLinkConnectionSteps, nrLinkGUID, nrLinkInfo, nrLinkMain } from 'src/modules/nrLinkConnection'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
+import { manualContractFillingIsEnabled } from 'src/modules/MyHouse/MyHouseConfig'
+import { URL_CONSUMPTION } from 'src/modules/MyConsumption'
+import { LastStepNrLinkConnectionProps } from './LastStepNrLinkConnection.d'
 
 /**
  * Secondary text.
@@ -36,19 +38,10 @@ const LastStepNrLinkConnection = ({
     meter,
     setIsNrLinkAuthorizeInProgress,
     handleNext,
-}: // eslint-disable-next-line jsdoc/require-jsdoc
-{
-    // eslint-disable-next-line jsdoc/require-jsdoc
-    handleBack: () => void
-    // eslint-disable-next-line jsdoc/require-jsdoc
-    meter: IMeter | null
-    // eslint-disable-next-line jsdoc/require-jsdoc
-    setIsNrLinkAuthorizeInProgress: React.Dispatch<React.SetStateAction<boolean>>
-    // eslint-disable-next-line jsdoc/require-jsdoc
-    handleNext: () => void
-}) => {
+}: LastStepNrLinkConnectionProps) => {
     const { formatMessage } = useIntl()
     const { enqueueSnackbar } = useSnackbar()
+    const history = useHistory()
 
     /**
      * On Submit function which calls addMeter and handleNext on success.
@@ -75,7 +68,11 @@ const LastStepNrLinkConnection = ({
                 { autoHideDuration: 10000, variant: 'success' },
             )
             setIsNrLinkAuthorizeInProgress(false)
-            handleNext()
+            if (manualContractFillingIsEnabled) {
+                handleNext()
+            } else {
+                history.push(URL_CONSUMPTION)
+            }
         } catch (error: any) {
             if (error.response && error.response.data && error.response.data.detail)
                 enqueueSnackbar(

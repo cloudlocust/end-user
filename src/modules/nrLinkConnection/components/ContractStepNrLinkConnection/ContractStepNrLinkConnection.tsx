@@ -8,6 +8,7 @@ import { useContractList } from 'src/modules/Contracts/contractsHook'
 import ContractForm from 'src/modules/Contracts/components/ContractForm'
 import { useState } from 'react'
 
+// TODO: Add tests for this component.
 /**
  * ContractStepNrLinkConnection component that handle contract setup after nrlink is connected.
  *
