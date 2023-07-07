@@ -3,13 +3,18 @@ import { useIntl } from 'react-intl'
 import { selectTheme } from 'src/common/ui-kit/fuse/utils/theming-generator'
 import { motion } from 'framer-motion'
 import { useHistory } from 'react-router'
+import { ButtonLoader } from 'src/common/ui-kit'
+import { ConnectedPlugsHeaderPropsType } from 'src/modules/MyHouse/components/ConnectedPlugs/ConnectedPlugs.d'
 
 /**
  * ConnectedPlugs header element.
  *
+ * @param props N/A.
+ * @param props.onAddClick Callback after closing shelly connected plugs window.
+ * @param props.isConnectedPlugListLoadingInProgress Loading of connected plugs list.
  * @returns ConnectedPlugsHeader component.
  */
-const ConnectedPlugsHeader = () => {
+const ConnectedPlugsHeader = ({ onAddClick, isConnectedPlugListLoadingInProgress }: ConnectedPlugsHeaderPropsType) => {
     const mainTheme = selectTheme()
     const { formatMessage } = useIntl()
     const history = useHistory()
@@ -52,6 +57,36 @@ const ConnectedPlugsHeader = () => {
                             })}
                         </Typography>
                     </div>
+                </div>
+                <div className="flex flex-1 items-center justify-end px-12">
+                    <motion.div
+                        initial={{ opacity: 0, x: 20 }}
+                        animate={{ opacity: 1, x: 0, transition: { delay: 0.2 } }}
+                    >
+                        <ButtonLoader
+                            className="whitespace-nowrap"
+                            variant="contained"
+                            color="secondary"
+                            inProgress={isConnectedPlugListLoadingInProgress}
+                            onClick={onAddClick}
+                            sx={{
+                                '&:hover': {
+                                    backgroundColor: 'secondary.main',
+                                    opacity: '.7',
+                                },
+                            }}
+                        >
+                            <span className="hidden sm:flex">
+                                {formatMessage({
+                                    id: 'Ajouter une prise',
+                                    defaultMessage: 'Ajouter une prise',
+                                })}
+                            </span>
+                            <span className="flex sm:hidden">
+                                <Icon>add</Icon>
+                            </span>
+                        </ButtonLoader>
+                    </motion.div>
                 </div>
             </div>
         </ThemeProvider>

@@ -1,12 +1,13 @@
 import { styled } from '@mui/material/styles'
 import { useIntl } from 'react-intl'
-import { Typography } from '@mui/material'
+import { Typography, Icon, Box } from '@mui/material'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import FusePageCarded from 'src/common/ui-kit/fuse/components/FusePageCarded'
 import { motion } from 'framer-motion'
 import Table from 'src/common/ui-kit/components/Table/Table'
 import ConnectedPlugsHeader from 'src/modules/MyHouse/components/ConnectedPlugs/ConnectedPlugsHeader'
 import ConnectedPlugsMobileRowContent from 'src/modules/MyHouse/components/ConnectedPlugs/ConnectedPlugsMobileRow'
+import { ButtonLoader } from 'src/common/ui-kit'
 import { ICell } from 'src/common/ui-kit/components/Table/TableT'
 import { useConnectedPlugList } from 'src/modules/MyHouse/components/ConnectedPlugs/connectedPlugsHook'
 import {
@@ -19,6 +20,7 @@ import { RootState } from 'src/redux'
 import { useSelector } from 'react-redux'
 import { contractsRouteParam } from 'src/modules/Contracts/contractsTypes.d'
 import { useParams } from 'react-router-dom'
+import { useShellyConnectedPlugs } from 'src/modules/MyHouse/components/ConnectedPlugs/connectedPlugsHook'
 
 const Root = styled(FusePageCarded)(({ theme }) => ({
     '& .FusePageCarded-header': {
@@ -49,9 +51,13 @@ const ConnectedPlugs = () => {
     const { houseId } = useParams<contractsRouteParam>()
     const currentHousingMeterGuid = housingList.find((housing) => housing.id === parseInt(houseId))?.meter?.guid
 
+    const { loadingInProgress: isShellyLoadingInProgress, openShellyConnectedPlugs } = useShellyConnectedPlugs(
+        parseInt(houseId),
+    )
+
     const {
         connectedPlugList,
-        loadingInProgress: isConnectedPlugsLoading,
+        loadingInProgress: isConnectedPlugListLoadingInProgress,
         loadConnectedPlugList,
     } = useConnectedPlugList(currentHousingMeterGuid!)
     const { formatMessage } = useIntl()
@@ -93,7 +99,16 @@ const ConnectedPlugs = () => {
 
     return (
         <Root
-            header={<ConnectedPlugsHeader />}
+            header={
+                <ConnectedPlugsHeader
+                    onAddClick={() => {
+                        openShellyConnectedPlugs(loadConnectedPlugList)
+                    }}
+                    isConnectedPlugListLoadingInProgress={
+                        isConnectedPlugListLoadingInProgress || isShellyLoadingInProgress
+                    }
+                />
+            }
             content={
                 <div className="flex flex-col w-full">
                     <ConnectedPlugsInformationMessage />
@@ -102,19 +117,42 @@ const ConnectedPlugs = () => {
                             cells={connectedPlugsCells}
                             totalRows={connectedPlugList.length}
                             onPageChange={loadConnectedPlugList}
-                            isRowsLoadingInProgress={isConnectedPlugsLoading}
+                            isRowsLoadingInProgress={isConnectedPlugListLoadingInProgress}
                             emptyRowsElement={
                                 <motion.div
                                     initial={{ opacity: 0 }}
                                     animate={{ opacity: 1, transition: { delay: 0.1 } }}
-                                    className="flex flex-1 items-center justify-center h-full"
+                                    className="flex flex-col p-16 items-center justify-center h-full gap-16 text-justify mb-48"
                                 >
-                                    <TypographyFormatMessage color="textSecondary" variant="h5">
+                                    <Box
+                                        className="flex justify-center items-center p-8"
+                                        sx={{
+                                            borderWidth: '5px',
+                                            borderStyle: 'solid',
+                                            borderColor: 'primary.main',
+                                            borderRadius: '50%',
+                                        }}
+                                    >
+                                        <Icon color="primary" style={{ fontSize: '96px' }}>
+                                            power_off
+                                        </Icon>
+                                    </Box>
+                                    <TypographyFormatMessage>
                                         {formatMessage({
-                                            id: 'Aucune prise disponible',
-                                            defaultMessage: 'Aucune prise disponible',
+                                            id: `Aucune prise connectée n'a encore été renseignée, cliquez "configuration" pour ouvrir l'onglet de paramètrage des prises connectée.`,
+                                            defaultMessage: `Aucune prise connectée n'a encore été renseignée, cliquez "configuration" pour ouvrir l'onglet de paramètrage des prises connectée.`,
                                         })}
                                     </TypographyFormatMessage>
+                                    <ButtonLoader
+                                        className="whitespace-nowrap"
+                                        variant="contained"
+                                        inProgress={isConnectedPlugListLoadingInProgress || isShellyLoadingInProgress}
+                                        onClick={() => {
+                                            openShellyConnectedPlugs(loadConnectedPlugList)
+                                        }}
+                                    >
+                                        <TypographyFormatMessage>Configuration</TypographyFormatMessage>{' '}
+                                    </ButtonLoader>
                                 </motion.div>
                             }
                             rows={connectedPlugList}
