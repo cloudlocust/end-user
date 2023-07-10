@@ -35,7 +35,7 @@ const ConnectedPlugsInformationMessage = () => {
                         component={motion.span}
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1, transition: { delay: 0.1 } }}
-                        className="text-13 md:text-16 font-semibold"
+                        className="text-13 md:text-16"
                     >
                         {formatMessage({
                             id: "Renseignez vos prises connectées pour visualiser votre production. Pour ajouter, supprimer des prises et gérer les consentements, cliquez sur le bouton d'ajout.",

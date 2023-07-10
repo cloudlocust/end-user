@@ -10,7 +10,7 @@ export enum connectedPlugConsentStateEnum {
     /**
      * Enum value for APPROVED consent.
      */
-    APPROVED = 'consumption_metrics',
+    APPROVED = 'APPROVED',
     /**
      * Enum value for DENIED consent.
      */
@@ -49,4 +49,30 @@ export type IConnectedPlugApiResponse = {
      * Connected Plugs.
      */
     devices: IConnectedPlug[]
+}
+
+/**
+ * Format of Connected Connected Plugs Header Props.
+ */
+// eslint-disable-next-line jsdoc/require-jsdoc
+export type ConnectedPlugsHeaderPropsType = {
+    /**
+     * Callback when clicking the add button.
+     */
+    onAddClick: () => void
+    /**
+     * Loading of connected plugs list.
+     */
+    isConnectedPlugListLoadingInProgress?: boolean
+}
+
+/**
+ * Format of Connected Plug from Api.
+ */
+// eslint-disable-next-line jsdoc/require-jsdoc
+export type IShellyConnectedPlugLink = {
+    /**
+     * Shelly Url.
+     */
+    url: string
 }
