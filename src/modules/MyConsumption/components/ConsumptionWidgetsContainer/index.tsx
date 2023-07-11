@@ -1,5 +1,5 @@
 import { useContext, useEffect } from 'react'
-import { enphaseConsentFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
+import { globalProductionFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
 import { Grid } from '@mui/material'
 import { useTheme } from '@mui/material'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
@@ -38,7 +38,7 @@ const ConsumptionWidgetsContainer = ({
     const { resetMetricsWidgetData } = useContext(ConsumptionWidgetsMetricsContext)
 
     const renderedWidgets: metricTargetType[] =
-        enphaseConsentFeatureState && !enphaseOff
+        globalProductionFeatureState && !enphaseOff
             ? [
                   metricTargetsEnum.totalProduction,
                   metricTargetsEnum.eurosConsumption,
@@ -79,7 +79,7 @@ const ConsumptionWidgetsContainer = ({
                      * Otherwise it'll be displayed with then normal Widget component, that displays one info : the consumption total,
                      *    (because in this case consumption total = purchased consumption).
                      */}
-                    {enphaseConsentFeatureState && !enphaseOff && (
+                    {globalProductionFeatureState && !enphaseOff && (
                         <WidgetConsumption
                             target={metricTargetsEnum.consumption}
                             range={range}

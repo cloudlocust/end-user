@@ -24,13 +24,13 @@ import { periodType } from 'src/modules/MyConsumption/myConsumptionTypes'
 import { getDateWithoutTimezoneOffset } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
 import dayjs from 'dayjs'
 
-let mockEnphaseConsentFeatureState = true
+let mockGlobalProductionFeatureState = true
 
 jest.mock('src/modules/MyHouse/MyHouseConfig', () => ({
     ...jest.requireActual('src/modules/MyHouse/MyHouseConfig'),
     // eslint-disable-next-line jsdoc/require-jsdoc
-    get enphaseConsentFeatureState() {
-        return mockEnphaseConsentFeatureState
+    get globalProductionFeatureState() {
+        return mockGlobalProductionFeatureState
     },
 }))
 
@@ -365,12 +365,12 @@ describe('Test widget functions', () => {
                 expect(result).toBe(value)
             })
         })
-        test('when enphaseConsentFeatureState is disabled, it returns `Consommation Totale` title for consumption target', () => {
-            mockEnphaseConsentFeatureState = false
+        test('when globalProductionFeatureState is disabled, it returns `Consommation Totale` title for consumption target', () => {
+            mockGlobalProductionFeatureState = false
             expect(renderWidgetTitle(metricTargetsEnum.consumption)).toBe('Consommation Totale')
         })
-        test('when enphaseConsentFeatureState & enphase is off, it returns `Consommation Totale` title for consumption target', () => {
-            mockEnphaseConsentFeatureState = true
+        test('when globalProductionFeatureState & enphase is off, it returns `Consommation Totale` title for consumption target', () => {
+            mockGlobalProductionFeatureState = true
             expect(renderWidgetTitle(metricTargetsEnum.consumption, true)).toBe('Consommation Totale')
         })
         test('when it throws', () => {

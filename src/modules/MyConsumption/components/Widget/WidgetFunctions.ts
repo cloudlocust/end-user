@@ -5,7 +5,7 @@ import {
     metricTargetsEnum,
     metricTargetType,
 } from 'src/modules/Metrics/Metrics.d'
-import { enphaseConsentFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
+import { globalProductionFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
 import { convertMetricsDataToApexChartsAxisValues } from 'src/modules/MyConsumption/utils/apexChartsDataConverter'
 import { sum, max, mean, round } from 'lodash'
 import { consumptionWattUnitConversion } from 'src/modules/MyConsumption/utils/unitConversionFunction'
@@ -239,7 +239,7 @@ export const isWidgetMonthlyMetrics = (type: metricTargetType, period: periodTyp
 export const renderWidgetTitle = (target: metricTargetType, enphaseOff?: boolean): widgetTitleType => {
     switch (target) {
         case metricTargetsEnum.consumption:
-            return enphaseConsentFeatureState && !enphaseOff ? 'Achetée' : 'Consommation Totale'
+            return globalProductionFeatureState && !enphaseOff ? 'Achetée' : 'Consommation Totale'
         case metricTargetsEnum.pMax:
             return 'Puissance Maximale'
         case metricTargetsEnum.externalTemperature:

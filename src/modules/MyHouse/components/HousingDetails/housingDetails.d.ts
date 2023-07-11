@@ -17,7 +17,20 @@ export type HouseDetailsElementType =
 /**
  * Housing card types.
  */
-export type HousingCardTypeOfDetails = 'accomodation' | 'equipments'
+export enum HousingCardTypeOfDetailsEnum {
+    /**
+     * Accomodation.
+     */
+    ACCOMODATION = 'accomodation',
+    /**
+     * Equipments.
+     */
+    EQUIPMENTS = 'equipments',
+    /**
+     * Connected Plugs.
+     */
+    CONNECTED_PLUGS = 'connected-plugs',
+}
 
 /**
  * Housing details card props.
@@ -36,7 +49,7 @@ export type HousingDetailsCardProps =
         /**
          * Title of the card.
          */
-        typeOfDetails: HousingCardTypeOfDetails
+        typeOfDetails: HousingCardTypeOfDetailsEnum
         /**
          * Are the elements configured.
          */

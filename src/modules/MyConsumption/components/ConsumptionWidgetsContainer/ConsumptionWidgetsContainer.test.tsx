@@ -14,7 +14,7 @@ const AUTOCONSOMMATION_TEXT = 'Autoconsommation'
 const widgetClassnameSelector = ' .MuiGrid-root .MuiGrid-item'
 // const numbersOfWidgets = WidgetTargets.length
 const LIST_WIDGETS_TEXT = 'Chiffres clés'
-let mockEnphaseConsentFeatureState = true
+let mockGlobalProductionFeatureState = true
 
 let mockFilters: metricFiltersType = [
     {
@@ -43,8 +43,8 @@ const consumptionWidgetsContainerProps: ConsumptionWidgetsContainerProps = {
 jest.mock('src/modules/MyHouse/MyHouseConfig', () => ({
     ...jest.requireActual('src/modules/MyHouse/MyHouseConfig'),
     // eslint-disable-next-line jsdoc/require-jsdoc
-    get enphaseConsentFeatureState() {
-        return mockEnphaseConsentFeatureState
+    get globalProductionFeatureState() {
+        return mockGlobalProductionFeatureState
     },
 }))
 
@@ -61,7 +61,7 @@ jest.mock('src/modules/Metrics/metricsHook.ts', () => ({
 describe('ConsumptionWidgetsContainer test', () => {
     afterEach(() => {
         consumptionWidgetsContainerProps.enphaseOff = false
-        mockEnphaseConsentFeatureState = true
+        mockGlobalProductionFeatureState = true
     })
     test('the widgets is showing correctly', async () => {
         const { container, getByText } = reduxedRender(
@@ -97,7 +97,7 @@ describe('ConsumptionWidgetsContainer test', () => {
         expect(queryByText(AUTOCONSOMMATION_TEXT)).not.toBeInTheDocument()
     })
     test('when the enphase feature is disabled, the widgets of production & autoconsumption should not be showing', async () => {
-        mockEnphaseConsentFeatureState = false
+        mockGlobalProductionFeatureState = false
         const { container, getByText, queryByText } = reduxedRender(
             <Router>
                 <ConsumptionWidgetsMetricsProvider>
