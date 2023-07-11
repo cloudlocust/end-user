@@ -27,9 +27,9 @@ export interface ConsumptionWidgetsContainerProps {
     /**
      * Boolean for Enphase Consent is inactive.
      */
-    enphaseOff: boolean | null
+    enphaseOff: boolean
     /**
      * Boolean for EnedisSge Consent is not Connected.
      */
-    enedisOff: boolean | null
+    enedisOff: boolean
 }
