@@ -52,7 +52,7 @@ const CONTACT_MAIL_MESSAGE = 'Contacter support@myem.fr'
 const VERIFY_METER_MESSAGE = "Vérification de l'existence de votre compteur"
 const CREATION_ENEDIS_SGE_CONSENT_TEXT = `${sgeConsentMessage}`
 
-const ERROR_ENPHASE_MESSAGE = 'Connectez votre onduleur pour visualiser votre production'
+const ERROR_ENPHASE_MESSAGE = 'Connectez votre onduleur Enphase'
 const PENDING_ENPHASE_MESSAGE = 'Votre connexion est en cours et sera active dans les plus brefs délais'
 
 const CREATED_AT = '2022-09-02T08:06:08Z'

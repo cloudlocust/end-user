@@ -6,10 +6,7 @@ import { NavLink } from 'react-router-dom'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import { MeterVerificationEnum } from 'src/modules/Consents/Consents.d'
 import { useConsents } from 'src/modules/Consents/consentsHook'
-import {
-    EnedisSgePopupProps,
-    EnedisSgePopupStepsEnum,
-} from 'src/modules/MyHouse/components/MeterStatus/enedisSgePopup.d'
+import { EnedisSgePopupProps, EnedisSgePopupStepsEnum } from 'src/modules/MyHouse/components/MeterStatus/MeterStatus.d'
 import { sgeConsentFeatureState, sgeConsentMessage } from 'src/modules/MyHouse/MyHouseConfig'
 import { warningMainHashColor } from 'src/modules/utils/muiThemeVariables'
 import { RootState } from 'src/redux'
