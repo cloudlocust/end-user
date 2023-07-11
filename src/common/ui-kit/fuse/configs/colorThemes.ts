@@ -427,6 +427,57 @@ const colorThemes: colorThemesType = {
             },
         },
     },
+    // TEEO
+    teeo: {
+        extendedColors: {
+            links: '#EAB043',
+        },
+        MUI: {
+            palette: {
+                mode: 'light',
+                text: {
+                    primary: '#000000',
+                    secondary: lightText.secondary,
+                    disabled: '#C4C7C7',
+                },
+                background: {
+                    paper: '#FFFFFF',
+                    default: '#f6f7f9',
+                },
+                primary: {
+                    light: '#1DC6DF',
+                    main: '#1B6CAA',
+                    dark: '#315B7C',
+                    contrastText: '#FFFFFF',
+                },
+                secondary: {
+                    light: '#F1C97E',
+                    main: '#EAB043',
+                    dark: '#CA8B16',
+                },
+            },
+            components: {
+                MuiButton: {
+                    styleOverrides: {
+                        outlinedPrimary: {
+                            borderColor: '#1B6CAA',
+                            color: '#1B6CAA',
+                            '&:hover': {
+                                borderColor: '#EAB043',
+                            },
+                        },
+                        containedPrimary: {
+                            backgroundColor: '#1B6CAA',
+                            '&:hover': {
+                                backgroundColor: '#FFFFFF',
+                                color: '#EAB043',
+                            },
+                        },
+                    },
+                },
+            },
+        },
+    },
     mainThemeDark: {
         MUI: {
             palette: {
