@@ -53,8 +53,8 @@ const ConnectedPlugProductionConsentPopup = ({ onClose }: IConnectedPlugProducti
                     >
                         <TypographyFormatMessage>
                             {formatMessage({
-                                id: `Aucune prise détectée. Renseignez vos prises connectée Shelly dans l'espace dedié`,
-                                defaultMessage: `Aucune prise détectée. Renseignez vos prises connectée Shelly dans l'espace dedié`,
+                                id: `Aucune prise détectée. Renseignez vos prises connectées Shelly dans l'espace dedié`,
+                                defaultMessage: `Aucune prise détectée. Renseignez vos prises connectées Shelly dans l'espace dedié`,
                             })}
                         </TypographyFormatMessage>
 
