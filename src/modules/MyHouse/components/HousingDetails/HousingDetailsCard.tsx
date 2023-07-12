@@ -50,7 +50,7 @@ const HousingDetailsCard = ({
                         <div className="w-56 h-56 bg-white rounded-md flex items-center justify-center mb-5 shadow-md border border-slate-800">
                             {element.icon}
                         </div>
-                        <p className="w-56 md:w-80 text-center">{element.label}</p>
+                        <p className="w-56 md:w-80 text-center truncate">{element.label}</p>
                     </div>
                 ))}
             </CardContent>

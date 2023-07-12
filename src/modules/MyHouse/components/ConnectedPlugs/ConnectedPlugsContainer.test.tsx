@@ -50,7 +50,7 @@ const store = init({
     models,
 })
 
-describe('Test Contracts Component', () => {
+describe('Test ConnectedPlugs Component', () => {
     beforeEach(async () => {
         await store.dispatch.translationModel.setLocale({ locale: DEFAULT_LOCALE, translations: null })
         await store.dispatch.housingModel.setHousingModelState(LIST_OF_HOUSES)
