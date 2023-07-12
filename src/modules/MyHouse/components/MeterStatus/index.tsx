@@ -61,6 +61,7 @@ export const MeterStatus = () => {
         enphaseConsent,
         enphaseLink,
         getEnphaseLink,
+        clearConsents,
     } = useConsents()
     const { currentHousing } = useSelector(({ housingModel }: RootState) => housingModel)
     const [foundHousing, setFoundHousing] = useState<IHousing>()
@@ -101,6 +102,8 @@ export const MeterStatus = () => {
     useEffect(() => {
         if (foundHousing?.meter?.guid) {
             getConsents(foundHousing.meter.guid, parseInt(houseId))
+        } else {
+            clearConsents()
         }
 
         /**
@@ -125,7 +128,7 @@ export const MeterStatus = () => {
         return () => {
             window.removeEventListener('storage', onStorage)
         }
-    }, [foundHousing?.meter?.guid, getConsents, houseId])
+    }, [foundHousing?.meter?.guid, getConsents, houseId, clearConsents])
 
     /**
      * Function that renders JSX accorrding to nrlink status.
