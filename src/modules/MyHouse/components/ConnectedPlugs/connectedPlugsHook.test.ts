@@ -69,13 +69,16 @@ describe('useConnectedPlugList test', () => {
 
 describe('useShellyConnectedPlugs test', () => {
     describe('Opening shelly window', () => {
+        let originalWindowOpen = window.open
+
+        afterEach(() => {
+            // Cleanup
+            window.open = originalWindowOpen
+        })
         /* Get Elements */
         test('when succes', async () => {
-            // Mock Shelly Window open
-            const originalWindowOpen = window.open
             const mockShellyWindowOpen = jest.fn().mockImplementation(() => ({}))
             window.open = mockShellyWindowOpen
-
             const {
                 renderedHook: { result, waitForValueToChange },
             } = reduxedRenderHook(() => useShellyConnectedPlugs(TEST_HOUSE_ID), { initialState: {} })
@@ -100,15 +103,12 @@ describe('useShellyConnectedPlugs test', () => {
                 expect.anything(),
                 expect.anything(),
             )
-            // Cleanup
-            window.open = originalWindowOpen
         }, 8000)
         test('when Passing onCloseShelly call back, it should be called', async () => {
             // Fake the setInterval
             jest.useFakeTimers()
 
             // Mock Shelly Window open
-            const originalWindowOpen = window.open
             const mockShellyWindowOpen = jest.fn().mockImplementation(() => ({
                 closed: true,
             }))
@@ -134,13 +134,10 @@ describe('useShellyConnectedPlugs test', () => {
             // Force setInterval to trigger the mockOnCloseShellyWindowCallback.
             jest.advanceTimersByTime(1000)
             expect(mockOnCloseShellyWindowCallback).toHaveBeenCalled()
-            // Cleanup
-            window.open = originalWindowOpen
         }, 15000)
 
         test('When opening a new shelly window while another one is still open, it should close the previous', async () => {
             // Mock Shelly Window open
-            const originalWindowOpen = window.open
             const mockCloseOpenedShellyWindow = jest.fn()
             const mockShellyWindowOpen = jest.fn().mockImplementation(() => ({
                 closed: true,
@@ -179,9 +176,6 @@ describe('useShellyConnectedPlugs test', () => {
             expect(result.current.loadingInProgress).toBe(false)
 
             expect(mockCloseOpenedShellyWindow).toHaveBeenCalled()
-
-            // Cleanup
-            window.open = originalWindowOpen
         }, 15000)
     })
 

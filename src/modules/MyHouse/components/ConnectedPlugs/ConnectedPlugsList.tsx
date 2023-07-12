@@ -138,10 +138,7 @@ const ConnectedPlugs = () => {
                                         </Icon>
                                     </Box>
                                     <TypographyFormatMessage>
-                                        {formatMessage({
-                                            id: `Aucune prise connectée n'a encore été renseignée, cliquez "configuration" pour ouvrir l'onglet de paramètrage des prises connectée.`,
-                                            defaultMessage: `Aucune prise connectée n'a encore été renseignée, cliquez "configuration" pour ouvrir l'onglet de paramètrage des prises connectée.`,
-                                        })}
+                                        {`Aucune prise connectée n'a encore été renseignée, cliquez "configuration" pour ouvrir l'onglet de paramètrage des prises connectée.`}
                                     </TypographyFormatMessage>
                                     <ButtonLoader
                                         className="whitespace-nowrap"
