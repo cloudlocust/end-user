@@ -96,8 +96,11 @@ export const useShellyConnectedPlugs = (housingId: number) => {
     const [loadingInProgress, setLoadingInProgress] = useState(false)
     const { enqueueSnackbar } = useSnackbar()
     const { formatMessage } = useIntl()
-    // This timer is used as a solution to detect the open of shellyWindow and does a polling that checks if a timer is closed or not.
-    // Reference: https://stackoverflow.com/a/48240128
+    /**
+     * This timer is used as a solution to detect the open of shellyWindow and does a polling that checks if a timer is closed or not.
+     *
+     * @see {@link Reference: https://stackoverflow.com/a/48240128}
+     */
     const timerShellyWindowListener = useRef<NodeJS.Timer | null>(null)
     const shellyWindow = useRef<Window | null>(null)
     const { isCancel, source } = useAxiosCancelToken()
