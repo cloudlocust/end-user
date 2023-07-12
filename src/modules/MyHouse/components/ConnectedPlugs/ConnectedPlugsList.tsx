@@ -57,7 +57,7 @@ const ConnectedPlugs = () => {
 
     const {
         connectedPlugList,
-        loadingInProgress: isConnectedPlugListLoadingInProgress,
+        loadingInProgress: isConnectedPlugListLoading,
         loadConnectedPlugList,
     } = useConnectedPlugList(currentHousingMeterGuid!)
     const { formatMessage } = useIntl()
@@ -104,9 +104,7 @@ const ConnectedPlugs = () => {
                     onAddClick={() => {
                         openShellyConnectedPlugsWindow(loadConnectedPlugList)
                     }}
-                    isConnectedPlugListLoadingInProgress={
-                        isConnectedPlugListLoadingInProgress || isShellyLoadingInProgress
-                    }
+                    isConnectedPlugListLoading={isConnectedPlugListLoading || isShellyLoadingInProgress}
                 />
             }
             content={
@@ -117,7 +115,7 @@ const ConnectedPlugs = () => {
                             cells={connectedPlugsCells}
                             totalRows={connectedPlugList.length}
                             onPageChange={loadConnectedPlugList}
-                            isRowsLoadingInProgress={isConnectedPlugListLoadingInProgress}
+                            isRowsLoadingInProgress={isConnectedPlugListLoading}
                             emptyRowsElement={
                                 <motion.div
                                     initial={{ opacity: 0 }}
@@ -143,7 +141,7 @@ const ConnectedPlugs = () => {
                                     <ButtonLoader
                                         className="whitespace-nowrap"
                                         variant="contained"
-                                        inProgress={isConnectedPlugListLoadingInProgress || isShellyLoadingInProgress}
+                                        inProgress={isConnectedPlugListLoading || isShellyLoadingInProgress}
                                         onClick={() => {
                                             openShellyConnectedPlugsWindow(loadConnectedPlugList)
                                         }}

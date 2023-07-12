@@ -11,10 +11,10 @@ import { ConnectedPlugsHeaderPropsType } from 'src/modules/MyHouse/components/Co
  *
  * @param props N/A.
  * @param props.onAddClick Callback after closing shelly connected plugs window.
- * @param props.isConnectedPlugListLoadingInProgress Loading of connected plugs list.
+ * @param props.isConnectedPlugListLoading Loading of connected plugs list.
  * @returns ConnectedPlugsHeader component.
  */
-const ConnectedPlugsHeader = ({ onAddClick, isConnectedPlugListLoadingInProgress }: ConnectedPlugsHeaderPropsType) => {
+const ConnectedPlugsHeader = ({ onAddClick, isConnectedPlugListLoading }: ConnectedPlugsHeaderPropsType) => {
     const mainTheme = selectTheme()
     const { formatMessage } = useIntl()
     const history = useHistory()
@@ -67,7 +67,7 @@ const ConnectedPlugsHeader = ({ onAddClick, isConnectedPlugListLoadingInProgress
                             className="whitespace-nowrap"
                             variant="contained"
                             color="secondary"
-                            inProgress={isConnectedPlugListLoadingInProgress}
+                            inProgress={isConnectedPlugListLoading}
                             onClick={onAddClick}
                             sx={{
                                 '&:hover': {

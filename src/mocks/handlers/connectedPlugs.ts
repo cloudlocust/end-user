@@ -33,42 +33,42 @@ export const TEST_SHELLY_CONNECTED_PLUG_URL = 'shelly_url.com'
  */
 export var TEST_CONNECTED_PLUGS: SnakeCasedPropertiesDeep<IConnectedPlug>[] = [
     {
-        device_id: '1',
+        device_id: '1234123',
         consent_state: connectedPlugConsentStateEnum.APPROVED,
         created_at: CREATED_AT_DATA,
     },
     {
-        device_id: '2',
+        device_id: '2234123',
         consent_state: connectedPlugConsentStateEnum.DENIED,
         created_at: CREATED_AT_DATA,
     },
     {
-        device_id: '3',
+        device_id: '3234123',
         consent_state: connectedPlugConsentStateEnum.APPROVED,
         created_at: CREATED_AT_DATA,
     },
     {
-        device_id: '4',
+        device_id: '4234123',
         consent_state: connectedPlugConsentStateEnum.DENIED,
         created_at: CREATED_AT_DATA,
     },
     {
-        device_id: '5',
+        device_id: '5234123',
         consent_state: connectedPlugConsentStateEnum.APPROVED,
         created_at: CREATED_AT_DATA,
     },
     {
-        device_id: '6',
+        device_id: '6234123',
         consent_state: connectedPlugConsentStateEnum.APPROVED,
         created_at: CREATED_AT_DATA,
     },
     {
-        device_id: '7',
+        device_id: '7234123',
         consent_state: connectedPlugConsentStateEnum.DENIED,
         created_at: CREATED_AT_DATA,
     },
     {
-        device_id: '8',
+        device_id: '8234123',
         consent_state: connectedPlugConsentStateEnum.APPROVED,
         created_at: CREATED_AT_DATA,
     },

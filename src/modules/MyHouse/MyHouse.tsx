@@ -8,6 +8,7 @@ import { useHistory, useParams } from 'react-router-dom'
 import { URL_MY_HOUSE } from 'src/modules/MyHouse/MyHouseConfig'
 import CircularProgress from '@mui/material/CircularProgress'
 import { HousingDetails } from 'src/modules/MyHouse/components/HousingDetails'
+import { isEmpty } from 'lodash'
 
 /**
  * MyHouse Component is used for urls that follow /my-houses and /my-houses/:id.
@@ -16,7 +17,7 @@ import { HousingDetails } from 'src/modules/MyHouse/components/HousingDetails'
  */
 export const MyHouse = () => {
     const { formatMessage } = useIntl()
-    const { currentHousing } = useSelector(({ housingModel }: RootState) => housingModel)
+    const { currentHousing, housingList } = useSelector(({ housingModel }: RootState) => housingModel)
     const history = useHistory()
 
     const { houseId } = useParams</**
@@ -45,7 +46,7 @@ export const MyHouse = () => {
         )
 
     // While waiting for history to change we show loading state.
-    if (!parseInt(houseId))
+    if (!parseInt(houseId) || !housingList || isEmpty(housingList))
         return (
             <div className="flex flex-col justify-center items-center w-full h-full" style={{ height: '320px' }}>
                 <CircularProgress size={32} />
