@@ -25,7 +25,7 @@ jest.mock('react-router', () => ({
  * Mocking props of ConnectedPlugsHeader.
  */
 const mockConnectedPlugsHeaderProps = {
-    isConnectedPlugListLoadingInProgress: false,
+    isConnectedPlugListLoading: false,
     onAddClick: jest.fn(),
 }
 
@@ -65,7 +65,7 @@ describe('Test ConnectedPlugsHeader', () => {
     })
 
     test('When Component mount, and isConnectedPlugListLoading spinner should be shown', async () => {
-        mockConnectedPlugsHeaderProps.isConnectedPlugListLoadingInProgress = true
+        mockConnectedPlugsHeaderProps.isConnectedPlugListLoading = true
         const { container } = reduxedRender(
             <Router>
                 <ConnectedPlugsHeader {...mockConnectedPlugsHeaderProps} />

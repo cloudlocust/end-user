@@ -63,7 +63,7 @@ export type ConnectedPlugsHeaderPropsType = {
     /**
      * Loading of connected plugs list.
      */
-    isConnectedPlugListLoadingInProgress?: boolean
+    isConnectedPlugListLoading?: boolean
 }
 
 /**

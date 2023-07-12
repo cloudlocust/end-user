@@ -67,7 +67,7 @@ export const HousingDetails = () => {
     const housingId = parseInt(houseId)
 
     const currentHousing = housingList.find((housing) => housing.id === Number(houseId))
-    const { connectedPlugList, loadingInProgress: isConnectedPlugListLoadingInProgress } = useConnectedPlugList(
+    const { connectedPlugList, loadingInProgress: isConnectedPlugListLoading } = useConnectedPlugList(
         currentHousing?.meter?.guid!,
     )
 
@@ -196,8 +196,7 @@ export const HousingDetails = () => {
                 connectedPlugElement.icon = <MoreHorizIcon color="primary" fontSize="large" />
             })
 
-            connectedPlugList.forEach((connectedPlug, index) => {
-                if (index > 2) return
+            connectedPlugList.slice(0, 3).forEach((connectedPlug, index) => {
                 copyPrevConnectedPlugsElements[index].label = 'Prise ' + connectedPlug.deviceId
                 copyPrevConnectedPlugsElements[index].icon = <ElectricalServicesIcon color="primary" fontSize="large" />
             })
@@ -239,7 +238,7 @@ export const HousingDetails = () => {
                                 elements={connectedPlugsElements}
                                 typeOfDetails={HousingCardTypeOfDetailsEnum.CONNECTED_PLUGS}
                                 isConfigured={!isEmpty(connectedPlugList)}
-                                loadingInProgress={isConnectedPlugListLoadingInProgress}
+                                loadingInProgress={isConnectedPlugListLoading}
                             />
                         ) : null}
                     </div>
