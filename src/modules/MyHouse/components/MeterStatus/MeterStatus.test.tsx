@@ -73,6 +73,7 @@ let mockHouseId = TEST_MOCKED_HOUSES[0].id
 let mockCreateEnedisSgeConsent = jest.fn()
 let mockSetMeterVerification = jest.fn()
 let mockEditMeter = jest.fn()
+let mockClearConsents = jest.fn()
 // eslint-disable-next-line sonarjs/no-duplicate-string
 const STATUS_ON_SRC = './assets/images/content/housing/consent-status/meter-on.svg'
 // eslint-disable-next-line sonarjs/no-duplicate-string
@@ -129,6 +130,7 @@ jest.mock('src/modules/Consents/consentsHook', () => ({
         isMeterVerifyLoading: mockisMeterVerifyLoading,
         meterVerification: mockMeterVerificationEnum,
         setMeterVerification: mockSetMeterVerification,
+        clearConsents: mockClearConsents,
     }),
 }))
 
@@ -252,6 +254,7 @@ describe('MeterStatus component test', () => {
             )
 
             expect(mockGetConsent).not.toBeCalledWith()
+            expect(mockClearConsents).toBeCalledWith()
             expect(getByText(NO_METER_MESSAGE)).toBeTruthy()
         })
         test('when clicking on Edit, display ReplaceNRLinkForm', async () => {
