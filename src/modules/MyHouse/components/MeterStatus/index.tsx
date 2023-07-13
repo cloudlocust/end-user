@@ -63,7 +63,7 @@ export const MeterStatus = () => {
         getEnphaseLink,
         clearConsents,
     } = useConsents()
-    const { currentHousing } = useSelector(({ housingModel }: RootState) => housingModel)
+    const { housingList } = useSelector(({ housingModel }: RootState) => housingModel)
     const [foundHousing, setFoundHousing] = useState<IHousing>()
     const [openEnphaseConsentPopup, setOpenEnphaseConsentPopup] = useState(false)
     const [openCancelCollectionDataTooltip, setOpenCancelCollectionDataTooltip] = useState(false)
@@ -88,10 +88,10 @@ export const MeterStatus = () => {
 
     // UseEffect that find the housing with the house Id from url params.
     useEffect(() => {
-        if (currentHousing) {
-            setFoundHousing(currentHousing)
+        if (housingList) {
+            setFoundHousing(housingList.find((housing) => housing.id === parseInt(houseId)))
         }
-    }, [houseId, currentHousing])
+    }, [houseId, housingList])
 
     /**
      * This useEffect listen to changes in localStorage for enphaseConsentState.
@@ -101,7 +101,7 @@ export const MeterStatus = () => {
      */
     useEffect(() => {
         if (foundHousing?.meter?.guid) {
-            getConsents(foundHousing.meter.guid, parseInt(houseId))
+            getConsents(foundHousing.meter.guid, foundHousing.id)
         } else {
             clearConsents()
         }
@@ -128,7 +128,7 @@ export const MeterStatus = () => {
         return () => {
             window.removeEventListener('storage', onStorage)
         }
-    }, [foundHousing?.meter?.guid, getConsents, houseId, clearConsents])
+    }, [foundHousing?.meter?.guid, foundHousing?.id, getConsents, clearConsents])
 
     /**
      * Function that renders JSX accorrding to nrlink status.
@@ -418,7 +418,7 @@ export const MeterStatus = () => {
                     >
                         {/* Nrlink Consent Status */}
                         <div className="w-full md:w-1/3 p-12">
-                            {!foundHousing || !foundHousing.meter ? (
+                            {!foundHousing ? (
                                 <>
                                     <TypographyFormatMessage className="text-xs md:text-sm font-semibold mb-6">
                                         Consommation en temps réel
@@ -453,7 +453,7 @@ export const MeterStatus = () => {
                             })}
                         >
                             <div className={`w-full md:w-1/3 p-12 ${!sgeConsentFeatureState && 'cursor-not-allowed'}`}>
-                                {!foundHousing || !foundHousing.meter ? (
+                                {!foundHousing ? (
                                     <>
                                         <TypographyFormatMessage className="text-xs md:text-sm font-semibold mb-6">
                                             Historique de consommation
@@ -479,7 +479,7 @@ export const MeterStatus = () => {
                         <Divider orientation={mdDown ? 'horizontal' : undefined} flexItem variant="fullWidth" />
                         {/* Enphase Consent Status */}
                         <div className={`w-full md:w-1/3 p-12 ${!globalProductionFeatureState && 'hidden'}`}>
-                            {!foundHousing || !foundHousing.meter ? (
+                            {!foundHousing ? (
                                 <>
                                     <TypographyFormatMessage className="text-xs md:text-sm font-semibold mb-6">
                                         Production solaire
