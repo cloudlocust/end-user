@@ -76,3 +76,22 @@ export type IShellyConnectedPlugLink = {
      */
     url: string
 }
+
+/**
+ * Connected Plug Associate Body Type.
+ */
+// eslint-disable-next-line jsdoc/require-jsdoc
+export type connectedPlugAssociateBodyType = {
+    /**
+     * Housing Id.
+     */
+    housingId: number
+    /**
+     * Connected Plug Id.
+     */
+    deviceId
+    /**
+     * Mode of the connected plug.
+     */
+    state: 'production' | null
+}

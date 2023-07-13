@@ -7,23 +7,29 @@ import { IConnectedPlug } from 'src/modules/MyHouse/components/ConnectedPlugs/Co
 import { BrowserRouter as Router } from 'react-router-dom'
 import ConnectedPlugProductionConsentPopup from 'src/modules/MyHouse/components/MeterStatus/ConnectedPlugProductionConsentPopup'
 import userEvent from '@testing-library/user-event'
+import { waitFor } from '@testing-library/react'
+import { URL_MY_HOUSE } from 'src/modules/MyHouse/MyHouseConfig'
 
 const LIST_OF_HOUSES: IHousing[] = applyCamelCase(TEST_HOUSES)
 const MOCK_TEST_CONNECTED_PLUGS: IConnectedPlug[] = applyCamelCase(TEST_CONNECTED_PLUGS)
 const CONFIGURE_SHELLY_TEXT = 'Configurer'
 let mockConnectedPlugsList = MOCK_TEST_CONNECTED_PLUGS
+const mockAssociateConnectedPlug = jest.fn()
 const mockHistoryGoBack = jest.fn()
+const mockHistoryPush = jest.fn()
 const mockOpenShellyConnectedPlugsWindow = jest.fn()
 const CONNECTED_PLUGS_EMPTY_TEXT = `Aucune prise détectée. Renseignez vos prises connectées Shelly dans l'espace dedié`
+const ASSOCIATE_BUTTON_TEXT = 'Enregistrer'
 const circularProgressRole = 'progressbar'
 const checkedOptionClassname = 'Mui-checked'
-const mockHouseId = LIST_OF_HOUSES[0].meter?.guid
+const mockHouseId = LIST_OF_HOUSES[0].meter?.id
 
 jest.mock('react-router', () => ({
     ...jest.requireActual('react-router'),
 
     // eslint-disable-next-line jsdoc/require-jsdoc
     useHistory: () => ({
+        push: mockHistoryPush,
         goBack: mockHistoryGoBack,
         listen: jest.fn(), // mocked for FuseScroll
     }),
@@ -43,6 +49,7 @@ jest.mock('src/modules/MyHouse/components/ConnectedPlugs/connectedPlugsHook', ()
     useConnectedPlugList: () => ({
         connectedPlugList: mockConnectedPlugsList,
         loadingInProgress: mockLoadingInProgress,
+        associateConnectedPlug: mockAssociateConnectedPlug,
     }),
 
     // eslint-disable-next-line jsdoc/require-jsdoc
@@ -113,8 +120,8 @@ describe('ConnectedPlugProductionConsentPopup component', () => {
             expect(getByText(`Prise ${mockConnectedPlugsList[1].deviceId}`)).toBeTruthy()
         })
 
-        test('when Selecting a connected plug', async () => {
-            const { getByLabelText } = reduxedRender(
+        test('when Selecting a connected plug and submitting, associate connected plug should be called and history pushed', async () => {
+            const { getByLabelText, getByText } = reduxedRender(
                 <Router>
                     <ConnectedPlugProductionConsentPopup />
                 </Router>,
@@ -129,6 +136,11 @@ describe('ConnectedPlugProductionConsentPopup component', () => {
                 .parentElement as HTMLDivElement
 
             expect(selectedConnectedPlugOption.classList.contains(checkedOptionClassname)).toBeTruthy()
+            userEvent.click(getByText(ASSOCIATE_BUTTON_TEXT))
+            await waitFor(() => {
+                expect(mockAssociateConnectedPlug).toHaveBeenCalledWith(mockConnectedPlugsList[0].deviceId, mockHouseId)
+            })
+            expect(mockHistoryPush).toHaveBeenCalledWith(`${URL_MY_HOUSE}/${mockHouseId}/connected-plugs`)
         })
     })
 })

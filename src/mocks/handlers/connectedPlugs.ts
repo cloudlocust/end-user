@@ -3,9 +3,11 @@ import { getPaginationFromElementList } from 'src/mocks/utils'
 import { SnakeCasedPropertiesDeep } from 'type-fest'
 import {
     IConnectedPlug,
+    connectedPlugAssociateBodyType,
     connectedPlugConsentStateEnum,
 } from 'src/modules/MyHouse/components/ConnectedPlugs/ConnectedPlugs.d'
 import {
+    ASSOCIATE_CONNECTED_PLUG_API,
     CONNECTED_PLUG_CONSENT_API,
     SHELLY_CONNECTED_PLUG_LINK_API,
 } from 'src/modules/MyHouse/components/ConnectedPlugs/connectedPlugsHook'
@@ -104,4 +106,16 @@ export const connectedPlugsEndpoints = [
             return res(ctx.status(200), ctx.delay(1000), ctx.json({ url: TEST_SHELLY_CONNECTED_PLUG_URL }))
         return res(ctx.status(400), ctx.delay(1000))
     }),
+
+    // Associate / Disassociate a connected plug a production.
+    rest.post<SnakeCasedPropertiesDeep<connectedPlugAssociateBodyType>>(
+        `${ASSOCIATE_CONNECTED_PLUG_API}`,
+        (req, res, ctx) => {
+            const { housing_id: housingId } = req.body
+
+            if (Number(housingId) && Number(housingId) !== TEST_ERROR_HOUSING_ID)
+                return res(ctx.status(200), ctx.delay(1000))
+            return res(ctx.status(400), ctx.delay(1000))
+        },
+    ),
 ]

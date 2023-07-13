@@ -9,10 +9,13 @@ import {
 
 const TEST_METER_GUID = '23215654321'
 const TEST_HOUSE_ID = 1
+const TEST_CONNECTED_PLUG_ID = '1234123'
 
 const ERROR_LOAD_MESSAGE = 'Erreur lors du chargement de vos prises'
 const ERROR_SHELLY_WINDOW_OPENING_MESSAGE = `Nous ne pouvons pas afficher la fenêtre Shelly des prises connectées, veuillez autoriser les Pop-Ups dans les Paramètres du navigateur`
 const ERROR_SHELLY_REQUESTING_URL_MESSAGE = "Erreur lors de la connexion avec l'interface shelly des prises connectées"
+const ERROR_ASSOCIATE_CONNECTED_PLUG = 'Erreur lors de la liaison de la prise connectée'
+
 const mockEnqueueSnackbar = jest.fn()
 
 /**
@@ -65,6 +68,53 @@ describe('useConnectedPlugList test', () => {
         expect(result.current.loadingInProgress).toBe(false)
         expect(result.current.connectedPlugList).toBeTruthy()
     }, 8000)
+
+    describe('Associate Connected Plug', () => {
+        test('When Error on association', async () => {
+            const {
+                renderedHook: { result, waitForValueToChange },
+                // Giving Empty GUID to fake an error.
+            } = reduxedRenderHook(() => useConnectedPlugList(TEST_ERROR_METER_GUID, false), { initialState: {} })
+            expect(result.current.loadingInProgress).toBe(false)
+
+            act(async () => {
+                await result.current.associateConnectedPlug(TEST_CONNECTED_PLUG_ID, TEST_ERROR_HOUSING_ID)
+            })
+            expect(result.current.loadingInProgress).toBe(true)
+
+            await waitForValueToChange(
+                () => {
+                    return result.current.loadingInProgress
+                },
+                { timeout: 6000 },
+            )
+            expect(result.current.loadingInProgress).toBe(false)
+            expect(mockEnqueueSnackbar).toHaveBeenCalledWith(ERROR_ASSOCIATE_CONNECTED_PLUG, {
+                variant: 'error',
+            })
+        }, 8000)
+        test('When Success on association', async () => {
+            const {
+                renderedHook: { result, waitForValueToChange },
+                // Giving Empty GUID to fake an error.
+            } = reduxedRenderHook(() => useConnectedPlugList(TEST_METER_GUID, false), { initialState: {} })
+            expect(result.current.loadingInProgress).toBe(false)
+
+            act(async () => {
+                await result.current.associateConnectedPlug(TEST_CONNECTED_PLUG_ID, TEST_HOUSE_ID)
+            })
+            expect(result.current.loadingInProgress).toBe(true)
+
+            await waitForValueToChange(
+                () => {
+                    return result.current.loadingInProgress
+                },
+                { timeout: 6000 },
+            )
+            expect(result.current.loadingInProgress).toBe(false)
+            expect(mockEnqueueSnackbar).not.toHaveBeenCalled()
+        }, 8000)
+    })
 })
 
 describe('useShellyConnectedPlugs test', () => {

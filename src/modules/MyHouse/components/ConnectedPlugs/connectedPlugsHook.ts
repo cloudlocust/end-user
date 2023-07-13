@@ -15,12 +15,22 @@ import { isNull } from 'lodash'
 /**
  * Connected Plug requests API.
  */
-export const CONNECTED_PLUG_CONSENT_API = `${API_RESOURCES_URL}/shelly/consent`
+export const CONNECTED_PLUG_API = `${API_RESOURCES_URL}/shelly`
+
+/**
+ * Connected Plug Consent requests API.
+ */
+export const CONNECTED_PLUG_CONSENT_API = `${CONNECTED_PLUG_API}/consent`
 
 /**
  * Connected Plug requests API.
  */
 export const SHELLY_CONNECTED_PLUG_LINK_API = `${CONNECTED_PLUG_CONSENT_API}/link`
+
+/**
+ * API to associate a connected plug in production mode.
+ */
+export const ASSOCIATE_CONNECTED_PLUG_API = `${CONNECTED_PLUG_API}/associate`
 
 /**
  * Hook to get Connected Plug Consent list.
@@ -79,10 +89,46 @@ export function useConnectedPlugList(meterGuid: string, immediate: boolean = tru
         }
     }, [immediate, loadConnectedPlugList])
 
+    /**
+     * Handler to set production mode in a connected plug.
+     *
+     * @param associate Indicate if the connected plug should be associated in production mode or not.
+     */
+    const associateConnectedPlug = useCallback(
+        async (connectedPlugId: string, housingId: number, associate: boolean = true) => {
+            setLoadingInProgress(true)
+            try {
+                await axios.post(
+                    `${ASSOCIATE_CONNECTED_PLUG_API}`,
+                    {
+                        deviceId: connectedPlugId,
+                        housingId,
+                        state: associate ? 'production' : null,
+                    },
+                    {
+                        cancelToken: source.current.token,
+                    },
+                )
+            } catch (error) {
+                if (isCancel(error)) return
+                enqueueSnackbar(
+                    formatMessage({
+                        id: 'Erreur lors de la liaison de la prise connectée',
+                        defaultMessage: 'Erreur lors de la liaison de la prise connectée',
+                    }),
+                    { variant: 'error' },
+                )
+            }
+            setLoadingInProgress(false)
+        },
+        [enqueueSnackbar, formatMessage, isCancel, source],
+    )
+
     return {
         loadingInProgress,
         loadConnectedPlugList,
         connectedPlugList,
+        associateConnectedPlug,
     }
 }
 
@@ -120,23 +166,26 @@ export const useShellyConnectedPlugs = (housingId: number) => {
                 )
                 if (!newShellyWindow) throw Error()
 
+                // Close previous window with previous timer, and allow only one.
+                if (shellyWindow.current) {
+                    shellyWindow.current.close()
+                    // Clear previous timer.
+                    if (!isNull(timerShellyWindowListener.current)) clearInterval(timerShellyWindowListener.current)
+                }
+
                 // Opens a popup and detect the close of the popup no matter the url in the popup.
                 // Reference: https://stackoverflow.com/a/48240128
                 if (onCloseShellyWindow) {
                     timerShellyWindowListener.current = setInterval(function () {
                         if (newShellyWindow.closed) {
                             onCloseShellyWindow()
-                            // Clear previous timer.
+                            // Clear The current timer.
                             if (!isNull(timerShellyWindowListener.current))
                                 clearInterval(timerShellyWindowListener.current)
                         }
                     }, 1000)
                 }
 
-                // Close previous window, and allow only one.
-                if (shellyWindow.current) {
-                    shellyWindow.current.close()
-                }
                 shellyWindow.current = newShellyWindow
             } catch (error) {
                 enqueueSnackbar(

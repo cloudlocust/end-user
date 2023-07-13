@@ -73,6 +73,7 @@ const mockSolarProductionStatusProps: ISolarProductionConsentStatusProps = {
     enphaseLink: 'fake',
     getEnphaseLink: jest.fn(),
     solarProductionConsentLoadingInProgress: false,
+    onRevokeEnphaseConsent: jest.fn(),
 }
 
 describe('SolarProductionStatus component test', () => {
@@ -83,7 +84,7 @@ describe('SolarProductionStatus component test', () => {
                     <SolarProductionConsentStatus {...mockSolarProductionStatusProps} />
                 </Router>,
             )
-            expect(getByText(`Connexion le ${dayjs(CREATED_AT).format('DD/MM/YYYY')}`)).toBeTruthy()
+            expect(getByText(`Onduleur Enphase connectée le ${dayjs(CREATED_AT).format('DD/MM/YYYY')}`)).toBeTruthy()
             const activeIcon = getByAltText('enphase-active-icon')
             expect(activeIcon).toHaveAttribute('src', STATUS_ON_SRC)
         })

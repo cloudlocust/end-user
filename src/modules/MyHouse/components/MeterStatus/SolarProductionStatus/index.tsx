@@ -18,6 +18,7 @@ import ConnectedPlugProductionConsentPopup from 'src/modules/MyHouse/components/
  * @param props.solarProductionConsent Solar Production Consent to be shown.
  * @param props.enphaseLink Enphase window link.
  * @param props.getEnphaseLink Handler to call to get enphaseLink.
+ * @param props.onRevokeEnphaseConsent Handler function to revoke Enphase Consent.
  * @returns Solar Production Consent Status component.
  */
 export const SolarProductionConsentStatus = ({
@@ -25,6 +26,7 @@ export const SolarProductionConsentStatus = ({
     solarProductionConsent,
     enphaseLink,
     getEnphaseLink,
+    onRevokeEnphaseConsent,
 }: ISolarProductionConsentStatusProps) => {
     const theme = useTheme()
     const { formatMessage } = useIntl()
@@ -72,10 +74,18 @@ export const SolarProductionConsentStatus = ({
                         <div className="flex flex-col">
                             <span className="text-grey-600">
                                 <span className="text-grey-600">{`${formatMessage({
-                                    id: 'Connexion le',
-                                    defaultMessage: 'Connexion le',
+                                    id: 'Onduleur Enphase connectée le',
+                                    defaultMessage: 'Onduleur Enphase connectée le',
                                 })} ${solarProductionConsentCreatedAt}`}</span>
                             </span>
+                            <TypographyFormatMessage
+                                color={theme.palette.primary.main}
+                                className="underline cursor-pointer"
+                                fontWeight={500}
+                                onClick={onRevokeEnphaseConsent}
+                            >
+                                Annuler la récolte de mes données
+                            </TypographyFormatMessage>
                         </div>
                     </>
                 )

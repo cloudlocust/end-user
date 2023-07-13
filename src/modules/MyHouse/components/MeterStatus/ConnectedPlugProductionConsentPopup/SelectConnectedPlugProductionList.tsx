@@ -29,7 +29,11 @@ const ConnectedPlugProductionListSelect = ({ connectedPlugList, onSubmit }: ISel
     return (
         <Box>
             <div className="flex flex-col items-center justify-center h-full gap-20">
-                <TypographyFormatMessage>
+                <TypographyFormatMessage variant="h6" className="text-center font-semibold text-16 md:text-20">
+                    Prises connectées
+                </TypographyFormatMessage>
+
+                <TypographyFormatMessage className="text-13 md:text-16">
                     {formatMessage({
                         id: `Sélectionnez la prise connectée Shelly utilisée pour panneau plug&play`,
                         defaultMessage: `Sélectionnez la prise connectée Shelly utilisée pour panneau plug&play`,

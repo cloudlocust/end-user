@@ -67,6 +67,10 @@ export interface ISolarProductionConsentStatusProps {
      * Boolean indicating the progress state when loading solar production consent (whether from enphase or connected plug).
      */
     solarProductionConsentLoadingInProgress: boolean
+    /**
+     * Handler function to revoke Enphase Consent.
+     */
+    onRevokeEnphaseConsent: () => Promise<void>
 }
 
 /**

@@ -7,10 +7,11 @@ import { useConnectedPlugList } from 'src/modules/MyHouse/components/ConnectedPl
 import { RootState } from 'src/redux'
 import { useSelector } from 'react-redux'
 import { contractsRouteParam } from 'src/modules/Contracts/contractsTypes.d'
-import { useParams } from 'react-router-dom'
+import { useParams, useHistory } from 'react-router-dom'
 import { useShellyConnectedPlugs } from 'src/modules/MyHouse/components/ConnectedPlugs/connectedPlugsHook'
 import SelectConnectedPlugProductionList from 'src/modules/MyHouse/components/MeterStatus/ConnectedPlugProductionConsentPopup/SelectConnectedPlugProductionList'
 import { IConnectedPlugProductionConsentPopupProps } from 'src/modules/MyHouse/components/MeterStatus/MeterStatus.d'
+import { URL_MY_HOUSE } from 'src/modules/MyHouse/MyHouseConfig'
 
 /**
  * ConnectedPlugProductionConsentPopup Page Component.
@@ -26,6 +27,7 @@ const ConnectedPlugProductionConsentPopup = ({ onClose }: IConnectedPlugProducti
     const currentHousingMeterGuid = housingList.find((housing) => housing.id === parseInt(houseId))?.meter?.guid
     const theme = useTheme()
     const mdDown = useMediaQuery(theme.breakpoints.down('md'))
+    const history = useHistory()
 
     const { loadingInProgress: isShellyLoadingInProgress, openShellyConnectedPlugsWindow } = useShellyConnectedPlugs(
         parseInt(houseId),
@@ -35,6 +37,7 @@ const ConnectedPlugProductionConsentPopup = ({ onClose }: IConnectedPlugProducti
         connectedPlugList,
         loadingInProgress: isConnectedPlugListLoadingInProgress,
         loadConnectedPlugList,
+        associateConnectedPlug,
     } = useConnectedPlugList(currentHousingMeterGuid!)
     const { formatMessage } = useIntl()
 
@@ -71,7 +74,10 @@ const ConnectedPlugProductionConsentPopup = ({ onClose }: IConnectedPlugProducti
                     </motion.div>
                 ) : (
                     <SelectConnectedPlugProductionList
-                        onSubmit={(_connectedPlugId) => {}}
+                        onSubmit={async (connectedPlugId) => {
+                            await associateConnectedPlug(connectedPlugId, parseInt(houseId))
+                            history.push(`${URL_MY_HOUSE}/${houseId}/connected-plugs`)
+                        }}
                         connectedPlugList={connectedPlugList}
                     />
                 )}
