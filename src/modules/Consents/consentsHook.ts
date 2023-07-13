@@ -212,6 +212,12 @@ export function useConsents() {
         [enqueueSnackbar, formatMessage],
     )
 
+    const clearConsents = useCallback(async () => {
+        setNrlinkConsent(undefined)
+        setEnedisSgeConsent(undefined)
+        setEnphaseConsent(undefined)
+    }, [])
+
     return {
         nrlinkConsent,
         consentsLoading,
@@ -230,5 +236,6 @@ export function useConsents() {
         getEnphaseLink,
         enphaseLink,
         setEnphaseLink,
+        clearConsents,
     }
 }
