@@ -86,6 +86,8 @@ jest.mock('src/modules/MyHouse/components/ConnectedPlugs/connectedPlugsHook', ()
     useConnectedPlugList: () => ({
         connectedPlugList: mockConnectedPlugsList,
         loadingInProgress: mockConnectedPlugListLoadingInProgress,
+        // eslint-disable-next-line jsdoc/require-jsdoc
+        getProductionConnectedPlug: () => undefined,
     }),
 }))
 // mock store.

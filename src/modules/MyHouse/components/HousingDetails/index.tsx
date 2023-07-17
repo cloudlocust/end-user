@@ -69,6 +69,7 @@ export const HousingDetails = () => {
     const currentHousing = housingList.find((housing) => housing.id === Number(houseId))
     const { connectedPlugList, loadingInProgress: isConnectedPlugListLoading } = useConnectedPlugList(
         currentHousing?.meter?.guid!,
+        Number(houseId),
     )
 
     const {
