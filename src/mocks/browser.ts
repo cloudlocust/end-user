@@ -65,7 +65,7 @@ export const handlers = [
     ...connectedPlugsEndpoints,
 ]
 
-// TODO Reset once back of connected plug is ready
+// TODO Reset once back of connected plug production mode and revoke enphase is ready
 /**
  * Handlers to mock urls for tests.
  */
