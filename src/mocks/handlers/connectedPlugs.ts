@@ -1,16 +1,19 @@
 import { rest } from 'msw'
-import { getPaginationFromElementList } from 'src/mocks/utils'
 import { SnakeCasedPropertiesDeep } from 'type-fest'
 import {
     IConnectedPlug,
+    IConnectedPlugConsent,
+    IConnectedPlugType,
     connectedPlugAssociateBodyType,
     connectedPlugConsentStateEnum,
+    connectedPlugTypeEnum,
 } from 'src/modules/MyHouse/components/ConnectedPlugs/ConnectedPlugs.d'
 import {
     ASSOCIATE_CONNECTED_PLUG_API,
     CONNECTED_PLUG_CONSENT_API,
     SHELLY_CONNECTED_PLUG_LINK_API,
 } from 'src/modules/MyHouse/components/ConnectedPlugs/connectedPlugsHook'
+import { HOUSING_API } from 'src/modules/MyHouse/components/HousingList/HousingsHooks'
 
 /**
  * Fake meter ID.
@@ -31,9 +34,9 @@ export const CREATED_AT_DATA = '2021-12-15T14:07:38.138000'
 export const TEST_SHELLY_CONNECTED_PLUG_URL = 'shelly_url.com'
 
 /**
- * Mock of customers/clients list data.
+ * Mock of connected plug list data.
  */
-export var TEST_CONNECTED_PLUGS: SnakeCasedPropertiesDeep<IConnectedPlug>[] = [
+export var TEST_CONNECTED_PLUGS_CONSENT: SnakeCasedPropertiesDeep<IConnectedPlugConsent>[] = [
     {
         device_id: '1234123',
         consent_state: connectedPlugConsentStateEnum.APPROVED,
@@ -76,6 +79,98 @@ export var TEST_CONNECTED_PLUGS: SnakeCasedPropertiesDeep<IConnectedPlug>[] = [
     },
 ]
 
+/**
+ * Mock of connected plug list with their state.
+ */
+export var TEST_CONNECTED_PLUGS_TYPE: SnakeCasedPropertiesDeep<IConnectedPlugType>[] = [
+    {
+        device_id: '1234123',
+        type: connectedPlugTypeEnum.production,
+    },
+    {
+        device_id: '2234123',
+        type: null,
+    },
+    {
+        device_id: '3234123',
+        type: null,
+    },
+    {
+        device_id: '4234123',
+        type: null,
+    },
+    {
+        device_id: '5234123',
+        type: null,
+    },
+    {
+        device_id: '6234123',
+        type: null,
+    },
+    {
+        device_id: '7234123',
+        type: null,
+    },
+    {
+        device_id: '8234123',
+        type: null,
+    },
+]
+
+/**
+ * Mock of connected plug list data.
+ */
+export var TEST_CONNECTED_PLUGS: SnakeCasedPropertiesDeep<IConnectedPlug>[] = [
+    {
+        device_id: '1234123',
+        consent_state: connectedPlugConsentStateEnum.APPROVED,
+        created_at: CREATED_AT_DATA,
+        type: connectedPlugTypeEnum.production,
+    },
+    {
+        device_id: '2234123',
+        consent_state: connectedPlugConsentStateEnum.DENIED,
+        created_at: CREATED_AT_DATA,
+        type: null,
+    },
+    {
+        device_id: '3234123',
+        consent_state: connectedPlugConsentStateEnum.APPROVED,
+        created_at: CREATED_AT_DATA,
+        type: null,
+    },
+    {
+        device_id: '4234123',
+        consent_state: connectedPlugConsentStateEnum.DENIED,
+        created_at: CREATED_AT_DATA,
+        type: null,
+    },
+    {
+        device_id: '5234123',
+        consent_state: connectedPlugConsentStateEnum.APPROVED,
+        created_at: CREATED_AT_DATA,
+        type: null,
+    },
+    {
+        device_id: '6234123',
+        consent_state: connectedPlugConsentStateEnum.APPROVED,
+        created_at: CREATED_AT_DATA,
+        type: null,
+    },
+    {
+        device_id: '7234123',
+        consent_state: connectedPlugConsentStateEnum.DENIED,
+        created_at: CREATED_AT_DATA,
+        type: null,
+    },
+    {
+        device_id: '8234123',
+        consent_state: connectedPlugConsentStateEnum.APPROVED,
+        created_at: CREATED_AT_DATA,
+        type: null,
+    },
+]
+
 // eslint-disable-next-line jsdoc/require-jsdoc
 export const connectedPlugsEndpoints = [
     // Get Meter Connected Plug List.
@@ -83,19 +178,14 @@ export const connectedPlugsEndpoints = [
         const { meterGuid } = req.params
         if (meterGuid === TEST_ERROR_METER_GUID) return res(ctx.status(400), ctx.delay(1000))
 
-        const TEST_CONNECTED_PLUGS_RESPONSE = getPaginationFromElementList<SnakeCasedPropertiesDeep<IConnectedPlug>>(
-            req,
-            TEST_CONNECTED_PLUGS as [],
+        return res(
+            ctx.status(200),
+            ctx.delay(1000),
+            ctx.json({
+                meter_guid: '12341234123',
+                devices: TEST_CONNECTED_PLUGS,
+            }),
         )
-        if (TEST_CONNECTED_PLUGS_RESPONSE !== null)
-            return res(
-                ctx.status(200),
-                ctx.delay(1000),
-                ctx.json({
-                    meter_guid: '12341234123',
-                    devices: TEST_CONNECTED_PLUGS_RESPONSE.items,
-                }),
-            )
     }),
 
     // Get Shelly Connected Plug Link.
@@ -118,4 +208,13 @@ export const connectedPlugsEndpoints = [
             return res(ctx.status(400), ctx.delay(1000))
         },
     ),
+
+    // Get Connected Plug List with their state.
+    rest.get(`${HOUSING_API}/:housing_id/plugs-associations`, (req, res, ctx) => {
+        const { housing_id: housingId } = req.params
+
+        if (Number(housingId) && Number(housingId) !== TEST_ERROR_HOUSING_ID)
+            return res(ctx.status(200), ctx.delay(1000), ctx.json(TEST_CONNECTED_PLUGS_TYPE))
+        return res(ctx.status(400), ctx.delay(1000))
+    }),
 ]

@@ -8,9 +8,12 @@ import { useIntl } from 'react-intl'
 import {
     IConnectedPlug,
     IConnectedPlugApiResponse,
+    IConnectedPlugTypeApiResponse,
     IShellyConnectedPlugLink,
+    connectedPlugTypeEnum,
 } from 'src/modules/MyHouse/components/ConnectedPlugs/ConnectedPlugs.d'
 import { isNull } from 'lodash'
+import { HOUSING_API } from 'src/modules/MyHouse/components/HousingList/HousingsHooks'
 
 /**
  * Connected Plug requests API.
@@ -33,13 +36,21 @@ export const SHELLY_CONNECTED_PLUG_LINK_API = `${CONNECTED_PLUG_CONSENT_API}/lin
 export const ASSOCIATE_CONNECTED_PLUG_API = `${CONNECTED_PLUG_API}/associate`
 
 /**
+ * Function to GET_CONNECTED_PLUG_TYPE_API.
+ *
+ * @param housingId HousingId.
+ * @returns API URL of Connected Plug Type.
+ */
+export const GET_CONNECTED_PLUG_TYPE_API = (housingId: number) => `${HOUSING_API}/${housingId}/plugs-associations`
+/**
  * Hook to get Connected Plug Consent list.
  *
  * @param meterGuid Meter GUID.
+ * @param housingId Housing Id.
  * @param immediate Indicates If useConnectedPlugList should be called on instanciation.
  * @returns Hook useConnectedPlugList.
  */
-export function useConnectedPlugList(meterGuid: string, immediate: boolean = true) {
+export function useConnectedPlugList(meterGuid: string, housingId: number, immediate: boolean = true) {
     const { enqueueSnackbar } = useSnackbar()
     const { formatMessage } = useIntl()
     const [loadingInProgress, setLoadingInProgress] = useState(false)
@@ -53,13 +64,29 @@ export function useConnectedPlugList(meterGuid: string, immediate: boolean = tru
     const loadConnectedPlugList = useCallback(async () => {
         setLoadingInProgress(true)
         try {
-            const { data: responseData } = await axios.get<IConnectedPlugApiResponse>(
+            const { data: connectedPlugConsentData } = await axios.get<IConnectedPlugApiResponse>(
                 `${CONNECTED_PLUG_CONSENT_API}/${meterGuid}`,
                 {
                     cancelToken: source.current.token,
                 },
             )
-            setConnectedPlugList(responseData.devices)
+            const { data: connectedPlugTypeData } = await axios.get<IConnectedPlugTypeApiResponse>(
+                GET_CONNECTED_PLUG_TYPE_API(housingId),
+                {
+                    cancelToken: source.current.token,
+                },
+            )
+            const responseData: IConnectedPlug[] = connectedPlugConsentData.devices.map((connectedPlugConsent) => {
+                const foundConnectedPlugType = connectedPlugTypeData.find(
+                    (connectedPlugType) => connectedPlugType.deviceId === connectedPlugConsent.deviceId,
+                )
+                return {
+                    ...connectedPlugConsent,
+                    type: foundConnectedPlugType ? foundConnectedPlugType.type : null,
+                }
+            })
+
+            setConnectedPlugList(responseData)
         } catch (error) {
             if (isCancel(error)) return
             enqueueSnackbar(
@@ -71,7 +98,7 @@ export function useConnectedPlugList(meterGuid: string, immediate: boolean = tru
             )
         }
         setLoadingInProgress(false)
-    }, [formatMessage, enqueueSnackbar, meterGuid, isCancel, source])
+    }, [formatMessage, enqueueSnackbar, meterGuid, isCancel, source, housingId])
 
     // Happens everytime dependencies change, doesn't happen first time hook is instanciated.
     useEffect(() => {
@@ -109,6 +136,8 @@ export function useConnectedPlugList(meterGuid: string, immediate: boolean = tru
                         cancelToken: source.current.token,
                     },
                 )
+                setLoadingInProgress(false)
+                return true
             } catch (error) {
                 if (isCancel(error)) return
                 enqueueSnackbar(
@@ -118,17 +147,26 @@ export function useConnectedPlugList(meterGuid: string, immediate: boolean = tru
                     }),
                     { variant: 'error' },
                 )
+                setLoadingInProgress(false)
             }
-            setLoadingInProgress(false)
         },
         [enqueueSnackbar, formatMessage, isCancel, source],
     )
 
+    /**
+     * Get The Production mode Connected Plug if found.
+     *
+     * @returns The production mode connected plug if found.
+     */
+    const getProductionConnectedPlug = () => {
+        return connectedPlugList.find((connectedPlug) => connectedPlug.type === connectedPlugTypeEnum.production)
+    }
     return {
         loadingInProgress,
         loadConnectedPlugList,
         connectedPlugList,
         associateConnectedPlug,
+        getProductionConnectedPlug,
     }
 }
 

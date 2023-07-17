@@ -38,7 +38,7 @@ const ConnectedPlugProductionConsentPopup = ({ onClose }: IConnectedPlugProducti
         loadingInProgress: isConnectedPlugListLoadingInProgress,
         loadConnectedPlugList,
         associateConnectedPlug,
-    } = useConnectedPlugList(currentHousingMeterGuid!)
+    } = useConnectedPlugList(currentHousingMeterGuid!, parseInt(houseId))
     const { formatMessage } = useIntl()
 
     return (
@@ -75,8 +75,8 @@ const ConnectedPlugProductionConsentPopup = ({ onClose }: IConnectedPlugProducti
                 ) : (
                     <SelectConnectedPlugProductionList
                         onSubmit={async (connectedPlugId) => {
-                            await associateConnectedPlug(connectedPlugId, parseInt(houseId))
-                            history.push(`${URL_MY_HOUSE}/${houseId}/connected-plugs`)
+                            const isSuccessResponse = await associateConnectedPlug(connectedPlugId, parseInt(houseId))
+                            if (isSuccessResponse) history.push(`${URL_MY_HOUSE}/${houseId}/connected-plugs`)
                         }}
                         connectedPlugList={connectedPlugList}
                     />

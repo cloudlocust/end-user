@@ -39,7 +39,7 @@ describe('useConnectedPlugList test', () => {
         const {
             renderedHook: { result, waitForValueToChange },
             // Giving Empty GUID to fake an error.
-        } = reduxedRenderHook(() => useConnectedPlugList(TEST_ERROR_METER_GUID), { initialState: {} })
+        } = reduxedRenderHook(() => useConnectedPlugList(TEST_ERROR_METER_GUID, TEST_HOUSE_ID), { initialState: {} })
 
         expect(result.current.loadingInProgress).toBe(true)
         await waitForValueToChange(
@@ -57,7 +57,7 @@ describe('useConnectedPlugList test', () => {
         const {
             renderedHook: { result, waitForValueToChange },
             // Giving negative size to fake an error in the msw.
-        } = reduxedRenderHook(() => useConnectedPlugList(TEST_METER_GUID), { initialState: {} })
+        } = reduxedRenderHook(() => useConnectedPlugList(TEST_METER_GUID, TEST_HOUSE_ID), { initialState: {} })
         expect(result.current.loadingInProgress).toBe(true)
         await waitForValueToChange(
             () => {
@@ -74,7 +74,9 @@ describe('useConnectedPlugList test', () => {
             const {
                 renderedHook: { result, waitForValueToChange },
                 // Giving Empty GUID to fake an error.
-            } = reduxedRenderHook(() => useConnectedPlugList(TEST_ERROR_METER_GUID, false), { initialState: {} })
+            } = reduxedRenderHook(() => useConnectedPlugList(TEST_ERROR_METER_GUID, TEST_HOUSE_ID, false), {
+                initialState: {},
+            })
             expect(result.current.loadingInProgress).toBe(false)
 
             act(async () => {
@@ -97,7 +99,9 @@ describe('useConnectedPlugList test', () => {
             const {
                 renderedHook: { result, waitForValueToChange },
                 // Giving Empty GUID to fake an error.
-            } = reduxedRenderHook(() => useConnectedPlugList(TEST_METER_GUID, false), { initialState: {} })
+            } = reduxedRenderHook(() => useConnectedPlugList(TEST_METER_GUID, TEST_HOUSE_ID, false), {
+                initialState: {},
+            })
             expect(result.current.loadingInProgress).toBe(false)
 
             act(async () => {

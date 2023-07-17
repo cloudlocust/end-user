@@ -2,6 +2,7 @@ import { TypographyProps } from '@mui/material/Typography'
 import { SetStateAction } from 'react'
 import { IEnedisSgeConsent, IEnphaseConsent } from 'src/modules/Consents/Consents'
 import { IConnectedPlug } from 'src/modules/MyHouse/components/ConnectedPlugs/ConnectedPlugs.d'
+import { IHousing } from 'src/modules/MyHouse/components/HousingList/housing'
 
 /**
  * Interface for Sge Popup Props.
@@ -71,6 +72,10 @@ export interface ISolarProductionConsentStatusProps {
      * Handler function to revoke Enphase Consent.
      */
     onRevokeEnphaseConsent: () => Promise<void>
+    /**
+     * Housing with the solarProductionConsent.
+     */
+    housing?: IHousing
 }
 
 /**
