@@ -195,7 +195,7 @@ export const metricTargetsHook: metricTargetsType = [
 /**
  * Targets shown in ConsumptionChart.
  */
-export const ConsumptionChartTargets: metricTargetType[] = [
+export const consumptionChartTargets: metricTargetType[] = [
     metricTargetsEnum.autoconsumption,
     metricTargetsEnum.consumption,
     metricTargetsEnum.eurosConsumption,
@@ -207,7 +207,7 @@ export const ConsumptionChartTargets: metricTargetType[] = [
 /**
  * When EnphaseOff Targets shown in ConsumptionChart.
  */
-export const EnphaseOffConsumptionChartTargets: metricTargetType[] = [
+export const enphaseOffConsumptionChartTargets: metricTargetType[] = [
     metricTargetsEnum.consumption,
     metricTargetsEnum.eurosConsumption,
     metricTargetsEnum.pMax,

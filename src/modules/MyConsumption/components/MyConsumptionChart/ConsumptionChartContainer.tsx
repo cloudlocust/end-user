@@ -13,8 +13,8 @@ import {
     showPerPeriodText,
 } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
 import {
-    ConsumptionChartTargets,
-    EnphaseOffConsumptionChartTargets,
+    consumptionChartTargets,
+    enphaseOffConsumptionChartTargets,
 } from 'src/modules/MyConsumption/utils/myConsumptionVariables'
 import { targetOptions } from 'src/modules/MyConsumption/utils/myConsumptionVariables'
 import {
@@ -23,6 +23,7 @@ import {
 } from 'src/modules/MyConsumption/components/MyConsumptionChart/ConsumptionChartWarnings'
 import { sgeConsentFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
 import TargetMenuGroup from 'src/modules/MyConsumption/components/TargetMenuGroup'
+import { ConsumptionSwitchButton } from 'src/modules/MyConsumption/components/ConsumptionSwitchButton'
 
 /**
  * MyConsumptionChart Component.
@@ -130,7 +131,7 @@ export const ConsumptionChartContainer = ({
             getMetricsWithParams({
                 interval: metricsInterval,
                 range,
-                targets: enphaseOff ? EnphaseOffConsumptionChartTargets : ConsumptionChartTargets,
+                targets: enphaseOff ? enphaseOffConsumptionChartTargets : consumptionChartTargets,
                 filters,
             })
         }
@@ -151,7 +152,7 @@ export const ConsumptionChartContainer = ({
 
     useEffect(() => {
         // To avoid multiple rerendering and thus calculation in MyConsumptionChart, CosnumptionChartData change only once, when visibleTargetChart change or when the first getMetrics targets is loaded, thus avoiding to rerender when the second getMetrics is loaded with all targets which should only happen in the background.
-        if (isVisibleTargetChartsChanged.current || data.length < EnphaseOffConsumptionChartTargets.length)
+        if (isVisibleTargetChartsChanged.current || data.length < enphaseOffConsumptionChartTargets.length)
             setConsumptionChartData(data.filter((datapoint) => visibleTargetCharts.includes(datapoint.target)))
     }, [data, visibleTargetCharts])
 
@@ -205,6 +206,7 @@ export const ConsumptionChartContainer = ({
                     showEurosConsumption={!isEurosConsumptionChart}
                     disabled={isEurosConsumptionDisabled}
                 />
+                <ConsumptionSwitchButton />
                 <TargetMenuGroup
                     removeTarget={hideMetricTargetChart}
                     addTarget={showMetricTargetChart}

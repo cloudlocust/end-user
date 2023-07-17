@@ -511,6 +511,12 @@ export const getChartSpecifities = (
             seriesName: 'Autoconsommation',
             show: false,
         }
+    } else if (target === metricTargetsEnum.idleConsumption) {
+        return {
+            label: 'Consommation de veille',
+            seriesName: 'Veille',
+            show: false,
+        }
     } else {
         throw Error('Wrong target')
     }

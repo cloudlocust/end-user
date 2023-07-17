@@ -16,8 +16,8 @@ import { IHousing } from 'src/modules/MyHouse/components/HousingList/housing'
 import { TEST_HOUSES } from 'src/mocks/handlers/houses'
 import { URL_MY_HOUSE } from 'src/modules/MyHouse/MyHouseConfig'
 import {
-    ConsumptionChartTargets,
-    EnphaseOffConsumptionChartTargets,
+    consumptionChartTargets,
+    enphaseOffConsumptionChartTargets,
 } from 'src/modules/MyConsumption/utils/myConsumptionVariables'
 import { ConsumptionChartContainerProps, periodType } from 'src/modules/MyConsumption/myConsumptionTypes'
 import { IEnedisSgeConsent, INrlinkConsent, IEnphaseConsent } from 'src/modules/Consents/Consents'
@@ -203,7 +203,7 @@ describe('MyConsumptionContainer test', () => {
         await waitFor(() => {
             expect(mockGetMetricsWithParams).toHaveBeenCalledWith({
                 ...mockGetMetricsWithParamsValues,
-                targets: ConsumptionChartTargets,
+                targets: consumptionChartTargets,
             })
         })
 
@@ -385,7 +385,7 @@ describe('MyConsumptionContainer test', () => {
         await waitFor(() => {
             expect(mockGetMetricsWithParams).toHaveBeenCalledWith({
                 ...mockGetMetricsWithParamsValues,
-                targets: EnphaseOffConsumptionChartTargets,
+                targets: enphaseOffConsumptionChartTargets,
             })
         })
         // Consent enphase is off AutoConsumption tooltip texts is not shown, and Total consumption is shown
