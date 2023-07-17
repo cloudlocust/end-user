@@ -73,6 +73,7 @@ let mockSetMeterVerification = jest.fn()
 let mockEditMeter = jest.fn()
 const circularProgressClassname = '.MuiCircularProgress-root'
 let mockRevokeEnphaseConsent = jest.fn()
+let mockClearConsents = jest.fn()
 // eslint-disable-next-line sonarjs/no-duplicate-string
 const STATUS_ON_SRC = './assets/images/content/housing/consent-status/meter-on.svg'
 
@@ -139,6 +140,7 @@ jest.mock('src/modules/Consents/consentsHook', () => ({
         setMeterVerification: mockSetMeterVerification,
         revokeEnphaseConsent: mockRevokeEnphaseConsent,
         isEnphaseConsentLoading: mockIsEnphaseConsentLoading,
+        clearConsents: mockClearConsents,
     }),
 }))
 
@@ -262,6 +264,7 @@ describe('MeterStatus component test', () => {
             )
 
             expect(mockGetConsent).not.toBeCalledWith()
+            expect(mockClearConsents).toBeCalledWith()
             expect(getByText(NO_METER_MESSAGE)).toBeTruthy()
         })
         test('when clicking on Edit, display ReplaceNRLinkForm', async () => {
