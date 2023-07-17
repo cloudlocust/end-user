@@ -85,6 +85,16 @@ jest.mock('src/modules/Meters/metersHook', () => ({
     }),
 }))
 
+// Mock useInstallationRequestsList hook
+jest.mock('src/modules/MyHouse/components/ConnectedPlugs/connectedPlugsHook', () => ({
+    ...jest.requireActual('src/modules/MyHouse/components/ConnectedPlugs/connectedPlugsHook'),
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    useConnectedPlugList: () => ({
+        // eslint-disable-next-line jsdoc/require-jsdoc
+        getProductionConnectedPlug: () => undefined,
+    }),
+}))
+
 /**
  * Mocking the useParams used in "meterStatus" to get the house id based on url /my-houses/:houseId params.
  */

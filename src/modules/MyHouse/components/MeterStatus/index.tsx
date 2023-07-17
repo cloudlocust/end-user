@@ -407,6 +407,7 @@ export const MeterStatus = () => {
                                 await revokeEnphaseConsent(`${foundHousing?.meter?.guid}`)
                                 getConsents(`${foundHousing?.meter?.guid}`, parseInt(houseId))
                             }}
+                            housing={foundHousing}
                         />
                     </div>
                 </MuiCardContent>

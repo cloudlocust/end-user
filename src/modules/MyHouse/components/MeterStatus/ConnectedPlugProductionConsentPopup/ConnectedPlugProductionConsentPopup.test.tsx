@@ -14,7 +14,7 @@ const LIST_OF_HOUSES: IHousing[] = applyCamelCase(TEST_HOUSES)
 const MOCK_TEST_CONNECTED_PLUGS: IConnectedPlug[] = applyCamelCase(TEST_CONNECTED_PLUGS)
 const CONFIGURE_SHELLY_TEXT = 'Configurer'
 let mockConnectedPlugsList = MOCK_TEST_CONNECTED_PLUGS
-const mockAssociateConnectedPlug = jest.fn()
+let mockAssociateConnectedPlug = jest.fn()
 const mockHistoryGoBack = jest.fn()
 const mockHistoryPush = jest.fn()
 const mockOpenShellyConnectedPlugsWindow = jest.fn()
@@ -121,6 +121,7 @@ describe('ConnectedPlugProductionConsentPopup component', () => {
         })
 
         test('when Selecting a connected plug and submitting, associate connected plug should be called and history pushed', async () => {
+            mockAssociateConnectedPlug = jest.fn().mockImplementationOnce(() => true)
             const { getByLabelText, getByText } = reduxedRender(
                 <Router>
                     <ConnectedPlugProductionConsentPopup />

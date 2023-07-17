@@ -9,6 +9,7 @@ import { globalProductionFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
 import { EnphaseConsentPopup } from 'src/modules/MyHouse/components/MeterStatus/EnphaseConsentPopup'
 import { ISolarProductionConsentStatusProps } from 'src/modules/MyHouse/components/MeterStatus/MeterStatus.d'
 import ConnectedPlugProductionConsentPopup from 'src/modules/MyHouse/components/MeterStatus/ConnectedPlugProductionConsentPopup'
+import { useConnectedPlugList } from 'src/modules/MyHouse/components/ConnectedPlugs/connectedPlugsHook'
 
 /**
  * Solar Production Consent Status Component, that shows and isolates the solar production consent of MeterStatus.
@@ -19,6 +20,7 @@ import ConnectedPlugProductionConsentPopup from 'src/modules/MyHouse/components/
  * @param props.enphaseLink Enphase window link.
  * @param props.getEnphaseLink Handler to call to get enphaseLink.
  * @param props.onRevokeEnphaseConsent Handler function to revoke Enphase Consent.
+ * @param props.housing The housing with the solarProductionConsent.
  * @returns Solar Production Consent Status component.
  */
 export const SolarProductionConsentStatus = ({
@@ -27,6 +29,7 @@ export const SolarProductionConsentStatus = ({
     enphaseLink,
     getEnphaseLink,
     onRevokeEnphaseConsent,
+    housing,
 }: ISolarProductionConsentStatusProps) => {
     const theme = useTheme()
     const { formatMessage } = useIntl()
@@ -36,6 +39,12 @@ export const SolarProductionConsentStatus = ({
     // Retrieving house id from url params /my-houses/:houseId
     // eslint-disable-next-line jsdoc/require-jsdoc
     const { houseId }: { houseId: string } = useParams()
+    // Load connected plug only when housing is defined
+    const {
+        loadingInProgress: isConnectedPlugListLoadingInProgress,
+        associateConnectedPlug,
+        getProductionConnectedPlug,
+    } = useConnectedPlugList(`${housing?.meter?.guid}`, parseInt(houseId), Boolean(housing))
 
     /* Enphase created at date formatted */
     const solarProductionConsentCreatedAt = dayjs(solarProductionConsent?.createdAt).format('DD/MM/YYYY')
@@ -63,6 +72,7 @@ export const SolarProductionConsentStatus = ({
     function renderSolarProductionConsentStatus(solarProductionConsent?: enphaseConsentStatus) {
         switch (solarProductionConsent) {
             case 'ACTIVE':
+                const productionConnectedPlug = getProductionConnectedPlug()
                 return (
                     <>
                         <Icon className="mr-12">
@@ -73,16 +83,32 @@ export const SolarProductionConsentStatus = ({
                         </Icon>
                         <div className="flex flex-col">
                             <span className="text-grey-600">
-                                <span className="text-grey-600">{`${formatMessage({
-                                    id: 'Onduleur Enphase connectée le',
-                                    defaultMessage: 'Onduleur Enphase connectée le',
-                                })} ${solarProductionConsentCreatedAt}`}</span>
+                                <span className="text-grey-600">
+                                    {productionConnectedPlug
+                                        ? `${formatMessage({
+                                              id: 'Prise Shelly connectée le',
+                                              defaultMessage: 'Prise Shelly connectée le',
+                                          })} ${dayjs(productionConnectedPlug.createdAt).format('DD/MM/YYYY')}`
+                                        : `${formatMessage({
+                                              id: 'Onduleur Enphase connecté le',
+                                              defaultMessage: 'Onduleur Enphase connecté le',
+                                          })} ${solarProductionConsentCreatedAt}`}
+                                </span>
                             </span>
                             <TypographyFormatMessage
                                 color={theme.palette.primary.main}
                                 className="underline cursor-pointer"
                                 fontWeight={500}
-                                onClick={onRevokeEnphaseConsent}
+                                onClick={
+                                    productionConnectedPlug
+                                        ? () =>
+                                              associateConnectedPlug(
+                                                  productionConnectedPlug.deviceId,
+                                                  parseInt(houseId),
+                                                  false,
+                                              )
+                                        : () => onRevokeEnphaseConsent()
+                                }
                             >
                                 Annuler la récolte de mes données
                             </TypographyFormatMessage>
@@ -175,7 +201,7 @@ export const SolarProductionConsentStatus = ({
         <>
             {/* Enphase Consent Status */}
             <div className={`w-full md:w-1/3 p-12 ${!globalProductionFeatureState && 'hidden'}`}>
-                {solarProductionConsentLoadingInProgress ? (
+                {solarProductionConsentLoadingInProgress || isConnectedPlugListLoadingInProgress ? (
                     <CircularProgress size={25} />
                 ) : (
                     <>
@@ -183,7 +209,10 @@ export const SolarProductionConsentStatus = ({
                             Production solaire
                         </TypographyFormatMessage>
                         <div className="flex flex-row items-center">
-                            {renderSolarProductionConsentStatus(solarProductionConsent?.enphaseConsentState)}
+                            {/* If there is a connected plug that's in production mode, then solarProduction consent is active */}
+                            {renderSolarProductionConsentStatus(
+                                getProductionConnectedPlug() ? 'ACTIVE' : solarProductionConsent?.enphaseConsentState,
+                            )}
                         </div>
                     </>
                 )}
