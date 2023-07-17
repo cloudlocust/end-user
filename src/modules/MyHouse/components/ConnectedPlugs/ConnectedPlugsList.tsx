@@ -59,7 +59,7 @@ const ConnectedPlugs = () => {
         connectedPlugList,
         loadingInProgress: isConnectedPlugListLoading,
         loadConnectedPlugList,
-    } = useConnectedPlugList(currentHousingMeterGuid!)
+    } = useConnectedPlugList(currentHousingMeterGuid!, parseInt(houseId))
     const { formatMessage } = useIntl()
 
     const connectedPlugsCells: ICell<IConnectedPlug>[] = [

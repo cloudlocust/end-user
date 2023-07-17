@@ -8,14 +8,22 @@ import { useIntl } from 'react-intl'
 import {
     IConnectedPlug,
     IConnectedPlugApiResponse,
+    IConnectedPlugTypeApiResponse,
     IShellyConnectedPlugLink,
+    connectedPlugTypeEnum,
 } from 'src/modules/MyHouse/components/ConnectedPlugs/ConnectedPlugs.d'
 import { isNull } from 'lodash'
+import { HOUSING_API } from 'src/modules/MyHouse/components/HousingList/HousingsHooks'
 
 /**
  * Connected Plug requests API.
  */
-export const CONNECTED_PLUG_CONSENT_API = `${API_RESOURCES_URL}/shelly/consent`
+export const CONNECTED_PLUG_API = `${API_RESOURCES_URL}/shelly`
+
+/**
+ * Connected Plug Consent requests API.
+ */
+export const CONNECTED_PLUG_CONSENT_API = `${CONNECTED_PLUG_API}/consent`
 
 /**
  * Connected Plug requests API.
@@ -23,13 +31,26 @@ export const CONNECTED_PLUG_CONSENT_API = `${API_RESOURCES_URL}/shelly/consent`
 export const SHELLY_CONNECTED_PLUG_LINK_API = `${CONNECTED_PLUG_CONSENT_API}/link`
 
 /**
+ * API to associate a connected plug in production mode.
+ */
+export const ASSOCIATE_CONNECTED_PLUG_API = `${CONNECTED_PLUG_API}/associate`
+
+/**
+ * Function to GET_CONNECTED_PLUG_TYPE_API.
+ *
+ * @param housingId HousingId.
+ * @returns API URL of Connected Plug Type.
+ */
+export const GET_CONNECTED_PLUG_TYPE_API = (housingId: number) => `${HOUSING_API}/${housingId}/plugs-associations`
+/**
  * Hook to get Connected Plug Consent list.
  *
  * @param meterGuid Meter GUID.
+ * @param housingId Housing Id.
  * @param immediate Indicates If useConnectedPlugList should be called on instanciation.
  * @returns Hook useConnectedPlugList.
  */
-export function useConnectedPlugList(meterGuid: string, immediate: boolean = true) {
+export function useConnectedPlugList(meterGuid: string, housingId: number, immediate: boolean = true) {
     const { enqueueSnackbar } = useSnackbar()
     const { formatMessage } = useIntl()
     const [loadingInProgress, setLoadingInProgress] = useState(false)
@@ -43,13 +64,29 @@ export function useConnectedPlugList(meterGuid: string, immediate: boolean = tru
     const loadConnectedPlugList = useCallback(async () => {
         setLoadingInProgress(true)
         try {
-            const { data: responseData } = await axios.get<IConnectedPlugApiResponse>(
+            const { data: connectedPlugConsentData } = await axios.get<IConnectedPlugApiResponse>(
                 `${CONNECTED_PLUG_CONSENT_API}/${meterGuid}`,
                 {
                     cancelToken: source.current.token,
                 },
             )
-            setConnectedPlugList(responseData.devices)
+            const { data: connectedPlugTypeData } = await axios.get<IConnectedPlugTypeApiResponse>(
+                GET_CONNECTED_PLUG_TYPE_API(housingId),
+                {
+                    cancelToken: source.current.token,
+                },
+            )
+            const responseData: IConnectedPlug[] = connectedPlugConsentData.devices.map((connectedPlugConsent) => {
+                const foundConnectedPlugType = connectedPlugTypeData.find(
+                    (connectedPlugType) => connectedPlugType.deviceId === connectedPlugConsent.deviceId,
+                )
+                return {
+                    ...connectedPlugConsent,
+                    type: foundConnectedPlugType ? foundConnectedPlugType.type : null,
+                }
+            })
+
+            setConnectedPlugList(responseData)
         } catch (error) {
             if (isCancel(error)) return
             enqueueSnackbar(
@@ -61,7 +98,7 @@ export function useConnectedPlugList(meterGuid: string, immediate: boolean = tru
             )
         }
         setLoadingInProgress(false)
-    }, [formatMessage, enqueueSnackbar, meterGuid, isCancel, source])
+    }, [formatMessage, enqueueSnackbar, meterGuid, isCancel, source, housingId])
 
     // Happens everytime dependencies change, doesn't happen first time hook is instanciated.
     useEffect(() => {
@@ -79,10 +116,57 @@ export function useConnectedPlugList(meterGuid: string, immediate: boolean = tru
         }
     }, [immediate, loadConnectedPlugList])
 
+    /**
+     * Handler to set production mode in a connected plug.
+     *
+     * @param associate Indicate if the connected plug should be associated in production mode or not.
+     */
+    const associateConnectedPlug = useCallback(
+        async (connectedPlugId: string, housingId: number, associate: boolean = true) => {
+            setLoadingInProgress(true)
+            try {
+                await axios.post(
+                    `${ASSOCIATE_CONNECTED_PLUG_API}`,
+                    {
+                        deviceId: connectedPlugId,
+                        housingId,
+                        state: associate ? 'production' : null,
+                    },
+                    {
+                        cancelToken: source.current.token,
+                    },
+                )
+                setLoadingInProgress(false)
+                return true
+            } catch (error) {
+                if (isCancel(error)) return
+                enqueueSnackbar(
+                    formatMessage({
+                        id: 'Erreur lors de la liaison de la prise connectée',
+                        defaultMessage: 'Erreur lors de la liaison de la prise connectée',
+                    }),
+                    { variant: 'error' },
+                )
+                setLoadingInProgress(false)
+            }
+        },
+        [enqueueSnackbar, formatMessage, isCancel, source],
+    )
+
+    /**
+     * Get The Production mode Connected Plug if found.
+     *
+     * @returns The production mode connected plug if found.
+     */
+    const getProductionConnectedPlug = () => {
+        return connectedPlugList.find((connectedPlug) => connectedPlug.type === connectedPlugTypeEnum.production)
+    }
     return {
         loadingInProgress,
         loadConnectedPlugList,
         connectedPlugList,
+        associateConnectedPlug,
+        getProductionConnectedPlug,
     }
 }
 
@@ -120,23 +204,26 @@ export const useShellyConnectedPlugs = (housingId: number) => {
                 )
                 if (!newShellyWindow) throw Error()
 
+                // Close previous window with previous timer, and allow only one.
+                if (shellyWindow.current) {
+                    shellyWindow.current.close()
+                    // Clear previous timer.
+                    if (!isNull(timerShellyWindowListener.current)) clearInterval(timerShellyWindowListener.current)
+                }
+
                 // Opens a popup and detect the close of the popup no matter the url in the popup.
                 // Reference: https://stackoverflow.com/a/48240128
                 if (onCloseShellyWindow) {
                     timerShellyWindowListener.current = setInterval(function () {
                         if (newShellyWindow.closed) {
                             onCloseShellyWindow()
-                            // Clear previous timer.
+                            // Clear The current timer.
                             if (!isNull(timerShellyWindowListener.current))
                                 clearInterval(timerShellyWindowListener.current)
                         }
                     }, 1000)
                 }
 
-                // Close previous window, and allow only one.
-                if (shellyWindow.current) {
-                    shellyWindow.current.close()
-                }
                 shellyWindow.current = newShellyWindow
             } catch (error) {
                 enqueueSnackbar(

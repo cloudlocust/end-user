@@ -61,6 +61,8 @@ export const MeterStatus = () => {
         enphaseConsent,
         enphaseLink,
         getEnphaseLink,
+        isEnphaseConsentLoading,
+        revokeEnphaseConsent,
     } = useConsents()
     const { housingList } = useSelector(({ housingModel }: RootState) => housingModel)
     const [foundHousing, setFoundHousing] = useState<IHousing>()
@@ -396,10 +398,16 @@ export const MeterStatus = () => {
                         </Tooltip>
                         <Divider orientation={mdDown ? 'horizontal' : undefined} flexItem variant="fullWidth" />
                         <SolarProductionConsentStatus
-                            solarProductionConsentLoadingInProgress={consentsLoading}
+                            solarProductionConsentLoadingInProgress={consentsLoading || isEnphaseConsentLoading}
                             solarProductionConsent={!foundHousing ? undefined : enphaseConsent}
                             enphaseLink={enphaseLink}
                             getEnphaseLink={getEnphaseLink}
+                            onRevokeEnphaseConsent={async () => {
+                                // When revoking enphase Consent means there is foundHousing.meter.guid
+                                await revokeEnphaseConsent(`${foundHousing?.meter?.guid}`)
+                                getConsents(`${foundHousing?.meter?.guid}`, parseInt(houseId))
+                            }}
+                            housing={foundHousing}
                         />
                     </div>
                 </MuiCardContent>

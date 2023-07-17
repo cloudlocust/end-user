@@ -51,10 +51,7 @@ const CONTACT_MAIL_MESSAGE = 'Contacter support@myem.fr'
 
 const VERIFY_METER_MESSAGE = "Vérification de l'existence de votre compteur"
 const CREATION_ENEDIS_SGE_CONSENT_TEXT = `${sgeConsentMessage}`
-
-const ERROR_ENPHASE_MESSAGE = 'Connectez votre onduleur Enphase'
-const PENDING_ENPHASE_MESSAGE = 'Votre connexion est en cours et sera active dans les plus brefs délais'
-
+const REVOKE_ENPHASE_CONSENT_TEXT = 'Annuler la récolte de mes données'
 const CREATED_AT = '2022-09-02T08:06:08Z'
 
 let mockNrlinkConsent: nrlinkConsentStatus
@@ -68,15 +65,16 @@ let mockWindowOpen = jest.fn()
 window.open = mockWindowOpen
 let mockSetIsMeterVerifyLoading = jest.fn()
 let mockisMeterVerifyLoading = false
+let mockIsEnphaseConsentLoading = false
 let mockMeterVerificationEnum = MeterVerificationEnum.NOT_VERIFIED
 let mockHouseId = TEST_MOCKED_HOUSES[0].id
 let mockCreateEnedisSgeConsent = jest.fn()
 let mockSetMeterVerification = jest.fn()
 let mockEditMeter = jest.fn()
+const circularProgressClassname = '.MuiCircularProgress-root'
+let mockRevokeEnphaseConsent = jest.fn()
 // eslint-disable-next-line sonarjs/no-duplicate-string
 const STATUS_ON_SRC = './assets/images/content/housing/consent-status/meter-on.svg'
-// eslint-disable-next-line sonarjs/no-duplicate-string
-const STATUS_OFF_SRC = './assets/images/content/housing/consent-status/meter-off.svg'
 
 jest.mock('src/modules/Meters/metersHook', () => ({
     // eslint-disable-next-line jsdoc/require-jsdoc
@@ -84,6 +82,16 @@ jest.mock('src/modules/Meters/metersHook', () => ({
     // eslint-disable-next-line jsdoc/require-jsdoc
     useMeterForHousing: () => ({
         editMeter: mockEditMeter,
+    }),
+}))
+
+// Mock useInstallationRequestsList hook
+jest.mock('src/modules/MyHouse/components/ConnectedPlugs/connectedPlugsHook', () => ({
+    ...jest.requireActual('src/modules/MyHouse/components/ConnectedPlugs/connectedPlugsHook'),
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    useConnectedPlugList: () => ({
+        // eslint-disable-next-line jsdoc/require-jsdoc
+        getProductionConnectedPlug: () => undefined,
     }),
 }))
 
@@ -129,6 +137,8 @@ jest.mock('src/modules/Consents/consentsHook', () => ({
         isMeterVerifyLoading: mockisMeterVerifyLoading,
         meterVerification: mockMeterVerificationEnum,
         setMeterVerification: mockSetMeterVerification,
+        revokeEnphaseConsent: mockRevokeEnphaseConsent,
+        isEnphaseConsentLoading: mockIsEnphaseConsentLoading,
     }),
 }))
 
@@ -328,43 +338,31 @@ describe('MeterStatus component test', () => {
         })
     })
     describe('enphase status', () => {
-        test('when enphase status is ACTIVE', async () => {
+        test('when revoking enphase status', async () => {
             foundHouse!.meter!.guid = '12345Her'
             mockEnphaseConsent = 'ACTIVE'
-            const { getByText, getByAltText } = reduxedRender(
-                <Router>
-                    <MeterStatus />
-                </Router>,
-            )
-            expect(getByText(`Connexion le ${dayjs(CREATED_AT).format('DD/MM/YYYY')}`)).toBeTruthy()
-            const activeIcon = getByAltText('enphase-active-icon')
-            expect(activeIcon).toHaveAttribute('src', STATUS_ON_SRC)
-        })
-        test('when enphase status is NOT ACTIVE', async () => {
-            foundHouse!.meter!.guid = '12345Her'
-            mockEnphaseConsent = 'EXPIRED' || 'NONEXISTENT'
-            const { getByText, getByAltText } = reduxedRender(
-                <Router>
-                    <MeterStatus />
-                </Router>,
-            )
-            const activeIcon = getByAltText('enphase-off-icon')
-            expect(getByText(ERROR_ENPHASE_MESSAGE)).toBeTruthy()
-            expect(activeIcon).toHaveAttribute('src', STATUS_OFF_SRC)
-        })
-        test('when enphase status is PENDING', async () => {
-            foundHouse!.meter!.guid = '12345Her'
-            mockEnphaseConsent = 'PENDING'
-
             const { getByText } = reduxedRender(
                 <Router>
                     <MeterStatus />
                 </Router>,
             )
+            userEvent.click(getByText(REVOKE_ENPHASE_CONSENT_TEXT))
+            await waitFor(() => {
+                expect(mockRevokeEnphaseConsent).toHaveBeenCalledWith(foundHouse?.meter?.guid)
+            })
+            expect(mockGetConsent).toHaveBeenCalledWith(foundHouse?.meter?.guid, mockHouseId)
+        })
+        test('when revoking enphase and isEnphaseLoading, spinner should be shown', async () => {
+            foundHouse!.meter!.guid = '12345Her'
+            mockEnphaseConsent = 'ACTIVE'
+            mockIsEnphaseConsentLoading = true
+            const { container } = reduxedRender(
+                <Router>
+                    <MeterStatus />
+                </Router>,
+            )
 
-            // Children of <Icon> </Icon>
-            expect(getByText('replay')).toBeTruthy()
-            expect(getByText(PENDING_ENPHASE_MESSAGE)).toBeTruthy()
+            expect(container.querySelector(circularProgressClassname)).toBeInTheDocument()
         })
     })
     describe('test implementation of EnedisSgePopup', () => {

@@ -4,6 +4,16 @@
 export type connectedPlugConsentStateType = 'APPROVED' | 'DENIED'
 
 /**
+ * Enum Connected Plug Type.
+ */
+export enum connectedPlugTypeEnum {
+    /**
+     * Production state.
+     */
+    production = 'production',
+}
+
+/**
  * Enum representing the connected plug consent state.
  */
 export enum connectedPlugConsentStateEnum {
@@ -18,10 +28,24 @@ export enum connectedPlugConsentStateEnum {
 }
 
 /**
+ * Connected Plug Type model.
+ */
+// eslint-disable-next-line jsdoc/require-jsdoc
+export type IConnectedPlugType = {
+    /**
+     * Connected Plug Id.
+     */
+    deviceId: string
+    /**
+     * Connected Plug Type.
+     */
+    type: connectedPlugTypeEnum | null
+}
+/**
  * Connected Plug Consent model.
  */
 // eslint-disable-next-line jsdoc/require-jsdoc
-export type IConnectedPlug = {
+export type IConnectedPlugConsent = {
     /**
      * Connected Plug Id.
      */
@@ -37,6 +61,11 @@ export type IConnectedPlug = {
 }
 
 /**
+ * Connected Plug model.
+ */
+export type IConnectedPlug = IConnectedPlugConsent & Omit<IConnectedPlugType, 'deviceId'>
+
+/**
  * Format of Connected Plug from Api.
  */
 // eslint-disable-next-line jsdoc/require-jsdoc
@@ -48,8 +77,14 @@ export type IConnectedPlugApiResponse = {
     /**
      * Connected Plugs.
      */
-    devices: IConnectedPlug[]
+    devices: IConnectedPlugConsent[]
 }
+
+/**
+ * Format of Connected Plug from Api.
+ */
+// eslint-disable-next-line jsdoc/require-jsdoc
+export type IConnectedPlugTypeApiResponse = IConnectedPlugType[]
 
 /**
  * Format of Connected Connected Plugs Header Props.
@@ -75,4 +110,23 @@ export type IShellyConnectedPlugLink = {
      * Shelly Url.
      */
     url: string
+}
+
+/**
+ * Connected Plug Associate Body Type.
+ */
+// eslint-disable-next-line jsdoc/require-jsdoc
+export type connectedPlugAssociateBodyType = {
+    /**
+     * Housing Id.
+     */
+    housingId: number
+    /**
+     * Connected Plug Id.
+     */
+    deviceId
+    /**
+     * Mode of the connected plug.
+     */
+    state: 'production' | null
 }

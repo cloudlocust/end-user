@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import { useIntl } from 'react-intl'
 import { Button, Box, FormControlLabel, FormControl, RadioGroup, Radio } from '@mui/material'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import { ISelectConnectedPlugProductionList } from 'src/modules/MyHouse/components/MeterStatus/MeterStatus.d'
@@ -13,8 +12,6 @@ import { ISelectConnectedPlugProductionList } from 'src/modules/MyHouse/componen
  * @returns Select Connected Plug Production List.
  */
 const ConnectedPlugProductionListSelect = ({ connectedPlugList, onSubmit }: ISelectConnectedPlugProductionList) => {
-    const { formatMessage } = useIntl()
-
     const [selectedConnectedPlug, setSelectedConnectedPlug] = useState<string | null>(null)
 
     /**
@@ -29,11 +26,12 @@ const ConnectedPlugProductionListSelect = ({ connectedPlugList, onSubmit }: ISel
     return (
         <Box>
             <div className="flex flex-col items-center justify-center h-full gap-20">
-                <TypographyFormatMessage>
-                    {formatMessage({
-                        id: `Sélectionnez la prise connectée Shelly utilisée pour panneau plug&play`,
-                        defaultMessage: `Sélectionnez la prise connectée Shelly utilisée pour panneau plug&play`,
-                    })}
+                <TypographyFormatMessage variant="h6" className="text-center font-semibold text-16 md:text-20">
+                    Prises connectées
+                </TypographyFormatMessage>
+
+                <TypographyFormatMessage className="text-13 md:text-16">
+                    {`Sélectionnez la prise connectée Shelly utilisée pour panneau plug&play`}
                 </TypographyFormatMessage>
 
                 <Box
