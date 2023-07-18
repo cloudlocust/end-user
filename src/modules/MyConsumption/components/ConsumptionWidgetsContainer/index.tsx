@@ -10,7 +10,6 @@ import { getWidgetInfoIcon } from 'src/modules/MyConsumption/components/WidgetIn
 import WidgetConsumption from 'src/modules/MyConsumption/components/WidgetConsumption'
 import { ConsumptionWidgetsMetricsContext } from 'src/modules/MyConsumption/components/ConsumptionWidgetsContainer/ConsumptionWidgetsMetricsContext'
 import { metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
-import { isWidgetMonthlyMetrics } from 'src/modules/MyConsumption/components/Widget/WidgetFunctions'
 import WidgetIdleConsumption from 'src/modules/MyConsumption/components/WidgetIdleConsumption'
 
 const renderedWidgets = globalProductionFeatureState
@@ -70,7 +69,7 @@ const ConsumptionWidgetsContainer = ({
                             target={metricTargetsEnum.consumption}
                             range={range}
                             filters={filters}
-                            metricsInterval={period === 'monthly' ? '1M' : metricsInterval}
+                            metricsInterval={metricsInterval}
                             period={period}
                             infoIcon={getWidgetInfoIcon({
                                 widgetTarget: metricTargetsEnum.consumption,
@@ -101,7 +100,7 @@ const ConsumptionWidgetsContainer = ({
                                 target={target}
                                 range={range}
                                 filters={filters}
-                                metricsInterval={isWidgetMonthlyMetrics(target, period) ? '1M' : metricsInterval}
+                                metricsInterval={metricsInterval}
                                 period={period}
                                 infoIcon={getWidgetInfoIcon({
                                     widgetTarget: target,

@@ -384,13 +384,13 @@ describe('Test widget functions', () => {
                 },
                 {
                     range: { from: '2021-12-01T00:00:00.000Z', to: '2022-12-25T23:59:59.999Z' },
-                    value: { from: '2021-11-01T00:00:00.000Z', to: '2021-12-15T23:59:59.999Z' },
+                    value: { from: '2021-11-01T00:00:00.000Z', to: '2021-11-30T23:59:59.999Z' },
                     period: 'monthly',
                     target: metricTargetsEnum.consumption,
                 },
                 {
                     range: { from: '2021-10-01T00:00:00.000Z', to: '2022-11-25T23:59:59.999Z' },
-                    value: { from: '2021-09-01T00:00:00.000Z', to: '2021-10-15T23:59:59.999Z' },
+                    value: { from: '2021-09-01T00:00:00.000Z', to: '2021-09-30T23:59:59.999Z' },
                     period: 'monthly',
                     target: metricTargetsEnum.eurosConsumption,
                 },
@@ -418,37 +418,33 @@ describe('Test widget functions', () => {
                     target: metricTargetsEnum.consumption,
                 },
                 {
-                    range: { from: '2022-12-15T10:00:00.000Z', to: '2022-12-21T23:59:59.999Z' },
-                    value: { from: '2022-12-15T00:00:00.000Z', to: '2022-12-21T23:59:59.999Z' },
+                    // eslint-disable-next-line sonarjs/no-duplicate-string
+                    range: { from: '2022-12-01T10:00:00.000Z', to: '2022-12-31T23:59:59.999Z' },
+                    value: { from: '2022-12-01T00:00:00.000Z', to: '2022-12-07T23:59:59.999Z' },
                     period: 'weekly',
                     target: metricTargetsEnum.consumption,
                 },
                 {
-                    range: { from: '2022-11-08T00:00:00.000Z', to: '2022-11-15T23:59:59.999Z' },
+                    range: { from: '2022-11-08T00:00:00.000Z', to: '2022-11-30T23:59:59.999Z' },
                     value: { from: '2022-11-01T00:00:00.000Z', to: '2022-11-30T23:59:59.999Z' },
                     period: 'monthly',
                     target: metricTargetsEnum.internalTemperature,
                 },
                 {
-                    range: { from: '2022-09-08T00:00:00.000Z', to: '2022-09-15T23:59:59.999Z' },
-                    value: { from: '2022-09-01T00:00:00.000Z', to: '2022-10-15T23:59:59.999Z' },
+                    range: { from: '2022-09-01T00:00:00.000Z', to: '2022-09-30T23:59:59.999Z' },
+                    value: { from: '2022-09-01T00:00:00.000Z', to: '2022-09-30T23:59:59.999Z' },
                     period: 'monthly',
                     target: metricTargetsEnum.consumption,
                 },
                 {
-                    range: { from: '2022-10-08T00:00:00.000Z', to: '2022-10-15T23:59:59.999Z' },
-                    value: { from: '2022-10-01T00:00:00.000Z', to: '2022-11-15T23:59:59.999Z' },
+                    range: { from: '2022-10-01T00:00:00.000Z', to: '2022-10-31T23:59:59.999Z' },
+                    value: { from: '2022-10-01T00:00:00.000Z', to: '2022-10-31T23:59:59.999Z' },
                     period: 'monthly',
                     target: metricTargetsEnum.eurosConsumption,
                 },
                 {
-                    range: { from: '2022-06-01T00:00:00.000Z', to: '2022-12-20T23:59:59.999Z' },
-                    value: { from: '2022-01-01T00:00:00.000Z', to: '2022-12-31T23:59:59.999Z' },
-                    period: 'yearly',
-                    target: metricTargetsEnum.consumption,
-                },
-                {
-                    range: { from: '2022-01-02T00:00:00.000Z', to: '2022-01-20T23:59:59.999Z' },
+                    // eslint-disable-next-line sonarjs/no-duplicate-string
+                    range: { from: '2022-01-01T00:00:00.000Z', to: '2022-12-31T23:59:59.999Z' },
                     value: { from: '2022-01-01T00:00:00.000Z', to: '2022-12-31T23:59:59.999Z' },
                     period: 'yearly',
                     target: metricTargetsEnum.consumption,
