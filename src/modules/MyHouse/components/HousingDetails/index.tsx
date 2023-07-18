@@ -4,8 +4,12 @@ import { useParams } from 'react-router'
 
 import FusePageCarded from 'src/common/ui-kit/fuse/components/FusePageCarded'
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz'
+import ElectricalServicesIcon from '@mui/icons-material/ElectricalServices'
 import HousingDetailsCard from 'src/modules/MyHouse/components/HousingDetails/HousingDetailsCard'
-import { HouseDetailsElementType } from 'src/modules/MyHouse/components/HousingDetails/housingDetails'
+import {
+    HouseDetailsElementType,
+    HousingCardTypeOfDetailsEnum,
+} from 'src/modules/MyHouse/components/HousingDetails/housingDetails.d'
 import { ReactComponent as SuperficieIcon } from 'src/assets/images/content/housing/Superficie.svg'
 import { ReactComponent as OccupantIcon } from 'src/assets/images/content/housing/Occupant.svg'
 import { ReactComponent as MainIcon } from 'src/assets/images/content/housing/Main.svg'
@@ -22,10 +26,10 @@ import { ReactComponent as ElectricityIcon } from 'src/assets/images/content/hou
 import { ReactComponent as GazIcon } from 'src/assets/images/content/housing/Gaz.svg'
 import HousingCard from 'src/modules/MyHouse/components/HousingCard'
 import { useSelector } from 'react-redux'
-import CircularProgress from '@mui/material/CircularProgress'
 import { RootState } from 'src/redux'
-import { isEmpty } from 'lodash'
+import { cloneDeep, isEmpty } from 'lodash'
 import { connectedPlugsFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
+import { useConnectedPlugList } from 'src/modules/MyHouse/components/ConnectedPlugs/connectedPlugsHook'
 
 const Root = styled(FusePageCarded)(() => ({
     '& .FusePageCarded-header': {
@@ -62,6 +66,12 @@ export const HousingDetails = () => {
 
     const housingId = parseInt(houseId)
 
+    const currentHousing = housingList.find((housing) => housing.id === Number(houseId))
+    const { connectedPlugList, loadingInProgress: isConnectedPlugListLoading } = useConnectedPlugList(
+        currentHousing?.meter?.guid!,
+        Number(houseId),
+    )
+
     const {
         accomodation,
         isAccomodationMeterListEmpty,
@@ -85,7 +95,8 @@ export const HousingDetails = () => {
         },
     ])
 
-    const connectedPlugsElements: HouseDetailsElementType[] = [
+    // By default having default connected plug elements when loading.
+    const [connectedPlugsElements, setConnectedPlugsElements] = useState<HouseDetailsElementType[]>([
         {
             icon: <MoreHorizIcon color="primary" fontSize="large" />,
             label: 'Prise 1',
@@ -98,7 +109,7 @@ export const HousingDetails = () => {
             icon: <MoreHorizIcon color="primary" fontSize="large" />,
             label: 'Prise 3',
         },
-    ]
+    ])
 
     // Then once elements are loaded handle each icon based on it's equipementType.
     useEffect(() => {
@@ -175,13 +186,25 @@ export const HousingDetails = () => {
         },
     ]
 
-    if (!housingList || isEmpty(housingList))
-        return (
-            <div className="flex flex-col justify-center items-center w-full h-full" style={{ height: '320px' }}>
-                <CircularProgress size={32} />
-            </div>
-        )
-    const currentHousing = housingList.find((housing) => housing.id === Number(houseId))
+    // Once connectedPlugList are loaded handle the top three label and icon.
+    useEffect(() => {
+        // PreviousConnectedPlugsElements will always have three elements.
+        // We update the previous connected plugs elements by the latest fetched connectedPlugList top three if exist.
+        setConnectedPlugsElements((prevConnectedPlugsElements) => {
+            const copyPrevConnectedPlugsElements = cloneDeep(prevConnectedPlugsElements)
+            // Reset Icons.
+            copyPrevConnectedPlugsElements.forEach((connectedPlugElement) => {
+                connectedPlugElement.icon = <MoreHorizIcon color="primary" fontSize="large" />
+            })
+
+            connectedPlugList.slice(0, 3).forEach((connectedPlug, index) => {
+                copyPrevConnectedPlugsElements[index].label = 'Prise ' + connectedPlug.deviceId
+                copyPrevConnectedPlugsElements[index].icon = <ElectricalServicesIcon color="primary" fontSize="large" />
+            })
+            return copyPrevConnectedPlugsElements
+        })
+    }, [connectedPlugList])
+
     return (
         <Root
             header={
@@ -196,14 +219,14 @@ export const HousingDetails = () => {
                         <HousingDetailsCard
                             title="Informations logement"
                             elements={housingElements}
-                            typeOfDetails="accomodation"
+                            typeOfDetails={HousingCardTypeOfDetailsEnum.ACCOMODATION}
                             isConfigured={!isAccomodationMeterListEmpty}
                             loadingInProgress={loadingAccomodationInProgress}
                         />
                         <HousingDetailsCard
                             title="Informations équipements"
                             elements={equipementElements}
-                            typeOfDetails="equipments"
+                            typeOfDetails={HousingCardTypeOfDetailsEnum.EQUIPMENTS}
                             isConfigured={!isEquipmentMeterListEmpty}
                             loadingInProgress={loadingEquipmentInProgress}
                         />
@@ -214,9 +237,9 @@ export const HousingDetails = () => {
                             <HousingDetailsCard
                                 title="Mes prises connectées"
                                 elements={connectedPlugsElements}
-                                typeOfDetails="connectedPlugs"
-                                isConfigured={false}
-                                loadingInProgress={false}
+                                typeOfDetails={HousingCardTypeOfDetailsEnum.CONNECTED_PLUGS}
+                                isConfigured={!isEmpty(connectedPlugList)}
+                                loadingInProgress={isConnectedPlugListLoading}
                             />
                         ) : null}
                     </div>

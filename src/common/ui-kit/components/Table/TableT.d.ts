@@ -30,7 +30,7 @@ interface IMobileTableProps<rowType> {
      * JSX Element of Row Actions.
      */
     // eslint-disable-next-line jsdoc/require-jsdoc
-    RowActionsElement: ({ row }: { row: rowType }) => JSX.Element
+    RowActionsElement?: ({ row }: { row: rowType }) => JSX.Element
     /**
      * Rows record of the table.
      */
@@ -83,7 +83,7 @@ interface ITable<rowType> {
      * JSX Element of Row Content.
      */
     // eslint-disable-next-line jsdoc/require-jsdoc
-    MobileRowActionsElement: ({ row }: { row: rowType }) => JSX.Element
+    MobileRowActionsElement?: ({ row }: { row: rowType }) => JSX.Element
     /**
      * Function to be called when page change.
      */

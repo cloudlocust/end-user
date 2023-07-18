@@ -16,6 +16,7 @@ import { ecowattEndpoints } from 'src/mocks/handlers/ecowatt'
 import { consumptionAlertsEndpoints } from 'src/mocks/handlers/consumptionAlerts'
 import { ecogestesEndpoints } from 'src/mocks/handlers/ecogestes'
 import { novuALertPreferencesEndpoints } from './handlers/novuAlertPreferences'
+import { connectedPlugsEndpoints } from 'src/mocks/handlers/connectedPlugs'
 
 /**
  * Handlers to mock urls for tests.
@@ -53,6 +54,8 @@ const handlers = [
     ...ecogestesEndpoints,
     /***** Novu Alert Preferences endpoint. */
     ...novuALertPreferencesEndpoints,
+    /***** Connected Plug Consent State endpoint. */
+    ...connectedPlugsEndpoints,
 ]
 
 // This configures a request mocking server with the given request handlers.
