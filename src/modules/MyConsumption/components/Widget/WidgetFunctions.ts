@@ -208,6 +208,7 @@ export const computeWidgetAssets = (data: IMetric[], type: metricTargetType) => 
     }
 }
 
+// ! When fetching current month data, the backend cannot retrieve the data since the month hasn't ended yet.
 /**
  * Utility Function helps not to break previous logic.
  * This function makes sure that Consumption, EurosConsumption, AutoConsumption Widgets fetches the monthly metrics when period is monthly.
