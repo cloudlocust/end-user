@@ -264,10 +264,10 @@ export const renderWidgetTitle = (target: metricTargetType): widgetTitleType => 
  *
  * @param range Range from metrics.
  * @param period Period give.
- * @param target Widget Target.
+ * @param _target Widget Target.
  * @returns Previous range according from period, if "daily" returns range (startOf: fromDate-1, endOf: fromDate-1). If "weekly" returns range (startOf: fromDate week-1, endOf: fromDate-1). If "monthly" returns range (startOf: fromDate month-1, endOf: fromDate month-1). If "yearly" returns range (startOf: fromDate year-1, endOf: fromDate year-1).
  */
-export const getWidgetPreviousRange = (range: metricRangeType, period: periodType, target: metricTargetType) => {
+export const getWidgetPreviousRange = (range: metricRangeType, period: periodType, _target: metricTargetType) => {
     // Extract only the date, so that new Date don't create a date including the timezone.
     const fromDate = new Date(range.from.split('T')[0])
     switch (period) {
@@ -284,14 +284,7 @@ export const getWidgetPreviousRange = (range: metricRangeType, period: periodTyp
         case 'monthly':
             return {
                 from: getDateWithoutTimezoneOffset(startOfMonth(subMonths(fromDate, 1))),
-                to: isWidgetMonthlyMetrics(target, period)
-                    ? // Same as getWidgetRange, this gets the previous range, which ensures a correct comparaison with current range and the previous range.
-                      // For the widgets that'll show the sum from the monthly metrics request.
-                      // Adding 15 days will ensure to receive that sum.
-                      // Example: To see consumption of 04/2022, A query request will be made with metricsInterval '1M' and make range [from: 01/04/2022 - to: 15/05/2022]
-                      // This will make sure the response result, contains the metric for 04/2022 as first element, and if there is a second element it'll be null, because we're requesting whole month data when we give only 15/05
-                      getDateWithoutTimezoneOffset(addDays(endOfMonth(subMonths(fromDate, 1)), 15))
-                    : getDateWithoutTimezoneOffset(endOfMonth(subMonths(fromDate, 1))),
+                to: getDateWithoutTimezoneOffset(endOfMonth(subMonths(fromDate, 1))),
             }
         case 'yearly':
             return {
@@ -306,14 +299,14 @@ export const getWidgetPreviousRange = (range: metricRangeType, period: periodTyp
  *
  * @param range Range from metrics.
  * @param period Period give.
- * @param target Metric Target type.
+ * @param _target Metric Target type.
  * @returns Range according to period.
  * - When "daily" range should be [start, end] of same day.
  * - When "weekly" range should be a week starting with the fromDate day of given range.
  * - When "monthly" range should be [start, end] of same month.
  * - When "yearly" range should be [start, end] of same year.
  */
-export const getWidgetRange = (range: metricRangeType, period: periodType, target: metricTargetType) => {
+export const getWidgetRange = (range: metricRangeType, period: periodType, _target: metricTargetType) => {
     // Extract only the date, so that new Date don't create a date including the timezone.
     const fromDate = startOfDay(new Date(range.from))
     switch (period) {
@@ -330,13 +323,7 @@ export const getWidgetRange = (range: metricRangeType, period: periodType, targe
         case 'monthly':
             return {
                 from: getDateWithoutTimezoneOffset(startOfMonth(fromDate)),
-                to: isWidgetMonthlyMetrics(target, period)
-                    ? // For the widgets that'll show the sum from the monthly metrics request.
-                      // Adding 15 days will ensure to receive that sum.
-                      // Example: To see consumption of 04/2022, A query request will be made with metricsInterval '1M' and make range [from: 01/04/2022 - to: 15/05/2022]
-                      // This will make sure the response result, contains the metric for 04/2022 as first element, and if there is a second element it'll be null, because we're requesting whole month data when we give only 15/05
-                      getDateWithoutTimezoneOffset(addDays(endOfMonth(fromDate), 15))
-                    : getDateWithoutTimezoneOffset(endOfMonth(fromDate)),
+                to: getDateWithoutTimezoneOffset(endOfMonth(fromDate)),
             }
         case 'yearly':
             return {
