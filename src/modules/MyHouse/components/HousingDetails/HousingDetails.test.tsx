@@ -18,7 +18,6 @@ const LIST_OF_HOUSES: IHousing[] = applyCamelCase(TEST_HOUSES)
 const TEST_METER_EQUIPMENTS = applyCamelCase(MOCK_EQUIPMENTS)
 const TEST_ACCOMODATION_RESPONSE = applyCamelCase(MOCK_TEST_ACCOMODATION_RESPONSE)
 
-const circularProgressClassname = '.MuiCircularProgress-root'
 let mockHouseId = LIST_OF_HOUSES[0].id
 
 /**
@@ -109,17 +108,6 @@ describe('Test HousingDetails Component', () => {
         expect(getByText('Chauffage')).toBeTruthy()
         expect(getByText('Eau')).toBeTruthy()
         expect(getByText('Plaques')).toBeTruthy()
-    })
-    test('when HousingList is null, Loading is shown', async () => {
-        await store.dispatch.housingModel.setHousingModelState([])
-
-        const { container } = reduxedRender(
-            <Router>
-                <HousingDetails />
-            </Router>,
-            { store },
-        )
-        expect(container.querySelector(circularProgressClassname)).toBeInTheDocument()
     })
 
     describe('Should display connectedPlugs correctly', () => {

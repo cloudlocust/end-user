@@ -10,40 +10,27 @@ import Modal from '@mui/material/Modal'
 import Box from '@mui/material/Box'
 import SvgIcon from '@mui/material/SvgIcon'
 import { ReactComponent as HousingIcon } from 'src/assets/images/navbarItems/Housings.svg'
-import { IHousing } from 'src/modules/MyHouse/components/HousingList/housing.d'
 import { useHousingsDetails } from 'src/modules/MyHouse/components/HousingList/HousingsHooks'
 import { deleteAddFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
 import Tooltip from '@mui/material/Tooltip'
 
-import { useDispatch } from 'react-redux'
-import { Dispatch } from 'src/redux'
+import { useDispatch, useSelector } from 'react-redux'
+import { Dispatch, RootState } from 'src/redux'
 import { HousingCardForm } from 'src/modules/MyHouse/components/HousingCardForm'
 
 /**
- * This is a card for the display of a logement item.
+ * This is a card to display the infos of the current housing (selected housing).
  *
- * @param props Props.
- * @param props.element Logement object we cant to display.
  * @returns Card.
  */
-const HousingCard = ({
-    element: logement,
-}: /**
- * Props Typing.
- */
-{
-    /**
-     * The fields required for the display of the logement.
-     */
-    element: IHousing
-}) => {
+const HousingCard = () => {
     const { formatMessage } = useIntl()
+    const dispatch = useDispatch<Dispatch>()
 
     const [confirmModalOpen, setConfirmModalOpen] = React.useState(false)
 
     const { removeHousing } = useHousingsDetails()
-
-    const dispatch = useDispatch<Dispatch>()
+    const { currentHousing } = useSelector(({ housingModel }: RootState) => housingModel)
 
     const MY_HOUSING_AT = formatMessage({
         id: 'Mon Logement à ',
@@ -103,12 +90,12 @@ const HousingCard = ({
                     <div className="flex justify-between">
                         <div className="flex items-center jutsify-center">
                             <Typography className="font-bold text-16 whitespace-normal">
-                                {MY_HOUSING_AT + logement.address.city.toUpperCase()}
+                                {MY_HOUSING_AT + currentHousing!.address.city.toUpperCase()}
                             </Typography>
                         </div>
                         <div className="ml-12 flex">
                             <HousingCardForm
-                                housing={logement}
+                                housing={currentHousing!}
                                 onAfterDeleteUpdateSuccess={onAfterDeleteUpdateSuccess}
                             />
 
@@ -139,7 +126,7 @@ const HousingCard = ({
                             <HousingIcon />
                         </SvgIcon>
                         <Typography variant="subtitle1" className="text-13 flex">
-                            {`${logement.address.name}`}
+                            {`${currentHousing!.address.name}`}
                         </Typography>
                     </div>
                 </CardContent>
@@ -182,7 +169,7 @@ const HousingCard = ({
                             variant="outlined"
                             className="text-white m-12 border-white"
                             onClick={() => {
-                                logement && handleDeleteHousing(logement.id)
+                                handleDeleteHousing(currentHousing!.id)
                             }}
                         >
                             {formatMessage({
