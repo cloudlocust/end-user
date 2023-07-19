@@ -11,6 +11,7 @@ export type metricTargetType =
     | 'enphase_production_metrics'
     | 'production_metrics'
     | 'idle_consumption'
+    | 'subscription_prices'
 
 /**
  * Enum representing the metricTarget without exposing the backend naming.
@@ -52,6 +53,10 @@ export enum metricTargetsEnum {
      * Eneum value for consommation de veille.
      */
     idleConsumption = 'idle_consumption',
+    /**
+     * Enum value for abonnement.
+     */
+    subscriptionPrices = 'subscription_prices',
 }
 /**
  * Metrics intervals.

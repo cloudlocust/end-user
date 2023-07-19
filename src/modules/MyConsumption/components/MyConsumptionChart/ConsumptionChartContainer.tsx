@@ -88,11 +88,11 @@ export const ConsumptionChartContainer = ({
         [visibleTargetCharts],
     )
 
-    // This state represents whether or not the chart is stacked: true.
     const isEurosConsumptionChart = useMemo(
         () => visibleTargetCharts.includes(metricTargetsEnum.eurosConsumption),
         [visibleTargetCharts],
     )
+
     const isEurosConsumptionDisabled = !isEurosConsumptionChart && period === 'daily'
 
     // State that stores if visibleTargetCharts contains pMax or eurosConsumption when period is euros, so that when period is "daily". With this variable we prevent getMetrics to execute until we remove € and pMax targets.

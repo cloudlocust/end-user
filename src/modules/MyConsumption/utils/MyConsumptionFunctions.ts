@@ -478,8 +478,15 @@ export const getChartSpecifities = (
         }
     } else if (target === metricTargetsEnum.eurosConsumption) {
         return {
+            // eslint-disable-next-line sonarjs/no-duplicate-string
             label: 'Consommation Euros',
             seriesName: 'Consommation Euros',
+        }
+    } else if (target === metricTargetsEnum.subscriptionPrices) {
+        return {
+            label: 'Abonnement',
+            seriesName: 'Consommation Euros',
+            show: false,
         }
     } else if (target === metricTargetsEnum.externalTemperature) {
         return {

@@ -59,6 +59,7 @@ const EurosConsumptionButtonToggler = ({
                                 removeTarget(metricTargetsEnum.consumption)
                                 removeTarget(metricTargetsEnum.autoconsumption)
                                 addTarget(metricTargetsEnum.eurosConsumption)
+                                addTarget(metricTargetsEnum.subscriptionPrices)
                             }}
                         >
                             <EuroIcon sx={{ width: 20, height: 20 }} />
@@ -80,6 +81,7 @@ const EurosConsumptionButtonToggler = ({
                     onClick={() => {
                         // TODO Remove target should take an array of targets
                         removeTarget(metricTargetsEnum.eurosConsumption)
+                        removeTarget(metricTargetsEnum.subscriptionPrices)
                         addTarget(metricTargetsEnum.consumption)
                         addTarget(metricTargetsEnum.autoconsumption)
                     }}
