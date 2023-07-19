@@ -27,6 +27,7 @@ import {
 } from 'src/modules/MyHouse/components/ReplaceNRLinkFormPopup/replaceNrLinkFormPopupConfig'
 
 const LIST_OF_HOUSES: IHousing[] = applyCamelCase(TEST_HOUSES)
+const CURRENT_HOUSING = LIST_OF_HOUSES[0]
 /**
  * Mock user model state.
  */
@@ -57,6 +58,9 @@ const PENDING_ENPHASE_MESSAGE = 'Votre connexion est en cours et sera active dan
 
 const CREATED_AT = '2022-09-02T08:06:08Z'
 
+const CONNECTED_ICON_TEXT = 'connected-icon'
+const EDIT_ICON_TESTID = 'EditIcon'
+
 let mockNrlinkConsent: nrlinkConsentStatus
 let mockEnedisSgeConsent: enedisSgeConsentStatus
 let mockEnphaseConsent: enphaseConsentStatus
@@ -73,14 +77,12 @@ let mockHouseId = TEST_MOCKED_HOUSES[0].id
 let mockCreateEnedisSgeConsent = jest.fn()
 let mockSetMeterVerification = jest.fn()
 let mockEditMeter = jest.fn()
-let mockClearConsents = jest.fn()
-// eslint-disable-next-line sonarjs/no-duplicate-string
+
 const STATUS_ON_SRC = './assets/images/content/housing/consent-status/meter-on.svg'
-// eslint-disable-next-line sonarjs/no-duplicate-string
 const STATUS_OFF_SRC = './assets/images/content/housing/consent-status/meter-off.svg'
+const STATUS_ERROR_SRC = './assets/images/content/housing/consent-status/meter-error.svg'
 
 jest.mock('src/modules/Meters/metersHook', () => ({
-    // eslint-disable-next-line jsdoc/require-jsdoc
     ...jest.requireActual('src/modules/Meters/metersHook'),
     // eslint-disable-next-line jsdoc/require-jsdoc
     useMeterForHousing: () => ({
@@ -130,7 +132,6 @@ jest.mock('src/modules/Consents/consentsHook', () => ({
         isMeterVerifyLoading: mockisMeterVerifyLoading,
         meterVerification: mockMeterVerificationEnum,
         setMeterVerification: mockSetMeterVerification,
-        clearConsents: mockClearConsents,
     }),
 }))
 
@@ -139,7 +140,7 @@ jest.mock('src/modules/Consents/consentsHook', () => ({
  */
 let mockHousingModelState: IHousingState = {
     housingList: LIST_OF_HOUSES,
-    currentHousing: LIST_OF_HOUSES[0],
+    currentHousing: CURRENT_HOUSING,
 }
 
 /**
@@ -163,8 +164,6 @@ const mockStore = init({
 
 const mockUseSelector = jest.spyOn(reactRedux, 'useSelector')
 const mockUseDispatch = jest.spyOn(reactRedux, 'useDispatch')
-
-let foundHouse = mockHousingModelState.housingList.find((house) => house.id === mockHouseId)
 
 describe('MeterStatus component test', () => {
     beforeEach(() => {
@@ -190,15 +189,14 @@ describe('MeterStatus component test', () => {
                 </Router>,
             )
 
-            expect(mockGetConsent).toBeCalledWith(foundHouse?.meter?.guid, mockHouseId)
+            expect(mockGetConsent).toBeCalledWith(LIST_OF_HOUSES[0].meter?.guid, mockHouseId)
             // Retrieve image alt attribute
-            // eslint-disable-next-line sonarjs/no-duplicate-string
-            const image = getByAltText('connected-icon')
+            const image = getByAltText(CONNECTED_ICON_TEXT)
 
-            expect(getByTestId('EditIcon')).toBeTruthy()
-            expect(getByAltText('connected-icon')).toBeTruthy()
+            expect(getByTestId(EDIT_ICON_TESTID)).toBeTruthy()
+            expect(getByAltText(CONNECTED_ICON_TEXT)).toBeTruthy()
             expect(getByText(COMPTEUR_TITLE)).toBeTruthy()
-            expect(getByText(`n° ${foundHouse?.meter?.guid}`)).toBeTruthy()
+            expect(getByText(`n° ${CURRENT_HOUSING?.meter?.guid}`)).toBeTruthy()
             expect(getByText(NRLINK_TITLE)).toBeTruthy()
             expect(image).toHaveAttribute('src', STATUS_ON_SRC)
             expect(getByText(`nrLINK n° ${mockNrlinkGuid}`)).toBeTruthy()
@@ -213,14 +211,14 @@ describe('MeterStatus component test', () => {
                     <MeterStatus />
                 </Router>,
             )
-            expect(mockGetConsent).toBeCalledWith(foundHouse?.meter?.guid, mockHouseId)
+            expect(mockGetConsent).toBeCalledWith(CURRENT_HOUSING?.meter?.guid, mockHouseId)
             // Retrieve image alt attribute
             const image = getByAltText('error-icon')
             expect(getByText(COMPTEUR_TITLE)).toBeTruthy()
-            expect(getByText(`n° ${foundHouse?.meter?.guid}`)).toBeTruthy()
+            expect(getByText(`n° ${CURRENT_HOUSING?.meter?.guid}`)).toBeTruthy()
             expect(getByText(NRLINK_TITLE)).toBeTruthy()
             expect(getByText(NRLINK_DISCONNECTED_MESSAGE)).toBeTruthy()
-            expect(image).toHaveAttribute('src', './assets/images/content/housing/consent-status/meter-error.svg')
+            expect(image).toHaveAttribute('src', STATUS_ERROR_SRC)
         })
         test('when nrlink status is expired or nonexistant', async () => {
             mockNrlinkConsent = 'EXPIRED' || 'NONEXISTENT'
@@ -230,14 +228,14 @@ describe('MeterStatus component test', () => {
                     <MeterStatus />
                 </Router>,
             )
-            expect(mockGetConsent).toBeCalledWith(foundHouse?.meter?.guid, mockHouseId)
+            expect(mockGetConsent).toBeCalledWith(CURRENT_HOUSING?.meter?.guid, mockHouseId)
             // Retrieve image alt attribute
             const image = getAllByAltText('off-icon')[0]
             expect(getByText(COMPTEUR_TITLE)).toBeTruthy()
-            expect(getByText(`n° ${foundHouse?.meter?.guid}`)).toBeTruthy()
+            expect(getByText(`n° ${CURRENT_HOUSING?.meter?.guid}`)).toBeTruthy()
             expect(getByText(NRLINK_TITLE)).toBeTruthy()
             expect(getByText(NRLINK_NONEXISTANT_EXPIRED_MESSAGE)).toBeTruthy()
-            expect(image).toHaveAttribute('src', './assets/images/content/housing/consent-status/meter-off.svg')
+            expect(image).toHaveAttribute('src', STATUS_OFF_SRC)
             expect(getByText(NRLINK_NONEXISTANT_EXPIRED_MESSAGE).closest('a')).toHaveAttribute(
                 'href',
                 `${URL_NRLINK_CONNECTION_STEPS}/${mockHouseId}`,
@@ -245,7 +243,7 @@ describe('MeterStatus component test', () => {
         })
         test('when there is no meterGuid, a message is displayed: Veuillez renseigner votre compteur', async () => {
             // Empty string represent a falsy value to test when there is no meter guid.
-            foundHouse!.meter!.guid = ''
+            CURRENT_HOUSING!.meter!.guid = ''
 
             const { getByText } = reduxedRender(
                 <Router>
@@ -253,9 +251,11 @@ describe('MeterStatus component test', () => {
                 </Router>,
             )
 
-            expect(mockGetConsent).not.toBeCalledWith()
-            expect(mockClearConsents).toBeCalledWith()
+            expect(mockGetConsent).toBeCalledWith('', CURRENT_HOUSING?.id)
             expect(getByText(NO_METER_MESSAGE)).toBeTruthy()
+            expect(getByText(NRLINK_NONEXISTANT_EXPIRED_MESSAGE)).toBeTruthy()
+            expect(getByText(ERROR_ENPHASE_MESSAGE)).toBeTruthy()
+            expect(getByText(ENEDIS_NONEXISTANT_EXPIRED_MESSAGE)).toBeTruthy()
         })
         test('when clicking on Edit, display ReplaceNRLinkForm', async () => {
             mockNrlinkConsent = 'CONNECTED'
@@ -266,10 +266,10 @@ describe('MeterStatus component test', () => {
                 </Router>,
             )
 
-            expect(getByTestId('EditIcon')).toBeTruthy()
+            expect(getByTestId(EDIT_ICON_TESTID)).toBeTruthy()
             expect(queryByLabelText('ReplaceNRLinkFormPopup')).not.toBeTruthy()
 
-            userEvent.click(getByTestId('EditIcon'))
+            userEvent.click(getByTestId(EDIT_ICON_TESTID))
             await waitFor(() => {
                 expect(queryByLabelText('ReplaceNRLinkFormPopup')).toBeTruthy()
             })
@@ -280,7 +280,7 @@ describe('MeterStatus component test', () => {
     })
     describe('enedis status test', () => {
         test('when enedis status is connected', async () => {
-            foundHouse!.meter!.guid = '12345Her'
+            CURRENT_HOUSING!.meter!.guid = '12345Her'
             mockNrlinkConsent = 'DISCONNECTED'
             mockEnedisSgeConsent = 'CONNECTED'
             const { getByText, getByAltText } = reduxedRender(
@@ -288,12 +288,12 @@ describe('MeterStatus component test', () => {
                     <MeterStatus />
                 </Router>,
             )
-            expect(mockGetConsent).toBeCalledWith(foundHouse?.meter?.guid, mockHouseId)
+            expect(mockGetConsent).toBeCalledWith(CURRENT_HOUSING?.meter?.guid, mockHouseId)
             expect(getByText(COMPTEUR_TITLE)).toBeTruthy()
-            expect(getByText(`n° ${foundHouse?.meter?.guid}`)).toBeTruthy()
+            expect(getByText(`n° ${CURRENT_HOUSING?.meter?.guid}`)).toBeTruthy()
             expect(getByText(ENEDIS_CONNECTED_MESSAGE)).toBeTruthy()
-            const image = getByAltText('connected-icon')
-            expect(image).toHaveAttribute('src', './assets/images/content/housing/consent-status/meter-on.svg')
+            const image = getByAltText(CONNECTED_ICON_TEXT)
+            expect(image).toHaveAttribute('src', STATUS_ON_SRC)
             expect(getByText(enedisFormatedEndingDate)).toBeTruthy()
             const cancelMessage = getByText(ENEDIS_CANCEL_COLLECTION_DATA_MESSAGE)
             expect(cancelMessage).toBeTruthy()
@@ -301,7 +301,7 @@ describe('MeterStatus component test', () => {
             expect(getByText(CONTACT_MAIL_MESSAGE)).toBeInTheDocument()
         })
         test('when enedis status is expired or nonexistant', async () => {
-            foundHouse!.meter!.guid = '12345Her'
+            CURRENT_HOUSING!.meter!.guid = '12345Her'
             mockNrlinkConsent = 'DISCONNECTED'
             mockEnedisSgeConsent = 'EXPIRED' || 'NONEXISTENT'
             const { getByText, getByAltText } = reduxedRender(
@@ -310,10 +310,10 @@ describe('MeterStatus component test', () => {
                 </Router>,
             )
             expect(getByText(COMPTEUR_TITLE)).toBeTruthy()
-            expect(getByText(`n° ${foundHouse?.meter?.guid}`)).toBeTruthy()
+            expect(getByText(`n° ${CURRENT_HOUSING?.meter?.guid}`)).toBeTruthy()
             expect(getByText(ENEDIS_NONEXISTANT_EXPIRED_MESSAGE)).toBeTruthy()
             const image = getByAltText('off-icon')
-            expect(image).toHaveAttribute('src', './assets/images/content/housing/consent-status/meter-off.svg')
+            expect(image).toHaveAttribute('src', STATUS_OFF_SRC)
         })
         test('when enedis sge consent is UNSYNCHRONIZED', async () => {
             mockEnedisSgeConsent = 'UNSYNCHRONIZED'
@@ -326,13 +326,13 @@ describe('MeterStatus component test', () => {
             )
 
             const image = getByAltText('sge-error-icon')
-            expect(image).toHaveAttribute('src', './assets/images/content/housing/consent-status/meter-error.svg')
+            expect(image).toHaveAttribute('src', STATUS_ERROR_SRC)
             expect(ENEDIS_UNSYNCHRONIZED_MESSAGE).toBeTruthy()
         })
     })
     describe('enphase status', () => {
         test('when enphase status is ACTIVE', async () => {
-            foundHouse!.meter!.guid = '12345Her'
+            CURRENT_HOUSING!.meter!.guid = '12345Her'
             mockEnphaseConsent = 'ACTIVE'
             const { getByText, getByAltText } = reduxedRender(
                 <Router>
@@ -344,7 +344,7 @@ describe('MeterStatus component test', () => {
             expect(activeIcon).toHaveAttribute('src', STATUS_ON_SRC)
         })
         test('when enphase status is NOT ACTIVE', async () => {
-            foundHouse!.meter!.guid = '12345Her'
+            CURRENT_HOUSING!.meter!.guid = '12345Her'
             mockEnphaseConsent = 'EXPIRED' || 'NONEXISTENT'
             const { getByText, getByAltText } = reduxedRender(
                 <Router>
@@ -356,7 +356,7 @@ describe('MeterStatus component test', () => {
             expect(activeIcon).toHaveAttribute('src', STATUS_OFF_SRC)
         })
         test('when enphase status is PENDING', async () => {
-            foundHouse!.meter!.guid = '12345Her'
+            CURRENT_HOUSING!.meter!.guid = '12345Her'
             mockEnphaseConsent = 'PENDING'
 
             const { getByText } = reduxedRender(
@@ -372,7 +372,7 @@ describe('MeterStatus component test', () => {
     })
     describe('test implementation of EnedisSgePopup', () => {
         test('when clicked on error message, verify meter popup is shown with loading', async () => {
-            foundHouse!.meter!.guid = '12345Her'
+            CURRENT_HOUSING!.meter!.guid = '12345Her'
             mockEnedisSgeConsent = 'EXPIRED' || 'NONEXISTENT'
             mockisMeterVerifyLoading = true
             const { getByText, getByTestId } = reduxedRender(

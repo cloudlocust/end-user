@@ -60,7 +60,6 @@ export const MeterStatus = () => {
         enphaseConsent,
         enphaseLink,
         getEnphaseLink,
-        clearConsents,
     } = useConsents()
     const { currentHousing } = useSelector(({ housingModel }: RootState) => housingModel)
     const [openEnphaseConsentPopup, setOpenEnphaseConsentPopup] = useState(false)
@@ -91,11 +90,7 @@ export const MeterStatus = () => {
      *
      */
     useEffect(() => {
-        if (currentHousing?.meter?.guid) {
-            getConsents(currentHousing.meter.guid, currentHousing.id)
-        } else {
-            clearConsents()
-        }
+        getConsents(currentHousing?.meter?.guid, currentHousing?.id)
 
         /**
          * OnStorage function that execute the setter for EnphaseStateFromLocalStorage.
@@ -119,7 +114,7 @@ export const MeterStatus = () => {
         return () => {
             window.removeEventListener('storage', onStorage)
         }
-    }, [currentHousing?.meter?.guid, currentHousing?.id, getConsents, clearConsents])
+    }, [currentHousing?.meter?.guid, currentHousing?.id, getConsents])
 
     /**
      * Function that renders JSX accorrding to nrlink status.
@@ -151,9 +146,7 @@ export const MeterStatus = () => {
                         <ReplaceNRLinkModule
                             nrLinkConsent={nrlinkConsent}
                             onAfterReplaceNRLink={() => {
-                                if (currentHousing?.meter?.guid) {
-                                    getConsents(currentHousing.meter.guid, parseInt(houseId))
-                                }
+                                getConsents(currentHousing?.meter?.guid, parseInt(houseId))
                             }}
                         />
                     </>
