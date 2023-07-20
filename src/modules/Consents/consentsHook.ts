@@ -52,6 +52,7 @@ export function useConsents() {
     const [isMeterVerifyLoading, setIsMeterVerifyLoading] = useState(false)
     const [enedisSgeConsent, setEnedisSgeConsent] = useState<IEnedisSgeConsent>()
     const [isCreateEnedisSgeConsentLoading, setIsCreateEnedisSgeConsentLoading] = useState(false)
+    const [isEnphaseConsentLoading, setIsEnphaseConsentLoading] = useState(false)
     const [createEnedisSgeConsentError, setCreateEnedisSgeConsentError] = useState<boolean>(false)
     const [enphaseLink, setEnphaseLink] = useState<EnphaseLink['url']>('')
     const { isCancel, source } = useAxiosCancelToken()
@@ -194,6 +195,34 @@ export function useConsents() {
         [enqueueSnackbar, formatMessage],
     )
 
+    /**
+     * Revoke Enphase Consent handler.
+     */
+    const revokeEnphaseConsent = useCallback(
+        async (meterGuid: string) => {
+            try {
+                if (!meterGuid) throw new Error(NO_HOUSING_ID_ERROR_TEXT)
+                setIsEnphaseConsentLoading(true)
+                await axios.patch(`${ENPHASE_CONSENT_API}/${meterGuid}/revoke`)
+                setEnphaseConsent(undefined)
+                setIsEnphaseConsentLoading(false)
+            } catch (error: any) {
+                setIsEnphaseConsentLoading(false)
+                enqueueSnackbar(
+                    formatMessage({
+                        id: 'Erreur lors de la révokation de votre consentement enphase',
+                        defaultMessage: 'Erreur lors de la révokation de votre consentement enphase',
+                    }),
+                    {
+                        autoHideDuration: 5000,
+                        variant: 'error',
+                    },
+                )
+            }
+        },
+        [enqueueSnackbar, formatMessage],
+    )
+
     const getEnphaseLink = useCallback(
         async (housingId: number) => {
             try {
@@ -234,5 +263,7 @@ export function useConsents() {
         getEnphaseLink,
         enphaseLink,
         setEnphaseLink,
+        isEnphaseConsentLoading,
+        revokeEnphaseConsent,
     }
 }
