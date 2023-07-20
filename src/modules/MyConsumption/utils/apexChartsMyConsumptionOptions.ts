@@ -334,6 +334,7 @@ export const getApexChartMyConsumptionProps = ({
                 }
             },
         },
+        inverseOrder: isStackedEnabled ? true : false,
     }
 
     if (xAxisType === 'category') {
