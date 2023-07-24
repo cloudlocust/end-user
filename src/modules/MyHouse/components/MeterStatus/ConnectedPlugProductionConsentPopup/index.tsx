@@ -29,7 +29,7 @@ const ConnectedPlugProductionConsentPopup = ({ onClose }: IConnectedPlugProducti
     const history = useHistory()
 
     const { loadingInProgress: isShellyLoadingInProgress, openShellyConnectedPlugsWindow } = useShellyConnectedPlugs(
-        currentHousing!.id,
+        currentHousing?.id,
     )
 
     const {
@@ -37,7 +37,7 @@ const ConnectedPlugProductionConsentPopup = ({ onClose }: IConnectedPlugProducti
         loadingInProgress: isConnectedPlugListLoadingInProgress,
         loadConnectedPlugList,
         associateConnectedPlug,
-    } = useConnectedPlugList(currentHousing!.meter?.guid, currentHousing!.id)
+    } = useConnectedPlugList(currentHousing?.meter?.guid, currentHousing?.id)
 
     useEffect(() => {
         loadConnectedPlugList()
@@ -78,7 +78,7 @@ const ConnectedPlugProductionConsentPopup = ({ onClose }: IConnectedPlugProducti
                     <SelectConnectedPlugProductionList
                         onSubmit={async (connectedPlugId) => {
                             const isSuccessResponse = await associateConnectedPlug(connectedPlugId, currentHousing!.id)
-                            if (isSuccessResponse) history.push(`${URL_MY_HOUSE}/${currentHousing!.id}/connected-plugs`)
+                            if (isSuccessResponse) history.push(`${URL_MY_HOUSE}/${currentHousing?.id}/connected-plugs`)
                         }}
                         connectedPlugList={connectedPlugList}
                     />

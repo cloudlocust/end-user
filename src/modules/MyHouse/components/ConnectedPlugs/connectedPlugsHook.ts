@@ -175,7 +175,7 @@ export function useConnectedPlugList(meterGuid?: string, housingId?: number) {
  * @param housingId Housing Id.
  * @returns Shelly Connected Plugs Link & Popup open.
  */
-export const useShellyConnectedPlugs = (housingId: number) => {
+export const useShellyConnectedPlugs = (housingId?: number) => {
     const [loadingInProgress, setLoadingInProgress] = useState(false)
     const { enqueueSnackbar } = useSnackbar()
     const { formatMessage } = useIntl()
@@ -239,6 +239,7 @@ export const useShellyConnectedPlugs = (housingId: number) => {
      */
     const openShellyConnectedPlugsWindow = useCallback(
         async (onCloseShellyWindow?: () => void) => {
+            if (!housingId) return
             setLoadingInProgress(true)
             try {
                 const { data: responseData } = await axios.get<IShellyConnectedPlugLink>(

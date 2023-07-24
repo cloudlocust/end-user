@@ -48,14 +48,14 @@ const ConnectedPlugs = () => {
     const { currentHousing } = useSelector(({ housingModel }: RootState) => housingModel)
 
     const { loadingInProgress: isShellyLoadingInProgress, openShellyConnectedPlugsWindow } = useShellyConnectedPlugs(
-        currentHousing!.id,
+        currentHousing?.id,
     )
 
     const {
         connectedPlugList,
         loadingInProgress: isConnectedPlugListLoading,
         loadConnectedPlugList,
-    } = useConnectedPlugList(currentHousing!.meter?.guid, currentHousing!.id)
+    } = useConnectedPlugList(currentHousing?.meter?.guid, currentHousing?.id)
     const { formatMessage } = useIntl()
 
     useEffect(() => {

@@ -59,15 +59,15 @@ export const HousingDetails = () => {
         connectedPlugList,
         loadingInProgress: isConnectedPlugListLoading,
         loadConnectedPlugList,
-    } = useConnectedPlugList(currentHousing!.meter?.guid!, currentHousing!.id)
+    } = useConnectedPlugList(currentHousing?.meter?.guid!, currentHousing?.id)
 
     const {
         accomodation,
         isAccomodationMeterListEmpty,
         isLoadingInProgress: loadingAccomodationInProgress,
-    } = useAccomodation(currentHousing!.id)
+    } = useAccomodation(currentHousing?.id)
     const { equipmentList, isEquipmentMeterListEmpty, loadingEquipmentInProgress } = useEquipmentList(
-        currentHousing!.id,
+        currentHousing?.id,
     )
 
     // get a default elements with default icons for when it's loading.

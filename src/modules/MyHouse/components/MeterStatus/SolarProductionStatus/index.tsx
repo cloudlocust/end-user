@@ -43,7 +43,7 @@ export const SolarProductionConsentStatus = ({
         loadConnectedPlugList,
         associateConnectedPlug,
         getProductionConnectedPlug,
-    } = useConnectedPlugList(currentHousing!.meter?.guid, currentHousing?.id)
+    } = useConnectedPlugList(currentHousing?.meter?.guid, currentHousing?.id)
 
     /* Enphase created at date formatted */
     const solarProductionConsentCreatedAt = dayjs(solarProductionConsent?.createdAt).format('DD/MM/YYYY')
@@ -103,11 +103,11 @@ export const SolarProductionConsentStatus = ({
                                 className="underline cursor-pointer"
                                 fontWeight={500}
                                 onClick={
-                                    productionConnectedPlug
+                                    currentHousing && productionConnectedPlug
                                         ? () =>
                                               associateConnectedPlug(
                                                   productionConnectedPlug.deviceId,
-                                                  currentHousing!.id,
+                                                  currentHousing.id,
                                                   false,
                                               )
                                         : () => onRevokeEnphaseConsent()
@@ -161,7 +161,7 @@ export const SolarProductionConsentStatus = ({
                                     className="underline cursor-pointer"
                                     fontWeight={600}
                                     onClick={() => {
-                                        getEnphaseLink(currentHousing!.id)
+                                        currentHousing && getEnphaseLink(currentHousing.id)
                                         setOpenEnphaseConsentPopup(true)
                                     }}
                                 >

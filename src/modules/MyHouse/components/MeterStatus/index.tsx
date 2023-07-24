@@ -249,7 +249,7 @@ export const MeterStatus = () => {
                         </Icon>
                         <div className="flex flex-col">
                             <TypographyFormatMessage color={theme.palette.warning.main} fontWeight={600}>
-                                Les données de votre récolte dhistorique semblent incohérentes par rapport à celle de
+                                Les données de votre récolte d'historique semblent incohérentes par rapport à celle de
                                 votre nrLINK
                             </TypographyFormatMessage>
                         </div>
