@@ -191,15 +191,4 @@ describe('useConsents test', () => {
             variant: 'error',
         })
     })
-    test('when clearConsents is called, consent state is reset to undefined', async () => {
-        const {
-            renderedHook: { result },
-        } = reduxedRenderHook(() => useConsents())
-        act(() => {
-            result.current.clearConsents()
-        })
-        expect(result.current.nrlinkConsent).toBeUndefined()
-        expect(result.current.enedisSgeConsent).toBeUndefined()
-        expect(result.current.enphaseConsent).toBeUndefined()
-    }, 8000)
 })

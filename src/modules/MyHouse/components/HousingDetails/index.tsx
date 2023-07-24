@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react'
 import { styled } from '@mui/material/styles'
-import { useParams } from 'react-router'
 
 import FusePageCarded from 'src/common/ui-kit/fuse/components/FusePageCarded'
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz'
@@ -22,9 +21,7 @@ import { ReactComponent as ElectricityIcon } from 'src/assets/images/content/hou
 import { ReactComponent as GazIcon } from 'src/assets/images/content/housing/Gaz.svg'
 import HousingCard from 'src/modules/MyHouse/components/HousingCard'
 import { useSelector } from 'react-redux'
-import CircularProgress from '@mui/material/CircularProgress'
 import { RootState } from 'src/redux'
-import { isEmpty } from 'lodash'
 import { connectedPlugsFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
 
 const Root = styled(FusePageCarded)(() => ({
@@ -48,26 +45,18 @@ const Root = styled(FusePageCarded)(() => ({
  * @returns  Element Details Tabs.
  */
 export const HousingDetails = () => {
-    const { housingList } = useSelector(({ housingModel }: RootState) => housingModel)
+    const { currentHousing } = useSelector(({ housingModel }: RootState) => housingModel)
 
     const theme = useTheme()
-
-    const { houseId } = useParams</**
-     *
-     */
-    {
-        // eslint-disable-next-line jsdoc/require-jsdoc
-        houseId: string
-    }>()
-
-    const housingId = parseInt(houseId)
 
     const {
         accomodation,
         isAccomodationMeterListEmpty,
         isLoadingInProgress: loadingAccomodationInProgress,
-    } = useAccomodation(housingId)
-    const { equipmentList, isEquipmentMeterListEmpty, loadingEquipmentInProgress } = useEquipmentList(housingId)
+    } = useAccomodation(currentHousing!.id)
+    const { equipmentList, isEquipmentMeterListEmpty, loadingEquipmentInProgress } = useEquipmentList(
+        currentHousing!.id,
+    )
 
     // get a default elements with default icons for when it's loading.
     const [equipementElements, setEquipementElements] = useState<HouseDetailsElementType[]>([
@@ -175,18 +164,11 @@ export const HousingDetails = () => {
         },
     ]
 
-    if (!housingList || isEmpty(housingList))
-        return (
-            <div className="flex flex-col justify-center items-center w-full h-full" style={{ height: '320px' }}>
-                <CircularProgress size={32} />
-            </div>
-        )
-    const currentHousing = housingList.find((housing) => housing.id === Number(houseId))
     return (
         <Root
             header={
                 <ThemeProvider theme={theme}>
-                    <HousingCard element={currentHousing!} />
+                    <HousingCard />
                 </ThemeProvider>
             }
             content={

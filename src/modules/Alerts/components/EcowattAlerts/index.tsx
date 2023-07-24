@@ -48,7 +48,7 @@ export const EcowattAlerts = () => {
                     onClose={() => setOpenTooltip(false)}
                 />
             </div>
-            <TypographyFormatMessage className="text-13 md:text-16 font-medium md:text-15 flex items-center">
+            <TypographyFormatMessage className="text-13 md:text-16 font-medium flex items-center">
                 La météo de l'électricité
             </TypographyFormatMessage>
 
