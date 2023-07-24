@@ -86,7 +86,7 @@ export const SelectHousing = () => {
                             <TypographyFormatMessage className="mr-8" noWrap>
                                 {housing.address.name}
                             </TypographyFormatMessage>
-                            <Link to={'/my-houses/' + housing.id}>
+                            <Link to={`/my-houses/${housing.id}`}>
                                 <SettingsIcon sx={{ color: 'grey.600' }} />
                             </Link>
                         </MenuItem>
