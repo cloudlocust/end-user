@@ -183,8 +183,9 @@ export const HousingDetails = () => {
         // We update the previous connected plugs elements by the latest fetched connectedPlugList top three if exist.
         setConnectedPlugsElements((prevConnectedPlugsElements) => {
             const copyPrevConnectedPlugsElements = cloneDeep(prevConnectedPlugsElements)
-            // Reset Icons.
-            copyPrevConnectedPlugsElements.forEach((connectedPlugElement) => {
+            // Reset Icons & labels.
+            copyPrevConnectedPlugsElements.forEach((connectedPlugElement, index) => {
+                connectedPlugElement.label = `Prise ${index + 1}`
                 connectedPlugElement.icon = <MoreHorizIcon color="primary" fontSize="large" />
             })
 
