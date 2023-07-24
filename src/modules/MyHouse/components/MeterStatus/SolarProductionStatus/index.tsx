@@ -1,8 +1,7 @@
 import { CircularProgress, Icon, useTheme, Box } from '@mui/material'
 import dayjs from 'dayjs'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useIntl } from 'react-intl'
-import { useParams } from 'react-router-dom'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import { enphaseConsentStatus } from 'src/modules/Consents/Consents'
 import { globalProductionFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
@@ -10,6 +9,8 @@ import { EnphaseConsentPopup } from 'src/modules/MyHouse/components/MeterStatus/
 import { ISolarProductionConsentStatusProps } from 'src/modules/MyHouse/components/MeterStatus/MeterStatus.d'
 import ConnectedPlugProductionConsentPopup from 'src/modules/MyHouse/components/MeterStatus/ConnectedPlugProductionConsentPopup'
 import { useConnectedPlugList } from 'src/modules/MyHouse/components/ConnectedPlugs/connectedPlugsHook'
+import { useSelector } from 'react-redux'
+import { RootState } from 'src/redux'
 
 /**
  * Solar Production Consent Status Component, that shows and isolates the solar production consent of MeterStatus.
@@ -20,7 +21,6 @@ import { useConnectedPlugList } from 'src/modules/MyHouse/components/ConnectedPl
  * @param props.enphaseLink Enphase window link.
  * @param props.getEnphaseLink Handler to call to get enphaseLink.
  * @param props.onRevokeEnphaseConsent Handler function to revoke Enphase Consent.
- * @param props.housing The housing with the solarProductionConsent.
  * @returns Solar Production Consent Status component.
  */
 export const SolarProductionConsentStatus = ({
@@ -29,22 +29,21 @@ export const SolarProductionConsentStatus = ({
     enphaseLink,
     getEnphaseLink,
     onRevokeEnphaseConsent,
-    housing,
 }: ISolarProductionConsentStatusProps) => {
     const theme = useTheme()
     const { formatMessage } = useIntl()
+
+    const { currentHousing } = useSelector(({ housingModel }: RootState) => housingModel)
     const [openEnphaseConsentPopup, setOpenEnphaseConsentPopup] = useState(false)
     const [openConnectedPlugProductionConsentPopup, setOpenConnectedPlugProductionConsentPopup] = useState(false)
 
-    // Retrieving house id from url params /my-houses/:houseId
-    // eslint-disable-next-line jsdoc/require-jsdoc
-    const { houseId }: { houseId: string } = useParams()
     // Load connected plug only when housing is defined
     const {
         loadingInProgress: isConnectedPlugListLoadingInProgress,
+        loadConnectedPlugList,
         associateConnectedPlug,
         getProductionConnectedPlug,
-    } = useConnectedPlugList(`${housing?.meter?.guid}`, parseInt(houseId), Boolean(housing))
+    } = useConnectedPlugList(currentHousing!.meter?.guid, currentHousing?.id)
 
     /* Enphase created at date formatted */
     const solarProductionConsentCreatedAt = dayjs(solarProductionConsent?.createdAt).format('DD/MM/YYYY')
@@ -62,6 +61,10 @@ export const SolarProductionConsentStatus = ({
     const handleCloseConnectedPlugConsentPopup = () => {
         setOpenConnectedPlugProductionConsentPopup(false)
     }
+
+    useEffect(() => {
+        loadConnectedPlugList()
+    }, [loadConnectedPlugList])
 
     /**
      * Function that renders solarProductionConsent statuses.
@@ -104,7 +107,7 @@ export const SolarProductionConsentStatus = ({
                                         ? () =>
                                               associateConnectedPlug(
                                                   productionConnectedPlug.deviceId,
-                                                  parseInt(houseId),
+                                                  currentHousing!.id,
                                                   false,
                                               )
                                         : () => onRevokeEnphaseConsent()
@@ -158,7 +161,7 @@ export const SolarProductionConsentStatus = ({
                                     className="underline cursor-pointer"
                                     fontWeight={600}
                                     onClick={() => {
-                                        getEnphaseLink(parseInt(houseId))
+                                        getEnphaseLink(currentHousing!.id)
                                         setOpenEnphaseConsentPopup(true)
                                     }}
                                 >

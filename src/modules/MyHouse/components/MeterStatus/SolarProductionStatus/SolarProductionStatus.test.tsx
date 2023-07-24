@@ -28,6 +28,7 @@ const CREATED_AT = '2022-09-02T08:06:08Z'
 let mockWindowOpen = jest.fn()
 const REVOKE_SOLAR_PRODUCTION_CONSENT_TEXT = 'Annuler la récolte de mes données'
 let mockAssociateConnectedPlug = jest.fn()
+let mockLoadConnectedPlugList = jest.fn()
 // eslint-disable-next-line jsdoc/require-jsdoc
 let mockGetProductionConnectedPlug: () => IConnectedPlug | undefined = () => mockConnectedPlugsList[0]
 window.open = mockWindowOpen
@@ -64,6 +65,7 @@ jest.mock('src/modules/MyHouse/components/ConnectedPlugs/connectedPlugsHook', ()
         // eslint-disable-next-line jsdoc/require-jsdoc
         getProductionConnectedPlug: mockGetProductionConnectedPlug,
         associateConnectedPlug: mockAssociateConnectedPlug,
+        loadConnectedPlugList: mockLoadConnectedPlugList,
     }),
 }))
 
@@ -106,6 +108,11 @@ describe('SolarProductionStatus component test', () => {
             <Router>
                 <SolarProductionConsentStatus {...mockSolarProductionStatusProps} />
             </Router>,
+            {
+                initialState: {
+                    housingModel: { currentHousing: TEST_MOCKED_HOUSES[0], housingList: TEST_MOCKED_HOUSES },
+                },
+            },
         )
         expect(
             getByText(`Prise Shelly connectée le ${dayjs(mockConnectedPlugsList[0].createdAt).format('DD/MM/YYYY')}`),
@@ -129,6 +136,11 @@ describe('SolarProductionStatus component test', () => {
             <Router>
                 <SolarProductionConsentStatus {...mockSolarProductionStatusProps} />
             </Router>,
+            {
+                initialState: {
+                    housingModel: { currentHousing: TEST_MOCKED_HOUSES[0], housingList: TEST_MOCKED_HOUSES },
+                },
+            },
         )
         expect(getByText(`Onduleur Enphase connecté le ${dayjs(CREATED_AT).format('DD/MM/YYYY')}`)).toBeTruthy()
         const activeIcon = getByAltText('enphase-active-icon')
@@ -141,6 +153,11 @@ describe('SolarProductionStatus component test', () => {
             <Router>
                 <SolarProductionConsentStatus {...mockSolarProductionStatusProps} />
             </Router>,
+            {
+                initialState: {
+                    housingModel: { currentHousing: TEST_MOCKED_HOUSES[0], housingList: TEST_MOCKED_HOUSES },
+                },
+            },
         )
 
         // Children of <Icon> </Icon>
@@ -156,6 +173,11 @@ describe('SolarProductionStatus component test', () => {
                 <Router>
                     <SolarProductionConsentStatus {...mockSolarProductionStatusProps} />
                 </Router>,
+                {
+                    initialState: {
+                        housingModel: { currentHousing: TEST_MOCKED_HOUSES[0], housingList: TEST_MOCKED_HOUSES },
+                    },
+                },
             )
             const offIcon = getAllByAltText('enphase-off-icon')[index]
             expect(getAllByText(ERROR_ENPHASE_MESSAGE)[index]).toBeTruthy()
@@ -170,6 +192,11 @@ describe('SolarProductionStatus component test', () => {
             <Router>
                 <SolarProductionConsentStatus {...mockSolarProductionStatusProps} />
             </Router>,
+            {
+                initialState: {
+                    housingModel: { currentHousing: TEST_MOCKED_HOUSES[0], housingList: TEST_MOCKED_HOUSES },
+                },
+            },
         )
 
         userEvent.click(getByText(ERROR_ENPHASE_MESSAGE))
@@ -191,6 +218,11 @@ describe('SolarProductionStatus component test', () => {
             <Router>
                 <SolarProductionConsentStatus {...mockSolarProductionStatusProps} />
             </Router>,
+            {
+                initialState: {
+                    housingModel: { currentHousing: TEST_MOCKED_HOUSES[0], housingList: TEST_MOCKED_HOUSES },
+                },
+            },
         )
 
         userEvent.click(getByText(ERROR_SHELLY_MESSAGE))
@@ -213,6 +245,11 @@ describe('SolarProductionStatus component test', () => {
             <Router>
                 <SolarProductionConsentStatus {...mockSolarProductionStatusProps} />
             </Router>,
+            {
+                initialState: {
+                    housingModel: { currentHousing: TEST_MOCKED_HOUSES[0], housingList: TEST_MOCKED_HOUSES },
+                },
+            },
         )
 
         expect(container.querySelector(circularProgressClassname)).toBeInTheDocument()

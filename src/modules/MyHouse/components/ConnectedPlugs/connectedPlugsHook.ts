@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect, useRef } from 'react'
+import { useState, useCallback, useRef } from 'react'
 import { API_RESOURCES_URL } from 'src/configs'
 import { axios } from 'src/common/react-platform-components'
 import { useAxiosCancelToken } from 'src/hooks/AxiosCancelToken'
@@ -47,74 +47,73 @@ export const GET_CONNECTED_PLUG_TYPE_API = (housingId: number) => `${HOUSING_API
  *
  * @param meterGuid Meter GUID.
  * @param housingId Housing Id.
- * @param immediate Indicates If useConnectedPlugList should be called on instanciation.
  * @returns Hook useConnectedPlugList.
  */
-export function useConnectedPlugList(meterGuid: string, housingId: number, immediate: boolean = true) {
+export function useConnectedPlugList(meterGuid?: string, housingId?: number) {
     const { enqueueSnackbar } = useSnackbar()
     const { formatMessage } = useIntl()
     const [loadingInProgress, setLoadingInProgress] = useState(false)
     const [connectedPlugList, setConnectedPlugList] = useState<IConnectedPlug[] | []>([])
-    const isInitialMount = useRef(true)
     const { isCancel, source } = useAxiosCancelToken()
 
     /**
      * Fetching Offers function.
      */
     const loadConnectedPlugList = useCallback(async () => {
+        setConnectedPlugList([])
+        if (!meterGuid || !housingId) return
         setLoadingInProgress(true)
-        try {
-            const { data: connectedPlugConsentData } = await axios.get<IConnectedPlugApiResponse>(
-                `${CONNECTED_PLUG_CONSENT_API}/${meterGuid}`,
-                {
-                    cancelToken: source.current.token,
+        /**
+         * Used Promise.allSettled() instead of Promise.all to return a promise that resolves after all of the given requests have either been fulfilled or rejected.
+         * Because Promise.all() throws only when the first promise is rejected and it returns only that rejection.
+         * If the promise status is "fulfilled" it returns "value", If it's "rejetected" it returns "reason".
+         *
+         * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/allSettled .
+         */
+        const [connectedPlugConsentData, connectedPlugTypeData] = await Promise.allSettled([
+            axios.get<IConnectedPlugApiResponse>(`${CONNECTED_PLUG_CONSENT_API}/${meterGuid}`, {
+                cancelToken: source.current.token,
+            }),
+            axios.get<IConnectedPlugTypeApiResponse>(GET_CONNECTED_PLUG_TYPE_API(housingId), {
+                cancelToken: source.current.token,
+            }),
+        ])
+
+        // Cancel previous request.
+        if (connectedPlugConsentData.status === 'rejected' && isCancel(connectedPlugConsentData.reason)) return
+        if (connectedPlugTypeData.status === 'rejected' && isCancel(connectedPlugTypeData.reason)) return
+
+        // Set ConnectedPlugList when Fulfilled.
+        if (connectedPlugConsentData.status === 'fulfilled' && connectedPlugTypeData.status === 'fulfilled') {
+            const responseData: IConnectedPlug[] = connectedPlugConsentData.value?.data.devices.map(
+                (connectedPlugConsent) => {
+                    const foundConnectedPlugType = connectedPlugTypeData.value?.data.find(
+                        (connectedPlugType) => connectedPlugType.deviceId === connectedPlugConsent.deviceId,
+                    )
+                    return {
+                        ...connectedPlugConsent,
+                        type: foundConnectedPlugType ? foundConnectedPlugType.type : null,
+                    }
                 },
             )
-            const { data: connectedPlugTypeData } = await axios.get<IConnectedPlugTypeApiResponse>(
-                GET_CONNECTED_PLUG_TYPE_API(housingId),
-                {
-                    cancelToken: source.current.token,
-                },
-            )
-            const responseData: IConnectedPlug[] = connectedPlugConsentData.devices.map((connectedPlugConsent) => {
-                const foundConnectedPlugType = connectedPlugTypeData.find(
-                    (connectedPlugType) => connectedPlugType.deviceId === connectedPlugConsent.deviceId,
-                )
-                return {
-                    ...connectedPlugConsent,
-                    type: foundConnectedPlugType ? foundConnectedPlugType.type : null,
-                }
-            })
 
             setConnectedPlugList(responseData)
-        } catch (error) {
-            if (isCancel(error)) return
+        }
+        // Show error message when rejected.
+        if (connectedPlugConsentData.status === 'rejected' || connectedPlugTypeData.status === 'rejected') {
             enqueueSnackbar(
                 formatMessage({
                     id: 'Erreur lors du chargement de vos prises',
                     defaultMessage: 'Erreur lors du chargement de vos prises',
                 }),
-                { variant: 'error' },
+                {
+                    variant: 'error',
+                    autoHideDuration: 5000,
+                },
             )
         }
         setLoadingInProgress(false)
-    }, [formatMessage, enqueueSnackbar, meterGuid, isCancel, source, housingId])
-
-    // Happens everytime dependencies change, doesn't happen first time hook is instanciated.
-    useEffect(() => {
-        if (!isInitialMount.current) {
-            loadConnectedPlugList()
-        }
-    }, [loadConnectedPlugList])
-
-    // Happens only once on instanciation of hook. execute if we want to fire it right away.
-    // Otherwise execute can be called later, such as when filters change
-    useEffect(() => {
-        if (isInitialMount.current) {
-            if (immediate) loadConnectedPlugList()
-            isInitialMount.current = false
-        }
-    }, [immediate, loadConnectedPlugList])
+    }, [meterGuid, housingId, source, isCancel, enqueueSnackbar, formatMessage])
 
     /**
      * Handler to set production mode in a connected plug.

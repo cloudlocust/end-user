@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { styled } from '@mui/material/styles'
 import { useIntl } from 'react-intl'
 import { Typography, Icon, Box } from '@mui/material'
@@ -18,8 +19,6 @@ import dayjs from 'dayjs'
 import ConnectedPlugsInformationMessage from 'src/modules/MyHouse/components/ConnectedPlugs/ConnectedPlugsInformationMessage'
 import { RootState } from 'src/redux'
 import { useSelector } from 'react-redux'
-import { contractsRouteParam } from 'src/modules/Contracts/contractsTypes.d'
-import { useParams } from 'react-router-dom'
 import { useShellyConnectedPlugs } from 'src/modules/MyHouse/components/ConnectedPlugs/connectedPlugsHook'
 
 const Root = styled(FusePageCarded)(({ theme }) => ({
@@ -46,21 +45,22 @@ const Root = styled(FusePageCarded)(({ theme }) => ({
  * @returns ConnectedPlugsList JSX.
  */
 const ConnectedPlugs = () => {
-    const { housingList } = useSelector(({ housingModel }: RootState) => housingModel)
-    // HouseId extracted from params of the url :houseId/connected-plugs
-    const { houseId } = useParams<contractsRouteParam>()
-    const currentHousingMeterGuid = housingList.find((housing) => housing.id === parseInt(houseId))?.meter?.guid
+    const { currentHousing } = useSelector(({ housingModel }: RootState) => housingModel)
 
     const { loadingInProgress: isShellyLoadingInProgress, openShellyConnectedPlugsWindow } = useShellyConnectedPlugs(
-        parseInt(houseId),
+        currentHousing!.id,
     )
 
     const {
         connectedPlugList,
         loadingInProgress: isConnectedPlugListLoading,
         loadConnectedPlugList,
-    } = useConnectedPlugList(currentHousingMeterGuid!, parseInt(houseId))
+    } = useConnectedPlugList(currentHousing!.meter?.guid, currentHousing!.id)
     const { formatMessage } = useIntl()
+
+    useEffect(() => {
+        loadConnectedPlugList()
+    }, [loadConnectedPlugList])
 
     const connectedPlugsCells: ICell<IConnectedPlug>[] = [
         {

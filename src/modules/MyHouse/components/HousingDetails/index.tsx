@@ -55,10 +55,11 @@ export const HousingDetails = () => {
 
     const theme = useTheme()
 
-    const { connectedPlugList, loadingInProgress: isConnectedPlugListLoading } = useConnectedPlugList(
-        currentHousing!.meter?.guid!,
-        currentHousing!.id,
-    )
+    const {
+        connectedPlugList,
+        loadingInProgress: isConnectedPlugListLoading,
+        loadConnectedPlugList,
+    } = useConnectedPlugList(currentHousing!.meter?.guid!, currentHousing!.id)
 
     const {
         accomodation,
@@ -194,6 +195,10 @@ export const HousingDetails = () => {
             return copyPrevConnectedPlugsElements
         })
     }, [connectedPlugList])
+
+    useEffect(() => {
+        loadConnectedPlugList()
+    }, [loadConnectedPlugList])
 
     return (
         <Root
