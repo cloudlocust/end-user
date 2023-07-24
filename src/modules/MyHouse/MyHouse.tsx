@@ -46,7 +46,7 @@ export const MyHouse = () => {
         )
 
     // While waiting for history to change we show loading state.
-    if (!parseInt(houseId) || !housingList || isEmpty(housingList))
+    if (!parseInt(houseId) || isEmpty(housingList))
         return (
             <div className="flex flex-col justify-center items-center w-full h-full" style={{ height: '320px' }}>
                 <CircularProgress size={32} />

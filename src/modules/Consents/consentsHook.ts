@@ -63,9 +63,13 @@ export function useConsents() {
      * @param meterGuid MeterGuid.
      */
     const getConsents = useCallback(
-        async (meterGuid: string, houseId?: number) => {
+        async (meterGuid?: string, houseId?: number) => {
+            setNrlinkConsent(undefined)
+            setEnedisSgeConsent(undefined)
+            setEnphaseConsent(undefined)
+            if (!meterGuid) return
+
             setConsentsLoading(true)
-            if (!meterGuid) throw Error('Meter guid missing!')
             /**
              * Used Promise.allSettled() instead of Promise.all to return a promise that resolves after all of the given requests have either been fulfilled or rejected.
              * Because Promise.all() throws only when the first promise is rejected and it returns only that rejection.
@@ -241,12 +245,6 @@ export function useConsents() {
         [enqueueSnackbar, formatMessage],
     )
 
-    const clearConsents = useCallback(async () => {
-        setNrlinkConsent(undefined)
-        setEnedisSgeConsent(undefined)
-        setEnphaseConsent(undefined)
-    }, [])
-
     return {
         nrlinkConsent,
         consentsLoading,
@@ -267,6 +265,5 @@ export function useConsents() {
         setEnphaseLink,
         isEnphaseConsentLoading,
         revokeEnphaseConsent,
-        clearConsents,
     }
 }

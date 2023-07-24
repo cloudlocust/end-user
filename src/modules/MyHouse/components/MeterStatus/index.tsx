@@ -11,7 +11,6 @@ import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyForm
 import { enedisSgeConsentStatus, nrlinkConsentStatus } from 'src/modules/Consents/Consents'
 import { useConsents } from 'src/modules/Consents/consentsHook'
 import { URL_MY_HOUSE, globalProductionFeatureState, sgeConsentFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
-import { IHousing } from 'src/modules/MyHouse/components/HousingList/housing'
 import { EnedisSgePopup } from 'src/modules/MyHouse/components/MeterStatus/EnedisSgePopup'
 import { NrlinkConnectionStepsEnum } from 'src/modules/nrLinkConnection/nrlinkConnectionSteps.d'
 import { RootState } from 'src/redux'
@@ -63,10 +62,8 @@ export const MeterStatus = () => {
         getEnphaseLink,
         isEnphaseConsentLoading,
         revokeEnphaseConsent,
-        clearConsents,
     } = useConsents()
-    const { housingList } = useSelector(({ housingModel }: RootState) => housingModel)
-    const [foundHousing, setFoundHousing] = useState<IHousing>()
+    const { currentHousing } = useSelector(({ housingModel }: RootState) => housingModel)
     const [openCancelCollectionDataTooltip, setOpenCancelCollectionDataTooltip] = useState(false)
 
     // Retrieving house id from url params /my-houses/:houseId
@@ -78,34 +75,23 @@ export const MeterStatus = () => {
     /* To have the ending date of the consent, we add 3 years to the date the consent was made */
     const enedisConsentEndingDate = dayjs(enedisSgeConsent?.createdAt).add(3, 'year').format('DD/MM/YYYY')
 
-    // UseEffect that find the housing with the house Id from url params.
-    useEffect(() => {
-        if (housingList) {
-            setFoundHousing(housingList.find((housing) => housing.id === parseInt(houseId)))
-        }
-    }, [houseId, housingList])
-
     /**
      * This useEffect listen to changes in localStorage for enphaseConsentState.
      *
-     * It also listen to changes in foundHousing that triggers getConsents.
+     * It also listen to changes in currentHousing that triggers getConsents.
      *
      */
     useEffect(() => {
-        if (foundHousing?.meter?.guid) {
-            getConsents(foundHousing.meter.guid, foundHousing.id)
-        } else {
-            clearConsents()
-        }
+        getConsents(currentHousing?.meter?.guid, currentHousing?.id)
 
         /**
          * OnStorage function that execute the setter for EnphaseStateFromLocalStorage.
          */
         const onStorage = () => {
             const enphaseConfirmConsentState = localStorage.getItem('enphaseConfirmState')
-            if (enphaseConfirmConsentState === 'SUCCESS' && foundHousing?.meter?.guid) {
+            if (enphaseConfirmConsentState === 'SUCCESS' && currentHousing?.meter?.guid) {
                 localStorage.removeItem('enphaseConfirmState')
-                getConsents(foundHousing.meter.guid)
+                getConsents(currentHousing.meter.guid)
             }
         }
 
@@ -120,7 +106,7 @@ export const MeterStatus = () => {
         return () => {
             window.removeEventListener('storage', onStorage)
         }
-    }, [foundHousing?.meter?.guid, foundHousing?.id, getConsents, clearConsents])
+    }, [currentHousing?.meter?.guid, currentHousing?.id, getConsents])
 
     /**
      * Function that renders JSX accorrding to nrlink status.
@@ -152,9 +138,7 @@ export const MeterStatus = () => {
                         <ReplaceNRLinkModule
                             nrLinkConsent={nrlinkConsent}
                             onAfterReplaceNRLink={() => {
-                                if (foundHousing?.meter?.guid) {
-                                    getConsents(foundHousing.meter.guid, parseInt(houseId))
-                                }
+                                getConsents(currentHousing?.meter?.guid, parseInt(houseId))
                             }}
                         />
                     </>
@@ -188,7 +172,7 @@ export const MeterStatus = () => {
                                 to={{
                                     pathname: `/nrlink-connection-steps/${parseInt(houseId)}`,
                                     state: {
-                                        activeStep: foundHousing?.meter?.guid
+                                        activeStep: currentHousing?.meter?.guid
                                             ? NrlinkConnectionStepsEnum.thirdStep
                                             : NrlinkConnectionStepsEnum.secondStep,
                                     },
@@ -317,7 +301,7 @@ export const MeterStatus = () => {
             <Card className="my-12 md:mx-16" variant="outlined">
                 <MuiCardContent sx={{ p: 0, '&:last-child': { pb: 0 } }}>
                     <div className={`flex flex-row justify-between bg-grey-200 p-12 border-b-1 border-grey-300`}>
-                        <MeterInfos element={foundHousing} />
+                        <MeterInfos element={currentHousing!} />
                         <NavLink to={`${URL_MY_HOUSE}/${houseId}/contracts`} className="flex">
                             <Card className="flex flex-col items-center rounded p-8">
                                 <ContractIcon
@@ -341,16 +325,7 @@ export const MeterStatus = () => {
                     >
                         {/* Nrlink Consent Status */}
                         <div className="w-full md:w-1/3 p-12">
-                            {!foundHousing ? (
-                                <>
-                                    <TypographyFormatMessage className="text-xs md:text-sm font-semibold mb-6">
-                                        Consommation en temps réel
-                                    </TypographyFormatMessage>
-                                    <div className="flex flex-row items-center">
-                                        {renderNrlinkStatus('NONEXISTENT')}
-                                    </div>
-                                </>
-                            ) : consentsLoading ? (
+                            {consentsLoading ? (
                                 <CircularProgress size={25} />
                             ) : (
                                 <>
@@ -376,16 +351,7 @@ export const MeterStatus = () => {
                             })}
                         >
                             <div className={`w-full md:w-1/3 p-12 ${!sgeConsentFeatureState && 'cursor-not-allowed'}`}>
-                                {!foundHousing ? (
-                                    <>
-                                        <TypographyFormatMessage className="text-xs md:text-sm font-semibold mb-6">
-                                            Historique de consommation
-                                        </TypographyFormatMessage>
-                                        <div className="flex flex-row items-center">
-                                            {renderEnedisStatus('NONEXISTENT')}
-                                        </div>
-                                    </>
-                                ) : consentsLoading ? (
+                                {consentsLoading ? (
                                     <CircularProgress size={25} />
                                 ) : (
                                     <>
@@ -402,15 +368,15 @@ export const MeterStatus = () => {
                         <Divider orientation={mdDown ? 'horizontal' : undefined} flexItem variant="fullWidth" />
                         <SolarProductionConsentStatus
                             solarProductionConsentLoadingInProgress={consentsLoading || isEnphaseConsentLoading}
-                            solarProductionConsent={!foundHousing ? undefined : enphaseConsent}
+                            solarProductionConsent={enphaseConsent}
                             enphaseLink={enphaseLink}
                             getEnphaseLink={getEnphaseLink}
                             onRevokeEnphaseConsent={async () => {
-                                // When revoking enphase Consent means there is foundHousing.meter.guid
-                                await revokeEnphaseConsent(`${foundHousing?.meter?.guid}`)
-                                getConsents(`${foundHousing?.meter?.guid}`, parseInt(houseId))
+                                // When revoking enphase Consent means there is currentHousing!.meter.guid
+                                await revokeEnphaseConsent(`${currentHousing!.meter?.guid}`)
+                                getConsents(`${currentHousing!.meter?.guid}`, parseInt(houseId))
                             }}
-                            housing={foundHousing}
+                            housing={currentHousing!}
                         />
                     </div>
                 </MuiCardContent>
