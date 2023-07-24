@@ -1,6 +1,5 @@
 import {
     ApexAxisChartSerie,
-    getMetricType,
     metricFiltersType,
     metricRangeType,
     metricTargetsEnum,
@@ -38,8 +37,6 @@ import {
     endOfYear,
 } from 'date-fns'
 import { cloneDeep } from 'lodash'
-import { metricTargetsHook } from 'src/modules/MyConsumption/utils/myConsumptionVariables'
-import { globalProductionFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
 import { isNil } from 'lodash'
 import fr from 'date-fns/locale/fr'
 
@@ -551,37 +548,6 @@ export const convertConsumptionToWatt = (
             : (conversionFactor * value).toFixed(2)
         : 0
     return result + ' W'
-}
-
-/**
- * Functuon that returns initial values used for useMetrics hook for MyConsumption page.
- *
- * @returns Initial metrics hook values.
- */
-export const getInitialMetricsHookValues = (): getMetricType => {
-    let targetsWithoutEnphase = []
-
-    if (!globalProductionFeatureState) {
-        targetsWithoutEnphase = metricTargetsHook.filter(
-            (metric) =>
-                metric.target !== metricTargetsEnum.autoconsumption &&
-                metric.target !== metricTargetsEnum.injectedProduction &&
-                metric.target !== metricTargetsEnum.totalProduction,
-        )
-        return {
-            interval: '1m',
-            range: getRange('day'),
-            targets: targetsWithoutEnphase,
-            filters: [],
-        }
-    } else {
-        return {
-            interval: '1m',
-            range: getRange('day'),
-            targets: metricTargetsHook,
-            filters: [],
-        }
-    }
 }
 
 /**
