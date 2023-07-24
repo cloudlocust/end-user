@@ -205,7 +205,6 @@ export const ConsumptionChartTargets: metricTargetType[] = [
     metricTargetsEnum.pMax,
     metricTargetsEnum.externalTemperature,
     metricTargetsEnum.internalTemperature,
-    metricTargetsEnum.subscriptionPrices,
 ]
 
 /**
@@ -217,7 +216,6 @@ export const EnphaseOffConsumptionChartTargets: metricTargetType[] = [
     metricTargetsEnum.pMax,
     metricTargetsEnum.externalTemperature,
     metricTargetsEnum.internalTemperature,
-    metricTargetsEnum.subscriptionPrices,
 ]
 
 /**
