@@ -15,6 +15,8 @@ const mockCloseModalFn = jest.fn()
 const TEST_TXT_FAKE_OLD_NRLINK_ID = '0CA2F400008A4F86'
 const TEST_TXT_FAKE_NEW_NRLINK_ID = '0CA2F400008A4F42'
 
+const TEXT_BOX_ROLE = 'textbox'
+
 const mockEnqueueSnackbar = jest.fn()
 
 jest.mock('notistack', () => ({
@@ -69,12 +71,14 @@ describe('ReplaceNRLinkForm tests', () => {
         )
         expect(getByRole('form')).toBeTruthy()
         expect(getByRole('separator')).toBeTruthy()
-        expect(getByRole('textbox')).toBeTruthy()
+        expect(getByRole(TEXT_BOX_ROLE)).toBeTruthy()
         expect(getByRole('checkbox')).toBeTruthy()
         expect(getAllByRole('button')).toHaveLength(2)
 
         expect(getByText(MSG_REPLACE_NRLINK_MODAL_TITLE)).toBeTruthy()
         expect(getByText(MSG_REPLACE_NRLINK_CLEAR_OLD_DATA)).toBeTruthy()
+
+        expect(getByRole(TEXT_BOX_ROLE)).toHaveValue('fakeNRLinkGuid')
     })
     describe('When interacting, should update correctly', () => {
         test('When just replacing nrLink, should act correctly', async () => {
@@ -89,7 +93,10 @@ describe('ReplaceNRLinkForm tests', () => {
                 </BrowserRouter>,
             )
 
-            userEvent.type(getByRole('textbox'), TEST_TXT_FAKE_NEW_NRLINK_ID)
+            expect(getByRole(TEXT_BOX_ROLE)).toHaveValue(TEST_TXT_FAKE_OLD_NRLINK_ID)
+
+            userEvent.clear(getByRole(TEXT_BOX_ROLE))
+            userEvent.type(getByRole(TEXT_BOX_ROLE), TEST_TXT_FAKE_NEW_NRLINK_ID)
             userEvent.click(getByText('Enregistrer'))
 
             await waitFor(() => {
@@ -116,7 +123,10 @@ describe('ReplaceNRLinkForm tests', () => {
                 </BrowserRouter>,
             )
 
-            userEvent.type(getByRole('textbox'), TEST_TXT_FAKE_NEW_NRLINK_ID)
+            expect(getByRole(TEXT_BOX_ROLE)).toHaveValue(TEST_TXT_FAKE_OLD_NRLINK_ID)
+
+            userEvent.clear(getByRole(TEXT_BOX_ROLE))
+            userEvent.type(getByRole(TEXT_BOX_ROLE), TEST_TXT_FAKE_NEW_NRLINK_ID)
             userEvent.click(getByRole('checkbox'))
             userEvent.click(getByText('Enregistrer'))
 
@@ -135,7 +145,7 @@ describe('ReplaceNRLinkForm tests', () => {
         })
 
         test('When clicking on Cancel, should ask Parent to close Modal', async () => {
-            const { getByText } = reduxedRender(
+            const { getByText, getByRole } = reduxedRender(
                 <BrowserRouter>
                     <ReplaceNRLinkForm
                         meterGuid="42"
@@ -146,7 +156,34 @@ describe('ReplaceNRLinkForm tests', () => {
                 </BrowserRouter>,
             )
 
+            expect(getByRole(TEXT_BOX_ROLE)).toHaveValue(TEST_TXT_FAKE_OLD_NRLINK_ID)
+
             userEvent.click(getByText('Annuler'))
+
+            await waitFor(() => {
+                expect(mockCloseModalFn).toBeCalled()
+            })
+        })
+
+        test('When we replace nrLink by itself, replaceNRLink should not be called, and the modal should close', async () => {
+            const { getByRole, getByText } = reduxedRender(
+                <BrowserRouter>
+                    <ReplaceNRLinkForm
+                        meterGuid="42"
+                        oldNRLinkGuid={TEST_TXT_FAKE_OLD_NRLINK_ID}
+                        onAfterReplaceNRLink={mockOnSuccessFn}
+                        closeModal={mockCloseModalFn}
+                    />
+                </BrowserRouter>,
+            )
+
+            expect(getByRole(TEXT_BOX_ROLE)).toHaveValue(TEST_TXT_FAKE_OLD_NRLINK_ID)
+
+            userEvent.click(getByText('Enregistrer'))
+
+            await waitFor(() => {
+                expect(mockUseReplaceNRLink).not.toBeCalled()
+            })
 
             await waitFor(() => {
                 expect(mockCloseModalFn).toBeCalled()
