@@ -4,7 +4,7 @@ import EuroIcon from '@mui/icons-material/Euro'
 import { getChartColor } from 'src/modules/MyConsumption/utils/myConsumptionVariables'
 import { useTheme } from '@mui/material'
 import { metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
-import { EurosConsumptionButtonTogglerProps } from 'src/modules/MyConsumption/myConsumptionTypes'
+import { EurosConsumptionButtonTogglerProps } from 'src/modules/MyConsumption/myConsumptionTypes.d'
 import Tooltip from '@mui/material/Tooltip'
 import { useIntl } from 'react-intl'
 
@@ -26,6 +26,7 @@ const EurosConsumptionButtonToggler = ({
 }: EurosConsumptionButtonTogglerProps) => {
     const { formatMessage } = useIntl()
     const theme = useTheme()
+
     return (
         <>
             {showEurosConsumption ? (

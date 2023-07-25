@@ -8,10 +8,7 @@ import { IMetric, metricTargetsEnum, metricTargetType } from 'src/modules/Metric
 import { ConsumptionChartContainerProps } from 'src/modules/MyConsumption/myConsumptionTypes.d'
 import CircularProgress from '@mui/material/CircularProgress'
 import EurosConsumptionButtonToggler from 'src/modules/MyConsumption/components/EurosConsumptionButtonToggler'
-import {
-    filterPmaxAndEurosConsumptionTargetFromVisibleChartTargets,
-    showPerPeriodText,
-} from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
+import { filterTargetsOnDailyPeriod, showPerPeriodText } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
 import {
     ConsumptionChartTargets,
     EnphaseOffConsumptionChartTargets,
@@ -109,9 +106,7 @@ export const ConsumptionChartContainer = ({
     useEffect(() => {
         // When period is daily, remove target pMax or eurosConsumption from visibleTargetCharts and thus when calling getMetrics it won't have these targets.
         if (period === 'daily') {
-            setVisibleTargetsCharts((prevState) =>
-                filterPmaxAndEurosConsumptionTargetFromVisibleChartTargets(prevState),
-            )
+            setVisibleTargetsCharts((prevState) => filterTargetsOnDailyPeriod(prevState))
         }
     }, [period])
 

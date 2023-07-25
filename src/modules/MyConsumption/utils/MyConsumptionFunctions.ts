@@ -582,7 +582,8 @@ export const showPerPeriodText = (chartType: 'consumption' | 'production', perio
 export const filterPmaxAndEurosConsumptionTargetFromVisibleChartTargets = (visibleChartTargets: metricTargetType[]) => {
     if (
         visibleChartTargets.includes(metricTargetsEnum.eurosConsumption) ||
-        visibleChartTargets.includes(metricTargetsEnum.pMax)
+        visibleChartTargets.includes(metricTargetsEnum.pMax) ||
+        visibleChartTargets.includes(metricTargetsEnum.subscriptionPrices)
     ) {
         const savedVisibleTargetCharts = visibleChartTargets.filter(
             (target) =>
@@ -591,6 +592,7 @@ export const filterPmaxAndEurosConsumptionTargetFromVisibleChartTargets = (visib
                     metricTargetsEnum.consumption,
                     metricTargetsEnum.pMax,
                     metricTargetsEnum.eurosConsumption,
+                    metricTargetsEnum.subscriptionPrices,
                 ].includes(target as metricTargetsEnum),
         )
         return [metricTargetsEnum.consumption, metricTargetsEnum.autoconsumption, ...savedVisibleTargetCharts]
