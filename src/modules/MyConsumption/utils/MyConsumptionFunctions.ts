@@ -579,7 +579,7 @@ export const showPerPeriodText = (chartType: 'consumption' | 'production', perio
  * @param visibleChartTargets Given Targets may contain pMax and eurosConsumption and other targets.
  * @returns New visibleChartTargets without eurosConsumption and pMax.
  */
-export const filterPmaxAndEurosConsumptionTargetFromVisibleChartTargets = (visibleChartTargets: metricTargetType[]) => {
+export const filterTargetsOnDailyPeriod = (visibleChartTargets: metricTargetType[]) => {
     if (
         visibleChartTargets.includes(metricTargetsEnum.eurosConsumption) ||
         visibleChartTargets.includes(metricTargetsEnum.pMax) ||
