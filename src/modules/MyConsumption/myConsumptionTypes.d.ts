@@ -208,6 +208,8 @@ export interface ConsumptionChartContainerProps {
     enphaseConsent?: IEnphaseConsent
     // eslint-disable-next-line jsdoc/require-jsdoc
     enedisSgeConsent?: IEnedisSgeConsent
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    isPeakHourOffPeakHourTariffType: boolean
 }
 
 /**
@@ -227,7 +229,7 @@ export type DefaultContractWarningProps =
  */
 export type ProductionChartContainerProps = Omit<
     ConsumptionChartContainerProps,
-    'enedisSgeConsent' | 'hasMissingHousingContracts'
+    'enedisSgeConsent' | 'hasMissingHousingContracts' | 'isPeakHourOffPeakHourTariffType'
 >
 
 /**

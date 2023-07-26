@@ -20,6 +20,12 @@ import CircularProgress from '@mui/material/CircularProgress'
 import Box from '@mui/material/Box'
 import ConsumptionWidgetsContainer from 'src/modules/MyConsumption/components/ConsumptionWidgetsContainer'
 import { ConsumptionWidgetsMetricsProvider } from 'src/modules/MyConsumption/components/ConsumptionWidgetsContainer/ConsumptionWidgetsMetricsContext'
+import { useContractList } from 'src/modules/Contracts/contractsHook'
+
+/**
+ * HP / HC tariff name.
+ */
+export const HP_HC_TARIFF_NAME = 'Heures Pleines / Heures Creuses'
 
 /**
  * MyConsumptionContainer.
@@ -39,6 +45,19 @@ export const MyConsumptionContainer = () => {
     // This won't create a problem even if metricIntervalType doesn't include undefined, because this will affect only on mount of MyConsumptionContainer and all children component that useMetrics, won't execute getMetrics on mount.
     const [metricsInterval, setMetricsInterval] = useState<metricIntervalType>('1m')
     const { ecowattSignalsData, isLoadingInProgress: isEcowattDataInProgress } = useEcowatt(true)
+    const { elementList: contractList, loadElementList: loadContractsList } = useContractList(
+        currentHousing?.id,
+        // No SizeParams.
+        undefined,
+        // False indicates that the hook isn't called when it's instanciated.
+        false,
+    )
+    const { hasMissingHousingContracts } = useHasMissingHousingContracts(range, currentHousing?.id)
+
+    const currentContract = contractList?.find((contract) => !contract.endSubscription)
+
+    // Boolean state which indicates that the currentContract is of type HP/HC.
+    const isPeakHourOffPeakHourTariffType = currentContract?.tariffType.name === HP_HC_TARIFF_NAME
 
     const nrlinkOff = nrlinkConsent?.nrlinkConsentState === 'NONEXISTENT'
     const enedisOff = enedisSgeConsent?.enedisSgeConsentState !== 'CONNECTED'
@@ -46,10 +65,18 @@ export const MyConsumptionContainer = () => {
 
     // UseEffect to check for consent whenever a meter is selected.
     useEffect(() => {
-        if (!currentHousing?.meter?.guid) return
+        if (!currentHousing?.id || !currentHousing?.meter?.guid) return
         setFilters(formatMetricFilter(currentHousing?.meter.guid))
-        getConsents(currentHousing?.meter.guid, currentHousing?.id)
-    }, [currentHousing?.meter?.guid, setFilters, getConsents, currentHousing?.id])
+        getConsents(currentHousing.meter.guid, currentHousing.id)
+        if (!hasMissingHousingContracts) loadContractsList()
+    }, [
+        currentHousing?.meter?.guid,
+        setFilters,
+        getConsents,
+        currentHousing?.id,
+        loadContractsList,
+        hasMissingHousingContracts,
+    ])
 
     /**
      * Callback when MyConsumptionPeriod components change metrics Interval.
@@ -69,8 +96,6 @@ export const MyConsumptionContainer = () => {
             else return prevState
         })
     }, [enphaseConsent])
-
-    const { hasMissingHousingContracts } = useHasMissingHousingContracts(range, currentHousing?.id)
 
     if (consentsLoading)
         return (
@@ -124,6 +149,7 @@ export const MyConsumptionContainer = () => {
                             enedisSgeConsent={enedisSgeConsent}
                             enphaseConsent={enphaseConsent}
                             metricsInterval={metricsInterval}
+                            isPeakHourOffPeakHourTariffType={isPeakHourOffPeakHourTariffType}
                         />
                     </>
                 )}

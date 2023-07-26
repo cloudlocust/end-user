@@ -721,3 +721,25 @@ export function getRangeV2(period: PeriodEnum) {
             }
     }
 }
+
+/**
+ * Utility function to return whuch targets should be visible.
+ *
+ * Used in ConsumptionChartContainer in visibleTargetCharts state.
+ *
+ * @param isEnphaseOff Enphase state OFF.
+ * @param isPeakHourOffPeakHourTariffType HP/HC boolean.
+ * @returns Metric targets list.
+ */
+export const getViibleTargetChartss = (
+    isEnphaseOff: boolean,
+    isPeakHourOffPeakHourTariffType: boolean,
+): metricTargetType[] => {
+    if (isEnphaseOff) {
+        return [metricTargetsEnum.consumption]
+    } else if (isPeakHourOffPeakHourTariffType) {
+        return [metricTargetsEnum.peakHourConsumption, metricTargetsEnum.offPeakHourConsumption]
+    }
+
+    return [metricTargetsEnum.autoconsumption, metricTargetsEnum.consumption]
+}

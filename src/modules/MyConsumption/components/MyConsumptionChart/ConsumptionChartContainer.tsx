@@ -5,10 +5,14 @@ import MyConsumptionChart from 'src/modules/MyConsumption/components/MyConsumpti
 import { useTheme } from '@mui/material'
 import { useMetrics } from 'src/modules/Metrics/metricsHook'
 import { IMetric, metricTargetsEnum, metricTargetType } from 'src/modules/Metrics/Metrics.d'
-import { ConsumptionChartContainerProps } from 'src/modules/MyConsumption/myConsumptionTypes.d'
+import { ConsumptionChartContainerProps } from 'src/modules/MyConsumption/myConsumptionTypes'
 import CircularProgress from '@mui/material/CircularProgress'
 import EurosConsumptionButtonToggler from 'src/modules/MyConsumption/components/EurosConsumptionButtonToggler'
-import { filterTargetsOnDailyPeriod, showPerPeriodText } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
+import {
+    filterTargetsOnDailyPeriod,
+    getViibleTargetChartss,
+    showPerPeriodText,
+} from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
 import {
     ConsumptionChartTargets,
     EnphaseOffConsumptionChartTargets,
@@ -32,6 +36,7 @@ import TargetMenuGroup from 'src/modules/MyConsumption/components/TargetMenuGrou
  * @param props.hasMissingHousingContracts Consumption or production chart type.
  * @param props.enedisSgeConsent Consumption or production chart type.
  * @param props.enphaseConsent Consumption or production chart type.
+ * @param props.isPeakHourOffPeakHourTariffType Boolean state which indicates that the currentContract is of type HP/HC.
  * @returns MyConsumptionChart Component.
  */
 export const ConsumptionChartContainer = ({
@@ -42,6 +47,7 @@ export const ConsumptionChartContainer = ({
     hasMissingHousingContracts,
     enedisSgeConsent,
     enphaseConsent,
+    isPeakHourOffPeakHourTariffType,
 }: ConsumptionChartContainerProps) => {
     const theme = useTheme()
     // This state represents whether or not the chart is displaying a spinner, which should happen only when we request the current metrics, not the request of all metrics that happens in the background.
@@ -50,14 +56,11 @@ export const ConsumptionChartContainer = ({
     const enphaseOff = enphaseConsent?.enphaseConsentState !== 'ACTIVE'
     // Visible Targets will influence k
     const [visibleTargetCharts, setVisibleTargetsCharts] = useState<metricTargetType[]>(
-        enphaseOff
-            ? [metricTargetsEnum.consumption]
-            : [metricTargetsEnum.autoconsumption, metricTargetsEnum.consumption],
+        getViibleTargetChartss(enphaseOff, isPeakHourOffPeakHourTariffType),
     )
     // Indicates if enedisSgeConsent is not Connected
     const enedisSgeOff = enedisSgeConsent?.enedisSgeConsentState !== 'CONNECTED'
     const hidePmax = period === 'daily' || enedisSgeOff
-
     // Track the change of visibleTargetCharts, so that we don't call getMetrics when visibleTargetCharts change (and thus no request when showing / hiding target in MyConsumptionChart).
     const isVisibleTargetChartsChanged = useRef(false)
     const { data, getMetricsWithParams } = useMetrics({
@@ -75,7 +78,6 @@ export const ConsumptionChartContainer = ({
         ],
         filters,
     })
-
     const [consumptionChartData, setConsumptionChartData] = useState<IMetric[]>(data)
 
     // This state represents whether or not the chart is stacked: true.

@@ -106,6 +106,7 @@ const consumptionChartContainerProps: ConsumptionChartContainerProps = {
     metricsInterval: mockMetricsInterval,
     period: mockPeriod,
     range: mockRange,
+    isPeakHourOffPeakHourTariffType: false,
 }
 
 const mockGetMetricsWithParamsValues: getMetricsWithParamsType = {

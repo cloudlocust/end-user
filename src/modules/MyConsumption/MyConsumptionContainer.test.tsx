@@ -1,5 +1,5 @@
 import { reduxedRender } from 'src/common/react-platform-components/test'
-import { MyConsumptionContainer } from 'src/modules/MyConsumption/MyConsumptionContainer'
+import { HP_HC_TARIFF_NAME, MyConsumptionContainer } from 'src/modules/MyConsumption/MyConsumptionContainer'
 import { BrowserRouter as Router } from 'react-router-dom'
 import { waitFor } from '@testing-library/react'
 import { formatMetricFilter } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
@@ -11,6 +11,8 @@ import { TEST_HOUSES } from 'src/mocks/handlers/houses'
 import { NRLINK_ENEDIS_OFF_MESSAGE } from 'src/modules/MyConsumption/utils/myConsumptionVariables'
 import { ConsumptionChartContainerProps } from 'src/modules/MyConsumption/myConsumptionTypes'
 import { IEnedisSgeConsent, INrlinkConsent, IEnphaseConsent } from 'src/modules/Consents/Consents'
+import { TEST_CONTRACT_TYPES, TEST_OFFERS, TEST_PROVIDERS } from 'src/mocks/handlers/commercialOffer'
+import { TEST_DATETIME } from 'src/mocks/handlers/contracts'
 
 // List of houses to add to the redux state
 const LIST_OF_HOUSES: IHousing[] = applyCamelCase(TEST_HOUSES)
@@ -56,6 +58,19 @@ const mockSetPeriod = jest.fn()
 const PERIOD_TEXT = 'Period'
 const METRICS_INTERVAL_ENPHASE_ACTIVE = '30m'
 
+const mockContracts = [
+    {
+        id: 1,
+        commercialOffer: { ...TEST_OFFERS[0], provider: TEST_PROVIDERS[0] },
+        tariffType: { name: HP_HC_TARIFF_NAME, id: 1 },
+        contractType: TEST_CONTRACT_TYPES[0],
+        power: 6,
+        startSubscription: TEST_DATETIME,
+    },
+]
+
+let mockLoadContractsList = jest.fn()
+
 // Mock consentsHook
 jest.mock('src/modules/Consents/consentsHook.ts', () => ({
     // eslint-disable-next-line jsdoc/require-jsdoc
@@ -73,6 +88,17 @@ jest.mock('src/hooks/HasMissingHousingContracts', () => ({
     // eslint-disable-next-line jsdoc/require-jsdoc
     useHasMissingHousingContracts: () => ({
         hasMissingHousingContracts: true,
+    }),
+}))
+
+/**
+ * Mocking the useContractList.
+ */
+jest.mock('src/modules/Contracts/contractsHook', () => ({
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    useContractList: () => ({
+        elementList: mockContracts,
+        loadContractsList: mockLoadContractsList,
     }),
 }))
 
