@@ -233,6 +233,7 @@ describe('MeterStatus component test', () => {
             expect(getByText(COMPTEUR_TITLE)).toBeTruthy()
             expect(getByText(`n° ${CURRENT_HOUSING?.meter?.guid}`)).toBeTruthy()
             expect(getByText(NRLINK_TITLE)).toBeTruthy()
+            expect(getByText(`nrLINK N° ${mockNrlinkGuid}`)).toBeTruthy()
             expect(getByText(NRLINK_DISCONNECTED_MESSAGE)).toBeTruthy()
             expect(image).toHaveAttribute('src', STATUS_ERROR_SRC)
         })

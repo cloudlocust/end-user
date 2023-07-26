@@ -145,19 +145,26 @@ export const MeterStatus = () => {
                 )
             case 'DISCONNECTED':
                 return (
-                    <>
-                        <Icon className="mr-12">
-                            <img
-                                src="./assets/images/content/housing/consent-status/meter-error.svg"
-                                alt="error-icon"
-                            />
-                        </Icon>
-                        <div className="flex flex-col">
-                            <TypographyFormatMessage color={theme.palette.warning.main} fontWeight={600}>
-                                Veuillez vérifier le branchement de votre appareil et/ou la connexion wifi.
+                    <div className="flex flex-col">
+                        {nrlinkConsent?.nrlinkGuid ? (
+                            <TypographyFormatMessage color={theme.palette.grey[700]} fontWeight={600} className="pb-4">
+                                {`nrLINK N° ${nrlinkConsent?.nrlinkGuid}`}
                             </TypographyFormatMessage>
+                        ) : null}
+                        <div className="flex flex-row items-center">
+                            <Icon className="mr-12">
+                                <img
+                                    src="./assets/images/content/housing/consent-status/meter-error.svg"
+                                    alt="error-icon"
+                                />
+                            </Icon>
+                            <div className="flex flex-col">
+                                <TypographyFormatMessage color={theme.palette.warning.main} fontWeight={600}>
+                                    Veuillez vérifier le branchement de votre appareil et/ou la connexion wifi.
+                                </TypographyFormatMessage>
+                            </div>
                         </div>
-                    </>
+                    </div>
                 )
             case 'EXPIRED':
             case 'NONEXISTENT':
