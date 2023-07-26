@@ -79,6 +79,7 @@ let mockSetMeterVerification = jest.fn()
 let mockEditMeter = jest.fn()
 const circularProgressClassname = '.MuiCircularProgress-root'
 let mockRevokeEnphaseConsent = jest.fn()
+let mockLoadConnectedPlugList = jest.fn()
 
 const STATUS_ON_SRC = './assets/images/content/housing/consent-status/meter-on.svg'
 const STATUS_OFF_SRC = './assets/images/content/housing/consent-status/meter-off.svg'
@@ -99,6 +100,7 @@ jest.mock('src/modules/MyHouse/components/ConnectedPlugs/connectedPlugsHook', ()
     useConnectedPlugList: () => ({
         // eslint-disable-next-line jsdoc/require-jsdoc
         getProductionConnectedPlug: () => undefined,
+        loadConnectedPlugList: mockLoadConnectedPlugList,
     }),
 }))
 
