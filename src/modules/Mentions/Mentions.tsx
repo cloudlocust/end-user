@@ -29,6 +29,7 @@ export const Mentions = (): JSX.Element => {
         },
         {
             title: 'Préférences des cookies',
+            // This function is allow to user to display and manage cookie consent.
             // eslint-disable-next-line no-script-url
             link: `javascript:openAxeptioCookies()`,
         },
