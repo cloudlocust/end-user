@@ -122,6 +122,7 @@ export function useConnectedPlugList(meterGuid?: string, housingId?: number) {
      */
     const associateConnectedPlug = useCallback(
         async (connectedPlugId: string, housingId: number, associate: boolean = true) => {
+            if (!meterGuid) return
             setLoadingInProgress(true)
             try {
                 await axios.post(
@@ -129,6 +130,7 @@ export function useConnectedPlugList(meterGuid?: string, housingId?: number) {
                     {
                         deviceId: connectedPlugId,
                         housingId,
+                        meterGuid,
                         state: associate ? 'production' : null,
                     },
                     {
@@ -149,7 +151,7 @@ export function useConnectedPlugList(meterGuid?: string, housingId?: number) {
                 setLoadingInProgress(false)
             }
         },
-        [enqueueSnackbar, formatMessage, isCancel, source],
+        [enqueueSnackbar, formatMessage, isCancel, meterGuid, source],
     )
 
     /**
