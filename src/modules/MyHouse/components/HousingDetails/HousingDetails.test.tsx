@@ -42,6 +42,7 @@ jest.mock('react-router', () => ({
 let mockIsLoadingInProgress = false
 const mockUpdateAccomodation = jest.fn()
 const mockLoadAccomodation = jest.fn()
+let mockLoadConnectedPlugList = jest.fn()
 let mockAccomodation: AccomodationDataType = TEST_ACCOMODATION_RESPONSE
 
 /**
@@ -88,6 +89,7 @@ jest.mock('src/modules/MyHouse/components/ConnectedPlugs/connectedPlugsHook', ()
         loadingInProgress: mockConnectedPlugListLoadingInProgress,
         // eslint-disable-next-line jsdoc/require-jsdoc
         getProductionConnectedPlug: () => undefined,
+        loadConnectedPlugList: mockLoadConnectedPlugList,
     }),
 }))
 // mock store.

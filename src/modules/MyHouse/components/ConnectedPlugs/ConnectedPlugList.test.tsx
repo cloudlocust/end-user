@@ -15,6 +15,7 @@ const ADD_CONNECTED_PLUG_BUTTON_TEXT = 'Ajouter une prise'
 let mockConnectedPlugsList = MOCK_TEST_CONNECTED_PLUGS
 const mockHistoryGoBack = jest.fn()
 const mockOpenShellyConnectedPlugsWindow = jest.fn()
+let mockLoadConnectedPlugList = jest.fn()
 const CONNECTED_PLUGS_EMPTY_TEXT = `Aucune prise connectée n'a encore été renseignée, cliquez "configuration" pour ouvrir l'onglet de paramètrage des prises connectée.`
 const CONNECTED_PLUG_CONSENT_EXIST_TEXT = 'Connectée le'
 const CONFIGURE_SHELLY_TEXT = 'Configuration'
@@ -46,6 +47,7 @@ jest.mock('src/modules/MyHouse/components/ConnectedPlugs/connectedPlugsHook', ()
     useConnectedPlugList: () => ({
         connectedPlugList: mockConnectedPlugsList,
         loadingInProgress: mockLoadingInProgress,
+        loadConnectedPlugList: mockLoadConnectedPlugList,
     }),
 
     // eslint-disable-next-line jsdoc/require-jsdoc

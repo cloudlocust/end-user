@@ -38,9 +38,13 @@ describe('useConnectedPlugList test', () => {
     test('when snackbar is called with error', async () => {
         const {
             renderedHook: { result, waitForValueToChange },
-            // Giving Empty GUID to fake an error.
+            // Giving fake GUID to fake an error.
         } = reduxedRenderHook(() => useConnectedPlugList(TEST_ERROR_METER_GUID, TEST_HOUSE_ID), { initialState: {} })
 
+        expect(result.current.loadingInProgress).toBe(false)
+        act(async () => {
+            await result.current.loadConnectedPlugList()
+        })
         expect(result.current.loadingInProgress).toBe(true)
         await waitForValueToChange(
             () => {
@@ -51,13 +55,18 @@ describe('useConnectedPlugList test', () => {
         expect(result.current.loadingInProgress).toBe(false)
         expect(mockEnqueueSnackbar).toHaveBeenCalledWith(ERROR_LOAD_MESSAGE, {
             variant: 'error',
+            autoHideDuration: 5000,
         })
     }, 8000)
     test('when elementlist loads succesfully', async () => {
         const {
             renderedHook: { result, waitForValueToChange },
-            // Giving negative size to fake an error in the msw.
         } = reduxedRenderHook(() => useConnectedPlugList(TEST_METER_GUID, TEST_HOUSE_ID), { initialState: {} })
+
+        expect(result.current.loadingInProgress).toBe(false)
+        act(async () => {
+            await result.current.loadConnectedPlugList()
+        })
         expect(result.current.loadingInProgress).toBe(true)
         await waitForValueToChange(
             () => {
@@ -74,7 +83,7 @@ describe('useConnectedPlugList test', () => {
             const {
                 renderedHook: { result, waitForValueToChange },
                 // Giving Empty GUID to fake an error.
-            } = reduxedRenderHook(() => useConnectedPlugList(TEST_ERROR_METER_GUID, TEST_HOUSE_ID, false), {
+            } = reduxedRenderHook(() => useConnectedPlugList(TEST_ERROR_METER_GUID, TEST_HOUSE_ID), {
                 initialState: {},
             })
             expect(result.current.loadingInProgress).toBe(false)
@@ -99,7 +108,7 @@ describe('useConnectedPlugList test', () => {
             const {
                 renderedHook: { result, waitForValueToChange },
                 // Giving Empty GUID to fake an error.
-            } = reduxedRenderHook(() => useConnectedPlugList(TEST_METER_GUID, TEST_HOUSE_ID, false), {
+            } = reduxedRenderHook(() => useConnectedPlugList(TEST_METER_GUID, TEST_HOUSE_ID), {
                 initialState: {},
             })
             expect(result.current.loadingInProgress).toBe(false)

@@ -15,6 +15,7 @@ const MOCK_TEST_CONNECTED_PLUGS: IConnectedPlug[] = applyCamelCase(TEST_CONNECTE
 const CONFIGURE_SHELLY_TEXT = 'Configurer'
 let mockConnectedPlugsList = MOCK_TEST_CONNECTED_PLUGS
 let mockAssociateConnectedPlug = jest.fn()
+let mockLoadConnectedPlugList = jest.fn()
 const mockHistoryGoBack = jest.fn()
 const mockHistoryPush = jest.fn()
 const mockOpenShellyConnectedPlugsWindow = jest.fn()
@@ -50,6 +51,7 @@ jest.mock('src/modules/MyHouse/components/ConnectedPlugs/connectedPlugsHook', ()
         connectedPlugList: mockConnectedPlugsList,
         loadingInProgress: mockLoadingInProgress,
         associateConnectedPlug: mockAssociateConnectedPlug,
+        loadConnectedPlugList: mockLoadConnectedPlugList,
     }),
 
     // eslint-disable-next-line jsdoc/require-jsdoc

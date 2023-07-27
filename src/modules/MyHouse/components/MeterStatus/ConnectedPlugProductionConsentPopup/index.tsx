@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { useIntl } from 'react-intl'
 import { Dialog, DialogContent, useMediaQuery, useTheme, CircularProgress } from '@mui/material'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
@@ -6,8 +7,7 @@ import { ButtonLoader } from 'src/common/ui-kit'
 import { useConnectedPlugList } from 'src/modules/MyHouse/components/ConnectedPlugs/connectedPlugsHook'
 import { RootState } from 'src/redux'
 import { useSelector } from 'react-redux'
-import { contractsRouteParam } from 'src/modules/Contracts/contractsTypes.d'
-import { useParams, useHistory } from 'react-router-dom'
+import { useHistory } from 'react-router-dom'
 import { useShellyConnectedPlugs } from 'src/modules/MyHouse/components/ConnectedPlugs/connectedPlugsHook'
 import SelectConnectedPlugProductionList from 'src/modules/MyHouse/components/MeterStatus/ConnectedPlugProductionConsentPopup/SelectConnectedPlugProductionList'
 import { IConnectedPlugProductionConsentPopupProps } from 'src/modules/MyHouse/components/MeterStatus/MeterStatus.d'
@@ -21,16 +21,15 @@ import { URL_MY_HOUSE } from 'src/modules/MyHouse/MyHouseConfig'
  * @returns ConnectedPlugProductionConsentPopup .
  */
 const ConnectedPlugProductionConsentPopup = ({ onClose }: IConnectedPlugProductionConsentPopupProps) => {
-    const { housingList } = useSelector(({ housingModel }: RootState) => housingModel)
-    // HouseId extracted from params of the url :houseId/connected-plugs
-    const { houseId } = useParams<contractsRouteParam>()
-    const currentHousingMeterGuid = housingList.find((housing) => housing.id === parseInt(houseId))?.meter?.guid
+    const { formatMessage } = useIntl()
+    const { currentHousing } = useSelector(({ housingModel }: RootState) => housingModel)
+
     const theme = useTheme()
     const mdDown = useMediaQuery(theme.breakpoints.down('md'))
     const history = useHistory()
 
     const { loadingInProgress: isShellyLoadingInProgress, openShellyConnectedPlugsWindow } = useShellyConnectedPlugs(
-        parseInt(houseId),
+        currentHousing?.id,
     )
 
     const {
@@ -38,8 +37,11 @@ const ConnectedPlugProductionConsentPopup = ({ onClose }: IConnectedPlugProducti
         loadingInProgress: isConnectedPlugListLoadingInProgress,
         loadConnectedPlugList,
         associateConnectedPlug,
-    } = useConnectedPlugList(currentHousingMeterGuid!, parseInt(houseId))
-    const { formatMessage } = useIntl()
+    } = useConnectedPlugList(currentHousing?.meter?.guid, currentHousing?.id)
+
+    useEffect(() => {
+        loadConnectedPlugList()
+    }, [loadConnectedPlugList])
 
     return (
         <Dialog open={true} fullWidth maxWidth={mdDown ? 'xl' : 'sm'} onClose={onClose} onBackdropClick={onClose}>
@@ -75,8 +77,8 @@ const ConnectedPlugProductionConsentPopup = ({ onClose }: IConnectedPlugProducti
                 ) : (
                     <SelectConnectedPlugProductionList
                         onSubmit={async (connectedPlugId) => {
-                            const isSuccessResponse = await associateConnectedPlug(connectedPlugId, parseInt(houseId))
-                            if (isSuccessResponse) history.push(`${URL_MY_HOUSE}/${houseId}/connected-plugs`)
+                            const isSuccessResponse = await associateConnectedPlug(connectedPlugId, currentHousing!.id)
+                            if (isSuccessResponse) history.push(`${URL_MY_HOUSE}/${currentHousing?.id}/connected-plugs`)
                         }}
                         connectedPlugList={connectedPlugList}
                     />

@@ -55,18 +55,19 @@ export const HousingDetails = () => {
 
     const theme = useTheme()
 
-    const { connectedPlugList, loadingInProgress: isConnectedPlugListLoading } = useConnectedPlugList(
-        currentHousing!.meter?.guid!,
-        currentHousing!.id,
-    )
+    const {
+        connectedPlugList,
+        loadingInProgress: isConnectedPlugListLoading,
+        loadConnectedPlugList,
+    } = useConnectedPlugList(currentHousing?.meter?.guid!, currentHousing?.id)
 
     const {
         accomodation,
         isAccomodationMeterListEmpty,
         isLoadingInProgress: loadingAccomodationInProgress,
-    } = useAccomodation(currentHousing!.id)
+    } = useAccomodation(currentHousing?.id)
     const { equipmentList, isEquipmentMeterListEmpty, loadingEquipmentInProgress } = useEquipmentList(
-        currentHousing!.id,
+        currentHousing?.id,
     )
 
     // get a default elements with default icons for when it's loading.
@@ -182,8 +183,9 @@ export const HousingDetails = () => {
         // We update the previous connected plugs elements by the latest fetched connectedPlugList top three if exist.
         setConnectedPlugsElements((prevConnectedPlugsElements) => {
             const copyPrevConnectedPlugsElements = cloneDeep(prevConnectedPlugsElements)
-            // Reset Icons.
-            copyPrevConnectedPlugsElements.forEach((connectedPlugElement) => {
+            // Reset Icons & labels.
+            copyPrevConnectedPlugsElements.forEach((connectedPlugElement, index) => {
+                connectedPlugElement.label = `Prise ${index + 1}`
                 connectedPlugElement.icon = <MoreHorizIcon color="primary" fontSize="large" />
             })
 
@@ -194,6 +196,10 @@ export const HousingDetails = () => {
             return copyPrevConnectedPlugsElements
         })
     }, [connectedPlugList])
+
+    useEffect(() => {
+        loadConnectedPlugList()
+    }, [loadConnectedPlugList])
 
     return (
         <Root
