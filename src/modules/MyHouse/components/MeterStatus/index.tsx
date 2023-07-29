@@ -4,7 +4,7 @@ import dayjs from 'dayjs'
 import { useEffect, useState } from 'react'
 import { useIntl } from 'react-intl'
 import { useSelector } from 'react-redux'
-import { NavLink, useParams } from 'react-router-dom'
+import { NavLink } from 'react-router-dom'
 import { ReactComponent as ContractIcon } from 'src/assets/images/content/housing/contract.svg'
 import { MuiCardContent } from 'src/common/ui-kit'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
@@ -65,10 +65,6 @@ export const MeterStatus = () => {
     } = useConsents()
     const { currentHousing } = useSelector(({ housingModel }: RootState) => housingModel)
     const [openCancelCollectionDataTooltip, setOpenCancelCollectionDataTooltip] = useState(false)
-
-    // Retrieving house id from url params /my-houses/:houseId
-    // eslint-disable-next-line jsdoc/require-jsdoc
-    const { houseId }: { houseId: string } = useParams()
 
     /*  Nrlink created at date formatted */
     const nrlinkConsentCreatedAt = dayjs(nrlinkConsent?.createdAt).format(FORMATTED_DATA)
@@ -138,7 +134,7 @@ export const MeterStatus = () => {
                         <ReplaceNRLinkModule
                             nrLinkConsent={nrlinkConsent}
                             onAfterReplaceNRLink={() => {
-                                getConsents(currentHousing?.meter?.guid, parseInt(houseId))
+                                getConsents(currentHousing?.meter?.guid, currentHousing?.id)
                             }}
                         />
                     </>
@@ -147,9 +143,21 @@ export const MeterStatus = () => {
                 return (
                     <div className="flex flex-col">
                         {nrlinkConsent?.nrlinkGuid ? (
-                            <TypographyFormatMessage color={theme.palette.grey[700]} fontWeight={600} className="pb-4">
-                                {`nrLINK N° ${nrlinkConsent?.nrlinkGuid}`}
-                            </TypographyFormatMessage>
+                            <div className="flex flex-row items-center">
+                                <TypographyFormatMessage
+                                    color={theme.palette.grey[700]}
+                                    fontWeight={600}
+                                    className="pb-4"
+                                >
+                                    {`nrLINK N° ${nrlinkConsent?.nrlinkGuid}`}
+                                </TypographyFormatMessage>
+                                <ReplaceNRLinkModule
+                                    nrLinkConsent={nrlinkConsent}
+                                    onAfterReplaceNRLink={() => {
+                                        getConsents(currentHousing?.meter?.guid, currentHousing?.id)
+                                    }}
+                                />
+                            </div>
                         ) : null}
                         <div className="flex flex-row items-center">
                             <Icon className="mr-12">
@@ -177,7 +185,7 @@ export const MeterStatus = () => {
                         <div className="flex flex-col">
                             <NavLink
                                 to={{
-                                    pathname: `/nrlink-connection-steps/${parseInt(houseId)}`,
+                                    pathname: `/nrlink-connection-steps/${currentHousing?.id}`,
                                     state: {
                                         activeStep: currentHousing?.meter?.guid
                                             ? NrlinkConnectionStepsEnum.thirdStep
@@ -292,7 +300,7 @@ export const MeterStatus = () => {
                                 TypographyProps={{
                                     color: theme.palette.error.main,
                                 }}
-                                houseId={parseInt(houseId)}
+                                houseId={currentHousing?.id}
                                 createEnedisSgeConsent={createEnedisSgeConsent}
                                 createEnedisSgeConsentError={createEnedisSgeConsentError}
                                 isCreateEnedisSgeConsentLoading={isCreateEnedisSgeConsentLoading}
@@ -309,7 +317,7 @@ export const MeterStatus = () => {
                 <MuiCardContent sx={{ p: 0, '&:last-child': { pb: 0 } }}>
                     <div className={`flex flex-row justify-between bg-grey-200 p-12 border-b-1 border-grey-300`}>
                         <MeterInfos element={currentHousing!} />
-                        <NavLink to={`${URL_MY_HOUSE}/${houseId}/contracts`} className="flex">
+                        <NavLink to={`${URL_MY_HOUSE}/${currentHousing?.id}/contracts`} className="flex">
                             <Card className="flex flex-col items-center rounded p-8">
                                 <ContractIcon
                                     style={{ fill: theme.palette.primary.main, marginBottom: '4px' }}
@@ -380,8 +388,8 @@ export const MeterStatus = () => {
                             getEnphaseLink={getEnphaseLink}
                             onRevokeEnphaseConsent={async () => {
                                 // When revoking enphase Consent means there is currentHousing!.meter.guid
-                                await revokeEnphaseConsent(`${currentHousing!.meter?.guid}`)
-                                getConsents(`${currentHousing!.meter?.guid}`, parseInt(houseId))
+                                await revokeEnphaseConsent(currentHousing!.meter?.guid)
+                                getConsents(currentHousing!.meter?.guid, currentHousing?.id)
                             }}
                         />
                     </div>

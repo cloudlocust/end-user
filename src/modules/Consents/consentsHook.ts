@@ -199,9 +199,9 @@ export function useConsents() {
      * Revoke Enphase Consent handler.
      */
     const revokeEnphaseConsent = useCallback(
-        async (meterGuid: string) => {
+        async (meterGuid?: string) => {
             try {
-                if (!meterGuid) throw new Error(NO_HOUSING_ID_ERROR_TEXT)
+                if (!meterGuid) return
                 setIsEnphaseConsentLoading(true)
                 await axios.patch(`${ENPHASE_CONSENT_API}/${meterGuid}/revoke`)
                 setEnphaseConsent(undefined)

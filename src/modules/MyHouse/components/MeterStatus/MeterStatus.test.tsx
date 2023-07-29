@@ -59,6 +59,7 @@ const ERROR_SHELLY_MESSAGE = 'Reliez la prise Shelly de vos panneaux plug&play'
 
 const CONNECTED_ICON_TEXT = 'connected-icon'
 const EDIT_ICON_TESTID = 'EditIcon'
+const Replace_NRLINK_FORM_ALT_TEXT = 'ReplaceNRLinkFormPopup'
 
 let mockNrlinkConsent: nrlinkConsentStatus
 let mockEnedisSgeConsent: enedisSgeConsentStatus
@@ -217,12 +218,12 @@ describe('MeterStatus component test', () => {
             expect(image).toHaveAttribute('src', STATUS_ON_SRC)
             expect(getByText(`nrLINK n° ${mockNrlinkGuid}`)).toBeTruthy()
 
-            expect(queryByAltText('ReplaceNRLinkFormPopup')).not.toBeTruthy()
+            expect(queryByAltText(Replace_NRLINK_FORM_ALT_TEXT)).not.toBeTruthy()
         })
         test('when nrlink status is disconnected', async () => {
             mockNrlinkConsent = 'DISCONNECTED'
 
-            const { getByText, getByAltText } = reduxedRender(
+            const { getByText, getByAltText, getByTestId, queryByLabelText } = reduxedRender(
                 <Router>
                     <MeterStatus />
                 </Router>,
@@ -236,6 +237,18 @@ describe('MeterStatus component test', () => {
             expect(getByText(`nrLINK N° ${mockNrlinkGuid}`)).toBeTruthy()
             expect(getByText(NRLINK_DISCONNECTED_MESSAGE)).toBeTruthy()
             expect(image).toHaveAttribute('src', STATUS_ERROR_SRC)
+
+            // test if the edit is shown, and open the edit nrlink form popup
+            expect(getByTestId(EDIT_ICON_TESTID)).toBeTruthy()
+            expect(queryByLabelText(Replace_NRLINK_FORM_ALT_TEXT)).not.toBeTruthy()
+
+            userEvent.click(getByTestId(EDIT_ICON_TESTID))
+            await waitFor(() => {
+                expect(queryByLabelText(Replace_NRLINK_FORM_ALT_TEXT)).toBeTruthy()
+            })
+
+            expect(getByText(MSG_REPLACE_NRLINK_MODAL_TITLE)).toBeTruthy()
+            expect(getByText(MSG_REPLACE_NRLINK_CLEAR_OLD_DATA)).toBeTruthy()
         })
         test('when nrlink status is expired or nonexistant', async () => {
             mockNrlinkConsent = 'EXPIRED' || 'NONEXISTENT'
@@ -285,11 +298,11 @@ describe('MeterStatus component test', () => {
             )
 
             expect(getByTestId(EDIT_ICON_TESTID)).toBeTruthy()
-            expect(queryByLabelText('ReplaceNRLinkFormPopup')).not.toBeTruthy()
+            expect(queryByLabelText(Replace_NRLINK_FORM_ALT_TEXT)).not.toBeTruthy()
 
             userEvent.click(getByTestId(EDIT_ICON_TESTID))
             await waitFor(() => {
-                expect(queryByLabelText('ReplaceNRLinkFormPopup')).toBeTruthy()
+                expect(queryByLabelText(Replace_NRLINK_FORM_ALT_TEXT)).toBeTruthy()
             })
 
             expect(getByText(MSG_REPLACE_NRLINK_MODAL_TITLE)).toBeTruthy()
