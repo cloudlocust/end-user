@@ -19,7 +19,8 @@ import {
     IReplaceNRLinkFormProps,
     IReplaceNRLinkPayload,
 } from 'src/modules/MyHouse/components/ReplaceNRLinkFormPopup/replaceNrLinkFormPopup'
-import { useParams } from 'react-router-dom'
+import { useSelector } from 'react-redux'
+import { RootState } from 'src/redux'
 
 /**
  * Form to replace current nrLINK with another nrLINK.
@@ -37,11 +38,10 @@ export const ReplaceNRLinkForm = ({
     onAfterReplaceNRLink,
     closeModal,
 }: IReplaceNRLinkFormProps) => {
-    // eslint-disable-next-line jsdoc/require-jsdoc
-    const { houseId }: { houseId: string } = useParams()
+    const { currentHousing } = useSelector(({ housingModel }: RootState) => housingModel)
 
     const { formatMessage } = useIntl()
-    const { loadingInProgress, replaceNRLink } = useReplaceNRLinkHook(houseId)
+    const { loadingInProgress, replaceNRLink } = useReplaceNRLinkHook(currentHousing?.id)
     const [clearOldData, setClearDataStatus] = React.useState<boolean>(false)
 
     /**
@@ -57,6 +57,11 @@ export const ReplaceNRLinkForm = ({
      * @param newNRLinkGuid The ID of the new nrLINK that will replace the old.
      */
     async function updateNRLinkId(newNRLinkGuid: string) {
+        // if the newNRLinkGuid is the same as the old, then close the modal form and do nothing.
+        if (newNRLinkGuid === oldNRLinkGuid) {
+            return closeModal()
+        }
+
         let body: IReplaceNRLinkPayload = {
             old_nrlink_guid: oldNRLinkGuid,
             new_nrlink_guid: newNRLinkGuid,
@@ -85,6 +90,7 @@ export const ReplaceNRLinkForm = ({
             }) => {
                 await updateNRLinkId(data.nrlinkGuid)
             }}
+            defaultValues={{ nrlinkGuid: oldNRLinkGuid ?? '' }}
         >
             <Card className="relative cursor-pointer flex-wrap rounded-16">
                 <CardContent>
