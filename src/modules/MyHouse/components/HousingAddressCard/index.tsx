@@ -12,7 +12,7 @@ import { Dispatch, RootState } from 'src/redux'
 import { HousingCardForm } from 'src/modules/MyHouse/components/HousingCardForm'
 import { useState } from 'react'
 
-const StyledCard = styled(Card)(({ theme }) => ({
+const StyledCard = styled(Card)(() => ({
     borderRadius: '0',
     border: 'none',
     boxShadow: 'none',

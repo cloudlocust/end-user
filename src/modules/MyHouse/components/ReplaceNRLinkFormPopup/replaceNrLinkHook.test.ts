@@ -1,4 +1,5 @@
 import { act } from '@testing-library/react-hooks'
+import { axios } from 'src/common/react-platform-components'
 import { reduxedRenderHook } from 'src/common/react-platform-components/test'
 import { useReplaceNRLinkHook } from 'src/modules/MyHouse/components/ReplaceNRLinkFormPopup/replaceNrLinkHook'
 
@@ -20,7 +21,7 @@ describe('ReplaceNrLink Hook tests', () => {
     test('When using bad house id, should throw error', async () => {
         const {
             renderedHook: { result, waitForValueToChange },
-        } = reduxedRenderHook(() => useReplaceNRLinkHook('INVALID_HOUSE_ID'), { initialState: {} })
+        } = reduxedRenderHook(() => useReplaceNRLinkHook(999), { initialState: {} })
 
         expect(result.current.loadingInProgress).toBe(false)
 
@@ -45,11 +46,41 @@ describe('ReplaceNrLink Hook tests', () => {
         })
     })
 
+    test('When there is no house id, the api should not be called', async () => {
+        // mock axios.patch
+        const originalAxiosPatch = axios.patch
+        const mockAxiosPatch = jest.fn()
+        axios.patch = mockAxiosPatch
+
+        const {
+            renderedHook: { result },
+        } = reduxedRenderHook(() => useReplaceNRLinkHook(undefined), { initialState: {} })
+
+        expect(result.current.loadingInProgress).toBe(false)
+
+        act(async () => {
+            try {
+                await result.current.replaceNRLink({
+                    old: 'aaaaa1aaaaa1aaab',
+                    new: 'aaaaa1aaaaa1aaab',
+                })
+            } catch (err) {}
+        })
+
+        expect(result.current.loadingInProgress).toBe(false)
+
+        expect(mockAxiosPatch).not.toHaveBeenCalled()
+        expect(mockEnqueueSnackbar).not.toHaveBeenCalled()
+
+        // reset the original value
+        axios.patch = originalAxiosPatch
+    })
+
     describe('when using good houseId', () => {
         test('When using bad nrLinkGuid, should throw error', async () => {
             const {
                 renderedHook: { result, waitForValueToChange },
-            } = reduxedRenderHook(() => useReplaceNRLinkHook('42'), { initialState: {} })
+            } = reduxedRenderHook(() => useReplaceNRLinkHook(42), { initialState: {} })
 
             expect(result.current.loadingInProgress).toBe(false)
 
@@ -78,7 +109,7 @@ describe('ReplaceNrLink Hook tests', () => {
         test('When user good nrLinkGuid, should throw success', async () => {
             const {
                 renderedHook: { result, waitForValueToChange },
-            } = reduxedRenderHook(() => useReplaceNRLinkHook('42'), { initialState: {} })
+            } = reduxedRenderHook(() => useReplaceNRLinkHook(42), { initialState: {} })
 
             expect(result.current.loadingInProgress).toBe(false)
 
@@ -108,7 +139,7 @@ describe('ReplaceNrLink Hook tests', () => {
         test('When user want to clear data, should send clear_data action', async () => {
             const {
                 renderedHook: { result, waitForValueToChange },
-            } = reduxedRenderHook(() => useReplaceNRLinkHook('42'), { initialState: {} })
+            } = reduxedRenderHook(() => useReplaceNRLinkHook(42), { initialState: {} })
 
             expect(result.current.loadingInProgress).toBe(false)
 

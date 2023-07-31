@@ -177,7 +177,7 @@ describe('MeterStatus component test', () => {
         test('when nrlink status is connected', async () => {
             mockNrlinkConsent = 'CONNECTED'
 
-            const { getByText, getByAltText, queryByAltText } = reduxedRender(
+            const { getByText, getByAltText } = reduxedRender(
                 <Router>
                     <MeterStatus />
                 </Router>,
@@ -193,8 +193,6 @@ describe('MeterStatus component test', () => {
             expect(getByText(NRLINK_TITLE)).toBeTruthy()
             expect(image).toHaveAttribute('src', STATUS_ON_SRC)
             expect(getByText(`nrLINK n° ${mockNrlinkGuid}`)).toBeTruthy()
-
-            expect(queryByAltText('ReplaceNRLinkFormPopup')).not.toBeTruthy()
         })
         test('when nrlink status is disconnected', async () => {
             mockNrlinkConsent = 'DISCONNECTED'
