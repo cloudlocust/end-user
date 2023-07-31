@@ -1,34 +1,32 @@
-import React from 'react'
-import { Card } from '@mui/material'
-import CardContent from '@mui/material/CardContent'
-import Typography from '@mui/material/Typography'
+import { Card, CardContent, Button, IconButton, Modal, Box, Tooltip, Typography } from '@mui/material'
+import { styled } from '@mui/material/styles'
 import { useIntl } from 'react-intl'
-import Button from '@mui/material/Button'
-import IconButton from '@mui/material/IconButton'
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined'
-import Modal from '@mui/material/Modal'
-import Box from '@mui/material/Box'
 import SvgIcon from '@mui/material/SvgIcon'
 import { ReactComponent as HousingIcon } from 'src/assets/images/navbarItems/Housings.svg'
 import { useHousingsDetails } from 'src/modules/MyHouse/components/HousingList/HousingsHooks'
 import { deleteAddFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
-import Tooltip from '@mui/material/Tooltip'
 
 import { useDispatch, useSelector } from 'react-redux'
 import { Dispatch, RootState } from 'src/redux'
 import { HousingCardForm } from 'src/modules/MyHouse/components/HousingCardForm'
+import { useState } from 'react'
+
+const StyledCard = styled(Card)(({ theme }) => ({
+    borderRadius: '0',
+    border: 'none',
+    boxShadow: 'none',
+}))
 
 /**
- * This is a card to display the infos of the current housing (selected housing).
+ * HousingAddressCard component.
  *
- * @returns Card.
+ * @returns HousingAddressCard JSX.
  */
-const HousingCard = () => {
+export const HousingAddressCard = () => {
     const { formatMessage } = useIntl()
-    const dispatch = useDispatch<Dispatch>()
-
-    const [confirmModalOpen, setConfirmModalOpen] = React.useState(false)
-
+    const { housingModel } = useDispatch<Dispatch>()
+    const [confirmModalOpen, setConfirmModalOpen] = useState(false)
     const { removeHousing } = useHousingsDetails()
     const { currentHousing } = useSelector(({ housingModel }: RootState) => housingModel)
 
@@ -80,12 +78,12 @@ const HousingCard = () => {
      * Handler onAfterDeleteUpdateSuccess function when updating or delete housing.
      */
     const onAfterDeleteUpdateSuccess = () => {
-        dispatch.housingModel.loadHousingsList()
+        housingModel.loadHousingsList()
     }
 
     return (
         <>
-            <Card className="relative cursor-pointer flex flex-col justify-between rounded-16 w-full housing-card">
+            <StyledCard className="relative cursor-pointer flex flex-col justify-between w-full" variant="outlined">
                 <CardContent className="p-8" style={{ paddingBottom: 8 }}>
                     <div className="flex justify-between">
                         <div className="flex items-center jutsify-center">
@@ -130,7 +128,7 @@ const HousingCard = () => {
                         </Typography>
                     </div>
                 </CardContent>
-            </Card>
+            </StyledCard>
             <Modal open={confirmModalOpen} onClose={handleCloseConfirmModal}>
                 <Box sx={style} className="flex-col w-2/3 h-2/4 sm:w-1/3 sm:h-2/4">
                     <div className="flex flex-col justify-center align-center text-white text-center text-sm font-medium my-20">
@@ -183,4 +181,3 @@ const HousingCard = () => {
         </>
     )
 }
-export default HousingCard
