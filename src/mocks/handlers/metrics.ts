@@ -442,14 +442,14 @@ function getMetrics(targets: metricTargetType[], timeStampList: number[]) {
                     // Generate a random consumption value, it can be between 1000 - 9000  with 90% chance, or 10% chance to be null
                     // Typing as Array<number>, because datapoints is considered as number[][], and with chance we can have null value, thus typescript will say number[] is not compatible with (number|null)[], thus this will stop typescript shouting, and this won't create any problem in the application if there are null values in metrics datapoints, just typescript shouting.
                     return [
-                        chance.weighted([chance.integer({ min: 10, max: 20 }), null], [0.9, 0.1]),
+                        chance.weighted([chance.integer({ min: 10, max: 20 }), null], [0.3, 0.7]),
                         timestamp,
                     ] as Array<number>
                 case metricTargetsEnum.peakHourConsumption:
                     // Generate a random consumption value, it can be between 1000 - 9000  with 90% chance, or 10% chance to be null
                     // Typing as Array<number>, because datapoints is considered as number[][], and with chance we can have null value, thus typescript will say number[] is not compatible with (number|null)[], thus this will stop typescript shouting, and this won't create any problem in the application if there are null values in metrics datapoints, just typescript shouting.
                     return [
-                        chance.weighted([chance.integer({ min: 30, max: 40 }), null], [0.9, 0.1]),
+                        chance.weighted([chance.integer({ min: 30, max: 40 }), null], [0.7, 0.3]),
                         timestamp,
                     ] as Array<number>
                 default:

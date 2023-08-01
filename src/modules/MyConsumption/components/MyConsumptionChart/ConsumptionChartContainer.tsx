@@ -10,7 +10,7 @@ import CircularProgress from '@mui/material/CircularProgress'
 import EurosConsumptionButtonToggler from 'src/modules/MyConsumption/components/EurosConsumptionButtonToggler'
 import {
     filterTargetsOnDailyPeriod,
-    getViibleTargetChartss,
+    getVisibleTargetCharts,
     showPerPeriodText,
 } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
 import {
@@ -36,7 +36,6 @@ import TargetMenuGroup from 'src/modules/MyConsumption/components/TargetMenuGrou
  * @param props.hasMissingHousingContracts Consumption or production chart type.
  * @param props.enedisSgeConsent Consumption or production chart type.
  * @param props.enphaseConsent Consumption or production chart type.
- * @param props.isPeakHourOffPeakHourTariffType Boolean state which indicates that the currentContract is of type HP/HC.
  * @returns MyConsumptionChart Component.
  */
 export const ConsumptionChartContainer = ({
@@ -47,7 +46,6 @@ export const ConsumptionChartContainer = ({
     hasMissingHousingContracts,
     enedisSgeConsent,
     enphaseConsent,
-    isPeakHourOffPeakHourTariffType,
 }: ConsumptionChartContainerProps) => {
     const theme = useTheme()
     // This state represents whether or not the chart is displaying a spinner, which should happen only when we request the current metrics, not the request of all metrics that happens in the background.
@@ -56,7 +54,7 @@ export const ConsumptionChartContainer = ({
     const enphaseOff = enphaseConsent?.enphaseConsentState !== 'ACTIVE'
     // Visible Targets will influence k
     const [visibleTargetCharts, setVisibleTargetsCharts] = useState<metricTargetType[]>(
-        getViibleTargetChartss(enphaseOff, isPeakHourOffPeakHourTariffType),
+        getVisibleTargetCharts(enphaseOff),
     )
     // Indicates if enedisSgeConsent is not Connected
     const enedisSgeOff = enedisSgeConsent?.enedisSgeConsentState !== 'CONNECTED'
@@ -68,7 +66,7 @@ export const ConsumptionChartContainer = ({
         range: range,
         targets: [
             {
-                target: metricTargetsEnum.consumption,
+                target: metricTargetsEnum.baseConsumption,
                 type: 'timeserie',
             },
             {

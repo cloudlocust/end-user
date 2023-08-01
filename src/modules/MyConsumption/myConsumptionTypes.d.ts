@@ -208,8 +208,6 @@ export interface ConsumptionChartContainerProps {
     enphaseConsent?: IEnphaseConsent
     // eslint-disable-next-line jsdoc/require-jsdoc
     enedisSgeConsent?: IEnedisSgeConsent
-    // eslint-disable-next-line jsdoc/require-jsdoc
-    isPeakHourOffPeakHourTariffType: boolean
 }
 
 /**
