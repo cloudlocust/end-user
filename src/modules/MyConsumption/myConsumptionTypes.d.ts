@@ -227,7 +227,7 @@ export type DefaultContractWarningProps =
  */
 export type ProductionChartContainerProps = Omit<
     ConsumptionChartContainerProps,
-    'enedisSgeConsent' | 'hasMissingHousingContracts' | 'isPeakHourOffPeakHourTariffType'
+    'enedisSgeConsent' | 'hasMissingHousingContracts'
 >
 
 /**
