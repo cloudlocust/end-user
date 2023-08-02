@@ -14,6 +14,7 @@ import {
 } from 'src/modules/MyHouse/components/ConnectedPlugs/ConnectedPlugs.d'
 import { isNull } from 'lodash'
 import { HOUSING_API } from 'src/modules/MyHouse/components/HousingList/HousingsHooks'
+import { connectedPlugsFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
 
 /**
  * Connected Plug requests API.
@@ -61,7 +62,7 @@ export function useConnectedPlugList(meterGuid?: string, housingId?: number) {
      */
     const loadConnectedPlugList = useCallback(async () => {
         setConnectedPlugList([])
-        if (!meterGuid || !housingId) return
+        if (!meterGuid || !housingId || !connectedPlugsFeatureState) return
         setLoadingInProgress(true)
         /**
          * Used Promise.allSettled() instead of Promise.all to return a promise that resolves after all of the given requests have either been fulfilled or rejected.

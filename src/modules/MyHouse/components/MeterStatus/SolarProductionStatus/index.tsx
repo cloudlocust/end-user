@@ -11,6 +11,7 @@ import ConnectedPlugProductionConsentPopup from 'src/modules/MyHouse/components/
 import { useConnectedPlugList } from 'src/modules/MyHouse/components/ConnectedPlugs/connectedPlugsHook'
 import { useSelector } from 'react-redux'
 import { RootState } from 'src/redux'
+import { connectedPlugsFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
 
 /**
  * Solar Production Consent Status Component, that shows and isolates the solar production consent of MeterStatus.
@@ -98,23 +99,28 @@ export const SolarProductionConsentStatus = ({
                                           })} ${solarProductionConsentCreatedAt}`}
                                 </span>
                             </span>
-                            <TypographyFormatMessage
-                                color={theme.palette.primary.main}
-                                className="underline cursor-pointer"
-                                fontWeight={500}
-                                onClick={
-                                    currentHousing && productionConnectedPlug
-                                        ? () =>
-                                              associateConnectedPlug(
-                                                  productionConnectedPlug.deviceId,
-                                                  currentHousing.id,
-                                                  false,
-                                              )
-                                        : () => onRevokeEnphaseConsent()
-                                }
-                            >
-                                Annuler la récolte de mes données
-                            </TypographyFormatMessage>
+                            {
+                                // TODO REMOVE when Connected plug or revoke enphase is in prod
+                                connectedPlugsFeatureState && (
+                                    <TypographyFormatMessage
+                                        color={theme.palette.primary.main}
+                                        className="underline cursor-pointer"
+                                        fontWeight={500}
+                                        onClick={
+                                            currentHousing && productionConnectedPlug
+                                                ? () =>
+                                                      associateConnectedPlug(
+                                                          productionConnectedPlug.deviceId,
+                                                          currentHousing.id,
+                                                          false,
+                                                      )
+                                                : () => onRevokeEnphaseConsent()
+                                        }
+                                    >
+                                        Annuler la récolte de mes données
+                                    </TypographyFormatMessage>
+                                )
+                            }
                         </div>
                     </>
                 )

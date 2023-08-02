@@ -55,6 +55,15 @@ jest.mock('react-router-dom', () => ({
 
 let mockConnectedPlugLoadingInProgress = false
 
+// TODO REMOVE when Connected plug or revoke enphase is in prod
+jest.mock('src/modules/MyHouse/MyHouseConfig', () => ({
+    ...jest.requireActual('src/modules/MyHouse/MyHouseConfig'),
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    get connectedPlugsFeatureState() {
+        return true
+    },
+}))
+
 // Mock useInstallationRequestsList hook
 jest.mock('src/modules/MyHouse/components/ConnectedPlugs/connectedPlugsHook', () => ({
     ...jest.requireActual('src/modules/MyHouse/components/ConnectedPlugs/connectedPlugsHook'),
