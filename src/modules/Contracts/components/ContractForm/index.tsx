@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from 'react'
 import { useIntl } from 'react-intl'
-import { requiredBuilder } from 'src/common/react-platform-components'
+import { dayjsUTC, requiredBuilder } from 'src/common/react-platform-components'
 import {
     addContractDataType,
     ContractFormFieldsProps,
@@ -58,10 +58,10 @@ const ContractForm = ({ onSubmit, isContractsLoading, defaultValues }: ContractF
                 // Format the start subscription to ISO Datetime.
                 let cleanData: addContractDataType = {
                     ...restData,
-                    startSubscription: new Date(startSubscription).toISOString(),
+                    startSubscription: dayjsUTC(startSubscription).toISOString(),
                 }
                 // Format the end subscription to ISO Datetime.
-                if (endSubscription) cleanData.endSubscription = new Date(endSubscription).toISOString()
+                if (endSubscription) cleanData.endSubscription = dayjsUTC(endSubscription).toISOString()
                 // Update meterFeatures if offPeakhours have been set.
                 if (meterFeatures && !meterFeatures.offpeak.readOnly) {
                     try {
