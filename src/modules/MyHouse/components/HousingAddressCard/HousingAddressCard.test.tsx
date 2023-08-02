@@ -1,5 +1,5 @@
 import { reduxedRender } from 'src/common/react-platform-components/test'
-import HousingCard from 'src/modules/MyHouse/components/HousingCard'
+import { HousingAddressCard } from 'src/modules/MyHouse/components/HousingAddressCard'
 import { TEST_HOUSES } from 'src/mocks/handlers/houses'
 import { applyCamelCase } from 'src/common/react-platform-components/utils/mm'
 import { BrowserRouter as Router } from 'react-router-dom'
@@ -34,7 +34,7 @@ const store = init({
 
 const mockLoadHousings = jest.spyOn(store.dispatch.housingModel, 'loadHousingsList')
 
-describe('Test HousingCard', () => {
+describe('Test HousingAddressCard', () => {
     beforeEach(async () => {
         await store.dispatch.translationModel.setLocale({ locale: DEFAULT_LOCALE, translations: null })
         await store.dispatch.housingModel.setHousingModelState(TEST_MOCKED_HOUSES)
@@ -43,7 +43,7 @@ describe('Test HousingCard', () => {
         test('When Component Mount data should be shown', async () => {
             const { getByText } = reduxedRender(
                 <Router>
-                    <HousingCard />
+                    <HousingAddressCard />
                 </Router>,
                 { store },
             )
@@ -57,7 +57,7 @@ describe('Test HousingCard', () => {
         test('popup delete warning should open', async () => {
             const { getByRole, getByText } = reduxedRender(
                 <Router>
-                    <HousingCard />
+                    <HousingAddressCard />
                 </Router>,
                 { store },
             )
@@ -72,7 +72,7 @@ describe('Test HousingCard', () => {
         test('annuler popup delete warning should close popup', async () => {
             const { getByRole, getByText } = reduxedRender(
                 <Router>
-                    <HousingCard />
+                    <HousingAddressCard />
                 </Router>,
                 { store },
             )
@@ -94,7 +94,7 @@ describe('Test HousingCard', () => {
         test('removeHousing function hook should be called, and loadHousings', async () => {
             const { getByRole, getByText } = reduxedRender(
                 <Router>
-                    <HousingCard />
+                    <HousingAddressCard />
                 </Router>,
                 { store },
             )

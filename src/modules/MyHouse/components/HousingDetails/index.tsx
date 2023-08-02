@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react'
 import { styled } from '@mui/material/styles'
-
 import FusePageCarded from 'src/common/ui-kit/fuse/components/FusePageCarded'
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz'
 import ElectricalServicesIcon from '@mui/icons-material/ElectricalServices'
@@ -23,11 +22,11 @@ import { equipmentNameType } from 'src/modules/MyHouse/components/Equipments/Equ
 import { MeterStatus } from 'src/modules/MyHouse/components/MeterStatus'
 import { ReactComponent as ElectricityIcon } from 'src/assets/images/content/housing/Electricity.svg'
 import { ReactComponent as GazIcon } from 'src/assets/images/content/housing/Gaz.svg'
-import HousingCard from 'src/modules/MyHouse/components/HousingCard'
 import { useSelector } from 'react-redux'
 import { RootState } from 'src/redux'
 import { cloneDeep, isEmpty } from 'lodash'
 import { connectedPlugsFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
+import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import { useConnectedPlugList } from 'src/modules/MyHouse/components/ConnectedPlugs/connectedPlugsHook'
 
 const Root = styled(FusePageCarded)(() => ({
@@ -52,7 +51,6 @@ const Root = styled(FusePageCarded)(() => ({
  */
 export const HousingDetails = () => {
     const { currentHousing } = useSelector(({ housingModel }: RootState) => housingModel)
-
     const theme = useTheme()
 
     const {
@@ -205,13 +203,20 @@ export const HousingDetails = () => {
         <Root
             header={
                 <ThemeProvider theme={theme}>
-                    <HousingCard />
+                    <div className="w-full relative flex flex-col justify-center items-center p-16 h-full">
+                        <TypographyFormatMessage
+                            className="text-18 md:text-24"
+                            style={{ color: theme.palette.primary.contrastText }}
+                        >
+                            Logement
+                        </TypographyFormatMessage>
+                    </div>
                 </ThemeProvider>
             }
             content={
                 <>
                     <MeterStatus />
-                    <div className="flex flex-col items-center md:flex-row justify-around mt-40">
+                    <div className="flex flex-col items-center md:flex-row justify-around mt-40 space-x-20">
                         <HousingDetailsCard
                             title="Informations logement"
                             elements={housingElements}
