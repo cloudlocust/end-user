@@ -311,6 +311,78 @@ export const MeterStatus = () => {
         }
     }
 
+    /**
+     * Function that renders enphase statuses.
+     *
+     * @param enphaseStatus Enphase statuses.
+     * @returns JSX according to enphase status.
+     */
+    function renderEnphaseStatus(enphaseStatus?: enphaseConsentStatus) {
+        switch (enphaseStatus) {
+            case 'ACTIVE':
+                return (
+                    <>
+                        <Icon className="mr-12">
+                            <img
+                                src="./assets/images/content/housing/consent-status/meter-on.svg"
+                                alt="enphase-active-icon"
+                            />
+                        </Icon>
+                        <div className="flex flex-col">
+                            <span className="text-grey-600">
+                                <span className="text-grey-600">{`${formatMessage({
+                                    id: TEXT_CONNEXION_LE,
+                                    defaultMessage: TEXT_CONNEXION_LE,
+                                })} ${enphaseConsentCreatedAt}`}</span>
+                            </span>
+                        </div>
+                    </>
+                )
+            case 'PENDING':
+                return (
+                    <>
+                        <Icon className="mr-12" color="warning">
+                            replay
+                        </Icon>
+                        <div className="flex flex-col">
+                            <TypographyFormatMessage color={theme.palette.warning.main} fontWeight={600}>
+                                Votre connexion est en cours et sera active dans les plus brefs délais
+                            </TypographyFormatMessage>
+                        </div>
+                    </>
+                )
+            case 'EXPIRED':
+            case 'NONEXISTENT':
+            default:
+                return (
+                    <>
+                        <Icon className="mr-12">
+                            <img
+                                src="./assets/images/content/housing/consent-status/meter-off.svg"
+                                alt="enphase-off-icon"
+                            />
+                        </Icon>
+                        <div className="flex flex-col">
+                            <TypographyFormatMessage
+                                color={theme.palette.error.main}
+                                className="underline cursor-pointer"
+                                fontWeight={600}
+                                onClick={() => {
+                                    if (currentHousing?.id) {
+                                        getEnphaseLink(currentHousing?.id)
+                                        setOpenEnphaseConsentPopup(true)
+                                    }
+                                }}
+                            >
+                                Connectez votre onduleur pour visualiser votre production
+                            </TypographyFormatMessage>
+                        </div>
+                    </>
+                )
+        }
+    }
+
+
     return (
         <>
             <Card className="my-12 md:mx-16" variant="outlined">
