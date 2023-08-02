@@ -8,15 +8,15 @@ import { NavLink } from 'react-router-dom'
 import { ReactComponent as ContractIcon } from 'src/assets/images/content/housing/contract.svg'
 import { MuiCardContent } from 'src/common/ui-kit'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
-import { enedisSgeConsentStatus, enphaseConsentStatus, nrlinkConsentStatus } from 'src/modules/Consents/Consents'
+import { enedisSgeConsentStatus, nrlinkConsentStatus } from 'src/modules/Consents/Consents'
 import { useConsents } from 'src/modules/Consents/consentsHook'
 import { URL_MY_HOUSE, globalProductionFeatureState, sgeConsentFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
 import { EnedisSgePopup } from 'src/modules/MyHouse/components/MeterStatus/EnedisSgePopup'
-import { EnphaseConsentPopup } from 'src/modules/MyHouse/components/MeterStatus/EnphaseConsentPopup'
 import { NrlinkConnectionStepsEnum } from 'src/modules/nrLinkConnection/nrlinkConnectionSteps.d'
 import { RootState } from 'src/redux'
 import { ReplaceNRLinkModule } from 'src/modules/MyHouse/components/ReplaceNRLinkFormPopup/ReplaceNRLinkModule'
 import MeterInfos from 'src/modules/MyHouse/components/MeterInfo'
+import { SolarProductionConsentStatus } from 'src/modules/MyHouse/components/MeterStatus/SolarProductionStatus'
 
 const FORMATTED_DATA = 'DD/MM/YYYY'
 const TEXT_CONNEXION_LE = 'Connexion le'
@@ -60,24 +60,16 @@ export const MeterStatus = () => {
         enphaseConsent,
         enphaseLink,
         getEnphaseLink,
+        isEnphaseConsentLoading,
+        revokeEnphaseConsent,
     } = useConsents()
     const { currentHousing } = useSelector(({ housingModel }: RootState) => housingModel)
-    const [openEnphaseConsentPopup, setOpenEnphaseConsentPopup] = useState(false)
     const [openCancelCollectionDataTooltip, setOpenCancelCollectionDataTooltip] = useState(false)
 
     /*  Nrlink created at date formatted */
     const nrlinkConsentCreatedAt = dayjs(nrlinkConsent?.createdAt).format(FORMATTED_DATA)
     /* To have the ending date of the consent, we add 3 years to the date the consent was made */
     const enedisConsentEndingDate = dayjs(enedisSgeConsent?.createdAt).add(3, 'year').format('DD/MM/YYYY')
-    /* Enphase created at date formatted */
-    const enphaseConsentCreatedAt = dayjs(enphaseConsent?.createdAt).format(FORMATTED_DATA)
-
-    /**
-     * Function that handle closing the popup.
-     */
-    const handleOnCloseEnphasePopup = () => {
-        setOpenEnphaseConsentPopup(false)
-    }
 
     /**
      * This useEffect listen to changes in localStorage for enphaseConsentState.
@@ -272,7 +264,7 @@ export const MeterStatus = () => {
                         </Icon>
                         <div className="flex flex-col">
                             <TypographyFormatMessage color={theme.palette.warning.main} fontWeight={600}>
-                                Les données de votre récolte dhistorique semblent incohérentes par rapport à celle de
+                                Les données de votre récolte d'historique semblent incohérentes par rapport à celle de
                                 votre nrLINK
                             </TypographyFormatMessage>
                         </div>
@@ -390,6 +382,7 @@ export const MeterStatus = () => {
         }
     }
 
+
     return (
         <>
             <Card className="my-12 md:mx-16" variant="outlined">
@@ -460,24 +453,17 @@ export const MeterStatus = () => {
                             </div>
                         </Tooltip>
                         <Divider orientation={mdDown ? 'horizontal' : undefined} flexItem variant="fullWidth" />
-                        {/* Enphase Consent Status */}
-                        <div className={`w-full md:w-1/3 p-12 ${!globalProductionFeatureState && 'hidden'}`}>
-                            {consentsLoading ? (
-                                <CircularProgress size={25} />
-                            ) : (
-                                <>
-                                    <TypographyFormatMessage className="text-xs md:text-sm font-semibold mb-6">
-                                        Production solaire
-                                    </TypographyFormatMessage>
-                                    <div className="flex flex-row items-center">
-                                        {renderEnphaseStatus(enphaseConsent?.enphaseConsentState)}
-                                    </div>
-                                </>
-                            )}
-                        </div>
-                        {openEnphaseConsentPopup && (
-                            <EnphaseConsentPopup onClose={handleOnCloseEnphasePopup} url={enphaseLink} />
-                        )}
+                        <SolarProductionConsentStatus
+                            solarProductionConsentLoadingInProgress={consentsLoading || isEnphaseConsentLoading}
+                            solarProductionConsent={enphaseConsent}
+                            enphaseLink={enphaseLink}
+                            getEnphaseLink={getEnphaseLink}
+                            onRevokeEnphaseConsent={async () => {
+                                // When revoking enphase Consent means there is currentHousing!.meter.guid
+                                await revokeEnphaseConsent(currentHousing!.meter?.guid)
+                                getConsents(currentHousing!.meter?.guid, currentHousing?.id)
+                            }}
+                        />
                     </div>
                 </MuiCardContent>
             </Card>
