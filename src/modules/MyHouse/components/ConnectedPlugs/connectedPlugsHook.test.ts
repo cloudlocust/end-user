@@ -33,6 +33,14 @@ jest.mock('notistack', () => ({
     }),
 }))
 
+jest.mock('src/modules/MyHouse/MyHouseConfig', () => ({
+    ...jest.requireActual('src/modules/MyHouse/MyHouseConfig'),
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    get connectedPlugsFeatureState() {
+        return true
+    },
+}))
+
 describe('useConnectedPlugList test', () => {
     /* Get Elements */
     test('when snackbar is called with error', async () => {
