@@ -218,6 +218,8 @@ export const getApexChartMyConsumptionProps = ({
                 yAxisSerie.name === metricTargetsEnum.baseConsumption ||
                 yAxisSerie.name === metricTargetsEnum.autoconsumption ||
                 yAxisSerie.name === metricTargetsEnum.injectedProduction ||
+                yAxisSerie.name === metricTargetsEnum.peakHourConsumption ||
+                yAxisSerie.name === metricTargetsEnum.offPeakHourConsumption ||
                 yAxisSerie.name === metricTargetsEnum.totalProduction) &&
             period !== 'daily' &&
             (yAxisSerie.data.length !== 48 || 1440)
@@ -250,6 +252,8 @@ export const getApexChartMyConsumptionProps = ({
                     if (
                         yAxisSerie.name === metricTargetsEnum.consumption ||
                         yAxisSerie.name === metricTargetsEnum.baseConsumption ||
+                        yAxisSerie.name === metricTargetsEnum.peakHourConsumption ||
+                        yAxisSerie.name === metricTargetsEnum.offPeakHourConsumption ||
                         yAxisSerie.name === metricTargetsEnum.autoconsumption ||
                         yAxisSerie.name === metricTargetsEnum.totalProduction ||
                         yAxisSerie.name === metricTargetsEnum.injectedProduction

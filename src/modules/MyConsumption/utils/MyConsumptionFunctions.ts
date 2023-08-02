@@ -458,6 +458,7 @@ export const getChartType = (metricTarget: metricTargetType, period: periodType)
 export const getChartSpecifities = (
     target: metricTargetsEnum,
     chartLabel?: 'Consommation totale' | 'Electricité achetée sur le réseau',
+    // eslint-disable-next-line sonarjs/cognitive-complexity
 ): getChartSpecifitiesType => {
     if (
         (target === metricTargetsEnum.baseConsumption || target === metricTargetsEnum.consumption) &&
@@ -520,6 +521,18 @@ export const getChartSpecifities = (
         return {
             label: 'Electricité redistribuée sur le réseau',
             seriesName: 'Autoconsommation',
+            show: false,
+        }
+    } else if (target === metricTargetsEnum.peakHourConsumption) {
+        return {
+            label: 'Consommation en HP',
+            seriesName: chartLabel,
+            show: false,
+        }
+    } else if (target === metricTargetsEnum.offPeakHourConsumption) {
+        return {
+            label: 'Consommation en HC',
+            seriesName: chartLabel,
             show: false,
         }
     } else {
