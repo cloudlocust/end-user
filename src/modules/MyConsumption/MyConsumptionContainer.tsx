@@ -22,11 +22,6 @@ import ConsumptionWidgetsContainer from 'src/modules/MyConsumption/components/Co
 import { ConsumptionWidgetsMetricsProvider } from 'src/modules/MyConsumption/components/ConsumptionWidgetsContainer/ConsumptionWidgetsMetricsContext'
 
 /**
- * HP / HC tariff name.
- */
-export const HP_HC_TARIFF_NAME = 'Heures Pleines / Heures Creuses'
-
-/**
  * MyConsumptionContainer.
  * Parent component.
  *
