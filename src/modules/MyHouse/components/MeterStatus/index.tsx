@@ -86,9 +86,9 @@ export const MeterStatus = () => {
          */
         const onStorage = () => {
             const enphaseConfirmConsentState = localStorage.getItem('enphaseConfirmState')
-            if (enphaseConfirmConsentState === 'SUCCESS' && currentHousing?.meter?.guid) {
+            if (enphaseConfirmConsentState === 'SUCCESS' && currentHousing?.meter?.guid && currentHousing?.id) {
                 localStorage.removeItem('enphaseConfirmState')
-                getConsents(currentHousing.meter.guid)
+                getConsents(currentHousing.meter.guid, currentHousing.id)
             }
         }
 
