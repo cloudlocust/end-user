@@ -28,7 +28,7 @@ export const ALL_EQUIPMENTS_API = `${API_RESOURCES_URL}/equipments`
  * @param housingId Indicate the id of the meter.
  * @returns UseEquipment Hook.
  */
-export const useEquipmentList = (housingId: number) => {
+export const useEquipmentList = (housingId?: number) => {
     const { enqueueSnackbar } = useSnackbar()
     const { formatMessage } = useIntl()
     const isInitialMount = useRef(true)
@@ -42,6 +42,7 @@ export const useEquipmentList = (housingId: number) => {
      * @returns The function returns a string message containing successful and errors message.
      */
     const loadEquipmentList = useCallback(async () => {
+        if (!housingId) return
         setLoadingEquipmentInProgress(true)
         setIsEquipmentMeterListEmpty(false)
         try {
@@ -86,6 +87,7 @@ export const useEquipmentList = (housingId: number) => {
      * @returns Equipments saved.
      */
     const saveEquipment = async (body: postEquipmentInputType) => {
+        if (!housingId) return
         setLoadingEquipmentInProgress(true)
         try {
             const { data: responseData } = await axios.post<

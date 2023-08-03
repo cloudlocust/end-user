@@ -21,10 +21,6 @@ import { applyCamelCase } from 'src/common/react-platform-components'
 import * as reactRedux from 'react-redux'
 import { sgeConsentMessage } from 'src/modules/MyHouse/MyHouseConfig'
 import { waitFor } from '@testing-library/react'
-import {
-    MSG_REPLACE_NRLINK_CLEAR_OLD_DATA,
-    MSG_REPLACE_NRLINK_MODAL_TITLE,
-} from 'src/modules/MyHouse/components/ReplaceNRLinkFormPopup/replaceNrLinkFormPopupConfig'
 
 const LIST_OF_HOUSES: IHousing[] = applyCamelCase(TEST_HOUSES)
 const CURRENT_HOUSING = LIST_OF_HOUSES[0]
@@ -52,15 +48,12 @@ const CONTACT_MAIL_MESSAGE = 'Contacter support@myem.fr'
 
 const VERIFY_METER_MESSAGE = "Vérification de l'existence de votre compteur"
 const CREATION_ENEDIS_SGE_CONSENT_TEXT = `${sgeConsentMessage}`
-
-const ERROR_ENPHASE_MESSAGE = 'Connectez votre onduleur pour visualiser votre production'
-const PENDING_ENPHASE_MESSAGE = 'Votre connexion est en cours et sera active dans les plus brefs délais'
-
+const REVOKE_ENPHASE_CONSENT_TEXT = 'Annuler la récolte de mes données'
 const CREATED_AT = '2022-09-02T08:06:08Z'
+const ERROR_ENPHASE_MESSAGE = 'Connectez votre onduleur Enphase'
+const ERROR_SHELLY_MESSAGE = 'Reliez la prise Shelly de vos panneaux plug&play'
 
 const CONNECTED_ICON_TEXT = 'connected-icon'
-const EDIT_ICON_TESTID = 'EditIcon'
-const Replace_NRLINK_FORM_ALT_TEXT = 'ReplaceNRLinkFormPopup'
 
 let mockNrlinkConsent: nrlinkConsentStatus
 let mockEnedisSgeConsent: enedisSgeConsentStatus
@@ -73,11 +66,15 @@ let mockWindowOpen = jest.fn()
 window.open = mockWindowOpen
 let mockSetIsMeterVerifyLoading = jest.fn()
 let mockisMeterVerifyLoading = false
+let mockIsEnphaseConsentLoading = false
 let mockMeterVerificationEnum = MeterVerificationEnum.NOT_VERIFIED
 let mockHouseId = TEST_MOCKED_HOUSES[0].id
 let mockCreateEnedisSgeConsent = jest.fn()
 let mockSetMeterVerification = jest.fn()
 let mockEditMeter = jest.fn()
+const circularProgressClassname = '.MuiCircularProgress-root'
+let mockRevokeEnphaseConsent = jest.fn()
+let mockLoadConnectedPlugList = jest.fn()
 
 const STATUS_ON_SRC = './assets/images/content/housing/consent-status/meter-on.svg'
 const STATUS_OFF_SRC = './assets/images/content/housing/consent-status/meter-off.svg'
@@ -88,6 +85,17 @@ jest.mock('src/modules/Meters/metersHook', () => ({
     // eslint-disable-next-line jsdoc/require-jsdoc
     useMeterForHousing: () => ({
         editMeter: mockEditMeter,
+    }),
+}))
+
+// Mock useInstallationRequestsList hook
+jest.mock('src/modules/MyHouse/components/ConnectedPlugs/connectedPlugsHook', () => ({
+    ...jest.requireActual('src/modules/MyHouse/components/ConnectedPlugs/connectedPlugsHook'),
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    useConnectedPlugList: () => ({
+        // eslint-disable-next-line jsdoc/require-jsdoc
+        getProductionConnectedPlug: () => undefined,
+        loadConnectedPlugList: mockLoadConnectedPlugList,
     }),
 }))
 
@@ -104,6 +112,15 @@ jest.mock('react-router-dom', () => ({
     useParams: () => ({
         houseId: `${mockHouseId}`,
     }),
+}))
+
+// TODO REMOVE when Connected plug or revoke enphase is in prod
+jest.mock('src/modules/MyHouse/MyHouseConfig', () => ({
+    ...jest.requireActual('src/modules/MyHouse/MyHouseConfig'),
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    get connectedPlugsFeatureState() {
+        return true
+    },
 }))
 
 // Mock consentsHook
@@ -133,6 +150,8 @@ jest.mock('src/modules/Consents/consentsHook', () => ({
         isMeterVerifyLoading: mockisMeterVerifyLoading,
         meterVerification: mockMeterVerificationEnum,
         setMeterVerification: mockSetMeterVerification,
+        revokeEnphaseConsent: mockRevokeEnphaseConsent,
+        isEnphaseConsentLoading: mockIsEnphaseConsentLoading,
     }),
 }))
 
@@ -184,7 +203,7 @@ describe('MeterStatus component test', () => {
         test('when nrlink status is connected', async () => {
             mockNrlinkConsent = 'CONNECTED'
 
-            const { getByText, getByAltText, getByTestId, queryByAltText } = reduxedRender(
+            const { getByText, getByAltText } = reduxedRender(
                 <Router>
                     <MeterStatus />
                 </Router>,
@@ -194,20 +213,17 @@ describe('MeterStatus component test', () => {
             // Retrieve image alt attribute
             const image = getByAltText(CONNECTED_ICON_TEXT)
 
-            expect(getByTestId(EDIT_ICON_TESTID)).toBeTruthy()
             expect(getByAltText(CONNECTED_ICON_TEXT)).toBeTruthy()
             expect(getByText(COMPTEUR_TITLE)).toBeTruthy()
             expect(getByText(`n° ${CURRENT_HOUSING?.meter?.guid}`)).toBeTruthy()
             expect(getByText(NRLINK_TITLE)).toBeTruthy()
             expect(image).toHaveAttribute('src', STATUS_ON_SRC)
             expect(getByText(`nrLINK n° ${mockNrlinkGuid}`)).toBeTruthy()
-
-            expect(queryByAltText(Replace_NRLINK_FORM_ALT_TEXT)).not.toBeTruthy()
         })
         test('when nrlink status is disconnected', async () => {
             mockNrlinkConsent = 'DISCONNECTED'
 
-            const { getByText, getByAltText, getByTestId, queryByLabelText } = reduxedRender(
+            const { getByText, getByAltText } = reduxedRender(
                 <Router>
                     <MeterStatus />
                 </Router>,
@@ -221,18 +237,6 @@ describe('MeterStatus component test', () => {
             expect(getByText(`nrLINK N° ${mockNrlinkGuid}`)).toBeTruthy()
             expect(getByText(NRLINK_DISCONNECTED_MESSAGE)).toBeTruthy()
             expect(image).toHaveAttribute('src', STATUS_ERROR_SRC)
-
-            // test if the edit is shown, and open the edit nrlink form popup
-            expect(getByTestId(EDIT_ICON_TESTID)).toBeTruthy()
-            expect(queryByLabelText(Replace_NRLINK_FORM_ALT_TEXT)).not.toBeTruthy()
-
-            userEvent.click(getByTestId(EDIT_ICON_TESTID))
-            await waitFor(() => {
-                expect(queryByLabelText(Replace_NRLINK_FORM_ALT_TEXT)).toBeTruthy()
-            })
-
-            expect(getByText(MSG_REPLACE_NRLINK_MODAL_TITLE)).toBeTruthy()
-            expect(getByText(MSG_REPLACE_NRLINK_CLEAR_OLD_DATA)).toBeTruthy()
         })
         test('when nrlink status is expired or nonexistant', async () => {
             mockNrlinkConsent = 'EXPIRED' || 'NONEXISTENT'
@@ -269,27 +273,8 @@ describe('MeterStatus component test', () => {
             expect(getByText(NO_METER_MESSAGE)).toBeTruthy()
             expect(getByText(NRLINK_NONEXISTANT_EXPIRED_MESSAGE)).toBeTruthy()
             expect(getByText(ERROR_ENPHASE_MESSAGE)).toBeTruthy()
+            expect(getByText(ERROR_SHELLY_MESSAGE)).toBeTruthy()
             expect(getByText(ENEDIS_NONEXISTANT_EXPIRED_MESSAGE)).toBeTruthy()
-        })
-        test('when clicking on Edit, display ReplaceNRLinkForm', async () => {
-            mockNrlinkConsent = 'CONNECTED'
-
-            const { getByTestId, getByText, queryByLabelText } = reduxedRender(
-                <Router>
-                    <MeterStatus />
-                </Router>,
-            )
-
-            expect(getByTestId(EDIT_ICON_TESTID)).toBeTruthy()
-            expect(queryByLabelText(Replace_NRLINK_FORM_ALT_TEXT)).not.toBeTruthy()
-
-            userEvent.click(getByTestId(EDIT_ICON_TESTID))
-            await waitFor(() => {
-                expect(queryByLabelText(Replace_NRLINK_FORM_ALT_TEXT)).toBeTruthy()
-            })
-
-            expect(getByText(MSG_REPLACE_NRLINK_MODAL_TITLE)).toBeTruthy()
-            expect(getByText(MSG_REPLACE_NRLINK_CLEAR_OLD_DATA)).toBeTruthy()
         })
     })
     describe('enedis status test', () => {
@@ -345,43 +330,31 @@ describe('MeterStatus component test', () => {
         })
     })
     describe('enphase status', () => {
-        test('when enphase status is ACTIVE', async () => {
+        test('when revoking enphase status', async () => {
             CURRENT_HOUSING!.meter!.guid = '12345Her'
             mockEnphaseConsent = 'ACTIVE'
-            const { getByText, getByAltText } = reduxedRender(
-                <Router>
-                    <MeterStatus />
-                </Router>,
-            )
-            expect(getByText(`Connexion le ${dayjs(CREATED_AT).format('DD/MM/YYYY')}`)).toBeTruthy()
-            const activeIcon = getByAltText('enphase-active-icon')
-            expect(activeIcon).toHaveAttribute('src', STATUS_ON_SRC)
-        })
-        test('when enphase status is NOT ACTIVE', async () => {
-            CURRENT_HOUSING!.meter!.guid = '12345Her'
-            mockEnphaseConsent = 'EXPIRED' || 'NONEXISTENT'
-            const { getByText, getByAltText } = reduxedRender(
-                <Router>
-                    <MeterStatus />
-                </Router>,
-            )
-            const activeIcon = getByAltText('enphase-off-icon')
-            expect(getByText(ERROR_ENPHASE_MESSAGE)).toBeTruthy()
-            expect(activeIcon).toHaveAttribute('src', STATUS_OFF_SRC)
-        })
-        test('when enphase status is PENDING', async () => {
-            CURRENT_HOUSING!.meter!.guid = '12345Her'
-            mockEnphaseConsent = 'PENDING'
-
             const { getByText } = reduxedRender(
                 <Router>
                     <MeterStatus />
                 </Router>,
             )
+            userEvent.click(getByText(REVOKE_ENPHASE_CONSENT_TEXT))
+            await waitFor(() => {
+                expect(mockRevokeEnphaseConsent).toHaveBeenCalledWith(CURRENT_HOUSING?.meter?.guid)
+            })
+            expect(mockGetConsent).toHaveBeenCalledWith(CURRENT_HOUSING?.meter?.guid, mockHouseId)
+        })
+        test('when revoking enphase and isEnphaseLoading, spinner should be shown', async () => {
+            CURRENT_HOUSING!.meter!.guid = '12345Her'
+            mockEnphaseConsent = 'ACTIVE'
+            mockIsEnphaseConsentLoading = true
+            const { container } = reduxedRender(
+                <Router>
+                    <MeterStatus />
+                </Router>,
+            )
 
-            // Children of <Icon> </Icon>
-            expect(getByText('replay')).toBeTruthy()
-            expect(getByText(PENDING_ENPHASE_MESSAGE)).toBeTruthy()
+            expect(container.querySelector(circularProgressClassname)).toBeInTheDocument()
         })
     })
     describe('test implementation of EnedisSgePopup', () => {

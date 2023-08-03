@@ -21,7 +21,7 @@ export const ACCOMODATION_API = (housingId: number) => `${HOUSING_API}/${housing
  * @param housingId MeterId.
  * @returns UseAccomodation.
  */
-export function useAccomodation(housingId: number) {
+export function useAccomodation(housingId?: number) {
     const [accomodation, setAccomodation] = useState<AccomodationDataType>()
     const { enqueueSnackbar } = useSnackbar()
     const [isLoadingInProgress, setIsLoadingInProgress] = useState(false)
@@ -36,6 +36,7 @@ export function useAccomodation(housingId: number) {
      * @param body Accomodation data.
      */
     const updateAccomodation = async (body: AccomodationDataType) => {
+        if (!housingId) return
         setIsLoadingInProgress(true)
         try {
             await axios.post<AccomodationDataType, AxiosResponse<AccomodationDataType>>(
@@ -64,6 +65,7 @@ export function useAccomodation(housingId: number) {
      * @returns The function throw an error, and show snackbar message containing successful and errors message.
      */
     const loadAccomodation = useCallback(async () => {
+        if (!housingId) return
         setIsLoadingInProgress(true)
         setIsAccomodationMeterListEmpty(false)
         try {
