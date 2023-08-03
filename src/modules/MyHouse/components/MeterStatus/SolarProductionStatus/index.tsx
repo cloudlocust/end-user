@@ -174,32 +174,36 @@ export const SolarProductionConsentStatus = ({
                                     Connectez votre onduleur Enphase
                                 </TypographyFormatMessage>
                             </div>
-                            <TypographyFormatMessage>Ou</TypographyFormatMessage>
+                            {connectedPlugsFeatureState && (
+                                <>
+                                    <TypographyFormatMessage>Ou</TypographyFormatMessage>
 
-                            <div className="flex pl-4 gap-4 md:items-center">
-                                <div
-                                    className="mt-7 md:mt-0"
-                                    style={{
-                                        borderRadius: '50%',
-                                        width: '4px',
-                                        height: '4px',
-                                        backgroundColor: theme.palette.error.main,
-                                    }}
-                                ></div>
+                                    <div className="flex pl-4 gap-4 md:items-center">
+                                        <div
+                                            className="mt-7 md:mt-0"
+                                            style={{
+                                                borderRadius: '50%',
+                                                width: '4px',
+                                                height: '4px',
+                                                backgroundColor: theme.palette.error.main,
+                                            }}
+                                        ></div>
 
-                                <span>
-                                    <TypographyFormatMessage
-                                        color={theme.palette.error.main}
-                                        className="underline cursor-pointer"
-                                        fontWeight={600}
-                                        onClick={() => {
-                                            setOpenConnectedPlugProductionConsentPopup(true)
-                                        }}
-                                    >
-                                        Reliez la prise Shelly de vos panneaux plug&play
-                                    </TypographyFormatMessage>
-                                </span>
-                            </div>
+                                        <span>
+                                            <TypographyFormatMessage
+                                                color={theme.palette.error.main}
+                                                className="underline cursor-pointer"
+                                                fontWeight={600}
+                                                onClick={() => {
+                                                    setOpenConnectedPlugProductionConsentPopup(true)
+                                                }}
+                                            >
+                                                Reliez la prise Shelly de vos panneaux plug&play
+                                            </TypographyFormatMessage>
+                                        </span>
+                                    </div>
+                                </>
+                            )}
                         </div>
                     </>
                 )
