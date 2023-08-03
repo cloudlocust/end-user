@@ -317,7 +317,7 @@ export const MeterStatus = () => {
             <Card className="my-12 md:mx-16" variant="outlined">
                 <MuiCardContent sx={{ p: 0, '&:last-child': { pb: 0 } }}>
                     <HousingAddressCard />
-                    <div className={`flex flex-row justify-between bg-grey-200 p-12 border-b-1 border-grey-300`}>
+                    <div className={`flex flex-row justify-between bg-gray-50 p-12 border-1 border-slate-600`}>
                         <MeterInfos element={currentHousing!} />
                         <NavLink to={`${URL_MY_HOUSE}/${currentHousing?.id}/contracts`} className="flex">
                             <Card className="flex flex-col items-center rounded p-8">
