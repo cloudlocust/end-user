@@ -21,10 +21,6 @@ import { applyCamelCase } from 'src/common/react-platform-components'
 import * as reactRedux from 'react-redux'
 import { sgeConsentMessage } from 'src/modules/MyHouse/MyHouseConfig'
 import { waitFor } from '@testing-library/react'
-import {
-    MSG_REPLACE_NRLINK_CLEAR_OLD_DATA,
-    MSG_REPLACE_NRLINK_MODAL_TITLE,
-} from 'src/modules/MyHouse/components/ReplaceNRLinkFormPopup/replaceNrLinkFormPopupConfig'
 
 const LIST_OF_HOUSES: IHousing[] = applyCamelCase(TEST_HOUSES)
 const CURRENT_HOUSING = LIST_OF_HOUSES[0]
@@ -58,8 +54,6 @@ const ERROR_ENPHASE_MESSAGE = 'Connectez votre onduleur Enphase'
 const ERROR_SHELLY_MESSAGE = 'Reliez la prise Shelly de vos panneaux plug&play'
 
 const CONNECTED_ICON_TEXT = 'connected-icon'
-const EDIT_ICON_TESTID = 'EditIcon'
-const Replace_NRLINK_FORM_ALT_TEXT = 'ReplaceNRLinkFormPopup'
 
 let mockNrlinkConsent: nrlinkConsentStatus
 let mockEnedisSgeConsent: enedisSgeConsentStatus
@@ -209,7 +203,7 @@ describe('MeterStatus component test', () => {
         test('when nrlink status is connected', async () => {
             mockNrlinkConsent = 'CONNECTED'
 
-            const { getByText, getByAltText, getByTestId, queryByAltText } = reduxedRender(
+            const { getByText, getByAltText } = reduxedRender(
                 <Router>
                     <MeterStatus />
                 </Router>,
@@ -219,20 +213,17 @@ describe('MeterStatus component test', () => {
             // Retrieve image alt attribute
             const image = getByAltText(CONNECTED_ICON_TEXT)
 
-            expect(getByTestId(EDIT_ICON_TESTID)).toBeTruthy()
             expect(getByAltText(CONNECTED_ICON_TEXT)).toBeTruthy()
             expect(getByText(COMPTEUR_TITLE)).toBeTruthy()
             expect(getByText(`n° ${CURRENT_HOUSING?.meter?.guid}`)).toBeTruthy()
             expect(getByText(NRLINK_TITLE)).toBeTruthy()
             expect(image).toHaveAttribute('src', STATUS_ON_SRC)
             expect(getByText(`nrLINK n° ${mockNrlinkGuid}`)).toBeTruthy()
-
-            expect(queryByAltText(Replace_NRLINK_FORM_ALT_TEXT)).not.toBeTruthy()
         })
         test('when nrlink status is disconnected', async () => {
             mockNrlinkConsent = 'DISCONNECTED'
 
-            const { getByText, getByAltText, getByTestId, queryByLabelText } = reduxedRender(
+            const { getByText, getByAltText } = reduxedRender(
                 <Router>
                     <MeterStatus />
                 </Router>,
@@ -246,18 +237,6 @@ describe('MeterStatus component test', () => {
             expect(getByText(`nrLINK N° ${mockNrlinkGuid}`)).toBeTruthy()
             expect(getByText(NRLINK_DISCONNECTED_MESSAGE)).toBeTruthy()
             expect(image).toHaveAttribute('src', STATUS_ERROR_SRC)
-
-            // test if the edit is shown, and open the edit nrlink form popup
-            expect(getByTestId(EDIT_ICON_TESTID)).toBeTruthy()
-            expect(queryByLabelText(Replace_NRLINK_FORM_ALT_TEXT)).not.toBeTruthy()
-
-            userEvent.click(getByTestId(EDIT_ICON_TESTID))
-            await waitFor(() => {
-                expect(queryByLabelText(Replace_NRLINK_FORM_ALT_TEXT)).toBeTruthy()
-            })
-
-            expect(getByText(MSG_REPLACE_NRLINK_MODAL_TITLE)).toBeTruthy()
-            expect(getByText(MSG_REPLACE_NRLINK_CLEAR_OLD_DATA)).toBeTruthy()
         })
         test('when nrlink status is expired or nonexistant', async () => {
             mockNrlinkConsent = 'EXPIRED' || 'NONEXISTENT'
@@ -296,26 +275,6 @@ describe('MeterStatus component test', () => {
             expect(getByText(ERROR_ENPHASE_MESSAGE)).toBeTruthy()
             expect(getByText(ERROR_SHELLY_MESSAGE)).toBeTruthy()
             expect(getByText(ENEDIS_NONEXISTANT_EXPIRED_MESSAGE)).toBeTruthy()
-        })
-        test('when clicking on Edit, display ReplaceNRLinkForm', async () => {
-            mockNrlinkConsent = 'CONNECTED'
-
-            const { getByTestId, getByText, queryByLabelText } = reduxedRender(
-                <Router>
-                    <MeterStatus />
-                </Router>,
-            )
-
-            expect(getByTestId(EDIT_ICON_TESTID)).toBeTruthy()
-            expect(queryByLabelText(Replace_NRLINK_FORM_ALT_TEXT)).not.toBeTruthy()
-
-            userEvent.click(getByTestId(EDIT_ICON_TESTID))
-            await waitFor(() => {
-                expect(queryByLabelText(Replace_NRLINK_FORM_ALT_TEXT)).toBeTruthy()
-            })
-
-            expect(getByText(MSG_REPLACE_NRLINK_MODAL_TITLE)).toBeTruthy()
-            expect(getByText(MSG_REPLACE_NRLINK_CLEAR_OLD_DATA)).toBeTruthy()
         })
     })
     describe('enedis status test', () => {

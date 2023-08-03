@@ -16,6 +16,7 @@ import { NrlinkConnectionStepsEnum } from 'src/modules/nrLinkConnection/nrlinkCo
 import { RootState } from 'src/redux'
 import { ReplaceNRLinkModule } from 'src/modules/MyHouse/components/ReplaceNRLinkFormPopup/ReplaceNRLinkModule'
 import MeterInfos from 'src/modules/MyHouse/components/MeterInfo'
+import { HousingAddressCard } from 'src/modules/MyHouse/components/HousingAddressCard'
 import { SolarProductionConsentStatus } from 'src/modules/MyHouse/components/MeterStatus/SolarProductionStatus'
 
 const FORMATTED_DATA = 'DD/MM/YYYY'
@@ -315,7 +316,8 @@ export const MeterStatus = () => {
         <>
             <Card className="my-12 md:mx-16" variant="outlined">
                 <MuiCardContent sx={{ p: 0, '&:last-child': { pb: 0 } }}>
-                    <div className={`flex flex-row justify-between bg-grey-200 p-12 border-b-1 border-grey-300`}>
+                    <HousingAddressCard />
+                    <div className={`flex flex-row justify-between bg-gray-50 p-12 border-1 border-slate-600`}>
                         <MeterInfos element={currentHousing!} />
                         <NavLink to={`${URL_MY_HOUSE}/${currentHousing?.id}/contracts`} className="flex">
                             <Card className="flex flex-col items-center rounded p-8">
