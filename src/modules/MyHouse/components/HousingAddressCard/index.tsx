@@ -83,7 +83,7 @@ export const HousingAddressCard = () => {
 
     return (
         <>
-            <StyledCard className="relative cursor-pointer flex flex-col justify-between w-full" variant="outlined">
+            <StyledCard className="relative flex flex-col justify-between w-full" variant="outlined">
                 <CardContent className="p-8" style={{ paddingBottom: 8 }}>
                     <div className="flex justify-between">
                         <div className="flex items-center jutsify-center">
