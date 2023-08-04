@@ -8,6 +8,7 @@ pipeline{
 
     stages{
         stage ('Install deps') {
+            when{  expression { ! changeset('enduser-react-chart')} }
             steps {
                 // Using ignore-engines, will fix the error "engine node incompatible with this module", when using yarn install which happens on jenkins after installing firebase package.
                 sh 'npm install -g yarn && yarn install --ignore-engines && export NODE_OPTIONS="--max-old-space-size=8192"'
@@ -250,12 +251,31 @@ def isPathExist(changeSets,path) {
             
     
 }
-
+def isJustPathExist(changeSets,path) {
+    
+            b = true
+            changeSets.each { 
+                a = it.startsWith(path)
+                b = a && b
+            }
+            return b
+            
+    
+}
 def changeset(path){
     def jobName="$JOB_NAME"
     def job = Jenkins.getInstance().getItemByFullName(jobName)
     if ( job.lastSuccessfulBuild == null) { return true }    
     def changeSets = allChangeSetsFromLastSuccessfulBuild()                                          
     return  isPathExist(getFilesChanged(changeSets),path)
+
+}
+
+def changedchart(path){
+    def jobName="$JOB_NAME"
+    def job = Jenkins.getInstance().getItemByFullName(jobName)
+    if ( job.lastSuccessfulBuild == null) { return true }    
+    def changeSets = allChangeSetsFromLastSuccessfulBuild()                                          
+    return  isJustPathExist(getFilesChanged(changeSets),path)
 
 }
