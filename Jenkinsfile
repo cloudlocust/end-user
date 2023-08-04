@@ -103,35 +103,34 @@ pipeline{
                }
             }
 
-        }
-         stage('Publish in chart regisry'){
-                       when{  expression { changeset('enduser-react-chart')} }
-                       environment {
-                           ENV_NAME = getEnvName(BRANCH_NAME)
-                           IMG_TAG = getImgTag(BRANCH_NAME)
-                           VERSION_CHART = "0.1.${BUILD_NUMBER}"
-                           USER_NAME_ = credentials('helm_registry_username')
-                           PASSWORD_ = credentials('helm_registry_password')
-                           url = credentials('helm_registry_url')
-                           URL_ = "${url}/${IMG_TAG}registry"
-                           }
-                        steps {
-                              script{
-
-                                sh(script: " helm registry login -u ${USER_NAME_} -p ${PASSWORD_} ${URL_} ")
-                                sh(script: "rm -rf helm-chart-repository")
-                                sh(script: "mkdir helm-chart-repository")         
-                                sh(script: "helm package enduser-react-chart --version ${VERSION_CHART} -d helm-chart-repository")
-                                sh(script: "helm push helm-chart-repository/* oci://${URL_}")
-                                sh(script: "rm -rf helm-chart-repository")
-
-                }
-              }  
-
-                }  
+        } 
            }
         }
+        stage('Publish in chart regisry'){
+                    when{  expression { changeset('enduser-react-chart')} }
+                    environment {
+                        ENV_NAME = getEnvName(BRANCH_NAME)
+                        IMG_TAG = getImgTag(BRANCH_NAME)
+                        VERSION_CHART = "0.1.${BUILD_NUMBER}"
+                        USER_NAME_ = credentials('helm_registry_username')
+                        PASSWORD_ = credentials('helm_registry_password')
+                        url = credentials('helm_registry_url')
+                        URL_ = "${url}/${IMG_TAG}registry"
+                        }
+                    steps {
+                            script{
 
+                            sh(script: " helm registry login -u ${USER_NAME_} -p ${PASSWORD_} ${URL_} ")
+                            sh(script: "rm -rf helm-chart-repository")
+                            sh(script: "mkdir helm-chart-repository")         
+                            sh(script: "helm package enduser-react-chart --version ${VERSION_CHART} -d helm-chart-repository")
+                            sh(script: "helm push helm-chart-repository/* oci://${URL_}")
+                            sh(script: "rm -rf helm-chart-repository")
+
+            }
+            }  
+
+            } 
 
        stage ('Deploy') {
         when {
