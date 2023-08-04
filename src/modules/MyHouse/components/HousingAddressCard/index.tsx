@@ -1,49 +1,34 @@
-import React from 'react'
-import { Card } from '@mui/material'
-import CardContent from '@mui/material/CardContent'
-import Typography from '@mui/material/Typography'
+import { Card, CardContent, Button, IconButton, Modal, Box, Tooltip, Typography } from '@mui/material'
+import { styled } from '@mui/material/styles'
 import { useIntl } from 'react-intl'
-import Button from '@mui/material/Button'
-import IconButton from '@mui/material/IconButton'
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined'
-import Modal from '@mui/material/Modal'
-import Box from '@mui/material/Box'
 import SvgIcon from '@mui/material/SvgIcon'
 import { ReactComponent as HousingIcon } from 'src/assets/images/navbarItems/Housings.svg'
-import { IHousing } from 'src/modules/MyHouse/components/HousingList/housing.d'
 import { useHousingsDetails } from 'src/modules/MyHouse/components/HousingList/HousingsHooks'
 import { deleteAddFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
-import Tooltip from '@mui/material/Tooltip'
 
-import { useDispatch } from 'react-redux'
-import { Dispatch } from 'src/redux'
+import { useDispatch, useSelector } from 'react-redux'
+import { Dispatch, RootState } from 'src/redux'
 import { HousingCardForm } from 'src/modules/MyHouse/components/HousingCardForm'
+import { useState } from 'react'
+
+const StyledCard = styled(Card)(() => ({
+    borderRadius: '0',
+    border: 'none',
+    boxShadow: 'none',
+}))
 
 /**
- * This is a card for the display of a logement item.
+ * HousingAddressCard component.
  *
- * @param props Props.
- * @param props.element Logement object we cant to display.
- * @returns Card.
+ * @returns HousingAddressCard JSX.
  */
-const HousingCard = ({
-    element: logement,
-}: /**
- * Props Typing.
- */
-{
-    /**
-     * The fields required for the display of the logement.
-     */
-    element: IHousing
-}) => {
+export const HousingAddressCard = () => {
     const { formatMessage } = useIntl()
-
-    const [confirmModalOpen, setConfirmModalOpen] = React.useState(false)
-
+    const { housingModel } = useDispatch<Dispatch>()
+    const [confirmModalOpen, setConfirmModalOpen] = useState(false)
     const { removeHousing } = useHousingsDetails()
-
-    const dispatch = useDispatch<Dispatch>()
+    const { currentHousing } = useSelector(({ housingModel }: RootState) => housingModel)
 
     const MY_HOUSING_AT = formatMessage({
         id: 'Mon Logement à ',
@@ -93,22 +78,22 @@ const HousingCard = ({
      * Handler onAfterDeleteUpdateSuccess function when updating or delete housing.
      */
     const onAfterDeleteUpdateSuccess = () => {
-        dispatch.housingModel.loadHousingsList()
+        housingModel.loadHousingsList()
     }
 
     return (
         <>
-            <Card className="relative cursor-pointer flex flex-col justify-between rounded-16 w-full housing-card">
+            <StyledCard className="relative cursor-pointer flex flex-col justify-between w-full" variant="outlined">
                 <CardContent className="p-8" style={{ paddingBottom: 8 }}>
                     <div className="flex justify-between">
                         <div className="flex items-center jutsify-center">
                             <Typography className="font-bold text-16 whitespace-normal">
-                                {MY_HOUSING_AT + logement.address.city.toUpperCase()}
+                                {MY_HOUSING_AT + currentHousing!.address.city.toUpperCase()}
                             </Typography>
                         </div>
                         <div className="ml-12 flex">
                             <HousingCardForm
-                                housing={logement}
+                                housing={currentHousing!}
                                 onAfterDeleteUpdateSuccess={onAfterDeleteUpdateSuccess}
                             />
 
@@ -139,11 +124,11 @@ const HousingCard = ({
                             <HousingIcon />
                         </SvgIcon>
                         <Typography variant="subtitle1" className="text-13 flex">
-                            {`${logement.address.name}`}
+                            {`${currentHousing!.address.name}`}
                         </Typography>
                     </div>
                 </CardContent>
-            </Card>
+            </StyledCard>
             <Modal open={confirmModalOpen} onClose={handleCloseConfirmModal}>
                 <Box sx={style} className="flex-col w-2/3 h-2/4 sm:w-1/3 sm:h-2/4">
                     <div className="flex flex-col justify-center align-center text-white text-center text-sm font-medium my-20">
@@ -182,7 +167,7 @@ const HousingCard = ({
                             variant="outlined"
                             className="text-white m-12 border-white"
                             onClick={() => {
-                                logement && handleDeleteHousing(logement.id)
+                                handleDeleteHousing(currentHousing!.id)
                             }}
                         >
                             {formatMessage({
@@ -196,4 +181,3 @@ const HousingCard = ({
         </>
     )
 }
-export default HousingCard

@@ -52,6 +52,7 @@ export function useConsents() {
     const [isMeterVerifyLoading, setIsMeterVerifyLoading] = useState(false)
     const [enedisSgeConsent, setEnedisSgeConsent] = useState<IEnedisSgeConsent>()
     const [isCreateEnedisSgeConsentLoading, setIsCreateEnedisSgeConsentLoading] = useState(false)
+    const [isEnphaseConsentLoading, setIsEnphaseConsentLoading] = useState(false)
     const [createEnedisSgeConsentError, setCreateEnedisSgeConsentError] = useState<boolean>(false)
     const [enphaseLink, setEnphaseLink] = useState<EnphaseLink['url']>('')
     const { isCancel, source } = useAxiosCancelToken()
@@ -62,9 +63,13 @@ export function useConsents() {
      * @param meterGuid MeterGuid.
      */
     const getConsents = useCallback(
-        async (meterGuid: string, houseId?: number) => {
+        async (meterGuid?: string, houseId?: number) => {
+            setNrlinkConsent(undefined)
+            setEnedisSgeConsent(undefined)
+            setEnphaseConsent(undefined)
+            if (!meterGuid) return
+
             setConsentsLoading(true)
-            if (!meterGuid) throw Error('Meter guid missing!')
             /**
              * Used Promise.allSettled() instead of Promise.all to return a promise that resolves after all of the given requests have either been fulfilled or rejected.
              * Because Promise.all() throws only when the first promise is rejected and it returns only that rejection.
@@ -190,6 +195,34 @@ export function useConsents() {
         [enqueueSnackbar, formatMessage],
     )
 
+    /**
+     * Revoke Enphase Consent handler.
+     */
+    const revokeEnphaseConsent = useCallback(
+        async (meterGuid?: string) => {
+            try {
+                if (!meterGuid) return
+                setIsEnphaseConsentLoading(true)
+                await axios.patch(`${ENPHASE_CONSENT_API}/${meterGuid}/revoke`)
+                setEnphaseConsent(undefined)
+                setIsEnphaseConsentLoading(false)
+            } catch (error: any) {
+                setIsEnphaseConsentLoading(false)
+                enqueueSnackbar(
+                    formatMessage({
+                        id: 'Erreur lors de la révokation de votre consentement enphase',
+                        defaultMessage: 'Erreur lors de la révokation de votre consentement enphase',
+                    }),
+                    {
+                        autoHideDuration: 5000,
+                        variant: 'error',
+                    },
+                )
+            }
+        },
+        [enqueueSnackbar, formatMessage],
+    )
+
     const getEnphaseLink = useCallback(
         async (housingId: number) => {
             try {
@@ -212,12 +245,6 @@ export function useConsents() {
         [enqueueSnackbar, formatMessage],
     )
 
-    const clearConsents = useCallback(async () => {
-        setNrlinkConsent(undefined)
-        setEnedisSgeConsent(undefined)
-        setEnphaseConsent(undefined)
-    }, [])
-
     return {
         nrlinkConsent,
         consentsLoading,
@@ -236,6 +263,7 @@ export function useConsents() {
         getEnphaseLink,
         enphaseLink,
         setEnphaseLink,
-        clearConsents,
+        isEnphaseConsentLoading,
+        revokeEnphaseConsent,
     }
 }

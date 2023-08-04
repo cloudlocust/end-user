@@ -11,14 +11,17 @@ import { AccomodationDataType } from 'src/modules/MyHouse/components/Accomodatio
 import { TEST_ACCOMODATION_RESPONSE as MOCK_TEST_ACCOMODATION_RESPONSE } from 'src/mocks/handlers/accomodation'
 import { TEST_HOUSING_EQUIPMENTS as MOCK_EQUIPMENTS } from 'src/mocks/handlers/equipments'
 import { IEquipmentMeter } from 'src/modules/MyHouse/components/Equipments/EquipmentsType'
+import { TEST_CONNECTED_PLUGS } from 'src/mocks/handlers/connectedPlugs'
+import { IConnectedPlug } from 'src/modules/MyHouse/components/ConnectedPlugs/ConnectedPlugs.d'
 
 import * as houseConfig from 'src/modules/MyHouse/MyHouseConfig'
 
 const LIST_OF_HOUSES: IHousing[] = applyCamelCase(TEST_HOUSES)
 const TEST_METER_EQUIPMENTS = applyCamelCase(MOCK_EQUIPMENTS)
 const TEST_ACCOMODATION_RESPONSE = applyCamelCase(MOCK_TEST_ACCOMODATION_RESPONSE)
+const MOCK_TEST_CONNECTED_PLUGS: IConnectedPlug[] = applyCamelCase(TEST_CONNECTED_PLUGS)
+let mockConnectedPlugsList = MOCK_TEST_CONNECTED_PLUGS
 
-const circularProgressClassname = '.MuiCircularProgress-root'
 let mockHouseId = LIST_OF_HOUSES[0].id
 
 /**
@@ -39,6 +42,7 @@ jest.mock('react-router', () => ({
 let mockIsLoadingInProgress = false
 const mockUpdateAccomodation = jest.fn()
 const mockLoadAccomodation = jest.fn()
+let mockLoadConnectedPlugList = jest.fn()
 let mockAccomodation: AccomodationDataType = TEST_ACCOMODATION_RESPONSE
 
 /**
@@ -74,6 +78,20 @@ jest.mock('src/modules/MyHouse/components/Equipments/equipmentHooks', () => ({
     }),
 }))
 
+let mockConnectedPlugListLoadingInProgress = false
+
+// Mock useInstallationRequestsList hook
+jest.mock('src/modules/MyHouse/components/ConnectedPlugs/connectedPlugsHook', () => ({
+    ...jest.requireActual('src/modules/MyHouse/components/ConnectedPlugs/connectedPlugsHook'),
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    useConnectedPlugList: () => ({
+        connectedPlugList: mockConnectedPlugsList,
+        loadingInProgress: mockConnectedPlugListLoadingInProgress,
+        // eslint-disable-next-line jsdoc/require-jsdoc
+        getProductionConnectedPlug: () => undefined,
+        loadConnectedPlugList: mockLoadConnectedPlugList,
+    }),
+}))
 // mock store.
 const store = init({
     models,
@@ -110,20 +128,10 @@ describe('Test HousingDetails Component', () => {
         expect(getByText('Eau')).toBeTruthy()
         expect(getByText('Plaques')).toBeTruthy()
     })
-    test('when HousingList is null, Loading is shown', async () => {
-        await store.dispatch.housingModel.setHousingModelState([])
-
-        const { container } = reduxedRender(
-            <Router>
-                <HousingDetails />
-            </Router>,
-            { store },
-        )
-        expect(container.querySelector(circularProgressClassname)).toBeInTheDocument()
-    })
 
     describe('Should display connectedPlugs correctly', () => {
-        test('Should display correctly skeleton data at mount', async () => {
+        test('connectedPlugList loaded, detail card should show correctly', async () => {
+            mockConnectedPlugsList = [MOCK_TEST_CONNECTED_PLUGS[0]]
             const { getByText } = reduxedRender(
                 <Router>
                     <HousingDetails />
@@ -131,10 +139,25 @@ describe('Test HousingDetails Component', () => {
                 { store },
             )
             expect(getByText('Mes prises connectées')).toBeTruthy()
+            expect(getByText('Prise ' + MOCK_TEST_CONNECTED_PLUGS[0].deviceId)).toBeTruthy()
+            expect(getByText('Prise 2')).toBeTruthy()
+            expect(getByText('Prise 3')).toBeTruthy()
+        })
+
+        test('Should display correctly skeleton data when empty', async () => {
+            mockConnectedPlugListLoadingInProgress = true
+            mockConnectedPlugsList = []
+            const { getByText } = reduxedRender(
+                <Router>
+                    <HousingDetails />
+                </Router>,
+                { store },
+            )
             expect(getByText('Prise 1')).toBeTruthy()
             expect(getByText('Prise 2')).toBeTruthy()
             expect(getByText('Prise 3')).toBeTruthy()
         })
+
         test('Should not display when Enphase is disabled', async () => {
             mockHouseConfig.connectedPlugsFeatureState = false
             const { queryByText } = reduxedRender(

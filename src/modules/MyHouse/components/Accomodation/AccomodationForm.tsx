@@ -86,19 +86,17 @@ export const AccomodationForm = () => {
             </div>
         )
     return (
-        <div className="flex flex-col items-center justify-center w-full md:w-3/4 ml-5 mr-5 overflow-y-scroll">
+        <div className="flex flex-col items-center justify-center w-full ml-5 mr-5 overflow-y-scroll">
             {isAccomodationInfoConsentmentOpen && (
                 <div
-                    className="flex items-center justify-center w-screen min-h-56"
-                    style={{ background: theme.palette.primary.main }}
+                    className="flex items-center text-center text-13 md:text-16 justify-center w-full min-h-56"
+                    style={{ background: theme.palette.primary.main, color: theme.palette.primary.contrastText }}
                 >
-                    <div className="max-w-xs text-white text-center">
-                        {formatMessage({
-                            id: 'En renseignant votre logement nous pourrons vous apporter une analyse plus précise de votre consommation',
-                            defaultMessage:
-                                'En renseignant votre logement nous pourrons vous apporter une analyse plus précise de votre consommation',
-                        })}
-                    </div>
+                    {formatMessage({
+                        id: 'En renseignant votre logement nous pourrons vous apporter une analyse plus précise de votre consommation',
+                        defaultMessage:
+                            'En renseignant votre logement nous pourrons vous apporter une analyse plus précise de votre consommation',
+                    })}
                 </div>
             )}
             <div className="flex flex-col justify-center w-full md:w-3/4">
