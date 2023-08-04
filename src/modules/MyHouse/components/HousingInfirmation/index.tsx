@@ -1,5 +1,5 @@
 import MultiTab from 'src/common/ui-kit/components/MultiTab/MultiTab'
-import { ThemeProvider, useTheme, useMediaQuery } from '@mui/material'
+import { ThemeProvider, useTheme } from '@mui/material'
 import Accomodation from 'src/modules/MyHouse/components/Accomodation'
 import Equipments from 'src/modules/MyHouse/components/Equipments'
 import { Button, Icon } from '@mui/material'
@@ -16,7 +16,6 @@ import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyForm
  */
 export const HousingInformation = () => {
     const theme = useTheme()
-    const mdDown = useMediaQuery(theme.breakpoints.down('md'))
     const history = useHistory()
     const tabsContent = [
         {
