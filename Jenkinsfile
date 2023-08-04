@@ -65,18 +65,18 @@ pipeline{
             }
         }
         stage('Test NG generate') {
-            when{  expression { ! changedchart('enduser-react-chart')} }
             when {
               expression { ! (BRANCH_NAME ==~ /(production|master|develop)/) }
+              expression { ! changedchart('enduser-react-chart')}
             }
             steps{
                sh 'yarn build'
             }
         }
         stage("Publish") {
-            when{  expression { ! changedchart('enduser-react-chart')} }
             when {
                     expression { BRANCH_NAME ==~ /(production|master|develop)/ }
+                    expression { ! changedchart('enduser-react-chart')}
             }
            stages {
            stage('Publish in dockerhub'){
