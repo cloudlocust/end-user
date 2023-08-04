@@ -107,7 +107,10 @@ pipeline{
            }
         }
         stage('Publish in chart regisry'){
-                    when{  expression { changeset('enduser-react-chart')} }
+                    when{  
+                        expression { BRANCH_NAME ==~ /(production|master|develop)/ }
+                        expression { changeset('enduser-react-chart')} 
+                        }
                     environment {
                         ENV_NAME = getEnvName(BRANCH_NAME)
                         IMG_TAG = getImgTag(BRANCH_NAME)
