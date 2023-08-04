@@ -8,30 +8,34 @@ pipeline{
 
     stages{
         stage ('Install deps') {
-            when{  expression { ! changeset('enduser-react-chart')} }
+            when{  expression { ! changedchart('enduser-react-chart')} }
             steps {
                 // Using ignore-engines, will fix the error "engine node incompatible with this module", when using yarn install which happens on jenkins after installing firebase package.
                 sh 'npm install -g yarn && yarn install --ignore-engines && export NODE_OPTIONS="--max-old-space-size=8192"'
             }
         }
         stage ('Eslint') {
+            when{  expression { ! changedchart('enduser-react-chart')} }
             steps {
                 sh 'npx eslint . --max-warnings=0'
             }
         }
         stage('Typescript') {
+            when{  expression { ! changedchart('enduser-react-chart')} }
             steps {
                 sh 'npx tsc --skipLibCheck'
             }
 
         }
         stage('Unit-test'){
+            when{  expression { ! changedchart('enduser-react-chart')} }
             steps {
                 sh 'yarn test --bail --watchAll=false --maxWorkers=2 --no-cache  --coverage --testResultsProcessor jest-sonar-reporter'
             }
 
         }
         stage('build && SonarQube analysis') {
+            when{  expression { ! changedchart('enduser-react-chart')} }
             environment {
                 scannerHome = tool 'SonarQubeScanner'
                 sonarqube_Token = credentials('sonarq-token')
@@ -51,6 +55,7 @@ pipeline{
             }
         }
         stage("Quality Gate") {
+            when{  expression { ! changedchart('enduser-react-chart')} }
             steps {
                 timeout(time: 10, unit: 'MINUTES') {
                     // Parameter indicates whether to set pipeline to UNSTABLE if Quality Gate fails
@@ -60,6 +65,7 @@ pipeline{
             }
         }
         stage('Test NG generate') {
+            when{  expression { ! changedchart('enduser-react-chart')} }
             when {
               expression { ! (BRANCH_NAME ==~ /(production|master|develop)/) }
             }
@@ -68,6 +74,7 @@ pipeline{
             }
         }
         stage("Publish") {
+            when{  expression { ! changedchart('enduser-react-chart')} }
             when {
                     expression { BRANCH_NAME ==~ /(production|master|develop)/ }
             }
