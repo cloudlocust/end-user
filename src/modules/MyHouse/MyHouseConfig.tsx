@@ -6,6 +6,7 @@ import Accomodation from 'src/modules/MyHouse/components/Accomodation'
 import ConnectedPlugs from 'src/modules/MyHouse/components/ConnectedPlugs'
 import { ReactComponent as HousingIcon } from 'src/assets/images/navbarItems/Housings.svg'
 import SvgIcon from '@mui/material/SvgIcon'
+import { HousingInformation } from 'src/modules/MyHouse/components/HousingInfirmation'
 
 /**
  * Url for myHouse.
@@ -27,6 +28,11 @@ export const URL_HOUSING_ACCOMODATION = `${URL_MY_HOUSE_DETAILS}/accomodation`
  * Url for housing connected plugs.
  */
 export const URL_HOUSING_CONNECTED_PLUGS = `${URL_MY_HOUSE_DETAILS}/connected-plugs`
+
+/**
+ * Url for housing information.
+ */
+export const URL_HOUSING_INFORMATION = `${URL_MY_HOUSE_DETAILS}/information`
 
 /**
  * Interface .
@@ -136,8 +142,8 @@ export const MyHouseConfig = [
         },
     } as IRouteNavigationConfig<MyHouseProps>,
     {
-        path: URL_HOUSING_EQUIPMENTS,
-        component: Equipments,
+        path: URL_HOUSING_INFORMATION,
+        component: HousingInformation,
         auth: { authType: authTypes.loginRequired },
         settings: {
             layout: {
@@ -152,31 +158,7 @@ export const MyHouseConfig = [
                                 <HousingIcon />
                             </SvgIcon>
                         ),
-                        url: URL_HOUSING_EQUIPMENTS,
-                        disabled: equipmentsAccomodationFeatureState,
-                    },
-                },
-            },
-        },
-    } as IRouteNavigationConfig<MyHouseProps>,
-    {
-        path: URL_HOUSING_ACCOMODATION,
-        component: Accomodation,
-        auth: { authType: authTypes.loginRequired },
-        settings: {
-            layout: {
-                navbar: {
-                    UINavbarItem: {
-                        id: 'myHouses',
-                        label: 'Logement',
-                        labelAbbreviation: 'Logement',
-                        type: 'item',
-                        icon: (
-                            <SvgIcon>
-                                <HousingIcon />
-                            </SvgIcon>
-                        ),
-                        url: URL_HOUSING_ACCOMODATION,
+                        url: URL_HOUSING_INFORMATION,
                         disabled: equipmentsAccomodationFeatureState,
                     },
                 },

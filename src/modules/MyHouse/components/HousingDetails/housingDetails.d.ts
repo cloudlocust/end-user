@@ -19,13 +19,9 @@ export type HouseDetailsElementType =
  */
 export enum HousingCardTypeOfDetailsEnum {
     /**
-     * Accomodation.
+     * Housing information.
      */
-    ACCOMODATION = 'accomodation',
-    /**
-     * Equipments.
-     */
-    EQUIPMENTS = 'equipments',
+    HOUSSING_INFORMATION = 'information',
     /**
      * Connected Plugs.
      */
@@ -45,7 +41,7 @@ export type HousingDetailsCardProps =
         /**
          * Elements to display (element is a icon and a label).
          */
-        elements: HouseDetailsElementType[]
+        elements: HouseDetailsElementType[] | HouseDetailsElementType[][]
         /**
          * Title of the card.
          */

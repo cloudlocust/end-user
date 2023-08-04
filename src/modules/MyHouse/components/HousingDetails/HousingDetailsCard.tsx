@@ -10,6 +10,7 @@ import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined'
 import { ButtonLoader } from 'src/common/ui-kit'
 import { equipmentsAccomodationFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
 import Tooltip from '@mui/material/Tooltip'
+import { isArray } from 'lodash'
 
 /**
  * This is a component to display different elements of equipements/home-configuration in a card.
@@ -45,24 +46,34 @@ const HousingDetailsCard = ({
                 {title}
             </TypographyFormatMessage>
             <CardContent className="flex content-center items-start p-0">
-                {elements.map((element) => (
-                    <div className="w-70 h-120 flex flex-1 flex-col items-center justify-items-center m-10">
-                        <div className="w-56 h-56 bg-white rounded-md flex items-center justify-center mb-5 shadow-md border border-slate-800">
-                            {element.icon}
+                {elements.map((element, index) => {
+                    return (
+                        <div
+                            className="w-70 h-120 flex flex-1 flex-col items-center justify-items-center m-10"
+                            key={index}
+                        >
+                            <div className="w-56 h-56 bg-white rounded-md flex items-center justify-center mb-5 shadow-md border border-slate-800">
+                                {isArray(element) ? element[0].icon : element.icon}
+                            </div>
+                            <p className="w-56 md:w-80 truncate text-center">
+                                {isArray(element) ? element[0].label : element.label}
+                            </p>
                         </div>
-                        <p className="w-56 md:w-80 text-center truncate">{element.label}</p>
-                    </div>
-                ))}
+                    )
+                })}
             </CardContent>
             <CardActions className="flex items-center content-center justify-end">
                 <Tooltip
                     arrow
                     placement="top"
                     disableHoverListener={!equipmentsAccomodationFeatureState}
-                    title={formatMessage({
-                        id: "Cette fonctionnalité n'est pas disponible sur cette version",
-                        defaultMessage: "Cette fonctionnalité n'est pas disponible sur cette version",
-                    })}
+                    title={
+                        equipmentsAccomodationFeatureState &&
+                        formatMessage({
+                            id: "Cette fonctionnalité n'est pas disponible sur cette version",
+                            defaultMessage: "Cette fonctionnalité n'est pas disponible sur cette version",
+                        })
+                    }
                 >
                     <div className={`${equipmentsAccomodationFeatureState && 'cursor-not-allowed'}`}>
                         <NavLink
@@ -77,15 +88,11 @@ const HousingDetailsCard = ({
                                 endIcon={isConfigured && <SettingsOutlinedIcon />}
                                 inProgress={loadingInProgress}
                             >
-                                {isConfigured
-                                    ? formatMessage({
-                                          id: 'Détail',
-                                          defaultMessage: 'Détail',
-                                      })
-                                    : formatMessage({
-                                          id: 'Configuration',
-                                          defaultMessage: 'Configuration',
-                                      })}
+                                {isConfigured ? (
+                                    <TypographyFormatMessage>Détail</TypographyFormatMessage>
+                                ) : (
+                                    <TypographyFormatMessage>Configuration</TypographyFormatMessage>
+                                )}
                             </ButtonLoader>
                         </NavLink>
                     </div>
