@@ -10,7 +10,7 @@ pipeline{
         stage ('Install deps') {
             when {
                 expression {
-                    !changedchart('enduser-react-chart') || (env.BUILD_NUMBER != '1')
+                    !changedchart('enduser-react-chart') || (env.BUILD_NUMBER == '1')
                 }
             }
             steps {
