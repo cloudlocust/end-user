@@ -27,7 +27,7 @@ let mockHouseId = TEST_MOCKED_HOUSES[0].id
 
 // mock housing details props
 const mockTitle = 'Informations logement'
-const mockTypeOfDetails: HousingCardTypeOfDetailsEnum = HousingCardTypeOfDetailsEnum.ACCOMODATION
+const mockTypeOfDetails: HousingCardTypeOfDetailsEnum = HousingCardTypeOfDetailsEnum.HOUSSING_INFORMATION
 let mockIsConfigured = true
 let mockIsLoadingInProgress = false
 
