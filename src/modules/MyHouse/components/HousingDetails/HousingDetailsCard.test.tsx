@@ -3,7 +3,7 @@ import { reduxedRender } from 'src/common/react-platform-components/test'
 import { applyCamelCase } from 'src/common/react-platform-components'
 import { TEST_HOUSES } from 'src/mocks/handlers/houses'
 import { IHousing } from 'src/modules/MyHouse/components/HousingList/housing'
-import HousingDetailsCard from 'src/modules/MyHouse/components/HousingDetails/HousingDetailsCard'
+import { HousingDetailsCard } from 'src/modules/MyHouse/components/HousingDetails/HousingDetailsCard'
 import { ReactComponent as SuperficieIcon } from 'src/assets/images/content/housing/Superficie.svg'
 import { ReactComponent as OccupantIcon } from 'src/assets/images/content/housing/Occupant.svg'
 import { ReactComponent as MainIcon } from 'src/assets/images/content/housing/Main.svg'
@@ -117,5 +117,32 @@ describe('Test HousingDetailsCard', () => {
         expect(container.getElementsByTagName('a')[0].href).toContain(
             `${URL_MY_HOUSE}/${mockHouseId}/${mockTypeOfDetails}`,
         )
+    })
+    test('Only 3 elements are shown in the care', async () => {
+        mockHousingDetailsCardProps.elements = [
+            { icon: <>icon1</>, label: 'label1' },
+            { icon: <>icon2</>, label: 'label2' },
+            { icon: <>icon3</>, label: 'label3' },
+            { icon: <>icon4</>, label: 'label4' },
+            { icon: <>icon5</>, label: 'label5' },
+            { icon: <>icon6</>, label: 'label6' },
+        ]
+        const { getByText } = reduxedRender(
+            <BrowserRouter>
+                <HousingDetailsCard {...mockHousingDetailsCardProps} />
+            </BrowserRouter>,
+        )
+
+        // icons displayed
+        expect(getByText('icon1')).toBeTruthy()
+        expect(getByText('icon2')).toBeTruthy()
+        expect(getByText('icon3')).toBeTruthy()
+        expect(() => getByText('icon4')).toThrow()
+
+        // text displayed
+        expect(getByText('label1')).toBeTruthy()
+        expect(getByText('label2')).toBeTruthy()
+        expect(getByText('label3')).toBeTruthy()
+        expect(() => getByText('label4')).toThrow()
     })
 })

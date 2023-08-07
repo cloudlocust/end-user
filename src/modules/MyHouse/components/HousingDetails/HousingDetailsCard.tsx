@@ -1,7 +1,6 @@
 import { Card } from '@mui/material'
 import CardContent from '@mui/material/CardContent'
 import CardActions from '@mui/material/CardActions'
-import { useIntl } from 'react-intl'
 import { HousingDetailsCardProps } from 'src/modules/MyHouse/components/HousingDetails/housingDetails'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import { NavLink, useParams } from 'react-router-dom'
@@ -10,7 +9,6 @@ import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined'
 import { ButtonLoader } from 'src/common/ui-kit'
 import { equipmentsAccomodationFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
 import Tooltip from '@mui/material/Tooltip'
-import { isArray } from 'lodash'
 
 /**
  * This is a component to display different elements of equipements/home-configuration in a card.
@@ -23,15 +21,13 @@ import { isArray } from 'lodash'
  * @param props.loadingInProgress Are the elements loaded.
  * @returns Void.
  */
-const HousingDetailsCard = ({
+export const HousingDetailsCard = ({
     title,
     elements,
     typeOfDetails,
     isConfigured,
     loadingInProgress,
 }: HousingDetailsCardProps) => {
-    const { formatMessage } = useIntl()
-
     const { houseId } = useParams</**
      *
      */
@@ -40,24 +36,29 @@ const HousingDetailsCard = ({
         houseId: string
     }>()
 
+    /**
+     * Extracts the first three elements from the 'elements' prop.
+     *
+     * If the 'elements' prop contains more than six elements, only the first three will be included in 'firstThreeElements'.
+     */
+    const firstThreeElements = elements.filter((_, index) => index < 3)
+
     return (
         <Card className="rounded-16 border border-slate-600 bg-gray-50 mb-20 w-full h-256 md:w-400 flex flex-col justify-between">
             <TypographyFormatMessage className="font-bold mt-20 ml-20 text-14 whitespace-normal">
                 {title}
             </TypographyFormatMessage>
             <CardContent className="flex content-center items-start p-0">
-                {elements.map((element, index) => {
+                {firstThreeElements.map((element, index) => {
                     return (
                         <div
                             className="w-70 h-120 flex flex-1 flex-col items-center justify-items-center m-10"
                             key={index}
                         >
                             <div className="w-56 h-56 bg-white rounded-md flex items-center justify-center mb-5 shadow-md border border-slate-800">
-                                {isArray(element) ? element[0].icon : element.icon}
+                                {element.icon}
                             </div>
-                            <p className="w-56 md:w-80 truncate text-center">
-                                {isArray(element) ? element[0].label : element.label}
-                            </p>
+                            <p className="w-56 md:w-80 truncate text-center">{element.label}</p>
                         </div>
                     )
                 })}
@@ -68,11 +69,11 @@ const HousingDetailsCard = ({
                     placement="top"
                     disableHoverListener={!equipmentsAccomodationFeatureState}
                     title={
-                        equipmentsAccomodationFeatureState &&
-                        formatMessage({
-                            id: "Cette fonctionnalité n'est pas disponible sur cette version",
-                            defaultMessage: "Cette fonctionnalité n'est pas disponible sur cette version",
-                        })
+                        equipmentsAccomodationFeatureState && (
+                            <TypographyFormatMessage>
+                                Cette fonctionnalité n'est pas disponible sur cette version
+                            </TypographyFormatMessage>
+                        )
                     }
                 >
                     <div className={`${equipmentsAccomodationFeatureState && 'cursor-not-allowed'}`}>
@@ -101,5 +102,3 @@ const HousingDetailsCard = ({
         </Card>
     )
 }
-
-export default HousingDetailsCard

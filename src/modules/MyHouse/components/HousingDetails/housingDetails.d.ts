@@ -41,7 +41,7 @@ export type HousingDetailsCardProps =
         /**
          * Elements to display (element is a icon and a label).
          */
-        elements: HouseDetailsElementType[] | HouseDetailsElementType[][]
+        elements: HouseDetailsElementType[]
         /**
          * Title of the card.
          */

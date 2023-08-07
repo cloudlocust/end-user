@@ -3,7 +3,7 @@ import { styled } from '@mui/material/styles'
 import FusePageCarded from 'src/common/ui-kit/fuse/components/FusePageCarded'
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz'
 import ElectricalServicesIcon from '@mui/icons-material/ElectricalServices'
-import HousingDetailsCard from 'src/modules/MyHouse/components/HousingDetails/HousingDetailsCard'
+import { HousingDetailsCard } from 'src/modules/MyHouse/components/HousingDetails/HousingDetailsCard'
 import {
     HouseDetailsElementType,
     HousingCardTypeOfDetailsEnum,
@@ -219,7 +219,7 @@ export const HousingDetails = () => {
                     <div className="flex flex-col items-center md:flex-row justify-around mt-40 space-x-20">
                         <HousingDetailsCard
                             title="Information domicile"
-                            elements={[housingElements, equipementElements]}
+                            elements={[...housingElements, ...equipementElements]}
                             typeOfDetails={HousingCardTypeOfDetailsEnum.HOUSSING_INFORMATION}
                             isConfigured={!isEquipmentMeterListEmpty || !isAccomodationMeterListEmpty}
                             loadingInProgress={loadingEquipmentInProgress || loadingAccomodationInProgress}

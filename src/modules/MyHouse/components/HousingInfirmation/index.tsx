@@ -1,11 +1,11 @@
 import MultiTab from 'src/common/ui-kit/components/MultiTab/MultiTab'
 import { ThemeProvider, useTheme } from '@mui/material'
-import Accomodation from 'src/modules/MyHouse/components/Accomodation'
-import Equipments from 'src/modules/MyHouse/components/Equipments'
 import { Button, Icon } from '@mui/material'
 import { useHistory } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
+import { AccomodationForm } from 'src/modules/MyHouse/components/Accomodation/AccomodationForm'
+import { EquipmentForm } from 'src/modules/MyHouse/components/Equipments/EquipmentForm'
 
 /**
  * Page component for housing information.
@@ -21,12 +21,12 @@ export const HousingInformation = () => {
         {
             tabTitle: 'Logement',
             tabSlug: 'accomodation',
-            tabContent: <Accomodation />,
+            tabContent: <AccomodationForm />,
         },
         {
             tabTitle: 'Equipement',
             tabSlug: 'equipments',
-            tabContent: <Equipments />,
+            tabContent: <EquipmentForm />,
         },
     ]
 
