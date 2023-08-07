@@ -19,27 +19,43 @@ pipeline{
             }
         }
         stage ('Eslint') {
-            when{  expression { ! changedchart('enduser-react-chart')} }
+            when {
+                expression {
+                    !changedchart('enduser-react-chart') || (env.BUILD_NUMBER == '1')
+                }
+            }
             steps {
                 sh 'npx eslint . --max-warnings=0'
             }
         }
         stage('Typescript') {
-            when{  expression { ! changedchart('enduser-react-chart')} }
+            when {
+                expression {
+                    !changedchart('enduser-react-chart') || (env.BUILD_NUMBER == '1')
+                }
+            }
             steps {
                 sh 'npx tsc --skipLibCheck'
             }
 
         }
         stage('Unit-test'){
-            when{  expression { ! changedchart('enduser-react-chart')} }
+            when {
+                expression {
+                    !changedchart('enduser-react-chart') || (env.BUILD_NUMBER == '1')
+                }
+            }
             steps {
                 sh 'yarn test --bail --watchAll=false --maxWorkers=2 --no-cache  --coverage --testResultsProcessor jest-sonar-reporter'
             }
 
         }
         stage('build && SonarQube analysis') {
-            when{  expression { ! changedchart('enduser-react-chart')} }
+            when {
+                expression {
+                    !changedchart('enduser-react-chart') || (env.BUILD_NUMBER == '1')
+                }
+            }
             environment {
                 scannerHome = tool 'SonarQubeScanner'
                 sonarqube_Token = credentials('sonarq-token')
@@ -59,7 +75,11 @@ pipeline{
             }
         }
         stage("Quality Gate") {
-            when{  expression { ! changedchart('enduser-react-chart')} }
+            when {
+                expression {
+                    !changedchart('enduser-react-chart') || (env.BUILD_NUMBER == '1')
+                }
+            }
             steps {
                 timeout(time: 10, unit: 'MINUTES') {
                     // Parameter indicates whether to set pipeline to UNSTABLE if Quality Gate fails
@@ -71,8 +91,8 @@ pipeline{
         stage('Test NG generate') {
             when {
               expression { ! (BRANCH_NAME ==~ /(production|master|develop)/) }
-              expression { ! changedchart('enduser-react-chart')}
-            }
+              expression { !changedchart('enduser-react-chart') || (env.BUILD_NUMBER == '1') }
+            }            
             steps{
                sh 'yarn build'
             }
@@ -80,7 +100,7 @@ pipeline{
         stage("Publish") {
             when {
                     expression { BRANCH_NAME ==~ /(production|master|develop)/ }
-                    expression { ! changedchart('enduser-react-chart')}
+                    expression { !changedchart('enduser-react-chart') || (env.BUILD_NUMBER == '1') }
             }
            stages {
            stage('Publish in dockerhub'){
