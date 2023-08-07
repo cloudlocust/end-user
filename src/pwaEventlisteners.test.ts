@@ -1,6 +1,5 @@
 import { pwaTrackingListeners } from 'src/pwaEventlisteners'
 
-
 describe('pwaTrackingListeners', () => {
     let originalAddEventListener: typeof window.addEventListener
     let originalRemoveEventListener: typeof window.removeEventListener
