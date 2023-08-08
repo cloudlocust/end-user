@@ -16,7 +16,10 @@ import {
 import { Form } from 'src/common/react-platform-components'
 import { EditButtonsGroup } from 'src/modules/MyHouse/EditButtonsGroup'
 import { useAccomodation } from 'src/modules/MyHouse/components/Accomodation/AccomodationHooks'
-import { AccomodationDataType } from 'src/modules/MyHouse/components/Accomodation/AccomodationType'
+import {
+    AccomodationDataType,
+    ownershipStatusEnum,
+} from 'src/modules/MyHouse/components/Accomodation/AccomodationType.d'
 import { CircularProgress } from '@mui/material'
 import { isMatch } from 'lodash'
 import { useParams } from 'react-router-dom'
@@ -25,6 +28,9 @@ import Tooltip from '@mui/material/Tooltip'
 import { useTheme } from '@mui/material'
 import { linksColor } from 'src/modules/utils/muiThemeVariables'
 import { ReactComponent as MeterErrorIcon } from 'src/assets/images/content/housing/meter-error.svg'
+import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
+import { ReactComponent as OwnerIcon } from 'src/assets/images/accomodation/owner.svg'
+import { ReactComponent as TenantIcon } from 'src/assets/images/accomodation/tenant.svg'
 
 /**
  * AccomodationForm .
@@ -60,6 +66,7 @@ export const AccomodationForm = () => {
         isolationLevel: accomodation?.isolationLevel,
         numberOfInhabitants: accomodation?.numberOfInhabitants,
         houseArea: accomodation?.houseArea,
+        ownershipStatus: accomodation?.ownershipStatus,
     }
     /**
      * Leave only one selected field in the data from.
@@ -92,11 +99,10 @@ export const AccomodationForm = () => {
                     className="flex items-center text-center text-13 md:text-16 justify-center w-full min-h-56"
                     style={{ background: theme.palette.primary.main, color: theme.palette.primary.contrastText }}
                 >
-                    {formatMessage({
-                        id: 'En renseignant votre logement nous pourrons vous apporter une analyse plus précise de votre consommation',
-                        defaultMessage:
-                            'En renseignant votre logement nous pourrons vous apporter une analyse plus précise de votre consommation',
-                    })}
+                    <TypographyFormatMessage>
+                        En renseignant votre logement nous pourrons vous apporter une analyse plus précise de votre
+                        consommation
+                    </TypographyFormatMessage>
                 </div>
             )}
             <div className="flex flex-col justify-center w-full md:w-3/4">
@@ -112,10 +118,7 @@ export const AccomodationForm = () => {
                     defaultValues={accomodationData}
                 >
                     <div className="flex justify-center font-semibold text-sm mb-4 mt-16">
-                        {formatMessage({
-                            id: 'Informations Logements',
-                            defaultMessage: 'Informations Logements',
-                        })}
+                        <TypographyFormatMessage>Informations Logements</TypographyFormatMessage>
                         {isAccomodationMeterListEmpty && (
                             <MeterErrorIcon
                                 style={{
@@ -130,8 +133,28 @@ export const AccomodationForm = () => {
                         )}
                     </div>
                     <SelectButtons
+                        name={accomodationNames.ownershipStatus}
+                        titleLabel="Je suis :"
+                        wrapperStyles="flex flex-row justify-center space-x-12"
+                        isDisabled={disabledField}
+                        formOptions={[
+                            {
+                                label: accomodationLabelOptions.owner,
+                                value: ownershipStatusEnum.OWNER,
+                                buttonStyle: 'w-240 mt-16 flex flex-col mr-16',
+                                icon: <OwnerIcon />,
+                            },
+                            {
+                                label: accomodationLabelOptions.tenant,
+                                value: ownershipStatusEnum.TENANT,
+                                buttonStyle: 'w-240 mt-16 flex flex-col',
+                                icon: <TenantIcon />,
+                            },
+                        ]}
+                    />
+                    <SelectButtons
                         name={accomodationNames.houseType}
-                        wrapperStyles="flex flex-row  justify-center"
+                        wrapperStyles="flex flex-row justify-center"
                         titleLabel="Type de logement :"
                         isDisabled={disabledField}
                         formOptions={[
