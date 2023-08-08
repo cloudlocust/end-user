@@ -4,7 +4,7 @@ import EuroIcon from '@mui/icons-material/Euro'
 import { getChartColor } from 'src/modules/MyConsumption/utils/myConsumptionVariables'
 import { useTheme } from '@mui/material'
 import { metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
-import { EurosConsumptionButtonTogglerProps } from 'src/modules/MyConsumption/myConsumptionTypes'
+import { EurosConsumptionButtonTogglerProps } from 'src/modules/MyConsumption/myConsumptionTypes.d'
 import Tooltip from '@mui/material/Tooltip'
 import { useIntl } from 'react-intl'
 
@@ -26,6 +26,7 @@ const EurosConsumptionButtonToggler = ({
 }: EurosConsumptionButtonTogglerProps) => {
     const { formatMessage } = useIntl()
     const theme = useTheme()
+
     return (
         <>
             {showEurosConsumption ? (
@@ -59,6 +60,7 @@ const EurosConsumptionButtonToggler = ({
                                 removeTarget(metricTargetsEnum.consumption)
                                 removeTarget(metricTargetsEnum.autoconsumption)
                                 addTarget(metricTargetsEnum.eurosConsumption)
+                                addTarget(metricTargetsEnum.subscriptionPrices)
                             }}
                         >
                             <EuroIcon sx={{ width: 20, height: 20 }} />
@@ -80,6 +82,7 @@ const EurosConsumptionButtonToggler = ({
                     onClick={() => {
                         // TODO Remove target should take an array of targets
                         removeTarget(metricTargetsEnum.eurosConsumption)
+                        removeTarget(metricTargetsEnum.subscriptionPrices)
                         addTarget(metricTargetsEnum.consumption)
                         addTarget(metricTargetsEnum.autoconsumption)
                     }}
