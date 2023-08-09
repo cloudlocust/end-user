@@ -62,7 +62,6 @@ describe('ReplaceNRLinkForm tests', () => {
         const { getByRole, getAllByRole, getByText } = reduxedRender(
             <BrowserRouter>
                 <ReplaceNRLinkForm
-                    meterGuid="42"
                     oldNRLinkGuid="fakeNRLinkGuid"
                     onAfterReplaceNRLink={mockOnSuccessFn}
                     closeModal={mockCloseModalFn}
@@ -85,7 +84,6 @@ describe('ReplaceNRLinkForm tests', () => {
             const { getByRole, getByText } = reduxedRender(
                 <BrowserRouter>
                     <ReplaceNRLinkForm
-                        meterGuid="42"
                         oldNRLinkGuid={TEST_TXT_FAKE_OLD_NRLINK_ID}
                         onAfterReplaceNRLink={mockOnSuccessFn}
                         closeModal={mockCloseModalFn}
@@ -103,7 +101,6 @@ describe('ReplaceNRLinkForm tests', () => {
                 expect(mockUseReplaceNRLink).toBeCalledWith({
                     old_nrlink_guid: TEST_TXT_FAKE_OLD_NRLINK_ID,
                     new_nrlink_guid: TEST_TXT_FAKE_NEW_NRLINK_ID,
-                    meter_guid: '42',
                 })
             })
 
@@ -115,7 +112,6 @@ describe('ReplaceNRLinkForm tests', () => {
             const { getByRole, getByText } = reduxedRender(
                 <BrowserRouter>
                     <ReplaceNRLinkForm
-                        meterGuid="42"
                         oldNRLinkGuid={TEST_TXT_FAKE_OLD_NRLINK_ID}
                         onAfterReplaceNRLink={mockOnSuccessFn}
                         closeModal={mockCloseModalFn}
@@ -134,7 +130,6 @@ describe('ReplaceNRLinkForm tests', () => {
                 expect(mockUseReplaceNRLink).toBeCalledWith({
                     old_nrlink_guid: TEST_TXT_FAKE_OLD_NRLINK_ID,
                     new_nrlink_guid: TEST_TXT_FAKE_NEW_NRLINK_ID,
-                    meter_guid: '42',
                     clear_data: true,
                 })
             })
@@ -148,7 +143,6 @@ describe('ReplaceNRLinkForm tests', () => {
             const { getByText, getByRole } = reduxedRender(
                 <BrowserRouter>
                     <ReplaceNRLinkForm
-                        meterGuid="42"
                         oldNRLinkGuid={TEST_TXT_FAKE_OLD_NRLINK_ID}
                         onAfterReplaceNRLink={mockOnSuccessFn}
                         closeModal={mockCloseModalFn}
@@ -169,7 +163,6 @@ describe('ReplaceNRLinkForm tests', () => {
             const { getByRole, getByText } = reduxedRender(
                 <BrowserRouter>
                     <ReplaceNRLinkForm
-                        meterGuid="42"
                         oldNRLinkGuid={TEST_TXT_FAKE_OLD_NRLINK_ID}
                         onAfterReplaceNRLink={mockOnSuccessFn}
                         closeModal={mockCloseModalFn}

@@ -26,18 +26,12 @@ import { RootState } from 'src/redux'
  * Form to replace current nrLINK with another nrLINK.
  *
  * @param root0 N/A.
- * @param root0.meterGuid Id of the Meter used to make a new consent on a nrLINK.
  * @param root0.oldNRLinkGuid Id of the current nrLINK inside the house.
  * @param root0.onAfterReplaceNRLink Callback when action is done with success.
  * @param root0.closeModal Callback to close Modal when we click on "Cancel".
  * @returns JSX.Element - Form.
  */
-export const ReplaceNRLinkForm = ({
-    meterGuid,
-    oldNRLinkGuid,
-    onAfterReplaceNRLink,
-    closeModal,
-}: IReplaceNRLinkFormProps) => {
+export const ReplaceNRLinkForm = ({ oldNRLinkGuid, onAfterReplaceNRLink, closeModal }: IReplaceNRLinkFormProps) => {
     const { currentHousing } = useSelector(({ housingModel }: RootState) => housingModel)
 
     const { formatMessage } = useIntl()
@@ -65,7 +59,6 @@ export const ReplaceNRLinkForm = ({
         let body: IReplaceNRLinkPayload = {
             old_nrlink_guid: oldNRLinkGuid,
             new_nrlink_guid: newNRLinkGuid,
-            meter_guid: meterGuid,
         }
 
         if (clearOldData) {

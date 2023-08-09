@@ -63,9 +63,7 @@ export const nrlinkEndpoints = [
         const { old_nrlink_guid, clear_data } = req.body
 
         // invalid House Id
-        if (houseId === 'INVALID_HOUSE_ID') return res(ctx.status(404), ctx.delay(1000))
-        // no meterGuid -> throw error
-        if (!req.body.meter_guid) return res(ctx.status(500), ctx.delay(1000))
+        if (Number(houseId) === -1) return res(ctx.status(404), ctx.delay(1000))
 
         // testing clear_data payload.
         if (old_nrlink_guid === 'aaaaa1aaaaa1aaaa') {
