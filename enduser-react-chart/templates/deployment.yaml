@@ -3,6 +3,7 @@ kind: Deployment
 metadata:
   name: enduser-react
 spec:
+
   replicas: {{ .Values.replicaCount | default 1 }}
   selector:
     matchLabels:
