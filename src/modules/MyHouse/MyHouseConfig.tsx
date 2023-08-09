@@ -4,7 +4,7 @@ import { MyHouse } from 'src/modules/MyHouse/MyHouse'
 import ConnectedPlugs from 'src/modules/MyHouse/components/ConnectedPlugs'
 import { ReactComponent as HousingIcon } from 'src/assets/images/navbarItems/Housings.svg'
 import SvgIcon from '@mui/material/SvgIcon'
-import { HousingInformation } from 'src/modules/MyHouse/components/HousingInfirmation'
+import { HousingInformation } from 'src/modules/MyHouse/components/HousingInformation'
 
 /**
  * Url for myHouse.

@@ -58,7 +58,7 @@ export const HousingInformation = () => {
                 TabsProps={{ variant: 'fullWidth' }}
                 rootCss={{
                     height: 'none',
-                    minHeight: 'none',
+                    minHeight: '0',
                 }}
                 isUseRouting={false}
             />
