@@ -36,14 +36,18 @@ export const useReplaceNRLinkHook = (houseId?: number) => {
                 }),
                 { variant: 'success' },
             )
-        } catch (error) {
-            enqueueSnackbar(
-                formatMessage({
-                    id: 'Erreur lors de la modification de votre nrLINK',
-                    defaultMessage: 'Erreur lors de la modification de votre nrLINK',
-                }),
-                { variant: 'error' },
-            )
+        } catch (error: any) {
+            if (error?.response?.data?.detail) {
+                enqueueSnackbar(error.response.data.detail, { variant: 'error' })
+            } else {
+                enqueueSnackbar(
+                    formatMessage({
+                        id: 'Erreur lors de la modification de votre nrLINK',
+                        defaultMessage: 'Erreur lors de la modification de votre nrLINK',
+                    }),
+                    { variant: 'error' },
+                )
+            }
             throw catchError(error)
         } finally {
             setLoadingStatus(false)
