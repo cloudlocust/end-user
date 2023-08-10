@@ -6,6 +6,7 @@ import {
     GET_SHOW_NRLINK_POPUP_ENDPOINT,
     SET_SHOW_NRLINK_POPUP_ENDPOINT,
 } from 'src/modules/nrLinkConnection/NrLinkConnection'
+import { SnakeCasedPropertiesDeep } from 'type-fest'
 // eslint-disable-next-line jsdoc/require-jsdoc
 export const showNrLinkPopupTrue = 'showNrLinkPopupTrue'
 // eslint-disable-next-line jsdoc/require-jsdoc
@@ -58,18 +59,16 @@ export const nrlinkEndpoints = [
         return res(ctx.status(200), ctx.delay(1000))
     }),
 
-    rest.patch<IReplaceNRLinkPayload>(`${NRLINK_CONSENT_API}/:houseId`, (req, res, ctx) => {
+    rest.patch<SnakeCasedPropertiesDeep<IReplaceNRLinkPayload>>(`${NRLINK_CONSENT_API}/:houseId`, (req, res, ctx) => {
         const { houseId } = req.params
-        const { old_nrlink_guid, clear_data } = req.body
+        const { old_nrlink_guid: oldNrlinkGuid, clear_data: clearData } = req.body
 
         // invalid House Id
-        if (houseId === 'INVALID_HOUSE_ID') return res(ctx.status(404), ctx.delay(1000))
-        // no meterGuid -> throw error
-        if (!req.body.meter_guid) return res(ctx.status(500), ctx.delay(1000))
+        if (Number(houseId) === -1) return res(ctx.status(404), ctx.delay(1000))
 
         // testing clear_data payload.
-        if (old_nrlink_guid === 'aaaaa1aaaaa1aaaa') {
-            return res(ctx.status(clear_data ? 201 : 500), ctx.delay(1000))
+        if (oldNrlinkGuid === 'aaaaa1aaaaa1aaaa') {
+            return res(ctx.status(clearData ? 201 : 500), ctx.delay(1000))
         }
 
         // Success
