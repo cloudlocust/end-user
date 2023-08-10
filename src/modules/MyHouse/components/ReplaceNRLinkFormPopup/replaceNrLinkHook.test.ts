@@ -87,8 +87,8 @@ describe('ReplaceNrLink Hook tests', () => {
             act(async () => {
                 try {
                     await result.current.replaceNRLink({
-                        old_nrlink_guid: 'aaaaa1aaaaa1aaaa',
-                        new_nrlink_guid: 'bbbbb2bbbbb2bbbb',
+                        oldNrlinkGuid: 'aaaaa1aaaaa1aaaa',
+                        newNrlinkGuid: 'bbbbb2bbbbb2bbbb',
                     })
                 } catch (err) {}
             })
@@ -115,9 +115,9 @@ describe('ReplaceNrLink Hook tests', () => {
             act(async () => {
                 try {
                     await result.current.replaceNRLink({
-                        old_nrlink_guid: 'aaaaa1aaaaa1aaaa',
-                        new_nrlink_guid: 'bbbbb2bbbbb2bbbb',
-                        clear_data: true,
+                        oldNrlinkGuid: 'aaaaa1aaaaa1aaaa',
+                        newNrlinkGuid: 'bbbbb2bbbbb2bbbb',
+                        clearData: true,
                     })
                 } catch (err) {}
             })
@@ -144,9 +144,9 @@ describe('ReplaceNrLink Hook tests', () => {
             act(async () => {
                 try {
                     await result.current.replaceNRLink({
-                        old_nrlink_guid: 'aaaaa1aaaaa1aaaa',
-                        new_nrlink_guid: 'llllllllllllllll',
-                        clear_data: true,
+                        oldNrlinkGuid: 'aaaaa1aaaaa1aaaa',
+                        newNrlinkGuid: 'llllllllllllllll',
+                        clearData: true,
                     })
                 } catch (err) {}
             })

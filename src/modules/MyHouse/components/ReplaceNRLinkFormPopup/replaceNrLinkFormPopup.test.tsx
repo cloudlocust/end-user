@@ -99,8 +99,8 @@ describe('ReplaceNRLinkForm tests', () => {
 
             await waitFor(() => {
                 expect(mockUseReplaceNRLink).toBeCalledWith({
-                    old_nrlink_guid: TEST_TXT_FAKE_OLD_NRLINK_ID,
-                    new_nrlink_guid: TEST_TXT_FAKE_NEW_NRLINK_ID,
+                    oldNrlinkGuid: TEST_TXT_FAKE_OLD_NRLINK_ID,
+                    newNrlinkGuid: TEST_TXT_FAKE_NEW_NRLINK_ID,
                 })
             })
 
@@ -128,9 +128,9 @@ describe('ReplaceNRLinkForm tests', () => {
 
             await waitFor(() => {
                 expect(mockUseReplaceNRLink).toBeCalledWith({
-                    old_nrlink_guid: TEST_TXT_FAKE_OLD_NRLINK_ID,
-                    new_nrlink_guid: TEST_TXT_FAKE_NEW_NRLINK_ID,
-                    clear_data: true,
+                    oldNrlinkGuid: TEST_TXT_FAKE_OLD_NRLINK_ID,
+                    newNrlinkGuid: TEST_TXT_FAKE_NEW_NRLINK_ID,
+                    clearData: true,
                 })
             })
 

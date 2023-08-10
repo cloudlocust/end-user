@@ -39,15 +39,15 @@ export interface IReplaceNRLinkPayload {
     /**
      * Id of the current nrLINK used in house.
      */
-    old_nrlink_guid: string
+    oldNrlinkGuid: string
 
     /**
      * Id of the new nrLINK to use instead of nrLINK currently used in House.
      */
-    new_nrlink_guid: string
+    newNrlinkGuid: string
 
     /**
      * Partial, if present we should revoke old consent of old nrLINK and clear all data related to this nrLINK.
      */
-    clear_data?: boolean
+    clearData?: boolean
 }

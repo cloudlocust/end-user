@@ -57,12 +57,12 @@ export const ReplaceNRLinkForm = ({ oldNRLinkGuid, onAfterReplaceNRLink, closeMo
         }
 
         let body: IReplaceNRLinkPayload = {
-            old_nrlink_guid: oldNRLinkGuid,
-            new_nrlink_guid: newNRLinkGuid,
+            oldNrlinkGuid: oldNRLinkGuid,
+            newNrlinkGuid: newNRLinkGuid,
         }
 
         if (clearOldData) {
-            body.clear_data = true
+            body.clearData = true
         }
 
         try {
