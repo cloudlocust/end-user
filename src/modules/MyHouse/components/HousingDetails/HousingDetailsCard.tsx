@@ -39,7 +39,7 @@ export const HousingDetailsCard = ({
     /**
      * Extracts the first three elements from the 'elements' prop.
      *
-     * If the 'elements' prop contains more than six elements, only the first three will be included in 'firstThreeElements'.
+     * If the 'elements' prop contains more than three elements, only the first three will be included in 'firstThreeElements'.
      */
     const firstThreeElements = elements.filter((_, index) => index < 3)
 
@@ -69,7 +69,7 @@ export const HousingDetailsCard = ({
                     placement="top"
                     disableHoverListener={!equipmentsAccomodationFeatureState}
                     title={
-                        equipmentsAccomodationFeatureState && (
+                        !equipmentsAccomodationFeatureState && (
                             <TypographyFormatMessage>
                                 Cette fonctionnalité n'est pas disponible sur cette version
                             </TypographyFormatMessage>

@@ -37,6 +37,8 @@ const Root = styled(FusePageCarded)(() => ({
         margin: '24px 0',
     },
     '& .FusePageCarded-content': {
+        overflowX: 'hidden',
+        overflowY: 'auto',
         margin: 10,
     },
     '& .FusePageCarded-contentCard': {
