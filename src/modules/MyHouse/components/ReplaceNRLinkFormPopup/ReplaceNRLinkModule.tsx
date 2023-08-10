@@ -46,7 +46,6 @@ export const ReplaceNRLinkModule = ({ nrLinkConsent, onAfterReplaceNRLink }: IRe
             >
                 <ModalContent>
                     <ReplaceNRLinkForm
-                        meterGuid={nrLinkConsent.meterGuid}
                         oldNRLinkGuid={nrLinkConsent.nrlinkGuid}
                         closeModal={() => setModalDisplayState(false)}
                         onAfterReplaceNRLink={() => {
