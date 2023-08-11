@@ -49,9 +49,9 @@ export const performanceOptions = ['A', 'B', 'C', 'D', 'E', 'F', 'G']
  */
 export const isolationOptions = ['Faible', 'Moyenne', 'Forte']
 
-const buttonStyleLast = 'w-160 mt-16 flex flex-col'
+const buttonStyleLast = 'w-160 mt-16 mr-12 flex flex-col'
 const buttonStyle = `${buttonStyleLast}`
-const wrapperStyles = 'flex flex-row justify-center space-x-12'
+const wrapperStyles = 'flex flex-row justify-center'
 const iconStyles = 'my-5 h-56'
 const customSvgIconsStyling = {
     marginTop: '5px',

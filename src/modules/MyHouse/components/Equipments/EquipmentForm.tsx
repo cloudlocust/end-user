@@ -77,7 +77,7 @@ export const EquipmentForm = () => {
             : savedEquipmentList[equipmentName].equipmentType!
     })
     return (
-        <div className="flex flex-col justify-center w-full md:w-3/4 ">
+        <div className="flex flex-col justify-center w-full items-center">
             <Form
                 defaultValues={defaultValues}
                 onSubmit={async (formData: equipmentValuesType) => {

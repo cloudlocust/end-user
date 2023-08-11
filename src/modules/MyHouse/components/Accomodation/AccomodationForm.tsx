@@ -106,7 +106,7 @@ export const AccomodationForm = () => {
                     </TypographyFormatMessage>
                 </div>
             )}
-            <div className="flex flex-col justify-center w-full md:w-3/4">
+            <div className="flex flex-col justify-center w-full items-center">
                 <Form
                     onSubmit={async (data: AccomodationDataType) => {
                         const dataAccomodation = setSelectFields(data)
