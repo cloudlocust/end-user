@@ -6,7 +6,7 @@ import {
     IConnectedPlugType,
     connectedPlugAssociateBodyType,
     connectedPlugConsentStateEnum,
-    connectedPlugTypeEnum,
+    connectedPlugLinkTypeEnum,
 } from 'src/modules/MyHouse/components/ConnectedPlugs/ConnectedPlugs.d'
 import {
     ASSOCIATE_CONNECTED_PLUG_API,
@@ -85,35 +85,35 @@ export var TEST_CONNECTED_PLUGS_CONSENT: SnakeCasedPropertiesDeep<IConnectedPlug
 export var TEST_CONNECTED_PLUGS_TYPE: SnakeCasedPropertiesDeep<IConnectedPlugType>[] = [
     {
         device_id: '1234123',
-        type: connectedPlugTypeEnum.production,
+        link_type: connectedPlugLinkTypeEnum.production,
     },
     {
         device_id: '2234123',
-        type: null,
+        link_type: null,
     },
     {
         device_id: '3234123',
-        type: null,
+        link_type: null,
     },
     {
         device_id: '4234123',
-        type: null,
+        link_type: null,
     },
     {
         device_id: '5234123',
-        type: null,
+        link_type: null,
     },
     {
         device_id: '6234123',
-        type: null,
+        link_type: null,
     },
     {
         device_id: '7234123',
-        type: null,
+        link_type: null,
     },
     {
         device_id: '8234123',
-        type: null,
+        link_type: null,
     },
 ]
 
@@ -125,49 +125,49 @@ export var TEST_CONNECTED_PLUGS: SnakeCasedPropertiesDeep<IConnectedPlug>[] = [
         device_id: '1234123',
         consent_state: connectedPlugConsentStateEnum.APPROVED,
         created_at: CREATED_AT_DATA,
-        type: connectedPlugTypeEnum.production,
+        link_type: connectedPlugLinkTypeEnum.production,
     },
     {
         device_id: '2234123',
         consent_state: connectedPlugConsentStateEnum.DENIED,
         created_at: CREATED_AT_DATA,
-        type: null,
+        link_type: null,
     },
     {
         device_id: '3234123',
         consent_state: connectedPlugConsentStateEnum.APPROVED,
         created_at: CREATED_AT_DATA,
-        type: null,
+        link_type: null,
     },
     {
         device_id: '4234123',
         consent_state: connectedPlugConsentStateEnum.DENIED,
         created_at: CREATED_AT_DATA,
-        type: null,
+        link_type: null,
     },
     {
         device_id: '5234123',
         consent_state: connectedPlugConsentStateEnum.APPROVED,
         created_at: CREATED_AT_DATA,
-        type: null,
+        link_type: null,
     },
     {
         device_id: '6234123',
         consent_state: connectedPlugConsentStateEnum.APPROVED,
         created_at: CREATED_AT_DATA,
-        type: null,
+        link_type: null,
     },
     {
         device_id: '7234123',
         consent_state: connectedPlugConsentStateEnum.DENIED,
         created_at: CREATED_AT_DATA,
-        type: null,
+        link_type: null,
     },
     {
         device_id: '8234123',
         consent_state: connectedPlugConsentStateEnum.APPROVED,
         created_at: CREATED_AT_DATA,
-        type: null,
+        link_type: null,
     },
 ]
 

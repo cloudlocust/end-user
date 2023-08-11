@@ -6,7 +6,7 @@ export type connectedPlugConsentStateType = 'APPROVED' | 'DENIED'
 /**
  * Enum Connected Plug Type.
  */
-export enum connectedPlugTypeEnum {
+export enum connectedPlugLinkTypeEnum {
     /**
      * Production state.
      */
@@ -37,9 +37,9 @@ export type IConnectedPlugType = {
      */
     deviceId: string
     /**
-     * Connected Plug Type.
+     * Connected Plug Link Type.
      */
-    type: connectedPlugTypeEnum | null
+    linkType: connectedPlugLinkTypeEnum | null
 }
 /**
  * Connected Plug Consent model.
@@ -128,5 +128,5 @@ export type connectedPlugAssociateBodyType = {
     /**
      * Mode of the connected plug.
      */
-    state: 'production' | null
+    link_type: 'production' | null
 }

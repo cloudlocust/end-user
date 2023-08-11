@@ -10,7 +10,7 @@ import {
     IConnectedPlugApiResponse,
     IConnectedPlugTypeApiResponse,
     IShellyConnectedPlugLink,
-    connectedPlugTypeEnum,
+    connectedPlugLinkTypeEnum,
 } from 'src/modules/MyHouse/components/ConnectedPlugs/ConnectedPlugs.d'
 import { isNull } from 'lodash'
 import { HOUSING_API } from 'src/modules/MyHouse/components/HousingList/HousingsHooks'
@@ -93,7 +93,7 @@ export function useConnectedPlugList(meterGuid?: string, housingId?: number) {
                     )
                     return {
                         ...connectedPlugConsent,
-                        type: foundConnectedPlugType ? foundConnectedPlugType.type : null,
+                        linkType: foundConnectedPlugType ? foundConnectedPlugType.linkType : null,
                     }
                 },
             )
@@ -132,7 +132,7 @@ export function useConnectedPlugList(meterGuid?: string, housingId?: number) {
                         deviceId: connectedPlugId,
                         housingId,
                         meterGuid,
-                        state: associate ? 'production' : null,
+                        linkType: associate ? 'production' : null,
                     },
                     {
                         cancelToken: source.current.token,
@@ -161,7 +161,9 @@ export function useConnectedPlugList(meterGuid?: string, housingId?: number) {
      * @returns The production mode connected plug if found.
      */
     const getProductionConnectedPlug = () => {
-        return connectedPlugList.find((connectedPlug) => connectedPlug.type === connectedPlugTypeEnum.production)
+        return connectedPlugList.find(
+            (connectedPlug) => connectedPlug.linkType === connectedPlugLinkTypeEnum.production,
+        )
     }
     return {
         loadingInProgress,
