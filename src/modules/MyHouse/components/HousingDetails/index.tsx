@@ -21,7 +21,7 @@ import { useEquipmentList } from 'src/modules/MyHouse/components/Equipments/equi
 import { equipmentNameType } from 'src/modules/MyHouse/components/Equipments/EquipmentsType'
 import { MeterStatus } from 'src/modules/MyHouse/components/MeterStatus'
 import { ReactComponent as ElectricityIcon } from 'src/assets/images/content/housing/Electricity.svg'
-import { ReactComponent as GazIcon } from 'src/assets/images/content/housing/Gaz.svg'
+// import { ReactComponent as GazIcon } from 'src/assets/images/content/housing/Gaz.svg'
 import { useSelector } from 'react-redux'
 import { RootState } from 'src/redux'
 import { cloneDeep, isEmpty } from 'lodash'
@@ -112,12 +112,6 @@ export const HousingDetails = () => {
                     return (
                         <SvgIcon color="primary">
                             <ElectricityIcon />
-                        </SvgIcon>
-                    )
-                case 'gaz':
-                    return (
-                        <SvgIcon color="primary">
-                            <GazIcon />
                         </SvgIcon>
                     )
                 case 'vitroceramic':

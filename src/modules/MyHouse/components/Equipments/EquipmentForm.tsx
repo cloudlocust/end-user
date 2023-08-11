@@ -1,17 +1,13 @@
 import { useState } from 'react'
-import { CircularProgress, useMediaQuery, useTheme } from '@mui/material'
+import { CircularProgress } from '@mui/material'
 import { Form } from 'src/common/react-platform-components'
 import { useIntl } from 'src/common/react-platform-translation'
-import { NumberFieldForm } from 'src/common/ui-kit/components/NumberField/NumberFieldForm'
-import { INumberFieldForm } from 'src/common/ui-kit/components/NumberField/NumberFieldTypes'
 import { SelectButtons } from 'src/common/ui-kit/form-fields/SelectButtons/SelectButtons'
 import { EditButtonsGroup } from 'src/modules/MyHouse/EditButtonsGroup'
 import {
-    myEquipmentOptions,
     heaterEquipment,
     sanitaryEquipment,
     hotPlateEquipment,
-    groupedCards,
     mappingEquipmentNameToType,
 } from 'src/modules/MyHouse/utils/MyHouseVariables'
 import { useEquipmentList } from 'src/modules/MyHouse/components/Equipments/equipmentHooks'
@@ -57,12 +53,6 @@ export const EquipmentForm = () => {
         })
     }
     const { formatMessage } = useIntl()
-    const theme = useTheme()
-    const isDesktop = useMediaQuery(theme.breakpoints.up('lg'))
-
-    const myEquipment = isDesktop
-        ? groupedCards(myEquipmentOptions as INumberFieldForm[], 5)
-        : groupedCards(myEquipmentOptions as INumberFieldForm[])
 
     if (!equipmentList || loadingEquipmentInProgress || equipmentList.length === 0)
         return (
@@ -121,11 +111,11 @@ export const EquipmentForm = () => {
                     setIsEdit(false)
                 }}
             >
-                <div className="flex flex-col justify-center w-full ">
+                <div className="flex flex-col justify-center w-full">
                     <div className="font-semibold self-center text-sm mb-4 mt-16">
                         {formatMessage({
-                            id: 'Informations Equipements',
-                            defaultMessage: 'Informations Equipements',
+                            id: 'Informations Installation',
+                            defaultMessage: 'Informations Installation',
                         })}
                     </div>
                     <div className="text-13">
@@ -137,25 +127,6 @@ export const EquipmentForm = () => {
                     <div className="text-13">
                         <SelectButtons isDisabled={!isEquipmentMeterListEmpty && !isEdit} {...hotPlateEquipment} />
                     </div>
-                </div>
-                <div className="mt-16 mb-20">
-                    {formatMessage({
-                        id: 'Vos équipements :',
-                        defaultMessage: 'Vos équipements :',
-                    })}
-                </div>
-                <div className="flex">
-                    {myEquipment.map((col) => (
-                        <div className="w-full text-13">
-                            {col.map((item) => (
-                                <NumberFieldForm
-                                    key={item.name}
-                                    {...item}
-                                    disabled={!isEquipmentMeterListEmpty && !isEdit}
-                                />
-                            ))}
-                        </div>
-                    ))}
                 </div>
                 <EditButtonsGroup
                     formInitialValues={defaultValues}
