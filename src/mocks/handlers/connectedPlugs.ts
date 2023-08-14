@@ -174,9 +174,9 @@ export var TEST_CONNECTED_PLUGS: SnakeCasedPropertiesDeep<IConnectedPlug>[] = [
 // eslint-disable-next-line jsdoc/require-jsdoc
 export const connectedPlugsEndpoints = [
     // Get Meter Connected Plug List.
-    rest.get(`${CONNECTED_PLUG_CONSENT_API}/:meterGuid`, (req, res, ctx) => {
-        const { meterGuid } = req.params
-        if (meterGuid === TEST_ERROR_METER_GUID) return res(ctx.status(400), ctx.delay(1000))
+    rest.get(`${CONNECTED_PLUG_CONSENT_API}/:housingId`, (req, res, ctx) => {
+        const { housingId } = req.params
+        if (parseInt(housingId) === TEST_ERROR_HOUSING_ID) return res(ctx.status(400), ctx.delay(1000))
 
         return res(
             ctx.status(200),
@@ -189,10 +189,10 @@ export const connectedPlugsEndpoints = [
     }),
 
     // Get Shelly Connected Plug Link.
-    rest.get(`${SHELLY_CONNECTED_PLUG_LINK_API}/:houseId`, (req, res, ctx) => {
-        const { houseId } = req.params
+    rest.get(`${SHELLY_CONNECTED_PLUG_LINK_API}/:housingId`, (req, res, ctx) => {
+        const { housingId } = req.params
 
-        if (parseInt(houseId) && parseInt(houseId) !== TEST_ERROR_HOUSING_ID)
+        if (parseInt(housingId) && parseInt(housingId) !== TEST_ERROR_HOUSING_ID)
             return res(ctx.status(200), ctx.delay(1000), ctx.json({ url: TEST_SHELLY_CONNECTED_PLUG_URL }))
         return res(ctx.status(400), ctx.delay(1000))
     }),

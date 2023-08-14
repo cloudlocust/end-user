@@ -37,7 +37,7 @@ const ConnectedPlugProductionConsentPopup = ({ onClose }: IConnectedPlugProducti
         loadingInProgress: isConnectedPlugListLoadingInProgress,
         loadConnectedPlugList,
         associateConnectedPlug,
-    } = useConnectedPlugList(currentHousing?.meter?.guid, currentHousing?.id)
+    } = useConnectedPlugList(currentHousing?.id)
 
     useEffect(() => {
         loadConnectedPlugList()
@@ -77,7 +77,11 @@ const ConnectedPlugProductionConsentPopup = ({ onClose }: IConnectedPlugProducti
                 ) : (
                     <SelectConnectedPlugProductionList
                         onSubmit={async (connectedPlugId) => {
-                            const isSuccessResponse = await associateConnectedPlug(connectedPlugId, currentHousing!.id)
+                            const isSuccessResponse = await associateConnectedPlug(
+                                connectedPlugId,
+                                currentHousing!.id,
+                                currentHousing?.meter?.guid,
+                            )
                             if (isSuccessResponse) history.push(`${URL_MY_HOUSE}/${currentHousing?.id}/connected-plugs`)
                         }}
                         connectedPlugList={connectedPlugList}

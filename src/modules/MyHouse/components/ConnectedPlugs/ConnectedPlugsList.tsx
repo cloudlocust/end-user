@@ -55,7 +55,7 @@ const ConnectedPlugs = () => {
         connectedPlugList,
         loadingInProgress: isConnectedPlugListLoading,
         loadConnectedPlugList,
-    } = useConnectedPlugList(currentHousing?.meter?.guid, currentHousing?.id)
+    } = useConnectedPlugList(currentHousing?.id)
     const { formatMessage } = useIntl()
 
     useEffect(() => {
