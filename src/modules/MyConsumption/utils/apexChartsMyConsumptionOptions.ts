@@ -304,7 +304,9 @@ export const getApexChartMyConsumptionProps = ({
                 yAxisSerie.name === metricTargetsEnum.autoconsumption ||
                 yAxisSerie.name === metricTargetsEnum.totalProduction ||
                 yAxisSerie.name === metricTargetsEnum.injectedProduction ||
-                yAxisSerie.name === metricTargetsEnum.subscriptionPrices
+                yAxisSerie.name === metricTargetsEnum.subscriptionPrices ||
+                yAxisSerie.name === metricTargetsEnum.peakHourConsumption ||
+                yAxisSerie.name === metricTargetsEnum.offPeakHourConsumption
                 ? 0
                 : 1.5,
         )
