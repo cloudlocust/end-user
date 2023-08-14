@@ -1,4 +1,18 @@
 /**
+ * Ownership status enum.
+ */
+export enum ownershipStatusEnum {
+    /**
+     * Locataire.
+     */
+    TENANT = 'tenant',
+    /**
+     * Propriétaire.
+     */
+    OWNER = 'owner',
+}
+
+/**
  * Accomodation Data Type.
  */
 export type AccomodationDataType =
@@ -34,4 +48,8 @@ export type AccomodationDataType =
          * House Area.
          */
         houseArea?: string
+        /**
+         * Ownership status.
+         */
+        ownershipStatus?: ownershipStatusEnum
     }
