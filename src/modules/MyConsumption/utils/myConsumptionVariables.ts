@@ -1,4 +1,4 @@
-import { metricTargetsEnum, metricTargetsType, metricTargetType } from 'src/modules/Metrics/Metrics.d'
+import { metricTargetsEnum, metricTargetType } from 'src/modules/Metrics/Metrics.d'
 import { PeriodEnum } from 'src/modules/MyConsumption/myConsumptionTypes'
 import { Theme } from '@mui/material/styles/createTheme'
 import { isNil } from 'lodash'
@@ -92,6 +92,8 @@ export const getChartColor = (chartName: metricTargetsEnum, theme: Theme) => {
             return '#C8D210'
         case metricTargetsEnum.injectedProduction:
             return '#6E9A8B'
+        case metricTargetsEnum.subscriptionPrices:
+            return '#CCDCDD'
         default:
             return theme.palette.secondary.main
     }
@@ -120,6 +122,7 @@ export const getYPointValueLabel = (
     const value = isNil(yValue) ? '' : yValue
     switch (chartName) {
         case metricTargetsEnum.eurosConsumption:
+        case metricTargetsEnum.subscriptionPrices:
             return `${value === '' ? value : value.toFixed(2)} €`
         case metricTargetsEnum.externalTemperature:
         case metricTargetsEnum.internalTemperature:
@@ -152,44 +155,6 @@ export const NRLINK_ENEDIS_OFF_MESSAGE =
  * Enphase off message.
  */
 export const ENPHASE_OFF_MESSAGE = 'Pour voir vos données de production veuillez connecter votre onduleur'
-
-/**
- * Targets for initialMetricHook for MyConsumption page.
- */
-export const metricTargetsHook: metricTargetsType = [
-    {
-        target: metricTargetsEnum.autoconsumption,
-        type: 'timeserie',
-    },
-    {
-        target: metricTargetsEnum.consumption,
-        type: 'timeserie',
-    },
-    {
-        target: metricTargetsEnum.eurosConsumption,
-        type: 'timeserie',
-    },
-    {
-        target: metricTargetsEnum.pMax,
-        type: 'timeserie',
-    },
-    {
-        target: metricTargetsEnum.externalTemperature,
-        type: 'timeserie',
-    },
-    {
-        target: metricTargetsEnum.internalTemperature,
-        type: 'timeserie',
-    },
-    {
-        target: metricTargetsEnum.totalProduction,
-        type: 'timeserie',
-    },
-    {
-        target: metricTargetsEnum.injectedProduction,
-        type: 'timeserie',
-    },
-]
 
 /**
  * Targets shown in ConsumptionChart.

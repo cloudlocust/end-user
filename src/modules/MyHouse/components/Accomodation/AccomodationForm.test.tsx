@@ -74,7 +74,7 @@ describe('Test AccomodationForm', () => {
             </BrowserRouter>,
         )
         expect(container.querySelectorAll(INPUT_DISABLED_ELEMENT)!.length).toBe(2)
-        expect(container.querySelectorAll(BUTTON_DISABLED_ELEMENT)!.length).toBe(7)
+        expect(container.querySelectorAll(BUTTON_DISABLED_ELEMENT)!.length).toBe(9)
         expect(getByText(MODIFIER_BUTTON_TEXT)).toBeTruthy()
         expect(() => getByText(ANNULER_BUTTON_TEXT)).toThrow()
         expect(() => getByText(ENREGISTRER_BUTTON_TEXT)).toThrow()
@@ -103,11 +103,13 @@ describe('Test AccomodationForm', () => {
             fireEvent.click(getByText(MODIFIER_BUTTON_TEXT))
         })
         await act(async () => {
+            fireEvent.click(getByText('Propriétaire'))
             fireEvent.click(getByText('Maison'))
             fireEvent.click(getByText('Avant 1950'))
             fireEvent.click(getByText('Secondaire'))
         })
         await waitFor(async () => {
+            expect(getByText('Propriétaire').getAttribute('value')).toBe('owner')
             expect(getByText('Maison').getAttribute('value')).toBe('Maison')
             expect(getByText('Avant 1950').getAttribute('value')).toBe('Avant_1950')
             expect(getByText('Secondaire').getAttribute('value')).toBe('Secondaire')
