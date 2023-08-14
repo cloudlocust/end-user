@@ -46,10 +46,10 @@ export const MyConsumptionContainer = () => {
 
     // UseEffect to check for consent whenever a meter is selected.
     useEffect(() => {
-        if (!currentHousing?.meter?.guid) return
-        setFilters(formatMetricFilter(currentHousing?.meter.guid))
+        if (!currentHousing?.id) return
+        setFilters(formatMetricFilter(currentHousing?.id))
         getConsents(currentHousing?.id)
-    }, [currentHousing?.meter?.guid, setFilters, getConsents, currentHousing?.id])
+    }, [setFilters, getConsents, currentHousing?.id])
 
     /**
      * Callback when MyConsumptionPeriod components change metrics Interval.

@@ -213,13 +213,13 @@ describe('test pure functions', () => {
         expect(ApexChartsDatetimeFilledValues).toHaveLength(0)
     }, 70000)
     test('formatMetricFilter test', async () => {
-        const FAKE_GUID = '123'
-        let resultMetricFilter = formatMetricFilter(FAKE_GUID)
+        const FAKE_HOUSING_ID = 123
+        let resultMetricFilter = formatMetricFilter(FAKE_HOUSING_ID)
         expect(resultMetricFilter).toStrictEqual([
             {
-                key: 'meter_guid',
+                key: 'network_identifier',
                 operator: '=',
-                value: FAKE_GUID,
+                value: FAKE_HOUSING_ID,
             },
         ])
     })

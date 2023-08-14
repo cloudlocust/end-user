@@ -70,9 +70,9 @@ jest.mock('src/modules/Metrics/metricsHook.ts', () => ({
         isMetricsLoading: mockIsMetricsLoading,
         filters: [
             {
-                key: 'meter_guid',
+                key: 'network_identifier',
                 operator: '=',
-                value: '123456789',
+                value: 123456789,
             },
         ],
         range: mockRange,

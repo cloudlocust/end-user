@@ -61,10 +61,10 @@ export default function Analysis() {
     const enedisSgeOff = enedisSgeConsent?.enedisSgeConsentState !== 'CONNECTED'
 
     useEffect(() => {
-        if (!currentHousing?.meter?.guid) return
-        setFilters(formatMetricFilter(currentHousing?.meter.guid))
+        if (!currentHousing?.id) return
+        setFilters(formatMetricFilter(currentHousing?.id))
         getConsents(currentHousing?.id)
-    }, [currentHousing?.meter?.guid, setFilters, getConsents, currentHousing?.id])
+    }, [setFilters, getConsents, currentHousing?.id])
 
     const tabsContent = [
         {

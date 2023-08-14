@@ -5,9 +5,9 @@ import { IMetric, metricFiltersType, metricTargetsEnum } from 'src/modules/Metri
 
 let mockFilters: metricFiltersType = [
     {
-        key: 'meter_guid',
+        key: 'network_identifier',
         operator: '=',
-        value: '123456789',
+        value: 123456789,
     },
 ]
 
