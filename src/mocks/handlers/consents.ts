@@ -60,7 +60,7 @@ export const consentsEndpoints = [
         }
     }),
 
-    rest.get<INrlinkConsent>(`${NRLINK_CONSENT_API}/:meter_guid`, (req, res, ctx) => {
+    rest.get<INrlinkConsent>(`${NRLINK_CONSENT_API}/:houseId`, (req, res, ctx) => {
         const authorization = req.headers.get('authorization')
         if (authorization === TEST_ERROR_AUTHORIZATION) {
             return res(ctx.status(400), ctx.delay(1000))
@@ -68,7 +68,7 @@ export const consentsEndpoints = [
             return res(ctx.status(200), ctx.delay(1000), ctx.json(TEST_SUCCESS_NRLINK_CONSENT))
         }
     }),
-    rest.get<IEnphaseConsent>(`${ENPHASE_CONSENT_API}/:meter_guid`, (req, res, ctx) => {
+    rest.get<IEnphaseConsent>(`${ENPHASE_CONSENT_API}/:houseId`, (req, res, ctx) => {
         const authorization = req.headers.get('authorization')
         if (authorization === TEST_ERROR_AUTHORIZATION) {
             return res(ctx.status(400), ctx.delay(1000))
@@ -111,7 +111,7 @@ export const consentsEndpoints = [
         }
     }),
 
-    rest.patch(`${ENPHASE_CONSENT_API}/:meter_guid/revoke`, (req, res, ctx) => {
+    rest.patch(`${ENPHASE_CONSENT_API}/:houseId/revoke`, (req, res, ctx) => {
         const authorization = req.headers.get('authorization')
         if (authorization === TEST_ERROR_ENPHASE_AUTHORIZATION) {
             return res(ctx.status(400), ctx.delay(1000))

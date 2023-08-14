@@ -28,9 +28,9 @@ const mockGetMetricsWithParams = jest.fn()
 
 let mockFilters: metricFiltersType = [
     {
-        key: 'meter_guid',
+        key: 'network_identifier',
         operator: '=',
-        value: '123456789',
+        value: 123456789,
     },
 ]
 let mockRange = {

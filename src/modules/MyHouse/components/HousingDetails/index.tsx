@@ -59,7 +59,7 @@ export const HousingDetails = () => {
         connectedPlugList,
         loadingInProgress: isConnectedPlugListLoading,
         loadConnectedPlugList,
-    } = useConnectedPlugList(currentHousing?.meter?.guid!, currentHousing?.id)
+    } = useConnectedPlugList(currentHousing?.id)
 
     const {
         accomodation,

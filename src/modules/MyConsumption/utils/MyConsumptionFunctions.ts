@@ -43,15 +43,15 @@ import fr from 'date-fns/locale/fr'
 /**
  * FormatMetricFilter function converts the data to the required format.
  *
- * @param valueGuid Meter guid.
+ * @param housingId Housing id.
  * @returns Formated meter data.
  */
-export const formatMetricFilter = (valueGuid: string) => {
+export const formatMetricFilter = (housingId: number) => {
     return [
         {
-            key: 'meter_guid',
+            key: 'network_identifier',
             operator: '=',
-            value: valueGuid,
+            value: housingId,
         },
     ] as metricFiltersType
 }

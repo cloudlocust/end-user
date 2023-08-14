@@ -32,9 +32,9 @@ const circularProgressClassname = '.MuiCircularProgress-root'
 let mockProductionChartErrorState = false
 let mockFilters: metricFiltersType = [
     {
-        key: 'meter_guid',
+        key: 'network_identifier',
         operator: '=',
-        value: '123456789',
+        value: 123456789,
     },
 ]
 let mockRange = {
