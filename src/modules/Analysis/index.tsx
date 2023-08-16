@@ -47,7 +47,7 @@ export const initialMetricsHookValues: getMetricType = {
 /**
  * Analysis component.
  *
- * @returns Analysis JSX.
+ * @returns Analysis Component JSX.
  */
 export default function Analysis() {
     const theme = useTheme()
