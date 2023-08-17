@@ -17,5 +17,5 @@ export interface LastStepNrLinkConnectionProps {
     /**
      * Housing id.
      */
-    housingId: number | undefined
+    housingId?: number
 }
