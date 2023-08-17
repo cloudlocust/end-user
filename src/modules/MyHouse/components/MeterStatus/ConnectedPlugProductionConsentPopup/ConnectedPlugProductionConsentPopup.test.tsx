@@ -24,6 +24,7 @@ const ASSOCIATE_BUTTON_TEXT = 'Enregistrer'
 const circularProgressRole = 'progressbar'
 const checkedOptionClassname = 'Mui-checked'
 const mockHouseId = LIST_OF_HOUSES[0].meter?.id
+const mockHouseMeterGuid = LIST_OF_HOUSES[0].meter?.guid
 
 jest.mock('react-router', () => ({
     ...jest.requireActual('react-router'),
@@ -141,7 +142,11 @@ describe('ConnectedPlugProductionConsentPopup component', () => {
             expect(selectedConnectedPlugOption.classList.contains(checkedOptionClassname)).toBeTruthy()
             userEvent.click(getByText(ASSOCIATE_BUTTON_TEXT))
             await waitFor(() => {
-                expect(mockAssociateConnectedPlug).toHaveBeenCalledWith(mockConnectedPlugsList[0].deviceId, mockHouseId)
+                expect(mockAssociateConnectedPlug).toHaveBeenCalledWith(
+                    mockConnectedPlugsList[0].deviceId,
+                    mockHouseId,
+                    mockHouseMeterGuid,
+                )
             })
             expect(mockHistoryPush).toHaveBeenCalledWith(`${URL_MY_HOUSE}/${mockHouseId}/connected-plugs`)
         })

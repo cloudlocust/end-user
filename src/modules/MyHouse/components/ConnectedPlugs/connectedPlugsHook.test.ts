@@ -1,7 +1,6 @@
 import { act } from '@testing-library/react-hooks'
 import { reduxedRenderHook } from 'src/common/react-platform-components/test'
 import { TEST_ERROR_HOUSING_ID, TEST_SHELLY_CONNECTED_PLUG_URL } from 'src/mocks/handlers/connectedPlugs'
-import { TEST_ERROR_METER_GUID } from 'src/mocks/handlers/meters'
 import {
     useConnectedPlugList,
     useShellyConnectedPlugs,
@@ -47,7 +46,7 @@ describe('useConnectedPlugList test', () => {
         const {
             renderedHook: { result, waitForValueToChange },
             // Giving fake GUID to fake an error.
-        } = reduxedRenderHook(() => useConnectedPlugList(TEST_ERROR_METER_GUID, TEST_HOUSE_ID), { initialState: {} })
+        } = reduxedRenderHook(() => useConnectedPlugList(TEST_ERROR_HOUSING_ID), { initialState: {} })
 
         expect(result.current.loadingInProgress).toBe(false)
         act(async () => {
@@ -69,7 +68,7 @@ describe('useConnectedPlugList test', () => {
     test('when elementlist loads succesfully', async () => {
         const {
             renderedHook: { result, waitForValueToChange },
-        } = reduxedRenderHook(() => useConnectedPlugList(TEST_METER_GUID, TEST_HOUSE_ID), { initialState: {} })
+        } = reduxedRenderHook(() => useConnectedPlugList(TEST_HOUSE_ID), { initialState: {} })
 
         expect(result.current.loadingInProgress).toBe(false)
         act(async () => {
@@ -91,13 +90,17 @@ describe('useConnectedPlugList test', () => {
             const {
                 renderedHook: { result, waitForValueToChange },
                 // Giving Empty GUID to fake an error.
-            } = reduxedRenderHook(() => useConnectedPlugList(TEST_ERROR_METER_GUID, TEST_HOUSE_ID), {
+            } = reduxedRenderHook(() => useConnectedPlugList(TEST_HOUSE_ID), {
                 initialState: {},
             })
             expect(result.current.loadingInProgress).toBe(false)
 
             act(async () => {
-                await result.current.associateConnectedPlug(TEST_CONNECTED_PLUG_ID, TEST_ERROR_HOUSING_ID)
+                await result.current.associateConnectedPlug(
+                    TEST_CONNECTED_PLUG_ID,
+                    TEST_ERROR_HOUSING_ID,
+                    TEST_METER_GUID,
+                )
             })
             expect(result.current.loadingInProgress).toBe(true)
 
@@ -116,13 +119,13 @@ describe('useConnectedPlugList test', () => {
             const {
                 renderedHook: { result, waitForValueToChange },
                 // Giving Empty GUID to fake an error.
-            } = reduxedRenderHook(() => useConnectedPlugList(TEST_METER_GUID, TEST_HOUSE_ID), {
+            } = reduxedRenderHook(() => useConnectedPlugList(TEST_HOUSE_ID), {
                 initialState: {},
             })
             expect(result.current.loadingInProgress).toBe(false)
 
             act(async () => {
-                await result.current.associateConnectedPlug(TEST_CONNECTED_PLUG_ID, TEST_HOUSE_ID)
+                await result.current.associateConnectedPlug(TEST_CONNECTED_PLUG_ID, TEST_HOUSE_ID, TEST_METER_GUID)
             })
             expect(result.current.loadingInProgress).toBe(true)
 

@@ -134,6 +134,7 @@ describe('SolarProductionStatus component test', () => {
             expect(mockAssociateConnectedPlug).toHaveBeenCalledWith(
                 mockConnectedPlugsList[0].deviceId,
                 mockHouseId,
+                TEST_MOCKED_HOUSES[0].meter?.guid,
                 false,
             )
         })
