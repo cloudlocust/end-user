@@ -162,8 +162,8 @@ const NrLinkConnectionSteps = () => {
         <LastStepNrLinkConnection
             handleBack={handleBack}
             handleNext={handleNext}
-            meter={meter}
             setIsNrLinkAuthorizeInProgress={setIsNrLinkAuthorizeInProgress}
+            housingId={housingId}
         />,
     ]
 
