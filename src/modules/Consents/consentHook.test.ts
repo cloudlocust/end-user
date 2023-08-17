@@ -25,7 +25,7 @@ jest.mock('notistack', () => ({
     }),
 }))
 
-const TEST_METER_GUID = '123456'
+const TEST_HOUSING_ID = '123456'
 const connectedState = 'CONNECTED'
 const TEST_ENEDIS_NRLINK_ENPHASE_ERROR =
     'Nous rencontrons une erreur lors de la récupération de vos consentements d’un de vos compteurs ou capteurs. Veuillez réessayer plus tard'
@@ -36,7 +36,7 @@ describe('useConsents test', () => {
             renderedHook: { result, waitForValueToChange },
         } = reduxedRenderHook(() => useConsents())
         act(() => {
-            result.current.getConsents(TEST_METER_GUID)
+            result.current.getConsents(TEST_HOUSING_ID)
         })
         await waitForValueToChange(
             () => {
@@ -57,7 +57,7 @@ describe('useConsents test', () => {
         } = reduxedRenderHook(() => useConsents(), { store })
 
         act(() => {
-            result.current.getConsents(TEST_METER_GUID)
+            result.current.getConsents(TEST_HOUSING_ID)
         })
         await waitForValueToChange(
             () => {
@@ -201,7 +201,7 @@ describe('useConsents test', () => {
             } = reduxedRenderHook(() => useConsents())
 
             act(() => {
-                result.current.getConsents(TEST_METER_GUID)
+                result.current.getConsents(TEST_HOUSING_ID)
             })
             await waitForValueToChange(
                 () => {
@@ -232,7 +232,7 @@ describe('useConsents test', () => {
                 renderedHook: { result, waitForValueToChange },
             } = reduxedRenderHook(() => useConsents())
             act(() => {
-                result.current.getConsents(TEST_METER_GUID)
+                result.current.getConsents(TEST_HOUSING_ID)
             })
             await waitForValueToChange(
                 () => {
