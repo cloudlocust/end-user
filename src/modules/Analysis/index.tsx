@@ -63,7 +63,7 @@ export default function Analysis() {
     useEffect(() => {
         if (!currentHousing?.meter?.guid) return
         setFilters(formatMetricFilter(currentHousing?.meter.guid))
-        getConsents(currentHousing?.meter.guid, currentHousing?.id)
+        getConsents(currentHousing?.id)
     }, [currentHousing?.meter?.guid, setFilters, getConsents, currentHousing?.id])
 
     const tabsContent = [
