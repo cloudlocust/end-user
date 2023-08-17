@@ -1,16 +1,13 @@
 import { reduxedRender } from 'src/common/react-platform-components/test'
 import { LastStepNrLinkConnection } from 'src/modules/nrLinkConnection'
 import { waitFor } from '@testing-library/react'
-import { TEST_METERS as MOCK_METERS } from 'src/mocks/handlers/meters'
 import userEvent from '@testing-library/user-event'
-import { IMeter } from 'src/modules/Meters/Meters'
-import { applyCamelCase, axios } from 'src/common/react-platform-components'
+import { axios } from 'src/common/react-platform-components'
 import { URL_CONSUMPTION } from 'src/modules/MyConsumption'
 import { API_RESOURCES_URL } from 'src/configs'
 import { SET_SHOW_NRLINK_POPUP_ENDPOINT } from 'src/modules/nrLinkConnection/NrLinkConnection'
 import { LastStepNrLinkConnectionProps } from 'src/modules/nrLinkConnection/components/LastStepNrLinkConnection/LastStepNrLinkConnection.d'
 
-const TEST_METERS: IMeter[] = applyCamelCase(MOCK_METERS)
 // List of houses to add to the redux state
 const NEXT_BUTTON_TEXT = 'Suivant'
 const REQUIRED_ERROR_TEXT = 'Champ obligatoire non renseigné'
@@ -68,7 +65,7 @@ jest.mock('src/modules/MyHouse/MyHouseConfig', () => ({
 // eslint-disable-next-line jsdoc/require-jsdoc
 const mockLastStepNrLinkConnectionProps: LastStepNrLinkConnectionProps = {
     handleBack: jest.fn(),
-    meter: null,
+    housingId: 123,
     setIsNrLinkAuthorizeInProgress: mockSetIsNrLinkAuthorizeInProgress,
     handleNext: mockHandleNext,
 }
@@ -81,7 +78,6 @@ describe('Test LastStepNrLinkConnection', () => {
             expect(container.querySelector(guidNrlinkInputQuerySelector)).toHaveValue('')
         })
         test('all fields required required', async () => {
-            mockLastStepNrLinkConnectionProps.meter = TEST_METERS[0]
             const { container, getByText } = reduxedRender(
                 <LastStepNrLinkConnection {...mockLastStepNrLinkConnectionProps} />,
             )
@@ -94,7 +90,6 @@ describe('Test LastStepNrLinkConnection', () => {
         })
 
         test('Invalid nrlink guid', async () => {
-            mockLastStepNrLinkConnectionProps.meter = TEST_METERS[0]
             const { container, getByText } = reduxedRender(
                 <LastStepNrLinkConnection {...mockLastStepNrLinkConnectionProps} />,
             )
@@ -187,7 +182,6 @@ describe('Test LastStepNrLinkConnection', () => {
             axios.post = mockAxiosPost
             axios.patch = mockAxiosPatch
 
-            mockLastStepNrLinkConnectionProps.meter = TEST_METERS[0]
             const { container, getByText } = reduxedRender(
                 <LastStepNrLinkConnection {...mockLastStepNrLinkConnectionProps} />,
             )
@@ -202,7 +196,7 @@ describe('Test LastStepNrLinkConnection', () => {
             })
 
             expect(mockAxiosPost).toHaveBeenCalledWith(`${API_RESOURCES_URL}/nrlink/authorize`, {
-                meterGuid: mockLastStepNrLinkConnectionProps.meter?.guid,
+                networkIdentifier: mockLastStepNrLinkConnectionProps.housingId,
                 nrlinkGuid: VALID_NRLINK_GUID,
             })
 
