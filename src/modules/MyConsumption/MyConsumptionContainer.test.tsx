@@ -129,7 +129,7 @@ describe('MyConsumptionContainer test', () => {
         })
 
         await waitFor(() => {
-            expect(mockGetConsents).toHaveBeenCalledWith(LIST_OF_HOUSES[0]!.meter!.guid, LIST_OF_HOUSES[0]!.meter!.id)
+            expect(mockGetConsents).toHaveBeenCalledWith(LIST_OF_HOUSES[0]!.meter!.id)
         })
     }, 10000)
 
