@@ -10,7 +10,7 @@ import {
     IConnectedPlugApiResponse,
     IConnectedPlugTypeApiResponse,
     IShellyConnectedPlugLink,
-    connectedPlugTypeEnum,
+    connectedPlugLinkTypeEnum,
 } from 'src/modules/MyHouse/components/ConnectedPlugs/ConnectedPlugs.d'
 import { isNull } from 'lodash'
 import { HOUSING_API } from 'src/modules/MyHouse/components/HousingList/HousingsHooks'
@@ -43,14 +43,14 @@ export const ASSOCIATE_CONNECTED_PLUG_API = `${CONNECTED_PLUG_API}/associate`
  * @returns API URL of Connected Plug Type.
  */
 export const GET_CONNECTED_PLUG_TYPE_API = (housingId: number) => `${HOUSING_API}/${housingId}/plugs-associations`
+
 /**
  * Hook to get Connected Plug Consent list.
  *
- * @param meterGuid Meter GUID.
  * @param housingId Housing Id.
  * @returns Hook useConnectedPlugList.
  */
-export function useConnectedPlugList(meterGuid?: string, housingId?: number) {
+export function useConnectedPlugList(housingId?: number) {
     const { enqueueSnackbar } = useSnackbar()
     const { formatMessage } = useIntl()
     const [loadingInProgress, setLoadingInProgress] = useState(false)
@@ -62,7 +62,7 @@ export function useConnectedPlugList(meterGuid?: string, housingId?: number) {
      */
     const loadConnectedPlugList = useCallback(async () => {
         setConnectedPlugList([])
-        if (!meterGuid || !housingId || !connectedPlugsFeatureState) return
+        if (!housingId || !connectedPlugsFeatureState) return
         setLoadingInProgress(true)
         /**
          * Used Promise.allSettled() instead of Promise.all to return a promise that resolves after all of the given requests have either been fulfilled or rejected.
@@ -72,7 +72,7 @@ export function useConnectedPlugList(meterGuid?: string, housingId?: number) {
          * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/allSettled .
          */
         const [connectedPlugConsentData, connectedPlugTypeData] = await Promise.allSettled([
-            axios.get<IConnectedPlugApiResponse>(`${CONNECTED_PLUG_CONSENT_API}/${meterGuid}`, {
+            axios.get<IConnectedPlugApiResponse>(`${CONNECTED_PLUG_CONSENT_API}/${housingId}`, {
                 cancelToken: source.current.token,
             }),
             axios.get<IConnectedPlugTypeApiResponse>(GET_CONNECTED_PLUG_TYPE_API(housingId), {
@@ -93,7 +93,7 @@ export function useConnectedPlugList(meterGuid?: string, housingId?: number) {
                     )
                     return {
                         ...connectedPlugConsent,
-                        type: foundConnectedPlugType ? foundConnectedPlugType.type : null,
+                        linkType: foundConnectedPlugType ? foundConnectedPlugType.linkType : null,
                     }
                 },
             )
@@ -114,7 +114,7 @@ export function useConnectedPlugList(meterGuid?: string, housingId?: number) {
             )
         }
         setLoadingInProgress(false)
-    }, [meterGuid, housingId, source, isCancel, enqueueSnackbar, formatMessage])
+    }, [housingId, source, isCancel, enqueueSnackbar, formatMessage])
 
     /**
      * Handler to set production mode in a connected plug.
@@ -122,7 +122,7 @@ export function useConnectedPlugList(meterGuid?: string, housingId?: number) {
      * @param associate Indicate if the connected plug should be associated in production mode or not.
      */
     const associateConnectedPlug = useCallback(
-        async (connectedPlugId: string, housingId: number, associate: boolean = true) => {
+        async (connectedPlugId: string, housingId: number, meterGuid?: string, associate: boolean = true) => {
             if (!meterGuid) return
             setLoadingInProgress(true)
             try {
@@ -132,7 +132,7 @@ export function useConnectedPlugList(meterGuid?: string, housingId?: number) {
                         deviceId: connectedPlugId,
                         housingId,
                         meterGuid,
-                        state: associate ? 'production' : null,
+                        linkType: associate ? 'production' : null,
                     },
                     {
                         cancelToken: source.current.token,
@@ -152,7 +152,7 @@ export function useConnectedPlugList(meterGuid?: string, housingId?: number) {
                 setLoadingInProgress(false)
             }
         },
-        [enqueueSnackbar, formatMessage, isCancel, meterGuid, source],
+        [enqueueSnackbar, formatMessage, isCancel, source],
     )
 
     /**
@@ -161,7 +161,9 @@ export function useConnectedPlugList(meterGuid?: string, housingId?: number) {
      * @returns The production mode connected plug if found.
      */
     const getProductionConnectedPlug = () => {
-        return connectedPlugList.find((connectedPlug) => connectedPlug.type === connectedPlugTypeEnum.production)
+        return connectedPlugList.find(
+            (connectedPlug) => connectedPlug.linkType === connectedPlugLinkTypeEnum.production,
+        )
     }
     return {
         loadingInProgress,
