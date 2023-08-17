@@ -9,7 +9,7 @@ import {
     getDateWithoutTimezoneOffset,
     addPeriod,
     subPeriod,
-    filterPmaxAndEurosConsumptionTargetFromVisibleChartTargets,
+    filterTargetsOnDailyPeriod,
     convertConsumptionToWatt,
     getRangeV2,
     subtractTime,
@@ -335,7 +335,7 @@ describe('test pure functions', () => {
         })
     })
 
-    test('filterPmaxAndEurosConsumptionTargetFromVisibleChartTargets test with different cases', async () => {
+    test('filterTargetsOnDailyPeriod test with different cases', async () => {
         const caseList = [
             // Filtering eurosConsumption Target.
             {
@@ -368,7 +368,7 @@ describe('test pure functions', () => {
             },
         ]
         caseList.forEach(({ visibleTargetsChart, expectedResult }) => {
-            const result = filterPmaxAndEurosConsumptionTargetFromVisibleChartTargets(visibleTargetsChart)
+            const result = filterTargetsOnDailyPeriod(visibleTargetsChart)
             expect(result).toEqual(expectedResult)
         })
     })
