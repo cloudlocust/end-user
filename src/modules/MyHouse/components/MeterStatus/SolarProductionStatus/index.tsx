@@ -99,29 +99,26 @@ export const SolarProductionConsentStatus = ({
                                           })} ${solarProductionConsentCreatedAt}`}
                                 </span>
                             </span>
-                            {
-                                // TODO REMOVE when Connected plug or revoke enphase is in prod
-                                connectedPlugsFeatureState && (
-                                    <TypographyFormatMessage
-                                        color={theme.palette.primary.main}
-                                        className="underline cursor-pointer"
-                                        fontWeight={500}
-                                        onClick={
-                                            currentHousing && productionConnectedPlug
-                                                ? () =>
-                                                      associateConnectedPlug(
-                                                          productionConnectedPlug.deviceId,
-                                                          currentHousing.id,
-                                                          currentHousing.meter?.guid,
-                                                          false,
-                                                      )
-                                                : () => onRevokeEnphaseConsent()
-                                        }
-                                    >
-                                        Annuler la récolte de mes données
-                                    </TypographyFormatMessage>
-                                )
-                            }
+                            <TypographyFormatMessage
+                                color={theme.palette.primary.main}
+                                className="underline cursor-pointer"
+                                fontWeight={500}
+                                onClick={
+                                    currentHousing && connectedPlugsFeatureState && productionConnectedPlug
+                                        ? () => {
+                                              associateConnectedPlug(
+                                                  productionConnectedPlug.deviceId,
+                                                  currentHousing.id,
+                                                  currentHousing.meter?.guid,
+                                                  false,
+                                              )
+                                              loadConnectedPlugList()
+                                          }
+                                        : () => onRevokeEnphaseConsent()
+                                }
+                            >
+                                Annuler la récolte de mes données
+                            </TypographyFormatMessage>
                         </div>
                     </>
                 )
