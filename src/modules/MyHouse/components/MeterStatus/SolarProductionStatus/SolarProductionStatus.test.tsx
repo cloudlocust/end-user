@@ -55,6 +55,7 @@ jest.mock('react-router-dom', () => ({
 
 let mockConnectedPlugLoadingInProgress = false
 
+// Set connected plug feature state to true to test associate of connected plug.
 jest.mock('src/modules/MyHouse/MyHouseConfig', () => ({
     ...jest.requireActual('src/modules/MyHouse/MyHouseConfig'),
     // eslint-disable-next-line jsdoc/require-jsdoc
