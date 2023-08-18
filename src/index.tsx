@@ -1,8 +1,6 @@
 import React, { FC } from 'react'
 import ReactDOM from 'react-dom'
-// TODO Reset once back of connected plug production mode and revoke enphase is ready
-// import { BASENAME_URL, FIREBASE_MESSAGING_SW_URL, MSW_MOCK } from './configs'
-import { BASENAME_URL, FIREBASE_MESSAGING_SW_URL } from './configs'
+import { BASENAME_URL, FIREBASE_MESSAGING_SW_URL, MSW_MOCK } from './configs'
 import { Provider } from 'react-redux'
 import reportWebVitals from './reportWebVitals'
 import 'typeface-poppins'
@@ -72,12 +70,11 @@ bootstrapApplication().then((app) => {
 })
 
 // In order to activate MSW, you have to set the env variable to enabled in env.development.
-// TODO Reset once back of connected plug production mode and revoke enphase is ready
-// if ('serviceWorker' in navigator && process.env.NODE_ENV === 'development' && MSW_MOCK === 'enabled') {
-navigator.serviceWorker.register(`${process.env.PUBLIC_URL}/mockServiceWorker.js`)
-const { worker } = require('src/mocks/browser')
-worker.start()
-// }
+if ('serviceWorker' in navigator && process.env.NODE_ENV === 'development' && MSW_MOCK === 'enabled') {
+    navigator.serviceWorker.register(`${process.env.PUBLIC_URL}/mockServiceWorker.js`)
+    const { worker } = require('src/mocks/browser')
+    worker.start()
+}
 
 // PWA service worker should only be working in production mode.
 if (isBrowser && 'serviceWorker' in navigator && process.env.NODE_ENV === 'production') {
