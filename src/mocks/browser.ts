@@ -65,18 +65,7 @@ export const handlers = [
     ...connectedPlugsEndpoints,
 ]
 
-// TODO Reset once back of connected plug production mode and revoke enphase is ready
-/**
- * Handlers to mock urls for tests.
- */
-export const activeMockHandlers = [
-    /******Consents REQUESTS*****/
-    ...consentsEndpoints.slice(-1),
-    /***** Connected Plug Consent State endpoint. */
-    ...connectedPlugsEndpoints.slice(2),
-]
-
 /**
  *
  */
-export const worker = setupWorker(...activeMockHandlers)
+export const worker = setupWorker(...handlers)
