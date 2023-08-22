@@ -154,6 +154,12 @@ export const NRLINK_ENEDIS_OFF_MESSAGE =
 export const ENPHASE_OFF_MESSAGE = 'Pour voir vos données de production veuillez connecter votre onduleur'
 
 /**
+ * Enphase off message.
+ */
+export const PRODUCTION_OFF_MESSAGE =
+    'Pour voir vos données de production veuillez connecter votre onduleur Ou Reliez la prise Shelly de vos panneaux plug&play'
+
+/**
  * Targets for initialMetricHook for MyConsumption page.
  */
 export const metricTargetsHook: metricTargetsType = [

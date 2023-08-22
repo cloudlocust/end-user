@@ -11,8 +11,11 @@ import { TEST_HOUSES } from 'src/mocks/handlers/houses'
 import { NRLINK_ENEDIS_OFF_MESSAGE } from 'src/modules/MyConsumption/utils/myConsumptionVariables'
 import { ConsumptionChartContainerProps } from 'src/modules/MyConsumption/myConsumptionTypes'
 import { IEnedisSgeConsent, INrlinkConsent, IEnphaseConsent } from 'src/modules/Consents/Consents'
+import { TEST_CONNECTED_PLUGS } from 'src/mocks/handlers/connectedPlugs'
+import { IConnectedPlug } from 'src/modules/MyHouse/components/ConnectedPlugs/ConnectedPlugs.d'
 
 // List of houses to add to the redux state
+const MOCK_TEST_CONNECTED_PLUGS: IConnectedPlug[] = applyCamelCase(TEST_CONNECTED_PLUGS)
 const LIST_OF_HOUSES: IHousing[] = applyCamelCase(TEST_HOUSES)
 
 // Nrlink Consent format
@@ -100,6 +103,25 @@ jest.mock(
     // eslint-disable-next-line jsdoc/require-jsdoc
     () => (props: any) => <div className="apexcharts-svg" {...props}></div>,
 )
+
+let mockConnectedPlugLoadingInProgress = false
+let mockConnectedPlugsList = MOCK_TEST_CONNECTED_PLUGS
+// eslint-disable-next-line jsdoc/require-jsdoc
+let mockGetProductionConnectedPlug: () => IConnectedPlug | undefined = () => undefined
+
+// Mock useInstallationRequestsList hook
+jest.mock('src/modules/MyHouse/components/ConnectedPlugs/connectedPlugsHook', () => ({
+    ...jest.requireActual('src/modules/MyHouse/components/ConnectedPlugs/connectedPlugsHook'),
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    useConnectedPlugList: () => ({
+        connectedPlugList: mockConnectedPlugsList,
+        loadingInProgress: mockConnectedPlugLoadingInProgress,
+        // eslint-disable-next-line jsdoc/require-jsdoc
+        getProductionConnectedPlug: mockGetProductionConnectedPlug,
+        loadConnectedPlugList: jest.fn(),
+    }),
+}))
+
 describe('MyConsumptionContainer test', () => {
     test('when there is no meter, a message is shown', async () => {
         const { getByText } = reduxedRender(

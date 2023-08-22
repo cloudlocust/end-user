@@ -26,7 +26,7 @@ export interface MyConsumptionProps {
 }
 
 /**
- * Enphase chart error state.
+ * Production chart error state.
  */
 export const productionChartErrorState = window._env_.REACT_APP_PRODUCTION_CHART_ERROR_STATE === 'enabled'
 

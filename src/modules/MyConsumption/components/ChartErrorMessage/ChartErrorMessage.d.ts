@@ -11,12 +11,12 @@ export interface ChartErrorMessageProps {
      */
     nrlinkEnedisOffMessage?: string
     /**
-     * If enphase is off.
+     * If production consent is off.
      */
-    enphaseOff?: boolean
+    productionConsentOff?: boolean
     /**
      */
-    enphaseOffMessage?: string
+    productionConsentOffMessage?: string
     /**
      * Link to redirect.
      */
