@@ -1,4 +1,4 @@
-import { ApexAxisChartSerie, IMetric } from 'src/modules/Metrics/Metrics'
+import { ApexAxisChartSerie, IMetric, metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
 import { ApexChartsAxisValuesType } from 'src/modules/MyConsumption/myConsumptionTypes'
 
 /**
@@ -83,6 +83,11 @@ export const convertMetricsDataToApexChartsDateTimeAxisValues = (data: IMetric[]
             data: metricApexChartsDatapoints,
         })
     })
+
+    // Check if data has subscriptionPrices target in it, then we reverse the data array so that we see subscriptionPrices at the bottom of the stacked bar chart.
+    if (data.some((target) => target.target === metricTargetsEnum.subscriptionPrices)) {
+        return apexChartsSeries.reverse()
+    }
 
     return apexChartsSeries
 }
