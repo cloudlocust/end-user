@@ -70,14 +70,14 @@ describe('ConnectedPlugList component', () => {
             },
         )
 
-        expect(getByText(mockConnectedPlugsList[0].deviceId)).toBeTruthy()
+        expect(getByText(mockConnectedPlugsList[0].deviceName)).toBeTruthy()
         expect(getByText(CONNECTED_PLUG_CONSENT_EXIST_TEXT, { exact: false })).toBeTruthy()
         expect(
             getByText(dayjs.utc(mockConnectedPlugsList[0].createdAt).local().format('DD/MM/YYYY'), {
                 exact: false,
             }),
         ).toBeTruthy()
-        expect(getByText(mockConnectedPlugsList[1].deviceId)).toBeTruthy()
+        expect(getByText(mockConnectedPlugsList[1].deviceName)).toBeTruthy()
         expect(getByText(CONNECTED_PLUG_CONSENT_NOT_EXIST_TEXT, { exact: false })).toBeTruthy()
     })
     describe('Opening shelly window', () => {
