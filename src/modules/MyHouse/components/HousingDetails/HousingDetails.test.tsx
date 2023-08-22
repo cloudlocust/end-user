@@ -138,7 +138,7 @@ describe('Test HousingDetails Component', () => {
                 { store },
             )
             expect(getByText('Mes prises connectées')).toBeTruthy()
-            expect(getByText('Prise ' + MOCK_TEST_CONNECTED_PLUGS[0].deviceId)).toBeTruthy()
+            expect(getByText(MOCK_TEST_CONNECTED_PLUGS[0].deviceName)).toBeTruthy()
             expect(getByText('Prise 2')).toBeTruthy()
             expect(getByText('Prise 3')).toBeTruthy()
         })

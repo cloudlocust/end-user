@@ -119,8 +119,8 @@ describe('ConnectedPlugProductionConsentPopup component', () => {
                 },
             )
 
-            expect(getByText(`Prise ${mockConnectedPlugsList[0].deviceId}`)).toBeTruthy()
-            expect(getByText(`Prise ${mockConnectedPlugsList[1].deviceId}`)).toBeTruthy()
+            expect(getByText(mockConnectedPlugsList[0].deviceName)).toBeTruthy()
+            expect(getByText(mockConnectedPlugsList[1].deviceName)).toBeTruthy()
         })
 
         test('when Selecting a connected plug and submitting, associate connected plug should be called and history pushed', async () => {
@@ -134,9 +134,9 @@ describe('ConnectedPlugProductionConsentPopup component', () => {
                 },
             )
 
-            userEvent.click(getByLabelText(`Prise ${mockConnectedPlugsList[0].deviceId}`))
+            userEvent.click(getByLabelText(mockConnectedPlugsList[0].deviceName))
 
-            const selectedConnectedPlugOption = getByLabelText(`Prise ${mockConnectedPlugsList[0].deviceId}`)
+            const selectedConnectedPlugOption = getByLabelText(mockConnectedPlugsList[0].deviceName)
                 .parentElement as HTMLDivElement
 
             expect(selectedConnectedPlugOption.classList.contains(checkedOptionClassname)).toBeTruthy()
