@@ -1,3 +1,5 @@
+import { ReactComponentElement } from 'react'
+
 /**
  * Interface for Select Button.
  */
