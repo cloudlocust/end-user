@@ -126,7 +126,7 @@ export var TEST_CONNECTED_PLUGS_TYPE: SnakeCasedPropertiesDeep<IConnectedPlugTyp
 ]
 
 /**
- * Mock of connected plug list data.
+ * Mock of connected plug list mock data.
  */
 export var TEST_CONNECTED_PLUGS: SnakeCasedPropertiesDeep<IConnectedPlug>[] = [
     {
