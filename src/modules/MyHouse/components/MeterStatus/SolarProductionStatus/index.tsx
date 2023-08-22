@@ -104,17 +104,19 @@ export const SolarProductionConsentStatus = ({
                                 className="underline cursor-pointer"
                                 fontWeight={500}
                                 onClick={
-                                    currentHousing && connectedPlugsFeatureState && productionConnectedPlug
-                                        ? () => {
-                                              associateConnectedPlug(
+                                    currentHousing && productionConnectedPlug
+                                        ? async () => {
+                                              await associateConnectedPlug(
                                                   productionConnectedPlug.deviceId,
                                                   currentHousing.id,
                                                   currentHousing.meter?.guid,
                                                   false,
                                               )
-                                              loadConnectedPlugList()
+                                              await loadConnectedPlugList()
                                           }
-                                        : () => onRevokeEnphaseConsent()
+                                        : async () => {
+                                              await onRevokeEnphaseConsent()
+                                          }
                                 }
                             >
                                 Annuler la récolte de mes données
