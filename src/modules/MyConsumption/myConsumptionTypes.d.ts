@@ -226,8 +226,18 @@ export type DefaultContractWarningProps =
  */
 export type ProductionChartContainerProps = Omit<
     ConsumptionChartContainerProps,
-    'enedisSgeConsent' | 'hasMissingHousingContracts'
->
+    'enedisSgeConsent' | 'hasMissingHousingContracts' | 'enphaseConsent'
+    // eslint-disable-next-line jsdoc/require-jsdoc
+> & {
+    /**
+     * Boolean indicating if proudction consent is off.
+     */
+    isProductionConsentOff?: boolean
+    /**
+     * Boolean indicating if production consent is in-progress.
+     */
+    isProductionConsentLoadingInProgress?: boolean
+}
 
 /**
  * Type for getChartSpecifities function return.
