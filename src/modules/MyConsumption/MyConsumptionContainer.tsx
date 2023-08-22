@@ -20,6 +20,9 @@ import CircularProgress from '@mui/material/CircularProgress'
 import Box from '@mui/material/Box'
 import ConsumptionWidgetsContainer from 'src/modules/MyConsumption/components/ConsumptionWidgetsContainer'
 import { ConsumptionWidgetsMetricsProvider } from 'src/modules/MyConsumption/components/ConsumptionWidgetsContainer/ConsumptionWidgetsMetricsContext'
+import { useConnectedPlugList } from 'src/modules/MyHouse/components/ConnectedPlugs/connectedPlugsHook'
+import { connectedPlugsFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
+import { globalProductionFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
 
 /**
  * MyConsumptionContainer.
@@ -42,7 +45,19 @@ export const MyConsumptionContainer = () => {
 
     const nrlinkOff = nrlinkConsent?.nrlinkConsentState === 'NONEXISTENT'
     const enedisOff = enedisSgeConsent?.enedisSgeConsentState !== 'CONNECTED'
-    const enphaseOff = enphaseConsent?.enphaseConsentState !== 'ACTIVE'
+
+    // Load connected plug only when housing is defined
+    const {
+        loadingInProgress: isConnectedPlugListLoadingInProgress,
+        getProductionConnectedPlug,
+        loadConnectedPlugList,
+    } = useConnectedPlugList(currentHousing?.id)
+    // Check if there's connected plug in production mode.
+    const isProductionConnectedPlug = getProductionConnectedPlug()
+
+    // TODO put enphaseConsent.enphaseConsentState in an enum.
+    let isProductionConsentOff = enphaseConsent?.enphaseConsentState !== 'ACTIVE'
+    if (connectedPlugsFeatureState) isProductionConsentOff = isProductionConsentOff && !isProductionConnectedPlug
 
     // UseEffect to check for consent whenever a meter is selected.
     useEffect(() => {
@@ -69,6 +84,10 @@ export const MyConsumptionContainer = () => {
             else return prevState
         })
     }, [enphaseConsent])
+
+    useEffect(() => {
+        loadConnectedPlugList()
+    }, [loadConnectedPlugList])
 
     const { hasMissingHousingContracts } = useHasMissingHousingContracts(range, currentHousing?.id)
 
@@ -129,13 +148,16 @@ export const MyConsumptionContainer = () => {
                 )}
 
                 {/* Production Chart */}
-                <ProductionChartContainer
-                    period={period}
-                    range={range}
-                    filters={filters}
-                    enphaseConsent={enphaseConsent}
-                    metricsInterval={metricsInterval}
-                />
+                {globalProductionFeatureState && (
+                    <ProductionChartContainer
+                        period={period}
+                        range={range}
+                        filters={filters}
+                        isProductionConsentOff={isProductionConsentOff}
+                        isProductionConsentLoadingInProgress={isConnectedPlugListLoadingInProgress}
+                        metricsInterval={metricsInterval}
+                    />
+                )}
             </div>
 
             {/* Widget List */}
@@ -147,7 +169,8 @@ export const MyConsumptionContainer = () => {
                         filters={filters}
                         hasMissingHousingContracts={hasMissingHousingContracts}
                         metricsInterval={metricsInterval}
-                        enphaseOff={enphaseOff}
+                        // TODO Change enphaseOff for a more generic naming such as isProductionConsentOff or productionOff...
+                        enphaseOff={isProductionConsentOff}
                         enedisOff={enedisOff}
                     />
                 </ConsumptionWidgetsMetricsProvider>

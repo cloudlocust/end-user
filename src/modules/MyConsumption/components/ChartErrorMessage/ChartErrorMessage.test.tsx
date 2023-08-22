@@ -4,7 +4,7 @@ import { ChartErrorMessage } from 'src/modules/MyConsumption/components/ChartErr
 import { ENPHASE_OFF_MESSAGE, NRLINK_ENEDIS_OFF_MESSAGE } from 'src/modules/MyConsumption/utils/myConsumptionVariables'
 
 let mockNrLinkEnedisOff = true
-let mockEnphaseOff = true
+let mockProductionConsentOff = true
 
 describe('load ConsumptionPeriod', () => {
     test('Error message if nrLINK, enedis and enphase are Off.', async () => {
@@ -14,8 +14,8 @@ describe('load ConsumptionPeriod', () => {
                     nrLinkEnedisOff={mockNrLinkEnedisOff}
                     nrlinkEnedisOffMessage={NRLINK_ENEDIS_OFF_MESSAGE}
                     linkTo="/my-houses/1256"
-                    enphaseOff={mockEnphaseOff}
-                    enphaseOffMessage={ENPHASE_OFF_MESSAGE}
+                    productionConsentOff={mockProductionConsentOff}
+                    productionConsentOffMessage={ENPHASE_OFF_MESSAGE}
                 />
             </Router>,
         )
@@ -28,8 +28,8 @@ describe('load ConsumptionPeriod', () => {
             <Router>
                 <ChartErrorMessage
                     nrLinkEnedisOff={mockNrLinkEnedisOff}
-                    enphaseOff={mockEnphaseOff}
-                    enphaseOffMessage={ENPHASE_OFF_MESSAGE}
+                    productionConsentOff={mockProductionConsentOff}
+                    productionConsentOffMessage={ENPHASE_OFF_MESSAGE}
                     linkTo="/my-houses/1256"
                 />
             </Router>,
@@ -38,14 +38,14 @@ describe('load ConsumptionPeriod', () => {
     })
     test('Error message if nrLINK, enedis are Off', async () => {
         mockNrLinkEnedisOff = true
-        mockEnphaseOff = false
+        mockProductionConsentOff = false
         const { getByText } = reduxedRender(
             <Router>
                 <ChartErrorMessage
                     nrLinkEnedisOff={mockNrLinkEnedisOff}
                     nrlinkEnedisOffMessage={NRLINK_ENEDIS_OFF_MESSAGE}
                     linkTo="/my-houses/1256"
-                    enphaseOff={mockEnphaseOff}
+                    productionConsentOff={mockProductionConsentOff}
                 />
             </Router>,
         )
