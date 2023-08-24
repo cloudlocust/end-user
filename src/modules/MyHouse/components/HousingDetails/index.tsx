@@ -188,7 +188,7 @@ export const HousingDetails = () => {
             })
 
             connectedPlugList.slice(0, 3).forEach((connectedPlug, index) => {
-                copyPrevConnectedPlugsElements[index].label = 'Prise ' + connectedPlug.deviceId
+                copyPrevConnectedPlugsElements[index].label = connectedPlug.deviceName
                 copyPrevConnectedPlugsElements[index].icon = <ElectricalServicesIcon color="primary" fontSize="large" />
             })
             return copyPrevConnectedPlugsElements

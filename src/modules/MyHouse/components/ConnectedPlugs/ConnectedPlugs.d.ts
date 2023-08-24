@@ -51,6 +51,11 @@ export type IConnectedPlugConsent = {
      */
     deviceId: string
     /**
+     * Connected Plug Name.
+     */
+    deviceName: string
+
+    /**
      * Connected Plug Consent.
      */
     consentState: connectedPlugConsentStateEnum
