@@ -22,6 +22,8 @@ export const accomodationLabelOptions = {
     secondary: 'Secondaire',
     energeticPerformance: 'Performance énergétique',
     isolation: 'Estimation isolation',
+    tenant: 'Locataire',
+    owner: 'Propriétaire',
 }
 /**
  * Accomodation names.
@@ -35,6 +37,7 @@ export const accomodationNames = {
     numberOfInhabitants: 'numberOfInhabitants',
     houseArea: 'houseArea',
     meterId: 'meterId',
+    ownershipStatus: 'ownershipStatus',
 }
 /**
  * Performance options.
