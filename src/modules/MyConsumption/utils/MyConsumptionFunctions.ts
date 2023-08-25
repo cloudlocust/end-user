@@ -1,6 +1,5 @@
 import {
     ApexAxisChartSerie,
-    getMetricType,
     metricFiltersType,
     metricRangeType,
     metricTargetsEnum,
@@ -39,8 +38,6 @@ import {
     endOfYear,
 } from 'date-fns'
 import { cloneDeep, sum } from 'lodash'
-import { metricTargetsHook } from 'src/modules/MyConsumption/utils/myConsumptionVariables'
-import { globalProductionFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
 import { isNil } from 'lodash'
 import fr from 'date-fns/locale/fr'
 
@@ -474,8 +471,15 @@ export const getChartSpecifities = (
         }
     } else if (target === metricTargetsEnum.eurosConsumption) {
         return {
+            // eslint-disable-next-line sonarjs/no-duplicate-string
             label: 'Consommation Euros',
             seriesName: 'Consommation Euros',
+        }
+    } else if (target === metricTargetsEnum.subscriptionPrices) {
+        return {
+            label: 'Abonnement',
+            seriesName: 'Consommation Euros',
+            show: false,
         }
     } else if (target === metricTargetsEnum.externalTemperature) {
         return {
@@ -543,37 +547,6 @@ export const convertConsumptionToWatt = (
 }
 
 /**
- * Functuon that returns initial values used for useMetrics hook for MyConsumption page.
- *
- * @returns Initial metrics hook values.
- */
-export const getInitialMetricsHookValues = (): getMetricType => {
-    let targetsWithoutEnphase = []
-
-    if (!globalProductionFeatureState) {
-        targetsWithoutEnphase = metricTargetsHook.filter(
-            (metric) =>
-                metric.target !== metricTargetsEnum.autoconsumption &&
-                metric.target !== metricTargetsEnum.injectedProduction &&
-                metric.target !== metricTargetsEnum.totalProduction,
-        )
-        return {
-            interval: '1m',
-            range: getRange('day'),
-            targets: targetsWithoutEnphase,
-            filters: [],
-        }
-    } else {
-        return {
-            interval: '1m',
-            range: getRange('day'),
-            targets: metricTargetsHook,
-            filters: [],
-        }
-    }
-}
-
-/**
  * Show text according to interval.
  *
  * @param chartType Chart type: consumption or production.
@@ -602,10 +575,11 @@ export const showPerPeriodText = (chartType: 'consumption' | 'production', perio
  * @param visibleChartTargets Given Targets may contain pMax and eurosConsumption and other targets.
  * @returns New visibleChartTargets without eurosConsumption and pMax.
  */
-export const filterPmaxAndEurosConsumptionTargetFromVisibleChartTargets = (visibleChartTargets: metricTargetType[]) => {
+export const filterTargetsOnDailyPeriod = (visibleChartTargets: metricTargetType[]) => {
     if (
         visibleChartTargets.includes(metricTargetsEnum.eurosConsumption) ||
-        visibleChartTargets.includes(metricTargetsEnum.pMax)
+        visibleChartTargets.includes(metricTargetsEnum.pMax) ||
+        visibleChartTargets.includes(metricTargetsEnum.subscriptionPrices)
     ) {
         const savedVisibleTargetCharts = visibleChartTargets.filter(
             (target) =>
@@ -614,6 +588,7 @@ export const filterPmaxAndEurosConsumptionTargetFromVisibleChartTargets = (visib
                     metricTargetsEnum.consumption,
                     metricTargetsEnum.pMax,
                     metricTargetsEnum.eurosConsumption,
+                    metricTargetsEnum.subscriptionPrices,
                 ].includes(target as metricTargetsEnum),
         )
         return [metricTargetsEnum.consumption, metricTargetsEnum.autoconsumption, ...savedVisibleTargetCharts]

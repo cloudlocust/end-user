@@ -312,7 +312,8 @@ export const getApexChartMyConsumptionProps = ({
                 yAxisSerie.name === metricTargetsEnum.eurosConsumption ||
                 yAxisSerie.name === metricTargetsEnum.autoconsumption ||
                 yAxisSerie.name === metricTargetsEnum.totalProduction ||
-                yAxisSerie.name === metricTargetsEnum.injectedProduction
+                yAxisSerie.name === metricTargetsEnum.injectedProduction ||
+                yAxisSerie.name === metricTargetsEnum.subscriptionPrices
                 ? 0
                 : 1.5,
         )
@@ -350,6 +351,7 @@ export const getApexChartMyConsumptionProps = ({
                 }
             },
         },
+        inverseOrder: isStackedEnabled ? true : false,
     }
 
     if (xAxisType === 'category') {

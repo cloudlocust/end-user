@@ -72,18 +72,16 @@ export const MyConsumptionContainer = () => {
      * @param interval Metric Interval selected.
      */
     const setMyConsumptionPeriodMetricsInterval = (interval: metricIntervalType) => {
-        if (interval === '1m')
-            setMetricsInterval(enphaseConsent && enphaseConsent.enphaseConsentState === 'ACTIVE' ? '30m' : '1m')
+        if (interval === '1m') setMetricsInterval(!isProductionConsentOff ? '30m' : '1m')
         else setMetricsInterval(interval)
     }
 
     useEffect(() => {
         setMetricsInterval((prevState) => {
-            if (prevState === '1m' || prevState === '30m')
-                return enphaseConsent && enphaseConsent.enphaseConsentState === 'ACTIVE' ? '30m' : '1m'
+            if (prevState === '1m' || prevState === '30m') return !isProductionConsentOff ? '30m' : '1m'
             else return prevState
         })
-    }, [enphaseConsent])
+    }, [isProductionConsentOff])
 
     useEffect(() => {
         loadConnectedPlugList()
