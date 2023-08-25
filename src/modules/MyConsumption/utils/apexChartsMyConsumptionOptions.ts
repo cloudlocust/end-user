@@ -13,6 +13,7 @@ import {
     getChartType,
 } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
 import timezone from 'dayjs/plugin/timezone'
+import { sum } from 'lodash'
 dayjs.extend(timezone)
 
 /**
@@ -186,7 +187,11 @@ export const getApexChartMyConsumptionProps = ({
 
     // We save the maximum value, so that it'll indicate the unit of the chart, For Consumption (W, kWh or MWh will be indicated according to the max value unit).
     let maxYValue = 0
+    // This variable is used to determine if we should show the Total Production, only when injected is 0.
+    // TODO Refactor to a simpler way split getApexChartMyConsumptionProps to production & consumption props maybe, and have Chart component for each chartType.
+    let showTotalProduction = false
     // eslint-disable-next-line sonarjs/cognitive-complexity
+
     yAxisSeries.forEach((yAxisSerie) => {
         // Keep track of the labels that have already been rendered (for consumption and production charts, values are rounded and this causes duplication).
         let labelsRendered: string[] = []
@@ -199,6 +204,15 @@ export const getApexChartMyConsumptionProps = ({
         // That's why change in it to category makes apexcharts gives us the full control for xaxis labels, and thus we can have xaxis visual according to our need
         if (period === 'monthly' || period === 'weekly') xAxisType = 'category'
 
+        // Showing the total production only if the injected production have null or 0 values, To check that injectedProduction have null values happens when sum of injectedProduction is 0.
+        // TODO Refactor to a simpler way split getApexChartMyConsumptionProps to production & consumption props maybe, and have Chart component for each chartType.
+        if (yAxisSerie.name === metricTargetsEnum.injectedProduction) {
+            const totalInjectedProduction = sum(
+                yAxisSerie.data.map((datapoint) => Number((datapoint as [number, number])[1])),
+            )
+            showTotalProduction = totalInjectedProduction === 0
+        }
+
         myConsumptionApexChartSeries!.push({
             ...yAxisSerie,
             color: getChartColor(yAxisSerie.name as metricTargetsEnum, theme),
@@ -206,7 +220,10 @@ export const getApexChartMyConsumptionProps = ({
                 id: label,
                 defaultMessage: label,
             }),
-            type: getChartType(yAxisSerie.name as metricTargetType, period),
+            type:
+                yAxisSerie.name === metricTargetsEnum.totalProduction && !showTotalProduction
+                    ? ''
+                    : getChartType(yAxisSerie.name as metricTargetType, period),
         })
 
         // We compute the consumption chart maximum y value, so that we can indicate the correct unit on the chart, and we do it only one time with this condition.
