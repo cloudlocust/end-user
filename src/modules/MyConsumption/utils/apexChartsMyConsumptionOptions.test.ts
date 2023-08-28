@@ -15,9 +15,9 @@ import dayjs from 'dayjs'
 const mockFormatMessage: any = (input: MessageDescriptor) => input.id
 let mockChartType: ApexChart['type'] | '' = '' || 'area' || 'bar'
 const mockDatapoints = [[247, 1651406400]]
-
+const totalProductionName = 'Production totale'
 // eslint-disable-next-line jsdoc/require-jsdoc
-const mockYAxisSeriesConvertedData: ApexAxisChartSeries = [
+let mockYAxisSeriesConvertedData: ApexAxisChartSeries = [
     {
         name: metricTargetsEnum.consumption,
         data: [mockDatapoints[0][0]],
@@ -286,5 +286,57 @@ describe('test pure function', () => {
         expect((apexChartProps.options.yaxis as ApexYAxis[])[2].labels!.formatter!(12)).toStrictEqual('12 °C')
         expect((apexChartProps.options.yaxis as ApexYAxis[])[2].show).toBeFalsy()
         expect((apexChartProps.options.yaxis as ApexYAxis[])[3].labels!.formatter!(12000)).toStrictEqual('12.00 kVA')
+    })
+    test('When injectedProduction datapoint are null, total production is shown', async () => {
+        let period = 'weekly' as periodType
+
+        const mockSeriesData: ApexAxisChartSeries = [
+            {
+                name: metricTargetsEnum.injectedProduction,
+                data: [[mockDatapoints[0][1], 0]],
+            },
+            {
+                name: metricTargetsEnum.totalProduction,
+                data: [[mockDatapoints[0][1], mockDatapoints[0][0]]],
+            },
+        ]
+
+        // Test Show Total Production
+        const apexChartProps = getApexChartMyConsumptionProps({
+            yAxisSeries: mockSeriesData,
+            formatMessage: mockFormatMessage,
+            theme,
+            period,
+            isStackedEnabled: false,
+            chartType: 'production',
+        })
+        expect(apexChartProps.series[1].name).toStrictEqual(totalProductionName)
+        expect(apexChartProps.series[1].type).toStrictEqual('bar')
+    })
+    test('When injectedProduction datapoint are not null, total production is hidden', async () => {
+        let period = 'weekly' as periodType
+
+        const mockSeriesData: ApexAxisChartSeries = [
+            {
+                name: metricTargetsEnum.injectedProduction,
+                data: mockDatapoints as [number, number][],
+            },
+            {
+                name: metricTargetsEnum.totalProduction,
+                data: mockDatapoints as [number, number][],
+            },
+        ]
+
+        // Test Show Total Production
+        const apexChartProps = getApexChartMyConsumptionProps({
+            yAxisSeries: mockSeriesData,
+            formatMessage: mockFormatMessage,
+            theme,
+            period,
+            isStackedEnabled: false,
+            chartType: 'production',
+        })
+        expect(apexChartProps.series[1].name).toStrictEqual(totalProductionName)
+        expect(apexChartProps.series[1].type).toStrictEqual('')
     })
 })

@@ -5,6 +5,7 @@ import {
     metricRangeType,
     metricTargetsEnum,
     metricTargetType,
+    IMetric,
 } from 'src/modules/Metrics/Metrics.d'
 import dayjs from 'dayjs'
 import {
@@ -37,7 +38,7 @@ import {
     endOfMonth,
     endOfYear,
 } from 'date-fns'
-import { cloneDeep } from 'lodash'
+import { cloneDeep, sum } from 'lodash'
 import { metricTargetsHook } from 'src/modules/MyConsumption/utils/myConsumptionVariables'
 import { globalProductionFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
 import { isNil } from 'lodash'
@@ -428,23 +429,18 @@ export const getChartType = (metricTarget: metricTargetType, period: periodType)
     if (
         (metricTarget === metricTargetsEnum.consumption ||
             metricTarget === metricTargetsEnum.eurosConsumption ||
-            metricTarget === metricTargetsEnum.autoconsumption) &&
+            metricTarget === metricTargetsEnum.autoconsumption ||
+            metricTarget === metricTargetsEnum.injectedProduction ||
+            metricTarget === metricTargetsEnum.totalProduction) &&
         period === 'daily'
     ) {
         return 'area'
-    } else if (metricTarget === metricTargetsEnum.totalProduction) {
-        return ''
     } else if (
         metricTarget === metricTargetsEnum.externalTemperature ||
         metricTarget === metricTargetsEnum.internalTemperature ||
         metricTarget === metricTargetsEnum.pMax
     ) {
         return 'line'
-    } else if (
-        (metricTarget === metricTargetsEnum.autoconsumption || metricTargetsEnum.injectedProduction) &&
-        period === 'daily'
-    ) {
-        return 'area'
     } else {
         return 'bar'
     }
@@ -745,4 +741,66 @@ export function getRangeV2(period: PeriodEnum) {
                     : getDateWithoutTimezoneOffset(endOfYear(currentDate)),
             }
     }
+}
+
+/**
+ * Indicates if metrics data is empty.
+ *
+ * @description
+ * Empty Metrics Data happens when datapoints of all metricsData targets are NULL or 0.
+ * To check that metricsData is empty, by summing all targets datapoints and the results must be 0 as the data should be positive.
+ * Param targetsFilter to indicate which target Data to check if it's empty.
+ * @example
+ * data = [
+ *  {
+ *    "target": "consumption_metrics",
+ *    "datapoints": [[null, 00001], [null, 00002] ,[null, 00003], [null, 00004]
+ *  },
+ *  {
+ *    "target": "internal_temperature",
+ *    "datapoints": [[0, 00001], [0, 00002] ,[0, 00003], [0, 00004]
+ *  }
+ * ]
+ * => isEmptyMetricsData(data) === True
+ * The isEmptyMetricsData returns true in this case because target datapoints are full of "null" and "0"
+ * @example
+ * data = [
+ *  {
+ *    "target": "consumption_metrics",
+ *    "datapoints": [[null, 00001], [70, 00002] ,[89, 00003], [123, 00004]
+ *  },
+ *  {
+ *    "target": "internal_temperature",
+ *    "datapoints": [[0, 00001], [0, 00002] ,[120, 00003], [89, 00004]
+ *  }
+ * ]
+ * => isEmptyMetricsData(data) === False
+ * The isEmptyMetricsData returns false in this case because target datapoints are null made of only with "null" and "0"
+ * @example
+ * data = [
+ *  {
+ *    "target": "consumption_metrics",
+ *    "datapoints": [[null, 00001], [null, 00002] ,[89, 00003], [123, 00004]
+ *  },
+ *  {
+ *    "target": "internal_temperature",
+ *    "datapoints": [[0, 00001], [0, 00002] ,[0, 00003], [0, 00004]
+ *  }
+ * ]
+ * => isEmptyMetricsData(data, ['consumption_metrics']) === False
+ * The isEmptyMetricsData returns false in this case because the filtered target "consumption_metrics" datapoints are not all null or 0.
+ * @param data Metrics Data.
+ * @param targetsFilter Filter indicatting the targets to check if they have empty datapoints.
+ * @returns If Metrics Data given is empty (datapoints are "null" and "0" only).
+ */
+export const isEmptyMetricsData = (data: IMetric[], targetsFilter?: metricTargetType[]) => {
+    let totalMetricsData = 0
+    data.forEach((metric) => {
+        if (targetsFilter && !targetsFilter.includes(metric.target)) return
+
+        totalMetricsData += sum(
+            metric.datapoints.reduce((prevValues: number[], datapoints) => prevValues.concat(datapoints[0]), []),
+        )
+    })
+    return totalMetricsData === 0
 }
