@@ -12,7 +12,7 @@ import { NRLINK_CONSENT_API } from 'src/modules/Consents/consentsHook'
  * @param houseId Id of the house, where we need to replace the nrLINK.
  * @returns .
  */
-export const useReplaceNRLinkHook = (houseId: string) => {
+export const useReplaceNRLinkHook = (houseId?: number) => {
     const { enqueueSnackbar } = useSnackbar()
     const { formatMessage } = useIntl()
 
@@ -24,6 +24,7 @@ export const useReplaceNRLinkHook = (houseId: string) => {
      * @param body Request body.
      */
     const replaceNRLink = async (body: IReplaceNRLinkPayload) => {
+        if (!houseId) return
         setLoadingStatus(true)
         try {
             await axios.patch(`${NRLINK_CONSENT_API}/${houseId}`, body)
@@ -35,14 +36,18 @@ export const useReplaceNRLinkHook = (houseId: string) => {
                 }),
                 { variant: 'success' },
             )
-        } catch (error) {
-            enqueueSnackbar(
-                formatMessage({
-                    id: 'Erreur lors de la modification de votre nrLINK',
-                    defaultMessage: 'Erreur lors de la modification de votre nrLINK',
-                }),
-                { variant: 'error' },
-            )
+        } catch (error: any) {
+            if (error?.response?.data?.detail) {
+                enqueueSnackbar(error.response.data.detail, { variant: 'error' })
+            } else {
+                enqueueSnackbar(
+                    formatMessage({
+                        id: 'Erreur lors de la modification de votre nrLINK',
+                        defaultMessage: 'Erreur lors de la modification de votre nrLINK',
+                    }),
+                    { variant: 'error' },
+                )
+            }
             throw catchError(error)
         } finally {
             setLoadingStatus(false)

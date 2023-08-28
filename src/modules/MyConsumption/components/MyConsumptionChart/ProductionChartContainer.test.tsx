@@ -3,7 +3,6 @@ import { BrowserRouter as Router } from 'react-router-dom'
 import { IMetric, metricFiltersType, metricIntervalType, metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
 import { TEST_SUCCESS_WEEK_METRICS } from 'src/mocks/handlers/metrics'
 import { periodType, ProductionChartContainerProps } from 'src/modules/MyConsumption/myConsumptionTypes'
-import { IEnphaseConsent } from 'src/modules/Consents/Consents'
 import { ProductionChartContainer } from 'src/modules/MyConsumption/components/MyConsumptionChart/ProductionChartContainer'
 import { ENPHASE_OFF_MESSAGE } from 'src/modules/MyConsumption/utils/myConsumptionVariables'
 
@@ -13,12 +12,6 @@ let mockData: IMetric[] = TEST_SUCCESS_WEEK_METRICS([
     metricTargetsEnum.autoconsumption,
 ])
 
-// Enphase Consent default
-const enphaseConsent: IEnphaseConsent = {
-    meterGuid: '133456',
-    enphaseConsentState: 'ACTIVE',
-}
-
 let mockIsMetricsLoading = false
 const mockSetFilters = jest.fn()
 const PRODUCTION_TITLE_DAILY = 'en Watt par jour'
@@ -26,10 +19,12 @@ const PRODUCTION_TITLE_WEEKLY = 'en kWh par semaine'
 const PRODUCTION_TITLE_MONTHLY = 'en kWh par mois'
 const PRODUCTION_TITLE_YEARLY = 'en kWh par année'
 const apexchartsClassName = 'apexcharts-svg'
-const PRODUCTION_TITLE_TEXT = 'Ma production'
+const PRODUCTION_CONSENT_OFF_MESSAGE =
+    'Pour voir vos données de production veuillez connecter votre onduleur Ou Reliez la prise Shelly de vos panneaux plug&play'
 const mockGetMetricsWithParams = jest.fn()
 const circularProgressClassname = '.MuiCircularProgress-root'
 let mockProductionChartErrorState = false
+let mockConnectedPlugsFeatureState = true
 let mockFilters: metricFiltersType = [
     {
         key: 'meter_guid',
@@ -47,7 +42,8 @@ let mockMetricsInterval: metricIntervalType = '1m'
 
 const productionChartContainerProps: ProductionChartContainerProps = {
     filters: mockFilters,
-    enphaseConsent,
+    isProductionConsentOff: false,
+    isProductionConsentLoadingInProgress: false,
     metricsInterval: mockMetricsInterval,
     period: mockPeriod,
     range: mockRange,
@@ -84,6 +80,15 @@ jest.mock('src/modules/MyConsumption/MyConsumptionConfig', () => ({
     },
 }))
 
+// Set connected plug feature state to test associate of connected plug.
+jest.mock('src/modules/MyHouse/MyHouseConfig', () => ({
+    ...jest.requireActual('src/modules/MyHouse/MyHouseConfig'),
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    get connectedPlugsFeatureState() {
+        return mockConnectedPlugsFeatureState
+    },
+}))
+
 describe('ProductionChartContainer test', () => {
     test('Different period props, When production chart.', async () => {
         const productionTitleCases = [
@@ -115,7 +120,7 @@ describe('ProductionChartContainer test', () => {
             expect(getByText(text)).toBeTruthy()
         })
     })
-    test('When isMetricsLoading true, Spinner is shown', async () => {
+    test('When only isMetricsLoading true, Spinner is shown', async () => {
         mockIsMetricsLoading = true
         const { container } = reduxedRender(
             <Router>
@@ -125,23 +130,34 @@ describe('ProductionChartContainer test', () => {
         expect(container.querySelector(circularProgressClassname)).toBeInTheDocument()
         expect(container.querySelector(`.${apexchartsClassName}`)).not.toBeInTheDocument()
     })
-    test('When enphaseConsentState not Active.', async () => {
-        mockIsMetricsLoading = true
 
-        enphaseConsent!.enphaseConsentState = 'EXPIRED'
-        productionChartContainerProps.enphaseConsent = enphaseConsent
+    test('When only isProductionConsentLoadingInProgress true, Spinner is shown', async () => {
+        productionChartContainerProps.isProductionConsentLoadingInProgress = true
+        const { container } = reduxedRender(
+            <Router>
+                <ProductionChartContainer {...productionChartContainerProps} />
+            </Router>,
+        )
+        expect(container.querySelector(circularProgressClassname)).toBeInTheDocument()
+        expect(container.querySelector(`.${apexchartsClassName}`)).not.toBeInTheDocument()
+    })
+
+    test('When connectedPlugProduction and enphaseConsent OFF.', async () => {
+        mockIsMetricsLoading = false
+        mockProductionChartErrorState = true
+        productionChartContainerProps.isProductionConsentOff = true
+        productionChartContainerProps.isProductionConsentLoadingInProgress = false
+        mockConnectedPlugsFeatureState = true
         const { getByText } = reduxedRender(
             <Router>
                 <ProductionChartContainer {...productionChartContainerProps} />
             </Router>,
         )
-        expect(() => getByText(PRODUCTION_TITLE_TEXT)).toThrow()
+        expect(getByText(PRODUCTION_CONSENT_OFF_MESSAGE)).toBeTruthy()
     })
 
-    test('When productionChartErrorState.', async () => {
-        enphaseConsent!.enphaseConsentState = 'EXPIRED'
-        productionChartContainerProps.enphaseConsent = enphaseConsent
-        mockProductionChartErrorState = true
+    test('When only enphaseConsentOff.', async () => {
+        mockConnectedPlugsFeatureState = false
         const { getByText } = reduxedRender(
             <Router>
                 <ProductionChartContainer {...productionChartContainerProps} />

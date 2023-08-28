@@ -11,8 +11,9 @@ import CircularProgress from '@mui/material/CircularProgress'
 import { useSelector } from 'react-redux'
 import { RootState } from 'src/redux'
 import { ChartErrorMessage } from 'src/modules/MyConsumption/components/ChartErrorMessage'
-import { ENPHASE_OFF_MESSAGE } from 'src/modules/MyConsumption/utils/myConsumptionVariables'
+import { ENPHASE_OFF_MESSAGE, PRODUCTION_OFF_MESSAGE } from 'src/modules/MyConsumption/utils/myConsumptionVariables'
 import { productionChartErrorState } from 'src/modules/MyConsumption/MyConsumptionConfig'
+import { connectedPlugsFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
 
 /**
  * ProductionChartContainer Component.
@@ -22,7 +23,8 @@ import { productionChartErrorState } from 'src/modules/MyConsumption/MyConsumpti
  * @param props.range Current range so that we handle the xAxis values according to period and range selected.
  * @param props.metricsInterval Boolean state to know whether the stacked option is true or false.
  * @param props.filters Consumption or production chart type.
- * @param props.enphaseConsent Consumption or production chart type.
+ * @param props.isProductionConsentOff Boolean indicating if proudction consent is off.
+ * @param props.isProductionConsentLoadingInProgress Boolean indicating if production consent is in-progress.
  * @returns ProductionChartContainer Component.
  */
 export const ProductionChartContainer = ({
@@ -30,7 +32,8 @@ export const ProductionChartContainer = ({
     range,
     metricsInterval,
     filters,
-    enphaseConsent,
+    isProductionConsentOff,
+    isProductionConsentLoadingInProgress,
 }: ProductionChartContainerProps) => {
     const theme = useTheme()
     const { data, setMetricsInterval, setRange, isMetricsLoading } = useMetrics(
@@ -56,11 +59,10 @@ export const ProductionChartContainer = ({
         true,
     )
 
+    const isProductionChartLoadingInProgress = isMetricsLoading || isProductionConsentLoadingInProgress
+
     // This state represents whether or not the chart is stacked: true.
     const { currentHousing } = useSelector(({ housingModel }: RootState) => housingModel)
-
-    // TODO put different consentStates in an enum.
-    const enphaseOff = enphaseConsent?.enphaseConsentState !== 'ACTIVE'
 
     // get metrics when range change.
     useEffect(() => {
@@ -72,55 +74,56 @@ export const ProductionChartContainer = ({
         setMetricsInterval(metricsInterval)
     }, [metricsInterval, setMetricsInterval])
 
-    return (
-        <>
-            {enphaseConsent?.enphaseConsentState === 'ACTIVE' ? (
-                <div className="mb-12">
-                    <div className="relative flex flex-col md:flex-row items-center justify-center">
-                        <motion.div
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            className="mb-10 md:mb-0 flex flex-col items-center md:flex-row text-center"
-                        >
-                            <TypographyFormatMessage
-                                variant="h5"
-                                className="sm:mr-8"
-                                style={{ color: theme.palette.primary.contrastText }}
-                            >
-                                Ma production
-                            </TypographyFormatMessage>
-                            {/* Consommation Watt par jour / Semaine / Mois / Année */}
-                            <TypographyFormatMessage variant="h5" style={{ color: theme.palette.primary.contrastText }}>
-                                {showPerPeriodText('production', period)}
-                            </TypographyFormatMessage>
-                        </motion.div>
-                    </div>
-                    {isMetricsLoading ? (
-                        <div
-                            className="flex flex-col justify-center items-center w-full h-full"
-                            style={{ height: '320px' }}
-                        >
-                            <CircularProgress style={{ color: theme.palette.background.paper }} />
-                        </div>
-                    ) : (
-                        <MyConsumptionChart
-                            data={data}
-                            period={period}
-                            range={range}
-                            chartType="production"
-                            metricsInterval={metricsInterval}
-                        />
-                    )}
-                </div>
-            ) : (
-                productionChartErrorState && (
+    if (isProductionChartLoadingInProgress)
+        return (
+            <div className="flex flex-col justify-center items-center w-full h-full" style={{ height: '320px' }}>
+                <CircularProgress style={{ color: theme.palette.background.paper }} />
+            </div>
+        )
+
+    if (isProductionConsentOff)
+        return (
+            <>
+                {productionChartErrorState && (
                     <ChartErrorMessage
-                        enphaseOff={enphaseOff}
-                        enphaseOffMessage={ENPHASE_OFF_MESSAGE}
+                        productionConsentOff={true}
+                        productionConsentOffMessage={
+                            connectedPlugsFeatureState ? PRODUCTION_OFF_MESSAGE : ENPHASE_OFF_MESSAGE
+                        }
                         linkTo={`/my-houses/${currentHousing?.id}`}
                     />
-                )
-            )}
-        </>
+                )}
+            </>
+        )
+
+    return (
+        <div className="mb-12">
+            <div className="relative flex flex-col md:flex-row items-center justify-center">
+                <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    className="mb-10 md:mb-0 flex flex-col items-center md:flex-row text-center"
+                >
+                    <TypographyFormatMessage
+                        variant="h5"
+                        className="sm:mr-8"
+                        style={{ color: theme.palette.primary.contrastText }}
+                    >
+                        Ma production
+                    </TypographyFormatMessage>
+                    {/* Consommation Watt par jour / Semaine / Mois / Année */}
+                    <TypographyFormatMessage variant="h5" style={{ color: theme.palette.primary.contrastText }}>
+                        {showPerPeriodText('production', period)}
+                    </TypographyFormatMessage>
+                </motion.div>
+            </div>
+            <MyConsumptionChart
+                data={data}
+                period={period}
+                range={range}
+                chartType="production"
+                metricsInterval={metricsInterval}
+            />
+        </div>
     )
 }

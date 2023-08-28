@@ -52,6 +52,7 @@ export function useConsents() {
     const [isMeterVerifyLoading, setIsMeterVerifyLoading] = useState(false)
     const [enedisSgeConsent, setEnedisSgeConsent] = useState<IEnedisSgeConsent>()
     const [isCreateEnedisSgeConsentLoading, setIsCreateEnedisSgeConsentLoading] = useState(false)
+    const [isEnphaseConsentLoading, setIsEnphaseConsentLoading] = useState(false)
     const [createEnedisSgeConsentError, setCreateEnedisSgeConsentError] = useState<boolean>(false)
     const [enphaseLink, setEnphaseLink] = useState<EnphaseLink['url']>('')
     const { isCancel, source } = useAxiosCancelToken()
@@ -59,12 +60,16 @@ export function useConsents() {
     /**
      * Function that performs HTTP call to get consents.
      *
-     * @param meterGuid MeterGuid.
+     * @param houseId HouseId.
      */
     const getConsents = useCallback(
-        async (meterGuid: string, houseId?: number) => {
+        async (houseId?: number) => {
+            setNrlinkConsent(undefined)
+            setEnedisSgeConsent(undefined)
+            setEnphaseConsent(undefined)
+            if (!houseId) return
+
             setConsentsLoading(true)
-            if (!meterGuid) throw Error('Meter guid missing!')
             /**
              * Used Promise.allSettled() instead of Promise.all to return a promise that resolves after all of the given requests have either been fulfilled or rejected.
              * Because Promise.all() throws only when the first promise is rejected and it returns only that rejection.
@@ -73,14 +78,14 @@ export function useConsents() {
              * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/allSettled .
              */
             const [nrlinkConsent, enedisSgeConsent, enphaseConsent] = await Promise.allSettled([
-                axios.get<INrlinkConsent>(`${NRLINK_CONSENT_API}/${meterGuid}`, { cancelToken: source.current.token }),
+                axios.get<INrlinkConsent>(`${NRLINK_CONSENT_API}/${houseId}`, { cancelToken: source.current.token }),
                 sgeConsentFeatureState
                     ? axios.get<IEnedisSgeConsent>(`${ENEDIS_SGE_CONSENT_API}/${houseId}`, {
                           cancelToken: source.current.token,
                       })
                     : null, // If env is disabled, the request for SgeConsent won't be performed.
                 globalProductionFeatureState
-                    ? axios.get<IEnphaseConsent>(`${ENPHASE_CONSENT_API}/${meterGuid}`, {
+                    ? axios.get<IEnphaseConsent>(`${ENPHASE_CONSENT_API}/${houseId}`, {
                           cancelToken: source.current.token,
                       })
                     : null,
@@ -190,6 +195,34 @@ export function useConsents() {
         [enqueueSnackbar, formatMessage],
     )
 
+    /**
+     * Revoke Enphase Consent handler.
+     */
+    const revokeEnphaseConsent = useCallback(
+        async (houseId?: number) => {
+            try {
+                if (!houseId) return
+                setIsEnphaseConsentLoading(true)
+                await axios.patch(`${ENPHASE_CONSENT_API}/${houseId}/revoke`)
+                setEnphaseConsent(undefined)
+                setIsEnphaseConsentLoading(false)
+            } catch (error: any) {
+                setIsEnphaseConsentLoading(false)
+                enqueueSnackbar(
+                    formatMessage({
+                        id: 'Erreur lors de la révokation de votre consentement enphase',
+                        defaultMessage: 'Erreur lors de la révokation de votre consentement enphase',
+                    }),
+                    {
+                        autoHideDuration: 5000,
+                        variant: 'error',
+                    },
+                )
+            }
+        },
+        [enqueueSnackbar, formatMessage],
+    )
+
     const getEnphaseLink = useCallback(
         async (housingId: number) => {
             try {
@@ -212,12 +245,6 @@ export function useConsents() {
         [enqueueSnackbar, formatMessage],
     )
 
-    const clearConsents = useCallback(async () => {
-        setNrlinkConsent(undefined)
-        setEnedisSgeConsent(undefined)
-        setEnphaseConsent(undefined)
-    }, [])
-
     return {
         nrlinkConsent,
         consentsLoading,
@@ -236,6 +263,7 @@ export function useConsents() {
         getEnphaseLink,
         enphaseLink,
         setEnphaseLink,
-        clearConsents,
+        isEnphaseConsentLoading,
+        revokeEnphaseConsent,
     }
 }

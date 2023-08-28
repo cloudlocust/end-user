@@ -1,5 +1,4 @@
 import { metricTargetsEnum, metricTargetType } from 'src/modules/Metrics/Metrics.d'
-import { globalProductionFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
 import { PeriodEnum } from 'src/modules/MyConsumption/myConsumptionTypes'
 import { Theme } from '@mui/material/styles/createTheme'
 import { isNil } from 'lodash'
@@ -166,6 +165,13 @@ export const ENPHASE_OFF_MESSAGE = 'Pour voir vos données de production veuille
 
 /**
  * Targets when enphase is ON.
+ * Enphase off message.
+ */
+export const PRODUCTION_OFF_MESSAGE =
+    'Pour voir vos données de production veuillez connecter votre onduleur Ou Reliez la prise Shelly de vos panneaux plug&play'
+
+/**
+ * Targets shown in ConsumptionChart.
  */
 export const ConsumptionChartTargets: metricTargetType[] = [
     metricTargetsEnum.autoconsumption,
@@ -190,26 +196,3 @@ export const EnphaseOffConsumptionChartTargets: metricTargetType[] = [
     metricTargetsEnum.peakHourConsumption,
     metricTargetsEnum.offPeakHourConsumption,
 ]
-
-/**
- * Widget Targets.
- *
- * If enphaseConsentFeature is enabled, then we show totalProduction, injectedProduction and autoconsumption widgets.
- */
-export const WidgetTargets: metricTargetType[] = globalProductionFeatureState
-    ? [
-          metricTargetsEnum.consumption,
-          metricTargetsEnum.totalProduction,
-          metricTargetsEnum.eurosConsumption,
-          metricTargetsEnum.autoconsumption,
-          metricTargetsEnum.pMax,
-          metricTargetsEnum.externalTemperature,
-          metricTargetsEnum.internalTemperature,
-      ]
-    : [
-          metricTargetsEnum.consumption,
-          metricTargetsEnum.eurosConsumption,
-          metricTargetsEnum.pMax,
-          metricTargetsEnum.externalTemperature,
-          metricTargetsEnum.internalTemperature,
-      ]

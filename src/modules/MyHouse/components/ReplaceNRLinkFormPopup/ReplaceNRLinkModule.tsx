@@ -30,9 +30,7 @@ export const ReplaceNRLinkModule = ({ nrLinkConsent, onAfterReplaceNRLink }: IRe
      * No NRLink ? Don't show the Edit Icon.
      */
 
-    if (!nrLinkConsent || !nrLinkConsent.nrlinkGuid || !nrLinkConsent?.meterGuid) {
-        return null
-    }
+    if (!nrLinkConsent || !nrLinkConsent.nrlinkGuid || !nrLinkConsent?.meterGuid) return null
 
     return (
         <>
@@ -48,7 +46,6 @@ export const ReplaceNRLinkModule = ({ nrLinkConsent, onAfterReplaceNRLink }: IRe
             >
                 <ModalContent>
                     <ReplaceNRLinkForm
-                        meterGuid={nrLinkConsent.meterGuid}
                         oldNRLinkGuid={nrLinkConsent.nrlinkGuid}
                         closeModal={() => setModalDisplayState(false)}
                         onAfterReplaceNRLink={() => {

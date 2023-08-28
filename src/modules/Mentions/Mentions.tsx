@@ -28,6 +28,12 @@ export const Mentions = (): JSX.Element => {
             link: `${privacyPolicy}`,
         },
         {
+            title: 'Préférences des cookies',
+            // This function is allow to user to display and manage cookie consent.
+            // eslint-disable-next-line no-script-url
+            link: `javascript:openAxeptioCookies()`,
+        },
+        {
             title: 'Consentement à la récolte des données de consommation',
             link: 'https://drive.google.com/uc?export=download&id=15QHX14AWoKepWuEJBxscijK5IIHPnCbl',
         },
@@ -83,7 +89,12 @@ export const Mentions = (): JSX.Element => {
                             }}
                         >
                             {listUrl.map((list, index) => (
-                                <a href={list.link} target="_blank" rel="noopener noreferrer" key={index}>
+                                <a
+                                    href={list.link}
+                                    target={list.title !== 'Préférences des cookies' ? '_blank' : ''}
+                                    rel="noopener noreferrer"
+                                    key={index}
+                                >
                                     <ListItem
                                         sx={{
                                             display: 'list-item',

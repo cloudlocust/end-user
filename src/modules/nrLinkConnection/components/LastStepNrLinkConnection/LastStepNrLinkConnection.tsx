@@ -11,7 +11,7 @@ import { ActionsNrLinkConnectionSteps, nrLinkGUID, nrLinkInfo, nrLinkMain } from
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import { manualContractFillingIsEnabled } from 'src/modules/MyHouse/MyHouseConfig'
 import { URL_CONSUMPTION } from 'src/modules/MyConsumption'
-import { LastStepNrLinkConnectionProps } from './LastStepNrLinkConnection.d'
+import { LastStepNrLinkConnectionProps } from 'src/modules/nrLinkConnection/components/LastStepNrLinkConnection/LastStepNrLinkConnection.d'
 
 /**
  * Secondary text.
@@ -28,16 +28,16 @@ export const NRLINK_SUCCESS_SETUP_MESSAGE = 'Votre nrLINK a été configuré ave
  *
  * @param props N/A.
  * @param props.handleBack HandleBack.
- * @param props.meter The selectedMeter.
  * @param props.setIsNrLinkAuthorizeInProgress Handler to set the nrLinkAutorhizeInProgress.
  * @param props.handleNext HandleNext.
+ * @param props.housingId The current housing Id.
  * @returns LastStepNrLinkConnection.
  */
 const LastStepNrLinkConnection = ({
     handleBack,
-    meter,
     setIsNrLinkAuthorizeInProgress,
     handleNext,
+    housingId,
 }: LastStepNrLinkConnectionProps) => {
     const { formatMessage } = useIntl()
     const { enqueueSnackbar } = useSnackbar()
@@ -47,14 +47,14 @@ const LastStepNrLinkConnection = ({
      * On Submit function which calls addMeter and handleNext on success.
      *
      * @param formData FormData.
-     * @param formData.meterGuid Meter GUID.
      * @param formData.nrlinkGuid NrLink GUID.
      */
     // eslint-disable-next-line jsdoc/require-jsdoc
-    const onSubmit = async (formData: { meterGuid: string; nrlinkGuid: string }) => {
+    const onSubmit = async (formData: { nrlinkGuid: string }) => {
         try {
+            const cleanData = { ...formData, networkIdentifier: housingId }
             setIsNrLinkAuthorizeInProgress(true)
-            await axios.post(`${API_RESOURCES_URL}/nrlink/authorize`, formData)
+            await axios.post(`${API_RESOURCES_URL}/nrlink/authorize`, cleanData)
             // Set Show NrLinkPopup when last step is done
             // eslint-disable-next-line jsdoc/require-jsdoc
             await axios.patch<{ showNrlinkPopup: boolean }>(`${SET_SHOW_NRLINK_POPUP_ENDPOINT}`, {
@@ -94,18 +94,10 @@ const LastStepNrLinkConnection = ({
         }
     }
     return (
-        <Form onSubmit={onSubmit} defaultValues={meter ? { meterGuid: meter!.guid, nrlinkGuid: '' } : {}}>
+        <Form onSubmit={onSubmit}>
             <div className="w-full flex justify-between items-center landscape:mt-10">
                 <div className="portrait:flex-col landscape:flex-row h-full flex justify-center items-center w-full">
                     <div className="w-full mx-32">
-                        <div className="hidden">
-                            <TextField
-                                name="meterGuid"
-                                disabled
-                                label="Numéro de mon compteur"
-                                placeholder="Ex: 12345678912345"
-                            />
-                        </div>
                         <TextField
                             name="nrlinkGuid"
                             label="№ d'identification nrLINK"
