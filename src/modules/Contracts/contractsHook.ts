@@ -122,13 +122,13 @@ const removeContractSuccess = (_responseData: IContract, formatMessage: formatMe
  * @param immediate Indicates if the called on instantiation or not.
  * @returns Hook useContractList.
  */
-export const useContractList = (houseId?: number, sizeParam?: number, immediate: boolean = true) => {
+export const useContractList = (houseId: number, sizeParam?: number, immediate: boolean = true) => {
     const { elementList, ...restBuilderUseElementList } = BuilderUseElementList<
         loadContractResponse,
         addContractDataType,
         searchFilterType
     >({
-        API_ENDPOINT: houseId ? CONTRACTS_API(houseId) : '',
+        API_ENDPOINT: CONTRACTS_API(houseId),
         sizeParam,
         snackBarMessage0verride: {
             loadElementListError: loadContractListError,

@@ -228,10 +228,10 @@ export function BuilderUseElementList<T, U, K>({
         /**
          * Handler to reload elements with page === 1.
          */
-        const reloadElements = () => {
+        const reloadElements = useCallback(() => {
             if (page === 1) loadElementList()
             else setPage(1)
-        }
+        }, [loadElementList, page])
 
         /**
          * Set Filters function, to change the filters state with a new filter.
