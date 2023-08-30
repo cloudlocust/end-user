@@ -1,4 +1,4 @@
-import { ApexAxisChartSerie, IMetric } from 'src/modules/Metrics/Metrics'
+import { ApexAxisChartSerie, IMetric, metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
 import { ApexChartsAxisValuesType } from 'src/modules/MyConsumption/myConsumptionTypes'
 
 /**
@@ -68,8 +68,7 @@ export const convertMetricsDataToApexChartsDateTimeAxisValues = (data: IMetric[]
     // We can have multiple yAxisSeries (datapoints), for each target it'll have its own yAxis Series (datapoints).
     let apexChartsSeries: ApexAxisChartSeries = []
 
-    data.forEach((metric) => {
-        // eslint-disable-next-line jsdoc/require-jsdoc
+    for (const metric of data) {
         let metricApexChartsDatapoints: ApexAxisChartSerie['data'] = metric.datapoints.map((datapoint) => {
             // Typing [number, number], because typescript infer [datapoint[1], datapoint[0]] as number[].
             // Thus typescript will infer metricApexChartsDatapoints as number[][], but we typed metricApexChartsDatapoints: ApexAxisChartSerie['data'].
@@ -82,7 +81,12 @@ export const convertMetricsDataToApexChartsDateTimeAxisValues = (data: IMetric[]
             name: metric.target,
             data: metricApexChartsDatapoints,
         })
-    })
+    }
+
+    // Check if data has subscriptionPrices target in it, then we reverse the data array so that we see subscriptionPrices at the bottom of the stacked bar chart.
+    if (data.some((target) => target.target === metricTargetsEnum.subscriptionPrices)) {
+        return apexChartsSeries.reverse()
+    }
 
     return apexChartsSeries
 }

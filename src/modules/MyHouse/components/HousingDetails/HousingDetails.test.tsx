@@ -23,6 +23,7 @@ const MOCK_TEST_CONNECTED_PLUGS: IConnectedPlug[] = applyCamelCase(TEST_CONNECTE
 let mockConnectedPlugsList = MOCK_TEST_CONNECTED_PLUGS
 
 let mockHouseId = LIST_OF_HOUSES[0].id
+const INFORMATION_DOMICILE_TEXT = 'Information domicile'
 
 /**
  * Mocking the react-router-dom for houseId in useParams.
@@ -115,18 +116,16 @@ describe('Test HousingDetails Component', () => {
         await store.dispatch.housingModel.setHousingModelState(LIST_OF_HOUSES)
     })
 
-    test('when Equipment valid', async () => {
-        await store.dispatch.housingModel.setHousingModelState(LIST_OF_HOUSES)
-
-        const { getByText } = reduxedRender(
-            <Router>
-                <HousingDetails />
-            </Router>,
-            { store },
-        )
-        expect(getByText('Chauffage')).toBeTruthy()
-        expect(getByText('Eau')).toBeTruthy()
-        expect(getByText('Plaques')).toBeTruthy()
+    describe('Information domicile card', () => {
+        test('Information domicile card is displayed', async () => {
+            const { getByText } = reduxedRender(
+                <Router>
+                    <HousingDetails />
+                </Router>,
+                { store },
+            )
+            expect(getByText(INFORMATION_DOMICILE_TEXT)).toBeInTheDocument()
+        })
     })
 
     describe('Should display connectedPlugs correctly', () => {

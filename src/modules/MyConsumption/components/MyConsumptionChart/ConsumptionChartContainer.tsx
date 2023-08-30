@@ -9,7 +9,8 @@ import { ConsumptionChartContainerProps } from 'src/modules/MyConsumption/myCons
 import CircularProgress from '@mui/material/CircularProgress'
 import EurosConsumptionButtonToggler from 'src/modules/MyConsumption/components/EurosConsumptionButtonToggler'
 import {
-    filterPmaxAndEurosConsumptionTargetFromVisibleChartTargets,
+    filterTargetsOnDailyPeriod,
+    getVisibleTargetCharts,
     showPerPeriodText,
 } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
 import {
@@ -53,9 +54,7 @@ export const ConsumptionChartContainer = ({
     const enphaseOff = enphaseConsent?.enphaseConsentState !== 'ACTIVE'
     // Visible Targets will influence k
     const [visibleTargetCharts, setVisibleTargetsCharts] = useState<metricTargetType[]>(
-        enphaseOff
-            ? [metricTargetsEnum.consumption]
-            : [metricTargetsEnum.autoconsumption, metricTargetsEnum.consumption],
+        getVisibleTargetCharts(enphaseOff),
     )
     // Indicates if enedisSgeConsent is not Connected
     const enedisSgeOff = enedisSgeConsent?.enedisSgeConsentState !== 'CONNECTED'
@@ -67,7 +66,7 @@ export const ConsumptionChartContainer = ({
         range: range,
         targets: [
             {
-                target: metricTargetsEnum.consumption,
+                target: metricTargetsEnum.baseConsumption,
                 type: 'timeserie',
             },
             {
@@ -88,11 +87,11 @@ export const ConsumptionChartContainer = ({
         [visibleTargetCharts],
     )
 
-    // This state represents whether or not the chart is stacked: true.
     const isEurosConsumptionChart = useMemo(
         () => visibleTargetCharts.includes(metricTargetsEnum.eurosConsumption),
         [visibleTargetCharts],
     )
+
     const isEurosConsumptionDisabled = !isEurosConsumptionChart && period === 'daily'
 
     // State that stores if visibleTargetCharts contains pMax or eurosConsumption when period is euros, so that when period is "daily". With this variable we prevent getMetrics to execute until we remove € and pMax targets.
@@ -107,9 +106,7 @@ export const ConsumptionChartContainer = ({
     useEffect(() => {
         // When period is daily, remove target pMax or eurosConsumption from visibleTargetCharts and thus when calling getMetrics it won't have these targets.
         if (period === 'daily') {
-            setVisibleTargetsCharts((prevState) =>
-                filterPmaxAndEurosConsumptionTargetFromVisibleChartTargets(prevState),
-            )
+            setVisibleTargetsCharts((prevState) => filterTargetsOnDailyPeriod(prevState))
         }
     }, [period])
 
@@ -117,6 +114,14 @@ export const ConsumptionChartContainer = ({
         // Resetting isVisibleTargetChartsChanged when range, filters or metricsInterval change so that we can call getMetrics only when these change.
         isVisibleTargetChartsChanged.current = false
     }, [filters, range, metricsInterval])
+
+    const customEnphaseOffConsumptionChartTargets = useMemo(
+        () =>
+            metricsInterval === '1d' || metricsInterval === '1M'
+                ? [...EnphaseOffConsumptionChartTargets, metricTargetsEnum.subscriptionPrices]
+                : EnphaseOffConsumptionChartTargets,
+        [metricsInterval],
+    )
 
     // Desire behaviour is to focus on calling getMetrics on the active target show in MyConsumptionChart, and handle the spinner only for those targets.
     // Then in the background fetching the remaining targets, and will not show a spinner and will be done without any user experience knowing it.
@@ -130,18 +135,19 @@ export const ConsumptionChartContainer = ({
             getMetricsWithParams({
                 interval: metricsInterval,
                 range,
-                targets: enphaseOff ? EnphaseOffConsumptionChartTargets : ConsumptionChartTargets,
+                targets: enphaseOff ? customEnphaseOffConsumptionChartTargets : ConsumptionChartTargets,
                 filters,
             })
         }
     }, [
-        filters,
-        range,
-        metricsInterval,
-        getMetricsWithParams,
-        visibleTargetCharts,
         isEurosConsumptionOrPmaxVisibleTargetChartOnPeriodDaily,
+        getMetricsWithParams,
+        metricsInterval,
+        range,
+        visibleTargetCharts,
+        filters,
         enphaseOff,
+        customEnphaseOffConsumptionChartTargets,
     ])
 
     // Happens everytime getMetrics dependencies change, and doesn't execute when hook is instanciated.

@@ -119,9 +119,10 @@ const removeContractSuccess = (_responseData: IContract, formatMessage: formatMe
  *
  * @param houseId Indicates contract of current House.
  * @param sizeParam Indicates the default size when loadElement.
+ * @param immediate Indicates if the called on instantiation or not.
  * @returns Hook useContractList.
  */
-export const useContractList = (houseId: number, sizeParam?: number) => {
+export const useContractList = (houseId: number, sizeParam?: number, immediate: boolean = true) => {
     const { elementList, ...restBuilderUseElementList } = BuilderUseElementList<
         loadContractResponse,
         addContractDataType,
@@ -134,6 +135,7 @@ export const useContractList = (houseId: number, sizeParam?: number) => {
             addElementError: addContractError,
             addElementSuccess: addContractSuccess,
         },
+        immediate,
     })()
 
     return {

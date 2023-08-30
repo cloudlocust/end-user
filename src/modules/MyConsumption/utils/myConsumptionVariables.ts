@@ -1,4 +1,4 @@
-import { metricTargetsEnum, metricTargetsType, metricTargetType } from 'src/modules/Metrics/Metrics.d'
+import { metricTargetsEnum, metricTargetType } from 'src/modules/Metrics/Metrics.d'
 import { PeriodEnum } from 'src/modules/MyConsumption/myConsumptionTypes'
 import { Theme } from '@mui/material/styles/createTheme'
 import { isNil } from 'lodash'
@@ -92,6 +92,12 @@ export const getChartColor = (chartName: metricTargetsEnum, theme: Theme) => {
             return '#C8D210'
         case metricTargetsEnum.injectedProduction:
             return '#6E9A8B'
+        case metricTargetsEnum.subscriptionPrices:
+            return '#CCDCDD'
+        case metricTargetsEnum.peakHourConsumption:
+            return '#CC9121'
+        case metricTargetsEnum.offPeakHourConsumption:
+            return '#CCAB1D'
         default:
             return theme.palette.secondary.main
     }
@@ -120,6 +126,7 @@ export const getYPointValueLabel = (
     const value = isNil(yValue) ? '' : yValue
     switch (chartName) {
         case metricTargetsEnum.eurosConsumption:
+        case metricTargetsEnum.subscriptionPrices:
             return `${value === '' ? value : value.toFixed(2)} €`
         case metricTargetsEnum.externalTemperature:
         case metricTargetsEnum.internalTemperature:
@@ -128,9 +135,12 @@ export const getYPointValueLabel = (
             // Value given by backend is in Va and thus convert it to kVA.
             return `${value === '' ? value : convert(value).from('VA').to('kVA'!).toFixed(2)} kVA`
         case metricTargetsEnum.consumption:
+        case metricTargetsEnum.baseConsumption:
         case metricTargetsEnum.autoconsumption:
         case metricTargetsEnum.totalProduction:
         case metricTargetsEnum.injectedProduction:
+        case metricTargetsEnum.peakHourConsumption:
+        case metricTargetsEnum.offPeakHourConsumption:
             return `${
                 value === ''
                     ? value
@@ -154,68 +164,35 @@ export const NRLINK_ENEDIS_OFF_MESSAGE =
 export const ENPHASE_OFF_MESSAGE = 'Pour voir vos données de production veuillez connecter votre onduleur'
 
 /**
+ * Targets when enphase is ON.
  * Enphase off message.
  */
 export const PRODUCTION_OFF_MESSAGE =
     'Pour voir vos données de production veuillez connecter votre onduleur Ou Reliez la prise Shelly de vos panneaux plug&play'
 
 /**
- * Targets for initialMetricHook for MyConsumption page.
- */
-export const metricTargetsHook: metricTargetsType = [
-    {
-        target: metricTargetsEnum.autoconsumption,
-        type: 'timeserie',
-    },
-    {
-        target: metricTargetsEnum.consumption,
-        type: 'timeserie',
-    },
-    {
-        target: metricTargetsEnum.eurosConsumption,
-        type: 'timeserie',
-    },
-    {
-        target: metricTargetsEnum.pMax,
-        type: 'timeserie',
-    },
-    {
-        target: metricTargetsEnum.externalTemperature,
-        type: 'timeserie',
-    },
-    {
-        target: metricTargetsEnum.internalTemperature,
-        type: 'timeserie',
-    },
-    {
-        target: metricTargetsEnum.totalProduction,
-        type: 'timeserie',
-    },
-    {
-        target: metricTargetsEnum.injectedProduction,
-        type: 'timeserie',
-    },
-]
-
-/**
  * Targets shown in ConsumptionChart.
  */
 export const ConsumptionChartTargets: metricTargetType[] = [
     metricTargetsEnum.autoconsumption,
-    metricTargetsEnum.consumption,
+    metricTargetsEnum.baseConsumption,
     metricTargetsEnum.eurosConsumption,
     metricTargetsEnum.pMax,
     metricTargetsEnum.externalTemperature,
     metricTargetsEnum.internalTemperature,
+    metricTargetsEnum.peakHourConsumption,
+    metricTargetsEnum.offPeakHourConsumption,
 ]
 
 /**
  * When EnphaseOff Targets shown in ConsumptionChart.
  */
 export const EnphaseOffConsumptionChartTargets: metricTargetType[] = [
-    metricTargetsEnum.consumption,
+    metricTargetsEnum.baseConsumption,
     metricTargetsEnum.eurosConsumption,
     metricTargetsEnum.pMax,
     metricTargetsEnum.externalTemperature,
     metricTargetsEnum.internalTemperature,
+    metricTargetsEnum.peakHourConsumption,
+    metricTargetsEnum.offPeakHourConsumption,
 ]

@@ -1,4 +1,5 @@
 import { IEnedisSgeConsent, IEnphaseConsent } from 'src/modules/Consents/Consents.d'
+import { metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
 
 /**
  * Interface MyConsumptionPeriod.
@@ -132,11 +133,11 @@ export type EurosConsumptionButtonTogglerProps =
         /**
          * RemoveTarget.
          */
-        removeTarget: (target: metricTarget) => void
+        removeTarget: (target: metricTargetsEnum) => void
         /**
          * AddTarget.
          */
-        addTarget: (target: metricTarget) => void
+        addTarget: (target: metricTargetsEnum) => void
         /**
          * Indicate eurosConsumption or consumption IconButton to be shown.
          */
