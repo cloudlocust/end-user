@@ -59,6 +59,8 @@ const EurosConsumptionButtonToggler = ({
                             onClick={() => {
                                 removeTarget(metricTargetsEnum.baseConsumption)
                                 removeTarget(metricTargetsEnum.autoconsumption)
+                                removeTarget(metricTargetsEnum.peakHourConsumption)
+                                removeTarget(metricTargetsEnum.offPeakHourConsumption)
                                 addTarget(metricTargetsEnum.eurosConsumption)
                                 addTarget(metricTargetsEnum.subscriptionPrices)
                             }}
@@ -85,6 +87,8 @@ const EurosConsumptionButtonToggler = ({
                         removeTarget(metricTargetsEnum.subscriptionPrices)
                         addTarget(metricTargetsEnum.baseConsumption)
                         addTarget(metricTargetsEnum.autoconsumption)
+                        addTarget(metricTargetsEnum.peakHourConsumption)
+                        addTarget(metricTargetsEnum.offPeakHourConsumption)
                     }}
                 >
                     <BoltIcon sx={{ width: 24, height: 24 }} />
