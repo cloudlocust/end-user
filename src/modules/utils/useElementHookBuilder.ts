@@ -30,8 +30,6 @@ interface useElementListCommonFunctions<T, U, K> {
     addElement: (body: U) => Promise<T>
     // eslint-disable-next-line jsdoc/require-jsdoc
     totalElementList: number
-    // eslint-disable-next-line jsdoc/require-jsdoc
-    loadElementList: () => void
 }
 
 /**
@@ -300,7 +298,6 @@ export function BuilderUseElementList<T, U, K>({
             addElement,
             noMoreElementToLoad,
             totalElementList,
-            loadElementList,
             /**
              * LoadMoreElements that represents the function that increments the page state.
              *
