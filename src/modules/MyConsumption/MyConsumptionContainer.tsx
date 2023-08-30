@@ -43,6 +43,8 @@ export const MyConsumptionContainer = () => {
     const [metricsInterval, setMetricsInterval] = useState<metricIntervalType>('1m')
     const { ecowattSignalsData, isLoadingInProgress: isEcowattDataInProgress } = useEcowatt(true)
 
+    const { hasMissingHousingContracts } = useHasMissingHousingContracts(range, currentHousing?.id)
+
     const nrlinkOff = nrlinkConsent?.nrlinkConsentState === 'NONEXISTENT'
     const enedisOff = enedisSgeConsent?.enedisSgeConsentState !== 'CONNECTED'
 
@@ -61,7 +63,7 @@ export const MyConsumptionContainer = () => {
 
     // UseEffect to check for consent whenever a meter is selected.
     useEffect(() => {
-        if (!currentHousing?.meter?.guid) return
+        if (!currentHousing?.id || !currentHousing?.meter?.guid) return
         setFilters(formatMetricFilter(currentHousing?.meter.guid))
         getConsents(currentHousing?.id)
     }, [currentHousing?.meter?.guid, setFilters, getConsents, currentHousing?.id])
@@ -86,8 +88,6 @@ export const MyConsumptionContainer = () => {
     useEffect(() => {
         loadConnectedPlugList()
     }, [loadConnectedPlugList])
-
-    const { hasMissingHousingContracts } = useHasMissingHousingContracts(range, currentHousing?.id)
 
     if (consentsLoading)
         return (

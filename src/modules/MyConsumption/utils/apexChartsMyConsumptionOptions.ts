@@ -232,8 +232,11 @@ export const getApexChartMyConsumptionProps = ({
         // TODO Clean this in a function.
         if (
             (yAxisSerie.name === metricTargetsEnum.consumption ||
+                yAxisSerie.name === metricTargetsEnum.baseConsumption ||
                 yAxisSerie.name === metricTargetsEnum.autoconsumption ||
                 yAxisSerie.name === metricTargetsEnum.injectedProduction ||
+                yAxisSerie.name === metricTargetsEnum.peakHourConsumption ||
+                yAxisSerie.name === metricTargetsEnum.offPeakHourConsumption ||
                 yAxisSerie.name === metricTargetsEnum.totalProduction) &&
             period !== 'daily' &&
             (yAxisSerie.data.length !== 48 || 1440)
@@ -248,6 +251,7 @@ export const getApexChartMyConsumptionProps = ({
             ...restChartSpecifities,
             opposite:
                 yAxisSerie.name !== metricTargetsEnum.consumption &&
+                yAxisSerie.name !== metricTargetsEnum.baseConsumption &&
                 yAxisSerie.name !== metricTargetsEnum.eurosConsumption &&
                 yAxisSerie.name !== metricTargetsEnum.totalProduction &&
                 yAxisSerie.name !== metricTargetsEnum.injectedProduction,
@@ -264,6 +268,9 @@ export const getApexChartMyConsumptionProps = ({
                     const isTooltipValue = typeof isTooltipOrYaxisLineIndex !== 'number'
                     if (
                         yAxisSerie.name === metricTargetsEnum.consumption ||
+                        yAxisSerie.name === metricTargetsEnum.baseConsumption ||
+                        yAxisSerie.name === metricTargetsEnum.peakHourConsumption ||
+                        yAxisSerie.name === metricTargetsEnum.offPeakHourConsumption ||
                         yAxisSerie.name === metricTargetsEnum.autoconsumption ||
                         yAxisSerie.name === metricTargetsEnum.totalProduction ||
                         yAxisSerie.name === metricTargetsEnum.injectedProduction
@@ -309,11 +316,14 @@ export const getApexChartMyConsumptionProps = ({
         // When chart is consumption or eurosConsumption then we show no stroke cause the area chart is enough otherwise it'll be too cumbersome.
         strokeWidthList.push(
             yAxisSerie.name === metricTargetsEnum.consumption ||
+                yAxisSerie.name === metricTargetsEnum.baseConsumption ||
                 yAxisSerie.name === metricTargetsEnum.eurosConsumption ||
                 yAxisSerie.name === metricTargetsEnum.autoconsumption ||
                 yAxisSerie.name === metricTargetsEnum.totalProduction ||
                 yAxisSerie.name === metricTargetsEnum.injectedProduction ||
-                yAxisSerie.name === metricTargetsEnum.subscriptionPrices
+                yAxisSerie.name === metricTargetsEnum.subscriptionPrices ||
+                yAxisSerie.name === metricTargetsEnum.peakHourConsumption ||
+                yAxisSerie.name === metricTargetsEnum.offPeakHourConsumption
                 ? 0
                 : 1.5,
         )

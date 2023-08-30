@@ -12,6 +12,9 @@ export type metricTargetType =
     | 'production_metrics'
     | 'idle_consumption'
     | 'subscription_prices'
+    | 'base_consumption_metrics'
+    | 'hp_consumption_metrics'
+    | 'hc_consumption_metrics'
 
 /**
  * Enum representing the metricTarget without exposing the backend naming.
@@ -57,6 +60,18 @@ export enum metricTargetsEnum {
      * Enum value for abonnement.
      */
     subscriptionPrices = 'subscription_prices',
+    /**
+     * Enum value for heure pleine.
+     */
+    peakHourConsumption = 'hp_consumption_metrics',
+    /**
+     * Enum for heure creuse.
+     */
+    offPeakHourConsumption = 'hc_consumption_metrics',
+    /**
+     * Base conssumption metrics (according to Tariff de base).
+     */
+    baseConsumption = 'base_consumption_metrics',
 }
 /**
  * Metrics intervals.

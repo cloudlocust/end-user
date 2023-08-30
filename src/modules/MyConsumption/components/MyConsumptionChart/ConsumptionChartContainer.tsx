@@ -5,10 +5,14 @@ import MyConsumptionChart from 'src/modules/MyConsumption/components/MyConsumpti
 import { useTheme } from '@mui/material'
 import { useMetrics } from 'src/modules/Metrics/metricsHook'
 import { IMetric, metricTargetsEnum, metricTargetType } from 'src/modules/Metrics/Metrics.d'
-import { ConsumptionChartContainerProps } from 'src/modules/MyConsumption/myConsumptionTypes.d'
+import { ConsumptionChartContainerProps } from 'src/modules/MyConsumption/myConsumptionTypes'
 import CircularProgress from '@mui/material/CircularProgress'
 import EurosConsumptionButtonToggler from 'src/modules/MyConsumption/components/EurosConsumptionButtonToggler'
-import { filterTargetsOnDailyPeriod, showPerPeriodText } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
+import {
+    filterTargetsOnDailyPeriod,
+    getVisibleTargetCharts,
+    showPerPeriodText,
+} from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
 import {
     ConsumptionChartTargets,
     EnphaseOffConsumptionChartTargets,
@@ -50,14 +54,11 @@ export const ConsumptionChartContainer = ({
     const enphaseOff = enphaseConsent?.enphaseConsentState !== 'ACTIVE'
     // Visible Targets will influence k
     const [visibleTargetCharts, setVisibleTargetsCharts] = useState<metricTargetType[]>(
-        enphaseOff
-            ? [metricTargetsEnum.consumption]
-            : [metricTargetsEnum.autoconsumption, metricTargetsEnum.consumption],
+        getVisibleTargetCharts(enphaseOff),
     )
     // Indicates if enedisSgeConsent is not Connected
     const enedisSgeOff = enedisSgeConsent?.enedisSgeConsentState !== 'CONNECTED'
     const hidePmax = period === 'daily' || enedisSgeOff
-
     // Track the change of visibleTargetCharts, so that we don't call getMetrics when visibleTargetCharts change (and thus no request when showing / hiding target in MyConsumptionChart).
     const isVisibleTargetChartsChanged = useRef(false)
     const { data, getMetricsWithParams } = useMetrics({
@@ -65,7 +66,7 @@ export const ConsumptionChartContainer = ({
         range: range,
         targets: [
             {
-                target: metricTargetsEnum.consumption,
+                target: metricTargetsEnum.baseConsumption,
                 type: 'timeserie',
             },
             {
@@ -75,7 +76,6 @@ export const ConsumptionChartContainer = ({
         ],
         filters,
     })
-
     const [consumptionChartData, setConsumptionChartData] = useState<IMetric[]>(data)
 
     // This state represents whether or not the chart is stacked: true.

@@ -425,6 +425,7 @@ export const isEqualDates = (date1: number, date2: number, period: periodType) =
 export const getChartType = (metricTarget: metricTargetType, period: periodType): ApexChart['type'] | '' => {
     if (
         (metricTarget === metricTargetsEnum.consumption ||
+            metricTarget === metricTargetsEnum.baseConsumption ||
             metricTarget === metricTargetsEnum.eurosConsumption ||
             metricTarget === metricTargetsEnum.autoconsumption ||
             metricTarget === metricTargetsEnum.injectedProduction ||
@@ -453,13 +454,20 @@ export const getChartType = (metricTarget: metricTargetType, period: periodType)
 export const getChartSpecifities = (
     target: metricTargetsEnum,
     chartLabel?: 'Consommation totale' | 'Electricité achetée sur le réseau',
+    // eslint-disable-next-line sonarjs/cognitive-complexity
 ): getChartSpecifitiesType => {
-    if (target === metricTargetsEnum.consumption && chartLabel === 'Consommation totale') {
+    if (
+        (target === metricTargetsEnum.baseConsumption || target === metricTargetsEnum.consumption) &&
+        chartLabel === 'Consommation totale'
+    ) {
         return {
             label: chartLabel,
         }
+    } else if (
+        (target === metricTargetsEnum.baseConsumption || target === metricTargetsEnum.consumption) &&
+        chartLabel === 'Electricité achetée sur le réseau'
         // eslint-disable-next-line sonarjs/no-duplicated-branches
-    } else if (target === metricTargetsEnum.consumption && chartLabel === 'Electricité achetée sur le réseau') {
+    ) {
         return {
             label: chartLabel,
         }
@@ -509,6 +517,18 @@ export const getChartSpecifities = (
         return {
             label: 'Electricité redistribuée sur le réseau',
             seriesName: 'Autoconsommation',
+            show: false,
+        }
+    } else if (target === metricTargetsEnum.peakHourConsumption) {
+        return {
+            label: 'Consommation en HP',
+            seriesName: chartLabel,
+            show: false,
+        }
+    } else if (target === metricTargetsEnum.offPeakHourConsumption) {
+        return {
+            label: 'Consommation en HC',
+            seriesName: chartLabel,
             show: false,
         }
     } else {
@@ -586,12 +606,13 @@ export const filterTargetsOnDailyPeriod = (visibleChartTargets: metricTargetType
                 ![
                     metricTargetsEnum.autoconsumption,
                     metricTargetsEnum.consumption,
+                    metricTargetsEnum.baseConsumption,
                     metricTargetsEnum.pMax,
                     metricTargetsEnum.eurosConsumption,
                     metricTargetsEnum.subscriptionPrices,
                 ].includes(target as metricTargetsEnum),
         )
-        return [metricTargetsEnum.consumption, metricTargetsEnum.autoconsumption, ...savedVisibleTargetCharts]
+        return [metricTargetsEnum.baseConsumption, metricTargetsEnum.autoconsumption, ...savedVisibleTargetCharts]
     }
     return visibleChartTargets
 }
@@ -716,6 +737,26 @@ export function getRangeV2(period: PeriodEnum) {
                     : getDateWithoutTimezoneOffset(endOfYear(currentDate)),
             }
     }
+}
+
+/**
+ * Utility function to return whuch targets should be visible.
+ *
+ * Used in ConsumptionChartContainer in visibleTargetCharts state.
+ *
+ * @param isEnphaseOff Enphase state OFF.
+ * @returns Metric targets list.
+ */
+export const getVisibleTargetCharts = (isEnphaseOff: boolean): metricTargetType[] => {
+    if (isEnphaseOff) {
+        return [
+            metricTargetsEnum.baseConsumption,
+            metricTargetsEnum.peakHourConsumption,
+            metricTargetsEnum.offPeakHourConsumption,
+        ]
+    }
+
+    return [metricTargetsEnum.autoconsumption, metricTargetsEnum.baseConsumption]
 }
 
 /**
