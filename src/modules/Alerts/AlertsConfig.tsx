@@ -8,6 +8,11 @@ import Alerts from 'src/modules/Alerts'
 export const URL_ALERTS = '/alerts'
 
 /**
+ * Is consumption alerts configuration showing.
+ */
+export const isConsumptionAlertsVisible = window._env_.REACT_APP_CONSUMPTION_ALERTS_VISIBILITY === 'enabled'
+
+/**
  * AlertsConfig.
  */
 export const AlertsConfig = [
@@ -21,6 +26,7 @@ export const AlertsConfig = [
                     UINavbarItem: {},
                 },
             },
+            disabled: !isConsumptionAlertsVisible,
         },
 
         // eslint-disable-next-line jsdoc/require-jsdoc
