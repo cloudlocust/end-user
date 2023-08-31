@@ -429,7 +429,9 @@ export const getChartType = (metricTarget: metricTargetType, period: periodType)
             metricTarget === metricTargetsEnum.eurosConsumption ||
             metricTarget === metricTargetsEnum.autoconsumption ||
             metricTarget === metricTargetsEnum.injectedProduction ||
-            metricTarget === metricTargetsEnum.totalProduction) &&
+            metricTarget === metricTargetsEnum.totalProduction ||
+            metricTarget === metricTargetsEnum.peakHourConsumption ||
+            metricTarget === metricTargetsEnum.offPeakHourConsumption) &&
         period === 'daily'
     ) {
         return 'area'
