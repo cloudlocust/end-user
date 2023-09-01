@@ -458,12 +458,16 @@ export const getChartSpecifities = (
     chartLabel?: 'Consommation totale' | 'Electricité achetée sur le réseau',
     // eslint-disable-next-line sonarjs/cognitive-complexity
 ): getChartSpecifitiesType => {
-    if (
-        (target === metricTargetsEnum.baseConsumption || target === metricTargetsEnum.consumption) &&
-        chartLabel === 'Consommation totale'
-    ) {
+    if (target === metricTargetsEnum.consumption && chartLabel === 'Consommation totale') {
         return {
             label: chartLabel,
+            seriesName: chartLabel,
+        }
+    } else if (target === metricTargetsEnum.baseConsumption && chartLabel === 'Consommation totale') {
+        return {
+            label: 'Consommation de base',
+            seriesName: chartLabel,
+            show: false,
         }
     } else if (
         (target === metricTargetsEnum.baseConsumption || target === metricTargetsEnum.consumption) &&
@@ -752,13 +756,14 @@ export function getRangeV2(period: PeriodEnum) {
 export const getVisibleTargetCharts = (isEnphaseOff: boolean): metricTargetType[] => {
     if (isEnphaseOff) {
         return [
+            metricTargetsEnum.consumption,
             metricTargetsEnum.baseConsumption,
             metricTargetsEnum.peakHourConsumption,
             metricTargetsEnum.offPeakHourConsumption,
         ]
     }
 
-    return [metricTargetsEnum.autoconsumption, metricTargetsEnum.baseConsumption]
+    return [metricTargetsEnum.autoconsumption, metricTargetsEnum.consumption]
 }
 
 /**

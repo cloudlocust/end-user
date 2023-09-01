@@ -221,7 +221,8 @@ export const getApexChartMyConsumptionProps = ({
                 defaultMessage: label,
             }),
             type:
-                yAxisSerie.name === metricTargetsEnum.totalProduction && !showTotalProduction
+                (yAxisSerie.name === metricTargetsEnum.totalProduction && !showTotalProduction) ||
+                yAxisSerie.name === metricTargetsEnum.consumption
                     ? ''
                     : getChartType(yAxisSerie.name as metricTargetType, period),
         })

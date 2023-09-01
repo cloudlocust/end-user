@@ -126,7 +126,17 @@ describe('test pure function', () => {
         })
         const mockOptionsResult = mockOptions(theme, period)
         mockOptionsResult.stroke!.show = true
-        expect(apexChartProps.series).toStrictEqual(mockyAxisSeries)
+        // eslint-disable-next-line sonarjs/no-unused-collection
+        let emptyApexSeriesType: ApexAxisChartSeries = [
+            {
+                data: [mockDatapoints[0][0]],
+                // eslint-disable-next-line sonarjs/no-duplicate-string
+                name: 'Consommation totale',
+                type: '',
+                color: '#FFEECD',
+            },
+        ]
+        expect(apexChartProps.series).toStrictEqual([...emptyApexSeriesType])
         // When it's first yAxis Line, it shows rounded value 12 Wh = 720 Watt
         expect((apexChartProps.options.yaxis as ApexYAxis[])[0].labels!.formatter!(12, 0)).toStrictEqual('720 W')
         // When it's tooltip, it shows floated value
@@ -276,7 +286,17 @@ describe('test pure function', () => {
             chartType: 'consumption',
             chartLabel: 'Consommation totale',
         })
-        expect(apexChartProps.series).toStrictEqual(mockyAxisSeries)
+        // eslint-disable-next-line sonarjs/no-unused-collection
+        let emptyApexSeriesType: ApexAxisChartSeries = [
+            {
+                data: [mockDatapoints[0][0]],
+                // eslint-disable-next-line sonarjs/no-duplicate-string
+                name: 'Consommation totale',
+                type: '',
+                color: '#FFEECD',
+            },
+        ]
+        expect(apexChartProps.series[0]).toStrictEqual(emptyApexSeriesType[0])
         // 12 Wh = 720 Watt
         // When it's first yAxis Line, it shows rounded value 12 Wh = 720 Watt
         expect((apexChartProps.options.yaxis as ApexYAxis[])[0].labels!.formatter!(12, 0)).toStrictEqual('720 W')

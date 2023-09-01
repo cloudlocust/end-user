@@ -175,6 +175,7 @@ export const PRODUCTION_OFF_MESSAGE =
  */
 export const ConsumptionChartTargets: metricTargetType[] = [
     metricTargetsEnum.autoconsumption,
+    metricTargetsEnum.consumption,
     metricTargetsEnum.baseConsumption,
     metricTargetsEnum.eurosConsumption,
     metricTargetsEnum.pMax,
@@ -189,6 +190,7 @@ export const ConsumptionChartTargets: metricTargetType[] = [
  */
 export const EnphaseOffConsumptionChartTargets: metricTargetType[] = [
     metricTargetsEnum.baseConsumption,
+    metricTargetsEnum.consumption,
     metricTargetsEnum.eurosConsumption,
     metricTargetsEnum.pMax,
     metricTargetsEnum.externalTemperature,
