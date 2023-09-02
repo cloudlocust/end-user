@@ -133,7 +133,7 @@ describe('test pure function', () => {
                 // eslint-disable-next-line sonarjs/no-duplicate-string
                 name: 'Consommation totale',
                 type: '',
-                color: '#FFEECD',
+                color: 'rgba(255,255,255, .0)',
             },
         ]
         expect(apexChartProps.series).toStrictEqual([...emptyApexSeriesType])
@@ -293,7 +293,7 @@ describe('test pure function', () => {
                 // eslint-disable-next-line sonarjs/no-duplicate-string
                 name: 'Consommation totale',
                 type: '',
-                color: '#FFEECD',
+                color: 'rgba(255,255,255, .0)',
             },
         ]
         expect(apexChartProps.series[0]).toStrictEqual(emptyApexSeriesType[0])

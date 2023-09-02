@@ -98,6 +98,8 @@ export const getChartColor = (chartName: metricTargetsEnum, theme: Theme) => {
             return '#CC9121'
         case metricTargetsEnum.offPeakHourConsumption:
             return '#CCAB1D'
+        case metricTargetsEnum.consumption:
+            return 'rgba(255,255,255, .0)'
         default:
             return theme.palette.secondary.main
     }

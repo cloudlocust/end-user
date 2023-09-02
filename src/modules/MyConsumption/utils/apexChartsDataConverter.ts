@@ -1,5 +1,6 @@
 import { ApexAxisChartSerie, IMetric, metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
-import { ApexChartsAxisValuesType } from 'src/modules/MyConsumption/myConsumptionTypes'
+import { ApexChartsAxisValuesType, periodType } from 'src/modules/MyConsumption/myConsumptionTypes.d'
+import { isEmptyMetricsData } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
 
 /**
  * Convert dataPoints array that has the format [Yaxis, Xaxis][] where Yaxis and Xaxis are numbers, to Object {yAxisValues, xAxisValues}.
@@ -59,14 +60,23 @@ export const convertMetricsDataToApexChartsAxisValues = (data: IMetric[]): ApexC
  *
  * ApexCharts Performance is much faster when using datetime xAxis.
  *
- * Example: Metric datapoints (input) [[val1, timestamp1], [val2, timestamp2], ...] => ApexCharts datapoints (output) [[timestamp1, val1], [timestamp2, val2], ...].
- *
+ * @example Metric datapoints (input) [[val1, timestamp1], [val2, timestamp2], ...] => ApexCharts datapoints (output) [[timestamp1, val1], [timestamp2, val2], ...].
  * @param data Data of format IMetric[] that will be converted .
+ * @param period Period.
  * @returns ApexCharts datapoints format (adapted for datetime xAxis).
  */
-export const convertMetricsDataToApexChartsDateTimeAxisValues = (data: IMetric[]): ApexAxisChartSeries => {
+export const convertMetricsDataToApexChartsDateTimeAxisValues = (
+    data: IMetric[],
+    period?: periodType,
+): ApexAxisChartSeries => {
     // We can have multiple yAxisSeries (datapoints), for each target it'll have its own yAxis Series (datapoints).
     let apexChartsSeries: ApexAxisChartSeries = []
+
+    // TODO: move this to a better place.
+    // Filter apexChartsSeries accprding to base consumption.
+    // If base consumption has data, then we filter HP HC targets.
+    // If base doesn't have data then we assiume that user has HP HC contract.
+    const isBaseConsumptionDataEmpty = isEmptyMetricsData(data, [metricTargetsEnum.baseConsumption])
 
     for (const metric of data) {
         let metricApexChartsDatapoints: ApexAxisChartSerie['data'] = metric.datapoints.map((datapoint) => {
@@ -86,6 +96,22 @@ export const convertMetricsDataToApexChartsDateTimeAxisValues = (data: IMetric[]
     // Check if data has subscriptionPrices target in it, then we reverse the data array so that we see subscriptionPrices at the bottom of the stacked bar chart.
     if (data.some((target) => target.target === metricTargetsEnum.subscriptionPrices)) {
         return apexChartsSeries.reverse()
+    }
+
+    // TODO: move this to a better place.
+    if (isBaseConsumptionDataEmpty && period === 'daily') {
+        return apexChartsSeries.filter(
+            (serie) =>
+                serie.name === metricTargetsEnum.consumption ||
+                serie.name === metricTargetsEnum.peakHourConsumption ||
+                serie.name === metricTargetsEnum.offPeakHourConsumption,
+        )
+    }
+
+    if (!isBaseConsumptionDataEmpty && period === 'daily') {
+        return apexChartsSeries.filter(
+            (serie) => serie.name === metricTargetsEnum.baseConsumption || serie.name === metricTargetsEnum.consumption,
+        )
     }
 
     return apexChartsSeries

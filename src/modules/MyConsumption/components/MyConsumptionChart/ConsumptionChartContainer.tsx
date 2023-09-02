@@ -13,10 +13,7 @@ import {
     getVisibleTargetCharts,
     showPerPeriodText,
 } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
-import {
-    ConsumptionChartTargets,
-    EnphaseOffConsumptionChartTargets,
-} from 'src/modules/MyConsumption/utils/myConsumptionVariables'
+import { EnphaseOffConsumptionChartTargets } from 'src/modules/MyConsumption/utils/myConsumptionVariables'
 import { targetOptions } from 'src/modules/MyConsumption/utils/myConsumptionVariables'
 import {
     DefaultContractWarning,
@@ -48,8 +45,6 @@ export const ConsumptionChartContainer = ({
     enphaseConsent,
 }: ConsumptionChartContainerProps) => {
     const theme = useTheme()
-    // This state represents whether or not the chart is displaying a spinner, which should happen only when we request the current metrics, not the request of all metrics that happens in the background.
-    const [isConsumptionChartLoading, setIsConsumptionChartLoading] = useState<boolean>(true)
     // Indicates if enphaseConsentState is not ACTIVE
     const enphaseOff = enphaseConsent?.enphaseConsentState !== 'ACTIVE'
     // Visible Targets will influence k
@@ -61,7 +56,7 @@ export const ConsumptionChartContainer = ({
     const hidePmax = period === 'daily' || enedisSgeOff
     // Track the change of visibleTargetCharts, so that we don't call getMetrics when visibleTargetCharts change (and thus no request when showing / hiding target in MyConsumptionChart).
     const isVisibleTargetChartsChanged = useRef(false)
-    const { data, getMetricsWithParams } = useMetrics({
+    const { data, getMetricsWithParams, isMetricsLoading } = useMetrics({
         interval: metricsInterval,
         range: range,
         targets: [],
@@ -112,9 +107,7 @@ export const ConsumptionChartContainer = ({
         // Condition !isVisibleTargetCharts responsible for not calling getMetrics when toggling between targets through UI Buttons (€ consumption, Temperature, pMax)
         // Condition !isEurosConsumptionOrPmaxVisibleTargetCharts responsible for preventing getMetrics to be called when period changes to daily and there'll is pMax or eurosConsumption targets in the request. Those will be removed in a useEffect and getMetrics will be called.
         if (!isEurosConsumptionOrPmaxVisibleTargetChartOnPeriodDaily) {
-            setIsConsumptionChartLoading(true)
             await getMetricsWithParams({ interval: metricsInterval, range, targets: visibleTargetCharts, filters })
-            setIsConsumptionChartLoading(false)
         }
     }, [
         isEurosConsumptionOrPmaxVisibleTargetChartOnPeriodDaily,
@@ -144,11 +137,9 @@ export const ConsumptionChartContainer = ({
      */
     const showMetricTargetChart = useCallback(
         async (targets: metricTargetType[], isEuroChart?: boolean) => {
-            setIsConsumptionChartLoading(true)
             isVisibleTargetChartsChanged.current = true
             if (enphaseOff && targets.includes(metricTargetsEnum.autoconsumption)) return
             setVisibleTargetsCharts(isEuroChart ? [...targets] : [...getVisibleTargetCharts(enphaseOff), ...targets])
-            setIsConsumptionChartLoading(false)
         },
         [enphaseOff],
     )
@@ -158,10 +149,8 @@ export const ConsumptionChartContainer = ({
      *
      */
     const resetMetricsTargets = useCallback(async () => {
-        setIsConsumptionChartLoading(true)
         isVisibleTargetChartsChanged.current = true
         setVisibleTargetsCharts([...getVisibleTargetCharts(enphaseOff)])
-        setIsConsumptionChartLoading(false)
     }, [enphaseOff])
 
     return (
@@ -200,7 +189,7 @@ export const ConsumptionChartContainer = ({
                 />
             </div>
 
-            {isConsumptionChartLoading ? (
+            {isMetricsLoading ? (
                 <div className="flex h-full w-full flex-col items-center justify-center" style={{ height: '320px' }}>
                     <CircularProgress style={{ color: theme.palette.background.paper }} />
                 </div>
