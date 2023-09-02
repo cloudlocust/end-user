@@ -109,7 +109,7 @@ describe('test pure functions', () => {
         })
         // When Consumption, it should return palette.primary.light.
         let label = getChartColor(metricTargetsEnum.consumption, theme)
-        expect(label).toBe('#AABBCC')
+        expect(label).toBe('rgba(255,255,255, .0)')
 
         // When Euros Consumption, it should return palette.primary.light.
         label = getChartColor(metricTargetsEnum.eurosConsumption, theme)

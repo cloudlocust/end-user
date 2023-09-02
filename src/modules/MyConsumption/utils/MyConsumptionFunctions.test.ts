@@ -539,6 +539,7 @@ describe('getVisibleTargetCharts tests', () => {
         enphaseOff = true
         const result = getVisibleTargetCharts(enphaseOff)
         expect(result).toStrictEqual([
+            metricTargetsEnum.consumption,
             metricTargetsEnum.baseConsumption,
             metricTargetsEnum.peakHourConsumption,
             metricTargetsEnum.offPeakHourConsumption,
@@ -548,6 +549,6 @@ describe('getVisibleTargetCharts tests', () => {
     test('when enphase is false, , it returns auto conso w/ base consumption', () => {
         const result = getVisibleTargetCharts(enphaseOff)
 
-        expect(result).toStrictEqual([metricTargetsEnum.autoconsumption, metricTargetsEnum.baseConsumption])
+        expect(result).toStrictEqual([metricTargetsEnum.autoconsumption, metricTargetsEnum.consumption])
     })
 })

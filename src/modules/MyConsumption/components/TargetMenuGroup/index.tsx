@@ -2,7 +2,6 @@ import { useEffect } from 'react'
 import Button from '@mui/material/Button'
 import { useState } from 'react'
 import { useTheme } from '@mui/material'
-import { targetOptions } from 'src/modules/MyConsumption/utils/myConsumptionVariables'
 import { ITargetMenuGroup } from 'src/modules/MyConsumption/myConsumptionTypes'
 import { metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
 import { tempPmaxFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
@@ -62,9 +61,13 @@ const TargetMenuGroup = ({ removeTarget, addTarget, hidePmax }: ITargetMenuGroup
      * @param targets Target value to handle.
      */
     const handleTarget = (targets: metricTargetsEnum[]) => {
-        targetOptions.forEach((target) => {
-            targets.includes(target) ? addTarget(target) : removeTarget(target)
-        })
+        if (targets.includes(metricTargetsEnum.internalTemperature)) {
+            addTarget([metricTargetsEnum.internalTemperature, metricTargetsEnum.externalTemperature])
+        } else if (targets.includes(metricTargetsEnum.pMax)) {
+            addTarget([metricTargetsEnum.pMax])
+        } else {
+            removeTarget()
+        }
     }
 
     useEffect(() => {

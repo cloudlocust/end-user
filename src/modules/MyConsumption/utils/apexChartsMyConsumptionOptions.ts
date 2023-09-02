@@ -197,6 +197,19 @@ export const getApexChartMyConsumptionProps = ({
         let labelsRendered: string[] = []
         // If this Serie doesn't have any data we don't show it on the chart thus we do return, and if this is true for all series then we'll show an empty chart.
         if (yAxisSerie.data.length === 0) return
+
+        let data: any = [...yAxisSerie.data]
+
+        if (
+            period === 'daily' &&
+            (yAxisSerie.name === metricTargetsEnum.peakHourConsumption ||
+                yAxisSerie.name === metricTargetsEnum.offPeakHourConsumption)
+        ) {
+            data = yAxisSerie.data.map((datapoint) =>
+                Array.isArray(datapoint) ? [datapoint[0], Number(datapoint[1])] : datapoint,
+            ) as Array<number>
+        }
+
         // Get specifity of each chart.
         const { label, ...restChartSpecifities } = getChartSpecifities(yAxisSerie.name as metricTargetsEnum, chartLabel)
 
@@ -215,13 +228,15 @@ export const getApexChartMyConsumptionProps = ({
 
         myConsumptionApexChartSeries!.push({
             ...yAxisSerie,
+            data,
             color: getChartColor(yAxisSerie.name as metricTargetsEnum, theme),
             name: formatMessage({
                 id: label,
                 defaultMessage: label,
             }),
             type:
-                yAxisSerie.name === metricTargetsEnum.totalProduction && !showTotalProduction
+                (yAxisSerie.name === metricTargetsEnum.totalProduction && !showTotalProduction) ||
+                (period !== 'daily' && yAxisSerie.name === metricTargetsEnum.consumption)
                     ? ''
                     : getChartType(yAxisSerie.name as metricTargetType, period),
         })
