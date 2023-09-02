@@ -236,7 +236,7 @@ export const getApexChartMyConsumptionProps = ({
             }),
             type:
                 (yAxisSerie.name === metricTargetsEnum.totalProduction && !showTotalProduction) ||
-                yAxisSerie.name === metricTargetsEnum.consumption
+                (period !== 'daily' && yAxisSerie.name === metricTargetsEnum.consumption)
                     ? ''
                     : getChartType(yAxisSerie.name as metricTargetType, period),
         })

@@ -14,7 +14,6 @@ import {
     showPerPeriodText,
 } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
 import { EnphaseOffConsumptionChartTargets } from 'src/modules/MyConsumption/utils/myConsumptionVariables'
-import { targetOptions } from 'src/modules/MyConsumption/utils/myConsumptionVariables'
 import {
     DefaultContractWarning,
     ConsumptionEnedisSgeWarning,
@@ -65,13 +64,27 @@ export const ConsumptionChartContainer = ({
     const [consumptionChartData, setConsumptionChartData] = useState<IMetric[]>(data)
 
     // This state represents whether or not the chart is stacked: true.
-    const isStackedEnabled = useMemo(
-        () =>
-            !visibleTargetCharts.some((visibleTargetChart) =>
-                targetOptions.includes(visibleTargetChart as metricTargetsEnum),
-            ),
-        [visibleTargetCharts],
-    )
+    const isStackedEnabled = useMemo(() => {
+        // eslint-disable-next-line sonarjs/prefer-single-boolean-return
+        if (
+            period !== 'daily' &&
+            visibleTargetCharts.some(
+                (target) =>
+                    target === metricTargetsEnum.pMax ||
+                    target === metricTargetsEnum.internalTemperature ||
+                    target === metricTargetsEnum.externalTemperature,
+            )
+        ) {
+            return false
+        } else if (
+            period === 'daily' &&
+            visibleTargetCharts.includes(metricTargetsEnum.consumption || metricTargetsEnum.baseConsumption)
+        ) {
+            return false
+        } else {
+            return true
+        }
+    }, [period, visibleTargetCharts])
 
     const isEurosConsumptionChart = useMemo(
         () => visibleTargetCharts.includes(metricTargetsEnum.eurosConsumption),

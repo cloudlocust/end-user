@@ -132,7 +132,7 @@ describe('test pure function', () => {
                 data: [mockDatapoints[0][0]],
                 // eslint-disable-next-line sonarjs/no-duplicate-string
                 name: 'Consommation totale',
-                type: '',
+                type: 'area',
                 color: 'rgba(255,255,255, .0)',
             },
         ]
@@ -292,7 +292,7 @@ describe('test pure function', () => {
                 data: [mockDatapoints[0][0]],
                 // eslint-disable-next-line sonarjs/no-duplicate-string
                 name: 'Consommation totale',
-                type: '',
+                type: 'area',
                 color: 'rgba(255,255,255, .0)',
             },
         ]

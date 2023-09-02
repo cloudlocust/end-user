@@ -104,13 +104,19 @@ export const convertMetricsDataToApexChartsDateTimeAxisValues = (
             (serie) =>
                 serie.name === metricTargetsEnum.consumption ||
                 serie.name === metricTargetsEnum.peakHourConsumption ||
-                serie.name === metricTargetsEnum.offPeakHourConsumption,
+                serie.name === metricTargetsEnum.offPeakHourConsumption ||
+                serie.name === metricTargetsEnum.externalTemperature ||
+                serie.name === metricTargetsEnum.internalTemperature,
         )
     }
 
     if (!isBaseConsumptionDataEmpty && period === 'daily') {
         return apexChartsSeries.filter(
-            (serie) => serie.name === metricTargetsEnum.baseConsumption || serie.name === metricTargetsEnum.consumption,
+            (serie) =>
+                serie.name === metricTargetsEnum.baseConsumption ||
+                serie.name === metricTargetsEnum.consumption ||
+                serie.name === metricTargetsEnum.externalTemperature ||
+                serie.name === metricTargetsEnum.internalTemperature,
         )
     }
 
