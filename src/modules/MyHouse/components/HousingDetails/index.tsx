@@ -218,7 +218,7 @@ export const HousingDetails = () => {
             content={
                 <>
                     <MeterStatus />
-                    <div className="flex flex-col items-center md:flex-row justify-around mt-40 space-x-20">
+                    <div className="flex flex-col items-center md:flex-row justify-around mt-40">
                         <HousingDetailsCard
                             title="Information domicile"
                             elements={[...housingElements, ...equipementElements]}
@@ -241,6 +241,7 @@ export const HousingDetails = () => {
                     </div>
                 </>
             }
+            innerScroll
         />
     )
 }
