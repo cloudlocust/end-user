@@ -74,9 +74,10 @@ export const targetOptions: metricTargetsEnum[] = [
  *
  * @param chartName MetricTarget Chart.
  * @param theme Current MUI Theme Applied.
+ * @param enphaseOff Enphase consent not ACTIVE.
  * @returns Color of the chartName.
  */
-export const getChartColor = (chartName: metricTargetsEnum, theme: Theme) => {
+export const getChartColor = (chartName: metricTargetsEnum, theme: Theme, enphaseOff?: boolean) => {
     switch (chartName) {
         case metricTargetsEnum.externalTemperature:
             return '#FFC200'
@@ -99,7 +100,7 @@ export const getChartColor = (chartName: metricTargetsEnum, theme: Theme) => {
         case metricTargetsEnum.offPeakHourConsumption:
             return '#CCAB1D'
         case metricTargetsEnum.consumption:
-            return 'rgba(255,255,255, .0)'
+            return enphaseOff ? 'rgba(255,255,255, .0)' : theme.palette.secondary.main
         default:
             return theme.palette.secondary.main
     }

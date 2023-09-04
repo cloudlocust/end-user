@@ -145,6 +145,7 @@ const getXAxisLabelFormatFromPeriod = (period: periodType, isTooltipLabel?: bool
  * @param params.chartType Consumption or production type.
  * @param params.chartLabel Chart label according to enphase state.
  * @param params.metricsInterval Active metrics interval.
+ * @param params.enphaseOff Enphase consent not ACTIVE.
  * @returns Props of apexCharts in MyConsumptionChart.
  */
 export const getApexChartMyConsumptionProps = ({
@@ -156,6 +157,7 @@ export const getApexChartMyConsumptionProps = ({
     chartType,
     chartLabel,
     metricsInterval,
+    enphaseOff,
 }: // eslint-disable-next-line jsdoc/require-jsdoc
 {
     // eslint-disable-next-line jsdoc/require-jsdoc
@@ -174,6 +176,8 @@ export const getApexChartMyConsumptionProps = ({
     chartLabel?: 'Consommation totale' | 'Electricité achetée sur le réseau'
     // eslint-disable-next-line jsdoc/require-jsdoc
     metricsInterval?: '1m' | '30m'
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    enphaseOff?: boolean
     // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
     let options: Props['options'] = defaultApexChartOptions(theme)!
@@ -229,7 +233,7 @@ export const getApexChartMyConsumptionProps = ({
         myConsumptionApexChartSeries!.push({
             ...yAxisSerie,
             data,
-            color: getChartColor(yAxisSerie.name as metricTargetsEnum, theme),
+            color: getChartColor(yAxisSerie.name as metricTargetsEnum, theme, enphaseOff),
             name: formatMessage({
                 id: label,
                 defaultMessage: label,

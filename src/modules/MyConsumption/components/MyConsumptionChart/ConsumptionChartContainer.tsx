@@ -215,6 +215,7 @@ export const ConsumptionChartContainer = ({
                     chartType="consumption"
                     chartLabel={enphaseOff ? 'Consommation totale' : 'Electricité achetée sur le réseau'}
                     metricsInterval={metricsInterval}
+                    enphaseOff={enphaseOff}
                 />
             )}
             <DefaultContractWarning isShowWarning={isEurosConsumptionChart && Boolean(hasMissingHousingContracts)} />

@@ -123,6 +123,7 @@ describe('test pure function', () => {
             isStackedEnabled: false,
             chartType: 'consumption',
             chartLabel: 'Consommation totale',
+            enphaseOff: true,
         })
         const mockOptionsResult = mockOptions(theme, period)
         mockOptionsResult.stroke!.show = true
@@ -285,6 +286,7 @@ describe('test pure function', () => {
             isStackedEnabled: false,
             chartType: 'consumption',
             chartLabel: 'Consommation totale',
+            enphaseOff: true,
         })
         // eslint-disable-next-line sonarjs/no-unused-collection
         let emptyApexSeriesType: ApexAxisChartSeries = [
