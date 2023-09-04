@@ -103,6 +103,7 @@ export const convertMetricsDataToApexChartsDateTimeAxisValues = (
         return apexChartsSeries.filter(
             (serie) =>
                 serie.name === metricTargetsEnum.consumption ||
+                serie.name === metricTargetsEnum.autoconsumption ||
                 serie.name === metricTargetsEnum.peakHourConsumption ||
                 serie.name === metricTargetsEnum.offPeakHourConsumption ||
                 serie.name === metricTargetsEnum.externalTemperature ||
@@ -114,6 +115,7 @@ export const convertMetricsDataToApexChartsDateTimeAxisValues = (
         return apexChartsSeries.filter(
             (serie) =>
                 serie.name === metricTargetsEnum.baseConsumption ||
+                serie.name === metricTargetsEnum.autoconsumption ||
                 serie.name === metricTargetsEnum.consumption ||
                 serie.name === metricTargetsEnum.externalTemperature ||
                 serie.name === metricTargetsEnum.internalTemperature,

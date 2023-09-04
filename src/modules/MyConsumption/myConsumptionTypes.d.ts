@@ -188,6 +188,8 @@ export interface MyConsumptionChartProps {
     chartLabel?: 'Consommation totale' | 'Electricité achetée sur le réseau'
     // eslint-disable-next-line jsdoc/require-jsdoc
     metricsInterval?: metricIntervalType
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    enphaseOff?: boolean
 }
 
 /**
