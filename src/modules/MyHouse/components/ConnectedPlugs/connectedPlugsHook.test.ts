@@ -216,6 +216,9 @@ describe('useShellyConnectedPlugs test', () => {
             const mockShellyWindowOpen = jest.fn().mockImplementation(() => ({
                 closed: true,
                 close: mockCloseOpenedShellyWindow,
+                document: {
+                    write: jest.fn(),
+                },
             }))
             window.open = mockShellyWindowOpen
 
