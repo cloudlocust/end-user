@@ -59,7 +59,7 @@ export const HousingDetails = () => {
         connectedPlugList,
         loadingInProgress: isConnectedPlugListLoading,
         loadConnectedPlugList,
-    } = useConnectedPlugList(currentHousing?.meter?.guid!, currentHousing?.id)
+    } = useConnectedPlugList(currentHousing?.id)
 
     const {
         accomodation,
@@ -184,7 +184,7 @@ export const HousingDetails = () => {
             })
 
             connectedPlugList.slice(0, 3).forEach((connectedPlug, index) => {
-                copyPrevConnectedPlugsElements[index].label = 'Prise ' + connectedPlug.deviceId
+                copyPrevConnectedPlugsElements[index].label = connectedPlug.deviceName
                 copyPrevConnectedPlugsElements[index].icon = <ElectricalServicesIcon color="primary" fontSize="large" />
             })
             return copyPrevConnectedPlugsElements
@@ -212,7 +212,7 @@ export const HousingDetails = () => {
             content={
                 <>
                     <MeterStatus />
-                    <div className="flex flex-col items-center md:flex-row justify-around mt-40 space-x-20">
+                    <div className="flex flex-col items-center md:flex-row justify-around mt-40">
                         <HousingDetailsCard
                             title="Information domicile"
                             elements={[...housingElements, ...equipementElements]}
@@ -235,6 +235,7 @@ export const HousingDetails = () => {
                     </div>
                 </>
             }
+            innerScroll
         />
     )
 }

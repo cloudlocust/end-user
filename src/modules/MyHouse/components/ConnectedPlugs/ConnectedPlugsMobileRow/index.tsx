@@ -1,7 +1,8 @@
-import { Typography } from '@mui/material'
+import { Typography, Chip } from '@mui/material'
 import {
     IConnectedPlug,
     connectedPlugConsentStateEnum,
+    connectedPlugLinkTypeEnum,
 } from 'src/modules/MyHouse/components/ConnectedPlugs/ConnectedPlugs.d'
 import Icon from '@mui/material/Icon'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
@@ -31,11 +32,11 @@ const ConnectedPlugsMobileRowContent =
                         >
                             electrical_services
                         </Icon>
-                        <div className="flex gap-2">
-                            <TypographyFormatMessage className="text-sm">Prise</TypographyFormatMessage>
-                            <Typography>{row.deviceId}</Typography>
-                        </div>
+                        <Typography>{row.deviceName}</Typography>
                     </Typography>
+                    {row.linkType === connectedPlugLinkTypeEnum.production && (
+                        <Chip color="warning" label={'production'} />
+                    )}
                 </div>
                 <div>
                     {row.consentState === connectedPlugConsentStateEnum.APPROVED ? (

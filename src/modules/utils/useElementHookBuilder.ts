@@ -124,12 +124,14 @@ export type elementDetailsSnackBarMessage0verrideType<T, K> =
  * @param props.API_ENDPOINT Represent the endpoint for all request of the customer useElementList.
  * @param props.sizeParam Default SizeParam when instanciating useElementList.
  * @param props.snackBarMessage0verride Function that returns Custom snackbar message for overriding the default useElementList messages.
+ * @param props.immediate Indicates if the called on instantiation or not.
  * @returns Builder for implement useElementList hook.
  */
 export function BuilderUseElementList<T, U, K>({
     API_ENDPOINT,
     sizeParam,
     snackBarMessage0verride,
+    immediate = true,
 }: // eslint-disable-next-line jsdoc/require-jsdoc
 {
     // eslint-disable-next-line jsdoc/require-jsdoc
@@ -138,6 +140,8 @@ export function BuilderUseElementList<T, U, K>({
     sizeParam?: number
     // eslint-disable-next-line jsdoc/require-jsdoc
     snackBarMessage0verride?: snackBarMessage0verrideType<T>
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    immediate?: boolean
 }) {
     /**
     `* Hooks for customersList.
@@ -214,18 +218,18 @@ export function BuilderUseElementList<T, U, K>({
         // UseEffect executes on initial intantiation of useElementList, responsible for loadElementList on initialLoad.
         useEffect(() => {
             if (isInitialMount.current) {
+                if (immediate) loadElementList()
                 isInitialMount.current = false
-                loadElementList()
             }
         }, [loadElementList])
 
         /**
          * Handler to reload elements with page === 1.
          */
-        const reloadElements = () => {
+        const reloadElements = useCallback(() => {
             if (page === 1) loadElementList()
             else setPage(1)
-        }
+        }, [loadElementList, page])
 
         /**
          * Set Filters function, to change the filters state with a new filter.
@@ -330,9 +334,9 @@ export function BuilderUseElementList<T, U, K>({
                 previousPage: () => setPage((prevPage) => prevPage - 1),
                 nextPage: loadMoreElements,
                 page,
-            } as useElementListFunctionsType<T, U, K, N>
+            } as unknown as useElementListFunctionsType<T, U, K, N>
         }
-        return useElementListFunctions as useElementListFunctionsType<T, U, K, N>
+        return useElementListFunctions as unknown as useElementListFunctionsType<T, U, K, N>
     }
     return useElementList
 }

@@ -47,7 +47,7 @@ export const initialMetricsHookValues: getMetricType = {
 /**
  * Analysis component.
  *
- * @returns Analysis JSX.
+ * @returns Analysis Component JSX.
  */
 export default function Analysis() {
     const theme = useTheme()
@@ -63,7 +63,7 @@ export default function Analysis() {
     useEffect(() => {
         if (!currentHousing?.meter?.guid) return
         setFilters(formatMetricFilter(currentHousing?.meter.guid))
-        getConsents(currentHousing?.meter.guid, currentHousing?.id)
+        getConsents(currentHousing?.id)
     }, [currentHousing?.meter?.guid, setFilters, getConsents, currentHousing?.id])
 
     const tabsContent = [

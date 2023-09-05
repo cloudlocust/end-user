@@ -57,10 +57,10 @@ const EurosConsumptionButtonToggler = ({
                             disabled={disabled}
                             // TODO Remove target should take an array of targets
                             onClick={() => {
-                                removeTarget(metricTargetsEnum.consumption)
-                                removeTarget(metricTargetsEnum.autoconsumption)
-                                addTarget(metricTargetsEnum.eurosConsumption)
-                                addTarget(metricTargetsEnum.subscriptionPrices)
+                                addTarget(
+                                    [metricTargetsEnum.eurosConsumption, metricTargetsEnum.subscriptionPrices],
+                                    true,
+                                )
                             }}
                         >
                             <EuroIcon sx={{ width: 20, height: 20 }} />
@@ -80,11 +80,7 @@ const EurosConsumptionButtonToggler = ({
                     }}
                     disabled={disabled}
                     onClick={() => {
-                        // TODO Remove target should take an array of targets
-                        removeTarget(metricTargetsEnum.eurosConsumption)
-                        removeTarget(metricTargetsEnum.subscriptionPrices)
-                        addTarget(metricTargetsEnum.consumption)
-                        addTarget(metricTargetsEnum.autoconsumption)
+                        removeTarget()
                     }}
                 >
                     <BoltIcon sx={{ width: 24, height: 24 }} />

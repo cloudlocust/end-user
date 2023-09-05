@@ -5,21 +5,21 @@ import { linksColor, warningMainHashColor } from 'src/modules/utils/muiThemeVari
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline'
 
 /**
- * ConsumptionErrorMessage component shows an error message depending on the received parameters nrLinkEnedisOff and enphaseOff.
+ * ConsumptionErrorMessage component shows an error message depending on the received parameters nrLinkEnedisOff and productionConsentOff.
  *
  * @param root0 N/A.
  * @param root0.nrLinkEnedisOff Nrlink and enedis are off.
- * @param root0.enphaseOff Enphase is off.
+ * @param root0.productionConsentOff Enphase is off.
  * @param root0.linkTo Redirect link.
  * @param root0.nrlinkEnedisOffMessage Message for nrlinkEnedisOff error.
- * @param root0.enphaseOffMessage Message for enphaseOff error.
+ * @param root0.productionConsentOffMessage Message for productionConsentOff error.
  * @returns ConsumptionErrorMessage component.
  */
 export const ChartErrorMessage = ({
     nrLinkEnedisOff,
     nrlinkEnedisOffMessage,
-    enphaseOff,
-    enphaseOffMessage,
+    productionConsentOff,
+    productionConsentOffMessage,
     linkTo,
 }: ChartErrorMessageProps) => {
     const theme = useTheme()
@@ -50,7 +50,7 @@ export const ChartErrorMessage = ({
                         </Typography>
                     </Link>
                 )}
-                {enphaseOff && (
+                {productionConsentOff && (
                     <Link to={linkTo!}>
                         <Typography
                             className="underline"
@@ -62,7 +62,7 @@ export const ChartErrorMessage = ({
                                 fontSize: { xs: '13px', md: '16px' },
                             }}
                         >
-                            {enphaseOffMessage}
+                            {productionConsentOffMessage}
                         </Typography>
                     </Link>
                 )}

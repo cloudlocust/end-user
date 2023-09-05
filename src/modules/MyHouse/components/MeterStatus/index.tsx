@@ -79,16 +79,16 @@ export const MeterStatus = () => {
      *
      */
     useEffect(() => {
-        getConsents(currentHousing?.meter?.guid, currentHousing?.id)
+        getConsents(currentHousing?.id)
 
         /**
          * OnStorage function that execute the setter for EnphaseStateFromLocalStorage.
          */
         const onStorage = () => {
             const enphaseConfirmConsentState = localStorage.getItem('enphaseConfirmState')
-            if (enphaseConfirmConsentState === 'SUCCESS' && currentHousing?.meter?.guid && currentHousing?.id) {
+            if (enphaseConfirmConsentState === 'SUCCESS' && currentHousing?.id) {
                 localStorage.removeItem('enphaseConfirmState')
-                getConsents(currentHousing.meter.guid, currentHousing.id)
+                getConsents(currentHousing.id)
             }
         }
 
@@ -103,7 +103,7 @@ export const MeterStatus = () => {
         return () => {
             window.removeEventListener('storage', onStorage)
         }
-    }, [currentHousing?.meter?.guid, currentHousing?.id, getConsents])
+    }, [currentHousing?.id, getConsents])
 
     /**
      * Function that renders JSX accorrding to nrlink status.
@@ -135,7 +135,7 @@ export const MeterStatus = () => {
                         <ReplaceNRLinkModule
                             nrLinkConsent={nrlinkConsent}
                             onAfterReplaceNRLink={() => {
-                                getConsents(currentHousing?.meter?.guid, currentHousing?.id)
+                                getConsents(currentHousing?.id)
                             }}
                         />
                     </>
@@ -155,7 +155,7 @@ export const MeterStatus = () => {
                                 <ReplaceNRLinkModule
                                     nrLinkConsent={nrlinkConsent}
                                     onAfterReplaceNRLink={() => {
-                                        getConsents(currentHousing?.meter?.guid, currentHousing?.id)
+                                        getConsents(currentHousing?.id)
                                     }}
                                 />
                             </div>
@@ -390,8 +390,8 @@ export const MeterStatus = () => {
                             getEnphaseLink={getEnphaseLink}
                             onRevokeEnphaseConsent={async () => {
                                 // When revoking enphase Consent means there is currentHousing!.meter.guid
-                                await revokeEnphaseConsent(currentHousing!.meter?.guid)
-                                getConsents(currentHousing!.meter?.guid, currentHousing?.id)
+                                await revokeEnphaseConsent(currentHousing!.id)
+                                getConsents(currentHousing?.id)
                             }}
                         />
                     </div>

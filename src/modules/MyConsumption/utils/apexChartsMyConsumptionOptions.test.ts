@@ -15,9 +15,9 @@ import dayjs from 'dayjs'
 const mockFormatMessage: any = (input: MessageDescriptor) => input.id
 let mockChartType: ApexChart['type'] | '' = '' || 'area' || 'bar'
 const mockDatapoints = [[247, 1651406400]]
-
+const totalProductionName = 'Production totale'
 // eslint-disable-next-line jsdoc/require-jsdoc
-const mockYAxisSeriesConvertedData: ApexAxisChartSeries = [
+let mockYAxisSeriesConvertedData: ApexAxisChartSeries = [
     {
         name: metricTargetsEnum.consumption,
         data: [mockDatapoints[0][0]],
@@ -123,10 +123,21 @@ describe('test pure function', () => {
             isStackedEnabled: false,
             chartType: 'consumption',
             chartLabel: 'Consommation totale',
+            enphaseOff: true,
         })
         const mockOptionsResult = mockOptions(theme, period)
         mockOptionsResult.stroke!.show = true
-        expect(apexChartProps.series).toStrictEqual(mockyAxisSeries)
+        // eslint-disable-next-line sonarjs/no-unused-collection
+        let emptyApexSeriesType: ApexAxisChartSeries = [
+            {
+                data: [mockDatapoints[0][0]],
+                // eslint-disable-next-line sonarjs/no-duplicate-string
+                name: 'Consommation totale',
+                type: 'area',
+                color: 'rgba(255,255,255, .0)',
+            },
+        ]
+        expect(apexChartProps.series).toStrictEqual([...emptyApexSeriesType])
         // When it's first yAxis Line, it shows rounded value 12 Wh = 720 Watt
         expect((apexChartProps.options.yaxis as ApexYAxis[])[0].labels!.formatter!(12, 0)).toStrictEqual('720 W')
         // When it's tooltip, it shows floated value
@@ -275,8 +286,19 @@ describe('test pure function', () => {
             isStackedEnabled: false,
             chartType: 'consumption',
             chartLabel: 'Consommation totale',
+            enphaseOff: true,
         })
-        expect(apexChartProps.series).toStrictEqual(mockyAxisSeries)
+        // eslint-disable-next-line sonarjs/no-unused-collection
+        let emptyApexSeriesType: ApexAxisChartSeries = [
+            {
+                data: [mockDatapoints[0][0]],
+                // eslint-disable-next-line sonarjs/no-duplicate-string
+                name: 'Consommation totale',
+                type: 'area',
+                color: 'rgba(255,255,255, .0)',
+            },
+        ]
+        expect(apexChartProps.series[0]).toStrictEqual(emptyApexSeriesType[0])
         // 12 Wh = 720 Watt
         // When it's first yAxis Line, it shows rounded value 12 Wh = 720 Watt
         expect((apexChartProps.options.yaxis as ApexYAxis[])[0].labels!.formatter!(12, 0)).toStrictEqual('720 W')
@@ -286,5 +308,57 @@ describe('test pure function', () => {
         expect((apexChartProps.options.yaxis as ApexYAxis[])[2].labels!.formatter!(12)).toStrictEqual('12 °C')
         expect((apexChartProps.options.yaxis as ApexYAxis[])[2].show).toBeFalsy()
         expect((apexChartProps.options.yaxis as ApexYAxis[])[3].labels!.formatter!(12000)).toStrictEqual('12.00 kVA')
+    })
+    test('When injectedProduction datapoint are null, total production is shown', async () => {
+        let period = 'weekly' as periodType
+
+        const mockSeriesData: ApexAxisChartSeries = [
+            {
+                name: metricTargetsEnum.injectedProduction,
+                data: [[mockDatapoints[0][1], 0]],
+            },
+            {
+                name: metricTargetsEnum.totalProduction,
+                data: [[mockDatapoints[0][1], mockDatapoints[0][0]]],
+            },
+        ]
+
+        // Test Show Total Production
+        const apexChartProps = getApexChartMyConsumptionProps({
+            yAxisSeries: mockSeriesData,
+            formatMessage: mockFormatMessage,
+            theme,
+            period,
+            isStackedEnabled: false,
+            chartType: 'production',
+        })
+        expect(apexChartProps.series[1].name).toStrictEqual(totalProductionName)
+        expect(apexChartProps.series[1].type).toStrictEqual('bar')
+    })
+    test('When injectedProduction datapoint are not null, total production is hidden', async () => {
+        let period = 'weekly' as periodType
+
+        const mockSeriesData: ApexAxisChartSeries = [
+            {
+                name: metricTargetsEnum.injectedProduction,
+                data: mockDatapoints as [number, number][],
+            },
+            {
+                name: metricTargetsEnum.totalProduction,
+                data: mockDatapoints as [number, number][],
+            },
+        ]
+
+        // Test Show Total Production
+        const apexChartProps = getApexChartMyConsumptionProps({
+            yAxisSeries: mockSeriesData,
+            formatMessage: mockFormatMessage,
+            theme,
+            period,
+            isStackedEnabled: false,
+            chartType: 'production',
+        })
+        expect(apexChartProps.series[1].name).toStrictEqual(totalProductionName)
+        expect(apexChartProps.series[1].type).toStrictEqual('')
     })
 })

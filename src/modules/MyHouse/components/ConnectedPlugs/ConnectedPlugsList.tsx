@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import { styled } from '@mui/material/styles'
 import { useIntl } from 'react-intl'
-import { Typography, Icon, Box } from '@mui/material'
+import { Typography, Chip, Icon, Box } from '@mui/material'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import FusePageCarded from 'src/common/ui-kit/fuse/components/FusePageCarded'
 import { motion } from 'framer-motion'
@@ -14,6 +14,7 @@ import { useConnectedPlugList } from 'src/modules/MyHouse/components/ConnectedPl
 import {
     IConnectedPlug,
     connectedPlugConsentStateEnum,
+    connectedPlugLinkTypeEnum,
 } from 'src/modules/MyHouse/components/ConnectedPlugs/ConnectedPlugs.d'
 import dayjs from 'dayjs'
 import ConnectedPlugsInformationMessage from 'src/modules/MyHouse/components/ConnectedPlugs/ConnectedPlugsInformationMessage'
@@ -55,7 +56,7 @@ const ConnectedPlugs = () => {
         connectedPlugList,
         loadingInProgress: isConnectedPlugListLoading,
         loadConnectedPlugList,
-    } = useConnectedPlugList(currentHousing?.meter?.guid, currentHousing?.id)
+    } = useConnectedPlugList(currentHousing?.id)
     const { formatMessage } = useIntl()
 
     useEffect(() => {
@@ -67,12 +68,16 @@ const ConnectedPlugs = () => {
             id: 'name',
             headCellLabel: formatMessage({ id: 'Nom', defaultMessage: 'Nom' }),
             // eslint-disable-next-line jsdoc/require-jsdoc
-            rowCell: (row: IConnectedPlug) => (
-                <div className="flex gap-2">
-                    <TypographyFormatMessage className="text-sm">Prise</TypographyFormatMessage>
-                    <Typography>{row.deviceId}</Typography>
-                </div>
-            ),
+            rowCell: (row: IConnectedPlug) => {
+                return (
+                    <div className="flex gap-8 items-center">
+                        <Typography>{row.deviceName}</Typography>
+                        {row.linkType === connectedPlugLinkTypeEnum.production && (
+                            <Chip color="warning" label={'production'} size="small" />
+                        )}
+                    </div>
+                )
+            },
         },
         {
             id: 'consent',

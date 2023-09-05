@@ -74,9 +74,10 @@ export const targetOptions: metricTargetsEnum[] = [
  *
  * @param chartName MetricTarget Chart.
  * @param theme Current MUI Theme Applied.
+ * @param enphaseOff Enphase consent not ACTIVE.
  * @returns Color of the chartName.
  */
-export const getChartColor = (chartName: metricTargetsEnum, theme: Theme) => {
+export const getChartColor = (chartName: metricTargetsEnum, theme: Theme, enphaseOff?: boolean) => {
     switch (chartName) {
         case metricTargetsEnum.externalTemperature:
             return '#FFC200'
@@ -94,6 +95,12 @@ export const getChartColor = (chartName: metricTargetsEnum, theme: Theme) => {
             return '#6E9A8B'
         case metricTargetsEnum.subscriptionPrices:
             return '#CCDCDD'
+        case metricTargetsEnum.peakHourConsumption:
+            return '#CC9121'
+        case metricTargetsEnum.offPeakHourConsumption:
+            return '#CCAB1D'
+        case metricTargetsEnum.consumption:
+            return enphaseOff ? 'rgba(255,255,255, .0)' : theme.palette.secondary.main
         default:
             return theme.palette.secondary.main
     }
@@ -131,9 +138,12 @@ export const getYPointValueLabel = (
             // Value given by backend is in Va and thus convert it to kVA.
             return `${value === '' ? value : convert(value).from('VA').to('kVA'!).toFixed(2)} kVA`
         case metricTargetsEnum.consumption:
+        case metricTargetsEnum.baseConsumption:
         case metricTargetsEnum.autoconsumption:
         case metricTargetsEnum.totalProduction:
         case metricTargetsEnum.injectedProduction:
+        case metricTargetsEnum.peakHourConsumption:
+        case metricTargetsEnum.offPeakHourConsumption:
             return `${
                 value === ''
                     ? value
@@ -157,24 +167,37 @@ export const NRLINK_ENEDIS_OFF_MESSAGE =
 export const ENPHASE_OFF_MESSAGE = 'Pour voir vos données de production veuillez connecter votre onduleur'
 
 /**
+ * Targets when enphase is ON.
+ * Enphase off message.
+ */
+export const PRODUCTION_OFF_MESSAGE =
+    'Pour voir vos données de production veuillez connecter votre onduleur Ou Reliez la prise Shelly de vos panneaux plug&play'
+
+/**
  * Targets shown in ConsumptionChart.
  */
 export const ConsumptionChartTargets: metricTargetType[] = [
     metricTargetsEnum.autoconsumption,
     metricTargetsEnum.consumption,
+    metricTargetsEnum.baseConsumption,
     metricTargetsEnum.eurosConsumption,
     metricTargetsEnum.pMax,
     metricTargetsEnum.externalTemperature,
     metricTargetsEnum.internalTemperature,
+    metricTargetsEnum.peakHourConsumption,
+    metricTargetsEnum.offPeakHourConsumption,
 ]
 
 /**
  * When EnphaseOff Targets shown in ConsumptionChart.
  */
 export const EnphaseOffConsumptionChartTargets: metricTargetType[] = [
+    metricTargetsEnum.baseConsumption,
     metricTargetsEnum.consumption,
     metricTargetsEnum.eurosConsumption,
     metricTargetsEnum.pMax,
     metricTargetsEnum.externalTemperature,
     metricTargetsEnum.internalTemperature,
+    metricTargetsEnum.peakHourConsumption,
+    metricTargetsEnum.offPeakHourConsumption,
 ]

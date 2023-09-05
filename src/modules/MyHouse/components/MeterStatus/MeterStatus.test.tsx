@@ -114,15 +114,6 @@ jest.mock('react-router-dom', () => ({
     }),
 }))
 
-// TODO REMOVE when Connected plug or revoke enphase is in prod
-jest.mock('src/modules/MyHouse/MyHouseConfig', () => ({
-    ...jest.requireActual('src/modules/MyHouse/MyHouseConfig'),
-    // eslint-disable-next-line jsdoc/require-jsdoc
-    get connectedPlugsFeatureState() {
-        return true
-    },
-}))
-
 // Mock consentsHook
 jest.mock('src/modules/Consents/consentsHook', () => ({
     // eslint-disable-next-line jsdoc/require-jsdoc
@@ -209,7 +200,7 @@ describe('MeterStatus component test', () => {
                 </Router>,
             )
 
-            expect(mockGetConsent).toBeCalledWith(LIST_OF_HOUSES[0].meter?.guid, mockHouseId)
+            expect(mockGetConsent).toBeCalledWith(mockHouseId)
             // Retrieve image alt attribute
             const image = getByAltText(CONNECTED_ICON_TEXT)
 
@@ -228,7 +219,7 @@ describe('MeterStatus component test', () => {
                     <MeterStatus />
                 </Router>,
             )
-            expect(mockGetConsent).toBeCalledWith(CURRENT_HOUSING?.meter?.guid, mockHouseId)
+            expect(mockGetConsent).toBeCalledWith(mockHouseId)
             // Retrieve image alt attribute
             const image = getByAltText('error-icon')
             expect(getByText(COMPTEUR_TITLE)).toBeTruthy()
@@ -246,7 +237,7 @@ describe('MeterStatus component test', () => {
                     <MeterStatus />
                 </Router>,
             )
-            expect(mockGetConsent).toBeCalledWith(CURRENT_HOUSING?.meter?.guid, mockHouseId)
+            expect(mockGetConsent).toBeCalledWith(mockHouseId)
             // Retrieve image alt attribute
             const image = getAllByAltText('off-icon')[0]
             expect(getByText(COMPTEUR_TITLE)).toBeTruthy()
@@ -269,7 +260,6 @@ describe('MeterStatus component test', () => {
                 </Router>,
             )
 
-            expect(mockGetConsent).toBeCalledWith('', CURRENT_HOUSING?.id)
             expect(getByText(NO_METER_MESSAGE)).toBeTruthy()
             expect(getByText(NRLINK_NONEXISTANT_EXPIRED_MESSAGE)).toBeTruthy()
             expect(getByText(ERROR_ENPHASE_MESSAGE)).toBeTruthy()
@@ -287,7 +277,7 @@ describe('MeterStatus component test', () => {
                     <MeterStatus />
                 </Router>,
             )
-            expect(mockGetConsent).toBeCalledWith(CURRENT_HOUSING?.meter?.guid, mockHouseId)
+            expect(mockGetConsent).toBeCalledWith(mockHouseId)
             expect(getByText(COMPTEUR_TITLE)).toBeTruthy()
             expect(getByText(`n° ${CURRENT_HOUSING?.meter?.guid}`)).toBeTruthy()
             expect(getByText(ENEDIS_CONNECTED_MESSAGE)).toBeTruthy()
@@ -331,7 +321,6 @@ describe('MeterStatus component test', () => {
     })
     describe('enphase status', () => {
         test('when revoking enphase status', async () => {
-            CURRENT_HOUSING!.meter!.guid = '12345Her'
             mockEnphaseConsent = 'ACTIVE'
             const { getByText } = reduxedRender(
                 <Router>
@@ -340,12 +329,11 @@ describe('MeterStatus component test', () => {
             )
             userEvent.click(getByText(REVOKE_ENPHASE_CONSENT_TEXT))
             await waitFor(() => {
-                expect(mockRevokeEnphaseConsent).toHaveBeenCalledWith(CURRENT_HOUSING?.meter?.guid)
+                expect(mockRevokeEnphaseConsent).toHaveBeenCalledWith(CURRENT_HOUSING?.id)
             })
-            expect(mockGetConsent).toHaveBeenCalledWith(CURRENT_HOUSING?.meter?.guid, mockHouseId)
+            expect(mockGetConsent).toHaveBeenCalledWith(mockHouseId)
         })
         test('when revoking enphase and isEnphaseLoading, spinner should be shown', async () => {
-            CURRENT_HOUSING!.meter!.guid = '12345Her'
             mockEnphaseConsent = 'ACTIVE'
             mockIsEnphaseConsentLoading = true
             const { container } = reduxedRender(
@@ -359,7 +347,6 @@ describe('MeterStatus component test', () => {
     })
     describe('test implementation of EnedisSgePopup', () => {
         test('when clicked on error message, verify meter popup is shown with loading', async () => {
-            CURRENT_HOUSING!.meter!.guid = '12345Her'
             mockEnedisSgeConsent = 'EXPIRED' || 'NONEXISTENT'
             mockisMeterVerifyLoading = true
             const { getByText, getByTestId } = reduxedRender(

@@ -60,14 +60,14 @@ export function useConsents() {
     /**
      * Function that performs HTTP call to get consents.
      *
-     * @param meterGuid MeterGuid.
+     * @param houseId HouseId.
      */
     const getConsents = useCallback(
-        async (meterGuid?: string, houseId?: number) => {
+        async (houseId?: number) => {
             setNrlinkConsent(undefined)
             setEnedisSgeConsent(undefined)
             setEnphaseConsent(undefined)
-            if (!meterGuid) return
+            if (!houseId) return
 
             setConsentsLoading(true)
             /**
@@ -78,14 +78,14 @@ export function useConsents() {
              * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/allSettled .
              */
             const [nrlinkConsent, enedisSgeConsent, enphaseConsent] = await Promise.allSettled([
-                axios.get<INrlinkConsent>(`${NRLINK_CONSENT_API}/${meterGuid}`, { cancelToken: source.current.token }),
+                axios.get<INrlinkConsent>(`${NRLINK_CONSENT_API}/${houseId}`, { cancelToken: source.current.token }),
                 sgeConsentFeatureState
                     ? axios.get<IEnedisSgeConsent>(`${ENEDIS_SGE_CONSENT_API}/${houseId}`, {
                           cancelToken: source.current.token,
                       })
                     : null, // If env is disabled, the request for SgeConsent won't be performed.
                 globalProductionFeatureState
-                    ? axios.get<IEnphaseConsent>(`${ENPHASE_CONSENT_API}/${meterGuid}`, {
+                    ? axios.get<IEnphaseConsent>(`${ENPHASE_CONSENT_API}/${houseId}`, {
                           cancelToken: source.current.token,
                       })
                     : null,
@@ -199,11 +199,11 @@ export function useConsents() {
      * Revoke Enphase Consent handler.
      */
     const revokeEnphaseConsent = useCallback(
-        async (meterGuid?: string) => {
+        async (houseId?: number) => {
             try {
-                if (!meterGuid) return
+                if (!houseId) return
                 setIsEnphaseConsentLoading(true)
-                await axios.patch(`${ENPHASE_CONSENT_API}/${meterGuid}/revoke`)
+                await axios.patch(`${ENPHASE_CONSENT_API}/${houseId}/revoke`)
                 setEnphaseConsent(undefined)
                 setIsEnphaseConsentLoading(false)
             } catch (error: any) {

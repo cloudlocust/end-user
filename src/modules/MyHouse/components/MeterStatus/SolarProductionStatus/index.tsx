@@ -44,7 +44,7 @@ export const SolarProductionConsentStatus = ({
         loadConnectedPlugList,
         associateConnectedPlug,
         getProductionConnectedPlug,
-    } = useConnectedPlugList(currentHousing?.meter?.guid, currentHousing?.id)
+    } = useConnectedPlugList(currentHousing?.id)
 
     /* Enphase created at date formatted */
     const solarProductionConsentCreatedAt = dayjs(solarProductionConsent?.createdAt).format('DD/MM/YYYY')
@@ -99,28 +99,28 @@ export const SolarProductionConsentStatus = ({
                                           })} ${solarProductionConsentCreatedAt}`}
                                 </span>
                             </span>
-                            {
-                                // TODO REMOVE when Connected plug or revoke enphase is in prod
-                                connectedPlugsFeatureState && (
-                                    <TypographyFormatMessage
-                                        color={theme.palette.primary.main}
-                                        className="underline cursor-pointer"
-                                        fontWeight={500}
-                                        onClick={
-                                            currentHousing && productionConnectedPlug
-                                                ? () =>
-                                                      associateConnectedPlug(
-                                                          productionConnectedPlug.deviceId,
-                                                          currentHousing.id,
-                                                          false,
-                                                      )
-                                                : () => onRevokeEnphaseConsent()
-                                        }
-                                    >
-                                        Annuler la récolte de mes données
-                                    </TypographyFormatMessage>
-                                )
-                            }
+                            <TypographyFormatMessage
+                                color={theme.palette.primary.main}
+                                className="underline cursor-pointer"
+                                fontWeight={500}
+                                onClick={
+                                    currentHousing && productionConnectedPlug
+                                        ? async () => {
+                                              await associateConnectedPlug(
+                                                  productionConnectedPlug.deviceId,
+                                                  currentHousing.id,
+                                                  currentHousing.meter?.guid,
+                                                  false,
+                                              )
+                                              await loadConnectedPlugList()
+                                          }
+                                        : async () => {
+                                              await onRevokeEnphaseConsent()
+                                          }
+                                }
+                            >
+                                Annuler la récolte de mes données
+                            </TypographyFormatMessage>
                         </div>
                     </>
                 )

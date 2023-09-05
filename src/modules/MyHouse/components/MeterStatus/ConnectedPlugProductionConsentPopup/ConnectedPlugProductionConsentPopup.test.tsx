@@ -24,6 +24,7 @@ const ASSOCIATE_BUTTON_TEXT = 'Enregistrer'
 const circularProgressRole = 'progressbar'
 const checkedOptionClassname = 'Mui-checked'
 const mockHouseId = LIST_OF_HOUSES[0].meter?.id
+const mockHouseMeterGuid = LIST_OF_HOUSES[0].meter?.guid
 
 jest.mock('react-router', () => ({
     ...jest.requireActual('react-router'),
@@ -118,8 +119,8 @@ describe('ConnectedPlugProductionConsentPopup component', () => {
                 },
             )
 
-            expect(getByText(`Prise ${mockConnectedPlugsList[0].deviceId}`)).toBeTruthy()
-            expect(getByText(`Prise ${mockConnectedPlugsList[1].deviceId}`)).toBeTruthy()
+            expect(getByText(mockConnectedPlugsList[0].deviceName)).toBeTruthy()
+            expect(getByText(mockConnectedPlugsList[1].deviceName)).toBeTruthy()
         })
 
         test('when Selecting a connected plug and submitting, associate connected plug should be called and history pushed', async () => {
@@ -133,15 +134,19 @@ describe('ConnectedPlugProductionConsentPopup component', () => {
                 },
             )
 
-            userEvent.click(getByLabelText(`Prise ${mockConnectedPlugsList[0].deviceId}`))
+            userEvent.click(getByLabelText(mockConnectedPlugsList[0].deviceName))
 
-            const selectedConnectedPlugOption = getByLabelText(`Prise ${mockConnectedPlugsList[0].deviceId}`)
+            const selectedConnectedPlugOption = getByLabelText(mockConnectedPlugsList[0].deviceName)
                 .parentElement as HTMLDivElement
 
             expect(selectedConnectedPlugOption.classList.contains(checkedOptionClassname)).toBeTruthy()
             userEvent.click(getByText(ASSOCIATE_BUTTON_TEXT))
             await waitFor(() => {
-                expect(mockAssociateConnectedPlug).toHaveBeenCalledWith(mockConnectedPlugsList[0].deviceId, mockHouseId)
+                expect(mockAssociateConnectedPlug).toHaveBeenCalledWith(
+                    mockConnectedPlugsList[0].deviceId,
+                    mockHouseId,
+                    mockHouseMeterGuid,
+                )
             })
             expect(mockHistoryPush).toHaveBeenCalledWith(`${URL_MY_HOUSE}/${mockHouseId}/connected-plugs`)
         })

@@ -21,6 +21,7 @@ import useMediaQuery from '@mui/material/useMediaQuery'
  * @param props.chartType Consumption or production chart type.
  * @param props.chartLabel Chart label according to enphase state.
  * @param props.metricsInterval Metrics intervals.
+ * @param props.enphaseOff Enphase consent is not ACTIVE.
  * @returns MyConsumptionChart Component.
  */
 const MyConsumptionChart = ({
@@ -31,6 +32,7 @@ const MyConsumptionChart = ({
     chartType,
     chartLabel,
     metricsInterval,
+    enphaseOff,
 }: MyConsumptionChartProps) => {
     const { formatMessage } = useIntl()
     const theme = useTheme()
@@ -54,7 +56,10 @@ const MyConsumptionChart = ({
     // The fillApexChartsDatetimeSeriesMissingValues checks if there are missing datapoints.
     const reactApexChartsProps = useMemo(() => {
         if (isDataChanged.current) {
-            let ApexChartsAxisValues: ApexAxisChartSeries = convertMetricsDataToApexChartsDateTimeAxisValues(data)
+            let ApexChartsAxisValues: ApexAxisChartSeries = convertMetricsDataToApexChartsDateTimeAxisValues(
+                data,
+                chartType === 'consumption' ? period : undefined,
+            )
             ApexChartsAxisValues = fillApexChartsDatetimeSeriesMissingValues(ApexChartsAxisValues, period, range)
             const apexChartsProps = getApexChartMyConsumptionProps({
                 yAxisSeries: ApexChartsAxisValues,
@@ -65,6 +70,7 @@ const MyConsumptionChart = ({
                 chartType,
                 chartLabel,
                 metricsInterval,
+                enphaseOff,
             })
             apexChartsProps.options!.chart!.events = {
                 /**
@@ -90,7 +96,18 @@ const MyConsumptionChart = ({
             }
             return apexChartsProps
         }
-    }, [data, period, range, formatMessage, theme, isStackedEnabled, chartType, chartLabel, metricsInterval])
+    }, [
+        data,
+        chartType,
+        period,
+        range,
+        formatMessage,
+        theme,
+        isStackedEnabled,
+        chartLabel,
+        metricsInterval,
+        enphaseOff,
+    ])
 
     return (
         <div

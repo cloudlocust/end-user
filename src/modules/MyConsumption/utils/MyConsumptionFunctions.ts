@@ -4,6 +4,7 @@ import {
     metricRangeType,
     metricTargetsEnum,
     metricTargetType,
+    IMetric,
 } from 'src/modules/Metrics/Metrics.d'
 import dayjs from 'dayjs'
 import {
@@ -36,7 +37,7 @@ import {
     endOfMonth,
     endOfYear,
 } from 'date-fns'
-import { cloneDeep } from 'lodash'
+import { cloneDeep, sum } from 'lodash'
 import { isNil } from 'lodash'
 import fr from 'date-fns/locale/fr'
 
@@ -424,24 +425,22 @@ export const isEqualDates = (date1: number, date2: number, period: periodType) =
 export const getChartType = (metricTarget: metricTargetType, period: periodType): ApexChart['type'] | '' => {
     if (
         (metricTarget === metricTargetsEnum.consumption ||
+            metricTarget === metricTargetsEnum.baseConsumption ||
             metricTarget === metricTargetsEnum.eurosConsumption ||
-            metricTarget === metricTargetsEnum.autoconsumption) &&
+            metricTarget === metricTargetsEnum.autoconsumption ||
+            metricTarget === metricTargetsEnum.injectedProduction ||
+            metricTarget === metricTargetsEnum.totalProduction ||
+            metricTarget === metricTargetsEnum.peakHourConsumption ||
+            metricTarget === metricTargetsEnum.offPeakHourConsumption) &&
         period === 'daily'
     ) {
         return 'area'
-    } else if (metricTarget === metricTargetsEnum.totalProduction) {
-        return ''
     } else if (
         metricTarget === metricTargetsEnum.externalTemperature ||
         metricTarget === metricTargetsEnum.internalTemperature ||
         metricTarget === metricTargetsEnum.pMax
     ) {
         return 'line'
-    } else if (
-        (metricTarget === metricTargetsEnum.autoconsumption || metricTargetsEnum.injectedProduction) &&
-        period === 'daily'
-    ) {
-        return 'area'
     } else {
         return 'bar'
     }
@@ -457,13 +456,24 @@ export const getChartType = (metricTarget: metricTargetType, period: periodType)
 export const getChartSpecifities = (
     target: metricTargetsEnum,
     chartLabel?: 'Consommation totale' | 'Electricité achetée sur le réseau',
+    // eslint-disable-next-line sonarjs/cognitive-complexity
 ): getChartSpecifitiesType => {
     if (target === metricTargetsEnum.consumption && chartLabel === 'Consommation totale') {
         return {
             label: chartLabel,
+            seriesName: chartLabel,
         }
+    } else if (target === metricTargetsEnum.baseConsumption && chartLabel === 'Consommation totale') {
+        return {
+            label: 'Consommation de base',
+            seriesName: chartLabel,
+            show: false,
+        }
+    } else if (
+        (target === metricTargetsEnum.baseConsumption || target === metricTargetsEnum.consumption) &&
+        chartLabel === 'Electricité achetée sur le réseau'
         // eslint-disable-next-line sonarjs/no-duplicated-branches
-    } else if (target === metricTargetsEnum.consumption && chartLabel === 'Electricité achetée sur le réseau') {
+    ) {
         return {
             label: chartLabel,
         }
@@ -513,6 +523,18 @@ export const getChartSpecifities = (
         return {
             label: 'Electricité redistribuée sur le réseau',
             seriesName: 'Autoconsommation',
+            show: false,
+        }
+    } else if (target === metricTargetsEnum.peakHourConsumption) {
+        return {
+            label: 'Consommation en HP',
+            seriesName: chartLabel,
+            show: false,
+        }
+    } else if (target === metricTargetsEnum.offPeakHourConsumption) {
+        return {
+            label: 'Consommation en HC',
+            seriesName: chartLabel,
             show: false,
         }
     } else {
@@ -590,12 +612,13 @@ export const filterTargetsOnDailyPeriod = (visibleChartTargets: metricTargetType
                 ![
                     metricTargetsEnum.autoconsumption,
                     metricTargetsEnum.consumption,
+                    metricTargetsEnum.baseConsumption,
                     metricTargetsEnum.pMax,
                     metricTargetsEnum.eurosConsumption,
                     metricTargetsEnum.subscriptionPrices,
                 ].includes(target as metricTargetsEnum),
         )
-        return [metricTargetsEnum.consumption, metricTargetsEnum.autoconsumption, ...savedVisibleTargetCharts]
+        return [metricTargetsEnum.baseConsumption, metricTargetsEnum.autoconsumption, ...savedVisibleTargetCharts]
     }
     return visibleChartTargets
 }
@@ -720,4 +743,87 @@ export function getRangeV2(period: PeriodEnum) {
                     : getDateWithoutTimezoneOffset(endOfYear(currentDate)),
             }
     }
+}
+
+/**
+ * Utility function to return whuch targets should be visible.
+ *
+ * Used in ConsumptionChartContainer in visibleTargetCharts state.
+ *
+ * @param isEnphaseOff Enphase state OFF.
+ * @returns Metric targets list.
+ */
+export const getVisibleTargetCharts = (isEnphaseOff: boolean): metricTargetType[] => {
+    if (isEnphaseOff) {
+        return [
+            metricTargetsEnum.consumption,
+            metricTargetsEnum.baseConsumption,
+            metricTargetsEnum.peakHourConsumption,
+            metricTargetsEnum.offPeakHourConsumption,
+        ]
+    }
+
+    return [metricTargetsEnum.autoconsumption, metricTargetsEnum.consumption]
+}
+
+/**
+ * Indicates if metrics data is empty.
+ *
+ * @description
+ * Empty Metrics Data happens when datapoints of all metricsData targets are NULL or 0.
+ * To check that metricsData is empty, by summing all targets datapoints and the results must be 0 as the data should be positive.
+ * Param targetsFilter to indicate which target Data to check if it's empty.
+ * @example
+ * data = [
+ *  {
+ *    "target": "consumption_metrics",
+ *    "datapoints": [[null, 00001], [null, 00002] ,[null, 00003], [null, 00004]
+ *  },
+ *  {
+ *    "target": "internal_temperature",
+ *    "datapoints": [[0, 00001], [0, 00002] ,[0, 00003], [0, 00004]
+ *  }
+ * ]
+ * => isEmptyMetricsData(data) === True
+ * The isEmptyMetricsData returns true in this case because target datapoints are full of "null" and "0"
+ * @example
+ * data = [
+ *  {
+ *    "target": "consumption_metrics",
+ *    "datapoints": [[null, 00001], [70, 00002] ,[89, 00003], [123, 00004]
+ *  },
+ *  {
+ *    "target": "internal_temperature",
+ *    "datapoints": [[0, 00001], [0, 00002] ,[120, 00003], [89, 00004]
+ *  }
+ * ]
+ * => isEmptyMetricsData(data) === False
+ * The isEmptyMetricsData returns false in this case because target datapoints are null made of only with "null" and "0"
+ * @example
+ * data = [
+ *  {
+ *    "target": "consumption_metrics",
+ *    "datapoints": [[null, 00001], [null, 00002] ,[89, 00003], [123, 00004]
+ *  },
+ *  {
+ *    "target": "internal_temperature",
+ *    "datapoints": [[0, 00001], [0, 00002] ,[0, 00003], [0, 00004]
+ *  }
+ * ]
+ * => isEmptyMetricsData(data, ['consumption_metrics']) === False
+ * The isEmptyMetricsData returns false in this case because the filtered target "consumption_metrics" datapoints are not all null or 0.
+ * @param data Metrics Data.
+ * @param targetsFilter Filter indicatting the targets to check if they have empty datapoints.
+ * @returns If Metrics Data given is empty (datapoints are "null" and "0" only).
+ */
+export const isEmptyMetricsData = (data: IMetric[], targetsFilter?: metricTargetType[]) => {
+    let totalMetricsData = 0
+    data.forEach((metric) => {
+        if (targetsFilter && !targetsFilter.includes(metric.target)) return
+
+        totalMetricsData += sum(
+            metric.datapoints.reduce((prevValues: number[], datapoints) => prevValues.concat(datapoints[0]), []),
+        )
+    })
+    return totalMetricsData === 0
 }
