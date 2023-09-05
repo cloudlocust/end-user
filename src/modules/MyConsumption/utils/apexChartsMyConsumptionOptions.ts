@@ -145,6 +145,7 @@ const getXAxisLabelFormatFromPeriod = (period: periodType, isTooltipLabel?: bool
  * @param params.chartType Consumption or production type.
  * @param params.chartLabel Chart label according to enphase state.
  * @param params.metricsInterval Active metrics interval.
+ * @param params.enphaseOff Enphase consent not ACTIVE.
  * @returns Props of apexCharts in MyConsumptionChart.
  */
 export const getApexChartMyConsumptionProps = ({
@@ -156,6 +157,7 @@ export const getApexChartMyConsumptionProps = ({
     chartType,
     chartLabel,
     metricsInterval,
+    enphaseOff,
 }: // eslint-disable-next-line jsdoc/require-jsdoc
 {
     // eslint-disable-next-line jsdoc/require-jsdoc
@@ -174,6 +176,8 @@ export const getApexChartMyConsumptionProps = ({
     chartLabel?: 'Consommation totale' | 'Electricité achetée sur le réseau'
     // eslint-disable-next-line jsdoc/require-jsdoc
     metricsInterval?: '1m' | '30m'
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    enphaseOff?: boolean
     // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
     let options: Props['options'] = defaultApexChartOptions(theme)!
@@ -197,6 +201,19 @@ export const getApexChartMyConsumptionProps = ({
         let labelsRendered: string[] = []
         // If this Serie doesn't have any data we don't show it on the chart thus we do return, and if this is true for all series then we'll show an empty chart.
         if (yAxisSerie.data.length === 0) return
+
+        let data: any = [...yAxisSerie.data]
+
+        if (
+            period === 'daily' &&
+            (yAxisSerie.name === metricTargetsEnum.peakHourConsumption ||
+                yAxisSerie.name === metricTargetsEnum.offPeakHourConsumption)
+        ) {
+            data = yAxisSerie.data.map((datapoint) =>
+                Array.isArray(datapoint) ? [datapoint[0], Number(datapoint[1])] : datapoint,
+            ) as Array<number>
+        }
+
         // Get specifity of each chart.
         const { label, ...restChartSpecifities } = getChartSpecifities(yAxisSerie.name as metricTargetsEnum, chartLabel)
 
@@ -215,13 +232,15 @@ export const getApexChartMyConsumptionProps = ({
 
         myConsumptionApexChartSeries!.push({
             ...yAxisSerie,
-            color: getChartColor(yAxisSerie.name as metricTargetsEnum, theme),
+            data,
+            color: getChartColor(yAxisSerie.name as metricTargetsEnum, theme, enphaseOff),
             name: formatMessage({
                 id: label,
                 defaultMessage: label,
             }),
             type:
-                yAxisSerie.name === metricTargetsEnum.totalProduction && !showTotalProduction
+                (yAxisSerie.name === metricTargetsEnum.totalProduction && !showTotalProduction) ||
+                (period !== 'daily' && yAxisSerie.name === metricTargetsEnum.consumption)
                     ? ''
                     : getChartType(yAxisSerie.name as metricTargetType, period),
         })
@@ -232,8 +251,11 @@ export const getApexChartMyConsumptionProps = ({
         // TODO Clean this in a function.
         if (
             (yAxisSerie.name === metricTargetsEnum.consumption ||
+                yAxisSerie.name === metricTargetsEnum.baseConsumption ||
                 yAxisSerie.name === metricTargetsEnum.autoconsumption ||
                 yAxisSerie.name === metricTargetsEnum.injectedProduction ||
+                yAxisSerie.name === metricTargetsEnum.peakHourConsumption ||
+                yAxisSerie.name === metricTargetsEnum.offPeakHourConsumption ||
                 yAxisSerie.name === metricTargetsEnum.totalProduction) &&
             period !== 'daily' &&
             (yAxisSerie.data.length !== 48 || 1440)
@@ -248,6 +270,7 @@ export const getApexChartMyConsumptionProps = ({
             ...restChartSpecifities,
             opposite:
                 yAxisSerie.name !== metricTargetsEnum.consumption &&
+                yAxisSerie.name !== metricTargetsEnum.baseConsumption &&
                 yAxisSerie.name !== metricTargetsEnum.eurosConsumption &&
                 yAxisSerie.name !== metricTargetsEnum.totalProduction &&
                 yAxisSerie.name !== metricTargetsEnum.injectedProduction,
@@ -264,6 +287,9 @@ export const getApexChartMyConsumptionProps = ({
                     const isTooltipValue = typeof isTooltipOrYaxisLineIndex !== 'number'
                     if (
                         yAxisSerie.name === metricTargetsEnum.consumption ||
+                        yAxisSerie.name === metricTargetsEnum.baseConsumption ||
+                        yAxisSerie.name === metricTargetsEnum.peakHourConsumption ||
+                        yAxisSerie.name === metricTargetsEnum.offPeakHourConsumption ||
                         yAxisSerie.name === metricTargetsEnum.autoconsumption ||
                         yAxisSerie.name === metricTargetsEnum.totalProduction ||
                         yAxisSerie.name === metricTargetsEnum.injectedProduction
@@ -309,10 +335,14 @@ export const getApexChartMyConsumptionProps = ({
         // When chart is consumption or eurosConsumption then we show no stroke cause the area chart is enough otherwise it'll be too cumbersome.
         strokeWidthList.push(
             yAxisSerie.name === metricTargetsEnum.consumption ||
+                yAxisSerie.name === metricTargetsEnum.baseConsumption ||
                 yAxisSerie.name === metricTargetsEnum.eurosConsumption ||
                 yAxisSerie.name === metricTargetsEnum.autoconsumption ||
                 yAxisSerie.name === metricTargetsEnum.totalProduction ||
-                yAxisSerie.name === metricTargetsEnum.injectedProduction
+                yAxisSerie.name === metricTargetsEnum.injectedProduction ||
+                yAxisSerie.name === metricTargetsEnum.subscriptionPrices ||
+                yAxisSerie.name === metricTargetsEnum.peakHourConsumption ||
+                yAxisSerie.name === metricTargetsEnum.offPeakHourConsumption
                 ? 0
                 : 1.5,
         )
@@ -350,6 +380,7 @@ export const getApexChartMyConsumptionProps = ({
                 }
             },
         },
+        inverseOrder: isStackedEnabled ? true : false,
     }
 
     if (xAxisType === 'category') {

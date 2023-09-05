@@ -56,8 +56,10 @@ describe('Unit tests for TargetMenuGroup component', () => {
 
         menuItems[2].click()
 
-        expect(mockAddTarget).toBeCalledWith(metricTargetsEnum.internalTemperature)
-        expect(mockAddTarget).toBeCalledWith(metricTargetsEnum.externalTemperature)
+        expect(mockAddTarget).toBeCalledWith([
+            metricTargetsEnum.internalTemperature,
+            metricTargetsEnum.externalTemperature,
+        ])
     })
     test('when clicked on Pmax menu item, pmax target is called', async () => {
         const { getByLabelText, getAllByRole } = reduxedRender(
@@ -73,7 +75,7 @@ describe('Unit tests for TargetMenuGroup component', () => {
 
         menuItems[3].click()
 
-        expect(mockAddTarget).toBeCalledWith(metricTargetsEnum.pMax)
+        expect(mockAddTarget).toBeCalledWith([metricTargetsEnum.pMax])
     })
     test('when clicked on Annuler, all targets are reset', async () => {
         const { getByLabelText, getAllByRole } = reduxedRender(

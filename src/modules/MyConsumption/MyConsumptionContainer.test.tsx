@@ -57,7 +57,7 @@ const RANGE_TEXT = 'Range'
 // Mock function to check the value of period state in MyConsumptionContainer.
 const mockSetPeriod = jest.fn()
 const PERIOD_TEXT = 'Period'
-const METRICS_INTERVAL_ENPHASE_ACTIVE = '30m'
+const METRICS_INTERVAL_PRODUCTION_ACTIVE = '30m'
 
 // Mock consentsHook
 jest.mock('src/modules/Consents/consentsHook.ts', () => ({
@@ -165,7 +165,21 @@ describe('MyConsumptionContainer test', () => {
         )
         // Period EnphaseConsent Active
         await waitFor(() => {
-            expect(getByText(METRICS_INTERVAL_ENPHASE_ACTIVE)).toBeTruthy()
+            expect(getByText(METRICS_INTERVAL_PRODUCTION_ACTIVE)).toBeTruthy()
+        })
+    })
+    test('When connected plug production, metricsIterval is related to it', async () => {
+        // eslint-disable-next-line jsdoc/require-jsdoc
+        mockGetProductionConnectedPlug = () => MOCK_TEST_CONNECTED_PLUGS[0]
+        mockEnphaseConsent!.enphaseConsentState = 'ACTIVE'
+        const { getByText } = reduxedRender(
+            <Router>
+                <MyConsumptionContainer />
+            </Router>,
+            { initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[0] } } },
+        )
+        await waitFor(() => {
+            expect(getByText(METRICS_INTERVAL_PRODUCTION_ACTIVE)).toBeTruthy()
         })
     })
 

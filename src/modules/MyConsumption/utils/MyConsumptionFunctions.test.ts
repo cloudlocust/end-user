@@ -9,11 +9,12 @@ import {
     getDateWithoutTimezoneOffset,
     addPeriod,
     subPeriod,
-    filterPmaxAndEurosConsumptionTargetFromVisibleChartTargets,
+    filterTargetsOnDailyPeriod,
     convertConsumptionToWatt,
     getRangeV2,
     subtractTime,
     addTime,
+    getVisibleTargetCharts,
 } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
 import { IMetric, metricIntervalType, metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
 import { FAKE_WEEK_DATA, FAKE_DAY_DATA, FAKE_MONTH_DATA, FAKE_YEAR_DATA } from 'src/mocks/handlers/metrics'
@@ -335,13 +336,13 @@ describe('test pure functions', () => {
         })
     })
 
-    test('filterPmaxAndEurosConsumptionTargetFromVisibleChartTargets test with different cases', async () => {
+    test('filterTargetsOnDailyPeriod test with different cases', async () => {
         const caseList = [
             // Filtering eurosConsumption Target.
             {
                 visibleTargetsChart: [metricTargetsEnum.eurosConsumption, metricTargetsEnum.internalTemperature],
                 expectedResult: [
-                    metricTargetsEnum.consumption,
+                    metricTargetsEnum.baseConsumption,
                     metricTargetsEnum.autoconsumption,
                     metricTargetsEnum.internalTemperature,
                 ],
@@ -349,18 +350,18 @@ describe('test pure functions', () => {
             // Filtering pMax Target.
             {
                 visibleTargetsChart: [metricTargetsEnum.eurosConsumption, metricTargetsEnum.pMax],
-                expectedResult: [metricTargetsEnum.consumption, metricTargetsEnum.autoconsumption],
+                expectedResult: [metricTargetsEnum.baseConsumption, metricTargetsEnum.autoconsumption],
             },
             // Everything's alright.
             {
                 visibleTargetsChart: [
-                    metricTargetsEnum.consumption,
+                    metricTargetsEnum.baseConsumption,
                     metricTargetsEnum.autoconsumption,
                     metricTargetsEnum.internalTemperature,
                     metricTargetsEnum.externalTemperature,
                 ],
                 expectedResult: [
-                    metricTargetsEnum.consumption,
+                    metricTargetsEnum.baseConsumption,
                     metricTargetsEnum.autoconsumption,
                     metricTargetsEnum.internalTemperature,
                     metricTargetsEnum.externalTemperature,
@@ -368,7 +369,7 @@ describe('test pure functions', () => {
             },
         ]
         caseList.forEach(({ visibleTargetsChart, expectedResult }) => {
-            const result = filterPmaxAndEurosConsumptionTargetFromVisibleChartTargets(visibleTargetsChart)
+            const result = filterTargetsOnDailyPeriod(visibleTargetsChart)
             expect(result).toEqual(expectedResult)
         })
     })
@@ -524,5 +525,30 @@ describe('addTime', () => {
         const expectedDate = getDateWithoutTimezoneOffset(addYears(startOfYear(currentDate), 1))
         const actualDate = addTime(currentDate, PeriodEnum.YEARLY)
         expect(actualDate).toEqual(expectedDate)
+    })
+})
+
+describe('getVisibleTargetCharts tests', () => {
+    let enphaseOff = false
+
+    beforeEach(() => {
+        enphaseOff = false
+    })
+
+    test('when enphaseOff is true, it returns consumption metrics', () => {
+        enphaseOff = true
+        const result = getVisibleTargetCharts(enphaseOff)
+        expect(result).toStrictEqual([
+            metricTargetsEnum.consumption,
+            metricTargetsEnum.baseConsumption,
+            metricTargetsEnum.peakHourConsumption,
+            metricTargetsEnum.offPeakHourConsumption,
+        ])
+    })
+
+    test('when enphase is false, , it returns auto conso w/ base consumption', () => {
+        const result = getVisibleTargetCharts(enphaseOff)
+
+        expect(result).toStrictEqual([metricTargetsEnum.autoconsumption, metricTargetsEnum.consumption])
     })
 })
