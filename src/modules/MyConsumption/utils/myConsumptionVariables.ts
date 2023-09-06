@@ -176,7 +176,7 @@ export const PRODUCTION_OFF_MESSAGE =
 /**
  * Targets shown in ConsumptionChart.
  */
-export const consumptionChartTargets: metricTargetType[] = [
+export const ConsumptionChartTargets: metricTargetType[] = [
     metricTargetsEnum.autoconsumption,
     metricTargetsEnum.consumption,
     metricTargetsEnum.baseConsumption,
