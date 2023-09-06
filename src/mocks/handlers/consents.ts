@@ -13,6 +13,13 @@ import dayjs from 'dayjs'
 export const TEST_CREATED_AT_DATE = '2022-09-15T08:23:55+0000'
 // eslint-disable-next-line jsdoc/require-jsdoc
 export const TEST_METER_GUID = '17707368031234'
+
+// eslint-disable-next-line jsdoc/require-jsdoc
+export const TEST_ERROR_AUTHORIZATION = 'error'
+
+// eslint-disable-next-line jsdoc/require-jsdoc
+export const TEST_ERROR_ENPHASE_AUTHORIZATION = 'error_enphase'
+
 /**
  * Success test Nrlink consent.
  */
@@ -46,29 +53,30 @@ export const TEST_SUCCESS_ENPHASE_CONSENT: SnakeCasedPropertiesDeep<IEnphaseCons
 export const consentsEndpoints = [
     rest.get<IEnedisSgeConsent>(`${ENEDIS_SGE_CONSENT_API}/:houseId`, (req, res, ctx) => {
         const authorization = req.headers.get('authorization')
-        if (authorization === 'error') {
+        if (authorization === TEST_ERROR_AUTHORIZATION) {
             return res(ctx.status(400), ctx.delay(1000))
         } else {
             return res(ctx.status(200), ctx.delay(1000), ctx.json(TEST_SUCCESS_ENEDIS_SGE_CONSENT))
         }
     }),
 
-    rest.get<INrlinkConsent>(`${NRLINK_CONSENT_API}/:meter_guid`, (req, res, ctx) => {
+    rest.get<INrlinkConsent>(`${NRLINK_CONSENT_API}/:houseId`, (req, res, ctx) => {
         const authorization = req.headers.get('authorization')
-        if (authorization === 'error') {
+        if (authorization === TEST_ERROR_AUTHORIZATION) {
             return res(ctx.status(400), ctx.delay(1000))
         } else {
             return res(ctx.status(200), ctx.delay(1000), ctx.json(TEST_SUCCESS_NRLINK_CONSENT))
         }
     }),
-    rest.get<IEnphaseConsent>(`${ENPHASE_CONSENT_API}/:meter_guid`, (req, res, ctx) => {
+    rest.get<IEnphaseConsent>(`${ENPHASE_CONSENT_API}/:houseId`, (req, res, ctx) => {
         const authorization = req.headers.get('authorization')
-        if (authorization === 'error') {
+        if (authorization === TEST_ERROR_AUTHORIZATION) {
             return res(ctx.status(400), ctx.delay(1000))
         } else {
             return res(ctx.status(200), ctx.delay(1000), ctx.json(TEST_SUCCESS_ENPHASE_CONSENT))
         }
     }),
+
     rest.get(`${API_RESOURCES_URL}/enedis-sge/consent/:houseid/check`, (req, res, ctx) => {
         const authorization = req.headers.get('authorization')
         if (authorization && authorization === 'snackbar_error') {
@@ -90,7 +98,7 @@ export const consentsEndpoints = [
     }),
     rest.get(`${ENPHASE_URL}/:housingId`, (req, res, ctx) => {
         const authorization = req.headers.get('authorization')
-        if (authorization && authorization === 'error') {
+        if (authorization && authorization === TEST_ERROR_AUTHORIZATION) {
             return res(ctx.status(400), ctx.delay(1000))
         } else {
             return res(
@@ -100,6 +108,15 @@ export const consentsEndpoints = [
                     url: 'https://enlighten.enphaseenergy.com/',
                 }),
             )
+        }
+    }),
+
+    rest.patch(`${ENPHASE_CONSENT_API}/:houseId/revoke`, (req, res, ctx) => {
+        const authorization = req.headers.get('authorization')
+        if (authorization === TEST_ERROR_ENPHASE_AUTHORIZATION) {
+            return res(ctx.status(400), ctx.delay(1000))
+        } else {
+            return res(ctx.status(200), ctx.delay(1000))
         }
     }),
 ]

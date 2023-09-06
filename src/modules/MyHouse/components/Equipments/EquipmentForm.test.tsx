@@ -21,7 +21,6 @@ let mockEquipmentList: IEquipmentMeter[] | null = TEST_METER_EQUIPMENTS
 const MODIFIER_BUTTON_TEXT = 'Modifier'
 const SANITARY_INFO_TEXT = 'Eau chaude sanitaire :'
 const HEATER_TEXT = 'Type de chauffage :'
-const EQUIPMENT_INFO_TEXT = 'Informations Equipements'
 const HOTPLATE_INFO_TEXT = 'Type de plaques de cuisson :'
 const INDUCTION_VALUE_TEXT = 'Induction'
 const DISABLED_CLASS = 'Mui-disabled'
@@ -80,7 +79,6 @@ describe('Test EquipmentForm', () => {
         expect(getByText(INDUCTION_VALUE_TEXT).classList.contains(DISABLED_CLASS)).toBeTruthy()
         expect(getByText(HEATER_TEXT)).toBeTruthy()
         expect(getByText(SANITARY_INFO_TEXT)).toBeTruthy()
-        expect(getByText(EQUIPMENT_INFO_TEXT)).toBeTruthy()
         expect(getByText(HOTPLATE_INFO_TEXT)).toBeTruthy()
         expect(getByText(MODIFIER_BUTTON_TEXT)).toBeTruthy()
         expect(() => getByText(ANNULER_BUTTON_TEXT)).toThrow()
@@ -95,18 +93,18 @@ describe('Test EquipmentForm', () => {
     })
 
     test('When submitting data, saveEquipment data should be changed and saveEquipment should be called', async () => {
-        const { getAllByText, getByText } = reduxedRender(
+        const { getByText, getAllByText } = reduxedRender(
             <BrowserRouter>
                 <EquipmentForm />
             </BrowserRouter>,
         )
         userEvent.click(getByText(MODIFIER_BUTTON_TEXT))
         await act(async () => {
-            fireEvent.click(getAllByText('Eléctricité')[0])
+            fireEvent.click(getAllByText('Collectif')[0])
             fireEvent.click(getByText('Induction'))
         })
         await waitFor(async () => {
-            expect(getAllByText('Eléctricité')[0].getAttribute('value')).toBe('electricity')
+            expect(getAllByText('Collectif')[0].getAttribute('value')).toBe('collective')
             expect(getByText('Induction').getAttribute('value')).toBe('induction')
         })
         await waitFor(() => {
@@ -115,8 +113,9 @@ describe('Test EquipmentForm', () => {
         userEvent.click(getByText(ENREGISTRER_BUTTON_TEXT))
         await waitFor(() => {
             expect(mockSaveEquipment).toHaveBeenCalledWith([
-                { equipmentId: 1, equipmentType: 'electricity', equipmentNumber: 0 },
+                { equipmentId: 1, equipmentType: 'collective', equipmentNumber: 0 },
                 { equipmentId: 3, equipmentType: 'induction', equipmentNumber: 0 },
+                { equipmentId: 14, equipmentType: 'existant' },
             ])
         })
     })

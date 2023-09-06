@@ -94,13 +94,11 @@ describe('Test SelectHousing Widget.', () => {
             URL_MY_HOUSE + '/' + LIST_OF_HOUSES[1].id,
         )
 
-        // Clicking on the link won't affect the test, it just cover the line where onClick of Link.
+        // Clicking on the link (on the param icon).
         act(() => {
             fireEvent.click(getAllByRole('option')[1].getElementsByTagName('a')[0])
         })
-        // Select LIST_OF_HOUSES[1] option
-        userEvent.click(getByText(LIST_OF_HOUSES[1].address.name))
-        // Check that select shows the selected option.
+
         await waitFor(
             () => {
                 // Select is closed and no other option is shown.
@@ -110,6 +108,7 @@ describe('Test SelectHousing Widget.', () => {
         )
         // The current housing appears as default selected
         expect(getByText(LIST_OF_HOUSES[1].address.name)).toBeTruthy()
+        expect(window.location.pathname).toBe(`/my-houses/${LIST_OF_HOUSES[1].id}`)
     }, 20000)
 
     test('When Clicking on add house, modal should appear, and when clicking on the backdrop it should close', async () => {

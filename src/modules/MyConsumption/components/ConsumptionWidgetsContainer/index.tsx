@@ -3,19 +3,14 @@ import { globalProductionFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
 import { Grid } from '@mui/material'
 import { useTheme } from '@mui/material'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
-import { WidgetTargets } from 'src/modules/MyConsumption/utils/myConsumptionVariables'
 import { Widget } from 'src/modules/MyConsumption/components/Widget'
 import { ConsumptionWidgetsContainerProps } from 'src/modules/MyConsumption/components/ConsumptionWidgetsContainer/WidgetContainer'
 import { getWidgetInfoIcon } from 'src/modules/MyConsumption/components/WidgetInfoIcons'
 import WidgetConsumption from 'src/modules/MyConsumption/components/WidgetConsumption'
 import { ConsumptionWidgetsMetricsContext } from 'src/modules/MyConsumption/components/ConsumptionWidgetsContainer/ConsumptionWidgetsMetricsContext'
-import { metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
-import { isWidgetMonthlyMetrics } from 'src/modules/MyConsumption/components/Widget/WidgetFunctions'
+import { metricTargetsEnum, metricTargetType } from 'src/modules/Metrics/Metrics.d'
 import WidgetIdleConsumption from 'src/modules/MyConsumption/components/WidgetIdleConsumption'
 
-const renderedWidgets = globalProductionFeatureState
-    ? WidgetTargets.filter((target) => target !== metricTargetsEnum.consumption)
-    : WidgetTargets
 /**
  * MyConsumptionWidgets Component (it's Wrapper of the list of Widgets).
  *
@@ -41,6 +36,24 @@ const ConsumptionWidgetsContainer = ({
     const theme = useTheme()
     const { resetMetricsWidgetData } = useContext(ConsumptionWidgetsMetricsContext)
 
+    const renderedWidgets: metricTargetType[] =
+        globalProductionFeatureState && !enphaseOff
+            ? [
+                  metricTargetsEnum.totalProduction,
+                  metricTargetsEnum.eurosConsumption,
+                  metricTargetsEnum.autoconsumption,
+                  metricTargetsEnum.pMax,
+                  metricTargetsEnum.externalTemperature,
+                  metricTargetsEnum.internalTemperature,
+              ]
+            : [
+                  metricTargetsEnum.consumption,
+                  metricTargetsEnum.eurosConsumption,
+                  metricTargetsEnum.pMax,
+                  metricTargetsEnum.externalTemperature,
+                  metricTargetsEnum.internalTemperature,
+              ]
+
     /**
      *   We should reset the metrics context when the range, filters, metricsInterval or period changes,
      * because we have a completely new metrics when one of those dependencies changes.
@@ -59,18 +72,18 @@ const ConsumptionWidgetsContainer = ({
             <div style={{ background: theme.palette.background.default }} className="w-full my-8">
                 <Grid container spacing={{ xs: 1, md: 2 }}>
                     {/**
-                     * If enphase consent is enabled, Display consumption target (first_target in WidgetTargets) with a specific WidgetConsumption Component,
+                     * If enphase consent is enabled, Display consumption target with a specific WidgetConsumption Component,
                      *    that displays two info : the consumption total and the purchased consumption,
                      *   (because in this case consumption total = purchased consumption + auto consumption).
                      * Otherwise it'll be displayed with then normal Widget component, that displays one info : the consumption total,
                      *    (because in this case consumption total = purchased consumption).
                      */}
-                    {globalProductionFeatureState && (
+                    {globalProductionFeatureState && !enphaseOff && (
                         <WidgetConsumption
                             target={metricTargetsEnum.consumption}
                             range={range}
                             filters={filters}
-                            metricsInterval={period === 'monthly' ? '1M' : metricsInterval}
+                            metricsInterval={metricsInterval}
                             period={period}
                             infoIcon={getWidgetInfoIcon({
                                 widgetTarget: metricTargetsEnum.consumption,
@@ -78,6 +91,7 @@ const ConsumptionWidgetsContainer = ({
                                 enphaseOff,
                                 enedisSgeOff: enedisOff,
                             })}
+                            enphaseOff={enphaseOff}
                         />
                     )}
 
@@ -101,7 +115,7 @@ const ConsumptionWidgetsContainer = ({
                                 target={target}
                                 range={range}
                                 filters={filters}
-                                metricsInterval={isWidgetMonthlyMetrics(target, period) ? '1M' : metricsInterval}
+                                metricsInterval={metricsInterval}
                                 period={period}
                                 infoIcon={getWidgetInfoIcon({
                                     widgetTarget: target,
@@ -109,6 +123,7 @@ const ConsumptionWidgetsContainer = ({
                                     enphaseOff,
                                     enedisSgeOff: enedisOff,
                                 })}
+                                enphaseOff={enphaseOff}
                             />
                         )
                     })}

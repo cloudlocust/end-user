@@ -8,29 +8,54 @@ pipeline{
 
     stages{
         stage ('Install deps') {
+            when {
+                expression {
+                    !changedchart('enduser-react-chart') || (env.BUILD_NUMBER == '1')
+                }
+            }
             steps {
                 // Using ignore-engines, will fix the error "engine node incompatible with this module", when using yarn install which happens on jenkins after installing firebase package.
                 sh 'npm install -g yarn && yarn install --ignore-engines && export NODE_OPTIONS="--max-old-space-size=8192"'
             }
         }
         stage ('Eslint') {
+            when {
+                expression {
+                    !changedchart('enduser-react-chart') || (env.BUILD_NUMBER == '1')
+                }
+            }
             steps {
                 sh 'npx eslint . --max-warnings=0'
             }
         }
         stage('Typescript') {
+            when {
+                expression {
+                    !changedchart('enduser-react-chart') || (env.BUILD_NUMBER == '1')
+                }
+            }
             steps {
                 sh 'npx tsc --skipLibCheck'
             }
 
         }
         stage('Unit-test'){
+            when {
+                expression {
+                    !changedchart('enduser-react-chart') || (env.BUILD_NUMBER == '1')
+                }
+            }
             steps {
                 sh 'yarn test --bail --watchAll=false --maxWorkers=2 --no-cache  --coverage --testResultsProcessor jest-sonar-reporter'
             }
 
         }
         stage('build && SonarQube analysis') {
+            when {
+                expression {
+                    !changedchart('enduser-react-chart') || (env.BUILD_NUMBER == '1')
+                }
+            }
             environment {
                 scannerHome = tool 'SonarQubeScanner'
                 sonarqube_Token = credentials('sonarq-token')
@@ -50,6 +75,11 @@ pipeline{
             }
         }
         stage("Quality Gate") {
+            when {
+                expression {
+                    !changedchart('enduser-react-chart') || (env.BUILD_NUMBER == '1')
+                }
+            }
             steps {
                 timeout(time: 10, unit: 'MINUTES') {
                     // Parameter indicates whether to set pipeline to UNSTABLE if Quality Gate fails
@@ -61,7 +91,8 @@ pipeline{
         stage('Test NG generate') {
             when {
               expression { ! (BRANCH_NAME ==~ /(production|master|develop)/) }
-            }
+              expression { !changedchart('enduser-react-chart') || (env.BUILD_NUMBER == '1') }
+            }            
             steps{
                sh 'yarn build'
             }
@@ -69,6 +100,7 @@ pipeline{
         stage("Publish") {
             when {
                     expression { BRANCH_NAME ==~ /(production|master|develop)/ }
+                    expression { !changedchart('enduser-react-chart') || (env.BUILD_NUMBER == '1') }
             }
            stages {
            stage('Publish in dockerhub'){
@@ -95,35 +127,37 @@ pipeline{
                }
             }
 
-        }
-         stage('Publish in chart regisry'){
-                       when{  expression { changeset('enduser-react-chart')} }
-                       environment {
-                           ENV_NAME = getEnvName(BRANCH_NAME)
-                           IMG_TAG = getImgTag(BRANCH_NAME)
-                           VERSION_CHART = "0.1.${BUILD_NUMBER}"
-                           USER_NAME_ = credentials('helm_registry_username')
-                           PASSWORD_ = credentials('helm_registry_password')
-                           url = credentials('helm_registry_url')
-                           URL_ = "${url}/${IMG_TAG}registry"
-                           }
-                        steps {
-                              script{
-
-                                sh(script: " helm registry login -u ${USER_NAME_} -p ${PASSWORD_} ${URL_} ")
-                                sh(script: "rm -rf helm-chart-repository")
-                                sh(script: "mkdir helm-chart-repository")         
-                                sh(script: "helm package enduser-react-chart --version ${VERSION_CHART} -d helm-chart-repository")
-                                sh(script: "helm push helm-chart-repository/* oci://${URL_}")
-                                sh(script: "rm -rf helm-chart-repository")
-
-                }
-              }  
-
-                }  
+        } 
            }
         }
+        stage('Publish in chart regisry'){
+                    when{  
+                        expression { BRANCH_NAME ==~ /(production|master|develop)/ }
+                        expression { changeset('enduser-react-chart')} 
+                        }
+                    environment {
+                        ENV_NAME = getEnvName(BRANCH_NAME)
+                        IMG_TAG = getImgTag(BRANCH_NAME)
+                        VERSION_CHART = "0.1.${BUILD_NUMBER}"
+                        USER_NAME_ = credentials('helm_registry_username')
+                        PASSWORD_ = credentials('helm_registry_password')
+                        url = credentials('helm_registry_url')
+                        URL_ = "${url}/${IMG_TAG}registry"
+                        }
+                    steps {
+                            script{
 
+                            sh(script: " helm registry login -u ${USER_NAME_} -p ${PASSWORD_} ${URL_} ")
+                            sh(script: "rm -rf helm-chart-repository")
+                            sh(script: "mkdir helm-chart-repository")         
+                            sh(script: "helm package enduser-react-chart --version ${VERSION_CHART} -d helm-chart-repository")
+                            sh(script: "helm push helm-chart-repository/* oci://${URL_}")
+                            sh(script: "rm -rf helm-chart-repository")
+
+            }
+            }  
+
+            } 
 
        stage ('Deploy') {
         when {
@@ -250,12 +284,31 @@ def isPathExist(changeSets,path) {
             
     
 }
-
+def isJustPathExist(changeSets,path) {
+    
+            b = true
+            changeSets.each { 
+                a = it.startsWith(path)
+                b = a && b
+            }
+            return b
+            
+    
+}
 def changeset(path){
     def jobName="$JOB_NAME"
     def job = Jenkins.getInstance().getItemByFullName(jobName)
     if ( job.lastSuccessfulBuild == null) { return true }    
     def changeSets = allChangeSetsFromLastSuccessfulBuild()                                          
     return  isPathExist(getFilesChanged(changeSets),path)
+
+}
+
+def changedchart(path){
+    def jobName="$JOB_NAME"
+    def job = Jenkins.getInstance().getItemByFullName(jobName)
+    if ( job.lastSuccessfulBuild == null) { return true }    
+    def changeSets = allChangeSetsFromLastSuccessfulBuild()                                          
+    return  isJustPathExist(getFilesChanged(changeSets),path)
 
 }

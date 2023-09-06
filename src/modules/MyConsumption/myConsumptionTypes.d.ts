@@ -1,4 +1,5 @@
 import { IEnedisSgeConsent, IEnphaseConsent } from 'src/modules/Consents/Consents.d'
+import { metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
 
 /**
  * Interface MyConsumptionPeriod.
@@ -112,11 +113,11 @@ interface ITargetMenuGroup {
     /**
      * RemoveTarget.
      */
-    removeTarget: (target: metricTarget) => void
+    removeTarget: () => void
     /**
      * AddTarget.
      */
-    addTarget: (target: metricTarget) => void
+    addTarget: (targets: metricTarget[]) => void
     /**
      * If hidePmax exists Pmax button will be disabled.
      */
@@ -132,11 +133,11 @@ export type EurosConsumptionButtonTogglerProps =
         /**
          * RemoveTarget.
          */
-        removeTarget: (target: metricTarget) => void
+        removeTarget: () => void
         /**
          * AddTarget.
          */
-        addTarget: (target: metricTarget) => void
+        addTarget: (targets: metricTargetsEnum[], isEuroChart?: boolean) => void
         /**
          * Indicate eurosConsumption or consumption IconButton to be shown.
          */
@@ -187,6 +188,8 @@ export interface MyConsumptionChartProps {
     chartLabel?: 'Consommation totale' | 'Electricité achetée sur le réseau'
     // eslint-disable-next-line jsdoc/require-jsdoc
     metricsInterval?: metricIntervalType
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    enphaseOff?: boolean
 }
 
 /**
@@ -226,8 +229,18 @@ export type DefaultContractWarningProps =
  */
 export type ProductionChartContainerProps = Omit<
     ConsumptionChartContainerProps,
-    'enedisSgeConsent' | 'hasMissingHousingContracts'
->
+    'enedisSgeConsent' | 'hasMissingHousingContracts' | 'enphaseConsent'
+    // eslint-disable-next-line jsdoc/require-jsdoc
+> & {
+    /**
+     * Boolean indicating if proudction consent is off.
+     */
+    isProductionConsentOff?: boolean
+    /**
+     * Boolean indicating if production consent is in-progress.
+     */
+    isProductionConsentLoadingInProgress?: boolean
+}
 
 /**
  * Type for getChartSpecifities function return.

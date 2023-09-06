@@ -15,9 +15,18 @@ export type equipmentNameType =
     | 'dryer'
     | 'laptop'
     | 'desktopcomputer'
+    | 'solarpanel'
 
 // eslint-disable-next-line jsdoc/require-jsdoc
-export type equipmentAllowedTypeT = 'induction' | 'electricity' | 'other' | 'vitroceramic' | 'gaz'
+export type equipmentAllowedTypeT =
+    | 'induction'
+    | 'electricity'
+    | 'other'
+    | 'vitroceramic'
+    | 'existant'
+    | 'non-existant'
+    | 'collective'
+    | 'individual'
 
 // eslint-disable-next-line jsdoc/require-jsdoc
 export type equipmentMeterType = {

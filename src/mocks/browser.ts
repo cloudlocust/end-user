@@ -23,11 +23,12 @@ import { ecowattEndpoints } from 'src/mocks/handlers/ecowatt'
 import { consumptionAlertsEndpoints } from 'src/mocks/handlers/consumptionAlerts'
 import { ecogestesEndpoints } from './handlers/ecogestes'
 import { novuALertPreferencesEndpoints } from 'src/mocks/handlers/novuAlertPreferences'
+import { connectedPlugsEndpoints } from 'src/mocks/handlers/connectedPlugs'
 
 /**
  * Handlers to mock urls for tests.
  */
-const handlers = [
+export const handlers = [
     /******User REQUESTS*****/
     ...userEndpoints,
     /******Meters REQUESTS*****/
@@ -60,6 +61,8 @@ const handlers = [
     ...ecogestesEndpoints,
     /**** Novu Alert Preferences endpoint. */
     ...novuALertPreferencesEndpoints,
+    /***** Connected Plug Consent State endpoint. */
+    ...connectedPlugsEndpoints,
 ]
 
 /**

@@ -5,9 +5,10 @@ import { equipmentNameType } from 'src/modules/MyHouse/components/Equipments/Equ
 import { SvgIcon } from '@mui/material'
 import { ReactComponent as ElectricityIcon } from 'src/assets/images/content/housing/Electricity.svg'
 import { ReactComponent as OtherIcon } from 'src/assets/images/content/housing/Other.svg'
-import { ReactComponent as GazIcon } from 'src/assets/images/content/housing/Gaz.svg'
 import { ReactComponent as InductionIcon } from 'src/assets/images/content/housing/Induction.svg'
 import { ReactComponent as VitroceramicIcon } from 'src/assets/images/content/housing/Vitroceramic.svg'
+import { ReactComponent as FontElectrique } from 'src/assets/images/content/housing/FontElectrique.svg'
+import GroupsIcon from '@mui/icons-material/Groups'
 
 /**
  * Accomodation labels.
@@ -22,6 +23,8 @@ export const accomodationLabelOptions = {
     secondary: 'Secondaire',
     energeticPerformance: 'Performance énergétique',
     isolation: 'Estimation isolation',
+    tenant: 'Locataire',
+    owner: 'Propriétaire',
 }
 /**
  * Accomodation names.
@@ -35,6 +38,7 @@ export const accomodationNames = {
     numberOfInhabitants: 'numberOfInhabitants',
     houseArea: 'houseArea',
     meterId: 'meterId',
+    ownershipStatus: 'ownershipStatus',
 }
 /**
  * Performance options.
@@ -45,8 +49,8 @@ export const performanceOptions = ['A', 'B', 'C', 'D', 'E', 'F', 'G']
  */
 export const isolationOptions = ['Faible', 'Moyenne', 'Forte']
 
-const buttonStyleLast = 'w-160 mt-16 flex flex-col'
-const buttonStyle = `${buttonStyleLast} mr-10`
+const buttonStyleLast = 'w-160 mt-16 mr-12 flex flex-col'
+const buttonStyle = `${buttonStyleLast}`
 const wrapperStyles = 'flex flex-row justify-center'
 const iconStyles = 'my-5 h-56'
 const customSvgIconsStyling = {
@@ -55,9 +59,6 @@ const customSvgIconsStyling = {
     height: '56px',
     width: '56px',
 }
-
-// Just for that eslint does scream at us about the duplication
-const ELECTRICITY_LABEL = 'Eléctricité'
 
 // eslint-disable-next-line jsdoc/require-jsdoc
 const getEquipmentIconPath = (name: string) => `./assets/images/content/equipment/${name}.svg`
@@ -69,15 +70,26 @@ export const heaterEquipment: ISelectButtons = {
     titleLabel: 'Type de chauffage :',
     formOptions: [
         {
-            label: ELECTRICITY_LABEL,
-            buttonStyle,
+            label: 'Collectif',
+            icon: (
+                <SvgIcon sx={customSvgIconsStyling}>
+                    <GroupsIcon />
+                </SvgIcon>
+            ),
+            buttonStyle: buttonStyleLast,
+            iconStyles,
+            value: 'collective',
+        },
+        {
+            label: 'Individuel Electrique',
             icon: (
                 <SvgIcon sx={customSvgIconsStyling}>
                     <ElectricityIcon />
                 </SvgIcon>
             ),
+            buttonStyle: buttonStyleLast,
             iconStyles,
-            value: 'electricity',
+            value: 'individual',
         },
         {
             label: 'Autre',
@@ -100,26 +112,26 @@ export const sanitaryEquipment: ISelectButtons = {
     titleLabel: 'Eau chaude sanitaire :',
     formOptions: [
         {
-            label: ELECTRICITY_LABEL,
+            label: 'Collectif',
+            icon: (
+                <SvgIcon sx={customSvgIconsStyling}>
+                    <GroupsIcon />
+                </SvgIcon>
+            ),
+            buttonStyle: buttonStyleLast,
+            iconStyles,
+            value: 'collective',
+        },
+        {
+            label: 'Individuel Electrique',
             icon: (
                 <SvgIcon sx={customSvgIconsStyling}>
                     <ElectricityIcon />
                 </SvgIcon>
             ),
-            buttonStyle,
+            buttonStyle: buttonStyleLast,
             iconStyles,
-            value: 'electricity',
-        },
-        {
-            label: 'Gaz',
-            icon: (
-                <SvgIcon sx={customSvgIconsStyling}>
-                    <GazIcon />
-                </SvgIcon>
-            ),
-            buttonStyle,
-            iconStyles,
-            value: 'gaz',
+            value: 'individual',
         },
         {
             label: 'Autre',
@@ -138,20 +150,9 @@ export const sanitaryEquipment: ISelectButtons = {
 // eslint-disable-next-line jsdoc/require-jsdoc
 export const hotPlateEquipment: ISelectButtons = {
     name: 'hotplate',
-    wrapperStyles,
+    wrapperStyles: `${wrapperStyles} flex-wrap`,
     titleLabel: 'Type de plaques de cuisson :',
     formOptions: [
-        {
-            label: ELECTRICITY_LABEL,
-            icon: (
-                <SvgIcon sx={customSvgIconsStyling}>
-                    <VitroceramicIcon />
-                </SvgIcon>
-            ),
-            buttonStyle,
-            iconStyles,
-            value: 'vitroceramic',
-        },
         {
             label: 'Induction',
             icon: (
@@ -162,6 +163,28 @@ export const hotPlateEquipment: ISelectButtons = {
             buttonStyle,
             iconStyles,
             value: 'induction',
+        },
+        {
+            label: 'Électrique (fonte)',
+            icon: (
+                <SvgIcon sx={customSvgIconsStyling}>
+                    <FontElectrique />
+                </SvgIcon>
+            ),
+            buttonStyle,
+            iconStyles,
+            value: 'electricity',
+        },
+        {
+            label: 'Vitrocéramique',
+            icon: (
+                <SvgIcon sx={customSvgIconsStyling}>
+                    <VitroceramicIcon />
+                </SvgIcon>
+            ),
+            buttonStyle,
+            iconStyles,
+            value: 'vitroceramic',
         },
         {
             label: 'Autre',
@@ -264,6 +287,7 @@ export const mappingEquipmentNameToType: { [key in equipmentNameType]: 'number' 
     dryer: 'number',
     laptop: 'number',
     desktopcomputer: 'number',
+    solarpanel: 'type',
 }
 /**
  * Grouped Cards for showing in flex mode.

@@ -1,6 +1,6 @@
 import { act } from '@testing-library/react-hooks'
 import { reduxedRenderHook } from 'src/common/react-platform-components/test'
-import { TEST_SUCCESS_ENEDIS_SGE_CONSENT } from 'src/mocks/handlers/consents'
+import { TEST_SUCCESS_ENEDIS_SGE_CONSENT, TEST_ERROR_ENPHASE_AUTHORIZATION } from 'src/mocks/handlers/consents'
 import { TEST_HOUSES } from 'src/mocks/handlers/houses'
 import { MeterVerificationEnum } from 'src/modules/Consents/Consents.d'
 import { useConsents } from 'src/modules/Consents/consentsHook'
@@ -25,7 +25,7 @@ jest.mock('notistack', () => ({
     }),
 }))
 
-const TEST_METER_GUID = '123456'
+const TEST_HOUSING_ID = '123456'
 const connectedState = 'CONNECTED'
 const TEST_ENEDIS_NRLINK_ENPHASE_ERROR =
     'Nous rencontrons une erreur lors de la récupération de vos consentements d’un de vos compteurs ou capteurs. Veuillez réessayer plus tard'
@@ -36,7 +36,7 @@ describe('useConsents test', () => {
             renderedHook: { result, waitForValueToChange },
         } = reduxedRenderHook(() => useConsents())
         act(() => {
-            result.current.getConsents(TEST_METER_GUID)
+            result.current.getConsents(TEST_HOUSING_ID)
         })
         await waitForValueToChange(
             () => {
@@ -57,7 +57,7 @@ describe('useConsents test', () => {
         } = reduxedRenderHook(() => useConsents(), { store })
 
         act(() => {
-            result.current.getConsents(TEST_METER_GUID)
+            result.current.getConsents(TEST_HOUSING_ID)
         })
         await waitForValueToChange(
             () => {
@@ -190,5 +190,78 @@ describe('useConsents test', () => {
             autoHideDuration: 5000,
             variant: 'error',
         })
+    })
+
+    describe('revoke enphase consent', () => {
+        test('when its success', async () => {
+            const { store } = require('src/redux')
+            await store.dispatch.userModel.setAuthenticationToken(TEST_SUCCESS)
+            const {
+                renderedHook: { result, waitForValueToChange },
+            } = reduxedRenderHook(() => useConsents())
+
+            act(() => {
+                result.current.getConsents(TEST_HOUSING_ID)
+            })
+            await waitForValueToChange(
+                () => {
+                    return result.current.consentsLoading
+                },
+                { timeout: 6000 },
+            )
+            expect(result.current.enphaseConsent.enphaseConsentState).toStrictEqual('ACTIVE')
+            expect(result.current.isEnphaseConsentLoading).toBeFalsy()
+
+            act(() => {
+                result.current.revokeEnphaseConsent(TEST_HOUSES[0].meter?.guid)
+            })
+            expect(result.current.isEnphaseConsentLoading).toBeTruthy()
+            await waitForValueToChange(
+                () => {
+                    return result.current.isEnphaseConsentLoading
+                },
+                { timeout: 6000 },
+            )
+
+            expect(result.current.enphaseConsentState).toBeUndefined()
+        }, 8000)
+        test('when fails', async () => {
+            const { store } = require('src/redux')
+            await store.dispatch.userModel.setAuthenticationToken(TEST_ERROR_ENPHASE_AUTHORIZATION)
+            const {
+                renderedHook: { result, waitForValueToChange },
+            } = reduxedRenderHook(() => useConsents())
+            act(() => {
+                result.current.getConsents(TEST_HOUSING_ID)
+            })
+            await waitForValueToChange(
+                () => {
+                    return result.current.consentsLoading
+                },
+                { timeout: 6000 },
+            )
+            expect(result.current.enphaseConsent.enphaseConsentState).toStrictEqual('ACTIVE')
+            expect(result.current.isEnphaseConsentLoading).toBeFalsy()
+
+            act(() => {
+                result.current.revokeEnphaseConsent(TEST_HOUSES[0].meter?.guid)
+            })
+            expect(result.current.isEnphaseConsentLoading).toBeTruthy()
+            await waitForValueToChange(
+                () => {
+                    return result.current.isEnphaseConsentLoading
+                },
+                { timeout: 6000 },
+            )
+            expect(result.current.isEnphaseConsentLoading).toBeFalsy()
+
+            expect(mockEnqueueSnackbar).toHaveBeenCalledWith(
+                'Erreur lors de la révokation de votre consentement enphase',
+                {
+                    autoHideDuration: 5000,
+                    variant: 'error',
+                },
+            )
+        }, 8000)
     })
 })

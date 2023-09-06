@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useIntl } from 'src/common/react-platform-translation'
 import Radio from '@mui/material/Radio'
 import RadioGroup from '@mui/material/RadioGroup'
@@ -16,15 +16,24 @@ import {
 import { Form } from 'src/common/react-platform-components'
 import { EditButtonsGroup } from 'src/modules/MyHouse/EditButtonsGroup'
 import { useAccomodation } from 'src/modules/MyHouse/components/Accomodation/AccomodationHooks'
-import { AccomodationDataType } from 'src/modules/MyHouse/components/Accomodation/AccomodationType'
+import {
+    AccomodationDataType,
+    ownershipStatusEnum,
+} from 'src/modules/MyHouse/components/Accomodation/AccomodationType.d'
 import { CircularProgress } from '@mui/material'
 import { isMatch } from 'lodash'
-import { useParams } from 'react-router-dom'
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline'
 import Tooltip from '@mui/material/Tooltip'
 import { useTheme } from '@mui/material'
 import { linksColor } from 'src/modules/utils/muiThemeVariables'
 import { ReactComponent as MeterErrorIcon } from 'src/assets/images/content/housing/meter-error.svg'
+import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
+import { ReactComponent as OwnerIcon } from 'src/assets/images/accomodation/owner.svg'
+import { ReactComponent as TenantIcon } from 'src/assets/images/accomodation/tenant.svg'
+import { ReactComponent as HousingIcon } from 'src/assets/images/accomodation/logementMaison.svg'
+import { ReactComponent as ApartmentIcon } from 'src/assets/images/accomodation/logementAppartement.svg'
+import { useSelector } from 'react-redux'
+import { RootState } from 'src/redux'
 
 /**
  * AccomodationForm .
@@ -32,20 +41,12 @@ import { ReactComponent as MeterErrorIcon } from 'src/assets/images/content/hous
  * @returns AccomodationForm.
  */
 export const AccomodationForm = () => {
-    const { houseId } = useParams</**
-     *
-     */
-    {
-        // eslint-disable-next-line jsdoc/require-jsdoc
-        houseId: string
-    }>()
-
-    const housingId = parseInt(houseId)
+    const { currentHousing } = useSelector(({ housingModel }: RootState) => housingModel)
 
     const { formatMessage } = useIntl()
     const [isDPE, setIsDPE] = useState(true)
     const { loadAccomodation, updateAccomodation, accomodation, isLoadingInProgress, isAccomodationMeterListEmpty } =
-        useAccomodation(housingId)
+        useAccomodation(currentHousing?.id)
     const [isEditAccomodation, setIdEditAccomodation] = useState(false)
     const disabledField = !isAccomodationMeterListEmpty && !isEditAccomodation
 
@@ -60,6 +61,7 @@ export const AccomodationForm = () => {
         isolationLevel: accomodation?.isolationLevel,
         numberOfInhabitants: accomodation?.numberOfInhabitants,
         houseArea: accomodation?.houseArea,
+        ownershipStatus: accomodation?.ownershipStatus,
     }
     /**
      * Leave only one selected field in the data from.
@@ -79,30 +81,34 @@ export const AccomodationForm = () => {
         }
         return data
     }
+
+    useEffect(() => {
+        loadAccomodation()
+    }, [loadAccomodation])
+
     if (isLoadingInProgress)
         return (
             <div className="flex flex-col justify-center items-center w-full" style={{ minHeight: '60vh' }}>
                 <CircularProgress />
             </div>
         )
+
     return (
-        <div className="flex flex-col items-center justify-center w-full md:w-3/4 ml-5 mr-5 overflow-y-scroll">
+        <div className="flex flex-col items-center justify-center w-full overflow-y-scroll">
             {isAccomodationInfoConsentmentOpen && (
                 <div
-                    className="flex items-center justify-center w-screen min-h-56"
-                    style={{ background: theme.palette.primary.main }}
+                    className="flex items-center text-center text-13 md:text-16 justify-center w-full min-h-56"
+                    style={{ background: theme.palette.primary.main, color: theme.palette.primary.contrastText }}
                 >
-                    <div className="max-w-xs text-white text-center">
-                        {formatMessage({
-                            id: 'En renseignant votre logement nous pourrons vous apporter une analyse plus précise de votre consommation',
-                            defaultMessage:
-                                'En renseignant votre logement nous pourrons vous apporter une analyse plus précise de votre consommation',
-                        })}
-                    </div>
+                    <TypographyFormatMessage>
+                        En renseignant votre logement nous pourrons vous apporter une analyse plus précise de votre
+                        consommation
+                    </TypographyFormatMessage>
                 </div>
             )}
-            <div className="flex flex-col justify-center w-full md:w-3/4">
+            <div className="flex flex-col justify-center w-full items-center">
                 <Form
+                    style={{ width: '100%' }}
                     onSubmit={async (data: AccomodationDataType) => {
                         const dataAccomodation = setSelectFields(data)
                         const dataIsNotModified = isMatch(accomodationData as AccomodationDataType, dataAccomodation)
@@ -113,11 +119,7 @@ export const AccomodationForm = () => {
                     }}
                     defaultValues={accomodationData}
                 >
-                    <div className="flex justify-center font-semibold text-sm mb-4 mt-16">
-                        {formatMessage({
-                            id: 'Informations Logements',
-                            defaultMessage: 'Informations Logements',
-                        })}
+                    <div className="flex justify-center font-semibold text-sm mb-4 mt-16 flex-wrap w-full">
                         {isAccomodationMeterListEmpty && (
                             <MeterErrorIcon
                                 style={{
@@ -132,24 +134,42 @@ export const AccomodationForm = () => {
                         )}
                     </div>
                     <SelectButtons
+                        name={accomodationNames.ownershipStatus}
+                        titleLabel="Je suis :"
+                        wrapperStyles="flex flex-row justify-center space-x-12"
+                        isDisabled={disabledField}
+                        formOptions={[
+                            {
+                                label: accomodationLabelOptions.owner,
+                                value: ownershipStatusEnum.OWNER,
+                                buttonStyle: 'w-240 mt-16 flex flex-col mr-16',
+                                icon: <OwnerIcon />,
+                            },
+                            {
+                                label: accomodationLabelOptions.tenant,
+                                value: ownershipStatusEnum.TENANT,
+                                buttonStyle: 'w-240 mt-16 flex flex-col',
+                                icon: <TenantIcon />,
+                            },
+                        ]}
+                    />
+                    <SelectButtons
                         name={accomodationNames.houseType}
-                        wrapperStyles="flex flex-row  justify-center"
+                        wrapperStyles="flex flex-row justify-center space-x-12"
                         titleLabel="Type de logement :"
                         isDisabled={disabledField}
                         formOptions={[
                             {
                                 label: accomodationLabelOptions.house,
-                                iconPath: './assets/images/content/accomodation/logementMaison.svg',
-                                iconStyles: 'my-20',
                                 buttonStyle: 'w-240 mt-16 flex flex-col mr-16',
                                 value: accomodationLabelOptions.house,
+                                icon: <HousingIcon className="p-5 mb-5" />,
                             },
                             {
                                 label: accomodationLabelOptions.apartment,
-                                iconPath: './assets/images/content/accomodation/logementAppartement.svg',
-                                iconStyles: 'my-20',
                                 buttonStyle: 'w-240 mt-16 flex flex-col',
                                 value: accomodationLabelOptions.apartment,
+                                icon: <ApartmentIcon className="p-5 mb-5" />,
                             },
                         ]}
                     />

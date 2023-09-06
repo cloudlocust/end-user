@@ -4,20 +4,20 @@ import dayjs from 'dayjs'
 import { useEffect, useState } from 'react'
 import { useIntl } from 'react-intl'
 import { useSelector } from 'react-redux'
-import { NavLink, useParams } from 'react-router-dom'
+import { NavLink } from 'react-router-dom'
 import { ReactComponent as ContractIcon } from 'src/assets/images/content/housing/contract.svg'
 import { MuiCardContent } from 'src/common/ui-kit'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
-import { enedisSgeConsentStatus, enphaseConsentStatus, nrlinkConsentStatus } from 'src/modules/Consents/Consents'
+import { enedisSgeConsentStatus, nrlinkConsentStatus } from 'src/modules/Consents/Consents'
 import { useConsents } from 'src/modules/Consents/consentsHook'
 import { URL_MY_HOUSE, globalProductionFeatureState, sgeConsentFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
-import { IHousing } from 'src/modules/MyHouse/components/HousingList/housing'
 import { EnedisSgePopup } from 'src/modules/MyHouse/components/MeterStatus/EnedisSgePopup'
-import { EnphaseConsentPopup } from 'src/modules/MyHouse/components/MeterStatus/EnphaseConsentPopup'
 import { NrlinkConnectionStepsEnum } from 'src/modules/nrLinkConnection/nrlinkConnectionSteps.d'
 import { RootState } from 'src/redux'
 import { ReplaceNRLinkModule } from 'src/modules/MyHouse/components/ReplaceNRLinkFormPopup/ReplaceNRLinkModule'
 import MeterInfos from 'src/modules/MyHouse/components/MeterInfo'
+import { HousingAddressCard } from 'src/modules/MyHouse/components/HousingAddressCard'
+import { SolarProductionConsentStatus } from 'src/modules/MyHouse/components/MeterStatus/SolarProductionStatus'
 
 const FORMATTED_DATA = 'DD/MM/YYYY'
 const TEXT_CONNEXION_LE = 'Connexion le'
@@ -61,56 +61,34 @@ export const MeterStatus = () => {
         enphaseConsent,
         enphaseLink,
         getEnphaseLink,
+        isEnphaseConsentLoading,
+        revokeEnphaseConsent,
     } = useConsents()
-    const { housingList } = useSelector(({ housingModel }: RootState) => housingModel)
-    const [foundHousing, setFoundHousing] = useState<IHousing>()
-    const [openEnphaseConsentPopup, setOpenEnphaseConsentPopup] = useState(false)
+    const { currentHousing } = useSelector(({ housingModel }: RootState) => housingModel)
     const [openCancelCollectionDataTooltip, setOpenCancelCollectionDataTooltip] = useState(false)
-
-    // Retrieving house id from url params /my-houses/:houseId
-    // eslint-disable-next-line jsdoc/require-jsdoc
-    const { houseId }: { houseId: string } = useParams()
 
     /*  Nrlink created at date formatted */
     const nrlinkConsentCreatedAt = dayjs(nrlinkConsent?.createdAt).format(FORMATTED_DATA)
     /* To have the ending date of the consent, we add 3 years to the date the consent was made */
     const enedisConsentEndingDate = dayjs(enedisSgeConsent?.createdAt).add(3, 'year').format('DD/MM/YYYY')
-    /* Enphase created at date formatted */
-    const enphaseConsentCreatedAt = dayjs(enphaseConsent?.createdAt).format(FORMATTED_DATA)
-
-    /**
-     * Function that handle closing the popup.
-     */
-    const handleOnCloseEnphasePopup = () => {
-        setOpenEnphaseConsentPopup(false)
-    }
-
-    // UseEffect that find the housing with the house Id from url params.
-    useEffect(() => {
-        if (housingList) {
-            setFoundHousing(housingList.find((housing) => housing.id === parseInt(houseId)))
-        }
-    }, [houseId, housingList])
 
     /**
      * This useEffect listen to changes in localStorage for enphaseConsentState.
      *
-     * It also listen to changes in foundHousing that triggers getConsents.
+     * It also listen to changes in currentHousing that triggers getConsents.
      *
      */
     useEffect(() => {
-        if (foundHousing?.meter?.guid) {
-            getConsents(foundHousing?.meter?.guid, parseInt(houseId))
-        }
+        getConsents(currentHousing?.id)
 
         /**
          * OnStorage function that execute the setter for EnphaseStateFromLocalStorage.
          */
         const onStorage = () => {
             const enphaseConfirmConsentState = localStorage.getItem('enphaseConfirmState')
-            if (enphaseConfirmConsentState === 'SUCCESS' && foundHousing?.meter?.guid) {
+            if (enphaseConfirmConsentState === 'SUCCESS' && currentHousing?.id) {
                 localStorage.removeItem('enphaseConfirmState')
-                getConsents(foundHousing.meter.guid)
+                getConsents(currentHousing.id)
             }
         }
 
@@ -125,7 +103,7 @@ export const MeterStatus = () => {
         return () => {
             window.removeEventListener('storage', onStorage)
         }
-    }, [foundHousing?.meter?.guid, getConsents, houseId])
+    }, [currentHousing?.id, getConsents])
 
     /**
      * Function that renders JSX accorrding to nrlink status.
@@ -157,28 +135,45 @@ export const MeterStatus = () => {
                         <ReplaceNRLinkModule
                             nrLinkConsent={nrlinkConsent}
                             onAfterReplaceNRLink={() => {
-                                if (foundHousing?.meter?.guid) {
-                                    getConsents(foundHousing?.meter?.guid, parseInt(houseId))
-                                }
+                                getConsents(currentHousing?.id)
                             }}
                         />
                     </>
                 )
             case 'DISCONNECTED':
                 return (
-                    <>
-                        <Icon className="mr-12">
-                            <img
-                                src="./assets/images/content/housing/consent-status/meter-error.svg"
-                                alt="error-icon"
-                            />
-                        </Icon>
-                        <div className="flex flex-col">
-                            <TypographyFormatMessage color={theme.palette.warning.main} fontWeight={600}>
-                                Veuillez vérifier le branchement de votre appareil et/ou la connexion wifi.
-                            </TypographyFormatMessage>
+                    <div className="flex flex-col">
+                        {nrlinkConsent?.nrlinkGuid ? (
+                            <div className="flex flex-row items-center">
+                                <TypographyFormatMessage
+                                    color={theme.palette.grey[700]}
+                                    fontWeight={600}
+                                    className="pb-4"
+                                >
+                                    {`nrLINK N° ${nrlinkConsent?.nrlinkGuid}`}
+                                </TypographyFormatMessage>
+                                <ReplaceNRLinkModule
+                                    nrLinkConsent={nrlinkConsent}
+                                    onAfterReplaceNRLink={() => {
+                                        getConsents(currentHousing?.id)
+                                    }}
+                                />
+                            </div>
+                        ) : null}
+                        <div className="flex flex-row items-center">
+                            <Icon className="mr-12">
+                                <img
+                                    src="./assets/images/content/housing/consent-status/meter-error.svg"
+                                    alt="error-icon"
+                                />
+                            </Icon>
+                            <div className="flex flex-col">
+                                <TypographyFormatMessage color={theme.palette.warning.main} fontWeight={600}>
+                                    Veuillez vérifier le branchement de votre appareil et/ou la connexion wifi.
+                                </TypographyFormatMessage>
+                            </div>
                         </div>
-                    </>
+                    </div>
                 )
             case 'EXPIRED':
             case 'NONEXISTENT':
@@ -191,9 +186,9 @@ export const MeterStatus = () => {
                         <div className="flex flex-col">
                             <NavLink
                                 to={{
-                                    pathname: `/nrlink-connection-steps/${parseInt(houseId)}`,
+                                    pathname: `/nrlink-connection-steps/${currentHousing?.id}`,
                                     state: {
-                                        activeStep: foundHousing?.meter?.guid
+                                        activeStep: currentHousing?.meter?.guid
                                             ? NrlinkConnectionStepsEnum.thirdStep
                                             : NrlinkConnectionStepsEnum.secondStep,
                                     },
@@ -270,7 +265,7 @@ export const MeterStatus = () => {
                         </Icon>
                         <div className="flex flex-col">
                             <TypographyFormatMessage color={theme.palette.warning.main} fontWeight={600}>
-                                Les données de votre récolte dhistorique semblent incohérentes par rapport à celle de
+                                Les données de votre récolte d'historique semblent incohérentes par rapport à celle de
                                 votre nrLINK
                             </TypographyFormatMessage>
                         </div>
@@ -306,7 +301,7 @@ export const MeterStatus = () => {
                                 TypographyProps={{
                                     color: theme.palette.error.main,
                                 }}
-                                houseId={parseInt(houseId)}
+                                houseId={currentHousing?.id}
                                 createEnedisSgeConsent={createEnedisSgeConsent}
                                 createEnedisSgeConsentError={createEnedisSgeConsentError}
                                 isCreateEnedisSgeConsentLoading={isCreateEnedisSgeConsentLoading}
@@ -317,82 +312,14 @@ export const MeterStatus = () => {
         }
     }
 
-    /**
-     * Function that renders enphase statuses.
-     *
-     * @param enphaseStatus Enphase statuses.
-     * @returns JSX according to enphase status.
-     */
-    function renderEnphaseStatus(enphaseStatus?: enphaseConsentStatus) {
-        switch (enphaseStatus) {
-            case 'ACTIVE':
-                return (
-                    <>
-                        <Icon className="mr-12">
-                            <img
-                                src="./assets/images/content/housing/consent-status/meter-on.svg"
-                                alt="enphase-active-icon"
-                            />
-                        </Icon>
-                        <div className="flex flex-col">
-                            <span className="text-grey-600">
-                                <span className="text-grey-600">{`${formatMessage({
-                                    id: TEXT_CONNEXION_LE,
-                                    defaultMessage: TEXT_CONNEXION_LE,
-                                })} ${enphaseConsentCreatedAt}`}</span>
-                            </span>
-                        </div>
-                    </>
-                )
-            case 'PENDING':
-                return (
-                    <>
-                        <Icon className="mr-12" color="warning">
-                            replay
-                        </Icon>
-                        <div className="flex flex-col">
-                            <TypographyFormatMessage color={theme.palette.warning.main} fontWeight={600}>
-                                Votre connexion est en cours et sera active dans les plus brefs délais
-                            </TypographyFormatMessage>
-                        </div>
-                    </>
-                )
-            case 'EXPIRED':
-            case 'NONEXISTENT':
-            default:
-                return (
-                    <>
-                        <Icon className="mr-12">
-                            <img
-                                src="./assets/images/content/housing/consent-status/meter-off.svg"
-                                alt="enphase-off-icon"
-                            />
-                        </Icon>
-                        <div className="flex flex-col">
-                            <TypographyFormatMessage
-                                color={theme.palette.error.main}
-                                className="underline cursor-pointer"
-                                fontWeight={600}
-                                onClick={() => {
-                                    getEnphaseLink(parseInt(houseId))
-                                    setOpenEnphaseConsentPopup(true)
-                                }}
-                            >
-                                Connectez votre onduleur pour visualiser votre production
-                            </TypographyFormatMessage>
-                        </div>
-                    </>
-                )
-        }
-    }
-
     return (
         <>
             <Card className="my-12 md:mx-16" variant="outlined">
                 <MuiCardContent sx={{ p: 0, '&:last-child': { pb: 0 } }}>
-                    <div className={`flex flex-row justify-between bg-grey-200 p-12 border-b-1 border-grey-300`}>
-                        <MeterInfos element={foundHousing} />
-                        <NavLink to={`${URL_MY_HOUSE}/${houseId}/contracts`} className="flex">
+                    <HousingAddressCard />
+                    <div className={`flex flex-row justify-between bg-gray-50 p-12 border-1 border-slate-600`}>
+                        <MeterInfos element={currentHousing!} />
+                        <NavLink to={`${URL_MY_HOUSE}/${currentHousing?.id}/contracts`} className="flex">
                             <Card className="flex flex-col items-center rounded p-8">
                                 <ContractIcon
                                     style={{ fill: theme.palette.primary.main, marginBottom: '4px' }}
@@ -415,16 +342,7 @@ export const MeterStatus = () => {
                     >
                         {/* Nrlink Consent Status */}
                         <div className="w-full md:w-1/3 p-12">
-                            {!foundHousing ? (
-                                <>
-                                    <TypographyFormatMessage className="text-xs md:text-sm font-semibold mb-6">
-                                        Consommation en temps réel
-                                    </TypographyFormatMessage>
-                                    <div className="flex flex-row items-center">
-                                        {renderNrlinkStatus('NONEXISTENT')}
-                                    </div>
-                                </>
-                            ) : consentsLoading ? (
+                            {consentsLoading ? (
                                 <CircularProgress size={25} />
                             ) : (
                                 <>
@@ -450,16 +368,7 @@ export const MeterStatus = () => {
                             })}
                         >
                             <div className={`w-full md:w-1/3 p-12 ${!sgeConsentFeatureState && 'cursor-not-allowed'}`}>
-                                {!foundHousing ? (
-                                    <>
-                                        <TypographyFormatMessage className="text-xs md:text-sm font-semibold mb-6">
-                                            Historique de consommation
-                                        </TypographyFormatMessage>
-                                        <div className="flex flex-row items-center">
-                                            {renderEnedisStatus('NONEXISTENT')}
-                                        </div>
-                                    </>
-                                ) : consentsLoading ? (
+                                {consentsLoading ? (
                                     <CircularProgress size={25} />
                                 ) : (
                                     <>
@@ -474,33 +383,17 @@ export const MeterStatus = () => {
                             </div>
                         </Tooltip>
                         <Divider orientation={mdDown ? 'horizontal' : undefined} flexItem variant="fullWidth" />
-                        {/* Enphase Consent Status */}
-                        <div className={`w-full md:w-1/3 p-12 ${!globalProductionFeatureState && 'hidden'}`}>
-                            {!foundHousing ? (
-                                <>
-                                    <TypographyFormatMessage className="text-xs md:text-sm font-semibold mb-6">
-                                        Production solaire
-                                    </TypographyFormatMessage>
-                                    <div className="flex flex-row items-center">
-                                        {renderEnphaseStatus('NONEXISTENT')}
-                                    </div>
-                                </>
-                            ) : consentsLoading ? (
-                                <CircularProgress size={25} />
-                            ) : (
-                                <>
-                                    <TypographyFormatMessage className="text-xs md:text-sm font-semibold mb-6">
-                                        Production solaire
-                                    </TypographyFormatMessage>
-                                    <div className="flex flex-row items-center">
-                                        {renderEnphaseStatus(enphaseConsent?.enphaseConsentState)}
-                                    </div>
-                                </>
-                            )}
-                        </div>
-                        {openEnphaseConsentPopup && (
-                            <EnphaseConsentPopup onClose={handleOnCloseEnphasePopup} url={enphaseLink} />
-                        )}
+                        <SolarProductionConsentStatus
+                            solarProductionConsentLoadingInProgress={consentsLoading || isEnphaseConsentLoading}
+                            solarProductionConsent={enphaseConsent}
+                            enphaseLink={enphaseLink}
+                            getEnphaseLink={getEnphaseLink}
+                            onRevokeEnphaseConsent={async () => {
+                                // When revoking enphase Consent means there is currentHousing!.meter.guid
+                                await revokeEnphaseConsent(currentHousing!.id)
+                                getConsents(currentHousing?.id)
+                            }}
+                        />
                     </div>
                 </MuiCardContent>
             </Card>
