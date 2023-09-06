@@ -80,7 +80,6 @@ describe('Test EquipmentForm', () => {
         expect(getByText(INDUCTION_VALUE_TEXT).classList.contains(DISABLED_CLASS)).toBeTruthy()
         expect(getByText(HEATER_TEXT)).toBeTruthy()
         expect(getByText(SANITARY_INFO_TEXT)).toBeTruthy()
-        expect(getByText(EQUIPMENT_INFO_TEXT)).toBeTruthy()
         expect(getByText(HOTPLATE_INFO_TEXT)).toBeTruthy()
         expect(getByText(MODIFIER_BUTTON_TEXT)).toBeTruthy()
         expect(() => getByText(ANNULER_BUTTON_TEXT)).toThrow()
@@ -117,6 +116,7 @@ describe('Test EquipmentForm', () => {
             expect(mockSaveEquipment).toHaveBeenCalledWith([
                 { equipmentId: 1, equipmentType: 'collective', equipmentNumber: 0 },
                 { equipmentId: 3, equipmentType: 'induction', equipmentNumber: 0 },
+                { equipmentId: 14, equipmentType: 'existant' },
             ])
         })
     })

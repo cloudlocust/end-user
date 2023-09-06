@@ -42,12 +42,12 @@ export var TEST_EQUIPMENTS: SnakeCasedPropertiesDeep<equipmentType>[] = [
     {
         id: 2,
         name: 'sanitary' as equipmentNameType,
-        allowed_type: ['electricity', 'gaz', 'other'],
+        allowed_type: ['other', 'collective', 'individual'],
     },
     {
         id: 3,
         name: 'hotplate' as equipmentNameType,
-        allowed_type: ['vitroceramic', 'induction', 'other'],
+        allowed_type: ['vitroceramic', 'induction', 'electricity', 'other'],
     },
     {
         id: 4,

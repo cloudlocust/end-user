@@ -108,6 +108,7 @@ export const AccomodationForm = () => {
             )}
             <div className="flex flex-col justify-center w-full items-center">
                 <Form
+                    style={{ width: '100%' }}
                     onSubmit={async (data: AccomodationDataType) => {
                         const dataAccomodation = setSelectFields(data)
                         const dataIsNotModified = isMatch(accomodationData as AccomodationDataType, dataAccomodation)
@@ -118,8 +119,7 @@ export const AccomodationForm = () => {
                     }}
                     defaultValues={accomodationData}
                 >
-                    <div className="flex justify-center font-semibold text-sm mb-4 mt-16">
-                        <TypographyFormatMessage>Informations Logements</TypographyFormatMessage>
+                    <div className="flex justify-center font-semibold text-sm mb-4 mt-16 flex-wrap w-full">
                         {isAccomodationMeterListEmpty && (
                             <MeterErrorIcon
                                 style={{

@@ -126,5 +126,6 @@ export const useEquipmentList = (housingId?: number) => {
         saveEquipment,
         equipmentList,
         isEquipmentMeterListEmpty,
+        loadEquipmentList,
     }
 }

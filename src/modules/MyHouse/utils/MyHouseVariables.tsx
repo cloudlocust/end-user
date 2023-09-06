@@ -184,7 +184,7 @@ export const hotPlateEquipment: ISelectButtons = {
             ),
             buttonStyle,
             iconStyles,
-            value: 'electricity',
+            value: 'vitroceramic',
         },
         {
             label: 'Autre',
@@ -287,6 +287,7 @@ export const mappingEquipmentNameToType: { [key in equipmentNameType]: 'number' 
     dryer: 'number',
     laptop: 'number',
     desktopcomputer: 'number',
+    solarpanel: 'type',
 }
 /**
  * Grouped Cards for showing in flex mode.
