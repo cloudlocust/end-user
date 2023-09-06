@@ -1,13 +1,24 @@
 import { useEffect, useState } from 'react'
-import { CircularProgress, Radio, RadioGroup, FormControlLabel, FormControl, useTheme } from '@mui/material'
+import {
+    CircularProgress,
+    // Radio,
+    // RadioGroup,
+    // FormControlLabel,
+    // FormControl,
+    useTheme,
+    useMediaQuery,
+    Container,
+} from '@mui/material'
 import { Form } from 'src/common/react-platform-components'
-import { SelectButtons } from 'src/common/ui-kit/form-fields/SelectButtons/SelectButtons'
+// import { SelectButtons } from 'src/common/ui-kit/form-fields/SelectButtons/SelectButtons'
 import { EditButtonsGroup } from 'src/modules/MyHouse/EditButtonsGroup'
 import {
-    heaterEquipment,
-    sanitaryEquipment,
-    hotPlateEquipment,
+    groupedCards,
+    // heaterEquipment,
+    // sanitaryEquipment,
+    // hotPlateEquipment,
     mappingEquipmentNameToType,
+    myEquipmentOptions,
 } from 'src/modules/MyHouse/utils/MyHouseVariables'
 import { useEquipmentList } from 'src/modules/MyHouse/components/Equipments/equipmentHooks'
 import {
@@ -21,6 +32,8 @@ import { RootState } from 'src/redux'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import { ReactComponent as MeterErrorIcon } from 'src/assets/images/content/housing/meter-error.svg'
 import { linksColor } from 'src/modules/utils/muiThemeVariables'
+import { INumberFieldForm } from 'src/common/ui-kit/components/NumberField/NumberFieldTypes'
+import { NumberFieldForm } from 'src/common/ui-kit/components/NumberField/NumberFieldForm'
 
 /**
  * EquipmentForm Component.
@@ -29,21 +42,22 @@ import { linksColor } from 'src/modules/utils/muiThemeVariables'
  */
 export const EquipmentForm = () => {
     const theme = useTheme()
+    const isDesktop = useMediaQuery(theme.breakpoints.up('lg'))
     const { currentHousing } = useSelector(({ housingModel }: RootState) => housingModel)
     const { equipmentList, saveEquipment, loadingEquipmentInProgress, isEquipmentMeterListEmpty, loadEquipmentList } =
         useEquipmentList(currentHousing?.id)
 
-    const [solarPanelRadioValue, setSolarPanelRadioValue] = useState<'existant' | 'non-existant'>('existant')
+    // const [solarPanelRadioValue, setSolarPanelRadioValue] = useState<'existant' | 'non-existant'>('existant')
     const [isEquiomentInfoConsentmentOpen, setIsEquiomentInfoConsentmentOpen] = useState(false)
 
-    /**
-     * Handler for solar panel radio button.
-     *
-     * @param event React change event.
-     */
-    const handleSolarPanelRadioChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setSolarPanelRadioValue((event.target as HTMLInputElement).value as 'existant' | 'non-existant')
-    }
+    // /**
+    //  * Handler for solar panel radio button.
+    //  *
+    //  * @param event React change event.
+    //  */
+    // const handleSolarPanelRadioChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    //     setSolarPanelRadioValue((event.target as HTMLInputElement).value as 'existant' | 'non-existant')
+    // }
     const [isEdit, setIsEdit] = useState(false)
 
     // It'll have the following format an object of all equipment, name is the key, for example: {"heater": {equipment_id, equipment_type, equipment_number, isNumber, equipment: {id, name, allowed_type} } }.
@@ -86,73 +100,78 @@ export const EquipmentForm = () => {
             : savedEquipmentList[equipmentName].equipmentType!
     })
 
+    const myEquipment = isDesktop
+        ? groupedCards(myEquipmentOptions as INumberFieldForm[], 2)
+        : groupedCards(myEquipmentOptions as INumberFieldForm[])
+
     return (
-        <div className="flex flex-col justify-center w-full items-center">
-            {isEquiomentInfoConsentmentOpen && (
-                <div
-                    className="flex items-center text-center text-13 md:text-16 justify-center w-full min-h-56"
-                    style={{ background: theme.palette.primary.main, color: theme.palette.primary.contrastText }}
-                >
-                    <TypographyFormatMessage>
-                        En renseignant vos équipements nous pourrons vous apporter une analyse plus précise de votre
-                        consommation
-                    </TypographyFormatMessage>
-                </div>
-            )}
-            <Form
-                style={{ width: '100%' }}
-                defaultValues={defaultValues}
-                onSubmit={async (formData: equipmentValuesType) => {
-                    let body: equipmentMeterType[] = []
-                    // Transform formData into body for saveEquipment Request, using the savedData.
-                    Object.keys(savedEquipmentList).forEach((equipmentName) => {
-                        if (
-                            formData[equipmentName as keyof equipmentValuesType] &&
-                            // Check that it's new values.
-                            savedEquipmentList[equipmentName].equipmentNumber !==
+        <Container>
+            <div className="flex flex-col justify-center w-full items-center">
+                {isEquiomentInfoConsentmentOpen && (
+                    <div
+                        className="flex items-center text-center text-13 md:text-16 justify-center w-full min-h-56"
+                        style={{ background: theme.palette.primary.main, color: theme.palette.primary.contrastText }}
+                    >
+                        <TypographyFormatMessage>
+                            En renseignant vos équipements nous pourrons vous apporter une analyse plus précise de votre
+                            consommation
+                        </TypographyFormatMessage>
+                    </div>
+                )}
+                <Form
+                    style={{ width: '100%' }}
+                    defaultValues={defaultValues}
+                    onSubmit={async (formData: equipmentValuesType) => {
+                        let body: equipmentMeterType[] = []
+                        // Transform formData into body for saveEquipment Request, using the savedData.
+                        Object.keys(savedEquipmentList).forEach((equipmentName) => {
+                            if (
                                 formData[equipmentName as keyof equipmentValuesType] &&
-                            savedEquipmentList[equipmentName].equipmentType !==
-                                formData[equipmentName as keyof equipmentValuesType]
-                        ) {
-                            if (savedEquipmentList[equipmentName].isNumber)
-                                savedEquipmentList[equipmentName].equipmentNumber = formData[
-                                    equipmentName as keyof equipmentValuesType
-                                ] as number
-                            else
-                                savedEquipmentList[equipmentName].equipmentType = formData[
-                                    equipmentName as keyof equipmentValuesType
-                                ] as equipmentAllowedTypeT
+                                // Check that it's new values.
+                                savedEquipmentList[equipmentName].equipmentNumber !==
+                                    formData[equipmentName as keyof equipmentValuesType] &&
+                                savedEquipmentList[equipmentName].equipmentType !==
+                                    formData[equipmentName as keyof equipmentValuesType]
+                            ) {
+                                if (savedEquipmentList[equipmentName].isNumber)
+                                    savedEquipmentList[equipmentName].equipmentNumber = formData[
+                                        equipmentName as keyof equipmentValuesType
+                                    ] as number
+                                else
+                                    savedEquipmentList[equipmentName].equipmentType = formData[
+                                        equipmentName as keyof equipmentValuesType
+                                    ] as equipmentAllowedTypeT
 
-                            const { equipment, isNumber, ...rest } = savedEquipmentList[equipmentName]
-                            body.push(rest)
+                                const { equipment, isNumber, ...rest } = savedEquipmentList[equipmentName]
+                                body.push(rest)
+                            }
+                        })
+
+                        // if (solarPanelRadioValue) {
+                        //     body.push({ equipmentId: 14, equipmentType: solarPanelRadioValue })
+                        // }
+
+                        if (body.length > 0) {
+                            await saveEquipment(body)
                         }
-                    })
-
-                    if (solarPanelRadioValue) {
-                        body.push({ equipmentId: 14, equipmentType: solarPanelRadioValue })
-                    }
-
-                    if (body.length > 0) {
-                        await saveEquipment(body)
-                    }
-                    setIsEdit(false)
-                }}
-            >
-                <div className="flex justify-center font-semibold text-sm mb-4 mt-16 flex-wrap w-full">
-                    {isEquipmentMeterListEmpty && (
-                        <MeterErrorIcon
-                            style={{
-                                width: '24px',
-                                height: '24px',
-                                color: linksColor || theme.palette.primary.main,
-                                marginLeft: '12px',
-                                cursor: 'pointer',
-                            }}
-                            onClick={() => setIsEquiomentInfoConsentmentOpen(!isEquiomentInfoConsentmentOpen)}
-                        />
-                    )}
-                </div>
-                <div className="flex flex-col justify-center w-full">
+                        setIsEdit(false)
+                    }}
+                >
+                    <div className="flex justify-center font-semibold text-sm mb-4 mt-16 flex-wrap w-full">
+                        {isEquipmentMeterListEmpty && (
+                            <MeterErrorIcon
+                                style={{
+                                    width: '24px',
+                                    height: '24px',
+                                    color: linksColor || theme.palette.primary.main,
+                                    marginLeft: '12px',
+                                    cursor: 'pointer',
+                                }}
+                                onClick={() => setIsEquiomentInfoConsentmentOpen(!isEquiomentInfoConsentmentOpen)}
+                            />
+                        )}
+                    </div>
+                    {/* <div className="flex flex-col justify-center w-full">
                     <div className="text-13">
                         <SelectButtons isDisabled={!isEquipmentMeterListEmpty && !isEdit} {...heaterEquipment} />
                     </div>
@@ -189,14 +208,31 @@ export const EquipmentForm = () => {
                             </RadioGroup>
                         </FormControl>
                     </div>
-                </div>
-                <EditButtonsGroup
-                    formInitialValues={defaultValues}
-                    isEdit={isEquipmentMeterListEmpty || isEdit}
-                    disableEdit={() => setIsEdit(false)}
-                    enableForm={() => setIsEdit(true)}
-                />
-            </Form>
-        </div>
+                </div> */}
+                    <div className="mt-16 mb-20">
+                        <TypographyFormatMessage>Vos équipements :</TypographyFormatMessage>
+                    </div>
+                    <div className="flex">
+                        {myEquipment.map((col) => (
+                            <div className="w-full text-13">
+                                {col.map((item) => (
+                                    <NumberFieldForm
+                                        key={item.name}
+                                        {...item}
+                                        disabled={!isEquipmentMeterListEmpty && !isEdit}
+                                    />
+                                ))}
+                            </div>
+                        ))}
+                    </div>
+                    <EditButtonsGroup
+                        formInitialValues={defaultValues}
+                        isEdit={isEquipmentMeterListEmpty || isEdit}
+                        disableEdit={() => setIsEdit(false)}
+                        enableForm={() => setIsEdit(true)}
+                    />
+                </Form>
+            </div>
+        </Container>
     )
 }
