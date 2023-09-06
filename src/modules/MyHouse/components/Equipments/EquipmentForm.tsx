@@ -94,7 +94,7 @@ export const EquipmentForm = () => {
                     style={{ background: theme.palette.primary.main, color: theme.palette.primary.contrastText }}
                 >
                     <TypographyFormatMessage>
-                        En renseignant vos équiements nous pourrons vous apporter une analyse plus précise de votre
+                        En renseignant vos équipements nous pourrons vous apporter une analyse plus précise de votre
                         consommation
                     </TypographyFormatMessage>
                 </div>
