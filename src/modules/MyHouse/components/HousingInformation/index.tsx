@@ -19,12 +19,12 @@ export const HousingInformation = () => {
     const history = useHistory()
     const tabsContent = [
         {
-            tabTitle: 'Logement',
+            tabTitle: 'Info Logement',
             tabSlug: 'accomodation',
             tabContent: <AccomodationForm />,
         },
         {
-            tabTitle: 'Equipement',
+            tabTitle: 'Info Installation',
             tabSlug: 'equipments',
             tabContent: <EquipmentForm />,
         },
