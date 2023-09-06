@@ -21,7 +21,6 @@ let mockEquipmentList: IEquipmentMeter[] | null = TEST_METER_EQUIPMENTS
 const MODIFIER_BUTTON_TEXT = 'Modifier'
 const SANITARY_INFO_TEXT = 'Eau chaude sanitaire :'
 const HEATER_TEXT = 'Type de chauffage :'
-const EQUIPMENT_INFO_TEXT = 'Informations Installation'
 const HOTPLATE_INFO_TEXT = 'Type de plaques de cuisson :'
 const INDUCTION_VALUE_TEXT = 'Induction'
 const DISABLED_CLASS = 'Mui-disabled'
