@@ -5,6 +5,7 @@ import ConnectedPlugs from 'src/modules/MyHouse/components/ConnectedPlugs'
 import { ReactComponent as HousingIcon } from 'src/assets/images/navbarItems/Housings.svg'
 import SvgIcon from '@mui/material/SvgIcon'
 import { HousingInformation } from 'src/modules/MyHouse/components/HousingInformation'
+import { Equipments } from 'src/modules/MyHouse/components/Equipments'
 
 /**
  * Url for myHouse.
@@ -18,10 +19,6 @@ export const URL_MY_HOUSE_DETAILS = URL_MY_HOUSE + '/:houseId'
  * Url for housing equipments.
  */
 export const URL_HOUSING_EQUIPMENTS = `${URL_MY_HOUSE_DETAILS}/equipments`
-/**
- * Url for housing accomodation.
- */
-export const URL_HOUSING_ACCOMODATION = `${URL_MY_HOUSE_DETAILS}/accomodation`
 /**
  * Url for housing connected plugs.
  */
@@ -158,6 +155,29 @@ export const MyHouseConfig = [
                         ),
                         url: URL_HOUSING_INFORMATION,
                         disabled: equipmentsAccomodationFeatureState,
+                    },
+                },
+            },
+        },
+    } as IRouteNavigationConfig<MyHouseProps>,
+    {
+        path: URL_HOUSING_EQUIPMENTS,
+        component: Equipments,
+        auth: { authType: authTypes.loginRequired },
+        settings: {
+            layout: {
+                navbar: {
+                    UINavbarItem: {
+                        id: 'myHouses',
+                        label: 'Equipements',
+                        labelAbbreviation: 'Equipements',
+                        type: 'item',
+                        icon: (
+                            <SvgIcon>
+                                <HousingIcon />
+                            </SvgIcon>
+                        ),
+                        url: URL_HOUSING_EQUIPMENTS,
                     },
                 },
             },

@@ -1,10 +1,10 @@
 // import { fireEvent, act, waitFor } from '@testing-library/react'
 import { BrowserRouter } from 'react-router-dom'
 import { reduxedRender } from 'src/common/react-platform-components/test'
-import { EquipmentForm } from 'src/modules/MyHouse/components/Equipments/EquipmentForm'
+import { InstallationForm } from 'src/modules/MyHouse/components/Installation/InstallationForm'
 import { TEST_HOUSING_EQUIPMENTS as MOCK_EQUIPMENTS } from 'src/mocks/handlers/equipments'
 import { applyCamelCase } from 'src/common/react-platform-components'
-import { IEquipmentMeter } from 'src/modules/MyHouse/components/Equipments/EquipmentsType'
+import { IEquipmentMeter } from 'src/modules/MyHouse/components/Installation/InstallationType.d'
 // import userEvent from '@testing-library/user-event'
 import { TEST_HOUSES } from 'src/mocks/handlers/houses'
 import { IHousing } from 'src/modules/MyHouse/components/HousingList/housing'
@@ -29,7 +29,7 @@ const ENREGISTRER_BUTTON_TEXT = 'Enregistrer'
 const mockEnqueueSnackbar = jest.fn()
 
 /**
- * Mocking the useSnackbar used in EquipmentForm.
+ * Mocking the useSnackbar used in InstallationForm.
  */
 jest.mock('notistack', () => ({
     ...jest.requireActual('notistack'),
@@ -42,8 +42,8 @@ jest.mock('notistack', () => ({
         enqueueSnackbar: mockEnqueueSnackbar,
     }),
 }))
-jest.mock('src/modules/MyHouse/components/Equipments/equipmentHooks', () => ({
-    ...jest.requireActual('src/modules/MyHouse/components/Equipments/equipmentHooks'),
+jest.mock('src/modules/MyHouse/components/Installation/installationHook', () => ({
+    ...jest.requireActual('src/modules/MyHouse/components/Installation/installationHook'),
     // eslint-disable-next-line jsdoc/require-jsdoc
     useEquipmentList: () => ({
         loadEquipmentList: mockLoadEquipmentList,
@@ -55,7 +55,7 @@ jest.mock('src/modules/MyHouse/components/Equipments/equipmentHooks', () => ({
 }))
 
 /**
- * Mocking the useParams used in "equipmentForm" to get the house id based on url /houses/:houseId/equipements {houseId} params.
+ * Mocking the useParams used in "InstallationForm" to get the house id based on url /houses/:houseId/equipements {houseId} params.
  */
 jest.mock('react-router-dom', () => ({
     ...jest.requireActual('react-router-dom'),
@@ -69,7 +69,7 @@ jest.mock('react-router-dom', () => ({
     }),
 }))
 
-describe('Test EquipmentForm', () => {
+describe('Test InstallationForm', () => {
     // test('When equipmentForm mount, with equipmentMeterList form should be disabled, clicking on Modifier form should not be disabled', async () => {
     //     const { getByText } = reduxedRender(
     //         <BrowserRouter>
@@ -158,7 +158,7 @@ describe('Test EquipmentForm', () => {
         mockIsLoadingInProgress = true
         const { getByText } = reduxedRender(
             <BrowserRouter>
-                <EquipmentForm />
+                <InstallationForm />
             </BrowserRouter>,
         )
         expect(() => getByText(MODIFIER_BUTTON_TEXT)).toThrow()

@@ -7,7 +7,7 @@ import {
     TEST_LOAD_ERROR_METER_EQUIPMENT,
     TEST_AUTHORIZATION_LOAD_EMPTY_METER_EQUIPEMENTS,
 } from 'src/mocks/handlers/equipments'
-import { useEquipmentList } from 'src/modules/MyHouse/components/Equipments/equipmentHooks'
+import { useEquipmentList } from 'src/modules/MyHouse/components/Installation/installationHook'
 const mockEnqueueSnackbar = jest.fn()
 /**
  * Mocking the useSnackbar used in CustomerDetails to load the customerDetails based on url /customers/:id {id} params.

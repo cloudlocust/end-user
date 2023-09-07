@@ -23,6 +23,10 @@ export enum HousingCardTypeOfDetailsEnum {
      */
     HOUSSING_INFORMATION = 'information',
     /**
+     * Housing information.
+     */
+    HOUSSING_EQUIPMENTS = 'equipments',
+    /**
      * Connected Plugs.
      */
     CONNECTED_PLUGS = 'connected-plugs',
