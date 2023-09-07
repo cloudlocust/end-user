@@ -20,13 +20,13 @@ import {
     mappingEquipmentNameToType,
     myEquipmentOptions,
 } from 'src/modules/MyHouse/utils/MyHouseVariables'
-import { useEquipmentList } from 'src/modules/MyHouse/components/Equipments/equipmentHooks'
+import { useEquipmentList } from 'src/modules/MyHouse/components/Installation/installationHook'
 import {
     equipmentAllowedTypeT,
     equipmentValuesType,
     equipmentMeterType,
     IEquipmentMeter,
-} from 'src/modules/MyHouse/components/Equipments/EquipmentsType'
+} from 'src/modules/MyHouse/components/Installation/InstallationType.d'
 import { useSelector } from 'react-redux'
 import { RootState } from 'src/redux'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
@@ -40,7 +40,7 @@ import { NumberFieldForm } from 'src/common/ui-kit/components/NumberField/Number
  *
  * @returns Equipment Form equipment.
  */
-export const EquipmentForm = () => {
+export const InstallationForm = () => {
     const theme = useTheme()
     const isDesktop = useMediaQuery(theme.breakpoints.up('lg'))
     const { currentHousing } = useSelector(({ housingModel }: RootState) => housingModel)
