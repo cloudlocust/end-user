@@ -539,10 +539,10 @@ describe('getVisibleTargetCharts tests', () => {
         enphaseOff = true
         const result = getVisibleTargetCharts(enphaseOff)
         expect(result).toStrictEqual([
-            metricTargetsEnum.consumption,
             metricTargetsEnum.baseConsumption,
             metricTargetsEnum.peakHourConsumption,
             metricTargetsEnum.offPeakHourConsumption,
+            metricTargetsEnum.consumption,
         ])
     })
 

@@ -1,5 +1,5 @@
 import { reduxedRender } from 'src/common/react-platform-components/test'
-import { ConsumptionSwitchButton } from 'src/modules/MyConsumption/components/ConsumptionSwitchButton'
+import { SwitchIdleConsumptionButton } from 'src/modules/MyConsumption/components/SwitchIdleConsumptionButton'
 import { createTheme } from '@mui/material/styles'
 import { ThemeProvider } from '@mui/material'
 import userEvent from '@testing-library/user-event'
@@ -7,7 +7,7 @@ import userEvent from '@testing-library/user-event'
 const GENERAL_TEXT = 'Général'
 const VEILLE_TEXT = 'Veille'
 
-describe('ConsumptionSwitchButton', () => {
+describe('SwitchIdleConsumptionButton', () => {
     const theme = createTheme({
         palette: {
             primary: {
@@ -22,7 +22,7 @@ describe('ConsumptionSwitchButton', () => {
     test('when button is in general as default', async () => {
         const { getByText } = reduxedRender(
             <ThemeProvider theme={theme}>
-                <ConsumptionSwitchButton />
+                <SwitchIdleConsumptionButton />
             </ThemeProvider>,
         )
 
@@ -43,7 +43,7 @@ describe('ConsumptionSwitchButton', () => {
     test('when veille button is clicked, style changes', async () => {
         const { getByText } = reduxedRender(
             <ThemeProvider theme={theme}>
-                <ConsumptionSwitchButton />
+                <SwitchIdleConsumptionButton />
             </ThemeProvider>,
         )
 

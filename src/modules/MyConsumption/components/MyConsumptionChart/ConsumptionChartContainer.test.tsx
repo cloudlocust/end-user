@@ -369,10 +369,10 @@ describe('MyConsumptionContainer test', () => {
             expect(mockGetMetricsWithParams).toHaveBeenCalledWith({
                 ...mockGetMetricsWithParamsValues,
                 targets: [
-                    metricTargetsEnum.consumption,
                     metricTargetsEnum.baseConsumption,
                     metricTargetsEnum.peakHourConsumption,
                     metricTargetsEnum.offPeakHourConsumption,
+                    metricTargetsEnum.consumption,
                 ],
             })
         })

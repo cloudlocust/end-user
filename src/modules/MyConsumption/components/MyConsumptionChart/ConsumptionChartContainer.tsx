@@ -20,7 +20,7 @@ import {
 } from 'src/modules/MyConsumption/components/MyConsumptionChart/ConsumptionChartWarnings'
 import { sgeConsentFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
 import TargetMenuGroup from 'src/modules/MyConsumption/components/TargetMenuGroup'
-import { ConsumptionSwitchButton } from 'src/modules/MyConsumption/components/ConsumptionSwitchButton'
+import { SwitchIdleConsumptionButton } from 'src/modules/MyConsumption/components/ConsumptionSwitchButton'
 
 /**
  * MyConsumptionChart Component.
@@ -160,12 +160,19 @@ export const ConsumptionChartContainer = ({
 
     /**
      * Hide given metric target chart.
-     *
      */
     const resetMetricsTargets = useCallback(async () => {
         isVisibleTargetChartsChanged.current = true
         setVisibleTargetsCharts([...getVisibleTargetCharts(enphaseOff)])
     }, [enphaseOff])
+
+    /**
+     * Handler when switching to IdleTarget On ConsumptionSwitchButton.
+     */
+    const onIdleConsumptionSwitchButton = useCallback(async () => {
+        isVisibleTargetChartsChanged.current = true
+        setVisibleTargetsCharts([metricTargetsEnum.idleConsumption, ...getVisibleTargetCharts(true)])
+    }, [])
 
     return (
         <div className="mb-12">
@@ -196,7 +203,11 @@ export const ConsumptionChartContainer = ({
                     showEurosConsumption={!isEurosConsumptionChart}
                     disabled={isEurosConsumptionDisabled}
                 />
-                <ConsumptionSwitchButton />
+                <SwitchIdleConsumptionButton
+                    removeIdleTarget={resetMetricsTargets}
+                    addIdleTarget={onIdleConsumptionSwitchButton}
+                    isIdleConsumptionButtonDisabled={period === 'daily'}
+                />
                 <TargetMenuGroup
                     removeTarget={resetMetricsTargets}
                     addTarget={showMetricTargetChart}

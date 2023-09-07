@@ -89,6 +89,8 @@ export const getChartColor = (chartName: metricTargetsEnum, theme: Theme, enphas
             return theme.palette.primary.light
         case metricTargetsEnum.autoconsumption:
             return '#BEECDB'
+        case metricTargetsEnum.idleConsumption:
+            return '#8191B2'
         case metricTargetsEnum.totalProduction:
             return '#C8D210'
         case metricTargetsEnum.injectedProduction:
@@ -141,6 +143,7 @@ export const getYPointValueLabel = (
         case metricTargetsEnum.baseConsumption:
         case metricTargetsEnum.autoconsumption:
         case metricTargetsEnum.totalProduction:
+        case metricTargetsEnum.idleConsumption:
         case metricTargetsEnum.injectedProduction:
         case metricTargetsEnum.peakHourConsumption:
         case metricTargetsEnum.offPeakHourConsumption:

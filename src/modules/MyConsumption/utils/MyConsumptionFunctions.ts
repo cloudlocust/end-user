@@ -528,7 +528,7 @@ export const getChartSpecifities = (
     } else if (target === metricTargetsEnum.idleConsumption) {
         return {
             label: 'Consommation de veille',
-            seriesName: 'Veille',
+            seriesName: chartLabel,
             show: false,
         }
     } else if (target === metricTargetsEnum.peakHourConsumption) {
@@ -762,10 +762,10 @@ export function getRangeV2(period: PeriodEnum) {
 export const getVisibleTargetCharts = (isEnphaseOff: boolean): metricTargetType[] => {
     if (isEnphaseOff) {
         return [
-            metricTargetsEnum.consumption,
             metricTargetsEnum.baseConsumption,
             metricTargetsEnum.peakHourConsumption,
             metricTargetsEnum.offPeakHourConsumption,
+            metricTargetsEnum.consumption,
         ]
     }
 
