@@ -1,24 +1,13 @@
 import { useEffect, useState } from 'react'
-import {
-    CircularProgress,
-    // Radio,
-    // RadioGroup,
-    // FormControlLabel,
-    // FormControl,
-    useTheme,
-    useMediaQuery,
-    Container,
-} from '@mui/material'
+import { CircularProgress, Radio, RadioGroup, FormControlLabel, FormControl, useTheme, Container } from '@mui/material'
 import { Form } from 'src/common/react-platform-components'
-// import { SelectButtons } from 'src/common/ui-kit/form-fields/SelectButtons/SelectButtons'
+import { SelectButtons } from 'src/common/ui-kit/form-fields/SelectButtons/SelectButtons'
 import { EditButtonsGroup } from 'src/modules/MyHouse/EditButtonsGroup'
 import {
-    groupedCards,
-    // heaterEquipment,
-    // sanitaryEquipment,
-    // hotPlateEquipment,
+    heaterEquipment,
+    sanitaryEquipment,
+    hotPlateEquipment,
     mappingEquipmentNameToType,
-    myEquipmentOptions,
 } from 'src/modules/MyHouse/utils/MyHouseVariables'
 import { useEquipmentList } from 'src/modules/MyHouse/components/Installation/installationHook'
 import {
@@ -32,8 +21,6 @@ import { RootState } from 'src/redux'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import { ReactComponent as MeterErrorIcon } from 'src/assets/images/content/housing/meter-error.svg'
 import { linksColor } from 'src/modules/utils/muiThemeVariables'
-import { INumberFieldForm } from 'src/common/ui-kit/components/NumberField/NumberFieldTypes'
-import { NumberFieldForm } from 'src/common/ui-kit/components/NumberField/NumberFieldForm'
 
 /**
  * EquipmentForm Component.
@@ -42,22 +29,21 @@ import { NumberFieldForm } from 'src/common/ui-kit/components/NumberField/Number
  */
 export const InstallationForm = () => {
     const theme = useTheme()
-    const isDesktop = useMediaQuery(theme.breakpoints.up('lg'))
     const { currentHousing } = useSelector(({ housingModel }: RootState) => housingModel)
     const { equipmentList, saveEquipment, loadingEquipmentInProgress, isEquipmentMeterListEmpty, loadEquipmentList } =
         useEquipmentList(currentHousing?.id)
 
-    // const [solarPanelRadioValue, setSolarPanelRadioValue] = useState<'existant' | 'non-existant'>('existant')
+    const [solarPanelRadioValue, setSolarPanelRadioValue] = useState<'existant' | 'non-existant'>('existant')
     const [isEquiomentInfoConsentmentOpen, setIsEquiomentInfoConsentmentOpen] = useState(false)
 
-    // /**
-    //  * Handler for solar panel radio button.
-    //  *
-    //  * @param event React change event.
-    //  */
-    // const handleSolarPanelRadioChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    //     setSolarPanelRadioValue((event.target as HTMLInputElement).value as 'existant' | 'non-existant')
-    // }
+    /**
+     * Handler for solar panel radio button.
+     *
+     * @param event React change event.
+     */
+    const handleSolarPanelRadioChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setSolarPanelRadioValue((event.target as HTMLInputElement).value as 'existant' | 'non-existant')
+    }
     const [isEdit, setIsEdit] = useState(false)
 
     // It'll have the following format an object of all equipment, name is the key, for example: {"heater": {equipment_id, equipment_type, equipment_number, isNumber, equipment: {id, name, allowed_type} } }.
@@ -99,10 +85,6 @@ export const InstallationForm = () => {
             ? savedEquipmentList[equipmentName].equipmentNumber!
             : savedEquipmentList[equipmentName].equipmentType!
     })
-
-    const myEquipment = isDesktop
-        ? groupedCards(myEquipmentOptions as INumberFieldForm[], 2)
-        : groupedCards(myEquipmentOptions as INumberFieldForm[])
 
     return (
         <Container>
@@ -147,9 +129,9 @@ export const InstallationForm = () => {
                             }
                         })
 
-                        // if (solarPanelRadioValue) {
-                        //     body.push({ equipmentId: 14, equipmentType: solarPanelRadioValue })
-                        // }
+                        if (solarPanelRadioValue) {
+                            body.push({ equipmentId: 14, equipmentType: solarPanelRadioValue })
+                        }
 
                         if (body.length > 0) {
                             await saveEquipment(body)
@@ -171,65 +153,51 @@ export const InstallationForm = () => {
                             />
                         )}
                     </div>
-                    {/* <div className="flex flex-col justify-center w-full">
-                    <div className="text-13">
-                        <SelectButtons isDisabled={!isEquipmentMeterListEmpty && !isEdit} {...heaterEquipment} />
-                    </div>
-                    <div className="text-13">
-                        <SelectButtons isDisabled={!isEquipmentMeterListEmpty && !isEdit} {...sanitaryEquipment} />
-                    </div>
-                    <div className="text-13">
-                        <SelectButtons isDisabled={!isEquipmentMeterListEmpty && !isEdit} {...hotPlateEquipment} />
-                    </div>
-                    <div className="text-13 flex flex-row justify-around md:justify-center mt-8 md:mt-24">
-                        <TypographyFormatMessage className="flex flex-row items-center">
-                            Je dispose de panneaux solaires :
-                        </TypographyFormatMessage>
-                        <FormControl className="md:ml-8">
-                            <RadioGroup
-                                aria-labelledby="demo-controlled-radio-buttons-group"
-                                name="controlled-radio-buttons-group"
-                                value={solarPanelRadioValue}
-                                onChange={handleSolarPanelRadioChange}
-                                className="flex flex-col md:flex-row ml-12"
-                            >
-                                <FormControlLabel
-                                    value="existant"
-                                    control={<Radio />}
-                                    label="Oui"
-                                    disabled={!isEquipmentMeterListEmpty && !isEdit}
-                                />
-                                <FormControlLabel
-                                    value="non-existant"
-                                    control={<Radio />}
-                                    label="Non"
-                                    disabled={!isEquipmentMeterListEmpty && !isEdit}
-                                />
-                            </RadioGroup>
-                        </FormControl>
-                    </div>
-                </div> */}
-                    <div className="mt-16 mb-20">
-                        <TypographyFormatMessage>Vos équipements :</TypographyFormatMessage>
-                    </div>
-                    <div className="flex">
-                        {myEquipment.map((col) => (
-                            <div className="w-full text-13">
-                                {col.map((item) => (
-                                    <NumberFieldForm
-                                        key={item.name}
-                                        {...item}
+                    <div className="flex flex-col justify-center w-full">
+                        <div className="text-13">
+                            <SelectButtons isDisabled={!isEquipmentMeterListEmpty && !isEdit} {...heaterEquipment} />
+                        </div>
+                        <div className="text-13">
+                            <SelectButtons isDisabled={!isEquipmentMeterListEmpty && !isEdit} {...sanitaryEquipment} />
+                        </div>
+                        <div className="text-13">
+                            <SelectButtons isDisabled={!isEquipmentMeterListEmpty && !isEdit} {...hotPlateEquipment} />
+                        </div>
+                        <div className="text-13 flex flex-row justify-around md:justify-center mt-8 md:mt-24">
+                            <TypographyFormatMessage className="flex flex-row items-center">
+                                Je dispose de panneaux solaires :
+                            </TypographyFormatMessage>
+                            <FormControl className="md:ml-8">
+                                <RadioGroup
+                                    aria-labelledby="demo-controlled-radio-buttons-group"
+                                    name="controlled-radio-buttons-group"
+                                    value={solarPanelRadioValue}
+                                    onChange={handleSolarPanelRadioChange}
+                                    className="flex flex-col md:flex-row ml-12"
+                                >
+                                    <FormControlLabel
+                                        value="existant"
+                                        control={<Radio />}
+                                        label="Oui"
                                         disabled={!isEquipmentMeterListEmpty && !isEdit}
                                     />
-                                ))}
-                            </div>
-                        ))}
+                                    <FormControlLabel
+                                        value="non-existant"
+                                        control={<Radio />}
+                                        label="Non"
+                                        disabled={!isEquipmentMeterListEmpty && !isEdit}
+                                    />
+                                </RadioGroup>
+                            </FormControl>
+                        </div>
                     </div>
+
                     <EditButtonsGroup
                         formInitialValues={defaultValues}
                         isEdit={isEquipmentMeterListEmpty || isEdit}
                         disableEdit={() => setIsEdit(false)}
                         enableForm={() => setIsEdit(true)}
+                        inProgress={loadingEquipmentInProgress}
                     />
                 </Form>
             </div>
