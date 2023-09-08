@@ -7,6 +7,7 @@ import { useMetrics } from 'src/modules/Metrics/metricsHook'
 import { IMetric, metricTargetsEnum, metricTargetType } from 'src/modules/Metrics/Metrics.d'
 import { ConsumptionChartContainerProps } from 'src/modules/MyConsumption/myConsumptionTypes'
 import CircularProgress from '@mui/material/CircularProgress'
+import Box from '@mui/material/Box'
 import EurosConsumptionButtonToggler from 'src/modules/MyConsumption/components/EurosConsumptionButtonToggler'
 import {
     filterTargetsOnDailyPeriod,
@@ -20,6 +21,7 @@ import {
 } from 'src/modules/MyConsumption/components/MyConsumptionChart/ConsumptionChartWarnings'
 import { sgeConsentFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
 import TargetMenuGroup from 'src/modules/MyConsumption/components/TargetMenuGroup'
+import CloseIcon from '@mui/icons-material/Close'
 import { SwitchIdleConsumption } from 'src/modules/MyConsumption/components/SwitchIdleConsumption'
 
 /**
@@ -51,6 +53,7 @@ export const ConsumptionChartContainer = ({
     const [visibleTargetCharts, setVisibleTargetsCharts] = useState<metricTargetType[]>(
         getVisibleTargetCharts(enphaseOff),
     )
+    const [isShowIdleConsumptionDisabledInfo, setIsShowIdleConsumptionDisabledInfo] = useState(false)
     // Indicates if enedisSgeConsent is not Connected
     const enedisSgeOff = enedisSgeConsent?.enedisSgeConsentState !== 'CONNECTED'
     const hidePmax = period === 'daily' || enedisSgeOff
@@ -121,6 +124,7 @@ export const ConsumptionChartContainer = ({
         // Condition !isVisibleTargetCharts responsible for not calling getMetrics when toggling between targets through UI Buttons (€ consumption, Temperature, pMax)
         // Condition !isEurosConsumptionOrPmaxVisibleTargetCharts responsible for preventing getMetrics to be called when period changes to daily and there'll is pMax or eurosConsumption targets in the request. Those will be removed in a useEffect and getMetrics will be called.
         if (!isEurosConsumptionOrPmaxVisibleTargetChartOnPeriodDaily) {
+            setIsShowIdleConsumptionDisabledInfo(false)
             await getMetricsWithParams({ interval: metricsInterval, range, targets: visibleTargetCharts, filters })
         }
     }, [
@@ -196,6 +200,25 @@ export const ConsumptionChartContainer = ({
                 </motion.div>
             </div>
 
+            {/* SwitchIdleConsumption Info Text*/}
+            {isShowIdleConsumptionDisabledInfo && (
+                <Box
+                    className="flex items-center justify-between text-13 md:text-16 w-full p-16"
+                    sx={{ backgroundColor: 'primary.main', color: 'primary.contrastText' }}
+                >
+                    <TypographyFormatMessage
+                        sx={{
+                            flexGrow: 1,
+                            display: 'flex',
+                            justifyContent: 'center',
+                        }}
+                    >
+                        Les informations de veille ne sont pas disponibles pour cette pèriode
+                    </TypographyFormatMessage>
+                    <CloseIcon sx={{ cursor: 'pointer' }} onClick={() => setIsShowIdleConsumptionDisabledInfo(false)} />
+                </Box>
+            )}
+
             <div className="my-16 flex justify-between">
                 <EurosConsumptionButtonToggler
                     removeTarget={resetMetricsTargets}
@@ -207,6 +230,7 @@ export const ConsumptionChartContainer = ({
                     removeIdleTarget={resetMetricsTargets}
                     addIdleTarget={onIdleConsumptionSwitchButton}
                     isIdleConsumptionButtonDisabled={period === 'daily'}
+                    onClickIdleConsumptionDisabledInfoIcon={() => setIsShowIdleConsumptionDisabledInfo(true)}
                 />
                 <TargetMenuGroup
                     removeTarget={resetMetricsTargets}

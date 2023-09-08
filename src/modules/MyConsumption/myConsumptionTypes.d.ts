@@ -166,6 +166,10 @@ export type SwitchIdleConsumptionProps =
          * Indicate if IdleConsumptionTogglButton is disabled.
          */
         isIdleConsumptionButtonDisabled?: boolean
+        /**
+         * Callback when clicking the infoIcon on disabled idleConsumption button.
+         */
+        onClickIdleConsumptionDisabledInfoIcon: () => void
     }
 
 /**
