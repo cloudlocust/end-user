@@ -1,6 +1,7 @@
-import { Container, useMediaQuery, useTheme } from '@mui/material'
-import { useState } from 'react'
+import { Container, useMediaQuery, useTheme, ThemeProvider, Button, Icon, CircularProgress } from '@mui/material'
+import { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
+import { useHistory } from 'react-router-dom'
 import { Form } from 'src/common/react-platform-components'
 import { NumberFieldForm } from 'src/common/ui-kit/components/NumberField/NumberFieldForm'
 import { INumberFieldForm } from 'src/common/ui-kit/components/NumberField/NumberFieldTypes'
@@ -20,6 +21,7 @@ import {
     myEquipmentOptions,
 } from 'src/modules/MyHouse/utils/MyHouseVariables'
 import { RootState } from 'src/redux'
+import { motion } from 'framer-motion'
 
 /**
  * Housing Equipments.
@@ -28,17 +30,13 @@ import { RootState } from 'src/redux'
  */
 export const Equipments = () => {
     const theme = useTheme()
+    const history = useHistory()
     const isDesktop = useMediaQuery(theme.breakpoints.up('lg'))
     const { currentHousing } = useSelector(({ housingModel }: RootState) => housingModel)
-    const { equipmentList, saveEquipment, loadingEquipmentInProgress, isEquipmentMeterListEmpty } = useEquipmentList(
-        currentHousing?.id,
-    )
+    const { equipmentList, saveEquipment, loadingEquipmentInProgress, isEquipmentMeterListEmpty, loadEquipmentList } =
+        useEquipmentList(currentHousing?.id)
 
     const [isEdit, setIsEdit] = useState(false)
-
-    const myEquipment = isDesktop
-        ? groupedCards(myEquipmentOptions as INumberFieldForm[], 2)
-        : groupedCards(myEquipmentOptions as INumberFieldForm[])
 
     // It'll have the following format an object of all equipment, name is the key, for example: {"heater": {equipment_id, equipment_type, equipment_number, isNumber, equipment: {id, name, allowed_type} } }.
     // eslint-disable-next-line jsdoc/require-jsdoc
@@ -69,9 +67,59 @@ export const Equipments = () => {
             : savedEquipmentList[equipmentName].equipmentType!
     })
 
+    // eslint-disable-next-line array-callback-return
+    const updatedMyEquipmentOptions = myEquipmentOptions.map((option) => {
+        const matchingEquipment = equipmentList?.find((equipment) => equipment.equipment.name === option.name)
+        if (matchingEquipment) {
+            return {
+                ...option,
+                value: matchingEquipment.equipmentNumber,
+            }
+        }
+    })
+
+    const myEquipment = isDesktop
+        ? groupedCards(updatedMyEquipmentOptions as INumberFieldForm[], 2)
+        : groupedCards(updatedMyEquipmentOptions as INumberFieldForm[])
+
+    useEffect(() => {
+        loadEquipmentList()
+    }, [loadEquipmentList])
+
+    if (loadingEquipmentInProgress)
+        return (
+            <div className="flex flex-col justify-center items-center w-full" style={{ minHeight: '60vh' }}>
+                <CircularProgress />
+            </div>
+        )
+
     return (
         <PageSimple
-            header={<></>}
+            header={
+                <ThemeProvider theme={theme}>
+                    <div
+                        className="w-full h-full px-10 flex justify-start items-center"
+                        style={{ backgroundColor: theme.palette.primary.dark }}
+                    >
+                        <Button
+                            sx={{ color: 'primary.contrastText' }}
+                            onClick={history.goBack}
+                            className="text-12 md:text-16 mt-10"
+                            color="inherit"
+                        >
+                            <Icon
+                                component={motion.span}
+                                initial={{ scale: 0 }}
+                                animate={{ scale: 1, transition: { delay: 0.2 } }}
+                                className="text-16 md:text-24 mr-2"
+                            >
+                                arrow_back
+                            </Icon>
+                            <TypographyFormatMessage>Retour</TypographyFormatMessage>
+                        </Button>
+                    </div>
+                </ThemeProvider>
+            }
             content={
                 <Container>
                     <Form
@@ -115,13 +163,16 @@ export const Equipments = () => {
                         <div className="flex">
                             {myEquipment.map((col) => (
                                 <div className="w-full text-13">
-                                    {col.map((item) => (
-                                        <NumberFieldForm
-                                            key={item.name}
-                                            {...item}
-                                            disabled={!isEquipmentMeterListEmpty && !isEdit}
-                                        />
-                                    ))}
+                                    {col.map((item) => {
+                                        return (
+                                            <NumberFieldForm
+                                                key={item.name}
+                                                value={item.value}
+                                                {...item}
+                                                disabled={!isEquipmentMeterListEmpty && !isEdit}
+                                            />
+                                        )
+                                    })}
                                 </div>
                             ))}
                         </div>
