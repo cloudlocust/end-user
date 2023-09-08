@@ -5,7 +5,7 @@ import { useHistory } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import { AccomodationForm } from 'src/modules/MyHouse/components/Accomodation/AccomodationForm'
-import { EquipmentForm } from 'src/modules/MyHouse/components/Equipments/EquipmentForm'
+import { InstallationForm } from 'src/modules/MyHouse/components/Installation/InstallationForm'
 
 /**
  * Page component for housing information.
@@ -25,8 +25,8 @@ export const HousingInformation = () => {
         },
         {
             tabTitle: 'Info Installation',
-            tabSlug: 'equipments',
-            tabContent: <EquipmentForm />,
+            tabSlug: 'installation',
+            tabContent: <InstallationForm />,
         },
     ]
 

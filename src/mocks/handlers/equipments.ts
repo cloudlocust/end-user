@@ -1,13 +1,13 @@
 import { rest } from 'msw'
 import { SnakeCasedPropertiesDeep } from 'type-fest'
-import { ALL_EQUIPMENTS_API } from 'src/modules/MyHouse/components/Equipments/equipmentHooks'
+import { ALL_EQUIPMENTS_API } from 'src/modules/MyHouse/components/Installation/installationHook'
 import {
     equipmentNameType,
     equipmentType,
     equipmentMeterType,
     postEquipmentInputType,
     IEquipmentMeter,
-} from 'src/modules/MyHouse/components/Equipments/EquipmentsType'
+} from 'src/modules/MyHouse/components/Installation/InstallationType.d'
 import { HOUSING_API } from 'src/modules/MyHouse/components/HousingList/HousingsHooks'
 /**
  * Mock for meter data to be added.

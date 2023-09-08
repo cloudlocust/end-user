@@ -1,7 +1,7 @@
 import { chunk, filter, zip } from 'lodash'
 import { INumberFieldForm } from 'src/common/ui-kit/components/NumberField/NumberFieldTypes'
 import { ISelectButtons } from 'src/common/ui-kit/form-fields/SelectButtons/SelectButtonsTypes'
-import { equipmentNameType } from 'src/modules/MyHouse/components/Equipments/EquipmentsType'
+import { equipmentNameType } from 'src/modules/MyHouse/components/Installation/InstallationType.d'
 import { SvgIcon } from '@mui/material'
 import { ReactComponent as ElectricityIcon } from 'src/assets/images/content/housing/Electricity.svg'
 import { ReactComponent as OtherIcon } from 'src/assets/images/content/housing/Other.svg'

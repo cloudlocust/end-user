@@ -1,5 +1,5 @@
 export { MyHouseConfig, URL_MY_HOUSE } from 'src/modules/MyHouse/MyHouseConfig'
 export { MyHouse } from 'src/modules/MyHouse/MyHouse'
 export { AccomodationForm } from 'src/modules/MyHouse/components/Accomodation/AccomodationForm'
-export { EquipmentForm } from 'src/modules/MyHouse/components/Equipments/EquipmentForm'
+export { InstallationForm } from 'src/modules/MyHouse/components/Installation/InstallationForm'
 export { EditButtonsGroup } from 'src/modules/MyHouse/EditButtonsGroup'
