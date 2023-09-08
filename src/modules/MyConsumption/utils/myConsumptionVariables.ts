@@ -86,6 +86,7 @@ export const getChartColor = (chartName: metricTargetsEnum, theme: Theme, enphas
         case metricTargetsEnum.pMax:
             return '#FF7A00'
         case metricTargetsEnum.eurosConsumption:
+        case metricTargetsEnum.baseEuroConsumption:
             return theme.palette.primary.light
         case metricTargetsEnum.autoconsumption:
             return '#BEECDB'
@@ -101,6 +102,10 @@ export const getChartColor = (chartName: metricTargetsEnum, theme: Theme, enphas
             return '#CCAB1D'
         case metricTargetsEnum.consumption:
             return enphaseOff ? 'rgba(255,255,255, .0)' : theme.palette.secondary.main
+        case metricTargetsEnum.euroPeakHourConsumption:
+            return '#4DD9E4'
+        case metricTargetsEnum.euroOffPeakConsumption:
+            return '#006970'
         default:
             return theme.palette.secondary.main
     }
@@ -129,7 +134,10 @@ export const getYPointValueLabel = (
     const value = isNil(yValue) ? '' : yValue
     switch (chartName) {
         case metricTargetsEnum.eurosConsumption:
+        case metricTargetsEnum.baseEuroConsumption:
         case metricTargetsEnum.subscriptionPrices:
+        case metricTargetsEnum.euroPeakHourConsumption:
+        case metricTargetsEnum.euroOffPeakConsumption:
             return `${value === '' ? value : value.toFixed(2)} €`
         case metricTargetsEnum.externalTemperature:
         case metricTargetsEnum.internalTemperature:

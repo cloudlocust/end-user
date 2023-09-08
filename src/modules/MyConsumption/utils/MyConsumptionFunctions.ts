@@ -483,16 +483,28 @@ export const getChartSpecifities = (
             seriesName: chartLabel,
             show: false,
         }
-    } else if (target === metricTargetsEnum.eurosConsumption) {
+    } else if (target === metricTargetsEnum.eurosConsumption || target === metricTargetsEnum.baseEuroConsumption) {
         return {
             // eslint-disable-next-line sonarjs/no-duplicate-string
-            label: 'Consommation Euros',
-            seriesName: 'Consommation Euros',
+            label: 'Consommation euro de base',
+            seriesName: 'Consommation euro de base',
         }
     } else if (target === metricTargetsEnum.subscriptionPrices) {
         return {
             label: 'Abonnement',
-            seriesName: 'Consommation Euros',
+            seriesName: 'Consommation euro de base',
+            show: false,
+        }
+    } else if (target === metricTargetsEnum.euroPeakHourConsumption) {
+        return {
+            label: 'Consommation achetée HP',
+            seriesName: 'Consommation euro de base',
+            show: false,
+        }
+    } else if (target === metricTargetsEnum.euroOffPeakConsumption) {
+        return {
+            label: 'Consommation achetée HC',
+            seriesName: 'Consommation euro de base',
             show: false,
         }
     } else if (target === metricTargetsEnum.externalTemperature) {

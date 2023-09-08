@@ -55,10 +55,14 @@ const EurosConsumptionButtonToggler = ({
                                 },
                             }}
                             disabled={disabled}
-                            // TODO Remove target should take an array of targets
                             onClick={() => {
                                 addTarget(
-                                    [metricTargetsEnum.eurosConsumption, metricTargetsEnum.subscriptionPrices],
+                                    [
+                                        metricTargetsEnum.baseEuroConsumption,
+                                        metricTargetsEnum.euroPeakHourConsumption,
+                                        metricTargetsEnum.euroOffPeakConsumption,
+                                        metricTargetsEnum.subscriptionPrices,
+                                    ],
                                     true,
                                 )
                             }}
