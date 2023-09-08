@@ -4,7 +4,6 @@ import { axios } from 'src/common/react-platform-components'
 import { useAxiosCancelToken } from 'src/hooks/AxiosCancelToken'
 import { useSnackbar } from 'notistack'
 import { useIntl } from 'react-intl'
-
 import {
     IConnectedPlug,
     IConnectedPlugApiResponse,
@@ -15,6 +14,7 @@ import {
 import { isNull } from 'lodash'
 import { HOUSING_API } from 'src/modules/MyHouse/components/HousingList/HousingsHooks'
 import { connectedPlugsFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
+import { getShellyWindowInstructionsHTML } from 'src/modules/MyHouse/components/ConnectedPlugs/ShellyWindowInstructions'
 
 /**
  * Connected Plug requests API.
@@ -227,7 +227,7 @@ export const useShellyConnectedPlugs = (housingId?: number) => {
                         }
                     }, 1000)
                 }
-
+                newShellyWindow.document.write(getShellyWindowInstructionsHTML(shellyUrl))
                 shellyWindow.current = newShellyWindow
             } catch (error) {
                 enqueueSnackbar(
