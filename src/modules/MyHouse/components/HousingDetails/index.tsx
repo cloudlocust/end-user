@@ -251,7 +251,7 @@ export const HousingDetails = () => {
                             title="Mes équipements"
                             elements={equipementElements}
                             typeOfDetails={HousingCardTypeOfDetailsEnum.HOUSSING_EQUIPMENTS}
-                            isConfigured={false}
+                            isConfigured={!isEquipmentMeterListEmpty}
                             loadingInProgress={loadingEquipmentInProgress}
                         />
 
