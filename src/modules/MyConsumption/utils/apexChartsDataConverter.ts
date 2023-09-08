@@ -77,7 +77,6 @@ export const convertMetricsDataToApexChartsDateTimeAxisValues = (
     // If base consumption has data, then we filter HP HC targets.
     // If base doesn't have data then we assiume that user has HP HC contract.
     const isBaseConsumptionDataEmpty = isEmptyMetricsData(data, [metricTargetsEnum.baseConsumption])
-    const isBaseEuroConsumptionDataEmpty = isEmptyMetricsData(data, [metricTargetsEnum.baseEuroConsumption])
 
     for (const metric of data) {
         let metricApexChartsDatapoints: ApexAxisChartSerie['data'] = metric.datapoints.map((datapoint) => {
@@ -118,33 +117,6 @@ export const convertMetricsDataToApexChartsDateTimeAxisValues = (
                 serie.name === metricTargetsEnum.baseConsumption ||
                 serie.name === metricTargetsEnum.autoconsumption ||
                 serie.name === metricTargetsEnum.consumption ||
-                serie.name === metricTargetsEnum.externalTemperature ||
-                serie.name === metricTargetsEnum.internalTemperature,
-        )
-    }
-
-    if (isBaseEuroConsumptionDataEmpty && period !== 'daily') {
-        return apexChartsSeries.filter(
-            (serie) =>
-                serie.name === metricTargetsEnum.consumption ||
-                serie.name === metricTargetsEnum.autoconsumption ||
-                serie.name === metricTargetsEnum.peakHourConsumption ||
-                serie.name === metricTargetsEnum.offPeakHourConsumption ||
-                serie.name === metricTargetsEnum.baseEuroConsumption ||
-                serie.name === metricTargetsEnum.subscriptionPrices ||
-                serie.name === metricTargetsEnum.externalTemperature ||
-                serie.name === metricTargetsEnum.internalTemperature,
-        )
-    } else if (!isBaseEuroConsumptionDataEmpty && period !== 'daily') {
-        return apexChartsSeries.filter(
-            (serie) =>
-                serie.name === metricTargetsEnum.consumption ||
-                serie.name === metricTargetsEnum.autoconsumption ||
-                serie.name === metricTargetsEnum.peakHourConsumption ||
-                serie.name === metricTargetsEnum.offPeakHourConsumption ||
-                serie.name === metricTargetsEnum.euroPeakHourConsumption ||
-                serie.name === metricTargetsEnum.euroOffPeakConsumption ||
-                serie.name === metricTargetsEnum.subscriptionPrices ||
                 serie.name === metricTargetsEnum.externalTemperature ||
                 serie.name === metricTargetsEnum.internalTemperature,
         )

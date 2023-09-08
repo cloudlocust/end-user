@@ -272,6 +272,7 @@ export const getApexChartMyConsumptionProps = ({
                 yAxisSerie.name !== metricTargetsEnum.consumption &&
                 yAxisSerie.name !== metricTargetsEnum.baseConsumption &&
                 yAxisSerie.name !== metricTargetsEnum.eurosConsumption &&
+                yAxisSerie.name !== metricTargetsEnum.baseEuroConsumption &&
                 yAxisSerie.name !== metricTargetsEnum.totalProduction &&
                 yAxisSerie.name !== metricTargetsEnum.injectedProduction,
 

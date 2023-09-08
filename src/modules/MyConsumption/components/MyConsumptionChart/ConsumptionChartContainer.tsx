@@ -80,7 +80,7 @@ export const ConsumptionChartContainer = ({
     }, [period, visibleTargetCharts])
 
     const isEurosConsumptionChart = useMemo(
-        () => visibleTargetCharts.includes(metricTargetsEnum.eurosConsumption),
+        () => visibleTargetCharts.includes(metricTargetsEnum.baseEuroConsumption),
         [visibleTargetCharts],
     )
 

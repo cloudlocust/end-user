@@ -55,7 +55,6 @@ const EurosConsumptionButtonToggler = ({
                                 },
                             }}
                             disabled={disabled}
-                            // TODO Remove target should take an array of targets
                             onClick={() => {
                                 addTarget(
                                     [
