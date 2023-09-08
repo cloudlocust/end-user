@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { ToggleButtonGroup, ToggleButton, capitalize } from '@mui/material'
-import { SwitchIdleConsumptionButtonProps } from 'src/modules/MyConsumption/myConsumptionTypes.d'
+import { SwitchIdleConsumptionProps } from 'src/modules/MyConsumption/myConsumptionTypes.d'
 
 /**
  * Component for idle consumption switch button.
@@ -11,11 +11,11 @@ import { SwitchIdleConsumptionButtonProps } from 'src/modules/MyConsumption/myCo
  * @param props.isIdleConsumptionButtonDisabled Indicated if IdleConsumptionButton is disabled.
  * @returns Idle Conssumption switch button.
  */
-export const SwitchIdleConsumptionButton = ({
+export const SwitchIdleConsumption = ({
     addIdleTarget,
     removeIdleTarget,
     isIdleConsumptionButtonDisabled,
-}: SwitchIdleConsumptionButtonProps): JSX.Element => {
+}: SwitchIdleConsumptionProps): JSX.Element => {
     const [isIdleConsumptionButtonSelected, setIsIdleConsumptionButtonSelected] = useState(false)
 
     const idleConsumptionSwitchButtons = [

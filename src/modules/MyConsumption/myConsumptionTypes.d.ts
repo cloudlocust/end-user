@@ -149,9 +149,9 @@ export type EurosConsumptionButtonTogglerProps =
     }
 
 /**
- * Interface for SwitchIdleConsumptionButtonProps.
+ * Interface for SwitchIdleConsumptionProps.
  */
-export type SwitchIdleConsumptionButtonProps =
+export type SwitchIdleConsumptionProps =
     // eslint-disable-next-line jsdoc/require-jsdoc
     {
         /**

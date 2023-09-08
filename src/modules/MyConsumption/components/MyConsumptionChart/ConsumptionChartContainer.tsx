@@ -20,7 +20,7 @@ import {
 } from 'src/modules/MyConsumption/components/MyConsumptionChart/ConsumptionChartWarnings'
 import { sgeConsentFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
 import TargetMenuGroup from 'src/modules/MyConsumption/components/TargetMenuGroup'
-import { SwitchIdleConsumptionButton } from 'src/modules/MyConsumption/components/ConsumptionSwitchButton'
+import { SwitchIdleConsumption } from 'src/modules/MyConsumption/components/SwitchIdleConsumption'
 
 /**
  * MyConsumptionChart Component.
@@ -203,7 +203,7 @@ export const ConsumptionChartContainer = ({
                     showEurosConsumption={!isEurosConsumptionChart}
                     disabled={isEurosConsumptionDisabled}
                 />
-                <SwitchIdleConsumptionButton
+                <SwitchIdleConsumption
                     removeIdleTarget={resetMetricsTargets}
                     addIdleTarget={onIdleConsumptionSwitchButton}
                     isIdleConsumptionButtonDisabled={period === 'daily'}
