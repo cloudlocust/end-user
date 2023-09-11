@@ -194,7 +194,7 @@ const getDaysValues = (
  * @returns List of months.
  */
 const getMonthValues = (range: metricRangeType) => {
-    return getAddedDates(13, range.from, 'month')
+    return getAddedDates(12, range.from, 'month')
 }
 
 /**
@@ -331,7 +331,7 @@ export const fillApexChartsDatetimeSeriesMissingValues = (
         // TODO Find a better way rather than hard code the number.
         // Checking if there are missing datapoints.
         // If period is yearly then yAxisValues chart has 13 elements, representing all the months starting from the year preceding the current month with duplicating the current month.
-        if (yAxisSerie.data.length >= 13) return
+        if (yAxisSerie.data.length > 12) return
         // Fill datapoints missing values.
         // This index will help to go through datapoints and map between missing value and its timestamp counterpart.
         let missingDatapointIndex = 0
