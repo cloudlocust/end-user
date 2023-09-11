@@ -37,9 +37,10 @@ import {
     endOfMonth,
     endOfYear,
 } from 'date-fns'
-import { cloneDeep, sum } from 'lodash'
+import { cloneDeep, subtract, sum } from 'lodash'
 import { isNil } from 'lodash'
 import fr from 'date-fns/locale/fr'
+import { getDataFromYAxis } from '../components/Widget/WidgetFunctions'
 
 /**
  * FormatMetricFilter function converts the data to the required format.
@@ -537,6 +538,18 @@ export const getChartSpecifities = (
             seriesName: 'Autoconsommation',
             show: false,
         }
+    } else if (target === metricTargetsEnum.idleConsumption) {
+        return {
+            label: 'Consommation de veille',
+            seriesName: chartLabel,
+            show: false,
+        }
+    } else if (target === metricTargetsEnum.totalOffIdleConsumption) {
+        return {
+            label: 'Consommation Hors-veille',
+            seriesName: chartLabel,
+            show: false,
+        }
     } else if (target === metricTargetsEnum.peakHourConsumption) {
         return {
             label: 'Consommation en HP',
@@ -768,10 +781,10 @@ export function getRangeV2(period: PeriodEnum) {
 export const getVisibleTargetCharts = (isEnphaseOff: boolean): metricTargetType[] => {
     if (isEnphaseOff) {
         return [
-            metricTargetsEnum.consumption,
             metricTargetsEnum.baseConsumption,
             metricTargetsEnum.peakHourConsumption,
             metricTargetsEnum.offPeakHourConsumption,
+            metricTargetsEnum.consumption,
         ]
     }
 
@@ -838,4 +851,77 @@ export const isEmptyMetricsData = (data: IMetric[], targetsFilter?: metricTarget
         )
     })
     return totalMetricsData === 0
+}
+
+/**
+ * Compute TotalOffIdleConsumption MetricData based on total consumption (consumption_metrics) and idleConsumption (if exist).
+ *
+ * @description
+ * Empty Metrics Data happens when datapoints of all metricsData targets are NULL or 0.
+ * To check that metricsData is empty, by summing all targets datapoints and the results must be 0 as the data should be positive.
+ * Param targetsFilter to indicate which target Data to check if it's empty.
+ * @example
+ * data = [
+ *  {
+ *    "target": "consumption_metrics",
+ *    "datapoints": [[null, 00001], [null, 00002] ,[null, 00003], [null, 00004]]
+ *  },
+ *  {
+ *    "target": "idle_consumption_metrics",
+ *    "datapoints": [[0, 00001], [0, 00002] ,[0, 00003], [0, 00004]]
+ *  }
+ * ]
+ * => getTotalOffIdleConsumptionData(data) === {
+ *    "target": "off_idle_consumption_metrics",
+ *    "datapoints": [[null, 00001], [null, 00002] ,[null, 00003], [null, 00004]]
+ *  }
+ * The getTotalOffIdleConsumptionData returns a new metrics object with null datapoints because consumption_metrics has only null values.
+ * @example
+ * data = [
+ *  {
+ *    "target": "consumption_metrics",
+ *    "datapoints": [[null, 00001], [70, 00002] ,[120, 00003], [129, 00004]]
+ *  },
+ *  {
+ *    "target": "idle_consumption_metrics",
+ *    "datapoints": [[0, 00001], [30, 00002] ,[88, 00003], [89, 00004]]
+ *  }
+ * ]
+ * => getTotalOffIdleConsumptionData(data) === {
+ *    "target": "off_idle_consumption_metrics",
+ *    "datapoints": [[null, 00001], [40, 00002] ,[32, 00003], [40, 00004]]
+ *  }
+ * The getTotalOffIdleConsumptionData returns a new metrics object based on the subtraction of consumption_metrics - idle_consumption_metrics.
+ * @example
+ * data = [
+ *  {
+ *    "target": "consumption_metrics",
+ *    "datapoints": [[null, 00001], [null, 00002] ,[89, 00003], [123, 00004]
+ *  },
+ *  {
+ *    "target": "internal_temperature",
+ *    "datapoints": [[0, 00001], [0, 00002] ,[0, 00003], [0, 00004]
+ *  }
+ * ]
+ * => getTotalOffIdleConsumptionData(data) === undefined
+ * The getTotalOffIdleConsumptionData returns undefined because there's not idle_consumption_metrics.
+ * @param data Metrics Data.
+ * @returns TotalOffIdle Metric Data.
+ */
+export const getTotalOffIdleConsumptionData = (data: IMetric[]): IMetric | undefined => {
+    const idleConsumptionMetrics = data.find((metricData) => metricData.target === metricTargetsEnum.idleConsumption)
+    if (idleConsumptionMetrics) {
+        const totalConsumptionDatapoints = getDataFromYAxis(data, metricTargetsEnum.consumption)
+        const idleConsumptionDatapoints = idleConsumptionMetrics.datapoints
+        return {
+            target: metricTargetsEnum.totalOffIdleConsumption,
+            datapoints: totalConsumptionDatapoints.map((val, index) => {
+                return [
+                    val ? subtract(val, Number(idleConsumptionDatapoints[index][0])) : val,
+                    idleConsumptionDatapoints[index][1],
+                ]
+            }),
+        }
+    }
+    return undefined
 }

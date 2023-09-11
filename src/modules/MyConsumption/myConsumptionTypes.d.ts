@@ -149,6 +149,30 @@ export type EurosConsumptionButtonTogglerProps =
     }
 
 /**
+ * Interface for SwitchIdleConsumptionProps.
+ */
+export type SwitchIdleConsumptionProps =
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    {
+        /**
+         * RemoveIdleTarget.
+         */
+        removeIdleTarget: () => void
+        /**
+         * AddIdleTarget.
+         */
+        addIdleTarget: () => void
+        /**
+         * Indicate if IdleConsumptionTogglButton is disabled.
+         */
+        isIdleConsumptionButtonDisabled?: boolean
+        /**
+         * Callback when clicking the infoIcon on disabled idleConsumption button.
+         */
+        onClickIdleConsumptionDisabledInfoIcon: () => void
+    }
+
+/**
  * Represent the type return by apexChartsDataConverter.
  */
 export type ApexChartsAxisValuesType =

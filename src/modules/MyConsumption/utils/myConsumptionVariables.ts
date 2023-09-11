@@ -90,6 +90,8 @@ export const getChartColor = (chartName: metricTargetsEnum, theme: Theme, enphas
             return theme.palette.primary.light
         case metricTargetsEnum.autoconsumption:
             return '#BEECDB'
+        case metricTargetsEnum.idleConsumption:
+            return '#8191B2'
         case metricTargetsEnum.totalProduction:
             return '#C8D210'
         case metricTargetsEnum.injectedProduction:
@@ -100,6 +102,8 @@ export const getChartColor = (chartName: metricTargetsEnum, theme: Theme, enphas
             return '#CC9121'
         case metricTargetsEnum.offPeakHourConsumption:
             return '#CCAB1D'
+        case metricTargetsEnum.totalOffIdleConsumption:
+            return theme.palette.secondary.main
         case metricTargetsEnum.consumption:
             return enphaseOff ? 'rgba(255,255,255, .0)' : theme.palette.secondary.main
         case metricTargetsEnum.euroPeakHourConsumption:
@@ -149,6 +153,8 @@ export const getYPointValueLabel = (
         case metricTargetsEnum.baseConsumption:
         case metricTargetsEnum.autoconsumption:
         case metricTargetsEnum.totalProduction:
+        case metricTargetsEnum.idleConsumption:
+        case metricTargetsEnum.totalOffIdleConsumption:
         case metricTargetsEnum.injectedProduction:
         case metricTargetsEnum.peakHourConsumption:
         case metricTargetsEnum.offPeakHourConsumption:
@@ -157,7 +163,9 @@ export const getYPointValueLabel = (
                     ? value
                     : isYValueRounded
                     ? Math.round(convert(value).from('Wh').to(unit!))
-                    : convert(value).from('Wh').to(unit!).toFixed(2)
+                    : // With .toFixed it rounds up the number, doing slice and toFixed(3) will make sure to truncate and not round up.
+                      // So that we have a result of a number with two digits after the decimal point.
+                      convert(value).from('Wh').to(unit!).toFixed(3).slice(0, -1)
             } ${unit}`
         default:
             return ` ${unit}`

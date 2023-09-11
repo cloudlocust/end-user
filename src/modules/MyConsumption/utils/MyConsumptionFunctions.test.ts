@@ -15,6 +15,7 @@ import {
     subtractTime,
     addTime,
     getVisibleTargetCharts,
+    getTotalOffIdleConsumptionData,
 } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
 import { IMetric, metricIntervalType, metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
 import { FAKE_WEEK_DATA, FAKE_DAY_DATA, FAKE_MONTH_DATA, FAKE_YEAR_DATA } from 'src/mocks/handlers/metrics'
@@ -537,10 +538,10 @@ describe('getVisibleTargetCharts tests', () => {
         enphaseOff = true
         const result = getVisibleTargetCharts(enphaseOff)
         expect(result).toStrictEqual([
-            metricTargetsEnum.consumption,
             metricTargetsEnum.baseConsumption,
             metricTargetsEnum.peakHourConsumption,
             metricTargetsEnum.offPeakHourConsumption,
+            metricTargetsEnum.consumption,
         ])
     })
 
@@ -548,5 +549,102 @@ describe('getVisibleTargetCharts tests', () => {
         const result = getVisibleTargetCharts(enphaseOff)
 
         expect(result).toStrictEqual([metricTargetsEnum.autoconsumption, metricTargetsEnum.consumption])
+    })
+})
+
+test('filterTargetsOnDailyPeriod test with different cases', async () => {
+    const caseList = [
+        // Total off idle consumption with null values
+        {
+            data: [
+                {
+                    target: metricTargetsEnum.consumption,
+                    datapoints: [
+                        [null, 10001],
+                        [null, 10002],
+                        [null, 10003],
+                        [null, 10004],
+                    ],
+                },
+                {
+                    target: metricTargetsEnum.idleConsumption,
+                    datapoints: [
+                        [0, 10001],
+                        [0, 10002],
+                        [0, 10003],
+                        [0, 10004],
+                    ],
+                },
+            ],
+            expectedResult: {
+                target: metricTargetsEnum.totalOffIdleConsumption,
+                datapoints: [
+                    [null, 10001],
+                    [null, 10002],
+                    [null, 10003],
+                    [null, 10004],
+                ],
+            },
+        },
+        // Total off idle consumption with not-null values.
+        {
+            data: [
+                {
+                    target: metricTargetsEnum.consumption,
+                    datapoints: [
+                        [null, 10001],
+                        [130, 10002],
+                        [55, 10003],
+                        [800, 10004],
+                    ],
+                },
+                {
+                    target: metricTargetsEnum.idleConsumption,
+                    datapoints: [
+                        [0, 10001],
+                        [30, 10002],
+                        [33, 10003],
+                        [null, 10004],
+                    ],
+                },
+            ],
+            expectedResult: {
+                target: metricTargetsEnum.totalOffIdleConsumption,
+                datapoints: [
+                    [null, 10001],
+                    [100, 10002],
+                    [22, 10003],
+                    [800, 10004],
+                ],
+            },
+        },
+        // Undefined return.
+        {
+            data: [
+                {
+                    target: metricTargetsEnum.consumption,
+                    datapoints: [
+                        [890, 10001],
+                        [130, 10002],
+                        [77, 10003],
+                        [148, 10004],
+                    ],
+                },
+                {
+                    target: metricTargetsEnum.internalTemperature,
+                    datapoints: [
+                        [0, 10001],
+                        [30, 10002],
+                        [32, 10003],
+                        [null, 10004],
+                    ],
+                },
+            ],
+            expectedResult: undefined,
+        },
+    ]
+    caseList.forEach(({ data, expectedResult }) => {
+        const result = getTotalOffIdleConsumptionData(data as IMetric[])
+        expect(result).toEqual(expectedResult)
     })
 })
