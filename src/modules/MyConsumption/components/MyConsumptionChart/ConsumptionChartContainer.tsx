@@ -109,7 +109,9 @@ export const ConsumptionChartContainer = ({
         if (data.length > 0) {
             let chartData = data.filter((datapoint) => visibleTargetCharts.includes(datapoint.target))
             const totalOffIdleConsumptionData = getTotalOffIdleConsumptionData(chartData)
-            if (totalOffIdleConsumptionData) chartData = [totalOffIdleConsumptionData, ...chartData]
+            if (totalOffIdleConsumptionData) {
+                chartData = [...chartData, totalOffIdleConsumptionData]
+            }
             setConsumptionChartData(chartData)
         }
     }, [data, visibleTargetCharts])
@@ -138,7 +140,7 @@ export const ConsumptionChartContainer = ({
      * Handler when switching to IdleTarget On ConsumptionSwitchButton.
      */
     const onIdleConsumptionSwitchButton = useCallback(async () => {
-        setVisibleTargetsCharts([metricTargetsEnum.idleConsumption, ...getVisibleTargetCharts(true)])
+        setVisibleTargetsCharts([metricTargetsEnum.consumption, metricTargetsEnum.idleConsumption])
     }, [])
 
     return (

@@ -546,7 +546,7 @@ export const getChartSpecifities = (
         }
     } else if (target === metricTargetsEnum.totalOffIdleConsumption) {
         return {
-            label: 'Consommation totale (Hors-veille)',
+            label: 'Consommation Hors-veille',
             seriesName: chartLabel,
             show: false,
         }
