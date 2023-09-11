@@ -9,7 +9,11 @@ import { ConsumptionChartContainerProps } from 'src/modules/MyConsumption/myCons
 import CircularProgress from '@mui/material/CircularProgress'
 import Box from '@mui/material/Box'
 import EurosConsumptionButtonToggler from 'src/modules/MyConsumption/components/EurosConsumptionButtonToggler'
-import { getVisibleTargetCharts, showPerPeriodText } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
+import {
+    getTotalOffIdleConsumptionData,
+    getVisibleTargetCharts,
+    showPerPeriodText,
+} from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
 import {
     DefaultContractWarning,
     ConsumptionEnedisSgeWarning,
@@ -103,7 +107,10 @@ export const ConsumptionChartContainer = ({
     useEffect(() => {
         // To avoid multiple rerendering and thus calculation in MyConsumptionChart, CosnumptionChartData change only once, when visibleTargetChart change or when the first getMetrics targets is loaded, thus avoiding to rerender when the second getMetrics is loaded with all targets which should only happen in the background.
         if (data.length > 0) {
-            setConsumptionChartData(data.filter((datapoint) => visibleTargetCharts.includes(datapoint.target)))
+            let chartData = data.filter((datapoint) => visibleTargetCharts.includes(datapoint.target))
+            const totalOffIdleConsumptionData = getTotalOffIdleConsumptionData(chartData)
+            if (totalOffIdleConsumptionData) chartData = [totalOffIdleConsumptionData, ...chartData]
+            setConsumptionChartData(chartData)
         }
     }, [data, visibleTargetCharts])
 
