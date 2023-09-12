@@ -217,3 +217,38 @@ export const EnphaseOffConsumptionChartTargets: metricTargetType[] = [
     metricTargetsEnum.peakHourConsumption,
     metricTargetsEnum.offPeakHourConsumption,
 ]
+
+/**
+ * Targets related to idleConsumption.
+ */
+export const idleConsumptionTargets: metricTargetType[] = [
+    metricTargetsEnum.idleConsumption,
+    metricTargetsEnum.consumption,
+]
+
+/**
+ * Targets related to Euros IdleConsumption.
+ */
+export const eurosIdleConsumptionTargets: metricTargetType[] = [
+    metricTargetsEnum.eurosIdleConsumption,
+    metricTargetsEnum.eurosConsumption,
+]
+
+/**
+ * Targets related to Euros Consumption.
+ */
+export const eurosConsumptionTargets: metricTargetType[] = [
+    metricTargetsEnum.baseEuroConsumption,
+    metricTargetsEnum.euroPeakHourConsumption,
+    metricTargetsEnum.euroOffPeakConsumption,
+    metricTargetsEnum.subscriptionPrices,
+]
+
+/**
+ * Targets related to the TargetMenuGroup button which consists of temperature and pMax.
+ */
+export const temperatureOrPmaxTargets: metricTargetType[] = [
+    metricTargetsEnum.pMax,
+    metricTargetsEnum.internalTemperature,
+    metricTargetsEnum.externalTemperature,
+]

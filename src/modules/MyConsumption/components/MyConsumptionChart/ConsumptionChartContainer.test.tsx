@@ -270,18 +270,19 @@ describe('MyConsumptionContainer test', () => {
     test('When hasMissingHousingContracts and isEurosConsumptin, message is shown', async () => {
         consumptionChartContainerProps.period = 'weekly'
         consumptionChartContainerProps.hasMissingHousingContracts = true
-        const { getByText, getByTestId } = reduxedRender(
+        const { getByText, getAllByTestId } = reduxedRender(
             <Router>
                 <ConsumptionChartContainer {...consumptionChartContainerProps} />
             </Router>,
             { initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[0] } } },
         )
 
+        expect(getAllByTestId(EUROS_CONSUMPTION_ICON_TEST_ID)[0]).toBe('qsfs')
         // TOGGLING TO EUROS CONSUMPTION CHART
-        userEvent.click(getByTestId(EUROS_CONSUMPTION_ICON_TEST_ID).parentElement as HTMLButtonElement)
+        userEvent.click(getAllByTestId(EUROS_CONSUMPTION_ICON_TEST_ID)[0].parentElement as HTMLButtonElement)
         // CONSUMPTION ICON should be shown
         await waitFor(() => {
-            expect(getByTestId(CONSUMPTION_ICON_TEST_ID)).toBeTruthy()
+            expect(getAllByTestId(CONSUMPTION_ICON_TEST_ID)[0]).toBeTruthy()
         })
 
         // HasMissingContractsExample Text
@@ -293,10 +294,10 @@ describe('MyConsumptionContainer test', () => {
         )
 
         // TOGGLING BACK TO CONSUMPTION, AUTOCONSUMPTION CHART, for coverage of EurosConsumptionButtonToggler.
-        userEvent.click(getByTestId(CONSUMPTION_ICON_TEST_ID))
+        userEvent.click(getAllByTestId(CONSUMPTION_ICON_TEST_ID)[0])
         // EUROS ICON Should be shown
         await waitFor(() => {
-            expect(getByTestId(EUROS_CONSUMPTION_ICON_TEST_ID)).toBeTruthy()
+            expect(getAllByTestId(EUROS_CONSUMPTION_ICON_TEST_ID)[0]).toBeTruthy()
         })
         expect(() => getByText(HAS_MISSING_CONTRACTS_WARNING_TEXT)).toThrow()
     })
