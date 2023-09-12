@@ -10,7 +10,7 @@ import { models } from 'src/models'
 import { AccomodationDataType } from 'src/modules/MyHouse/components/Accomodation/AccomodationType.d'
 import { TEST_ACCOMODATION_RESPONSE as MOCK_TEST_ACCOMODATION_RESPONSE } from 'src/mocks/handlers/accomodation'
 import { TEST_HOUSING_EQUIPMENTS as MOCK_EQUIPMENTS } from 'src/mocks/handlers/equipments'
-import { IEquipmentMeter } from 'src/modules/MyHouse/components/Equipments/EquipmentsType'
+import { IEquipmentMeter } from 'src/modules/MyHouse/components/Installation/InstallationType.d'
 import { TEST_CONNECTED_PLUGS } from 'src/mocks/handlers/connectedPlugs'
 import { IConnectedPlug } from 'src/modules/MyHouse/components/ConnectedPlugs/ConnectedPlugs.d'
 
@@ -23,6 +23,7 @@ const MOCK_TEST_CONNECTED_PLUGS: IConnectedPlug[] = applyCamelCase(TEST_CONNECTE
 let mockConnectedPlugsList = MOCK_TEST_CONNECTED_PLUGS
 
 let mockHouseId = LIST_OF_HOUSES[0].id
+const INFORMATION_DOMICILE_TEXT = 'Information domicile'
 
 /**
  * Mocking the react-router-dom for houseId in useParams.
@@ -66,8 +67,8 @@ let mockEquipmentList: IEquipmentMeter[] | null = TEST_METER_EQUIPMENTS
 /**
  * Mock the useEquipment hook.
  */
-jest.mock('src/modules/MyHouse/components/Equipments/equipmentHooks', () => ({
-    ...jest.requireActual('src/modules/MyHouse/components/Equipments/equipmentHooks'),
+jest.mock('src/modules/MyHouse/components/Installation/installationHook', () => ({
+    ...jest.requireActual('src/modules/MyHouse/components/Installation/installationHook'),
     // eslint-disable-next-line jsdoc/require-jsdoc
     useEquipmentList: () => ({
         loadEquipmentList: mockLoadEquipmentList,
@@ -115,18 +116,16 @@ describe('Test HousingDetails Component', () => {
         await store.dispatch.housingModel.setHousingModelState(LIST_OF_HOUSES)
     })
 
-    test('when Equipment valid', async () => {
-        await store.dispatch.housingModel.setHousingModelState(LIST_OF_HOUSES)
-
-        const { getByText } = reduxedRender(
-            <Router>
-                <HousingDetails />
-            </Router>,
-            { store },
-        )
-        expect(getByText('Chauffage')).toBeTruthy()
-        expect(getByText('Eau')).toBeTruthy()
-        expect(getByText('Plaques')).toBeTruthy()
+    describe('Information domicile card', () => {
+        test('Information domicile card is displayed', async () => {
+            const { getByText } = reduxedRender(
+                <Router>
+                    <HousingDetails />
+                </Router>,
+                { store },
+            )
+            expect(getByText(INFORMATION_DOMICILE_TEXT)).toBeInTheDocument()
+        })
     })
 
     describe('Should display connectedPlugs correctly', () => {

@@ -11,6 +11,13 @@ export type metricTargetType =
     | 'enphase_production_metrics'
     | 'production_metrics'
     | 'idle_consumption'
+    | 'subscription_prices'
+    | 'base_consumption_metrics'
+    | 'hp_consumption_metrics'
+    | 'hc_consumption_metrics'
+    | 'base__euros__consumption_metrics'
+    | 'hp__euros__consumption_metrics'
+    | 'hc__euros__consumption_metrics'
 
 /**
  * Enum representing the metricTarget without exposing the backend naming.
@@ -52,6 +59,34 @@ export enum metricTargetsEnum {
      * Eneum value for consommation de veille.
      */
     idleConsumption = 'idle_consumption',
+    /**
+     * Enum value for abonnement.
+     */
+    subscriptionPrices = 'subscription_prices',
+    /**
+     * Enum value for heure pleine.
+     */
+    peakHourConsumption = 'hp_consumption_metrics',
+    /**
+     * Enum for heure creuse.
+     */
+    offPeakHourConsumption = 'hc_consumption_metrics',
+    /**
+     * Base conssumption metrics (according to Tariff de base).
+     */
+    baseConsumption = 'base_consumption_metrics',
+    /**
+     * Euro consumption for heure pleine.
+     */
+    euroPeakHourConsumption = 'hp__euros__consumption_metrics',
+    /**
+     * Euro consumption for heure creuse.
+     */
+    euroOffPeakConsumption = 'hc__euros__consumption_metrics',
+    /**
+     * Base euro consumption (according to Tariff de base).
+     */
+    baseEuroConsumption = 'base__euros__consumption_metrics',
 }
 /**
  * Metrics intervals.

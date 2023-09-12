@@ -9,11 +9,12 @@ import {
     getDateWithoutTimezoneOffset,
     addPeriod,
     subPeriod,
-    filterPmaxAndEurosConsumptionTargetFromVisibleChartTargets,
+    filterTargetsOnDailyPeriod,
     convertConsumptionToWatt,
     getRangeV2,
     subtractTime,
     addTime,
+    getVisibleTargetCharts,
 } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
 import { IMetric, metricIntervalType, metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
 import { FAKE_WEEK_DATA, FAKE_DAY_DATA, FAKE_MONTH_DATA, FAKE_YEAR_DATA } from 'src/mocks/handlers/metrics'
@@ -140,7 +141,7 @@ describe('test pure functions', () => {
         interval = '1M'
         xAxisValues = generateXAxisValues('yearly', getRange('year'))
         // If interval is 1d and period is yearly , then length should be 13 because we start from the current month till the month of next year.
-        expect(xAxisValues).toHaveLength(13)
+        expect(xAxisValues).toHaveLength(12)
     })
 
     test('fillApexChartsAxisMissingValues test with different cases', async () => {
@@ -153,8 +154,8 @@ describe('test pure functions', () => {
             'yearly',
             fakeYearRange,
         )
-        expect(ApexChartsFilledAxisValues.xAxisSeries[0]).toHaveLength(13)
-        expect(ApexChartsFilledAxisValues.yAxisSeries[0].data).toHaveLength(13)
+        expect(ApexChartsFilledAxisValues.xAxisSeries[0]).toHaveLength(12)
+        expect(ApexChartsFilledAxisValues.yAxisSeries[0].data).toHaveLength(12)
         expect(ApexChartsFilledAxisValues.yAxisSeries[0].data[0]).toEqual(MOCK_YEAR_MISSING_DATA[0][0])
         expect(ApexChartsFilledAxisValues.yAxisSeries[0].data[1]).toEqual(MOCK_YEAR_MISSING_DATA[1][0])
         expect(ApexChartsFilledAxisValues.yAxisSeries[0].data[2]).toBeNull()
@@ -167,7 +168,6 @@ describe('test pure functions', () => {
         expect(ApexChartsFilledAxisValues.yAxisSeries[0].data[9]).toBeNull()
         expect(ApexChartsFilledAxisValues.yAxisSeries[0].data[10]).toBeNull()
         expect(ApexChartsFilledAxisValues.yAxisSeries[0].data[11]).toEqual(MOCK_YEAR_MISSING_DATA[2][0])
-        expect(ApexChartsFilledAxisValues.yAxisSeries[0].data[12]).toBeNull()
 
         // When yAxisSeries is empty nothing should changes
         apexChartsMissingValues = convertMetricsDataToApexChartsAxisValues([])
@@ -186,7 +186,7 @@ describe('test pure functions', () => {
             'yearly',
             fakeYearRange,
         )
-        expect(ApexChartsDatetimeFilledValues[0].data).toHaveLength(13)
+        expect(ApexChartsDatetimeFilledValues[0].data).toHaveLength(12)
         expect((ApexChartsDatetimeFilledValues[0].data[0] as [number, number])[1]).toEqual(MOCK_YEAR_MISSING_DATA[0][0])
         expect((ApexChartsDatetimeFilledValues[0].data[1] as [number, number])[1]).toEqual(MOCK_YEAR_MISSING_DATA[1][0])
         expect((ApexChartsDatetimeFilledValues[0].data[2] as [number, number])[1]).toBeNull()
@@ -201,7 +201,6 @@ describe('test pure functions', () => {
         expect((ApexChartsDatetimeFilledValues[0].data[11] as [number, number])[1]).toEqual(
             MOCK_YEAR_MISSING_DATA[2][0],
         )
-        expect((ApexChartsDatetimeFilledValues[0].data[12] as [number, number])[1]).toBeNull()
 
         // When yAxisSeries is empty nothing should changes
         apexChartsDatetimeMissingValues = convertMetricsDataToApexChartsDateTimeAxisValues([])
@@ -335,13 +334,13 @@ describe('test pure functions', () => {
         })
     })
 
-    test('filterPmaxAndEurosConsumptionTargetFromVisibleChartTargets test with different cases', async () => {
+    test('filterTargetsOnDailyPeriod test with different cases', async () => {
         const caseList = [
             // Filtering eurosConsumption Target.
             {
                 visibleTargetsChart: [metricTargetsEnum.eurosConsumption, metricTargetsEnum.internalTemperature],
                 expectedResult: [
-                    metricTargetsEnum.consumption,
+                    metricTargetsEnum.baseConsumption,
                     metricTargetsEnum.autoconsumption,
                     metricTargetsEnum.internalTemperature,
                 ],
@@ -349,18 +348,18 @@ describe('test pure functions', () => {
             // Filtering pMax Target.
             {
                 visibleTargetsChart: [metricTargetsEnum.eurosConsumption, metricTargetsEnum.pMax],
-                expectedResult: [metricTargetsEnum.consumption, metricTargetsEnum.autoconsumption],
+                expectedResult: [metricTargetsEnum.baseConsumption, metricTargetsEnum.autoconsumption],
             },
             // Everything's alright.
             {
                 visibleTargetsChart: [
-                    metricTargetsEnum.consumption,
+                    metricTargetsEnum.baseConsumption,
                     metricTargetsEnum.autoconsumption,
                     metricTargetsEnum.internalTemperature,
                     metricTargetsEnum.externalTemperature,
                 ],
                 expectedResult: [
-                    metricTargetsEnum.consumption,
+                    metricTargetsEnum.baseConsumption,
                     metricTargetsEnum.autoconsumption,
                     metricTargetsEnum.internalTemperature,
                     metricTargetsEnum.externalTemperature,
@@ -368,7 +367,7 @@ describe('test pure functions', () => {
             },
         ]
         caseList.forEach(({ visibleTargetsChart, expectedResult }) => {
-            const result = filterPmaxAndEurosConsumptionTargetFromVisibleChartTargets(visibleTargetsChart)
+            const result = filterTargetsOnDailyPeriod(visibleTargetsChart)
             expect(result).toEqual(expectedResult)
         })
     })
@@ -524,5 +523,30 @@ describe('addTime', () => {
         const expectedDate = getDateWithoutTimezoneOffset(addYears(startOfYear(currentDate), 1))
         const actualDate = addTime(currentDate, PeriodEnum.YEARLY)
         expect(actualDate).toEqual(expectedDate)
+    })
+})
+
+describe('getVisibleTargetCharts tests', () => {
+    let enphaseOff = false
+
+    beforeEach(() => {
+        enphaseOff = false
+    })
+
+    test('when enphaseOff is true, it returns consumption metrics', () => {
+        enphaseOff = true
+        const result = getVisibleTargetCharts(enphaseOff)
+        expect(result).toStrictEqual([
+            metricTargetsEnum.consumption,
+            metricTargetsEnum.baseConsumption,
+            metricTargetsEnum.peakHourConsumption,
+            metricTargetsEnum.offPeakHourConsumption,
+        ])
+    })
+
+    test('when enphase is false, , it returns auto conso w/ base consumption', () => {
+        const result = getVisibleTargetCharts(enphaseOff)
+
+        expect(result).toStrictEqual([metricTargetsEnum.autoconsumption, metricTargetsEnum.consumption])
     })
 })
