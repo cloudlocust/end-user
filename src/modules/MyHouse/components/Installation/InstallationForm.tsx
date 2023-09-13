@@ -33,7 +33,7 @@ export const InstallationForm = () => {
     const { equipmentList, saveEquipment, loadingEquipmentInProgress, isEquipmentMeterListEmpty, loadEquipmentList } =
         useEquipmentList(currentHousing?.id)
 
-    const [solarPanelRadioValue, setSolarPanelRadioValue] = useState<'existant' | 'non-existant'>('existant')
+    const [solarPanelRadioValue, setSolarPanelRadioValue] = useState<'existant' | 'nonexistant'>('existant')
     const [isEquiomentInfoConsentmentOpen, setIsEquiomentInfoConsentmentOpen] = useState(false)
 
     /**
@@ -42,9 +42,10 @@ export const InstallationForm = () => {
      * @param event React change event.
      */
     const handleSolarPanelRadioChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setSolarPanelRadioValue((event.target as HTMLInputElement).value as 'existant' | 'non-existant')
+        setSolarPanelRadioValue((event.target as HTMLInputElement).value as 'existant' | 'nonexistant')
     }
     const [isEdit, setIsEdit] = useState(false)
+    const disabledField = !isEquipmentMeterListEmpty && !isEdit
 
     // It'll have the following format an object of all equipment, name is the key, for example: {"heater": {equipment_id, equipment_type, equipment_number, isNumber, equipment: {id, name, allowed_type} } }.
     // eslint-disable-next-line jsdoc/require-jsdoc
@@ -155,13 +156,13 @@ export const InstallationForm = () => {
                     </div>
                     <div className="flex flex-col justify-center w-full">
                         <div className="text-13">
-                            <SelectButtons isDisabled={!isEquipmentMeterListEmpty && !isEdit} {...heaterEquipment} />
+                            <SelectButtons isDisabled={disabledField} {...heaterEquipment} />
                         </div>
                         <div className="text-13">
-                            <SelectButtons isDisabled={!isEquipmentMeterListEmpty && !isEdit} {...sanitaryEquipment} />
+                            <SelectButtons isDisabled={disabledField} {...sanitaryEquipment} />
                         </div>
                         <div className="text-13">
-                            <SelectButtons isDisabled={!isEquipmentMeterListEmpty && !isEdit} {...hotPlateEquipment} />
+                            <SelectButtons isDisabled={disabledField} {...hotPlateEquipment} />
                         </div>
                         <div className="text-13 flex flex-row justify-around md:justify-center mt-8 md:mt-24">
                             <TypographyFormatMessage className="flex flex-row items-center">
@@ -179,13 +180,13 @@ export const InstallationForm = () => {
                                         value="existant"
                                         control={<Radio />}
                                         label="Oui"
-                                        disabled={!isEquipmentMeterListEmpty && !isEdit}
+                                        disabled={disabledField}
                                     />
                                     <FormControlLabel
-                                        value="non-existant"
+                                        value="nonexistant"
                                         control={<Radio />}
                                         label="Non"
-                                        disabled={!isEquipmentMeterListEmpty && !isEdit}
+                                        disabled={disabledField}
                                     />
                                 </RadioGroup>
                             </FormControl>
