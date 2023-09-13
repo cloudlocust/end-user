@@ -55,10 +55,10 @@ export const ConsumptionChartContainer = ({
     // Indicates if enphaseConsentState is not ACTIVE
     const enphaseOff = enphaseConsent?.enphaseConsentState !== 'ACTIVE'
     // Handling the targets makes it simpler instead of the useMetrics as it's a straightforward array of metricTargetType
-    //  meanwhile the setTargets for useMetrics needs to add {type: 'timeserie'} everytime...
+    // Meanwhile the setTargets for useMetrics needs to add {type: 'timeserie'} everytime...
     const [targets, setTargets] = useState<metricTargetType[]>(getDefaultConsumptionTargets(enphaseOff))
-    const [isShowIdleConsumptionDisabledInfo, setIsShowIdleConsumptionDisabledInfo] = useState(false)
     // Indicates if enedisSgeConsent is not Connected
+    const [isShowIdleConsumptionDisabledInfo, setIsShowIdleConsumptionDisabledInfo] = useState(false)
     const enedisSgeOff = enedisSgeConsent?.enedisSgeConsentState !== 'CONNECTED'
     const hidePmax = period === 'daily' || enedisSgeOff
 
@@ -84,8 +84,8 @@ export const ConsumptionChartContainer = ({
     }, [period, targets])
 
     // MetricRequest shouldn't be allowed when period is daily (metric interval is '1m' or '30m' and targets don't include euros or idle).
-    const isMetricRequestAllowed = useMemo(() => {
-        return !(
+    const isMetricRequestNotAllowed = useMemo(() => {
+        return (
             ['1m', '30m'].includes(metricsInterval) &&
             targets.some((target) =>
                 [
@@ -100,8 +100,8 @@ export const ConsumptionChartContainer = ({
     // When switching to period daily, if Euros Charts or Idle charts buttons are selected, metrics should be reset.
     // This useEffect reset metrics.
     useEffect(() => {
-        if (!isMetricRequestAllowed) setTargets(getDefaultConsumptionTargets(enphaseOff))
-    }, [isMetricRequestAllowed, enphaseOff])
+        if (isMetricRequestNotAllowed) setTargets(getDefaultConsumptionTargets(enphaseOff))
+    }, [isMetricRequestNotAllowed, enphaseOff])
 
     const isEurosButtonToggled = useMemo(
         () => targets.some((target) => [...eurosConsumptionTargets, ...eurosIdleConsumptionTargets].includes(target)),
@@ -129,10 +129,10 @@ export const ConsumptionChartContainer = ({
     const isEurosConsumptionDisabled = !isEurosButtonToggled && period === 'daily'
 
     const getMetrics = useCallback(async () => {
+        if (isMetricRequestNotAllowed) return
         setIsShowIdleConsumptionDisabledInfo(false)
-        if (!isMetricRequestAllowed) return
         await getMetricsWithParams({ interval: metricsInterval, range, targets, filters })
-    }, [getMetricsWithParams, metricsInterval, range, targets, filters, isMetricRequestAllowed])
+    }, [getMetricsWithParams, metricsInterval, range, targets, filters, isMetricRequestNotAllowed])
 
     // Happens everytime getMetrics dependencies change, and doesn't execute when hook is instanciated.
     useEffect(() => {
@@ -168,7 +168,7 @@ export const ConsumptionChartContainer = ({
      */
     const onEurosConsumptionButtonToggl = useCallback(
         (isEuroToggled: boolean) => {
-            setTargets((prevTargets) => {
+            setTargets((_prevTargets) => {
                 let newVisibleTargets: metricTargetType[] = []
                 if (isEuroToggled) {
                     newVisibleTargets = isIdleSwitchToggled ? eurosIdleConsumptionTargets : eurosConsumptionTargets
@@ -190,7 +190,7 @@ export const ConsumptionChartContainer = ({
      */
     const onIdleConsumptionSwitchButton = useCallback(
         async (isIdleConsumptionToggled: boolean) => {
-            setTargets((prevTargets) => {
+            setTargets((_prevTargets) => {
                 if (isIdleConsumptionToggled)
                     return isEurosButtonToggled ? eurosIdleConsumptionTargets : idleConsumptionTargets
                 return isEurosButtonToggled ? eurosConsumptionTargets : getDefaultConsumptionTargets(enphaseOff)

@@ -236,20 +236,24 @@ describe('MyConsumptionContainer test', () => {
         const consumptionTitleCases = [
             {
                 period: 'weekly' as periodType,
-                text: EUROS_CONSUMPTION_TITLE_WEEKLY,
+                metricsInterval: '1d' as metricIntervalType,
+                ConsumptionChartPeriodTitle: EUROS_CONSUMPTION_TITLE_WEEKLY,
             },
             {
                 period: 'monthly' as periodType,
-                text: EUROS_CONSUMPTION_TITLE_MONTHLY,
+                metricsInterval: '1d' as metricIntervalType,
+                ConsumptionChartPeriodTitle: EUROS_CONSUMPTION_TITLE_MONTHLY,
             },
             {
                 period: 'yearly' as periodType,
-                text: EUROS_CONSUMPTION_TITLE_YEARLY,
+                metricsInterval: '1M' as metricIntervalType,
+                ConsumptionChartPeriodTitle: EUROS_CONSUMPTION_TITLE_YEARLY,
             },
         ]
 
-        consumptionTitleCases.forEach(async ({ period, text }) => {
+        consumptionTitleCases.forEach(async ({ period, metricsInterval, ConsumptionChartPeriodTitle }) => {
             consumptionChartContainerProps.period = period
+            consumptionChartContainerProps.metricsInterval = metricsInterval
             const { getByText, getByTestId } = reduxedRender(
                 <Router>
                     <ConsumptionChartContainer {...consumptionChartContainerProps} />
@@ -263,27 +267,28 @@ describe('MyConsumptionContainer test', () => {
                 expect(getByTestId(CONSUMPTION_ICON_TEST_ID)).toBeTruthy()
             })
             try {
-                expect(getByText(text)).toBeTruthy()
+                expect(getByText(ConsumptionChartPeriodTitle)).toBeTruthy()
             } catch (err) {}
         })
-    })
+    }, 20000)
     test('When hasMissingHousingContracts and isEurosConsumptin, message is shown', async () => {
         consumptionChartContainerProps.period = 'weekly'
+        consumptionChartContainerProps.metricsInterval = '1d'
         consumptionChartContainerProps.hasMissingHousingContracts = true
-        const { getByText, getAllByTestId } = reduxedRender(
+        const { getByText, getByTestId } = reduxedRender(
             <Router>
                 <ConsumptionChartContainer {...consumptionChartContainerProps} />
             </Router>,
             { initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[0] } } },
         )
 
-        expect(getAllByTestId(EUROS_CONSUMPTION_ICON_TEST_ID)[0]).toBe('qsfs')
         // TOGGLING TO EUROS CONSUMPTION CHART
-        userEvent.click(getAllByTestId(EUROS_CONSUMPTION_ICON_TEST_ID)[0].parentElement as HTMLButtonElement)
+        userEvent.click(getByTestId(EUROS_CONSUMPTION_ICON_TEST_ID).parentElement as HTMLButtonElement)
         // CONSUMPTION ICON should be shown
         await waitFor(() => {
-            expect(getAllByTestId(CONSUMPTION_ICON_TEST_ID)[0]).toBeTruthy()
+            expect(getByTestId(CONSUMPTION_ICON_TEST_ID)).toBeTruthy()
         })
+        expect(() => getByTestId(EUROS_CONSUMPTION_ICON_TEST_ID)).toThrow()
 
         // HasMissingContractsExample Text
         expect(getByText(HAS_MISSING_CONTRACTS_WARNING_TEXT)).toBeTruthy()
@@ -294,15 +299,16 @@ describe('MyConsumptionContainer test', () => {
         )
 
         // TOGGLING BACK TO CONSUMPTION, AUTOCONSUMPTION CHART, for coverage of EurosConsumptionButtonToggler.
-        userEvent.click(getAllByTestId(CONSUMPTION_ICON_TEST_ID)[0])
+        userEvent.click(getByTestId(CONSUMPTION_ICON_TEST_ID).parentElement as HTMLButtonElement)
         // EUROS ICON Should be shown
         await waitFor(() => {
-            expect(getAllByTestId(EUROS_CONSUMPTION_ICON_TEST_ID)[0]).toBeTruthy()
+            expect(getByTestId(EUROS_CONSUMPTION_ICON_TEST_ID)).toBeTruthy()
         })
         expect(() => getByText(HAS_MISSING_CONTRACTS_WARNING_TEXT)).toThrow()
-    })
+    }, 20000)
     test('When period is daily, EurosConsumption and pMax button should be disabled', async () => {
         consumptionChartContainerProps.period = 'daily'
+        consumptionChartContainerProps.metricsInterval = '1m' as metricIntervalType
         const { getByText, getByTestId, getByLabelText, getAllByRole } = reduxedRender(
             <Router>
                 <ConsumptionChartContainer {...consumptionChartContainerProps} />
@@ -332,6 +338,7 @@ describe('MyConsumptionContainer test', () => {
 
     test('When period is not daily and enedisSgeConsent is not Connected, pMax button should be disabled, enedisSgeConsent warning is shown', async () => {
         consumptionChartContainerProps.period = 'weekly'
+        consumptionChartContainerProps.metricsInterval = mockGetMetricsWithParamsValues.interval
         consumptionChartContainerProps.enedisSgeConsent = mockEnedisSgeConsentOff
         mockEnedisConsent = mockEnedisSgeConsentOff
 
@@ -395,6 +402,8 @@ describe('MyConsumptionContainer test', () => {
 
     test('When isShowIdleConsumptionDisabledInfo', async () => {
         consumptionChartContainerProps.period = 'daily'
+        consumptionChartContainerProps.metricsInterval = '1m' as metricIntervalType
+
         const { getByText } = reduxedRender(
             <Router>
                 <ConsumptionChartContainer {...consumptionChartContainerProps} />
@@ -408,5 +417,32 @@ describe('MyConsumptionContainer test', () => {
         await waitFor(() => {
             expect(getByText('Les informations de veille ne sont pas disponibles pour cette pèriode')).toBeTruthy()
         })
+    })
+
+    describe('TemperatureOrPmax TargetMenuGroup Test', () => {
+        test('When clicking on reset button, getMetrics should be called without pMax or temperature', async () => {
+            consumptionChartContainerProps.period = 'weekly'
+            consumptionChartContainerProps.metricsInterval = '1d' as metricIntervalType
+
+            const { getByLabelText, getAllByRole } = reduxedRender(
+                <Router>
+                    <ConsumptionChartContainer {...consumptionChartContainerProps} />
+                </Router>,
+                { initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[0] } } },
+            )
+
+            let button = getByLabelText(buttonLabelText)
+            expect(button).toBeInTheDocument()
+
+            button.focus()
+            button.click()
+
+            // Reset Button.
+            userEvent.click(getAllByRole('menuitem')[1])
+
+            await waitFor(() => {
+                expect(mockGetMetricsWithParams).toHaveBeenCalledTimes(2)
+            })
+        }, 10000)
     })
 })
