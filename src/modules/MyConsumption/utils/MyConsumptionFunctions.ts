@@ -484,10 +484,16 @@ export const getChartSpecifities = (
             seriesName: chartLabel,
             show: false,
         }
-    } else if (target === metricTargetsEnum.eurosConsumption || target === metricTargetsEnum.baseEuroConsumption) {
+    } else if (target === metricTargetsEnum.baseEuroConsumption) {
         return {
             // eslint-disable-next-line sonarjs/no-duplicate-string
             label: 'Consommation euro de base',
+            seriesName: 'Consommation euro de base',
+        }
+    } else if (target === metricTargetsEnum.eurosConsumption) {
+        return {
+            // eslint-disable-next-line sonarjs/no-duplicate-string
+            label: 'Consommation euro totale',
             seriesName: 'Consommation euro de base',
         }
     } else if (target === metricTargetsEnum.subscriptionPrices) {
@@ -505,6 +511,18 @@ export const getChartSpecifities = (
     } else if (target === metricTargetsEnum.euroOffPeakConsumption) {
         return {
             label: 'Consommation achetée HC',
+            seriesName: 'Consommation euro de base',
+            show: false,
+        }
+    } else if (target === metricTargetsEnum.eurosIdleConsumption) {
+        return {
+            label: 'Consommation euro de veille',
+            seriesName: 'Consommation euro de base',
+            show: false,
+        }
+    } else if (target === metricTargetsEnum.totalEurosOffIdleConsumption) {
+        return {
+            label: 'Consommation euro Hors-veille',
             seriesName: 'Consommation euro de base',
             show: false,
         }
@@ -854,7 +872,7 @@ export const isEmptyMetricsData = (data: IMetric[], targetsFilter?: metricTarget
 }
 
 /**
- * Compute TotalOffIdleConsumption MetricData based on total consumption (consumption_metrics) and idleConsumption (if exist).
+ * Compute TotalOffIdleConsumption MetricData based on total consumption (consumption_metrics) and idleConsumption (if exist), handle both euros and default idleConsumption.
  *
  * @description
  * Empty Metrics Data happens when datapoints of all metricsData targets are NULL or 0.
@@ -905,6 +923,22 @@ export const isEmptyMetricsData = (data: IMetric[], targetsFilter?: metricTarget
  * ]
  * => getTotalOffIdleConsumptionData(data) === undefined
  * The getTotalOffIdleConsumptionData returns undefined because there's not idle_consumption_metrics.
+ * @example
+ * data = [
+ *  {
+ *    "target": "__euros__consumption_metrics",
+ *    "datapoints": [[null, 00001], [70, 00002] ,[120, 00003], [129, 00004]]
+ *  },
+ *  {
+ *    "target": "__euros__idle_consumption_metrics",
+ *    "datapoints": [[0, 00001], [30, 00002] ,[88, 00003], [89, 00004]]
+ *  }
+ * ]
+ * => getTotalOffIdleConsumptionData(data) === {
+ *    "target": "__euros__off_idle_consumption_metrics",
+ *    "datapoints": [[null, 00001], [40, 00002] ,[32, 00003], [40, 00004]]
+ *  }
+ * The getTotalOffIdleConsumptionData returns a new metrics object based on the subtraction of euros_consumption_metrics - euros_idle_consumption_metrics.
  * @param data Metrics Data.
  * @returns TotalOffIdle Metric Data.
  */
@@ -923,5 +957,23 @@ export const getTotalOffIdleConsumptionData = (data: IMetric[]): IMetric | undef
             }),
         }
     }
+
+    const idleEurosConsumptionMetrics = data.find(
+        (metricData) => metricData.target === metricTargetsEnum.eurosIdleConsumption,
+    )
+    if (idleEurosConsumptionMetrics) {
+        const totalEurosConsumptionDatapoints = getDataFromYAxis(data, metricTargetsEnum.eurosConsumption)
+        const idleEurosConsumptionDatapoints = idleEurosConsumptionMetrics.datapoints
+        return {
+            target: metricTargetsEnum.totalEurosOffIdleConsumption,
+            datapoints: totalEurosConsumptionDatapoints.map((val, index) => {
+                return [
+                    val ? subtract(val, Number(idleEurosConsumptionDatapoints[index][0])) : val,
+                    idleEurosConsumptionDatapoints[index][1],
+                ]
+            }),
+        }
+    }
+
     return undefined
 }

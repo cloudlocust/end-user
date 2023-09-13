@@ -554,6 +554,7 @@ describe('getDefaultConsumptionTargets tests', () => {
 
 test('filterTargetsOnDailyPeriod test with different cases', async () => {
     const caseList = [
+        // NORMAL CASE
         // Total off idle consumption with null values
         {
             data: [
@@ -632,6 +633,63 @@ test('filterTargetsOnDailyPeriod test with different cases', async () => {
                 },
                 {
                     target: metricTargetsEnum.internalTemperature,
+                    datapoints: [
+                        [0, 10001],
+                        [30, 10002],
+                        [32, 10003],
+                        [null, 10004],
+                    ],
+                },
+            ],
+            expectedResult: undefined,
+        },
+        // EUROS CASE:
+        // EUROS Total off idle consumption with not-null values.
+        {
+            data: [
+                {
+                    target: metricTargetsEnum.eurosConsumption,
+                    datapoints: [
+                        [null, 10001],
+                        [130, 10002],
+                        [55, 10003],
+                        [800, 10004],
+                    ],
+                },
+                {
+                    target: metricTargetsEnum.eurosIdleConsumption,
+                    datapoints: [
+                        [0, 10001],
+                        [30, 10002],
+                        [33, 10003],
+                        [null, 10004],
+                    ],
+                },
+            ],
+            expectedResult: {
+                target: metricTargetsEnum.totalEurosOffIdleConsumption,
+                datapoints: [
+                    [null, 10001],
+                    [100, 10002],
+                    [22, 10003],
+                    [800, 10004],
+                ],
+            },
+        },
+        // Undefined return.
+        {
+            data: [
+                {
+                    target: metricTargetsEnum.eurosConsumption,
+                    datapoints: [
+                        [890, 10001],
+                        [130, 10002],
+                        [77, 10003],
+                        [148, 10004],
+                    ],
+                },
+                {
+                    target: metricTargetsEnum.pMax,
                     datapoints: [
                         [0, 10001],
                         [30, 10002],

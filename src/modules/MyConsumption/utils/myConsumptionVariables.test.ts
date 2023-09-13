@@ -133,5 +133,29 @@ describe('test pure functions', () => {
         // Autoconsommation
         label = getChartColor(metricTargetsEnum.autoconsumption, theme)
         expect(label).toBe('#BEECDB')
+
+        // Total Off Idle Autoconsommation
+        label = getChartColor(metricTargetsEnum.totalOffIdleConsumption, theme)
+        expect(label).toBe(theme.palette.secondary.main)
+
+        // Total Off Euro Idle Consumption
+        label = getChartColor(metricTargetsEnum.totalEurosOffIdleConsumption, theme)
+        expect(label).toBe(theme.palette.primary.light)
+
+        // Subscription
+        label = getChartColor(metricTargetsEnum.subscriptionPrices, theme)
+        expect(label).toBe('#CCDCDD')
+
+        // Peak hour consumption
+        label = getChartColor(metricTargetsEnum.peakHourConsumption, theme)
+        expect(label).toBe('#CC9121')
+
+        // Off Peak hour consumption
+        label = getChartColor(metricTargetsEnum.offPeakHourConsumption, theme)
+        expect(label).toBe('#CCAB1D')
+
+        // Euros Idle consumption
+        label = getChartColor(metricTargetsEnum.eurosIdleConsumption, theme)
+        expect(label).toBe('#8191B2')
     })
 })
