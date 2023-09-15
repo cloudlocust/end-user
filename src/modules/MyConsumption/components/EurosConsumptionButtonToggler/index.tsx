@@ -55,14 +55,16 @@ const EurosConsumptionButtonToggler = ({
                                 },
                             }}
                             disabled={disabled}
-                            // TODO Remove target should take an array of targets
                             onClick={() => {
-                                removeTarget(metricTargetsEnum.baseConsumption)
-                                removeTarget(metricTargetsEnum.autoconsumption)
-                                removeTarget(metricTargetsEnum.peakHourConsumption)
-                                removeTarget(metricTargetsEnum.offPeakHourConsumption)
-                                addTarget(metricTargetsEnum.eurosConsumption)
-                                addTarget(metricTargetsEnum.subscriptionPrices)
+                                addTarget(
+                                    [
+                                        metricTargetsEnum.baseEuroConsumption,
+                                        metricTargetsEnum.euroPeakHourConsumption,
+                                        metricTargetsEnum.euroOffPeakConsumption,
+                                        metricTargetsEnum.subscriptionPrices,
+                                    ],
+                                    true,
+                                )
                             }}
                         >
                             <EuroIcon sx={{ width: 20, height: 20 }} />
@@ -82,13 +84,7 @@ const EurosConsumptionButtonToggler = ({
                     }}
                     disabled={disabled}
                     onClick={() => {
-                        // TODO Remove target should take an array of targets
-                        removeTarget(metricTargetsEnum.eurosConsumption)
-                        removeTarget(metricTargetsEnum.subscriptionPrices)
-                        addTarget(metricTargetsEnum.baseConsumption)
-                        addTarget(metricTargetsEnum.autoconsumption)
-                        addTarget(metricTargetsEnum.peakHourConsumption)
-                        addTarget(metricTargetsEnum.offPeakHourConsumption)
+                        removeTarget()
                     }}
                 >
                     <BoltIcon sx={{ width: 24, height: 24 }} />

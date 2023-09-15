@@ -74,9 +74,10 @@ export const targetOptions: metricTargetsEnum[] = [
  *
  * @param chartName MetricTarget Chart.
  * @param theme Current MUI Theme Applied.
+ * @param enphaseOff Enphase consent not ACTIVE.
  * @returns Color of the chartName.
  */
-export const getChartColor = (chartName: metricTargetsEnum, theme: Theme) => {
+export const getChartColor = (chartName: metricTargetsEnum, theme: Theme, enphaseOff?: boolean) => {
     switch (chartName) {
         case metricTargetsEnum.externalTemperature:
             return '#FFC200'
@@ -85,6 +86,7 @@ export const getChartColor = (chartName: metricTargetsEnum, theme: Theme) => {
         case metricTargetsEnum.pMax:
             return '#FF7A00'
         case metricTargetsEnum.eurosConsumption:
+        case metricTargetsEnum.baseEuroConsumption:
             return theme.palette.primary.light
         case metricTargetsEnum.autoconsumption:
             return '#BEECDB'
@@ -98,6 +100,12 @@ export const getChartColor = (chartName: metricTargetsEnum, theme: Theme) => {
             return '#CC9121'
         case metricTargetsEnum.offPeakHourConsumption:
             return '#CCAB1D'
+        case metricTargetsEnum.consumption:
+            return enphaseOff ? 'rgba(255,255,255, .0)' : theme.palette.secondary.main
+        case metricTargetsEnum.euroPeakHourConsumption:
+            return '#4DD9E4'
+        case metricTargetsEnum.euroOffPeakConsumption:
+            return '#006970'
         default:
             return theme.palette.secondary.main
     }
@@ -126,7 +134,10 @@ export const getYPointValueLabel = (
     const value = isNil(yValue) ? '' : yValue
     switch (chartName) {
         case metricTargetsEnum.eurosConsumption:
+        case metricTargetsEnum.baseEuroConsumption:
         case metricTargetsEnum.subscriptionPrices:
+        case metricTargetsEnum.euroPeakHourConsumption:
+        case metricTargetsEnum.euroOffPeakConsumption:
             return `${value === '' ? value : value.toFixed(2)} €`
         case metricTargetsEnum.externalTemperature:
         case metricTargetsEnum.internalTemperature:
@@ -175,6 +186,7 @@ export const PRODUCTION_OFF_MESSAGE =
  */
 export const ConsumptionChartTargets: metricTargetType[] = [
     metricTargetsEnum.autoconsumption,
+    metricTargetsEnum.consumption,
     metricTargetsEnum.baseConsumption,
     metricTargetsEnum.eurosConsumption,
     metricTargetsEnum.pMax,
@@ -189,6 +201,7 @@ export const ConsumptionChartTargets: metricTargetType[] = [
  */
 export const EnphaseOffConsumptionChartTargets: metricTargetType[] = [
     metricTargetsEnum.baseConsumption,
+    metricTargetsEnum.consumption,
     metricTargetsEnum.eurosConsumption,
     metricTargetsEnum.pMax,
     metricTargetsEnum.externalTemperature,

@@ -194,7 +194,7 @@ const getDaysValues = (
  * @returns List of months.
  */
 const getMonthValues = (range: metricRangeType) => {
-    return getAddedDates(13, range.from, 'month')
+    return getAddedDates(12, range.from, 'month')
 }
 
 /**
@@ -331,7 +331,7 @@ export const fillApexChartsDatetimeSeriesMissingValues = (
         // TODO Find a better way rather than hard code the number.
         // Checking if there are missing datapoints.
         // If period is yearly then yAxisValues chart has 13 elements, representing all the months starting from the year preceding the current month with duplicating the current month.
-        if (yAxisSerie.data.length >= 13) return
+        if (yAxisSerie.data.length > 12) return
         // Fill datapoints missing values.
         // This index will help to go through datapoints and map between missing value and its timestamp counterpart.
         let missingDatapointIndex = 0
@@ -429,7 +429,9 @@ export const getChartType = (metricTarget: metricTargetType, period: periodType)
             metricTarget === metricTargetsEnum.eurosConsumption ||
             metricTarget === metricTargetsEnum.autoconsumption ||
             metricTarget === metricTargetsEnum.injectedProduction ||
-            metricTarget === metricTargetsEnum.totalProduction) &&
+            metricTarget === metricTargetsEnum.totalProduction ||
+            metricTarget === metricTargetsEnum.peakHourConsumption ||
+            metricTarget === metricTargetsEnum.offPeakHourConsumption) &&
         period === 'daily'
     ) {
         return 'area'
@@ -456,12 +458,16 @@ export const getChartSpecifities = (
     chartLabel?: 'Consommation totale' | 'Electricité achetée sur le réseau',
     // eslint-disable-next-line sonarjs/cognitive-complexity
 ): getChartSpecifitiesType => {
-    if (
-        (target === metricTargetsEnum.baseConsumption || target === metricTargetsEnum.consumption) &&
-        chartLabel === 'Consommation totale'
-    ) {
+    if (target === metricTargetsEnum.consumption && chartLabel === 'Consommation totale') {
         return {
             label: chartLabel,
+            seriesName: chartLabel,
+        }
+    } else if (target === metricTargetsEnum.baseConsumption && chartLabel === 'Consommation totale') {
+        return {
+            label: 'Consommation de base',
+            seriesName: chartLabel,
+            show: false,
         }
     } else if (
         (target === metricTargetsEnum.baseConsumption || target === metricTargetsEnum.consumption) &&
@@ -477,16 +483,28 @@ export const getChartSpecifities = (
             seriesName: chartLabel,
             show: false,
         }
-    } else if (target === metricTargetsEnum.eurosConsumption) {
+    } else if (target === metricTargetsEnum.eurosConsumption || target === metricTargetsEnum.baseEuroConsumption) {
         return {
             // eslint-disable-next-line sonarjs/no-duplicate-string
-            label: 'Consommation Euros',
-            seriesName: 'Consommation Euros',
+            label: 'Consommation euro de base',
+            seriesName: 'Consommation euro de base',
         }
     } else if (target === metricTargetsEnum.subscriptionPrices) {
         return {
             label: 'Abonnement',
-            seriesName: 'Consommation Euros',
+            seriesName: 'Consommation euro de base',
+            show: false,
+        }
+    } else if (target === metricTargetsEnum.euroPeakHourConsumption) {
+        return {
+            label: 'Consommation achetée HP',
+            seriesName: 'Consommation euro de base',
+            show: false,
+        }
+    } else if (target === metricTargetsEnum.euroOffPeakConsumption) {
+        return {
+            label: 'Consommation achetée HC',
+            seriesName: 'Consommation euro de base',
             show: false,
         }
     } else if (target === metricTargetsEnum.externalTemperature) {
@@ -750,13 +768,14 @@ export function getRangeV2(period: PeriodEnum) {
 export const getVisibleTargetCharts = (isEnphaseOff: boolean): metricTargetType[] => {
     if (isEnphaseOff) {
         return [
+            metricTargetsEnum.consumption,
             metricTargetsEnum.baseConsumption,
             metricTargetsEnum.peakHourConsumption,
             metricTargetsEnum.offPeakHourConsumption,
         ]
     }
 
-    return [metricTargetsEnum.autoconsumption, metricTargetsEnum.baseConsumption]
+    return [metricTargetsEnum.autoconsumption, metricTargetsEnum.consumption]
 }
 
 /**

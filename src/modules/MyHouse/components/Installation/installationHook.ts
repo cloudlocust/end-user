@@ -2,7 +2,7 @@ import {
     equipmentType,
     IEquipmentMeter,
     postEquipmentInputType,
-} from 'src/modules/MyHouse/components/Equipments/EquipmentsType'
+} from 'src/modules/MyHouse/components/Installation/InstallationType'
 import { useEffect, useState, useCallback, useRef } from 'react'
 import { AxiosResponse } from 'axios'
 import { axios } from 'src/common/react-platform-components'
@@ -126,5 +126,6 @@ export const useEquipmentList = (housingId?: number) => {
         saveEquipment,
         equipmentList,
         isEquipmentMeterListEmpty,
+        loadEquipmentList,
     }
 }
