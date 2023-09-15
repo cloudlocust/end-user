@@ -165,7 +165,7 @@ export const AlertsContent = () => {
                     }
                     updateNovuAlertPreferences={updateNovuAlertPreferences}
                     isNovuAlertPreferencesLoading={isNovuAlertPreferencesLoading}
-                    refetchData={getNovuAlertPreferences}
+                    onAfterUpdate={getNovuAlertPreferences}
                 />
                 <EcowattAlerts />
                 {currentContract?.tariffType.name === 'Jour Tempo' && <TempoAlerts />}
