@@ -1,5 +1,6 @@
-import { render, fireEvent } from '@testing-library/react'
+import { render, waitFor } from '@testing-library/react'
 import CustomRadioButton from './CustomRadioButton'
+import userEvent from '@testing-library/user-event'
 
 describe('CustomRadioButton', () => {
     test('renders without errors', () => {
@@ -8,7 +9,7 @@ describe('CustomRadioButton', () => {
         expect(optionLabel).toBeInTheDocument()
     })
 
-    test('toggles the selected state when clicked', () => {
+    test('toggles the selected state when clicked', async () => {
         const setSelectedValue = jest.fn()
         const { getByText } = render(
             <CustomRadioButton
@@ -19,17 +20,19 @@ describe('CustomRadioButton', () => {
             />,
         )
         const optionButton = getByText('Option 1')
-        fireEvent.click(optionButton)
-        expect(setSelectedValue).toHaveBeenCalledWith('option1')
+        userEvent.click(optionButton)
+        await waitFor(() => {
+            expect(setSelectedValue).toHaveBeenCalledWith('option1')
+        })
     })
 
-    test('applies "contained" variant when selected', () => {
+    test('applies contained variant when selected', () => {
         const { getByRole } = render(<CustomRadioButton value="option1" label="Option 1" selectedValue="option1" />)
         const optionButton = getByRole('button')
         expect(optionButton).toHaveClass('MuiButton-contained')
     })
 
-    test('applies "outlined" variant when not selected', () => {
+    test('applies outlined variant when not selected', () => {
         const { getByRole } = render(<CustomRadioButton value="option1" label="Option 1" selectedValue="option2" />)
         const optionButton = getByRole('button')
         expect(optionButton).toHaveClass('MuiButton-outlined')

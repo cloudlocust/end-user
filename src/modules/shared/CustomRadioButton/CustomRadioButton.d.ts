@@ -15,7 +15,7 @@ export type CustomRadioButtonProps =
          */
         label: string
         /**
-         * A state holds the value of the currently selected radio button among athegroup of radio buttons.
+         * A state holds the value of the currently selected radio button among the group of radio buttons.
          */
         selectedValue?: string
         /**
