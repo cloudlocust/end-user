@@ -7,7 +7,6 @@ import { Form } from 'src/common/react-platform-components'
 import { InfoOutlined, Close } from '@mui/icons-material'
 import { NovuChannelsWithValueAndKey } from '../../Alerts'
 import { LoadingButton } from '@mui/lab'
-import { useIntl } from 'react-intl'
 import { linksColor } from 'src/modules/utils/muiThemeVariables'
 
 /**
@@ -26,14 +25,14 @@ export const TOOLTIP_TEXT_TITLE = 'Que Signifie cette alerte ?'
  * @param props.initialSwitchValues Is push notification state.
  * @param props.isNovuAlertPreferencesLoading Is Novu alert preferences loading.
  * @param props.updateNovuAlertPreferences Update novu alert notification preferences.
- * @param props.refetchData Refetch preferences to update initial values.
+ * @param props.onAfterUpdate Refetch preferences to update initial values.
  * @returns JSX Element.
  */
 const PowerMaxAlert = ({
     initialSwitchValues,
     isNovuAlertPreferencesLoading,
     updateNovuAlertPreferences,
-    refetchData,
+    onAfterUpdate,
 }: /**
  */
 {
@@ -55,12 +54,11 @@ const PowerMaxAlert = ({
     /**
      * Refretch data after succesful update.
      */
-    refetchData?: () => void
+    onAfterUpdate?: () => void
 }) => {
     const theme = useTheme()
-    const { formatMessage } = useIntl()
 
-    const isSwitchSet = useRef(false)
+    const isSwitchSet = useRef(false) // to know if the switch are set after loading the component or not
     const [isPush, setIsPush] = useToggle(false)
     const [isEmail, setIsEmail] = useToggle(false)
     const [openTooltip, setOpenTooltip] = useState<boolean>(false)
@@ -86,8 +84,8 @@ const PowerMaxAlert = ({
                 [initialSwitchValues.push.key]: isPush,
                 [initialSwitchValues.email.key]: isEmail,
             })
-            if (refetchData) {
-                await refetchData()
+            if (onAfterUpdate) {
+                await onAfterUpdate()
             }
         }
     }
@@ -141,10 +139,7 @@ const PowerMaxAlert = ({
                                     type="submit"
                                     variant="contained"
                                 >
-                                    {formatMessage({
-                                        id: 'Enregistrer',
-                                        defaultMessage: 'Enregistrer',
-                                    })}
+                                    <TypographyFormatMessage>Enregistrer</TypographyFormatMessage>
                                 </LoadingButton>
                             </div>
                         </div>

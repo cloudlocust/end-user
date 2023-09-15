@@ -19,7 +19,7 @@ const CLOSE_ICON = 'CloseIcon'
 
 const mockUpdateNovuAlertPreferences = jest.fn()
 let mockIsNovuAlertPreferencesLoading = false
-let mockRefetchData = jest.fn()
+let mockOnAfterUpdate = jest.fn()
 let mockPushDefaultValue = false
 let mockEmailDefaultValue = false
 
@@ -38,7 +38,7 @@ let mockPowerMaxProps = {
     isNovuAlertPreferencesLoading: mockIsNovuAlertPreferencesLoading,
     initialSwitchValues: mockInitialAlertPreferencesValues,
     updateNovuAlertPreferences: mockUpdateNovuAlertPreferences,
-    refetchData: mockRefetchData,
+    onAfterUpdate: mockOnAfterUpdate,
 }
 
 describe('Test Power Max Alert component.', () => {
@@ -107,7 +107,7 @@ describe('Test Power Max Alert component.', () => {
         // update and refetch data functions called
         await waitFor(() => {
             expect(mockPowerMaxProps.updateNovuAlertPreferences).toBeCalled()
-            expect(mockPowerMaxProps.refetchData).toBeCalled()
+            expect(mockPowerMaxProps.onAfterUpdate).toBeCalled()
         })
     })
     test('When changing values and save, values did not change, no calling for update.', async () => {
@@ -123,7 +123,7 @@ describe('Test Power Max Alert component.', () => {
         // update and refetch data functions not called
         await waitFor(() => {
             expect(mockPowerMaxProps.updateNovuAlertPreferences).not.toBeCalled()
-            expect(mockPowerMaxProps.refetchData).not.toBeCalled()
+            expect(mockPowerMaxProps.onAfterUpdate).not.toBeCalled()
         })
     })
 })
