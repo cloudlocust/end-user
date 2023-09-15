@@ -113,11 +113,11 @@ interface ITargetMenuGroup {
     /**
      * RemoveTarget.
      */
-    removeTarget: (target: metricTarget) => void
+    removeTarget: () => void
     /**
      * AddTarget.
      */
-    addTarget: (target: metricTarget) => void
+    addTarget: (targets: metricTarget[]) => void
     /**
      * If hidePmax exists Pmax button will be disabled.
      */
@@ -133,11 +133,11 @@ export type EurosConsumptionButtonTogglerProps =
         /**
          * RemoveTarget.
          */
-        removeTarget: (target: metricTargetsEnum) => void
+        removeTarget: () => void
         /**
          * AddTarget.
          */
-        addTarget: (target: metricTargetsEnum) => void
+        addTarget: (targets: metricTargetsEnum[], isEuroChart?: boolean) => void
         /**
          * Indicate eurosConsumption or consumption IconButton to be shown.
          */
@@ -188,6 +188,8 @@ export interface MyConsumptionChartProps {
     chartLabel?: 'Consommation totale' | 'Electricité achetée sur le réseau'
     // eslint-disable-next-line jsdoc/require-jsdoc
     metricsInterval?: metricIntervalType
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    enphaseOff?: boolean
 }
 
 /**

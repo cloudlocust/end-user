@@ -15,7 +15,6 @@ import { applyCamelCase } from 'src/common/react-platform-components'
 import { IHousing } from 'src/modules/MyHouse/components/HousingList/housing'
 import { TEST_HOUSES } from 'src/mocks/handlers/houses'
 import { URL_MY_HOUSE } from 'src/modules/MyHouse/MyHouseConfig'
-import { ConsumptionChartTargets } from 'src/modules/MyConsumption/utils/myConsumptionVariables'
 import { ConsumptionChartContainerProps, periodType } from 'src/modules/MyConsumption/myConsumptionTypes'
 import { IEnedisSgeConsent, INrlinkConsent, IEnphaseConsent } from 'src/modules/Consents/Consents'
 import { ConsumptionChartContainer } from 'src/modules/MyConsumption/components/MyConsumptionChart/ConsumptionChartContainer'
@@ -109,7 +108,7 @@ const mockGetMetricsWithParamsValues: getMetricsWithParamsType = {
     filters: mockFilters,
     interval: mockMetricsInterval,
     range: mockRange,
-    targets: [metricTargetsEnum.autoconsumption, metricTargetsEnum.baseConsumption],
+    targets: [metricTargetsEnum.autoconsumption, metricTargetsEnum.consumption],
 }
 // Mock metricsHook
 jest.mock('src/modules/Metrics/metricsHook.ts', () => ({
@@ -195,16 +194,10 @@ describe('MyConsumptionContainer test', () => {
         await waitFor(() => {
             expect(mockGetMetricsWithParams).toHaveBeenCalledWith(mockGetMetricsWithParamsValues)
         })
-        // Second time, getMetrics is called with only all targets
-        await waitFor(() => {
-            expect(mockGetMetricsWithParams).toHaveBeenCalledWith({
-                ...mockGetMetricsWithParamsValues,
-                targets: ConsumptionChartTargets,
-            })
-        })
 
         expect(() => getByText(CONSUMPTION_ENEDIS_SGE_WARNING_TEXT)).toThrow()
         // Consent enphase is Active Bought network consumption and AutoConsumption tooltip texts are shown
+        // TODO: fix thisS.
         expect(getByText(AUTO_CONSUMPTION_TOOLTIP_TEXT)).toBeTruthy()
     })
     test('Different period props, When consumption chart.', async () => {
@@ -376,22 +369,8 @@ describe('MyConsumptionContainer test', () => {
             expect(mockGetMetricsWithParams).toHaveBeenCalledWith({
                 ...mockGetMetricsWithParamsValues,
                 targets: [
+                    metricTargetsEnum.consumption,
                     metricTargetsEnum.baseConsumption,
-                    metricTargetsEnum.peakHourConsumption,
-                    metricTargetsEnum.offPeakHourConsumption,
-                ],
-            })
-        })
-        // Second time, getMetrics is called with only all targets
-        await waitFor(() => {
-            expect(mockGetMetricsWithParams).toHaveBeenCalledWith({
-                ...mockGetMetricsWithParamsValues,
-                targets: [
-                    metricTargetsEnum.baseConsumption,
-                    metricTargetsEnum.eurosConsumption,
-                    metricTargetsEnum.pMax,
-                    metricTargetsEnum.externalTemperature,
-                    metricTargetsEnum.internalTemperature,
                     metricTargetsEnum.peakHourConsumption,
                     metricTargetsEnum.offPeakHourConsumption,
                 ],

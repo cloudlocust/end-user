@@ -6,7 +6,6 @@ import 'src/modules/MyConsumption/components/MyConsumptionChart/MyConsumptionCha
 import { convertMetricsDataToApexChartsDateTimeAxisValues } from 'src/modules/MyConsumption/utils/apexChartsDataConverter'
 import { getApexChartMyConsumptionProps } from 'src/modules/MyConsumption/utils/apexChartsMyConsumptionOptions'
 import { MyConsumptionChartProps } from 'src/modules/MyConsumption/myConsumptionTypes'
-import { fillApexChartsDatetimeSeriesMissingValues } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
 import { CircularProgress } from '@mui/material'
 import useMediaQuery from '@mui/material/useMediaQuery'
 
@@ -21,6 +20,7 @@ import useMediaQuery from '@mui/material/useMediaQuery'
  * @param props.chartType Consumption or production chart type.
  * @param props.chartLabel Chart label according to enphase state.
  * @param props.metricsInterval Metrics intervals.
+ * @param props.enphaseOff Enphase consent is not ACTIVE.
  * @returns MyConsumptionChart Component.
  */
 const MyConsumptionChart = ({
@@ -31,6 +31,7 @@ const MyConsumptionChart = ({
     chartType,
     chartLabel,
     metricsInterval,
+    enphaseOff,
 }: MyConsumptionChartProps) => {
     const { formatMessage } = useIntl()
     const theme = useTheme()
@@ -54,8 +55,10 @@ const MyConsumptionChart = ({
     // The fillApexChartsDatetimeSeriesMissingValues checks if there are missing datapoints.
     const reactApexChartsProps = useMemo(() => {
         if (isDataChanged.current) {
-            let ApexChartsAxisValues: ApexAxisChartSeries = convertMetricsDataToApexChartsDateTimeAxisValues(data)
-            ApexChartsAxisValues = fillApexChartsDatetimeSeriesMissingValues(ApexChartsAxisValues, period, range)
+            let ApexChartsAxisValues: ApexAxisChartSeries = convertMetricsDataToApexChartsDateTimeAxisValues(
+                data,
+                chartType === 'consumption' ? period : undefined,
+            )
             const apexChartsProps = getApexChartMyConsumptionProps({
                 yAxisSeries: ApexChartsAxisValues,
                 period,
@@ -65,6 +68,7 @@ const MyConsumptionChart = ({
                 chartType,
                 chartLabel,
                 metricsInterval,
+                enphaseOff,
             })
             apexChartsProps.options!.chart!.events = {
                 /**
@@ -90,7 +94,7 @@ const MyConsumptionChart = ({
             }
             return apexChartsProps
         }
-    }, [data, period, range, formatMessage, theme, isStackedEnabled, chartType, chartLabel, metricsInterval])
+    }, [data, chartType, period, formatMessage, theme, isStackedEnabled, chartLabel, metricsInterval, enphaseOff])
 
     return (
         <div
