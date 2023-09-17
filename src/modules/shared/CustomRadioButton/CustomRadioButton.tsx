@@ -36,7 +36,6 @@ const CustomRadioButton = ({ value, label, selectedValue, setSelectedValue }: Cu
                 control={
                     <Radio
                         checked={isSelected}
-                        onChange={handleClick}
                         size="small"
                         color="secondary"
                         sx={{
