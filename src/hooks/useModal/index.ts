@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { ModalState } from 'src/hooks/useModal/useModal'
+import { ModalState } from 'src/hooks/useModal/useModal.d'
 
 /**
  * Hook to manage modal state.
