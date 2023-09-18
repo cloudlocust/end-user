@@ -28,6 +28,7 @@ import {
     idleConsumptionTargets,
     temperatureOrPmaxTargets,
 } from 'src/modules/MyConsumption/utils/myConsumptionVariables'
+import ConsumptionChart from './ConsumptionChart'
 
 /**
  * MyConsumptionChart Component.
@@ -70,6 +71,7 @@ export const ConsumptionChartContainer = ({
     })
     // Using ConsumptionChartData allow the front end to add additional chart data not only those from useMetrics.
     // Such as totalOffIdleConsumption
+    // TODO Remove with Echarts now (and everything that set consumptionChart, let only target with setTargets).
     const [consumptionChartData, setConsumptionChartData] = useState<IMetric[]>(data)
 
     // This state represents whether or not the chart is stacked: true.
@@ -83,7 +85,7 @@ export const ConsumptionChartContainer = ({
         else return !targets.some((target) => temperatureOrPmaxTargets.includes(target))
     }, [period, targets])
 
-    // MetricRequest shouldn't be allowed when period is daily (metric interval is '1m' or '30m' and targets don't include euros or idle).
+    // MetricRequest shouldn't be allowed when period is daily (metric interval is '1m' or '30m' and targets include euros or idle).
     const isMetricRequestNotAllowed = useMemo(() => {
         return (
             ['1m', '30m'].includes(metricsInterval) &&
@@ -267,16 +269,28 @@ export const ConsumptionChartContainer = ({
                     <CircularProgress style={{ color: theme.palette.background.paper }} />
                 </div>
             ) : (
-                <MyConsumptionChart
-                    data={consumptionChartData}
-                    period={period}
-                    range={range}
-                    isStackedEnabled={isStackedEnabled}
-                    chartType="consumption"
-                    chartLabel={enphaseOff ? 'Consommation totale' : 'Electricité achetée sur le réseau'}
-                    metricsInterval={metricsInterval}
-                    enphaseOff={enphaseOff}
-                />
+                <>
+                    <ConsumptionChart
+                        data={consumptionChartData}
+                        period={period}
+                        range={range}
+                        isStackedEnabled={isStackedEnabled}
+                        chartType="consumption"
+                        chartLabel={enphaseOff ? 'Consommation totale' : 'Electricité achetée sur le réseau'}
+                        metricsInterval={metricsInterval}
+                        enphaseOff={enphaseOff}
+                    />
+                    {/* <MyConsumptionChart
+                        data={consumptionChartData}
+                        period={period}
+                        range={range}
+                        isStackedEnabled={isStackedEnabled}
+                        chartType="consumption"
+                        chartLabel={enphaseOff ? 'Consommation totale' : 'Electricité achetée sur le réseau'}
+                        metricsInterval={metricsInterval}
+                        enphaseOff={enphaseOff}
+                    /> */}
+                </>
             )}
             <DefaultContractWarning isShowWarning={isEurosButtonToggled && Boolean(hasMissingHousingContracts)} />
             <ConsumptionEnedisSgeWarning isShowWarning={enedisSgeOff && sgeConsentFeatureState} />
