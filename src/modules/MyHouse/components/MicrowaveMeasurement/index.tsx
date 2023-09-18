@@ -1,8 +1,34 @@
+import { useEffect, useState } from 'react'
 import Box from '@mui/material/Box'
 import Modal from '@mui/material/Modal'
 import IconButton from '@mui/material/IconButton'
-import { MicrowaveMeasurementProps } from 'src/modules/MyHouse/components/MicrowaveMeasurement/MicrowaveMeasurement.d'
+import Stepper from '@mui/material/Stepper'
+import Step from '@mui/material/Step'
+import StepLabel from '@mui/material/StepLabel'
+import {
+    MicrowaveMeasurementProps,
+    TestStepPageProps,
+} from 'src/modules/MyHouse/components/MicrowaveMeasurement/MicrowaveMeasurement.d'
 import CloseIcon from '@mui/icons-material/Close'
+import InfosPage from 'src/modules/MyHouse/components/MicrowaveMeasurement/InfosPage'
+import { Button, Typography } from '@mui/material'
+
+/**
+ * TestStepPage component.
+ *
+ * @param root0 N/A.
+ * @param root0.step The state responsible for storing the current step.
+ * @param root0.stepSetter The setter linked to the state step.
+ * @returns The TestStepPage component.
+ */
+const TestStepPage = ({ step, stepSetter }: TestStepPageProps) => (
+    <Box minHeight="300px" display="flex" flexDirection="column" justifyContent="center" alignItems="center" gap="60px">
+        <Typography variant="h4">Step {step}</Typography>
+        <Button variant="contained" onClick={() => stepSetter((step + 1) % 5)}>
+            Next
+        </Button>
+    </Box>
+)
 
 /**
  * MicrowaveMeasurement component.
@@ -12,7 +38,13 @@ import CloseIcon from '@mui/icons-material/Close'
  * @param root0.closeModal Modal closing handler.
  * @returns MicrowaveMeasurement component.
  */
-const index = ({ modalIsOpen, closeModal }: MicrowaveMeasurementProps) => {
+const MicrowaveMeasurement = ({ modalIsOpen, closeModal }: MicrowaveMeasurementProps) => {
+    const [currentStep, setCurrentStep] = useState(0)
+
+    useEffect(() => {
+        if (!modalIsOpen) setCurrentStep(0)
+    }, [modalIsOpen])
+
     return (
         <Modal
             open={modalIsOpen}
@@ -25,7 +57,7 @@ const index = ({ modalIsOpen, closeModal }: MicrowaveMeasurementProps) => {
         >
             <Box
                 width="100%"
-                maxWidth="600px"
+                maxWidth="500px"
                 margin="10px"
                 padding="30px 20px"
                 borderRadius="20px"
@@ -53,9 +85,44 @@ const index = ({ modalIsOpen, closeModal }: MicrowaveMeasurementProps) => {
                 </IconButton>
 
                 {/* The content of the modal */}
+                {currentStep === 0 ? (
+                    <InfosPage stepSetter={setCurrentStep} />
+                ) : (
+                    <>
+                        <Box width="70%" margin="0 auto">
+                            <Stepper activeStep={currentStep - 1}>
+                                <Step>
+                                    <StepLabel />
+                                </Step>
+                                <Step>
+                                    <StepLabel />
+                                </Step>
+                                <Step>
+                                    <StepLabel />
+                                </Step>
+                                <Step>
+                                    <StepLabel />
+                                </Step>
+                            </Stepper>
+                        </Box>
+                        {currentStep === 1 ? (
+                            // Step 1
+                            <TestStepPage step={currentStep} stepSetter={setCurrentStep} />
+                        ) : currentStep === 2 ? (
+                            // Step 2
+                            <TestStepPage step={currentStep} stepSetter={setCurrentStep} />
+                        ) : currentStep === 3 ? (
+                            // Step 3
+                            <TestStepPage step={currentStep} stepSetter={setCurrentStep} />
+                        ) : currentStep === 4 ? (
+                            // Step 4
+                            <TestStepPage step={currentStep} stepSetter={setCurrentStep} />
+                        ) : null}
+                    </>
+                )}
             </Box>
         </Modal>
     )
 }
 
-export default index
+export default MicrowaveMeasurement
