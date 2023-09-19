@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import FormControl from '@mui/material/FormControl'
@@ -19,13 +18,20 @@ import {
  * ConfigurationStep component.
  *
  * @param root0 N/A.
+ * @param root0.selectedMicrowave The state that hold the selected microwave.
+ * @param root0.setSelectedMicrowave The setter associated to the selected microwave state.
+ * @param root0.measuringMode The state that hold the measurement mode.
+ * @param root0.setMeasuringMode The setter associated to the measurement mode state.
  * @param root0.stepSetter The setter linked to the state responsible for storing the current step.
  * @returns The ConfigurationStep component.
  */
-const ConfigurationStep = ({ stepSetter }: ConfigurationStepProps) => {
-    const [selectedMicrowave, setSelectedMicrowave] = useState('')
-    const [measuringMode, setMeasuringMode] = useState('')
-
+const ConfigurationStep = ({
+    selectedMicrowave,
+    setSelectedMicrowave,
+    measuringMode,
+    setMeasuringMode,
+    stepSetter,
+}: ConfigurationStepProps) => {
     /**
      * The select onChange handler function.
      *
@@ -93,9 +99,9 @@ const ConfigurationStep = ({ stepSetter }: ConfigurationStepProps) => {
                             },
                         }}
                     >
-                        <CustomRadioButton value="standard" label="Standard" />
-                        <CustomRadioButton value="decongelation" label="Décongélation" />
-                        <CustomRadioButton value="grill" label="Grill" />
+                        <CustomRadioButton value="Standard" label="Standard" />
+                        <CustomRadioButton value="Décongélation" label="Décongélation" />
+                        <CustomRadioButton value="Grill" label="Grill" />
                     </CustomRadioGroup>
                 </Box>
 

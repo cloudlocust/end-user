@@ -27,9 +27,11 @@ import EquipmentStartupStep from 'src/modules/MyHouse/components/MicrowaveMeasur
 const TestStepPage = ({ step, stepSetter }: TestStepPageProps) => (
     <Box minHeight="300px" display="flex" flexDirection="column" justifyContent="center" alignItems="center" gap="60px">
         <Typography variant="h4">Step {step}</Typography>
-        <Button variant="contained" onClick={() => stepSetter((step + 1) % 5)}>
-            Next
-        </Button>
+        {step !== 4 ? (
+            <Button variant="contained" onClick={() => stepSetter(step + 1)}>
+                Next
+            </Button>
+        ) : null}
     </Box>
 )
 
@@ -43,9 +45,15 @@ const TestStepPage = ({ step, stepSetter }: TestStepPageProps) => (
  */
 const MicrowaveMeasurement = ({ modalIsOpen, closeModal }: MicrowaveMeasurementProps) => {
     const [currentStep, setCurrentStep] = useState(0)
+    const [selectedMicrowave, setSelectedMicrowave] = useState('')
+    const [measuringMode, setMeasuringMode] = useState('')
 
     useEffect(() => {
-        if (!modalIsOpen) setCurrentStep(0)
+        if (!modalIsOpen) {
+            setCurrentStep(0)
+            setSelectedMicrowave('')
+            setMeasuringMode('')
+        }
     }, [modalIsOpen])
 
     return (
@@ -110,10 +118,16 @@ const MicrowaveMeasurement = ({ modalIsOpen, closeModal }: MicrowaveMeasurementP
                         </Box>
                         {currentStep === 1 ? (
                             // Step 1
-                            <ConfigurationStep stepSetter={setCurrentStep} />
+                            <ConfigurationStep
+                                selectedMicrowave={selectedMicrowave}
+                                setSelectedMicrowave={setSelectedMicrowave}
+                                measuringMode={measuringMode}
+                                setMeasuringMode={setMeasuringMode}
+                                stepSetter={setCurrentStep}
+                            />
                         ) : currentStep === 2 ? (
                             // Step 2
-                            <EquipmentStartupStep testMode="Standard" stepSetter={setCurrentStep} />
+                            <EquipmentStartupStep testMode={measuringMode} stepSetter={setCurrentStep} />
                         ) : currentStep === 3 ? (
                             // Step 3
                             <TestStepPage step={currentStep} stepSetter={setCurrentStep} />
