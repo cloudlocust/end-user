@@ -88,11 +88,28 @@ export const ConsumptionChartContainer = ({
         [visibleTargetCharts],
     )
 
+    // MetricRequest shouldn't be allowed when period is daily (metric interval is '1m' or '30m' and targets don't include euros or idle).
+    const isMetricRequestNotAllowed = useMemo(() => {
+        return (
+            ['1m', '30m'].includes(metricsInterval) &&
+            visibleTargetCharts.some((target) =>
+                [metricTargetsEnum.eurosConsumption].includes(target as metricTargetsEnum),
+            )
+        )
+    }, [metricsInterval, visibleTargetCharts])
+
     const isEurosConsumptionDisabled = !isEurosConsumptionChart && period === 'daily'
 
     const getMetrics = useCallback(async () => {
+        if (isMetricRequestNotAllowed) return
         await getMetricsWithParams({ interval: metricsInterval, range, targets: visibleTargetCharts, filters })
-    }, [getMetricsWithParams, metricsInterval, range, visibleTargetCharts, filters])
+    }, [getMetricsWithParams, metricsInterval, range, visibleTargetCharts, filters, isMetricRequestNotAllowed])
+
+    // When switching to period daily, if Euros Charts or Idle charts buttons are selected, metrics should be reset.
+    // This useEffect reset metrics.
+    useEffect(() => {
+        if (isMetricRequestNotAllowed) setVisibleTargetsCharts(getVisibleTargetCharts(enphaseOff))
+    }, [isMetricRequestNotAllowed, enphaseOff])
 
     // Happens everytime getMetrics dependencies change, and doesn't execute when hook is instanciated.
     useEffect(() => {
@@ -104,8 +121,10 @@ export const ConsumptionChartContainer = ({
         if (data.length > 0) {
             let chartData = data.filter((datapoint) => visibleTargetCharts.includes(datapoint.target))
             // Filter target cases.
-            const fileteredMetricsData = filterMetricsData(chartData, period, enphaseOff, isEurosConsumptionChart)
-            setConsumptionChartData(fileteredMetricsData)
+            const fileteredMetricsData = filterMetricsData(chartData, period, enphaseOff)
+            if (fileteredMetricsData) {
+                setConsumptionChartData(fileteredMetricsData)
+            } else setConsumptionChartData(chartData)
         }
         // Only use data & visibleTargetCharts as dependencies.
         // eslint-disable-next-line react-hooks/exhaustive-deps

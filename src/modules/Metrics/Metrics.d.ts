@@ -92,11 +92,8 @@ export enum metricTargetsEnum {
     /**
      * 'only_consumption_metrics' target is made for front purposes, it doesn't exist on the back.
      *
-     * The target is used when data gets filtered before being sent to apexchart.
-     * In order to avoid adding more complexity to the current target architecture,
-     * we use a custom target made only in the frontend to represent a particular metrics.
+     * Only used when base consumption & ho & hc are empty.
      *
-     * This target is used as consumption.
      *
      * Only consumption metrics.
      *
@@ -105,11 +102,8 @@ export enum metricTargetsEnum {
     /**
      * 'only_euro_consumption_metrics' target is made for front purposes, it doesn't exist on the back.
      *
-     * The target is used when data gets filtered before being sent to apexchart.
-     * In order to avoid adding more complexity to the current target architecture,
-     * we use a custom target made only in the frontend to represent a particular metrics.
+     * Only used when euro base & euro HP & euro HC are empty.
      *
-     * This target is used as __euros__consumption_metrics.
      *
      * Only euro consumption metrics.
      */

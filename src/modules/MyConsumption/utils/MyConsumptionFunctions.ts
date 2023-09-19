@@ -902,28 +902,41 @@ export const getOnlyEuroConsumptionMetrics = (data: IMetric[]) => {
  * @param data Metrics data.
  * @param period Period type.
  * @param enphaseOff Enphase boolean when it's OFF.
- * @param isEuroChart Boolean to know if EuroConsumptionChart is toggled.
  * @returns New filterd metrics array data.
  */
 export const filterMetricsData = (
     data: IMetric[],
     period?: periodType,
     enphaseOff?: boolean,
-    isEuroChart?: boolean,
     // eslint-disable-next-line sonarjs/cognitive-complexity
-): IMetric[] => {
-    // When neither of: baseConsumption or HP or HC consumption metrics has data, we use the "general" consumption metrics target.
-    // In this case it's handled from the front as onlyConsumption.
-    const isBasePeakOffPeakConsumptionEmpty = isEmptyMetricsData(data, [
-        metricTargetsEnum.baseConsumption,
-        metricTargetsEnum.peakHourConsumption,
-        metricTargetsEnum.offPeakHourConsumption,
-    ])
-    if (isBasePeakOffPeakConsumptionEmpty && enphaseOff) {
-        const onlyConsumption = getOnlyConsumptionMetrics(data)
+): IMetric[] | undefined => {
+    const isEuroTarget = data.some((metric) =>
+        [metricTargetsEnum.eurosConsumption].includes(metric.target as metricTargetsEnum),
+    )
 
-        if (onlyConsumption) {
-            return [onlyConsumption]
+    const isBasePeakOffPeakConsumptionTargets = data.some((metric) =>
+        [
+            metricTargetsEnum.baseConsumption,
+            metricTargetsEnum.peakHourConsumption,
+            metricTargetsEnum.offPeakHourConsumption,
+        ].includes(metric.target as metricTargetsEnum),
+    )
+
+    if (isBasePeakOffPeakConsumptionTargets) {
+        // When neither of: baseConsumption or HP or HC consumption metrics has data, we use the "general" consumption metrics target.
+        // In this case it's handled from the front as onlyConsumption.
+        const isBasePeakOffPeakConsumptionEmpty = isEmptyMetricsData(data, [
+            metricTargetsEnum.baseConsumption,
+            metricTargetsEnum.peakHourConsumption,
+            metricTargetsEnum.offPeakHourConsumption,
+        ])
+
+        if (isBasePeakOffPeakConsumptionEmpty && enphaseOff) {
+            const onlyConsumption = getOnlyConsumptionMetrics(data)
+
+            if (onlyConsumption) {
+                return [onlyConsumption]
+            }
         }
     }
 
@@ -952,7 +965,7 @@ export const filterMetricsData = (
         metricTargetsEnum.euroPeakHourConsumption,
         metricTargetsEnum.euroOffPeakConsumption,
     ])
-    if (period !== 'daily' && isEuroChart && isBaseEuroPeakOffPeakConsumptionEmpty) {
+    if (isEuroTarget && isBaseEuroPeakOffPeakConsumptionEmpty) {
         const onlyEuroConsimption = getOnlyEuroConsumptionMetrics(data)
         const subscriptionPricesTarget = data.find((metric) => metric.target === metricTargetsEnum.subscriptionPrices)
 
