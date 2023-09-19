@@ -55,10 +55,7 @@ const MyConsumptionChart = ({
     // The fillApexChartsDatetimeSeriesMissingValues checks if there are missing datapoints.
     const reactApexChartsProps = useMemo(() => {
         if (isDataChanged.current) {
-            let ApexChartsAxisValues: ApexAxisChartSeries = convertMetricsDataToApexChartsDateTimeAxisValues(
-                data,
-                chartType === 'consumption' ? period : undefined,
-            )
+            let ApexChartsAxisValues: ApexAxisChartSeries = convertMetricsDataToApexChartsDateTimeAxisValues(data)
             const apexChartsProps = getApexChartMyConsumptionProps({
                 yAxisSeries: ApexChartsAxisValues,
                 period,

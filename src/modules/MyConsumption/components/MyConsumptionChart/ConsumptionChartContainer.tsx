@@ -8,7 +8,11 @@ import { IMetric, metricTargetsEnum, metricTargetType } from 'src/modules/Metric
 import { ConsumptionChartContainerProps } from 'src/modules/MyConsumption/myConsumptionTypes'
 import CircularProgress from '@mui/material/CircularProgress'
 import EurosConsumptionButtonToggler from 'src/modules/MyConsumption/components/EurosConsumptionButtonToggler'
-import { getVisibleTargetCharts, showPerPeriodText } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
+import {
+    filterMetricsData,
+    getVisibleTargetCharts,
+    showPerPeriodText,
+} from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
 import {
     DefaultContractWarning,
     ConsumptionEnedisSgeWarning,
@@ -80,15 +84,32 @@ export const ConsumptionChartContainer = ({
     }, [period, visibleTargetCharts])
 
     const isEurosConsumptionChart = useMemo(
-        () => visibleTargetCharts.includes(metricTargetsEnum.baseEuroConsumption),
+        () => visibleTargetCharts.includes(metricTargetsEnum.eurosConsumption),
         [visibleTargetCharts],
     )
+
+    // MetricRequest shouldn't be allowed when period is daily (metric interval is '1m' or '30m' and targets don't include euros or idle).
+    const isMetricRequestNotAllowed = useMemo(() => {
+        return (
+            ['1m', '30m'].includes(metricsInterval) &&
+            visibleTargetCharts.some((target) =>
+                [metricTargetsEnum.eurosConsumption].includes(target as metricTargetsEnum),
+            )
+        )
+    }, [metricsInterval, visibleTargetCharts])
 
     const isEurosConsumptionDisabled = !isEurosConsumptionChart && period === 'daily'
 
     const getMetrics = useCallback(async () => {
+        if (isMetricRequestNotAllowed) return
         await getMetricsWithParams({ interval: metricsInterval, range, targets: visibleTargetCharts, filters })
-    }, [getMetricsWithParams, metricsInterval, range, visibleTargetCharts, filters])
+    }, [getMetricsWithParams, metricsInterval, range, visibleTargetCharts, filters, isMetricRequestNotAllowed])
+
+    // When switching to period daily, if Euros Charts or Idle charts buttons are selected, metrics should be reset.
+    // This useEffect reset metrics.
+    useEffect(() => {
+        if (isMetricRequestNotAllowed) setVisibleTargetsCharts(getVisibleTargetCharts(enphaseOff))
+    }, [isMetricRequestNotAllowed, enphaseOff])
 
     // Happens everytime getMetrics dependencies change, and doesn't execute when hook is instanciated.
     useEffect(() => {
@@ -98,8 +119,15 @@ export const ConsumptionChartContainer = ({
     useEffect(() => {
         // To avoid multiple rerendering and thus calculation in MyConsumptionChart, CosnumptionChartData change only once, when visibleTargetChart change or when the first getMetrics targets is loaded, thus avoiding to rerender when the second getMetrics is loaded with all targets which should only happen in the background.
         if (data.length > 0) {
-            setConsumptionChartData(data.filter((datapoint) => visibleTargetCharts.includes(datapoint.target)))
+            let chartData = data.filter((datapoint) => visibleTargetCharts.includes(datapoint.target))
+            // Filter target cases.
+            const fileteredMetricsData = filterMetricsData(chartData, period, enphaseOff)
+            if (fileteredMetricsData) {
+                setConsumptionChartData(fileteredMetricsData)
+            } else setConsumptionChartData(chartData)
         }
+        // Only use data & visibleTargetCharts as dependencies.
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [data, visibleTargetCharts])
 
     /**
