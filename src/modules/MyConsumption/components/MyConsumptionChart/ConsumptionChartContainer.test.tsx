@@ -385,4 +385,17 @@ describe('MyConsumptionContainer test', () => {
             })
         })
     })
+    test('When manual contract filling is disabled, missing contract link does not show.', () => {
+        mockManualContractFillingIsEnabled = false
+        const { queryByText } = reduxedRender(
+            <Router>
+                <ConsumptionChartContainer {...consumptionChartContainerProps} />
+            </Router>,
+            { initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[0] } } },
+        )
+
+        expect(queryByText(HAS_MISSING_CONTRACTS_WARNING_REDIRECT_LINK_TEXT)).not.toBeInTheDocument()
+
+        mockManualContractFillingIsEnabled = true
+    })
 })
