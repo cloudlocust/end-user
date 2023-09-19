@@ -15,7 +15,6 @@ import {
     subtractTime,
     addTime,
     getVisibleTargetCharts,
-    isEmptyMetricsData,
     filterMetricsData,
 } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
 import { IMetric, metricIntervalType, metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'

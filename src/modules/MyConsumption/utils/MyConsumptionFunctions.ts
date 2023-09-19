@@ -425,7 +425,7 @@ export const isEqualDates = (date1: number, date2: number, period: periodType) =
 export const getChartType = (metricTarget: metricTargetType, period: periodType): ApexChart['type'] | '' => {
     if (
         (metricTarget === metricTargetsEnum.consumption ||
-            // metricTarget === metricTargetsEnum.onlyConsumption ||
+            metricTarget === metricTargetsEnum.onlyConsumption ||
             metricTarget === metricTargetsEnum.baseConsumption ||
             metricTarget === metricTargetsEnum.eurosConsumption ||
             metricTarget === metricTargetsEnum.autoconsumption ||
