@@ -107,7 +107,9 @@ export const ConsumptionChartContainer = ({
             const fileteredMetricsData = filterMetricsData(chartData, period, enphaseOff, isEurosConsumptionChart)
             setConsumptionChartData(fileteredMetricsData)
         }
-    }, [data, enphaseOff, isEurosConsumptionChart, period, visibleTargetCharts])
+        // Only use data & visibleTargetCharts as dependencies.
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [data, visibleTargetCharts])
 
     /**
      * Show given metric target chart.
