@@ -116,7 +116,7 @@ describe('test pure functions', () => {
 
         // When Euros Consumption, it should return palette.primary.light.
         label = getChartColor(metricTargetsEnum.eurosConsumption, theme)
-        expect(label).toBe('#FFEECD')
+        expect(label).toBe('rgba(255, 255, 255, .0)')
 
         // When internal temperature.
         label = getChartColor(metricTargetsEnum.internalTemperature, theme)

@@ -459,6 +459,8 @@ export const getChartSpecifities = (
     chartLabel?: 'Consommation totale' | 'Electricité achetée sur le réseau',
     // eslint-disable-next-line sonarjs/cognitive-complexity
 ): getChartSpecifitiesType => {
+    const baseEurosConsumptionSeriesName = 'Consommation euro de base'
+    const totalEurosConsumptionSeriesName = 'Consommation euro totale'
     if (target === metricTargetsEnum.consumption && chartLabel === 'Consommation totale') {
         return {
             label: chartLabel,
@@ -487,43 +489,43 @@ export const getChartSpecifities = (
     } else if (target === metricTargetsEnum.baseEuroConsumption) {
         return {
             // eslint-disable-next-line sonarjs/no-duplicate-string
-            label: 'Consommation euro de base',
-            seriesName: 'Consommation euro de base',
+            label: baseEurosConsumptionSeriesName,
+            seriesName: baseEurosConsumptionSeriesName,
         }
     } else if (target === metricTargetsEnum.eurosConsumption) {
         return {
             // eslint-disable-next-line sonarjs/no-duplicate-string
             label: 'Consommation euro totale',
-            seriesName: 'Consommation euro de base',
+            seriesName: totalEurosConsumptionSeriesName,
         }
     } else if (target === metricTargetsEnum.subscriptionPrices) {
         return {
             label: 'Abonnement',
-            seriesName: 'Consommation euro de base',
+            seriesName: baseEurosConsumptionSeriesName,
             show: false,
         }
     } else if (target === metricTargetsEnum.euroPeakHourConsumption) {
         return {
             label: 'Consommation achetée HP',
-            seriesName: 'Consommation euro de base',
+            seriesName: baseEurosConsumptionSeriesName,
             show: false,
         }
     } else if (target === metricTargetsEnum.euroOffPeakConsumption) {
         return {
             label: 'Consommation achetée HC',
-            seriesName: 'Consommation euro de base',
+            seriesName: baseEurosConsumptionSeriesName,
             show: false,
         }
     } else if (target === metricTargetsEnum.eurosIdleConsumption) {
         return {
             label: 'Consommation euro de veille',
-            seriesName: 'Consommation euro de base',
+            seriesName: totalEurosConsumptionSeriesName,
             show: false,
         }
     } else if (target === metricTargetsEnum.totalEurosOffIdleConsumption) {
         return {
             label: 'Consommation euro Hors-veille',
-            seriesName: 'Consommation euro de base',
+            seriesName: totalEurosConsumptionSeriesName,
             show: false,
         }
     } else if (target === metricTargetsEnum.externalTemperature) {
@@ -950,10 +952,20 @@ export const getTotalOffIdleConsumptionData = (data: IMetric[]): IMetric | undef
         return {
             target: metricTargetsEnum.totalOffIdleConsumption,
             datapoints: totalConsumptionDatapoints.map((val, index) => {
-                return [
-                    val ? subtract(val, Number(idleConsumptionDatapoints[index][0])) : val,
-                    idleConsumptionDatapoints[index][1],
-                ]
+                // SOLUTION
+                // To avoid rounding of numbers and thus showing wrong computation on the chart.
+                // We Make a subtraction with the numbers truncated to two digits after the decimal point.
+
+                // METHOD:
+                // With toFixed it rounds up the number, doing slice and toFixed(3) will make sure to truncate and not round up.
+                // So that we have a result of a number with two digits after the decimal point.
+                let totalOffIdleValue = val
+                    ? subtract(
+                          Number(val.toFixed(3).slice(0, -1)),
+                          Number(Number(idleConsumptionDatapoints[index][0]).toFixed(3).slice(0, -1)),
+                      )
+                    : val
+                return [totalOffIdleValue, idleConsumptionDatapoints[index][1]]
             }),
         }
     }
@@ -967,10 +979,20 @@ export const getTotalOffIdleConsumptionData = (data: IMetric[]): IMetric | undef
         return {
             target: metricTargetsEnum.totalEurosOffIdleConsumption,
             datapoints: totalEurosConsumptionDatapoints.map((val, index) => {
-                return [
-                    val ? subtract(val, Number(idleEurosConsumptionDatapoints[index][0])) : val,
-                    idleEurosConsumptionDatapoints[index][1],
-                ]
+                // SOLUTION
+                // To avoid rounding of numbers and thus showing wrong computation on the chart.
+                // We Make a subtraction with the numbers truncated to two digits after the decimal point.
+
+                // METHOD:
+                // With toFixed it rounds up the number, doing slice and toFixed(3) will make sure to truncate and not round up.
+                // So that we have a result of a number with two digits after the decimal point.
+                let totalEurosOffIdleValue = val
+                    ? subtract(
+                          Number(val.toFixed(3).slice(0, -1)),
+                          Number(Number(idleEurosConsumptionDatapoints[index][0]).toFixed(3).slice(0, -1)),
+                      )
+                    : val
+                return [totalEurosOffIdleValue, idleEurosConsumptionDatapoints[index][1]]
             }),
         }
     }

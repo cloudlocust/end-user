@@ -86,6 +86,7 @@ export const getChartColor = (chartName: metricTargetsEnum, theme: Theme, enphas
         case metricTargetsEnum.pMax:
             return '#FF7A00'
         case metricTargetsEnum.eurosConsumption:
+            return 'rgba(255, 255, 255, .0)'
         case metricTargetsEnum.baseEuroConsumption:
         case metricTargetsEnum.totalEurosOffIdleConsumption:
             return theme.palette.primary.light

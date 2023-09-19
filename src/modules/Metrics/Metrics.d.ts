@@ -94,6 +94,11 @@ export enum metricTargetsEnum {
      */
     baseEuroConsumption = 'base__euros__consumption_metrics',
     /**
+     * Eneum value for Euros Idle Consumption.
+     */
+    eurosIdleConsumption = '__euros__idle_consumption_metrics',
+    // Targets used only on the FRONT.
+    /**
      * Total Off Idle consumption, that'll be computed on the front based on consumption_metrics & idle_consumption_metrics.
      */
     totalOffIdleConsumption = 'off_idle_consumption_metrics',
@@ -101,10 +106,6 @@ export enum metricTargetsEnum {
      * Total Off Euros Idle consumption, that'll be computed on the front based on __euros__consumption_metrics & __euros__idle_consumption_metrics.
      */
     totalEurosOffIdleConsumption = '__euros__off_idle_consumption_metrics',
-    /**
-     * Eneum value for Euros Idle Consumption.
-     */
-    eurosIdleConsumption = '__euros__idle_consumption_metrics',
 }
 /**
  * Metrics intervals.

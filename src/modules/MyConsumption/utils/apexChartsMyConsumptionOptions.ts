@@ -349,11 +349,11 @@ export const getApexChartMyConsumptionProps = ({
                 yAxisSerie.name === metricTargetsEnum.offPeakHourConsumption ||
                 yAxisSerie.name === metricTargetsEnum.idleConsumption ||
                 yAxisSerie.name === metricTargetsEnum.totalOffIdleConsumption ||
+                yAxisSerie.name === metricTargetsEnum.totalEurosOffIdleConsumption ||
                 yAxisSerie.name === metricTargetsEnum.baseEuroConsumption ||
                 yAxisSerie.name === metricTargetsEnum.euroPeakHourConsumption ||
                 yAxisSerie.name === metricTargetsEnum.euroOffPeakConsumption ||
-                yAxisSerie.name === metricTargetsEnum.eurosIdleConsumption ||
-                yAxisSerie.name === metricTargetsEnum.totalOffIdleConsumption
+                yAxisSerie.name === metricTargetsEnum.eurosIdleConsumption
                 ? 0
                 : 1.5,
         )
