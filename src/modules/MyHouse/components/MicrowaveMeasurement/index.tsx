@@ -14,6 +14,7 @@ import {
     TestStepPageProps,
 } from 'src/modules/MyHouse/components/MicrowaveMeasurement/MicrowaveMeasurement.d'
 import ConfigurationStep from 'src/modules/MyHouse/components/MicrowaveMeasurement/ConfigurationStep'
+import EquipmentStartupStep from 'src/modules/MyHouse/components/MicrowaveMeasurement/EquipmentStartupStep'
 
 /**
  * TestStepPage component.
@@ -112,7 +113,7 @@ const MicrowaveMeasurement = ({ modalIsOpen, closeModal }: MicrowaveMeasurementP
                             <ConfigurationStep stepSetter={setCurrentStep} />
                         ) : currentStep === 2 ? (
                             // Step 2
-                            <TestStepPage step={currentStep} stepSetter={setCurrentStep} />
+                            <EquipmentStartupStep testMode="Standard" stepSetter={setCurrentStep} />
                         ) : currentStep === 3 ? (
                             // Step 3
                             <TestStepPage step={currentStep} stepSetter={setCurrentStep} />

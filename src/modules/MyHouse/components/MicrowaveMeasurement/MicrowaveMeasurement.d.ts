@@ -64,6 +64,20 @@ export interface ConfigurationStepProps {
 }
 
 /**
+ * Props of the EquipmentStartupStep component.
+ */
+export interface EquipmentStartupStepProps {
+    /**
+     * The mode of the measurement test.
+     */
+    testMode: string
+    /**
+     * The setter linked to the state responsible for storing the current step.
+     */
+    stepSetter: StepSetterFunction
+}
+
+/**
  * Props of the TestStepPage component.
  */
 export interface TestStepPageProps {

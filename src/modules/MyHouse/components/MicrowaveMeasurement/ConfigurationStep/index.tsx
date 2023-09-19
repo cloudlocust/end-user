@@ -64,7 +64,7 @@ const ConfigurationStep = ({ stepSetter }: ConfigurationStepProps) => {
             <Box>
                 {/* Select the microwave */}
                 <Box marginBottom="20px">
-                    <Typography marginBottom="10px" fontWeight="500">
+                    <Typography marginBottom="15px" fontWeight="500">
                         Selectionner le micro-onde à mesurer
                     </Typography>
                     <FormControl fullWidth>
@@ -78,7 +78,7 @@ const ConfigurationStep = ({ stepSetter }: ConfigurationStepProps) => {
 
                 {/* Select the microwave */}
                 <Box marginBottom="30px">
-                    <Typography marginBottom="10px" fontWeight="500">
+                    <Typography marginBottom="15px" fontWeight="500">
                         Selectionner le mode à mesurer
                     </Typography>
                     <CustomRadioGroup
