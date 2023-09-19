@@ -39,13 +39,28 @@ export interface CustomOrderedListItemProps {
 }
 
 /**
+ * Type of the setter function of the step state.
+ */
+type StepSetterFunction = Dispatch<SetStateAction<number>>
+
+/**
  * Props of the InfosPage component.
  */
 export interface InfosPageProps {
     /**
      * The setter linked to the state responsible for storing the current step.
      */
-    stepSetter: Dispatch<SetStateAction<number>>
+    stepSetter: StepSetterFunction
+}
+
+/**
+ * Props of the ConfigurationStep component.
+ */
+export interface ConfigurationStepProps {
+    /**
+     * The setter linked to the state responsible for storing the current step.
+     */
+    stepSetter: StepSetterFunction
 }
 
 /**
@@ -59,5 +74,15 @@ export interface TestStepPageProps {
     /**
      * The setter linked to the state step.
      */
-    stepSetter: Dispatch<SetStateAction<number>>
+    stepSetter: StepSetterFunction
 }
+
+/**
+ * Type of the select onChange handler function.
+ */
+export type SelectOnChangeHandler = (event: SelectChangeEvent<string>, child: ReactNode) => void
+
+/**
+ * Type of the radio group onChange handler function.
+ */
+export type RadioGroupOnChangeHandler = (v: string) => void

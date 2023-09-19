@@ -5,13 +5,15 @@ import IconButton from '@mui/material/IconButton'
 import Stepper from '@mui/material/Stepper'
 import Step from '@mui/material/Step'
 import StepLabel from '@mui/material/StepLabel'
+import Button from '@mui/material/Button'
+import Typography from '@mui/material/Typography'
+import CloseIcon from '@mui/icons-material/Close'
+import InfosPage from 'src/modules/MyHouse/components/MicrowaveMeasurement/InfosPage'
 import {
     MicrowaveMeasurementProps,
     TestStepPageProps,
 } from 'src/modules/MyHouse/components/MicrowaveMeasurement/MicrowaveMeasurement.d'
-import CloseIcon from '@mui/icons-material/Close'
-import InfosPage from 'src/modules/MyHouse/components/MicrowaveMeasurement/InfosPage'
-import { Button, Typography } from '@mui/material'
+import ConfigurationStep from 'src/modules/MyHouse/components/MicrowaveMeasurement/ConfigurationStep'
 
 /**
  * TestStepPage component.
@@ -57,7 +59,7 @@ const MicrowaveMeasurement = ({ modalIsOpen, closeModal }: MicrowaveMeasurementP
         >
             <Box
                 width="100%"
-                maxWidth="500px"
+                maxWidth="450px"
                 margin="10px"
                 padding="30px 20px"
                 borderRadius="20px"
@@ -89,7 +91,7 @@ const MicrowaveMeasurement = ({ modalIsOpen, closeModal }: MicrowaveMeasurementP
                     <InfosPage stepSetter={setCurrentStep} />
                 ) : (
                     <>
-                        <Box width="70%" margin="0 auto">
+                        <Box width="70%" margin="0 auto 20px">
                             <Stepper activeStep={currentStep - 1}>
                                 <Step>
                                     <StepLabel />
@@ -107,7 +109,7 @@ const MicrowaveMeasurement = ({ modalIsOpen, closeModal }: MicrowaveMeasurementP
                         </Box>
                         {currentStep === 1 ? (
                             // Step 1
-                            <TestStepPage step={currentStep} stepSetter={setCurrentStep} />
+                            <ConfigurationStep stepSetter={setCurrentStep} />
                         ) : currentStep === 2 ? (
                             // Step 2
                             <TestStepPage step={currentStep} stepSetter={setCurrentStep} />

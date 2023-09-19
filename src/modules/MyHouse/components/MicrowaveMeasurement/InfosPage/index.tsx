@@ -91,26 +91,33 @@ const InfosPage = ({ stepSetter }: InfosPageProps) => {
 
             {/* Content */}
             <Box>
-                <Typography fontWeight="500">Tester votre appareil vous permet de&nbsp;:</Typography>
-                <Box paddingLeft="20px" marginBottom="20px">
-                    {testBenefits.map((item, i) => (
-                        <CustomUnorderedListItem key={i}>{item}</CustomUnorderedListItem>
-                    ))}
+                {/* The test benefits */}
+                <Box marginBottom="25px">
+                    <Typography fontWeight="500">Tester votre appareil vous permet de&nbsp;:</Typography>
+                    <Box paddingLeft="20px">
+                        {testBenefits.map((item, i) => (
+                            <CustomUnorderedListItem key={i}>{item}</CustomUnorderedListItem>
+                        ))}
+                    </Box>
                 </Box>
 
-                <Typography fontWeight="500">Le test se déroule en 4 étapes&nbsp;:</Typography>
-                <Box paddingLeft="20px" marginBottom="15px">
-                    {testSteps.map((item, i) => (
-                        <CustomOrderedListItem index={i + 1} key={i}>
-                            {item}
-                        </CustomOrderedListItem>
-                    ))}
+                {/* The test steps */}
+                <Box marginBottom="25px">
+                    <Typography fontWeight="500">Le test se déroule en 4 étapes&nbsp;:</Typography>
+                    <Box paddingLeft="20px">
+                        {testSteps.map((item, i) => (
+                            <CustomOrderedListItem index={i + 1} key={i}>
+                                {item}
+                            </CustomOrderedListItem>
+                        ))}
+                    </Box>
                 </Box>
 
+                {/* The test starting button */}
                 <Box display="flex" justifyContent="center">
                     <Button
                         variant="contained"
-                        sx={{ textAlign: 'center', padding: '6px 40px' }}
+                        sx={{ padding: '10px auto', textAlign: 'center', width: '60%', minWidth: '160px' }}
                         onClick={handleBtnClick}
                     >
                         Commencer
