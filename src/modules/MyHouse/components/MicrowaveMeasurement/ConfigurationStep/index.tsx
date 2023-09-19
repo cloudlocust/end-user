@@ -74,8 +74,14 @@ const ConfigurationStep = ({
                         Selectionner le micro-onde à mesurer
                     </Typography>
                     <FormControl fullWidth>
-                        <InputLabel>Mon équipement</InputLabel>
-                        <Select value={selectedMicrowave} label="Mon équipement" onChange={handleSelectMicrowaveChange}>
+                        <InputLabel id="microwave-select-label">Mon équipement</InputLabel>
+                        <Select
+                            labelId="microwave-select-label"
+                            id="microwave-select"
+                            value={selectedMicrowave}
+                            label="Mon équipement"
+                            onChange={handleSelectMicrowaveChange}
+                        >
                             <MenuItem value="micro-onde-1">Micro-onde 1</MenuItem>
                             <MenuItem value="micro-onde-2">Micro-onde 2</MenuItem>
                         </Select>
