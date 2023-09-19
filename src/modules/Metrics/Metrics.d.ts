@@ -18,6 +18,8 @@ export type metricTargetType =
     | 'base__euros__consumption_metrics'
     | 'hp__euros__consumption_metrics'
     | 'hc__euros__consumption_metrics'
+    | 'only_consumption_metrics'
+    | 'only_euro_consumption_metrics'
 
 /**
  * Enum representing the metricTarget without exposing the backend naming.
@@ -87,6 +89,19 @@ export enum metricTargetsEnum {
      * Base euro consumption (according to Tariff de base).
      */
     baseEuroConsumption = 'base__euros__consumption_metrics',
+    /**
+     * 'only_consumption_metrics' target is made for front purposes, it doesn't exist on the back.
+     *
+     * Only consumption metrics.
+     *
+     */
+    onlyConsumption = 'only_consumption_metrics',
+    /**
+     * 'only_euro_consumption_metrics' target is made for front purposes, it doesn't exist on the back.
+     *
+     * Only euro consumption metrics.
+     */
+    onlyEuroConsumption = 'only_euro_consumption_metrics',
 }
 /**
  * Metrics intervals.

@@ -425,6 +425,7 @@ export const isEqualDates = (date1: number, date2: number, period: periodType) =
 export const getChartType = (metricTarget: metricTargetType, period: periodType): ApexChart['type'] | '' => {
     if (
         (metricTarget === metricTargetsEnum.consumption ||
+            // metricTarget === metricTargetsEnum.onlyConsumption ||
             metricTarget === metricTargetsEnum.baseConsumption ||
             metricTarget === metricTargetsEnum.eurosConsumption ||
             metricTarget === metricTargetsEnum.autoconsumption ||
@@ -458,6 +459,7 @@ export const getChartSpecifities = (
     chartLabel?: 'Consommation totale' | 'Electricité achetée sur le réseau',
     // eslint-disable-next-line sonarjs/cognitive-complexity
 ): getChartSpecifitiesType => {
+    // eslint-disable-next-line sonarjs/no-duplicate-string
     if (target === metricTargetsEnum.consumption && chartLabel === 'Consommation totale') {
         return {
             label: chartLabel,
@@ -483,28 +485,35 @@ export const getChartSpecifities = (
             seriesName: chartLabel,
             show: false,
         }
-    } else if (target === metricTargetsEnum.eurosConsumption || target === metricTargetsEnum.baseEuroConsumption) {
+    } else if (target === metricTargetsEnum.eurosConsumption && chartLabel) {
+        return {
+            // eslint-disable-next-line sonarjs/no-duplicate-string
+            label: 'Consommation euro totale',
+            seriesName: 'Consommation euro totale',
+            show: false,
+        }
+    } else if (target === metricTargetsEnum.baseEuroConsumption) {
         return {
             // eslint-disable-next-line sonarjs/no-duplicate-string
             label: 'Consommation euro de base',
-            seriesName: 'Consommation euro de base',
+            seriesName: 'Consommation euro totale',
         }
     } else if (target === metricTargetsEnum.subscriptionPrices) {
         return {
             label: 'Abonnement',
-            seriesName: 'Consommation euro de base',
+            seriesName: 'Consommation euro totale',
             show: false,
         }
     } else if (target === metricTargetsEnum.euroPeakHourConsumption) {
         return {
             label: 'Consommation achetée HP',
-            seriesName: 'Consommation euro de base',
+            seriesName: 'Consommation euro totale',
             show: false,
         }
     } else if (target === metricTargetsEnum.euroOffPeakConsumption) {
         return {
             label: 'Consommation achetée HC',
-            seriesName: 'Consommation euro de base',
+            seriesName: 'Consommation euro totale',
             show: false,
         }
     } else if (target === metricTargetsEnum.externalTemperature) {
@@ -548,6 +557,18 @@ export const getChartSpecifities = (
             label: 'Consommation en HC',
             seriesName: chartLabel,
             show: false,
+        }
+    } else if (target === metricTargetsEnum.onlyConsumption) {
+        return {
+            label: 'Consommation totale',
+            seriesName: 'Consommation totale',
+            show: true,
+        }
+    } else if (target === metricTargetsEnum.onlyEuroConsumption) {
+        return {
+            label: 'Consommation euro totale',
+            seriesName: 'Consommation euro totale',
+            show: true,
         }
     } else {
         throw Error('Wrong target')
@@ -838,4 +859,113 @@ export const isEmptyMetricsData = (data: IMetric[], targetsFilter?: metricTarget
         )
     })
     return totalMetricsData === 0
+}
+
+/**
+ * Functon that generates a custom target: onlyConsumption.
+ *
+ * @param data Metrics data.
+ * @returns New generated target.
+ */
+export const getOnlyConsumptionMetrics = (data: IMetric[]) => {
+    const consumptionMetrics = data.find((metricData) => metricData.target === metricTargetsEnum.consumption)
+    if (consumptionMetrics) {
+        return {
+            target: metricTargetsEnum.onlyConsumption,
+            datapoints: consumptionMetrics.datapoints,
+        }
+    }
+}
+
+/**
+ * Functon that generates a custom target: onlyEuroConsumption.
+ *
+ * @param data Metrics data.
+ * @returns New generated target.
+ */
+export const getOnlyEuroConsumptionMetrics = (data: IMetric[]) => {
+    const eurosConsumptionMetrics = data.find((metricData) => metricData.target === metricTargetsEnum.eurosConsumption)
+
+    if (eurosConsumptionMetrics) {
+        return {
+            target: metricTargetsEnum.onlyEuroConsumption,
+            datapoints: eurosConsumptionMetrics.datapoints,
+        }
+    }
+}
+
+/**
+ * Function that filters data coming from backend in order to handle the visible targets for the user.
+ *
+ * Not all targets that are requested are visible to the user.
+ *
+ * @param data Metrics data.
+ * @param period Period type.
+ * @param enphaseOff Enphase boolean when it's OFF.
+ * @param isEuroChart Boolean to know if EuroConsumptionChart is toggled.
+ * @returns New filterd metrics array data.
+ */
+export const filterMetricsData = (
+    data: IMetric[],
+    period?: periodType,
+    enphaseOff?: boolean,
+    isEuroChart?: boolean,
+    // eslint-disable-next-line sonarjs/cognitive-complexity
+): IMetric[] => {
+    // When neither of: baseConsumption or HP or HC consumption metrics has data, we use the "general" consumption metrics target.
+    // In this case it's handled from the front as onlyConsumption.
+    const isBasePeakOffPeakConsumptionEmpty = isEmptyMetricsData(data, [
+        metricTargetsEnum.baseConsumption,
+        metricTargetsEnum.peakHourConsumption,
+        metricTargetsEnum.offPeakHourConsumption,
+    ])
+    if (isBasePeakOffPeakConsumptionEmpty && enphaseOff) {
+        const onlyConsumption = getOnlyConsumptionMetrics(data)
+
+        if (onlyConsumption) {
+            return [onlyConsumption]
+        }
+    }
+
+    // Base consumption is empty & period is daily & enphase consent is OFF
+    const isBaseConsumptionEmpty = isEmptyMetricsData(data, [metricTargetsEnum.baseConsumption])
+    if (period === 'daily' && isBaseConsumptionEmpty && enphaseOff) {
+        return data.filter(
+            (metric) =>
+                metric.target === metricTargetsEnum.consumption ||
+                metric.target === metricTargetsEnum.peakHourConsumption ||
+                metric.target === metricTargetsEnum.offPeakHourConsumption,
+        )
+    }
+
+    // Base consumption is NOT empty (has data), period is daily & enphase is OFF
+    if (period === 'daily' && !isBaseConsumptionEmpty && enphaseOff) {
+        return data.filter(
+            (metric) =>
+                metric.target === metricTargetsEnum.consumption || metric.target === metricTargetsEnum.baseConsumption,
+        )
+    }
+
+    // When base euro consumption & euro HP & euro HC are empty, we return a custom target: onlyEuroConsumption.
+    const isBaseEuroPeakOffPeakConsumptionEmpty = isEmptyMetricsData(data, [
+        metricTargetsEnum.baseEuroConsumption,
+        metricTargetsEnum.euroPeakHourConsumption,
+        metricTargetsEnum.euroOffPeakConsumption,
+    ])
+    if (period !== 'daily' && isEuroChart && isBaseEuroPeakOffPeakConsumptionEmpty) {
+        const onlyEuroConsimption = getOnlyEuroConsumptionMetrics(data)
+        const subscriptionPricesTarget = data.find((metric) => metric.target === metricTargetsEnum.subscriptionPrices)
+
+        if (onlyEuroConsimption && subscriptionPricesTarget) return [onlyEuroConsimption, subscriptionPricesTarget]
+    }
+
+    // When onphase is ON, we return consumption & autoconsumption
+    if (period === 'daily' && !enphaseOff) {
+        return data.filter(
+            (metric) =>
+                metric.target === metricTargetsEnum.consumption || metric.target === metricTargetsEnum.autoconsumption,
+        )
+    }
+
+    return data
 }
