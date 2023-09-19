@@ -908,8 +908,9 @@ export const filterMetricsData = (
     data: IMetric[],
     period?: periodType,
     enphaseOff?: boolean,
+    // TODO: remove cognitive-complexity in veille
     // eslint-disable-next-line sonarjs/cognitive-complexity
-): IMetric[] | undefined => {
+): IMetric[] => {
     const isEuroTarget = data.some((metric) =>
         [metricTargetsEnum.eurosConsumption].includes(metric.target as metricTargetsEnum),
     )
@@ -923,6 +924,13 @@ export const filterMetricsData = (
     )
 
     if (isBasePeakOffPeakConsumptionTargets) {
+        if (!enphaseOff)
+            return data.filter(
+                (metric) =>
+                    metric.target === metricTargetsEnum.consumption ||
+                    metric.target === metricTargetsEnum.autoconsumption,
+            )
+
         // When neither of: baseConsumption or HP or HC consumption metrics has data, we use the "general" consumption metrics target.
         // In this case it's handled from the front as onlyConsumption.
         const isBasePeakOffPeakConsumptionEmpty = isEmptyMetricsData(data, [
@@ -959,25 +967,21 @@ export const filterMetricsData = (
         )
     }
 
-    // When base euro consumption & euro HP & euro HC are empty, we return a custom target: onlyEuroConsumption.
-    const isBaseEuroPeakOffPeakConsumptionEmpty = isEmptyMetricsData(data, [
-        metricTargetsEnum.baseEuroConsumption,
-        metricTargetsEnum.euroPeakHourConsumption,
-        metricTargetsEnum.euroOffPeakConsumption,
-    ])
-    if (isEuroTarget && isBaseEuroPeakOffPeakConsumptionEmpty) {
-        const onlyEuroConsimption = getOnlyEuroConsumptionMetrics(data)
-        const subscriptionPricesTarget = data.find((metric) => metric.target === metricTargetsEnum.subscriptionPrices)
+    if (isEuroTarget) {
+        // When base euro consumption & euro HP & euro HC are empty, we return a custom target: onlyEuroConsumption.
+        const isBaseEuroPeakOffPeakConsumptionEmpty = isEmptyMetricsData(data, [
+            metricTargetsEnum.baseEuroConsumption,
+            metricTargetsEnum.euroPeakHourConsumption,
+            metricTargetsEnum.euroOffPeakConsumption,
+        ])
+        if (isBaseEuroPeakOffPeakConsumptionEmpty) {
+            const onlyEuroConsimption = getOnlyEuroConsumptionMetrics(data)
+            const subscriptionPricesTarget = data.find(
+                (metric) => metric.target === metricTargetsEnum.subscriptionPrices,
+            )
 
-        if (onlyEuroConsimption && subscriptionPricesTarget) return [onlyEuroConsimption, subscriptionPricesTarget]
-    }
-
-    // When onphase is ON, we return consumption & autoconsumption
-    if (period === 'daily' && !enphaseOff) {
-        return data.filter(
-            (metric) =>
-                metric.target === metricTargetsEnum.consumption || metric.target === metricTargetsEnum.autoconsumption,
-        )
+            if (onlyEuroConsimption && subscriptionPricesTarget) return [onlyEuroConsimption, subscriptionPricesTarget]
+        }
     }
 
     return data

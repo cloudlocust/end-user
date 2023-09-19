@@ -654,7 +654,7 @@ describe('filterMetricsData tests', () => {
             },
         ]
 
-        const fileteredData = filterMetricsData(data, 'weekly', true, true)
+        const fileteredData = filterMetricsData(data, 'weekly', true)
 
         expect(fileteredData).toStrictEqual([
             { datapoints: [[99, 99]], target: metricTargetsEnum.onlyEuroConsumption },
@@ -674,7 +674,7 @@ describe('filterMetricsData tests', () => {
             },
         ]
 
-        const fileteredData = filterMetricsData(data, 'daily', false, false)
+        const fileteredData = filterMetricsData(data, 'daily', false)
 
         expect(fileteredData).toStrictEqual([
             { datapoints: [[99, 99]], target: metricTargetsEnum.consumption },
