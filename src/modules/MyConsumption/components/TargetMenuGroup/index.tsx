@@ -45,13 +45,13 @@ export const buttonOptions = [
  * TargetButtonGroup component.
  *
  * @param root0 N/A.
- * @param root0.removeTarget RemoveTarget.
- * @param root0.addTarget AddTarget.
+ * @param root0.removeTargets RemoveTarget.
+ * @param root0.addTargets AddTarget.
  * @param root0.hidePmax If hidePmax exists Pmax button will be disabled.
+ * @param root0.activeButton Indicate which button is active.
  * @returns TargetButtonGroup.
  */
-const TargetMenuGroup = ({ removeTarget, addTarget, hidePmax }: ITargetMenuGroup) => {
-    const [activeButton, setActiveButton] = useState('reset')
+const TargetMenuGroup = ({ removeTargets, addTargets, hidePmax, activeButton }: ITargetMenuGroup) => {
     const [anchorEl, setAnchorEl] = useState<null | Element>(null)
     const theme = useTheme()
 
@@ -62,17 +62,17 @@ const TargetMenuGroup = ({ removeTarget, addTarget, hidePmax }: ITargetMenuGroup
      */
     const handleTarget = (targets: metricTargetsEnum[]) => {
         if (targets.includes(metricTargetsEnum.internalTemperature)) {
-            addTarget([metricTargetsEnum.internalTemperature, metricTargetsEnum.externalTemperature])
+            addTargets([metricTargetsEnum.internalTemperature, metricTargetsEnum.externalTemperature])
         } else if (targets.includes(metricTargetsEnum.pMax)) {
-            addTarget([metricTargetsEnum.pMax])
+            addTargets([metricTargetsEnum.pMax])
         } else {
-            removeTarget()
+            removeTargets()
         }
     }
 
     useEffect(() => {
-        if (hidePmax && activeButton === 'Pmax') setActiveButton('reset')
-    }, [hidePmax, activeButton])
+        if (hidePmax && activeButton === 'Pmax') removeTargets()
+    }, [hidePmax, activeButton, removeTargets])
 
     /**
      * Function called on click.
@@ -148,7 +148,6 @@ const TargetMenuGroup = ({ removeTarget, addTarget, hidePmax }: ITargetMenuGroup
                                     key={option.value}
                                     onClick={() => {
                                         if (disabledField) return
-                                        setActiveButton(option.value)
                                         handleTarget(option.targets)
                                         handleClose()
                                     }}
