@@ -61,7 +61,7 @@ const customSvgIconsStyling = {
 }
 
 // eslint-disable-next-line jsdoc/require-jsdoc
-const getEquipmentIconPath = (name: string) => `./assets/images/content/equipment/${name}.svg`
+export const getEquipmentIconPath = (name: string) => `./assets/images/content/equipment/${name}.svg`
 
 // eslint-disable-next-line jsdoc/require-jsdoc
 export const heaterEquipment: ISelectButtons = {
