@@ -3,7 +3,7 @@ import { BrowserRouter } from 'react-router-dom'
 import ConsumptionAlert from '.'
 import userEvent from '@testing-library/user-event'
 import { waitFor } from '@testing-library/react'
-import { NovuChannelsWithValueAndKey } from './consumptionAlert'
+import { NovuChannelsWithValueAndKey } from '../../Alerts'
 
 const INTERVAL_TITLE_DAY = "Seuil d'alerte journalier"
 const INTERVAL_TITLE_WEEK = "Seuil d'alerte hebdomadaire"

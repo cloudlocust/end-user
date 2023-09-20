@@ -1,5 +1,9 @@
 import { metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
-import { getYPointValueLabel, getChartColor } from 'src/modules/MyConsumption/utils/myConsumptionVariables'
+import {
+    getYPointValueLabel,
+    getChartColor,
+    TRANSPARENT_COLOR,
+} from 'src/modules/MyConsumption/utils/myConsumptionVariables'
 import { createTheme } from '@mui/material/styles'
 
 const yValue = 1.2
@@ -112,11 +116,11 @@ describe('test pure functions', () => {
         expect(label).toBe('#AABBCC')
 
         label = getChartColor(metricTargetsEnum.consumption, theme, true)
-        expect(label).toBe('rgba(255,255,255, .0)')
+        expect(label).toBe(TRANSPARENT_COLOR)
 
         // When Euros Consumption, it should return palette.primary.light.
         label = getChartColor(metricTargetsEnum.eurosConsumption, theme)
-        expect(label).toBe('rgba(255, 255, 255, .0)')
+        expect(label).toBe(TRANSPARENT_COLOR)
 
         // When internal temperature.
         label = getChartColor(metricTargetsEnum.internalTemperature, theme)
@@ -157,5 +161,10 @@ describe('test pure functions', () => {
         // Euros Idle consumption
         label = getChartColor(metricTargetsEnum.eurosIdleConsumption, theme)
         expect(label).toBe('#8191B2')
+        label = getChartColor(metricTargetsEnum.onlyConsumption, theme)
+        expect(label).toBe('#AABBCC')
+
+        label = getChartColor(metricTargetsEnum.onlyEuroConsumption, theme)
+        expect(label).toBe(theme.palette.primary.light)
     })
 })
