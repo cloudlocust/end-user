@@ -136,12 +136,10 @@ export type EurosConsumptionButtonTogglerProps =
     // eslint-disable-next-line jsdoc/require-jsdoc
     {
         /**
-         * RemoveTarget.
          * Handler when clicking on EuroButton.
          */
         onEuroClick: () => void
         /**
-         * AddTarget.
          * Handler when clicking on ConsumptionButton.
          */
         onConsumptionClick: () => void
