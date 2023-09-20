@@ -679,14 +679,24 @@ export function getCalendarDates(
 
     switch (operator) {
         case 'sub':
+            const subResFROM = subtractTime(new Date(from), period)
+            // TODO refactor getCalendarDates to get the results directly from subTime & addTime.
+            // Because subtractTime(new Date(to), period) returns the start of the wanted day + 1
+            // Doing getDateWithoutTimezoneOffset and endOfDay with subDays transform the result so that we have the end of the wanted day.
+            const subResTO = getDateWithoutTimezoneOffset(
+                endOfDay(subDays(new Date(subtractTime(new Date(to), period)), 1)),
+            )
             return {
-                from: subtractTime(new Date(from), period),
-                to: subtractTime(new Date(to), period),
+                from: subResFROM,
+                to: subResTO,
             }
         case 'add':
+            const addResFROM = addTime(new Date(from), period)
+            const addResTO = getDateWithoutTimezoneOffset(endOfDay(subDays(new Date(addTime(new Date(to), period)), 1)))
+
             return {
-                from: addTime(new Date(from), period),
-                to: addTime(new Date(to), period),
+                from: addResFROM,
+                to: addResTO,
             }
         case 'none':
         default:
