@@ -2,7 +2,6 @@ import IconButton from '@mui/material/IconButton'
 import BoltIcon from '@mui/icons-material/Bolt'
 import EuroIcon from '@mui/icons-material/Euro'
 import { useTheme } from '@mui/material'
-import { metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
 import { EurosConsumptionButtonTogglerProps } from 'src/modules/MyConsumption/myConsumptionTypes.d'
 import Tooltip from '@mui/material/Tooltip'
 import { useIntl } from 'react-intl'
@@ -11,15 +10,15 @@ import { useIntl } from 'react-intl'
  * Component showing the eurosConsumption IconButton when its consumptionChart, and consumption IconButton when it's eurosConsumption Chart.
  *
  * @param props N/A.
- * @param props.removeTarget Remove Target prop.
- * @param props.addTarget Add Target prop.
+ * @param props.onEuroClick Handler when clicking on EuroButton.
+ * @param props.onConsumptionClick Handler when clicking on ConsumptionButton.
  * @param props.showEurosConsumption Indicate eurosConsumption or consumption IconButton to be shown.
  * @param props.disabled Indicated if EurosConsumptionButton is disabled.
  * @returns EurosConsumptionButtonToggler Component.
  */
 const EurosConsumptionButtonToggler = ({
-    removeTarget,
-    addTarget,
+    onEuroClick,
+    onConsumptionClick,
     showEurosConsumption,
     disabled,
 }: EurosConsumptionButtonTogglerProps) => {
@@ -54,18 +53,7 @@ const EurosConsumptionButtonToggler = ({
                                 },
                             }}
                             disabled={disabled}
-                            onClick={() => {
-                                addTarget(
-                                    [
-                                        metricTargetsEnum.eurosConsumption,
-                                        metricTargetsEnum.baseEuroConsumption,
-                                        metricTargetsEnum.euroPeakHourConsumption,
-                                        metricTargetsEnum.euroOffPeakConsumption,
-                                        metricTargetsEnum.subscriptionPrices,
-                                    ],
-                                    true,
-                                )
-                            }}
+                            onClick={onEuroClick}
                         >
                             <EuroIcon sx={{ width: 20, height: 20 }} />
                         </IconButton>
@@ -83,9 +71,7 @@ const EurosConsumptionButtonToggler = ({
                         },
                     }}
                     disabled={disabled}
-                    onClick={() => {
-                        removeTarget()
-                    }}
+                    onClick={onConsumptionClick}
                 >
                     <BoltIcon sx={{ width: 24, height: 24 }} />
                 </IconButton>

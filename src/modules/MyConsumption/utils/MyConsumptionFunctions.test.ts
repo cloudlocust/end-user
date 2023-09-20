@@ -14,7 +14,7 @@ import {
     getRangeV2,
     subtractTime,
     addTime,
-    getVisibleTargetCharts,
+    getDefaultConsumptionTargets,
     filterMetricsData,
 } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
 import { IMetric, metricIntervalType, metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
@@ -527,7 +527,7 @@ describe('addTime', () => {
     })
 })
 
-describe('getVisibleTargetCharts tests', () => {
+describe('getDefaultConsumptionTargets tests', () => {
     let enphaseOff = false
 
     beforeEach(() => {
@@ -536,7 +536,7 @@ describe('getVisibleTargetCharts tests', () => {
 
     test('when enphaseOff is true, it returns consumption metrics', () => {
         enphaseOff = true
-        const result = getVisibleTargetCharts(enphaseOff)
+        const result = getDefaultConsumptionTargets(enphaseOff)
         expect(result).toStrictEqual([
             metricTargetsEnum.consumption,
             metricTargetsEnum.baseConsumption,
@@ -546,7 +546,7 @@ describe('getVisibleTargetCharts tests', () => {
     })
 
     test('when enphase is false, , it returns auto conso w/ base consumption', () => {
-        const result = getVisibleTargetCharts(enphaseOff)
+        const result = getDefaultConsumptionTargets(enphaseOff)
 
         expect(result).toStrictEqual([metricTargetsEnum.autoconsumption, metricTargetsEnum.consumption])
     })

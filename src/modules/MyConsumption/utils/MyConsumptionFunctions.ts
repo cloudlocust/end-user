@@ -786,7 +786,7 @@ export function getRangeV2(period: PeriodEnum) {
  * @param isEnphaseOff Enphase state OFF.
  * @returns Metric targets list.
  */
-export const getVisibleTargetCharts = (isEnphaseOff: boolean): metricTargetType[] => {
+export const getDefaultConsumptionTargets = (isEnphaseOff: boolean): metricTargetType[] => {
     if (isEnphaseOff) {
         return [
             metricTargetsEnum.consumption,
