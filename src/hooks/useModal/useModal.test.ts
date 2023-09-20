@@ -1,6 +1,6 @@
 import { renderHook, act } from '@testing-library/react-hooks'
 import { waitFor } from '@testing-library/react'
-import useModal from 'src/hooks/useModal'
+import { useModal } from 'src/hooks/useModal'
 
 describe('useModal custom hook', () => {
     test('should initialize the state isOpen as false', () => {

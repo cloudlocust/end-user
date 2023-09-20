@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react'
-import Box from '@mui/material/Box'
 import Modal from '@mui/material/Modal'
 import IconButton from '@mui/material/IconButton'
 import Stepper from '@mui/material/Stepper'
@@ -8,13 +7,13 @@ import StepLabel from '@mui/material/StepLabel'
 import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
 import CloseIcon from '@mui/icons-material/Close'
-import InfosPage from 'src/modules/MyHouse/components/MicrowaveMeasurement/InfosPage'
+import { InfosPage } from 'src/modules/MyHouse/components/MicrowaveMeasurement/InfosPage'
+import { ConfigurationStep } from 'src/modules/MyHouse/components/MicrowaveMeasurement/ConfigurationStep'
+import { EquipmentStartupStep } from 'src/modules/MyHouse/components/MicrowaveMeasurement/EquipmentStartupStep'
 import {
     MicrowaveMeasurementProps,
     TestStepPageProps,
 } from 'src/modules/MyHouse/components/MicrowaveMeasurement/MicrowaveMeasurement.d'
-import ConfigurationStep from 'src/modules/MyHouse/components/MicrowaveMeasurement/ConfigurationStep'
-import EquipmentStartupStep from 'src/modules/MyHouse/components/MicrowaveMeasurement/EquipmentStartupStep'
 
 /**
  * TestStepPage component.
@@ -25,14 +24,14 @@ import EquipmentStartupStep from 'src/modules/MyHouse/components/MicrowaveMeasur
  * @returns The TestStepPage component.
  */
 const TestStepPage = ({ step, stepSetter }: TestStepPageProps) => (
-    <Box minHeight="300px" display="flex" flexDirection="column" justifyContent="center" alignItems="center" gap="60px">
+    <div className="min-h-360 flex flex-col justify-center items-center gap-40">
         <Typography variant="h4">Step {step}</Typography>
         {step !== 4 ? (
             <Button variant="contained" onClick={() => stepSetter(step + 1)}>
                 Next
             </Button>
         ) : null}
-    </Box>
+    </div>
 )
 
 /**
@@ -41,18 +40,31 @@ const TestStepPage = ({ step, stepSetter }: TestStepPageProps) => (
  * @param root0 N/A.
  * @param root0.modalIsOpen The state of the modal.
  * @param root0.closeModal Modal closing handler.
+ * @example
+ *  /// Use this MicrowaveMeasurement component with our useModal custom hook
+ *
+ *  const { isOpen, openModal, closeModal } = useModal()
+ *
+ *  return(
+ *      <div>
+ *          <Button onClick={openModal}>
+ *              Mesurer
+ *          </Button>
+ *          <MicrowaveMeasurement modalIsOpen={isOpen} closeModal={closeModal} />
+ *      </div>
+ *  )
  * @returns MicrowaveMeasurement component.
  */
-const MicrowaveMeasurement = ({ modalIsOpen, closeModal }: MicrowaveMeasurementProps) => {
+export const MicrowaveMeasurement = ({ modalIsOpen, closeModal }: MicrowaveMeasurementProps) => {
     const [currentStep, setCurrentStep] = useState(0)
     const [selectedMicrowave, setSelectedMicrowave] = useState('')
-    const [measuringMode, setMeasuringMode] = useState('')
+    const [measurementMode, setMeasurementMode] = useState('')
 
     useEffect(() => {
         if (!modalIsOpen) {
             setCurrentStep(0)
             setSelectedMicrowave('')
-            setMeasuringMode('')
+            setMeasurementMode('')
         }
     }, [modalIsOpen])
 
@@ -66,15 +78,7 @@ const MicrowaveMeasurement = ({ modalIsOpen, closeModal }: MicrowaveMeasurementP
                 alignItems: 'center',
             }}
         >
-            <Box
-                width="100%"
-                maxWidth="450px"
-                margin="10px"
-                padding="30px 20px"
-                borderRadius="20px"
-                position="relative"
-                bgcolor="white"
-            >
+            <div className="w-full max-w-400 m-7 px-14 py-20 rounded-12 relative bg-white">
                 {/* The closing button */}
                 <IconButton
                     aria-label="close"
@@ -100,7 +104,7 @@ const MicrowaveMeasurement = ({ modalIsOpen, closeModal }: MicrowaveMeasurementP
                     <InfosPage stepSetter={setCurrentStep} />
                 ) : (
                     <>
-                        <Box width="70%" margin="0 auto 20px">
+                        <div className="mt-0 mb-24 mx-auto" style={{ width: '70%' }}>
                             <Stepper activeStep={currentStep - 1}>
                                 <Step>
                                     <StepLabel />
@@ -115,19 +119,19 @@ const MicrowaveMeasurement = ({ modalIsOpen, closeModal }: MicrowaveMeasurementP
                                     <StepLabel />
                                 </Step>
                             </Stepper>
-                        </Box>
+                        </div>
                         {currentStep === 1 ? (
                             // Step 1
                             <ConfigurationStep
                                 selectedMicrowave={selectedMicrowave}
                                 setSelectedMicrowave={setSelectedMicrowave}
-                                measuringMode={measuringMode}
-                                setMeasuringMode={setMeasuringMode}
+                                measurementMode={measurementMode}
+                                setMeasurementMode={setMeasurementMode}
                                 stepSetter={setCurrentStep}
                             />
                         ) : currentStep === 2 ? (
                             // Step 2
-                            <EquipmentStartupStep testMode={measuringMode} stepSetter={setCurrentStep} />
+                            <EquipmentStartupStep measurementMode={measurementMode} stepSetter={setCurrentStep} />
                         ) : currentStep === 3 ? (
                             // Step 3
                             <TestStepPage step={currentStep} stepSetter={setCurrentStep} />
@@ -137,9 +141,7 @@ const MicrowaveMeasurement = ({ modalIsOpen, closeModal }: MicrowaveMeasurementP
                         ) : null}
                     </>
                 )}
-            </Box>
+            </div>
         </Modal>
     )
 }
-
-export default MicrowaveMeasurement

@@ -1,13 +1,14 @@
-import { render, screen, waitFor } from '@testing-library/react'
+import { screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import InfosPage from './index'
+import { reduxedRender } from 'src/common/react-platform-components/test'
+import { InfosPage } from 'src/modules/MyHouse/components/MicrowaveMeasurement/InfosPage'
 
 // Mock the function passed as a prop
 const mockStepSetter = jest.fn()
 
 describe('InfosPage Component', () => {
     test('renders header correctly', () => {
-        render(<InfosPage stepSetter={mockStepSetter} />)
+        reduxedRender(<InfosPage stepSetter={mockStepSetter} />)
 
         const headerText = screen.getByText("Mesure d'appareil")
         expect(headerText).toBeInTheDocument()
@@ -17,7 +18,7 @@ describe('InfosPage Component', () => {
     })
 
     test('renders test benefits and steps correctly', () => {
-        render(<InfosPage stepSetter={mockStepSetter} />)
+        reduxedRender(<InfosPage stepSetter={mockStepSetter} />)
 
         const benefitText = screen.getByText((content, _) => {
             return content.startsWith('Tester votre appareil vous permet de')
@@ -31,7 +32,7 @@ describe('InfosPage Component', () => {
     })
 
     test('calls stepSetter when the button Commencer is clicked', async () => {
-        render(<InfosPage stepSetter={mockStepSetter} />)
+        reduxedRender(<InfosPage stepSetter={mockStepSetter} />)
 
         const button = screen.getByText('Commencer')
         userEvent.click(button)

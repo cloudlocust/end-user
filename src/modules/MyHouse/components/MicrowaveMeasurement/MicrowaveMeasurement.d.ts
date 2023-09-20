@@ -68,11 +68,11 @@ export interface ConfigurationStepProps {
     /**
      * The state that hold the measurement mode.
      */
-    measuringMode: string
+    measurementMode: string
     /**
      * The setter associated to the measurement mode state.
      */
-    setMeasuringMode: Dispatch<SetStateAction<string>>
+    setMeasurementMode: Dispatch<SetStateAction<string>>
     /**
      * The setter linked to the state responsible for storing the current step.
      */
@@ -86,7 +86,7 @@ export interface EquipmentStartupStepProps {
     /**
      * The mode of the measurement test.
      */
-    testMode: string
+    measurementMode: string
     /**
      * The setter linked to the state responsible for storing the current step.
      */

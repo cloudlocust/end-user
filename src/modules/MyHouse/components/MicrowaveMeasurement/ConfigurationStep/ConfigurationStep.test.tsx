@@ -1,6 +1,7 @@
-import { render, screen, waitFor } from '@testing-library/react'
+import { screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import ConfigurationStep from './index'
+import { reduxedRender } from 'src/common/react-platform-components/test'
+import { ConfigurationStep } from 'src/modules/MyHouse/components/MicrowaveMeasurement/ConfigurationStep'
 
 // Mock Dispatch and StepSetterFunction
 const mockDispatch = jest.fn()
@@ -13,20 +14,20 @@ const grilOption = 'Grill'
 const defaultProps = {
     selectedMicrowave: '',
     setSelectedMicrowave: mockDispatch,
-    measuringMode: '',
-    setMeasuringMode: mockDispatch,
+    measurementMode: '',
+    setMeasurementMode: mockDispatch,
     stepSetter: mockStepSetter,
 }
 
 describe('ConfigurationStep Component', () => {
     test('renders header correctly', () => {
-        render(<ConfigurationStep {...defaultProps} />)
+        reduxedRender(<ConfigurationStep {...defaultProps} />)
         const headerText = screen.getByText('Configuration')
         expect(headerText).toBeInTheDocument()
     })
 
     test('renders select microwave dropdown correctly', () => {
-        render(<ConfigurationStep {...defaultProps} />)
+        reduxedRender(<ConfigurationStep {...defaultProps} />)
         const selectLabel = screen.getByText('Selectionner le micro-onde à mesurer')
         expect(selectLabel).toBeInTheDocument()
 
@@ -35,7 +36,7 @@ describe('ConfigurationStep Component', () => {
     })
 
     test('renders select measuring mode radio group correctly', () => {
-        render(<ConfigurationStep {...defaultProps} />)
+        reduxedRender(<ConfigurationStep {...defaultProps} />)
         const radioGroupLabel = screen.getByText('Selectionner le mode à mesurer')
         expect(radioGroupLabel).toBeInTheDocument()
 
@@ -49,15 +50,15 @@ describe('ConfigurationStep Component', () => {
     })
 
     test('renders warning message correctly', () => {
-        render(<ConfigurationStep {...defaultProps} />)
+        reduxedRender(<ConfigurationStep {...defaultProps} />)
 
         const warningMessage = screen.getByText('Attention à ne pas trop perturber le flux électrique durant le test')
         expect(warningMessage).toBeInTheDocument()
     })
 
-    test('calls setMeasuringMode when selections are made', async () => {
-        const measuringMode = stanOption
-        render(<ConfigurationStep {...defaultProps} measuringMode={measuringMode} />)
+    test('calls setMeasurementMode when selections are made', async () => {
+        const measurementMode = stanOption
+        reduxedRender(<ConfigurationStep {...defaultProps} measurementMode={measurementMode} />)
 
         // Assuming 'Standard' is selected initially
         const decongelationRadio = screen.getByText(decOption)
@@ -69,9 +70,13 @@ describe('ConfigurationStep Component', () => {
 
     test('calls stepSetter when the button Suivant is clicked with valid selections', async () => {
         const selectedMicrowave = 'micro-onde-1'
-        const measuringMode = stanOption
-        render(
-            <ConfigurationStep {...defaultProps} selectedMicrowave={selectedMicrowave} measuringMode={measuringMode} />,
+        const measurementMode = stanOption
+        reduxedRender(
+            <ConfigurationStep
+                {...defaultProps}
+                selectedMicrowave={selectedMicrowave}
+                measurementMode={measurementMode}
+            />,
         )
         const button = screen.getByText('Suivant')
         userEvent.click(button)
@@ -83,7 +88,7 @@ describe('ConfigurationStep Component', () => {
     })
 
     test('disables the button Suivant when selections are not valid', () => {
-        render(<ConfigurationStep {...defaultProps} />)
+        reduxedRender(<ConfigurationStep {...defaultProps} />)
         const button = screen.getByText('Suivant')
         expect(button).toBeDisabled()
     })

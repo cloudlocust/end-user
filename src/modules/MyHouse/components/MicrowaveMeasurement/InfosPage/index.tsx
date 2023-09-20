@@ -1,6 +1,7 @@
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import Button from '@mui/material/Button'
+import { useIntl } from 'react-intl'
 import {
     CustomOrderedListItemProps,
     CustomUnorderedListItemProps,
@@ -16,7 +17,7 @@ import {
  */
 const CustomUnorderedListItem = ({ children }: CustomUnorderedListItemProps) => {
     return (
-        <Box display="flex" gap="10px" marginTop="5px">
+        <div className="flex gap-7 mt-4">
             <Box
                 height="8px"
                 width="8px"
@@ -26,7 +27,7 @@ const CustomUnorderedListItem = ({ children }: CustomUnorderedListItemProps) => 
                 sx={{ transform: 'translateY(5px)' }}
             />
             <Typography>{children}</Typography>
-        </Box>
+        </div>
     )
 }
 
@@ -40,12 +41,12 @@ const CustomUnorderedListItem = ({ children }: CustomUnorderedListItemProps) => 
  */
 const CustomOrderedListItem = ({ children, index }: CustomOrderedListItemProps) => {
     return (
-        <Box display="flex" gap="10px" marginTop="5px">
+        <div className="flex gap-7 mt-4">
             <Typography width="8px" textAlign="right">
                 {index}.
             </Typography>
             <Typography>{children}</Typography>
-        </Box>
+        </div>
     )
 }
 
@@ -56,18 +57,41 @@ const CustomOrderedListItem = ({ children, index }: CustomOrderedListItemProps) 
  * @param root0.stepSetter The setter linked to the state responsible for storing the current step.
  * @returns The InfosPage component.
  */
-const InfosPage = ({ stepSetter }: InfosPageProps) => {
+export const InfosPage = ({ stepSetter }: InfosPageProps) => {
+    const { formatMessage } = useIntl()
+
     const testBenefits = [
-        'Vérifier l’état de votre appareil',
-        'Comparer votre utilisation à celui des autres utilisateurs',
-        'Alimenter la rubrique “Conseils”',
+        formatMessage({
+            id: 'Vérifier l’état de votre appareil',
+            defaultMessage: 'Vérifier l’état de votre appareil',
+        }),
+        formatMessage({
+            id: 'Comparer votre utilisation à celui des autres utilisateurs',
+            defaultMessage: 'Comparer votre utilisation à celui des autres utilisateurs',
+        }),
+        formatMessage({
+            id: 'Alimenter la rubrique “Conseils”',
+            defaultMessage: 'Alimenter la rubrique “Conseils”',
+        }),
     ]
 
     const testSteps = [
-        'Selection de l’appareil et du mode à tester',
-        'Mise en marche de l’appareil',
-        'Visualisation en direct des résultats',
-        'Analyse des résultats',
+        formatMessage({
+            id: 'Selection de l’appareil et du mode à tester',
+            defaultMessage: 'Selection de l’appareil et du mode à tester',
+        }),
+        formatMessage({
+            id: 'Mise en marche de l’appareil',
+            defaultMessage: 'Mise en marche de l’appareil',
+        }),
+        formatMessage({
+            id: 'Visualisation en direct des résultats',
+            defaultMessage: 'Visualisation en direct des résultats',
+        }),
+        formatMessage({
+            id: 'Analyse des résultats',
+            defaultMessage: 'Analyse des résultats',
+        }),
     ]
 
     /**
@@ -78,54 +102,73 @@ const InfosPage = ({ stepSetter }: InfosPageProps) => {
     }
 
     return (
-        <Box>
+        <>
             {/* Header */}
-            <Box textAlign="center" marginBottom="20px">
+            <div className="text-center mb-20">
                 <Typography component="h2" fontWeight="500" fontSize="18px">
-                    Mesure d'appareil
+                    {formatMessage({
+                        id: "Mesure d'appareil",
+                        defaultMessage: "Mesure d'appareil",
+                    })}
                 </Typography>
                 <Typography component="h2" fontWeight="500" fontSize="18px" color="primary">
-                    Micro Onde
+                    {formatMessage({
+                        id: 'Micro Onde',
+                        defaultMessage: 'Micro Onde',
+                    })}
                 </Typography>
-            </Box>
+            </div>
 
             {/* Content */}
-            <Box>
+            <div>
                 {/* The test benefits */}
-                <Box marginBottom="25px">
-                    <Typography fontWeight="500">Tester votre appareil vous permet de&nbsp;:</Typography>
-                    <Box paddingLeft="20px">
+                <div className="mb-20">
+                    <Typography fontWeight="500">
+                        {formatMessage({
+                            id: 'Tester votre appareil vous permet de',
+                            defaultMessage: 'Tester votre appareil vous permet de',
+                        })}
+                        &nbsp;:
+                    </Typography>
+                    <div className="pl-20">
                         {testBenefits.map((item, i) => (
                             <CustomUnorderedListItem key={i}>{item}</CustomUnorderedListItem>
                         ))}
-                    </Box>
-                </Box>
+                    </div>
+                </div>
 
                 {/* The test steps */}
-                <Box marginBottom="25px">
-                    <Typography fontWeight="500">Le test se déroule en 4 étapes&nbsp;:</Typography>
-                    <Box paddingLeft="20px">
+                <div className="mb-20">
+                    <Typography fontWeight="500">
+                        {formatMessage({
+                            id: 'Le test se déroule en 4 étapes',
+                            defaultMessage: 'Le test se déroule en 4 étapes',
+                        })}
+                        &nbsp;:
+                    </Typography>
+                    <div className="pl-20">
                         {testSteps.map((item, i) => (
                             <CustomOrderedListItem index={i + 1} key={i}>
                                 {item}
                             </CustomOrderedListItem>
                         ))}
-                    </Box>
-                </Box>
+                    </div>
+                </div>
 
                 {/* The test starting button */}
-                <Box display="flex" justifyContent="center">
+                <div className="flex justify-center">
                     <Button
                         variant="contained"
                         sx={{ padding: '10px auto', textAlign: 'center', width: '60%', minWidth: '160px' }}
                         onClick={handleBtnClick}
                     >
-                        Commencer
+                        {formatMessage({
+                            id: 'Commencer',
+                            defaultMessage: 'Commencer',
+                        })}
                     </Button>
-                </Box>
-            </Box>
-        </Box>
+                </div>
+            </div>
+        </>
     )
 }
-
-export default InfosPage

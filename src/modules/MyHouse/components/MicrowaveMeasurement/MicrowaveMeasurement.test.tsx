@@ -1,13 +1,14 @@
-import { render, screen, waitFor } from '@testing-library/react'
+import { screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import MicrowaveMeasurement from './index'
+import { reduxedRender } from 'src/common/react-platform-components/test'
+import { MicrowaveMeasurement } from 'src/modules/MyHouse/components/MicrowaveMeasurement'
 
 describe('MicrowaveMeasurement', () => {
     test('renders the component and interacts with it', async () => {
         // Mock modal close functions
         const closeModal = jest.fn()
 
-        render(<MicrowaveMeasurement modalIsOpen={true} closeModal={closeModal} />)
+        reduxedRender(<MicrowaveMeasurement modalIsOpen={true} closeModal={closeModal} />)
 
         // Close modal
         userEvent.click(screen.getByRole('button', { name: 'close' }))

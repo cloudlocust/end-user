@@ -1,4 +1,3 @@
-import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import FormControl from '@mui/material/FormControl'
 import InputLabel from '@mui/material/InputLabel'
@@ -8,6 +7,7 @@ import Button from '@mui/material/Button'
 import WarningRoundedIcon from '@mui/icons-material/WarningRounded'
 import CustomRadioGroup from 'src/modules/shared/CustomRadioGroup/CustomRadioGroup'
 import CustomRadioButton from 'src/modules/shared/CustomRadioButton/CustomRadioButton'
+import { useIntl } from 'react-intl'
 import {
     ConfigurationStepProps,
     RadioGroupOnChangeHandler,
@@ -20,18 +20,20 @@ import {
  * @param root0 N/A.
  * @param root0.selectedMicrowave The state that hold the selected microwave.
  * @param root0.setSelectedMicrowave The setter associated to the selected microwave state.
- * @param root0.measuringMode The state that hold the measurement mode.
- * @param root0.setMeasuringMode The setter associated to the measurement mode state.
+ * @param root0.measurementMode The state that hold the measurement mode.
+ * @param root0.setMeasurementMode The setter associated to the measurement mode state.
  * @param root0.stepSetter The setter linked to the state responsible for storing the current step.
  * @returns The ConfigurationStep component.
  */
-const ConfigurationStep = ({
+export const ConfigurationStep = ({
     selectedMicrowave,
     setSelectedMicrowave,
-    measuringMode,
-    setMeasuringMode,
+    measurementMode,
+    setMeasurementMode,
     stepSetter,
 }: ConfigurationStepProps) => {
+    const { formatMessage } = useIntl()
+
     /**
      * The select onChange handler function.
      *
@@ -47,7 +49,7 @@ const ConfigurationStep = ({
      * @param v The new value after the change.
      */
     const handleRadioGroupChange: RadioGroupOnChangeHandler = (v) => {
-        setMeasuringMode(v)
+        setMeasurementMode(v)
     }
 
     /**
@@ -57,44 +59,63 @@ const ConfigurationStep = ({
         stepSetter(2)
     }
 
+    const monEquipementStr = 'Mon équipement'
+
     return (
-        <Box>
+        <>
             {/* Header */}
-            <Box textAlign="center" marginBottom="20px">
+            <div className="text-center mb-20">
                 <Typography component="h2" fontWeight="500" fontSize="18px" color="primary">
-                    Configuration
+                    {formatMessage({
+                        id: 'Configuration',
+                        defaultMessage: 'Configuration',
+                    })}
                 </Typography>
-            </Box>
+            </div>
 
             {/* Content */}
-            <Box>
+            <div>
                 {/* Select the microwave */}
-                <Box marginBottom="20px">
+                <div className="mb-20">
                     <Typography marginBottom="15px" fontWeight="500">
-                        Selectionner le micro-onde à mesurer
+                        {formatMessage({
+                            id: 'Selectionner le micro-onde à mesurer',
+                            defaultMessage: 'Selectionner le micro-onde à mesurer',
+                        })}
                     </Typography>
                     <FormControl fullWidth>
-                        <InputLabel id="microwave-select-label">Mon équipement</InputLabel>
+                        <InputLabel id="microwave-select-label">
+                            {formatMessage({
+                                id: monEquipementStr,
+                                defaultMessage: monEquipementStr,
+                            })}
+                        </InputLabel>
                         <Select
                             labelId="microwave-select-label"
                             id="microwave-select"
                             value={selectedMicrowave}
-                            label="Mon équipement"
+                            label={formatMessage({
+                                id: monEquipementStr,
+                                defaultMessage: monEquipementStr,
+                            })}
                             onChange={handleSelectMicrowaveChange}
                         >
                             <MenuItem value="micro-onde-1">Micro-onde 1</MenuItem>
                             <MenuItem value="micro-onde-2">Micro-onde 2</MenuItem>
                         </Select>
                     </FormControl>
-                </Box>
+                </div>
 
                 {/* Select the microwave */}
-                <Box marginBottom="30px">
+                <div className="mb-20">
                     <Typography marginBottom="15px" fontWeight="500">
-                        Selectionner le mode à mesurer
+                        {formatMessage({
+                            id: 'Selectionner le mode à mesurer',
+                            defaultMessage: 'Selectionner le mode à mesurer',
+                        })}
                     </Typography>
                     <CustomRadioGroup
-                        defaultValue={measuringMode}
+                        defaultValue={measurementMode}
                         onValueChange={handleRadioGroupChange}
                         display="flex"
                         justifyContent="space-between"
@@ -109,28 +130,34 @@ const ConfigurationStep = ({
                         <CustomRadioButton value="Décongélation" label="Décongélation" />
                         <CustomRadioButton value="Grill" label="Grill" />
                     </CustomRadioGroup>
-                </Box>
+                </div>
 
                 {/* Warning */}
-                <Box display="flex" alignItems="center" gap="10px" marginBottom="20px">
+                <div className="flex items-center gap-7 mb-20">
                     <WarningRoundedIcon fontSize="large" color="secondary" />
-                    <Typography>Attention à ne pas trop perturber le flux électrique durant le test</Typography>
-                </Box>
+                    <Typography>
+                        {formatMessage({
+                            id: 'Attention à ne pas trop perturber le flux électrique durant le test',
+                            defaultMessage: 'Attention à ne pas trop perturber le flux électrique durant le test',
+                        })}
+                    </Typography>
+                </div>
 
                 {/* The test starting button */}
-                <Box display="flex" justifyContent="center">
+                <div className="flex justify-center">
                     <Button
                         variant="contained"
                         sx={{ padding: '10px auto', textAlign: 'center', width: '60%', minWidth: '160px' }}
                         onClick={handleBtnClick}
-                        disabled={!selectedMicrowave || !measuringMode}
+                        disabled={!selectedMicrowave || !measurementMode}
                     >
-                        Suivant
+                        {formatMessage({
+                            id: 'Suivant',
+                            defaultMessage: 'Suivant',
+                        })}
                     </Button>
-                </Box>
-            </Box>
-        </Box>
+                </div>
+            </div>
+        </>
     )
 }
-
-export default ConfigurationStep

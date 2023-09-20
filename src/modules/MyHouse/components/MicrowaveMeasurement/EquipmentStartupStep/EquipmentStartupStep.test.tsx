@@ -1,27 +1,28 @@
-import { render, screen, waitFor } from '@testing-library/react'
+import { screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import EquipmentStartupStep from './index'
+import { reduxedRender } from 'src/common/react-platform-components/test'
+import { EquipmentStartupStep } from 'src/modules/MyHouse/components/MicrowaveMeasurement/EquipmentStartupStep'
 
 const mockStepSetter = jest.fn()
 
 const props = {
-    testMode: 'Test Mode',
+    measurementMode: 'Measurement Mode',
     stepSetter: mockStepSetter,
 }
 
 describe('EquipmentStartupStep Component', () => {
     test('renders correctly', () => {
-        render(<EquipmentStartupStep {...props} />)
+        reduxedRender(<EquipmentStartupStep {...props} />)
 
         // Check if the component renders the header correctly
-        const testModeText = screen.getByText((content, _) => {
+        const measurementModeText = screen.getByText((content, _) => {
             return content.startsWith("Mettez en marche l'appareil sur le mode")
         })
-        const testModeValue = screen.getByText((content, _) => {
-            return content.startsWith('Test Mode')
+        const measurementModeValue = screen.getByText((content, _) => {
+            return content.startsWith('Measurement Mode')
         })
-        expect(testModeText).toBeInTheDocument()
-        expect(testModeValue).toBeInTheDocument()
+        expect(measurementModeText).toBeInTheDocument()
+        expect(measurementModeValue).toBeInTheDocument()
 
         // Check if the button Commencer la mesure is displayed
         const startButton = screen.getByRole('button', { name: 'Commencer la mesure' })
@@ -29,7 +30,7 @@ describe('EquipmentStartupStep Component', () => {
     })
 
     test('calls stepSetter when the button Commencer la mesure is clicked', async () => {
-        render(<EquipmentStartupStep {...props} />)
+        reduxedRender(<EquipmentStartupStep {...props} />)
 
         const startButton = screen.getByRole('button', { name: 'Commencer la mesure' })
         userEvent.click(startButton)

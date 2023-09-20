@@ -4,9 +4,24 @@ import { ModalState } from 'src/hooks/useModal/useModal.d'
 /**
  * Hook to manage modal state.
  *
+ * @example
+ *  // Using it with MUI Modal Component
+ *
+ *  const { isOpen, openModal, closeModal } = useModal()
+ *
+ *  return(
+ *      <div>
+ *          <Button onClick={openModal}>
+ *              Show modal
+ *          </Button>
+ *          <Modal open={isOpen} onClose={closeModal}>
+ *              modal content
+ *          </Modal>
+ *      </div>
+ *  )
  * @returns Modal state.
  */
-const useModal: () => ModalState = () => {
+export const useModal: () => ModalState = () => {
     const [isOpen, setIsOpen] = useState(false)
 
     /**
@@ -29,5 +44,3 @@ const useModal: () => ModalState = () => {
         closeModal,
     }
 }
-
-export default useModal
