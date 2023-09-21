@@ -1,5 +1,5 @@
 import { IEnedisSgeConsent, IEnphaseConsent } from 'src/modules/Consents/Consents.d'
-import { metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
+import { metricTargetType } from 'src/modules/Metrics/Metrics'
 
 /**
  * Interface MyConsumptionPeriod.
@@ -106,6 +106,7 @@ export type dateFnsPeriod = 'seconds' | 'hours' | 'minutes' | 'days' | 'weeks' |
  * Type for views in MobileDatePicker.
  */
 export type ViewsType = 'day' | 'month' | 'year'
+
 /**
  * Interface for TargetButtonGroup.
  */
@@ -113,15 +114,19 @@ interface ITargetMenuGroup {
     /**
      * RemoveTarget.
      */
-    removeTarget: () => void
+    removeTargets: () => void
     /**
      * AddTarget.
      */
-    addTarget: (targets: metricTarget[]) => void
+    addTargets: (targets: metricTargetType[]) => void
     /**
      * If hidePmax exists Pmax button will be disabled.
      */
     hidePmax: boolean
+    /**
+     * Indicates which button is active.
+     */
+    activeButton: string
 }
 
 /**
@@ -131,13 +136,13 @@ export type EurosConsumptionButtonTogglerProps =
     // eslint-disable-next-line jsdoc/require-jsdoc
     {
         /**
-         * RemoveTarget.
+         * Handler when clicking on EuroButton.
          */
-        removeTarget: () => void
+        onEuroClick: () => void
         /**
-         * AddTarget.
+         * Handler when clicking on ConsumptionButton.
          */
-        addTarget: (targets: metricTargetsEnum[], isEuroChart?: boolean) => void
+        onConsumptionClick: () => void
         /**
          * Indicate eurosConsumption or consumption IconButton to be shown.
          */
@@ -147,7 +152,6 @@ export type EurosConsumptionButtonTogglerProps =
          */
         disabled?: boolean
     }
-
 /**
  * Interface for SwitchIdleConsumptionProps.
  */
