@@ -35,7 +35,7 @@ export interface CustomOrderedListItemProps {
     /**
      * The order of the item list.
      */
-    index: number
+    order: number
 }
 
 /**

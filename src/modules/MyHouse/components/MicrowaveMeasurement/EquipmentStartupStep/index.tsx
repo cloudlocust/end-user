@@ -4,6 +4,7 @@ import SvgIcon from '@mui/material/SvgIcon'
 import { ReactComponent as ConnectEquipmentIcon } from 'src/assets/images/content/housing/ConnectEquipment.svg'
 import { useIntl } from 'react-intl'
 import { EquipmentStartupStepProps } from 'src/modules/MyHouse/components/MicrowaveMeasurement/MicrowaveMeasurement'
+import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 
 /**
  * ConfigurationStep component.
@@ -47,13 +48,9 @@ export const EquipmentStartupStep = ({ measurementMode, stepSetter }: EquipmentS
                 </div>
 
                 {/* Description */}
-                <Typography textAlign="center" marginBottom="20px">
-                    {formatMessage({
-                        id: 'Une fois l’appreil mis en marche, appuyez sur “Commencer la mesure” pour débuter le test',
-                        defaultMessage:
-                            'Une fois l’appreil mis en marche, appuyez sur “Commencer la mesure” pour débuter le test',
-                    })}
-                </Typography>
+                <TypographyFormatMessage textAlign="center" marginBottom="20px">
+                    Une fois l’appreil mis en marche, appuyez sur “Commencer la mesure” pour débuter le test
+                </TypographyFormatMessage>
 
                 {/* The measurement starting button */}
                 <div className="flex justify-center">

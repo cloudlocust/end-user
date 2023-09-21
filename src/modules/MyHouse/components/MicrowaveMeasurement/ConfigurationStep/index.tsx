@@ -36,19 +36,19 @@ export const ConfigurationStep = ({
     /**
      * The select onChange handler function.
      *
-     * @param e The onChange event.
+     * @param event The onChange event.
      */
-    const handleSelectMicrowaveChange: SelectOnChangeHandler = (e) => {
-        setSelectedMicrowave(e.target.value)
+    const handleSelectMicrowaveChange: SelectOnChangeHandler = (event) => {
+        setSelectedMicrowave(event.target.value)
     }
 
     /**
      * The radio group onChange handler function.
      *
-     * @param v The new value after the change.
+     * @param value The new value after the change.
      */
-    const handleRadioGroupChange: RadioGroupOnChangeHandler = (v) => {
-        setMeasurementMode(v)
+    const handleRadioGroupChange: RadioGroupOnChangeHandler = (value) => {
+        setMeasurementMode(value)
     }
 
     /**

@@ -7,6 +7,7 @@ import {
     CustomUnorderedListItemProps,
     InfosPageProps,
 } from 'src/modules/MyHouse/components/MicrowaveMeasurement/MicrowaveMeasurement.d'
+import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 
 /**
  * CustomUnorderedListItem component.
@@ -26,7 +27,7 @@ const CustomUnorderedListItem = ({ children }: CustomUnorderedListItemProps) => 
                 flexShrink="0"
                 sx={{ transform: 'translateY(5px)' }}
             />
-            <Typography>{children}</Typography>
+            {children}
         </div>
     )
 }
@@ -36,16 +37,16 @@ const CustomUnorderedListItem = ({ children }: CustomUnorderedListItemProps) => 
  *
  * @param root0 N/A.
  * @param root0.children Children elements of the list item.
- * @param root0.index The order of the item list.
+ * @param root0.order The order of the item list.
  * @returns The CustomOrderedListItem component.
  */
-const CustomOrderedListItem = ({ children, index }: CustomOrderedListItemProps) => {
+const CustomOrderedListItem = ({ children, order }: CustomOrderedListItemProps) => {
     return (
         <div className="flex gap-7 mt-4">
             <Typography width="8px" textAlign="right">
-                {index}.
+                {order}.
             </Typography>
-            <Typography>{children}</Typography>
+            {children}
         </div>
     )
 }
@@ -61,37 +62,16 @@ export const InfosPage = ({ stepSetter }: InfosPageProps) => {
     const { formatMessage } = useIntl()
 
     const testBenefits = [
-        formatMessage({
-            id: 'Vérifier l’état de votre appareil',
-            defaultMessage: 'Vérifier l’état de votre appareil',
-        }),
-        formatMessage({
-            id: 'Comparer votre utilisation à celui des autres utilisateurs',
-            defaultMessage: 'Comparer votre utilisation à celui des autres utilisateurs',
-        }),
-        formatMessage({
-            id: 'Alimenter la rubrique “Conseils”',
-            defaultMessage: 'Alimenter la rubrique “Conseils”',
-        }),
+        'Vérifier l’état de votre appareil',
+        'Comparer votre utilisation à celui des autres utilisateurs',
+        'Alimenter la rubrique “Conseils”',
     ]
 
     const testSteps = [
-        formatMessage({
-            id: 'Selection de l’appareil et du mode à tester',
-            defaultMessage: 'Selection de l’appareil et du mode à tester',
-        }),
-        formatMessage({
-            id: 'Mise en marche de l’appareil',
-            defaultMessage: 'Mise en marche de l’appareil',
-        }),
-        formatMessage({
-            id: 'Visualisation en direct des résultats',
-            defaultMessage: 'Visualisation en direct des résultats',
-        }),
-        formatMessage({
-            id: 'Analyse des résultats',
-            defaultMessage: 'Analyse des résultats',
-        }),
+        'Selection de l’appareil et du mode à tester',
+        'Mise en marche de l’appareil',
+        'Visualisation en direct des résultats',
+        'Analyse des résultats',
     ]
 
     /**
@@ -123,33 +103,29 @@ export const InfosPage = ({ stepSetter }: InfosPageProps) => {
             <div>
                 {/* The measurement benefits */}
                 <div className="mb-20">
-                    <Typography fontWeight="500">
-                        {formatMessage({
-                            id: 'Tester votre appareil vous permet de',
-                            defaultMessage: 'Tester votre appareil vous permet de',
-                        })}
-                        &nbsp;:
-                    </Typography>
+                    <TypographyFormatMessage display="inline" fontWeight="500">
+                        Tester votre appareil vous permet de
+                    </TypographyFormatMessage>
+                    &nbsp;:
                     <div className="pl-20">
-                        {testBenefits.map((item, i) => (
-                            <CustomUnorderedListItem key={i}>{item}</CustomUnorderedListItem>
+                        {testBenefits.map((item, index) => (
+                            <CustomUnorderedListItem key={index}>
+                                <TypographyFormatMessage>{item}</TypographyFormatMessage>
+                            </CustomUnorderedListItem>
                         ))}
                     </div>
                 </div>
 
                 {/* The measurement steps */}
                 <div className="mb-20">
-                    <Typography fontWeight="500">
-                        {formatMessage({
-                            id: 'Le test se déroule en 4 étapes',
-                            defaultMessage: 'Le test se déroule en 4 étapes',
-                        })}
-                        &nbsp;:
-                    </Typography>
+                    <TypographyFormatMessage display="inline" fontWeight="500">
+                        Le test se déroule en 4 étapes
+                    </TypographyFormatMessage>
+                    &nbsp;:
                     <div className="pl-20">
-                        {testSteps.map((item, i) => (
-                            <CustomOrderedListItem index={i + 1} key={i}>
-                                {item}
+                        {testSteps.map((item, index) => (
+                            <CustomOrderedListItem order={index + 1} key={index}>
+                                <TypographyFormatMessage>{item}</TypographyFormatMessage>
                             </CustomOrderedListItem>
                         ))}
                     </div>
