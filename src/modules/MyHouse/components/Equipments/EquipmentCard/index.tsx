@@ -13,7 +13,7 @@ import { getEquipmentIconPath } from 'src/modules/MyHouse/utils/MyHouseVariables
  */
 export const EquipmentCard = ({ name, type, number }: EquipmentCardProps) => {
     return (
-        <Card className="rounded-16 border border-slate-600 w-full md:w-1/2 lg:w-1/3 h-96">
+        <Card className="rounded-16 border border-slate-600 w-full md:w-1/2 lg:w-1/3 h-96" data-testid="equipment-item">
             <CardContent className="flex justify-between flex-row">
                 <img src={getEquipmentIconPath(name)} alt="equipment-icon" />
                 <div>

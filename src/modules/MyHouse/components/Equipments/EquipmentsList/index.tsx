@@ -20,18 +20,17 @@ export const EquipmentsList = ({ equipmentsList, loadingEquipmentInProgress }: E
         )
 
     // Map equipmentsList into a better readable list.
-    const equipments = equipmentsList
-        ?.map((element) => {
-            return {
-                id: element.equipmentId,
-                name: element.equipment.name,
-                allowedType: element.equipment.allowedType,
-                number: element.equipmentNumber,
-                type: element.equipmentType!,
-            }
-        })
-        .filter((element) => (element.number ? element.number > 0 : null))
-
+    // TODO: filter list to have only those who has value
+    const equipments = equipmentsList?.map((element) => {
+        return {
+            id: element.equipmentId,
+            name: element.equipment.name,
+            allowedType: element.equipment.allowedType,
+            number: element.equipmentNumber,
+            type: element.equipmentType!,
+        }
+    })
+    // .filter((element) => (element.number ? element.number > 0 : null))
     // Order the equipments list from the largest to the smallest.
     const orderedEquipmentsList = orderBy(equipments, (el) => el.number, 'desc')
 
