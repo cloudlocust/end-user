@@ -18,6 +18,7 @@ import { TempoAlerts } from 'src/modules/Alerts/components/TempoAlerts'
 import { useContractList } from 'src/modules/Contracts/contractsHook'
 import SvgIcon from '@mui/material/SvgIcon'
 import { manualContractFillingIsEnabled } from 'src/modules/MyHouse/MyHouseConfig'
+import PowerMaxAlert from './components/PowerMaxAlert'
 
 /**
  * Alerts Drawer component contains all the alerts.
@@ -38,6 +39,7 @@ export const AlertsContent = () => {
         novuAlertPreferences,
         isLoadingInProgress: isNovuAlertPreferencesLoading,
         updateNovuAlertPreferences,
+        getNovuAlertPreferences,
     } = useNovuAlertPreferences(currentHousing?.id ?? null)
 
     /**
@@ -145,6 +147,25 @@ export const AlertsContent = () => {
                     initialAlertPreferencesValues={getChannelPreferencesByInterval('month', novuAlertPreferences!)}
                     updateNovuAlertPreferences={updateNovuAlertPreferences}
                     isNovuAlertPreferencesLoading={isNovuAlertPreferencesLoading}
+                />
+                <PowerMaxAlert
+                    initialSwitchValues={
+                        novuAlertPreferences
+                            ? {
+                                  push: {
+                                      key: 'isPushPowerMax',
+                                      value: novuAlertPreferences.isPushPowerMax ?? false,
+                                  },
+                                  email: {
+                                      key: 'isEmailPowerMax',
+                                      value: novuAlertPreferences.isEmailPowerMax ?? false,
+                                  },
+                              }
+                            : undefined
+                    }
+                    updateNovuAlertPreferences={updateNovuAlertPreferences}
+                    isNovuAlertPreferencesLoading={isNovuAlertPreferencesLoading}
+                    onAfterUpdate={getNovuAlertPreferences}
                 />
                 <EcowattAlerts />
                 {currentContract?.tariffType.name === 'Jour Tempo' && <TempoAlerts />}
