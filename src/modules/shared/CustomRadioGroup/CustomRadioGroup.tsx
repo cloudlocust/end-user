@@ -26,7 +26,7 @@ export const CustomRadioGroup = ({
      *
      * @param v The value of the radio button clicked.
      */
-    const handleRadioBtnClick: (v: string) => void = (v) => {
+    const handleRadioBtnClick = (v: string) => {
         setSelectedValue(v)
         if (onValueChange) {
             onValueChange(v)
