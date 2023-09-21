@@ -6,7 +6,6 @@ import 'src/modules/MyConsumption/components/MyConsumptionChart/MyConsumptionCha
 import { convertMetricsDataToApexChartsDateTimeAxisValues } from 'src/modules/MyConsumption/utils/apexChartsDataConverter'
 import { getApexChartMyConsumptionProps } from 'src/modules/MyConsumption/utils/apexChartsMyConsumptionOptions'
 import { MyConsumptionChartProps } from 'src/modules/MyConsumption/myConsumptionTypes'
-import { fillApexChartsDatetimeSeriesMissingValues } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
 import { CircularProgress } from '@mui/material'
 import useMediaQuery from '@mui/material/useMediaQuery'
 
@@ -56,11 +55,7 @@ const MyConsumptionChart = ({
     // The fillApexChartsDatetimeSeriesMissingValues checks if there are missing datapoints.
     const reactApexChartsProps = useMemo(() => {
         if (isDataChanged.current) {
-            let ApexChartsAxisValues: ApexAxisChartSeries = convertMetricsDataToApexChartsDateTimeAxisValues(
-                data,
-                chartType === 'consumption' ? period : undefined,
-            )
-            ApexChartsAxisValues = fillApexChartsDatetimeSeriesMissingValues(ApexChartsAxisValues, period, range)
+            let ApexChartsAxisValues: ApexAxisChartSeries = convertMetricsDataToApexChartsDateTimeAxisValues(data)
             const apexChartsProps = getApexChartMyConsumptionProps({
                 yAxisSeries: ApexChartsAxisValues,
                 period,
@@ -96,18 +91,7 @@ const MyConsumptionChart = ({
             }
             return apexChartsProps
         }
-    }, [
-        data,
-        chartType,
-        period,
-        range,
-        formatMessage,
-        theme,
-        isStackedEnabled,
-        chartLabel,
-        metricsInterval,
-        enphaseOff,
-    ])
+    }, [data, chartType, period, formatMessage, theme, isStackedEnabled, chartLabel, metricsInterval, enphaseOff])
 
     return (
         <div

@@ -14,8 +14,8 @@ import {
     getRangeV2,
     subtractTime,
     addTime,
-    getVisibleTargetCharts,
-    getTotalOffIdleConsumptionData,
+    getDefaultConsumptionTargets,
+    filterMetricsData,
 } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
 import { IMetric, metricIntervalType, metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
 import { FAKE_WEEK_DATA, FAKE_DAY_DATA, FAKE_MONTH_DATA, FAKE_YEAR_DATA } from 'src/mocks/handlers/metrics'
@@ -142,7 +142,7 @@ describe('test pure functions', () => {
         interval = '1M'
         xAxisValues = generateXAxisValues('yearly', getRange('year'))
         // If interval is 1d and period is yearly , then length should be 13 because we start from the current month till the month of next year.
-        expect(xAxisValues).toHaveLength(13)
+        expect(xAxisValues).toHaveLength(12)
     })
 
     test('fillApexChartsAxisMissingValues test with different cases', async () => {
@@ -155,8 +155,8 @@ describe('test pure functions', () => {
             'yearly',
             fakeYearRange,
         )
-        expect(ApexChartsFilledAxisValues.xAxisSeries[0]).toHaveLength(13)
-        expect(ApexChartsFilledAxisValues.yAxisSeries[0].data).toHaveLength(13)
+        expect(ApexChartsFilledAxisValues.xAxisSeries[0]).toHaveLength(12)
+        expect(ApexChartsFilledAxisValues.yAxisSeries[0].data).toHaveLength(12)
         expect(ApexChartsFilledAxisValues.yAxisSeries[0].data[0]).toEqual(MOCK_YEAR_MISSING_DATA[0][0])
         expect(ApexChartsFilledAxisValues.yAxisSeries[0].data[1]).toEqual(MOCK_YEAR_MISSING_DATA[1][0])
         expect(ApexChartsFilledAxisValues.yAxisSeries[0].data[2]).toBeNull()
@@ -169,7 +169,6 @@ describe('test pure functions', () => {
         expect(ApexChartsFilledAxisValues.yAxisSeries[0].data[9]).toBeNull()
         expect(ApexChartsFilledAxisValues.yAxisSeries[0].data[10]).toBeNull()
         expect(ApexChartsFilledAxisValues.yAxisSeries[0].data[11]).toEqual(MOCK_YEAR_MISSING_DATA[2][0])
-        expect(ApexChartsFilledAxisValues.yAxisSeries[0].data[12]).toBeNull()
 
         // When yAxisSeries is empty nothing should changes
         apexChartsMissingValues = convertMetricsDataToApexChartsAxisValues([])
@@ -188,7 +187,7 @@ describe('test pure functions', () => {
             'yearly',
             fakeYearRange,
         )
-        expect(ApexChartsDatetimeFilledValues[0].data).toHaveLength(13)
+        expect(ApexChartsDatetimeFilledValues[0].data).toHaveLength(12)
         expect((ApexChartsDatetimeFilledValues[0].data[0] as [number, number])[1]).toEqual(MOCK_YEAR_MISSING_DATA[0][0])
         expect((ApexChartsDatetimeFilledValues[0].data[1] as [number, number])[1]).toEqual(MOCK_YEAR_MISSING_DATA[1][0])
         expect((ApexChartsDatetimeFilledValues[0].data[2] as [number, number])[1]).toBeNull()
@@ -203,7 +202,6 @@ describe('test pure functions', () => {
         expect((ApexChartsDatetimeFilledValues[0].data[11] as [number, number])[1]).toEqual(
             MOCK_YEAR_MISSING_DATA[2][0],
         )
-        expect((ApexChartsDatetimeFilledValues[0].data[12] as [number, number])[1]).toBeNull()
 
         // When yAxisSeries is empty nothing should changes
         apexChartsDatetimeMissingValues = convertMetricsDataToApexChartsDateTimeAxisValues([])
@@ -529,7 +527,7 @@ describe('addTime', () => {
     })
 })
 
-describe('getVisibleTargetCharts tests', () => {
+describe('getDefaultConsumptionTargets tests', () => {
     let enphaseOff = false
 
     beforeEach(() => {
@@ -538,7 +536,7 @@ describe('getVisibleTargetCharts tests', () => {
 
     test('when enphaseOff is true, it returns consumption metrics', () => {
         enphaseOff = true
-        const result = getVisibleTargetCharts(enphaseOff)
+        const result = getDefaultConsumptionTargets(enphaseOff)
         expect(result).toStrictEqual([
             metricTargetsEnum.baseConsumption,
             metricTargetsEnum.peakHourConsumption,
@@ -548,105 +546,139 @@ describe('getVisibleTargetCharts tests', () => {
     })
 
     test('when enphase is false, , it returns auto conso w/ base consumption', () => {
-        const result = getVisibleTargetCharts(enphaseOff)
+        const result = getDefaultConsumptionTargets(enphaseOff)
 
         expect(result).toStrictEqual([metricTargetsEnum.autoconsumption, metricTargetsEnum.consumption])
     })
 })
 
-test('filterTargetsOnDailyPeriod test with different cases', async () => {
-    const caseList = [
-        // Total off idle consumption with null values
+describe('filterMetricsData tests', () => {
+    let data: IMetric[] = [
         {
-            data: [
-                {
-                    target: metricTargetsEnum.consumption,
-                    datapoints: [
-                        [null, 10001],
-                        [null, 10002],
-                        [null, 10003],
-                        [null, 10004],
-                    ],
-                },
-                {
-                    target: metricTargetsEnum.idleConsumption,
-                    datapoints: [
-                        [0, 10001],
-                        [0, 10002],
-                        [0, 10003],
-                        [0, 10004],
-                    ],
-                },
-            ],
-            expectedResult: {
-                target: metricTargetsEnum.totalOffIdleConsumption,
-                datapoints: [
-                    [null, 10001],
-                    [null, 10002],
-                    [null, 10003],
-                    [null, 10004],
-                ],
-            },
+            target: metricTargetsEnum.consumption,
+            datapoints: [[0, 0]],
         },
-        // Total off idle consumption with not-null values.
         {
-            data: [
-                {
-                    target: metricTargetsEnum.consumption,
-                    datapoints: [
-                        [null, 10001],
-                        [130, 10002],
-                        [55, 10003],
-                        [800, 10004],
-                    ],
-                },
-                {
-                    target: metricTargetsEnum.idleConsumption,
-                    datapoints: [
-                        [0, 10001],
-                        [30, 10002],
-                        [33, 10003],
-                        [null, 10004],
-                    ],
-                },
-            ],
-            expectedResult: {
-                target: metricTargetsEnum.totalOffIdleConsumption,
-                datapoints: [
-                    [null, 10001],
-                    [100, 10002],
-                    [22, 10003],
-                    [800, 10004],
-                ],
-            },
+            target: metricTargetsEnum.peakHourConsumption,
+            datapoints: [[0, 0]],
         },
-        // Undefined return.
         {
-            data: [
-                {
-                    target: metricTargetsEnum.consumption,
-                    datapoints: [
-                        [890, 10001],
-                        [130, 10002],
-                        [77, 10003],
-                        [148, 10004],
-                    ],
-                },
-                {
-                    target: metricTargetsEnum.internalTemperature,
-                    datapoints: [
-                        [0, 10001],
-                        [30, 10002],
-                        [32, 10003],
-                        [null, 10004],
-                    ],
-                },
-            ],
-            expectedResult: undefined,
+            target: metricTargetsEnum.offPeakHourConsumption,
+            datapoints: [[0, 0]],
         },
     ]
-    caseList.forEach(({ data, expectedResult }) => {
-        const result = getTotalOffIdleConsumptionData(data as IMetric[])
-        expect(result).toEqual(expectedResult)
+
+    test('when period is daily && isBasePeakOffPeakConsumptionEmpty is true', () => {
+        const fileteredData = filterMetricsData(data, 'daily', true)
+
+        expect(fileteredData).toStrictEqual([{ datapoints: [[0, 0]], target: metricTargetsEnum.onlyConsumption }])
+    })
+
+    test('when period is daily && isBaseConsumptionEmpty is true and HP HC has data', () => {
+        data = [
+            {
+                target: metricTargetsEnum.baseConsumption,
+                datapoints: [[0, 0]],
+            },
+            {
+                target: metricTargetsEnum.consumption,
+                datapoints: [[99, 99]],
+            },
+            {
+                target: metricTargetsEnum.peakHourConsumption,
+                datapoints: [[99, 99]],
+            },
+            {
+                target: metricTargetsEnum.offPeakHourConsumption,
+                datapoints: [[99, 99]],
+            },
+        ]
+
+        const fileteredData = filterMetricsData(data, 'daily', true)
+
+        expect(fileteredData).toStrictEqual([
+            { datapoints: [[99, 99]], target: metricTargetsEnum.consumption },
+            { datapoints: [[99, 99]], target: metricTargetsEnum.peakHourConsumption },
+            { datapoints: [[99, 99]], target: metricTargetsEnum.offPeakHourConsumption },
+        ])
+    })
+    test('when period is daily && isBaseConsumptionEmpty is not TRUE', () => {
+        data = [
+            {
+                target: metricTargetsEnum.baseConsumption,
+                datapoints: [[99, 99]],
+            },
+            {
+                target: metricTargetsEnum.consumption,
+                datapoints: [[99, 99]],
+            },
+            {
+                target: metricTargetsEnum.peakHourConsumption,
+                datapoints: [[0, 0]],
+            },
+            {
+                target: metricTargetsEnum.offPeakHourConsumption,
+                datapoints: [[0, 0]],
+            },
+        ]
+
+        const fileteredData = filterMetricsData(data, 'daily', true)
+
+        expect(fileteredData).toStrictEqual([
+            { datapoints: [[99, 99]], target: metricTargetsEnum.baseConsumption },
+            { datapoints: [[99, 99]], target: metricTargetsEnum.consumption },
+        ])
+    })
+
+    test('when period is NOT daily && isBaseEuroPeakOffPeakConsumptionEmpty is empty and isEuroChart is true', () => {
+        data = [
+            {
+                target: metricTargetsEnum.eurosConsumption,
+                datapoints: [[99, 99]],
+            },
+            {
+                target: metricTargetsEnum.baseEuroConsumption,
+                datapoints: [[0, 0]],
+            },
+            {
+                target: metricTargetsEnum.euroPeakHourConsumption,
+                datapoints: [[0, 0]],
+            },
+            {
+                target: metricTargetsEnum.euroOffPeakConsumption,
+                datapoints: [[0, 0]],
+            },
+            {
+                target: metricTargetsEnum.subscriptionPrices,
+                datapoints: [[99, 99]],
+            },
+        ]
+
+        const fileteredData = filterMetricsData(data, 'weekly', true)
+
+        expect(fileteredData).toStrictEqual([
+            { datapoints: [[99, 99]], target: metricTargetsEnum.onlyEuroConsumption },
+            { datapoints: [[99, 99]], target: metricTargetsEnum.subscriptionPrices },
+        ])
+    })
+
+    test('When onphase is ON (false), we return consumption & autoconsumption', () => {
+        data = [
+            {
+                target: metricTargetsEnum.consumption,
+                datapoints: [[99, 99]],
+            },
+            {
+                target: metricTargetsEnum.autoconsumption,
+                datapoints: [[99, 99]],
+            },
+        ]
+
+        const fileteredData = filterMetricsData(data, 'daily', false)
+
+        expect(fileteredData).toStrictEqual([
+            { datapoints: [[99, 99]], target: metricTargetsEnum.consumption },
+            { datapoints: [[99, 99]], target: metricTargetsEnum.autoconsumption },
+        ])
     })
 })
