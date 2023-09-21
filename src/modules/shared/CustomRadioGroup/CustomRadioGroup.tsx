@@ -1,48 +1,49 @@
-import React, { useState, useEffect } from 'react'
+import { useState } from 'react'
 import Box from '@mui/material/Box'
-import {
-    CustomRadioGroupProps,
-    CustomRadioButtonAdditionalProps,
-} from 'src/modules/shared/CustomRadioGroup/CustomRadioGroup.d'
+import { CustomRadioGroupProps } from 'src/modules/shared/CustomRadioGroup/CustomRadioGroup.d'
+import { CustomRadioButton } from 'src/modules/shared/CustomRadioButton/CustomRadioButton'
 
 /**.
  * Custom radio group component.
  *
  * @param root0 N/A.
+ * @param root0.elements The parameters of the CustomRadioButton children components.
  * @param root0.defaultValue The default value for the radio group.
  * @param root0.onValueChange Function triggered when the radio group value change.
- * @param root0.children The children components (CustomRadioButton) of the CustomRadioGroup component.
+ * @param root0.boxProps Props of the MUI Box component.
  * @returns CustomRadioGroup component.
  */
-const CustomRadioGroup: React.FC<CustomRadioGroupProps> = ({
-    children,
+export const CustomRadioGroup = ({
+    elements,
     defaultValue,
     onValueChange,
-    ...rest
+    ...boxProps
 }: CustomRadioGroupProps): JSX.Element => {
     const [selectedValue, setSelectedValue] = useState(defaultValue || '')
 
-    useEffect(() => {
+    /**
+     * Click handler for the radio button.
+     *
+     * @param v The value of the radio button clicked.
+     */
+    const handleRadioBtnClick: (v: string) => void = (v) => {
+        setSelectedValue(v)
         if (onValueChange) {
-            onValueChange(selectedValue)
+            onValueChange(v)
         }
-    }, [onValueChange, selectedValue])
+    }
 
     return (
-        <Box {...rest}>
-            {React.Children.map(children, (child) =>
-                React.isValidElement(child)
-                    ? /**
-                       * Add the state of the radio group to the props of the CustomRadioButton child.
-                       */
-                      React.cloneElement(child, {
-                          selectedValue,
-                          setSelectedValue,
-                      } as CustomRadioButtonAdditionalProps)
-                    : child,
-            )}
+        <Box {...boxProps}>
+            {elements.map((element) => (
+                <CustomRadioButton
+                    key={element.label}
+                    value={element.value}
+                    label={element.label}
+                    selectedValue={selectedValue}
+                    handleRadioBtnClick={handleRadioBtnClick}
+                />
+            ))}
         </Box>
     )
 }
-
-export default CustomRadioGroup

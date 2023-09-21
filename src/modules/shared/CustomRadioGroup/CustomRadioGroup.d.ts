@@ -1,42 +1,33 @@
-import React from 'react'
-import Box from '@mui/material/Box'
+import { BoxProps } from '@mui/material/Box'
 
 /**
  * Props types for CustomRadioGroup component.
  */
-export type CustomRadioGroupProps =
+export interface CustomRadioGroupProps extends BoxProps {
     /**
-     *
+     * The parameters of the CustomRadioButton children components.
      */
-    {
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    elements: {
         /**
-         * The children components (CustomRadioButton) of the CustomRadioGroup component.
+         * The value of the CustomRadioButton component.
          */
-        children?: React.ReactNode
+        value: string
         /**
-         * The default value for the radio group.
+         * The label of the CustomRadioButton component.
          */
-        defaultValue?: string
-        /**
-         * Function triggered when the radio group value change.
-         */
-        onValueChange?: (v: string) => void
-    } & React.ComponentProps<typeof Box>
-
-/**
- * Types of props that the CustomRadioGroup component adds to its CustomRadioButton children to manage the value of the radio group.
- */
-export type CustomRadioButtonAdditionalProps =
+        label: string
+    }[]
     /**
-     *
+     * The default value for the radio group.
      */
-    {
-        /**
-         * The state that holds the value of the radio group.
-         */
-        selectedValue?: string
-        /**
-         * The setter associated to the radio group value state (selectedValue).
-         */
-        setSelectedValue?: React.Dispatch<React.SetStateAction<string>>
-    }
+    defaultValue?: string
+    /**
+     * Function triggered when the radio group value change.
+     */
+    onValueChange?: (v: string) => void
+    /**
+     * Props of the MUI Box component.
+     */
+    boxProps?: BoxProps
+}

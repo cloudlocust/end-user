@@ -6,7 +6,8 @@ describe('Unit tests for TargetMenuGroup component', () => {
     let mockAddTarget = jest.fn()
     let mockRemoveTarget = jest.fn()
     let mockHidePMax = false
-
+    const resetButtonText = 'reset'
+    let mockActiveButton = resetButtonText
     let buttonLabelText = 'target-menu'
 
     afterEach(() => {
@@ -15,7 +16,12 @@ describe('Unit tests for TargetMenuGroup component', () => {
 
     test("when menu isn't open", async () => {
         const { getByLabelText, getByText } = reduxedRender(
-            <TargetMenuGroup addTarget={mockAddTarget} removeTarget={mockRemoveTarget} hidePmax={mockHidePMax} />,
+            <TargetMenuGroup
+                addTargets={mockAddTarget}
+                removeTargets={mockRemoveTarget}
+                hidePmax={mockHidePMax}
+                activeButton={mockActiveButton}
+            />,
         )
 
         let button = getByLabelText(buttonLabelText)
@@ -25,7 +31,12 @@ describe('Unit tests for TargetMenuGroup component', () => {
     })
     test('when button is clicked, menu is shown with 3 items', async () => {
         const { getByLabelText, getAllByRole } = reduxedRender(
-            <TargetMenuGroup addTarget={mockAddTarget} removeTarget={mockRemoveTarget} hidePmax={mockHidePMax} />,
+            <TargetMenuGroup
+                addTargets={mockAddTarget}
+                removeTargets={mockRemoveTarget}
+                hidePmax={mockHidePMax}
+                activeButton={mockActiveButton}
+            />,
         )
 
         let button = getByLabelText(buttonLabelText)
@@ -40,7 +51,12 @@ describe('Unit tests for TargetMenuGroup component', () => {
     })
     test('when click on a temperature menu item, targets are called', async () => {
         const { getByLabelText, getAllByRole } = reduxedRender(
-            <TargetMenuGroup addTarget={mockAddTarget} removeTarget={mockRemoveTarget} hidePmax={mockHidePMax} />,
+            <TargetMenuGroup
+                addTargets={mockAddTarget}
+                removeTargets={mockRemoveTarget}
+                hidePmax={mockHidePMax}
+                activeButton={mockActiveButton}
+            />,
         )
 
         let button = getByLabelText(buttonLabelText)
@@ -63,7 +79,12 @@ describe('Unit tests for TargetMenuGroup component', () => {
     })
     test('when clicked on Pmax menu item, pmax target is called', async () => {
         const { getByLabelText, getAllByRole } = reduxedRender(
-            <TargetMenuGroup addTarget={mockAddTarget} removeTarget={mockRemoveTarget} hidePmax={mockHidePMax} />,
+            <TargetMenuGroup
+                addTargets={mockAddTarget}
+                removeTargets={mockRemoveTarget}
+                hidePmax={mockHidePMax}
+                activeButton={mockActiveButton}
+            />,
         )
 
         let button = getByLabelText(buttonLabelText)
@@ -79,7 +100,12 @@ describe('Unit tests for TargetMenuGroup component', () => {
     })
     test('when clicked on Annuler, all targets are reset', async () => {
         const { getByLabelText, getAllByRole } = reduxedRender(
-            <TargetMenuGroup addTarget={mockAddTarget} removeTarget={mockRemoveTarget} hidePmax={mockHidePMax} />,
+            <TargetMenuGroup
+                addTargets={mockAddTarget}
+                removeTargets={mockRemoveTarget}
+                hidePmax={mockHidePMax}
+                activeButton={mockActiveButton}
+            />,
         )
 
         let button = getByLabelText(buttonLabelText)
@@ -97,7 +123,12 @@ describe('Unit tests for TargetMenuGroup component', () => {
         mockHidePMax = true
 
         const { getByLabelText, getAllByRole } = reduxedRender(
-            <TargetMenuGroup addTarget={mockAddTarget} removeTarget={mockRemoveTarget} hidePmax={mockHidePMax} />,
+            <TargetMenuGroup
+                addTargets={mockAddTarget}
+                removeTargets={mockRemoveTarget}
+                hidePmax={mockHidePMax}
+                activeButton={mockActiveButton}
+            />,
         )
 
         let button = getByLabelText(buttonLabelText)

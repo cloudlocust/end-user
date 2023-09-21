@@ -70,10 +70,12 @@ describe('Load MyConsumptionDatePicker', () => {
         userEvent.click(getByText(DECREMENT_DATE_ARROW_TEXT))
         expect(container.querySelector('input')?.value).toBe(format(new Date(prevYear), 'yyyy'))
     })
-    test('when the user clicks on the right arrow, the next year is shown', async () => {
+    test('when the user clicks on the right arrow, the end of year is shown', async () => {
         mockPeriod = PeriodEnum.YEARLY
         const dateYear = new Date('2019')
         const nextYear = dateYear.setFullYear(dateYear.getFullYear() + 1)
+        const endYear = '2020-12-31T23:59:59.999Z'
+        const startYear = '2020-01-01T00:00:00.000Z'
         mockSetRange = jest.fn()
         mockRange = getRange(mockPeriod, new Date(nextYear), 'sub')
         const { getByText } = reduxedRender(
@@ -82,7 +84,10 @@ describe('Load MyConsumptionDatePicker', () => {
             </Router>,
         )
         userEvent.click(getByText(INCREMENT_DATE_ARROW_TEXT))
-        const expectedRange = getRange(mockPeriod, new Date(nextYear), 'add')
+        const expectedRange = {
+            from: startYear,
+            to: endYear,
+        }
         await waitFor(() => {
             expect(mockSetRange).toHaveBeenCalledWith(expectedRange)
         })
