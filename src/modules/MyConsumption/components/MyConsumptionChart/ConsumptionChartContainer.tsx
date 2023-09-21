@@ -11,6 +11,7 @@ import Box from '@mui/material/Box'
 import EurosConsumptionButtonToggler from 'src/modules/MyConsumption/components/EurosConsumptionButtonToggler'
 import {
     getTotalOffIdleConsumptionData,
+    filterMetricsData,
     getDefaultConsumptionTargets,
     showPerPeriodText,
 } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
@@ -54,11 +55,11 @@ export const ConsumptionChartContainer = ({
     const theme = useTheme()
     // Indicates if enphaseConsentState is not ACTIVE
     const enphaseOff = enphaseConsent?.enphaseConsentState !== 'ACTIVE'
+    const [isShowIdleConsumptionDisabledInfo, setIsShowIdleConsumptionDisabledInfo] = useState(false)
     // Handling the targets makes it simpler instead of the useMetrics as it's a straightforward array of metricTargetType
     // Meanwhile the setTargets for useMetrics needs to add {type: 'timeserie'} everytime...
     const [targets, setTargets] = useState<metricTargetType[]>(getDefaultConsumptionTargets(enphaseOff))
     // Indicates if enedisSgeConsent is not Connected
-    const [isShowIdleConsumptionDisabledInfo, setIsShowIdleConsumptionDisabledInfo] = useState(false)
     const enedisSgeOff = enedisSgeConsent?.enedisSgeConsentState !== 'CONNECTED'
     const hidePmax = period === 'daily' || enedisSgeOff
 
@@ -143,12 +144,22 @@ export const ConsumptionChartContainer = ({
         // To avoid multiple rerendering and thus calculation in MyConsumptionChart, CosnumptionChartData change only once, when targets change or when the first getMetrics targets is loaded, thus avoiding to rerender when the second getMetrics is loaded with all targets which should only happen in the background.
         if (data.length > 0) {
             let chartData = data.filter((datapoint) => targets.includes(datapoint.target))
+            // When it's idleConsumption, chartData is handled differently from filteredMetricsData
             const totalOffIdleConsumptionData = getTotalOffIdleConsumptionData(chartData)
             if (totalOffIdleConsumptionData) {
                 chartData = [...chartData, totalOffIdleConsumptionData]
+            } else {
+                // Filter target cases.
+                const fileteredMetricsData = filterMetricsData(chartData, period, enphaseOff)
+                if (fileteredMetricsData) {
+                    setConsumptionChartData(fileteredMetricsData)
+                }
             }
             setConsumptionChartData(chartData)
         }
+        // Only use data & visibleTargetCharts as dependencies.
+        // TODO REMOVE this exhausitve-deps due to filteredMetricsData
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [data, targets])
 
     /**

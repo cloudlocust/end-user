@@ -70,6 +70,11 @@ export const targetOptions: metricTargetsEnum[] = [
 ]
 
 /**
+ * Transparent color.
+ */
+export const TRANSPARENT_COLOR = 'rgba(255,255,255, .0)'
+
+/**
  * Function that returns the color for each metricTarget Chart.
  *
  * @param chartName MetricTarget Chart.
@@ -86,7 +91,9 @@ export const getChartColor = (chartName: metricTargetsEnum, theme: Theme, enphas
         case metricTargetsEnum.pMax:
             return '#FF7A00'
         case metricTargetsEnum.eurosConsumption:
+            return TRANSPARENT_COLOR
         case metricTargetsEnum.baseEuroConsumption:
+        case metricTargetsEnum.onlyEuroConsumption:
             return theme.palette.primary.light
         case metricTargetsEnum.autoconsumption:
             return '#BEECDB'
@@ -105,11 +112,13 @@ export const getChartColor = (chartName: metricTargetsEnum, theme: Theme, enphas
         case metricTargetsEnum.totalOffIdleConsumption:
             return theme.palette.secondary.main
         case metricTargetsEnum.consumption:
-            return enphaseOff ? 'rgba(255,255,255, .0)' : theme.palette.secondary.main
+            return enphaseOff ? TRANSPARENT_COLOR : theme.palette.secondary.main
         case metricTargetsEnum.euroPeakHourConsumption:
             return '#4DD9E4'
         case metricTargetsEnum.euroOffPeakConsumption:
             return '#006970'
+        case metricTargetsEnum.onlyConsumption:
+            return theme.palette.secondary.main
         default:
             return theme.palette.secondary.main
     }
@@ -142,6 +151,7 @@ export const getYPointValueLabel = (
         case metricTargetsEnum.subscriptionPrices:
         case metricTargetsEnum.euroPeakHourConsumption:
         case metricTargetsEnum.euroOffPeakConsumption:
+        case metricTargetsEnum.onlyEuroConsumption:
             return `${value === '' ? value : value.toFixed(2)} €`
         case metricTargetsEnum.externalTemperature:
         case metricTargetsEnum.internalTemperature:
@@ -158,6 +168,7 @@ export const getYPointValueLabel = (
         case metricTargetsEnum.injectedProduction:
         case metricTargetsEnum.peakHourConsumption:
         case metricTargetsEnum.offPeakHourConsumption:
+        case metricTargetsEnum.onlyConsumption:
             return `${
                 value === ''
                     ? value
@@ -238,6 +249,7 @@ export const eurosIdleConsumptionTargets: metricTargetType[] = [
  * Targets related to Euros Consumption.
  */
 export const eurosConsumptionTargets: metricTargetType[] = [
+    metricTargetsEnum.eurosConsumption,
     metricTargetsEnum.baseEuroConsumption,
     metricTargetsEnum.euroPeakHourConsumption,
     metricTargetsEnum.euroOffPeakConsumption,

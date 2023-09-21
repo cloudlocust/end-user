@@ -24,6 +24,8 @@ export type metricTargetType =
     // It'll be calculated based on 'consumption_metrics' and 'idle_consumption_metrics'
     | 'off_idle_consumption_metrics'
     | '__euros__off_idle_consumption_metrics'
+    | 'only_consumption_metrics'
+    | 'only_euro_consumption_metrics'
 
 /**
  * Enum representing the metricTarget without exposing the backend naming.
@@ -105,6 +107,25 @@ export enum metricTargetsEnum {
      * Eneum value for Euros Idle Consumption.
      */
     eurosIdleConsumption = '__euros__idle_consumption_metrics',
+    /**
+     * 'only_consumption_metrics' target is made for front purposes, it doesn't exist on the back.
+     *
+     * Only used when base consumption & ho & hc are empty.
+     *
+     *
+     * Only consumption metrics.
+     *
+     */
+    onlyConsumption = 'only_consumption_metrics',
+    /**
+     * 'only_euro_consumption_metrics' target is made for front purposes, it doesn't exist on the back.
+     *
+     * Only used when euro base & euro HP & euro HC are empty.
+     *
+     *
+     * Only euro consumption metrics.
+     */
+    onlyEuroConsumption = 'only_euro_consumption_metrics',
 }
 /**
  * Metrics intervals.

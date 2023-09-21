@@ -40,33 +40,6 @@ export interface IConsumptionAlert extends ConsumptionAlertData {
 }
 
 /**
- * Novu Available channels.
- */
-export type NovuChannels = 'push' | 'email'
-
-/**
- * Novu value and key.
- */
-type NovuChannelValueAndKeyName = /**
- */ {
-    /**
-     * Value of channel.
-     */
-    value: boolean
-    /**
-     * Name of the correspondant key.
-     */
-    key: keyof ConsumptionNovuAlertPreferencesType
-}
-
-/**
- * For Novu channels with the name of the key for the template.
- */
-export type NovuChannelsWithValueAndKey = {
-    [keys in NovuChannels]: NovuChannelValueAndKeyName
-}
-
-/**
  * Consumption Alert component prop Type.
  */
 export interface ConsumptionAlertPropsType {
