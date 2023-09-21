@@ -36,14 +36,15 @@ const ConsumptionChart = ({
     metricsInterval,
     enphaseOff,
 }: MyConsumptionChartProps) => {
+    const theme = useTheme()
     const { timestamps, values } = useMemo(() => {
         return formatMetricsDataToTimestampsValues(data)
     }, [data])
 
     // ConsumptionChart Option.
     const option = useMemo(() => {
-        return getEchartsConsumptionChartOptions(timestamps, values)
-    }, [timestamps, values])
+        return getEchartsConsumptionChartOptions(timestamps, values, theme)
+    }, [timestamps, values, theme])
     console.log('🚀 ~ file: ConsumptionChart.tsx:47 ~ option ~ option:', option)
 
     return (

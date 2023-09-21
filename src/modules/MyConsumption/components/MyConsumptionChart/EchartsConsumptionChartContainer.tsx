@@ -282,7 +282,7 @@ export const ConsumptionChartContainer = ({
                 </div>
             ) : (
                 <>
-                    <MyConsumptionChart
+                    <ConsumptionChart
                         data={consumptionChartData}
                         period={period}
                         range={range}
