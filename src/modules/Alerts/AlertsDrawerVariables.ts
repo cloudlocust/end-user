@@ -3,8 +3,8 @@ import { subMonths, startOfMonth, endOfMonth } from 'date-fns'
 import {
     ConsumptionAlertIntervalsType,
     ConsumptionNovuAlertPreferencesType,
-    NovuChannelsWithValueAndKey,
 } from './components/ConsumptionAlert/consumptionAlert'
+import { NovuChannelsWithValueAndKey } from './Alerts'
 
 /**
  * Set new range for this mounth to see if user has contract.
