@@ -11,9 +11,10 @@ import Box from '@mui/material/Box'
 import EurosConsumptionButtonToggler from 'src/modules/MyConsumption/components/EurosConsumptionButtonToggler'
 import {
     getTotalOffIdleConsumptionData,
-    getDefaultConsumptionTargets,
     filterMetricsData,
+    getDefaultConsumptionTargets,
     showPerPeriodText,
+    nullifyTodayIdleConsumptionValue,
 } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
 import {
     DefaultContractWarning,
@@ -55,11 +56,11 @@ export const ConsumptionChartContainer = ({
     const theme = useTheme()
     // Indicates if enphaseConsentState is not ACTIVE
     const enphaseOff = enphaseConsent?.enphaseConsentState !== 'ACTIVE'
+    const [isShowIdleConsumptionDisabledInfo, setIsShowIdleConsumptionDisabledInfo] = useState(false)
     // Handling the targets makes it simpler instead of the useMetrics as it's a straightforward array of metricTargetType
     // Meanwhile the setTargets for useMetrics needs to add {type: 'timeserie'} everytime...
     const [targets, setTargets] = useState<metricTargetType[]>(getDefaultConsumptionTargets(enphaseOff))
     // Indicates if enedisSgeConsent is not Connected
-    const [isShowIdleConsumptionDisabledInfo, setIsShowIdleConsumptionDisabledInfo] = useState(false)
     const enedisSgeOff = enedisSgeConsent?.enedisSgeConsentState !== 'CONNECTED'
     const hidePmax = period === 'daily' || enedisSgeOff
 
@@ -147,7 +148,7 @@ export const ConsumptionChartContainer = ({
             // When it's idleConsumption, chartData is handled differently from filteredMetricsData
             const totalOffIdleConsumptionData = getTotalOffIdleConsumptionData(chartData)
             if (totalOffIdleConsumptionData) {
-                chartData = [...chartData, totalOffIdleConsumptionData]
+                chartData = nullifyTodayIdleConsumptionValue([...chartData, totalOffIdleConsumptionData])
             } else {
                 // Filter target cases.
                 const fileteredMetricsData = filterMetricsData(chartData, period, enphaseOff)

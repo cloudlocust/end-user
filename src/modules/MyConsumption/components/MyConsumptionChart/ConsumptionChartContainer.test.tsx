@@ -385,6 +385,7 @@ describe('MyConsumptionContainer test', () => {
             })
         })
     })
+
     test('When manual contract filling is disabled, missing contract link does not show.', () => {
         mockManualContractFillingIsEnabled = false
         const { queryByText } = reduxedRender(

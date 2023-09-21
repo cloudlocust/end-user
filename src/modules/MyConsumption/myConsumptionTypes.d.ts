@@ -106,6 +106,7 @@ export type dateFnsPeriod = 'seconds' | 'hours' | 'minutes' | 'days' | 'weeks' |
  * Type for views in MobileDatePicker.
  */
 export type ViewsType = 'day' | 'month' | 'year'
+
 /**
  * Interface for TargetButtonGroup.
  */
@@ -151,7 +152,6 @@ export type EurosConsumptionButtonTogglerProps =
          */
         disabled?: boolean
     }
-
 /**
  * Interface for SwitchIdleConsumptionProps.
  */

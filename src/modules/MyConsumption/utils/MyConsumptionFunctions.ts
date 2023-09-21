@@ -703,6 +703,7 @@ export function getCalendarDates(
     switch (operator) {
         case 'sub':
             const subResFROM = subtractTime(new Date(from), period)
+            // TODO refactor getCalendarDates to get the results directly from subTime & addTime.
             // Because subtractTime(new Date(to), period) returns the start of the wanted day + 1
             // Doing getDateWithoutTimezoneOffset and endOfDay with subDays transform the result so that we have the end of the wanted day.
             const subResTO = getDateWithoutTimezoneOffset(
@@ -1018,6 +1019,65 @@ export const getTotalOffIdleConsumptionData = (data: IMetric[]): IMetric | undef
     }
 
     return undefined
+}
+
+/**
+ Nullify the value of idleConsumption or eurosIdleConsumption metric datapoint on the timestamp that represents today's date.
+ *
+ * @description
+ * Nullify the value of idleConsumption metric datapoint on the timestamp that represents today's date.
+ * So that on the chart the idleConsumption is null when xAxis has today's date.
+ * @example
+ * Today timestamp === 00002
+ * data = [
+ *  {
+ *    "target": "idle_consumption_metrics",
+ *    "datapoints": [[0, 00001], [0, 00002] ,[0, 00003], [0, 00004]]
+ *  }
+ * ]
+ * => nullifyTodayIdleConsumptionValue(data) === [
+ * {
+ *    "target": "idle_consumption_metrics",
+ *    "datapoints": [[0, 00001], [null, 00002] ,[0, 00003], [0, 00004]]
+ *  }
+ * ]
+ * The nullifyTodayIdleConsumptionValue returns new metric data, where idle_consumption_metrics has null value when today's timestamp.
+ * @example
+ * Today timestamp === 00004
+ * data = [
+ *  {
+ *    "target": "__euros__idle_consumption_metrics",
+ *    "datapoints": [[0, 00001], [30, 00002] ,[88, 00003], [89, 00004]]
+ *  }
+ * ]
+ * => nullifyTodayIdleConsumptionValue(data) === [
+ * {
+ *    "target": "__euros__idle_consumption_metrics",
+ *    "datapoints": [[0, 00001], [30, 00002] ,[32, 00003], [40, 00004]]
+ *  }
+ * ]
+ * The nullifyTodayIdleConsumptionValue returns new metric data, where idle_consumption_metrics has null value when today's timestamp.
+ * @param data Metrics Data.
+ * @returns Metrics Data with idleConsumption has datapoint with null value on today's timestamp.
+ */
+export const nullifyTodayIdleConsumptionValue = (data: IMetric[]) => {
+    return data.map((metric: IMetric) => {
+        if (
+            [metricTargetsEnum.idleConsumption, metricTargetsEnum.eurosIdleConsumption].includes(
+                metric.target as metricTargetsEnum,
+            )
+        ) {
+            return {
+                target: metric.target,
+                datapoints: metric.datapoints.map((datapoint) => {
+                    const timestamp = datapoint[1]
+                    const value = datapoint[0]
+                    return [isEqualDates(timestamp, new Date().getTime(), PeriodEnum.MONTHLY) ? null : value, timestamp]
+                }),
+            }
+        }
+        return metric
+    }) as IMetric[]
 }
 
 /**
