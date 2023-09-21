@@ -240,8 +240,8 @@ export const getApexChartMyConsumptionProps = ({
             }),
             type:
                 (yAxisSerie.name === metricTargetsEnum.totalProduction && !showTotalProduction) ||
-                (period !== 'daily' && yAxisSerie.name === metricTargetsEnum.consumption) ||
-                yAxisSerie.name === metricTargetsEnum.eurosConsumption
+                yAxisSerie.name === metricTargetsEnum.eurosConsumption ||
+                (period !== 'daily' && yAxisSerie.name === metricTargetsEnum.consumption && enphaseOff)
                     ? ''
                     : getChartType(yAxisSerie.name as metricTargetType, period),
         })
@@ -271,8 +271,10 @@ export const getApexChartMyConsumptionProps = ({
             ...restChartSpecifities,
             opposite:
                 yAxisSerie.name !== metricTargetsEnum.consumption &&
+                yAxisSerie.name !== metricTargetsEnum.onlyConsumption &&
                 yAxisSerie.name !== metricTargetsEnum.baseConsumption &&
                 yAxisSerie.name !== metricTargetsEnum.eurosConsumption &&
+                yAxisSerie.name !== metricTargetsEnum.onlyEuroConsumption &&
                 yAxisSerie.name !== metricTargetsEnum.baseEuroConsumption &&
                 yAxisSerie.name !== metricTargetsEnum.totalProduction &&
                 yAxisSerie.name !== metricTargetsEnum.injectedProduction,
@@ -296,7 +298,8 @@ export const getApexChartMyConsumptionProps = ({
                         yAxisSerie.name === metricTargetsEnum.offPeakHourConsumption ||
                         yAxisSerie.name === metricTargetsEnum.autoconsumption ||
                         yAxisSerie.name === metricTargetsEnum.totalProduction ||
-                        yAxisSerie.name === metricTargetsEnum.injectedProduction
+                        yAxisSerie.name === metricTargetsEnum.injectedProduction ||
+                        yAxisSerie.name === metricTargetsEnum.onlyConsumption
                     ) {
                         // Consumption unit shown in the chart will be W if its daily, or it'll be the unit of the maximum y value.
                         const label =
@@ -349,11 +352,13 @@ export const getApexChartMyConsumptionProps = ({
                 yAxisSerie.name === metricTargetsEnum.offPeakHourConsumption ||
                 yAxisSerie.name === metricTargetsEnum.idleConsumption ||
                 yAxisSerie.name === metricTargetsEnum.totalOffIdleConsumption ||
+                yAxisSerie.name === metricTargetsEnum.totalEurosOffIdleConsumption ||
                 yAxisSerie.name === metricTargetsEnum.baseEuroConsumption ||
                 yAxisSerie.name === metricTargetsEnum.euroPeakHourConsumption ||
                 yAxisSerie.name === metricTargetsEnum.euroOffPeakConsumption ||
                 yAxisSerie.name === metricTargetsEnum.eurosIdleConsumption ||
-                yAxisSerie.name === metricTargetsEnum.totalOffIdleConsumption
+                yAxisSerie.name === metricTargetsEnum.onlyConsumption ||
+                yAxisSerie.name === metricTargetsEnum.onlyEuroConsumption
                 ? 0
                 : 1.5,
         )

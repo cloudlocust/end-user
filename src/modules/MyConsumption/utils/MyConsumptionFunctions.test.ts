@@ -16,6 +16,8 @@ import {
     addTime,
     getTotalOffIdleConsumptionData,
     getDefaultConsumptionTargets,
+    filterMetricsData,
+    nullifyTodayIdleConsumptionValue,
 } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
 import { IMetric, metricIntervalType, metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
 import { FAKE_WEEK_DATA, FAKE_DAY_DATA, FAKE_MONTH_DATA, FAKE_YEAR_DATA } from 'src/mocks/handlers/metrics'
@@ -706,5 +708,246 @@ describe('getTotalOffIdleConsumptionData test with different cases', () => {
             const result = getTotalOffIdleConsumptionData(data as IMetric[])
             expect(result).toEqual(expectedResult)
         })
+    })
+})
+
+describe('nullifyTodayIdleConsumptionValue test with different cases', () => {
+    test('different cases', () => {
+        const todaysTimestamp = new Date().getTime()
+        const caseList = [
+            {
+                data: [
+                    {
+                        target: metricTargetsEnum.idleConsumption,
+                        datapoints: [
+                            [null, 10001],
+                            [null, 10002],
+                            [null, 10003],
+                            [0, todaysTimestamp],
+                        ],
+                    },
+                ],
+                expectedResult: [
+                    {
+                        target: metricTargetsEnum.idleConsumption,
+                        datapoints: [
+                            [null, 10001],
+                            [null, 10002],
+                            [null, 10003],
+                            [null, todaysTimestamp],
+                        ],
+                    },
+                ],
+            },
+            {
+                data: [
+                    {
+                        target: metricTargetsEnum.eurosIdleConsumption,
+                        datapoints: [
+                            [0, 10001],
+                            [30, 10002],
+                            [33, 10003],
+                            [800, todaysTimestamp],
+                        ],
+                    },
+                ],
+                expectedResult: [
+                    {
+                        target: metricTargetsEnum.eurosIdleConsumption,
+                        datapoints: [
+                            [0, 10001],
+                            [30, 10002],
+                            [33, 10003],
+                            [null, todaysTimestamp],
+                        ],
+                    },
+                ],
+            },
+            // Undefined return.
+            {
+                data: [
+                    {
+                        target: metricTargetsEnum.idleConsumption,
+                        datapoints: [
+                            [890, 10001],
+                            [130, 10002],
+                            [77, 10003],
+                            [148, todaysTimestamp],
+                        ],
+                    },
+                ],
+                expectedResult: [
+                    {
+                        target: metricTargetsEnum.idleConsumption,
+                        datapoints: [
+                            [890, 10001],
+                            [130, 10002],
+                            [77, 10003],
+                            [null, todaysTimestamp],
+                        ],
+                    },
+                ],
+            },
+            // No Change return data.
+            {
+                data: [
+                    {
+                        target: metricTargetsEnum.pMax,
+                        datapoints: [
+                            [890, 10001],
+                            [130, 10002],
+                            [77, 10003],
+                            [148, 10004],
+                        ],
+                    },
+                ],
+                expectedResult: [
+                    {
+                        target: metricTargetsEnum.pMax,
+                        datapoints: [
+                            [890, 10001],
+                            [130, 10002],
+                            [77, 10003],
+                            [148, 10004],
+                        ],
+                    },
+                ],
+            },
+        ]
+        caseList.forEach(({ data, expectedResult }) => {
+            const result = nullifyTodayIdleConsumptionValue(data as IMetric[])
+            expect(result).toEqual(expectedResult)
+        })
+    })
+})
+
+describe('filterMetricsData tests', () => {
+    let data: IMetric[] = [
+        {
+            target: metricTargetsEnum.consumption,
+            datapoints: [[0, 0]],
+        },
+        {
+            target: metricTargetsEnum.peakHourConsumption,
+            datapoints: [[0, 0]],
+        },
+        {
+            target: metricTargetsEnum.offPeakHourConsumption,
+            datapoints: [[0, 0]],
+        },
+    ]
+
+    test('when period is daily && isBasePeakOffPeakConsumptionEmpty is true', () => {
+        const fileteredData = filterMetricsData(data, 'daily', true)
+
+        expect(fileteredData).toStrictEqual([{ datapoints: [[0, 0]], target: metricTargetsEnum.onlyConsumption }])
+    })
+
+    test('when period is daily && isBaseConsumptionEmpty is true and HP HC has data', () => {
+        data = [
+            {
+                target: metricTargetsEnum.baseConsumption,
+                datapoints: [[0, 0]],
+            },
+            {
+                target: metricTargetsEnum.consumption,
+                datapoints: [[99, 99]],
+            },
+            {
+                target: metricTargetsEnum.peakHourConsumption,
+                datapoints: [[99, 99]],
+            },
+            {
+                target: metricTargetsEnum.offPeakHourConsumption,
+                datapoints: [[99, 99]],
+            },
+        ]
+
+        const fileteredData = filterMetricsData(data, 'daily', true)
+
+        expect(fileteredData).toStrictEqual([
+            { datapoints: [[99, 99]], target: metricTargetsEnum.consumption },
+            { datapoints: [[99, 99]], target: metricTargetsEnum.peakHourConsumption },
+            { datapoints: [[99, 99]], target: metricTargetsEnum.offPeakHourConsumption },
+        ])
+    })
+    test('when period is daily && isBaseConsumptionEmpty is not TRUE', () => {
+        data = [
+            {
+                target: metricTargetsEnum.baseConsumption,
+                datapoints: [[99, 99]],
+            },
+            {
+                target: metricTargetsEnum.consumption,
+                datapoints: [[99, 99]],
+            },
+            {
+                target: metricTargetsEnum.peakHourConsumption,
+                datapoints: [[0, 0]],
+            },
+            {
+                target: metricTargetsEnum.offPeakHourConsumption,
+                datapoints: [[0, 0]],
+            },
+        ]
+
+        const fileteredData = filterMetricsData(data, 'daily', true)
+
+        expect(fileteredData).toStrictEqual([
+            { datapoints: [[99, 99]], target: metricTargetsEnum.baseConsumption },
+            { datapoints: [[99, 99]], target: metricTargetsEnum.consumption },
+        ])
+    })
+
+    test('when period is NOT daily && isBaseEuroPeakOffPeakConsumptionEmpty is empty and isEuroChart is true', () => {
+        data = [
+            {
+                target: metricTargetsEnum.eurosConsumption,
+                datapoints: [[99, 99]],
+            },
+            {
+                target: metricTargetsEnum.baseEuroConsumption,
+                datapoints: [[0, 0]],
+            },
+            {
+                target: metricTargetsEnum.euroPeakHourConsumption,
+                datapoints: [[0, 0]],
+            },
+            {
+                target: metricTargetsEnum.euroOffPeakConsumption,
+                datapoints: [[0, 0]],
+            },
+            {
+                target: metricTargetsEnum.subscriptionPrices,
+                datapoints: [[99, 99]],
+            },
+        ]
+
+        const fileteredData = filterMetricsData(data, 'weekly', true)
+
+        expect(fileteredData).toStrictEqual([
+            { datapoints: [[99, 99]], target: metricTargetsEnum.onlyEuroConsumption },
+            { datapoints: [[99, 99]], target: metricTargetsEnum.subscriptionPrices },
+        ])
+    })
+
+    test('When onphase is ON (false), we return consumption & autoconsumption', () => {
+        data = [
+            {
+                target: metricTargetsEnum.consumption,
+                datapoints: [[99, 99]],
+            },
+            {
+                target: metricTargetsEnum.autoconsumption,
+                datapoints: [[99, 99]],
+            },
+        ]
+
+        const fileteredData = filterMetricsData(data, 'daily', false)
+
+        expect(fileteredData).toStrictEqual([
+            { datapoints: [[99, 99]], target: metricTargetsEnum.consumption },
+            { datapoints: [[99, 99]], target: metricTargetsEnum.autoconsumption },
+        ])
     })
 })

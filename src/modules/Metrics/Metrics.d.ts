@@ -19,11 +19,14 @@ export type metricTargetType =
     | 'hp__euros__consumption_metrics'
     | 'hc__euros__consumption_metrics'
     | '__euros__idle_consumption_metrics'
+    // FRONT END PURPOSES TARGETS
     // 'off_idle_consumption_metrics' target is made for front purposes, it doesn't exist on the back
     // To show a chart with the total off-idle consumption.
     // It'll be calculated based on 'consumption_metrics' and 'idle_consumption_metrics'
     | 'off_idle_consumption_metrics'
     | '__euros__off_idle_consumption_metrics'
+    | 'only_consumption_metrics'
+    | 'only_euro_consumption_metrics'
 
 /**
  * Enum representing the metricTarget without exposing the backend naming.
@@ -94,6 +97,12 @@ export enum metricTargetsEnum {
      */
     baseEuroConsumption = 'base__euros__consumption_metrics',
     /**
+     * Eneum value for Euros Idle Consumption.
+     */
+    eurosIdleConsumption = '__euros__idle_consumption_metrics',
+
+    // Targets used only on the FRONT.
+    /**
      * Total Off Idle consumption, that'll be computed on the front based on consumption_metrics & idle_consumption_metrics.
      */
     totalOffIdleConsumption = 'off_idle_consumption_metrics',
@@ -105,6 +114,25 @@ export enum metricTargetsEnum {
      * Eneum value for Euros Idle Consumption.
      */
     eurosIdleConsumption = '__euros__idle_consumption_metrics',
+    /**
+     * 'only_consumption_metrics' target is made for front purposes, it doesn't exist on the back.
+     *
+     * Only used when base consumption & ho & hc are empty.
+     *
+     *
+     * Only consumption metrics.
+     *
+     */
+    onlyConsumption = 'only_consumption_metrics',
+    /**
+     * 'only_euro_consumption_metrics' target is made for front purposes, it doesn't exist on the back.
+     *
+     * Only used when euro base & euro HP & euro HC are empty.
+     *
+     *
+     * Only euro consumption metrics.
+     */
+    onlyEuroConsumption = 'only_euro_consumption_metrics',
 }
 
 /**

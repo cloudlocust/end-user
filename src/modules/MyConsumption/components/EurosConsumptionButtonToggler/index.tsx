@@ -1,9 +1,7 @@
 import IconButton from '@mui/material/IconButton'
 import BoltIcon from '@mui/icons-material/Bolt'
 import EuroIcon from '@mui/icons-material/Euro'
-import { getChartColor } from 'src/modules/MyConsumption/utils/myConsumptionVariables'
 import { useTheme } from '@mui/material'
-import { metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
 import { EurosConsumptionButtonTogglerProps } from 'src/modules/MyConsumption/myConsumptionTypes.d'
 import Tooltip from '@mui/material/Tooltip'
 import { useIntl } from 'react-intl'
@@ -43,10 +41,10 @@ const EurosConsumptionButtonToggler = ({
                         <IconButton
                             sx={{
                                 color: 'white',
-                                backgroundColor: getChartColor(metricTargetsEnum.eurosConsumption, theme),
+                                backgroundColor: theme.palette.primary.light,
                                 opacity: 1,
                                 '&:hover': {
-                                    backgroundColor: getChartColor(metricTargetsEnum.eurosConsumption, theme),
+                                    backgroundColor: theme.palette.primary.light,
                                     opacity: 0.7,
                                 },
                                 '&:disabled': {
