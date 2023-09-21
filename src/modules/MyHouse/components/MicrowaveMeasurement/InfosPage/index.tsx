@@ -121,7 +121,7 @@ export const InfosPage = ({ stepSetter }: InfosPageProps) => {
 
             {/* Content */}
             <div>
-                {/* The test benefits */}
+                {/* The measurement benefits */}
                 <div className="mb-20">
                     <Typography fontWeight="500">
                         {formatMessage({
@@ -137,7 +137,7 @@ export const InfosPage = ({ stepSetter }: InfosPageProps) => {
                     </div>
                 </div>
 
-                {/* The test steps */}
+                {/* The measurement steps */}
                 <div className="mb-20">
                     <Typography fontWeight="500">
                         {formatMessage({
@@ -155,7 +155,7 @@ export const InfosPage = ({ stepSetter }: InfosPageProps) => {
                     </div>
                 </div>
 
-                {/* The test starting button */}
+                {/* The measurement starting button */}
                 <div className="flex justify-center">
                     <Button
                         variant="contained"

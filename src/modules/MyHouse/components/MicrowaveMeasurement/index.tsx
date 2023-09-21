@@ -6,6 +6,7 @@ import Step from '@mui/material/Step'
 import StepLabel from '@mui/material/StepLabel'
 import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
+import { useTheme } from '@mui/material/styles'
 import CloseIcon from '@mui/icons-material/Close'
 import { InfosPage } from 'src/modules/MyHouse/components/MicrowaveMeasurement/InfosPage'
 import { ConfigurationStep } from 'src/modules/MyHouse/components/MicrowaveMeasurement/ConfigurationStep'
@@ -59,6 +60,20 @@ export const MicrowaveMeasurement = ({ modalIsOpen, closeModal }: MicrowaveMeasu
     const [currentStep, setCurrentStep] = useState(0)
     const [selectedMicrowave, setSelectedMicrowave] = useState('')
     const [measurementMode, setMeasurementMode] = useState('')
+    const theme = useTheme()
+
+    const stepsContent = [
+        <ConfigurationStep
+            selectedMicrowave={selectedMicrowave}
+            setSelectedMicrowave={setSelectedMicrowave}
+            measurementMode={measurementMode}
+            setMeasurementMode={setMeasurementMode}
+            stepSetter={setCurrentStep}
+        />,
+        <EquipmentStartupStep measurementMode={measurementMode} stepSetter={setCurrentStep} />,
+        <TestStepPage step={currentStep} stepSetter={setCurrentStep} />,
+        <TestStepPage step={currentStep} stepSetter={setCurrentStep} />,
+    ]
 
     useEffect(() => {
         if (!modalIsOpen) {
@@ -87,13 +102,7 @@ export const MicrowaveMeasurement = ({ modalIsOpen, closeModal }: MicrowaveMeasu
                         position: 'absolute',
                         right: 6,
                         top: 6,
-                        /**
-                         * Access predefined palette color.
-                         *
-                         * @param theme The MUI theme object.
-                         * @returns A grey color.
-                         */
-                        color: (theme) => theme.palette.grey[500],
+                        color: theme.palette.grey[500],
                     }}
                 >
                     <CloseIcon />
@@ -104,41 +113,16 @@ export const MicrowaveMeasurement = ({ modalIsOpen, closeModal }: MicrowaveMeasu
                     <InfosPage stepSetter={setCurrentStep} />
                 ) : (
                     <>
-                        <div className="mt-0 mb-24 mx-auto" style={{ width: '70%' }}>
+                        <div className="mt-0 mb-24 mx-auto w-3/4">
                             <Stepper activeStep={currentStep - 1}>
-                                <Step>
-                                    <StepLabel />
-                                </Step>
-                                <Step>
-                                    <StepLabel />
-                                </Step>
-                                <Step>
-                                    <StepLabel />
-                                </Step>
-                                <Step>
-                                    <StepLabel />
-                                </Step>
+                                {stepsContent.map((_, index) => (
+                                    <Step key={index}>
+                                        <StepLabel />
+                                    </Step>
+                                ))}
                             </Stepper>
                         </div>
-                        {currentStep === 1 ? (
-                            // Step 1
-                            <ConfigurationStep
-                                selectedMicrowave={selectedMicrowave}
-                                setSelectedMicrowave={setSelectedMicrowave}
-                                measurementMode={measurementMode}
-                                setMeasurementMode={setMeasurementMode}
-                                stepSetter={setCurrentStep}
-                            />
-                        ) : currentStep === 2 ? (
-                            // Step 2
-                            <EquipmentStartupStep measurementMode={measurementMode} stepSetter={setCurrentStep} />
-                        ) : currentStep === 3 ? (
-                            // Step 3
-                            <TestStepPage step={currentStep} stepSetter={setCurrentStep} />
-                        ) : currentStep === 4 ? (
-                            // Step 4
-                            <TestStepPage step={currentStep} stepSetter={setCurrentStep} />
-                        ) : null}
+                        {currentStep < 5 ? stepsContent[currentStep - 1] : null}
                     </>
                 )}
             </div>

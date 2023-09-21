@@ -14,17 +14,16 @@ describe('EquipmentStartupStep Component', () => {
     test('renders correctly', () => {
         reduxedRender(<EquipmentStartupStep {...props} />)
 
-        // Check if the component renders the header correctly
         const measurementModeText = screen.getByText((content, _) => {
             return content.startsWith("Mettez en marche l'appareil sur le mode")
         })
+        expect(measurementModeText).toBeInTheDocument()
+
         const measurementModeValue = screen.getByText((content, _) => {
             return content.startsWith('Measurement Mode')
         })
-        expect(measurementModeText).toBeInTheDocument()
         expect(measurementModeValue).toBeInTheDocument()
 
-        // Check if the button Commencer la mesure is displayed
         const startButton = screen.getByRole('button', { name: 'Commencer la mesure' })
         expect(startButton).toBeInTheDocument()
     })
@@ -34,6 +33,7 @@ describe('EquipmentStartupStep Component', () => {
 
         const startButton = screen.getByRole('button', { name: 'Commencer la mesure' })
         userEvent.click(startButton)
+
         await waitFor(() => {
             expect(mockStepSetter).toHaveBeenCalledWith(3)
         })

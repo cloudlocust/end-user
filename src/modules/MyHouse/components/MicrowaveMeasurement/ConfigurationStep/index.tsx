@@ -5,8 +5,7 @@ import Select from '@mui/material/Select'
 import MenuItem from '@mui/material/MenuItem'
 import Button from '@mui/material/Button'
 import WarningRoundedIcon from '@mui/icons-material/WarningRounded'
-import CustomRadioGroup from 'src/modules/shared/CustomRadioGroup/CustomRadioGroup'
-import CustomRadioButton from 'src/modules/shared/CustomRadioButton/CustomRadioButton'
+import { CustomRadioGroup } from 'src/modules/shared/CustomRadioGroup/CustomRadioGroup'
 import { useIntl } from 'react-intl'
 import {
     ConfigurationStepProps,
@@ -115,6 +114,11 @@ export const ConfigurationStep = ({
                         })}
                     </Typography>
                     <CustomRadioGroup
+                        elements={[
+                            { value: 'Standard', label: 'Standard' },
+                            { value: 'Décongélation', label: 'Décongélation' },
+                            { value: 'Grill', label: 'Grill' },
+                        ]}
                         defaultValue={measurementMode}
                         onValueChange={handleRadioGroupChange}
                         display="flex"
@@ -125,11 +129,7 @@ export const ConfigurationStep = ({
                                 width: 'calc((100% - 10px) / 3)',
                             },
                         }}
-                    >
-                        <CustomRadioButton value="Standard" label="Standard" />
-                        <CustomRadioButton value="Décongélation" label="Décongélation" />
-                        <CustomRadioButton value="Grill" label="Grill" />
-                    </CustomRadioGroup>
+                    />
                 </div>
 
                 {/* Warning */}

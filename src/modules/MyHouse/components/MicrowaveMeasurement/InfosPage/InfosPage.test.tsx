@@ -7,7 +7,7 @@ import { InfosPage } from 'src/modules/MyHouse/components/MicrowaveMeasurement/I
 const mockStepSetter = jest.fn()
 
 describe('InfosPage Component', () => {
-    test('renders header correctly', () => {
+    test('renders correctly', () => {
         reduxedRender(<InfosPage stepSetter={mockStepSetter} />)
 
         const headerText = screen.getByText("Mesure d'appareil")
@@ -15,10 +15,6 @@ describe('InfosPage Component', () => {
 
         const subHeaderText = screen.getByText('Micro Onde')
         expect(subHeaderText).toBeInTheDocument()
-    })
-
-    test('renders test benefits and steps correctly', () => {
-        reduxedRender(<InfosPage stepSetter={mockStepSetter} />)
 
         const benefitText = screen.getByText((content, _) => {
             return content.startsWith('Tester votre appareil vous permet de')
@@ -36,8 +32,6 @@ describe('InfosPage Component', () => {
 
         const button = screen.getByText('Commencer')
         userEvent.click(button)
-
-        // Check if the stepSetter function was called
         await waitFor(() => {
             expect(mockStepSetter).toHaveBeenCalledWith(1)
         })
