@@ -220,3 +220,23 @@ export const EnphaseOffConsumptionChartTargets: metricTargetType[] = [
     metricTargetsEnum.peakHourConsumption,
     metricTargetsEnum.offPeakHourConsumption,
 ]
+
+/**
+ * Targets related to Euros Consumption.
+ */
+export const eurosConsumptionTargets: metricTargetType[] = [
+    metricTargetsEnum.eurosConsumption,
+    metricTargetsEnum.baseEuroConsumption,
+    metricTargetsEnum.euroPeakHourConsumption,
+    metricTargetsEnum.euroOffPeakConsumption,
+    metricTargetsEnum.subscriptionPrices,
+]
+
+/**
+ * Targets related to the TargetMenuGroup button which consists of temperature and pMax.
+ */
+export const temperatureOrPmaxTargets: metricTargetType[] = [
+    metricTargetsEnum.pMax,
+    metricTargetsEnum.internalTemperature,
+    metricTargetsEnum.externalTemperature,
+]
