@@ -11,12 +11,13 @@ import {
     ConfigurationStepProps,
     RadioGroupOnChangeHandler,
     SelectOnChangeHandler,
-} from 'src/modules/MyHouse/components/MicrowaveMeasurement/MicrowaveMeasurement'
+} from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement/MicrowaveMeasurement'
 
 /**
  * ConfigurationStep component.
  *
  * @param root0 N/A.
+ * @param root0.equipmentsNumber The number of microwaves.
  * @param root0.selectedMicrowave The state that hold the selected microwave.
  * @param root0.setSelectedMicrowave The setter associated to the selected microwave state.
  * @param root0.measurementMode The state that hold the measurement mode.
@@ -25,6 +26,7 @@ import {
  * @returns The ConfigurationStep component.
  */
 export const ConfigurationStep = ({
+    equipmentsNumber,
     selectedMicrowave,
     setSelectedMicrowave,
     measurementMode,
@@ -99,8 +101,19 @@ export const ConfigurationStep = ({
                             })}
                             onChange={handleSelectMicrowaveChange}
                         >
+                            {(() => {
+                                let menuItemsList: JSX.Element[] = []
+                                for (let i = 0; i < equipmentsNumber; i++) {
+                                    menuItemsList.push(
+                                        <MenuItem value={`micro-onde-${i + 1}`}>Micro-onde {i + 1}</MenuItem>,
+                                    )
+                                }
+                                return menuItemsList
+                            })()}
+                            {/*
                             <MenuItem value="micro-onde-1">Micro-onde 1</MenuItem>
                             <MenuItem value="micro-onde-2">Micro-onde 2</MenuItem>
+                            */}
                         </Select>
                     </FormControl>
                 </div>

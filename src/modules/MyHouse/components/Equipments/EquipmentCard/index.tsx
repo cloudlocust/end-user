@@ -1,5 +1,7 @@
-import { Card, CardContent } from '@mui/material'
+import { Card, CardContent, CardActions, Button } from '@mui/material'
+import { useModal } from 'src/hooks/useModal'
 import { EquipmentCardProps } from 'src/modules/MyHouse/components/Equipments/EquipmentCard/equipmentsCard'
+import { MicrowaveMeasurement } from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement'
 import { getEquipmentIconPath } from 'src/modules/MyHouse/utils/MyHouseVariables'
 
 /**
@@ -12,15 +14,37 @@ import { getEquipmentIconPath } from 'src/modules/MyHouse/utils/MyHouseVariables
  * @returns EquipmentCard JSX.
  */
 export const EquipmentCard = ({ name, type, number }: EquipmentCardProps) => {
+    const {
+        isOpen: measurementModalIsOpen,
+        openModal: openMeasurementModal,
+        closeModal: closeMeasurementModal,
+    } = useModal()
+
     return (
-        <Card className="rounded-16 border border-slate-600 w-full md:w-1/2 lg:w-1/3 h-96" data-testid="equipment-item">
-            <CardContent className="flex justify-between flex-row">
-                <img src={getEquipmentIconPath(name)} alt="equipment-icon" />
-                <div>
-                    <div>{type}</div>
-                    <div>{number}</div>
-                </div>
-            </CardContent>
-        </Card>
+        <>
+            <Card className="rounded-16 border border-slate-600 w-full md:w-1/2 lg:w-1/3" data-testid="equipment-item">
+                <CardContent className="flex justify-between flex-row">
+                    <img src={getEquipmentIconPath(name)} alt="equipment-icon" />
+                    <div>
+                        <div>{type}</div>
+                        <div>{number}</div>
+                    </div>
+                </CardContent>
+                {number > 0 && name === 'microwave' ? (
+                    <CardActions className="flex justify-end">
+                        <Button className="px-20 py-3" variant="contained" onClick={openMeasurementModal}>
+                            Mesurer
+                        </Button>
+                    </CardActions>
+                ) : null}
+            </Card>
+            {number > 0 && name === 'microwave' ? (
+                <MicrowaveMeasurement
+                    equipmentsNumber={number}
+                    modalIsOpen={measurementModalIsOpen}
+                    closeModal={closeMeasurementModal}
+                />
+            ) : null}
+        </>
     )
 }

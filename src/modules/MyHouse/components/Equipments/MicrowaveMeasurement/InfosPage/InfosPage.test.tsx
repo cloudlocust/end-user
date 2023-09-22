@@ -1,7 +1,7 @@
 import { screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { reduxedRender } from 'src/common/react-platform-components/test'
-import { InfosPage } from 'src/modules/MyHouse/components/MicrowaveMeasurement/InfosPage'
+import { InfosPage } from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement/InfosPage'
 
 // Mock the function passed as a prop
 const mockStepSetter = jest.fn()

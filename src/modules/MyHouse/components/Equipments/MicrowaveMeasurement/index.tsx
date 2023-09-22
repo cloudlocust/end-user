@@ -8,13 +8,13 @@ import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
 import { useTheme } from '@mui/material/styles'
 import CloseIcon from '@mui/icons-material/Close'
-import { InfosPage } from 'src/modules/MyHouse/components/MicrowaveMeasurement/InfosPage'
-import { ConfigurationStep } from 'src/modules/MyHouse/components/MicrowaveMeasurement/ConfigurationStep'
-import { EquipmentStartupStep } from 'src/modules/MyHouse/components/MicrowaveMeasurement/EquipmentStartupStep'
+import { InfosPage } from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement/InfosPage'
+import { ConfigurationStep } from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement/ConfigurationStep'
+import { EquipmentStartupStep } from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement/EquipmentStartupStep'
 import {
     MicrowaveMeasurementProps,
     TestStepPageProps,
-} from 'src/modules/MyHouse/components/MicrowaveMeasurement/MicrowaveMeasurement.d'
+} from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement/MicrowaveMeasurement'
 
 /**
  * TestStepPage component.
@@ -39,6 +39,7 @@ const TestStepPage = ({ step, stepSetter }: TestStepPageProps) => (
  * MicrowaveMeasurement component.
  *
  * @param root0 N/A.
+ * @param root0.equipmentsNumber The number of microwaves.
  * @param root0.modalIsOpen The state of the modal.
  * @param root0.closeModal Modal closing handler.
  * @example
@@ -51,12 +52,12 @@ const TestStepPage = ({ step, stepSetter }: TestStepPageProps) => (
  *          <Button onClick={openModal}>
  *              Mesurer
  *          </Button>
- *          <MicrowaveMeasurement modalIsOpen={isOpen} closeModal={closeModal} />
+ *          <MicrowaveMeasurement equipmentsNumber={3} modalIsOpen={isOpen} closeModal={closeModal} />
  *      </div>
  *  )
  * @returns MicrowaveMeasurement component.
  */
-export const MicrowaveMeasurement = ({ modalIsOpen, closeModal }: MicrowaveMeasurementProps) => {
+export const MicrowaveMeasurement = ({ equipmentsNumber, modalIsOpen, closeModal }: MicrowaveMeasurementProps) => {
     const [currentStep, setCurrentStep] = useState(0)
     const [selectedMicrowave, setSelectedMicrowave] = useState('')
     const [measurementMode, setMeasurementMode] = useState('')
@@ -64,6 +65,7 @@ export const MicrowaveMeasurement = ({ modalIsOpen, closeModal }: MicrowaveMeasu
 
     const stepsContent = [
         <ConfigurationStep
+            equipmentsNumber={equipmentsNumber}
             selectedMicrowave={selectedMicrowave}
             setSelectedMicrowave={setSelectedMicrowave}
             measurementMode={measurementMode}
