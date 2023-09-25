@@ -101,14 +101,16 @@ export const ConfigurationStep = ({
                             })}
                             onChange={handleSelectMicrowaveChange}
                         >
-                            {Array(equipmentsNumber).map((_, index) => (
-                                <MenuItem value={`micro-onde-${index + 1}`}>Micro-onde {index + 1}</MenuItem>
-                            ))}
+                            {Array(equipmentsNumber)
+                                .fill(null)
+                                .map((_, index) => (
+                                    <MenuItem value={`micro-onde-${index + 1}`}>Micro-onde {index + 1}</MenuItem>
+                                ))}
                         </Select>
                     </FormControl>
                 </div>
 
-                {/* Select the microwave */}
+                {/* Select the measurement mode */}
                 <div className="mb-20">
                     <Typography marginBottom="15px" fontWeight="500">
                         {formatMessage({
