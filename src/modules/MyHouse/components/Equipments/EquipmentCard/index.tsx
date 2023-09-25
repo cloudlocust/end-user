@@ -20,6 +20,8 @@ export const EquipmentCard = ({ name, type, number }: EquipmentCardProps) => {
         closeModal: closeMeasurementModal,
     } = useModal()
 
+    const showMicrowaveMeasurementBtn = number > 0 && name === 'microwave'
+
     return (
         <>
             <Card className="rounded-16 border border-slate-600 w-full md:w-1/2 lg:w-1/3" data-testid="equipment-item">
@@ -30,7 +32,7 @@ export const EquipmentCard = ({ name, type, number }: EquipmentCardProps) => {
                         <div>{number}</div>
                     </div>
                 </CardContent>
-                {number > 0 && name === 'microwave' ? (
+                {showMicrowaveMeasurementBtn ? (
                     <CardActions className="flex justify-end">
                         <Button className="px-20 py-3" variant="contained" onClick={openMeasurementModal}>
                             Mesurer
@@ -38,7 +40,7 @@ export const EquipmentCard = ({ name, type, number }: EquipmentCardProps) => {
                     </CardActions>
                 ) : null}
             </Card>
-            {number > 0 && name === 'microwave' ? (
+            {showMicrowaveMeasurementBtn ? (
                 <MicrowaveMeasurement
                     equipmentsNumber={number}
                     modalIsOpen={measurementModalIsOpen}

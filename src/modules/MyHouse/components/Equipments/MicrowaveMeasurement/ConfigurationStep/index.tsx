@@ -1,3 +1,5 @@
+import { useState } from 'react'
+import { useIntl } from 'react-intl'
 import Typography from '@mui/material/Typography'
 import FormControl from '@mui/material/FormControl'
 import InputLabel from '@mui/material/InputLabel'
@@ -6,7 +8,6 @@ import MenuItem from '@mui/material/MenuItem'
 import Button from '@mui/material/Button'
 import WarningRoundedIcon from '@mui/icons-material/WarningRounded'
 import { CustomRadioGroup } from 'src/modules/shared/CustomRadioGroup/CustomRadioGroup'
-import { useIntl } from 'react-intl'
 import {
     ConfigurationStepProps,
     RadioGroupOnChangeHandler,
@@ -60,6 +61,21 @@ export const ConfigurationStep = ({
         stepSetter(2)
     }
 
+    /**
+     * Function that generate microwave list items for the Select component.
+     *
+     * @returns The microwave list items.
+     */
+    const microwaveListGenerator = () => {
+        let menuItemsList: JSX.Element[] = []
+        for (let i = 0; i < equipmentsNumber; i++) {
+            menuItemsList.push(<MenuItem value={`micro-onde-${i + 1}`}>Micro-onde {i + 1}</MenuItem>)
+        }
+        return menuItemsList
+    }
+
+    const [microwaveList] = useState(microwaveListGenerator)
+
     const monEquipementStr = 'Mon équipement'
 
     return (
@@ -101,19 +117,7 @@ export const ConfigurationStep = ({
                             })}
                             onChange={handleSelectMicrowaveChange}
                         >
-                            {(() => {
-                                let menuItemsList: JSX.Element[] = []
-                                for (let i = 0; i < equipmentsNumber; i++) {
-                                    menuItemsList.push(
-                                        <MenuItem value={`micro-onde-${i + 1}`}>Micro-onde {i + 1}</MenuItem>,
-                                    )
-                                }
-                                return menuItemsList
-                            })()}
-                            {/*
-                            <MenuItem value="micro-onde-1">Micro-onde 1</MenuItem>
-                            <MenuItem value="micro-onde-2">Micro-onde 2</MenuItem>
-                            */}
+                            {microwaveList}
                         </Select>
                     </FormControl>
                 </div>
