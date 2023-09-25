@@ -26,8 +26,6 @@ describe('EquipmentsList tests', () => {
     test('when loadingEquipmentInProgress is false, and equipmentsList has data', async () => {
         const { getAllByTestId } = reduxedRender(<EquipmentsList {...equipmentsListProps} />)
 
-        const equipmentsListLength = equipmentsListProps.equipmentsList?.length
-
-        expect(getAllByTestId('equipment-item')).toHaveLength(equipmentsListLength!)
+        expect(getAllByTestId('equipment-item')).toHaveLength(10)
     })
 })
