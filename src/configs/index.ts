@@ -142,6 +142,11 @@ export const REACT_APP_FIREBASE_APP_ID = window._env_.REACT_APP_FIREBASE_APP_ID
 export const REACT_APP_FIREBASE_VAPID_KEY = window._env_.REACT_APP_FIREBASE_VAPID_KEY
 
 /**
+ * Is Access Rights active.
+ */
+export const isAccessRightsActive = window._env_.REACT_APP_ACCESS_RIGHTS_STATE === 'enabled'
+
+/**
  * All firebase config in one variable.
  */
 export const FIREBASE_CONFIG = {
