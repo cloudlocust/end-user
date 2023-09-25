@@ -32,7 +32,14 @@ export const CustomRadioButton = ({
         <Button
             variant={isSelected ? 'contained' : 'outlined'}
             onClick={handleClick}
-            sx={{ borderWidth: '1.5px', borderRadius: '10px', '& label': { margin: 0 } }}
+            sx={{
+                borderRadius: '10px',
+                borderWidth: '1.5px',
+                '&:hover': {
+                    borderWidth: '1.5px',
+                },
+                '& label': { margin: 0 },
+            }}
         >
             <FormControlLabel
                 label={label}
