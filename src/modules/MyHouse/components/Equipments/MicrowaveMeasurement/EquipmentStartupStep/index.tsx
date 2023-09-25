@@ -49,7 +49,7 @@ export const EquipmentStartupStep = ({ measurementMode, stepSetter }: EquipmentS
 
                 {/* Description */}
                 <TypographyFormatMessage textAlign="center" marginBottom="20px">
-                    Une fois l’appreil mis en marche, appuyez sur “Commencer la mesure” pour débuter le test
+                    Une fois l’appareil mis en marche, appuyez sur “Commencer la mesure” pour débuter le test
                 </TypographyFormatMessage>
 
                 {/* The measurement starting button */}

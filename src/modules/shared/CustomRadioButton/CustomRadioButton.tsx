@@ -1,7 +1,6 @@
 import FormControlLabel from '@mui/material/FormControlLabel'
 import Radio from '@mui/material/Radio'
 import Button from '@mui/material/Button'
-import { useTheme } from '@mui/material/styles'
 import { CustomRadioButtonProps } from 'src/modules/shared/CustomRadioButton/CustomRadioButton.d'
 
 /**
@@ -20,7 +19,6 @@ export const CustomRadioButton = ({
     selectedValue,
     handleRadioBtnClick,
 }: CustomRadioButtonProps): JSX.Element => {
-    const theme = useTheme()
     const isSelected = value === selectedValue
 
     /**
@@ -34,7 +32,7 @@ export const CustomRadioButton = ({
         <Button
             variant={isSelected ? 'contained' : 'outlined'}
             onClick={handleClick}
-            sx={{ borderRadius: '10px', '& label': { margin: 0 } }}
+            sx={{ borderWidth: '1.5px', borderRadius: '10px', '& label': { margin: 0 } }}
         >
             <FormControlLabel
                 label={label}
@@ -45,11 +43,12 @@ export const CustomRadioButton = ({
                         color="secondary"
                         sx={{
                             position: 'absolute',
-                            top: '1px',
-                            right: '1px',
+                            top: '0px',
+                            right: '0px',
                             height: '18px',
                             width: '18px',
-                            color: theme.palette.primary.main,
+                            color: 'inherit',
+                            transform: 'scale(0.8)',
                         }}
                     />
                 }
