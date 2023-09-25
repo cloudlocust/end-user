@@ -45,11 +45,11 @@ const ConsumptionChart = ({
     const option = useMemo(() => {
         return getEchartsConsumptionChartOptions(timestamps, values, theme)
     }, [timestamps, values, theme])
-    console.log('🚀 ~ file: ConsumptionChart.tsx:47 ~ option ~ option:', option)
+    console.log('🚀 ~ file: ConsumptionChart.tsx:48 ~ option ~ option:', option)
 
     return (
         <>
-            <ReactECharts option={option} style={{ height: 700, margin: '0 auto' }} />
+            <ReactECharts option={option} style={{ height: 360, margin: '0 auto' }} />
         </>
     )
 }

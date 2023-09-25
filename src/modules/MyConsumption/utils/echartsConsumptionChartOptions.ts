@@ -5,28 +5,14 @@ import fr from 'dayjs/locale/fr'
 import { Theme } from '@mui/material/styles/createTheme'
 import utc from 'dayjs/plugin/utc'
 import convert from 'convert-units'
-import { isNull, mean } from 'lodash'
+import { isNull, mean, capitalize } from 'lodash'
 import { getChartColor } from 'src/modules/MyConsumption/utils/myConsumptionVariables'
 import { getChartSpecifities } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
 import { PeriodEnum, periodType } from 'src/modules/MyConsumption/myConsumptionTypes.d'
+import timezone from 'dayjs/plugin/timezone'
 dayjs.locale(fr)
 dayjs.extend(utc)
-
-/**
- * Get Period From timestamps length.
- *
- * @param length Length of timestamps.
- * @returns Get the periodType from the length of timestamps.
- */
-const getPeriodFromTimestampsLength = (length: number): periodType => {
-    if (length <= 7) {
-        return PeriodEnum.WEEKLY
-    } else if (length <= 12) {
-        return PeriodEnum.YEARLY
-    } else if (length <= 31) {
-        return PeriodEnum.MONTHLY
-    } else return PeriodEnum.DAILY
-}
+dayjs.extend(timezone)
 
 /**
  * Object mapping the metricTarget with its slice line chart name.
@@ -56,10 +42,49 @@ const targetChartColors: { [key: string]: string } = {
 }
 
 const MaxChartName = 'Max'
+
+/**
+ * Get Echarts Consumption CHart Options.
+ *
+ * @param timestamps Timestamps.
+ * @param values Values.
+ * @param theme Theme used for colors, fonts and backgrounds purposes.
+ * @returns Echarts Consumption Option.
+ */
+export const getEchartsConsumptionChartOptions = (
+    timestamps: targetTimestampsValuesFormat,
+    values: targetTimestampsValuesFormat,
+    theme: Theme,
+) => {
+    console.log('🚀 ~ file: echartsConsumptionChartOptions.ts:94 ~ values:', values)
+    if (!Object.values(timestamps).length || !Object.values(values).length) return {}
+    return {
+        ...getDefaultOptionsEchartsConsumptionChart(theme),
+        ...getXAxisOptionEchartsConsumptionChart(timestamps, theme),
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        series: Object.keys(values).map((target) => {
+            const data = values[target as metricTargetType]
+            console.log('🚀 ~ file: echartsConsumptionChartOptions.ts:122 ~ series:Object.keys ~ data:', data)
+            return {
+                type: 'line',
+                emphasis: {
+                    focus: 'series',
+                },
+                name: `${getChartSpecifities(target as metricTargetsEnum, 'Consommation totale').label}`,
+                data,
+                stack: 'stack',
+                itemStyle: {
+                    color: getChartColor(target as metricTargetsEnum, theme),
+                },
+            }
+        }),
+    } as EChartsOption
+}
+
 /**
  * Echarts ConsumptionChart Default option.
  */
-const getEchartsConsumptionChartDefaultOptions = (theme: Theme) =>
+const getDefaultOptionsEchartsConsumptionChart = (theme: Theme) =>
     ({
         color: 'transparent',
         textStyle: {
@@ -120,6 +145,11 @@ const getEchartsConsumptionChartDefaultOptions = (theme: Theme) =>
                     },
                 },
                 splitLine: {
+                    interval(index, value) {
+                        console.log('🚀 ~ file: echartsConsumptionChartOptions.ts:149 ~ interval ~ value:', value)
+                        console.log('🚀 ~ file: echartsConsumptionChartOptions.ts:149 ~ interval ~ index:', index)
+                        return 0
+                    },
                     show: true,
                     lineStyle: {
                         color: theme.palette.primary.contrastText,
@@ -132,41 +162,40 @@ const getEchartsConsumptionChartDefaultOptions = (theme: Theme) =>
     } as EChartsOption)
 
 /**
- * Get Echarts Consumption CHart Options.
+ * Get Xaxis option of Echarts Consumption Option.
  *
  * @param timestamps Timestamps.
- * @param values Values.
- * @param theme Theme used for colors, fonts and backgrounds purposes.
- * @returns Echarts Consumption Option.
+ * @param theme Theme used for colors, fonts and backgrounds of xAxis.
+ * @returns XAxis object option for Echarts Consumption Options.
  */
-export const getEchartsConsumptionChartOptions = (
-    timestamps: targetTimestampsValuesFormat,
-    values: targetTimestampsValuesFormat,
-    theme: Theme,
-) => {
-    console.log('🚀 ~ file: echartsConsumptionChartOptions.ts:94 ~ values:', values)
-    if (!Object.values(timestamps).length || !Object.values(values).length) return {}
+export const getXAxisOptionEchartsConsumptionChart = (timestamps: targetTimestampsValuesFormat, theme: Theme) => {
     const xAxisTimestamps = Object.values(timestamps).length ? Object.values(timestamps)[0] : []
     const period = getPeriodFromTimestampsLength(xAxisTimestamps.length)
     return {
-        ...getEchartsConsumptionChartDefaultOptions(theme),
         xAxis: [
             {
-                rotate: 40,
+                // Rotate to 40 so that we can show all the hours.
                 type: 'category',
                 boundaryGap: false,
-                data: xAxisTimestamps.map((timestamp) => dayjs(timestamp).format('D MMM')),
-                /**
-                 * Formatting the labels show in xAxis, show only the first minute of each hour.
-                 *
-                 * @param value Value of xAxis.
-                 * @param index Index of the value in xAxis data.
-                 * @returns Label of value in the xAxis.
-                 */
-                formatter(value: string, index: number) {
-                    // If it's the first minute of the hour, show it otherwise hide it.
-                    if (index % 6 === 0) return value
-                    return ''
+                data: getXAxisData(xAxisTimestamps, period),
+                axisLabel: {
+                    rotate: period === PeriodEnum.DAILY ? 30 : undefined,
+                    hideOverlap: true,
+                    /**
+                     * Formatting the labels shown in xAxis.
+                     *
+                     * @param value Value of xAxis date point.
+                     * @param index Index of point.
+                     * @returns Label of date point in the xAxis.
+                     */
+                    formatter(value: string, index: number) {
+                        // When Period is Daily, show only each first hour of the day.
+                        // if (period === PeriodEnum.DAILY) {
+                        // console.log('🚀 ~ file: echartsConsumptionChartOptions.ts:190 ~ formatter ~ value:', value)
+                        // return value.endsWith('00') ? value : ''
+                        // }
+                        return value
+                    },
                 },
                 axisLine: {
                     show: true,
@@ -187,22 +216,42 @@ export const getEchartsConsumptionChartOptions = (
                 },
             },
         ],
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        series: Object.keys(values).map((target) => {
-            const data = values[target as metricTargetType]
-            console.log('🚀 ~ file: echartsConsumptionChartOptions.ts:122 ~ series:Object.keys ~ data:', data)
-            return {
-                type: 'line',
-                emphasis: {
-                    focus: 'series',
-                },
-                name: `${getChartSpecifities(target as metricTargetsEnum, 'Consommation totale').label}`,
-                data,
-                stack: 'stack',
-                itemStyle: {
-                    color: getChartColor(target as metricTargetsEnum, theme),
-                },
-            }
-        }),
     } as EChartsOption
+}
+
+/**
+ * Get Period From timestamps length.
+ *
+ * @param length Length of timestamps.
+ * @returns Get the periodType from the length of timestamps.
+ */
+const getPeriodFromTimestampsLength = (length: number): periodType => {
+    if (length <= 7) {
+        return PeriodEnum.WEEKLY
+    } else if (length <= 12) {
+        return PeriodEnum.YEARLY
+    } else if (length <= 31) {
+        return PeriodEnum.MONTHLY
+    } else return PeriodEnum.DAILY
+}
+
+/**
+ * Get XAxis points Data.
+ *
+ * @description
+ * Format the timestamps points data to a date format based on the current periodType.
+ * @example
+ * @param timestamps Timestamps data points.
+ * @param period Current period.
+ * @returns XAxis points data.
+ */
+const getXAxisData = (timestamps: number[], period: periodType) => {
+    switch (period) {
+        case 'daily':
+            return timestamps.map((timestamp) => capitalize(dayjs.utc(timestamp).format('HH:mm')))
+        case 'yearly':
+            return timestamps.map((timestamp) => capitalize(dayjs.utc(timestamp).format('MMM')))
+        default:
+            return timestamps.map((timestamp) => capitalize(dayjs.utc(timestamp).format('D MMM')))
+    }
 }
