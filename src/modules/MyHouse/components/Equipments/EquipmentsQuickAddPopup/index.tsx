@@ -1,5 +1,5 @@
 import { EquipmentsQuickAddPopupProps } from 'src/modules/MyHouse/components/Equipments/EquipmentsQuickAddPopup/equipmentsQuickAddPopup.d'
-import { Dialog, DialogTitle, DialogContent, useMediaQuery, useTheme } from '@mui/material'
+import { Dialog, DialogTitle, DialogContent } from '@mui/material'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import { Form } from 'src/common/react-platform-components'
 import {
@@ -36,9 +36,6 @@ export const EquipmentsQuickAddPopup = ({
     saveEquipment,
     loadingEquipmentInProgress,
 }: EquipmentsQuickAddPopupProps) => {
-    const theme = useTheme()
-    const isDesktop = useMediaQuery(theme.breakpoints.up('lg'))
-
     const [isEdit, setIsEdit] = useState(false)
 
     // It'll have the following format an object of all equipment, name is the key, for example: {"heater": {equipment_id, equipment_type, equipment_number, isNumber, equipment: {id, name, allowed_type} } }.
@@ -79,11 +76,9 @@ export const EquipmentsQuickAddPopup = ({
                 value: matchingEquipment.equipmentNumber,
             }
         }
-    })
+    }) as INumberFieldForm[]
 
-    const myEquipment = isDesktop
-        ? groupedCards(updatedMyEquipmentOptions as INumberFieldForm[], 2)
-        : groupedCards(updatedMyEquipmentOptions as INumberFieldForm[])
+    const myEquipment = groupedCards(updatedMyEquipmentOptions)
 
     return (
         <Dialog open={open} onClose={handleClosePopup} aria-labelledby="alert-dialog-title" maxWidth="sm" fullWidth>
@@ -91,7 +86,7 @@ export const EquipmentsQuickAddPopup = ({
                 Ajout Rapide
             </DialogTitle>
             <DialogContent>
-                <TypographyFormatMessage>Selectionner vos équipements :</TypographyFormatMessage>
+                <TypographyFormatMessage className="mb-10">Selectionner vos équipements :</TypographyFormatMessage>
                 <Form
                     style={{ width: '100%' }}
                     defaultValues={defaultValues}

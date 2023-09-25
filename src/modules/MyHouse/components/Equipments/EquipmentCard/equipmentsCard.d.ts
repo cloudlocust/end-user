@@ -1,5 +1,3 @@
-import { equipmentAllowedTypeT } from 'src/modules/MyHouse/components/Installation/InstallationType'
-
 /**
  * EquipmentCardProps.
  */
@@ -11,9 +9,21 @@ export interface EquipmentCardProps {
     /**
      * Equipment type.
      */
-    type: equipmentAllowedTypeT
+    label?: string
     /**
      * Equipment number: represents how many of the same equipment the user has.
      */
     number: number
+    /**
+     * Equipment icon.
+     */
+    icon?: JSX.Element
+    /**
+     * Funcrion that increament equipment number.
+     */
+    onIncreasmentEquipmentNumber: () => void
+    /**
+     * Function that decreament equipment number.
+     */
+    onDecrementEquipmentNumber: () => void
 }

@@ -1,5 +1,4 @@
 import { chunk, filter, zip } from 'lodash'
-import { INumberFieldForm } from 'src/common/ui-kit/components/NumberField/NumberFieldTypes'
 import { ISelectButtons } from 'src/common/ui-kit/form-fields/SelectButtons/SelectButtonsTypes'
 import { equipmentNameType } from 'src/modules/MyHouse/components/Installation/InstallationType.d'
 import { SvgIcon } from '@mui/material'
@@ -8,6 +7,16 @@ import { ReactComponent as OtherIcon } from 'src/assets/images/content/housing/O
 import { ReactComponent as InductionIcon } from 'src/assets/images/content/housing/Induction.svg'
 import { ReactComponent as VitroceramicIcon } from 'src/assets/images/content/housing/Vitroceramic.svg'
 import { ReactComponent as FontElectrique } from 'src/assets/images/content/housing/FontElectrique.svg'
+import { ReactComponent as TvIcon } from 'src/assets/images/content/housing/equipments/tv.svg'
+import { ReactComponent as DesktopComputerIcon } from 'src/assets/images/content/housing/equipments/desktopcomputer.svg'
+import { ReactComponent as LaptopIcon } from 'src/assets/images/content/housing/equipments/laptop.svg'
+import { ReactComponent as VaccumIcon } from 'src/assets/images/content/housing/equipments/vacuum.svg'
+import { ReactComponent as OvenIcon } from 'src/assets/images/content/housing/equipments/oven.svg'
+import { ReactComponent as MicrowaveIcon } from 'src/assets/images/content/housing/equipments/microwave.svg'
+import { ReactComponent as FridgeIcon } from 'src/assets/images/content/housing/equipments/fridge.svg'
+import { ReactComponent as DisahwasherIcon } from 'src/assets/images/content/housing/equipments/dishwasher.svg'
+import { ReactComponent as WashingmachineIcon } from 'src/assets/images/content/housing/equipments/washingmachine.svg'
+import { ReactComponent as DryerIcon } from 'src/assets/images/content/housing/equipments/dryer.svg'
 import GroupsIcon from '@mui/icons-material/Groups'
 
 /**
@@ -59,9 +68,6 @@ const customSvgIconsStyling = {
     height: '56px',
     width: '56px',
 }
-
-// eslint-disable-next-line jsdoc/require-jsdoc
-export const getEquipmentIconPath = (name: string) => `./assets/images/content/equipment/${name}.svg`
 
 // eslint-disable-next-line jsdoc/require-jsdoc
 export const heaterEquipment: ISelectButtons = {
@@ -201,70 +207,65 @@ export const hotPlateEquipment: ISelectButtons = {
 }
 
 // eslint-disable-next-line jsdoc/require-jsdoc
-export const myEquipmentOptions: INumberFieldForm[] = [
+export const myEquipmentOptions = [
     {
         name: 'desktopcomputer',
         labelTitle: 'PC de bureau',
-        iconLabel: 'computer',
+        iconComponent: <DesktopComputerIcon />,
         disableDecrement: true,
     },
     {
         name: 'laptop',
         labelTitle: 'PC Portable',
-        iconLabel: 'computer',
+        iconComponent: <LaptopIcon />,
         disableDecrement: true,
     },
     {
         name: 'tv',
         labelTitle: 'Téléviseur',
-        iconLabel: 'tv',
+        iconComponent: <TvIcon />,
         disableDecrement: true,
     },
     {
         name: 'vacuum',
         labelTitle: 'Aspirateur',
-        // eslint-disable-next-line jsdoc/require-jsdoc
-        get iconPath() {
-            return getEquipmentIconPath(this.name)
-        },
+        iconComponent: <VaccumIcon />,
         disableDecrement: true,
     },
     {
         name: 'oven',
         labelTitle: 'Four',
-        // eslint-disable-next-line jsdoc/require-jsdoc
-        get iconPath() {
-            return getEquipmentIconPath(this.name)
-        },
+        iconComponent: <OvenIcon />,
         disableDecrement: true,
     },
-    { name: 'microwave', labelTitle: 'Micro-onde', iconLabel: 'microwave', disableDecrement: true },
-    { name: 'fridge', labelTitle: 'Réfrigérateur', iconLabel: 'kitchen', disableDecrement: true },
+    {
+        name: 'microwave',
+        labelTitle: 'Micro-onde',
+        iconComponent: <MicrowaveIcon />,
+        disableDecrement: true,
+    },
+    {
+        name: 'fridge',
+        labelTitle: 'Réfrigérateur',
+        iconComponent: <FridgeIcon />,
+        disableDecrement: true,
+    },
     {
         name: 'dishwasher',
         labelTitle: 'Lave-vaisselle',
-        // eslint-disable-next-line jsdoc/require-jsdoc
-        get iconPath() {
-            return getEquipmentIconPath(this.name)
-        },
+        iconComponent: <DisahwasherIcon />,
         disableDecrement: true,
     },
     {
         name: 'washingmachine',
         labelTitle: 'Lave linge',
-        // eslint-disable-next-line jsdoc/require-jsdoc
-        get iconPath() {
-            return getEquipmentIconPath(this.name)
-        },
+        iconComponent: <WashingmachineIcon />,
         disableDecrement: true,
     },
     {
         name: 'dryer',
         labelTitle: 'Sèche linge',
-        // eslint-disable-next-line jsdoc/require-jsdoc
-        get iconPath() {
-            return getEquipmentIconPath(this.name)
-        },
+        iconComponent: <DryerIcon />,
         disableDecrement: true,
     },
 ]
