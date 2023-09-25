@@ -73,13 +73,13 @@ export const EquipmentCard = ({ number, label, name }: EquipmentCardProps) => {
                     </div>
                 </CardContent>
             </Card>
-            {showMicrowaveMeasurementBtn ? (
+            {showMicrowaveMeasurementBtn && (
                 <MicrowaveMeasurement
                     equipmentsNumber={number}
                     modalIsOpen={measurementModalIsOpen}
                     closeModal={closeMeasurementModal}
                 />
-            ) : null}
+            )}
         </>
     )
 }

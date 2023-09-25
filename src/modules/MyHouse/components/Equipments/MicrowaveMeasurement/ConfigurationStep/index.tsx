@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import { useIntl } from 'react-intl'
 import Typography from '@mui/material/Typography'
 import FormControl from '@mui/material/FormControl'
@@ -61,21 +60,6 @@ export const ConfigurationStep = ({
         stepSetter(2)
     }
 
-    /**
-     * Function that generate microwave list items for the Select component.
-     *
-     * @returns The microwave list items.
-     */
-    const microwaveListGenerator = () => {
-        let menuItemsList: JSX.Element[] = []
-        for (let i = 0; i < equipmentsNumber; i++) {
-            menuItemsList.push(<MenuItem value={`micro-onde-${i + 1}`}>Micro-onde {i + 1}</MenuItem>)
-        }
-        return menuItemsList
-    }
-
-    const [microwaveList] = useState(microwaveListGenerator)
-
     const monEquipementStr = 'Mon équipement'
 
     return (
@@ -117,7 +101,9 @@ export const ConfigurationStep = ({
                             })}
                             onChange={handleSelectMicrowaveChange}
                         >
-                            {microwaveList}
+                            {Array(equipmentsNumber).map((_, index) => (
+                                <MenuItem value={`micro-onde-${index + 1}`}>Micro-onde {index + 1}</MenuItem>
+                            ))}
                         </Select>
                     </FormControl>
                 </div>
