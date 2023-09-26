@@ -1,3 +1,4 @@
+import { useIntl } from 'react-intl'
 import Typography from '@mui/material/Typography'
 import FormControl from '@mui/material/FormControl'
 import InputLabel from '@mui/material/InputLabel'
@@ -6,17 +7,17 @@ import MenuItem from '@mui/material/MenuItem'
 import Button from '@mui/material/Button'
 import WarningRoundedIcon from '@mui/icons-material/WarningRounded'
 import { CustomRadioGroup } from 'src/modules/shared/CustomRadioGroup/CustomRadioGroup'
-import { useIntl } from 'react-intl'
 import {
     ConfigurationStepProps,
     RadioGroupOnChangeHandler,
     SelectOnChangeHandler,
-} from 'src/modules/MyHouse/components/MicrowaveMeasurement/MicrowaveMeasurement'
+} from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement/MicrowaveMeasurement'
 
 /**
  * ConfigurationStep component.
  *
  * @param root0 N/A.
+ * @param root0.equipmentsNumber The number of microwaves.
  * @param root0.selectedMicrowave The state that hold the selected microwave.
  * @param root0.setSelectedMicrowave The setter associated to the selected microwave state.
  * @param root0.measurementMode The state that hold the measurement mode.
@@ -25,6 +26,7 @@ import {
  * @returns The ConfigurationStep component.
  */
 export const ConfigurationStep = ({
+    equipmentsNumber,
     selectedMicrowave,
     setSelectedMicrowave,
     measurementMode,
@@ -99,13 +101,16 @@ export const ConfigurationStep = ({
                             })}
                             onChange={handleSelectMicrowaveChange}
                         >
-                            <MenuItem value="micro-onde-1">Micro-onde 1</MenuItem>
-                            <MenuItem value="micro-onde-2">Micro-onde 2</MenuItem>
+                            {Array(equipmentsNumber)
+                                .fill(null)
+                                .map((_, index) => (
+                                    <MenuItem value={`micro-onde-${index + 1}`}>Micro-onde {index + 1}</MenuItem>
+                                ))}
                         </Select>
                     </FormControl>
                 </div>
 
-                {/* Select the microwave */}
+                {/* Select the measurement mode */}
                 <div className="mb-20">
                     <Typography marginBottom="15px" fontWeight="500">
                         {formatMessage({

@@ -5,6 +5,10 @@ import React from 'react'
  */
 export interface MicrowaveMeasurementProps {
     /**
+     * The number of microwaves.
+     */
+    equipmentsNumber: number
+    /**
      * The state of the modal.
      */
     modalIsOpen: boolean
@@ -57,6 +61,10 @@ export interface InfosPageProps {
  * Props of the ConfigurationStep component.
  */
 export interface ConfigurationStepProps {
+    /**
+     * The number of microwaves.
+     */
+    equipmentsNumber: number
     /**
      * The state that hold the selected microwave.
      */

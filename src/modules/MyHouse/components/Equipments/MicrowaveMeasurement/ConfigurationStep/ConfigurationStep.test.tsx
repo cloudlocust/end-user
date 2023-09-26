@@ -1,7 +1,7 @@
 import { screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { reduxedRender } from 'src/common/react-platform-components/test'
-import { ConfigurationStep } from 'src/modules/MyHouse/components/MicrowaveMeasurement/ConfigurationStep'
+import { ConfigurationStep } from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement/ConfigurationStep'
 
 // Mock Dispatch and StepSetterFunction
 const mockDispatch = jest.fn()
@@ -12,6 +12,7 @@ const stanOption = 'Standard'
 const grilOption = 'Grill'
 
 const defaultProps = {
+    equipmentsNumber: 1,
     selectedMicrowave: '',
     setSelectedMicrowave: mockDispatch,
     measurementMode: '',
