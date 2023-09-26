@@ -40,15 +40,6 @@ jest.mock('react-router', () => ({
     }),
 }))
 
-let mockArePlugsUsedBasedOnProductionStatusReturnValue = true
-
-// need to mock this because myHouseConfig uses it
-jest.mock('src/modules/MyHouse/utils/MyHouseHooks.ts', () => ({
-    ...jest.requireActual('src/modules/MyHouse/utils/MyHouseHooks.ts'),
-    //eslint-disable-next-line
-    arePlugsUsedBasedOnProductionStatus: () => mockArePlugsUsedBasedOnProductionStatusReturnValue,
-}))
-
 let mockIsLoadingInProgress = false
 const mockUpdateAccomodation = jest.fn()
 const mockLoadAccomodation = jest.fn()
@@ -168,7 +159,7 @@ describe('Test HousingDetails Component', () => {
 
         test('Should not display when Enphase is disabled', async () => {
             mockHouseConfig.connectedPlugsFeatureState = false
-            mockArePlugsUsedBasedOnProductionStatusReturnValue = false
+            process.env.REACT_APP_CONNECTED_PLUGS_FEATURE_STATE = 'disabled'
             const { queryByText } = reduxedRender(
                 <Router>
                     <HousingDetails />
@@ -177,6 +168,8 @@ describe('Test HousingDetails Component', () => {
             )
             expect(queryByText('Mes prises connectées')).not.toBeInTheDocument()
             expect(queryByText('Prise 1')).not.toBeInTheDocument()
+
+            process.env.REACT_APP_CONNECTED_PLUGS_FEATURE_STATE = 'enabled'
         })
     })
 })

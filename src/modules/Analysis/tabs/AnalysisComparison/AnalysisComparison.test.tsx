@@ -17,13 +17,6 @@ jest.mock(
     () => (props: any) => <div className="apexcharts-svg" data-testid="apexchart" {...props}></div>,
 )
 
-// need to mock this because myHouseConfig uses it
-jest.mock('src/modules/MyHouse/utils/MyHouseHooks.ts', () => ({
-    ...jest.requireActual('src/modules/MyHouse/utils/MyHouseHooks.ts'),
-    //eslint-disable-next-line
-    arePlugsUsedBasedOnProductionStatus: () => true,
-}))
-
 describe('AnanlysisComprison tests', () => {
     test('when there is no available data', async () => {
         const { getByText } = reduxedRender(<AnalysisComparison {...mockAnalysisComprisonProps} />)

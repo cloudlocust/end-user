@@ -3,9 +3,19 @@
 // expect(element).toHaveTextContent(/react/i)
 // learn more: https://github.com/testing-library/jest-dom
 import '@testing-library/jest-dom'
+// import * as housingHooks from 'src/modules/MyHouse/utils/MyHouseHooks'
 
 // src/setupTests.js
 let serverImport: any
+// need to mock this because myHouseConfig uses it
+// doing the condition as return because their is a cross dependency in imports when trying to mock
+// did not know how to fixe it other wise
+// TODO - fixe it with a more classy way
+jest.mock('src/modules/MyHouse/utils/MyHouseHooks.ts', () => ({
+    ...jest.requireActual('src/modules/MyHouse/utils/MyHouseHooks.ts'),
+    //eslint-disable-next-line
+    arePlugsUsedBasedOnProductionStatus: () => (process.env.REACT_APP_CONNECTED_PLUGS_FEATURE_STATE === 'enabled'),
+}))
 // Establish API mocking before all tests.
 beforeAll(() => {
     // Do not import server at the top of the file, because, they potentially import

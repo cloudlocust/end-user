@@ -177,13 +177,6 @@ const mockStore = init({
 const mockUseSelector = jest.spyOn(reactRedux, 'useSelector')
 const mockUseDispatch = jest.spyOn(reactRedux, 'useDispatch')
 
-// need to mock this because myHouseConfig uses it
-jest.mock('src/modules/MyHouse/utils/MyHouseHooks.ts', () => ({
-    ...jest.requireActual('src/modules/MyHouse/utils/MyHouseHooks.ts'),
-    //eslint-disable-next-line
-    arePlugsUsedBasedOnProductionStatus: () => true,
-}))
-
 describe('MeterStatus component test', () => {
     beforeEach(() => {
         mockUseDispatch.mockClear()

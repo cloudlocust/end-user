@@ -14,13 +14,6 @@ let mockConnectedPlug: IConnectedPlug = applyCamelCase(TEST_CONNECTED_PLUGS[0])
 const CONNECTED_PLUG_CONSENT_EXIST_TEXT = 'Connectée le'
 const CONNECTED_PLUG_CONSENT_NOT_EXIST_TEXT = 'Non Connectée'
 
-// need to mock this because myHouseConfig uses it
-jest.mock('src/modules/MyHouse/utils/MyHouseHooks.ts', () => ({
-    ...jest.requireActual('src/modules/MyHouse/utils/MyHouseHooks.ts'),
-    //eslint-disable-next-line
-    arePlugsUsedBasedOnProductionStatus: () => true,
-}))
-
 describe('ConnectedPlugs Mobile Row Test', () => {
     describe('Content Test', () => {
         test('when Consent Exist', async () => {
