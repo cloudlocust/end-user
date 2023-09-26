@@ -6,6 +6,8 @@ import { ReactComponent as HousingIcon } from 'src/assets/images/navbarItems/Hou
 import SvgIcon from '@mui/material/SvgIcon'
 import { HousingInformation } from 'src/modules/MyHouse/components/HousingInformation'
 import { Equipments } from 'src/modules/MyHouse/components/Equipments'
+import { arePlugsUsedBasedOnProductionStatus } from './utils/MyHouseHooks'
+import { store } from 'src/redux'
 
 /**
  * Url for myHouse.
@@ -201,7 +203,9 @@ export const MyHouseConfig = [
                             </SvgIcon>
                         ),
                         url: URL_HOUSING_EQUIPMENTS,
-                        disabled: !connectedPlugsFeatureState,
+                        disabled: !arePlugsUsedBasedOnProductionStatus(
+                            store.getState().housingModel.currentHousingScopes,
+                        ),
                     },
                 },
             },

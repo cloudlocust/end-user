@@ -25,6 +25,15 @@ jest.mock('notistack', () => ({
     }),
 }))
 
+// need to mock this because myHouseConfig uses it
+jest.mock('src/modules/MyHouse/utils/MyHouseHooks.ts', () => ({
+    ...jest.requireActual('src/modules/MyHouse/utils/MyHouseHooks.ts'),
+    //eslint-disable-next-line
+    arePlugsUsedBasedOnProductionStatus: () => true,
+    //eslint-disable-next-line
+    isProductionActiveAndHousingHasAccess: () => true,
+}))
+
 const TEST_HOUSING_ID = '123456'
 const connectedState = 'CONNECTED'
 const TEST_ENEDIS_NRLINK_ENPHASE_ERROR =

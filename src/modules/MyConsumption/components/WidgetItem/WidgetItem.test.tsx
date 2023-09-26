@@ -16,6 +16,13 @@ const mockWidgetPropsDefault: IWidgetItemProps = {
     percentageChange: 50,
 }
 
+// need to mock this because myHouseConfig uses it
+jest.mock('src/modules/MyHouse/utils/MyHouseHooks.ts', () => ({
+    ...jest.requireActual('src/modules/MyHouse/utils/MyHouseHooks.ts'),
+    //eslint-disable-next-line
+    arePlugsUsedBasedOnProductionStatus: () => true,
+}))
+
 describe('WidgetItem Component test', () => {
     test('when there is a value, the WidgetItem infos is shown correctly', async () => {
         const { getByText } = reduxedRender(<WidgetItem {...mockWidgetPropsDefault} />)

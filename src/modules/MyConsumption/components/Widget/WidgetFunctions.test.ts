@@ -34,6 +34,16 @@ jest.mock('src/modules/MyHouse/MyHouseConfig', () => ({
     },
 }))
 
+let mockIsProductionActiveAndHousingHasAccess = true
+// need to mock this because myHouseConfig uses it
+jest.mock('src/modules/MyHouse/utils/MyHouseHooks.ts', () => ({
+    ...jest.requireActual('src/modules/MyHouse/utils/MyHouseHooks.ts'),
+    //eslint-disable-next-line
+    arePlugsUsedBasedOnProductionStatus: () => true,
+    //eslint-disable-next-line
+    isProductionActiveAndHousingHasAccess: () => mockIsProductionActiveAndHousingHasAccess,
+}))
+
 /**
  * Reusable test function that used to test multiple compute total function.
  * Like (computeTotalConsumption, computeTotalProduction, computeTotalAutoconsumption).
@@ -366,7 +376,8 @@ describe('Test widget functions', () => {
             })
         })
         test('when globalProductionFeatureState is disabled, it returns `Consommation Totale` title for consumption target', () => {
-            mockGlobalProductionFeatureState = false
+            mockGlobalProductionFeatureState = false // in tests we don't realy need it
+            mockIsProductionActiveAndHousingHasAccess = false
             expect(renderWidgetTitle(metricTargetsEnum.consumption)).toBe('Consommation Totale')
         })
         test('when globalProductionFeatureState & enphase is off, it returns `Consommation Totale` title for consumption target', () => {

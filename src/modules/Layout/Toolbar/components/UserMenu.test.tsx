@@ -55,6 +55,8 @@ jest.mock('src/modules/MyHouse/utils/MyHouseHooks.ts', () => ({
         loadHousingsAndScopes: mockLoadHousingsAndScopes,
         setDefaultHousingModel: mockSetDefaultHousingModel,
     }),
+    //eslint-disable-next-line
+    arePlugsUsedBasedOnProductionStatus: () => true,
 }))
 
 const mockFaqRedirectLink = 'url'

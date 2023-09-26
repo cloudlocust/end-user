@@ -49,6 +49,16 @@ const productionChartContainerProps: ProductionChartContainerProps = {
     range: mockRange,
 }
 
+// need to mock this because myHouseConfig uses it
+// doing the condition as return because their is a cross dependency in imports when trying to mock
+// did not know how to fixe it other wise
+// TODO - fixe it with a more classy way
+jest.mock('src/modules/MyHouse/utils/MyHouseHooks.ts', () => ({
+    ...jest.requireActual('src/modules/MyHouse/utils/MyHouseHooks.ts'),
+    //eslint-disable-next-line
+    arePlugsUsedBasedOnProductionStatus: () => process.env.REACT_APP_CONNECTED_PLUGS_FEATURE_STATE === 'enabled',
+}))
+
 // Mock metricsHook
 jest.mock('src/modules/Metrics/metricsHook.ts', () => ({
     // eslint-disable-next-line jsdoc/require-jsdoc
@@ -158,11 +168,14 @@ describe('ProductionChartContainer test', () => {
 
     test('When only enphaseConsentOff.', async () => {
         mockConnectedPlugsFeatureState = false
+        process.env.REACT_APP_CONNECTED_PLUGS_FEATURE_STATE = 'disabled'
         const { getByText } = reduxedRender(
             <Router>
                 <ProductionChartContainer {...productionChartContainerProps} />
             </Router>,
         )
         expect(getByText(ENPHASE_OFF_MESSAGE)).toBeTruthy()
+
+        process.env.REACT_APP_CONNECTED_PLUGS_FEATURE_STATE = 'enabled'
     })
 })

@@ -56,6 +56,13 @@ jest.mock('src/modules/MyHouse/components/ConnectedPlugs/connectedPlugsHook', ()
     }),
 }))
 
+// need to mock this because myHouseConfig uses it
+jest.mock('src/modules/MyHouse/utils/MyHouseHooks.ts', () => ({
+    ...jest.requireActual('src/modules/MyHouse/utils/MyHouseHooks.ts'),
+    //eslint-disable-next-line
+    arePlugsUsedBasedOnProductionStatus: () => true,
+}))
+
 const LOADING_TEXT = 'Chargement...'
 
 describe('ConnectedPlugList component', () => {

@@ -21,8 +21,10 @@ import Box from '@mui/material/Box'
 import ConsumptionWidgetsContainer from 'src/modules/MyConsumption/components/ConsumptionWidgetsContainer'
 import { ConsumptionWidgetsMetricsProvider } from 'src/modules/MyConsumption/components/ConsumptionWidgetsContainer/ConsumptionWidgetsMetricsContext'
 import { useConnectedPlugList } from 'src/modules/MyHouse/components/ConnectedPlugs/connectedPlugsHook'
-import { connectedPlugsFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
-import { globalProductionFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
+import {
+    arePlugsUsedBasedOnProductionStatus,
+    isProductionActiveAndHousingHasAccess,
+} from 'src/modules/MyHouse/utils/MyHouseHooks'
 
 /**
  * MyConsumptionContainer.
@@ -34,7 +36,7 @@ export const MyConsumptionContainer = () => {
     const theme = useTheme()
     const { getConsents, nrlinkConsent, enedisSgeConsent, enphaseConsent, consentsLoading } = useConsents()
     const [period, setPeriod] = useState<PeriodEnum>(PeriodEnum.DAILY)
-    const { currentHousing } = useSelector(({ housingModel }: RootState) => housingModel)
+    const { currentHousing, currentHousingScopes } = useSelector(({ housingModel }: RootState) => housingModel)
     const [range, setRange] = useState<metricRangeType>(getRangeV2(PeriodEnum.DAILY))
     const [filters, setFilters] = useState<metricFiltersType>([])
 
@@ -59,7 +61,8 @@ export const MyConsumptionContainer = () => {
 
     // TODO put enphaseConsent.enphaseConsentState in an enum.
     let isProductionConsentOff = enphaseConsent?.enphaseConsentState !== 'ACTIVE'
-    if (connectedPlugsFeatureState) isProductionConsentOff = isProductionConsentOff && !isProductionConnectedPlug
+    if (arePlugsUsedBasedOnProductionStatus(currentHousingScopes))
+        isProductionConsentOff = isProductionConsentOff && !isProductionConnectedPlug
 
     // UseEffect to check for consent whenever a meter is selected.
     useEffect(() => {
@@ -146,7 +149,7 @@ export const MyConsumptionContainer = () => {
                 )}
 
                 {/* Production Chart */}
-                {globalProductionFeatureState && (
+                {isProductionActiveAndHousingHasAccess(currentHousingScopes) && (
                     <ProductionChartContainer
                         period={period}
                         range={range}

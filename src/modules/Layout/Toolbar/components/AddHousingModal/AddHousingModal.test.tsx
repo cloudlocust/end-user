@@ -14,6 +14,13 @@ const mockAddHousingModalProps: AddHousingModalProps = {
     closeModal: jest.fn(),
 }
 
+// need to mock this because myHouseConfig uses it
+jest.mock('src/modules/MyHouse/utils/MyHouseHooks.ts', () => ({
+    ...jest.requireActual('src/modules/MyHouse/utils/MyHouseHooks.ts'),
+    //eslint-disable-next-line
+    arePlugsUsedBasedOnProductionStatus: () => true,
+}))
+
 describe('Test AddHousing Modal.', () => {
     test('when modalOpen is true, the Modal is shown.', async () => {
         const { getByText } = reduxedRender(<AddHousingModal {...mockAddHousingModalProps} />)
