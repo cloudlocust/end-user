@@ -18,6 +18,7 @@ import { ReplaceNRLinkModule } from 'src/modules/MyHouse/components/ReplaceNRLin
 import MeterInfos from 'src/modules/MyHouse/components/MeterInfo'
 import { HousingAddressCard } from 'src/modules/MyHouse/components/HousingAddressCard'
 import { SolarProductionConsentStatus } from 'src/modules/MyHouse/components/MeterStatus/SolarProductionStatus'
+import { DeleteNrlinkConsent } from 'src/modules/MyHouse/components/DeleteNrlinkConsent'
 
 const FORMATTED_DATA = 'DD/MM/YYYY'
 const TEXT_CONNEXION_LE = 'Connexion le'
@@ -132,12 +133,19 @@ export const MeterStatus = () => {
                                 defaultMessage: TEXT_CONNEXION_LE,
                             })} ${nrlinkConsentCreatedAt}`}</span>
                         </div>
-                        <ReplaceNRLinkModule
-                            nrLinkConsent={nrlinkConsent}
-                            onAfterReplaceNRLink={() => {
-                                getConsents(currentHousing?.id)
-                            }}
-                        />
+                        <div className="flex flex-1 justify-end">
+                            <ReplaceNRLinkModule
+                                nrLinkConsent={nrlinkConsent}
+                                onAfterReplaceNRLink={() => {
+                                    getConsents(currentHousing?.id)
+                                }}
+                            />
+                            <DeleteNrlinkConsent
+                                onAfterDeleteNrlinkConsent={() => {
+                                    getConsents(currentHousing?.id)
+                                }}
+                            />
+                        </div>
                     </>
                 )
             case 'DISCONNECTED':
