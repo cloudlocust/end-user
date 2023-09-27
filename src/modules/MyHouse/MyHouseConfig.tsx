@@ -90,6 +90,11 @@ export const connectedPlugsFeatureState = window._env_.REACT_APP_CONNECTED_PLUGS
 export const manualContractFillingIsEnabled = window._env_.REACT_APP_MANUAL_CONTRACT_FILLING === 'enabled'
 
 /**
+ * Env var for custom SGE consent custom popup message.
+ */
+export const sgeConsentFeatureStatePopup: string = window._env_.REACT_APP_SGE_CONSENT_FEATURE_STATE_POPUP_MESSAGE
+
+/**
  * Check if global production is active, if so check if we are using access rights, if so then we have to use the production offer rights.
  *
  * @param scopes Scopes of housing to check.
