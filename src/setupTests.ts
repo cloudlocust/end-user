@@ -11,8 +11,8 @@ let serverImport: any
 // doing the condition as return because their is a cross dependency in imports when trying to mock
 // did not know how to fixe it other wise
 // TODO - fixe it with a more classy way
-jest.mock('src/modules/MyHouse/utils/MyHouseHooks.ts', () => ({
-    ...jest.requireActual('src/modules/MyHouse/utils/MyHouseHooks.ts'),
+jest.mock('src/modules/MyHouse/utils/MyHouseUtilsFunctions.ts', () => ({
+    ...jest.requireActual('src/modules/MyHouse/utils/MyHouseUtilsFunctions.ts'),
     //eslint-disable-next-line
     arePlugsUsedBasedOnProductionStatus: () => (process.env.REACT_APP_CONNECTED_PLUGS_FEATURE_STATE === 'enabled'),
 }))

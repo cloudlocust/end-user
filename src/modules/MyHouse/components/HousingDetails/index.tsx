@@ -27,7 +27,7 @@ import { RootState } from 'src/redux'
 import { cloneDeep, isEmpty } from 'lodash'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import { useConnectedPlugList } from 'src/modules/MyHouse/components/ConnectedPlugs/connectedPlugsHook'
-import { arePlugsUsedBasedOnProductionStatus } from 'src/modules/MyHouse/utils/MyHouseHooks'
+import { arePlugsUsedBasedOnProductionStatus } from 'src/modules/MyHouse/utils/MyHouseUtilsFunctions'
 
 const Root = styled(FusePageCarded)(() => ({
     '& .FusePageCarded-header': {

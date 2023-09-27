@@ -6,7 +6,7 @@ import { ReactComponent as HousingIcon } from 'src/assets/images/navbarItems/Hou
 import SvgIcon from '@mui/material/SvgIcon'
 import { HousingInformation } from 'src/modules/MyHouse/components/HousingInformation'
 import { Equipments } from 'src/modules/MyHouse/components/Equipments'
-import { arePlugsUsedBasedOnProductionStatus } from './utils/MyHouseHooks'
+import { arePlugsUsedBasedOnProductionStatus } from 'src/modules/MyHouse/utils/MyHouseUtilsFunctions'
 import { store } from 'src/redux'
 
 /**

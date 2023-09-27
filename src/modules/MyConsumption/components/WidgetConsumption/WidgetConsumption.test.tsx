@@ -66,8 +66,8 @@ jest.mock('src/modules/Metrics/metricsHook.ts', () => ({
 }))
 
 // need to mock this because myHouseConfig uses it
-jest.mock('src/modules/MyHouse/utils/MyHouseHooks.ts', () => ({
-    ...jest.requireActual('src/modules/MyHouse/utils/MyHouseHooks.ts'),
+jest.mock('src/modules/MyHouse/utils/MyHouseUtilsFunctions.ts', () => ({
+    ...jest.requireActual('src/modules/MyHouse/utils/MyHouseUtilsFunctions.ts'),
     //eslint-disable-next-line
     arePlugsUsedBasedOnProductionStatus: jest.fn(),
     //eslint-disable-next-line

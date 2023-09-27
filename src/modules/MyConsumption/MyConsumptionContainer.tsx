@@ -24,7 +24,7 @@ import { useConnectedPlugList } from 'src/modules/MyHouse/components/ConnectedPl
 import {
     arePlugsUsedBasedOnProductionStatus,
     isProductionActiveAndHousingHasAccess,
-} from 'src/modules/MyHouse/utils/MyHouseHooks'
+} from 'src/modules/MyHouse/utils/MyHouseUtilsFunctions'
 
 /**
  * MyConsumptionContainer.

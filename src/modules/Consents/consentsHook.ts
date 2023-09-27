@@ -14,7 +14,7 @@ import { sgeConsentFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
 import { useAxiosCancelToken } from 'src/hooks/AxiosCancelToken'
 import { useSelector } from 'react-redux'
 import { RootState } from 'src/redux'
-import { isProductionActiveAndHousingHasAccess } from 'src/modules/MyHouse/utils/MyHouseHooks'
+import { isProductionActiveAndHousingHasAccess } from 'src/modules/MyHouse/utils/MyHouseUtilsFunctions'
 
 const NO_HOUSING_ID_ERROR_TEXT = 'No housing id provided'
 

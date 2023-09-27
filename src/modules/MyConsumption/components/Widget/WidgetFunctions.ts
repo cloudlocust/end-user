@@ -25,7 +25,7 @@ import {
 import { periodType } from 'src/modules/MyConsumption/myConsumptionTypes'
 import { getDateWithoutTimezoneOffset } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
 import dayjs from 'dayjs'
-import { isProductionActiveAndHousingHasAccess } from 'src/modules/MyHouse/utils/MyHouseHooks'
+import { isProductionActiveAndHousingHasAccess } from 'src/modules/MyHouse/utils/MyHouseUtilsFunctions'
 import { store } from 'src/redux'
 
 /**
