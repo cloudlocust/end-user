@@ -87,6 +87,11 @@ export const connectedPlugsFeatureState = window._env_.REACT_APP_CONNECTED_PLUGS
 export const manualContractFillingIsEnabled = window._env_.REACT_APP_MANUAL_CONTRACT_FILLING === 'enabled'
 
 /**
+ * Env var for custom SGE consent custom popup message.
+ */
+export const sgeConsentFeatureStatePopup: string = window._env_.REACT_APP_SGE_CONSENT_FEATURE_STATE_POPUP_MESSAGE
+
+/**
  * MyHouseConfig.
  */
 export const MyHouseConfig = [

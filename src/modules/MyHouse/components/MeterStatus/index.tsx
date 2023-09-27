@@ -10,7 +10,12 @@ import { MuiCardContent } from 'src/common/ui-kit'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import { enedisSgeConsentStatus, nrlinkConsentStatus } from 'src/modules/Consents/Consents'
 import { useConsents } from 'src/modules/Consents/consentsHook'
-import { URL_MY_HOUSE, globalProductionFeatureState, sgeConsentFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
+import {
+    URL_MY_HOUSE,
+    globalProductionFeatureState,
+    sgeConsentFeatureState,
+    sgeConsentFeatureStatePopup,
+} from 'src/modules/MyHouse/MyHouseConfig'
 import { EnedisSgePopup } from 'src/modules/MyHouse/components/MeterStatus/EnedisSgePopup'
 import { NrlinkConnectionStepsEnum } from 'src/modules/nrLinkConnection/nrlinkConnectionSteps.d'
 import { RootState } from 'src/redux'
@@ -363,8 +368,8 @@ export const MeterStatus = () => {
                             placement="top"
                             disableHoverListener={sgeConsentFeatureState}
                             title={formatMessage({
-                                id: "Cette fonctionnalité n'est pas encore disponible",
-                                defaultMessage: "Cette fonctionnalité n'est pas encore disponible",
+                                id: `${sgeConsentFeatureStatePopup}`,
+                                defaultMessage: `${sgeConsentFeatureStatePopup}`,
                             })}
                         >
                             <div className={`w-full md:w-1/3 p-12 ${!sgeConsentFeatureState && 'cursor-not-allowed'}`}>

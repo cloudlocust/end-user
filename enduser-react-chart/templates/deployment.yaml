@@ -287,5 +287,10 @@ spec:
             configMapKeyRef:
               name: enduser-react
               key: REACT_APP_CONSUMPTION_ALERTS_VISIBILITY      
+        - name: REACT_APP_SGE_CONSENT_FEATURE_STATE_POPUP_MESSAGE
+          valueFrom:
+            configMapKeyRef:
+              name: enduser-react
+              key: REACT_APP_SGE_CONSENT_FEATURE_STATE_POPUP_MESSAGE      
       imagePullSecrets:
       - name: dockersecret  
