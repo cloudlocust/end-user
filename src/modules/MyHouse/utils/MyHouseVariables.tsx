@@ -9,6 +9,15 @@ import { ReactComponent as InductionIcon } from 'src/assets/images/content/housi
 import { ReactComponent as VitroceramicIcon } from 'src/assets/images/content/housing/Vitroceramic.svg'
 import { ReactComponent as FontElectrique } from 'src/assets/images/content/housing/FontElectrique.svg'
 import GroupsIcon from '@mui/icons-material/Groups'
+import { API_RESOURCES_URL } from 'src/configs'
+
+/**
+ * Access rights url.
+ *
+ * @param housingId The housingId of the rights we want to get.
+ * @returns Access rights base url.
+ */
+export const ACCESS_RIGHTS_API = (housingId: number) => `${API_RESOURCES_URL}/access-rights/${housingId}`
 
 /**
  * Accomodation labels.

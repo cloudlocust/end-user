@@ -106,8 +106,10 @@ const store = init({
 const mockHouseConfig = houseConfig as { connectedPlugsFeatureState: boolean }
 
 jest.mock('src/modules/MyHouse/MyHouseConfig', () => ({
+    ...jest.requireActual('src/modules/MyHouse/MyHouseConfig'),
     __esModule: true,
-    connectedPlugsFeatureState: true,
+    //eslint-disable-next-line
+    arePlugsUsedBasedOnProductionStatus: () => process.env.REACT_APP_CONNECTED_PLUGS_FEATURE_STATE === 'enabled',
 }))
 
 describe('Test HousingDetails Component', () => {
@@ -159,6 +161,7 @@ describe('Test HousingDetails Component', () => {
 
         test('Should not display when Enphase is disabled', async () => {
             mockHouseConfig.connectedPlugsFeatureState = false
+            process.env.REACT_APP_CONNECTED_PLUGS_FEATURE_STATE = 'disabled'
             const { queryByText } = reduxedRender(
                 <Router>
                     <HousingDetails />
@@ -167,6 +170,8 @@ describe('Test HousingDetails Component', () => {
             )
             expect(queryByText('Mes prises connectées')).not.toBeInTheDocument()
             expect(queryByText('Prise 1')).not.toBeInTheDocument()
+
+            process.env.REACT_APP_CONNECTED_PLUGS_FEATURE_STATE = 'enabled'
         })
     })
 })

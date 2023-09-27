@@ -25,6 +25,7 @@ import { getDateWithoutTimezoneOffset } from 'src/modules/MyConsumption/utils/My
 import dayjs from 'dayjs'
 
 let mockGlobalProductionFeatureState = true
+let mockIsProductionActiveAndHousingHasAccess = true
 
 jest.mock('src/modules/MyHouse/MyHouseConfig', () => ({
     ...jest.requireActual('src/modules/MyHouse/MyHouseConfig'),
@@ -32,6 +33,10 @@ jest.mock('src/modules/MyHouse/MyHouseConfig', () => ({
     get globalProductionFeatureState() {
         return mockGlobalProductionFeatureState
     },
+    //eslint-disable-next-line
+    arePlugsUsedBasedOnProductionStatus: () => true,
+    //eslint-disable-next-line
+    isProductionActiveAndHousingHasAccess: () => mockIsProductionActiveAndHousingHasAccess,
 }))
 
 /**
@@ -366,7 +371,8 @@ describe('Test widget functions', () => {
             })
         })
         test('when globalProductionFeatureState is disabled, it returns `Consommation Totale` title for consumption target', () => {
-            mockGlobalProductionFeatureState = false
+            mockGlobalProductionFeatureState = false // in tests we don't realy need it
+            mockIsProductionActiveAndHousingHasAccess = false
             expect(renderWidgetTitle(metricTargetsEnum.consumption)).toBe('Consommation Totale')
         })
         test('when globalProductionFeatureState & enphase is off, it returns `Consommation Totale` title for consumption target', () => {
