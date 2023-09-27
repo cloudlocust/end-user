@@ -38,11 +38,6 @@ jest.mock('src/modules/MyHouse/MyHouseConfig', () => ({
     get connectedPlugsFeatureState() {
         return true
     },
-}))
-
-// need to mock this because myHouseConfig uses it
-jest.mock('src/modules/MyHouse/utils/MyHouseUtilsFunctions.ts', () => ({
-    ...jest.requireActual('src/modules/MyHouse/utils/MyHouseUtilsFunctions.ts'),
     //eslint-disable-next-line
     arePlugsUsedBasedOnProductionStatus: () => true,
     //eslint-disable-next-line

@@ -87,6 +87,10 @@ jest.mock('src/modules/MyHouse/MyHouseConfig', () => ({
     get connectedPlugsFeatureState() {
         return mockConnectedPlugsFeatureState
     },
+    //eslint-disable-next-line
+    arePlugsUsedBasedOnProductionStatus: () => {
+        return process.env.REACT_APP_CONNECTED_PLUGS_FEATURE_STATE === 'enabled'
+    },
 }))
 
 describe('ProductionChartContainer test', () => {

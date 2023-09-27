@@ -106,8 +106,10 @@ const store = init({
 const mockHouseConfig = houseConfig as { connectedPlugsFeatureState: boolean }
 
 jest.mock('src/modules/MyHouse/MyHouseConfig', () => ({
+    ...jest.requireActual('src/modules/MyHouse/MyHouseConfig'),
     __esModule: true,
-    connectedPlugsFeatureState: true,
+    //eslint-disable-next-line
+    arePlugsUsedBasedOnProductionStatus: () => process.env.REACT_APP_CONNECTED_PLUGS_FEATURE_STATE === 'enabled',
 }))
 
 describe('Test HousingDetails Component', () => {

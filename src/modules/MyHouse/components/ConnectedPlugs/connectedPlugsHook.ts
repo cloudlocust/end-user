@@ -14,7 +14,7 @@ import {
 import { isNull } from 'lodash'
 import { HOUSING_API } from 'src/modules/MyHouse/components/HousingList/HousingsHooks'
 import { getShellyWindowInstructionsHTML } from 'src/modules/MyHouse/components/ConnectedPlugs/ShellyWindowInstructions'
-import { arePlugsUsedBasedOnProductionStatus } from 'src/modules/MyHouse/utils/MyHouseUtilsFunctions'
+import { arePlugsUsedBasedOnProductionStatus } from 'src/modules/MyHouse/MyHouseConfig'
 import { useSelector } from 'react-redux'
 import { RootState } from 'src/redux'
 

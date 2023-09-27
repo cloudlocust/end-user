@@ -13,7 +13,7 @@ import { RootState } from 'src/redux'
 import { ChartErrorMessage } from 'src/modules/MyConsumption/components/ChartErrorMessage'
 import { ENPHASE_OFF_MESSAGE, PRODUCTION_OFF_MESSAGE } from 'src/modules/MyConsumption/utils/myConsumptionVariables'
 import { productionChartErrorState } from 'src/modules/MyConsumption/MyConsumptionConfig'
-import { arePlugsUsedBasedOnProductionStatus } from 'src/modules/MyHouse/utils/MyHouseUtilsFunctions'
+import { arePlugsUsedBasedOnProductionStatus } from 'src/modules/MyHouse/MyHouseConfig'
 
 /**
  * ProductionChartContainer Component.

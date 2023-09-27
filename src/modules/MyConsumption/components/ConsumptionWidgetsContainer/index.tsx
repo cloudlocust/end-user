@@ -9,7 +9,7 @@ import WidgetConsumption from 'src/modules/MyConsumption/components/WidgetConsum
 import { ConsumptionWidgetsMetricsContext } from 'src/modules/MyConsumption/components/ConsumptionWidgetsContainer/ConsumptionWidgetsMetricsContext'
 import { metricTargetsEnum, metricTargetType } from 'src/modules/Metrics/Metrics.d'
 import WidgetIdleConsumption from 'src/modules/MyConsumption/components/WidgetIdleConsumption'
-import { isProductionActiveAndHousingHasAccess } from 'src/modules/MyHouse/utils/MyHouseUtilsFunctions'
+import { isProductionActiveAndHousingHasAccess } from 'src/modules/MyHouse/MyHouseConfig'
 import { useSelector } from 'react-redux'
 import { RootState } from 'src/redux'
 

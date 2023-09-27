@@ -13,7 +13,7 @@ import { RootState } from 'src/redux'
 import {
     arePlugsUsedBasedOnProductionStatus,
     isProductionActiveAndHousingHasAccess,
-} from 'src/modules/MyHouse/utils/MyHouseUtilsFunctions'
+} from 'src/modules/MyHouse/MyHouseConfig'
 
 /**
  * Solar Production Consent Status Component, that shows and isolates the solar production consent of MeterStatus.

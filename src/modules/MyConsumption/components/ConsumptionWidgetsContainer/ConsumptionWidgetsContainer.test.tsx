@@ -42,21 +42,16 @@ const consumptionWidgetsContainerProps: ConsumptionWidgetsContainerProps = {
 
 let mockIsProductionActiveAndHousingHasAccess = true
 
-// need to mock this because myHouseConfig uses it
-jest.mock('src/modules/MyHouse/utils/MyHouseUtilsFunctions.ts', () => ({
-    ...jest.requireActual('src/modules/MyHouse/utils/MyHouseUtilsFunctions.ts'),
-    //eslint-disable-next-line
-    arePlugsUsedBasedOnProductionStatus: () => true,
-    //eslint-disable-next-line
-    isProductionActiveAndHousingHasAccess: () => mockIsProductionActiveAndHousingHasAccess,
-}))
-
 jest.mock('src/modules/MyHouse/MyHouseConfig', () => ({
     ...jest.requireActual('src/modules/MyHouse/MyHouseConfig'),
     // eslint-disable-next-line jsdoc/require-jsdoc
     get globalProductionFeatureState() {
         return mockGlobalProductionFeatureState
     },
+    //eslint-disable-next-line
+    arePlugsUsedBasedOnProductionStatus: () => true,
+    //eslint-disable-next-line
+    isProductionActiveAndHousingHasAccess: () => mockIsProductionActiveAndHousingHasAccess,
 }))
 
 jest.mock('src/modules/Metrics/metricsHook.ts', () => ({

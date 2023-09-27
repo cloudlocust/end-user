@@ -18,7 +18,7 @@ import { ReplaceNRLinkModule } from 'src/modules/MyHouse/components/ReplaceNRLin
 import MeterInfos from 'src/modules/MyHouse/components/MeterInfo'
 import { HousingAddressCard } from 'src/modules/MyHouse/components/HousingAddressCard'
 import { SolarProductionConsentStatus } from 'src/modules/MyHouse/components/MeterStatus/SolarProductionStatus'
-import { isProductionActiveAndHousingHasAccess } from 'src/modules/MyHouse/utils/MyHouseUtilsFunctions'
+import { isProductionActiveAndHousingHasAccess } from 'src/modules/MyHouse/MyHouseConfig'
 
 const FORMATTED_DATA = 'DD/MM/YYYY'
 const TEXT_CONNEXION_LE = 'Connexion le'
