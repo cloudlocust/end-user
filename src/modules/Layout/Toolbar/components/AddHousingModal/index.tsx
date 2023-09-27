@@ -1,8 +1,7 @@
 import { Modal, Box } from '@mui/material'
-import { Dispatch } from 'src/redux'
-import { useDispatch } from 'react-redux'
 import { AddHousingModalProps } from 'src/modules/Layout/Toolbar/components/AddHousingModal/AddHousingModal'
 import HousingForm from 'src/modules/MyHouse/components/HousingForm'
+import { useHousingRedux } from 'src/modules/MyHouse/utils/MyHouseHooks'
 
 /**
  * Modal to Add housing.
@@ -14,7 +13,7 @@ import HousingForm from 'src/modules/MyHouse/components/HousingForm'
  * @returns JSX.Element - Modal.
  */
 function AddHousingModal({ modalOpen, closeModal, disableBackdropClick = false }: AddHousingModalProps) {
-    const dispatch = useDispatch<Dispatch>()
+    const { loadHousingsAndScopes } = useHousingRedux()
 
     /**
      * Callback to handle when the user clicks on the backdrop of the modal.
@@ -40,7 +39,7 @@ function AddHousingModal({ modalOpen, closeModal, disableBackdropClick = false }
                 <HousingForm
                     onSuccess={() => {
                         closeModal()
-                        dispatch.housingModel.loadHousingsList()
+                        loadHousingsAndScopes()
                     }}
                 />
             </Box>

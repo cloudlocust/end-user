@@ -10,12 +10,7 @@ import { MuiCardContent } from 'src/common/ui-kit'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import { enedisSgeConsentStatus, nrlinkConsentStatus } from 'src/modules/Consents/Consents'
 import { useConsents } from 'src/modules/Consents/consentsHook'
-import {
-    URL_MY_HOUSE,
-    globalProductionFeatureState,
-    sgeConsentFeatureState,
-    sgeConsentFeatureStatePopup,
-} from 'src/modules/MyHouse/MyHouseConfig'
+import { URL_MY_HOUSE, sgeConsentFeatureState, sgeConsentFeatureStatePopup } from 'src/modules/MyHouse/MyHouseConfig'
 import { EnedisSgePopup } from 'src/modules/MyHouse/components/MeterStatus/EnedisSgePopup'
 import { NrlinkConnectionStepsEnum } from 'src/modules/nrLinkConnection/nrlinkConnectionSteps.d'
 import { RootState } from 'src/redux'
@@ -23,6 +18,7 @@ import { ReplaceNRLinkModule } from 'src/modules/MyHouse/components/ReplaceNRLin
 import MeterInfos from 'src/modules/MyHouse/components/MeterInfo'
 import { HousingAddressCard } from 'src/modules/MyHouse/components/HousingAddressCard'
 import { SolarProductionConsentStatus } from 'src/modules/MyHouse/components/MeterStatus/SolarProductionStatus'
+import { isProductionActiveAndHousingHasAccess } from 'src/modules/MyHouse/MyHouseConfig'
 
 const FORMATTED_DATA = 'DD/MM/YYYY'
 const TEXT_CONNEXION_LE = 'Connexion le'
@@ -69,8 +65,10 @@ export const MeterStatus = () => {
         isEnphaseConsentLoading,
         revokeEnphaseConsent,
     } = useConsents()
-    const { currentHousing } = useSelector(({ housingModel }: RootState) => housingModel)
+    const { currentHousing, currentHousingScopes } = useSelector(({ housingModel }: RootState) => housingModel)
     const [openCancelCollectionDataTooltip, setOpenCancelCollectionDataTooltip] = useState(false)
+
+    const isProductionActive = isProductionActiveAndHousingHasAccess(currentHousingScopes)
 
     /*  Nrlink created at date formatted */
     const nrlinkConsentCreatedAt = dayjs(nrlinkConsent?.createdAt).format(FORMATTED_DATA)
@@ -342,7 +340,7 @@ export const MeterStatus = () => {
                     </div>
                     <div
                         className={`flex flex-col md:flex-row ${
-                            !globalProductionFeatureState ? 'justify-between' : 'justify-evenly'
+                            !isProductionActive ? 'justify-between' : 'justify-evenly'
                         } items-center`}
                     >
                         {/* Nrlink Consent Status */}
