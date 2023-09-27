@@ -55,5 +55,5 @@ data:
   REACT_APP_MANUAL_CONTRACT_FILLING: {{ .Values.REACT_APP_MANUAL_CONTRACT_FILLING | default "enabled" }}
   REACT_APP_IS_MAINTENANCE_MODE: {{ .Values.REACT_APP_IS_MAINTENANCE_MODE | default "false" | quote }}
   REACT_APP_CONSUMPTION_ALERTS_VISIBILITY: {{ .Values.REACT_APP_CONSUMPTION_ALERTS_VISIBILITY | default "enabled" }}
-  REACT_APP_SGE_CONSENT_FEATURE_STATE_POPUP_MESSAGE: {{ .Values.REACT_APP_SGE_CONSENT_FEATURE_STATE_POPUP_MESSAGE | default "'Cette fonctionnalité n'est pas encore disponible'" }}
+  REACT_APP_SGE_CONSENT_FEATURE_STATE_POPUP_MESSAGE: {{ .Values.REACT_APP_SGE_CONSENT_FEATURE_STATE_POPUP_MESSAGE | default "'Cette fonctionnalité n'est pas encore disponible'"  | quote }}
   REACT_APP_ACCESS_RIGHTS_STATE: {{ .Values.REACT_APP_ACCESS_RIGHTS_STATE | default "disabled" }}
