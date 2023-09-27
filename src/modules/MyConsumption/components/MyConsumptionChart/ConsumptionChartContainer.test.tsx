@@ -385,6 +385,7 @@ describe('MyConsumptionContainer test', () => {
             })
         })
     })
+
     test('When manual contract filling is disabled, missing contract link does not show.', () => {
         mockManualContractFillingIsEnabled = false
         const { queryByText } = reduxedRender(
@@ -397,5 +398,32 @@ describe('MyConsumptionContainer test', () => {
         expect(queryByText(HAS_MISSING_CONTRACTS_WARNING_REDIRECT_LINK_TEXT)).not.toBeInTheDocument()
 
         mockManualContractFillingIsEnabled = true
+    })
+
+    describe('TemperatureOrPmax TargetMenuGroup Test', () => {
+        test('When clicking on reset button, getMetrics should be called without pMax or temperature', async () => {
+            consumptionChartContainerProps.period = 'weekly'
+            consumptionChartContainerProps.metricsInterval = '1d' as metricIntervalType
+
+            const { getByLabelText, getAllByRole } = reduxedRender(
+                <Router>
+                    <ConsumptionChartContainer {...consumptionChartContainerProps} />
+                </Router>,
+                { initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[0] } } },
+            )
+
+            let button = getByLabelText(buttonLabelText)
+            expect(button).toBeInTheDocument()
+
+            button.focus()
+            button.click()
+
+            // Reset Button.
+            userEvent.click(getAllByRole('menuitem')[1])
+
+            await waitFor(() => {
+                expect(mockGetMetricsWithParams).toHaveBeenCalledTimes(2)
+            })
+        }, 10000)
     })
 })
