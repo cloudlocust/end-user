@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import { ToggleButtonGroup, ToggleButton, capitalize } from '@mui/material'
 import { SwitchIdleConsumptionProps } from 'src/modules/MyConsumption/myConsumptionTypes.d'
 import { linksColor, warningMainHashColor } from 'src/modules/utils/muiThemeVariables'
@@ -12,6 +11,7 @@ import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline'
  * @param props.addIdleTarget Add Target Idle prop.
  * @param props.isIdleConsumptionButtonDisabled Indicated if IdleConsumptionButton is disabled.
  * @param props.onClickIdleConsumptionDisabledInfoIcon When Clicking on IdleConsumptionDisabledInfoIcon.
+ * @param props.isIdleConsumptionButtonSelected Value of idleConsumptionButton.
  * @returns Idle Conssumption switch button.
  */
 export const SwitchIdleConsumption = ({
@@ -19,9 +19,8 @@ export const SwitchIdleConsumption = ({
     removeIdleTarget,
     isIdleConsumptionButtonDisabled,
     onClickIdleConsumptionDisabledInfoIcon,
+    isIdleConsumptionButtonSelected,
 }: SwitchIdleConsumptionProps): JSX.Element => {
-    const [isIdleConsumptionButtonSelected, setIsIdleConsumptionButtonSelected] = useState(false)
-
     const idleConsumptionSwitchButtons = [
         {
             label: 'Général',
@@ -48,7 +47,6 @@ export const SwitchIdleConsumption = ({
             }
             addIdleTarget()
         } else removeIdleTarget()
-        setIsIdleConsumptionButtonSelected(isIdleConsumptionValue)
     }
 
     return (

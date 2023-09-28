@@ -402,6 +402,8 @@ describe('MyConsumptionContainer test', () => {
 
     test('When isShowIdleConsumptionDisabledInfo', async () => {
         consumptionChartContainerProps.period = 'daily'
+        consumptionChartContainerProps.metricsInterval = '1m' as metricIntervalType
+
         const { getByText } = reduxedRender(
             <Router>
                 <ConsumptionChartContainer {...consumptionChartContainerProps} />
@@ -416,6 +418,7 @@ describe('MyConsumptionContainer test', () => {
             expect(getByText('Les informations de veille ne sont pas disponibles pour cette pèriode')).toBeTruthy()
         })
     })
+
     describe('TemperatureOrPmax TargetMenuGroup Test', () => {
         test('When clicking on reset button, getMetrics should be called without pMax or temperature', async () => {
             consumptionChartContainerProps.period = 'weekly'

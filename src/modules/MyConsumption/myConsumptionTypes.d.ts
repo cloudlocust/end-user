@@ -167,6 +167,10 @@ export type SwitchIdleConsumptionProps =
          */
         addIdleTarget: () => void
         /**
+         * Value of idleConsumptionButton.
+         */
+        isIdleConsumptionButtonSelected: boolean
+        /**
          * Indicate if IdleConsumptionTogglButton is disabled.
          */
         isIdleConsumptionButtonDisabled?: boolean
