@@ -7,12 +7,14 @@ import { useMetrics } from 'src/modules/Metrics/metricsHook'
 import { IMetric, metricTargetsEnum, metricTargetType } from 'src/modules/Metrics/Metrics.d'
 import { ConsumptionChartContainerProps } from 'src/modules/MyConsumption/myConsumptionTypes'
 import CircularProgress from '@mui/material/CircularProgress'
+import Box from '@mui/material/Box'
 import EurosConsumptionButtonToggler from 'src/modules/MyConsumption/components/EurosConsumptionButtonToggler'
 import {
     getTotalOffIdleConsumptionData,
     filterMetricsData,
     getDefaultConsumptionTargets,
     showPerPeriodText,
+    nullifyTodayIdleConsumptionValue,
 } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
 import {
     DefaultContractWarning,
@@ -20,9 +22,12 @@ import {
 } from 'src/modules/MyConsumption/components/MyConsumptionChart/ConsumptionChartWarnings'
 import { sgeConsentFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
 import TargetMenuGroup from 'src/modules/MyConsumption/components/TargetMenuGroup'
+import CloseIcon from '@mui/icons-material/Close'
 import { SwitchIdleConsumption } from 'src/modules/MyConsumption/components/SwitchIdleConsumption'
 import {
     eurosConsumptionTargets,
+    eurosIdleConsumptionTargets,
+    idleConsumptionTargets,
     temperatureOrPmaxTargets,
 } from 'src/modules/MyConsumption/utils/myConsumptionVariables'
 
@@ -51,6 +56,7 @@ export const ConsumptionChartContainer = ({
     const theme = useTheme()
     // Indicates if enphaseConsentState is not ACTIVE
     const enphaseOff = enphaseConsent?.enphaseConsentState !== 'ACTIVE'
+    const [isShowIdleConsumptionDisabledInfo, setIsShowIdleConsumptionDisabledInfo] = useState(false)
     // Handling the targets makes it simpler instead of the useMetrics as it's a straightforward array of metricTargetType
     // Meanwhile the setTargets for useMetrics needs to add {type: 'timeserie'} everytime...
     const [targets, setTargets] = useState<metricTargetType[]>(getDefaultConsumptionTargets(enphaseOff))
@@ -83,7 +89,13 @@ export const ConsumptionChartContainer = ({
     const isMetricRequestNotAllowed = useMemo(() => {
         return (
             ['1m', '30m'].includes(metricsInterval) &&
-            targets.some((target) => [...eurosConsumptionTargets].includes(target))
+            targets.some((target) =>
+                [
+                    ...eurosConsumptionTargets,
+                    ...eurosIdleConsumptionTargets,
+                    metricTargetsEnum.idleConsumption,
+                ].includes(target),
+            )
         )
     }, [targets, metricsInterval])
 
@@ -94,7 +106,16 @@ export const ConsumptionChartContainer = ({
     }, [isMetricRequestNotAllowed, enphaseOff])
 
     const isEurosButtonToggled = useMemo(
-        () => targets.some((target) => [...eurosConsumptionTargets].includes(target)),
+        () => targets.some((target) => [...eurosConsumptionTargets, ...eurosIdleConsumptionTargets].includes(target)),
+        [targets],
+    )
+    const isIdleSwitchToggled = useMemo(
+        () =>
+            targets.some((target) =>
+                (
+                    [metricTargetsEnum.idleConsumption, metricTargetsEnum.eurosIdleConsumption] as metricTargetType[]
+                ).includes(target),
+            ),
         [targets],
     )
     const targetMenuActiveButton = useMemo(() => {
@@ -111,14 +132,9 @@ export const ConsumptionChartContainer = ({
 
     const getMetrics = useCallback(async () => {
         if (isMetricRequestNotAllowed) return
+        setIsShowIdleConsumptionDisabledInfo(false)
         await getMetricsWithParams({ interval: metricsInterval, range, targets, filters })
     }, [getMetricsWithParams, metricsInterval, range, targets, filters, isMetricRequestNotAllowed])
-
-    // When switching to period daily, if Euros Charts or Idle charts buttons are selected, metrics should be reset.
-    // This useEffect reset metrics.
-    useEffect(() => {
-        if (isMetricRequestNotAllowed) setTargets(getDefaultConsumptionTargets(enphaseOff))
-    }, [isMetricRequestNotAllowed, enphaseOff])
 
     // Happens everytime getMetrics dependencies change, and doesn't execute when hook is instanciated.
     useEffect(() => {
@@ -132,7 +148,7 @@ export const ConsumptionChartContainer = ({
             // When it's idleConsumption, chartData is handled differently from filteredMetricsData
             const totalOffIdleConsumptionData = getTotalOffIdleConsumptionData(chartData)
             if (totalOffIdleConsumptionData) {
-                chartData = [...chartData, totalOffIdleConsumptionData]
+                chartData = nullifyTodayIdleConsumptionValue([...chartData, totalOffIdleConsumptionData])
             } else {
                 // Filter target cases.
                 const fileteredMetricsData = filterMetricsData(chartData, period, enphaseOff)
@@ -169,25 +185,35 @@ export const ConsumptionChartContainer = ({
     const onEurosConsumptionButtonToggl = useCallback(
         (isEuroToggled: boolean) => {
             setTargets((_prevTargets) => {
-                return isEuroToggled ? eurosConsumptionTargets : getDefaultConsumptionTargets(enphaseOff)
+                let newVisibleTargets: metricTargetType[] = []
+                if (isEuroToggled) {
+                    newVisibleTargets = isIdleSwitchToggled ? eurosIdleConsumptionTargets : eurosConsumptionTargets
+                } else {
+                    newVisibleTargets = isIdleSwitchToggled
+                        ? idleConsumptionTargets
+                        : getDefaultConsumptionTargets(enphaseOff)
+                }
+                return newVisibleTargets
             })
         },
-        [enphaseOff],
+        [enphaseOff, isIdleSwitchToggled],
     )
 
     /**
-     * Hide given metric target chart.
-     */
-    const resetMetricsTargets = useCallback(async () => {
-        setTargets([...getDefaultConsumptionTargets(enphaseOff)])
-    }, [enphaseOff])
-
-    /**
      * Handler when switching to IdleTarget On ConsumptionSwitchButton.
+     *
+     * @param isIdleConsumptionToggled Indicates if the idleConsumption was selected.
      */
-    const onIdleConsumptionSwitchButton = useCallback(async () => {
-        setTargets([metricTargetsEnum.consumption, metricTargetsEnum.idleConsumption])
-    }, [])
+    const onIdleConsumptionSwitchButton = useCallback(
+        async (isIdleConsumptionToggled: boolean) => {
+            setTargets((_prevTargets) => {
+                if (isIdleConsumptionToggled)
+                    return isEurosButtonToggled ? eurosIdleConsumptionTargets : idleConsumptionTargets
+                return isEurosButtonToggled ? eurosConsumptionTargets : getDefaultConsumptionTargets(enphaseOff)
+            })
+        },
+        [isEurosButtonToggled, enphaseOff],
+    )
 
     return (
         <div className="mb-12">
@@ -211,6 +237,25 @@ export const ConsumptionChartContainer = ({
                 </motion.div>
             </div>
 
+            {/* SwitchIdleConsumption Info Text*/}
+            {isShowIdleConsumptionDisabledInfo && (
+                <Box
+                    className="flex items-center justify-between text-13 md:text-16 w-full p-16"
+                    sx={{ backgroundColor: 'primary.main', color: 'primary.contrastText' }}
+                >
+                    <TypographyFormatMessage
+                        sx={{
+                            flexGrow: 1,
+                            display: 'flex',
+                            justifyContent: 'center',
+                        }}
+                    >
+                        Les informations de veille ne sont pas disponibles pour cette pèriode
+                    </TypographyFormatMessage>
+                    <CloseIcon sx={{ cursor: 'pointer' }} onClick={() => setIsShowIdleConsumptionDisabledInfo(false)} />
+                </Box>
+            )}
+
             <div className="my-16 flex justify-between">
                 <EurosConsumptionButtonToggler
                     onEuroClick={() => onEurosConsumptionButtonToggl(true)}
@@ -219,9 +264,11 @@ export const ConsumptionChartContainer = ({
                     disabled={isEurosConsumptionDisabled}
                 />
                 <SwitchIdleConsumption
-                    removeIdleTarget={resetMetricsTargets}
-                    addIdleTarget={onIdleConsumptionSwitchButton}
+                    removeIdleTarget={() => onIdleConsumptionSwitchButton(false)}
+                    addIdleTarget={() => onIdleConsumptionSwitchButton(true)}
                     isIdleConsumptionButtonDisabled={period === 'daily'}
+                    onClickIdleConsumptionDisabledInfoIcon={() => setIsShowIdleConsumptionDisabledInfo(true)}
+                    isIdleConsumptionButtonSelected={isIdleSwitchToggled}
                 />
                 <TargetMenuGroup
                     removeTargets={() => onTemperatureOrPmaxMenuClick([])}

@@ -461,13 +461,14 @@ export const getChartSpecifities = (
     chartLabel?: 'Consommation totale' | 'Electricité achetée sur le réseau',
     // eslint-disable-next-line sonarjs/cognitive-complexity
 ): getChartSpecifitiesType => {
-    // eslint-disable-next-line sonarjs/no-duplicate-string
-    if (target === metricTargetsEnum.consumption && chartLabel === 'Consommation totale') {
+    const totalConsumptionSeriesName = 'Consommation totale'
+    const totalEurosConsumptionSeriesName = 'Consommation euro totale'
+    if (target === metricTargetsEnum.consumption && chartLabel === totalConsumptionSeriesName) {
         return {
             label: chartLabel,
             seriesName: chartLabel,
         }
-    } else if (target === metricTargetsEnum.baseConsumption && chartLabel === 'Consommation totale') {
+    } else if (target === metricTargetsEnum.baseConsumption && chartLabel === totalConsumptionSeriesName) {
         return {
             label: 'Consommation de base',
             seriesName: chartLabel,
@@ -476,7 +477,6 @@ export const getChartSpecifities = (
     } else if (
         (target === metricTargetsEnum.baseConsumption || target === metricTargetsEnum.consumption) &&
         chartLabel === 'Electricité achetée sur le réseau'
-        // eslint-disable-next-line sonarjs/no-duplicated-branches
     ) {
         return {
             label: chartLabel,
@@ -487,35 +487,46 @@ export const getChartSpecifities = (
             seriesName: chartLabel,
             show: false,
         }
-    } else if (target === metricTargetsEnum.eurosConsumption && chartLabel) {
+    } else if (target === metricTargetsEnum.eurosConsumption) {
         return {
             // eslint-disable-next-line sonarjs/no-duplicate-string
-            label: 'Consommation euro totale',
-            seriesName: 'Consommation euro totale',
-            show: false,
+            label: totalEurosConsumptionSeriesName,
+            seriesName: totalEurosConsumptionSeriesName,
         }
     } else if (target === metricTargetsEnum.baseEuroConsumption) {
         return {
             // eslint-disable-next-line sonarjs/no-duplicate-string
             label: 'Consommation euro de base',
-            seriesName: 'Consommation euro totale',
+            seriesName: totalEurosConsumptionSeriesName,
         }
     } else if (target === metricTargetsEnum.subscriptionPrices) {
         return {
             label: 'Abonnement',
-            seriesName: 'Consommation euro totale',
+            seriesName: totalEurosConsumptionSeriesName,
             show: false,
         }
     } else if (target === metricTargetsEnum.euroPeakHourConsumption) {
         return {
             label: 'Consommation achetée HP',
-            seriesName: 'Consommation euro totale',
+            seriesName: totalEurosConsumptionSeriesName,
             show: false,
         }
     } else if (target === metricTargetsEnum.euroOffPeakConsumption) {
         return {
             label: 'Consommation achetée HC',
-            seriesName: 'Consommation euro totale',
+            seriesName: totalEurosConsumptionSeriesName,
+            show: false,
+        }
+    } else if (target === metricTargetsEnum.eurosIdleConsumption) {
+        return {
+            label: 'Consommation euro de veille',
+            seriesName: totalEurosConsumptionSeriesName,
+            show: false,
+        }
+    } else if (target === metricTargetsEnum.totalEurosOffIdleConsumption) {
+        return {
+            label: 'Consommation euro Hors-veille',
+            seriesName: totalEurosConsumptionSeriesName,
             show: false,
         }
     } else if (target === metricTargetsEnum.externalTemperature) {
@@ -574,14 +585,14 @@ export const getChartSpecifities = (
         }
     } else if (target === metricTargetsEnum.onlyConsumption) {
         return {
-            label: 'Consommation totale',
-            seriesName: 'Consommation totale',
+            label: totalConsumptionSeriesName,
+            seriesName: totalConsumptionSeriesName,
             show: true,
         }
     } else if (target === metricTargetsEnum.onlyEuroConsumption) {
         return {
-            label: 'Consommation euro totale',
-            seriesName: 'Consommation euro totale',
+            label: totalEurosConsumptionSeriesName,
+            seriesName: totalEurosConsumptionSeriesName,
             show: true,
         }
     } else {
@@ -690,7 +701,6 @@ export function getCalendarDates(
     period: PeriodEnum,
 ) {
     const { from, to } = range
-
     switch (operator) {
         case 'sub':
             const subResFROM = subtractTime(new Date(from), period)
@@ -886,7 +896,7 @@ export const isEmptyMetricsData = (data: IMetric[], targetsFilter?: metricTarget
 }
 
 /**
- * Compute TotalOffIdleConsumption MetricData based on total consumption (consumption_metrics) and idleConsumption (if exist).
+ * Compute TotalOffIdleConsumption MetricData based on total consumption (consumption_metrics) and idleConsumption (if exist), handle both euros and default idleConsumption.
  *
  * @description
  * Empty Metrics Data happens when datapoints of all metricsData targets are NULL or 0.
@@ -937,6 +947,22 @@ export const isEmptyMetricsData = (data: IMetric[], targetsFilter?: metricTarget
  * ]
  * => getTotalOffIdleConsumptionData(data) === undefined
  * The getTotalOffIdleConsumptionData returns undefined because there's not idle_consumption_metrics.
+ * @example
+ * data = [
+ *  {
+ *    "target": "__euros__consumption_metrics",
+ *    "datapoints": [[null, 00001], [70, 00002] ,[120, 00003], [129, 00004]]
+ *  },
+ *  {
+ *    "target": "__euros__idle_consumption_metrics",
+ *    "datapoints": [[0, 00001], [30, 00002] ,[88, 00003], [89, 00004]]
+ *  }
+ * ]
+ * => getTotalOffIdleConsumptionData(data) === {
+ *    "target": "__euros__off_idle_consumption_metrics",
+ *    "datapoints": [[null, 00001], [40, 00002] ,[32, 00003], [40, 00004]]
+ *  }
+ * The getTotalOffIdleConsumptionData returns a new metrics object based on the subtraction of euros_consumption_metrics - euros_idle_consumption_metrics.
  * @param data Metrics Data.
  * @returns TotalOffIdle Metric Data.
  */
@@ -948,15 +974,113 @@ export const getTotalOffIdleConsumptionData = (data: IMetric[]): IMetric | undef
         return {
             target: metricTargetsEnum.totalOffIdleConsumption,
             datapoints: totalConsumptionDatapoints.map((val, index) => {
-                return [
-                    val ? subtract(val, Number(idleConsumptionDatapoints[index][0])) : val,
-                    idleConsumptionDatapoints[index][1],
-                ]
+                // SOLUTION
+                // To avoid rounding of numbers and thus showing wrong computation on the chart.
+                // We Make a subtraction with the numbers truncated to two digits after the decimal point.
+
+                // METHOD:
+                // With toFixed it rounds up the number, doing slice and toFixed(3) will make sure to truncate and not round up.
+                // So that we have a result of a number with two digits after the decimal point.
+                let totalOffIdleValue = val
+                    ? subtract(
+                          Number(val.toFixed(3).slice(0, -1)),
+                          Number(Number(idleConsumptionDatapoints[index][0]).toFixed(3).slice(0, -1)),
+                      )
+                    : val
+                return [totalOffIdleValue, idleConsumptionDatapoints[index][1]]
             }),
         }
     }
+
+    const idleEurosConsumptionMetrics = data.find(
+        (metricData) => metricData.target === metricTargetsEnum.eurosIdleConsumption,
+    )
+    if (idleEurosConsumptionMetrics) {
+        const totalEurosConsumptionDatapoints = getDataFromYAxis(data, metricTargetsEnum.eurosConsumption)
+        const idleEurosConsumptionDatapoints = idleEurosConsumptionMetrics.datapoints
+        return {
+            target: metricTargetsEnum.totalEurosOffIdleConsumption,
+            datapoints: totalEurosConsumptionDatapoints.map((val, index) => {
+                // SOLUTION
+                // To avoid rounding of numbers and thus showing wrong computation on the chart.
+                // We Make a subtraction with the numbers truncated to two digits after the decimal point.
+
+                // METHOD:
+                // With toFixed it rounds up the number, doing slice and toFixed(3) will make sure to truncate and not round up.
+                // So that we have a result of a number with two digits after the decimal point.
+                let totalEurosOffIdleValue = val
+                    ? subtract(
+                          Number(val.toFixed(3).slice(0, -1)),
+                          Number(Number(idleEurosConsumptionDatapoints[index][0]).toFixed(3).slice(0, -1)),
+                      )
+                    : val
+                return [totalEurosOffIdleValue, idleEurosConsumptionDatapoints[index][1]]
+            }),
+        }
+    }
+
     return undefined
 }
+
+/**
+ Nullify the value of idleConsumption or eurosIdleConsumption metric datapoint on the timestamp that represents today's date.
+ *
+ * @description
+ * Nullify the value of idleConsumption metric datapoint on the timestamp that represents today's date.
+ * So that on the chart the idleConsumption is null when xAxis has today's date.
+ * @example
+ * Today timestamp === 00002
+ * data = [
+ *  {
+ *    "target": "idle_consumption_metrics",
+ *    "datapoints": [[0, 00001], [0, 00002] ,[0, 00003], [0, 00004]]
+ *  }
+ * ]
+ * => nullifyTodayIdleConsumptionValue(data) === [
+ * {
+ *    "target": "idle_consumption_metrics",
+ *    "datapoints": [[0, 00001], [null, 00002] ,[0, 00003], [0, 00004]]
+ *  }
+ * ]
+ * The nullifyTodayIdleConsumptionValue returns new metric data, where idle_consumption_metrics has null value when today's timestamp.
+ * @example
+ * Today timestamp === 00004
+ * data = [
+ *  {
+ *    "target": "__euros__idle_consumption_metrics",
+ *    "datapoints": [[0, 00001], [30, 00002] ,[88, 00003], [89, 00004]]
+ *  }
+ * ]
+ * => nullifyTodayIdleConsumptionValue(data) === [
+ * {
+ *    "target": "__euros__idle_consumption_metrics",
+ *    "datapoints": [[0, 00001], [30, 00002] ,[32, 00003], [40, 00004]]
+ *  }
+ * ]
+ * The nullifyTodayIdleConsumptionValue returns new metric data, where idle_consumption_metrics has null value when today's timestamp.
+ * @param data Metrics Data.
+ * @returns Metrics Data with idleConsumption has datapoint with null value on today's timestamp.
+ */
+export const nullifyTodayIdleConsumptionValue = (data: IMetric[]) => {
+    return data.map((metric: IMetric) => {
+        if (
+            [metricTargetsEnum.idleConsumption, metricTargetsEnum.eurosIdleConsumption].includes(
+                metric.target as metricTargetsEnum,
+            )
+        ) {
+            return {
+                target: metric.target,
+                datapoints: metric.datapoints.map((datapoint) => {
+                    const timestamp = datapoint[1]
+                    const value = datapoint[0]
+                    return [isEqualDates(timestamp, new Date().getTime(), PeriodEnum.MONTHLY) ? null : value, timestamp]
+                }),
+            }
+        }
+        return metric
+    }) as IMetric[]
+}
+
 /**
  * Functon that generates a custom target: onlyConsumption.
  *

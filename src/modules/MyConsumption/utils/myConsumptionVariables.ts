@@ -93,11 +93,13 @@ export const getChartColor = (chartName: metricTargetsEnum, theme: Theme, enphas
         case metricTargetsEnum.eurosConsumption:
             return TRANSPARENT_COLOR
         case metricTargetsEnum.baseEuroConsumption:
+        case metricTargetsEnum.totalEurosOffIdleConsumption:
         case metricTargetsEnum.onlyEuroConsumption:
             return theme.palette.primary.light
         case metricTargetsEnum.autoconsumption:
             return '#BEECDB'
         case metricTargetsEnum.idleConsumption:
+        case metricTargetsEnum.eurosIdleConsumption:
             return '#8191B2'
         case metricTargetsEnum.totalProduction:
             return '#C8D210'
@@ -151,8 +153,12 @@ export const getYPointValueLabel = (
         case metricTargetsEnum.subscriptionPrices:
         case metricTargetsEnum.euroPeakHourConsumption:
         case metricTargetsEnum.euroOffPeakConsumption:
+        case metricTargetsEnum.eurosIdleConsumption:
+        case metricTargetsEnum.totalEurosOffIdleConsumption:
         case metricTargetsEnum.onlyEuroConsumption:
-            return `${value === '' ? value : value.toFixed(2)} €`
+            // With toFixed it rounds up the number, doing slice and toFixed(3) will make sure to truncate and not round up.
+            // So that we have a result of a number with two digits after the decimal point.
+            return `${value === '' ? value : value.toFixed(3).slice(0, -1)} €`
         case metricTargetsEnum.externalTemperature:
         case metricTargetsEnum.internalTemperature:
             return `${value} °C`
@@ -174,7 +180,7 @@ export const getYPointValueLabel = (
                     ? value
                     : isYValueRounded
                     ? Math.round(convert(value).from('Wh').to(unit!))
-                    : // With .toFixed it rounds up the number, doing slice and toFixed(3) will make sure to truncate and not round up.
+                    : // With toFixed it rounds up the number, doing slice and toFixed(3) will make sure to truncate and not round up.
                       // So that we have a result of a number with two digits after the decimal point.
                       convert(value).from('Wh').to(unit!).toFixed(3).slice(0, -1)
             } ${unit}`
@@ -227,6 +233,22 @@ export const EnphaseOffConsumptionChartTargets: metricTargetType[] = [
     metricTargetsEnum.internalTemperature,
     metricTargetsEnum.peakHourConsumption,
     metricTargetsEnum.offPeakHourConsumption,
+]
+
+/**
+ * Targets related to idleConsumption.
+ */
+export const idleConsumptionTargets: metricTargetType[] = [
+    metricTargetsEnum.idleConsumption,
+    metricTargetsEnum.consumption,
+]
+
+/**
+ * Targets related to Euros IdleConsumption.
+ */
+export const eurosIdleConsumptionTargets: metricTargetType[] = [
+    metricTargetsEnum.eurosIdleConsumption,
+    metricTargetsEnum.eurosConsumption,
 ]
 
 /**

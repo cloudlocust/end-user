@@ -8,7 +8,6 @@ import { waitFor } from '@testing-library/react'
 
 const DEFAULT_CONSUMPTION_BUTTON_TEXT = 'Général'
 const IDLE_CONSUMPTION_BUTTON_TEXT = 'Veille'
-const DISABLED_CLASS_NAME = 'Mui-disabled'
 
 /**
  * Switch Idle Consumption Button Props.
@@ -17,6 +16,8 @@ let switchIdleConsumptionButtonProps: SwitchIdleConsumptionProps = {
     addIdleTarget: jest.fn(),
     removeIdleTarget: jest.fn(),
     isIdleConsumptionButtonDisabled: false,
+    onClickIdleConsumptionDisabledInfoIcon: jest.fn(),
+    isIdleConsumptionButtonSelected: false,
 }
 describe('SwitchIdleConsumption', () => {
     const theme = createTheme({
@@ -30,7 +31,7 @@ describe('SwitchIdleConsumption', () => {
         },
     })
 
-    test('when SwitchIdleConsumption button is not idle by default', async () => {
+    test('when SwitchIdleConsumption button doesnt have idle selected', async () => {
         const { getByText } = reduxedRender(
             <ThemeProvider theme={theme}>
                 <SwitchIdleConsumption {...switchIdleConsumptionButtonProps} />
@@ -51,9 +52,9 @@ describe('SwitchIdleConsumption', () => {
             background: theme.palette.primary.main,
         })
     })
-    test('when switching from idle to default consumption, style changes and removeIdleTarget is called', async () => {
-        const mockRemoveIdleTarget = jest.fn()
-        switchIdleConsumptionButtonProps.removeIdleTarget = mockRemoveIdleTarget
+    test('when idle button is selected, addIdleTarget is called', async () => {
+        const mockAddIdleTarget = jest.fn()
+        switchIdleConsumptionButtonProps.addIdleTarget = mockAddIdleTarget
         const { getByText } = reduxedRender(
             <ThemeProvider theme={theme}>
                 <SwitchIdleConsumption {...switchIdleConsumptionButtonProps} />
@@ -66,46 +67,43 @@ describe('SwitchIdleConsumption', () => {
         // Switching to Idle consumption
         userEvent.click(idleConsumptionButtonElement)
         await waitFor(() => {
-            expect(idleConsumptionButtonElement).toHaveStyle({
-                background: theme.palette.secondary.main,
-            })
-        })
-
-        // Switching back to Default Consumption.
-        userEvent.click(defaultConsumptionButtonElement)
-        await waitFor(() => {
-            expect(defaultConsumptionButtonElement).toHaveStyle({
-                background: theme.palette.secondary.main,
-            })
-        })
-        expect(idleConsumptionButtonElement).toHaveStyle({
-            background: theme.palette.primary.main,
-        })
-        expect(mockRemoveIdleTarget).toHaveBeenCalled()
-    })
-    test('when idle button is clicked, style changes and addIdleTarget is called', async () => {
-        const mockAddIdleTarget = jest.fn()
-        switchIdleConsumptionButtonProps.addIdleTarget = mockAddIdleTarget
-        const { getByText } = reduxedRender(
-            <ThemeProvider theme={theme}>
-                <SwitchIdleConsumption {...switchIdleConsumptionButtonProps} />
-            </ThemeProvider>,
-        )
-
-        const idleConsumptionButtonElement = getByText(IDLE_CONSUMPTION_BUTTON_TEXT)
-
-        userEvent.click(idleConsumptionButtonElement)
-
-        await waitFor(() => {
             expect(mockAddIdleTarget).toHaveBeenCalled()
         })
-        expect(idleConsumptionButtonElement).toHaveStyle({
+
+        expect(defaultConsumptionButtonElement).toHaveStyle({
             background: theme.palette.secondary.main,
         })
     })
 
-    test('when Idle prop is disabled idle button is disabled with icon', async () => {
+    test('when idle is selected and switching to default consumption, removeIdleTarget is called', async () => {
+        const mockRemoveIdleTarget = jest.fn()
+        switchIdleConsumptionButtonProps.removeIdleTarget = mockRemoveIdleTarget
+        switchIdleConsumptionButtonProps.isIdleConsumptionButtonSelected = true
+        const { getByText } = reduxedRender(
+            <ThemeProvider theme={theme}>
+                <SwitchIdleConsumption {...switchIdleConsumptionButtonProps} />
+            </ThemeProvider>,
+        )
+
+        const idleConsumptionButtonElement = getByText(IDLE_CONSUMPTION_BUTTON_TEXT)
+        const defaultConsumptionButtonElement = getByText(DEFAULT_CONSUMPTION_BUTTON_TEXT)
+        // Idle Consumption is selected.
+        expect(idleConsumptionButtonElement).toHaveStyle({
+            background: theme.palette.secondary.main,
+        })
+
+        // Switching back to Default Consumption.
+        userEvent.click(defaultConsumptionButtonElement)
+        // Remove IdleTarget is called
+        expect(mockRemoveIdleTarget).toHaveBeenCalled()
+    })
+
+    test('when disabled idleButton styling and click should follow', async () => {
+        switchIdleConsumptionButtonProps.isIdleConsumptionButtonSelected = false
         switchIdleConsumptionButtonProps.isIdleConsumptionButtonDisabled = true
+        const mockOnClickIdleConsumptionDisabledInfoIcon = jest.fn()
+        switchIdleConsumptionButtonProps.onClickIdleConsumptionDisabledInfoIcon =
+            mockOnClickIdleConsumptionDisabledInfoIcon
         const { getByText } = reduxedRender(
             <ThemeProvider theme={theme}>
                 <SwitchIdleConsumption {...switchIdleConsumptionButtonProps} />
@@ -114,6 +112,15 @@ describe('SwitchIdleConsumption', () => {
 
         const idleConsumptionButtonElement = getByText(IDLE_CONSUMPTION_BUTTON_TEXT)
 
-        expect(idleConsumptionButtonElement.classList.contains(DISABLED_CLASS_NAME)).toBeTruthy()
-    })
+        expect(idleConsumptionButtonElement).toHaveStyle({
+            backgroundColor: theme.palette.grey[600],
+        })
+        userEvent.click(idleConsumptionButtonElement)
+        await waitFor(
+            () => {
+                expect(mockOnClickIdleConsumptionDisabledInfoIcon).toHaveBeenCalled()
+            },
+            { timeout: 8000 },
+        )
+    }, 10000)
 })
