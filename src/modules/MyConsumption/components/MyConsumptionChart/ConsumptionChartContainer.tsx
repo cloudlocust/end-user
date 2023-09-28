@@ -152,9 +152,7 @@ export const ConsumptionChartContainer = ({
             } else {
                 // Filter target cases.
                 const fileteredMetricsData = filterMetricsData(chartData, period, enphaseOff)
-                if (fileteredMetricsData) {
-                    setConsumptionChartData(fileteredMetricsData)
-                }
+                if (fileteredMetricsData) chartData = fileteredMetricsData
             }
             setConsumptionChartData(chartData)
         }
