@@ -1,15 +1,9 @@
-import React, { useRef, useEffect, useMemo } from 'react'
+import React, { useMemo } from 'react'
 import ReactECharts from 'echarts-for-react'
-import { metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
 import { formatMetricsDataToTimestampsValues } from 'src/modules/Metrics/formatMetricsData'
 import { useTheme } from '@mui/material/styles'
-import { useIntl } from 'react-intl'
 import 'src/modules/MyConsumption/components/MyConsumptionChart/MyConsumptionChart.scss'
-import { convertMetricsDataToApexChartsDateTimeAxisValues } from 'src/modules/MyConsumption/utils/apexChartsDataConverter'
-import { getApexChartMyConsumptionProps } from 'src/modules/MyConsumption/utils/apexChartsMyConsumptionOptions'
 import { EchartsConsumptionChartProps } from 'src/modules/MyConsumption/myConsumptionTypes'
-import { CircularProgress } from '@mui/material'
-import useMediaQuery from '@mui/material/useMediaQuery'
 import { getEchartsConsumptionChartOptions } from 'src/modules/MyConsumption/utils/echartsConsumptionChartOptions'
 
 /**
@@ -32,15 +26,17 @@ const EchartsConsumptionChart = ({
     metricsInterval,
     isSolarProductionConsentOff,
 }: EchartsConsumptionChartProps) => {
+    console.log('🚀 ~ file: EchartsConsumptionChart.tsx:29 ~ data:', data)
     const theme = useTheme()
     const { timestamps, values } = useMemo(() => {
         return formatMetricsDataToTimestampsValues(data)
     }, [data])
 
-    // ConsumptionChart Option.
+    // EchartsConsumptionChart Option.
     const option = useMemo(() => {
         return getEchartsConsumptionChartOptions(timestamps, values, theme, isSolarProductionConsentOff)
     }, [timestamps, values, theme, isSolarProductionConsentOff])
+    console.log('🚀 ~ file: EchartsConsumptionChart.tsx:38 ~ option ~ option:', option)
 
     return (
         <>

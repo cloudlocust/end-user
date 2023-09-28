@@ -1,31 +1,28 @@
-import {
-    metricIntervalType,
-    metricTargetType,
-    metricTargetsEnum,
-    targetTimestampsValuesFormat,
-} from 'src/modules/Metrics/Metrics.d'
-import { EChartsOption, SeriesOption } from 'echarts'
+import { metricTargetType, metricTargetsEnum, targetTimestampsValuesFormat } from 'src/modules/Metrics/Metrics.d'
+import { EChartsOption } from 'echarts'
 import dayjs from 'dayjs'
 import fr from 'dayjs/locale/fr'
 import { Theme } from '@mui/material/styles/createTheme'
 import utc from 'dayjs/plugin/utc'
 import convert from 'convert-units'
-import { isNull, mean, capitalize } from 'lodash'
+import { capitalize, isNil } from 'lodash'
 import {
     TRANSPARENT_COLOR,
-    getChartColor,
     getYPointValueLabel,
     temperatureOrPmaxTargets,
 } from 'src/modules/MyConsumption/utils/myConsumptionVariables'
-import { convertConsumptionToWatt, getChartSpecifities } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
+import { convertConsumptionToWatt } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
 import { PeriodEnum, periodType } from 'src/modules/MyConsumption/myConsumptionTypes.d'
 import timezone from 'dayjs/plugin/timezone'
-import { consumptionWattUnitConversion } from './unitConversionFunction'
+import { consumptionWattUnitConversion } from 'src/modules/MyConsumption/utils/unitConversionFunction'
+import {
+    targetYAxisIndexEnum,
+    getTargetsYAxisValueFormattersType,
+    targetsYAxisValueFormattersType,
+} from 'src/modules/MyConsumption/utils/echartsConsumptionChartOptionsTypes.d'
 dayjs.locale(fr)
 dayjs.extend(utc)
 dayjs.extend(timezone)
-
-const MaxChartName = 'Max'
 
 /**
  * Get Echarts Consumption CHart Options.
@@ -46,16 +43,27 @@ export const getEchartsConsumptionChartOptions = (
     const xAxisTimestamps = Object.values(timestamps).length ? Object.values(timestamps)[0] : []
     const period = getPeriodFromTimestampsLength(xAxisTimestamps.length)
 
+    const targetsYAxisValueFormatters = getTargetsYAxisValueFormatters(values, period)
+
     return {
         ...getDefaultOptionsEchartsConsumptionChart(theme),
         ...getXAxisOptionEchartsConsumptionChart(xAxisTimestamps, period, theme),
-        ...getYAxisOptionEchartsConsumptionChart(values, period, theme),
-        ...getSeriesOptionEchartsConsumptionChart(values, period, isSolarProductionConsentOff, theme),
+        ...getYAxisOptionEchartsConsumptionChart(targetsYAxisValueFormatters, theme),
+        ...getSeriesOptionEchartsConsumptionChart(
+            values,
+            period,
+            isSolarProductionConsentOff,
+            targetsYAxisValueFormatters,
+            theme,
+        ),
     } as EChartsOption
 }
 
 /**
  * Echarts ConsumptionChart Default option.
+ *
+ * @param theme Theme used for colors, fonts and backgrounds.
+ * @returns Default EchartsConsumptionChart option.
  */
 const getDefaultOptionsEchartsConsumptionChart = (theme: Theme) =>
     ({
@@ -92,6 +100,7 @@ const getDefaultOptionsEchartsConsumptionChart = (theme: Theme) =>
  * @param values Datapoint values from the echarts metrics conversion function.
  * @param period Current period.
  * @param isSolarProductionConsentOff Boolean indicating if solar production consent is off.
+ * @param targetsYAxisValueFormatters Targets functions yAxis Value formatter type (label shown in tooltip and yAxisLine).
  * @param theme Theme used for colors, fonts and backgrounds of xAxis.
  * @returns XAxis object option for Echarts Consumption Options.
  */
@@ -99,10 +108,12 @@ export const getSeriesOptionEchartsConsumptionChart = (
     values: targetTimestampsValuesFormat,
     period: periodType,
     isSolarProductionConsentOff: boolean,
+    targetsYAxisValueFormatters: targetsYAxisValueFormattersType,
     theme: Theme,
 ) => {
     return {
         series: Object.keys(values).map((target) => {
+            const targetYAxisIndex = getTargetYAxisIndexFromTargetName(target as metricTargetsEnum)
             return {
                 ...getTypeTargetSeriesEchartsConsumptionChart(target as metricTargetsEnum, period),
                 emphasis: {
@@ -118,6 +129,10 @@ export const getSeriesOptionEchartsConsumptionChart = (
                     theme,
                     isSolarProductionConsentOff,
                 ),
+                yAxisIndex: Number(targetYAxisIndex),
+                tooltip: {
+                    valueFormatter: targetsYAxisValueFormatters[targetYAxisIndex as targetYAxisIndexEnum],
+                },
                 itemStyle: {
                     color: getColorTargetSeriesEchartsConsumptionChart(
                         target as metricTargetsEnum,
@@ -138,8 +153,8 @@ export const getSeriesOptionEchartsConsumptionChart = (
  * @param theme Theme used for colors, fonts and backgrounds of xAxis.
  * @returns XAxis object option for Echarts Consumption Options.
  */
-export const getXAxisOptionEchartsConsumptionChart = (xAxisTimestamps: number[], period: periodType, theme: Theme) => {
-    return {
+export const getXAxisOptionEchartsConsumptionChart = (xAxisTimestamps: number[], period: periodType, theme: Theme) =>
+    ({
         xAxis: [
             {
                 // Rotate to 40 so that we can show all the hours.
@@ -147,15 +162,22 @@ export const getXAxisOptionEchartsConsumptionChart = (xAxisTimestamps: number[],
                 boundaryGap: false,
                 data: getXAxisCategoriesData(xAxisTimestamps, period),
                 axisLabel: {
+                    // TODO Remove once handled daily period
                     // rotate: period === PeriodEnum.DAILY ? 30 : undefined,
                     hideOverlap: true,
                     /**
                      * Formatting the labels shown in xAxis.
                      *
                      * @param value Value of xAxis date point.
-                     * @param index Index of point.
                      * @returns Label of date point in the xAxis.
                      */
+                    formatter(value: string) {
+                        if (period === PeriodEnum.MONTHLY || period === PeriodEnum.WEEKLY)
+                            // When period is weekly or Monthly, we remove the weekday from the value category.
+                            return capitalize(value.split(' ').splice(1).join(' '))
+                        return value
+                    },
+                    // TODO To remove once handling responsive of daily period.
                     // formatter(value: string, index: number) {
                     // When Period is Daily, show only each first hour of the day.
                     // if (period === PeriodEnum.DAILY) {
@@ -189,8 +211,7 @@ export const getXAxisOptionEchartsConsumptionChart = (xAxisTimestamps: number[],
                 },
             },
         ],
-    } as EChartsOption
-}
+    } as EChartsOption)
 
 /**
  * Get Period From timestamps length.
@@ -225,7 +246,7 @@ const getXAxisCategoriesData = (timestamps: number[], period: periodType) => {
         case 'yearly':
             return timestamps.map((timestamp) => capitalize(dayjs.utc(timestamp).format('MMM')))
         default:
-            return timestamps.map((timestamp) => capitalize(dayjs.utc(timestamp).format('D MMM')))
+            return timestamps.map((timestamp) => capitalize(dayjs.utc(timestamp).format('ddd D MMM')))
     }
 }
 
@@ -341,6 +362,41 @@ export const getNameTargetSeriesEchartsConsumptionChart = (
 }
 
 /**
+ * Function that returns the TargetYAxisIndex from target, indicating this target to which YAxis Line its values are represented.
+ *
+ * @param target MetricTarget Chart.
+ * @returns YAxisIndex of target.
+ */
+export const getTargetYAxisIndexFromTargetName = (target: metricTargetsEnum): targetYAxisIndexEnum => {
+    switch (target) {
+        case metricTargetsEnum.onlyConsumption:
+        case metricTargetsEnum.consumption:
+        case metricTargetsEnum.baseConsumption:
+        case metricTargetsEnum.autoconsumption:
+        case metricTargetsEnum.idleConsumption:
+        case metricTargetsEnum.totalOffIdleConsumption:
+        case metricTargetsEnum.peakHourConsumption:
+        case metricTargetsEnum.offPeakHourConsumption:
+            return targetYAxisIndexEnum.CONSUMPTION
+        case metricTargetsEnum.eurosConsumption:
+        case metricTargetsEnum.onlyEuroConsumption:
+        case metricTargetsEnum.baseEuroConsumption:
+        case metricTargetsEnum.subscriptionPrices:
+        case metricTargetsEnum.euroPeakHourConsumption:
+        case metricTargetsEnum.eurosIdleConsumption:
+        case metricTargetsEnum.euroOffPeakConsumption:
+            return targetYAxisIndexEnum.EUROS
+        case metricTargetsEnum.externalTemperature:
+        case metricTargetsEnum.internalTemperature:
+            return targetYAxisIndexEnum.TEMPERATURE
+        case metricTargetsEnum.pMax:
+            return targetYAxisIndexEnum.PMAX
+        default:
+            throw Error(`Can't find the label for target ${target}`)
+    }
+}
+
+/**
  * Function that returns object relative to the type of given target echarts series.
  *
  * @description The return of the function is an object with two property "type" that can be either 'bar' or 'line'.
@@ -417,26 +473,70 @@ export const getStackTargetSeriesEchartsConsumptionChart = (
 /**
  * Get YAxis option of Echarts Consumption Option.
  *
- * @param values Datapoint values from the echarts metrics conversion function.
- * @param period Current period.
+ * @param targetsYAxisValueFormatters Targets functions yAxis Value formatter type (label shown in tooltip and yAxisLine).
  * @param theme Theme used for colors, fonts and backgrounds of xAxis.
  * @returns YAxis object option for Echarts Consumption Options.
  */
 export const getYAxisOptionEchartsConsumptionChart = (
-    values: targetTimestampsValuesFormat,
-    period: periodType,
+    targetsYAxisValueFormatters: targetsYAxisValueFormattersType,
     theme: Theme,
-    // TODO Remove cognitive complexity.
-    // eslint-disable-next-line sonarjs/cognitive-complexity
 ) => {
-    console.log('🚀 ~ file: echartsConsumptionChartOptions.ts:439 ~ values:', values)
-    // We compute the consumption chart maximum y value, so that we can indicate the correct unit on the chart, and we do it only one time with this condition.
-    // data.length !== 1440 is added because there can be case where period is not daily, and yAxisSerie.data didn't updated and still express data of daily.
+    return {
+        yAxis: Object.keys(targetsYAxisValueFormatters).map((targetYAxisIndex) => ({
+            type: 'value',
+            axisLine: {
+                show: true,
+                lineStyle: {
+                    color: theme.palette.primary.contrastText,
+                    type: 'solid',
+                    opacity: 1,
+                },
+            },
+            show: true,
+            position: [targetYAxisIndexEnum.PMAX, targetYAxisIndexEnum.TEMPERATURE].includes(
+                targetYAxisIndex as targetYAxisIndexEnum,
+            )
+                ? 'right'
+                : 'left',
+            splitLine: {
+                // TODO Remove once reponsive of daily period.
+                // interval(index, value) {
+                //     console.log('🚀 ~ file: echartsConsumptionChartOptions.ts:149 ~ interval ~ value:', value)
+                //     console.log('🚀 ~ file: echartsConsumptionChartOptions.ts:149 ~ interval ~ index:', index)
+                //     return 0
+                // },
+
+                show: true,
+                lineStyle: {
+                    color: theme.palette.primary.contrastText,
+                    type: 'dashed',
+                    opacity: 0.4,
+                },
+            },
+            axisLabel: {
+                formatter: targetsYAxisValueFormatters[targetYAxisIndex as targetYAxisIndexEnum],
+            },
+        })),
+    } as EChartsOption
+}
+
+/**
+ * Function that returns values formatter functions (which is the label shown whether in tooltip or yAxisLine).
+ *
+ * @param values Datapoint values from the echarts metrics conversion function.
+ * @param period Current period.
+ * @returns Value formatters to group yAxisLine and tooltip labels.
+ */
+// eslint-disable-next-line sonarjs/cognitive-complexity
+export const getTargetsYAxisValueFormatters: getTargetsYAxisValueFormattersType = (values, period) => {
+    // We compute the consumption chart maximum y value, so that we can indicate the correct unit on the Consumption yAxis tooltip and axisLine according to the unit of the maximum value
+    // Because there's a conversion function used to format consumption y values which gives different units to the maximum and other lower values.
+    // Doing this allow us to show the yValues with the same unit.
     let maxConsumptionValue = 0
     let metricsInterval: '1m' | '30m' = '30m'
-
     if (Object.keys(values).includes(metricTargetsEnum.consumption))
         if (period === PeriodEnum.DAILY) {
+            // Computing the metricsInterval is used in period DAILY to convert consumption to WATT according to the metricsInterval.
             const valuesLength = Object.values(values).length ? Object.values(values)[0].length : 0
             metricsInterval = valuesLength % 60 === 0 ? '1m' : '30m'
         } else
@@ -448,113 +548,59 @@ export const getYAxisOptionEchartsConsumptionChart = (
                     return cumulatedValues
                 }, []),
             )
-    const commonYaxisOptions = {
-        type: 'value',
-        axisLine: {
-            show: true,
-            lineStyle: {
-                color: theme.palette.primary.contrastText,
-                type: 'solid',
-                opacity: 1,
-            },
-        },
-        splitLine: {
-            // interval(index, value) {
-            //     console.log('🚀 ~ file: echartsConsumptionChartOptions.ts:149 ~ interval ~ value:', value)
-            //     console.log('🚀 ~ file: echartsConsumptionChartOptions.ts:149 ~ interval ~ index:', index)
-            //     return 0
-            // },
-
-            show: true,
-            lineStyle: {
-                color: theme.palette.primary.contrastText,
-                type: 'dashed',
-                opacity: 0.4,
-            },
-        },
-    }
     return {
-        yAxis: [
-            // First yAxis represent the yAxis for all consumptions.
-            {
-                ...commonYaxisOptions,
-                axisLabel: {
-                    /**
-                     * Label of the yAxis in the consumption charts.
-                     *
-                     * @param value Value yAxis.
-                     * @returns The yAxis Label.
-                     */
-                    formatter(value: number) {
-                        console.log('🚀 ~ file: echartsConsumptionChartOptions.ts:496 ~ formatter ~ value:', value)
-                        if (period === PeriodEnum.DAILY) {
-                            return convertConsumptionToWatt(value, true, metricsInterval)
-                        }
-                        return getYPointValueLabel(
-                            value,
-                            metricTargetsEnum.consumption,
-                            consumptionWattUnitConversion(maxConsumptionValue).unit,
-                            true,
-                        )
-                    },
-                },
-            },
-            // Second yAxis represent the yAxis for temperature.
-            {
-                ...commonYaxisOptions,
-                axisLabel: {
-                    /**
-                     * Label of the yAxis in the power charts.
-                     *
-                     * @param value Value yAxis.
-                     * @returns The yAxis Label.
-                     */
-                    formatter(value: number) {
-                        return `${value} °C`
-                    },
-                },
-                position: 'right',
-            },
-            // Third yAxis represent the yAxis for pMax.
-            {
-                ...commonYaxisOptions,
-                axisLabel: {
-                    /**
-                     * Label of the yAxis in the power charts.
-                     *
-                     * @param value Value yAxis.
-                     * @returns The yAxis Label.
-                     */
-                    formatter(value: string) {
-                        console.log('🚀 ~ file: echartsConsumptionChartOptions.ts:502 ~ formatter ~ value:', value)
-                        // console.log('🚀 ~ file: echartsConsumptionChartOptions.ts:502 ~ formatter ~ value:', value)
-                        // Value given by backend is in Va and thus convert it to kVA.
-                        return `${value === '' ? value : convert(Number(value)).from('VA').to('kVA'!).toFixed(2)} kVA`
+        /**
+         * Value formatter Label for Consumption targets yAxis.
+         *
+         * @param value Value yAxis.
+         * @returns The yAxis Label.
+         */
+        [targetYAxisIndexEnum.CONSUMPTION]: function (value) {
+            if (period === PeriodEnum.DAILY) {
+                return convertConsumptionToWatt(value, true, metricsInterval)
+            }
+            return getYPointValueLabel(
+                value,
+                metricTargetsEnum.consumption,
+                consumptionWattUnitConversion(maxConsumptionValue).unit,
+                true,
+            )
+        },
+        /**
+         * Value formatter Label for Temperature targets yAxis.
+         *
+         * @param value Value yAxis.
+         * @returns The yAxis Label.
+         */
+        [targetYAxisIndexEnum.TEMPERATURE]: function (value) {
+            return `${value} °C`
+        },
+        /**
+         * Value formatter Label Label for Pmax targets yAxis.
+         *
+         * @param value Value yAxis.
+         * @returns The yAxis Label.
+         */
+        [targetYAxisIndexEnum.PMAX]: function (value) {
+            return `${isNil(value) ? value : convert(Number(value)).from('VA').to('kVA'!).toFixed(2)} kVA`
 
-                        // return `${k convert(value).from('VA').to('kVA'!).toFixed(2)} kVA`
-                    },
-                    position: 'right',
-                },
+            // return `${k convert(value).from('VA').to('kVA'!).toFixed(2)} kVA`
+        },
+        /**
+         * Value formatter Label Label for EUROS targets yAxis.
+         *
+         * @param value Value yAxis.
+         * @returns The yAxis Label.
+         */
+        [targetYAxisIndexEnum.EUROS]:
+            /**
+             * Label of the yAxis in the power charts.
+             *
+             * @param value Value yAxis.
+             * @returns The yAxis Label.
+             */
+            function (value) {
+                return `${isNil(value) ? value : Number(value).toFixed(3).slice(0, -1)} €`
             },
-            // Fourth yAxis represent the yAxis for eurosConsumptions.
-            {
-                ...commonYaxisOptions,
-                axisLabel: {
-                    /**
-                     * Label of the yAxis in the power charts.
-                     *
-                     * @param value Value yAxis.
-                     * @returns The yAxis Label.
-                     */
-                    formatter(value: string) {
-                        console.log('🚀 ~ file: echartsConsumptionChartOptions.ts:502 ~ formatter ~ value:', value)
-                        // console.log('🚀 ~ file: echartsConsumptionChartOptions.ts:502 ~ formatter ~ value:', value)
-                        // Value given by backend is in Va and thus convert it to kVA.
-                        return `${value === '' ? value : Number(value).toFixed(3).slice(0, -1)} €`
-                        // return `${k convert(value).from('VA').to('kVA'!).toFixed(2)} kVA`
-                    },
-                },
-            },
-        ],
-    } as EChartsOption
+    }
 }
