@@ -14,6 +14,7 @@ import {
     filterMetricsData,
     getDefaultConsumptionTargets,
     showPerPeriodText,
+    nullifyTodayIdleConsumptionValue,
 } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
 import {
     DefaultContractWarning,
@@ -147,7 +148,7 @@ export const ConsumptionChartContainer = ({
             // When it's idleConsumption, chartData is handled differently from filteredMetricsData
             const totalOffIdleConsumptionData = getTotalOffIdleConsumptionData(chartData)
             if (totalOffIdleConsumptionData) {
-                chartData = [...chartData, totalOffIdleConsumptionData]
+                chartData = nullifyTodayIdleConsumptionValue([...chartData, totalOffIdleConsumptionData])
             } else {
                 // Filter target cases.
                 const fileteredMetricsData = filterMetricsData(chartData, period, enphaseOff)

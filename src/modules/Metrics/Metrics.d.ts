@@ -19,6 +19,7 @@ export type metricTargetType =
     | 'hp__euros__consumption_metrics'
     | 'hc__euros__consumption_metrics'
     | '__euros__idle_consumption_metrics'
+    // FRONT END PURPOSES TARGETS
     // 'off_idle_consumption_metrics' target is made for front purposes, it doesn't exist on the back
     // To show a chart with the total off-idle consumption.
     // It'll be calculated based on 'consumption_metrics' and 'idle_consumption_metrics'
@@ -95,6 +96,12 @@ export enum metricTargetsEnum {
      * Base euro consumption (according to Tariff de base).
      */
     baseEuroConsumption = 'base__euros__consumption_metrics',
+    /**
+     * Eneum value for Euros Idle Consumption.
+     */
+    eurosIdleConsumption = '__euros__idle_consumption_metrics',
+
+    // Targets used only on the FRONT.
     /**
      * Total Off Idle consumption, that'll be computed on the front based on consumption_metrics & idle_consumption_metrics.
      */
