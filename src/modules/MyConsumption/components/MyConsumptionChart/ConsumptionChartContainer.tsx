@@ -153,9 +153,7 @@ export const ConsumptionChartContainer = ({
             } else {
                 // Filter target cases.
                 const fileteredMetricsData = filterMetricsData(chartData, period, enphaseOff)
-                if (fileteredMetricsData) {
-                    setConsumptionChartData(fileteredMetricsData)
-                }
+                if (fileteredMetricsData) chartData = fileteredMetricsData
             }
             setConsumptionChartData(chartData)
         }
@@ -170,7 +168,11 @@ export const ConsumptionChartContainer = ({
      * @param targets Targets related to pMaxOrTemperatureMenu.
      */
     const onTemperatureOrPmaxMenuClick = useCallback(async (targets: metricTargetType[]) => {
-        if (targets.length) setTargets((prevTargets) => [...prevTargets, ...targets])
+        if (targets.length)
+            setTargets((prevTargets) => [
+                ...prevTargets.filter((target) => !temperatureOrPmaxTargets.includes(target)),
+                ...targets,
+            ])
         else setTargets((prevTargets) => prevTargets.filter((target) => !temperatureOrPmaxTargets.includes(target)))
     }, [])
 
@@ -197,7 +199,7 @@ export const ConsumptionChartContainer = ({
     )
 
     /**
-     * Handler when switching to IdleTarget On ConsumptionSwitchButton.
+     * Handler when switching to IdleTarget In ConsumptionSwitchButton.
      *
      * @param isIdleConsumptionToggled Indicates if the idleConsumption was selected.
      */
