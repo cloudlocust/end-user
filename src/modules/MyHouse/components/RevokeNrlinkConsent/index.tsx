@@ -8,32 +8,33 @@ import Button from '@mui/material/Button'
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined'
 import { useSelector } from 'react-redux'
 import { RootState } from 'src/redux'
-import { DeleteNrlinkConsentProps } from 'src/modules/MyHouse/components/DeleteNrlinkConsent/DeleteNrlinkConsent'
-import { useDeleteNRLinkConsentHook } from 'src/modules/MyHouse/components/DeleteNrlinkConsent/deleteNrlinkConsentHook'
 import { useModal } from 'src/hooks/useModal'
 import { useIntl } from 'src/common/react-platform-translation'
 import { ButtonLoader } from 'src/common/ui-kit'
+import { useConsents } from 'src/modules/Consents/consentsHook'
+import { RevokeNrlinkConsentProps } from 'src/modules/MyHouse/components/RevokeNrlinkConsent/RevokeNrlinkConsent'
 
 /**
- * Delete NRLink Consent Module.
+ * Revoke NRLink Consent Module.
  *
  * @param root0 N/A.
- * @param root0.onAfterDeleteNrlinkConsent Callback when nrLink consent is successfully deleted.
- * @returns NRLink Delete Consent Component.
+ * @param root0.nrLinkConsent NRLink consent with all informations needed for BackEnd.
+ * @param root0.onAfterRevokeNRLink Callback when nrLink consent is successfully revoked.
+ * @returns NRLink Revoke Consent Component.
  */
-export const DeleteNrlinkConsent = ({ onAfterDeleteNrlinkConsent }: DeleteNrlinkConsentProps) => {
+export const RevokeNrlinkConsent = ({ nrLinkConsent, onAfterRevokeNRLink }: RevokeNrlinkConsentProps) => {
     const { formatMessage } = useIntl()
     const { currentHousing } = useSelector(({ housingModel }: RootState) => housingModel)
-    const { loadingInProgress, deleteNRLinkConsent } = useDeleteNRLinkConsentHook(currentHousing?.id)
+    const { revokeNrlinkConsent, isNrlinkConsentLoading } = useConsents()
     const { isOpen, openModal: openDialog, closeModal: closeDialog } = useModal()
 
     /**
-     * Function for deleting NRLink consent.
+     * Function for revoking NRLink consent.
      */
-    const handleDeleteNRLinkConsent = async () => {
+    const handleRevokeNRLinkConsent = async () => {
         try {
-            await deleteNRLinkConsent()
-            onAfterDeleteNrlinkConsent()
+            await revokeNrlinkConsent(currentHousing?.id, nrLinkConsent?.nrlinkGuid)
+            onAfterRevokeNRLink()
         } catch {}
         closeDialog()
     }
@@ -65,7 +66,7 @@ export const DeleteNrlinkConsent = ({ onAfterDeleteNrlinkConsent }: DeleteNrlink
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={closeDialog}>Non</Button>
-                    <ButtonLoader onClick={handleDeleteNRLinkConsent} inProgress={loadingInProgress} autoFocus>
+                    <ButtonLoader onClick={handleRevokeNRLinkConsent} inProgress={isNrlinkConsentLoading} autoFocus>
                         Oui
                     </ButtonLoader>
                 </DialogActions>

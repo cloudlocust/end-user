@@ -121,6 +121,9 @@ export const consentsEndpoints = [
     }),
 
     rest.delete(`${NRLINK_CONSENT_API}/:houseId`, (req, res, ctx) => {
+        const houseId = req.params.houseId
+        const nrlinkGuid = req.url.searchParams.get('nrlink_guid')
+        if (!houseId || !nrlinkGuid) return res(ctx.status(400), ctx.delay(1000))
         const authorization = req.headers.get('authorization')
         if (authorization === 'snackbar_error') {
             return res(ctx.status(400), ctx.delay(1000))

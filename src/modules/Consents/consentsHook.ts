@@ -8,7 +8,7 @@ import {
 } from 'src/modules/Consents/Consents.d'
 import { useSnackbar } from 'notistack'
 import { useIntl } from 'react-intl'
-import { axios } from 'src/common/react-platform-components'
+import { axios, catchError } from 'src/common/react-platform-components'
 import { API_RESOURCES_URL } from 'src/configs'
 import { globalProductionFeatureState, sgeConsentFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
 import { useAxiosCancelToken } from 'src/hooks/AxiosCancelToken'
@@ -53,6 +53,7 @@ export function useConsents() {
     const [enedisSgeConsent, setEnedisSgeConsent] = useState<IEnedisSgeConsent>()
     const [isCreateEnedisSgeConsentLoading, setIsCreateEnedisSgeConsentLoading] = useState(false)
     const [isEnphaseConsentLoading, setIsEnphaseConsentLoading] = useState(false)
+    const [isNrlinkConsentLoading, setIsNrlinkConsentLoading] = useState(false)
     const [createEnedisSgeConsentError, setCreateEnedisSgeConsentError] = useState<boolean>(false)
     const [enphaseLink, setEnphaseLink] = useState<EnphaseLink['url']>('')
     const { isCancel, source } = useAxiosCancelToken()
@@ -245,6 +246,49 @@ export function useConsents() {
         [enqueueSnackbar, formatMessage],
     )
 
+    /**
+     * Revoke Nrlink Consent handler.
+     */
+    const revokeNrlinkConsent = useCallback(
+        async (houseId?: number, nrlinkGuid?: string) => {
+            if (!houseId || !nrlinkGuid) return
+            setIsNrlinkConsentLoading(true)
+            try {
+                await axios.delete(`${NRLINK_CONSENT_API}/${houseId}?nrlink_guid=${nrlinkGuid}`)
+                setNrlinkConsent(undefined)
+                enqueueSnackbar(
+                    formatMessage({
+                        id: 'Consentement nrLINK révoqué avec succès',
+                        defaultMessage: 'Consentement nrLINK révoqué avec succès',
+                    }),
+                    {
+                        autoHideDuration: 3000,
+                        variant: 'success',
+                    },
+                )
+            } catch (error: any) {
+                if (error?.response?.data?.detail) {
+                    enqueueSnackbar(error.response.data.detail, { variant: 'error' })
+                } else {
+                    enqueueSnackbar(
+                        formatMessage({
+                            id: 'Erreur lors de la révokation de votre Consentement nrLINK',
+                            defaultMessage: 'Erreur lors de la révokation de votre Consentement nrLINK',
+                        }),
+                        {
+                            autoHideDuration: 5000,
+                            variant: 'error',
+                        },
+                    )
+                }
+                throw catchError(error)
+            } finally {
+                setIsNrlinkConsentLoading(false)
+            }
+        },
+        [enqueueSnackbar, formatMessage],
+    )
+
     return {
         nrlinkConsent,
         consentsLoading,
@@ -265,5 +309,7 @@ export function useConsents() {
         setEnphaseLink,
         isEnphaseConsentLoading,
         revokeEnphaseConsent,
+        isNrlinkConsentLoading,
+        revokeNrlinkConsent,
     }
 }
