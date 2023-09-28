@@ -75,17 +75,6 @@ export const EchartsConsumptionChartContainer = ({
     // TODO Remove with Echarts now (and everything that set consumptionChart, let only target with setTargets).
     const [consumptionChartData, setConsumptionChartData] = useState<IMetric[]>(data)
 
-    // This state represents whether or not the chart is stacked: true.
-    const isStackedEnabled = useMemo(() => {
-        if (period === 'daily')
-            return !targets.some((target) =>
-                ([metricTargetsEnum.consumption, metricTargetsEnum.baseConsumption] as metricTargetType[]).includes(
-                    target,
-                ),
-            )
-        else return !targets.some((target) => temperatureOrPmaxTargets.includes(target))
-    }, [period, targets])
-
     // MetricRequest shouldn't be allowed when period is daily (metric interval is '1m' or '30m' and targets include euros or idle).
     const isMetricRequestNotAllowed = useMemo(() => {
         return (
@@ -152,7 +141,8 @@ export const EchartsConsumptionChartContainer = ({
                 chartData = nullifyTodayIdleConsumptionValue([...chartData, totalOffIdleConsumptionData])
             } else {
                 // Filter target cases.
-                chartData = filterMetricsData(chartData, period, isSolarProductionConsentOff)
+                const fileteredMetricsData = filterMetricsData(chartData, period, isSolarProductionConsentOff)
+                if (fileteredMetricsData) chartData = fileteredMetricsData
             }
             setConsumptionChartData(chartData)
         }
@@ -167,7 +157,11 @@ export const EchartsConsumptionChartContainer = ({
      * @param targets Targets related to pMaxOrTemperatureMenu.
      */
     const onTemperatureOrPmaxMenuClick = useCallback(async (targets: metricTargetType[]) => {
-        if (targets.length) setTargets((prevTargets) => [...prevTargets, ...targets])
+        if (targets.length)
+            setTargets((prevTargets) => [
+                ...prevTargets.filter((target) => !temperatureOrPmaxTargets.includes(target)),
+                ...targets,
+            ])
         else setTargets((prevTargets) => prevTargets.filter((target) => !temperatureOrPmaxTargets.includes(target)))
     }, [])
 
@@ -283,9 +277,6 @@ export const EchartsConsumptionChartContainer = ({
                     <EchartsConsumptionChart
                         data={consumptionChartData}
                         period={period}
-                        range={range}
-                        isStackedEnabled={isStackedEnabled}
-                        metricsInterval={metricsInterval}
                         isSolarProductionConsentOff={isSolarProductionConsentOff}
                     />
                 </>

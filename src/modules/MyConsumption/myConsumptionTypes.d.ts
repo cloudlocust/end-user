@@ -233,12 +233,6 @@ export interface EchartsConsumptionChartProps {
     // eslint-disable-next-line jsdoc/require-jsdoc
     period: periodType
     // eslint-disable-next-line jsdoc/require-jsdoc
-    range: metricRangeType
-    // eslint-disable-next-line jsdoc/require-jsdoc
-    isStackedEnabled?: boolean
-    // eslint-disable-next-line jsdoc/require-jsdoc
-    metricsInterval?: metricIntervalType
-    // eslint-disable-next-line jsdoc/require-jsdoc
     isSolarProductionConsentOff: boolean
 }
 

@@ -20,7 +20,6 @@ import {
     getTargetsYAxisValueFormattersType,
     targetsYAxisValueFormattersType,
 } from 'src/modules/MyConsumption/utils/echartsConsumptionChartOptionsTypes.d'
-dayjs.locale(fr)
 dayjs.extend(utc)
 dayjs.extend(timezone)
 
@@ -48,7 +47,7 @@ export const getEchartsConsumptionChartOptions = (
     return {
         ...getDefaultOptionsEchartsConsumptionChart(theme),
         ...getXAxisOptionEchartsConsumptionChart(xAxisTimestamps, period, theme),
-        ...getYAxisOptionEchartsConsumptionChart(targetsYAxisValueFormatters, theme),
+        ...getYAxisOptionEchartsConsumptionChart(values, targetsYAxisValueFormatters, theme),
         ...getSeriesOptionEchartsConsumptionChart(
             values,
             period,
@@ -114,8 +113,21 @@ export const getSeriesOptionEchartsConsumptionChart = (
     return {
         series: Object.keys(values).map((target) => {
             const targetYAxisIndex = getTargetYAxisIndexFromTargetName(target as metricTargetsEnum)
+            const colorTargetSeries = getColorTargetSeriesEchartsConsumptionChart(
+                target as metricTargetsEnum,
+                theme,
+                isSolarProductionConsentOff,
+            )
+            // When the series is Transparent we hide it through type 'line' and symbole none, so that it won't interject with the already bar and line charts additional to its own stack name.
+            const typeTargetSeries: EChartsOption['series'] =
+                colorTargetSeries === TRANSPARENT_COLOR
+                    ? {
+                          type: 'line',
+                          symbol: 'none',
+                      }
+                    : getTypeTargetSeriesEchartsConsumptionChart(target as metricTargetsEnum, period)
             return {
-                ...getTypeTargetSeriesEchartsConsumptionChart(target as metricTargetsEnum, period),
+                ...typeTargetSeries,
                 emphasis: {
                     focus: 'series',
                 },
@@ -134,11 +146,7 @@ export const getSeriesOptionEchartsConsumptionChart = (
                     valueFormatter: targetsYAxisValueFormatters[targetYAxisIndex as targetYAxisIndexEnum],
                 },
                 itemStyle: {
-                    color: getColorTargetSeriesEchartsConsumptionChart(
-                        target as metricTargetsEnum,
-                        theme,
-                        isSolarProductionConsentOff,
-                    ),
+                    color: colorTargetSeries,
                 },
             }
         }),
@@ -159,14 +167,13 @@ export const getXAxisOptionEchartsConsumptionChart = (xAxisTimestamps: number[],
             {
                 // Rotate to 40 so that we can show all the hours.
                 type: 'category',
-                boundaryGap: false,
                 data: getXAxisCategoriesData(xAxisTimestamps, period),
                 axisLabel: {
                     // TODO Remove once handled daily period
                     // rotate: period === PeriodEnum.DAILY ? 30 : undefined,
                     hideOverlap: true,
                     /**
-                     * Formatting the labels shown in xAxis.
+                     * Formatting the labels shown in xAxis, which are the already formatted categories data according to the period.
                      *
                      * @param value Value of xAxis date point.
                      * @returns Label of date point in the xAxis.
@@ -190,12 +197,15 @@ export const getXAxisOptionEchartsConsumptionChart = (xAxisTimestamps: number[],
                 // AxisLine represents the horizontal line that shows xAxis labels.
                 axisLine: {
                     show: true,
+                    // Important to put onZero so that bar charts don't overflow with yAxis.
+                    onZero: true,
                     lineStyle: {
                         color: theme.palette.primary.contrastText,
                         type: 'solid',
                         opacity: 1,
                     },
                 },
+
                 axisTick: {
                     alignWithLabel: true,
                 },
@@ -242,11 +252,11 @@ const getPeriodFromTimestampsLength = (length: number): periodType => {
 const getXAxisCategoriesData = (timestamps: number[], period: periodType) => {
     switch (period) {
         case 'daily':
-            return timestamps.map((timestamp) => capitalize(dayjs.utc(timestamp).format('HH:mm')))
+            return timestamps.map((timestamp) => capitalize(dayjs.utc(timestamp).locale(fr).format('HH:mm')))
         case 'yearly':
-            return timestamps.map((timestamp) => capitalize(dayjs.utc(timestamp).format('MMM')))
+            return timestamps.map((timestamp) => capitalize(dayjs.utc(timestamp).locale(fr).format('MMM')))
         default:
-            return timestamps.map((timestamp) => capitalize(dayjs.utc(timestamp).format('ddd D MMM')))
+            return timestamps.map((timestamp) => capitalize(dayjs.utc(timestamp).locale(fr).format('ddd D MMM')))
     }
 }
 
@@ -473,18 +483,27 @@ export const getStackTargetSeriesEchartsConsumptionChart = (
 /**
  * Get YAxis option of Echarts Consumption Option.
  *
+ * @param values Datapoint values from the echarts metrics conversion function.
  * @param targetsYAxisValueFormatters Targets functions yAxis Value formatter type (label shown in tooltip and yAxisLine).
  * @param theme Theme used for colors, fonts and backgrounds of xAxis.
  * @returns YAxis object option for Echarts Consumption Options.
  */
 export const getYAxisOptionEchartsConsumptionChart = (
+    values: targetTimestampsValuesFormat,
     targetsYAxisValueFormatters: targetsYAxisValueFormattersType,
     theme: Theme,
 ) => {
+    // Not showing the yAxis that don't have their targets in the values.
+    const YAxisShowList: targetYAxisIndexEnum[] = []
+    Object.keys(values).forEach((target) => {
+        const targetYAxisIndex = getTargetYAxisIndexFromTargetName(target as metricTargetsEnum)
+        if (!YAxisShowList.includes(targetYAxisIndex)) YAxisShowList.push(targetYAxisIndex)
+    })
     return {
         yAxis: Object.keys(targetsYAxisValueFormatters).map((targetYAxisIndex) => ({
             type: 'value',
             axisLine: {
+                onZero: true,
                 show: true,
                 lineStyle: {
                     color: theme.palette.primary.contrastText,
@@ -492,7 +511,7 @@ export const getYAxisOptionEchartsConsumptionChart = (
                     opacity: 1,
                 },
             },
-            show: true,
+            show: YAxisShowList.includes(targetYAxisIndex as targetYAxisIndexEnum),
             position: [targetYAxisIndexEnum.PMAX, targetYAxisIndexEnum.TEMPERATURE].includes(
                 targetYAxisIndex as targetYAxisIndexEnum,
             )
@@ -527,11 +546,12 @@ export const getYAxisOptionEchartsConsumptionChart = (
  * @param period Current period.
  * @returns Value formatters to group yAxisLine and tooltip labels.
  */
+// TODO Remove disable cognitive-complexity
 // eslint-disable-next-line sonarjs/cognitive-complexity
 export const getTargetsYAxisValueFormatters: getTargetsYAxisValueFormattersType = (values, period) => {
     // We compute the consumption chart maximum y value, so that we can indicate the correct unit on the Consumption yAxis tooltip and axisLine according to the unit of the maximum value
     // Because there's a conversion function used to format consumption y values which gives different units to the maximum and other lower values.
-    // Doing this allow us to show the yValues with the same unit.
+    // Doing this allow us to show the yValues with the same unit., also for optimization we do it one time here.
     let maxConsumptionValue = 0
     let metricsInterval: '1m' | '30m' = '30m'
     if (Object.keys(values).includes(metricTargetsEnum.consumption))
@@ -555,17 +575,7 @@ export const getTargetsYAxisValueFormatters: getTargetsYAxisValueFormattersType 
          * @param value Value yAxis.
          * @returns The yAxis Label.
          */
-        [targetYAxisIndexEnum.CONSUMPTION]: function (value) {
-            if (period === PeriodEnum.DAILY) {
-                return convertConsumptionToWatt(value, true, metricsInterval)
-            }
-            return getYPointValueLabel(
-                value,
-                metricTargetsEnum.consumption,
-                consumptionWattUnitConversion(maxConsumptionValue).unit,
-                true,
-            )
-        },
+        [targetYAxisIndexEnum.CONSUMPTION]: ConsumptionValueFormatter(period, maxConsumptionValue, metricsInterval),
         /**
          * Value formatter Label for Temperature targets yAxis.
          *
@@ -573,7 +583,7 @@ export const getTargetsYAxisValueFormatters: getTargetsYAxisValueFormattersType 
          * @returns The yAxis Label.
          */
         [targetYAxisIndexEnum.TEMPERATURE]: function (value) {
-            return `${value} °C`
+            return `${isNil(value) ? '' : value} °C`
         },
         /**
          * Value formatter Label Label for Pmax targets yAxis.
@@ -582,7 +592,7 @@ export const getTargetsYAxisValueFormatters: getTargetsYAxisValueFormattersType 
          * @returns The yAxis Label.
          */
         [targetYAxisIndexEnum.PMAX]: function (value) {
-            return `${isNil(value) ? value : convert(Number(value)).from('VA').to('kVA'!).toFixed(2)} kVA`
+            return `${isNil(value) ? '' : convert(Number(value)).from('VA').to('kVA'!).toFixed(2)} kVA`
 
             // return `${k convert(value).from('VA').to('kVA'!).toFixed(2)} kVA`
         },
@@ -600,7 +610,29 @@ export const getTargetsYAxisValueFormatters: getTargetsYAxisValueFormattersType 
              * @returns The yAxis Label.
              */
             function (value) {
-                return `${isNil(value) ? value : Number(value).toFixed(3).slice(0, -1)} €`
+                return `${isNil(value) ? '' : Number(value).toFixed(3).slice(0, -1)} €`
             },
+    }
+}
+
+/**
+ * Function that returns values formatter functions (which is the label shown whether in tooltip or yAxisLine).
+ *
+ * @param period Current period.
+ * @param maxConsumptionValue Consumption chart maximum y value.
+ * @param metricsInterval Computing the metricsInterval is used in period DAILY to convert consumption to WATT according to the metricsInterval.
+ * @returns Value function value formatters for Consumption YAxis.
+ */
+const ConsumptionValueFormatter = (period: periodType, maxConsumptionValue: number, metricsInterval: '1m' | '30m') => {
+    return function (value: undefined | number) {
+        if (period === PeriodEnum.DAILY) {
+            return convertConsumptionToWatt(value, true, metricsInterval)
+        }
+        return getYPointValueLabel(
+            value,
+            metricTargetsEnum.consumption,
+            consumptionWattUnitConversion(maxConsumptionValue).unit,
+            true,
+        )
     }
 }
