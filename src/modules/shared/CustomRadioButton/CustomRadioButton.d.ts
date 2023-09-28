@@ -1,25 +1,27 @@
 /**
+ * Props related to the radio group state.
+ */
+export interface RadioStateProps {
+    /**
+     * The state that holds the value of the radio group.
+     */
+    selectedValue?: string
+    /**
+     * The radio button click handler function that update the selectedValue.
+     */
+    handleRadioBtnClick?: (v: string) => void
+}
+
+/**
  * Props types for CustomRadioButton component.
  */
-export type CustomRadioButtonProps =
+export interface CustomRadioButtonProps extends RadioStateProps {
     /**
-     *
+     * The value associated with the radio button.
      */
-    {
-        /**
-         * The value associated with the radio button.
-         */
-        value: string
-        /**
-         * The descriptive text associated with the radio button.
-         */
-        label: string
-        /**
-         * A state holds the value of the currently selected radio button among the group of radio buttons.
-         */
-        selectedValue?: string
-        /**
-         * The setter associated to the selected radio button state (selectedValue).
-         */
-        setSelectedValue?: (v: string) => void
-    }
+    value: string
+    /**
+     * The descriptive text associated with the radio button.
+     */
+    label: string
+}

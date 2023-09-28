@@ -157,7 +157,11 @@ export const ConsumptionChartContainer = ({
      * @param targets Targets related to pMaxOrTemperatureMenu.
      */
     const onTemperatureOrPmaxMenuClick = useCallback(async (targets: metricTargetType[]) => {
-        if (targets.length) setTargets((prevTargets) => [...prevTargets, ...targets])
+        if (targets.length)
+            setTargets((prevTargets) => [
+                ...prevTargets.filter((target) => !temperatureOrPmaxTargets.includes(target)),
+                ...targets,
+            ])
         else setTargets((prevTargets) => prevTargets.filter((target) => !temperatureOrPmaxTargets.includes(target)))
     }, [])
 

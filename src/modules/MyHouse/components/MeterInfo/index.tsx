@@ -12,10 +12,9 @@ import { Form, max, min, requiredBuilder } from 'src/common/react-platform-compo
 import { IHousing } from 'src/modules/MyHouse/components/HousingList/housing.d'
 import { useMeterForHousing } from 'src/modules/Meters/metersHook'
 import { addMeterInputType } from 'src/modules/Meters/Meters'
-import { useDispatch } from 'react-redux'
-import { Dispatch } from 'src/redux'
 import { linksColor, warningMainHashColor } from 'src/modules/utils/muiThemeVariables'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
+import { useHousingRedux } from '../../utils/MyHouseHooks'
 
 /**
  * This is a card for the display of a housing item.
@@ -41,7 +40,7 @@ const MeterInfos = ({
 
     const { addMeter, loadingInProgress: isMeterInProgress } = useMeterForHousing()
 
-    const dispatch = useDispatch<Dispatch>()
+    const { loadHousingsAndScopes } = useHousingRedux()
 
     /**
      * What should be done when closing the add meter popup.
@@ -61,7 +60,7 @@ const MeterInfos = ({
      * Handler onAfterDeleteUpdateSuccess function when updating or delete housing.
      */
     const onAfterDeleteUpdateSuccess = () => {
-        dispatch.housingModel.loadHousingsList()
+        loadHousingsAndScopes()
     }
 
     return (

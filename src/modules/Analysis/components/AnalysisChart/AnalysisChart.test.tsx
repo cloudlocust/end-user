@@ -23,6 +23,15 @@ const mockAnalysisChartProps = {
     getSelectedValueElementColor: jest.fn(),
 }
 
+// need to mock this because myHouseConfig uses it
+jest.mock('src/modules/MyHouse/MyHouseConfig', () => ({
+    ...jest.requireActual('src/modules/MyHouse/MyHouseConfig'),
+    //eslint-disable-next-line
+    arePlugsUsedBasedOnProductionStatus: () => true,
+    //eslint-disable-next-line
+    isProductionActiveAndHousingHasAccess: () => true,
+}))
+
 let mockIsMobile = true
 // testing for mobile as default
 jest.mock(
