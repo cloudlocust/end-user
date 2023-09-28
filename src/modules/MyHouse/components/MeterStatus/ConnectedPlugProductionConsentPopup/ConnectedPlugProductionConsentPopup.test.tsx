@@ -44,6 +44,13 @@ jest.mock('react-router', () => ({
 
 let mockLoadingInProgress = false
 
+// TODO - fixe this shity quick fixe for tests by separating myHouseConfig dependencies
+jest.mock('src/modules/MyHouse/MyHouseConfig', () => ({
+    ...jest.requireActual('src/modules/MyHouse/MyHouseConfig'),
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    URL_MY_HOUSE: '/my-house',
+}))
+
 // Mock useInstallationRequestsList hook
 jest.mock('src/modules/MyHouse/components/ConnectedPlugs/connectedPlugsHook', () => ({
     ...jest.requireActual('src/modules/MyHouse/components/ConnectedPlugs/connectedPlugsHook'),

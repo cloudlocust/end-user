@@ -27,11 +27,7 @@ const ConnectedPlugsHeader = ({ onAddClick, isConnectedPlugListLoading }: Connec
                         initial={{ opacity: 0, x: 20 }}
                         animate={{ opacity: 1, x: 0, transition: { delay: 0.2 } }}
                     >
-                        <Button
-                            sx={{ color: 'primary.contrastText' }}
-                            onClick={history.goBack}
-                            className="text-16 ml-12"
-                        >
+                        <Button sx={{ color: 'primary.contrastText' }} onClick={history.goBack} className="text-16">
                             <Icon
                                 component={motion.span}
                                 initial={{ scale: 0 }}

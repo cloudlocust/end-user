@@ -35,4 +35,8 @@ export interface IHousingState {
      * List of available housings.
      */
     housingList: IHousing[]
+    /**
+     * Current Housing Scope.
+     */
+    currentHousingScopes: ScopesTypesEnum[]
 }
