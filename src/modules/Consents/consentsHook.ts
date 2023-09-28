@@ -8,7 +8,7 @@ import {
 } from 'src/modules/Consents/Consents.d'
 import { useSnackbar } from 'notistack'
 import { useIntl } from 'react-intl'
-import { axios, catchError } from 'src/common/react-platform-components'
+import { axios } from 'src/common/react-platform-components'
 import { API_RESOURCES_URL } from 'src/configs'
 import { globalProductionFeatureState, sgeConsentFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
 import { useAxiosCancelToken } from 'src/hooks/AxiosCancelToken'
@@ -262,7 +262,7 @@ export function useConsents() {
                         defaultMessage: 'Consentement nrLINK révoqué avec succès',
                     }),
                     {
-                        autoHideDuration: 3000,
+                        autoHideDuration: 5000,
                         variant: 'success',
                     },
                 )
@@ -281,7 +281,6 @@ export function useConsents() {
                         },
                     )
                 }
-                throw catchError(error)
             } finally {
                 setIsNrlinkConsentLoading(false)
             }
