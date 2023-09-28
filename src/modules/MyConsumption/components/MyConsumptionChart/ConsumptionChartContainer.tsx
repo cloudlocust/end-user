@@ -30,7 +30,6 @@ import {
     idleConsumptionTargets,
     temperatureOrPmaxTargets,
 } from 'src/modules/MyConsumption/utils/myConsumptionVariables'
-import ConsumptionChart from './ConsumptionChart'
 
 /**
  * MyConsumptionChart Component.

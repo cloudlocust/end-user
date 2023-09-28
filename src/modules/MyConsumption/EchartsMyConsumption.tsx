@@ -1,11 +1,11 @@
 import PageSimple from 'src/common/ui-kit/fuse/components/PageSimple/PageSimple'
-import { MyConsumptionContainer } from 'src/modules/MyConsumption/EchartsMyConsumptionContainer'
+import { EchartsMyConsumptionContainer } from 'src/modules/MyConsumption/EchartsMyConsumptionContainer'
 
 /**
- * MyConsumption page.
+ * EchartsMyConsumption page.
  *
- * @returns MyConsumptionContainer.
+ * @returns EchartsMyConsumptionContainer.
  */
-export const MyConsumption = () => {
-    return <PageSimple content={<MyConsumptionContainer />} />
+export const EchartsMyConsumption = () => {
+    return <PageSimple content={<EchartsMyConsumptionContainer />} />
 }

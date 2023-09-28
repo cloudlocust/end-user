@@ -113,6 +113,7 @@ export const defaultApexChartOptions: (theme: Theme) => Props['options'] = (them
     },
 })
 
+// TODO: NOT HANDLED for tooltip
 /**
  * Get apexCharts format for xxaxis labels or dayjs format for tooltip label according to the current period selected.
  *
@@ -204,6 +205,7 @@ export const getApexChartMyConsumptionProps = ({
 
         let data: any = [...yAxisSerie.data]
 
+        // TODO: NOT HANDLED
         if (
             period === 'daily' &&
             (yAxisSerie.name === metricTargetsEnum.peakHourConsumption ||
@@ -223,6 +225,7 @@ export const getApexChartMyConsumptionProps = ({
 
         // Showing the total production only if the injected production have null or 0 values, To check that injectedProduction have null values happens when sum of injectedProduction is 0.
         // TODO Refactor to a simpler way split getApexChartMyConsumptionProps to production & consumption props maybe, and have Chart component for each chartType.
+        // TODO: NOT HANDLED
         if (yAxisSerie.name === metricTargetsEnum.injectedProduction) {
             const totalInjectedProduction = sum(
                 yAxisSerie.data.map((datapoint) => Number((datapoint as [number, number])[1])),
@@ -238,6 +241,7 @@ export const getApexChartMyConsumptionProps = ({
                 id: label,
                 defaultMessage: label,
             }),
+            // TODO: HANDLE TOTAL PRODUCTION
             type:
                 (yAxisSerie.name === metricTargetsEnum.totalProduction && !showTotalProduction) ||
                 yAxisSerie.name === metricTargetsEnum.eurosConsumption ||
@@ -250,6 +254,7 @@ export const getApexChartMyConsumptionProps = ({
         // data.length !== 1440 is added because there can be case where period is not daily, and yAxisSerie.data didn't updated and still express data of daily.
         // TODO Fix find a better way to reender period and data at same time, instead of doing yAxisSerie.data.length !== 1440
         // TODO Clean this in a function.
+        // TODO: NOT HANDLED
         if (
             (yAxisSerie.name === metricTargetsEnum.consumption ||
                 yAxisSerie.name === metricTargetsEnum.baseConsumption ||
@@ -269,6 +274,7 @@ export const getApexChartMyConsumptionProps = ({
 
         yAxisOptions.push({
             ...restChartSpecifities,
+            // TODO: NOT HANDLED
             opposite:
                 yAxisSerie.name !== metricTargetsEnum.consumption &&
                 yAxisSerie.name !== metricTargetsEnum.onlyConsumption &&

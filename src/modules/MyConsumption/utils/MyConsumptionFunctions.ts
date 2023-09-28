@@ -460,7 +460,6 @@ export const getChartSpecifities = (
     chartLabel?: 'Consommation totale' | 'Electricité achetée sur le réseau',
     // eslint-disable-next-line sonarjs/cognitive-complexity
 ): getChartSpecifitiesType => {
-    console.log('🚀 ~ file: MyConsumptionFunctions.ts:463 ~ target:', target)
     const totalConsumptionSeriesName = 'Consommation totale'
     const totalEurosConsumptionSeriesName = 'Consommation euro totale'
     if (target === metricTargetsEnum.consumption && chartLabel === totalConsumptionSeriesName) {

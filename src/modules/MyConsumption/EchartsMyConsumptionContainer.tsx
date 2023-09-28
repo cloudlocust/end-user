@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { ConsumptionChartContainer } from 'src/modules/MyConsumption/components/MyConsumptionChart/EchartsConsumptionChartContainer'
+import { EchartsConsumptionChartContainer } from 'src/modules/MyConsumption/components/MyConsumptionChart/EchartsConsumptionChartContainer'
 import { formatMetricFilter, getRangeV2 } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
 import { useTheme } from '@mui/material'
 import { metricRangeType, metricFiltersType, metricIntervalType } from 'src/modules/Metrics/Metrics.d'
@@ -25,12 +25,12 @@ import { connectedPlugsFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
 import { globalProductionFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
 
 /**
- * MyConsumptionContainer.
+ * EchartsMyConsumptionContainer.
  * Parent component.
  *
- * @returns MyConsumptionContainer and its children.
+ * @returns EchartsMyConsumptionContainer and its children.
  */
-export const MyConsumptionContainer = () => {
+export const EchartsMyConsumptionContainer = () => {
     const theme = useTheme()
     const { getConsents, nrlinkConsent, enedisSgeConsent, enphaseConsent, consentsLoading } = useConsents()
     const [period, setPeriod] = useState<PeriodEnum>(PeriodEnum.DAILY)
@@ -39,7 +39,7 @@ export const MyConsumptionContainer = () => {
     const [filters, setFilters] = useState<metricFiltersType>([])
 
     // metricsInterval is initialized this way, so that its value is different from 2m or 30m, because it'll be set to 2m or 30m once consent request has finished.
-    // This won't create a problem even if metricIntervalType doesn't include undefined, because this will affect only on mount of MyConsumptionContainer and all children component that useMetrics, won't execute getMetrics on mount.
+    // This won't create a problem even if metricIntervalType doesn't include undefined, because this will affect only on mount of EchartsMyConsumptionContainer and all children component that useMetrics, won't execute getMetrics on mount.
     const [metricsInterval, setMetricsInterval] = useState<metricIntervalType>('1m')
     const { ecowattSignalsData, isLoadingInProgress: isEcowattDataInProgress } = useEcowatt(true)
 
@@ -58,8 +58,9 @@ export const MyConsumptionContainer = () => {
     const isProductionConnectedPlug = getProductionConnectedPlug()
 
     // TODO put enphaseConsent.enphaseConsentState in an enum.
-    let isProductionConsentOff = enphaseConsent?.enphaseConsentState !== 'ACTIVE'
-    if (connectedPlugsFeatureState) isProductionConsentOff = isProductionConsentOff && !isProductionConnectedPlug
+    let isSolarProductionConsentOff = enphaseConsent?.enphaseConsentState !== 'ACTIVE'
+    if (connectedPlugsFeatureState)
+        isSolarProductionConsentOff = isSolarProductionConsentOff && !isProductionConnectedPlug
 
     // UseEffect to check for consent whenever a meter is selected.
     useEffect(() => {
@@ -74,16 +75,16 @@ export const MyConsumptionContainer = () => {
      * @param interval Metric Interval selected.
      */
     const setMyConsumptionPeriodMetricsInterval = (interval: metricIntervalType) => {
-        if (interval === '1m') setMetricsInterval(!isProductionConsentOff ? '30m' : '1m')
+        if (interval === '1m') setMetricsInterval(!isSolarProductionConsentOff ? '30m' : '1m')
         else setMetricsInterval(interval)
     }
 
     useEffect(() => {
         setMetricsInterval((prevState) => {
-            if (prevState === '1m' || prevState === '30m') return !isProductionConsentOff ? '30m' : '1m'
+            if (prevState === '1m' || prevState === '30m') return !isSolarProductionConsentOff ? '30m' : '1m'
             else return prevState
         })
-    }, [isProductionConsentOff])
+    }, [isSolarProductionConsentOff])
 
     useEffect(() => {
         loadConnectedPlugList()
@@ -133,13 +134,13 @@ export const MyConsumptionContainer = () => {
                             <MyConsumptionDatePicker period={period} setRange={setRange} range={range} />
                         </div>
 
-                        <ConsumptionChartContainer
+                        <EchartsConsumptionChartContainer
                             period={period}
                             hasMissingHousingContracts={hasMissingHousingContracts}
                             range={range}
                             filters={filters}
+                            isSolarProductionConsentOff={isSolarProductionConsentOff}
                             enedisSgeConsent={enedisSgeConsent}
-                            enphaseConsent={enphaseConsent}
                             metricsInterval={metricsInterval}
                         />
                     </>
@@ -151,7 +152,7 @@ export const MyConsumptionContainer = () => {
                         period={period}
                         range={range}
                         filters={filters}
-                        isProductionConsentOff={isProductionConsentOff}
+                        isProductionConsentOff={isSolarProductionConsentOff}
                         isProductionConsentLoadingInProgress={isConnectedPlugListLoadingInProgress}
                         metricsInterval={metricsInterval}
                     />
@@ -168,7 +169,7 @@ export const MyConsumptionContainer = () => {
                         hasMissingHousingContracts={hasMissingHousingContracts}
                         metricsInterval={metricsInterval}
                         // TODO Change enphaseOff for a more generic naming such as isProductionConsentOff or productionOff...
-                        enphaseOff={isProductionConsentOff}
+                        enphaseOff={isSolarProductionConsentOff}
                         enedisOff={enedisOff}
                     />
                 </ConsumptionWidgetsMetricsProvider>
