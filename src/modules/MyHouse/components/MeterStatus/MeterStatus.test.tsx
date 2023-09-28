@@ -152,6 +152,7 @@ jest.mock('src/modules/Consents/consentsHook', () => ({
 let mockHousingModelState: IHousingState = {
     housingList: LIST_OF_HOUSES,
     currentHousing: CURRENT_HOUSING,
+    currentHousingScopes: [],
 }
 
 /**

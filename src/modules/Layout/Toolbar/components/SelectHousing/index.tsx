@@ -53,10 +53,12 @@ export const SelectHousing = () => {
      *
      * @param event Event from the select value.
      */
-    const handleChange = (event: SelectChangeEvent<number | string>) => {
-        if (Number(event.target.value))
+    const handleChange = async (event: SelectChangeEvent<number | string>) => {
+        if (Number(event.target.value)) {
             // if it's a string it's ignored.
             dispatch.housingModel.setCurrentHousingState(event.target.value as number)
+            await dispatch.housingModel.loadHousingScopesFromId(currentHousing?.id)
+        }
     }
     return (
         <>

@@ -4,6 +4,10 @@ import { createModel } from '@rematch/core'
 import { RootModel } from 'src/models'
 import { ILoadDataPagination } from 'src/common/react-platform-components/utils/mm'
 import { HOUSING_API } from 'src/modules/MyHouse/components/HousingList/HousingsHooks'
+import { ScopesAccessRightsType, ScopesTypesEnum } from './utils/MyHouseCommonTypes'
+import { isAccessRightsActive } from 'src/configs'
+import { ACCESS_RIGHTS_API } from './utils/MyHouseVariables'
+// import { store } from 'src/redux'
 
 /**
  * Default state of housing state.
@@ -11,6 +15,7 @@ import { HOUSING_API } from 'src/modules/MyHouse/components/HousingList/Housings
 export const defaultState: IHousingState = {
     housingList: [],
     currentHousing: null,
+    currentHousingScopes: [],
 }
 
 // eslint-disable-next-line jsdoc/require-jsdoc
@@ -30,9 +35,7 @@ export const housingModel = createModel<RootModel>()({
         /**
          * LoadHousingsList function.
          *
-         * @returns List of available housings.
          */
-        // eslint-disable-next-line jsdoc/require-jsdoc
         async loadHousingsList() {
             try {
                 const { data } = await axios.get<ILoadDataPagination<IHousing[]>>(`${HOUSING_API}?size=100&page=1`)
@@ -41,6 +44,22 @@ export const housingModel = createModel<RootModel>()({
                 // use onError callback to handle the error request in the component
                 throw handleHousingEffectsErrors(error)
             }
+        },
+        /**
+         * Load current housing scopes.
+         *
+         * @param housingId Housing id that will have the scopes set on state.
+         */
+        async loadHousingScopesFromId(housingId: number | undefined) {
+            let housingScopes: ScopesTypesEnum[] = []
+            try {
+                // const { housingModel } = store.getState()
+                if (housingId && isAccessRightsActive) {
+                    const { data: responseData } = await axios.get<ScopesAccessRightsType>(ACCESS_RIGHTS_API(housingId))
+                    housingScopes = responseData.scopes
+                }
+                dispatch.housingModel.setCurrentHousingScopesState(housingScopes)
+            } catch (err) {}
         },
     }),
     reducers: {
@@ -52,8 +71,10 @@ export const housingModel = createModel<RootModel>()({
          * @returns New state with user data.
          */
         setHousingModelState(state: IHousingState, housingList: IHousing[]): IHousingState {
+            // TODO - take off the function getCurrentHousingOnLoad and put it in the effect
             return {
-                currentHousing: setCurrentHousingOnLoad(state, housingList),
+                ...state,
+                currentHousing: getCurrentHousingOnLoad(state, housingList),
                 housingList,
             }
         },
@@ -65,9 +86,23 @@ export const housingModel = createModel<RootModel>()({
          * @returns New state with user data.
          */
         setCurrentHousingState(state: IHousingState, selectedHousingId: number): IHousingState {
+            const currentHousing = state.housingList.find((housing) => housing.id === selectedHousingId) ?? null
             return {
                 ...state,
-                currentHousing: state.housingList.find((housing) => housing.id === selectedHousingId) ?? null,
+                currentHousing,
+            }
+        },
+        /**
+         * Set the housing model state.
+         *
+         * @param state Current state.
+         * @param currentHousingScopes The scopes of the current housing.
+         * @returns New state with user data.
+         */
+        setCurrentHousingScopesState(state: IHousingState, currentHousingScopes: ScopesTypesEnum[]): IHousingState {
+            return {
+                ...state,
+                currentHousingScopes: currentHousingScopes,
             }
         },
     },
@@ -81,7 +116,7 @@ export const housingModel = createModel<RootModel>()({
  * @param housingList Housing List that we get from fetching data when onLoad.
  * @returns Current Hsouing value based on the behaviour of the app and prece.
  */
-const setCurrentHousingOnLoad = (state: IHousingState, housingList: IHousing[]) => {
+const getCurrentHousingOnLoad = (state: IHousingState, housingList: IHousing[]) => {
     if (!state.currentHousing) {
         // if the current housing is null this mean that we just loged in and no state has been saved yet.
         if (housingList![0]) {
