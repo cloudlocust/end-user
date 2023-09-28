@@ -40,7 +40,8 @@ import {
 import { cloneDeep, subtract, sum } from 'lodash'
 import { isNil } from 'lodash'
 import fr from 'date-fns/locale/fr'
-import { getDataFromYAxis } from '../components/Widget/WidgetFunctions'
+import { getDataFromYAxis } from 'src/modules/MyConsumption/components/Widget/WidgetFunctions'
+import { temperatureOrPmaxTargets } from 'src/modules/MyConsumption/utils/myConsumptionVariables'
 
 /**
  * FormatMetricFilter function converts the data to the required format.
@@ -1006,6 +1007,9 @@ export const filterMetricsData = (
     // TODO: remove cognitive-complexity in veille
     // eslint-disable-next-line sonarjs/cognitive-complexity
 ): IMetric[] => {
+    const temperatureOrPmaxMetricsData = data.filter((metric) =>
+        temperatureOrPmaxTargets.includes(metric.target as metricTargetsEnum),
+    )
     const isEuroTarget = data.some((metric) =>
         [metricTargetsEnum.eurosConsumption].includes(metric.target as metricTargetsEnum),
     )
@@ -1020,11 +1024,14 @@ export const filterMetricsData = (
 
     if (isBasePeakOffPeakConsumptionTargets) {
         if (!enphaseOff)
-            return data.filter(
-                (metric) =>
-                    metric.target === metricTargetsEnum.consumption ||
-                    metric.target === metricTargetsEnum.autoconsumption,
-            )
+            return [
+                ...data.filter(
+                    (metric) =>
+                        metric.target === metricTargetsEnum.consumption ||
+                        metric.target === metricTargetsEnum.autoconsumption,
+                ),
+                ...temperatureOrPmaxMetricsData,
+            ]
 
         // When neither of: baseConsumption or HP or HC consumption metrics has data, we use the "general" consumption metrics target.
         // In this case it's handled from the front as onlyConsumption.
@@ -1038,7 +1045,7 @@ export const filterMetricsData = (
             const onlyConsumption = getOnlyConsumptionMetrics(data)
 
             if (onlyConsumption) {
-                return [onlyConsumption]
+                return [onlyConsumption, ...temperatureOrPmaxMetricsData]
             }
         }
     }
@@ -1046,20 +1053,27 @@ export const filterMetricsData = (
     // Base consumption is empty & period is daily & enphase consent is OFF
     const isBaseConsumptionEmpty = isEmptyMetricsData(data, [metricTargetsEnum.baseConsumption])
     if (period === 'daily' && isBaseConsumptionEmpty && enphaseOff) {
-        return data.filter(
-            (metric) =>
-                metric.target === metricTargetsEnum.consumption ||
-                metric.target === metricTargetsEnum.peakHourConsumption ||
-                metric.target === metricTargetsEnum.offPeakHourConsumption,
-        )
+        return [
+            ...data.filter(
+                (metric) =>
+                    metric.target === metricTargetsEnum.consumption ||
+                    metric.target === metricTargetsEnum.peakHourConsumption ||
+                    metric.target === metricTargetsEnum.offPeakHourConsumption,
+            ),
+            ...temperatureOrPmaxMetricsData,
+        ]
     }
 
     // Base consumption is NOT empty (has data), period is daily & enphase is OFF
     if (period === 'daily' && !isBaseConsumptionEmpty && enphaseOff) {
-        return data.filter(
-            (metric) =>
-                metric.target === metricTargetsEnum.consumption || metric.target === metricTargetsEnum.baseConsumption,
-        )
+        return [
+            ...data.filter(
+                (metric) =>
+                    metric.target === metricTargetsEnum.consumption ||
+                    metric.target === metricTargetsEnum.baseConsumption,
+            ),
+            ...temperatureOrPmaxMetricsData,
+        ]
     }
 
     if (isEuroTarget) {
@@ -1075,7 +1089,8 @@ export const filterMetricsData = (
                 (metric) => metric.target === metricTargetsEnum.subscriptionPrices,
             )
 
-            if (onlyEuroConsimption && subscriptionPricesTarget) return [onlyEuroConsimption, subscriptionPricesTarget]
+            if (onlyEuroConsimption && subscriptionPricesTarget)
+                return [onlyEuroConsimption, subscriptionPricesTarget, ...temperatureOrPmaxMetricsData]
         }
     }
 

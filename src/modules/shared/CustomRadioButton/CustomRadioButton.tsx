@@ -1,7 +1,6 @@
 import FormControlLabel from '@mui/material/FormControlLabel'
 import Radio from '@mui/material/Radio'
 import Button from '@mui/material/Button'
-import { useTheme } from '@mui/material/styles'
 import { CustomRadioButtonProps } from 'src/modules/shared/CustomRadioButton/CustomRadioButton.d'
 
 /**
@@ -10,26 +9,37 @@ import { CustomRadioButtonProps } from 'src/modules/shared/CustomRadioButton/Cus
  * @param root0 N/A.
  * @param root0.value The value associated with the radio button.
  * @param root0.label The descriptive text associated with the radio button.
- * @param root0.selectedValue A state holds the value of the currently selected radio button among the group of radio buttons.
- * @param root0.setSelectedValue The setter associated to the selected radio button state (selectedValue).
+ * @param root0.selectedValue The state that holds the value of the radio group.
+ * @param root0.handleRadioBtnClick The radio button click handler function that update the selectedValue.
  * @returns Enedis Sge consent JSX.
  */
-const CustomRadioButton = ({ value, label, selectedValue, setSelectedValue }: CustomRadioButtonProps): JSX.Element => {
-    const theme = useTheme()
+export const CustomRadioButton = ({
+    value,
+    label,
+    selectedValue,
+    handleRadioBtnClick,
+}: CustomRadioButtonProps): JSX.Element => {
     const isSelected = value === selectedValue
 
     /**
-     * A click handler function for the custom radio button.
+     * Click handler for the Button.
      */
     const handleClick = () => {
-        if (setSelectedValue) setSelectedValue(value)
+        if (handleRadioBtnClick) handleRadioBtnClick(value)
     }
 
     return (
         <Button
             variant={isSelected ? 'contained' : 'outlined'}
             onClick={handleClick}
-            sx={{ borderRadius: '10px', '& label': { margin: 0 } }}
+            sx={{
+                borderRadius: '10px',
+                borderWidth: '1.5px',
+                '&:hover': {
+                    borderWidth: '1.5px',
+                },
+                '& label': { margin: 0 },
+            }}
         >
             <FormControlLabel
                 label={label}
@@ -40,11 +50,12 @@ const CustomRadioButton = ({ value, label, selectedValue, setSelectedValue }: Cu
                         color="secondary"
                         sx={{
                             position: 'absolute',
-                            top: '1px',
-                            right: '1px',
+                            top: '0px',
+                            right: '0px',
                             height: '18px',
                             width: '18px',
-                            color: theme.palette.primary.main,
+                            color: 'inherit',
+                            transform: 'scale(0.8)',
                         }}
                     />
                 }
@@ -53,5 +64,3 @@ const CustomRadioButton = ({ value, label, selectedValue, setSelectedValue }: Cu
         </Button>
     )
 }
-
-export default CustomRadioButton

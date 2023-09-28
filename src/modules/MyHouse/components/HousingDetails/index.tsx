@@ -25,9 +25,9 @@ import { ReactComponent as ElectricityIcon } from 'src/assets/images/content/hou
 import { useSelector } from 'react-redux'
 import { RootState } from 'src/redux'
 import { cloneDeep, isEmpty } from 'lodash'
-import { connectedPlugsFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import { useConnectedPlugList } from 'src/modules/MyHouse/components/ConnectedPlugs/connectedPlugsHook'
+import { arePlugsUsedBasedOnProductionStatus } from 'src/modules/MyHouse/MyHouseConfig'
 
 const Root = styled(FusePageCarded)(() => ({
     '& .FusePageCarded-header': {
@@ -52,7 +52,7 @@ const Root = styled(FusePageCarded)(() => ({
  * @returns  Element Details Tabs.
  */
 export const HousingDetails = () => {
-    const { currentHousing } = useSelector(({ housingModel }: RootState) => housingModel)
+    const { currentHousing, currentHousingScopes } = useSelector(({ housingModel }: RootState) => housingModel)
     const theme = useTheme()
 
     const {
@@ -258,7 +258,7 @@ export const HousingDetails = () => {
                         {/**
                          * TODO: Configure, isLoading? Elements like Equipments (load default at mount then replace by real data).
                          */}
-                        {connectedPlugsFeatureState && (
+                        {arePlugsUsedBasedOnProductionStatus(currentHousingScopes) && (
                             <HousingDetailsCard
                                 title="Mes prises connectées"
                                 elements={connectedPlugsElements}

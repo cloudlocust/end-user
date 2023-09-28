@@ -36,6 +36,12 @@ jest.mock('react-router-dom', () => ({
     }),
 }))
 
+jest.mock('src/modules/MyHouse/MyHouseConfig', () => ({
+    ...jest.requireActual('src/modules/MyHouse/MyHouseConfig'),
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    URL_MY_HOUSE: '/my-house',
+}))
+
 /**
  * Mocking the ConnectedPlugsList.
  */

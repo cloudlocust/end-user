@@ -13,6 +13,7 @@ let mockConnectedPlug: IConnectedPlug = applyCamelCase(TEST_CONNECTED_PLUGS[0])
 
 const CONNECTED_PLUG_CONSENT_EXIST_TEXT = 'Connectée le'
 const CONNECTED_PLUG_CONSENT_NOT_EXIST_TEXT = 'Non Connectée'
+
 describe('ConnectedPlugs Mobile Row Test', () => {
     describe('Content Test', () => {
         test('when Consent Exist', async () => {
