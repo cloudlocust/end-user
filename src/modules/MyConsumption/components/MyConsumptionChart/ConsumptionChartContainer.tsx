@@ -198,7 +198,7 @@ export const ConsumptionChartContainer = ({
     )
 
     /**
-     * Handler when switching to IdleTarget On ConsumptionSwitchButton.
+     * Handler when switching to IdleTarget In ConsumptionSwitchButton.
      *
      * @param isIdleConsumptionToggled Indicates if the idleConsumption was selected.
      */
