@@ -38,6 +38,10 @@ jest.mock('src/modules/MyHouse/MyHouseConfig', () => ({
     get connectedPlugsFeatureState() {
         return true
     },
+    //eslint-disable-next-line
+    arePlugsUsedBasedOnProductionStatus: () => true,
+    //eslint-disable-next-line
+    isProductionActiveAndHousingHasAccess: () => true,
 }))
 
 describe('useConnectedPlugList test', () => {
