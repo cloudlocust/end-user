@@ -87,6 +87,10 @@ jest.mock('src/modules/MyHouse/MyHouseConfig', () => ({
     get connectedPlugsFeatureState() {
         return mockConnectedPlugsFeatureState
     },
+    //eslint-disable-next-line
+    arePlugsUsedBasedOnProductionStatus: () => {
+        return process.env.REACT_APP_CONNECTED_PLUGS_FEATURE_STATE === 'enabled'
+    },
 }))
 
 describe('ProductionChartContainer test', () => {
@@ -158,11 +162,14 @@ describe('ProductionChartContainer test', () => {
 
     test('When only enphaseConsentOff.', async () => {
         mockConnectedPlugsFeatureState = false
+        process.env.REACT_APP_CONNECTED_PLUGS_FEATURE_STATE = 'disabled'
         const { getByText } = reduxedRender(
             <Router>
                 <ProductionChartContainer {...productionChartContainerProps} />
             </Router>,
         )
         expect(getByText(ENPHASE_OFF_MESSAGE)).toBeTruthy()
+
+        process.env.REACT_APP_CONNECTED_PLUGS_FEATURE_STATE = 'enabled'
     })
 })

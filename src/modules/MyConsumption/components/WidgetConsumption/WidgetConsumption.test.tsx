@@ -65,6 +65,15 @@ jest.mock('src/modules/Metrics/metricsHook.ts', () => ({
     }),
 }))
 
+// need to mock this because myHouseConfig uses it
+jest.mock('src/modules/MyHouse/MyHouseConfig', () => ({
+    ...jest.requireActual('src/modules/MyHouse/MyHouseConfig'),
+    //eslint-disable-next-line
+    arePlugsUsedBasedOnProductionStatus: jest.fn(),
+    //eslint-disable-next-line
+    isProductionActiveAndHousingHasAccess: () => true,
+}))
+
 /**
  * Reusable render Test Component.
  *

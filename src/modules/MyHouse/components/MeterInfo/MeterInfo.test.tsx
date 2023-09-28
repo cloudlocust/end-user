@@ -19,6 +19,18 @@ const ADD_METER_NUMBER_PLACEHOLDER = 'Ex: 12345678912345'
 
 const NUMBER_OF_MY_METER = '12345XRC8g5r9f'
 
+const mockLoadHousingsAndScopes = jest.fn()
+const mockSetDefaultHousingModel = jest.fn()
+
+jest.mock('src/modules/MyHouse/utils/MyHouseHooks.ts', () => ({
+    ...jest.requireActual('src/modules/MyHouse/utils/MyHouseHooks.ts'),
+    //eslint-disable-next-line
+    useHousingRedux: () => ({
+        loadHousingsAndScopes: mockLoadHousingsAndScopes,
+        setDefaultHousingModel: mockSetDefaultHousingModel,
+    }),
+}))
+
 /**
  * Mocking the useHousingsDetails.
  */
@@ -111,6 +123,7 @@ describe('Test MeterInfo', () => {
             // Add meter function is called
             await waitFor(() => {
                 expect(mockAddMeter).toHaveBeenCalled()
+                expect(mockLoadHousingsAndScopes).toBeCalled()
             })
         })
         test('Fill the informations to add meter and cancel the process.', async () => {
@@ -140,6 +153,7 @@ describe('Test MeterInfo', () => {
             await waitFor(() => {
                 expect(queryByPlaceholderText(ADD_METER_NUMBER_PLACEHOLDER)).toBeNull()
                 expect(mockAddMeter).not.toHaveBeenCalled()
+                expect(mockLoadHousingsAndScopes).not.toBeCalled()
             })
         })
         test('Dont Fill correctly the informations to add meter.', async () => {
@@ -169,6 +183,7 @@ describe('Test MeterInfo', () => {
             // Add meter function is not called
             await waitFor(() => {
                 expect(mockAddMeter).not.toHaveBeenCalled()
+                expect(mockLoadHousingsAndScopes).not.toBeCalled()
             })
         })
     })
