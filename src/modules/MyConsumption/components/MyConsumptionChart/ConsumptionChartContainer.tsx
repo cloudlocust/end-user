@@ -148,7 +148,7 @@ export const ConsumptionChartContainer = ({
             // When it's idleConsumption, chartData is handled differently from filteredMetricsData
             const totalOffIdleConsumptionData = getTotalOffIdleConsumptionData(chartData)
             if (totalOffIdleConsumptionData) {
-                chartData = nullifyTodayIdleConsumptionValue([...chartData, totalOffIdleConsumptionData])
+                chartData = nullifyTodayIdleConsumptionValue([totalOffIdleConsumptionData, ...chartData])
             } else {
                 // Filter target cases.
                 const fileteredMetricsData = filterMetricsData(chartData, period, enphaseOff)
