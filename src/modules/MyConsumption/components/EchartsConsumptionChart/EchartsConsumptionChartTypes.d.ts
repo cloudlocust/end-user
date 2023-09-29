@@ -26,7 +26,7 @@ export enum targetYAxisIndexEnum {
 /**
  * Axis Value Formatter.
  */
-export type axisValueFormatterType = (value: number | undefined) => string
+export type axisValueFormatterType = (value: number | undefined) => string | null
 
 /**
  * Targets functions yAxis Value formatters type (label shown in tooltip and yAxisLine).
@@ -39,11 +39,13 @@ export type targetsYAxisValueFormattersType = { [x in targetYAxisIndexEnum]: axi
  *
  * @param values Datapoint values from the echarts metrics conversion function.
  * @param period Current period.
+ * @param isYAxisValueFormatter Indicate if it's value formatter for yAxisLine so that we round the value and handle duplicates.
  * @returns Value formatters to group yAxisLine and tooltip labels.
  */
 export type getTargetsYAxisValueFormattersType = (
     values: targetTimestampsValuesFormat,
     period: periodType,
+    isConsumptionYValueRounded?: boolean,
 ) => targetsYAxisValueFormattersType
 
 /**
