@@ -492,6 +492,7 @@ export const getChartSpecifities = (
             // eslint-disable-next-line sonarjs/no-duplicate-string
             label: totalEurosConsumptionSeriesName,
             seriesName: totalEurosConsumptionSeriesName,
+            show: false,
         }
     } else if (target === metricTargetsEnum.baseEuroConsumption) {
         return {
@@ -562,13 +563,19 @@ export const getChartSpecifities = (
     } else if (target === metricTargetsEnum.idleConsumption) {
         return {
             label: 'Consommation de veille',
-            seriesName: chartLabel,
+            seriesName: totalConsumptionSeriesName,
             show: false,
+        }
+    } else if (target === metricTargetsEnum.totalIdleConsumption) {
+        return {
+            label: totalConsumptionSeriesName,
+            seriesName: chartLabel,
+            show: true,
         }
     } else if (target === metricTargetsEnum.totalOffIdleConsumption) {
         return {
             label: 'Consommation Hors-veille',
-            seriesName: chartLabel,
+            seriesName: totalConsumptionSeriesName,
             show: false,
         }
     } else if (target === metricTargetsEnum.peakHourConsumption) {
@@ -589,7 +596,7 @@ export const getChartSpecifities = (
             seriesName: totalConsumptionSeriesName,
             show: true,
         }
-    } else if (target === metricTargetsEnum.onlyEuroConsumption) {
+    } else if (target === metricTargetsEnum.onlyEuroConsumption || metricTargetsEnum.totalEurosIdleConsumption) {
         return {
             label: totalEurosConsumptionSeriesName,
             seriesName: totalEurosConsumptionSeriesName,
@@ -1063,21 +1070,34 @@ export const getTotalOffIdleConsumptionData = (data: IMetric[]): IMetric | undef
  */
 export const nullifyTodayIdleConsumptionValue = (data: IMetric[]) => {
     return data.map((metric: IMetric) => {
-        if (
-            [metricTargetsEnum.idleConsumption, metricTargetsEnum.eurosIdleConsumption].includes(
-                metric.target as metricTargetsEnum,
-            )
-        ) {
-            return {
-                target: metric.target,
-                datapoints: metric.datapoints.map((datapoint) => {
-                    const timestamp = datapoint[1]
-                    const value = datapoint[0]
-                    return [isEqualDates(timestamp, new Date().getTime(), PeriodEnum.MONTHLY) ? null : value, timestamp]
-                }),
-            }
+        switch (metric.target) {
+            case metricTargetsEnum.idleConsumption:
+            case metricTargetsEnum.eurosIdleConsumption:
+                return {
+                    target: metric.target,
+                    datapoints: metric.datapoints.map((datapoint) => {
+                        const timestamp = datapoint[1]
+                        const value = datapoint[0]
+                        return [
+                            isEqualDates(timestamp, new Date().getTime(), PeriodEnum.MONTHLY) ? null : value,
+                            timestamp,
+                        ]
+                    }),
+                }
+            case metricTargetsEnum.consumption:
+                return {
+                    target: metricTargetsEnum.totalIdleConsumption,
+                    datapoints: metric.datapoints,
+                }
+            case metricTargetsEnum.eurosConsumption:
+                return {
+                    target: metricTargetsEnum.totalEurosIdleConsumption,
+                    datapoints: metric.datapoints,
+                }
+
+            default:
+                return metric
         }
-        return metric
     }) as IMetric[]
 }
 
