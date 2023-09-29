@@ -65,6 +65,7 @@ export const MeterStatus = () => {
         getEnphaseLink,
         isEnphaseConsentLoading,
         revokeEnphaseConsent,
+        revokeNrlinkConsent,
     } = useConsents()
     const { currentHousing, currentHousingScopes } = useSelector(({ housingModel }: RootState) => housingModel)
     const [openCancelCollectionDataTooltip, setOpenCancelCollectionDataTooltip] = useState(false)
@@ -145,9 +146,7 @@ export const MeterStatus = () => {
                             />
                             <RevokeNrlinkConsent
                                 nrLinkConsent={nrlinkConsent}
-                                onAfterRevokeNRLink={() => {
-                                    getConsents(currentHousing?.id)
-                                }}
+                                revokeNrlinkConsent={revokeNrlinkConsent}
                             />
                         </div>
                     </>
@@ -164,12 +163,18 @@ export const MeterStatus = () => {
                                 >
                                     {`nrLINK N° ${nrlinkConsent?.nrlinkGuid}`}
                                 </TypographyFormatMessage>
-                                <ReplaceNRLinkModule
-                                    nrLinkConsent={nrlinkConsent}
-                                    onAfterReplaceNRLink={() => {
-                                        getConsents(currentHousing?.id)
-                                    }}
-                                />
+                                <div className="flex flex-1 justify-end">
+                                    <ReplaceNRLinkModule
+                                        nrLinkConsent={nrlinkConsent}
+                                        onAfterReplaceNRLink={() => {
+                                            getConsents(currentHousing?.id)
+                                        }}
+                                    />
+                                    <RevokeNrlinkConsent
+                                        nrLinkConsent={nrlinkConsent}
+                                        revokeNrlinkConsent={revokeNrlinkConsent}
+                                    />
+                                </div>
                             </div>
                         ) : null}
                         <div className="flex flex-row items-center">

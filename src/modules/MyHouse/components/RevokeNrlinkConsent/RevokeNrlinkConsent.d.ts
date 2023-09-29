@@ -9,7 +9,7 @@ export interface RevokeNrlinkConsentProps {
      */
     nrLinkConsent: INrlinkConsent | undefined
     /**
-     * Callback when nrLink consent is successfully revoked.
+     * Revoke nrLink consent function handler.
      */
-    onAfterRevokeNRLink: () => void
+    revokeNrlinkConsent: (houseId?: number, nrlinkGuid?: string) => void
 }
