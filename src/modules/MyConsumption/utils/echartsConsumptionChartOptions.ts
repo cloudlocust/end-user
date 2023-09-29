@@ -575,12 +575,8 @@ export const getTargetsYAxisValueFormatters: getTargetsYAxisValueFormattersType 
          * @param value Value yAxis.
          * @returns The yAxis Label.
          */
-        [targetYAxisIndexEnum.CONSUMPTION]: ConsumptionValueFormatter(
-            period,
-            maxConsumptionValue,
-            metricsInterval,
-            true,
-        ),
+        [targetYAxisIndexEnum.CONSUMPTION]: (isTooltipLabel) =>
+            ConsumptionValueFormatter(period, maxConsumptionValue, metricsInterval, true),
         /**
          * Value formatter Label for Temperature targets yAxis.
          *
@@ -626,24 +622,24 @@ export const getTargetsYAxisValueFormatters: getTargetsYAxisValueFormattersType 
  * @param period Current period.
  * @param maxConsumptionValue Consumption chart maximum y value.
  * @param metricsInterval Computing the metricsInterval is used in period DAILY to convert consumption to WATT according to the metricsInterval.
- * @param isYValueRounded Indicate if Math.round should be applied to the value.
+ * @param isYAxisLabel Indicate if Math.round should be applied to the value.
  * @returns Value function value formatters for Consumption YAxis.
  */
 const ConsumptionValueFormatter = (
     period: periodType,
     maxConsumptionValue: number,
     metricsInterval: '1m' | '30m',
-    isYValueRounded: boolean = false,
+    isYAxisLabel?: boolean,
 ) => {
     return function (value: undefined | number) {
         if (period === PeriodEnum.DAILY) {
-            return convertConsumptionToWatt(value, isYValueRounded, metricsInterval)
+            return convertConsumptionToWatt(value, Boolean(isYAxisLabel), metricsInterval)
         }
         return getYPointValueLabel(
             value,
             metricTargetsEnum.consumption,
             consumptionWattUnitConversion(maxConsumptionValue).unit,
-            isYValueRounded,
+            Boolean(isYAxisLabel),
         )
     }
 }

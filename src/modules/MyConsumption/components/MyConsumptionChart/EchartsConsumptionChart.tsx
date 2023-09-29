@@ -24,6 +24,7 @@ const EchartsConsumptionChart = ({ data, isSolarProductionConsentOff }: EchartsC
     const option = useMemo(() => {
         return getEchartsConsumptionChartOptions(timestamps, values, theme, isSolarProductionConsentOff)
     }, [timestamps, values, theme, isSolarProductionConsentOff])
+    console.log('🚀 ~ file: EchartsConsumptionChart.tsx:27 ~ option ~ option:', option)
 
     return (
         <>
