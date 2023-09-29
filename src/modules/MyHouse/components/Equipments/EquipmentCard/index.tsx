@@ -18,12 +18,12 @@ export const EquipmentCard = ({ number, label, name }: EquipmentCardProps) => {
     const theme = useTheme()
     const { formatMessage } = useIntl()
     const {
-        isOpen: measurementModalIsOpen,
-        openModal: openMeasurementModal,
-        closeModal: closeMeasurementModal,
+        isOpen: isMeasurementModalIsOpen,
+        openModal: onOpenMeasurementModal,
+        closeModal: onCloseMeasurementModal,
     } = useModal()
     const svgUrl = require(`src/assets/images/content/housing/equipments/${name}.svg`).default
-    const showMicrowaveMeasurementBtn = number > 0 && name === 'microwave'
+    const isMicrowaveMeasurementButtonShown = number > 0 && name === 'microwave'
 
     return (
         <>
@@ -64,8 +64,8 @@ export const EquipmentCard = ({ number, label, name }: EquipmentCardProps) => {
                                     remove_circle_outlined
                                 </Icon>
                             </div>
-                            {showMicrowaveMeasurementBtn && (
-                                <Button className="px-20 py-3" variant="contained" onClick={openMeasurementModal}>
+                            {isMicrowaveMeasurementButtonShown && (
+                                <Button className="px-20 py-3" variant="contained" onClick={onOpenMeasurementModal}>
                                     Mesurer
                                 </Button>
                             )}
@@ -73,11 +73,11 @@ export const EquipmentCard = ({ number, label, name }: EquipmentCardProps) => {
                     </div>
                 </CardContent>
             </Card>
-            {showMicrowaveMeasurementBtn && (
+            {isMicrowaveMeasurementButtonShown && (
                 <MicrowaveMeasurement
                     equipmentsNumber={number}
-                    modalIsOpen={measurementModalIsOpen}
-                    closeModal={closeMeasurementModal}
+                    isModalOpen={isMeasurementModalIsOpen}
+                    onCloseModal={onCloseMeasurementModal}
                 />
             )}
         </>
