@@ -18,6 +18,15 @@ import { ReactComponent as DisahwasherIcon } from 'src/assets/images/content/hou
 import { ReactComponent as WashingmachineIcon } from 'src/assets/images/content/housing/equipments/washingmachine.svg'
 import { ReactComponent as DryerIcon } from 'src/assets/images/content/housing/equipments/dryer.svg'
 import GroupsIcon from '@mui/icons-material/Groups'
+import { API_RESOURCES_URL } from 'src/configs'
+
+/**
+ * Access rights url.
+ *
+ * @param housingId The housingId of the rights we want to get.
+ * @returns Access rights base url.
+ */
+export const ACCESS_RIGHTS_API = (housingId: number) => `${API_RESOURCES_URL}/access-rights/${housingId}`
 
 /**
  * Accomodation labels.

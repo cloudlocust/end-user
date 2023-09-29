@@ -10,8 +10,11 @@ import { useSnackbar } from 'notistack'
 import { useIntl } from 'react-intl'
 import { axios } from 'src/common/react-platform-components'
 import { API_RESOURCES_URL } from 'src/configs'
-import { globalProductionFeatureState, sgeConsentFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
+import { sgeConsentFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
 import { useAxiosCancelToken } from 'src/hooks/AxiosCancelToken'
+import { useSelector } from 'react-redux'
+import { RootState } from 'src/redux'
+import { isProductionActiveAndHousingHasAccess } from 'src/modules/MyHouse/MyHouseConfig'
 
 const NO_HOUSING_ID_ERROR_TEXT = 'No housing id provided'
 
@@ -58,6 +61,8 @@ export function useConsents() {
     const [enphaseLink, setEnphaseLink] = useState<EnphaseLink['url']>('')
     const { isCancel, source } = useAxiosCancelToken()
 
+    const { currentHousingScopes } = useSelector(({ housingModel }: RootState) => housingModel)
+
     /**
      * Function that performs HTTP call to get consents.
      *
@@ -85,7 +90,7 @@ export function useConsents() {
                           cancelToken: source.current.token,
                       })
                     : null, // If env is disabled, the request for SgeConsent won't be performed.
-                globalProductionFeatureState
+                isProductionActiveAndHousingHasAccess(currentHousingScopes)
                     ? axios.get<IEnphaseConsent>(`${ENPHASE_CONSENT_API}/${houseId}`, {
                           cancelToken: source.current.token,
                       })
@@ -122,7 +127,7 @@ export function useConsents() {
             }
             setConsentsLoading(false)
         },
-        [enqueueSnackbar, formatMessage, isCancel, source],
+        [enqueueSnackbar, formatMessage, isCancel, source, currentHousingScopes],
     )
 
     /**

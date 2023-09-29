@@ -13,7 +13,7 @@ import { RootState } from 'src/redux'
 import { ChartErrorMessage } from 'src/modules/MyConsumption/components/ChartErrorMessage'
 import { ENPHASE_OFF_MESSAGE, PRODUCTION_OFF_MESSAGE } from 'src/modules/MyConsumption/utils/myConsumptionVariables'
 import { productionChartErrorState } from 'src/modules/MyConsumption/MyConsumptionConfig'
-import { connectedPlugsFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
+import { arePlugsUsedBasedOnProductionStatus } from 'src/modules/MyHouse/MyHouseConfig'
 
 /**
  * ProductionChartContainer Component.
@@ -62,7 +62,7 @@ export const ProductionChartContainer = ({
     const isProductionChartLoadingInProgress = isMetricsLoading || isProductionConsentLoadingInProgress
 
     // This state represents whether or not the chart is stacked: true.
-    const { currentHousing } = useSelector(({ housingModel }: RootState) => housingModel)
+    const { currentHousing, currentHousingScopes } = useSelector(({ housingModel }: RootState) => housingModel)
 
     // get metrics when range change.
     useEffect(() => {
@@ -88,7 +88,9 @@ export const ProductionChartContainer = ({
                     <ChartErrorMessage
                         productionConsentOff={true}
                         productionConsentOffMessage={
-                            connectedPlugsFeatureState ? PRODUCTION_OFF_MESSAGE : ENPHASE_OFF_MESSAGE
+                            arePlugsUsedBasedOnProductionStatus(currentHousingScopes)
+                                ? PRODUCTION_OFF_MESSAGE
+                                : ENPHASE_OFF_MESSAGE
                         }
                         linkTo={`/my-houses/${currentHousing?.id}`}
                     />
