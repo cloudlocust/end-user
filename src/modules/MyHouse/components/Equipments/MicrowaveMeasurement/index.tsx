@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import Modal from '@mui/material/Modal'
 import IconButton from '@mui/material/IconButton'
 import Stepper from '@mui/material/Stepper'
@@ -40,8 +40,8 @@ const TestStepPage = ({ step, stepSetter }: TestStepPageProps) => (
  *
  * @param root0 N/A.
  * @param root0.equipmentsNumber The number of microwaves.
- * @param root0.modalIsOpen The state of the modal.
- * @param root0.closeModal Modal closing handler.
+ * @param root0.isModelOpen The state of the modal.
+ * @param root0.onCloseModel Modal closing handler.
  * @example
  *  /// Use this MicrowaveMeasurement component with our useModal custom hook
  *
@@ -52,12 +52,12 @@ const TestStepPage = ({ step, stepSetter }: TestStepPageProps) => (
  *          <Button onClick={openModal}>
  *              Mesurer
  *          </Button>
- *          <MicrowaveMeasurement equipmentsNumber={3} modalIsOpen={isOpen} closeModal={closeModal} />
+ *          <MicrowaveMeasurement equipmentsNumber={3} isModelOpen={isOpen} onCloseModel={closeModal} />
  *      </div>
  *  )
  * @returns MicrowaveMeasurement component.
  */
-export const MicrowaveMeasurement = ({ equipmentsNumber, modalIsOpen, closeModal }: MicrowaveMeasurementProps) => {
+export const MicrowaveMeasurement = ({ equipmentsNumber, isModelOpen, onCloseModel }: MicrowaveMeasurementProps) => {
     const [currentStep, setCurrentStep] = useState(0)
     const [selectedMicrowave, setSelectedMicrowave] = useState('')
     const [measurementMode, setMeasurementMode] = useState('')
@@ -77,18 +77,15 @@ export const MicrowaveMeasurement = ({ equipmentsNumber, modalIsOpen, closeModal
         <TestStepPage step={currentStep} stepSetter={setCurrentStep} />,
     ]
 
-    useEffect(() => {
-        if (!modalIsOpen) {
-            setCurrentStep(0)
-            setSelectedMicrowave('')
-            setMeasurementMode('')
-        }
-    }, [modalIsOpen])
-
     return (
         <Modal
-            open={modalIsOpen}
-            onClose={closeModal}
+            open={isModelOpen}
+            onClose={() => {
+                setCurrentStep(0)
+                setSelectedMicrowave('')
+                setMeasurementMode('')
+                onCloseModel()
+            }}
             sx={{
                 display: 'flex',
                 justifyContent: 'center',
@@ -99,7 +96,7 @@ export const MicrowaveMeasurement = ({ equipmentsNumber, modalIsOpen, closeModal
                 {/* The closing button */}
                 <IconButton
                     aria-label="close"
-                    onClick={closeModal}
+                    onClick={onCloseModel}
                     sx={{
                         position: 'absolute',
                         right: 6,
