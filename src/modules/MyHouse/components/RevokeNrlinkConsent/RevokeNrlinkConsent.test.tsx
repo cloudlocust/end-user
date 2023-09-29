@@ -27,7 +27,7 @@ describe('RevokeNrlinkConsent', () => {
         const deleteButton = screen.getByRole('button')
         userEvent.click(deleteButton)
         await waitFor(async () => {
-            const nonButton = screen.getByRole('button', { name: 'Non' })
+            const nonButton = screen.getByRole('button', { name: 'Annuler' })
             userEvent.click(nonButton)
             await waitFor(() => {
                 expect(screen.queryByRole('dialog')).toBeNull()

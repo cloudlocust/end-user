@@ -13,6 +13,7 @@ import { useIntl } from 'src/common/react-platform-translation'
 import { ButtonLoader } from 'src/common/ui-kit'
 import { useConsents } from 'src/modules/Consents/consentsHook'
 import { RevokeNrlinkConsentProps } from 'src/modules/MyHouse/components/RevokeNrlinkConsent/RevokeNrlinkConsent'
+import Paper from '@mui/material/Paper'
 
 /**
  * Revoke NRLink Consent Module.
@@ -50,26 +51,50 @@ export const RevokeNrlinkConsent = ({ nrLinkConsent, onAfterRevokeNRLink }: Revo
                 aria-labelledby="alert-dialog-title"
                 aria-describedby="alert-dialog-description"
             >
-                <DialogTitle id="alert-dialog-title">
-                    {formatMessage({
-                        id: 'Révocation du consentement nrLINK',
-                        defaultMessage: 'Révocation du consentement nrLINK',
-                    })}
-                </DialogTitle>
-                <DialogContent>
-                    <DialogContentText id="alert-dialog-description">
+                <Paper sx={{ backgroundColor: 'red' }}>
+                    <DialogTitle id="alert-dialog-title" className="text-white text-center">
                         {formatMessage({
-                            id: 'Êtes-vous sûr de vouloir révoquer votre consentement nrLINK ?',
-                            defaultMessage: 'Êtes-vous sûr de vouloir révoquer votre consentement nrLINK ?',
+                            id: 'Révocation du consentement nrLINK !',
+                            defaultMessage: 'Révocation du consentement nrLINK !',
                         })}
-                    </DialogContentText>
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={closeDialog}>Non</Button>
-                    <ButtonLoader onClick={handleRevokeNRLinkConsent} inProgress={isNrlinkConsentLoading} autoFocus>
-                        Oui
-                    </ButtonLoader>
-                </DialogActions>
+                    </DialogTitle>
+                    <DialogContent sx={{ paddingY: 0, marginTop: '20px', marginBottom: '10px' }}>
+                        <DialogContentText
+                            id="alert-dialog-description"
+                            className="text-white text-center text-sm font-medium"
+                        >
+                            {formatMessage({
+                                id: 'Vous êtes sur le point de révoquer votre consentement nrLINK. Êtes-vous sûr de vouloir continuer ?',
+                                defaultMessage:
+                                    'Vous êtes sur le point de révoquer votre consentement nrLINK. Êtes-vous sûr de vouloir continuer ?',
+                            })}
+                        </DialogContentText>
+                    </DialogContent>
+                    <DialogActions className="flex items-center justify-center">
+                        <Button
+                            variant="outlined"
+                            className="text-white m-12 border-white"
+                            onClick={closeDialog}
+                            autoFocus
+                        >
+                            {formatMessage({
+                                id: 'Annuler',
+                                defaultMessage: 'Annuler',
+                            })}
+                        </Button>
+                        <ButtonLoader
+                            variant="outlined"
+                            className="text-white m-12 border-white"
+                            onClick={handleRevokeNRLinkConsent}
+                            inProgress={isNrlinkConsentLoading}
+                        >
+                            {formatMessage({
+                                id: 'Continuer',
+                                defaultMessage: 'Continuer',
+                            })}
+                        </ButtonLoader>
+                    </DialogActions>
+                </Paper>
             </Dialog>
         </>
     )
