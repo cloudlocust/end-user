@@ -134,7 +134,7 @@ export const getChartColor = (chartName: metricTargetsEnum, theme: Theme, enphas
  *  - And "{value} {unit}" depends on the unit of the maximum value, whether (W, kWh, MWh) so that we have one synchronized unit depending on the maxValue.
  *
  * @param yValue Given Y value datapoint in the chart (we'll go through all the y values).
- * @param chartName MetricTargeteeChart.
+ * @param chartName MetricTarget Chart.
  * @param unit The unit for consumption, it's given outside as its related with the unit of maximum value to have one unit for all values in consumption chart.
  * @param isYValueRounded Indicate if Math.round should be applied to the value.
  * @returns Text shown for each y value datapoint.

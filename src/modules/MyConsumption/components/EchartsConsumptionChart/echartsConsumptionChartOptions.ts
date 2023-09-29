@@ -19,7 +19,7 @@ import {
     targetYAxisIndexEnum,
     getTargetsYAxisValueFormattersType,
     targetsYAxisValueFormattersType,
-} from 'src/modules/MyConsumption/utils/echartsConsumptionChartOptionsTypes.d'
+} from 'src/modules/MyConsumption/components/EchartsConsumptionChart/EchartsConsumptionChartTypes.d'
 dayjs.extend(utc)
 dayjs.extend(timezone)
 
@@ -575,8 +575,12 @@ export const getTargetsYAxisValueFormatters: getTargetsYAxisValueFormattersType 
          * @param value Value yAxis.
          * @returns The yAxis Label.
          */
-        [targetYAxisIndexEnum.CONSUMPTION]: (isTooltipLabel) =>
-            ConsumptionValueFormatter(period, maxConsumptionValue, metricsInterval, true),
+        [targetYAxisIndexEnum.CONSUMPTION]: ConsumptionValueFormatter(
+            period,
+            maxConsumptionValue,
+            metricsInterval,
+            true,
+        ),
         /**
          * Value formatter Label for Temperature targets yAxis.
          *

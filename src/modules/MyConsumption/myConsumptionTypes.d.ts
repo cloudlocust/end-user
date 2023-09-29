@@ -225,18 +225,6 @@ export interface MyConsumptionChartProps {
 }
 
 /**
- * EchartsConsumptionChart Props.
- */
-export interface EchartsConsumptionChartProps {
-    // eslint-disable-next-line jsdoc/require-jsdoc
-    data: IMetric[]
-    // eslint-disable-next-line jsdoc/require-jsdoc
-    period: periodType
-    // eslint-disable-next-line jsdoc/require-jsdoc
-    isSolarProductionConsentOff: boolean
-}
-
-/**
  * ConsumptionChartContainer Props.
  */
 export interface ConsumptionChartContainerProps {
@@ -254,26 +242,6 @@ export interface ConsumptionChartContainerProps {
     enphaseConsent?: IEnphaseConsent
     // eslint-disable-next-line jsdoc/require-jsdoc
     enedisSgeConsent?: IEnedisSgeConsent
-}
-
-/**
- * EchartsConsumptionChartContainer Props.
- */
-export interface EchartsConsumptionChartContainerProps {
-    // eslint-disable-next-line jsdoc/require-jsdoc
-    period: periodType
-    // eslint-disable-next-line jsdoc/require-jsdoc
-    range: metricRangeType
-    // eslint-disable-next-line jsdoc/require-jsdoc
-    metricsInterval: metricIntervalType
-    // eslint-disable-next-line jsdoc/require-jsdoc
-    filters: metricFiltersType
-    // eslint-disable-next-line jsdoc/require-jsdoc
-    hasMissingHousingContracts: boolean | null
-    // eslint-disable-next-line jsdoc/require-jsdoc
-    enedisSgeConsent?: IEnedisSgeConsent
-    // eslint-disable-next-line jsdoc/require-jsdoc
-    isSolarProductionConsentOff: boolean
 }
 
 /**

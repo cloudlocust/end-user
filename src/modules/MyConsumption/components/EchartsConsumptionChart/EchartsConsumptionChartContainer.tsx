@@ -4,7 +4,7 @@ import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyForm
 import { useTheme } from '@mui/material'
 import { useMetrics } from 'src/modules/Metrics/metricsHook'
 import { IMetric, metricTargetsEnum, metricTargetType } from 'src/modules/Metrics/Metrics.d'
-import { EchartsConsumptionChartContainerProps } from 'src/modules/MyConsumption/myConsumptionTypes'
+import { EchartsConsumptionChartContainerProps } from 'src/modules/MyConsumption/components/EchartsConsumptionChart/EchartsConsumptionChartTypes.d'
 import CircularProgress from '@mui/material/CircularProgress'
 import Box from '@mui/material/Box'
 import EurosConsumptionButtonToggler from 'src/modules/MyConsumption/components/EurosConsumptionButtonToggler'
@@ -29,7 +29,7 @@ import {
     idleConsumptionTargets,
     temperatureOrPmaxTargets,
 } from 'src/modules/MyConsumption/utils/myConsumptionVariables'
-import EchartsConsumptionChart from 'src/modules/MyConsumption/components/MyConsumptionChart/EchartsConsumptionChart'
+import EchartsConsumptionChart from 'src/modules/MyConsumption/components/EchartsConsumptionChart/EchartsConsumptionChart'
 
 /**
  * EchartsConsumptionChartContainer Component.
