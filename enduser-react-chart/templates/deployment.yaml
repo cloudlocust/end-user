@@ -282,11 +282,11 @@ spec:
             configMapKeyRef:
               name: enduser-react
               key: REACT_APP_IS_MAINTENANCE_MODE   
-        - name: REACT_APP_CONSUMPTION_ALERTS_VISIBILITY
+        - name: REACT_APP_CONTRACT_CONFIGURATION_STATE
           valueFrom:
             configMapKeyRef:
               name: enduser-react
-              key: REACT_APP_CONSUMPTION_ALERTS_VISIBILITY      
+              key: REACT_APP_CONTRACT_CONFIGURATION_STATE      
         - name: REACT_APP_SGE_CONSENT_FEATURE_STATE_POPUP_MESSAGE
           valueFrom:
             configMapKeyRef:

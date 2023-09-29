@@ -67,13 +67,6 @@ jest.mock('src/configs', () => ({
     FAQ_REDIRECT_LINK: 'url',
 }))
 
-/**
- * Mock Configs Variables.
- */
-jest.mock('src/modules/Alerts/AlertsConfig', () => ({
-    isConsumptionAlertsVisible: true,
-}))
-
 describe('test UserMenu component', () => {
     beforeEach(async () => {
         await store.dispatch.userModel.setUser(mockUser)
