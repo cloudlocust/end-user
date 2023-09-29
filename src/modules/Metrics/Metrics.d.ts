@@ -24,6 +24,8 @@ export type metricTargetType =
     // To show a chart with the total off-idle consumption.
     // It'll be calculated based on 'consumption_metrics' and 'idle_consumption_metrics'
     | 'off_idle_consumption_metrics'
+    | 'total_idle_consumption_metrics'
+    | 'total__euros__idle_consumption_metrics'
     | '__euros__off_idle_consumption_metrics'
     | 'only_consumption_metrics'
     | 'only_euro_consumption_metrics'
@@ -102,6 +104,15 @@ export enum metricTargetsEnum {
     eurosIdleConsumption = '__euros__idle_consumption_metrics',
 
     // Targets used only on the FRONT.
+    /**
+     * Total Idle consumption, that'll be consumption_metrics when idle_consumption_metrics.
+     */
+    totalIdleConsumption = 'total_idle_consumption_metrics',
+    /**
+     * Total Euros Idle consumption, that'll be __euros__consumption_metrics when __euros__idle_consumption_metrics.
+     */
+    totalEurosIdleConsumption = 'total__euros__idle_consumption_metrics',
+
     /**
      * Total Off Idle consumption, that'll be computed on the front based on consumption_metrics & idle_consumption_metrics.
      */

@@ -763,6 +763,56 @@ describe('nullifyTodayIdleConsumptionValue test with different cases', () => {
                     },
                 ],
             },
+            // Total Idle Consumption
+            {
+                data: [
+                    {
+                        target: metricTargetsEnum.consumption,
+                        datapoints: [
+                            [0, 10001],
+                            [30, 10002],
+                            [33, 10003],
+                            [800, todaysTimestamp],
+                        ],
+                    },
+                ],
+                expectedResult: [
+                    {
+                        target: metricTargetsEnum.totalIdleConsumption,
+                        datapoints: [
+                            [0, 10001],
+                            [30, 10002],
+                            [33, 10003],
+                            [800, todaysTimestamp],
+                        ],
+                    },
+                ],
+            },
+            // Total Idle EurosConsumption
+            {
+                data: [
+                    {
+                        target: metricTargetsEnum.eurosConsumption,
+                        datapoints: [
+                            [0, 10001],
+                            [30, 10002],
+                            [33, 10003],
+                            [800, todaysTimestamp],
+                        ],
+                    },
+                ],
+                expectedResult: [
+                    {
+                        target: metricTargetsEnum.totalEurosIdleConsumption,
+                        datapoints: [
+                            [0, 10001],
+                            [30, 10002],
+                            [33, 10003],
+                            [800, todaysTimestamp],
+                        ],
+                    },
+                ],
+            },
             // Undefined return.
             {
                 data: [

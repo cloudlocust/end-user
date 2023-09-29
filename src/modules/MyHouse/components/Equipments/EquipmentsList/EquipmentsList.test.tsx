@@ -23,9 +23,9 @@ describe('EquipmentsList tests', () => {
         expect(getByRole('progressbar')).toBeInTheDocument()
     })
 
-    test('when loadingEquipmentInProgress is false, and equipmentsList has data', async () => {
+    test('when loadingEquipmentInProgress is false, and equipmentsList has data, show only equipments which have > 0 number', async () => {
         const { getAllByTestId } = reduxedRender(<EquipmentsList {...equipmentsListProps} />)
 
-        expect(getAllByTestId('equipment-item')).toHaveLength(10)
+        expect(getAllByTestId('equipment-item')).toHaveLength(1)
     })
 })
