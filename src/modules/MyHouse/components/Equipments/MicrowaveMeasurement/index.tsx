@@ -67,6 +67,7 @@ export const MicrowaveMeasurement = ({ equipmentsNumber, isModalOpen, onCloseMod
      * Function for resetting popup states.
      */
     const onResetStates = () => {
+        onCloseModal()
         setCurrentStep(0)
         setSelectedMicrowave('')
         setMeasurementMode('')
