@@ -31,7 +31,7 @@ export const EquipmentsList = ({ equipmentsList, loadingEquipmentInProgress }: E
                 isNumber: mappingEquipmentNameToType[element.equipment.name] === 'number',
             }
         })
-        .filter((el) => el.isNumber)
+        .filter((el) => el.isNumber && el.number! > 0)
     // Order the equipments list from the largest to the smallest.
     const orderedEquipmentsList = orderBy(equipments, (el) => el.number, 'desc')
 

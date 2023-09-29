@@ -83,7 +83,7 @@ export const EquipmentsQuickAddPopup = ({
     return (
         <Dialog open={open} onClose={handleClosePopup} aria-labelledby="alert-dialog-title" maxWidth="sm" fullWidth>
             <DialogTitle id="alert-dialog-title" sx={{ color: 'primary.main' }}>
-                Ajout Rapide
+                <TypographyFormatMessage>Ajout Rapide</TypographyFormatMessage>
             </DialogTitle>
             <DialogContent>
                 <TypographyFormatMessage className="mb-10">Selectionner vos équipements :</TypographyFormatMessage>

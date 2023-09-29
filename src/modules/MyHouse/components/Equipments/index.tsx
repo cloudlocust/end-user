@@ -6,7 +6,7 @@ import { useSelector } from 'react-redux'
 import { RootState } from 'src/redux'
 import { useEquipmentList } from 'src/modules/MyHouse/components/Installation/installationHook'
 import { EquipmentsQuickAddPopup } from 'src/modules/MyHouse/components/Equipments/EquipmentsQuickAddPopup'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { EmptyEquipmentsList } from 'src/modules/MyHouse/components/Equipments/EmptyEquipmentsList'
 
 const Root = styled(FusePageCarded)(() => ({
@@ -33,10 +33,13 @@ const Root = styled(FusePageCarded)(() => ({
  */
 export const Equipments = () => {
     const { currentHousing } = useSelector(({ housingModel }: RootState) => housingModel)
-    const { equipmentList, saveEquipment, loadingEquipmentInProgress, isEquipmentMeterListEmpty } = useEquipmentList(
-        currentHousing?.id,
-    )
+    const { equipmentList, saveEquipment, loadingEquipmentInProgress, isEquipmentMeterListEmpty, loadEquipmentList } =
+        useEquipmentList(currentHousing?.id)
     const [isEquipmentsQuickAddPopupOpen, setIsEquipmentsQuickAddPopupOpen] = useState(false)
+
+    useEffect(() => {
+        loadEquipmentList()
+    }, [loadEquipmentList])
 
     return (
         <Root
