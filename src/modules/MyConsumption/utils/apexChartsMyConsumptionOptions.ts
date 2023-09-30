@@ -240,6 +240,9 @@ export const getApexChartMyConsumptionProps = ({
             }),
             type:
                 (yAxisSerie.name === metricTargetsEnum.totalProduction && !showTotalProduction) ||
+                yAxisSerie.name === metricTargetsEnum.eurosConsumption ||
+                yAxisSerie.name === metricTargetsEnum.totalIdleConsumption ||
+                yAxisSerie.name === metricTargetsEnum.totalEurosIdleConsumption ||
                 (period !== 'daily' && yAxisSerie.name === metricTargetsEnum.consumption && enphaseOff)
                     ? ''
                     : getChartType(yAxisSerie.name as metricTargetType, period),
@@ -253,6 +256,7 @@ export const getApexChartMyConsumptionProps = ({
             (yAxisSerie.name === metricTargetsEnum.consumption ||
                 yAxisSerie.name === metricTargetsEnum.baseConsumption ||
                 yAxisSerie.name === metricTargetsEnum.autoconsumption ||
+                yAxisSerie.name === metricTargetsEnum.totalIdleConsumption ||
                 yAxisSerie.name === metricTargetsEnum.injectedProduction ||
                 yAxisSerie.name === metricTargetsEnum.peakHourConsumption ||
                 yAxisSerie.name === metricTargetsEnum.offPeakHourConsumption ||
@@ -270,6 +274,8 @@ export const getApexChartMyConsumptionProps = ({
             ...restChartSpecifities,
             opposite:
                 yAxisSerie.name !== metricTargetsEnum.consumption &&
+                yAxisSerie.name !== metricTargetsEnum.totalIdleConsumption &&
+                yAxisSerie.name !== metricTargetsEnum.totalEurosIdleConsumption &&
                 yAxisSerie.name !== metricTargetsEnum.onlyConsumption &&
                 yAxisSerie.name !== metricTargetsEnum.baseConsumption &&
                 yAxisSerie.name !== metricTargetsEnum.eurosConsumption &&
@@ -290,7 +296,10 @@ export const getApexChartMyConsumptionProps = ({
                     const isTooltipValue = typeof isTooltipOrYaxisLineIndex !== 'number'
                     if (
                         yAxisSerie.name === metricTargetsEnum.consumption ||
+                        yAxisSerie.name === metricTargetsEnum.totalIdleConsumption ||
                         yAxisSerie.name === metricTargetsEnum.baseConsumption ||
+                        yAxisSerie.name === metricTargetsEnum.idleConsumption ||
+                        yAxisSerie.name === metricTargetsEnum.totalOffIdleConsumption ||
                         yAxisSerie.name === metricTargetsEnum.peakHourConsumption ||
                         yAxisSerie.name === metricTargetsEnum.offPeakHourConsumption ||
                         yAxisSerie.name === metricTargetsEnum.autoconsumption ||
@@ -347,9 +356,15 @@ export const getApexChartMyConsumptionProps = ({
                 yAxisSerie.name === metricTargetsEnum.subscriptionPrices ||
                 yAxisSerie.name === metricTargetsEnum.peakHourConsumption ||
                 yAxisSerie.name === metricTargetsEnum.offPeakHourConsumption ||
+                yAxisSerie.name === metricTargetsEnum.idleConsumption ||
+                yAxisSerie.name === metricTargetsEnum.totalIdleConsumption ||
+                yAxisSerie.name === metricTargetsEnum.totalEurosIdleConsumption ||
+                yAxisSerie.name === metricTargetsEnum.totalOffIdleConsumption ||
+                yAxisSerie.name === metricTargetsEnum.totalEurosOffIdleConsumption ||
                 yAxisSerie.name === metricTargetsEnum.baseEuroConsumption ||
                 yAxisSerie.name === metricTargetsEnum.euroPeakHourConsumption ||
                 yAxisSerie.name === metricTargetsEnum.euroOffPeakConsumption ||
+                yAxisSerie.name === metricTargetsEnum.eurosIdleConsumption ||
                 yAxisSerie.name === metricTargetsEnum.onlyConsumption ||
                 yAxisSerie.name === metricTargetsEnum.onlyEuroConsumption
                 ? 0

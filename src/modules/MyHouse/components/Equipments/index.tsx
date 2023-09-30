@@ -1,27 +1,30 @@
-import { Container, useMediaQuery, useTheme, ThemeProvider, Button, Icon, CircularProgress } from '@mui/material'
-import { useEffect, useState } from 'react'
+import FusePageCarded from 'src/common/ui-kit/fuse/components/FusePageCarded/FusePageCarded'
+import { styled } from '@mui/material'
+import { EquipmentsHeader } from 'src/modules/MyHouse/components/Equipments/EquipmentsHeader/'
+import { EquipmentsList } from 'src/modules/MyHouse/components/Equipments/EquipmentsList'
 import { useSelector } from 'react-redux'
-import { useHistory } from 'react-router-dom'
-import { Form } from 'src/common/react-platform-components'
-import { NumberFieldForm } from 'src/common/ui-kit/components/NumberField/NumberFieldForm'
-import { INumberFieldForm } from 'src/common/ui-kit/components/NumberField/NumberFieldTypes'
-import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
-import PageSimple from 'src/common/ui-kit/fuse/components/PageSimple/PageSimple'
-import { EditButtonsGroup } from 'src/modules/MyHouse/EditButtonsGroup'
-import {
-    IEquipmentMeter,
-    equipmentAllowedTypeT,
-    equipmentMeterType,
-    equipmentValuesType,
-} from 'src/modules/MyHouse/components/Installation/InstallationType'
-import { useEquipmentList } from 'src/modules/MyHouse/components/Installation/installationHook'
-import {
-    groupedCards,
-    mappingEquipmentNameToType,
-    myEquipmentOptions,
-} from 'src/modules/MyHouse/utils/MyHouseVariables'
 import { RootState } from 'src/redux'
-import { motion } from 'framer-motion'
+import { useEquipmentList } from 'src/modules/MyHouse/components/Installation/installationHook'
+import { EquipmentsQuickAddPopup } from 'src/modules/MyHouse/components/Equipments/EquipmentsQuickAddPopup'
+import { useEffect, useState } from 'react'
+import { EmptyEquipmentsList } from 'src/modules/MyHouse/components/Equipments/EmptyEquipmentsList'
+
+const Root = styled(FusePageCarded)(() => ({
+    '& .FusePageCarded-header': {
+        minHeight: 90,
+        height: 'fit-content',
+        alignItems: 'center',
+        margin: '24px 0',
+    },
+    '& .FusePageCarded-content': {
+        overflowX: 'hidden',
+        overflowY: 'auto',
+        margin: 10,
+    },
+    '& .FusePageCarded-contentCard': {
+        overflow: 'hidden',
+    },
+}))
 
 /**
  * Housing Equipments.
@@ -29,162 +32,38 @@ import { motion } from 'framer-motion'
  * @returns Housing Equipments.
  */
 export const Equipments = () => {
-    const theme = useTheme()
-    const history = useHistory()
-    const isDesktop = useMediaQuery(theme.breakpoints.up('lg'))
     const { currentHousing } = useSelector(({ housingModel }: RootState) => housingModel)
     const { equipmentList, saveEquipment, loadingEquipmentInProgress, isEquipmentMeterListEmpty, loadEquipmentList } =
         useEquipmentList(currentHousing?.id)
-
-    const [isEdit, setIsEdit] = useState(false)
-
-    // It'll have the following format an object of all equipment, name is the key, for example: {"heater": {equipment_id, equipment_type, equipment_number, isNumber, equipment: {id, name, allowed_type} } }.
-    // eslint-disable-next-line jsdoc/require-jsdoc
-    let savedEquipmentList: { [key: string]: IEquipmentMeter & { isNumber: boolean } } = {}
-    if (equipmentList) {
-        equipmentList.forEach((equipment) => {
-            // Check that equipmentMeterList is not empty.
-            savedEquipmentList![equipment.equipment.name] = {
-                ...equipment,
-                isNumber: mappingEquipmentNameToType[equipment.equipment.name] === 'number',
-            }
-        })
-    }
-
-    // eslint-disabled-next-line jsdoc/require-jsdoc
-    let defaultValues: // eslint-disabled-next-line jsdoc/require-jsdoc
-    /**
-     * Default values used for setting the value of the form, and when resseting form.
-     */
-    {
-        // eslint-disabled-next-line jsdoc/require-jsdoc
-        [key: string]: number | equipmentAllowedTypeT
-    } = {}
-    // Initialise default Values
-    Object.keys(savedEquipmentList!).forEach((equipmentName) => {
-        defaultValues[equipmentName] = savedEquipmentList[equipmentName].isNumber
-            ? savedEquipmentList[equipmentName].equipmentNumber!
-            : savedEquipmentList[equipmentName].equipmentType!
-    })
-
-    // eslint-disable-next-line array-callback-return
-    const updatedMyEquipmentOptions = myEquipmentOptions.map((option) => {
-        const matchingEquipment = equipmentList?.find((equipment) => equipment.equipment.name === option.name)
-        if (matchingEquipment) {
-            return {
-                ...option,
-                value: matchingEquipment.equipmentNumber,
-            }
-        }
-    })
-
-    const myEquipment = isDesktop
-        ? groupedCards(updatedMyEquipmentOptions as INumberFieldForm[], 2)
-        : groupedCards(updatedMyEquipmentOptions as INumberFieldForm[])
+    const [isEquipmentsQuickAddPopupOpen, setIsEquipmentsQuickAddPopupOpen] = useState(false)
 
     useEffect(() => {
         loadEquipmentList()
     }, [loadEquipmentList])
 
-    if (loadingEquipmentInProgress)
-        return (
-            <div className="flex flex-col justify-center items-center w-full" style={{ minHeight: '60vh' }}>
-                <CircularProgress />
-            </div>
-        )
-
     return (
-        <PageSimple
-            header={
-                <ThemeProvider theme={theme}>
-                    <div
-                        className="w-full h-full px-10 flex justify-start items-center"
-                        style={{ backgroundColor: theme.palette.primary.dark }}
-                    >
-                        <Button
-                            sx={{ color: 'primary.contrastText' }}
-                            onClick={history.goBack}
-                            className="text-12 md:text-16 mt-10"
-                            color="inherit"
-                        >
-                            <Icon
-                                component={motion.span}
-                                initial={{ scale: 0 }}
-                                animate={{ scale: 1, transition: { delay: 0.2 } }}
-                                className="text-16 md:text-24 mr-2"
-                            >
-                                arrow_back
-                            </Icon>
-                            <TypographyFormatMessage>Retour</TypographyFormatMessage>
-                        </Button>
-                    </div>
-                </ThemeProvider>
-            }
+        <Root
+            header={<EquipmentsHeader isEquipmentMeterListEmpty={isEquipmentMeterListEmpty} />}
             content={
-                <Container>
-                    <Form
-                        style={{ width: '100%' }}
-                        defaultValues={defaultValues}
-                        onSubmit={async (formData: equipmentValuesType) => {
-                            let body: equipmentMeterType[] = []
-                            // Transform formData into body for saveEquipment Request, using the savedData.
-                            Object.keys(savedEquipmentList).forEach((equipmentName) => {
-                                if (
-                                    formData[equipmentName as keyof equipmentValuesType] &&
-                                    // Check that it's new values.
-                                    savedEquipmentList[equipmentName].equipmentNumber !==
-                                        formData[equipmentName as keyof equipmentValuesType] &&
-                                    savedEquipmentList[equipmentName].equipmentType !==
-                                        formData[equipmentName as keyof equipmentValuesType]
-                                ) {
-                                    if (savedEquipmentList[equipmentName].isNumber)
-                                        savedEquipmentList[equipmentName].equipmentNumber = formData[
-                                            equipmentName as keyof equipmentValuesType
-                                        ] as number
-                                    else
-                                        savedEquipmentList[equipmentName].equipmentType = formData[
-                                            equipmentName as keyof equipmentValuesType
-                                        ] as equipmentAllowedTypeT
-
-                                    const { equipment, isNumber, ...rest } = savedEquipmentList[equipmentName]
-                                    body.push(rest)
-                                }
-                            })
-
-                            if (body.length > 0) {
-                                await saveEquipment(body)
-                            }
-                            setIsEdit(false)
-                        }}
-                    >
-                        <div className="mt-16 mb-20">
-                            <TypographyFormatMessage>Vos équipements :</TypographyFormatMessage>
-                        </div>
-                        <div className="flex">
-                            {myEquipment.map((col) => (
-                                <div className="w-full text-13">
-                                    {col.map((item) => {
-                                        return (
-                                            <NumberFieldForm
-                                                key={item.name}
-                                                value={item.value}
-                                                {...item}
-                                                disabled={!isEquipmentMeterListEmpty && !isEdit}
-                                            />
-                                        )
-                                    })}
-                                </div>
-                            ))}
-                        </div>
-                        <EditButtonsGroup
-                            formInitialValues={defaultValues}
-                            isEdit={isEquipmentMeterListEmpty || isEdit}
-                            disableEdit={() => setIsEdit(false)}
-                            enableForm={() => setIsEdit(true)}
-                            inProgress={loadingEquipmentInProgress}
+                <>
+                    {isEquipmentsQuickAddPopupOpen && (
+                        <EquipmentsQuickAddPopup
+                            open={isEquipmentsQuickAddPopupOpen}
+                            handleClosePopup={() => setIsEquipmentsQuickAddPopupOpen(false)}
+                            saveEquipment={saveEquipment}
+                            equipmentsList={equipmentList}
+                            loadingEquipmentInProgress={loadingEquipmentInProgress}
                         />
-                    </Form>
-                </Container>
+                    )}
+                    {isEquipmentMeterListEmpty || !equipmentList ? (
+                        <EmptyEquipmentsList handleOpenPopup={() => setIsEquipmentsQuickAddPopupOpen(true)} />
+                    ) : (
+                        <EquipmentsList
+                            equipmentsList={equipmentList}
+                            loadingEquipmentInProgress={loadingEquipmentInProgress}
+                        />
+                    )}
+                </>
             }
         />
     )

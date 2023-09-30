@@ -377,10 +377,10 @@ describe('MyConsumptionContainer test', () => {
             expect(mockGetMetricsWithParams).toHaveBeenCalledWith({
                 ...mockGetMetricsWithParamsValues,
                 targets: [
-                    metricTargetsEnum.consumption,
                     metricTargetsEnum.baseConsumption,
                     metricTargetsEnum.peakHourConsumption,
                     metricTargetsEnum.offPeakHourConsumption,
+                    metricTargetsEnum.consumption,
                 ],
             })
         })
@@ -398,6 +398,25 @@ describe('MyConsumptionContainer test', () => {
         expect(queryByText(HAS_MISSING_CONTRACTS_WARNING_REDIRECT_LINK_TEXT)).not.toBeInTheDocument()
 
         mockManualContractFillingIsEnabled = true
+    })
+
+    test('When isShowIdleConsumptionDisabledInfo', async () => {
+        consumptionChartContainerProps.period = 'daily'
+        consumptionChartContainerProps.metricsInterval = '1m' as metricIntervalType
+
+        const { getByText } = reduxedRender(
+            <Router>
+                <ConsumptionChartContainer {...consumptionChartContainerProps} />
+            </Router>,
+            { initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[0] } } },
+        )
+
+        const idleConsumptionButtonElement = getByText('Veille')
+
+        userEvent.click(idleConsumptionButtonElement)
+        await waitFor(() => {
+            expect(getByText('Les informations de veille ne sont pas disponibles pour cette pèriode')).toBeTruthy()
+        })
     })
 
     describe('TemperatureOrPmax TargetMenuGroup Test', () => {
