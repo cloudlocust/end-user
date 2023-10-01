@@ -221,7 +221,7 @@ export const getXAxisOptionEchartsConsumptionChart = (xAxisTimestamps: number[],
  * @param length Length of timestamps.
  * @returns Get the periodType from the length of timestamps.
  */
-const getPeriodFromTimestampsLength = (length: number): periodType => {
+export const getPeriodFromTimestampsLength = (length: number): periodType => {
     if (length <= 7) {
         return PeriodEnum.WEEKLY
     } else if (length <= 12) {
@@ -273,6 +273,8 @@ export const getColorTargetSeriesEchartsConsumptionChart = (
         case metricTargetsEnum.pMax:
             return '#FF7A00'
         case metricTargetsEnum.eurosConsumption:
+        case metricTargetsEnum.totalEurosIdleConsumption:
+        case metricTargetsEnum.totalIdleConsumption:
             return TRANSPARENT_COLOR
         case metricTargetsEnum.baseEuroConsumption:
         case metricTargetsEnum.totalEurosOffIdleConsumption:
@@ -283,10 +285,6 @@ export const getColorTargetSeriesEchartsConsumptionChart = (
         case metricTargetsEnum.idleConsumption:
         case metricTargetsEnum.eurosIdleConsumption:
             return '#8191B2'
-        case metricTargetsEnum.totalProduction:
-            return '#C8D210'
-        case metricTargetsEnum.injectedProduction:
-            return '#6E9A8B'
         case metricTargetsEnum.subscriptionPrices:
             return '#CCDCDD'
         case metricTargetsEnum.peakHourConsumption:
@@ -324,6 +322,7 @@ export const getNameTargetSeriesEchartsConsumptionChart = (
 
     switch (target) {
         case metricTargetsEnum.onlyConsumption:
+        case metricTargetsEnum.totalIdleConsumption:
             return totalConsumptionSeriesLabel
         case metricTargetsEnum.consumption:
             return isSolarProductionConsentOff ? totalConsumptionSeriesLabel : 'Electricité achetée sur le réseau'
@@ -332,6 +331,7 @@ export const getNameTargetSeriesEchartsConsumptionChart = (
         case metricTargetsEnum.autoconsumption:
             return 'Autoconsommation'
         case metricTargetsEnum.eurosConsumption:
+        case metricTargetsEnum.totalEurosIdleConsumption:
         case metricTargetsEnum.onlyEuroConsumption:
             return totalEurosConsumptionSeriesLabel
         case metricTargetsEnum.baseEuroConsumption:
@@ -379,6 +379,7 @@ export const getTargetYAxisIndexFromTargetName = (target: metricTargetsEnum): ta
         case metricTargetsEnum.autoconsumption:
         case metricTargetsEnum.idleConsumption:
         case metricTargetsEnum.totalOffIdleConsumption:
+        case metricTargetsEnum.totalIdleConsumption:
         case metricTargetsEnum.peakHourConsumption:
         case metricTargetsEnum.offPeakHourConsumption:
             return targetYAxisIndexEnum.CONSUMPTION
@@ -387,6 +388,8 @@ export const getTargetYAxisIndexFromTargetName = (target: metricTargetsEnum): ta
         case metricTargetsEnum.baseEuroConsumption:
         case metricTargetsEnum.subscriptionPrices:
         case metricTargetsEnum.euroPeakHourConsumption:
+        case metricTargetsEnum.totalEurosIdleConsumption:
+        case metricTargetsEnum.totalEurosOffIdleConsumption:
         case metricTargetsEnum.eurosIdleConsumption:
         case metricTargetsEnum.euroOffPeakConsumption:
             return targetYAxisIndexEnum.EUROS
@@ -488,6 +491,7 @@ export const getYAxisOptionEchartsConsumptionChart = (
     theme: Theme,
 ) => {
     // Not showing the yAxis that don't have their targets in the values.
+    // For example if euros_consumption target is not in values and there's no euro targets, then yAxis of euros will have show: false.
     const YAxisShowList: targetYAxisIndexEnum[] = []
     Object.keys(values).forEach((target) => {
         const targetYAxisIndex = getTargetYAxisIndexFromTargetName(target as metricTargetsEnum)

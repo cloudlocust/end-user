@@ -129,6 +129,7 @@ export const EchartsMyConsumptionContainer = () => {
                                 setPeriod={setPeriod}
                                 setRange={setRange}
                                 setMetricsInterval={setMyConsumptionPeriodMetricsInterval}
+                                period={period}
                                 range={range}
                             />
                             <MyConsumptionDatePicker period={period} setRange={setRange} range={range} />
