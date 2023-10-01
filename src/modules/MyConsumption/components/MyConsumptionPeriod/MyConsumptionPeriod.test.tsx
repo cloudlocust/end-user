@@ -5,6 +5,7 @@ import { waitFor } from '@testing-library/react'
 import { dataConsumptionPeriod } from 'src/modules/MyConsumption/utils/myConsumptionVariables'
 import { MyConsumptionPeriod } from 'src/modules/MyConsumption'
 import { getRange } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
+import { PeriodEnum } from 'src/modules/MyConsumption/myConsumptionTypes.d'
 /*
  * We will test This component if he render and switch content correctly.
  */
@@ -21,6 +22,7 @@ describe('load MyConsumptionPeriod', () => {
                 <MyConsumptionPeriod
                     setPeriod={mockSetPeriod}
                     setRange={mockSetRange}
+                    period={PeriodEnum.WEEKLY}
                     setMetricsInterval={mockSetMetricsInterval}
                     range={mockRange}
                 />
