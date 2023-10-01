@@ -1,9 +1,18 @@
 import { metricTargetsEnum, metricTargetType } from 'src/modules/Metrics/Metrics.d'
-import { PeriodEnum } from 'src/modules/MyConsumption/myConsumptionTypes'
+import { PeriodEnum } from 'src/modules/MyConsumption/myConsumptionTypes.d'
 import { Theme } from '@mui/material/styles/createTheme'
 import { isNil } from 'lodash'
 import convert, { Unit } from 'convert-units'
 
+/**
+ * Map Consumption Period in its Index.
+ */
+export const dataConsumptionPeriodValueList = [
+    PeriodEnum.DAILY,
+    PeriodEnum.WEEKLY,
+    PeriodEnum.MONTHLY,
+    PeriodEnum.YEARLY,
+]
 /**
  * Data Consumption Period.
  */
@@ -91,6 +100,8 @@ export const getChartColor = (chartName: metricTargetsEnum, theme: Theme, enphas
         case metricTargetsEnum.pMax:
             return '#FF7A00'
         case metricTargetsEnum.eurosConsumption:
+        case metricTargetsEnum.totalEurosIdleConsumption:
+        case metricTargetsEnum.totalIdleConsumption:
             return TRANSPARENT_COLOR
         case metricTargetsEnum.baseEuroConsumption:
         case metricTargetsEnum.totalEurosOffIdleConsumption:
@@ -149,6 +160,7 @@ export const getYPointValueLabel = (
     const value = isNil(yValue) ? '' : yValue
     switch (chartName) {
         case metricTargetsEnum.eurosConsumption:
+        case metricTargetsEnum.totalEurosIdleConsumption:
         case metricTargetsEnum.baseEuroConsumption:
         case metricTargetsEnum.subscriptionPrices:
         case metricTargetsEnum.euroPeakHourConsumption:
@@ -171,6 +183,7 @@ export const getYPointValueLabel = (
         case metricTargetsEnum.totalProduction:
         case metricTargetsEnum.idleConsumption:
         case metricTargetsEnum.totalOffIdleConsumption:
+        case metricTargetsEnum.totalIdleConsumption:
         case metricTargetsEnum.injectedProduction:
         case metricTargetsEnum.peakHourConsumption:
         case metricTargetsEnum.offPeakHourConsumption:

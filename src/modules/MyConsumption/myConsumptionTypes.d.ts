@@ -21,6 +21,10 @@ export interface IMyConsumptionPeriod {
      * Period to range.
      */
     range: metricRangeType
+    /**
+     * Current Period.
+     */
+    period: periodType
 }
 /**
  * Range value type.

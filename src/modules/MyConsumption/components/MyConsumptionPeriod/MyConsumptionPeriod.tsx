@@ -1,10 +1,12 @@
 import { useTheme } from '@mui/material/styles'
 import Tab from '@mui/material/Tab'
 import Tabs from '@mui/material/Tabs'
-import { useState } from 'react'
 import Box from '@mui/material/Box'
-import { dataConsumptionPeriod } from 'src/modules/MyConsumption/utils/myConsumptionVariables'
-import { IMyConsumptionPeriod } from 'src/modules/MyConsumption/myConsumptionTypes'
+import {
+    dataConsumptionPeriod,
+    dataConsumptionPeriodValueList,
+} from 'src/modules/MyConsumption/utils/myConsumptionVariables'
+import { IMyConsumptionPeriod, PeriodEnum } from 'src/modules/MyConsumption/myConsumptionTypes.d'
 import { getRangeV2 } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
 /**
  * MyConsumptionPeriod Component.
@@ -13,21 +15,21 @@ import { getRangeV2 } from 'src/modules/MyConsumption/utils/MyConsumptionFunctio
  * @param param0.setPeriod SetPeriod function.
  * @param param0.setRange SetRange function.
  * @param param0.setMetricsInterval SetMetricsInterval function.
+ * @param param0.period Current Period.
  * @returns  MyConsumptionPeriod.
  */
-export const MyConsumptionPeriod = ({ setRange, setPeriod, setMetricsInterval }: IMyConsumptionPeriod) => {
+export const MyConsumptionPeriod = ({ setRange, setPeriod, setMetricsInterval, period }: IMyConsumptionPeriod) => {
     const theme = useTheme()
-    const [tabValue, setTabValue] = useState(0)
 
     return (
         <div className="flex flex-row items-center">
             <Tabs
-                value={tabValue}
+                value={period}
                 onChange={(_event, value) => {
-                    setTabValue(value)
-                    setRange(getRangeV2(dataConsumptionPeriod[value].period))
-                    setMetricsInterval(dataConsumptionPeriod[value].interval)
-                    setPeriod(dataConsumptionPeriod[value].period)
+                    const valueIndex = dataConsumptionPeriodValueList.indexOf(value as PeriodEnum)
+                    setRange(getRangeV2(dataConsumptionPeriod[valueIndex].period))
+                    setMetricsInterval(dataConsumptionPeriod[valueIndex].interval)
+                    setPeriod(dataConsumptionPeriod[valueIndex].period)
                 }}
                 indicatorColor="secondary"
                 textColor="inherit"
@@ -46,6 +48,7 @@ export const MyConsumptionPeriod = ({ setRange, setPeriod, setMetricsInterval }:
             >
                 {dataConsumptionPeriod.map((item) => (
                     <Tab
+                        value={item.period}
                         key={item.name}
                         className="text-14 font-semibold min-h-40 min-w-64 mx-4 px-12 capitalize opacity-50"
                         disableRipple

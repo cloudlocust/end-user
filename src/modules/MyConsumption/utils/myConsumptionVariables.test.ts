@@ -64,6 +64,10 @@ describe('test pure functions', () => {
         label = getYPointValueLabel(yValue, metricTargetsEnum.eurosConsumption)
         expect(label).toBe(`${yValue.toFixed(2)} €`)
 
+        // When Euros Consumption it'll show the value given in €.
+        label = getYPointValueLabel(yValue, metricTargetsEnum.totalEurosIdleConsumption)
+        expect(label).toBe(`${yValue.toFixed(2)} €`)
+
         // When value is null and External temperature it'll show only the unit.
         label = getYPointValueLabel(null, metricTargetsEnum.eurosConsumption)
         expect(label).toBe(' €')
@@ -120,6 +124,12 @@ describe('test pure functions', () => {
 
         // When Euros Consumption, it should return palette.primary.light.
         label = getChartColor(metricTargetsEnum.eurosConsumption, theme)
+        expect(label).toBe(TRANSPARENT_COLOR)
+
+        label = getChartColor(metricTargetsEnum.totalEurosIdleConsumption, theme)
+        expect(label).toBe(TRANSPARENT_COLOR)
+
+        label = getChartColor(metricTargetsEnum.totalIdleConsumption, theme)
         expect(label).toBe(TRANSPARENT_COLOR)
 
         // When internal temperature.
