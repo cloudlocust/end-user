@@ -18,6 +18,7 @@ import { ReplaceNRLinkModule } from 'src/modules/MyHouse/components/ReplaceNRLin
 import MeterInfos from 'src/modules/MyHouse/components/MeterInfo'
 import { HousingAddressCard } from 'src/modules/MyHouse/components/HousingAddressCard'
 import { SolarProductionConsentStatus } from 'src/modules/MyHouse/components/MeterStatus/SolarProductionStatus'
+import { RevokeNrlinkConsent } from 'src/modules/MyHouse/components/RevokeNrlinkConsent'
 import { isProductionActiveAndHousingHasAccess } from 'src/modules/MyHouse/MyHouseConfig'
 
 const FORMATTED_DATA = 'DD/MM/YYYY'
@@ -64,6 +65,7 @@ export const MeterStatus = () => {
         getEnphaseLink,
         isEnphaseConsentLoading,
         revokeEnphaseConsent,
+        revokeNrlinkConsent,
     } = useConsents()
     const { currentHousing, currentHousingScopes } = useSelector(({ housingModel }: RootState) => housingModel)
     const [openCancelCollectionDataTooltip, setOpenCancelCollectionDataTooltip] = useState(false)
@@ -135,12 +137,18 @@ export const MeterStatus = () => {
                                 defaultMessage: TEXT_CONNEXION_LE,
                             })} ${nrlinkConsentCreatedAt}`}</span>
                         </div>
-                        <ReplaceNRLinkModule
-                            nrLinkConsent={nrlinkConsent}
-                            onAfterReplaceNRLink={() => {
-                                getConsents(currentHousing?.id)
-                            }}
-                        />
+                        <div className="flex flex-1 justify-end">
+                            <ReplaceNRLinkModule
+                                nrLinkConsent={nrlinkConsent}
+                                onAfterReplaceNRLink={() => {
+                                    getConsents(currentHousing?.id)
+                                }}
+                            />
+                            <RevokeNrlinkConsent
+                                nrLinkConsent={nrlinkConsent}
+                                revokeNrlinkConsent={revokeNrlinkConsent}
+                            />
+                        </div>
                     </>
                 )
             case 'DISCONNECTED':
@@ -155,12 +163,18 @@ export const MeterStatus = () => {
                                 >
                                     {`nrLINK N° ${nrlinkConsent?.nrlinkGuid}`}
                                 </TypographyFormatMessage>
-                                <ReplaceNRLinkModule
-                                    nrLinkConsent={nrlinkConsent}
-                                    onAfterReplaceNRLink={() => {
-                                        getConsents(currentHousing?.id)
-                                    }}
-                                />
+                                <div className="flex flex-1 justify-end">
+                                    <ReplaceNRLinkModule
+                                        nrLinkConsent={nrlinkConsent}
+                                        onAfterReplaceNRLink={() => {
+                                            getConsents(currentHousing?.id)
+                                        }}
+                                    />
+                                    <RevokeNrlinkConsent
+                                        nrLinkConsent={nrlinkConsent}
+                                        revokeNrlinkConsent={revokeNrlinkConsent}
+                                    />
+                                </div>
                             </div>
                         ) : null}
                         <div className="flex flex-row items-center">
