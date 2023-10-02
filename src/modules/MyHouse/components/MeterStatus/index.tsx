@@ -82,7 +82,7 @@ export const MeterStatus = () => {
      *
      */
     useEffect(() => {
-        getConsents(currentHousing?.id)
+        if (currentHousing?.meter?.guid) getConsents(currentHousing?.id)
 
         /**
          * OnStorage function that execute the setter for EnphaseStateFromLocalStorage.
@@ -106,7 +106,7 @@ export const MeterStatus = () => {
         return () => {
             window.removeEventListener('storage', onStorage)
         }
-    }, [currentHousing?.id, getConsents])
+    }, [currentHousing?.id, currentHousing?.meter?.guid, getConsents])
 
     /**
      * Function that renders JSX accorrding to nrlink status.

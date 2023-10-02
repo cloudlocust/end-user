@@ -60,8 +60,8 @@ const ConnectedPlugs = () => {
     const { formatMessage } = useIntl()
 
     useEffect(() => {
-        loadConnectedPlugList()
-    }, [loadConnectedPlugList])
+        if (currentHousing?.meter?.guid) loadConnectedPlugList()
+    }, [currentHousing?.meter?.guid, loadConnectedPlugList])
 
     const connectedPlugsCells: ICell<IConnectedPlug>[] = [
         {

@@ -40,8 +40,8 @@ const ConnectedPlugProductionConsentPopup = ({ onClose }: IConnectedPlugProducti
     } = useConnectedPlugList(currentHousing?.id)
 
     useEffect(() => {
-        loadConnectedPlugList()
-    }, [loadConnectedPlugList])
+        if (currentHousing?.meter?.guid) loadConnectedPlugList()
+    }, [currentHousing?.meter?.guid, loadConnectedPlugList])
 
     return (
         <Dialog open={true} fullWidth maxWidth={mdDown ? 'xl' : 'sm'} onClose={onClose} onBackdropClick={onClose}>

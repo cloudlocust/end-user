@@ -219,8 +219,8 @@ export const HousingDetails = () => {
     }, [connectedPlugList])
 
     useEffect(() => {
-        loadConnectedPlugList()
-    }, [loadConnectedPlugList])
+        if (currentHousing?.meter?.guid) loadConnectedPlugList()
+    }, [currentHousing?.meter?.guid, loadConnectedPlugList])
 
     return (
         <Root
