@@ -60,7 +60,7 @@ export function useConsents() {
     const [enphaseLink, setEnphaseLink] = useState<EnphaseLink['url']>('')
     const { isCancel, source } = useAxiosCancelToken()
 
-    const { currentHousingScopes } = useSelector(({ housingModel }: RootState) => housingModel)
+    const { currentHousingScopes, currentHousing } = useSelector(({ housingModel }: RootState) => housingModel)
 
     /**
      * Function that performs HTTP call to get consents.
@@ -108,9 +108,10 @@ export function useConsents() {
 
             // Show error message when rejeected.
             if (
-                enedisSgeConsent.status === 'rejected' ||
-                nrlinkConsent.status === 'rejected' ||
-                enphaseConsent.status === 'rejected'
+                currentHousing?.meter?.guid &&
+                (enedisSgeConsent.status === 'rejected' ||
+                    nrlinkConsent.status === 'rejected' ||
+                    enphaseConsent.status === 'rejected')
             ) {
                 enqueueSnackbar(
                     formatMessage({
@@ -126,7 +127,7 @@ export function useConsents() {
             }
             setConsentsLoading(false)
         },
-        [enqueueSnackbar, formatMessage, isCancel, source, currentHousingScopes],
+        [source, currentHousingScopes, isCancel, currentHousing?.meter?.guid, enqueueSnackbar, formatMessage],
     )
 
     /**

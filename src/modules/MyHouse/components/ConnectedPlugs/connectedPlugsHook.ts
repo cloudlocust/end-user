@@ -58,7 +58,7 @@ export function useConnectedPlugList(housingId?: number) {
     const [loadingInProgress, setLoadingInProgress] = useState(false)
     const [connectedPlugList, setConnectedPlugList] = useState<IConnectedPlug[] | []>([])
     const { isCancel, source } = useAxiosCancelToken()
-    const { currentHousingScopes } = useSelector(({ housingModel }: RootState) => housingModel)
+    const { currentHousingScopes, currentHousing } = useSelector(({ housingModel }: RootState) => housingModel)
 
     /**
      * Fetching Offers function.
@@ -104,7 +104,10 @@ export function useConnectedPlugList(housingId?: number) {
             setConnectedPlugList(responseData)
         }
         // Show error message when rejected.
-        if (connectedPlugConsentData.status === 'rejected' || connectedPlugTypeData.status === 'rejected') {
+        if (
+            currentHousing?.meter?.guid &&
+            (connectedPlugConsentData.status === 'rejected' || connectedPlugTypeData.status === 'rejected')
+        ) {
             enqueueSnackbar(
                 formatMessage({
                     id: 'Erreur lors du chargement de vos prises',
@@ -117,7 +120,7 @@ export function useConnectedPlugList(housingId?: number) {
             )
         }
         setLoadingInProgress(false)
-    }, [housingId, source, isCancel, enqueueSnackbar, formatMessage, currentHousingScopes])
+    }, [housingId, currentHousingScopes, source, isCancel, currentHousing?.meter?.guid, enqueueSnackbar, formatMessage])
 
     /**
      * Handler to set production mode in a connected plug.

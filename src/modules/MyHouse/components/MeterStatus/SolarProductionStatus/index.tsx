@@ -68,8 +68,8 @@ export const SolarProductionConsentStatus = ({
     }
 
     useEffect(() => {
-        if (currentHousing?.meter?.guid) loadConnectedPlugList()
-    }, [currentHousing?.meter?.guid, loadConnectedPlugList])
+        loadConnectedPlugList()
+    }, [loadConnectedPlugList])
 
     /**
      * Function that renders solarProductionConsent statuses.

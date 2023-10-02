@@ -89,8 +89,8 @@ export const MyConsumptionContainer = () => {
     }, [isProductionConsentOff])
 
     useEffect(() => {
-        if (currentHousing?.meter?.guid) loadConnectedPlugList()
-    }, [currentHousing?.meter?.guid, loadConnectedPlugList])
+        loadConnectedPlugList()
+    }, [loadConnectedPlugList])
 
     if (consentsLoading)
         return (
