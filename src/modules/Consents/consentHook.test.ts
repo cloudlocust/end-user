@@ -275,4 +275,83 @@ describe('useConsents test', () => {
             )
         }, 8000)
     })
+
+    describe('revoke nrlink consent', () => {
+        test('when its success', async () => {
+            const { store } = require('src/redux')
+            await store.dispatch.userModel.setAuthenticationToken(TEST_SUCCESS)
+            const {
+                renderedHook: { result, waitForValueToChange },
+            } = reduxedRenderHook(() => useConsents())
+
+            act(() => {
+                result.current.getConsents(TEST_HOUSING_ID)
+            })
+            await waitForValueToChange(
+                () => {
+                    return result.current.consentsLoading
+                },
+                { timeout: 6000 },
+            )
+            expect(result.current.nrlinkConsent.nrlinkConsentState).toStrictEqual(connectedState)
+            expect(result.current.isNrlinkConsentLoading).toBeFalsy()
+
+            act(() => {
+                result.current.revokeNrlinkConsent(TEST_HOUSES[0].id, TEST_HOUSES[0].meter?.guid)
+            })
+            expect(result.current.isNrlinkConsentLoading).toBeTruthy()
+
+            await waitForValueToChange(
+                () => {
+                    return result.current.isNrlinkConsentLoading
+                },
+                { timeout: 6000 },
+            )
+            expect(result.current.nrlinkConsentState).toBeUndefined()
+            expect(mockEnqueueSnackbar).toHaveBeenCalledWith('Consentement nrLINK révoqué avec succès', {
+                autoHideDuration: 5000,
+                variant: 'success',
+            })
+        }, 8000)
+
+        test('when fails', async () => {
+            const { store } = require('src/redux')
+            await store.dispatch.userModel.setAuthenticationToken(TEST_SNACKBAR_ERROR)
+            const {
+                renderedHook: { result, waitForValueToChange },
+            } = reduxedRenderHook(() => useConsents())
+
+            act(() => {
+                result.current.getConsents(TEST_HOUSING_ID)
+            })
+            await waitForValueToChange(
+                () => {
+                    return result.current.consentsLoading
+                },
+                { timeout: 6000 },
+            )
+            expect(result.current.nrlinkConsent.nrlinkConsentState).toStrictEqual(connectedState)
+            expect(result.current.isNrlinkConsentLoading).toBeFalsy()
+
+            act(() => {
+                result.current.revokeNrlinkConsent(TEST_HOUSES[0].id, TEST_HOUSES[0].meter?.guid)
+            })
+            expect(result.current.isNrlinkConsentLoading).toBeTruthy()
+
+            await waitForValueToChange(
+                () => {
+                    return result.current.isNrlinkConsentLoading
+                },
+                { timeout: 6000 },
+            )
+            expect(result.current.isNrlinkConsentLoading).toBeFalsy()
+            expect(mockEnqueueSnackbar).toHaveBeenCalledWith(
+                'Erreur lors de la révokation de votre Consentement nrLINK',
+                {
+                    autoHideDuration: 5000,
+                    variant: 'error',
+                },
+            )
+        }, 8000)
+    })
 })

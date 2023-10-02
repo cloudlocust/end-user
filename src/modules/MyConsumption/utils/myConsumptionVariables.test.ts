@@ -64,6 +64,10 @@ describe('test pure functions', () => {
         label = getYPointValueLabel(yValue, metricTargetsEnum.eurosConsumption)
         expect(label).toBe(`${yValue.toFixed(2)} €`)
 
+        // When Euros Consumption it'll show the value given in €.
+        label = getYPointValueLabel(yValue, metricTargetsEnum.totalEurosIdleConsumption)
+        expect(label).toBe(`${yValue.toFixed(2)} €`)
+
         // When value is null and External temperature it'll show only the unit.
         label = getYPointValueLabel(null, metricTargetsEnum.eurosConsumption)
         expect(label).toBe(' €')
@@ -122,6 +126,12 @@ describe('test pure functions', () => {
         label = getChartColor(metricTargetsEnum.eurosConsumption, theme)
         expect(label).toBe(TRANSPARENT_COLOR)
 
+        label = getChartColor(metricTargetsEnum.totalEurosIdleConsumption, theme)
+        expect(label).toBe(TRANSPARENT_COLOR)
+
+        label = getChartColor(metricTargetsEnum.totalIdleConsumption, theme)
+        expect(label).toBe(TRANSPARENT_COLOR)
+
         // When internal temperature.
         label = getChartColor(metricTargetsEnum.internalTemperature, theme)
         expect(label).toBe('#BA1B1B')
@@ -138,6 +148,29 @@ describe('test pure functions', () => {
         label = getChartColor(metricTargetsEnum.autoconsumption, theme)
         expect(label).toBe('#BEECDB')
 
+        // Total Off Idle Autoconsommation
+        label = getChartColor(metricTargetsEnum.totalOffIdleConsumption, theme)
+        expect(label).toBe(theme.palette.secondary.main)
+
+        // Total Off Euro Idle Consumption
+        label = getChartColor(metricTargetsEnum.totalEurosOffIdleConsumption, theme)
+        expect(label).toBe(theme.palette.primary.light)
+
+        // Subscription
+        label = getChartColor(metricTargetsEnum.subscriptionPrices, theme)
+        expect(label).toBe('#CCDCDD')
+
+        // Peak hour consumption
+        label = getChartColor(metricTargetsEnum.peakHourConsumption, theme)
+        expect(label).toBe('#CC9121')
+
+        // Off Peak hour consumption
+        label = getChartColor(metricTargetsEnum.offPeakHourConsumption, theme)
+        expect(label).toBe('#CCAB1D')
+
+        // Euros Idle consumption
+        label = getChartColor(metricTargetsEnum.eurosIdleConsumption, theme)
+        expect(label).toBe('#8191B2')
         label = getChartColor(metricTargetsEnum.onlyConsumption, theme)
         expect(label).toBe('#AABBCC')
 

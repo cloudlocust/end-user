@@ -21,6 +21,10 @@ export interface IMyConsumptionPeriod {
      * Period to range.
      */
     range: metricRangeType
+    /**
+     * Current Period.
+     */
+    period: periodType
 }
 /**
  * Range value type.
@@ -152,6 +156,34 @@ export type EurosConsumptionButtonTogglerProps =
          */
         disabled?: boolean
     }
+/**
+ * Interface for SwitchIdleConsumptionProps.
+ */
+export type SwitchIdleConsumptionProps =
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    {
+        /**
+         * RemoveIdleTarget.
+         */
+        removeIdleTarget: () => void
+        /**
+         * AddIdleTarget.
+         */
+        addIdleTarget: () => void
+        /**
+         * Value of idleConsumptionButton.
+         */
+        isIdleConsumptionButtonSelected: boolean
+        /**
+         * Indicate if IdleConsumptionTogglButton is disabled.
+         */
+        isIdleConsumptionButtonDisabled?: boolean
+        /**
+         * Callback when clicking the infoIcon on disabled idleConsumption button.
+         */
+        onClickIdleConsumptionDisabledInfoIcon: () => void
+    }
+
 /**
  * Represent the type return by apexChartsDataConverter.
  */
