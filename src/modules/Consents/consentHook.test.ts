@@ -4,11 +4,15 @@ import { TEST_SUCCESS_ENEDIS_SGE_CONSENT, TEST_ERROR_ENPHASE_AUTHORIZATION } fro
 import { TEST_HOUSES } from 'src/mocks/handlers/houses'
 import { MeterVerificationEnum } from 'src/modules/Consents/Consents.d'
 import { useConsents } from 'src/modules/Consents/consentsHook'
+import { store } from 'src/redux'
+import { applyCamelCase } from 'src/common/react-platform-components'
+import { IHousing } from 'src/modules/MyHouse/components/HousingList/housing'
 
 const mockEnqueueSnackbar = jest.fn()
 const TEST_SUCCESS = 'success'
 const TEST_ERROR = 'error'
 const TEST_SNACKBAR_ERROR = 'snackbar_error'
+const LIST_OF_HOUSES: IHousing[] = applyCamelCase(TEST_HOUSES)
 
 /**
  * Mocking the useSnackbar.
@@ -56,8 +60,8 @@ describe('useConsents test', () => {
         expect(result.current.enphaseConsent.enphaseConsentState).toStrictEqual('ACTIVE')
     }, 8000)
     test('when there is server error while fetching consents, snackbar is shown only once', async () => {
-        const { store } = require('src/redux')
-        await store.dispatch.userModel.setAuthenticationToken(TEST_ERROR)
+        store.dispatch.userModel.setAuthenticationToken(TEST_ERROR)
+        store.dispatch.housingModel.setHousingModelState(LIST_OF_HOUSES)
 
         const {
             renderedHook: { result, waitForValueToChange },
