@@ -13,6 +13,7 @@ import { TEST_HOUSES } from 'src/mocks/handlers/houses'
 import { URL_MY_HOUSE } from 'src/modules/MyHouse'
 import { ProductionWidgetErrorIcon } from 'src/modules/MyConsumption/components/WidgetInfoIcons'
 import { ConsumptionWidgetsMetricsProvider } from 'src/modules/MyConsumption/components/ConsumptionWidgetsContainer/ConsumptionWidgetsMetricsContext'
+import { renderWidgetTitle } from 'src/modules/MyConsumption/components/Widget/WidgetFunctions'
 
 const TEST_WEEK_DATA: IMetric[] = TEST_SUCCESS_WEEK_METRICS([metricTargetsEnum.consumption])
 let mockData: IMetric[] = TEST_WEEK_DATA
@@ -135,5 +136,16 @@ describe('Widget component test', () => {
         expect(getByTestId(ENPHASE_CONSENT_INACTIVE_ERROR_ICON)).toBeTruthy()
         userEvent.click(getByTestId(ENPHASE_CONSENT_INACTIVE_ERROR_ICON))
         expect(window.location.pathname).toBe(`${URL_MY_HOUSE}/${LIST_OF_HOUSES[0].id}`)
+    })
+
+    test('when there is many targets, all targets should be rendered', async () => {
+        mockData = []
+        const { getByText } = renderTestComponent({
+            ...mockWidgetPropsDefault,
+            targetList: [metricTargetsEnum.totalProduction, metricTargetsEnum.autoconsumption],
+        })
+
+        expect(getByText(renderWidgetTitle(metricTargetsEnum.totalProduction))).toBeInTheDocument()
+        expect(getByText(renderWidgetTitle(metricTargetsEnum.autoconsumption))).toBeInTheDocument()
     })
 })
