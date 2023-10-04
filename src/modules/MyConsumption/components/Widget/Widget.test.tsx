@@ -50,7 +50,7 @@ let mockWidgetPropsDefault: IWidgetProps = {
     filters: mockFilters,
     metricsInterval: mockMetricsInterval,
     range: mockRange,
-    target: metricTargetsEnum.consumption,
+    targetList: [metricTargetsEnum.consumption],
 }
 
 // Mock metricsHook
@@ -119,7 +119,7 @@ describe('Widget component test', () => {
         mockData = []
         const mockWidgetProps: IWidgetProps = {
             ...mockWidgetPropsDefault,
-            infoIcon: <ProductionWidgetErrorIcon />,
+            infoIconList: [<ProductionWidgetErrorIcon />],
         }
         const { getByTestId } = reduxedRender(
             <Router>

@@ -426,8 +426,8 @@ describe('Test widget functions', () => {
                 },
             ]
 
-            cases.forEach(({ range, period, value, target }) => {
-                const result = getWidgetPreviousRange(range, period as periodType, target as metricTargetsEnum)
+            cases.forEach(({ range, period, value }) => {
+                const result = getWidgetPreviousRange(range, period as periodType)
                 expect(result).toStrictEqual(value)
             })
         })
@@ -475,8 +475,8 @@ describe('Test widget functions', () => {
                 },
             ]
 
-            cases.forEach(({ range, period, value, target }) => {
-                const result = getWidgetRange(range, period as periodType, target as metricTargetsEnum)
+            cases.forEach(({ range, period, value }) => {
+                const result = getWidgetRange(range, period as periodType)
                 expect(result).toStrictEqual(value)
             })
         })

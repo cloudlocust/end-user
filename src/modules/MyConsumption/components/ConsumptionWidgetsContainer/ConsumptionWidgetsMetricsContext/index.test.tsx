@@ -38,7 +38,7 @@ let mockWidgetProps: IWidgetProps = {
     filters: mockFilters,
     metricsInterval: mockMetricsInterval,
     range: mockRange,
-    target: metricTargetsEnum.consumption,
+    targetList: [metricTargetsEnum.consumption],
 }
 
 /**

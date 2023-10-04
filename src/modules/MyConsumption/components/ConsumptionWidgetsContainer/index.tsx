@@ -83,31 +83,35 @@ const ConsumptionWidgetsContainer = ({
                      */}
                     {isProductionActiveAndHousingHasAccess(currentHousingScopes) && !enphaseOff && (
                         <WidgetConsumption
-                            target={metricTargetsEnum.consumption}
+                            targetList={[metricTargetsEnum.consumption]}
                             range={range}
                             filters={filters}
                             metricsInterval={metricsInterval}
                             period={period}
-                            infoIcon={getWidgetInfoIcon({
-                                widgetTarget: metricTargetsEnum.consumption,
-                                hasMissingContracts: hasMissingHousingContracts,
-                                enphaseOff,
-                                enedisSgeOff: enedisOff,
-                            })}
+                            infoIconList={[
+                                getWidgetInfoIcon({
+                                    widgetTarget: metricTargetsEnum.consumption,
+                                    hasMissingContracts: hasMissingHousingContracts,
+                                    enphaseOff,
+                                    enedisSgeOff: enedisOff,
+                                }),
+                            ]}
                             enphaseOff={enphaseOff}
                         />
                     )}
 
                     <WidgetIdleConsumption
-                        target={metricTargetsEnum.idleConsumption}
+                        targetList={[metricTargetsEnum.idleConsumption]}
                         range={range}
                         filters={filters}
                         metricsInterval={metricsInterval}
                         period={period}
-                        infoIcon={getWidgetInfoIcon({
-                            widgetTarget: metricTargetsEnum.idleConsumption,
-                            hasMissingContracts: hasMissingHousingContracts,
-                        })}
+                        infoIconList={[
+                            getWidgetInfoIcon({
+                                widgetTarget: metricTargetsEnum.idleConsumption,
+                                hasMissingContracts: hasMissingHousingContracts,
+                            }),
+                        ]}
                     />
 
                     {/** Display the other targets with Widget Component. */}
@@ -115,17 +119,19 @@ const ConsumptionWidgetsContainer = ({
                         return (
                             <Widget
                                 key={target}
-                                target={target}
+                                targetList={[target]}
                                 range={range}
                                 filters={filters}
                                 metricsInterval={metricsInterval}
                                 period={period}
-                                infoIcon={getWidgetInfoIcon({
-                                    widgetTarget: target,
-                                    hasMissingContracts: hasMissingHousingContracts,
-                                    enphaseOff,
-                                    enedisSgeOff: enedisOff,
-                                })}
+                                infoIconList={[
+                                    getWidgetInfoIcon({
+                                        widgetTarget: target,
+                                        hasMissingContracts: hasMissingHousingContracts,
+                                        enphaseOff,
+                                        enedisSgeOff: enedisOff,
+                                    }),
+                                ]}
                                 enphaseOff={enphaseOff}
                             />
                         )

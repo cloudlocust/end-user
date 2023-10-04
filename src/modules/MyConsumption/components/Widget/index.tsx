@@ -20,23 +20,21 @@ const emptyValueUnit = { value: 0, unit: '' }
  * @param props N/A.
  * @param props.range Current range so that we handle the xAxis values according to period and range selected.
  * @param props.filters Metrics Filters.
- * @param props.infoIcon InfoIcon showed in top right of widget.
- * @param props.target Target of the widget.
+ * @param props.infoIconList InfoIcon showed in top right of widgets.
+ * @param props.targetList Targets of the widget.
  * @param props.period Current Period.
  * @returns Widget Component.
  */
 // eslint-disable-next-line sonarjs/cognitive-complexity
 export const Widget = memo(
-    ({ filters, range, infoIcon, metricsInterval, target, period, enphaseOff, children }: IWidgetProps) => {
+    ({ filters, range, infoIconList, metricsInterval, targetList, period, enphaseOff, children }: IWidgetProps) => {
         const { data, setMetricsInterval, setRange, isMetricsLoading } = useMetrics({
             interval: metricsInterval,
-            range: getWidgetRange(range, period, target),
-            targets: [
-                {
-                    target: target,
-                    type: 'timeserie',
-                },
-            ],
+            range: getWidgetRange(range, period),
+            targets: targetList.map((target) => ({
+                target: target,
+                type: 'timeserie',
+            })),
             filters,
         })
         const {
@@ -45,13 +43,11 @@ export const Widget = memo(
             setRange: setRangePrevious,
         } = useMetrics({
             interval: metricsInterval,
-            range: getWidgetPreviousRange(getWidgetRange(range, period, target), period, target),
-            targets: [
-                {
-                    target: target,
-                    type: 'timeserie',
-                },
-            ],
+            range: getWidgetPreviousRange(getWidgetRange(range, period), period),
+            targets: targetList.map((target) => ({
+                target: target,
+                type: 'timeserie',
+            })),
             filters,
         })
 
@@ -66,18 +62,42 @@ export const Widget = memo(
         }, [oldData, storeWidgetMetricsData])
 
         const theme = useTheme()
-        const { unit, value } = useMemo(
-            () => (!data.length ? emptyValueUnit : computeWidgetAssets(data, target)),
-            [data, target],
+
+        const { unitsList, valuesList } = useMemo(
+            () =>
+                targetList.reduce(
+                    (result, target) => {
+                        const { unit, value } = !data.length ? emptyValueUnit : computeWidgetAssets(data, target)
+                        result.unitsList.push(unit)
+                        result.valuesList.push(value)
+                        return result
+                    },
+                    {
+                        unitsList: [] as string[],
+                        valuesList: [] as (string | number)[],
+                    },
+                ),
+            [data, targetList],
         )
-        const { value: oldDataValue } = useMemo(
-            () => (!oldData.length ? emptyValueUnit : computeWidgetAssets(oldData, target)),
-            [oldData, target],
+
+        const oldDataValuesList = useMemo(
+            () =>
+                targetList.reduce((result, target) => {
+                    const { value } = !oldData.length ? emptyValueUnit : computeWidgetAssets(oldData, target)
+                    result.push(value)
+                    return result
+                }, [] as (string | number)[]),
+            [oldData, targetList],
         )
-        const percentageChange = useMemo(
-            () => computePercentageChange(oldDataValue as number, value as number),
-            [value, oldDataValue],
-        )
+
+        const percentageChangesList = useMemo(() => {
+            let percentagesList = [] as number[]
+            for (let i = 0; i < targetList.length; i++) {
+                percentagesList.push(computePercentageChange(oldDataValuesList[i] as number, valuesList[i] as number))
+            }
+            return percentagesList
+        }, [targetList.length, oldDataValuesList, valuesList])
+
         // Props to track the change of range change, so that we call getMetrics only when range change, instead of when both range and period change.
         const isRangeChanged = useRef(false)
 
@@ -97,13 +117,13 @@ export const Widget = memo(
             // If period just changed block the call of getMetrics, because period and range changes at the same time, so to avoid two call of getMetrics
             // 1 call when range change and the other when period change, then only focus on when range changes.
             if (isRangeChanged.current) {
-                const widgetRange = getWidgetRange(range, period, target)
+                const widgetRange = getWidgetRange(range, period)
                 setRange(widgetRange)
-                setRangePrevious(getWidgetPreviousRange(widgetRange, period, target))
+                setRangePrevious(getWidgetPreviousRange(widgetRange, period))
                 // reset isRangdChanged
                 isRangeChanged.current = false
             }
-        }, [period, range, setRange, setRangePrevious, target])
+        }, [period, range, setRange, setRangePrevious])
 
         return (
             <Grid item xs={6} sm={6} md={4} lg={3} xl={3} className="flex">
@@ -119,14 +139,19 @@ export const Widget = memo(
                         ) : (
                             <div className="h-full flex flex-col">
                                 {children}
-                                <WidgetItem
-                                    target={target}
-                                    title={renderWidgetTitle(target, enphaseOff)}
-                                    infoIcon={infoIcon}
-                                    value={value}
-                                    unit={unit}
-                                    percentageChange={percentageChange}
-                                />
+                                {Array(targetList.length)
+                                    .fill(null)
+                                    .map((_, index) => (
+                                        <WidgetItem
+                                            key={index}
+                                            target={targetList[index]}
+                                            title={renderWidgetTitle(targetList[index], enphaseOff)}
+                                            infoIcon={infoIconList?.at(index)}
+                                            value={valuesList[index]}
+                                            unit={unitsList[index]}
+                                            percentageChange={percentageChangesList[index]}
+                                        />
+                                    ))}
                             </div>
                         )}
                     </>

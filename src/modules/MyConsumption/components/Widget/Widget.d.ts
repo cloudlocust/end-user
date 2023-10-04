@@ -27,7 +27,7 @@ export interface IWidgetProps {
     /**
      * HasMissingHousingContracts come from metrics when euroConsumption, responsible for showing an info icon in EuroWidget.
      */
-    infoIcon?: JSX.Element | null
+    infoIconList?: (JSX.Element | null)[]
     /**
      * Metrics range.
      */
@@ -41,9 +41,9 @@ export interface IWidgetProps {
      */
     filters: metricFiltersType
     /**
-     * Target of the Widget.
+     * Targets of the Widget.
      */
-    target: metricTargetType
+    targetList: metricTargetType[]
     /**
      * Period of the Widget.
      */

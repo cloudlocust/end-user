@@ -269,10 +269,9 @@ export const renderWidgetTitle = (target: metricTargetType, enphaseOff?: boolean
  *
  * @param range Range from metrics.
  * @param period Period give.
- * @param _target Widget Target.
  * @returns Previous range according from period, if "daily" returns range (startOf: fromDate-1, endOf: fromDate-1). If "weekly" returns range (startOf: fromDate week-1, endOf: fromDate-1). If "monthly" returns range (startOf: fromDate month-1, endOf: fromDate month-1). If "yearly" returns range (startOf: fromDate year-1, endOf: fromDate year-1).
  */
-export const getWidgetPreviousRange = (range: metricRangeType, period: periodType, _target: metricTargetType) => {
+export const getWidgetPreviousRange = (range: metricRangeType, period: periodType) => {
     // Extract only the date, so that new Date don't create a date including the timezone.
     const fromDate = new Date(range.from.split('T')[0])
     switch (period) {
@@ -304,14 +303,13 @@ export const getWidgetPreviousRange = (range: metricRangeType, period: periodTyp
  *
  * @param range Range from metrics.
  * @param period Period give.
- * @param _target Metric Target type.
  * @returns Range according to period.
  * - When "daily" range should be [start, end] of same day.
  * - When "weekly" range should be a week starting with the fromDate day of given range.
  * - When "monthly" range should be [start, end] of same month.
  * - When "yearly" range should be [start, end] of same year.
  */
-export const getWidgetRange = (range: metricRangeType, period: periodType, _target: metricTargetType) => {
+export const getWidgetRange = (range: metricRangeType, period: periodType) => {
     // Extract only the date, so that new Date don't create a date including the timezone.
     const fromDate = startOfDay(new Date(range.from))
     switch (period) {

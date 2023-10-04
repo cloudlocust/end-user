@@ -23,12 +23,13 @@ const emptyValueUnit = { value: 0, unit: '' }
  * @returns WidgetConsumption Component.
  */
 const WidgetIdleConsumption = (props: IWidgetProps) => {
-    const { filters, period, range, target, metricsInterval } = props
+    const { filters, period, range, targetList, metricsInterval } = props
+    const target = targetList[0]
     const theme = useTheme()
 
     const { data, setMetricsInterval, setRange, isMetricsLoading } = useMetrics({
         interval: metricsInterval,
-        range: getWidgetRange(range, period, target),
+        range: getWidgetRange(range, period),
         targets: [
             {
                 target: target,
@@ -43,7 +44,7 @@ const WidgetIdleConsumption = (props: IWidgetProps) => {
         setRange: setRangePrevious,
     } = useMetrics({
         interval: metricsInterval,
-        range: getWidgetPreviousRange(getWidgetRange(range, period, target), period, target),
+        range: getWidgetPreviousRange(getWidgetRange(range, period), period),
         targets: [
             {
                 target: target,
@@ -60,12 +61,12 @@ const WidgetIdleConsumption = (props: IWidgetProps) => {
 
     useEffect(() => {
         if (period === 'daily') {
-            setRange(getWidgetRange(range, period, target))
-            setRangePrevious(getWidgetPreviousRange(range, period, target))
+            setRange(getWidgetRange(range, period))
+            setRangePrevious(getWidgetPreviousRange(range, period))
         } else {
-            const widgetRange = getWidgetRange(range, period, target)
+            const widgetRange = getWidgetRange(range, period)
             setRange(widgetRange)
-            setRangePrevious(getWidgetPreviousRange(widgetRange, period, target))
+            setRangePrevious(getWidgetPreviousRange(widgetRange, period))
         }
     }, [period, range, setRange, setRangePrevious, target])
 
