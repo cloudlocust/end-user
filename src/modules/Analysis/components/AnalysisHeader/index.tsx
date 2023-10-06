@@ -6,8 +6,7 @@ import { PeriodEnum } from 'src/modules/MyConsumption/myConsumptionTypes.d'
 import { getDateWithoutTimezoneOffset } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
 import { endOfMonth, startOfMonth, subMonths } from 'date-fns'
 import { AnalysisHeaderProps } from 'src/modules/Analysis/components/AnalysisHeader/AnalysisHeader.d'
-import { ThemeProvider } from '@mui/material'
-import { selectTheme } from 'src/common/ui-kit/fuse/utils/theming-generator'
+import { ThemeProvider, useTheme } from '@mui/material'
 
 /**
  * Analysis header component.
@@ -19,7 +18,7 @@ import { selectTheme } from 'src/common/ui-kit/fuse/utils/theming-generator'
  * @returns Analysis header JSX.
  */
 export default function AnalysisHeader({ setRange, range, enedisSgeOff }: AnalysisHeaderProps) {
-    const selectedTheme = selectTheme()
+    const theme = useTheme()
     /**
      * Handler when DatePicker change, to apply the range related to Analysis Component and overwrites the default ConsumptionDatePicker.
      * In Analysis range always go from: start month of a given date, to: end of same month for the same given date.
@@ -35,7 +34,7 @@ export default function AnalysisHeader({ setRange, range, enedisSgeOff }: Analys
     }
 
     return (
-        <ThemeProvider theme={selectedTheme}>
+        <ThemeProvider theme={theme}>
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="w-full flex flex-col items-center">
                 <MyConsumptionDatePicker
                     period={PeriodEnum.MONTHLY}
