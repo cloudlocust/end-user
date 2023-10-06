@@ -12,7 +12,7 @@ import { installationRequestsFeatureState } from 'src/modules/InstallationReques
 import { equipmentFeatureState, URL_SOLAR_EQUIPMENTS } from 'src/modules/SolarEquipments/solarEquipmentsConfig'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import { FAQ_REDIRECT_LINK } from 'src/configs'
-import { isConsumptionAlertsVisible, URL_ALERTS } from 'src/modules/Alerts/AlertsConfig'
+import { URL_ALERTS } from 'src/modules/Alerts/AlertsConfig'
 import { useHousingRedux } from 'src/modules/MyHouse/utils/MyHouseHooks'
 
 // TODO This is not a generic component to share with medialem, to update.
@@ -102,16 +102,14 @@ function UserMenu() {
                         idLabel="Gestion de Profil"
                         defaultMessageLabel="Gestion de Profil"
                     />
-                    {isConsumptionAlertsVisible && (
-                        <ToolbarMenuItem
-                            onMenuItemClick={() => {
-                                history.push(URL_ALERTS)
-                            }}
-                            iconLabel="edit_notifications"
-                            idLabel="Gestion des alertes"
-                            defaultMessageLabel="Gestion des alertes"
-                        />
-                    )}
+                    <ToolbarMenuItem
+                        onMenuItemClick={() => {
+                            history.push(URL_ALERTS)
+                        }}
+                        iconLabel="edit_notifications"
+                        idLabel="Gestion des alertes"
+                        defaultMessageLabel="Gestion des alertes"
+                    />
                     <ToolbarMenuItem
                         onMenuItemClick={() => {
                             history.push('/mentions')
