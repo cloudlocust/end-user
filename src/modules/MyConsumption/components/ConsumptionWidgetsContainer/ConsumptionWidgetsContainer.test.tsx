@@ -9,6 +9,7 @@ import { periodType } from 'src/modules/MyConsumption/myConsumptionTypes'
 const CONSOMMATION_TOTAL_TEXT = 'Consommation Totale'
 const CONSOMMATION_PURCHASED_TEXT = 'Achetée'
 const PRODUCTION_TOTAL_TEXT = 'Production Totale'
+const PRODUCTION_INJECTED_TEXT = 'Injectée'
 const AUTOCONSOMMATION_TEXT = 'Autoconsommation'
 
 const widgetClassnameSelector = ' .MuiGrid-root .MuiGrid-item'
@@ -83,6 +84,7 @@ describe('ConsumptionWidgetsContainer test', () => {
         expect(getByText(CONSOMMATION_TOTAL_TEXT)).toBeInTheDocument()
         expect(getByText(CONSOMMATION_PURCHASED_TEXT)).toBeInTheDocument()
         expect(getByText(PRODUCTION_TOTAL_TEXT)).toBeInTheDocument()
+        expect(getByText(PRODUCTION_INJECTED_TEXT)).toBeInTheDocument()
         expect(getByText(AUTOCONSOMMATION_TEXT)).toBeInTheDocument()
     })
     // test('when the enphase consent is not active, the widgets of production & autoconsumption should not be showing', async () => {
