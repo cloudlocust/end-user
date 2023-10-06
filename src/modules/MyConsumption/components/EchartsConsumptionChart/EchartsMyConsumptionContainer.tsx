@@ -14,15 +14,17 @@ import { ChartErrorMessage } from 'src/modules/MyConsumption/components/ChartErr
 import { NRLINK_ENEDIS_OFF_MESSAGE } from 'src/modules/MyConsumption/utils/myConsumptionVariables'
 import { EcowattWidget } from 'src/modules/Ecowatt/EcowattWidget'
 import { MissingHousingMeterErrorMessage } from 'src/modules/MyConsumption/utils/ErrorMessages'
-import { ProductionChartContainer } from 'src/modules/MyConsumption/components/MyConsumptionChart/ProductionChartContainer'
 import { useEcowatt } from 'src/modules/Ecowatt/EcowattHook'
 import CircularProgress from '@mui/material/CircularProgress'
 import Box from '@mui/material/Box'
 import ConsumptionWidgetsContainer from 'src/modules/MyConsumption/components/ConsumptionWidgetsContainer'
 import { ConsumptionWidgetsMetricsProvider } from 'src/modules/MyConsumption/components/ConsumptionWidgetsContainer/ConsumptionWidgetsMetricsContext'
 import { useConnectedPlugList } from 'src/modules/MyHouse/components/ConnectedPlugs/connectedPlugsHook'
-import { connectedPlugsFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
-import { globalProductionFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
+import {
+    arePlugsUsedBasedOnProductionStatus,
+    isProductionActiveAndHousingHasAccess,
+} from 'src/modules/MyHouse/MyHouseConfig'
+import { EchartsProductionChartContainer } from 'src/modules/MyConsumption/components/EchartsProductionChart/EchartsProductionChartContainer'
 
 /**
  * EchartsMyConsumptionContainer.
@@ -34,7 +36,7 @@ export const EchartsMyConsumptionContainer = () => {
     const theme = useTheme()
     const { getConsents, nrlinkConsent, enedisSgeConsent, enphaseConsent, consentsLoading } = useConsents()
     const [period, setPeriod] = useState<PeriodEnum>(PeriodEnum.DAILY)
-    const { currentHousing } = useSelector(({ housingModel }: RootState) => housingModel)
+    const { currentHousing, currentHousingScopes } = useSelector(({ housingModel }: RootState) => housingModel)
     const [range, setRange] = useState<metricRangeType>(getRangeV2(PeriodEnum.DAILY))
     const [filters, setFilters] = useState<metricFiltersType>([])
 
@@ -59,7 +61,7 @@ export const EchartsMyConsumptionContainer = () => {
 
     // TODO put enphaseConsent.enphaseConsentState in an enum.
     let isSolarProductionConsentOff = enphaseConsent?.enphaseConsentState !== 'ACTIVE'
-    if (connectedPlugsFeatureState)
+    if (arePlugsUsedBasedOnProductionStatus(currentHousingScopes))
         isSolarProductionConsentOff = isSolarProductionConsentOff && !isProductionConnectedPlug
 
     // UseEffect to check for consent whenever a meter is selected.
@@ -148,8 +150,8 @@ export const EchartsMyConsumptionContainer = () => {
                 )}
 
                 {/* Production Chart */}
-                {globalProductionFeatureState && (
-                    <ProductionChartContainer
+                {isProductionActiveAndHousingHasAccess(currentHousingScopes) && (
+                    <EchartsProductionChartContainer
                         period={period}
                         range={range}
                         filters={filters}
