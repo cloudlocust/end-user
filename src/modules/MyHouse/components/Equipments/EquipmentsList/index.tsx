@@ -8,11 +8,11 @@ import { mappingEquipmentNameToType, myEquipmentOptions } from 'src/modules/MyHo
  * EquipmentsList component.
  *
  * @param root0 N/A.
- * @param root0.equipmentsList Equipments list containing all the equipments.
+ * @param root0.housingEquipmentsList Equipments list containing all the equipments.
  * @param root0.loadingEquipmentInProgress Boolean for CircularProgress.
  * @returns EquipmentsList JSX.
  */
-export const EquipmentsList = ({ equipmentsList, loadingEquipmentInProgress }: EquipmentsListProps) => {
+export const EquipmentsList = ({ housingEquipmentsList, loadingEquipmentInProgress }: EquipmentsListProps) => {
     if (loadingEquipmentInProgress)
         return (
             <div className="flex flex-col justify-center items-center w-full" style={{ minHeight: '60vh' }}>
@@ -21,7 +21,7 @@ export const EquipmentsList = ({ equipmentsList, loadingEquipmentInProgress }: E
         )
 
     // Map equipmentsList into a better readable list.
-    const equipments = equipmentsList
+    const equipments = housingEquipmentsList
         ?.map((element) => {
             return {
                 id: element.equipmentId,

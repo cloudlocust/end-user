@@ -30,8 +30,13 @@ import { linksColor } from 'src/modules/utils/muiThemeVariables'
 export const InstallationForm = () => {
     const theme = useTheme()
     const { currentHousing } = useSelector(({ housingModel }: RootState) => housingModel)
-    const { equipmentList, saveEquipment, loadingEquipmentInProgress, isEquipmentMeterListEmpty, loadEquipmentList } =
-        useEquipmentList(currentHousing?.id)
+    const {
+        housingEquipmentsList,
+        saveEquipment,
+        loadingEquipmentInProgress,
+        isEquipmentMeterListEmpty,
+        loadEquipmentList,
+    } = useEquipmentList(currentHousing?.id)
 
     const [solarPanelRadioValue, setSolarPanelRadioValue] = useState<'existant' | 'nonexistant'>('existant')
     const [isEquiomentInfoConsentmentOpen, setIsEquiomentInfoConsentmentOpen] = useState(false)
@@ -50,8 +55,8 @@ export const InstallationForm = () => {
     // It'll have the following format an object of all equipment, name is the key, for example: {"heater": {equipment_id, equipment_type, equipment_number, isNumber, equipment: {id, name, allowed_type} } }.
     // eslint-disable-next-line jsdoc/require-jsdoc
     let savedEquipmentList: { [key: string]: IEquipmentMeter & { isNumber: boolean } } = {}
-    if (equipmentList) {
-        equipmentList.forEach((equipment) => {
+    if (housingEquipmentsList) {
+        housingEquipmentsList.forEach((equipment) => {
             // Check that equipmentMeterList is not empty.
             savedEquipmentList![equipment.equipment.name] = {
                 ...equipment,
@@ -64,7 +69,7 @@ export const InstallationForm = () => {
         loadEquipmentList()
     }, [loadEquipmentList])
 
-    if (!equipmentList || loadingEquipmentInProgress || equipmentList.length === 0)
+    if (!housingEquipmentsList || loadingEquipmentInProgress || housingEquipmentsList.length === 0)
         return (
             <div className="flex flex-col justify-center items-center w-full" style={{ minHeight: '60vh' }}>
                 <CircularProgress />

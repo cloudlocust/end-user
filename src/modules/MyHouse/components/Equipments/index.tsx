@@ -8,6 +8,7 @@ import { useEquipmentList } from 'src/modules/MyHouse/components/Installation/in
 import { EquipmentsQuickAddPopup } from 'src/modules/MyHouse/components/Equipments/EquipmentsQuickAddPopup'
 import { useEffect, useState } from 'react'
 import { EmptyEquipmentsList } from 'src/modules/MyHouse/components/Equipments/EmptyEquipmentsList'
+import { AddEquipmentPopup } from 'src/modules/MyHouse/components/Equipments/AddEquipmentPopup/AddEquipmentPopup'
 
 const Root = styled(FusePageCarded)(() => ({
     '& .FusePageCarded-header': {
@@ -33,9 +34,16 @@ const Root = styled(FusePageCarded)(() => ({
  */
 export const Equipments = () => {
     const { currentHousing } = useSelector(({ housingModel }: RootState) => housingModel)
-    const { equipmentList, saveEquipment, loadingEquipmentInProgress, isEquipmentMeterListEmpty, loadEquipmentList } =
-        useEquipmentList(currentHousing?.id)
+    const {
+        equipmentList,
+        housingEquipmentsList,
+        saveEquipment,
+        loadingEquipmentInProgress,
+        isEquipmentMeterListEmpty,
+        loadEquipmentList,
+    } = useEquipmentList(currentHousing?.id)
     const [isEquipmentsQuickAddPopupOpen, setIsEquipmentsQuickAddPopupOpen] = useState(false)
+    const [isAddEquipmentPopupOpen, setIsAddEquipmentPopupOpen] = useState(false)
 
     useEffect(() => {
         loadEquipmentList()
@@ -43,7 +51,12 @@ export const Equipments = () => {
 
     return (
         <Root
-            header={<EquipmentsHeader isEquipmentMeterListEmpty={isEquipmentMeterListEmpty} />}
+            header={
+                <EquipmentsHeader
+                    isEquipmentMeterListEmpty={isEquipmentMeterListEmpty}
+                    onOpenAddEquipmentPopup={() => setIsAddEquipmentPopupOpen(true)}
+                />
+            }
             content={
                 <>
                     {isEquipmentsQuickAddPopupOpen && (
@@ -51,7 +64,7 @@ export const Equipments = () => {
                             open={isEquipmentsQuickAddPopupOpen}
                             handleClosePopup={() => setIsEquipmentsQuickAddPopupOpen(false)}
                             saveEquipment={saveEquipment}
-                            equipmentsList={equipmentList}
+                            housingEquipmentsList={housingEquipmentsList}
                             loadingEquipmentInProgress={loadingEquipmentInProgress}
                         />
                     )}
@@ -59,8 +72,15 @@ export const Equipments = () => {
                         <EmptyEquipmentsList handleOpenPopup={() => setIsEquipmentsQuickAddPopupOpen(true)} />
                     ) : (
                         <EquipmentsList
-                            equipmentsList={equipmentList}
+                            housingEquipmentsList={housingEquipmentsList}
                             loadingEquipmentInProgress={loadingEquipmentInProgress}
+                        />
+                    )}
+                    {isAddEquipmentPopupOpen && (
+                        <AddEquipmentPopup
+                            isOpen={isAddEquipmentPopupOpen}
+                            onClosePopup={() => setIsAddEquipmentPopupOpen(false)}
+                            equipmentsList={equipmentList}
                         />
                     )}
                 </>

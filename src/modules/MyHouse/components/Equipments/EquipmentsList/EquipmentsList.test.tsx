@@ -5,13 +5,13 @@ import { EquipmentsList } from 'src/modules/MyHouse/components/Equipments/Equipm
 import { EquipmentsListProps } from 'src/modules/MyHouse/components/Equipments/EquipmentsList/equipmentsList'
 
 let equipmentsListProps: EquipmentsListProps = {
-    equipmentsList: [],
+    housingEquipmentsList: [],
     loadingEquipmentInProgress: false,
 }
 
 describe('EquipmentsList tests', () => {
     afterEach(() => {
-        equipmentsListProps.equipmentsList = applyCamelCase(TEST_HOUSING_EQUIPMENTS)
+        equipmentsListProps.housingEquipmentsList = applyCamelCase(TEST_HOUSING_EQUIPMENTS)
         equipmentsListProps.loadingEquipmentInProgress = false
     })
 

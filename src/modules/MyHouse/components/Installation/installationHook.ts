@@ -1,3 +1,4 @@
+import { addEquipmentType } from './InstallationType.d'
 import {
     equipmentType,
     IEquipmentMeter,
@@ -17,8 +18,6 @@ import { equipmentsAccomodationFeatureState } from 'src/modules/MyHouse/MyHouseC
 // eslint-disable-next-line jsdoc/require-jsdoc
 export const HOUSING_EQUIPMENTS_API = (housingId: number) => `${HOUSING_API}/${housingId}/equipments`
 
-// All Equipments API
-
 // eslint-disable-next-line jsdoc/require-jsdoc
 export const ALL_EQUIPMENTS_API = `${API_RESOURCES_URL}/equipments`
 
@@ -34,7 +33,9 @@ export const useEquipmentList = (housingId?: number) => {
     const isInitialMount = useRef(true)
     const [loadingEquipmentInProgress, setLoadingEquipmentInProgress] = useState(false)
     const [isEquipmentMeterListEmpty, setIsEquipmentMeterListEmpty] = useState(false)
-    const [equipmentList, setEquipmentList] = useState<IEquipmentMeter[] | null>(null)
+    const [equipmentList, setEquipmentList] = useState<equipmentType[] | null>(null)
+    const [housingEquipmentsList, setHousingEquipmentsList] = useState<IEquipmentMeter[] | null>(null)
+    const [isaAdEquipmentLoading, setIsAddEquipmentLoading] = useState(false)
 
     /**
      * Load Customers function responsing for fetching customersList.
@@ -60,7 +61,8 @@ export const useEquipmentList = (housingId?: number) => {
                     equipment,
                 }
             })
-            setEquipmentList(responseData)
+            setEquipmentList(equipments)
+            setHousingEquipmentsList(responseData)
         } catch (error) {
             enqueueSnackbar(
                 formatMessage({
@@ -86,6 +88,7 @@ export const useEquipmentList = (housingId?: number) => {
      * @param body Values for saving equipment.
      * @returns Equipments saved.
      */
+    // TODO: rename it to addHousingEquipment to avoid confusion.
     const saveEquipment = async (body: postEquipmentInputType) => {
         if (!housingId) return
         setLoadingEquipmentInProgress(true)
@@ -121,11 +124,53 @@ export const useEquipmentList = (housingId?: number) => {
             setLoadingEquipmentInProgress(false)
         }
     }
+
+    const addEquipment = useCallback(
+        async (data: addEquipmentType) => {
+            try {
+                setIsAddEquipmentLoading(true)
+                const response = await axios.post<addEquipmentType, AxiosResponse<equipmentType>>(
+                    `${ALL_EQUIPMENTS_API}`,
+                    data,
+                )
+
+                if (response.status === 201) {
+                    enqueueSnackbar(
+                        formatMessage({
+                            id: "Succès lors de l'ajout de votre équipement",
+                            defaultMessage: "Succès lors de l'ajout de votre équipement",
+                        }),
+                        { variant: 'success' },
+                    )
+                }
+            } catch (error: any) {
+                enqueueSnackbar(
+                    error.response.data && error.response.data.detail
+                        ? formatMessage({
+                              id: error.response.data.detail,
+                              defaultMessage: error.response.data.detail,
+                          })
+                        : formatMessage({
+                              id: "Erreur lors de l'enregistrement de votre équipments",
+                              defaultMessage: "Erreur lors de l'enregistrement de votre équipments",
+                          }),
+                    { variant: 'error' },
+                )
+            } finally {
+                setIsAddEquipmentLoading(false)
+            }
+        },
+        [enqueueSnackbar, formatMessage],
+    )
+
     return {
         loadingEquipmentInProgress,
         saveEquipment,
+        housingEquipmentsList,
         equipmentList,
         isEquipmentMeterListEmpty,
         loadEquipmentList,
+        addEquipment,
+        isaAdEquipmentLoading,
     }
 }

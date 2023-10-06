@@ -5,7 +5,7 @@ import { IEquipmentMeter } from 'src/modules/MyHouse/components/Installation/Ins
  */
 export interface EquipmentsListProps {
     // eslint-disable-next-line jsdoc/require-jsdoc
-    equipmentsList: IEquipmentMeter[] | null
+    housingEquipmentsList: IEquipmentMeter[] | null
     // eslint-disable-next-line jsdoc/require-jsdoc
     loadingEquipmentInProgress: boolean
 }

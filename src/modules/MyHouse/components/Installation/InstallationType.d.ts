@@ -79,3 +79,22 @@ export type postEquipmentInputType = equipmentMeterType[]
 
 //eslint-disable-next-line jsdoc/require-jsdoc
 export type equipmentValuesType = { [key in equipmentNameType]: number | string }
+
+/**
+ * Add equipment type.
+ */
+// eslint-disable-next-line jsdoc/require-jsdoc
+export type addEquipmentType = {
+    /**
+     * Equipment id.
+     */
+    id?: number
+    /**
+     * Equipment name.
+     */
+    name: string
+    /**
+     * Allowed type for the equipment.
+     */
+    allowed_type: ['electricity']
+}
