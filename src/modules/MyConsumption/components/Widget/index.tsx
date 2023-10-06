@@ -150,6 +150,8 @@ export const Widget = memo(
                                             value={valuesList[index]}
                                             unit={unitsList[index]}
                                             percentageChange={percentageChangesList[index]}
+                                            enphaseOff={enphaseOff}
+                                            period={period}
                                         />
                                     ))}
                             </div>

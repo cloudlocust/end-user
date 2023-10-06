@@ -51,6 +51,7 @@ const ConsumptionWidgetsContainer = ({
               ]
             : [
                   metricTargetsEnum.consumption,
+                  metricTargetsEnum.totalProduction,
                   metricTargetsEnum.eurosConsumption,
                   metricTargetsEnum.pMax,
                   metricTargetsEnum.externalTemperature,
@@ -116,7 +117,31 @@ const ConsumptionWidgetsContainer = ({
 
                     {/** Display the other targets with Widget Component. */}
                     {renderedWidgets.map((target) => {
-                        return (
+                        return target === metricTargetsEnum.totalProduction ? (
+                            <Widget
+                                key={target}
+                                targetList={[target, metricTargetsEnum.injectedProduction]}
+                                range={range}
+                                filters={filters}
+                                metricsInterval={metricsInterval}
+                                period={period}
+                                infoIconList={[
+                                    getWidgetInfoIcon({
+                                        widgetTarget: target,
+                                        hasMissingContracts: hasMissingHousingContracts,
+                                        enphaseOff,
+                                        enedisSgeOff: enedisOff,
+                                    }),
+                                    getWidgetInfoIcon({
+                                        widgetTarget: metricTargetsEnum.injectedProduction,
+                                        hasMissingContracts: hasMissingHousingContracts,
+                                        enphaseOff,
+                                        enedisSgeOff: enedisOff,
+                                    }),
+                                ]}
+                                enphaseOff={enphaseOff}
+                            />
+                        ) : (
                             <Widget
                                 key={target}
                                 targetList={[target]}
