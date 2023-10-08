@@ -42,7 +42,7 @@ const MeasurementProgress = ({ status, maxDuration }: MeasurementProgressProps) 
     }
 
     /**
-     * Get the content to render in the middle of the progress circle depending on the status value.
+     * Get the content to render depending on the status value.
      *
      * @returns The content to render.
      */

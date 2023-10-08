@@ -12,7 +12,7 @@ jest.mock(
 )
 
 describe('useMeasurementProgress hook', () => {
-    it('Calculates remainingTime and circularProgressValue correctly', () => {
+    test('Calculates remainingTime and circularProgressValue correctly', () => {
         const maxDuration = 60
 
         // Mock the values returned by the helper functions
