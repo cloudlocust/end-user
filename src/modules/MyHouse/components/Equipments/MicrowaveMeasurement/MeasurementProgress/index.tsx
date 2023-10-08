@@ -1,5 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import CircularProgress from '@mui/material/CircularProgress'
+import Typography from '@mui/material/Typography'
 import { useTheme } from '@mui/material'
 import CheckCircleIcon from '@mui/icons-material/CheckCircle'
 import CancelIcon from '@mui/icons-material/Cancel'
@@ -7,8 +8,9 @@ import {
     MeasurementProgressProps,
     measurementStatusEnum,
 } from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement/MeasurementProgress/MeasurementProgress.d'
-import { useEffect, useState } from 'react'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
+import { useMeasurementProgress } from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement/MeasurementProgress/useMeasurementProgress'
+import { formatDuration } from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement/MeasurementProgress/MeasurementProgressFunctions'
 
 /**
  * MeasurementProgress component.
@@ -19,93 +21,7 @@ import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyForm
  * @returns The MeasurementProgress component.
  */
 const MeasurementProgress = ({ status, maxDuration }: MeasurementProgressProps) => {
-    const [secondsCounter, setSecondsCounter] = useState(0)
-    const [remainingTime, setRemainingTime] = useState(maxDuration)
-    const [circularProgressValue, setCircularProgressValue] = useState(0)
-
-    useEffect(() => {
-        let intervalId: NodeJS.Timer | null = null
-
-        if (status === measurementStatusEnum.inProgress) {
-            intervalId = setInterval(() => {
-                setSecondsCounter((oldValue) => oldValue + 1)
-            }, 1000)
-        } else {
-            if (intervalId) {
-                clearInterval(intervalId)
-                intervalId = null
-            }
-        }
-
-        return () => {
-            if (intervalId) {
-                clearInterval(intervalId)
-            }
-        }
-    }, [status])
-
-    /**
-     * Calculate the time remaining until the end of the measurement.
-     *
-     * @param second The second value.
-     * @returns The remaining time (in seconds).
-     */
-    const calculateRemainingTime = (second: number): number => {
-        const linear = maxDuration - second
-        const expo = maxDuration * Math.exp((-2.5 * second) / maxDuration)
-        return Math.max(linear, expo)
-    }
-
-    /**
-     * Calculate the value prop for the CircularProgress component.
-     *
-     * @param remainingSeconds Remaining time until the end of the measurement.
-     * @returns The CircularProgress value prop.
-     */
-    const calculateCircularProgressValue = (remainingSeconds: number): number => {
-        return 100 - (100 * remainingSeconds) / maxDuration
-    }
-
-    useEffect(() => {
-        const newRemainingTime = calculateRemainingTime(secondsCounter)
-        setCircularProgressValue(calculateCircularProgressValue(newRemainingTime))
-        if (newRemainingTime !== remainingTime) setRemainingTime(Math.ceil(newRemainingTime))
-    }, [secondsCounter])
-
-    /**
-     * Format the seconds value duration to mm:ss fomat.
-     *
-     * @param durationInSeconds Duration in seconds.
-     * @returns Formated duration.
-     */
-    const formatDuration = (durationInSeconds: number): string => {
-        const minutes = Math.floor(durationInSeconds / 60)
-        const seconds = durationInSeconds % 60
-        const formattedMinutes = String(minutes).padStart(2, '0')
-        const formattedSeconds = String(seconds).padStart(2, '0')
-        return `${formattedMinutes} : ${formattedSeconds}`
-    }
-
-    /**
-     * Get the content to render in the middle of the progress circle depending on the status value.
-     *
-     * @returns The content to render.
-     */
-    const renderContent = () => {
-        switch (status) {
-            case measurementStatusEnum.pending:
-                return <TypographyFormatMessage>En attente</TypographyFormatMessage>
-            case measurementStatusEnum.inProgress:
-                return <h4>{formatDuration(remainingTime)}</h4>
-            case measurementStatusEnum.success:
-                return <CheckCircleIcon color="success" sx={{ transform: 'scale(2.5)' }} />
-            case measurementStatusEnum.failed:
-                return <CancelIcon color="error" sx={{ transform: 'scale(2.5)' }} />
-            default:
-                return null
-        }
-    }
-
+    const { remainingTime, circularProgressValue } = useMeasurementProgress(status, maxDuration)
     const theme = useTheme()
 
     const borderCircleStyle = {
@@ -123,6 +39,26 @@ const MeasurementProgress = ({ status, maxDuration }: MeasurementProgressProps) 
         top: '50%',
         left: '50%',
         transform: 'translate(-50%,-50%)',
+    }
+
+    /**
+     * Get the content to render in the middle of the progress circle depending on the status value.
+     *
+     * @returns The content to render.
+     */
+    const renderContent = () => {
+        switch (status) {
+            case measurementStatusEnum.pending:
+                return <TypographyFormatMessage>En attente</TypographyFormatMessage>
+            case measurementStatusEnum.inProgress:
+                return <Typography>{formatDuration(remainingTime)}</Typography>
+            case measurementStatusEnum.success:
+                return <CheckCircleIcon color="success" sx={{ transform: 'scale(2.5)' }} />
+            case measurementStatusEnum.failed:
+                return <CancelIcon color="error" sx={{ transform: 'scale(2.5)' }} />
+            default:
+                return null
+        }
     }
 
     return (
