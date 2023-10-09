@@ -1,6 +1,6 @@
 import { screen } from '@testing-library/react'
 import { reduxedRender } from 'src/common/react-platform-components/test'
-import MeasurementProgress from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement/MeasurementProgress'
+import { MeasurementProgress } from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement/MeasurementProgress'
 import { measurementStatusEnum } from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement/MeasurementProgress/MeasurementProgress.d'
 
 jest.mock(

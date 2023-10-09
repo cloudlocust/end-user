@@ -1,8 +1,5 @@
 import { useState, useEffect } from 'react'
-import {
-    measurementStatusType,
-    measurementStatusEnum,
-} from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement/MeasurementProgress/MeasurementProgress.d'
+import { measurementStatusEnum } from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement/MeasurementProgress/MeasurementProgress.d'
 import {
     calculateRemainingTime,
     calculateCircularProgressValue,
@@ -15,7 +12,7 @@ import {
  * @param maxDuration Estimated value for the maximum duration of the measurement process (in seconds).
  * @returns The states remainingTime and circularProgressValue.
  */
-export const useMeasurementProgress = (status: measurementStatusType, maxDuration: number) => {
+export const useMeasurementProgress = (status: measurementStatusEnum, maxDuration: number) => {
     const [secondsCounter, setSecondsCounter] = useState(0)
     const [remainingTime, setRemainingTime] = useState(maxDuration)
     const [circularProgressValue, setCircularProgressValue] = useState(0)

@@ -20,21 +20,15 @@ import { formatDuration } from 'src/modules/MyHouse/components/Equipments/Microw
  * @param root0.maxDuration Estimated value for the maximum duration of the measurement process (in seconds).
  * @returns The MeasurementProgress component.
  */
-const MeasurementProgress = ({ status, maxDuration }: MeasurementProgressProps) => {
+export const MeasurementProgress = ({ status, maxDuration }: MeasurementProgressProps) => {
     const { remainingTime, circularProgressValue } = useMeasurementProgress(status, maxDuration)
     const theme = useTheme()
 
-    const borderCircleStyle = {
+    const borderCircleStyle: React.CSSProperties = {
         content: '""',
         display: status === measurementStatusEnum.success || status === measurementStatusEnum.failed ? 'none' : 'block',
         borderRadius: '50%',
-        border: `solid 1px ${
-            status === measurementStatusEnum.success
-                ? theme.palette.success.main
-                : status === measurementStatusEnum.failed
-                ? theme.palette.error.main
-                : theme.palette.primary.main
-        }`,
+        border: `solid 1px ${theme.palette.primary.main}`,
         position: 'absolute',
         top: '50%',
         left: '50%',
@@ -100,5 +94,3 @@ const MeasurementProgress = ({ status, maxDuration }: MeasurementProgressProps) 
         </div>
     )
 }
-
-export default MeasurementProgress

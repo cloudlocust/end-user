@@ -1,16 +1,11 @@
 /**
- * Type of the measurement status.
- */
-export type measurementStatusType = 'PENDING' | 'IN_PROGRESS' | 'SUCCESS' | 'FAILED'
-
-/**
  * Props of the MeasurementProgress component.
  */
 export interface MeasurementProgressProps {
     /**
      * Current status of the measurement process.
      */
-    status: measurementStatusType
+    status: measurementStatusEnum
     /**
      * Estimated value for the maximum duration of the measurement process (in seconds).
      */

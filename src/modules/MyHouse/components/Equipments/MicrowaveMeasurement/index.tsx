@@ -77,15 +77,20 @@ export const MicrowaveMeasurement = ({ equipmentsNumber, isModelOpen, onCloseMod
         <TestStepPage step={currentStep} stepSetter={setCurrentStep} />,
     ]
 
+    /**
+     * Handle closing the model.
+     */
+    const handleCloseModal = () => {
+        setCurrentStep(0)
+        setSelectedMicrowave('')
+        setMeasurementMode('')
+        onCloseModel()
+    }
+
     return (
         <Modal
             open={isModelOpen}
-            onClose={() => {
-                setCurrentStep(0)
-                setSelectedMicrowave('')
-                setMeasurementMode('')
-                onCloseModel()
-            }}
+            onClose={handleCloseModal}
             sx={{
                 display: 'flex',
                 justifyContent: 'center',
@@ -96,7 +101,7 @@ export const MicrowaveMeasurement = ({ equipmentsNumber, isModelOpen, onCloseMod
                 {/* The closing button */}
                 <IconButton
                     aria-label="close"
-                    onClick={onCloseModel}
+                    onClick={handleCloseModal}
                     sx={{
                         position: 'absolute',
                         right: 6,
