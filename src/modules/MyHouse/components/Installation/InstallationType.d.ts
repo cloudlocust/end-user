@@ -92,9 +92,9 @@ export type addEquipmentType = {
     /**
      * Equipment name.
      */
-    name: string
+    name?: string
     /**
      * Allowed type for the equipment.
      */
-    allowed_type: ['electricity']
+    allowedType?: ['electricity']
 }

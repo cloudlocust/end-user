@@ -24,10 +24,12 @@ jest.mock('notistack', () => ({
     }),
 }))
 
-const TEST_LOAD_EQUIPMENTS_ERROR_MESSAGE = 'Erreur lors du chargement de vos équipments'
-const TEST_SAVE_EQUIPMENT_ERROR_MESSAGE = 'Erreur backend'
-const TEST_SAVE_EQUIPMENT_DEFAULT_ERROR_MESSAGE = "Erreur lors de l'enregistrement de vos équipments"
-const TEST_SAVE_EQUIPMENT_SUCCESS_MESSAGE = "Succès lors de l'enregistrement de vos équipments"
+const TEST_LOAD_HOUSING_EQUIPMENTS_ERROR_MESSAGE = 'Erreur lors du chargement de vos équipments'
+const TEST_SAVE_HOUSING_EQUIPMENT_ERROR_MESSAGE = 'Erreur backend'
+const TEST_SAVE_HOUSING_EQUIPMENT_DEFAULT_ERROR_MESSAGE = "Erreur lors de l'enregistrement de vos équipments"
+const TEST_SAVE_HOUSING_EQUIPMENT_SUCCESS_MESSAGE = "Succès lors de l'enregistrement de vos équipments"
+const TEST_ADD_EQUIPMENT_SUCCESS_MESSAGE = "Succès lors de l'ajout de votre équipement"
+
 describe('EquipmentHooks test', () => {
     describe('Save Equipment when', () => {
         test('fail, message from backend should be shown in snackbar', async () => {
@@ -61,7 +63,7 @@ describe('EquipmentHooks test', () => {
                 { timeout: 2000 },
             )
             expect(result.current.loadingEquipmentInProgress).toBe(false)
-            expect(mockEnqueueSnackbar).toHaveBeenCalledWith(TEST_SAVE_EQUIPMENT_ERROR_MESSAGE, {
+            expect(mockEnqueueSnackbar).toHaveBeenCalledWith(TEST_SAVE_HOUSING_EQUIPMENT_ERROR_MESSAGE, {
                 variant: 'error',
             })
         }, 20000)
@@ -96,7 +98,7 @@ describe('EquipmentHooks test', () => {
                 { timeout: 2000 },
             )
             expect(result.current.loadingEquipmentInProgress).toBe(false)
-            expect(mockEnqueueSnackbar).toHaveBeenCalledWith(TEST_SAVE_EQUIPMENT_DEFAULT_ERROR_MESSAGE, {
+            expect(mockEnqueueSnackbar).toHaveBeenCalledWith(TEST_SAVE_HOUSING_EQUIPMENT_DEFAULT_ERROR_MESSAGE, {
                 variant: 'error',
             })
         }, 20000)
@@ -126,7 +128,7 @@ describe('EquipmentHooks test', () => {
                 { timeout: 4000 },
             )
             expect(result.current.loadingEquipmentInProgress).toBe(false)
-            expect(mockEnqueueSnackbar).toHaveBeenCalledWith(TEST_SAVE_EQUIPMENT_SUCCESS_MESSAGE, {
+            expect(mockEnqueueSnackbar).toHaveBeenCalledWith(TEST_SAVE_HOUSING_EQUIPMENT_SUCCESS_MESSAGE, {
                 variant: 'success',
             })
         }, 20000)
@@ -154,7 +156,7 @@ describe('EquipmentHooks test', () => {
                 { timeout: 4000 },
             )
             expect(result.current.loadingEquipmentInProgress).toBe(false)
-            expect(mockEnqueueSnackbar).toHaveBeenCalledWith(TEST_LOAD_EQUIPMENTS_ERROR_MESSAGE, {
+            expect(mockEnqueueSnackbar).toHaveBeenCalledWith(TEST_LOAD_HOUSING_EQUIPMENTS_ERROR_MESSAGE, {
                 variant: 'error',
             })
         })
@@ -180,7 +182,7 @@ describe('EquipmentHooks test', () => {
                 { timeout: 4000 },
             )
             expect(result.current.loadingEquipmentInProgress).toBe(false)
-            expect(mockEnqueueSnackbar).toHaveBeenCalledWith(TEST_LOAD_EQUIPMENTS_ERROR_MESSAGE, {
+            expect(mockEnqueueSnackbar).toHaveBeenCalledWith(TEST_LOAD_HOUSING_EQUIPMENTS_ERROR_MESSAGE, {
                 variant: 'error',
             })
         })
@@ -209,6 +211,39 @@ describe('EquipmentHooks test', () => {
             )
             expect(result.current.loadingEquipmentInProgress).toBe(false)
             expect(result.current.isEquipmentMeterListEmpty).toBe(true)
+        })
+        test('When new equipment is added succesfully', async () => {
+            const {
+                renderedHook: { result, waitForValueToChange },
+            } = reduxedRenderHook(() => useEquipmentList(1))
+
+            act(async () => {
+                await result.current.addEquipment({
+                    name: 'test equipment',
+                })
+            })
+            expect(result.current.isaAdEquipmentLoading).toBe(true)
+            await waitForValueToChange(
+                () => {
+                    return result.current.isaAdEquipmentLoading
+                },
+                { timeout: 4000 },
+            )
+            expect(result.current.isaAdEquipmentLoading).toBe(false)
+            // eslint-disable-next-line sonarjs/no-identical-functions
+            act(async () => {
+                try {
+                    await result.current.saveEquipment([
+                        {
+                            ...TEST_SAVE_EQUIPMENT,
+                            equipmentId: TEST_SAVE_EQUIPMENT.equipment_id,
+                        },
+                    ])
+                } catch (err) {}
+            })
+            expect(mockEnqueueSnackbar).toHaveBeenCalledWith(TEST_ADD_EQUIPMENT_SUCCESS_MESSAGE, {
+                variant: 'success',
+            })
         })
     })
 })

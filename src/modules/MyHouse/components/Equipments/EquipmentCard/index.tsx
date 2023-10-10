@@ -4,18 +4,23 @@ import { Card, CardContent, Button, useTheme, Typography, Icon } from '@mui/mate
 import { EquipmentCardProps } from 'src/modules/MyHouse/components/Equipments/EquipmentCard/equipmentsCard'
 import { ReactSVG } from 'react-svg'
 import { useIntl } from 'src/common/react-platform-translation'
+import { useState } from 'react'
 
 /**
  * Equipment Card component.
  *
  * @param root0 N/A.
+ * @param root0.id Equipment id.
  * @param root0.number How many equipments are there of that type.
  * @param root0.label Equipment label.
  * @param root0.name Equipment backend name.
+ * @param root0.onEquipmentChange Function that handle the equipment number.
  * @returns EquipmentCard JSX.
  */
-export const EquipmentCard = ({ number, label, name }: EquipmentCardProps) => {
+export const EquipmentCard = ({ id, number, label, name, onEquipmentChange }: EquipmentCardProps) => {
     const theme = useTheme()
+    const [equipmentNumber, setEquipmentNumber] = useState<number>(number)
+
     const { formatMessage } = useIntl()
     const {
         isOpen: isMeasurementModalIsOpen,
@@ -56,11 +61,31 @@ export const EquipmentCard = ({ number, label, name }: EquipmentCardProps) => {
                         {/* TODO: add deboucing component here */}
                         <div className="flex flex-col justify-between items-end">
                             <div className="flex flex-row items-center space-x-8">
-                                <Icon color="disabled" className="cursor-pointer">
+                                <Icon
+                                    color="disabled"
+                                    className="cursor-pointer"
+                                    onClick={() => {
+                                        setEquipmentNumber((prevv) => {
+                                            onEquipmentChange([{ equipmentId: id, equipmentNumber: prevv + 1 }])
+                                            return prevv + 1
+                                        })
+                                    }}
+                                >
                                     add_circle_outlined
                                 </Icon>
-                                <div className="text-14 font-medium">{number}</div>
-                                <Icon color="disabled" className="cursor-pointer">
+                                <div className="text-14 font-medium">{equipmentNumber}</div>
+                                <Icon
+                                    color="disabled"
+                                    className="cursor-pointer"
+                                    onClick={() => {
+                                        if (equipmentNumber > 0) {
+                                            setEquipmentNumber((prevv) => {
+                                                onEquipmentChange([{ equipmentId: id, equipmentNumber: prevv - 1 }])
+                                                return prevv - 1
+                                            })
+                                        }
+                                    }}
+                                >
                                     remove_circle_outlined
                                 </Icon>
                             </div>

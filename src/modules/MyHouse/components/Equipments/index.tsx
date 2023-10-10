@@ -8,7 +8,7 @@ import { useEquipmentList } from 'src/modules/MyHouse/components/Installation/in
 import { EquipmentsQuickAddPopup } from 'src/modules/MyHouse/components/Equipments/EquipmentsQuickAddPopup'
 import { useEffect, useState } from 'react'
 import { EmptyEquipmentsList } from 'src/modules/MyHouse/components/Equipments/EmptyEquipmentsList'
-import { AddEquipmentPopup } from 'src/modules/MyHouse/components/Equipments/AddEquipmentPopup/AddEquipmentPopup'
+import { AddEquipmentPopup } from 'src/modules/MyHouse/components/Equipments/AddEquipmentPopup'
 
 const Root = styled(FusePageCarded)(() => ({
     '& .FusePageCarded-header': {
@@ -41,6 +41,8 @@ export const Equipments = () => {
         loadingEquipmentInProgress,
         isEquipmentMeterListEmpty,
         loadEquipmentList,
+        addEquipment,
+        isaAdEquipmentLoading,
     } = useEquipmentList(currentHousing?.id)
     const [isEquipmentsQuickAddPopupOpen, setIsEquipmentsQuickAddPopupOpen] = useState(false)
     const [isAddEquipmentPopupOpen, setIsAddEquipmentPopupOpen] = useState(false)
@@ -74,6 +76,7 @@ export const Equipments = () => {
                         <EquipmentsList
                             housingEquipmentsList={housingEquipmentsList}
                             loadingEquipmentInProgress={loadingEquipmentInProgress}
+                            saveEquipment={saveEquipment}
                         />
                     )}
                     {isAddEquipmentPopupOpen && (
@@ -81,6 +84,8 @@ export const Equipments = () => {
                             isOpen={isAddEquipmentPopupOpen}
                             onClosePopup={() => setIsAddEquipmentPopupOpen(false)}
                             equipmentsList={equipmentList}
+                            addEquipment={addEquipment}
+                            isaAdEquipmentLoading={isaAdEquipmentLoading}
                         />
                     )}
                 </>

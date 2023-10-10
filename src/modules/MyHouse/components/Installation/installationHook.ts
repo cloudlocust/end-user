@@ -89,41 +89,44 @@ export const useEquipmentList = (housingId?: number) => {
      * @returns Equipments saved.
      */
     // TODO: rename it to addHousingEquipment to avoid confusion.
-    const saveEquipment = async (body: postEquipmentInputType) => {
-        if (!housingId) return
-        setLoadingEquipmentInProgress(true)
-        try {
-            const { data: responseData } = await axios.post<
-                postEquipmentInputType,
-                AxiosResponse<postEquipmentInputType>
-            >(HOUSING_EQUIPMENTS_API(housingId), body)
+    const saveEquipment = useCallback(
+        async (body: postEquipmentInputType) => {
+            if (!housingId) return
+            setLoadingEquipmentInProgress(true)
+            try {
+                const { data: responseData } = await axios.post<
+                    postEquipmentInputType,
+                    AxiosResponse<postEquipmentInputType>
+                >(HOUSING_EQUIPMENTS_API(housingId), body)
 
-            await loadEquipmentList()
-            enqueueSnackbar(
-                formatMessage({
-                    id: "Succès lors de l'enregistrement de vos équipments",
-                    defaultMessage: "Succès lors de l'enregistrement de vos équipments",
-                }),
-                { variant: 'success' },
-            )
-            setLoadingEquipmentInProgress(false)
-            return responseData
-        } catch (error: any) {
-            enqueueSnackbar(
-                error.response.data && error.response.data.detail
-                    ? formatMessage({
-                          id: error.response.data.detail,
-                          defaultMessage: error.response.data.detail,
-                      })
-                    : formatMessage({
-                          id: "Erreur lors de l'enregistrement de vos équipments",
-                          defaultMessage: "Erreur lors de l'enregistrement de vos équipments",
-                      }),
-                { variant: 'error' },
-            )
-            setLoadingEquipmentInProgress(false)
-        }
-    }
+                await loadEquipmentList()
+                enqueueSnackbar(
+                    formatMessage({
+                        id: "Succès lors de l'enregistrement de vos équipments",
+                        defaultMessage: "Succès lors de l'enregistrement de vos équipments",
+                    }),
+                    { variant: 'success' },
+                )
+                setLoadingEquipmentInProgress(false)
+                return responseData
+            } catch (error: any) {
+                enqueueSnackbar(
+                    error.response.data && error.response.data.detail
+                        ? formatMessage({
+                              id: error.response.data.detail,
+                              defaultMessage: error.response.data.detail,
+                          })
+                        : formatMessage({
+                              id: "Erreur lors de l'enregistrement de vos équipments",
+                              defaultMessage: "Erreur lors de l'enregistrement de vos équipments",
+                          }),
+                    { variant: 'error' },
+                )
+                setLoadingEquipmentInProgress(false)
+            }
+        },
+        [enqueueSnackbar, formatMessage, housingId, loadEquipmentList],
+    )
 
     const addEquipment = useCallback(
         async (data: addEquipmentType) => {
@@ -131,10 +134,18 @@ export const useEquipmentList = (housingId?: number) => {
                 setIsAddEquipmentLoading(true)
                 const response = await axios.post<addEquipmentType, AxiosResponse<equipmentType>>(
                     `${ALL_EQUIPMENTS_API}`,
-                    data,
+                    {
+                        ...data,
+                        allowedType: ['electrcity'],
+                    },
                 )
 
                 if (response.status === 201) {
+                    await saveEquipment([
+                        {
+                            equipmentId: data!.id!,
+                        },
+                    ])
                     enqueueSnackbar(
                         formatMessage({
                             id: "Succès lors de l'ajout de votre équipement",
@@ -160,7 +171,7 @@ export const useEquipmentList = (housingId?: number) => {
                 setIsAddEquipmentLoading(false)
             }
         },
-        [enqueueSnackbar, formatMessage],
+        [enqueueSnackbar, formatMessage, saveEquipment],
     )
 
     return {

@@ -10,16 +10,14 @@ import { mappingEquipmentNameToType, myEquipmentOptions } from 'src/modules/MyHo
  * @param root0 N/A.
  * @param root0.housingEquipmentsList Equipments list containing all the equipments.
  * @param root0.loadingEquipmentInProgress Boolean for CircularProgress.
+ * @param root0.saveEquipment Saving the equipment.
  * @returns EquipmentsList JSX.
  */
-export const EquipmentsList = ({ housingEquipmentsList, loadingEquipmentInProgress }: EquipmentsListProps) => {
-    if (loadingEquipmentInProgress)
-        return (
-            <div className="flex flex-col justify-center items-center w-full" style={{ minHeight: '60vh' }}>
-                <CircularProgress />
-            </div>
-        )
-
+export const EquipmentsList = ({
+    housingEquipmentsList,
+    loadingEquipmentInProgress,
+    saveEquipment,
+}: EquipmentsListProps) => {
     // Map equipmentsList into a better readable list.
     const equipments = housingEquipmentsList
         ?.map((element) => {
@@ -35,10 +33,12 @@ export const EquipmentsList = ({ housingEquipmentsList, loadingEquipmentInProgre
     // Order the equipments list from the largest to the smallest.
     const orderedEquipmentsList = orderBy(equipments, (el) => el.number, 'desc')
 
-    // eslint-disable-next-line jsdoc/require-jsdoc
-    const onIncreasmentEquipmentNumber = async () => {}
-    // eslint-disable-next-line jsdoc/require-jsdoc
-    const onDecrementEquipmentNumber = async () => {}
+    if (loadingEquipmentInProgress)
+        return (
+            <div className="flex flex-col justify-center items-center w-full" style={{ minHeight: '60vh' }}>
+                <CircularProgress />
+            </div>
+        )
 
     return (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
@@ -48,11 +48,11 @@ export const EquipmentsList = ({ housingEquipmentsList, loadingEquipmentInProgre
                 return (
                     <EquipmentCard
                         key={equipment.id}
+                        id={equipment.id}
                         label={equipmentLabel}
                         name={equipment.name}
                         number={equipment.number ? equipment.number : 0}
-                        onIncreasmentEquipmentNumber={onIncreasmentEquipmentNumber}
-                        onDecrementEquipmentNumber={onDecrementEquipmentNumber}
+                        onEquipmentChange={saveEquipment}
                     />
                 )
             })}

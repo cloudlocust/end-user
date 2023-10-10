@@ -17,7 +17,7 @@ import { equipmentType } from 'src/modules/MyHouse/components/Installation/Insta
  * @returns AddEquipmentPopup JSX.
  */
 export const AddEquipmentPopup = (props: AddEquipmentPopupProps) => {
-    const { isOpen, onClosePopup, equipmentsList } = props
+    const { isOpen, onClosePopup, equipmentsList, addEquipment, isaAdEquipmentLoading } = props
     const { formatMessage } = useIntl()
     const [equipmentValue, setEquipmentValue] = useState<string | equipmentType | null>(null)
     const [inputValue, setInputValue] = useState('')
@@ -80,7 +80,19 @@ export const AddEquipmentPopup = (props: AddEquipmentPopupProps) => {
                     )}
                 </div>
                 <div className="flex justify-center items-center mt-16">
-                    <ButtonLoader disabled={!equipmentValue}>
+                    <ButtonLoader
+                        disabled={!equipmentValue}
+                        onClick={async () => {
+                            if (typeof equipmentValue === 'object') {
+                                await addEquipment({
+                                    id: equipmentValue?.id,
+                                    name: equipmentValue?.name,
+                                })
+                                onClosePopup()
+                            }
+                        }}
+                        inProgress={isaAdEquipmentLoading}
+                    >
                         <TypographyFormatMessage>Enregister</TypographyFormatMessage>
                     </ButtonLoader>
                 </div>
