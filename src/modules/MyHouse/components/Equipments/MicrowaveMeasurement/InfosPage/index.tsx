@@ -6,7 +6,7 @@ import {
     CustomOrderedListItemProps,
     CustomUnorderedListItemProps,
     InfosPageProps,
-} from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement/MicrowaveMeasurement'
+} from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement/InfosPage/InfosPage.d'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 
 /**

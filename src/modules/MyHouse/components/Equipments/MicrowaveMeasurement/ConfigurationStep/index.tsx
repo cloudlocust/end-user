@@ -11,7 +11,7 @@ import {
     ConfigurationStepProps,
     RadioGroupOnChangeHandler,
     SelectOnChangeHandler,
-} from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement/MicrowaveMeasurement'
+} from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement/ConfigurationStep/ConfigurationStep.d'
 
 /**
  * ConfigurationStep component.
