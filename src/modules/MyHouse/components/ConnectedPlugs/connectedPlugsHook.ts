@@ -65,7 +65,8 @@ export function useConnectedPlugList(housingId?: number) {
      */
     const loadConnectedPlugList = useCallback(async () => {
         setConnectedPlugList([])
-        if (!housingId || !arePlugsUsedBasedOnProductionStatus(currentHousingScopes)) return
+        if (!housingId || !currentHousing?.meter?.guid || !arePlugsUsedBasedOnProductionStatus(currentHousingScopes))
+            return
         setLoadingInProgress(true)
         /**
          * Used Promise.allSettled() instead of Promise.all to return a promise that resolves after all of the given requests have either been fulfilled or rejected.
@@ -104,10 +105,7 @@ export function useConnectedPlugList(housingId?: number) {
             setConnectedPlugList(responseData)
         }
         // Show error message when rejected.
-        if (
-            currentHousing?.meter?.guid &&
-            (connectedPlugConsentData.status === 'rejected' || connectedPlugTypeData.status === 'rejected')
-        ) {
+        if (connectedPlugConsentData.status === 'rejected' || connectedPlugTypeData.status === 'rejected') {
             enqueueSnackbar(
                 formatMessage({
                     id: 'Erreur lors du chargement de vos prises',

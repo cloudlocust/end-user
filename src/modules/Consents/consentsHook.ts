@@ -73,7 +73,7 @@ export function useConsents() {
             setNrlinkConsent(undefined)
             setEnedisSgeConsent(undefined)
             setEnphaseConsent(undefined)
-            if (!houseId) return
+            if (!houseId || !currentHousing?.meter?.guid) return
 
             setConsentsLoading(true)
             /**
@@ -109,10 +109,9 @@ export function useConsents() {
 
             // Show error message when rejeected.
             if (
-                currentHousing?.meter?.guid &&
-                (enedisSgeConsent.status === 'rejected' ||
-                    nrlinkConsent.status === 'rejected' ||
-                    enphaseConsent.status === 'rejected')
+                enedisSgeConsent.status === 'rejected' ||
+                nrlinkConsent.status === 'rejected' ||
+                enphaseConsent.status === 'rejected'
             ) {
                 enqueueSnackbar(
                     formatMessage({

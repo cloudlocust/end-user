@@ -1,7 +1,8 @@
-import { styled, useTheme } from '@mui/material'
+import { styled, useTheme, ThemeProvider } from '@mui/material'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import PageSimple from 'src/common/ui-kit/fuse/components/PageSimple'
 import { EcogestesWrapper } from 'src/modules/Ecogestes/EcogestesWrapper'
+import { motion } from 'framer-motion'
 
 const Root = styled(PageSimple)(({ theme }) => ({
     '& .PageSimple-header': {
@@ -38,17 +39,20 @@ export const Advices = () => {
     return (
         <Root
             header={
-                <div
-                    className="w-full relative flex flex-col justify-center items-center p-16 h-full"
-                    style={{ backgroundColor: theme.palette.primary.dark }}
-                >
-                    <TypographyFormatMessage
-                        className="text-18 md:text-24"
-                        style={{ color: theme.palette.primary.contrastText }}
+                <ThemeProvider theme={theme}>
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        className="w-full flex flex-col items-center"
                     >
-                        Ecogestes
-                    </TypographyFormatMessage>
-                </div>
+                        <TypographyFormatMessage
+                            className="text-18 md:text-24"
+                            style={{ color: theme.palette.primary.contrastText }}
+                        >
+                            Ecogestes
+                        </TypographyFormatMessage>
+                    </motion.div>
+                </ThemeProvider>
             }
             content={<EcogestesWrapper />}
         />

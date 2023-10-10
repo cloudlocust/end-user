@@ -74,7 +74,9 @@ describe('useConnectedPlugList test', () => {
     test('when elementlist loads succesfully', async () => {
         const {
             renderedHook: { result, waitForValueToChange },
-        } = reduxedRenderHook(() => useConnectedPlugList(TEST_HOUSE_ID), { initialState: {} })
+        } = reduxedRenderHook(() => useConnectedPlugList(TEST_HOUSE_ID), {
+            initialState: { housingModel: { currentHousing: { meter: { guid: TEST_METER_GUID } } } },
+        })
 
         expect(result.current.loadingInProgress).toBe(false)
         act(async () => {
