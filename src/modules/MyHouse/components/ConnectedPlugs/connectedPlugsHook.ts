@@ -58,14 +58,15 @@ export function useConnectedPlugList(housingId?: number) {
     const [loadingInProgress, setLoadingInProgress] = useState(false)
     const [connectedPlugList, setConnectedPlugList] = useState<IConnectedPlug[] | []>([])
     const { isCancel, source } = useAxiosCancelToken()
-    const { currentHousingScopes } = useSelector(({ housingModel }: RootState) => housingModel)
+    const { currentHousingScopes, currentHousing } = useSelector(({ housingModel }: RootState) => housingModel)
 
     /**
      * Fetching Offers function.
      */
     const loadConnectedPlugList = useCallback(async () => {
         setConnectedPlugList([])
-        if (!housingId || !arePlugsUsedBasedOnProductionStatus(currentHousingScopes)) return
+        if (!housingId || !currentHousing?.meter?.guid || !arePlugsUsedBasedOnProductionStatus(currentHousingScopes))
+            return
         setLoadingInProgress(true)
         /**
          * Used Promise.allSettled() instead of Promise.all to return a promise that resolves after all of the given requests have either been fulfilled or rejected.
@@ -117,7 +118,7 @@ export function useConnectedPlugList(housingId?: number) {
             )
         }
         setLoadingInProgress(false)
-    }, [housingId, source, isCancel, enqueueSnackbar, formatMessage, currentHousingScopes])
+    }, [housingId, currentHousingScopes, source, isCancel, currentHousing?.meter?.guid, enqueueSnackbar, formatMessage])
 
     /**
      * Handler to set production mode in a connected plug.

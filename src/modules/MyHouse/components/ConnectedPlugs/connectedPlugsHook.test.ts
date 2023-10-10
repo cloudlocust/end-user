@@ -50,7 +50,9 @@ describe('useConnectedPlugList test', () => {
         const {
             renderedHook: { result, waitForValueToChange },
             // Giving fake GUID to fake an error.
-        } = reduxedRenderHook(() => useConnectedPlugList(TEST_ERROR_HOUSING_ID), { initialState: {} })
+        } = reduxedRenderHook(() => useConnectedPlugList(TEST_ERROR_HOUSING_ID), {
+            initialState: { housingModel: { currentHousing: { meter: { guid: TEST_METER_GUID } } } },
+        })
 
         expect(result.current.loadingInProgress).toBe(false)
         act(async () => {
@@ -72,7 +74,9 @@ describe('useConnectedPlugList test', () => {
     test('when elementlist loads succesfully', async () => {
         const {
             renderedHook: { result, waitForValueToChange },
-        } = reduxedRenderHook(() => useConnectedPlugList(TEST_HOUSE_ID), { initialState: {} })
+        } = reduxedRenderHook(() => useConnectedPlugList(TEST_HOUSE_ID), {
+            initialState: { housingModel: { currentHousing: { meter: { guid: TEST_METER_GUID } } } },
+        })
 
         expect(result.current.loadingInProgress).toBe(false)
         act(async () => {
