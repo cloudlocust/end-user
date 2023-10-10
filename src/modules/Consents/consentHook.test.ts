@@ -9,6 +9,7 @@ import { applyCamelCase } from 'src/common/react-platform-components'
 import { IHousing } from 'src/modules/MyHouse/components/HousingList/housing'
 
 const mockEnqueueSnackbar = jest.fn()
+const TEST_METER_GUID = '23215654321'
 const TEST_SUCCESS = 'success'
 const TEST_ERROR = 'error'
 const TEST_SNACKBAR_ERROR = 'snackbar_error'
@@ -45,7 +46,9 @@ describe('useConsents test', () => {
     test('when getConsents is called, state changes', async () => {
         const {
             renderedHook: { result, waitForValueToChange },
-        } = reduxedRenderHook(() => useConsents())
+        } = reduxedRenderHook(() => useConsents(), {
+            initialState: { housingModel: { currentHousing: { meter: { guid: TEST_METER_GUID } } } },
+        })
         act(() => {
             result.current.getConsents(TEST_HOUSING_ID)
         })
@@ -209,7 +212,9 @@ describe('useConsents test', () => {
             await store.dispatch.userModel.setAuthenticationToken(TEST_SUCCESS)
             const {
                 renderedHook: { result, waitForValueToChange },
-            } = reduxedRenderHook(() => useConsents())
+            } = reduxedRenderHook(() => useConsents(), {
+                initialState: { housingModel: { currentHousing: { meter: { guid: TEST_METER_GUID } } } },
+            })
 
             act(() => {
                 result.current.getConsents(TEST_HOUSING_ID)
@@ -241,7 +246,9 @@ describe('useConsents test', () => {
             await store.dispatch.userModel.setAuthenticationToken(TEST_ERROR_ENPHASE_AUTHORIZATION)
             const {
                 renderedHook: { result, waitForValueToChange },
-            } = reduxedRenderHook(() => useConsents())
+            } = reduxedRenderHook(() => useConsents(), {
+                initialState: { housingModel: { currentHousing: { meter: { guid: TEST_METER_GUID } } } },
+            })
             act(() => {
                 result.current.getConsents(TEST_HOUSING_ID)
             })
