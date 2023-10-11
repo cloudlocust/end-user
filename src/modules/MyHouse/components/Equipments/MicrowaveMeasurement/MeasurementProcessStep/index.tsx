@@ -21,7 +21,7 @@ import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyForm
  * @param root0.success True if it's a success response.
  * @returns The ResponseMessage component.
  */
-const ResponseMessage = ({ theme, title, content, success }: ResponseMessageProps) => (
+export const ResponseMessage = ({ theme, title, content, success }: ResponseMessageProps) => (
     <div className="text-center">
         <TypographyFormatMessage
             fontWeight="500"
@@ -75,7 +75,7 @@ export const MeasurementProcessStep = ({ microwave, measurementMode, stepSetter 
 
         // Ending the measurement
         setTimeout(() => {
-            setMeasurementStatus(Math.random() < 0.2 ? measurementStatusEnum.success : measurementStatusEnum.failed)
+            setMeasurementStatus(Math.random() < 0.3 ? measurementStatusEnum.success : measurementStatusEnum.failed)
         }, 4000 + measurementMaxDuration * 1000)
     }
 
@@ -95,7 +95,7 @@ export const MeasurementProcessStep = ({ microwave, measurementMode, stepSetter 
         <>
             {/* Header */}
             <div className="text-center mb-20">
-                <Typography component="h2" fontWeight="500" fontSize="18px">
+                <Typography component="h2" fontWeight="500" fontSize="18px" data-testid="headerElement">
                     {formatMessage({
                         id: headerText[measurementStatus],
                         defaultMessage: headerText[measurementStatus],
