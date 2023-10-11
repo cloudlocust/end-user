@@ -11,6 +11,7 @@ import CloseIcon from '@mui/icons-material/Close'
 import { InfosPage } from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement/InfosPage'
 import { ConfigurationStep } from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement/ConfigurationStep'
 import { EquipmentStartupStep } from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement/EquipmentStartupStep'
+import { MeasurementProcessStep } from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement/MeasurementProcessStep'
 import {
     MicrowaveMeasurementProps,
     TestStepPageProps,
@@ -73,7 +74,11 @@ export const MicrowaveMeasurement = ({ equipmentsNumber, isModelOpen, onCloseMod
             stepSetter={setCurrentStep}
         />,
         <EquipmentStartupStep measurementMode={measurementMode} stepSetter={setCurrentStep} />,
-        <TestStepPage step={currentStep} stepSetter={setCurrentStep} />,
+        <MeasurementProcessStep
+            measurementMode={measurementMode}
+            microwave={selectedMicrowave}
+            stepSetter={setCurrentStep}
+        />,
         <TestStepPage step={currentStep} stepSetter={setCurrentStep} />,
     ]
 

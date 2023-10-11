@@ -1,7 +1,7 @@
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import Button from '@mui/material/Button'
-import { useIntl } from 'react-intl'
+import { useIntl } from 'src/common/react-platform-translation'
 import {
     CustomOrderedListItemProps,
     CustomUnorderedListItemProps,

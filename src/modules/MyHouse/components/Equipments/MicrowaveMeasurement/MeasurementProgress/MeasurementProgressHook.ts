@@ -18,23 +18,19 @@ export const useMeasurementProgress = (status: measurementStatusEnum, maxDuratio
     const [circularProgressValue, setCircularProgressValue] = useState(0)
 
     useEffect(() => {
-        let intervalId: NodeJS.Timer | null = null
+        let intervalId: NodeJS.Timer
 
         if (status === measurementStatusEnum.inProgress) {
+            setSecondsCounter(0)
             intervalId = setInterval(() => {
                 setSecondsCounter((oldValue) => oldValue + 1)
             }, 1000)
         } else {
-            if (intervalId) {
-                clearInterval(intervalId)
-                intervalId = null
-            }
+            clearInterval(intervalId!)
         }
 
         return () => {
-            if (intervalId) {
-                clearInterval(intervalId)
-            }
+            clearInterval(intervalId!)
         }
     }, [status])
 

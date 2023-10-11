@@ -56,7 +56,13 @@ export const MeasurementProgress = ({ status, maxDuration }: MeasurementProgress
     }
 
     return (
-        <div className="flex justify-center items-center h-192 w-192">
+        <div
+            className={`flex justify-center items-center ${
+                status === measurementStatusEnum.success || status === measurementStatusEnum.failed
+                    ? 'h-128 w-128'
+                    : 'h-192 w-192'
+            }`}
+        >
             <CircularProgress
                 value={status === measurementStatusEnum.inProgress ? circularProgressValue : 100}
                 variant={status === measurementStatusEnum.pending ? 'indeterminate' : 'determinate'}
@@ -67,17 +73,10 @@ export const MeasurementProgress = ({ status, maxDuration }: MeasurementProgress
                         ? 'error'
                         : 'primary'
                 }
-                size={180}
+                size={status === measurementStatusEnum.success || status === measurementStatusEnum.failed ? 128 : 180}
                 thickness={3}
                 sx={{
                     position: 'absolute',
-                    '& > *': {
-                        transform:
-                            status === measurementStatusEnum.success || status === measurementStatusEnum.failed
-                                ? 'scale(0.5)'
-                                : 'scale(1)',
-                        transition: 'transform 500ms cubic-bezier(0.4, 0, 0.2, 1)',
-                    },
                     '&::before': {
                         ...borderCircleStyle,
                         height: '180px',

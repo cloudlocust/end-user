@@ -2,7 +2,7 @@ import Typography from '@mui/material/Typography'
 import Button from '@mui/material/Button'
 import SvgIcon from '@mui/material/SvgIcon'
 import { ReactComponent as ConnectEquipmentIcon } from 'src/assets/images/content/housing/ConnectEquipment.svg'
-import { useIntl } from 'react-intl'
+import { useIntl } from 'src/common/react-platform-translation'
 import { EquipmentStartupStepProps } from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement/EquipmentStartupStep/EquipmentStartupStep.d'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 
