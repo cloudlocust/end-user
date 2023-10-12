@@ -41,7 +41,7 @@ export const getEchartsComparaisonChartOptions = (data: IMetric[], theme: Theme)
  * @param data Data IMetric[].
  * @returns Formated data to be used.
  */
-const getValuesWithTargetForComparaison = (data: IMetric[]) => {
+export const getValuesWithTargetForComparaison = (data: IMetric[]) => {
     return {
         [data[0].target]: [data[0].datapoints[0][0]],
         [CustomTargetsForComparaisonEnum.averageAdemeConsumption]: [round(4792 / 12) * 1000],
