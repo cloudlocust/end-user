@@ -4,11 +4,16 @@ import { TEST_SUCCESS_ENEDIS_SGE_CONSENT, TEST_ERROR_ENPHASE_AUTHORIZATION } fro
 import { TEST_HOUSES } from 'src/mocks/handlers/houses'
 import { MeterVerificationEnum } from 'src/modules/Consents/Consents.d'
 import { useConsents } from 'src/modules/Consents/consentsHook'
+import { store } from 'src/redux'
+import { applyCamelCase } from 'src/common/react-platform-components'
+import { IHousing } from 'src/modules/MyHouse/components/HousingList/housing'
 
 const mockEnqueueSnackbar = jest.fn()
+const TEST_METER_GUID = '23215654321'
 const TEST_SUCCESS = 'success'
 const TEST_ERROR = 'error'
 const TEST_SNACKBAR_ERROR = 'snackbar_error'
+const LIST_OF_HOUSES: IHousing[] = applyCamelCase(TEST_HOUSES)
 
 /**
  * Mocking the useSnackbar.
@@ -41,7 +46,9 @@ describe('useConsents test', () => {
     test('when getConsents is called, state changes', async () => {
         const {
             renderedHook: { result, waitForValueToChange },
-        } = reduxedRenderHook(() => useConsents())
+        } = reduxedRenderHook(() => useConsents(), {
+            initialState: { housingModel: { currentHousing: { meter: { guid: TEST_METER_GUID } } } },
+        })
         act(() => {
             result.current.getConsents(TEST_HOUSING_ID)
         })
@@ -56,8 +63,8 @@ describe('useConsents test', () => {
         expect(result.current.enphaseConsent.enphaseConsentState).toStrictEqual('ACTIVE')
     }, 8000)
     test('when there is server error while fetching consents, snackbar is shown only once', async () => {
-        const { store } = require('src/redux')
-        await store.dispatch.userModel.setAuthenticationToken(TEST_ERROR)
+        store.dispatch.userModel.setAuthenticationToken(TEST_ERROR)
+        store.dispatch.housingModel.setHousingModelState(LIST_OF_HOUSES)
 
         const {
             renderedHook: { result, waitForValueToChange },
@@ -205,7 +212,9 @@ describe('useConsents test', () => {
             await store.dispatch.userModel.setAuthenticationToken(TEST_SUCCESS)
             const {
                 renderedHook: { result, waitForValueToChange },
-            } = reduxedRenderHook(() => useConsents())
+            } = reduxedRenderHook(() => useConsents(), {
+                initialState: { housingModel: { currentHousing: { meter: { guid: TEST_METER_GUID } } } },
+            })
 
             act(() => {
                 result.current.getConsents(TEST_HOUSING_ID)
@@ -237,7 +246,9 @@ describe('useConsents test', () => {
             await store.dispatch.userModel.setAuthenticationToken(TEST_ERROR_ENPHASE_AUTHORIZATION)
             const {
                 renderedHook: { result, waitForValueToChange },
-            } = reduxedRenderHook(() => useConsents())
+            } = reduxedRenderHook(() => useConsents(), {
+                initialState: { housingModel: { currentHousing: { meter: { guid: TEST_METER_GUID } } } },
+            })
             act(() => {
                 result.current.getConsents(TEST_HOUSING_ID)
             })
@@ -264,6 +275,89 @@ describe('useConsents test', () => {
 
             expect(mockEnqueueSnackbar).toHaveBeenCalledWith(
                 'Erreur lors de la révokation de votre consentement enphase',
+                {
+                    autoHideDuration: 5000,
+                    variant: 'error',
+                },
+            )
+        }, 8000)
+    })
+
+    describe('revoke nrlink consent', () => {
+        test('when its success', async () => {
+            const { store } = require('src/redux')
+            await store.dispatch.userModel.setAuthenticationToken(TEST_SUCCESS)
+            const {
+                renderedHook: { result, waitForValueToChange },
+            } = reduxedRenderHook(() => useConsents(), {
+                initialState: { housingModel: { currentHousing: { meter: { guid: TEST_METER_GUID } } } },
+            })
+
+            act(() => {
+                result.current.getConsents(TEST_HOUSING_ID)
+            })
+            await waitForValueToChange(
+                () => {
+                    return result.current.consentsLoading
+                },
+                { timeout: 6000 },
+            )
+            expect(result.current.nrlinkConsent.nrlinkConsentState).toStrictEqual(connectedState)
+            expect(result.current.isNrlinkConsentLoading).toBeFalsy()
+
+            act(() => {
+                result.current.revokeNrlinkConsent(TEST_HOUSES[0].id, TEST_HOUSES[0].meter?.guid)
+            })
+            expect(result.current.isNrlinkConsentLoading).toBeTruthy()
+
+            await waitForValueToChange(
+                () => {
+                    return result.current.isNrlinkConsentLoading
+                },
+                { timeout: 6000 },
+            )
+            expect(result.current.nrlinkConsentState).toBeUndefined()
+            expect(mockEnqueueSnackbar).toHaveBeenCalledWith('Consentement nrLINK révoqué avec succès', {
+                autoHideDuration: 5000,
+                variant: 'success',
+            })
+        }, 8000)
+
+        test('when fails', async () => {
+            const { store } = require('src/redux')
+            await store.dispatch.userModel.setAuthenticationToken(TEST_SNACKBAR_ERROR)
+            const {
+                renderedHook: { result, waitForValueToChange },
+            } = reduxedRenderHook(() => useConsents(), {
+                initialState: { housingModel: { currentHousing: { meter: { guid: TEST_METER_GUID } } } },
+            })
+
+            act(() => {
+                result.current.getConsents(TEST_HOUSING_ID)
+            })
+            await waitForValueToChange(
+                () => {
+                    return result.current.consentsLoading
+                },
+                { timeout: 6000 },
+            )
+            expect(result.current.nrlinkConsent.nrlinkConsentState).toStrictEqual(connectedState)
+            expect(result.current.isNrlinkConsentLoading).toBeFalsy()
+
+            act(() => {
+                result.current.revokeNrlinkConsent(TEST_HOUSES[0].id, TEST_HOUSES[0].meter?.guid)
+            })
+            expect(result.current.isNrlinkConsentLoading).toBeTruthy()
+
+            await waitForValueToChange(
+                () => {
+                    return result.current.isNrlinkConsentLoading
+                },
+                { timeout: 6000 },
+            )
+            expect(result.current.isNrlinkConsentLoading).toBeFalsy()
+            expect(mockEnqueueSnackbar).toHaveBeenCalledWith(
+                'Erreur lors de la révokation de votre Consentement nrLINK',
                 {
                     autoHideDuration: 5000,
                     variant: 'error',
