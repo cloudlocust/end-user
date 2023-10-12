@@ -53,7 +53,7 @@ export type equipmentType = {
     /**
      * Name of the equipment.
      */
-    name: equipmentNameType
+    name: equipmentNameType | string
     /**
      * Type of the Equipment.
      */

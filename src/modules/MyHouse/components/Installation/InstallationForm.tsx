@@ -15,6 +15,7 @@ import {
     equipmentValuesType,
     equipmentMeterType,
     IEquipmentMeter,
+    equipmentNameType,
 } from 'src/modules/MyHouse/components/Installation/InstallationType.d'
 import { useSelector } from 'react-redux'
 import { RootState } from 'src/redux'
@@ -60,7 +61,7 @@ export const InstallationForm = () => {
             // Check that equipmentMeterList is not empty.
             savedEquipmentList![equipment.equipment.name] = {
                 ...equipment,
-                isNumber: mappingEquipmentNameToType[equipment.equipment.name] === 'number',
+                isNumber: mappingEquipmentNameToType[equipment.equipment.name as equipmentNameType] === 'number',
             }
         })
     }

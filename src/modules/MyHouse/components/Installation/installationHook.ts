@@ -135,24 +135,27 @@ export const useEquipmentList = (housingId?: number) => {
                 const response = await axios.post<addEquipmentType, AxiosResponse<equipmentType>>(
                     `${ALL_EQUIPMENTS_API}`,
                     {
-                        ...data,
-                        allowedType: ['electrcity'],
+                        id: data.id,
+                        name: data.name,
+                        allowedType: data.allowedType,
                     },
                 )
 
                 if (response.status === 201) {
-                    await saveEquipment([
+                    const addedHousingEquipment = await saveEquipment([
                         {
-                            equipmentId: data!.id!,
+                            equipmentId: response.data.id,
                         },
                     ])
-                    enqueueSnackbar(
-                        formatMessage({
-                            id: "Succès lors de l'ajout de votre équipement",
-                            defaultMessage: "Succès lors de l'ajout de votre équipement",
-                        }),
-                        { variant: 'success' },
-                    )
+                    if (addedHousingEquipment!.length > 0) {
+                        enqueueSnackbar(
+                            formatMessage({
+                                id: "Succès lors de l'ajout de votre équipement",
+                                defaultMessage: "Succès lors de l'ajout de votre équipement",
+                            }),
+                            { variant: 'success' },
+                        )
+                    }
                 }
             } catch (error: any) {
                 enqueueSnackbar(

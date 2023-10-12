@@ -2,6 +2,7 @@ import { CircularProgress } from '@mui/material'
 import { orderBy } from 'lodash'
 import { EquipmentCard } from 'src/modules/MyHouse/components/Equipments/EquipmentCard'
 import { EquipmentsListProps } from 'src/modules/MyHouse/components/Equipments/EquipmentsList/equipmentsList'
+import { equipmentNameType } from 'src/modules/MyHouse/components/Installation/InstallationType'
 import { mappingEquipmentNameToType, myEquipmentOptions } from 'src/modules/MyHouse/utils/MyHouseVariables'
 
 /**
@@ -26,10 +27,11 @@ export const EquipmentsList = ({
                 name: element.equipment.name,
                 allowedType: element.equipment.allowedType,
                 number: element.equipmentNumber,
-                isNumber: mappingEquipmentNameToType[element.equipment.name] === 'number',
+                isNumber: mappingEquipmentNameToType[element.equipment.name as equipmentNameType] === 'number',
             }
         })
-        .filter((el) => el.isNumber && el.number! > 0)
+        .filter((el) => el.number! > 0)
+
     // Order the equipments list from the largest to the smallest.
     const orderedEquipmentsList = orderBy(equipments, (el) => el.number, 'desc')
 
@@ -49,7 +51,7 @@ export const EquipmentsList = ({
                     <EquipmentCard
                         key={equipment.id}
                         id={equipment.id}
-                        label={equipmentLabel}
+                        label={equipmentLabel ? equipmentLabel : equipment.name}
                         name={equipment.name}
                         number={equipment.number ? equipment.number : 0}
                         onEquipmentChange={saveEquipment}

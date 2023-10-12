@@ -1,5 +1,5 @@
-import { useMemo, useRef } from 'react'
-import { Dialog, DialogContent, DialogTitle, IconButton, TextField, Autocomplete } from '@mui/material'
+import { useMemo } from 'react'
+import { Dialog, DialogContent, DialogTitle, IconButton, TextField, Select, MenuItem } from '@mui/material'
 import { Close } from '@mui/icons-material'
 import { AddEquipmentPopupProps } from 'src/modules/MyHouse/components/Equipments/AddEquipmentPopup/addEquipmentPopup'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
@@ -8,7 +8,7 @@ import { mapppingEquipmentToLabel } from 'src/modules/MyHouse/utils/MyHouseVaria
 import { orderBy } from 'lodash'
 import { useState } from 'react'
 import { ButtonLoader } from 'src/common/ui-kit'
-import { equipmentType } from 'src/modules/MyHouse/components/Installation/InstallationType'
+import { equipmentNameType, equipmentType } from 'src/modules/MyHouse/components/Installation/InstallationType'
 
 /**
  * AddEquipmentPopup component.
@@ -19,13 +19,15 @@ import { equipmentType } from 'src/modules/MyHouse/components/Installation/Insta
 export const AddEquipmentPopup = (props: AddEquipmentPopupProps) => {
     const { isOpen, onClosePopup, equipmentsList, addEquipment, isaAdEquipmentLoading } = props
     const { formatMessage } = useIntl()
-    const [equipmentValue, setEquipmentValue] = useState<string | equipmentType | null>(null)
-    const [inputValue, setInputValue] = useState('')
-    const customEquipmentRef = useRef('')
+    const [equipmentValue, setEquipmentValue] = useState<equipmentType | 'other' | ''>('')
+    const [customEquipmentValue, setCustomEquipmentValue] = useState('')
+    const [, setIsCustomEquipmentFieldError] = useState(false)
 
     const orderedEquipmentsList = useMemo(
         () => [
-            ...orderBy(equipmentsList, (el) => el.name, 'asc').filter((el) => mapppingEquipmentToLabel[el.name]),
+            ...orderBy(equipmentsList, (el) => el.name, 'asc').filter(
+                (el) => mapppingEquipmentToLabel[el.name as unknown as equipmentNameType],
+            ),
             { id: Math.random(), name: 'other', allowed_type: ['electricity'] } as unknown as equipmentType,
         ],
         [equipmentsList],
@@ -43,53 +45,58 @@ export const AddEquipmentPopup = (props: AddEquipmentPopupProps) => {
             fullWidth
             maxWidth="sm"
         >
-            <div className="flex flex-row justify-between items-center">
+            <div className="flex flex-row justify-center items-center relative">
                 <DialogTitle>Nouvel Equipement</DialogTitle>
-                <IconButton onClick={onClosePopup} className="p-10">
+                <IconButton onClick={onClosePopup} className="p-10 absolute right-0 top-0">
                     <Close />
                 </IconButton>
             </div>
             <DialogContent>
-                <TypographyFormatMessage className="text-15">Type of equipement :</TypographyFormatMessage>
+                <TypographyFormatMessage className="text-15">Type d'equipement :</TypographyFormatMessage>
                 <div className="mt-10">
-                    <Autocomplete
-                        freeSolo
+                    <Select
                         value={equipmentValue}
-                        onChange={(_event, value) => setEquipmentValue(value as equipmentType)}
-                        options={orderedEquipmentsList}
-                        inputValue={inputValue}
-                        onInputChange={(_event, newInputValue) => {
-                            setInputValue(newInputValue)
-                        }}
-                        getOptionLabel={(option) =>
-                            formatMessage({
-                                id: mapppingEquipmentToLabel[option.name]!,
-                                defaultMessage: mapppingEquipmentToLabel[option.name]!,
-                            })
-                        }
-                        renderInput={(params) => <TextField {...params} />}
-                    />
-                    {inputValue === 'Autre' && (
+                        onChange={(event) => setEquipmentValue(event.target.value as equipmentType)}
+                        fullWidth
+                    >
+                        {orderedEquipmentsList.map((option) => (
+                            <MenuItem key={option.id} value={option.name}>
+                                {formatMessage({
+                                    id: mapppingEquipmentToLabel[option.name as unknown as equipmentNameType]!,
+                                    defaultMessage:
+                                        mapppingEquipmentToLabel[option.name as unknown as equipmentNameType]!,
+                                })}
+                            </MenuItem>
+                        ))}
+                    </Select>
+                    {equipmentValue === 'other' && (
                         <TextField
                             name="other"
                             placeholder="Saisisez votre équipement"
                             className="mt-16"
                             fullWidth
-                            inputRef={customEquipmentRef}
+                            onChange={(e) => setCustomEquipmentValue(e.target.value)}
+                            error={customEquipmentValue.length <= 0}
+                            helperText={customEquipmentValue.length <= 0 && "Veuillez saisir un nom d'équipement"}
                         />
                     )}
                 </div>
                 <div className="flex justify-center items-center mt-16">
                     <ButtonLoader
-                        disabled={!equipmentValue}
+                        disabled={
+                            equipmentValue.toString().length <= 0 ||
+                            (equipmentValue === 'other' && customEquipmentValue.length <= 0)
+                        }
                         onClick={async () => {
-                            if (typeof equipmentValue === 'object') {
-                                await addEquipment({
-                                    id: equipmentValue?.id,
-                                    name: equipmentValue?.name,
-                                })
-                                onClosePopup()
+                            if (customEquipmentValue.length <= 0) {
+                                setIsCustomEquipmentFieldError(true)
+                                return
                             }
+                            await addEquipment({
+                                name: equipmentValue === 'other' ? customEquipmentValue : (equipmentValue as string),
+                                allowedType: ['electricity'],
+                            })
+                            onClosePopup()
                         }}
                         inProgress={isaAdEquipmentLoading}
                     >

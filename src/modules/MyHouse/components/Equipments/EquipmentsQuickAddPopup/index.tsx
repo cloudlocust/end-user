@@ -6,6 +6,7 @@ import {
     IEquipmentMeter,
     equipmentAllowedTypeT,
     equipmentMeterType,
+    equipmentNameType,
     equipmentValuesType,
 } from 'src/modules/MyHouse/components/Installation/InstallationType'
 import { useState } from 'react'
@@ -46,7 +47,7 @@ export const EquipmentsQuickAddPopup = ({
             // Check that equipmentMeterList is not empty.
             savedEquipmentList![equipment.equipment.name] = {
                 ...equipment,
-                isNumber: mappingEquipmentNameToType[equipment.equipment.name] === 'number',
+                isNumber: mappingEquipmentNameToType[equipment.equipment.name as equipmentNameType] === 'number',
             }
         })
     }

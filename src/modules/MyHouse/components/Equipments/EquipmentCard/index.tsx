@@ -58,7 +58,6 @@ export const EquipmentCard = ({ id, number, label, name, onEquipmentChange }: Eq
                                 defaultMessage: label,
                             })}
                         </Typography>
-                        {/* TODO: add deboucing component here */}
                         <div className="flex flex-col justify-between items-end">
                             <div className="flex flex-row items-center space-x-8">
                                 <Icon
