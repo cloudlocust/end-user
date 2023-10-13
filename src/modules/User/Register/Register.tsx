@@ -10,6 +10,8 @@ import { motion } from 'framer-motion'
 import CardContent from '@mui/material/CardContent'
 import { linksColor } from 'src/modules/utils/muiThemeVariables'
 import { renderCommonLogo } from 'src/modules/User/Login/Login'
+import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
+import { isPopupAfterRegistration } from 'src/modules/User/Register/RegisterConfig'
 
 /**
  * Props of the register component.
@@ -39,6 +41,13 @@ const Register: FC<RegisterProps> = ({ registerForm = <DefaultRegisterForm defau
                             <Typography variant="h6" className="mt-16 mb-24 font-semibold text-18 sm:text-24">
                                 {formatMessage({ id: 'Inscription', defaultMessage: 'Inscription' })}
                             </Typography>
+
+                            {isPopupAfterRegistration && (
+                                <TypographyFormatMessage className="text-13 mb-32 text-center font-medium">
+                                    Muissez vous de votre N° de PDL - présent sur votre facture d'électrcité - et de
+                                    votre RIB.
+                                </TypographyFormatMessage>
+                            )}
 
                             {registerForm}
 
