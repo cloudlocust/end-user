@@ -49,7 +49,7 @@ export const useEquipmentList = (housingId?: number) => {
         try {
             const { data: housingEquipments } = await axios.get<IEquipmentMeter[]>(HOUSING_EQUIPMENTS_API(housingId))
             const { data: equipments } = await axios.get<equipmentType[]>(ALL_EQUIPMENTS_API)
-            if (!housingEquipments || housingEquipments.length === 0) setIsEquipmentMeterListEmpty(true)
+            if (housingEquipments.length === 0) setIsEquipmentMeterListEmpty(true)
             const responseData = equipments.map((equipment) => {
                 const foundEquipment = housingEquipments.find(
                     (housingEquipments) => housingEquipments.equipmentId === equipment.id,

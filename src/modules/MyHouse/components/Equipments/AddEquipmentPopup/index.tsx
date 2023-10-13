@@ -58,6 +58,7 @@ export const AddEquipmentPopup = (props: AddEquipmentPopupProps) => {
                         value={equipmentValue}
                         onChange={(event) => setEquipmentValue(event.target.value as equipmentType)}
                         fullWidth
+                        data-testid={'equipments-select'}
                     >
                         {orderedEquipmentsList.map((option) => (
                             <MenuItem key={option.id} value={option.name}>
@@ -100,7 +101,7 @@ export const AddEquipmentPopup = (props: AddEquipmentPopupProps) => {
                         }}
                         inProgress={isaAdEquipmentLoading}
                     >
-                        <TypographyFormatMessage>Enregister</TypographyFormatMessage>
+                        <TypographyFormatMessage>Enregistrer</TypographyFormatMessage>
                     </ButtonLoader>
                 </div>
             </DialogContent>

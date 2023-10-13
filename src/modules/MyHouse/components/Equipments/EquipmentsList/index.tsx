@@ -44,20 +44,23 @@ export const EquipmentsList = ({
 
     return (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-            {orderedEquipmentsList?.map((equipment) => {
-                const equipmentLabel = myEquipmentOptions.find((element) => element.name === equipment.name)?.labelTitle
+            {orderedEquipmentsList &&
+                orderedEquipmentsList.map((equipment) => {
+                    const equipmentLabel = myEquipmentOptions.find(
+                        (element) => element.name === equipment.name,
+                    )?.labelTitle
 
-                return (
-                    <EquipmentCard
-                        key={equipment.id}
-                        id={equipment.id}
-                        label={equipmentLabel ? equipmentLabel : equipment.name}
-                        name={equipment.name}
-                        number={equipment.number ? equipment.number : 0}
-                        onEquipmentChange={saveEquipment}
-                    />
-                )
-            })}
+                    return (
+                        <EquipmentCard
+                            key={equipment.id}
+                            id={equipment.id}
+                            label={equipmentLabel || equipment.name}
+                            name={equipment.name}
+                            number={equipment.number ? equipment.number : 0}
+                            onEquipmentChange={saveEquipment}
+                        />
+                    )
+                })}
         </div>
     )
 }

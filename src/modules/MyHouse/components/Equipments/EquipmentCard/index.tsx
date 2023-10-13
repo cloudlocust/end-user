@@ -2,7 +2,6 @@ import { useModal } from 'src/hooks/useModal'
 import { MicrowaveMeasurement } from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement'
 import { Card, CardContent, Button, useTheme, Typography, Icon } from '@mui/material'
 import { EquipmentCardProps } from 'src/modules/MyHouse/components/Equipments/EquipmentCard/equipmentsCard'
-import { ReactSVG } from 'react-svg'
 import { useIntl } from 'src/common/react-platform-translation'
 import { useState } from 'react'
 
@@ -20,14 +19,13 @@ import { useState } from 'react'
 export const EquipmentCard = ({ id, number, label, name, onEquipmentChange }: EquipmentCardProps) => {
     const theme = useTheme()
     const [equipmentNumber, setEquipmentNumber] = useState<number>(number)
-
     const { formatMessage } = useIntl()
     const {
         isOpen: isMeasurementModalIsOpen,
         openModal: onOpenMeasurementModal,
         closeModal: onCloseMeasurementModal,
     } = useModal()
-    const svgUrl = require(`src/assets/images/content/housing/equipments/${name}.svg`).default
+
     const isMicrowaveMeasurementButtonShown = number > 0 && name === 'microwave'
 
     return (
@@ -37,20 +35,7 @@ export const EquipmentCard = ({ id, number, label, name, onEquipmentChange }: Eq
                     <div
                         className="flex justify-center items-center rounded-16 border-2"
                         style={{ borderColor: theme.palette.primary.main, width: '75px', height: '75px' }}
-                    >
-                        <ReactSVG
-                            src={svgUrl}
-                            beforeInjection={(svg) => {
-                                const paths = svg.querySelectorAll('path')
-                                paths.forEach((p) => {
-                                    p.style.fill = theme.palette.primary.main
-                                })
-                                svg.setAttribute('width', '35')
-                                svg.setAttribute('height', '35')
-                            }}
-                            className="flex justify-center w-full"
-                        />
-                    </div>
+                    ></div>
                     <div className="flex flex-row w-full justify-between">
                         <Typography className="text-16 md:text-17 font-medium">
                             {formatMessage({
