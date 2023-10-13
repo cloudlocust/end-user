@@ -12,6 +12,7 @@ import {
     Button,
     SvgIcon,
     ListSubheader,
+    Backdrop,
 } from '@mui/material'
 import { useIntl } from 'react-intl'
 import { Link } from 'react-router-dom'
@@ -47,6 +48,7 @@ export const SelectHousing = () => {
     const dispatch = useDispatch<Dispatch>()
     const { housingList, currentHousing } = useSelector(({ housingModel }: RootState) => housingModel)
     const [modalAddHousingOpen, setModalAddHousingOpen] = useState(false)
+    const [openBackdrop, setOpenBackdrop] = useState(false)
 
     /**
      * Function to handle when selecting a housing.
@@ -82,6 +84,8 @@ export const SelectHousing = () => {
                     input={<OutlinedInput label="Logement" />}
                     renderValue={() => <>{currentHousing?.address.name}</>}
                     MenuProps={MenuProps}
+                    onOpen={() => setOpenBackdrop(true)}
+                    onClose={() => setOpenBackdrop(false)}
                 >
                     {housingList?.map((housing) => (
                         <MenuItem key={housing.id} value={housing.id} className="flex justify-between">
@@ -125,6 +129,7 @@ export const SelectHousing = () => {
                     </ListSubheader>
                 </Select>
             </FormControl>
+            <Backdrop open={openBackdrop} onClick={() => setOpenBackdrop(true)} />
             <AddHousingModal modalOpen={modalAddHousingOpen} closeModal={() => setModalAddHousingOpen(false)} />
         </>
     )
