@@ -17,9 +17,22 @@ const RegisterForm = ({ defaultRole }: { defaultRole: string }) => {
 const REGISTER_TEXT = 'Inscription'
 const HAVE_ALREADY_ACCOUNT_TEXT = 'Vous avez déjà un compte ?'
 const LOGIN_TEXT = 'Se connecter'
+const TEXT_POPUP_AFTER_REGISTRATION =
+    "Muissez vous de votre N° de PDL - présent sur votre facture d'électrcité - et de votre RIB."
+
+let mockIsPopupAfterRegistration = false
+
+jest.mock('src/modules/User/Register/RegisterConfig', () => ({
+    ...jest.requireActual('src/modules/User/Register/RegisterConfig'),
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    get isPopupAfterRegistration() {
+        return mockIsPopupAfterRegistration
+    },
+}))
 
 describe('Register component', () => {
     test('register component text is rendered', async () => {
+        mockIsPopupAfterRegistration = true
         const { getByText } = reduxedRender(
             <BrowserRouter>
                 <Register registerForm={<RegisterForm defaultRole="enduser" />} />
@@ -27,6 +40,7 @@ describe('Register component', () => {
         )
 
         expect(getByText(REGISTER_TEXT)).toBeInTheDocument()
+        expect(getByText(TEXT_POPUP_AFTER_REGISTRATION)).toBeInTheDocument()
         expect(getByText('Register form')).toBeInTheDocument()
         expect(getByText('enduser')).toBeInTheDocument()
         expect(getByText(HAVE_ALREADY_ACCOUNT_TEXT)).toBeInTheDocument()
@@ -47,5 +61,14 @@ describe('Register component', () => {
         await waitFor(() => {
             expect(getByText('login')).toBeInTheDocument()
         })
+    })
+    test('when isPopupAfterRegistration is false', async () => {
+        mockIsPopupAfterRegistration = false
+        const { getByText } = reduxedRender(
+            <BrowserRouter>
+                <Register registerForm={<RegisterForm defaultRole="enduser" />} />
+            </BrowserRouter>,
+        )
+        expect(() => getByText(TEXT_POPUP_AFTER_REGISTRATION)).toThrow()
     })
 })
