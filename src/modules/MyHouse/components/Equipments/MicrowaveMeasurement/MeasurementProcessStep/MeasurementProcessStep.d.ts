@@ -27,9 +27,13 @@ export interface ResponseMessageProps {
  */
 export interface MeasurementProcessStepProps {
     /**
+     * The global equipment id.
+     */
+    housingEquipmentId: number
+    /**
      * The microwave to mesure.
      */
-    microwave: string
+    microwaveNumber: number
     /**
      * The measurement mode.
      */

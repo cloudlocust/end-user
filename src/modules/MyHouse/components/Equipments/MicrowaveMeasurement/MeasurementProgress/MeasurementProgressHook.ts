@@ -12,7 +12,7 @@ import {
  * @param maxDuration Estimated value for the maximum duration of the measurement process (in seconds).
  * @returns The states remainingTime and circularProgressValue.
  */
-export const useMeasurementProgress = (status: measurementStatusEnum, maxDuration: number) => {
+export const useMeasurementProgress = (status: measurementStatusEnum | null, maxDuration: number) => {
     const [secondsCounter, setSecondsCounter] = useState(0)
     const [remainingTime, setRemainingTime] = useState(maxDuration)
     const [circularProgressValue, setCircularProgressValue] = useState(0)

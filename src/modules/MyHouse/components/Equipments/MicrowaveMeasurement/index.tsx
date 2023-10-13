@@ -40,7 +40,9 @@ const TestStepPage = ({ step, stepSetter }: TestStepPageProps) => (
  * MicrowaveMeasurement component.
  *
  * @param root0 N/A.
+ * @param root0.housingEquipmentId The global equipment id.
  * @param root0.equipmentsNumber The number of microwaves.
+ * @param root0.measurementModes Measurement modes for the Equipment.
  * @param root0.isModelOpen The state of the modal.
  * @param root0.onCloseModel Modal closing handler.
  * @example
@@ -53,30 +55,38 @@ const TestStepPage = ({ step, stepSetter }: TestStepPageProps) => (
  *          <Button onClick={openModal}>
  *              Mesurer
  *          </Button>
- *          <MicrowaveMeasurement equipmentsNumber={3} isModelOpen={isOpen} onCloseModel={closeModal} />
+ *          <MicrowaveMeasurement isModelOpen={isOpen} onCloseModel={closeModal} housingEquipmentId={25} equipmentsNumber={3} measurementModes={["Mode A", "Mode B"]} />
  *      </div>
  *  )
  * @returns MicrowaveMeasurement component.
  */
-export const MicrowaveMeasurement = ({ equipmentsNumber, isModelOpen, onCloseModel }: MicrowaveMeasurementProps) => {
+export const MicrowaveMeasurement = ({
+    housingEquipmentId,
+    equipmentsNumber,
+    measurementModes,
+    isModelOpen,
+    onCloseModel,
+}: MicrowaveMeasurementProps) => {
     const [currentStep, setCurrentStep] = useState(0)
-    const [selectedMicrowave, setSelectedMicrowave] = useState('')
+    const [microwaveNumber, setMicrowaveNumber] = useState(0)
     const [measurementMode, setMeasurementMode] = useState('')
     const theme = useTheme()
 
     const stepsContent = [
         <ConfigurationStep
             equipmentsNumber={equipmentsNumber}
-            selectedMicrowave={selectedMicrowave}
-            setSelectedMicrowave={setSelectedMicrowave}
-            measurementMode={measurementMode}
-            setMeasurementMode={setMeasurementMode}
+            selectedMicrowave={microwaveNumber}
+            setSelectedMicrowave={setMicrowaveNumber}
+            measurementModes={measurementModes}
+            selectedMeasurementMode={measurementMode}
+            setSelectedMeasurementMode={setMeasurementMode}
             stepSetter={setCurrentStep}
         />,
         <EquipmentStartupStep measurementMode={measurementMode} stepSetter={setCurrentStep} />,
         <MeasurementProcessStep
+            housingEquipmentId={housingEquipmentId}
             measurementMode={measurementMode}
-            microwave={selectedMicrowave}
+            microwaveNumber={microwaveNumber}
             stepSetter={setCurrentStep}
         />,
         <TestStepPage step={currentStep} stepSetter={setCurrentStep} />,
@@ -87,7 +97,7 @@ export const MicrowaveMeasurement = ({ equipmentsNumber, isModelOpen, onCloseMod
      */
     const handleCloseModal = () => {
         setCurrentStep(0)
-        setSelectedMicrowave('')
+        setMicrowaveNumber(0)
         setMeasurementMode('')
         onCloseModel()
     }

@@ -5,7 +5,7 @@ export interface MeasurementProgressProps {
     /**
      * Current status of the measurement process.
      */
-    status: measurementStatusEnum
+    status: measurementStatusEnum | null
     /**
      * Estimated value for the maximum duration of the measurement process (in seconds).
      */

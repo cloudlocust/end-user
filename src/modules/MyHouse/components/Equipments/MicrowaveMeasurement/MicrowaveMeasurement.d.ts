@@ -3,9 +3,17 @@
  */
 export interface MicrowaveMeasurementProps {
     /**
+     * The global equipment id.
+     */
+    housingEquipmentId: number
+    /**
      * The number of microwaves.
      */
     equipmentsNumber: number
+    /**
+     * Measurement modes for the Equipment.
+     */
+    measurementModes: string[]
     /**
      * The state of the modal.
      */

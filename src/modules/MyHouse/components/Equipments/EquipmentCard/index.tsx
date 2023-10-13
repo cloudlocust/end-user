@@ -12,9 +12,11 @@ import { useIntl } from 'src/common/react-platform-translation'
  * @param root0.number How many equipments are there of that type.
  * @param root0.label Equipment label.
  * @param root0.name Equipment backend name.
+ * @param root0.housingEquipmentId The global equipment id.
+ * @param root0.measurementModes Measurement modes for the Equipment.
  * @returns EquipmentCard JSX.
  */
-export const EquipmentCard = ({ number, label, name }: EquipmentCardProps) => {
+export const EquipmentCard = ({ number, label, name, housingEquipmentId, measurementModes }: EquipmentCardProps) => {
     const theme = useTheme()
     const { formatMessage } = useIntl()
     const {
@@ -73,9 +75,11 @@ export const EquipmentCard = ({ number, label, name }: EquipmentCardProps) => {
                     </div>
                 </CardContent>
             </Card>
-            {showMicrowaveMeasurementBtn && (
+            {showMicrowaveMeasurementBtn && housingEquipmentId && measurementModes && (
                 <MicrowaveMeasurement
+                    housingEquipmentId={housingEquipmentId}
                     equipmentsNumber={number}
+                    measurementModes={measurementModes}
                     isModelOpen={isMeasurementModelOpen}
                     onCloseModel={onCloseMeasurementModal}
                 />

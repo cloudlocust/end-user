@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import Typography from '@mui/material/Typography'
 import Button from '@mui/material/Button'
 import { useTheme } from '@mui/material'
@@ -10,6 +10,7 @@ import {
 } from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement/MeasurementProcessStep/MeasurementProcessStep'
 import { MeasurementProgress } from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement/MeasurementProgress'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
+import { useMicrowaveMeasurement } from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement/MicrowaveMeasurementHook'
 
 /**
  * Component for showing the response message of the measurement.
@@ -39,18 +40,32 @@ export const ResponseMessage = ({ theme, title, content, success }: ResponseMess
  * MeasurementProcessStep component.
  *
  * @param root0 N/A.
- * @param root0.microwave The microwave to mesure.
+ * @param root0.housingEquipmentId The global equipment id.
  * @param root0.measurementMode The measurement mode.
+ * @param root0.microwaveNumber The microwave to mesure.
  * @param root0.stepSetter The setter linked to the state responsible for storing the current step.
  * @returns The MeasurementProcessStep component.
  */
-export const MeasurementProcessStep = ({ microwave, measurementMode, stepSetter }: MeasurementProcessStepProps) => {
+export const MeasurementProcessStep = ({
+    housingEquipmentId,
+    measurementMode,
+    microwaveNumber,
+    stepSetter,
+}: MeasurementProcessStepProps) => {
     const { formatMessage } = useIntl()
     const theme = useTheme()
-    const [measurementStatus, setMeasurementStatus] = useState<measurementStatusEnum>(measurementStatusEnum.pending)
-    const measurementMaxDuration = 10
+    const measurementMaxDuration = 50
+
+    const { measurementStatus, measurementResult, startMeasurement } = useMicrowaveMeasurement(
+        housingEquipmentId,
+        measurementMode,
+        microwaveNumber,
+        measurementMaxDuration,
+    )
+
     const headerText = {
-        [measurementStatusEnum.pending]: 'Mesure en cours',
+        starting: 'Démarrage de la mesure',
+        [measurementStatusEnum.pending]: 'Démarrage de la mesure',
         [measurementStatusEnum.inProgress]: 'Mesure en cours',
         [measurementStatusEnum.success]: 'Mesure terminée avec succès',
         [measurementStatusEnum.failed]: 'Mesure terminée avec échec',
@@ -63,32 +78,9 @@ export const MeasurementProcessStep = ({ microwave, measurementMode, stepSetter 
         stepSetter(4)
     }
 
-    /**
-     * The following code is just for testing before creating the hook that manage
-     * the measurement requests.
-     */
-    const test = () => {
-        // Starting the measurement
-        setTimeout(() => {
-            setMeasurementStatus(measurementStatusEnum.inProgress)
-        }, 4000)
-
-        // Ending the measurement
-        setTimeout(() => {
-            setMeasurementStatus(Math.random() < 0.3 ? measurementStatusEnum.success : measurementStatusEnum.failed)
-        }, 4000 + measurementMaxDuration * 1000)
-    }
-
-    /**
-     * Function for restart the measurement test.
-     */
-    const restartTest = () => {
-        setMeasurementStatus(measurementStatusEnum.pending)
-        test()
-    }
-
     useEffect(() => {
-        test()
+        startMeasurement()
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     return (
@@ -96,10 +88,17 @@ export const MeasurementProcessStep = ({ microwave, measurementMode, stepSetter 
             {/* Header */}
             <div className="text-center mb-20">
                 <Typography component="h2" fontWeight="500" fontSize="18px" data-testid="headerElement">
-                    {formatMessage({
-                        id: headerText[measurementStatus],
-                        defaultMessage: headerText[measurementStatus],
-                    })}
+                    {formatMessage(
+                        measurementStatus
+                            ? {
+                                  id: headerText[measurementStatus],
+                                  defaultMessage: headerText[measurementStatus],
+                              }
+                            : {
+                                  id: headerText.starting,
+                                  defaultMessage: headerText.starting,
+                              },
+                    )}
                 </Typography>
             </div>
 
@@ -115,7 +114,7 @@ export const MeasurementProcessStep = ({ microwave, measurementMode, stepSetter 
                     {measurementStatus === measurementStatusEnum.success && (
                         <ResponseMessage
                             title="Félicitations !"
-                            content="Le test s'est terminé avec succès, vous pouvez désormais analyser vos résultats"
+                            content={`Le test s'est terminé avec succès, vous pouvez désormais analyser vos résultats. Le résultat de la mesure est ${measurementResult}`}
                             theme={theme}
                             success
                         />
@@ -149,7 +148,7 @@ export const MeasurementProcessStep = ({ microwave, measurementMode, stepSetter 
                         <Button
                             variant="contained"
                             sx={{ padding: '10px auto', textAlign: 'center', width: '60%', minWidth: '160px' }}
-                            onClick={restartTest}
+                            onClick={startMeasurement}
                         >
                             {formatMessage({
                                 id: 'Relancer le test',

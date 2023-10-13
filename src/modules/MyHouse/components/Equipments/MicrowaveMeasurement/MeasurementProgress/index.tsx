@@ -42,8 +42,6 @@ export const MeasurementProgress = ({ status, maxDuration }: MeasurementProgress
      */
     const renderContent = () => {
         switch (status) {
-            case measurementStatusEnum.pending:
-                return <TypographyFormatMessage>En attente</TypographyFormatMessage>
             case measurementStatusEnum.inProgress:
                 return <Typography>{formatDuration(remainingTime)}</Typography>
             case measurementStatusEnum.success:
@@ -51,7 +49,7 @@ export const MeasurementProgress = ({ status, maxDuration }: MeasurementProgress
             case measurementStatusEnum.failed:
                 return <CancelIcon color="error" sx={{ transform: 'scale(2.5)' }} />
             default:
-                return null
+                return <TypographyFormatMessage>En attente</TypographyFormatMessage>
         }
     }
 
@@ -65,7 +63,7 @@ export const MeasurementProgress = ({ status, maxDuration }: MeasurementProgress
         >
             <CircularProgress
                 value={status === measurementStatusEnum.inProgress ? circularProgressValue : 100}
-                variant={status === measurementStatusEnum.pending ? 'indeterminate' : 'determinate'}
+                variant={!status || status === measurementStatusEnum.pending ? 'indeterminate' : 'determinate'}
                 color={
                     status === measurementStatusEnum.success
                         ? 'success'
