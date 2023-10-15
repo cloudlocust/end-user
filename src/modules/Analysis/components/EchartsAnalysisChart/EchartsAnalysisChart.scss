@@ -1,0 +1,19 @@
+@import 'src/common/ui-kit/styles/media.scss';
+
+.analysisChartCircleContent {
+    position: absolute;
+    transform: translate(-50%, 50%);
+    left: 50%;
+    bottom: 50%;
+    border-radius: 50%;
+    height: 170px;
+    width: 170px;
+    @include md {
+        height: 176px;
+        width: 176px;
+    }
+    @include lg {
+        height: 212px;
+        width: 212px;
+    }
+}

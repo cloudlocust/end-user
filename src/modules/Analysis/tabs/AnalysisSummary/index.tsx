@@ -2,7 +2,6 @@ import { useState } from 'react'
 import { useTheme } from '@mui/material'
 import CircularProgress from '@mui/material/CircularProgress'
 import AnalysisInformationList from 'src/modules/Analysis/components/AnalysisInformationList'
-import AnalysisChart from 'src/modules/Analysis/components/AnalysisChart'
 import { analysisInformationName } from 'src/modules/Analysis/analysisTypes.d'
 import useMediaQuery from '@mui/material/useMediaQuery'
 import { AnalysisSummaryProps } from 'src/modules/Analysis/tabs/AnalysisSummary/AnalysisSummary'
@@ -16,6 +15,7 @@ import { useAnalysisStore } from 'src/modules/Analysis/store/analysisStore'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import { computeTotalConsumption } from 'src/modules/MyConsumption/components/Widget/WidgetFunctions'
 import Box from '@mui/material/Box'
+import EchartsAnalysisChart from 'src/modules/Analysis/components/EchartsAnalysisChart'
 
 // eslint-disable-next-line jsdoc/require-jsdoc
 export const AnalysisCTAColor = linksColor || warningMainHashColor
@@ -43,24 +43,6 @@ export default function AnalysisSummary(props: AnalysisSummaryProps) {
     const isMobile = useMediaQuery(theme.breakpoints.down('lg'))
 
     const totalConsumption = useAnalysisStore((state) => state.totalConsumption)
-
-    /**
-     * Handler to set the correct information name (min, max, mean) Based on the selected value element fill color in analysisChart.
-     *
-     * @param color Fill Color of the selected value element.
-     */
-    const getSelectedValueElementColor = (color: string) => {
-        switch (color) {
-            case theme.palette.primary.light:
-                setActiveInformationName('minConsumptionDay')
-                break
-            case theme.palette.primary.dark:
-                setActiveInformationName('maxConsumptionDay')
-                break
-            default:
-                setActiveInformationName('meanConsumption')
-        }
-    }
 
     // By checking if the metersList is true we make sure that if someone has skipped the step of connecting their PDL, they will see this error message.
     // Else if they have a PDL, we check its consent.
@@ -95,12 +77,14 @@ export default function AnalysisSummary(props: AnalysisSummaryProps) {
                         <CircularProgress style={{ color: theme.palette.primary.main }} />
                     </div>
                 ) : (
-                    <AnalysisChart data={data} getSelectedValueElementColor={getSelectedValueElementColor}>
-                        <AnalysisChartCircleContent
-                            dateReferenceConsumptionValue={new Date(range.from)}
-                            filters={filters}
-                        />
-                    </AnalysisChart>
+                    <>
+                        <EchartsAnalysisChart data={data} setActiveBarType={setActiveInformationName}>
+                            <AnalysisChartCircleContent
+                                dateReferenceConsumptionValue={new Date(range.from)}
+                                filters={filters}
+                            />
+                        </EchartsAnalysisChart>
+                    </>
                 )}
             </div>
             {!isMetricsLoading && (
