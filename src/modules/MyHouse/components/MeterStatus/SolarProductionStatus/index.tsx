@@ -4,14 +4,16 @@ import { useEffect, useState } from 'react'
 import { useIntl } from 'react-intl'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import { enphaseConsentStatus } from 'src/modules/Consents/Consents'
-import { globalProductionFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
 import { EnphaseConsentPopup } from 'src/modules/MyHouse/components/MeterStatus/EnphaseConsentPopup'
 import { ISolarProductionConsentStatusProps } from 'src/modules/MyHouse/components/MeterStatus/MeterStatus.d'
 import ConnectedPlugProductionConsentPopup from 'src/modules/MyHouse/components/MeterStatus/ConnectedPlugProductionConsentPopup'
 import { useConnectedPlugList } from 'src/modules/MyHouse/components/ConnectedPlugs/connectedPlugsHook'
 import { useSelector } from 'react-redux'
 import { RootState } from 'src/redux'
-import { connectedPlugsFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
+import {
+    arePlugsUsedBasedOnProductionStatus,
+    isProductionActiveAndHousingHasAccess,
+} from 'src/modules/MyHouse/MyHouseConfig'
 
 /**
  * Solar Production Consent Status Component, that shows and isolates the solar production consent of MeterStatus.
@@ -34,9 +36,11 @@ export const SolarProductionConsentStatus = ({
     const theme = useTheme()
     const { formatMessage } = useIntl()
 
-    const { currentHousing } = useSelector(({ housingModel }: RootState) => housingModel)
+    const { currentHousing, currentHousingScopes } = useSelector(({ housingModel }: RootState) => housingModel)
     const [openEnphaseConsentPopup, setOpenEnphaseConsentPopup] = useState(false)
     const [openConnectedPlugProductionConsentPopup, setOpenConnectedPlugProductionConsentPopup] = useState(false)
+
+    const isProductionActive = isProductionActiveAndHousingHasAccess(currentHousingScopes)
 
     // Load connected plug only when housing is defined
     const {
@@ -99,29 +103,28 @@ export const SolarProductionConsentStatus = ({
                                           })} ${solarProductionConsentCreatedAt}`}
                                 </span>
                             </span>
-                            {
-                                // TODO REMOVE when Connected plug or revoke enphase is in prod
-                                connectedPlugsFeatureState && (
-                                    <TypographyFormatMessage
-                                        color={theme.palette.primary.main}
-                                        className="underline cursor-pointer"
-                                        fontWeight={500}
-                                        onClick={
-                                            currentHousing && productionConnectedPlug
-                                                ? () =>
-                                                      associateConnectedPlug(
-                                                          productionConnectedPlug.deviceId,
-                                                          currentHousing.id,
-                                                          currentHousing.meter?.guid,
-                                                          false,
-                                                      )
-                                                : () => onRevokeEnphaseConsent()
-                                        }
-                                    >
-                                        Annuler la récolte de mes données
-                                    </TypographyFormatMessage>
-                                )
-                            }
+                            <TypographyFormatMessage
+                                color={theme.palette.primary.main}
+                                className="underline cursor-pointer"
+                                fontWeight={500}
+                                onClick={
+                                    currentHousing && productionConnectedPlug
+                                        ? async () => {
+                                              await associateConnectedPlug(
+                                                  productionConnectedPlug.deviceId,
+                                                  currentHousing.id,
+                                                  currentHousing.meter?.guid,
+                                                  false,
+                                              )
+                                              await loadConnectedPlugList()
+                                          }
+                                        : async () => {
+                                              await onRevokeEnphaseConsent()
+                                          }
+                                }
+                            >
+                                Annuler la récolte de mes données
+                            </TypographyFormatMessage>
                         </div>
                     </>
                 )
@@ -175,7 +178,7 @@ export const SolarProductionConsentStatus = ({
                                     Connectez votre onduleur Enphase
                                 </TypographyFormatMessage>
                             </div>
-                            {connectedPlugsFeatureState && (
+                            {arePlugsUsedBasedOnProductionStatus(currentHousingScopes) && (
                                 <>
                                     <TypographyFormatMessage>Ou</TypographyFormatMessage>
 
@@ -214,7 +217,7 @@ export const SolarProductionConsentStatus = ({
     return (
         <>
             {/* Enphase Consent Status */}
-            <div className={`w-full md:w-1/3 p-12 ${!globalProductionFeatureState && 'hidden'}`}>
+            <div className={`w-full md:w-1/3 p-12 ${!isProductionActive && 'hidden'}`}>
                 {solarProductionConsentLoadingInProgress || isConnectedPlugListLoadingInProgress ? (
                     <CircularProgress size={25} />
                 ) : (

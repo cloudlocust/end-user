@@ -1,5 +1,5 @@
-import { ApexAxisChartSerie, IMetric } from 'src/modules/Metrics/Metrics'
-import { ApexChartsAxisValuesType } from 'src/modules/MyConsumption/myConsumptionTypes'
+import { ApexAxisChartSerie, IMetric, metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
+import { ApexChartsAxisValuesType } from 'src/modules/MyConsumption/myConsumptionTypes.d'
 
 /**
  * Convert dataPoints array that has the format [Yaxis, Xaxis][] where Yaxis and Xaxis are numbers, to Object {yAxisValues, xAxisValues}.
@@ -59,8 +59,7 @@ export const convertMetricsDataToApexChartsAxisValues = (data: IMetric[]): ApexC
  *
  * ApexCharts Performance is much faster when using datetime xAxis.
  *
- * Example: Metric datapoints (input) [[val1, timestamp1], [val2, timestamp2], ...] => ApexCharts datapoints (output) [[timestamp1, val1], [timestamp2, val2], ...].
- *
+ * @example Metric datapoints (input) [[val1, timestamp1], [val2, timestamp2], ...] => ApexCharts datapoints (output) [[timestamp1, val1], [timestamp2, val2], ...].
  * @param data Data of format IMetric[] that will be converted .
  * @returns ApexCharts datapoints format (adapted for datetime xAxis).
  */
@@ -68,8 +67,7 @@ export const convertMetricsDataToApexChartsDateTimeAxisValues = (data: IMetric[]
     // We can have multiple yAxisSeries (datapoints), for each target it'll have its own yAxis Series (datapoints).
     let apexChartsSeries: ApexAxisChartSeries = []
 
-    data.forEach((metric) => {
-        // eslint-disable-next-line jsdoc/require-jsdoc
+    for (const metric of data) {
         let metricApexChartsDatapoints: ApexAxisChartSerie['data'] = metric.datapoints.map((datapoint) => {
             // Typing [number, number], because typescript infer [datapoint[1], datapoint[0]] as number[].
             // Thus typescript will infer metricApexChartsDatapoints as number[][], but we typed metricApexChartsDatapoints: ApexAxisChartSerie['data'].
@@ -82,7 +80,12 @@ export const convertMetricsDataToApexChartsDateTimeAxisValues = (data: IMetric[]
             name: metric.target,
             data: metricApexChartsDatapoints,
         })
-    })
+    }
+
+    // Check if data has subscriptionPrices target in it, then we reverse the data array so that we see subscriptionPrices at the bottom of the stacked bar chart.
+    if (data.some((target) => target.target === metricTargetsEnum.subscriptionPrices)) {
+        return apexChartsSeries.reverse()
+    }
 
     return apexChartsSeries
 }

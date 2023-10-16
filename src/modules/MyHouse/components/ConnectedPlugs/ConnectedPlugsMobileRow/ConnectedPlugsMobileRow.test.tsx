@@ -11,9 +11,9 @@ import ConnectedPlugsMobileRowContent from 'src/modules/MyHouse/components/Conne
 
 let mockConnectedPlug: IConnectedPlug = applyCamelCase(TEST_CONNECTED_PLUGS[0])
 
-const CONNECTED_PLUG_NAME_TEXT = 'Prise'
 const CONNECTED_PLUG_CONSENT_EXIST_TEXT = 'Connectée le'
 const CONNECTED_PLUG_CONSENT_NOT_EXIST_TEXT = 'Non Connectée'
+
 describe('ConnectedPlugs Mobile Row Test', () => {
     describe('Content Test', () => {
         test('when Consent Exist', async () => {
@@ -22,8 +22,7 @@ describe('ConnectedPlugs Mobile Row Test', () => {
                     <ConnectedPlugsMobileRowContent row={mockConnectedPlug} />
                 </Router>,
             )
-            expect(getByText(CONNECTED_PLUG_NAME_TEXT)).toBeTruthy()
-            expect(getByText(mockConnectedPlug.deviceId)).toBeTruthy()
+            expect(getByText(mockConnectedPlug.deviceName)).toBeTruthy()
             expect(getByText(CONNECTED_PLUG_CONSENT_EXIST_TEXT, { exact: false })).toBeTruthy()
             expect(
                 getByText(dayjs.utc(mockConnectedPlug.createdAt).local().format('DD/MM/YYYY'), { exact: false }),
@@ -36,7 +35,7 @@ describe('ConnectedPlugs Mobile Row Test', () => {
                     <ConnectedPlugsMobileRowContent row={mockConnectedPlug} />
                 </Router>,
             )
-            expect(getByText(mockConnectedPlug.deviceId)).toBeTruthy()
+            expect(getByText(mockConnectedPlug.deviceName)).toBeTruthy()
             expect(getByText(CONNECTED_PLUG_CONSENT_NOT_EXIST_TEXT, { exact: false })).toBeTruthy()
         })
     })

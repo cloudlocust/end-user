@@ -2,7 +2,6 @@ import { useEffect } from 'react'
 import Button from '@mui/material/Button'
 import { useState } from 'react'
 import { useTheme } from '@mui/material'
-import { targetOptions } from 'src/modules/MyConsumption/utils/myConsumptionVariables'
 import { ITargetMenuGroup } from 'src/modules/MyConsumption/myConsumptionTypes'
 import { metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
 import { tempPmaxFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
@@ -46,13 +45,13 @@ export const buttonOptions = [
  * TargetButtonGroup component.
  *
  * @param root0 N/A.
- * @param root0.removeTarget RemoveTarget.
- * @param root0.addTarget AddTarget.
+ * @param root0.removeTargets RemoveTarget.
+ * @param root0.addTargets AddTarget.
  * @param root0.hidePmax If hidePmax exists Pmax button will be disabled.
+ * @param root0.activeButton Indicate which button is active.
  * @returns TargetButtonGroup.
  */
-const TargetMenuGroup = ({ removeTarget, addTarget, hidePmax }: ITargetMenuGroup) => {
-    const [activeButton, setActiveButton] = useState('reset')
+const TargetMenuGroup = ({ removeTargets, addTargets, hidePmax, activeButton }: ITargetMenuGroup) => {
     const [anchorEl, setAnchorEl] = useState<null | Element>(null)
     const theme = useTheme()
 
@@ -62,14 +61,18 @@ const TargetMenuGroup = ({ removeTarget, addTarget, hidePmax }: ITargetMenuGroup
      * @param targets Target value to handle.
      */
     const handleTarget = (targets: metricTargetsEnum[]) => {
-        targetOptions.forEach((target) => {
-            targets.includes(target) ? addTarget(target) : removeTarget(target)
-        })
+        if (targets.includes(metricTargetsEnum.internalTemperature)) {
+            addTargets([metricTargetsEnum.internalTemperature, metricTargetsEnum.externalTemperature])
+        } else if (targets.includes(metricTargetsEnum.pMax)) {
+            addTargets([metricTargetsEnum.pMax])
+        } else {
+            removeTargets()
+        }
     }
 
     useEffect(() => {
-        if (hidePmax && activeButton === 'Pmax') setActiveButton('reset')
-    }, [hidePmax, activeButton])
+        if (hidePmax && activeButton === 'Pmax') removeTargets()
+    }, [hidePmax, activeButton, removeTargets])
 
     /**
      * Function called on click.
@@ -145,7 +148,6 @@ const TargetMenuGroup = ({ removeTarget, addTarget, hidePmax }: ITargetMenuGroup
                                     key={option.value}
                                     onClick={() => {
                                         if (disabledField) return
-                                        setActiveButton(option.value)
                                         handleTarget(option.targets)
                                         handleClose()
                                     }}

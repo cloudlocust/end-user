@@ -24,6 +24,7 @@ import { consumptionAlertsEndpoints } from 'src/mocks/handlers/consumptionAlerts
 import { ecogestesEndpoints } from './handlers/ecogestes'
 import { novuALertPreferencesEndpoints } from 'src/mocks/handlers/novuAlertPreferences'
 import { connectedPlugsEndpoints } from 'src/mocks/handlers/connectedPlugs'
+import { accessRightsEndpoints } from './handlers/accessRights'
 
 /**
  * Handlers to mock urls for tests.
@@ -63,20 +64,11 @@ export const handlers = [
     ...novuALertPreferencesEndpoints,
     /***** Connected Plug Consent State endpoint. */
     ...connectedPlugsEndpoints,
-]
-
-// TODO Reset once back of connected plug production mode and revoke enphase is ready
-/**
- * Handlers to mock urls for tests.
- */
-export const activeMockHandlers = [
-    /******Consents REQUESTS*****/
-    ...consentsEndpoints.slice(-1),
-    /***** Connected Plug Consent State endpoint. */
-    ...connectedPlugsEndpoints.slice(2),
+    /****** Access rights endpiont. */
+    ...accessRightsEndpoints,
 ]
 
 /**
  *
  */
-export const worker = setupWorker(...activeMockHandlers)
+export const worker = setupWorker(...handlers)

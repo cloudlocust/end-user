@@ -37,16 +37,23 @@ interface IEditButtonsGroup {
  * @param param0.enableForm Function to enable form.
  * @param param0.formInitialValues Function to disable form.
  * @param param0.disableEdit Initial values.
+ * @param param0.inProgress Loading indicator.
  * @returns EditButtonsGroup.
  */
-export const EditButtonsGroup = ({ isEdit, enableForm, formInitialValues, disableEdit }: IEditButtonsGroup) => {
+export const EditButtonsGroup = ({
+    isEdit,
+    enableForm,
+    formInitialValues,
+    disableEdit,
+    inProgress,
+}: IEditButtonsGroup) => {
     const { formatMessage } = useIntl()
     return (
         <div className="flex my-10 justify-end w-full">
             {isEdit ? (
                 <>
                     <ButtonResetForm initialValues={formInitialValues} onClickButtonReset={disableEdit} />
-                    <ButtonLoader variant="contained" type="submit" className="ml-16">
+                    <ButtonLoader variant="contained" type="submit" className="ml-16" inProgress={inProgress}>
                         {formatMessage({ id: 'Enregistrer', defaultMessage: 'Enregistrer' })}
                     </ButtonLoader>
                 </>

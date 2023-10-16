@@ -1,4 +1,5 @@
 import { IEnedisSgeConsent, IEnphaseConsent } from 'src/modules/Consents/Consents.d'
+import { metricTargetType } from 'src/modules/Metrics/Metrics'
 
 /**
  * Interface MyConsumptionPeriod.
@@ -105,6 +106,7 @@ export type dateFnsPeriod = 'seconds' | 'hours' | 'minutes' | 'days' | 'weeks' |
  * Type for views in MobileDatePicker.
  */
 export type ViewsType = 'day' | 'month' | 'year'
+
 /**
  * Interface for TargetButtonGroup.
  */
@@ -112,15 +114,19 @@ interface ITargetMenuGroup {
     /**
      * RemoveTarget.
      */
-    removeTarget: (target: metricTarget) => void
+    removeTargets: () => void
     /**
      * AddTarget.
      */
-    addTarget: (target: metricTarget) => void
+    addTargets: (targets: metricTargetType[]) => void
     /**
      * If hidePmax exists Pmax button will be disabled.
      */
     hidePmax: boolean
+    /**
+     * Indicates which button is active.
+     */
+    activeButton: string
 }
 
 /**
@@ -130,13 +136,13 @@ export type EurosConsumptionButtonTogglerProps =
     // eslint-disable-next-line jsdoc/require-jsdoc
     {
         /**
-         * RemoveTarget.
+         * Handler when clicking on EuroButton.
          */
-        removeTarget: (target: metricTarget) => void
+        onEuroClick: () => void
         /**
-         * AddTarget.
+         * Handler when clicking on ConsumptionButton.
          */
-        addTarget: (target: metricTarget) => void
+        onConsumptionClick: () => void
         /**
          * Indicate eurosConsumption or consumption IconButton to be shown.
          */
@@ -146,7 +152,6 @@ export type EurosConsumptionButtonTogglerProps =
          */
         disabled?: boolean
     }
-
 /**
  * Represent the type return by apexChartsDataConverter.
  */
@@ -187,6 +192,8 @@ export interface MyConsumptionChartProps {
     chartLabel?: 'Consommation totale' | 'Electricité achetée sur le réseau'
     // eslint-disable-next-line jsdoc/require-jsdoc
     metricsInterval?: metricIntervalType
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    enphaseOff?: boolean
 }
 
 /**
@@ -226,8 +233,18 @@ export type DefaultContractWarningProps =
  */
 export type ProductionChartContainerProps = Omit<
     ConsumptionChartContainerProps,
-    'enedisSgeConsent' | 'hasMissingHousingContracts'
->
+    'enedisSgeConsent' | 'hasMissingHousingContracts' | 'enphaseConsent'
+    // eslint-disable-next-line jsdoc/require-jsdoc
+> & {
+    /**
+     * Boolean indicating if proudction consent is off.
+     */
+    isProductionConsentOff?: boolean
+    /**
+     * Boolean indicating if production consent is in-progress.
+     */
+    isProductionConsentLoadingInProgress?: boolean
+}
 
 /**
  * Type for getChartSpecifities function return.

@@ -21,6 +21,7 @@ export const AlertsConfig = [
                     UINavbarItem: {},
                 },
             },
+            disabled: false,
         },
 
         // eslint-disable-next-line jsdoc/require-jsdoc

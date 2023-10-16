@@ -1,13 +1,13 @@
 import { rest } from 'msw'
 import { SnakeCasedPropertiesDeep } from 'type-fest'
-import { ALL_EQUIPMENTS_API } from 'src/modules/MyHouse/components/Equipments/equipmentHooks'
+import { ALL_EQUIPMENTS_API } from 'src/modules/MyHouse/components/Installation/installationHook'
 import {
     equipmentNameType,
     equipmentType,
     equipmentMeterType,
     postEquipmentInputType,
     IEquipmentMeter,
-} from 'src/modules/MyHouse/components/Equipments/EquipmentsType'
+} from 'src/modules/MyHouse/components/Installation/InstallationType.d'
 import { HOUSING_API } from 'src/modules/MyHouse/components/HousingList/HousingsHooks'
 /**
  * Mock for meter data to be added.
@@ -42,12 +42,12 @@ export var TEST_EQUIPMENTS: SnakeCasedPropertiesDeep<equipmentType>[] = [
     {
         id: 2,
         name: 'sanitary' as equipmentNameType,
-        allowed_type: ['electricity', 'gaz', 'other'],
+        allowed_type: ['other', 'collective', 'individual'],
     },
     {
         id: 3,
         name: 'hotplate' as equipmentNameType,
-        allowed_type: ['vitroceramic', 'induction', 'other'],
+        allowed_type: ['vitroceramic', 'induction', 'electricity', 'other'],
     },
     {
         id: 4,

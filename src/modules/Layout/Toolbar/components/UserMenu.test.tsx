@@ -36,6 +36,8 @@ const store = init({
 
 const mockReplaceHistory = jest.fn()
 const mockPushHistory = jest.fn()
+const mockLoadHousingsAndScopes = jest.fn()
+const mockSetDefaultHousingModel = jest.fn()
 
 jest.mock('react-router', () => ({
     ...jest.requireActual('react-router'),
@@ -43,6 +45,15 @@ jest.mock('react-router', () => ({
     useHistory: () => ({
         replace: mockReplaceHistory,
         push: mockPushHistory,
+    }),
+}))
+
+jest.mock('src/modules/MyHouse/utils/MyHouseHooks.ts', () => ({
+    ...jest.requireActual('src/modules/MyHouse/utils/MyHouseHooks.ts'),
+    //eslint-disable-next-line
+    useHousingRedux: () => ({
+        loadHousingsAndScopes: mockLoadHousingsAndScopes,
+        setDefaultHousingModel: mockSetDefaultHousingModel,
     }),
 }))
 
@@ -128,10 +139,15 @@ describe('test UserMenu component', () => {
             expect(() => getByText(userFullName)).toThrow()
         })
 
+        const { housingModel } = store.getState()
         await waitFor(() => {
-            expect(store.getState().housingModel.currentHousing).toBeNull()
+            expect(housingModel.currentHousing).toBeNull()
         })
         expect(mockReplaceHistory).toHaveBeenCalledWith(LOGOUT_REDIRECT_URL)
+
+        expect(mockSetDefaultHousingModel).toBeCalled()
+        expect(housingModel?.currentHousingScopes.length).toBe(0)
+        expect(housingModel.housingList.length).toBe(0)
     })
 
     test('When clicking on the different MenuItems', async () => {

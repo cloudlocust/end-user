@@ -114,15 +114,6 @@ jest.mock('react-router-dom', () => ({
     }),
 }))
 
-// TODO REMOVE when Connected plug or revoke enphase is in prod
-jest.mock('src/modules/MyHouse/MyHouseConfig', () => ({
-    ...jest.requireActual('src/modules/MyHouse/MyHouseConfig'),
-    // eslint-disable-next-line jsdoc/require-jsdoc
-    get connectedPlugsFeatureState() {
-        return true
-    },
-}))
-
 // Mock consentsHook
 jest.mock('src/modules/Consents/consentsHook', () => ({
     // eslint-disable-next-line jsdoc/require-jsdoc
@@ -161,6 +152,7 @@ jest.mock('src/modules/Consents/consentsHook', () => ({
 let mockHousingModelState: IHousingState = {
     housingList: LIST_OF_HOUSES,
     currentHousing: CURRENT_HOUSING,
+    currentHousingScopes: [],
 }
 
 /**

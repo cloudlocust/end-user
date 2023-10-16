@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, useCallback, useRef } from 'react'
+import { useState, useEffect, useMemo, useCallback } from 'react'
 import { motion } from 'framer-motion'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import MyConsumptionChart from 'src/modules/MyConsumption/components/MyConsumptionChart'
@@ -9,20 +9,20 @@ import { ConsumptionChartContainerProps } from 'src/modules/MyConsumption/myCons
 import CircularProgress from '@mui/material/CircularProgress'
 import EurosConsumptionButtonToggler from 'src/modules/MyConsumption/components/EurosConsumptionButtonToggler'
 import {
-    filterPmaxAndEurosConsumptionTargetFromVisibleChartTargets,
+    filterMetricsData,
+    getDefaultConsumptionTargets,
     showPerPeriodText,
 } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
-import {
-    ConsumptionChartTargets,
-    EnphaseOffConsumptionChartTargets,
-} from 'src/modules/MyConsumption/utils/myConsumptionVariables'
-import { targetOptions } from 'src/modules/MyConsumption/utils/myConsumptionVariables'
 import {
     DefaultContractWarning,
     ConsumptionEnedisSgeWarning,
 } from 'src/modules/MyConsumption/components/MyConsumptionChart/ConsumptionChartWarnings'
 import { sgeConsentFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
 import TargetMenuGroup from 'src/modules/MyConsumption/components/TargetMenuGroup'
+import {
+    eurosConsumptionTargets,
+    temperatureOrPmaxTargets,
+} from 'src/modules/MyConsumption/utils/myConsumptionVariables'
 
 /**
  * MyConsumptionChart Component.
@@ -47,102 +47,76 @@ export const ConsumptionChartContainer = ({
     enphaseConsent,
 }: ConsumptionChartContainerProps) => {
     const theme = useTheme()
-    // This state represents whether or not the chart is displaying a spinner, which should happen only when we request the current metrics, not the request of all metrics that happens in the background.
-    const [isConsumptionChartLoading, setIsConsumptionChartLoading] = useState<boolean>(true)
     // Indicates if enphaseConsentState is not ACTIVE
     const enphaseOff = enphaseConsent?.enphaseConsentState !== 'ACTIVE'
-    // Visible Targets will influence k
-    const [visibleTargetCharts, setVisibleTargetsCharts] = useState<metricTargetType[]>(
-        enphaseOff
-            ? [metricTargetsEnum.consumption]
-            : [metricTargetsEnum.autoconsumption, metricTargetsEnum.consumption],
-    )
+    // Handling the targets makes it simpler instead of the useMetrics as it's a straightforward array of metricTargetType
+    // Meanwhile the setTargets for useMetrics needs to add {type: 'timeserie'} everytime...
+    const [targets, setTargets] = useState<metricTargetType[]>(getDefaultConsumptionTargets(enphaseOff))
     // Indicates if enedisSgeConsent is not Connected
     const enedisSgeOff = enedisSgeConsent?.enedisSgeConsentState !== 'CONNECTED'
     const hidePmax = period === 'daily' || enedisSgeOff
-    // Track the change of visibleTargetCharts, so that we don't call getMetrics when visibleTargetCharts change (and thus no request when showing / hiding target in MyConsumptionChart).
-    const isVisibleTargetChartsChanged = useRef(false)
-    const { data, getMetricsWithParams } = useMetrics({
+
+    const { data, getMetricsWithParams, isMetricsLoading } = useMetrics({
         interval: metricsInterval,
         range: range,
-        targets: [
-            {
-                target: metricTargetsEnum.consumption,
-                type: 'timeserie',
-            },
-            {
-                target: metricTargetsEnum.autoconsumption,
-                type: 'timeserie',
-            },
-        ],
+        targets: [],
         filters,
     })
+    // Using ConsumptionChartData allow the front end to add additional chart data not only those from useMetrics.
+    // Such as totalOffIdleConsumption
     const [consumptionChartData, setConsumptionChartData] = useState<IMetric[]>(data)
 
     // This state represents whether or not the chart is stacked: true.
-    const isStackedEnabled = useMemo(
-        () =>
-            !visibleTargetCharts.some((visibleTargetChart) =>
-                targetOptions.includes(visibleTargetChart as metricTargetsEnum),
-            ),
-        [visibleTargetCharts],
-    )
-
-    // This state represents whether or not the chart is stacked: true.
-    const isEurosConsumptionChart = useMemo(
-        () => visibleTargetCharts.includes(metricTargetsEnum.eurosConsumption),
-        [visibleTargetCharts],
-    )
-    const isEurosConsumptionDisabled = !isEurosConsumptionChart && period === 'daily'
-
-    // State that stores if visibleTargetCharts contains pMax or eurosConsumption when period is euros, so that when period is "daily". With this variable we prevent getMetrics to execute until we remove € and pMax targets.
-    const isEurosConsumptionOrPmaxVisibleTargetChartOnPeriodDaily = useMemo(() => {
-        return (
-            period === 'daily' &&
-            (visibleTargetCharts.includes(metricTargetsEnum.eurosConsumption) ||
-                visibleTargetCharts.includes(metricTargetsEnum.pMax))
-        )
-    }, [period, visibleTargetCharts])
-
-    useEffect(() => {
-        // When period is daily, remove target pMax or eurosConsumption from visibleTargetCharts and thus when calling getMetrics it won't have these targets.
-        if (period === 'daily') {
-            setVisibleTargetsCharts((prevState) =>
-                filterPmaxAndEurosConsumptionTargetFromVisibleChartTargets(prevState),
+    const isStackedEnabled = useMemo(() => {
+        if (period === 'daily')
+            return !targets.some((target) =>
+                ([metricTargetsEnum.consumption, metricTargetsEnum.baseConsumption] as metricTargetType[]).includes(
+                    target,
+                ),
             )
-        }
-    }, [period])
+        else return !targets.some((target) => temperatureOrPmaxTargets.includes(target))
+    }, [period, targets])
 
+    // MetricRequest shouldn't be allowed when period is daily (metric interval is '1m' or '30m' and targets don't include euros or idle).
+    const isMetricRequestNotAllowed = useMemo(() => {
+        return (
+            ['1m', '30m'].includes(metricsInterval) &&
+            targets.some((target) => [...eurosConsumptionTargets].includes(target))
+        )
+    }, [targets, metricsInterval])
+
+    // When switching to period daily, if Euros Charts or Idle charts buttons are selected, metrics should be reset.
+    // This useEffect reset metrics.
     useEffect(() => {
-        // Resetting isVisibleTargetChartsChanged when range, filters or metricsInterval change so that we can call getMetrics only when these change.
-        isVisibleTargetChartsChanged.current = false
-    }, [filters, range, metricsInterval])
+        if (isMetricRequestNotAllowed) setTargets(getDefaultConsumptionTargets(enphaseOff))
+    }, [isMetricRequestNotAllowed, enphaseOff])
 
-    // Desire behaviour is to focus on calling getMetrics on the active target show in MyConsumptionChart, and handle the spinner only for those targets.
-    // Then in the background fetching the remaining targets, and will not show a spinner and will be done without any user experience knowing it.
+    const isEurosButtonToggled = useMemo(
+        () => targets.some((target) => [...eurosConsumptionTargets].includes(target)),
+        [targets],
+    )
+    const targetMenuActiveButton = useMemo(() => {
+        if (
+            targets.includes(metricTargetsEnum.internalTemperature) ||
+            targets.includes(metricTargetsEnum.externalTemperature)
+        )
+            return 'temperature'
+        else if (targets.includes(metricTargetsEnum.pMax)) return 'Pmax'
+        return 'reset'
+    }, [targets])
+
+    const isEurosConsumptionDisabled = !isEurosButtonToggled && period === 'daily'
+
     const getMetrics = useCallback(async () => {
-        // Condition !isVisibleTargetCharts responsible for not calling getMetrics when toggling between targets through UI Buttons (€ consumption, Temperature, pMax)
-        // Condition !isEurosConsumptionOrPmaxVisibleTargetCharts responsible for preventing getMetrics to be called when period changes to daily and there'll is pMax or eurosConsumption targets in the request. Those will be removed in a useEffect and getMetrics will be called.
-        if (!isVisibleTargetChartsChanged.current && !isEurosConsumptionOrPmaxVisibleTargetChartOnPeriodDaily) {
-            setIsConsumptionChartLoading(true)
-            await getMetricsWithParams({ interval: metricsInterval, range, targets: visibleTargetCharts, filters })
-            setIsConsumptionChartLoading(false)
-            getMetricsWithParams({
-                interval: metricsInterval,
-                range,
-                targets: enphaseOff ? EnphaseOffConsumptionChartTargets : ConsumptionChartTargets,
-                filters,
-            })
-        }
-    }, [
-        filters,
-        range,
-        metricsInterval,
-        getMetricsWithParams,
-        visibleTargetCharts,
-        isEurosConsumptionOrPmaxVisibleTargetChartOnPeriodDaily,
-        enphaseOff,
-    ])
+        if (isMetricRequestNotAllowed) return
+        await getMetricsWithParams({ interval: metricsInterval, range, targets, filters })
+    }, [getMetricsWithParams, metricsInterval, range, targets, filters, isMetricRequestNotAllowed])
+
+    // When switching to period daily, if Euros Charts or Idle charts buttons are selected, metrics should be reset.
+    // This useEffect reset metrics.
+    useEffect(() => {
+        if (isMetricRequestNotAllowed) setTargets(getDefaultConsumptionTargets(enphaseOff))
+    }, [isMetricRequestNotAllowed, enphaseOff])
 
     // Happens everytime getMetrics dependencies change, and doesn't execute when hook is instanciated.
     useEffect(() => {
@@ -150,32 +124,46 @@ export const ConsumptionChartContainer = ({
     }, [getMetrics])
 
     useEffect(() => {
-        // To avoid multiple rerendering and thus calculation in MyConsumptionChart, CosnumptionChartData change only once, when visibleTargetChart change or when the first getMetrics targets is loaded, thus avoiding to rerender when the second getMetrics is loaded with all targets which should only happen in the background.
-        if (isVisibleTargetChartsChanged.current || data.length < EnphaseOffConsumptionChartTargets.length)
-            setConsumptionChartData(data.filter((datapoint) => visibleTargetCharts.includes(datapoint.target)))
-    }, [data, visibleTargetCharts])
+        // To avoid multiple rerendering and thus calculation in MyConsumptionChart, CosnumptionChartData change only once, when targets change or when the first getMetrics targets is loaded, thus avoiding to rerender when the second getMetrics is loaded with all targets which should only happen in the background.
+        if (data.length > 0) {
+            let chartData = data.filter((datapoint) => targets.includes(datapoint.target))
+            // Filter target cases.
+            const fileteredMetricsData = filterMetricsData(chartData, period, enphaseOff)
+            if (fileteredMetricsData) {
+                setConsumptionChartData(fileteredMetricsData)
+            } else setConsumptionChartData(chartData)
+        }
+        // Only use data & visibleTargetCharts as dependencies.
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [data, targets])
 
     /**
-     * Show given metric target chart.
+     * Handler when clicking on temperature or pMax menu.
      *
-     * @param target Indicated target.
+     * @param targets Targets related to pMaxOrTemperatureMenu.
      */
-    const showMetricTargetChart = (target: metricTargetType) => {
-        if (enphaseOff && target === metricTargetsEnum.autoconsumption) return
-        isVisibleTargetChartsChanged.current = true
-        setVisibleTargetsCharts((prevState) => [...prevState, target])
-    }
+    const onTemperatureOrPmaxMenuClick = useCallback(async (targets: metricTargetType[]) => {
+        if (targets.length)
+            setTargets((prevTargets) => [
+                ...prevTargets.filter((target) => !temperatureOrPmaxTargets.includes(target)),
+                ...targets,
+            ])
+        else setTargets((prevTargets) => prevTargets.filter((target) => !temperatureOrPmaxTargets.includes(target)))
+    }, [])
 
     /**
-     * Hide given metric target chart.
+     * OnEurosConsumptionToggl Handler Function.
      *
-     * @param target Indicated target.
+     * @param isEuroToggled Indicates if the EurosToggl is set to Euros and was clicked.
      */
-    const hideMetricTargetChart = (target: metricTargetType) => {
-        isVisibleTargetChartsChanged.current = true
-        setVisibleTargetsCharts((prevState) => prevState.filter((visibleTarget) => visibleTarget !== target))
-    }
-
+    const onEurosConsumptionButtonToggl = useCallback(
+        (isEuroToggled: boolean) => {
+            setTargets((_prevTargets) => {
+                return isEuroToggled ? eurosConsumptionTargets : getDefaultConsumptionTargets(enphaseOff)
+            })
+        },
+        [enphaseOff],
+    )
     return (
         <div className="mb-12">
             <div className="relative flex flex-col md:flex-row items-center justify-center">
@@ -193,26 +181,27 @@ export const ConsumptionChartContainer = ({
                     </TypographyFormatMessage>
                     {/* Consommation Watt par jour / Semaine / Mois / Année */}
                     <TypographyFormatMessage variant="h5" style={{ color: theme.palette.primary.contrastText }}>
-                        {showPerPeriodText('consumption', period, isEurosConsumptionChart)}
+                        {showPerPeriodText('consumption', period, isEurosButtonToggled)}
                     </TypographyFormatMessage>
                 </motion.div>
             </div>
 
             <div className="my-16 flex justify-between">
                 <EurosConsumptionButtonToggler
-                    removeTarget={hideMetricTargetChart}
-                    addTarget={showMetricTargetChart}
-                    showEurosConsumption={!isEurosConsumptionChart}
+                    onEuroClick={() => onEurosConsumptionButtonToggl(true)}
+                    onConsumptionClick={() => onEurosConsumptionButtonToggl(false)}
+                    showEurosConsumption={!isEurosButtonToggled}
                     disabled={isEurosConsumptionDisabled}
                 />
                 <TargetMenuGroup
-                    removeTarget={hideMetricTargetChart}
-                    addTarget={showMetricTargetChart}
+                    removeTargets={() => onTemperatureOrPmaxMenuClick([])}
+                    addTargets={onTemperatureOrPmaxMenuClick}
                     hidePmax={hidePmax}
+                    activeButton={targetMenuActiveButton}
                 />
             </div>
 
-            {isConsumptionChartLoading ? (
+            {isMetricsLoading ? (
                 <div className="flex h-full w-full flex-col items-center justify-center" style={{ height: '320px' }}>
                     <CircularProgress style={{ color: theme.palette.background.paper }} />
                 </div>
@@ -225,9 +214,10 @@ export const ConsumptionChartContainer = ({
                     chartType="consumption"
                     chartLabel={enphaseOff ? 'Consommation totale' : 'Electricité achetée sur le réseau'}
                     metricsInterval={metricsInterval}
+                    enphaseOff={enphaseOff}
                 />
             )}
-            <DefaultContractWarning isShowWarning={isEurosConsumptionChart && Boolean(hasMissingHousingContracts)} />
+            <DefaultContractWarning isShowWarning={isEurosButtonToggled && Boolean(hasMissingHousingContracts)} />
             <ConsumptionEnedisSgeWarning isShowWarning={enedisSgeOff && sgeConsentFeatureState} />
         </div>
     )

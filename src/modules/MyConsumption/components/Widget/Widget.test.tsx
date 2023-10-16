@@ -69,6 +69,13 @@ jest.mock('src/modules/Metrics/metricsHook.ts', () => ({
     }),
 }))
 
+// need to mock this because myHouseConfig uses it
+jest.mock('src/modules/MyHouse/MyHouseConfig', () => ({
+    ...jest.requireActual('src/modules/MyHouse/MyHouseConfig'),
+    //eslint-disable-next-line
+    isProductionActiveAndHousingHasAccess: () => true,
+}))
+
 /**
  * Render the widget with the given props.
  *

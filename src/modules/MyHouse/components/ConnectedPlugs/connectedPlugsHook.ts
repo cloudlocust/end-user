@@ -4,7 +4,6 @@ import { axios } from 'src/common/react-platform-components'
 import { useAxiosCancelToken } from 'src/hooks/AxiosCancelToken'
 import { useSnackbar } from 'notistack'
 import { useIntl } from 'react-intl'
-
 import {
     IConnectedPlug,
     IConnectedPlugApiResponse,
@@ -14,7 +13,10 @@ import {
 } from 'src/modules/MyHouse/components/ConnectedPlugs/ConnectedPlugs.d'
 import { isNull } from 'lodash'
 import { HOUSING_API } from 'src/modules/MyHouse/components/HousingList/HousingsHooks'
-import { connectedPlugsFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
+import { getShellyWindowInstructionsHTML } from 'src/modules/MyHouse/components/ConnectedPlugs/ShellyWindowInstructions'
+import { arePlugsUsedBasedOnProductionStatus } from 'src/modules/MyHouse/MyHouseConfig'
+import { useSelector } from 'react-redux'
+import { RootState } from 'src/redux'
 
 /**
  * Connected Plug requests API.
@@ -56,13 +58,15 @@ export function useConnectedPlugList(housingId?: number) {
     const [loadingInProgress, setLoadingInProgress] = useState(false)
     const [connectedPlugList, setConnectedPlugList] = useState<IConnectedPlug[] | []>([])
     const { isCancel, source } = useAxiosCancelToken()
+    const { currentHousingScopes, currentHousing } = useSelector(({ housingModel }: RootState) => housingModel)
 
     /**
      * Fetching Offers function.
      */
     const loadConnectedPlugList = useCallback(async () => {
         setConnectedPlugList([])
-        if (!housingId || !connectedPlugsFeatureState) return
+        if (!housingId || !currentHousing?.meter?.guid || !arePlugsUsedBasedOnProductionStatus(currentHousingScopes))
+            return
         setLoadingInProgress(true)
         /**
          * Used Promise.allSettled() instead of Promise.all to return a promise that resolves after all of the given requests have either been fulfilled or rejected.
@@ -114,7 +118,7 @@ export function useConnectedPlugList(housingId?: number) {
             )
         }
         setLoadingInProgress(false)
-    }, [housingId, source, isCancel, enqueueSnackbar, formatMessage])
+    }, [housingId, currentHousingScopes, source, isCancel, currentHousing?.meter?.guid, enqueueSnackbar, formatMessage])
 
     /**
      * Handler to set production mode in a connected plug.
@@ -227,7 +231,7 @@ export const useShellyConnectedPlugs = (housingId?: number) => {
                         }
                     }, 1000)
                 }
-
+                newShellyWindow.document.write(getShellyWindowInstructionsHTML(shellyUrl))
                 shellyWindow.current = newShellyWindow
             } catch (error) {
                 enqueueSnackbar(
