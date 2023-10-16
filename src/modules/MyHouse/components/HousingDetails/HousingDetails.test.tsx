@@ -10,7 +10,7 @@ import { models } from 'src/models'
 import { AccomodationDataType } from 'src/modules/MyHouse/components/Accomodation/AccomodationType.d'
 import { TEST_ACCOMODATION_RESPONSE as MOCK_TEST_ACCOMODATION_RESPONSE } from 'src/mocks/handlers/accomodation'
 import { TEST_HOUSING_EQUIPMENTS as MOCK_EQUIPMENTS } from 'src/mocks/handlers/equipments'
-import { IEquipmentMeter } from 'src/modules/MyHouse/components/Equipments/EquipmentsType'
+import { IEquipmentMeter } from 'src/modules/MyHouse/components/Installation/InstallationType.d'
 import { TEST_CONNECTED_PLUGS } from 'src/mocks/handlers/connectedPlugs'
 import { IConnectedPlug } from 'src/modules/MyHouse/components/ConnectedPlugs/ConnectedPlugs.d'
 
@@ -67,8 +67,8 @@ let mockEquipmentList: IEquipmentMeter[] | null = TEST_METER_EQUIPMENTS
 /**
  * Mock the useEquipment hook.
  */
-jest.mock('src/modules/MyHouse/components/Equipments/equipmentHooks', () => ({
-    ...jest.requireActual('src/modules/MyHouse/components/Equipments/equipmentHooks'),
+jest.mock('src/modules/MyHouse/components/Installation/installationHook', () => ({
+    ...jest.requireActual('src/modules/MyHouse/components/Installation/installationHook'),
     // eslint-disable-next-line jsdoc/require-jsdoc
     useEquipmentList: () => ({
         loadEquipmentList: mockLoadEquipmentList,
@@ -106,8 +106,10 @@ const store = init({
 const mockHouseConfig = houseConfig as { connectedPlugsFeatureState: boolean }
 
 jest.mock('src/modules/MyHouse/MyHouseConfig', () => ({
+    ...jest.requireActual('src/modules/MyHouse/MyHouseConfig'),
     __esModule: true,
-    connectedPlugsFeatureState: true,
+    //eslint-disable-next-line
+    arePlugsUsedBasedOnProductionStatus: () => process.env.REACT_APP_CONNECTED_PLUGS_FEATURE_STATE === 'enabled',
 }))
 
 describe('Test HousingDetails Component', () => {
@@ -138,7 +140,7 @@ describe('Test HousingDetails Component', () => {
                 { store },
             )
             expect(getByText('Mes prises connectées')).toBeTruthy()
-            expect(getByText('Prise ' + MOCK_TEST_CONNECTED_PLUGS[0].deviceId)).toBeTruthy()
+            expect(getByText(MOCK_TEST_CONNECTED_PLUGS[0].deviceName)).toBeTruthy()
             expect(getByText('Prise 2')).toBeTruthy()
             expect(getByText('Prise 3')).toBeTruthy()
         })
@@ -159,6 +161,7 @@ describe('Test HousingDetails Component', () => {
 
         test('Should not display when Enphase is disabled', async () => {
             mockHouseConfig.connectedPlugsFeatureState = false
+            process.env.REACT_APP_CONNECTED_PLUGS_FEATURE_STATE = 'disabled'
             const { queryByText } = reduxedRender(
                 <Router>
                     <HousingDetails />
@@ -167,6 +170,8 @@ describe('Test HousingDetails Component', () => {
             )
             expect(queryByText('Mes prises connectées')).not.toBeInTheDocument()
             expect(queryByText('Prise 1')).not.toBeInTheDocument()
+
+            process.env.REACT_APP_CONNECTED_PLUGS_FEATURE_STATE = 'enabled'
         })
     })
 })

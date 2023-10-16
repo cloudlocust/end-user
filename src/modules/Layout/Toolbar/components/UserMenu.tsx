@@ -13,6 +13,7 @@ import { equipmentFeatureState, URL_SOLAR_EQUIPMENTS } from 'src/modules/SolarEq
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import { FAQ_REDIRECT_LINK } from 'src/configs'
 import { URL_ALERTS } from 'src/modules/Alerts/AlertsConfig'
+import { useHousingRedux } from 'src/modules/MyHouse/utils/MyHouseHooks'
 
 // TODO This is not a generic component to share with medialem, to update.
 /**
@@ -28,6 +29,8 @@ function UserMenu() {
     const [userMenu, setUserMenu] = useState<Element | null>(null)
     const dispatch = useDispatch<Dispatch>()
     const history = useHistory()
+
+    const { setDefaultHousingModel } = useHousingRedux()
 
     /**
      * Handler for opening the UserMenu when clicking on UserProfile.
@@ -106,7 +109,7 @@ function UserMenu() {
                         iconLabel="edit_notifications"
                         idLabel="Gestion des alertes"
                         defaultMessageLabel="Gestion des alertes"
-                    />{' '}
+                    />
                     <ToolbarMenuItem
                         onMenuItemClick={() => {
                             history.push('/mentions')
@@ -148,7 +151,7 @@ function UserMenu() {
                     <ToolbarMenuItem
                         onMenuItemClick={() => {
                             // Reset Housing Model when logging out.
-                            dispatch.housingModel.setHousingModelState([])
+                            setDefaultHousingModel()
                             dispatch.userModel.logout()
                             history.replace('/login')
                         }}

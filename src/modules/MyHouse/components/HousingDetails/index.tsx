@@ -17,17 +17,17 @@ import { ReactComponent as OtherIcon } from 'src/assets/images/content/housing/O
 import SvgIcon from '@mui/material/SvgIcon'
 import { useTheme, ThemeProvider } from '@mui/material/styles'
 import { useAccomodation } from 'src/modules/MyHouse/components/Accomodation/AccomodationHooks'
-import { useEquipmentList } from 'src/modules/MyHouse/components/Equipments/equipmentHooks'
-import { equipmentNameType } from 'src/modules/MyHouse/components/Equipments/EquipmentsType'
+import { useEquipmentList } from 'src/modules/MyHouse/components/Installation/installationHook'
+import { equipmentNameType } from 'src/modules/MyHouse/components/Installation/InstallationType.d'
 import { MeterStatus } from 'src/modules/MyHouse/components/MeterStatus'
 import { ReactComponent as ElectricityIcon } from 'src/assets/images/content/housing/Electricity.svg'
-import { ReactComponent as GazIcon } from 'src/assets/images/content/housing/Gaz.svg'
+// import { ReactComponent as GazIcon } from 'src/assets/images/content/housing/Gaz.svg'
 import { useSelector } from 'react-redux'
 import { RootState } from 'src/redux'
 import { cloneDeep, isEmpty } from 'lodash'
-import { connectedPlugsFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import { useConnectedPlugList } from 'src/modules/MyHouse/components/ConnectedPlugs/connectedPlugsHook'
+import { arePlugsUsedBasedOnProductionStatus } from 'src/modules/MyHouse/MyHouseConfig'
 
 const Root = styled(FusePageCarded)(() => ({
     '& .FusePageCarded-header': {
@@ -52,7 +52,7 @@ const Root = styled(FusePageCarded)(() => ({
  * @returns  Element Details Tabs.
  */
 export const HousingDetails = () => {
-    const { currentHousing } = useSelector(({ housingModel }: RootState) => housingModel)
+    const { currentHousing, currentHousingScopes } = useSelector(({ housingModel }: RootState) => housingModel)
     const theme = useTheme()
 
     const {
@@ -70,8 +70,22 @@ export const HousingDetails = () => {
         currentHousing?.id,
     )
 
-    // get a default elements with default icons for when it's loading.
-    const [equipementElements, setEquipementElements] = useState<HouseDetailsElementType[]>([
+    const [installationElements, setInstallationElements] = useState<HouseDetailsElementType[]>([
+        {
+            icon: <MoreHorizIcon color="primary" fontSize="large" />,
+            label: 'Chauffage',
+        },
+        {
+            icon: <MoreHorizIcon color="primary" fontSize="large" />,
+            label: 'Eau',
+        },
+        {
+            icon: <MoreHorizIcon color="primary" fontSize="large" />,
+            label: 'Plaques',
+        },
+    ])
+
+    const [equipementElements, setEquipmentElments] = useState<HouseDetailsElementType[]>([
         {
             icon: <MoreHorizIcon color="primary" fontSize="large" />,
             label: 'Chauffage',
@@ -114,12 +128,6 @@ export const HousingDetails = () => {
                             <ElectricityIcon />
                         </SvgIcon>
                     )
-                case 'gaz':
-                    return (
-                        <SvgIcon color="primary">
-                            <GazIcon />
-                        </SvgIcon>
-                    )
                 case 'vitroceramic':
                     return (
                         <SvgIcon color="primary">
@@ -143,22 +151,35 @@ export const HousingDetails = () => {
             }
         }
 
-        if (equipmentList) {
-            setEquipementElements([
-                {
-                    icon: handleEquipmentsIcons('heater'),
-                    label: 'Chauffage',
-                },
-                {
-                    icon: handleEquipmentsIcons('sanitary'),
-                    label: 'Eau',
-                },
-                {
-                    icon: handleEquipmentsIcons('hotplate'),
-                    label: 'Plaques',
-                },
-            ])
-        }
+        setInstallationElements([
+            {
+                icon: handleEquipmentsIcons('heater'),
+                label: 'Chauffage',
+            },
+            {
+                icon: handleEquipmentsIcons('sanitary'),
+                label: 'Eau',
+            },
+            {
+                icon: handleEquipmentsIcons('hotplate'),
+                label: 'Plaques',
+            },
+        ])
+
+        setEquipmentElments([
+            {
+                icon: handleEquipmentsIcons('microwave'),
+                label: 'Micro-onde',
+            },
+            {
+                icon: handleEquipmentsIcons('oven'),
+                label: 'Four',
+            },
+            {
+                icon: handleEquipmentsIcons('dishwasher'),
+                label: 'Lave-vaiselle',
+            },
+        ])
     }, [equipmentList])
 
     // For the house accomodation we don't need to handle the icons based on a certain type.
@@ -190,7 +211,7 @@ export const HousingDetails = () => {
             })
 
             connectedPlugList.slice(0, 3).forEach((connectedPlug, index) => {
-                copyPrevConnectedPlugsElements[index].label = 'Prise ' + connectedPlug.deviceId
+                copyPrevConnectedPlugsElements[index].label = connectedPlug.deviceName
                 copyPrevConnectedPlugsElements[index].icon = <ElectricalServicesIcon color="primary" fontSize="large" />
             })
             return copyPrevConnectedPlugsElements
@@ -218,18 +239,26 @@ export const HousingDetails = () => {
             content={
                 <>
                     <MeterStatus />
-                    <div className="flex flex-col items-center md:flex-row justify-around mt-40 space-x-20">
+                    <div className="flex flex-col items-center md:flex-row justify-around mt-40">
                         <HousingDetailsCard
                             title="Information domicile"
-                            elements={[...housingElements, ...equipementElements]}
+                            elements={[...housingElements, ...installationElements]}
                             typeOfDetails={HousingCardTypeOfDetailsEnum.HOUSSING_INFORMATION}
                             isConfigured={!isEquipmentMeterListEmpty || !isAccomodationMeterListEmpty}
                             loadingInProgress={loadingEquipmentInProgress || loadingAccomodationInProgress}
                         />
+                        <HousingDetailsCard
+                            title="Mes équipements"
+                            elements={equipementElements}
+                            typeOfDetails={HousingCardTypeOfDetailsEnum.HOUSSING_EQUIPMENTS}
+                            isConfigured={!isEquipmentMeterListEmpty}
+                            loadingInProgress={loadingEquipmentInProgress}
+                        />
+
                         {/**
                          * TODO: Configure, isLoading? Elements like Equipments (load default at mount then replace by real data).
                          */}
-                        {connectedPlugsFeatureState && (
+                        {arePlugsUsedBasedOnProductionStatus(currentHousingScopes) && (
                             <HousingDetailsCard
                                 title="Mes prises connectées"
                                 elements={connectedPlugsElements}
@@ -241,6 +270,7 @@ export const HousingDetails = () => {
                     </div>
                 </>
             }
+            innerScroll
         />
     )
 }

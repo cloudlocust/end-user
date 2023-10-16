@@ -36,28 +36,31 @@ export const nrlinkEndpoints = [
 
     // Authorize nrLINK
     // eslint-disable-next-line jsdoc/require-jsdoc
-    rest.post<{ nrlink_guid: string; meter_guid: string }>(`${API_RESOURCES_URL}/nrlink/authorize`, (req, res, ctx) => {
-        // No Data received in NrLink
-        if (req.body.nrlink_guid === 'aaaaa1aaaaa1aaaa')
-            return res(
-                ctx.status(400),
-                ctx.delay(1000),
-                ctx.json({ detail: "Votre nrLINK ne reçoit pas de données vérifier qu'il est connecté au Wifi" }),
-            )
-        // Already connected nrLINK
-        if (req.body.nrlink_guid === 'bbbbb2bbbbb2bbbb')
-            return res(
-                ctx.status(400),
-                ctx.delay(1000),
-                ctx.json({
-                    detail: 'Votre nrLINK est déjà connecté à un autre compteur, veuillez réessayer ou contacter votre Boucle Locale',
-                }),
-            )
-        // Other error
-        if (req.body.nrlink_guid === 'ccccc3ccccc3cccc') return res(ctx.status(400), ctx.delay(1000))
-        // Success
-        return res(ctx.status(200), ctx.delay(1000))
-    }),
+    rest.post<{ nrlink_guid: string; network_identifier: number }>(
+        `${API_RESOURCES_URL}/nrlink/authorize`,
+        (req, res, ctx) => {
+            // No Data received in NrLink
+            if (req.body.nrlink_guid === 'aaaaa1aaaaa1aaaa')
+                return res(
+                    ctx.status(400),
+                    ctx.delay(1000),
+                    ctx.json({ detail: "Votre nrLINK ne reçoit pas de données vérifier qu'il est connecté au Wifi" }),
+                )
+            // Already connected nrLINK
+            if (req.body.nrlink_guid === 'bbbbb2bbbbb2bbbb')
+                return res(
+                    ctx.status(400),
+                    ctx.delay(1000),
+                    ctx.json({
+                        detail: 'Votre nrLINK est déjà connecté à un autre compteur, veuillez réessayer ou contacter votre Boucle Locale',
+                    }),
+                )
+            // Other error
+            if (req.body.nrlink_guid === 'ccccc3ccccc3cccc') return res(ctx.status(400), ctx.delay(1000))
+            // Success
+            return res(ctx.status(200), ctx.delay(1000))
+        },
+    ),
 
     rest.patch<SnakeCasedPropertiesDeep<IReplaceNRLinkPayload>>(`${NRLINK_CONSENT_API}/:houseId`, (req, res, ctx) => {
         const { houseId } = req.params

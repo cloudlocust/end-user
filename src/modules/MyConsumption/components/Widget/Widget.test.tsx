@@ -31,9 +31,9 @@ const ENPHASE_CONSENT_INACTIVE_ERROR_ICON = 'ErrorOutlineIcon'
 const mockGetMetricsWithParams = jest.fn()
 let mockFilters: metricFiltersType = [
     {
-        key: 'network_identifier',
+        key: 'housing_id',
         operator: '=',
-        value: 123456789,
+        value: '123456789',
     },
 ]
 let mockRange = {
@@ -67,6 +67,13 @@ jest.mock('src/modules/Metrics/metricsHook.ts', () => ({
         setFilters: mockSetFilters,
         getMetricsWithParams: mockGetMetricsWithParams,
     }),
+}))
+
+// need to mock this because myHouseConfig uses it
+jest.mock('src/modules/MyHouse/MyHouseConfig', () => ({
+    ...jest.requireActual('src/modules/MyHouse/MyHouseConfig'),
+    //eslint-disable-next-line
+    isProductionActiveAndHousingHasAccess: () => true,
 }))
 
 /**

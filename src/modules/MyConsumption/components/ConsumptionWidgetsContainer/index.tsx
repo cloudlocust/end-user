@@ -1,5 +1,4 @@
 import { useContext, useEffect } from 'react'
-import { globalProductionFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
 import { Grid } from '@mui/material'
 import { useTheme } from '@mui/material'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
@@ -10,6 +9,9 @@ import WidgetConsumption from 'src/modules/MyConsumption/components/WidgetConsum
 import { ConsumptionWidgetsMetricsContext } from 'src/modules/MyConsumption/components/ConsumptionWidgetsContainer/ConsumptionWidgetsMetricsContext'
 import { metricTargetsEnum, metricTargetType } from 'src/modules/Metrics/Metrics.d'
 import WidgetIdleConsumption from 'src/modules/MyConsumption/components/WidgetIdleConsumption'
+import { isProductionActiveAndHousingHasAccess } from 'src/modules/MyHouse/MyHouseConfig'
+import { useSelector } from 'react-redux'
+import { RootState } from 'src/redux'
 
 /**
  * MyConsumptionWidgets Component (it's Wrapper of the list of Widgets).
@@ -35,9 +37,10 @@ const ConsumptionWidgetsContainer = ({
 }: ConsumptionWidgetsContainerProps) => {
     const theme = useTheme()
     const { resetMetricsWidgetData } = useContext(ConsumptionWidgetsMetricsContext)
+    const { currentHousingScopes } = useSelector(({ housingModel }: RootState) => housingModel)
 
     const renderedWidgets: metricTargetType[] =
-        globalProductionFeatureState && !enphaseOff
+        isProductionActiveAndHousingHasAccess(currentHousingScopes) && !enphaseOff
             ? [
                   metricTargetsEnum.totalProduction,
                   metricTargetsEnum.eurosConsumption,
@@ -78,7 +81,7 @@ const ConsumptionWidgetsContainer = ({
                      * Otherwise it'll be displayed with then normal Widget component, that displays one info : the consumption total,
                      *    (because in this case consumption total = purchased consumption).
                      */}
-                    {globalProductionFeatureState && !enphaseOff && (
+                    {isProductionActiveAndHousingHasAccess(currentHousingScopes) && !enphaseOff && (
                         <WidgetConsumption
                             target={metricTargetsEnum.consumption}
                             range={range}

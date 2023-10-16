@@ -18,9 +18,9 @@ let mockGlobalProductionFeatureState = true
 
 let mockFilters: metricFiltersType = [
     {
-        key: 'network_identifier',
+        key: 'housing_id',
         operator: '=',
-        value: 123456789,
+        value: '123456789',
     },
 ]
 let mockMetricsInterval: metricIntervalType = '1m'
@@ -40,12 +40,18 @@ const consumptionWidgetsContainerProps: ConsumptionWidgetsContainerProps = {
     enphaseOff: false,
 }
 
+let mockIsProductionActiveAndHousingHasAccess = true
+
 jest.mock('src/modules/MyHouse/MyHouseConfig', () => ({
     ...jest.requireActual('src/modules/MyHouse/MyHouseConfig'),
     // eslint-disable-next-line jsdoc/require-jsdoc
     get globalProductionFeatureState() {
         return mockGlobalProductionFeatureState
     },
+    //eslint-disable-next-line
+    arePlugsUsedBasedOnProductionStatus: () => true,
+    //eslint-disable-next-line
+    isProductionActiveAndHousingHasAccess: () => mockIsProductionActiveAndHousingHasAccess,
 }))
 
 jest.mock('src/modules/Metrics/metricsHook.ts', () => ({
@@ -97,7 +103,8 @@ describe('ConsumptionWidgetsContainer test', () => {
         expect(queryByText(AUTOCONSOMMATION_TEXT)).not.toBeInTheDocument()
     })
     test('when the enphase feature is disabled, the widgets of production & autoconsumption should not be showing', async () => {
-        mockGlobalProductionFeatureState = false
+        mockGlobalProductionFeatureState = false // in tests no need for this since we mocked the hire function (IsProductionActiveAndHasHousingAccess)
+        mockIsProductionActiveAndHousingHasAccess = false
         const { container, getByText, queryByText } = reduxedRender(
             <Router>
                 <ConsumptionWidgetsMetricsProvider>

@@ -4,10 +4,12 @@ import { TEST_HOUSES } from 'src/mocks/handlers/houses'
 import { IHousing, IHousingState } from 'src/modules/MyHouse/components/HousingList/housing'
 import { applyCamelCase } from 'src/common/react-platform-components'
 import { housingModel } from './model'
+import { ScopesTypesEnum } from './utils/MyHouseCommonTypes.d'
 
 let mockInitialState: IHousingState = {
     housingList: [],
     currentHousing: null,
+    currentHousingScopes: [],
 }
 
 const LIST_OF_HOUSES: IHousing[] = applyCamelCase(TEST_HOUSES)
@@ -50,5 +52,17 @@ describe('test housing model', () => {
         // check if the state changed with correct values
         expect(mockedHousingModel.housingList.length).toBe(LIST_OF_HOUSES.length)
         expect(mockedHousingModel.currentHousing?.id).toBe(LIST_OF_HOUSES[0].id)
+    })
+
+    test('set housing scopes for the current id', async () => {
+        // get scopes for the housing id
+        await store.dispatch.housingModel.loadHousingScopesFromId(LIST_OF_HOUSES[0].id)
+
+        const { housingModel: mockedHousingModel } = store.getState()
+
+        // check that the correct values of the housing id is set in the state.
+
+        expect(mockedHousingModel?.currentHousingScopes.length).toBe(1)
+        expect(mockedHousingModel?.currentHousingScopes[0]).toBe(ScopesTypesEnum.PRODUCTION)
     })
 })

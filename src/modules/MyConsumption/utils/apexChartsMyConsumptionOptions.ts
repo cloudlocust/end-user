@@ -13,6 +13,7 @@ import {
     getChartType,
 } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
 import timezone from 'dayjs/plugin/timezone'
+import { sum } from 'lodash'
 dayjs.extend(timezone)
 
 /**
@@ -144,6 +145,7 @@ const getXAxisLabelFormatFromPeriod = (period: periodType, isTooltipLabel?: bool
  * @param params.chartType Consumption or production type.
  * @param params.chartLabel Chart label according to enphase state.
  * @param params.metricsInterval Active metrics interval.
+ * @param params.enphaseOff Enphase consent not ACTIVE.
  * @returns Props of apexCharts in MyConsumptionChart.
  */
 export const getApexChartMyConsumptionProps = ({
@@ -155,6 +157,7 @@ export const getApexChartMyConsumptionProps = ({
     chartType,
     chartLabel,
     metricsInterval,
+    enphaseOff,
 }: // eslint-disable-next-line jsdoc/require-jsdoc
 {
     // eslint-disable-next-line jsdoc/require-jsdoc
@@ -173,6 +176,8 @@ export const getApexChartMyConsumptionProps = ({
     chartLabel?: 'Consommation totale' | 'Electricité achetée sur le réseau'
     // eslint-disable-next-line jsdoc/require-jsdoc
     metricsInterval?: '1m' | '30m'
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    enphaseOff?: boolean
     // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
     let options: Props['options'] = defaultApexChartOptions(theme)!
@@ -186,12 +191,29 @@ export const getApexChartMyConsumptionProps = ({
 
     // We save the maximum value, so that it'll indicate the unit of the chart, For Consumption (W, kWh or MWh will be indicated according to the max value unit).
     let maxYValue = 0
+    // This variable is used to determine if we should show the Total Production, only when injected is 0.
+    // TODO Refactor to a simpler way split getApexChartMyConsumptionProps to production & consumption props maybe, and have Chart component for each chartType.
+    let showTotalProduction = false
     // eslint-disable-next-line sonarjs/cognitive-complexity
+
     yAxisSeries.forEach((yAxisSerie) => {
         // Keep track of the labels that have already been rendered (for consumption and production charts, values are rounded and this causes duplication).
         let labelsRendered: string[] = []
         // If this Serie doesn't have any data we don't show it on the chart thus we do return, and if this is true for all series then we'll show an empty chart.
         if (yAxisSerie.data.length === 0) return
+
+        let data: any = [...yAxisSerie.data]
+
+        if (
+            period === 'daily' &&
+            (yAxisSerie.name === metricTargetsEnum.peakHourConsumption ||
+                yAxisSerie.name === metricTargetsEnum.offPeakHourConsumption)
+        ) {
+            data = yAxisSerie.data.map((datapoint) =>
+                Array.isArray(datapoint) ? [datapoint[0], Number(datapoint[1])] : datapoint,
+            ) as Array<number>
+        }
+
         // Get specifity of each chart.
         const { label, ...restChartSpecifities } = getChartSpecifities(yAxisSerie.name as metricTargetsEnum, chartLabel)
 
@@ -199,14 +221,28 @@ export const getApexChartMyConsumptionProps = ({
         // That's why change in it to category makes apexcharts gives us the full control for xaxis labels, and thus we can have xaxis visual according to our need
         if (period === 'monthly' || period === 'weekly') xAxisType = 'category'
 
+        // Showing the total production only if the injected production have null or 0 values, To check that injectedProduction have null values happens when sum of injectedProduction is 0.
+        // TODO Refactor to a simpler way split getApexChartMyConsumptionProps to production & consumption props maybe, and have Chart component for each chartType.
+        if (yAxisSerie.name === metricTargetsEnum.injectedProduction) {
+            const totalInjectedProduction = sum(
+                yAxisSerie.data.map((datapoint) => Number((datapoint as [number, number])[1])),
+            )
+            showTotalProduction = totalInjectedProduction === 0
+        }
+
         myConsumptionApexChartSeries!.push({
             ...yAxisSerie,
-            color: getChartColor(yAxisSerie.name as metricTargetsEnum, theme),
+            data,
+            color: getChartColor(yAxisSerie.name as metricTargetsEnum, theme, enphaseOff),
             name: formatMessage({
                 id: label,
                 defaultMessage: label,
             }),
-            type: getChartType(yAxisSerie.name as metricTargetType, period),
+            type:
+                (yAxisSerie.name === metricTargetsEnum.totalProduction && !showTotalProduction) ||
+                (period !== 'daily' && yAxisSerie.name === metricTargetsEnum.consumption && enphaseOff)
+                    ? ''
+                    : getChartType(yAxisSerie.name as metricTargetType, period),
         })
 
         // We compute the consumption chart maximum y value, so that we can indicate the correct unit on the chart, and we do it only one time with this condition.
@@ -215,8 +251,11 @@ export const getApexChartMyConsumptionProps = ({
         // TODO Clean this in a function.
         if (
             (yAxisSerie.name === metricTargetsEnum.consumption ||
+                yAxisSerie.name === metricTargetsEnum.baseConsumption ||
                 yAxisSerie.name === metricTargetsEnum.autoconsumption ||
                 yAxisSerie.name === metricTargetsEnum.injectedProduction ||
+                yAxisSerie.name === metricTargetsEnum.peakHourConsumption ||
+                yAxisSerie.name === metricTargetsEnum.offPeakHourConsumption ||
                 yAxisSerie.name === metricTargetsEnum.totalProduction) &&
             period !== 'daily' &&
             (yAxisSerie.data.length !== 48 || 1440)
@@ -231,7 +270,11 @@ export const getApexChartMyConsumptionProps = ({
             ...restChartSpecifities,
             opposite:
                 yAxisSerie.name !== metricTargetsEnum.consumption &&
+                yAxisSerie.name !== metricTargetsEnum.onlyConsumption &&
+                yAxisSerie.name !== metricTargetsEnum.baseConsumption &&
                 yAxisSerie.name !== metricTargetsEnum.eurosConsumption &&
+                yAxisSerie.name !== metricTargetsEnum.onlyEuroConsumption &&
+                yAxisSerie.name !== metricTargetsEnum.baseEuroConsumption &&
                 yAxisSerie.name !== metricTargetsEnum.totalProduction &&
                 yAxisSerie.name !== metricTargetsEnum.injectedProduction,
 
@@ -247,9 +290,13 @@ export const getApexChartMyConsumptionProps = ({
                     const isTooltipValue = typeof isTooltipOrYaxisLineIndex !== 'number'
                     if (
                         yAxisSerie.name === metricTargetsEnum.consumption ||
+                        yAxisSerie.name === metricTargetsEnum.baseConsumption ||
+                        yAxisSerie.name === metricTargetsEnum.peakHourConsumption ||
+                        yAxisSerie.name === metricTargetsEnum.offPeakHourConsumption ||
                         yAxisSerie.name === metricTargetsEnum.autoconsumption ||
                         yAxisSerie.name === metricTargetsEnum.totalProduction ||
-                        yAxisSerie.name === metricTargetsEnum.injectedProduction
+                        yAxisSerie.name === metricTargetsEnum.injectedProduction ||
+                        yAxisSerie.name === metricTargetsEnum.onlyConsumption
                     ) {
                         // Consumption unit shown in the chart will be W if its daily, or it'll be the unit of the maximum y value.
                         const label =
@@ -292,11 +339,19 @@ export const getApexChartMyConsumptionProps = ({
         // When chart is consumption or eurosConsumption then we show no stroke cause the area chart is enough otherwise it'll be too cumbersome.
         strokeWidthList.push(
             yAxisSerie.name === metricTargetsEnum.consumption ||
+                yAxisSerie.name === metricTargetsEnum.baseConsumption ||
                 yAxisSerie.name === metricTargetsEnum.eurosConsumption ||
                 yAxisSerie.name === metricTargetsEnum.autoconsumption ||
                 yAxisSerie.name === metricTargetsEnum.totalProduction ||
                 yAxisSerie.name === metricTargetsEnum.injectedProduction ||
-                yAxisSerie.name === metricTargetsEnum.subscriptionPrices
+                yAxisSerie.name === metricTargetsEnum.subscriptionPrices ||
+                yAxisSerie.name === metricTargetsEnum.peakHourConsumption ||
+                yAxisSerie.name === metricTargetsEnum.offPeakHourConsumption ||
+                yAxisSerie.name === metricTargetsEnum.baseEuroConsumption ||
+                yAxisSerie.name === metricTargetsEnum.euroPeakHourConsumption ||
+                yAxisSerie.name === metricTargetsEnum.euroOffPeakConsumption ||
+                yAxisSerie.name === metricTargetsEnum.onlyConsumption ||
+                yAxisSerie.name === metricTargetsEnum.onlyEuroConsumption
                 ? 0
                 : 1.5,
         )

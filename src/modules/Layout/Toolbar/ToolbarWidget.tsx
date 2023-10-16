@@ -1,12 +1,11 @@
 import { useEffect } from 'react'
-import { useDispatch } from 'react-redux'
-import { Dispatch } from 'src/redux'
 import { useHistory } from 'react-router-dom'
 import UserMenu from 'src/modules/Layout/Toolbar/components/UserMenu'
 import Notification from 'src/modules/Layout/Toolbar/components/Novu/Notification'
 import './ToolbarWidget.scss'
 import { URL_ERROR_500 } from 'src/modules/Errors/ErrorsConfig'
 import { SelectHousing } from 'src/modules/Layout/Toolbar/components/SelectHousing'
+import { useHousingRedux } from 'src/modules/MyHouse/utils/MyHouseHooks'
 
 /**
  * ToolbarWidget include the content of the Toolbar.
@@ -15,8 +14,7 @@ import { SelectHousing } from 'src/modules/Layout/Toolbar/components/SelectHousi
  */
 export const ToolbarWidget = () => {
     const history = useHistory()
-    // We use the dispatch to get the housing model from the redux state.
-    const dispatch = useDispatch<Dispatch>()
+    const { loadHousingsAndScopes } = useHousingRedux()
 
     // when the toolbar mount we refetch the housings (this insure that the housings are updated when refresh the page)
     useEffect(() => {
@@ -26,13 +24,13 @@ export const ToolbarWidget = () => {
          */
         const loadHousings = async () => {
             try {
-                await dispatch.housingModel.loadHousingsList()
+                await loadHousingsAndScopes()
             } catch (error) {
                 history.push(URL_ERROR_500)
             }
         }
         loadHousings()
-    }, [dispatch.housingModel, history])
+    }, [loadHousingsAndScopes, history])
 
     return (
         <div className="flex flex-1 my-20 justify-between toolbar-widget">

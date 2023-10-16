@@ -12,6 +12,14 @@ export type metricTargetType =
     | 'production_metrics'
     | 'idle_consumption'
     | 'subscription_prices'
+    | 'base_consumption_metrics'
+    | 'hp_consumption_metrics'
+    | 'hc_consumption_metrics'
+    | 'base__euros__consumption_metrics'
+    | 'hp__euros__consumption_metrics'
+    | 'hc__euros__consumption_metrics'
+    | 'only_consumption_metrics'
+    | 'only_euro_consumption_metrics'
 
 /**
  * Enum representing the metricTarget without exposing the backend naming.
@@ -57,6 +65,49 @@ export enum metricTargetsEnum {
      * Enum value for abonnement.
      */
     subscriptionPrices = 'subscription_prices',
+    /**
+     * Enum value for heure pleine.
+     */
+    peakHourConsumption = 'hp_consumption_metrics',
+    /**
+     * Enum for heure creuse.
+     */
+    offPeakHourConsumption = 'hc_consumption_metrics',
+    /**
+     * Base conssumption metrics (according to Tariff de base).
+     */
+    baseConsumption = 'base_consumption_metrics',
+    /**
+     * Euro consumption for heure pleine.
+     */
+    euroPeakHourConsumption = 'hp__euros__consumption_metrics',
+    /**
+     * Euro consumption for heure creuse.
+     */
+    euroOffPeakConsumption = 'hc__euros__consumption_metrics',
+    /**
+     * Base euro consumption (according to Tariff de base).
+     */
+    baseEuroConsumption = 'base__euros__consumption_metrics',
+    /**
+     * 'only_consumption_metrics' target is made for front purposes, it doesn't exist on the back.
+     *
+     * Only used when base consumption & ho & hc are empty.
+     *
+     *
+     * Only consumption metrics.
+     *
+     */
+    onlyConsumption = 'only_consumption_metrics',
+    /**
+     * 'only_euro_consumption_metrics' target is made for front purposes, it doesn't exist on the back.
+     *
+     * Only used when euro base & euro HP & euro HC are empty.
+     *
+     *
+     * Only euro consumption metrics.
+     */
+    onlyEuroConsumption = 'only_euro_consumption_metrics',
 }
 /**
  * Metrics intervals.
@@ -99,17 +150,17 @@ export type metricTargetsType = {
 // eslint-disable-next-line jsdoc/require-jsdoc
 export type metricFiltersType = {
     /**
-     * Key. Default is: "network_identifier".
+     * Key. Default is: "housing_id".
      */
-    key: 'network_identifier'
+    key: 'housing_id'
     /**
      * Operator.
      */
     operator: '='
     /**
-     * Value of the network_identifier.
+     * Value of the housing_id.
      */
-    value: number
+    value: string
 }[]
 
 /**

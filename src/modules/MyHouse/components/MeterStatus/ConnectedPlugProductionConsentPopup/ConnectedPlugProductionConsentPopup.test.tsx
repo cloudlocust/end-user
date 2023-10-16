@@ -44,6 +44,13 @@ jest.mock('react-router', () => ({
 
 let mockLoadingInProgress = false
 
+// TODO - fixe this shity quick fixe for tests by separating myHouseConfig dependencies
+jest.mock('src/modules/MyHouse/MyHouseConfig', () => ({
+    ...jest.requireActual('src/modules/MyHouse/MyHouseConfig'),
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    URL_MY_HOUSE: '/my-house',
+}))
+
 // Mock useInstallationRequestsList hook
 jest.mock('src/modules/MyHouse/components/ConnectedPlugs/connectedPlugsHook', () => ({
     ...jest.requireActual('src/modules/MyHouse/components/ConnectedPlugs/connectedPlugsHook'),
@@ -119,8 +126,8 @@ describe('ConnectedPlugProductionConsentPopup component', () => {
                 },
             )
 
-            expect(getByText(`Prise ${mockConnectedPlugsList[0].deviceId}`)).toBeTruthy()
-            expect(getByText(`Prise ${mockConnectedPlugsList[1].deviceId}`)).toBeTruthy()
+            expect(getByText(mockConnectedPlugsList[0].deviceName)).toBeTruthy()
+            expect(getByText(mockConnectedPlugsList[1].deviceName)).toBeTruthy()
         })
 
         test('when Selecting a connected plug and submitting, associate connected plug should be called and history pushed', async () => {
@@ -134,9 +141,9 @@ describe('ConnectedPlugProductionConsentPopup component', () => {
                 },
             )
 
-            userEvent.click(getByLabelText(`Prise ${mockConnectedPlugsList[0].deviceId}`))
+            userEvent.click(getByLabelText(mockConnectedPlugsList[0].deviceName))
 
-            const selectedConnectedPlugOption = getByLabelText(`Prise ${mockConnectedPlugsList[0].deviceId}`)
+            const selectedConnectedPlugOption = getByLabelText(mockConnectedPlugsList[0].deviceName)
                 .parentElement as HTMLDivElement
 
             expect(selectedConnectedPlugOption.classList.contains(checkedOptionClassname)).toBeTruthy()

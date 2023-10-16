@@ -70,13 +70,19 @@ export const targetOptions: metricTargetsEnum[] = [
 ]
 
 /**
+ * Transparent color.
+ */
+export const TRANSPARENT_COLOR = 'rgba(255,255,255, .0)'
+
+/**
  * Function that returns the color for each metricTarget Chart.
  *
  * @param chartName MetricTarget Chart.
  * @param theme Current MUI Theme Applied.
+ * @param enphaseOff Enphase consent not ACTIVE.
  * @returns Color of the chartName.
  */
-export const getChartColor = (chartName: metricTargetsEnum, theme: Theme) => {
+export const getChartColor = (chartName: metricTargetsEnum, theme: Theme, enphaseOff?: boolean) => {
     switch (chartName) {
         case metricTargetsEnum.externalTemperature:
             return '#FFC200'
@@ -85,6 +91,9 @@ export const getChartColor = (chartName: metricTargetsEnum, theme: Theme) => {
         case metricTargetsEnum.pMax:
             return '#FF7A00'
         case metricTargetsEnum.eurosConsumption:
+            return TRANSPARENT_COLOR
+        case metricTargetsEnum.baseEuroConsumption:
+        case metricTargetsEnum.onlyEuroConsumption:
             return theme.palette.primary.light
         case metricTargetsEnum.autoconsumption:
             return '#BEECDB'
@@ -94,6 +103,18 @@ export const getChartColor = (chartName: metricTargetsEnum, theme: Theme) => {
             return '#6E9A8B'
         case metricTargetsEnum.subscriptionPrices:
             return '#CCDCDD'
+        case metricTargetsEnum.peakHourConsumption:
+            return '#CC9121'
+        case metricTargetsEnum.offPeakHourConsumption:
+            return '#CCAB1D'
+        case metricTargetsEnum.consumption:
+            return enphaseOff ? TRANSPARENT_COLOR : theme.palette.secondary.main
+        case metricTargetsEnum.euroPeakHourConsumption:
+            return '#4DD9E4'
+        case metricTargetsEnum.euroOffPeakConsumption:
+            return '#006970'
+        case metricTargetsEnum.onlyConsumption:
+            return theme.palette.secondary.main
         default:
             return theme.palette.secondary.main
     }
@@ -122,7 +143,11 @@ export const getYPointValueLabel = (
     const value = isNil(yValue) ? '' : yValue
     switch (chartName) {
         case metricTargetsEnum.eurosConsumption:
+        case metricTargetsEnum.baseEuroConsumption:
         case metricTargetsEnum.subscriptionPrices:
+        case metricTargetsEnum.euroPeakHourConsumption:
+        case metricTargetsEnum.euroOffPeakConsumption:
+        case metricTargetsEnum.onlyEuroConsumption:
             return `${value === '' ? value : value.toFixed(2)} €`
         case metricTargetsEnum.externalTemperature:
         case metricTargetsEnum.internalTemperature:
@@ -131,9 +156,13 @@ export const getYPointValueLabel = (
             // Value given by backend is in Va and thus convert it to kVA.
             return `${value === '' ? value : convert(value).from('VA').to('kVA'!).toFixed(2)} kVA`
         case metricTargetsEnum.consumption:
+        case metricTargetsEnum.baseConsumption:
         case metricTargetsEnum.autoconsumption:
         case metricTargetsEnum.totalProduction:
         case metricTargetsEnum.injectedProduction:
+        case metricTargetsEnum.peakHourConsumption:
+        case metricTargetsEnum.offPeakHourConsumption:
+        case metricTargetsEnum.onlyConsumption:
             return `${
                 value === ''
                     ? value
@@ -157,24 +186,57 @@ export const NRLINK_ENEDIS_OFF_MESSAGE =
 export const ENPHASE_OFF_MESSAGE = 'Pour voir vos données de production veuillez connecter votre onduleur'
 
 /**
+ * Targets when enphase is ON.
+ * Enphase off message.
+ */
+export const PRODUCTION_OFF_MESSAGE =
+    'Pour voir vos données de production veuillez connecter votre onduleur Ou Reliez la prise Shelly de vos panneaux plug&play'
+
+/**
  * Targets shown in ConsumptionChart.
  */
 export const ConsumptionChartTargets: metricTargetType[] = [
     metricTargetsEnum.autoconsumption,
     metricTargetsEnum.consumption,
+    metricTargetsEnum.baseConsumption,
     metricTargetsEnum.eurosConsumption,
     metricTargetsEnum.pMax,
     metricTargetsEnum.externalTemperature,
     metricTargetsEnum.internalTemperature,
+    metricTargetsEnum.peakHourConsumption,
+    metricTargetsEnum.offPeakHourConsumption,
 ]
 
 /**
  * When EnphaseOff Targets shown in ConsumptionChart.
  */
 export const EnphaseOffConsumptionChartTargets: metricTargetType[] = [
+    metricTargetsEnum.baseConsumption,
     metricTargetsEnum.consumption,
     metricTargetsEnum.eurosConsumption,
     metricTargetsEnum.pMax,
     metricTargetsEnum.externalTemperature,
     metricTargetsEnum.internalTemperature,
+    metricTargetsEnum.peakHourConsumption,
+    metricTargetsEnum.offPeakHourConsumption,
+]
+
+/**
+ * Targets related to Euros Consumption.
+ */
+export const eurosConsumptionTargets: metricTargetType[] = [
+    metricTargetsEnum.eurosConsumption,
+    metricTargetsEnum.baseEuroConsumption,
+    metricTargetsEnum.euroPeakHourConsumption,
+    metricTargetsEnum.euroOffPeakConsumption,
+    metricTargetsEnum.subscriptionPrices,
+]
+
+/**
+ * Targets related to the TargetMenuGroup button which consists of temperature and pMax.
+ */
+export const temperatureOrPmaxTargets: metricTargetType[] = [
+    metricTargetsEnum.pMax,
+    metricTargetsEnum.internalTemperature,
+    metricTargetsEnum.externalTemperature,
 ]

@@ -19,6 +19,10 @@ export type FormProps =
          * Erro handler.
          */
         onError?(error: unknown): void
+        /**
+         * Form style.
+         */
+        style?: React.CSSProperties
     }
 
 /**

@@ -62,7 +62,7 @@ const ConnectedPlugProductionListSelect = ({ connectedPlugList, onSubmit }: ISel
                                     }}
                                     value={connectedPlug.deviceId}
                                     control={<Radio color="primary" />}
-                                    label={'Prise ' + connectedPlug.deviceId}
+                                    label={connectedPlug.deviceName}
                                 />
                             ))}
                         </RadioGroup>
