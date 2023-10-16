@@ -217,9 +217,9 @@ describe('test pure functions', () => {
         let resultMetricFilter = formatMetricFilter(FAKE_HOUSING_ID)
         expect(resultMetricFilter).toStrictEqual([
             {
-                key: 'network_identifier',
+                key: 'housing_id',
                 operator: '=',
-                value: FAKE_HOUSING_ID,
+                value: `${FAKE_HOUSING_ID}`,
             },
         ])
     })

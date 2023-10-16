@@ -150,17 +150,17 @@ export type metricTargetsType = {
 // eslint-disable-next-line jsdoc/require-jsdoc
 export type metricFiltersType = {
     /**
-     * Key. Default is: "network_identifier".
+     * Key. Default is: "housing_id".
      */
-    key: 'network_identifier'
+    key: 'housing_id'
     /**
      * Operator.
      */
     operator: '='
     /**
-     * Value of the network_identifier.
+     * Value of the housing_id.
      */
-    value: number
+    value: string
 }[]
 
 /**

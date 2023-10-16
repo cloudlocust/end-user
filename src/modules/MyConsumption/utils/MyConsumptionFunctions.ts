@@ -51,9 +51,9 @@ import { temperatureOrPmaxTargets } from 'src/modules/MyConsumption/utils/myCons
 export const formatMetricFilter = (housingId: number) => {
     return [
         {
-            key: 'network_identifier',
+            key: 'housing_id',
             operator: '=',
-            value: housingId,
+            value: `${housingId}`,
         },
     ] as metricFiltersType
 }

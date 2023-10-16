@@ -27,9 +27,9 @@ let mockProductionChartErrorState = false
 let mockConnectedPlugsFeatureState = true
 let mockFilters: metricFiltersType = [
     {
-        key: 'network_identifier',
+        key: 'housing_id',
         operator: '=',
-        value: 123456789,
+        value: '123456789',
     },
 ]
 let mockRange = {

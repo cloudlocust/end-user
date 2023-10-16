@@ -18,9 +18,9 @@ let mockGlobalProductionFeatureState = true
 
 let mockFilters: metricFiltersType = [
     {
-        key: 'network_identifier',
+        key: 'housing_id',
         operator: '=',
-        value: 123456789,
+        value: '123456789',
     },
 ]
 let mockMetricsInterval: metricIntervalType = '1m'
