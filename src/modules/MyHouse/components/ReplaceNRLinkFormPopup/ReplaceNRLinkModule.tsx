@@ -34,11 +34,9 @@ export const ReplaceNRLinkModule = ({ nrLinkConsent, onAfterReplaceNRLink }: IRe
 
     return (
         <>
-            <div className="flex flex-1 justify-end">
-                <IconButton color="primary" size="large" onClick={() => setModalDisplayState(true)}>
-                    <EditIcon />
-                </IconButton>
-            </div>
+            <IconButton color="primary" size="small" onClick={() => setModalDisplayState(true)}>
+                <EditIcon />
+            </IconButton>
             <Modal
                 aria-label="ReplaceNRLinkFormPopup"
                 open={modalIsDisplayed}

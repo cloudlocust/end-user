@@ -68,12 +68,14 @@ export const BuilderUseRegister = ({
                 const { user: userResponse } = await dispatch.userModel.register({ data })
                 setIsRegisterInProgress(false)
                 if (userResponse) {
-                    enqueueSnackbar(
-                        Boolean(USER_REGISTRATION_AUTO_VALIDATE)
-                            ? 'Votre inscription a bien été prise en compte. Vous allez reçevoir un lien de confirmation sur votre adresse email.'
-                            : "Votre inscription a bien été prise en compte, vous pourrez vous connecter une fois celle-ci validée par l'administrateur.",
-                        { variant: 'success', autoHideDuration: 8000 },
-                    )
+                    // If it's energy provider, we don't show the snackbar message.
+                    !isPopupAfterRegistration &&
+                        enqueueSnackbar(
+                            Boolean(USER_REGISTRATION_AUTO_VALIDATE)
+                                ? 'Votre inscription a bien été prise en compte. Vous allez reçevoir un lien de confirmation sur votre adresse email.'
+                                : "Votre inscription a bien été prise en compte, vous pourrez vous connecter une fois celle-ci validée par l'administrateur.",
+                            { variant: 'success', autoHideDuration: 8000 },
+                        )
                     handleOnAfterSubmit(data)
                 }
             } catch (error) {

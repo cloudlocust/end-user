@@ -1,9 +1,18 @@
 import { metricTargetsEnum, metricTargetType } from 'src/modules/Metrics/Metrics.d'
-import { PeriodEnum } from 'src/modules/MyConsumption/myConsumptionTypes'
+import { PeriodEnum } from 'src/modules/MyConsumption/myConsumptionTypes.d'
 import { Theme } from '@mui/material/styles/createTheme'
 import { isNil } from 'lodash'
 import convert, { Unit } from 'convert-units'
 
+/**
+ * Map Consumption Period in its Index.
+ */
+export const dataConsumptionPeriodValueList = [
+    PeriodEnum.DAILY,
+    PeriodEnum.WEEKLY,
+    PeriodEnum.MONTHLY,
+    PeriodEnum.YEARLY,
+]
 /**
  * Data Consumption Period.
  */
@@ -91,12 +100,18 @@ export const getChartColor = (chartName: metricTargetsEnum, theme: Theme, enphas
         case metricTargetsEnum.pMax:
             return '#FF7A00'
         case metricTargetsEnum.eurosConsumption:
+        case metricTargetsEnum.totalEurosIdleConsumption:
+        case metricTargetsEnum.totalIdleConsumption:
             return TRANSPARENT_COLOR
         case metricTargetsEnum.baseEuroConsumption:
+        case metricTargetsEnum.totalEurosOffIdleConsumption:
         case metricTargetsEnum.onlyEuroConsumption:
             return theme.palette.primary.light
         case metricTargetsEnum.autoconsumption:
             return '#BEECDB'
+        case metricTargetsEnum.idleConsumption:
+        case metricTargetsEnum.eurosIdleConsumption:
+            return '#8191B2'
         case metricTargetsEnum.totalProduction:
             return '#C8D210'
         case metricTargetsEnum.injectedProduction:
@@ -107,6 +122,8 @@ export const getChartColor = (chartName: metricTargetsEnum, theme: Theme, enphas
             return '#CC9121'
         case metricTargetsEnum.offPeakHourConsumption:
             return '#CCAB1D'
+        case metricTargetsEnum.totalOffIdleConsumption:
+            return theme.palette.secondary.main
         case metricTargetsEnum.consumption:
             return enphaseOff ? TRANSPARENT_COLOR : theme.palette.secondary.main
         case metricTargetsEnum.euroPeakHourConsumption:
@@ -143,12 +160,17 @@ export const getYPointValueLabel = (
     const value = isNil(yValue) ? '' : yValue
     switch (chartName) {
         case metricTargetsEnum.eurosConsumption:
+        case metricTargetsEnum.totalEurosIdleConsumption:
         case metricTargetsEnum.baseEuroConsumption:
         case metricTargetsEnum.subscriptionPrices:
         case metricTargetsEnum.euroPeakHourConsumption:
         case metricTargetsEnum.euroOffPeakConsumption:
+        case metricTargetsEnum.eurosIdleConsumption:
+        case metricTargetsEnum.totalEurosOffIdleConsumption:
         case metricTargetsEnum.onlyEuroConsumption:
-            return `${value === '' ? value : value.toFixed(2)} €`
+            // With toFixed it rounds up the number, doing slice and toFixed(3) will make sure to truncate and not round up.
+            // So that we have a result of a number with two digits after the decimal point.
+            return `${value === '' ? value : value.toFixed(3).slice(0, -1)} €`
         case metricTargetsEnum.externalTemperature:
         case metricTargetsEnum.internalTemperature:
             return `${value} °C`
@@ -159,6 +181,9 @@ export const getYPointValueLabel = (
         case metricTargetsEnum.baseConsumption:
         case metricTargetsEnum.autoconsumption:
         case metricTargetsEnum.totalProduction:
+        case metricTargetsEnum.idleConsumption:
+        case metricTargetsEnum.totalOffIdleConsumption:
+        case metricTargetsEnum.totalIdleConsumption:
         case metricTargetsEnum.injectedProduction:
         case metricTargetsEnum.peakHourConsumption:
         case metricTargetsEnum.offPeakHourConsumption:
@@ -168,7 +193,9 @@ export const getYPointValueLabel = (
                     ? value
                     : isYValueRounded
                     ? Math.round(convert(value).from('Wh').to(unit!))
-                    : convert(value).from('Wh').to(unit!).toFixed(2)
+                    : // With toFixed it rounds up the number, doing slice and toFixed(3) will make sure to truncate and not round up.
+                      // So that we have a result of a number with two digits after the decimal point.
+                      convert(value).from('Wh').to(unit!).toFixed(3).slice(0, -1)
             } ${unit}`
         default:
             return ` ${unit}`
@@ -219,6 +246,22 @@ export const EnphaseOffConsumptionChartTargets: metricTargetType[] = [
     metricTargetsEnum.internalTemperature,
     metricTargetsEnum.peakHourConsumption,
     metricTargetsEnum.offPeakHourConsumption,
+]
+
+/**
+ * Targets related to idleConsumption.
+ */
+export const idleConsumptionTargets: metricTargetType[] = [
+    metricTargetsEnum.idleConsumption,
+    metricTargetsEnum.consumption,
+]
+
+/**
+ * Targets related to Euros IdleConsumption.
+ */
+export const eurosIdleConsumptionTargets: metricTargetType[] = [
+    metricTargetsEnum.eurosIdleConsumption,
+    metricTargetsEnum.eurosConsumption,
 ]
 
 /**
