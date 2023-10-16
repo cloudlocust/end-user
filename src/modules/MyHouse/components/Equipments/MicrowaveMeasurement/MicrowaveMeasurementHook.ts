@@ -80,14 +80,14 @@ export function useMicrowaveMeasurement(
     const startMeasurement = useCallback(async () => {
         const status = await getMeasurementStatus()
         if (status === measurementStatusEnum.pending || status === measurementStatusEnum.inProgress) {
-            setMeasurementStatus(status)
             enqueueSnackbar(
                 formatMessage({
                     id: 'Un test de mesure est déjà en cours',
                     defaultMessage: 'Un test de mesure est déjà en cours',
                 }),
-                { variant: 'info' },
+                { autoHideDuration: 5000, variant: 'info' },
             )
+            setMeasurementStatus(status)
         } else {
             try {
                 await axios.post(`${HOUSINGS_EQUIPMENTS_API}/${housingEquipmentId}/measurement/${measurementMode}`, {
@@ -101,7 +101,7 @@ export function useMicrowaveMeasurement(
                         id: 'Erreur lors du lancement du test de mesure',
                         defaultMessage: 'Erreur lors du lancement du test de mesure',
                     }),
-                    { variant: 'error' },
+                    { autoHideDuration: 5000, variant: 'error' },
                 )
             }
         }
@@ -140,6 +140,8 @@ export function useMicrowaveMeasurement(
     return {
         measurementStatus,
         measurementResult,
+        updateResult,
+        updateStatus,
         startMeasurement,
     }
 }

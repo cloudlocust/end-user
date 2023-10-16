@@ -26,8 +26,9 @@ const ResponseMessageProps = {
 const mockStepSetter = jest.fn()
 
 const MeasurementProcessStepProps = {
-    microwave: '',
-    measurementMode: '',
+    housingEquipmentId: 0,
+    measurementMode: 'mode',
+    microwaveNumber: 1,
     stepSetter: mockStepSetter,
 }
 

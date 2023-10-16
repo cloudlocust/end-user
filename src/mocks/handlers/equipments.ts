@@ -9,6 +9,8 @@ import {
     IEquipmentMeter,
 } from 'src/modules/MyHouse/components/Installation/InstallationType.d'
 import { HOUSING_API } from 'src/modules/MyHouse/components/HousingList/HousingsHooks'
+import { measurementStatusEnum } from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement/MeasurementProgress/MeasurementProgress.d'
+import { HOUSINGS_EQUIPMENTS_API } from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement/MicrowaveMeasurementHook'
 /**
  * Mock for meter data to be added.
  */
@@ -26,6 +28,18 @@ export const TEST_AUTHORIZATION_LOAD_EMPTY_METER_EQUIPEMENTS = 'empty meter equi
 export const TEST_LOAD_ERROR_METER_EQUIPMENT = 'errorMeter'
 // eslint-disable-next-line jsdoc/require-jsdoc
 export const TEST_LOAD_ERROR_EQUIPMENT = 'errorEquipment'
+// eslint-disable-next-line jsdoc/require-jsdoc
+export const TEST_MEASUREMENT_RESULT_EXIST = 'measurementResult'
+// eslint-disable-next-line jsdoc/require-jsdoc
+export const TEST_RESULT_VALUE = 25
+// eslint-disable-next-line jsdoc/require-jsdoc
+export const TEST_STATUS_PENDING = 'statusPending'
+// eslint-disable-next-line jsdoc/require-jsdoc
+export const TEST_STATUS_IN_PROGRESS = 'statusInProgress'
+// eslint-disable-next-line jsdoc/require-jsdoc
+export const TEST_STATUS_SUCCESS = 'statusSuccess'
+// eslint-disable-next-line jsdoc/require-jsdoc
+export const TEST_STATUS_FAILED = 'statusFailed'
 
 // eslint-disable-next-line jsdoc/require-jsdoc
 export const CREATED_AT_DATA = '2021-12-15T14:07:38.138000'
@@ -273,5 +287,82 @@ export const equipmentsEndpoints = [
             // Other error
             return res(ctx.status(401), ctx.delay(1000))
         }
+    }),
+
+    // Get the result of the measurement
+    rest.get(
+        `${HOUSINGS_EQUIPMENTS_API}/:housingEquipmentId/measurement/:measurementMode/result/:equipmentNumber`,
+        (req, res, ctx) => {
+            return res(
+                ctx.status(200),
+                ctx.delay(1000),
+                ctx.json({
+                    value: TEST_RESULT_VALUE,
+                }),
+            )
+        },
+    ),
+
+    // Get the status of the measurement process
+    rest.get(
+        `${HOUSINGS_EQUIPMENTS_API}/:housingEquipmentId/measurement/:measurementMode/status/:equipmentNumber`,
+        (req, res, ctx) => {
+            const authorization = req.headers.get('authorization')
+            if (authorization && authorization === TEST_STATUS_PENDING)
+                return res(
+                    ctx.status(200),
+                    ctx.delay(1000),
+                    ctx.json({
+                        status: measurementStatusEnum.pending,
+                    }),
+                )
+            if (authorization && authorization === TEST_STATUS_IN_PROGRESS)
+                return res(
+                    ctx.status(200),
+                    ctx.delay(1000),
+                    ctx.json({
+                        status: measurementStatusEnum.inProgress,
+                    }),
+                )
+            if (authorization && authorization === TEST_STATUS_SUCCESS)
+                return res(
+                    ctx.status(200),
+                    ctx.delay(1000),
+                    ctx.json({
+                        status: measurementStatusEnum.success,
+                    }),
+                )
+            if (authorization && authorization === TEST_STATUS_FAILED)
+                return res(
+                    ctx.status(200),
+                    ctx.delay(1000),
+                    ctx.json({
+                        status: measurementStatusEnum.failed,
+                    }),
+                )
+            else
+                return res(
+                    ctx.status(404),
+                    ctx.delay(1000),
+                    ctx.json({
+                        detail: "L'équipement du logement n'existe pas !",
+                    }),
+                )
+        },
+    ),
+
+    // Start the measurement process for an equipment
+    rest.post(`${HOUSINGS_EQUIPMENTS_API}/:housingEquipmentId/measurement/:measurementMode`, (req, res, ctx) => {
+        const authorization = req.headers.get('authorization')
+        if (authorization && authorization !== TEST_STATUS_PENDING && authorization !== TEST_STATUS_IN_PROGRESS)
+            return res(ctx.status(200), ctx.delay(1000))
+        else
+            return res(
+                ctx.status(400),
+                ctx.delay(1000),
+                ctx.json({
+                    detail: "Une mesure est en cours, veuillez patienter jusqu'à ce qu'elle soit terminée !",
+                }),
+            )
     }),
 ]
