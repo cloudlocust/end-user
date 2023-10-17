@@ -3,7 +3,7 @@ import { BrowserRouter as Router } from 'react-router-dom'
 import { IMetric, metricFiltersType, metricIntervalType, metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
 import { TEST_SUCCESS_WEEK_METRICS } from 'src/mocks/handlers/metrics'
 import { periodType, ProductionChartContainerProps } from 'src/modules/MyConsumption/myConsumptionTypes'
-import { EchartsProductionChartContainer } from 'src/modules/MyConsumption/components/EchartsProductionChart/EchartsProductionChartContainer'
+import { ProductionChartContainer } from 'src/modules/MyConsumption/components/ProductionChart/ProductionChartContainer'
 import { ENPHASE_OFF_MESSAGE } from 'src/modules/MyConsumption/utils/myConsumptionVariables'
 
 let mockData: IMetric[] = TEST_SUCCESS_WEEK_METRICS([
@@ -110,7 +110,7 @@ describe('ProductionChartContainer test', () => {
             productionChartContainerProps.period = period
             const { getByText } = reduxedRender(
                 <Router>
-                    <EchartsProductionChartContainer {...productionChartContainerProps} />
+                    <ProductionChartContainer {...productionChartContainerProps} />
                 </Router>,
             )
             expect(getByText(text)).toBeTruthy()
@@ -120,7 +120,7 @@ describe('ProductionChartContainer test', () => {
         mockIsMetricsLoading = true
         const { container } = reduxedRender(
             <Router>
-                <EchartsProductionChartContainer {...productionChartContainerProps} />
+                <ProductionChartContainer {...productionChartContainerProps} />
             </Router>,
         )
         expect(container.querySelector(circularProgressClassname)).toBeInTheDocument()
@@ -130,7 +130,7 @@ describe('ProductionChartContainer test', () => {
         productionChartContainerProps.isProductionConsentLoadingInProgress = true
         const { container } = reduxedRender(
             <Router>
-                <EchartsProductionChartContainer {...productionChartContainerProps} />
+                <ProductionChartContainer {...productionChartContainerProps} />
             </Router>,
         )
         expect(container.querySelector(circularProgressClassname)).toBeInTheDocument()
@@ -144,7 +144,7 @@ describe('ProductionChartContainer test', () => {
         mockConnectedPlugsFeatureState = true
         const { getByText } = reduxedRender(
             <Router>
-                <EchartsProductionChartContainer {...productionChartContainerProps} />
+                <ProductionChartContainer {...productionChartContainerProps} />
             </Router>,
         )
         expect(getByText(PRODUCTION_CONSENT_OFF_MESSAGE)).toBeTruthy()
@@ -155,7 +155,7 @@ describe('ProductionChartContainer test', () => {
         process.env.REACT_APP_CONNECTED_PLUGS_FEATURE_STATE = 'disabled'
         const { getByText } = reduxedRender(
             <Router>
-                <EchartsProductionChartContainer {...productionChartContainerProps} />
+                <ProductionChartContainer {...productionChartContainerProps} />
             </Router>,
         )
         expect(getByText(ENPHASE_OFF_MESSAGE)).toBeTruthy()
