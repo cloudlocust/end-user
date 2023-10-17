@@ -6,11 +6,7 @@ import { Theme } from '@mui/material/styles/createTheme'
 import utc from 'dayjs/plugin/utc'
 import convert from 'convert-units'
 import { capitalize, isNil } from 'lodash'
-import {
-    TRANSPARENT_COLOR,
-    getYPointValueLabel,
-    temperatureOrPmaxTargets,
-} from 'src/modules/MyConsumption/utils/myConsumptionVariables'
+import { TRANSPARENT_COLOR, getYPointValueLabel } from 'src/modules/MyConsumption/utils/myConsumptionVariables'
 import { convertConsumptionToWatt } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
 import { PeriodEnum, periodType } from 'src/modules/MyConsumption/myConsumptionTypes.d'
 import timezone from 'dayjs/plugin/timezone'
@@ -18,7 +14,7 @@ import { consumptionWattUnitConversion } from 'src/modules/MyConsumption/utils/u
 import {
     targetYAxisIndexEnum,
     getTargetsYAxisValueFormattersType,
-} from 'src/modules/MyConsumption/components/EchartsConsumptionChart/EchartsConsumptionChartTypes.d'
+} from 'src/modules/MyConsumption/components/MyConsumptionChart/MyConsumptionChartTypes.d'
 dayjs.extend(utc)
 dayjs.extend(timezone)
 
@@ -471,10 +467,11 @@ export const getStackTargetSeriesEchartsConsumptionChart = (
     isSolarProductionConsentOff?: boolean,
 ) => {
     const targetColor = getColorTargetSeriesEchartsConsumptionChart(target, theme, isSolarProductionConsentOff)
-    const stackTemperatureOrPmaxTargetsSeries = 'stackTemperatureOrPmaxTargetsSeries'
     const stackHiddenTargetsSeries = 'stackHiddenTargetsSeries'
     const stackConsumptionTargetsSeries = 'stackConsumptionTargetsSeries'
-    if (temperatureOrPmaxTargets.includes(target)) return stackTemperatureOrPmaxTargetsSeries
+    if (target === metricTargetsEnum.pMax) return 'stackPmaxTargetSeries'
+    if (target === metricTargetsEnum.internalTemperature) return 'stackInternalTemperatureTargetSeries'
+    if (target === metricTargetsEnum.externalTemperature) return 'stackExternalTemperatureTargetSeries'
     if (targetColor === TRANSPARENT_COLOR) return stackHiddenTargetsSeries
     return stackConsumptionTargetsSeries
 }

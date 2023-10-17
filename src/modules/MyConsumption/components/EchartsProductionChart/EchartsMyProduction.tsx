@@ -2,7 +2,6 @@ import { useMemo } from 'react'
 import ReactECharts from 'echarts-for-react'
 import { formatMetricsDataToTimestampsValues } from 'src/modules/Metrics/formatMetricsData'
 import { useTheme } from '@mui/material/styles'
-import 'src/modules/MyConsumption/components/MyConsumptionChart/MyConsumptionChart.scss'
 import { getEchartsProductionChartOptions } from 'src/modules/MyConsumption/components/EchartsProductionChart/echartsProductionChartOptions'
 import { EchartsProductionChartProps } from 'src/modules/MyConsumption/components/EchartsProductionChart/EchartsProductionChartTypes.d'
 
