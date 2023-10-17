@@ -13,7 +13,7 @@ import { useHasMissingHousingContracts } from 'src/hooks/HasMissingHousingContra
 import { ChartErrorMessage } from 'src/modules/MyConsumption/components/ChartErrorMessage'
 import { NRLINK_ENEDIS_OFF_MESSAGE } from 'src/modules/MyConsumption/utils/myConsumptionVariables'
 import { EcowattWidget } from 'src/modules/Ecowatt/EcowattWidget'
-import { MissingHousingMeterErrorMessage } from './utils/ErrorMessages'
+import { MissingHousingMeterErrorMessage } from 'src/modules/MyConsumption/utils/ErrorMessages'
 import { ProductionChartContainer } from 'src/modules/MyConsumption/components/MyConsumptionChart/ProductionChartContainer'
 import { useEcowatt } from 'src/modules/Ecowatt/EcowattHook'
 import CircularProgress from '@mui/material/CircularProgress'
@@ -21,10 +21,8 @@ import Box from '@mui/material/Box'
 import ConsumptionWidgetsContainer from 'src/modules/MyConsumption/components/ConsumptionWidgetsContainer'
 import { ConsumptionWidgetsMetricsProvider } from 'src/modules/MyConsumption/components/ConsumptionWidgetsContainer/ConsumptionWidgetsMetricsContext'
 import { useConnectedPlugList } from 'src/modules/MyHouse/components/ConnectedPlugs/connectedPlugsHook'
-import {
-    arePlugsUsedBasedOnProductionStatus,
-    isProductionActiveAndHousingHasAccess,
-} from 'src/modules/MyHouse/MyHouseConfig'
+import { connectedPlugsFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
+import { globalProductionFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
 
 /**
  * MyConsumptionContainer.
@@ -36,7 +34,7 @@ export const MyConsumptionContainer = () => {
     const theme = useTheme()
     const { getConsents, nrlinkConsent, enedisSgeConsent, enphaseConsent, consentsLoading } = useConsents()
     const [period, setPeriod] = useState<PeriodEnum>(PeriodEnum.DAILY)
-    const { currentHousing, currentHousingScopes } = useSelector(({ housingModel }: RootState) => housingModel)
+    const { currentHousing } = useSelector(({ housingModel }: RootState) => housingModel)
     const [range, setRange] = useState<metricRangeType>(getRangeV2(PeriodEnum.DAILY))
     const [filters, setFilters] = useState<metricFiltersType>([])
 
@@ -60,9 +58,9 @@ export const MyConsumptionContainer = () => {
     const isProductionConnectedPlug = getProductionConnectedPlug()
 
     // TODO put enphaseConsent.enphaseConsentState in an enum.
-    let isProductionConsentOff = enphaseConsent?.enphaseConsentState !== 'ACTIVE'
-    if (arePlugsUsedBasedOnProductionStatus(currentHousingScopes))
-        isProductionConsentOff = isProductionConsentOff && !isProductionConnectedPlug
+    let isSolarProductionConsentOff = enphaseConsent?.enphaseConsentState !== 'ACTIVE'
+    if (connectedPlugsFeatureState)
+        isSolarProductionConsentOff = isSolarProductionConsentOff && !isProductionConnectedPlug
 
     // UseEffect to check for consent whenever a meter is selected.
     useEffect(() => {
@@ -77,16 +75,16 @@ export const MyConsumptionContainer = () => {
      * @param interval Metric Interval selected.
      */
     const setMyConsumptionPeriodMetricsInterval = (interval: metricIntervalType) => {
-        if (interval === '1m') setMetricsInterval(!isProductionConsentOff ? '30m' : '1m')
+        if (interval === '1m') setMetricsInterval(!isSolarProductionConsentOff ? '30m' : '1m')
         else setMetricsInterval(interval)
     }
 
     useEffect(() => {
         setMetricsInterval((prevState) => {
-            if (prevState === '1m' || prevState === '30m') return !isProductionConsentOff ? '30m' : '1m'
+            if (prevState === '1m' || prevState === '30m') return !isSolarProductionConsentOff ? '30m' : '1m'
             else return prevState
         })
-    }, [isProductionConsentOff])
+    }, [isSolarProductionConsentOff])
 
     useEffect(() => {
         loadConnectedPlugList()
@@ -142,20 +140,20 @@ export const MyConsumptionContainer = () => {
                             hasMissingHousingContracts={hasMissingHousingContracts}
                             range={range}
                             filters={filters}
+                            isSolarProductionConsentOff={isSolarProductionConsentOff}
                             enedisSgeConsent={enedisSgeConsent}
-                            enphaseConsent={enphaseConsent}
                             metricsInterval={metricsInterval}
                         />
                     </>
                 )}
 
                 {/* Production Chart */}
-                {isProductionActiveAndHousingHasAccess(currentHousingScopes) && (
+                {globalProductionFeatureState && (
                     <ProductionChartContainer
                         period={period}
                         range={range}
                         filters={filters}
-                        isProductionConsentOff={isProductionConsentOff}
+                        isProductionConsentOff={isSolarProductionConsentOff}
                         isProductionConsentLoadingInProgress={isConnectedPlugListLoadingInProgress}
                         metricsInterval={metricsInterval}
                     />
@@ -172,7 +170,7 @@ export const MyConsumptionContainer = () => {
                         hasMissingHousingContracts={hasMissingHousingContracts}
                         metricsInterval={metricsInterval}
                         // TODO Change enphaseOff for a more generic naming such as isProductionConsentOff or productionOff...
-                        enphaseOff={isProductionConsentOff}
+                        enphaseOff={isSolarProductionConsentOff}
                         enedisOff={enedisOff}
                     />
                 </ConsumptionWidgetsMetricsProvider>

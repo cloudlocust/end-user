@@ -14,7 +14,7 @@ import { consumptionWattUnitConversion } from 'src/modules/MyConsumption/utils/u
 import {
     targetYAxisIndexEnum,
     getTargetsYAxisValueFormattersType,
-} from 'src/modules/MyConsumption/components/EchartsConsumptionChart/EchartsConsumptionChartTypes.d'
+} from 'src/modules/MyConsumption/components/MyConsumptionChart/MyConsumptionChartTypes.d'
 dayjs.extend(utc)
 dayjs.extend(timezone)
 

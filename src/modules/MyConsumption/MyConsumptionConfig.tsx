@@ -1,7 +1,6 @@
 import { authTypes } from 'src/common/react-platform-components'
 import { IRouteNavigationConfig } from 'src/routes'
 import { MyConsumption } from './MyConsumption'
-import { EchartsMyConsumption } from 'src/modules/MyConsumption/components/EchartsConsumptionChart/EchartsMyConsumption'
 import { ReactComponent as MyConsumptionIcon } from 'src/assets/images/navbarItems/MyConsumption.svg'
 import SvgIcon from '@mui/material/SvgIcon'
 
@@ -53,29 +52,6 @@ export const MyConsumptionConfig = [
                             </SvgIcon>
                         ),
                         url: URL_CONSUMPTION,
-                    },
-                },
-            },
-        },
-    } as IRouteNavigationConfig<MyConsumptionProps>,
-    {
-        path: `/conso/echarts`,
-        component: EchartsMyConsumption,
-        auth: { authType: authTypes.loginRequired },
-        settings: {
-            layout: {
-                navbar: {
-                    UINavbarItem: {
-                        id: 'my_consumption_echarts',
-                        label: 'Conso ECHARTS',
-                        labelAbbreviation: 'Conso Echarts',
-                        type: 'item',
-                        icon: (
-                            <SvgIcon>
-                                <MyConsumptionIcon />
-                            </SvgIcon>
-                        ),
-                        url: `/conso/echarts`,
                     },
                 },
             },

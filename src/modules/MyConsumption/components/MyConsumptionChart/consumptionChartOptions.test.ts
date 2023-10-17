@@ -8,12 +8,12 @@ import {
     getXAxisOptionEchartsConsumptionChart,
     getYAxisOptionEchartsConsumptionChart,
     getPeriodFromTimestampsLength,
-} from 'src/modules/MyConsumption/components/EchartsConsumptionChart/echartsConsumptionChartOptions'
+} from 'src/modules/MyConsumption/components/MyConsumptionChart/consumptionChartOptions'
 import { metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
 import { TRANSPARENT_COLOR } from 'src/modules/MyConsumption/utils/myConsumptionVariables'
 import { createTheme } from '@mui/material/styles'
 import { PeriodEnum } from 'src/modules/MyConsumption/myConsumptionTypes.d'
-import { targetYAxisIndexEnum } from 'src/modules/MyConsumption/components/EchartsConsumptionChart/EchartsConsumptionChartTypes.d'
+import { targetYAxisIndexEnum } from 'src/modules/MyConsumption/components/MyConsumptionChart/MyConsumptionChartTypes.d'
 import { EChartsOption } from 'echarts-for-react'
 
 describe('Test echartsConsumptionOptions', () => {
@@ -189,7 +189,17 @@ describe('Test echartsConsumptionOptions', () => {
             {
                 target: metricTargetsEnum.externalTemperature,
                 isSolarProductionConsentOff: false,
-                stack: 'stackTemperatureOrPmaxTargetsSeries',
+                stack: 'stackExternalTemperatureTargetSeries',
+            },
+            {
+                target: metricTargetsEnum.internalTemperature,
+                isSolarProductionConsentOff: false,
+                stack: 'stackInternalTemperatureTargetSeries',
+            },
+            {
+                target: metricTargetsEnum.pMax,
+                isSolarProductionConsentOff: false,
+                stack: 'stackPmaxTargetSeries',
             },
             {
                 target: metricTargetsEnum.eurosConsumption,
