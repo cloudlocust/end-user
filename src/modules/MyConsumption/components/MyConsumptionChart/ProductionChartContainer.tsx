@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import { motion } from 'framer-motion'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
-import MyConsumptionChart from 'src/modules/MyConsumption/components/MyConsumptionChart'
+// import MyConsumptionChart from 'src/modules/MyConsumption/components/MyConsumptionChart'
 import { showPerPeriodText } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
 import { useTheme } from '@mui/material'
 import { useMetrics } from 'src/modules/Metrics/metricsHook'
@@ -36,7 +36,13 @@ export const ProductionChartContainer = ({
     isProductionConsentLoadingInProgress,
 }: ProductionChartContainerProps) => {
     const theme = useTheme()
-    const { data, setMetricsInterval, setRange, isMetricsLoading } = useMetrics(
+    //eslint-disable-next-line
+    const {
+        //eslint-disable-next-line
+        //data,
+        //eslint-disable-next-line
+        setMetricsInterval, setRange, isMetricsLoading
+    } = useMetrics(
         {
             interval: metricsInterval,
             range: range,
@@ -119,13 +125,13 @@ export const ProductionChartContainer = ({
                     </TypographyFormatMessage>
                 </motion.div>
             </div>
-            <MyConsumptionChart
+            {/* <MyConsumptionChart
                 data={data}
                 period={period}
                 range={range}
                 chartType="production"
                 metricsInterval={metricsInterval}
-            />
+            /> */}
         </div>
     )
 }
