@@ -95,22 +95,24 @@ export function useMicrowaveMeasurement(
             )
             setMeasurementStatus({ status, ...(updatedAt ? { lastUpdate: updatedAt } : {}) })
         } else {
-            try {
-                await axios.post(`${HOUSINGS_EQUIPMENTS_API}/${housingEquipmentId}/measurement/${measurementMode}`, {
+            axios
+                .post(`${HOUSINGS_EQUIPMENTS_API}/${housingEquipmentId}/measurement/${measurementMode}`, {
                     equipment_number: equipmentNumber,
                 })
-                await setMeasurementStatus({ status: measurementStatusEnum.pending })
-            } catch (_) {
-                if (status !== measurementStatusEnum.failed)
+                .then(() => {
+                    setMeasurementStatus({ status: measurementStatusEnum.pending })
+                })
+                .catch((error) => {
                     setMeasurementStatus({ status: measurementStatusEnum.failed })
-                enqueueSnackbar(
-                    formatMessage({
-                        id: 'Erreur lors du lancement du test de mesure',
-                        defaultMessage: 'Erreur lors du lancement du test de mesure',
-                    }),
-                    { autoHideDuration: 5000, variant: 'error' },
-                )
-            }
+                    const errorMessage = error?.response?.data?.detail || 'Erreur lors du lancement du test de mesure'
+                    enqueueSnackbar(
+                        formatMessage({
+                            id: errorMessage,
+                            defaultMessage: errorMessage,
+                        }),
+                        { autoHideDuration: 5000, variant: 'error' },
+                    )
+                })
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [equipmentNumber, housingEquipmentId, measurementMode, updateStatus])
