@@ -98,13 +98,6 @@ jest.mock(
     }),
 )
 
-// ApexCharts cannot render if we don't mock react-apexcharts
-jest.mock(
-    'react-apexcharts',
-    // eslint-disable-next-line jsdoc/require-jsdoc
-    () => (props: any) => <div className="apexcharts-svg" {...props}></div>,
-)
-
 let mockConnectedPlugLoadingInProgress = false
 let mockConnectedPlugsList = MOCK_TEST_CONNECTED_PLUGS
 // eslint-disable-next-line jsdoc/require-jsdoc
