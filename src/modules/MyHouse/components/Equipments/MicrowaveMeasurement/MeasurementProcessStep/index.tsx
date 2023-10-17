@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useMemo } from 'react'
 import Typography from '@mui/material/Typography'
 import Button from '@mui/material/Button'
 import { useTheme } from '@mui/material'
@@ -29,20 +29,22 @@ export const MeasurementProcessStep = ({
     const theme = useTheme()
     const measurementMaxDuration = 50
 
-    const { measurementStatus, measurementResult, startMeasurement } = useMicrowaveMeasurement(
-        housingEquipmentId,
-        measurementMode,
-        microwaveNumber,
-        measurementMaxDuration,
-    )
+    const { measurementStatus, measurementResult, passedTimeFromStatusLastUpdate, startMeasurement } =
+        useMicrowaveMeasurement(housingEquipmentId, measurementMode, microwaveNumber, measurementMaxDuration)
 
-    const headerText = {
-        starting: 'Démarrage de la mesure',
-        [measurementStatusEnum.pending]: 'Démarrage de la mesure',
-        [measurementStatusEnum.inProgress]: 'Mesure en cours',
-        [measurementStatusEnum.success]: 'Mesure terminée avec succès',
-        [measurementStatusEnum.failed]: 'Mesure terminée avec échec',
-    }
+    const getHeaderText = useMemo(() => {
+        switch (measurementStatus?.status) {
+            case measurementStatusEnum.pending:
+                return 'Démarrage de la mesure'
+            case measurementStatusEnum.inProgress:
+                return 'Mesure en cours'
+            case measurementStatusEnum.success:
+                return 'Mesure terminée avec succès'
+            case measurementStatusEnum.failed:
+                return 'Mesure terminée avec échec'
+        }
+        return 'Démarrage de la mesure'
+    }, [measurementStatus])
 
     /**
      * Click handler for the button "Terminer".
@@ -61,17 +63,10 @@ export const MeasurementProcessStep = ({
             {/* Header */}
             <div className="text-center mb-20">
                 <Typography component="h2" fontWeight="500" fontSize="18px" data-testid="headerElement">
-                    {formatMessage(
-                        measurementStatus
-                            ? {
-                                  id: headerText[measurementStatus],
-                                  defaultMessage: headerText[measurementStatus],
-                              }
-                            : {
-                                  id: headerText.starting,
-                                  defaultMessage: headerText.starting,
-                              },
-                    )}
+                    {formatMessage({
+                        id: getHeaderText,
+                        defaultMessage: getHeaderText,
+                    })}
                 </Typography>
             </div>
 
@@ -79,11 +74,15 @@ export const MeasurementProcessStep = ({
             <div className="min-h-256 flex flex-col justify-around">
                 {/* The measurement progress component */}
                 <div className="flex justify-center">
-                    <MeasurementProgress status={measurementStatus} maxDuration={measurementMaxDuration} />
+                    <MeasurementProgress
+                        status={measurementStatus?.status}
+                        maxDuration={measurementMaxDuration}
+                        getTimeFromLastUpdate={passedTimeFromStatusLastUpdate}
+                    />
                 </div>
 
                 {/* Success message */}
-                {measurementStatus === measurementStatusEnum.success && (
+                {measurementStatus?.status === measurementStatusEnum.success && (
                     <ResponseMessage
                         title="Félicitations !"
                         content={`Le test s'est terminé avec succès, vous pouvez désormais analyser vos résultats. Le résultat de la mesure est ${measurementResult}`}
@@ -93,7 +92,7 @@ export const MeasurementProcessStep = ({
                 )}
 
                 {/* Failure message */}
-                {measurementStatus === measurementStatusEnum.failed && (
+                {measurementStatus?.status === measurementStatusEnum.failed && (
                     <ResponseMessage
                         title="La mesure a échoué"
                         content="Le test s'est terminé par un échec, vous pouvez le lancer à nouveau"
@@ -104,12 +103,12 @@ export const MeasurementProcessStep = ({
 
             {/* The test ending button */}
             <div className="flex justify-center mt-20">
-                {measurementStatus !== measurementStatusEnum.failed ? (
+                {measurementStatus?.status !== measurementStatusEnum.failed ? (
                     <Button
                         variant="contained"
                         sx={{ padding: '10px auto', textAlign: 'center', width: '60%', minWidth: '160px' }}
                         onClick={handleFinishBtnClick}
-                        disabled={measurementStatus !== measurementStatusEnum.success}
+                        disabled={measurementStatus?.status !== measurementStatusEnum.success}
                     >
                         {formatMessage({
                             id: 'Terminer',

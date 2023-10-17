@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import CircularProgress from '@mui/material/CircularProgress'
 import Typography from '@mui/material/Typography'
 import { useTheme } from '@mui/material'
@@ -18,10 +17,11 @@ import { formatDuration } from 'src/modules/MyHouse/components/Equipments/Microw
  * @param root0 N/A.
  * @param root0.status Current status of the measurement process.
  * @param root0.maxDuration Estimated value for the maximum duration of the measurement process (in seconds).
+ * @param root0.getTimeFromLastUpdate Function to get the passed time (in seconds) from the last update of status.
  * @returns The MeasurementProgress component.
  */
-export const MeasurementProgress = ({ status, maxDuration }: MeasurementProgressProps) => {
-    const { remainingTime, circularProgressValue } = useMeasurementProgress(status, maxDuration)
+export const MeasurementProgress = ({ status, maxDuration, getTimeFromLastUpdate }: MeasurementProgressProps) => {
+    const { remainingTime, circularProgressValue } = useMeasurementProgress(status, maxDuration, getTimeFromLastUpdate)
     const theme = useTheme()
     const successOrFailed = status === measurementStatusEnum.success || status === measurementStatusEnum.failed
 

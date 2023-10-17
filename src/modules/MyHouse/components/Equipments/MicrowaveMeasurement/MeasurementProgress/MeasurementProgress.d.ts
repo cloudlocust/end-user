@@ -10,6 +10,10 @@ export interface MeasurementProgressProps {
      * Estimated value for the maximum duration of the measurement process (in seconds).
      */
     maxDuration: number
+    /**
+     * Function to get the passed time (in seconds) from the last update of status.
+     */
+    getTimeFromLastUpdate: () => number
 }
 
 /**

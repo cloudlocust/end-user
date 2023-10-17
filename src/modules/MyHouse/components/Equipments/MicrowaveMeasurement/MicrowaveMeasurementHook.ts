@@ -1,9 +1,15 @@
 import { useState, useCallback, useEffect } from 'react'
 import { axios } from 'src/common/react-platform-components'
+import { parseISO, differenceInSeconds } from 'date-fns'
+import { utcToZonedTime } from 'date-fns-tz'
 import { useIntl } from 'src/common/react-platform-translation'
 import { useSnackbar } from 'notistack'
 import { API_RESOURCES_URL } from 'src/configs'
 import { measurementStatusEnum } from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement/MeasurementProgress/MeasurementProgress.d'
+import {
+    MeasurementStatusApiResponse,
+    MeasurementStatusStateType,
+} from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement/MicrowaveMeasurement.d'
 
 /**
  * Housings equipments endpoint.
@@ -27,7 +33,7 @@ export function useMicrowaveMeasurement(
 ) {
     const { enqueueSnackbar } = useSnackbar()
     const { formatMessage } = useIntl()
-    const [measurementStatus, setMeasurementStatus] = useState<measurementStatusEnum | null>(null)
+    const [measurementStatus, setMeasurementStatus] = useState<MeasurementStatusStateType | null>(null)
     const [measurementResult, setMeasurementResult] = useState<number | null>(null)
 
     /**
@@ -57,12 +63,12 @@ export function useMicrowaveMeasurement(
      */
     const getMeasurementStatus = useCallback(async () => {
         try {
-            const { data } = await axios.get(
+            const { data } = await axios.get<MeasurementStatusApiResponse>(
                 `${HOUSINGS_EQUIPMENTS_API}/${housingEquipmentId}/measurement/${measurementMode}/status/${equipmentNumber}`,
             )
-            return data?.status || measurementStatusEnum.failed
+            return data || { status: measurementStatusEnum.failed }
         } catch (_) {
-            return measurementStatusEnum.failed
+            return { status: measurementStatusEnum.failed }
         }
     }, [equipmentNumber, housingEquipmentId, measurementMode])
 
@@ -70,15 +76,15 @@ export function useMicrowaveMeasurement(
      * Fonction that update the measurement status from the backend.
      */
     const updateStatus = useCallback(async () => {
-        const status = await getMeasurementStatus()
-        setMeasurementStatus(status)
+        const { status, updatedAt } = await getMeasurementStatus()
+        setMeasurementStatus({ status, ...(updatedAt ? { lastUpdate: updatedAt } : {}) })
     }, [getMeasurementStatus])
 
     /**
      * Function that start the measurement of the equipment.
      */
     const startMeasurement = useCallback(async () => {
-        const status = await getMeasurementStatus()
+        const { status, updatedAt } = await getMeasurementStatus()
         if (status === measurementStatusEnum.pending || status === measurementStatusEnum.inProgress) {
             enqueueSnackbar(
                 formatMessage({
@@ -87,15 +93,16 @@ export function useMicrowaveMeasurement(
                 }),
                 { autoHideDuration: 5000, variant: 'info' },
             )
-            setMeasurementStatus(status)
+            setMeasurementStatus({ status, ...(updatedAt ? { lastUpdate: updatedAt } : {}) })
         } else {
             try {
                 await axios.post(`${HOUSINGS_EQUIPMENTS_API}/${housingEquipmentId}/measurement/${measurementMode}`, {
                     equipment_number: equipmentNumber,
                 })
-                await setMeasurementStatus(measurementStatusEnum.pending)
+                await setMeasurementStatus({ status: measurementStatusEnum.pending })
             } catch (_) {
-                if (status !== measurementStatusEnum.failed) setMeasurementStatus(measurementStatusEnum.failed)
+                if (status !== measurementStatusEnum.failed)
+                    setMeasurementStatus({ status: measurementStatusEnum.failed })
                 enqueueSnackbar(
                     formatMessage({
                         id: 'Erreur lors du lancement du test de mesure',
@@ -108,23 +115,31 @@ export function useMicrowaveMeasurement(
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [equipmentNumber, housingEquipmentId, measurementMode, updateStatus])
 
+    const passedTimeFromStatusLastUpdate = useCallback(() => {
+        const currentUtcDate = utcToZonedTime(new Date(), 'Etc/UTC')
+        return measurementStatus?.lastUpdate
+            ? differenceInSeconds(currentUtcDate, parseISO(measurementStatus.lastUpdate))
+            : 0
+    }, [measurementStatus])
+
     useEffect(() => {
         let intervalId: NodeJS.Timer
         let timeoutId: NodeJS.Timeout
 
-        switch (measurementStatus) {
+        switch (measurementStatus?.status) {
             case measurementStatusEnum.pending:
                 intervalId = setInterval(updateStatus, 3000)
                 break
 
             case measurementStatusEnum.inProgress:
+                const waitingTime = Math.max(measurementMaxDuration - passedTimeFromStatusLastUpdate() - 3, 0)
                 timeoutId = setTimeout(() => {
                     intervalId = setInterval(updateStatus, 3000)
-                }, Math.max(measurementMaxDuration - 3, 0) * 1000)
+                }, waitingTime * 1000)
                 break
 
             default:
-                if (measurementStatus === measurementStatusEnum.success) updateResult()
+                if (measurementStatus?.status === measurementStatusEnum.success) updateResult()
                 clearInterval(intervalId!)
                 clearTimeout(timeoutId!)
                 break
@@ -140,6 +155,7 @@ export function useMicrowaveMeasurement(
     return {
         measurementStatus,
         measurementResult,
+        passedTimeFromStatusLastUpdate,
         updateResult,
         updateStatus,
         startMeasurement,
