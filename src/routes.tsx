@@ -137,4 +137,4 @@ export type IPageSettingsDisabled = IPageSettings & /**
 export const navigationsConfig: IRouteNavigationConfig</**
  *
  */
-{}>[] = [MyConsumptionConfig[0], AnalysisConfig[0], AdvicesConfig[0], MyHouseConfig[0], MyConsumptionConfig[1]]
+{}>[] = [MyConsumptionConfig[0], AnalysisConfig[0], AdvicesConfig[0], MyHouseConfig[0]]

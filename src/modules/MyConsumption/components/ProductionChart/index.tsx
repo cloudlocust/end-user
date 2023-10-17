@@ -2,9 +2,8 @@ import { useMemo } from 'react'
 import ReactECharts from 'echarts-for-react'
 import { formatMetricsDataToTimestampsValues } from 'src/modules/Metrics/formatMetricsData'
 import { useTheme } from '@mui/material/styles'
-import 'src/modules/MyConsumption/components/MyConsumptionChart/MyConsumptionChart.scss'
-import { getEchartsProductionChartOptions } from 'src/modules/MyConsumption/components/EchartsProductionChart/echartsProductionChartOptions'
-import { EchartsProductionChartProps } from 'src/modules/MyConsumption/components/EchartsProductionChart/EchartsProductionChartTypes.d'
+import { getEchartsProductionChartOptions } from 'src/modules/MyConsumption/components/ProductionChart/productionChartOptions'
+import { ProductionChartProps } from 'src/modules/MyConsumption/components/ProductionChart/ProductionChartTypes.d'
 
 /**
  * EchartsProductionChart Component.
@@ -13,7 +12,7 @@ import { EchartsProductionChartProps } from 'src/modules/MyConsumption/component
  * @param props.data Data received from backend of format IMetric[].
  * @returns EchartsProductionChart Component.
  */
-const EchartsProductionChart = ({ data }: EchartsProductionChartProps) => {
+const ProductionChart = ({ data }: ProductionChartProps) => {
     const theme = useTheme()
     const { timestamps, values } = useMemo(() => {
         return formatMetricsDataToTimestampsValues(data)
@@ -37,4 +36,4 @@ const EchartsProductionChart = ({ data }: EchartsProductionChartProps) => {
     )
 }
 
-export default EchartsProductionChart
+export default ProductionChart

@@ -37,9 +37,9 @@ export type getTargetsYAxisValueFormattersType = (
 ) => targetsYAxisValueFormattersType
 
 /**
- * EchartsProductionChart Props.
+ * ProductionChart Props.
  */
-export interface EchartsProductionChartProps {
+export interface ProductionChartProps {
     /**
      * Data as array of metrics to be shown in chart.
      */

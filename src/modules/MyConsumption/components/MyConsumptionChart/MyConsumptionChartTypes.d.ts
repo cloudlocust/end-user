@@ -49,9 +49,9 @@ export type getTargetsYAxisValueFormattersType = (
 ) => targetsYAxisValueFormattersType
 
 /**
- * EchartsConsumptionChartContainer Props.
+ * ConsumptionChartContainer Props.
  */
-export interface EchartsConsumptionChartContainerProps {
+export interface ConsumptionChartContainerProps {
     // eslint-disable-next-line jsdoc/require-jsdoc
     period: periodType
     // eslint-disable-next-line jsdoc/require-jsdoc
@@ -69,9 +69,9 @@ export interface EchartsConsumptionChartContainerProps {
 }
 
 /**
- * EchartsConsumptionChart Props.
+ * ConsumptionChart Props.
  */
-export interface EchartsConsumptionChartProps {
+export interface ConsumptionChartProps {
     // eslint-disable-next-line jsdoc/require-jsdoc
     data: IMetric[]
     // eslint-disable-next-line jsdoc/require-jsdoc
