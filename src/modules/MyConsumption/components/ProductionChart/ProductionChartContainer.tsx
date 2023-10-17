@@ -13,10 +13,10 @@ import { ChartErrorMessage } from 'src/modules/MyConsumption/components/ChartErr
 import { ENPHASE_OFF_MESSAGE, PRODUCTION_OFF_MESSAGE } from 'src/modules/MyConsumption/utils/myConsumptionVariables'
 import { productionChartErrorState } from 'src/modules/MyConsumption/MyConsumptionConfig'
 import { arePlugsUsedBasedOnProductionStatus } from 'src/modules/MyHouse/MyHouseConfig'
-import EchartsProductionChart from 'src/modules/MyConsumption/components/EchartsProductionChart/EchartsMyProduction'
+import EchartsProductionChart from 'src/modules/MyConsumption/components/ProductionChart'
 
 /**
- * EchartsProductionChartContainer Component.
+ * ProductionChartContainer Component.
  *
  * @param props N/A.
  * @param props.period Indicates the current selected Period if it's monthly or daily or yearly or weekly so that we format tooltip and xAxis of chart according to the period.
@@ -27,7 +27,7 @@ import EchartsProductionChart from 'src/modules/MyConsumption/components/Echarts
  * @param props.isProductionConsentLoadingInProgress Boolean indicating if production consent is in-progress.
  * @returns ProductionChartContainer Component.
  */
-export const EchartsProductionChartContainer = ({
+export const ProductionChartContainer = ({
     period,
     range,
     metricsInterval,

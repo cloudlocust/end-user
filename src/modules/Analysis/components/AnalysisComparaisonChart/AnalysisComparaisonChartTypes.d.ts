@@ -1,4 +1,4 @@
-import { metricTargetType } from 'src/modules/Metrics/Metrics'
+import { metricTargetType, IMetric } from 'src/modules/Metrics/Metrics'
 
 /**
  * Enum Indicating the different yAxisIndex, so that each yAxis has its own value formatting.
@@ -46,3 +46,13 @@ export type targetValuesFormatForComparaison =
     {
         [key in metricTargetExtendedWithComparaison]?: number[]
     }
+
+/**
+ * AnalysisComparisonChartProps.
+ */
+export interface AnalysisComparisonChartProps {
+    /**
+     * Metrics data.
+     */
+    data: IMetric[]
+}

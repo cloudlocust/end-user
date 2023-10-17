@@ -1,8 +1,8 @@
 import { useTheme } from '@mui/material'
 import { useMemo } from 'react'
 import ReactECharts from 'echarts-for-react'
-import { AnalysisComparisonChartProps } from 'src/modules/Analysis/components/AnalysisComparisonChart/analysisComparisonChart'
-import { getEchartsComparaisonChartOptions } from './echartsComparaisonChartOptions'
+import { AnalysisComparisonChartProps } from 'src/modules/Analysis/components/AnalysisComparaisonChart/AnalysisComparaisonChartTypes.d'
+import { getEchartsComparaisonChartOptions } from './comparaisonChartOptions'
 
 /**
  * AnalysisComparisonChart component.
@@ -11,7 +11,7 @@ import { getEchartsComparaisonChartOptions } from './echartsComparaisonChartOpti
  * @param param0.data Metrics data.
  * @returns ReactApexChart.
  */
-export default function EchartsAnalysisComparisonChart({ data }: AnalysisComparisonChartProps) {
+export default function AnalysisComparisonChart({ data }: AnalysisComparisonChartProps) {
     const theme = useTheme()
 
     // EchartsComparaisonChart Option.

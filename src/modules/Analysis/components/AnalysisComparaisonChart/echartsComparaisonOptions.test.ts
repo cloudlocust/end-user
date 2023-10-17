@@ -6,14 +6,14 @@ import {
     getValuesWithTargetForComparaison,
     getXAxisOptionEchartsComparaisonChart,
     getYAxisOptionEchartsComparaisonChart,
-} from 'src/modules/Analysis/components/EchartsComparaisonChart/echartsComparaisonChartOptions'
+} from 'src/modules/Analysis/components/AnalysisComparaisonChart/comparaisonChartOptions'
 import { IMetric, metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
 import { createTheme } from '@mui/material/styles'
 import {
     comparaisonTargetYAxisIndexEnum,
     CustomTargetsForComparaisonEnum,
     metricTargetExtendedWithComparaisonType,
-} from 'src/modules/Analysis/components/EchartsComparaisonChart/EchartsComparaisonChartTypes.d'
+} from 'src/modules/Analysis/components/AnalysisComparaisonChart/AnalysisComparaisonChartTypes.d'
 import { EChartsOption } from 'echarts-for-react'
 import { round } from 'lodash'
 

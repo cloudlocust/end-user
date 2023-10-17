@@ -8,11 +8,11 @@ import {
     getXAxisOptionEchartsProductionChart,
     getYAxisOptionEchartsProductionChart,
     getPeriodFromTimestampsLength,
-} from 'src/modules/MyConsumption/components/EchartsProductionChart/echartsProductionChartOptions'
+} from 'src/modules/MyConsumption/components/ProductionChart/productionChartOptions'
 import { metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
 import { createTheme } from '@mui/material/styles'
 import { PeriodEnum } from 'src/modules/MyConsumption/myConsumptionTypes.d'
-import { productionTargetYAxisIndexEnum } from 'src/modules/MyConsumption/components/EchartsProductionChart/EchartsProductionChartTypes.d'
+import { productionTargetYAxisIndexEnum } from 'src/modules/MyConsumption/components/ProductionChart/ProductionChartTypes.d'
 import { EChartsOption } from 'echarts-for-react'
 
 describe('Test echartsProductionOptions', () => {
