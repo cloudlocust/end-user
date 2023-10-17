@@ -15,7 +15,7 @@ import { useAnalysisStore } from 'src/modules/Analysis/store/analysisStore'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import { computeTotalConsumption } from 'src/modules/MyConsumption/components/Widget/WidgetFunctions'
 import Box from '@mui/material/Box'
-import EchartsAnalysisChart from 'src/modules/Analysis/components/EchartsAnalysisChart'
+import AnalysisChart from 'src/modules/Analysis/components/AnalysisChart'
 
 // eslint-disable-next-line jsdoc/require-jsdoc
 export const AnalysisCTAColor = linksColor || warningMainHashColor
@@ -78,12 +78,12 @@ export default function AnalysisSummary(props: AnalysisSummaryProps) {
                     </div>
                 ) : (
                     <>
-                        <EchartsAnalysisChart data={data} setActiveBarType={setActiveInformationName}>
+                        <AnalysisChart data={data} setActiveBarType={setActiveInformationName}>
                             <AnalysisChartCircleContent
                                 dateReferenceConsumptionValue={new Date(range.from)}
                                 filters={filters}
                             />
-                        </EchartsAnalysisChart>
+                        </AnalysisChart>
                     </>
                 )}
             </div>

@@ -106,7 +106,7 @@ export const getSeriesOptionEchartsAnalysisChart = (values: (number | null)[], t
             {
                 type: 'bar',
                 //eslint-disable-next-line
-                animationDelay: (idx) => idx * 200, // for having circular effect on upload
+                animationDelay: (idx) => idx * 50, // for having circular effect on upload
                 emphasis: {
                     focus: 'series',
                     itemStyle: {
