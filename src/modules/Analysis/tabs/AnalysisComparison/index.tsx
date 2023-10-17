@@ -1,6 +1,6 @@
 import { endOfMonth, startOfMonth, subYears } from 'date-fns'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
-// import AnalysisComparisonChart from 'src/modules/Analysis/components/AnalysisComparisonChart'
+import AnalysisComparisonChart from 'src/modules/Analysis/components/AnalysisComparaisonChart'
 import { AnalysisComparisonProps } from 'src/modules/Analysis/tabs/AnalysisComparison/analysisComparison'
 import { metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
 import { useMetrics } from 'src/modules/Metrics/metricsHook'
@@ -8,7 +8,6 @@ import { getDateWithoutTimezoneOffset } from 'src/modules/MyConsumption/utils/My
 import { getDataCorrespendingToRange } from 'src/modules/Analysis/utils/computationFunctions'
 import { AnalysisCTAColor } from 'src/modules/Analysis/tabs/AnalysisSummary'
 import { Icon } from '@mui/material'
-import EchartsAnalysisComparisonChart from 'src/modules/Analysis/components/EchartsComparaisonChart'
 
 /**
  * Analyse comparison tab component.
@@ -63,8 +62,7 @@ export default function AnalysisComparison({ filters, monthlyRange }: AnalysisCo
                     Comparaison de ma consommation globale
                 </TypographyFormatMessage>
             </div>
-            {/* <AnalysisComparisonChart data={data} /> */}
-            <EchartsAnalysisComparisonChart data={data} />
+            <AnalysisComparisonChart data={data} />
         </div>
     )
 }

@@ -12,7 +12,7 @@ import {
     CustomTargetsForComparaisonEnum,
     metricTargetExtendedWithComparaisonType,
     targetValuesFormatForComparaison,
-} from './EchartsComparaisonChartTypes.d'
+} from 'src/modules/Analysis/components/AnalysisComparaisonChart/AnalysisComparaisonChartTypes.d'
 dayjs.extend(utc)
 dayjs.extend(timezone)
 
