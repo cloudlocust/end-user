@@ -12,6 +12,13 @@ jest.mock(
     }),
 )
 
+/**
+ * Mock for the getTimeFromLastUpdate function.
+ *
+ * @returns Passed time from last update.
+ */
+const mockGetTimeFromLastUpdate = () => 0
+
 describe('useMeasurementProgress hook', () => {
     beforeEach(() => {
         jest.useFakeTimers()
@@ -25,7 +32,9 @@ describe('useMeasurementProgress hook', () => {
         const maxDuration = 50
 
         // Render the hook with status inProgress
-        const { result } = renderHook(() => useMeasurementProgress(measurementStatusEnum.inProgress, maxDuration))
+        const { result } = renderHook(() =>
+            useMeasurementProgress(measurementStatusEnum.inProgress, maxDuration, mockGetTimeFromLastUpdate),
+        )
 
         expect(result.current.remainingTime).toBe(50)
         expect(result.current.circularProgressValue).toBe(0)
