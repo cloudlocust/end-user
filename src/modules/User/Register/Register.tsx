@@ -44,7 +44,7 @@ const Register: FC<RegisterProps> = ({ registerForm = <DefaultRegisterForm defau
 
                             {isPopupAfterRegistration && (
                                 <TypographyFormatMessage className="text-13 mb-32 text-center font-medium">
-                                    Muissez vous de votre N° de PDL - présent sur votre facture d'électrcité - et de
+                                    Munissez vous de votre N° de PDL - présent sur votre facture d'électrcité - et de
                                     votre RIB.
                                 </TypographyFormatMessage>
                             )}
