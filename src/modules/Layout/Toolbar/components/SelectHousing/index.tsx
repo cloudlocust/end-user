@@ -2,18 +2,7 @@ import { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Dispatch, RootState } from 'src/redux'
 import Select, { SelectChangeEvent } from '@mui/material/Select'
-import {
-    FormControl,
-    InputLabel,
-    MenuItem,
-    OutlinedInput,
-    Divider,
-    Tooltip,
-    Button,
-    SvgIcon,
-    ListSubheader,
-    Backdrop,
-} from '@mui/material'
+import { MenuItem, Input, Divider, Tooltip, Button, SvgIcon, ListSubheader, Backdrop } from '@mui/material'
 import { useIntl } from 'react-intl'
 import { Link } from 'react-router-dom'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
@@ -64,71 +53,68 @@ export const SelectHousing = () => {
     }
     return (
         <>
-            <FormControl>
-                <InputLabel id="select-housing-label">
-                    {currentHousing?.id
-                        ? formatMessage({
-                              id: 'Logements',
-                              defaultMessage: 'Logements',
-                          })
-                        : formatMessage({
-                              id: 'Aucun logement disponible',
-                              defaultMessage: 'Aucun logement disponible',
-                          })}
-                </InputLabel>
-                <Select
-                    labelId="select-housing-label"
-                    id="select-housing"
-                    value={currentHousing?.id ?? ''}
-                    onChange={handleChange}
-                    input={<OutlinedInput label="Logement" />}
-                    renderValue={() => <>{currentHousing?.address.name}</>}
-                    MenuProps={MenuProps}
-                    onOpen={() => setOpenBackdrop(true)}
-                    onClose={() => setOpenBackdrop(false)}
-                >
-                    {housingList?.map((housing) => (
-                        <MenuItem key={housing.id} value={housing.id} className="flex justify-between">
-                            <TypographyFormatMessage className="mr-8" noWrap>
-                                {housing.address.name}
-                            </TypographyFormatMessage>
-                            <Link to={`/my-houses/${housing.id}`}>
-                                <SettingsIcon sx={{ color: 'grey.600' }} />
-                            </Link>
-                        </MenuItem>
-                    ))}
-                    <ListSubheader>
-                        <Divider className="my-8" />
-                        <Tooltip
-                            arrow
-                            placement="top"
-                            disableHoverListener={!deleteAddFeatureState}
-                            title={formatMessage({
-                                id: "Cette fonctionnalité n'est pas encore disponible",
-                                defaultMessage: "Cette fonctionnalité n'est pas encore disponible",
-                            })}
-                        >
-                            <div className={`flex justify-center ${deleteAddFeatureState && 'cursor-not-allowed'}`}>
-                                <Button
-                                    variant="text"
-                                    disabled={deleteAddFeatureState}
-                                    startIcon={
-                                        <SvgIcon color={deleteAddFeatureState ? 'disabled' : 'inherit'}>
-                                            <AddIcon />
-                                        </SvgIcon>
-                                    }
-                                    onClick={() => setModalAddHousingOpen(true)}
-                                >
-                                    {formatMessage({
-                                        id: 'Ajouter un logement',
-                                        defaultMessage: 'Ajouter un logement',
-                                    })}
-                                </Button>
-                            </div>
-                        </Tooltip>{' '}
-                    </ListSubheader>
-                </Select>
-            </FormControl>
+            <Select
+                displayEmpty={!currentHousing?.address.name}
+                labelId="select-housing-label"
+                id="select-housing"
+                value={currentHousing?.id ?? ''}
+                onChange={handleChange}
+                input={<Input disableUnderline />}
+                renderValue={() => {
+                    return (
+                        <div className="underline">
+                            {!currentHousing?.address.name
+                                ? 'Aucun logement disponible'
+                                : currentHousing?.address?.name}
+                        </div>
+                    )
+                }}
+                defaultValue={'Aucun logement disponible'}
+                MenuProps={MenuProps}
+                onOpen={() => setOpenBackdrop(true)}
+                onClose={() => setOpenBackdrop(false)}
+            >
+                {housingList?.map((housing) => (
+                    <MenuItem key={housing.id} value={housing.id} className="flex justify-between">
+                        <TypographyFormatMessage className="mr-8" noWrap>
+                            {housing.address.name}
+                        </TypographyFormatMessage>
+                        <Link to={`/my-houses/${housing.id}`}>
+                            <SettingsIcon sx={{ color: 'grey.600' }} />
+                        </Link>
+                    </MenuItem>
+                ))}
+                <ListSubheader>
+                    <Divider className="my-8" />
+                    <Tooltip
+                        arrow
+                        placement="top"
+                        disableHoverListener={!deleteAddFeatureState}
+                        title={formatMessage({
+                            id: "Cette fonctionnalité n'est pas encore disponible",
+                            defaultMessage: "Cette fonctionnalité n'est pas encore disponible",
+                        })}
+                    >
+                        <div className={`flex justify-center ${deleteAddFeatureState && 'cursor-not-allowed'}`}>
+                            <Button
+                                variant="text"
+                                disabled={deleteAddFeatureState}
+                                startIcon={
+                                    <SvgIcon color={deleteAddFeatureState ? 'disabled' : 'inherit'}>
+                                        <AddIcon />
+                                    </SvgIcon>
+                                }
+                                onClick={() => setModalAddHousingOpen(true)}
+                            >
+                                {formatMessage({
+                                    id: 'Ajouter un logement',
+                                    defaultMessage: 'Ajouter un logement',
+                                })}
+                            </Button>
+                        </div>
+                    </Tooltip>{' '}
+                </ListSubheader>
+            </Select>
             <Backdrop open={openBackdrop} onClick={() => setOpenBackdrop(true)} />
             <AddHousingModal modalOpen={modalAddHousingOpen} closeModal={() => setModalAddHousingOpen(false)} />
         </>
