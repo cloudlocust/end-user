@@ -25,6 +25,16 @@ export interface MicrowaveMeasurementProps {
 }
 
 /**
+ * Format of measurement result Api responce.
+ */
+export interface MeasurementResultApiResponse {
+    /**
+     * The result value.
+     */
+    value: number
+}
+
+/**
  * Props of the TestStepPage component.
  */
 export interface TestStepPageProps {

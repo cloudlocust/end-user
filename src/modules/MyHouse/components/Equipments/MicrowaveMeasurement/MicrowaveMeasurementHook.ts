@@ -2,13 +2,9 @@ import { useState, useCallback, useEffect } from 'react'
 import { axios } from 'src/common/react-platform-components'
 import { useIntl } from 'src/common/react-platform-translation'
 import { useSnackbar } from 'notistack'
-import { API_RESOURCES_URL } from 'src/configs'
 import { measurementStatusEnum } from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement/MeasurementProgress/MeasurementProgress.d'
-
-/**
- * Housings equipments endpoint.
- */
-export const HOUSINGS_EQUIPMENTS_API = `${API_RESOURCES_URL}/housings/equipments`
+import { HOUSING_API } from 'src/modules/MyHouse/components/HousingList/HousingsHooks'
+import { MeasurementResultApiResponse } from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement/MicrowaveMeasurement.d'
 
 /**
  * Microwave measurement hook.
@@ -35,8 +31,8 @@ export function useMicrowaveMeasurement(
      */
     const getMeasurementResult = useCallback(async () => {
         try {
-            const { data } = await axios.get(
-                `${HOUSINGS_EQUIPMENTS_API}/${housingEquipmentId}/measurement/${measurementMode}/result/${equipmentNumber}`,
+            const { data } = await axios.get<MeasurementResultApiResponse>(
+                `${HOUSING_API}/equipments/${housingEquipmentId}/measurement/${measurementMode}/result/${equipmentNumber}`,
             )
             return data?.value
         } catch (_) {
@@ -58,7 +54,7 @@ export function useMicrowaveMeasurement(
     const getMeasurementStatus = useCallback(async () => {
         try {
             const { data } = await axios.get(
-                `${HOUSINGS_EQUIPMENTS_API}/${housingEquipmentId}/measurement/${measurementMode}/status/${equipmentNumber}`,
+                `${HOUSING_API}/equipments/${housingEquipmentId}/measurement/${measurementMode}/status/${equipmentNumber}`,
             )
             return data?.status || measurementStatusEnum.failed
         } catch (_) {
@@ -90,7 +86,7 @@ export function useMicrowaveMeasurement(
             setMeasurementStatus(status)
         } else {
             try {
-                await axios.post(`${HOUSINGS_EQUIPMENTS_API}/${housingEquipmentId}/measurement/${measurementMode}`, {
+                await axios.post(`${HOUSING_API}/equipments/${housingEquipmentId}/measurement/${measurementMode}`, {
                     equipment_number: equipmentNumber,
                 })
                 await setMeasurementStatus(measurementStatusEnum.pending)
@@ -105,8 +101,7 @@ export function useMicrowaveMeasurement(
                 )
             }
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [equipmentNumber, housingEquipmentId, measurementMode, updateStatus])
+    }, [equipmentNumber, housingEquipmentId, measurementMode, enqueueSnackbar, formatMessage, getMeasurementStatus])
 
     useEffect(() => {
         let intervalId: NodeJS.Timer

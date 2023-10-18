@@ -10,7 +10,7 @@ import {
 } from 'src/modules/MyHouse/components/Installation/InstallationType.d'
 import { HOUSING_API } from 'src/modules/MyHouse/components/HousingList/HousingsHooks'
 import { measurementStatusEnum } from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement/MeasurementProgress/MeasurementProgress.d'
-import { HOUSINGS_EQUIPMENTS_API } from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement/MicrowaveMeasurementHook'
+
 /**
  * Mock for meter data to be added.
  */
@@ -291,7 +291,7 @@ export const equipmentsEndpoints = [
 
     // Get the result of the measurement
     rest.get(
-        `${HOUSINGS_EQUIPMENTS_API}/:housingEquipmentId/measurement/:measurementMode/result/:equipmentNumber`,
+        `${HOUSING_API}/equipments/:housingEquipmentId/measurement/:measurementMode/result/:equipmentNumber`,
         (req, res, ctx) => {
             return res(
                 ctx.status(200),
@@ -305,7 +305,7 @@ export const equipmentsEndpoints = [
 
     // Get the status of the measurement process
     rest.get(
-        `${HOUSINGS_EQUIPMENTS_API}/:housingEquipmentId/measurement/:measurementMode/status/:equipmentNumber`,
+        `${HOUSING_API}/equipments/:housingEquipmentId/measurement/:measurementMode/status/:equipmentNumber`,
         (req, res, ctx) => {
             const authorization = req.headers.get('authorization')
             if (authorization && authorization === TEST_STATUS_PENDING)
@@ -352,7 +352,7 @@ export const equipmentsEndpoints = [
     ),
 
     // Start the measurement process for an equipment
-    rest.post(`${HOUSINGS_EQUIPMENTS_API}/:housingEquipmentId/measurement/:measurementMode`, (req, res, ctx) => {
+    rest.post(`${HOUSING_API}/equipments/:housingEquipmentId/measurement/:measurementMode`, (req, res, ctx) => {
         const authorization = req.headers.get('authorization')
         if (authorization && authorization !== TEST_STATUS_PENDING && authorization !== TEST_STATUS_IN_PROGRESS)
             return res(ctx.status(200), ctx.delay(1000))
