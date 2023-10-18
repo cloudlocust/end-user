@@ -4,17 +4,13 @@ import { parseISO, differenceInSeconds } from 'date-fns'
 import { utcToZonedTime } from 'date-fns-tz'
 import { useIntl } from 'src/common/react-platform-translation'
 import { useSnackbar } from 'notistack'
-import { API_RESOURCES_URL } from 'src/configs'
 import { measurementStatusEnum } from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement/MeasurementProgress/MeasurementProgress.d'
+import { HOUSING_API } from 'src/modules/MyHouse/components/HousingList/HousingsHooks'
 import {
+    MeasurementResultApiResponse,
     MeasurementStatusApiResponse,
     MeasurementStatusStateType,
 } from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement/MicrowaveMeasurement.d'
-
-/**
- * Housings equipments endpoint.
- */
-export const HOUSINGS_EQUIPMENTS_API = `${API_RESOURCES_URL}/housings/equipments`
 
 /**
  * Microwave measurement hook.
@@ -41,8 +37,8 @@ export function useMicrowaveMeasurement(
      */
     const getMeasurementResult = useCallback(async () => {
         try {
-            const { data } = await axios.get(
-                `${HOUSINGS_EQUIPMENTS_API}/${housingEquipmentId}/measurement/${measurementMode}/result/${equipmentNumber}`,
+            const { data } = await axios.get<MeasurementResultApiResponse>(
+                `${HOUSING_API}/equipments/${housingEquipmentId}/measurement/${measurementMode}/result/${equipmentNumber}`,
             )
             return data?.value
         } catch (_) {
@@ -64,7 +60,7 @@ export function useMicrowaveMeasurement(
     const getMeasurementStatus = useCallback(async () => {
         try {
             const { data } = await axios.get<MeasurementStatusApiResponse>(
-                `${HOUSINGS_EQUIPMENTS_API}/${housingEquipmentId}/measurement/${measurementMode}/status/${equipmentNumber}`,
+                `${HOUSING_API}/equipments/${housingEquipmentId}/measurement/${measurementMode}/status/${equipmentNumber}`,
             )
             return data || { status: measurementStatusEnum.failed }
         } catch (_) {
@@ -96,7 +92,7 @@ export function useMicrowaveMeasurement(
             setMeasurementStatus({ status, ...(updatedAt ? { lastUpdate: updatedAt } : {}) })
         } else {
             axios
-                .post(`${HOUSINGS_EQUIPMENTS_API}/${housingEquipmentId}/measurement/${measurementMode}`, {
+                .post(`${HOUSING_API}/equipments/${housingEquipmentId}/measurement/${measurementMode}`, {
                     equipment_number: equipmentNumber,
                 })
                 .then(() => {
@@ -114,8 +110,7 @@ export function useMicrowaveMeasurement(
                     )
                 })
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [equipmentNumber, housingEquipmentId, measurementMode, updateStatus])
+    }, [equipmentNumber, housingEquipmentId, measurementMode, enqueueSnackbar, formatMessage, getMeasurementStatus])
 
     const passedTimeFromStatusLastUpdate = useCallback(() => {
         const currentUtcDate = utcToZonedTime(new Date(), 'Etc/UTC')

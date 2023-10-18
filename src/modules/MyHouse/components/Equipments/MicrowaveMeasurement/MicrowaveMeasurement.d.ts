@@ -25,6 +25,16 @@ export interface MicrowaveMeasurementProps {
 }
 
 /**
+ * Format of measurement result Api responce.
+ */
+export interface MeasurementResultApiResponse {
+    /**
+     * The result value.
+     */
+    value: number
+}
+
+/**
  * Format of measurement status Api response.
  */
 export interface MeasurementStatusApiResponse {
