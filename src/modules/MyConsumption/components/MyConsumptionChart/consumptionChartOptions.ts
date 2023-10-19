@@ -25,6 +25,7 @@ dayjs.extend(timezone)
  * @param values Values datapoints.
  * @param theme Theme used for colors, fonts and backgrounds purposes.
  * @param isSolarProductionConsentOff Boolean indicating if solar production consent is off.
+ * @param isMobile Is Mobile view.
  * @returns Echarts Consumption Option.
  */
 export const getEchartsConsumptionChartOptions = (
@@ -32,13 +33,14 @@ export const getEchartsConsumptionChartOptions = (
     values: targetTimestampsValuesFormat,
     theme: Theme,
     isSolarProductionConsentOff: boolean,
+    isMobile: boolean,
 ) => {
     if (!Object.values(timestamps).length || !Object.values(values).length) return {}
     const xAxisTimestamps = Object.values(timestamps).length ? Object.values(timestamps)[0] : []
     const period = getPeriodFromTimestampsLength(xAxisTimestamps.length)
 
     return {
-        ...getDefaultOptionsEchartsConsumptionChart(theme),
+        ...getDefaultOptionsEchartsConsumptionChart(theme, isMobile),
         ...getXAxisOptionEchartsConsumptionChart(xAxisTimestamps, isSolarProductionConsentOff, period, theme),
         ...getYAxisOptionEchartsConsumptionChart(values, period, theme),
         ...getSeriesOptionEchartsConsumptionChart(values, period, isSolarProductionConsentOff, theme),
@@ -49,9 +51,10 @@ export const getEchartsConsumptionChartOptions = (
  * Echarts ConsumptionChart Default option.
  *
  * @param theme Theme used for colors, fonts and backgrounds.
+ * @param isMobile Is Mobile view.
  * @returns Default EchartsConsumptionChart option.
  */
-const getDefaultOptionsEchartsConsumptionChart = (theme: Theme) =>
+const getDefaultOptionsEchartsConsumptionChart = (theme: Theme, isMobile: boolean) =>
     ({
         color: 'transparent',
         textStyle: {
@@ -63,7 +66,7 @@ const getDefaultOptionsEchartsConsumptionChart = (theme: Theme) =>
             trigger: 'axis',
         },
         toolbox: {
-            show: true,
+            show: !isMobile,
             feature: {
                 dataZoom: {
                     yAxisIndex: 'all',

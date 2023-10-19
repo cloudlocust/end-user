@@ -4,6 +4,12 @@ import { formatMetricsDataToTimestampsValues } from 'src/modules/Metrics/formatM
 import { useTheme } from '@mui/material/styles'
 import { getEchartsProductionChartOptions } from 'src/modules/MyConsumption/components/ProductionChart/productionChartOptions'
 import { ProductionChartProps } from 'src/modules/MyConsumption/components/ProductionChart/ProductionChartTypes.d'
+import { useMediaQuery } from '@mui/material'
+
+/**
+ * Production test id.
+ */
+export const productionChartClassName = 'production-chart-classname'
 
 /**
  * EchartsProductionChart Component.
@@ -18,14 +24,17 @@ const ProductionChart = ({ data }: ProductionChartProps) => {
         return formatMetricsDataToTimestampsValues(data)
     }, [data])
 
+    const isMobile = useMediaQuery(theme.breakpoints.down('lg'))
+
     // EchartsProductionChart Option.
     const option = useMemo(() => {
-        return getEchartsProductionChartOptions(timestamps, values, theme)
-    }, [timestamps, values, theme])
+        return getEchartsProductionChartOptions(timestamps, values, theme, isMobile)
+    }, [timestamps, values, theme, isMobile])
 
     return (
         <>
             <ReactECharts
+                className={productionChartClassName}
                 opts={{
                     renderer: 'svg',
                 }}

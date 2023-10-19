@@ -23,19 +23,21 @@ dayjs.extend(timezone)
  * @param timestamps Timestamps.
  * @param values Values datapoints.
  * @param theme Theme used for colors, fonts and backgrounds purposes.
+ * @param isMobile Is Mobile view.
  * @returns Echarts Production Option.
  */
 export const getEchartsProductionChartOptions = (
     timestamps: targetTimestampsValuesFormat,
     values: targetTimestampsValuesFormat,
     theme: Theme,
+    isMobile: boolean,
 ) => {
     if (!Object.values(timestamps).length || !Object.values(values).length) return {}
     const xAxisTimestamps = Object.values(timestamps).length ? Object.values(timestamps)[0] : []
     const period = getPeriodFromTimestampsLength(xAxisTimestamps.length)
 
     return {
-        ...getDefaultOptionsEchartsProductionChart(theme),
+        ...getDefaultOptionsEchartsProductionChart(theme, isMobile),
         ...getXAxisOptionEchartsProductionChart(xAxisTimestamps, period, theme),
         ...getYAxisOptionEchartsProductionChart(values, period, theme),
         ...getSeriesOptionEchartsProductionChart(values, period, theme),
@@ -46,9 +48,10 @@ export const getEchartsProductionChartOptions = (
  * Echarts ProductionChart Default option.
  *
  * @param theme Theme used for colors, fonts and backgrounds.
+ * @param isMobile Is mobile view.
  * @returns Default EchartsProductionChart option.
  */
-const getDefaultOptionsEchartsProductionChart = (theme: Theme) =>
+const getDefaultOptionsEchartsProductionChart = (theme: Theme, isMobile: boolean) =>
     ({
         color: 'transparent',
         textStyle: {
@@ -60,7 +63,7 @@ const getDefaultOptionsEchartsProductionChart = (theme: Theme) =>
             trigger: 'axis',
         },
         toolbox: {
-            show: true,
+            show: !isMobile,
             feature: {
                 dataZoom: {
                     yAxisIndex: 'all',
