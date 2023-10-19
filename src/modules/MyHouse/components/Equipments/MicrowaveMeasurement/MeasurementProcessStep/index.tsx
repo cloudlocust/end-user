@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo } from 'react'
 import Typography from '@mui/material/Typography'
 import Button from '@mui/material/Button'
 import { useTheme } from '@mui/material'
@@ -12,20 +12,32 @@ import { ResponseMessage } from 'src/modules/MyHouse/components/Equipments/Micro
  * MeasurementProcessStep component.
  *
  * @param root0 N/A.
+ * @param root0.measurementStatus The measurementStatus state.
+ * @param root0.setMeasurementStatus The setter linked to the measurementStatus state.
  * @param root0.stepSetter The setter linked to the state responsible for storing the current step.
  * @returns The MeasurementProcessStep component.
  */
-export const MeasurementProcessStep = ({ stepSetter }: MeasurementProcessStepProps) => {
+export const MeasurementProcessStep = ({
+    measurementStatus,
+    setMeasurementStatus,
+    stepSetter,
+}: MeasurementProcessStepProps) => {
     const { formatMessage } = useIntl()
     const theme = useTheme()
-    const [measurementStatus, setMeasurementStatus] = useState<measurementStatusEnum>(measurementStatusEnum.pending)
     const measurementMaxDuration = 10
-    const headerText = {
-        [measurementStatusEnum.pending]: 'Mesure en cours',
-        [measurementStatusEnum.inProgress]: 'Mesure en cours',
-        [measurementStatusEnum.success]: 'Mesure terminée avec succès',
-        [measurementStatusEnum.failed]: 'Mesure terminée avec échec',
-    }
+    const getHeaderText = useMemo(() => {
+        switch (measurementStatus) {
+            case measurementStatusEnum.pending:
+                return 'Démarrage de la mesure'
+            case measurementStatusEnum.inProgress:
+                return 'Mesure en cours'
+            case measurementStatusEnum.success:
+                return 'Mesure terminée avec succès'
+            case measurementStatusEnum.failed:
+                return 'Mesure terminée avec échec'
+        }
+        return 'Démarrage de la mesure'
+    }, [measurementStatus])
 
     /**
      * Click handler for the button "Terminer".
@@ -60,6 +72,7 @@ export const MeasurementProcessStep = ({ stepSetter }: MeasurementProcessStepPro
 
     useEffect(() => {
         test()
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     return (
@@ -68,8 +81,8 @@ export const MeasurementProcessStep = ({ stepSetter }: MeasurementProcessStepPro
             <div className="text-center mb-20">
                 <Typography component="h2" fontWeight="500" fontSize="18px" data-testid="headerElement">
                     {formatMessage({
-                        id: headerText[measurementStatus],
-                        defaultMessage: headerText[measurementStatus],
+                        id: getHeaderText,
+                        defaultMessage: getHeaderText,
                     })}
                 </Typography>
             </div>

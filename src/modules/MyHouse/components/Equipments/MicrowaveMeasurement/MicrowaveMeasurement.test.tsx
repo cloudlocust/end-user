@@ -3,14 +3,20 @@ import userEvent from '@testing-library/user-event'
 import { reduxedRender } from 'src/common/react-platform-components/test'
 import { MicrowaveMeasurement } from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement'
 
-describe('MicrowaveMeasurement', () => {
+describe('MicrowaveMeasurement tests', () => {
     test('renders the MicrowaveMeasurement modal and close it', async () => {
-        const closeModal = jest.fn()
-        reduxedRender(<MicrowaveMeasurement equipmentsNumber={1} isModelOpen={true} onCloseModel={closeModal} />)
+        const onCloseModalMock = jest.fn()
+        reduxedRender(
+            <MicrowaveMeasurement
+                equipmentsNumber={1}
+                isMeasurementModalOpen={true}
+                onCloseMeasurementModal={onCloseModalMock}
+            />,
+        )
 
         userEvent.click(screen.getByRole('button', { name: 'close' }))
         await waitFor(() => {
-            expect(closeModal).toHaveBeenCalledTimes(1)
+            expect(onCloseModalMock).toHaveBeenCalledTimes(1)
         })
     })
 })

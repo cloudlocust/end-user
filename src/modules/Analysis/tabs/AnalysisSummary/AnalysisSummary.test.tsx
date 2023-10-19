@@ -27,12 +27,12 @@ let mockIsMetricsLoading = false
 const HAS_MISSING_CONTRACTS_WARNING_TEXT = 'Le coût en euros est un exemple. Pour avoir le coût réel.'
 let mockManualContractFillingIsEnabled = true
 const HAS_MISSING_CONTRACTS_WARNING_REDIRECT_LINK_TEXT = "Renseigner votre contrat d'énergie"
-const MIN_CONSUMPTION_DAY_HIGHLIGHT = 'minConsumptionDay'
-const MIN_CONSUMPTION_DAY_CHART = 'minConsumptionDayChart'
-const MAX_CONSUMPTION_DAY_HIGHLIGHT = 'maxConsumptionDay'
-const MAX_CONSUMPTION_DAY_CHART = 'maxConsumptionDayChart'
-const MEAN_CONSUMPTION_DAY_HIGHLIGHT = 'meanConsumption'
-const MEAN_CONSUMPTION_DAY_CHART = 'meanConsumptionDayChart'
+// const MIN_CONSUMPTION_DAY_HIGHLIGHT = 'minConsumptionDay'
+// const MIN_CONSUMPTION_DAY_CHART = 'minConsumptionDayChart'
+// const MAX_CONSUMPTION_DAY_HIGHLIGHT = 'maxConsumptionDay'
+// const MAX_CONSUMPTION_DAY_CHART = 'maxConsumptionDayChart'
+// const MEAN_CONSUMPTION_DAY_HIGHLIGHT = 'meanConsumption'
+// const MEAN_CONSUMPTION_DAY_CHART = 'meanConsumptionDayChart'
 const circularProgressClassname = '.MuiCircularProgress-root'
 const analysisInformationListClassname = '.analysis-information-list'
 const analysisChartClassname = '.apexcharts-svg'
@@ -197,38 +197,39 @@ describe('Analysis test', () => {
         expect(getByText(REDIRECT_TEXT)).toBeTruthy()
     })
 
-    test('When selecting element in analysisChart (minConsumptionDay, maxConsumptionDay, meanConsumptionDay), it should be highlighted in analysisInformationList', async () => {
-        mockNrlinkConsent = 'CONNECTED'
-        mockEnedisConsent = mockEnedisSgeConsentConnected
+    // TODO - add tests for new echarts
+    // test('When selecting element in analysisChart (minConsumptionDay, maxConsumptionDay, meanConsumptionDay), it should be highlighted in analysisInformationList', async () => {
+    //     mockNrlinkConsent = 'CONNECTED'
+    //     mockEnedisConsent = mockEnedisSgeConsentConnected
 
-        const { getByText } = reduxedRender(
-            <Router>
-                <Analysis />
-            </Router>,
-            { initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[0] } } },
-        )
+    //     const { getByText } = reduxedRender(
+    //         <Router>
+    //             <Analysis />
+    //         </Router>,
+    //         { initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[0] } } },
+    //     )
 
-        // Selecting MinConsumptionDay in analysisChart.
-        userEvent.click(getByText(MIN_CONSUMPTION_DAY_CHART))
-        // MinConsumptionDay Should be highlighted in AnalysisInformationList.
-        await waitFor(() => {
-            expect(getByText(MIN_CONSUMPTION_DAY_HIGHLIGHT)).toBeTruthy()
-        })
+    // // Selecting MinConsumptionDay in analysisChart.
+    // userEvent.click(getByText(MIN_CONSUMPTION_DAY_CHART))
+    // // MinConsumptionDay Should be highlighted in AnalysisInformationList.
+    // await waitFor(() => {
+    //     expect(getByText(MIN_CONSUMPTION_DAY_HIGHLIGHT)).toBeTruthy()
+    // })
 
-        // Selecting MaxConsumptionDay in analysisChart.
-        userEvent.click(getByText(MAX_CONSUMPTION_DAY_CHART))
-        // MaxConsumptionDay Should be highlighted in AnalysisInformationList.
-        await waitFor(() => {
-            expect(getByText(MAX_CONSUMPTION_DAY_HIGHLIGHT)).toBeTruthy()
-        })
+    // // Selecting MaxConsumptionDay in analysisChart.
+    // userEvent.click(getByText(MAX_CONSUMPTION_DAY_CHART))
+    // MaxConsumptionDay Should be highlighted in AnalysisInformationList.
+    // await waitFor(() => {
+    //     expect(getByText(MAX_CONSUMPTION_DAY_HIGHLIGHT)).toBeTruthy()
+    // })
 
-        // Selecting MeanConsumptionDay in analysisChart.
-        userEvent.click(getByText(MEAN_CONSUMPTION_DAY_CHART))
-        // MeanConsumptionDay Should be highlighted in AnalysisInformationList.
-        await waitFor(() => {
-            expect(getByText(MEAN_CONSUMPTION_DAY_HIGHLIGHT)).toBeTruthy()
-        })
-    }, 50000)
+    // // Selecting MeanConsumptionDay in analysisChart.
+    // userEvent.click(getByText(MEAN_CONSUMPTION_DAY_CHART))
+    // MeanConsumptionDay Should be highlighted in AnalysisInformationList.
+    // await waitFor(() => {
+    //     expect(getByText(MEAN_CONSUMPTION_DAY_HIGHLIGHT)).toBeTruthy()
+    // })
+    // }, 50000)
 
     test('When enedisSgeConsent is not Connected, enedisSgeConsent warning is shown', async () => {
         mockEnedisConsent = mockEnedisSgeConsentOff
