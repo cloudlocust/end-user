@@ -3,7 +3,7 @@ import { BrowserRouter as Router } from 'react-router-dom'
 import { IMetric, metricFiltersType, metricIntervalType, metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
 import { TEST_SUCCESS_WEEK_METRICS } from 'src/mocks/handlers/metrics'
 import { periodType, ProductionChartContainerProps } from 'src/modules/MyConsumption/myConsumptionTypes'
-import { ProductionChartContainer } from 'src/modules/MyConsumption/components/MyConsumptionChart/ProductionChartContainer'
+import { ProductionChartContainer } from 'src/modules/MyConsumption/components/ProductionChart/ProductionChartContainer'
 import { ENPHASE_OFF_MESSAGE } from 'src/modules/MyConsumption/utils/myConsumptionVariables'
 
 let mockData: IMetric[] = TEST_SUCCESS_WEEK_METRICS([
@@ -18,7 +18,6 @@ const PRODUCTION_TITLE_DAILY = 'en Watt par jour'
 const PRODUCTION_TITLE_WEEKLY = 'en kWh par semaine'
 const PRODUCTION_TITLE_MONTHLY = 'en kWh par mois'
 const PRODUCTION_TITLE_YEARLY = 'en kWh par année'
-const apexchartsClassName = 'apexcharts-svg'
 const PRODUCTION_CONSENT_OFF_MESSAGE =
     'Pour voir vos données de production veuillez connecter votre onduleur Ou Reliez la prise Shelly de vos panneaux plug&play'
 const mockGetMetricsWithParams = jest.fn()
@@ -64,13 +63,6 @@ jest.mock('src/modules/Metrics/metricsHook.ts', () => ({
         getMetricsWithParams: mockGetMetricsWithParams,
     }),
 }))
-
-// ProductionChartContainer cannot render if we don't mock react-apexcharts
-jest.mock(
-    'react-apexcharts',
-    // eslint-disable-next-line jsdoc/require-jsdoc
-    () => (props: any) => <div className={`${apexchartsClassName}`} {...props}></div>,
-)
 
 jest.mock('src/modules/MyConsumption/MyConsumptionConfig', () => ({
     ...jest.requireActual('src/modules/MyConsumption/MyConsumptionConfig'),
@@ -132,7 +124,6 @@ describe('ProductionChartContainer test', () => {
             </Router>,
         )
         expect(container.querySelector(circularProgressClassname)).toBeInTheDocument()
-        expect(container.querySelector(`.${apexchartsClassName}`)).not.toBeInTheDocument()
     })
 
     test('When only isProductionConsentLoadingInProgress true, Spinner is shown', async () => {
@@ -143,7 +134,6 @@ describe('ProductionChartContainer test', () => {
             </Router>,
         )
         expect(container.querySelector(circularProgressClassname)).toBeInTheDocument()
-        expect(container.querySelector(`.${apexchartsClassName}`)).not.toBeInTheDocument()
     })
 
     test('When connectedPlugProduction and enphaseConsent OFF.', async () => {

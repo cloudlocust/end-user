@@ -13,8 +13,8 @@ import { useHasMissingHousingContracts } from 'src/hooks/HasMissingHousingContra
 import { ChartErrorMessage } from 'src/modules/MyConsumption/components/ChartErrorMessage'
 import { NRLINK_ENEDIS_OFF_MESSAGE } from 'src/modules/MyConsumption/utils/myConsumptionVariables'
 import { EcowattWidget } from 'src/modules/Ecowatt/EcowattWidget'
-import { MissingHousingMeterErrorMessage } from './utils/ErrorMessages'
-import { ProductionChartContainer } from 'src/modules/MyConsumption/components/MyConsumptionChart/ProductionChartContainer'
+import { MissingHousingMeterErrorMessage } from 'src/modules/MyConsumption/utils/ErrorMessages'
+import { ProductionChartContainer } from 'src/modules/MyConsumption/components/ProductionChart/ProductionChartContainer'
 import { useEcowatt } from 'src/modules/Ecowatt/EcowattHook'
 import CircularProgress from '@mui/material/CircularProgress'
 import Box from '@mui/material/Box'
@@ -60,9 +60,9 @@ export const MyConsumptionContainer = () => {
     const isProductionConnectedPlug = getProductionConnectedPlug()
 
     // TODO put enphaseConsent.enphaseConsentState in an enum.
-    let isProductionConsentOff = enphaseConsent?.enphaseConsentState !== 'ACTIVE'
+    let isSolarProductionConsentOff = enphaseConsent?.enphaseConsentState !== 'ACTIVE'
     if (arePlugsUsedBasedOnProductionStatus(currentHousingScopes))
-        isProductionConsentOff = isProductionConsentOff && !isProductionConnectedPlug
+        isSolarProductionConsentOff = isSolarProductionConsentOff && !isProductionConnectedPlug
 
     // UseEffect to check for consent whenever a meter is selected.
     useEffect(() => {
@@ -77,16 +77,16 @@ export const MyConsumptionContainer = () => {
      * @param interval Metric Interval selected.
      */
     const setMyConsumptionPeriodMetricsInterval = (interval: metricIntervalType) => {
-        if (interval === '1m') setMetricsInterval(!isProductionConsentOff ? '30m' : '1m')
+        if (interval === '1m') setMetricsInterval(!isSolarProductionConsentOff ? '30m' : '1m')
         else setMetricsInterval(interval)
     }
 
     useEffect(() => {
         setMetricsInterval((prevState) => {
-            if (prevState === '1m' || prevState === '30m') return !isProductionConsentOff ? '30m' : '1m'
+            if (prevState === '1m' || prevState === '30m') return !isSolarProductionConsentOff ? '30m' : '1m'
             else return prevState
         })
-    }, [isProductionConsentOff])
+    }, [isSolarProductionConsentOff])
 
     useEffect(() => {
         loadConnectedPlugList()
@@ -142,8 +142,8 @@ export const MyConsumptionContainer = () => {
                             hasMissingHousingContracts={hasMissingHousingContracts}
                             range={range}
                             filters={filters}
+                            isSolarProductionConsentOff={isSolarProductionConsentOff}
                             enedisSgeConsent={enedisSgeConsent}
-                            enphaseConsent={enphaseConsent}
                             metricsInterval={metricsInterval}
                         />
                     </>
@@ -155,7 +155,7 @@ export const MyConsumptionContainer = () => {
                         period={period}
                         range={range}
                         filters={filters}
-                        isProductionConsentOff={isProductionConsentOff}
+                        isProductionConsentOff={isSolarProductionConsentOff}
                         isProductionConsentLoadingInProgress={isConnectedPlugListLoadingInProgress}
                         metricsInterval={metricsInterval}
                     />
@@ -172,7 +172,7 @@ export const MyConsumptionContainer = () => {
                         hasMissingHousingContracts={hasMissingHousingContracts}
                         metricsInterval={metricsInterval}
                         // TODO Change enphaseOff for a more generic naming such as isProductionConsentOff or productionOff...
-                        enphaseOff={isProductionConsentOff}
+                        enphaseOff={isSolarProductionConsentOff}
                         enedisOff={enedisOff}
                     />
                 </ConsumptionWidgetsMetricsProvider>
