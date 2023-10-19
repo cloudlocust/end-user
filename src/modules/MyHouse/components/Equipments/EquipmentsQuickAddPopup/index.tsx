@@ -6,6 +6,7 @@ import {
     IEquipmentMeter,
     equipmentAllowedTypeT,
     equipmentMeterType,
+    equipmentNameType,
     equipmentValuesType,
 } from 'src/modules/MyHouse/components/Installation/InstallationType'
 import { useState } from 'react'
@@ -24,7 +25,7 @@ import { NumberFieldForm } from 'src/common/ui-kit/components/NumberField/Number
  * @param param0 N/A.
  * @param param0.open Open state for dialog.
  * @param param0.handleClosePopup OnClose function to close the dialog.
- * @param param0.equipmentsList Equipments list.
+ * @param param0.housingEquipmentsList Housing equipments list.
  * @param param0.saveEquipment Function that saves new equipments to backend.
  * @param param0.loadingEquipmentInProgress Loading state.
  * @returns EquipmentsQuickAddPopup JSX.
@@ -32,7 +33,7 @@ import { NumberFieldForm } from 'src/common/ui-kit/components/NumberField/Number
 export const EquipmentsQuickAddPopup = ({
     open,
     handleClosePopup,
-    equipmentsList,
+    housingEquipmentsList,
     saveEquipment,
     loadingEquipmentInProgress,
 }: EquipmentsQuickAddPopupProps) => {
@@ -41,12 +42,12 @@ export const EquipmentsQuickAddPopup = ({
     // It'll have the following format an object of all equipment, name is the key, for example: {"heater": {equipment_id, equipment_type, equipment_number, isNumber, equipment: {id, name, allowed_type} } }.
     // eslint-disable-next-line jsdoc/require-jsdoc
     let savedEquipmentList: { [key: string]: IEquipmentMeter & { isNumber: boolean } } = {}
-    if (equipmentsList) {
-        equipmentsList.forEach((equipment) => {
+    if (housingEquipmentsList) {
+        housingEquipmentsList.forEach((equipment) => {
             // Check that equipmentMeterList is not empty.
             savedEquipmentList![equipment.equipment.name] = {
                 ...equipment,
-                isNumber: mappingEquipmentNameToType[equipment.equipment.name] === 'number',
+                isNumber: mappingEquipmentNameToType[equipment.equipment.name as equipmentNameType] === 'number',
             }
         })
     }
@@ -69,7 +70,7 @@ export const EquipmentsQuickAddPopup = ({
 
     // eslint-disable-next-line array-callback-return
     const updatedMyEquipmentOptions = myEquipmentOptions.map((option) => {
-        const matchingEquipment = equipmentsList?.find((equipment) => equipment.equipment.name === option.name)
+        const matchingEquipment = housingEquipmentsList?.find((equipment) => equipment.equipment.name === option.name)
         if (matchingEquipment) {
             return {
                 ...option,

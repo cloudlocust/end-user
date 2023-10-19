@@ -1,7 +1,13 @@
+import { postEquipmentInputType } from 'src/modules/MyHouse/components/Installation/InstallationType'
+
 /**
  * EquipmentCardProps.
  */
 export interface EquipmentCardProps {
+    /**
+     * Equipment id.
+     */
+    id: number
     /**
      * Equipment name.
      */
@@ -27,11 +33,7 @@ export interface EquipmentCardProps {
      */
     icon?: JSX.Element
     /**
-     * Funcrion that increament equipment number.
+     * Function that handle the equipment number.
      */
-    onIncreasmentEquipmentNumber: () => void
-    /**
-     * Function that decreament equipment number.
-     */
-    onDecrementEquipmentNumber: () => void
+    onEquipmentChange: (body: postEquipmentInputType) => void
 }

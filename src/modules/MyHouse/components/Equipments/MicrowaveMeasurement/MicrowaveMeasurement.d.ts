@@ -17,11 +17,11 @@ export interface MicrowaveMeasurementProps {
     /**
      * The state of the modal.
      */
-    isModelOpen: boolean
+    isMeasurementModalOpen: boolean
     /**
      * Modal closing handler.
      */
-    onCloseModel: () => void
+    onCloseMeasurementModal: () => void
 }
 
 /**

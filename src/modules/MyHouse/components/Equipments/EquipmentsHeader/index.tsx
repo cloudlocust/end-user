@@ -10,10 +10,11 @@ import { EquipmentHeaderProps } from 'src/modules/MyHouse/components/Equipments/
  * EquipmentsHeader compoonent.
  *
  * @param root0 N/A.
- * @param root0.isEquipmentMeterListEmpty N/A.
+ * @param root0.isEquipmentMeterListEmpty Boolean to check is equipment lists is empty.
+ * @param root0.onOpenAddEquipmentPopup Callback function to open addEquipmentPopup component.
  * @returns EquipmentsHeader JSX.
  */
-export const EquipmentsHeader = ({ isEquipmentMeterListEmpty }: EquipmentHeaderProps) => {
+export const EquipmentsHeader = ({ isEquipmentMeterListEmpty, onOpenAddEquipmentPopup }: EquipmentHeaderProps) => {
     const theme = selectTheme()
     const history = useHistory()
     const { formatMessage } = useIntl()
@@ -63,9 +64,7 @@ export const EquipmentsHeader = ({ isEquipmentMeterListEmpty }: EquipmentHeaderP
                                 className="whitespace-nowrap"
                                 variant="contained"
                                 color="secondary"
-                                // TODO: Handle this iN MYEM-4630 story.
-                                // inProgress={}
-                                // onClick={}
+                                onClick={onOpenAddEquipmentPopup}
                                 sx={{
                                     '&:hover': {
                                         backgroundColor: 'secondary.main',

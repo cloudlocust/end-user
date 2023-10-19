@@ -29,7 +29,7 @@ export interface EquipmentsQuickAddPopupProps {
     /**
      * List of all equipments.
      */
-    equipmentsList: IEquipmentMeter[] | null
+    housingEquipmentsList: IEquipmentMeter[] | null
 
     /**
      * Equipments loading state.

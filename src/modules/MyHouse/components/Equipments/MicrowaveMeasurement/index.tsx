@@ -16,6 +16,7 @@ import {
     MicrowaveMeasurementProps,
     TestStepPageProps,
 } from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement/MicrowaveMeasurement'
+import { useMicrowaveMeasurement } from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement/MicrowaveMeasurementHook'
 
 /**
  * TestStepPage component.
@@ -43,8 +44,8 @@ const TestStepPage = ({ step, stepSetter }: TestStepPageProps) => (
  * @param root0.housingEquipmentId The global equipment id.
  * @param root0.equipmentsNumber The number of microwaves.
  * @param root0.measurementModes Measurement modes for the Equipment.
- * @param root0.isModelOpen The state of the modal.
- * @param root0.onCloseModel Modal closing handler.
+ * @param root0.isMeasurementModalOpen The state of the modal.
+ * @param root0.onCloseMeasurementModal Modal closing handler.
  * @example
  *  /// Use this MicrowaveMeasurement component with our useModal custom hook
  *
@@ -55,7 +56,7 @@ const TestStepPage = ({ step, stepSetter }: TestStepPageProps) => (
  *          <Button onClick={openModal}>
  *              Mesurer
  *          </Button>
- *          <MicrowaveMeasurement isModelOpen={isOpen} onCloseModel={closeModal} housingEquipmentId={25} equipmentsNumber={3} measurementModes={["Mode A", "Mode B"]} />
+ *          <MicrowaveMeasurement isMeasurementModalOpen={isOpen} onCloseMeasurementModal={closeModal} housingEquipmentId={25} equipmentsNumber={3} measurementModes={["Mode A", "Mode B"]} />
  *      </div>
  *  )
  * @returns MicrowaveMeasurement component.
@@ -64,13 +65,22 @@ export const MicrowaveMeasurement = ({
     housingEquipmentId,
     equipmentsNumber,
     measurementModes,
-    isModelOpen,
-    onCloseModel,
+    isMeasurementModalOpen,
+    onCloseMeasurementModal,
 }: MicrowaveMeasurementProps) => {
     const [currentStep, setCurrentStep] = useState(0)
     const [microwaveNumber, setMicrowaveNumber] = useState(0)
     const [measurementMode, setMeasurementMode] = useState('')
     const theme = useTheme()
+
+    const measurementMaxDuration = 50
+
+    const { measurementStatus, measurementResult, setMeasurementStatus, startMeasurement } = useMicrowaveMeasurement(
+        housingEquipmentId,
+        measurementMode,
+        microwaveNumber,
+        measurementMaxDuration,
+    )
 
     const stepsContent = [
         <ConfigurationStep
@@ -84,27 +94,29 @@ export const MicrowaveMeasurement = ({
         />,
         <EquipmentStartupStep measurementMode={measurementMode} stepSetter={setCurrentStep} />,
         <MeasurementProcessStep
-            housingEquipmentId={housingEquipmentId}
-            measurementMode={measurementMode}
-            microwaveNumber={microwaveNumber}
+            measurementStatus={measurementStatus}
+            measurementResult={measurementResult}
+            measurementMaxDuration={measurementMaxDuration}
+            startMeasurement={startMeasurement}
             stepSetter={setCurrentStep}
         />,
         <TestStepPage step={currentStep} stepSetter={setCurrentStep} />,
     ]
 
     /**
-     * Handle closing the model.
+     * Handle closing the measurement Modal.
      */
-    const handleCloseModal = () => {
+    const handleCloseModal = async () => {
+        await setMeasurementStatus(null)
         setCurrentStep(0)
         setMicrowaveNumber(0)
         setMeasurementMode('')
-        onCloseModel()
+        onCloseMeasurementModal()
     }
 
     return (
         <Modal
-            open={isModelOpen}
+            open={isMeasurementModalOpen}
             onClose={handleCloseModal}
             sx={{
                 display: 'flex',

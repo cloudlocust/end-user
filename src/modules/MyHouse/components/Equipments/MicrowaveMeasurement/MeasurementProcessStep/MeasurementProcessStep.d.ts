@@ -1,4 +1,5 @@
 import { Theme } from '@mui/material'
+import { measurementStatusEnum } from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement/MeasurementProgress/MeasurementProgress.d'
 
 /**
  * Props of the ResponseMessage component.
@@ -27,17 +28,21 @@ export interface ResponseMessageProps {
  */
 export interface MeasurementProcessStepProps {
     /**
-     * The global equipment id.
+     * The measurementStatus state.
      */
-    housingEquipmentId: number
+    measurementStatus: measurementStatusEnum | null
     /**
-     * The microwave to mesure.
+     * The result value for the measurement.
      */
-    microwaveNumber: number
+    measurementResult: number | null
     /**
-     * The measurement mode.
+     * Estimated value for the maximum duration of the measurement process (in seconds).
      */
-    measurementMode: string
+    measurementMaxDuration: number
+    /**
+     * The function that start the measurement process.
+     */
+    startMeasurement: () => Promise<void>
     /**
      * The setter linked to the state responsible for storing the current step.
      */

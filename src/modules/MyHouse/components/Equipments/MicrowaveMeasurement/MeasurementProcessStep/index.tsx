@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useMemo } from 'react'
 import Typography from '@mui/material/Typography'
 import Button from '@mui/material/Button'
 import { useTheme } from '@mui/material'
@@ -6,43 +6,42 @@ import { useIntl } from 'src/common/react-platform-translation'
 import { measurementStatusEnum } from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement/MeasurementProgress/MeasurementProgress.d'
 import { MeasurementProcessStepProps } from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement/MeasurementProcessStep/MeasurementProcessStep'
 import { MeasurementProgress } from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement/MeasurementProgress'
-import { useMicrowaveMeasurement } from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement/MicrowaveMeasurementHook'
 import { ResponseMessage } from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement/MeasurementProcessStep/ResponseMessage'
 
 /**
  * MeasurementProcessStep component.
  *
  * @param root0 N/A.
- * @param root0.housingEquipmentId The global equipment id.
- * @param root0.measurementMode The measurement mode.
- * @param root0.microwaveNumber The microwave to mesure.
+ * @param root0.measurementStatus The measurementStatus state.
+ * @param root0.measurementResult The result value for the measurement.
+ * @param root0.measurementMaxDuration Estimated value for the maximum duration of the measurement process (in seconds).
+ * @param root0.startMeasurement The function that start the measurement process.
  * @param root0.stepSetter The setter linked to the state responsible for storing the current step.
  * @returns The MeasurementProcessStep component.
  */
 export const MeasurementProcessStep = ({
-    housingEquipmentId,
-    measurementMode,
-    microwaveNumber,
+    measurementStatus,
+    measurementResult,
+    measurementMaxDuration,
+    startMeasurement,
     stepSetter,
 }: MeasurementProcessStepProps) => {
     const { formatMessage } = useIntl()
     const theme = useTheme()
-    const measurementMaxDuration = 50
 
-    const { measurementStatus, measurementResult, startMeasurement } = useMicrowaveMeasurement(
-        housingEquipmentId,
-        measurementMode,
-        microwaveNumber,
-        measurementMaxDuration,
-    )
-
-    const headerText = {
-        starting: 'Démarrage de la mesure',
-        [measurementStatusEnum.pending]: 'Démarrage de la mesure',
-        [measurementStatusEnum.inProgress]: 'Mesure en cours',
-        [measurementStatusEnum.success]: 'Mesure terminée avec succès',
-        [measurementStatusEnum.failed]: 'Mesure terminée avec échec',
-    }
+    const getHeaderText = useMemo(() => {
+        switch (measurementStatus) {
+            case measurementStatusEnum.pending:
+                return 'Démarrage de la mesure'
+            case measurementStatusEnum.inProgress:
+                return 'Mesure en cours'
+            case measurementStatusEnum.success:
+                return 'Mesure terminée avec succès'
+            case measurementStatusEnum.failed:
+                return 'Mesure terminée avec échec'
+        }
+        return 'Démarrage de la mesure'
+    }, [measurementStatus])
 
     /**
      * Click handler for the button "Terminer".
@@ -61,17 +60,10 @@ export const MeasurementProcessStep = ({
             {/* Header */}
             <div className="text-center mb-20">
                 <Typography component="h2" fontWeight="500" fontSize="18px" data-testid="headerElement">
-                    {formatMessage(
-                        measurementStatus
-                            ? {
-                                  id: headerText[measurementStatus],
-                                  defaultMessage: headerText[measurementStatus],
-                              }
-                            : {
-                                  id: headerText.starting,
-                                  defaultMessage: headerText.starting,
-                              },
-                    )}
+                    {formatMessage({
+                        id: getHeaderText,
+                        defaultMessage: getHeaderText,
+                    })}
                 </Typography>
             </div>
 
