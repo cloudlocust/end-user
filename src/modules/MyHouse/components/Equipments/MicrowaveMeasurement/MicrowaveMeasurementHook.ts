@@ -88,21 +88,24 @@ export function useMicrowaveMeasurement(
             )
             setMeasurementStatus(status)
         } else {
-            try {
-                await axios.post(`${HOUSING_API}/equipments/${housingEquipmentId}/measurement/${measurementMode}`, {
+            axios
+                .post(`${HOUSING_API}/equipments/${housingEquipmentId}/measurement/${measurementMode}`, {
                     equipment_number: equipmentNumber,
                 })
-                setMeasurementStatus(measurementStatusEnum.pending)
-            } catch (_) {
-                if (status !== measurementStatusEnum.failed) setMeasurementStatus(measurementStatusEnum.failed)
-                enqueueSnackbar(
-                    formatMessage({
-                        id: 'Erreur lors du lancement du test de mesure',
-                        defaultMessage: 'Erreur lors du lancement du test de mesure',
-                    }),
-                    { autoHideDuration: 5000, variant: 'error' },
-                )
-            }
+                .then(() => {
+                    setMeasurementStatus(measurementStatusEnum.pending)
+                })
+                .catch((error) => {
+                    setMeasurementStatus(measurementStatusEnum.failed)
+                    const errorMessage = error?.response?.data?.detail || 'Erreur lors du lancement du test de mesure'
+                    enqueueSnackbar(
+                        formatMessage({
+                            id: errorMessage,
+                            defaultMessage: errorMessage,
+                        }),
+                        { autoHideDuration: 5000, variant: 'error' },
+                    )
+                })
         }
     }, [equipmentNumber, housingEquipmentId, measurementMode, enqueueSnackbar, formatMessage, getMeasurementStatus])
 

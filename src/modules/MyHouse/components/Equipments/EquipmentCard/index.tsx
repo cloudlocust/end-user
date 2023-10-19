@@ -92,11 +92,11 @@ export const EquipmentCard = ({
                     </div>
                 </CardContent>
             </Card>
-            {isMicrowaveMeasurementButtonShown && housingEquipmentId && measurementModes && (
+            {isMicrowaveMeasurementButtonShown && (
                 <MicrowaveMeasurement
-                    housingEquipmentId={housingEquipmentId}
+                    housingEquipmentId={housingEquipmentId!}
                     equipmentsNumber={number}
-                    measurementModes={measurementModes}
+                    measurementModes={measurementModes!}
                     isMeasurementModalOpen={isMeasurementModalOpen}
                     onCloseMeasurementModal={onCloseMeasurementModal}
                 />
