@@ -6,7 +6,13 @@ import { MicrowaveMeasurement } from 'src/modules/MyHouse/components/Equipments/
 describe('MicrowaveMeasurement', () => {
     test('renders the MicrowaveMeasurement modal and close it', async () => {
         const closeModal = jest.fn()
-        reduxedRender(<MicrowaveMeasurement equipmentsNumber={1} isModelOpen={true} onCloseModel={closeModal} />)
+        reduxedRender(
+            <MicrowaveMeasurement
+                equipmentsNumber={1}
+                isMeasurementModalOpen={true}
+                onCloseMeasurementModal={closeModal}
+            />,
+        )
 
         userEvent.click(screen.getByRole('button', { name: 'close' }))
         await waitFor(() => {

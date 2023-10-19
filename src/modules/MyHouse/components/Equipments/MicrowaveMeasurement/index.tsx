@@ -40,8 +40,8 @@ const TestStepPage = ({ step, stepSetter }: TestStepPageProps) => (
  *
  * @param root0 N/A.
  * @param root0.equipmentsNumber The number of microwaves.
- * @param root0.isModelOpen The state of the modal.
- * @param root0.onCloseModel Modal closing handler.
+ * @param root0.isMeasurementModalOpen The state of the modal.
+ * @param root0.onCloseMeasurementModal Modal closing handler.
  * @example
  *  /// Use this MicrowaveMeasurement component with our useModal custom hook
  *
@@ -52,12 +52,16 @@ const TestStepPage = ({ step, stepSetter }: TestStepPageProps) => (
  *          <Button onClick={openModal}>
  *              Mesurer
  *          </Button>
- *          <MicrowaveMeasurement equipmentsNumber={3} isModelOpen={isOpen} onCloseModel={closeModal} />
+ *          <MicrowaveMeasurement equipmentsNumber={3} isMeasurementModalOpen={isOpen} onCloseMeasurementModal={closeModal} />
  *      </div>
  *  )
  * @returns MicrowaveMeasurement component.
  */
-export const MicrowaveMeasurement = ({ equipmentsNumber, isModelOpen, onCloseModel }: MicrowaveMeasurementProps) => {
+export const MicrowaveMeasurement = ({
+    equipmentsNumber,
+    isMeasurementModalOpen,
+    onCloseMeasurementModal,
+}: MicrowaveMeasurementProps) => {
     const [currentStep, setCurrentStep] = useState(0)
     const [selectedMicrowave, setSelectedMicrowave] = useState('')
     const [measurementMode, setMeasurementMode] = useState('')
@@ -78,18 +82,18 @@ export const MicrowaveMeasurement = ({ equipmentsNumber, isModelOpen, onCloseMod
     ]
 
     /**
-     * Handle closing the model.
+     * Handle closing the measurement Modal.
      */
     const handleCloseModal = () => {
         setCurrentStep(0)
         setSelectedMicrowave('')
         setMeasurementMode('')
-        onCloseModel()
+        onCloseMeasurementModal()
     }
 
     return (
         <Modal
-            open={isModelOpen}
+            open={isMeasurementModalOpen}
             onClose={handleCloseModal}
             sx={{
                 display: 'flex',

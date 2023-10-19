@@ -76,8 +76,8 @@ export const EquipmentCard = ({ number, label, name }: EquipmentCardProps) => {
             {showMicrowaveMeasurementBtn && (
                 <MicrowaveMeasurement
                     equipmentsNumber={number}
-                    isModelOpen={isMeasurementModelOpen}
-                    onCloseModel={onCloseMeasurementModal}
+                    isMeasurementModalOpen={isMeasurementModelOpen}
+                    onCloseMeasurementModal={onCloseMeasurementModal}
                 />
             )}
         </>

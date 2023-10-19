@@ -23,10 +23,11 @@ import { formatDuration } from 'src/modules/MyHouse/components/Equipments/Microw
 export const MeasurementProgress = ({ status, maxDuration }: MeasurementProgressProps) => {
     const { remainingTime, circularProgressValue } = useMeasurementProgress(status, maxDuration)
     const theme = useTheme()
+    const successOrFailed = status === measurementStatusEnum.success || status === measurementStatusEnum.failed
 
     const borderCircleStyle: React.CSSProperties = {
         content: '""',
-        display: status === measurementStatusEnum.success || status === measurementStatusEnum.failed ? 'none' : 'block',
+        display: successOrFailed ? 'none' : 'block',
         borderRadius: '50%',
         border: `solid 1px ${theme.palette.primary.main}`,
         position: 'absolute',
@@ -56,7 +57,7 @@ export const MeasurementProgress = ({ status, maxDuration }: MeasurementProgress
     }
 
     return (
-        <div className="flex justify-center items-center h-192 w-192">
+        <div className={`flex justify-center items-center ${successOrFailed ? 'h-128 w-128' : 'h-192 w-192'}`}>
             <CircularProgress
                 value={status === measurementStatusEnum.inProgress ? circularProgressValue : 100}
                 variant={status === measurementStatusEnum.pending ? 'indeterminate' : 'determinate'}
@@ -67,17 +68,10 @@ export const MeasurementProgress = ({ status, maxDuration }: MeasurementProgress
                         ? 'error'
                         : 'primary'
                 }
-                size={180}
+                size={successOrFailed ? 128 : 180}
                 thickness={3}
                 sx={{
                     position: 'absolute',
-                    '& > *': {
-                        transform:
-                            status === measurementStatusEnum.success || status === measurementStatusEnum.failed
-                                ? 'scale(0.5)'
-                                : 'scale(1)',
-                        transition: 'transform 500ms cubic-bezier(0.4, 0, 0.2, 1)',
-                    },
                     '&::before': {
                         ...borderCircleStyle,
                         height: '180px',
