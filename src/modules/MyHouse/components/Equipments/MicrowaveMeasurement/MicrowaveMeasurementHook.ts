@@ -92,7 +92,7 @@ export function useMicrowaveMeasurement(
                 await axios.post(`${HOUSING_API}/equipments/${housingEquipmentId}/measurement/${measurementMode}`, {
                     equipment_number: equipmentNumber,
                 })
-                setMeasurementStatus(await getMeasurementStatus())
+                setMeasurementStatus(measurementStatusEnum.pending)
             } catch (_) {
                 if (status !== measurementStatusEnum.failed) setMeasurementStatus(measurementStatusEnum.failed)
                 enqueueSnackbar(
