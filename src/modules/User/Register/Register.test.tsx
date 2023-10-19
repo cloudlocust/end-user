@@ -18,7 +18,7 @@ const REGISTER_TEXT = 'Inscription'
 const HAVE_ALREADY_ACCOUNT_TEXT = 'Vous avez déjà un compte ?'
 const LOGIN_TEXT = 'Se connecter'
 const TEXT_POPUP_AFTER_REGISTRATION =
-    "Muissez vous de votre N° de PDL - présent sur votre facture d'électrcité - et de votre RIB."
+    "Munissez vous de votre N° de PDL - présent sur votre facture d'électrcité - et de votre RIB."
 
 let mockIsPopupAfterRegistration = false
 
