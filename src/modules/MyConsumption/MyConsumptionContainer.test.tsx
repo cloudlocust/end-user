@@ -79,8 +79,6 @@ jest.mock('src/hooks/HasMissingHousingContracts', () => ({
     }),
 }))
 
-// TODO When migrating it's very important to put the path of ConsumptionChartContainer
-// MyConsumptionContainer cannot render if we don't mock react-apexcharts
 jest.mock(
     'src/modules/MyConsumption/components/MyConsumptionChart/ConsumptionChartContainer',
     // eslint-disable-next-line jsdoc/require-jsdoc

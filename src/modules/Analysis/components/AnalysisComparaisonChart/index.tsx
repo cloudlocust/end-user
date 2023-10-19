@@ -9,7 +9,7 @@ import { getEchartsComparaisonChartOptions } from './comparaisonChartOptions'
  *
  * @param param0 N/A.
  * @param param0.data Metrics data.
- * @returns ReactApexChart.
+ * @returns ReactEcharts.
  */
 export default function AnalysisComparisonChart({ data }: AnalysisComparisonChartProps) {
     const theme = useTheme()

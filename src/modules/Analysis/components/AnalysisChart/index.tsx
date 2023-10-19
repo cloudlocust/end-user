@@ -4,7 +4,7 @@ import useMediaQuery from '@mui/material/useMediaQuery'
 import 'src/modules/Analysis/components/AnalysisChart/AnalysisChart.scss'
 import { IMetric } from 'src/modules/Metrics/Metrics.d'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
-import { convertMetricsDataToApexChartsAxisValues } from 'src/modules/MyConsumption/utils/apexChartsDataConverter'
+import { convertMetricsDataToChartsAxisValues } from 'src/modules/MyConsumption/utils/chartsDataConverter'
 import ReactECharts from 'echarts-for-react'
 import { getEchartsAnalysisChartOptions } from 'src/modules/Analysis/components/AnalysisChart/analysisChartOptions'
 import { DefaultLabelFormatterCallbackParams } from 'echarts'
@@ -46,9 +46,9 @@ const AnalysisChart = ({
     const [values, timeStamps] = useMemo(() => {
         // Represents the consumption values in yAxisSeries, and their timestamp in xAxisSeries
         // TODO - rename the convert function
-        let { yAxisSeries, xAxisSeries } = convertMetricsDataToApexChartsAxisValues(data)
+        let { yAxisSeries, xAxisSeries } = convertMetricsDataToChartsAxisValues(data)
 
-        return data.length ? [yAxisSeries[0].data as ApexNonAxisChartSeries, xAxisSeries[0]] : [[], []]
+        return data.length ? [yAxisSeries[0].data, xAxisSeries[0]] : [[], []]
     }, [data])
 
     // EchartsProductionChart Option.

@@ -143,9 +143,9 @@ export const getXAxisOptionEchartsProductionChart = (xAxisTimestamps: number[], 
                 type: 'category',
                 data: getXAxisCategoriesData(xAxisTimestamps, period),
                 axisLabel: {
-                    // TODO Remove once handled daily period
-                    // rotate: period === PeriodEnum.DAILY ? 30 : undefined,
+                    interval: period === 'yearly' || period === 'weekly' ? 0 : 1,
                     hideOverlap: true,
+                    rotate: 30,
                     /**
                      * Formatting the labels shown in xAxis, which are the already formatted categories data according to the period.
                      *
@@ -158,15 +158,6 @@ export const getXAxisOptionEchartsProductionChart = (xAxisTimestamps: number[], 
                             return capitalize(value.split(' ').splice(1).join(' '))
                         return value
                     },
-                    // TODO To remove once handling responsive of daily period.
-                    // formatter(value: string, index: number) {
-                    // When Period is Daily, show only each first hour of the day.
-                    // if (period === PeriodEnum.DAILY) {
-                    // console.log('🚀 ~ file: echartsConsumptionChartOptions.ts:190 ~ formatter ~ value:', value)
-                    // return value.endsWith('00') ? value : ''
-                    // }
-                    // return value
-                    // },
                 },
                 // AxisLine represents the horizontal line that shows xAxis labels.
                 axisLine: {

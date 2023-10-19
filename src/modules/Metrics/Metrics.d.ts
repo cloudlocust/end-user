@@ -263,12 +263,6 @@ export type getMetricsWithParamsType = {
 }
 
 /**
- * TODO Remove if migration completed.
- * Type of ApexAxisChartSerie.
- */
-declare type ApexAxisChartSerie = ApexAxisChartSeries[0]
-
-/**
  * Format of timestamps or values object generated from formatMetricsDataToTimestampsValues function.
  *
  * @example

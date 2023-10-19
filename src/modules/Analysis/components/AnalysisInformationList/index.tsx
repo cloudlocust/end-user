@@ -8,9 +8,9 @@ import {
     computeStatisticsMetricsTargetData,
 } from 'src/modules/Analysis/utils/computationFunctions'
 import { analysisInformationName, analysisInformationType } from 'src/modules/Analysis/analysisTypes.d'
-import { convertMetricsDataToApexChartsAxisValues } from 'src/modules/MyConsumption/utils/apexChartsDataConverter'
-import { ApexChartsAxisValuesType } from 'src/modules/MyConsumption/myConsumptionTypes'
-import { fillApexChartsAxisMissingValues } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
+import { convertMetricsDataToChartsAxisValues } from 'src/modules/MyConsumption/utils/chartsDataConverter'
+import { ChartsAxisValuesType } from 'src/modules/MyConsumption/myConsumptionTypes'
+import { fillChartsAxisMissingValues } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import Avatar from '@mui/material/Avatar'
 import dayjs from 'dayjs'
@@ -28,10 +28,10 @@ const analysisInformationList: analysisInformationType[] = [
         iconPath: './assets/images/content/analysis/meanConsumption.svg',
         color: 'palette.primary.main',
         // eslint-disable-next-line jsdoc/require-jsdoc
-        computeConsumption: (consumptionAxisValues: ApexChartsAxisValuesType) =>
+        computeConsumption: (consumptionAxisValues: ChartsAxisValuesType) =>
             computeMeanConsumption(consumptionAxisValues),
         // eslint-disable-next-line jsdoc/require-jsdoc
-        computeEuros: (consumptionAxisValues: ApexChartsAxisValuesType) =>
+        computeEuros: (consumptionAxisValues: ChartsAxisValuesType) =>
             computeStatisticsMetricsTargetData(consumptionAxisValues, metricTargetsEnum.eurosConsumption, 'mean'),
     },
     {
@@ -40,10 +40,10 @@ const analysisInformationList: analysisInformationType[] = [
         color: 'palette.primary.dark',
         iconPath: './assets/images/content/analysis/maxConsumption.svg',
         // eslint-disable-next-line jsdoc/require-jsdoc
-        computeConsumption: (consumptionAxisValues: ApexChartsAxisValuesType) =>
+        computeConsumption: (consumptionAxisValues: ChartsAxisValuesType) =>
             computeMaxConsumption(consumptionAxisValues),
         // eslint-disable-next-line jsdoc/require-jsdoc
-        computeEuros: (consumptionAxisValues: ApexChartsAxisValuesType) =>
+        computeEuros: (consumptionAxisValues: ChartsAxisValuesType) =>
             computeStatisticsMetricsTargetData(consumptionAxisValues, metricTargetsEnum.eurosConsumption, 'maximum'),
     },
     {
@@ -52,10 +52,10 @@ const analysisInformationList: analysisInformationType[] = [
         color: 'palette.primary.light',
         iconPath: './assets/images/content/analysis/minConsumption.svg',
         // eslint-disable-next-line jsdoc/require-jsdoc
-        computeConsumption: (consumptionAxisValues: ApexChartsAxisValuesType) =>
+        computeConsumption: (consumptionAxisValues: ChartsAxisValuesType) =>
             computeMinConsumption(consumptionAxisValues),
         // eslint-disable-next-line jsdoc/require-jsdoc
-        computeEuros: (consumptionAxisValues: ApexChartsAxisValuesType) =>
+        computeEuros: (consumptionAxisValues: ChartsAxisValuesType) =>
             computeStatisticsMetricsTargetData(consumptionAxisValues, metricTargetsEnum.eurosConsumption, 'minimum'),
     },
 ]
@@ -91,17 +91,14 @@ const AnalysisInformationList = ({
     const theme = useTheme()
 
     // Wrap in useMemo for better performance, as we save the result of convertMetricsData function and we don't call it again on every reender, until data changes.
-    let ApexChartsAxisValues: ApexChartsAxisValuesType = useMemo(
-        () => convertMetricsDataToApexChartsAxisValues(data),
-        [data],
-    )
+    let ChartsAxisValues: ChartsAxisValuesType = useMemo(() => convertMetricsDataToChartsAxisValues(data), [data])
 
-    // Wrap in useMemo for better performance, as we save the heavy computational result of fillApexChartsAxisMissingValues function and we don't call it again on every reender, until period, range or ApexChartsAxisValues from convertMetricsDataToApexChartsAxisValues changes.
-    // The fillApexChartsAxisMissingValues checks if there are missing axis values.
-    ApexChartsAxisValues = useMemo(
-        // Because of ApexCharts to show the right amount of xAxis even If there are missing values according to the period (for example for 'weekly' we expect seven values), we fill the missing values with null.
-        () => fillApexChartsAxisMissingValues(ApexChartsAxisValues, 'monthly', range),
-        [range, ApexChartsAxisValues],
+    // Wrap in useMemo for better performance, as we save the heavy computational result of fillChartsAxisMissingValues function and we don't call it again on every reender, until period, range or ChartsAxisValues from convertMetricsDataToChartsAxisValues changes.
+    // The fillChartsAxisMissingValues checks if there are missing axis values.
+    ChartsAxisValues = useMemo(
+        // Because of Charts to show the right amount of xAxis even If there are missing values according to the period (for example for 'weekly' we expect seven values), we fill the missing values with null.
+        () => fillChartsAxisMissingValues(ChartsAxisValues, 'monthly', range),
+        [range, ChartsAxisValues],
     )
 
     return (
@@ -112,8 +109,8 @@ const AnalysisInformationList = ({
                         unit: consumptionUnit,
                         value: consumptionValue,
                         timestamp,
-                    } = computeConsumption(ApexChartsAxisValues)
-                    const eurosValue = computeEuros(ApexChartsAxisValues)
+                    } = computeConsumption(ChartsAxisValues)
+                    const eurosValue = computeEuros(ChartsAxisValues)
                     return (
                         <div
                             className="flex flex-row mb-16"
