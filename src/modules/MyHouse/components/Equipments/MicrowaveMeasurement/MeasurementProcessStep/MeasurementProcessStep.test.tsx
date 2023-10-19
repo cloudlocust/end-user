@@ -2,17 +2,23 @@ import { screen } from '@testing-library/react'
 import { reduxedRender } from 'src/common/react-platform-components/test'
 import { MeasurementProcessStep } from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement/MeasurementProcessStep'
 import { MeasurementProcessStepProps } from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement/MeasurementProcessStep/MeasurementProcessStep'
+import { measurementStatusEnum } from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement/MeasurementProgress/MeasurementProgress.d'
 
 // Mock StepSetterFunction
 let mockStepSetter: jest.Mock<any, any>
+let mockSetMeasurementStatus: jest.Mock<any, any>
 let MeasurementProcessStepPropsValues: MeasurementProcessStepProps
 
 describe('MeasurementProcessStep Component', () => {
     beforeEach(() => {
         mockStepSetter = jest.fn()
+        mockSetMeasurementStatus = jest.fn()
+
         MeasurementProcessStepPropsValues = {
             microwave: '',
             measurementMode: '',
+            measurementStatus: measurementStatusEnum.pending,
+            setMeasurementStatus: mockSetMeasurementStatus,
             stepSetter: mockStepSetter,
         }
     })
