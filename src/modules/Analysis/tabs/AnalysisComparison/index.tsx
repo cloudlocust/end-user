@@ -1,6 +1,6 @@
 import { endOfMonth, startOfMonth, subYears } from 'date-fns'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
-import AnalysisComparisonChart from 'src/modules/Analysis/components/AnalysisComparisonChart'
+import AnalysisComparisonChart from 'src/modules/Analysis/components/AnalysisComparaisonChart'
 import { AnalysisComparisonProps } from 'src/modules/Analysis/tabs/AnalysisComparison/analysisComparison'
 import { metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
 import { useMetrics } from 'src/modules/Metrics/metricsHook'
