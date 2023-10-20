@@ -1,7 +1,6 @@
 import { useEffect } from 'react'
 import { motion } from 'framer-motion'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
-import MyConsumptionChart from 'src/modules/MyConsumption/components/MyConsumptionChart'
 import { showPerPeriodText } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
 import { useTheme } from '@mui/material'
 import { useMetrics } from 'src/modules/Metrics/metricsHook'
@@ -14,6 +13,7 @@ import { ChartErrorMessage } from 'src/modules/MyConsumption/components/ChartErr
 import { ENPHASE_OFF_MESSAGE, PRODUCTION_OFF_MESSAGE } from 'src/modules/MyConsumption/utils/myConsumptionVariables'
 import { productionChartErrorState } from 'src/modules/MyConsumption/MyConsumptionConfig'
 import { arePlugsUsedBasedOnProductionStatus } from 'src/modules/MyHouse/MyHouseConfig'
+import EchartsProductionChart from 'src/modules/MyConsumption/components/ProductionChart'
 
 /**
  * ProductionChartContainer Component.
@@ -119,13 +119,7 @@ export const ProductionChartContainer = ({
                     </TypographyFormatMessage>
                 </motion.div>
             </div>
-            <MyConsumptionChart
-                data={data}
-                period={period}
-                range={range}
-                chartType="production"
-                metricsInterval={metricsInterval}
-            />
+            <EchartsProductionChart data={data} />
         </div>
     )
 }

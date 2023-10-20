@@ -39,7 +39,7 @@ export const RegisterEnergyProviderSuccess = () => {
         }
     }, [history, energyProviderFormLink])
 
-    const registerSuccessMessage = `La première étape de votre inscription a été prise en compte. Pour la poursuivre, procédez à la souscription chez ${energyProviderName}`
+    const registerSuccessMessage = `La première étape de votre inscription a été prise en compte. Pour finaliser, procédez à la souscription chez notre partenaire ${energyProviderName}`
 
     /**
      *  Subscribe to Energy Provider button handler.
@@ -56,23 +56,23 @@ export const RegisterEnergyProviderSuccess = () => {
                 <motion.div initial={{ opacity: 0, scale: 0.6 }} animate={{ opacity: 1, scale: 1 }}>
                     <Card>
                         <MuiCardContent>
-                            <TypographyFormatMessage className="description">
+                            <TypographyFormatMessage className="text-20 font-medium text-center mb-32">
+                                Encore un petit effort !
+                            </TypographyFormatMessage>
+                            <TypographyFormatMessage className="text-14 text-center mb-32">
                                 {registerSuccessMessage}
                             </TypographyFormatMessage>
 
-                            <div className="login-container">
+                            <div className="flex flex-col justify-center items-center">
                                 <ButtonLoader
                                     variant="contained"
                                     color="primary"
-                                    className="w-224 mx-auto mb-16 mt-16"
+                                    className="w-224 mx-auto mb-16"
                                     aria-label="REGISTER"
                                     onClick={displayEnergyProviderFormHandler}
                                     type="submit"
                                 >
-                                    {formatMessage({
-                                        id: `Étape suivante`,
-                                        defaultMessage: `Étape suivante`,
-                                    })}
+                                    <TypographyFormatMessage>Finaliser votre inscription</TypographyFormatMessage>
                                 </ButtonLoader>
                                 <MuiLink
                                     component={Link}

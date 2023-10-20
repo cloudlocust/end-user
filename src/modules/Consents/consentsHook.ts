@@ -61,7 +61,7 @@ export function useConsents() {
     const [enphaseLink, setEnphaseLink] = useState<EnphaseLink['url']>('')
     const { isCancel, source } = useAxiosCancelToken()
 
-    const { currentHousingScopes } = useSelector(({ housingModel }: RootState) => housingModel)
+    const { currentHousingScopes, currentHousing } = useSelector(({ housingModel }: RootState) => housingModel)
 
     /**
      * Function that performs HTTP call to get consents.
@@ -73,7 +73,7 @@ export function useConsents() {
             setNrlinkConsent(undefined)
             setEnedisSgeConsent(undefined)
             setEnphaseConsent(undefined)
-            if (!houseId) return
+            if (!houseId || !currentHousing?.meter?.guid) return
 
             setConsentsLoading(true)
             /**
@@ -127,7 +127,7 @@ export function useConsents() {
             }
             setConsentsLoading(false)
         },
-        [enqueueSnackbar, formatMessage, isCancel, source, currentHousingScopes],
+        [source, currentHousingScopes, isCancel, currentHousing?.meter?.guid, enqueueSnackbar, formatMessage],
     )
 
     /**
