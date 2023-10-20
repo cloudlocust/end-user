@@ -17,7 +17,7 @@ describe('MeasurementProcessStep Component', () => {
         mockPassedTimeFromStatusLastUpdate = jest.fn(() => 0)
 
         MeasurementProcessStepPropsValues = {
-            measurementStatus: { status: measurementStatusEnum.pending },
+            measurementStatus: { status: measurementStatusEnum.PENDING },
             measurementResult: 24,
             measurementMaxDuration: 50,
             passedTimeFromStatusLastUpdate: mockPassedTimeFromStatusLastUpdate,

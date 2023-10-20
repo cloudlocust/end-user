@@ -33,13 +33,13 @@ export const MeasurementProcessStep = ({
 
     const getHeaderText = useMemo(() => {
         switch (measurementStatus?.status) {
-            case measurementStatusEnum.pending:
+            case measurementStatusEnum.PENDING:
                 return 'Démarrage de la mesure'
-            case measurementStatusEnum.inProgress:
+            case measurementStatusEnum.IN_PROGRESS:
                 return 'Mesure en cours'
-            case measurementStatusEnum.success:
+            case measurementStatusEnum.SUCCESS:
                 return 'Mesure terminée avec succès'
-            case measurementStatusEnum.failed:
+            case measurementStatusEnum.FAILED:
                 return 'Mesure terminée avec échec'
         }
         return 'Démarrage de la mesure'
@@ -81,7 +81,7 @@ export const MeasurementProcessStep = ({
                 </div>
 
                 {/* Success message */}
-                {measurementStatus?.status === measurementStatusEnum.success && (
+                {measurementStatus?.status === measurementStatusEnum.SUCCESS && (
                     <ResponseMessage
                         title="Félicitations !"
                         content={`Le test s'est terminé avec succès, vous pouvez désormais analyser vos résultats. Le résultat de la mesure est ${measurementResult}`}
@@ -91,7 +91,7 @@ export const MeasurementProcessStep = ({
                 )}
 
                 {/* Failure message */}
-                {measurementStatus?.status === measurementStatusEnum.failed && (
+                {measurementStatus?.status === measurementStatusEnum.FAILED && (
                     <ResponseMessage
                         title="La mesure a échoué"
                         content="Le test s'est terminé par un échec, vous pouvez le lancer à nouveau"
@@ -102,12 +102,12 @@ export const MeasurementProcessStep = ({
 
             {/* The test ending button */}
             <div className="flex justify-center mt-20">
-                {measurementStatus?.status !== measurementStatusEnum.failed ? (
+                {measurementStatus?.status !== measurementStatusEnum.FAILED ? (
                     <Button
                         variant="contained"
                         sx={{ padding: '10px auto', textAlign: 'center', width: '60%', minWidth: '160px' }}
                         onClick={handleFinishBtnClick}
-                        disabled={measurementStatus?.status !== measurementStatusEnum.success}
+                        disabled={measurementStatus?.status !== measurementStatusEnum.SUCCESS}
                     >
                         {formatMessage({
                             id: 'Terminer',

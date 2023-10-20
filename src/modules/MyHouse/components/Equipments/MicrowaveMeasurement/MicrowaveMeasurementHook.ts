@@ -65,9 +65,9 @@ export function useMicrowaveMeasurement(
             const { data } = await axios.get<MeasurementStatusApiResponse>(
                 `${HOUSING_API}/equipments/${housingEquipmentId}/measurement/${measurementMode}/status/${equipmentNumber}`,
             )
-            return data || { status: measurementStatusEnum.failed }
+            return data || { status: measurementStatusEnum.FAILED }
         } catch (_) {
-            return { status: measurementStatusEnum.failed }
+            return { status: measurementStatusEnum.FAILED }
         }
     }, [equipmentNumber, housingEquipmentId, measurementMode])
 
@@ -87,8 +87,8 @@ export function useMicrowaveMeasurement(
         const newStatus = await getMeasurementStatus()
         if (newStatus === null) setMeasurementStatus(null)
         else if (
-            newStatus.status === measurementStatusEnum.pending ||
-            newStatus.status === measurementStatusEnum.inProgress
+            newStatus.status === measurementStatusEnum.PENDING ||
+            newStatus.status === measurementStatusEnum.IN_PROGRESS
         ) {
             enqueueSnackbar(
                 formatMessage({
@@ -107,10 +107,10 @@ export function useMicrowaveMeasurement(
                     equipment_number: equipmentNumber,
                 })
                 .then(() => {
-                    setMeasurementStatus({ status: measurementStatusEnum.pending })
+                    setMeasurementStatus({ status: measurementStatusEnum.PENDING })
                 })
                 .catch((error) => {
-                    setMeasurementStatus({ status: measurementStatusEnum.failed })
+                    setMeasurementStatus({ status: measurementStatusEnum.FAILED })
                     const errorMessage = error?.response?.data?.detail || 'Erreur lors du lancement du test de mesure'
                     enqueueSnackbar(
                         formatMessage({
@@ -158,7 +158,7 @@ export function useMicrowaveMeasurement(
         clearUpdateStatusInterval()
 
         switch (measurementStatus?.status) {
-            case measurementStatusEnum.pending:
+            case measurementStatusEnum.PENDING:
                 /**
                  * When the status changes to the value PENDING, an interval will be created to update
                  * the status state from the backend every 3 seconds (to check if the measurement has
@@ -169,7 +169,7 @@ export function useMicrowaveMeasurement(
                 updateStatusIntervalRef.current = setInterval(updateStatus, 3000)
                 break
 
-            case measurementStatusEnum.inProgress:
+            case measurementStatusEnum.IN_PROGRESS:
                 const waitingTime = Math.max(measurementMaxDuration - passedTimeFromStatusLastUpdate() - 3, 0)
                 /**
                  * When the status changes to the value IN_PROGRESS (the measurement has started),
@@ -184,7 +184,7 @@ export function useMicrowaveMeasurement(
                 }, waitingTime * 1000)
                 break
 
-            case measurementStatusEnum.success:
+            case measurementStatusEnum.SUCCESS:
                 /**
                  * When the status changes to the value SUCCESS, we get the measurement result value.
                  */

@@ -26,10 +26,10 @@ jest.mock(
 const mockGetTimeFromLastUpdate = () => 0
 
 describe('MeasurementProgress', () => {
-    test('Renders the message "En attente" when status is pending', () => {
+    test('Renders the message "En attente" when status is PENDING', () => {
         reduxedRender(
             <MeasurementProgress
-                status={measurementStatusEnum.pending}
+                status={measurementStatusEnum.PENDING}
                 maxDuration={60}
                 getTimeFromLastUpdate={mockGetTimeFromLastUpdate}
             />,
@@ -38,10 +38,10 @@ describe('MeasurementProgress', () => {
         expect(message).toBeInTheDocument()
     })
 
-    test('Renders the remaining time when status is inProgress', () => {
+    test('Renders the remaining time when status is IN_PROGRESS', () => {
         reduxedRender(
             <MeasurementProgress
-                status={measurementStatusEnum.inProgress}
+                status={measurementStatusEnum.IN_PROGRESS}
                 maxDuration={60}
                 getTimeFromLastUpdate={mockGetTimeFromLastUpdate}
             />,
@@ -53,7 +53,7 @@ describe('MeasurementProgress', () => {
     test('Renders the success icon when status is success', () => {
         reduxedRender(
             <MeasurementProgress
-                status={measurementStatusEnum.success}
+                status={measurementStatusEnum.SUCCESS}
                 maxDuration={60}
                 getTimeFromLastUpdate={mockGetTimeFromLastUpdate}
             />,
@@ -62,10 +62,10 @@ describe('MeasurementProgress', () => {
         expect(successIcon).toBeInTheDocument()
     })
 
-    test('Renders the failed icon when status is failed', () => {
+    test('Renders the failed icon when status is FAILED', () => {
         reduxedRender(
             <MeasurementProgress
-                status={measurementStatusEnum.failed}
+                status={measurementStatusEnum.FAILED}
                 maxDuration={60}
                 getTimeFromLastUpdate={mockGetTimeFromLastUpdate}
             />,

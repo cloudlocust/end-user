@@ -37,7 +37,7 @@ export const useMeasurementProgress = (
      * and "circularProgressValue".
      */
     useEffect(() => {
-        if (status === measurementStatusEnum.inProgress) {
+        if (status === measurementStatusEnum.IN_PROGRESS) {
             setSecondsCounter(0)
             /**
              * When the status changes to the value IN_PROGRESS, an interval is created to increment

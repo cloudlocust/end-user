@@ -23,7 +23,7 @@ import { formatDuration } from 'src/modules/MyHouse/components/Equipments/Microw
 export const MeasurementProgress = ({ status, maxDuration, getTimeFromLastUpdate }: MeasurementProgressProps) => {
     const { remainingTime, circularProgressValue } = useMeasurementProgress(status, maxDuration, getTimeFromLastUpdate)
     const theme = useTheme()
-    const successOrFailed = status === measurementStatusEnum.success || status === measurementStatusEnum.failed
+    const successOrFailed = status === measurementStatusEnum.SUCCESS || status === measurementStatusEnum.FAILED
 
     const borderCircleStyle: React.CSSProperties = {
         content: '""',
@@ -43,11 +43,11 @@ export const MeasurementProgress = ({ status, maxDuration, getTimeFromLastUpdate
      */
     const renderContent = () => {
         switch (status) {
-            case measurementStatusEnum.inProgress:
+            case measurementStatusEnum.IN_PROGRESS:
                 return <Typography>{formatDuration(remainingTime)}</Typography>
-            case measurementStatusEnum.success:
+            case measurementStatusEnum.SUCCESS:
                 return <CheckCircleIcon color="success" sx={{ transform: 'scale(2.5)' }} />
-            case measurementStatusEnum.failed:
+            case measurementStatusEnum.FAILED:
                 return <CancelIcon color="error" sx={{ transform: 'scale(2.5)' }} />
             default:
                 return <TypographyFormatMessage>En attente</TypographyFormatMessage>
@@ -57,12 +57,12 @@ export const MeasurementProgress = ({ status, maxDuration, getTimeFromLastUpdate
     return (
         <div className={`flex justify-center items-center ${successOrFailed ? 'h-128 w-128' : 'h-192 w-192'}`}>
             <CircularProgress
-                value={status === measurementStatusEnum.inProgress ? circularProgressValue : 100}
-                variant={!status || status === measurementStatusEnum.pending ? 'indeterminate' : 'determinate'}
+                value={status === measurementStatusEnum.IN_PROGRESS ? circularProgressValue : 100}
+                variant={!status || status === measurementStatusEnum.PENDING ? 'indeterminate' : 'determinate'}
                 color={
-                    status === measurementStatusEnum.success
+                    status === measurementStatusEnum.SUCCESS
                         ? 'success'
-                        : status === measurementStatusEnum.failed
+                        : status === measurementStatusEnum.FAILED
                         ? 'error'
                         : 'primary'
                 }

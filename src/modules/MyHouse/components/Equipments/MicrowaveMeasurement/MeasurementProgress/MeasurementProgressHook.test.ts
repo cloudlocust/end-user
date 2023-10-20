@@ -31,9 +31,9 @@ describe('useMeasurementProgress hook', () => {
     test('Calculates remainingTime and circularProgressValue correctly', () => {
         const maxDuration = 50
 
-        // Render the hook with status inProgress
+        // Render the hook with status IN_PROGRESS
         const { result } = renderHook(() =>
-            useMeasurementProgress(measurementStatusEnum.inProgress, maxDuration, mockGetTimeFromLastUpdate),
+            useMeasurementProgress(measurementStatusEnum.IN_PROGRESS, maxDuration, mockGetTimeFromLastUpdate),
         )
 
         expect(result.current.remainingTime).toBe(50)
