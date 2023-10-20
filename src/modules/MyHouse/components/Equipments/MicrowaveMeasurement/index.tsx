@@ -79,7 +79,7 @@ export const MicrowaveMeasurement = ({
         measurementStatus,
         measurementResult,
         setMeasurementStatus,
-        passedTimeFromStatusLastUpdate,
+        getTimeFromStatusLastUpdate,
         startMeasurement,
     } = useMicrowaveMeasurement(housingEquipmentId, measurementMode, microwaveNumber, measurementMaxDuration)
 
@@ -98,7 +98,7 @@ export const MicrowaveMeasurement = ({
             measurementStatus={measurementStatus}
             measurementResult={measurementResult}
             measurementMaxDuration={measurementMaxDuration}
-            passedTimeFromStatusLastUpdate={passedTimeFromStatusLastUpdate}
+            getTimeFromStatusLastUpdate={getTimeFromStatusLastUpdate}
             startMeasurement={startMeasurement}
             stepSetter={setCurrentStep}
         />,

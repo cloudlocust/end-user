@@ -123,7 +123,10 @@ export function useMicrowaveMeasurement(
         }
     }, [equipmentNumber, housingEquipmentId, measurementMode, enqueueSnackbar, formatMessage, getMeasurementStatus])
 
-    const passedTimeFromStatusLastUpdate = useCallback(() => {
+    /**
+     * Function to get the passed time (in seconds) from the last update of status.
+     */
+    const getTimeFromStatusLastUpdate = useCallback(() => {
         const currentUtcDate = utcToZonedTime(new Date(), 'Etc/UTC')
         return measurementStatus?.updatedAt
             ? differenceInSeconds(currentUtcDate, parseISO(measurementStatus.updatedAt))
@@ -170,7 +173,7 @@ export function useMicrowaveMeasurement(
                 break
 
             case measurementStatusEnum.IN_PROGRESS:
-                const waitingTime = Math.max(measurementMaxDuration - passedTimeFromStatusLastUpdate() - 3, 0)
+                const waitingTime = Math.max(measurementMaxDuration - getTimeFromStatusLastUpdate() - 3, 0)
                 /**
                  * When the status changes to the value IN_PROGRESS (the measurement has started),
                  * we wait a moment to let the measurement progress, then we start updating the status
@@ -198,7 +201,7 @@ export function useMicrowaveMeasurement(
         measurementStatus,
         measurementResult,
         setMeasurementStatus,
-        passedTimeFromStatusLastUpdate,
+        getTimeFromStatusLastUpdate,
         updateResult,
         updateStatus,
         startMeasurement,

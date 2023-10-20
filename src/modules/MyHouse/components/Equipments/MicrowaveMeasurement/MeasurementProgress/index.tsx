@@ -17,11 +17,15 @@ import { formatDuration } from 'src/modules/MyHouse/components/Equipments/Microw
  * @param root0 N/A.
  * @param root0.status Current status of the measurement process.
  * @param root0.maxDuration Estimated value for the maximum duration of the measurement process (in seconds).
- * @param root0.getTimeFromLastUpdate Function to get the passed time (in seconds) from the last update of status.
+ * @param root0.getTimeFromStatusLastUpdate Function to get the passed time (in seconds) from the last update of status.
  * @returns The MeasurementProgress component.
  */
-export const MeasurementProgress = ({ status, maxDuration, getTimeFromLastUpdate }: MeasurementProgressProps) => {
-    const { remainingTime, circularProgressValue } = useMeasurementProgress(status, maxDuration, getTimeFromLastUpdate)
+export const MeasurementProgress = ({ status, maxDuration, getTimeFromStatusLastUpdate }: MeasurementProgressProps) => {
+    const { remainingTime, circularProgressValue } = useMeasurementProgress(
+        status,
+        maxDuration,
+        getTimeFromStatusLastUpdate,
+    )
     const theme = useTheme()
     const successOrFailed = status === measurementStatusEnum.SUCCESS || status === measurementStatusEnum.FAILED
 

@@ -13,22 +13,22 @@ import {
  *
  * @param status Current status of the measurement process.
  * @param maxDuration Estimated value for the maximum duration of the measurement process (in seconds).
- * @param getTimeFromLastUpdate Function to get the passed time (in seconds) from the last update of status.
+ * @param getTimeFromStatusLastUpdate Function to get the passed time (in seconds) from the last update of status.
  * @returns The states remainingTime and circularProgressValue.
  */
 export const useMeasurementProgress = (
     status: measurementStatusEnum | null,
     maxDuration: number,
-    getTimeFromLastUpdate: () => number,
+    getTimeFromStatusLastUpdate: () => number,
 ) => {
     const [secondsCounter, setSecondsCounter] = useState(0)
-    const [timeFromLastUpdate, setTimeFromLastUpdate] = useState(0)
+    const [timeFromStatusLastUpdate, setTimeFromStatusLastUpdate] = useState(0)
     const [remainingTime, setRemainingTime] = useState(maxDuration)
     const [circularProgressValue, setCircularProgressValue] = useState(0)
     const intervalIdRef = useRef<NodeJS.Timer | null>(null)
 
     useEffect(() => {
-        setTimeFromLastUpdate(getTimeFromLastUpdate())
+        setTimeFromStatusLastUpdate(getTimeFromStatusLastUpdate())
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [status])
 
@@ -62,7 +62,7 @@ export const useMeasurementProgress = (
      * In this useEffect, we calculate "remainingTime" and "circularProgressValue" and update their status.
      */
     useEffect(() => {
-        const newRemainingTime = calculateRemainingTime(secondsCounter + timeFromLastUpdate, maxDuration)
+        const newRemainingTime = calculateRemainingTime(secondsCounter + timeFromStatusLastUpdate, maxDuration)
         setCircularProgressValue(calculateCircularProgressValue(newRemainingTime, maxDuration))
 
         /**
@@ -74,7 +74,7 @@ export const useMeasurementProgress = (
         setRemainingTime((prevRemainingTime) =>
             newRemainingTime !== prevRemainingTime ? Math.ceil(newRemainingTime) : prevRemainingTime,
         )
-    }, [maxDuration, secondsCounter, timeFromLastUpdate])
+    }, [maxDuration, secondsCounter, timeFromStatusLastUpdate])
 
     return { remainingTime, circularProgressValue }
 }

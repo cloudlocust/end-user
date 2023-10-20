@@ -19,11 +19,9 @@ jest.mock(
 )
 
 /**
- * Mock for the getTimeFromLastUpdate function.
- *
- * @returns Passed time from last update.
+ * Mock for the getTimeFromStatusLastUpdate function.
  */
-const mockGetTimeFromLastUpdate = () => 0
+const mockGetTimeFromStatusLastUpdate = jest.fn(() => 0)
 
 describe('MeasurementProgress', () => {
     test('Renders the message "En attente" when status is PENDING', () => {
@@ -31,7 +29,7 @@ describe('MeasurementProgress', () => {
             <MeasurementProgress
                 status={measurementStatusEnum.PENDING}
                 maxDuration={60}
-                getTimeFromLastUpdate={mockGetTimeFromLastUpdate}
+                getTimeFromStatusLastUpdate={mockGetTimeFromStatusLastUpdate}
             />,
         )
         const message = screen.getByText('En attente')
@@ -43,7 +41,7 @@ describe('MeasurementProgress', () => {
             <MeasurementProgress
                 status={measurementStatusEnum.IN_PROGRESS}
                 maxDuration={60}
-                getTimeFromLastUpdate={mockGetTimeFromLastUpdate}
+                getTimeFromStatusLastUpdate={mockGetTimeFromStatusLastUpdate}
             />,
         )
         const remainingTime = screen.getByText('00 : 30')
@@ -55,7 +53,7 @@ describe('MeasurementProgress', () => {
             <MeasurementProgress
                 status={measurementStatusEnum.SUCCESS}
                 maxDuration={60}
-                getTimeFromLastUpdate={mockGetTimeFromLastUpdate}
+                getTimeFromStatusLastUpdate={mockGetTimeFromStatusLastUpdate}
             />,
         )
         const successIcon = screen.getByTestId('CheckCircleIcon')
@@ -67,7 +65,7 @@ describe('MeasurementProgress', () => {
             <MeasurementProgress
                 status={measurementStatusEnum.FAILED}
                 maxDuration={60}
-                getTimeFromLastUpdate={mockGetTimeFromLastUpdate}
+                getTimeFromStatusLastUpdate={mockGetTimeFromStatusLastUpdate}
             />,
         )
         const failedIcon = screen.getByTestId('CancelIcon')

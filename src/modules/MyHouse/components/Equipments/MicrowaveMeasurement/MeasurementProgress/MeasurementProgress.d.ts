@@ -13,7 +13,7 @@ export interface MeasurementProgressProps {
     /**
      * Function to get the passed time (in seconds) from the last update of status.
      */
-    getTimeFromLastUpdate: () => number
+    getTimeFromStatusLastUpdate: () => number
 }
 
 /**

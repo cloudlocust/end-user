@@ -15,7 +15,7 @@ import { ResponseMessage } from 'src/modules/MyHouse/components/Equipments/Micro
  * @param root0.measurementStatus The measurementStatus state.
  * @param root0.measurementResult The result value for the measurement.
  * @param root0.measurementMaxDuration Estimated value for the maximum duration of the measurement process (in seconds).
- * @param root0.passedTimeFromStatusLastUpdate Function to get the time passed (in seconds) from the last update os measurement status.
+ * @param root0.getTimeFromStatusLastUpdate Function to get the time passed (in seconds) from the last update os measurement status.
  * @param root0.startMeasurement The function that start the measurement process.
  * @param root0.stepSetter The setter linked to the state responsible for storing the current step.
  * @returns The MeasurementProcessStep component.
@@ -24,7 +24,7 @@ export const MeasurementProcessStep = ({
     measurementStatus,
     measurementResult,
     measurementMaxDuration,
-    passedTimeFromStatusLastUpdate,
+    getTimeFromStatusLastUpdate,
     startMeasurement,
     stepSetter,
 }: MeasurementProcessStepProps) => {
@@ -76,7 +76,7 @@ export const MeasurementProcessStep = ({
                     <MeasurementProgress
                         status={measurementStatus?.status}
                         maxDuration={measurementMaxDuration}
-                        getTimeFromLastUpdate={passedTimeFromStatusLastUpdate}
+                        getTimeFromStatusLastUpdate={getTimeFromStatusLastUpdate}
                     />
                 </div>
 

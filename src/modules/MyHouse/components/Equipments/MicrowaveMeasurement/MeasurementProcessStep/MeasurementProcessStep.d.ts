@@ -42,7 +42,7 @@ export interface MeasurementProcessStepProps {
     /**
      * Function to get the time passed (in seconds) from the last update os measurement status.
      */
-    passedTimeFromStatusLastUpdate: () => number
+    getTimeFromStatusLastUpdate: () => number
     /**
      * The function that start the measurement process.
      */
