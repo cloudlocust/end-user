@@ -1,7 +1,6 @@
 import { act } from '@testing-library/react-hooks'
 import { reduxedRenderHook } from 'src/common/react-platform-components/test'
 import {
-    TEST_MEASUREMENT_RESULT_EXIST,
     TEST_RESULT_VALUE,
     TEST_STATUS_PENDING,
     TEST_STATUS_IN_PROGRESS,
@@ -58,8 +57,6 @@ describe('useMicrowaveMeasurement', () => {
     })
 
     test('updating the measurement result', async () => {
-        const { store } = require('src/redux')
-        await store.dispatch.userModel.setAuthenticationToken(TEST_MEASUREMENT_RESULT_EXIST)
         const {
             renderedHook: { result, waitForValueToChange },
         } = reduxedRenderHook(useMicrowaveMeasurementFunction)
