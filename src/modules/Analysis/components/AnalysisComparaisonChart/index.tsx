@@ -23,7 +23,7 @@ export default function AnalysisComparisonChart({ data }: AnalysisComparisonChar
         <>
             <ReactECharts
                 opts={{
-                    renderer: 'svg',
+                    renderer: 'canvas',
                 }}
                 option={option}
                 style={{ height: 360, margin: '0 auto', width: '100%' }}

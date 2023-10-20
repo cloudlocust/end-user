@@ -36,7 +36,7 @@ const ProductionChart = ({ data }: ProductionChartProps) => {
             <ReactECharts
                 className={productionChartClassName}
                 opts={{
-                    renderer: 'svg',
+                    renderer: 'canvas',
                 }}
                 option={option}
                 style={{ height: 360, margin: '0 auto' }}

@@ -37,7 +37,7 @@ const MyConsumptionChart = ({ data, isSolarProductionConsentOff }: ConsumptionCh
             <ReactECharts
                 className={consumptionChartClassName}
                 opts={{
-                    renderer: 'svg',
+                    renderer: 'canvas',
                 }}
                 option={option}
                 style={{ height: 360, margin: '0 auto' }}

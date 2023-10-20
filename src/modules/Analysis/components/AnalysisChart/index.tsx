@@ -85,7 +85,7 @@ const AnalysisChart = ({
         <div className="analysisChartContainer flex justify-center items-center w-full md:px-24">
             <ReactECharts
                 opts={{
-                    renderer: 'svg',
+                    renderer: 'canvas',
                 }}
                 onEvents={{ click: handleBarClick }}
                 option={option}
