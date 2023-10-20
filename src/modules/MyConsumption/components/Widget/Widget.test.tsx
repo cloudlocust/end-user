@@ -31,7 +31,7 @@ const ENPHASE_CONSENT_INACTIVE_ERROR_ICON = 'ErrorOutlineIcon'
 const mockGetMetricsWithParams = jest.fn()
 let mockFilters: metricFiltersType = [
     {
-        key: 'meter_guid',
+        key: 'housing_id',
         operator: '=',
         value: '123456789',
     },
