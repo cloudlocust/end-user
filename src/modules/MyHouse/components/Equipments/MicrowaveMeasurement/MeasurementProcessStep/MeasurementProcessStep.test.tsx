@@ -7,17 +7,20 @@ import { measurementStatusEnum } from 'src/modules/MyHouse/components/Equipments
 // Mock StepSetterFunction
 let mockStepSetter: jest.Mock<any, any>
 let mockStartMeasurement: jest.Mock<any, any>
+let mockPassedTimeFromStatusLastUpdate: jest.Mock<any, any>
 let MeasurementProcessStepPropsValues: MeasurementProcessStepProps
 
 describe('MeasurementProcessStep Component', () => {
     beforeEach(() => {
         mockStepSetter = jest.fn()
         mockStartMeasurement = jest.fn()
+        mockPassedTimeFromStatusLastUpdate = jest.fn(() => 0)
 
         MeasurementProcessStepPropsValues = {
-            measurementStatus: measurementStatusEnum.pending,
+            measurementStatus: { status: measurementStatusEnum.pending },
             measurementResult: 24,
             measurementMaxDuration: 50,
+            passedTimeFromStatusLastUpdate: mockPassedTimeFromStatusLastUpdate,
             startMeasurement: mockStartMeasurement,
             stepSetter: mockStepSetter,
         }
