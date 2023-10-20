@@ -207,28 +207,6 @@ export type ApexChartsAxisValuesType =
 export type getHasMissingHousingContractsResponse = { hasMissingHousingContracts: boolean }
 
 /**
- * MyConsumptionChart Props.
- */
-export interface MyConsumptionChartProps {
-    // eslint-disable-next-line jsdoc/require-jsdoc
-    data: IMetric[]
-    // eslint-disable-next-line jsdoc/require-jsdoc
-    period: periodType
-    // eslint-disable-next-line jsdoc/require-jsdoc
-    range: metricRangeType
-    // eslint-disable-next-line jsdoc/require-jsdoc
-    isStackedEnabled?: boolean
-    // eslint-disable-next-line jsdoc/require-jsdoc
-    chartType: 'consumption' | 'production'
-    // eslint-disable-next-line jsdoc/require-jsdoc
-    chartLabel?: 'Consommation totale' | 'Electricité achetée sur le réseau'
-    // eslint-disable-next-line jsdoc/require-jsdoc
-    metricsInterval?: metricIntervalType
-    // eslint-disable-next-line jsdoc/require-jsdoc
-    enphaseOff?: boolean
-}
-
-/**
  * ConsumptionChartContainer Props.
  */
 export interface ConsumptionChartContainerProps {

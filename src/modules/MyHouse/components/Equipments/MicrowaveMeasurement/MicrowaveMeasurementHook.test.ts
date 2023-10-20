@@ -28,7 +28,7 @@ jest.mock('notistack', () => ({
     }),
 }))
 
-const housingEquipmentId = 0
+const housingEquipmentId = 35
 const measurementMode = 'mode'
 const equipmentNumber = 1
 const measurementMaxDuration = 50

@@ -1,7 +1,6 @@
 import { reduxedRender } from 'src/common/react-platform-components/test'
 import { BrowserRouter as Router } from 'react-router-dom'
 import {
-    ApexAxisChartSerie,
     getMetricsWithParamsType,
     IMetric,
     metricFiltersType,
@@ -15,9 +14,10 @@ import { applyCamelCase } from 'src/common/react-platform-components'
 import { IHousing } from 'src/modules/MyHouse/components/HousingList/housing'
 import { TEST_HOUSES } from 'src/mocks/handlers/houses'
 import { URL_MY_HOUSE } from 'src/modules/MyHouse/MyHouseConfig'
-import { ConsumptionChartContainerProps, periodType } from 'src/modules/MyConsumption/myConsumptionTypes'
+import { periodType } from 'src/modules/MyConsumption/myConsumptionTypes'
 import { IEnedisSgeConsent, INrlinkConsent, IEnphaseConsent } from 'src/modules/Consents/Consents'
 import { ConsumptionChartContainer } from 'src/modules/MyConsumption/components/MyConsumptionChart/ConsumptionChartContainer'
+import { ConsumptionChartContainerProps } from 'src/modules/MyConsumption/components/MyConsumptionChart/MyConsumptionChartTypes.d'
 
 // List of houses to add to the redux state
 const LIST_OF_HOUSES: IHousing[] = applyCamelCase(TEST_HOUSES)
@@ -71,7 +71,6 @@ const EUROS_CONSUMPTION_TITLE_MONTHLY = 'en € par mois'
 const EUROS_CONSUMPTION_TITLE_YEARLY = 'en € par année'
 const CONSUMPTION_ICON_TEST_ID = 'BoltIcon'
 const EUROS_CONSUMPTION_ICON_TEST_ID = 'EuroIcon'
-const apexchartsClassName = 'apexcharts-svg'
 const buttonDisabledClassname = 'Mui-disabled'
 let buttonLabelText = 'target-menu'
 const mockGetConsents = jest.fn()
@@ -94,10 +93,10 @@ let mockRange = {
 let mockPeriod: periodType = 'daily'
 let mockMetricsInterval: metricIntervalType = '1m'
 
-const consumptionChartContainerProps: ConsumptionChartContainerProps = {
+const echartsConsumptionChartContainerProps: ConsumptionChartContainerProps = {
     filters: mockFilters,
     enedisSgeConsent: mockEnedisConsent,
-    enphaseConsent,
+    isSolarProductionConsentOff: false,
     hasMissingHousingContracts: false,
     metricsInterval: mockMetricsInterval,
     period: mockPeriod,
@@ -126,8 +125,6 @@ jest.mock('src/modules/Metrics/metricsHook.ts', () => ({
     }),
 }))
 
-const AUTO_CONSUMPTION_TOOLTIP_TEXT = 'Autoconsommation'
-// const TOTAL_CONSUMPTION_TOOLTIP_TEXT = 'Consommation totale'
 // Mock consentsHook
 jest.mock('src/modules/Consents/consentsHook.ts', () => ({
     // eslint-disable-next-line jsdoc/require-jsdoc
@@ -153,21 +150,6 @@ jest.mock('src/hooks/HasMissingHousingContracts', () => ({
     }),
 }))
 
-// MyConsumptionContainer cannot render if we don't mock react-apexcharts
-jest.mock(
-    'react-apexcharts',
-    // eslint-disable-next-line jsdoc/require-jsdoc
-    () => (props: any) =>
-        (
-            <div className={`${apexchartsClassName}`} {...props}>
-                {/* Show all chart targets, passed a data props */}
-                {props.series.map((serie: ApexAxisChartSerie) => (
-                    <h1 id={serie.name}>{serie.name}</h1>
-                ))}
-            </div>
-        ),
-)
-
 jest.mock('src/modules/MyHouse/MyHouseConfig', () => ({
     ...jest.requireActual('src/modules/MyHouse/MyHouseConfig'),
     // eslint-disable-next-line jsdoc/require-jsdoc
@@ -181,11 +163,11 @@ jest.mock('src/modules/MyHouse/MyHouseConfig', () => ({
 }))
 
 describe('MyConsumptionContainer test', () => {
-    test('onLoad getMetrics is called two times, one with default targets and then all targets.', async () => {
-        consumptionChartContainerProps.period = mockPeriod
+    test('onLoad getMetrics with isSolarProductionConsentOff false is called two times, one with default targets of autoconsumption and then all targets.', async () => {
+        echartsConsumptionChartContainerProps.period = mockPeriod
         const { getByText } = reduxedRender(
             <Router>
-                <ConsumptionChartContainer {...consumptionChartContainerProps} />
+                <ConsumptionChartContainer {...echartsConsumptionChartContainerProps} />
             </Router>,
             { initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[0] } } },
         )
@@ -196,9 +178,6 @@ describe('MyConsumptionContainer test', () => {
         })
 
         expect(() => getByText(CONSUMPTION_ENEDIS_SGE_WARNING_TEXT)).toThrow()
-        // Consent enphase is Active Bought network consumption and AutoConsumption tooltip texts are shown
-        // TODO: fix thisS.
-        expect(getByText(AUTO_CONSUMPTION_TOOLTIP_TEXT)).toBeTruthy()
     })
     test('Different period props, When consumption chart.', async () => {
         const consumptionTitleCases = [
@@ -221,10 +200,10 @@ describe('MyConsumptionContainer test', () => {
         ]
 
         consumptionTitleCases.forEach(({ period, text }) => {
-            consumptionChartContainerProps.period = period
+            echartsConsumptionChartContainerProps.period = period
             const { getByText, queryAllByText } = reduxedRender(
                 <Router>
-                    <ConsumptionChartContainer {...consumptionChartContainerProps} />
+                    <ConsumptionChartContainer {...echartsConsumptionChartContainerProps} />
                 </Router>,
                 { initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[0] } } },
             )
@@ -252,11 +231,11 @@ describe('MyConsumptionContainer test', () => {
         ]
 
         consumptionTitleCases.forEach(async ({ period, metricsInterval, ConsumptionChartPeriodTitle }) => {
-            consumptionChartContainerProps.period = period
-            consumptionChartContainerProps.metricsInterval = metricsInterval
+            echartsConsumptionChartContainerProps.period = period
+            echartsConsumptionChartContainerProps.metricsInterval = metricsInterval
             const { getByText, getByTestId } = reduxedRender(
                 <Router>
-                    <ConsumptionChartContainer {...consumptionChartContainerProps} />
+                    <ConsumptionChartContainer {...echartsConsumptionChartContainerProps} />
                 </Router>,
                 { initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[0] } } },
             )
@@ -272,12 +251,12 @@ describe('MyConsumptionContainer test', () => {
         })
     }, 20000)
     test('When hasMissingHousingContracts and isEurosConsumptin, message is shown', async () => {
-        consumptionChartContainerProps.period = 'weekly'
-        consumptionChartContainerProps.metricsInterval = '1d'
-        consumptionChartContainerProps.hasMissingHousingContracts = true
+        echartsConsumptionChartContainerProps.period = 'weekly'
+        echartsConsumptionChartContainerProps.metricsInterval = '1d'
+        echartsConsumptionChartContainerProps.hasMissingHousingContracts = true
         const { getByText, getByTestId } = reduxedRender(
             <Router>
-                <ConsumptionChartContainer {...consumptionChartContainerProps} />
+                <ConsumptionChartContainer {...echartsConsumptionChartContainerProps} />
             </Router>,
             { initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[0] } } },
         )
@@ -307,11 +286,11 @@ describe('MyConsumptionContainer test', () => {
         expect(() => getByText(HAS_MISSING_CONTRACTS_WARNING_TEXT)).toThrow()
     }, 20000)
     test('When period is daily, EurosConsumption and pMax button should be disabled', async () => {
-        consumptionChartContainerProps.period = 'daily'
-        consumptionChartContainerProps.metricsInterval = '1m' as metricIntervalType
+        echartsConsumptionChartContainerProps.period = 'daily'
+        echartsConsumptionChartContainerProps.metricsInterval = '1m' as metricIntervalType
         const { getByText, getByTestId, getByLabelText, getAllByRole } = reduxedRender(
             <Router>
-                <ConsumptionChartContainer {...consumptionChartContainerProps} />
+                <ConsumptionChartContainer {...echartsConsumptionChartContainerProps} />
             </Router>,
             { initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[0] } } },
         )
@@ -337,14 +316,14 @@ describe('MyConsumptionContainer test', () => {
     })
 
     test('When period is not daily and enedisSgeConsent is not Connected, pMax button should be disabled, enedisSgeConsent warning is shown', async () => {
-        consumptionChartContainerProps.period = 'weekly'
-        consumptionChartContainerProps.metricsInterval = mockGetMetricsWithParamsValues.interval
-        consumptionChartContainerProps.enedisSgeConsent = mockEnedisSgeConsentOff
+        echartsConsumptionChartContainerProps.period = 'weekly'
+        echartsConsumptionChartContainerProps.metricsInterval = mockGetMetricsWithParamsValues.interval
+        echartsConsumptionChartContainerProps.enedisSgeConsent = mockEnedisSgeConsentOff
         mockEnedisConsent = mockEnedisSgeConsentOff
 
         const { getByText, getAllByRole, getByLabelText } = reduxedRender(
             <Router>
-                <ConsumptionChartContainer {...consumptionChartContainerProps} />
+                <ConsumptionChartContainer {...echartsConsumptionChartContainerProps} />
             </Router>,
             { initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[0] } } },
         )
@@ -363,11 +342,11 @@ describe('MyConsumptionContainer test', () => {
         expect(getByText(CONSUMPTION_ENEDIS_SGE_WARNING_TEXT)).toBeTruthy()
     })
 
-    test('When consent enphaseOff, autoconsumption target is not shown, getMetrics is called two times, one with default targets and then all targets both without autoconsumption target', async () => {
-        consumptionChartContainerProps.enphaseConsent!.enphaseConsentState = 'NONEXISTENT'
+    test('When isSolarProductionConsentOff is true, autoconsumption target is not shown, getMetrics is called without autoconsumption target', async () => {
+        echartsConsumptionChartContainerProps.isSolarProductionConsentOff = true
         reduxedRender(
             <Router>
-                <ConsumptionChartContainer {...consumptionChartContainerProps} />
+                <ConsumptionChartContainer {...echartsConsumptionChartContainerProps} />
             </Router>,
             { initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[0] } } },
         )
@@ -390,7 +369,7 @@ describe('MyConsumptionContainer test', () => {
         mockManualContractFillingIsEnabled = false
         const { queryByText } = reduxedRender(
             <Router>
-                <ConsumptionChartContainer {...consumptionChartContainerProps} />
+                <ConsumptionChartContainer {...echartsConsumptionChartContainerProps} />
             </Router>,
             { initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[0] } } },
         )
@@ -401,12 +380,12 @@ describe('MyConsumptionContainer test', () => {
     })
 
     test('When isShowIdleConsumptionDisabledInfo', async () => {
-        consumptionChartContainerProps.period = 'daily'
-        consumptionChartContainerProps.metricsInterval = '1m' as metricIntervalType
+        echartsConsumptionChartContainerProps.period = 'daily'
+        echartsConsumptionChartContainerProps.metricsInterval = '1m' as metricIntervalType
 
         const { getByText } = reduxedRender(
             <Router>
-                <ConsumptionChartContainer {...consumptionChartContainerProps} />
+                <ConsumptionChartContainer {...echartsConsumptionChartContainerProps} />
             </Router>,
             { initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[0] } } },
         )
@@ -421,12 +400,12 @@ describe('MyConsumptionContainer test', () => {
 
     describe('TemperatureOrPmax TargetMenuGroup Test', () => {
         test('When clicking on reset button, getMetrics should be called without pMax or temperature', async () => {
-            consumptionChartContainerProps.period = 'weekly'
-            consumptionChartContainerProps.metricsInterval = '1d' as metricIntervalType
+            echartsConsumptionChartContainerProps.period = 'weekly'
+            echartsConsumptionChartContainerProps.metricsInterval = '1d' as metricIntervalType
 
             const { getByLabelText, getAllByRole } = reduxedRender(
                 <Router>
-                    <ConsumptionChartContainer {...consumptionChartContainerProps} />
+                    <ConsumptionChartContainer {...echartsConsumptionChartContainerProps} />
                 </Router>,
                 { initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[0] } } },
             )

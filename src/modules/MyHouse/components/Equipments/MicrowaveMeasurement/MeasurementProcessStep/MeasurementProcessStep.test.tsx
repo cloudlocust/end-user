@@ -2,18 +2,23 @@ import { screen } from '@testing-library/react'
 import { reduxedRender } from 'src/common/react-platform-components/test'
 import { MeasurementProcessStep } from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement/MeasurementProcessStep'
 import { MeasurementProcessStepProps } from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement/MeasurementProcessStep/MeasurementProcessStep'
+import { measurementStatusEnum } from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement/MeasurementProgress/MeasurementProgress.d'
 
 // Mock StepSetterFunction
 let mockStepSetter: jest.Mock<any, any>
+let mockStartMeasurement: jest.Mock<any, any>
 let MeasurementProcessStepPropsValues: MeasurementProcessStepProps
 
 describe('MeasurementProcessStep Component', () => {
     beforeEach(() => {
         mockStepSetter = jest.fn()
+        mockStartMeasurement = jest.fn()
+
         MeasurementProcessStepPropsValues = {
-            housingEquipmentId: 0,
-            measurementMode: 'mode',
-            microwaveNumber: 1,
+            measurementStatus: measurementStatusEnum.pending,
+            measurementResult: 24,
+            measurementMaxDuration: 50,
+            startMeasurement: mockStartMeasurement,
             stepSetter: mockStepSetter,
         }
     })
@@ -33,6 +38,4 @@ describe('MeasurementProcessStep Component', () => {
         // The button must be disabled initially
         expect(button).toBeDisabled()
     })
-
-    // More tests will be added after creating the hook that manage the measurement requests.
 })

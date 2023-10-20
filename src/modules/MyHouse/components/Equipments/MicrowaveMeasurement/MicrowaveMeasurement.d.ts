@@ -17,11 +17,11 @@ export interface MicrowaveMeasurementProps {
     /**
      * The state of the modal.
      */
-    isModelOpen: boolean
+    isMeasurementModalOpen: boolean
     /**
      * Modal closing handler.
      */
-    onCloseModel: () => void
+    onCloseMeasurementModal: () => void
 }
 
 /**
@@ -63,7 +63,7 @@ export interface MeasurementStatusStateType {
     /**
      * The time of the last update of the measurement status.
      */
-    lastUpdate?: string
+    updatedAt?: string
 }
 
 /**

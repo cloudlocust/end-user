@@ -299,6 +299,26 @@ export const mappingEquipmentNameToType: { [key in equipmentNameType]: 'number' 
     desktopcomputer: 'number',
     solarpanel: 'type',
 }
+
+/**
+ * Mapping equipment name to frontend labels.
+ */
+export const mapppingEquipmentToLabel = {
+    tv: 'Téléviseur',
+    vacuum: 'Aspirateur',
+    oven: 'Four',
+    microwave: 'Micro-onde',
+    fridge: 'Réfrigérateur',
+    dishwasher: 'Lave-vaisselle',
+    washingmachine: 'Lave linge',
+    dryer: 'Sèche linge',
+    laptop: 'PC Portable',
+    desktopcomputer: 'PC de bureau',
+    // Other doesn't exisit in the backend. It's just used for frontend purpose.
+    // To display the option "Autre" for the Autocomplete input.
+    other: 'Autre',
+} as { [key in equipmentNameType]?: string }
+
 /**
  * Grouped Cards for showing in flex mode.
  *

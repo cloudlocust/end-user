@@ -7,6 +7,7 @@ import {
     equipmentMeterType,
     postEquipmentInputType,
     IEquipmentMeter,
+    addEquipmentType,
 } from 'src/modules/MyHouse/components/Installation/InstallationType.d'
 import { HOUSING_API } from 'src/modules/MyHouse/components/HousingList/HousingsHooks'
 import { measurementStatusEnum } from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement/MeasurementProgress/MeasurementProgress.d'
@@ -29,7 +30,7 @@ export const TEST_LOAD_ERROR_METER_EQUIPMENT = 'errorMeter'
 // eslint-disable-next-line jsdoc/require-jsdoc
 export const TEST_LOAD_ERROR_EQUIPMENT = 'errorEquipment'
 // eslint-disable-next-line jsdoc/require-jsdoc
-export const TEST_MEASUREMENT_RESULT_EXIST = 'measurementResult'
+export const TEST_MEASUREMENT_RESULT_ERROR = 'measurement result error'
 // eslint-disable-next-line jsdoc/require-jsdoc
 export const TEST_RESULT_VALUE = 25
 // eslint-disable-next-line jsdoc/require-jsdoc
@@ -114,6 +115,24 @@ export var TEST_EQUIPMENTS: SnakeCasedPropertiesDeep<equipmentType>[] = [
         allowed_type: [],
     },
 ]
+
+/**
+ * TEST SUCCESS CUSTOM EQUIPMENT.
+ */
+export const TEST_SUCCESS_CUSTOM_EQUIPMENT = {
+    id: 1000,
+    name: 'test_custom_equipment',
+    allowed_type: ['electricity'],
+}
+
+/**
+ * TEST ERROR CUSTOM EQUIPMENT.
+ */
+export const TEST_ERROR_CUSTOM_EQUIPMENT = {
+    id: 1000,
+    name: 'error_equipment_name',
+    allowed_type: ['not_allowed_type'],
+}
 
 /**
  * Mock of customers/clients list data.
@@ -289,17 +308,36 @@ export const equipmentsEndpoints = [
         }
     }),
 
+    // Add custom equipment
+    rest.post<SnakeCasedPropertiesDeep<addEquipmentType>>(`${ALL_EQUIPMENTS_API}`, (req, res, ctx) => {
+        if (req.body.name === 'error_equipment_name') {
+            return res(
+                ctx.status(400),
+                ctx.delay(1000),
+                ctx.json({
+                    detail: 'Cette équipement est déjà existant dans la liste des équipements.',
+                }),
+            )
+        }
+
+        return res(ctx.status(201), ctx.delay(1000), ctx.json(TEST_SUCCESS_CUSTOM_EQUIPMENT))
+    }),
+
     // Get the result of the measurement
     rest.get(
         `${HOUSING_API}/equipments/:housingEquipmentId/measurement/:measurementMode/result/:equipmentNumber`,
         (req, res, ctx) => {
-            return res(
-                ctx.status(200),
-                ctx.delay(1000),
-                ctx.json({
-                    value: TEST_RESULT_VALUE,
-                }),
-            )
+            const authorization = req.headers.get('authorization')
+            if (authorization && authorization === TEST_MEASUREMENT_RESULT_ERROR)
+                return res(ctx.status(400), ctx.delay(1000))
+            else
+                return res(
+                    ctx.status(200),
+                    ctx.delay(1000),
+                    ctx.json({
+                        value: TEST_RESULT_VALUE,
+                    }),
+                )
         },
     ),
 

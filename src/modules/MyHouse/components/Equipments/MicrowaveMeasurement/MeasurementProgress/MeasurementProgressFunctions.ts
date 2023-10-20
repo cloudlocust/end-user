@@ -16,7 +16,11 @@ export const calculateRemainingTime = (second: number, maxDuration: number): num
 }
 
 /**
- * Calculate the value prop for the CircularProgress component.
+ * Calculate the value prop for the MUI CircularProgress component, which is a value between 0 and 100
+ * that represent the progress percentage for the CircularProgress component. This value is inversely
+ * proportional to the remainingSeconds value :
+ *  / if (remainingSeconds == maxDuration)   ==>   value == 0
+ *  \ if (remainingSeconds == 0          )   ==>   value == 100     .
  *
  * @param remainingSeconds Remaining time until the end of the measurement.
  * @param maxDuration Estimated value for the maximum duration of the measurement process (in seconds).
