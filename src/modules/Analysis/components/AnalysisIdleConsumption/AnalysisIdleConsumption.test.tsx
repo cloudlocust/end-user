@@ -5,7 +5,7 @@ import { IMetric, metricFiltersType, metricTargetsEnum } from 'src/modules/Metri
 
 let mockFilters: metricFiltersType = [
     {
-        key: 'meter_guid',
+        key: 'housing_id',
         operator: '=',
         value: '123456789',
     },
