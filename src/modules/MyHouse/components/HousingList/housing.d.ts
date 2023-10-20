@@ -1,5 +1,6 @@
 import { defaultValueType } from 'src/common/ui-kit/form-fields/GoogleMapsAddressAutoComplete/utils'
 import { IMeter } from 'src/modules/Meters/Meters'
+import { ScopesTypesEnum } from 'src/modules/MyHouse/utils/MyHouseCommonTypes'
 
 /**
  * The Type of a logement.

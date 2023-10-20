@@ -1,5 +1,5 @@
 import { reduxedRender } from 'src/common/react-platform-components/test'
-import { MyConsumptionContainer } from 'src/modules/MyConsumption/MyConsumptionContainer'
+import { MyConsumptionContainer } from 'src/modules/MyConsumption//MyConsumptionContainer'
 import { BrowserRouter as Router } from 'react-router-dom'
 import { waitFor } from '@testing-library/react'
 import { formatMetricFilter } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
@@ -9,7 +9,7 @@ import { applyCamelCase } from 'src/common/react-platform-components'
 import { IHousing } from 'src/modules/MyHouse/components/HousingList/housing'
 import { TEST_HOUSES } from 'src/mocks/handlers/houses'
 import { NRLINK_ENEDIS_OFF_MESSAGE } from 'src/modules/MyConsumption/utils/myConsumptionVariables'
-import { ConsumptionChartContainerProps } from 'src/modules/MyConsumption/myConsumptionTypes'
+import { ConsumptionChartContainerProps } from 'src/modules/MyConsumption/components/MyConsumptionChart/MyConsumptionChartTypes.d'
 import { IEnedisSgeConsent, INrlinkConsent, IEnphaseConsent } from 'src/modules/Consents/Consents'
 import { TEST_CONNECTED_PLUGS } from 'src/mocks/handlers/connectedPlugs'
 import { IConnectedPlug } from 'src/modules/MyHouse/components/ConnectedPlugs/ConnectedPlugs.d'
@@ -79,6 +79,7 @@ jest.mock('src/hooks/HasMissingHousingContracts', () => ({
     }),
 }))
 
+// TODO When migrating it's very important to put the path of ConsumptionChartContainer
 // MyConsumptionContainer cannot render if we don't mock react-apexcharts
 jest.mock(
     'src/modules/MyConsumption/components/MyConsumptionChart/ConsumptionChartContainer',
@@ -95,13 +96,6 @@ jest.mock(
             </div>
         ),
     }),
-)
-
-// ApexCharts cannot render if we don't mock react-apexcharts
-jest.mock(
-    'react-apexcharts',
-    // eslint-disable-next-line jsdoc/require-jsdoc
-    () => (props: any) => <div className="apexcharts-svg" {...props}></div>,
 )
 
 let mockConnectedPlugLoadingInProgress = false
@@ -147,7 +141,7 @@ describe('MyConsumptionContainer test', () => {
 
         userEvent.click(getByText(FILTERS_TEXT))
         await waitFor(() => {
-            expect(mockSetFilters).toHaveBeenCalledWith(formatMetricFilter(LIST_OF_HOUSES[0]!.meter!.guid))
+            expect(mockSetFilters).toHaveBeenCalledWith(formatMetricFilter(LIST_OF_HOUSES[0]!.id))
         })
 
         await waitFor(() => {

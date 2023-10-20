@@ -28,7 +28,7 @@ const mockGetMetricsWithParams = jest.fn()
 
 let mockFilters: metricFiltersType = [
     {
-        key: 'meter_guid',
+        key: 'housing_id',
         operator: '=',
         value: '123456789',
     },

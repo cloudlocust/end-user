@@ -27,11 +27,13 @@ describe('test RegisterEnergyProviderSuccess page', () => {
             </Router>,
         )
 
+        expect(getByText('Encore un petit effort !')).toBeTruthy()
         expect(
             getByText(
-                'La première étape de votre inscription a été prise en compte. Pour la poursuivre, procédez à la souscription chez ALPIQ',
+                'La première étape de votre inscription a été prise en compte. Pour finaliser, procédez à la souscription chez notre partenaire ALPIQ',
             ),
         ).toBeTruthy()
+        expect(getByText('Finaliser votre inscription')).toBeTruthy()
     })
 
     test('should have a back to login Link', async () => {

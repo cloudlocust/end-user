@@ -145,6 +145,7 @@ export enum metricTargetsEnum {
      */
     onlyEuroConsumption = 'only_euro_consumption_metrics',
 }
+
 /**
  * Metrics intervals.
  */
@@ -186,15 +187,15 @@ export type metricTargetsType = {
 // eslint-disable-next-line jsdoc/require-jsdoc
 export type metricFiltersType = {
     /**
-     * Key. Default is: "meter_guid".
+     * Key. Default is: "housing_id".
      */
-    key: 'meter_guid'
+    key: 'housing_id'
     /**
      * Operator.
      */
     operator: '='
     /**
-     * Value of the meter_guid.
+     * Value of the housing_id.
      */
     value: string
 }[]
@@ -262,6 +263,71 @@ export type getMetricsWithParamsType = {
 }
 
 /**
+ * TODO Remove if migration completed.
  * Type of ApexAxisChartSerie.
  */
 declare type ApexAxisChartSerie = ApexAxisChartSeries[0]
+
+/**
+ * Format of timestamps or values object generated from formatMetricsDataToTimestampsValues function.
+ *
+ * @example
+ * A a targetTimestampsValuesFormat would look like
+ *
+ * values: targetTimestampsValuesFormat = {
+ *    "consumption_metrics": [1, 2, 3, 4, 5, 6, 7]
+ *    "internal_temperature": [21, 22, 23, 24, 25, 26, 27]
+ * }
+ *
+ * timestamps:targetTimestampsValuesFormat = {
+ *    "consumption_metrics": [00001, 00002, 00003, 00004, 00005, 00006, 00007]
+ *    "internal_temperature": [00001, 00002, 00003, 00004, 00005, 00006, 00007]
+ * }
+ */
+export type targetTimestampsValuesFormat =
+    /**
+     * Metric Target Type.
+     */
+    {
+        [key in metricTargetType]?: number[]
+    }
+
+/**
+ * Format of the return from formatMetricsDataToTimestampsValues function.
+ *
+ * @example
+ * data = [
+ *  {
+ *    "target": "consumption_metrics",
+ *    "datapoints": [[1, 00001], [2, 00002] ,[3, 00003], [4, 00004], [5, 00005], [6, 00006], [7, 00007]]
+ *  },
+ *  {
+ *    "target": "internal_temperature",
+ *    "datapoints": [[21, 00001], [22, 00002] ,[23, 00003], [24, 00004], [25, 00005], [26, 00006], [27, 00007]]
+ *  }
+ * ]
+ *
+ * formatMetricsData(data) will give the following type.
+ * {
+ *  values = {
+ *    "consumption_metrics": [1, 2, 3, 4, 5, 6, 7]
+ *    "internal_temperature": [21, 22, 23, 24, 25, 26, 27]
+ *  }
+ *  timestamps = {
+ *    "consumption_metrics": [00001, 00002, 00003, 00004, 00005, 00006, 00007]
+ *    "internal_temperature": [00001, 00002, 00003, 00004, 00005, 00006, 00007]
+ *  }
+ * }
+ */
+export type formattedMetricsDataToTimestampsValues =
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    {
+        /**
+         * Values extracted from formatMetricsDataToTimestampsValues.
+         */
+        values: targetTimestampsValuesFormat
+        /**
+         * Timestamps extracted from formatMetricsDataToTimestampsValues.
+         */
+        timestamps: targetTimestampsValuesFormat
+    }
