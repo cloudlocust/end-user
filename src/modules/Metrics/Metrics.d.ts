@@ -150,15 +150,15 @@ export type metricTargetsType = {
 // eslint-disable-next-line jsdoc/require-jsdoc
 export type metricFiltersType = {
     /**
-     * Key. Default is: "meter_guid".
+     * Key. Default is: "housing_id".
      */
-    key: 'meter_guid'
+    key: 'housing_id'
     /**
      * Operator.
      */
     operator: '='
     /**
-     * Value of the meter_guid.
+     * Value of the housing_id.
      */
     value: string
 }[]

@@ -45,15 +45,15 @@ import { temperatureOrPmaxTargets } from 'src/modules/MyConsumption/utils/myCons
 /**
  * FormatMetricFilter function converts the data to the required format.
  *
- * @param valueGuid Meter guid.
+ * @param housingId Housing id.
  * @returns Formated meter data.
  */
-export const formatMetricFilter = (valueGuid: string) => {
+export const formatMetricFilter = (housingId: number) => {
     return [
         {
-            key: 'meter_guid',
+            key: 'housing_id',
             operator: '=',
-            value: valueGuid,
+            value: `${housingId}`,
         },
     ] as metricFiltersType
 }

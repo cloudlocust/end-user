@@ -147,7 +147,7 @@ describe('MyConsumptionContainer test', () => {
 
         userEvent.click(getByText(FILTERS_TEXT))
         await waitFor(() => {
-            expect(mockSetFilters).toHaveBeenCalledWith(formatMetricFilter(LIST_OF_HOUSES[0]!.meter!.guid))
+            expect(mockSetFilters).toHaveBeenCalledWith(formatMetricFilter(LIST_OF_HOUSES[0]!.id))
         })
 
         await waitFor(() => {
