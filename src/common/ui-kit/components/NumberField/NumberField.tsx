@@ -54,7 +54,7 @@ export const NumberField = ({ ...props }: INumberField) => {
                         {iconLabel}
                     </Icon>
                 ) : iconComponent ? (
-                    <>{iconComponent}</>
+                    <>{iconComponent()}</>
                 ) : (
                     <img src={iconPath} alt="icon" className="w-28" />
                 )}

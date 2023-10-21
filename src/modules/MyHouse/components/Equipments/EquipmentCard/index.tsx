@@ -4,6 +4,7 @@ import { Card, CardContent, Button, useTheme, Typography, Icon } from '@mui/mate
 import { EquipmentCardProps } from 'src/modules/MyHouse/components/Equipments/EquipmentCard/equipmentsCard'
 import { useIntl } from 'src/common/react-platform-translation'
 import { useState } from 'react'
+import { ReactComponent as CustomEquipmentIcon } from 'src/assets/images/content/housing/equipments/custom-equipment.svg'
 
 /**
  * Equipment Card component.
@@ -14,9 +15,10 @@ import { useState } from 'react'
  * @param root0.label Equipment label.
  * @param root0.name Equipment backend name.
  * @param root0.onEquipmentChange Function that handle the equipment number.
+ * @param root0.iconComponent Icon component.
  * @returns EquipmentCard JSX.
  */
-export const EquipmentCard = ({ id, number, label, name, onEquipmentChange }: EquipmentCardProps) => {
+export const EquipmentCard = ({ id, number, label, name, onEquipmentChange, iconComponent }: EquipmentCardProps) => {
     const theme = useTheme()
     const [equipmentNumber, setEquipmentNumber] = useState<number>(number)
     const { formatMessage } = useIntl()
@@ -35,7 +37,13 @@ export const EquipmentCard = ({ id, number, label, name, onEquipmentChange }: Eq
                     <div
                         className="flex justify-center items-center rounded-16 border-2"
                         style={{ borderColor: theme.palette.primary.main, width: '75px', height: '75px' }}
-                    ></div>
+                    >
+                        {iconComponent ? (
+                            iconComponent(theme)
+                        ) : (
+                            <CustomEquipmentIcon fill={theme.palette.primary.main} width={'35'} height={'35'} />
+                        )}
+                    </div>
                     <div className="flex flex-row w-full justify-between">
                         <Typography className="text-16 md:text-17 font-medium">
                             {formatMessage({

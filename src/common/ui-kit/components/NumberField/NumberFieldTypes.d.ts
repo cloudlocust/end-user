@@ -22,7 +22,7 @@ export interface INumberField {
     /**
      * Icon component.
      */
-    iconComponent?: JSX.Element
+    iconComponent?: () => JSX.Element
     /**
      * Is Field disabled.
      */
