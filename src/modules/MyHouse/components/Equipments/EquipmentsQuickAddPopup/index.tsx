@@ -37,7 +37,7 @@ export const EquipmentsQuickAddPopup = ({
     saveEquipment,
     loadingEquipmentInProgress,
 }: EquipmentsQuickAddPopupProps) => {
-    const [isEdit, setIsEdit] = useState(false)
+    const [isEdit, setIsEdit] = useState(true)
 
     // It'll have the following format an object of all equipment, name is the key, for example: {"heater": {equipment_id, equipment_type, equipment_number, isNumber, equipment: {id, name, allowed_type} } }.
     // eslint-disable-next-line jsdoc/require-jsdoc
