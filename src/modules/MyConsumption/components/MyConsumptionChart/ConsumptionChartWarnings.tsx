@@ -21,7 +21,7 @@ export const DefaultContractWarning = ({ isShowWarning }: DefaultContractWarning
     const { currentHousing } = useSelector(({ housingModel }: RootState) => housingModel)
     if (!isShowWarning) return null
     return (
-        <div className="flex items-center justify-center mt-12 gap-8">
+        <div className="flex items-start justify-center mt-12 gap-8">
             <ErrorOutlineIcon
                 sx={{
                     color: linksColor || warningMainHashColor,
@@ -30,7 +30,7 @@ export const DefaultContractWarning = ({ isShowWarning }: DefaultContractWarning
                 }}
             />
 
-            <div className="w-full">
+            <div>
                 <TypographyFormatMessage
                     sx={{ color: linksColor || warningMainHashColor }}
                     className="text-13 md:text-16 text-center"

@@ -1,3 +1,5 @@
+import { ChartsAxisValuesType } from 'src/modules/MyConsumption/myConsumptionTypes'
+
 /**
  * Return Type of computation Functions (mean, min, max).
  */
@@ -38,11 +40,11 @@ export type analysisInformationType =
         /**
          * Return Computation Function (min, max, mean) of the analysisInformation which represents (unit, value, timestamp).
          */
-        computeConsumption: (consumptionAxisValues: ApexChartsAxisValuesType) => computationFunctionType
+        computeConsumption: (consumptionAxisValues: ChartsAxisValuesType) => computationFunctionType
         /**
          * Return Euros (min, max, mean) of the analysisInformation.
          */
-        computeEuros: (consumptionAxisValues: ApexChartsAxisValuesType) => number
+        computeEuros: (consumptionAxisValues: ChartsAxisValuesType) => number
         /**
          * Path of Icon of the analysis information.
          */

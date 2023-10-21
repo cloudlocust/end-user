@@ -157,7 +157,7 @@ export const getYPointValueLabel = (
     isYValueRounded?: boolean,
 ) => {
     // IsNill check that value is undefined or null.
-    const value = isNil(yValue) ? '' : yValue
+    const value = isNil(yValue) ? '-' : yValue
     switch (chartName) {
         case metricTargetsEnum.eurosConsumption:
         case metricTargetsEnum.totalEurosIdleConsumption:
@@ -170,13 +170,13 @@ export const getYPointValueLabel = (
         case metricTargetsEnum.onlyEuroConsumption:
             // With toFixed it rounds up the number, doing slice and toFixed(3) will make sure to truncate and not round up.
             // So that we have a result of a number with two digits after the decimal point.
-            return `${value === '' ? value : value.toFixed(3).slice(0, -1)} €`
+            return `${value === '-' ? value : value.toFixed(3).slice(0, -1)} €`
         case metricTargetsEnum.externalTemperature:
         case metricTargetsEnum.internalTemperature:
             return `${value} °C`
         case metricTargetsEnum.pMax:
             // Value given by backend is in Va and thus convert it to kVA.
-            return `${value === '' ? value : convert(value).from('VA').to('kVA'!).toFixed(2)} kVA`
+            return `${value === '-' ? value : convert(value).from('VA').to('kVA'!).toFixed(2)} kVA`
         case metricTargetsEnum.consumption:
         case metricTargetsEnum.baseConsumption:
         case metricTargetsEnum.autoconsumption:
@@ -189,7 +189,7 @@ export const getYPointValueLabel = (
         case metricTargetsEnum.offPeakHourConsumption:
         case metricTargetsEnum.onlyConsumption:
             return `${
-                value === ''
+                value === '-'
                     ? value
                     : isYValueRounded
                     ? Math.round(convert(value).from('Wh').to(unit!))
