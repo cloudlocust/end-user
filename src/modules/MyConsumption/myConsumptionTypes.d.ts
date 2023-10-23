@@ -185,19 +185,42 @@ export type SwitchIdleConsumptionProps =
     }
 
 /**
- * Represent the type return by apexChartsDataConverter.
+ * Y Axis Chart Series.
  */
-export type ApexChartsAxisValuesType =
+export type YAxisChartSerie =
+    /**
+     *
+     */
+    {
+        /**
+         * Target name.
+         */
+        name: metricTargetType
+        /**
+         * Data correspondant to the target.
+         */
+        data: (number | null)[]
+    }
+
+/**
+ * X Axis Series.
+ */
+export type XAxisChartSeries = number[][]
+
+/**
+ * Represent the type return by ChartsDataConverter.
+ */
+export type ChartsAxisValuesType =
     // eslint-disable-next-line jsdoc/require-jsdoc
     {
         /**
-         * Represent the yAxisValues for each target, as ApexChartSerie.
+         * Represent the yAxisValues for each target, as ChartSerie.
          */
-        yAxisSeries: ApexAxisChartSeries
+        yAxisSeries: YAxisChartSerie[]
         /**
          * Represent the xAxisValues for each target.
          */
-        xAxisSeries: number[][]
+        xAxisSeries: XAxisChartSeries
     }
 
 /**

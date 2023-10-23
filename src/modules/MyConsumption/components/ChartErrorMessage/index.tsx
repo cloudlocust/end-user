@@ -26,7 +26,7 @@ export const ChartErrorMessage = ({
 
     return (
         <div style={{ background: theme.palette.primary.dark }}>
-            <div className="container relative p-16 sm:p-24 text-center flex items-center justify-center gap-8">
+            <div className="container relative p-16 sm:p-24 text-center flex items-start justify-center gap-8">
                 <ErrorOutlineIcon
                     sx={{
                         color: linksColor || warningMainHashColor,

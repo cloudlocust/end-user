@@ -17,7 +17,7 @@ dayjs.extend(timezone)
  * @param theme Theme used for colors, fonts and backgrounds purposes.
  * @returns Echarts Analysis Option.
  */
-export const getEchartsAnalysisChartOptions = (values: ApexNonAxisChartSeries, timeStamps: number[], theme: Theme) => {
+export const getEchartsAnalysisChartOptions = (values: (number | null)[], timeStamps: number[], theme: Theme) => {
     return {
         ...getDefaultOptionsEchartsAnalysisChart(values, theme),
         ...getAngleAxisOptionEchartsAnalysisChart(timeStamps),
