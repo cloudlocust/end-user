@@ -81,8 +81,6 @@ export const MicrowaveMeasurement = ({
         />,
         <EquipmentStartupStep measurementMode={measurementMode} stepSetter={setCurrentStep} />,
         <MeasurementProcessStep
-            measurementMode={measurementMode}
-            microwave={selectedMicrowave}
             measurementStatus={measurementStatus}
             setMeasurementStatus={setMeasurementStatus}
             stepSetter={setCurrentStep}
