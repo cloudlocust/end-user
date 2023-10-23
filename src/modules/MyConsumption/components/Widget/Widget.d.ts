@@ -11,6 +11,7 @@ export type widgetTitleType =
     | 'Température Extérieure'
     | 'Coût Total'
     | 'Production Totale'
+    | 'Injectée'
     | 'Autoconsommation'
     | 'Achetée'
     | 'Consommation de Veille'

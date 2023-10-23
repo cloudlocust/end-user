@@ -1,4 +1,5 @@
 import { metricTargetType } from 'src/modules/Metrics/Metrics'
+import { periodType } from 'src/modules/MyConsumption/myConsumptionTypes'
 
 /**
  * Interface WidgetItem Props.
@@ -28,4 +29,12 @@ export interface IWidgetItemProps {
      * Percentage.
      */
     percentageChange: number
+    /**
+     * Boolean for Enphase Consent is inactive.
+     */
+    enphaseOff?: boolean
+    /**
+     * Period of the Widget.
+     */
+    period?: periodType
 }

@@ -153,6 +153,15 @@ export const computeTotalEuros = (data: IMetric[]): { value: number | string; un
 export const computeTotalProduction = (data: IMetric[]) => computeTotalEnergy(data, metricTargetsEnum.totalProduction)
 
 /**
+ * Function that computes injected production.
+ *
+ * @param data Metrics data.
+ * @returns Injected production rounded.
+ */
+export const computeInjectedProduction = (data: IMetric[]) =>
+    computeTotalEnergy(data, metricTargetsEnum.injectedProduction)
+
+/**
  * Function that computes total Autoconsumption.
  *
  * @param data Metrics data.
@@ -194,6 +203,8 @@ export const computeWidgetAssets = (data: IMetric[], type: metricTargetType) => 
             return computeTotalEuros(data)!
         case metricTargetsEnum.totalProduction:
             return computeTotalProduction(data)!
+        case metricTargetsEnum.injectedProduction:
+            return computeInjectedProduction(data)!
         case metricTargetsEnum.autoconsumption:
             return computeTotalAutoconsumption(data)!
         case metricTargetsEnum.idleConsumption:
@@ -249,6 +260,8 @@ export const renderWidgetTitle = (target: metricTargetType, enphaseOff?: boolean
             return 'Coût Total'
         case metricTargetsEnum.totalProduction:
             return 'Production Totale'
+        case metricTargetsEnum.injectedProduction:
+            return 'Injectée'
         case metricTargetsEnum.autoconsumption:
             return 'Autoconsommation'
         case metricTargetsEnum.idleConsumption:

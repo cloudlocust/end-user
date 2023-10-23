@@ -131,6 +131,8 @@ export const Widget = memo(
                                         value={targetsInfos[target.toString()].value}
                                         unit={targetsInfos[target.toString()].unit}
                                         percentageChange={targetsInfos[target.toString()].percentageChange}
+                                        enphaseOff={enphaseOff}
+                                        period={period}
                                     />
                                 ))}
                             </div>
