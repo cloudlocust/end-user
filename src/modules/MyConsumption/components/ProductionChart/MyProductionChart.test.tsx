@@ -1,5 +1,5 @@
 import { reduxedRender } from 'src/common/react-platform-components/test'
-import MyProductionChart from 'src/modules/MyConsumption/components/ProductionChart'
+import MyProductionChart, { productionChartClassName } from 'src/modules/MyConsumption/components/ProductionChart'
 import { createTheme } from '@mui/material/styles'
 import { ThemeProvider } from '@mui/material'
 import { TEST_SUCCESS_WEEK_METRICS as MOCK_WEEK_METRICS } from 'src/mocks/handlers/metrics'
@@ -12,8 +12,6 @@ const TEST_SUCCESS_WEEK_METRICS = applyCamelCase(MOCK_WEEK_METRICS([metricTarget
 const propsMyProductionChart = {
     data: TEST_SUCCESS_WEEK_METRICS,
 } as ProductionChartProps
-
-const eChartsClassName = '.echarts-for-react'
 
 describe('Test MyProductionChart', () => {
     const theme = createTheme({
@@ -29,6 +27,6 @@ describe('Test MyProductionChart', () => {
                 <MyProductionChart {...propsMyProductionChart} />
             </ThemeProvider>,
         )
-        expect(container.querySelector(eChartsClassName)).toBeInTheDocument()
+        expect(container.getElementsByClassName(`.${productionChartClassName}`)).toBeTruthy()
     })
 })

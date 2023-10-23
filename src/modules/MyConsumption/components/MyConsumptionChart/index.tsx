@@ -4,6 +4,12 @@ import { formatMetricsDataToTimestampsValues } from 'src/modules/Metrics/formatM
 import { useTheme } from '@mui/material/styles'
 import { ConsumptionChartProps } from 'src/modules/MyConsumption/components/MyConsumptionChart/MyConsumptionChartTypes.d'
 import { getEchartsConsumptionChartOptions } from 'src/modules/MyConsumption/components/MyConsumptionChart/consumptionChartOptions'
+import { useMediaQuery } from '@mui/material'
+
+/**
+ * Consumption test id.
+ */
+export const consumptionChartClassName = 'consumption-chart-classname'
 
 /**
  * MyConsumptionChart Component.
@@ -19,16 +25,19 @@ const MyConsumptionChart = ({ data, isSolarProductionConsentOff }: ConsumptionCh
         return formatMetricsDataToTimestampsValues(data)
     }, [data])
 
+    const isMobile = useMediaQuery(theme.breakpoints.down('lg'))
+
     // EchartsConsumptionChart Option.
     const option = useMemo(() => {
-        return getEchartsConsumptionChartOptions(timestamps, values, theme, isSolarProductionConsentOff)
-    }, [timestamps, values, theme, isSolarProductionConsentOff])
+        return getEchartsConsumptionChartOptions(timestamps, values, theme, isSolarProductionConsentOff, isMobile)
+    }, [timestamps, values, theme, isSolarProductionConsentOff, isMobile])
 
     return (
         <>
             <ReactECharts
+                className={consumptionChartClassName}
                 opts={{
-                    renderer: 'svg',
+                    renderer: 'canvas',
                 }}
                 option={option}
                 style={{ height: 360, margin: '0 auto' }}

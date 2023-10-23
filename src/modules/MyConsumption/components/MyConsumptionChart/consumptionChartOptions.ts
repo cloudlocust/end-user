@@ -25,6 +25,7 @@ dayjs.extend(timezone)
  * @param values Values datapoints.
  * @param theme Theme used for colors, fonts and backgrounds purposes.
  * @param isSolarProductionConsentOff Boolean indicating if solar production consent is off.
+ * @param isMobile Is Mobile view.
  * @returns Echarts Consumption Option.
  */
 export const getEchartsConsumptionChartOptions = (
@@ -32,14 +33,15 @@ export const getEchartsConsumptionChartOptions = (
     values: targetTimestampsValuesFormat,
     theme: Theme,
     isSolarProductionConsentOff: boolean,
+    isMobile: boolean,
 ) => {
     if (!Object.values(timestamps).length || !Object.values(values).length) return {}
     const xAxisTimestamps = Object.values(timestamps).length ? Object.values(timestamps)[0] : []
     const period = getPeriodFromTimestampsLength(xAxisTimestamps.length)
 
     return {
-        ...getDefaultOptionsEchartsConsumptionChart(theme),
-        ...getXAxisOptionEchartsConsumptionChart(xAxisTimestamps, period, theme),
+        ...getDefaultOptionsEchartsConsumptionChart(theme, isMobile),
+        ...getXAxisOptionEchartsConsumptionChart(xAxisTimestamps, isSolarProductionConsentOff, period, theme),
         ...getYAxisOptionEchartsConsumptionChart(values, period, theme),
         ...getSeriesOptionEchartsConsumptionChart(values, period, isSolarProductionConsentOff, theme),
     } as EChartsOption
@@ -49,9 +51,10 @@ export const getEchartsConsumptionChartOptions = (
  * Echarts ConsumptionChart Default option.
  *
  * @param theme Theme used for colors, fonts and backgrounds.
+ * @param isMobile Is Mobile view.
  * @returns Default EchartsConsumptionChart option.
  */
-const getDefaultOptionsEchartsConsumptionChart = (theme: Theme) =>
+const getDefaultOptionsEchartsConsumptionChart = (theme: Theme, isMobile: boolean) =>
     ({
         color: 'transparent',
         textStyle: {
@@ -63,7 +66,7 @@ const getDefaultOptionsEchartsConsumptionChart = (theme: Theme) =>
             trigger: 'axis',
         },
         toolbox: {
-            show: true,
+            show: !isMobile,
             feature: {
                 dataZoom: {
                     yAxisIndex: 'all',
@@ -98,48 +101,71 @@ export const getSeriesOptionEchartsConsumptionChart = (
     // Targets functions yAxis Value formatter type (label shown in tooltip).
     const targetsYAxisValueFormatters = getTargetsYAxisValueFormatters(values, period)
 
-    return {
-        series: Object.keys(values).map((target) => {
-            const targetYAxisIndex = getTargetYAxisIndexFromTargetName(target as metricTargetsEnum)
-            const colorTargetSeries = getColorTargetSeriesEchartsConsumptionChart(
+    const resultSeries = Object.keys(values).map((target) => {
+        const targetYAxisIndex = getTargetYAxisIndexFromTargetName(target as metricTargetsEnum)
+        const colorTargetSeries = getColorTargetSeriesEchartsConsumptionChart(
+            target as metricTargetsEnum,
+            theme,
+            isSolarProductionConsentOff,
+        )
+        // When the series is Transparent we hide it through type 'line' and symbole none, so that it won't interject with the already bar and line charts additional to its own stack name.
+        const typeTargetSeries: EChartsOption['series'] =
+            colorTargetSeries === TRANSPARENT_COLOR
+                ? {
+                      type: 'line',
+                      symbol: 'none',
+                  }
+                : getTypeTargetSeriesEchartsConsumptionChart(target as metricTargetsEnum, period)
+        return {
+            ...typeTargetSeries,
+            emphasis: {
+                focus: 'series',
+            },
+            name: `${getNameTargetSeriesEchartsConsumptionChart(
+                target as metricTargetsEnum,
+                isSolarProductionConsentOff,
+            )}`,
+            data: values[target as metricTargetType],
+            stack: getStackTargetSeriesEchartsConsumptionChart(
                 target as metricTargetsEnum,
                 theme,
                 isSolarProductionConsentOff,
-            )
-            // When the series is Transparent we hide it through type 'line' and symbole none, so that it won't interject with the already bar and line charts additional to its own stack name.
-            const typeTargetSeries: EChartsOption['series'] =
-                colorTargetSeries === TRANSPARENT_COLOR
-                    ? {
-                          type: 'line',
-                          symbol: 'none',
-                      }
-                    : getTypeTargetSeriesEchartsConsumptionChart(target as metricTargetsEnum, period)
-            return {
-                ...typeTargetSeries,
-                emphasis: {
-                    focus: 'series',
-                },
-                name: `${getNameTargetSeriesEchartsConsumptionChart(
-                    target as metricTargetsEnum,
-                    isSolarProductionConsentOff,
-                )}`,
-                data: values[target as metricTargetType],
-                stack: getStackTargetSeriesEchartsConsumptionChart(
-                    target as metricTargetsEnum,
-                    theme,
+            ),
+            yAxisIndex: Number(targetYAxisIndex),
+            tooltip: {
+                valueFormatter: targetsYAxisValueFormatters[targetYAxisIndex as targetYAxisIndexEnum],
+            },
+            showSymbol: false,
+            smooth: true,
+            itemStyle: {
+                color: colorTargetSeries,
+            },
+        }
+    })
+
+    // this part is just to put in the bottom of the stack the idleConsumption (tried zlevel does not work)
+    let sortedSeries = resultSeries
+
+    // veille only for the week, month, and year
+    if (period !== 'daily') {
+        const index = resultSeries.findIndex(
+            (serie) =>
+                serie.name ===
+                getNameTargetSeriesEchartsConsumptionChart(
+                    metricTargetsEnum.idleConsumption,
                     isSolarProductionConsentOff,
                 ),
-                yAxisIndex: Number(targetYAxisIndex),
-                tooltip: {
-                    valueFormatter: targetsYAxisValueFormatters[targetYAxisIndex as targetYAxisIndexEnum],
-                },
-                showSymbol: false,
-                smooth: true,
-                itemStyle: {
-                    color: colorTargetSeries,
-                },
-            }
-        }),
+        )
+
+        // if no index then veille is not activated and we are not showing it in the first place
+        if (index !== -1) {
+            const IdleSerie = sortedSeries.splice(index, 1)[0]
+            sortedSeries.unshift(IdleSerie)
+        }
+    }
+
+    return {
+        series: sortedSeries,
     } as EChartsOption
 }
 
@@ -147,11 +173,17 @@ export const getSeriesOptionEchartsConsumptionChart = (
  * Get Xaxis option of Echarts Consumption Option.
  *
  * @param xAxisTimestamps Timestamps array.
+ * @param isSolarProductionConsentOff IsSolarProductionConsentOff.
  * @param period Current period.
  * @param theme Theme used for colors, fonts and backgrounds of xAxis.
  * @returns XAxis object option for Echarts Consumption Options.
  */
-export const getXAxisOptionEchartsConsumptionChart = (xAxisTimestamps: number[], period: periodType, theme: Theme) =>
+export const getXAxisOptionEchartsConsumptionChart = (
+    xAxisTimestamps: number[],
+    isSolarProductionConsentOff: boolean,
+    period: periodType,
+    theme: Theme,
+) =>
     ({
         xAxis: [
             {
@@ -159,9 +191,9 @@ export const getXAxisOptionEchartsConsumptionChart = (xAxisTimestamps: number[],
                 type: 'category',
                 data: getXAxisCategoriesData(xAxisTimestamps, period),
                 axisLabel: {
-                    // TODO Remove once handled daily period
-                    // rotate: period === PeriodEnum.DAILY ? 30 : undefined,
+                    interval: getXAxisLabelInterval(isSolarProductionConsentOff, period),
                     hideOverlap: true,
+                    rotate: 30,
                     /**
                      * Formatting the labels shown in xAxis, which are the already formatted categories data according to the period.
                      *
@@ -174,15 +206,6 @@ export const getXAxisOptionEchartsConsumptionChart = (xAxisTimestamps: number[],
                             return capitalize(value.split(' ').splice(1).join(' '))
                         return value
                     },
-                    // TODO To remove once handling responsive of daily period.
-                    // formatter(value: string, index: number) {
-                    // When Period is Daily, show only each first hour of the day.
-                    // if (period === PeriodEnum.DAILY) {
-                    // console.log('🚀 ~ file: echartsConsumptionChartOptions.ts:190 ~ formatter ~ value:', value)
-                    // return value.endsWith('00') ? value : ''
-                    // }
-                    // return value
-                    // },
                 },
                 // AxisLine represents the horizontal line that shows xAxis labels.
                 axisLine: {
@@ -212,6 +235,20 @@ export const getXAxisOptionEchartsConsumptionChart = (xAxisTimestamps: number[],
             },
         ],
     } as EChartsOption)
+
+/**
+ * Function that give the index of the time in timestamps that we will get the interval from.
+ * For exemple : ['00:30', '01:00', '01:30', '02:00'], if we put the index 1, it will show every 2 timestamps in the axis line.
+ *
+ * @param isSolarProductionConsentOff Is production on, to know if data is every minute or 30min.
+ * @param period Period to know if it's daily or not.
+ * @returns Value of the index that will be the reference for the times.
+ */
+const getXAxisLabelInterval = (isSolarProductionConsentOff: boolean, period: periodType) => {
+    if (period === 'daily') {
+        return isSolarProductionConsentOff ? 59 : 1
+    }
+}
 
 /**
  * Get Period From timestamps length.
@@ -593,7 +630,7 @@ export const getTargetsYAxisValueFormatters: getTargetsYAxisValueFormattersType 
          * @returns The yAxis Label.
          */
         [targetYAxisIndexEnum.TEMPERATURE]: function (value) {
-            return `${isNil(value) ? '' : value} °C`
+            return `${isNil(value) ? '-' : value} °C`
         },
         /**
          * Value formatter Label Label for Pmax targets yAxis.
@@ -602,7 +639,7 @@ export const getTargetsYAxisValueFormatters: getTargetsYAxisValueFormattersType 
          * @returns The yAxis Label.
          */
         [targetYAxisIndexEnum.PMAX]: function (value) {
-            return `${isNil(value) ? '' : convert(Number(value)).from('VA').to('kVA'!).toFixed(2)} kVA`
+            return `${isNil(value) ? '-' : convert(Number(value)).from('VA').to('kVA'!).toFixed(2)} kVA`
 
             // return `${k convert(value).from('VA').to('kVA'!).toFixed(2)} kVA`
         },
@@ -620,7 +657,7 @@ export const getTargetsYAxisValueFormatters: getTargetsYAxisValueFormattersType 
              * @returns The yAxis Label.
              */
             function (value) {
-                return `${isNil(value) ? '' : Number(value).toFixed(3).slice(0, -1)} €`
+                return `${isNil(value) ? '-' : Number(value).toFixed(3).slice(0, -1)} €`
             },
     }
 }
