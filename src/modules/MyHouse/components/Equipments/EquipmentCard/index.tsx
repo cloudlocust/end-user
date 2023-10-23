@@ -1,14 +1,18 @@
 import { useModal } from 'src/hooks/useModal'
 import { MicrowaveMeasurement } from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement'
-import { Card, CardContent, Button, useTheme, Typography, Icon } from '@mui/material'
+import { Card, CardContent, Button, useTheme, Typography, Icon, Tooltip } from '@mui/material'
 import { EquipmentCardProps } from 'src/modules/MyHouse/components/Equipments/EquipmentCard/equipmentsCard'
 import { useIntl } from 'src/common/react-platform-translation'
 import { useState } from 'react'
 import { ReactComponent as CustomEquipmentIcon } from 'src/assets/images/content/housing/equipments/custom-equipment.svg'
+import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
+import { isEquipmentMeasurementFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
+import { FEATURE_COMMING_SOON_TEXT } from 'src/modules/shared'
 
 /**
  * Equipment Card component.
  *
+ * @description Equipment Card component that displays individual card for each type of equipment.
  * @param root0 N/A.
  * @param root0.id Equipment id.
  * @param root0.number How many equipments are there of that type.
@@ -81,11 +85,28 @@ export const EquipmentCard = ({ id, number, label, name, onEquipmentChange, icon
                                     remove_circle_outlined
                                 </Icon>
                             </div>
-                            {isMicrowaveMeasurementButtonShown && (
-                                <Button className="px-20 py-3" variant="contained" onClick={onOpenMeasurementModal}>
-                                    Mesurer
-                                </Button>
-                            )}
+                            <Tooltip
+                                disableHoverListener={isEquipmentMeasurementFeatureState}
+                                title={<TypographyFormatMessage>{FEATURE_COMMING_SOON_TEXT}</TypographyFormatMessage>}
+                                placement="top"
+                                arrow
+                            >
+                                {/* In order to get the tooltip to show you need to wrap the disabled Button in a inline-block div */}
+                                {isMicrowaveMeasurementButtonShown ? (
+                                    <div className="inline-block">
+                                        <Button
+                                            className="px-20 py-3"
+                                            variant="contained"
+                                            onClick={onOpenMeasurementModal}
+                                            disabled={!isEquipmentMeasurementFeatureState}
+                                        >
+                                            Mesurer
+                                        </Button>
+                                    </div>
+                                ) : (
+                                    <></>
+                                )}
+                            </Tooltip>
                         </div>
                     </div>
                 </CardContent>

@@ -3,6 +3,17 @@ import { reduxedRender } from 'src/common/react-platform-components/test'
 import { EquipmentCard } from 'src/modules/MyHouse/components/Equipments/EquipmentCard'
 import { EquipmentCardProps } from 'src/modules/MyHouse/components/Equipments/EquipmentCard/equipmentsCard'
 
+let mockIsEquipmentMeasurementFeatureState = true
+
+jest.mock('src/modules/MyHouse/MyHouseConfig', () => ({
+    ...jest.requireActual('src/modules/MyHouse/MyHouseConfig'),
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    get isEquipmentMeasurementFeatureState() {
+        return mockIsEquipmentMeasurementFeatureState
+    },
+}))
+
+// TODO: add a beforeEach hook to reset the props before each test.
 describe('EquipmentCard tests', () => {
     let mockEquipmentCardProps: EquipmentCardProps = {
         id: 1,
@@ -52,5 +63,14 @@ describe('EquipmentCard tests', () => {
         userEvent.click(getByText('Mesurer'))
 
         expect(getByText("Mesure d'appareil")).toBeInTheDocument()
+    })
+    test('when isEquipmentMeasurementFeatureState is false, the button is disabled', async () => {
+        mockIsEquipmentMeasurementFeatureState = false
+        mockEquipmentCardProps.name = 'microwave'
+        const { getByText } = reduxedRender(<EquipmentCard {...mockEquipmentCardProps} />)
+        const measurementButton = getByText('Mesurer')
+        userEvent.click(measurementButton)
+        expect(() => getByText("Mesure d'appareil")).toThrow()
+        expect(getByText('Mesurer').closest('button')).toBeDisabled()
     })
 })

@@ -95,6 +95,12 @@ export const manualContractFillingIsEnabled = window._env_.REACT_APP_MANUAL_CONT
 export const sgeConsentFeatureStatePopup: string = window._env_.REACT_APP_SGE_CONSENT_FEATURE_STATE_POPUP_MESSAGE
 
 /**
+ * Env var for equipment measurement feature.
+ */
+export const isEquipmentMeasurementFeatureState: boolean =
+    window._env_.REACT_APP_EQUIPMENT_MEASUREMENT_FEATURE_STATE === 'enabled'
+
+/**
  * Check if global production is active, if so check if we are using access rights, if so then we have to use the production offer rights.
  *
  * @param scopes Scopes of housing to check.
