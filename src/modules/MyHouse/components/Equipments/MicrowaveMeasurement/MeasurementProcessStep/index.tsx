@@ -25,7 +25,7 @@ export const MeasurementProcessStep = ({
     const { formatMessage } = useIntl()
     const theme = useTheme()
     const measurementMaxDuration = 10
-    const getHeaderText = useMemo(() => {
+    const headerText = useMemo(() => {
         switch (measurementStatus) {
             case measurementStatusEnum.pending:
                 return 'Démarrage de la mesure'
@@ -42,7 +42,7 @@ export const MeasurementProcessStep = ({
     /**
      * Click handler for the button "Terminer".
      */
-    const handleFinishBtnClick = () => {
+    const handleFinishButtonClick = () => {
         stepSetter(4)
     }
 
@@ -81,8 +81,8 @@ export const MeasurementProcessStep = ({
             <div className="text-center mb-20">
                 <Typography component="h2" fontWeight="500" fontSize="18px" data-testid="headerElement">
                     {formatMessage({
-                        id: getHeaderText,
-                        defaultMessage: getHeaderText,
+                        id: headerText,
+                        defaultMessage: headerText,
                     })}
                 </Typography>
             </div>
@@ -120,25 +120,23 @@ export const MeasurementProcessStep = ({
                     <Button
                         variant="contained"
                         sx={{ padding: '10px auto', textAlign: 'center', width: '60%', minWidth: '160px' }}
-                        onClick={handleFinishBtnClick}
+                        onClick={handleFinishButtonClick}
                         disabled={measurementStatus !== measurementStatusEnum.success}
-                    >
-                        {formatMessage({
+                        children={formatMessage({
                             id: 'Terminer',
                             defaultMessage: 'Terminer',
                         })}
-                    </Button>
+                    />
                 ) : (
                     <Button
                         variant="contained"
                         sx={{ padding: '10px auto', textAlign: 'center', width: '60%', minWidth: '160px' }}
                         onClick={restartTest}
-                    >
-                        {formatMessage({
+                        children={formatMessage({
                             id: 'Relancer le test',
                             defaultMessage: 'Relancer le test',
                         })}
-                    </Button>
+                    />
                 )}
             </div>
         </>

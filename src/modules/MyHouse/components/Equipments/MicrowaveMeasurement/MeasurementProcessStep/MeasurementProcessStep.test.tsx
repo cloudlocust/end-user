@@ -1,43 +1,138 @@
-import { screen } from '@testing-library/react'
+import { screen, waitFor } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 import { reduxedRender } from 'src/common/react-platform-components/test'
 import { MeasurementProcessStep } from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement/MeasurementProcessStep'
 import { MeasurementProcessStepProps } from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement/MeasurementProcessStep/MeasurementProcessStep'
 import { measurementStatusEnum } from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement/MeasurementProgress/MeasurementProgress.d'
 
+const HEADER_TEXT_PENDING_OR_NULL = 'Démarrage de la mesure'
+const HEADER_TEXT_IN_PROGRESS = 'Mesure en cours'
+const HEADER_TEXT_SUCCESS = 'Mesure terminée avec succès'
+const HEADER_TEXT_FAILED = 'Mesure terminée avec échec'
+
 // Mock StepSetterFunction
 let mockStepSetter: jest.Mock<any, any>
 let mockSetMeasurementStatus: jest.Mock<any, any>
-let MeasurementProcessStepPropsValues: MeasurementProcessStepProps
+let MeasurementProcessStepPropsDefaultValues: MeasurementProcessStepProps
 
 describe('MeasurementProcessStep Component', () => {
     beforeEach(() => {
         mockStepSetter = jest.fn()
         mockSetMeasurementStatus = jest.fn()
 
-        MeasurementProcessStepPropsValues = {
-            microwave: '',
-            measurementMode: '',
-            measurementStatus: measurementStatusEnum.pending,
+        MeasurementProcessStepPropsDefaultValues = {
+            measurementStatus: null,
             setMeasurementStatus: mockSetMeasurementStatus,
             stepSetter: mockStepSetter,
         }
     })
 
-    test('Renders correctly', () => {
-        reduxedRender(<MeasurementProcessStep {...MeasurementProcessStepPropsValues} />)
+    test('When the measurement status is null (initially, before getting the status value from the backend)', () => {
+        reduxedRender(<MeasurementProcessStep {...MeasurementProcessStepPropsDefaultValues} />)
 
-        const header = screen.getByTestId('headerElement')
-        expect(header).toBeInTheDocument()
+        const headerText = screen.getByText(HEADER_TEXT_PENDING_OR_NULL)
+        expect(headerText).toBeInTheDocument()
 
         const progressCircle = screen.getByRole('progressbar')
         expect(progressCircle).toBeInTheDocument()
 
-        const button = screen.getByText('Terminer')
-        expect(button).toBeInTheDocument()
-
-        // The button must be disabled initially
-        expect(button).toBeDisabled()
+        const buttonFinish = screen.getByText('Terminer')
+        expect(buttonFinish).toBeInTheDocument()
+        expect(buttonFinish).toBeDisabled()
     })
 
-    // More tests will be added after creating the hook that manage the measurement requests.
+    test('When the measurement status is PENDING', () => {
+        reduxedRender(
+            <MeasurementProcessStep
+                {...MeasurementProcessStepPropsDefaultValues}
+                measurementStatus={measurementStatusEnum.pending}
+            />,
+        )
+
+        const headerText = screen.getByText(HEADER_TEXT_PENDING_OR_NULL)
+        expect(headerText).toBeInTheDocument()
+
+        const progressCircle = screen.getByRole('progressbar')
+        expect(progressCircle).toBeInTheDocument()
+
+        const loadingMessage = screen.getByText('En attente')
+        expect(loadingMessage).toBeInTheDocument()
+
+        const buttonFinish = screen.getByText('Terminer')
+        expect(buttonFinish).toBeInTheDocument()
+        expect(buttonFinish).toBeDisabled()
+    })
+
+    test('When the measurement status is IN_PROGRESS', () => {
+        reduxedRender(
+            <MeasurementProcessStep
+                {...MeasurementProcessStepPropsDefaultValues}
+                measurementStatus={measurementStatusEnum.inProgress}
+            />,
+        )
+
+        const headerText = screen.getByText(HEADER_TEXT_IN_PROGRESS)
+        expect(headerText).toBeInTheDocument()
+
+        const progressCircle = screen.getByRole('progressbar')
+        expect(progressCircle).toBeInTheDocument()
+
+        // Checking the time counter (mm : ss)
+        const timeCounter = screen.getByText(/^[0-9][0-9] : [0-5][0-9]$/)
+        expect(timeCounter).toBeInTheDocument()
+
+        const buttonFinish = screen.getByText('Terminer')
+        expect(buttonFinish).toBeInTheDocument()
+        expect(buttonFinish).toBeDisabled()
+    })
+
+    test('When the measurement status is SUCCESS', async () => {
+        reduxedRender(
+            <MeasurementProcessStep
+                {...MeasurementProcessStepPropsDefaultValues}
+                measurementStatus={measurementStatusEnum.success}
+            />,
+        )
+
+        const headerText = screen.getByText(HEADER_TEXT_SUCCESS)
+        expect(headerText).toBeInTheDocument()
+
+        const progressCircle = screen.getByRole('progressbar')
+        expect(progressCircle).toBeInTheDocument()
+
+        const successMessage = screen.getByText('Félicitations !')
+        expect(successMessage).toBeInTheDocument()
+
+        const buttonFinish = screen.getByText('Terminer')
+        expect(buttonFinish).toBeInTheDocument()
+        expect(buttonFinish).toBeEnabled()
+
+        // Calling stepSetter function on clicking on the button Terminer
+        userEvent.click(buttonFinish)
+        await waitFor(() => {
+            expect(mockStepSetter).toHaveBeenCalledWith(4)
+        })
+    })
+
+    test('When the measurement status is FAILED', () => {
+        reduxedRender(
+            <MeasurementProcessStep
+                {...MeasurementProcessStepPropsDefaultValues}
+                measurementStatus={measurementStatusEnum.failed}
+            />,
+        )
+
+        const headerText = screen.getByText(HEADER_TEXT_FAILED)
+        expect(headerText).toBeInTheDocument()
+
+        const progressCircle = screen.getByRole('progressbar')
+        expect(progressCircle).toBeInTheDocument()
+
+        const successMessage = screen.getByText('La mesure a échoué')
+        expect(successMessage).toBeInTheDocument()
+
+        const buttonFinish = screen.getByText('Relancer le test')
+        expect(buttonFinish).toBeInTheDocument()
+        expect(buttonFinish).toBeEnabled()
+    })
 })

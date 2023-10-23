@@ -28,14 +28,6 @@ export interface ResponseMessageProps {
  */
 export interface MeasurementProcessStepProps {
     /**
-     * The microwave to mesure.
-     */
-    microwave: string
-    /**
-     * The measurement mode.
-     */
-    measurementMode: string
-    /**
      * The measurementStatus state.
      */
     measurementStatus: measurementStatusEnum | null
