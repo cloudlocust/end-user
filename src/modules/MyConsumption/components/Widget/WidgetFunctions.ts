@@ -1,11 +1,5 @@
-import {
-    ApexAxisChartSerie,
-    IMetric,
-    metricRangeType,
-    metricTargetsEnum,
-    metricTargetType,
-} from 'src/modules/Metrics/Metrics.d'
-import { convertMetricsDataToApexChartsAxisValues } from 'src/modules/MyConsumption/utils/apexChartsDataConverter'
+import { IMetric, metricRangeType, metricTargetsEnum, metricTargetType } from 'src/modules/Metrics/Metrics.d'
+import { convertMetricsDataToChartsAxisValues } from 'src/modules/MyConsumption/utils/chartsDataConverter'
 import { sum, max, mean, round } from 'lodash'
 import { consumptionWattUnitConversion } from 'src/modules/MyConsumption/utils/unitConversionFunction'
 import convert from 'convert-units'
@@ -22,7 +16,7 @@ import {
     subYears,
     addDays,
 } from 'date-fns'
-import { periodType } from 'src/modules/MyConsumption/myConsumptionTypes'
+import { periodType, YAxisChartSerie } from 'src/modules/MyConsumption/myConsumptionTypes'
 import { getDateWithoutTimezoneOffset } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
 import dayjs from 'dayjs'
 import { isProductionActiveAndHousingHasAccess } from 'src/modules/MyHouse/MyHouseConfig'
@@ -42,10 +36,10 @@ export const WRONG_TARGET_TEXT = 'Wrong target'
  */
 export const getDataFromYAxis = (data: IMetric[], target: metricTargetType) => {
     // The values to be used in the widget are the values of the Y axis in the chart.
-    const { yAxisSeries } = convertMetricsDataToApexChartsAxisValues(data)
+    const { yAxisSeries } = convertMetricsDataToChartsAxisValues(data)
     let values: number[] = []
     // Filter xAxisSeries according to the target.
-    values = yAxisSeries.filter((el: ApexAxisChartSerie) => el.name === target)[0].data as number[]
+    values = yAxisSeries.filter((el: YAxisChartSerie) => el.name === target)[0].data as number[]
     return values
 }
 

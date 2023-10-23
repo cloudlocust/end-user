@@ -271,6 +271,8 @@ describe('Test echartsProductionOptions', () => {
                         axisLabel: {
                             hideOverlap: true,
                             formatter: expect.anything(),
+                            interval: 1,
+                            rotate: 30,
                         },
                         axisLine: {
                             show: true,

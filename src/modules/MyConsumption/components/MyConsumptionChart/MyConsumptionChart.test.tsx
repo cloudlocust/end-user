@@ -1,5 +1,5 @@
 import { reduxedRender } from 'src/common/react-platform-components/test'
-import MyConsumptionChart from 'src/modules/MyConsumption/components/MyConsumptionChart'
+import MyConsumptionChart, { consumptionChartClassName } from 'src/modules/MyConsumption/components/MyConsumptionChart'
 import { createTheme } from '@mui/material/styles'
 import { ThemeProvider } from '@mui/material'
 import { TEST_SUCCESS_WEEK_METRICS as MOCK_WEEK_METRICS } from 'src/mocks/handlers/metrics'
@@ -13,8 +13,6 @@ const propsMyConsumptionChart = {
     data: TEST_SUCCESS_WEEK_METRICS,
     isSolarProductionConsentOff: false,
 } as ConsumptionChartProps
-
-const eChartsClassName = '.echarts-for-react'
 
 describe('Test MyConsumptionChart', () => {
     const theme = createTheme({
@@ -30,6 +28,6 @@ describe('Test MyConsumptionChart', () => {
                 <MyConsumptionChart {...propsMyConsumptionChart} />
             </ThemeProvider>,
         )
-        expect(container.querySelector(eChartsClassName)).toBeInTheDocument()
+        expect(container.getElementsByClassName(`.${consumptionChartClassName}`)).toBeTruthy()
     })
 })
