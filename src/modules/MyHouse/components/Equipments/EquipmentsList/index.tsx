@@ -50,6 +50,10 @@ export const EquipmentsList = ({
                         (element) => element.name === equipment.name,
                     )?.labelTitle
 
+                    const iconComponent = myEquipmentOptions.find(
+                        (element) => element.name === equipment.name,
+                    )?.iconComponent
+
                     return (
                         <EquipmentCard
                             key={equipment.id}
@@ -58,6 +62,7 @@ export const EquipmentsList = ({
                             name={equipment.name}
                             number={equipment.number ? equipment.number : 0}
                             onEquipmentChange={saveEquipment}
+                            iconComponent={iconComponent}
                         />
                     )
                 })}

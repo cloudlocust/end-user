@@ -165,12 +165,12 @@ describe('Test echartsConsumptionOptions', () => {
         test('Temperature value formatter', async () => {
             const temperatureValueFormatter = getTargetsYAxisValueFormatters({}, PeriodEnum.DAILY, false)['1']
             expect(temperatureValueFormatter(12)).toBe(`${12} °C`)
-            expect(temperatureValueFormatter(undefined)).toBe(` °C`)
+            expect(temperatureValueFormatter(undefined)).toBe(`- °C`)
         })
         test('PMax value formatter', async () => {
             const pMaxValueFormatter = getTargetsYAxisValueFormatters({}, PeriodEnum.DAILY, false)['2']
             expect(pMaxValueFormatter(1_200)).toBe(`1.20 kVA`)
-            expect(pMaxValueFormatter(undefined)).toBe(` kVA`)
+            expect(pMaxValueFormatter(undefined)).toBe(`- kVA`)
         })
         test('Euros value formatter', async () => {
             // Tooltip value formatter
@@ -180,7 +180,7 @@ describe('Test echartsConsumptionOptions', () => {
              */
             // When Internal temperature it'll show the value given in Watt.
             expect(eurosValueFormatter(12.5)).toBe(`12.50 €`)
-            expect(eurosValueFormatter(undefined)).toBe(` €`)
+            expect(eurosValueFormatter(undefined)).toBe(`- €`)
         })
     })
 
@@ -537,7 +537,7 @@ describe('Test echartsConsumptionOptions', () => {
         const FirstJanTimestamp = 1672534800000
 
         test('Default options', () => {
-            const result = getXAxisOptionEchartsConsumptionChart([FirstJanTimestamp], PeriodEnum.DAILY, theme)
+            const result = getXAxisOptionEchartsConsumptionChart([FirstJanTimestamp], true, PeriodEnum.DAILY, theme)
             expect(result).toEqual({
                 xAxis: [
                     {
@@ -546,6 +546,8 @@ describe('Test echartsConsumptionOptions', () => {
                         axisLabel: {
                             hideOverlap: true,
                             formatter: expect.anything(),
+                            interval: 59,
+                            rotate: 30,
                         },
                         axisLine: {
                             show: true,
@@ -557,7 +559,6 @@ describe('Test echartsConsumptionOptions', () => {
                                 opacity: 1,
                             },
                         },
-
                         axisTick: {
                             alignWithLabel: true,
                         },
@@ -577,7 +578,12 @@ describe('Test echartsConsumptionOptions', () => {
         })
         test('Formatter DAILY', async () => {
             // XAXIS Formatter when Daily
-            const xAxisDailyOption = getXAxisOptionEchartsConsumptionChart([FirstJanTimestamp], PeriodEnum.DAILY, theme)
+            const xAxisDailyOption = getXAxisOptionEchartsConsumptionChart(
+                [FirstJanTimestamp],
+                true,
+                PeriodEnum.DAILY,
+                theme,
+            )
             const xAxisDaily = (xAxisDailyOption.xAxis as Array<any>)![0]
             const xAxisDailyLabel = xAxisDaily.axisLabel
             expect(xAxisDailyLabel.formatter('01:00')).toBe('01:00')
@@ -587,6 +593,7 @@ describe('Test echartsConsumptionOptions', () => {
             // XAXIS Formatter when Weekly
             const xAxisWeeklyOption = getXAxisOptionEchartsConsumptionChart(
                 [FirstJanTimestamp],
+                true,
                 PeriodEnum.WEEKLY,
                 theme,
             )
@@ -599,6 +606,7 @@ describe('Test echartsConsumptionOptions', () => {
             // XAXIS Formatter when Monthly
             const xAxisMonthlyOption = getXAxisOptionEchartsConsumptionChart(
                 [FirstJanTimestamp],
+                true,
                 PeriodEnum.MONTHLY,
                 theme,
             )
@@ -611,6 +619,7 @@ describe('Test echartsConsumptionOptions', () => {
             // XAXIS Formatter when Yearly
             const xAxisYearlyOption = getXAxisOptionEchartsConsumptionChart(
                 [FirstJanTimestamp],
+                true,
                 PeriodEnum.YEARLY,
                 theme,
             )
