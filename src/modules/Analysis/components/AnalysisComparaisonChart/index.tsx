@@ -9,7 +9,7 @@ import { getEchartsComparaisonChartOptions } from './comparaisonChartOptions'
  *
  * @param param0 N/A.
  * @param param0.data Metrics data.
- * @returns ReactApexChart.
+ * @returns ReactEcharts.
  */
 export default function AnalysisComparisonChart({ data }: AnalysisComparisonChartProps) {
     const theme = useTheme()
@@ -23,7 +23,7 @@ export default function AnalysisComparisonChart({ data }: AnalysisComparisonChar
         <>
             <ReactECharts
                 opts={{
-                    renderer: 'svg',
+                    renderer: 'canvas',
                 }}
                 option={option}
                 style={{ height: 360, margin: '0 auto', width: '100%' }}

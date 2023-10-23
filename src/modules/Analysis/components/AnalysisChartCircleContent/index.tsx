@@ -3,8 +3,8 @@ import { addMonths, endOfMonth, startOfMonth, subMonths, subYears } from 'date-f
 import { getMetricType, metricFiltersType, metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
 import { useMetrics } from 'src/modules/Metrics/metricsHook'
 import { getDateWithoutTimezoneOffset } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
-import { ApexChartsAxisValuesType } from 'src/modules/MyConsumption/myConsumptionTypes'
-import { convertMetricsDataToApexChartsAxisValues } from 'src/modules/MyConsumption/utils/apexChartsDataConverter'
+import { ChartsAxisValuesType } from 'src/modules/MyConsumption/myConsumptionTypes'
+import { convertMetricsDataToChartsAxisValues } from 'src/modules/MyConsumption/utils/chartsDataConverter'
 import { computePercentageChange } from 'src/modules/Analysis/utils/computationFunctions'
 import Icon from '@mui/material/Icon'
 import dayjs from 'dayjs'
@@ -141,64 +141,59 @@ const AnalysisChartCircleContent = ({
         Boolean(filters.length),
     )
     // Wrap in useMemo for better performance, as we save the result of convertMetricsData function and we don't call it again on every reender, until data changes.
-    let ApexChartsAxisValues: ApexChartsAxisValuesType = useMemo(
-        () => convertMetricsDataToApexChartsAxisValues(data),
-        [data],
-    )
+    let ChartsAxisValues: ChartsAxisValuesType = useMemo(() => convertMetricsDataToChartsAxisValues(data), [data])
 
     // Wrap in useMemo for better performance, as we save the result of convertMetricsData function and we don't call it again on every reender, until data changes.
-    let ApexChartsAxisPreviousYearValues: ApexChartsAxisValuesType = useMemo(
-        () => convertMetricsDataToApexChartsAxisValues(dataPreviousYear),
+    let ChartsAxisPreviousYearValues: ChartsAxisValuesType = useMemo(
+        () => convertMetricsDataToChartsAxisValues(dataPreviousYear),
         [dataPreviousYear],
     )
 
     const setTotalConsumption = useAnalysisStore((state) => state.setTotalConsumption)
 
     useEffect(() => {
-        if (ApexChartsAxisValues.yAxisSeries.length && !isMetricsLoading) {
+        if (ChartsAxisValues.yAxisSeries.length && !isMetricsLoading) {
             // Reference consumption value reference represents the last element due to the range we're setting.
             setTotalConsumption(
-                Number(ApexChartsAxisValues.yAxisSeries[0].data[ApexChartsAxisValues.yAxisSeries[0].data.length - 1]),
+                Number(ChartsAxisValues.yAxisSeries[0].data[ChartsAxisValues.yAxisSeries[0].data.length - 1]),
             )
         }
-    }, [ApexChartsAxisValues, isMetricsLoading, setTotalConsumption])
+    }, [ChartsAxisValues, isMetricsLoading, setTotalConsumption])
 
-    if (ApexChartsAxisValues.yAxisSeries.length === 0 || isMetricsLoading || isPreviousYearMetricsLoading) return <></>
+    if (ChartsAxisValues.yAxisSeries.length === 0 || isMetricsLoading || isPreviousYearMetricsLoading) return <></>
 
     let previousMonthPercentageChange = 0
     let previousYearPercentageChange = 0
 
     // Reference consumption value reference represents the last element due to the range we're setting.
-    const indexReferenceConsumptionValue = ApexChartsAxisValues.yAxisSeries[0].data.length - 1
+    const indexReferenceConsumptionValue = ChartsAxisValues.yAxisSeries[0].data.length - 1
 
     // Previous Month consumption represent the element before consumption value reference, because the last represent the dateReference and thus before it is the previous month of dateReference.
     const indexPreviousMonthPercentageChange = indexReferenceConsumptionValue - 1
     // Example: if dateReference is 01-02-2022, then our range will be {from: "01-01-2022", to: "31-02-2022"}.
     // Thus we'll have data array showing: [Jan 2022, Feb 2022].
     previousMonthPercentageChange = computePercentageChange(
-        Number(ApexChartsAxisValues.yAxisSeries[0].data[indexPreviousMonthPercentageChange]),
-        Number(ApexChartsAxisValues.yAxisSeries[0].data[indexReferenceConsumptionValue]),
+        Number(ChartsAxisValues.yAxisSeries[0].data[indexPreviousMonthPercentageChange]),
+        Number(ChartsAxisValues.yAxisSeries[0].data[indexReferenceConsumptionValue]),
     )
 
     // Previous Year consumption represent the first element for the range given in previousYear Metric Request.
-    previousYearPercentageChange = ApexChartsAxisPreviousYearValues.yAxisSeries.length
+    previousYearPercentageChange = ChartsAxisPreviousYearValues.yAxisSeries.length
         ? computePercentageChange(
-              Number(ApexChartsAxisPreviousYearValues.yAxisSeries[0].data[0]),
-              Number(ApexChartsAxisValues.yAxisSeries[0].data[indexReferenceConsumptionValue]),
+              Number(ChartsAxisPreviousYearValues.yAxisSeries[0].data[0]),
+              Number(ChartsAxisValues.yAxisSeries[0].data[indexReferenceConsumptionValue]),
           )
         : 0
 
-    if (isNull(ApexChartsAxisValues.yAxisSeries[0].data[indexReferenceConsumptionValue]))
+    if (isNull(ChartsAxisValues.yAxisSeries[0].data[indexReferenceConsumptionValue]))
         return (
             <TypographyFormatMessage className="sm:text-16 font-medium md:text-20 text-center">
                 Aucune donnée disponible
             </TypographyFormatMessage>
         )
 
-    const totalConsumption = Number(ApexChartsAxisValues.yAxisSeries[0].data[indexReferenceConsumptionValue])
-        ? consumptionWattUnitConversion(
-              Number(ApexChartsAxisValues.yAxisSeries[0].data[indexReferenceConsumptionValue]),
-          )
+    const totalConsumption = Number(ChartsAxisValues.yAxisSeries[0].data[indexReferenceConsumptionValue])
+        ? consumptionWattUnitConversion(Number(ChartsAxisValues.yAxisSeries[0].data[indexReferenceConsumptionValue]))
         : { value: 0, unit: 'kWh' }
 
     return (
@@ -215,7 +210,7 @@ const AnalysisChartCircleContent = ({
                 percentageChange={previousYearPercentageChange}
             />
             <p className="text-16 md:text-20 font-medium">
-                {Number(ApexChartsAxisValues.yAxisSeries[1].data[indexReferenceConsumptionValue]).toFixed(2)}
+                {Number(ChartsAxisValues.yAxisSeries[1].data[indexReferenceConsumptionValue]).toFixed(2)}
                 {' €'}
             </p>
         </div>
