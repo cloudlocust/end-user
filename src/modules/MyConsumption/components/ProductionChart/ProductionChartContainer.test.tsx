@@ -5,6 +5,7 @@ import { TEST_SUCCESS_WEEK_METRICS } from 'src/mocks/handlers/metrics'
 import { periodType, ProductionChartContainerProps } from 'src/modules/MyConsumption/myConsumptionTypes'
 import { ProductionChartContainer } from 'src/modules/MyConsumption/components/ProductionChart/ProductionChartContainer'
 import { ENPHASE_OFF_MESSAGE } from 'src/modules/MyConsumption/utils/myConsumptionVariables'
+import { setupJestCanvasMock } from 'jest-canvas-mock'
 
 let mockData: IMetric[] = TEST_SUCCESS_WEEK_METRICS([
     metricTargetsEnum.totalProduction,
@@ -86,6 +87,9 @@ jest.mock('src/modules/MyHouse/MyHouseConfig', () => ({
 }))
 
 describe('ProductionChartContainer test', () => {
+    beforeEach(() => {
+        setupJestCanvasMock()
+    })
     test('Different period props, When production chart.', async () => {
         const productionTitleCases = [
             {
