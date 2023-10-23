@@ -46,7 +46,7 @@ let mockWidgetPropsDefault: IWidgetProps = {
     filters: mockFilters,
     metricsInterval: mockMetricsInterval,
     range: mockRange,
-    targetList: [metricTargetsEnum.consumption],
+    targets: [metricTargetsEnum.consumption],
 }
 
 // Mock metricsHook

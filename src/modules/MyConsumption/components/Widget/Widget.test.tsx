@@ -51,7 +51,7 @@ let mockWidgetPropsDefault: IWidgetProps = {
     filters: mockFilters,
     metricsInterval: mockMetricsInterval,
     range: mockRange,
-    targetList: [metricTargetsEnum.consumption],
+    targets: [metricTargetsEnum.consumption],
 }
 
 // Mock metricsHook
@@ -120,7 +120,7 @@ describe('Widget component test', () => {
         mockData = []
         const mockWidgetProps: IWidgetProps = {
             ...mockWidgetPropsDefault,
-            infoIconList: [<ProductionWidgetErrorIcon />],
+            infoIcons: { [metricTargetsEnum.consumption]: <ProductionWidgetErrorIcon /> },
         }
         const { getByTestId } = reduxedRender(
             <Router>
@@ -142,7 +142,7 @@ describe('Widget component test', () => {
         mockData = []
         const { getByText } = renderTestComponent({
             ...mockWidgetPropsDefault,
-            targetList: [metricTargetsEnum.totalProduction, metricTargetsEnum.autoconsumption],
+            targets: [metricTargetsEnum.totalProduction, metricTargetsEnum.autoconsumption],
         })
 
         expect(getByText(renderWidgetTitle(metricTargetsEnum.totalProduction))).toBeInTheDocument()

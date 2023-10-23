@@ -23,8 +23,8 @@ const emptyValueUnit = { value: 0, unit: '' }
  * @returns WidgetConsumption Component.
  */
 const WidgetIdleConsumption = (props: IWidgetProps) => {
-    const { filters, period, range, targetList, metricsInterval } = props
-    const target = targetList[0]
+    const { filters, period, range, targets, metricsInterval } = props
+    const target = targets[0]
     const theme = useTheme()
 
     const { data, setMetricsInterval, setRange, isMetricsLoading } = useMetrics({
