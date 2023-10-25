@@ -29,7 +29,7 @@ const TEST_LOAD_PROVIDERS_ERROR_MESSAGE = 'Erreur lors du chargement des fournis
 const TEST_LOAD_OFFERS_ERROR_MESSAGE = 'Erreur lors du chargement des offres'
 const TEST_LOAD_TARIFF_TYPES_ERROR_MESSAGE = 'Erreur lors du chargement des types de tariff'
 const TEST_LOAD_POWERS_ERROR_MESSAGE = 'Erreur lors du chargement des puissances de contrat'
-const TEST_LOAD_TARIF_CONTRACT_ERROR_MESSAGE = 'Erreur lors du chargement des tariffs de contrat'
+const TEST_LOAD_TARIF_CONTRACT_ERROR_MESSAGE = 'Erreur lors du chargement des tariffs du contrat'
 
 describe('useCommercialOffer Hook test', () => {
     describe('Load Contract Types', () => {
@@ -246,7 +246,13 @@ describe('useCommercialOffer Hook test', () => {
             } = reduxedRenderHook(() => useCommercialOffer(), {})
 
             act(() => {
-                result.current.loadTariffsHousingContract(TEST_LOAD_ERROR_ID)
+                result.current.loadTariffsHousingContract(
+                    TEST_LOAD_ERROR_ID,
+                    TEST_LOAD_ERROR_ID,
+                    TEST_LOAD_ERROR_ID,
+                    6,
+                    '2023-10-25',
+                )
             })
             expect(result.current.isTariffsLoading).toBe(true)
             await waitForValueToChange(
@@ -272,7 +278,7 @@ describe('useCommercialOffer Hook test', () => {
                     TEST_LOAD_SUCCESS_ID,
                     TEST_LOAD_SUCCESS_ID,
                     6,
-                    '2022-03-01T00:00:00.000Z',
+                    '2023-10-25',
                 )
             })
             await waitForValueToChange(
