@@ -631,6 +631,10 @@ describe('Test echartsConsumptionOptions', () => {
     })
 
     test('getYAxisOptionEchartsConsumptionChart', () => {
+        const commonLineStyle = {
+            color: theme.palette.primary.contrastText,
+            type: 'dashed',
+        }
         const commonOptions = {
             type: 'value',
             axisLine: {
@@ -640,15 +644,6 @@ describe('Test echartsConsumptionOptions', () => {
                     color: theme.palette.primary.contrastText,
                     type: 'solid',
                     opacity: 1,
-                },
-            },
-
-            splitLine: {
-                show: true,
-                lineStyle: {
-                    color: theme.palette.primary.contrastText,
-                    type: 'dashed',
-                    opacity: 0.4,
                 },
             },
         }
@@ -667,6 +662,13 @@ describe('Test echartsConsumptionOptions', () => {
                     axisLabel: {
                         formatter: expect.anything(),
                     },
+                    splitLine: {
+                        show: true,
+                        lineStyle: {
+                            ...commonLineStyle,
+                            opacity: 0.4,
+                        },
+                    },
                 },
                 // TEMPERATURE YAXIS
                 {
@@ -675,6 +677,13 @@ describe('Test echartsConsumptionOptions', () => {
                     position: 'right',
                     axisLabel: {
                         formatter: expect.anything(),
+                    },
+                    splitLine: {
+                        show: true,
+                        lineStyle: {
+                            ...commonLineStyle,
+                            opacity: 0,
+                        },
                     },
                 },
                 // PMAX YAXIS
@@ -685,6 +694,13 @@ describe('Test echartsConsumptionOptions', () => {
                     axisLabel: {
                         formatter: expect.anything(),
                     },
+                    splitLine: {
+                        show: true,
+                        lineStyle: {
+                            ...commonLineStyle,
+                            opacity: 0,
+                        },
+                    },
                 },
                 // EUROS YAXIS
                 {
@@ -693,6 +709,13 @@ describe('Test echartsConsumptionOptions', () => {
                     position: 'left',
                     axisLabel: {
                         formatter: expect.anything(),
+                    },
+                    splitLine: {
+                        show: true,
+                        lineStyle: {
+                            ...commonLineStyle,
+                            opacity: 0.4,
+                        },
                     },
                 },
             ],
