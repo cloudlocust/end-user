@@ -80,8 +80,8 @@ describe('Test echartsConsumptionOptions', () => {
                 isSolarProductionConsentOff: false,
                 color: theme.palette.secondary.main,
             },
-            { target: metricTargetsEnum.euroPeakHourConsumption, isSolarProductionConsentOff: false, color: '#4DD9E4' },
-            { target: metricTargetsEnum.euroOffPeakConsumption, isSolarProductionConsentOff: false, color: '#006970' },
+            { target: metricTargetsEnum.euroPeakHourConsumption, isSolarProductionConsentOff: false, color: '#6BCBFF' },
+            { target: metricTargetsEnum.euroOffPeakConsumption, isSolarProductionConsentOff: false, color: '#BEE8FF' },
             {
                 target: metricTargetsEnum.onlyConsumption,
                 isSolarProductionConsentOff: false,
