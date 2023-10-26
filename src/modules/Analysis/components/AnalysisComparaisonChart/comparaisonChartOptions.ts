@@ -101,6 +101,7 @@ export const getSeriesOptionEchartsComparaisonChart = (values: targetValuesForma
                 tooltip: {
                     valueFormatter: consumptionUnitFormatter,
                 },
+                barMaxWidth: 300,
                 showSymbol: false,
                 smooth: true,
                 itemStyle: {
