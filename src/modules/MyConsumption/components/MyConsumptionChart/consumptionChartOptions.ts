@@ -147,7 +147,6 @@ export const getSeriesOptionEchartsConsumptionChart = (
     let sortedSeries = resultSeries
 
     // veille only for the week, month, and year
-    // will switch graph for idle consumption for euros and watts
     if (period !== 'daily') {
         const index = resultSeries.findIndex(
             (serie) =>
@@ -342,11 +341,23 @@ export const getColorTargetSeriesEchartsConsumptionChart = (
         case metricTargetsEnum.consumption:
             return isSolarProductionConsentOff ? TRANSPARENT_COLOR : theme.palette.secondary.main
         case metricTargetsEnum.euroPeakHourConsumption:
-            return '#4DD9E4'
+            return '#6BCBFF'
         case metricTargetsEnum.euroOffPeakConsumption:
-            return '#006970'
+            return '#BEE8FF'
         case metricTargetsEnum.onlyConsumption:
             return theme.palette.secondary.main
+        case metricTargetsEnum.peakHourBlueTempoConsumption:
+            return '#6CCBFD'
+        case metricTargetsEnum.offPeakHourBlueTempoConsumption:
+            return '#BEE8FE'
+        case metricTargetsEnum.peakHourRedTempoConsumption:
+            return '#FF7065'
+        case metricTargetsEnum.offPeakHourRedTempoConsumption:
+            return '#FFC3BE'
+        case metricTargetsEnum.peakHourWhiteTempoConsumption:
+            return '#7A7A7A'
+        case metricTargetsEnum.offPeakHourWhiteTempoConsumption:
+            return '#B8B8B8'
         default:
             return theme.palette.secondary.main
     }
@@ -406,6 +417,18 @@ export const getNameTargetSeriesEchartsConsumptionChart = (
             return 'Consommation en HP'
         case metricTargetsEnum.offPeakHourConsumption:
             return 'Consommation en HC'
+        case metricTargetsEnum.peakHourBlueTempoConsumption:
+            return 'Consommation HP Bleu'
+        case metricTargetsEnum.offPeakHourBlueTempoConsumption:
+            return 'Consommation HC Bleu'
+        case metricTargetsEnum.peakHourRedTempoConsumption:
+            return 'Consommation HP Rouge'
+        case metricTargetsEnum.offPeakHourRedTempoConsumption:
+            return 'Consommation HC Rouge'
+        case metricTargetsEnum.peakHourWhiteTempoConsumption:
+            return 'Consommation HP Blanc'
+        case metricTargetsEnum.offPeakHourWhiteTempoConsumption:
+            return 'Consommation HC Blanc'
         default:
             throw Error(`Can't find the label for target ${target}`)
     }
@@ -428,6 +451,12 @@ export const getTargetYAxisIndexFromTargetName = (target: metricTargetsEnum): ta
         case metricTargetsEnum.totalIdleConsumption:
         case metricTargetsEnum.peakHourConsumption:
         case metricTargetsEnum.offPeakHourConsumption:
+        case metricTargetsEnum.peakHourBlueTempoConsumption:
+        case metricTargetsEnum.offPeakHourBlueTempoConsumption:
+        case metricTargetsEnum.peakHourRedTempoConsumption:
+        case metricTargetsEnum.offPeakHourRedTempoConsumption:
+        case metricTargetsEnum.peakHourWhiteTempoConsumption:
+        case metricTargetsEnum.offPeakHourWhiteTempoConsumption:
             return targetYAxisIndexEnum.CONSUMPTION
         case metricTargetsEnum.eurosConsumption:
         case metricTargetsEnum.onlyEuroConsumption:
@@ -475,6 +504,12 @@ export const getTypeTargetSeriesEchartsConsumptionChart = (
         case metricTargetsEnum.autoconsumption:
         case metricTargetsEnum.peakHourConsumption:
         case metricTargetsEnum.offPeakHourConsumption:
+        case metricTargetsEnum.peakHourBlueTempoConsumption:
+        case metricTargetsEnum.offPeakHourBlueTempoConsumption:
+        case metricTargetsEnum.peakHourRedTempoConsumption:
+        case metricTargetsEnum.offPeakHourRedTempoConsumption:
+        case metricTargetsEnum.peakHourWhiteTempoConsumption:
+        case metricTargetsEnum.offPeakHourWhiteTempoConsumption:
             return period === PeriodEnum.DAILY
                 ? {
                       type: 'line',
@@ -546,6 +581,7 @@ export const getYAxisOptionEchartsConsumptionChart = (
     })
     // Targets functions yAxis Value formatter type (label shown in yAxisLine).
     const targetsYAxisValueFormatters = getTargetsYAxisValueFormatters(values, period, true)
+
     return {
         yAxis: Object.keys(targetsYAxisValueFormatters).map((targetYAxisIndex) => ({
             type: 'value',

@@ -269,9 +269,7 @@ export const eurosIdleConsumptionTargets: metricTargetType[] = [
  */
 export const eurosConsumptionTargets: metricTargetType[] = [
     metricTargetsEnum.eurosConsumption,
-    metricTargetsEnum.baseEuroConsumption,
-    metricTargetsEnum.euroPeakHourConsumption,
-    metricTargetsEnum.euroOffPeakConsumption,
+    metricTargetsEnum.euroConsumptionByTariffComponent,
     metricTargetsEnum.subscriptionPrices,
 ]
 
