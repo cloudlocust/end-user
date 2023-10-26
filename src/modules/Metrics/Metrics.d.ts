@@ -140,25 +140,6 @@ export enum metricTargetsEnum {
      */
     eurosIdleConsumption = '__euros__idle_consumption_metrics',
     /**
-     * 'only_consumption_metrics' target is made for front purposes, it doesn't exist on the back.
-     *
-     * Only used when base consumption & ho & hc are empty.
-     *
-     *
-     * Only consumption metrics.
-     *
-     */
-    onlyConsumption = 'only_consumption_metrics',
-    /**
-     * 'only_euro_consumption_metrics' target is made for front purposes, it doesn't exist on the back.
-     *
-     * Only used when euro base & euro HP & euro HC are empty.
-     *
-     *
-     * Only euro consumption metrics.
-     */
-    onlyEuroConsumption = 'only_euro_consumption_metrics',
-    /**
      * This target should return all the targets of tempo consumption metrics.
      * 
      * @description Only used to do the request.
@@ -205,6 +186,47 @@ export enum metricTargetsEnum {
     consumptionByTariffComponent = 'consumption_metrics_by_tariff_component',
     /**
      * This target should return all the targets of euro tempo consumption metrics.
+     * 
+     * @description Only used to do the request.
+     * @example 
+     * "targets": [
+     *         {
+            "target": "__euro__base_consumption_metrics",
+            "type": "timeserie"
+        },
+        {
+            "target": "__euro__hp_consumption_metrics",
+            "type": "timeserie"
+        },
+        {
+            "target": "__euro__hc_consumption_metrics",
+            "type": "timeserie"
+        },
+        {
+            "target": "__euro__hp_jour_bleu_consumption_metrics",
+            "type": "timeserie"
+        },
+        {
+            "target": "__euro__hc_jour_bleu_consumption_metrics",
+            "type": "timeserie"
+        },
+        {
+            "target": "__euro__hp_jour_rouge_consumption_metrics",
+            "type": "timeserie"
+        },
+        {
+            "target": "__euro__hc_jour_rouge_consumption_metrics",
+            "type": "timeserie"
+        },
+        {
+            "target": "__euro__hp_jour_blanc_consumption_metrics",
+            "type": "timeserie"
+        },
+        {
+            "target": "__euro__hc_jour_blanc_consumption_metrics",
+            "type": "timeserie"
+        }
+    ],
      */
     euroConsumptionByTariffComponent = '__euros__consumption_metrics_by_tariff_component',
     /**
@@ -255,6 +277,26 @@ export enum metricTargetsEnum {
      * Tempo HC BLANC.
      */
     euroOffPeakHourWhiteTempoConsumption = '__euros__hc_jour_blanc_consumption_metrics',
+
+    /**
+     * 'only_consumption_metrics' target is made for front purposes, it doesn't exist on the back.
+     *
+     * Only used when base consumption & ho & hc are empty.
+     *
+     *
+     * Only consumption metrics.
+     *
+     */
+    onlyConsumption = 'only_consumption_metrics',
+    /**
+     * 'only_euro_consumption_metrics' target is made for front purposes, it doesn't exist on the back.
+     *
+     * Only used when euro base & euro HP & euro HC are empty.
+     *
+     *
+     * Only euro consumption metrics.
+     */
+    onlyEuroConsumption = 'only_euro_consumption_metrics',
 }
 
 /**

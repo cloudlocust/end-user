@@ -347,16 +347,22 @@ export const getColorTargetSeriesEchartsConsumptionChart = (
         case metricTargetsEnum.onlyConsumption:
             return theme.palette.secondary.main
         case metricTargetsEnum.peakHourBlueTempoConsumption:
+        case metricTargetsEnum.euroPeakHourBlueTempoConsumption:
             return '#6CCBFD'
         case metricTargetsEnum.offPeakHourBlueTempoConsumption:
+        case metricTargetsEnum.euroOffPeakHourBlueTempoConsumption:
             return '#BEE8FE'
         case metricTargetsEnum.peakHourRedTempoConsumption:
+        case metricTargetsEnum.euroPeakHourRedTempoConsumption:
             return '#FF7065'
         case metricTargetsEnum.offPeakHourRedTempoConsumption:
+        case metricTargetsEnum.euroOffPeakHourRedTempoConsumption:
             return '#FFC3BE'
         case metricTargetsEnum.peakHourWhiteTempoConsumption:
+        case metricTargetsEnum.euroPeakHourWhiteTempoConsumption:
             return '#7A7A7A'
         case metricTargetsEnum.offPeakHourWhiteTempoConsumption:
+        case metricTargetsEnum.euroOffPeakHourWhiteTempoConsumption:
             return '#B8B8B8'
         default:
             return theme.palette.secondary.main
@@ -429,6 +435,18 @@ export const getNameTargetSeriesEchartsConsumptionChart = (
             return 'Consommation HP Blanc'
         case metricTargetsEnum.offPeakHourWhiteTempoConsumption:
             return 'Consommation HC Blanc'
+        case metricTargetsEnum.euroPeakHourBlueTempoConsumption:
+            return 'Consommation HP Bleu Euro'
+        case metricTargetsEnum.euroOffPeakHourBlueTempoConsumption:
+            return 'Consommation HC Bleu Euro'
+        case metricTargetsEnum.euroPeakHourRedTempoConsumption:
+            return 'Consommation HP Rouge Euro'
+        case metricTargetsEnum.euroOffPeakHourRedTempoConsumption:
+            return 'Consommation HC Rouge Euro'
+        case metricTargetsEnum.euroPeakHourWhiteTempoConsumption:
+            return 'Consommation HP Blanc Euro'
+        case metricTargetsEnum.euroOffPeakHourWhiteTempoConsumption:
+            return 'Consommation HC Blanc Euro'
         default:
             throw Error(`Can't find the label for target ${target}`)
     }
@@ -467,6 +485,12 @@ export const getTargetYAxisIndexFromTargetName = (target: metricTargetsEnum): ta
         case metricTargetsEnum.totalEurosOffIdleConsumption:
         case metricTargetsEnum.eurosIdleConsumption:
         case metricTargetsEnum.euroOffPeakConsumption:
+        case metricTargetsEnum.euroPeakHourBlueTempoConsumption:
+        case metricTargetsEnum.euroOffPeakHourBlueTempoConsumption:
+        case metricTargetsEnum.euroPeakHourRedTempoConsumption:
+        case metricTargetsEnum.euroOffPeakHourRedTempoConsumption:
+        case metricTargetsEnum.euroPeakHourWhiteTempoConsumption:
+        case metricTargetsEnum.euroOffPeakHourWhiteTempoConsumption:
             return targetYAxisIndexEnum.EUROS
         case metricTargetsEnum.externalTemperature:
         case metricTargetsEnum.internalTemperature:
