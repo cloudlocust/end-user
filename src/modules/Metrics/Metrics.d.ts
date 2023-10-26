@@ -29,6 +29,20 @@ export type metricTargetType =
     | '__euros__off_idle_consumption_metrics'
     | 'only_consumption_metrics'
     | 'only_euro_consumption_metrics'
+    | 'consumption_metrics_by_tariff_component'
+    | '__euros__consumption_metrics_by_tariff_component'
+    | 'hp_jour_bleu_consumption_metrics'
+    | 'hc_jour_bleu_consumption_metrics'
+    | 'hp_jour_rouge_consumption_metrics'
+    | 'hc_jour_rouge_consumption_metrics'
+    | 'hp_jour_blanc_consumption_metrics'
+    | 'hc_jour_blanc_consumption_metrics'
+    | '__euros__hp_jour_bleu_consumption_metrics'
+    | '__euros__hc_jour_bleu_consumption_metrics'
+    | '__euros__hp_jour_rouge_consumption_metrics'
+    | '__euros__hc_jour_rouge_consumption_metrics'
+    | '__euros__hp_jour_blanc_consumption_metrics'
+    | '__euros__hc_jour_blanc_consumption_metrics'
 
 /**
  * Enum representing the metricTarget without exposing the backend naming.
@@ -125,6 +139,145 @@ export enum metricTargetsEnum {
      * Eneum value for Euros Idle Consumption.
      */
     eurosIdleConsumption = '__euros__idle_consumption_metrics',
+    /**
+     * This target should return all the targets of tempo consumption metrics.
+     * 
+     * @description Only used to do the request.
+     * @example 
+     * "targets": [
+     *         {
+            "target": "base_consumption_metrics",
+            "type": "timeserie"
+        },
+        {
+            "target": "hp_consumption_metrics",
+            "type": "timeserie"
+        },
+        {
+            "target": "hc_consumption_metrics",
+            "type": "timeserie"
+        },
+        {
+            "target": "hp_jour_bleu_consumption_metrics",
+            "type": "timeserie"
+        },
+        {
+            "target": "hc_jour_bleu_consumption_metrics",
+            "type": "timeserie"
+        },
+        {
+            "target": "hp_jour_rouge_consumption_metrics",
+            "type": "timeserie"
+        },
+        {
+            "target": "hc_jour_rouge_consumption_metrics",
+            "type": "timeserie"
+        },
+        {
+            "target": "hp_jour_blanc_consumption_metrics",
+            "type": "timeserie"
+        },
+        {
+            "target": "hc_jour_blanc_consumption_metrics",
+            "type": "timeserie"
+        }
+    ],
+     */
+    consumptionByTariffComponent = 'consumption_metrics_by_tariff_component',
+    /**
+     * This target should return all the targets of euro tempo consumption metrics.
+     * 
+     * @description Only used to do the request.
+     * @example 
+     * "targets": [
+     *         {
+            "target": "__euro__base_consumption_metrics",
+            "type": "timeserie"
+        },
+        {
+            "target": "__euro__hp_consumption_metrics",
+            "type": "timeserie"
+        },
+        {
+            "target": "__euro__hc_consumption_metrics",
+            "type": "timeserie"
+        },
+        {
+            "target": "__euro__hp_jour_bleu_consumption_metrics",
+            "type": "timeserie"
+        },
+        {
+            "target": "__euro__hc_jour_bleu_consumption_metrics",
+            "type": "timeserie"
+        },
+        {
+            "target": "__euro__hp_jour_rouge_consumption_metrics",
+            "type": "timeserie"
+        },
+        {
+            "target": "__euro__hc_jour_rouge_consumption_metrics",
+            "type": "timeserie"
+        },
+        {
+            "target": "__euro__hp_jour_blanc_consumption_metrics",
+            "type": "timeserie"
+        },
+        {
+            "target": "__euro__hc_jour_blanc_consumption_metrics",
+            "type": "timeserie"
+        }
+    ],
+     */
+    euroConsumptionByTariffComponent = '__euros__consumption_metrics_by_tariff_component',
+    /**
+     * Tempo HP BLEU.
+     */
+    peakHourBlueTempoConsumption = 'hp_jour_bleu_consumption_metrics',
+    /**
+     * Tempo HC BLEU.
+     */
+    offPeakHourBlueTempoConsumption = 'hc_jour_bleu_consumption_metrics',
+    /**
+     * Tempo HP ROUGE.
+     */
+    peakHourRedTempoConsumption = 'hp_jour_rouge_consumption_metrics',
+    /**
+     * Tempo HC ROUGE.
+     */
+    offPeakHourRedTempoConsumption = 'hc_jour_rouge_consumption_metrics',
+    /**
+     * Tempo HP BLANC.
+     */
+    peakHourWhiteTempoConsumption = 'hp_jour_blanc_consumption_metrics',
+    /**
+     * Tempo HC BLANC.
+     */
+    offPeakHourWhiteTempoConsumption = 'hc_jour_blanc_consumption_metrics',
+    /**
+     * Tempo HP BLEU.
+     */
+    euroPeakHourBlueTempoConsumption = '__euros__hp_jour_bleu_consumption_metrics',
+    /**
+     * Tempo HC BLEU.
+     */
+    euroOffPeakHourBlueTempoConsumption = '__euros__hc_jour_bleu_consumption_metrics',
+    /**
+     * Tempo HP ROUGE.
+     */
+    euroPeakHourRedTempoConsumption = '__euros__hp_jour_rouge_consumption_metrics',
+    /**
+     * Tempo HC ROUGE.
+     */
+    euroOffPeakHourRedTempoConsumption = '__euros__hc_jour_rouge_consumption_metrics',
+    /**
+     * Tempo HP BLANC.
+     */
+    euroPeakHourWhiteTempoConsumption = '__euros__hp_jour_blanc_consumption_metrics',
+    /**
+     * Tempo HC BLANC.
+     */
+    euroOffPeakHourWhiteTempoConsumption = '__euros__hc_jour_blanc_consumption_metrics',
+
     /**
      * 'only_consumption_metrics' target is made for front purposes, it doesn't exist on the back.
      *
