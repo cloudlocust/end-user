@@ -55,11 +55,13 @@ export const ConsumptionChartContainer = ({
 }: ConsumptionChartContainerProps) => {
     const theme = useTheme()
     const [isShowIdleConsumptionDisabledInfo, setIsShowIdleConsumptionDisabledInfo] = useState(false)
+
     // Handling the targets makes it simpler instead of the useMetrics as it's a straightforward array of metricTargetType
     // Meanwhile the setTargets for useMetrics needs to add {type: 'timeserie'} everytime...
     const [targets, setTargets] = useState<metricTargetType[]>(
         getDefaultConsumptionTargets(isSolarProductionConsentOff),
     )
+
     // Indicates if enedisSgeConsent is not Connected
     const enedisSgeOff = enedisSgeConsent?.enedisSgeConsentState !== 'CONNECTED'
     const hidePmax = period === 'daily' || enedisSgeOff
@@ -131,10 +133,10 @@ export const ConsumptionChartContainer = ({
         getMetrics()
     }, [getMetrics])
 
+    // To avoid multiple rerendering and thus calculation in MyConsumptionChart, CosnumptionChartData change only once, when targets change or when the first getMetrics targets is loaded, thus avoiding to rerender when the second getMetrics is loaded with all targets which should only happen in the background.
     useEffect(() => {
-        // To avoid multiple rerendering and thus calculation in MyConsumptionChart, CosnumptionChartData change only once, when targets change or when the first getMetrics targets is loaded, thus avoiding to rerender when the second getMetrics is loaded with all targets which should only happen in the background.
         if (data.length > 0) {
-            let chartData = data.filter((datapoint) => targets.includes(datapoint.target))
+            let chartData = data
             // When it's idleConsumption, chartData is handled differently from filteredMetricsData
             const totalOffIdleConsumptionData = getTotalOffIdleConsumptionData(chartData)
             if (totalOffIdleConsumptionData) {
@@ -146,7 +148,7 @@ export const ConsumptionChartContainer = ({
             }
             setConsumptionChartData(chartData)
         }
-        // Only use data & visibleTargetCharts as dependencies.
+        // Only use data & targets as dependencies.
         // TODO REMOVE this exhausitve-deps due to filteredMetricsData
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [data, targets])
@@ -170,7 +172,7 @@ export const ConsumptionChartContainer = ({
      *
      * @param isEuroToggled Indicates if the EurosToggl is set to Euros and was clicked.
      */
-    const onEurosConsumptionButtonToggl = useCallback(
+    const onEurosConsumptionButtonToggle = useCallback(
         (isEuroToggled: boolean) => {
             setTargets((_prevTargets) => {
                 let newVisibleTargets: metricTargetType[] = []
@@ -248,8 +250,8 @@ export const ConsumptionChartContainer = ({
 
             <div className="my-16 flex justify-between">
                 <EurosConsumptionButtonToggler
-                    onEuroClick={() => onEurosConsumptionButtonToggl(true)}
-                    onConsumptionClick={() => onEurosConsumptionButtonToggl(false)}
+                    onEuroClick={() => onEurosConsumptionButtonToggle(true)}
+                    onConsumptionClick={() => onEurosConsumptionButtonToggle(false)}
                     showEurosConsumption={!isEurosButtonToggled}
                     disabled={isEurosConsumptionDisabled}
                 />
@@ -273,13 +275,11 @@ export const ConsumptionChartContainer = ({
                     <CircularProgress style={{ color: theme.palette.background.paper }} />
                 </div>
             ) : (
-                <>
-                    <MyConsumptionChart
-                        data={consumptionChartData}
-                        period={period}
-                        isSolarProductionConsentOff={isSolarProductionConsentOff}
-                    />
-                </>
+                <MyConsumptionChart
+                    data={consumptionChartData}
+                    period={period}
+                    isSolarProductionConsentOff={isSolarProductionConsentOff}
+                />
             )}
             <DefaultContractWarning isShowWarning={isEurosButtonToggled && Boolean(hasMissingHousingContracts)} />
             <ConsumptionEnedisSgeWarning isShowWarning={enedisSgeOff && sgeConsentFeatureState} />
