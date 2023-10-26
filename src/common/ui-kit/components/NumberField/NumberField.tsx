@@ -26,34 +26,40 @@ export const NumberField = ({ ...props }: INumberField) => {
         disabled,
         wrapperClasses = 'flex mr-8 mb-10',
         onChange,
+        iconComponent,
     } = props
     const theme = useTheme()
     const disabledField = disableDecrement && value <= 0
 
+    if (!iconPath && !iconLabel && !iconComponent) {
+        throw new Error(`iconPath or iconLabel or iconComponent prop must be provided`)
+    }
+
     return (
         <div className={wrapperClasses}>
-            {(iconPath || iconLabel) && (
-                <div
-                    className="flex items-center px-4 Mui-disabled"
-                    style={{
-                        backgroundColor: disabled ? theme.palette.grey[300] : theme.palette.primary.main,
-                        borderBottom: `1px solid ${disabled ? theme.palette.grey[300] : theme.palette.primary.main}`,
-                    }}
-                >
-                    {iconLabel ? (
-                        <Icon
-                            color="action"
-                            sx={{
-                                color: theme.palette.background.paper,
-                            }}
-                        >
-                            {iconLabel}
-                        </Icon>
-                    ) : (
-                        <img src={iconPath} alt="icon" className="w-28" />
-                    )}
-                </div>
-            )}
+            <div
+                className="flex items-center px-4 Mui-disabled"
+                style={{
+                    backgroundColor: disabled ? theme.palette.grey[300] : theme.palette.primary.main,
+                    borderBottom: `1px solid ${disabled ? theme.palette.grey[300] : theme.palette.primary.main}`,
+                }}
+            >
+                {iconLabel ? (
+                    <Icon
+                        color="action"
+                        sx={{
+                            color: theme.palette.background.paper,
+                        }}
+                    >
+                        {iconLabel}
+                    </Icon>
+                ) : iconComponent ? (
+                    <>{iconComponent()}</>
+                ) : (
+                    <img src={iconPath} alt="icon" className="w-28" />
+                )}
+            </div>
+
             <div
                 className="flex flex-col items-center w-full"
                 style={{

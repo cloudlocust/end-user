@@ -7,6 +7,8 @@ import ListItemText from '@mui/material/ListItemText'
 import clsx from 'clsx'
 import { IFuseNavigationComponentProps } from 'src/common/ui-kit/fuse/components/FuseNavigation/FuseNavigation'
 import { useIntl } from 'src/common/react-platform-translation'
+import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
+import { FEATURE_COMMING_SOON_TEXT } from 'src/modules/shared'
 
 const Root = styled('div')(({ theme }) => ({
     '& > .fuse-list-item': {
@@ -75,10 +77,7 @@ function FuseNavVerticalTab(props: IFuseNavigationComponentProps) {
             placement="right"
             disableHoverListener={!item?.disabled}
             className={`${item?.disabled && 'cursor-not-allowed'}`}
-            title={formatMessage({
-                id: 'Cette fonctionnalité arrive prochainement.',
-                defaultMessage: 'Cette fonctionnalité arrive prochainement.',
-            })}
+            title={<TypographyFormatMessage>{FEATURE_COMMING_SOON_TEXT}</TypographyFormatMessage>}
         >
             <Root>
                 <ListItemButton

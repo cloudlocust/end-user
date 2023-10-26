@@ -20,6 +20,10 @@ export interface INumberField {
      */
     iconPath?: string
     /**
+     * Icon component.
+     */
+    iconComponent?: () => JSX.Element
+    /**
      * Is Field disabled.
      */
     disabled?: boolean

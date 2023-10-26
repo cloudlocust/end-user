@@ -292,5 +292,10 @@ spec:
             configMapKeyRef:
               name: enduser-react
               key: REACT_APP_ACCESS_RIGHTS_STATE 
+        - name: REACT_APP_EQUIPMENT_MEASUREMENT_FEATURE_STATE
+          valueFrom:
+            configMapKeyRef:
+              name: enduser-react
+              key: REACT_APP_EQUIPMENT_MEASUREMENT_FEATURE_STATE 
       imagePullSecrets:
       - name: dockersecret  

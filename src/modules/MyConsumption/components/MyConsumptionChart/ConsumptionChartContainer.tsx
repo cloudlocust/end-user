@@ -1,17 +1,19 @@
 import { useState, useEffect, useMemo, useCallback } from 'react'
 import { motion } from 'framer-motion'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
-import MyConsumptionChart from 'src/modules/MyConsumption/components/MyConsumptionChart'
 import { useTheme } from '@mui/material'
 import { useMetrics } from 'src/modules/Metrics/metricsHook'
 import { IMetric, metricTargetsEnum, metricTargetType } from 'src/modules/Metrics/Metrics.d'
-import { ConsumptionChartContainerProps } from 'src/modules/MyConsumption/myConsumptionTypes'
+import { ConsumptionChartContainerProps } from 'src/modules/MyConsumption/components/MyConsumptionChart/MyConsumptionChartTypes.d'
 import CircularProgress from '@mui/material/CircularProgress'
+import Box from '@mui/material/Box'
 import EurosConsumptionButtonToggler from 'src/modules/MyConsumption/components/EurosConsumptionButtonToggler'
 import {
+    getTotalOffIdleConsumptionData,
     filterMetricsData,
     getDefaultConsumptionTargets,
     showPerPeriodText,
+    nullifyTodayIdleConsumptionValue,
 } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
 import {
     DefaultContractWarning,
@@ -19,13 +21,18 @@ import {
 } from 'src/modules/MyConsumption/components/MyConsumptionChart/ConsumptionChartWarnings'
 import { sgeConsentFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
 import TargetMenuGroup from 'src/modules/MyConsumption/components/TargetMenuGroup'
+import CloseIcon from '@mui/icons-material/Close'
+import { SwitchIdleConsumption } from 'src/modules/MyConsumption/components/SwitchIdleConsumption'
 import {
     eurosConsumptionTargets,
+    eurosIdleConsumptionTargets,
+    idleConsumptionTargets,
     temperatureOrPmaxTargets,
 } from 'src/modules/MyConsumption/utils/myConsumptionVariables'
+import MyConsumptionChart from 'src/modules/MyConsumption/components/MyConsumptionChart'
 
 /**
- * MyConsumptionChart Component.
+ * MyConsumptionChartContainer Component.
  *
  * @param props N/A.
  * @param props.period Indicates the current selected Period if it's monthly or daily or yearly or weekly so that we format tooltip and xAxis of chart according to the period.
@@ -34,8 +41,8 @@ import {
  * @param props.filters Consumption or production chart type.
  * @param props.hasMissingHousingContracts Consumption or production chart type.
  * @param props.enedisSgeConsent Consumption or production chart type.
- * @param props.enphaseConsent Consumption or production chart type.
- * @returns MyConsumptionChart Component.
+ * @param props.isSolarProductionConsentOff Boolean indicating if solar production consent is off.
+ * @returns ConsumptionChartContainer Component.
  */
 export const ConsumptionChartContainer = ({
     period,
@@ -44,14 +51,15 @@ export const ConsumptionChartContainer = ({
     filters,
     hasMissingHousingContracts,
     enedisSgeConsent,
-    enphaseConsent,
+    isSolarProductionConsentOff,
 }: ConsumptionChartContainerProps) => {
     const theme = useTheme()
-    // Indicates if enphaseConsentState is not ACTIVE
-    const enphaseOff = enphaseConsent?.enphaseConsentState !== 'ACTIVE'
+    const [isShowIdleConsumptionDisabledInfo, setIsShowIdleConsumptionDisabledInfo] = useState(false)
     // Handling the targets makes it simpler instead of the useMetrics as it's a straightforward array of metricTargetType
     // Meanwhile the setTargets for useMetrics needs to add {type: 'timeserie'} everytime...
-    const [targets, setTargets] = useState<metricTargetType[]>(getDefaultConsumptionTargets(enphaseOff))
+    const [targets, setTargets] = useState<metricTargetType[]>(
+        getDefaultConsumptionTargets(isSolarProductionConsentOff),
+    )
     // Indicates if enedisSgeConsent is not Connected
     const enedisSgeOff = enedisSgeConsent?.enedisSgeConsentState !== 'CONNECTED'
     const hidePmax = period === 'daily' || enedisSgeOff
@@ -64,35 +72,40 @@ export const ConsumptionChartContainer = ({
     })
     // Using ConsumptionChartData allow the front end to add additional chart data not only those from useMetrics.
     // Such as totalOffIdleConsumption
+    // TODO Remove with Echarts now (and everything that set consumptionChart, let only target with setTargets).
     const [consumptionChartData, setConsumptionChartData] = useState<IMetric[]>(data)
 
-    // This state represents whether or not the chart is stacked: true.
-    const isStackedEnabled = useMemo(() => {
-        if (period === 'daily')
-            return !targets.some((target) =>
-                ([metricTargetsEnum.consumption, metricTargetsEnum.baseConsumption] as metricTargetType[]).includes(
-                    target,
-                ),
-            )
-        else return !targets.some((target) => temperatureOrPmaxTargets.includes(target))
-    }, [period, targets])
-
-    // MetricRequest shouldn't be allowed when period is daily (metric interval is '1m' or '30m' and targets don't include euros or idle).
+    // MetricRequest shouldn't be allowed when period is daily (metric interval is '1m' or '30m' and targets include euros or idle).
     const isMetricRequestNotAllowed = useMemo(() => {
         return (
             ['1m', '30m'].includes(metricsInterval) &&
-            targets.some((target) => [...eurosConsumptionTargets].includes(target))
+            targets.some((target) =>
+                [
+                    ...eurosConsumptionTargets,
+                    ...eurosIdleConsumptionTargets,
+                    metricTargetsEnum.idleConsumption,
+                ].includes(target),
+            )
         )
     }, [targets, metricsInterval])
 
     // When switching to period daily, if Euros Charts or Idle charts buttons are selected, metrics should be reset.
     // This useEffect reset metrics.
     useEffect(() => {
-        if (isMetricRequestNotAllowed) setTargets(getDefaultConsumptionTargets(enphaseOff))
-    }, [isMetricRequestNotAllowed, enphaseOff])
+        if (isMetricRequestNotAllowed) setTargets(getDefaultConsumptionTargets(isSolarProductionConsentOff))
+    }, [isMetricRequestNotAllowed, isSolarProductionConsentOff])
 
     const isEurosButtonToggled = useMemo(
-        () => targets.some((target) => [...eurosConsumptionTargets].includes(target)),
+        () => targets.some((target) => [...eurosConsumptionTargets, ...eurosIdleConsumptionTargets].includes(target)),
+        [targets],
+    )
+    const isIdleSwitchToggled = useMemo(
+        () =>
+            targets.some((target) =>
+                (
+                    [metricTargetsEnum.idleConsumption, metricTargetsEnum.eurosIdleConsumption] as metricTargetType[]
+                ).includes(target),
+            ),
         [targets],
     )
     const targetMenuActiveButton = useMemo(() => {
@@ -109,14 +122,9 @@ export const ConsumptionChartContainer = ({
 
     const getMetrics = useCallback(async () => {
         if (isMetricRequestNotAllowed) return
+        setIsShowIdleConsumptionDisabledInfo(false)
         await getMetricsWithParams({ interval: metricsInterval, range, targets, filters })
     }, [getMetricsWithParams, metricsInterval, range, targets, filters, isMetricRequestNotAllowed])
-
-    // When switching to period daily, if Euros Charts or Idle charts buttons are selected, metrics should be reset.
-    // This useEffect reset metrics.
-    useEffect(() => {
-        if (isMetricRequestNotAllowed) setTargets(getDefaultConsumptionTargets(enphaseOff))
-    }, [isMetricRequestNotAllowed, enphaseOff])
 
     // Happens everytime getMetrics dependencies change, and doesn't execute when hook is instanciated.
     useEffect(() => {
@@ -127,13 +135,19 @@ export const ConsumptionChartContainer = ({
         // To avoid multiple rerendering and thus calculation in MyConsumptionChart, CosnumptionChartData change only once, when targets change or when the first getMetrics targets is loaded, thus avoiding to rerender when the second getMetrics is loaded with all targets which should only happen in the background.
         if (data.length > 0) {
             let chartData = data.filter((datapoint) => targets.includes(datapoint.target))
-            // Filter target cases.
-            const fileteredMetricsData = filterMetricsData(chartData, period, enphaseOff)
-            if (fileteredMetricsData) {
-                setConsumptionChartData(fileteredMetricsData)
-            } else setConsumptionChartData(chartData)
+            // When it's idleConsumption, chartData is handled differently from filteredMetricsData
+            const totalOffIdleConsumptionData = getTotalOffIdleConsumptionData(chartData)
+            if (totalOffIdleConsumptionData) {
+                chartData = nullifyTodayIdleConsumptionValue([totalOffIdleConsumptionData, ...chartData])
+            } else {
+                // Filter target cases.
+                const fileteredMetricsData = filterMetricsData(chartData, period, isSolarProductionConsentOff)
+                if (fileteredMetricsData) chartData = fileteredMetricsData
+            }
+            setConsumptionChartData(chartData)
         }
         // Only use data & visibleTargetCharts as dependencies.
+        // TODO REMOVE this exhausitve-deps due to filteredMetricsData
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [data, targets])
 
@@ -159,11 +173,38 @@ export const ConsumptionChartContainer = ({
     const onEurosConsumptionButtonToggl = useCallback(
         (isEuroToggled: boolean) => {
             setTargets((_prevTargets) => {
-                return isEuroToggled ? eurosConsumptionTargets : getDefaultConsumptionTargets(enphaseOff)
+                let newVisibleTargets: metricTargetType[] = []
+                if (isEuroToggled) {
+                    newVisibleTargets = isIdleSwitchToggled ? eurosIdleConsumptionTargets : eurosConsumptionTargets
+                } else {
+                    newVisibleTargets = isIdleSwitchToggled
+                        ? idleConsumptionTargets
+                        : getDefaultConsumptionTargets(isSolarProductionConsentOff)
+                }
+                return newVisibleTargets
             })
         },
-        [enphaseOff],
+        [isSolarProductionConsentOff, isIdleSwitchToggled],
     )
+
+    /**
+     * Handler when switching to IdleTarget On ConsumptionSwitchButton.
+     *
+     * @param isIdleConsumptionToggled Indicates if the idleConsumption was selected.
+     */
+    const onIdleConsumptionSwitchButton = useCallback(
+        async (isIdleConsumptionToggled: boolean) => {
+            setTargets((_prevTargets) => {
+                if (isIdleConsumptionToggled)
+                    return isEurosButtonToggled ? eurosIdleConsumptionTargets : idleConsumptionTargets
+                return isEurosButtonToggled
+                    ? eurosConsumptionTargets
+                    : getDefaultConsumptionTargets(isSolarProductionConsentOff)
+            })
+        },
+        [isEurosButtonToggled, isSolarProductionConsentOff],
+    )
+
     return (
         <div className="mb-12">
             <div className="relative flex flex-col md:flex-row items-center justify-center">
@@ -186,12 +227,38 @@ export const ConsumptionChartContainer = ({
                 </motion.div>
             </div>
 
+            {/* SwitchIdleConsumption Info Text*/}
+            {isShowIdleConsumptionDisabledInfo && (
+                <Box
+                    className="flex items-center justify-between text-13 md:text-16 w-full p-16"
+                    sx={{ backgroundColor: 'primary.main', color: 'primary.contrastText' }}
+                >
+                    <TypographyFormatMessage
+                        sx={{
+                            flexGrow: 1,
+                            display: 'flex',
+                            justifyContent: 'center',
+                        }}
+                    >
+                        Les informations de veille ne sont pas disponibles pour cette pèriode
+                    </TypographyFormatMessage>
+                    <CloseIcon sx={{ cursor: 'pointer' }} onClick={() => setIsShowIdleConsumptionDisabledInfo(false)} />
+                </Box>
+            )}
+
             <div className="my-16 flex justify-between">
                 <EurosConsumptionButtonToggler
                     onEuroClick={() => onEurosConsumptionButtonToggl(true)}
                     onConsumptionClick={() => onEurosConsumptionButtonToggl(false)}
                     showEurosConsumption={!isEurosButtonToggled}
                     disabled={isEurosConsumptionDisabled}
+                />
+                <SwitchIdleConsumption
+                    removeIdleTarget={() => onIdleConsumptionSwitchButton(false)}
+                    addIdleTarget={() => onIdleConsumptionSwitchButton(true)}
+                    isIdleConsumptionButtonDisabled={period === 'daily'}
+                    onClickIdleConsumptionDisabledInfoIcon={() => setIsShowIdleConsumptionDisabledInfo(true)}
+                    isIdleConsumptionButtonSelected={isIdleSwitchToggled}
                 />
                 <TargetMenuGroup
                     removeTargets={() => onTemperatureOrPmaxMenuClick([])}
@@ -206,16 +273,13 @@ export const ConsumptionChartContainer = ({
                     <CircularProgress style={{ color: theme.palette.background.paper }} />
                 </div>
             ) : (
-                <MyConsumptionChart
-                    data={consumptionChartData}
-                    period={period}
-                    range={range}
-                    isStackedEnabled={isStackedEnabled}
-                    chartType="consumption"
-                    chartLabel={enphaseOff ? 'Consommation totale' : 'Electricité achetée sur le réseau'}
-                    metricsInterval={metricsInterval}
-                    enphaseOff={enphaseOff}
-                />
+                <>
+                    <MyConsumptionChart
+                        data={consumptionChartData}
+                        period={period}
+                        isSolarProductionConsentOff={isSolarProductionConsentOff}
+                    />
+                </>
             )}
             <DefaultContractWarning isShowWarning={isEurosButtonToggled && Boolean(hasMissingHousingContracts)} />
             <ConsumptionEnedisSgeWarning isShowWarning={enedisSgeOff && sgeConsentFeatureState} />
