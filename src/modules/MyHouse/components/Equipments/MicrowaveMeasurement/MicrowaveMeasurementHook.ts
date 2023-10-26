@@ -59,7 +59,7 @@ export function useMicrowaveMeasurement(
             const { data } = await axios.get(
                 `${HOUSING_API}/equipments/${housingEquipmentId}/measurement/${measurementMode}/status/${equipmentNumber}`,
             )
-            return data?.status || measurementStatusEnum.failed
+            return data?.status
         } catch (_) {
             return measurementStatusEnum.failed
         }
@@ -143,8 +143,6 @@ export function useMicrowaveMeasurement(
                  * the status state from the backend every 3 seconds (to check if the measurement has
                  * started or not).
                  */
-                clearMeasurementWaitingTimeout()
-                clearUpdateStatusInterval()
                 updateStatusIntervalRef.current = setInterval(updateStatus, 3000)
                 break
 
@@ -155,8 +153,6 @@ export function useMicrowaveMeasurement(
                  * state from the backend every 3 seconds (to check if the measurement has succeeded
                  * or failed).
                  */
-                clearMeasurementWaitingTimeout()
-                clearUpdateStatusInterval()
                 measurementWaitingTimeoutRef.current = setTimeout(() => {
                     updateStatusIntervalRef.current = setInterval(updateStatus, 3000)
                 }, Math.max(measurementMaxDuration - 3, 0) * 1000)
@@ -169,8 +165,7 @@ export function useMicrowaveMeasurement(
                 updateResult()
                 break
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [measurementStatus])
+    }, [measurementStatus, measurementMaxDuration, updateResult, updateStatus])
 
     return {
         measurementStatus,

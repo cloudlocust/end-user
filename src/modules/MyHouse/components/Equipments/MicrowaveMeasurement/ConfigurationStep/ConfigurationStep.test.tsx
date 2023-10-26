@@ -24,33 +24,27 @@ describe('ConfigurationStep Component', () => {
     test('renders correctly', () => {
         reduxedRender(<ConfigurationStep {...defaultProps} />)
 
-        const headerText = screen.getByText('Configuration')
-        expect(headerText).toBeInTheDocument()
+        expect(screen.getByText('Configuration')).toBeInTheDocument()
 
-        const selectLabel = screen.getByText('Selectionner le micro-onde à mesurer')
-        expect(selectLabel).toBeInTheDocument()
+        expect(screen.getByText('Selectionner le micro-onde à mesurer')).toBeInTheDocument()
 
-        const selectInput = screen.getByLabelText('Mon équipement')
-        expect(selectInput).toBeInTheDocument()
+        expect(screen.getByLabelText('Mon équipement')).toBeInTheDocument()
 
-        const radioGroupLabel = screen.getByText('Selectionner le mode à mesurer')
-        expect(radioGroupLabel).toBeInTheDocument()
+        expect(screen.getByText('Selectionner le mode à mesurer')).toBeInTheDocument()
 
-        const modeARadio = screen.getByText(modeA)
-        expect(modeARadio).toBeInTheDocument()
+        expect(screen.getByText(modeA)).toBeInTheDocument()
 
-        const modeBRadio = screen.getByText(modeB)
-        expect(modeBRadio).toBeInTheDocument()
+        expect(screen.getByText(modeB)).toBeInTheDocument()
 
-        const warningMessage = screen.getByText('Attention à ne pas trop perturber le flux électrique durant le test')
-        expect(warningMessage).toBeInTheDocument()
+        expect(
+            screen.getByText('Attention à ne pas trop perturber le flux électrique durant le test'),
+        ).toBeInTheDocument()
     })
 
     test('calls setMeasurementMode when selections are made', async () => {
         reduxedRender(<ConfigurationStep {...defaultProps} selectedMeasurementMode={modeA} />)
 
-        const decongelationRadio = screen.getByText(modeB)
-        userEvent.click(decongelationRadio)
+        userEvent.click(screen.getByText(modeB))
         await waitFor(() => {
             expect(mockDispatch).toHaveBeenCalledWith(modeB)
         })
@@ -59,8 +53,7 @@ describe('ConfigurationStep Component', () => {
     test('calls stepSetter when the button Suivant is clicked with valid selections', async () => {
         reduxedRender(<ConfigurationStep {...defaultProps} selectedMicrowave={1} selectedMeasurementMode={modeA} />)
 
-        const button = screen.getByText('Suivant')
-        userEvent.click(button)
+        userEvent.click(screen.getByText('Suivant'))
         await waitFor(() => {
             expect(mockStepSetter).toHaveBeenCalledWith(2)
         })
@@ -69,7 +62,6 @@ describe('ConfigurationStep Component', () => {
     test('disables the button Suivant when selections are not valid', () => {
         reduxedRender(<ConfigurationStep {...defaultProps} />)
 
-        const button = screen.getByText('Suivant')
-        expect(button).toBeDisabled()
+        expect(screen.getByText('Suivant')).toBeDisabled()
     })
 })

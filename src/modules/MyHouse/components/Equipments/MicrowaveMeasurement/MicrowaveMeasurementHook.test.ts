@@ -57,20 +57,36 @@ describe('useMicrowaveMeasurement', () => {
         expect(result.current.measurementResult).toBe(null)
     })
 
-    test('updating the measurement result', async () => {
-        const { store } = require('src/redux')
-        await store.dispatch.userModel.setAuthenticationToken(TEST_MEASUREMENT_RESULT_EXIST)
-        const {
-            renderedHook: { result, waitForValueToChange },
-        } = reduxedRenderHook(useMicrowaveMeasurementFunction)
-        act(() => result.current.updateResult())
-        await waitForValueToChange(
-            () => {
-                return result.current.measurementResult
-            },
-            { timeout: 5000 },
-        )
-        expect(result.current.measurementResult).toBe(TEST_RESULT_VALUE)
+    describe('updating the measurement result', () => {
+        test('when the measurement result exist', async () => {
+            const { store } = require('src/redux')
+            await store.dispatch.userModel.setAuthenticationToken(TEST_MEASUREMENT_RESULT_EXIST)
+            const {
+                renderedHook: { result, waitForValueToChange },
+            } = reduxedRenderHook(useMicrowaveMeasurementFunction)
+            act(() => result.current.updateResult())
+            await waitForValueToChange(
+                () => {
+                    return result.current.measurementResult
+                },
+                { timeout: 5000 },
+            )
+            expect(result.current.measurementResult).toBe(TEST_RESULT_VALUE)
+        })
+
+        test('when the measurement result doesn not exist', async () => {
+            const {
+                renderedHook: { result, waitForValueToChange },
+            } = reduxedRenderHook(useMicrowaveMeasurementFunction)
+            act(() => result.current.updateResult())
+            await waitForValueToChange(
+                () => {
+                    return result.current.measurementResult
+                },
+                { timeout: 5000 },
+            )
+            expect(result.current.measurementResult).toBe(0)
+        })
     })
 
     describe('updating the measurement status', () => {

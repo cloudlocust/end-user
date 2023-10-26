@@ -52,8 +52,7 @@ export const MeasurementProcessStep = ({
 
     useEffect(() => {
         startMeasurement()
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [])
+    }, [startMeasurement])
 
     return (
         <>
@@ -78,7 +77,7 @@ export const MeasurementProcessStep = ({
                 {measurementStatus === measurementStatusEnum.success && (
                     <ResponseMessage
                         title="Félicitations !"
-                        content={`Le test s'est terminé avec succès, vous pouvez désormais analyser vos résultats. Le résultat de la mesure est ${measurementResult}`}
+                        content={`Le test est terminé avec succès, vous pouvez désormais analyser vos résultats. Le résultat de la mesure est ${measurementResult}`}
                         theme={theme}
                         success
                     />
@@ -88,7 +87,7 @@ export const MeasurementProcessStep = ({
                 {measurementStatus === measurementStatusEnum.failed && (
                     <ResponseMessage
                         title="La mesure a échoué"
-                        content="Le test s'est terminé par un échec, vous pouvez le lancer à nouveau"
+                        content="Le test est terminé par un échec, vous pouvez le lancer à nouveau"
                         theme={theme}
                     />
                 )}

@@ -327,11 +327,20 @@ export const equipmentsEndpoints = [
     rest.get(
         `${HOUSING_API}/equipments/:housingEquipmentId/measurement/:measurementMode/result/:equipmentNumber`,
         (req, res, ctx) => {
+            const authorization = req.headers.get('authorization')
+            if (authorization && authorization === TEST_MEASUREMENT_RESULT_EXIST)
+                return res(
+                    ctx.status(200),
+                    ctx.delay(1000),
+                    ctx.json({
+                        value: TEST_RESULT_VALUE,
+                    }),
+                )
             return res(
                 ctx.status(200),
                 ctx.delay(1000),
                 ctx.json({
-                    value: TEST_RESULT_VALUE,
+                    value: 0,
                 }),
             )
         },
@@ -374,14 +383,13 @@ export const equipmentsEndpoints = [
                         status: measurementStatusEnum.failed,
                     }),
                 )
-            else
-                return res(
-                    ctx.status(404),
-                    ctx.delay(1000),
-                    ctx.json({
-                        detail: "L'équipement du logement n'existe pas !",
-                    }),
-                )
+            return res(
+                ctx.status(404),
+                ctx.delay(1000),
+                ctx.json({
+                    detail: "L'équipement du logement n'existe pas !",
+                }),
+            )
         },
     ),
 
@@ -390,13 +398,12 @@ export const equipmentsEndpoints = [
         const authorization = req.headers.get('authorization')
         if (authorization && authorization !== TEST_STATUS_PENDING && authorization !== TEST_STATUS_IN_PROGRESS)
             return res(ctx.status(200), ctx.delay(1000))
-        else
-            return res(
-                ctx.status(400),
-                ctx.delay(1000),
-                ctx.json({
-                    detail: "Une mesure est en cours, veuillez patienter jusqu'à ce qu'elle soit terminée !",
-                }),
-            )
+        return res(
+            ctx.status(400),
+            ctx.delay(1000),
+            ctx.json({
+                detail: "Une mesure est en cours, veuillez patienter jusqu'à ce qu'elle soit terminée !",
+            }),
+        )
     }),
 ]
