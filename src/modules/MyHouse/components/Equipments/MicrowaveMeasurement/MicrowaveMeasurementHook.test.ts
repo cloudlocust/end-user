@@ -103,7 +103,7 @@ describe('useMicrowaveMeasurement', () => {
                 },
                 { timeout: 5000 },
             )
-            expect(result.current.measurementStatus).toBe(measurementStatusEnum.pending)
+            expect(result.current.measurementStatus.status).toBe(measurementStatusEnum.PENDING)
         })
 
         test('should update the measurement status when the status is IN_PROGRESS', async () => {
@@ -119,7 +119,7 @@ describe('useMicrowaveMeasurement', () => {
                 },
                 { timeout: 5000 },
             )
-            expect(result.current.measurementStatus).toBe(measurementStatusEnum.inProgress)
+            expect(result.current.measurementStatus.status).toBe(measurementStatusEnum.IN_PROGRESS)
         })
 
         test('should update the measurement status when the status is FAILED', async () => {
@@ -135,7 +135,7 @@ describe('useMicrowaveMeasurement', () => {
                 },
                 { timeout: 5000 },
             )
-            expect(result.current.measurementStatus).toBe(measurementStatusEnum.failed)
+            expect(result.current.measurementStatus.status).toBe(measurementStatusEnum.FAILED)
         })
 
         test('should update the measurement status when the status is SUCCESS', async () => {
@@ -151,7 +151,7 @@ describe('useMicrowaveMeasurement', () => {
                 },
                 { timeout: 5000 },
             )
-            expect(result.current.measurementStatus).toBe(measurementStatusEnum.success)
+            expect(result.current.measurementStatus.status).toBe(measurementStatusEnum.SUCCESS)
         })
 
         test('should update the measurement status when the equipment does not exist', async () => {
@@ -165,7 +165,7 @@ describe('useMicrowaveMeasurement', () => {
                 },
                 { timeout: 5000 },
             )
-            expect(result.current.measurementStatus).toBe(measurementStatusEnum.failed)
+            expect(result.current.measurementStatus.status).toBe(measurementStatusEnum.FAILED)
         })
     })
 
@@ -184,7 +184,7 @@ describe('useMicrowaveMeasurement', () => {
                     },
                     { timeout: 5000 },
                 )
-                expect(result.current.measurementStatus).toBe(measurementStatusEnum.pending)
+                expect(result.current.measurementStatus.status).toBe(measurementStatusEnum.PENDING)
                 expect(mockEnqueueSnackbar).toHaveBeenCalledWith('Un test de mesure est déjà en cours', {
                     autoHideDuration: 5000,
                     variant: 'info',
@@ -204,7 +204,7 @@ describe('useMicrowaveMeasurement', () => {
                     },
                     { timeout: 5000 },
                 )
-                expect(result.current.measurementStatus).toBe(measurementStatusEnum.inProgress)
+                expect(result.current.measurementStatus.status).toBe(measurementStatusEnum.IN_PROGRESS)
                 expect(mockEnqueueSnackbar).toHaveBeenCalledWith('Un test de mesure est déjà en cours', {
                     autoHideDuration: 5000,
                     variant: 'info',
@@ -226,7 +226,7 @@ describe('useMicrowaveMeasurement', () => {
                     },
                     { timeout: 5000 },
                 )
-                expect(result.current.measurementStatus).toBe(measurementStatusEnum.pending)
+                expect(result.current.measurementStatus.status).toBe(measurementStatusEnum.PENDING)
             })
 
             test('when status is FAILED', async () => {
@@ -242,7 +242,7 @@ describe('useMicrowaveMeasurement', () => {
                     },
                     { timeout: 5000 },
                 )
-                expect(result.current.measurementStatus).toBe(measurementStatusEnum.pending)
+                expect(result.current.measurementStatus.status).toBe(measurementStatusEnum.PENDING)
             })
         })
     })

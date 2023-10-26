@@ -15,6 +15,7 @@ import { ResponseMessage } from 'src/modules/MyHouse/components/Equipments/Micro
  * @param root0.measurementStatus The measurementStatus state.
  * @param root0.measurementResult The result value for the measurement.
  * @param root0.measurementMaxDuration Estimated value for the maximum duration of the measurement process (in seconds).
+ * @param root0.getTimeFromStatusLastUpdate Function to get the time passed (in seconds) from the last update os measurement status.
  * @param root0.startMeasurement The function that start the measurement process.
  * @param root0.stepSetter The setter linked to the state responsible for storing the current step.
  * @returns The MeasurementProcessStep component.
@@ -23,6 +24,7 @@ export const MeasurementProcessStep = ({
     measurementStatus,
     measurementResult,
     measurementMaxDuration,
+    getTimeFromStatusLastUpdate,
     startMeasurement,
     stepSetter,
 }: MeasurementProcessStepProps) => {
@@ -30,14 +32,14 @@ export const MeasurementProcessStep = ({
     const theme = useTheme()
 
     const headerText = useMemo(() => {
-        switch (measurementStatus) {
-            case measurementStatusEnum.pending:
+        switch (measurementStatus?.status) {
+            case measurementStatusEnum.PENDING:
                 return 'Démarrage de la mesure'
-            case measurementStatusEnum.inProgress:
+            case measurementStatusEnum.IN_PROGRESS:
                 return 'Mesure en cours'
-            case measurementStatusEnum.success:
+            case measurementStatusEnum.SUCCESS:
                 return 'Mesure terminée avec succès'
-            case measurementStatusEnum.failed:
+            case measurementStatusEnum.FAILED:
                 return 'Mesure terminée avec échec'
         }
         return 'Démarrage de la mesure'
@@ -70,11 +72,15 @@ export const MeasurementProcessStep = ({
             <div className="min-h-256 flex flex-col justify-around">
                 {/* The measurement progress component */}
                 <div className="flex justify-center">
-                    <MeasurementProgress status={measurementStatus} maxDuration={measurementMaxDuration} />
+                    <MeasurementProgress
+                        status={measurementStatus?.status}
+                        maxDuration={measurementMaxDuration}
+                        getTimeFromStatusLastUpdate={getTimeFromStatusLastUpdate}
+                    />
                 </div>
 
                 {/* Success message */}
-                {measurementStatus === measurementStatusEnum.success && (
+                {measurementStatus?.status === measurementStatusEnum.SUCCESS && (
                     <ResponseMessage
                         title="Félicitations !"
                         content={`Le test est terminé avec succès, vous pouvez désormais analyser vos résultats. Le résultat de la mesure est ${measurementResult}`}
@@ -84,7 +90,7 @@ export const MeasurementProcessStep = ({
                 )}
 
                 {/* Failure message */}
-                {measurementStatus === measurementStatusEnum.failed && (
+                {measurementStatus?.status === measurementStatusEnum.FAILED && (
                     <ResponseMessage
                         title="La mesure a échoué"
                         content="Le test est terminé par un échec, vous pouvez le lancer à nouveau"
@@ -95,12 +101,12 @@ export const MeasurementProcessStep = ({
 
             {/* The test ending button */}
             <div className="flex justify-center mt-20">
-                {measurementStatus !== measurementStatusEnum.failed ? (
+                {measurementStatus?.status !== measurementStatusEnum.FAILED ? (
                     <Button
                         variant="contained"
                         sx={{ padding: '10px auto', textAlign: 'center', width: '60%', minWidth: '160px' }}
                         onClick={handleFinishButtonClick}
-                        disabled={measurementStatus !== measurementStatusEnum.success}
+                        disabled={measurementStatus?.status !== measurementStatusEnum.SUCCESS}
                         children={formatMessage({
                             id: 'Terminer',
                             defaultMessage: 'Terminer',

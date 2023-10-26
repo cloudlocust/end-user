@@ -10,6 +10,10 @@ export interface MeasurementProgressProps {
      * Estimated value for the maximum duration of the measurement process (in seconds).
      */
     maxDuration: number
+    /**
+     * Function to get the passed time (in seconds) from the last update of status.
+     */
+    getTimeFromStatusLastUpdate: () => number
 }
 
 /**
@@ -19,17 +23,17 @@ export enum measurementStatusEnum {
     /**
      * Value for PENDING status.
      */
-    pending = 'PENDING',
+    PENDING = 'PENDING',
     /**
      * Value for IN_PROGRESS status.
      */
-    inProgress = 'IN_PROGRESS',
+    IN_PROGRESS = 'IN_PROGRESS',
     /**
      * Value for SUCCESS status.
      */
-    success = 'SUCCESS',
+    SUCCESS = 'SUCCESS',
     /**
      * Value for FAILED status.
      */
-    failed = 'FAILED',
+    FAILED = 'FAILED',
 }

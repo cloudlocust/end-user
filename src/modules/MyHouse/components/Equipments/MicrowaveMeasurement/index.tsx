@@ -75,12 +75,13 @@ export const MicrowaveMeasurement = ({
 
     const measurementMaxDuration = 50
 
-    const { measurementStatus, measurementResult, setMeasurementStatus, startMeasurement } = useMicrowaveMeasurement(
-        housingEquipmentId,
-        measurementMode,
-        microwaveNumber,
-        measurementMaxDuration,
-    )
+    const {
+        measurementStatus,
+        measurementResult,
+        setMeasurementStatus,
+        getTimeFromStatusLastUpdate,
+        startMeasurement,
+    } = useMicrowaveMeasurement(housingEquipmentId, measurementMode, microwaveNumber, measurementMaxDuration)
 
     const stepsContent = [
         <ConfigurationStep
@@ -97,6 +98,7 @@ export const MicrowaveMeasurement = ({
             measurementStatus={measurementStatus}
             measurementResult={measurementResult}
             measurementMaxDuration={measurementMaxDuration}
+            getTimeFromStatusLastUpdate={getTimeFromStatusLastUpdate}
             startMeasurement={startMeasurement}
             stepSetter={setCurrentStep}
         />,

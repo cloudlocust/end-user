@@ -30,7 +30,7 @@ export const TEST_LOAD_ERROR_METER_EQUIPMENT = 'errorMeter'
 // eslint-disable-next-line jsdoc/require-jsdoc
 export const TEST_LOAD_ERROR_EQUIPMENT = 'errorEquipment'
 // eslint-disable-next-line jsdoc/require-jsdoc
-export const TEST_MEASUREMENT_RESULT_EXIST = 'measurementResult'
+export const TEST_MEASUREMENT_RESULT_EXIST = 'measurement result exist'
 // eslint-disable-next-line jsdoc/require-jsdoc
 export const TEST_RESULT_VALUE = 25
 // eslint-disable-next-line jsdoc/require-jsdoc
@@ -356,7 +356,7 @@ export const equipmentsEndpoints = [
                     ctx.status(200),
                     ctx.delay(1000),
                     ctx.json({
-                        status: measurementStatusEnum.pending,
+                        status: measurementStatusEnum.PENDING,
                     }),
                 )
             if (authorization && authorization === TEST_STATUS_IN_PROGRESS)
@@ -364,7 +364,7 @@ export const equipmentsEndpoints = [
                     ctx.status(200),
                     ctx.delay(1000),
                     ctx.json({
-                        status: measurementStatusEnum.inProgress,
+                        status: measurementStatusEnum.IN_PROGRESS,
                     }),
                 )
             if (authorization && authorization === TEST_STATUS_SUCCESS)
@@ -372,7 +372,7 @@ export const equipmentsEndpoints = [
                     ctx.status(200),
                     ctx.delay(1000),
                     ctx.json({
-                        status: measurementStatusEnum.success,
+                        status: measurementStatusEnum.SUCCESS,
                     }),
                 )
             if (authorization && authorization === TEST_STATUS_FAILED)
@@ -380,7 +380,7 @@ export const equipmentsEndpoints = [
                     ctx.status(200),
                     ctx.delay(1000),
                     ctx.json({
-                        status: measurementStatusEnum.failed,
+                        status: measurementStatusEnum.FAILED,
                     }),
                 )
             return res(

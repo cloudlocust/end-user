@@ -1,5 +1,5 @@
 import { Theme } from '@mui/material'
-import { measurementStatusEnum } from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement/MeasurementProgress/MeasurementProgress.d'
+import { MeasurementStatusStateType } from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement/MicrowaveMeasurement'
 
 /**
  * Props of the ResponseMessage component.
@@ -30,7 +30,7 @@ export interface MeasurementProcessStepProps {
     /**
      * The measurementStatus state.
      */
-    measurementStatus: measurementStatusEnum | null
+    measurementStatus: MeasurementStatusStateType | null
     /**
      * The result value for the measurement.
      */
@@ -39,6 +39,10 @@ export interface MeasurementProcessStepProps {
      * Estimated value for the maximum duration of the measurement process (in seconds).
      */
     measurementMaxDuration: number
+    /**
+     * Function to get the time passed (in seconds) from the last update os measurement status.
+     */
+    getTimeFromStatusLastUpdate: () => number
     /**
      * The function that start the measurement process.
      */

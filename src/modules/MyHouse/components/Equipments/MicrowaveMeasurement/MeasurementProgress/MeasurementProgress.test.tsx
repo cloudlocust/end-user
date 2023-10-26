@@ -18,27 +18,56 @@ jest.mock(
     }),
 )
 
+/**
+ * Mock for the getTimeFromStatusLastUpdate function.
+ */
+const mockGetTimeFromStatusLastUpdate = jest.fn(() => 0)
+
 describe('MeasurementProgress', () => {
-    test('Renders the message "En attente" when status is pending', () => {
-        reduxedRender(<MeasurementProgress status={measurementStatusEnum.pending} maxDuration={60} />)
+    test('Renders the message "En attente" when status is PENDING', () => {
+        reduxedRender(
+            <MeasurementProgress
+                status={measurementStatusEnum.PENDING}
+                maxDuration={60}
+                getTimeFromStatusLastUpdate={mockGetTimeFromStatusLastUpdate}
+            />,
+        )
         const message = screen.getByText('En attente')
         expect(message).toBeInTheDocument()
     })
 
-    test('Renders the remaining time when status is inProgress', () => {
-        reduxedRender(<MeasurementProgress status={measurementStatusEnum.inProgress} maxDuration={60} />)
+    test('Renders the remaining time when status is IN_PROGRESS', () => {
+        reduxedRender(
+            <MeasurementProgress
+                status={measurementStatusEnum.IN_PROGRESS}
+                maxDuration={60}
+                getTimeFromStatusLastUpdate={mockGetTimeFromStatusLastUpdate}
+            />,
+        )
         const remainingTime = screen.getByText('00 : 30')
         expect(remainingTime).toBeInTheDocument()
     })
 
     test('Renders the success icon when status is success', () => {
-        reduxedRender(<MeasurementProgress status={measurementStatusEnum.success} maxDuration={60} />)
+        reduxedRender(
+            <MeasurementProgress
+                status={measurementStatusEnum.SUCCESS}
+                maxDuration={60}
+                getTimeFromStatusLastUpdate={mockGetTimeFromStatusLastUpdate}
+            />,
+        )
         const successIcon = screen.getByTestId('CheckCircleIcon')
         expect(successIcon).toBeInTheDocument()
     })
 
-    test('Renders the failed icon when status is failed', () => {
-        reduxedRender(<MeasurementProgress status={measurementStatusEnum.failed} maxDuration={60} />)
+    test('Renders the failed icon when status is FAILED', () => {
+        reduxedRender(
+            <MeasurementProgress
+                status={measurementStatusEnum.FAILED}
+                maxDuration={60}
+                getTimeFromStatusLastUpdate={mockGetTimeFromStatusLastUpdate}
+            />,
+        )
         const failedIcon = screen.getByTestId('CancelIcon')
         expect(failedIcon).toBeInTheDocument()
     })
