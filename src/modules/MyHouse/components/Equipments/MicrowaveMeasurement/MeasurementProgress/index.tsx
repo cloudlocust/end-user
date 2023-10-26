@@ -23,11 +23,12 @@ import { formatDuration } from 'src/modules/MyHouse/components/Equipments/Microw
 export const MeasurementProgress = ({ status, maxDuration }: MeasurementProgressProps) => {
     const { remainingTime, circularProgressValue } = useMeasurementProgress(status, maxDuration)
     const theme = useTheme()
-    const successOrFailed = status === measurementStatusEnum.success || status === measurementStatusEnum.failed
+    const isSuccessOrFailedMeasurementStatus =
+        status === measurementStatusEnum.success || status === measurementStatusEnum.failed
 
     const borderCircleStyle: React.CSSProperties = {
         content: '""',
-        display: successOrFailed ? 'none' : 'block',
+        display: isSuccessOrFailedMeasurementStatus ? 'none' : 'block',
         borderRadius: '50%',
         border: `solid 1px ${theme.palette.primary.main}`,
         position: 'absolute',
@@ -55,7 +56,11 @@ export const MeasurementProgress = ({ status, maxDuration }: MeasurementProgress
     }
 
     return (
-        <div className={`flex justify-center items-center ${successOrFailed ? 'h-128 w-128' : 'h-192 w-192'}`}>
+        <div
+            className={`flex justify-center items-center ${
+                isSuccessOrFailedMeasurementStatus ? 'h-128 w-128' : 'h-192 w-192'
+            }`}
+        >
             <CircularProgress
                 value={status === measurementStatusEnum.inProgress ? circularProgressValue : 100}
                 variant={!status || status === measurementStatusEnum.pending ? 'indeterminate' : 'determinate'}
@@ -66,7 +71,7 @@ export const MeasurementProgress = ({ status, maxDuration }: MeasurementProgress
                         ? 'error'
                         : 'primary'
                 }
-                size={successOrFailed ? 128 : 180}
+                size={isSuccessOrFailedMeasurementStatus ? 128 : 180}
                 thickness={3}
                 sx={{
                     position: 'absolute',
