@@ -5,6 +5,7 @@ import { useSnackbar } from 'notistack'
 import { API_RESOURCES_URL } from 'src/configs'
 import { IContractType, IProvider, ITariffType, IPower, IOffer } from './CommercialOffers.d'
 import { tariffContract } from 'src/modules/Contracts/contractsTypes'
+import { isValidDate } from 'src/modules/Contracts/utils/contractsFunctions'
 
 /**
  * Contract Type API.
@@ -180,18 +181,24 @@ export const useCommercialOffer = () => {
             contractTypeId: IContractType['id'],
             power: number,
             startSubscription: string,
+            endSubscription?: string,
         ) => {
+            const startSubscriptionDate = new Date(startSubscription!).toISOString()
+            const endSubscriptionDate = isValidDate(endSubscription) ? new Date(endSubscription!).toISOString() : ''
+
             setIsTariffsLoading(true)
             try {
-                const { data: responseData } = await axios.get<tariffContract[]>(
-                    `${TARIFFS_CONTRACT_API}?offer_id=${offerId}&tariff_type_id=${tariffTypeId}&contract_type_id=${contractTypeId}&power=${power}&start_subscription=${startSubscription}`,
-                )
+                let endpoint = `${TARIFFS_CONTRACT_API}?offer_id=${offerId}&tariff_type_id=${tariffTypeId}&contract_type_id=${contractTypeId}&power=${power}&start_subscription=${startSubscriptionDate}`
+                if (endSubscriptionDate) {
+                    endpoint += `&end_subscription=${endSubscriptionDate}`
+                }
+                const { data: responseData } = await axios.get<tariffContract[]>(endpoint)
                 setTariffs(responseData)
             } catch (error) {
                 enqueueSnackbar(
                     formatMessage({
-                        id: 'Erreur lors du chargement des tariffs de contrat',
-                        defaultMessage: 'Erreur lors du chargement des tariffs de contrat',
+                        id: 'Erreur lors du chargement des tariffs du contrat',
+                        defaultMessage: 'Erreur lors du chargement des tariffs du contrat',
                     }),
                     { variant: 'error' },
                 )

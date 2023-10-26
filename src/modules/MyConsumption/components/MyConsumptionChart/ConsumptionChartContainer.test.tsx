@@ -18,6 +18,7 @@ import { periodType } from 'src/modules/MyConsumption/myConsumptionTypes'
 import { IEnedisSgeConsent, INrlinkConsent, IEnphaseConsent } from 'src/modules/Consents/Consents'
 import { ConsumptionChartContainer } from 'src/modules/MyConsumption/components/MyConsumptionChart/ConsumptionChartContainer'
 import { ConsumptionChartContainerProps } from 'src/modules/MyConsumption/components/MyConsumptionChart/MyConsumptionChartTypes.d'
+import { setupJestCanvasMock } from 'jest-canvas-mock'
 
 // List of houses to add to the redux state
 const LIST_OF_HOUSES: IHousing[] = applyCamelCase(TEST_HOUSES)
@@ -163,6 +164,9 @@ jest.mock('src/modules/MyHouse/MyHouseConfig', () => ({
 }))
 
 describe('MyConsumptionContainer test', () => {
+    beforeEach(() => {
+        setupJestCanvasMock()
+    })
     test('onLoad getMetrics with isSolarProductionConsentOff false is called two times, one with default targets of autoconsumption and then all targets.', async () => {
         echartsConsumptionChartContainerProps.period = mockPeriod
         const { getByText } = reduxedRender(

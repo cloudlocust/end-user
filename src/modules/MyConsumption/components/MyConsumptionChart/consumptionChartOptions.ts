@@ -147,14 +147,25 @@ export const getSeriesOptionEchartsConsumptionChart = (
     let sortedSeries = resultSeries
 
     // veille only for the week, month, and year
+    // will switch graph for idle consumption for euros and watts
     if (period !== 'daily') {
         const index = resultSeries.findIndex(
             (serie) =>
                 serie.name ===
-                getNameTargetSeriesEchartsConsumptionChart(
-                    metricTargetsEnum.idleConsumption,
-                    isSolarProductionConsentOff,
-                ),
+                    getNameTargetSeriesEchartsConsumptionChart(
+                        metricTargetsEnum.idleConsumption,
+                        isSolarProductionConsentOff,
+                    ) ||
+                serie.name ===
+                    getNameTargetSeriesEchartsConsumptionChart(
+                        metricTargetsEnum.eurosIdleConsumption,
+                        isSolarProductionConsentOff,
+                    ) ||
+                serie.name ===
+                    getNameTargetSeriesEchartsConsumptionChart(
+                        metricTargetsEnum.subscriptionPrices,
+                        isSolarProductionConsentOff,
+                    ),
         )
 
         // if no index then veille is not activated and we are not showing it in the first place
@@ -535,7 +546,6 @@ export const getYAxisOptionEchartsConsumptionChart = (
     })
     // Targets functions yAxis Value formatter type (label shown in yAxisLine).
     const targetsYAxisValueFormatters = getTargetsYAxisValueFormatters(values, period, true)
-
     return {
         yAxis: Object.keys(targetsYAxisValueFormatters).map((targetYAxisIndex) => ({
             type: 'value',
@@ -555,18 +565,15 @@ export const getYAxisOptionEchartsConsumptionChart = (
                 ? 'right'
                 : 'left',
             splitLine: {
-                // TODO Remove once reponsive of daily period.
-                // interval(index, value) {
-                //     console.log('🚀 ~ file: echartsConsumptionChartOptions.ts:149 ~ interval ~ value:', value)
-                //     console.log('🚀 ~ file: echartsConsumptionChartOptions.ts:149 ~ interval ~ index:', index)
-                //     return 0
-                // },
-
                 show: true,
                 lineStyle: {
                     color: theme.palette.primary.contrastText,
                     type: 'dashed',
-                    opacity: 0.4,
+                    opacity: [targetYAxisIndexEnum.PMAX, targetYAxisIndexEnum.TEMPERATURE].includes(
+                        targetYAxisIndex as targetYAxisIndexEnum,
+                    )
+                        ? 0
+                        : 0.4,
                 },
             },
             axisLabel: {
