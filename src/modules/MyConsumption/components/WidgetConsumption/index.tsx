@@ -19,13 +19,13 @@ const WidgetConsumption = (props: IWidgetProps) => {
     const { getMetricsWidgetsData } = useContext(ConsumptionWidgetsMetricsContext)
 
     const currentRangeConsumptionData = useMemo(
-        () => getMetricsWidgetsData([props.target, metricTargetsEnum.autoconsumption]),
-        [props.target, getMetricsWidgetsData],
+        () => getMetricsWidgetsData([props.targets[0], metricTargetsEnum.autoconsumption]),
+        [getMetricsWidgetsData, props.targets],
     )
 
     const oldRangeConsumptionData = useMemo(
-        () => getMetricsWidgetsData([props.target, metricTargetsEnum.autoconsumption], true),
-        [props.target, getMetricsWidgetsData],
+        () => getMetricsWidgetsData([props.targets[0], metricTargetsEnum.autoconsumption], true),
+        [getMetricsWidgetsData, props.targets],
     )
 
     const { unit, value } = useMemo(
@@ -54,7 +54,7 @@ const WidgetConsumption = (props: IWidgetProps) => {
     return (
         <Widget {...props}>
             <WidgetItem
-                target={props.target}
+                target={props.targets[0]}
                 title={'Consommation Totale'}
                 value={value}
                 unit={unit}

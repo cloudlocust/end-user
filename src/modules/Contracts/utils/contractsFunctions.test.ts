@@ -93,7 +93,7 @@ describe('contractFunctions', () => {
                 expectedResult: false,
             },
             {
-                date: '0',
+                date: '',
                 expectedResult: false,
             },
         ]

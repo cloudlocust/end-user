@@ -6,6 +6,7 @@ import { TEST_SUCCESS_WEEK_METRICS as MOCK_WEEK_METRICS } from 'src/mocks/handle
 import { applyCamelCase } from 'src/common/react-platform-components'
 import { metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
 import { ConsumptionChartProps } from 'src/modules/MyConsumption/components/MyConsumptionChart/MyConsumptionChartTypes.d'
+import { setupJestCanvasMock } from 'jest-canvas-mock'
 
 const TEST_SUCCESS_WEEK_METRICS = applyCamelCase(MOCK_WEEK_METRICS([metricTargetsEnum.consumption]))
 // eslint-disable-next-line jsdoc/require-jsdoc
@@ -15,6 +16,9 @@ const propsMyConsumptionChart = {
 } as ConsumptionChartProps
 
 describe('Test MyConsumptionChart', () => {
+    beforeEach(() => {
+        setupJestCanvasMock()
+    })
     const theme = createTheme({
         palette: {
             primary: {
