@@ -441,12 +441,7 @@ describe('getDefaultConsumptionTargets tests', () => {
     test('when enphaseOff is true, it returns consumption metrics', () => {
         enphaseOff = true
         const result = getDefaultConsumptionTargets(enphaseOff)
-        expect(result).toStrictEqual([
-            metricTargetsEnum.baseConsumption,
-            metricTargetsEnum.peakHourConsumption,
-            metricTargetsEnum.offPeakHourConsumption,
-            metricTargetsEnum.consumption,
-        ])
+        expect(result).toStrictEqual([metricTargetsEnum.consumptionByTariffComponent])
     })
 
     test('when enphase is false, , it returns auto conso w/ base consumption', () => {
@@ -961,7 +956,7 @@ describe('filterMetricsData tests', () => {
         })
     })
 
-    test('When onphase is ON (false), we return consumption & autoconsumption', () => {
+    test('When enphase is ON (false), we return consumption & autoconsumption', () => {
         const expectedConsumptionData = [
             { datapoints: [[99, 99]], target: metricTargetsEnum.consumption },
             { datapoints: [[99, 99]], target: metricTargetsEnum.autoconsumption },
@@ -998,6 +993,335 @@ describe('filterMetricsData tests', () => {
         ]
         caseList.forEach(({ data, expectedResult }) => {
             const fileteredData = filterMetricsData(data, 'weekly', false)
+
+            expect(fileteredData).toStrictEqual(expectedResult)
+        })
+    })
+    test('when one of the TEMPO targets has data (BLEU), return that target', () => {
+        const consumptionData = [
+            {
+                target: metricTargetsEnum.baseConsumption,
+                datapoints: [[0, 0]],
+            },
+            {
+                target: metricTargetsEnum.consumption,
+                datapoints: [[0, 0]],
+            },
+            {
+                target: metricTargetsEnum.peakHourConsumption,
+                datapoints: [[0, 0]],
+            },
+            {
+                target: metricTargetsEnum.offPeakHourConsumption,
+                datapoints: [[0, 0]],
+            },
+            {
+                target: metricTargetsEnum.peakHourBlueTempoConsumption,
+                datapoints: [[99, 99]],
+            },
+            {
+                target: metricTargetsEnum.offPeakHourBlueTempoConsumption,
+                datapoints: [[99, 99]],
+            },
+            {
+                target: metricTargetsEnum.peakHourRedTempoConsumption,
+                datapoints: [[0, 0]],
+            },
+            {
+                target: metricTargetsEnum.offPeakHourRedTempoConsumption,
+                datapoints: [[0, 0]],
+            },
+            {
+                target: metricTargetsEnum.peakHourWhiteTempoConsumption,
+                datapoints: [[0, 0]],
+            },
+            {
+                target: metricTargetsEnum.offPeakHourWhiteTempoConsumption,
+                datapoints: [[0, 0]],
+            },
+        ]
+
+        const expectedConsumptionData = [
+            { datapoints: [[99, 99]], target: metricTargetsEnum.peakHourBlueTempoConsumption },
+            { datapoints: [[99, 99]], target: metricTargetsEnum.offPeakHourBlueTempoConsumption },
+        ]
+
+        const caseList = [
+            // Without pMax or Temperature targets.
+            {
+                data: consumptionData,
+                expectedResult: expectedConsumptionData,
+            },
+            // With Temperature targets.
+            {
+                data: [
+                    ...consumptionData,
+                    { datapoints: [[99, 99]], target: metricTargetsEnum.internalTemperature },
+                    { datapoints: [[99, 99]], target: metricTargetsEnum.externalTemperature },
+                ],
+                expectedResult: [
+                    ...expectedConsumptionData,
+                    { datapoints: [[99, 99]], target: metricTargetsEnum.internalTemperature },
+                    { datapoints: [[99, 99]], target: metricTargetsEnum.externalTemperature },
+                ],
+            },
+        ]
+        // eslint-disable-next-line sonarjs/no-identical-functions
+        caseList.forEach(({ data, expectedResult }) => {
+            const fileteredData = filterMetricsData(data, 'daily', true)
+
+            expect(fileteredData).toStrictEqual(expectedResult)
+        })
+    })
+    test('when one of the TEMPO targets has data (ROUGE), return that target', () => {
+        const consumptionData = [
+            {
+                target: metricTargetsEnum.baseConsumption,
+                datapoints: [[0, 0]],
+            },
+            {
+                target: metricTargetsEnum.consumption,
+                datapoints: [[0, 0]],
+            },
+            {
+                target: metricTargetsEnum.peakHourConsumption,
+                datapoints: [[0, 0]],
+            },
+            {
+                target: metricTargetsEnum.offPeakHourConsumption,
+                datapoints: [[0, 0]],
+            },
+            {
+                target: metricTargetsEnum.peakHourBlueTempoConsumption,
+                datapoints: [[0, 0]],
+            },
+            {
+                target: metricTargetsEnum.offPeakHourBlueTempoConsumption,
+                datapoints: [[0, 0]],
+            },
+            {
+                target: metricTargetsEnum.peakHourRedTempoConsumption,
+                datapoints: [[99, 99]],
+            },
+            {
+                target: metricTargetsEnum.offPeakHourRedTempoConsumption,
+                datapoints: [[99, 99]],
+            },
+            {
+                target: metricTargetsEnum.peakHourWhiteTempoConsumption,
+                datapoints: [[0, 0]],
+            },
+            {
+                target: metricTargetsEnum.offPeakHourWhiteTempoConsumption,
+                datapoints: [[0, 0]],
+            },
+        ]
+
+        const expectedConsumptionData = [
+            { datapoints: [[99, 99]], target: metricTargetsEnum.peakHourRedTempoConsumption },
+            { datapoints: [[99, 99]], target: metricTargetsEnum.offPeakHourRedTempoConsumption },
+        ]
+
+        const caseList = [
+            // Without pMax or Temperature targets.
+            {
+                data: consumptionData,
+                expectedResult: expectedConsumptionData,
+            },
+            // With Temperature targets.
+            {
+                data: [
+                    ...consumptionData,
+                    { datapoints: [[99, 99]], target: metricTargetsEnum.internalTemperature },
+                    { datapoints: [[99, 99]], target: metricTargetsEnum.externalTemperature },
+                ],
+                expectedResult: [
+                    ...expectedConsumptionData,
+                    { datapoints: [[99, 99]], target: metricTargetsEnum.internalTemperature },
+                    { datapoints: [[99, 99]], target: metricTargetsEnum.externalTemperature },
+                ],
+            },
+        ]
+        // eslint-disable-next-line sonarjs/no-identical-functions
+        caseList.forEach(({ data, expectedResult }) => {
+            const fileteredData = filterMetricsData(data, 'daily', true)
+
+            expect(fileteredData).toStrictEqual(expectedResult)
+        })
+    })
+    test('when one of the TEMPO targets has data (BLANC), return that target', () => {
+        const consumptionData = [
+            {
+                target: metricTargetsEnum.baseConsumption,
+                datapoints: [[0, 0]],
+            },
+            {
+                target: metricTargetsEnum.consumption,
+                datapoints: [[0, 0]],
+            },
+            {
+                target: metricTargetsEnum.peakHourConsumption,
+                datapoints: [[0, 0]],
+            },
+            {
+                target: metricTargetsEnum.offPeakHourConsumption,
+                datapoints: [[0, 0]],
+            },
+            {
+                target: metricTargetsEnum.peakHourBlueTempoConsumption,
+                datapoints: [[0, 0]],
+            },
+            {
+                target: metricTargetsEnum.offPeakHourBlueTempoConsumption,
+                datapoints: [[0, 0]],
+            },
+            {
+                target: metricTargetsEnum.peakHourRedTempoConsumption,
+                datapoints: [[0, 0]],
+            },
+            {
+                target: metricTargetsEnum.offPeakHourRedTempoConsumption,
+                datapoints: [[0, 0]],
+            },
+            {
+                target: metricTargetsEnum.peakHourWhiteTempoConsumption,
+                datapoints: [[99, 99]],
+            },
+            {
+                target: metricTargetsEnum.offPeakHourWhiteTempoConsumption,
+                datapoints: [[99, 99]],
+            },
+        ]
+
+        const expectedConsumptionData = [
+            { datapoints: [[99, 99]], target: metricTargetsEnum.peakHourWhiteTempoConsumption },
+            { datapoints: [[99, 99]], target: metricTargetsEnum.offPeakHourWhiteTempoConsumption },
+        ]
+
+        const caseList = [
+            // Without pMax or Temperature targets.
+            {
+                data: consumptionData,
+                expectedResult: expectedConsumptionData,
+            },
+            // With Temperature targets.
+            {
+                data: [
+                    ...consumptionData,
+                    { datapoints: [[99, 99]], target: metricTargetsEnum.internalTemperature },
+                    { datapoints: [[99, 99]], target: metricTargetsEnum.externalTemperature },
+                ],
+                expectedResult: [
+                    ...expectedConsumptionData,
+                    { datapoints: [[99, 99]], target: metricTargetsEnum.internalTemperature },
+                    { datapoints: [[99, 99]], target: metricTargetsEnum.externalTemperature },
+                ],
+            },
+        ]
+        // eslint-disable-next-line sonarjs/no-identical-functions
+        caseList.forEach(({ data, expectedResult }) => {
+            const fileteredData = filterMetricsData(data, 'daily', true)
+
+            expect(fileteredData).toStrictEqual(expectedResult)
+        })
+    })
+
+    test('when chart is euro, and there is tempo data', () => {
+        const consumptionData = [
+            {
+                target: metricTargetsEnum.eurosConsumption,
+                datapoints: [[99, 99]],
+            },
+            {
+                target: metricTargetsEnum.baseEuroConsumption,
+                datapoints: [[0, 0]],
+            },
+            {
+                target: metricTargetsEnum.euroPeakHourConsumption,
+                datapoints: [[0, 0]],
+            },
+            {
+                target: metricTargetsEnum.euroOffPeakConsumption,
+                datapoints: [[0, 0]],
+            },
+            {
+                target: metricTargetsEnum.subscriptionPrices,
+                datapoints: [[99, 99]],
+            },
+            {
+                target: metricTargetsEnum.euroPeakHourBlueTempoConsumption,
+                datapoints: [[0, 0]],
+            },
+            {
+                target: metricTargetsEnum.euroOffPeakHourBlueTempoConsumption,
+                datapoints: [[0, 0]],
+            },
+            {
+                target: metricTargetsEnum.euroPeakHourRedTempoConsumption,
+                datapoints: [[0, 0]],
+            },
+            {
+                target: metricTargetsEnum.euroOffPeakHourRedTempoConsumption,
+                datapoints: [[0, 0]],
+            },
+            {
+                target: metricTargetsEnum.euroPeakHourWhiteTempoConsumption,
+                datapoints: [[99, 99]],
+            },
+            {
+                target: metricTargetsEnum.euroOffPeakHourWhiteTempoConsumption,
+                datapoints: [[99, 99]],
+            },
+        ]
+
+        const expectedConsumptionData = [
+            {
+                datapoints: [[99, 99]],
+                target: metricTargetsEnum.eurosConsumption,
+            },
+            {
+                datapoints: [[99, 99]],
+                target: metricTargetsEnum.subscriptionPrices,
+            },
+            {
+                datapoints: [[0, 0]],
+                target: metricTargetsEnum.euroPeakHourBlueTempoConsumption,
+            },
+            {
+                datapoints: [[0, 0]],
+                target: metricTargetsEnum.euroOffPeakHourBlueTempoConsumption,
+            },
+            {
+                datapoints: [[0, 0]],
+                target: metricTargetsEnum.euroPeakHourRedTempoConsumption,
+            },
+            {
+                datapoints: [[0, 0]],
+                target: metricTargetsEnum.euroOffPeakHourRedTempoConsumption,
+            },
+            {
+                datapoints: [[99, 99]],
+                target: metricTargetsEnum.euroPeakHourWhiteTempoConsumption,
+            },
+            {
+                datapoints: [[99, 99]],
+                target: metricTargetsEnum.euroOffPeakHourWhiteTempoConsumption,
+            },
+        ]
+
+        const caseList = [
+            {
+                data: consumptionData,
+                expectedResult: expectedConsumptionData,
+            },
+            {
+                data: consumptionData,
+                expectedResult: expectedConsumptionData,
+            },
+        ]
+        // eslint-disable-next-line sonarjs/no-identical-functions
+        caseList.forEach(({ data, expectedResult }) => {
+            const fileteredData = filterMetricsData(data, 'weekly', true)
 
             expect(fileteredData).toStrictEqual(expectedResult)
         })
