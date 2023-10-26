@@ -171,6 +171,13 @@ export function useMicrowaveMeasurement(
                 break
 
             case measurementStatusEnum.IN_PROGRESS:
+                /**
+                 * This is the time left for the test ending and it's the time that we should wait
+                 * until restarting checking if the test has finished (the status changed to SUCCESS
+                 * or FAILED), it's equal to the measurement duration minus the passed time from
+                 * the starting of the test minus 3 (we subtracted the 3 to avoid waiting another
+                 * 3 seconds, due to the updateStatusInterval interval, before restarting the check).
+                 */
                 const waitingTime = Math.max(measurementMaxDuration - getTimeFromStatusLastUpdate() - 3, 0)
                 /**
                  * When the status changes to the value IN_PROGRESS (the measurement has started),

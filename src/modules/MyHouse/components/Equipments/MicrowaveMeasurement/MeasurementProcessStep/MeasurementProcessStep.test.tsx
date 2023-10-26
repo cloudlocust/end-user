@@ -10,7 +10,6 @@ const HEADER_TEXT_IN_PROGRESS = 'Mesure en cours'
 const HEADER_TEXT_SUCCESS = 'Mesure terminée avec succès'
 const HEADER_TEXT_FAILED = 'Mesure terminée avec échec'
 
-// Mock StepSetterFunction
 let mockStepSetter: jest.Mock<any, any>
 let mockStartMeasurement: jest.Mock<any, any>
 let mockGetTimeFromStatusLastUpdate: jest.Mock<any, any>
