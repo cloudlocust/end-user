@@ -2,6 +2,8 @@ import { Icon, Typography } from '@mui/material'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import { getWidgetIndicatorColor } from 'src/modules/MyConsumption/components/Widget/WidgetFunctions'
 import { IWidgetItemProps } from 'src/modules/MyConsumption/components/WidgetItem/WidgetItem'
+import { metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
+import { PeriodEnum } from 'src/modules/MyConsumption/myConsumptionTypes.d'
 
 /**
  * Widget Item Component.
@@ -13,9 +15,20 @@ import { IWidgetItemProps } from 'src/modules/MyConsumption/components/WidgetIte
  * @param props.value Value of the widget.
  * @param props.unit Unit of the widget.
  * @param props.percentageChange Percentage change of the widget.
+ * @param props.enphaseOff Boolean for Enphase Consent is inactive.
+ * @param props.period Period of the Widget.
  * @returns WidgetItem Component.
  */
-export function WidgetItem({ target, title, infoIcon, value, unit, percentageChange }: IWidgetItemProps) {
+export function WidgetItem({
+    target,
+    title,
+    infoIcon,
+    value,
+    unit,
+    percentageChange,
+    enphaseOff,
+    period,
+}: IWidgetItemProps) {
     return (
         <div className="p-16 flex flex-col flex-1 gap-3 justify-between">
             <div className="flex flex-row justify-between">
@@ -24,7 +37,11 @@ export function WidgetItem({ target, title, infoIcon, value, unit, percentageCha
                 {/* Widget infoIcon */}
                 {infoIcon}
             </div>
-            {!value ? (
+            {target === metricTargetsEnum.totalProduction && enphaseOff ? (
+                <div className="text-center flex flex-1 justify-center items-center py-4">
+                    <TypographyFormatMessage>Connecter votre onduleur</TypographyFormatMessage>
+                </div>
+            ) : !value || (target === metricTargetsEnum.injectedProduction && period === PeriodEnum.DAILY) ? (
                 <div className="text-center flex flex-1 justify-center items-center py-4">
                     <TypographyFormatMessage>Aucune donnée disponible</TypographyFormatMessage>
                 </div>

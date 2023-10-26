@@ -66,7 +66,7 @@ export const HousingDetails = () => {
         isAccomodationMeterListEmpty,
         isLoadingInProgress: loadingAccomodationInProgress,
     } = useAccomodation(currentHousing?.id)
-    const { equipmentList, isEquipmentMeterListEmpty, loadingEquipmentInProgress } = useEquipmentList(
+    const { housingEquipmentsList, isEquipmentMeterListEmpty, loadingEquipmentInProgress } = useEquipmentList(
         currentHousing?.id,
     )
 
@@ -120,7 +120,7 @@ export const HousingDetails = () => {
     useEffect(() => {
         // eslint-disable-next-line
         const handleEquipmentsIcons = (equipementName: equipmentNameType) => {
-            const equipement = equipmentList?.find((equipement) => equipement.equipment.name === equipementName)
+            const equipement = housingEquipmentsList?.find((equipement) => equipement.equipment.name === equipementName)
             switch (equipement?.equipmentType) {
                 case 'electricity':
                     return (
@@ -180,7 +180,7 @@ export const HousingDetails = () => {
                 label: 'Lave-vaiselle',
             },
         ])
-    }, [equipmentList])
+    }, [housingEquipmentsList])
 
     // For the house accomodation we don't need to handle the icons based on a certain type.
     const housingElements: HouseDetailsElementType[] = [

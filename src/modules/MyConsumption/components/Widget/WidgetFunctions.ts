@@ -1,11 +1,5 @@
-import {
-    ApexAxisChartSerie,
-    IMetric,
-    metricRangeType,
-    metricTargetsEnum,
-    metricTargetType,
-} from 'src/modules/Metrics/Metrics.d'
-import { convertMetricsDataToApexChartsAxisValues } from 'src/modules/MyConsumption/utils/apexChartsDataConverter'
+import { IMetric, metricRangeType, metricTargetsEnum, metricTargetType } from 'src/modules/Metrics/Metrics.d'
+import { convertMetricsDataToChartsAxisValues } from 'src/modules/MyConsumption/utils/chartsDataConverter'
 import { sum, max, mean, round } from 'lodash'
 import { consumptionWattUnitConversion } from 'src/modules/MyConsumption/utils/unitConversionFunction'
 import convert from 'convert-units'
@@ -22,7 +16,7 @@ import {
     subYears,
     addDays,
 } from 'date-fns'
-import { periodType } from 'src/modules/MyConsumption/myConsumptionTypes'
+import { periodType, YAxisChartSerie } from 'src/modules/MyConsumption/myConsumptionTypes'
 import { getDateWithoutTimezoneOffset } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
 import dayjs from 'dayjs'
 import { isProductionActiveAndHousingHasAccess } from 'src/modules/MyHouse/MyHouseConfig'
@@ -42,10 +36,10 @@ export const WRONG_TARGET_TEXT = 'Wrong target'
  */
 export const getDataFromYAxis = (data: IMetric[], target: metricTargetType) => {
     // The values to be used in the widget are the values of the Y axis in the chart.
-    const { yAxisSeries } = convertMetricsDataToApexChartsAxisValues(data)
+    const { yAxisSeries } = convertMetricsDataToChartsAxisValues(data)
     let values: number[] = []
     // Filter xAxisSeries according to the target.
-    values = yAxisSeries.filter((el: ApexAxisChartSerie) => el.name === target)[0].data as number[]
+    values = yAxisSeries.filter((el: YAxisChartSerie) => el.name === target)[0].data as number[]
     return values
 }
 
@@ -159,6 +153,15 @@ export const computeTotalEuros = (data: IMetric[]): { value: number | string; un
 export const computeTotalProduction = (data: IMetric[]) => computeTotalEnergy(data, metricTargetsEnum.totalProduction)
 
 /**
+ * Function that computes injected production.
+ *
+ * @param data Metrics data.
+ * @returns Injected production rounded.
+ */
+export const computeInjectedProduction = (data: IMetric[]) =>
+    computeTotalEnergy(data, metricTargetsEnum.injectedProduction)
+
+/**
  * Function that computes total Autoconsumption.
  *
  * @param data Metrics data.
@@ -200,6 +203,8 @@ export const computeWidgetAssets = (data: IMetric[], type: metricTargetType) => 
             return computeTotalEuros(data)!
         case metricTargetsEnum.totalProduction:
             return computeTotalProduction(data)!
+        case metricTargetsEnum.injectedProduction:
+            return computeInjectedProduction(data)!
         case metricTargetsEnum.autoconsumption:
             return computeTotalAutoconsumption(data)!
         case metricTargetsEnum.idleConsumption:
@@ -255,6 +260,8 @@ export const renderWidgetTitle = (target: metricTargetType, enphaseOff?: boolean
             return 'Coût Total'
         case metricTargetsEnum.totalProduction:
             return 'Production Totale'
+        case metricTargetsEnum.injectedProduction:
+            return 'Injectée'
         case metricTargetsEnum.autoconsumption:
             return 'Autoconsommation'
         case metricTargetsEnum.idleConsumption:
@@ -269,10 +276,9 @@ export const renderWidgetTitle = (target: metricTargetType, enphaseOff?: boolean
  *
  * @param range Range from metrics.
  * @param period Period give.
- * @param _target Widget Target.
  * @returns Previous range according from period, if "daily" returns range (startOf: fromDate-1, endOf: fromDate-1). If "weekly" returns range (startOf: fromDate week-1, endOf: fromDate-1). If "monthly" returns range (startOf: fromDate month-1, endOf: fromDate month-1). If "yearly" returns range (startOf: fromDate year-1, endOf: fromDate year-1).
  */
-export const getWidgetPreviousRange = (range: metricRangeType, period: periodType, _target: metricTargetType) => {
+export const getWidgetPreviousRange = (range: metricRangeType, period: periodType) => {
     // Extract only the date, so that new Date don't create a date including the timezone.
     const fromDate = new Date(range.from.split('T')[0])
     switch (period) {
@@ -304,14 +310,13 @@ export const getWidgetPreviousRange = (range: metricRangeType, period: periodTyp
  *
  * @param range Range from metrics.
  * @param period Period give.
- * @param _target Metric Target type.
  * @returns Range according to period.
  * - When "daily" range should be [start, end] of same day.
  * - When "weekly" range should be a week starting with the fromDate day of given range.
  * - When "monthly" range should be [start, end] of same month.
  * - When "yearly" range should be [start, end] of same year.
  */
-export const getWidgetRange = (range: metricRangeType, period: periodType, _target: metricTargetType) => {
+export const getWidgetRange = (range: metricRangeType, period: periodType) => {
     // Extract only the date, so that new Date don't create a date including the timezone.
     const fromDate = startOfDay(new Date(range.from))
     switch (period) {

@@ -1,5 +1,4 @@
 import {
-    ApexAxisChartSerie,
     metricFiltersType,
     metricRangeType,
     metricTargetsEnum,
@@ -7,13 +6,8 @@ import {
     IMetric,
 } from 'src/modules/Metrics/Metrics.d'
 import dayjs from 'dayjs'
-import {
-    dateFnsPeriod,
-    getChartSpecifitiesType,
-    PeriodEnum,
-    periodType,
-} from 'src/modules/MyConsumption/myConsumptionTypes.d'
-import { ApexChartsAxisValuesType } from 'src/modules/MyConsumption/myConsumptionTypes'
+import { dateFnsPeriod, PeriodEnum, periodType, YAxisChartSerie } from 'src/modules/MyConsumption/myConsumptionTypes.d'
+import { ChartsAxisValuesType } from 'src/modules/MyConsumption/myConsumptionTypes'
 import {
     add,
     addDays,
@@ -37,9 +31,10 @@ import {
     endOfMonth,
     endOfYear,
 } from 'date-fns'
-import { cloneDeep, sum } from 'lodash'
+import { subtract, sum } from 'lodash'
 import { isNil } from 'lodash'
 import fr from 'date-fns/locale/fr'
+import { getDataFromYAxis } from 'src/modules/MyConsumption/components/Widget/WidgetFunctions'
 import { temperatureOrPmaxTargets } from 'src/modules/MyConsumption/utils/myConsumptionVariables'
 
 /**
@@ -232,54 +227,54 @@ export const generateXAxisValues = (period: periodType, range: metricRangeType) 
 /**
  * Function that map and fills gap values from backend response (which will have ordered xAxis), and returns the Values depending on range and when period is 'yearly', it will return list of every month (13entries)).
  *
- * @param ApexChartsMissingAxisValues Filled datapoints with the when yearly.
+ * @param chartsMissingAxisValues Filled datapoints with the when yearly.
  * @param period Period of the chart ('daily', 'weekly', 'montly', 'yearly').
  * @param range Range represents the first day and last day.
- * @returns ApexChartsMissingAxisValues with filled gap datapoints.
+ * @returns ChartsMissingAxisValues with filled gap datapoints.
  */
-export const fillApexChartsAxisMissingValues = (
-    ApexChartsMissingAxisValues: ApexChartsAxisValuesType,
+export const fillChartsAxisMissingValues = (
+    chartsMissingAxisValues: ChartsAxisValuesType,
     period: periodType,
     range: metricRangeType,
 ) => {
     // Checking if AxisValues are empty no need to feel anything, because there is no response data.
     if (
-        ApexChartsMissingAxisValues.yAxisSeries.length === 0 ||
-        ApexChartsMissingAxisValues.xAxisSeries.length === 0 ||
+        chartsMissingAxisValues.yAxisSeries.length === 0 ||
+        chartsMissingAxisValues.xAxisSeries.length === 0 ||
         period !== 'yearly'
     )
-        return ApexChartsMissingAxisValues
+        return chartsMissingAxisValues
 
     // Filling the missing values for all data targets happens only when period is yearly, otherwise the check is only for consumption target.
     let xAxisExpectedValues: number[] = []
     xAxisExpectedValues = generateXAxisValues(period, range)
-    ApexChartsMissingAxisValues.yAxisSeries.forEach((yAxisSerie: ApexAxisChartSerie, serieIndex: number) => {
+    chartsMissingAxisValues.yAxisSeries.forEach((yAxisSerie: YAxisChartSerie, serieIndex: number) => {
         if (!isMissingYAxisValues(yAxisSerie.data, period))
             // Checking if there are missing axis values to fill them.
             return
         // fillTargetYAxisValues check also if there are missing values.
         yAxisSerie.data = fillTargetYAxisValues(
             yAxisSerie.data,
-            ApexChartsMissingAxisValues.xAxisSeries[serieIndex],
+            chartsMissingAxisValues.xAxisSeries[serieIndex],
             xAxisExpectedValues,
             period,
-        ) as ApexAxisChartSerie['data']
+        ) as YAxisChartSerie['data']
     })
-    ApexChartsMissingAxisValues.xAxisSeries[0] = xAxisExpectedValues
-    return ApexChartsMissingAxisValues
+    chartsMissingAxisValues.xAxisSeries[0] = xAxisExpectedValues
+    return chartsMissingAxisValues
 }
 
 /**
  * Function that map and fills missing values for given yAxisMissingValues.
  *
- * @param yAxisMissingValues ApexChartsAxisValues with the missing values for the indicated period.
+ * @param yAxisMissingValues ChartsAxisValues with the missing values for the indicated period.
  * @param xAxisMissingValues The Curent Period.
  * @param xAxisExpectedValues The Curent Period.
  * @param period Period of the chart ('daily', 'weekly', 'montly', 'yearly').
- * @returns ApexChartsAxisValues for the given range and period.
+ * @returns ChartsAxisValues for the given range and period.
  */
 const fillTargetYAxisValues = (
-    yAxisMissingValues: ApexAxisChartSerie['data'],
+    yAxisMissingValues: YAxisChartSerie['data'],
     xAxisMissingValues: number[],
     xAxisExpectedValues: number[],
     period: periodType,
@@ -287,7 +282,7 @@ const fillTargetYAxisValues = (
     // This index will help to go through backend xAxis because there is a gap, the length of xAxis backend will not be the same of expected xAxis length, thus they'll not have the same idnexing.
     let missAxisValuesIndex = 0
 
-    // Filling the missing y value with null, so that we can show its xAxis label, otherwise if ApexCharts if he find xAxis[i] and doesn't find yAxis[i] of the same index it'll hide the xAxis label, however even if yAxis[i] === null ApexCharts will show its xAxis[i], and that's why we're doing this so that we can show xAxis labels (for example: period === 'weekly', xAxis will be [Saturday, Sunday, Monday, Tuesday, Wednesday, Thursday, Friday], and if yValus in Monday doesn't exist in ApexCharts it'll hide Tuesday, thus it'll show only 6 entries on the graph instead of 7, but by giving null to yValue it'll show all days including Tuesday but with no value on the chart).
+    // Filling the missing y value with null, so that we can show its xAxis label, otherwise if Charts if he find xAxis[i] and doesn't find yAxis[i] of the same index it'll hide the xAxis label, however even if yAxis[i] === null Charts will show its xAxis[i], and that's why we're doing this so that we can show xAxis labels (for example: period === 'weekly', xAxis will be [Saturday, Sunday, Monday, Tuesday, Wednesday, Thursday, Friday], and if yValus in Monday doesn't exist in Charts it'll hide Tuesday, thus it'll show only 6 entries on the graph instead of 7, but by giving null to yValue it'll show all days including Tuesday but with no value on the chart).
     // consumptionSeries.data = fillMissingYValues(xAxisExpectedValues,
     return xAxisExpectedValues.map((xAxisValue) => {
         // Checking dates so that even if there is gap from backend response, we put the backend xAxis index value in its correct expected xAxis counterpart.
@@ -296,7 +291,7 @@ const fillTargetYAxisValues = (
             missAxisValuesIndex === xAxisMissingValues.length ||
             !isEqualDates(xAxisValue, xAxisMissingValues[missAxisValuesIndex], period)
         ) {
-            // Filling the missing y value with null, so that we can show its xAxis label, otherwise if ApexCharts if he find xAxis[i] and doesn't find yAxis[i] of the same index it'll hide the xAxis label, however even if yAxis[i] === null ApexCharts will show its xAxis[i], and that's why we're doing this so that we can show xAxis labels (for example: period === 'weekly', xAxis will be [Saturday, Sunday, Monday, Tuesday, Wednesday, Thursday, Friday], and if yValus in Monday doesn't exist in ApexCharts it'll hide Tuesday, thus it'll show only 6 entries on the graph instead of 7, but by giving null to yValue it'll show all days including Tuesday but with no value on the chart).
+            // Filling the missing y value with null, so that we can show its xAxis label, otherwise if Charts if he find xAxis[i] and doesn't find yAxis[i] of the same index it'll hide the xAxis label, however even if yAxis[i] === null Charts will show its xAxis[i], and that's why we're doing this so that we can show xAxis labels (for example: period === 'weekly', xAxis will be [Saturday, Sunday, Monday, Tuesday, Wednesday, Thursday, Friday], and if yValus in Monday doesn't exist in Charts it'll hide Tuesday, thus it'll show only 6 entries on the graph instead of 7, but by giving null to yValue it'll show all days including Tuesday but with no value on the chart).
             return null
         }
 
@@ -307,61 +302,13 @@ const fillTargetYAxisValues = (
 }
 
 /**
- * Filling missing values of datapoints when period is yearly, because response from metrics can send missing elements when target is temperature for period yearly, so they are filled in the frontend side.
- *
- * Datapoints are already formatted as ApexAxisChartsSeries that has format [ [timestamp1, value1], [timestamp2, value2], ....etc].
- *
- * @param ApexChartsSeriesDatetime ApexChartsAxisValues with potential missing values for the indicated period.
- * @param period Period of the chart ('daily', 'weekly', 'montly', 'yearly').
- * @param range Range represents the first day and last day.
- * @returns Filled datapoints when yearly.
- */
-export const fillApexChartsDatetimeSeriesMissingValues = (
-    ApexChartsSeriesDatetime: ApexAxisChartSeries,
-    period: periodType,
-    range: metricRangeType,
-) => {
-    // Checking if AxisValues are empty or period is not yearly no need to feel anything.
-    if (ApexChartsSeriesDatetime.length === 0 || period !== 'yearly') return ApexChartsSeriesDatetime
-
-    const MissingApexChartsSeriesDatetime = cloneDeep(ApexChartsSeriesDatetime)
-    // Filling the missing values for all data targets can happen only when period is yearly.
-    let expectedTimestampList: number[] = []
-    expectedTimestampList = generateXAxisValues(period, range)
-    MissingApexChartsSeriesDatetime.forEach((yAxisSerie: ApexAxisChartSerie) => {
-        // TODO Find a better way rather than hard code the number.
-        // Checking if there are missing datapoints.
-        // If period is yearly then yAxisValues chart has 13 elements, representing all the months starting from the year preceding the current month with duplicating the current month.
-        if (yAxisSerie.data.length > 12) return
-        // Fill datapoints missing values.
-        // This index will help to go through datapoints and map between missing value and its timestamp counterpart.
-        let missingDatapointIndex = 0
-        yAxisSerie.data = expectedTimestampList.map((xAxisValue) => {
-            // Check for gap of current expected timestamp and current datapoint timestamp, otherwise check if we covered all given datapoints then we just fill the remaining datapoints.
-            if (
-                missingDatapointIndex === yAxisSerie.data.length ||
-                !isEqualDates(xAxisValue, (yAxisSerie.data[missingDatapointIndex] as [number, number])[0], period)
-            ) {
-                // Fill the missing ones with null.
-                return [xAxisValue, null]
-            }
-
-            // Map the current given datapoint in its right index following timestamp ascending oder.
-            missingDatapointIndex += 1
-            return [xAxisValue, (yAxisSerie.data[missingDatapointIndex - 1] as [number, number])[1]]
-        }) as ApexAxisChartSerie['data']
-    })
-    return MissingApexChartsSeriesDatetime
-}
-
-/**
  * Check if the YAxisValues given have missing values, according to the expected number of elements for each period.
  *
  * @param yAxisValues The YAxisValues.
  * @param period Period of the chart ('daily', 'weekly', 'montly', 'yearly').
  * @returns Boolean indicating if there is the expected number of data according to the period given.
  */
-export const isMissingYAxisValues = (yAxisValues: ApexAxisChartSerie['data'], period: periodType) => {
+export const isMissingYAxisValues = (yAxisValues: YAxisChartSerie['data'], period: periodType) => {
     /**
      * If period is weekly then yAxisValues chart has 7, representing all the the days of the week ending at the current day.
      * Example: Saturday 20 June, data will include [Sunday 14 June, Monday 15 June, Tuesday 16 June, Wednesday 17 June, Thursday 18 June, Friday 19 June, Saturday 20 June].
@@ -414,166 +361,6 @@ export const isEqualDates = (date1: number, date2: number, period: periodType) =
         dayjs.utc(new Date(date1).toUTCString()).format('DD/MM/YYYY') ===
         dayjs.utc(new Date(date2).toUTCString()).format('DD/MM/YYYY')
     )
-}
-
-/**
- * Function that gets the chart type.
- *
- * @param metricTarget Metric target.
- * @param period Period type.
- * @returns Apexchart type.
- */
-export const getChartType = (metricTarget: metricTargetType, period: periodType): ApexChart['type'] | '' => {
-    if (
-        (metricTarget === metricTargetsEnum.consumption ||
-            metricTarget === metricTargetsEnum.onlyConsumption ||
-            metricTarget === metricTargetsEnum.baseConsumption ||
-            metricTarget === metricTargetsEnum.eurosConsumption ||
-            metricTarget === metricTargetsEnum.autoconsumption ||
-            metricTarget === metricTargetsEnum.injectedProduction ||
-            metricTarget === metricTargetsEnum.totalProduction ||
-            metricTarget === metricTargetsEnum.peakHourConsumption ||
-            metricTarget === metricTargetsEnum.offPeakHourConsumption) &&
-        period === 'daily'
-    ) {
-        return 'area'
-    } else if (
-        metricTarget === metricTargetsEnum.externalTemperature ||
-        metricTarget === metricTargetsEnum.internalTemperature ||
-        metricTarget === metricTargetsEnum.pMax
-    ) {
-        return 'line'
-    } else {
-        return 'bar'
-    }
-}
-
-/**
- * Function to get chart specifities.
- *
- * @param target Metric target.
- * @param chartLabel Chart label according to enphase state.
- * @returns Specifity according to metric target.
- */
-export const getChartSpecifities = (
-    target: metricTargetsEnum,
-    chartLabel?: 'Consommation totale' | 'Electricité achetée sur le réseau',
-    // eslint-disable-next-line sonarjs/cognitive-complexity
-): getChartSpecifitiesType => {
-    // eslint-disable-next-line sonarjs/no-duplicate-string
-    if (target === metricTargetsEnum.consumption && chartLabel === 'Consommation totale') {
-        return {
-            label: chartLabel,
-            seriesName: chartLabel,
-        }
-    } else if (target === metricTargetsEnum.baseConsumption && chartLabel === 'Consommation totale') {
-        return {
-            label: 'Consommation de base',
-            seriesName: chartLabel,
-            show: false,
-        }
-    } else if (
-        (target === metricTargetsEnum.baseConsumption || target === metricTargetsEnum.consumption) &&
-        chartLabel === 'Electricité achetée sur le réseau'
-        // eslint-disable-next-line sonarjs/no-duplicated-branches
-    ) {
-        return {
-            label: chartLabel,
-        }
-    } else if (target === metricTargetsEnum.autoconsumption) {
-        return {
-            label: 'Autoconsommation',
-            seriesName: chartLabel,
-            show: false,
-        }
-    } else if (target === metricTargetsEnum.eurosConsumption && chartLabel) {
-        return {
-            // eslint-disable-next-line sonarjs/no-duplicate-string
-            label: 'Consommation euro totale',
-            seriesName: 'Consommation euro totale',
-            show: false,
-        }
-    } else if (target === metricTargetsEnum.baseEuroConsumption) {
-        return {
-            // eslint-disable-next-line sonarjs/no-duplicate-string
-            label: 'Consommation euro de base',
-            seriesName: 'Consommation euro totale',
-        }
-    } else if (target === metricTargetsEnum.subscriptionPrices) {
-        return {
-            label: 'Abonnement',
-            seriesName: 'Consommation euro totale',
-            show: false,
-        }
-    } else if (target === metricTargetsEnum.euroPeakHourConsumption) {
-        return {
-            label: 'Consommation achetée HP',
-            seriesName: 'Consommation euro totale',
-            show: false,
-        }
-    } else if (target === metricTargetsEnum.euroOffPeakConsumption) {
-        return {
-            label: 'Consommation achetée HC',
-            seriesName: 'Consommation euro totale',
-            show: false,
-        }
-    } else if (target === metricTargetsEnum.externalTemperature) {
-        return {
-            label: 'Température Extérieure',
-            // We put seriesName the same as internal temperature so that internal and external temperature charts will show their values in the same YAxis, instead of having 2 YAxis for each chart.
-            seriesName: 'Température Intérieure',
-            // Show is false here so that we don't show external temperature YAxis because its values will be shown on internal Temperature YAxis
-            show: false,
-        }
-    } else if (target === metricTargetsEnum.internalTemperature) {
-        return {
-            label: 'Température Intérieure',
-            // We put seriesName the same as internal temperature so that internal and external temperature charts will show their values in the same YAxis, instead of having 2 YAxis for each chart.
-            seriesName: 'Température Extérieure',
-        }
-    } else if (target === metricTargetsEnum.pMax) {
-        return {
-            label: 'Pmax',
-        }
-    } else if (target === metricTargetsEnum.totalProduction) {
-        return {
-            label: 'Production totale',
-            seriesName: 'Autoconsommation',
-            show: true,
-        }
-    } else if (target === metricTargetsEnum.injectedProduction) {
-        return {
-            label: 'Electricité redistribuée sur le réseau',
-            seriesName: 'Autoconsommation',
-            show: false,
-        }
-    } else if (target === metricTargetsEnum.peakHourConsumption) {
-        return {
-            label: 'Consommation en HP',
-            seriesName: chartLabel,
-            show: false,
-        }
-    } else if (target === metricTargetsEnum.offPeakHourConsumption) {
-        return {
-            label: 'Consommation en HC',
-            seriesName: chartLabel,
-            show: false,
-        }
-    } else if (target === metricTargetsEnum.onlyConsumption) {
-        return {
-            label: 'Consommation totale',
-            seriesName: 'Consommation totale',
-            show: true,
-        }
-    } else if (target === metricTargetsEnum.onlyEuroConsumption) {
-        return {
-            label: 'Consommation euro totale',
-            seriesName: 'Consommation euro totale',
-            show: true,
-        }
-    } else {
-        throw Error('Wrong target')
-    }
 }
 
 /**
@@ -630,34 +417,6 @@ export const showPerPeriodText = (chartType: 'consumption' | 'production', perio
 }
 
 /**
- * Utility function used to filter pMax and EurosConsumption targets from given visibleChartTargets.
- *
- * @param visibleChartTargets Given Targets may contain pMax and eurosConsumption and other targets.
- * @returns New visibleChartTargets without eurosConsumption and pMax.
- */
-export const filterTargetsOnDailyPeriod = (visibleChartTargets: metricTargetType[]) => {
-    if (
-        visibleChartTargets.includes(metricTargetsEnum.eurosConsumption) ||
-        visibleChartTargets.includes(metricTargetsEnum.pMax) ||
-        visibleChartTargets.includes(metricTargetsEnum.subscriptionPrices)
-    ) {
-        const savedVisibleTargetCharts = visibleChartTargets.filter(
-            (target) =>
-                ![
-                    metricTargetsEnum.autoconsumption,
-                    metricTargetsEnum.consumption,
-                    metricTargetsEnum.baseConsumption,
-                    metricTargetsEnum.pMax,
-                    metricTargetsEnum.eurosConsumption,
-                    metricTargetsEnum.subscriptionPrices,
-                ].includes(target as metricTargetsEnum),
-        )
-        return [metricTargetsEnum.baseConsumption, metricTargetsEnum.autoconsumption, ...savedVisibleTargetCharts]
-    }
-    return visibleChartTargets
-}
-
-/**
  * Function that gets calendar dates.
  *
  * Période semaine du lundi au dimanche.
@@ -677,7 +436,6 @@ export function getCalendarDates(
     period: PeriodEnum,
 ) {
     const { from, to } = range
-
     switch (operator) {
         case 'sub':
             const subResFROM = subtractTime(new Date(from), period)
@@ -800,10 +558,10 @@ export function getRangeV2(period: PeriodEnum) {
 export const getDefaultConsumptionTargets = (isEnphaseOff: boolean): metricTargetType[] => {
     if (isEnphaseOff) {
         return [
-            metricTargetsEnum.consumption,
             metricTargetsEnum.baseConsumption,
             metricTargetsEnum.peakHourConsumption,
             metricTargetsEnum.offPeakHourConsumption,
+            metricTargetsEnum.consumption,
         ]
     }
 
@@ -870,6 +628,205 @@ export const isEmptyMetricsData = (data: IMetric[], targetsFilter?: metricTarget
         )
     })
     return totalMetricsData === 0
+}
+
+/**
+ * Compute TotalOffIdleConsumption MetricData based on total consumption (consumption_metrics) and idleConsumption (if exist), handle both euros and default idleConsumption.
+ *
+ * @description
+ * Empty Metrics Data happens when datapoints of all metricsData targets are NULL or 0.
+ * To check that metricsData is empty, by summing all targets datapoints and the results must be 0 as the data should be positive.
+ * Param targetsFilter to indicate which target Data to check if it's empty.
+ * @example
+ * data = [
+ *  {
+ *    "target": "consumption_metrics",
+ *    "datapoints": [[null, 00001], [null, 00002] ,[null, 00003], [null, 00004]]
+ *  },
+ *  {
+ *    "target": "idle_consumption_metrics",
+ *    "datapoints": [[0, 00001], [0, 00002] ,[0, 00003], [0, 00004]]
+ *  }
+ * ]
+ * => getTotalOffIdleConsumptionData(data) === {
+ *    "target": "off_idle_consumption_metrics",
+ *    "datapoints": [[null, 00001], [null, 00002] ,[null, 00003], [null, 00004]]
+ *  }
+ * The getTotalOffIdleConsumptionData returns a new metrics object with null datapoints because consumption_metrics has only null values.
+ * @example
+ * data = [
+ *  {
+ *    "target": "consumption_metrics",
+ *    "datapoints": [[null, 00001], [70, 00002] ,[120, 00003], [129, 00004]]
+ *  },
+ *  {
+ *    "target": "idle_consumption_metrics",
+ *    "datapoints": [[0, 00001], [30, 00002] ,[88, 00003], [89, 00004]]
+ *  }
+ * ]
+ * => getTotalOffIdleConsumptionData(data) === {
+ *    "target": "off_idle_consumption_metrics",
+ *    "datapoints": [[null, 00001], [40, 00002] ,[32, 00003], [40, 00004]]
+ *  }
+ * The getTotalOffIdleConsumptionData returns a new metrics object based on the subtraction of consumption_metrics - idle_consumption_metrics.
+ * @example
+ * data = [
+ *  {
+ *    "target": "consumption_metrics",
+ *    "datapoints": [[null, 00001], [null, 00002] ,[89, 00003], [123, 00004]
+ *  },
+ *  {
+ *    "target": "internal_temperature",
+ *    "datapoints": [[0, 00001], [0, 00002] ,[0, 00003], [0, 00004]
+ *  }
+ * ]
+ * => getTotalOffIdleConsumptionData(data) === undefined
+ * The getTotalOffIdleConsumptionData returns undefined because there's not idle_consumption_metrics.
+ * @example
+ * data = [
+ *  {
+ *    "target": "__euros__consumption_metrics",
+ *    "datapoints": [[null, 00001], [70, 00002] ,[120, 00003], [129, 00004]]
+ *  },
+ *  {
+ *    "target": "__euros__idle_consumption_metrics",
+ *    "datapoints": [[0, 00001], [30, 00002] ,[88, 00003], [89, 00004]]
+ *  }
+ * ]
+ * => getTotalOffIdleConsumptionData(data) === {
+ *    "target": "__euros__off_idle_consumption_metrics",
+ *    "datapoints": [[null, 00001], [40, 00002] ,[32, 00003], [40, 00004]]
+ *  }
+ * The getTotalOffIdleConsumptionData returns a new metrics object based on the subtraction of euros_consumption_metrics - euros_idle_consumption_metrics.
+ * @param data Metrics Data.
+ * @returns TotalOffIdle Metric Data.
+ */
+export const getTotalOffIdleConsumptionData = (data: IMetric[]): IMetric | undefined => {
+    const idleConsumptionMetrics = data.find((metricData) => metricData.target === metricTargetsEnum.idleConsumption)
+    if (idleConsumptionMetrics) {
+        const totalConsumptionDatapoints = getDataFromYAxis(data, metricTargetsEnum.consumption)
+        const idleConsumptionDatapoints = idleConsumptionMetrics.datapoints
+        return {
+            target: metricTargetsEnum.totalOffIdleConsumption,
+            datapoints: totalConsumptionDatapoints.map((val, index) => {
+                // SOLUTION
+                // To avoid rounding of numbers and thus showing wrong computation on the chart.
+                // We Make a subtraction with the numbers truncated to two digits after the decimal point.
+
+                // METHOD:
+                // With toFixed it rounds up the number, doing slice and toFixed(3) will make sure to truncate and not round up.
+                // So that we have a result of a number with two digits after the decimal point.
+                let totalOffIdleValue = val
+                    ? subtract(
+                          Number(val.toFixed(3).slice(0, -1)),
+                          Number(Number(idleConsumptionDatapoints[index][0]).toFixed(3).slice(0, -1)),
+                      )
+                    : val
+                return [totalOffIdleValue, idleConsumptionDatapoints[index][1]]
+            }),
+        }
+    }
+
+    const idleEurosConsumptionMetrics = data.find(
+        (metricData) => metricData.target === metricTargetsEnum.eurosIdleConsumption,
+    )
+    if (idleEurosConsumptionMetrics) {
+        const totalEurosConsumptionDatapoints = getDataFromYAxis(data, metricTargetsEnum.eurosConsumption)
+        const idleEurosConsumptionDatapoints = idleEurosConsumptionMetrics.datapoints
+        return {
+            target: metricTargetsEnum.totalEurosOffIdleConsumption,
+            datapoints: totalEurosConsumptionDatapoints.map((val, index) => {
+                // SOLUTION
+                // To avoid rounding of numbers and thus showing wrong computation on the chart.
+                // We Make a subtraction with the numbers truncated to two digits after the decimal point.
+
+                // METHOD:
+                // With toFixed it rounds up the number, doing slice and toFixed(3) will make sure to truncate and not round up.
+                // So that we have a result of a number with two digits after the decimal point.
+                let totalEurosOffIdleValue = val
+                    ? subtract(
+                          Number(val.toFixed(3).slice(0, -1)),
+                          Number(Number(idleEurosConsumptionDatapoints[index][0]).toFixed(3).slice(0, -1)),
+                      )
+                    : val
+                return [totalEurosOffIdleValue, idleEurosConsumptionDatapoints[index][1]]
+            }),
+        }
+    }
+
+    return undefined
+}
+
+/**
+ Nullify the value of idleConsumption or eurosIdleConsumption metric datapoint on the timestamp that represents today's date.
+ *
+ * @description
+ * Nullify the value of idleConsumption metric datapoint on the timestamp that represents today's date.
+ * So that on the chart the idleConsumption is null when xAxis has today's date.
+ * @example
+ * Today timestamp === 00002
+ * data = [
+ *  {
+ *    "target": "idle_consumption_metrics",
+ *    "datapoints": [[0, 00001], [0, 00002] ,[0, 00003], [0, 00004]]
+ *  }
+ * ]
+ * => nullifyTodayIdleConsumptionValue(data) === [
+ * {
+ *    "target": "idle_consumption_metrics",
+ *    "datapoints": [[0, 00001], [null, 00002] ,[0, 00003], [0, 00004]]
+ *  }
+ * ]
+ * The nullifyTodayIdleConsumptionValue returns new metric data, where idle_consumption_metrics has null value when today's timestamp.
+ * @example
+ * Today timestamp === 00004
+ * data = [
+ *  {
+ *    "target": "__euros__idle_consumption_metrics",
+ *    "datapoints": [[0, 00001], [30, 00002] ,[88, 00003], [89, 00004]]
+ *  }
+ * ]
+ * => nullifyTodayIdleConsumptionValue(data) === [
+ * {
+ *    "target": "__euros__idle_consumption_metrics",
+ *    "datapoints": [[0, 00001], [30, 00002] ,[32, 00003], [40, 00004]]
+ *  }
+ * ]
+ * The nullifyTodayIdleConsumptionValue returns new metric data, where idle_consumption_metrics has null value when today's timestamp.
+ * @param data Metrics Data.
+ * @returns Metrics Data with idleConsumption has datapoint with null value on today's timestamp.
+ */
+export const nullifyTodayIdleConsumptionValue = (data: IMetric[]) => {
+    return data.map((metric: IMetric) => {
+        switch (metric.target) {
+            case metricTargetsEnum.idleConsumption:
+            case metricTargetsEnum.eurosIdleConsumption:
+                return {
+                    target: metric.target,
+                    datapoints: metric.datapoints.map((datapoint) => {
+                        const timestamp = datapoint[1]
+                        const value = datapoint[0]
+                        return [
+                            isEqualDates(timestamp, new Date().getTime(), PeriodEnum.MONTHLY) ? null : value,
+                            timestamp,
+                        ]
+                    }),
+                }
+            case metricTargetsEnum.consumption:
+                return {
+                    target: metricTargetsEnum.totalIdleConsumption,
+                    datapoints: metric.datapoints,
+                }
+            case metricTargetsEnum.eurosConsumption:
+                return {
+                    target: metricTargetsEnum.totalEurosIdleConsumption,
+                    datapoints: metric.datapoints,
+                }
+
+            default:
+                return metric
+        }
+    }) as IMetric[]
 }
 
 /**

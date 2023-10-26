@@ -10,13 +10,6 @@ let mockAnalysisComprisonProps: AnalysisComparisonProps = {
     filters: [],
 }
 
-// ApexCharts cannot render if we don't mock react-apexcharts
-jest.mock(
-    'react-apexcharts',
-    // eslint-disable-next-line jsdoc/require-jsdoc
-    () => (props: any) => <div className="apexcharts-svg" data-testid="apexchart" {...props}></div>,
-)
-
 describe('AnanlysisComprison tests', () => {
     test('when there is no available data', async () => {
         const { getByText } = reduxedRender(<AnalysisComparison {...mockAnalysisComprisonProps} />)

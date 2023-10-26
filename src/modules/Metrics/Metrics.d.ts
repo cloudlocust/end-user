@@ -18,6 +18,15 @@ export type metricTargetType =
     | 'base__euros__consumption_metrics'
     | 'hp__euros__consumption_metrics'
     | 'hc__euros__consumption_metrics'
+    | '__euros__idle_consumption_metrics'
+    // FRONT END PURPOSES TARGETS
+    // 'off_idle_consumption_metrics' target is made for front purposes, it doesn't exist on the back
+    // To show a chart with the total off-idle consumption.
+    // It'll be calculated based on 'consumption_metrics' and 'idle_consumption_metrics'
+    | 'off_idle_consumption_metrics'
+    | 'total_idle_consumption_metrics'
+    | 'total__euros__idle_consumption_metrics'
+    | '__euros__off_idle_consumption_metrics'
     | 'only_consumption_metrics'
     | 'only_euro_consumption_metrics'
 
@@ -90,6 +99,33 @@ export enum metricTargetsEnum {
      */
     baseEuroConsumption = 'base__euros__consumption_metrics',
     /**
+     * Eneum value for Euros Idle Consumption.
+     */
+    eurosIdleConsumption = '__euros__idle_consumption_metrics',
+
+    // Targets used only on the FRONT.
+    /**
+     * Total Idle consumption, that'll be consumption_metrics when idle_consumption_metrics.
+     */
+    totalIdleConsumption = 'total_idle_consumption_metrics',
+    /**
+     * Total Euros Idle consumption, that'll be __euros__consumption_metrics when __euros__idle_consumption_metrics.
+     */
+    totalEurosIdleConsumption = 'total__euros__idle_consumption_metrics',
+
+    /**
+     * Total Off Idle consumption, that'll be computed on the front based on consumption_metrics & idle_consumption_metrics.
+     */
+    totalOffIdleConsumption = 'off_idle_consumption_metrics',
+    /**
+     * Total Off Euros Idle consumption, that'll be computed on the front based on __euros__consumption_metrics & __euros__idle_consumption_metrics.
+     */
+    totalEurosOffIdleConsumption = '__euros__off_idle_consumption_metrics',
+    /**
+     * Eneum value for Euros Idle Consumption.
+     */
+    eurosIdleConsumption = '__euros__idle_consumption_metrics',
+    /**
      * 'only_consumption_metrics' target is made for front purposes, it doesn't exist on the back.
      *
      * Only used when base consumption & ho & hc are empty.
@@ -109,6 +145,7 @@ export enum metricTargetsEnum {
      */
     onlyEuroConsumption = 'only_euro_consumption_metrics',
 }
+
 /**
  * Metrics intervals.
  */
@@ -226,6 +263,65 @@ export type getMetricsWithParamsType = {
 }
 
 /**
- * Type of ApexAxisChartSerie.
+ * Format of timestamps or values object generated from formatMetricsDataToTimestampsValues function.
+ *
+ * @example
+ * A a targetTimestampsValuesFormat would look like
+ *
+ * values: targetTimestampsValuesFormat = {
+ *    "consumption_metrics": [1, 2, 3, 4, 5, 6, 7]
+ *    "internal_temperature": [21, 22, 23, 24, 25, 26, 27]
+ * }
+ *
+ * timestamps:targetTimestampsValuesFormat = {
+ *    "consumption_metrics": [00001, 00002, 00003, 00004, 00005, 00006, 00007]
+ *    "internal_temperature": [00001, 00002, 00003, 00004, 00005, 00006, 00007]
+ * }
  */
-declare type ApexAxisChartSerie = ApexAxisChartSeries[0]
+export type targetTimestampsValuesFormat =
+    /**
+     * Metric Target Type.
+     */
+    {
+        [key in metricTargetType]?: number[]
+    }
+
+/**
+ * Format of the return from formatMetricsDataToTimestampsValues function.
+ *
+ * @example
+ * data = [
+ *  {
+ *    "target": "consumption_metrics",
+ *    "datapoints": [[1, 00001], [2, 00002] ,[3, 00003], [4, 00004], [5, 00005], [6, 00006], [7, 00007]]
+ *  },
+ *  {
+ *    "target": "internal_temperature",
+ *    "datapoints": [[21, 00001], [22, 00002] ,[23, 00003], [24, 00004], [25, 00005], [26, 00006], [27, 00007]]
+ *  }
+ * ]
+ *
+ * formatMetricsData(data) will give the following type.
+ * {
+ *  values = {
+ *    "consumption_metrics": [1, 2, 3, 4, 5, 6, 7]
+ *    "internal_temperature": [21, 22, 23, 24, 25, 26, 27]
+ *  }
+ *  timestamps = {
+ *    "consumption_metrics": [00001, 00002, 00003, 00004, 00005, 00006, 00007]
+ *    "internal_temperature": [00001, 00002, 00003, 00004, 00005, 00006, 00007]
+ *  }
+ * }
+ */
+export type formattedMetricsDataToTimestampsValues =
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    {
+        /**
+         * Values extracted from formatMetricsDataToTimestampsValues.
+         */
+        values: targetTimestampsValuesFormat
+        /**
+         * Timestamps extracted from formatMetricsDataToTimestampsValues.
+         */
+        timestamps: targetTimestampsValuesFormat
+    }
