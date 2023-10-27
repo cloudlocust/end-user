@@ -1,4 +1,4 @@
-import { isNil, mean } from 'lodash'
+import { isNil, mean, round } from 'lodash'
 import { ChartsAxisValuesType, YAxisChartSerie } from 'src/modules/MyConsumption/myConsumptionTypes'
 import { consumptionWattUnitConversion } from 'src/modules/MyConsumption/utils/unitConversionFunction'
 import { computationFunctionType } from 'src/modules/Analysis/analysisTypes.d'
@@ -178,4 +178,31 @@ export const getDataCorrespendingToRange = (
             target: target,
         },
     ]
+}
+
+/**
+ * Function that distribute 4792 data of ADEM to each month of the year according to the days of the month.
+ *
+ * @param amount The amount needed to be distributed.
+ * @param timestamp Timestamp of the data we want to get.
+ * @returns Rounded number.
+ */
+export const distributeAmountPerMonth = (amount: number, timestamp: number): number => {
+    const inputDate = dayjs(timestamp)
+    const yearOfTimestamp = inputDate.year()
+    const monthOfTimestamp = inputDate.month()
+
+    let totalDays = 0
+
+    // Calculate total days in the year of the given timestamp
+    for (let month = 0; month < 12; month++) {
+        totalDays += dayjs(`${yearOfTimestamp}-${month + 1}-01`).daysInMonth()
+    }
+
+    const amountPerDay = amount / totalDays
+
+    // Distribute the amount based on days in the month of the provided timestamp
+    const daysInGivenMonth = dayjs(`${yearOfTimestamp}-${monthOfTimestamp + 1}-01`).daysInMonth()
+
+    return round(amountPerDay * daysInGivenMonth, 2)
 }
