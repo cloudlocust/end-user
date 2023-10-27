@@ -15,7 +15,7 @@ import {
     metricTargetExtendedWithComparaisonType,
 } from 'src/modules/Analysis/components/AnalysisComparaisonChart/AnalysisComparaisonChartTypes.d'
 import { EChartsOption } from 'echarts-for-react'
-import { round } from 'lodash'
+import { distributeAmountPerMonth } from 'src/modules/Analysis/utils/computationFunctions'
 
 describe('Test echartsComparaisonOptions', () => {
     const theme = createTheme({
@@ -59,7 +59,7 @@ describe('Test echartsComparaisonOptions', () => {
 
         expect(result).toEqual({
             my_consumption_metrics: [490],
-            average_ademe_consumption: [round(4792 / 12) * 1000],
+            average_ademe_consumption: [distributeAmountPerMonth(4792, data[0].datapoints[0][1]) * 1000],
         })
     })
 
