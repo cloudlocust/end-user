@@ -553,13 +553,9 @@ export function getRangeV2(period: PeriodEnum) {
  * Used in ConsumptionChartContainer in visibleTargetCharts state.
  *
  * @param isEnphaseOff Enphase state OFF.
- * @param isCurrentContractTempo Boolean to chheck if current contract is tempo.
  * @returns Metric targets list.
  */
-export const getDefaultConsumptionTargets = (
-    isEnphaseOff: boolean = true,
-    isCurrentContractTempo?: boolean,
-): metricTargetType[] => {
+export const getDefaultConsumptionTargets = (isEnphaseOff: boolean): metricTargetType[] => {
     if (isEnphaseOff) {
         return [metricTargetsEnum.consumptionByTariffComponent]
     }
