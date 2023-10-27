@@ -15,11 +15,11 @@ import {
  * @param maxDuration Estimated value for the maximum duration of the measurement process (in seconds).
  * @returns The states remainingTime and circularProgressValue.
  */
-export const useMeasurementProgress = (status: measurementStatusEnum, maxDuration: number) => {
+export const useMeasurementProgress = (status: measurementStatusEnum | null, maxDuration: number) => {
     const [secondsCounter, setSecondsCounter] = useState(0)
     const [remainingTime, setRemainingTime] = useState(maxDuration)
     const [circularProgressValue, setCircularProgressValue] = useState(0)
-    const intervalIdRef = useRef<NodeJS.Timer>()
+    const intervalIdRef = useRef<NodeJS.Timer | null>(null)
 
     /**
      * This useEffect implements the seconds counter used for calculating "remainingTime"
@@ -27,6 +27,7 @@ export const useMeasurementProgress = (status: measurementStatusEnum, maxDuratio
      */
     useEffect(() => {
         if (status === measurementStatusEnum.inProgress) {
+            setSecondsCounter(0)
             /**
              * When the status changes to the value IN_PROGRESS, an interval is created to increment
              * the secondsCounter counter every second.
@@ -41,6 +42,7 @@ export const useMeasurementProgress = (status: measurementStatusEnum, maxDuratio
              */
             if (intervalIdRef.current) {
                 clearInterval(intervalIdRef.current)
+                intervalIdRef.current = null
             }
         }
     }, [status])

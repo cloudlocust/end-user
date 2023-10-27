@@ -1,4 +1,4 @@
-import { useIntl } from 'react-intl'
+import { useIntl } from 'src/common/react-platform-translation'
 import Typography from '@mui/material/Typography'
 import FormControl from '@mui/material/FormControl'
 import InputLabel from '@mui/material/InputLabel'
@@ -11,7 +11,7 @@ import {
     ConfigurationStepProps,
     RadioGroupOnChangeHandler,
     SelectOnChangeHandler,
-} from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement/MicrowaveMeasurement'
+} from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement/ConfigurationStep/ConfigurationStep.d'
 
 /**
  * ConfigurationStep component.

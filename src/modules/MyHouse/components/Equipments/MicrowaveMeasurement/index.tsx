@@ -11,6 +11,8 @@ import CloseIcon from '@mui/icons-material/Close'
 import { InfosPage } from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement/InfosPage'
 import { ConfigurationStep } from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement/ConfigurationStep'
 import { EquipmentStartupStep } from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement/EquipmentStartupStep'
+import { MeasurementProcessStep } from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement/MeasurementProcessStep'
+import { measurementStatusEnum } from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement/MeasurementProgress/MeasurementProgress.d'
 import {
     MicrowaveMeasurementProps,
     TestStepPageProps,
@@ -66,6 +68,7 @@ export const MicrowaveMeasurement = ({
     const [selectedMicrowave, setSelectedMicrowave] = useState('')
     const [measurementMode, setMeasurementMode] = useState('')
     const theme = useTheme()
+    const [measurementStatus, setMeasurementStatus] = useState<measurementStatusEnum | null>(null)
 
     const stepsContent = [
         <ConfigurationStep
@@ -77,14 +80,19 @@ export const MicrowaveMeasurement = ({
             stepSetter={setCurrentStep}
         />,
         <EquipmentStartupStep measurementMode={measurementMode} stepSetter={setCurrentStep} />,
-        <TestStepPage step={currentStep} stepSetter={setCurrentStep} />,
+        <MeasurementProcessStep
+            measurementStatus={measurementStatus}
+            setMeasurementStatus={setMeasurementStatus}
+            stepSetter={setCurrentStep}
+        />,
         <TestStepPage step={currentStep} stepSetter={setCurrentStep} />,
     ]
 
     /**
      * Handle closing the measurement Modal.
      */
-    const handleCloseModal = () => {
+    const handleCloseModal = async () => {
+        await setMeasurementStatus(null)
         setCurrentStep(0)
         setSelectedMicrowave('')
         setMeasurementMode('')
