@@ -32,9 +32,17 @@ export interface MeasurementProcessStepProps {
      */
     measurementStatus: measurementStatusEnum | null
     /**
-     * The setter linked to the measurementStatus state.
+     * The result value for the measurement.
      */
-    setMeasurementStatus: Dispatch<SetStateAction<measurementStatusEnum | null>>
+    measurementResult: number | null
+    /**
+     * Estimated value for the maximum duration of the measurement process (in seconds).
+     */
+    measurementMaxDuration: number
+    /**
+     * The function that start the measurement process.
+     */
+    startMeasurement: () => Promise<void>
     /**
      * The setter linked to the state responsible for storing the current step.
      */

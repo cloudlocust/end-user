@@ -3,9 +3,17 @@
  */
 export interface MicrowaveMeasurementProps {
     /**
+     * The global equipment id.
+     */
+    housingEquipmentId: number
+    /**
      * The number of microwaves.
      */
     equipmentsNumber: number
+    /**
+     * Measurement modes for the Equipment.
+     */
+    measurementModes: string[]
     /**
      * The state of the modal.
      */
@@ -14,6 +22,16 @@ export interface MicrowaveMeasurementProps {
      * Modal closing handler.
      */
     onCloseMeasurementModal: () => void
+}
+
+/**
+ * Format of measurement result Api responce.
+ */
+export interface MeasurementResultApiResponse {
+    /**
+     * The result value.
+     */
+    value: number
 }
 
 /**

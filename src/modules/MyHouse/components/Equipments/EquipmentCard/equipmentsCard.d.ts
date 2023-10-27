@@ -22,6 +22,14 @@ export interface EquipmentCardProps {
      */
     number: number
     /**
+     * The global equipment id.
+     */
+    housingEquipmentId?: number
+    /**
+     * Measurement modes for the Equipment.
+     */
+    measurementModes?: string[]
+    /**
      * Equipment icon.
      */
     iconPath?: string

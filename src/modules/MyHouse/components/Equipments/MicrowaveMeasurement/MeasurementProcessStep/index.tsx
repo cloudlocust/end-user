@@ -13,18 +13,22 @@ import { ResponseMessage } from 'src/modules/MyHouse/components/Equipments/Micro
  *
  * @param root0 N/A.
  * @param root0.measurementStatus The measurementStatus state.
- * @param root0.setMeasurementStatus The setter linked to the measurementStatus state.
+ * @param root0.measurementResult The result value for the measurement.
+ * @param root0.measurementMaxDuration Estimated value for the maximum duration of the measurement process (in seconds).
+ * @param root0.startMeasurement The function that start the measurement process.
  * @param root0.stepSetter The setter linked to the state responsible for storing the current step.
  * @returns The MeasurementProcessStep component.
  */
 export const MeasurementProcessStep = ({
     measurementStatus,
-    setMeasurementStatus,
+    measurementResult,
+    measurementMaxDuration,
+    startMeasurement,
     stepSetter,
 }: MeasurementProcessStepProps) => {
     const { formatMessage } = useIntl()
     const theme = useTheme()
-    const measurementMaxDuration = 10
+
     const headerText = useMemo(() => {
         switch (measurementStatus) {
             case measurementStatusEnum.pending:
@@ -46,34 +50,9 @@ export const MeasurementProcessStep = ({
         stepSetter(4)
     }
 
-    /**
-     * The following code is just for testing before creating the hook that manage
-     * the measurement requests.
-     */
-    const test = () => {
-        // Starting the measurement
-        setTimeout(() => {
-            setMeasurementStatus(measurementStatusEnum.inProgress)
-        }, 4000)
-
-        // Ending the measurement
-        setTimeout(() => {
-            setMeasurementStatus(Math.random() < 0.3 ? measurementStatusEnum.success : measurementStatusEnum.failed)
-        }, 4000 + measurementMaxDuration * 1000)
-    }
-
-    /**
-     * Function for restart the measurement test.
-     */
-    const restartTest = () => {
-        setMeasurementStatus(measurementStatusEnum.pending)
-        test()
-    }
-
     useEffect(() => {
-        test()
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [])
+        startMeasurement()
+    }, [startMeasurement])
 
     return (
         <>
@@ -98,7 +77,7 @@ export const MeasurementProcessStep = ({
                 {measurementStatus === measurementStatusEnum.success && (
                     <ResponseMessage
                         title="Félicitations !"
-                        content="Le test s'est terminé avec succès, vous pouvez désormais analyser vos résultats"
+                        content={`Le test est terminé avec succès, vous pouvez désormais analyser vos résultats. Le résultat de la mesure est ${measurementResult}`}
                         theme={theme}
                         success
                     />
@@ -108,7 +87,7 @@ export const MeasurementProcessStep = ({
                 {measurementStatus === measurementStatusEnum.failed && (
                     <ResponseMessage
                         title="La mesure a échoué"
-                        content="Le test s'est terminé par un échec, vous pouvez le lancer à nouveau"
+                        content="Le test est terminé par un échec, vous pouvez le lancer à nouveau"
                         theme={theme}
                     />
                 )}
@@ -131,7 +110,7 @@ export const MeasurementProcessStep = ({
                     <Button
                         variant="contained"
                         sx={{ padding: '10px auto', textAlign: 'center', width: '60%', minWidth: '160px' }}
-                        onClick={restartTest}
+                        onClick={startMeasurement}
                         children={formatMessage({
                             id: 'Relancer le test',
                             defaultMessage: 'Relancer le test',

@@ -12,11 +12,11 @@ import { InfosPage } from 'src/modules/MyHouse/components/Equipments/MicrowaveMe
 import { ConfigurationStep } from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement/ConfigurationStep'
 import { EquipmentStartupStep } from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement/EquipmentStartupStep'
 import { MeasurementProcessStep } from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement/MeasurementProcessStep'
-import { measurementStatusEnum } from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement/MeasurementProgress/MeasurementProgress.d'
 import {
     MicrowaveMeasurementProps,
     TestStepPageProps,
 } from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement/MicrowaveMeasurement'
+import { useMicrowaveMeasurement } from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement/MicrowaveMeasurementHook'
 
 /**
  * TestStepPage component.
@@ -41,7 +41,9 @@ const TestStepPage = ({ step, stepSetter }: TestStepPageProps) => (
  * MicrowaveMeasurement component.
  *
  * @param root0 N/A.
+ * @param root0.housingEquipmentId The global equipment id.
  * @param root0.equipmentsNumber The number of microwaves.
+ * @param root0.measurementModes Measurement modes for the Equipment.
  * @param root0.isMeasurementModalOpen The state of the modal.
  * @param root0.onCloseMeasurementModal Modal closing handler.
  * @example
@@ -54,35 +56,48 @@ const TestStepPage = ({ step, stepSetter }: TestStepPageProps) => (
  *          <Button onClick={openModal}>
  *              Mesurer
  *          </Button>
- *          <MicrowaveMeasurement equipmentsNumber={3} isMeasurementModalOpen={isOpen} onCloseMeasurementModal={closeModal} />
+ *          <MicrowaveMeasurement isMeasurementModalOpen={isOpen} onCloseMeasurementModal={closeModal} housingEquipmentId={25} equipmentsNumber={3} measurementModes={["Mode A", "Mode B"]} />
  *      </div>
  *  )
  * @returns MicrowaveMeasurement component.
  */
 export const MicrowaveMeasurement = ({
+    housingEquipmentId,
     equipmentsNumber,
+    measurementModes,
     isMeasurementModalOpen,
     onCloseMeasurementModal,
 }: MicrowaveMeasurementProps) => {
     const [currentStep, setCurrentStep] = useState(0)
-    const [selectedMicrowave, setSelectedMicrowave] = useState('')
+    const [microwaveNumber, setMicrowaveNumber] = useState(0)
     const [measurementMode, setMeasurementMode] = useState('')
     const theme = useTheme()
-    const [measurementStatus, setMeasurementStatus] = useState<measurementStatusEnum | null>(null)
+
+    const measurementMaxDuration = 50
+
+    const { measurementStatus, measurementResult, setMeasurementStatus, startMeasurement } = useMicrowaveMeasurement(
+        housingEquipmentId,
+        measurementMode,
+        microwaveNumber,
+        measurementMaxDuration,
+    )
 
     const stepsContent = [
         <ConfigurationStep
             equipmentsNumber={equipmentsNumber}
-            selectedMicrowave={selectedMicrowave}
-            setSelectedMicrowave={setSelectedMicrowave}
-            measurementMode={measurementMode}
-            setMeasurementMode={setMeasurementMode}
+            selectedMicrowave={microwaveNumber}
+            setSelectedMicrowave={setMicrowaveNumber}
+            measurementModes={measurementModes}
+            selectedMeasurementMode={measurementMode}
+            setSelectedMeasurementMode={setMeasurementMode}
             stepSetter={setCurrentStep}
         />,
         <EquipmentStartupStep measurementMode={measurementMode} stepSetter={setCurrentStep} />,
         <MeasurementProcessStep
             measurementStatus={measurementStatus}
-            setMeasurementStatus={setMeasurementStatus}
+            measurementResult={measurementResult}
+            measurementMaxDuration={measurementMaxDuration}
+            startMeasurement={startMeasurement}
             stepSetter={setCurrentStep}
         />,
         <TestStepPage step={currentStep} stepSetter={setCurrentStep} />,
@@ -94,7 +109,7 @@ export const MicrowaveMeasurement = ({
     const handleCloseModal = async () => {
         await setMeasurementStatus(null)
         setCurrentStep(0)
-        setSelectedMicrowave('')
+        setMicrowaveNumber(0)
         setMeasurementMode('')
         onCloseMeasurementModal()
     }

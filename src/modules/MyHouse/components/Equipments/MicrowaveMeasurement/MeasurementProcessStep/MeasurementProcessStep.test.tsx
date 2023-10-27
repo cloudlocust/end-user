@@ -12,17 +12,19 @@ const HEADER_TEXT_FAILED = 'Mesure terminée avec échec'
 
 // Mock StepSetterFunction
 let mockStepSetter: jest.Mock<any, any>
-let mockSetMeasurementStatus: jest.Mock<any, any>
+let mockStartMeasurement: jest.Mock<any, any>
 let MeasurementProcessStepPropsDefaultValues: MeasurementProcessStepProps
 
 describe('MeasurementProcessStep Component', () => {
     beforeEach(() => {
         mockStepSetter = jest.fn()
-        mockSetMeasurementStatus = jest.fn()
+        mockStartMeasurement = jest.fn()
 
         MeasurementProcessStepPropsDefaultValues = {
             measurementStatus: null,
-            setMeasurementStatus: mockSetMeasurementStatus,
+            measurementResult: 24,
+            measurementMaxDuration: 50,
+            startMeasurement: mockStartMeasurement,
             stepSetter: mockStepSetter,
         }
     })
@@ -107,14 +109,14 @@ describe('MeasurementProcessStep Component', () => {
         expect(buttonFinish).toBeInTheDocument()
         expect(buttonFinish).toBeEnabled()
 
-        // Calling stepSetter function on clicking on the button Terminer
+        // Calling stepSetter function on clicking on the button "Terminer"
         userEvent.click(buttonFinish)
         await waitFor(() => {
             expect(mockStepSetter).toHaveBeenCalledWith(4)
         })
     })
 
-    test('When the measurement status is FAILED', () => {
+    test('When the measurement status is FAILED', async () => {
         reduxedRender(
             <MeasurementProcessStep
                 {...MeasurementProcessStepPropsDefaultValues}
@@ -131,8 +133,14 @@ describe('MeasurementProcessStep Component', () => {
         const successMessage = screen.getByText('La mesure a échoué')
         expect(successMessage).toBeInTheDocument()
 
-        const buttonFinish = screen.getByText('Relancer le test')
-        expect(buttonFinish).toBeInTheDocument()
-        expect(buttonFinish).toBeEnabled()
+        const buttonRetest = screen.getByText('Relancer le test')
+        expect(buttonRetest).toBeInTheDocument()
+        expect(buttonRetest).toBeEnabled()
+
+        // Calling startMeasurement function on clicking on the button "Relancer le test"
+        userEvent.click(buttonRetest)
+        await waitFor(() => {
+            expect(mockStartMeasurement).toHaveBeenCalled()
+        })
     })
 })

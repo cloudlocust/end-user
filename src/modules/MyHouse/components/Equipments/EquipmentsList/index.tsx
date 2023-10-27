@@ -24,10 +24,12 @@ export const EquipmentsList = ({
         ?.map((element) => {
             return {
                 id: element.equipmentId,
+                housingEquipmentId: element.id,
                 name: element.equipment.name,
                 allowedType: element.equipment.allowedType,
                 number: element.equipmentNumber,
                 isNumber: mappingEquipmentNameToType[element.equipment.name as equipmentNameType] === 'number',
+                measurementModes: element.equipment.measurementModes,
             }
         })
         .filter((el) => el.number! > 0)
@@ -60,6 +62,8 @@ export const EquipmentsList = ({
                             id={equipment.id}
                             label={equipmentLabel || equipment.name}
                             name={equipment.name}
+                            housingEquipmentId={equipment.housingEquipmentId}
+                            measurementModes={equipment.measurementModes}
                             number={equipment.number ? equipment.number : 0}
                             onEquipmentChange={saveEquipment}
                             iconComponent={iconComponent}

@@ -11,19 +11,23 @@ export interface ConfigurationStepProps {
     /**
      * The state that hold the selected microwave.
      */
-    selectedMicrowave: string
+    selectedMicrowave: number
     /**
      * The setter associated to the selected microwave state.
      */
-    setSelectedMicrowave: Dispatch<SetStateAction<string>>
+    setSelectedMicrowave: Dispatch<SetStateAction<number>>
     /**
-     * The state that hold the measurement mode.
+     * Measurement modes for the Equipment.
      */
-    measurementMode: string
+    measurementModes: string[]
+    /**
+     * The state that hold the selected measurement mode.
+     */
+    selectedMeasurementMode: string
     /**
      * The setter associated to the measurement mode state.
      */
-    setMeasurementMode: Dispatch<SetStateAction<string>>
+    setSelectedMeasurementMode: Dispatch<SetStateAction<string>>
     /**
      * The setter linked to the state responsible for storing the current step.
      */

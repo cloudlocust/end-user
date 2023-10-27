@@ -8,7 +8,9 @@ describe('MicrowaveMeasurement tests', () => {
         const onCloseModalMock = jest.fn()
         reduxedRender(
             <MicrowaveMeasurement
+                housingEquipmentId={25}
                 equipmentsNumber={1}
+                measurementModes={['A', 'B']}
                 isMeasurementModalOpen={true}
                 onCloseMeasurementModal={onCloseModalMock}
             />,
