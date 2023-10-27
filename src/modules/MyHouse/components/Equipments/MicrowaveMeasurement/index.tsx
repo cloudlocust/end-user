@@ -40,8 +40,8 @@ const TestStepPage = ({ step, stepSetter }: TestStepPageProps) => (
  *
  * @param root0 N/A.
  * @param root0.equipmentsNumber The number of microwaves.
- * @param root0.isModalOpen The state of the modal.
- * @param root0.onCloseModal Modal closing handler.
+ * @param root0.isMeasurementModalOpen The state of the modal.
+ * @param root0.onCloseMeasurementModal Modal closing handler.
  * @example
  *  /// Use this MicrowaveMeasurement component with our useModal custom hook
  *
@@ -52,26 +52,20 @@ const TestStepPage = ({ step, stepSetter }: TestStepPageProps) => (
  *          <Button onClick={openModal}>
  *              Mesurer
  *          </Button>
- *          <MicrowaveMeasurement equipmentsNumber={3} isModalOpen={isOpen} onCloseModal={onCloseModal} />
+ *          <MicrowaveMeasurement equipmentsNumber={3} isMeasurementModalOpen={isOpen} onCloseMeasurementModal={closeModal} />
  *      </div>
  *  )
  * @returns MicrowaveMeasurement component.
  */
-export const MicrowaveMeasurement = ({ equipmentsNumber, isModalOpen, onCloseModal }: MicrowaveMeasurementProps) => {
+export const MicrowaveMeasurement = ({
+    equipmentsNumber,
+    isMeasurementModalOpen,
+    onCloseMeasurementModal,
+}: MicrowaveMeasurementProps) => {
     const [currentStep, setCurrentStep] = useState(0)
     const [selectedMicrowave, setSelectedMicrowave] = useState('')
     const [measurementMode, setMeasurementMode] = useState('')
     const theme = useTheme()
-
-    /**
-     * Function for resetting popup states.
-     */
-    const onResetStates = () => {
-        onCloseModal()
-        setCurrentStep(0)
-        setSelectedMicrowave('')
-        setMeasurementMode('')
-    }
 
     const stepsContent = [
         <ConfigurationStep
@@ -87,10 +81,20 @@ export const MicrowaveMeasurement = ({ equipmentsNumber, isModalOpen, onCloseMod
         <TestStepPage step={currentStep} stepSetter={setCurrentStep} />,
     ]
 
+    /**
+     * Handle closing the measurement Modal.
+     */
+    const handleCloseModal = () => {
+        setCurrentStep(0)
+        setSelectedMicrowave('')
+        setMeasurementMode('')
+        onCloseMeasurementModal()
+    }
+
     return (
         <Modal
-            open={isModalOpen}
-            onClose={onResetStates}
+            open={isMeasurementModalOpen}
+            onClose={handleCloseModal}
             sx={{
                 display: 'flex',
                 justifyContent: 'center',
@@ -101,7 +105,7 @@ export const MicrowaveMeasurement = ({ equipmentsNumber, isModalOpen, onCloseMod
                 {/* The closing button */}
                 <IconButton
                     aria-label="close"
-                    onClick={onResetStates}
+                    onClick={handleCloseModal}
                     sx={{
                         position: 'absolute',
                         right: 6,

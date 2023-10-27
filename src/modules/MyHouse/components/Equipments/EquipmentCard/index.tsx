@@ -27,7 +27,7 @@ export const EquipmentCard = ({ id, number, label, name, onEquipmentChange, icon
     const [equipmentNumber, setEquipmentNumber] = useState<number>(number)
     const { formatMessage } = useIntl()
     const {
-        isOpen: isMeasurementModalIsOpen,
+        isOpen: isMeasurementModalOpen,
         openModal: onOpenMeasurementModal,
         closeModal: onCloseMeasurementModal,
     } = useModal()
@@ -114,8 +114,8 @@ export const EquipmentCard = ({ id, number, label, name, onEquipmentChange, icon
             {isMicrowaveMeasurementButtonShown && (
                 <MicrowaveMeasurement
                     equipmentsNumber={number}
-                    isModalOpen={isMeasurementModalIsOpen}
-                    onCloseModal={onCloseMeasurementModal}
+                    isMeasurementModalOpen={isMeasurementModalOpen}
+                    onCloseMeasurementModal={onCloseMeasurementModal}
                 />
             )}
         </>
