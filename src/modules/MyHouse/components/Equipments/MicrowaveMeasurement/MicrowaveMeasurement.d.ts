@@ -1,104 +1,69 @@
-import React from 'react'
-
 /**
  * Props of the MicrowaveMeasurement component.
  */
 export interface MicrowaveMeasurementProps {
     /**
+     * The global equipment id.
+     */
+    housingEquipmentId: number
+    /**
      * The number of microwaves.
      */
     equipmentsNumber: number
+    /**
+     * Measurement modes for the Equipment.
+     */
+    measurementModes: string[]
     /**
      * The state of the modal.
      */
-    isModalOpen: boolean
+    isMeasurementModalOpen: boolean
     /**
      * Modal closing handler.
      */
-    onCloseModal: () => void
+    onCloseMeasurementModal: () => void
 }
 
 /**
- * Props of the CustomUnorderedListItem component.
+ * Format of measurement result Api responce.
  */
-export interface CustomUnorderedListItemProps {
+export interface MeasurementResultApiResponse {
     /**
-     * Children elements of the list item.
+     * The result value.
      */
-    children: React.ReactNode
+    value: number
 }
 
 /**
- * Props of the CustomOrderedListItem component.
+ * Format of measurement status Api response.
  */
-export interface CustomOrderedListItemProps {
+export interface MeasurementStatusApiResponse {
     /**
-     * Children elements of the list item.
+     * The status.
      */
-    children: React.ReactNode
+    status: measurementStatusEnum
     /**
-     * The order of the item list.
+     * Time of the last update of status.
      */
-    order: number
+    updatedAt?: string
+    /**
+     * Time of the creation of status.
+     */
+    createdAt?: string
 }
 
 /**
- * Type of the setter function of the step state.
+ * Type of the measurement status state.
  */
-type StepSetterFunction = Dispatch<SetStateAction<number>>
-
-/**
- * Props of the InfosPage component.
- */
-export interface InfosPageProps {
+export interface MeasurementStatusStateType {
     /**
-     * The setter linked to the state responsible for storing the current step.
+     * The measurement status.
      */
-    stepSetter: StepSetterFunction
-}
-
-/**
- * Props of the ConfigurationStep component.
- */
-export interface ConfigurationStepProps {
+    status: measurementStatusEnum
     /**
-     * The number of microwaves.
+     * The time of the last update of the measurement status.
      */
-    equipmentsNumber: number
-    /**
-     * The state that hold the selected microwave.
-     */
-    selectedMicrowave: string
-    /**
-     * The setter associated to the selected microwave state.
-     */
-    setSelectedMicrowave: Dispatch<SetStateAction<string>>
-    /**
-     * The state that hold the measurement mode.
-     */
-    measurementMode: string
-    /**
-     * The setter associated to the measurement mode state.
-     */
-    setMeasurementMode: Dispatch<SetStateAction<string>>
-    /**
-     * The setter linked to the state responsible for storing the current step.
-     */
-    stepSetter: StepSetterFunction
-}
-
-/**
- * Props of the EquipmentStartupStep component.
- */
-export interface EquipmentStartupStepProps {
-    /**
-     * The mode of the measurement test.
-     */
-    measurementMode: string
-    /**
-     * The setter linked to the state responsible for storing the current step.
-     */
-    stepSetter: StepSetterFunction
+    updatedAt?: string
 }
 
 /**
@@ -112,15 +77,5 @@ export interface TestStepPageProps {
     /**
      * The setter linked to the state step.
      */
-    stepSetter: StepSetterFunction
+    stepSetter: Dispatch<SetStateAction<number>>
 }
-
-/**
- * Type of the select onChange handler function.
- */
-export type SelectOnChangeHandler = (event: SelectChangeEvent<string>, child: ReactNode) => void
-
-/**
- * Type of the radio group onChange handler function.
- */
-export type RadioGroupOnChangeHandler = (v: string) => void
