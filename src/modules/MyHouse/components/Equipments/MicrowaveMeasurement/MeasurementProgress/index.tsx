@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import CircularProgress from '@mui/material/CircularProgress'
 import Typography from '@mui/material/Typography'
 import { useTheme } from '@mui/material'
@@ -18,13 +17,18 @@ import { formatDuration } from 'src/modules/MyHouse/components/Equipments/Microw
  * @param root0 N/A.
  * @param root0.status Current status of the measurement process.
  * @param root0.maxDuration Estimated value for the maximum duration of the measurement process (in seconds).
+ * @param root0.getTimeFromStatusLastUpdate Function to get the passed time (in seconds) from the last update of status.
  * @returns The MeasurementProgress component.
  */
-export const MeasurementProgress = ({ status, maxDuration }: MeasurementProgressProps) => {
-    const { remainingTime, circularProgressValue } = useMeasurementProgress(status, maxDuration)
+export const MeasurementProgress = ({ status, maxDuration, getTimeFromStatusLastUpdate }: MeasurementProgressProps) => {
+    const { remainingTime, circularProgressValue } = useMeasurementProgress(
+        status,
+        maxDuration,
+        getTimeFromStatusLastUpdate,
+    )
     const theme = useTheme()
     const isSuccessOrFailedMeasurementStatus =
-        status === measurementStatusEnum.success || status === measurementStatusEnum.failed
+        status === measurementStatusEnum.SUCCESS || status === measurementStatusEnum.FAILED
 
     const borderCircleStyle: React.CSSProperties = {
         content: '""',
@@ -44,11 +48,11 @@ export const MeasurementProgress = ({ status, maxDuration }: MeasurementProgress
      */
     const renderContent = () => {
         switch (status) {
-            case measurementStatusEnum.inProgress:
+            case measurementStatusEnum.IN_PROGRESS:
                 return <Typography>{formatDuration(remainingTime)}</Typography>
-            case measurementStatusEnum.success:
+            case measurementStatusEnum.SUCCESS:
                 return <CheckCircleIcon color="success" sx={{ transform: 'scale(2.5)' }} />
-            case measurementStatusEnum.failed:
+            case measurementStatusEnum.FAILED:
                 return <CancelIcon color="error" sx={{ transform: 'scale(2.5)' }} />
             default:
                 return <TypographyFormatMessage>En attente</TypographyFormatMessage>
@@ -62,12 +66,12 @@ export const MeasurementProgress = ({ status, maxDuration }: MeasurementProgress
             }`}
         >
             <CircularProgress
-                value={status === measurementStatusEnum.inProgress ? circularProgressValue : 100}
-                variant={!status || status === measurementStatusEnum.pending ? 'indeterminate' : 'determinate'}
+                value={status === measurementStatusEnum.IN_PROGRESS ? circularProgressValue : 100}
+                variant={!status || status === measurementStatusEnum.PENDING ? 'indeterminate' : 'determinate'}
                 color={
-                    status === measurementStatusEnum.success
+                    status === measurementStatusEnum.SUCCESS
                         ? 'success'
-                        : status === measurementStatusEnum.failed
+                        : status === measurementStatusEnum.FAILED
                         ? 'error'
                         : 'primary'
                 }

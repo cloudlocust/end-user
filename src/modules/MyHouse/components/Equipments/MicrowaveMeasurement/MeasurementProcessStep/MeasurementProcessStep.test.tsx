@@ -10,20 +10,22 @@ const HEADER_TEXT_IN_PROGRESS = 'Mesure en cours'
 const HEADER_TEXT_SUCCESS = 'Mesure terminée avec succès'
 const HEADER_TEXT_FAILED = 'Mesure terminée avec échec'
 
-// Mock StepSetterFunction
 let mockStepSetter: jest.Mock<any, any>
 let mockStartMeasurement: jest.Mock<any, any>
+let mockGetTimeFromStatusLastUpdate: jest.Mock<any, any>
 let MeasurementProcessStepPropsDefaultValues: MeasurementProcessStepProps
 
 describe('MeasurementProcessStep Component', () => {
     beforeEach(() => {
         mockStepSetter = jest.fn()
         mockStartMeasurement = jest.fn()
+        mockGetTimeFromStatusLastUpdate = jest.fn(() => 0)
 
         MeasurementProcessStepPropsDefaultValues = {
             measurementStatus: null,
             measurementResult: 24,
             measurementMaxDuration: 50,
+            getTimeFromStatusLastUpdate: mockGetTimeFromStatusLastUpdate,
             startMeasurement: mockStartMeasurement,
             stepSetter: mockStepSetter,
         }
@@ -47,7 +49,7 @@ describe('MeasurementProcessStep Component', () => {
         reduxedRender(
             <MeasurementProcessStep
                 {...MeasurementProcessStepPropsDefaultValues}
-                measurementStatus={measurementStatusEnum.pending}
+                measurementStatus={{ status: measurementStatusEnum.PENDING }}
             />,
         )
 
@@ -69,7 +71,7 @@ describe('MeasurementProcessStep Component', () => {
         reduxedRender(
             <MeasurementProcessStep
                 {...MeasurementProcessStepPropsDefaultValues}
-                measurementStatus={measurementStatusEnum.inProgress}
+                measurementStatus={{ status: measurementStatusEnum.IN_PROGRESS }}
             />,
         )
 
@@ -92,7 +94,7 @@ describe('MeasurementProcessStep Component', () => {
         reduxedRender(
             <MeasurementProcessStep
                 {...MeasurementProcessStepPropsDefaultValues}
-                measurementStatus={measurementStatusEnum.success}
+                measurementStatus={{ status: measurementStatusEnum.SUCCESS }}
             />,
         )
 
@@ -120,7 +122,7 @@ describe('MeasurementProcessStep Component', () => {
         reduxedRender(
             <MeasurementProcessStep
                 {...MeasurementProcessStepPropsDefaultValues}
-                measurementStatus={measurementStatusEnum.failed}
+                measurementStatus={{ status: measurementStatusEnum.FAILED }}
             />,
         )
 

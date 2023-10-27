@@ -11,9 +11,13 @@ jest.mock(
         ),
     }),
 )
+let mockGetTimeFromStatusLastUpdate: jest.Mock<any, any>
+let maxDuration: number
 
 describe('useMeasurementProgress hook', () => {
     beforeEach(() => {
+        mockGetTimeFromStatusLastUpdate = jest.fn(() => 0)
+        maxDuration = 50
         jest.useFakeTimers()
     })
 
@@ -22,10 +26,10 @@ describe('useMeasurementProgress hook', () => {
     })
 
     test('Calculates remainingTime and circularProgressValue correctly', () => {
-        const maxDuration = 50
-
-        // Render the hook with status inProgress
-        const { result } = renderHook(() => useMeasurementProgress(measurementStatusEnum.inProgress, maxDuration))
+        // Render the hook with status IN_PROGRESS
+        const { result } = renderHook(() =>
+            useMeasurementProgress(measurementStatusEnum.IN_PROGRESS, maxDuration, mockGetTimeFromStatusLastUpdate),
+        )
 
         expect(result.current.remainingTime).toBe(50)
         expect(result.current.circularProgressValue).toBe(0)
@@ -43,5 +47,24 @@ describe('useMeasurementProgress hook', () => {
         // Check if values are updated
         expect(result.current.remainingTime).toBe(25)
         expect(result.current.circularProgressValue).toBe(50)
+    })
+
+    test('Calculates remainingTime and circularProgressValue correctly when the time from status last update is not null', () => {
+        mockGetTimeFromStatusLastUpdate = jest.fn(() => 20)
+
+        // Render the hook with status IN_PROGRESS
+        const { result } = renderHook(() =>
+            useMeasurementProgress(measurementStatusEnum.IN_PROGRESS, maxDuration, mockGetTimeFromStatusLastUpdate),
+        )
+
+        expect(result.current.remainingTime).toBe(30)
+        expect(result.current.circularProgressValue).toBe(40)
+
+        // Advance the timer by 10 seconds
+        jest.advanceTimersByTime(10000)
+
+        // Check if the values are updated
+        expect(result.current.remainingTime).toBe(20)
+        expect(result.current.circularProgressValue).toBe(60)
     })
 })

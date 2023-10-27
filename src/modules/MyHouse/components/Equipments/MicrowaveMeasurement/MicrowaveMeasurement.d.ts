@@ -35,6 +35,38 @@ export interface MeasurementResultApiResponse {
 }
 
 /**
+ * Format of measurement status Api response.
+ */
+export interface MeasurementStatusApiResponse {
+    /**
+     * The status.
+     */
+    status: measurementStatusEnum
+    /**
+     * Time of the last update of status.
+     */
+    updatedAt?: string
+    /**
+     * Time of the creation of status.
+     */
+    createdAt?: string
+}
+
+/**
+ * Type of the measurement status state.
+ */
+export interface MeasurementStatusStateType {
+    /**
+     * The measurement status.
+     */
+    status: measurementStatusEnum
+    /**
+     * The time of the last update of the measurement status.
+     */
+    updatedAt?: string
+}
+
+/**
  * Props of the TestStepPage component.
  */
 export interface TestStepPageProps {

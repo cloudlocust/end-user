@@ -1,10 +1,16 @@
 import { useState, useCallback, useEffect, useRef } from 'react'
 import { axios } from 'src/common/react-platform-components'
+import { parseISO, differenceInSeconds } from 'date-fns'
+import { utcToZonedTime } from 'date-fns-tz'
 import { useIntl } from 'src/common/react-platform-translation'
 import { useSnackbar } from 'notistack'
 import { measurementStatusEnum } from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement/MeasurementProgress/MeasurementProgress.d'
 import { HOUSING_API } from 'src/modules/MyHouse/components/HousingList/HousingsHooks'
-import { MeasurementResultApiResponse } from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement/MicrowaveMeasurement.d'
+import {
+    MeasurementResultApiResponse,
+    MeasurementStatusApiResponse,
+    MeasurementStatusStateType,
+} from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement/MicrowaveMeasurement.d'
 
 /**
  * Microwave measurement hook.
@@ -23,7 +29,7 @@ export function useMicrowaveMeasurement(
 ) {
     const { enqueueSnackbar } = useSnackbar()
     const { formatMessage } = useIntl()
-    const [measurementStatus, setMeasurementStatus] = useState<measurementStatusEnum | null>(null)
+    const [measurementStatus, setMeasurementStatus] = useState<MeasurementStatusStateType | null>(null)
     const [measurementResult, setMeasurementResult] = useState<number | null>(null)
     const updateStatusIntervalRef = useRef<NodeJS.Timer | null>(null)
     const measurementWaitingTimeoutRef = useRef<NodeJS.Timeout | null>(null)
@@ -56,12 +62,12 @@ export function useMicrowaveMeasurement(
     const getMeasurementStatus = useCallback(async () => {
         if (!equipmentNumber || !housingEquipmentId || !measurementMode) return null
         try {
-            const { data } = await axios.get(
+            const { data } = await axios.get<MeasurementStatusApiResponse>(
                 `${HOUSING_API}/equipments/${housingEquipmentId}/measurement/${measurementMode}/status/${equipmentNumber}`,
             )
-            return data?.status
+            return data
         } catch (_) {
-            return measurementStatusEnum.failed
+            return { status: measurementStatusEnum.FAILED }
         }
     }, [equipmentNumber, housingEquipmentId, measurementMode])
 
@@ -69,16 +75,21 @@ export function useMicrowaveMeasurement(
      * Fonction that update the measurement status from the backend.
      */
     const updateStatus = useCallback(async () => {
-        const status = await getMeasurementStatus()
-        setMeasurementStatus(status)
+        const newStatus = await getMeasurementStatus()
+        if (newStatus === null) setMeasurementStatus(null)
+        else setMeasurementStatus({ status: newStatus.status, updatedAt: newStatus.updatedAt })
     }, [getMeasurementStatus])
 
     /**
      * Function that start the measurement of the equipment.
      */
     const startMeasurement = useCallback(async () => {
-        const status = await getMeasurementStatus()
-        if (status === measurementStatusEnum.pending || status === measurementStatusEnum.inProgress) {
+        const newStatus = await getMeasurementStatus()
+        if (newStatus === null) setMeasurementStatus(null)
+        else if (
+            newStatus.status === measurementStatusEnum.PENDING ||
+            newStatus.status === measurementStatusEnum.IN_PROGRESS
+        ) {
             enqueueSnackbar(
                 formatMessage({
                     id: 'Un test de mesure est déjà en cours',
@@ -86,17 +97,20 @@ export function useMicrowaveMeasurement(
                 }),
                 { autoHideDuration: 5000, variant: 'info' },
             )
-            setMeasurementStatus(status)
+            setMeasurementStatus({
+                status: newStatus.status,
+                ...(newStatus.updatedAt ? { updatedAt: newStatus.updatedAt } : {}),
+            })
         } else {
             axios
                 .post(`${HOUSING_API}/equipments/${housingEquipmentId}/measurement/${measurementMode}`, {
                     equipment_number: equipmentNumber,
                 })
                 .then(() => {
-                    setMeasurementStatus(measurementStatusEnum.pending)
+                    setMeasurementStatus({ status: measurementStatusEnum.PENDING })
                 })
                 .catch((error) => {
-                    setMeasurementStatus(measurementStatusEnum.failed)
+                    setMeasurementStatus({ status: measurementStatusEnum.FAILED })
                     const errorMessage = error?.response?.data?.detail || 'Erreur lors du lancement du test de mesure'
                     enqueueSnackbar(
                         formatMessage({
@@ -108,6 +122,16 @@ export function useMicrowaveMeasurement(
                 })
         }
     }, [equipmentNumber, housingEquipmentId, measurementMode, enqueueSnackbar, formatMessage, getMeasurementStatus])
+
+    /**
+     * Function to get the passed time (in seconds) from the last update of status.
+     */
+    const getTimeFromStatusLastUpdate = useCallback(() => {
+        const currentUtcDate = utcToZonedTime(new Date(), 'Etc/UTC')
+        return measurementStatus?.updatedAt
+            ? differenceInSeconds(currentUtcDate, parseISO(measurementStatus.updatedAt))
+            : 0
+    }, [measurementStatus])
 
     /**
      * Function that cleared the interval used to update the measurement status.
@@ -136,8 +160,8 @@ export function useMicrowaveMeasurement(
         clearMeasurementWaitingTimeout()
         clearUpdateStatusInterval()
 
-        switch (measurementStatus) {
-            case measurementStatusEnum.pending:
+        switch (measurementStatus?.status) {
+            case measurementStatusEnum.PENDING:
                 /**
                  * When the status changes to the value PENDING, an interval will be created to update
                  * the status state from the backend every 3 seconds (to check if the measurement has
@@ -146,7 +170,15 @@ export function useMicrowaveMeasurement(
                 updateStatusIntervalRef.current = setInterval(updateStatus, 3000)
                 break
 
-            case measurementStatusEnum.inProgress:
+            case measurementStatusEnum.IN_PROGRESS:
+                /**
+                 * This is the time left for the test ending and it's the time that we should wait
+                 * until restarting checking if the test has finished (the status changed to SUCCESS
+                 * or FAILED), it's equal to the measurement duration minus the passed time from
+                 * the starting of the test minus 3 (we subtracted the 3 to avoid waiting another
+                 * 3 seconds, due to the updateStatusInterval interval, before restarting the check).
+                 */
+                const waitingTime = Math.max(measurementMaxDuration - getTimeFromStatusLastUpdate() - 3, 0)
                 /**
                  * When the status changes to the value IN_PROGRESS (the measurement has started),
                  * we wait a moment to let the measurement progress, then we start updating the status
@@ -155,22 +187,23 @@ export function useMicrowaveMeasurement(
                  */
                 measurementWaitingTimeoutRef.current = setTimeout(() => {
                     updateStatusIntervalRef.current = setInterval(updateStatus, 3000)
-                }, Math.max(measurementMaxDuration - 3, 0) * 1000)
+                }, waitingTime * 1000)
                 break
 
-            case measurementStatusEnum.success:
+            case measurementStatusEnum.SUCCESS:
                 /**
                  * When the status changes to the value SUCCESS, we get the measurement result value.
                  */
                 updateResult()
                 break
         }
-    }, [measurementStatus, measurementMaxDuration, updateResult, updateStatus])
+    }, [measurementStatus, measurementMaxDuration, updateResult, updateStatus, getTimeFromStatusLastUpdate])
 
     return {
         measurementStatus,
         measurementResult,
         setMeasurementStatus,
+        getTimeFromStatusLastUpdate,
         updateResult,
         updateStatus,
         startMeasurement,
