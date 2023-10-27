@@ -1,6 +1,5 @@
 import { metricTargetsEnum, IMetric } from 'src/modules/Metrics/Metrics.d'
 import { EChartsOption } from 'echarts'
-import { round } from 'lodash'
 import dayjs from 'dayjs'
 import { Theme } from '@mui/material/styles/createTheme'
 import utc from 'dayjs/plugin/utc'
@@ -13,6 +12,7 @@ import {
     metricTargetExtendedWithComparaisonType,
     targetValuesFormatForComparaison,
 } from 'src/modules/Analysis/components/AnalysisComparaisonChart/AnalysisComparaisonChartTypes.d'
+import { distributeAmountPerMonth } from 'src/modules/Analysis/utils/computationFunctions'
 dayjs.extend(utc)
 dayjs.extend(timezone)
 
@@ -44,7 +44,9 @@ export const getEchartsComparaisonChartOptions = (data: IMetric[], theme: Theme)
 export const getValuesWithTargetForComparaison = (data: IMetric[]) => {
     return {
         [data[0].target]: [data[0].datapoints[0][0]],
-        [CustomTargetsForComparaisonEnum.averageAdemeConsumption]: [round(4792 / 12) * 1000],
+        [CustomTargetsForComparaisonEnum.averageAdemeConsumption]: [
+            distributeAmountPerMonth(4792, data[0].datapoints[0][1]) * 1000,
+        ],
     }
 }
 
