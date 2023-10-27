@@ -271,7 +271,8 @@ export const getPeriodFromTimestampsLength = (length: number): periodType => {
         return PeriodEnum.WEEKLY
     } else if (length <= 12) {
         return PeriodEnum.YEARLY
-    } else if (length <= 31) {
+        //! TOFIX: backeend is returning 32 timestamps (one timestamp extra), await for backend to fix this. It should be 31 max.
+    } else if (length <= 32) {
         return PeriodEnum.MONTHLY
     } else return PeriodEnum.DAILY
 }
