@@ -101,6 +101,7 @@ export const ConsumptionChartContainer = ({
         () => targets.some((target) => [...eurosConsumptionTargets, ...eurosIdleConsumptionTargets].includes(target)),
         [targets],
     )
+
     const isIdleSwitchToggled = useMemo(
         () =>
             targets.some((target) =>

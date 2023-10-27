@@ -267,11 +267,7 @@ export const eurosIdleConsumptionTargets: metricTargetType[] = [
 /**
  * Targets related to Euros Consumption.
  */
-export const eurosConsumptionTargets: metricTargetType[] = [
-    metricTargetsEnum.eurosConsumption,
-    metricTargetsEnum.euroConsumptionByTariffComponent,
-    metricTargetsEnum.subscriptionPrices,
-]
+export const eurosConsumptionTargets: metricTargetType[] = [metricTargetsEnum.euroConsumptionByTariffComponent]
 
 /**
  * Targets related to the TargetMenuGroup button which consists of temperature and pMax.
