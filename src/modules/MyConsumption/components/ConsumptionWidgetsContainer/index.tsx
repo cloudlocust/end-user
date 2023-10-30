@@ -51,7 +51,6 @@ const ConsumptionWidgetsContainer = ({
               ]
             : [
                   metricTargetsEnum.consumption,
-                  metricTargetsEnum.totalProduction,
                   metricTargetsEnum.eurosConsumption,
                   metricTargetsEnum.pMax,
                   metricTargetsEnum.externalTemperature,
