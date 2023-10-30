@@ -1,4 +1,4 @@
-import { useIntl } from 'react-intl'
+import { useIntl } from 'src/common/react-platform-translation'
 import Typography from '@mui/material/Typography'
 import FormControl from '@mui/material/FormControl'
 import InputLabel from '@mui/material/InputLabel'
@@ -11,7 +11,7 @@ import {
     ConfigurationStepProps,
     RadioGroupOnChangeHandler,
     SelectOnChangeHandler,
-} from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement/MicrowaveMeasurement'
+} from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement/ConfigurationStep/ConfigurationStep.d'
 
 /**
  * ConfigurationStep component.
@@ -20,8 +20,9 @@ import {
  * @param root0.equipmentsNumber The number of microwaves.
  * @param root0.selectedMicrowave The state that hold the selected microwave.
  * @param root0.setSelectedMicrowave The setter associated to the selected microwave state.
- * @param root0.measurementMode The state that hold the measurement mode.
- * @param root0.setMeasurementMode The setter associated to the measurement mode state.
+ * @param root0.measurementModes Measurement modes for the Equipment.
+ * @param root0.selectedMeasurementMode The state that hold the selected measurement mode.
+ * @param root0.setSelectedMeasurementMode The setter associated to the measurement mode state.
  * @param root0.stepSetter The setter linked to the state responsible for storing the current step.
  * @returns The ConfigurationStep component.
  */
@@ -29,8 +30,9 @@ export const ConfigurationStep = ({
     equipmentsNumber,
     selectedMicrowave,
     setSelectedMicrowave,
-    measurementMode,
-    setMeasurementMode,
+    measurementModes,
+    selectedMeasurementMode,
+    setSelectedMeasurementMode,
     stepSetter,
 }: ConfigurationStepProps) => {
     const { formatMessage } = useIntl()
@@ -50,7 +52,7 @@ export const ConfigurationStep = ({
      * @param value The new value after the change.
      */
     const handleRadioGroupChange: RadioGroupOnChangeHandler = (value) => {
-        setMeasurementMode(value)
+        setSelectedMeasurementMode(value)
     }
 
     /**
@@ -104,7 +106,7 @@ export const ConfigurationStep = ({
                             {Array(equipmentsNumber)
                                 .fill(null)
                                 .map((_, index) => (
-                                    <MenuItem value={`micro-onde-${index + 1}`}>Micro-onde {index + 1}</MenuItem>
+                                    <MenuItem value={index + 1}>Micro-onde {index + 1}</MenuItem>
                                 ))}
                         </Select>
                     </FormControl>
@@ -119,12 +121,11 @@ export const ConfigurationStep = ({
                         })}
                     </Typography>
                     <CustomRadioGroup
-                        elements={[
-                            { value: 'Standard', label: 'Standard' },
-                            { value: 'Décongélation', label: 'Décongélation' },
-                            { value: 'Grill', label: 'Grill' },
-                        ]}
-                        defaultValue={measurementMode}
+                        elements={measurementModes.map((measurementMode) => ({
+                            value: measurementMode,
+                            label: measurementMode,
+                        }))}
+                        defaultValue={selectedMeasurementMode}
                         onValueChange={handleRadioGroupChange}
                         display="flex"
                         justifyContent="space-between"
@@ -154,7 +155,7 @@ export const ConfigurationStep = ({
                         variant="contained"
                         sx={{ padding: '10px auto', textAlign: 'center', width: '60%', minWidth: '160px' }}
                         onClick={handleBtnClick}
-                        disabled={!selectedMicrowave || !measurementMode}
+                        disabled={!selectedMicrowave || !selectedMeasurementMode}
                     >
                         {formatMessage({
                             id: 'Suivant',

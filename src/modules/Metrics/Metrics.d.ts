@@ -15,9 +15,9 @@ export type metricTargetType =
     | 'base_consumption_metrics'
     | 'hp_consumption_metrics'
     | 'hc_consumption_metrics'
-    | 'base__euros__consumption_metrics'
-    | 'hp__euros__consumption_metrics'
-    | 'hc__euros__consumption_metrics'
+    | '__euros__base_consumption_metrics'
+    | '__euros__hp_consumption_metrics'
+    | '__euros__hc_consumption_metrics'
     | '__euros__idle_consumption_metrics'
     // FRONT END PURPOSES TARGETS
     // 'off_idle_consumption_metrics' target is made for front purposes, it doesn't exist on the back
@@ -103,15 +103,15 @@ export enum metricTargetsEnum {
     /**
      * Euro consumption for heure pleine.
      */
-    euroPeakHourConsumption = 'hp__euros__consumption_metrics',
+    euroPeakHourConsumption = '__euros__hp_consumption_metrics',
     /**
      * Euro consumption for heure creuse.
      */
-    euroOffPeakConsumption = 'hc__euros__consumption_metrics',
+    euroOffPeakConsumption = '__euros__hc_consumption_metrics',
     /**
      * Base euro consumption (according to Tariff de base).
      */
-    baseEuroConsumption = 'base__euros__consumption_metrics',
+    baseEuroConsumption = '__euros__base_consumption_metrics',
     /**
      * Eneum value for Euros Idle Consumption.
      */

@@ -1,3 +1,5 @@
+import { Theme } from '@mui/material'
+
 /**
  * NumberField
  *  interface.
@@ -22,7 +24,7 @@ export interface INumberField {
     /**
      * Icon component.
      */
-    iconComponent?: () => JSX.Element
+    iconComponent?: (theme: Theme, isDisabled?: boolean) => JSX.Element
     /**
      * Is Field disabled.
      */

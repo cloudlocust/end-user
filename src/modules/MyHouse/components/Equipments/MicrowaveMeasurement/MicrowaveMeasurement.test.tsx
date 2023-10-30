@@ -5,12 +5,20 @@ import { MicrowaveMeasurement } from 'src/modules/MyHouse/components/Equipments/
 
 describe('MicrowaveMeasurement tests', () => {
     test('renders the MicrowaveMeasurement modal and close it', async () => {
-        const onCloseModelMock = jest.fn()
-        reduxedRender(<MicrowaveMeasurement equipmentsNumber={1} isModalOpen={true} onCloseModal={onCloseModelMock} />)
+        const onCloseModalMock = jest.fn()
+        reduxedRender(
+            <MicrowaveMeasurement
+                housingEquipmentId={25}
+                equipmentsNumber={1}
+                measurementModes={['A', 'B']}
+                isMeasurementModalOpen={true}
+                onCloseMeasurementModal={onCloseModalMock}
+            />,
+        )
 
         userEvent.click(screen.getByRole('button', { name: 'close' }))
         await waitFor(() => {
-            expect(onCloseModelMock).toHaveBeenCalledTimes(1)
+            expect(onCloseModalMock).toHaveBeenCalledTimes(1)
         })
     })
 })
