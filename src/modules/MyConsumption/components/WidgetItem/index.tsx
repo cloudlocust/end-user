@@ -35,13 +35,11 @@ export function WidgetItem({
                 {/* Widget title */}
                 <TypographyFormatMessage className="sm:text-16 font-medium md:text-17">{title}</TypographyFormatMessage>
                 {/* Widget infoIcon */}
-                {infoIcon}
+                {target === metricTargetsEnum.injectedProduction
+                    ? (!value || period === PeriodEnum.DAILY) && infoIcon
+                    : infoIcon}
             </div>
-            {target === metricTargetsEnum.totalProduction && enphaseOff ? (
-                <div className="text-center flex flex-1 justify-center items-center py-4">
-                    <TypographyFormatMessage>Connecter votre onduleur</TypographyFormatMessage>
-                </div>
-            ) : !value || (target === metricTargetsEnum.injectedProduction && period === PeriodEnum.DAILY) ? (
+            {!value || (target === metricTargetsEnum.injectedProduction && period === PeriodEnum.DAILY) ? (
                 <div className="text-center flex flex-1 justify-center items-center py-4">
                     <TypographyFormatMessage>Aucune donnée disponible</TypographyFormatMessage>
                 </div>
