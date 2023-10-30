@@ -99,7 +99,11 @@ export const getSeriesOptionEchartsProductionChart = (
     return {
         series: Object.keys(values).map((target) => {
             const targetYAxisIndex = getTargetYAxisIndexFromTargetName(target as metricTargetsEnum)
-            const colorTargetSeries = getColorTargetSeriesEchartsProductionChart(target as metricTargetsEnum, theme)
+            const colorTargetSeries = getColorTargetSeriesEchartsProductionChart(
+                target as metricTargetsEnum,
+                theme,
+                values,
+            )
             // When the series is Transparent we hide it through type 'line' and symbole none, so that it won't interject with the already bar and line charts additional to its own stack name.
             const typeTargetSeries: EChartsOption['series'] =
                 colorTargetSeries === TRANSPARENT_COLOR
@@ -233,14 +237,37 @@ const getXAxisCategoriesData = (timestamps: number[], period: periodType) => {
  *
  * @param target MetricTarget Chart.
  * @param theme Current MUI Theme Applied.
+ * @param values Data values to be able to know if we show production or not.
  * @returns Color of the given target series in EchartsProductionChart.
  */
-export const getColorTargetSeriesEchartsProductionChart = (target: metricTargetsEnum, theme: Theme) => {
+export const getColorTargetSeriesEchartsProductionChart = (
+    target: metricTargetsEnum,
+    theme: Theme,
+    values: targetTimestampsValuesFormat,
+) => {
+    // by default we show the production (it's not transparent)
+    let isTotalProductionTransparent = false
+
+    // map target values, and see if we find data in autoconsmption or injected
+    // if so then we don't show the total production
+    Object.entries(values).map(([target, targetValues]) => {
+        // !isTotalProductionTransparent is to know if we already found data in one of the two metrics
+        // if so then we already know that we don't show the total and made it to transparent, no need to continue
+        if (
+            !isTotalProductionTransparent &&
+            (target === metricTargetsEnum.injectedProduction || target === metricTargetsEnum.autoconsumption)
+        ) {
+            isTotalProductionTransparent = targetValues.some((value) => value !== null)
+        }
+        // just for eslint does not scream at us
+        return undefined
+    })
+
     switch (target) {
         case metricTargetsEnum.autoconsumption:
             return '#BEECDB'
         case metricTargetsEnum.totalProduction:
-            return '#C8D210'
+            return isTotalProductionTransparent ? TRANSPARENT_COLOR : '#C8D210'
         case metricTargetsEnum.injectedProduction:
             return '#6E9A8B'
         default:

@@ -14,6 +14,7 @@ import { createTheme } from '@mui/material/styles'
 import { PeriodEnum } from 'src/modules/MyConsumption/myConsumptionTypes.d'
 import { productionTargetYAxisIndexEnum } from 'src/modules/MyConsumption/components/ProductionChart/ProductionChartTypes.d'
 import { EChartsOption } from 'echarts-for-react'
+import { TRANSPARENT_COLOR } from 'src/modules/MyConsumption/utils/myConsumptionVariables'
 
 describe('Test echartsProductionOptions', () => {
     const theme = createTheme({
@@ -27,7 +28,7 @@ describe('Test echartsProductionOptions', () => {
         },
     })
 
-    test('getColorTargetSeriesEchartsConsumptionChart', () => {
+    test('getColorTargetSeriesEchartsConsumptionChart, production has color', () => {
         const caseList = [
             { target: metricTargetsEnum.autoconsumption, color: '#BEECDB' },
             { target: metricTargetsEnum.totalProduction, color: '#C8D210' },
@@ -35,7 +36,25 @@ describe('Test echartsProductionOptions', () => {
         ]
         caseList.forEach(({ color, target }) => {
             // Result
-            const resultColor = getColorTargetSeriesEchartsProductionChart(target, theme)
+            const resultColor = getColorTargetSeriesEchartsProductionChart(target, theme, {
+                [metricTargetsEnum.totalProduction]: [100, 200, 300],
+            })
+
+            expect(resultColor).toStrictEqual(color)
+        })
+    })
+
+    test('getColorTargetSeriesEchartsConsumptionChart, production transparent', () => {
+        const caseList = [
+            { target: metricTargetsEnum.autoconsumption, color: '#BEECDB' },
+            { target: metricTargetsEnum.totalProduction, color: TRANSPARENT_COLOR },
+            { target: metricTargetsEnum.injectedProduction, color: '#6E9A8B' },
+        ]
+        caseList.forEach(({ color, target }) => {
+            // Result
+            const resultColor = getColorTargetSeriesEchartsProductionChart(target, theme, {
+                [metricTargetsEnum.autoconsumption]: [100, 200, 300],
+            })
 
             expect(resultColor).toStrictEqual(color)
         })
