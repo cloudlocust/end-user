@@ -148,11 +148,12 @@ export const ConsumptionChartContainer = ({
                 if (fileteredMetricsData) chartData = fileteredMetricsData
             }
             setConsumptionChartData(chartData)
+        } else {
+            setConsumptionChartData(data)
         }
         // Only use data & targets as dependencies.
         // TODO REMOVE this exhausitve-deps due to filteredMetricsData
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [data, targets])
+    }, [data, isSolarProductionConsentOff, period, targets])
 
     /**
      * Handler when clicking on temperature or pMax menu.
