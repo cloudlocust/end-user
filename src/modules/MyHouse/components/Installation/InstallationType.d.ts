@@ -66,6 +66,10 @@ export type equipmentType = {
      * Measurement modes for the Equipment.
      */
     measurementModes?: string[]
+    /**
+     * Customer id related to the equipment.
+     */
+    customerId?: number | null
 }
 
 /**
