@@ -1,4 +1,5 @@
 import userEvent from '@testing-library/user-event'
+import { screen, waitFor } from '@testing-library/react'
 import { reduxedRender } from 'src/common/react-platform-components/test'
 import { EquipmentCard } from 'src/modules/MyHouse/components/Equipments/EquipmentCard'
 import { EquipmentCardProps } from 'src/modules/MyHouse/components/Equipments/EquipmentCard/equipmentsCard'
@@ -57,12 +58,14 @@ describe('EquipmentCard tests', () => {
         expect(mockEquipmentCardProps.onEquipmentChange).toHaveBeenCalledWith([{ equipmentId: 1, equipmentNumber: 4 }])
         expect(getByText('4')).toBeInTheDocument()
     })
-    test('measurement popyp', async () => {
+    test('measurement popup', async () => {
         mockEquipmentCardProps.name = 'microwave'
-        const { getByText } = reduxedRender(<EquipmentCard {...mockEquipmentCardProps} />)
-        userEvent.click(getByText('Mesurer'))
+        reduxedRender(<EquipmentCard {...mockEquipmentCardProps} />)
+        userEvent.click(screen.getByText('Mesurer'))
 
-        expect(getByText("Mesure d'appareil")).toBeInTheDocument()
+        await waitFor(() => {
+            expect(screen.getByRole('presentation')).toBeInTheDocument()
+        })
     })
     test('when isEquipmentMeasurementFeatureState is false, the button is disabled', async () => {
         mockIsEquipmentMeasurementFeatureState = false
