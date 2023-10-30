@@ -21,7 +21,6 @@ export const AddEquipmentPopup = (props: AddEquipmentPopupProps) => {
     const { formatMessage } = useIntl()
     const [equipmentValue, setEquipmentValue] = useState<equipmentType | 'other' | ''>('')
     const [customEquipmentValue, setCustomEquipmentValue] = useState('')
-    const [, setIsCustomEquipmentFieldError] = useState(false)
 
     const orderedEquipmentsList = useMemo(
         () => [
@@ -89,10 +88,6 @@ export const AddEquipmentPopup = (props: AddEquipmentPopupProps) => {
                             (equipmentValue === 'other' && customEquipmentValue.length <= 0)
                         }
                         onClick={async () => {
-                            if (customEquipmentValue.length <= 0) {
-                                setIsCustomEquipmentFieldError(true)
-                                return
-                            }
                             await addEquipment({
                                 name: equipmentValue === 'other' ? customEquipmentValue : (equipmentValue as string),
                                 allowedType: ['electricity'],

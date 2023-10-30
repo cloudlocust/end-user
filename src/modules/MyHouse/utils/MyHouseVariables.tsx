@@ -221,8 +221,12 @@ export const myEquipmentOptions = [
         name: 'desktopcomputer',
         labelTitle: 'PC de bureau',
         // eslint-disable-next-line jsdoc/require-jsdoc
-        iconComponent: (theme: Theme) => (
-            <DesktopComputerIcon fill={theme.palette.primary.main} width={'35'} height={'35'} />
+        iconComponent: (theme: Theme, isDisabled?: boolean) => (
+            <DesktopComputerIcon
+                fill={isDisabled ? theme.palette.grey[300] : theme.palette.primary.main}
+                width={'35'}
+                height={'35'}
+            />
         ),
         disableDecrement: true,
     },
@@ -230,50 +234,90 @@ export const myEquipmentOptions = [
         name: 'laptop',
         labelTitle: 'PC Portable',
         // eslint-disable-next-line jsdoc/require-jsdoc
-        iconComponent: (theme: Theme) => <LaptopIcon fill={theme.palette.primary.main} width={'35'} height={'35'} />,
+        iconComponent: (theme: Theme, isDisabled?: boolean) => (
+            <LaptopIcon
+                fill={isDisabled ? theme.palette.grey[300] : theme.palette.primary.main}
+                width={'35'}
+                height={'35'}
+            />
+        ),
         disableDecrement: true,
     },
     {
         name: 'tv',
         labelTitle: 'Téléviseur',
         // eslint-disable-next-line jsdoc/require-jsdoc
-        iconComponent: (theme: Theme) => <TvIcon fill={theme.palette.primary.main} width={'35'} height={'35'} />,
+        iconComponent: (theme: Theme, isDisabled?: boolean) => (
+            <TvIcon
+                fill={isDisabled ? theme.palette.grey[300] : theme.palette.primary.main}
+                width={'35'}
+                height={'35'}
+            />
+        ),
         disableDecrement: true,
     },
     {
         name: 'vacuum',
         labelTitle: 'Aspirateur',
         // eslint-disable-next-line jsdoc/require-jsdoc
-        iconComponent: (theme: Theme) => <VaccumIcon fill={theme.palette.primary.main} width={'35'} height={'35'} />,
+        iconComponent: (theme: Theme, isDisabled?: boolean) => (
+            <VaccumIcon
+                fill={isDisabled ? theme.palette.grey[300] : theme.palette.primary.main}
+                width={'35'}
+                height={'35'}
+            />
+        ),
         disableDecrement: true,
     },
     {
         name: 'oven',
         labelTitle: 'Four',
         // eslint-disable-next-line jsdoc/require-jsdoc
-        iconComponent: (theme: Theme) => <OvenIcon fill={theme.palette.primary.main} width={'35'} height={'35'} />,
+        iconComponent: (theme: Theme, isDisabled?: boolean) => (
+            <OvenIcon
+                fill={isDisabled ? theme.palette.grey[300] : theme.palette.primary.main}
+                width={'35'}
+                height={'35'}
+            />
+        ),
         disableDecrement: true,
     },
     {
         name: 'microwave',
         labelTitle: 'Micro-onde',
         // eslint-disable-next-line jsdoc/require-jsdoc
-        iconComponent: (theme: Theme) => <MicrowaveIcon fill={theme.palette.primary.main} width={'35'} height={'35'} />,
+        iconComponent: (theme: Theme, isDisabled?: boolean) => (
+            <MicrowaveIcon
+                fill={isDisabled ? theme.palette.grey[300] : theme.palette.primary.main}
+                width={'35'}
+                height={'35'}
+            />
+        ),
         disableDecrement: true,
     },
     {
         name: 'fridge',
         labelTitle: 'Réfrigérateur',
         // eslint-disable-next-line jsdoc/require-jsdoc
-        iconComponent: (theme: Theme) => <FridgeIcon fill={theme.palette.primary.main} width={'35'} height={'35'} />,
+        iconComponent: (theme: Theme, isDisabled?: boolean) => (
+            <FridgeIcon
+                fill={isDisabled ? theme.palette.grey[300] : theme.palette.primary.main}
+                width={'35'}
+                height={'35'}
+            />
+        ),
         disableDecrement: true,
     },
     {
         name: 'dishwasher',
         labelTitle: 'Lave-vaisselle',
         // eslint-disable-next-line jsdoc/require-jsdoc
-        iconComponent: (theme: Theme) => (
-            <DisahwasherIcon fill={theme.palette.primary.main} width={'35'} height={'35'} />
+        iconComponent: (theme: Theme, isDisabled?: boolean) => (
+            <DisahwasherIcon
+                fill={isDisabled ? theme.palette.grey[300] : theme.palette.primary.main}
+                width={'35'}
+                height={'35'}
+            />
         ),
         disableDecrement: true,
     },
@@ -281,8 +325,12 @@ export const myEquipmentOptions = [
         name: 'washingmachine',
         labelTitle: 'Lave linge',
         // eslint-disable-next-line jsdoc/require-jsdoc
-        iconComponent: (theme: Theme) => (
-            <WashingmachineIcon fill={theme.palette.primary.main} width={'35'} height={'35'} />
+        iconComponent: (theme: Theme, isDisabled?: boolean) => (
+            <WashingmachineIcon
+                fill={isDisabled ? theme.palette.grey[300] : theme.palette.primary.main}
+                width={'35'}
+                height={'35'}
+            />
         ),
         disableDecrement: true,
     },
@@ -290,14 +338,22 @@ export const myEquipmentOptions = [
         name: 'dryer',
         labelTitle: 'Sèche linge',
         // eslint-disable-next-line jsdoc/require-jsdoc
-        iconComponent: (theme: Theme) => <DryerIcon fill={theme.palette.primary.main} width={'35'} height={'35'} />,
+        iconComponent: (theme: Theme, isDisabled?: boolean) => (
+            <DryerIcon
+                fill={isDisabled ? theme.palette.grey[300] : theme.palette.primary.main}
+                width={'35'}
+                height={'35'}
+            />
+        ),
         disableDecrement: true,
     },
     {
         name: 'solarpanel',
         labelTitle: 'Panneaux solaire',
         // eslint-disable-next-line jsdoc/require-jsdoc
-        iconComponent: () => <SolarPower color={'primary'} fontSize="large" />,
+        iconComponent: (theme: Theme, isDisabled?: boolean) => (
+            <SolarPower color={isDisabled ? 'disabled' : 'primary'} fontSize="large" />
+        ),
     },
 ]
 

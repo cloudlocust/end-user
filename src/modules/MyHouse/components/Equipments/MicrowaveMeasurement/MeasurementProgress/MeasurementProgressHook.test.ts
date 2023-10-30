@@ -1,0 +1,70 @@
+import { renderHook } from '@testing-library/react-hooks'
+import { useMeasurementProgress } from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement/MeasurementProgress/MeasurementProgressHook'
+import { measurementStatusEnum } from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement/MeasurementProgress/MeasurementProgress.d'
+
+// Mock functions used in the hook (use the real ones)
+jest.mock(
+    'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement/MeasurementProgress/MeasurementProgressFunctions',
+    () => ({
+        ...jest.requireActual(
+            'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement/MeasurementProgress/MeasurementProgressFunctions',
+        ),
+    }),
+)
+let mockGetTimeFromStatusLastUpdate: jest.Mock<any, any>
+let maxDuration: number
+
+describe('useMeasurementProgress hook', () => {
+    beforeEach(() => {
+        mockGetTimeFromStatusLastUpdate = jest.fn(() => 0)
+        maxDuration = 50
+        jest.useFakeTimers()
+    })
+
+    afterEach(() => {
+        jest.useRealTimers()
+    })
+
+    test('Calculates remainingTime and circularProgressValue correctly', () => {
+        // Render the hook with status IN_PROGRESS
+        const { result } = renderHook(() =>
+            useMeasurementProgress(measurementStatusEnum.IN_PROGRESS, maxDuration, mockGetTimeFromStatusLastUpdate),
+        )
+
+        expect(result.current.remainingTime).toBe(50)
+        expect(result.current.circularProgressValue).toBe(0)
+
+        // Advance the timer by 1 second
+        jest.advanceTimersByTime(1000)
+
+        // Check if values are updated
+        expect(result.current.remainingTime).toBe(49)
+        expect(result.current.circularProgressValue).toBe(2)
+
+        // Advance the timer by 24 seconds (25 seconds after starting the measurement process, the middle of the process)
+        jest.advanceTimersByTime(24000)
+
+        // Check if values are updated
+        expect(result.current.remainingTime).toBe(25)
+        expect(result.current.circularProgressValue).toBe(50)
+    })
+
+    test('Calculates remainingTime and circularProgressValue correctly when the time from status last update is not null', () => {
+        mockGetTimeFromStatusLastUpdate = jest.fn(() => 20)
+
+        // Render the hook with status IN_PROGRESS
+        const { result } = renderHook(() =>
+            useMeasurementProgress(measurementStatusEnum.IN_PROGRESS, maxDuration, mockGetTimeFromStatusLastUpdate),
+        )
+
+        expect(result.current.remainingTime).toBe(30)
+        expect(result.current.circularProgressValue).toBe(40)
+
+        // Advance the timer by 10 seconds
+        jest.advanceTimersByTime(10000)
+
+        // Check if the values are updated
+        expect(result.current.remainingTime).toBe(20)
+        expect(result.current.circularProgressValue).toBe(60)
+    })
+})

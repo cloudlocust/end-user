@@ -557,12 +557,7 @@ export function getRangeV2(period: PeriodEnum) {
  */
 export const getDefaultConsumptionTargets = (isEnphaseOff: boolean): metricTargetType[] => {
     if (isEnphaseOff) {
-        return [
-            metricTargetsEnum.baseConsumption,
-            metricTargetsEnum.peakHourConsumption,
-            metricTargetsEnum.offPeakHourConsumption,
-            metricTargetsEnum.consumption,
-        ]
+        return [metricTargetsEnum.consumptionByTariffComponent]
     }
 
     return [metricTargetsEnum.autoconsumption, metricTargetsEnum.consumption]
@@ -894,8 +889,20 @@ export const filterMetricsData = (
         ].includes(metric.target as metricTargetsEnum),
     )
 
-    if (isBasePeakOffPeakConsumptionTargets) {
-        if (!enphaseOff)
+    const isTempoTargets = data.some((metric) =>
+        [
+            metricTargetsEnum.peakHourBlueTempoConsumption,
+            metricTargetsEnum.offPeakHourBlueTempoConsumption,
+            metricTargetsEnum.peakHourRedTempoConsumption,
+            metricTargetsEnum.offPeakHourRedTempoConsumption,
+            metricTargetsEnum.peakHourWhiteTempoConsumption,
+            metricTargetsEnum.offPeakHourWhiteTempoConsumption,
+        ].includes(metric.target as metricTargetsEnum),
+    )
+
+    // When basic HP HC consumption metrics are empty
+    if (isBasePeakOffPeakConsumptionTargets || isTempoTargets) {
+        if (!enphaseOff) {
             return [
                 ...data.filter(
                     (metric) =>
@@ -904,6 +911,7 @@ export const filterMetricsData = (
                 ),
                 ...temperatureOrPmaxMetricsData,
             ]
+        }
 
         // When neither of: baseConsumption or HP or HC consumption metrics has data, we use the "general" consumption metrics target.
         // In this case it's handled from the front as onlyConsumption.
@@ -913,7 +921,64 @@ export const filterMetricsData = (
             metricTargetsEnum.offPeakHourConsumption,
         ])
 
-        if (isBasePeakOffPeakConsumptionEmpty && enphaseOff) {
+        const isAllTempoConsumptionEmpty = isEmptyMetricsData(data, [
+            metricTargetsEnum.peakHourBlueTempoConsumption,
+            metricTargetsEnum.offPeakHourBlueTempoConsumption,
+            metricTargetsEnum.peakHourRedTempoConsumption,
+            metricTargetsEnum.offPeakHourRedTempoConsumption,
+            metricTargetsEnum.peakHourWhiteTempoConsumption,
+            metricTargetsEnum.offPeakHourWhiteTempoConsumption,
+        ])
+
+        const isTempoBlueConsumptionEmpty = isEmptyMetricsData(data, [
+            metricTargetsEnum.peakHourBlueTempoConsumption,
+            metricTargetsEnum.offPeakHourBlueTempoConsumption,
+        ])
+
+        const isTempoRedConsumptionEmpty = isEmptyMetricsData(data, [
+            metricTargetsEnum.peakHourRedTempoConsumption,
+            metricTargetsEnum.offPeakHourRedTempoConsumption,
+        ])
+
+        const isTempoWhiteConsumptionEmpty = isEmptyMetricsData(data, [
+            metricTargetsEnum.peakHourWhiteTempoConsumption,
+            metricTargetsEnum.offPeakHourWhiteTempoConsumption,
+        ])
+
+        if (period === 'daily' && !isTempoBlueConsumptionEmpty) {
+            return [
+                ...data.filter(
+                    (metric) =>
+                        metric.target === metricTargetsEnum.peakHourBlueTempoConsumption ||
+                        metric.target === metricTargetsEnum.offPeakHourBlueTempoConsumption,
+                ),
+                ...temperatureOrPmaxMetricsData,
+            ]
+        }
+
+        if (period === 'daily' && !isTempoRedConsumptionEmpty) {
+            return [
+                ...data.filter(
+                    (metric) =>
+                        metric.target === metricTargetsEnum.peakHourRedTempoConsumption ||
+                        metric.target === metricTargetsEnum.offPeakHourRedTempoConsumption,
+                ),
+                ...temperatureOrPmaxMetricsData,
+            ]
+        }
+
+        if (period === 'daily' && !isTempoWhiteConsumptionEmpty) {
+            return [
+                ...data.filter(
+                    (metric) =>
+                        metric.target === metricTargetsEnum.peakHourWhiteTempoConsumption ||
+                        metric.target === metricTargetsEnum.offPeakHourWhiteTempoConsumption,
+                ),
+                ...temperatureOrPmaxMetricsData,
+            ]
+        }
+
+        if (isBasePeakOffPeakConsumptionEmpty && isAllTempoConsumptionEmpty && enphaseOff) {
             const onlyConsumption = getOnlyConsumptionMetrics(data)
 
             if (onlyConsumption) {
@@ -924,6 +989,7 @@ export const filterMetricsData = (
 
     // Base consumption is empty & period is daily & enphase consent is OFF
     const isBaseConsumptionEmpty = isEmptyMetricsData(data, [metricTargetsEnum.baseConsumption])
+
     if (period === 'daily' && isBaseConsumptionEmpty && enphaseOff) {
         return [
             ...data.filter(
@@ -949,17 +1015,38 @@ export const filterMetricsData = (
     }
 
     if (isEuroTarget) {
+        const subscriptionPricesTarget = data.find((metric) => metric.target === metricTargetsEnum.subscriptionPrices)
+
         // When base euro consumption & euro HP & euro HC are empty, we return a custom target: onlyEuroConsumption.
         const isBaseEuroPeakOffPeakConsumptionEmpty = isEmptyMetricsData(data, [
             metricTargetsEnum.baseEuroConsumption,
             metricTargetsEnum.euroPeakHourConsumption,
             metricTargetsEnum.euroOffPeakConsumption,
         ])
-        if (isBaseEuroPeakOffPeakConsumptionEmpty) {
+
+        const isEuroTempoConsumptionEmpty = isEmptyMetricsData(data, [
+            metricTargetsEnum.euroPeakHourBlueTempoConsumption,
+            metricTargetsEnum.euroOffPeakHourBlueTempoConsumption,
+            metricTargetsEnum.euroPeakHourRedTempoConsumption,
+            metricTargetsEnum.euroOffPeakHourRedTempoConsumption,
+            metricTargetsEnum.euroPeakHourWhiteTempoConsumption,
+            metricTargetsEnum.euroOffPeakHourWhiteTempoConsumption,
+        ])
+
+        // When Teempo targets have data, we don't show base & normal HP HC
+        if (!isEuroTempoConsumptionEmpty) {
+            return [
+                ...data.filter(
+                    (metric) =>
+                        metric.target !== metricTargetsEnum.baseEuroConsumption &&
+                        metric.target !== metricTargetsEnum.euroPeakHourConsumption &&
+                        metric.target !== metricTargetsEnum.euroOffPeakConsumption,
+                ),
+            ]
+        }
+
+        if (isBaseEuroPeakOffPeakConsumptionEmpty && isEuroTempoConsumptionEmpty) {
             const onlyEuroConsimption = getOnlyEuroConsumptionMetrics(data)
-            const subscriptionPricesTarget = data.find(
-                (metric) => metric.target === metricTargetsEnum.subscriptionPrices,
-            )
 
             if (onlyEuroConsimption && subscriptionPricesTarget)
                 return [onlyEuroConsimption, subscriptionPricesTarget, ...temperatureOrPmaxMetricsData]

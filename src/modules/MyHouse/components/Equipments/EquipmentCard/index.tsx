@@ -18,16 +18,27 @@ import { FEATURE_COMMING_SOON_TEXT } from 'src/modules/shared'
  * @param root0.number How many equipments are there of that type.
  * @param root0.label Equipment label.
  * @param root0.name Equipment backend name.
+ * @param root0.housingEquipmentId The global equipment id.
+ * @param root0.measurementModes Measurement modes for the Equipment.
  * @param root0.onEquipmentChange Function that handle the equipment number.
  * @param root0.iconComponent Icon component.
  * @returns EquipmentCard JSX.
  */
-export const EquipmentCard = ({ id, number, label, name, onEquipmentChange, iconComponent }: EquipmentCardProps) => {
+export const EquipmentCard = ({
+    id,
+    number,
+    label,
+    name,
+    housingEquipmentId,
+    measurementModes,
+    onEquipmentChange,
+    iconComponent,
+}: EquipmentCardProps) => {
     const theme = useTheme()
     const [equipmentNumber, setEquipmentNumber] = useState<number>(number)
     const { formatMessage } = useIntl()
     const {
-        isOpen: isMeasurementModalIsOpen,
+        isOpen: isMeasurementModalOpen,
         openModal: onOpenMeasurementModal,
         closeModal: onCloseMeasurementModal,
     } = useModal()
@@ -113,9 +124,11 @@ export const EquipmentCard = ({ id, number, label, name, onEquipmentChange, icon
             </Card>
             {isMicrowaveMeasurementButtonShown && (
                 <MicrowaveMeasurement
+                    housingEquipmentId={housingEquipmentId!}
                     equipmentsNumber={number}
-                    isModalOpen={isMeasurementModalIsOpen}
-                    onCloseModal={onCloseMeasurementModal}
+                    measurementModes={measurementModes!}
+                    isMeasurementModalOpen={isMeasurementModalOpen}
+                    onCloseMeasurementModal={onCloseMeasurementModal}
                 />
             )}
         </>

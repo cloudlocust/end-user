@@ -40,8 +40,8 @@ export const NumberField = ({ ...props }: INumberField) => {
             <div
                 className="flex items-center px-4 Mui-disabled"
                 style={{
-                    backgroundColor: disabled ? theme.palette.grey[300] : theme.palette.primary.main,
-                    borderBottom: `1px solid ${disabled ? theme.palette.grey[300] : theme.palette.primary.main}`,
+                    backgroundColor: disabled ? theme.palette.common.white : '',
+                    borderBottom: `1px solid ${disabled ? theme.palette.common.white : theme.palette.primary.main}`,
                 }}
             >
                 {iconLabel ? (
@@ -54,7 +54,7 @@ export const NumberField = ({ ...props }: INumberField) => {
                         {iconLabel}
                     </Icon>
                 ) : iconComponent ? (
-                    <>{iconComponent()}</>
+                    <>{iconComponent(theme, disabled)}</>
                 ) : (
                     <img src={iconPath} alt="icon" className="w-28" />
                 )}
