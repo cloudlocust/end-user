@@ -22,6 +22,7 @@ export const HistogramBarIcon = ({ icon }: HistogramBarIconProps) => {
         <div
             className="h-32 w-32 flex justify-center items-center text-white rounded-full border-2 border-white absolute top-0 right-0"
             style={{ backgroundColor: theme.palette.secondary.main, transform: 'translate(40%, -40%)' }}
+            data-testid="histogram-bar-icon"
         >
             {icon}
         </div>
@@ -45,10 +46,19 @@ export const HistogramBar = ({ isAverageConsumption, consumptionValue, otherCons
             <div
                 className="w-1/2 min-h-44 relative border-2"
                 style={{
-                    height: `${Math.min(100, (100 * consumptionValue) / otherConsumptionValue)}%`,
+                    /**
+                     * The height of the bar is 100 % if consumptionValue >= otherConsumptionValue
+                     * else the height is the percentage of the consumptionValue relative to the otherConsumptionValue.
+                     */
+                    height: `${
+                        consumptionValue >= otherConsumptionValue
+                            ? 100
+                            : (100 * consumptionValue) / otherConsumptionValue
+                    }%`,
                     backgroundColor: isAverageConsumption ? 'transparent' : theme.palette.primary.main,
                     borderColor: theme.palette.primary.main,
                 }}
+                data-testid="histogram-bar"
             >
                 {/* The consumption value */}
                 <Typography color={isAverageConsumption ? 'primary' : 'white'} className="text-center mt-20">
