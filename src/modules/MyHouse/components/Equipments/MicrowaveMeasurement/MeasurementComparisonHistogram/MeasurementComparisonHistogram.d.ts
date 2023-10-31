@@ -17,11 +17,25 @@ export interface HistogramBarProps {
      */
     isAverageConsumption?: boolean
     /**
-     * The value of the consumption.
+     * The value of the consumption (in Watt).
      */
     consumptionValue: number
     /**
-     * The other consumption value (if isAverageConsumption is true it's the user consumption, else it's the average consumption).
+     * The other consumption value  (in Watt, if isAverageConsumption is true it's the user consumption, else it's the average consumption).
      */
     otherConsumptionValue: number
+}
+
+/**
+ * Props for the MeasurementComparisonHistogram component.
+ */
+export interface MeasurementComparisonHistogramProps {
+    /**
+     * The value of the user consumption in Watt.
+     */
+    userConsumption: number
+    /**
+     * The value of the average consumption in Watt.
+     */
+    averageConsumption: number
 }

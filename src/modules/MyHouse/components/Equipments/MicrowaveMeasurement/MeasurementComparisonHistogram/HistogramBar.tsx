@@ -20,8 +20,8 @@ export const HistogramBarIcon = ({ icon }: HistogramBarIconProps) => {
 
     return (
         <div
-            className="h-32 w-32 flex justify-center items-center text-white rounded-full border-2 border-white absolute top-0 right-0"
-            style={{ backgroundColor: theme.palette.secondary.main, transform: 'translate(40%, -40%)' }}
+            className="h-28 w-28 flex justify-center items-center text-white rounded-full border-2 border-white absolute top-0 right-0"
+            style={{ backgroundColor: theme.palette.secondary.main, transform: 'translate(50%, -50%)' }}
             data-testid="histogram-bar-icon"
         >
             {icon}
@@ -44,7 +44,7 @@ export const HistogramBar = ({ isAverageConsumption, consumptionValue, otherCons
     return (
         <div className="h-full flex flex-col items-center justify-end flex-1">
             <div
-                className="w-1/2 min-h-44 relative border-2"
+                className="w-2/5 min-w-36 min-h-44 relative border-2 border-b-0"
                 style={{
                     /**
                      * The height of the bar is 100 % if consumptionValue >= otherConsumptionValue
@@ -61,13 +61,19 @@ export const HistogramBar = ({ isAverageConsumption, consumptionValue, otherCons
                 data-testid="histogram-bar"
             >
                 {/* The consumption value */}
-                <Typography color={isAverageConsumption ? 'primary' : 'white'} className="text-center mt-20">
+                <Typography color={isAverageConsumption ? 'primary' : 'white'} className="text-center mt-14">
                     {consumptionValue} W
                 </Typography>
 
                 {/* The histogram bar icon */}
                 <HistogramBarIcon
-                    icon={isAverageConsumption ? <GroupsOutlinedIcon /> : <PersonOutlineOutlinedIcon />}
+                    icon={
+                        isAverageConsumption ? (
+                            <GroupsOutlinedIcon fontSize="small" />
+                        ) : (
+                            <PersonOutlineOutlinedIcon fontSize="small" />
+                        )
+                    }
                 />
             </div>
         </div>
