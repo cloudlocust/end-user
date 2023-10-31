@@ -441,7 +441,7 @@ describe('getDefaultConsumptionTargets tests', () => {
     test('when enphaseOff is true, it returns consumption metrics', () => {
         enphaseOff = true
         const result = getDefaultConsumptionTargets(enphaseOff)
-        expect(result).toStrictEqual([metricTargetsEnum.consumptionByTariffComponent])
+        expect(result).toStrictEqual([metricTargetsEnum.consumptionByTariffComponent, metricTargetsEnum.consumption])
     })
 
     test('when enphase is false, , it returns auto conso w/ base consumption', () => {

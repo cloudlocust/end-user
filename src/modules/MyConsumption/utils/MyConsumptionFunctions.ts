@@ -557,7 +557,7 @@ export function getRangeV2(period: PeriodEnum) {
  */
 export const getDefaultConsumptionTargets = (isEnphaseOff: boolean): metricTargetType[] => {
     if (isEnphaseOff) {
-        return [metricTargetsEnum.consumptionByTariffComponent]
+        return [metricTargetsEnum.consumptionByTariffComponent, metricTargetsEnum.consumption]
     }
 
     return [metricTargetsEnum.autoconsumption, metricTargetsEnum.consumption]
