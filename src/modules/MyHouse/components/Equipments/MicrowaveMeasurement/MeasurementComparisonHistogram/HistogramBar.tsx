@@ -35,10 +35,10 @@ export const HistogramBarIcon = ({ icon }: HistogramBarIconProps) => {
  * @param root0 N/A.
  * @param root0.isAverageConsumption Boolean indicate if the histogram bar is for the average consumption or not (for the user consumption).
  * @param root0.consumptionValue The value of the consumption.
- * @param root0.otherConsumptionValue The other consumption value (if isAverageConsumption is true it's the user consumption, else it's the average consumption).
+ * @param root0.height The height value for the bar (in percentage %).
  * @returns The component HistogramBar.
  */
-export const HistogramBar = ({ isAverageConsumption, consumptionValue, otherConsumptionValue }: HistogramBarProps) => {
+export const HistogramBar = ({ isAverageConsumption, consumptionValue, height }: HistogramBarProps) => {
     const theme = useTheme()
 
     return (
@@ -46,15 +46,7 @@ export const HistogramBar = ({ isAverageConsumption, consumptionValue, otherCons
             <div
                 className="w-1/2 min-h-44 relative border-2"
                 style={{
-                    /**
-                     * The height of the bar is 100 % if consumptionValue >= otherConsumptionValue
-                     * else the height is the percentage of the consumptionValue relative to the otherConsumptionValue.
-                     */
-                    height: `${
-                        consumptionValue >= otherConsumptionValue
-                            ? 100
-                            : (100 * consumptionValue) / otherConsumptionValue
-                    }%`,
+                    height: `${height}%`,
                     backgroundColor: isAverageConsumption ? 'transparent' : theme.palette.primary.main,
                     borderColor: theme.palette.primary.main,
                 }}
