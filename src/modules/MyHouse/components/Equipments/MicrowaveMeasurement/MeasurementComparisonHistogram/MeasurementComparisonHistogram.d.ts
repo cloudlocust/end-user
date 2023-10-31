@@ -23,7 +23,7 @@ export interface HistogramBarProps {
     /**
      * The other consumption value  (in Watt, if isAverageConsumption is true it's the user consumption, else it's the average consumption).
      */
-    otherConsumptionValue: number
+    height: number
 }
 
 /**
