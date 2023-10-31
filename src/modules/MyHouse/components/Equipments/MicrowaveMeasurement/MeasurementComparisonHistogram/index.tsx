@@ -1,3 +1,4 @@
+import { useMemo } from 'react'
 import { TypographyProps } from '@mui/material/Typography'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import { HistogramBar } from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement/MeasurementComparisonHistogram/HistogramBar'
@@ -20,13 +21,32 @@ export const MeasurementComparisonHistogram = ({
         style: { overflowWrap: 'anywhere' },
     }
 
+    /**
+     * This useMemo hook calculate the heights of the userConsumption bar and the averageConsumption bar
+     * for the comparaison histogram.
+     *
+     * - The height of a bar is 100 if there consumption value is >= to the other bar consumption value.
+     * - Else, the height of the bar is the percentage of there consumption value relative to the other
+     *   bar consumption value.
+     *
+     * The hook return an array of two value, the first one is the userConsumption height value, and
+     * the second one is the averageConsumption height value.
+     */
+    const [userConsumptionBarHeight, averageConsumptionBarHeight] = useMemo(
+        () =>
+            userConsumption >= averageConsumption
+                ? [100, (100 * averageConsumption) / userConsumption]
+                : [(100 * userConsumption) / averageConsumption, 100],
+        [averageConsumption, userConsumption],
+    )
+
     return (
         <div className="w-full max-w-288 mx-auto">
             <div className="h-160 flex border-b-2 border-grey-500">
-                <HistogramBar consumptionValue={userConsumption} otherConsumptionValue={averageConsumption} />
+                <HistogramBar consumptionValue={userConsumption} height={userConsumptionBarHeight} />
                 <HistogramBar
                     consumptionValue={averageConsumption}
-                    otherConsumptionValue={userConsumption}
+                    height={averageConsumptionBarHeight}
                     isAverageConsumption
                 />
             </div>
