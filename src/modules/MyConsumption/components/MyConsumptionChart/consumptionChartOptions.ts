@@ -39,11 +39,19 @@ export const getEchartsConsumptionChartOptions = (
     const xAxisTimestamps = Object.values(timestamps).length ? Object.values(timestamps)[0] : []
     const period = getPeriodFromTimestampsLength(xAxisTimestamps.length)
 
+    let filteredValues: targetTimestampsValuesFormat = {}
+    Object.entries(values).map(([key, arr]) => {
+        if (arr.some((value) => value !== null)) {
+            filteredValues[key as metricTargetType] = arr
+        }
+        return undefined
+    })
+
     return {
         ...getDefaultOptionsEchartsConsumptionChart(theme, isMobile),
         ...getXAxisOptionEchartsConsumptionChart(xAxisTimestamps, isSolarProductionConsentOff, period, theme),
-        ...getYAxisOptionEchartsConsumptionChart(values, period, theme),
-        ...getSeriesOptionEchartsConsumptionChart(values, period, isSolarProductionConsentOff, theme),
+        ...getYAxisOptionEchartsConsumptionChart(filteredValues, period, theme),
+        ...getSeriesOptionEchartsConsumptionChart(filteredValues, period, isSolarProductionConsentOff, theme),
     } as EChartsOption
 }
 

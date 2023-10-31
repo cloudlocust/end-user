@@ -15,20 +15,10 @@ import { PeriodEnum } from 'src/modules/MyConsumption/myConsumptionTypes.d'
  * @param props.value Value of the widget.
  * @param props.unit Unit of the widget.
  * @param props.percentageChange Percentage change of the widget.
- * @param props.enphaseOff Boolean for Enphase Consent is inactive.
  * @param props.period Period of the Widget.
  * @returns WidgetItem Component.
  */
-export function WidgetItem({
-    target,
-    title,
-    infoIcon,
-    value,
-    unit,
-    percentageChange,
-    enphaseOff,
-    period,
-}: IWidgetItemProps) {
+export function WidgetItem({ target, title, infoIcon, value, unit, percentageChange, period }: IWidgetItemProps) {
     return (
         <div className="p-16 flex flex-col flex-1 gap-3 justify-between">
             <div className="flex flex-row justify-between">
