@@ -19,6 +19,7 @@ import { ReactComponent as WashingmachineIcon } from 'src/assets/images/content/
 import { ReactComponent as DryerIcon } from 'src/assets/images/content/housing/equipments/dryer.svg'
 import { API_RESOURCES_URL } from 'src/configs'
 import { SolarPower, Groups } from '@mui/icons-material'
+import { EquipmentOptionsType } from 'src/modules/MyHouse/utils/MyHouseCommonTypes.d'
 
 /**
  * Access rights url.
@@ -351,11 +352,11 @@ export const myEquipmentOptions = [
         name: 'solarpanel',
         labelTitle: 'Panneaux solaire',
         // eslint-disable-next-line jsdoc/require-jsdoc
-        iconComponent: (theme: Theme, isDisabled?: boolean) => (
+        iconComponent: (isDisabled?: boolean) => (
             <SolarPower color={isDisabled ? 'disabled' : 'primary'} fontSize="large" />
         ),
     },
-]
+] as EquipmentOptionsType[]
 
 /**
  * Equipment Name type.
