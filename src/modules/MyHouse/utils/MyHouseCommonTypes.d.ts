@@ -17,3 +17,25 @@ export interface ScopesAccessRightsType {
      */
     scopes: ScopesTypesEnum[]
 }
+
+/**
+ * Equipment options type.
+ */
+export interface EquipmentOptionsType {
+    /**
+     * Name.
+     */
+    name: string
+    /**
+     * Label Title.
+     */
+    labelTitle: string
+    /**
+     * IconComponent.
+     */
+    iconComponent: IconComponentType
+    /**
+     * Disable Decrement.
+     */
+    disableDecrement: boolean
+}
