@@ -359,7 +359,7 @@ describe('MyConsumptionContainer test', () => {
         await waitFor(() => {
             expect(mockGetMetricsWithParams).toHaveBeenCalledWith({
                 ...mockGetMetricsWithParamsValues,
-                targets: [metricTargetsEnum.consumptionByTariffComponent],
+                targets: [metricTargetsEnum.consumptionByTariffComponent, metricTargetsEnum.consumption],
             })
         })
     })
