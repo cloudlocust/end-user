@@ -270,6 +270,7 @@ export const eurosIdleConsumptionTargets: metricTargetType[] = [
 export const eurosConsumptionTargets: metricTargetType[] = [
     metricTargetsEnum.euroConsumptionByTariffComponent,
     metricTargetsEnum.eurosConsumption,
+    metricTargetsEnum.subscriptionPrices,
 ]
 
 /**
