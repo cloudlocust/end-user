@@ -7,7 +7,6 @@ import {
     getTargetYAxisIndexFromTargetName,
     getXAxisOptionEchartsConsumptionChart,
     getYAxisOptionEchartsConsumptionChart,
-    getPeriodFromTimestampsLength,
 } from 'src/modules/MyConsumption/components/MyConsumptionChart/consumptionChartOptions'
 import { metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
 import { TRANSPARENT_COLOR } from 'src/modules/MyConsumption/utils/myConsumptionVariables'
@@ -217,33 +216,6 @@ describe('Test echartsConsumptionOptions', () => {
             const resultStack = getStackTargetSeriesEchartsConsumptionChart(target, theme, isSolarProductionConsentOff)
 
             expect(resultStack).toStrictEqual(stack)
-        })
-    })
-
-    test('getPeriodFromTimestampsLength', () => {
-        const caseList = [
-            {
-                timeStampLength: 1440,
-                period: PeriodEnum.DAILY,
-            },
-            {
-                timeStampLength: 7,
-                period: PeriodEnum.WEEKLY,
-            },
-            {
-                timeStampLength: 30,
-                period: PeriodEnum.MONTHLY,
-            },
-            {
-                timeStampLength: 12,
-                period: PeriodEnum.YEARLY,
-            },
-        ]
-        caseList.forEach(({ timeStampLength, period }) => {
-            // Result
-            const resultPeriod = getPeriodFromTimestampsLength(timeStampLength)
-
-            expect(resultPeriod).toStrictEqual(period)
         })
     })
 

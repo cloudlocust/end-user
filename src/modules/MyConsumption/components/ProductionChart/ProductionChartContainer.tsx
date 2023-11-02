@@ -119,7 +119,7 @@ export const ProductionChartContainer = ({
                     </TypographyFormatMessage>
                 </motion.div>
             </div>
-            <EchartsProductionChart data={data} />
+            <EchartsProductionChart period={period} data={data} />
         </div>
     )
 }

@@ -24,6 +24,7 @@ dayjs.extend(timezone)
  * @param values Values datapoints.
  * @param theme Theme used for colors, fonts and backgrounds purposes.
  * @param isMobile Is Mobile view.
+ * @param period Period type.
  * @returns Echarts Production Option.
  */
 export const getEchartsProductionChartOptions = (
@@ -31,10 +32,10 @@ export const getEchartsProductionChartOptions = (
     values: targetTimestampsValuesFormat,
     theme: Theme,
     isMobile: boolean,
+    period: periodType,
 ) => {
-    if (!Object.values(timestamps).length || !Object.values(values).length) return {}
-    const xAxisTimestamps = Object.values(timestamps).length ? Object.values(timestamps)[0] : []
-    const period = getPeriodFromTimestampsLength(xAxisTimestamps.length)
+    const xAxisTimestamps = Object.values(timestamps).length ? Object.values(timestamps)[0] : [0]
+    // const period = getPeriodFromTimestampsLength(xAxisTimestamps.length)
 
     return {
         ...getDefaultOptionsEchartsProductionChart(theme, isMobile),
@@ -194,22 +195,6 @@ export const getXAxisOptionEchartsProductionChart = (xAxisTimestamps: number[], 
             },
         ],
     } as EChartsOption)
-
-/**
- * Get Period From timestamps length.
- *
- * @param length Length of timestamps.
- * @returns Get the periodType from the length of timestamps.
- */
-export const getPeriodFromTimestampsLength = (length: number): periodType => {
-    if (length <= 7) {
-        return PeriodEnum.WEEKLY
-    } else if (length <= 12) {
-        return PeriodEnum.YEARLY
-    } else if (length <= 31) {
-        return PeriodEnum.MONTHLY
-    } else return PeriodEnum.DAILY
-}
 
 /**
  * Get XAxis categories Data.
@@ -400,13 +385,6 @@ export const getYAxisOptionEchartsProductionChart = (
             // label position
             position: 'left',
             splitLine: {
-                // TODO Remove once reponsive of daily period.
-                // interval(index, value) {
-                //     console.log('🚀 ~ file: echartsConsumptionChartOptions.ts:149 ~ interval ~ value:', value)
-                //     console.log('🚀 ~ file: echartsConsumptionChartOptions.ts:149 ~ interval ~ index:', index)
-                //     return 0
-                // },
-
                 show: true,
                 lineStyle: {
                     color: theme.palette.primary.contrastText,

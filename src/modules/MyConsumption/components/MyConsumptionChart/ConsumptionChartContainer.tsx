@@ -153,7 +153,8 @@ export const ConsumptionChartContainer = ({
         }
         // Only use data & targets as dependencies.
         // TODO REMOVE this exhausitve-deps due to filteredMetricsData
-    }, [data, isSolarProductionConsentOff, period, targets])
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [data, targets])
 
     /**
      * Handler when clicking on temperature or pMax menu.

@@ -7,7 +7,6 @@ import {
     getTargetYAxisIndexFromTargetName,
     getXAxisOptionEchartsProductionChart,
     getYAxisOptionEchartsProductionChart,
-    getPeriodFromTimestampsLength,
 } from 'src/modules/MyConsumption/components/ProductionChart/productionChartOptions'
 import { metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
 import { createTheme } from '@mui/material/styles'
@@ -148,33 +147,6 @@ describe('Test echartsProductionOptions', () => {
             const resultStack = getStackTargetSeriesEchartsProductionChart()
 
             expect(resultStack).toStrictEqual(stack)
-        })
-    })
-
-    test('getPeriodFromTimestampsLength', () => {
-        const caseList = [
-            {
-                timeStampLength: 1440,
-                period: PeriodEnum.DAILY,
-            },
-            {
-                timeStampLength: 7,
-                period: PeriodEnum.WEEKLY,
-            },
-            {
-                timeStampLength: 30,
-                period: PeriodEnum.MONTHLY,
-            },
-            {
-                timeStampLength: 12,
-                period: PeriodEnum.YEARLY,
-            },
-        ]
-        caseList.forEach(({ timeStampLength, period }) => {
-            // Result
-            const resultPeriod = getPeriodFromTimestampsLength(timeStampLength)
-
-            expect(resultPeriod).toStrictEqual(period)
         })
     })
 

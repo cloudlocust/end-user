@@ -167,22 +167,6 @@ describe('MyConsumptionContainer test', () => {
     beforeEach(() => {
         setupJestCanvasMock()
     })
-    test('onLoad getMetrics with isSolarProductionConsentOff false is called two times, one with default targets of autoconsumption and then all targets.', async () => {
-        echartsConsumptionChartContainerProps.period = mockPeriod
-        const { getByText } = reduxedRender(
-            <Router>
-                <ConsumptionChartContainer {...echartsConsumptionChartContainerProps} />
-            </Router>,
-            { initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[0] } } },
-        )
-
-        // First time, getMetrics is called with only two targets
-        await waitFor(() => {
-            expect(mockGetMetricsWithParams).toHaveBeenCalledWith(mockGetMetricsWithParamsValues)
-        })
-
-        expect(() => getByText(CONSUMPTION_ENEDIS_SGE_WARNING_TEXT)).toThrow()
-    })
     test('Different period props, When consumption chart.', async () => {
         const consumptionTitleCases = [
             {
@@ -214,6 +198,22 @@ describe('MyConsumptionContainer test', () => {
             expect(queryAllByText('Ma puissance')).toBeTruthy()
             expect(getByText(text)).toBeTruthy()
         })
+    })
+    test('onLoad getMetrics with isSolarProductionConsentOff false is called two times, one with default targets of autoconsumption and then all targets.', async () => {
+        mockPeriod = 'daily'
+        const { getByText } = reduxedRender(
+            <Router>
+                <ConsumptionChartContainer {...echartsConsumptionChartContainerProps} />
+            </Router>,
+            { initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[0] } } },
+        )
+
+        // First time, getMetrics is called with only two targets
+        await waitFor(() => {
+            expect(mockGetMetricsWithParams).toHaveBeenCalledWith(mockGetMetricsWithParamsValues)
+        })
+
+        expect(() => getByText(CONSUMPTION_ENEDIS_SGE_WARNING_TEXT)).toThrow()
     })
     test('Different period props, When euros consumption chart.', async () => {
         const consumptionTitleCases = [
@@ -362,6 +362,7 @@ describe('MyConsumptionContainer test', () => {
                 targets: [metricTargetsEnum.consumptionByTariffComponent, metricTargetsEnum.consumption],
             })
         })
+        echartsConsumptionChartContainerProps.isSolarProductionConsentOff = false
     })
 
     test('When manual contract filling is disabled, missing contract link does not show.', () => {
