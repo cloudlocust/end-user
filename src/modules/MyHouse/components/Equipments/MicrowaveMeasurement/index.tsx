@@ -1,41 +1,18 @@
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 import Modal from '@mui/material/Modal'
 import IconButton from '@mui/material/IconButton'
 import Stepper from '@mui/material/Stepper'
 import Step from '@mui/material/Step'
 import StepLabel from '@mui/material/StepLabel'
-import Button from '@mui/material/Button'
-import Typography from '@mui/material/Typography'
 import { useTheme } from '@mui/material/styles'
 import CloseIcon from '@mui/icons-material/Close'
 import { InfosPage } from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement/InfosPage'
 import { ConfigurationStep } from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement/ConfigurationStep'
 import { EquipmentStartupStep } from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement/EquipmentStartupStep'
 import { MeasurementProcessStep } from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement/MeasurementProcessStep'
-import {
-    MicrowaveMeasurementProps,
-    TestStepPageProps,
-} from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement/MicrowaveMeasurement'
+import { MeasurementResultStep } from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement/MeasurementResultStep'
+import { MicrowaveMeasurementProps } from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement/MicrowaveMeasurement'
 import { useMicrowaveMeasurement } from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement/MicrowaveMeasurementHook'
-
-/**
- * TestStepPage component.
- *
- * @param root0 N/A.
- * @param root0.step The state responsible for storing the current step.
- * @param root0.stepSetter The setter linked to the state step.
- * @returns The TestStepPage component.
- */
-const TestStepPage = ({ step, stepSetter }: TestStepPageProps) => (
-    <div className="min-h-360 flex flex-col justify-center items-center gap-40">
-        <Typography variant="h4">Step {step}</Typography>
-        {step !== 4 ? (
-            <Button variant="contained" onClick={() => stepSetter(step + 1)}>
-                Next
-            </Button>
-        ) : null}
-    </div>
-)
 
 /**
  * MicrowaveMeasurement component.
@@ -83,6 +60,17 @@ export const MicrowaveMeasurement = ({
         startMeasurement,
     } = useMicrowaveMeasurement(housingEquipmentId, measurementMode, microwaveNumber, measurementMaxDuration)
 
+    /**
+     * Handle closing the measurement Modal.
+     */
+    const handleCloseMeasurementModal = useCallback(async () => {
+        await setMeasurementStatus(null)
+        setCurrentStep(0)
+        setMicrowaveNumber(0)
+        setMeasurementMode('')
+        onCloseMeasurementModal()
+    }, [onCloseMeasurementModal, setMeasurementStatus])
+
     const stepsContent = [
         <ConfigurationStep
             equipmentsNumber={equipmentsNumber}
@@ -102,24 +90,17 @@ export const MicrowaveMeasurement = ({
             startMeasurement={startMeasurement}
             stepSetter={setCurrentStep}
         />,
-        <TestStepPage step={currentStep} stepSetter={setCurrentStep} />,
+        <MeasurementResultStep
+            measurementMode={measurementMode}
+            measurementResult={measurementResult}
+            closeMeasurementModal={handleCloseMeasurementModal}
+        />,
     ]
-
-    /**
-     * Handle closing the measurement Modal.
-     */
-    const handleCloseModal = async () => {
-        await setMeasurementStatus(null)
-        setCurrentStep(0)
-        setMicrowaveNumber(0)
-        setMeasurementMode('')
-        onCloseMeasurementModal()
-    }
 
     return (
         <Modal
             open={isMeasurementModalOpen}
-            onClose={handleCloseModal}
+            onClose={handleCloseMeasurementModal}
             sx={{
                 display: 'flex',
                 justifyContent: 'center',
@@ -130,7 +111,7 @@ export const MicrowaveMeasurement = ({
                 {/* The closing button */}
                 <IconButton
                     aria-label="close"
-                    onClick={handleCloseModal}
+                    onClick={handleCloseMeasurementModal}
                     sx={{
                         position: 'absolute',
                         right: 6,
