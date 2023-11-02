@@ -7,11 +7,13 @@ import { applyCamelCase } from 'src/common/react-platform-components'
 import { metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
 import { ProductionChartProps } from 'src/modules/MyConsumption/components/ProductionChart/ProductionChartTypes.d'
 import { setupJestCanvasMock } from 'jest-canvas-mock'
+import { periodType } from 'src/modules/MyConsumption/myConsumptionTypes.d'
 
 const TEST_SUCCESS_WEEK_METRICS = applyCamelCase(MOCK_WEEK_METRICS([metricTargetsEnum.totalProduction]))
 // eslint-disable-next-line jsdoc/require-jsdoc
 const propsMyProductionChart = {
     data: TEST_SUCCESS_WEEK_METRICS,
+    period: 'daily' as periodType,
 } as ProductionChartProps
 
 describe('Test MyProductionChart', () => {
