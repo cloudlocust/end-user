@@ -8,7 +8,7 @@ export interface CustomRadioGroupProps extends BoxProps {
      * The parameters of the CustomRadioButton children components.
      */
     // eslint-disable-next-line jsdoc/require-jsdoc
-    elements: {
+    elements?: {
         /**
          * The value of the CustomRadioButton component.
          */
