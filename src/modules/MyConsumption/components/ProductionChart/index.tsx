@@ -16,9 +16,10 @@ export const productionChartClassName = 'production-chart-classname'
  *
  * @param props N/A.
  * @param props.data Data received from backend of format IMetric[].
+ * @param props.period Period Type.
  * @returns EchartsProductionChart Component.
  */
-const ProductionChart = ({ data }: ProductionChartProps) => {
+const ProductionChart = ({ data, period }: ProductionChartProps) => {
     const theme = useTheme()
     const { timestamps, values } = useMemo(() => {
         return formatMetricsDataToTimestampsValues(data)
@@ -28,8 +29,8 @@ const ProductionChart = ({ data }: ProductionChartProps) => {
 
     // EchartsProductionChart Option.
     const option = useMemo(() => {
-        return getEchartsProductionChartOptions(timestamps, values, theme, isMobile)
-    }, [timestamps, values, theme, isMobile])
+        return getEchartsProductionChartOptions(timestamps, values, theme, isMobile, period)
+    }, [timestamps, values, theme, isMobile, period])
 
     return (
         <>

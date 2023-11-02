@@ -44,4 +44,8 @@ export interface ProductionChartProps {
      * Data as array of metrics to be shown in chart.
      */
     data: IMetric[]
+    /**
+     * Period Type.
+     */
+    period: periodType
 }
