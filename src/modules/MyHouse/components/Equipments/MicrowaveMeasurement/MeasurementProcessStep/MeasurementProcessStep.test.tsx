@@ -7,8 +7,9 @@ import { measurementStatusEnum } from 'src/modules/MyHouse/components/Equipments
 
 const HEADER_TEXT_PENDING_OR_NULL = 'Démarrage de la mesure'
 const HEADER_TEXT_IN_PROGRESS = 'Mesure en cours'
-const HEADER_TEXT_SUCCESS = 'Mesure terminée avec succès'
+const HEADER_TEXT_SUCCESS = 'Mesure effectuée avec succès'
 const HEADER_TEXT_FAILED = 'Mesure terminée avec échec'
+const BUTTON_TEXT = 'Voir le résultat'
 
 let mockStepSetter: jest.Mock<any, any>
 let mockStartMeasurement: jest.Mock<any, any>
@@ -40,7 +41,7 @@ describe('MeasurementProcessStep Component', () => {
         const progressCircle = screen.getByRole('progressbar')
         expect(progressCircle).toBeInTheDocument()
 
-        const buttonFinish = screen.getByText('Terminer')
+        const buttonFinish = screen.getByText(BUTTON_TEXT)
         expect(buttonFinish).toBeInTheDocument()
         expect(buttonFinish).toBeDisabled()
     })
@@ -62,7 +63,7 @@ describe('MeasurementProcessStep Component', () => {
         const loadingMessage = screen.getByText('En attente')
         expect(loadingMessage).toBeInTheDocument()
 
-        const buttonFinish = screen.getByText('Terminer')
+        const buttonFinish = screen.getByText(BUTTON_TEXT)
         expect(buttonFinish).toBeInTheDocument()
         expect(buttonFinish).toBeDisabled()
     })
@@ -85,7 +86,7 @@ describe('MeasurementProcessStep Component', () => {
         const timeCounter = screen.getByText(/^[0-9][0-9] : [0-5][0-9]$/)
         expect(timeCounter).toBeInTheDocument()
 
-        const buttonFinish = screen.getByText('Terminer')
+        const buttonFinish = screen.getByText(BUTTON_TEXT)
         expect(buttonFinish).toBeInTheDocument()
         expect(buttonFinish).toBeDisabled()
     })
@@ -107,11 +108,11 @@ describe('MeasurementProcessStep Component', () => {
         const successMessage = screen.getByText('Félicitations !')
         expect(successMessage).toBeInTheDocument()
 
-        const buttonFinish = screen.getByText('Terminer')
+        const buttonFinish = screen.getByText(BUTTON_TEXT)
         expect(buttonFinish).toBeInTheDocument()
         expect(buttonFinish).toBeEnabled()
 
-        // Calling stepSetter function on clicking on the button "Terminer"
+        // Calling stepSetter function on clicking on the button "Voir le résultat"
         userEvent.click(buttonFinish)
         await waitFor(() => {
             expect(mockStepSetter).toHaveBeenCalledWith(4)
