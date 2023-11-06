@@ -122,7 +122,7 @@ describe('MeasurementProcessStep Component', () => {
         reduxedRender(
             <MeasurementProcessStep
                 {...MeasurementProcessStepPropsDefaultValues}
-                measurementStatus={{ status: measurementStatusEnum.FAILED }}
+                measurementStatus={{ status: measurementStatusEnum.FAILED, failureMessage: 'Failur message test' }}
             />,
         )
 
@@ -135,11 +135,11 @@ describe('MeasurementProcessStep Component', () => {
         const successMessage = screen.getByText('La mesure a échoué')
         expect(successMessage).toBeInTheDocument()
 
-        const buttonRetest = screen.getByText('Relancer le test')
+        const buttonRetest = screen.getByText('Recommencer la mesure')
         expect(buttonRetest).toBeInTheDocument()
         expect(buttonRetest).toBeEnabled()
 
-        // Calling startMeasurement function on clicking on the button "Relancer le test"
+        // Calling startMeasurement function on clicking on the button "Recommencer la mesure"
         userEvent.click(buttonRetest)
         await waitFor(() => {
             expect(mockStartMeasurement).toHaveBeenCalled()

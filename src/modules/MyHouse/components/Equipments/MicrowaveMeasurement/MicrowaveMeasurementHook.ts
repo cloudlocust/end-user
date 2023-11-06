@@ -77,7 +77,16 @@ export function useMicrowaveMeasurement(
     const updateStatus = useCallback(async () => {
         const newStatus = await getMeasurementStatus()
         if (newStatus === null) setMeasurementStatus(null)
-        else setMeasurementStatus({ status: newStatus.status, updatedAt: newStatus.updatedAt })
+        else
+            setMeasurementStatus({
+                status: newStatus.status,
+                updatedAt: newStatus.updatedAt,
+                ...(newStatus.status === measurementStatusEnum.FAILED
+                    ? {
+                          failureMessage: 'Zut ! Votre nrLINK n’a pas détecté la mise en route de votre micro-onde…',
+                      }
+                    : {}),
+            })
     }, [getMeasurementStatus])
 
     /**
@@ -110,15 +119,11 @@ export function useMicrowaveMeasurement(
                     setMeasurementStatus({ status: measurementStatusEnum.PENDING })
                 })
                 .catch((error) => {
-                    setMeasurementStatus({ status: measurementStatusEnum.FAILED })
-                    const errorMessage = error?.response?.data?.detail || 'Erreur lors du lancement du test de mesure'
-                    enqueueSnackbar(
-                        formatMessage({
-                            id: errorMessage,
-                            defaultMessage: errorMessage,
-                        }),
-                        { autoHideDuration: 5000, variant: 'error' },
-                    )
+                    setMeasurementStatus({
+                        status: measurementStatusEnum.FAILED,
+                        failureMessage:
+                            'Votre nrLINK ne semble pas connecté ! Assurez-vous de le reconnecter avant de recommencer la mesure…',
+                    })
                 })
         }
     }, [equipmentNumber, housingEquipmentId, measurementMode, enqueueSnackbar, formatMessage, getMeasurementStatus])

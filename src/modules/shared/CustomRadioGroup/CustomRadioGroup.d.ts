@@ -19,10 +19,6 @@ export interface CustomRadioGroupProps extends BoxProps {
         label: string
     }[]
     /**
-     * The default value for the radio group.
-     */
-    defaultValue?: string
-    /**
      * Function triggered when the radio group value change.
      */
     onValueChange?: (v: string) => void

@@ -64,6 +64,10 @@ export interface MeasurementStatusStateType {
      * The time of the last update of the measurement status.
      */
     updatedAt?: string
+    /**
+     * The error message to show when the status is FAILED.
+     */
+    failureMessage?: string
 }
 
 /**
