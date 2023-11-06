@@ -4,10 +4,10 @@ import { Card, CardContent, Button, useTheme, Typography, Icon, Tooltip } from '
 import { EquipmentCardProps } from 'src/modules/MyHouse/components/Equipments/EquipmentCard/equipmentsCard'
 import { useIntl } from 'src/common/react-platform-translation'
 import { useState } from 'react'
-import { ReactComponent as CustomEquipmentIcon } from 'src/assets/images/content/housing/equipments/custom-equipment.svg'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import { isEquipmentMeasurementFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
 import { FEATURE_COMMING_SOON_TEXT } from 'src/modules/shared'
+import { DashboardCustomizeOutlined } from '@mui/icons-material'
 
 /**
  * Equipment Card component.
@@ -56,7 +56,7 @@ export const EquipmentCard = ({
                         {iconComponent ? (
                             iconComponent(theme)
                         ) : (
-                            <CustomEquipmentIcon fill={theme.palette.primary.main} width={'35'} height={'35'} />
+                            <DashboardCustomizeOutlined color="primary" fontSize="large" />
                         )}
                     </div>
                     <div className="flex flex-row w-full justify-between">

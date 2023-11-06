@@ -66,7 +66,6 @@ export function useMetrics(initialState: getMetricType, immediate: boolean = fal
             setData(response.data)
         } catch (error) {
             if (isCancel(error)) return
-            setIsMetricsLoading(false)
             enqueueSnackbar(
                 formatMessage({
                     id: GET_METRICS_ERROR_MESSAGE,
@@ -77,6 +76,7 @@ export function useMetrics(initialState: getMetricType, immediate: boolean = fal
                     autoHideDuration: 5000,
                 },
             )
+            setData([])
         }
         setIsMetricsLoading(false)
     }, [enqueueSnackbar, filters, formatMessage, isCancel, metricsInterval, range, source, targets])
@@ -140,7 +140,6 @@ export function useMetrics(initialState: getMetricType, immediate: boolean = fal
                 })
                 setData(response.data)
             } catch (error) {
-                setIsMetricsLoading(false)
                 enqueueSnackbar(
                     formatMessage({
                         id: GET_METRICS_ERROR_MESSAGE,
@@ -151,6 +150,7 @@ export function useMetrics(initialState: getMetricType, immediate: boolean = fal
                         autoHideDuration: 5000,
                     },
                 )
+                setData([])
             }
             setIsMetricsLoading(false)
         },

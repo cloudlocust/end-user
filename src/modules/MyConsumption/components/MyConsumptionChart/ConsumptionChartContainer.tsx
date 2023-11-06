@@ -148,6 +148,8 @@ export const ConsumptionChartContainer = ({
                 if (fileteredMetricsData) chartData = fileteredMetricsData
             }
             setConsumptionChartData(chartData)
+        } else {
+            setConsumptionChartData(data)
         }
         // Only use data & targets as dependencies.
         // TODO REMOVE this exhausitve-deps due to filteredMetricsData

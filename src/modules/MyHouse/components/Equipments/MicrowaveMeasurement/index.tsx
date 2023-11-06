@@ -54,7 +54,7 @@ export const MicrowaveMeasurement = ({
 
     const {
         measurementStatus,
-        measurementResult,
+        // measurementResult,
         setMeasurementStatus,
         getTimeFromStatusLastUpdate,
         startMeasurement,
@@ -84,7 +84,6 @@ export const MicrowaveMeasurement = ({
         <EquipmentStartupStep measurementMode={measurementMode} stepSetter={setCurrentStep} />,
         <MeasurementProcessStep
             measurementStatus={measurementStatus}
-            measurementResult={measurementResult}
             measurementMaxDuration={measurementMaxDuration}
             getTimeFromStatusLastUpdate={getTimeFromStatusLastUpdate}
             startMeasurement={startMeasurement}
