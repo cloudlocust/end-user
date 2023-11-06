@@ -24,6 +24,7 @@ dayjs.extend(timezone)
  * @param values Values datapoints.
  * @param theme Theme used for colors, fonts and backgrounds purposes.
  * @param isMobile Is Mobile view.
+ * @param period Period type.
  * @returns Echarts Production Option.
  */
 export const getEchartsProductionChartOptions = (
@@ -31,10 +32,10 @@ export const getEchartsProductionChartOptions = (
     values: targetTimestampsValuesFormat,
     theme: Theme,
     isMobile: boolean,
+    period: periodType,
 ) => {
-    if (!Object.values(timestamps).length || !Object.values(values).length) return {}
-    const xAxisTimestamps = Object.values(timestamps).length ? Object.values(timestamps)[0] : []
-    const period = getPeriodFromTimestampsLength(xAxisTimestamps.length)
+    const xAxisTimestamps = Object.values(timestamps).length ? Object.values(timestamps)[0] : [0]
+    // const period = getPeriodFromTimestampsLength(xAxisTimestamps.length)
 
     return {
         ...getDefaultOptionsEchartsProductionChart(theme, isMobile),
@@ -99,7 +100,11 @@ export const getSeriesOptionEchartsProductionChart = (
     return {
         series: Object.keys(values).map((target) => {
             const targetYAxisIndex = getTargetYAxisIndexFromTargetName(target as metricTargetsEnum)
-            const colorTargetSeries = getColorTargetSeriesEchartsProductionChart(target as metricTargetsEnum, theme)
+            const colorTargetSeries = getColorTargetSeriesEchartsProductionChart(
+                target as metricTargetsEnum,
+                theme,
+                values,
+            )
             // When the series is Transparent we hide it through type 'line' and symbole none, so that it won't interject with the already bar and line charts additional to its own stack name.
             const typeTargetSeries: EChartsOption['series'] =
                 colorTargetSeries === TRANSPARENT_COLOR
@@ -192,22 +197,6 @@ export const getXAxisOptionEchartsProductionChart = (xAxisTimestamps: number[], 
     } as EChartsOption)
 
 /**
- * Get Period From timestamps length.
- *
- * @param length Length of timestamps.
- * @returns Get the periodType from the length of timestamps.
- */
-export const getPeriodFromTimestampsLength = (length: number): periodType => {
-    if (length <= 7) {
-        return PeriodEnum.WEEKLY
-    } else if (length <= 12) {
-        return PeriodEnum.YEARLY
-    } else if (length <= 31) {
-        return PeriodEnum.MONTHLY
-    } else return PeriodEnum.DAILY
-}
-
-/**
  * Get XAxis categories Data.
  *
  * @description
@@ -233,14 +222,37 @@ const getXAxisCategoriesData = (timestamps: number[], period: periodType) => {
  *
  * @param target MetricTarget Chart.
  * @param theme Current MUI Theme Applied.
+ * @param values Data values to be able to know if we show production or not.
  * @returns Color of the given target series in EchartsProductionChart.
  */
-export const getColorTargetSeriesEchartsProductionChart = (target: metricTargetsEnum, theme: Theme) => {
+export const getColorTargetSeriesEchartsProductionChart = (
+    target: metricTargetsEnum,
+    theme: Theme,
+    values: targetTimestampsValuesFormat,
+) => {
+    // by default we show the production (it's not transparent)
+    let isTotalProductionTransparent = false
+
+    // map target values, and see if we find data in autoconsmption or injected
+    // if so then we don't show the total production
+    Object.entries(values).map(([target, targetValues]) => {
+        // !isTotalProductionTransparent is to know if we already found data in one of the two metrics
+        // if so then we already know that we don't show the total and made it to transparent, no need to continue
+        if (
+            !isTotalProductionTransparent &&
+            (target === metricTargetsEnum.injectedProduction || target === metricTargetsEnum.autoconsumption)
+        ) {
+            isTotalProductionTransparent = targetValues.some((value) => value !== null)
+        }
+        // just for eslint does not scream at us
+        return undefined
+    })
+
     switch (target) {
         case metricTargetsEnum.autoconsumption:
             return '#BEECDB'
         case metricTargetsEnum.totalProduction:
-            return '#C8D210'
+            return isTotalProductionTransparent ? TRANSPARENT_COLOR : '#C8D210'
         case metricTargetsEnum.injectedProduction:
             return '#6E9A8B'
         default:
@@ -373,13 +385,6 @@ export const getYAxisOptionEchartsProductionChart = (
             // label position
             position: 'left',
             splitLine: {
-                // TODO Remove once reponsive of daily period.
-                // interval(index, value) {
-                //     console.log('🚀 ~ file: echartsConsumptionChartOptions.ts:149 ~ interval ~ value:', value)
-                //     console.log('🚀 ~ file: echartsConsumptionChartOptions.ts:149 ~ interval ~ index:', index)
-                //     return 0
-                // },
-
                 show: true,
                 lineStyle: {
                     color: theme.palette.primary.contrastText,

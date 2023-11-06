@@ -7,12 +7,14 @@ import { applyCamelCase } from 'src/common/react-platform-components'
 import { metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
 import { ConsumptionChartProps } from 'src/modules/MyConsumption/components/MyConsumptionChart/MyConsumptionChartTypes.d'
 import { setupJestCanvasMock } from 'jest-canvas-mock'
+import { periodType } from 'src/modules/MyConsumption/myConsumptionTypes.d'
 
 const TEST_SUCCESS_WEEK_METRICS = applyCamelCase(MOCK_WEEK_METRICS([metricTargetsEnum.consumption]))
 // eslint-disable-next-line jsdoc/require-jsdoc
 const propsMyConsumptionChart = {
     data: TEST_SUCCESS_WEEK_METRICS,
     isSolarProductionConsentOff: false,
+    period: 'daily' as periodType,
 } as ConsumptionChartProps
 
 describe('Test MyConsumptionChart', () => {

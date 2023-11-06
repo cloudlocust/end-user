@@ -1,3 +1,5 @@
+import { IconComponentType } from 'src/modules/MyHouse/components/Equipments/EquipmentCard/equipmentsCard'
+
 /**
  * Scope types Enum.
  */
@@ -16,4 +18,26 @@ export interface ScopesAccessRightsType {
      * Scopes access rights.
      */
     scopes: ScopesTypesEnum[]
+}
+
+/**
+ * Equipment options type.
+ */
+export interface EquipmentOptionsType {
+    /**
+     * Name.
+     */
+    name: string
+    /**
+     * Label Title.
+     */
+    labelTitle: string
+    /**
+     * IconComponent.
+     */
+    iconComponent: IconComponentType
+    /**
+     * Disable Decrement.
+     */
+    disableDecrement: boolean
 }

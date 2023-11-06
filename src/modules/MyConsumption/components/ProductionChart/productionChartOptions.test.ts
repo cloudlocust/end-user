@@ -7,13 +7,13 @@ import {
     getTargetYAxisIndexFromTargetName,
     getXAxisOptionEchartsProductionChart,
     getYAxisOptionEchartsProductionChart,
-    getPeriodFromTimestampsLength,
 } from 'src/modules/MyConsumption/components/ProductionChart/productionChartOptions'
 import { metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
 import { createTheme } from '@mui/material/styles'
 import { PeriodEnum } from 'src/modules/MyConsumption/myConsumptionTypes.d'
 import { productionTargetYAxisIndexEnum } from 'src/modules/MyConsumption/components/ProductionChart/ProductionChartTypes.d'
 import { EChartsOption } from 'echarts-for-react'
+import { TRANSPARENT_COLOR } from 'src/modules/MyConsumption/utils/myConsumptionVariables'
 
 describe('Test echartsProductionOptions', () => {
     const theme = createTheme({
@@ -27,7 +27,7 @@ describe('Test echartsProductionOptions', () => {
         },
     })
 
-    test('getColorTargetSeriesEchartsConsumptionChart', () => {
+    test('getColorTargetSeriesEchartsConsumptionChart, production has color', () => {
         const caseList = [
             { target: metricTargetsEnum.autoconsumption, color: '#BEECDB' },
             { target: metricTargetsEnum.totalProduction, color: '#C8D210' },
@@ -35,7 +35,25 @@ describe('Test echartsProductionOptions', () => {
         ]
         caseList.forEach(({ color, target }) => {
             // Result
-            const resultColor = getColorTargetSeriesEchartsProductionChart(target, theme)
+            const resultColor = getColorTargetSeriesEchartsProductionChart(target, theme, {
+                [metricTargetsEnum.totalProduction]: [100, 200, 300],
+            })
+
+            expect(resultColor).toStrictEqual(color)
+        })
+    })
+
+    test('getColorTargetSeriesEchartsConsumptionChart, production transparent', () => {
+        const caseList = [
+            { target: metricTargetsEnum.autoconsumption, color: '#BEECDB' },
+            { target: metricTargetsEnum.totalProduction, color: TRANSPARENT_COLOR },
+            { target: metricTargetsEnum.injectedProduction, color: '#6E9A8B' },
+        ]
+        caseList.forEach(({ color, target }) => {
+            // Result
+            const resultColor = getColorTargetSeriesEchartsProductionChart(target, theme, {
+                [metricTargetsEnum.autoconsumption]: [100, 200, 300],
+            })
 
             expect(resultColor).toStrictEqual(color)
         })
@@ -129,33 +147,6 @@ describe('Test echartsProductionOptions', () => {
             const resultStack = getStackTargetSeriesEchartsProductionChart()
 
             expect(resultStack).toStrictEqual(stack)
-        })
-    })
-
-    test('getPeriodFromTimestampsLength', () => {
-        const caseList = [
-            {
-                timeStampLength: 1440,
-                period: PeriodEnum.DAILY,
-            },
-            {
-                timeStampLength: 7,
-                period: PeriodEnum.WEEKLY,
-            },
-            {
-                timeStampLength: 30,
-                period: PeriodEnum.MONTHLY,
-            },
-            {
-                timeStampLength: 12,
-                period: PeriodEnum.YEARLY,
-            },
-        ]
-        caseList.forEach(({ timeStampLength, period }) => {
-            // Result
-            const resultPeriod = getPeriodFromTimestampsLength(timeStampLength)
-
-            expect(resultPeriod).toStrictEqual(period)
         })
     })
 

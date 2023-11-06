@@ -26,6 +26,7 @@ dayjs.extend(timezone)
  * @param theme Theme used for colors, fonts and backgrounds purposes.
  * @param isSolarProductionConsentOff Boolean indicating if solar production consent is off.
  * @param isMobile Is Mobile view.
+ * @param period Period type.
  * @returns Echarts Consumption Option.
  */
 export const getEchartsConsumptionChartOptions = (
@@ -34,16 +35,23 @@ export const getEchartsConsumptionChartOptions = (
     theme: Theme,
     isSolarProductionConsentOff: boolean,
     isMobile: boolean,
+    period: periodType,
 ) => {
-    if (!Object.values(timestamps).length || !Object.values(values).length) return {}
-    const xAxisTimestamps = Object.values(timestamps).length ? Object.values(timestamps)[0] : []
-    const period = getPeriodFromTimestampsLength(xAxisTimestamps.length)
+    const xAxisTimestamps = Object.values(timestamps).length ? Object.values(timestamps)[0] : [0]
+
+    let filteredValues: targetTimestampsValuesFormat = {}
+    Object.entries(values).map(([key, arr]) => {
+        if (arr.some((value) => value !== null)) {
+            filteredValues[key as metricTargetType] = arr
+        }
+        return undefined
+    })
 
     return {
         ...getDefaultOptionsEchartsConsumptionChart(theme, isMobile),
         ...getXAxisOptionEchartsConsumptionChart(xAxisTimestamps, isSolarProductionConsentOff, period, theme),
-        ...getYAxisOptionEchartsConsumptionChart(values, period, theme),
-        ...getSeriesOptionEchartsConsumptionChart(values, period, isSolarProductionConsentOff, theme),
+        ...getYAxisOptionEchartsConsumptionChart(filteredValues, period, theme),
+        ...getSeriesOptionEchartsConsumptionChart(filteredValues, period, isSolarProductionConsentOff, theme),
     } as EChartsOption
 }
 
@@ -258,22 +266,6 @@ const getXAxisLabelInterval = (isSolarProductionConsentOff: boolean, period: per
     if (period === 'daily') {
         return isSolarProductionConsentOff ? 59 : 1
     }
-}
-
-/**
- * Get Period From timestamps length.
- *
- * @param length Length of timestamps.
- * @returns Get the periodType from the length of timestamps.
- */
-export const getPeriodFromTimestampsLength = (length: number): periodType => {
-    if (length <= 7) {
-        return PeriodEnum.WEEKLY
-    } else if (length <= 12) {
-        return PeriodEnum.YEARLY
-    } else if (length <= 31) {
-        return PeriodEnum.MONTHLY
-    } else return PeriodEnum.DAILY
 }
 
 /**

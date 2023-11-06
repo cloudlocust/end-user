@@ -17,9 +17,10 @@ export const consumptionChartClassName = 'consumption-chart-classname'
  * @param props N/A.
  * @param props.data Data received from backend of format IMetric[].
  * @param props.isSolarProductionConsentOff Boolean indicating if solar production consent is off.
+ * @param props.period Period Type.
  * @returns MyConsumptionChart Component.
  */
-const MyConsumptionChart = ({ data, isSolarProductionConsentOff }: ConsumptionChartProps) => {
+const MyConsumptionChart = ({ data, isSolarProductionConsentOff, period }: ConsumptionChartProps) => {
     const theme = useTheme()
     const { timestamps, values } = useMemo(() => {
         return formatMetricsDataToTimestampsValues(data)
@@ -29,8 +30,15 @@ const MyConsumptionChart = ({ data, isSolarProductionConsentOff }: ConsumptionCh
 
     // EchartsConsumptionChart Option.
     const option = useMemo(() => {
-        return getEchartsConsumptionChartOptions(timestamps, values, theme, isSolarProductionConsentOff, isMobile)
-    }, [timestamps, values, theme, isSolarProductionConsentOff, isMobile])
+        return getEchartsConsumptionChartOptions(
+            timestamps,
+            values,
+            theme,
+            isSolarProductionConsentOff,
+            isMobile,
+            period,
+        )
+    }, [timestamps, values, theme, isSolarProductionConsentOff, isMobile, period])
 
     return (
         <>
