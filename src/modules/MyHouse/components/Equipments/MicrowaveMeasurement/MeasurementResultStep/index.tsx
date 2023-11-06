@@ -20,6 +20,19 @@ export const MeasurementResultStep = ({
 }: MeasurementResultStepProps) => {
     const { formatMessage } = useIntl()
 
+    /**
+     * The average consumption of microwaves according to the LeLynx.fr website (same value in the ADEME
+     * website) is estimated to 40 kWh per year for an average use of 5 minutes per day.
+     * (https://www.lelynx.fr/energie/comparateur-electricite/consommation-electrique/appareils/).
+     */
+    const microwaveAverageConsumptionPerYear = 40
+
+    /**
+     * The value that we will use in the comparaiseon is the average consumption of the microwave
+     * in Watt per hour.
+     */
+    const microwaveAverageConsumption = Math.round((microwaveAverageConsumptionPerYear * 1000) / (365 * (5 / 60)))
+
     return (
         <>
             {/* Header */}
@@ -45,7 +58,10 @@ export const MeasurementResultStep = ({
             {/* Content */}
             <div>
                 {/* The comparison histogram */}
-                <MeasurementComparisonHistogram userConsumption={measurementResult || 0} averageConsumption={1046} />
+                <MeasurementComparisonHistogram
+                    userConsumption={measurementResult || 0}
+                    averageConsumption={microwaveAverageConsumption}
+                />
 
                 {/* The measurement ending button */}
                 <div className="flex justify-center">
