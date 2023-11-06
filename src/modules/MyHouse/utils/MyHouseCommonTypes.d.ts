@@ -1,3 +1,5 @@
+import { IconComponentType } from 'src/modules/MyHouse/components/Equipments/EquipmentCard/equipmentsCard'
+
 /**
  * Scope types Enum.
  */
