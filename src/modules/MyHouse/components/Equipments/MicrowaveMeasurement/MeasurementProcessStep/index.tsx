@@ -13,7 +13,6 @@ import { ResponseMessage } from 'src/modules/MyHouse/components/Equipments/Micro
  *
  * @param root0 N/A.
  * @param root0.measurementStatus The measurementStatus state.
- * @param root0.measurementResult The result value for the measurement.
  * @param root0.measurementMaxDuration Estimated value for the maximum duration of the measurement process (in seconds).
  * @param root0.getTimeFromStatusLastUpdate Function to get the time passed (in seconds) from the last update os measurement status.
  * @param root0.startMeasurement The function that start the measurement process.
@@ -22,7 +21,6 @@ import { ResponseMessage } from 'src/modules/MyHouse/components/Equipments/Micro
  */
 export const MeasurementProcessStep = ({
     measurementStatus,
-    measurementResult,
     measurementMaxDuration,
     getTimeFromStatusLastUpdate,
     startMeasurement,
@@ -38,7 +36,7 @@ export const MeasurementProcessStep = ({
             case measurementStatusEnum.IN_PROGRESS:
                 return 'Mesure en cours'
             case measurementStatusEnum.SUCCESS:
-                return 'Mesure terminée avec succès'
+                return 'Mesure effectuée avec succès'
             case measurementStatusEnum.FAILED:
                 return 'Mesure terminée avec échec'
         }
@@ -46,7 +44,7 @@ export const MeasurementProcessStep = ({
     }, [measurementStatus])
 
     /**
-     * Click handler for the button "Terminer".
+     * Click handler for the button "Voir le résultat".
      */
     const handleFinishButtonClick = () => {
         stepSetter(4)
@@ -83,7 +81,7 @@ export const MeasurementProcessStep = ({
                 {measurementStatus?.status === measurementStatusEnum.SUCCESS && (
                     <ResponseMessage
                         title="Félicitations !"
-                        content={`Le test est terminé avec succès, vous pouvez désormais analyser vos résultats. Le résultat de la mesure est ${measurementResult}`}
+                        content="La mesure a été effectuée avec succès, vous pouvez arrêter votre appareil."
                         theme={theme}
                         success
                     />
@@ -108,8 +106,8 @@ export const MeasurementProcessStep = ({
                         onClick={handleFinishButtonClick}
                         disabled={measurementStatus?.status !== measurementStatusEnum.SUCCESS}
                         children={formatMessage({
-                            id: 'Terminer',
-                            defaultMessage: 'Terminer',
+                            id: 'Voir le résultat',
+                            defaultMessage: 'Voir le résultat',
                         })}
                     />
                 ) : (
