@@ -30,10 +30,6 @@ export interface IWidgetItemProps {
      */
     percentageChange: number
     /**
-     * Boolean for Enphase Consent is inactive.
-     */
-    enphaseOff?: boolean
-    /**
      * Period of the Widget.
      */
     period?: periodType

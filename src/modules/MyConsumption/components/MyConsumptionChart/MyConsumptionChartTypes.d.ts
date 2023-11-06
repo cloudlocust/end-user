@@ -72,10 +72,16 @@ export interface ConsumptionChartContainerProps {
  * ConsumptionChart Props.
  */
 export interface ConsumptionChartProps {
-    // eslint-disable-next-line jsdoc/require-jsdoc
+    /**
+     * Data.
+     */
     data: IMetric[]
-    // eslint-disable-next-line jsdoc/require-jsdoc
-    period: periodType
-    // eslint-disable-next-line jsdoc/require-jsdoc
+    /**
+     * Is Solar production consent off.
+     */
     isSolarProductionConsentOff: boolean
+    /**
+     * Period Type.
+     */
+    period: periodType
 }
