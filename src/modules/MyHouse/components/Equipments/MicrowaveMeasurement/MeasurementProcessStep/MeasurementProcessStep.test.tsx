@@ -24,7 +24,6 @@ describe('MeasurementProcessStep Component', () => {
 
         MeasurementProcessStepPropsDefaultValues = {
             measurementStatus: null,
-            measurementResult: 24,
             measurementMaxDuration: 50,
             getTimeFromStatusLastUpdate: mockGetTimeFromStatusLastUpdate,
             startMeasurement: mockStartMeasurement,
