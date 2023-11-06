@@ -32,10 +32,6 @@ export interface MeasurementProcessStepProps {
      */
     measurementStatus: MeasurementStatusStateType | null
     /**
-     * The result value for the measurement.
-     */
-    measurementResult: number | null
-    /**
      * Estimated value for the maximum duration of the measurement process (in seconds).
      */
     measurementMaxDuration: number
