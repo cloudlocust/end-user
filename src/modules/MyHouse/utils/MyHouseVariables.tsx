@@ -352,9 +352,7 @@ export const myEquipmentOptions = [
         name: 'solarpanel',
         labelTitle: 'Panneaux solaire',
         // eslint-disable-next-line jsdoc/require-jsdoc
-        iconComponent: (isDisabled?: boolean) => (
-            <SolarPower color={isDisabled ? 'disabled' : 'primary'} fontSize="large" />
-        ),
+        iconComponent: () => <SolarPower color="primary" fontSize="large" />,
     },
 ] as EquipmentOptionsType[]
 
