@@ -29,6 +29,7 @@ export const AddEquipmentPopup = (props: AddEquipmentPopupProps) => {
      * It should be excluded entirely from the resultant list.
      */
     const orderedEquipmentsList = useMemo(() => {
+        if (!equipmentsList) return
         // Get all equipment names that have a customerId.
         const namesWithCustomerId = new Set(equipmentsList?.filter((el) => el.customerId !== null).map((el) => el.name))
 
@@ -71,7 +72,7 @@ export const AddEquipmentPopup = (props: AddEquipmentPopupProps) => {
                         fullWidth
                         data-testid={'equipments-select'}
                     >
-                        {orderedEquipmentsList.map((option) => (
+                        {orderedEquipmentsList?.map((option) => (
                             <MenuItem key={option.id} value={option.name}>
                                 {formatMessage({
                                     id: mapppingEquipmentToLabel[option.name as unknown as equipmentNameType]!,
