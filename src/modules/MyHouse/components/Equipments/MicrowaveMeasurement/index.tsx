@@ -54,7 +54,7 @@ export const MicrowaveMeasurement = ({
 
     const {
         measurementStatus,
-        // measurementResult,
+        measurementResult,
         setMeasurementStatus,
         getTimeFromStatusLastUpdate,
         startMeasurement,
