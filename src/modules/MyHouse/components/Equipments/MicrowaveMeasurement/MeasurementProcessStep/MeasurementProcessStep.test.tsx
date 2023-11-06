@@ -13,6 +13,7 @@ const BUTTON_TEXT = 'Voir le résultat'
 
 let mockStepSetter: jest.Mock<any, any>
 let mockStartMeasurement: jest.Mock<any, any>
+let mockRestartMeasurementFromBeginning: jest.Mock<any, any>
 let mockGetTimeFromStatusLastUpdate: jest.Mock<any, any>
 let MeasurementProcessStepPropsDefaultValues: MeasurementProcessStepProps
 
@@ -20,6 +21,7 @@ describe('MeasurementProcessStep Component', () => {
     beforeEach(() => {
         mockStepSetter = jest.fn()
         mockStartMeasurement = jest.fn()
+        mockRestartMeasurementFromBeginning = jest.fn()
         mockGetTimeFromStatusLastUpdate = jest.fn(() => 0)
 
         MeasurementProcessStepPropsDefaultValues = {
@@ -27,6 +29,7 @@ describe('MeasurementProcessStep Component', () => {
             measurementMaxDuration: 50,
             getTimeFromStatusLastUpdate: mockGetTimeFromStatusLastUpdate,
             startMeasurement: mockStartMeasurement,
+            restartMeasurementFromBeginning: mockRestartMeasurementFromBeginning,
             stepSetter: mockStepSetter,
         }
     })
