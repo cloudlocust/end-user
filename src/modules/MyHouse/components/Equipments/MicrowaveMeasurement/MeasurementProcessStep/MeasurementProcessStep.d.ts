@@ -44,6 +44,10 @@ export interface MeasurementProcessStepProps {
      */
     startMeasurement: () => Promise<void>
     /**
+     * The function that restart the measurement from the beginning.
+     */
+    restartMeasurementFromBeginning: () => Promise<void>
+    /**
      * The setter linked to the state responsible for storing the current step.
      */
     stepSetter: Dispatch<SetStateAction<number>>
