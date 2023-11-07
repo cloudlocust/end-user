@@ -17,6 +17,7 @@ import { ResponseMessage } from 'src/modules/MyHouse/components/Equipments/Micro
  * @param root0.getTimeFromStatusLastUpdate Function to get the time passed (in seconds) from the last update os measurement status.
  * @param root0.startMeasurement The function that start the measurement process.
  * @param root0.stepSetter The setter linked to the state responsible for storing the current step.
+ * @param root0.restartMeasurementFromBeginning The function that restart the measurement from the beginning.
  * @returns The MeasurementProcessStep component.
  */
 export const MeasurementProcessStep = ({
@@ -24,6 +25,7 @@ export const MeasurementProcessStep = ({
     measurementMaxDuration,
     getTimeFromStatusLastUpdate,
     startMeasurement,
+    restartMeasurementFromBeginning,
     stepSetter,
 }: MeasurementProcessStepProps) => {
     const { formatMessage } = useIntl()
@@ -91,13 +93,13 @@ export const MeasurementProcessStep = ({
                 {measurementStatus?.status === measurementStatusEnum.FAILED && (
                     <ResponseMessage
                         title="La mesure a échoué"
-                        content="Le test est terminé par un échec, vous pouvez le lancer à nouveau"
+                        content={measurementStatus.failureMessage!}
                         theme={theme}
                     />
                 )}
             </div>
 
-            {/* The test ending button */}
+            {/* The test ending and restarting buttons */}
             <div className="flex justify-center mt-20">
                 {measurementStatus?.status !== measurementStatusEnum.FAILED ? (
                     <Button
@@ -114,10 +116,10 @@ export const MeasurementProcessStep = ({
                     <Button
                         variant="contained"
                         sx={{ padding: '10px auto', textAlign: 'center', width: '60%', minWidth: '160px' }}
-                        onClick={startMeasurement}
+                        onClick={restartMeasurementFromBeginning}
                         children={formatMessage({
-                            id: 'Relancer le test',
-                            defaultMessage: 'Relancer le test',
+                            id: 'Recommencer la mesure',
+                            defaultMessage: 'Recommencer la mesure',
                         })}
                     />
                 )}
