@@ -13,6 +13,7 @@ const BUTTON_TEXT = 'Voir le résultat'
 
 let mockStepSetter: jest.Mock<any, any>
 let mockStartMeasurement: jest.Mock<any, any>
+let mockRestartMeasurementFromBeginning: jest.Mock<any, any>
 let mockGetTimeFromStatusLastUpdate: jest.Mock<any, any>
 let MeasurementProcessStepPropsDefaultValues: MeasurementProcessStepProps
 
@@ -20,6 +21,7 @@ describe('MeasurementProcessStep Component', () => {
     beforeEach(() => {
         mockStepSetter = jest.fn()
         mockStartMeasurement = jest.fn()
+        mockRestartMeasurementFromBeginning = jest.fn()
         mockGetTimeFromStatusLastUpdate = jest.fn(() => 0)
 
         MeasurementProcessStepPropsDefaultValues = {
@@ -27,6 +29,7 @@ describe('MeasurementProcessStep Component', () => {
             measurementMaxDuration: 50,
             getTimeFromStatusLastUpdate: mockGetTimeFromStatusLastUpdate,
             startMeasurement: mockStartMeasurement,
+            restartMeasurementFromBeginning: mockRestartMeasurementFromBeginning,
             stepSetter: mockStepSetter,
         }
     })
@@ -122,7 +125,7 @@ describe('MeasurementProcessStep Component', () => {
         reduxedRender(
             <MeasurementProcessStep
                 {...MeasurementProcessStepPropsDefaultValues}
-                measurementStatus={{ status: measurementStatusEnum.FAILED }}
+                measurementStatus={{ status: measurementStatusEnum.FAILED, failureMessage: 'Failur message test' }}
             />,
         )
 
@@ -135,11 +138,11 @@ describe('MeasurementProcessStep Component', () => {
         const successMessage = screen.getByText('La mesure a échoué')
         expect(successMessage).toBeInTheDocument()
 
-        const buttonRetest = screen.getByText('Relancer le test')
+        const buttonRetest = screen.getByText('Recommencer la mesure')
         expect(buttonRetest).toBeInTheDocument()
         expect(buttonRetest).toBeEnabled()
 
-        // Calling startMeasurement function on clicking on the button "Relancer le test"
+        // Calling startMeasurement function on clicking on the button "Recommencer la mesure"
         userEvent.click(buttonRetest)
         await waitFor(() => {
             expect(mockStartMeasurement).toHaveBeenCalled()

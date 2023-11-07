@@ -77,7 +77,16 @@ export function useMicrowaveMeasurement(
     const updateStatus = useCallback(async () => {
         const newStatus = await getMeasurementStatus()
         if (newStatus === null) setMeasurementStatus(null)
-        else setMeasurementStatus({ status: newStatus.status, updatedAt: newStatus.updatedAt })
+        else
+            setMeasurementStatus({
+                status: newStatus.status,
+                updatedAt: newStatus.updatedAt,
+                ...(newStatus.status === measurementStatusEnum.FAILED
+                    ? {
+                          failureMessage: 'Zut ! Votre nrLINK n’a pas détecté la mise en route de votre micro-onde…',
+                      }
+                    : {}),
+            })
     }, [getMeasurementStatus])
 
     /**
@@ -102,24 +111,21 @@ export function useMicrowaveMeasurement(
                 ...(newStatus.updatedAt ? { updatedAt: newStatus.updatedAt } : {}),
             })
         } else {
-            axios
-                .post(`${HOUSING_API}/equipments/${housingEquipmentId}/measurement/${measurementMode}`, {
-                    equipment_number: equipmentNumber,
+            try {
+                const res = await axios.post(
+                    `${HOUSING_API}/equipments/${housingEquipmentId}/measurement/${measurementMode}`,
+                    {
+                        equipment_number: equipmentNumber,
+                    },
+                )
+                if (res.status === 200) setMeasurementStatus({ status: measurementStatusEnum.PENDING })
+            } catch (_) {
+                setMeasurementStatus({
+                    status: measurementStatusEnum.FAILED,
+                    failureMessage:
+                        'Oups ! Votre nrLINK ne semble pas connecté ! Connectez-le puis recommencer la mesure…',
                 })
-                .then(() => {
-                    setMeasurementStatus({ status: measurementStatusEnum.PENDING })
-                })
-                .catch((error) => {
-                    setMeasurementStatus({ status: measurementStatusEnum.FAILED })
-                    const errorMessage = error?.response?.data?.detail || 'Erreur lors du lancement du test de mesure'
-                    enqueueSnackbar(
-                        formatMessage({
-                            id: errorMessage,
-                            defaultMessage: errorMessage,
-                        }),
-                        { autoHideDuration: 5000, variant: 'error' },
-                    )
-                })
+            }
         }
     }, [equipmentNumber, housingEquipmentId, measurementMode, enqueueSnackbar, formatMessage, getMeasurementStatus])
 

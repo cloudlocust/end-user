@@ -61,6 +61,16 @@ export const MicrowaveMeasurement = ({
     } = useMicrowaveMeasurement(housingEquipmentId, measurementMode, microwaveNumber, measurementMaxDuration)
 
     /**
+     * Restart the measurement from the beginning.
+     */
+    const handleRestartingMeasurement = useCallback(async () => {
+        await setMeasurementStatus(null)
+        setCurrentStep(1)
+        setMicrowaveNumber(0)
+        setMeasurementMode('')
+    }, [setMeasurementStatus])
+
+    /**
      * Handle closing the measurement Modal.
      */
     const handleCloseMeasurementModal = useCallback(async () => {
@@ -87,6 +97,7 @@ export const MicrowaveMeasurement = ({
             measurementMaxDuration={measurementMaxDuration}
             getTimeFromStatusLastUpdate={getTimeFromStatusLastUpdate}
             startMeasurement={startMeasurement}
+            restartMeasurementFromBeginning={handleRestartingMeasurement}
             stepSetter={setCurrentStep}
         />,
         <MeasurementResultStep
