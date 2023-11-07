@@ -112,10 +112,13 @@ export function useMicrowaveMeasurement(
             })
         } else {
             try {
-                await axios.post(`${HOUSING_API}/equipments/${housingEquipmentId}/measurement/${measurementMode}`, {
-                    equipment_number: equipmentNumber,
-                })
-                setMeasurementStatus({ status: measurementStatusEnum.PENDING })
+                const res = await axios.post(
+                    `${HOUSING_API}/equipments/${housingEquipmentId}/measurement/${measurementMode}`,
+                    {
+                        equipment_number: equipmentNumber,
+                    },
+                )
+                if (res.status === 200) setMeasurementStatus({ status: measurementStatusEnum.PENDING })
             } catch (_) {
                 setMeasurementStatus({
                     status: measurementStatusEnum.FAILED,
