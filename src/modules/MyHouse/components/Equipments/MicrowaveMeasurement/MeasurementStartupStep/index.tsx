@@ -3,18 +3,18 @@ import Button from '@mui/material/Button'
 import SvgIcon from '@mui/material/SvgIcon'
 import { ReactComponent as ConnectEquipmentIcon } from 'src/assets/images/content/housing/ConnectEquipment.svg'
 import { useIntl } from 'src/common/react-platform-translation'
-import { EquipmentStartupStepProps } from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement/EquipmentStartupStep/EquipmentStartupStep.d'
+import { MeasurementStartupStepProps } from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement/MeasurementStartupStep/MeasurementStartupStep'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 
 /**
- * ConfigurationStep component.
+ * MeasurementStartupStep component.
  *
  * @param root0 N/A.
  * @param root0.measurementMode The mode of the measurement test.
  * @param root0.stepSetter The setter linked to the state responsible for storing the current step.
- * @returns The ConfigurationStep component.
+ * @returns The MeasurementStartupStep component.
  */
-export const EquipmentStartupStep = ({ measurementMode, stepSetter }: EquipmentStartupStepProps) => {
+export const MeasurementStartupStep = ({ measurementMode, stepSetter }: MeasurementStartupStepProps) => {
     const { formatMessage } = useIntl()
 
     /**

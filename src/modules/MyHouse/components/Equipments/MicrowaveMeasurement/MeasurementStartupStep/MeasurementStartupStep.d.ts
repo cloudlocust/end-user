@@ -1,7 +1,7 @@
 /**
- * Props of the EquipmentStartupStep component.
+ * Props of the MeasurementStartupStep component.
  */
-export interface EquipmentStartupStepProps {
+export interface MeasurementStartupStepProps {
     /**
      * The mode of the measurement test.
      */
