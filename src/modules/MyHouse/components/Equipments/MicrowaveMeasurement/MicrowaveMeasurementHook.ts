@@ -118,11 +118,11 @@ export function useMicrowaveMeasurement(
                 .then(() => {
                     setMeasurementStatus({ status: measurementStatusEnum.PENDING })
                 })
-                .catch((error) => {
+                .catch(() => {
                     setMeasurementStatus({
                         status: measurementStatusEnum.FAILED,
                         failureMessage:
-                            'Votre nrLINK ne semble pas connecté ! Assurez-vous de le reconnecter avant de recommencer la mesure…',
+                            'Oups ! Votre nrLINK ne semble pas connecté ! Connectez-le puis recommencer la mesure…',
                     })
                 })
         }
