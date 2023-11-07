@@ -83,6 +83,16 @@ export const MicrowaveMeasurement = ({
         startMeasurement,
     } = useMicrowaveMeasurement(housingEquipmentId, measurementMode, microwaveNumber, measurementMaxDuration)
 
+    /**
+     * Restart the measurement from the beginning.
+     */
+    const handleRestartingMeasurement = async () => {
+        await setMeasurementStatus(null)
+        setCurrentStep(1)
+        setMicrowaveNumber(0)
+        setMeasurementMode('')
+    }
+
     const stepsContent = [
         <ConfigurationStep
             equipmentsNumber={equipmentsNumber}
@@ -99,6 +109,7 @@ export const MicrowaveMeasurement = ({
             measurementMaxDuration={measurementMaxDuration}
             getTimeFromStatusLastUpdate={getTimeFromStatusLastUpdate}
             startMeasurement={startMeasurement}
+            restartMeasurementFromBeginning={handleRestartingMeasurement}
             stepSetter={setCurrentStep}
         />,
         <TestStepPage step={currentStep} stepSetter={setCurrentStep} />,

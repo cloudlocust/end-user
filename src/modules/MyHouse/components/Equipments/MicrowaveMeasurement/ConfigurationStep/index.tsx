@@ -64,6 +64,26 @@ export const ConfigurationStep = ({
 
     const monEquipementStr = 'Mon équipement'
 
+    const measurementModesOptions = measurementModes?.map((measurementMode) => ({
+        value: measurementMode,
+        label: measurementMode,
+    }))
+
+    const defaultMicrowaveMeasurementModesOptions = [
+        {
+            value: 'Standard',
+            label: 'Standard',
+        },
+        {
+            value: 'Décongélation',
+            label: 'Décongélation',
+        },
+        {
+            value: 'Grill',
+            label: 'Grill',
+        },
+    ]
+
     return (
         <>
             {/* Header */}
@@ -121,11 +141,7 @@ export const ConfigurationStep = ({
                         })}
                     </Typography>
                     <CustomRadioGroup
-                        elements={measurementModes.map((measurementMode) => ({
-                            value: measurementMode,
-                            label: measurementMode,
-                        }))}
-                        defaultValue={selectedMeasurementMode}
+                        elements={measurementModesOptions || defaultMicrowaveMeasurementModesOptions}
                         onValueChange={handleRadioGroupChange}
                         display="flex"
                         justifyContent="space-between"
