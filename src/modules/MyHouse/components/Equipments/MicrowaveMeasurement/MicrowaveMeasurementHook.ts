@@ -111,20 +111,18 @@ export function useMicrowaveMeasurement(
                 ...(newStatus.updatedAt ? { updatedAt: newStatus.updatedAt } : {}),
             })
         } else {
-            axios
-                .post(`${HOUSING_API}/equipments/${housingEquipmentId}/measurement/${measurementMode}`, {
+            try {
+                await axios.post(`${HOUSING_API}/equipments/${housingEquipmentId}/measurement/${measurementMode}`, {
                     equipment_number: equipmentNumber,
                 })
-                .then(() => {
-                    setMeasurementStatus({ status: measurementStatusEnum.PENDING })
+                setMeasurementStatus({ status: measurementStatusEnum.PENDING })
+            } catch (_) {
+                setMeasurementStatus({
+                    status: measurementStatusEnum.FAILED,
+                    failureMessage:
+                        'Oups ! Votre nrLINK ne semble pas connecté ! Connectez-le puis recommencer la mesure…',
                 })
-                .catch(() => {
-                    setMeasurementStatus({
-                        status: measurementStatusEnum.FAILED,
-                        failureMessage:
-                            'Oups ! Votre nrLINK ne semble pas connecté ! Connectez-le puis recommencer la mesure…',
-                    })
-                })
+            }
         }
     }, [equipmentNumber, housingEquipmentId, measurementMode, enqueueSnackbar, formatMessage, getMeasurementStatus])
 
