@@ -24,13 +24,16 @@ export const EquipmentsList = ({
         ?.map((element) => {
             return {
                 id: element.equipmentId,
+                housingEquipmentId: element.id,
                 name: element.equipment.name,
                 allowedType: element.equipment.allowedType,
                 number: element.equipmentNumber,
                 isNumber: mappingEquipmentNameToType[element.equipment.name as equipmentNameType] === 'number',
+                measurementModes: element.equipment.measurementModes,
+                customerId: element.equipment.customerId,
             }
         })
-        .filter((el) => el.number! > 0)
+        .filter((eq) => eq.customerId)
 
     // Order the equipments list from the largest to the smallest.
     const orderedEquipmentsList = orderBy(equipments, (el) => el.number, 'desc')
@@ -50,14 +53,21 @@ export const EquipmentsList = ({
                         (element) => element.name === equipment.name,
                     )?.labelTitle
 
+                    const iconComponent = myEquipmentOptions.find(
+                        (element) => element.name === equipment.name,
+                    )?.iconComponent
+
                     return (
                         <EquipmentCard
                             key={equipment.id}
                             id={equipment.id}
                             label={equipmentLabel || equipment.name}
                             name={equipment.name}
+                            housingEquipmentId={equipment.housingEquipmentId}
+                            measurementModes={equipment.measurementModes}
                             number={equipment.number ? equipment.number : 0}
                             onEquipmentChange={saveEquipment}
+                            iconComponent={iconComponent}
                         />
                     )
                 })}

@@ -35,6 +35,10 @@ export type equipmentMeterType = {
      */
     equipmentId: number
     /**
+     * The global equipment id.
+     */
+    id?: number
+    /**
      * Number value of the equipment.
      */
     equipmentNumber?: number
@@ -58,6 +62,14 @@ export type equipmentType = {
      * Type of the Equipment.
      */
     allowedType: equipmentAllowedTypeT[]
+    /**
+     * Measurement modes for the Equipment.
+     */
+    measurementModes?: string[]
+    /**
+     * Customer id related to the equipment.
+     */
+    customerId?: number | null
 }
 
 /**

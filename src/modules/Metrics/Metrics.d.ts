@@ -15,9 +15,9 @@ export type metricTargetType =
     | 'base_consumption_metrics'
     | 'hp_consumption_metrics'
     | 'hc_consumption_metrics'
-    | 'base__euros__consumption_metrics'
-    | 'hp__euros__consumption_metrics'
-    | 'hc__euros__consumption_metrics'
+    | '__euros__base_consumption_metrics'
+    | '__euros__hp_consumption_metrics'
+    | '__euros__hc_consumption_metrics'
     | '__euros__idle_consumption_metrics'
     // FRONT END PURPOSES TARGETS
     // 'off_idle_consumption_metrics' target is made for front purposes, it doesn't exist on the back
@@ -29,6 +29,20 @@ export type metricTargetType =
     | '__euros__off_idle_consumption_metrics'
     | 'only_consumption_metrics'
     | 'only_euro_consumption_metrics'
+    | 'consumption_metrics_by_tariff_component'
+    | '__euros__consumption_metrics_by_tariff_component'
+    | 'hp_jour_bleu_consumption_metrics'
+    | 'hc_jour_bleu_consumption_metrics'
+    | 'hp_jour_rouge_consumption_metrics'
+    | 'hc_jour_rouge_consumption_metrics'
+    | 'hp_jour_blanc_consumption_metrics'
+    | 'hc_jour_blanc_consumption_metrics'
+    | '__euros__hp_jour_bleu_consumption_metrics'
+    | '__euros__hc_jour_bleu_consumption_metrics'
+    | '__euros__hp_jour_rouge_consumption_metrics'
+    | '__euros__hc_jour_rouge_consumption_metrics'
+    | '__euros__hp_jour_blanc_consumption_metrics'
+    | '__euros__hc_jour_blanc_consumption_metrics'
 
 /**
  * Enum representing the metricTarget without exposing the backend naming.
@@ -89,15 +103,15 @@ export enum metricTargetsEnum {
     /**
      * Euro consumption for heure pleine.
      */
-    euroPeakHourConsumption = 'hp__euros__consumption_metrics',
+    euroPeakHourConsumption = '__euros__hp_consumption_metrics',
     /**
      * Euro consumption for heure creuse.
      */
-    euroOffPeakConsumption = 'hc__euros__consumption_metrics',
+    euroOffPeakConsumption = '__euros__hc_consumption_metrics',
     /**
      * Base euro consumption (according to Tariff de base).
      */
-    baseEuroConsumption = 'base__euros__consumption_metrics',
+    baseEuroConsumption = '__euros__base_consumption_metrics',
     /**
      * Eneum value for Euros Idle Consumption.
      */
@@ -126,6 +140,145 @@ export enum metricTargetsEnum {
      */
     eurosIdleConsumption = '__euros__idle_consumption_metrics',
     /**
+     * This target should return all the targets of tempo consumption metrics.
+     * 
+     * @description Only used to do the request.
+     * @example 
+     * "targets": [
+     *         {
+            "target": "base_consumption_metrics",
+            "type": "timeserie"
+        },
+        {
+            "target": "hp_consumption_metrics",
+            "type": "timeserie"
+        },
+        {
+            "target": "hc_consumption_metrics",
+            "type": "timeserie"
+        },
+        {
+            "target": "hp_jour_bleu_consumption_metrics",
+            "type": "timeserie"
+        },
+        {
+            "target": "hc_jour_bleu_consumption_metrics",
+            "type": "timeserie"
+        },
+        {
+            "target": "hp_jour_rouge_consumption_metrics",
+            "type": "timeserie"
+        },
+        {
+            "target": "hc_jour_rouge_consumption_metrics",
+            "type": "timeserie"
+        },
+        {
+            "target": "hp_jour_blanc_consumption_metrics",
+            "type": "timeserie"
+        },
+        {
+            "target": "hc_jour_blanc_consumption_metrics",
+            "type": "timeserie"
+        }
+    ],
+     */
+    consumptionByTariffComponent = 'consumption_metrics_by_tariff_component',
+    /**
+     * This target should return all the targets of euro tempo consumption metrics.
+     * 
+     * @description Only used to do the request.
+     * @example 
+     * "targets": [
+     *         {
+            "target": "__euro__base_consumption_metrics",
+            "type": "timeserie"
+        },
+        {
+            "target": "__euro__hp_consumption_metrics",
+            "type": "timeserie"
+        },
+        {
+            "target": "__euro__hc_consumption_metrics",
+            "type": "timeserie"
+        },
+        {
+            "target": "__euro__hp_jour_bleu_consumption_metrics",
+            "type": "timeserie"
+        },
+        {
+            "target": "__euro__hc_jour_bleu_consumption_metrics",
+            "type": "timeserie"
+        },
+        {
+            "target": "__euro__hp_jour_rouge_consumption_metrics",
+            "type": "timeserie"
+        },
+        {
+            "target": "__euro__hc_jour_rouge_consumption_metrics",
+            "type": "timeserie"
+        },
+        {
+            "target": "__euro__hp_jour_blanc_consumption_metrics",
+            "type": "timeserie"
+        },
+        {
+            "target": "__euro__hc_jour_blanc_consumption_metrics",
+            "type": "timeserie"
+        }
+    ],
+     */
+    euroConsumptionByTariffComponent = '__euros__consumption_metrics_by_tariff_component',
+    /**
+     * Tempo HP BLEU.
+     */
+    peakHourBlueTempoConsumption = 'hp_jour_bleu_consumption_metrics',
+    /**
+     * Tempo HC BLEU.
+     */
+    offPeakHourBlueTempoConsumption = 'hc_jour_bleu_consumption_metrics',
+    /**
+     * Tempo HP ROUGE.
+     */
+    peakHourRedTempoConsumption = 'hp_jour_rouge_consumption_metrics',
+    /**
+     * Tempo HC ROUGE.
+     */
+    offPeakHourRedTempoConsumption = 'hc_jour_rouge_consumption_metrics',
+    /**
+     * Tempo HP BLANC.
+     */
+    peakHourWhiteTempoConsumption = 'hp_jour_blanc_consumption_metrics',
+    /**
+     * Tempo HC BLANC.
+     */
+    offPeakHourWhiteTempoConsumption = 'hc_jour_blanc_consumption_metrics',
+    /**
+     * Tempo HP BLEU.
+     */
+    euroPeakHourBlueTempoConsumption = '__euros__hp_jour_bleu_consumption_metrics',
+    /**
+     * Tempo HC BLEU.
+     */
+    euroOffPeakHourBlueTempoConsumption = '__euros__hc_jour_bleu_consumption_metrics',
+    /**
+     * Tempo HP ROUGE.
+     */
+    euroPeakHourRedTempoConsumption = '__euros__hp_jour_rouge_consumption_metrics',
+    /**
+     * Tempo HC ROUGE.
+     */
+    euroOffPeakHourRedTempoConsumption = '__euros__hc_jour_rouge_consumption_metrics',
+    /**
+     * Tempo HP BLANC.
+     */
+    euroPeakHourWhiteTempoConsumption = '__euros__hp_jour_blanc_consumption_metrics',
+    /**
+     * Tempo HC BLANC.
+     */
+    euroOffPeakHourWhiteTempoConsumption = '__euros__hc_jour_blanc_consumption_metrics',
+
+    /**
      * 'only_consumption_metrics' target is made for front purposes, it doesn't exist on the back.
      *
      * Only used when base consumption & ho & hc are empty.
@@ -145,6 +298,7 @@ export enum metricTargetsEnum {
      */
     onlyEuroConsumption = 'only_euro_consumption_metrics',
 }
+
 /**
  * Metrics intervals.
  */
@@ -186,15 +340,15 @@ export type metricTargetsType = {
 // eslint-disable-next-line jsdoc/require-jsdoc
 export type metricFiltersType = {
     /**
-     * Key. Default is: "meter_guid".
+     * Key. Default is: "housing_id".
      */
-    key: 'meter_guid'
+    key: 'housing_id'
     /**
      * Operator.
      */
     operator: '='
     /**
-     * Value of the meter_guid.
+     * Value of the housing_id.
      */
     value: string
 }[]
@@ -262,6 +416,65 @@ export type getMetricsWithParamsType = {
 }
 
 /**
- * Type of ApexAxisChartSerie.
+ * Format of timestamps or values object generated from formatMetricsDataToTimestampsValues function.
+ *
+ * @example
+ * A a targetTimestampsValuesFormat would look like
+ *
+ * values: targetTimestampsValuesFormat = {
+ *    "consumption_metrics": [1, 2, 3, 4, 5, 6, 7]
+ *    "internal_temperature": [21, 22, 23, 24, 25, 26, 27]
+ * }
+ *
+ * timestamps:targetTimestampsValuesFormat = {
+ *    "consumption_metrics": [00001, 00002, 00003, 00004, 00005, 00006, 00007]
+ *    "internal_temperature": [00001, 00002, 00003, 00004, 00005, 00006, 00007]
+ * }
  */
-declare type ApexAxisChartSerie = ApexAxisChartSeries[0]
+export type targetTimestampsValuesFormat =
+    /**
+     * Metric Target Type.
+     */
+    {
+        [key in metricTargetType]?: number[]
+    }
+
+/**
+ * Format of the return from formatMetricsDataToTimestampsValues function.
+ *
+ * @example
+ * data = [
+ *  {
+ *    "target": "consumption_metrics",
+ *    "datapoints": [[1, 00001], [2, 00002] ,[3, 00003], [4, 00004], [5, 00005], [6, 00006], [7, 00007]]
+ *  },
+ *  {
+ *    "target": "internal_temperature",
+ *    "datapoints": [[21, 00001], [22, 00002] ,[23, 00003], [24, 00004], [25, 00005], [26, 00006], [27, 00007]]
+ *  }
+ * ]
+ *
+ * formatMetricsData(data) will give the following type.
+ * {
+ *  values = {
+ *    "consumption_metrics": [1, 2, 3, 4, 5, 6, 7]
+ *    "internal_temperature": [21, 22, 23, 24, 25, 26, 27]
+ *  }
+ *  timestamps = {
+ *    "consumption_metrics": [00001, 00002, 00003, 00004, 00005, 00006, 00007]
+ *    "internal_temperature": [00001, 00002, 00003, 00004, 00005, 00006, 00007]
+ *  }
+ * }
+ */
+export type formattedMetricsDataToTimestampsValues =
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    {
+        /**
+         * Values extracted from formatMetricsDataToTimestampsValues.
+         */
+        values: targetTimestampsValuesFormat
+        /**
+         * Timestamps extracted from formatMetricsDataToTimestampsValues.
+         */
+        timestamps: targetTimestampsValuesFormat
+    }

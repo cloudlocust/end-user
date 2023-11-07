@@ -1,14 +1,8 @@
-import { isNil, mean } from 'lodash'
-import { ApexChartsAxisValuesType } from 'src/modules/MyConsumption/myConsumptionTypes'
+import { isNil, mean, round } from 'lodash'
+import { ChartsAxisValuesType, YAxisChartSerie } from 'src/modules/MyConsumption/myConsumptionTypes'
 import { consumptionWattUnitConversion } from 'src/modules/MyConsumption/utils/unitConversionFunction'
 import { computationFunctionType } from 'src/modules/Analysis/analysisTypes.d'
-import {
-    ApexAxisChartSerie,
-    IMetric,
-    metricRangeType,
-    metricTargetsEnum,
-    metricTargetType,
-} from 'src/modules/Metrics/Metrics.d'
+import { IMetric, metricRangeType, metricTargetsEnum, metricTargetType } from 'src/modules/Metrics/Metrics.d'
 import dayjs from 'dayjs'
 
 /**
@@ -17,7 +11,7 @@ import dayjs from 'dayjs'
  * @param consumptionAxisValues Consumption Y and X values, where (Y, represent each consumption entry) and (X, represent the timestamp for it).
  * @returns Value and Unit for the mean consumption.
  */
-export const computeMeanConsumption = (consumptionAxisValues: ApexChartsAxisValuesType): computationFunctionType => {
+export const computeMeanConsumption = (consumptionAxisValues: ChartsAxisValuesType): computationFunctionType => {
     const meanConsumption = computeStatisticsMetricsTargetData(
         consumptionAxisValues,
         metricTargetsEnum.consumption,
@@ -39,14 +33,14 @@ export const computeMeanConsumption = (consumptionAxisValues: ApexChartsAxisValu
  */
 export const computeStatisticConsumption = (
     statisticConsumptionType: 'maximum' | 'minimum',
-    consumptionAxisValues: ApexChartsAxisValuesType,
+    consumptionAxisValues: ChartsAxisValuesType,
 ): computationFunctionType => {
     // If we're looking at the minimum we initialize the result to -1, because consumption is a positive number.
     let resultStatisticConsumption = statisticConsumptionType === 'maximum' ? 0 : -1
     let timestampStatisticConsumption = 0
     if (consumptionAxisValues.yAxisSeries.length > 0) {
         const indexConsumptionTarget = consumptionAxisValues.yAxisSeries.findIndex(
-            (el: ApexAxisChartSerie) => el.name === metricTargetsEnum.consumption,
+            (el: YAxisChartSerie) => el.name === metricTargetsEnum.consumption,
         )
         const valuesConsumption = consumptionAxisValues.yAxisSeries[indexConsumptionTarget].data as Array<number | null>
         const timeStampsConsumption = consumptionAxisValues.xAxisSeries[indexConsumptionTarget]
@@ -81,7 +75,7 @@ export const computeStatisticConsumption = (
  * @param consumptionAxisValues Consumption Y and X values, where (Y, represent each consumption entry) and (X, represent the timestamp for it).
  * @returns Value and Unit and the timestamp of the maximum consumption.
  */
-export const computeMaxConsumption = (consumptionAxisValues: ApexChartsAxisValuesType): computationFunctionType =>
+export const computeMaxConsumption = (consumptionAxisValues: ChartsAxisValuesType): computationFunctionType =>
     computeStatisticConsumption('maximum', consumptionAxisValues)
 
 /**
@@ -90,7 +84,7 @@ export const computeMaxConsumption = (consumptionAxisValues: ApexChartsAxisValue
  * @param consumptionAxisValues Consumption Y and X values, where (Y, represent each consumption entry) and (X, represent the timestamp for it).
  * @returns Value and Unit and the timestamp of the minimum consumption.
  */
-export const computeMinConsumption = (consumptionAxisValues: ApexChartsAxisValuesType): computationFunctionType =>
+export const computeMinConsumption = (consumptionAxisValues: ChartsAxisValuesType): computationFunctionType =>
     computeStatisticConsumption('minimum', consumptionAxisValues)
 
 /**
@@ -129,14 +123,14 @@ export const normalizeValues = (values: number[], customMin: number, customMax: 
  * @returns Mean target data.
  */
 export const computeStatisticsMetricsTargetData = (
-    consumptionAxisValues: ApexChartsAxisValuesType,
+    consumptionAxisValues: ChartsAxisValuesType,
     target: metricTargetType,
     statisticConsumptionType: 'maximum' | 'minimum' | 'mean',
 ) => {
     if (consumptionAxisValues.yAxisSeries.length === 0) return 0
     let values: number[] = []
     // Filter yAxisSeries according to the target.
-    values = consumptionAxisValues.yAxisSeries.filter((el: ApexAxisChartSerie) => el.name === target)[0]
+    values = consumptionAxisValues.yAxisSeries.filter((el: YAxisChartSerie) => el.name === target)[0]
         .data as Array<number>
 
     switch (statisticConsumptionType) {
@@ -184,4 +178,31 @@ export const getDataCorrespendingToRange = (
             target: target,
         },
     ]
+}
+
+/**
+ * Function that distribute 4792 data of ADEM to each month of the year according to the days of the month.
+ *
+ * @param amount The amount needed to be distributed.
+ * @param timestamp Timestamp of the data we want to get.
+ * @returns Rounded number.
+ */
+export const distributeAmountPerMonth = (amount: number, timestamp: number): number => {
+    const inputDate = dayjs(timestamp)
+    const yearOfTimestamp = inputDate.year()
+    const monthOfTimestamp = inputDate.month()
+
+    let totalDays = 0
+
+    // Calculate total days in the year of the given timestamp
+    for (let month = 0; month < 12; month++) {
+        totalDays += dayjs(`${yearOfTimestamp}-${month + 1}-01`).daysInMonth()
+    }
+
+    const amountPerDay = amount / totalDays
+
+    // Distribute the amount based on days in the month of the provided timestamp
+    const daysInGivenMonth = dayjs(`${yearOfTimestamp}-${monthOfTimestamp + 1}-01`).daysInMonth()
+
+    return round(amountPerDay * daysInGivenMonth, 2)
 }

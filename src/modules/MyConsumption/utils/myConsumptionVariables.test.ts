@@ -47,15 +47,15 @@ describe('test pure functions', () => {
 
         // When value is null and unit Wh consumption it'll show only the unit.
         label = getYPointValueLabel(null, metricTargetsEnum.consumption, 'Wh')
-        expect(label).toBe(' Wh')
+        expect(label).toBe('- Wh')
 
         // When value is null and unit kWh consumption it'll show only the unit.
         label = getYPointValueLabel(null, metricTargetsEnum.consumption, 'kWh')
-        expect(label).toBe(' kWh')
+        expect(label).toBe('- kWh')
 
         // When value is null and unit MWh consumption it'll show only the unit.
         label = getYPointValueLabel(null, metricTargetsEnum.consumption, 'MWh')
-        expect(label).toBe(' MWh')
+        expect(label).toBe('- MWh')
 
         /**
          * Euros Consumption TEST.
@@ -70,7 +70,7 @@ describe('test pure functions', () => {
 
         // When value is null and External temperature it'll show only the unit.
         label = getYPointValueLabel(null, metricTargetsEnum.eurosConsumption)
-        expect(label).toBe(' €')
+        expect(label).toBe('- €')
 
         /**
          * TEMPERATURE TEST.
@@ -81,7 +81,7 @@ describe('test pure functions', () => {
 
         // When value is null and External temperature it'll show only the unit.
         label = getYPointValueLabel(null, metricTargetsEnum.internalTemperature)
-        expect(label).toBe(' °C')
+        expect(label).toBe('- °C')
 
         // When External temperature it'll show the value given in Watt.
         label = getYPointValueLabel(yValue, metricTargetsEnum.externalTemperature)
@@ -89,7 +89,7 @@ describe('test pure functions', () => {
 
         // When value is null and External temperature it'll show only the unit.
         label = getYPointValueLabel(null, metricTargetsEnum.externalTemperature)
-        expect(label).toBe(' °C')
+        expect(label).toBe('- °C')
 
         /**
          * PMAX TEST.
@@ -100,7 +100,7 @@ describe('test pure functions', () => {
 
         // When value is null and Pmax it'll show only the unit.
         label = getYPointValueLabel(null, metricTargetsEnum.pMax)
-        expect(label).toBe(' kVA')
+        expect(label).toBe('- kVA')
     })
 
     test('getChartColor test with different cases', async () => {

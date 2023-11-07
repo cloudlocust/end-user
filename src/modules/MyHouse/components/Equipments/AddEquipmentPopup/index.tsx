@@ -21,17 +21,29 @@ export const AddEquipmentPopup = (props: AddEquipmentPopupProps) => {
     const { formatMessage } = useIntl()
     const [equipmentValue, setEquipmentValue] = useState<equipmentType | 'other' | ''>('')
     const [customEquipmentValue, setCustomEquipmentValue] = useState('')
-    const [, setIsCustomEquipmentFieldError] = useState(false)
 
-    const orderedEquipmentsList = useMemo(
-        () => [
-            ...orderBy(equipmentsList, (el) => el.name, 'asc').filter(
-                (el) => mapppingEquipmentToLabel[el.name as unknown as equipmentNameType],
-            ),
+    /**
+     * For any equipment name that appears in the list with an associated customerId.
+     * We don't want any items of that name to appear in the filtered list, regardless of whether they have a customerId or not.
+     * In other words, if an equipment name has been associated with any customerId even once.
+     * It should be excluded entirely from the resultant list.
+     */
+    const orderedEquipmentsList = useMemo(() => {
+        if (!equipmentsList) return
+        // Get all equipment names that have a customerId.
+        const namesWithCustomerId = new Set(equipmentsList?.filter((el) => el.customerId !== null).map((el) => el.name))
+
+        // Filter out equipments that either have a name in namesWithCustomerId or do not exist in mapppingEquipmentToLabel.
+        const filteredList = equipmentsList?.filter(
+            (el) =>
+                !namesWithCustomerId.has(el.name) && mapppingEquipmentToLabel[el.name as unknown as equipmentNameType],
+        )
+
+        return [
+            ...orderBy(filteredList, (el) => el.name, 'asc'),
             { id: Math.random(), name: 'other', allowed_type: ['electricity'] } as unknown as equipmentType,
-        ],
-        [equipmentsList],
-    )
+        ]
+    }, [equipmentsList])
 
     return (
         <Dialog
@@ -60,7 +72,7 @@ export const AddEquipmentPopup = (props: AddEquipmentPopupProps) => {
                         fullWidth
                         data-testid={'equipments-select'}
                     >
-                        {orderedEquipmentsList.map((option) => (
+                        {orderedEquipmentsList?.map((option) => (
                             <MenuItem key={option.id} value={option.name}>
                                 {formatMessage({
                                     id: mapppingEquipmentToLabel[option.name as unknown as equipmentNameType]!,
@@ -89,10 +101,6 @@ export const AddEquipmentPopup = (props: AddEquipmentPopupProps) => {
                             (equipmentValue === 'other' && customEquipmentValue.length <= 0)
                         }
                         onClick={async () => {
-                            if (customEquipmentValue.length <= 0) {
-                                setIsCustomEquipmentFieldError(true)
-                                return
-                            }
                             await addEquipment({
                                 name: equipmentValue === 'other' ? customEquipmentValue : (equipmentValue as string),
                                 allowedType: ['electricity'],

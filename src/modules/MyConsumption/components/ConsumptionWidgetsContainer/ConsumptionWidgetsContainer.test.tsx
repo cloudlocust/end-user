@@ -9,6 +9,7 @@ import { periodType } from 'src/modules/MyConsumption/myConsumptionTypes'
 const CONSOMMATION_TOTAL_TEXT = 'Consommation Totale'
 const CONSOMMATION_PURCHASED_TEXT = 'Achetée'
 const PRODUCTION_TOTAL_TEXT = 'Production Totale'
+const PRODUCTION_INJECTED_TEXT = 'Injectée'
 const AUTOCONSOMMATION_TEXT = 'Autoconsommation'
 
 const widgetClassnameSelector = ' .MuiGrid-root .MuiGrid-item'
@@ -18,7 +19,7 @@ let mockGlobalProductionFeatureState = true
 
 let mockFilters: metricFiltersType = [
     {
-        key: 'meter_guid',
+        key: 'housing_id',
         operator: '=',
         value: '123456789',
     },
@@ -83,6 +84,7 @@ describe('ConsumptionWidgetsContainer test', () => {
         expect(getByText(CONSOMMATION_TOTAL_TEXT)).toBeInTheDocument()
         expect(getByText(CONSOMMATION_PURCHASED_TEXT)).toBeInTheDocument()
         expect(getByText(PRODUCTION_TOTAL_TEXT)).toBeInTheDocument()
+        expect(getByText(PRODUCTION_INJECTED_TEXT)).toBeInTheDocument()
         expect(getByText(AUTOCONSOMMATION_TEXT)).toBeInTheDocument()
     })
     test('when the enphase consent is not active, the widgets of production & autoconsumption should not be showing', async () => {
@@ -100,6 +102,7 @@ describe('ConsumptionWidgetsContainer test', () => {
         expect(getByText(CONSOMMATION_TOTAL_TEXT)).toBeInTheDocument()
         expect(queryByText(CONSOMMATION_PURCHASED_TEXT)).not.toBeInTheDocument()
         expect(queryByText(PRODUCTION_TOTAL_TEXT)).not.toBeInTheDocument()
+        expect(queryByText(PRODUCTION_INJECTED_TEXT)).not.toBeInTheDocument()
         expect(queryByText(AUTOCONSOMMATION_TEXT)).not.toBeInTheDocument()
     })
     test('when the enphase feature is disabled, the widgets of production & autoconsumption should not be showing', async () => {
@@ -118,6 +121,7 @@ describe('ConsumptionWidgetsContainer test', () => {
         expect(getByText(CONSOMMATION_TOTAL_TEXT)).toBeInTheDocument()
         expect(queryByText(CONSOMMATION_PURCHASED_TEXT)).not.toBeInTheDocument()
         expect(queryByText(PRODUCTION_TOTAL_TEXT)).not.toBeInTheDocument()
+        expect(queryByText(PRODUCTION_INJECTED_TEXT)).not.toBeInTheDocument()
         expect(queryByText(AUTOCONSOMMATION_TEXT)).not.toBeInTheDocument()
     })
 })

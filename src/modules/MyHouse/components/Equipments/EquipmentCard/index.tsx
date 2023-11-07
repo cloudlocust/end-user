@@ -1,27 +1,44 @@
 import { useModal } from 'src/hooks/useModal'
 import { MicrowaveMeasurement } from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement'
-import { Card, CardContent, Button, useTheme, Typography, Icon } from '@mui/material'
+import { Card, CardContent, Button, useTheme, Typography, Icon, Tooltip } from '@mui/material'
 import { EquipmentCardProps } from 'src/modules/MyHouse/components/Equipments/EquipmentCard/equipmentsCard'
 import { useIntl } from 'src/common/react-platform-translation'
 import { useState } from 'react'
+import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
+import { isEquipmentMeasurementFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
+import { FEATURE_COMMING_SOON_TEXT } from 'src/modules/shared'
+import { DashboardCustomizeOutlined } from '@mui/icons-material'
 
 /**
  * Equipment Card component.
  *
+ * @description Equipment Card component that displays individual card for each type of equipment.
  * @param root0 N/A.
  * @param root0.id Equipment id.
  * @param root0.number How many equipments are there of that type.
  * @param root0.label Equipment label.
  * @param root0.name Equipment backend name.
+ * @param root0.housingEquipmentId The global equipment id.
+ * @param root0.measurementModes Measurement modes for the Equipment.
  * @param root0.onEquipmentChange Function that handle the equipment number.
+ * @param root0.iconComponent Icon component.
  * @returns EquipmentCard JSX.
  */
-export const EquipmentCard = ({ id, number, label, name, onEquipmentChange }: EquipmentCardProps) => {
+export const EquipmentCard = ({
+    id,
+    number,
+    label,
+    name,
+    housingEquipmentId,
+    measurementModes,
+    onEquipmentChange,
+    iconComponent,
+}: EquipmentCardProps) => {
     const theme = useTheme()
     const [equipmentNumber, setEquipmentNumber] = useState<number>(number)
     const { formatMessage } = useIntl()
     const {
-        isOpen: isMeasurementModalIsOpen,
+        isOpen: isMeasurementModalOpen,
         openModal: onOpenMeasurementModal,
         closeModal: onCloseMeasurementModal,
     } = useModal()
@@ -35,7 +52,13 @@ export const EquipmentCard = ({ id, number, label, name, onEquipmentChange }: Eq
                     <div
                         className="flex justify-center items-center rounded-16 border-2"
                         style={{ borderColor: theme.palette.primary.main, width: '75px', height: '75px' }}
-                    ></div>
+                    >
+                        {iconComponent ? (
+                            iconComponent(theme)
+                        ) : (
+                            <DashboardCustomizeOutlined color="primary" fontSize="large" />
+                        )}
+                    </div>
                     <div className="flex flex-row w-full justify-between">
                         <Typography className="text-16 md:text-17 font-medium">
                             {formatMessage({
@@ -73,20 +96,39 @@ export const EquipmentCard = ({ id, number, label, name, onEquipmentChange }: Eq
                                     remove_circle_outlined
                                 </Icon>
                             </div>
-                            {isMicrowaveMeasurementButtonShown && (
-                                <Button className="px-20 py-3" variant="contained" onClick={onOpenMeasurementModal}>
-                                    Mesurer
-                                </Button>
-                            )}
+                            <Tooltip
+                                disableHoverListener={isEquipmentMeasurementFeatureState}
+                                title={<TypographyFormatMessage>{FEATURE_COMMING_SOON_TEXT}</TypographyFormatMessage>}
+                                placement="top"
+                                arrow
+                            >
+                                {/* In order to get the tooltip to show you need to wrap the disabled Button in a inline-block div */}
+                                {isMicrowaveMeasurementButtonShown ? (
+                                    <div className="inline-block">
+                                        <Button
+                                            className="px-20 py-3"
+                                            variant="contained"
+                                            onClick={onOpenMeasurementModal}
+                                            disabled={!isEquipmentMeasurementFeatureState}
+                                        >
+                                            Mesurer
+                                        </Button>
+                                    </div>
+                                ) : (
+                                    <></>
+                                )}
+                            </Tooltip>
                         </div>
                     </div>
                 </CardContent>
             </Card>
             {isMicrowaveMeasurementButtonShown && (
                 <MicrowaveMeasurement
+                    housingEquipmentId={housingEquipmentId!}
                     equipmentsNumber={number}
-                    isModalOpen={isMeasurementModalIsOpen}
-                    onCloseModal={onCloseMeasurementModal}
+                    measurementModes={measurementModes!}
+                    isMeasurementModalOpen={isMeasurementModalOpen}
+                    onCloseMeasurementModal={onCloseMeasurementModal}
                 />
             )}
         </>

@@ -3,8 +3,9 @@ import { BrowserRouter as Router } from 'react-router-dom'
 import { IMetric, metricFiltersType, metricIntervalType, metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
 import { TEST_SUCCESS_WEEK_METRICS } from 'src/mocks/handlers/metrics'
 import { periodType, ProductionChartContainerProps } from 'src/modules/MyConsumption/myConsumptionTypes'
-import { ProductionChartContainer } from 'src/modules/MyConsumption/components/MyConsumptionChart/ProductionChartContainer'
+import { ProductionChartContainer } from 'src/modules/MyConsumption/components/ProductionChart/ProductionChartContainer'
 import { ENPHASE_OFF_MESSAGE } from 'src/modules/MyConsumption/utils/myConsumptionVariables'
+import { setupJestCanvasMock } from 'jest-canvas-mock'
 
 let mockData: IMetric[] = TEST_SUCCESS_WEEK_METRICS([
     metricTargetsEnum.totalProduction,
@@ -18,7 +19,6 @@ const PRODUCTION_TITLE_DAILY = 'en Watt par jour'
 const PRODUCTION_TITLE_WEEKLY = 'en kWh par semaine'
 const PRODUCTION_TITLE_MONTHLY = 'en kWh par mois'
 const PRODUCTION_TITLE_YEARLY = 'en kWh par année'
-const apexchartsClassName = 'apexcharts-svg'
 const PRODUCTION_CONSENT_OFF_MESSAGE =
     'Pour voir vos données de production veuillez connecter votre onduleur Ou Reliez la prise Shelly de vos panneaux plug&play'
 const mockGetMetricsWithParams = jest.fn()
@@ -27,7 +27,7 @@ let mockProductionChartErrorState = false
 let mockConnectedPlugsFeatureState = true
 let mockFilters: metricFiltersType = [
     {
-        key: 'meter_guid',
+        key: 'housing_id',
         operator: '=',
         value: '123456789',
     },
@@ -65,13 +65,6 @@ jest.mock('src/modules/Metrics/metricsHook.ts', () => ({
     }),
 }))
 
-// ProductionChartContainer cannot render if we don't mock react-apexcharts
-jest.mock(
-    'react-apexcharts',
-    // eslint-disable-next-line jsdoc/require-jsdoc
-    () => (props: any) => <div className={`${apexchartsClassName}`} {...props}></div>,
-)
-
 jest.mock('src/modules/MyConsumption/MyConsumptionConfig', () => ({
     ...jest.requireActual('src/modules/MyConsumption/MyConsumptionConfig'),
     // eslint-disable-next-line jsdoc/require-jsdoc
@@ -94,6 +87,9 @@ jest.mock('src/modules/MyHouse/MyHouseConfig', () => ({
 }))
 
 describe('ProductionChartContainer test', () => {
+    beforeEach(() => {
+        setupJestCanvasMock()
+    })
     test('Different period props, When production chart.', async () => {
         const productionTitleCases = [
             {
@@ -132,7 +128,6 @@ describe('ProductionChartContainer test', () => {
             </Router>,
         )
         expect(container.querySelector(circularProgressClassname)).toBeInTheDocument()
-        expect(container.querySelector(`.${apexchartsClassName}`)).not.toBeInTheDocument()
     })
 
     test('When only isProductionConsentLoadingInProgress true, Spinner is shown', async () => {
@@ -143,7 +138,6 @@ describe('ProductionChartContainer test', () => {
             </Router>,
         )
         expect(container.querySelector(circularProgressClassname)).toBeInTheDocument()
-        expect(container.querySelector(`.${apexchartsClassName}`)).not.toBeInTheDocument()
     })
 
     test('When connectedPlugProduction and enphaseConsent OFF.', async () => {

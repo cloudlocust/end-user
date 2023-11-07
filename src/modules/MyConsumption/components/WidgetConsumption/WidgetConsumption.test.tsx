@@ -28,7 +28,7 @@ const mockGetMetricsWithParams = jest.fn()
 
 let mockFilters: metricFiltersType = [
     {
-        key: 'meter_guid',
+        key: 'housing_id',
         operator: '=',
         value: '123456789',
     },
@@ -46,7 +46,7 @@ let mockWidgetPropsDefault: IWidgetProps = {
     filters: mockFilters,
     metricsInterval: mockMetricsInterval,
     range: mockRange,
-    target: metricTargetsEnum.consumption,
+    targets: [metricTargetsEnum.consumption],
 }
 
 // Mock metricsHook

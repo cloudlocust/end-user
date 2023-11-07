@@ -37,7 +37,7 @@ export const EquipmentsQuickAddPopup = ({
     saveEquipment,
     loadingEquipmentInProgress,
 }: EquipmentsQuickAddPopupProps) => {
-    const [isEdit, setIsEdit] = useState(false)
+    const [isEdit, setIsEdit] = useState(true)
 
     // It'll have the following format an object of all equipment, name is the key, for example: {"heater": {equipment_id, equipment_type, equipment_number, isNumber, equipment: {id, name, allowed_type} } }.
     // eslint-disable-next-line jsdoc/require-jsdoc
@@ -125,20 +125,25 @@ export const EquipmentsQuickAddPopup = ({
                     }}
                 >
                     <div className="flex">
-                        {myEquipment.map((col) => (
-                            <div className="w-full text-13">
-                                {col.map((item) => {
-                                    return (
-                                        <NumberFieldForm
-                                            key={item.name}
-                                            value={item.value}
-                                            {...item}
-                                            disabled={!isEdit}
-                                        />
-                                    )
-                                })}
-                            </div>
-                        ))}
+                        {myEquipment.map((col) => {
+                            // Remove solarpanel from the list.
+                            const equipmentItem = col.filter((c) => c.name !== 'solarpanel')
+                            return (
+                                <div className="w-full text-13">
+                                    {equipmentItem.map((item) => {
+                                        return (
+                                            <NumberFieldForm
+                                                key={item.name}
+                                                value={item.value}
+                                                {...item}
+                                                disabled={!isEdit}
+                                                iconComponent={item.iconComponent}
+                                            />
+                                        )
+                                    })}
+                                </div>
+                            )
+                        })}
                     </div>
                     <EditButtonsGroup
                         formInitialValues={defaultValues}

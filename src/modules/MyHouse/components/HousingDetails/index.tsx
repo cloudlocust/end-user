@@ -21,7 +21,6 @@ import { useEquipmentList } from 'src/modules/MyHouse/components/Installation/in
 import { equipmentNameType } from 'src/modules/MyHouse/components/Installation/InstallationType.d'
 import { MeterStatus } from 'src/modules/MyHouse/components/MeterStatus'
 import { ReactComponent as ElectricityIcon } from 'src/assets/images/content/housing/Electricity.svg'
-// import { ReactComponent as GazIcon } from 'src/assets/images/content/housing/Gaz.svg'
 import { useSelector } from 'react-redux'
 import { RootState } from 'src/redux'
 import { cloneDeep, isEmpty } from 'lodash'
@@ -239,7 +238,7 @@ export const HousingDetails = () => {
             content={
                 <>
                     <MeterStatus />
-                    <div className="flex flex-col items-center md:flex-row justify-around mt-40">
+                    <div className="flex flex-col items-center md:flex-row justify-between space-x-0 md:space-x-10 my-12 md:mx-16">
                         <HousingDetailsCard
                             title="Information domicile"
                             elements={[...housingElements, ...installationElements]}

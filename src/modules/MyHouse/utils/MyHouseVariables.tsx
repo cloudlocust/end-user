@@ -1,7 +1,7 @@
 import { chunk, filter, zip } from 'lodash'
 import { ISelectButtons } from 'src/common/ui-kit/form-fields/SelectButtons/SelectButtonsTypes'
 import { equipmentNameType } from 'src/modules/MyHouse/components/Installation/InstallationType.d'
-import { SvgIcon } from '@mui/material'
+import { SvgIcon, Theme } from '@mui/material'
 import { ReactComponent as ElectricityIcon } from 'src/assets/images/content/housing/Electricity.svg'
 import { ReactComponent as OtherIcon } from 'src/assets/images/content/housing/Other.svg'
 import { ReactComponent as InductionIcon } from 'src/assets/images/content/housing/Induction.svg'
@@ -17,8 +17,9 @@ import { ReactComponent as FridgeIcon } from 'src/assets/images/content/housing/
 import { ReactComponent as DisahwasherIcon } from 'src/assets/images/content/housing/equipments/dishwasher.svg'
 import { ReactComponent as WashingmachineIcon } from 'src/assets/images/content/housing/equipments/washingmachine.svg'
 import { ReactComponent as DryerIcon } from 'src/assets/images/content/housing/equipments/dryer.svg'
-import GroupsIcon from '@mui/icons-material/Groups'
 import { API_RESOURCES_URL } from 'src/configs'
+import { SolarPower, Groups } from '@mui/icons-material'
+import { EquipmentOptionsType } from 'src/modules/MyHouse/utils/MyHouseCommonTypes.d'
 
 /**
  * Access rights url.
@@ -88,7 +89,7 @@ export const heaterEquipment: ISelectButtons = {
             label: 'Collectif',
             icon: (
                 <SvgIcon sx={customSvgIconsStyling}>
-                    <GroupsIcon />
+                    <Groups />
                 </SvgIcon>
             ),
             buttonStyle: buttonStyleLast,
@@ -130,7 +131,7 @@ export const sanitaryEquipment: ISelectButtons = {
             label: 'Collectif',
             icon: (
                 <SvgIcon sx={customSvgIconsStyling}>
-                    <GroupsIcon />
+                    <Groups />
                 </SvgIcon>
             ),
             buttonStyle: buttonStyleLast,
@@ -220,64 +221,140 @@ export const myEquipmentOptions = [
     {
         name: 'desktopcomputer',
         labelTitle: 'PC de bureau',
-        iconComponent: <DesktopComputerIcon />,
+        // eslint-disable-next-line jsdoc/require-jsdoc
+        iconComponent: (theme: Theme, isDisabled?: boolean) => (
+            <DesktopComputerIcon
+                fill={isDisabled ? theme.palette.grey[300] : theme.palette.primary.main}
+                width={'35'}
+                height={'35'}
+            />
+        ),
         disableDecrement: true,
     },
     {
         name: 'laptop',
         labelTitle: 'PC Portable',
-        iconComponent: <LaptopIcon />,
+        // eslint-disable-next-line jsdoc/require-jsdoc
+        iconComponent: (theme: Theme, isDisabled?: boolean) => (
+            <LaptopIcon
+                fill={isDisabled ? theme.palette.grey[300] : theme.palette.primary.main}
+                width={'35'}
+                height={'35'}
+            />
+        ),
         disableDecrement: true,
     },
     {
         name: 'tv',
         labelTitle: 'Téléviseur',
-        iconComponent: <TvIcon />,
+        // eslint-disable-next-line jsdoc/require-jsdoc
+        iconComponent: (theme: Theme, isDisabled?: boolean) => (
+            <TvIcon
+                fill={isDisabled ? theme.palette.grey[300] : theme.palette.primary.main}
+                width={'35'}
+                height={'35'}
+            />
+        ),
         disableDecrement: true,
     },
     {
         name: 'vacuum',
         labelTitle: 'Aspirateur',
-        iconComponent: <VaccumIcon />,
+        // eslint-disable-next-line jsdoc/require-jsdoc
+        iconComponent: (theme: Theme, isDisabled?: boolean) => (
+            <VaccumIcon
+                fill={isDisabled ? theme.palette.grey[300] : theme.palette.primary.main}
+                width={'35'}
+                height={'35'}
+            />
+        ),
         disableDecrement: true,
     },
     {
         name: 'oven',
         labelTitle: 'Four',
-        iconComponent: <OvenIcon />,
+        // eslint-disable-next-line jsdoc/require-jsdoc
+        iconComponent: (theme: Theme, isDisabled?: boolean) => (
+            <OvenIcon
+                fill={isDisabled ? theme.palette.grey[300] : theme.palette.primary.main}
+                width={'35'}
+                height={'35'}
+            />
+        ),
         disableDecrement: true,
     },
     {
         name: 'microwave',
         labelTitle: 'Micro-onde',
-        iconComponent: <MicrowaveIcon />,
+        // eslint-disable-next-line jsdoc/require-jsdoc
+        iconComponent: (theme: Theme, isDisabled?: boolean) => (
+            <MicrowaveIcon
+                fill={isDisabled ? theme.palette.grey[300] : theme.palette.primary.main}
+                width={'35'}
+                height={'35'}
+            />
+        ),
         disableDecrement: true,
     },
     {
         name: 'fridge',
         labelTitle: 'Réfrigérateur',
-        iconComponent: <FridgeIcon />,
+        // eslint-disable-next-line jsdoc/require-jsdoc
+        iconComponent: (theme: Theme, isDisabled?: boolean) => (
+            <FridgeIcon
+                fill={isDisabled ? theme.palette.grey[300] : theme.palette.primary.main}
+                width={'35'}
+                height={'35'}
+            />
+        ),
         disableDecrement: true,
     },
     {
         name: 'dishwasher',
         labelTitle: 'Lave-vaisselle',
-        iconComponent: <DisahwasherIcon />,
+        // eslint-disable-next-line jsdoc/require-jsdoc
+        iconComponent: (theme: Theme, isDisabled?: boolean) => (
+            <DisahwasherIcon
+                fill={isDisabled ? theme.palette.grey[300] : theme.palette.primary.main}
+                width={'35'}
+                height={'35'}
+            />
+        ),
         disableDecrement: true,
     },
     {
         name: 'washingmachine',
         labelTitle: 'Lave linge',
-        iconComponent: <WashingmachineIcon />,
+        // eslint-disable-next-line jsdoc/require-jsdoc
+        iconComponent: (theme: Theme, isDisabled?: boolean) => (
+            <WashingmachineIcon
+                fill={isDisabled ? theme.palette.grey[300] : theme.palette.primary.main}
+                width={'35'}
+                height={'35'}
+            />
+        ),
         disableDecrement: true,
     },
     {
         name: 'dryer',
         labelTitle: 'Sèche linge',
-        iconComponent: <DryerIcon />,
+        // eslint-disable-next-line jsdoc/require-jsdoc
+        iconComponent: (theme: Theme, isDisabled?: boolean) => (
+            <DryerIcon
+                fill={isDisabled ? theme.palette.grey[300] : theme.palette.primary.main}
+                width={'35'}
+                height={'35'}
+            />
+        ),
         disableDecrement: true,
     },
-]
+    {
+        name: 'solarpanel',
+        labelTitle: 'Panneaux solaire',
+        // eslint-disable-next-line jsdoc/require-jsdoc
+        iconComponent: () => <SolarPower color="primary" fontSize="large" />,
+    },
+] as EquipmentOptionsType[]
 
 /**
  * Equipment Name type.
@@ -315,7 +392,7 @@ export const mapppingEquipmentToLabel = {
     laptop: 'PC Portable',
     desktopcomputer: 'PC de bureau',
     // Other doesn't exisit in the backend. It's just used for frontend purpose.
-    // To display the option "Autre" for the Autocomplete input.
+    // To display the option "Autre" when creating a custom equipment.
     other: 'Autre',
 } as { [key in equipmentNameType]?: string }
 

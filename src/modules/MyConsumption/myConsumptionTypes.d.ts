@@ -185,19 +185,42 @@ export type SwitchIdleConsumptionProps =
     }
 
 /**
- * Represent the type return by apexChartsDataConverter.
+ * Y Axis Chart Series.
  */
-export type ApexChartsAxisValuesType =
+export type YAxisChartSerie =
+    /**
+     *
+     */
+    {
+        /**
+         * Target name.
+         */
+        name: metricTargetType
+        /**
+         * Data correspondant to the target.
+         */
+        data: (number | null)[]
+    }
+
+/**
+ * X Axis Series.
+ */
+export type XAxisChartSeries = number[][]
+
+/**
+ * Represent the type return by ChartsDataConverter.
+ */
+export type ChartsAxisValuesType =
     // eslint-disable-next-line jsdoc/require-jsdoc
     {
         /**
-         * Represent the yAxisValues for each target, as ApexChartSerie.
+         * Represent the yAxisValues for each target, as ChartSerie.
          */
-        yAxisSeries: ApexAxisChartSeries
+        yAxisSeries: YAxisChartSerie[]
         /**
          * Represent the xAxisValues for each target.
          */
-        xAxisSeries: number[][]
+        xAxisSeries: XAxisChartSeries
     }
 
 /**
@@ -205,28 +228,6 @@ export type ApexChartsAxisValuesType =
  */
 // eslint-disable-next-line jsdoc/require-jsdoc
 export type getHasMissingHousingContractsResponse = { hasMissingHousingContracts: boolean }
-
-/**
- * MyConsumptionChart Props.
- */
-export interface MyConsumptionChartProps {
-    // eslint-disable-next-line jsdoc/require-jsdoc
-    data: IMetric[]
-    // eslint-disable-next-line jsdoc/require-jsdoc
-    period: periodType
-    // eslint-disable-next-line jsdoc/require-jsdoc
-    range: metricRangeType
-    // eslint-disable-next-line jsdoc/require-jsdoc
-    isStackedEnabled?: boolean
-    // eslint-disable-next-line jsdoc/require-jsdoc
-    chartType: 'consumption' | 'production'
-    // eslint-disable-next-line jsdoc/require-jsdoc
-    chartLabel?: 'Consommation totale' | 'Electricité achetée sur le réseau'
-    // eslint-disable-next-line jsdoc/require-jsdoc
-    metricsInterval?: metricIntervalType
-    // eslint-disable-next-line jsdoc/require-jsdoc
-    enphaseOff?: boolean
-}
 
 /**
  * ConsumptionChartContainer Props.

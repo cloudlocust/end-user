@@ -1,4 +1,4 @@
-import { convertMetricsDataToApexChartsAxisValues } from 'src/modules/MyConsumption/utils/apexChartsDataConverter'
+import { convertMetricsDataToChartsAxisValues } from 'src/modules/MyConsumption/utils/chartsDataConverter'
 import { computationFunctionType } from 'src/modules/Analysis/analysisTypes.d'
 import {
     computeMeanConsumption,
@@ -7,8 +7,11 @@ import {
     computePercentageChange,
     normalizeValues,
     computeStatisticsMetricsTargetData,
+    distributeAmountPerMonth,
 } from 'src/modules/Analysis/utils/computationFunctions'
 import { IMetric, metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
+import { round } from 'lodash'
+import dayjs from 'dayjs'
 
 // eslint-disable-next-line jsdoc/require-jsdoc
 const mockMetricsData: IMetric[] = [
@@ -37,22 +40,22 @@ const emptyConsumption = {
 }
 test('computeMeanConsumption test with different cases', async () => {
     // When data is not empty
-    let apexChartsValues = convertMetricsDataToApexChartsAxisValues(mockMetricsData)
+    let chartsValues = convertMetricsDataToChartsAxisValues(mockMetricsData)
 
-    let result = computeMeanConsumption(apexChartsValues) as computationFunctionType
+    let result = computeMeanConsumption(chartsValues) as computationFunctionType
     expect(result).toEqual({
         value: valueMeanConsumption,
         unit: unitConsumption,
     })
 
-    result = computeMaxConsumption(apexChartsValues) as computationFunctionType
+    result = computeMaxConsumption(chartsValues) as computationFunctionType
     expect(result).toEqual({
         value: valueMaxConsumption,
         unit: unitConsumption,
         timestamp: timeStampMaxConsumption,
     })
 
-    result = computeMinConsumption(apexChartsValues) as computationFunctionType
+    result = computeMinConsumption(chartsValues) as computationFunctionType
     expect(result).toEqual({
         value: valueMinConsumption,
         unit: unitConsumption,
@@ -60,18 +63,18 @@ test('computeMeanConsumption test with different cases', async () => {
     })
 
     // When metricsData is empty
-    apexChartsValues = convertMetricsDataToApexChartsAxisValues([])
+    chartsValues = convertMetricsDataToChartsAxisValues([])
 
-    result = computeMeanConsumption(apexChartsValues) as computationFunctionType
+    result = computeMeanConsumption(chartsValues) as computationFunctionType
     expect(result).toEqual({
         value: emptyConsumption.value,
         unit: emptyConsumption.unit,
     })
 
-    result = computeMaxConsumption(apexChartsValues) as computationFunctionType
+    result = computeMaxConsumption(chartsValues) as computationFunctionType
     expect(result).toEqual(emptyConsumption)
 
-    result = computeMinConsumption(apexChartsValues) as computationFunctionType
+    result = computeMinConsumption(chartsValues) as computationFunctionType
     expect(result).toEqual(emptyConsumption)
 }, 20000)
 
@@ -141,19 +144,47 @@ test('normalizeValues test with different cases', async () => {
 
 test('computeStatisticsMetricsTargetData test with different cases', async () => {
     // When data is not empty
-    let apexChartsValues = convertMetricsDataToApexChartsAxisValues(mockMetricsData)
+    let chartsValues = convertMetricsDataToChartsAxisValues(mockMetricsData)
 
-    let result = computeStatisticsMetricsTargetData(apexChartsValues, metricTargetsEnum.consumption, 'mean')
+    let result = computeStatisticsMetricsTargetData(chartsValues, metricTargetsEnum.consumption, 'mean')
     expect(result).toEqual(valueMeanConsumption)
 
-    result = computeStatisticsMetricsTargetData(apexChartsValues, metricTargetsEnum.consumption, 'maximum')
+    result = computeStatisticsMetricsTargetData(chartsValues, metricTargetsEnum.consumption, 'maximum')
     expect(result).toEqual(valueMaxConsumption)
 
-    result = computeStatisticsMetricsTargetData(apexChartsValues, metricTargetsEnum.consumption, 'minimum')
+    result = computeStatisticsMetricsTargetData(chartsValues, metricTargetsEnum.consumption, 'minimum')
     expect(result).toEqual(valueMinConsumption)
 
     // When metricsData is empty
-    apexChartsValues = convertMetricsDataToApexChartsAxisValues([])
-    result = computeStatisticsMetricsTargetData(apexChartsValues, metricTargetsEnum.consumption, 'mean')
+    chartsValues = convertMetricsDataToChartsAxisValues([])
+    result = computeStatisticsMetricsTargetData(chartsValues, metricTargetsEnum.consumption, 'mean')
     expect(result).toEqual(emptyConsumption.value)
 }, 20000)
+
+describe('distributeAmountPerMonth', () => {
+    it('should distribute amount correctly based on days of the month', () => {
+        const amount = 4792
+        const timestampForFebruary = dayjs('2023-02-01').valueOf() // February has 28 days in 2023
+        const amountForFebruary = distributeAmountPerMonth(amount, timestampForFebruary)
+
+        // Calculate expected amount for February
+        const totalDaysIn2023 = 365 // Non-leap year
+        const daysInFebruary = 28
+        const expectedAmountForFebruary = round((amount / totalDaysIn2023) * daysInFebruary, 2)
+
+        expect(amountForFebruary).toBe(expectedAmountForFebruary)
+    })
+
+    it('should distribute amount correctly for months with 31 days', () => {
+        const amount = 4792
+        const timestampForJuly = dayjs('2023-07-01').valueOf() // July has 31 days
+        const amountForJuly = distributeAmountPerMonth(amount, timestampForJuly)
+
+        // Calculate expected amount for July
+        const totalDaysIn2023 = 365 // Non-leap year
+        const daysInJuly = 31
+        const expectedAmountForJuly = round((amount / totalDaysIn2023) * daysInJuly, 2)
+
+        expect(amountForJuly).toBe(expectedAmountForJuly)
+    })
+})
