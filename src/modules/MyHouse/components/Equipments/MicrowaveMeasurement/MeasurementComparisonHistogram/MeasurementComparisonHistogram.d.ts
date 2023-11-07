@@ -21,9 +21,13 @@ export interface HistogramBarProps {
      */
     consumptionValue: number
     /**
-     * The other consumption value  (in Watt, if isAverageConsumption is true it's the user consumption, else it's the average consumption).
+     * The height value for the bar (in percentage %).
      */
     height: number
+    /**
+     * The label text for the histogram bar.
+     */
+    label: string
 }
 
 /**
