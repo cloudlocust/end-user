@@ -30,7 +30,7 @@ describe('MeasurementComparisonHistogram component', () => {
             height: '75%',
         })
         expect(userConsumptionBarElement).not.toHaveStyle({
-            height: 'transparent',
+            backgroundColor: 'transparent',
         })
 
         // Assert that the averageConsumption bar height and background color are correct
@@ -52,7 +52,7 @@ describe('MeasurementComparisonHistogram component', () => {
             height: '100%',
         })
         expect(userConsumptionBarElement).not.toHaveStyle({
-            height: 'transparent',
+            backgroundColor: 'transparent',
         })
 
         // Assert that the averageConsumption bar height and background color are correct
@@ -74,7 +74,7 @@ describe('MeasurementComparisonHistogram component', () => {
             height: '100%',
         })
         expect(userConsumptionBarElement).not.toHaveStyle({
-            height: 'transparent',
+            backgroundColor: 'transparent',
         })
 
         // Assert that the averageConsumption bar height and background color are correct

@@ -1,4 +1,5 @@
 import { render } from '@testing-library/react'
+import { reduxedRender } from 'src/common/react-platform-components/test'
 import {
     HistogramBar,
     HistogramBarIcon,
@@ -15,10 +16,17 @@ describe('HistogramBarIcon component', () => {
 
 describe('HistogramBar component', () => {
     const HISTOGRAM_BAR_TEST_ID = 'histogram-bar'
+    const AVERAGE_CONSUMPTION_LABEL_TEXT = "Consommation moyenne d'un micro onde"
+    const USER_CONSUMPTION_LABEL_TEXT = 'Consommation de votre micro onde'
 
     test('renders correctly when the HistogramBar is for the average consumption', () => {
-        const { getByText, getByTestId } = render(
-            <HistogramBar consumptionValue={600} height={74} isAverageConsumption />,
+        const { getByText, getByTestId } = reduxedRender(
+            <HistogramBar
+                consumptionValue={600}
+                height={74}
+                label={AVERAGE_CONSUMPTION_LABEL_TEXT}
+                isAverageConsumption
+            />,
         )
 
         // Assert that the consumption value is present and correct
@@ -32,10 +40,15 @@ describe('HistogramBar component', () => {
             height: '74%',
             backgroundColor: 'transparent',
         })
+
+        // Assert that the text label is present
+        expect(getByText(AVERAGE_CONSUMPTION_LABEL_TEXT)).toBeInTheDocument()
     })
 
     test('renders correctly when the HistogramBar is for the user consumption', () => {
-        const { getByText, getByTestId } = render(<HistogramBar consumptionValue={800} height={36} />)
+        const { getByText, getByTestId } = reduxedRender(
+            <HistogramBar consumptionValue={800} height={36} label={USER_CONSUMPTION_LABEL_TEXT} />,
+        )
 
         // Assert that the consumption value is present and correct
         expect(getByText('800 W')).toBeInTheDocument()
@@ -51,5 +64,8 @@ describe('HistogramBar component', () => {
         expect(histogramBar).not.toHaveStyle({
             height: 'transparent',
         })
+
+        // Assert that the text label is present
+        expect(getByText(USER_CONSUMPTION_LABEL_TEXT)).toBeInTheDocument()
     })
 })

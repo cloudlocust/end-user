@@ -1,6 +1,4 @@
 import { useMemo } from 'react'
-import { TypographyProps } from '@mui/material/Typography'
-import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import { HistogramBar } from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement/MeasurementComparisonHistogram/HistogramBar'
 import { MeasurementComparisonHistogramProps } from './MeasurementComparisonHistogram.d'
 
@@ -16,11 +14,6 @@ export const MeasurementComparisonHistogram = ({
     userConsumption,
     averageConsumption,
 }: MeasurementComparisonHistogramProps) => {
-    const labelTextPropsValues: TypographyProps = {
-        className: 'flex-1 mx-20 mt-5',
-        style: { overflowWrap: 'anywhere' },
-    }
-
     /**
      * This useMemo hook calculate the heights of the userConsumption bar and the averageConsumption bar
      * for the comparaison histogram.
@@ -35,29 +28,24 @@ export const MeasurementComparisonHistogram = ({
     const [userConsumptionBarHeight, averageConsumptionBarHeight] = useMemo(
         () =>
             userConsumption >= averageConsumption
-                ? [100, (100 * averageConsumption) / userConsumption]
-                : [(100 * userConsumption) / averageConsumption, 100],
+                ? [100, userConsumption ? (100 * averageConsumption) / userConsumption : 100]
+                : [averageConsumption ? (100 * userConsumption) / averageConsumption : 100, 100],
         [averageConsumption, userConsumption],
     )
 
     return (
-        <div className="w-full max-w-288 mx-auto">
-            <div className="h-160 flex border-b-2 border-grey-500">
-                <HistogramBar consumptionValue={userConsumption} height={userConsumptionBarHeight} />
-                <HistogramBar
-                    consumptionValue={averageConsumption}
-                    height={averageConsumptionBarHeight}
-                    isAverageConsumption
-                />
-            </div>
-            <div className="flex text-center">
-                <TypographyFormatMessage {...labelTextPropsValues}>
-                    Consommation de votre micro onde
-                </TypographyFormatMessage>
-                <TypographyFormatMessage {...labelTextPropsValues}>
-                    Consommation moyenne d'un micro onde
-                </TypographyFormatMessage>
-            </div>
+        <div className="flex w-full max-w-288 mx-auto">
+            <HistogramBar
+                consumptionValue={userConsumption}
+                height={userConsumptionBarHeight}
+                label="Consommation de votre micro onde"
+            />
+            <HistogramBar
+                consumptionValue={averageConsumption}
+                height={averageConsumptionBarHeight}
+                label="Consommation moyenne d'un micro onde"
+                isAverageConsumption
+            />
         </div>
     )
 }
