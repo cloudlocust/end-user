@@ -1,7 +1,7 @@
 import { screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { reduxedRender } from 'src/common/react-platform-components/test'
-import { EquipmentStartupStep } from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement/EquipmentStartupStep'
+import { MeasurementStartupStep } from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement/MeasurementStartupStep'
 
 const mockStepSetter = jest.fn()
 
@@ -10,9 +10,9 @@ const props = {
     stepSetter: mockStepSetter,
 }
 
-describe('EquipmentStartupStep Component', () => {
+describe('MeasurementStartupStep Component', () => {
     test('renders correctly', () => {
-        reduxedRender(<EquipmentStartupStep {...props} />)
+        reduxedRender(<MeasurementStartupStep {...props} />)
 
         const measurementModeText = screen.getByText((content, _) => {
             return content.startsWith("Mettez en marche l'appareil sur le mode")
@@ -29,7 +29,7 @@ describe('EquipmentStartupStep Component', () => {
     })
 
     test('calls stepSetter when the button Commencer la mesure is clicked', async () => {
-        reduxedRender(<EquipmentStartupStep {...props} />)
+        reduxedRender(<MeasurementStartupStep {...props} />)
 
         const startButton = screen.getByRole('button', { name: 'Commencer la mesure' })
         userEvent.click(startButton)

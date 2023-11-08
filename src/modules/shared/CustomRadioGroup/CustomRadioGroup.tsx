@@ -29,7 +29,7 @@ export const CustomRadioGroup = ({ elements, onValueChange, ...boxProps }: Custo
 
     return (
         <Box {...boxProps}>
-            {elements.map((element) => (
+            {elements?.map((element) => (
                 <CustomRadioButton
                     key={element.label}
                     value={element.value}
