@@ -1,4 +1,5 @@
 import Typography from '@mui/material/Typography'
+import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import { useTheme } from '@mui/material'
 import {
     HistogramBarProps,
@@ -20,8 +21,8 @@ export const HistogramBarIcon = ({ icon }: HistogramBarIconProps) => {
 
     return (
         <div
-            className="h-32 w-32 flex justify-center items-center text-white rounded-full border-2 border-white absolute top-0 right-0"
-            style={{ backgroundColor: theme.palette.secondary.main, transform: 'translate(40%, -40%)' }}
+            className="h-28 w-28 flex justify-center items-center text-white rounded-full border-2 border-white absolute top-0 right-0"
+            style={{ backgroundColor: theme.palette.secondary.main, transform: 'translate(50%, -50%)' }}
             data-testid="histogram-bar-icon"
         >
             {icon}
@@ -36,32 +37,47 @@ export const HistogramBarIcon = ({ icon }: HistogramBarIconProps) => {
  * @param root0.isAverageConsumption Boolean indicate if the histogram bar is for the average consumption or not (for the user consumption).
  * @param root0.consumptionValue The value of the consumption.
  * @param root0.height The height value for the bar (in percentage %).
+ * @param root0.label The label text for the histogram bar.
  * @returns The component HistogramBar.
  */
-export const HistogramBar = ({ isAverageConsumption, consumptionValue, height }: HistogramBarProps) => {
+export const HistogramBar = ({ isAverageConsumption, consumptionValue, height, label }: HistogramBarProps) => {
     const theme = useTheme()
 
     return (
-        <div className="h-full flex flex-col items-center justify-end flex-1">
-            <div
-                className="w-1/2 min-h-44 relative border-2"
-                style={{
-                    height: `${height}%`,
-                    backgroundColor: isAverageConsumption ? 'transparent' : theme.palette.primary.main,
-                    borderColor: theme.palette.primary.main,
-                }}
-                data-testid="histogram-bar"
-            >
-                {/* The consumption value */}
-                <Typography color={isAverageConsumption ? 'primary' : 'white'} className="text-center mt-20">
-                    {consumptionValue} W
-                </Typography>
+        <div className="flex-1">
+            {/* The bar shape */}
+            <div className="h-160 flex flex-col items-center justify-end border-b-2 border-grey-500 ">
+                <div
+                    className="w-2/5 min-w-36 min-h-44 relative border-2 border-b-0"
+                    style={{
+                        height: `${height}%`,
+                        backgroundColor: isAverageConsumption ? 'transparent' : theme.palette.primary.main,
+                        borderColor: theme.palette.primary.main,
+                    }}
+                    data-testid="histogram-bar"
+                >
+                    {/* The consumption value */}
+                    <Typography color={isAverageConsumption ? 'primary' : 'white'} className="text-center mt-14">
+                        {consumptionValue} W
+                    </Typography>
 
-                {/* The histogram bar icon */}
-                <HistogramBarIcon
-                    icon={isAverageConsumption ? <GroupsOutlinedIcon /> : <PersonOutlineOutlinedIcon />}
-                />
+                    {/* The histogram bar icon */}
+                    <HistogramBarIcon
+                        icon={
+                            isAverageConsumption ? (
+                                <GroupsOutlinedIcon fontSize="small" />
+                            ) : (
+                                <PersonOutlineOutlinedIcon fontSize="small" />
+                            )
+                        }
+                    />
+                </div>
             </div>
+
+            {/* The label text */}
+            <TypographyFormatMessage className="text-center mx-20 mt-5" sx={{ overflowWrap: 'anywhere' }}>
+                {label}
+            </TypographyFormatMessage>
         </div>
     )
 }
