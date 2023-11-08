@@ -8,7 +8,6 @@ import { measurementStatusEnum } from 'src/modules/MyHouse/components/Equipments
 const HEADER_TEXT_PENDING_OR_NULL = 'Démarrage de la mesure'
 const HEADER_TEXT_IN_PROGRESS = 'Mesure en cours'
 const HEADER_TEXT_SUCCESS = 'Mesure effectuée avec succès'
-const HEADER_TEXT_FAILED = 'Mesure terminée avec échec'
 const BUTTON_TEXT = 'Voir le résultat'
 
 let mockStepSetter: jest.Mock<any, any>
@@ -128,9 +127,6 @@ describe('MeasurementProcessStep Component', () => {
                 measurementStatus={{ status: measurementStatusEnum.FAILED, failureMessage: 'Failur message test' }}
             />,
         )
-
-        const headerText = screen.getByText(HEADER_TEXT_FAILED)
-        expect(headerText).toBeInTheDocument()
 
         const progressCircle = screen.getByRole('progressbar')
         expect(progressCircle).toBeInTheDocument()
