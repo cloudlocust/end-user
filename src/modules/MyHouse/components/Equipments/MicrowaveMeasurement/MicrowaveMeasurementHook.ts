@@ -123,7 +123,7 @@ export function useMicrowaveMeasurement(
                 setMeasurementStatus({
                     status: measurementStatusEnum.FAILED,
                     failureMessage:
-                        'Oups ! Votre nrLINK ne semble pas connecté ! Connectez-le puis recommencer la mesure…',
+                        'Oups ! Votre nrLINK ne semble pas connecté ! Connectez-le puis recommencez la mesure…',
                 })
             }
         }

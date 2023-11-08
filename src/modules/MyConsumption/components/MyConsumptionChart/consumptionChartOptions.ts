@@ -47,6 +47,9 @@ export const getEchartsConsumptionChartOptions = (
         return undefined
     })
 
+    // filteredValues['hp_jour_bleu_consumption_metrics'] = filteredValues['base_consumption_metrics']
+    // filteredValues['base_consumption_metrics'] = []
+
     return {
         ...getDefaultOptionsEchartsConsumptionChart(theme, isMobile),
         ...getXAxisOptionEchartsConsumptionChart(xAxisTimestamps, isSolarProductionConsentOff, period, theme),
@@ -77,8 +80,11 @@ const getDefaultOptionsEchartsConsumptionChart = (theme: Theme, isMobile: boolea
             show: !isMobile,
             feature: {
                 dataZoom: {
-                    yAxisIndex: 'all',
+                    yAxisIndex: 'none',
                     xAxisIndex: 'all',
+                    iconStyle: {
+                        borderColor: 'white',
+                    },
                 },
             },
         },
@@ -655,20 +661,19 @@ export const getTargetsYAxisValueFormatters: getTargetsYAxisValueFormattersType 
     // Doing this allow us to show the yValues with the same unit., also for optimization we do it one time here.
     let maxConsumptionValue = 0
     let metricsInterval: '1m' | '30m' = '30m'
-    if (Object.keys(values).includes(metricTargetsEnum.consumption))
-        if (period === PeriodEnum.DAILY) {
-            // Computing the metricsInterval is used in period DAILY to convert consumption to WATT according to the metricsInterval.
-            const valuesLength = Object.values(values).length ? Object.values(values)[0].length : 0
-            metricsInterval = valuesLength % 60 === 0 ? '1m' : '30m'
-        } else
-            maxConsumptionValue = Math.max(
-                maxConsumptionValue,
-                ...Object.keys(values).reduce((cumulatedValues: number[], target) => {
-                    const targetValues = values[target as metricTargetsEnum]
-                    if (targetValues) return cumulatedValues.concat(targetValues as number[])
-                    return cumulatedValues
-                }, []),
-            )
+    if (period === PeriodEnum.DAILY) {
+        // Computing the metricsInterval is used in period DAILY to convert consumption to WATT according to the metricsInterval.
+        const valuesLength = Object.values(values).length ? Object.values(values)[0].length : 0
+        metricsInterval = valuesLength % 60 === 0 ? '1m' : '30m'
+    } else
+        maxConsumptionValue = Math.max(
+            maxConsumptionValue,
+            ...Object.keys(values).reduce((cumulatedValues: number[], target) => {
+                const targetValues = values[target as metricTargetsEnum]
+                if (targetValues) return cumulatedValues.concat(targetValues as number[])
+                return cumulatedValues
+            }, []),
+        )
     return {
         /**
          * Value formatter Label for Consumption targets yAxis.
