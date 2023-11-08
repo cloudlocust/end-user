@@ -40,7 +40,7 @@ export const MeasurementProcessStep = ({
             case measurementStatusEnum.SUCCESS:
                 return 'Mesure effectuée avec succès'
             case measurementStatusEnum.FAILED:
-                return 'Mesure terminée avec échec'
+                return ''
         }
         return 'Démarrage de la mesure'
     }, [measurementStatus])
@@ -59,14 +59,16 @@ export const MeasurementProcessStep = ({
     return (
         <>
             {/* Header */}
-            <div className="text-center mb-20">
-                <Typography component="h2" fontWeight="500" fontSize="18px" data-testid="headerElement">
-                    {formatMessage({
-                        id: headerText,
-                        defaultMessage: headerText,
-                    })}
-                </Typography>
-            </div>
+            {headerText && (
+                <div className="text-center mb-20">
+                    <Typography component="h2" fontWeight="500" fontSize="18px" data-testid="headerElement">
+                        {formatMessage({
+                            id: headerText,
+                            defaultMessage: headerText,
+                        })}
+                    </Typography>
+                </div>
+            )}
 
             {/* Content */}
             <div className="min-h-256 flex flex-col justify-around">
