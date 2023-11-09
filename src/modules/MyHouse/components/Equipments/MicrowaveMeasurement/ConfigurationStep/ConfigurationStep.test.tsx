@@ -26,25 +26,27 @@ describe('ConfigurationStep Component', () => {
 
         expect(screen.getByText('Configuration')).toBeInTheDocument()
 
-        expect(screen.getByText('Selectionner le micro-onde à mesurer')).toBeInTheDocument()
+        expect(screen.getByText('Sélectionner le micro-onde à mesurer')).toBeInTheDocument()
 
         expect(screen.getByLabelText('Mon équipement')).toBeInTheDocument()
 
-        expect(screen.getByText('Selectionner le mode à mesurer')).toBeInTheDocument()
+        expect(screen.getByText('Choisir le réglage à mesurer')).toBeInTheDocument()
 
         expect(screen.getByText(modeA)).toBeInTheDocument()
 
         expect(screen.getByText(modeB)).toBeInTheDocument()
 
         expect(
-            screen.getByText('Attention à ne pas trop perturber le flux électrique durant le test'),
+            screen.getByText(
+                'Attention : si vous lancez un autre appareil au même moment, cela risque de fausser la mesure.',
+            ),
         ).toBeInTheDocument()
     })
 
     test('do not display the microwave select when there is only one microwave', () => {
         reduxedRender(<ConfigurationStep {...defaultProps} equipmentsNumber={1} />)
 
-        expect(screen.queryByText('Selectionner le micro-onde à mesurer')).toBeNull()
+        expect(screen.queryByText('Sélectionner le micro-onde à mesurer')).toBeNull()
         expect(screen.queryByText('Mon équipement')).toBeNull()
     })
 

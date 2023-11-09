@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { useIntl } from 'src/common/react-platform-translation'
 import Typography from '@mui/material/Typography'
 import FormControl from '@mui/material/FormControl'
@@ -6,13 +7,13 @@ import Select from '@mui/material/Select'
 import MenuItem from '@mui/material/MenuItem'
 import Button from '@mui/material/Button'
 import WarningRoundedIcon from '@mui/icons-material/WarningRounded'
+import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import { CustomRadioGroup } from 'src/modules/shared/CustomRadioGroup/CustomRadioGroup'
 import {
     ConfigurationStepProps,
     RadioGroupOnChangeHandler,
     SelectOnChangeHandler,
 } from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement/ConfigurationStep/ConfigurationStep.d'
-import { useEffect } from 'react'
 
 /**
  * ConfigurationStep component.
@@ -107,12 +108,9 @@ export const ConfigurationStep = ({
                 {/* Select the microwave */}
                 {equipmentsNumber > 1 && (
                     <div className="mb-20">
-                        <Typography marginBottom="15px" fontWeight="500">
-                            {formatMessage({
-                                id: 'Selectionner le micro-onde à mesurer',
-                                defaultMessage: 'Selectionner le micro-onde à mesurer',
-                            })}
-                        </Typography>
+                        <TypographyFormatMessage marginBottom="15px" fontWeight="500">
+                            Sélectionner le micro-onde à mesurer
+                        </TypographyFormatMessage>
                         <FormControl fullWidth>
                             <InputLabel id="microwave-select-label">
                                 {formatMessage({
@@ -142,12 +140,9 @@ export const ConfigurationStep = ({
 
                 {/* Select the measurement mode */}
                 <div className="mb-20">
-                    <Typography marginBottom="15px" fontWeight="500">
-                        {formatMessage({
-                            id: 'Selectionner le mode à mesurer',
-                            defaultMessage: 'Selectionner le mode à mesurer',
-                        })}
-                    </Typography>
+                    <TypographyFormatMessage marginBottom="15px" fontWeight="500">
+                        Choisir le réglage à mesurer
+                    </TypographyFormatMessage>
                     <CustomRadioGroup
                         elements={measurementModesOptions || defaultMicrowaveMeasurementModesOptions}
                         onValueChange={handleRadioGroupChange}
@@ -165,12 +160,9 @@ export const ConfigurationStep = ({
                 {/* Warning */}
                 <div className="flex items-center gap-7 mb-20">
                     <WarningRoundedIcon fontSize="large" color="secondary" />
-                    <Typography>
-                        {formatMessage({
-                            id: 'Attention à ne pas trop perturber le flux électrique durant le test',
-                            defaultMessage: 'Attention à ne pas trop perturber le flux électrique durant le test',
-                        })}
-                    </Typography>
+                    <TypographyFormatMessage>
+                        Attention : si vous lancez un autre appareil au même moment, cela risque de fausser la mesure.
+                    </TypographyFormatMessage>
                 </div>
             </div>
 
