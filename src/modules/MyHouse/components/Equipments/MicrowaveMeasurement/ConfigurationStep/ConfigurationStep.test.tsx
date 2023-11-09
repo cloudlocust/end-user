@@ -11,7 +11,7 @@ const modeA = 'Mode A'
 const modeB = 'Mode B'
 
 const defaultProps = {
-    equipmentsNumber: 1,
+    equipmentsNumber: 2,
     selectedMicrowave: 0,
     setSelectedMicrowave: mockDispatch,
     measurementModes: [modeA, modeB],
@@ -39,6 +39,13 @@ describe('ConfigurationStep Component', () => {
         expect(
             screen.getByText('Attention à ne pas trop perturber le flux électrique durant le test'),
         ).toBeInTheDocument()
+    })
+
+    test('do not display the microwave select when there is only one microwave', () => {
+        reduxedRender(<ConfigurationStep {...defaultProps} equipmentsNumber={1} />)
+
+        expect(screen.queryByText('Selectionner le micro-onde à mesurer')).toBeNull()
+        expect(screen.queryByText('Mon équipement')).toBeNull()
     })
 
     test('calls setMeasurementMode when selections are made', async () => {

@@ -12,6 +12,7 @@ import {
     RadioGroupOnChangeHandler,
     SelectOnChangeHandler,
 } from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement/ConfigurationStep/ConfigurationStep.d'
+import { useEffect } from 'react'
 
 /**
  * ConfigurationStep component.
@@ -62,6 +63,11 @@ export const ConfigurationStep = ({
         stepSetter(2)
     }
 
+    // Set the selected microwave to 1 when there is only one microwave
+    useEffect(() => {
+        if (equipmentsNumber === 1) setSelectedMicrowave(1)
+    }, [equipmentsNumber, setSelectedMicrowave])
+
     const monEquipementStr = 'Mon équipement'
 
     const measurementModesOptions = measurementModes?.map((measurementMode) => ({
@@ -97,40 +103,42 @@ export const ConfigurationStep = ({
             </div>
 
             {/* Content */}
-            <div className="flex-1 flex flex-col justify-center">
+            <div className="flex-1 flex flex-col justify-evenly">
                 {/* Select the microwave */}
-                <div className="mb-20">
-                    <Typography marginBottom="15px" fontWeight="500">
-                        {formatMessage({
-                            id: 'Selectionner le micro-onde à mesurer',
-                            defaultMessage: 'Selectionner le micro-onde à mesurer',
-                        })}
-                    </Typography>
-                    <FormControl fullWidth>
-                        <InputLabel id="microwave-select-label">
+                {equipmentsNumber > 1 && (
+                    <div className="mb-20">
+                        <Typography marginBottom="15px" fontWeight="500">
                             {formatMessage({
-                                id: monEquipementStr,
-                                defaultMessage: monEquipementStr,
+                                id: 'Selectionner le micro-onde à mesurer',
+                                defaultMessage: 'Selectionner le micro-onde à mesurer',
                             })}
-                        </InputLabel>
-                        <Select
-                            labelId="microwave-select-label"
-                            id="microwave-select"
-                            value={selectedMicrowave}
-                            label={formatMessage({
-                                id: monEquipementStr,
-                                defaultMessage: monEquipementStr,
-                            })}
-                            onChange={handleSelectMicrowaveChange}
-                        >
-                            {Array(equipmentsNumber)
-                                .fill(null)
-                                .map((_, index) => (
-                                    <MenuItem value={index + 1}>Micro-onde {index + 1}</MenuItem>
-                                ))}
-                        </Select>
-                    </FormControl>
-                </div>
+                        </Typography>
+                        <FormControl fullWidth>
+                            <InputLabel id="microwave-select-label">
+                                {formatMessage({
+                                    id: monEquipementStr,
+                                    defaultMessage: monEquipementStr,
+                                })}
+                            </InputLabel>
+                            <Select
+                                labelId="microwave-select-label"
+                                id="microwave-select"
+                                value={selectedMicrowave}
+                                label={formatMessage({
+                                    id: monEquipementStr,
+                                    defaultMessage: monEquipementStr,
+                                })}
+                                onChange={handleSelectMicrowaveChange}
+                            >
+                                {Array(equipmentsNumber)
+                                    .fill(null)
+                                    .map((_, index) => (
+                                        <MenuItem value={index + 1}>Micro-onde {index + 1}</MenuItem>
+                                    ))}
+                            </Select>
+                        </FormControl>
+                    </div>
+                )}
 
                 {/* Select the measurement mode */}
                 <div className="mb-20">
