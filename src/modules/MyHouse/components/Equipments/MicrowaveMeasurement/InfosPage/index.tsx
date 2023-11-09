@@ -9,6 +9,22 @@ import {
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 
 /**
+ * ListItemCircle component.
+ *
+ * @returns The circle shape to decorate text items.
+ */
+const ListItemCircle = () => (
+    <Box
+        height="6px"
+        width="6px"
+        borderRadius="50px"
+        bgcolor={(theme) => theme.palette.primary.main}
+        flexShrink="0"
+        sx={{ transform: 'translateY(7px)' }}
+    />
+)
+
+/**
  * CustomOrderedListItem component.
  *
  * @param root0 N/A.
@@ -43,17 +59,6 @@ export const InfosPage = ({ stepSetter }: InfosPageProps) => {
         'Lancez la mesure',
     ]
 
-    const listItemCircle = (
-        <Box
-            height="6px"
-            width="6px"
-            borderRadius="50px"
-            bgcolor={(theme) => theme.palette.primary.main}
-            flexShrink="0"
-            sx={{ transform: 'translateY(7px)' }}
-        />
-    )
-
     /**
      * Click handler for the button Commencer.
      */
@@ -82,7 +87,7 @@ export const InfosPage = ({ stepSetter }: InfosPageProps) => {
             {/* Content */}
             <div className="flex-1 flex flex-col justify-center gap-14">
                 <div className="flex gap-7 mb-20">
-                    {listItemCircle}
+                    <ListItemCircle />
                     <TypographyFormatMessage fontWeight="500">
                         Grâce à votre nrLINK, vous avez la possibilité de surveiller l'efficacité énergétique de vos
                         appareils.
@@ -92,7 +97,7 @@ export const InfosPage = ({ stepSetter }: InfosPageProps) => {
                 {/* The measurement steps */}
                 <div className="mb-20">
                     <div className="flex gap-7">
-                        {listItemCircle}
+                        <ListItemCircle />
                         <div>
                             <TypographyFormatMessage display="inline" fontWeight="500">
                                 Analysons ensemble la consommation moyenne de votre appareil en suivant 3 étapes simples
