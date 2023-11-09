@@ -262,6 +262,11 @@ export const userModel = createModel<RootModel>()({
                     `${AUTH_BASE_URL}/auth/jwt/login`,
                     formData,
                 )
+                if (responseData.role !== 'enduser') {
+                    throw new Error(
+                        "Cet utilisateur n'a pas accès à la plateforme, veuillez vérifier vos informations.",
+                    )
+                }
                 const { accessToken, tokenType, ...usersData } = responseData
                 dispatch.userModel.setAuthenticationToken(`${tokenType} ${accessToken}`)
                 dispatch.userModel.setUser(usersData)
