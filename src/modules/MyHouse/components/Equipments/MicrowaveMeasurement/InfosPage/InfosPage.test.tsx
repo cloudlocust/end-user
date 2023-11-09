@@ -10,21 +10,26 @@ describe('InfosPage Component', () => {
     test('renders correctly', () => {
         reduxedRender(<InfosPage stepSetter={mockStepSetter} />)
 
-        const headerText = screen.getByText("Mesure d'appareil")
-        expect(headerText).toBeInTheDocument()
+        // Assert that the headers are present
+        expect(screen.getByText("Mesure d'appareil")).toBeInTheDocument()
+        expect(screen.getByText('Micro Onde')).toBeInTheDocument()
 
-        const subHeaderText = screen.getByText('Micro Onde')
-        expect(subHeaderText).toBeInTheDocument()
-
-        const benefitText = screen.getByText((content, _) => {
-            return content.startsWith('Tester votre appareil vous permet de')
-        })
-        expect(benefitText).toBeInTheDocument()
-
-        const stepText = screen.getByText((content, _) => {
-            return content.startsWith('Le test se déroule en 4 étapes')
-        })
-        expect(stepText).toBeInTheDocument()
+        // Assert that the content texts are present
+        expect(
+            screen.getByText(
+                "Grâce à votre nrLINK, vous avez la possibilité de surveiller l'efficacité énergétique de vos appareils.",
+            ),
+        ).toBeInTheDocument()
+        expect(
+            screen.getByText(
+                'Analysons ensemble la consommation moyenne de votre appareil en suivant 3 étapes simples',
+            ),
+        ).toBeInTheDocument()
+        expect(
+            screen.getByText('Choisissez le réglage de votre appareil que vous souhaitez mesurer'),
+        ).toBeInTheDocument()
+        expect(screen.getByText('Mettez en route de votre appareil')).toBeInTheDocument()
+        expect(screen.getByText('Lancez la mesure')).toBeInTheDocument()
     })
 
     test('calls stepSetter when the button Commencer is clicked', async () => {

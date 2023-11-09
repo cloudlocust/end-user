@@ -4,33 +4,25 @@ import Button from '@mui/material/Button'
 import { useIntl } from 'src/common/react-platform-translation'
 import {
     CustomOrderedListItemProps,
-    CustomUnorderedListItemProps,
     InfosPageProps,
 } from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement/InfosPage/InfosPage.d'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 
 /**
- * CustomUnorderedListItem component.
+ * ListItemCircle component.
  *
- * @param root0 N/A.
- * @param root0.children Children elements of the list item.
- * @returns The CustomUnorderedListItem component.
+ * @returns The circle shape to decorate text items.
  */
-const CustomUnorderedListItem = ({ children }: CustomUnorderedListItemProps) => {
-    return (
-        <div className="flex gap-7 mt-4">
-            <Box
-                height="8px"
-                width="8px"
-                borderRadius="50px"
-                bgcolor={(theme) => theme.palette.primary.main}
-                flexShrink="0"
-                sx={{ transform: 'translateY(5px)' }}
-            />
-            {children}
-        </div>
-    )
-}
+const ListItemCircle = () => (
+    <Box
+        height="6px"
+        width="6px"
+        borderRadius="50px"
+        bgcolor={(theme) => theme.palette.primary.main}
+        flexShrink="0"
+        sx={{ transform: 'translateY(7px)' }}
+    />
+)
 
 /**
  * CustomOrderedListItem component.
@@ -42,7 +34,7 @@ const CustomUnorderedListItem = ({ children }: CustomUnorderedListItemProps) => 
  */
 const CustomOrderedListItem = ({ children, order }: CustomOrderedListItemProps) => {
     return (
-        <div className="flex gap-7 mt-4">
+        <div className="flex gap-7 mt-10">
             <Typography width="8px" textAlign="right">
                 {order}.
             </Typography>
@@ -61,17 +53,10 @@ const CustomOrderedListItem = ({ children, order }: CustomOrderedListItemProps) 
 export const InfosPage = ({ stepSetter }: InfosPageProps) => {
     const { formatMessage } = useIntl()
 
-    const testBenefits = [
-        'Vérifier l’état de votre appareil',
-        'Comparer votre utilisation à celui des autres utilisateurs',
-        'Alimenter la rubrique “Conseils”',
-    ]
-
     const testSteps = [
-        'Selection de l’appareil et du mode à tester',
-        'Mise en marche de l’appareil',
-        'Visualisation en direct des résultats',
-        'Analyse des résultats',
+        'Choisissez le réglage de votre appareil que vous souhaitez mesurer',
+        'Mettez en route de votre appareil',
+        'Lancez la mesure',
     ]
 
     /**
@@ -100,28 +85,27 @@ export const InfosPage = ({ stepSetter }: InfosPageProps) => {
             </div>
 
             {/* Content */}
-            <div className="flex-1 flex flex-col justify-center">
-                {/* The measurement benefits */}
-                <div className="mb-20">
-                    <TypographyFormatMessage display="inline" fontWeight="500">
-                        Tester votre appareil vous permet de
+            <div className="flex-1 flex flex-col justify-center gap-14">
+                <div className="flex gap-7 mb-20">
+                    <ListItemCircle />
+                    <TypographyFormatMessage fontWeight="500">
+                        Grâce à votre nrLINK, vous avez la possibilité de surveiller l'efficacité énergétique de vos
+                        appareils.
                     </TypographyFormatMessage>
-                    &nbsp;:
-                    <div className="pl-20">
-                        {testBenefits.map((item, index) => (
-                            <CustomUnorderedListItem key={index}>
-                                <TypographyFormatMessage>{item}</TypographyFormatMessage>
-                            </CustomUnorderedListItem>
-                        ))}
-                    </div>
                 </div>
 
                 {/* The measurement steps */}
                 <div className="mb-20">
-                    <TypographyFormatMessage display="inline" fontWeight="500">
-                        Le test se déroule en 4 étapes
-                    </TypographyFormatMessage>
-                    &nbsp;:
+                    <div className="flex gap-7">
+                        <ListItemCircle />
+                        <div>
+                            <TypographyFormatMessage display="inline" fontWeight="500">
+                                Analysons ensemble la consommation moyenne de votre appareil en suivant 3 étapes simples
+                            </TypographyFormatMessage>
+                            &nbsp;:
+                        </div>
+                    </div>
+
                     <div className="pl-20">
                         {testSteps.map((item, index) => (
                             <CustomOrderedListItem order={index + 1} key={index}>

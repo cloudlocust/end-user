@@ -1,16 +1,6 @@
 import React from 'react'
 
 /**
- * Props of the CustomUnorderedListItem component.
- */
-export interface CustomUnorderedListItemProps {
-    /**
-     * Children elements of the list item.
-     */
-    children: React.ReactNode
-}
-
-/**
  * Props of the CustomOrderedListItem component.
  */
 export interface CustomOrderedListItemProps {
