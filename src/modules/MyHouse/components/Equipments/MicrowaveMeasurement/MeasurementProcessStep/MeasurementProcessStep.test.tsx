@@ -5,8 +5,7 @@ import { MeasurementProcessStep } from 'src/modules/MyHouse/components/Equipment
 import { MeasurementProcessStepProps } from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement/MeasurementProcessStep/MeasurementProcessStep'
 import { measurementStatusEnum } from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement/MeasurementProgress/MeasurementProgress.d'
 
-const HEADER_TEXT_PENDING_OR_NULL = 'Démarrage de la mesure'
-const HEADER_TEXT_IN_PROGRESS = 'Mesure en cours'
+const HEADER_TEXT_PENDING_OR_IN_PROGRESS = 'Mesure en cours ...'
 const HEADER_TEXT_SUCCESS = 'Mesure effectuée avec succès'
 const BUTTON_TEXT = 'Voir le résultat'
 
@@ -36,7 +35,7 @@ describe('MeasurementProcessStep Component', () => {
     test('When the measurement status is null (initially, before getting the status value from the backend)', () => {
         reduxedRender(<MeasurementProcessStep {...MeasurementProcessStepPropsDefaultValues} />)
 
-        const headerText = screen.getByText(HEADER_TEXT_PENDING_OR_NULL)
+        const headerText = screen.getByText(HEADER_TEXT_PENDING_OR_IN_PROGRESS)
         expect(headerText).toBeInTheDocument()
 
         const progressCircle = screen.getByRole('progressbar')
@@ -55,7 +54,7 @@ describe('MeasurementProcessStep Component', () => {
             />,
         )
 
-        const headerText = screen.getByText(HEADER_TEXT_PENDING_OR_NULL)
+        const headerText = screen.getByText(HEADER_TEXT_PENDING_OR_IN_PROGRESS)
         expect(headerText).toBeInTheDocument()
 
         const progressCircle = screen.getByRole('progressbar')
@@ -77,7 +76,7 @@ describe('MeasurementProcessStep Component', () => {
             />,
         )
 
-        const headerText = screen.getByText(HEADER_TEXT_IN_PROGRESS)
+        const headerText = screen.getByText(HEADER_TEXT_PENDING_OR_IN_PROGRESS)
         expect(headerText).toBeInTheDocument()
 
         const progressCircle = screen.getByRole('progressbar')

@@ -33,16 +33,12 @@ export const MeasurementProcessStep = ({
 
     const headerText = useMemo(() => {
         switch (measurementStatus?.status) {
-            case measurementStatusEnum.PENDING:
-                return 'Démarrage de la mesure'
-            case measurementStatusEnum.IN_PROGRESS:
-                return 'Mesure en cours'
             case measurementStatusEnum.SUCCESS:
                 return 'Mesure effectuée avec succès'
             case measurementStatusEnum.FAILED:
                 return ''
         }
-        return 'Démarrage de la mesure'
+        return 'Mesure en cours ...'
     }, [measurementStatus])
 
     /**
