@@ -30,14 +30,19 @@ export const MeasurementStartupStep = ({ measurementMode, stepSetter }: Measurem
             <div className="text-center mb-20">
                 <Typography display="inline" component="h2" fontWeight="500" fontSize="18px">
                     {formatMessage({
-                        id: "Mettez en marche l'appareil sur le mode",
-                        defaultMessage: "Mettez en marche l'appareil sur le mode",
+                        id: 'Choisissez le réglage',
+                        defaultMessage: 'Choisissez le réglage',
                     })}
-                    &nbsp;:
                 </Typography>{' '}
                 <Typography display="inline" component="h2" fontWeight="500" fontSize="18px" color="primary">
                     {measurementMode}
-                </Typography>
+                </Typography>{' '}
+                <Typography display="inline" component="h2" fontWeight="500" fontSize="18px">
+                    {formatMessage({
+                        id: 'puis mettez en marche votre appareil',
+                        defaultMessage: 'puis mettez en marche votre appareil',
+                    })}
+                </Typography>{' '}
             </div>
 
             {/* Content */}
@@ -49,7 +54,7 @@ export const MeasurementStartupStep = ({ measurementMode, stepSetter }: Measurem
 
                 {/* Description */}
                 <TypographyFormatMessage textAlign="center" marginBottom="20px">
-                    Une fois l’appareil mis en marche, appuyez sur “Commencer la mesure” pour débuter le test
+                    Une fois votre appareil en marche, vous pouvez lancer la mesure.
                 </TypographyFormatMessage>
             </div>
 
