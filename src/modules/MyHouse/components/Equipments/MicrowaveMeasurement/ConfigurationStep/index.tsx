@@ -1,4 +1,3 @@
-import { useEffect } from 'react'
 import { useIntl } from 'src/common/react-platform-translation'
 import Typography from '@mui/material/Typography'
 import FormControl from '@mui/material/FormControl'
@@ -63,11 +62,6 @@ export const ConfigurationStep = ({
     const handleBtnClick = () => {
         stepSetter(2)
     }
-
-    // Set the selected microwave to 1 when there is only one microwave
-    useEffect(() => {
-        if (equipmentsNumber === 1) setSelectedMicrowave(1)
-    }, [equipmentsNumber, setSelectedMicrowave])
 
     const monEquipementStr = 'Mon équipement'
 
