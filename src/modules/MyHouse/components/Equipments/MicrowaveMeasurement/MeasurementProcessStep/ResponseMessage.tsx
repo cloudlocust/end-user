@@ -12,7 +12,7 @@ import { ResponseMessageProps } from 'src/modules/MyHouse/components/Equipments/
  * @returns The ResponseMessage component.
  */
 export const ResponseMessage = ({ theme, title, content, success }: ResponseMessageProps) => (
-    <div className="text-center">
+    <div className="text-center mb-20">
         <TypographyFormatMessage
             fontWeight="500"
             fontSize="15px"

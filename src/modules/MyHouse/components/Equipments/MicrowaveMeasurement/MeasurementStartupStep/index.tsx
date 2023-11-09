@@ -41,7 +41,7 @@ export const MeasurementStartupStep = ({ measurementMode, stepSetter }: Measurem
             </div>
 
             {/* Content */}
-            <div>
+            <div className="flex-1 flex flex-col justify-center">
                 {/* Descriptive image */}
                 <div className="mb-20">
                     <SvgIcon component={ConnectEquipmentIcon} sx={{ width: '100%', height: '160px' }} inheritViewBox />
@@ -51,20 +51,20 @@ export const MeasurementStartupStep = ({ measurementMode, stepSetter }: Measurem
                 <TypographyFormatMessage textAlign="center" marginBottom="20px">
                     Une fois l’appareil mis en marche, appuyez sur “Commencer la mesure” pour débuter le test
                 </TypographyFormatMessage>
+            </div>
 
-                {/* The measurement starting button */}
-                <div className="flex justify-center">
-                    <Button
-                        variant="contained"
-                        sx={{ padding: '10px auto', textAlign: 'center', width: '60%', minWidth: '190px' }}
-                        onClick={handleBtnClick}
-                    >
-                        {formatMessage({
-                            id: 'Commencer la mesure',
-                            defaultMessage: 'Commencer la mesure',
-                        })}
-                    </Button>
-                </div>
+            {/* The measurement starting button */}
+            <div className="flex justify-center">
+                <Button
+                    variant="contained"
+                    sx={{ padding: '10px auto', textAlign: 'center', width: '60%', minWidth: '160px' }}
+                    onClick={handleBtnClick}
+                >
+                    {formatMessage({
+                        id: 'Commencer la mesure',
+                        defaultMessage: 'Commencer la mesure',
+                    })}
+                </Button>
             </div>
         </>
     )

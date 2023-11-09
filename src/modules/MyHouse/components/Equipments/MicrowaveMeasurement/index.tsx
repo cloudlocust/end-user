@@ -100,24 +100,19 @@ export const MicrowaveMeasurement = ({
             restartMeasurementFromBeginning={handleRestartingMeasurement}
             stepSetter={setCurrentStep}
         />,
-        <MeasurementResultStep
-            measurementMode={measurementMode}
-            measurementResult={measurementResult}
-            closeMeasurementModal={handleCloseMeasurementModal}
-        />,
     ]
 
     return (
-        <Modal
-            open={isMeasurementModalOpen}
-            onClose={handleCloseMeasurementModal}
-            sx={{
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-            }}
-        >
-            <div className="w-full max-w-400 m-7 px-14 py-20 rounded-12 relative bg-white">
+        <Modal open={isMeasurementModalOpen} onClose={handleCloseMeasurementModal}>
+            <div
+                className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 overflow-auto flex flex-col px-20 py-20 rounded-12 bg-white"
+                style={{
+                    height: 'calc(100% - 20px)',
+                    maxHeight: '450px',
+                    width: 'calc(100% - 20px)',
+                    maxWidth: '400px',
+                }}
+            >
                 {/* The closing button */}
                 <IconButton
                     aria-label="close"
@@ -135,9 +130,15 @@ export const MicrowaveMeasurement = ({
                 {/* The content of the modal */}
                 {currentStep === 0 ? (
                     <InfosPage stepSetter={setCurrentStep} />
+                ) : currentStep === 4 ? (
+                    <MeasurementResultStep
+                        measurementMode={measurementMode}
+                        measurementResult={measurementResult}
+                        closeMeasurementModal={handleCloseMeasurementModal}
+                    />
                 ) : (
                     <>
-                        <div className="mt-0 mb-24 mx-auto w-3/4">
+                        <div className="mt-0 mb-24 mx-auto w-3/5">
                             <Stepper activeStep={currentStep - 1}>
                                 {stepsContent.map((_, index) => (
                                     <Step key={index}>
@@ -146,7 +147,7 @@ export const MicrowaveMeasurement = ({
                                 ))}
                             </Stepper>
                         </div>
-                        {currentStep < 5 ? stepsContent[currentStep - 1] : null}
+                        {currentStep >= 1 && currentStep <= 3 ? stepsContent[currentStep - 1] : null}
                     </>
                 )}
             </div>

@@ -56,32 +56,26 @@ export const MeasurementResultStep = ({
             </div>
 
             {/* Content */}
-            <div>
+            <div className="flex-1 flex flex-col justify-center">
                 {/* The comparison histogram */}
                 <MeasurementComparisonHistogram
                     userConsumption={measurementResult || 0}
                     averageConsumption={microwaveAverageConsumption}
                 />
+            </div>
 
-                {/* The measurement ending button */}
-                <div className="flex justify-center">
-                    <Button
-                        variant="contained"
-                        sx={{
-                            padding: '10px auto',
-                            textAlign: 'center',
-                            width: '60%',
-                            minWidth: '190px',
-                            marginTop: '17.5px',
-                        }}
-                        onClick={closeMeasurementModal}
-                    >
-                        {formatMessage({
-                            id: 'Suivant',
-                            defaultMessage: 'Suivant',
-                        })}
-                    </Button>
-                </div>
+            {/* The measurement ending button */}
+            <div className="flex justify-center">
+                <Button
+                    variant="contained"
+                    sx={{ padding: '10px auto', textAlign: 'center', width: '60%', minWidth: '160px' }}
+                    onClick={closeMeasurementModal}
+                >
+                    {formatMessage({
+                        id: 'Suivant',
+                        defaultMessage: 'Suivant',
+                    })}
+                </Button>
             </div>
         </>
     )

@@ -97,7 +97,7 @@ export const ConfigurationStep = ({
             </div>
 
             {/* Content */}
-            <div>
+            <div className="flex-1 flex flex-col justify-center">
                 {/* Select the microwave */}
                 <div className="mb-20">
                     <Typography marginBottom="15px" fontWeight="500">
@@ -164,21 +164,21 @@ export const ConfigurationStep = ({
                         })}
                     </Typography>
                 </div>
+            </div>
 
-                {/* The test starting button */}
-                <div className="flex justify-center">
-                    <Button
-                        variant="contained"
-                        sx={{ padding: '10px auto', textAlign: 'center', width: '60%', minWidth: '160px' }}
-                        onClick={handleBtnClick}
-                        disabled={!selectedMicrowave || !selectedMeasurementMode}
-                    >
-                        {formatMessage({
-                            id: 'Suivant',
-                            defaultMessage: 'Suivant',
-                        })}
-                    </Button>
-                </div>
+            {/* The test starting button */}
+            <div className="flex justify-center">
+                <Button
+                    variant="contained"
+                    sx={{ padding: '10px auto', textAlign: 'center', width: '60%', minWidth: '160px' }}
+                    onClick={handleBtnClick}
+                    disabled={!selectedMicrowave || !selectedMeasurementMode}
+                >
+                    {formatMessage({
+                        id: 'Suivant',
+                        defaultMessage: 'Suivant',
+                    })}
+                </Button>
             </div>
         </>
     )

@@ -71,9 +71,9 @@ export const MeasurementProcessStep = ({
             )}
 
             {/* Content */}
-            <div className="min-h-256 flex flex-col justify-around">
+            <div className="flex-1 flex flex-col justify-center">
                 {/* The measurement progress component */}
-                <div className="flex justify-center">
+                <div className="flex justify-center mb-32">
                     <MeasurementProgress
                         status={measurementStatus?.status}
                         maxDuration={measurementMaxDuration}
@@ -102,7 +102,7 @@ export const MeasurementProcessStep = ({
             </div>
 
             {/* The test ending and restarting buttons */}
-            <div className="flex justify-center mt-20">
+            <div className="flex justify-center">
                 {measurementStatus?.status !== measurementStatusEnum.FAILED ? (
                     <Button
                         variant="contained"
