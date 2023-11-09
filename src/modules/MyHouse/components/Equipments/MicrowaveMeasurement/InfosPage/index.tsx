@@ -100,7 +100,7 @@ export const InfosPage = ({ stepSetter }: InfosPageProps) => {
             </div>
 
             {/* Content */}
-            <div>
+            <div className="flex-1 flex flex-col justify-center">
                 {/* The measurement benefits */}
                 <div className="mb-20">
                     <TypographyFormatMessage display="inline" fontWeight="500">
@@ -130,20 +130,20 @@ export const InfosPage = ({ stepSetter }: InfosPageProps) => {
                         ))}
                     </div>
                 </div>
+            </div>
 
-                {/* The measurement starting button */}
-                <div className="flex justify-center">
-                    <Button
-                        variant="contained"
-                        sx={{ padding: '10px auto', textAlign: 'center', width: '60%', minWidth: '160px' }}
-                        onClick={handleBtnClick}
-                    >
-                        {formatMessage({
-                            id: 'Commencer',
-                            defaultMessage: 'Commencer',
-                        })}
-                    </Button>
-                </div>
+            {/* The measurement starting button */}
+            <div className="flex justify-center">
+                <Button
+                    variant="contained"
+                    sx={{ padding: '10px auto', textAlign: 'center', width: '60%', minWidth: '160px' }}
+                    onClick={handleBtnClick}
+                >
+                    {formatMessage({
+                        id: 'Commencer',
+                        defaultMessage: 'Commencer',
+                    })}
+                </Button>
             </div>
         </>
     )
