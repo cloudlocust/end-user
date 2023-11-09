@@ -46,7 +46,7 @@ export const MicrowaveMeasurement = ({
     onCloseMeasurementModal,
 }: MicrowaveMeasurementProps) => {
     const [currentStep, setCurrentStep] = useState(0)
-    const [microwaveNumber, setMicrowaveNumber] = useState(0)
+    const [microwaveNumber, setMicrowaveNumber] = useState(equipmentsNumber === 1 ? 1 : 0)
     const [measurementMode, setMeasurementMode] = useState('')
     const theme = useTheme()
 
@@ -66,9 +66,9 @@ export const MicrowaveMeasurement = ({
     const handleRestartingMeasurement = useCallback(async () => {
         await setMeasurementStatus(null)
         setCurrentStep(1)
-        setMicrowaveNumber(0)
+        setMicrowaveNumber(equipmentsNumber === 1 ? 1 : 0)
         setMeasurementMode('')
-    }, [setMeasurementStatus])
+    }, [equipmentsNumber, setMeasurementStatus])
 
     /**
      * Handle closing the measurement Modal.
@@ -76,10 +76,10 @@ export const MicrowaveMeasurement = ({
     const handleCloseMeasurementModal = useCallback(async () => {
         await setMeasurementStatus(null)
         setCurrentStep(0)
-        setMicrowaveNumber(0)
+        setMicrowaveNumber(equipmentsNumber === 1 ? 1 : 0)
         setMeasurementMode('')
         onCloseMeasurementModal()
-    }, [onCloseMeasurementModal, setMeasurementStatus])
+    }, [equipmentsNumber, onCloseMeasurementModal, setMeasurementStatus])
 
     const stepsContent = [
         <ConfigurationStep
