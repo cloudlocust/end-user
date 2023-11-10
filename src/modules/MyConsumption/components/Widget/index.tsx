@@ -11,7 +11,7 @@ import {
 import { computePercentageChange } from 'src/modules/Analysis/utils/computationFunctions'
 import { WidgetItem } from 'src/modules/MyConsumption/components/WidgetItem'
 import { ConsumptionWidgetsMetricsContext } from 'src/modules/MyConsumption/components/ConsumptionWidgetsContainer/ConsumptionWidgetsMetricsContext'
-import { metricTargetType } from 'src/modules/Metrics/Metrics'
+import { metricTargetType } from 'src/modules/Metrics/Metrics.d'
 
 const emptyValueUnit = { value: 0, unit: '' }
 

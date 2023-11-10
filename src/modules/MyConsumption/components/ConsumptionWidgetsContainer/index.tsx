@@ -65,6 +65,18 @@ const ConsumptionWidgetsContainer = ({
         resetMetricsWidgetData()
     }, [range, filters, metricsInterval, period, resetMetricsWidgetData])
 
+    /**
+     * This function is to filter special metrics interval, for example the consumption_metrics in week, need to be treated as one value for the 7d.
+     *
+     * @param target Target that we want to get the metricsInterval for.
+     * @returns Metrics Interval.
+     */
+    const getMetricIntervalForWidget = (target: metricTargetType) => {
+        // for consumption metrics we want to get one value for all the week, their is no 1w so we use 7d
+        if (target === metricTargetsEnum.consumption && period === 'weekly') return '7d'
+        else return metricsInterval
+    }
+
     return (
         <div className="p-12 sm:p-24">
             <div className="flex justify-center items-center md:justify-start">
@@ -86,7 +98,7 @@ const ConsumptionWidgetsContainer = ({
                             targets={[metricTargetsEnum.consumption]}
                             range={range}
                             filters={filters}
-                            metricsInterval={metricsInterval}
+                            metricsInterval={getMetricIntervalForWidget(metricTargetsEnum.consumption)}
                             period={period}
                             infoIcons={{
                                 [metricTargetsEnum.consumption]: getWidgetInfoIcon({
@@ -146,7 +158,7 @@ const ConsumptionWidgetsContainer = ({
                                 targets={[target]}
                                 range={range}
                                 filters={filters}
-                                metricsInterval={metricsInterval}
+                                metricsInterval={getMetricIntervalForWidget(target)}
                                 period={period}
                                 infoIcons={{
                                     [target.toString()]: getWidgetInfoIcon({
