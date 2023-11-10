@@ -27,7 +27,8 @@ export const OtherProviderOfferOptionMessage = ({ isShowMessage }: OtherProvider
                     support@myem.fr
                 </a>
                 <span> </span>
-                en précisant le fournisseur et l’offre que vous souhaitez voir renseignés
+                en précisant le fournisseur et l’offre que vous souhaitez voir renseignés. Si vous le pouvez, ajoutez la
+                grille tarifaire correspondante à votre offre. Cela nous permettra de l'enregistrer plus rapidement.
             </Typography>
         </div>
     )
