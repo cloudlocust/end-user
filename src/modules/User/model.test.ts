@@ -6,6 +6,7 @@ import {
     TEST_MESSAGE_DELETE_PROFILE_ERROR,
     TEST_SUCCESS_MAIL,
     TEST_SUCCESS_USER,
+    TEST_WRONG_ROLE_MAIL,
 } from 'src/mocks/handlers/user'
 import { handleRegisterErrors, defaultRequestErrorMessage, Handle422Errors, handleLoginErrors } from '.'
 import { applyCamelCase } from 'src/common/react-platform-components'
@@ -144,6 +145,23 @@ describe('test models', () => {
             const { userModel } = store.getState()
             await expect(userModel.user).not.toBeNull()
             await expect(userModel.authenticationToken).not.toBeNull()
+        })
+        test('login with wrong role', async () => {
+            let error
+            const store = init({
+                models,
+            })
+            try {
+                await store.dispatch.userModel.login({
+                    data: { email: TEST_WRONG_ROLE_MAIL, password: '123456' },
+                })
+            } catch (err) {
+                error = err
+            }
+            expect(error).toBe("Cet utilisateur n'a pas accès à la plateforme, veuillez vérifier vos informations.")
+            const { userModel } = store.getState()
+            await expect(userModel.user).toBeNull()
+            await expect(userModel.authenticationToken).toBeNull()
         })
         test('login test error', async () => {
             const store = init({
