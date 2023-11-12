@@ -33,7 +33,7 @@ export const InstallationForm = () => {
     const { currentHousing } = useSelector(({ housingModel }: RootState) => housingModel)
     const {
         housingEquipmentsList,
-        saveEquipment,
+        addHousingEquipment,
         loadingEquipmentInProgress,
         isEquipmentMeterListEmpty,
         loadEquipmentList,
@@ -141,7 +141,7 @@ export const InstallationForm = () => {
                         }
 
                         if (body.length > 0) {
-                            await saveEquipment(body)
+                            await addHousingEquipment(body)
                         }
                         setIsEdit(false)
                     }}

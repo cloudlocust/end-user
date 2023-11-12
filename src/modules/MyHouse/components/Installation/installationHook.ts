@@ -33,7 +33,7 @@ export const useEquipmentList = (housingId?: number) => {
     const isInitialMount = useRef(true)
     const [loadingEquipmentInProgress, setLoadingEquipmentInProgress] = useState(false)
     const [isEquipmentMeterListEmpty, setIsEquipmentMeterListEmpty] = useState(false)
-    const [equipmentList, setEquipmentList] = useState<equipmentType[] | null>(null)
+    const [equipmentsList, setEquipmentsList] = useState<equipmentType[] | null>(null)
     const [housingEquipmentsList, setHousingEquipmentsList] = useState<IEquipmentMeter[] | null>(null)
     const [isaAdEquipmentLoading, setIsAddEquipmentLoading] = useState(false)
 
@@ -61,7 +61,7 @@ export const useEquipmentList = (housingId?: number) => {
                     equipment,
                 }
             })
-            setEquipmentList(equipments)
+            setEquipmentsList(equipments)
             setHousingEquipmentsList(responseData)
         } catch (error) {
             enqueueSnackbar(
@@ -88,8 +88,7 @@ export const useEquipmentList = (housingId?: number) => {
      * @param body Values for saving equipment.
      * @returns Equipments saved.
      */
-    // TODO: rename it to addHousingEquipment to avoid confusion.
-    const saveEquipment = useCallback(
+    const addHousingEquipment = useCallback(
         async (body: postEquipmentInputType) => {
             if (!housingId) return
             setLoadingEquipmentInProgress(true)
@@ -99,14 +98,16 @@ export const useEquipmentList = (housingId?: number) => {
                     AxiosResponse<postEquipmentInputType>
                 >(HOUSING_EQUIPMENTS_API(housingId), body)
 
-                await loadEquipmentList()
-                enqueueSnackbar(
-                    formatMessage({
-                        id: "Succès lors de l'enregistrement de vos équipments",
-                        defaultMessage: "Succès lors de l'enregistrement de vos équipments",
-                    }),
-                    { variant: 'success' },
-                )
+                if (responseData) {
+                    await loadEquipmentList()
+                    enqueueSnackbar(
+                        formatMessage({
+                            id: "Succès lors de l'enregistrement de vos équipments",
+                            defaultMessage: "Succès lors de l'enregistrement de vos équipments",
+                        }),
+                        { variant: 'success' },
+                    )
+                }
                 setLoadingEquipmentInProgress(false)
                 return responseData
             } catch (error: any) {
@@ -142,19 +143,13 @@ export const useEquipmentList = (housingId?: number) => {
                 )
 
                 if (response.status === 201) {
-                    const addedHousingEquipment = await saveEquipment([
+                    const addedHousingEquipment = await addHousingEquipment([
                         {
                             equipmentId: response.data.id,
                         },
                     ])
-                    if (addedHousingEquipment!.length > 0) {
-                        enqueueSnackbar(
-                            formatMessage({
-                                id: "Succès lors de l'ajout de votre équipement",
-                                defaultMessage: "Succès lors de l'ajout de votre équipement",
-                            }),
-                            { variant: 'success' },
-                        )
+                    if (addedHousingEquipment && addedHousingEquipment.length > 0) {
+                        return addedHousingEquipment
                     }
                 }
             } catch (error: any) {
@@ -174,14 +169,14 @@ export const useEquipmentList = (housingId?: number) => {
                 setIsAddEquipmentLoading(false)
             }
         },
-        [enqueueSnackbar, formatMessage, saveEquipment],
+        [enqueueSnackbar, formatMessage, addHousingEquipment],
     )
 
     return {
         loadingEquipmentInProgress,
-        saveEquipment,
+        addHousingEquipment,
         housingEquipmentsList,
-        equipmentList,
+        equipmentsList,
         isEquipmentMeterListEmpty,
         loadEquipmentList,
         addEquipment,
