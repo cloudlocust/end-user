@@ -7,6 +7,12 @@ import { IUser, IUserRegister } from 'src/modules/User/model'
  * Success mail to send for login.
  */
 export const TEST_SUCCESS_MAIL = 'user@success.com'
+
+/**
+ * Wrong role mail to send for login.
+ */
+export const TEST_WRONG_ROLE_MAIL = 'user@distributor.com'
+
 /**
  *
  */
@@ -60,6 +66,13 @@ export const TEST_SUCCESS_USER = {
     is_super_user: false,
 }
 
+let TEST_USER_WRONG_ROLE = {
+    ...TEST_SUCCESS_USER,
+    id: '2',
+    role: 'distributor',
+    email: TEST_WRONG_ROLE_MAIL,
+}
+
 /**
  * Mock enduser List, which represents users that doesn't have installers.
  */
@@ -75,6 +88,11 @@ export const userEndpoints = [
             return res(
                 ctx.status(200),
                 ctx.json({ ...TEST_SUCCESS_USER, authentication_token: '123456', token_type: 'bearer' }),
+            )
+        } else if (username === TEST_WRONG_ROLE_MAIL) {
+            return res(
+                ctx.status(200),
+                ctx.json({ ...TEST_USER_WRONG_ROLE, authentication_token: '123456', token_type: 'bearer' }),
             )
         } else {
             return res(ctx.status(400))

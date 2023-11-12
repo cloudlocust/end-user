@@ -24,7 +24,7 @@ export interface EquipmentsQuickAddPopupProps {
      * @param body EquipmentMeterType[].
      * @returns Promise.
      */
-    saveEquipment: (body: postEquipmentInputType) => Promise<postEquipmentInputType | undefined>
+    addHousingEquipment: (body: postEquipmentInputType) => Promise<postEquipmentInputType | undefined>
 
     /**
      * List of all equipments.
