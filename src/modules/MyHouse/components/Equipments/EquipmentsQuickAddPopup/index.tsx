@@ -26,7 +26,7 @@ import { NumberFieldForm } from 'src/common/ui-kit/components/NumberField/Number
  * @param param0.open Open state for dialog.
  * @param param0.handleClosePopup OnClose function to close the dialog.
  * @param param0.housingEquipmentsList Housing equipments list.
- * @param param0.saveEquipment Function that saves new equipments to backend.
+ * @param param0.addHousingEquipment Function that saves new equipments to backend.
  * @param param0.loadingEquipmentInProgress Loading state.
  * @returns EquipmentsQuickAddPopup JSX.
  */
@@ -34,7 +34,7 @@ export const EquipmentsQuickAddPopup = ({
     open,
     handleClosePopup,
     housingEquipmentsList,
-    saveEquipment,
+    addHousingEquipment,
     loadingEquipmentInProgress,
 }: EquipmentsQuickAddPopupProps) => {
     const [isEdit, setIsEdit] = useState(true)
@@ -118,7 +118,7 @@ export const EquipmentsQuickAddPopup = ({
                         })
 
                         if (body.length > 0) {
-                            await saveEquipment(body)
+                            await addHousingEquipment(body)
                         }
                         setIsEdit(false)
                         handleClosePopup()

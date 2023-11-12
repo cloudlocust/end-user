@@ -6,9 +6,13 @@ import { useSelector } from 'react-redux'
 import { RootState } from 'src/redux'
 import { useEquipmentList } from 'src/modules/MyHouse/components/Installation/installationHook'
 import { EquipmentsQuickAddPopup } from 'src/modules/MyHouse/components/Equipments/EquipmentsQuickAddPopup'
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { EmptyEquipmentsList } from 'src/modules/MyHouse/components/Equipments/EmptyEquipmentsList'
 import { AddEquipmentPopup } from 'src/modules/MyHouse/components/Equipments/AddEquipmentPopup'
+import { mappingEquipmentNameToType } from 'src/modules/MyHouse/utils/MyHouseVariables'
+import { equipmentNameType } from 'src/modules/MyHouse/components/Installation/InstallationType'
+import { orderBy } from 'lodash'
+import { getAvailableEquipments } from 'src/modules/MyHouse/components/Equipments/utils'
 
 const Root = styled(FusePageCarded)(() => ({
     '& .FusePageCarded-header': {
@@ -35,9 +39,9 @@ const Root = styled(FusePageCarded)(() => ({
 export const Equipments = () => {
     const { currentHousing } = useSelector(({ housingModel }: RootState) => housingModel)
     const {
-        equipmentList,
+        equipmentsList,
         housingEquipmentsList,
-        saveEquipment,
+        addHousingEquipment,
         loadingEquipmentInProgress,
         isEquipmentMeterListEmpty,
         loadEquipmentList,
@@ -50,6 +54,32 @@ export const Equipments = () => {
     useEffect(() => {
         loadEquipmentList()
     }, [loadEquipmentList])
+
+    const mappedHousingEquipmentsList = useMemo(
+        () =>
+            housingEquipmentsList
+                ?.map((element) => {
+                    return {
+                        id: element.equipmentId,
+                        housingEquipmentId: element.id,
+                        name: element.equipment.name,
+                        allowedType: element.equipment.allowedType,
+                        number: element.equipmentNumber,
+                        isNumber: mappingEquipmentNameToType[element.equipment.name as equipmentNameType] === 'number',
+                        measurementModes: element.equipment.measurementModes,
+                        customerId: element.equipment.customerId,
+                    }
+                })
+                .filter((eq) => eq.number && (eq.isNumber || eq.customerId)),
+        [housingEquipmentsList],
+    )
+
+    const orderedHousingEquipmentsList = useMemo(
+        () => orderBy(mappedHousingEquipmentsList, (el) => el.measurementModes?.length, 'asc'),
+        [mappedHousingEquipmentsList],
+    )
+
+    const availableEquipments = getAvailableEquipments(mappedHousingEquipmentsList, equipmentsList)
 
     return (
         <Root
@@ -65,26 +95,27 @@ export const Equipments = () => {
                         <EquipmentsQuickAddPopup
                             open={isEquipmentsQuickAddPopupOpen}
                             handleClosePopup={() => setIsEquipmentsQuickAddPopupOpen(false)}
-                            saveEquipment={saveEquipment}
+                            addHousingEquipment={addHousingEquipment}
                             housingEquipmentsList={housingEquipmentsList}
                             loadingEquipmentInProgress={loadingEquipmentInProgress}
                         />
                     )}
-                    {isEquipmentMeterListEmpty || !equipmentList ? (
+                    {isEquipmentMeterListEmpty ? (
                         <EmptyEquipmentsList handleOpenPopup={() => setIsEquipmentsQuickAddPopupOpen(true)} />
                     ) : (
                         <EquipmentsList
-                            housingEquipmentsList={housingEquipmentsList}
+                            housingEquipmentsList={orderedHousingEquipmentsList}
                             loadingEquipmentInProgress={loadingEquipmentInProgress}
-                            saveEquipment={saveEquipment}
+                            addHousingEquipment={addHousingEquipment}
                         />
                     )}
                     {isAddEquipmentPopupOpen && (
                         <AddEquipmentPopup
                             isOpen={isAddEquipmentPopupOpen}
                             onClosePopup={() => setIsAddEquipmentPopupOpen(false)}
-                            equipmentsList={equipmentList}
+                            equipmentsList={availableEquipments}
                             addEquipment={addEquipment}
+                            addHousingEquipment={addHousingEquipment}
                             isaAdEquipmentLoading={isaAdEquipmentLoading}
                         />
                     )}
