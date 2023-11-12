@@ -15,6 +15,7 @@ beforeEach(() => {
         isaAdEquipmentLoading: false,
         isOpen: false,
         onClosePopup: jest.fn(),
+        addHousingEquipment: jest.fn(),
     }
 })
 
