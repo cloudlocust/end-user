@@ -43,7 +43,11 @@ export function useMicrowaveMeasurement(
                 `${HOUSING_API}/equipments/${housingEquipmentId}/measurement/${measurementMode}/result/${equipmentNumber}`,
             )
             return data?.value
-        } catch (_) {
+        } catch (error: any) {
+            setMeasurementStatus({
+                status: measurementStatusEnum.FAILED,
+                failureMessage: error?.response?.data?.detail as string,
+            })
             return null
         }
     }, [equipmentNumber, housingEquipmentId, measurementMode])
@@ -59,15 +63,18 @@ export function useMicrowaveMeasurement(
     /**
      * Function that get the status of the measurement process.
      */
-    const getMeasurementStatus = useCallback(async () => {
+    const getMeasurementStatus = useCallback<() => Promise<MeasurementStatusStateType | null>>(async () => {
         if (!equipmentNumber || !housingEquipmentId || !measurementMode) return null
         try {
             const { data } = await axios.get<MeasurementStatusApiResponse>(
                 `${HOUSING_API}/equipments/${housingEquipmentId}/measurement/${measurementMode}/status/${equipmentNumber}`,
             )
             return data
-        } catch (_) {
-            return { status: measurementStatusEnum.FAILED }
+        } catch (error: any) {
+            return {
+                status: measurementStatusEnum.FAILED,
+                failureMessage: error?.response?.data?.detail as string,
+            }
         }
     }, [equipmentNumber, housingEquipmentId, measurementMode])
 
@@ -80,8 +87,12 @@ export function useMicrowaveMeasurement(
         else
             setMeasurementStatus({
                 status: newStatus.status,
-                updatedAt: newStatus.updatedAt,
-                ...(newStatus.status === measurementStatusEnum.FAILED
+                ...(newStatus?.updatedAt
+                    ? {
+                          updatedAt: newStatus.updatedAt,
+                      }
+                    : {}),
+                ...(newStatus.status === measurementStatusEnum.FAILED && !newStatus?.failureMessage
                     ? {
                           failureMessage: 'Zut ! Votre nrLINK n’a pas détecté la mise en route de votre micro-onde…',
                       }
@@ -93,37 +104,35 @@ export function useMicrowaveMeasurement(
      * Function that start the measurement of the equipment.
      */
     const startMeasurement = useCallback(async () => {
-        const newStatus = await getMeasurementStatus()
-        if (newStatus === null) setMeasurementStatus(null)
-        else if (
-            newStatus.status === measurementStatusEnum.PENDING ||
-            newStatus.status === measurementStatusEnum.IN_PROGRESS
-        ) {
-            enqueueSnackbar(
-                formatMessage({
-                    id: 'Un test de mesure est déjà en cours',
-                    defaultMessage: 'Un test de mesure est déjà en cours',
-                }),
-                { autoHideDuration: 5000, variant: 'info' },
+        try {
+            const res = await axios.post(
+                `${HOUSING_API}/equipments/${housingEquipmentId}/measurement/${measurementMode}`,
+                {
+                    equipment_number: equipmentNumber,
+                },
             )
-            setMeasurementStatus({
-                status: newStatus.status,
-                ...(newStatus.updatedAt ? { updatedAt: newStatus.updatedAt } : {}),
-            })
-        } else {
-            try {
-                const res = await axios.post(
-                    `${HOUSING_API}/equipments/${housingEquipmentId}/measurement/${measurementMode}`,
-                    {
-                        equipment_number: equipmentNumber,
-                    },
+            if (res.status === 200) setMeasurementStatus({ status: measurementStatusEnum.PENDING })
+        } catch (error: any) {
+            const newStatus = await getMeasurementStatus()
+            if (
+                newStatus?.status === measurementStatusEnum.PENDING ||
+                newStatus?.status === measurementStatusEnum.IN_PROGRESS
+            ) {
+                enqueueSnackbar(
+                    formatMessage({
+                        id: error?.response?.data?.detail as string,
+                        defaultMessage: error?.response?.data?.detail as string,
+                    }),
+                    { autoHideDuration: 5000, variant: 'info' },
                 )
-                if (res.status === 200) setMeasurementStatus({ status: measurementStatusEnum.PENDING })
-            } catch (_) {
+                setMeasurementStatus({
+                    status: newStatus.status,
+                    ...(newStatus.updatedAt ? { updatedAt: newStatus.updatedAt } : {}),
+                })
+            } else {
                 setMeasurementStatus({
                     status: measurementStatusEnum.FAILED,
-                    failureMessage:
-                        'Oups ! Votre nrLINK ne semble pas connecté ! Connectez-le puis recommencez la mesure…',
+                    failureMessage: error?.response?.data?.detail as string,
                 })
             }
         }

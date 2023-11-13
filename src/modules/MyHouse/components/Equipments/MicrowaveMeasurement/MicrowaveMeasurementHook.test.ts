@@ -185,7 +185,7 @@ describe('useMicrowaveMeasurement', () => {
                     { timeout: 5000 },
                 )
                 expect(result.current.measurementStatus.status).toBe(measurementStatusEnum.PENDING)
-                expect(mockEnqueueSnackbar).toHaveBeenCalledWith('Un test de mesure est déjà en cours', {
+                expect(mockEnqueueSnackbar).toHaveBeenCalledWith(expect.any(String), {
                     autoHideDuration: 5000,
                     variant: 'info',
                 })
@@ -205,7 +205,7 @@ describe('useMicrowaveMeasurement', () => {
                     { timeout: 5000 },
                 )
                 expect(result.current.measurementStatus.status).toBe(measurementStatusEnum.IN_PROGRESS)
-                expect(mockEnqueueSnackbar).toHaveBeenCalledWith('Un test de mesure est déjà en cours', {
+                expect(mockEnqueueSnackbar).toHaveBeenCalledWith(expect.any(String), {
                     autoHideDuration: 5000,
                     variant: 'info',
                 })
