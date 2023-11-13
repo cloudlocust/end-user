@@ -238,7 +238,7 @@ export const HousingDetails = () => {
             content={
                 <>
                     <MeterStatus />
-                    <div className="flex flex-col items-center md:flex-row justify-between space-x-0 md:space-x-10 my-12 md:mx-16">
+                    <div className="flex flex-col items-center md:flex-row justify-around space-x-0 md:space-x-10 my-12 md:mx-16">
                         <HousingDetailsCard
                             title="Information domicile"
                             elements={[...housingElements, ...installationElements]}
