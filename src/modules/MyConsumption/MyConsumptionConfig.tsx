@@ -1,7 +1,7 @@
 import { authTypes } from 'src/common/react-platform-components'
 import { IRouteNavigationConfig } from 'src/routes'
 import { MyConsumption } from './MyConsumption'
-import { ReactComponent as MyConsumptionIcon } from 'src/assets/images/navbarItems/MyConsumption.svg'
+import { ReactComponent as MyConsumptionIcon } from 'src/assets/images/navbarItems/my-consumption.svg'
 import SvgIcon from '@mui/material/SvgIcon'
 
 /**
