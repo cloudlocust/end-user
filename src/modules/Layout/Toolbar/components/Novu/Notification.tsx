@@ -49,24 +49,26 @@ const CustomNotification = () => {
     const { formatMessage } = useIntl()
 
     return (
-        <PopoverNotificationCenter
-            onNotificationClick={() => {}}
-            colorScheme="light"
-            showUserPreferences={false}
-            footer={() =>
-                fetching || notifications.length ? (
-                    <></>
-                ) : (
-                    <EmptyTableMessage
-                        message={formatMessage({
-                            id: 'La liste est vide',
-                            defaultMessage: 'La liste est vide',
-                        })}
-                    />
-                )
-            }
-        >
-            {({ unseenCount }) => <NotificationBell unseenCount={unseenCount} />}
-        </PopoverNotificationCenter>
+        <div className="flex justify-center items-center mr-6 md:mr-0">
+            <PopoverNotificationCenter
+                onNotificationClick={() => {}}
+                colorScheme="light"
+                showUserPreferences={false}
+                footer={() =>
+                    fetching || notifications.length ? (
+                        <></>
+                    ) : (
+                        <EmptyTableMessage
+                            message={formatMessage({
+                                id: 'La liste est vide',
+                                defaultMessage: 'La liste est vide',
+                            })}
+                        />
+                    )
+                }
+            >
+                {({ unseenCount }) => <NotificationBell unseenCount={unseenCount} />}
+            </PopoverNotificationCenter>
+        </div>
     )
 }
