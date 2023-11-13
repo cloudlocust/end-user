@@ -1,7 +1,7 @@
 import { authTypes } from 'src/common/react-platform-components'
 import { IRouteNavigationConfig } from 'src/routes'
 import Analysis from 'src/modules/Analysis'
-import { ReactComponent as AnalysisIcon } from 'src/assets/images/navbarItems/Analysis.svg'
+import { ReactComponent as AnalysisIcon } from 'src/assets/images/navbarItems/analysis.svg'
 import SvgIcon from '@mui/material/SvgIcon'
 
 /**

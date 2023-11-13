@@ -1,7 +1,7 @@
 import { authTypes } from 'src/common/react-platform-components'
 import { IRouteNavigationConfig } from 'src/routes'
 import { Advices } from './Advices'
-import { ReactComponent as AdvicesIcon } from 'src/assets/images/navbarItems/Advices.svg'
+import { ReactComponent as AdvicesIcon } from 'src/assets/images/navbarItems/advice.svg'
 import SvgIcon from '@mui/material/SvgIcon'
 
 /**
