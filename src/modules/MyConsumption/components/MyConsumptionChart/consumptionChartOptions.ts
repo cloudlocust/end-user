@@ -47,9 +47,6 @@ export const getEchartsConsumptionChartOptions = (
         return undefined
     })
 
-    // filteredValues['hp_jour_bleu_consumption_metrics'] = filteredValues['base_consumption_metrics']
-    // filteredValues['base_consumption_metrics'] = []
-
     return {
         ...getDefaultOptionsEchartsConsumptionChart(theme, isMobile),
         ...getXAxisOptionEchartsConsumptionChart(xAxisTimestamps, isSolarProductionConsentOff, period, theme),
@@ -82,6 +79,9 @@ const getDefaultOptionsEchartsConsumptionChart = (theme: Theme, isMobile: boolea
                 dataZoom: {
                     yAxisIndex: 'none',
                     xAxisIndex: 'all',
+                    title: {
+                        back: 'Retour',
+                    },
                     iconStyle: {
                         borderColor: 'white',
                     },
@@ -704,8 +704,6 @@ export const getTargetsYAxisValueFormatters: getTargetsYAxisValueFormattersType 
          */
         [targetYAxisIndexEnum.PMAX]: function (value) {
             return `${isNil(value) ? '-' : convert(Number(value)).from('VA').to('kVA'!).toFixed(2)} kVA`
-
-            // return `${k convert(value).from('VA').to('kVA'!).toFixed(2)} kVA`
         },
         /**
          * Value formatter Label Label for EUROS targets yAxis.
