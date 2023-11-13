@@ -39,7 +39,7 @@ describe('EquipmentHooks test', () => {
 
             await waitForValueToChange(
                 () => {
-                    return result.current.equipmentList
+                    return result.current.equipmentsList
                 },
                 { timeout: 4000 },
             )
@@ -47,7 +47,7 @@ describe('EquipmentHooks test', () => {
             // Element is added at the beginning of the equipmentList.
             act(async () => {
                 try {
-                    await result.current.saveEquipment([
+                    await result.current.addHousingEquipment([
                         {
                             ...TEST_SAVE_EQUIPMENT,
                             equipmentId: TEST_ERROR_SAVE_EQUIPMENT_ID,
@@ -74,7 +74,7 @@ describe('EquipmentHooks test', () => {
 
             await waitForValueToChange(
                 () => {
-                    return result.current.equipmentList
+                    return result.current.equipmentsList
                 },
                 { timeout: 4000 },
             )
@@ -82,7 +82,7 @@ describe('EquipmentHooks test', () => {
             // Element is added at the beginning of the equipmentList.
             act(async () => {
                 try {
-                    await result.current.saveEquipment([
+                    await result.current.addHousingEquipment([
                         {
                             ...TEST_SAVE_EQUIPMENT,
                             equipmentId: TEST_SAVE_EQUIPMENT.equipment_id + 1,
@@ -109,7 +109,7 @@ describe('EquipmentHooks test', () => {
 
             await waitForValueToChange(
                 () => {
-                    return result.current.equipmentList
+                    return result.current.equipmentsList
                 },
                 { timeout: 4000 },
             )
@@ -117,7 +117,7 @@ describe('EquipmentHooks test', () => {
             // Element is added.
             act(async () => {
                 try {
-                    await result.current.saveEquipment([{ ...TEST_SAVE_EQUIPMENT }])
+                    await result.current.addHousingEquipment([{ ...TEST_SAVE_EQUIPMENT }])
                 } catch (err) {}
             })
             expect(result.current.loadingEquipmentInProgress).toBe(true)

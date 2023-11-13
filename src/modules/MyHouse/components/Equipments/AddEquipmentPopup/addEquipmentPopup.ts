@@ -1,4 +1,8 @@
-import { addEquipmentType, equipmentType } from 'src/modules/MyHouse/components/Installation/InstallationType'
+import {
+    addEquipmentType,
+    equipmentType,
+    postEquipmentInputType,
+} from 'src/modules/MyHouse/components/Installation/InstallationType'
 
 /**
  * Add equipment popup props.
@@ -15,13 +19,17 @@ export interface AddEquipmentPopupProps {
     /**
      * Equipments list.
      */
-    equipmentsList: equipmentType[] | null
+    equipmentsList?: equipmentType[]
     /**
      * Add equipment function.
      */
-    addEquipment: (bodu: addEquipmentType) => Promise<void>
+    addEquipment: (data: addEquipmentType) => Promise<postEquipmentInputType | undefined>
     /**
      * Loading boolean for adding equipment.
      */
     isaAdEquipmentLoading: boolean
+    /**
+     * Add housing equipment function.
+     */
+    addHousingEquipment: (body: postEquipmentInputType) => Promise<postEquipmentInputType | undefined>
 }

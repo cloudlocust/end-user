@@ -33,9 +33,9 @@ export const ToolbarWidget = () => {
     }, [loadHousingsAndScopes, history])
 
     return (
-        <div className="flex flex-1 my-20 justify-between toolbar-widget">
+        <div className="flex flex-1 my-20 justify-between w-full">
             <SelectHousing />
-            <div className="flex align-center">
+            <div className="flex justify-end items-center w-1/3">
                 <Notification />
                 <UserMenu />
             </div>
