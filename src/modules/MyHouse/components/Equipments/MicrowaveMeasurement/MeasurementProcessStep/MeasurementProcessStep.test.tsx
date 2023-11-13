@@ -5,13 +5,13 @@ import { MeasurementProcessStep } from 'src/modules/MyHouse/components/Equipment
 import { MeasurementProcessStepProps } from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement/MeasurementProcessStep/MeasurementProcessStep'
 import { measurementStatusEnum } from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement/MeasurementProgress/MeasurementProgress.d'
 
-const HEADER_TEXT_PENDING_OR_NULL = 'Démarrage de la mesure'
-const HEADER_TEXT_IN_PROGRESS = 'Mesure en cours'
-const HEADER_TEXT_SUCCESS = 'Mesure terminée avec succès'
-const HEADER_TEXT_FAILED = 'Mesure terminée avec échec'
+const HEADER_TEXT_PENDING_OR_IN_PROGRESS = 'Mesure en cours ...'
+const HEADER_TEXT_SUCCESS = 'Mesure effectuée avec succès'
+const BUTTON_TEXT = 'Voir le résultat'
 
 let mockStepSetter: jest.Mock<any, any>
 let mockStartMeasurement: jest.Mock<any, any>
+let mockRestartMeasurementFromBeginning: jest.Mock<any, any>
 let mockGetTimeFromStatusLastUpdate: jest.Mock<any, any>
 let MeasurementProcessStepPropsDefaultValues: MeasurementProcessStepProps
 
@@ -19,14 +19,15 @@ describe('MeasurementProcessStep Component', () => {
     beforeEach(() => {
         mockStepSetter = jest.fn()
         mockStartMeasurement = jest.fn()
+        mockRestartMeasurementFromBeginning = jest.fn()
         mockGetTimeFromStatusLastUpdate = jest.fn(() => 0)
 
         MeasurementProcessStepPropsDefaultValues = {
             measurementStatus: null,
-            measurementResult: 24,
             measurementMaxDuration: 50,
             getTimeFromStatusLastUpdate: mockGetTimeFromStatusLastUpdate,
             startMeasurement: mockStartMeasurement,
+            restartMeasurementFromBeginning: mockRestartMeasurementFromBeginning,
             stepSetter: mockStepSetter,
         }
     })
@@ -34,13 +35,13 @@ describe('MeasurementProcessStep Component', () => {
     test('When the measurement status is null (initially, before getting the status value from the backend)', () => {
         reduxedRender(<MeasurementProcessStep {...MeasurementProcessStepPropsDefaultValues} />)
 
-        const headerText = screen.getByText(HEADER_TEXT_PENDING_OR_NULL)
+        const headerText = screen.getByText(HEADER_TEXT_PENDING_OR_IN_PROGRESS)
         expect(headerText).toBeInTheDocument()
 
         const progressCircle = screen.getByRole('progressbar')
         expect(progressCircle).toBeInTheDocument()
 
-        const buttonFinish = screen.getByText('Terminer')
+        const buttonFinish = screen.getByText(BUTTON_TEXT)
         expect(buttonFinish).toBeInTheDocument()
         expect(buttonFinish).toBeDisabled()
     })
@@ -53,7 +54,7 @@ describe('MeasurementProcessStep Component', () => {
             />,
         )
 
-        const headerText = screen.getByText(HEADER_TEXT_PENDING_OR_NULL)
+        const headerText = screen.getByText(HEADER_TEXT_PENDING_OR_IN_PROGRESS)
         expect(headerText).toBeInTheDocument()
 
         const progressCircle = screen.getByRole('progressbar')
@@ -62,7 +63,7 @@ describe('MeasurementProcessStep Component', () => {
         const loadingMessage = screen.getByText('En attente')
         expect(loadingMessage).toBeInTheDocument()
 
-        const buttonFinish = screen.getByText('Terminer')
+        const buttonFinish = screen.getByText(BUTTON_TEXT)
         expect(buttonFinish).toBeInTheDocument()
         expect(buttonFinish).toBeDisabled()
     })
@@ -75,7 +76,7 @@ describe('MeasurementProcessStep Component', () => {
             />,
         )
 
-        const headerText = screen.getByText(HEADER_TEXT_IN_PROGRESS)
+        const headerText = screen.getByText(HEADER_TEXT_PENDING_OR_IN_PROGRESS)
         expect(headerText).toBeInTheDocument()
 
         const progressCircle = screen.getByRole('progressbar')
@@ -85,7 +86,7 @@ describe('MeasurementProcessStep Component', () => {
         const timeCounter = screen.getByText(/^[0-9][0-9] : [0-5][0-9]$/)
         expect(timeCounter).toBeInTheDocument()
 
-        const buttonFinish = screen.getByText('Terminer')
+        const buttonFinish = screen.getByText(BUTTON_TEXT)
         expect(buttonFinish).toBeInTheDocument()
         expect(buttonFinish).toBeDisabled()
     })
@@ -107,11 +108,11 @@ describe('MeasurementProcessStep Component', () => {
         const successMessage = screen.getByText('Félicitations !')
         expect(successMessage).toBeInTheDocument()
 
-        const buttonFinish = screen.getByText('Terminer')
+        const buttonFinish = screen.getByText(BUTTON_TEXT)
         expect(buttonFinish).toBeInTheDocument()
         expect(buttonFinish).toBeEnabled()
 
-        // Calling stepSetter function on clicking on the button "Terminer"
+        // Calling stepSetter function on clicking on the button "Voir le résultat"
         userEvent.click(buttonFinish)
         await waitFor(() => {
             expect(mockStepSetter).toHaveBeenCalledWith(4)
@@ -122,12 +123,9 @@ describe('MeasurementProcessStep Component', () => {
         reduxedRender(
             <MeasurementProcessStep
                 {...MeasurementProcessStepPropsDefaultValues}
-                measurementStatus={{ status: measurementStatusEnum.FAILED }}
+                measurementStatus={{ status: measurementStatusEnum.FAILED, failureMessage: 'Failur message test' }}
             />,
         )
-
-        const headerText = screen.getByText(HEADER_TEXT_FAILED)
-        expect(headerText).toBeInTheDocument()
 
         const progressCircle = screen.getByRole('progressbar')
         expect(progressCircle).toBeInTheDocument()
@@ -135,11 +133,11 @@ describe('MeasurementProcessStep Component', () => {
         const successMessage = screen.getByText('La mesure a échoué')
         expect(successMessage).toBeInTheDocument()
 
-        const buttonRetest = screen.getByText('Relancer le test')
+        const buttonRetest = screen.getByText('Recommencer la mesure')
         expect(buttonRetest).toBeInTheDocument()
         expect(buttonRetest).toBeEnabled()
 
-        // Calling startMeasurement function on clicking on the button "Relancer le test"
+        // Calling startMeasurement function on clicking on the button "Recommencer la mesure"
         userEvent.click(buttonRetest)
         await waitFor(() => {
             expect(mockStartMeasurement).toHaveBeenCalled()

@@ -64,18 +64,8 @@ export interface MeasurementStatusStateType {
      * The time of the last update of the measurement status.
      */
     updatedAt?: string
-}
-
-/**
- * Props of the TestStepPage component.
- */
-export interface TestStepPageProps {
     /**
-     * The state responsible for storing the current step.
+     * The error message to show when the status is FAILED.
      */
-    step: number
-    /**
-     * The setter linked to the state step.
-     */
-    stepSetter: Dispatch<SetStateAction<number>>
+    failureMessage?: string
 }

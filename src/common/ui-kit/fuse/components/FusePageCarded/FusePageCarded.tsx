@@ -222,7 +222,7 @@ const FusePageCarded = forwardRef((props: IPageCardedProps) => {
                             </div>
                         </div>
                     ) : (
-                        <div className={clsx('FusePageCarded-contentWrapper')}>
+                        <div className={clsx('FusePageCarded-contentWrapper pb-20')}>
                             <FusePageCardedHeader header={props.header} />
                             <div className={clsx('FusePageCarded-contentCard', props.innerScroll && 'inner-scroll')}>
                                 {toolbar}

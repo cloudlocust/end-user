@@ -32,10 +32,6 @@ export interface MeasurementProcessStepProps {
      */
     measurementStatus: MeasurementStatusStateType | null
     /**
-     * The result value for the measurement.
-     */
-    measurementResult: number | null
-    /**
      * Estimated value for the maximum duration of the measurement process (in seconds).
      */
     measurementMaxDuration: number
@@ -47,6 +43,10 @@ export interface MeasurementProcessStepProps {
      * The function that start the measurement process.
      */
     startMeasurement: () => Promise<void>
+    /**
+     * The function that restart the measurement from the beginning.
+     */
+    restartMeasurementFromBeginning: () => Promise<void>
     /**
      * The setter linked to the state responsible for storing the current step.
      */

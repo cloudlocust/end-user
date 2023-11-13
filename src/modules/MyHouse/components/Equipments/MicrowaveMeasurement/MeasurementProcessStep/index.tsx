@@ -13,19 +13,19 @@ import { ResponseMessage } from 'src/modules/MyHouse/components/Equipments/Micro
  *
  * @param root0 N/A.
  * @param root0.measurementStatus The measurementStatus state.
- * @param root0.measurementResult The result value for the measurement.
  * @param root0.measurementMaxDuration Estimated value for the maximum duration of the measurement process (in seconds).
  * @param root0.getTimeFromStatusLastUpdate Function to get the time passed (in seconds) from the last update os measurement status.
  * @param root0.startMeasurement The function that start the measurement process.
  * @param root0.stepSetter The setter linked to the state responsible for storing the current step.
+ * @param root0.restartMeasurementFromBeginning The function that restart the measurement from the beginning.
  * @returns The MeasurementProcessStep component.
  */
 export const MeasurementProcessStep = ({
     measurementStatus,
-    measurementResult,
     measurementMaxDuration,
     getTimeFromStatusLastUpdate,
     startMeasurement,
+    restartMeasurementFromBeginning,
     stepSetter,
 }: MeasurementProcessStepProps) => {
     const { formatMessage } = useIntl()
@@ -33,20 +33,16 @@ export const MeasurementProcessStep = ({
 
     const headerText = useMemo(() => {
         switch (measurementStatus?.status) {
-            case measurementStatusEnum.PENDING:
-                return 'Démarrage de la mesure'
-            case measurementStatusEnum.IN_PROGRESS:
-                return 'Mesure en cours'
             case measurementStatusEnum.SUCCESS:
-                return 'Mesure terminée avec succès'
+                return 'Mesure effectuée avec succès'
             case measurementStatusEnum.FAILED:
-                return 'Mesure terminée avec échec'
+                return ''
         }
-        return 'Démarrage de la mesure'
+        return 'Mesure en cours ...'
     }, [measurementStatus])
 
     /**
-     * Click handler for the button "Terminer".
+     * Click handler for the button "Voir le résultat".
      */
     const handleFinishButtonClick = () => {
         stepSetter(4)
@@ -59,19 +55,21 @@ export const MeasurementProcessStep = ({
     return (
         <>
             {/* Header */}
-            <div className="text-center mb-20">
-                <Typography component="h2" fontWeight="500" fontSize="18px" data-testid="headerElement">
-                    {formatMessage({
-                        id: headerText,
-                        defaultMessage: headerText,
-                    })}
-                </Typography>
-            </div>
+            {headerText && (
+                <div className="text-center mb-20">
+                    <Typography component="h2" fontWeight="500" fontSize="18px" data-testid="headerElement">
+                        {formatMessage({
+                            id: headerText,
+                            defaultMessage: headerText,
+                        })}
+                    </Typography>
+                </div>
+            )}
 
             {/* Content */}
-            <div className="min-h-256 flex flex-col justify-around">
+            <div className="flex-1 flex flex-col justify-center">
                 {/* The measurement progress component */}
-                <div className="flex justify-center">
+                <div className="flex justify-center mb-32">
                     <MeasurementProgress
                         status={measurementStatus?.status}
                         maxDuration={measurementMaxDuration}
@@ -83,7 +81,7 @@ export const MeasurementProcessStep = ({
                 {measurementStatus?.status === measurementStatusEnum.SUCCESS && (
                     <ResponseMessage
                         title="Félicitations !"
-                        content={`Le test est terminé avec succès, vous pouvez désormais analyser vos résultats. Le résultat de la mesure est ${measurementResult}`}
+                        content="La mesure a été effectuée avec succès, vous pouvez arrêter votre appareil."
                         theme={theme}
                         success
                     />
@@ -93,14 +91,14 @@ export const MeasurementProcessStep = ({
                 {measurementStatus?.status === measurementStatusEnum.FAILED && (
                     <ResponseMessage
                         title="La mesure a échoué"
-                        content="Le test est terminé par un échec, vous pouvez le lancer à nouveau"
+                        content={measurementStatus.failureMessage!}
                         theme={theme}
                     />
                 )}
             </div>
 
-            {/* The test ending button */}
-            <div className="flex justify-center mt-20">
+            {/* The test ending and restarting buttons */}
+            <div className="flex justify-center">
                 {measurementStatus?.status !== measurementStatusEnum.FAILED ? (
                     <Button
                         variant="contained"
@@ -108,18 +106,18 @@ export const MeasurementProcessStep = ({
                         onClick={handleFinishButtonClick}
                         disabled={measurementStatus?.status !== measurementStatusEnum.SUCCESS}
                         children={formatMessage({
-                            id: 'Terminer',
-                            defaultMessage: 'Terminer',
+                            id: 'Voir le résultat',
+                            defaultMessage: 'Voir le résultat',
                         })}
                     />
                 ) : (
                     <Button
                         variant="contained"
                         sx={{ padding: '10px auto', textAlign: 'center', width: '60%', minWidth: '160px' }}
-                        onClick={startMeasurement}
+                        onClick={restartMeasurementFromBeginning}
                         children={formatMessage({
-                            id: 'Relancer le test',
-                            defaultMessage: 'Relancer le test',
+                            id: 'Recommencer la mesure',
+                            defaultMessage: 'Recommencer la mesure',
                         })}
                     />
                 )}

@@ -3,18 +3,18 @@ import Button from '@mui/material/Button'
 import SvgIcon from '@mui/material/SvgIcon'
 import { ReactComponent as ConnectEquipmentIcon } from 'src/assets/images/content/housing/ConnectEquipment.svg'
 import { useIntl } from 'src/common/react-platform-translation'
-import { EquipmentStartupStepProps } from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement/EquipmentStartupStep/EquipmentStartupStep.d'
+import { MeasurementStartupStepProps } from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement/MeasurementStartupStep/MeasurementStartupStep'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 
 /**
- * ConfigurationStep component.
+ * MeasurementStartupStep component.
  *
  * @param root0 N/A.
  * @param root0.measurementMode The mode of the measurement test.
  * @param root0.stepSetter The setter linked to the state responsible for storing the current step.
- * @returns The ConfigurationStep component.
+ * @returns The MeasurementStartupStep component.
  */
-export const EquipmentStartupStep = ({ measurementMode, stepSetter }: EquipmentStartupStepProps) => {
+export const MeasurementStartupStep = ({ measurementMode, stepSetter }: MeasurementStartupStepProps) => {
     const { formatMessage } = useIntl()
 
     /**
@@ -30,18 +30,23 @@ export const EquipmentStartupStep = ({ measurementMode, stepSetter }: EquipmentS
             <div className="text-center mb-20">
                 <Typography display="inline" component="h2" fontWeight="500" fontSize="18px">
                     {formatMessage({
-                        id: "Mettez en marche l'appareil sur le mode",
-                        defaultMessage: "Mettez en marche l'appareil sur le mode",
+                        id: 'Choisissez le réglage',
+                        defaultMessage: 'Choisissez le réglage',
                     })}
-                    &nbsp;:
                 </Typography>{' '}
                 <Typography display="inline" component="h2" fontWeight="500" fontSize="18px" color="primary">
                     {measurementMode}
-                </Typography>
+                </Typography>{' '}
+                <Typography display="inline" component="h2" fontWeight="500" fontSize="18px">
+                    {formatMessage({
+                        id: 'puis mettez en marche votre appareil',
+                        defaultMessage: 'puis mettez en marche votre appareil',
+                    })}
+                </Typography>{' '}
             </div>
 
             {/* Content */}
-            <div>
+            <div className="flex-1 flex flex-col justify-center">
                 {/* Descriptive image */}
                 <div className="mb-20">
                     <SvgIcon component={ConnectEquipmentIcon} sx={{ width: '100%', height: '160px' }} inheritViewBox />
@@ -49,22 +54,22 @@ export const EquipmentStartupStep = ({ measurementMode, stepSetter }: EquipmentS
 
                 {/* Description */}
                 <TypographyFormatMessage textAlign="center" marginBottom="20px">
-                    Une fois l’appareil mis en marche, appuyez sur “Commencer la mesure” pour débuter le test
+                    Une fois votre appareil en marche, vous pouvez lancer la mesure.
                 </TypographyFormatMessage>
+            </div>
 
-                {/* The measurement starting button */}
-                <div className="flex justify-center">
-                    <Button
-                        variant="contained"
-                        sx={{ padding: '10px auto', textAlign: 'center', width: '60%', minWidth: '190px' }}
-                        onClick={handleBtnClick}
-                    >
-                        {formatMessage({
-                            id: 'Commencer la mesure',
-                            defaultMessage: 'Commencer la mesure',
-                        })}
-                    </Button>
-                </div>
+            {/* The measurement starting button */}
+            <div className="flex justify-center">
+                <Button
+                    variant="contained"
+                    sx={{ padding: '10px auto', textAlign: 'center', width: '60%', minWidth: '160px' }}
+                    onClick={handleBtnClick}
+                >
+                    {formatMessage({
+                        id: 'Commencer la mesure',
+                        defaultMessage: 'Commencer la mesure',
+                    })}
+                </Button>
             </div>
         </>
     )

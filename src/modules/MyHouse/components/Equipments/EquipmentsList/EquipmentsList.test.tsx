@@ -7,7 +7,7 @@ import { EquipmentsListProps } from 'src/modules/MyHouse/components/Equipments/E
 let equipmentsListProps: EquipmentsListProps = {
     housingEquipmentsList: [],
     loadingEquipmentInProgress: false,
-    saveEquipment: jest.fn(),
+    addHousingEquipment: jest.fn(),
 }
 
 describe('EquipmentsList tests', () => {
