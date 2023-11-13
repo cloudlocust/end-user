@@ -72,8 +72,8 @@ export const MeasurementResultStep = ({
                     onClick={closeMeasurementModal}
                 >
                     {formatMessage({
-                        id: 'Suivant',
-                        defaultMessage: 'Suivant',
+                        id: 'Terminer',
+                        defaultMessage: 'Terminer',
                     })}
                 </Button>
             </div>

@@ -34,13 +34,13 @@ describe('MeasurementResultStep Component', () => {
         expect(screen.getByText(`${MEASUREMENT_RESULT_TEST} W`)).toBeInTheDocument()
 
         // Assert that the the measurement ending button is present
-        expect(screen.getByRole('button', { name: 'Suivant' })).toBeInTheDocument()
+        expect(screen.getByRole('button', { name: 'Terminer' })).toBeInTheDocument()
     })
 
-    test('calls closeMeasurementModal when the button "Suivant" is clicked', async () => {
+    test('calls closeMeasurementModal when the button "Terminer" is clicked', async () => {
         reduxedRender(<MeasurementResultStep {...props} />)
 
-        const nextButton = screen.getByRole('button', { name: 'Suivant' })
+        const nextButton = screen.getByRole('button', { name: 'Terminer' })
         userEvent.click(nextButton)
         await waitFor(() => {
             expect(mockCloseMeasurementModal).toHaveBeenCalled()
