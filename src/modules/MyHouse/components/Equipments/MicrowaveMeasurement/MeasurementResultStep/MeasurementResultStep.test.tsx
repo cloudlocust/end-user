@@ -6,11 +6,13 @@ import { MeasurementResultStep } from 'src/modules/MyHouse/components/Equipments
 const MEASUREMENT_MODE_TEST = 'Measurement Mode'
 const MEASUREMENT_RESULT_TEST = 120
 const mockCloseMeasurementModal = jest.fn()
+const mockNavigateToEquipmentDetailsPage = jest.fn()
 
 const props = {
     measurementMode: MEASUREMENT_MODE_TEST,
     measurementResult: MEASUREMENT_RESULT_TEST,
     closeMeasurementModal: mockCloseMeasurementModal,
+    navigateToEquipmentDetailsPage: mockNavigateToEquipmentDetailsPage,
 }
 
 describe('MeasurementResultStep Component', () => {
@@ -37,13 +39,14 @@ describe('MeasurementResultStep Component', () => {
         expect(screen.getByRole('button', { name: 'Terminer' })).toBeInTheDocument()
     })
 
-    test('calls closeMeasurementModal when the button "Terminer" is clicked', async () => {
+    test('calls closeMeasurementModal & navigateToEquipmentDetailsPage when the button "Terminer" is clicked', async () => {
         reduxedRender(<MeasurementResultStep {...props} />)
 
         const nextButton = screen.getByRole('button', { name: 'Terminer' })
         userEvent.click(nextButton)
         await waitFor(() => {
             expect(mockCloseMeasurementModal).toHaveBeenCalled()
+            expect(mockNavigateToEquipmentDetailsPage).toHaveBeenCalled()
         })
     })
 })
