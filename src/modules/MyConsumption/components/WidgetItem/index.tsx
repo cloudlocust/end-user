@@ -16,9 +16,19 @@ import { PeriodEnum } from 'src/modules/MyConsumption/myConsumptionTypes.d'
  * @param props.unit Unit of the widget.
  * @param props.percentageChange Percentage change of the widget.
  * @param props.period Period of the Widget.
+ * @param props.noValueMessage Message when no value exists.
  * @returns WidgetItem Component.
  */
-export function WidgetItem({ target, title, infoIcon, value, unit, percentageChange, period }: IWidgetItemProps) {
+export function WidgetItem({
+    target,
+    title,
+    infoIcon,
+    value,
+    unit,
+    percentageChange,
+    period,
+    noValueMessage,
+}: IWidgetItemProps) {
     return (
         <div className="p-16 flex flex-col flex-1 gap-3 justify-between">
             <div className="flex flex-row justify-between">
@@ -30,9 +40,7 @@ export function WidgetItem({ target, title, infoIcon, value, unit, percentageCha
                     : infoIcon}
             </div>
             {!value || (target === metricTargetsEnum.injectedProduction && period === PeriodEnum.DAILY) ? (
-                <div className="text-center flex flex-1 justify-center items-center py-4">
-                    <TypographyFormatMessage>Aucune donnée disponible</TypographyFormatMessage>
-                </div>
+                <div className="text-center flex flex-1 justify-center items-center py-4">{noValueMessage}</div>
             ) : (
                 <div className="flex flex-row justify-between items-center gap-3">
                     <div className="flex flex-row items-end gap-3">

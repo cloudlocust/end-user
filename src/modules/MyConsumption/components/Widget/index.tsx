@@ -11,9 +11,15 @@ import {
 import { computePercentageChange } from 'src/modules/Analysis/utils/computationFunctions'
 import { WidgetItem } from 'src/modules/MyConsumption/components/WidgetItem'
 import { ConsumptionWidgetsMetricsContext } from 'src/modules/MyConsumption/components/ConsumptionWidgetsContainer/ConsumptionWidgetsMetricsContext'
-import { metricTargetType } from 'src/modules/Metrics/Metrics.d'
-
+import { metricTargetType, metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
+import { PeriodEnum } from 'src/modules/MyConsumption/myConsumptionTypes.d'
+import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 const emptyValueUnit = { value: 0, unit: '' }
+
+/**
+ * Default no value message.
+ */
+export const DEFAULT_NO_VALUE_MESSAGE = 'Aucune donnée disponible'
 
 /**
  * Widget Component.
@@ -132,6 +138,18 @@ export const Widget = memo(
                                         unit={targetsInfos[target.toString()].unit}
                                         percentageChange={targetsInfos[target.toString()].percentageChange}
                                         period={period}
+                                        noValueMessage={
+                                            target === metricTargetsEnum.pMax && period === PeriodEnum.DAILY ? (
+                                                // maxWidth to have a more balanced text.
+                                                <TypographyFormatMessage style={{ maxWidth: '90%' }}>
+                                                    La puissance maximale n'est pas disponible sur la journée en cours
+                                                </TypographyFormatMessage>
+                                            ) : (
+                                                <TypographyFormatMessage>
+                                                    {DEFAULT_NO_VALUE_MESSAGE}
+                                                </TypographyFormatMessage>
+                                            )
+                                        }
                                     />
                                 ))}
                             </div>

@@ -82,8 +82,8 @@ export const MeasurementResultStep = ({
                     onClick={handleNextButtonClick}
                 >
                     {formatMessage({
-                        id: 'Suivant',
-                        defaultMessage: 'Suivant',
+                        id: 'Terminer',
+                        defaultMessage: 'Terminer',
                     })}
                 </Button>
             </div>
