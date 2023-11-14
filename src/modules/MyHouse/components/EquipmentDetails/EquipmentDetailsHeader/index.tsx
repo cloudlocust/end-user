@@ -41,7 +41,7 @@ export const EquipmentDetailsHeader = ({ equipmentName }: EquipmentDetailsHeader
                         </Button>
                     </motion.div>
                     <div className="flex items-center gap-4 my-4 md:my-8">
-                        {equipmentIcon && equipmentIcon(theme)}
+                        {equipmentIcon && equipmentIcon(theme, false, theme.palette.common.white)}
                         <Typography
                             component={motion.span}
                             initial={{ x: -20 }}

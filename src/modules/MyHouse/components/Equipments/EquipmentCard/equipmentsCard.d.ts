@@ -12,7 +12,7 @@ import { HousingEquipmentType } from 'src/modules/MyHouse/components/Equipments/
  * @param isDisabled Is icon disabled.
  * @returns Icon component.
  */
-export type IconComponentType = (theme: Theme, isDisabled?: boolean) => ReactElement | ReactElement
+export type IconComponentType = (theme: Theme, isDisabled?: boolean, fill?: string) => ReactElement | ReactElement
 
 /**
  * EquipmentCardProps.
