@@ -33,4 +33,8 @@ export interface IWidgetItemProps {
      * Period of the Widget.
      */
     period?: periodType
+    /**
+     * Message when there is no value.
+     */
+    noValueMessage?: JSX.Element
 }

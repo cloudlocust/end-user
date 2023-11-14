@@ -161,7 +161,7 @@ const ConsumptionWidgetsContainer = ({
                                 metricsInterval={getMetricIntervalForWidget(target)}
                                 period={period}
                                 infoIcons={{
-                                    [target.toString()]: getWidgetInfoIcon({
+                                    [target]: getWidgetInfoIcon({
                                         widgetTarget: target,
                                         hasMissingContracts: hasMissingHousingContracts,
                                         enphaseOff,

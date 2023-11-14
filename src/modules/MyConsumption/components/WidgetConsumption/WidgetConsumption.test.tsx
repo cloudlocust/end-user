@@ -129,6 +129,6 @@ describe('WidgetConsumption test', () => {
 
         expect(queryByText(CONSOMMATION_TOTALE_TEXT)).toBeInTheDocument()
         expect(queryByText(CONSOMMATION_PURCHASED_TEXT)).toBeInTheDocument()
-        expect(getAllByText(NO_DATA_MESSAGE)).toHaveLength(2)
+        expect(getAllByText(NO_DATA_MESSAGE)).toHaveLength(1)
     })
 })
