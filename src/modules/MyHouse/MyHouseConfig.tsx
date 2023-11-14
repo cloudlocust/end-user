@@ -26,7 +26,7 @@ export const URL_HOUSING_EQUIPMENTS = `${URL_MY_HOUSE_DETAILS}/equipments`
 /**
  * Url for equipment details.
  */
-export const URL_HOUSING_EQUIPMENT_DETAILS = `${URL_HOUSING_EQUIPMENTS}/:housingEquipmentId`
+export const URL_HOUSING_EQUIPMENT_DETAILS = `${URL_HOUSING_EQUIPMENTS}/details`
 /**
  * Url for housing connected plugs.
  */

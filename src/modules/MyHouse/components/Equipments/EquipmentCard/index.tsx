@@ -3,7 +3,9 @@ import { MicrowaveMeasurement } from 'src/modules/MyHouse/components/Equipments/
 import { Card, CardContent, Button, useTheme, Typography, Icon, Tooltip } from '@mui/material'
 import { EquipmentCardProps } from 'src/modules/MyHouse/components/Equipments/EquipmentCard/equipmentsCard'
 import { useIntl } from 'src/common/react-platform-translation'
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
+import { useParams, useHistory } from 'react-router-dom'
+import { URL_MY_HOUSE } from 'src/modules/MyHouse/MyHouseConfig'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import { isEquipmentMeasurementFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
 import { FEATURE_COMMING_SOON_TEXT } from 'src/modules/shared'
@@ -14,28 +16,15 @@ import { DashboardCustomizeOutlined } from '@mui/icons-material'
  *
  * @description Equipment Card component that displays individual card for each type of equipment.
  * @param root0 N/A.
- * @param root0.id Equipment id.
- * @param root0.number How many equipments are there of that type.
+ * @param root0.equipment The equipment details object.
  * @param root0.label Equipment label.
- * @param root0.name Equipment backend name.
- * @param root0.housingEquipmentId The global equipment id.
- * @param root0.measurementModes Measurement modes for the Equipment.
  * @param root0.onEquipmentChange Function that handle the equipment number.
  * @param root0.iconComponent Icon component.
  * @returns EquipmentCard JSX.
  */
-export const EquipmentCard = ({
-    id,
-    number,
-    label,
-    name,
-    housingEquipmentId,
-    measurementModes,
-    onEquipmentChange,
-    iconComponent,
-}: EquipmentCardProps) => {
+export const EquipmentCard = ({ equipment, label, onEquipmentChange, iconComponent }: EquipmentCardProps) => {
     const theme = useTheme()
-    const [equipmentNumber, setEquipmentNumber] = useState<number>(number)
+    const [equipmentNumber, setEquipmentNumber] = useState<number>(equipment.number || 0)
     const { formatMessage } = useIntl()
     const {
         isOpen: isMeasurementModalOpen,
@@ -43,15 +32,27 @@ export const EquipmentCard = ({
         closeModal: onCloseMeasurementModal,
     } = useModal()
 
-    const isMicrowaveMeasurementButtonShown = number > 0 && name === 'microwave'
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    const { houseId } = useParams<{ houseId: string }>()
+    const history = useHistory()
+
+    /**
+     * Function for navigating to the equipment details page.
+     */
+    const navigateToEquipmentDetailsPage = useCallback(() => {
+        history.push(`${URL_MY_HOUSE}/${houseId}/equipments/details`, { equipment })
+    }, [equipment, history, houseId])
+
+    const isMicrowaveMeasurementButtonShown = equipment.number && equipment.number > 0 && equipment.name === 'microwave'
 
     return (
         <>
             <Card className="rounded-16 border border-slate-600 w-full" data-testid="equipment-item">
                 <CardContent className="flex flex-row space-x-14" sx={{ p: '1rem', '&:last-child': { pb: '1rem' } }}>
                     <div
-                        className="flex justify-center items-center rounded-16 border-2"
+                        className="flex justify-center items-center rounded-16 border-2 cursor-pointer"
                         style={{ borderColor: theme.palette.primary.main, width: '75px', height: '75px' }}
+                        onClick={navigateToEquipmentDetailsPage}
                     >
                         {iconComponent ? (
                             iconComponent(theme)
@@ -59,6 +60,7 @@ export const EquipmentCard = ({
                             <DashboardCustomizeOutlined color="primary" fontSize="large" />
                         )}
                     </div>
+
                     <div className="flex flex-row w-full justify-between">
                         <Typography className="text-16 md:text-17 font-medium">
                             {formatMessage({
@@ -73,7 +75,9 @@ export const EquipmentCard = ({
                                     className="cursor-pointer"
                                     onClick={() => {
                                         setEquipmentNumber((prevv) => {
-                                            onEquipmentChange([{ equipmentId: id, equipmentNumber: prevv + 1 }])
+                                            onEquipmentChange([
+                                                { equipmentId: equipment.id, equipmentNumber: prevv + 1 },
+                                            ])
                                             return prevv + 1
                                         })
                                     }}
@@ -87,7 +91,9 @@ export const EquipmentCard = ({
                                     onClick={() => {
                                         if (equipmentNumber > 0) {
                                             setEquipmentNumber((prevv) => {
-                                                onEquipmentChange([{ equipmentId: id, equipmentNumber: prevv - 1 }])
+                                                onEquipmentChange([
+                                                    { equipmentId: equipment.id, equipmentNumber: prevv - 1 },
+                                                ])
                                                 return prevv - 1
                                             })
                                         }
@@ -124,11 +130,12 @@ export const EquipmentCard = ({
             </Card>
             {isMicrowaveMeasurementButtonShown && (
                 <MicrowaveMeasurement
-                    housingEquipmentId={housingEquipmentId!}
-                    equipmentsNumber={number}
-                    measurementModes={measurementModes!}
+                    housingEquipmentId={equipment.housingEquipmentId!}
+                    equipmentsNumber={equipment.number || 0}
+                    measurementModes={equipment.measurementModes!}
                     isMeasurementModalOpen={isMeasurementModalOpen}
                     onCloseMeasurementModal={onCloseMeasurementModal}
+                    navigateToEquipmentDetailsPage={navigateToEquipmentDetailsPage}
                 />
             )}
         </>

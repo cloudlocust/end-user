@@ -14,4 +14,8 @@ export interface MeasurementResultStepProps {
      * Function that closes the measurement modal and resets the states.
      */
     closeMeasurementModal: () => Promise<void>
+    /**
+     * Function for navigating to the equipment details page.
+     */
+    navigateToEquipmentDetailsPage: () => void
 }

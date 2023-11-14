@@ -6,7 +6,7 @@ import {
 /**
  * Housing equipment list type.
  */
-type HousingEquipmentListType =
+export type HousingEquipmentType =
     /**
      *
      */
@@ -27,7 +27,12 @@ type HousingEquipmentListType =
         measurementModes: string[] | undefined
         // eslint-disable-next-line jsdoc/require-jsdoc
         customerId: number | null | undefined
-    }[]
+    }
+
+/**
+ * Housing equipment list type.
+ */
+type HousingEquipmentListType = HousingEquipmentType[]
 
 /**
  * EquipmentsList Props.
