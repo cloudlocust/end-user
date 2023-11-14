@@ -12,12 +12,12 @@ import { linksColor } from 'src/modules/utils/muiThemeVariables'
 /**
  * Tooltip content text.
  */
-export const TOOLTIP_TEXT_CONTENT = `Cette alerte sera déclanché lorsque votre puissance instantanée atteint la puissance souscrite, vous serai notifier régulièrement jusqu'à ce que la puissance repasse en état normal`
+export const TOOLTIP_TEXT_CONTENT = `Vous recevrez une notification lorsque votre puissance instantanée atteindra la puissance souscrite. Vous serez également notifié lorsque la puissance reviendra à un niveau normal.`
 
 /**
  * Tooltip content title.
  */
-export const TOOLTIP_TEXT_TITLE = 'Que Signifie cette alerte ?'
+export const TOOLTIP_TEXT_TITLE = 'Que signifie cette alerte ?'
 /**
  * Power max alerts component.
  *
@@ -199,6 +199,7 @@ const PowerMaxTooltip = ({
             }
             placement="top-start"
             arrow
+            className="mb-10"
         >
             <InfoOutlined
                 sx={(theme) => ({

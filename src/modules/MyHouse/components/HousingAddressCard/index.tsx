@@ -3,7 +3,7 @@ import { styled } from '@mui/material/styles'
 import { useIntl } from 'react-intl'
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined'
 import SvgIcon from '@mui/material/SvgIcon'
-import { ReactComponent as HousingIcon } from 'src/assets/images/navbarItems/Housings.svg'
+import { ReactComponent as HousingIcon } from 'src/assets/images/navbarItems/housing.svg'
 import { useHousingsDetails } from 'src/modules/MyHouse/components/HousingList/HousingsHooks'
 import { deleteAddFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
 

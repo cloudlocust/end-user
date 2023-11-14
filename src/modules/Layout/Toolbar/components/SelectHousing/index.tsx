@@ -3,15 +3,16 @@ import { useDispatch, useSelector } from 'react-redux'
 import { Dispatch, RootState } from 'src/redux'
 import Select, { SelectChangeEvent } from '@mui/material/Select'
 import {
-    FormControl,
-    InputLabel,
     MenuItem,
-    OutlinedInput,
+    Input,
     Divider,
     Tooltip,
     Button,
     SvgIcon,
     ListSubheader,
+    Backdrop,
+    useTheme,
+    useMediaQuery,
 } from '@mui/material'
 import { useIntl } from 'react-intl'
 import { Link } from 'react-router-dom'
@@ -43,10 +44,13 @@ const MenuProps = {
  */
 export const SelectHousing = () => {
     const { formatMessage } = useIntl()
+    const theme = useTheme()
+    const smDown = useMediaQuery(theme.breakpoints.down('sm'))
     // We use the dispatch to get the housing model from the redux state.
     const dispatch = useDispatch<Dispatch>()
     const { housingList, currentHousing } = useSelector(({ housingModel }: RootState) => housingModel)
     const [modalAddHousingOpen, setModalAddHousingOpen] = useState(false)
+    const [openBackdrop, setOpenBackdrop] = useState(false)
 
     /**
      * Function to handle when selecting a housing.
@@ -62,30 +66,33 @@ export const SelectHousing = () => {
     }
     return (
         <>
-            <FormControl>
-                <InputLabel id="select-housing-label">
-                    {currentHousing?.id
-                        ? formatMessage({
-                              id: 'Logements',
-                              defaultMessage: 'Logements',
-                          })
-                        : formatMessage({
-                              id: 'Aucun logement disponible',
-                              defaultMessage: 'Aucun logement disponible',
-                          })}
-                </InputLabel>
+            <div className="w-full flex justify-start items-center truncate">
                 <Select
+                    className="w-full flex justify-center items-center"
+                    displayEmpty={!currentHousing?.address.name}
                     labelId="select-housing-label"
                     id="select-housing"
                     value={currentHousing?.id ?? ''}
                     onChange={handleChange}
-                    input={<OutlinedInput label="Logement" />}
-                    renderValue={() => <>{currentHousing?.address.name}</>}
+                    input={<Input disableUnderline />}
+                    sx={{ maxWidth: smDown ? '100%' : '250px' }}
+                    renderValue={() => {
+                        return (
+                            <div className="underline truncate">
+                                {!currentHousing?.address.name
+                                    ? 'Aucun logement disponible'
+                                    : currentHousing?.address?.name}
+                            </div>
+                        )
+                    }}
+                    defaultValue={'Aucun logement disponible'}
                     MenuProps={MenuProps}
+                    onOpen={() => setOpenBackdrop(true)}
+                    onClose={() => setOpenBackdrop(false)}
                 >
                     {housingList?.map((housing) => (
                         <MenuItem key={housing.id} value={housing.id} className="flex justify-between">
-                            <TypographyFormatMessage className="mr-8" noWrap>
+                            <TypographyFormatMessage className="mr-8 whitespace-normal">
                                 {housing.address.name}
                             </TypographyFormatMessage>
                             <Link to={`/my-houses/${housing.id}`}>
@@ -121,10 +128,11 @@ export const SelectHousing = () => {
                                     })}
                                 </Button>
                             </div>
-                        </Tooltip>{' '}
+                        </Tooltip>
                     </ListSubheader>
                 </Select>
-            </FormControl>
+            </div>
+            <Backdrop open={openBackdrop} onClick={() => setOpenBackdrop(true)} />
             <AddHousingModal modalOpen={modalAddHousingOpen} closeModal={() => setModalAddHousingOpen(false)} />
         </>
     )
