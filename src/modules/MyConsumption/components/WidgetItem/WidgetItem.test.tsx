@@ -28,6 +28,7 @@ describe('WidgetItem Component test', () => {
         const mockWidgetProps: IWidgetItemProps = {
             ...mockWidgetPropsDefault,
             value: 0,
+            noValueMessage: <h1>{NO_DATA_MESSAGE}</h1>,
         }
         const { getByText } = reduxedRender(<WidgetItem {...mockWidgetProps} />)
 
