@@ -17,8 +17,9 @@ export const EquipmentDetailsHeader = ({ equipmentName }: EquipmentDetailsHeader
     const theme = selectTheme()
     const history = useHistory()
     const { formatMessage } = useIntl()
-    const equipmentIcon = myEquipmentOptions.find((element) => element.name === equipmentName)?.iconComponent
-    const equipmentLabel = myEquipmentOptions.find((element) => element.name === equipmentName)?.labelTitle
+
+    const { iconComponent: equipmentIcon, labelTitle: equipmentLabel } =
+        myEquipmentOptions.find((element) => element.name === equipmentName) || {}
 
     return (
         <ThemeProvider theme={theme}>

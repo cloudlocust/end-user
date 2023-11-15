@@ -4,7 +4,9 @@ import { Card, CardContent, Button, useTheme, Typography, Icon, Tooltip } from '
 import { EquipmentCardProps } from 'src/modules/MyHouse/components/Equipments/EquipmentCard/equipmentsCard'
 import { useIntl } from 'src/common/react-platform-translation'
 import { useCallback, useState } from 'react'
-import { useParams, useHistory } from 'react-router-dom'
+import { useHistory } from 'react-router-dom'
+import { RootState } from 'src/redux'
+import { useSelector } from 'react-redux'
 import { URL_MY_HOUSE } from 'src/modules/MyHouse/MyHouseConfig'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import { isEquipmentMeasurementFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
@@ -31,17 +33,15 @@ export const EquipmentCard = ({ equipment, label, onEquipmentChange, iconCompone
         openModal: onOpenMeasurementModal,
         closeModal: onCloseMeasurementModal,
     } = useModal()
-
-    // eslint-disable-next-line jsdoc/require-jsdoc
-    const { houseId } = useParams<{ houseId: string }>()
+    const { currentHousing } = useSelector(({ housingModel }: RootState) => housingModel)
     const history = useHistory()
 
     /**
      * Function for navigating to the equipment details page.
      */
     const navigateToEquipmentDetailsPage = useCallback(() => {
-        history.push(`${URL_MY_HOUSE}/${houseId}/equipments/details`, { equipment })
-    }, [equipment, history, houseId])
+        if (currentHousing?.id) history.push(`${URL_MY_HOUSE}/${currentHousing?.id}/equipments/details`, { equipment })
+    }, [currentHousing?.id, equipment, history])
 
     const isMicrowaveMeasurementButtonShown = equipment.number && equipment.number > 0 && equipment.name === 'microwave'
 
