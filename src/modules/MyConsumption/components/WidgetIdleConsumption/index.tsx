@@ -23,7 +23,7 @@ const emptyValueUnit = { value: 0, unit: '' }
  * @returns WidgetConsumption Component.
  */
 const WidgetIdleConsumption = (props: IWidgetProps) => {
-    const { filters, period, range, targets, metricsInterval } = props
+    const { filters, period, range, targets, infoIcons, metricsInterval } = props
     const target = targets[0]
     const theme = useTheme()
 
@@ -87,51 +87,35 @@ const WidgetIdleConsumption = (props: IWidgetProps) => {
 
     const isMessageShown = isRangeWithinToday(range.from, range.to)
 
-    // When the range period is of Today, we show this message because the Idle Consumption is still on
-    if (isMessageShown)
-        return (
-            <Grid item xs={6} sm={6} md={4} lg={3} xl={3} className="flex">
-                <Card className="w-full rounded-20 shadow sm:m-4" variant="outlined" style={{ minHeight: '170px' }}>
-                    <div className="p-16 flex flex-col flex-1 gap-3 justify-between h-full">
-                        <div className="text-center flex flex-1 justify-center items-center py-4">
-                            <TypographyFormatMessage
-                                sx={(theme) => ({
-                                    color: theme.palette.secondary.main,
-                                })}
-                                fontWeight={500}
-                            >
-                                La moyenne de votre consommation de veille pour aujourd'hui est en cours mais disponible
-                                sur hier
-                            </TypographyFormatMessage>
-                        </div>
-                    </div>
-                </Card>
-            </Grid>
-        )
-
     return (
         <Grid item xs={6} sm={6} md={4} lg={3} xl={3} className="flex">
             <Card className="w-full rounded-20 shadow sm:m-4" variant="outlined" style={{ minHeight: '170px' }}>
-                <>
-                    {isMetricsLoading ? (
-                        <div
-                            className="flex flex-col justify-center items-center w-full h-full"
-                            style={{ height: '170px' }}
-                        >
-                            <CircularProgress style={{ color: theme.palette.primary.main }} />
-                        </div>
-                    ) : (
-                        <div className="h-full flex flex-col">
-                            <WidgetItem
-                                target={target}
-                                title={renderWidgetTitle(target)}
-                                value={value}
-                                unit={unit}
-                                percentageChange={percentageChange}
-                            />
-                        </div>
-                    )}
-                </>
+                {isMetricsLoading ? (
+                    <div
+                        className="flex flex-col justify-center items-center w-full h-full"
+                        style={{ height: '170px' }}
+                    >
+                        <CircularProgress style={{ color: theme.palette.primary.main }} />
+                    </div>
+                ) : (
+                    <div className="h-full flex flex-col">
+                        <WidgetItem
+                            target={target}
+                            title={renderWidgetTitle(target)}
+                            infoIcon={infoIcons && infoIcons[target]}
+                            value={!isMessageShown ? value : ''}
+                            unit={unit}
+                            percentageChange={percentageChange}
+                            noValueMessage={
+                                isMessageShown ? (
+                                    <TypographyFormatMessage style={{ maxWidth: '90%' }}>
+                                        La consommation de veille n’est pas disponible sur la journée en cours.
+                                    </TypographyFormatMessage>
+                                ) : undefined
+                            }
+                        />
+                    </div>
+                )}
             </Card>
         </Grid>
     )

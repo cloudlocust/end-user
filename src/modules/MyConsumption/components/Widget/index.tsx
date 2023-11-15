@@ -17,11 +17,6 @@ import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyForm
 const emptyValueUnit = { value: 0, unit: '' }
 
 /**
- * Default no value message.
- */
-export const DEFAULT_NO_VALUE_MESSAGE = 'Aucune donnée disponible'
-
-/**
  * Widget Component.
  *
  * @param props N/A.
@@ -82,7 +77,7 @@ export const Widget = memo(
                     oldValue,
                     percentageChange,
                 }
-                targetsInfos[target.toString()] = targetInfos
+                targetsInfos[target] = targetInfos
             })
             return targetsInfos
         }, [data, oldData, targets])
@@ -133,10 +128,10 @@ export const Widget = memo(
                                         key={index}
                                         target={target}
                                         title={renderWidgetTitle(target, enphaseOff)}
-                                        infoIcon={infoIcons && infoIcons[target.toString()]}
-                                        value={targetsInfos[target.toString()].value}
-                                        unit={targetsInfos[target.toString()].unit}
-                                        percentageChange={targetsInfos[target.toString()].percentageChange}
+                                        infoIcon={infoIcons && infoIcons[target]}
+                                        value={targetsInfos[target].value}
+                                        unit={targetsInfos[target].unit}
+                                        percentageChange={targetsInfos[target].percentageChange}
                                         period={period}
                                         noValueMessage={
                                             target === metricTargetsEnum.pMax && period === PeriodEnum.DAILY ? (
@@ -144,11 +139,7 @@ export const Widget = memo(
                                                 <TypographyFormatMessage style={{ maxWidth: '90%' }}>
                                                     La puissance maximale n'est pas disponible sur la journée en cours
                                                 </TypographyFormatMessage>
-                                            ) : (
-                                                <TypographyFormatMessage>
-                                                    {DEFAULT_NO_VALUE_MESSAGE}
-                                                </TypographyFormatMessage>
-                                            )
+                                            ) : undefined
                                         }
                                     />
                                 ))}
