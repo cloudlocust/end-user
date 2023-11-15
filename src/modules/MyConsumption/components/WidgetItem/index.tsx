@@ -6,11 +6,6 @@ import { metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
 import { PeriodEnum } from 'src/modules/MyConsumption/myConsumptionTypes.d'
 
 /**
- * Default no value message.
- */
-export const DEFAULT_NO_VALUE_MESSAGE = 'Aucune donnée disponible'
-
-/**
  * Widget Item Component.
  *
  * @param props N/A.
@@ -32,7 +27,7 @@ export function WidgetItem({
     unit,
     percentageChange,
     period,
-    noValueMessage = <TypographyFormatMessage>{DEFAULT_NO_VALUE_MESSAGE}</TypographyFormatMessage>,
+    noValueMessage,
 }: IWidgetItemProps) {
     return (
         <div className="p-16 flex flex-col flex-1 gap-3 justify-between">

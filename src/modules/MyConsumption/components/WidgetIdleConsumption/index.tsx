@@ -13,6 +13,7 @@ import { getWidgetRange } from 'src/modules/MyConsumption/components/Widget/Widg
 import { useMetrics } from 'src/modules/Metrics/metricsHook'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import { Grid, Card, CircularProgress, useTheme } from '@mui/material'
+import { DEFAULT_NO_VALUE_MESSAGE } from 'src/modules/MyConsumption/components/Widget'
 
 const emptyValueUnit = { value: 0, unit: '' }
 
@@ -109,9 +110,11 @@ const WidgetIdleConsumption = (props: IWidgetProps) => {
                             noValueMessage={
                                 isMessageShown ? (
                                     <TypographyFormatMessage style={{ maxWidth: '90%' }}>
-                                        La consommation de veille n’est pas disponible sur la journée en cours.
+                                        La consommation de veille n’est pas disponible sur la journée en cours
                                     </TypographyFormatMessage>
-                                ) : undefined
+                                ) : (
+                                    <TypographyFormatMessage>{DEFAULT_NO_VALUE_MESSAGE}</TypographyFormatMessage>
+                                )
                             }
                         />
                     </div>
