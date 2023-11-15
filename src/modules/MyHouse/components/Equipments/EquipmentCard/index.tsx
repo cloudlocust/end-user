@@ -72,19 +72,6 @@ export const EquipmentCard = ({
                                     color="disabled"
                                     className="cursor-pointer"
                                     onClick={() => {
-                                        setEquipmentNumber((prevv) => {
-                                            onEquipmentChange([{ equipmentId: id, equipmentNumber: prevv + 1 }])
-                                            return prevv + 1
-                                        })
-                                    }}
-                                >
-                                    add_circle_outlined
-                                </Icon>
-                                <div className="text-14 font-medium">{equipmentNumber}</div>
-                                <Icon
-                                    color="disabled"
-                                    className="cursor-pointer"
-                                    onClick={() => {
                                         if (equipmentNumber > 0) {
                                             setEquipmentNumber((prevv) => {
                                                 onEquipmentChange([{ equipmentId: id, equipmentNumber: prevv - 1 }])
@@ -94,6 +81,19 @@ export const EquipmentCard = ({
                                     }}
                                 >
                                     remove_circle_outlined
+                                </Icon>
+                                <div className="text-14 font-medium">{equipmentNumber}</div>
+                                <Icon
+                                    color="disabled"
+                                    className="cursor-pointer"
+                                    onClick={() => {
+                                        setEquipmentNumber((prevv) => {
+                                            onEquipmentChange([{ equipmentId: id, equipmentNumber: prevv + 1 }])
+                                            return prevv + 1
+                                        })
+                                    }}
+                                >
+                                    add_circle_outlined
                                 </Icon>
                             </div>
                             <Tooltip
