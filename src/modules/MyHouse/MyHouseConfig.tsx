@@ -106,16 +106,15 @@ export const isEquipmentMeasurementFeatureState: boolean =
  * @param scopes Scopes of housing to check.
  * @returns Boolean.
  */
-// TODO: refactor this for more readibility readability and reduced redundancy.
-export const isProductionActiveAndHousingHasAccess = (scopes: ScopesTypesEnum[] | undefined) => {
-    if (globalProductionFeatureState) {
-        if (isAccessRightsActive) {
-            if (scopes?.find((scope) => scope === ScopesTypesEnum.PRODUCTION)) return true
-            return false
-        }
-        return true
-    }
-    return false
+export const isProductionActiveAndHousingHasAccess = (scopes: ScopesTypesEnum[]) => {
+    // If global production is not active, return false
+    if (!globalProductionFeatureState) return false
+
+    // If access rights are not active, return true since global production is active
+    if (!isAccessRightsActive) return true
+
+    // Check if scopes include PRODUCTION, if so return true, else return false
+    return scopes?.some((scope) => scope === ScopesTypesEnum.PRODUCTION) ?? false
 }
 
 /**
@@ -124,7 +123,7 @@ export const isProductionActiveAndHousingHasAccess = (scopes: ScopesTypesEnum[] 
  * @param scopes Scopes from housing.
  * @returns Boolean.
  */
-export const arePlugsUsedBasedOnProductionStatus = (scopes: ScopesTypesEnum[] | undefined) => {
+export const arePlugsUsedBasedOnProductionStatus = (scopes: ScopesTypesEnum[]) => {
     // check if we are using the production offer ( if rights are activated then we are using it)
     if (isAccessRightsActive) {
         if (isProductionActiveAndHousingHasAccess(scopes) && connectedPlugsFeatureState) return true

@@ -19,6 +19,7 @@ import { IEnedisSgeConsent, INrlinkConsent, IEnphaseConsent } from 'src/modules/
 import { ConsumptionChartContainer } from 'src/modules/MyConsumption/components/MyConsumptionChart/ConsumptionChartContainer'
 import { ConsumptionChartContainerProps } from 'src/modules/MyConsumption/components/MyConsumptionChart/MyConsumptionChartTypes.d'
 import { setupJestCanvasMock } from 'jest-canvas-mock'
+import { ScopesTypesEnum } from 'src/modules/MyHouse/utils/MyHouseCommonTypes.d'
 
 // List of houses to add to the redux state
 const LIST_OF_HOUSES: IHousing[] = applyCamelCase(TEST_HOUSES)
@@ -78,6 +79,8 @@ const mockGetConsents = jest.fn()
 const mockGetMetricsWithParams = jest.fn()
 let mockSgeConsentFeatureState = true
 let mockManualContractFillingIsEnabled = true
+let mockGlobalProductionFeatureState = false
+let mockIsProductionActiveAndHousingHasAccess = false
 
 let mockFilters: metricFiltersType = [
     {
@@ -102,6 +105,7 @@ const echartsConsumptionChartContainerProps: ConsumptionChartContainerProps = {
     metricsInterval: mockMetricsInterval,
     period: mockPeriod,
     range: mockRange,
+    currentHousingScopes: [ScopesTypesEnum.PRODUCTION],
 }
 
 const mockGetMetricsWithParamsValues: getMetricsWithParamsType = {
@@ -161,6 +165,12 @@ jest.mock('src/modules/MyHouse/MyHouseConfig', () => ({
     get manualContractFillingIsEnabled() {
         return mockManualContractFillingIsEnabled
     },
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    get globalProductionFeatureState() {
+        return mockGlobalProductionFeatureState
+    },
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    isProductionActiveAndHousingHasAccess: () => mockIsProductionActiveAndHousingHasAccess,
 }))
 
 describe('MyConsumptionContainer test', () => {
@@ -379,7 +389,7 @@ describe('MyConsumptionContainer test', () => {
         mockManualContractFillingIsEnabled = true
     })
 
-    test('When isShowIdleConsumptionDisabledInfo', async () => {
+    test('When isShowIdleConsumptionDisabledInfo is false', async () => {
         echartsConsumptionChartContainerProps.period = 'daily'
         echartsConsumptionChartContainerProps.metricsInterval = '1m' as metricIntervalType
 
@@ -396,6 +406,22 @@ describe('MyConsumptionContainer test', () => {
         await waitFor(() => {
             expect(getByText('Les informations de veille ne sont pas disponibles pour cette pèriode')).toBeTruthy()
         })
+    })
+    test('when isShowIdleConsumptionDisabledInfo is false from isProductionActiveAndHousingHasAccess', async () => {
+        mockIsProductionActiveAndHousingHasAccess = true
+        echartsConsumptionChartContainerProps.period = 'weekly'
+        echartsConsumptionChartContainerProps.metricsInterval = '1m' as metricIntervalType
+
+        const { getByText } = reduxedRender(
+            <Router>
+                <ConsumptionChartContainer {...echartsConsumptionChartContainerProps} />
+            </Router>,
+            { initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[0] } } },
+        )
+        const idleConsumptionButtonElement = getByText('Veille')
+        userEvent.click(idleConsumptionButtonElement)
+
+        expect(() => getByText('Les informations de veille ne sont pas disponibles pour cette pèriode')).toThrow()
     })
 
     describe('TemperatureOrPmax TargetMenuGroup Test', () => {
