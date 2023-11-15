@@ -19,7 +19,7 @@ import {
     DefaultContractWarning,
     ConsumptionEnedisSgeWarning,
 } from 'src/modules/MyConsumption/components/MyConsumptionChart/ConsumptionChartWarnings'
-import { sgeConsentFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
+import { isProductionActiveAndHousingHasAccess, sgeConsentFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
 import TargetMenuGroup from 'src/modules/MyConsumption/components/TargetMenuGroup'
 import CloseIcon from '@mui/icons-material/Close'
 import { SwitchIdleConsumption } from 'src/modules/MyConsumption/components/SwitchIdleConsumption'
@@ -42,6 +42,7 @@ import MyConsumptionChart from 'src/modules/MyConsumption/components/MyConsumpti
  * @param props.hasMissingHousingContracts Consumption or production chart type.
  * @param props.enedisSgeConsent Consumption or production chart type.
  * @param props.isSolarProductionConsentOff Boolean indicating if solar production consent is off.
+ * @param props.currentHousingScopes Current housingscopes.
  * @returns ConsumptionChartContainer Component.
  */
 export const ConsumptionChartContainer = ({
@@ -52,6 +53,7 @@ export const ConsumptionChartContainer = ({
     hasMissingHousingContracts,
     enedisSgeConsent,
     isSolarProductionConsentOff,
+    currentHousingScopes,
 }: ConsumptionChartContainerProps) => {
     const theme = useTheme()
     const [isShowIdleConsumptionDisabledInfo, setIsShowIdleConsumptionDisabledInfo] = useState(false)
@@ -233,9 +235,9 @@ export const ConsumptionChartContainer = ({
             </div>
 
             {/* SwitchIdleConsumption Info Text*/}
-            {isShowIdleConsumptionDisabledInfo && (
+            {isShowIdleConsumptionDisabledInfo && !isProductionActiveAndHousingHasAccess(currentHousingScopes) && (
                 <Box
-                    className="flex items-center justify-between text-13 md:text-16 w-full p-16"
+                    className="flex items-center justify-between text-13 md:text-16 w-full p-16 my-16"
                     sx={{ backgroundColor: 'primary.main', color: 'primary.contrastText' }}
                 >
                     <TypographyFormatMessage
@@ -247,7 +249,7 @@ export const ConsumptionChartContainer = ({
                     >
                         Les informations de veille ne sont pas disponibles pour cette pèriode
                     </TypographyFormatMessage>
-                    <CloseIcon sx={{ cursor: 'pointer' }} onClick={() => setIsShowIdleConsumptionDisabledInfo(false)} />
+                    <CloseIcon className="cursor-pointer" onClick={() => setIsShowIdleConsumptionDisabledInfo(false)} />
                 </Box>
             )}
 
@@ -261,7 +263,9 @@ export const ConsumptionChartContainer = ({
                 <SwitchIdleConsumption
                     removeIdleTarget={() => onIdleConsumptionSwitchButton(false)}
                     addIdleTarget={() => onIdleConsumptionSwitchButton(true)}
-                    isIdleConsumptionButtonDisabled={period === 'daily'}
+                    isIdleConsumptionButtonDisabled={
+                        period === 'daily' || isProductionActiveAndHousingHasAccess(currentHousingScopes)
+                    }
                     onClickIdleConsumptionDisabledInfoIcon={() => setIsShowIdleConsumptionDisabledInfo(true)}
                     isIdleConsumptionButtonSelected={isIdleSwitchToggled}
                 />
