@@ -67,6 +67,7 @@ export const EquipmentDetailsContent = ({ equipmentDetails }: EquipmentDetailsCo
                             sx={{
                                 fontSize: max_width_600 ? 14 : 16,
                             }}
+                            data-testid="equipment-select"
                         >
                             {Array(equipmentDetails.number)
                                 .fill(null)
