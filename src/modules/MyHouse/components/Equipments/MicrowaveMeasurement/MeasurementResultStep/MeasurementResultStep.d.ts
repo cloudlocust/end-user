@@ -9,7 +9,7 @@ export interface MeasurementResultStepProps {
     /**
      * The resut of the measurement process.
      */
-    measurementResult: number | null
+    measurementResult: number | null | undefined
     /**
      * Function that closes the measurement modal and resets the states.
      */

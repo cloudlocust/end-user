@@ -57,7 +57,7 @@ export const EquipmentMeasurementResultsList = ({
 
     return measurementModes && measurementModes.length > 0 ? (
         <>
-            <Typography variant="h6" fontSize={max_width_600 ? 17 : 20} marginBottom="20px">
+            <Typography variant="h5" fontSize={max_width_600 ? 17 : 20} marginBottom="20px">
                 {formatMessage({
                     id: 'Résultats des mesures',
                     defaultMessage: 'Résultats des mesures',
@@ -87,6 +87,7 @@ export const EquipmentMeasurementResultsList = ({
                                 </TableCell>
                                 <TableCell align="left">
                                     <LoadingButton
+                                        disabled={!measurementResults[measurementMode]}
                                         sx={{ fontSize: max_width_600 ? 14 : 16 }}
                                         variant="text"
                                         loading={measurementResults[measurementMode] === undefined}

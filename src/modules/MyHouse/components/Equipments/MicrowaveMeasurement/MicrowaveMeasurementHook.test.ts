@@ -7,6 +7,7 @@ import {
     TEST_STATUS_IN_PROGRESS,
     TEST_STATUS_SUCCESS,
     TEST_STATUS_FAILED,
+    TEST_MEASUREMENT_ERROR,
 } from 'src/mocks/handlers/equipments'
 import { useMicrowaveMeasurement } from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement/MicrowaveMeasurementHook'
 import { measurementStatusEnum } from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement/MeasurementProgress/MeasurementProgress.d'
@@ -54,7 +55,7 @@ describe('useMicrowaveMeasurement', () => {
         )
 
         expect(result.current.measurementStatus).toBe(null)
-        expect(result.current.measurementResult).toBe(null)
+        expect(result.current.measurementResult).toBe(undefined)
     })
 
     describe('updating the measurement result', () => {
@@ -85,7 +86,23 @@ describe('useMicrowaveMeasurement', () => {
                 },
                 { timeout: 5000 },
             )
-            expect(result.current.measurementResult).toBe(0)
+            expect(result.current.measurementResult).toBe(null)
+        })
+
+        test('when there is an error', async () => {
+            const { store } = require('src/redux')
+            await store.dispatch.userModel.setAuthenticationToken(TEST_MEASUREMENT_ERROR)
+            const {
+                renderedHook: { result, waitForValueToChange },
+            } = reduxedRenderHook(useMicrowaveMeasurementFunction)
+            act(() => result.current.updateResult())
+            await waitForValueToChange(
+                () => {
+                    return result.current.measurementResult
+                },
+                { timeout: 5000 },
+            )
+            expect(result.current.measurementResult).toBe(null)
         })
     })
 
