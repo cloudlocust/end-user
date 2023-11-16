@@ -19,11 +19,13 @@ const Root = styled(BottomNavigation)(({ theme }) => ({
     zIndex: 99,
     overflow: 'hidden',
     wordWrap: 'break-word',
+    borderTop: `0.1px solid ${theme.palette.grey[300]}`,
     '& > div': {
         display: 'flex',
         justifyContent: 'center',
         flexGrow: 1,
         flexShrink: 1,
+        background: theme.palette.common.white,
     },
     '& > div > .fuse-bottom-navigation-item': {
         textAlign: 'center',
@@ -33,19 +35,19 @@ const Root = styled(BottomNavigation)(({ theme }) => ({
         minWidth: '80px',
         maxWidth: '168px',
         '& > .MuiBottomNavigationAction-label': {
-            color: theme.palette.primary.main,
+            color: theme.palette.mode,
         },
         '& > .MuiIcon-root': {
-            color: theme.palette.primary.main,
+            color: theme.palette.mode,
         },
         '&.active': {
             '& > .MuiBottomNavigationAction-label': {
-                color: 'white',
+                color: theme.palette.primary.main,
             },
             '& > .MuiIcon-root': {
-                color: 'white',
+                color: theme.palette.primary.main,
             },
-            backgroundColor: theme.palette.primary.main,
+            backgroundColor: theme.palette.common.white,
         },
         '&.disabled': {
             opacity: '0.38',
