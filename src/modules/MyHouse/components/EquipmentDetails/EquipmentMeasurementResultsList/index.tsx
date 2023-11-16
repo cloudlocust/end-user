@@ -65,7 +65,7 @@ export const EquipmentMeasurementResultsList = ({
                 &nbsp;:
             </Typography>
 
-            <TableContainer component={Paper} elevation={3}>
+            <TableContainer component={Paper} elevation={3} data-testid="table-container">
                 <Table size={max_width_600 ? 'small' : 'medium'} sx={{ minWidth: 385 }}>
                     <TableBody>
                         {measurementModes.map((measurementMode) => (
@@ -91,6 +91,7 @@ export const EquipmentMeasurementResultsList = ({
                                         sx={{ fontSize: max_width_600 ? 14 : 16 }}
                                         variant="text"
                                         loading={measurementResults[measurementMode] === undefined}
+                                        data-testid="loading-button"
                                     >
                                         {measurementResults[measurementMode]
                                             ? `${measurementResults[measurementMode]} W`
