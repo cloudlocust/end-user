@@ -19,6 +19,10 @@ export interface MicrowaveMeasurementProps {
      */
     isMeasurementModalOpen: boolean
     /**
+     * Boolean indicating whether we want to display an old result.
+     */
+    showingOldResult?: boolean
+    /**
      * Modal closing handler.
      */
     onCloseMeasurementModal: () => void

@@ -114,7 +114,7 @@ export const MeasurementProcessStep = ({
                     <Button
                         variant="contained"
                         sx={{ padding: '10px auto', textAlign: 'center', width: '60%', minWidth: '160px' }}
-                        onClick={restartMeasurementFromBeginning}
+                        onClick={() => restartMeasurementFromBeginning()}
                         children={formatMessage({
                             id: 'Recommencer la mesure',
                             defaultMessage: 'Recommencer la mesure',

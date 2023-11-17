@@ -22,6 +22,7 @@ import { useMicrowaveMeasurement } from 'src/modules/MyHouse/components/Equipmen
  * @param root0.equipmentsNumber The number of microwaves.
  * @param root0.measurementModes Measurement modes for the Equipment.
  * @param root0.isMeasurementModalOpen The state of the modal.
+ * @param root0.showingOldResult Boolean indicating whether we want to display an old result.
  * @param root0.onCloseMeasurementModal Modal closing handler.
  * @param root0.navigateToEquipmentDetailsPage Function for navigating to the equipment details page.
  * @example
@@ -44,10 +45,11 @@ export const MicrowaveMeasurement = ({
     equipmentsNumber,
     measurementModes,
     isMeasurementModalOpen,
+    showingOldResult,
     onCloseMeasurementModal,
     navigateToEquipmentDetailsPage,
 }: MicrowaveMeasurementProps) => {
-    const [currentStep, setCurrentStep] = useState(0)
+    const [currentStep, setCurrentStep] = useState(showingOldResult ? 4 : 0)
     const [microwaveNumber, setMicrowaveNumber] = useState(equipmentsNumber === 1 ? 1 : 0)
     const [measurementMode, setMeasurementMode] = useState('')
     const theme = useTheme()
@@ -65,12 +67,15 @@ export const MicrowaveMeasurement = ({
     /**
      * Restart the measurement from the beginning.
      */
-    const handleRestartingMeasurement = useCallback(async () => {
-        await setMeasurementStatus(null)
-        setCurrentStep(1)
-        setMicrowaveNumber(equipmentsNumber === 1 ? 1 : 0)
-        setMeasurementMode('')
-    }, [equipmentsNumber, setMeasurementStatus])
+    const handleRestartingMeasurement = useCallback(
+        async (microwaveNumber?: number, measurementMode?: string) => {
+            await setMeasurementStatus(null)
+            setCurrentStep(1)
+            setMicrowaveNumber(microwaveNumber || equipmentsNumber === 1 ? 1 : 0)
+            setMeasurementMode(measurementMode || '')
+        },
+        [equipmentsNumber, setMeasurementStatus],
+    )
 
     /**
      * Handle closing the measurement Modal.
@@ -134,10 +139,13 @@ export const MicrowaveMeasurement = ({
                     <InfosPage stepSetter={setCurrentStep} />
                 ) : currentStep === 4 ? (
                     <MeasurementResultStep
+                        microwaveNumber={microwaveNumber}
                         measurementMode={measurementMode}
                         measurementResult={measurementResult}
+                        showingOldResult={showingOldResult}
                         closeMeasurementModal={handleCloseMeasurementModal}
                         navigateToEquipmentDetailsPage={navigateToEquipmentDetailsPage}
+                        restartMeasurementFromBeginning={handleRestartingMeasurement}
                     />
                 ) : (
                     <>
