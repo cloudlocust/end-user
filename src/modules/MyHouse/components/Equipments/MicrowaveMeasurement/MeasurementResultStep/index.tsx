@@ -1,9 +1,9 @@
 import Typography from '@mui/material/Typography'
 import Button from '@mui/material/Button'
+import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import { useIntl } from 'src/common/react-platform-translation'
 import { MeasurementResultStepProps } from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement/MeasurementResultStep/MeasurementResultStep'
 import { MeasurementComparisonHistogram } from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement/MeasurementComparisonHistogram'
-import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 
 /**
  * MeasurementResultStep component.
@@ -53,7 +53,7 @@ export const MeasurementResultStep = ({
     return (
         <>
             {/* Header */}
-            <div className="text-center mb-16">
+            <div className="text-center mb-16" data-testid="measurement-result-step-header">
                 <Typography component="h2" fontWeight="500" fontSize="18px" marginBottom="6px">
                     {formatMessage({
                         id: 'Résultats',
