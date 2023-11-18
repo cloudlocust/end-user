@@ -122,19 +122,12 @@ function NavbarMobileContent(props: /**
     navbarContent: navbarItemType[]
 }) {
     const theme = useTheme()
-    const [selectedNavigation, setSelectedNavigation] = useState<navbarItemType[] | []>([])
-    const location = useLocation()
     const { navbarContent } = props
+    const [selectedNavigation, setSelectedNavigation] = useState<navbarItemType[] | []>([])
+    const [selectedItem, setSelectedItem] = useState<navbarItemType>()
+    const location = useLocation()
     const [panelOpen, setPanelOpen] = useState(false)
     const { formatMessage } = useIntl()
-
-    useEffect(() => {
-        navbarContent?.forEach((item) => {
-            if (needsToBeOpened(location, item)) {
-                setSelectedNavigation([item])
-            }
-        })
-    }, [location, navbarContent])
 
     /**
      * Handler for when we click parent of item (parent means the level on top of this item) in the navbar.
@@ -174,6 +167,38 @@ function NavbarMobileContent(props: /**
         setPanelOpen(false)
     }
 
+    /**
+     * Function that checks if the right navbar item is selected.
+     *
+     * @param item Navbar item.
+     * @returns Boolean if the right navbar item is selected.
+     */
+    function isItemSelected(item: navbarItemType) {
+        return selectedItem?.id === item.id
+    }
+
+    useEffect(() => {
+        navbarContent?.forEach((item) => {
+            if (needsToBeOpened(location, item)) {
+                setSelectedNavigation([item])
+            }
+        })
+    }, [location, navbarContent])
+
+    useEffect(() => {
+        // Find the navbar item that matches the current pathname
+        // eslint-disable-next-line array-callback-return
+        const activeItem = navbarContent.find((item) => {
+            if (item.url) {
+                return location.pathname.startsWith(item.url)
+            }
+        })
+        // Set the found item as selected, or reset to undefined if no match is found
+        if (activeItem) {
+            setSelectedItem(activeItem)
+        }
+    }, [location.pathname, navbarContent])
+
     return (
         <ClickAwayListener onClickAway={() => setPanelOpen(false)}>
             <>
@@ -185,7 +210,7 @@ function NavbarMobileContent(props: /**
                             overflowX: 'auto',
                             backgroundColor: theme.palette.background.default,
                         }}
-                        value={selectedNavigation}
+                        value={selectedItem}
                         onChange={(_event, item) => handleParentItemClick(item)}
                     >
                         {navbarContent.map((item) => (
@@ -193,10 +218,15 @@ function NavbarMobileContent(props: /**
                                 arrow
                                 placement="bottom-end"
                                 disableHoverListener={!item.disabled}
-                                title={formatMessage({
-                                    id: "Cette fonctionnalité n'est pas disponible sur cette version",
-                                    defaultMessage: "Cette fonctionnalité n'est pas disponible sur cette version",
-                                })}
+                                title={
+                                    item.disabled
+                                        ? formatMessage({
+                                              id: "Cette fonctionnalité n'est pas disponible sur cette version",
+                                              defaultMessage:
+                                                  "Cette fonctionnalité n'est pas disponible sur cette version",
+                                          })
+                                        : item.label ?? <></>
+                                }
                             >
                                 <div className={`${item?.disabled && 'cursor-not-allowed'}`}>
                                     <BottomNavigationAction
@@ -215,12 +245,21 @@ function NavbarMobileContent(props: /**
                                                       defaultMessage: item.label,
                                                   })
                                         }
-                                        value={item}
+                                        value={item.id}
                                         exact={item.exact}
                                         role="button"
                                         disabled={item.disabled}
                                         icon={
-                                            item.icon ? (
+                                            isItemSelected(item) ? (
+                                                <Icon
+                                                    className={clsx(
+                                                        `type-${item!.type}`,
+                                                        'fuse-bottom-navigation-item-icon',
+                                                    )}
+                                                >
+                                                    {item.selectedIcon}
+                                                </Icon>
+                                            ) : (
                                                 <Icon
                                                     className={clsx(
                                                         `type-${item!.type}`,
@@ -229,11 +268,6 @@ function NavbarMobileContent(props: /**
                                                 >
                                                     {item.icon}
                                                 </Icon>
-                                            ) : (
-                                                formatMessage({
-                                                    id: item!.label,
-                                                    defaultMessage: item!.label,
-                                                }) && <div className="font-bold text-20">{item!.label![0]}</div>
                                             )
                                         }
                                     />
