@@ -50,9 +50,7 @@ describe('useMicrowaveMeasurement', () => {
     test('should render the initial measurement status and measurement result', () => {
         const {
             renderedHook: { result },
-        } = reduxedRenderHook(() =>
-            useMicrowaveMeasurement(housingEquipmentId, measurementMode, equipmentNumber, measurementMaxDuration),
-        )
+        } = reduxedRenderHook(useMicrowaveMeasurementFunction)
 
         expect(result.current.measurementStatus).toBe(null)
         expect(result.current.measurementResult).toBe(undefined)
