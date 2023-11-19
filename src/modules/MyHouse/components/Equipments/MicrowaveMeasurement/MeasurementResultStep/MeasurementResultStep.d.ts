@@ -25,7 +25,7 @@ export interface MeasurementResultStepProps {
     /**
      * Function for navigating to the equipment details page.
      */
-    navigateToEquipmentDetailsPage: () => void
+    navigateToEquipmentDetailsPage?: () => void
     /**
      * The function that restart the measurement from the beginning.
      */

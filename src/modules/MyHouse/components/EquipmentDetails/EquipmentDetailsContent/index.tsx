@@ -24,7 +24,7 @@ export const EquipmentDetailsContent = ({ equipmentDetails }: EquipmentDetailsCo
     const { formatMessage } = useIntl()
     const max_width_600 = useMediaQuery('(max-width:600px)')
     const max_width_470 = useMediaQuery('(max-width:470px)')
-    const [selectedEquipmentNumber, setSelectedEquipmentNumber] = useState(equipmentDetails.number === 1 ? 1 : null)
+    const [selectedEquipmentNumber, setSelectedEquipmentNumber] = useState(equipmentDetails.number === 1 ? 1 : 0)
     const myEquipmentStr = 'Mon équipement'
     const { labelTitle: equipmentLabel } =
         myEquipmentOptions.find((element) => element.name === equipmentDetails.name) || {}
@@ -88,7 +88,8 @@ export const EquipmentDetailsContent = ({ equipmentDetails }: EquipmentDetailsCo
             <div className="flex-1">
                 <EquipmentMeasurementResultsList
                     measurementModes={equipmentDetails.measurementModes}
-                    housingEquipmentId={equipmentDetails.housingEquipmentId}
+                    housingEquipmentId={equipmentDetails.housingEquipmentId!}
+                    equipmentsNumber={equipmentDetails.number}
                     equipmentNumber={selectedEquipmentNumber}
                 />
             </div>

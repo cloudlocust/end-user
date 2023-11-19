@@ -23,13 +23,25 @@ export interface MicrowaveMeasurementProps {
      */
     showingOldResult?: boolean
     /**
+     * Default value for the microwave number.
+     */
+    defaultMicrowaveNumber?: number
+    /**
+     * Default value for the measurement mode.
+     */
+    defaultMeasurementMode?: string
+    /**
+     * Default value for the measurement result.
+     */
+    defaultMeasurementResult?: number | null
+    /**
      * Modal closing handler.
      */
     onCloseMeasurementModal: () => void
     /**
      * Function for navigating to the equipment details page.
      */
-    navigateToEquipmentDetailsPage: () => void
+    navigateToEquipmentDetailsPage?: () => void
 }
 
 /**

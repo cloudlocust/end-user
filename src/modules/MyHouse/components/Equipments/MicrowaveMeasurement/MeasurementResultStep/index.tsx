@@ -43,11 +43,11 @@ export const MeasurementResultStep = ({
     const microwaveAverageConsumption = Math.round((microwaveAverageConsumptionPerYear * 1000) / (365 * (5 / 60)))
 
     /**
-     * Function handler for clicking on the button Suivant.
+     * Function handler for clicking on the button Terminer.
      */
-    const handleNextButtonClick = () => {
+    const handleEndButtonClick = () => {
         closeMeasurementModal()
-        navigateToEquipmentDetailsPage()
+        if (navigateToEquipmentDetailsPage) navigateToEquipmentDetailsPage()
     }
 
     return (
@@ -104,7 +104,7 @@ export const MeasurementResultStep = ({
                     <Button
                         variant="contained"
                         sx={{ padding: '10px auto', textAlign: 'center', width: '60%', minWidth: '160px' }}
-                        onClick={handleNextButtonClick}
+                        onClick={handleEndButtonClick}
                     >
                         {formatMessage({
                             id: 'Terminer',

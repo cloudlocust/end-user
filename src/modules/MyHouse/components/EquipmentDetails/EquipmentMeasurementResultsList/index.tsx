@@ -14,20 +14,28 @@ import {
     MeasurementResultProps,
 } from 'src/modules/MyHouse/components/EquipmentDetails/EquipmentMeasurementResultsList/EquipmentMeasurementResultsList'
 import { useEquipmentMeasurementResults } from 'src/modules/MyHouse/components/EquipmentDetails/EquipmentMeasurementResultsList/EquipmentMeasurementResultsHook'
+import { MicrowaveMeasurement } from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement'
+import { useModal } from 'src/hooks/useModal'
+import { useCallback, useEffect, useState } from 'react'
 
 /**
  * MeasurementResult compoonent (used only in this component).
  *
  * @param root0 N/A.
+ * @param root0.handleClickingOnMeasurementResult Function that open the measurement modal.
  * @param root0.result The measurement result.
  * @param root0.isMobileView We are in the mobile view.
  * @returns MeasurementResult JSX.
  */
-const MeasurementResult = ({ result, isMobileView }: MeasurementResultProps) =>
+export const MeasurementResult = ({
+    handleClickingOnMeasurementResult,
+    result,
+    isMobileView,
+}: MeasurementResultProps) =>
     result?.isLoading ? (
         <CircularProgress size={isMobileView ? 14 : 16} />
     ) : result?.value ? (
-        <Button variant="text" sx={{ fontSize: isMobileView ? 14 : 16 }}>
+        <Button onClick={handleClickingOnMeasurementResult} variant="text" sx={{ fontSize: isMobileView ? 14 : 16 }}>
             {result.value} W
         </Button>
     ) : (
@@ -42,17 +50,47 @@ const MeasurementResult = ({ result, isMobileView }: MeasurementResultProps) =>
  * @param root0 N/A.
  * @param root0.measurementModes The list of measurement modes for the equipment.
  * @param root0.housingEquipmentId The global equipment id.
+ * @param root0.equipmentsNumber The number of equipments.
  * @param root0.equipmentNumber The equipment number.
  * @returns EquipmentMeasurementResultsList JSX.
  */
 export const EquipmentMeasurementResultsList = ({
     measurementModes,
     housingEquipmentId,
+    equipmentsNumber,
     equipmentNumber,
 }: EquipmentMeasurementResultsListProps) => {
     const { formatMessage } = useIntl()
     const max_width_600 = useMediaQuery('(max-width:600px)')
-    const { measurementResults } = useEquipmentMeasurementResults(equipmentNumber, housingEquipmentId, measurementModes)
+    const { measurementResults, updateEquipmentMeasurementResults } = useEquipmentMeasurementResults()
+
+    const {
+        isOpen: isMeasurementModalOpen,
+        openModal: onOpenMeasurementModal,
+        closeModal: onCloseMeasurementModal,
+    } = useModal()
+    const [measurementMode, setMeasurementMode] = useState('')
+    const [measurementResult, setMeasurementResult] = useState<number | null>(null)
+
+    const handleClickingOnMeasurementResult = useCallback(
+        async (measurementMode: string, result: number | null) => {
+            await setMeasurementMode(measurementMode)
+            await setMeasurementResult(result)
+            onOpenMeasurementModal()
+        },
+        [onOpenMeasurementModal],
+    )
+
+    useEffect(() => {
+        if (!isMeasurementModalOpen)
+            updateEquipmentMeasurementResults(equipmentNumber, housingEquipmentId, measurementModes)
+    }, [
+        equipmentNumber,
+        housingEquipmentId,
+        isMeasurementModalOpen,
+        measurementModes,
+        updateEquipmentMeasurementResults,
+    ])
 
     return measurementModes && measurementModes.length > 0 ? (
         <>
@@ -90,6 +128,12 @@ export const EquipmentMeasurementResultsList = ({
                                     height={max_width_600 ? 60 : 73}
                                 >
                                     <MeasurementResult
+                                        handleClickingOnMeasurementResult={() => {
+                                            handleClickingOnMeasurementResult(
+                                                measurementMode,
+                                                measurementResults[measurementMode].value || null,
+                                            )
+                                        }}
                                         result={measurementResults[measurementMode]}
                                         isMobileView={max_width_600}
                                     />
@@ -99,7 +143,18 @@ export const EquipmentMeasurementResultsList = ({
                     </TableBody>
                 </Table>
             </TableContainer>
+
+            <MicrowaveMeasurement
+                housingEquipmentId={housingEquipmentId!}
+                equipmentsNumber={equipmentsNumber!}
+                measurementModes={measurementModes}
+                isMeasurementModalOpen={isMeasurementModalOpen}
+                onCloseMeasurementModal={onCloseMeasurementModal}
+                defaultMicrowaveNumber={equipmentNumber}
+                defaultMeasurementMode={measurementMode}
+                defaultMeasurementResult={measurementResult}
+                showingOldResult
+            />
         </>
     ) : null
 }
-// 2h 30m

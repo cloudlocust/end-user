@@ -9,11 +9,15 @@ export interface EquipmentMeasurementResultsListProps {
     /**
      * The global equipment id.
      */
-    housingEquipmentId?: number
+    housingEquipmentId: number
+    /**
+     * The number of equipments.
+     */
+    equipmentsNumber?: number
     /**
      * The equipment number.
      */
-    equipmentNumber: number | null
+    equipmentNumber: number
 }
 
 /**
@@ -42,6 +46,10 @@ export interface measurementResultsStateType {
  * MeasurementResultProps.
  */
 export interface MeasurementResultProps {
+    /**
+     * Function that open the measurement modal.
+     */
+    handleClickingOnMeasurementResult: () => void
     /**
      * The measurement result.
      */
