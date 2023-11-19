@@ -1,19 +1,40 @@
-import { useCallback, useEffect, useState } from 'react'
 import { useIntl } from 'src/common/react-platform-translation'
 import Typography from '@mui/material/Typography'
 import Paper from '@mui/material/Paper'
-import LoadingButton from '@mui/lab/LoadingButton'
+import Button from '@mui/material/Button'
+import CircularProgress from '@mui/material/CircularProgress'
 import TableContainer from '@mui/material/TableContainer'
 import Table from '@mui/material/Table'
 import TableBody from '@mui/material/TableBody'
 import TableCell from '@mui/material/TableCell'
 import TableRow from '@mui/material/TableRow'
 import useMediaQuery from '@mui/material/useMediaQuery'
-import { getEquipmentMeasurementResult } from 'src/modules/MyHouse/components/EquipmentDetails/EquipmentMeasurementResultsList/utils'
 import {
     EquipmentMeasurementResultsListProps,
-    measurementResultsStateType,
+    MeasurementResultProps,
 } from 'src/modules/MyHouse/components/EquipmentDetails/EquipmentMeasurementResultsList/EquipmentMeasurementResultsList'
+import { useEquipmentMeasurementResults } from 'src/modules/MyHouse/components/EquipmentDetails/EquipmentMeasurementResultsList/EquipmentMeasurementResultsHook'
+
+/**
+ * MeasurementResult compoonent (used only in this component).
+ *
+ * @param root0 N/A.
+ * @param root0.result The measurement result.
+ * @param root0.isMobileView We are in the mobile view.
+ * @returns MeasurementResult JSX.
+ */
+const MeasurementResult = ({ result, isMobileView }: MeasurementResultProps) =>
+    result?.isLoading ? (
+        <CircularProgress size={isMobileView ? 14 : 16} />
+    ) : result?.value ? (
+        <Button variant="text" sx={{ fontSize: isMobileView ? 14 : 16 }}>
+            {result.value} W
+        </Button>
+    ) : (
+        <Typography color="primary" fontWeight={500} fontSize={isMobileView ? 14 : 16}>
+            ?
+        </Typography>
+    )
 
 /**
  * EquipmentMeasurementResultsList compoonent.
@@ -31,29 +52,7 @@ export const EquipmentMeasurementResultsList = ({
 }: EquipmentMeasurementResultsListProps) => {
     const { formatMessage } = useIntl()
     const max_width_600 = useMediaQuery('(max-width:600px)')
-    const [measurementResults, setMeasurementResults] = useState<measurementResultsStateType>({})
-
-    /**
-     * Function to update the measurement results value for the equipment.
-     */
-    const updateEquipmentMeasurementResults = useCallback(async () => {
-        await setMeasurementResults({})
-        measurementModes?.forEach(async (measurementMode) => {
-            const resultValue = await getEquipmentMeasurementResult(
-                measurementMode,
-                housingEquipmentId!,
-                equipmentNumber,
-            )
-            setMeasurementResults((currentResults) => ({
-                ...currentResults,
-                [measurementMode]: resultValue,
-            }))
-        })
-    }, [equipmentNumber, housingEquipmentId, measurementModes])
-
-    useEffect(() => {
-        updateEquipmentMeasurementResults()
-    }, [updateEquipmentMeasurementResults])
+    const { measurementResults } = useEquipmentMeasurementResults(equipmentNumber, housingEquipmentId, measurementModes)
 
     return measurementModes && measurementModes.length > 0 ? (
         <>
@@ -85,18 +84,15 @@ export const EquipmentMeasurementResultsList = ({
                                         {measurementMode}&nbsp;:
                                     </Typography>
                                 </TableCell>
-                                <TableCell align="left">
-                                    <LoadingButton
-                                        disabled={!measurementResults[measurementMode]}
-                                        sx={{ fontSize: max_width_600 ? 14 : 16 }}
-                                        variant="text"
-                                        loading={measurementResults[measurementMode] === undefined}
-                                        data-testid="loading-button"
-                                    >
-                                        {measurementResults[measurementMode]
-                                            ? `${measurementResults[measurementMode]} W`
-                                            : '?'}
-                                    </LoadingButton>
+                                <TableCell
+                                    align="center"
+                                    data-testid="measurement-result"
+                                    height={max_width_600 ? 60 : 73}
+                                >
+                                    <MeasurementResult
+                                        result={measurementResults[measurementMode]}
+                                        isMobileView={max_width_600}
+                                    />
                                 </TableCell>
                             </TableRow>
                         ))}
@@ -106,3 +102,4 @@ export const EquipmentMeasurementResultsList = ({
         </>
     ) : null
 }
+// 2h 30m

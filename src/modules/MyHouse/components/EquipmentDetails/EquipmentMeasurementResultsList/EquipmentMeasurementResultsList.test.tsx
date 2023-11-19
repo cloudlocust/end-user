@@ -5,7 +5,7 @@ const mockedMeasurementModes = ['mode1', 'mode2']
 const mockedHousingEquipmentId = 1
 const mockedEquipmentNumber = 2
 const tableContainerTestId = 'table-container'
-const loadingButtonTestId = 'loading-button'
+const loadingButtonTestId = 'measurement-result'
 
 describe('EquipmentMeasurementResultsList', () => {
     test('renders correctly with measurement modes', async () => {
