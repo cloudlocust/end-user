@@ -2,10 +2,7 @@ import { useCallback, useState } from 'react'
 import { axios } from 'src/common/react-platform-components'
 import { HOUSING_API } from 'src/modules/MyHouse/components/HousingList/HousingsHooks'
 import { MeasurementResultApiResponse } from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement/MicrowaveMeasurement'
-import {
-    measurementParametersType,
-    measurementResultsStateType,
-} from 'src/modules/MyHouse/components/EquipmentDetails/EquipmentMeasurementResultsList/EquipmentMeasurementResultsList'
+import { measurementResultsStateType } from 'src/modules/MyHouse/components/EquipmentDetails/EquipmentMeasurementResultsList/EquipmentMeasurementResultsList'
 
 /**
  * Equipment measurement results hook.
@@ -13,7 +10,6 @@ import {
  * @returns The tests result state and the function that update it.
  */
 export function useEquipmentMeasurementResults() {
-    const [measurementParameters, setMeasurementParameters] = useState<measurementParametersType>()
     const [measurementResults, setMeasurementResults] = useState<measurementResultsStateType>({})
     const [isLoadingMeasurements, setIsLoadingMeasurements] = useState(false)
 
@@ -42,41 +38,24 @@ export function useEquipmentMeasurementResults() {
      * Function to update the measurement result values for the equipment.
      */
     const updateEquipmentMeasurementResults = useCallback(
-        async (equipmentNumber?: number, housingEquipmentId?: number, measurementModes?: string[]) => {
+        async (equipmentNumber: number, housingEquipmentId: number, measurementModes: string[]) => {
             setIsLoadingMeasurements(true)
             setMeasurementResults({})
 
-            if (equipmentNumber !== undefined && housingEquipmentId !== undefined && measurementModes !== undefined) {
-                setMeasurementParameters({
-                    equipmentNumber,
-                    housingEquipmentId,
-                    measurementModes,
-                })
+            let measurementResultsObj: measurementResultsStateType = {}
+            for (const measurementMode of measurementModes) {
+                const resultValue = await getEquipmentMeasurementResult(
+                    equipmentNumber!,
+                    housingEquipmentId!,
+                    measurementMode,
+                )
+                measurementResultsObj[measurementMode] = resultValue
             }
-
-            if (measurementParameters?.measurementModes) {
-                for (const measurementMode of measurementParameters?.measurementModes) {
-                    const resultValue = await getEquipmentMeasurementResult(
-                        measurementParameters?.equipmentNumber!,
-                        measurementParameters?.housingEquipmentId!,
-                        measurementMode,
-                    )
-
-                    setMeasurementResults((currentResults) => ({
-                        ...currentResults,
-                        [measurementMode]: resultValue,
-                    }))
-                }
-            }
+            setMeasurementResults(measurementResultsObj)
 
             setIsLoadingMeasurements(false)
         },
-        [
-            getEquipmentMeasurementResult,
-            measurementParameters?.equipmentNumber,
-            measurementParameters?.housingEquipmentId,
-            measurementParameters?.measurementModes,
-        ],
+        [getEquipmentMeasurementResult],
     )
 
     return {

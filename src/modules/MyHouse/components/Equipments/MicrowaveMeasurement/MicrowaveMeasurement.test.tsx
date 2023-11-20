@@ -32,6 +32,12 @@ describe('MicrowaveMeasurement tests', () => {
         expect(screen.getByTestId('measurement-result-step-header')).toBeInTheDocument()
     })
 
+    test('renders correctly when we start the mesurement from EquipmentsDetails Page', async () => {
+        reduxedRender(<MicrowaveMeasurement {...props} startMeasurementFromEquipmentsDetailsPage />)
+
+        expect(screen.getByTestId('measurement-configuration-step-header')).toBeInTheDocument()
+    })
+
     test('close the MicrowaveMeasurement modal on clicking on the close button', async () => {
         reduxedRender(<MicrowaveMeasurement {...props} />)
 

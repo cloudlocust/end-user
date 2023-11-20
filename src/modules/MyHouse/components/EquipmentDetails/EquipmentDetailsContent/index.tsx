@@ -40,8 +40,19 @@ export const EquipmentDetailsContent = ({ equipmentDetails }: EquipmentDetailsCo
         myEquipmentOptions.find((element) => element.name === equipmentDetails.name) || {}
 
     useEffect(() => {
-        if (!isMeasurementModalOpen) updateEquipmentMeasurementResults()
-    }, [isMeasurementModalOpen, updateEquipmentMeasurementResults])
+        if (!isMeasurementModalOpen)
+            updateEquipmentMeasurementResults(
+                equipmentDetails.number!,
+                equipmentDetails.housingEquipmentId!,
+                equipmentDetails.measurementModes!,
+            )
+    }, [
+        equipmentDetails.housingEquipmentId,
+        equipmentDetails.measurementModes,
+        equipmentDetails.number,
+        isMeasurementModalOpen,
+        updateEquipmentMeasurementResults,
+    ])
 
     /**
      * The select onChange handler function.

@@ -1,5 +1,6 @@
 import { reduxedRender } from 'src/common/react-platform-components/test'
-import { screen } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
+import { screen, waitFor } from '@testing-library/react'
 import { EquipmentDetailsContent } from 'src/modules/MyHouse/components/EquipmentDetails/EquipmentDetailsContent'
 import { HousingEquipmentType } from 'src/modules/MyHouse/components/Equipments/EquipmentsList/equipmentsList'
 
@@ -32,5 +33,14 @@ describe('EquipmentDetailsContent component', () => {
 
         const select = screen.getByTestId(equipmentSelectTestId)
         expect(select.children).toHaveLength(4)
+    })
+
+    test("show the measurement popup whwn clicking on the button `Mesurer l'appareil`", async () => {
+        reduxedRender(<EquipmentDetailsContent equipmentDetails={mockedEquipmentDetails} />)
+
+        userEvent.click(screen.getByText("Mesurer l'appareil"))
+        await waitFor(() => {
+            expect(screen.getByRole('presentation')).toBeInTheDocument()
+        })
     })
 })

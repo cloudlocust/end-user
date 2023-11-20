@@ -7,12 +7,6 @@ const measurementModes = ['mode A', 'mode B', 'mode C']
 const housingEquipmentId = 35
 const equipmentNumber = 1
 
-// eslint-disable-next-line jsdoc/require-returns
-/**
- * Function that call the useEquipmentMeasurementResults function with default parameters.
- */
-const useEquipmentMeasurementResultsFunction = () => useEquipmentMeasurementResults()
-
 describe('useEquipmentMeasurementResults hook', () => {
     beforeEach(async () => {
         const { store } = require('src/redux')
@@ -24,44 +18,40 @@ describe('useEquipmentMeasurementResults hook', () => {
         await store.dispatch.userModel.setAuthenticationToken(TEST_MEASUREMENT_RESULT_EXIST)
         const {
             renderedHook: { result, waitForValueToChange },
-        } = reduxedRenderHook(useEquipmentMeasurementResultsFunction)
+        } = reduxedRenderHook(() => useEquipmentMeasurementResults())
         act(() =>
             result.current.updateEquipmentMeasurementResults(equipmentNumber, housingEquipmentId, measurementModes),
         )
-        for (let i = 0; i < measurementModes.length; i++) {
-            await waitForValueToChange(
-                () => {
-                    return result.current.measurementResults
-                },
-                { timeout: 5000 },
-            )
-        }
+        await waitForValueToChange(
+            () => {
+                return result.current.measurementResults
+            },
+            { timeout: 5000 },
+        )
         expect(result.current.measurementResults).toStrictEqual({
-            [measurementModes[0]]: { isLoading: false, value: TEST_RESULT_VALUE },
-            [measurementModes[1]]: { isLoading: false, value: TEST_RESULT_VALUE },
-            [measurementModes[2]]: { isLoading: false, value: TEST_RESULT_VALUE },
+            [measurementModes[0]]: TEST_RESULT_VALUE,
+            [measurementModes[1]]: TEST_RESULT_VALUE,
+            [measurementModes[2]]: TEST_RESULT_VALUE,
         })
     })
 
     test('when the measurement result does not exist', async () => {
         const {
             renderedHook: { result, waitForValueToChange },
-        } = reduxedRenderHook(useEquipmentMeasurementResultsFunction)
+        } = reduxedRenderHook(() => useEquipmentMeasurementResults())
         act(() =>
             result.current.updateEquipmentMeasurementResults(equipmentNumber, housingEquipmentId, measurementModes),
         )
-        for (let i = 0; i < measurementModes.length; i++) {
-            await waitForValueToChange(
-                () => {
-                    return result.current.measurementResults
-                },
-                { timeout: 5000 },
-            )
-        }
+        await waitForValueToChange(
+            () => {
+                return result.current.measurementResults
+            },
+            { timeout: 5000 },
+        )
         expect(result.current.measurementResults).toStrictEqual({
-            [measurementModes[0]]: { isLoading: false, value: null },
-            [measurementModes[1]]: { isLoading: false, value: null },
-            [measurementModes[2]]: { isLoading: false, value: null },
+            [measurementModes[0]]: null,
+            [measurementModes[1]]: null,
+            [measurementModes[2]]: null,
         })
     })
 
@@ -70,22 +60,20 @@ describe('useEquipmentMeasurementResults hook', () => {
         await store.dispatch.userModel.setAuthenticationToken(TEST_MEASUREMENT_ERROR)
         const {
             renderedHook: { result, waitForValueToChange },
-        } = reduxedRenderHook(useEquipmentMeasurementResultsFunction)
+        } = reduxedRenderHook(() => useEquipmentMeasurementResults())
         act(() =>
             result.current.updateEquipmentMeasurementResults(equipmentNumber, housingEquipmentId, measurementModes),
         )
-        for (let i = 0; i < measurementModes.length; i++) {
-            await waitForValueToChange(
-                () => {
-                    return result.current.measurementResults
-                },
-                { timeout: 5000 },
-            )
-        }
+        await waitForValueToChange(
+            () => {
+                return result.current.measurementResults
+            },
+            { timeout: 5000 },
+        )
         expect(result.current.measurementResults).toStrictEqual({
-            [measurementModes[0]]: { isLoading: false, value: null },
-            [measurementModes[1]]: { isLoading: false, value: null },
-            [measurementModes[2]]: { isLoading: false, value: null },
+            [measurementModes[0]]: null,
+            [measurementModes[1]]: null,
+            [measurementModes[2]]: null,
         })
     })
 })

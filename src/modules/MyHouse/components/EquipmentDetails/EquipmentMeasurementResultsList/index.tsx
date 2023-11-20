@@ -88,7 +88,7 @@ export const EquipmentMeasurementResultsList = ({
 
     useEffect(() => {
         if (!isMeasurementModalOpen)
-            updateEquipmentMeasurementResults(equipmentNumber, housingEquipmentId, measurementModes)
+            updateEquipmentMeasurementResults(equipmentNumber, housingEquipmentId, measurementModes!)
     }, [
         equipmentNumber,
         housingEquipmentId,

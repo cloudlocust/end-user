@@ -32,7 +32,7 @@ export interface EquipmentMeasurementResultsListProps {
     updateEquipmentMeasurementResults: (
         equipmentNumber: number,
         housingEquipmentId: number,
-        measurementModes?: string[],
+        measurementModes: string[],
     ) => Promise<void>
 }
 
@@ -63,22 +63,4 @@ export interface MeasurementResultProps {
      * We are in the mobile view.
      */
     isMobileView?: boolean
-}
-
-/**
- * Measurement parameters type.
- */
-export interface measurementParametersType {
-    /**
-     * The equipment number.
-     */
-    equipmentNumber: number
-    /**
-     * The global equipment id.
-     */
-    housingEquipmentId: number
-    /**
-     * The list of measurement modes for the equipment.
-     */
-    measurementModes: string[]
 }
