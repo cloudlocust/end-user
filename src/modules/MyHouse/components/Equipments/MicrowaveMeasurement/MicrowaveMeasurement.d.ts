@@ -23,6 +23,10 @@ export interface MicrowaveMeasurementProps {
      */
     showingOldResult?: boolean
     /**
+     * Boolean indicating whether we start the measurement from the EquipmentsDetails Page.
+     */
+    startMeasurementFromEquipmentsDetailsPage?: boolean
+    /**
      * Default value for the microwave number.
      */
     defaultMicrowaveNumber?: number

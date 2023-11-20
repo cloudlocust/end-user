@@ -218,7 +218,7 @@ export function useMicrowaveMeasurement(
                 updateResult()
                 break
         }
-    }, [measurementStatus, measurementMaxDuration, updateResult, updateStatus, getTimeFromStatusLastUpdate])
+    }, [getTimeFromStatusLastUpdate, measurementMaxDuration, measurementStatus?.status, updateResult, updateStatus])
 
     return {
         measurementStatus,

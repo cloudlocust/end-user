@@ -13,7 +13,6 @@ import {
     EquipmentMeasurementResultsListProps,
     MeasurementResultProps,
 } from 'src/modules/MyHouse/components/EquipmentDetails/EquipmentMeasurementResultsList/EquipmentMeasurementResultsList'
-import { useEquipmentMeasurementResults } from 'src/modules/MyHouse/components/EquipmentDetails/EquipmentMeasurementResultsList/EquipmentMeasurementResultsHook'
 import { MicrowaveMeasurement } from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement'
 import { useModal } from 'src/hooks/useModal'
 import { useCallback, useEffect, useState } from 'react'
@@ -24,19 +23,21 @@ import { useCallback, useEffect, useState } from 'react'
  * @param root0 N/A.
  * @param root0.handleClickingOnMeasurementResult Function that open the measurement modal.
  * @param root0.result The measurement result.
+ * @param root0.isLoading The measurement result is loading.
  * @param root0.isMobileView We are in the mobile view.
  * @returns MeasurementResult JSX.
  */
 export const MeasurementResult = ({
     handleClickingOnMeasurementResult,
     result,
+    isLoading,
     isMobileView,
 }: MeasurementResultProps) =>
-    result?.isLoading ? (
+    isLoading ? (
         <CircularProgress size={isMobileView ? 14 : 16} />
-    ) : result?.value ? (
+    ) : result || result === 0 ? (
         <Button onClick={handleClickingOnMeasurementResult} variant="text" sx={{ fontSize: isMobileView ? 14 : 16 }}>
-            {result.value} W
+            {result} W
         </Button>
     ) : (
         <Typography color="primary" fontWeight={500} fontSize={isMobileView ? 14 : 16}>
@@ -52,6 +53,9 @@ export const MeasurementResult = ({
  * @param root0.housingEquipmentId The global equipment id.
  * @param root0.equipmentsNumber The number of equipments.
  * @param root0.equipmentNumber The equipment number.
+ * @param root0.measurementResults The measurement result values.
+ * @param root0.isLoadingMeasurements The measurement result values is loading.
+ * @param root0.updateEquipmentMeasurementResults Function to update the measurement result values.
  * @returns EquipmentMeasurementResultsList JSX.
  */
 export const EquipmentMeasurementResultsList = ({
@@ -59,11 +63,12 @@ export const EquipmentMeasurementResultsList = ({
     housingEquipmentId,
     equipmentsNumber,
     equipmentNumber,
+    measurementResults,
+    isLoadingMeasurements,
+    updateEquipmentMeasurementResults,
 }: EquipmentMeasurementResultsListProps) => {
     const { formatMessage } = useIntl()
     const max_width_600 = useMediaQuery('(max-width:600px)')
-    const { measurementResults, updateEquipmentMeasurementResults } = useEquipmentMeasurementResults()
-
     const {
         isOpen: isMeasurementModalOpen,
         openModal: onOpenMeasurementModal,
@@ -126,15 +131,17 @@ export const EquipmentMeasurementResultsList = ({
                                     align="center"
                                     data-testid="measurement-result"
                                     height={max_width_600 ? 60 : 73}
+                                    width="26%"
                                 >
                                     <MeasurementResult
                                         handleClickingOnMeasurementResult={() => {
                                             handleClickingOnMeasurementResult(
                                                 measurementMode,
-                                                measurementResults[measurementMode].value || null,
+                                                measurementResults[measurementMode] || null,
                                             )
                                         }}
                                         result={measurementResults[measurementMode]}
+                                        isLoading={isLoadingMeasurements}
                                         isMobileView={max_width_600}
                                     />
                                 </TableCell>

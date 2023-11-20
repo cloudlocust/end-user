@@ -2,7 +2,10 @@ import { useCallback, useState } from 'react'
 import { axios } from 'src/common/react-platform-components'
 import { HOUSING_API } from 'src/modules/MyHouse/components/HousingList/HousingsHooks'
 import { MeasurementResultApiResponse } from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement/MicrowaveMeasurement'
-import { measurementResultsStateType } from 'src/modules/MyHouse/components/EquipmentDetails/EquipmentMeasurementResultsList/EquipmentMeasurementResultsList'
+import {
+    measurementParametersType,
+    measurementResultsStateType,
+} from 'src/modules/MyHouse/components/EquipmentDetails/EquipmentMeasurementResultsList/EquipmentMeasurementResultsList'
 
 /**
  * Equipment measurement results hook.
@@ -10,7 +13,9 @@ import { measurementResultsStateType } from 'src/modules/MyHouse/components/Equi
  * @returns The tests result state and the function that update it.
  */
 export function useEquipmentMeasurementResults() {
+    const [measurementParameters, setMeasurementParameters] = useState<measurementParametersType>()
     const [measurementResults, setMeasurementResults] = useState<measurementResultsStateType>({})
+    const [isLoadingMeasurements, setIsLoadingMeasurements] = useState(false)
 
     /**
      * Function to get a measurement result for the equipment in a specific mode.
@@ -37,32 +42,46 @@ export function useEquipmentMeasurementResults() {
      * Function to update the measurement result values for the equipment.
      */
     const updateEquipmentMeasurementResults = useCallback(
-        async (equipmentNumber: number, housingEquipmentId: number, measurementModes?: string[]) => {
-            // Renitialize the measurementResults state
-            let measurementResultsInit: measurementResultsStateType = {}
-            measurementModes?.forEach((measurementMode) => {
-                measurementResultsInit[measurementMode] = { isLoading: true }
-            })
-            await setMeasurementResults(measurementResultsInit!)
+        async (equipmentNumber?: number, housingEquipmentId?: number, measurementModes?: string[]) => {
+            setIsLoadingMeasurements(true)
+            setMeasurementResults({})
 
-            // Update the measurementResults state
-            measurementModes?.forEach(async (measurementMode) => {
-                const resultValue = await getEquipmentMeasurementResult(
+            if (equipmentNumber !== undefined && housingEquipmentId !== undefined && measurementModes !== undefined) {
+                setMeasurementParameters({
                     equipmentNumber,
                     housingEquipmentId,
-                    measurementMode,
-                )
-                setMeasurementResults((currentResults) => ({
-                    ...currentResults,
-                    [measurementMode]: { value: resultValue, isLoading: false },
-                }))
-            })
+                    measurementModes,
+                })
+            }
+
+            if (measurementParameters?.measurementModes) {
+                for (const measurementMode of measurementParameters?.measurementModes) {
+                    const resultValue = await getEquipmentMeasurementResult(
+                        measurementParameters?.equipmentNumber!,
+                        measurementParameters?.housingEquipmentId!,
+                        measurementMode,
+                    )
+
+                    setMeasurementResults((currentResults) => ({
+                        ...currentResults,
+                        [measurementMode]: resultValue,
+                    }))
+                }
+            }
+
+            setIsLoadingMeasurements(false)
         },
-        [getEquipmentMeasurementResult],
+        [
+            getEquipmentMeasurementResult,
+            measurementParameters?.equipmentNumber,
+            measurementParameters?.housingEquipmentId,
+            measurementParameters?.measurementModes,
+        ],
     )
 
     return {
         measurementResults,
+        isLoadingMeasurements,
         updateEquipmentMeasurementResults,
     }
 }

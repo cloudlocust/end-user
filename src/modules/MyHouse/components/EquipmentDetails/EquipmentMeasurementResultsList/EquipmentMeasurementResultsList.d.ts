@@ -18,28 +18,29 @@ export interface EquipmentMeasurementResultsListProps {
      * The equipment number.
      */
     equipmentNumber: number
-}
-
-/**
- * Type for the result object.
- */
-// eslint-disable-next-line jsdoc/require-jsdoc
-export type resultType = {
     /**
-     * The result value.
+     * The measurement result values.
      */
-    value?: number | null
+    measurementResults: measurementResultsStateType
     /**
-     * Boolean indicate that the value is not yet recieved.
+     * The measurement result values is loading.
      */
-    isLoading: boolean
+    isLoadingMeasurements: boolean
+    /**
+     * Function to update the measurement result values.
+     */
+    updateEquipmentMeasurementResults: (
+        equipmentNumber: number,
+        housingEquipmentId: number,
+        measurementModes?: string[],
+    ) => Promise<void>
 }
 
 /**
  * The measurement results state type.
  */
 export interface measurementResultsStateType {
-    [key: string]: resultType
+    [key: string]: number | null
 }
 
 /**
@@ -53,9 +54,31 @@ export interface MeasurementResultProps {
     /**
      * The measurement result.
      */
-    result?: resultType
+    result?: number | null
+    /**
+     * The measurement result is loading.
+     */
+    isLoading?: boolean
     /**
      * We are in the mobile view.
      */
     isMobileView?: boolean
+}
+
+/**
+ * Measurement parameters type.
+ */
+export interface measurementParametersType {
+    /**
+     * The equipment number.
+     */
+    equipmentNumber: number
+    /**
+     * The global equipment id.
+     */
+    housingEquipmentId: number
+    /**
+     * The list of measurement modes for the equipment.
+     */
+    measurementModes: string[]
 }
