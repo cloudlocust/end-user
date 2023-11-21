@@ -42,15 +42,15 @@ export const EquipmentDetailsContent = ({ equipmentDetails }: EquipmentDetailsCo
     useEffect(() => {
         if (!isMeasurementModalOpen)
             updateEquipmentMeasurementResults(
-                equipmentDetails.number!,
+                selectedEquipmentNumber,
                 equipmentDetails.housingEquipmentId!,
                 equipmentDetails.measurementModes!,
             )
     }, [
         equipmentDetails.housingEquipmentId,
         equipmentDetails.measurementModes,
-        equipmentDetails.number,
         isMeasurementModalOpen,
+        selectedEquipmentNumber,
         updateEquipmentMeasurementResults,
     ])
 

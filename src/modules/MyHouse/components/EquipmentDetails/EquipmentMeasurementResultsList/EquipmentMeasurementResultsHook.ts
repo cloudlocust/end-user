@@ -11,7 +11,7 @@ import { measurementResultsStateType } from 'src/modules/MyHouse/components/Equi
  */
 export function useEquipmentMeasurementResults() {
     const [measurementResults, setMeasurementResults] = useState<measurementResultsStateType>({})
-    const [isLoadingMeasurements, setIsLoadingMeasurements] = useState(false)
+    const [isLoadingMeasurements, setIsLoadingMeasurements] = useState(true)
 
     /**
      * Function to get a measurement result for the equipment in a specific mode.
