@@ -1,6 +1,5 @@
 import { targetTimestampsValuesFormat } from 'src/modules/Metrics/Metrics'
 import { periodType } from 'src/modules/MyConsumption/myConsumptionTypes.d'
-import { ScopesTypesEnum } from 'src/modules/MyHouse/utils/MyHouseCommonTypes.d'
 
 /**
  * Enum Indicating the different yAxisIndex, so that each yAxis has its own value formatting.
@@ -67,8 +66,6 @@ export interface ConsumptionChartContainerProps {
     enedisSgeConsent?: IEnedisSgeConsent
     // eslint-disable-next-line jsdoc/require-jsdoc
     isSolarProductionConsentOff: boolean
-    // eslint-disable-next-line jsdoc/require-jsdoc
-    currentHousingScopes: ScopesTypesEnum[]
 }
 
 /**
