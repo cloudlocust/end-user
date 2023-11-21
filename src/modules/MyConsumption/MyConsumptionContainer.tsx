@@ -145,7 +145,6 @@ export const MyConsumptionContainer = () => {
                             isSolarProductionConsentOff={isSolarProductionConsentOff}
                             enedisSgeConsent={enedisSgeConsent}
                             metricsInterval={metricsInterval}
-                            currentHousingScopes={currentHousingScopes}
                         />
                     </>
                 )}
