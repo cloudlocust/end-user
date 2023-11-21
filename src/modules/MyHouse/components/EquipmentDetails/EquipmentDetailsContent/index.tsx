@@ -63,6 +63,9 @@ export const EquipmentDetailsContent = ({ equipmentDetails }: EquipmentDetailsCo
         setSelectedEquipmentNumber(event.target.value)
     }
 
+    const isMeasurementButtonShown =
+        equipmentDetails.number && equipmentDetails.number > 0 && equipmentDetails.name === 'microwave'
+
     return (
         <>
             <div className="flex flex-col h-full p-16">
@@ -136,6 +139,7 @@ export const EquipmentDetailsContent = ({ equipmentDetails }: EquipmentDetailsCo
                         size="large"
                         className={max_width_600 ? 'flex-1' : ''}
                         onClick={onOpenMeasurementModal}
+                        disabled={!isMeasurementButtonShown}
                     >
                         {formatMessage({
                             id: "Mesurer l'appareil",
