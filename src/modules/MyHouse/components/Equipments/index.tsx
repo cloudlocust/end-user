@@ -9,9 +9,8 @@ import { EquipmentsQuickAddPopup } from 'src/modules/MyHouse/components/Equipmen
 import { useEffect, useMemo, useState } from 'react'
 import { EmptyEquipmentsList } from 'src/modules/MyHouse/components/Equipments/EmptyEquipmentsList'
 import { AddEquipmentPopup } from 'src/modules/MyHouse/components/Equipments/AddEquipmentPopup'
-import { mappingEquipmentNameToType } from 'src/modules/MyHouse/utils/MyHouseVariables'
+import { mappingEquipmentNameToType, myEquipmentOptions } from 'src/modules/MyHouse/utils/MyHouseVariables'
 import { equipmentNameType } from 'src/modules/MyHouse/components/Installation/InstallationType'
-import { orderBy } from 'lodash'
 import { getAvailableEquipments } from 'src/modules/MyHouse/components/Equipments/utils'
 
 const Root = styled(FusePageCarded)(() => ({
@@ -58,26 +57,35 @@ export const Equipments = () => {
     const mappedHousingEquipmentsList = useMemo(
         () =>
             housingEquipmentsList
-                ?.map((element) => {
+                ?.map((housingEquipment) => {
+                    const equipmentOption = myEquipmentOptions.find(
+                        (option) => option.name === housingEquipment.equipment.name,
+                    )
                     return {
-                        id: element.equipmentId,
-                        housingEquipmentId: element.id,
-                        name: element.equipment.name,
-                        allowedType: element.equipment.allowedType,
-                        number: element.equipmentNumber,
-                        isNumber: mappingEquipmentNameToType[element.equipment.name as equipmentNameType] === 'number',
-                        measurementModes: element.equipment.measurementModes,
-                        customerId: element.equipment.customerId,
+                        id: housingEquipment.equipmentId,
+                        housingEquipmentId: housingEquipment.id,
+                        name: housingEquipment.equipment.name,
+                        equipmentLabel: equipmentOption?.labelTitle,
+                        iconComponent: equipmentOption?.iconComponent,
+                        allowedType: housingEquipment.equipment.allowedType,
+                        number: housingEquipment.equipmentNumber,
+                        isNumber:
+                            mappingEquipmentNameToType[housingEquipment.equipment.name as equipmentNameType] ===
+                            'number',
+                        measurementModes: housingEquipment.equipment.measurementModes,
+                        customerId: housingEquipment.equipment.customerId,
                     }
                 })
                 .filter((eq) => eq.number && (eq.isNumber || eq.customerId)),
         [housingEquipmentsList],
     )
 
-    const orderedHousingEquipmentsList = useMemo(
-        () => orderBy(mappedHousingEquipmentsList, (el) => el.measurementModes?.length, 'asc'),
-        [mappedHousingEquipmentsList],
-    )
+    const orderedHousingEquipmentsList = useMemo(() => {
+        if (mappedHousingEquipmentsList)
+            return [...mappedHousingEquipmentsList].sort((a, b) =>
+                (a.equipmentLabel || a.name).localeCompare(b.equipmentLabel || b.name),
+            )
+    }, [mappedHousingEquipmentsList])
 
     const availableEquipments = getAvailableEquipments(mappedHousingEquipmentsList, equipmentsList)
 
