@@ -78,9 +78,9 @@ export const EquipmentMeasurementResultsList = ({
     const [measurementResult, setMeasurementResult] = useState<number | null>(null)
 
     const handleClickingOnMeasurementResult = useCallback(
-        async (measurementMode: string, result: number | null) => {
-            await setMeasurementMode(measurementMode)
-            await setMeasurementResult(result)
+        (measurementMode: string, result: number | null) => {
+            setMeasurementMode(measurementMode)
+            setMeasurementResult(result)
             onOpenMeasurementModal()
         },
         [onOpenMeasurementModal],

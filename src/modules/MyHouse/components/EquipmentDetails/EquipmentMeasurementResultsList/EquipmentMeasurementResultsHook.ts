@@ -39,21 +39,21 @@ export function useEquipmentMeasurementResults() {
      */
     const updateEquipmentMeasurementResults = useCallback(
         async (equipmentNumber: number, housingEquipmentId: number, measurementModes: string[]) => {
-            setIsLoadingMeasurements(true)
-            setMeasurementResults({})
-
-            let measurementResultsObj: measurementResultsStateType = {}
-            for (const measurementMode of measurementModes) {
-                const resultValue = await getEquipmentMeasurementResult(
-                    equipmentNumber!,
-                    housingEquipmentId!,
-                    measurementMode,
-                )
-                measurementResultsObj[measurementMode] = resultValue
+            if (measurementModes && measurementModes.length > 0) {
+                setIsLoadingMeasurements(true)
+                setMeasurementResults({})
+                let measurementResultsObj: measurementResultsStateType = {}
+                for (const measurementMode of measurementModes) {
+                    const resultValue = await getEquipmentMeasurementResult(
+                        equipmentNumber!,
+                        housingEquipmentId!,
+                        measurementMode,
+                    )
+                    measurementResultsObj[measurementMode] = resultValue
+                }
+                setMeasurementResults(measurementResultsObj)
+                setIsLoadingMeasurements(false)
             }
-            setMeasurementResults(measurementResultsObj)
-
-            setIsLoadingMeasurements(false)
         },
         [getEquipmentMeasurementResult],
     )
