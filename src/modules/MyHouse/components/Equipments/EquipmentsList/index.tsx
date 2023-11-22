@@ -1,7 +1,6 @@
 import FuseLoading from 'src/common/ui-kit/fuse/components/FuseLoading/FuseLoading'
 import { EquipmentCard } from 'src/modules/MyHouse/components/Equipments/EquipmentCard'
 import { EquipmentsListProps } from 'src/modules/MyHouse/components/Equipments/EquipmentsList/equipmentsList'
-import { myEquipmentOptions } from 'src/modules/MyHouse/utils/MyHouseVariables'
 
 /**
  * EquipmentsList component.
@@ -28,25 +27,17 @@ export const EquipmentsList = ({
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
             {housingEquipmentsList &&
                 housingEquipmentsList.map((equipment) => {
-                    const equipmentLabel = myEquipmentOptions.find(
-                        (element) => element.name === equipment.name,
-                    )?.labelTitle
-
-                    const iconComponent = myEquipmentOptions.find(
-                        (element) => element.name === equipment.name,
-                    )?.iconComponent
-
                     return (
                         <EquipmentCard
                             key={equipment.id}
                             id={equipment.id}
-                            label={equipmentLabel || equipment.name}
+                            label={equipment.equipmentLabel || equipment.name}
                             name={equipment.name}
                             housingEquipmentId={equipment.housingEquipmentId}
                             measurementModes={equipment.measurementModes}
                             number={equipment.number ? equipment.number : 0}
                             onEquipmentChange={addHousingEquipment}
-                            iconComponent={iconComponent}
+                            iconComponent={equipment.iconComponent}
                         />
                     )
                 })}
