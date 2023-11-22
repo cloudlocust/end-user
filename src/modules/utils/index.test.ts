@@ -50,6 +50,7 @@ describe('Test orderListBy', () => {
     test('order by number value', () => {
         const ascOrderedList = orderListBy(listToOrder, (item) => item.id)
         expect(ascOrderedList).toEqual(listOrderedAscById)
+
         const descOrderedList = orderListBy(listToOrder, (item) => item.id, true)
         expect(descOrderedList).toEqual(listOrderedDescById)
     })
@@ -57,7 +58,16 @@ describe('Test orderListBy', () => {
     test('order by string value', () => {
         const ascOrderedList = orderListBy(listToOrder, (item) => item.value)
         expect(ascOrderedList).toEqual(listOrderedAscByValue)
+
         const descOrderedList = orderListBy(listToOrder, (item) => item.value, true)
         expect(descOrderedList).toEqual(listOrderedDescByValue)
+    })
+
+    test('return the same list when orderByValueCallback is undefined', () => {
+        const ascOrderedList = orderListBy(listToOrder)
+        expect(ascOrderedList).toEqual(listToOrder)
+
+        const descOrderedList = orderListBy(listToOrder, undefined, true)
+        expect(descOrderedList).toEqual(listToOrder)
     })
 })

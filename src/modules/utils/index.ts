@@ -77,6 +77,6 @@ export const orderListBy = <T>(list: T[], orderByValueCallback?: (item: T) => an
             ? descendingOrder
                 ? orderByValueCallback(b).toString().localeCompare(orderByValueCallback(a).toString())
                 : orderByValueCallback(a).toString().localeCompare(orderByValueCallback(b).toString())
-            : true,
+            : 0,
     )
 }
