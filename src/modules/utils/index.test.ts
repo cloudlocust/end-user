@@ -1,4 +1,5 @@
 import { getMsgFromAxiosError, getQueryParamsFromFiltersObject } from '.'
+import { orderListBy } from 'src/modules/utils'
 window._env_ = {}
 
 describe('Test get msg from axios error function', () => {
@@ -32,5 +33,31 @@ describe('Test getQueryParamsFromFiltersObject', () => {
 
         // Case empty object
         expect(getQueryParamsFromFiltersObject(obj2)).toBe('')
+    })
+})
+
+describe('Test orderListBy', () => {
+    const item1 = { id: 1, value: 'B' }
+    const item2 = { id: 3, value: 'D' }
+    const item3 = { id: 2, value: 'A' }
+    const item4 = { id: 4, value: 'C' }
+    const listToOrder = [item1, item2, item3, item4]
+    const listOrderedAscById = [item1, item3, item2, item4]
+    const listOrderedDescById = [...listOrderedAscById].reverse()
+    const listOrderedAscByValue = [item3, item1, item4, item2]
+    const listOrderedDescByValue = [...listOrderedAscByValue].reverse()
+
+    test('order by number value', () => {
+        const ascOrderedList = orderListBy(listToOrder, (item) => item.id)
+        expect(ascOrderedList).toEqual(listOrderedAscById)
+        const descOrderedList = orderListBy(listToOrder, (item) => item.id, true)
+        expect(descOrderedList).toEqual(listOrderedDescById)
+    })
+
+    test('order by string value', () => {
+        const ascOrderedList = orderListBy(listToOrder, (item) => item.value)
+        expect(ascOrderedList).toEqual(listOrderedAscByValue)
+        const descOrderedList = orderListBy(listToOrder, (item) => item.value, true)
+        expect(descOrderedList).toEqual(listOrderedDescByValue)
     })
 })
