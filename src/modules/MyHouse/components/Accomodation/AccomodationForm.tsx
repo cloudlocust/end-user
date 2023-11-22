@@ -19,7 +19,7 @@ import {
     isolationOptions,
     performanceOptions,
 } from 'src/modules/MyHouse/utils/MyHouseVariables'
-import { Form } from 'src/common/react-platform-components'
+import { Form, requiredBuilder } from 'src/common/react-platform-components'
 import { EditButtonsGroup } from 'src/modules/MyHouse/EditButtonsGroup'
 import { useAccomodation } from 'src/modules/MyHouse/components/Accomodation/AccomodationHooks'
 import {
@@ -282,6 +282,7 @@ export const AccomodationForm = () => {
                                         })}
                                         defaultValue={null}
                                         disabled={disabledField}
+                                        validateFunctions={[requiredBuilder()]}
                                     />
                                 ) : (
                                     <Select
@@ -292,6 +293,7 @@ export const AccomodationForm = () => {
                                         })}
                                         defaultValue={null}
                                         disabled={disabledField}
+                                        validateFunctions={[requiredBuilder()]}
                                     />
                                 )}
                             </div>
