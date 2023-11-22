@@ -2,6 +2,7 @@ import { authTypes } from 'src/common/react-platform-components'
 import { IRouteNavigationConfig } from 'src/routes'
 import Analysis from 'src/modules/Analysis'
 import { ReactComponent as AnalysisIcon } from 'src/assets/images/navbarItems/analysis.svg'
+import { ReactComponent as AnalysisSelectedIcon } from 'src/assets/images/navbarItems/analysis-selected.svg'
 import SvgIcon from '@mui/material/SvgIcon'
 
 /**
@@ -49,6 +50,11 @@ export const AnalysisConfig = [
                         icon: (
                             <SvgIcon>
                                 <AnalysisIcon />
+                            </SvgIcon>
+                        ),
+                        selectedIcon: (
+                            <SvgIcon>
+                                <AnalysisSelectedIcon />
                             </SvgIcon>
                         ),
                         disabled: analysisFeatureState,
