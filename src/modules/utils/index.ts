@@ -40,6 +40,7 @@ export const getQueryParamsFromFiltersObject = (
     })
     return queryParams.join('&')
 }
+
 /**
  * Type of the search filters, used in all elementList pages with search bar in the header.
  */
@@ -60,3 +61,23 @@ export type searchFilterType =
 export const passwordFieldValidationSecurity1 = new RegExp(
     '^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[~_\\^\\*%/\\.+:;=@$!%#?&]).{8,}$',
 ).source
+
+/**
+ * Function to order a list.
+ *
+ * @param list The list of objects to be ordered.
+ * @param orderByValueCallback The callback function that return the value to order the list by.
+ * @param descendingOrder If true, the order is descending.
+ * @returns The ordered list.
+ */
+export const orderListBy = (list: any[], orderByValueCallback?: (item: any) => any, descendingOrder?: boolean) => {
+    if (list) {
+        return [...list].sort((a, b) =>
+            orderByValueCallback
+                ? descendingOrder
+                    ? orderByValueCallback(b).toString().localeCompare(orderByValueCallback(a).toString())
+                    : orderByValueCallback(a).toString().localeCompare(orderByValueCallback(b).toString())
+                : true,
+        )
+    }
+}

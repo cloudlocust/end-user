@@ -12,6 +12,7 @@ import { AddEquipmentPopup } from 'src/modules/MyHouse/components/Equipments/Add
 import { mappingEquipmentNameToType, myEquipmentOptions } from 'src/modules/MyHouse/utils/MyHouseVariables'
 import { equipmentNameType } from 'src/modules/MyHouse/components/Installation/InstallationType'
 import { getAvailableEquipments } from 'src/modules/MyHouse/components/Equipments/utils'
+import { orderListBy } from 'src/modules/utils'
 
 const Root = styled(FusePageCarded)(() => ({
     '& .FusePageCarded-header': {
@@ -80,12 +81,13 @@ export const Equipments = () => {
         [housingEquipmentsList],
     )
 
-    const orderedHousingEquipmentsList = useMemo(() => {
-        if (mappedHousingEquipmentsList)
-            return [...mappedHousingEquipmentsList].sort((a, b) =>
-                (a.equipmentLabel || a.name).localeCompare(b.equipmentLabel || b.name),
-            )
-    }, [mappedHousingEquipmentsList])
+    const orderedHousingEquipmentsList = useMemo(
+        () =>
+            mappedHousingEquipmentsList
+                ? orderListBy(mappedHousingEquipmentsList, (item) => item.equipmentLabel || item.name)
+                : mappedHousingEquipmentsList,
+        [mappedHousingEquipmentsList],
+    )
 
     const availableEquipments = getAvailableEquipments(mappedHousingEquipmentsList, equipmentsList)
 
