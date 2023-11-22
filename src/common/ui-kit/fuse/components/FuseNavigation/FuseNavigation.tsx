@@ -41,6 +41,10 @@ export type navbarItemType = {
      */
     icon?: React.ReactNode
     /**
+     *  Used only when there are two states of an icon, active/inactive.
+     */
+    selectedIcon?: React.ReactNode
+    /**
      * Is Item Disabled.
      */
     disabled?: boolean

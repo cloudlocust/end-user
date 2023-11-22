@@ -3,6 +3,7 @@ import { IRouteNavigationConfig } from 'src/routes'
 import { MyHouse } from 'src/modules/MyHouse/MyHouse'
 import ConnectedPlugs from 'src/modules/MyHouse/components/ConnectedPlugs'
 import { ReactComponent as HousingIcon } from 'src/assets/images/navbarItems/housing.svg'
+import { ReactComponent as HousingSelectedIcon } from 'src/assets/images/navbarItems/housing-selected.svg'
 import SvgIcon from '@mui/material/SvgIcon'
 import { HousingInformation } from 'src/modules/MyHouse/components/HousingInformation'
 import { Equipments } from 'src/modules/MyHouse/components/Equipments'
@@ -144,13 +145,18 @@ export const MyHouseConfig = [
             layout: {
                 navbar: {
                     UINavbarItem: {
-                        id: 'myHouses',
+                        id: 'Logement',
                         label: 'Logement',
                         labelAbbreviation: 'Logement',
                         type: 'item',
                         icon: (
                             <SvgIcon>
                                 <HousingIcon />
+                            </SvgIcon>
+                        ),
+                        selectedIcon: (
+                            <SvgIcon>
+                                <HousingSelectedIcon />
                             </SvgIcon>
                         ),
                         url: URL_MY_HOUSE,
@@ -167,13 +173,18 @@ export const MyHouseConfig = [
             layout: {
                 navbar: {
                     UINavbarItem: {
-                        id: 'myHouses',
+                        id: 'Logement',
                         label: 'Logement',
                         labelAbbreviation: 'Logement',
                         type: 'item',
                         icon: (
                             <SvgIcon>
                                 <HousingIcon />
+                            </SvgIcon>
+                        ),
+                        selectedIcon: (
+                            <SvgIcon>
+                                <HousingSelectedIcon />
                             </SvgIcon>
                         ),
                         url: URL_MY_HOUSE_DETAILS,
@@ -190,13 +201,18 @@ export const MyHouseConfig = [
             layout: {
                 navbar: {
                     UINavbarItem: {
-                        id: 'myHouses',
+                        id: 'Logement',
                         label: 'Logement',
                         labelAbbreviation: 'Logement',
                         type: 'item',
                         icon: (
                             <SvgIcon>
                                 <HousingIcon />
+                            </SvgIcon>
+                        ),
+                        selectedIcon: (
+                            <SvgIcon>
+                                <HousingSelectedIcon />
                             </SvgIcon>
                         ),
                         url: URL_HOUSING_INFORMATION,
@@ -214,13 +230,18 @@ export const MyHouseConfig = [
             layout: {
                 navbar: {
                     UINavbarItem: {
-                        id: 'myHouses',
+                        id: 'Logement',
                         label: 'Equipements',
                         labelAbbreviation: 'Equipements',
                         type: 'item',
                         icon: (
                             <SvgIcon>
                                 <HousingIcon />
+                            </SvgIcon>
+                        ),
+                        selectedIcon: (
+                            <SvgIcon>
+                                <HousingSelectedIcon />
                             </SvgIcon>
                         ),
                         url: URL_HOUSING_EQUIPMENTS,
@@ -237,13 +258,18 @@ export const MyHouseConfig = [
             layout: {
                 navbar: {
                     UINavbarItem: {
-                        id: 'myHouses',
+                        id: 'Logement',
                         label: 'Logement',
                         labelAbbreviation: 'Logement',
                         type: 'item',
                         icon: (
                             <SvgIcon>
                                 <HousingIcon />
+                            </SvgIcon>
+                        ),
+                        selectedIcon: (
+                            <SvgIcon>
+                                <HousingSelectedIcon />
                             </SvgIcon>
                         ),
                         url: URL_HOUSING_EQUIPMENTS,

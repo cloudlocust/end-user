@@ -2,6 +2,7 @@ import { authTypes } from 'src/common/react-platform-components'
 import { IRouteNavigationConfig } from 'src/routes'
 import { Advices } from './Advices'
 import { ReactComponent as AdvicesIcon } from 'src/assets/images/navbarItems/advice.svg'
+import { ReactComponent as AdvicesSelectedIcon } from 'src/assets/images/navbarItems/advice-selected.svg'
 import SvgIcon from '@mui/material/SvgIcon'
 
 /**
@@ -50,6 +51,11 @@ export const AdvicesConfig = [
                         icon: (
                             <SvgIcon>
                                 <AdvicesIcon />
+                            </SvgIcon>
+                        ),
+                        selectedIcon: (
+                            <SvgIcon>
+                                <AdvicesSelectedIcon />
                             </SvgIcon>
                         ),
                         disabled: advicesFeatureState,
