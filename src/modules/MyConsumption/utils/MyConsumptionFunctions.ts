@@ -871,7 +871,7 @@ export const filterMetricsData = (
     data: IMetric[],
     period?: periodType,
     enphaseOff?: boolean,
-    // TODO: remove cognitive-complexity in veille
+    // TODO: Refactor this function, it's too long.
     // eslint-disable-next-line sonarjs/cognitive-complexity
 ): IMetric[] => {
     const temperatureOrPmaxMetricsData = data.filter((metric) =>
