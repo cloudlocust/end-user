@@ -1,4 +1,3 @@
-import React from 'react'
 import { render } from '@testing-library/react'
 import '@testing-library/jest-dom'
 import { FuseCard } from 'src/modules/shared/FuseCard/FuseCard'

@@ -60,28 +60,3 @@ export type searchFilterType =
 export const passwordFieldValidationSecurity1 = new RegExp(
     '^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[~_\\^\\*%/\\.+:;=@$!%#?&]).{8,}$',
 ).source
-
-export const mockDayjsFactory = (dayjsDate: string | Date) => {
-    const originalDayjs = jest.requireActual('dayjs')
-    const utc = require('dayjs/plugin/utc')
-    const frLocale = require('dayjs/locale/fr')
-    originalDayjs.extend(utc)
-
-    // eslint-disable-next-line jsdoc/require-jsdoc
-    const mockDayjs = (...args: string[]) => {
-        return args.length ? originalDayjs(...args) : originalDayjs(dayjsDate)
-    }
-
-    // eslint-disable-next-line jsdoc/require-jsdoc
-    mockDayjs.extend = (plugin: any) => {
-        originalDayjs.extend(plugin)
-    }
-
-    // Apply the UTC plugin (and other plugins if necessary)
-    mockDayjs.extend(utc)
-
-    const instance = mockDayjs()
-    instance.locale('fr')
-
-    return () => mockDayjs
-}

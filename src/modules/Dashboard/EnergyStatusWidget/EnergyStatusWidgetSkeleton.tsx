@@ -2,6 +2,11 @@ import { Skeleton, CardContent, useTheme } from '@mui/material'
 import { CARD_HEIGHT } from 'src/modules/Dashboard/EnergyStatusWidget/Index'
 import { FuseCard } from 'src/modules/shared/FuseCard/FuseCard'
 
+/**
+ * Skelton  component for EnergyStatusWidget. Used during loading.
+ *
+ * @returns EnerguStatusWidget Skeleton.
+ */
 export const EnergyStatusWidgetSkeleton = () => {
     const theme = useTheme()
     const themeContrastText = theme.palette.primary.contrastText

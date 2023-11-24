@@ -5,7 +5,7 @@ import { useConsumptionAlerts } from 'src/modules/Alerts/components/ConsumptionA
 import { useConsents } from 'src/modules/Consents/consentsHook'
 import { EnergyStatusWidget } from 'src/modules/Dashboard/EnergyStatusWidget/Index'
 import { EnergyStatusWidgetTypeEnum } from 'src/modules/Dashboard/EnergyStatusWidget/energyStatusWidget.d'
-import { IMetric, metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
+import { metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
 import { useMetrics } from 'src/modules/Metrics/metricsHook'
 import { PeriodEnum } from 'src/modules/MyConsumption/myConsumptionTypes.d'
 import { getRangeV2, formatMetricFilter } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
@@ -51,19 +51,7 @@ export const DashboardContainer = () => {
             <TypographyFormatMessage className="mb-12 font-500 text-24">Accueil</TypographyFormatMessage>
 
             <EnergyStatusWidget
-                data={
-                    [
-                        {
-                            target: 'consumption_metrics',
-                            datapoints: [
-                                [null, new Date('2023-01-01T11:53:00.000Z').getTime()],
-                                [6.0, new Date('2023-01-01T11:54:00.000Z').getTime()],
-                                [2.0, new Date('2023-01-01T11:55:00.000Z').getTime()],
-                                [4.0, new Date('2023-01-01T11:56:00.000Z').getTime()],
-                            ],
-                        },
-                    ] as IMetric[]
-                }
+                data={data}
                 nrlinkConsent={nrlinkConsent?.nrlinkConsentState}
                 type={
                     isSolarProductionConsentOff

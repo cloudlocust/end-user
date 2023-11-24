@@ -1,4 +1,4 @@
-import { Card, CardContent, useTheme, IconButton } from '@mui/material'
+import { CardContent, useTheme, IconButton } from '@mui/material'
 import {
     EnergyStatusWidgetProps,
     EnergyStatusWidgetTypeEnum,
@@ -60,7 +60,6 @@ export const EnergyStatusWidget = (props: EnergyStatusWidgetProps) => {
         )
 
     const lastData = useMemo(() => findLastNonNullableDatapoint(data), [data])
-    console.log(lastData)
 
     const { value: lastDataValue, unit: lastDataUnit } = consumptionWattUnitConversion(lastData?.value ?? 0)
     const isLastDateWithinSixMinutes = lastData?.message === LastDataStatus.UPDATED
