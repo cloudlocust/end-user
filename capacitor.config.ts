@@ -3,8 +3,9 @@ import { CapacitorConfig } from '@capacitor/cli'
 const config: CapacitorConfig = {
     appId: 'com.myem.myemapp',
     appName: 'myemapp',
-    webDir: 'build',
+    webDir: 'public',
     server: {
+        cleartext: true,
         androidScheme: 'https',
     },
 }
