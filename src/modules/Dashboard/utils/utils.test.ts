@@ -1,3 +1,4 @@
+import { LastDataStatus } from 'src/modules/Dashboard/utils/utils.d'
 import { findLastNonNullableDatapoint } from 'src/modules/Dashboard/utils/utils'
 import { IMetric } from 'src/modules/Metrics/Metrics'
 
@@ -42,7 +43,7 @@ describe('findLastNonNullableDatapoint', () => {
             },
         ] as IMetric[]
         expect(findLastNonNullableDatapoint(data)).toStrictEqual({
-            message: 'Data received within 6 minutes',
+            message: LastDataStatus.UPDATED,
             timestamp: data[0].datapoints[0][1],
             value: 6.0,
         })
@@ -58,7 +59,7 @@ describe('findLastNonNullableDatapoint', () => {
             },
         ] as IMetric[]
         expect(findLastNonNullableDatapoint(data)).toStrictEqual({
-            message: 'No data received for more than 6 minutes',
+            message: LastDataStatus.OUTDATED,
             timestamp: data[0].datapoints[0][1],
             value: 6.0,
         })

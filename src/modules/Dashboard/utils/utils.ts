@@ -1,3 +1,4 @@
+import { LastDataStatus } from './utils.d'
 import { IMetric } from 'src/modules/Metrics/Metrics'
 import dayjs from 'dayjs'
 
@@ -26,14 +27,15 @@ export function findLastNonNullableDatapoint(data: IMetric[]) {
             // Check if the time difference is more than 6 minutes
             if (timeDifference > SIX_MINUTES_IN_MILLISECONDS) {
                 return {
-                    message: 'No data received for more than 6 minutes',
+                    message: LastDataStatus.OUTDATED,
                     timestamp: lastDataTimestamp,
                     value: lastDataValue,
                 }
             }
 
+            // If data is within 6 minutes.
             return {
-                message: 'Data received within 6 minutes',
+                message: LastDataStatus.UPDATED,
                 timestamp: lastDataTimestamp,
                 value: lastDataValue,
             }
