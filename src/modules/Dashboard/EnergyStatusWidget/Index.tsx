@@ -1,4 +1,4 @@
-import { Card, CardContent, useTheme, IconButton, CircularProgress } from '@mui/material'
+import { Card, CardContent, useTheme, IconButton } from '@mui/material'
 import {
     EnergyStatusWidgetProps,
     EnergyStatusWidgetTypeEnum,
@@ -11,13 +11,33 @@ import { SVGAttributes, useMemo } from 'react'
 import { findLastNonNullableDatapoint } from 'src/modules/Dashboard/utils/utils'
 import { consumptionWattUnitConversion } from 'src/modules/MyConsumption/utils/unitConversionFunction'
 import { LastDataStatus } from 'src/modules/Dashboard/utils/utils.d'
+import { EnergyStatusWidgetSkeleton } from 'src/modules/Dashboard/EnergyStatusWidget/EnergyStatusWidgetSkeleton'
+import { FuseCard } from 'src/modules/shared/FuseCard/FuseCard'
 
 const iconStyle: SVGAttributes<SVGSVGElement> = {
     width: 25,
     height: 25,
 }
 
-const CARD_WIDTH = '170px'
+/**
+ * Card width.
+ */
+export const CARD_HEIGHT = '170px'
+
+/**
+ * Nrlink out of range message.
+ */
+export const NRLINK_OUT_OF_RANGE_MESSAGE = 'nrLINK hors de portée wifi'
+
+/**
+ * Nrlink offline message.
+ */
+export const NRLINK_OFFLINE = 'Connectez votre nrLINK pour voir votre consommation à la minute'
+
+/**
+ * Background primary main.
+ */
+export const BG_PRIMARY_MAIN = 'primary.main'
 
 /**
  * EnergyStatusWidget component.
@@ -40,27 +60,22 @@ export const EnergyStatusWidget = (props: EnergyStatusWidgetProps) => {
         )
 
     const lastData = useMemo(() => findLastNonNullableDatapoint(data), [data])
+    console.log(lastData)
+
     const { value: lastDataValue, unit: lastDataUnit } = consumptionWattUnitConversion(lastData?.value ?? 0)
-    const isLastDataUpdated = lastData?.message === LastDataStatus.UPDATED
+    const isLastDateWithinSixMinutes = lastData?.message === LastDataStatus.UPDATED
     const isLastDataNull = !lastData
 
     if (isLoading) {
-        return (
-            <div className="flex flex-col justify-center items-center w-full h-full" style={{ height: CARD_WIDTH }}>
-                <CircularProgress style={{ color: theme.palette.primary.main }} />
-            </div>
-        )
+        return <EnergyStatusWidgetSkeleton />
     }
 
     return (
-        <Card
-            className="shadow rounded-2xl overflow-hidden"
-            sx={{ bgcolor: theme.palette.primary.main, height: '185px' }}
-        >
+        <FuseCard sx={{ bgcolor: BG_PRIMARY_MAIN, height: CARD_HEIGHT }}>
             <CardContent className="flex flex-col h-full">
                 <div className="flex justify-between items-center mb-5">
                     {nrlinkConsent !== 'NONEXISTENT' && (
-                        <IconButton sx={{ background: themeContrastText }} className="mr-10">
+                        <IconButton sx={{ bgcolor: themeContrastText }} className="mr-10">
                             {iconType}
                         </IconButton>
                     )}
@@ -71,11 +86,11 @@ export const EnergyStatusWidget = (props: EnergyStatusWidgetProps) => {
                 <div className="flex flex-col w-full flex-grow">
                     <div className="flex justify-end items-center text-14 mb-5">
                         <span style={{ color: themeContrastText }}>
-                            {!isLastDataUpdated
-                                ? 'nrLINK hors de portée wifi'
+                            {isLastDateWithinSixMinutes
+                                ? `à ${dayjs(lastData?.timestamp).format('HH:mm:ss')}`
                                 : isLastDataNull
-                                ? 'Connectez votre nrLINK pour voir votre consommation à la minute'
-                                : `à ${dayjs(lastData?.timestamp).format('HH:mm:ss')}`}
+                                ? NRLINK_OFFLINE
+                                : NRLINK_OUT_OF_RANGE_MESSAGE}
                         </span>
                     </div>
                     <div className="flex flex-row ml-auto flex-grow">
@@ -83,7 +98,7 @@ export const EnergyStatusWidget = (props: EnergyStatusWidgetProps) => {
                             className={`text-28 font-400 flex items-center mr-20`}
                             style={{ color: themeContrastText }}
                         >
-                            {!isLastDataUpdated ? '- w' : `${lastDataValue} ${lastDataUnit}`}
+                            {!isLastDateWithinSixMinutes ? '- w' : `${lastDataValue} ${lastDataUnit}`}
                         </span>
                         {type === EnergyStatusWidgetTypeEnum.CONSUMPTION && (
                             <span className="text-28 font-400 flex items-center" style={{ color: themeContrastText }}>
@@ -93,6 +108,6 @@ export const EnergyStatusWidget = (props: EnergyStatusWidgetProps) => {
                     </div>
                 </div>
             </CardContent>
-        </Card>
+        </FuseCard>
     )
 }
