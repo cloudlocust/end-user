@@ -4,6 +4,11 @@ const config: CapacitorConfig = {
     appId: 'com.myem.myemapp',
     appName: 'myemapp',
     webDir: 'public',
+    plugins: {
+        PushNotifications: {
+            presentationOptions: ['badge', 'sound', 'alert'],
+        },
+    },
     server: {
         cleartext: true,
         androidScheme: 'https',

@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1052502034983",
+    "project_id": "lunar-reef-332511",
+    "storage_bucket": "lunar-reef-332511.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1052502034983:android:dc745325db77b70d0b5c02",
+        "android_client_info": {
+          "package_name": "com.myem.myemapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1052502034983-tqd9brb2q19p08pkrsg2upk7at1po6pv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCa4nVz-v7EuXITw-E93OgmGjZmH_NlleU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1052502034983-tqd9brb2q19p08pkrsg2upk7at1po6pv.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

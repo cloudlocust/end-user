@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import { Switch, Route, Redirect, useLocation, useHistory } from 'react-router-dom'
 import { useAuth } from 'src/modules/User/authentication/useAuth'
 import { routes, navigationsConfig, IAdditionnalSettings, IPageSettingsDisabled } from 'src/routes'
@@ -17,6 +17,7 @@ import { useSelector } from 'react-redux'
 import { isMaintenanceMode } from 'src/configs'
 import { Maintenance } from 'src/modules/Maintenance/Maintenance'
 import { URL_MAINTENANCE } from 'src/modules/Maintenance/MaintenanceConfig'
+import { getTokenFromFirebase } from 'src/firebase'
 
 const Root = styled('div')(({ theme }) => ({
     '& #fuse-main': {
@@ -168,6 +169,17 @@ const Routes = () => {
  * @returns Main application.
  */
 function App() {
+    const { user } = useSelector(({ userModel }: RootState) => userModel)
+    const isTokenLoadedFromFirebase = useRef(false)
+
+    useEffect(() => {
+        // Send the device token to the backend
+        if (user && !isTokenLoadedFromFirebase.current) {
+            getTokenFromFirebase()
+            isTokenLoadedFromFirebase.current = true
+        }
+    }, [user])
+
     return <Routes />
 }
 
