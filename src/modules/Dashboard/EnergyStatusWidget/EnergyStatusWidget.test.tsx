@@ -38,10 +38,10 @@ jest.mock('dayjs', () => {
 })
 
 describe('EnergyStatusWidget', () => {
-    let mockkEnergyStatusWidget: EnergyStatusWidgetProps
+    let mockkEnergyStatusWidgetProps: EnergyStatusWidgetProps
 
     beforeEach(() => {
-        mockkEnergyStatusWidget = {
+        mockkEnergyStatusWidgetProps = {
             data: [],
             isLoading: false,
             type: EnergyStatusWidgetTypeEnum.CONSUMPTION,
@@ -50,7 +50,7 @@ describe('EnergyStatusWidget', () => {
     })
 
     test('when type is consumption', async () => {
-        mockkEnergyStatusWidget.data = [
+        mockkEnergyStatusWidgetProps.data = [
             {
                 target: 'consumption_metrics',
                 datapoints: [
@@ -61,7 +61,7 @@ describe('EnergyStatusWidget', () => {
                 ],
             },
         ] as IMetric[]
-        const { getByText } = reduxedRender(<EnergyStatusWidget {...mockkEnergyStatusWidget} />)
+        const { getByText } = reduxedRender(<EnergyStatusWidget {...mockkEnergyStatusWidgetProps} />)
 
         expect(getByText('Dernière puissance remontée')).toBeInTheDocument()
         expect(getByText('bolt.svg')).toBeInTheDocument()
@@ -70,8 +70,8 @@ describe('EnergyStatusWidget', () => {
         expect(getByText('0.5 €/h')).toBeInTheDocument()
     })
     test('when type is production', async () => {
-        mockkEnergyStatusWidget.type = EnergyStatusWidgetTypeEnum.PRODUCTION
-        mockkEnergyStatusWidget.data = [
+        mockkEnergyStatusWidgetProps.type = EnergyStatusWidgetTypeEnum.PRODUCTION
+        mockkEnergyStatusWidgetProps.data = [
             {
                 target: 'consumption_metrics',
                 datapoints: [
@@ -81,7 +81,7 @@ describe('EnergyStatusWidget', () => {
                 ],
             },
         ] as IMetric[]
-        const { getByText } = reduxedRender(<EnergyStatusWidget {...mockkEnergyStatusWidget} />)
+        const { getByText } = reduxedRender(<EnergyStatusWidget {...mockkEnergyStatusWidgetProps} />)
         expect(getByText('Dernière puissance injectée')).toBeInTheDocument()
         expect(getByText('electric-tower.svg')).toBeInTheDocument()
         expect(() => getByText('€/h')).toThrow()

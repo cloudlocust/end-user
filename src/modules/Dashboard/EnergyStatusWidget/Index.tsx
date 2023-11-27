@@ -11,7 +11,6 @@ import { SVGAttributes, useMemo } from 'react'
 import { findLastNonNullableDatapoint } from 'src/modules/Dashboard/utils/utils'
 import { consumptionWattUnitConversion } from 'src/modules/MyConsumption/utils/unitConversionFunction'
 import { LastDataStatus } from 'src/modules/Dashboard/utils/utils.d'
-import { EnergyStatusWidgetSkeleton } from 'src/modules/Dashboard/EnergyStatusWidget/EnergyStatusWidgetSkeleton'
 import { FuseCard } from 'src/modules/shared/FuseCard/FuseCard'
 
 const iconStyle: SVGAttributes<SVGSVGElement> = {
@@ -65,12 +64,12 @@ export const EnergyStatusWidget = (props: EnergyStatusWidgetProps) => {
     const isLastDateWithinSixMinutes = lastData?.message === LastDataStatus.UPDATED
     const isLastDataNull = !lastData
 
-    if (isLoading) {
-        return <EnergyStatusWidgetSkeleton />
-    }
-
     return (
-        <FuseCard sx={{ bgcolor: BG_PRIMARY_MAIN, height: CARD_HEIGHT }}>
+        <FuseCard
+            sx={{ bgcolor: BG_PRIMARY_MAIN, height: CARD_HEIGHT }}
+            isLoading={isLoading}
+            loadingColor={theme.palette.common.white}
+        >
             <CardContent className="flex flex-col h-full">
                 <div className="flex justify-between items-center mb-5">
                     {nrlinkConsent !== 'NONEXISTENT' && (
