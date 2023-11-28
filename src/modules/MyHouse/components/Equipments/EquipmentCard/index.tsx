@@ -40,7 +40,7 @@ export const EquipmentCard = ({ equipment, label, onEquipmentChange, iconCompone
      * Function for navigating to the equipment details page.
      */
     const navigateToEquipmentDetailsPage = useCallback(() => {
-        if (currentHousing?.id) history.push(`${URL_MY_HOUSE}/${currentHousing?.id}/equipments/details`, { equipment })
+        if (currentHousing?.id) history.push(`${URL_MY_HOUSE}/${currentHousing.id}/equipments/details`, { equipment })
     }, [currentHousing?.id, equipment, history])
 
     const isMicrowaveMeasurementButtonShown = equipment.number && equipment.number > 0 && equipment.name === 'microwave'
@@ -131,7 +131,7 @@ export const EquipmentCard = ({ equipment, label, onEquipmentChange, iconCompone
             {isMicrowaveMeasurementButtonShown && (
                 <MicrowaveMeasurement
                     housingEquipmentId={equipment.housingEquipmentId!}
-                    equipmentsNumber={equipment.number || 0}
+                    equipmentsNumber={equipmentNumber}
                     measurementModes={equipment.measurementModes!}
                     isMeasurementModalOpen={isMeasurementModalOpen}
                     onCloseMeasurementModal={onCloseMeasurementModal}
