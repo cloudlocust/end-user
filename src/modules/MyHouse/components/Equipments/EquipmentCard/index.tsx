@@ -40,8 +40,33 @@ export const EquipmentCard = ({ equipment, label, onEquipmentChange, iconCompone
      * Function for navigating to the equipment details page.
      */
     const navigateToEquipmentDetailsPage = useCallback(() => {
-        if (currentHousing?.id) history.push(`${URL_MY_HOUSE}/${currentHousing.id}/equipments/details`, { equipment })
-    }, [currentHousing?.id, equipment, history])
+        if (currentHousing?.id)
+            history.push(`${URL_MY_HOUSE}/${currentHousing.id}/equipments/details`, {
+                equipment: {
+                    id: equipment.id,
+                    housingEquipmentId: equipment.housingEquipmentId,
+                    name: equipment.name,
+                    equipmentLabel: equipment.equipmentLabel,
+                    allowedType: equipment.allowedType,
+                    number: equipment.number,
+                    isNumber: equipment.isNumber,
+                    measurementModes: equipment.measurementModes,
+                    customerId: equipment.customerId,
+                },
+            })
+    }, [
+        currentHousing?.id,
+        equipment.allowedType,
+        equipment.customerId,
+        equipment.equipmentLabel,
+        equipment.housingEquipmentId,
+        equipment.id,
+        equipment.isNumber,
+        equipment.measurementModes,
+        equipment.name,
+        equipment.number,
+        history,
+    ])
 
     const isMicrowaveMeasurementButtonShown = equipment.number && equipment.number > 0 && equipment.name === 'microwave'
 
@@ -74,21 +99,6 @@ export const EquipmentCard = ({ equipment, label, onEquipmentChange, iconCompone
                                     color="disabled"
                                     className="cursor-pointer"
                                     onClick={() => {
-                                        setEquipmentNumber((prevv) => {
-                                            onEquipmentChange([
-                                                { equipmentId: equipment.id, equipmentNumber: prevv + 1 },
-                                            ])
-                                            return prevv + 1
-                                        })
-                                    }}
-                                >
-                                    add_circle_outlined
-                                </Icon>
-                                <div className="text-14 font-medium">{equipmentNumber}</div>
-                                <Icon
-                                    color="disabled"
-                                    className="cursor-pointer"
-                                    onClick={() => {
                                         if (equipmentNumber > 0) {
                                             setEquipmentNumber((prevv) => {
                                                 onEquipmentChange([
@@ -100,6 +110,21 @@ export const EquipmentCard = ({ equipment, label, onEquipmentChange, iconCompone
                                     }}
                                 >
                                     remove_circle_outlined
+                                </Icon>
+                                <div className="text-14 font-medium">{equipmentNumber}</div>
+                                <Icon
+                                    color="disabled"
+                                    className="cursor-pointer"
+                                    onClick={() => {
+                                        setEquipmentNumber((prevv) => {
+                                            onEquipmentChange([
+                                                { equipmentId: equipment.id, equipmentNumber: prevv + 1 },
+                                            ])
+                                            return prevv + 1
+                                        })
+                                    }}
+                                >
+                                    add_circle_outlined
                                 </Icon>
                             </div>
                             <Tooltip

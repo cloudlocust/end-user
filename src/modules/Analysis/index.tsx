@@ -58,7 +58,9 @@ export default function Analysis() {
     const { hasMissingHousingContracts } = useHasMissingHousingContracts(range, currentHousing?.id)
 
     // Indicates if enedisSgeConsent is not Connected
-    const enedisSgeOff = enedisSgeConsent?.enedisSgeConsentState !== 'CONNECTED'
+    const enedisSgeOff =
+        enedisSgeConsent?.enedisSgeConsentState !== 'CONNECTED' &&
+        enedisSgeConsent?.enedisSgeConsentState !== 'UNSYNCHRONIZED'
 
     useEffect(() => {
         if (!currentHousing?.id) return
