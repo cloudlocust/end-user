@@ -1,3 +1,4 @@
+import { IconComponentType } from 'src/modules/MyHouse/components/Equipments/EquipmentCard/equipmentsCard'
 import {
     equipmentAllowedTypeT,
     postEquipmentInputType,
@@ -14,19 +15,23 @@ export type HousingEquipmentType =
         // eslint-disable-next-line jsdoc/require-jsdoc
         id: number
         // eslint-disable-next-line jsdoc/require-jsdoc
-        housingEquipmentId: number | undefined
+        housingEquipmentId?: number
         // eslint-disable-next-line jsdoc/require-jsdoc
         name: string
         // eslint-disable-next-line jsdoc/require-jsdoc
+        equipmentLabel?: string
+        // eslint-disable-next-line jsdoc/require-jsdoc
+        iconComponent?: IconComponentType
+        // eslint-disable-next-line jsdoc/require-jsdoc
         allowedType: equipmentAllowedTypeT[]
         // eslint-disable-next-line jsdoc/require-jsdoc
-        number: number | undefined
+        number?: number
         // eslint-disable-next-line jsdoc/require-jsdoc
         isNumber: boolean
         // eslint-disable-next-line jsdoc/require-jsdoc
-        measurementModes: string[] | undefined
+        measurementModes?: string[]
         // eslint-disable-next-line jsdoc/require-jsdoc
-        customerId: number | null | undefined
+        customerId?: number | null
     }
 
 /**

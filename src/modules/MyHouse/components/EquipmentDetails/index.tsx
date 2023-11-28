@@ -1,6 +1,4 @@
 import { useLocation } from 'react-router-dom'
-// import { RootState } from 'src/redux'
-// import { useSelector } from 'react-redux'
 import { styled } from '@mui/material'
 import FusePageCarded from 'src/common/ui-kit/fuse/components/FusePageCarded'
 import { EquipmentDetailsPageLocationState } from 'src/modules/MyHouse/components/EquipmentDetails/EquipmentDetails'
@@ -30,7 +28,6 @@ const Root = styled(FusePageCarded)(() => ({
  * @returns Equipment details component.
  */
 export const EquipmentDetails = () => {
-    // const { currentHousing } = useSelector(({ housingModel }: RootState) => housingModel)
     const location = useLocation<EquipmentDetailsPageLocationState>()
     const { equipment } = location.state
 
