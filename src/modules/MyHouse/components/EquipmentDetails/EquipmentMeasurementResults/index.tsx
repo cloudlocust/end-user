@@ -10,10 +10,10 @@ import TableCell from '@mui/material/TableCell'
 import TableRow from '@mui/material/TableRow'
 import useMediaQuery from '@mui/material/useMediaQuery'
 import {
-    EquipmentMeasurementResultsListProps,
+    EquipmentMeasurementResultsProps,
     MeasurementResultProps,
-} from 'src/modules/MyHouse/components/EquipmentDetails/EquipmentMeasurementResultsList/EquipmentMeasurementResultsList'
-import { useEquipmentMeasurementResults } from 'src/modules/MyHouse/components/EquipmentDetails/EquipmentMeasurementResultsList/EquipmentMeasurementResultsHook'
+} from 'src/modules/MyHouse/components/EquipmentDetails/EquipmentMeasurementResults/EquipmentMeasurementResults'
+import { useEquipmentMeasurementResults } from 'src/modules/MyHouse/components/EquipmentDetails/EquipmentMeasurementResults/EquipmentMeasurementResultsHook'
 
 /**
  * MeasurementResult compoonent (used only in this component).
@@ -37,19 +37,19 @@ const MeasurementResult = ({ result, isMobileView }: MeasurementResultProps) =>
     )
 
 /**
- * EquipmentMeasurementResultsList compoonent.
+ * EquipmentMeasurementResults compoonent that show the test results for a specific equipment.
  *
  * @param root0 N/A.
  * @param root0.measurementModes The list of measurement modes for the equipment.
  * @param root0.housingEquipmentId The global equipment id.
  * @param root0.equipmentNumber The equipment number.
- * @returns EquipmentMeasurementResultsList JSX.
+ * @returns EquipmentMeasurementResults JSX.
  */
-export const EquipmentMeasurementResultsList = ({
+export const EquipmentMeasurementResults = ({
     measurementModes,
     housingEquipmentId,
     equipmentNumber,
-}: EquipmentMeasurementResultsListProps) => {
+}: EquipmentMeasurementResultsProps) => {
     const { formatMessage } = useIntl()
     const max_width_600 = useMediaQuery('(max-width:600px)')
     const { measurementResults } = useEquipmentMeasurementResults(equipmentNumber, housingEquipmentId, measurementModes)

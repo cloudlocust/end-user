@@ -1,5 +1,5 @@
 import { reduxedRender } from 'src/common/react-platform-components/test'
-import { EquipmentMeasurementResultsList } from 'src/modules/MyHouse/components/EquipmentDetails/EquipmentMeasurementResultsList'
+import { EquipmentMeasurementResults } from 'src/modules/MyHouse/components/EquipmentDetails/EquipmentMeasurementResults'
 
 const mockedMeasurementModes = ['mode1', 'mode2']
 const mockedHousingEquipmentId = 1
@@ -7,10 +7,10 @@ const mockedEquipmentNumber = 2
 const tableContainerTestId = 'table-container'
 const loadingButtonTestId = 'measurement-result'
 
-describe('EquipmentMeasurementResultsList', () => {
+describe('EquipmentMeasurementResults', () => {
     test('renders correctly with measurement modes', async () => {
         const { getByText, getByTestId, getAllByTestId } = reduxedRender(
-            <EquipmentMeasurementResultsList
+            <EquipmentMeasurementResults
                 measurementModes={mockedMeasurementModes}
                 housingEquipmentId={mockedHousingEquipmentId}
                 equipmentNumber={mockedEquipmentNumber}
@@ -28,15 +28,14 @@ describe('EquipmentMeasurementResultsList', () => {
         expect(getAllByTestId(loadingButtonTestId)).toHaveLength(mockedMeasurementModes.length)
     })
 
-    test('does not render without measurement modes', () => {
+    test('when there is no measurement modes, it would not show anything', () => {
         const { container } = reduxedRender(
-            <EquipmentMeasurementResultsList
+            <EquipmentMeasurementResults
                 measurementModes={[]}
                 housingEquipmentId={mockedHousingEquipmentId}
                 equipmentNumber={mockedEquipmentNumber}
             />,
         )
-
         expect(container.firstChild).toBeNull()
     })
 })

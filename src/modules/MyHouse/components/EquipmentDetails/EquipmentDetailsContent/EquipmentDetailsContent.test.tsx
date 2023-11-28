@@ -13,16 +13,15 @@ const mockedEquipmentDetails: HousingEquipmentType = {
     name: 'microwave',
     number: 3,
 }
-const myEquipmentStr = 'Mon équipement'
-const tableContainerTestId = 'table-container'
-const equipmentSelectTestId = 'equipment-select'
+const TABLE_CONTAINER_TEST_ID = 'table-container'
+const EQUIPMENT_SELECT_TEST_ID = 'equipment-select'
 
 describe('EquipmentDetailsContent component', () => {
     test('renders without crashing', () => {
         reduxedRender(<EquipmentDetailsContent equipmentDetails={mockedEquipmentDetails} />)
 
-        expect(screen.getByLabelText(myEquipmentStr)).toBeInTheDocument()
-        expect(screen.getByTestId(tableContainerTestId)).toBeInTheDocument()
+        expect(screen.getByLabelText('Mon équipement')).toBeInTheDocument()
+        expect(screen.getByTestId(TABLE_CONTAINER_TEST_ID)).toBeInTheDocument()
         expect(screen.getByRole('button', { name: "Supprimer l'appareil" })).toBeInTheDocument()
         expect(screen.getByRole('button', { name: "Mesurer l'appareil" })).toBeInTheDocument()
     })
@@ -30,7 +29,7 @@ describe('EquipmentDetailsContent component', () => {
     test('renders the correct number of menu items in the select', () => {
         reduxedRender(<EquipmentDetailsContent equipmentDetails={mockedEquipmentDetails} />)
 
-        const select = screen.getByTestId(equipmentSelectTestId)
+        const select = screen.getByTestId(EQUIPMENT_SELECT_TEST_ID)
         expect(select.children).toHaveLength(4)
     })
 })

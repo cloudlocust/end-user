@@ -11,7 +11,7 @@ import {
 } from 'src/modules/MyHouse/components/EquipmentDetails/EquipmentDetailsContent/EquipmentDetailsContent'
 import { useState } from 'react'
 import { myEquipmentOptions } from 'src/modules/MyHouse/utils/MyHouseVariables'
-import { EquipmentMeasurementResultsList } from 'src/modules/MyHouse/components/EquipmentDetails/EquipmentMeasurementResultsList'
+import { EquipmentMeasurementResults } from 'src/modules/MyHouse/components/EquipmentDetails/EquipmentMeasurementResults'
 
 /**
  * EquipmentDetailsContent compoonent.
@@ -86,7 +86,7 @@ export const EquipmentDetailsContent = ({ equipmentDetails }: EquipmentDetailsCo
 
             {/* Measurement result list */}
             <div className="flex-1">
-                <EquipmentMeasurementResultsList
+                <EquipmentMeasurementResults
                     measurementModes={equipmentDetails.measurementModes}
                     housingEquipmentId={equipmentDetails.housingEquipmentId}
                     equipmentNumber={selectedEquipmentNumber}
