@@ -103,6 +103,7 @@ export const WidgetConsumptionDashboard = () => {
                     ]}
                     type="area"
                     height="100%"
+                    data-testid="apexcharts"
                 />
             </div>
         </Paper>
