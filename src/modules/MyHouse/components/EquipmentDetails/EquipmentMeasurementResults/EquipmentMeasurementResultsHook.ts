@@ -21,14 +21,13 @@ export function useEquipmentMeasurementResults() {
      */
     const getEquipmentMeasurementResult = useCallback(
         async (equipmentNumber: number, housingEquipmentId: number, measurementMode: string) => {
-            if (!measurementMode || !housingEquipmentId || !equipmentNumber) return null
             try {
                 const { data } = await axios.get<MeasurementResultApiResponse>(
                     `${HOUSING_API}/equipments/${housingEquipmentId}/measurement/${measurementMode}/result/${equipmentNumber}`,
                 )
-                return data?.value
+                return { mode: measurementMode, value: data?.value }
             } catch (error: any) {
-                return null
+                return { mode: measurementMode, value: null }
             }
         },
         [],
@@ -42,14 +41,14 @@ export function useEquipmentMeasurementResults() {
             if (measurementModes && measurementModes.length > 0) {
                 setIsLoadingMeasurements(true)
                 setMeasurementResults({})
+                const promises = measurementModes.map(
+                    async (measurementMode) =>
+                        await getEquipmentMeasurementResult(equipmentNumber, housingEquipmentId, measurementMode),
+                )
+                const resultValues = await Promise.all(promises)
                 let measurementResultsObj: measurementResultsStateType = {}
-                for (const measurementMode of measurementModes) {
-                    const resultValue = await getEquipmentMeasurementResult(
-                        equipmentNumber!,
-                        housingEquipmentId!,
-                        measurementMode,
-                    )
-                    measurementResultsObj[measurementMode] = resultValue
+                for (const resultValue of resultValues) {
+                    measurementResultsObj[resultValue.mode] = resultValue.value
                 }
                 setMeasurementResults(measurementResultsObj)
                 setIsLoadingMeasurements(false)
