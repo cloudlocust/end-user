@@ -1,7 +1,7 @@
 /**
- * EquipmentMeasurementResultsListProps.
+ * EquipmentMeasurementResultsProps.
  */
-export interface EquipmentMeasurementResultsListProps {
+export interface EquipmentMeasurementResultsProps {
     /**
      * The list of measurement modes for the equipment.
      */

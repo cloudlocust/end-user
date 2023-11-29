@@ -19,7 +19,7 @@ import {
     isolationOptions,
     performanceOptions,
 } from 'src/modules/MyHouse/utils/MyHouseVariables'
-import { Form } from 'src/common/react-platform-components'
+import { Form, requiredBuilder } from 'src/common/react-platform-components'
 import { EditButtonsGroup } from 'src/modules/MyHouse/EditButtonsGroup'
 import { useAccomodation } from 'src/modules/MyHouse/components/Accomodation/AccomodationHooks'
 import {
@@ -47,9 +47,9 @@ export const AccomodationForm = () => {
     const { currentHousing } = useSelector(({ housingModel }: RootState) => housingModel)
 
     const { formatMessage } = useIntl()
-    const [isDPE, setIsDPE] = useState(true)
     const { loadAccomodation, updateAccomodation, accomodation, isLoadingInProgress, isAccomodationMeterListEmpty } =
         useAccomodation(currentHousing?.id)
+    const [isDPE, setIsDPE] = useState(true)
     const [isEditAccomodation, setIdEditAccomodation] = useState(false)
     const disabledField = !isAccomodationMeterListEmpty && !isEditAccomodation
 
@@ -66,6 +66,13 @@ export const AccomodationForm = () => {
         houseArea: accomodation?.houseArea,
         ownershipStatus: accomodation?.ownershipStatus,
     }
+
+    // TODO: better remove this unnecessary useEffect
+    useEffect(() => {
+        if (accomodation?.isolationLevel) {
+            setIsDPE(false)
+        }
+    }, [accomodation?.isolationLevel])
     /**
      * Leave only one selected field in the data from.
      *
@@ -80,6 +87,7 @@ export const AccomodationForm = () => {
             isDPE
                 ? delete data[accomodationNames.isolationLevel as keyof AccomodationDataType]
                 : delete data[accomodationNames.energyPerformanceIndex as keyof AccomodationDataType]
+
             return data
         }
         return data
@@ -274,6 +282,7 @@ export const AccomodationForm = () => {
                                         })}
                                         defaultValue={null}
                                         disabled={disabledField}
+                                        validateFunctions={[requiredBuilder()]}
                                     />
                                 ) : (
                                     <Select
@@ -284,6 +293,7 @@ export const AccomodationForm = () => {
                                         })}
                                         defaultValue={null}
                                         disabled={disabledField}
+                                        validateFunctions={[requiredBuilder()]}
                                     />
                                 )}
                             </div>

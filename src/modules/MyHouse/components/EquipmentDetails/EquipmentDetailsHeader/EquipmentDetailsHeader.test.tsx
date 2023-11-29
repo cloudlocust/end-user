@@ -20,19 +20,14 @@ jest.mock('react-router', () => ({
 }))
 
 describe('EquipmentDetailsHeader tests', () => {
-    test('renders elements correctly', async () => {
+    test('renders correctly and call history.goBack when the button Retour clicked', async () => {
         const { getByText } = reduxedRender(<EquipmentDetailsHeader equipmentName={EQUIPMENT_NAME} />)
 
-        expect(getByText(GO_BACK_BUTTON_TEXT)).toBeInTheDocument()
         expect(getByText('arrow_back')).toBeInTheDocument()
         expect(getByText(EQUIPMENT_LABEL_TITLE)).toBeInTheDocument()
-    })
-
-    test('call history.goBack when the button Retour clicked', async () => {
-        const { getByText } = reduxedRender(<EquipmentDetailsHeader equipmentName={EQUIPMENT_NAME} />)
-
-        expect(getByText(GO_BACK_BUTTON_TEXT)).toBeInTheDocument()
-        userEvent.click(getByText(GO_BACK_BUTTON_TEXT))
+        const goBackButton = getByText(GO_BACK_BUTTON_TEXT)
+        expect(goBackButton).toBeInTheDocument()
+        userEvent.click(goBackButton)
         await waitFor(() => {
             expect(mockHistoryGoBack).toHaveBeenCalled()
         })

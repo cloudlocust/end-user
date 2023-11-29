@@ -21,11 +21,13 @@ import { ErrorsConfig } from 'src/modules/Errors/ErrorsConfig'
 import { EcogestesConfig } from 'src/modules/Ecogestes/EcogestesConfig'
 import { AlertsConfig } from 'src/modules/Alerts/AlertsConfig'
 import { MaintenanceConfig } from 'src/modules/Maintenance/MaintenanceConfig'
+import { DashboardConfig } from 'src/modules/Dashboard/DashboardConfig'
 
 /**
  *
  */
 export const routes = [
+    ...DashboardConfig,
     ...MyConsumptionConfig,
     ...NrLinkConnectionConfig,
     ...AdvicesConfig,

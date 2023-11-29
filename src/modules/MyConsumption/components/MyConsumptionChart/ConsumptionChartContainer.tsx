@@ -235,7 +235,7 @@ export const ConsumptionChartContainer = ({
             {/* SwitchIdleConsumption Info Text*/}
             {isShowIdleConsumptionDisabledInfo && (
                 <Box
-                    className="flex items-center justify-between text-13 md:text-16 w-full p-16"
+                    className="flex items-center justify-between text-13 md:text-16 w-full p-16 my-16"
                     sx={{ backgroundColor: 'primary.main', color: 'primary.contrastText' }}
                 >
                     <TypographyFormatMessage
@@ -247,7 +247,7 @@ export const ConsumptionChartContainer = ({
                     >
                         Les informations de veille ne sont pas disponibles pour cette pèriode
                     </TypographyFormatMessage>
-                    <CloseIcon sx={{ cursor: 'pointer' }} onClick={() => setIsShowIdleConsumptionDisabledInfo(false)} />
+                    <CloseIcon className="cursor-pointer" onClick={() => setIsShowIdleConsumptionDisabledInfo(false)} />
                 </Box>
             )}
 
@@ -261,7 +261,7 @@ export const ConsumptionChartContainer = ({
                 <SwitchIdleConsumption
                     removeIdleTarget={() => onIdleConsumptionSwitchButton(false)}
                     addIdleTarget={() => onIdleConsumptionSwitchButton(true)}
-                    isIdleConsumptionButtonDisabled={period === 'daily'}
+                    isIdleConsumptionButtonDisabled={period === 'daily' || !isSolarProductionConsentOff}
                     onClickIdleConsumptionDisabledInfoIcon={() => setIsShowIdleConsumptionDisabledInfo(true)}
                     isIdleConsumptionButtonSelected={isIdleSwitchToggled}
                 />

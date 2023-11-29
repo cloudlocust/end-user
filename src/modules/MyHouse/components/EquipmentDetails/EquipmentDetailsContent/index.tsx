@@ -11,10 +11,10 @@ import {
     SelectOnChangeHandler,
 } from 'src/modules/MyHouse/components/EquipmentDetails/EquipmentDetailsContent/EquipmentDetailsContent'
 import { myEquipmentOptions } from 'src/modules/MyHouse/utils/MyHouseVariables'
-import { EquipmentMeasurementResultsList } from 'src/modules/MyHouse/components/EquipmentDetails/EquipmentMeasurementResultsList'
+import { EquipmentMeasurementResults } from 'src/modules/MyHouse/components/EquipmentDetails/EquipmentMeasurementResults'
 import { MicrowaveMeasurement } from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement'
 import { useModal } from 'src/hooks/useModal'
-import { useEquipmentMeasurementResults } from 'src/modules/MyHouse/components/EquipmentDetails/EquipmentMeasurementResultsList/EquipmentMeasurementResultsHook'
+import { useEquipmentMeasurementResults } from 'src/modules/MyHouse/components/EquipmentDetails/EquipmentMeasurementResults/EquipmentMeasurementResultsHook'
 
 /**
  * EquipmentDetailsContent compoonent.
@@ -115,7 +115,7 @@ export const EquipmentDetailsContent = ({ equipmentDetails }: EquipmentDetailsCo
 
                 {/* Measurement result list */}
                 <div className="flex-1">
-                    <EquipmentMeasurementResultsList
+                    <EquipmentMeasurementResults
                         measurementModes={equipmentDetails.measurementModes}
                         housingEquipmentId={equipmentDetails.housingEquipmentId!}
                         equipmentsNumber={equipmentDetails.number}

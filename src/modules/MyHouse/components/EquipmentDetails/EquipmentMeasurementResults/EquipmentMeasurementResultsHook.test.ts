@@ -1,6 +1,6 @@
 import { act } from '@testing-library/react-hooks'
 import { TEST_MEASUREMENT_RESULT_EXIST, TEST_RESULT_VALUE, TEST_MEASUREMENT_ERROR } from 'src/mocks/handlers/equipments'
-import { useEquipmentMeasurementResults } from 'src/modules/MyHouse/components/EquipmentDetails/EquipmentMeasurementResultsList/EquipmentMeasurementResultsHook'
+import { useEquipmentMeasurementResults } from 'src/modules/MyHouse/components/EquipmentDetails/EquipmentMeasurementResults/EquipmentMeasurementResultsHook'
 import { reduxedRenderHook } from 'src/common/react-platform-components/test'
 
 const measurementModes = ['mode A', 'mode B', 'mode C']

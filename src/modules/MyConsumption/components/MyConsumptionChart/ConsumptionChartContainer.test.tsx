@@ -94,7 +94,7 @@ let mockRange = {
 let mockPeriod: periodType = 'daily'
 let mockMetricsInterval: metricIntervalType = '1m'
 
-const echartsConsumptionChartContainerProps: ConsumptionChartContainerProps = {
+let echartsConsumptionChartContainerProps: ConsumptionChartContainerProps = {
     filters: mockFilters,
     enedisSgeConsent: mockEnedisConsent,
     isSolarProductionConsentOff: false,
@@ -379,7 +379,7 @@ describe('MyConsumptionContainer test', () => {
         mockManualContractFillingIsEnabled = true
     })
 
-    test('When isShowIdleConsumptionDisabledInfo', async () => {
+    test('When isShowIdleConsumptionDisabledInfo is false', async () => {
         echartsConsumptionChartContainerProps.period = 'daily'
         echartsConsumptionChartContainerProps.metricsInterval = '1m' as metricIntervalType
 

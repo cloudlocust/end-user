@@ -10,9 +10,9 @@ import TableCell from '@mui/material/TableCell'
 import TableRow from '@mui/material/TableRow'
 import useMediaQuery from '@mui/material/useMediaQuery'
 import {
-    EquipmentMeasurementResultsListProps,
+    EquipmentMeasurementResultsProps,
     MeasurementResultProps,
-} from 'src/modules/MyHouse/components/EquipmentDetails/EquipmentMeasurementResultsList/EquipmentMeasurementResultsList'
+} from 'src/modules/MyHouse/components/EquipmentDetails/EquipmentMeasurementResults/EquipmentMeasurementResults'
 import { MicrowaveMeasurement } from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement'
 import { useModal } from 'src/hooks/useModal'
 import { useCallback, useEffect, useState } from 'react'
@@ -46,7 +46,7 @@ export const MeasurementResult = ({
     )
 
 /**
- * EquipmentMeasurementResultsList compoonent.
+ * EquipmentMeasurementResults compoonent.
  *
  * @param root0 N/A.
  * @param root0.measurementModes The list of measurement modes for the equipment.
@@ -56,9 +56,9 @@ export const MeasurementResult = ({
  * @param root0.measurementResults The measurement result values.
  * @param root0.isLoadingMeasurements The measurement result values is loading.
  * @param root0.updateEquipmentMeasurementResults Function to update the measurement result values.
- * @returns EquipmentMeasurementResultsList JSX.
+ * @returns EquipmentMeasurementResults JSX.
  */
-export const EquipmentMeasurementResultsList = ({
+export const EquipmentMeasurementResults = ({
     measurementModes,
     housingEquipmentId,
     equipmentsNumber,
@@ -66,7 +66,7 @@ export const EquipmentMeasurementResultsList = ({
     measurementResults,
     isLoadingMeasurements,
     updateEquipmentMeasurementResults,
-}: EquipmentMeasurementResultsListProps) => {
+}: EquipmentMeasurementResultsProps) => {
     const { formatMessage } = useIntl()
     const max_width_600 = useMediaQuery('(max-width:600px)')
     const {
