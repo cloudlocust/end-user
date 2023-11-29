@@ -25,7 +25,7 @@ export const EquipmentDetailsContent = ({ equipmentDetails }: EquipmentDetailsCo
     const max_width_600 = useMediaQuery('(max-width:600px)')
     const max_width_470 = useMediaQuery('(max-width:470px)')
     const [selectedEquipmentNumber, setSelectedEquipmentNumber] = useState(equipmentDetails.number === 1 ? 1 : null)
-    const myEquipmentStr = 'Mon équipement'
+    const MY_EQUIPEMENT = 'Mon équipement'
     const { labelTitle: equipmentLabel } =
         myEquipmentOptions.find((element) => element.name === equipmentDetails.name) || {}
 
@@ -51,8 +51,8 @@ export const EquipmentDetailsContent = ({ equipmentDetails }: EquipmentDetailsCo
                             }}
                         >
                             {formatMessage({
-                                id: myEquipmentStr,
-                                defaultMessage: myEquipmentStr,
+                                id: MY_EQUIPEMENT,
+                                defaultMessage: MY_EQUIPEMENT,
                             })}
                         </InputLabel>
                         <Select
@@ -60,8 +60,8 @@ export const EquipmentDetailsContent = ({ equipmentDetails }: EquipmentDetailsCo
                             id="equipment-select"
                             value={selectedEquipmentNumber}
                             label={formatMessage({
-                                id: myEquipmentStr,
-                                defaultMessage: myEquipmentStr,
+                                id: MY_EQUIPEMENT,
+                                defaultMessage: MY_EQUIPEMENT,
                             })}
                             onChange={handleSelectEquipmentChange}
                             sx={{
