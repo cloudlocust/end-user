@@ -35,7 +35,7 @@ export const EquipmentDetailsContent = ({ equipmentDetails }: EquipmentDetailsCo
         openModal: onOpenMeasurementModal,
         closeModal: onCloseMeasurementModal,
     } = useModal()
-    const myEquipmentStr = 'Mon équipement'
+    const MY_EQUIPEMENT = 'Mon équipement'
     const { labelTitle: equipmentLabel } =
         myEquipmentOptions.find((element) => element.name === equipmentDetails.name) || {}
 
@@ -80,8 +80,8 @@ export const EquipmentDetailsContent = ({ equipmentDetails }: EquipmentDetailsCo
                                 }}
                             >
                                 {formatMessage({
-                                    id: myEquipmentStr,
-                                    defaultMessage: myEquipmentStr,
+                                    id: MY_EQUIPEMENT,
+                                    defaultMessage: MY_EQUIPEMENT,
                                 })}
                             </InputLabel>
                             <Select
@@ -89,8 +89,8 @@ export const EquipmentDetailsContent = ({ equipmentDetails }: EquipmentDetailsCo
                                 id="equipment-select"
                                 value={selectedEquipmentNumber}
                                 label={formatMessage({
-                                    id: myEquipmentStr,
-                                    defaultMessage: myEquipmentStr,
+                                    id: MY_EQUIPEMENT,
+                                    defaultMessage: MY_EQUIPEMENT,
                                 })}
                                 onChange={handleSelectEquipmentChange}
                                 sx={{
