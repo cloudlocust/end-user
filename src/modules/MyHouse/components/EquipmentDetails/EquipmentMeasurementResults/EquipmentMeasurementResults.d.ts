@@ -13,7 +13,7 @@ export interface EquipmentMeasurementResultsProps {
     /**
      * The number of equipments.
      */
-    equipmentsNumber?: number
+    equipmentsNumber: number
     /**
      * The equipment number.
      */
@@ -54,7 +54,7 @@ export interface MeasurementResultProps {
     /**
      * The measurement result.
      */
-    result?: number | null
+    result: number | null
     /**
      * The measurement result is loading.
      */

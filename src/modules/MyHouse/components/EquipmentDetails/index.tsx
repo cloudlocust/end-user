@@ -38,6 +38,9 @@ export const EquipmentDetails = () => {
     const history = useHistory()
     const isInitialRender = useRef(true)
 
+    /**
+     * Return to the equipment list page when the currentHousing is changed.
+     */
     useEffect(() => {
         if (isInitialRender.current) isInitialRender.current = false
         else if (history.location.pathname.endsWith('/equipments/details') && currentHousing?.id)

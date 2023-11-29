@@ -46,11 +46,11 @@ export function useEquipmentMeasurementResults() {
                         await getEquipmentMeasurementResult(equipmentNumber, housingEquipmentId, measurementMode),
                 )
                 const resultValues = await Promise.all(promises)
-                let measurementResultsObj: measurementResultsStateType = {}
+                let intermediateMeasurementResults: measurementResultsStateType = {}
                 for (const resultValue of resultValues) {
-                    measurementResultsObj[resultValue.mode] = resultValue.value
+                    intermediateMeasurementResults[resultValue.mode] = resultValue.value
                 }
-                setMeasurementResults(measurementResultsObj)
+                setMeasurementResults(intermediateMeasurementResults)
                 setIsLoadingMeasurements(false)
             }
         },

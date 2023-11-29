@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useIntl } from 'src/common/react-platform-translation'
 import FormControl from '@mui/material/FormControl'
 import InputLabel from '@mui/material/InputLabel'
@@ -39,20 +39,26 @@ export const EquipmentDetailsContent = ({ equipmentDetails }: EquipmentDetailsCo
     const { labelTitle: equipmentLabel } =
         myEquipmentOptions.find((element) => element.name === equipmentDetails.name) || {}
 
-    useEffect(() => {
-        if (!isMeasurementModalOpen)
+    /**
+     * Function to update the measurement results for the current equipment.
+     */
+    const updateCurrentEquipmentMeasurementResults = useCallback(() => {
+        if (equipmentDetails.measurementModes)
             updateEquipmentMeasurementResults(
                 selectedEquipmentNumber,
                 equipmentDetails.housingEquipmentId!,
-                equipmentDetails.measurementModes!,
+                equipmentDetails.measurementModes,
             )
     }, [
         equipmentDetails.housingEquipmentId,
         equipmentDetails.measurementModes,
-        isMeasurementModalOpen,
         selectedEquipmentNumber,
         updateEquipmentMeasurementResults,
     ])
+
+    useEffect(() => {
+        updateCurrentEquipmentMeasurementResults()
+    }, [updateCurrentEquipmentMeasurementResults])
 
     /**
      * The select onChange handler function.
@@ -115,15 +121,17 @@ export const EquipmentDetailsContent = ({ equipmentDetails }: EquipmentDetailsCo
 
                 {/* Measurement result list */}
                 <div className="flex-1">
-                    <EquipmentMeasurementResults
-                        measurementModes={equipmentDetails.measurementModes}
-                        housingEquipmentId={equipmentDetails.housingEquipmentId!}
-                        equipmentsNumber={equipmentDetails.number}
-                        equipmentNumber={selectedEquipmentNumber}
-                        measurementResults={measurementResults}
-                        isLoadingMeasurements={isLoadingMeasurements}
-                        updateEquipmentMeasurementResults={updateEquipmentMeasurementResults}
-                    />
+                    {equipmentDetails.number && (
+                        <EquipmentMeasurementResults
+                            measurementModes={equipmentDetails.measurementModes}
+                            housingEquipmentId={equipmentDetails.housingEquipmentId!}
+                            equipmentsNumber={equipmentDetails.number}
+                            equipmentNumber={selectedEquipmentNumber}
+                            measurementResults={measurementResults}
+                            isLoadingMeasurements={isLoadingMeasurements}
+                            updateEquipmentMeasurementResults={updateEquipmentMeasurementResults}
+                        />
+                    )}
                 </div>
 
                 {/* Buttons */}
@@ -149,15 +157,18 @@ export const EquipmentDetailsContent = ({ equipmentDetails }: EquipmentDetailsCo
                 </div>
             </div>
 
-            <MicrowaveMeasurement
-                housingEquipmentId={equipmentDetails.housingEquipmentId!}
-                equipmentsNumber={equipmentDetails.number!}
-                measurementModes={equipmentDetails.measurementModes!}
-                isMeasurementModalOpen={isMeasurementModalOpen}
-                onCloseMeasurementModal={onCloseMeasurementModal}
-                defaultMicrowaveNumber={selectedEquipmentNumber}
-                startMeasurementFromEquipmentsDetailsPage
-            />
+            {equipmentDetails.number && equipmentDetails.measurementModes && (
+                <MicrowaveMeasurement
+                    housingEquipmentId={equipmentDetails.housingEquipmentId!}
+                    equipmentsNumber={equipmentDetails.number}
+                    measurementModes={equipmentDetails.measurementModes}
+                    isMeasurementModalOpen={isMeasurementModalOpen}
+                    onCloseMeasurementModal={onCloseMeasurementModal}
+                    defaultMicrowaveNumber={selectedEquipmentNumber}
+                    updateEquipmentMeasurementResults={updateCurrentEquipmentMeasurementResults}
+                    startMeasurementFromEquipmentsDetailsPage
+                />
+            )}
         </>
     )
 }

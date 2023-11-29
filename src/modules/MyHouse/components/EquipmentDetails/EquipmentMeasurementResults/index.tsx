@@ -15,7 +15,7 @@ import {
 } from 'src/modules/MyHouse/components/EquipmentDetails/EquipmentMeasurementResults/EquipmentMeasurementResults'
 import { MicrowaveMeasurement } from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement'
 import { useModal } from 'src/hooks/useModal'
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useState } from 'react'
 
 /**
  * MeasurementResult compoonent (used only in this component).
@@ -86,16 +86,12 @@ export const EquipmentMeasurementResults = ({
         [onOpenMeasurementModal],
     )
 
-    useEffect(() => {
-        if (!isMeasurementModalOpen)
-            updateEquipmentMeasurementResults(equipmentNumber, housingEquipmentId, measurementModes!)
-    }, [
-        equipmentNumber,
-        housingEquipmentId,
-        isMeasurementModalOpen,
-        measurementModes,
-        updateEquipmentMeasurementResults,
-    ])
+    /**
+     * Function to update the measurement results for the current equipment.
+     */
+    const updateCurrentEquipmentMeasurementResults = useCallback(() => {
+        updateEquipmentMeasurementResults(equipmentNumber, housingEquipmentId, measurementModes!)
+    }, [equipmentNumber, housingEquipmentId, measurementModes, updateEquipmentMeasurementResults])
 
     return measurementModes && measurementModes.length > 0 ? (
         <>
@@ -140,7 +136,7 @@ export const EquipmentMeasurementResults = ({
                                                 measurementResults[measurementMode] || null,
                                             )
                                         }}
-                                        result={measurementResults[measurementMode]}
+                                        result={measurementResults[measurementMode] || null}
                                         isLoading={isLoadingMeasurements}
                                         isMobileView={max_width_600}
                                     />
@@ -151,17 +147,20 @@ export const EquipmentMeasurementResults = ({
                 </Table>
             </TableContainer>
 
-            <MicrowaveMeasurement
-                housingEquipmentId={housingEquipmentId!}
-                equipmentsNumber={equipmentsNumber!}
-                measurementModes={measurementModes}
-                isMeasurementModalOpen={isMeasurementModalOpen}
-                onCloseMeasurementModal={onCloseMeasurementModal}
-                defaultMicrowaveNumber={equipmentNumber}
-                defaultMeasurementMode={measurementMode}
-                defaultMeasurementResult={measurementResult}
-                showingOldResult
-            />
+            {equipmentsNumber && (
+                <MicrowaveMeasurement
+                    housingEquipmentId={housingEquipmentId!}
+                    equipmentsNumber={equipmentsNumber!}
+                    measurementModes={measurementModes}
+                    isMeasurementModalOpen={isMeasurementModalOpen}
+                    onCloseMeasurementModal={onCloseMeasurementModal}
+                    defaultMicrowaveNumber={equipmentNumber}
+                    defaultMeasurementMode={measurementMode}
+                    defaultMeasurementResult={measurementResult}
+                    updateEquipmentMeasurementResults={updateCurrentEquipmentMeasurementResults}
+                    showingOldResult
+                />
+            )}
         </>
     ) : null
 }

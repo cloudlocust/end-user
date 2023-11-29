@@ -24,6 +24,7 @@ import { useMicrowaveMeasurement } from 'src/modules/MyHouse/components/Equipmen
  * @param root0.isMeasurementModalOpen The state of the modal.
  * @param root0.showingOldResult Boolean indicating whether we want to display an old result.
  * @param root0.startMeasurementFromEquipmentsDetailsPage Boolean indicating whether we start the measurement from the EquipmentsDetails Page.
+ * @param root0.updateEquipmentMeasurementResults Function that update the measurement results in the equipment details page.
  * @param root0.defaultMicrowaveNumber Default value for the microwave number.
  * @param root0.defaultMeasurementMode Default value for the measurement mode.
  * @param root0.defaultMeasurementResult Default value for the measurement result.
@@ -51,6 +52,7 @@ export const MicrowaveMeasurement = ({
     isMeasurementModalOpen,
     showingOldResult,
     startMeasurementFromEquipmentsDetailsPage,
+    updateEquipmentMeasurementResults,
     defaultMicrowaveNumber,
     defaultMeasurementMode,
     defaultMeasurementResult,
@@ -118,6 +120,7 @@ export const MicrowaveMeasurement = ({
         else setCurrentStep(0)
         setMicrowaveNumber(equipmentsNumber === 1 ? 1 : defaultMicrowaveNumber || 0)
         setMeasurementMode(defaultMeasurementMode || '')
+        if (updateEquipmentMeasurementResults) updateEquipmentMeasurementResults()
         onCloseMeasurementModal()
     }, [
         defaultMeasurementMode,
@@ -127,6 +130,7 @@ export const MicrowaveMeasurement = ({
         setMeasurementStatus,
         showingOldResult,
         startMeasurementFromEquipmentsDetailsPage,
+        updateEquipmentMeasurementResults,
     ])
 
     const stepsContent = [

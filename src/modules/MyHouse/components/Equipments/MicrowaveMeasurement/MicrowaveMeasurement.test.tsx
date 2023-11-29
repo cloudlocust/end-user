@@ -9,6 +9,7 @@ const EQUIPMENT_NUMBER_TEST = 1
 const MEASUREMENT_MODES_TEST = ['mode A', 'mode B']
 const mockOnCloseMeasurementModal = jest.fn()
 const mockNavigateToEquipmentDetailsPage = jest.fn()
+const mockUpdateEquipmentMeasurementResults = jest.fn()
 
 const props: MicrowaveMeasurementProps = {
     housingEquipmentId: HOUSING_EQUIPMENT_ID_TEST,
@@ -17,6 +18,7 @@ const props: MicrowaveMeasurementProps = {
     isMeasurementModalOpen: true,
     onCloseMeasurementModal: mockOnCloseMeasurementModal,
     navigateToEquipmentDetailsPage: mockNavigateToEquipmentDetailsPage,
+    updateEquipmentMeasurementResults: mockUpdateEquipmentMeasurementResults,
 }
 
 describe('MicrowaveMeasurement tests', () => {
@@ -38,12 +40,13 @@ describe('MicrowaveMeasurement tests', () => {
         expect(screen.getByTestId('measurement-configuration-step-header')).toBeInTheDocument()
     })
 
-    test('close the MicrowaveMeasurement modal on clicking on the close button', async () => {
+    test('call the onCloseMeasurementModal and updateEquipmentMeasurementResults functions on clicking on the close button', async () => {
         reduxedRender(<MicrowaveMeasurement {...props} />)
 
         userEvent.click(screen.getByRole('button', { name: 'close' }))
         await waitFor(() => {
             expect(mockOnCloseMeasurementModal).toHaveBeenCalledTimes(1)
+            expect(mockUpdateEquipmentMeasurementResults).toHaveBeenCalledTimes(1)
         })
     })
 })

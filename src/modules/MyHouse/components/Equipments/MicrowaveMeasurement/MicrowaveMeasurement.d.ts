@@ -27,6 +27,10 @@ export interface MicrowaveMeasurementProps {
      */
     startMeasurementFromEquipmentsDetailsPage?: boolean
     /**
+     *  Function that update the measurement results in the equipment details page.
+     */
+    updateEquipmentMeasurementResults?: () => void
+    /**
      * Default value for the microwave number.
      */
     defaultMicrowaveNumber?: number
