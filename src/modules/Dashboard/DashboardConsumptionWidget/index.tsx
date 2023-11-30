@@ -12,15 +12,15 @@ import {
     getDateWithoutTimezoneOffset,
 } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
 import { metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
-import { createDataForConsumptionWidgetGraph } from 'src/modules/Dashboard/WidgetConsumptionDashboard/utils'
+import { createDataForConsumptionWidgetGraph } from 'src/modules/Dashboard/DashboardConsumptionWidget/utils'
 import { FuseCard } from 'src/modules/shared/FuseCard/FuseCard'
 
 /**
  * Consumption widget component for the dashboard.
  *
- * @returns WidgetConsumptionDashboard Component.
+ * @returns DashboardConsumptionWidget Component.
  */
-export const WidgetConsumptionDashboard = () => {
+export const DashboardConsumptionWidget = () => {
     const { formatMessage } = useIntl()
     const theme = useTheme()
     const { currentHousing } = useSelector(({ housingModel }: RootState) => housingModel)

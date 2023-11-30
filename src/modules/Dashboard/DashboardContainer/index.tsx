@@ -5,7 +5,7 @@ import { useConsumptionAlerts } from 'src/modules/Alerts/components/ConsumptionA
 import { useConsents } from 'src/modules/Consents/consentsHook'
 import { EnergyStatusWidget } from 'src/modules/Dashboard/EnergyStatusWidget/Index'
 import { EnergyStatusWidgetTypeEnum } from 'src/modules/Dashboard/EnergyStatusWidget/energyStatusWidget.d'
-import { WidgetConsumptionDashboard } from 'src/modules/Dashboard/WidgetConsumptionDashboard'
+import { DashboardConsumptionWidget } from 'src/modules/Dashboard/DashboardConsumptionWidget'
 import { metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
 import { useMetrics } from 'src/modules/Metrics/metricsHook'
 import { PeriodEnum } from 'src/modules/MyConsumption/myConsumptionTypes.d'
@@ -64,7 +64,7 @@ export const DashboardContainer = () => {
                     pricePerKwh={pricePerKwh}
                 />
 
-                <WidgetConsumptionDashboard />
+                <DashboardConsumptionWidget />
             </div>
         </div>
     )

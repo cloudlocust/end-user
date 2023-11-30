@@ -1,5 +1,5 @@
 import { reduxedRender } from 'src/common/react-platform-components/test'
-import { WidgetConsumptionDashboard } from 'src/modules/Dashboard/WidgetConsumptionDashboard'
+import { DashboardConsumptionWidget } from 'src/modules/Dashboard/DashboardConsumptionWidget'
 
 const apexChartsTestId = 'apexcharts'
 
@@ -10,9 +10,9 @@ jest.mock(
     () => (props: any) => <div className="apexcharts-svg" {...props}></div>,
 )
 
-describe('Test WidgetConsumptionDashboard', () => {
-    test('When WidgetConsumptionDashboard is rendered, ApexChart should be shown', () => {
-        const { getByTestId } = reduxedRender(<WidgetConsumptionDashboard />)
+describe('DashboardConsumptionWidget', () => {
+    test('When the component DashboardConsumptionWidget is rendered, ApexChart should be shown', () => {
+        const { getByTestId } = reduxedRender(<DashboardConsumptionWidget />)
         expect(getByTestId(apexChartsTestId)).toBeInTheDocument()
     })
 

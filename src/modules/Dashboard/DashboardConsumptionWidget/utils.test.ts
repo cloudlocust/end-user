@@ -1,4 +1,4 @@
-import { createDataForConsumptionWidgetGraph } from 'src/modules/Dashboard/WidgetConsumptionDashboard/utils'
+import { createDataForConsumptionWidgetGraph } from 'src/modules/Dashboard/DashboardConsumptionWidget/utils'
 import { IMetric, metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
 
 // Mock the metric data
