@@ -5,6 +5,7 @@ import { useConsumptionAlerts } from 'src/modules/Alerts/components/ConsumptionA
 import { useConsents } from 'src/modules/Consents/consentsHook'
 import { EnergyStatusWidget } from 'src/modules/Dashboard/EnergyStatusWidget/Index'
 import { EnergyStatusWidgetTypeEnum } from 'src/modules/Dashboard/EnergyStatusWidget/energyStatusWidget.d'
+import { WidgetConsumptionDashboard } from 'src/modules/Dashboard/WidgetConsumptionDashboard'
 import { metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
 import { useMetrics } from 'src/modules/Metrics/metricsHook'
 import { PeriodEnum } from 'src/modules/MyConsumption/myConsumptionTypes.d'
@@ -50,17 +51,21 @@ export const DashboardContainer = () => {
         <div className="p-16 h-full">
             <TypographyFormatMessage className="mb-12 font-500 text-24">Accueil</TypographyFormatMessage>
 
-            <EnergyStatusWidget
-                data={data}
-                nrlinkConsent={nrlinkConsent?.nrlinkConsentState}
-                type={
-                    isSolarProductionConsentOff
-                        ? EnergyStatusWidgetTypeEnum.CONSUMPTION
-                        : EnergyStatusWidgetTypeEnum.PRODUCTION
-                }
-                isLoading={isMetricsLoading}
-                pricePerKwh={pricePerKwh}
-            />
+            <div className="flex flex-col gap-20">
+                <EnergyStatusWidget
+                    data={data}
+                    nrlinkConsent={nrlinkConsent?.nrlinkConsentState}
+                    type={
+                        isSolarProductionConsentOff
+                            ? EnergyStatusWidgetTypeEnum.CONSUMPTION
+                            : EnergyStatusWidgetTypeEnum.PRODUCTION
+                    }
+                    isLoading={isMetricsLoading}
+                    pricePerKwh={pricePerKwh}
+                />
+
+                <WidgetConsumptionDashboard />
+            </div>
         </div>
     )
 }

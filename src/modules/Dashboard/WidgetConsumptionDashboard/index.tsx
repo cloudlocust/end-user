@@ -2,7 +2,6 @@ import { useTheme } from '@mui/material'
 import { useIntl } from 'src/common/react-platform-translation'
 import ReactApexChart from 'react-apexcharts'
 import { ApexOptions } from 'apexcharts'
-import Paper from '@mui/material/Paper'
 import { useEffect, useState } from 'react'
 import { useMetrics } from 'src/modules/Metrics/metricsHook'
 import { startOfDay } from 'date-fns'
@@ -14,6 +13,7 @@ import {
 } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
 import { metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
 import { createDataForConsumptionWidgetGraph } from 'src/modules/Dashboard/WidgetConsumptionDashboard/utils'
+import { FuseCard } from 'src/modules/shared/FuseCard/FuseCard'
 
 /**
  * Consumption widget component for the dashboard.
@@ -26,7 +26,7 @@ export const WidgetConsumptionDashboard = () => {
     const { currentHousing } = useSelector(({ housingModel }: RootState) => housingModel)
     const currentTime = new Date()
     const filters = formatMetricFilter(currentHousing?.id!)
-    const { data } = useMetrics(
+    const { data, isMetricsLoading } = useMetrics(
         {
             interval: '30m',
             range: {
@@ -86,7 +86,7 @@ export const WidgetConsumptionDashboard = () => {
     }
 
     return (
-        <Paper className="flex flex-col flex-auto shadow rounded-2xl overflow-hidden m-40">
+        <FuseCard isLoading={isMetricsLoading} loadingColor={theme.palette.primary.main}>
             {/* This 1st div is just for add some space, it will be removed in the next PR */}
             <div className="h-128" />
             <div className="flex flex-col flex-auto h-92">
@@ -106,6 +106,6 @@ export const WidgetConsumptionDashboard = () => {
                     data-testid="apexcharts"
                 />
             </div>
-        </Paper>
+        </FuseCard>
     )
 }
