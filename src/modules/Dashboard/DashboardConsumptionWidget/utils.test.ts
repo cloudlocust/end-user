@@ -1,4 +1,7 @@
-import { createDataForConsumptionWidgetGraph } from 'src/modules/Dashboard/DashboardConsumptionWidget/utils'
+import {
+    createDataForConsumptionWidgetGraph,
+    calculateTotalDailyConsumptionAndPrice,
+} from 'src/modules/Dashboard/DashboardConsumptionWidget/utils'
 import { IMetric, metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
 
 // Mock the metric data
@@ -57,12 +60,42 @@ const expectedSerieValues = [
 ]
 
 describe('createDataForConsumptionWidgetGraph', () => {
-    test('returns labels and serieValues based on metric data', () => {
-        // Call the function with the mock data
+    test('should generate labels and serieValues based on metric data', () => {
         const result = createDataForConsumptionWidgetGraph(mockData)
 
-        // Assert the expected output
         expect(result.labels).toEqual(expectedLabels)
         expect(result.serieValues).toEqual(expectedSerieValues)
+    })
+})
+
+describe('calculateTotalDailyConsumptionAndPrice', () => {
+    test('should calculate total daily consumption and price with valid inputs', () => {
+        const serieValues = [100, 200, 300]
+        const pricePerKwh = 2
+        const result = calculateTotalDailyConsumptionAndPrice(serieValues, pricePerKwh)
+
+        expect(result.totalDailyConsumption).toEqual(600)
+        expect(result.consumptionUnit).toEqual('Wh')
+        expect(result.totalDailyPrice).toEqual(1.2)
+    })
+
+    test('should handle zero consumption values', () => {
+        const serieValues = [0, 0, 0]
+        const pricePerKwh = 2
+        const result = calculateTotalDailyConsumptionAndPrice(serieValues, pricePerKwh)
+
+        expect(result.totalDailyConsumption).toEqual(0)
+        expect(result.consumptionUnit).toEqual('Wh')
+        expect(result.totalDailyPrice).toEqual(0)
+    })
+
+    test('should handle null pricePerKwh', () => {
+        const serieValues = [390, 440, 500]
+        const pricePerKwh = null
+        const result = calculateTotalDailyConsumptionAndPrice(serieValues, pricePerKwh)
+
+        expect(result.totalDailyConsumption).toEqual(1.33)
+        expect(result.consumptionUnit).toEqual('kWh')
+        expect(result.totalDailyPrice).toEqual(0)
     })
 })
