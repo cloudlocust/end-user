@@ -407,3 +407,13 @@ export function groupedCards<T>(cards: T[], colNumber = 2) {
     const chunkArray = cards && chunk(cards, colNumber)
     return zip(...chunkArray).map((item) => filter(item)) as T[][]
 }
+
+/**
+ * Regex for meter guid. Accept only 14 numbers.
+ */
+export const meteGuidNumberRegex = /^\d{14}$/.source
+
+/**
+ * Text for meter guid regex.
+ */
+export const METER_GUID_REGEX_TEXT = 'Veuillez entrer votre numéro de compteur contenant exactement 14 chiffres.'

@@ -6,11 +6,12 @@ import { linkyPath, electricityPath, contractPath, ActionsNrLinkConnectionSteps 
 import TextFieldMui from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
 import { TextField } from 'src/common/ui-kit'
-import { Form, max, min, requiredBuilder } from 'src/common/react-platform-components'
+import { Form, regex, requiredBuilder } from 'src/common/react-platform-components'
 import { useMeterForHousing } from 'src/modules/Meters/metersHook'
 import { textNrlinkColor } from 'src/modules/nrLinkConnection/components/LastStepNrLinkConnection/LastStepNrLinkConnection'
 import { MeterStepNrLinkConnectionFormProps } from './MeterStepNrLinkConnectionForm.d'
 import AddHousingModal from 'src/modules/Layout/Toolbar/components/AddHousingModal'
+import { METER_GUID_REGEX_TEXT, meteGuidNumberRegex } from 'src/modules/MyHouse/utils/MyHouseVariables'
 
 /**
  * Component showing the first step in the nrLinkConnection Stepper.
@@ -87,7 +88,10 @@ const MeterStepNrLinkConnectionForm = ({
                                 name="guid"
                                 label="Numéro de mon compteur (PDL ou PRM)"
                                 placeholder="Ex: 12345678912345"
-                                validateFunctions={[requiredBuilder(), min(14), max(14)]}
+                                validateFunctions={[
+                                    requiredBuilder(),
+                                    regex(meteGuidNumberRegex, METER_GUID_REGEX_TEXT),
+                                ]}
                             />
                         )}
                     </div>
