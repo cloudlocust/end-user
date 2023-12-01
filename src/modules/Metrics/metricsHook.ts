@@ -139,6 +139,8 @@ export function useMetrics(initialState: getMetricType, immediate: boolean = fal
                     adhocFilters: params.filters,
                 })
                 setData(response.data)
+                setIsMetricsLoading(false)
+                return response.data
             } catch (error) {
                 enqueueSnackbar(
                     formatMessage({
@@ -151,8 +153,9 @@ export function useMetrics(initialState: getMetricType, immediate: boolean = fal
                     },
                 )
                 setData([])
+                setIsMetricsLoading(false)
+                return []
             }
-            setIsMetricsLoading(false)
         },
         [enqueueSnackbar, formatMessage],
     )

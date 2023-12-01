@@ -64,7 +64,10 @@ export const DashboardContainer = () => {
                     pricePerKwh={pricePerKwh}
                 />
 
-                <DashboardConsumptionWidget />
+                <DashboardConsumptionWidget
+                    metricInterval={enphaseConsent?.enphaseConsentState !== 'ACTIVE' ? '1m' : '30m'}
+                    pricePerKwh={pricePerKwh}
+                />
             </div>
         </div>
     )

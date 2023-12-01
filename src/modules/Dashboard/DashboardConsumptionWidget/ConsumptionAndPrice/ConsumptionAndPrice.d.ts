@@ -1,3 +1,5 @@
+import { totalConsumptionUnits } from 'src/modules/MyConsumption/components/Widget/Widget'
+
 /**
  * ConsumptionAndPrice props.
  */
@@ -9,7 +11,7 @@ export interface ConsumptionAndPriceProps {
     /**
      * The consumption value unit.
      */
-    consumptionUnit?: string
+    consumptionUnit?: totalConsumptionUnits
     /**
      * The price value.
      */
