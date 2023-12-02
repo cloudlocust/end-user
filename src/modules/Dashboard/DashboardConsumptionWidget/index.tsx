@@ -3,7 +3,6 @@ import { useIntl } from 'src/common/react-platform-translation'
 import ReactApexChart from 'react-apexcharts'
 import { ApexOptions } from 'apexcharts'
 import { useCallback, useEffect, useState } from 'react'
-import { useMetrics } from 'src/modules/Metrics/metricsHook'
 import { startOfDay } from 'date-fns'
 import { useSelector } from 'react-redux'
 import { RootState } from 'src/redux'
@@ -28,32 +27,23 @@ import {
  * Consumption widget component for the dashboard.
  *
  * @param root0 N/A.
+ * @param root0.getMetricsWithParams Function to get Metrics.
+ * @param root0.isMetricsLoading Is Metrics getting is in progress.
  * @param root0.metricInterval Metrics intervals.
  * @param root0.pricePerKwh Price per kWh.
  * @returns DashboardConsumptionWidget Component.
  */
-export const DashboardConsumptionWidget = ({ metricInterval, pricePerKwh }: DashboardConsumptionWidgetProps) => {
+export const DashboardConsumptionWidget = ({
+    getMetricsWithParams,
+    isMetricsLoading,
+    metricInterval,
+    pricePerKwh,
+}: DashboardConsumptionWidgetProps) => {
     const { formatMessage } = useIntl()
     const theme = useTheme()
     const { currentHousing } = useSelector(({ housingModel }: RootState) => housingModel)
-    const currentTime = new Date()
-    const { getMetricsWithParams } = useMetrics({
-        interval: metricInterval,
-        range: {
-            from: getDateWithoutTimezoneOffset(startOfDay(currentTime)),
-            to: getDateWithoutTimezoneOffset(currentTime),
-        },
-        targets: [
-            {
-                target: metricTargetsEnum.consumption,
-                type: 'timeserie',
-            },
-        ],
-        filters: formatMetricFilter(currentHousing?.id!),
-    })
     const [serieValues, setSerieValues] = useState<number[]>([])
     const [labels, setLabels] = useState<string[]>([])
-    const [isWidgetValuesLoading, setIsWidgetValuesLoading] = useState(true)
     const [totalDailyConsumption, setTotalDailyConsumption] = useState<totalDailyConsumptionType>({
         value: 0,
         unit: 'Wh',
@@ -104,7 +94,6 @@ export const DashboardConsumptionWidget = ({ metricInterval, pricePerKwh }: Dash
     }
 
     const updateWidgetValues = useCallback(async () => {
-        setIsWidgetValuesLoading(true)
         const currentTime = new Date()
         const data = await getMetricsWithParams({
             interval: metricInterval,
@@ -127,7 +116,6 @@ export const DashboardConsumptionWidget = ({ metricInterval, pricePerKwh }: Dash
             setTotalDailyPrice(totalDailyPrice)
             setTotalDailyConsumption({ value: totalDailyConsumption, unit: consumptionUnit })
         }
-        setIsWidgetValuesLoading(false)
     }, [currentHousing?.id, getMetricsWithParams, metricInterval, pricePerKwh])
 
     useEffect(() => {
@@ -135,7 +123,7 @@ export const DashboardConsumptionWidget = ({ metricInterval, pricePerKwh }: Dash
     }, [updateWidgetValues])
 
     return (
-        <FuseCard sx={{ height: 220 }} isLoading={isWidgetValuesLoading} loadingColor={theme.palette.primary.main}>
+        <FuseCard sx={{ height: 220 }} isLoading={isMetricsLoading} loadingColor={theme.palette.primary.main}>
             <div className="h-128 flex items-center mx-24">
                 <ConsumptionAndPrice
                     consumptionValue={totalDailyConsumption.value}

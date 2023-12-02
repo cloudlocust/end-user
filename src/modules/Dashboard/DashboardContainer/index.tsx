@@ -26,7 +26,7 @@ export const DashboardContainer = () => {
     const isSolarProductionConsentOff =
         enphaseConsent?.enphaseConsentState !== 'ACTIVE' || arePlugsUsedBasedOnProductionStatus(currentHousingScopes)
 
-    const { data, isMetricsLoading, setFilters } = useMetrics(
+    const { data, isMetricsLoading, setFilters, getMetricsWithParams } = useMetrics(
         {
             interval: '1m',
             range: getRangeV2(PeriodEnum.DAILY),
@@ -65,6 +65,8 @@ export const DashboardContainer = () => {
                 />
 
                 <DashboardConsumptionWidget
+                    getMetricsWithParams={getMetricsWithParams}
+                    isMetricsLoading={isMetricsLoading}
                     metricInterval={enphaseConsent?.enphaseConsentState !== 'ACTIVE' ? '1m' : '30m'}
                     pricePerKwh={pricePerKwh}
                 />

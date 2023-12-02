@@ -4,8 +4,10 @@ import {
 } from 'src/modules/Dashboard/DashboardConsumptionWidget/utils'
 import { IMetric, metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
 
-// Mock the metric data
-const mockData: IMetric[] = [
+/**
+ * Mock the metric data.
+ */
+export const mockMetricConsumptionData: IMetric[] = [
     {
         target: metricTargetsEnum.consumption,
         datapoints: [
@@ -31,8 +33,10 @@ const mockData: IMetric[] = [
     },
 ]
 
-// Expected labels for the mocked metric data
-const expectedLabels = [
+/**
+ * Expected labels for the mocked metric data.
+ */
+export const mockConsumptionLabels = [
     '00:30',
     '01:00',
     '01:30',
@@ -53,18 +57,20 @@ const expectedLabels = [
     '09:00',
 ]
 
-// Expected serieValues for the mocked metric data
-const expectedSerieValues = [
+/**
+ * Expected serieValues for the mocked metric data.
+ */
+export const mockConsumptionSerieValues = [
     135.0, 131.0, 124.0, 160.0, 146.0, 132.0, 125.0, 140.0, 131.0, 141.0, 129.0, 139.0, 130.0, 139.0, 138.0, 209.0,
     246.0, 353.0,
 ]
 
 describe('createDataForConsumptionWidgetGraph', () => {
     test('should generate labels and serieValues based on metric data', () => {
-        const result = createDataForConsumptionWidgetGraph(mockData)
+        const result = createDataForConsumptionWidgetGraph(mockMetricConsumptionData)
 
-        expect(result.labels).toEqual(expectedLabels)
-        expect(result.serieValues).toEqual(expectedSerieValues)
+        expect(result.labels).toEqual(mockConsumptionLabels)
+        expect(result.serieValues).toEqual(mockConsumptionSerieValues)
     })
 })
 
