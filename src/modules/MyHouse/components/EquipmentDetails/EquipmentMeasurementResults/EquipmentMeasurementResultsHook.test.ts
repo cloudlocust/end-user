@@ -2,7 +2,28 @@ import { TEST_MEASUREMENT_RESULT_EXIST, TEST_RESULT_VALUE, TEST_MEASUREMENT_ERRO
 import { useEquipmentMeasurementResults } from 'src/modules/MyHouse/components/EquipmentDetails/EquipmentMeasurementResults/EquipmentMeasurementResultsHook'
 import { reduxedRenderHook } from 'src/common/react-platform-components/test'
 
+const mockEnqueueSnackbar = jest.fn()
+
+/**
+ * Mocking the useSnackbar.
+ */
+jest.mock('notistack', () => ({
+    ...jest.requireActual('notistack'),
+    /**
+     * Mock the notistack useSnackbar hooks.
+     *
+     * @returns The notistack useSnackbar hook.
+     */
+    useSnackbar: () => ({
+        enqueueSnackbar: mockEnqueueSnackbar,
+    }),
+}))
+
 const measurementModes = ['mode A', 'mode B']
+const errorMessages = [
+    `Un problème s'est produit lors de la récupération du résultat de la mesure en mode mode A : Error in getting measurement result`,
+    `Un problème s'est produit lors de la récupération du résultat de la mesure en mode mode B : Error in getting measurement result`,
+]
 const housingEquipmentId = 35
 const equipmentNumber = 1
 
@@ -71,6 +92,15 @@ describe('useEquipmentMeasurementResults hook', () => {
         expect(result.current.measurementResults).toStrictEqual({
             [measurementModes[0]]: { isLoading: false, value: null },
             [measurementModes[1]]: { isLoading: false, value: null },
+        })
+        expect(mockEnqueueSnackbar).toHaveBeenCalledTimes(2)
+        expect(mockEnqueueSnackbar).toHaveBeenCalledWith(errorMessages[0], {
+            autoHideDuration: 5000,
+            variant: 'error',
+        })
+        expect(mockEnqueueSnackbar).toHaveBeenCalledWith(errorMessages[1], {
+            autoHideDuration: 5000,
+            variant: 'error',
         })
     })
 })

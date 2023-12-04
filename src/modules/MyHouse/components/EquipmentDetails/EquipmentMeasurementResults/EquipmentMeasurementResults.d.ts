@@ -37,17 +37,3 @@ export type resultType = {
 export interface measurementResultsStateType {
     [key: string]: resultType
 }
-
-/**
- * MeasurementResultProps.
- */
-export interface MeasurementResultProps {
-    /**
-     * The measurement result.
-     */
-    result?: resultType
-    /**
-     * We are in the mobile view.
-     */
-    isMobileView?: boolean
-}

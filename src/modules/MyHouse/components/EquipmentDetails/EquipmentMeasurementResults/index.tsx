@@ -1,40 +1,15 @@
 import { useIntl } from 'src/common/react-platform-translation'
 import Typography from '@mui/material/Typography'
 import Paper from '@mui/material/Paper'
-import Button from '@mui/material/Button'
-import CircularProgress from '@mui/material/CircularProgress'
 import TableContainer from '@mui/material/TableContainer'
 import Table from '@mui/material/Table'
 import TableBody from '@mui/material/TableBody'
 import TableCell from '@mui/material/TableCell'
 import TableRow from '@mui/material/TableRow'
 import useMediaQuery from '@mui/material/useMediaQuery'
-import {
-    EquipmentMeasurementResultsProps,
-    MeasurementResultProps,
-} from 'src/modules/MyHouse/components/EquipmentDetails/EquipmentMeasurementResults/EquipmentMeasurementResults'
+import { EquipmentMeasurementResultsProps } from 'src/modules/MyHouse/components/EquipmentDetails/EquipmentMeasurementResults/EquipmentMeasurementResults'
 import { useEquipmentMeasurementResults } from 'src/modules/MyHouse/components/EquipmentDetails/EquipmentMeasurementResults/EquipmentMeasurementResultsHook'
-
-/**
- * MeasurementResult compoonent (used only in this component).
- *
- * @param root0 N/A.
- * @param root0.result The measurement result.
- * @param root0.isMobileView We are in the mobile view.
- * @returns MeasurementResult JSX.
- */
-const MeasurementResult = ({ result, isMobileView }: MeasurementResultProps) =>
-    result?.isLoading ? (
-        <CircularProgress size={isMobileView ? 14 : 16} />
-    ) : result?.value ? (
-        <Button variant="text" sx={{ fontSize: isMobileView ? 14 : 16 }}>
-            {result.value} W
-        </Button>
-    ) : (
-        <Typography color="primary" fontWeight={500} fontSize={isMobileView ? 14 : 16}>
-            ?
-        </Typography>
-    )
+import { MeasurementResult } from 'src/modules/MyHouse/components/EquipmentDetails/EquipmentMeasurementResults/MeasurementResult'
 
 /**
  * EquipmentMeasurementResults compoonent that show the test results for a specific equipment.
@@ -51,12 +26,12 @@ export const EquipmentMeasurementResults = ({
     equipmentNumber,
 }: EquipmentMeasurementResultsProps) => {
     const { formatMessage } = useIntl()
-    const max_width_600 = useMediaQuery('(max-width:600px)')
+    const MAX_WIDTH_600 = useMediaQuery('(max-width:600px)')
     const { measurementResults } = useEquipmentMeasurementResults(equipmentNumber, housingEquipmentId, measurementModes)
 
     return measurementModes && measurementModes.length > 0 ? (
         <>
-            <Typography variant="h5" fontSize={max_width_600 ? 17 : 20} marginBottom="20px">
+            <Typography variant="h5" fontSize={MAX_WIDTH_600 ? 17 : 20} marginBottom="20px">
                 {formatMessage({
                     id: 'Résultats des mesures',
                     defaultMessage: 'Résultats des mesures',
@@ -65,7 +40,7 @@ export const EquipmentMeasurementResults = ({
             </Typography>
 
             <TableContainer component={Paper} elevation={3} data-testid="table-container">
-                <Table size={max_width_600 ? 'small' : 'medium'} sx={{ minWidth: 385 }}>
+                <Table size={MAX_WIDTH_600 ? 'small' : 'medium'} sx={{ minWidth: 385 }}>
                     <TableBody>
                         {measurementModes.map((measurementMode) => (
                             <TableRow
@@ -76,7 +51,7 @@ export const EquipmentMeasurementResults = ({
                                 }}
                             >
                                 <TableCell align="left">
-                                    <Typography fontSize={max_width_600 ? 14 : 16}>
+                                    <Typography fontSize={MAX_WIDTH_600 ? 14 : 16}>
                                         {formatMessage({
                                             id: 'Conso active mode',
                                             defaultMessage: 'Conso active mode',
@@ -87,11 +62,11 @@ export const EquipmentMeasurementResults = ({
                                 <TableCell
                                     align="center"
                                     data-testid="measurement-result"
-                                    height={max_width_600 ? 60 : 73}
+                                    height={MAX_WIDTH_600 ? 60 : 73}
                                 >
                                     <MeasurementResult
                                         result={measurementResults[measurementMode]}
-                                        isMobileView={max_width_600}
+                                        isMobileView={MAX_WIDTH_600}
                                     />
                                 </TableCell>
                             </TableRow>
@@ -102,4 +77,3 @@ export const EquipmentMeasurementResults = ({
         </>
     ) : null
 }
-// 2h 30m

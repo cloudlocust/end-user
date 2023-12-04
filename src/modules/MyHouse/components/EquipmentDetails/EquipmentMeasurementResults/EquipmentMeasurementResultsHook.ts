@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import { axios } from 'src/common/react-platform-components'
+import { useSnackbar } from 'notistack'
+import { useIntl } from 'src/common/react-platform-translation'
 import { HOUSING_API } from 'src/modules/MyHouse/components/HousingList/HousingsHooks'
 import { MeasurementResultApiResponse } from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement/MicrowaveMeasurement'
 import { measurementResultsStateType } from 'src/modules/MyHouse/components/EquipmentDetails/EquipmentMeasurementResults/EquipmentMeasurementResults'
@@ -17,6 +19,8 @@ export function useEquipmentMeasurementResults(
     housingEquipmentId?: number,
     measurementModes?: string[],
 ) {
+    const { enqueueSnackbar } = useSnackbar()
+    const { formatMessage } = useIntl()
     const [measurementResults, setMeasurementResults] = useState<measurementResultsStateType>({})
 
     /**
@@ -34,10 +38,19 @@ export function useEquipmentMeasurementResults(
                 )
                 return data?.value
             } catch (error: any) {
+                let errorMessage = `Un problème s'est produit lors de la récupération du résultat de la mesure en mode ${measurementMode}`
+                if (error?.response?.data?.detail) errorMessage += ` : ${error?.response?.data?.detail}`
+                enqueueSnackbar(
+                    formatMessage({
+                        id: errorMessage,
+                        defaultMessage: errorMessage,
+                    }),
+                    { autoHideDuration: 5000, variant: 'error' },
+                )
                 return null
             }
         },
-        [equipmentNumber, housingEquipmentId],
+        [enqueueSnackbar, equipmentNumber, formatMessage, housingEquipmentId],
     )
 
     /**
