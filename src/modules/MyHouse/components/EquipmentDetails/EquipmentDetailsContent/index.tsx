@@ -25,8 +25,8 @@ import { useEquipmentMeasurementResults } from 'src/modules/MyHouse/components/E
  */
 export const EquipmentDetailsContent = ({ equipmentDetails }: EquipmentDetailsContentProps) => {
     const { formatMessage } = useIntl()
-    const max_width_600 = useMediaQuery('(max-width:600px)')
-    const max_width_470 = useMediaQuery('(max-width:470px)')
+    const MAX_WIDTH_600 = useMediaQuery('(max-width:600px)')
+    const MAX_WIDTH_470 = useMediaQuery('(max-width:470px)')
     const [selectedEquipmentNumber, setSelectedEquipmentNumber] = useState(equipmentDetails.number === 1 ? 1 : 0)
     const { measurementResults, isLoadingMeasurements, updateEquipmentMeasurementResults } =
         useEquipmentMeasurementResults()
@@ -82,7 +82,7 @@ export const EquipmentDetailsContent = ({ equipmentDetails }: EquipmentDetailsCo
                             <InputLabel
                                 id="equipment-select-label"
                                 sx={{
-                                    fontSize: max_width_600 ? 14 : 16,
+                                    fontSize: MAX_WIDTH_600 ? 14 : 16,
                                 }}
                             >
                                 {formatMessage({
@@ -100,7 +100,7 @@ export const EquipmentDetailsContent = ({ equipmentDetails }: EquipmentDetailsCo
                                 })}
                                 onChange={handleSelectEquipmentChange}
                                 sx={{
-                                    fontSize: max_width_600 ? 14 : 16,
+                                    fontSize: MAX_WIDTH_600 ? 14 : 16,
                                 }}
                                 data-testid="equipment-select"
                             >
@@ -110,7 +110,7 @@ export const EquipmentDetailsContent = ({ equipmentDetails }: EquipmentDetailsCo
                                         <MenuItem
                                             value={index + 1}
                                             sx={{
-                                                fontSize: max_width_600 ? 14 : 16,
+                                                fontSize: MAX_WIDTH_600 ? 14 : 16,
                                             }}
                                         >{`${equipmentLabel} ${index + 1}`}</MenuItem>
                                     ))}
@@ -135,8 +135,8 @@ export const EquipmentDetailsContent = ({ equipmentDetails }: EquipmentDetailsCo
                 </div>
 
                 {/* Buttons */}
-                <div className={`flex ${max_width_470 ? 'flex-col' : 'flex-row'} justify-end gap-10 flex-wrap`}>
-                    <Button variant="outlined" size="large" className={max_width_600 ? 'flex-1' : ''} disabled>
+                <div className={`flex ${MAX_WIDTH_470 ? 'flex-col' : 'flex-row'} justify-end gap-10 flex-wrap`}>
+                    <Button variant="outlined" size="large" className={MAX_WIDTH_600 ? 'flex-1' : ''} disabled>
                         {formatMessage({
                             id: "Supprimer l'appareil",
                             defaultMessage: "Supprimer l'appareil",
@@ -145,7 +145,7 @@ export const EquipmentDetailsContent = ({ equipmentDetails }: EquipmentDetailsCo
                     <Button
                         variant="contained"
                         size="large"
-                        className={max_width_600 ? 'flex-1' : ''}
+                        className={MAX_WIDTH_600 ? 'flex-1' : ''}
                         onClick={onOpenMeasurementModal}
                         disabled={!isMeasurementButtonShown}
                     >
