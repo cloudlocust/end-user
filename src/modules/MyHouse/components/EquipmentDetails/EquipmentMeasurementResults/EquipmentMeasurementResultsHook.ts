@@ -24,7 +24,10 @@ export function useEquipmentMeasurementResults() {
      * @returns The measurement result value.
      */
     const getEquipmentMeasurementResult = useCallback(
-        async (equipmentNumber: number, housingEquipmentId: number, measurementMode: string) => {
+        async (equipmentNumber: number | null, housingEquipmentId: number, measurementMode: string) => {
+            if (!equipmentNumber || !housingEquipmentId) {
+                return { mode: measurementMode, value: null }
+            }
             try {
                 const { data } = await axios.get<MeasurementResultApiResponse>(
                     `${HOUSING_API}/equipments/${housingEquipmentId}/measurement/${measurementMode}/result/${equipmentNumber}`,
@@ -50,7 +53,7 @@ export function useEquipmentMeasurementResults() {
      * Function to update the measurement result values for the equipment.
      */
     const updateEquipmentMeasurementResults = useCallback(
-        async (equipmentNumber: number, housingEquipmentId: number, measurementModes: string[]) => {
+        async (equipmentNumber: number | null, housingEquipmentId: number, measurementModes: string[]) => {
             if (measurementModes && measurementModes.length > 0) {
                 setIsLoadingMeasurements(true)
                 setMeasurementResults({})

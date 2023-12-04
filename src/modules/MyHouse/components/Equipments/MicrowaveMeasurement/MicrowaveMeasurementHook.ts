@@ -27,12 +27,12 @@ export function useMicrowaveMeasurement(
     measurementMode: string,
     equipmentNumber: number,
     measurementMaxDuration: number,
-    defaultMeasurementResult?: number | null,
+    defaultMeasurementResult: number | null = null,
 ) {
     const { enqueueSnackbar } = useSnackbar()
     const { formatMessage } = useIntl()
     const [measurementStatus, setMeasurementStatus] = useState<MeasurementStatusStateType | null>(null)
-    const [measurementResult, setMeasurementResult] = useState<number | null | undefined>(defaultMeasurementResult)
+    const [measurementResult, setMeasurementResult] = useState<number | null>(defaultMeasurementResult)
     const updateStatusIntervalRef = useRef<NodeJS.Timer | null>(null)
     const measurementWaitingTimeoutRef = useRef<NodeJS.Timeout | null>(null)
 
@@ -48,13 +48,13 @@ export function useMicrowaveMeasurement(
             const { data } = await axios.get<MeasurementResultApiResponse>(
                 `${HOUSING_API}/equipments/${housingEquipmentId}/measurement/${measurementMode}/result/${equipmentNumber}`,
             )
-            return data?.value
+            return data?.value || 0
         } catch (error: any) {
             setMeasurementStatus({
                 status: measurementStatusEnum.FAILED,
                 failureMessage: error?.response?.data?.detail as string,
             })
-            return null
+            return 0
         }
     }, [equipmentNumber, housingEquipmentId, measurementMode])
 

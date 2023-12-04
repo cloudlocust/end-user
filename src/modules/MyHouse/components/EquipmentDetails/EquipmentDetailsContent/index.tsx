@@ -27,7 +27,7 @@ export const EquipmentDetailsContent = ({ equipmentDetails }: EquipmentDetailsCo
     const { formatMessage } = useIntl()
     const MAX_WIDTH_600 = useMediaQuery('(max-width:600px)')
     const MAX_WIDTH_470 = useMediaQuery('(max-width:470px)')
-    const [selectedEquipmentNumber, setSelectedEquipmentNumber] = useState(equipmentDetails.number === 1 ? 1 : 0)
+    const [selectedEquipmentNumber, setSelectedEquipmentNumber] = useState(equipmentDetails.number === 1 ? 1 : null)
     const { measurementResults, isLoadingMeasurements, updateEquipmentMeasurementResults } =
         useEquipmentMeasurementResults()
     const {

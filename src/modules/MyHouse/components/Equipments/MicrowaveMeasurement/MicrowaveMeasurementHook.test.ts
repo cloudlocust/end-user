@@ -53,7 +53,7 @@ describe('useMicrowaveMeasurement', () => {
         } = reduxedRenderHook(useMicrowaveMeasurementFunction)
 
         expect(result.current.measurementStatus).toBe(null)
-        expect(result.current.measurementResult).toBe(undefined)
+        expect(result.current.measurementResult).toBe(null)
     })
 
     describe('updating the measurement result', () => {
@@ -84,7 +84,7 @@ describe('useMicrowaveMeasurement', () => {
                 },
                 { timeout: 5000 },
             )
-            expect(result.current.measurementResult).toBe(null)
+            expect(result.current.measurementResult).toBe(0)
         })
 
         test('when there is an error', async () => {
@@ -100,7 +100,7 @@ describe('useMicrowaveMeasurement', () => {
                 },
                 { timeout: 5000 },
             )
-            expect(result.current.measurementResult).toBe(null)
+            expect(result.current.measurementResult).toBe(0)
         })
     })
 

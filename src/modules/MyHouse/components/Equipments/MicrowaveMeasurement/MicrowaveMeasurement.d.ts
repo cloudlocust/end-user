@@ -33,7 +33,7 @@ export interface MicrowaveMeasurementProps {
     /**
      * Default value for the microwave number.
      */
-    defaultMicrowaveNumber?: number
+    defaultMicrowaveNumber?: number | null
     /**
      * Default value for the measurement mode.
      */

@@ -17,7 +17,7 @@ export interface EquipmentMeasurementResultsProps {
     /**
      * The equipment number.
      */
-    equipmentNumber: number
+    equipmentNumber: number | null
     /**
      * The measurement result values.
      */
@@ -30,7 +30,7 @@ export interface EquipmentMeasurementResultsProps {
      * Function to update the measurement result values.
      */
     updateEquipmentMeasurementResults: (
-        equipmentNumber: number,
+        equipmentNumber: number | null,
         housingEquipmentId: number,
         measurementModes: string[],
     ) => Promise<void>
