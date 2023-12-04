@@ -102,8 +102,11 @@ export const MicrowaveMeasurement = ({
     const handleRestartingMeasurement = useCallback(
         async (microwaveNumber?: number, measurementMode?: string) => {
             await setMeasurementStatus(null)
-            if (showingOldResult) setCurrentStep(2)
-            else setCurrentStep(1)
+            if (showingOldResult) {
+                setCurrentStep(2)
+            } else {
+                setCurrentStep(1)
+            }
             setMicrowaveNumber(microwaveNumber || (equipmentsNumber === 1 ? 1 : defaultMicrowaveNumber || 0))
             setMeasurementMode(measurementMode || defaultMeasurementMode || '')
         },
@@ -115,12 +118,18 @@ export const MicrowaveMeasurement = ({
      */
     const handleCloseMeasurementModal = useCallback(async () => {
         await setMeasurementStatus(null)
-        if (showingOldResult) setCurrentStep(4)
-        else if (startMeasurementFromEquipmentsDetailsPage) setCurrentStep(1)
-        else setCurrentStep(0)
+        if (showingOldResult) {
+            setCurrentStep(4)
+        } else if (startMeasurementFromEquipmentsDetailsPage) {
+            setCurrentStep(1)
+        } else {
+            setCurrentStep(0)
+        }
         setMicrowaveNumber(equipmentsNumber === 1 ? 1 : defaultMicrowaveNumber || 0)
         setMeasurementMode(defaultMeasurementMode || '')
-        if (updateEquipmentMeasurementResults) updateEquipmentMeasurementResults()
+        if (updateEquipmentMeasurementResults) {
+            updateEquipmentMeasurementResults()
+        }
         onCloseMeasurementModal()
     }, [
         defaultMeasurementMode,

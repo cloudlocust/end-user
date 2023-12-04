@@ -42,9 +42,11 @@ export const EquipmentDetails = () => {
      * Return to the equipment list page when the currentHousing is changed.
      */
     useEffect(() => {
-        if (isInitialRender.current) isInitialRender.current = false
-        else if (history.location.pathname.endsWith('/equipments/details') && currentHousing?.id)
+        if (isInitialRender.current) {
+            isInitialRender.current = false
+        } else if (history.location.pathname.endsWith('/equipments/details') && currentHousing?.id) {
             history.push(`${URL_MY_HOUSE}/${currentHousing?.id}/equipments`)
+        }
     }, [currentHousing?.id, history])
 
     return (

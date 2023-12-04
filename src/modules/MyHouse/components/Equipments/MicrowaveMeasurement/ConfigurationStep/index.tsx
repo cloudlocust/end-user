@@ -88,7 +88,7 @@ export const ConfigurationStep = ({
     return (
         <>
             {/* Header */}
-            <div className="text-center mb-20" data-testid="measurement-configuration-step-header">
+            <div className="text-center mb-20">
                 <Typography component="h2" fontWeight="500" fontSize="18px" color="primary">
                     {formatMessage({
                         id: 'Configuration',

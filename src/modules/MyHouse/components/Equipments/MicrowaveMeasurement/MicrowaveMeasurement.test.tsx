@@ -25,19 +25,19 @@ describe('MicrowaveMeasurement tests', () => {
     test('renders correctly when starting new mesurement test', async () => {
         reduxedRender(<MicrowaveMeasurement {...props} />)
 
-        expect(screen.getByTestId('infos-page-header')).toBeInTheDocument()
+        expect(screen.getByText("Mesure d'appareil")).toBeInTheDocument()
     })
 
     test('renders correctly when showing an old mesurement test result', async () => {
         reduxedRender(<MicrowaveMeasurement {...props} showingOldResult />)
 
-        expect(screen.getByTestId('measurement-result-step-header')).toBeInTheDocument()
+        expect(screen.getByText('Résultats')).toBeInTheDocument()
     })
 
     test('renders correctly when we start the mesurement from EquipmentsDetails Page', async () => {
         reduxedRender(<MicrowaveMeasurement {...props} startMeasurementFromEquipmentsDetailsPage />)
 
-        expect(screen.getByTestId('measurement-configuration-step-header')).toBeInTheDocument()
+        expect(screen.getByText('Configuration')).toBeInTheDocument()
     })
 
     test('call the onCloseMeasurementModal and updateEquipmentMeasurementResults functions on clicking on the close button', async () => {

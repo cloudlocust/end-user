@@ -69,7 +69,7 @@ export const InfosPage = ({ stepSetter }: InfosPageProps) => {
     return (
         <>
             {/* Header */}
-            <div className="text-center mb-20" data-testid="infos-page-header">
+            <div className="text-center mb-20">
                 <Typography component="h2" fontWeight="500" fontSize="18px">
                     {formatMessage({
                         id: "Mesure d'appareil",

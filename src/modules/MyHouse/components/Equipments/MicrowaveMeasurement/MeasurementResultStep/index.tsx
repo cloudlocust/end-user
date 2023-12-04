@@ -53,7 +53,7 @@ export const MeasurementResultStep = ({
     return (
         <>
             {/* Header */}
-            <div className="text-center mb-16" data-testid="measurement-result-step-header">
+            <div className="text-center mb-16">
                 <Typography component="h2" fontWeight="500" fontSize="18px" marginBottom="6px">
                     {formatMessage({
                         id: 'Résultats',
