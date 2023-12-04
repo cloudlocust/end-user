@@ -1,10 +1,5 @@
-import { waitFor } from '@testing-library/react'
-import userEvent from '@testing-library/user-event'
 import { reduxedRender } from 'src/common/react-platform-components/test'
-import {
-    EquipmentMeasurementResults,
-    MeasurementResult,
-} from 'src/modules/MyHouse/components/EquipmentDetails/EquipmentMeasurementResults'
+import { EquipmentMeasurementResults } from 'src/modules/MyHouse/components/EquipmentDetails/EquipmentMeasurementResults'
 import { EquipmentMeasurementResultsProps } from 'src/modules/MyHouse/components/EquipmentDetails/EquipmentMeasurementResults/EquipmentMeasurementResults'
 
 const mockedMeasurementModes: ['mode1', 'mode2'] = ['mode1', 'mode2']
@@ -46,44 +41,5 @@ describe('EquipmentMeasurementResultsList', () => {
     test('doesn nott display anything when there are no measurementModes', () => {
         const { container } = reduxedRender(<EquipmentMeasurementResults {...props} measurementModes={[]} />)
         expect(container.firstChild).toBeNull()
-    })
-})
-
-const mockedHandleClickingOnMeasurementResult = jest.fn()
-
-describe('MeasurementResult', () => {
-    test('calling the handleClickingOnMeasurementResult function when clicking on a result value', async () => {
-        const { getByRole } = reduxedRender(
-            <MeasurementResult
-                handleClickingOnMeasurementResult={mockedHandleClickingOnMeasurementResult}
-                result={120}
-            />,
-        )
-        const resultButton = getByRole('button', { name: '120 W' })
-        userEvent.click(resultButton)
-        await waitFor(() => {
-            expect(mockedHandleClickingOnMeasurementResult).toHaveBeenCalledTimes(1)
-        })
-    })
-
-    test('display ? when the result value is null', async () => {
-        const { getByText } = reduxedRender(
-            <MeasurementResult
-                handleClickingOnMeasurementResult={mockedHandleClickingOnMeasurementResult}
-                result={null}
-            />,
-        )
-        expect(getByText('?')).toBeInTheDocument()
-    })
-
-    test('show a loading progress circle when isLoading is true', async () => {
-        const { getByRole } = reduxedRender(
-            <MeasurementResult
-                handleClickingOnMeasurementResult={mockedHandleClickingOnMeasurementResult}
-                result={null}
-                isLoading
-            />,
-        )
-        expect(getByRole('progressbar')).toBeInTheDocument()
     })
 })
