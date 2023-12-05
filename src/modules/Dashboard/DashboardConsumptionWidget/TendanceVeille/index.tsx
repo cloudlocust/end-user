@@ -21,6 +21,7 @@ export const TendanceVeille = ({ percentageChange }: TendanceVeilleProps) => {
         <div
             className="flex items-center gap-10 px-14 py-5 rounded-full relative"
             style={{ backgroundColor: `${hexColor}25` }}
+            data-testid="percentage-change"
         >
             {percentageChange < 0 ? (
                 <Icon color={color} sx={{ fontSize: { xs: '24px', md: '32px' } }}>

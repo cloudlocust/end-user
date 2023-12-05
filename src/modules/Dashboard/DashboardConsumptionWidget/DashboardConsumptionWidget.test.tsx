@@ -8,6 +8,7 @@ const TOTAL_DAILY_CONSUMPTION_TEST_ID = 'consumption-value'
 const CONSUMPTION_UNIT_TEST_ID = 'consumption-unit'
 const TOTAL_DAILY_PRICE_TEST_ID = 'price-value'
 const PRICE_UNIT = '€'
+const PERCENTAGE_CHANGE_TEST_ID = 'percentage-change'
 
 // Mocking apexcharts, because there are errors related to modules not found, in test mode.
 jest.mock(
@@ -44,6 +45,7 @@ describe('DashboardConsumptionWidget', () => {
         expect(getByTestId(TOTAL_DAILY_CONSUMPTION_TEST_ID)).toBeInTheDocument()
         expect(getByTestId(CONSUMPTION_UNIT_TEST_ID)).toBeInTheDocument()
         expect(getByTestId(TOTAL_DAILY_PRICE_TEST_ID)).toBeInTheDocument()
+        expect(getByTestId(PERCENTAGE_CHANGE_TEST_ID)).toBeInTheDocument()
         expect(getByText(PRICE_UNIT)).toBeInTheDocument()
     })
 })
