@@ -19,13 +19,37 @@ export interface MicrowaveMeasurementProps {
      */
     isMeasurementModalOpen: boolean
     /**
+     * Boolean indicating whether we want to display an old result.
+     */
+    showingOldResult?: boolean
+    /**
+     * Boolean indicating whether we start the measurement from the EquipmentsDetails Page.
+     */
+    startMeasurementFromEquipmentsDetailsPage?: boolean
+    /**
+     *  Function that update the measurement results in the equipment details page.
+     */
+    updateEquipmentMeasurementResults?: () => void
+    /**
+     * Default value for the microwave number.
+     */
+    defaultMicrowaveNumber?: number | null
+    /**
+     * Default value for the measurement mode.
+     */
+    defaultMeasurementMode?: string
+    /**
+     * Default value for the measurement result.
+     */
+    defaultMeasurementResult?: number | null
+    /**
      * Modal closing handler.
      */
     onCloseMeasurementModal: () => void
     /**
      * Function for navigating to the equipment details page.
      */
-    navigateToEquipmentDetailsPage: () => void
+    navigateToEquipmentDetailsPage?: () => void
 }
 
 /**

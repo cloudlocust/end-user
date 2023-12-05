@@ -1,8 +1,10 @@
 import { reduxedRender } from 'src/common/react-platform-components/test'
-import { screen } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
+import { screen, waitFor } from '@testing-library/react'
 import { EquipmentDetailsContent } from 'src/modules/MyHouse/components/EquipmentDetails/EquipmentDetailsContent'
 import { HousingEquipmentType } from 'src/modules/MyHouse/components/Equipments/EquipmentsList/equipmentsList'
 
+const MESURER_L_APPAREIL = "Mesurer l'appareil"
 const mockedEquipmentDetails: HousingEquipmentType = {
     allowedType: ['electricity'],
     customerId: null,
@@ -23,7 +25,7 @@ describe('EquipmentDetailsContent component', () => {
         expect(screen.getByLabelText('Mon équipement')).toBeInTheDocument()
         expect(screen.getByTestId(TABLE_CONTAINER_TEST_ID)).toBeInTheDocument()
         expect(screen.getByRole('button', { name: "Supprimer l'appareil" })).toBeInTheDocument()
-        expect(screen.getByRole('button', { name: "Mesurer l'appareil" })).toBeInTheDocument()
+        expect(screen.getByRole('button', { name: MESURER_L_APPAREIL })).toBeInTheDocument()
     })
 
     test('renders the correct number of menu items in the select', () => {
@@ -31,5 +33,14 @@ describe('EquipmentDetailsContent component', () => {
 
         const select = screen.getByTestId(EQUIPMENT_SELECT_TEST_ID)
         expect(select.children).toHaveLength(4)
+    })
+
+    test("show the measurement popup when clicking on the button `Mesurer l'appareil`", async () => {
+        reduxedRender(<EquipmentDetailsContent equipmentDetails={mockedEquipmentDetails} />)
+
+        userEvent.click(screen.getByText(MESURER_L_APPAREIL))
+        await waitFor(() => {
+            expect(screen.getByRole('presentation')).toBeInTheDocument()
+        })
     })
 })

@@ -1,21 +1,31 @@
 import { reduxedRender } from 'src/common/react-platform-components/test'
 import { EquipmentMeasurementResults } from 'src/modules/MyHouse/components/EquipmentDetails/EquipmentMeasurementResults'
+import { EquipmentMeasurementResultsProps } from 'src/modules/MyHouse/components/EquipmentDetails/EquipmentMeasurementResults/EquipmentMeasurementResults'
 
-const mockedMeasurementModes = ['mode1', 'mode2']
-const mockedHousingEquipmentId = 1
-const mockedEquipmentNumber = 2
+const mockedMeasurementModes: ['mode1', 'mode2'] = ['mode1', 'mode2']
+const mockedMeasurementResults = { mode1: 500, mode2: 1200 }
+const mockedHousingEquipmentId = 81
+const mockedEquipmentsNumber = 2
+const mockedEquipmentNumber = 1
+const mockedIsLoadingMeasurements = false
+const mockedUpdateEquipmentMeasurementResults = jest.fn()
+
+const props: EquipmentMeasurementResultsProps = {
+    measurementModes: mockedMeasurementModes,
+    measurementResults: mockedMeasurementResults,
+    housingEquipmentId: mockedHousingEquipmentId,
+    equipmentsNumber: mockedEquipmentsNumber,
+    equipmentNumber: mockedEquipmentNumber,
+    isLoadingMeasurements: mockedIsLoadingMeasurements,
+    updateEquipmentMeasurementResults: mockedUpdateEquipmentMeasurementResults,
+}
+
 const tableContainerTestId = 'table-container'
-const loadingButtonTestId = 'measurement-result'
 
-describe('EquipmentMeasurementResults', () => {
+describe('EquipmentMeasurementResultsList', () => {
     test('renders correctly with measurement modes', async () => {
-        const { getByText, getByTestId, getAllByTestId } = reduxedRender(
-            <EquipmentMeasurementResults
-                measurementModes={mockedMeasurementModes}
-                housingEquipmentId={mockedHousingEquipmentId}
-                equipmentNumber={mockedEquipmentNumber}
-            />,
-        )
+        const { getByText, getByTestId } = reduxedRender(<EquipmentMeasurementResults {...props} />)
+
         expect(
             getByText((content, _) => {
                 return content.startsWith('Résultats des mesures')
@@ -24,18 +34,12 @@ describe('EquipmentMeasurementResults', () => {
         expect(getByTestId(tableContainerTestId)).toBeInTheDocument()
         mockedMeasurementModes.forEach((mode) => {
             expect(getByText(`Conso active mode ${mode} :`)).toBeInTheDocument()
+            expect(getByText(`${mockedMeasurementResults[mode]} W`)).toBeInTheDocument()
         })
-        expect(getAllByTestId(loadingButtonTestId)).toHaveLength(mockedMeasurementModes.length)
     })
 
-    test('when there is no measurement modes, it would not show anything', () => {
-        const { container } = reduxedRender(
-            <EquipmentMeasurementResults
-                measurementModes={[]}
-                housingEquipmentId={mockedHousingEquipmentId}
-                equipmentNumber={mockedEquipmentNumber}
-            />,
-        )
+    test('doesn nott display anything when there are no measurementModes', () => {
+        const { container } = reduxedRender(<EquipmentMeasurementResults {...props} measurementModes={[]} />)
         expect(container.firstChild).toBeNull()
     })
 })

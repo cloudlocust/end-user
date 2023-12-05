@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useState } from 'react'
 import { axios } from 'src/common/react-platform-components'
 import { useSnackbar } from 'notistack'
 import { useIntl } from 'src/common/react-platform-translation'
@@ -9,19 +9,13 @@ import { measurementResultsStateType } from 'src/modules/MyHouse/components/Equi
 /**
  * Equipment measurement results hook.
  *
- * @param equipmentNumber The equipment number.
- * @param housingEquipmentId The global equipment id.
- * @param measurementModes The list of measurement modes for the equipment.
- * @returns The tests result values.
+ * @returns The tests result state and the function that update it.
  */
-export function useEquipmentMeasurementResults(
-    equipmentNumber: number | null,
-    housingEquipmentId?: number,
-    measurementModes?: string[],
-) {
+export function useEquipmentMeasurementResults() {
     const { enqueueSnackbar } = useSnackbar()
     const { formatMessage } = useIntl()
     const [measurementResults, setMeasurementResults] = useState<measurementResultsStateType>({})
+    const [isLoadingMeasurements, setIsLoadingMeasurements] = useState(true)
 
     /**
      * Function to get a measurement result for the equipment in a specific mode.
@@ -30,13 +24,15 @@ export function useEquipmentMeasurementResults(
      * @returns The measurement result value.
      */
     const getEquipmentMeasurementResult = useCallback(
-        async (measurementMode: string) => {
-            if (!measurementMode || !housingEquipmentId || !equipmentNumber) return null
+        async (equipmentNumber: number | null, housingEquipmentId: number, measurementMode: string) => {
+            if (!equipmentNumber || !housingEquipmentId) {
+                return { mode: measurementMode, value: null }
+            }
             try {
                 const { data } = await axios.get<MeasurementResultApiResponse>(
                     `${HOUSING_API}/equipments/${housingEquipmentId}/measurement/${measurementMode}/result/${equipmentNumber}`,
                 )
-                return data?.value
+                return { mode: measurementMode, value: data?.value }
             } catch (error: any) {
                 let errorMessage = `Un problème s'est produit lors de la récupération du résultat de la mesure en mode ${measurementMode}`
                 if (error?.response?.data?.detail) errorMessage += ` : ${error?.response?.data?.detail}`
@@ -47,41 +43,39 @@ export function useEquipmentMeasurementResults(
                     }),
                     { autoHideDuration: 5000, variant: 'error' },
                 )
-                return null
+                return { mode: measurementMode, value: null }
             }
         },
-        [enqueueSnackbar, equipmentNumber, formatMessage, housingEquipmentId],
+        [enqueueSnackbar, formatMessage],
     )
 
     /**
      * Function to update the measurement result values for the equipment.
      */
-    const updateEquipmentMeasurementResults = useCallback(async () => {
-        // Renitialize the measurementResults state
-        let measurementResultsInit: measurementResultsStateType = {}
-        measurementModes?.forEach((measurementMode) => {
-            measurementResultsInit[measurementMode] = { isLoading: true }
-        })
-        await setMeasurementResults(measurementResultsInit!)
-
-        // Update the measurementResults state
-        measurementModes?.forEach(async (measurementMode) => {
-            const resultValue = await getEquipmentMeasurementResult(measurementMode)
-            setMeasurementResults((currentResults) => ({
-                ...currentResults,
-                [measurementMode]: { value: resultValue, isLoading: false },
-            }))
-        })
-    }, [getEquipmentMeasurementResult, measurementModes])
-
-    /**
-     * Getting the measurement results every time the parameters chenges.
-     */
-    useEffect(() => {
-        updateEquipmentMeasurementResults()
-    }, [updateEquipmentMeasurementResults])
+    const updateEquipmentMeasurementResults = useCallback(
+        async (equipmentNumber: number | null, housingEquipmentId: number, measurementModes: string[]) => {
+            if (measurementModes && measurementModes.length > 0) {
+                setIsLoadingMeasurements(true)
+                setMeasurementResults({})
+                const promises = measurementModes.map(
+                    async (measurementMode) =>
+                        await getEquipmentMeasurementResult(equipmentNumber, housingEquipmentId, measurementMode),
+                )
+                const resultValues = await Promise.all(promises)
+                let intermediateMeasurementResults: measurementResultsStateType = {}
+                for (const resultValue of resultValues) {
+                    intermediateMeasurementResults[resultValue.mode] = resultValue.value
+                }
+                setMeasurementResults(intermediateMeasurementResults)
+                setIsLoadingMeasurements(false)
+            }
+        },
+        [getEquipmentMeasurementResult],
+    )
 
     return {
         measurementResults,
+        isLoadingMeasurements,
+        updateEquipmentMeasurementResults,
     }
 }

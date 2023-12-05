@@ -46,7 +46,7 @@ export interface MeasurementProcessStepProps {
     /**
      * The function that restart the measurement from the beginning.
      */
-    restartMeasurementFromBeginning: () => Promise<void>
+    restartMeasurementFromBeginning: (microwaveNumber?: number, measurementMode?: string) => Promise<void>
     /**
      * The setter linked to the state responsible for storing the current step.
      */

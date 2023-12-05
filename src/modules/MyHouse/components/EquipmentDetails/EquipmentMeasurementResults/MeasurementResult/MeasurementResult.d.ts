@@ -1,13 +1,19 @@
-import { resultType } from 'src/modules/MyHouse/components/EquipmentDetails/EquipmentMeasurementResults/EquipmentMeasurementResults'
-
 /**
  * MeasurementResultProps.
  */
 export interface MeasurementResultProps {
     /**
+     * Function that open the measurement modal.
+     */
+    handleClickingOnMeasurementResult: () => void
+    /**
      * The measurement result.
      */
-    result?: resultType
+    result: number | null
+    /**
+     * The measurement result is loading.
+     */
+    isLoading?: boolean
     /**
      * We are in the mobile view.
      */

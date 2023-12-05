@@ -68,16 +68,24 @@ export const EquipmentCard = ({ equipment, label, onEquipmentChange, iconCompone
         history,
     ])
 
-    const isMicrowaveMeasurementButtonShown = equipment.number && equipment.number > 0 && equipment.name === 'microwave'
+    const isMicrowaveMeasurementButtonShown = Boolean(
+        equipment.number && equipment.number > 0 && equipment.name === 'microwave',
+    )
 
     return (
         <>
             <Card className="rounded-16 border border-slate-600 w-full" data-testid="equipment-item">
                 <CardContent className="flex flex-row space-x-14" sx={{ p: '1rem', '&:last-child': { pb: '1rem' } }}>
                     <div
-                        className="flex justify-center items-center rounded-16 border-2 cursor-pointer"
+                        className={`flex justify-center items-center rounded-16 border-2 ${
+                            isEquipmentMeasurementFeatureState && isMicrowaveMeasurementButtonShown
+                                ? 'cursor-pointer'
+                                : ''
+                        }`}
                         style={{ borderColor: theme.palette.primary.main, width: '75px', height: '75px' }}
-                        onClick={navigateToEquipmentDetailsPage}
+                        {...(isEquipmentMeasurementFeatureState && isMicrowaveMeasurementButtonShown
+                            ? { onClick: navigateToEquipmentDetailsPage }
+                            : {})}
                     >
                         {iconComponent ? (
                             iconComponent(theme)
