@@ -22,6 +22,10 @@ export interface MicrowaveMeasurementProps {
      * Modal closing handler.
      */
     onCloseMeasurementModal: () => void
+    /**
+     * Function for navigating to the equipment details page.
+     */
+    navigateToEquipmentDetailsPage: () => void
 }
 
 /**

@@ -11,12 +11,14 @@ import { MeasurementComparisonHistogram } from 'src/modules/MyHouse/components/E
  * @param root0.measurementMode The selected measurement mode.
  * @param root0.measurementResult The resut of the measurement process.
  * @param root0.closeMeasurementModal Function that closes the measurement modal and resets the states.
+ * @param root0.navigateToEquipmentDetailsPage Function for navigating to the equipment details page.
  * @returns The MeasurementResultStep component.
  */
 export const MeasurementResultStep = ({
     measurementMode,
     measurementResult,
     closeMeasurementModal,
+    navigateToEquipmentDetailsPage,
 }: MeasurementResultStepProps) => {
     const { formatMessage } = useIntl()
 
@@ -32,6 +34,14 @@ export const MeasurementResultStep = ({
      * in Watt per hour.
      */
     const microwaveAverageConsumption = Math.round((microwaveAverageConsumptionPerYear * 1000) / (365 * (5 / 60)))
+
+    /**
+     * Function handler for clicking on the button Suivant.
+     */
+    const handleNextButtonClick = () => {
+        closeMeasurementModal()
+        navigateToEquipmentDetailsPage()
+    }
 
     return (
         <>
@@ -69,7 +79,7 @@ export const MeasurementResultStep = ({
                 <Button
                     variant="contained"
                     sx={{ padding: '10px auto', textAlign: 'center', width: '60%', minWidth: '160px' }}
-                    onClick={closeMeasurementModal}
+                    onClick={handleNextButtonClick}
                 >
                     {formatMessage({
                         id: 'Terminer',

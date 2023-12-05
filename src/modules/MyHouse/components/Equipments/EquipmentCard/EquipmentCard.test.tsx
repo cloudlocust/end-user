@@ -1,3 +1,4 @@
+import { BrowserRouter as Router } from 'react-router-dom'
 import userEvent from '@testing-library/user-event'
 import { screen, waitFor } from '@testing-library/react'
 import { reduxedRender } from 'src/common/react-platform-components/test'
@@ -17,31 +18,54 @@ jest.mock('src/modules/MyHouse/MyHouseConfig', () => ({
 // TODO: add a beforeEach hook to reset the props before each test.
 describe('EquipmentCard tests', () => {
     let mockEquipmentCardProps: EquipmentCardProps = {
-        id: 1,
-        name: 'tv',
-        number: 5,
-        onEquipmentChange: jest.fn(),
+        equipment: {
+            id: 1,
+            housingEquipmentId: 81,
+            name: 'tv',
+            allowedType: ['electricity'],
+            number: 5,
+            isNumber: true,
+            measurementModes: undefined,
+            customerId: undefined,
+        },
         label: 'Label',
+        onEquipmentChange: jest.fn(),
     }
 
     const EQUIPMENT_CARD_TEST_ID = 'equipment-item'
 
     test('if equipmentCard component is rendered', async () => {
-        const { getByTestId } = reduxedRender(<EquipmentCard {...mockEquipmentCardProps} />)
+        const { getByTestId } = reduxedRender(
+            <Router>
+                <EquipmentCard {...mockEquipmentCardProps} />
+            </Router>,
+        )
         expect(getByTestId(EQUIPMENT_CARD_TEST_ID)).toBeInTheDocument()
     })
 
     test('displays the correct label', async () => {
-        const { getByText } = reduxedRender(<EquipmentCard {...mockEquipmentCardProps} />)
+        const { getByText } = reduxedRender(
+            <Router>
+                <EquipmentCard {...mockEquipmentCardProps} />
+            </Router>,
+        )
         expect(getByText(mockEquipmentCardProps.label!)).toBeInTheDocument()
     })
 
     test('display the correct number', async () => {
-        const { getByText } = reduxedRender(<EquipmentCard {...mockEquipmentCardProps} />)
-        expect(getByText(mockEquipmentCardProps.number)).toBeInTheDocument()
+        const { getByText } = reduxedRender(
+            <Router>
+                <EquipmentCard {...mockEquipmentCardProps} />
+            </Router>,
+        )
+        expect(getByText(mockEquipmentCardProps.equipment.number!)).toBeInTheDocument()
     })
     test('increament call', async () => {
-        const { getByText } = reduxedRender(<EquipmentCard {...mockEquipmentCardProps} />)
+        const { getByText } = reduxedRender(
+            <Router>
+                <EquipmentCard {...mockEquipmentCardProps} />
+            </Router>,
+        )
         const increamentButton = getByText('add_circle_outlined')
         expect(increamentButton).toBeInTheDocument()
         userEvent.click(increamentButton)
@@ -50,7 +74,11 @@ describe('EquipmentCard tests', () => {
         expect(getByText('6')).toBeInTheDocument()
     })
     test('decreament call', async () => {
-        const { getByText } = reduxedRender(<EquipmentCard {...mockEquipmentCardProps} />)
+        const { getByText } = reduxedRender(
+            <Router>
+                <EquipmentCard {...mockEquipmentCardProps} />
+            </Router>,
+        )
         const increamentButton = getByText('remove_circle_outlined')
         expect(increamentButton).toBeInTheDocument()
         userEvent.click(increamentButton)
@@ -59,8 +87,12 @@ describe('EquipmentCard tests', () => {
         expect(getByText('4')).toBeInTheDocument()
     })
     test('measurement popup', async () => {
-        mockEquipmentCardProps.name = 'microwave'
-        reduxedRender(<EquipmentCard {...mockEquipmentCardProps} />)
+        mockEquipmentCardProps.equipment.name = 'microwave'
+        reduxedRender(
+            <Router>
+                <EquipmentCard {...mockEquipmentCardProps} />
+            </Router>,
+        )
         userEvent.click(screen.getByText('Mesurer'))
 
         await waitFor(() => {
@@ -69,8 +101,12 @@ describe('EquipmentCard tests', () => {
     })
     test('when isEquipmentMeasurementFeatureState is false, the button is disabled', async () => {
         mockIsEquipmentMeasurementFeatureState = false
-        mockEquipmentCardProps.name = 'microwave'
-        const { getByText } = reduxedRender(<EquipmentCard {...mockEquipmentCardProps} />)
+        mockEquipmentCardProps.equipment.name = 'microwave'
+        const { getByText } = reduxedRender(
+            <Router>
+                <EquipmentCard {...mockEquipmentCardProps} />
+            </Router>,
+        )
         const measurementButton = getByText('Mesurer')
         userEvent.click(measurementButton)
         expect(() => getByText("Mesure d'appareil")).toThrow()

@@ -23,6 +23,7 @@ import { useMicrowaveMeasurement } from 'src/modules/MyHouse/components/Equipmen
  * @param root0.measurementModes Measurement modes for the Equipment.
  * @param root0.isMeasurementModalOpen The state of the modal.
  * @param root0.onCloseMeasurementModal Modal closing handler.
+ * @param root0.navigateToEquipmentDetailsPage Function for navigating to the equipment details page.
  * @example
  *  /// Use this MicrowaveMeasurement component with our useModal custom hook
  *
@@ -44,6 +45,7 @@ export const MicrowaveMeasurement = ({
     measurementModes,
     isMeasurementModalOpen,
     onCloseMeasurementModal,
+    navigateToEquipmentDetailsPage,
 }: MicrowaveMeasurementProps) => {
     const [currentStep, setCurrentStep] = useState(0)
     const [microwaveNumber, setMicrowaveNumber] = useState(equipmentsNumber === 1 ? 1 : 0)
@@ -135,6 +137,7 @@ export const MicrowaveMeasurement = ({
                         measurementMode={measurementMode}
                         measurementResult={measurementResult}
                         closeMeasurementModal={handleCloseMeasurementModal}
+                        navigateToEquipmentDetailsPage={navigateToEquipmentDetailsPage}
                     />
                 ) : (
                     <>
