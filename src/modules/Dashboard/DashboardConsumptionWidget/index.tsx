@@ -22,6 +22,12 @@ import {
     DashboardConsumptionWidgetProps,
     totalDailyConsumptionType,
 } from 'src/modules/Dashboard/DashboardConsumptionWidget/DashboardConsumptionWidget'
+import {
+    computeWidgetAssets,
+    getWidgetPreviousRange,
+    getWidgetRange,
+} from 'src/modules/MyConsumption/components/Widget/WidgetFunctions'
+import { computePercentageChange } from 'src/modules/Analysis/utils/computationFunctions'
 
 /**
  * Consumption widget component for the dashboard.
@@ -49,6 +55,8 @@ export const DashboardConsumptionWidget = ({
         unit: 'Wh',
     })
     const [totalDailyPrice, setTotalDailyPrice] = useState<number>(0)
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const [percentageChange, setPercentageChange] = useState<number>(0)
 
     const chartOptions: ApexOptions = {
         chart: {
@@ -95,26 +103,49 @@ export const DashboardConsumptionWidget = ({
 
     const updateWidgetValues = useCallback(async () => {
         const currentTime = new Date()
-        const data = await getMetricsWithParams({
-            interval: metricInterval,
-            range: {
-                from: getDateWithoutTimezoneOffset(startOfDay(currentTime)),
-                to: getDateWithoutTimezoneOffset(currentTime),
+        const range = {
+            from: getDateWithoutTimezoneOffset(startOfDay(currentTime)),
+            to: getDateWithoutTimezoneOffset(currentTime),
+        }
+        const data = await getMetricsWithParams(
+            {
+                interval: metricInterval,
+                range,
+                targets: [metricTargetsEnum.consumption],
+                filters: formatMetricFilter(currentHousing?.id!),
             },
-            targets: [metricTargetsEnum.consumption],
-            filters: formatMetricFilter(currentHousing?.id!),
-        })
+            false,
+        )
 
         if (data.length) {
             const { labels, serieValues } = createDataForConsumptionWidgetGraph(data)
             setLabels(labels)
             setSerieValues(serieValues)
+
+            // Calculate the total daily consumption and price
             const { totalDailyConsumption, consumptionUnit, totalDailyPrice } = calculateTotalDailyConsumptionAndPrice(
                 serieValues,
                 pricePerKwh,
             )
             setTotalDailyPrice(totalDailyPrice)
             setTotalDailyConsumption({ value: totalDailyConsumption, unit: consumptionUnit })
+
+            // Calculate the percentage of change for the consumption
+            const oldData = await getMetricsWithParams(
+                {
+                    interval: metricInterval,
+                    range: getWidgetPreviousRange(getWidgetRange(range, 'daily'), 'daily'),
+                    targets: [metricTargetsEnum.consumption],
+                    filters: formatMetricFilter(currentHousing?.id!),
+                },
+                false,
+            )
+            const { value } = !data?.length ? { value: 0 } : computeWidgetAssets(data, metricTargetsEnum.consumption)
+            const { value: oldDataValue } = !oldData?.length
+                ? { value: 0 }
+                : computeWidgetAssets(oldData, metricTargetsEnum.consumption)
+            const percentageChange = computePercentageChange(oldDataValue as number, value as number)
+            setPercentageChange(percentageChange)
         }
     }, [currentHousing?.id, getMetricsWithParams, metricInterval, pricePerKwh])
 

@@ -128,7 +128,7 @@ export function useMetrics(initialState: getMetricType, immediate: boolean = fal
      * @param params.filters Adhoc Filters request.
      */
     const getMetricsWithParams = useCallback(
-        async (params: getMetricsWithParamsType) => {
+        async (params: getMetricsWithParamsType, isSettingData: boolean = true): Promise<IMetric[] | []> => {
             setIsMetricsLoading(true)
             const targetsBody: metricTargetsType = params.targets.map((target) => ({ target, type: 'timeserie' }))
             try {
@@ -138,7 +138,9 @@ export function useMetrics(initialState: getMetricType, immediate: boolean = fal
                     targets: targetsBody,
                     adhocFilters: params.filters,
                 })
-                setData(response.data)
+                if (isSettingData) {
+                    setData(response.data)
+                }
                 setIsMetricsLoading(false)
                 return response.data
             } catch (error) {
@@ -152,7 +154,9 @@ export function useMetrics(initialState: getMetricType, immediate: boolean = fal
                         autoHideDuration: 5000,
                     },
                 )
-                setData([])
+                if (isSettingData) {
+                    setData([])
+                }
                 setIsMetricsLoading(false)
                 return []
             }

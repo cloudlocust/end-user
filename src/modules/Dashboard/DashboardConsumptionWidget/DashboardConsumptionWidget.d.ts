@@ -1,4 +1,4 @@
-import { getMetricsWithParamsType } from 'src/modules/Metrics/Metrics'
+import { IMetric, getMetricsWithParamsType } from 'src/modules/Metrics/Metrics'
 import { totalConsumptionUnits } from 'src/modules/MyConsumption/components/Widget/Widget'
 
 /**
@@ -8,7 +8,7 @@ export interface DashboardConsumptionWidgetProps {
     /**
      * Function to get Metrics.
      */
-    getMetricsWithParams: (params: getMetricsWithParamsType) => Promise<any>
+    getMetricsWithParams: (params: getMetricsWithParamsType, isSettingData: boolean) => Promise<IMetric[] | []>
     /**
      * Is Metrics getting is in progress.
      */
