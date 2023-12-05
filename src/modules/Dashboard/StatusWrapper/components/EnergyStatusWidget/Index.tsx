@@ -1,17 +1,12 @@
 import { CardContent, useTheme, IconButton } from '@mui/material'
-import {
-    EnergyStatusWidgetProps,
-    EnergyStatusWidgetTypeEnum,
-} from 'src/modules/Dashboard/EnergyStatusWidget/energyStatusWidget.d'
 import { ReactComponent as ElectricTowerIcon } from 'src/assets/images/dashboard/electric-tower.svg'
 import { ReactComponent as BoltIcon } from 'src/assets/images/dashboard/bolt.svg'
 import dayjs from 'dayjs'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import { SVGAttributes, useMemo } from 'react'
-import { findLastNonNullableDatapoint } from 'src/modules/Dashboard/utils/utils'
 import { consumptionWattUnitConversion } from 'src/modules/MyConsumption/utils/unitConversionFunction'
-import { LastDataStatus } from 'src/modules/Dashboard/utils/utils.d'
 import { FuseCard } from 'src/modules/shared/FuseCard/FuseCard'
+import { EnergyStatusWidgetProps } from 'src/modules/Dashboard/StatusWrapper/components/EnergyStatusWidget/energyStatusWidget'
 
 const iconStyle: SVGAttributes<SVGSVGElement> = {
     width: 25,
@@ -45,50 +40,57 @@ export const BG_PRIMARY_MAIN = 'primary.main'
  * @returns EnergyStatusWidget JSX.
  */
 export const EnergyStatusWidget = (props: EnergyStatusWidgetProps) => {
-    const { data, nrlinkConsent, type, pricePerKwh, isLoading } = props
+    const { isNrlinkPowerLoading, pricePerKwh, lastPowerData, nrlinkConsent } = props
     const theme = useTheme()
     const themeContrastText = theme.palette.primary.contrastText
 
-    const widgetTitle =
-        type === EnergyStatusWidgetTypeEnum.CONSUMPTION ? 'Dernière puissance remontée' : 'Dernière puissance injectée'
-    const iconType =
-        type === EnergyStatusWidgetTypeEnum.CONSUMPTION ? (
-            <BoltIcon fill={theme.palette.secondary.main} {...iconStyle} />
-        ) : (
-            <ElectricTowerIcon fill={theme.palette.secondary.main} {...iconStyle} />
-        )
+    const isLastPowerDataNegative = lastPowerData?.value! < 0
 
-    const lastData = useMemo(() => findLastNonNullableDatapoint(data), [data])
+    const widgetTitle = isLastPowerDataNegative ? 'Dernière puissance injectée' : 'Dernière puissance remontée'
+    const iconType = isLastPowerDataNegative ? (
+        <ElectricTowerIcon fill={theme.palette.secondary.main} {...iconStyle} />
+    ) : (
+        <BoltIcon fill={theme.palette.secondary.main} {...iconStyle} />
+    )
 
-    const { value: lastDataValue, unit: lastDataUnit } = consumptionWattUnitConversion(lastData?.value ?? 0)
-    const isLastDateWithinSixMinutes = lastData?.message === LastDataStatus.UPDATED
-    const isLastDataNull = !lastData
+    const isNrlinkDisconnected = nrlinkConsent?.nrlinkConsentState === 'DISCONNECTED'
+    const isNrlinkOff = nrlinkConsent?.nrlinkConsentState === 'NONEXISTENT'
+
+    const lastDataTimestamp = lastPowerData?.timestamp
+
+    const computedLastPowerData = useMemo(
+        () => (lastPowerData?.value ? consumptionWattUnitConversion(lastPowerData?.value!) : { value: 0, unit: 'W' }),
+        [lastPowerData],
+    )
+
+    const lastNrlinkPowerDate = dayjs(lastDataTimestamp).format('HH:mm')
 
     return (
         <FuseCard
             sx={{ bgcolor: BG_PRIMARY_MAIN, height: CARD_HEIGHT }}
-            isLoading={isLoading}
+            isLoading={isNrlinkPowerLoading}
             loadingColor={theme.palette.common.white}
         >
             <CardContent className="flex flex-col h-full">
                 <div className="flex justify-between items-center mb-5">
-                    {nrlinkConsent !== 'NONEXISTENT' && (
+                    {!isNrlinkDisconnected && (
                         <IconButton sx={{ bgcolor: themeContrastText }} className="mr-10">
                             {iconType}
                         </IconButton>
                     )}
+
                     <TypographyFormatMessage className="text-20 font-400" sx={{ color: themeContrastText }}>
-                        {widgetTitle}
+                        {isNrlinkDisconnected ? ' ' : widgetTitle}
                     </TypographyFormatMessage>
                 </div>
                 <div className="flex flex-col w-full flex-grow">
                     <div className="flex justify-end items-center text-14 mb-5">
                         <span style={{ color: themeContrastText }}>
-                            {isLastDateWithinSixMinutes
-                                ? `à ${dayjs(lastData?.timestamp).format('HH:mm:ss')}`
-                                : isLastDataNull
+                            {isNrlinkDisconnected
+                                ? NRLINK_OUT_OF_RANGE_MESSAGE
+                                : isNrlinkOff && !lastPowerData?.value!
                                 ? NRLINK_OFFLINE
-                                : NRLINK_OUT_OF_RANGE_MESSAGE}
+                                : lastNrlinkPowerDate}
                         </span>
                     </div>
                     <div className="flex flex-row ml-auto flex-grow">
@@ -96,11 +98,13 @@ export const EnergyStatusWidget = (props: EnergyStatusWidgetProps) => {
                             className={`text-28 font-400 flex items-center mr-20`}
                             style={{ color: themeContrastText }}
                         >
-                            {!isLastDateWithinSixMinutes ? '- w' : `${lastDataValue} ${lastDataUnit}`}
+                            {isNrlinkDisconnected
+                                ? '-'
+                                : `${computedLastPowerData?.value} ${computedLastPowerData?.unit}`}
                         </span>
-                        {type === EnergyStatusWidgetTypeEnum.CONSUMPTION && (
+                        {!isLastPowerDataNegative && (
                             <span className="text-28 font-400 flex items-center" style={{ color: themeContrastText }}>
-                                {pricePerKwh ?? '-'} €/h
+                                {isNrlinkDisconnected ? '-' : pricePerKwh?.toFixed(2)} €/h
                             </span>
                         )}
                     </div>
