@@ -30,7 +30,7 @@ export function useMicrowaveMeasurement(
     const { enqueueSnackbar } = useSnackbar()
     const { formatMessage } = useIntl()
     const [measurementStatus, setMeasurementStatus] = useState<MeasurementStatusStateType | null>(null)
-    const [measurementResult, setMeasurementResult] = useState<number | null>(null)
+    const [measurementResult, setMeasurementResult] = useState<number | null | undefined>(undefined)
     const updateStatusIntervalRef = useRef<NodeJS.Timer | null>(null)
     const measurementWaitingTimeoutRef = useRef<NodeJS.Timeout | null>(null)
 
