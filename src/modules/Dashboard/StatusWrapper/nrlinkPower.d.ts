@@ -6,11 +6,11 @@ type NrlinkMetric = {
     /**
      * Represents the value.
      */
-    value: number
+    value: number | null
     /**
      *
      */
-    timestamp: string
+    timestamp: string | null
 }
 
 /**

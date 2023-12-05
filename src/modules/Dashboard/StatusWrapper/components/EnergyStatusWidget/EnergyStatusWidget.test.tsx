@@ -1,3 +1,4 @@
+import { screen } from '@testing-library/react'
 import { reduxedRender } from 'src/common/react-platform-components/test'
 import { EnergyStatusWidget } from 'src/modules/Dashboard/StatusWrapper/components/EnergyStatusWidget/Index'
 import { EnergyStatusWidgetProps } from 'src/modules/Dashboard/StatusWrapper/components/EnergyStatusWidget/energyStatusWidget'
@@ -10,7 +11,8 @@ jest.mock('dayjs', () => {
 
     // eslint-disable-next-line jsdoc/require-jsdoc
     const mockDayjs = (...args: string[]) => {
-        return args.length ? originalDayjs(...args) : originalDayjs('2023-01-01T12:00:00.000Z')
+        // eslint-disable-next-line sonarjs/no-duplicate-string
+        return args.length ? originalDayjs(...args) : originalDayjs('2023-01-01T12:00:00.000')
     }
 
     // eslint-disable-next-line jsdoc/require-jsdoc
@@ -50,9 +52,65 @@ describe('EnergyStatusWidget', () => {
                 nrlinkConsentState: 'DISCONNECTED',
             },
         }
-
-        reduxedRender(<EnergyStatusWidget {...defaultProps} />)
     })
 
-    test('when there is no data', async () => {})
+    test('when nrlink is disconnected', async () => {
+        defaultProps.lastPowerData = {
+            timestamp: '2023-01-01T12:00:00.000',
+            value: 2,
+        }
+
+        reduxedRender(<EnergyStatusWidget {...defaultProps} />)
+        expect(screen.getByText('nrLINK hors de portée wifi')).toBeInTheDocument()
+    })
+
+    test('when nrlink is off', async () => {
+        defaultProps.nrlinkConsent = {
+            meterGuid: '1',
+            createdAt: 'false',
+            nrlinkConsentState: 'NONEXISTENT',
+        }
+        defaultProps.lastPowerData = {
+            timestamp: null,
+            value: 2,
+        }
+        reduxedRender(<EnergyStatusWidget {...defaultProps} />)
+        expect(screen.getByText('Connectez votre nrLINK pour voir votre consommation à la minute')).toBeInTheDocument()
+    })
+
+    test('when nrlink last power value is positive', async () => {
+        defaultProps.lastPowerData = {
+            timestamp: null,
+            value: 2,
+        }
+        reduxedRender(<EnergyStatusWidget {...defaultProps} />)
+        expect(screen.getByText('Dernière puissance remontée')).toBeInTheDocument()
+        expect(screen.getByText('bolt.svg')).toBeInTheDocument()
+    })
+
+    test('when nrlink last power value is negative', async () => {
+        defaultProps.lastPowerData = {
+            timestamp: null,
+            value: -2,
+        }
+        reduxedRender(<EnergyStatusWidget {...defaultProps} />)
+        expect(screen.getByText('Dernière puissance injectée')).toBeInTheDocument()
+        expect(screen.getByText('electric-tower.svg')).toBeInTheDocument()
+        expect(() => screen.getByText('€/h')).toThrow()
+    })
+    test('when nrlink is connected and there is last power data', async () => {
+        defaultProps.nrlinkConsent = {
+            meterGuid: '1',
+            createdAt: 'false',
+            nrlinkConsentState: 'CONNECTED',
+        }
+        defaultProps.lastPowerData = {
+            timestamp: '2023-01-01T12:00:00.000',
+            value: 22,
+        }
+        reduxedRender(<EnergyStatusWidget {...defaultProps} />)
+        expect(screen.getByText('Dernière puissance remontée')).toBeInTheDocument()
+        expect(screen.getByText('22 Wh')).toBeInTheDocument()
+        expect(screen.getByText('12:00')).toBeInTheDocument()
+    })
 })

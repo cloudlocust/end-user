@@ -19,7 +19,7 @@ const nrlinkPowerData: SnakeCasedPropertiesDeep<INrlinkMetrics> = {
  * Mock of nrlink power data.
  */
 export const DashboardHandlers = [
-    rest.get(MOCK_NRLINK_POWER_ENDPOINT, (req, res, ctx) => {
-        return res(ctx.json(nrlinkPowerData))
+    rest.get(MOCK_NRLINK_POWER_ENDPOINT, (_req, res, ctx) => {
+        return res(ctx.delay(1000), ctx.status(200), ctx.json(nrlinkPowerData))
     }),
 ]

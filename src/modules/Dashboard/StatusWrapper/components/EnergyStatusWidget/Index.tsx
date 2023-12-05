@@ -59,7 +59,10 @@ export const EnergyStatusWidget = (props: EnergyStatusWidgetProps) => {
     const lastDataTimestamp = lastPowerData?.timestamp
 
     const computedLastPowerData = useMemo(
-        () => (lastPowerData?.value ? consumptionWattUnitConversion(lastPowerData?.value!) : { value: 0, unit: 'W' }),
+        () =>
+            lastPowerData?.value && lastPowerData.timestamp
+                ? consumptionWattUnitConversion(lastPowerData?.value!)
+                : { value: 0, unit: 'W' },
         [lastPowerData],
     )
 
@@ -73,14 +76,12 @@ export const EnergyStatusWidget = (props: EnergyStatusWidgetProps) => {
         >
             <CardContent className="flex flex-col h-full">
                 <div className="flex justify-between items-center mb-5">
-                    {!isNrlinkDisconnected && (
-                        <IconButton sx={{ bgcolor: themeContrastText }} className="mr-10">
-                            {iconType}
-                        </IconButton>
-                    )}
+                    <IconButton sx={{ bgcolor: themeContrastText }} className="mr-10">
+                        {iconType}
+                    </IconButton>
 
                     <TypographyFormatMessage className="text-20 font-400" sx={{ color: themeContrastText }}>
-                        {isNrlinkDisconnected ? ' ' : widgetTitle}
+                        {widgetTitle}
                     </TypographyFormatMessage>
                 </div>
                 <div className="flex flex-col w-full flex-grow">
@@ -88,7 +89,7 @@ export const EnergyStatusWidget = (props: EnergyStatusWidgetProps) => {
                         <span style={{ color: themeContrastText }}>
                             {isNrlinkDisconnected
                                 ? NRLINK_OUT_OF_RANGE_MESSAGE
-                                : isNrlinkOff && !lastPowerData?.value!
+                                : isNrlinkOff
                                 ? NRLINK_OFFLINE
                                 : lastNrlinkPowerDate}
                         </span>
