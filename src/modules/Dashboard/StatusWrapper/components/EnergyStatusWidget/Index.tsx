@@ -70,22 +70,30 @@ export const EnergyStatusWidget = (props: EnergyStatusWidgetProps) => {
 
     return (
         <FuseCard
-            sx={{ bgcolor: BG_PRIMARY_MAIN, height: CARD_HEIGHT }}
+            sx={{ bgcolor: BG_PRIMARY_MAIN, height: CARD_HEIGHT, width: '70%' }}
             isLoading={isNrlinkPowerLoading}
             loadingColor={theme.palette.common.white}
         >
-            <CardContent className="flex flex-col h-full">
-                <div className="flex justify-between items-center mb-5">
-                    <IconButton sx={{ bgcolor: themeContrastText }} className="mr-10">
+            <CardContent
+                className="flex flex-col h-full items-stretch"
+                sx={{
+                    padding: '1rem',
+                    '&:last-child': {
+                        paddingBottom: '1rem',
+                    },
+                }}
+            >
+                <div className="flex justify-between items-center mb-5 h-full">
+                    <IconButton sx={{ bgcolor: themeContrastText, pointerEvents: 'none' }} className="mr-10">
                         {iconType}
                     </IconButton>
 
-                    <TypographyFormatMessage className="text-20 font-400" sx={{ color: themeContrastText }}>
+                    <TypographyFormatMessage className="text-16 sm:text-20 font-400" sx={{ color: themeContrastText }}>
                         {widgetTitle}
                     </TypographyFormatMessage>
                 </div>
-                <div className="flex flex-col w-full flex-grow">
-                    <div className="flex justify-end items-center text-14 mb-5">
+                <div className="flex flex-col w-full h-full">
+                    <div className="flex justify-end items-center text-12 sm:text-16 mb-5">
                         <span style={{ color: themeContrastText }}>
                             {isNrlinkDisconnected
                                 ? NRLINK_OUT_OF_RANGE_MESSAGE
@@ -94,9 +102,9 @@ export const EnergyStatusWidget = (props: EnergyStatusWidgetProps) => {
                                 : lastNrlinkPowerDate}
                         </span>
                     </div>
-                    <div className="flex flex-row ml-auto flex-grow">
+                    <div className="flex flex-row ml-auto">
                         <span
-                            className={`text-28 font-400 flex items-center mr-20`}
+                            className={`text-24 sm:text-28 font-400 flex items-center mr-20`}
                             style={{ color: themeContrastText }}
                         >
                             {isNrlinkDisconnected
@@ -104,7 +112,10 @@ export const EnergyStatusWidget = (props: EnergyStatusWidgetProps) => {
                                 : `${computedLastPowerData?.value} ${computedLastPowerData?.unit}`}
                         </span>
                         {!isLastPowerDataNegative && (
-                            <span className="text-28 font-400 flex items-center" style={{ color: themeContrastText }}>
+                            <span
+                                className="text-24 sm:text-28 font-400 flex items-center"
+                                style={{ color: themeContrastText }}
+                            >
                                 {isNrlinkDisconnected ? '-' : pricePerKwh?.toFixed(2)} €/h
                             </span>
                         )}
