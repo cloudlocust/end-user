@@ -28,6 +28,7 @@ import {
     getWidgetRange,
 } from 'src/modules/MyConsumption/components/Widget/WidgetFunctions'
 import { computePercentageChange } from 'src/modules/Analysis/utils/computationFunctions'
+import { TendanceVeille } from 'src/modules/Dashboard/DashboardConsumptionWidget/TendanceVeille'
 
 /**
  * Consumption widget component for the dashboard.
@@ -55,7 +56,6 @@ export const DashboardConsumptionWidget = ({
         unit: 'Wh',
     })
     const [totalDailyPrice, setTotalDailyPrice] = useState<number>(0)
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [percentageChange, setPercentageChange] = useState<number>(0)
 
     const chartOptions: ApexOptions = {
@@ -155,12 +155,14 @@ export const DashboardConsumptionWidget = ({
 
     return (
         <FuseCard sx={{ height: 220 }} isLoading={isMetricsLoading} loadingColor={theme.palette.primary.main}>
-            <div className="h-128 flex items-center mx-24">
+            <div className="h-128 flex justify-between items-center gap-24 mx-24">
                 <ConsumptionAndPrice
                     consumptionValue={totalDailyConsumption.value}
                     consumptionUnit={totalDailyConsumption.unit}
                     priceValue={totalDailyPrice}
                 />
+
+                <TendanceVeille percentageChange={percentageChange} />
             </div>
             <div className="flex flex-col flex-auto h-92">
                 <ReactApexChart
