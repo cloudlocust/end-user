@@ -1,4 +1,4 @@
-import { useContext, useEffect } from 'react'
+import { useContext, useEffect, useMemo } from 'react'
 import { Grid } from '@mui/material'
 import { useTheme } from '@mui/material'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
@@ -38,24 +38,27 @@ const ConsumptionWidgetsContainer = ({
     const theme = useTheme()
     const { resetMetricsWidgetData } = useContext(ConsumptionWidgetsMetricsContext)
     const { currentHousingScopes } = useSelector(({ housingModel }: RootState) => housingModel)
+    const isProduction = useMemo(
+        () => isProductionActiveAndHousingHasAccess(currentHousingScopes) && !enphaseOff,
+        [currentHousingScopes, enphaseOff],
+    )
 
-    const renderedWidgets: metricTargetType[] =
-        isProductionActiveAndHousingHasAccess(currentHousingScopes) && !enphaseOff
-            ? [
-                  metricTargetsEnum.totalProduction,
-                  metricTargetsEnum.eurosConsumption,
-                  metricTargetsEnum.autoconsumption,
-                  metricTargetsEnum.pMax,
-                  metricTargetsEnum.externalTemperature,
-                  metricTargetsEnum.internalTemperature,
-              ]
-            : [
-                  metricTargetsEnum.consumption,
-                  metricTargetsEnum.eurosConsumption,
-                  metricTargetsEnum.pMax,
-                  metricTargetsEnum.externalTemperature,
-                  metricTargetsEnum.internalTemperature,
-              ]
+    const widgetsToRender = useMemo<metricTargetType[]>(() => {
+        let widgetsToRender: metricTargetType[] = [
+            metricTargetsEnum.eurosConsumption,
+            metricTargetsEnum.pMax,
+            metricTargetsEnum.externalTemperature,
+            metricTargetsEnum.internalTemperature,
+        ]
+
+        if (isProduction) {
+            widgetsToRender = [metricTargetsEnum.totalProduction, metricTargetsEnum.autoconsumption, ...widgetsToRender]
+        } else {
+            widgetsToRender = [metricTargetsEnum.consumption, ...widgetsToRender]
+        }
+
+        return widgetsToRender
+    }, [isProduction])
 
     /**
      *   We should reset the metrics context when the range, filters, metricsInterval or period changes,
@@ -93,7 +96,7 @@ const ConsumptionWidgetsContainer = ({
                      * Otherwise it'll be displayed with then normal Widget component, that displays one info : the consumption total,
                      *    (because in this case consumption total = purchased consumption).
                      */}
-                    {isProductionActiveAndHousingHasAccess(currentHousingScopes) && !enphaseOff && (
+                    {isProduction && (
                         <WidgetConsumption
                             targets={[metricTargetsEnum.consumption]}
                             range={range}
@@ -127,7 +130,7 @@ const ConsumptionWidgetsContainer = ({
                     />
 
                     {/** Display the other targets with Widget Component. */}
-                    {renderedWidgets.map((target) => {
+                    {widgetsToRender.map((target) => {
                         return target === metricTargetsEnum.totalProduction ? (
                             <Widget
                                 key={target}
