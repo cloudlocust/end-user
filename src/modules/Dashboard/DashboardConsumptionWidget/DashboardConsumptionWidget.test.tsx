@@ -47,5 +47,6 @@ describe('DashboardConsumptionWidget', () => {
         expect(getByTestId(TOTAL_DAILY_PRICE_TEST_ID)).toBeInTheDocument()
         expect(getByTestId(PERCENTAGE_CHANGE_TEST_ID)).toBeInTheDocument()
         expect(getByText(PRICE_UNIT)).toBeInTheDocument()
+        expect(getByText('Conso')).toBeInTheDocument()
     })
 })

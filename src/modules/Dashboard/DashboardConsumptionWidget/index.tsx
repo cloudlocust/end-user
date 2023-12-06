@@ -29,6 +29,7 @@ import {
 } from 'src/modules/MyConsumption/components/Widget/WidgetFunctions'
 import { computePercentageChange } from 'src/modules/Analysis/utils/computationFunctions'
 import { TendanceVeille } from 'src/modules/Dashboard/DashboardConsumptionWidget/TendanceVeille'
+import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 
 /**
  * Consumption widget component for the dashboard.
@@ -154,17 +155,27 @@ export const DashboardConsumptionWidget = ({
     }, [updateWidgetValues])
 
     return (
-        <FuseCard sx={{ height: 220 }} isLoading={isMetricsLoading} loadingColor={theme.palette.primary.main}>
-            <div className="h-128 flex justify-between items-center gap-24 mx-24">
-                <ConsumptionAndPrice
-                    consumptionValue={totalDailyConsumption.value}
-                    consumptionUnit={totalDailyConsumption.unit}
-                    priceValue={totalDailyPrice}
-                />
+        <FuseCard
+            sx={{ height: 264 }}
+            isLoading={isMetricsLoading}
+            loadingColor={theme.palette.primary.main}
+            className="flex flex-col justify-between"
+        >
+            <div className="p-20 pb-28">
+                <TypographyFormatMessage variant="h3" className="text-24 font-400 text-grey-900 mb-10">
+                    Conso
+                </TypographyFormatMessage>
+                <div className="flex justify-between items-center gap-24">
+                    <ConsumptionAndPrice
+                        consumptionValue={totalDailyConsumption.value}
+                        consumptionUnit={totalDailyConsumption.unit}
+                        priceValue={totalDailyPrice}
+                    />
 
-                <TendanceVeille percentageChange={percentageChange} />
+                    <TendanceVeille percentageChange={percentageChange} />
+                </div>
             </div>
-            <div className="flex flex-col flex-auto h-92">
+            <div className="flex flex-col flex-auto h-128">
                 <ReactApexChart
                     options={chartOptions}
                     series={[
