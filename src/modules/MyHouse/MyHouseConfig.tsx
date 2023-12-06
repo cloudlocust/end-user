@@ -7,6 +7,7 @@ import { ReactComponent as HousingSelectedIcon } from 'src/assets/images/navbarI
 import SvgIcon from '@mui/material/SvgIcon'
 import { HousingInformation } from 'src/modules/MyHouse/components/HousingInformation'
 import { Equipments } from 'src/modules/MyHouse/components/Equipments'
+import { EquipmentDetails } from 'src/modules/MyHouse/components/EquipmentDetails'
 import { store } from 'src/redux'
 import { ScopesTypesEnum } from 'src/modules/MyHouse/utils/MyHouseCommonTypes.d'
 import { isAccessRightsActive } from 'src/configs'
@@ -23,6 +24,10 @@ export const URL_MY_HOUSE_DETAILS = URL_MY_HOUSE + '/:houseId'
  * Url for housing equipments.
  */
 export const URL_HOUSING_EQUIPMENTS = `${URL_MY_HOUSE_DETAILS}/equipments`
+/**
+ * Url for equipment details.
+ */
+export const URL_HOUSING_EQUIPMENT_DETAILS = `${URL_HOUSING_EQUIPMENTS}/details`
 /**
  * Url for housing connected plugs.
  */
@@ -245,6 +250,29 @@ export const MyHouseConfig = [
                             </SvgIcon>
                         ),
                         url: URL_HOUSING_EQUIPMENTS,
+                    },
+                },
+            },
+        },
+    } as IRouteNavigationConfig<MyHouseProps>,
+    {
+        path: URL_HOUSING_EQUIPMENT_DETAILS,
+        component: EquipmentDetails,
+        auth: { authType: authTypes.loginRequired },
+        settings: {
+            layout: {
+                navbar: {
+                    UINavbarItem: {
+                        id: 'myHouses',
+                        label: 'Equipements',
+                        labelAbbreviation: 'Equipements',
+                        type: 'item',
+                        icon: (
+                            <SvgIcon>
+                                <HousingIcon />
+                            </SvgIcon>
+                        ),
+                        url: URL_HOUSING_EQUIPMENT_DETAILS,
                     },
                 },
             },
