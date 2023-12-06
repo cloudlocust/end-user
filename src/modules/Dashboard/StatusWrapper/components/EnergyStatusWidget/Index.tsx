@@ -83,7 +83,7 @@ export const EnergyStatusWidget = (props: EnergyStatusWidgetProps) => {
                     },
                 }}
             >
-                <div className="flex justify-between items-center mb-5 h-full">
+                <div className="flex justify-between items-start mb-5 h-full">
                     <IconButton sx={{ bgcolor: themeContrastText, pointerEvents: 'none' }} className="mr-10">
                         {iconType}
                     </IconButton>
