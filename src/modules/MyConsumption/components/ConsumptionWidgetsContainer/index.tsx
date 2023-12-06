@@ -12,6 +12,8 @@ import WidgetIdleConsumption from 'src/modules/MyConsumption/components/WidgetId
 import { isProductionActiveAndHousingHasAccess } from 'src/modules/MyHouse/MyHouseConfig'
 import { useSelector } from 'react-redux'
 import { RootState } from 'src/redux'
+import { getDateWithoutTimezoneOffset } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
+import { endOfDay, startOfDay } from 'date-fns'
 
 /**
  * MyConsumptionWidgets Component (it's Wrapper of the list of Widgets).
@@ -44,12 +46,20 @@ const ConsumptionWidgetsContainer = ({
     )
 
     const widgetsToRender = useMemo<metricTargetType[]>(() => {
-        let widgetsToRender: metricTargetType[] = [
-            metricTargetsEnum.eurosConsumption,
-            metricTargetsEnum.pMax,
-            metricTargetsEnum.externalTemperature,
-            metricTargetsEnum.internalTemperature,
-        ]
+        let widgetsToRender: metricTargetType[] = [metricTargetsEnum.eurosConsumption, metricTargetsEnum.pMax]
+
+        const currentTime = new Date()
+        if (
+            period === 'daily' &&
+            range.from === getDateWithoutTimezoneOffset(startOfDay(currentTime)) &&
+            range.to === getDateWithoutTimezoneOffset(endOfDay(currentTime))
+        ) {
+            widgetsToRender = [
+                ...widgetsToRender,
+                metricTargetsEnum.externalTemperature,
+                metricTargetsEnum.internalTemperature,
+            ]
+        }
 
         if (isProduction) {
             widgetsToRender = [metricTargetsEnum.totalProduction, metricTargetsEnum.autoconsumption, ...widgetsToRender]
@@ -58,7 +68,7 @@ const ConsumptionWidgetsContainer = ({
         }
 
         return widgetsToRender
-    }, [isProduction])
+    }, [isProduction, period, range.from, range.to])
 
     /**
      *   We should reset the metrics context when the range, filters, metricsInterval or period changes,
