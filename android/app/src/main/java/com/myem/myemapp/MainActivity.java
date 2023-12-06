@@ -1,4 +1,4 @@
-package com.myem.myemapp;
+package com.myem.myemStaging;
 
 import com.getcapacitor.BridgeActivity;
 
