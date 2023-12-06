@@ -1,5 +1,6 @@
 import { useTheme } from '@mui/material'
 import { useIntl } from 'src/common/react-platform-translation'
+import { Link } from 'react-router-dom'
 import ReactApexChart from 'react-apexcharts'
 import { ApexOptions } from 'apexcharts'
 import { useCallback, useEffect, useState } from 'react'
@@ -156,7 +157,7 @@ export const DashboardConsumptionWidget = ({
 
     return (
         <FuseCard
-            sx={{ height: 264 }}
+            sx={{ minHeight: 280 }}
             isLoading={isMetricsLoading}
             loadingColor={theme.palette.primary.main}
             className="flex flex-col justify-between"
@@ -191,6 +192,15 @@ export const DashboardConsumptionWidget = ({
                     height="100%"
                     data-testid="apexcharts"
                 />
+            </div>
+            <div className="text-center pb-5 pt-2" style={{ backgroundColor: `${theme.palette.primary.light}23` }}>
+                <Link to="/my-consumption" className="text-grey-700 underline">
+                    {formatMessage({
+                        id: 'Voir ma conso du jour',
+                        defaultMessage: 'Voir ma conso du jour',
+                    })}
+                    &nbsp;&gt;
+                </Link>
             </div>
         </FuseCard>
     )
