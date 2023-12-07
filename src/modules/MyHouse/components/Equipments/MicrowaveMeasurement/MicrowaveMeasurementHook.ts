@@ -19,6 +19,7 @@ import {
  * @param measurementMode The selected measurement mode.
  * @param equipmentNumber The number of the equipment to test.
  * @param measurementMaxDuration Estimated value for the maximum duration of the measurement process (in seconds).
+ * @param defaultMeasurementResult Default value for the measurement result.
  * @returns Microwave measurement status and functions...
  */
 export function useMicrowaveMeasurement(
@@ -26,13 +27,18 @@ export function useMicrowaveMeasurement(
     measurementMode: string,
     equipmentNumber: number,
     measurementMaxDuration: number,
+    defaultMeasurementResult: number | null = null,
 ) {
     const { enqueueSnackbar } = useSnackbar()
     const { formatMessage } = useIntl()
     const [measurementStatus, setMeasurementStatus] = useState<MeasurementStatusStateType | null>(null)
-    const [measurementResult, setMeasurementResult] = useState<number | null>(null)
+    const [measurementResult, setMeasurementResult] = useState<number | null>(defaultMeasurementResult)
     const updateStatusIntervalRef = useRef<NodeJS.Timer | null>(null)
     const measurementWaitingTimeoutRef = useRef<NodeJS.Timeout | null>(null)
+
+    useEffect(() => {
+        setMeasurementResult(defaultMeasurementResult)
+    }, [defaultMeasurementResult])
 
     /**
      * Function that get the result of the measurement process.
@@ -42,13 +48,13 @@ export function useMicrowaveMeasurement(
             const { data } = await axios.get<MeasurementResultApiResponse>(
                 `${HOUSING_API}/equipments/${housingEquipmentId}/measurement/${measurementMode}/result/${equipmentNumber}`,
             )
-            return data?.value
+            return data?.value || 0
         } catch (error: any) {
             setMeasurementStatus({
                 status: measurementStatusEnum.FAILED,
                 failureMessage: error?.response?.data?.detail as string,
             })
-            return null
+            return 0
         }
     }, [equipmentNumber, housingEquipmentId, measurementMode])
 
@@ -212,7 +218,7 @@ export function useMicrowaveMeasurement(
                 updateResult()
                 break
         }
-    }, [measurementStatus, measurementMaxDuration, updateResult, updateStatus, getTimeFromStatusLastUpdate])
+    }, [getTimeFromStatusLastUpdate, measurementMaxDuration, measurementStatus?.status, updateResult, updateStatus])
 
     return {
         measurementStatus,
