@@ -27,14 +27,6 @@ export const DashboardContainer = () => {
 
             <div className="flex flex-col gap-20">
                 <StatusWrapper nrlinkConsent={nrlinkConsent} />
-
-                <DashboardConsumptionWidget
-                    getMetricsWithParams={getMetricsWithParams}
-                    isMetricsLoading={isMetricsLoading}
-                    metricInterval={enphaseConsent?.enphaseConsentState !== 'ACTIVE' ? '1m' : '30m'}
-                    pricePerKwh={pricePerKwh}
-                />
-
                 <DashboardConsumptionWidget />
             </div>
         </div>

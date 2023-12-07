@@ -25,6 +25,15 @@ export const GET_METRICS_ERROR_MESSAGE =
  */
 export const METRICS_API = `${API_RESOURCES_URL}/query`
 
+const defaultInitialState: getMetricType = {
+    range: {
+        from: '',
+        to: '',
+    },
+    interval: '30m',
+    targets: [],
+}
+
 /**
  * Consumption Metrics hook.
  *
@@ -33,7 +42,7 @@ export const METRICS_API = `${API_RESOURCES_URL}/query`
  * @returns Consumption metrics hook.
  */
 // eslint-disable-next-line sonarjs/cognitive-complexity
-export function useMetrics(initialState: getMetricType, immediate: boolean = false) {
+export function useMetrics(initialState: getMetricType = defaultInitialState, immediate: boolean = false) {
     const { enqueueSnackbar } = useSnackbar()
     const { formatMessage } = useIntl()
     const [isMetricsLoading, setIsMetricsLoading] = useState(false)
