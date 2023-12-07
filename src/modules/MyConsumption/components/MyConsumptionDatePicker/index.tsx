@@ -103,7 +103,7 @@ const MyConsumptionDatePicker = ({
                 aria-label="Previous"
                 onClick={() => handleClick(subDays, rangeDateFormat.from, 'sub')}
                 size="large"
-                style={{ color: isRangeLoading ? theme.palette.grey[600] : theme.palette.secondary.light }}
+                style={{ color: isRangeLoading ? theme.palette.grey[600] : theme.palette.primary.main }}
                 disabled={isRangeLoading}
             >
                 <Icon>chevron_left </Icon>
@@ -131,7 +131,7 @@ const MyConsumptionDatePicker = ({
                                         {...params}
                                         sx={{
                                             input: {
-                                                color: theme.palette.secondary.light,
+                                                color: theme.palette.primary.main,
                                                 textAlign: 'center',
                                                 width: item.width,
                                                 fontSize: '1.6rem',
@@ -149,7 +149,7 @@ const MyConsumptionDatePicker = ({
                 size="large"
                 disabled={isFutureDate || isRangeLoading}
                 style={{
-                    color: isFutureDate || isRangeLoading ? theme.palette.grey[600] : theme.palette.secondary.light,
+                    color: isFutureDate || isRangeLoading ? theme.palette.grey[600] : theme.palette.primary.main,
                 }}
             >
                 <Icon>chevron_right</Icon>

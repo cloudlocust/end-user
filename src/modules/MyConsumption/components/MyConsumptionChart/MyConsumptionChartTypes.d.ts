@@ -84,4 +84,8 @@ export interface ConsumptionChartProps {
      * Period Type.
      */
     period: periodType
+    /**
+     * Color used for axis (labels, lines, etc.).
+     */
+    axisColor: string
 }

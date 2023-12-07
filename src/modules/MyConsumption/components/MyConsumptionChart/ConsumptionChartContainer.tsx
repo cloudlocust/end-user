@@ -30,6 +30,10 @@ import {
     temperatureOrPmaxTargets,
 } from 'src/modules/MyConsumption/utils/myConsumptionVariables'
 import MyConsumptionChart from 'src/modules/MyConsumption/components/MyConsumptionChart'
+import { Button } from '@mui/material'
+import { AddBusiness } from '@mui/icons-material'
+import { useHistory } from 'react-router-dom'
+import { URL_CONSUMPTION_LABELIZATION } from 'src/modules/MyConsumption/MyConsumptionConfig'
 
 /**
  * MyConsumptionChartContainer Component.
@@ -55,6 +59,14 @@ export const ConsumptionChartContainer = ({
 }: ConsumptionChartContainerProps) => {
     const theme = useTheme()
     const [isShowIdleConsumptionDisabledInfo, setIsShowIdleConsumptionDisabledInfo] = useState(false)
+    const history = useHistory()
+
+    /**
+     * Redirect to EcogestCard.
+     */
+    const handleClick = () => {
+        history.push(URL_CONSUMPTION_LABELIZATION)
+    }
 
     // Handling the targets makes it simpler instead of the useMetrics as it's a straightforward array of metricTargetType
     // Meanwhile the setTargets for useMetrics needs to add {type: 'timeserie'} everytime...
@@ -273,6 +285,17 @@ export const ConsumptionChartContainer = ({
                 />
             </div>
 
+            <div className="flex flex-row justify-end my-16">
+                <Button
+                    style={{ color: theme.palette.common.white }}
+                    startIcon={<AddBusiness />}
+                    variant="outlined"
+                    onClick={handleClick}
+                >
+                    Labéliser mes appareils
+                </Button>
+            </div>
+
             {isMetricsLoading ? (
                 <div className="flex h-full w-full flex-col items-center justify-center" style={{ height: '320px' }}>
                     <CircularProgress style={{ color: theme.palette.background.paper }} />
@@ -282,6 +305,7 @@ export const ConsumptionChartContainer = ({
                     data={consumptionChartData}
                     period={period}
                     isSolarProductionConsentOff={isSolarProductionConsentOff}
+                    axisColor={theme.palette.primary.contrastText}
                 />
             )}
             <DefaultContractWarning isShowWarning={isEurosButtonToggled && Boolean(hasMissingHousingContracts)} />

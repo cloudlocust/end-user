@@ -27,6 +27,7 @@ dayjs.extend(timezone)
  * @param isSolarProductionConsentOff Boolean indicating if solar production consent is off.
  * @param isMobile Is Mobile view.
  * @param period Period type.
+ * @param axisColor Color of the axis.
  * @returns Echarts Consumption Option.
  */
 export const getEchartsConsumptionChartOptions = (
@@ -36,6 +37,7 @@ export const getEchartsConsumptionChartOptions = (
     isSolarProductionConsentOff: boolean,
     isMobile: boolean,
     period: periodType,
+    axisColor: string,
 ) => {
     const xAxisTimestamps = Object.values(timestamps).length ? Object.values(timestamps)[0] : [0]
 
@@ -49,8 +51,14 @@ export const getEchartsConsumptionChartOptions = (
 
     return {
         ...getDefaultOptionsEchartsConsumptionChart(theme, isMobile),
-        ...getXAxisOptionEchartsConsumptionChart(xAxisTimestamps, isSolarProductionConsentOff, period, theme),
-        ...getYAxisOptionEchartsConsumptionChart(filteredValues, period, theme),
+        ...getXAxisOptionEchartsConsumptionChart(
+            xAxisTimestamps,
+            isSolarProductionConsentOff,
+            period,
+            theme,
+            axisColor,
+        ),
+        ...getYAxisOptionEchartsConsumptionChart(filteredValues, period, theme, axisColor),
         ...getSeriesOptionEchartsConsumptionChart(filteredValues, period, isSolarProductionConsentOff, theme),
     } as EChartsOption
 }
@@ -195,6 +203,7 @@ export const getSeriesOptionEchartsConsumptionChart = (
  * @param isSolarProductionConsentOff IsSolarProductionConsentOff.
  * @param period Current period.
  * @param theme Theme used for colors, fonts and backgrounds of xAxis.
+ * @param axisColor Color of the axis.
  * @returns XAxis object option for Echarts Consumption Options.
  */
 export const getXAxisOptionEchartsConsumptionChart = (
@@ -202,6 +211,7 @@ export const getXAxisOptionEchartsConsumptionChart = (
     isSolarProductionConsentOff: boolean,
     period: periodType,
     theme: Theme,
+    axisColor: string,
 ) =>
     ({
         xAxis: [
@@ -232,7 +242,7 @@ export const getXAxisOptionEchartsConsumptionChart = (
                     // Important to put onZero so that bar charts don't overflow with yAxis.
                     onZero: true,
                     lineStyle: {
-                        color: theme.palette.primary.contrastText,
+                        color: axisColor,
                         type: 'solid',
                         opacity: 1,
                     },
@@ -246,7 +256,7 @@ export const getXAxisOptionEchartsConsumptionChart = (
                 splitLine: {
                     show: true,
                     lineStyle: {
-                        color: theme.palette.primary.contrastText,
+                        color: axisColor,
                         type: 'dashed',
                         opacity: 0.4,
                     },
@@ -582,12 +592,14 @@ export const getStackTargetSeriesEchartsConsumptionChart = (
  * @param values Datapoint values from the echarts metrics conversion function.
  * @param period Current period.
  * @param theme Theme used for colors, fonts and backgrounds of xAxis.
+ * @param axisColor Color of the axis.
  * @returns YAxis object option for Echarts Consumption Options.
  */
 export const getYAxisOptionEchartsConsumptionChart = (
     values: targetTimestampsValuesFormat,
     period: periodType,
     theme: Theme,
+    axisColor: string,
 ) => {
     // Not showing the yAxis that don't have their targets in the values.
     // For example if euros_consumption target is not in values and there's no euro targets, then yAxis of euros will have show: false.
@@ -608,7 +620,7 @@ export const getYAxisOptionEchartsConsumptionChart = (
                 onZero: true,
                 show: true,
                 lineStyle: {
-                    color: theme.palette.primary.contrastText,
+                    color: axisColor,
                     type: 'solid',
                     opacity: 1,
                 },
@@ -622,7 +634,7 @@ export const getYAxisOptionEchartsConsumptionChart = (
             splitLine: {
                 show: true,
                 lineStyle: {
-                    color: theme.palette.primary.contrastText,
+                    color: axisColor,
                     type: 'dashed',
                     opacity: [targetYAxisIndexEnum.PMAX, targetYAxisIndexEnum.TEMPERATURE].includes(
                         targetYAxisIndex as targetYAxisIndexEnum,
