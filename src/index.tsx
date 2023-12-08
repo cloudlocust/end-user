@@ -18,6 +18,9 @@ import { SnackbarProvider } from 'src/common/react-platform-components/alerts/Sn
 import { pwaTrackingListeners } from './pwaEventlisteners'
 import TagManager from 'react-gtm-module'
 import { TAG_MANAGER_CONFIG } from 'src/configs'
+import { QueryClient, QueryClientProvider } from 'react-query'
+
+const queryClient = new QueryClient()
 
 const isBrowser = typeof window !== 'undefined'
 
@@ -33,19 +36,21 @@ if (isBrowser) {
 const Application: FC<any> = () => {
     return (
         <React.StrictMode>
-            <StyledEngineProvider injectFirst>
-                <Provider store={store}>
-                    <PersistGate persistor={getPersistor()}>
-                        <TranslatitonProvider>
-                            <Router basename={BASENAME_URL}>
-                                <SnackbarProvider>
-                                    <App />
-                                </SnackbarProvider>
-                            </Router>
-                        </TranslatitonProvider>
-                    </PersistGate>
-                </Provider>
-            </StyledEngineProvider>
+            <QueryClientProvider client={queryClient}>
+                <StyledEngineProvider injectFirst>
+                    <Provider store={store}>
+                        <PersistGate persistor={getPersistor()}>
+                            <TranslatitonProvider>
+                                <Router basename={BASENAME_URL}>
+                                    <SnackbarProvider>
+                                        <App />
+                                    </SnackbarProvider>
+                                </Router>
+                            </TranslatitonProvider>
+                        </PersistGate>
+                    </Provider>
+                </StyledEngineProvider>
+            </QueryClientProvider>
         </React.StrictMode>
     )
 }

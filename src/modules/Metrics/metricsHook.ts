@@ -25,6 +25,15 @@ export const GET_METRICS_ERROR_MESSAGE =
  */
 export const METRICS_API = `${API_RESOURCES_URL}/query`
 
+const defaultInitialState: getMetricType = {
+    range: {
+        from: '',
+        to: '',
+    },
+    interval: '30m',
+    targets: [],
+}
+
 /**
  * Consumption Metrics hook.
  *
@@ -33,7 +42,7 @@ export const METRICS_API = `${API_RESOURCES_URL}/query`
  * @returns Consumption metrics hook.
  */
 // eslint-disable-next-line sonarjs/cognitive-complexity
-export function useMetrics(initialState: getMetricType, immediate: boolean = false) {
+export function useMetrics(initialState: getMetricType = defaultInitialState, immediate: boolean = false) {
     const { enqueueSnackbar } = useSnackbar()
     const { formatMessage } = useIntl()
     const [isMetricsLoading, setIsMetricsLoading] = useState(false)
@@ -128,7 +137,7 @@ export function useMetrics(initialState: getMetricType, immediate: boolean = fal
      * @param params.filters Adhoc Filters request.
      */
     const getMetricsWithParams = useCallback(
-        async (params: getMetricsWithParamsType, isSettingData: boolean = true): Promise<IMetric[] | []> => {
+        async (params: getMetricsWithParamsType, isSettingData: boolean = true): Promise<IMetric[]> => {
             setIsMetricsLoading(true)
             const targetsBody: metricTargetsType = params.targets.map((target) => ({ target, type: 'timeserie' }))
             try {
