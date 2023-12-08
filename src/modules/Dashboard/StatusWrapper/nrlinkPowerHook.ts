@@ -14,7 +14,7 @@ const NRLINK_POWER_URL = (housingid?: number) => `${API_RESOURCES_URL}/nrlink-la
  * @param housingid Housing id.
  * @returns Response data.
  */
-const fetchLastNrlinkMetrics = async (housingid?: number): Promise<INrlinkMetrics> => {
+export const fetchLastNrlinkMetrics = async (housingid?: number): Promise<INrlinkMetrics> => {
     const response = await axios.get(NRLINK_POWER_URL(housingid))
     return response.data
 }
