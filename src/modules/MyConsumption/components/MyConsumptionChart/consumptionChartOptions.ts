@@ -48,7 +48,7 @@ export const getEchartsConsumptionChartOptions = (
     })
 
     return {
-        ...getDefaultOptionsEchartsConsumptionChart(theme, isMobile),
+        ...getDefaultOptionsEchartsConsumptionChart(theme, period, isMobile),
         ...getXAxisOptionEchartsConsumptionChart(xAxisTimestamps, isSolarProductionConsentOff, period, theme),
         ...getYAxisOptionEchartsConsumptionChart(filteredValues, period, theme),
         ...getSeriesOptionEchartsConsumptionChart(filteredValues, period, isSolarProductionConsentOff, theme),
@@ -59,10 +59,11 @@ export const getEchartsConsumptionChartOptions = (
  * Echarts ConsumptionChart Default option.
  *
  * @param theme Theme used for colors, fonts and backgrounds.
+ * @param period Period type.
  * @param isMobile Is Mobile view.
  * @returns Default EchartsConsumptionChart option.
  */
-const getDefaultOptionsEchartsConsumptionChart = (theme: Theme, isMobile: boolean) =>
+const getDefaultOptionsEchartsConsumptionChart = (theme: Theme, period: periodType, isMobile: boolean) =>
     ({
         color: 'transparent',
         axisPointer: {
@@ -81,6 +82,8 @@ const getDefaultOptionsEchartsConsumptionChart = (theme: Theme, isMobile: boolea
                 type: 'inside', // This enables zooming with the mouse wheel or touch gestures
                 start: 0, // start at 0 (0%) of the xAxis
                 end: 100, // end at 100 (100%) of the xAxis
+                disabled: period !== PeriodEnum.DAILY, // Disable zooming for period other than day
+                minValueSpan: 10,
             },
         ],
         // Putting % on the left & bottom & right helps to give space to make visible all the labels on xAxis & yAxis.
@@ -607,6 +610,9 @@ export const getYAxisOptionEchartsConsumptionChart = (
             axisLine: {
                 onZero: true,
                 show: true,
+                axisLabel: {
+                    show: true,
+                },
                 lineStyle: {
                     color: theme.palette.primary.contrastText,
                     type: 'solid',

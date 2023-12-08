@@ -610,6 +610,9 @@ describe('Test echartsConsumptionOptions', () => {
         const commonOptions = {
             type: 'value',
             axisLine: {
+                axisLabel: {
+                    show: true,
+                },
                 onZero: true,
                 show: true,
                 lineStyle: {
