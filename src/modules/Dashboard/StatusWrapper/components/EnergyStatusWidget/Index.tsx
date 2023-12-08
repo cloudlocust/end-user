@@ -8,7 +8,10 @@ import { consumptionWattUnitConversion } from 'src/modules/MyConsumption/utils/u
 import { FuseCard } from 'src/modules/shared/FuseCard/FuseCard'
 import { EnergyStatusWidgetProps } from 'src/modules/Dashboard/StatusWrapper/components/EnergyStatusWidget/energyStatusWidget'
 
-const iconStyle: SVGAttributes<SVGSVGElement> = {
+/**
+ * Icon style.
+ */
+export const iconStyle: SVGAttributes<SVGSVGElement> = {
     width: 25,
     height: 25,
 }
@@ -66,7 +69,7 @@ export const EnergyStatusWidget = (props: EnergyStatusWidgetProps) => {
         [lastPowerData],
     )
 
-    const lastNrlinkPowerDate = dayjs(lastDataTimestamp).format('HH:mm')
+    const lastNrlinkPowerDate = dayjs(lastDataTimestamp).format('HH:mm:ss')
 
     return (
         <FuseCard
@@ -76,6 +79,9 @@ export const EnergyStatusWidget = (props: EnergyStatusWidgetProps) => {
         >
             <CardContent
                 className="flex flex-col h-full items-stretch"
+                /**
+                 * @see https://stackoverflow.com/a/60403040/14005627
+                 */
                 sx={{
                     padding: '1rem',
                     '&:last-child': {
@@ -84,7 +90,7 @@ export const EnergyStatusWidget = (props: EnergyStatusWidgetProps) => {
                 }}
             >
                 <div className="flex justify-between items-start mb-5 h-full">
-                    <IconButton sx={{ bgcolor: themeContrastText, pointerEvents: 'none' }} className="mr-10">
+                    <IconButton sx={{ bgcolor: themeContrastText }} className="mr-10 pointer-events-none">
                         {iconType}
                     </IconButton>
 
@@ -92,32 +98,38 @@ export const EnergyStatusWidget = (props: EnergyStatusWidgetProps) => {
                         {widgetTitle}
                     </TypographyFormatMessage>
                 </div>
-                <div className="flex flex-col w-full h-full">
-                    <div className="flex justify-end items-center text-12 sm:text-16 mb-5">
+                <div className="flex flex-col w-full">
+                    <div className="flex justify-end items-center text-14 sm:text-16 mb-10">
                         <span style={{ color: themeContrastText }}>
                             {isNrlinkDisconnected
                                 ? NRLINK_OUT_OF_RANGE_MESSAGE
                                 : isNrlinkOff
                                 ? NRLINK_OFFLINE
-                                : lastNrlinkPowerDate}
+                                : `à ${lastNrlinkPowerDate}`}
                         </span>
                     </div>
-                    <div className="flex flex-row ml-auto">
-                        <span
-                            className={`text-24 sm:text-28 font-400 flex items-center mr-20`}
-                            style={{ color: themeContrastText }}
-                        >
-                            {isNrlinkDisconnected
-                                ? '-'
-                                : `${computedLastPowerData?.value} ${computedLastPowerData?.unit}`}
-                        </span>
+                    <div className="flex flex-row space-x-5 justify-end">
+                        {isNrlinkDisconnected ? (
+                            '-'
+                        ) : (
+                            <div className="flex space-x-5 items-baseline">
+                                <span className="text-28 leading-3" style={{ color: themeContrastText }}>
+                                    {computedLastPowerData?.value}
+                                </span>
+                                <span className="text-14 leading-3" style={{ color: themeContrastText }}>
+                                    {computedLastPowerData?.unit}
+                                </span>
+                            </div>
+                        )}
                         {!isLastPowerDataNegative && (
-                            <span
-                                className="text-24 sm:text-28 font-400 flex items-center"
-                                style={{ color: themeContrastText }}
-                            >
-                                {isNrlinkDisconnected ? '-' : pricePerKwh?.toFixed(2)} €/h
-                            </span>
+                            <div className="flex space-x-5 items-baseline">
+                                <span className="text-28 leading-3" style={{ color: themeContrastText }}>
+                                    {isNrlinkDisconnected ? '-' : pricePerKwh?.toFixed(2)}
+                                </span>
+                                <span className="text-14 leading-3" style={{ color: themeContrastText }}>
+                                    €/h
+                                </span>
+                            </div>
                         )}
                     </div>
                 </div>

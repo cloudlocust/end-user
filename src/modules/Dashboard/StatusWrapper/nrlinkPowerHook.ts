@@ -38,8 +38,8 @@ export function useNrlinkMetrics(housingId?: number): UseQueryResult<INrlinkMetr
         onError: (error: any) => {
             enqueueSnackbar(
                 formatMessage({
-                    id: 'Error fetching power data',
-                    defaultMessage: 'Error fetching power data',
+                    id: 'Erreur lors de la récupération des données de puissance',
+                    defaultMessage: 'Erreur lors de la récupération des données de puissance',
                 }),
                 { variant: 'error' },
             )
