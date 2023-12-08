@@ -38,13 +38,13 @@ export const WeatherWidget = (props: WeatherWidgetProps) => {
                             }}
                         />
                     </IconButton>
-                    <div className="flex flex-col justify-center items-center flex-1">
-                        <div className="">
-                            <span className="text-44 leading-3 font-medium text-grey-700 mb-10">
-                                {lastTemperatureData?.value ?? '-'}
-                            </span>
-                            <span className="text-14 leading-3 mb-auto">°C</span>
-                        </div>
+                    <div className="flex justify-center items-stretch flex-1">
+                        <span className="text-44 leading-none font-medium text-grey-700">
+                            {lastTemperatureData?.value ?? '-'}
+                        </span>
+                        <span className="text-14 leading-none self-start">°C</span>
+                    </div>
+                    <div className="flex justify-center items-center flex-1">
                         <span className="text-13 text-center text-grey-700">{currentHousing?.address.city}</span>
                     </div>
                 </div>

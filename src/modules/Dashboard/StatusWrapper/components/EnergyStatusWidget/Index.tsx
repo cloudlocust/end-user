@@ -56,20 +56,19 @@ export const EnergyStatusWidget = (props: EnergyStatusWidgetProps) => {
         <BoltIcon fill={theme.palette.secondary.main} {...iconStyle} />
     )
 
-    const isNrlinkDisconnected = nrlinkConsent?.nrlinkConsentState === 'DISCONNECTED'
+    // const isNrlinkDisconnected = nrlinkConsent?.nrlinkConsentState === 'DISCONNECTED'
+    const isNrlinkDisconnected = true
     const isNrlinkOff = nrlinkConsent?.nrlinkConsentState === 'NONEXISTENT'
 
     const lastDataTimestamp = lastPowerData?.timestamp
 
-    const computedLastPowerData = useMemo(
-        () =>
-            lastPowerData?.value && lastPowerData.timestamp
-                ? consumptionWattUnitConversion(lastPowerData?.value!)
-                : { value: 0, unit: 'W' },
-        [lastPowerData],
-    )
+    const computedLastPowerData = useMemo(() => {
+        return lastPowerData?.value && lastPowerData.timestamp
+            ? consumptionWattUnitConversion(Math.abs(lastPowerData?.value!))
+            : { value: 0, unit: 'W' }
+    }, [lastPowerData])
 
-    const lastNrlinkPowerDate = dayjs(lastDataTimestamp).format('HH:mm:ss')
+    const lastNrlinkPowerDate = lastDataTimestamp ? dayjs(lastDataTimestamp).format('HH:mm:ss') : ''
 
     return (
         <FuseCard
@@ -99,28 +98,25 @@ export const EnergyStatusWidget = (props: EnergyStatusWidgetProps) => {
                     </TypographyFormatMessage>
                 </div>
                 <div className="flex flex-col w-full">
-                    <div className="flex justify-end items-center text-14 sm:text-16 mb-10">
+                    {(isNrlinkDisconnected || isNrlinkOff) && (
+                        <div className="flex justify-end items-center text-12 sm:text-16 mb-10">
+                            <span style={{ color: themeContrastText }}>{NRLINK_OFFLINE}</span>
+                        </div>
+                    )}
+                    <div className="flex justify-end items-center text-11 sm:text-16 mb-5">
                         <span style={{ color: themeContrastText }}>
-                            {isNrlinkDisconnected
-                                ? NRLINK_OUT_OF_RANGE_MESSAGE
-                                : isNrlinkOff
-                                ? NRLINK_OFFLINE
-                                : `à ${lastNrlinkPowerDate}`}
+                            {lastNrlinkPowerDate ? `à ${lastNrlinkPowerDate}` : null}
                         </span>
                     </div>
                     <div className="flex flex-row space-x-5 justify-end">
-                        {isNrlinkDisconnected ? (
-                            '-'
-                        ) : (
-                            <div className="flex space-x-5 items-baseline">
-                                <span className="text-28 leading-3" style={{ color: themeContrastText }}>
-                                    {computedLastPowerData?.value}
-                                </span>
-                                <span className="text-14 leading-3" style={{ color: themeContrastText }}>
-                                    {computedLastPowerData?.unit}
-                                </span>
-                            </div>
-                        )}
+                        <div className="flex space-x-5 items-baseline">
+                            <span className="text-28 leading-3" style={{ color: themeContrastText }}>
+                                {computedLastPowerData?.value}
+                            </span>
+                            <span className="text-14 leading-3" style={{ color: themeContrastText }}>
+                                {computedLastPowerData?.unit}
+                            </span>
+                        </div>
                         {!isLastPowerDataNegative && (
                             <div className="flex space-x-5 items-baseline">
                                 <span className="text-28 leading-3" style={{ color: themeContrastText }}>
