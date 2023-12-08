@@ -137,7 +137,7 @@ export function useMetrics(initialState: getMetricType = defaultInitialState, im
      * @param params.filters Adhoc Filters request.
      */
     const getMetricsWithParams = useCallback(
-        async (params: getMetricsWithParamsType) => {
+        async (params: getMetricsWithParamsType): Promise<IMetric[]> => {
             setIsMetricsLoading(true)
             const targetsBody: metricTargetsType = params.targets.map((target) => ({ target, type: 'timeserie' }))
             try {

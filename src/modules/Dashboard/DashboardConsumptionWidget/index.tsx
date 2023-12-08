@@ -11,7 +11,7 @@ import {
     formatMetricFilter,
     getDateWithoutTimezoneOffset,
 } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
-import { metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
+import { IMetric, metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
 import {
     calculateTotalDailyConsumptionAndPrice,
     createDataForConsumptionWidgetGraph,
@@ -44,7 +44,7 @@ export const DashboardConsumptionWidget = () => {
 
     const updateWidgetValues = useCallback(async () => {
         const currentTime = new Date()
-        const data = await getMetricsWithParams({
+        const data: IMetric[] = await getMetricsWithParams({
             interval: metricInterval,
             range: {
                 from: getDateWithoutTimezoneOffset(startOfDay(currentTime)),
@@ -53,7 +53,7 @@ export const DashboardConsumptionWidget = () => {
             targets: [metricTargetsEnum.consumption],
             filters: formatMetricFilter(currentHousing!.id) ?? [],
         })
-        if (data.length) {
+        if (data?.length) {
             const { labels, serieValues } = createDataForConsumptionWidgetGraph(data)
             setLabels(labels)
             setSerieValues(serieValues)
