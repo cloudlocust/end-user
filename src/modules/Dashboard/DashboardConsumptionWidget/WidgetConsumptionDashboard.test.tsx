@@ -1,7 +1,27 @@
 import { reduxedRender } from 'src/common/react-platform-components/test'
 import { DashboardConsumptionWidget } from 'src/modules/Dashboard/DashboardConsumptionWidget'
 
-const apexChartsTestId = 'apexcharts'
+const APEX_CHARTS_TEST_ID = 'apexcharts'
+
+const mockInitialState = {
+    housingModel: {
+        currentHousing: {
+            id: 1,
+        },
+    },
+}
+
+const mockGetMetricsWithParams = jest.fn(() => [])
+let mockIsMetricsLoading = true
+
+// Mock metricsHook
+jest.mock('src/modules/Metrics/metricsHook.ts', () => ({
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    useMetrics: () => ({
+        isMetricsLoading: mockIsMetricsLoading,
+        getMetricsWithParams: mockGetMetricsWithParams,
+    }),
+}))
 
 // Mocking apexcharts, because there are errors related to modules not found, in test mode.
 jest.mock(
@@ -11,10 +31,20 @@ jest.mock(
 )
 
 describe('DashboardConsumptionWidget', () => {
-    test('When the component DashboardConsumptionWidget is rendered, ApexChart should be shown', () => {
-        const { getByTestId } = reduxedRender(<DashboardConsumptionWidget />)
-        expect(getByTestId(apexChartsTestId)).toBeInTheDocument()
+    test('When the widget content is loading, show loading circle', async () => {
+        const { getByRole } = reduxedRender(<DashboardConsumptionWidget />, {
+            initialState: mockInitialState,
+        })
+
+        expect(getByRole('progressbar')).toBeInTheDocument()
     })
 
-    // More tests will be added later
+    test('When the widget content is not loading, show the elements of the DashboardConsumptionWidget', async () => {
+        mockIsMetricsLoading = false
+        const { getByTestId } = reduxedRender(<DashboardConsumptionWidget />, {
+            initialState: mockInitialState,
+        })
+
+        expect(getByTestId(APEX_CHARTS_TEST_ID)).toBeInTheDocument()
+    })
 })
