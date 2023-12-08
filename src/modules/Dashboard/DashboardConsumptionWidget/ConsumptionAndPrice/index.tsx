@@ -17,21 +17,15 @@ export const ConsumptionAndPrice = ({
     priceUnit = '€',
 }: ConsumptionAndPriceProps) => {
     return (
-        <div className="flex items-baseline gap-8 font-500 text-grey-800">
+        <div className="flex items-baseline gap-8 font-500 text-grey-800" data-testid="consumption-and-price">
             {/* The consumption */}
             <div>
-                <span className="text-28" data-testid="consumption-value">
-                    {consumptionValue}
-                </span>
-                <span className="text-12 ml-2" data-testid="consumption-unit">
-                    {consumptionUnit}
-                </span>
+                <span className="text-28">{consumptionValue}</span>
+                <span className="text-12 ml-2">{consumptionUnit}</span>
             </div>
             {/* The price */}
             <div>
-                <span className="text-36 font-400" data-testid="price-value">
-                    {priceValue}
-                </span>
+                <span className="text-36 font-400">{priceValue}</span>
                 <span className="text-12 ml-2">{priceUnit}</span>
             </div>
         </div>
