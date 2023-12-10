@@ -28,6 +28,7 @@ import { linksColor } from 'src/modules/utils/muiThemeVariables'
  *
  * @returns Equipment Form equipment.
  */
+// TODO: this component is to be redone because it's a mess (thank you Kseniia)
 export const InstallationForm = () => {
     const theme = useTheme()
     const { currentHousing } = useSelector(({ housingModel }: RootState) => housingModel)
@@ -66,17 +67,6 @@ export const InstallationForm = () => {
         })
     }
 
-    useEffect(() => {
-        loadEquipmentList()
-    }, [loadEquipmentList])
-
-    if (!housingEquipmentsList || loadingEquipmentInProgress || housingEquipmentsList.length === 0)
-        return (
-            <div className="flex flex-col justify-center items-center w-full" style={{ minHeight: '60vh' }}>
-                <CircularProgress />
-            </div>
-        )
-
     // eslint-disabled-next-line jsdoc/require-jsdoc
     let defaultValues: // eslint-disabled-next-line jsdoc/require-jsdoc
     /**
@@ -92,6 +82,26 @@ export const InstallationForm = () => {
             ? savedEquipmentList[equipmentName].equipmentNumber!
             : savedEquipmentList[equipmentName].equipmentType!
     })
+
+    const solarpanelValue = defaultValues['solarpanel']
+
+    useEffect(() => {
+        loadEquipmentList()
+    }, [loadEquipmentList])
+
+    useEffect(() => {
+        if (solarpanelValue) {
+            setSolarPanelRadioValue(defaultValues['solarpanel'] as 'existant' | 'nonexistant')
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [solarpanelValue])
+
+    if (!housingEquipmentsList || loadingEquipmentInProgress || housingEquipmentsList.length === 0)
+        return (
+            <div className="flex flex-col justify-center items-center w-full" style={{ minHeight: '60vh' }}>
+                <CircularProgress />
+            </div>
+        )
 
     return (
         <Container>

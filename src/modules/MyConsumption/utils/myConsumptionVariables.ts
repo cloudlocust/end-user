@@ -281,3 +281,15 @@ export const temperatureOrPmaxTargets: metricTargetType[] = [
     metricTargetsEnum.internalTemperature,
     metricTargetsEnum.externalTemperature,
 ]
+
+/**
+ * All tempo related metric targets.
+ */
+export const allTempoMetrics = [
+    metricTargetsEnum.peakHourBlueTempoConsumption,
+    metricTargetsEnum.offPeakHourBlueTempoConsumption,
+    metricTargetsEnum.peakHourRedTempoConsumption,
+    metricTargetsEnum.offPeakHourRedTempoConsumption,
+    metricTargetsEnum.peakHourWhiteTempoConsumption,
+    metricTargetsEnum.offPeakHourWhiteTempoConsumption,
+]

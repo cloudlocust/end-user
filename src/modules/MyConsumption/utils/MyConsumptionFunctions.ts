@@ -35,7 +35,7 @@ import { subtract, sum } from 'lodash'
 import { isNil } from 'lodash'
 import fr from 'date-fns/locale/fr'
 import { getDataFromYAxis } from 'src/modules/MyConsumption/components/Widget/WidgetFunctions'
-import { temperatureOrPmaxTargets } from 'src/modules/MyConsumption/utils/myConsumptionVariables'
+import { allTempoMetrics, temperatureOrPmaxTargets } from 'src/modules/MyConsumption/utils/myConsumptionVariables'
 
 /**
  * FormatMetricFilter function converts the data to the required format.
@@ -871,7 +871,7 @@ export const filterMetricsData = (
     data: IMetric[],
     period?: periodType,
     enphaseOff?: boolean,
-    // TODO: remove cognitive-complexity in veille
+    // TODO: Refactor this function, it's too long.
     // eslint-disable-next-line sonarjs/cognitive-complexity
 ): IMetric[] => {
     const temperatureOrPmaxMetricsData = data.filter((metric) =>
@@ -889,16 +889,7 @@ export const filterMetricsData = (
         ].includes(metric.target as metricTargetsEnum),
     )
 
-    const isTempoTargets = data.some((metric) =>
-        [
-            metricTargetsEnum.peakHourBlueTempoConsumption,
-            metricTargetsEnum.offPeakHourBlueTempoConsumption,
-            metricTargetsEnum.peakHourRedTempoConsumption,
-            metricTargetsEnum.offPeakHourRedTempoConsumption,
-            metricTargetsEnum.peakHourWhiteTempoConsumption,
-            metricTargetsEnum.offPeakHourWhiteTempoConsumption,
-        ].includes(metric.target as metricTargetsEnum),
-    )
+    const isTempoTargets = data.some((metric) => allTempoMetrics.includes(metric.target as metricTargetsEnum))
 
     // When basic HP HC consumption metrics are empty
     if (isBasePeakOffPeakConsumptionTargets || isTempoTargets) {
@@ -921,64 +912,13 @@ export const filterMetricsData = (
             metricTargetsEnum.offPeakHourConsumption,
         ])
 
-        const isAllTempoConsumptionEmpty = isEmptyMetricsData(data, [
-            metricTargetsEnum.peakHourBlueTempoConsumption,
-            metricTargetsEnum.offPeakHourBlueTempoConsumption,
-            metricTargetsEnum.peakHourRedTempoConsumption,
-            metricTargetsEnum.offPeakHourRedTempoConsumption,
-            metricTargetsEnum.peakHourWhiteTempoConsumption,
-            metricTargetsEnum.offPeakHourWhiteTempoConsumption,
-        ])
+        const nonEmptyTempoMetricsData = data.filter(
+            (metric) => allTempoMetrics.includes(metric.target as metricTargetsEnum) && !isEmptyMetricsData([metric]),
+        )
 
-        const isTempoBlueConsumptionEmpty = isEmptyMetricsData(data, [
-            metricTargetsEnum.peakHourBlueTempoConsumption,
-            metricTargetsEnum.offPeakHourBlueTempoConsumption,
-        ])
+        if (nonEmptyTempoMetricsData.length > 0) return [...nonEmptyTempoMetricsData, ...temperatureOrPmaxMetricsData]
 
-        const isTempoRedConsumptionEmpty = isEmptyMetricsData(data, [
-            metricTargetsEnum.peakHourRedTempoConsumption,
-            metricTargetsEnum.offPeakHourRedTempoConsumption,
-        ])
-
-        const isTempoWhiteConsumptionEmpty = isEmptyMetricsData(data, [
-            metricTargetsEnum.peakHourWhiteTempoConsumption,
-            metricTargetsEnum.offPeakHourWhiteTempoConsumption,
-        ])
-
-        if (period === 'daily' && !isTempoBlueConsumptionEmpty) {
-            return [
-                ...data.filter(
-                    (metric) =>
-                        metric.target === metricTargetsEnum.peakHourBlueTempoConsumption ||
-                        metric.target === metricTargetsEnum.offPeakHourBlueTempoConsumption,
-                ),
-                ...temperatureOrPmaxMetricsData,
-            ]
-        }
-
-        if (period === 'daily' && !isTempoRedConsumptionEmpty) {
-            return [
-                ...data.filter(
-                    (metric) =>
-                        metric.target === metricTargetsEnum.peakHourRedTempoConsumption ||
-                        metric.target === metricTargetsEnum.offPeakHourRedTempoConsumption,
-                ),
-                ...temperatureOrPmaxMetricsData,
-            ]
-        }
-
-        if (period === 'daily' && !isTempoWhiteConsumptionEmpty) {
-            return [
-                ...data.filter(
-                    (metric) =>
-                        metric.target === metricTargetsEnum.peakHourWhiteTempoConsumption ||
-                        metric.target === metricTargetsEnum.offPeakHourWhiteTempoConsumption,
-                ),
-                ...temperatureOrPmaxMetricsData,
-            ]
-        }
-
-        if (isBasePeakOffPeakConsumptionEmpty && isAllTempoConsumptionEmpty && enphaseOff) {
+        if (isBasePeakOffPeakConsumptionEmpty && !nonEmptyTempoMetricsData.length && enphaseOff) {
             const onlyConsumption = getOnlyConsumptionMetrics(data)
 
             if (onlyConsumption) {

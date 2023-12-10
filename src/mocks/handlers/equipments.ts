@@ -30,6 +30,8 @@ export const TEST_LOAD_ERROR_METER_EQUIPMENT = 'errorMeter'
 // eslint-disable-next-line jsdoc/require-jsdoc
 export const TEST_LOAD_ERROR_EQUIPMENT = 'errorEquipment'
 // eslint-disable-next-line jsdoc/require-jsdoc
+export const TEST_MEASUREMENT_ERROR = 'measurement error'
+// eslint-disable-next-line jsdoc/require-jsdoc
 export const TEST_MEASUREMENT_RESULT_EXIST = 'measurement result exist'
 // eslint-disable-next-line jsdoc/require-jsdoc
 export const TEST_RESULT_VALUE = 25
@@ -328,19 +330,29 @@ export const equipmentsEndpoints = [
         `${HOUSING_API}/equipments/:housingEquipmentId/measurement/:measurementMode/result/:equipmentNumber`,
         (req, res, ctx) => {
             const authorization = req.headers.get('authorization')
-            if (authorization && authorization === TEST_MEASUREMENT_RESULT_EXIST)
-                return res(
-                    ctx.status(200),
-                    ctx.delay(1000),
-                    ctx.json({
-                        value: TEST_RESULT_VALUE,
-                    }),
-                )
+            if (authorization) {
+                if (authorization === TEST_MEASUREMENT_RESULT_EXIST)
+                    return res(
+                        ctx.status(200),
+                        ctx.delay(1000),
+                        ctx.json({
+                            value: TEST_RESULT_VALUE,
+                        }),
+                    )
+                if (authorization === TEST_MEASUREMENT_ERROR)
+                    return res(
+                        ctx.status(400),
+                        ctx.delay(1000),
+                        ctx.json({
+                            detail: 'Error in getting measurement result',
+                        }),
+                    )
+            }
             return res(
                 ctx.status(200),
                 ctx.delay(1000),
                 ctx.json({
-                    value: 0,
+                    value: null,
                 }),
             )
         },

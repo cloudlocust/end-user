@@ -19,7 +19,7 @@ import {
     DefaultContractWarning,
     ConsumptionEnedisSgeWarning,
 } from 'src/modules/MyConsumption/components/MyConsumptionChart/ConsumptionChartWarnings'
-import { isProductionActiveAndHousingHasAccess, sgeConsentFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
+import { sgeConsentFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
 import TargetMenuGroup from 'src/modules/MyConsumption/components/TargetMenuGroup'
 import CloseIcon from '@mui/icons-material/Close'
 import { SwitchIdleConsumption } from 'src/modules/MyConsumption/components/SwitchIdleConsumption'
@@ -42,7 +42,6 @@ import MyConsumptionChart from 'src/modules/MyConsumption/components/MyConsumpti
  * @param props.hasMissingHousingContracts Consumption or production chart type.
  * @param props.enedisSgeConsent Consumption or production chart type.
  * @param props.isSolarProductionConsentOff Boolean indicating if solar production consent is off.
- * @param props.currentHousingScopes Current housingscopes.
  * @returns ConsumptionChartContainer Component.
  */
 export const ConsumptionChartContainer = ({
@@ -53,7 +52,6 @@ export const ConsumptionChartContainer = ({
     hasMissingHousingContracts,
     enedisSgeConsent,
     isSolarProductionConsentOff,
-    currentHousingScopes,
 }: ConsumptionChartContainerProps) => {
     const theme = useTheme()
     const [isShowIdleConsumptionDisabledInfo, setIsShowIdleConsumptionDisabledInfo] = useState(false)
@@ -235,7 +233,7 @@ export const ConsumptionChartContainer = ({
             </div>
 
             {/* SwitchIdleConsumption Info Text*/}
-            {isShowIdleConsumptionDisabledInfo && !isProductionActiveAndHousingHasAccess(currentHousingScopes) && (
+            {isShowIdleConsumptionDisabledInfo && (
                 <Box
                     className="flex items-center justify-between text-13 md:text-16 w-full p-16 my-16"
                     sx={{ backgroundColor: 'primary.main', color: 'primary.contrastText' }}
@@ -263,9 +261,7 @@ export const ConsumptionChartContainer = ({
                 <SwitchIdleConsumption
                     removeIdleTarget={() => onIdleConsumptionSwitchButton(false)}
                     addIdleTarget={() => onIdleConsumptionSwitchButton(true)}
-                    isIdleConsumptionButtonDisabled={
-                        period === 'daily' || isProductionActiveAndHousingHasAccess(currentHousingScopes)
-                    }
+                    isIdleConsumptionButtonDisabled={period === 'daily' || !isSolarProductionConsentOff}
                     onClickIdleConsumptionDisabledInfoIcon={() => setIsShowIdleConsumptionDisabledInfo(true)}
                     isIdleConsumptionButtonSelected={isIdleSwitchToggled}
                 />
