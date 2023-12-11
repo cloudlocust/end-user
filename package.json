@@ -125,6 +125,11 @@
         "reportFile": "test-report.xml",
         "indent": 4
     },
+    "jest": {
+        "transformIgnorePatterns": [
+            "node_modules/(?!d3)/"
+        ]
+    },
     "resolutions": {
         "//": "See https://github.com/facebook/create-react-app/issues/11773",
         "react-error-overlay": "6.0.9"
