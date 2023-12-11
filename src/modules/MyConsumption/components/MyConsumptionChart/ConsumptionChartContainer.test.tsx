@@ -163,6 +163,12 @@ jest.mock('src/modules/MyHouse/MyHouseConfig', () => ({
     },
 }))
 
+// Now, when you import and use echarts-for-react in your Jest tests
+// It will use the mocked EChartsReact component instead of the real one.
+// This ensures that the rendering logic of the real charts is bypassed,
+// and the tests can focus on the behavior of your component without the need to render actual charts.
+jest.mock('echarts-for-react')
+
 describe('MyConsumptionContainer test', () => {
     beforeEach(() => {
         setupJestCanvasMock()

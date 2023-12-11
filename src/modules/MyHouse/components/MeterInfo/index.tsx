@@ -8,13 +8,14 @@ import CardActions from '@mui/material/CardActions'
 import Modal from '@mui/material/Modal'
 import Box from '@mui/material/Box'
 import { ButtonLoader, TextField } from 'src/common/ui-kit'
-import { Form, max, min, requiredBuilder } from 'src/common/react-platform-components'
+import { Form, regex, requiredBuilder } from 'src/common/react-platform-components'
 import { IHousing } from 'src/modules/MyHouse/components/HousingList/housing.d'
 import { useMeterForHousing } from 'src/modules/Meters/metersHook'
 import { addMeterInputType } from 'src/modules/Meters/Meters'
 import { linksColor, warningMainHashColor } from 'src/modules/utils/muiThemeVariables'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import { useHousingRedux } from '../../utils/MyHouseHooks'
+import { METER_GUID_REGEX_TEXT, meteGuidNumberRegex } from 'src/modules/MyHouse/utils/MyHouseVariables'
 
 /**
  * This is a card for the display of a housing item.
@@ -115,7 +116,10 @@ const MeterInfos = ({
                                         id: 'Ex: 12345678912345',
                                         defaultMessage: 'Ex: 12345678912345',
                                     })}
-                                    validateFunctions={[requiredBuilder(), min(14), max(14)]}
+                                    validateFunctions={[
+                                        requiredBuilder(),
+                                        regex(meteGuidNumberRegex, METER_GUID_REGEX_TEXT),
+                                    ]}
                                 />
                             </CardContent>
                             <CardActions className="flex items-center content-center justify-center mb-10">

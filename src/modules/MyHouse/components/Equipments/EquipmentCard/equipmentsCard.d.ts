@@ -1,6 +1,7 @@
 import { postEquipmentInputType } from 'src/modules/MyHouse/components/Installation/InstallationType'
 import { Theme } from '@mui/material'
 import { ReactElement } from 'react'
+import { HousingEquipmentType } from 'src/modules/MyHouse/components/Equipments/EquipmentsList/equipmentsList'
 
 /**
  * Equipment icon.
@@ -11,36 +12,20 @@ import { ReactElement } from 'react'
  * @param isDisabled Is icon disabled.
  * @returns Icon component.
  */
-export type IconComponentType = (theme: Theme, isDisabled?: boolean) => ReactElement | ReactElement
+export type IconComponentType = (theme: Theme, isDisabled?: boolean, fill?: string) => ReactElement | ReactElement
 
 /**
  * EquipmentCardProps.
  */
 export interface EquipmentCardProps {
     /**
-     * Equipment id.
+     * The equipment details object.
      */
-    id: number
-    /**
-     * Equipment name.
-     */
-    name: string
+    equipment: HousingEquipmentType
     /**
      * Equipment type.
      */
     label?: string
-    /**
-     * Equipment number: represents how many of the same equipment the user has.
-     */
-    number: number
-    /**
-     * The global equipment id.
-     */
-    housingEquipmentId?: number
-    /**
-     * Measurement modes for the Equipment.
-     */
-    measurementModes?: string[]
     /**
      * Equipment icon.
      */
@@ -49,7 +34,6 @@ export interface EquipmentCardProps {
      * Function that handle the equipment number.
      */
     onEquipmentChange: (body: postEquipmentInputType) => void
-
     /**
      * Icon Component.
      */

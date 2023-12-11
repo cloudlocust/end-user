@@ -18,6 +18,7 @@ import { ecogestesEndpoints } from 'src/mocks/handlers/ecogestes'
 import { novuALertPreferencesEndpoints } from './handlers/novuAlertPreferences'
 import { connectedPlugsEndpoints } from 'src/mocks/handlers/connectedPlugs'
 import { accessRightsEndpoints } from './handlers/accessRights'
+import { DashboardEndpoints } from 'src/mocks/handlers/dashboard'
 
 /**
  * Handlers to mock urls for tests.
@@ -59,6 +60,7 @@ const handlers = [
     ...connectedPlugsEndpoints,
     /****** Access rights endpoint. */
     ...accessRightsEndpoints,
+    ...DashboardEndpoints,
 ]
 
 // This configures a request mocking server with the given request handlers.
