@@ -742,13 +742,22 @@ const ConsumptionValueFormatter = (
     metricsInterval: '1m' | '30m',
     isYAxisValueFormatter?: boolean,
 ) => {
-    // Removing duplicates from yAxisLine because when rounding values it creates duplicates.
-    // Inspired by Reference: https://github.com/apache/echarts/issues/9896#issuecomment-463113642
-    // https://jsfiddle.net/ovilia/k1bsuteo/6/
-    const yAxisLineVisibleValuesList: string[] = []
-    // This variables helps to detect when it's the final process to remove duplicated values from yAxisLine when, because yAxisLine calls valuesFormat have two processes for the values and it's the final and second process that it handles the draw of values
-    let isYAxisLineFinalValueFormatProcess = false
-    let tempYAxisValue = '0'
+    /**
+     * I************************************************************************************************.
+     * TODO - it seems that de duplicated values errors is handled in echarts, their is no need to handle it manualy because it's causing the axis label disapear on zooming.
+     * If somehow an error of duplicated values is detected, we can use this code to handle it, otherwise we can remove it later.
+     * I************************************************************************************************.
+     */
+
+    // ********************************************************************************
+    // // Removing duplicates from yAxisLine because when rounding values it creates duplicates.
+    // // Inspired by Reference: https://github.com/apache/echarts/issues/9896#issuecomment-463113642
+    // // https://jsfiddle.net/ovilia/k1bsuteo/6/
+    // const yAxisLineVisibleValuesList: string[] = []
+    // // This variables helps to detect when it's the final process to remove duplicated values from yAxisLine when, because yAxisLine calls valuesFormat have two processes for the values and it's the final and second process that it handles the draw of values
+    // let isYAxisLineFinalValueFormatProcess = false
+    // let tempYAxisValue = '0'
+
     return function (value: undefined | number) {
         let newValue: string = ''
         if (period === PeriodEnum.DAILY) {
@@ -763,17 +772,18 @@ const ConsumptionValueFormatter = (
                 Boolean(isYAxisValueFormatter),
             )
         }
-        if (isYAxisValueFormatter) {
-            // When it's the final valueFormat Process it's time to handle the duplicated values.
-            // To know if we are on the second final process we need to have gone through the first process by tempYAxisValue which indicates that it's not 0, and we go back again to 0 indicated by newValue.
-            if (parseInt(newValue) !== 0) tempYAxisValue = newValue
-            if (parseInt(tempYAxisValue) !== 0 && parseInt(newValue) === 0 && !isYAxisLineFinalValueFormatProcess)
-                isYAxisLineFinalValueFormatProcess = true
-            if (isYAxisLineFinalValueFormatProcess) {
-                if (yAxisLineVisibleValuesList.includes(newValue)) return null
-                yAxisLineVisibleValuesList.push(newValue)
-            }
-        }
+        // if (isYAxisValueFormatter) {
+        //     // When it's the final valueFormat Process it's time to handle the duplicated values.
+        //     // To know if we are on the second final process we need to have gone through the first process by tempYAxisValue which indicates that it's not 0, and we go back again to 0 indicated by newValue.
+        //     if (parseInt(newValue) !== 0) tempYAxisValue = newValue
+        //     if (parseInt(tempYAxisValue) !== 0 && parseInt(newValue) === 0 && !isYAxisLineFinalValueFormatProcess)
+        //         isYAxisLineFinalValueFormatProcess = true
+        //     if (isYAxisLineFinalValueFormatProcess) {
+        //         if (yAxisLineVisibleValuesList.includes(newValue)) return null
+        //         yAxisLineVisibleValuesList.push(newValue)
+        //     }
+        //     console.log(newValue, 'newValue', isYAxisLineFinalValueFormatProcess, tempYAxisValue, yAxisLineVisibleValuesList)
+        // }
         return newValue
     }
 }

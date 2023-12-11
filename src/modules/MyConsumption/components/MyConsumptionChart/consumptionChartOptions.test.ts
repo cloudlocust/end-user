@@ -141,25 +141,26 @@ describe('Test echartsConsumptionOptions', () => {
                 )['0']
                 expect(consumptionYAxisWeeklyValueFormatter(10_000)).toBe('0 MWh')
             })
-            test('YAxis duplicates values', async () => {
-                // Removing duplicates from yAxisLine because when rounding values it creates duplicates.
-                // Echarts handles data two times and the second time the duplicates processing happens
-                // REFRENCE: SEE ConsumptionValueFormatter in echartsConsumptionChartOptions function for more documentation.
-                const consumptionYAxisDuplicatesValueFormatter = getTargetsYAxisValueFormatters(
-                    {
-                        [metricTargetsEnum.consumption]: [100, 200, 300],
-                    },
-                    PeriodEnum.WEEKLY,
-                    true,
-                )['0']
-                // Triggering the echarts first process.
-                expect(consumptionYAxisDuplicatesValueFormatter(1)).toBe('1 Wh')
-                // Triggering the duplication handling.
-                expect(consumptionYAxisDuplicatesValueFormatter(0)).toBe('0 Wh')
-                expect(consumptionYAxisDuplicatesValueFormatter(0)).toBe(null)
-                expect(consumptionYAxisDuplicatesValueFormatter(1)).toBe('1 Wh')
-                expect(consumptionYAxisDuplicatesValueFormatter(1)).toBe(null)
-            })
+            // This test is related to the commented code in the component.
+            // test('YAxis duplicates values', async () => {
+            //     // Removing duplicates from yAxisLine because when rounding values it creates duplicates.
+            //     // Echarts handles data two times and the second time the duplicates processing happens
+            //     // REFRENCE: SEE ConsumptionValueFormatter in echartsConsumptionChartOptions function for more documentation.
+            //     const consumptionYAxisDuplicatesValueFormatter = getTargetsYAxisValueFormatters(
+            //         {
+            //             [metricTargetsEnum.consumption]: [100, 200, 300],
+            //         },
+            //         PeriodEnum.WEEKLY,
+            //         true,
+            //     )['0']
+            //     // Triggering the echarts first process.
+            //     expect(consumptionYAxisDuplicatesValueFormatter(1)).toBe('1 Wh')
+            //     // Triggering the duplication handling.
+            //     expect(consumptionYAxisDuplicatesValueFormatter(0)).toBe('0 Wh')
+            //     expect(consumptionYAxisDuplicatesValueFormatter(0)).toBe(null)
+            //     expect(consumptionYAxisDuplicatesValueFormatter(1)).toBe('1 Wh')
+            //     expect(consumptionYAxisDuplicatesValueFormatter(1)).toBe(null)
+            // })
         })
         test('Temperature value formatter', async () => {
             const temperatureValueFormatter = getTargetsYAxisValueFormatters({}, PeriodEnum.DAILY, false)['1']
