@@ -101,11 +101,11 @@ const Routes = () => {
     })
 
     useEffect(() => {
-        if (isMaintenanceMode) {
-            const { pathname } = location
-            if (pathname !== URL_MAINTENANCE) {
-                history.replace(URL_MAINTENANCE)
-            }
+        const { pathname } = location
+        const isRedirectNeeded = isMaintenanceMode ? pathname !== URL_MAINTENANCE : pathname === URL_MAINTENANCE
+
+        if (isRedirectNeeded) {
+            history.replace(isMaintenanceMode ? URL_MAINTENANCE : '/')
         }
     }, [history, location])
 

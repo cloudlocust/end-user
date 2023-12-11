@@ -49,14 +49,13 @@ const requestPermissionAndRegister = async () => {
 
         if (result.receive === 'granted') {
             await PushNotifications.register()
+            PushNotifications.addListener('registration', (token: Token) => {
+                if (token.value) {
+                    addSubscriberDeviceToken(token.value)
+                }
+            })
         }
     } catch (error) {}
-
-    PushNotifications.addListener('registration', (token: Token) => {
-        if (token.value) {
-            addSubscriberDeviceToken(token.value)
-        }
-    })
 }
 
 /**
