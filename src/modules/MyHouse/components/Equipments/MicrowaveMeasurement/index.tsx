@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import Modal from '@mui/material/Modal'
 import IconButton from '@mui/material/IconButton'
 import Stepper from '@mui/material/Stepper'
@@ -22,7 +22,14 @@ import { useMicrowaveMeasurement } from 'src/modules/MyHouse/components/Equipmen
  * @param root0.equipmentsNumber The number of microwaves.
  * @param root0.measurementModes Measurement modes for the Equipment.
  * @param root0.isMeasurementModalOpen The state of the modal.
+ * @param root0.showingOldResult Boolean indicating whether we want to display an old result.
+ * @param root0.startMeasurementFromEquipmentsDetailsPage Boolean indicating whether we start the measurement from the EquipmentsDetails Page.
+ * @param root0.updateEquipmentMeasurementResults Function that update the measurement results in the equipment details page.
+ * @param root0.defaultMicrowaveNumber Default value for the microwave number.
+ * @param root0.defaultMeasurementMode Default value for the measurement mode.
+ * @param root0.defaultMeasurementResult Default value for the measurement result.
  * @param root0.onCloseMeasurementModal Modal closing handler.
+ * @param root0.navigateToEquipmentDetailsPage Function for navigating to the equipment details page.
  * @example
  *  /// Use this MicrowaveMeasurement component with our useModal custom hook
  *
@@ -43,11 +50,34 @@ export const MicrowaveMeasurement = ({
     equipmentsNumber,
     measurementModes,
     isMeasurementModalOpen,
+    showingOldResult,
+    startMeasurementFromEquipmentsDetailsPage,
+    updateEquipmentMeasurementResults,
+    defaultMicrowaveNumber,
+    defaultMeasurementMode,
+    defaultMeasurementResult,
     onCloseMeasurementModal,
+    navigateToEquipmentDetailsPage,
 }: MicrowaveMeasurementProps) => {
-    const [currentStep, setCurrentStep] = useState(0)
-    const [microwaveNumber, setMicrowaveNumber] = useState(equipmentsNumber === 1 ? 1 : 0)
-    const [measurementMode, setMeasurementMode] = useState('')
+    const [currentStep, setCurrentStep] = useState(
+        showingOldResult ? 4 : startMeasurementFromEquipmentsDetailsPage ? 1 : 0,
+    )
+    const [microwaveNumber, setMicrowaveNumber] = useState(equipmentsNumber === 1 ? 1 : defaultMicrowaveNumber || 0)
+    const [measurementMode, setMeasurementMode] = useState(defaultMeasurementMode || '')
+
+    useEffect(() => {
+        if (showingOldResult || startMeasurementFromEquipmentsDetailsPage) {
+            setMicrowaveNumber(equipmentsNumber === 1 ? 1 : defaultMicrowaveNumber || 0)
+            setMeasurementMode(defaultMeasurementMode || '')
+        }
+    }, [
+        defaultMeasurementMode,
+        defaultMicrowaveNumber,
+        equipmentsNumber,
+        showingOldResult,
+        startMeasurementFromEquipmentsDetailsPage,
+    ])
+
     const theme = useTheme()
 
     const measurementMaxDuration = 50
@@ -58,28 +88,59 @@ export const MicrowaveMeasurement = ({
         setMeasurementStatus,
         getTimeFromStatusLastUpdate,
         startMeasurement,
-    } = useMicrowaveMeasurement(housingEquipmentId, measurementMode, microwaveNumber, measurementMaxDuration)
+    } = useMicrowaveMeasurement(
+        housingEquipmentId,
+        measurementMode,
+        microwaveNumber,
+        measurementMaxDuration,
+        defaultMeasurementResult,
+    )
 
     /**
      * Restart the measurement from the beginning.
      */
-    const handleRestartingMeasurement = useCallback(async () => {
-        await setMeasurementStatus(null)
-        setCurrentStep(1)
-        setMicrowaveNumber(equipmentsNumber === 1 ? 1 : 0)
-        setMeasurementMode('')
-    }, [equipmentsNumber, setMeasurementStatus])
+    const handleRestartingMeasurement = useCallback(
+        async (microwaveNumber?: number, measurementMode?: string) => {
+            await setMeasurementStatus(null)
+            if (showingOldResult) {
+                setCurrentStep(2)
+            } else {
+                setCurrentStep(1)
+            }
+            setMicrowaveNumber(microwaveNumber || (equipmentsNumber === 1 ? 1 : defaultMicrowaveNumber || 0))
+            setMeasurementMode(measurementMode || defaultMeasurementMode || '')
+        },
+        [defaultMeasurementMode, defaultMicrowaveNumber, equipmentsNumber, setMeasurementStatus, showingOldResult],
+    )
 
     /**
      * Handle closing the measurement Modal.
      */
     const handleCloseMeasurementModal = useCallback(async () => {
         await setMeasurementStatus(null)
-        setCurrentStep(0)
-        setMicrowaveNumber(equipmentsNumber === 1 ? 1 : 0)
-        setMeasurementMode('')
+        if (showingOldResult) {
+            setCurrentStep(4)
+        } else if (startMeasurementFromEquipmentsDetailsPage) {
+            setCurrentStep(1)
+        } else {
+            setCurrentStep(0)
+        }
+        setMicrowaveNumber(equipmentsNumber === 1 ? 1 : defaultMicrowaveNumber || 0)
+        setMeasurementMode(defaultMeasurementMode || '')
+        if (updateEquipmentMeasurementResults) {
+            updateEquipmentMeasurementResults()
+        }
         onCloseMeasurementModal()
-    }, [equipmentsNumber, onCloseMeasurementModal, setMeasurementStatus])
+    }, [
+        defaultMeasurementMode,
+        defaultMicrowaveNumber,
+        equipmentsNumber,
+        onCloseMeasurementModal,
+        setMeasurementStatus,
+        showingOldResult,
+        startMeasurementFromEquipmentsDetailsPage,
+        updateEquipmentMeasurementResults,
+    ])
 
     const stepsContent = [
         <ConfigurationStep
@@ -132,9 +193,13 @@ export const MicrowaveMeasurement = ({
                     <InfosPage stepSetter={setCurrentStep} />
                 ) : currentStep === 4 ? (
                     <MeasurementResultStep
+                        microwaveNumber={microwaveNumber}
                         measurementMode={measurementMode}
                         measurementResult={measurementResult}
+                        showingOldResult={showingOldResult}
                         closeMeasurementModal={handleCloseMeasurementModal}
+                        navigateToEquipmentDetailsPage={navigateToEquipmentDetailsPage}
+                        restartMeasurementFromBeginning={handleRestartingMeasurement}
                     />
                 ) : (
                     <>

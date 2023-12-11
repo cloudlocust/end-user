@@ -222,9 +222,9 @@ export const myEquipmentOptions = [
         name: 'desktopcomputer',
         labelTitle: 'PC de bureau',
         // eslint-disable-next-line jsdoc/require-jsdoc
-        iconComponent: (theme: Theme, isDisabled?: boolean) => (
+        iconComponent: (theme: Theme, isDisabled?: boolean, fill?: string) => (
             <DesktopComputerIcon
-                fill={isDisabled ? theme.palette.grey[300] : theme.palette.primary.main}
+                fill={isDisabled ? theme.palette.grey[300] : fill || theme.palette.primary.main}
                 width={'35'}
                 height={'35'}
             />
@@ -235,9 +235,9 @@ export const myEquipmentOptions = [
         name: 'laptop',
         labelTitle: 'PC Portable',
         // eslint-disable-next-line jsdoc/require-jsdoc
-        iconComponent: (theme: Theme, isDisabled?: boolean) => (
+        iconComponent: (theme: Theme, isDisabled?: boolean, fill?: string) => (
             <LaptopIcon
-                fill={isDisabled ? theme.palette.grey[300] : theme.palette.primary.main}
+                fill={isDisabled ? theme.palette.grey[300] : fill || theme.palette.primary.main}
                 width={'35'}
                 height={'35'}
             />
@@ -248,9 +248,9 @@ export const myEquipmentOptions = [
         name: 'tv',
         labelTitle: 'Téléviseur',
         // eslint-disable-next-line jsdoc/require-jsdoc
-        iconComponent: (theme: Theme, isDisabled?: boolean) => (
+        iconComponent: (theme: Theme, isDisabled?: boolean, fill?: string) => (
             <TvIcon
-                fill={isDisabled ? theme.palette.grey[300] : theme.palette.primary.main}
+                fill={isDisabled ? theme.palette.grey[300] : fill || theme.palette.primary.main}
                 width={'35'}
                 height={'35'}
             />
@@ -261,9 +261,9 @@ export const myEquipmentOptions = [
         name: 'vacuum',
         labelTitle: 'Aspirateur',
         // eslint-disable-next-line jsdoc/require-jsdoc
-        iconComponent: (theme: Theme, isDisabled?: boolean) => (
+        iconComponent: (theme: Theme, isDisabled?: boolean, fill?: string) => (
             <VaccumIcon
-                fill={isDisabled ? theme.palette.grey[300] : theme.palette.primary.main}
+                fill={isDisabled ? theme.palette.grey[300] : fill || theme.palette.primary.main}
                 width={'35'}
                 height={'35'}
             />
@@ -274,9 +274,9 @@ export const myEquipmentOptions = [
         name: 'oven',
         labelTitle: 'Four',
         // eslint-disable-next-line jsdoc/require-jsdoc
-        iconComponent: (theme: Theme, isDisabled?: boolean) => (
+        iconComponent: (theme: Theme, isDisabled?: boolean, fill?: string) => (
             <OvenIcon
-                fill={isDisabled ? theme.palette.grey[300] : theme.palette.primary.main}
+                fill={isDisabled ? theme.palette.grey[300] : fill || theme.palette.primary.main}
                 width={'35'}
                 height={'35'}
             />
@@ -287,9 +287,9 @@ export const myEquipmentOptions = [
         name: 'microwave',
         labelTitle: 'Micro-onde',
         // eslint-disable-next-line jsdoc/require-jsdoc
-        iconComponent: (theme: Theme, isDisabled?: boolean) => (
+        iconComponent: (theme: Theme, isDisabled?: boolean, fill?: string) => (
             <MicrowaveIcon
-                fill={isDisabled ? theme.palette.grey[300] : theme.palette.primary.main}
+                fill={isDisabled ? theme.palette.grey[300] : fill || theme.palette.primary.main}
                 width={'35'}
                 height={'35'}
             />
@@ -300,9 +300,9 @@ export const myEquipmentOptions = [
         name: 'fridge',
         labelTitle: 'Réfrigérateur',
         // eslint-disable-next-line jsdoc/require-jsdoc
-        iconComponent: (theme: Theme, isDisabled?: boolean) => (
+        iconComponent: (theme: Theme, isDisabled?: boolean, fill?: string) => (
             <FridgeIcon
-                fill={isDisabled ? theme.palette.grey[300] : theme.palette.primary.main}
+                fill={isDisabled ? theme.palette.grey[300] : fill || theme.palette.primary.main}
                 width={'35'}
                 height={'35'}
             />
@@ -313,9 +313,9 @@ export const myEquipmentOptions = [
         name: 'dishwasher',
         labelTitle: 'Lave-vaisselle',
         // eslint-disable-next-line jsdoc/require-jsdoc
-        iconComponent: (theme: Theme, isDisabled?: boolean) => (
+        iconComponent: (theme: Theme, isDisabled?: boolean, fill?: string) => (
             <DisahwasherIcon
-                fill={isDisabled ? theme.palette.grey[300] : theme.palette.primary.main}
+                fill={isDisabled ? theme.palette.grey[300] : fill || theme.palette.primary.main}
                 width={'35'}
                 height={'35'}
             />
@@ -326,9 +326,9 @@ export const myEquipmentOptions = [
         name: 'washingmachine',
         labelTitle: 'Lave linge',
         // eslint-disable-next-line jsdoc/require-jsdoc
-        iconComponent: (theme: Theme, isDisabled?: boolean) => (
+        iconComponent: (theme: Theme, isDisabled?: boolean, fill?: string) => (
             <WashingmachineIcon
-                fill={isDisabled ? theme.palette.grey[300] : theme.palette.primary.main}
+                fill={isDisabled ? theme.palette.grey[300] : fill || theme.palette.primary.main}
                 width={'35'}
                 height={'35'}
             />
@@ -339,9 +339,9 @@ export const myEquipmentOptions = [
         name: 'dryer',
         labelTitle: 'Sèche linge',
         // eslint-disable-next-line jsdoc/require-jsdoc
-        iconComponent: (theme: Theme, isDisabled?: boolean) => (
+        iconComponent: (theme: Theme, isDisabled?: boolean, fill?: string) => (
             <DryerIcon
-                fill={isDisabled ? theme.palette.grey[300] : theme.palette.primary.main}
+                fill={isDisabled ? theme.palette.grey[300] : fill || theme.palette.primary.main}
                 width={'35'}
                 height={'35'}
             />
@@ -352,7 +352,12 @@ export const myEquipmentOptions = [
         name: 'solarpanel',
         labelTitle: 'Panneaux solaire',
         // eslint-disable-next-line jsdoc/require-jsdoc
-        iconComponent: () => <SolarPower color="primary" fontSize="large" />,
+        iconComponent: (theme: Theme, isDisabled?: boolean, fill?: string) => (
+            <SolarPower
+                sx={{ fill: isDisabled ? theme.palette.grey[300] : fill || theme.palette.primary.main }}
+                fontSize="large"
+            />
+        ),
     },
 ] as EquipmentOptionsType[]
 
@@ -407,3 +412,13 @@ export function groupedCards<T>(cards: T[], colNumber = 2) {
     const chunkArray = cards && chunk(cards, colNumber)
     return zip(...chunkArray).map((item) => filter(item)) as T[][]
 }
+
+/**
+ * Regex for meter guid. Accept only 14 numbers.
+ */
+export const meteGuidNumberRegex = /^\d{14}$/.source
+
+/**
+ * Text for meter guid regex.
+ */
+export const METER_GUID_REGEX_TEXT = 'Veuillez entrer votre numéro de compteur contenant exactement 14 chiffres.'

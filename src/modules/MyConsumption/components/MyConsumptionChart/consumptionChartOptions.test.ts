@@ -630,6 +630,8 @@ describe('Test echartsConsumptionOptions', () => {
                 {
                     ...commonOptions,
                     show: true,
+                    onZero: true,
+                    scale: true,
                     position: 'left',
                     axisLabel: {
                         formatter: expect.anything(),
@@ -646,6 +648,8 @@ describe('Test echartsConsumptionOptions', () => {
                 {
                     ...commonOptions,
                     show: false,
+                    scale: true,
+                    onZero: true,
                     position: 'right',
                     axisLabel: {
                         formatter: expect.anything(),
@@ -662,6 +666,8 @@ describe('Test echartsConsumptionOptions', () => {
                 {
                     ...commonOptions,
                     show: false,
+                    scale: true,
+                    onZero: true,
                     position: 'right',
                     axisLabel: {
                         formatter: expect.anything(),
@@ -678,6 +684,8 @@ describe('Test echartsConsumptionOptions', () => {
                 {
                     ...commonOptions,
                     show: false,
+                    scale: true,
+                    onZero: true,
                     position: 'left',
                     axisLabel: {
                         formatter: expect.anything(),
