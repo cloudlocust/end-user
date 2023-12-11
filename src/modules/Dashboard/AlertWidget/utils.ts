@@ -12,7 +12,7 @@ export const calculateGaugeChartPercent = (alertThreshold: number, currentValue:
     if (alertThreshold <= 0) {
         return 1
     } else {
-        return Math.min(1, currentValue / alertThreshold)
+        return Math.min(1, Number((currentValue / alertThreshold).toFixed(2)))
     }
 }
 
