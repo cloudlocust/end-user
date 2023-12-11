@@ -56,8 +56,7 @@ export const EnergyStatusWidget = (props: EnergyStatusWidgetProps) => {
         <BoltIcon fill={theme.palette.secondary.main} {...iconStyle} />
     )
 
-    // const isNrlinkDisconnected = nrlinkConsent?.nrlinkConsentState === 'DISCONNECTED'
-    const isNrlinkDisconnected = true
+    const isNrlinkDisconnected = nrlinkConsent?.nrlinkConsentState === 'DISCONNECTED'
     const isNrlinkOff = nrlinkConsent?.nrlinkConsentState === 'NONEXISTENT'
 
     const lastDataTimestamp = lastPowerData?.timestamp
@@ -103,7 +102,7 @@ export const EnergyStatusWidget = (props: EnergyStatusWidgetProps) => {
                             <span style={{ color: themeContrastText }}>{NRLINK_OFFLINE}</span>
                         </div>
                     )}
-                    <div className="flex justify-end items-center text-11 sm:text-16 mb-5">
+                    <div className="flex justify-end items-center text-12 sm:text-16 mb-10">
                         <span style={{ color: themeContrastText }}>
                             {lastNrlinkPowerDate ? `à ${lastNrlinkPowerDate}` : null}
                         </span>
