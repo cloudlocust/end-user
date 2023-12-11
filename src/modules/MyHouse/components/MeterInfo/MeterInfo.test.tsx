@@ -17,7 +17,7 @@ const DEFAULT_GUID_TEXT = 'Veuillez renseigner votre compteur'
 const DEFAULT_ADD_METER_NUMBER_TEXT = 'Numéro de PDL ou PRM'
 const ADD_METER_NUMBER_PLACEHOLDER = 'Ex: 12345678912345'
 
-const NUMBER_OF_MY_METER = '12345XRC8g5r9f'
+const NUMBER_OF_MY_METER = '12345678912345'
 
 const mockLoadHousingsAndScopes = jest.fn()
 const mockSetDefaultHousingModel = jest.fn()
@@ -126,7 +126,7 @@ describe('Test MeterInfo', () => {
                 expect(mockLoadHousingsAndScopes).toBeCalled()
             })
         })
-        test('Fill the informations to add meter and cancel the process.', async () => {
+        test('Fill the information to add meter and cancel the process.', async () => {
             const { getByText, getByPlaceholderText, queryByPlaceholderText } = reduxedRender(
                 <Router>
                     <MeterInfo element={TEST_MOCKED_HOUSES[1]} />
@@ -156,7 +156,7 @@ describe('Test MeterInfo', () => {
                 expect(mockLoadHousingsAndScopes).not.toBeCalled()
             })
         })
-        test('Dont Fill correctly the informations to add meter.', async () => {
+        test('fill wrong information format to add meter.', async () => {
             const { getByText, getByPlaceholderText } = reduxedRender(
                 <Router>
                     <MeterInfo element={TEST_MOCKED_HOUSES[1]} />
@@ -176,6 +176,17 @@ describe('Test MeterInfo', () => {
 
             // Fill the meter number with a smaller number then needed.
             userEvent.type(numberInput, '123')
+
+            // Save the changes.
+            userEvent.click(getByText('Enregistrer'))
+
+            // Add meter function is not called
+            await waitFor(() => {
+                expect(mockAddMeter).not.toHaveBeenCalled()
+                expect(mockLoadHousingsAndScopes).not.toBeCalled()
+            })
+
+            userEvent.type(numberInput, '123456789123456987') // more than 14 numbers
 
             // Save the changes.
             userEvent.click(getByText('Enregistrer'))

@@ -30,12 +30,8 @@ export const EquipmentsList = ({
                     return (
                         <EquipmentCard
                             key={equipment.id}
-                            id={equipment.id}
+                            equipment={equipment}
                             label={equipment.equipmentLabel || equipment.name}
-                            name={equipment.name}
-                            housingEquipmentId={equipment.housingEquipmentId}
-                            measurementModes={equipment.measurementModes}
-                            number={equipment.number ? equipment.number : 0}
                             onEquipmentChange={addHousingEquipment}
                             iconComponent={equipment.iconComponent}
                         />

@@ -29,8 +29,8 @@ export const StatusWrapper = ({
     const { data: nrlinkPowerData, isFetching: isNrlinkPowerLoading } = useNrlinkMetrics(currentHousing?.id)
     const { pricePerKwh } = useConsumptionAlerts(currentHousing!.id!)
 
-    const lastPowerData = useMemo(() => nrlinkPowerData?.lastPower, [nrlinkPowerData])
-    const lastTemperatureData = useMemo(() => nrlinkPowerData?.lastTemperature, [nrlinkPowerData])
+    const { lastPower: lastPowerData, lastTemperature: lastTemperatureData } =
+        useMemo(() => nrlinkPowerData, [nrlinkPowerData]) || {}
 
     return (
         <div className="flex justify-between items-center w-full space-x-10">

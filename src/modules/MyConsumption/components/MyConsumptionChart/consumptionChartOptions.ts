@@ -65,6 +65,9 @@ export const getEchartsConsumptionChartOptions = (
 const getDefaultOptionsEchartsConsumptionChart = (theme: Theme, isMobile: boolean) =>
     ({
         color: 'transparent',
+        axisPointer: {
+            triggerOn: isMobile ? 'click' : 'mousemove',
+        },
         textStyle: {
             fontFamily: theme.typography.fontFamily,
         },
@@ -73,21 +76,13 @@ const getDefaultOptionsEchartsConsumptionChart = (theme: Theme, isMobile: boolea
             confine: true,
             trigger: 'axis',
         },
-        toolbox: {
-            show: !isMobile,
-            feature: {
-                dataZoom: {
-                    yAxisIndex: 'none',
-                    xAxisIndex: 'all',
-                    title: {
-                        back: 'Retour',
-                    },
-                    iconStyle: {
-                        borderColor: 'white',
-                    },
-                },
+        dataZoom: [
+            {
+                type: 'inside', // This enables zooming with the mouse wheel or touch gestures
+                start: 0, // start at 0 (0%) of the xAxis
+                end: 100, // end at 100 (100%) of the xAxis
             },
-        },
+        ],
         // Putting % on the left & bottom & right helps to give space to make visible all the labels on xAxis & yAxis.
         grid: {
             left: '5%',
@@ -607,6 +602,8 @@ export const getYAxisOptionEchartsConsumptionChart = (
     return {
         yAxis: Object.keys(targetsYAxisValueFormatters).map((targetYAxisIndex) => ({
             type: 'value',
+            onZero: true,
+            scale: true,
             axisLine: {
                 onZero: true,
                 show: true,

@@ -8,54 +8,30 @@ pipeline{
 
     stages{
         stage ('Install deps') {
-            when {
-                expression {
-                    !changedchart('enduser-react-chart') || (env.BUILD_NUMBER == '1')
-                }
-            }
             steps {
                 // Using ignore-engines, will fix the error "engine node incompatible with this module", when using yarn install which happens on jenkins after installing firebase package.
                 sh 'npm install -g yarn && yarn install --ignore-engines && export NODE_OPTIONS="--max-old-space-size=8192"'
             }
         }
         stage ('Eslint') {
-            when {
-                expression {
-                    !changedchart('enduser-react-chart') || (env.BUILD_NUMBER == '1')
-                }
-            }
             steps {
                 sh 'npx eslint . --max-warnings=0'
             }
         }
         stage('Typescript') {
-            when {
-                expression {
-                    !changedchart('enduser-react-chart') || (env.BUILD_NUMBER == '1')
-                }
-            }
+
             steps {
                 sh 'npx tsc --skipLibCheck'
             }
 
         }
         stage('Unit-test'){
-            when {
-                expression {
-                    !changedchart('enduser-react-chart') || (env.BUILD_NUMBER == '1')
-                }
-            }
             steps {
                 sh 'yarn test --bail --watchAll=false --maxWorkers=2 --no-cache  --coverage --testResultsProcessor jest-sonar-reporter'
             }
 
         }
         stage('build && SonarQube analysis') {
-            when {
-                expression {
-                    !changedchart('enduser-react-chart') || (env.BUILD_NUMBER == '1')
-                }
-            }
             environment {
                 scannerHome = tool 'SonarQubeScanner'
                 sonarqube_Token = credentials('sonarq-token')
@@ -75,11 +51,6 @@ pipeline{
             }
         }
         stage("Quality Gate") {
-            when {
-                expression {
-                    !changedchart('enduser-react-chart') || (env.BUILD_NUMBER == '1')
-                }
-            }
             steps {
                 timeout(time: 10, unit: 'MINUTES') {
                     // Parameter indicates whether to set pipeline to UNSTABLE if Quality Gate fails
@@ -91,7 +62,6 @@ pipeline{
         stage('Test NG generate') {
             when {
               expression { ! (BRANCH_NAME ==~ /(production|master|develop)/) }
-              expression { !changedchart('enduser-react-chart') || (env.BUILD_NUMBER == '1') }
             }            
             steps{
                sh 'yarn build'
@@ -100,14 +70,13 @@ pipeline{
         stage("Publish") {
             when {
                     expression { BRANCH_NAME ==~ /(production|master|develop)/ }
-                    expression { !changedchart('enduser-react-chart') || (env.BUILD_NUMBER == '1') }
             }
            stages {
            stage('Publish in dockerhub'){
             environment {
                 registryCredential = 'dockerhub'
                 app_regisgtry = 'myem/enduser-react'
-                IMG_TAG = getImgTag(BRANCH_NAME)
+                ENV_NAME = getEnvName(BRANCH_NAME)
                 ENV_BUILD = getBuildEnv(BRANCH_NAME)
                 DOCKER_BUILDKIT='1'
                 VERSION= "${BUILD_NUMBER}"                
@@ -116,10 +85,10 @@ pipeline{
                 script {
                     docker.withRegistry( '', registryCredential ) {
                         // we copy files inside the app image and tag it
-                        def appimage = docker.build(app_regisgtry + ":${IMG_TAG}", "--build-arg ENV=${ENV_BUILD} --build-arg REACT_APP_TITLE='MYEM | Application de suivi de consommation ' --build-arg REACT_APP_CLIENT_ICON_FOLDER='ned' . -f ci/Dockerfile " )
-                        appimage.push("${IMG_TAG}")
+                        def appimage = docker.build(app_regisgtry + ":${ENV_NAME}", "--build-arg ENV=${ENV_BUILD} --build-arg REACT_APP_TITLE='MYEM | Application de suivi de consommation ' --build-arg REACT_APP_CLIENT_ICON_FOLDER='ned' . -f ci/Dockerfile " )
+                        appimage.push("${ENV_NAME}")
                         if (env.BRANCH_NAME == "production") {                                          
-                        appimage.push("${IMG_TAG}-${VERSION}")   
+                        appimage.push("${ENV_NAME}-${VERSION}")   
                         }                         
                     }
                     // Clean up unused Docker resources older than 1 hour
@@ -137,12 +106,11 @@ pipeline{
                         }
                     environment {
                         ENV_NAME = getEnvName(BRANCH_NAME)
-                        IMG_TAG = getImgTag(BRANCH_NAME)
                         VERSION_CHART = "0.1.${BUILD_NUMBER}"
                         USER_NAME_ = credentials('helm_registry_username')
                         PASSWORD_ = credentials('helm_registry_password')
                         url = credentials('helm_registry_url')
-                        URL_ = "${url}/${IMG_TAG}registry"
+                        URL_ = "${url}/${ENV_NAME}registry"
                         }
                     steps {
                             script{
@@ -165,11 +133,10 @@ pipeline{
            }
         environment {
               ENV_NAME = getEnvName(BRANCH_NAME)
-              IMG_TAG = getImgTag(BRANCH_NAME)
               USER_NAME_ = credentials('helm_registry_username')
               PASSWORD_ = credentials('helm_registry_password')
               url = credentials('helm_registry_url')
-              URL_ = "${url}/${IMG_TAG}registry"
+              URL_ = "${url}/${ENV_NAME}registry"
                             
            }
             steps {
@@ -197,19 +164,6 @@ pipeline{
             }
        }
     }
-}
-
-def getImgTag(branchName) {
-     // This function return staging by default.
-     if(branchName == "master")  {
-         return "alpha";
-     }
-     else if (branchName == "production"){
-         return "prod";
-     }
-     else {
-         return "staging";
-     }
 }
 
 def getEnvName(branchName) {
@@ -304,11 +258,3 @@ def changeset(path){
 
 }
 
-def changedchart(path){
-    def jobName="$JOB_NAME"
-    def job = Jenkins.getInstance().getItemByFullName(jobName)
-    if ( job.lastSuccessfulBuild == null) { return true }    
-    def changeSets = allChangeSetsFromLastSuccessfulBuild()                                          
-    return  isJustPathExist(getFilesChanged(changeSets),path)
-
-}
