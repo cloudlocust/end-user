@@ -8,6 +8,7 @@ import { TEST_HOUSES } from 'src/mocks/handlers/houses'
 import { applyCamelCase } from 'src/common/react-platform-components/utils/mm'
 import { IHousing } from 'src/modules/MyHouse/components/HousingList/housing'
 import { MeterStepNrLinkConnectionFormProps } from 'src/modules/nrLinkConnection/components/MeterStepNrLinkConnectionForm/MeterStepNrLinkConnectionForm.d'
+import { METER_GUID_REGEX_TEXT } from 'src/modules/MyHouse/utils/MyHouseVariables'
 
 const TEST_METERS: IMeter[] = applyCamelCase(MOCK_METERS)
 
@@ -59,21 +60,21 @@ describe('Test MeterStepNrLinkConnectionForm', () => {
                 expect(getAllByText(REQUIRED_ERROR_TEXT).length).toBe(1)
             })
         }, 20000)
-        test('GUID format validation, 14 characters', async () => {
+        test('GUID format validation, 14 chiffres', async () => {
             const { container, getByText } = reduxedRender(
                 <MeterStepNrLinkConnectionForm {...mockMeterStepNrLinkConnectionFormProps} />,
             )
             fireEvent.input(container.querySelector(guidMeterInputQuerySelector)!, { target: { value: '123456' } })
             userEvent.click(getByText(SUBMIT_BUTTON_TEXT))
             await waitFor(() => {
-                expect(getByText('Le champ doit avoir au minimum 14 caractères')).toBeTruthy()
+                expect(getByText(METER_GUID_REGEX_TEXT)).toBeTruthy()
             })
             fireEvent.input(container.querySelector(guidMeterInputQuerySelector)!, {
-                target: { value: '12345678910111213' },
+                target: { value: '12345678912345' },
             })
             userEvent.click(getByText(SUBMIT_BUTTON_TEXT))
             await waitFor(() => {
-                expect(getByText('Le champ doit avoir au maximum 14 caractères')).toBeTruthy()
+                expect(mockMeterStepNrLinkConnectionFormProps.handleNext).not.toHaveBeenCalled()
             })
         })
     })

@@ -6,18 +6,7 @@ import { useIntl } from 'react-intl'
 import { API_RESOURCES_URL } from 'src/configs'
 
 // eslint-disable-next-line jsdoc/require-jsdoc
-const NRLINK_POWER_URL = (housingid?: number) => `${API_RESOURCES_URL}/nrlink-last-metrics/${housingid}`
-
-/**
- * Function to fetch nrlink power data.
- *
- * @param housingid Housing id.
- * @returns Response data.
- */
-const fetchLastNrlinkMetrics = async (housingid?: number): Promise<INrlinkMetrics> => {
-    const response = await axios.get(NRLINK_POWER_URL(housingid))
-    return response.data
-}
+const NRLINK_POWER_URL = (housingId?: number) => `${API_RESOURCES_URL}/nrlink-last-metrics/${housingId}`
 
 /**
  * Hook to fetch nrlink power data.
@@ -29,21 +18,28 @@ export function useNrlinkMetrics(housingId?: number): UseQueryResult<INrlinkMetr
     const { enqueueSnackbar } = useSnackbar()
     const { formatMessage } = useIntl()
 
-    return useQuery<INrlinkMetrics>(['nrlinkMetrics', housingId], () => fetchLastNrlinkMetrics(housingId), {
-        /**
-         * On error.
-         *
-         * @param error Error.
-         */
-        onError: (error: any) => {
-            enqueueSnackbar(
-                formatMessage({
-                    id: 'Error fetching power data',
-                    defaultMessage: 'Error fetching power data',
-                }),
-                { variant: 'error' },
-            )
-            throw error
+    return useQuery<INrlinkMetrics>(
+        ['nrlinkMetrics', housingId],
+        async () => {
+            const response = await axios.get<INrlinkMetrics>(NRLINK_POWER_URL(housingId))
+            return response.data
         },
-    })
+        {
+            /**
+             * On error.
+             *
+             * @param error Error.
+             */
+            onError: (error: any) => {
+                enqueueSnackbar(
+                    formatMessage({
+                        id: 'Erreur lors de la récupération des données de puissance',
+                        defaultMessage: 'Erreur lors de la récupération des données de puissance',
+                    }),
+                    { variant: 'error' },
+                )
+                throw error
+            },
+        },
+    )
 }

@@ -61,7 +61,7 @@ describe('EnergyStatusWidget', () => {
         }
 
         reduxedRender(<EnergyStatusWidget {...defaultProps} />)
-        expect(screen.getByText('nrLINK hors de portée wifi')).toBeInTheDocument()
+        expect(screen.getByText('Connectez votre nrLINK pour voir votre consommation à la minute')).toBeInTheDocument()
     })
 
     test('when nrlink is off', async () => {
@@ -110,7 +110,8 @@ describe('EnergyStatusWidget', () => {
         }
         reduxedRender(<EnergyStatusWidget {...defaultProps} />)
         expect(screen.getByText('Dernière puissance remontée')).toBeInTheDocument()
-        expect(screen.getByText('22 Wh')).toBeInTheDocument()
-        expect(screen.getByText('12:00')).toBeInTheDocument()
+        expect(screen.getByText('22')).toBeInTheDocument()
+        expect(screen.getByText('Wh')).toBeInTheDocument()
+        expect(screen.getByText('à 12:00:00')).toBeInTheDocument()
     })
 })
