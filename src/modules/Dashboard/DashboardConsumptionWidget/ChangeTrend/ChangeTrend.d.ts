@@ -1,7 +1,7 @@
 /**
- * TendanceVeille props.
+ * ChangeTrend props.
  */
-export interface TendanceVeilleProps {
+export interface ChangeTrendProps {
     /**
      * The percentage of change.
      */

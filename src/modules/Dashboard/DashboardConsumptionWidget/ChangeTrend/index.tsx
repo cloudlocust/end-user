@@ -1,7 +1,7 @@
 import Icon from '@mui/material/Icon'
 import { useTheme } from '@mui/material'
 import { metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
-import { TendanceVeilleProps } from 'src/modules/Dashboard/DashboardConsumptionWidget/TendanceVeille/TendanceVeille'
+import { ChangeTrendProps } from 'src/modules/Dashboard/DashboardConsumptionWidget/ChangeTrend/ChangeTrend'
 import { getWidgetIndicatorColor } from 'src/modules/MyConsumption/components/Widget/WidgetFunctions'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 
@@ -10,9 +10,9 @@ import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyForm
  *
  * @param root0 N/A.
  * @param root0.percentageChange The percentage of change.
- * @returns TendanceVeille Component.
+ * @returns ChangeTrend Component.
  */
-export const TendanceVeille = ({ percentageChange }: TendanceVeilleProps) => {
+export const ChangeTrend = ({ percentageChange }: ChangeTrendProps) => {
     const theme = useTheme()
     const color = getWidgetIndicatorColor(metricTargetsEnum.consumption, percentageChange)
     const themeMainHexColor = theme.palette[color].main

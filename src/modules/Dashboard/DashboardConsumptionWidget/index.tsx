@@ -27,7 +27,7 @@ import {
     getWidgetRange,
 } from 'src/modules/MyConsumption/components/Widget/WidgetFunctions'
 import { computePercentageChange } from 'src/modules/Analysis/utils/computationFunctions'
-import { TendanceVeille } from 'src/modules/Dashboard/DashboardConsumptionWidget/TendanceVeille'
+import { ChangeTrend } from 'src/modules/Dashboard/DashboardConsumptionWidget/ChangeTrend'
 
 /**
  * Consumption widget component for the dashboard.
@@ -116,7 +116,7 @@ export const DashboardConsumptionWidget = () => {
                     priceValue={totalDailyPrice}
                 />
 
-                <TendanceVeille percentageChange={percentageChange} />
+                <ChangeTrend percentageChange={percentageChange} />
             </div>
             <div className="flex flex-col flex-auto h-92">
                 <ReactApexChart
