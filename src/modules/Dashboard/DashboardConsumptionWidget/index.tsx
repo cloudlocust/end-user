@@ -52,14 +52,14 @@ export const DashboardConsumptionWidget = () => {
 
     const updateWidgetValues = useCallback(async () => {
         const currentTime = utcToZonedTime(new Date(), 'Etc/UTC')
-        const range = {
+        const todayRange = {
             from: getDateWithoutTimezoneOffset(startOfDay(currentTime)),
             to: getDateWithoutTimezoneOffset(currentTime),
         }
         const data: IMetric[] = await getMetricsWithParams(
             {
                 interval: METRIC_INTERVAL,
-                range: range,
+                range: todayRange,
                 targets: [metricTargetsEnum.consumption],
                 filters: formatMetricFilter(currentHousing!.id) ?? [],
             },
@@ -78,11 +78,12 @@ export const DashboardConsumptionWidget = () => {
             setTotalDailyPrice(totalDailyPrice)
             setTotalDailyConsumption({ value: totalDailyConsumption, unit: consumptionUnit })
 
+            // TODO: Duplicate code, need to be refactored
             // Calculate the percentage of change for the consumption
             const oldData = await getMetricsWithParams(
                 {
                     interval: METRIC_INTERVAL,
-                    range: getWidgetPreviousRange(getWidgetRange(range, 'daily'), 'daily'),
+                    range: getWidgetPreviousRange(getWidgetRange(todayRange, 'daily'), 'daily'),
                     targets: [metricTargetsEnum.consumption],
                     filters: formatMetricFilter(currentHousing!.id) ?? [],
                 },

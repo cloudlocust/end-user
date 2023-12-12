@@ -15,24 +15,18 @@ import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyForm
 export const TendanceVeille = ({ percentageChange }: TendanceVeilleProps) => {
     const theme = useTheme()
     const color = getWidgetIndicatorColor(metricTargetsEnum.consumption, percentageChange)
-    const hexColor = theme.palette[color].main
+    const themeMainHexColor = theme.palette[color].main
 
     return (
         <div
             className="flex items-center gap-10 px-14 py-5 rounded-full relative"
-            style={{ backgroundColor: `${hexColor}25` }}
+            style={{ backgroundColor: `${themeMainHexColor}25` }}
             data-testid="percentage-change"
         >
-            {percentageChange < 0 ? (
-                <Icon color={color} sx={{ fontSize: { xs: '24px', md: '32px' } }}>
-                    trending_down
-                </Icon>
-            ) : (
-                <Icon color={color} sx={{ fontSize: { xs: '24px', md: '32px' } }}>
-                    trending_up
-                </Icon>
-            )}
-            <label className="text-14 font-500" style={{ color: hexColor }}>
+            <Icon color={color} sx={{ fontSize: { xs: '24px', md: '32px' } }}>
+                {percentageChange < 0 ? 'trending_down' : 'trending_up'}
+            </Icon>
+            <label className="text-14 font-500" style={{ color: themeMainHexColor }}>
                 {Math.round(Math.abs(percentageChange))}&nbsp;%
             </label>
             <TypographyFormatMessage className="text-14 text-grey-500 absolute right-0 -bottom-28 whitespace-nowrap">

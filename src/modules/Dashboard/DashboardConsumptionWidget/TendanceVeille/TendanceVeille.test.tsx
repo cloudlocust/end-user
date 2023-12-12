@@ -5,6 +5,7 @@ describe('TendanceVeille component', () => {
     test('renders correctly with positive percentageChange', () => {
         const { getByText } = reduxedRender(<TendanceVeille percentageChange={10.76} />)
 
+        expect(getByText('trending_up')).toBeInTheDocument()
         expect(
             getByText((content, _) => {
                 return content.startsWith('11')
@@ -21,6 +22,7 @@ describe('TendanceVeille component', () => {
     test('renders correctly with negative percentageChange', () => {
         const { getByText } = reduxedRender(<TendanceVeille percentageChange={-49.4} />)
 
+        expect(getByText('trending_down')).toBeInTheDocument()
         expect(
             getByText((content, _) => {
                 return content.startsWith('49')
