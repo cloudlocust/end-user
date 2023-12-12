@@ -53,5 +53,5 @@ export interface AlertWidgetProps {
     /**
      * The content of the alert widget is loading.
      */
-    isLoading: boolean
+    isLoading?: boolean
 }
