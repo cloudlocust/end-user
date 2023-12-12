@@ -1,13 +1,12 @@
 import { useTheme } from '@mui/material'
 import { useIntl } from 'src/common/react-platform-translation'
 import ReactApexChart from 'react-apexcharts'
-import { ApexOptions } from 'apexcharts'
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { startOfDay } from 'date-fns'
+import { utcToZonedTime } from 'date-fns-tz'
 import { useSelector } from 'react-redux'
 import { RootState } from 'src/redux'
 import {
-    convertConsumptionToWatt,
     formatMetricFilter,
     getDateWithoutTimezoneOffset,
 } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
@@ -15,6 +14,7 @@ import { IMetric, metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
 import {
     calculateTotalDailyConsumptionAndPrice,
     createDataForConsumptionWidgetGraph,
+    getApexChartOptions,
 } from 'src/modules/Dashboard/DashboardConsumptionWidget/utils'
 import { FuseCard } from 'src/modules/shared/FuseCard/FuseCard'
 import { ConsumptionAndPrice } from 'src/modules/Dashboard/DashboardConsumptionWidget/ConsumptionAndPrice'
@@ -39,11 +39,11 @@ export const DashboardConsumptionWidget = () => {
         unit: 'Wh',
     })
     const [totalDailyPrice, setTotalDailyPrice] = useState<number>(0)
-    const metricInterval = '30m'
+    const metricInterval: '1m' | '30m' = '30m'
     const { isMetricsLoading, getMetricsWithParams } = useMetrics()
 
     const updateWidgetValues = useCallback(async () => {
-        const currentTime = new Date()
+        const currentTime = utcToZonedTime(new Date(), 'Etc/UTC')
         const data: IMetric[] = await getMetricsWithParams({
             interval: metricInterval,
             range: {
@@ -70,48 +70,10 @@ export const DashboardConsumptionWidget = () => {
         updateWidgetValues()
     }, [updateWidgetValues])
 
-    const chartOptions: ApexOptions = {
-        chart: {
-            animations: {
-                enabled: false,
-            },
-            fontFamily: 'inherit',
-            foreColor: 'inherit',
-            height: '100%',
-            type: 'area',
-            sparkline: {
-                enabled: true,
-            },
-        },
-        colors: [theme.palette.primary.main],
-        fill: {
-            colors: [theme.palette.primary.light],
-            opacity: 0.5,
-        },
-        stroke: {
-            curve: 'smooth',
-        },
-        tooltip: {
-            followCursor: true,
-            theme: 'dark',
-        },
-        xaxis: {
-            type: 'category',
-            categories: labels,
-        },
-        yaxis: {
-            show: false,
-            labels: {
-                /**
-                 * Function to converts consumption from Wh to Watt.
-                 *
-                 * @param serieValue Consumption value in Wh.
-                 * @returns Consumption value in Watt.
-                 */
-                formatter: (serieValue) => convertConsumptionToWatt(serieValue, false, metricInterval),
-            },
-        },
-    }
+    const chartOptions = useMemo(
+        () => getApexChartOptions(theme.palette.primary.main, theme.palette.primary.light, labels, metricInterval),
+        [labels, theme.palette.primary.light, theme.palette.primary.main],
+    )
 
     return (
         <FuseCard sx={{ height: 220 }} isLoading={isMetricsLoading} loadingColor={theme.palette.primary.main}>

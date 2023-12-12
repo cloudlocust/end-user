@@ -1,6 +1,7 @@
 import {
     createDataForConsumptionWidgetGraph,
     calculateTotalDailyConsumptionAndPrice,
+    getApexChartOptions,
 } from 'src/modules/Dashboard/DashboardConsumptionWidget/utils'
 import { IMetric, metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
 
@@ -66,11 +67,11 @@ export const mockConsumptionSerieValues = [
 ]
 
 describe('createDataForConsumptionWidgetGraph', () => {
-    test('should generate labels and serieValues based on metric data', () => {
+    test('returns labels and serieValues based on metric data', () => {
         const result = createDataForConsumptionWidgetGraph(mockMetricConsumptionData)
 
-        expect(result.labels).toEqual(mockConsumptionLabels)
-        expect(result.serieValues).toEqual(mockConsumptionSerieValues)
+        expect(result.labels).toStrictEqual(mockConsumptionLabels)
+        expect(result.serieValues).toStrictEqual(mockConsumptionSerieValues)
     })
 })
 
@@ -103,5 +104,57 @@ describe('calculateTotalDailyConsumptionAndPrice', () => {
         expect(result.totalDailyConsumption).toEqual(1.33)
         expect(result.consumptionUnit).toEqual('kWh')
         expect(result.totalDailyPrice).toEqual(0)
+    })
+})
+
+const LINE_COLOR = '#000000'
+const FILL_COLOR = '#ffffff'
+const METRIC_INTERVAL = '30m'
+const expectedApexChartOptions = {
+    chart: {
+        animations: {
+            enabled: false,
+        },
+        fontFamily: 'inherit',
+        foreColor: 'inherit',
+        height: '100%',
+        type: 'area',
+        sparkline: {
+            enabled: true,
+        },
+    },
+    colors: [LINE_COLOR],
+    fill: {
+        colors: [FILL_COLOR],
+        opacity: 0.5,
+    },
+    stroke: {
+        curve: 'smooth',
+    },
+    tooltip: {
+        followCursor: true,
+        theme: 'dark',
+    },
+    xaxis: {
+        type: 'category',
+        categories: mockConsumptionLabels,
+    },
+}
+
+describe('getApexChartOptions', () => {
+    test('returns ApexChart options object based on lineColor, fillColor and categories parameters', () => {
+        const result = getApexChartOptions(LINE_COLOR, FILL_COLOR, mockConsumptionLabels, METRIC_INTERVAL)
+
+        expect(result).toEqual(
+            expect.objectContaining({
+                ...expectedApexChartOptions,
+                yaxis: {
+                    show: false,
+                    labels: expect.objectContaining({
+                        formatter: expect.any(Function),
+                    }),
+                },
+            }),
+        )
     })
 })
