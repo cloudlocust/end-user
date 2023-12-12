@@ -12,13 +12,13 @@ import {
 } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
 import { IMetric, metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
 import {
-    calculateTotalDailyConsumptionAndPrice,
+    calculateTotalConsumptionAndPrice,
     createDataForConsumptionWidgetGraph,
     getApexChartOptions,
 } from 'src/modules/Dashboard/DashboardConsumptionWidget/utils'
 import { FuseCard } from 'src/modules/shared/FuseCard/FuseCard'
 import { ConsumptionAndPrice } from 'src/modules/Dashboard/DashboardConsumptionWidget/ConsumptionAndPrice'
-import { totalDailyConsumptionType } from 'src/modules/Dashboard/DashboardConsumptionWidget/DashboardConsumptionWidget'
+import { ConsumptionStatisticsType } from 'src/modules/Dashboard/DashboardConsumptionWidget/DashboardConsumptionWidget'
 import { useMetrics } from 'src/modules/Metrics/metricsHook'
 import { useConsumptionAlerts } from 'src/modules/Alerts/components/ConsumptionAlert/consumptionAlertHooks'
 
@@ -34,18 +34,18 @@ export const DashboardConsumptionWidget = () => {
     const { pricePerKwh } = useConsumptionAlerts(currentHousing!.id)
     const [serieValues, setSerieValues] = useState<number[]>([])
     const [labels, setLabels] = useState<string[]>([])
-    const [totalDailyConsumption, setTotalDailyConsumption] = useState<totalDailyConsumptionType>({
+    const [totalDailyConsumption, setTotalDailyConsumption] = useState<ConsumptionStatisticsType>({
         value: 0,
         unit: 'Wh',
     })
     const [totalDailyPrice, setTotalDailyPrice] = useState<number>(0)
-    const metricInterval: '1m' | '30m' = '30m'
     const { isMetricsLoading, getMetricsWithParams } = useMetrics()
+    const METRIC_INTERVAL: '1m' | '30m' = '30m'
 
     const updateWidgetValues = useCallback(async () => {
         const currentTime = utcToZonedTime(new Date(), 'Etc/UTC')
         const data: IMetric[] = await getMetricsWithParams({
-            interval: metricInterval,
+            interval: METRIC_INTERVAL,
             range: {
                 from: getDateWithoutTimezoneOffset(startOfDay(currentTime)),
                 to: getDateWithoutTimezoneOffset(currentTime),
@@ -57,7 +57,7 @@ export const DashboardConsumptionWidget = () => {
             const { labels, serieValues } = createDataForConsumptionWidgetGraph(data)
             setLabels(labels)
             setSerieValues(serieValues)
-            const { totalDailyConsumption, consumptionUnit, totalDailyPrice } = calculateTotalDailyConsumptionAndPrice(
+            const { totalDailyConsumption, consumptionUnit, totalDailyPrice } = calculateTotalConsumptionAndPrice(
                 serieValues,
                 pricePerKwh,
             )
@@ -71,7 +71,7 @@ export const DashboardConsumptionWidget = () => {
     }, [updateWidgetValues])
 
     const chartOptions = useMemo(
-        () => getApexChartOptions(theme.palette.primary.main, theme.palette.primary.light, labels, metricInterval),
+        () => getApexChartOptions(theme.palette.primary.main, theme.palette.primary.light, labels, METRIC_INTERVAL),
         [labels, theme.palette.primary.light, theme.palette.primary.main],
     )
 

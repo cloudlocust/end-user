@@ -21,13 +21,13 @@ export const createDataForConsumptionWidgetGraph = (data: IMetric[]) => {
 }
 
 /**
- * Calculate the total daily consumption and price.
+ * Calculate the total consumption and price for a consumption serie values.
  *
  * @param serieValues Consumption values in Wh.
  * @param pricePerKwh Price per kWh.
  * @returns The total daily consumption and price.
  */
-export const calculateTotalDailyConsumptionAndPrice = (serieValues: number[], pricePerKwh: number | null) => {
+export const calculateTotalConsumptionAndPrice = (serieValues: number[], pricePerKwh: number | null) => {
     const sumConsumptions = sum(serieValues)
     const { value: totalDailyConsumption, unit: consumptionUnit } = consumptionWattUnitConversion(sumConsumptions)
     const totalDailyPrice = pricePerKwh ? Number(((sumConsumptions * pricePerKwh) / 1000).toFixed(2)) : 0

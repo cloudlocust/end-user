@@ -3,7 +3,7 @@ import { totalConsumptionUnits } from 'src/modules/MyConsumption/components/Widg
 /**
  * The totalDailyConsumption state type.
  */
-export interface totalDailyConsumptionType {
+export interface ConsumptionStatisticsType {
     /**
      * The total consumption value.
      */
