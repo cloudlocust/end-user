@@ -1,4 +1,7 @@
-import { createDataForConsumptionWidgetGraph } from 'src/modules/Dashboard/DashboardConsumptionWidget/utils'
+import {
+    createDataForConsumptionWidgetGraph,
+    getApexChartOptions,
+} from 'src/modules/Dashboard/DashboardConsumptionWidget/utils'
 import { IMetric, metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
 
 // Mock the metric data
@@ -58,11 +61,51 @@ const expectedSerieValues = [
 
 describe('createDataForConsumptionWidgetGraph', () => {
     test('returns labels and serieValues based on metric data', () => {
-        // Call the function with the mock data
         const result = createDataForConsumptionWidgetGraph(mockData)
 
-        // Assert the expected output
-        expect(result.labels).toEqual(expectedLabels)
-        expect(result.serieValues).toEqual(expectedSerieValues)
+        expect(result.labels).toStrictEqual(expectedLabels)
+        expect(result.serieValues).toStrictEqual(expectedSerieValues)
+    })
+})
+
+const LINE_COLOR = '#000000'
+const FILL_COLOR = '#ffffff'
+
+const expectedApexChartOptions = {
+    chart: {
+        animations: {
+            enabled: false,
+        },
+        fontFamily: 'inherit',
+        foreColor: 'inherit',
+        height: '100%',
+        type: 'area',
+        sparkline: {
+            enabled: true,
+        },
+    },
+    colors: [LINE_COLOR],
+    fill: {
+        colors: [FILL_COLOR],
+        opacity: 0.5,
+    },
+    stroke: {
+        curve: 'smooth',
+    },
+    tooltip: {
+        followCursor: true,
+        theme: 'dark',
+    },
+    xaxis: {
+        type: 'category',
+        categories: expectedLabels,
+    },
+}
+
+describe('getApexChartOptions', () => {
+    test('returns ApexChart options object based on lineColor, fillColor and categories parameters', () => {
+        const result = getApexChartOptions(LINE_COLOR, FILL_COLOR, expectedLabels)
+
+        expect(result).toStrictEqual(expectedApexChartOptions)
     })
 })

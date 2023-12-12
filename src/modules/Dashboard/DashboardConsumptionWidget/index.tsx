@@ -1,10 +1,10 @@
 import { useTheme } from '@mui/material'
 import { useIntl } from 'src/common/react-platform-translation'
 import ReactApexChart from 'react-apexcharts'
-import { ApexOptions } from 'apexcharts'
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useMetrics } from 'src/modules/Metrics/metricsHook'
 import { startOfDay } from 'date-fns'
+import { utcToZonedTime } from 'date-fns-tz'
 import { useSelector } from 'react-redux'
 import { RootState } from 'src/redux'
 import {
@@ -12,7 +12,10 @@ import {
     getDateWithoutTimezoneOffset,
 } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
 import { metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
-import { createDataForConsumptionWidgetGraph } from 'src/modules/Dashboard/DashboardConsumptionWidget/utils'
+import {
+    createDataForConsumptionWidgetGraph,
+    getApexChartOptions,
+} from 'src/modules/Dashboard/DashboardConsumptionWidget/utils'
 import { FuseCard } from 'src/modules/shared/FuseCard/FuseCard'
 
 /**
@@ -24,7 +27,7 @@ export const DashboardConsumptionWidget = () => {
     const { formatMessage } = useIntl()
     const theme = useTheme()
     const { currentHousing } = useSelector(({ housingModel }: RootState) => housingModel)
-    const currentTime = new Date()
+    const currentTime = utcToZonedTime(new Date(), 'Etc/UTC')
     const filters = formatMetricFilter(currentHousing?.id!)
     const { data, isMetricsLoading } = useMetrics(
         {
@@ -54,36 +57,10 @@ export const DashboardConsumptionWidget = () => {
         }
     }, [data])
 
-    const chartOptions: ApexOptions = {
-        chart: {
-            animations: {
-                enabled: false,
-            },
-            fontFamily: 'inherit',
-            foreColor: 'inherit',
-            height: '100%',
-            type: 'area',
-            sparkline: {
-                enabled: true,
-            },
-        },
-        colors: [theme.palette.primary.main],
-        fill: {
-            colors: [theme.palette.primary.light],
-            opacity: 0.5,
-        },
-        stroke: {
-            curve: 'smooth',
-        },
-        tooltip: {
-            followCursor: true,
-            theme: 'dark',
-        },
-        xaxis: {
-            type: 'category',
-            categories: labels,
-        },
-    }
+    const chartOptions = useMemo(
+        () => getApexChartOptions(theme.palette.primary.main, theme.palette.primary.light, labels),
+        [labels, theme.palette.primary.light, theme.palette.primary.main],
+    )
 
     return (
         <FuseCard isLoading={isMetricsLoading} loadingColor={theme.palette.primary.main}>
