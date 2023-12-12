@@ -156,7 +156,7 @@ describe('useMetrics hook test', () => {
             expect(result.current.data.length).toBeGreaterThan(0)
         }, 30000)
 
-        test('success when isSettingData=false', async () => {
+        test('success (when the parameter isSettingData is equal to false)', async () => {
             const {
                 renderedHook: { result, waitForValueToChange },
             } = reduxedRenderHook(() => useMetrics(mockHookArguments, false))
