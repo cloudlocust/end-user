@@ -150,7 +150,6 @@ export function useMetrics(initialState: getMetricType = defaultInitialState, im
                 if (isSettingData) {
                     setData(response.data)
                 }
-                setIsMetricsLoading(false)
                 return response.data
             } catch (error) {
                 enqueueSnackbar(
@@ -166,8 +165,9 @@ export function useMetrics(initialState: getMetricType = defaultInitialState, im
                 if (isSettingData) {
                     setData([])
                 }
-                setIsMetricsLoading(false)
                 return []
+            } finally {
+                setIsMetricsLoading(false)
             }
         },
         [enqueueSnackbar, formatMessage],

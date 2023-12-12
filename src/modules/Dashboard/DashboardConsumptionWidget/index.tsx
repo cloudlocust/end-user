@@ -1,24 +1,24 @@
 import { useTheme } from '@mui/material'
 import { useIntl } from 'src/common/react-platform-translation'
 import ReactApexChart from 'react-apexcharts'
-import { ApexOptions } from 'apexcharts'
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { startOfDay } from 'date-fns'
+import { utcToZonedTime } from 'date-fns-tz'
 import { useSelector } from 'react-redux'
 import { RootState } from 'src/redux'
 import {
-    convertConsumptionToWatt,
     formatMetricFilter,
     getDateWithoutTimezoneOffset,
 } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
 import { IMetric, metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
 import {
-    calculateTotalDailyConsumptionAndPrice,
+    calculateTotalConsumptionAndPrice,
     createDataForConsumptionWidgetGraph,
+    getApexChartOptions,
 } from 'src/modules/Dashboard/DashboardConsumptionWidget/utils'
 import { FuseCard } from 'src/modules/shared/FuseCard/FuseCard'
 import { ConsumptionAndPrice } from 'src/modules/Dashboard/DashboardConsumptionWidget/ConsumptionAndPrice'
-import { totalDailyConsumptionType } from 'src/modules/Dashboard/DashboardConsumptionWidget/DashboardConsumptionWidget'
+import { ConsumptionStatisticsType } from 'src/modules/Dashboard/DashboardConsumptionWidget/DashboardConsumptionWidget'
 import { useMetrics } from 'src/modules/Metrics/metricsHook'
 import { useConsumptionAlerts } from 'src/modules/Alerts/components/ConsumptionAlert/consumptionAlertHooks'
 import {
@@ -41,24 +41,24 @@ export const DashboardConsumptionWidget = () => {
     const { pricePerKwh } = useConsumptionAlerts(currentHousing!.id)
     const [serieValues, setSerieValues] = useState<number[]>([])
     const [labels, setLabels] = useState<string[]>([])
-    const [totalDailyConsumption, setTotalDailyConsumption] = useState<totalDailyConsumptionType>({
+    const [totalDailyConsumption, setTotalDailyConsumption] = useState<ConsumptionStatisticsType>({
         value: 0,
         unit: 'Wh',
     })
     const [totalDailyPrice, setTotalDailyPrice] = useState<number>(0)
     const [percentageChange, setPercentageChange] = useState<number>(0)
-    const metricInterval = '30m'
     const { isMetricsLoading, getMetricsWithParams } = useMetrics()
+    const METRIC_INTERVAL: '1m' | '30m' = '30m'
 
     const updateWidgetValues = useCallback(async () => {
-        const currentTime = new Date()
+        const currentTime = utcToZonedTime(new Date(), 'Etc/UTC')
         const range = {
             from: getDateWithoutTimezoneOffset(startOfDay(currentTime)),
             to: getDateWithoutTimezoneOffset(currentTime),
         }
         const data: IMetric[] = await getMetricsWithParams(
             {
-                interval: metricInterval,
+                interval: METRIC_INTERVAL,
                 range: range,
                 targets: [metricTargetsEnum.consumption],
                 filters: formatMetricFilter(currentHousing!.id) ?? [],
@@ -71,7 +71,7 @@ export const DashboardConsumptionWidget = () => {
             setSerieValues(serieValues)
 
             // Calculate the total daily consumption and price
-            const { totalDailyConsumption, consumptionUnit, totalDailyPrice } = calculateTotalDailyConsumptionAndPrice(
+            const { totalDailyConsumption, consumptionUnit, totalDailyPrice } = calculateTotalConsumptionAndPrice(
                 serieValues,
                 pricePerKwh,
             )
@@ -81,7 +81,7 @@ export const DashboardConsumptionWidget = () => {
             // Calculate the percentage of change for the consumption
             const oldData = await getMetricsWithParams(
                 {
-                    interval: metricInterval,
+                    interval: METRIC_INTERVAL,
                     range: getWidgetPreviousRange(getWidgetRange(range, 'daily'), 'daily'),
                     targets: [metricTargetsEnum.consumption],
                     filters: formatMetricFilter(currentHousing!.id) ?? [],
@@ -101,48 +101,10 @@ export const DashboardConsumptionWidget = () => {
         updateWidgetValues()
     }, [updateWidgetValues])
 
-    const chartOptions: ApexOptions = {
-        chart: {
-            animations: {
-                enabled: false,
-            },
-            fontFamily: 'inherit',
-            foreColor: 'inherit',
-            height: '100%',
-            type: 'area',
-            sparkline: {
-                enabled: true,
-            },
-        },
-        colors: [theme.palette.primary.main],
-        fill: {
-            colors: [theme.palette.primary.light],
-            opacity: 0.5,
-        },
-        stroke: {
-            curve: 'smooth',
-        },
-        tooltip: {
-            followCursor: true,
-            theme: 'dark',
-        },
-        xaxis: {
-            type: 'category',
-            categories: labels,
-        },
-        yaxis: {
-            show: false,
-            labels: {
-                /**
-                 * Function to converts consumption from Wh to Watt.
-                 *
-                 * @param serieValue Consumption value in Wh.
-                 * @returns Consumption value in Watt.
-                 */
-                formatter: (serieValue) => convertConsumptionToWatt(serieValue, false, metricInterval),
-            },
-        },
-    }
+    const chartOptions = useMemo(
+        () => getApexChartOptions(theme.palette.primary.main, theme.palette.primary.light, labels, METRIC_INTERVAL),
+        [labels, theme.palette.primary.light, theme.palette.primary.main],
+    )
 
     return (
         <FuseCard sx={{ height: 220 }} isLoading={isMetricsLoading} loadingColor={theme.palette.primary.main}>
