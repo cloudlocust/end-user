@@ -21,6 +21,13 @@ import { ConsumptionAndPrice } from 'src/modules/Dashboard/DashboardConsumptionW
 import { ConsumptionStatisticsType } from 'src/modules/Dashboard/DashboardConsumptionWidget/DashboardConsumptionWidget'
 import { useMetrics } from 'src/modules/Metrics/metricsHook'
 import { useConsumptionAlerts } from 'src/modules/Alerts/components/ConsumptionAlert/consumptionAlertHooks'
+import {
+    computeWidgetAssets,
+    getWidgetPreviousRange,
+    getWidgetRange,
+} from 'src/modules/MyConsumption/components/Widget/WidgetFunctions'
+import { computePercentageChange } from 'src/modules/Analysis/utils/computationFunctions'
+import { ChangeTrend } from 'src/modules/Dashboard/DashboardConsumptionWidget/ChangeTrend'
 
 /**
  * Consumption widget component for the dashboard.
@@ -39,30 +46,55 @@ export const DashboardConsumptionWidget = () => {
         unit: 'Wh',
     })
     const [totalDailyPrice, setTotalDailyPrice] = useState<number>(0)
+    const [percentageChange, setPercentageChange] = useState<number>(0)
     const { isMetricsLoading, getMetricsWithParams } = useMetrics()
     const METRIC_INTERVAL: '1m' | '30m' = '30m'
 
     const updateWidgetValues = useCallback(async () => {
         const currentTime = utcToZonedTime(new Date(), 'Etc/UTC')
-        const data: IMetric[] = await getMetricsWithParams({
-            interval: METRIC_INTERVAL,
-            range: {
-                from: getDateWithoutTimezoneOffset(startOfDay(currentTime)),
-                to: getDateWithoutTimezoneOffset(currentTime),
+        const todayRange = {
+            from: getDateWithoutTimezoneOffset(startOfDay(currentTime)),
+            to: getDateWithoutTimezoneOffset(currentTime),
+        }
+        const data: IMetric[] = await getMetricsWithParams(
+            {
+                interval: METRIC_INTERVAL,
+                range: todayRange,
+                targets: [metricTargetsEnum.consumption],
+                filters: formatMetricFilter(currentHousing!.id) ?? [],
             },
-            targets: [metricTargetsEnum.consumption],
-            filters: formatMetricFilter(currentHousing!.id) ?? [],
-        })
+            false,
+        )
         if (data?.length) {
             const { labels, serieValues } = createDataForConsumptionWidgetGraph(data)
             setLabels(labels)
             setSerieValues(serieValues)
+
+            // Calculate the total daily consumption and price
             const { totalDailyConsumption, consumptionUnit, totalDailyPrice } = calculateTotalConsumptionAndPrice(
                 serieValues,
                 pricePerKwh,
             )
             setTotalDailyPrice(totalDailyPrice)
             setTotalDailyConsumption({ value: totalDailyConsumption, unit: consumptionUnit })
+
+            // TODO: Duplicate code, need to be refactored
+            // Calculate the percentage of change for the consumption
+            const oldData = await getMetricsWithParams(
+                {
+                    interval: METRIC_INTERVAL,
+                    range: getWidgetPreviousRange(getWidgetRange(todayRange, 'daily'), 'daily'),
+                    targets: [metricTargetsEnum.consumption],
+                    filters: formatMetricFilter(currentHousing!.id) ?? [],
+                },
+                false,
+            )
+            const { value } = !data?.length ? { value: 0 } : computeWidgetAssets(data, metricTargetsEnum.consumption)
+            const { value: oldDataValue } = !oldData?.length
+                ? { value: 0 }
+                : computeWidgetAssets(oldData, metricTargetsEnum.consumption)
+            const percentageChange = computePercentageChange(oldDataValue as number, value as number)
+            setPercentageChange(percentageChange)
         }
     }, [currentHousing, getMetricsWithParams, pricePerKwh])
 
@@ -77,12 +109,14 @@ export const DashboardConsumptionWidget = () => {
 
     return (
         <FuseCard sx={{ height: 220 }} isLoading={isMetricsLoading} loadingColor={theme.palette.primary.main}>
-            <div className="h-128 flex items-center mx-24">
+            <div className="h-128 flex justify-between items-center gap-24 mx-24">
                 <ConsumptionAndPrice
                     consumptionValue={totalDailyConsumption.value}
                     consumptionUnit={totalDailyConsumption.unit}
                     priceValue={totalDailyPrice}
                 />
+
+                <ChangeTrend percentageChange={percentageChange} />
             </div>
             <div className="flex flex-col flex-auto h-92">
                 <ReactApexChart

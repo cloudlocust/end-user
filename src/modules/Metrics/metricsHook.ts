@@ -137,7 +137,7 @@ export function useMetrics(initialState: getMetricType = defaultInitialState, im
      * @param params.filters Adhoc Filters request.
      */
     const getMetricsWithParams = useCallback(
-        async (params: getMetricsWithParamsType): Promise<IMetric[]> => {
+        async (params: getMetricsWithParamsType, isSettingData: boolean = true): Promise<IMetric[]> => {
             setIsMetricsLoading(true)
             const targetsBody: metricTargetsType = params.targets.map((target) => ({ target, type: 'timeserie' }))
             try {
@@ -147,7 +147,9 @@ export function useMetrics(initialState: getMetricType = defaultInitialState, im
                     targets: targetsBody,
                     adhocFilters: params.filters,
                 })
-                setData(response.data)
+                if (isSettingData) {
+                    setData(response.data)
+                }
                 return response.data
             } catch (error) {
                 enqueueSnackbar(
@@ -160,7 +162,9 @@ export function useMetrics(initialState: getMetricType = defaultInitialState, im
                         autoHideDuration: 5000,
                     },
                 )
-                setData([])
+                if (isSettingData) {
+                    setData([])
+                }
                 return []
             } finally {
                 setIsMetricsLoading(false)

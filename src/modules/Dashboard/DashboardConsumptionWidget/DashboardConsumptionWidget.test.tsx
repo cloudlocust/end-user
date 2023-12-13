@@ -3,6 +3,7 @@ import { DashboardConsumptionWidget } from 'src/modules/Dashboard/DashboardConsu
 
 const APEX_CHARTS_TEST_ID = 'apexcharts'
 const CONSUMPTION_AND_PRICE_TEST_ID = 'consumption-and-price'
+const PERCENTAGE_CHANGE_TEST_ID = 'percentage-change'
 
 const mockInitialState = {
     housingModel: {
@@ -55,5 +56,6 @@ describe('DashboardConsumptionWidget', () => {
 
         expect(getByTestId(APEX_CHARTS_TEST_ID)).toBeInTheDocument()
         expect(getByTestId(CONSUMPTION_AND_PRICE_TEST_ID)).toBeInTheDocument()
+        expect(getByTestId(PERCENTAGE_CHANGE_TEST_ID)).toBeInTheDocument()
     })
 })
