@@ -1,11 +1,14 @@
 import {
     createDataForConsumptionWidgetGraph,
+    calculateTotalConsumptionAndPrice,
     getApexChartOptions,
 } from 'src/modules/Dashboard/DashboardConsumptionWidget/utils'
 import { IMetric, metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
 
-// Mock the metric data
-const mockData: IMetric[] = [
+/**
+ * Mock the metric data.
+ */
+export const mockMetricConsumptionData: IMetric[] = [
     {
         target: metricTargetsEnum.consumption,
         datapoints: [
@@ -31,8 +34,10 @@ const mockData: IMetric[] = [
     },
 ]
 
-// Expected labels for the mocked metric data
-const expectedLabels = [
+/**
+ * Expected labels for the mocked metric data.
+ */
+export const mockConsumptionLabels = [
     '00:30',
     '01:00',
     '01:30',
@@ -53,24 +58,58 @@ const expectedLabels = [
     '09:00',
 ]
 
-// Expected serieValues for the mocked metric data
-const expectedSerieValues = [
+/**
+ * Expected serieValues for the mocked metric data.
+ */
+export const mockConsumptionSerieValues = [
     135.0, 131.0, 124.0, 160.0, 146.0, 132.0, 125.0, 140.0, 131.0, 141.0, 129.0, 139.0, 130.0, 139.0, 138.0, 209.0,
     246.0, 353.0,
 ]
 
 describe('createDataForConsumptionWidgetGraph', () => {
     test('returns labels and serieValues based on metric data', () => {
-        const result = createDataForConsumptionWidgetGraph(mockData)
+        const result = createDataForConsumptionWidgetGraph(mockMetricConsumptionData)
 
-        expect(result.labels).toStrictEqual(expectedLabels)
-        expect(result.serieValues).toStrictEqual(expectedSerieValues)
+        expect(result.labels).toStrictEqual(mockConsumptionLabels)
+        expect(result.serieValues).toStrictEqual(mockConsumptionSerieValues)
+    })
+})
+
+describe('calculateTotalConsumptionAndPrice', () => {
+    test('should calculate total daily consumption and price with valid inputs', () => {
+        const serieValues = [100, 200, 300]
+        const pricePerKwh = 2
+        const result = calculateTotalConsumptionAndPrice(serieValues, pricePerKwh)
+
+        expect(result.totalDailyConsumption).toEqual(600)
+        expect(result.consumptionUnit).toEqual('Wh')
+        expect(result.totalDailyPrice).toEqual(1.2)
+    })
+
+    test('should handle zero consumption values', () => {
+        const serieValues = [0, 0, 0]
+        const pricePerKwh = 2
+        const result = calculateTotalConsumptionAndPrice(serieValues, pricePerKwh)
+
+        expect(result.totalDailyConsumption).toEqual(0)
+        expect(result.consumptionUnit).toEqual('Wh')
+        expect(result.totalDailyPrice).toEqual(0)
+    })
+
+    test('should handle null pricePerKwh', () => {
+        const serieValues = [390, 440, 500]
+        const pricePerKwh = null
+        const result = calculateTotalConsumptionAndPrice(serieValues, pricePerKwh)
+
+        expect(result.totalDailyConsumption).toEqual(1.33)
+        expect(result.consumptionUnit).toEqual('kWh')
+        expect(result.totalDailyPrice).toEqual(0)
     })
 })
 
 const LINE_COLOR = '#000000'
 const FILL_COLOR = '#ffffff'
-
+const METRIC_INTERVAL = '30m'
 const expectedApexChartOptions = {
     chart: {
         animations: {
@@ -98,14 +137,24 @@ const expectedApexChartOptions = {
     },
     xaxis: {
         type: 'category',
-        categories: expectedLabels,
+        categories: mockConsumptionLabels,
     },
 }
 
 describe('getApexChartOptions', () => {
     test('returns ApexChart options object based on lineColor, fillColor and categories parameters', () => {
-        const result = getApexChartOptions(LINE_COLOR, FILL_COLOR, expectedLabels)
+        const result = getApexChartOptions(LINE_COLOR, FILL_COLOR, mockConsumptionLabels, METRIC_INTERVAL)
 
-        expect(result).toStrictEqual(expectedApexChartOptions)
+        expect(result).toEqual(
+            expect.objectContaining({
+                ...expectedApexChartOptions,
+                yaxis: {
+                    show: false,
+                    labels: expect.objectContaining({
+                        formatter: expect.any(Function),
+                    }),
+                },
+            }),
+        )
     })
 })

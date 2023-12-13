@@ -27,7 +27,6 @@ export const DashboardContainer = () => {
 
             <div className="flex flex-col gap-20">
                 <StatusWrapper nrlinkConsent={nrlinkConsent} />
-
                 <DashboardConsumptionWidget />
             </div>
         </div>
