@@ -1,4 +1,5 @@
 import { screen } from '@testing-library/react'
+import { BrowserRouter } from 'react-router-dom'
 import { reduxedRender } from 'src/common/react-platform-components/test'
 import { DashboardContainer } from 'src/modules/Dashboard/DashboardContainer'
 
@@ -24,9 +25,14 @@ jest.mock(
 
 describe('DashboardContainer tests', () => {
     test('should render the component', async () => {
-        reduxedRender(<DashboardContainer />, {
-            initialState: { housingModel: { currentHousing: { id: 1, address: { city: 'Paris' } } } },
-        })
+        reduxedRender(
+            <BrowserRouter>
+                <DashboardContainer />
+            </BrowserRouter>,
+            {
+                initialState: { housingModel: { currentHousing: { id: 1, address: { city: 'Paris' } } } },
+            },
+        )
 
         screen.getByText('Accueil')
     })
