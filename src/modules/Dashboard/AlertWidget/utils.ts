@@ -17,12 +17,12 @@ export const calculateGaugeChartPercent = (alertThreshold: number, currentValue:
 }
 
 /**
- * Get the correcponding text for the alertPeriod.
+ * Get the alertPeriod correcponding text to use in the widget title.
  *
  * @param alertPeriod The alert period.
- * @returns The alertPeriod text.
+ * @returns The alertPeriod title text.
  */
-export const getAlertPeriodText = (alertPeriod: AlertPeriodEnum): string => {
+export const getAlertPeriodTitleText = (alertPeriod: AlertPeriodEnum): string => {
     switch (alertPeriod) {
         case AlertPeriodEnum.DAY:
             return 'journalier'
@@ -30,6 +30,25 @@ export const getAlertPeriodText = (alertPeriod: AlertPeriodEnum): string => {
             return 'hebdomadaire'
         case AlertPeriodEnum.MONTH:
             return 'mensuel'
+        default:
+            return ''
+    }
+}
+
+/**
+ * Get the alertPeriod correcponding text to use in the widget error message.
+ *
+ * @param alertPeriod The alert period.
+ * @returns The alertPeriod error message text.
+ */
+export const getAlertPeriodErrorText = (alertPeriod: AlertPeriodEnum): string => {
+    switch (alertPeriod) {
+        case AlertPeriodEnum.DAY:
+            return 'quotidienne'
+        case AlertPeriodEnum.WEEK:
+            return 'hebdomadaire'
+        case AlertPeriodEnum.MONTH:
+            return 'mensuelle'
         default:
             return ''
     }
