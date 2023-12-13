@@ -67,6 +67,7 @@ describe('DashboardConsumptionWidget', () => {
             },
         )
 
+        // TODO: Add integration tests for the apexcharts component
         expect(getByTestId(APEX_CHARTS_TEST_ID)).toBeInTheDocument()
         expect(getByTestId(CONSUMPTION_AND_PRICE_TEST_ID)).toBeInTheDocument()
         expect(getByTestId(PERCENTAGE_CHANGE_TEST_ID)).toBeInTheDocument()
