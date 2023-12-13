@@ -1,5 +1,6 @@
 import { useTheme } from '@mui/material'
 import { useIntl } from 'src/common/react-platform-translation'
+import { Link } from 'react-router-dom'
 import ReactApexChart from 'react-apexcharts'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { startOfDay } from 'date-fns'
@@ -28,6 +29,7 @@ import {
 } from 'src/modules/MyConsumption/components/Widget/WidgetFunctions'
 import { computePercentageChange } from 'src/modules/Analysis/utils/computationFunctions'
 import { ChangeTrend } from 'src/modules/Dashboard/DashboardConsumptionWidget/ChangeTrend'
+import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 
 /**
  * Consumption widget component for the dashboard.
@@ -108,17 +110,27 @@ export const DashboardConsumptionWidget = () => {
     )
 
     return (
-        <FuseCard sx={{ height: 220 }} isLoading={isMetricsLoading} loadingColor={theme.palette.primary.main}>
-            <div className="h-128 flex justify-between items-center gap-24 mx-24">
-                <ConsumptionAndPrice
-                    consumptionValue={totalDailyConsumption.value}
-                    consumptionUnit={totalDailyConsumption.unit}
-                    priceValue={totalDailyPrice}
-                />
+        <FuseCard
+            sx={{ minHeight: 280 }}
+            isLoading={isMetricsLoading}
+            loadingColor={theme.palette.primary.main}
+            className="flex flex-col justify-between"
+        >
+            <div className="p-20 pb-28">
+                <TypographyFormatMessage variant="h3" className="text-24 font-400 text-grey-900 mb-10">
+                    Conso
+                </TypographyFormatMessage>
+                <div className="flex justify-between items-center gap-24">
+                    <ConsumptionAndPrice
+                        consumptionValue={totalDailyConsumption.value}
+                        consumptionUnit={totalDailyConsumption.unit}
+                        priceValue={totalDailyPrice}
+                    />
 
-                <ChangeTrend percentageChange={percentageChange} />
+                    <ChangeTrend percentageChange={percentageChange} />
+                </div>
             </div>
-            <div className="flex flex-col flex-auto h-92">
+            <div className="flex flex-col flex-auto h-128">
                 <ReactApexChart
                     options={chartOptions}
                     series={[
@@ -134,6 +146,15 @@ export const DashboardConsumptionWidget = () => {
                     height="100%"
                     data-testid="apexcharts"
                 />
+            </div>
+            <div className="text-center pb-5 pt-2" style={{ backgroundColor: `${theme.palette.primary.light}23` }}>
+                <Link to="/my-consumption" className="text-grey-700 underline">
+                    {formatMessage({
+                        id: 'Voir ma conso du jour',
+                        defaultMessage: 'Voir ma conso du jour',
+                    })}
+                    &nbsp;&gt;
+                </Link>
             </div>
         </FuseCard>
     )

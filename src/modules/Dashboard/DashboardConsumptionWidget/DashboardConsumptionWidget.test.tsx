@@ -1,5 +1,8 @@
 import { reduxedRender } from 'src/common/react-platform-components/test'
+import { BrowserRouter } from 'react-router-dom'
 import { DashboardConsumptionWidget } from 'src/modules/Dashboard/DashboardConsumptionWidget'
+import userEvent from '@testing-library/user-event'
+import { waitFor } from '@testing-library/react'
 
 const APEX_CHARTS_TEST_ID = 'apexcharts'
 const CONSUMPTION_AND_PRICE_TEST_ID = 'consumption-and-price'
@@ -40,22 +43,42 @@ jest.mock(
 )
 
 describe('DashboardConsumptionWidget', () => {
-    test('When the widget content is loading, show loading circle', async () => {
-        const { getByRole } = reduxedRender(<DashboardConsumptionWidget />, {
-            initialState: mockInitialState,
-        })
+    test('When the widget content is loading, show loading circle', () => {
+        const { getByRole } = reduxedRender(
+            <BrowserRouter>
+                <DashboardConsumptionWidget />
+            </BrowserRouter>,
+            {
+                initialState: mockInitialState,
+            },
+        )
 
         expect(getByRole('progressbar')).toBeInTheDocument()
     })
 
     test('When the widget content is not loading, show the elements of the DashboardConsumptionWidget', async () => {
         mockIsMetricsLoading = false
-        const { getByTestId } = reduxedRender(<DashboardConsumptionWidget />, {
-            initialState: mockInitialState,
-        })
+        const { getByTestId, getByText } = reduxedRender(
+            <BrowserRouter>
+                <DashboardConsumptionWidget />
+            </BrowserRouter>,
+            {
+                initialState: mockInitialState,
+            },
+        )
 
+        // TODO: Add integration tests for the apexcharts component
         expect(getByTestId(APEX_CHARTS_TEST_ID)).toBeInTheDocument()
         expect(getByTestId(CONSUMPTION_AND_PRICE_TEST_ID)).toBeInTheDocument()
         expect(getByTestId(PERCENTAGE_CHANGE_TEST_ID)).toBeInTheDocument()
+        expect(getByText('Conso')).toBeInTheDocument()
+        const showMyConsumptionLink = getByText((content, _) => {
+            return content.startsWith('Voir ma conso du jour')
+        })
+        expect(showMyConsumptionLink).toBeInTheDocument()
+        userEvent.click(showMyConsumptionLink)
+        await waitFor(() => {
+            expect(window.location.pathname).toBe('/my-consumption')
+        })
     })
 })
