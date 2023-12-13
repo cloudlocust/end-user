@@ -15,8 +15,15 @@ jest.mock('src/modules/Dashboard/StatusWrapper/nrlinkPowerHook.ts', () => ({
     }),
 }))
 
+// Mocking apexcharts, because there are errors related to modules not found, in test mode.
+jest.mock(
+    'react-apexcharts',
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    () => (props: any) => <div className="apexcharts-svg" {...props}></div>,
+)
+
 describe('DashboardContainer tests', () => {
-    it('should render the component', async () => {
+    test('should render the component', async () => {
         reduxedRender(<DashboardContainer />, {
             initialState: { housingModel: { currentHousing: { id: 1, address: { city: 'Paris' } } } },
         })
