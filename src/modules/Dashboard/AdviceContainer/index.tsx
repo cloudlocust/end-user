@@ -1,4 +1,4 @@
-import { CardContent, IconButton, useTheme, alpha, useMediaQuery, Modal } from '@mui/material'
+import { CardContent, IconButton, useTheme, alpha, useMediaQuery } from '@mui/material'
 import { FuseCard } from 'src/modules/shared/FuseCard/FuseCard'
 import { ReactComponent as AdviceIcon } from 'src/assets/images/navbarItems/advice.svg'
 import { iconStyle } from 'src/modules/Dashboard/StatusWrapper/components/EnergyStatusWidget/Index'
@@ -11,6 +11,9 @@ import 'swiper/swiper.min.css'
 import { SavingPercentage } from 'src/modules/Dashboard/AdviceContainer/components/SavingPercentage/SavingPercentage'
 import useEcogestes from 'src/modules/Ecogestes/hooks/ecogestesHook'
 import { useModal } from 'src/hooks/useModal'
+import { MoreAdviceInformationPopup } from 'src/modules/Dashboard/AdviceContainer/components/MoreAdviceInformationPopup'
+import { IEcogeste } from 'src/modules/Ecogestes/components/ecogeste'
+import { useState } from 'react'
 
 /**
  * @see https://stackoverflow.com/a/60403040/14005627
@@ -31,9 +34,10 @@ export const AdviceContainer = () => {
     const { elementList: ecogestesList, loadingInProgress } = useEcogestes({ highlighted: true })
     const theme = useTheme()
     const smDown = useMediaQuery(theme.breakpoints.down('sm'))
-    const { isOpen, closeModal, openModal } = useModal()
+    const { isOpen: isnMoreAdviceInformationPopupOpen, closeModal, openModal } = useModal()
+    const [currentEcogeste, setCurrentEcogeste] = useState<IEcogeste | null>(null)
 
-    const cards = ecogestesList?.map((ecogeste, index) => (
+    const cards = ecogestesList?.map((ecogeste) => (
         <FuseCard
             className="flex flex-col p-20"
             key={ecogeste.id}
@@ -52,18 +56,24 @@ export const AdviceContainer = () => {
                     />
                 </div>
                 <div className="flex justify-between items-center w-full">
-                    <TypographyFormatMessage className="text-14 leading-none" fontWeight={600}>
+                    <TypographyFormatMessage className="text-14 md:text-16 leading-none" fontWeight={600}>
                         {ecogeste.title}
                     </TypographyFormatMessage>
                     <SavingPercentage percentageSaved={ecogeste.percentageSaved} />
                 </div>
             </div>
             <div className="flex flex-auto mb-10">
-                <TypographyFormatMessage className="text-14 text-justify">
+                <TypographyFormatMessage className="text-14 md:text-16 text-justify">
                     {truncate(ecogeste.description, { length: 150 })}
                 </TypographyFormatMessage>
             </div>
-            <div className="flex justify-end items-center flex-auto" onClick={() => openModal()}>
+            <div
+                className="flex justify-end items-center flex-auto cursor-pointer"
+                onClick={() => {
+                    setCurrentEcogeste(ecogeste)
+                    openModal()
+                }}
+            >
                 <TypographyFormatMessage className="text-12 md:text-14 leading-none underline text-grey-700">
                     Consulter &gt;
                 </TypographyFormatMessage>
@@ -116,10 +126,12 @@ export const AdviceContainer = () => {
                     )}
                 </CardContent>
             </CardContent>
-            {isOpen && (
-                <Modal open={isOpen} onClose={closeModal}>
-                    <>test</>
-                </Modal>
+            {isnMoreAdviceInformationPopupOpen && (
+                <MoreAdviceInformationPopup
+                    isOpen={isnMoreAdviceInformationPopupOpen}
+                    onClose={closeModal}
+                    currentEcogeste={currentEcogeste}
+                />
             )}
         </FuseCard>
     )

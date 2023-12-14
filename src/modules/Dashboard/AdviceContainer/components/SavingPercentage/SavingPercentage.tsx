@@ -17,7 +17,7 @@ export const SavingPercentage = (props: SavingPercentageProps) => {
     const smDown = useMediaQuery(theme.breakpoints.down('sm'))
 
     // Extract the number from the percentageSaved string
-    const number = parseInt(percentageSaved.replace('%', ''))
+    const number = parseInt(percentageSaved ? percentageSaved.replace('%', '') : '0')
 
     // Calculate the number of icons to display
     const numberOfIcons = Math.ceil((number / maxPercentage) * (maxPercentage / iconStep))
