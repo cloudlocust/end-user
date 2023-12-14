@@ -91,16 +91,13 @@ export const AddEquipmentPopup = (props: AddEquipmentPopupProps) => {
                             (equipmentValue === 'other' && customEquipmentValue.length <= 0)
                         }
                         onClick={async () => {
-                            // If equipmentValue is a custom equipment
+                            // Else it's a predefined equipment
                             if (Object.values(equipmentValue).includes('other')) {
                                 await addEquipment({
                                     name: customEquipmentValue,
                                     allowedType: ['electricity'],
                                 })
-                            }
-
-                            // Else it's a predefined equipment
-                            if (typeof equipmentValue === 'object') {
+                            } else if (typeof equipmentValue === 'object') {
                                 await addHousingEquipment([
                                     {
                                         equipmentId: equipmentValue.id,
