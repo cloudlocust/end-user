@@ -43,7 +43,6 @@ export const Equipments = () => {
         housingEquipmentsList,
         addHousingEquipment,
         loadingEquipmentInProgress,
-        isEquipmentMeterListEmpty,
         loadEquipmentList,
         addEquipment,
         isaAdEquipmentLoading,
@@ -58,6 +57,11 @@ export const Equipments = () => {
     const mappedHousingEquipmentsList = useMemo(
         () =>
             housingEquipmentsList
+                ?.filter(
+                    (housingEquipment) =>
+                        housingEquipment.equipment.allowedType.includes('existant') ||
+                        housingEquipment.equipment.allowedType.includes('electricity'),
+                )
                 ?.map((housingEquipment) => {
                     const equipmentOption = myEquipmentOptions.find(
                         (option) => option.name === housingEquipment.equipment.name,
@@ -66,7 +70,7 @@ export const Equipments = () => {
                         id: housingEquipment.equipmentId,
                         housingEquipmentId: housingEquipment.id,
                         name: housingEquipment.equipment.name,
-                        equipmentLabel: equipmentOption?.labelTitle,
+                        equipmentLabel: equipmentOption?.labelTitle || housingEquipment.equipment.name,
                         iconComponent: equipmentOption?.iconComponent,
                         allowedType: housingEquipment.equipment.allowedType,
                         number: housingEquipment.equipmentNumber,
@@ -95,7 +99,7 @@ export const Equipments = () => {
         <Root
             header={
                 <EquipmentsHeader
-                    isEquipmentMeterListEmpty={isEquipmentMeterListEmpty}
+                    isEquipmentMeterListEmpty={!mappedHousingEquipmentsList?.length}
                     onOpenAddEquipmentPopup={() => setIsAddEquipmentPopupOpen(true)}
                 />
             }
@@ -110,7 +114,7 @@ export const Equipments = () => {
                             loadingEquipmentInProgress={loadingEquipmentInProgress}
                         />
                     )}
-                    {isEquipmentMeterListEmpty ? (
+                    {!mappedHousingEquipmentsList?.length ? (
                         <EmptyEquipmentsList handleOpenPopup={() => setIsEquipmentsQuickAddPopupOpen(true)} />
                     ) : (
                         <EquipmentsList
