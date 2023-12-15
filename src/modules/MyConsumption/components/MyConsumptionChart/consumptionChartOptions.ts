@@ -282,7 +282,7 @@ const getXAxisLabelInterval = (isSolarProductionConsentOff: boolean, period: per
  * @param period Current period.
  * @returns XAxis categories data.
  */
-const getXAxisCategoriesData = (timestamps: number[], period: periodType) => {
+export const getXAxisCategoriesData = (timestamps: number[], period: periodType) => {
     switch (period) {
         case 'daily':
             return timestamps.map((timestamp) => capitalize(dayjs.utc(timestamp).locale(fr).format('HH:mm')))

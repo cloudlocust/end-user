@@ -3,7 +3,9 @@
 // expect(element).toHaveTextContent(/react/i)
 // learn more: https://github.com/testing-library/jest-dom
 import '@testing-library/jest-dom'
+import { QueryClient } from 'react-query'
 // import * as housingHooks from 'src/modules/MyHouse/utils/MyHouseHooks'
+const queryClient = new QueryClient()
 
 // src/setupTests.js
 let serverImport: any
@@ -14,7 +16,7 @@ let serverImport: any
 jest.mock('src/modules/MyHouse/MyHouseConfig', () => ({
     ...jest.requireActual('src/modules/MyHouse/MyHouseConfig'),
     //eslint-disable-next-line
-    arePlugsUsedBasedOnProductionStatus: () => (process.env.REACT_APP_CONNECTED_PLUGS_FEATURE_STATE === 'enabled'),
+    arePlugsUsedBasedOnProductionStatus: () => process.env.REACT_APP_CONNECTED_PLUGS_FEATURE_STATE === 'enabled',
 }))
 // Establish API mocking before all tests.
 beforeAll(() => {
@@ -32,6 +34,7 @@ beforeAll(() => {
 // so they don't affect other tests.
 afterEach(() => {
     serverImport?.server.resetHandlers()
+    queryClient.clear()
 })
 // Clean up after the tests are finished.
 afterAll(() => {
