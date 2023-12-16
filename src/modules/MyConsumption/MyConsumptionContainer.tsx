@@ -42,7 +42,7 @@ export const MyConsumptionContainer = () => {
 
     // metricsInterval is initialized this way, so that its value is different from 2m or 30m, because it'll be set to 2m or 30m once consent request has finished.
     // This won't create a problem even if metricIntervalType doesn't include undefined, because this will affect only on mount of MyConsumptionContainer and all children component that useMetrics, won't execute getMetrics on mount.
-    const [metricsInterval, setMetricsInterval] = useState<metricIntervalType>('1m')
+    const [metricsInterval, setMetricsInterval] = useState<metricIntervalType>('30m') // changed to 30min so that those who has production does not see the graph with 1m on loading
     const { ecowattSignalsData, isLoadingInProgress: isEcowattDataInProgress } = useEcowatt(true)
 
     const { hasMissingHousingContracts } = useHasMissingHousingContracts(range, currentHousing?.id)

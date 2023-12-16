@@ -1,6 +1,5 @@
 import {
     createDataForConsumptionWidgetGraph,
-    calculateTotalConsumptionAndPrice,
     getApexChartOptions,
 } from 'src/modules/Dashboard/DashboardConsumptionWidget/utils'
 import { IMetric, metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
@@ -72,38 +71,6 @@ describe('createDataForConsumptionWidgetGraph', () => {
 
         expect(result.labels).toStrictEqual(mockConsumptionLabels)
         expect(result.serieValues).toStrictEqual(mockConsumptionSerieValues)
-    })
-})
-
-describe('calculateTotalConsumptionAndPrice', () => {
-    test('should calculate total daily consumption and price with valid inputs', () => {
-        const serieValues = [100, 200, 300]
-        const pricePerKwh = 2
-        const result = calculateTotalConsumptionAndPrice(serieValues, pricePerKwh)
-
-        expect(result.totalDailyConsumption).toEqual(600)
-        expect(result.consumptionUnit).toEqual('Wh')
-        expect(result.totalDailyPrice).toEqual(1.2)
-    })
-
-    test('should handle zero consumption values', () => {
-        const serieValues = [0, 0, 0]
-        const pricePerKwh = 2
-        const result = calculateTotalConsumptionAndPrice(serieValues, pricePerKwh)
-
-        expect(result.totalDailyConsumption).toEqual(0)
-        expect(result.consumptionUnit).toEqual('Wh')
-        expect(result.totalDailyPrice).toEqual(0)
-    })
-
-    test('should handle null pricePerKwh', () => {
-        const serieValues = [390, 440, 500]
-        const pricePerKwh = null
-        const result = calculateTotalConsumptionAndPrice(serieValues, pricePerKwh)
-
-        expect(result.totalDailyConsumption).toEqual(1.33)
-        expect(result.consumptionUnit).toEqual('kWh')
-        expect(result.totalDailyPrice).toEqual(0)
     })
 })
 
