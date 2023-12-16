@@ -50,8 +50,4 @@ export interface AlertWidgetProps {
      * The current value of the consumption (in Wh) or price (in €).
      */
     currentValue: number
-    /**
-     * The content of the alert widget is loading.
-     */
-    isLoading?: boolean
 }

@@ -20,18 +20,7 @@ describe('AlertWidget', () => {
         }
     })
 
-    test('When the widget content is loading, show loading circle', () => {
-        mockAlertWidgetProps.isLoading = true
-        const { getByRole } = reduxedRender(
-            <BrowserRouter>
-                <AlertWidget {...mockAlertWidgetProps} />
-            </BrowserRouter>,
-        )
-
-        expect(getByRole('progressbar')).toBeInTheDocument()
-    })
-
-    test('When the widget content is not loading and alertThreshold is specified, show the elements of the AlertWidget', () => {
+    test('When alertThreshold is not undefined, show the elements of the AlertWidget', () => {
         mockAlertWidgetProps.alertThreshold = 25
         const { getByTestId, getByText } = reduxedRender(
             <BrowserRouter>
@@ -46,7 +35,7 @@ describe('AlertWidget', () => {
         expect(document.getElementById('gauge-chart-alert-month')).toBeDefined()
     })
 
-    test('When the widget content is not loading and alertThreshold is not specified, show the error message', async () => {
+    test('When alertThreshold is undefined, show the error message', async () => {
         const { getByText } = reduxedRender(
             <BrowserRouter>
                 <AlertWidget {...mockAlertWidgetProps} />

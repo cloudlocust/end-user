@@ -63,7 +63,10 @@ export const AlertWidgetsWrapper = () => {
     const updateCurrentTotalConsumptionValues = useCallback(async () => {
         const promises = [AlertPeriodEnum.DAILY, AlertPeriodEnum.WEEKLY, AlertPeriodEnum.MONTHLY].map(
             async (alertPeriod) => {
-                if (consumptionAlerts.find((alert) => alertPeriods[alert.interval] === alertPeriod)) {
+                if (
+                    alertPeriod === AlertPeriodEnum.DAILY ||
+                    consumptionAlerts.find((alert) => alertPeriods[alert.interval] === alertPeriod)
+                ) {
                     const consumptionData = await getMetricsWithParams(
                         {
                             interval: alertPeriod === AlertPeriodEnum.DAILY ? '1m' : '1d',
