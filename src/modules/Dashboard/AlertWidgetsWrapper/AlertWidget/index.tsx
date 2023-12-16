@@ -7,28 +7,25 @@ import Button from '@mui/material/Button'
 import Box from '@mui/material/Box'
 import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive'
 import GaugeChart from 'react-gauge-chart'
-import { FuseCard } from 'src/modules/shared/FuseCard/FuseCard'
 import {
     calculateGaugeChartPercent,
     getAlertPeriodErrorText,
     getAlertPeriodTitleText,
-    getFormatedAlertThreshold,
-} from 'src/modules/Dashboard/AlertWidget/utils'
-import { AlertWidgetProps } from 'src/modules/Dashboard/AlertWidget/AlertWidget'
+    // getFormatedAlertThreshold,
+} from 'src/modules/Dashboard/AlertWidgetsWrapper/AlertWidget/utils'
+import { AlertWidgetProps } from 'src/modules/Dashboard/AlertWidgetsWrapper/AlertWidget/AlertWidget'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 
 /**
  * AlertWidget component.
  *
  * @param root0 N/A.
- * @param root0.alertType The alert type.
  * @param root0.alertPeriod The alert period.
- * @param root0.alertThreshold The alert threshold (seuil) value for consumption or price.
- * @param root0.currentValue The current value of the consumption or price.
- * @param root0.isLoading The content of the alert widget is loading.
+ * @param root0.alertThreshold The alert threshold (seuil) value for consumption (in Wh) or price (in €).
+ * @param root0.currentValue The current value of the consumption (in Wh) or price (in €).
  * @returns AlertWidget Jsx.
  */
-export const AlertWidget = ({ alertType, alertPeriod, alertThreshold, currentValue, isLoading }: AlertWidgetProps) => {
+export const AlertWidget = ({ alertPeriod, alertThreshold, currentValue }: AlertWidgetProps) => {
     const theme = useTheme()
     const { formatMessage } = useIntl()
 
@@ -46,17 +43,13 @@ export const AlertWidget = ({ alertType, alertPeriod, alertThreshold, currentVal
         ]
     }, [alertPeriod, formatMessage])
 
-    const formatedAlertThreshold = useMemo(
-        () => (alertThreshold !== undefined ? getFormatedAlertThreshold(alertThreshold, alertType) : ''),
-        [alertThreshold, alertType],
-    )
+    // const formatedAlertThreshold = useMemo(
+    //     () => (alertThreshold !== undefined ? getFormatedAlertThreshold(alertThreshold, alertType) : ''),
+    //     [alertThreshold, alertType],
+    // )
 
     return (
-        <FuseCard
-            isLoading={isLoading}
-            loadingColor={theme.palette.primary.main}
-            className="flex flex-col min-h-288 p-20"
-        >
+        <div className="flex flex-col min-h-288 p-20">
             <div className="flex items-center gap-10">
                 <IconButton className="pointer-events-none" size="small" sx={{ bgcolor: theme.palette.primary.main }}>
                     <NotificationsActiveIcon sx={{ color: theme.palette.primary.contrastText }} />
@@ -74,11 +67,11 @@ export const AlertWidget = ({ alertType, alertPeriod, alertThreshold, currentVal
                             maxWidth: '400px',
                         },
                         '& .gauge-chart-alert > *': {
-                            transform: 'scale(1.35) translate(0, 6%)',
+                            transform: 'scale(1.2) translate(0, 4%)',
                         },
                     }}
                 >
-                    <span className="absolute right-5 top-0 underline font-700 text-14">{formatedAlertThreshold}</span>
+                    {/* <span className="absolute right-5 top-0 underline font-700 text-14">{formatedAlertThreshold}</span> */}
                     <GaugeChart
                         id={`gauge-chart-alert-${alertPeriod}`}
                         nrOfLevels={6}
@@ -90,7 +83,7 @@ export const AlertWidget = ({ alertType, alertPeriod, alertThreshold, currentVal
                     />
                 </Box>
             ) : (
-                <div className="flex-1 flex flex-col text-center mt-14">
+                <div className="flex-1 flex flex-col text-center mt-14 mx-20">
                     <div className="flex-1 flex flex-col justify-center gap-10">
                         <div>
                             <TypographyFormatMessage className="inline text-14">
@@ -102,13 +95,13 @@ export const AlertWidget = ({ alertType, alertPeriod, alertThreshold, currentVal
                             Les alertes peuvent contribuer à réduire votre consommation et vos factures d'énergie.
                         </TypographyFormatMessage>
                     </div>
-                    <Link to="/alerts">
+                    <Link to="/alerts" className="mb-10">
                         <Button variant="contained">
                             {formatMessage({ id: 'Créer une alerte', defaultMessage: 'Créer une alerte' })}
                         </Button>
                     </Link>
                 </div>
             )}
-        </FuseCard>
+        </div>
     )
 }

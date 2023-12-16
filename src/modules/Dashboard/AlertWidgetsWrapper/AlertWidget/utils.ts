@@ -1,11 +1,11 @@
-import { AlertPeriodEnum, AlertTypeEnum } from 'src/modules/Dashboard/AlertWidget/AlertWidget.d'
+import { AlertPeriodEnum, AlertTypeEnum } from 'src/modules/Dashboard/AlertWidgetsWrapper/AlertWidget/AlertWidget.d'
 import { consumptionWattUnitConversion } from 'src/modules/MyConsumption/utils/unitConversionFunction'
 
 /**
  * Calculate the percent prop for the GaugeChart component.
  *
- * @param alertThreshold The alert threshold (seuil) value for consumption or price.
- * @param currentValue The current value of the consumption or price.
+ * @param alertThreshold The alert threshold (seuil) value for consumption (in Wh) or price (in €).
+ * @param currentValue The current value of the consumption (in Wh) or price (in €).
  * @returns The percent prop value.
  */
 export const calculateGaugeChartPercent = (alertThreshold: number, currentValue: number): number => {
@@ -24,11 +24,11 @@ export const calculateGaugeChartPercent = (alertThreshold: number, currentValue:
  */
 export const getAlertPeriodTitleText = (alertPeriod: AlertPeriodEnum): string => {
     switch (alertPeriod) {
-        case AlertPeriodEnum.DAY:
+        case AlertPeriodEnum.DAILY:
             return 'journalier'
-        case AlertPeriodEnum.WEEK:
+        case AlertPeriodEnum.WEEKLY:
             return 'hebdomadaire'
-        case AlertPeriodEnum.MONTH:
+        case AlertPeriodEnum.MONTHLY:
             return 'mensuel'
         default:
             return ''
@@ -43,11 +43,11 @@ export const getAlertPeriodTitleText = (alertPeriod: AlertPeriodEnum): string =>
  */
 export const getAlertPeriodErrorText = (alertPeriod: AlertPeriodEnum): string => {
     switch (alertPeriod) {
-        case AlertPeriodEnum.DAY:
+        case AlertPeriodEnum.DAILY:
             return 'quotidienne'
-        case AlertPeriodEnum.WEEK:
+        case AlertPeriodEnum.WEEKLY:
             return 'hebdomadaire'
-        case AlertPeriodEnum.MONTH:
+        case AlertPeriodEnum.MONTHLY:
             return 'mensuelle'
         default:
             return ''
@@ -57,7 +57,7 @@ export const getAlertPeriodErrorText = (alertPeriod: AlertPeriodEnum): string =>
 /**
  * Get the formated alertThreshold value depending on the alertType.
  *
- * @param alertThreshold The alert threshold (seuil) value for consumption or price.
+ * @param alertThreshold The alert threshold (seuil) value for consumption (in Wh) or price (in €).
  * @param alertType The alert type.
  * @returns The formated alertThreshold value.
  */

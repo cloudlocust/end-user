@@ -3,8 +3,8 @@ import {
     getAlertPeriodErrorText,
     getAlertPeriodTitleText,
     getFormatedAlertThreshold,
-} from 'src/modules/Dashboard/AlertWidget/utils'
-import { AlertPeriodEnum, AlertTypeEnum } from 'src/modules/Dashboard/AlertWidget/AlertWidget.d'
+} from 'src/modules/Dashboard/AlertWidgetsWrapper/AlertWidget/utils'
+import { AlertPeriodEnum, AlertTypeEnum } from 'src/modules/Dashboard/AlertWidgetsWrapper/AlertWidget/AlertWidget.d'
 
 describe('calculateGaugeChartPercent', () => {
     test('should return 1 when alertThreshold is less than or equal to 0 or when alertThreshold is greater than currentValue', () => {
@@ -23,18 +23,18 @@ describe('calculateGaugeChartPercent', () => {
 
 describe('getAlertPeriodTitleText', () => {
     test('should return the correct text for each AlertPeriod', () => {
-        expect(getAlertPeriodTitleText(AlertPeriodEnum.DAY)).toBe('journalier')
-        expect(getAlertPeriodTitleText(AlertPeriodEnum.WEEK)).toBe('hebdomadaire')
-        expect(getAlertPeriodTitleText(AlertPeriodEnum.MONTH)).toBe('mensuel')
+        expect(getAlertPeriodTitleText(AlertPeriodEnum.DAILY)).toBe('journalier')
+        expect(getAlertPeriodTitleText(AlertPeriodEnum.WEEKLY)).toBe('hebdomadaire')
+        expect(getAlertPeriodTitleText(AlertPeriodEnum.MONTHLY)).toBe('mensuel')
         expect(getAlertPeriodTitleText('invalidPeriod' as AlertPeriodEnum)).toBe('')
     })
 })
 
 describe('getAlertPeriodErrorText', () => {
     test('should return the correct text for each AlertPeriod', () => {
-        expect(getAlertPeriodErrorText(AlertPeriodEnum.DAY)).toBe('quotidienne')
-        expect(getAlertPeriodErrorText(AlertPeriodEnum.WEEK)).toBe('hebdomadaire')
-        expect(getAlertPeriodErrorText(AlertPeriodEnum.MONTH)).toBe('mensuelle')
+        expect(getAlertPeriodErrorText(AlertPeriodEnum.DAILY)).toBe('quotidienne')
+        expect(getAlertPeriodErrorText(AlertPeriodEnum.WEEKLY)).toBe('hebdomadaire')
+        expect(getAlertPeriodErrorText(AlertPeriodEnum.MONTHLY)).toBe('mensuelle')
         expect(getAlertPeriodErrorText('invalidPeriod' as AlertPeriodEnum)).toBe('')
     })
 })
