@@ -61,46 +61,48 @@ export const AlertWidgetsWrapper = () => {
     )
 
     const updateCurrentTotalConsumptionValues = useCallback(async () => {
-        const promises = [AlertPeriodEnum.DAILY, AlertPeriodEnum.WEEKLY, AlertPeriodEnum.MONTHLY].map(
-            async (alertPeriod) => {
-                if (
-                    alertPeriod === AlertPeriodEnum.DAILY ||
-                    consumptionAlerts.find((alert) => alertPeriods[alert.interval] === alertPeriod)
-                ) {
-                    const consumptionData = await getMetricsWithParams(
-                        {
-                            interval: alertPeriod === AlertPeriodEnum.DAILY ? '1m' : '1d',
-                            range: getRangeV2(alertPeriod as any),
-                            targets: [metricTargetsEnum.consumption],
-                            filters: formatMetricFilter(currentHousing!.id) ?? [],
-                        },
-                        false,
-                    )
-                    const { value: totalConsumptionValue, unit: totalConsumptionUnit } = !consumptionData?.length
-                        ? emptyConsumptionValueUnit
-                        : computeWidgetAssets(consumptionData, metricTargetsEnum.consumption)
-                    return {
-                        [alertPeriod]: Number(
-                            convert(totalConsumptionValue as number)
-                                .from(totalConsumptionUnit as Unit)
-                                .to('Wh'),
-                        ),
+        if (consumptionAlerts.length > 0) {
+            const promises = [AlertPeriodEnum.DAILY, AlertPeriodEnum.WEEKLY, AlertPeriodEnum.MONTHLY].map(
+                async (alertPeriod) => {
+                    if (
+                        alertPeriod === AlertPeriodEnum.DAILY ||
+                        consumptionAlerts.find((alert) => alertPeriods[alert.interval] === alertPeriod)
+                    ) {
+                        const consumptionData = await getMetricsWithParams(
+                            {
+                                interval: alertPeriod === AlertPeriodEnum.DAILY ? '1m' : '1d',
+                                range: getRangeV2(alertPeriod as any),
+                                targets: [metricTargetsEnum.consumption],
+                                filters: formatMetricFilter(currentHousing!.id) ?? [],
+                            },
+                            false,
+                        )
+                        const { value: totalConsumptionValue, unit: totalConsumptionUnit } = !consumptionData?.length
+                            ? emptyConsumptionValueUnit
+                            : computeWidgetAssets(consumptionData, metricTargetsEnum.consumption)
+                        return {
+                            [alertPeriod]: Number(
+                                convert(totalConsumptionValue as number)
+                                    .from(totalConsumptionUnit as Unit)
+                                    .to('Wh'),
+                            ),
+                        }
                     }
-                }
-                return {
-                    [alertPeriod]: 0,
-                }
-            },
-        )
-        const results = await Promise.all(promises)
-        const totalConsumptions = { ...results[0], ...results[1], ...results[2] }
-        setCurrentTotalConsumptionValues({
-            [AlertPeriodEnum.DAILY]: totalConsumptions[AlertPeriodEnum.DAILY],
-            [AlertPeriodEnum.WEEKLY]:
-                totalConsumptions[AlertPeriodEnum.WEEKLY] + totalConsumptions[AlertPeriodEnum.DAILY],
-            [AlertPeriodEnum.MONTHLY]:
-                totalConsumptions[AlertPeriodEnum.MONTHLY] + totalConsumptions[AlertPeriodEnum.DAILY],
-        })
+                    return {
+                        [alertPeriod]: 0,
+                    }
+                },
+            )
+            const results = await Promise.all(promises)
+            const totalConsumptions = { ...results[0], ...results[1], ...results[2] }
+            setCurrentTotalConsumptionValues({
+                [AlertPeriodEnum.DAILY]: totalConsumptions[AlertPeriodEnum.DAILY],
+                [AlertPeriodEnum.WEEKLY]:
+                    totalConsumptions[AlertPeriodEnum.WEEKLY] + totalConsumptions[AlertPeriodEnum.DAILY],
+                [AlertPeriodEnum.MONTHLY]:
+                    totalConsumptions[AlertPeriodEnum.MONTHLY] + totalConsumptions[AlertPeriodEnum.DAILY],
+            })
+        }
     }, [consumptionAlerts, currentHousing, getMetricsWithParams])
 
     useEffect(() => {

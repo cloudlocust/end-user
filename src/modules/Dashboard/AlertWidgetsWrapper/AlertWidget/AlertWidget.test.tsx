@@ -32,7 +32,7 @@ describe('AlertWidget', () => {
         expect(getByText("Mon seuil d'alerte")).toBeInTheDocument()
         expect(getByText('mensuel')).toBeInTheDocument()
         // expect(getByText('25 €')).toBeInTheDocument()
-        expect(document.getElementById('gauge-chart-alert-month')).toBeDefined()
+        expect(getByTestId('gauge-chart-alert-monthly')).toBeInTheDocument()
     })
 
     test('When alertThreshold is undefined, show the error message', async () => {

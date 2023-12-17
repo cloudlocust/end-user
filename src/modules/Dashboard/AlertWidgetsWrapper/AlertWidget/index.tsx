@@ -70,6 +70,7 @@ export const AlertWidget = ({ alertPeriod, alertThreshold, currentValue }: Alert
                             transform: 'scale(1.2) translate(0, 4%)',
                         },
                     }}
+                    data-testid={`gauge-chart-alert-${alertPeriod}`}
                 >
                     {/* <span className="absolute right-5 top-0 underline font-700 text-14">{formatedAlertThreshold}</span> */}
                     <GaugeChart
