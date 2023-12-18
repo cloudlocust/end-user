@@ -135,22 +135,21 @@ export const DashboardConsumptionWidget = () => {
 
     return (
         <FuseCard
-            sx={{ minHeight: 280 }}
+            sx={{ height: isMetricsLoading ? 290 : 'auto' }}
             isLoading={isMetricsLoading}
             loadingColor={theme.palette.primary.main}
             className="flex flex-col justify-between"
         >
-            <div className="p-20 pb-28">
-                <TypographyFormatMessage variant="h3" className="text-24 font-400 text-grey-900 mb-10">
+            <div className="p-20 pb-24 sm:pb-28">
+                <TypographyFormatMessage variant="h3" className="text-20 sm:text-24 font-400 text-grey-900 mb-10">
                     Conso
                 </TypographyFormatMessage>
-                <div className="flex justify-between items-center gap-24">
+                <div className="flex justify-between items-center gap-5 flex-wrap">
                     <ConsumptionAndPrice
                         consumptionValue={totalDailyConsumption.value}
                         consumptionUnit={totalDailyConsumption.unit}
                         priceValue={totalDailyPrice}
                     />
-
                     <ChangeTrend percentageChange={percentageChange} />
                 </div>
             </div>
@@ -171,8 +170,8 @@ export const DashboardConsumptionWidget = () => {
                     data-testid="apexcharts"
                 />
             </div>
-            <div className="text-center pb-5 pt-2" style={{ backgroundColor: `${theme.palette.primary.light}23` }}>
-                <Link to="/my-consumption" className="text-grey-700 underline">
+            <div className="text-center py-4 sm:py-5" style={{ backgroundColor: `${theme.palette.primary.light}23` }}>
+                <Link to="/my-consumption" className="text-11 sm:text-13 text-grey-700 underline">
                     {formatMessage({
                         id: 'Voir ma conso du jour',
                         defaultMessage: 'Voir ma conso du jour',
