@@ -29,12 +29,18 @@ export const AlertWidget = ({ alertPeriod, alertThreshold, currentValue }: Alert
     const { formatMessage } = useIntl()
 
     const gaugeChartPercent = useMemo(
-        () => (alertThreshold !== undefined ? calculateGaugeChartPercent(alertThreshold, currentValue) : 0),
+        () =>
+            alertThreshold !== undefined // check if alertThreshold is not undefined (no alert was created for this period)
+                ? calculateGaugeChartPercent(alertThreshold, currentValue)
+                : 0,
         [alertThreshold, currentValue],
     )
 
     // const formatedAlertThreshold = useMemo(
-    //     () => (alertThreshold !== undefined ? getFormatedAlertThreshold(alertThreshold, alertType) : ''),
+    //     () =>
+    //         alertThreshold !== undefined // check if alertThreshold is not undefined (no alert was created for this period)
+    //             ? getFormatedAlertThreshold(alertThreshold, alertType)
+    //             : '',
     //     [alertThreshold, alertType],
     // )
 
@@ -45,59 +51,64 @@ export const AlertWidget = ({ alertPeriod, alertThreshold, currentValue }: Alert
                     <NotificationsActiveIcon sx={{ color: theme.palette.primary.contrastText }} />
                 </IconButton>
                 <div>
-                    <TypographyFormatMessage className="inline text-16">Mon seuil d'alerte</TypographyFormatMessage>{' '}
-                    <TypographyFormatMessage className="inline text-16 font-700">
+                    <TypographyFormatMessage className="inline text-14 sm:text-16">
+                        Mon seuil d'alerte
+                    </TypographyFormatMessage>{' '}
+                    <TypographyFormatMessage className="inline text-14 sm:text-16 font-700">
                         {alertPeriodText.title[alertPeriod]}
                     </TypographyFormatMessage>
                 </div>
             </div>
-            {alertThreshold !== undefined ? (
-                <Box
-                    className="flex-1 relative flex items-center justify-center mt-14"
-                    sx={{
-                        '& .gauge-chart-alert': {
-                            maxWidth: '400px',
-                        },
-                        '& .gauge-chart-alert > *': {
-                            transform: 'scale(1.2) translate(0, 4%)',
-                        },
-                    }}
-                    data-testid={`gauge-chart-alert-${alertPeriod}`}
-                >
-                    {/* <span className="absolute right-5 top-0 underline font-700 text-14">{formatedAlertThreshold}</span> */}
-                    <GaugeChart
-                        id={`gauge-chart-alert-${alertPeriod}`}
-                        nrOfLevels={6}
-                        colors={[`${theme.palette.primary.main}22`, `${theme.palette.primary.main}ff`]}
-                        arcWidth={0.3}
-                        percent={gaugeChartPercent}
-                        hideText
-                        className="gauge-chart-alert"
-                    />
-                </Box>
-            ) : (
-                <div className="flex-1 flex flex-col text-center mt-14 mx-20">
-                    <div className="flex-1 flex flex-col justify-center gap-10">
-                        <div>
-                            <TypographyFormatMessage className="inline text-14">
-                                Vous n'avez pas encore configuré d'alerte de consommation
-                            </TypographyFormatMessage>{' '}
-                            <TypographyFormatMessage className="inline text-14">
-                                {alertPeriodText.error[alertPeriod]}
+            {
+                // check if alertThreshold is not undefined (no alert was created for this period)
+                alertThreshold !== undefined ? (
+                    <Box
+                        className="flex-1 relative flex items-center justify-center mt-14"
+                        sx={{
+                            '& .gauge-chart-alert': {
+                                maxWidth: '400px',
+                            },
+                            '& .gauge-chart-alert > *': {
+                                transform: 'scale(1.2) translate(0, 4%)',
+                            },
+                        }}
+                        data-testid={`gauge-chart-alert-${alertPeriod}`}
+                    >
+                        {/* <span className="absolute right-5 top-0 underline font-700 text-12 sm:text-14">
+                            {formatedAlertThreshold}
+                        </span> */}
+                        <GaugeChart
+                            id={`gauge-chart-alert-${alertPeriod}`}
+                            nrOfLevels={6}
+                            colors={[`${theme.palette.primary.main}22`, `${theme.palette.primary.main}ff`]}
+                            arcWidth={0.3}
+                            percent={gaugeChartPercent}
+                            hideText
+                            className="gauge-chart-alert"
+                        />
+                    </Box>
+                ) : (
+                    <div className="flex-1 flex flex-col items-center text-center mt-14 mx-20">
+                        <div className="flex-1 flex flex-col justify-center gap-7">
+                            <div>
+                                <TypographyFormatMessage className="inline text-14 sm:text-15 text-grey-800">
+                                    Vous n'avez pas encore configuré d'alerte de consommation
+                                </TypographyFormatMessage>{' '}
+                                <TypographyFormatMessage className="inline text-14 sm:text-15 text-grey-800">
+                                    {alertPeriodText.error[alertPeriod]}
+                                </TypographyFormatMessage>
+                                .
+                            </div>
+                            <TypographyFormatMessage className="text-14 sm:text-15 text-grey-800">
+                                Les alertes peuvent contribuer à réduire votre consommation et vos factures d'énergie.
                             </TypographyFormatMessage>
-                            .
                         </div>
-                        <TypographyFormatMessage className="text-14">
-                            Les alertes peuvent contribuer à réduire votre consommation et vos factures d'énergie.
-                        </TypographyFormatMessage>
-                    </div>
-                    <Link to="/alerts" className="mb-10">
-                        <Button variant="contained">
+                        <Button component={Link} to="/alerts" variant="contained" className="w-max">
                             {formatMessage({ id: 'Créer une alerte', defaultMessage: 'Créer une alerte' })}
                         </Button>
-                    </Link>
-                </div>
-            )}
+                    </div>
+                )
+            }
         </div>
     )
 }
