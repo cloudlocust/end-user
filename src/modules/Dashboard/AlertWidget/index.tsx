@@ -58,8 +58,10 @@ export const AlertWidget = ({ alertType, alertPeriod, alertThreshold, currentVal
                     <NotificationsActiveIcon sx={{ color: theme.palette.primary.contrastText }} />
                 </IconButton>
                 <div>
-                    <TypographyFormatMessage className="inline text-16">Mon seuil d'alerte</TypographyFormatMessage>{' '}
-                    <TypographyFormatMessage className="inline text-16 font-700">
+                    <TypographyFormatMessage className="inline text-14 sm:text-16">
+                        Mon seuil d'alerte
+                    </TypographyFormatMessage>{' '}
+                    <TypographyFormatMessage className="inline text-14 sm:text-16 font-700">
                         {alertPeriodText.title[alertPeriod]}
                     </TypographyFormatMessage>
                 </div>
@@ -78,7 +80,7 @@ export const AlertWidget = ({ alertType, alertPeriod, alertThreshold, currentVal
                             },
                         }}
                     >
-                        <span className="absolute right-5 top-0 underline font-700 text-14">
+                        <span className="absolute right-5 top-0 underline font-700 text-12 sm:text-14">
                             {formatedAlertThreshold}
                         </span>
                         <GaugeChart
@@ -93,17 +95,17 @@ export const AlertWidget = ({ alertType, alertPeriod, alertThreshold, currentVal
                     </Box>
                 ) : (
                     <div className="flex-1 flex flex-col items-center text-center mt-14">
-                        <div className="flex-1 flex flex-col justify-center gap-10">
+                        <div className="flex-1 flex flex-col justify-center gap-7">
                             <div>
-                                <TypographyFormatMessage className="inline text-14">
+                                <TypographyFormatMessage className="inline text-14 sm:text-15 text-grey-800">
                                     Vous n'avez pas encore configuré d'alerte de consommation
                                 </TypographyFormatMessage>{' '}
-                                <TypographyFormatMessage className="inline text-14">
+                                <TypographyFormatMessage className="inline text-14 sm:text-15 text-grey-800">
                                     {alertPeriodText.error[alertPeriod]}
                                 </TypographyFormatMessage>
                                 .
                             </div>
-                            <TypographyFormatMessage className="text-14">
+                            <TypographyFormatMessage className="text-14 sm:text-15 text-grey-800">
                                 Les alertes peuvent contribuer à réduire votre consommation et vos factures d'énergie.
                             </TypographyFormatMessage>
                         </div>
