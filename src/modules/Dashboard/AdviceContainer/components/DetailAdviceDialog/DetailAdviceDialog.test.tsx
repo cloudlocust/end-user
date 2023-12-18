@@ -1,12 +1,12 @@
 import { applyCamelCase } from 'src/common/react-platform-components'
 import { reduxedRender } from 'src/common/react-platform-components/test'
 import { TEST_ECOGESTES } from 'src/mocks/handlers/ecogestes'
-import { MoreAdviceInformationPopup } from 'src/modules/Dashboard/AdviceContainer/components/MoreAdviceInformationPopup'
+import { DetailAdviceDialog } from 'src/modules/Dashboard/AdviceContainer/components/DetailAdviceDialog'
 import { IEcogeste } from 'src/modules/Ecogestes/components/ecogeste'
 import { BrowserRouter as Router } from 'react-router-dom'
 import userEvent from '@testing-library/user-event'
 
-describe('MoreAdviceInformationPopup', () => {
+describe('DetailAdviceDialog', () => {
     test('should render with the correct props', () => {
         const isOpen = true
         const onClose = jest.fn()
@@ -14,7 +14,12 @@ describe('MoreAdviceInformationPopup', () => {
 
         const { getByText } = reduxedRender(
             <Router>
-                <MoreAdviceInformationPopup isOpen={isOpen} onClose={onClose} currentEcogeste={currentEcogeste} />,
+                <DetailAdviceDialog
+                    isDetailAdvicePopupOpen={isOpen}
+                    onCloseDetailAdvicePopup={onClose}
+                    currentEcogeste={currentEcogeste}
+                />
+                ,
             </Router>,
         )
 
@@ -29,7 +34,12 @@ describe('MoreAdviceInformationPopup', () => {
 
         const { getByTestId } = reduxedRender(
             <Router>
-                <MoreAdviceInformationPopup isOpen={isOpen} onClose={onClose} currentEcogeste={currentEcogeste} />,
+                <DetailAdviceDialog
+                    isDetailAdvicePopupOpen={isOpen}
+                    onCloseDetailAdvicePopup={onClose}
+                    currentEcogeste={currentEcogeste}
+                />
+                ,
             </Router>,
         )
 
@@ -44,7 +54,12 @@ describe('MoreAdviceInformationPopup', () => {
 
         const { getByText } = reduxedRender(
             <Router>
-                <MoreAdviceInformationPopup isOpen={isOpen} onClose={onClose} currentEcogeste={currentEcogeste} />,
+                <DetailAdviceDialog
+                    isDetailAdvicePopupOpen={isOpen}
+                    onCloseDetailAdvicePopup={onClose}
+                    currentEcogeste={currentEcogeste}
+                />
+                ,
             </Router>,
         )
 

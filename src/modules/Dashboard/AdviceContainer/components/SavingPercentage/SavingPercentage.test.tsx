@@ -1,5 +1,5 @@
 import { render } from '@testing-library/react'
-import { SavingPercentage } from 'src/modules/Dashboard/AdviceContainer/components/SavingPercentage/SavingPercentage'
+import { SavingPercentage } from 'src/modules/Dashboard/AdviceContainer/components/SavingPercentage'
 
 describe('SavingPercentage', () => {
     it('calculates the number of icons correctly when the percentage is above 10', () => {

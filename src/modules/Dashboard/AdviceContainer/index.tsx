@@ -8,10 +8,10 @@ import { truncate } from 'lodash'
 import { Swiper, SwiperSlide } from 'swiper/react'
 import 'swiper/swiper-bundle.min.css'
 import 'swiper/swiper.min.css'
-import { SavingPercentage } from 'src/modules/Dashboard/AdviceContainer/components/SavingPercentage/SavingPercentage'
+import { SavingPercentage } from 'src/modules/Dashboard/AdviceContainer/components/SavingPercentage'
 import useEcogestes from 'src/modules/Ecogestes/hooks/ecogestesHook'
 import { useModal } from 'src/hooks/useModal'
-import { MoreAdviceInformationPopup } from 'src/modules/Dashboard/AdviceContainer/components/MoreAdviceInformationPopup'
+import { DetailAdviceDialog } from 'src/modules/Dashboard/AdviceContainer/components/DetailAdviceDialog'
 import { IEcogeste } from 'src/modules/Ecogestes/components/ecogeste'
 import { useState } from 'react'
 
@@ -34,7 +34,11 @@ export const AdviceContainer = () => {
     const { elementList: ecogestesList, loadingInProgress } = useEcogestes({ highlighted: true })
     const theme = useTheme()
     const smDown = useMediaQuery(theme.breakpoints.down('sm'))
-    const { isOpen: isnMoreAdviceInformationPopupOpen, closeModal, openModal } = useModal()
+    const {
+        isOpen: isDetailsAdviceDialogOpen,
+        closeModal: onCloseDetailAdvicePopup,
+        openModal: onOpenDetailAdvicePopup,
+    } = useModal()
     const [currentEcogeste, setCurrentEcogeste] = useState<IEcogeste | null>(null)
 
     const cards = ecogestesList?.map((ecogeste) => (
@@ -71,7 +75,7 @@ export const AdviceContainer = () => {
                 className="flex justify-end items-center flex-auto cursor-pointer"
                 onClick={() => {
                     setCurrentEcogeste(ecogeste)
-                    openModal()
+                    onOpenDetailAdvicePopup()
                 }}
             >
                 <TypographyFormatMessage className="text-12 md:text-14 leading-none underline text-grey-700">
@@ -113,12 +117,14 @@ export const AdviceContainer = () => {
                     {smDown ? (
                         <Swiper spaceBetween={10} slidesPerView={1.1}>
                             {cards?.map((card, index) => (
-                                <SwiperSlide key={index}>{card}</SwiperSlide>
+                                <SwiperSlide data-testid="ecogeste-swiper-slide-card" key={index}>
+                                    {card}
+                                </SwiperSlide>
                             ))}
                         </Swiper>
                     ) : (
                         <div
-                            className="sm:grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-20 no-scrollbar h-full"
+                            className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-20 no-scrollbar h-full"
                             style={{ minHeight: '250px' }}
                         >
                             {cards}
@@ -126,10 +132,10 @@ export const AdviceContainer = () => {
                     )}
                 </CardContent>
             </CardContent>
-            {isnMoreAdviceInformationPopupOpen && (
-                <MoreAdviceInformationPopup
-                    isOpen={isnMoreAdviceInformationPopupOpen}
-                    onClose={closeModal}
+            {isDetailsAdviceDialogOpen && (
+                <DetailAdviceDialog
+                    isDetailAdvicePopupOpen={isDetailsAdviceDialogOpen}
+                    onCloseDetailAdvicePopup={onCloseDetailAdvicePopup}
                     currentEcogeste={currentEcogeste}
                 />
             )}

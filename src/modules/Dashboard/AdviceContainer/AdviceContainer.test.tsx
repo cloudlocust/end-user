@@ -32,15 +32,12 @@ jest.mock('src/modules/Ecogestes/hooks/ecogestesHook', () => {
 })
 
 describe('AdviceContainer tests', () => {
-    beforeEach(() => {
+    test('should render the component with all the ecogestes', async () => {
         reduxedRender(
             <Router>
                 <AdviceContainer />
             </Router>,
         )
-    })
-
-    test('should render the component with all the ecogestes', async () => {
         expect(screen.getByText('advice.svg')).toBeInTheDocument()
         expect(screen.getByText('Conseils du moment')).toBeInTheDocument()
         expect(

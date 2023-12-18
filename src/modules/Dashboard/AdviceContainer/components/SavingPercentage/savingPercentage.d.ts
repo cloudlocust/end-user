@@ -7,5 +7,5 @@ export interface SavingPercentageProps {
     /**
      * The percentage of savings.
      */
-    percentageSaved?: IEcogeste['percentageSaved']
+    percentageSaved: IEcogeste['percentageSaved']
 }
