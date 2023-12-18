@@ -70,4 +70,11 @@ describe('Test orderListBy', () => {
         const descOrderedList = orderListBy(listToOrder, undefined, true)
         expect(descOrderedList).toEqual(listToOrder)
     })
+    test('return the same list when list is empty', () => {
+        const ascOrderedList = orderListBy([])
+        expect(ascOrderedList).toEqual([])
+
+        const descOrderedList = orderListBy([], undefined, true)
+        expect(descOrderedList).toEqual([])
+    })
 })

@@ -71,8 +71,11 @@ export const passwordFieldValidationSecurity1 = new RegExp(
  * @returns The ordered list.
  */
 export const orderListBy = <T>(list: T[], orderByValueCallback?: (item: T) => any, descendingOrder?: boolean): T[] => {
-    if (!list.length) throw Error(`the list is empty`)
-    return [...list].sort((a, b) =>
+    if (list.length === 0) {
+        return list
+    }
+
+    return list.sort((a, b) =>
         orderByValueCallback
             ? descendingOrder
                 ? orderByValueCallback(b).toString().localeCompare(orderByValueCallback(a).toString())
