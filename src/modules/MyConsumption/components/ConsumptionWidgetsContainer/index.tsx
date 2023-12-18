@@ -1,4 +1,4 @@
-import { useContext, useEffect } from 'react'
+import { useContext, useEffect, useMemo } from 'react'
 import { Grid } from '@mui/material'
 import { useTheme } from '@mui/material'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
@@ -12,6 +12,9 @@ import WidgetIdleConsumption from 'src/modules/MyConsumption/components/WidgetId
 import { isProductionActiveAndHousingHasAccess } from 'src/modules/MyHouse/MyHouseConfig'
 import { useSelector } from 'react-redux'
 import { RootState } from 'src/redux'
+import { getDateWithoutTimezoneOffset } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
+import { endOfDay, startOfDay } from 'date-fns'
+import { utcToZonedTime } from 'date-fns-tz'
 
 /**
  * MyConsumptionWidgets Component (it's Wrapper of the list of Widgets).
@@ -38,24 +41,35 @@ const ConsumptionWidgetsContainer = ({
     const theme = useTheme()
     const { resetMetricsWidgetData } = useContext(ConsumptionWidgetsMetricsContext)
     const { currentHousingScopes } = useSelector(({ housingModel }: RootState) => housingModel)
+    const isProductionEnabled = useMemo(
+        () => isProductionActiveAndHousingHasAccess(currentHousingScopes) && !enphaseOff,
+        [currentHousingScopes, enphaseOff],
+    )
 
-    const renderedWidgets: metricTargetType[] =
-        isProductionActiveAndHousingHasAccess(currentHousingScopes) && !enphaseOff
-            ? [
-                  metricTargetsEnum.totalProduction,
-                  metricTargetsEnum.eurosConsumption,
-                  metricTargetsEnum.autoconsumption,
-                  metricTargetsEnum.pMax,
-                  metricTargetsEnum.externalTemperature,
-                  metricTargetsEnum.internalTemperature,
-              ]
-            : [
-                  metricTargetsEnum.consumption,
-                  metricTargetsEnum.eurosConsumption,
-                  metricTargetsEnum.pMax,
-                  metricTargetsEnum.externalTemperature,
-                  metricTargetsEnum.internalTemperature,
-              ]
+    const widgetsToRender = useMemo<metricTargetType[]>(() => {
+        let widgetsToRender: metricTargetType[] = [metricTargetsEnum.eurosConsumption, metricTargetsEnum.pMax]
+
+        const currentTime = utcToZonedTime(new Date(), 'Europe/Paris')
+        if (
+            period === 'daily' &&
+            range.from === getDateWithoutTimezoneOffset(startOfDay(currentTime)) &&
+            range.to === getDateWithoutTimezoneOffset(endOfDay(currentTime))
+        ) {
+            widgetsToRender = [
+                ...widgetsToRender,
+                metricTargetsEnum.externalTemperature,
+                metricTargetsEnum.internalTemperature,
+            ]
+        }
+
+        if (isProductionEnabled) {
+            widgetsToRender = [metricTargetsEnum.totalProduction, metricTargetsEnum.autoconsumption, ...widgetsToRender]
+        } else {
+            widgetsToRender = [metricTargetsEnum.consumption, ...widgetsToRender]
+        }
+
+        return widgetsToRender
+    }, [isProductionEnabled, period, range.from, range.to])
 
     /**
      *   We should reset the metrics context when the range, filters, metricsInterval or period changes,
@@ -93,7 +107,7 @@ const ConsumptionWidgetsContainer = ({
                      * Otherwise it'll be displayed with then normal Widget component, that displays one info : the consumption total,
                      *    (because in this case consumption total = purchased consumption).
                      */}
-                    {isProductionActiveAndHousingHasAccess(currentHousingScopes) && !enphaseOff && (
+                    {isProductionEnabled && (
                         <WidgetConsumption
                             targets={[metricTargetsEnum.consumption]}
                             range={range}
@@ -127,7 +141,7 @@ const ConsumptionWidgetsContainer = ({
                     />
 
                     {/** Display the other targets with Widget Component. */}
-                    {renderedWidgets.map((target) => {
+                    {widgetsToRender.map((target) => {
                         return target === metricTargetsEnum.totalProduction ? (
                             <Widget
                                 key={target}
