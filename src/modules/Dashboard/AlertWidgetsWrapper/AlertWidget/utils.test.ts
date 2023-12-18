@@ -1,10 +1,8 @@
 import {
     calculateGaugeChartPercent,
-    getAlertPeriodErrorText,
-    getAlertPeriodTitleText,
     getFormatedAlertThreshold,
 } from 'src/modules/Dashboard/AlertWidgetsWrapper/AlertWidget/utils'
-import { AlertPeriodEnum, AlertTypeEnum } from 'src/modules/Dashboard/AlertWidgetsWrapper/AlertWidget/AlertWidget.d'
+import { AlertTypeEnum } from 'src/modules/Dashboard/AlertWidgetsWrapper/AlertWidget/AlertWidget.d'
 
 describe('calculateGaugeChartPercent', () => {
     test('should return 1 when alertThreshold is less than or equal to 0 or when alertThreshold is greater than currentValue', () => {
@@ -18,24 +16,6 @@ describe('calculateGaugeChartPercent', () => {
         expect(calculateGaugeChartPercent(50, 25)).toBe(0.5)
         expect(calculateGaugeChartPercent(100, 75)).toBe(0.75)
         expect(calculateGaugeChartPercent(70, 15)).toBe(0.21)
-    })
-})
-
-describe('getAlertPeriodTitleText', () => {
-    test('should return the correct text for each AlertPeriod', () => {
-        expect(getAlertPeriodTitleText(AlertPeriodEnum.DAILY)).toBe('journalier')
-        expect(getAlertPeriodTitleText(AlertPeriodEnum.WEEKLY)).toBe('hebdomadaire')
-        expect(getAlertPeriodTitleText(AlertPeriodEnum.MONTHLY)).toBe('mensuel')
-        expect(getAlertPeriodTitleText('invalidPeriod' as AlertPeriodEnum)).toBe('')
-    })
-})
-
-describe('getAlertPeriodErrorText', () => {
-    test('should return the correct text for each AlertPeriod', () => {
-        expect(getAlertPeriodErrorText(AlertPeriodEnum.DAILY)).toBe('quotidienne')
-        expect(getAlertPeriodErrorText(AlertPeriodEnum.WEEKLY)).toBe('hebdomadaire')
-        expect(getAlertPeriodErrorText(AlertPeriodEnum.MONTHLY)).toBe('mensuelle')
-        expect(getAlertPeriodErrorText('invalidPeriod' as AlertPeriodEnum)).toBe('')
     })
 })
 

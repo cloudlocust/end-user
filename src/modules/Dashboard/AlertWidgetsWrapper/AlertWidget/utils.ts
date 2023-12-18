@@ -2,6 +2,22 @@ import { AlertPeriodEnum, AlertTypeEnum } from 'src/modules/Dashboard/AlertWidge
 import { consumptionWattUnitConversion } from 'src/modules/MyConsumption/utils/unitConversionFunction'
 
 /**
+ * AlertPeriod texts to use in the title an error message of the widget.
+ */
+export const alertPeriodText = {
+    title: {
+        [AlertPeriodEnum.DAILY]: 'journalier',
+        [AlertPeriodEnum.WEEKLY]: 'hebdomadaire',
+        [AlertPeriodEnum.MONTHLY]: 'mensuel',
+    },
+    error: {
+        [AlertPeriodEnum.DAILY]: 'quotidienne',
+        [AlertPeriodEnum.WEEKLY]: 'hebdomadaire',
+        [AlertPeriodEnum.MONTHLY]: 'mensuelle',
+    },
+}
+
+/**
  * Calculate the percent prop for the GaugeChart component.
  *
  * @param alertThreshold The alert threshold (seuil) value for consumption (in Wh) or price (in €).
@@ -13,44 +29,6 @@ export const calculateGaugeChartPercent = (alertThreshold: number, currentValue:
         return 1
     } else {
         return Math.min(1, Number((currentValue / alertThreshold).toFixed(2)))
-    }
-}
-
-/**
- * Get the alertPeriod correcponding text to use in the widget title.
- *
- * @param alertPeriod The alert period.
- * @returns The alertPeriod title text.
- */
-export const getAlertPeriodTitleText = (alertPeriod: AlertPeriodEnum): string => {
-    switch (alertPeriod) {
-        case AlertPeriodEnum.DAILY:
-            return 'journalier'
-        case AlertPeriodEnum.WEEKLY:
-            return 'hebdomadaire'
-        case AlertPeriodEnum.MONTHLY:
-            return 'mensuel'
-        default:
-            return ''
-    }
-}
-
-/**
- * Get the alertPeriod correcponding text to use in the widget error message.
- *
- * @param alertPeriod The alert period.
- * @returns The alertPeriod error message text.
- */
-export const getAlertPeriodErrorText = (alertPeriod: AlertPeriodEnum): string => {
-    switch (alertPeriod) {
-        case AlertPeriodEnum.DAILY:
-            return 'quotidienne'
-        case AlertPeriodEnum.WEEKLY:
-            return 'hebdomadaire'
-        case AlertPeriodEnum.MONTHLY:
-            return 'mensuelle'
-        default:
-            return ''
     }
 }
 

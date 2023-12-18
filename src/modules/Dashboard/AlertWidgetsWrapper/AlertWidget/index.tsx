@@ -8,9 +8,8 @@ import Box from '@mui/material/Box'
 import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive'
 import GaugeChart from 'react-gauge-chart'
 import {
+    alertPeriodText,
     calculateGaugeChartPercent,
-    getAlertPeriodErrorText,
-    getAlertPeriodTitleText,
     // getFormatedAlertThreshold,
 } from 'src/modules/Dashboard/AlertWidgetsWrapper/AlertWidget/utils'
 import { AlertWidgetProps } from 'src/modules/Dashboard/AlertWidgetsWrapper/AlertWidget/AlertWidget'
@@ -34,15 +33,6 @@ export const AlertWidget = ({ alertPeriod, alertThreshold, currentValue }: Alert
         [alertThreshold, currentValue],
     )
 
-    const [alertPeriodTitleText, alertPeriodErrorText] = useMemo(() => {
-        const titleText = getAlertPeriodTitleText(alertPeriod)
-        const errorText = getAlertPeriodErrorText(alertPeriod)
-        return [
-            formatMessage({ id: titleText, defaultMessage: titleText }),
-            formatMessage({ id: errorText, defaultMessage: errorText }),
-        ]
-    }, [alertPeriod, formatMessage])
-
     // const formatedAlertThreshold = useMemo(
     //     () => (alertThreshold !== undefined ? getFormatedAlertThreshold(alertThreshold, alertType) : ''),
     //     [alertThreshold, alertType],
@@ -56,7 +46,9 @@ export const AlertWidget = ({ alertPeriod, alertThreshold, currentValue }: Alert
                 </IconButton>
                 <div>
                     <TypographyFormatMessage className="inline text-16">Mon seuil d'alerte</TypographyFormatMessage>{' '}
-                    <span className="text-16 font-700">{alertPeriodTitleText}</span>
+                    <TypographyFormatMessage className="inline text-16 font-700">
+                        {alertPeriodText.title[alertPeriod]}
+                    </TypographyFormatMessage>
                 </div>
             </div>
             {alertThreshold !== undefined ? (
@@ -90,7 +82,10 @@ export const AlertWidget = ({ alertPeriod, alertThreshold, currentValue }: Alert
                             <TypographyFormatMessage className="inline text-14">
                                 Vous n'avez pas encore configuré d'alerte de consommation
                             </TypographyFormatMessage>{' '}
-                            <span className="text-14">{alertPeriodErrorText}.</span>
+                            <TypographyFormatMessage className="inline text-14">
+                                {alertPeriodText.error[alertPeriod]}
+                            </TypographyFormatMessage>
+                            .
                         </div>
                         <TypographyFormatMessage className="text-14">
                             Les alertes peuvent contribuer à réduire votre consommation et vos factures d'énergie.
