@@ -24,6 +24,7 @@ export const TEST_ECOGESTES: SnakeCasedPropertiesDeep<IEcogeste>[] = [
         percentage_saved: '10%',
         url_icon: EXAMPLE_ICON,
         seen_by_customer: true,
+        highlighted: true,
     },
     {
         id: 2,
@@ -34,6 +35,7 @@ export const TEST_ECOGESTES: SnakeCasedPropertiesDeep<IEcogeste>[] = [
         percentage_saved: '15%',
         url_icon: EXAMPLE_ICON,
         seen_by_customer: false,
+        highlighted: true,
     },
     {
         id: 3,
@@ -44,6 +46,7 @@ export const TEST_ECOGESTES: SnakeCasedPropertiesDeep<IEcogeste>[] = [
         percentage_saved: '++',
         url_icon: EXAMPLE_ICON,
         seen_by_customer: false,
+        highlighted: true,
     },
     {
         id: 4,
@@ -53,6 +56,7 @@ export const TEST_ECOGESTES: SnakeCasedPropertiesDeep<IEcogeste>[] = [
         percentage_saved: '-',
         url_icon: EXAMPLE_ICON,
         seen_by_customer: false,
+        highlighted: false,
     },
     {
         id: 5,
@@ -63,6 +67,7 @@ export const TEST_ECOGESTES: SnakeCasedPropertiesDeep<IEcogeste>[] = [
         percentage_saved: '',
         url_icon: EXAMPLE_ICON,
         seen_by_customer: true,
+        highlighted: false,
     },
 ]
 
@@ -133,6 +138,9 @@ export const ecogestesEndpoints = [
         if (viewed !== null) {
             gests = gests.filter((gest) => gest.seen_by_customer === (viewed === 'true'))
         }
+
+        if (req.url.searchParams.get('highlighted') === 'true')
+            gests = gests.filter((gest) => gest.highlighted === true)
 
         const ECOGESTE_RESPONSE = getPaginationFromElementList(req, gests as [any])
         return res(ctx.status(200), ctx.delay(1000), ctx.json(ECOGESTE_RESPONSE))

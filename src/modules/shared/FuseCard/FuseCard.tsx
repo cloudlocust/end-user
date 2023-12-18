@@ -26,7 +26,7 @@ export const FuseCard: React.FC<FuseCardProps> = (props) => {
             sx={{ ...defaultStyles, ...props.sx }}
         >
             {props.isLoading ? (
-                <div className="flex flex-col justify-center items-center w-full h-full" style={{ minHeight: '170px' }}>
+                <div className="flex flex-col justify-center items-center w-full h-full" style={{ height: '100%' }}>
                     <CircularProgress style={{ color: props.loadingColor }} />
                 </div>
             ) : (

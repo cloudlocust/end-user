@@ -26,6 +26,7 @@
         "react-scripts": "4.0.3",
         "react-svg": "^16.1.14",
         "redux-persist-transform-filter": "^0.0.20",
+        "swiper": "6.8.4",
         "typeface-poppins": "^1.1.13",
         "zustand": "^4.3.8"
     },
