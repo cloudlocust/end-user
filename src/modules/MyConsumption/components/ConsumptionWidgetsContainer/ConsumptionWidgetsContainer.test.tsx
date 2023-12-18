@@ -7,6 +7,7 @@ import { ConsumptionWidgetsMetricsProvider } from 'src/modules/MyConsumption/com
 import { periodType } from 'src/modules/MyConsumption/myConsumptionTypes'
 import { getDateWithoutTimezoneOffset } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
 import { endOfDay, startOfDay } from 'date-fns'
+import { utcToZonedTime } from 'date-fns-tz'
 
 const CONSOMMATION_TOTAL_TEXT = 'Consommation Totale'
 const CONSOMMATION_PURCHASED_TEXT = 'Achetée'
@@ -30,12 +31,12 @@ let mockFilters: metricFiltersType = [
 ]
 let mockMetricsInterval: metricIntervalType = '1m'
 let mockPeriod: periodType = 'daily'
-const previousDayRange = {
+const mockPreviousDayRange = {
     from: '2022-06-04T00:00:00.000Z',
     to: '2022-06-04T23:59:59.999Z',
 }
-const currentTime = new Date()
-const todayRange = {
+const currentTime = utcToZonedTime(new Date(), 'Europe/Paris')
+const mockTodayRange = {
     from: getDateWithoutTimezoneOffset(startOfDay(currentTime)),
     to: getDateWithoutTimezoneOffset(endOfDay(currentTime)),
 }
@@ -72,7 +73,7 @@ describe('ConsumptionWidgetsContainer test', () => {
             filters: mockFilters,
             metricsInterval: mockMetricsInterval,
             period: mockPeriod,
-            range: todayRange,
+            range: mockTodayRange,
             hasMissingHousingContracts: false,
             enedisOff: false,
             enphaseOff: false,
@@ -103,7 +104,7 @@ describe('ConsumptionWidgetsContainer test', () => {
         expect(getByText(TEMPERATURE_EXTERIEURE_TEXT)).toBeInTheDocument()
         expect(getByText(TEMPERATURE_INTERIEURE_TEXT)).toBeInTheDocument()
     })
-    test('do not show the widgets externalTemperature and internalTemperature when the period is not daily', async () => {
+    test('when the period is not daily, do not show the widgets externalTemperature and internalTemperature', async () => {
         consumptionWidgetsContainerProps.period = 'monthly'
         const { container, getByText, queryByText } = reduxedRender(
             <Router>
@@ -123,8 +124,8 @@ describe('ConsumptionWidgetsContainer test', () => {
         expect(queryByText(TEMPERATURE_EXTERIEURE_TEXT)).not.toBeInTheDocument()
         expect(queryByText(TEMPERATURE_INTERIEURE_TEXT)).not.toBeInTheDocument()
     })
-    test('do not show the widgets externalTemperature and internalTemperature when the range is not for today', async () => {
-        consumptionWidgetsContainerProps.range = previousDayRange
+    test('when the range is not for today, do not show the widgets externalTemperature and internalTemperature', async () => {
+        consumptionWidgetsContainerProps.range = mockPreviousDayRange
         const { container, getByText, queryByText } = reduxedRender(
             <Router>
                 <ConsumptionWidgetsMetricsProvider>

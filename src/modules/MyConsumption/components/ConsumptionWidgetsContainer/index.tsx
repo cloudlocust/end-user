@@ -14,6 +14,7 @@ import { useSelector } from 'react-redux'
 import { RootState } from 'src/redux'
 import { getDateWithoutTimezoneOffset } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
 import { endOfDay, startOfDay } from 'date-fns'
+import { utcToZonedTime } from 'date-fns-tz'
 
 /**
  * MyConsumptionWidgets Component (it's Wrapper of the list of Widgets).
@@ -40,7 +41,7 @@ const ConsumptionWidgetsContainer = ({
     const theme = useTheme()
     const { resetMetricsWidgetData } = useContext(ConsumptionWidgetsMetricsContext)
     const { currentHousingScopes } = useSelector(({ housingModel }: RootState) => housingModel)
-    const isProduction = useMemo(
+    const isProductionEnabled = useMemo(
         () => isProductionActiveAndHousingHasAccess(currentHousingScopes) && !enphaseOff,
         [currentHousingScopes, enphaseOff],
     )
@@ -48,7 +49,7 @@ const ConsumptionWidgetsContainer = ({
     const widgetsToRender = useMemo<metricTargetType[]>(() => {
         let widgetsToRender: metricTargetType[] = [metricTargetsEnum.eurosConsumption, metricTargetsEnum.pMax]
 
-        const currentTime = new Date()
+        const currentTime = utcToZonedTime(new Date(), 'Europe/Paris')
         if (
             period === 'daily' &&
             range.from === getDateWithoutTimezoneOffset(startOfDay(currentTime)) &&
@@ -61,14 +62,14 @@ const ConsumptionWidgetsContainer = ({
             ]
         }
 
-        if (isProduction) {
+        if (isProductionEnabled) {
             widgetsToRender = [metricTargetsEnum.totalProduction, metricTargetsEnum.autoconsumption, ...widgetsToRender]
         } else {
             widgetsToRender = [metricTargetsEnum.consumption, ...widgetsToRender]
         }
 
         return widgetsToRender
-    }, [isProduction, period, range.from, range.to])
+    }, [isProductionEnabled, period, range.from, range.to])
 
     /**
      *   We should reset the metrics context when the range, filters, metricsInterval or period changes,
@@ -106,7 +107,7 @@ const ConsumptionWidgetsContainer = ({
                      * Otherwise it'll be displayed with then normal Widget component, that displays one info : the consumption total,
                      *    (because in this case consumption total = purchased consumption).
                      */}
-                    {isProduction && (
+                    {isProductionEnabled && (
                         <WidgetConsumption
                             targets={[metricTargetsEnum.consumption]}
                             range={range}
