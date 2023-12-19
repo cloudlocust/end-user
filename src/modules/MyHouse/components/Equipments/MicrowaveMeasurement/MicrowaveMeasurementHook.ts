@@ -148,7 +148,7 @@ export function useMicrowaveMeasurement(
      * Function to get the passed time (in seconds) from the last update of status.
      */
     const getTimeFromStatusLastUpdate = useCallback(() => {
-        const currentUtcDate = utcToZonedTime(new Date(), 'Etc/UTC')
+        const currentUtcDate = utcToZonedTime(new Date(), 'Europe/Paris')
         return measurementStatus?.updatedAt
             ? differenceInSeconds(currentUtcDate, parseISO(measurementStatus.updatedAt))
             : 0
