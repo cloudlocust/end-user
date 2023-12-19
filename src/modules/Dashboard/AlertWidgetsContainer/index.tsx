@@ -9,7 +9,6 @@ import { formatMetricFilter, getRangeV2 } from 'src/modules/MyConsumption/utils/
 import { metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
 import { FuseCard } from 'src/modules/shared/FuseCard/FuseCard'
 import { computeWidgetAssets } from 'src/modules/MyConsumption/components/Widget/WidgetFunctions'
-import { PeriodEnum } from 'src/modules/MyConsumption/myConsumptionTypes.d'
 import { AlertWidget } from 'src/modules/Dashboard/AlertWidgetsContainer/AlertWidget'
 import { AlertPeriodEnum, AlertTypeEnum } from 'src/modules/Dashboard/AlertWidgetsContainer/AlertWidget/AlertWidget.d'
 import SwiperCore, { Navigation, Pagination, Scrollbar, A11y } from 'swiper'
@@ -18,6 +17,12 @@ import 'swiper/swiper.scss'
 import 'swiper/components/navigation/navigation.scss'
 import 'swiper/components/pagination/pagination.scss'
 import 'swiper/components/scrollbar/scrollbar.scss'
+import {
+    alertPeriods,
+    alertPeriodsArray,
+    convertAlertPeriodEnumToPeriodEnum,
+    emptyConsumptionValueUnit,
+} from 'src/modules/Dashboard/AlertWidgetsContainer/utils'
 
 SwiperCore.use([Navigation, Pagination, Scrollbar, A11y])
 
@@ -34,31 +39,6 @@ const StyledSwiper = styled(Swiper)(({ theme }) => ({
         transform: 'scale(0.7)',
     },
 }))
-
-const emptyConsumptionValueUnit = { value: 0, unit: 'Wh' }
-const alertPeriods = {
-    day: AlertPeriodEnum.DAILY,
-    week: AlertPeriodEnum.WEEKLY,
-    month: AlertPeriodEnum.MONTHLY,
-}
-const alertPeriodsArray = [AlertPeriodEnum.DAILY, AlertPeriodEnum.WEEKLY, AlertPeriodEnum.MONTHLY]
-
-/**
- * Function to converte AlertPeriodEnum value to PeriodEnum value.
- *
- * @param alertPeriod AlertPeriodEnum value.
- * @returns PeriodEnum value.
- */
-const convertToPeriodEnum = (alertPeriod: AlertPeriodEnum): PeriodEnum => {
-    switch (alertPeriod) {
-        case AlertPeriodEnum.DAILY:
-            return PeriodEnum.DAILY
-        case AlertPeriodEnum.WEEKLY:
-            return PeriodEnum.WEEKLY
-        case AlertPeriodEnum.MONTHLY:
-            return PeriodEnum.MONTHLY
-    }
-}
 
 /**
  * Wrapper for the alert widgets.
@@ -79,9 +59,9 @@ export const AlertWidgetsContainer = () => {
     )
 
     /**
-     * Function to calculate and update the total consumption value state for every period.
+     * Function to calculate the total consumption value state for every period.
      */
-    const updateCurrentTotalConsumptionValues = useCallback(async () => {
+    const calculateCurrentTotalConsumptions = useCallback(async () => {
         if (consumptionAlerts.length > 0) {
             const totalConsumptiosPromises = alertPeriodsArray.map(async (alertPeriod) => {
                 /**
@@ -99,7 +79,7 @@ export const AlertWidgetsContainer = () => {
                     const consumptionData = await getMetricsWithParams(
                         {
                             interval: alertPeriod === AlertPeriodEnum.DAILY ? '1m' : '1d',
-                            range: getRangeV2(convertToPeriodEnum(alertPeriod)),
+                            range: getRangeV2(convertAlertPeriodEnumToPeriodEnum(alertPeriod)),
                             targets: [metricTargetsEnum.consumption],
                             filters: formatMetricFilter(currentHousing!.id) ?? [],
                         },
@@ -142,8 +122,8 @@ export const AlertWidgetsContainer = () => {
     }, [consumptionAlerts, currentHousing, getMetricsWithParams])
 
     useEffect(() => {
-        updateCurrentTotalConsumptionValues()
-    }, [updateCurrentTotalConsumptionValues])
+        calculateCurrentTotalConsumptions()
+    }, [calculateCurrentTotalConsumptions])
 
     return (
         <FuseCard
