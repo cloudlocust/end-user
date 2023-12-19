@@ -1,6 +1,6 @@
 import { reduxedRender } from 'src/common/react-platform-components/test'
 import { BrowserRouter } from 'react-router-dom'
-import { AlertWidgetsWrapper } from 'src/modules/Dashboard/AlertWidgetsWrapper'
+import { AlertWidgetsContainer } from 'src/modules/Dashboard/AlertWidgetsContainer'
 import { IConsumptionAlert } from 'src/modules/Alerts/components/ConsumptionAlert/consumptionAlert'
 import { IMetric } from 'src/modules/Metrics/Metrics'
 import userEvent from '@testing-library/user-event'
@@ -37,7 +37,7 @@ const mockInitialState = {
     },
 }
 
-describe('AlertWidgetsWrapper', () => {
+describe('AlertWidgetsContainer', () => {
     beforeEach(() => {
         mockIsAlertsLoadingInProgress = false
         mockIsMetricsLoading = false
@@ -47,7 +47,7 @@ describe('AlertWidgetsWrapper', () => {
         mockIsAlertsLoadingInProgress = true
         const { getByRole } = reduxedRender(
             <BrowserRouter>
-                <AlertWidgetsWrapper />
+                <AlertWidgetsContainer />
             </BrowserRouter>,
             {
                 initialState: mockInitialState,
@@ -61,7 +61,7 @@ describe('AlertWidgetsWrapper', () => {
         mockIsMetricsLoading = true
         const { getByRole } = reduxedRender(
             <BrowserRouter>
-                <AlertWidgetsWrapper />
+                <AlertWidgetsContainer />
             </BrowserRouter>,
             {
                 initialState: mockInitialState,
@@ -71,7 +71,7 @@ describe('AlertWidgetsWrapper', () => {
         expect(getByRole('progressbar')).toBeInTheDocument()
     })
 
-    test('when neither alerts nor measurements are being loaded, show the elements of the AlertWidgetsWrapper', async () => {
+    test('when neither alerts nor measurements are being loaded, show the elements of the AlertWidgetsContainer', async () => {
         mockMetrics = [
             {
                 target: 'consumption_metrics',
@@ -97,7 +97,7 @@ describe('AlertWidgetsWrapper', () => {
         ]
         const { getAllByTestId, getAllByText, getByTestId, getByText, queryByTestId } = reduxedRender(
             <BrowserRouter>
-                <AlertWidgetsWrapper />
+                <AlertWidgetsContainer />
             </BrowserRouter>,
             {
                 initialState: mockInitialState,

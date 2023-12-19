@@ -11,8 +11,8 @@ import {
     alertPeriodText,
     calculateGaugeChartPercent,
     // getFormatedAlertThreshold,
-} from 'src/modules/Dashboard/AlertWidgetsWrapper/AlertWidget/utils'
-import { AlertWidgetProps } from 'src/modules/Dashboard/AlertWidgetsWrapper/AlertWidget/AlertWidget'
+} from 'src/modules/Dashboard/AlertWidgetsContainer/AlertWidget/utils'
+import { AlertWidgetProps } from 'src/modules/Dashboard/AlertWidgetsContainer/AlertWidget/AlertWidget'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 
 /**
@@ -103,7 +103,7 @@ export const AlertWidget = ({ alertPeriod, alertThreshold, currentValue }: Alert
                                 Les alertes peuvent contribuer à réduire votre consommation et vos factures d'énergie.
                             </TypographyFormatMessage>
                         </div>
-                        <Button component={Link} to="/alerts" variant="contained" className="w-max">
+                        <Button component={Link} to="/alerts" variant="contained" className="w-max my-7">
                             {formatMessage({ id: 'Créer une alerte', defaultMessage: 'Créer une alerte' })}
                         </Button>
                     </div>

@@ -2,12 +2,12 @@ import { waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { BrowserRouter } from 'react-router-dom'
 import { reduxedRender } from 'src/common/react-platform-components/test'
-import { AlertWidget } from 'src/modules/Dashboard/AlertWidgetsWrapper/AlertWidget'
+import { AlertWidget } from 'src/modules/Dashboard/AlertWidgetsContainer/AlertWidget'
 import {
     AlertPeriodEnum,
     AlertTypeEnum,
     AlertWidgetProps,
-} from 'src/modules/Dashboard/AlertWidgetsWrapper/AlertWidget/AlertWidget.d'
+} from 'src/modules/Dashboard/AlertWidgetsContainer/AlertWidget/AlertWidget.d'
 
 describe('AlertWidget', () => {
     let mockAlertWidgetProps: AlertWidgetProps
