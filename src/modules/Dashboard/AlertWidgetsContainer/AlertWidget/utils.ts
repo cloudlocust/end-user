@@ -1,4 +1,4 @@
-import { AlertPeriodEnum, AlertTypeEnum } from 'src/modules/Dashboard/AlertWidget/AlertWidget.d'
+import { AlertPeriodEnum, AlertTypeEnum } from 'src/modules/Dashboard/AlertWidgetsContainer/AlertWidget/AlertWidget.d'
 import { consumptionWattUnitConversion } from 'src/modules/MyConsumption/utils/unitConversionFunction'
 
 /**
@@ -6,22 +6,22 @@ import { consumptionWattUnitConversion } from 'src/modules/MyConsumption/utils/u
  */
 export const alertPeriodText = {
     title: {
-        [AlertPeriodEnum.DAY]: 'journalier',
-        [AlertPeriodEnum.WEEK]: 'hebdomadaire',
-        [AlertPeriodEnum.MONTH]: 'mensuel',
+        [AlertPeriodEnum.DAILY]: 'journalier',
+        [AlertPeriodEnum.WEEKLY]: 'hebdomadaire',
+        [AlertPeriodEnum.MONTHLY]: 'mensuel',
     },
     error: {
-        [AlertPeriodEnum.DAY]: 'quotidienne',
-        [AlertPeriodEnum.WEEK]: 'hebdomadaire',
-        [AlertPeriodEnum.MONTH]: 'mensuelle',
+        [AlertPeriodEnum.DAILY]: 'quotidienne',
+        [AlertPeriodEnum.WEEKLY]: 'hebdomadaire',
+        [AlertPeriodEnum.MONTHLY]: 'mensuelle',
     },
 }
 
 /**
  * Calculate the percent prop for the GaugeChart component.
  *
- * @param alertThreshold The alert threshold (seuil) value for consumption or price.
- * @param currentValue The current value of the consumption or price.
+ * @param alertThreshold The alert threshold (seuil) value for consumption (in Wh) or price (in €).
+ * @param currentValue The current value of the consumption (in Wh) or price (in €).
  * @returns The percent prop value.
  */
 export const calculateGaugeChartPercent = (alertThreshold: number, currentValue: number): number => {
@@ -35,7 +35,7 @@ export const calculateGaugeChartPercent = (alertThreshold: number, currentValue:
 /**
  * Get the formated alertThreshold value depending on the alertType.
  *
- * @param alertThreshold The alert threshold (seuil) value for consumption or price.
+ * @param alertThreshold The alert threshold (seuil) value for consumption (in Wh) or price (in €).
  * @param alertType The alert type.
  * @returns The formated alertThreshold value.
  */

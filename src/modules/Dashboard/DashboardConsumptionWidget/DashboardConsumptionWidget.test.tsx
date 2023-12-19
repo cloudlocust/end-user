@@ -28,13 +28,6 @@ jest.mock('src/modules/Metrics/metricsHook.ts', () => ({
     }),
 }))
 
-jest.mock('src/modules/Alerts/components/ConsumptionAlert/consumptionAlertHooks.ts', () => ({
-    // eslint-disable-next-line jsdoc/require-jsdoc
-    useConsumptionAlerts: () => ({
-        pricePerKwh: 1.8,
-    }),
-}))
-
 // Mocking apexcharts, because there are errors related to modules not found, in test mode.
 jest.mock(
     'react-apexcharts',

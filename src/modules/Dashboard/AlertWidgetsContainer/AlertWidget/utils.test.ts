@@ -1,5 +1,8 @@
-import { calculateGaugeChartPercent, getFormatedAlertThreshold } from 'src/modules/Dashboard/AlertWidget/utils'
-import { AlertTypeEnum } from 'src/modules/Dashboard/AlertWidget/AlertWidget.d'
+import {
+    calculateGaugeChartPercent,
+    getFormatedAlertThreshold,
+} from 'src/modules/Dashboard/AlertWidgetsContainer/AlertWidget/utils'
+import { AlertTypeEnum } from 'src/modules/Dashboard/AlertWidgetsContainer/AlertWidget/AlertWidget.d'
 
 describe('calculateGaugeChartPercent', () => {
     test('should return 1 when alertThreshold is less than or equal to 0 or when alertThreshold is greater than currentValue', () => {

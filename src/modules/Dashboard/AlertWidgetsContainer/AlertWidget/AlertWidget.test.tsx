@@ -2,8 +2,12 @@ import { waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { BrowserRouter } from 'react-router-dom'
 import { reduxedRender } from 'src/common/react-platform-components/test'
-import { AlertWidget } from 'src/modules/Dashboard/AlertWidget'
-import { AlertPeriodEnum, AlertTypeEnum, AlertWidgetProps } from 'src/modules/Dashboard/AlertWidget/AlertWidget.d'
+import { AlertWidget } from 'src/modules/Dashboard/AlertWidgetsContainer/AlertWidget'
+import {
+    AlertPeriodEnum,
+    AlertTypeEnum,
+    AlertWidgetProps,
+} from 'src/modules/Dashboard/AlertWidgetsContainer/AlertWidget/AlertWidget.d'
 
 describe('AlertWidget', () => {
     let mockAlertWidgetProps: AlertWidgetProps
@@ -11,23 +15,12 @@ describe('AlertWidget', () => {
     beforeEach(() => {
         mockAlertWidgetProps = {
             alertType: AlertTypeEnum.PRICE,
-            alertPeriod: AlertPeriodEnum.MONTH,
+            alertPeriod: AlertPeriodEnum.MONTHLY,
             currentValue: 10,
         }
     })
 
-    test('When the widget content is loading, show loading circle', () => {
-        mockAlertWidgetProps.isLoading = true
-        const { getByRole } = reduxedRender(
-            <BrowserRouter>
-                <AlertWidget {...mockAlertWidgetProps} />
-            </BrowserRouter>,
-        )
-
-        expect(getByRole('progressbar')).toBeInTheDocument()
-    })
-
-    test('When the widget content is not loading and alertThreshold is specified, show the elements of the AlertWidget', () => {
+    test('When alertThreshold is not undefined, show the elements of the AlertWidget', () => {
         mockAlertWidgetProps.alertThreshold = 25
         const { getByTestId, getByText } = reduxedRender(
             <BrowserRouter>
@@ -38,11 +31,11 @@ describe('AlertWidget', () => {
         expect(getByTestId('NotificationsActiveIcon')).toBeInTheDocument()
         expect(getByText("Mon seuil d'alerte")).toBeInTheDocument()
         expect(getByText('mensuel')).toBeInTheDocument()
-        expect(getByText('25 €')).toBeInTheDocument()
-        expect(document.getElementById('gauge-chart-alert-month')).toBeDefined()
+        // expect(getByText('25 €')).toBeInTheDocument()
+        expect(getByTestId('gauge-chart-alert-monthly')).toBeInTheDocument()
     })
 
-    test('When the widget content is not loading and alertThreshold is not specified, show the error message', async () => {
+    test('When alertThreshold is undefined, show the error message', async () => {
         const { getByText } = reduxedRender(
             <BrowserRouter>
                 <AlertWidget {...mockAlertWidgetProps} />

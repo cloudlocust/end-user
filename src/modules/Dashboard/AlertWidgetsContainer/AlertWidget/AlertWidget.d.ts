@@ -17,17 +17,17 @@ export enum AlertTypeEnum {
  */
 export enum AlertPeriodEnum {
     /**
-     * Day alert period.
+     * Daily period.
      */
-    DAY = 'day',
+    DAILY = 'daily',
     /**
-     * Week alert period.
+     * Weekly period.
      */
-    WEEK = 'week',
+    WEEKLY = 'weekly',
     /**
-     * Month alert period.
+     * Monthly period.
      */
-    MONTH = 'month',
+    MONTHLY = 'monthly',
 }
 
 /**
@@ -43,15 +43,11 @@ export interface AlertWidgetProps {
      */
     alertPeriod: AlertPeriodEnum
     /**
-     * The alert threshold (seuil) value for consumption or price.
+     * The alert threshold (seuil) value for consumption (in Wh) or price (in €).
      */
     alertThreshold?: number
     /**
-     * The current value of the consumption or price.
+     * The current value of the consumption (in Wh) or price (in €).
      */
     currentValue: number
-    /**
-     * The content of the alert widget is loading.
-     */
-    isLoading?: boolean
 }

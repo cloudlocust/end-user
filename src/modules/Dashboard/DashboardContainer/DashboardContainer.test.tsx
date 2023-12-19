@@ -36,8 +36,17 @@ jest.mock(
     () => (props: any) => <div className="apexcharts-svg" {...props}></div>,
 )
 
+// Mock the useConsumptionAlerts hook
+jest.mock('src/modules/Alerts/components/ConsumptionAlert/consumptionAlertHooks', () => ({
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    useConsumptionAlerts: () => ({
+        isAlertsLoadingInProgress: true,
+        consumptionAlerts: [],
+    }),
+}))
+
 describe('DashboardContainer tests', () => {
-    it('should render the component', async () => {
+    test('should render the component', () => {
         reduxedRender(
             <Router>
                 <DashboardContainer />
@@ -47,6 +56,6 @@ describe('DashboardContainer tests', () => {
             },
         )
 
-        screen.getByText('Accueil')
+        expect(screen.getByText('Accueil')).toBeInTheDocument()
     })
 })
