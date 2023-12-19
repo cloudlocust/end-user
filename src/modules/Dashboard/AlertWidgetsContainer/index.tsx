@@ -146,7 +146,11 @@ export const AlertWidgetsContainer = () => {
     }, [updateCurrentTotalConsumptionValues])
 
     return (
-        <FuseCard isLoading={isAlertsLoadingInProgress || isMetricsLoading} loadingColor={theme.palette.primary.main}>
+        <FuseCard
+            sx={{ height: isAlertsLoadingInProgress || isMetricsLoading ? 290 : 'auto' }}
+            isLoading={isAlertsLoadingInProgress || isMetricsLoading}
+            loadingColor={theme.palette.primary.main}
+        >
             <StyledSwiper spaceBetween={20} slidesPerView={1} pagination={{ clickable: true }} navigation>
                 {alertPeriodsArray.map((alertPeriod) => {
                     const alertData = consumptionAlerts.find((alert) => alertPeriods[alert.interval] === alertPeriod)
