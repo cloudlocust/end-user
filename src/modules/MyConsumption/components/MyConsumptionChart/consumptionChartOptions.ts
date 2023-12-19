@@ -41,6 +41,10 @@ export const getEchartsConsumptionChartOptions = (
 
     let filteredValues: targetTimestampsValuesFormat = {}
     Object.entries(values).map(([key, arr]) => {
+        // TODO: maybe add a special implementation for production targets in consumption chart ?
+        if (key === metricTargetsEnum.autoconsumption) {
+            filteredValues[key as metricTargetType] = arr
+        }
         if (arr.some((value) => value !== null)) {
             filteredValues[key as metricTargetType] = arr
         }
