@@ -57,10 +57,13 @@ export const ConsumptionChartContainer = ({
     const [isShowIdleConsumptionDisabledInfo, setIsShowIdleConsumptionDisabledInfo] = useState(false)
 
     // Handling the targets makes it simpler instead of the useMetrics as it's a straightforward array of metricTargetType
-    // Meanwhile the setTargets for useMetrics needs to add {type: 'timeserie'} everytime...
-    const [targets, setTargets] = useState<metricTargetType[]>(
-        getDefaultConsumptionTargets(isSolarProductionConsentOff),
-    )
+    const [targets, setTargets] = useState<metricTargetType[]>([])
+
+    // When solar production consent is off, the default targets should be different.
+    useEffect(() => {
+        const defaultTargets = getDefaultConsumptionTargets(isSolarProductionConsentOff)
+        setTargets(defaultTargets)
+    }, [isSolarProductionConsentOff])
 
     // Indicates if enedisSgeConsent is not Connected
     const enedisSgeOff = enedisSgeConsent?.enedisSgeConsentState !== 'CONNECTED'
