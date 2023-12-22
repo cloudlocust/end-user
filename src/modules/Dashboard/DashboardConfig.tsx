@@ -2,6 +2,7 @@ import { authTypes } from 'src/common/react-platform-components'
 import { IRouteNavigationConfig } from 'src/routes'
 import { Dashboard } from 'src/modules/Dashboard/Dashboard'
 import { ReactComponent as DashboardIcon } from 'src/assets/images/navbarItems/dashboard.svg'
+import { ReactComponent as DashboardSelectedIcon } from 'src/assets/images/navbarItems/dashboard-selected.svg'
 import SvgIcon from '@mui/material/SvgIcon'
 
 /**
@@ -48,6 +49,11 @@ export const DashboardConfig = [
                             </SvgIcon>
                         ),
                         url: URL_DASHBOARD,
+                        selectedIcon: (
+                            <SvgIcon>
+                                <DashboardSelectedIcon />,
+                            </SvgIcon>
+                        ),
                     },
                 },
             },

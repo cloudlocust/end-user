@@ -36,16 +36,8 @@ export const AlertWidget = ({ alertPeriod, alertThreshold, currentValue }: Alert
         [alertThreshold, currentValue],
     )
 
-    // const formatedAlertThreshold = useMemo(
-    //     () =>
-    //         alertThreshold !== undefined // check if alertThreshold is not undefined (no alert was created for this period)
-    //             ? getFormatedAlertThreshold(alertThreshold, alertType)
-    //             : '',
-    //     [alertThreshold, alertType],
-    // )
-
     return (
-        <div className="flex flex-col min-h-288 p-20">
+        <>
             <div className="flex items-center gap-10">
                 <IconButton className="pointer-events-none" size="small" sx={{ bgcolor: theme.palette.primary.main }}>
                     <NotificationsActiveIcon sx={{ color: theme.palette.primary.contrastText }} />
@@ -74,9 +66,6 @@ export const AlertWidget = ({ alertPeriod, alertThreshold, currentValue }: Alert
                         }}
                         data-testid={`gauge-chart-alert-${alertPeriod}`}
                     >
-                        {/* <span className="absolute right-5 top-0 underline font-700 text-12 sm:text-14">
-                            {formatedAlertThreshold}
-                        </span> */}
                         <GaugeChart
                             id={`gauge-chart-alert-${alertPeriod}`}
                             nrOfLevels={6}
@@ -109,6 +98,6 @@ export const AlertWidget = ({ alertPeriod, alertThreshold, currentValue }: Alert
                     </div>
                 )
             }
-        </div>
+        </>
     )
 }
