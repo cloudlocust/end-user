@@ -28,6 +28,11 @@ export interface DashboardProps {
 }
 
 /**
+ * Env Variable to know if the feature is enabled.
+ */
+export const isDashboardFeatureEnabled = window._env_.REACT_APP_DASHBOARD_FEATURE_STATE === 'enabled'
+
+/**
  * Dashboard Config.
  */
 export const DashboardConfig = [
@@ -54,6 +59,8 @@ export const DashboardConfig = [
                                 <DashboardSelectedIcon />,
                             </SvgIcon>
                         ),
+                        // disabled: !isDashboardFeatureEnabled,
+                        // isHidden: !isDashboardFeatureEnabled,
                     },
                 },
             },

@@ -123,10 +123,13 @@ export const EnergyStatusWidget = (props: EnergyStatusWidgetProps) => {
                         </div>
                         {!isLastPowerDataNegative && (
                             <div className="flex space-x-5 items-baseline">
-                                <span className="text-28 leading-3" style={{ color: themeContrastText }}>
+                                <span
+                                    className="text-28 md:text-32 leading-3 md:font-semibold"
+                                    style={{ color: themeContrastText }}
+                                >
                                     {isNrlinkDisconnected ? '-' : pricePerKwh?.toFixed(2)}
                                 </span>
-                                <span className="text-14 leading-3" style={{ color: themeContrastText }}>
+                                <span className="text-14 leading-3 md:font-medium" style={{ color: themeContrastText }}>
                                     €/h
                                 </span>
                             </div>
