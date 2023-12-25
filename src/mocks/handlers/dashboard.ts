@@ -8,7 +8,7 @@ import { SnakeCasedPropertiesDeep } from 'type-fest'
 // eslint-disable-next-line jsdoc/require-jsdoc
 export const nrlinkPowerData: SnakeCasedPropertiesDeep<INrlinkMetrics> = {
     last_power: {
-        value: -55,
+        value: 55,
         timestamp: '2023-12-15T14:07:38.138000',
     },
     last_temperature: {
