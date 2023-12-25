@@ -2,6 +2,7 @@ import { authTypes } from 'src/common/react-platform-components'
 import { IRouteNavigationConfig } from 'src/routes'
 import { Dashboard } from 'src/modules/Dashboard/Dashboard'
 import { ReactComponent as DashboardIcon } from 'src/assets/images/navbarItems/dashboard.svg'
+import { ReactComponent as DashboardSelectedIcon } from 'src/assets/images/navbarItems/dashboard-selected.svg'
 import SvgIcon from '@mui/material/SvgIcon'
 
 /**
@@ -27,6 +28,11 @@ export interface DashboardProps {
 }
 
 /**
+ * Env Variable to know if the feature is enabled.
+ */
+export const isDashboardFeatureEnabled = window._env_.REACT_APP_DASHBOARD_FEATURE_STATE === 'enabled'
+
+/**
  * Dashboard Config.
  */
 export const DashboardConfig = [
@@ -40,7 +46,7 @@ export const DashboardConfig = [
                     UINavbarItem: {
                         id: 'Acceuil',
                         label: 'Acceuil',
-                        labelAbbreviation: 'accueil',
+                        labelAbbreviation: 'Accueil',
                         type: 'item',
                         icon: (
                             <SvgIcon>
@@ -48,6 +54,13 @@ export const DashboardConfig = [
                             </SvgIcon>
                         ),
                         url: URL_DASHBOARD,
+                        selectedIcon: (
+                            <SvgIcon>
+                                <DashboardSelectedIcon />,
+                            </SvgIcon>
+                        ),
+                        disabled: !isDashboardFeatureEnabled,
+                        isHidden: !isDashboardFeatureEnabled,
                     },
                 },
             },

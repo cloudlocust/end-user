@@ -48,6 +48,7 @@ export const routes = [
     ...EcogestesConfig,
     ...AlertsConfig,
     ...MaintenanceConfig,
+    ...DashboardConfig,
     {
         /**
          * TODO Document.
@@ -139,4 +140,4 @@ export type IPageSettingsDisabled = IPageSettings & /**
 export const navigationsConfig: IRouteNavigationConfig</**
  *
  */
-{}>[] = [MyConsumptionConfig[0], AnalysisConfig[0], AdvicesConfig[0], MyHouseConfig[0]]
+{}>[] = [DashboardConfig[0], MyConsumptionConfig[0], AnalysisConfig[0], AdvicesConfig[0], MyHouseConfig[0]]

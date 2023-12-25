@@ -1,8 +1,6 @@
-import { sum } from 'lodash'
 import { IMetric } from 'src/modules/Metrics/Metrics'
 import { formatMetricsDataToTimestampsValues } from 'src/modules/Metrics/formatMetricsData'
 import { getXAxisCategoriesData } from 'src/modules/MyConsumption/components/MyConsumptionChart/consumptionChartOptions'
-import { consumptionWattUnitConversion } from 'src/modules/MyConsumption/utils/unitConversionFunction'
 import { ApexOptions } from 'apexcharts'
 import { convertConsumptionToWatt } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
 
@@ -20,20 +18,6 @@ export const createDataForConsumptionWidgetGraph = (data: IMetric[]) => {
         ? Object.values(values)[0].map((value) => value ?? 0)
         : [0]
     return { labels, serieValues }
-}
-
-/**
- * Calculate the total consumption and price for a consumption serie values.
- *
- * @param serieValues Consumption values in Wh.
- * @param pricePerKwh Price per kWh.
- * @returns The total daily consumption and price.
- */
-export const calculateTotalConsumptionAndPrice = (serieValues: number[], pricePerKwh: number | null) => {
-    const sumConsumptions = sum(serieValues)
-    const { value: totalDailyConsumption, unit: consumptionUnit } = consumptionWattUnitConversion(sumConsumptions)
-    const totalDailyPrice = pricePerKwh ? Number(((sumConsumptions * pricePerKwh) / 1000).toFixed(2)) : 0
-    return { totalDailyConsumption, consumptionUnit, totalDailyPrice }
 }
 
 /**

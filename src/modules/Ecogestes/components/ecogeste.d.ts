@@ -41,6 +41,10 @@ export type IEcogeste =
          * Wheter or not the currently active customer has seen this Ecogeste.
          */
         seenByCustomer: boolean
+        /**
+         * Whether the ecogeste is highlighted or not.
+         */
+        highlighted: boolean | null
     }
 
 /**

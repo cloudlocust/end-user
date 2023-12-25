@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react'
 import { Switch, Route, Redirect, useLocation, useHistory } from 'react-router-dom'
 import { useAuth } from 'src/modules/User/authentication/useAuth'
-import { routes, navigationsConfig, IAdditionnalSettings, IPageSettingsDisabled } from 'src/routes'
+import { routes as routesConfig, navigationsConfig, IAdditionnalSettings, IPageSettingsDisabled } from 'src/routes'
 import Layout1 from 'src/common/ui-kit/fuse/layouts/layout1/Layout1'
 import ThemingProvider from 'src/common/ui-kit/fuse/components/ThemingProvider'
 import { navbarItemType } from 'src/common/ui-kit/fuse/components/FuseNavigation/FuseNavigation'
@@ -97,6 +97,10 @@ const Routes = () => {
     const navbarContent: navbarItemType[] = []
     navigationsConfig.forEach((navigationConfig) => {
         const UINavbarItem = navigationConfig.settings.layout.navbar.UINavbarItem
+
+        // If the navbar item is hidden, we don't need to push it to the navbarContent.
+        if (UINavbarItem?.isHidden) return
+
         hasAccess(navigationConfig.auth) && navbarContent.push(UINavbarItem)
     })
 
@@ -111,7 +115,7 @@ const Routes = () => {
 
     return (
         <Switch>
-            {routes.map((route, index) => {
+            {routesConfig.map((route, index) => {
                 return (
                     <Route
                         key={index}

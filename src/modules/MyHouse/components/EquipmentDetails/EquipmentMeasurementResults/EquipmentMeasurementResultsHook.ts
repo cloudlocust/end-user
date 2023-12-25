@@ -1,7 +1,5 @@
 import { useCallback, useState } from 'react'
 import { axios } from 'src/common/react-platform-components'
-import { useSnackbar } from 'notistack'
-import { useIntl } from 'src/common/react-platform-translation'
 import { HOUSING_API } from 'src/modules/MyHouse/components/HousingList/HousingsHooks'
 import { MeasurementResultApiResponse } from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement/MicrowaveMeasurement'
 import { measurementResultsStateType } from 'src/modules/MyHouse/components/EquipmentDetails/EquipmentMeasurementResults/EquipmentMeasurementResults'
@@ -12,14 +10,14 @@ import { measurementResultsStateType } from 'src/modules/MyHouse/components/Equi
  * @returns The tests result state and the function that update it.
  */
 export function useEquipmentMeasurementResults() {
-    const { enqueueSnackbar } = useSnackbar()
-    const { formatMessage } = useIntl()
     const [measurementResults, setMeasurementResults] = useState<measurementResultsStateType>({})
     const [isLoadingMeasurements, setIsLoadingMeasurements] = useState(true)
 
     /**
      * Function to get a measurement result for the equipment in a specific mode.
      *
+     * @param equipmentNumber The equipment number.
+     * @param housingEquipmentId The housing equipment id.
      * @param measurementMode The measurement mode.
      * @returns The measurement result value.
      */
@@ -34,23 +32,18 @@ export function useEquipmentMeasurementResults() {
                 )
                 return { mode: measurementMode, value: data?.value }
             } catch (error: any) {
-                let errorMessage = `Un problème s'est produit lors de la récupération du résultat de la mesure en mode ${measurementMode}`
-                if (error?.response?.data?.detail) errorMessage += ` : ${error?.response?.data?.detail}`
-                enqueueSnackbar(
-                    formatMessage({
-                        id: errorMessage,
-                        defaultMessage: errorMessage,
-                    }),
-                    { autoHideDuration: 5000, variant: 'error' },
-                )
                 return { mode: measurementMode, value: null }
             }
         },
-        [enqueueSnackbar, formatMessage],
+        [],
     )
 
     /**
      * Function to update the measurement result values for the equipment.
+     *
+     * @param equipmentNumber The equipment number.
+     * @param housingEquipmentId The housing equipment id.
+     * @param measurementModes The measurement modes.
      */
     const updateEquipmentMeasurementResults = useCallback(
         async (equipmentNumber: number | null, housingEquipmentId: number, measurementModes: string[]) => {
