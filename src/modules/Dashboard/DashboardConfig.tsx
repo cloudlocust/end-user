@@ -46,7 +46,7 @@ export const DashboardConfig = [
                     UINavbarItem: {
                         id: 'Acceuil',
                         label: 'Acceuil',
-                        labelAbbreviation: 'accueil',
+                        labelAbbreviation: 'Accueil',
                         type: 'item',
                         icon: (
                             <SvgIcon>
@@ -59,8 +59,8 @@ export const DashboardConfig = [
                                 <DashboardSelectedIcon />,
                             </SvgIcon>
                         ),
-                        // disabled: !isDashboardFeatureEnabled,
-                        // isHidden: !isDashboardFeatureEnabled,
+                        disabled: !isDashboardFeatureEnabled,
+                        isHidden: !isDashboardFeatureEnabled,
                     },
                 },
             },

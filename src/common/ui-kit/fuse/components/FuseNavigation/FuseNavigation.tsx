@@ -49,6 +49,10 @@ export type navbarItemType = {
      */
     disabled?: boolean
     /**
+     * Allowes the route to be hidden from the navbar. (Useful when we don't want some environment to have a specific route).
+     */
+    isHidden?: boolean
+    /**
      * Additional ClassName for the Icon.
      */
     iconClassName?: string
