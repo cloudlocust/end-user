@@ -995,3 +995,35 @@ export const filterMetricsData = (
 
     return data
 }
+
+/**
+ * Function that gets the range according to the period.
+ *
+ * @param date Date.
+ * @param period Metric period.
+ * @returns Returns the range according to the period.
+ */
+export function getRangeFromDate(date: Date, period: PeriodEnum): metricRangeType {
+    switch (period) {
+        case PeriodEnum.DAILY:
+            return {
+                from: getDateWithoutTimezoneOffset(startOfDay(date)),
+                to: getDateWithoutTimezoneOffset(endOfDay(date)),
+            }
+        case PeriodEnum.WEEKLY:
+            return {
+                from: getDateWithoutTimezoneOffset(startOfWeek(date, { locale: fr })),
+                to: getDateWithoutTimezoneOffset(endOfWeek(date, { locale: fr })),
+            }
+        case PeriodEnum.MONTHLY:
+            return {
+                from: getDateWithoutTimezoneOffset(startOfMonth(date)),
+                to: getDateWithoutTimezoneOffset(endOfMonth(date)),
+            }
+        case PeriodEnum.YEARLY:
+            return {
+                from: getDateWithoutTimezoneOffset(startOfYear(date)),
+                to: getDateWithoutTimezoneOffset(endOfYear(date)),
+            }
+    }
+}
