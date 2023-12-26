@@ -39,7 +39,7 @@ export const AdvicesConfig = [
     {
         path: URL_ADVICES,
         component: Advices,
-        auth: { authType: authTypes.freeAccess }, // TODO CHANGE
+        auth: { authType: authTypes.loginRequired },
         settings: {
             layout: {
                 navbar: {

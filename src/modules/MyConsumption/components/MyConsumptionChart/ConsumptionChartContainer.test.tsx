@@ -426,7 +426,7 @@ describe('MyConsumptionContainer test', () => {
             userEvent.click(getAllByRole('menuitem')[1])
 
             await waitFor(() => {
-                expect(mockGetMetricsWithParams).toHaveBeenCalledTimes(2)
+                expect(mockGetMetricsWithParams).toHaveBeenCalledTimes(3)
             })
         }, 10000)
     })

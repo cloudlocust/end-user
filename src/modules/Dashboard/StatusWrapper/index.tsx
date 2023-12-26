@@ -33,7 +33,7 @@ export const StatusWrapper = ({
         useMemo(() => nrlinkPowerData, [nrlinkPowerData]) || {}
 
     return (
-        <div className="flex justify-between items-center w-full space-x-10 mb-20">
+        <div className="flex space-x-10 md:flex-col md:justify-between md:space-x-0 md:space-y-32">
             <EnergyStatusWidget
                 isNrlinkPowerLoading={isNrlinkPowerLoading}
                 lastPowerData={lastPowerData}

@@ -72,7 +72,7 @@ export const AdviceContainer = () => {
                 </TypographyFormatMessage>
             </div>
             <div
-                className="flex justify-end items-center flex-auto cursor-pointer"
+                className="flex justify-end items-end flex-auto cursor-pointer"
                 onClick={() => {
                     setCurrentEcogeste(ecogeste)
                     onOpenDetailAdvicePopup()
@@ -87,9 +87,9 @@ export const AdviceContainer = () => {
 
     return (
         <FuseCard
-            className="w-full"
+            className="col-span-12"
             isLoading={loadingInProgress}
-            style={{ height: smDown && loadingInProgress ? '150px' : !smDown && loadingInProgress ? '250px' : 'auto' }}
+            style={{ height: smDown && loadingInProgress ? '150px' : !smDown && loadingInProgress ? '300px' : 'auto' }}
         >
             <CardContent
                 className="flex flex-col h-full items-stretch"
