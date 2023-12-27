@@ -16,6 +16,7 @@ import {
     getDefaultConsumptionTargets,
     filterMetricsData,
     nullifyTodayIdleConsumptionValue,
+    getRangeFromDate,
 } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
 import { IMetric, metricIntervalType, metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
 import { FAKE_WEEK_DATA, FAKE_DAY_DATA, FAKE_MONTH_DATA, FAKE_YEAR_DATA } from 'src/mocks/handlers/metrics'
@@ -1172,6 +1173,37 @@ describe('filterMetricsData tests', () => {
             const fileteredData = filterMetricsData(data, 'daily', true)
 
             expect(fileteredData).toStrictEqual(expectedResult)
+        })
+    })
+})
+
+describe('getRangeFromDate', () => {
+    test('getRangeFromDate test with different cases', () => {
+        const date = new Date('2022-06-23T00:00:00Z')
+
+        const testCases = [
+            {
+                period: PeriodEnum.DAILY,
+                expectedRange: { from: '2022-06-23T00:00:00.000Z', to: '2022-06-23T23:59:59.999Z' },
+            },
+            {
+                period: PeriodEnum.WEEKLY,
+                expectedRange: { from: '2022-06-20T00:00:00.000Z', to: '2022-06-26T23:59:59.999Z' },
+            },
+            {
+                period: PeriodEnum.MONTHLY,
+                expectedRange: { from: '2022-06-01T00:00:00.000Z', to: '2022-06-30T23:59:59.999Z' },
+            },
+            {
+                period: PeriodEnum.YEARLY,
+                expectedRange: { from: '2022-01-01T00:00:00.000Z', to: '2022-12-31T23:59:59.999Z' },
+            },
+        ]
+
+        testCases.forEach((testCase) => {
+            const { period, expectedRange } = testCase
+            const range = getRangeFromDate(date, period)
+            expect(range).toEqual(expectedRange)
         })
     })
 })

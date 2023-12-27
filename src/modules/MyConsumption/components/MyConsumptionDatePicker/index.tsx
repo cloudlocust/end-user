@@ -12,7 +12,7 @@ import {
     convertToDateFnsPeriod,
     getCalendarDates,
     getDateWithTimezoneOffset,
-    getRange,
+    getRangeFromDate,
     subPeriod,
 } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
 import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker'
@@ -62,7 +62,9 @@ const MyConsumptionDatePicker = ({
     const handleDateChange = (newDate: Date | null) => {
         if (newDate) {
             if (onDatePickerChange) onDatePickerChange(newDate)
-            else setRange(getRange(period, newDate, 'add'))
+            else {
+                setRange(getRangeFromDate(newDate, period))
+            }
         }
     }
 
