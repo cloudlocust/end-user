@@ -37,9 +37,9 @@ export const AlertWidget = ({ alertPeriod, alertThreshold, currentValue }: Alert
     )
 
     return (
-        <div className="flex flex-col min-h-288 p-20">
+        <div className="flex flex-col min-h-288 p-10">
             <div className="flex items-center gap-10">
-                <IconButton className="pointer-events-none" size="small" sx={{ bgcolor: theme.palette.primary.main }}>
+                <IconButton className="pointer-events-none" size="medium" sx={{ bgcolor: theme.palette.primary.main }}>
                     <NotificationsActiveIcon sx={{ color: theme.palette.primary.contrastText }} />
                 </IconButton>
                 <div>

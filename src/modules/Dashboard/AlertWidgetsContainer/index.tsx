@@ -130,7 +130,7 @@ export const AlertWidgetsContainer = () => {
             sx={{ height: isAlertsLoadingInProgress || isMetricsLoading ? 290 : '100%' }}
             isLoading={isAlertsLoadingInProgress || isMetricsLoading}
             loadingColor={theme.palette.primary.main}
-            className="p-20 flex flex-grow"
+            className="flex flex-grow"
         >
             <StyledSwiper spaceBetween={20} slidesPerView={1} pagination={{ clickable: true }} navigation>
                 {alertPeriodsArray.map((alertPeriod) => {
