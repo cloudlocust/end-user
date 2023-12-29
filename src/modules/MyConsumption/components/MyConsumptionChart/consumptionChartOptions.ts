@@ -78,8 +78,13 @@ const getDefaultOptionsEchartsConsumptionChart = (theme: Theme, period: periodTy
         },
         tooltip: {
             // Confine set to true helps for responsive, to avoid overflowing and hiding part of the tooltip on mobile.
-            confine: true,
+            confine: isMobile ? false : true,
             trigger: 'axis',
+            position: isMobile
+                ? () => {
+                      return { top: '-90', left: '20' }
+                  }
+                : 'inside',
         },
         dataZoom: [
             {
