@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "391767321408",
+    "project_id": "myem-staging",
+    "storage_bucket": "myem-staging.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:391767321408:android:7bf0ba366220323834e8a5",
+        "android_client_info": {
+          "package_name": "com.myem.myemStaging"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD11n0jb7J2UGhghAX3eZ0XN2v2emUhe7o"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

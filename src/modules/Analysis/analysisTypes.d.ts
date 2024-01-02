@@ -1,3 +1,4 @@
+import { totalConsumptionUnits } from 'src/modules/MyConsumption/components/Widget/Widget'
 import { ChartsAxisValuesType } from 'src/modules/MyConsumption/myConsumptionTypes'
 
 /**

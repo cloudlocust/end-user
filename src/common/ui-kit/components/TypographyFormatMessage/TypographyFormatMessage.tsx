@@ -2,7 +2,7 @@ import { useIntl } from 'src/common/react-platform-translation'
 import Typography, { TypographyProps } from '@mui/material/Typography'
 
 //eslint-disable-next-line jsdoc/require-jsdoc
-interface TypographyFormatMessageProps extends TypographyProps {
+type TypographyFormatMessageProps = TypographyProps & {
     //eslint-disable-next-line jsdoc/require-jsdoc
     TypoProps?: TypographyProps
     //eslint-disable-next-line jsdoc/require-jsdoc

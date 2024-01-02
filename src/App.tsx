@@ -1,7 +1,7 @@
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import { Switch, Route, Redirect, useLocation, useHistory } from 'react-router-dom'
 import { useAuth } from 'src/modules/User/authentication/useAuth'
-import { routes, navigationsConfig, IAdditionnalSettings, IPageSettingsDisabled } from 'src/routes'
+import { routes as routesConfig, navigationsConfig, IAdditionnalSettings, IPageSettingsDisabled } from 'src/routes'
 import Layout1 from 'src/common/ui-kit/fuse/layouts/layout1/Layout1'
 import ThemingProvider from 'src/common/ui-kit/fuse/components/ThemingProvider'
 import { navbarItemType } from 'src/common/ui-kit/fuse/components/FuseNavigation/FuseNavigation'
@@ -17,6 +17,7 @@ import { useSelector } from 'react-redux'
 import { isMaintenanceMode } from 'src/configs'
 import { Maintenance } from 'src/modules/Maintenance/Maintenance'
 import { URL_MAINTENANCE } from 'src/modules/Maintenance/MaintenanceConfig'
+import { getTokenFromFirebase } from 'src/firebase'
 
 const Root = styled('div')(({ theme }) => ({
     '& #fuse-main': {
@@ -96,21 +97,25 @@ const Routes = () => {
     const navbarContent: navbarItemType[] = []
     navigationsConfig.forEach((navigationConfig) => {
         const UINavbarItem = navigationConfig.settings.layout.navbar.UINavbarItem
+
+        // If the navbar item is hidden, we don't need to push it to the navbarContent.
+        if (UINavbarItem?.isHidden) return
+
         hasAccess(navigationConfig.auth) && navbarContent.push(UINavbarItem)
     })
 
     useEffect(() => {
-        if (isMaintenanceMode) {
-            const { pathname } = location
-            if (pathname !== URL_MAINTENANCE) {
-                history.replace(URL_MAINTENANCE)
-            }
+        const { pathname } = location
+        const isRedirectNeeded = isMaintenanceMode ? pathname !== URL_MAINTENANCE : pathname === URL_MAINTENANCE
+
+        if (isRedirectNeeded) {
+            history.replace(isMaintenanceMode ? URL_MAINTENANCE : '/')
         }
     }, [history, location])
 
     return (
         <Switch>
-            {routes.map((route, index) => {
+            {routesConfig.map((route, index) => {
                 return (
                     <Route
                         key={index}
@@ -168,6 +173,17 @@ const Routes = () => {
  * @returns Main application.
  */
 function App() {
+    const { user } = useSelector(({ userModel }: RootState) => userModel)
+    const isTokenLoadedFromFirebase = useRef(false)
+
+    useEffect(() => {
+        // Send the device token to the backend
+        if (user && !isTokenLoadedFromFirebase.current) {
+            getTokenFromFirebase()
+            isTokenLoadedFromFirebase.current = true
+        }
+    }, [user])
+
     return <Routes />
 }
 
