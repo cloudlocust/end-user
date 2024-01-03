@@ -43,10 +43,10 @@ export const AlertWidget = ({ alertPeriod, alertThreshold, currentValue }: Alert
                     <NotificationsActiveIcon sx={{ color: theme.palette.primary.contrastText }} />
                 </IconButton>
                 <div>
-                    <TypographyFormatMessage className="inline text-14 sm:text-16">
+                    <TypographyFormatMessage className="inline text-16 sm:text-20">
                         Mon seuil d'alerte
                     </TypographyFormatMessage>{' '}
-                    <TypographyFormatMessage className="inline text-14 sm:text-16 font-700">
+                    <TypographyFormatMessage className="inline text-16 sm:text-20 font-700">
                         {alertPeriodText.title[alertPeriod]}
                     </TypographyFormatMessage>
                 </div>
