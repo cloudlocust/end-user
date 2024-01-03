@@ -498,7 +498,7 @@ export const mapppingEquipmentToLabel = {
     vacuum: 'Aspirateur',
     oven: 'Four',
     microwave: 'Micro-onde',
-    fridge: 'Réfrigérateur',
+    fridge: 'Congélateur',
     dishwasher: 'Lave-vaisselle',
     washingmachine: 'Lave linge',
     dryer: 'Sèche linge',
