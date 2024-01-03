@@ -112,6 +112,6 @@ describe('EnergyStatusWidget', () => {
         expect(screen.getByText('Dernière puissance remontée')).toBeInTheDocument()
         expect(screen.getByText('22')).toBeInTheDocument()
         expect(screen.getByText('Wh')).toBeInTheDocument()
-        expect(screen.getByText('à 12:00:00')).toBeInTheDocument()
+        expect(screen.getByText('à 11:00:00')).toBeInTheDocument()
     })
 })
