@@ -21,7 +21,10 @@ export const WeatherWidget = (props: WeatherWidgetProps) => {
     return (
         <FuseCard
             isLoading={isNrlinkPowerLoading}
-            sx={{ height: mdDown ? CARD_HEIGHT : '40%', width: mdDown ? '30%' : '100%', minHeight: '100%' }}
+            sx={{
+                height: mdDown ? CARD_HEIGHT : '40%',
+                width: mdDown ? '30%' : '100%',
+            }}
             className="flex"
         >
             <CardContent

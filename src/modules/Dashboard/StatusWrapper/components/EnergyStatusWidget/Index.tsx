@@ -74,7 +74,7 @@ export const EnergyStatusWidget = (props: EnergyStatusWidgetProps) => {
         <FuseCard
             sx={{
                 bgcolor: BG_PRIMARY_MAIN,
-                minHeight: mdDown ? CARD_HEIGHT : '60%',
+                height: mdDown ? CARD_HEIGHT : '60%',
                 width: mdDown ? '70%' : '100%',
             }}
             isLoading={isNrlinkPowerLoading}
@@ -97,22 +97,25 @@ export const EnergyStatusWidget = (props: EnergyStatusWidgetProps) => {
                         {iconType}
                     </IconButton>
 
-                    <TypographyFormatMessage className="text-16 sm:text-20 font-400" sx={{ color: themeContrastText }}>
+                    <TypographyFormatMessage
+                        className="text-14 sm:text-18 lg:text-20 font-400"
+                        sx={{ color: themeContrastText }}
+                    >
                         {widgetTitle}
                     </TypographyFormatMessage>
                 </div>
                 <div className="flex flex-col w-full">
                     {(isNrlinkDisconnected || isNrlinkOff) && (
-                        <div className="flex justify-end items-center text-12 lg:text-14 mb-10">
+                        <div className="flex justify-end items-center text-13 mb-10">
                             <span style={{ color: themeContrastText }}>{NRLINK_OFFLINE}</span>
                         </div>
                     )}
-                    <div className="flex justify-end items-center text-12 sm:text-18 mb-10">
+                    <div className="flex justify-end items-center text-12 sm:text-16 mb-10">
                         <span style={{ color: themeContrastText }}>
                             {lastNrlinkPowerDate ? `à ${lastNrlinkPowerDate}` : null}
                         </span>
                     </div>
-                    <div className="flex flex-row space-x-5 justify-end">
+                    <div className="flex flex-row space-x-5 justify-end flex-1">
                         <div className="flex space-x-5 items-baseline">
                             <span className="text-28 leading-3 md:font-semibold" style={{ color: themeContrastText }}>
                                 {computedLastPowerData?.value}
