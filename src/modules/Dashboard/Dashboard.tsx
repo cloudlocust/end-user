@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux'
 import { RootState } from 'src/redux'
 import { MissingHousingMeterErrorMessage } from 'src/modules/MyConsumption/utils/ErrorMessages'
 import { useConsents } from 'src/modules/Consents/consentsHook'
+import { useEffect } from 'react'
 
 /**
  * Dashboard page.
@@ -12,10 +13,13 @@ import { useConsents } from 'src/modules/Consents/consentsHook'
  */
 export const Dashboard = () => {
     const { currentHousing } = useSelector(({ housingModel }: RootState) => housingModel)
-    const { nrlinkConsent, enedisSgeConsent } = useConsents()
-    const nrlinkOff = nrlinkConsent?.nrlinkConsentState === 'NONEXISTENT'
-    const enedisOff = enedisSgeConsent?.enedisSgeConsentState !== 'CONNECTED'
+    const { nrlinkConsent, getConsents } = useConsents()
+    const nrlinkActif = nrlinkConsent?.nrlinkConsentState !== 'NONEXISTENT'
+    useEffect(() => {
+        if (!currentHousing?.id) return
+        getConsents(currentHousing?.id)
+    }, [getConsents, currentHousing?.id])
 
-    if (!currentHousing?.meter?.guid || (nrlinkOff && enedisOff)) return <MissingHousingMeterErrorMessage />
+    if (!currentHousing?.meter?.guid || !nrlinkActif) return <MissingHousingMeterErrorMessage />
     return <PageSimple content={<DashboardContainer />} />
 }
