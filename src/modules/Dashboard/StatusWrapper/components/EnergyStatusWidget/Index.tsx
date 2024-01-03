@@ -4,9 +4,9 @@ import { ReactComponent as BoltIcon } from 'src/assets/images/dashboard/bolt.svg
 import dayjs from 'dayjs'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import { SVGAttributes, useMemo } from 'react'
-import { consumptionWattUnitConversion } from 'src/modules/MyConsumption/utils/unitConversionFunction'
 import { FuseCard } from 'src/modules/shared/FuseCard/FuseCard'
 import { EnergyStatusWidgetProps } from 'src/modules/Dashboard/StatusWrapper/components/EnergyStatusWidget/energyStatusWidget'
+import convert from 'convert-units'
 
 /**
  * Icon style.
@@ -64,11 +64,16 @@ export const EnergyStatusWidget = (props: EnergyStatusWidgetProps) => {
 
     const computedLastPowerData = useMemo(() => {
         return lastPowerData?.value && lastPowerData.timestamp
-            ? consumptionWattUnitConversion(Math.abs(lastPowerData?.value!))
+            ? { value: Math.abs(lastPowerData.value), unit: 'W' }
             : { value: 0, unit: 'W' }
     }, [lastPowerData])
 
     const lastNrlinkPowerDate = lastDataTimestamp ? dayjs(lastDataTimestamp).utc().locale('fr').format('HH:mm:ss') : ''
+
+    const lastNrlinkPowerDataInEuro = useMemo(
+        () => (pricePerKwh ? convert(computedLastPowerData.value).from('Wh').to('kWh') * pricePerKwh : 0),
+        [computedLastPowerData.value, pricePerKwh],
+    )
 
     return (
         <FuseCard
@@ -121,7 +126,7 @@ export const EnergyStatusWidget = (props: EnergyStatusWidgetProps) => {
                                 {computedLastPowerData?.value}
                             </span>
                             <span className="text-14 leading-3 md:font-medium" style={{ color: themeContrastText }}>
-                                {computedLastPowerData?.unit}
+                                {computedLastPowerData.unit}
                             </span>
                         </div>
                         {!isLastPowerDataNegative && (
@@ -130,7 +135,7 @@ export const EnergyStatusWidget = (props: EnergyStatusWidgetProps) => {
                                     className="text-28 md:text-32 leading-3 md:font-semibold"
                                     style={{ color: themeContrastText }}
                                 >
-                                    {isNrlinkDisconnected ? '-' : pricePerKwh?.toFixed(2)}
+                                    {isNrlinkDisconnected ? '-' : lastNrlinkPowerDataInEuro.toFixed(2)}
                                 </span>
                                 <span className="text-14 leading-3 md:font-medium" style={{ color: themeContrastText }}>
                                     €/h

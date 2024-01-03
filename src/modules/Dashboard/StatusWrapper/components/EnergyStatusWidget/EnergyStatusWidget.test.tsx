@@ -7,12 +7,11 @@ import { EnergyStatusWidgetProps } from 'src/modules/Dashboard/StatusWrapper/com
 jest.mock('dayjs', () => {
     const originalDayjs = jest.requireActual('dayjs')
     const utc = require('dayjs/plugin/utc')
-    const frLocale = require('dayjs/locale/fr')
 
     // eslint-disable-next-line jsdoc/require-jsdoc
-    const mockDayjs = (...args: string[]) => {
+    const mockDayjs = () => {
         // eslint-disable-next-line sonarjs/no-duplicate-string
-        return args.length ? originalDayjs(...args) : originalDayjs('2023-01-01T12:00:00.000')
+        return originalDayjs('2023-01-01T12:00:00.000')
     }
 
     // eslint-disable-next-line jsdoc/require-jsdoc
@@ -25,10 +24,6 @@ jest.mock('dayjs', () => {
 
     // eslint-disable-next-line jsdoc/require-jsdoc
     mockDayjs.locale = (locale: any) => {
-        if (locale === 'fr') {
-            originalDayjs.locale(frLocale)
-            return
-        }
         originalDayjs.locale(locale)
     }
 
@@ -108,10 +103,12 @@ describe('EnergyStatusWidget', () => {
             timestamp: '2023-01-01T12:00:00.000',
             value: 22,
         }
+        defaultProps.pricePerKwh = 0.22
         reduxedRender(<EnergyStatusWidget {...defaultProps} />)
         expect(screen.getByText('Dernière puissance remontée')).toBeInTheDocument()
         expect(screen.getByText('22')).toBeInTheDocument()
-        expect(screen.getByText('Wh')).toBeInTheDocument()
+        expect(screen.getByText('W')).toBeInTheDocument()
         expect(screen.getByText('à 11:00:00')).toBeInTheDocument()
+        expect(screen.getByText('€/h')).toBeInTheDocument()
     })
 })
