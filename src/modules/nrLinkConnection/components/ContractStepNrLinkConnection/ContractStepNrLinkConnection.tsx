@@ -2,7 +2,7 @@ import { Box, Button, useTheme, Hidden, CircularProgress } from '@mui/material'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import { ReactComponent as ContractIcon } from 'src/assets/images/content/housing/contract.svg'
 import { Link, useHistory } from 'react-router-dom'
-import { URL_CONSUMPTION } from 'src/modules/MyConsumption'
+import { URL_DASHBOARD } from 'src/modules/Dashboard/DashboardConfig'
 import { addContractDataType } from 'src/modules/Contracts/contractsTypes'
 import { useContractList } from 'src/modules/Contracts/contractsHook'
 import ContractForm from 'src/modules/Contracts/components/ContractForm'
@@ -68,7 +68,7 @@ const ContractStepNrLinkConnection = ({ housingId }: { housingId?: number }) => 
                         setIsContractAdding(true)
                         try {
                             await addContract(input)
-                            history.push(URL_CONSUMPTION)
+                            history.push(URL_DASHBOARD)
                             // Catching the error to avoir application crash and stops working.
                         } catch (error) {}
                         setIsContractAdding(false)
@@ -88,7 +88,7 @@ const ContractStepNrLinkConnection = ({ housingId }: { housingId?: number }) => 
                         className="mb-20"
                     />
                 </Hidden>
-                <Button component={Link} to={URL_CONSUMPTION} color="primary" variant="outlined" className="mx-24">
+                <Button component={Link} to={URL_DASHBOARD} color="primary" variant="outlined" className="mx-24">
                     <TypographyFormatMessage>Passer cette étape</TypographyFormatMessage>
                 </Button>
             </div>

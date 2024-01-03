@@ -8,10 +8,11 @@ import MuiLink from '@mui/material/Link'
 import Button from '@mui/material/Button'
 import { motion } from 'framer-motion'
 import { URL_NRLINK_CONNECTION_STEPS, linkyNrLinkPath } from 'src/modules/nrLinkConnection'
-import { URL_CONSUMPTION } from 'src/modules/MyConsumption'
 import { axios } from 'src/common/react-platform-components'
 import { API_RESOURCES_URL } from 'src/configs'
 import { linksColor } from 'src/modules/utils/muiThemeVariables'
+import { URL_DASHBOARD } from 'src/modules/Dashboard/DashboardConfig'
+
 /**
  * Get Show NrLink Popup Endpoint.
  */
@@ -40,10 +41,10 @@ const NrLinkConnection = () => {
                 `${GET_SHOW_NRLINK_POPUP_ENDPOINT}`,
             )
             if (!responseData.showNrlinkPopup) {
-                history.push(URL_CONSUMPTION)
+                history.push(URL_DASHBOARD)
             }
         } catch (error) {
-            history.push(URL_CONSUMPTION)
+            history.push(URL_DASHBOARD)
         }
     }, [history])
     useEffect(() => {
@@ -90,7 +91,7 @@ const NrLinkConnection = () => {
                                     // eslint-disable-next-line jsdoc/require-jsdoc
                                     (theme) => linksColor || theme.palette.primary.main,
                             }}
-                            to={URL_CONSUMPTION}
+                            to={URL_DASHBOARD}
                             underline="none"
                         >
                             {formatMessage({ id: 'Passer cette étape', defaultMessage: 'Passer cette étape' })}
