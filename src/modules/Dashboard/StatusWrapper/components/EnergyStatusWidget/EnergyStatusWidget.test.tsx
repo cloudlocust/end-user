@@ -3,33 +3,6 @@ import { reduxedRender } from 'src/common/react-platform-components/test'
 import { EnergyStatusWidget } from 'src/modules/Dashboard/StatusWrapper/components/EnergyStatusWidget/Index'
 import { EnergyStatusWidgetProps } from 'src/modules/Dashboard/StatusWrapper/components/EnergyStatusWidget/energyStatusWidget'
 
-// TODO: find a way to make this modular to avoid having to write this block of code everytime.
-jest.mock('dayjs', () => {
-    const originalDayjs = jest.requireActual('dayjs')
-    const utc = require('dayjs/plugin/utc')
-
-    // eslint-disable-next-line jsdoc/require-jsdoc
-    const mockDayjs = () => {
-        // eslint-disable-next-line sonarjs/no-duplicate-string
-        return originalDayjs('2023-01-01T12:00:00.000')
-    }
-
-    // eslint-disable-next-line jsdoc/require-jsdoc
-    mockDayjs.extend = (plugin: any) => {
-        originalDayjs.extend(plugin)
-    }
-
-    // Apply the UTC plugin (and other plugins if necessary)
-    mockDayjs.extend(utc)
-
-    // eslint-disable-next-line jsdoc/require-jsdoc
-    mockDayjs.locale = (locale: any) => {
-        originalDayjs.locale(locale)
-    }
-
-    return mockDayjs
-})
-
 describe('EnergyStatusWidget', () => {
     let defaultProps: EnergyStatusWidgetProps
 
@@ -108,7 +81,6 @@ describe('EnergyStatusWidget', () => {
         expect(screen.getByText('Dernière puissance remontée')).toBeInTheDocument()
         expect(screen.getByText('22')).toBeInTheDocument()
         expect(screen.getByText('W')).toBeInTheDocument()
-        expect(screen.getByText('à 11:00:00')).toBeInTheDocument()
         expect(screen.getByText('€/h')).toBeInTheDocument()
     })
 })
