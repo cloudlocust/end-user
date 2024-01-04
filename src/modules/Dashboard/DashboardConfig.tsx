@@ -44,8 +44,8 @@ export const DashboardConfig = [
             layout: {
                 navbar: {
                     UINavbarItem: {
-                        id: 'Acceuil',
-                        label: 'Acceuil',
+                        id: 'Accueil',
+                        label: 'Accueil',
                         labelAbbreviation: 'Accueil',
                         type: 'item',
                         icon: (
