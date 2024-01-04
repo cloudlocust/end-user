@@ -1,5 +1,4 @@
-import { Dialog, DialogContent, useTheme, IconButton, alpha, Button } from '@mui/material'
-import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
+import { Dialog, DialogContent, useTheme, IconButton, alpha, Button, Typography } from '@mui/material'
 import { DetailAdviceDialogProps } from 'src/modules/Dashboard/AdviceContainer/components/DetailAdviceDialog/detailAdviceDialog'
 import { Close as CloseIcon } from '@mui/icons-material'
 import { SavingPercentage } from 'src/modules/Dashboard/AdviceContainer/components/SavingPercentage'
@@ -17,6 +16,8 @@ export const DetailAdviceDialog = (props: DetailAdviceDialogProps) => {
 
     if (!currentEcogeste) return null
 
+    // !TypographyFormatMessage is throwing an error when one of the field in currentEcogeste is undefined.
+
     return (
         <Dialog open={isDetailAdvicePopupOpen} onClose={onCloseDetailAdvicePopup} maxWidth={'md'}>
             <DialogContent sx={{ bgcolor: alpha(theme.palette.primary.light, 0.1) }}>
@@ -28,35 +29,37 @@ export const DetailAdviceDialog = (props: DetailAdviceDialogProps) => {
                                 height: '100%',
                                 filter: `opacity(0.1) drop-shadow(0 0 0 ${theme.palette.primary.main}) drop-shadow(0 0 0 ${theme.palette.primary.main}) drop-shadow(0 0 0 ${theme.palette.primary.main}) drop-shadow(0 0 0 ${theme.palette.primary.main}) drop-shadow(0 0 0 ${theme.palette.primary.main})`,
                             }}
-                            src={currentEcogeste.urlIcon}
-                            alt={currentEcogeste.title}
+                            src={currentEcogeste?.urlIcon}
+                            alt={currentEcogeste?.title}
                         />
                     </div>
                     <div className="flex justify-between items-center w-full">
-                        <TypographyFormatMessage className="text-14 md:text-16 leading-none" fontWeight={600}>
-                            {`${currentEcogeste.title}`}
-                        </TypographyFormatMessage>
+                        <Typography className="text-14 md:text-16 leading-none" fontWeight={600}>
+                            {`${currentEcogeste?.title}`}
+                        </Typography>
                         <IconButton onClick={onCloseDetailAdvicePopup}>
                             <CloseIcon />
                         </IconButton>
                     </div>
                 </div>
                 <div className="flex flex-auto mb-10">
-                    <TypographyFormatMessage className="text-14 md:text-16 text-justify">
+                    <Typography className="text-14 md:text-16 text-justify">
                         {`${currentEcogeste?.description}`}
-                    </TypographyFormatMessage>
+                    </Typography>
                 </div>
-                <div className="flex flex-auto justify-between items-center mb-20 text-14 md:text-16">
-                    <SavingPercentage percentageSaved={currentEcogeste.percentageSaved} />
-                    <span>
-                        Jusqu'à <strong>{currentEcogeste.percentageSaved}</strong> d'économie
-                    </span>
-                </div>
+                {currentEcogeste?.percentageSaved && (
+                    <div className="flex flex-auto justify-between items-center mb-20 text-14 md:text-16">
+                        <SavingPercentage percentageSaved={currentEcogeste.percentageSaved} />
+                        <span>
+                            Jusqu'à <strong>{currentEcogeste?.percentageSaved}</strong> d'économie
+                        </span>
+                    </div>
+                )}
                 <div className="mb-10">
-                    <TypographyFormatMessage className="text-14 md:text-16" fontWeight={600}>
+                    <Typography className="text-14 md:text-16" fontWeight={600}>
                         Pour en savoir plus
-                    </TypographyFormatMessage>
-                    <TypographyFormatMessage className="text-14 md:text-16 text-justify">{`${currentEcogeste.infos}`}</TypographyFormatMessage>
+                    </Typography>
+                    <Typography className="text-14 md:text-16 text-justify">{`${currentEcogeste?.infos}`}</Typography>
                 </div>
                 <Button fullWidth component={Link} to="/advices" variant="contained" className="text-14 md:text-16">
                     Plus de conseils
