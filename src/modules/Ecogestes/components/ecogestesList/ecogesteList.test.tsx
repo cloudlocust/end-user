@@ -11,6 +11,7 @@ import { SnakeCasedPropertiesDeep } from 'type-fest'
 
 const TEST_ECOGESTES_ECO_CARD_LABEL = 'ecogeste-card'
 let mockCategoryId: string = '0'
+let mockShowJustVisualisedEcogests: boolean = false
 let mockEcogestes: SnakeCasedPropertiesDeep<IEcogeste>[] = []
 let mockEcogesteCategory: IEcogestCategory = {
     id: 42,
@@ -43,6 +44,15 @@ jest.mock('react-router-dom', () => ({
      */
     useParams: () => ({
         categoryId: mockCategoryId,
+    }),
+
+    /**
+     * Mock the useLocation.
+     *
+     * @returns UseLocation.
+     */
+    useLocation: () => ({
+        state: { showJustVisualisedEcogests: mockShowJustVisualisedEcogests },
     }),
 
     /**
@@ -80,6 +90,8 @@ jest.mock('src/modules/Ecogestes/hooks/ecogestesHook', () => {
     }
 })
 
+const filterButtonLabelText = 'button, filter'
+
 describe('EcogestesList tests', () => {
     describe('should render correctly component', () => {
         test('When loaded, should render correctly Ecogeste Header', async () => {
@@ -101,6 +113,7 @@ describe('EcogestesList tests', () => {
             expect(queryByRole('progressbar')).toBeTruthy()
         })
     })
+
     describe('Test proper rendering for categories', () => {
         test('When rendering, should render correctly ecogestes', async () => {
             mockCategoryId = '2'
@@ -140,7 +153,7 @@ describe('EcogestesList tests', () => {
                 </BrowserRouter>,
             )
 
-            const FilterButton = queryByLabelText('button, filter')
+            const FilterButton = queryByLabelText(filterButtonLabelText)
             expect(FilterButton).toBeTruthy()
 
             fireEvent(FilterButton!, new MouseEvent('click', { bubbles: true }))
@@ -158,7 +171,7 @@ describe('EcogestesList tests', () => {
                 </BrowserRouter>,
             )
 
-            const FilterButton = queryByLabelText('button, filter')
+            const FilterButton = queryByLabelText(filterButtonLabelText)
             expect(FilterButton).toBeTruthy()
 
             userEvent.click(FilterButton!, { bubbles: true })
@@ -213,5 +226,18 @@ describe('EcogestesList tests', () => {
                 expect(queryAllByLabelText(TEST_ECOGESTES_ECO_CARD_LABEL)).toHaveLength(TEST_ECOGESTES.length)
             })
         })
+    })
+
+    test('When showJustVisualisedEcogests is true, should not display the filter button', () => {
+        mockShowJustVisualisedEcogests = true
+        mockCategoryId = '0'
+        mockEcogestes = [TEST_ECOGESTES[0]]
+        const { queryByLabelText } = reduxedRender(
+            <BrowserRouter>
+                <EcogestesList />
+            </BrowserRouter>,
+        )
+
+        expect(queryByLabelText(filterButtonLabelText)).not.toBeTruthy()
     })
 })

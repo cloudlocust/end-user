@@ -40,7 +40,7 @@ export const EcogestesWrapper = ({ showJustVisualisedEcogests }: EcogestesWrappe
 
     return (
         <div
-            className="w-full relative flex flex-col items-center p-16"
+            className="w-full relative flex flex-col items-center gap-20 p-16"
             aria-label={selectedEcogestesCategory.toString() + 'Ecogests'}
         >
             <ButtonsSwitcher buttonsSwitcherParams={buttonsSwitcherParams} />

@@ -1,7 +1,6 @@
-import { useLocation } from 'react-router-dom'
 import { isEmpty, isNull } from 'lodash'
 import useEcogestes from 'src/modules/Ecogestes/hooks/ecogestesHook'
-import { useParams } from 'react-router-dom'
+import { useParams, useLocation } from 'react-router-dom'
 import { EcogesteCard } from 'src/modules/Ecogestes'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import { Button, Menu, MenuItem, MenuList, SvgIcon } from '@mui/material'

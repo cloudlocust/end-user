@@ -44,6 +44,7 @@ export const ButtonsSwitcher = ({ buttonsSwitcherParams }: ButtonsSwitcherProps)
                                   },
                               }
                     }
+                    aria-label={index === indexOfSelectedButton ? 'active-cell' : 'clickable-cell'}
                     onClick={() => {
                         setIndexOfSelectedButton(index)
                         buttonSwitcherParam.clickHandler()
