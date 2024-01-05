@@ -43,7 +43,7 @@ export const EcogesteCard = ({
     const theme = useTheme()
     const [shouldEllipse, setShouldEllipse] = useState(false)
     const [seeFull, setSeeFull] = useToggle(false)
-    const { setViewStatus } = useEcogestes()
+    const { setViewStatus } = useEcogestes(false)
     const [infoModalOpen, setInfoModalOpen] = useState(false)
 
     const ref = useRef(null)

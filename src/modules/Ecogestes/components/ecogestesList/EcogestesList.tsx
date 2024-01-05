@@ -1,3 +1,4 @@
+import { useLocation } from 'react-router-dom'
 import { isEmpty, isNull } from 'lodash'
 import useEcogestes from 'src/modules/Ecogestes/hooks/ecogestesHook'
 import { useParams } from 'react-router-dom'
@@ -41,6 +42,15 @@ const getFilterIcon = (filter: EcogestViewedEnum) => {
  * @returns A Component which displays and filter a list of ecogestes.
  */
 export const EcogestesList = () => {
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    const location = useLocation<{
+        /**
+         * Indicates whether to show just visualised ecogests.
+         */
+        showJustVisualisedEcogests: boolean
+    }>()
+    const { showJustVisualisedEcogests } = location.state
+
     /**
      * Mandatory...
      * If we don't do that we got a Re-render and some bugs like all ecogeste instead of Ecogeste linked to a Category...
@@ -61,7 +71,7 @@ export const EcogestesList = () => {
         elementList: ecogestesList,
         loadingInProgress: isEcogestesLoadingInProgress,
         filterEcogestes,
-    } = useEcogestes()
+    } = useEcogestes(showJustVisualisedEcogests)
 
     const [currentViewFilter, setCurrentViewFilter] = useState<EcogestViewedEnum>(EcogestViewedEnum.ALL)
 
@@ -99,54 +109,58 @@ export const EcogestesList = () => {
                 <TypographyFormatMessage variant="h2" className="text-20 font-bold mx-auto">
                     Les écogestes associés
                 </TypographyFormatMessage>
-                <>
-                    <Button
-                        variant="outlined"
-                        startIcon={getFilterIcon(currentViewFilter)}
-                        endIcon={<KeyboardArrowDownIcon />}
-                        onClick={handleClick}
-                        aria-label="button, filter"
-                        aria-controls={open ? 'basic-menu' : undefined}
-                        aria-haspopup="true"
-                        aria-expanded={open ? 'true' : undefined}
-                    >
-                        <TypographyFormatMessage className="font-semibold text-center">Filtrer</TypographyFormatMessage>
-                    </Button>
-                    <Menu
-                        id="basic-menu"
-                        anchorEl={anchorEl}
-                        open={open}
-                        onClose={handleClose}
-                        MenuListProps={{
-                            'aria-labelledby': 'button, filter',
-                        }}
-                        anchorOrigin={{
-                            vertical: 'bottom',
-                            horizontal: 'center',
-                        }}
-                        transformOrigin={{
-                            vertical: 'top',
-                            horizontal: 'center',
-                        }}
-                        PaperProps={{
-                            sx: {
-                                minWidth: '12rem',
-                            },
-                        }}
-                    >
-                        <MenuList dense>
-                            <MenuItem onClick={() => handleFilterClick(EcogestViewedEnum.READ)}>
-                                <TypographyFormatMessage>Lu</TypographyFormatMessage>
-                            </MenuItem>
-                            <MenuItem onClick={() => handleFilterClick(EcogestViewedEnum.UNREAD)}>
-                                <TypographyFormatMessage>Non lu</TypographyFormatMessage>
-                            </MenuItem>
-                            <MenuItem onClick={() => handleFilterClick(EcogestViewedEnum.ALL)}>
-                                <TypographyFormatMessage>Tous</TypographyFormatMessage>
-                            </MenuItem>
-                        </MenuList>
-                    </Menu>
-                </>
+                {!showJustVisualisedEcogests && (
+                    <>
+                        <Button
+                            variant="outlined"
+                            startIcon={getFilterIcon(currentViewFilter)}
+                            endIcon={<KeyboardArrowDownIcon />}
+                            onClick={handleClick}
+                            aria-label="button, filter"
+                            aria-controls={open ? 'basic-menu' : undefined}
+                            aria-haspopup="true"
+                            aria-expanded={open ? 'true' : undefined}
+                        >
+                            <TypographyFormatMessage className="font-semibold text-center">
+                                Filtrer
+                            </TypographyFormatMessage>
+                        </Button>
+                        <Menu
+                            id="basic-menu"
+                            anchorEl={anchorEl}
+                            open={open}
+                            onClose={handleClose}
+                            MenuListProps={{
+                                'aria-labelledby': 'button, filter',
+                            }}
+                            anchorOrigin={{
+                                vertical: 'bottom',
+                                horizontal: 'center',
+                            }}
+                            transformOrigin={{
+                                vertical: 'top',
+                                horizontal: 'center',
+                            }}
+                            PaperProps={{
+                                sx: {
+                                    minWidth: '12rem',
+                                },
+                            }}
+                        >
+                            <MenuList dense>
+                                <MenuItem onClick={() => handleFilterClick(EcogestViewedEnum.READ)}>
+                                    <TypographyFormatMessage>Lu</TypographyFormatMessage>
+                                </MenuItem>
+                                <MenuItem onClick={() => handleFilterClick(EcogestViewedEnum.UNREAD)}>
+                                    <TypographyFormatMessage>Non lu</TypographyFormatMessage>
+                                </MenuItem>
+                                <MenuItem onClick={() => handleFilterClick(EcogestViewedEnum.ALL)}>
+                                    <TypographyFormatMessage>Tous</TypographyFormatMessage>
+                                </MenuItem>
+                            </MenuList>
+                        </Menu>
+                    </>
+                )}
             </div>
             {(isEmpty(ecogestesList) || isNull(ecogestesList)) && !isEcogestesLoadingInProgress && (
                 <div className="flex flex-row justify-center items-start w-full h-full">

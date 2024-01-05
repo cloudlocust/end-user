@@ -31,7 +31,7 @@ export const CardContentPaddingStyle = {
  * @returns Advice wrapper component.
  */
 export const AdviceContainer = () => {
-    const { elementList: ecogestesList, loadingInProgress } = useEcogestes({ highlighted: true })
+    const { elementList: ecogestesList, loadingInProgress } = useEcogestes(false, { highlighted: true })
     const theme = useTheme()
     const smDown = useMediaQuery(theme.breakpoints.down('sm'))
     const {

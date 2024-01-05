@@ -33,11 +33,12 @@ export const addElementError = (_error: any, formatMessage: formatMessageType) =
 /**
  * Hook to get a list of ecogestes by category.
  *
+ * @param showJustVisualisedEcogests Indicates whether to show just visualised ecogests.
  * @param queryParams Query parameters to add to useElementList.
  * @returns A hook to get the ecogestes.
  */
 // eslint-disable-next-line jsdoc/require-jsdoc
-export const useEcogestes = (queryParams?: {}) => {
+export const useEcogestes = (showJustVisualisedEcogests: boolean, queryParams?: {}) => {
     const { enqueueSnackbar } = useSnackbar()
     const { formatMessage } = useIntl()
 
@@ -93,7 +94,11 @@ export const useEcogestes = (queryParams?: {}) => {
         API_ENDPOINT: ECOGESTES_ENDPOINT,
         sizeParam: 100,
         snackBarMessage0verride: { loadElementListError, addElementSuccess, addElementError },
-    })(undefined, { viewed: EcogestViewedEnum.ALL, tag_id: parsedCategoryTargetted, ...queryParams })
+    })(undefined, {
+        viewed: showJustVisualisedEcogests ? EcogestViewedEnum.READ : EcogestViewedEnum.ALL,
+        tag_id: parsedCategoryTargetted,
+        ...queryParams,
+    })
 
     /**
      * Filters the ecogest element list from this hook according to the given filter.
