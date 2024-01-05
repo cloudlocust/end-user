@@ -22,11 +22,12 @@ export const consumptionChartClassName = 'consumption-chart-classname'
  */
 const MyConsumptionChart = ({ data, isSolarProductionConsentOff, period }: ConsumptionChartProps) => {
     const theme = useTheme()
+
     const { timestamps, values } = useMemo(() => {
         return formatMetricsDataToTimestampsValues(data)
     }, [data])
 
-    const isMobile = useMediaQuery(theme.breakpoints.down('lg'))
+    const isMobile = useMediaQuery(theme.breakpoints.down('md'))
 
     // EchartsConsumptionChart Option.
     const option = useMemo(() => {

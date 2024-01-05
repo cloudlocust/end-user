@@ -21,7 +21,10 @@ export const WeatherWidget = (props: WeatherWidgetProps) => {
     return (
         <FuseCard
             isLoading={isNrlinkPowerLoading}
-            sx={{ height: mdDown ? CARD_HEIGHT : '40%', width: mdDown ? '30%' : '100%' }}
+            sx={{
+                height: mdDown ? CARD_HEIGHT : '40%',
+                width: mdDown ? '30%' : '100%',
+            }}
             className="flex"
         >
             <CardContent
@@ -47,13 +50,13 @@ export const WeatherWidget = (props: WeatherWidgetProps) => {
                         />
                     </IconButton>
                     <div className="flex flex-col justify-evenly md:flex-row-reverse items-stretch flex-1">
-                        <div className="flex flex-row">
+                        <div className="flex flex-row justify-center">
                             <span className="text-44 leading-none font-medium text-grey-700">
                                 {lastTemperatureData?.value ?? '-'}
                             </span>
                             <span className="text-14 leading-none self-start">°C</span>
                         </div>
-                        <div className="flex items-center flex-1 md:justify-end md:mr-5">
+                        <div className="flex items-center flex-1 justify-center md:justify-end md:mr-5">
                             <span className="text-13 text-center text-grey-500">{currentHousing?.address.city}</span>
                         </div>
                     </div>
