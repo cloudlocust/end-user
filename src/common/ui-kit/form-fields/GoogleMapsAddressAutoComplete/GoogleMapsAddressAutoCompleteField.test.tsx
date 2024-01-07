@@ -9,91 +9,18 @@ import {
     GoogleMapsAddressAutoCompleteFieldBuilder,
 } from './GoogleMapsAddressAutoCompleteField'
 import { GeocodeResult } from 'use-places-autocomplete'
+import { mockSuggestionAddressesData } from 'src/helpers/testVariables'
 
 // Need a test id because getbylabel because mui add a * to the field, and if we deactivate
 // strict mode it will returns multiple elements.
 /**
  * Address field test id.
  */
-export const ADDRESS_TESTID = 'AddressAutoCompleteField'
+const ADDRESS_TESTID = 'AddressAutoCompleteField'
 const ADDRESS_ADDITION_TESTID = 'AddressAdditionAutoCompleteField'
 const mockSetValue = jest.fn((_data) => null)
 const mockInit = jest.fn(() => null)
 const mockOnSubmit = jest.fn((_data) => {})
-const suggestionData = [
-    {
-        description: 'Rue Général Lotz 37, Uccle, Belgique',
-        place_id: 'ChIJKwNqoPnEw0cRIwMwh9SYOkI',
-        structured_formatting: {
-            main_text: 'Rue Général Lotz 37',
-            secondary_text: 'Uccle, Belgique',
-            main_text_matched_substrings: [
-                {
-                    length: 7,
-                    offset: 0,
-                },
-                {
-                    length: 2,
-                    offset: 17,
-                },
-            ],
-        },
-    },
-    {
-        description: '37 Rue Général de Larminat, Bordeaux, France',
-        place_id: 'ChIJUXSNwe0nVQ0RJu1MfaIwZbY',
-        structured_formatting: {
-            main_text: '37 Rue Général de Larminat',
-            secondary_text: 'Bordeaux, France',
-            main_text_matched_substrings: [
-                {
-                    length: 2,
-                    offset: 0,
-                },
-                {
-                    length: 7,
-                    offset: 3,
-                },
-            ],
-        },
-    },
-    {
-        description: '37 Rue Général Mangin, Grenoble, France',
-        place_id: 'ChIJo1WQ1pn0ikcR8eXMBbeo_5s',
-        structured_formatting: {
-            main_text: '37 Rue Général Mangin',
-            secondary_text: 'Grenoble, France',
-            main_text_matched_substrings: [
-                {
-                    length: 2,
-                    offset: 0,
-                },
-                {
-                    length: 7,
-                    offset: 3,
-                },
-            ],
-        },
-    },
-    {
-        description: '37 Rue Genton, Lyon, France',
-        place_id: 'ChIJTy9oE_LB9EcR7mmGhV5S1dY',
-        structured_formatting: {
-            main_text: '37 Rue Genton',
-            secondary_text: 'Lyon, France',
-            main_text_matched_substrings: [
-                {
-                    length: 2,
-                    offset: 0,
-                },
-                {
-                    length: 7,
-                    offset: 3,
-                },
-            ],
-        },
-    },
-]
 const formatted_addr_data = 'normal formatted_address'
 const formatted_test_locality = 'test locality'
 const formatted_test_country = 'test country'
@@ -106,7 +33,7 @@ jest.mock('use-places-autocomplete', () => ({
     default: () => ({
         setValue: mockSetValue,
         suggestions: {
-            data: suggestionData,
+            data: mockSuggestionAddressesData,
         },
         init: mockInit,
     }),
@@ -264,7 +191,7 @@ describe('test AddressForm', () => {
                         {
                             address: {
                                 name: formatted_addr_data,
-                                placeId: suggestionData[0].place_id,
+                                placeId: mockSuggestionAddressesData[0].place_id,
                                 lat: 1,
                                 lng: 2,
                                 country: formatted_test_country,
@@ -333,7 +260,7 @@ describe('test AddressForm', () => {
                         {
                             address: {
                                 name: formatted_addr_data,
-                                placeId: suggestionData[0].place_id,
+                                placeId: mockSuggestionAddressesData[0].place_id,
                                 lat: 1,
                                 lng: 2,
                                 country: formatted_test_country,
@@ -390,7 +317,7 @@ describe('test AddressForm', () => {
                                 latitude: 1.0,
                                 longitude: 1.0,
                                 formatted: 'formatted_override',
-                                placeId: suggestionData[0].place_id,
+                                placeId: mockSuggestionAddressesData[0].place_id,
                             },
                         },
                         expect.anything(),
@@ -456,7 +383,7 @@ describe('test AddressForm', () => {
                                 latitude: 1.0,
                                 longitude: 1.0,
                                 formatted: 'formatted_override',
-                                placeId: suggestionData[0].place_id,
+                                placeId: mockSuggestionAddressesData[0].place_id,
                                 addressAddition: additionalDataContent,
                             },
                         },
