@@ -136,15 +136,13 @@ const LablizationContainer = () => {
                         linkTo={`/my-houses/${currentHousing?.id}`}
                     />
                 ) : (
-                    <div className="flex flex-col">
-                        <SimplifiedConsumptionChartContainer
-                            range={range}
-                            setRange={setRange}
-                            filters={filters}
-                            isSolarProductionConsentOff={isSolarProductionConsentOff}
-                            metricsInterval={metricsInterval}
-                        />
-                    </div>
+                    <SimplifiedConsumptionChartContainer
+                        range={range}
+                        setRange={setRange}
+                        filters={filters}
+                        isSolarProductionConsentOff={isSolarProductionConsentOff}
+                        metricsInterval={metricsInterval}
+                    />
                 )
             }
             innerScroll

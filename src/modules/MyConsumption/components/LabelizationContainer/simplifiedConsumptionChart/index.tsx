@@ -1,4 +1,4 @@
-import { Button, CircularProgress } from '@mui/material'
+import { Button, CircularProgress, Icon } from '@mui/material'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import { motion } from 'framer-motion'
 import { Add as AddIcon } from '@mui/icons-material'
@@ -16,6 +16,10 @@ import {
 import { filterMetricsData, getDefaultConsumptionTargets } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
 import { useMetrics } from 'src/modules/Metrics/metricsHook'
 import MyConsumptionDatePicker from 'src/modules/MyConsumption/components/MyConsumptionDatePicker'
+import { useHistory } from 'react-router-dom'
+import ConsumptionLabelCard from '../ConsumptionLabelCard'
+import { ConsumptionLabelDataType } from 'src/modules/MyConsumption/components/LabelizationContainer/labelizaitonTypes.d'
+import { IPeriodTime } from '../../MyConsumptionChart/MyConsumptionChartTypes.d'
 
 /**
  * MyConsumptionChartContainer Component.
@@ -59,6 +63,7 @@ const SimplifiedConsumptionChartContainer = ({
     setRange: (range: metricRangeType) => void
 }) => {
     const theme = useTheme()
+    const history = useHistory()
     // Handling the targets makes it simpler instead of the useMetrics as it's a straightforward array of metricTargetType
     // Meanwhile the setTargets for useMetrics needs to add {type: 'timeserie'} everytime...
     const [targets, setTargets] = useState<metricTargetType[]>(
@@ -105,15 +110,121 @@ const SimplifiedConsumptionChartContainer = ({
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [data, targets])
 
+    const [selectedCardIndex, setSelectedCardIndex] = useState<number | null>(null)
+    const [selectedLabelData, setSelectedLabelData] = useState<ConsumptionLabelDataType | undefined>(undefined)
+    const [selectedPeriod, setSelectedPeriod] = useState<IPeriodTime>({ startTime: undefined, endTime: undefined })
+
+    /**
+     * Handle card click.
+     *
+     * @param cardIndex Index of the card.
+     * @param labelData Consumption label data.
+     */
+    const handleCardClick = (cardIndex: number, labelData: ConsumptionLabelDataType) => {
+        if (cardIndex === selectedCardIndex) {
+            setSelectedCardIndex(null)
+            setSelectedLabelData(undefined)
+        } else {
+            setSelectedCardIndex(cardIndex)
+            setSelectedLabelData(labelData)
+        }
+    }
+
+    useEffect(() => {
+        const startTime = selectedLabelData?.startTime
+        const endTime = selectedLabelData?.endTime
+        setSelectedPeriod({ startTime, endTime })
+    }, [selectedLabelData])
+
+    const RANDOM_DATE = '2022-11-19T00:00:00.000Z'
+    const labelsDataExample: ConsumptionLabelDataType[] = [
+        {
+            id: 1,
+            name: 'Label 1',
+            startTime: '08:00',
+            endTime: '09:00',
+            consumption: 2,
+            price: 3,
+            date: RANDOM_DATE,
+        },
+        {
+            id: 2,
+            name: 'Label 2',
+            startTime: '10:00',
+            endTime: '11:00',
+            consumption: 2,
+            price: 3,
+            date: RANDOM_DATE,
+        },
+        {
+            id: 3,
+            name: 'Label 3',
+            startTime: '12:00',
+            endTime: '13:00',
+            consumption: 2,
+            price: 3,
+            date: RANDOM_DATE,
+        },
+        {
+            id: 4,
+            name: 'Label 4',
+            startTime: '14:00',
+            endTime: '15:00',
+            consumption: 2,
+            price: 3,
+            date: RANDOM_DATE,
+        },
+        {
+            id: 5,
+            name: 'Label 1',
+            startTime: '08:00',
+            endTime: '09:00',
+            consumption: 2,
+            price: 3,
+            date: RANDOM_DATE,
+        },
+        {
+            id: 6,
+            name: 'Label 2',
+            startTime: '10:00',
+            endTime: '11:00',
+            consumption: 2,
+            price: 3,
+            date: RANDOM_DATE,
+        },
+        {
+            id: 7,
+            name: 'Label 3',
+            startTime: '12:00',
+            endTime: '13:00',
+            consumption: 2,
+            price: 3,
+            date: RANDOM_DATE,
+        },
+        {
+            id: 8,
+            name: 'Label 4',
+            startTime: '14:00',
+            endTime: '15:00',
+            consumption: 2,
+            price: 3,
+            date: RANDOM_DATE,
+        },
+    ]
     return (
         <div className="flex flex-col justify-center my-20">
-            <div className="flex flex-row justify-end mr-20">
+            <div className="flex flex-row justify-between align-center mx-20">
+                <Button className="flex justify-center items-center" variant="text" onClick={() => history.goBack()}>
+                    <Icon sx={{ color: theme.palette.primary.main }}>arrow_back</Icon>
+                    <TypographyFormatMessage sx={{ color: theme.palette.primary.main }} className="text-16 font-medium">
+                        Retour
+                    </TypographyFormatMessage>
+                </Button>
                 <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0, transition: { delay: 0.2 } }}>
                     <Button
                         className="whitespace-nowrap"
                         variant="contained"
                         color="secondary"
-                        startIcon={<AddIcon />}
                         sx={{
                             '&:hover': {
                                 backgroundColor: `${theme.palette.secondary.main}`,
@@ -121,12 +232,22 @@ const SimplifiedConsumptionChartContainer = ({
                             },
                         }}
                     >
-                        <TypographyFormatMessage>Ajouter un label</TypographyFormatMessage>
+                        <span className="hidden sm:flex">
+                            <TypographyFormatMessage>Ajouter un label</TypographyFormatMessage>
+                        </span>
+                        <span className="flex sm:hidden">
+                            <AddIcon />
+                        </span>
                     </Button>
                 </motion.div>
             </div>
             <div>
-                <MyConsumptionDatePicker period={period} setRange={setRange} range={range} />
+                <MyConsumptionDatePicker
+                    period={period}
+                    setRange={setRange}
+                    range={range}
+                    color={theme.palette.primary.main}
+                />
                 {isMetricsLoading ? (
                     <div
                         className="flex h-full w-full flex-col items-center justify-center"
@@ -135,12 +256,28 @@ const SimplifiedConsumptionChartContainer = ({
                         <CircularProgress style={{ color: theme.palette.primary.main }} />
                     </div>
                 ) : (
-                    <MyConsumptionChart
-                        data={consumptionChartData}
-                        period={period}
-                        isSolarProductionConsentOff={isSolarProductionConsentOff}
-                        axisColor={theme.palette.common.black}
-                    />
+                    <>
+                        <MyConsumptionChart
+                            data={consumptionChartData}
+                            period={period}
+                            isSolarProductionConsentOff={isSolarProductionConsentOff}
+                            axisColor={theme.palette.common.black}
+                            selectedLabelPeriod={selectedPeriod}
+                        />
+                        <div className="flex h-96 items-center overflow-x-auto whitespace-nowrap m-0 h-200">
+                            {labelsDataExample.map((labelData, index) => (
+                                <div
+                                    key={index}
+                                    className={`cursor-pointer cursor-pointer transition-transform transform ${
+                                        selectedCardIndex === index ? 'scale-110' : 'scale-100'
+                                    }`}
+                                    onClick={() => handleCardClick(index, labelData)}
+                                >
+                                    <ConsumptionLabelCard labelData={labelData} />
+                                </div>
+                            ))}
+                        </div>
+                    </>
                 )}
             </div>
         </div>

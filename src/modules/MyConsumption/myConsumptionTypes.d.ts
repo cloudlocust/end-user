@@ -100,6 +100,10 @@ export interface IMyConsumptionDatePicker {
      * Represent the maximum date in the DatePicker.
      */
     maxDate?: Date
+    /**
+     * Color of the date picker, by default is secondary.light.
+     */
+    color?: string
 }
 
 /**

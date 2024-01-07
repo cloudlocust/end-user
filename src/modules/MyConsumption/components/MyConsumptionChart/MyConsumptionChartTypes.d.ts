@@ -2,6 +2,38 @@ import { targetTimestampsValuesFormat } from 'src/modules/Metrics/Metrics'
 import { periodType } from 'src/modules/MyConsumption/myConsumptionTypes.d'
 
 /**
+ * Period of time type, with start and end time.
+ */
+export type IPeriodTime = /**
+ *
+ */ {
+    /**
+     * Start time.
+     */
+    startTime: string | undefined
+    /**
+     * End time.
+     */
+    endTime: string | undefined
+}
+
+/**
+ * Period of time type, with start and end time, but with indexes.
+ */
+export type IPeriodTimeIndexs = /**
+ *
+ */ {
+    /**
+     * Start time.
+     */
+    startTime: number | undefined
+    /**
+     * End time.
+     */
+    endTime: number | undefined
+}
+
+/**
  * Enum Indicating the different yAxisIndex, so that each yAxis has its own value formatting.
  */
 export enum targetYAxisIndexEnum {
@@ -88,4 +120,8 @@ export interface ConsumptionChartProps {
      * Color used for axis (labels, lines, etc.).
      */
     axisColor: string
+    /**
+     * The time interval in the label selected by the user.
+     */
+    selectedLabelPeriod?: IPeriodTime
 }

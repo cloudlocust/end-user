@@ -14,6 +14,8 @@ import { consumptionWattUnitConversion } from 'src/modules/MyConsumption/utils/u
 import {
     targetYAxisIndexEnum,
     getTargetsYAxisValueFormattersType,
+    IPeriodTime,
+    IPeriodTimeIndexs,
 } from 'src/modules/MyConsumption/components/MyConsumptionChart/MyConsumptionChartTypes.d'
 dayjs.extend(utc)
 dayjs.extend(timezone)
@@ -28,6 +30,7 @@ dayjs.extend(timezone)
  * @param isMobile Is Mobile view.
  * @param period Period type.
  * @param axisColor Color of the axis.
+ * @param selectedLabelPeriod The period selected by the user to highlight.
  * @returns Echarts Consumption Option.
  */
 export const getEchartsConsumptionChartOptions = (
@@ -38,6 +41,7 @@ export const getEchartsConsumptionChartOptions = (
     isMobile: boolean,
     period: periodType,
     axisColor: string,
+    selectedLabelPeriod?: IPeriodTime,
 ) => {
     const xAxisTimestamps = Object.values(timestamps).length ? Object.values(timestamps)[0] : [0]
 
@@ -49,17 +53,30 @@ export const getEchartsConsumptionChartOptions = (
         return undefined
     })
 
+    const xAxisData = getXAxisCategoriesData(xAxisTimestamps, period)
+    const selectedLabelPeriodIndex: IPeriodTimeIndexs = {
+        startTime: selectedLabelPeriod?.startTime ? xAxisData.indexOf(selectedLabelPeriod.startTime) : undefined,
+        endTime: selectedLabelPeriod?.endTime ? xAxisData.indexOf(selectedLabelPeriod.endTime) : undefined,
+    }
+    const isPeriodUsed = selectedLabelPeriod?.startTime && selectedLabelPeriod?.endTime ? true : false
+
     return {
-        ...getDefaultOptionsEchartsConsumptionChart(theme, isMobile),
-        ...getXAxisOptionEchartsConsumptionChart(
-            xAxisTimestamps,
-            isSolarProductionConsentOff,
-            period,
+        ...getDefaultOptionsEchartsConsumptionChart(
             theme,
-            axisColor,
+            isMobile,
+            selectedLabelPeriodIndex,
+            xAxisTimestamps,
+            isPeriodUsed,
         ),
+        ...getXAxisOptionEchartsConsumptionChart(xAxisData, isSolarProductionConsentOff, period, axisColor),
         ...getYAxisOptionEchartsConsumptionChart(filteredValues, period, theme, axisColor),
-        ...getSeriesOptionEchartsConsumptionChart(filteredValues, period, isSolarProductionConsentOff, theme),
+        ...getSeriesOptionEchartsConsumptionChart(
+            filteredValues,
+            period,
+            isSolarProductionConsentOff,
+            isPeriodUsed,
+            theme,
+        ),
     } as EChartsOption
 }
 
@@ -68,10 +85,19 @@ export const getEchartsConsumptionChartOptions = (
  *
  * @param theme Theme used for colors, fonts and backgrounds.
  * @param isMobile Is Mobile view.
+ * @param selectedLabelPeriod The period selected by the user to highlight.
+ * @param xAxisTimestamps Timestamps.
+ * @param isPeriodUsed Boolean indicating if the period is used.
  * @returns Default EchartsConsumptionChart option.
  */
-const getDefaultOptionsEchartsConsumptionChart = (theme: Theme, isMobile: boolean) =>
-    ({
+const getDefaultOptionsEchartsConsumptionChart = (
+    theme: Theme,
+    isMobile: boolean,
+    selectedLabelPeriod: IPeriodTimeIndexs | undefined,
+    xAxisTimestamps: number[],
+    isPeriodUsed: boolean,
+) => {
+    let defaultOptions = {
         color: 'transparent',
         axisPointer: {
             triggerOn: isMobile ? 'click' : 'mousemove',
@@ -96,9 +122,52 @@ const getDefaultOptionsEchartsConsumptionChart = (theme: Theme, isMobile: boolea
             left: '5%',
             right: '4%',
             bottom: '3%',
+            top: '5%',
             containLabel: true,
         },
-    } as EChartsOption)
+    } as EChartsOption
+
+    const commonVisualMapOptions = {
+        show: false,
+        target: {
+            inRange: {
+                opacity: 1,
+            },
+            outOfRange: {
+                opacity: 0.5,
+            },
+        },
+        dimension: 0,
+    }
+
+    if (isPeriodUsed) {
+        return {
+            ...defaultOptions,
+            visualMap: {
+                ...commonVisualMapOptions,
+                pieces: [
+                    {
+                        gte: selectedLabelPeriod?.startTime,
+                        lte: selectedLabelPeriod?.endTime,
+                    },
+                ],
+            },
+        }
+    } else {
+        return {
+            ...defaultOptions,
+            visualMap: {
+                ...commonVisualMapOptions,
+                pieces: [
+                    {
+                        gte: 0,
+                        lte: xAxisTimestamps.length - 1,
+                    },
+                ],
+            },
+        }
+    }
+}
 
 /**
  * Get Xaxis option of Echarts Consumption Option.
@@ -106,6 +175,7 @@ const getDefaultOptionsEchartsConsumptionChart = (theme: Theme, isMobile: boolea
  * @param values Datapoint values from the echarts metrics conversion function.
  * @param period Current period.
  * @param isSolarProductionConsentOff Boolean indicating if solar production consent is off.
+ * @param isPeriodUsed Boolean indicating if the period selction is used.
  * @param theme Theme used for colors, fonts and backgrounds of xAxis.
  * @returns XAxis object option for Echarts Consumption Options.
  */
@@ -113,6 +183,7 @@ export const getSeriesOptionEchartsConsumptionChart = (
     values: targetTimestampsValuesFormat,
     period: periodType,
     isSolarProductionConsentOff: boolean,
+    isPeriodUsed: boolean,
     theme: Theme,
 ) => {
     // Targets functions yAxis Value formatter type (label shown in tooltip).
@@ -136,7 +207,7 @@ export const getSeriesOptionEchartsConsumptionChart = (
         return {
             ...typeTargetSeries,
             emphasis: {
-                focus: 'series',
+                focus: period === PeriodEnum.DAILY ? 'none' : 'series',
             },
             name: `${getNameTargetSeriesEchartsConsumptionChart(
                 target as metricTargetsEnum,
@@ -156,6 +227,9 @@ export const getSeriesOptionEchartsConsumptionChart = (
             smooth: true,
             itemStyle: {
                 color: colorTargetSeries,
+            },
+            lineStyle: {
+                color: isPeriodUsed ? TRANSPARENT_COLOR : colorTargetSeries,
             },
         }
     })
@@ -199,18 +273,16 @@ export const getSeriesOptionEchartsConsumptionChart = (
 /**
  * Get Xaxis option of Echarts Consumption Option.
  *
- * @param xAxisTimestamps Timestamps array.
+ * @param xAxisData X axis data array.
  * @param isSolarProductionConsentOff IsSolarProductionConsentOff.
  * @param period Current period.
- * @param theme Theme used for colors, fonts and backgrounds of xAxis.
  * @param axisColor Color of the axis.
  * @returns XAxis object option for Echarts Consumption Options.
  */
 export const getXAxisOptionEchartsConsumptionChart = (
-    xAxisTimestamps: number[],
+    xAxisData: string[],
     isSolarProductionConsentOff: boolean,
     period: periodType,
-    theme: Theme,
     axisColor: string,
 ) =>
     ({
@@ -218,7 +290,7 @@ export const getXAxisOptionEchartsConsumptionChart = (
             {
                 // Rotate to 40 so that we can show all the hours.
                 type: 'category',
-                data: getXAxisCategoriesData(xAxisTimestamps, period),
+                data: xAxisData,
                 axisLabel: {
                     interval: getXAxisLabelInterval(isSolarProductionConsentOff, period),
                     hideOverlap: true,

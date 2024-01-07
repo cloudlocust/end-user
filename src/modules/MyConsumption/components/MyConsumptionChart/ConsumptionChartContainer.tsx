@@ -31,7 +31,6 @@ import {
 } from 'src/modules/MyConsumption/utils/myConsumptionVariables'
 import MyConsumptionChart from 'src/modules/MyConsumption/components/MyConsumptionChart'
 import { Button } from '@mui/material'
-import { AddBusiness } from '@mui/icons-material'
 import { useHistory } from 'react-router-dom'
 import { URL_CONSUMPTION_LABELIZATION } from 'src/modules/MyConsumption/MyConsumptionConfig'
 
@@ -270,30 +269,34 @@ export const ConsumptionChartContainer = ({
                     showEurosConsumption={!isEurosButtonToggled}
                     disabled={isEurosConsumptionDisabled}
                 />
-                <SwitchIdleConsumption
-                    removeIdleTarget={() => onIdleConsumptionSwitchButton(false)}
-                    addIdleTarget={() => onIdleConsumptionSwitchButton(true)}
-                    isIdleConsumptionButtonDisabled={period === 'daily' || !isSolarProductionConsentOff}
-                    onClickIdleConsumptionDisabledInfoIcon={() => setIsShowIdleConsumptionDisabledInfo(true)}
-                    isIdleConsumptionButtonSelected={isIdleSwitchToggled}
-                />
-                <TargetMenuGroup
-                    removeTargets={() => onTemperatureOrPmaxMenuClick([])}
-                    addTargets={onTemperatureOrPmaxMenuClick}
-                    hidePmax={hidePmax}
-                    activeButton={targetMenuActiveButton}
-                />
-            </div>
-
-            <div className="flex flex-row justify-end my-16">
-                <Button
-                    style={{ color: theme.palette.common.white }}
-                    startIcon={<AddBusiness />}
-                    variant="outlined"
-                    onClick={handleClick}
-                >
-                    Labéliser mes appareils
-                </Button>
+                {period !== 'daily' && (
+                    <SwitchIdleConsumption
+                        removeIdleTarget={() => onIdleConsumptionSwitchButton(false)}
+                        addIdleTarget={() => onIdleConsumptionSwitchButton(true)}
+                        isIdleConsumptionButtonDisabled={!isSolarProductionConsentOff}
+                        onClickIdleConsumptionDisabledInfoIcon={() => setIsShowIdleConsumptionDisabledInfo(true)}
+                        isIdleConsumptionButtonSelected={isIdleSwitchToggled}
+                    />
+                )}
+                <div className="flex flex-row">
+                    {period === 'daily' && (
+                        <div className="flex flex-row justify-end my-16">
+                            <Button
+                                style={{ color: theme.palette.common.white }}
+                                variant="outlined"
+                                onClick={handleClick}
+                            >
+                                Identifier mes appareils
+                            </Button>
+                        </div>
+                    )}
+                    <TargetMenuGroup
+                        removeTargets={() => onTemperatureOrPmaxMenuClick([])}
+                        addTargets={onTemperatureOrPmaxMenuClick}
+                        hidePmax={hidePmax}
+                        activeButton={targetMenuActiveButton}
+                    />
+                </div>
             </div>
 
             {isMetricsLoading ? (

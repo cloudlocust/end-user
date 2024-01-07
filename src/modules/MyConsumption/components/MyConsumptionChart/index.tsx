@@ -19,9 +19,16 @@ export const consumptionChartClassName = 'consumption-chart-classname'
  * @param props.isSolarProductionConsentOff Boolean indicating if solar production consent is off.
  * @param props.period Period Type.
  * @param props.axisColor Axis Color.
+ * @param props.selectedLabelPeriod Selected Label Period.
  * @returns MyConsumptionChart Component.
  */
-const MyConsumptionChart = ({ data, isSolarProductionConsentOff, period, axisColor }: ConsumptionChartProps) => {
+const MyConsumptionChart = ({
+    data,
+    isSolarProductionConsentOff,
+    period,
+    axisColor,
+    selectedLabelPeriod,
+}: ConsumptionChartProps) => {
     const theme = useTheme()
     const { timestamps, values } = useMemo(() => {
         return formatMetricsDataToTimestampsValues(data)
@@ -30,17 +37,16 @@ const MyConsumptionChart = ({ data, isSolarProductionConsentOff, period, axisCol
     const isMobile = useMediaQuery(theme.breakpoints.down('lg'))
 
     // EchartsConsumptionChart Option.
-    const option = useMemo(() => {
-        return getEchartsConsumptionChartOptions(
-            timestamps,
-            values,
-            theme,
-            isSolarProductionConsentOff,
-            isMobile,
-            period,
-            axisColor,
-        )
-    }, [timestamps, values, theme, isSolarProductionConsentOff, isMobile, period, axisColor])
+    const option = getEchartsConsumptionChartOptions(
+        timestamps,
+        values,
+        theme,
+        isSolarProductionConsentOff,
+        isMobile,
+        period,
+        axisColor,
+        selectedLabelPeriod,
+    )
 
     return (
         <>
@@ -50,7 +56,7 @@ const MyConsumptionChart = ({ data, isSolarProductionConsentOff, period, axisCol
                     renderer: 'canvas',
                 }}
                 option={option}
-                style={{ height: 'auto', margin: '0 auto' }}
+                style={{ height: 360, margin: '0 auto' }}
             />
         </>
     )

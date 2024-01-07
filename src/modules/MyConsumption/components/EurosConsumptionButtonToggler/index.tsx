@@ -26,7 +26,7 @@ const EurosConsumptionButtonToggler = ({
     const theme = useTheme()
 
     return (
-        <>
+        <div className="flex items-center">
             {showEurosConsumption ? (
                 <Tooltip
                     arrow
@@ -76,7 +76,7 @@ const EurosConsumptionButtonToggler = ({
                     <BoltIcon sx={{ width: 24, height: 24 }} />
                 </IconButton>
             )}
-        </>
+        </div>
     )
 }
 
