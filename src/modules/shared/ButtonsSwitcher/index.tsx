@@ -6,7 +6,6 @@ import { ButtonsSwitcherProps } from 'src/modules/shared/ButtonsSwitcher/Buttons
 const StyledButton = styled(Button)(({ theme }) => ({
     borderRadius: 0,
     flex: 1,
-    fontSize: 16,
     maxWidth: 300,
     color: theme.palette.grey[500],
     backgroundColor: theme.palette.grey[100],
@@ -44,6 +43,7 @@ export const ButtonsSwitcher = ({ buttonsSwitcherParams }: ButtonsSwitcherProps)
                                   },
                               }
                     }
+                    className="text-13 sm:text-16"
                     aria-label={index === indexOfSelectedButton ? 'active-cell' : 'clickable-cell'}
                     onClick={() => {
                         setIndexOfSelectedButton(index)

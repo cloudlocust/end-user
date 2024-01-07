@@ -11,7 +11,10 @@ import useEcogestesCategories from 'src/modules/Ecogestes/hooks/useEcogestesCate
  * @returns JSX.Element - all Ecogestes that belong to Consumption Poles.
  */
 export const EcogestesConsumptionPoles = ({ showJustVisualisedEcogests }: EcogestesConsumptionPolesProps) => {
-    const { elementList, loadingInProgress } = useEcogestesCategories(IEcogesteCategoryTypes.CONSUMPTION)
+    const { elementList, loadingInProgress } = useEcogestesCategories(
+        IEcogesteCategoryTypes.CONSUMPTION,
+        showJustVisualisedEcogests,
+    )
 
     return (
         <EcogesteCategoriesList
