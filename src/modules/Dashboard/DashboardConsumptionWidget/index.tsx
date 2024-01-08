@@ -109,10 +109,11 @@ export const DashboardConsumptionWidget = () => {
         )
         const percentageChange = computePercentageChange(
             // The consumption value from yesterday at the same current time.
-            dataFromYesterdayToCurrentTime[0].datapoints[0][0] ?? 0,
+            dataFromYesterdayToCurrentTime?.at(0)?.datapoints[0][0] ?? 0,
             // The consumption value at the current time today.
-            dataFromYesterdayToCurrentTime[0].datapoints[dataFromYesterdayToCurrentTime[0].datapoints.length - 1][0] ??
-                0,
+            dataFromYesterdayToCurrentTime?.at(0)?.datapoints[
+                (dataFromYesterdayToCurrentTime?.at(0)?.datapoints.length ?? 1) - 1
+            ][0] ?? 0,
         )
         setPercentageChange(percentageChange)
     }, [currentHousing, getMetricsWithParams])
