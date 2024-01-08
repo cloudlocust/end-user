@@ -20,16 +20,11 @@ import { FuseCard } from 'src/modules/shared/FuseCard/FuseCard'
 import { ConsumptionAndPrice } from 'src/modules/Dashboard/DashboardConsumptionWidget/ConsumptionAndPrice'
 import { ConsumptionStatisticsType } from 'src/modules/Dashboard/DashboardConsumptionWidget/DashboardConsumptionWidget'
 import { useMetrics } from 'src/modules/Metrics/metricsHook'
-import {
-    computeWidgetAssets,
-    getWidgetPreviousRange,
-    getWidgetRange,
-} from 'src/modules/MyConsumption/components/Widget/WidgetFunctions'
+import { computeWidgetAssets, getWidgetRange } from 'src/modules/MyConsumption/components/Widget/WidgetFunctions'
 import { computePercentageChange } from 'src/modules/Analysis/utils/computationFunctions'
 import { ChangeTrend } from 'src/modules/Dashboard/DashboardConsumptionWidget/ChangeTrend'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import { totalConsumptionUnits } from 'src/modules/MyConsumption/components/Widget/Widget'
-import convert, { Unit } from 'convert-units'
 const emptyConsumptionValueUnit = { value: 0, unit: 'Wh' }
 const emptyEuroValueUnit = { value: 0, unit: '€' }
 
@@ -58,7 +53,7 @@ export const DashboardConsumptionWidget = () => {
             from: getDateWithoutTimezoneOffset(startOfDay(currentTime)),
             to: getDateWithoutTimezoneOffset(currentTime),
         }
-        const dataInterval30m: IMetric[] = await getMetricsWithParams(
+        const currentDayDataInterval30m: IMetric[] = await getMetricsWithParams(
             {
                 interval: '30m',
                 range: todayRange,
@@ -67,15 +62,16 @@ export const DashboardConsumptionWidget = () => {
             },
             false,
         )
-        if (dataInterval30m?.length) {
-            const { labels, serieValues } = createDataForConsumptionWidgetGraph(dataInterval30m)
+
+        if (currentDayDataInterval30m?.length) {
+            const { labels, serieValues } = createDataForConsumptionWidgetGraph(currentDayDataInterval30m)
             setLabels(labels)
             setSerieValues(serieValues)
         }
 
         // TODO: Duplicate code, need to be refactored
         // Calculate the total daily consumption and price
-        const dataInterval1m = await getMetricsWithParams(
+        const currentDayDataInterval1m = await getMetricsWithParams(
             {
                 interval: '1m',
                 range: getWidgetRange(todayRange, 'daily'),
@@ -84,42 +80,39 @@ export const DashboardConsumptionWidget = () => {
             },
             false,
         )
-        const { value: totalConsumptionValue, unit: totalConsumptionUnit } = !dataInterval1m?.length
+        const { value: totalConsumptionValue, unit: totalConsumptionUnit } = !currentDayDataInterval1m?.length
             ? emptyConsumptionValueUnit
-            : computeWidgetAssets(dataInterval1m, metricTargetsEnum.consumption)
+            : computeWidgetAssets(currentDayDataInterval1m, metricTargetsEnum.consumption)
         setTotalDailyConsumption({
             value: totalConsumptionValue as number,
             unit: totalConsumptionUnit as totalConsumptionUnits,
         })
-        const { value: totalEurosValue } = !dataInterval1m?.length
+        const { value: totalEurosValue } = !currentDayDataInterval1m?.length
             ? emptyEuroValueUnit
-            : computeWidgetAssets(dataInterval1m, metricTargetsEnum.eurosConsumption)
+            : computeWidgetAssets(currentDayDataInterval1m, metricTargetsEnum.eurosConsumption)
         setTotalDailyPrice(totalEurosValue as number)
 
         // Calculate the percentage of change compared to yesterday.
-        const oldDataInterval1m = await getMetricsWithParams(
+        const yesterdaysCurrentTime = new Date()
+        yesterdaysCurrentTime.setDate(currentTime.getDate() - 1)
+        const dataFromYesterdayToCurrentTime = await getMetricsWithParams(
             {
                 interval: '1m',
-                range: getWidgetPreviousRange(getWidgetRange(todayRange, 'daily'), 'daily'),
+                range: {
+                    from: getDateWithoutTimezoneOffset(yesterdaysCurrentTime),
+                    to: getDateWithoutTimezoneOffset(currentTime),
+                },
                 targets: [metricTargetsEnum.consumption],
                 filters: formatMetricFilter(currentHousing!.id) ?? [],
             },
             false,
         )
-        const { value: oldTotalConsumptionValue, unit: oldTotalConsumptionUnit } = !oldDataInterval1m?.length
-            ? emptyConsumptionValueUnit
-            : computeWidgetAssets(oldDataInterval1m, metricTargetsEnum.consumption)
         const percentageChange = computePercentageChange(
-            Number(
-                convert(oldTotalConsumptionValue as number)
-                    .from(oldTotalConsumptionUnit as Unit)
-                    .to('Wh'),
-            ),
-            Number(
-                convert(totalConsumptionValue as number)
-                    .from(totalConsumptionUnit as Unit)
-                    .to('Wh'),
-            ),
+            // The consumption value from yesterday at the same current time.
+            dataFromYesterdayToCurrentTime[0].datapoints[0][0] ?? 0,
+            // The consumption value at the current time today.
+            dataFromYesterdayToCurrentTime[0].datapoints[dataFromYesterdayToCurrentTime[0].datapoints.length - 1][0] ??
+                0,
         )
         setPercentageChange(percentageChange)
     }, [currentHousing, getMetricsWithParams])
