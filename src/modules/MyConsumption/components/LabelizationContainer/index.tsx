@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { styled } from '@mui/material/styles'
 import PageSimple from 'src/common/ui-kit/fuse/components/PageSimple'
 import { useTheme, ThemeProvider } from '@mui/material/styles'
@@ -142,6 +142,7 @@ const LablizationContainer = () => {
                         filters={filters}
                         isSolarProductionConsentOff={isSolarProductionConsentOff}
                         metricsInterval={metricsInterval}
+                        enedisSgeConsent={enedisSgeConsent}
                     />
                 )
             }

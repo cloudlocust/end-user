@@ -69,7 +69,7 @@ export const getEchartsConsumptionChartOptions = (
             isPeriodUsed,
         ),
         ...getXAxisOptionEchartsConsumptionChart(xAxisData, isSolarProductionConsentOff, period, axisColor),
-        ...getYAxisOptionEchartsConsumptionChart(filteredValues, period, theme, axisColor),
+        ...getYAxisOptionEchartsConsumptionChart(filteredValues, period, axisColor),
         ...getSeriesOptionEchartsConsumptionChart(
             filteredValues,
             period,
@@ -361,7 +361,7 @@ const getXAxisLabelInterval = (isSolarProductionConsentOff: boolean, period: per
  * @param period Current period.
  * @returns XAxis categories data.
  */
-const getXAxisCategoriesData = (timestamps: number[], period: periodType) => {
+export const getXAxisCategoriesData = (timestamps: number[], period: periodType) => {
     switch (period) {
         case 'daily':
             return timestamps.map((timestamp) => capitalize(dayjs.utc(timestamp).locale(fr).format('HH:mm')))
@@ -663,14 +663,12 @@ export const getStackTargetSeriesEchartsConsumptionChart = (
  *
  * @param values Datapoint values from the echarts metrics conversion function.
  * @param period Current period.
- * @param theme Theme used for colors, fonts and backgrounds of xAxis.
  * @param axisColor Color of the axis.
  * @returns YAxis object option for Echarts Consumption Options.
  */
 export const getYAxisOptionEchartsConsumptionChart = (
     values: targetTimestampsValuesFormat,
     period: periodType,
-    theme: Theme,
     axisColor: string,
 ) => {
     // Not showing the yAxis that don't have their targets in the values.

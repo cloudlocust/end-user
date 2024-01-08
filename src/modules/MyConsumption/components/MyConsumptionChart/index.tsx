@@ -18,7 +18,7 @@ export const consumptionChartClassName = 'consumption-chart-classname'
  * @param props.data Data received from backend of format IMetric[].
  * @param props.isSolarProductionConsentOff Boolean indicating if solar production consent is off.
  * @param props.period Period Type.
- * @param props.axisColor Axis Color.
+ * @param props.axisColor Axis Color depending on the background of the graph.
  * @param props.selectedLabelPeriod Selected Label Period.
  * @returns MyConsumptionChart Component.
  */
@@ -37,16 +37,18 @@ const MyConsumptionChart = ({
     const isMobile = useMediaQuery(theme.breakpoints.down('lg'))
 
     // EchartsConsumptionChart Option.
-    const option = getEchartsConsumptionChartOptions(
-        timestamps,
-        values,
-        theme,
-        isSolarProductionConsentOff,
-        isMobile,
-        period,
-        axisColor,
-        selectedLabelPeriod,
-    )
+    const option = useMemo(() => {
+        return getEchartsConsumptionChartOptions(
+            timestamps,
+            values,
+            theme,
+            isSolarProductionConsentOff,
+            isMobile,
+            period,
+            axisColor,
+            selectedLabelPeriod,
+        )
+    }, [timestamps, values, theme, isSolarProductionConsentOff, isMobile, period, axisColor, selectedLabelPeriod])
 
     return (
         <>

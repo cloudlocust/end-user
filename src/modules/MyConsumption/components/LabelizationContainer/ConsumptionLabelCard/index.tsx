@@ -19,6 +19,8 @@ const ConsumptionLabelCard = ({
      */
     labelData: ConsumptionLabelDataType
 }) => {
+    const startTime = labelData.startTime.split('T')[1].split('.')[0]
+    const endTime = labelData.endTime.split('T')[1].split('.')[0]
     return (
         <div className="h-1/2 sm:w-208 md:w-320">
             <Card className="rounded-16 border border-slate-600 m-8">
@@ -30,8 +32,12 @@ const ConsumptionLabelCard = ({
                         </IconButton>
                     </div>
                     <div className="flex flex-row flex-start mx-5">
-                        <Typography className="text-13">{labelData.startTime}</Typography>
-                        <Typography className="text-13 ml-16">{labelData.endTime}</Typography>
+                        <Typography className="text-13">{`${startTime.split(':')[0]}:${
+                            startTime.split(':')[1]
+                        }`}</Typography>
+                        <Typography className="text-13 ml-16">{`${endTime.split(':')[0]}:${
+                            endTime.split(':')[1]
+                        }`}</Typography>
                     </div>
                 </CardContent>
             </Card>

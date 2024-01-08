@@ -6,20 +6,19 @@ import MyConsumptionChart from 'src/modules/MyConsumption/components/MyConsumpti
 import { PeriodEnum } from 'src/modules/MyConsumption/myConsumptionTypes.d'
 import { useTheme } from '@mui/material'
 import { useCallback, useEffect, useState } from 'react'
-import {
-    IMetric,
-    metricFiltersType,
-    metricIntervalType,
-    metricRangeType,
-    metricTargetType,
-} from 'src/modules/Metrics/Metrics'
+import { IMetric, metricTargetType } from 'src/modules/Metrics/Metrics'
 import { filterMetricsData, getDefaultConsumptionTargets } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
 import { useMetrics } from 'src/modules/Metrics/metricsHook'
 import MyConsumptionDatePicker from 'src/modules/MyConsumption/components/MyConsumptionDatePicker'
 import { useHistory } from 'react-router-dom'
 import ConsumptionLabelCard from '../ConsumptionLabelCard'
-import { ConsumptionLabelDataType } from 'src/modules/MyConsumption/components/LabelizationContainer/labelizaitonTypes.d'
+import {
+    ConsumptionLabelDataType,
+    SimplifiedConsumptionChartContainerPropsType,
+} from 'src/modules/MyConsumption/components/LabelizationContainer/labelizaitonTypes.d'
 import { IPeriodTime } from '../../MyConsumptionChart/MyConsumptionChartTypes.d'
+import { ConsumptionEnedisSgeWarning } from '../../MyConsumptionChart/ConsumptionChartWarnings'
+import { sgeConsentFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
 
 /**
  * MyConsumptionChartContainer Component.
@@ -29,6 +28,7 @@ import { IPeriodTime } from '../../MyConsumptionChart/MyConsumptionChartTypes.d'
  * @param props.metricsInterval Boolean state to know whether the stacked option is true or false.
  * @param props.filters Consumption or production chart type.
  * @param props.isSolarProductionConsentOff Boolean indicating if solar production consent is off.
+ * @param props.enedisSgeConsent Enedis SGE Consent.
  * @param props.setRange Set Range.
  * @returns MyConsumptionChartContainer Component.
  */
@@ -37,31 +37,9 @@ const SimplifiedConsumptionChartContainer = ({
     metricsInterval,
     filters,
     isSolarProductionConsentOff,
+    enedisSgeConsent,
     setRange,
-}: /**
- */
-{
-    /**
-     * Range.
-     */
-    range: metricRangeType
-    /**
-     * Metrics interval.
-     */
-    metricsInterval: metricIntervalType
-    /**
-     * Filters.
-     */
-    filters: metricFiltersType
-    /**
-     * Is production consent off.
-     */
-    isSolarProductionConsentOff: boolean
-    /**
-     * Set Range.
-     */
-    setRange: (range: metricRangeType) => void
-}) => {
+}: SimplifiedConsumptionChartContainerPropsType) => {
     const theme = useTheme()
     const history = useHistory()
     // Handling the targets makes it simpler instead of the useMetrics as it's a straightforward array of metricTargetType
@@ -70,6 +48,9 @@ const SimplifiedConsumptionChartContainer = ({
         getDefaultConsumptionTargets(isSolarProductionConsentOff),
     )
     const period = PeriodEnum.DAILY
+
+    // Indicates if enedisSgeConsent is not Connected
+    const enedisSgeOff = enedisSgeConsent?.enedisSgeConsentState !== 'CONNECTED'
 
     const { data, getMetricsWithParams, isMetricsLoading } = useMetrics({
         interval: metricsInterval,
@@ -126,7 +107,13 @@ const SimplifiedConsumptionChartContainer = ({
             setSelectedLabelData(undefined)
         } else {
             setSelectedCardIndex(cardIndex)
-            setSelectedLabelData(labelData)
+            const startTime = labelData.startTime.split('T')[1].split('.')[0]
+            const endTime = labelData.endTime.split('T')[1].split('.')[0]
+            setSelectedLabelData({
+                ...labelData,
+                startTime: `${startTime.split(':')[0]}:${startTime.split(':')[1]}`,
+                endTime: `${endTime.split(':')[0]}:${endTime.split(':')[1]}`,
+            })
         }
     }
 
@@ -136,79 +123,71 @@ const SimplifiedConsumptionChartContainer = ({
         setSelectedPeriod({ startTime, endTime })
     }, [selectedLabelData])
 
-    const RANDOM_DATE = '2022-11-19T00:00:00.000Z'
+    const RANDOM_DATE = '2022-11-19'
     const labelsDataExample: ConsumptionLabelDataType[] = [
         {
             id: 1,
             name: 'Label 1',
-            startTime: '08:00',
-            endTime: '09:00',
+            startTime: `${RANDOM_DATE}T08:00:00.000Z`,
+            endTime: `${RANDOM_DATE}T09:00:00.000Z`,
             consumption: 2,
             price: 3,
-            date: RANDOM_DATE,
         },
         {
             id: 2,
             name: 'Label 2',
-            startTime: '10:00',
-            endTime: '11:00',
+            startTime: `${RANDOM_DATE}T10:00:00.000Z`,
+            endTime: `${RANDOM_DATE}T11:00:00.000Z`,
             consumption: 2,
             price: 3,
-            date: RANDOM_DATE,
         },
         {
             id: 3,
             name: 'Label 3',
-            startTime: '12:00',
-            endTime: '13:00',
+            startTime: `${RANDOM_DATE}T12:00:00.000Z`,
+            endTime: `${RANDOM_DATE}T13:00:00.000Z`,
             consumption: 2,
             price: 3,
-            date: RANDOM_DATE,
         },
         {
             id: 4,
             name: 'Label 4',
-            startTime: '14:00',
-            endTime: '15:00',
+            startTime: `${RANDOM_DATE}T14:00:00.000Z`,
+            endTime: `${RANDOM_DATE}T15:00:00.000Z`,
             consumption: 2,
             price: 3,
-            date: RANDOM_DATE,
         },
         {
             id: 5,
             name: 'Label 1',
-            startTime: '08:00',
-            endTime: '09:00',
+            startTime: `${RANDOM_DATE}T08:00:00.000Z`,
+            endTime: `${RANDOM_DATE}T09:00:00.000Z`,
             consumption: 2,
             price: 3,
-            date: RANDOM_DATE,
         },
         {
             id: 6,
             name: 'Label 2',
-            startTime: '10:00',
-            endTime: '11:00',
+            startTime: `${RANDOM_DATE}T10:00:00.000Z`,
+            endTime: `${RANDOM_DATE}T11:00:00.000Z`,
             consumption: 2,
             price: 3,
-            date: RANDOM_DATE,
         },
         {
             id: 7,
             name: 'Label 3',
-            startTime: '12:00',
-            endTime: '13:00',
+            startTime: `${RANDOM_DATE}T12:00:00.000Z`,
+            endTime: `${RANDOM_DATE}T13:00:00.000Z`,
             consumption: 2,
             price: 3,
-            date: RANDOM_DATE,
         },
         {
             id: 8,
             name: 'Label 4',
-            startTime: '14:00',
-            endTime: '15:00',
+            startTime: `${RANDOM_DATE}T14:00:00.000Z`,
+            endTime: `${RANDOM_DATE}T15:00:00.000Z`,
             consumption: 2,
             price: 3,
-            date: RANDOM_DATE,
         },
     ]
     return (
@@ -264,6 +243,8 @@ const SimplifiedConsumptionChartContainer = ({
                             axisColor={theme.palette.common.black}
                             selectedLabelPeriod={selectedPeriod}
                         />
+                        <ConsumptionEnedisSgeWarning isShowWarning={enedisSgeOff && sgeConsentFeatureState} />
+
                         <div className="flex h-96 items-center overflow-x-auto whitespace-nowrap m-0 h-200">
                             {labelsDataExample.map((labelData, index) => (
                                 <div

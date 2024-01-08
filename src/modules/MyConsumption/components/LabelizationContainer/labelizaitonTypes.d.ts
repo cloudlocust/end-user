@@ -1,3 +1,6 @@
+import { IEnedisSgeConsent } from 'src/modules/Consents/Consents.d'
+import { metricFiltersType, metricIntervalType, metricRangeType } from 'src/modules/Metrics/Metrics'
+
 /**
  * Consumption label data type.
  */
@@ -23,15 +26,45 @@ export type ConsumptionLabelDataType =
          */
         endTime: string
         /**
-         * Consumption value.
+         * Consumption consumed in that time range.
          */
         consumption: number
         /**
-         * Price value.
+         * Price consumed in that time range.
          */
         price: number
+    }
+
+/**
+ * Type for consumption labelization container props.
+ */
+export type SimplifiedConsumptionChartContainerPropsType =
+    /**
+     *
+     */
+    {
         /**
-         * Date of the label.
+         * Range.
          */
-        date: string
+        range: metricRangeType
+        /**
+         * Metrics interval.
+         */
+        metricsInterval: metricIntervalType
+        /**
+         * Filters.
+         */
+        filters: metricFiltersType
+        /**
+         * Is production consent off.
+         */
+        isSolarProductionConsentOff: boolean
+        /**
+         * Enedis Sge consent.
+         */
+        enedisSgeConsent?: IEnedisSgeConsent
+        /**
+         * Set Range.
+         */
+        setRange: (range: metricRangeType) => void
     }

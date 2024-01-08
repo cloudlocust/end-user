@@ -385,9 +385,9 @@ describe('MyConsumptionContainer test', () => {
         mockManualContractFillingIsEnabled = true
     })
 
-    test('When isShowIdleConsumptionDisabledInfo is false', async () => {
-        echartsConsumptionChartContainerProps.period = 'daily'
-        echartsConsumptionChartContainerProps.metricsInterval = '1m' as metricIntervalType
+    test('When isShowIdleConsumptionDisabledInfo is false and period weekly', async () => {
+        echartsConsumptionChartContainerProps.period = 'weekly'
+        echartsConsumptionChartContainerProps.metricsInterval = '1d' as metricIntervalType
 
         const { getByText } = reduxedRender(
             <Router>
@@ -402,6 +402,34 @@ describe('MyConsumptionContainer test', () => {
         await waitFor(() => {
             expect(getByText('Les informations de veille ne sont pas disponibles pour cette pèriode')).toBeTruthy()
         })
+    })
+
+    test('When daily period, no button idle', async () => {
+        echartsConsumptionChartContainerProps.period = 'daily'
+        echartsConsumptionChartContainerProps.metricsInterval = '1m' as metricIntervalType
+
+        const { queryByText } = reduxedRender(
+            <Router>
+                <ConsumptionChartContainer {...echartsConsumptionChartContainerProps} />
+            </Router>,
+            { initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[0] } } },
+        )
+
+        expect(queryByText('Veille')).not.toBeInTheDocument()
+    })
+
+    test('When daily period, their is button for labelisation', async () => {
+        echartsConsumptionChartContainerProps.period = 'daily'
+        echartsConsumptionChartContainerProps.metricsInterval = '1m' as metricIntervalType
+
+        const { queryByText } = reduxedRender(
+            <Router>
+                <ConsumptionChartContainer {...echartsConsumptionChartContainerProps} />
+            </Router>,
+            { initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[0] } } },
+        )
+
+        expect(queryByText('Identifier mes appareils')).toBeInTheDocument()
     })
 
     describe('TemperatureOrPmax TargetMenuGroup Test', () => {
