@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { initializeApp } from 'firebase/app'
 import { getMessaging, getToken, isSupported } from 'firebase/messaging'
 import { axios } from 'src/common/react-platform-components'
@@ -21,23 +22,43 @@ const addSubscriberDeviceToken = async (currentToken: string) => {
         }>(`${AUTH_BASE_URL}/add-subscriber-device-token`, {
             deviceToken: currentToken,
         })
-    } catch (error) {}
+    } catch (error) {
+        console.log('Error while adding subscriber device token')
+        console.log(error)
+    }
 }
 
 /**
  * This function gets the device token from Firebase and adds it to the server.
  */
 const getTokenWithFirebase = async () => {
+    console.log('initializing firebase')
     const firebaseApp = initializeApp(FIREBASE_CONFIG)
+    console.log('******')
+    console.log(FIREBASE_CONFIG)
+    console.log(firebaseApp)
+    console.log('******')
+
+    console.log('getting messaging')
     const messaging = getMessaging(firebaseApp)
+    console.log('******')
+    console.log(messaging)
+    console.log('******')
 
     try {
+        console.log('getting token by using key: ', REACT_APP_FIREBASE_VAPID_KEY)
         const currentToken = await getToken(messaging, { vapidKey: REACT_APP_FIREBASE_VAPID_KEY })
+        console.log('getted token')
+        console.log(currentToken)
 
         if (currentToken) {
+            console.log('call add subscriber device token function')
             addSubscriberDeviceToken(currentToken)
         }
-    } catch (error) {}
+    } catch (error) {
+        console.log('error handling add subscriber device token function')
+        console.log(error)
+    }
 }
 
 /**
@@ -68,6 +89,7 @@ export const getTokenFromFirebase = async (_onPermissionGranted?: () => void) =>
     const isBrowserSupported = await isSupported()
 
     if (isBrowserSupported) {
+        console.log('The Browser is supported')
         return getTokenWithFirebase()
     } else {
         return requestPermissionAndRegister()
