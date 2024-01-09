@@ -13,7 +13,6 @@ import useEcogestesCategories from 'src/modules/Ecogestes/hooks/useEcogestesCate
 export const EcogestesRooms = ({ showJustVisualisedEcogests }: EcogestesRoomsProps) => {
     const { elementList: ecogestCategoriesList, loadingInProgress } = useEcogestesCategories(
         IEcogesteCategoryTypes.ROOMS,
-        showJustVisualisedEcogests,
     )
 
     return (
