@@ -8,9 +8,6 @@ export const getMsgFromAxiosError = (error: any) => {
     if (error?.response && error.response?.status === 400 && error.response.data && 'detail' in error.response?.data) {
         return error.response.data.detail
     }
-    if (error.response?.data?.errors && error.response.data.errors.find((error: any) => 'birthdate' in error)) {
-        return 'Veuillez saisir correctement votre date de naissance.'
-    }
     return "Une erreur s'est produite."
 }
 
