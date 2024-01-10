@@ -10,7 +10,7 @@ import { motion } from 'framer-motion'
 import { ActionsNrLinkConnectionSteps, nrLinkGUID, nrLinkInfo, nrLinkMain } from 'src/modules/nrLinkConnection'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import { manualContractFillingIsEnabled } from 'src/modules/MyHouse/MyHouseConfig'
-import { URL_CONSUMPTION } from 'src/modules/MyConsumption'
+import { URL_DASHBOARD } from 'src/modules/Dashboard/DashboardConfig'
 import { LastStepNrLinkConnectionProps } from 'src/modules/nrLinkConnection/components/LastStepNrLinkConnection/LastStepNrLinkConnection.d'
 
 /**
@@ -71,7 +71,7 @@ const LastStepNrLinkConnection = ({
             if (manualContractFillingIsEnabled) {
                 handleNext()
             } else {
-                history.push(URL_CONSUMPTION)
+                history.push(URL_DASHBOARD)
             }
         } catch (error: any) {
             if (error.response && error.response.data && error.response.data.detail)

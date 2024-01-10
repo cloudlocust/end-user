@@ -4,9 +4,9 @@ import { ReactComponent as BoltIcon } from 'src/assets/images/dashboard/bolt.svg
 import dayjs from 'dayjs'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import { SVGAttributes, useMemo } from 'react'
-import { consumptionWattUnitConversion } from 'src/modules/MyConsumption/utils/unitConversionFunction'
 import { FuseCard } from 'src/modules/shared/FuseCard/FuseCard'
 import { EnergyStatusWidgetProps } from 'src/modules/Dashboard/StatusWrapper/components/EnergyStatusWidget/energyStatusWidget'
+import convert from 'convert-units'
 
 /**
  * Icon style.
@@ -64,11 +64,16 @@ export const EnergyStatusWidget = (props: EnergyStatusWidgetProps) => {
 
     const computedLastPowerData = useMemo(() => {
         return lastPowerData?.value && lastPowerData.timestamp
-            ? consumptionWattUnitConversion(Math.abs(lastPowerData?.value!))
+            ? { value: Math.abs(lastPowerData.value), unit: 'W' }
             : { value: 0, unit: 'W' }
     }, [lastPowerData])
 
-    const lastNrlinkPowerDate = lastDataTimestamp ? dayjs(lastDataTimestamp).format('HH:mm:ss') : ''
+    const lastNrlinkPowerDate = lastDataTimestamp ? dayjs(lastDataTimestamp).utc().locale('fr').format('HH:mm:ss') : ''
+
+    const lastNrlinkPowerDataInEuro = useMemo(
+        () => (pricePerKwh ? convert(computedLastPowerData.value).from('Wh').to('kWh') * pricePerKwh : 0),
+        [computedLastPowerData.value, pricePerKwh],
+    )
 
     return (
         <FuseCard
@@ -97,28 +102,31 @@ export const EnergyStatusWidget = (props: EnergyStatusWidgetProps) => {
                         {iconType}
                     </IconButton>
 
-                    <TypographyFormatMessage className="text-16 sm:text-24 font-400" sx={{ color: themeContrastText }}>
+                    <TypographyFormatMessage
+                        className="text-14 sm:text-18 lg:text-20 font-400"
+                        sx={{ color: themeContrastText }}
+                    >
                         {widgetTitle}
                     </TypographyFormatMessage>
                 </div>
                 <div className="flex flex-col w-full">
                     {(isNrlinkDisconnected || isNrlinkOff) && (
-                        <div className="flex justify-end items-center text-12 sm:text-18 mb-10">
+                        <div className="flex justify-end items-center text-13 mb-10">
                             <span style={{ color: themeContrastText }}>{NRLINK_OFFLINE}</span>
                         </div>
                     )}
-                    <div className="flex justify-end items-center text-12 sm:text-18 mb-10">
+                    <div className="flex justify-end items-center text-12 sm:text-16 mb-10">
                         <span style={{ color: themeContrastText }}>
                             {lastNrlinkPowerDate ? `à ${lastNrlinkPowerDate}` : null}
                         </span>
                     </div>
-                    <div className="flex flex-row space-x-5 justify-end">
+                    <div className="flex flex-row space-x-5 justify-end flex-1">
                         <div className="flex space-x-5 items-baseline">
                             <span className="text-28 leading-3 md:font-semibold" style={{ color: themeContrastText }}>
                                 {computedLastPowerData?.value}
                             </span>
                             <span className="text-14 leading-3 md:font-medium" style={{ color: themeContrastText }}>
-                                {computedLastPowerData?.unit}
+                                {computedLastPowerData.unit}
                             </span>
                         </div>
                         {!isLastPowerDataNegative && (
@@ -127,7 +135,7 @@ export const EnergyStatusWidget = (props: EnergyStatusWidgetProps) => {
                                     className="text-28 md:text-32 leading-3 md:font-semibold"
                                     style={{ color: themeContrastText }}
                                 >
-                                    {isNrlinkDisconnected ? '-' : pricePerKwh?.toFixed(2)}
+                                    {isNrlinkDisconnected ? '-' : lastNrlinkPowerDataInEuro.toFixed(2)}
                                 </span>
                                 <span className="text-14 leading-3 md:font-medium" style={{ color: themeContrastText }}>
                                     €/h

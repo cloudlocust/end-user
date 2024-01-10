@@ -140,8 +140,8 @@ export const DashboardConsumptionWidget = () => {
             loadingColor={theme.palette.primary.main}
             className="flex flex-col justify-between"
         >
-            <div className="p-20 pb-24 sm:pb-28">
-                <TypographyFormatMessage variant="h3" className="text-20 sm:text-24 font-400 text-grey-900 mb-10">
+            <div className="p-20 pb-24 sm:pb-10">
+                <TypographyFormatMessage variant="h3" className="text-16 sm:text-20 font-400 text-grey-900 mb-10">
                     Conso
                 </TypographyFormatMessage>
                 <div className="flex justify-between items-center gap-5 flex-wrap">
