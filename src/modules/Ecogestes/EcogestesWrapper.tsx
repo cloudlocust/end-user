@@ -1,18 +1,15 @@
 import { useState } from 'react'
 import { IEcogesteCategoryTypes } from 'src/modules/Ecogestes/EcogestesConfig'
 import { ConsumptionPoleEcogestes, RoomEcogestes } from 'src/modules/Ecogestes/components/ecogesteCategoryTypes'
-import { EcogestesWrapperProps } from './EcogestesWrapper.d'
 import { ButtonSwitcherParamsType } from 'src/modules/shared/ButtonsSwitcher/ButtonsSwitcher'
 import { ButtonsSwitcher } from 'src/modules/shared/ButtonsSwitcher'
 
 /**
  *  Ecogestes Wrapper.
  *
- * @param root0 N/A.
- * @param root0.showJustVisualisedEcogests Indicates whether to show just visualised ecogests.
  *  @returns JSX.Element.
  */
-export const EcogestesWrapper = ({ showJustVisualisedEcogests }: EcogestesWrapperProps) => {
+export const EcogestesWrapper = () => {
     const [selectedEcogestesCategory, setSelectedEcogestesCategory] = useState<IEcogesteCategoryTypes>(
         IEcogesteCategoryTypes.CONSUMPTION,
     )
@@ -45,9 +42,9 @@ export const EcogestesWrapper = ({ showJustVisualisedEcogests }: EcogestesWrappe
         >
             <ButtonsSwitcher buttonsSwitcherParams={buttonsSwitcherParams} />
             {selectedEcogestesCategory === IEcogesteCategoryTypes.CONSUMPTION ? (
-                <ConsumptionPoleEcogestes showJustVisualisedEcogests={showJustVisualisedEcogests} />
+                <ConsumptionPoleEcogestes />
             ) : (
-                <RoomEcogestes showJustVisualisedEcogests={showJustVisualisedEcogests} />
+                <RoomEcogestes />
             )}
         </div>
     )

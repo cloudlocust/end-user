@@ -10,14 +10,12 @@ import { EcogesteCategoriesListProps } from 'src/modules/Ecogestes/components/ec
  * @param _elementList.categories List containing all Ecogestes Category.
  * @param _elementList.categoryType The type of the Category like Rooms or ConsumptionPools.
  * @param _elementList.loadingInProgress Loading state.
- * @param _elementList.showJustVisualisedEcogests Indicates whether to show just visualised ecogests.
  * @returns JSX.Element.
  */
 export const EcogesteCategoriesList = ({
     categories,
     categoryType,
     loadingInProgress,
-    showJustVisualisedEcogests,
 }: EcogesteCategoriesListProps) => {
     if (loadingInProgress) {
         return <EcogestesLoadingSpinner />
@@ -34,12 +32,7 @@ export const EcogesteCategoriesList = ({
     return (
         <div className="flex gap-9 flex-wrap justify-center mt-10" aria-label="list, categories, cards">
             {categories?.map((category) => (
-                <EcogesteCategoryCard
-                    key={category.id}
-                    ecogestCategory={category}
-                    categoryType={categoryType}
-                    showJustVisualisedEcogests={showJustVisualisedEcogests}
-                />
+                <EcogesteCategoryCard key={category.id} ecogestCategory={category} categoryType={categoryType} />
             ))}
         </div>
     )
