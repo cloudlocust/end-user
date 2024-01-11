@@ -11,7 +11,6 @@ import { SnakeCasedPropertiesDeep } from 'type-fest'
 
 const TEST_ECOGESTES_ECO_CARD_LABEL = 'ecogeste-card'
 let mockCategoryId: string = '0'
-let mockShowJustVisualisedEcogests: boolean = false
 let mockEcogestes: SnakeCasedPropertiesDeep<IEcogeste>[] = []
 let mockEcogesteCategory: IEcogestCategory = {
     id: 42,
@@ -44,15 +43,6 @@ jest.mock('react-router-dom', () => ({
      */
     useParams: () => ({
         categoryId: mockCategoryId,
-    }),
-
-    /**
-     * Mock the useLocation.
-     *
-     * @returns UseLocation.
-     */
-    useLocation: () => ({
-        state: { showJustVisualisedEcogests: mockShowJustVisualisedEcogests },
     }),
 
     /**
@@ -229,12 +219,11 @@ describe('EcogestesList tests', () => {
     })
 
     test('When showJustVisualisedEcogests is true, should not display the filter button', () => {
-        mockShowJustVisualisedEcogests = true
         mockCategoryId = '0'
         mockEcogestes = [TEST_ECOGESTES[0]]
         const { queryByLabelText } = reduxedRender(
             <BrowserRouter>
-                <EcogestesList />
+                <EcogestesList showJustVisualisedEcogests />
             </BrowserRouter>,
         )
 

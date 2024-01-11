@@ -11,13 +11,11 @@ import { URL_ROOT_ECOGESTES } from 'src/modules/Ecogestes/EcogestesConfig'
  * @param root0 N/A.
  * @param root0.ecogestCategory The ecogestCategory to display.
  * @param root0.categoryType The ecogestCategory type.
- * @param root0.showJustVisualisedEcogests Indicates whether to show just visualised ecogests.
  * @returns JSX.Element - EcogesteCategory extending mUI Card.
  */
 export const EcogesteCategoryCard: FC<IEcogesteCategoryCardProps> = ({
     ecogestCategory,
     categoryType,
-    showJustVisualisedEcogests,
 }: IEcogesteCategoryCardProps): JSX.Element => {
     const theme = useTheme()
     const history = useHistory()
@@ -26,9 +24,7 @@ export const EcogesteCategoryCard: FC<IEcogesteCategoryCardProps> = ({
      * Redirect to EcogestCard.
      */
     const handleClick = () => {
-        history.push(`${URL_ROOT_ECOGESTES}/${categoryType}/${ecogestCategory.id}`, {
-            showJustVisualisedEcogests,
-        })
+        history.push(`${URL_ROOT_ECOGESTES}/${categoryType}/${ecogestCategory.id}`)
     }
 
     const ecogestsNumberFormatted = `${ecogestCategory.nbEcogeste} Écogeste${ecogestCategory.nbEcogeste > 1 ? 's' : ''}`

@@ -167,3 +167,13 @@ export type IEcogesteCategoriesListProps =
          */
         loadingInProgress: boolean
     }
+
+/**
+ * EcogestesList props.
+ */
+export interface EcogestesListProps {
+    /**
+     * Indicates whether to show just visualised ecogests.
+     */
+    showJustVisualisedEcogests?: boolean
+}

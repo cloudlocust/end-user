@@ -1,6 +1,6 @@
 import { isEmpty, isNull } from 'lodash'
 import useEcogestes from 'src/modules/Ecogestes/hooks/ecogestesHook'
-import { useParams, useLocation } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 import { EcogesteCard } from 'src/modules/Ecogestes'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import { Button, Menu, MenuItem, MenuList, SvgIcon } from '@mui/material'
@@ -9,7 +9,7 @@ import FilterListIcon from '@mui/icons-material/FilterList'
 import VisibilityIcon from '@mui/icons-material/Visibility'
 import { ReactComponent as NotViewIcon } from 'src/modules/Ecogestes/components/ecogesteCard/NotRead.svg'
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
-import { EcogestViewedEnum, IEcogeste } from 'src/modules/Ecogestes/components/ecogeste.d'
+import { EcogestViewedEnum, EcogestesListProps, IEcogeste } from 'src/modules/Ecogestes/components/ecogeste.d'
 import { EcogestesLoadingSpinner } from 'src/modules/Ecogestes/components/shared/EcogestesLoadingSpinner'
 
 /**
@@ -38,18 +38,11 @@ const getFilterIcon = (filter: EcogestViewedEnum) => {
  * fetch and display a list of ecogestes.
  * Temporary display until we have category cards.
  *
+ * @param root0 N/A.
+ * @param root0.showJustVisualisedEcogests Indicates whether to show just visualised ecogests.
  * @returns A Component which displays and filter a list of ecogestes.
  */
-export const EcogestesList = () => {
-    // eslint-disable-next-line jsdoc/require-jsdoc
-    const location = useLocation<{
-        /**
-         * Indicates whether to show just visualised ecogests.
-         */
-        showJustVisualisedEcogests: boolean
-    }>()
-    const { showJustVisualisedEcogests } = location.state
-
+export const EcogestesList = ({ showJustVisualisedEcogests }: EcogestesListProps) => {
     /**
      * Mandatory...
      * If we don't do that we got a Re-render and some bugs like all ecogeste instead of Ecogeste linked to a Category...
@@ -70,7 +63,7 @@ export const EcogestesList = () => {
         elementList: ecogestesList,
         loadingInProgress: isEcogestesLoadingInProgress,
         filterEcogestes,
-    } = useEcogestes(showJustVisualisedEcogests)
+    } = useEcogestes(showJustVisualisedEcogests ? { viewed: EcogestViewedEnum.READ } : {})
 
     const [currentViewFilter, setCurrentViewFilter] = useState<EcogestViewedEnum>(EcogestViewedEnum.ALL)
 
@@ -105,11 +98,11 @@ export const EcogestesList = () => {
     return (
         <>
             <div className="flex justify-between w-full mb-20">
-                <TypographyFormatMessage variant="h2" className="text-20 font-bold mx-auto">
-                    Les écogestes associés
-                </TypographyFormatMessage>
                 {!showJustVisualisedEcogests && (
                     <>
+                        <TypographyFormatMessage variant="h2" className="text-20 font-bold mx-auto">
+                            Les écogestes associés
+                        </TypographyFormatMessage>
                         <Button
                             variant="outlined"
                             startIcon={getFilterIcon(currentViewFilter)}

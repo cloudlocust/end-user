@@ -17,10 +17,6 @@ export type IEcogesteCategoryCardProps =
          * Current Category of Ecogeste we're displaying.
          */
         ecogestCategory: IEcogestCategory
-        /**
-         * Indicates whether to show just visualised ecogests.
-         */
-        showJustVisualisedEcogests?: boolean
     }
 
 /**
@@ -39,8 +35,4 @@ export interface EcogesteCategoriesListProps {
      * EcogesteCategoriesList loading state.
      */
     loadingInProgress: boolean
-    /**
-     * Indicates whether to show just visualised ecogests.
-     */
-    showJustVisualisedEcogests?: boolean
 }
