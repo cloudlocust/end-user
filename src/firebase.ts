@@ -32,6 +32,7 @@ const addSubscriberDeviceToken = async (currentToken: string) => {
  * This function gets the device token from Firebase and adds it to the server.
  */
 const getTokenWithFirebase = async () => {
+    console.log('\n************************* getTokenWithFirebase function *************************')
     console.log('initializing firebase')
     const firebaseApp = initializeApp(FIREBASE_CONFIG)
     console.log('******')
@@ -65,6 +66,7 @@ const getTokenWithFirebase = async () => {
  * This function requests permissions and registers the device token using Capacitor.
  */
 const requestPermissionAndRegister = async () => {
+    console.log('\n requestPermissionAndRegister is called \n')
     try {
         const result = await PushNotifications.requestPermissions()
 
@@ -87,9 +89,12 @@ const requestPermissionAndRegister = async () => {
  */
 export const getTokenFromFirebase = async (_onPermissionGranted?: () => void) => {
     const isBrowserSupported = await isSupported()
-
+    console.log('\n*************** getTokenFromFirebase function ****************')
+    console.log('log process object: ')
+    console.log(process)
     if (isBrowserSupported) {
         console.log('The Browser is supported')
+        console.log('*******************************************************\n')
         return getTokenWithFirebase()
     } else {
         return requestPermissionAndRegister()

@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import React, { FC } from 'react'
 import ReactDOM from 'react-dom'
 import { BASENAME_URL, FIREBASE_MESSAGING_SW_URL, MSW_MOCK } from './configs'
@@ -83,6 +84,7 @@ bootstrapApplication().then((app) => {
 
 // In order to activate MSW, you have to set the env variable to enabled in env.development.
 if ('serviceWorker' in navigator && process.env.NODE_ENV === 'development' && MSW_MOCK === 'enabled') {
+    console.log('\nMSW_MOCK: is true and its lunched\n')
     navigator.serviceWorker.register(`${process.env.PUBLIC_URL}/mockServiceWorker.js`)
     const { worker } = require('src/mocks/browser')
     worker.start()
@@ -90,14 +92,21 @@ if ('serviceWorker' in navigator && process.env.NODE_ENV === 'development' && MS
 
 // PWA service worker should only be working in production mode.
 if (isBrowser && 'serviceWorker' in navigator && process.env.NODE_ENV === 'production') {
+    console.log('\nPWA service worker: is true and its added')
     window.addEventListener('load', async () => {
+        console.log('PWA service worker: load function is lunched with:')
+        console.log(`${process.env.PUBLIC_URL}`)
+        console.log(`${process.env.PUBLIC_URL}/pwaSW.js`)
         await navigator.serviceWorker.register(`${process.env.PUBLIC_URL}/pwaSW.js`)
     })
 }
 
 // Fireabse messaging Service worker.
 if ('serviceWorker' in navigator) {
+    console.log('\nFireabse messaging Service worker: is true and its added')
     window.addEventListener('load', async () => {
+        console.log('Fireabse messaging Service worker: load function is lunched with:')
+        console.log(`${FIREBASE_MESSAGING_SW_URL}`)
         await navigator.serviceWorker.register(`${FIREBASE_MESSAGING_SW_URL}`)
     })
 }
