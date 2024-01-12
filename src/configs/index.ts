@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 /**
  *
  */
@@ -168,6 +169,10 @@ export const FIREBASE_CONFIG = {
 export const FIREBASE_MESSAGING_SW_URL = `${process.env.PUBLIC_URL}/firebase-messaging-sw.js?${new URLSearchParams(
     FIREBASE_CONFIG,
 ).toString()}`
+
+console.log('\n****************************** scr/configs/index.ts ********************************')
+console.log(FIREBASE_MESSAGING_SW_URL)
+console.log('**************************************************************************************')
 
 /**
  * GTM ID environment variable.
