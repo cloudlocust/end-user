@@ -1,19 +1,20 @@
 import { render, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { ButtonsSwitcher } from 'src/modules/shared/ButtonsSwitcher'
+import { ButtonSwitcherParamsType } from 'src/modules/shared/ButtonsSwitcher/ButtonsSwitcher'
 
 describe('ButtonsSwitcher', () => {
     test('renders the buttons and handles clicks', async () => {
         const mockClickHandler1 = jest.fn()
         const mockClickHandler2 = jest.fn()
 
-        const buttonsSwitcherParams = [
+        const buttonsSwitcherParams: ButtonSwitcherParamsType[] = [
             {
-                btnText: 'Button 1',
+                buttonText: 'Button 1',
                 clickHandler: mockClickHandler1,
             },
             {
-                btnText: 'Button 2',
+                buttonText: 'Button 2',
                 clickHandler: mockClickHandler2,
             },
         ]

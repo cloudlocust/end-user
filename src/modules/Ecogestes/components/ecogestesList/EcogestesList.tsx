@@ -39,10 +39,10 @@ const getFilterIcon = (filter: EcogestViewedEnum) => {
  * Temporary display until we have category cards.
  *
  * @param root0 N/A.
- * @param root0.showJustVisualisedEcogests Indicates whether to show just visualised ecogests.
+ * @param root0.isEcogestsViewed Indicates whether to show just viewed ecogests.
  * @returns A Component which displays and filter a list of ecogestes.
  */
-export const EcogestesList = ({ showJustVisualisedEcogests }: EcogestesListProps) => {
+export const EcogestesList = ({ isEcogestsViewed }: EcogestesListProps) => {
     /**
      * Mandatory...
      * If we don't do that we got a Re-render and some bugs like all ecogeste instead of Ecogeste linked to a Category...
@@ -63,7 +63,7 @@ export const EcogestesList = ({ showJustVisualisedEcogests }: EcogestesListProps
         elementList: ecogestesList,
         loadingInProgress: isEcogestesLoadingInProgress,
         filterEcogestes,
-    } = useEcogestes(showJustVisualisedEcogests ? { viewed: EcogestViewedEnum.READ } : {})
+    } = useEcogestes(isEcogestsViewed ? { viewed: EcogestViewedEnum.READ } : {})
 
     const [currentViewFilter, setCurrentViewFilter] = useState<EcogestViewedEnum>(EcogestViewedEnum.ALL)
 
@@ -98,7 +98,7 @@ export const EcogestesList = ({ showJustVisualisedEcogests }: EcogestesListProps
     return (
         <>
             <div className="flex justify-between w-full mb-20">
-                {!showJustVisualisedEcogests && (
+                {!isEcogestsViewed && (
                     <>
                         <TypographyFormatMessage variant="h2" className="text-20 font-bold mx-auto">
                             Les écogestes associés

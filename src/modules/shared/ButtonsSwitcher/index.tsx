@@ -50,7 +50,7 @@ export const ButtonsSwitcher = ({ buttonsSwitcherParams }: ButtonsSwitcherProps)
                         buttonSwitcherParam.clickHandler()
                     }}
                 >
-                    {buttonSwitcherParam.btnText}
+                    {buttonSwitcherParam.buttonText}
                 </StyledButton>
             ))}
         </div>

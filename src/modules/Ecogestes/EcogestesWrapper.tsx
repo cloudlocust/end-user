@@ -16,7 +16,7 @@ export const EcogestesWrapper = () => {
 
     const buttonsSwitcherParams: ButtonSwitcherParamsType[] = [
         {
-            btnText: 'Postes de conso',
+            buttonText: 'Postes de conso',
             /**
              * Switch to Consumption Poles when a User fire a Click.
              */
@@ -25,7 +25,7 @@ export const EcogestesWrapper = () => {
             },
         },
         {
-            btnText: 'Pièces',
+            buttonText: 'Pièces',
             /**
              * Switch to Rooms when a User fire a Click.
              */

@@ -19,7 +19,7 @@ describe('Advices tests', () => {
         expect(getByText('Pièces')).toBeInTheDocument()
     })
 
-    test('when clicking in the tab "Réalisés", show the released ecogest list screen', async () => {
+    test('when clicking in the tab "Réalisés", show the realized ecogest list screen', async () => {
         const { getByText, getByLabelText, queryByLabelText } = reduxedRender(
             <Router>
                 <Advices />

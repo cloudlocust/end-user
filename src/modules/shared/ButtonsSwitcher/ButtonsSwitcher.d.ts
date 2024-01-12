@@ -6,7 +6,7 @@ export type ButtonSwitcherParamsType = {
     /**
      * Text to display in Button.
      */
-    btnText: string
+    buttonText: string
     /**
      * Callback to execute when the Button is clicked.
      */

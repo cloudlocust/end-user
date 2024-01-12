@@ -218,12 +218,12 @@ describe('EcogestesList tests', () => {
         })
     })
 
-    test('When showJustVisualisedEcogests is true, should not display the filter button', () => {
+    test('When isEcogestsViewed is true, should not display the filter button', () => {
         mockCategoryId = '0'
         mockEcogestes = [TEST_ECOGESTES[0]]
         const { queryByLabelText } = reduxedRender(
             <BrowserRouter>
-                <EcogestesList showJustVisualisedEcogests />
+                <EcogestesList isEcogestsViewed />
             </BrowserRouter>,
         )
 
