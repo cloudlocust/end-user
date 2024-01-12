@@ -26,7 +26,7 @@ export const Advices = () => {
         {
             tabTitle: 'Réalisés',
             tabSlug: 'realises',
-            tabContent: <EcogestesList showJustVisualisedEcogests />,
+            tabContent: <EcogestesList isEcogestsViewed />,
             icon: <CircleCheckIcon height={30} width={30} />,
         },
     ]

@@ -173,7 +173,7 @@ export type IEcogesteCategoriesListProps =
  */
 export interface EcogestesListProps {
     /**
-     * Indicates whether to show just visualised ecogests.
+     * Indicates whether to show just viewed ecogests.
      */
-    showJustVisualisedEcogests?: boolean
+    isEcogestsViewed?: boolean
 }
