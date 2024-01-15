@@ -1,24 +1,22 @@
-import { Button, CircularProgress, Icon } from '@mui/material'
-import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
-import { motion } from 'framer-motion'
-import { Add as AddIcon } from '@mui/icons-material'
+import { CircularProgress } from '@mui/material'
 import MyConsumptionChart from 'src/modules/MyConsumption/components/MyConsumptionChart'
 import { PeriodEnum } from 'src/modules/MyConsumption/myConsumptionTypes.d'
 import { useTheme } from '@mui/material'
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { IMetric, metricTargetType } from 'src/modules/Metrics/Metrics'
 import { filterMetricsData, getDefaultConsumptionTargets } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
 import { useMetrics } from 'src/modules/Metrics/metricsHook'
 import MyConsumptionDatePicker from 'src/modules/MyConsumption/components/MyConsumptionDatePicker'
-import { useHistory } from 'react-router-dom'
-import ConsumptionLabelCard from '../ConsumptionLabelCard'
+import ConsumptionLabelCard from 'src/modules/MyConsumption/components/LabelizationContainer/ConsumptionLabelCard'
 import {
     ConsumptionLabelDataType,
     SimplifiedConsumptionChartContainerPropsType,
 } from 'src/modules/MyConsumption/components/LabelizationContainer/labelizaitonTypes.d'
-import { IPeriodTime } from '../../MyConsumptionChart/MyConsumptionChartTypes.d'
-import { ConsumptionEnedisSgeWarning } from '../../MyConsumptionChart/ConsumptionChartWarnings'
+import { IPeriodTime } from 'src/modules/MyConsumption/components/MyConsumptionChart/MyConsumptionChartTypes.d'
+import { ConsumptionEnedisSgeWarning } from 'src/modules/MyConsumption/components/MyConsumptionChart/ConsumptionChartWarnings'
 import { sgeConsentFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
+import ReactECharts from 'echarts-for-react'
+import AddLabelButtonForm from 'src/modules/MyConsumption/components/LabelizationContainer/AddLabelButtonForm'
 
 /**
  * MyConsumptionChartContainer Component.
@@ -41,13 +39,13 @@ const SimplifiedConsumptionChartContainer = ({
     setRange,
 }: SimplifiedConsumptionChartContainerPropsType) => {
     const theme = useTheme()
-    const history = useHistory()
     // Handling the targets makes it simpler instead of the useMetrics as it's a straightforward array of metricTargetType
     // Meanwhile the setTargets for useMetrics needs to add {type: 'timeserie'} everytime...
     const [targets, setTargets] = useState<metricTargetType[]>(
         getDefaultConsumptionTargets(isSolarProductionConsentOff),
     )
     const period = PeriodEnum.DAILY
+    const chartRef = useRef<ReactECharts>(null)
 
     // Indicates if enedisSgeConsent is not Connected
     const enedisSgeOff = enedisSgeConsent?.enedisSgeConsentState !== 'CONNECTED'
@@ -94,7 +92,7 @@ const SimplifiedConsumptionChartContainer = ({
     const [selectedCardIndex, setSelectedCardIndex] = useState<number | null>(null)
     const [selectedLabelData, setSelectedLabelData] = useState<ConsumptionLabelDataType | undefined>(undefined)
     const [selectedPeriod, setSelectedPeriod] = useState<IPeriodTime>({ startTime: undefined, endTime: undefined })
-
+    const [inputPeriodTime, setInputPeriodTime] = useState<IPeriodTime>({ startTime: undefined, endTime: undefined })
     /**
      * Handle card click.
      *
@@ -192,41 +190,22 @@ const SimplifiedConsumptionChartContainer = ({
     ]
     return (
         <div className="flex flex-col justify-center my-20">
-            <div className="flex flex-row justify-between align-center mx-20">
-                <Button className="flex justify-center items-center" variant="text" onClick={() => history.goBack()}>
-                    <Icon sx={{ color: theme.palette.primary.main }}>arrow_back</Icon>
-                    <TypographyFormatMessage sx={{ color: theme.palette.primary.main }} className="text-16 font-medium">
-                        Retour
-                    </TypographyFormatMessage>
-                </Button>
-                <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0, transition: { delay: 0.2 } }}>
-                    <Button
-                        className="whitespace-nowrap"
-                        variant="contained"
-                        color="secondary"
-                        sx={{
-                            '&:hover': {
-                                backgroundColor: `${theme.palette.secondary.main}`,
-                                opacity: '.7',
-                            },
-                        }}
-                    >
-                        <span className="hidden sm:flex">
-                            <TypographyFormatMessage>Ajouter un label</TypographyFormatMessage>
-                        </span>
-                        <span className="flex sm:hidden">
-                            <AddIcon />
-                        </span>
-                    </Button>
-                </motion.div>
-            </div>
-            <div>
+            <div className="flex flex-row justify-center align-center">
                 <MyConsumptionDatePicker
                     period={period}
                     setRange={setRange}
                     range={range}
                     color={theme.palette.primary.main}
                 />
+            </div>
+            <div className="flex flex-row justify-end mx-10">
+                <AddLabelButtonForm
+                    color={`${theme.palette.secondary.main}`}
+                    chartRef={chartRef}
+                    inputPeriodTime={inputPeriodTime}
+                />
+            </div>
+            <div>
                 {isMetricsLoading ? (
                     <div
                         className="flex h-full w-full flex-col items-center justify-center"
@@ -242,6 +221,8 @@ const SimplifiedConsumptionChartContainer = ({
                             isSolarProductionConsentOff={isSolarProductionConsentOff}
                             axisColor={theme.palette.common.black}
                             selectedLabelPeriod={selectedPeriod}
+                            chartRef={chartRef}
+                            setInputPeriodTime={setInputPeriodTime}
                         />
                         <ConsumptionEnedisSgeWarning isShowWarning={enedisSgeOff && sgeConsentFeatureState} />
 
