@@ -5,8 +5,8 @@ import { reduxedRender } from 'src/common/react-platform-components/test'
 import { Advices } from 'src/modules/Advices/Advices'
 
 describe('Advices tests', () => {
-    test('renders correctly, and show the ecogest tags screen initialy', () => {
-        const { getByText } = reduxedRender(
+    test('renders correctly, and show the ecogest tags screen initialy', async () => {
+        const { getByLabelText, queryByLabelText, getByText } = reduxedRender(
             <Router>
                 <Advices />
             </Router>,
@@ -17,15 +17,7 @@ describe('Advices tests', () => {
         expect(getByText('Réalisés')).toBeInTheDocument()
         expect(getByText('Postes de conso')).toBeInTheDocument()
         expect(getByText('Pièces')).toBeInTheDocument()
-    })
-
-    test('when clicking in the tab "Réalisés", show the realized ecogest list screen', async () => {
-        const { getByText, getByLabelText, queryByLabelText } = reduxedRender(
-            <Router>
-                <Advices />
-            </Router>,
-        )
-
+        // when clicking on the tab "Réalisés", show the realized ecogest list screen
         userEvent.click(getByText('Réalisés'))
         await waitFor(() => {
             expect(getByLabelText('list, ecogests, cards')).toBeInTheDocument()

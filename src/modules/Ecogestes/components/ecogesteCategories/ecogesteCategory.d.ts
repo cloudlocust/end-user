@@ -22,7 +22,7 @@ export type IEcogesteCategoryCardProps =
 /**
  * EcogesteCategoriesList props.
  */
-export interface EcogesteCategoriesListProps {
+export interface EcogesteCategoriesProps {
     /**
      * Ecogest Categories.
      */
