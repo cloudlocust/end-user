@@ -2,89 +2,9 @@ import { fireEvent, screen, waitFor, within } from '@testing-library/react'
 import { reduxedRender } from 'src/common/react-platform-components/test'
 import { RegisterForm } from 'src/modules/User/Register/RegisterForm'
 import { act } from 'react-dom/test-utils'
-import { ADDRESS_TESTID } from 'src/common/ui-kit/form-fields/GoogleMapsAddressAutoComplete/GoogleMapsAddressAutoCompleteField.test'
 import userEvent from '@testing-library/user-event'
 import { TEST_SUCCESS_USER } from 'src/mocks/handlers/user'
-import dayjs from 'dayjs'
-
-// ============================================ this part is for required data to mock the address field ===============
-/**
- *
- */
-export const suggestionData = [
-    {
-        description: 'Rue Général Lotz 37, Uccle, Belgique',
-        place_id: 'ChIJKwNqoPnEw0cRIwMwh9SYOkI',
-        structured_formatting: {
-            main_text: 'Rue Général Lotz 37',
-            secondary_text: 'Uccle, Belgique',
-            main_text_matched_substrings: [
-                {
-                    length: 7,
-                    offset: 0,
-                },
-                {
-                    length: 2,
-                    offset: 17,
-                },
-            ],
-        },
-    },
-    {
-        description: '37 Rue Général de Larminat, Bordeaux, France',
-        place_id: 'ChIJUXSNwe0nVQ0RJu1MfaIwZbY',
-        structured_formatting: {
-            main_text: '37 Rue Général de Larminat',
-            secondary_text: 'Bordeaux, France',
-            main_text_matched_substrings: [
-                {
-                    length: 2,
-                    offset: 0,
-                },
-                {
-                    length: 7,
-                    offset: 3,
-                },
-            ],
-        },
-    },
-    {
-        description: '37 Rue Général Mangin, Grenoble, France',
-        place_id: 'ChIJo1WQ1pn0ikcR8eXMBbeo_5s',
-        structured_formatting: {
-            main_text: '37 Rue Général Mangin',
-            secondary_text: 'Grenoble, France',
-            main_text_matched_substrings: [
-                {
-                    length: 2,
-                    offset: 0,
-                },
-                {
-                    length: 7,
-                    offset: 3,
-                },
-            ],
-        },
-    },
-    {
-        description: '37 Rue Genton, Lyon, France',
-        place_id: 'ChIJTy9oE_LB9EcR7mmGhV5S1dY',
-        structured_formatting: {
-            main_text: '37 Rue Genton',
-            secondary_text: 'Lyon, France',
-            main_text_matched_substrings: [
-                {
-                    length: 2,
-                    offset: 0,
-                },
-                {
-                    length: 7,
-                    offset: 3,
-                },
-            ],
-        },
-    },
-]
+import { passwordQuerySelector, mockSuggestionAddressesData } from 'src/helpers/testVariables'
 
 const mockSetValue = jest.fn((_data) => null)
 const mockInit = jest.fn(() => null)
@@ -95,9 +15,9 @@ const INVALID_PASSWORD_FIELD_ERROR =
 const formatted_test_country = 'test country'
 const CHECKBOX_RGPD_ERROR_TEXT = 'Ce champ est obligatoire'
 // eslint-disable-next-line jsdoc/require-jsdoc
-export const passwordQuerySelector = 'input[name="password"]'
 const VALIDER_TEXT = 'Valider'
 const BIRTHDATE_lABEL = 'Date de naissance (optionnel)'
+const ADDRESS_TESTID = 'AddressAutoCompleteField'
 
 jest.mock('use-places-autocomplete', () => ({
     ...jest.requireActual('use-places-autocomplete'),
@@ -106,7 +26,7 @@ jest.mock('use-places-autocomplete', () => ({
     default: () => ({
         setValue: mockSetValue,
         suggestions: {
-            data: suggestionData,
+            data: mockSuggestionAddressesData,
         },
         init: mockInit,
     }),
@@ -312,13 +232,6 @@ describe('test registerForm', () => {
                     firstName: 'test prénom',
                     lastName: 'test nom',
                     phone: TEST_SUCCESS_USER.phone,
-                    /**
-                     * TODO: Rewrite the birthdate test.
-                     * There is a difficult in simulating the datepicker.
-                     * When it's clicked using userEvent.click
-                     * It takes the current date.
-                     */
-                    birthdate: dayjs().format('DD/MM/YYYY'),
                     password: 'P@ssword1',
                     address: {
                         city: 'test locality',
