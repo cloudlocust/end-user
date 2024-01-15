@@ -1,5 +1,5 @@
 import { IEcogesteCategoryTypes } from 'src/modules/Ecogestes/EcogestesConfig'
-import { EcogesteCategoriesList } from 'src/modules/Ecogestes/components/ecogesteCategories/EcogesteCategoriesList'
+import { EcogesteCategories } from 'src/modules/Ecogestes/components/ecogesteCategories'
 import useEcogestesCategories from 'src/modules/Ecogestes/hooks/useEcogestesCategories'
 
 /**
@@ -11,7 +11,7 @@ export const EcogestesConsumptionPoles = () => {
     const { elementList, loadingInProgress } = useEcogestesCategories(IEcogesteCategoryTypes.CONSUMPTION)
 
     return (
-        <EcogesteCategoriesList
+        <EcogesteCategories
             aria-label="ecogestsConsumptions"
             categoryType={IEcogesteCategoryTypes.CONSUMPTION}
             loadingInProgress={loadingInProgress}
