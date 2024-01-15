@@ -5,7 +5,7 @@ import { motion } from 'framer-motion'
 import MultiTab from 'src/common/ui-kit/components/MultiTab/MultiTab'
 import { ReactComponent as AdvicesIcon } from 'src/assets/images/navbarItems/advice.svg'
 import { ReactComponent as CircleCheckIcon } from 'src/assets/images/circleCheck.svg'
-import { EcogestesList } from 'src/modules/Ecogestes'
+import { Ecogestes } from 'src/modules/Ecogestes'
 
 /**
  * Form used for modify user Advices.
@@ -26,7 +26,7 @@ export const Advices = () => {
         {
             tabTitle: 'Réalisés',
             tabSlug: 'realises',
-            tabContent: <EcogestesList isEcogestsViewed />,
+            tabContent: <Ecogestes isEcogestsViewed />,
             icon: <CircleCheckIcon height={30} width={30} />,
         },
     ]

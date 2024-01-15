@@ -9,7 +9,7 @@ import FilterListIcon from '@mui/icons-material/FilterList'
 import VisibilityIcon from '@mui/icons-material/Visibility'
 import { ReactComponent as NotViewIcon } from 'src/modules/Ecogestes/components/ecogesteCard/NotRead.svg'
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
-import { EcogestViewedEnum, EcogestesListProps, IEcogeste } from 'src/modules/Ecogestes/components/ecogeste.d'
+import { EcogestViewedEnum, EcogestesProps, IEcogeste } from 'src/modules/Ecogestes/components/ecogeste.d'
 import { EcogestesLoadingSpinner } from 'src/modules/Ecogestes/components/shared/EcogestesLoadingSpinner'
 
 /**
@@ -40,9 +40,9 @@ const getFilterIcon = (filter: EcogestViewedEnum) => {
  *
  * @param root0 N/A.
  * @param root0.isEcogestsViewed Indicates whether to show just viewed ecogests.
- * @returns A Component which displays and filter a list of ecogestes.
+ * @returns A Component which displays and filter the ecogestes.
  */
-export const EcogestesList = ({ isEcogestsViewed }: EcogestesListProps) => {
+export const Ecogestes = ({ isEcogestsViewed }: EcogestesProps) => {
     /**
      * Mandatory...
      * If we don't do that we got a Re-render and some bugs like all ecogeste instead of Ecogeste linked to a Category...
@@ -60,7 +60,7 @@ export const EcogestesList = ({ isEcogestsViewed }: EcogestesListProps) => {
     const categoryIdInt = categoryId ? parseInt(categoryId) : undefined
 
     const {
-        elementList: ecogestesList,
+        elementList: ecogestes,
         loadingInProgress: isEcogestesLoadingInProgress,
         filterEcogestes,
     } = useEcogestes(isEcogestsViewed ? { viewed: EcogestViewedEnum.READ } : {})
@@ -154,7 +154,7 @@ export const EcogestesList = ({ isEcogestsViewed }: EcogestesListProps) => {
                     </>
                 )}
             </div>
-            {(isEmpty(ecogestesList) || isNull(ecogestesList)) && !isEcogestesLoadingInProgress && (
+            {(isEmpty(ecogestes) || isNull(ecogestes)) && !isEcogestesLoadingInProgress && (
                 <div className="flex flex-row justify-center items-start w-full h-full">
                     <TypographyFormatMessage>Aucun écogeste n'est disponible pour le moment.</TypographyFormatMessage>
                 </div>
@@ -166,11 +166,11 @@ export const EcogestesList = ({ isEcogestsViewed }: EcogestesListProps) => {
                 {isEcogestesLoadingInProgress ? (
                     <EcogestesLoadingSpinner />
                 ) : (
-                    ecogestesList?.map((ecogeste: IEcogeste) => <EcogesteCard key={ecogeste.id} ecogeste={ecogeste} />)
+                    ecogestes?.map((ecogeste: IEcogeste) => <EcogesteCard key={ecogeste.id} ecogeste={ecogeste} />)
                 )}
             </div>
         </>
     )
 }
 
-export default EcogestesList
+export default Ecogestes

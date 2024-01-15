@@ -169,9 +169,9 @@ export type IEcogesteCategoriesListProps =
     }
 
 /**
- * EcogestesList props.
+ * Ecogestes props.
  */
-export interface EcogestesListProps {
+export interface EcogestesProps {
     /**
      * Indicates whether to show just viewed ecogests.
      */

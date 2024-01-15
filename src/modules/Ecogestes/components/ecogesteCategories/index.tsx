@@ -1,7 +1,7 @@
 import { EcogesteCategoryCard } from 'src/modules/Ecogestes/components/ecogesteCategories/EcogesteCategoryCard'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import { EcogestesLoadingSpinner } from 'src/modules/Ecogestes/components/shared/EcogestesLoadingSpinner'
-import { EcogesteCategoriesListProps } from 'src/modules/Ecogestes/components/ecogesteCategories/ecogesteCategory'
+import { EcogesteCategoriesProps } from 'src/modules/Ecogestes/components/ecogesteCategories/ecogesteCategory'
 
 /**
  * Display the List of Ecogestes that belong to categoryType.
@@ -12,11 +12,7 @@ import { EcogesteCategoriesListProps } from 'src/modules/Ecogestes/components/ec
  * @param _elementList.loadingInProgress Loading state.
  * @returns JSX.Element.
  */
-export const EcogesteCategoriesList = ({
-    categories,
-    categoryType,
-    loadingInProgress,
-}: EcogesteCategoriesListProps) => {
+export const EcogesteCategories = ({ categories, categoryType, loadingInProgress }: EcogesteCategoriesProps) => {
     if (loadingInProgress) {
         return <EcogestesLoadingSpinner />
     }
