@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 import { initializeApp } from 'firebase/app'
-import { getMessaging, getToken, isSupported } from 'firebase/messaging'
+import { getMessaging, isSupported } from 'firebase/messaging'
 import { axios } from 'src/common/react-platform-components'
 import { REACT_APP_FIREBASE_VAPID_KEY, FIREBASE_CONFIG } from 'src/configs'
 import { AUTH_BASE_URL } from './modules/User/configs'
@@ -48,14 +48,14 @@ const getTokenWithFirebase = async () => {
 
     try {
         console.log('getting token by using key: ', REACT_APP_FIREBASE_VAPID_KEY)
-        const currentToken = await getToken(messaging, { vapidKey: REACT_APP_FIREBASE_VAPID_KEY })
-        console.log('getted token')
-        console.log(currentToken)
+        // const currentToken = await getToken(messaging, { vapidKey: REACT_APP_FIREBASE_VAPID_KEY })
+        // console.log('getted token')
+        // console.log(currentToken)
 
-        if (currentToken) {
-            console.log('call add subscriber device token function')
-            addSubscriberDeviceToken(currentToken)
-        }
+        // if (currentToken) {
+        //     console.log('call add subscriber device token function')
+        //     addSubscriberDeviceToken(currentToken)
+        // }
     } catch (error) {
         console.log('error handling add subscriber device token function')
         console.log(error)
