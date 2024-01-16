@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 import React, { FC } from 'react'
 import ReactDOM from 'react-dom'
-import { BASENAME_URL, FIREBASE_MESSAGING_SW_URL, MSW_MOCK } from './configs'
+import { BASENAME_URL, MSW_MOCK } from './configs'
 import { Provider } from 'react-redux'
 import reportWebVitals from './reportWebVitals'
 import 'typeface-poppins'
@@ -102,14 +102,15 @@ if (isBrowser && 'serviceWorker' in navigator && process.env.NODE_ENV === 'produ
 }
 
 // Fireabse messaging Service worker.
-if ('serviceWorker' in navigator) {
-    console.log('\nFireabse messaging Service worker: is true and its added')
-    window.addEventListener('load', async () => {
-        console.log('Fireabse messaging Service worker: load function is lunched with:')
-        console.log(`${FIREBASE_MESSAGING_SW_URL}`)
-        await navigator.serviceWorker.register(`${FIREBASE_MESSAGING_SW_URL}`)
-    })
-}
+// if ('serviceWorker' in navigator) {
+//     console.log('\nFireabse messaging Service worker: is true and its added')
+//     window.addEventListener('load', async () => {
+//         console.log('Fireabse messaging Service worker: load function is lunched with:')
+//         console.log(`${FIREBASE_MESSAGING_SW_URL}`)
+//         const serviceWorker = await navigator.serviceWorker.register(`${FIREBASE_MESSAGING_SW_URL}`)
+//         console.log(serviceWorker)
+//     })
+// }
 
 // ReactDOM.render(<Application />, document.getElementById('root'));
 
