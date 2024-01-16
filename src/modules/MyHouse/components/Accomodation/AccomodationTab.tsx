@@ -53,7 +53,8 @@ export const AccomodationTab = () => {
     )
     const [isAccomodationInfoConsentmentOpen, setIsAccomodationInfoConsentmentOpen] = useState(false)
 
-    const accomodationData = {
+    const defaultAccomodationData = {
+        id: accomodation?.id,
         houseType: accomodation?.houseType,
         houseYear: accomodation?.houseYear,
         residenceType: accomodation?.residenceType,
@@ -85,16 +86,6 @@ export const AccomodationTab = () => {
     }
 
     /**
-     * Function to check if data from form is the same as data from api.
-     *
-     * @param data Data from api.
-     * @returns {boolean} True if data is the same, false otherwise.
-     */
-    const isDataMatch = (data: AccomodationDataType) => {
-        return isMatch(accomodationData, data)
-    }
-
-    /**
      * Function to handle form submit.
      *
      * @param data Form data.
@@ -102,10 +93,10 @@ export const AccomodationTab = () => {
      */
     const handleFormSubmit = async (data: AccomodationDataType) => {
         const newAccomodationData = setSelectFields(data)
-        const dataIsNotModified = isDataMatch(data)
+        const dataIsNotModified = isMatch(defaultAccomodationData, data)
         if (dataIsNotModified) return
         await updateAccomodation(newAccomodationData)
-        return 'submitted'
+        return true
     }
 
     const methods = useForm({
@@ -113,12 +104,14 @@ export const AccomodationTab = () => {
         ...(accomodation ? { defaultValues: accomodation } : null),
     })
 
+    const { getValues, reset, handleSubmit } = methods
+
     useEffect(() => {
         if (accomodation) {
             // Populate form when data is retrieved from api.
-            methods.reset(accomodation)
+            reset(accomodation)
         }
-    }, [accomodation, methods])
+    }, [accomodation, reset])
 
     if (isLoadingInProgress)
         return (
@@ -134,17 +127,20 @@ export const AccomodationTab = () => {
                 contentText="Attention si vous n’enregistrez pas, vos données risques d’être perdues, souhaitez-vous enregistrer vos modifications"
                 okText="Oui"
                 cancelText="Non"
-                onOK={methods.handleSubmit(async (data) => {
+                onOK={handleSubmit(async (data) => {
                     try {
-                        const res = await handleFormSubmit(data)
-                        if (res === 'submitted') {
+                        const isSubmitted = await handleFormSubmit(data)
+                        if (isSubmitted) {
                             return true
                         }
                     } catch {
                         return false
                     }
                 })}
-                onCancel={() => methods.reset(accomodation)}
+                onCancel={() => {
+                    const values = getValues()
+                    reset(values)
+                }}
             />
 
             <div className="flex flex-col items-center justify-center w-full overflow-y-scroll pb-40">

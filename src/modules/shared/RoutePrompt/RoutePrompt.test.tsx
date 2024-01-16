@@ -1,103 +1,100 @@
-import { render, screen } from '@testing-library/react'
-import { BrowserRouter as Router } from 'react-router-dom'
+import { render, act } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
+import { createMemoryHistory, MemoryHistory } from 'history'
+import { Router } from 'react-router-dom'
 import { RouterPrompt } from 'src/modules/shared/RoutePrompt'
 
-jest.mock('react-router-dom', () => ({
-    ...jest.requireActual('react-router-dom'),
-    // eslint-disable-next-line jsdoc/require-jsdoc
-    useHistory: () => ({
-        goBack: jest.fn(),
-        block: jest.fn(),
-        unblock: jest.fn(),
-    }),
-}))
-
 describe('RouterPrompt', () => {
-    test('should not render the prompt dialog when showPrompt is false', () => {
+    let history: MemoryHistory
+
+    let newLocation = '/new-location'
+
+    beforeEach(() => {
+        history = createMemoryHistory()
+    })
+
+    test('renders without crashing', () => {
         render(
-            <Router>
+            <Router history={history}>
+                <RouterPrompt when={false} contentText="test" />
+            </Router>,
+        )
+    })
+
+    test('shows prompt when "when" prop is true', () => {
+        const { getByText } = render(
+            <Router history={history}>
                 <RouterPrompt
-                    when={false}
-                    onOK={() => {}}
-                    onCancel={() => {}}
-                    title="Prompt Title"
-                    contentText="Prompt Content"
+                    when={true}
+                    title="Test Title"
+                    contentText="Test Content"
                     okText="OK"
                     cancelText="Cancel"
                 />
             </Router>,
         )
 
-        const promptDialog = screen.queryByRole('dialog')
-        expect(promptDialog).not.toBeInTheDocument()
+        act(() => {
+            history.push(newLocation)
+        })
+
+        expect(getByText('Test Title')).toBeInTheDocument()
+        expect(getByText('Test Content')).toBeInTheDocument()
+        expect(getByText('OK')).toBeInTheDocument()
+        expect(getByText('Cancel')).toBeInTheDocument()
     })
 
-    // test('should render the prompt dialog when showPrompt is true', () => {
-    //     const screen = render(
-    //         <Router getUserConfirmation={() => {}}>
-    //             <RouterPrompt
-    //                 when={true}
-    //                 onOK={() => {}}
-    //                 onCancel={() => {}}
-    //                 title="Prompt Title"
-    //                 contentText="Prompt Content"
-    //                 okText="OK"
-    //                 cancelText="Cancel"
-    //             />
-    //         </Router>,
-    //     )
+    test('calls onOK and navigates when OK button is clicked', async () => {
+        const onOK = jest.fn().mockResolvedValue(true)
+        const { getByText } = render(
+            <Router history={history}>
+                <RouterPrompt
+                    when={true}
+                    title="Test Title"
+                    contentText="Test Content"
+                    okText="OK"
+                    cancelText="Cancel"
+                    onOK={onOK}
+                />
+            </Router>,
+        )
 
-    //     const promptDialog = screen.getByRole('dialog')
-    //     expect(promptDialog).toBeInTheDocument()
-    // })
+        act(() => {
+            history.push(newLocation)
+        })
 
-    // test('should call onOK and navigate to currentPath when OK button is clicked', () => {
-    //     const onOKMock = jest.fn()
-    //     const currentPath = '/example-path'
+        userEvent.click(getByText('OK'))
 
-    //     render(
-    //         <Router>
-    //             <RouterPrompt
-    //                 when={true}
-    //                 onOK={onOKMock}
-    //                 onCancel={() => {}}
-    //                 title="Prompt Title"
-    //                 contentText="Prompt Content"
-    //                 okText="OK"
-    //                 cancelText="Cancel"
-    //             />
-    //         </Router>,
-    //     )
+        await act(() => Promise.resolve())
 
-    //     const okButton = screen.getByText('OK')
-    //     fireEvent.click(okButton)
+        expect(onOK).toHaveBeenCalled()
+        expect(history.location.pathname).toBe('/')
+    })
 
-    //     expect(onOKMock).toHaveBeenCalled()
-    //     expect(window.location.pathname).toBe(currentPath)
-    // })
+    test('calls onCancel and does not navigate when Cancel button is clicked', async () => {
+        const onCancel = jest.fn()
+        const { getByText } = render(
+            <Router history={history}>
+                <RouterPrompt
+                    when={true}
+                    title="Test Title"
+                    contentText="Test Content"
+                    okText="OK"
+                    cancelText="Cancel"
+                    onCancel={onCancel}
+                />
+            </Router>,
+        )
 
-    // test('should call onCancel and navigate to currentPath when Cancel button is clicked', () => {
-    //     const onCancelMock = jest.fn()
-    //     const currentPath = '/example-path'
+        act(() => {
+            history.push(newLocation)
+        })
 
-    //     render(
-    //         <Router>
-    //             <RouterPrompt
-    //                 when={true}
-    //                 onOK={() => {}}
-    //                 onCancel={onCancelMock}
-    //                 title="Prompt Title"
-    //                 contentText="Prompt Content"
-    //                 okText="OK"
-    //                 cancelText="Cancel"
-    //             />
-    //         </Router>,
-    //     )
+        userEvent.click(getByText('Cancel'))
 
-    //     const cancelButton = screen.getByText('Cancel')
-    //     fireEvent.click(cancelButton)
+        await act(() => Promise.resolve())
 
-    //     expect(onCancelMock).toHaveBeenCalled()
-    //     expect(window.location.pathname).toBe(currentPath)
-    // })
+        expect(onCancel).toHaveBeenCalled()
+        expect(history.location.pathname).toBe(newLocation)
+    })
 })

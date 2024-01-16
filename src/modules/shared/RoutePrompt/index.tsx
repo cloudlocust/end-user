@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useHistory } from 'react-router'
 import { Dialog, DialogTitle, DialogActions, DialogContent, Button, useTheme } from '@mui/material'
 import { RoutePromptProps } from 'src/modules/shared/RoutePrompt/RoutePromptTypes'
@@ -14,12 +14,10 @@ export function RouterPrompt(props: RoutePromptProps) {
     const history = useHistory()
     const theme = useTheme()
     const [showPrompt, setShowPrompt] = useState(false)
-    const [currentPath, setCurrentPath] = useState('')
 
     useEffect(() => {
         const unblock = when
-            ? history.block((prompt) => {
-                  setCurrentPath(prompt.pathname)
+            ? history.block((_prompt) => {
                   setShowPrompt(true)
                   return 'true'
               })
@@ -30,26 +28,31 @@ export function RouterPrompt(props: RoutePromptProps) {
         }
     }, [history, when])
 
-    const handleOK = useCallback(async () => {
-        if (onOK) {
-            const canRoute = await Promise.resolve(onOK())
-            if (canRoute) {
-                history.push(currentPath)
-                history.block(() => {})
+    const handleNavigation = useCallback(
+        async (callback) => {
+            if (callback) {
+                const canRoute = await Promise.resolve(callback())
+                if (canRoute) {
+                    history.goBack()
+                    history.block(() => {})
+                }
+                return canRoute
             }
-        }
-    }, [currentPath, history, onOK])
+            return false
+        },
+        [history],
+    )
+
+    const handleOK = useCallback(() => {
+        handleNavigation(onOK)
+    }, [onOK, handleNavigation])
 
     const handleCancel = useCallback(async () => {
-        if (onCancel) {
-            const canRoute = await Promise.resolve(onCancel())
-            if (canRoute) {
-                history.push(currentPath)
-                history.block(() => {})
-            }
+        const canRoute = await handleNavigation(onCancel)
+        if (!canRoute) {
+            setShowPrompt(false)
         }
-        setShowPrompt(false)
-    }, [currentPath, history, onCancel])
+    }, [onCancel, handleNavigation])
 
     return showPrompt ? (
         <Dialog

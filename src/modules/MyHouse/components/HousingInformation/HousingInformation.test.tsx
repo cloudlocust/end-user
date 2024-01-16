@@ -48,17 +48,7 @@ describe('HousingInformation tests', () => {
 
         expect(mockGoBack).toBeCalled()
     })
-    // test('when user make changes in the form without saving and click on Retour button, RuotePrompt should be triggered', async () => {
-    //     const { getByText } = reduxedRender(
-    //         <Router>
-    //             <HousingInformation />
-    //         </Router>,
-    //     )
-
-    //     userEvent.click(getByText('Propriétaire'))
-    //     userEvent.click(getByText('Maison'))
-    //     userEvent.click(getByText('Avant 1950'))
-    //     userEvent.click(getByText('Secondaire'))
-    //     userEvent.click(getByText('Retour'))
-    // })
+    test.todo(
+        'when user make changes in the form without saving and click on Retour button, RuotePrompt should be triggered',
+    )
 })
