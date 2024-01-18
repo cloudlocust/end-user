@@ -1,11 +1,9 @@
-/* eslint-disable no-console */
 import { initializeApp } from 'firebase/app'
 import { getMessaging, getToken, isSupported } from 'firebase/messaging'
 import { axios } from 'src/common/react-platform-components'
 import { REACT_APP_FIREBASE_VAPID_KEY, FIREBASE_CONFIG, FIREBASE_MESSAGING_SW_URL } from 'src/configs'
 import { AUTH_BASE_URL } from './modules/User/configs'
 import { PushNotifications, Token } from '@capacitor/push-notifications'
-
 /**
  * Post function that adds a device token to the subscribers' devices.
  *
@@ -22,56 +20,34 @@ const addSubscriberDeviceToken = async (currentToken: string) => {
         }>(`${AUTH_BASE_URL}/add-subscriber-device-token`, {
             deviceToken: currentToken,
         })
-    } catch (error) {
-        console.log('Error while adding subscriber device token')
-        console.log(error)
-    }
+    } catch (error) {}
 }
 
 /**
  * This function gets the device token from Firebase and adds it to the server.
  */
 const getTokenWithFirebase = async () => {
-    console.log('\n************************* getTokenWithFirebase function *************************')
-    console.log('initializing firebase')
     const firebaseApp = initializeApp(FIREBASE_CONFIG)
-    console.log('******')
-    console.log(FIREBASE_CONFIG)
-    console.log(firebaseApp)
-    console.log('******')
-
-    console.log('getting messaging')
     const messaging = getMessaging(firebaseApp)
-    console.log('******')
-    console.log(messaging)
-    console.log('******')
 
     try {
-        console.log('getting token by using key: ', REACT_APP_FIREBASE_VAPID_KEY)
         const serviceWorker = await navigator.serviceWorker.register(`${FIREBASE_MESSAGING_SW_URL}`)
 
         const currentToken = await getToken(messaging, {
             vapidKey: REACT_APP_FIREBASE_VAPID_KEY,
             serviceWorkerRegistration: serviceWorker,
         })
-        console.log('getted token')
-        console.log(currentToken)
 
         if (currentToken) {
-            console.log('call add subscriber device token function')
             addSubscriberDeviceToken(currentToken)
         }
-    } catch (error) {
-        console.log('error handling add subscriber device token function')
-        console.log(error)
-    }
+    } catch (error) {}
 }
 
 /**
  * This function requests permissions and registers the device token using Capacitor.
  */
 const requestPermissionAndRegister = async () => {
-    console.log('\n requestPermissionAndRegister is called \n')
     try {
         const result = await PushNotifications.requestPermissions()
 
@@ -94,12 +70,7 @@ const requestPermissionAndRegister = async () => {
  */
 export const getTokenFromFirebase = async (_onPermissionGranted?: () => void) => {
     const isBrowserSupported = await isSupported()
-    console.log('\n*************** getTokenFromFirebase function ****************')
-    console.log('log process object: ')
-    console.log(process)
     if (isBrowserSupported) {
-        console.log('The Browser is supported')
-        console.log('*******************************************************\n')
         return getTokenWithFirebase()
     } else {
         return requestPermissionAndRegister()
