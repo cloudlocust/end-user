@@ -1,32 +1,11 @@
-import { styled, useTheme, ThemeProvider } from '@mui/material'
+import { useTheme, ThemeProvider, useMediaQuery } from '@mui/material'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
-import PageSimple from 'src/common/ui-kit/fuse/components/PageSimple'
 import { EcogestesWrapper } from 'src/modules/Ecogestes/EcogestesWrapper'
 import { motion } from 'framer-motion'
-
-const Root = styled(PageSimple)(({ theme }) => ({
-    '& .PageSimple-header': {
-        minHeight: 72,
-        height: 72,
-        alignItems: 'center',
-        [theme.breakpoints.up('sm')]: {
-            minHeight: 136,
-            height: 136,
-        },
-    },
-    '& .PageSimple-content': {
-        display: 'flex',
-        position: 'relative',
-    },
-    '& .PageSimple-contentCard': {
-        overflow: 'hidden',
-    },
-    [theme.breakpoints.down('md')]: {
-        '& .PageSimple-toolbar': {
-            height: 'auto',
-        },
-    },
-}))
+import MultiTab from 'src/common/ui-kit/components/MultiTab/MultiTab'
+import { ReactComponent as AdvicesIcon } from 'src/assets/images/navbarItems/advice.svg'
+import { ReactComponent as CircleCheckIcon } from 'src/assets/images/circleCheck.svg'
+import { Ecogestes } from 'src/modules/Ecogestes'
 
 /**
  * Form used for modify user Advices.
@@ -35,9 +14,25 @@ const Root = styled(PageSimple)(({ theme }) => ({
  */
 export const Advices = () => {
     const theme = useTheme()
+    const mdDown = useMediaQuery(theme.breakpoints.down('md'))
+
+    const tabsContent = [
+        {
+            tabTitle: 'Nos conseils',
+            tabSlug: 'nos-conseils',
+            tabContent: <EcogestesWrapper />,
+            icon: <AdvicesIcon height={30} width={30} />,
+        },
+        {
+            tabTitle: 'Réalisés',
+            tabSlug: 'realises',
+            tabContent: <Ecogestes isEcogestsViewed />,
+            icon: <CircleCheckIcon height={30} width={30} />,
+        },
+    ]
 
     return (
-        <Root
+        <MultiTab
             header={
                 <ThemeProvider theme={theme}>
                     <motion.div
@@ -54,7 +49,16 @@ export const Advices = () => {
                     </motion.div>
                 </ThemeProvider>
             }
-            content={<EcogestesWrapper />}
+            content={tabsContent}
+            innerScroll
+            TabsProps={{ variant: 'fullWidth' }}
+            TabProps={{ iconPosition: 'start', sx: { fontSize: 17 } }}
+            rootCss={{
+                height: 'auto',
+                minHeight: 'auto',
+                margin: `${!mdDown ? '0' : '0.5rem'}`,
+            }}
+            isUseRouting={false}
         />
     )
 }
