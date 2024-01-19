@@ -95,13 +95,6 @@ if (isBrowser && 'serviceWorker' in navigator && process.env.NODE_ENV === 'produ
     })
 }
 
-// Fireabse messaging Service worker.
-// if ('serviceWorker' in navigator) {
-//     window.addEventListener('load', async () => {
-//         const serviceWorker = await navigator.serviceWorker.register(`${FIREBASE_MESSAGING_SW_URL}`)
-//     })
-// }
-
 // ReactDOM.render(<Application />, document.getElementById('root'));
 
 // If you want to start measuring performance in your app, pass a function

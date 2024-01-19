@@ -18,9 +18,11 @@ export const MissingHousingMeterErrorMessage = () => {
 
     return (
         <div className="container relative h-200 sm:h-256 p-16 sm:p-24 flex-col text-center flex items-center justify-center">
-            <Icon style={{ fontSize: '4rem', marginBottom: '1rem', color: theme.palette.secondary.main }}>
-                error_outline_outlined
-            </Icon>
+            <>
+                <Icon style={{ fontSize: '4rem', marginBottom: '1rem', color: theme.palette.secondary.main }}>
+                    error_outline_outlined
+                </Icon>
+            </>
             <Typography>
                 {formatMessage({
                     id: "Pour voir votre consommation vous devez d'abord ",
