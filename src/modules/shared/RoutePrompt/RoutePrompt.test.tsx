@@ -16,7 +16,7 @@ describe('RouterPrompt', () => {
     test('renders without crashing', () => {
         render(
             <Router history={history}>
-                <RouterPrompt when={false} contentText="test" />
+                <RouterPrompt when={false} content="test" />
             </Router>,
         )
     })
@@ -24,13 +24,7 @@ describe('RouterPrompt', () => {
     test('shows prompt when "when" prop is true', () => {
         const { getByText } = render(
             <Router history={history}>
-                <RouterPrompt
-                    when={true}
-                    title="Test Title"
-                    contentText="Test Content"
-                    okText="OK"
-                    cancelText="Cancel"
-                />
+                <RouterPrompt when={true} title="Test Title" content="Test Content" okText="OK" cancelText="Cancel" />
             </Router>,
         )
 
@@ -51,7 +45,7 @@ describe('RouterPrompt', () => {
                 <RouterPrompt
                     when={true}
                     title="Test Title"
-                    contentText="Test Content"
+                    content="Test Content"
                     okText="OK"
                     cancelText="Cancel"
                     onOK={onOK}
@@ -78,7 +72,7 @@ describe('RouterPrompt', () => {
                 <RouterPrompt
                     when={true}
                     title="Test Title"
-                    contentText="Test Content"
+                    content="Test Content"
                     okText="OK"
                     cancelText="Cancel"
                     onCancel={onCancel}

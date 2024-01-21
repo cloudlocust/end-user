@@ -124,7 +124,7 @@ export const AccomodationTab = () => {
         <Container>
             <RouterPrompt
                 when={methods.formState.isDirty}
-                contentText="Attention si vous n’enregistrez pas, vos données risques d’être perdues, souhaitez-vous enregistrer vos modifications"
+                content="Attention si vous n’enregistrez pas, vos données risques d’être perdues, souhaitez-vous enregistrer vos modifications"
                 okText="Oui"
                 cancelText="Non"
                 onOK={handleSubmit(async (data) => {

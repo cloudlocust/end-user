@@ -19,7 +19,7 @@ export interface RoutePromptProps {
     /**
      * The content of the prompt.
      */
-    contentText: string | React.ReactNode
+    content: string | React.ReactNode
     /**
      * The title of the prompt.
      */

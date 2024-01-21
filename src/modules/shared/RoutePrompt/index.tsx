@@ -8,9 +8,12 @@ import { RoutePromptProps } from 'src/modules/shared/RoutePrompt/RoutePromptType
  *
  * @param props RoutePrompt props.
  * @returns Dialog component.
+ *
+ * TODO: Do a simple implementation of this component.
+ * @see https://stackoverflow.com/a/71105897/14005627
  */
 export function RouterPrompt(props: RoutePromptProps) {
-    const { when, onOK, onCancel, title, contentText, okText, cancelText } = props
+    const { when, onOK, onCancel, title, content, okText, cancelText } = props
     const history = useHistory()
     const theme = useTheme()
     const [showPrompt, setShowPrompt] = useState(false)
@@ -66,7 +69,7 @@ export function RouterPrompt(props: RoutePromptProps) {
             }}
         >
             {title && <DialogTitle>{title}</DialogTitle>}
-            {<DialogContent className="text-16 md:text-18 text-center text-white">{contentText}</DialogContent>}
+            {<DialogContent className="text-16 md:text-18 text-center text-white">{content}</DialogContent>}
             {okText && cancelText && (
                 <DialogActions>
                     <Button variant="text" className="text-13 md:text-16 font-medium text-white" onClick={handleOK}>
