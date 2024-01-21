@@ -1,6 +1,6 @@
 import React, { FC } from 'react'
 import ReactDOM from 'react-dom'
-import { BASENAME_URL, FIREBASE_MESSAGING_SW_URL, MSW_MOCK } from './configs'
+import { BASENAME_URL, MSW_MOCK } from './configs'
 import { Provider } from 'react-redux'
 import reportWebVitals from './reportWebVitals'
 import 'typeface-poppins'
@@ -92,13 +92,6 @@ if ('serviceWorker' in navigator && process.env.NODE_ENV === 'development' && MS
 if (isBrowser && 'serviceWorker' in navigator && process.env.NODE_ENV === 'production') {
     window.addEventListener('load', async () => {
         await navigator.serviceWorker.register(`${process.env.PUBLIC_URL}/pwaSW.js`)
-    })
-}
-
-// Fireabse messaging Service worker.
-if ('serviceWorker' in navigator) {
-    window.addEventListener('load', async () => {
-        await navigator.serviceWorker.register(`${FIREBASE_MESSAGING_SW_URL}`)
     })
 }
 
