@@ -1,4 +1,4 @@
-import { Card, CardContent, Icon, useTheme, CardActionArea } from '@mui/material'
+import { Card, CardContent, Icon, CardActionArea } from '@mui/material'
 import { FC } from 'react'
 import { useHistory } from 'react-router-dom'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
@@ -17,7 +17,6 @@ export const EcogesteCategoryCard: FC<IEcogesteCategoryCardProps> = ({
     ecogestCategory,
     categoryType,
 }: IEcogesteCategoryCardProps): JSX.Element => {
-    const theme = useTheme()
     const history = useHistory()
 
     /**
@@ -40,7 +39,6 @@ export const EcogesteCategoryCard: FC<IEcogesteCategoryCardProps> = ({
                     >
                         <img
                             style={{
-                                filter: `opacity(0.1) drop-shadow(0 0 0 ${theme.palette.primary.main}) drop-shadow(0 0 0 ${theme.palette.primary.main}) drop-shadow(0 0 0 ${theme.palette.primary.main}) drop-shadow(0 0 0 ${theme.palette.primary.main}) drop-shadow(0 0 0 ${theme.palette.primary.main})`,
                                 height: 'inherit',
                                 margin: 'auto',
                             }}
