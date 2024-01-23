@@ -48,13 +48,13 @@ const EcogestesPage: FC<IEcogesteListPageProps> = ({
             tabTitle: 'Nos conseils',
             tabSlug: 'nos-conseils',
             tabContent: <Ecogestes />,
-            icon: <AdvicesIcon height={30} width={30} />,
+            icon: <AdvicesIcon height={26} width={26} />,
         },
         {
             tabTitle: 'Réalisés',
             tabSlug: 'realises',
             tabContent: <Ecogestes isEcogestsViewed />,
-            icon: <CircleCheckIcon height={30} width={30} />,
+            icon: <CircleCheckIcon height={26} width={26} />,
         },
     ]
 
@@ -103,7 +103,7 @@ const EcogestesPage: FC<IEcogesteListPageProps> = ({
             content={tabsContent}
             innerScroll
             TabsProps={{ variant: 'fullWidth' }}
-            TabProps={{ iconPosition: 'start', sx: { fontSize: 17 } }}
+            TabProps={{ iconPosition: 'start', sx: { fontSize: 15 } }}
             rootCss={{
                 height: 'auto',
                 minHeight: 'auto',
