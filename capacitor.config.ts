@@ -12,6 +12,7 @@ const config: CapacitorConfig = {
     server: {
         cleartext: true,
         androidScheme: 'https',
+        url: 'https://particuliers.nrlink.fr/services',
     },
 }
 
