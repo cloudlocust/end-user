@@ -5,6 +5,7 @@ import { useSnackbar } from 'notistack'
 import { useParams } from 'react-router-dom'
 import { IEcogeste, IEcogestGetAllFilter, EcogestViewedEnum } from 'src/modules/Ecogestes/components/ecogeste.d'
 import { ECOGESTES_ENDPOINT } from 'src/modules/Ecogestes/EcogestesConfig'
+import { useCallback } from 'react'
 
 // eslint-disable-next-line jsdoc/require-jsdoc
 export const loadElementListError = (_error: any, formatMessage: formatMessageType) => {
@@ -59,20 +60,23 @@ export const useEcogestes = (queryParams?: {}) => {
      * @param ecogesteId ID of the ecogest to patch.
      * @param body Object that will be sent as patch body using axios.patch .
      */
-    const updateEcogeste = async (ecogesteId: number, body: Partial<IEcogeste>) => {
-        try {
-            await axios.patch(`${ECOGESTES_ENDPOINT}/${ecogesteId}`, body)
-        } catch (error) {
-            enqueueSnackbar(
-                formatMessage({
-                    id: "Erreur lors de la modification de l'ecogeste",
-                    defaultMessage: "Erreur lors de la modification de l'ecogeste",
-                }),
-                { variant: 'error' },
-            )
-            throw catchError(error)
-        }
-    }
+    const updateEcogeste = useCallback(
+        async (ecogesteId: number, body: Partial<IEcogeste>) => {
+            try {
+                await axios.patch(`${ECOGESTES_ENDPOINT}/${ecogesteId}`, body)
+            } catch (error) {
+                enqueueSnackbar(
+                    formatMessage({
+                        id: "Erreur lors de la modification de l'ecogeste",
+                        defaultMessage: "Erreur lors de la modification de l'ecogeste",
+                    }),
+                    { variant: 'error' },
+                )
+                throw catchError(error)
+            }
+        },
+        [enqueueSnackbar, formatMessage],
+    )
 
     /**
      * Specific method that uses a patch to update an ecogest's view status.
@@ -81,9 +85,12 @@ export const useEcogestes = (queryParams?: {}) => {
      * @param ecogesteId ID of the ecogest to set view status of.
      * @param status The new view status of the ecogest. True is seen, False is not seen.
      */
-    const setViewStatus = async (ecogesteId: number, status: boolean) => {
-        await updateEcogeste(ecogesteId, { seenByCustomer: status })
-    }
+    const setViewStatus = useCallback(
+        async (ecogesteId: number, status: boolean) => {
+            await updateEcogeste(ecogesteId, { seenByCustomer: status })
+        },
+        [updateEcogeste],
+    )
 
     const { elementList, loadingInProgress, updateFilters } = BuilderUseElementList<
         IEcogeste,
