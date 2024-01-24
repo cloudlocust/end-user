@@ -7,7 +7,7 @@ import { useConsumptionAlerts } from 'src/modules/Alerts/components/ConsumptionA
 import { useMetrics } from 'src/modules/Metrics/metricsHook'
 import { formatMetricFilter, getRangeV2 } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
 import { metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
-import { FuseCard } from 'src/modules/shared/FuseCard/FuseCard'
+import { FuseCard } from 'src/modules/shared/FuseCard'
 import { computeWidgetAssets } from 'src/modules/MyConsumption/components/Widget/WidgetFunctions'
 import { AlertWidget } from 'src/modules/Dashboard/AlertWidgetsContainer/AlertWidget'
 import { AlertPeriodEnum, AlertTypeEnum } from 'src/modules/Dashboard/AlertWidgetsContainer/AlertWidget/AlertWidget.d'
