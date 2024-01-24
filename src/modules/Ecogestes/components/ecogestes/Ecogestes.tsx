@@ -9,7 +9,7 @@ import FilterListIcon from '@mui/icons-material/FilterList'
 import VisibilityIcon from '@mui/icons-material/Visibility'
 import { ReactComponent as NotViewIcon } from 'src/modules/Ecogestes/components/ecogesteCard/NotRead.svg'
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
-import { EcogestViewedEnum, IEcogeste } from 'src/modules/Ecogestes/components/ecogeste.d'
+import { EcogestViewedEnum, EcogestesProps, IEcogeste } from 'src/modules/Ecogestes/components/ecogeste.d'
 import { EcogestesLoadingSpinner } from 'src/modules/Ecogestes/components/shared/EcogestesLoadingSpinner'
 
 /**
@@ -38,9 +38,11 @@ const getFilterIcon = (filter: EcogestViewedEnum) => {
  * fetch and display a list of ecogestes.
  * Temporary display until we have category cards.
  *
- * @returns A Component which displays and filter a list of ecogestes.
+ * @param root0 N/A.
+ * @param root0.isEcogestsViewed Indicates whether to show just viewed ecogests.
+ * @returns A Component which displays and filter the ecogestes.
  */
-export const EcogestesList = () => {
+export const Ecogestes = ({ isEcogestsViewed }: EcogestesProps) => {
     /**
      * Mandatory...
      * If we don't do that we got a Re-render and some bugs like all ecogeste instead of Ecogeste linked to a Category...
@@ -58,10 +60,10 @@ export const EcogestesList = () => {
     const categoryIdInt = categoryId ? parseInt(categoryId) : undefined
 
     const {
-        elementList: ecogestesList,
+        elementList: ecogestes,
         loadingInProgress: isEcogestesLoadingInProgress,
         filterEcogestes,
-    } = useEcogestes()
+    } = useEcogestes(isEcogestsViewed ? { viewed: EcogestViewedEnum.READ } : {})
 
     const [currentViewFilter, setCurrentViewFilter] = useState<EcogestViewedEnum>(EcogestViewedEnum.ALL)
 
@@ -96,59 +98,63 @@ export const EcogestesList = () => {
     return (
         <>
             <div className="flex justify-between w-full mb-20">
-                <TypographyFormatMessage variant="h2" className="text-20 font-bold mx-auto">
-                    Les écogestes associés
-                </TypographyFormatMessage>
-                <>
-                    <Button
-                        variant="outlined"
-                        startIcon={getFilterIcon(currentViewFilter)}
-                        endIcon={<KeyboardArrowDownIcon />}
-                        onClick={handleClick}
-                        aria-label="button, filter"
-                        aria-controls={open ? 'basic-menu' : undefined}
-                        aria-haspopup="true"
-                        aria-expanded={open ? 'true' : undefined}
-                    >
-                        <TypographyFormatMessage className="font-semibold text-center">Filtrer</TypographyFormatMessage>
-                    </Button>
-                    <Menu
-                        id="basic-menu"
-                        anchorEl={anchorEl}
-                        open={open}
-                        onClose={handleClose}
-                        MenuListProps={{
-                            'aria-labelledby': 'button, filter',
-                        }}
-                        anchorOrigin={{
-                            vertical: 'bottom',
-                            horizontal: 'center',
-                        }}
-                        transformOrigin={{
-                            vertical: 'top',
-                            horizontal: 'center',
-                        }}
-                        PaperProps={{
-                            sx: {
-                                minWidth: '12rem',
-                            },
-                        }}
-                    >
-                        <MenuList dense>
-                            <MenuItem onClick={() => handleFilterClick(EcogestViewedEnum.READ)}>
-                                <TypographyFormatMessage>Lu</TypographyFormatMessage>
-                            </MenuItem>
-                            <MenuItem onClick={() => handleFilterClick(EcogestViewedEnum.UNREAD)}>
-                                <TypographyFormatMessage>Non lu</TypographyFormatMessage>
-                            </MenuItem>
-                            <MenuItem onClick={() => handleFilterClick(EcogestViewedEnum.ALL)}>
-                                <TypographyFormatMessage>Tous</TypographyFormatMessage>
-                            </MenuItem>
-                        </MenuList>
-                    </Menu>
-                </>
+                {!isEcogestsViewed && (
+                    <>
+                        <TypographyFormatMessage variant="h2" className="text-20 font-bold mx-auto">
+                            Les écogestes associés
+                        </TypographyFormatMessage>
+                        <Button
+                            variant="outlined"
+                            startIcon={getFilterIcon(currentViewFilter)}
+                            endIcon={<KeyboardArrowDownIcon />}
+                            onClick={handleClick}
+                            aria-label="button, filter"
+                            aria-controls={open ? 'basic-menu' : undefined}
+                            aria-haspopup="true"
+                            aria-expanded={open ? 'true' : undefined}
+                        >
+                            <TypographyFormatMessage className="font-semibold text-center">
+                                Filtrer
+                            </TypographyFormatMessage>
+                        </Button>
+                        <Menu
+                            id="basic-menu"
+                            anchorEl={anchorEl}
+                            open={open}
+                            onClose={handleClose}
+                            MenuListProps={{
+                                'aria-labelledby': 'button, filter',
+                            }}
+                            anchorOrigin={{
+                                vertical: 'bottom',
+                                horizontal: 'center',
+                            }}
+                            transformOrigin={{
+                                vertical: 'top',
+                                horizontal: 'center',
+                            }}
+                            PaperProps={{
+                                sx: {
+                                    minWidth: '12rem',
+                                },
+                            }}
+                        >
+                            <MenuList dense>
+                                <MenuItem onClick={() => handleFilterClick(EcogestViewedEnum.READ)}>
+                                    <TypographyFormatMessage>Lu</TypographyFormatMessage>
+                                </MenuItem>
+                                <MenuItem onClick={() => handleFilterClick(EcogestViewedEnum.UNREAD)}>
+                                    <TypographyFormatMessage>Non lu</TypographyFormatMessage>
+                                </MenuItem>
+                                <MenuItem onClick={() => handleFilterClick(EcogestViewedEnum.ALL)}>
+                                    <TypographyFormatMessage>Tous</TypographyFormatMessage>
+                                </MenuItem>
+                            </MenuList>
+                        </Menu>
+                    </>
+                )}
             </div>
-            {(isEmpty(ecogestesList) || isNull(ecogestesList)) && !isEcogestesLoadingInProgress && (
+            {(isEmpty(ecogestes) || isNull(ecogestes)) && !isEcogestesLoadingInProgress && (
                 <div className="flex flex-row justify-center items-start w-full h-full">
                     <TypographyFormatMessage>Aucun écogeste n'est disponible pour le moment.</TypographyFormatMessage>
                 </div>
@@ -160,11 +166,11 @@ export const EcogestesList = () => {
                 {isEcogestesLoadingInProgress ? (
                     <EcogestesLoadingSpinner />
                 ) : (
-                    ecogestesList?.map((ecogeste: IEcogeste) => <EcogesteCard key={ecogeste.id} ecogeste={ecogeste} />)
+                    ecogestes?.map((ecogeste: IEcogeste) => <EcogesteCard key={ecogeste.id} ecogeste={ecogeste} />)
                 )}
             </div>
         </>
     )
 }
 
-export default EcogestesList
+export default Ecogestes

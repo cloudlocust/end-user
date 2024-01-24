@@ -2,7 +2,7 @@ import { ResetPasswordForm } from 'src/modules/User/ResetPassword/ResetPasswordF
 import { waitFor } from '@testing-library/react'
 import { reduxedRender } from 'src/common/react-platform-components/test'
 import userEvent from '@testing-library/user-event'
-import { passwordQuerySelector } from 'src/modules/User/Register/RegisterForm.test'
+import { passwordQuerySelector } from 'src/helpers/testVariables'
 
 const fakeToken = '123456ABCD'
 

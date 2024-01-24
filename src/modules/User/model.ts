@@ -3,6 +3,7 @@ import { AUTH_BASE_URL, USER_REGISTRATION_AUTO_VALIDATE } from './configs'
 import { createModel } from '@rematch/core'
 import { RootModel } from 'src/models'
 import { isArray } from 'lodash'
+import dayjs from 'dayjs'
 
 /**
  * User common elements between register and normal interface.
@@ -204,7 +205,10 @@ export const userModel = createModel<RootModel>()({
         // eslint-disable-next-line jsdoc/require-jsdoc
         async updateCurrentUser({ data }: { data: IUser & { password?: string } }, rootState) {
             if (!rootState.userModel.user) return
-            const response = await axios.patch<IUser>(`${AUTH_BASE_URL}/users/me`, data)
+            const response = await axios.patch<IUser>(`${AUTH_BASE_URL}/users/me`, {
+                ...data,
+                birthdate: data.birthdate ? dayjs(data.birthdate).format('DD/MM/YYYY') : null,
+            })
             const user = response.data
             // Set user in localstorage
             dispatch.userModel.setUser(user)
@@ -284,7 +288,10 @@ export const userModel = createModel<RootModel>()({
         // eslint-disable-next-line jsdoc/require-jsdoc
         async register({ data }: { data: IUserRegister }) {
             try {
-                const { data: user } = await axios.post<IUser>(`${AUTH_BASE_URL}/auth/register`, data)
+                const { data: user } = await axios.post<IUser>(`${AUTH_BASE_URL}/auth/register`, {
+                    ...data,
+                    birthdate: data.birthdate ? dayjs(data.birthdate).format('DD/MM/YYYY') : null,
+                })
                 return { user }
             } catch (error) {
                 throw handleRegisterErrors(error)

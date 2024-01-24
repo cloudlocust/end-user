@@ -1,7 +1,7 @@
 // import { fireEvent, act, waitFor } from '@testing-library/react'
 import { BrowserRouter } from 'react-router-dom'
 import { reduxedRender } from 'src/common/react-platform-components/test'
-import { InstallationForm } from 'src/modules/MyHouse/components/Installation/InstallationForm'
+import { InstallationTab } from 'src/modules/MyHouse/components/Installation/InstallationForm'
 import { TEST_HOUSING_EQUIPMENTS as MOCK_EQUIPMENTS } from 'src/mocks/handlers/equipments'
 import { applyCamelCase } from 'src/common/react-platform-components'
 import { IEquipmentMeter } from 'src/modules/MyHouse/components/Installation/InstallationType.d'
@@ -158,7 +158,7 @@ describe('Test InstallationForm', () => {
         mockIsLoadingInProgress = true
         const { getByText } = reduxedRender(
             <BrowserRouter>
-                <InstallationForm />
+                <InstallationTab />
             </BrowserRouter>,
         )
         expect(() => getByText(MODIFIER_BUTTON_TEXT)).toThrow()

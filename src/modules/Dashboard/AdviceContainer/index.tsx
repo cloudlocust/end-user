@@ -31,7 +31,7 @@ export const CardContentPaddingStyle = {
  * @returns Advice wrapper component.
  */
 export const AdviceContainer = () => {
-    const { elementList: ecogestesList, loadingInProgress } = useEcogestes({ highlighted: true })
+    const { elementList: ecogestes, loadingInProgress } = useEcogestes({ highlighted: true })
     const theme = useTheme()
     const smDown = useMediaQuery(theme.breakpoints.down('sm'))
     const {
@@ -41,7 +41,7 @@ export const AdviceContainer = () => {
     } = useModal()
     const [currentEcogeste, setCurrentEcogeste] = useState<IEcogeste | null>(null)
 
-    const cards = ecogestesList?.map((ecogeste) => (
+    const cards = ecogestes?.map((ecogeste) => (
         <FuseCard
             className="flex flex-col p-20"
             key={ecogeste.id}
