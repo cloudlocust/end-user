@@ -47,13 +47,21 @@ const EcogestesPage: FC<IEcogesteListPageProps> = ({
         {
             tabTitle: 'Nos conseils',
             tabSlug: 'nos-conseils',
-            tabContent: <Ecogestes />,
+            tabContent: (
+                <Ecogestes ecogestCategoryName={currentCategory?.name} ecogestCategoryIcon={currentCategory?.icon} />
+            ),
             icon: <AdvicesIcon height={26} width={26} />,
         },
         {
             tabTitle: 'Réalisés',
             tabSlug: 'realises',
-            tabContent: <Ecogestes isEcogestsViewed />,
+            tabContent: (
+                <Ecogestes
+                    ecogestCategoryName={currentCategory?.name}
+                    ecogestCategoryIcon={currentCategory?.icon}
+                    isEcogestsViewed
+                />
+            ),
             icon: <CircleCheckIcon height={26} width={26} />,
         },
     ]
@@ -84,6 +92,7 @@ const EcogestesPage: FC<IEcogesteListPageProps> = ({
                             className="w-full flex gap-10 justify-center items-center text-18 md:text-24 flex-wrap text-center mx-52"
                         >
                             <TypographyFormatMessage
+                                variant="h1"
                                 className="text-18 md:text-24"
                                 style={{ color: theme.palette.primary.contrastText }}
                             >
@@ -91,10 +100,11 @@ const EcogestesPage: FC<IEcogesteListPageProps> = ({
                             </TypographyFormatMessage>
                             &gt;
                             <TypographyFormatMessage
+                                variant="h1"
                                 className="text-18 md:text-24"
                                 style={{ color: theme.palette.primary.contrastText }}
                             >
-                                {currentCategory?.name ?? '...'}
+                                {currentCategory?.name ?? ' '}
                             </TypographyFormatMessage>
                         </motion.div>
                     </div>

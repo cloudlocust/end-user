@@ -93,7 +93,6 @@ export const useEcogestes = (queryParams?: {}) => {
         API_ENDPOINT: ECOGESTES_ENDPOINT,
         sizeParam: 100,
         snackBarMessage0verride: { loadElementListError, addElementSuccess, addElementError },
-        immediate: false,
     })(undefined, { viewed: EcogestViewedEnum.ALL, tag_id: parsedCategoryTargetted, ...queryParams })
 
     /**
