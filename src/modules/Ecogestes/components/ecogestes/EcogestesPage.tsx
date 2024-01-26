@@ -2,8 +2,8 @@ import { FC, useEffect, useState } from 'react'
 import PageSimple from 'src/common/ui-kit/fuse/components/PageSimple'
 import { useParams } from 'react-router-dom'
 import { IEcogestCategory, IEcogesteListPageProps } from 'src/modules/Ecogestes/components/ecogeste'
-import EcogestesListPageContent from 'src/modules/Ecogestes/components/ecogestesList/EcogestesListPageContent'
-import EcogestesListPageHeader from 'src/modules/Ecogestes/components/ecogestesList/EcogestesListPageHeader'
+import EcogestesPageContent from 'src/modules/Ecogestes/components/ecogestes/EcogestesPageContent'
+import EcogestesPageHeader from 'src/modules/Ecogestes/components/ecogestes/EcogestesPageHeader'
 import { IEcogesteCategoryTypes } from 'src/modules/Ecogestes/EcogestesConfig'
 import useEcogestesCategories from 'src/modules/Ecogestes/hooks/useEcogestesCategories'
 
@@ -14,7 +14,7 @@ import useEcogestesCategories from 'src/modules/Ecogestes/hooks/useEcogestesCate
  * @param root0.categoryType The type of the Category of Ecogestes that we want to load.
  * @returns EcogestPage.
  */
-const EcogestesListPage: FC<IEcogesteListPageProps> = ({
+const EcogestesPage: FC<IEcogesteListPageProps> = ({
     categoryType = IEcogesteCategoryTypes.CONSUMPTION,
 }): JSX.Element => {
     const { categoryId } = useParams</**
@@ -39,10 +39,10 @@ const EcogestesListPage: FC<IEcogesteListPageProps> = ({
 
     return (
         <PageSimple
-            header={<EcogestesListPageHeader isLoading={loadingInProgress} currentCategory={currentCategory} />}
-            content={<EcogestesListPageContent currentCategory={currentCategory} />}
+            header={<EcogestesPageHeader isLoading={loadingInProgress} currentCategory={currentCategory} />}
+            content={<EcogestesPageContent currentCategory={currentCategory} />}
         />
     )
 }
 
-export default EcogestesListPage
+export default EcogestesPage

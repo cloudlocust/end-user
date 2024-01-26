@@ -16,6 +16,22 @@ export type equipmentNameType =
     | 'laptop'
     | 'desktopcomputer'
     | 'solarpanel'
+    | 'freezer'
+    | 'kettle'
+    | 'coffee_machine'
+    | 'swimmingpool'
+    | 'heatpump'
+    | 'reversible_heatpump'
+    | 'swimmingpool_heatpump'
+    | 'electric_car'
+    | 'aquarium'
+    | 'ceramic_hob'
+    | 'iron_plate'
+    | 'induction_plate'
+    | 'radiator'
+    | 'air_conditioner'
+    | 'dry_towel'
+    | 'water_heater'
 
 // eslint-disable-next-line jsdoc/require-jsdoc
 export type equipmentAllowedTypeT =

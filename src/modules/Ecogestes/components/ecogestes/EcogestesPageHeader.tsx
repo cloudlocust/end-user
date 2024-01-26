@@ -14,7 +14,7 @@ import { EcogestesLoadingSpinner } from 'src/modules/Ecogestes/components/shared
  * @param root0.currentCategory Current Ecogest Category.
  * @returns HeaderComponent.
  */
-const EcogestesListPageHeader = ({ isLoading, currentCategory }: IEcogestHeaderProps): JSX.Element => {
+const EcogestesPageHeader = ({ isLoading, currentCategory }: IEcogestHeaderProps): JSX.Element => {
     const theme = useTheme()
     const history = useHistory()
 
@@ -58,4 +58,4 @@ const EcogestesListPageHeader = ({ isLoading, currentCategory }: IEcogestHeaderP
     )
 }
 
-export default EcogestesListPageHeader
+export default EcogestesPageHeader
