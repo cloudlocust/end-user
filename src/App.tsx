@@ -18,6 +18,8 @@ import { isMaintenanceMode } from 'src/configs'
 import { Maintenance } from 'src/modules/Maintenance/Maintenance'
 import { URL_MAINTENANCE } from 'src/modules/Maintenance/MaintenanceConfig'
 import { getTokenFromFirebase } from 'src/firebase'
+import { isEnergyProviderSubscriptionForm } from './modules/User/EnergyProviderSubscription/EnergyProviderSubscriptionConfig'
+import PdlVerificationForm from './modules/User/EnergyProviderSubscription/PdlVerificationForm'
 
 const Root = styled('div')(({ theme }) => ({
     '& #fuse-main': {
@@ -116,6 +118,7 @@ const Routes = () => {
     return (
         <Switch>
             {routesConfig.map((route, index) => {
+                console.log('route', route)
                 return (
                     <Route
                         key={index}
@@ -132,19 +135,23 @@ const Routes = () => {
                                         {/* Note: If you're using Material UI ThemeProvider, make sure ConfirmProvider is a child of it. */}
                                         <ConfirmProvider>
                                             <Root>
-                                                <Layout1
-                                                    navbarContent={navbarContent}
-                                                    displayToolbar={route.settings?.layout?.toolbar?.display}
-                                                    displayNavbar={route.settings?.layout?.navbar?.display}
-                                                    toolbarContent={<ToolbarContent />}
-                                                    toolbarIcon={<ToolbarIcon />}
-                                                >
-                                                    {isMaintenanceMode ? (
-                                                        <Maintenance />
-                                                    ) : (
-                                                        <route.component {...route.props} />
-                                                    )}
-                                                </Layout1>
+                                                {isEnergyProviderSubscriptionForm ? (
+                                                        <PdlVerificationForm />
+                                                ) : (
+                                                    <Layout1
+                                                        navbarContent={navbarContent}
+                                                        displayToolbar={route.settings?.layout?.toolbar?.display}
+                                                        displayNavbar={route.settings?.layout?.navbar?.display}
+                                                        toolbarContent={<ToolbarContent />}
+                                                        toolbarIcon={<ToolbarIcon />}
+                                                    >
+                                                        {isMaintenanceMode ? (
+                                                            <Maintenance />
+                                                        ) : (
+                                                            <route.component {...route.props} />
+                                                        )}
+                                                    </Layout1>
+                                                )}
                                             </Root>
                                         </ConfirmProvider>
                                     </ThemingProvider>
