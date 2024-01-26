@@ -45,6 +45,10 @@ export type IEcogeste =
          * Whether the ecogeste is highlighted or not.
          */
         highlighted: boolean | null
+        /**
+         * The creation date of the ecogeste.
+         */
+        createdAt?: string
     }
 
 /**

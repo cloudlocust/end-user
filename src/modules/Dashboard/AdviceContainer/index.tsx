@@ -14,6 +14,7 @@ import { useModal } from 'src/hooks/useModal'
 import { DetailAdviceDialog } from 'src/modules/Dashboard/AdviceContainer/components/DetailAdviceDialog'
 import { IEcogeste } from 'src/modules/Ecogestes/components/ecogeste'
 import { useState } from 'react'
+import { orderListBy } from 'src/modules/utils'
 
 /**
  * @see https://stackoverflow.com/a/60403040/14005627
@@ -41,7 +42,7 @@ export const AdviceContainer = () => {
     } = useModal()
     const [currentEcogeste, setCurrentEcogeste] = useState<IEcogeste | null>(null)
 
-    const cards = ecogestesList?.map((ecogeste) => (
+    const cards = orderListBy(ecogestesList ?? [], (item) => item.createdAt ?? '', true).map((ecogeste) => (
         <FuseCard
             className="flex flex-col p-20"
             key={ecogeste.id}
