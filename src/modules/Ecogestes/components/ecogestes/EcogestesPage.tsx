@@ -11,6 +11,21 @@ import { ReactComponent as AdvicesIcon } from 'src/assets/images/navbarItems/adv
 import { ReactComponent as CircleCheckIcon } from 'src/assets/images/circleCheck.svg'
 import { Ecogestes } from 'src/modules/Ecogestes'
 
+const tabsContent = [
+    {
+        tabTitle: 'Nos conseils',
+        tabSlug: 'nos-conseils',
+        tabContent: <Ecogestes />,
+        icon: <AdvicesIcon height={26} width={26} />,
+    },
+    {
+        tabTitle: 'Réalisés',
+        tabSlug: 'realises',
+        tabContent: <Ecogestes isEcogestsViewed />,
+        icon: <CircleCheckIcon height={26} width={26} />,
+    },
+]
+
 /**
  * EcogestListPage.
  *
@@ -42,21 +57,6 @@ const EcogestesPage: FC<IEcogesteListPageProps> = ({
         let _category = elementList?.find((element) => element.id === categoryIdInt)
         setCurrentCategory(_category ? _category : null)
     }, [elementList, categoryIdInt])
-
-    const tabsContent = [
-        {
-            tabTitle: 'Nos conseils',
-            tabSlug: 'nos-conseils',
-            tabContent: <Ecogestes />,
-            icon: <AdvicesIcon height={26} width={26} />,
-        },
-        {
-            tabTitle: 'Réalisés',
-            tabSlug: 'realises',
-            tabContent: <Ecogestes isEcogestsViewed />,
-            icon: <CircleCheckIcon height={26} width={26} />,
-        },
-    ]
 
     return (
         <MultiTab
