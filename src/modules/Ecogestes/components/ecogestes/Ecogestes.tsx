@@ -88,6 +88,7 @@ export const Ecogestes = ({ ecogestCategoryName, ecogestCategoryIconUrl, isEcoge
                 <div className="grid gap-16 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                     {ecogestes?.map((ecogeste: IEcogeste) => (
                         <NewEcogesteCard
+                            key={ecogeste.id}
                             ecogeste={ecogeste}
                             showMoreDetails={() => {
                                 setCurrentEcogeste(ecogeste)

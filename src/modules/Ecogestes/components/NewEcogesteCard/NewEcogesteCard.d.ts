@@ -9,7 +9,7 @@ export interface NewEcogesteCardProps {
      */
     ecogeste: IEcogeste
     /**
-     * The name of the ecogestes category.
+     * The function to call when the user click on details.
      */
     showMoreDetails: () => void
 }
