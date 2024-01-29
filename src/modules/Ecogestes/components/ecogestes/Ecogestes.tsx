@@ -3,35 +3,9 @@ import useEcogestes from 'src/modules/Ecogestes/hooks/ecogestesHook'
 import { useParams } from 'react-router-dom'
 import { EcogesteCard } from 'src/modules/Ecogestes'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
-import { Button, Menu, MenuItem, MenuList, SvgIcon } from '@mui/material'
-import { useState } from 'react'
-import FilterListIcon from '@mui/icons-material/FilterList'
-import VisibilityIcon from '@mui/icons-material/Visibility'
-import { ReactComponent as NotViewIcon } from 'src/modules/Ecogestes/components/ecogesteCard/NotRead.svg'
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
+import { useEffect } from 'react'
 import { EcogestViewedEnum, EcogestesProps, IEcogeste } from 'src/modules/Ecogestes/components/ecogeste.d'
 import { EcogestesLoadingSpinner } from 'src/modules/Ecogestes/components/shared/EcogestesLoadingSpinner'
-
-/**
- * Get an icon elment fragment corresponding to the given filter.
- *
- * @param filter The filter to get the icon for.
- * @returns The icon element JSX fragment, all subclasses of SvgIcon.
- */
-const getFilterIcon = (filter: EcogestViewedEnum) => {
-    switch (filter) {
-        case EcogestViewedEnum.READ:
-            return <VisibilityIcon />
-        case EcogestViewedEnum.UNREAD:
-            return (
-                <SvgIcon className="pt-4" inheritViewBox fontSize="inherit">
-                    <NotViewIcon />
-                </SvgIcon>
-            )
-        default:
-            return <FilterListIcon />
-    }
-}
 
 /**
  * Given a category of ecogestes,
@@ -63,113 +37,32 @@ export const Ecogestes = ({ isEcogestsViewed }: EcogestesProps) => {
         elementList: ecogestes,
         loadingInProgress: isEcogestesLoadingInProgress,
         filterEcogestes,
-    } = useEcogestes(isEcogestsViewed ? { viewed: EcogestViewedEnum.READ } : {})
+    } = useEcogestes(isEcogestsViewed ? { viewed: EcogestViewedEnum.READ } : { viewed: EcogestViewedEnum.UNREAD })
 
-    const [currentViewFilter, setCurrentViewFilter] = useState<EcogestViewedEnum>(EcogestViewedEnum.ALL)
+    useEffect(() => {
+        filterEcogestes({
+            viewed: isEcogestsViewed ? EcogestViewedEnum.READ : EcogestViewedEnum.UNREAD,
+            tag_id: categoryIdInt,
+        })
+    }, [categoryIdInt, filterEcogestes, isEcogestsViewed])
 
-    const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
-    const open = Boolean(anchorEl)
-    /**
-     * Handle the click event on the filter button dropdown.
-     *
-     * @param event The click event.
-     */
-    const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-        setAnchorEl(event.currentTarget)
-    }
-    /**
-     * Handle how to close the dropdown menu.
-     */
-    const handleClose = () => {
-        setAnchorEl(null)
-    }
-
-    /**
-     * Handled clicks on the filter menu items.
-     *
-     * @param viewed The filter to set.
-     */
-    const handleFilterClick = (viewed: EcogestViewedEnum) => {
-        setCurrentViewFilter(viewed)
-        filterEcogestes({ viewed, tag_id: categoryIdInt })
-        handleClose()
-    }
-
-    return (
-        <>
-            <div className="flex justify-between w-full mb-20">
-                {!isEcogestsViewed && (
-                    <>
-                        <TypographyFormatMessage variant="h2" className="text-20 font-bold mx-auto">
-                            Les écogestes associés
-                        </TypographyFormatMessage>
-                        <Button
-                            variant="outlined"
-                            startIcon={getFilterIcon(currentViewFilter)}
-                            endIcon={<KeyboardArrowDownIcon />}
-                            onClick={handleClick}
-                            aria-label="button, filter"
-                            aria-controls={open ? 'basic-menu' : undefined}
-                            aria-haspopup="true"
-                            aria-expanded={open ? 'true' : undefined}
-                        >
-                            <TypographyFormatMessage className="font-semibold text-center">
-                                Filtrer
-                            </TypographyFormatMessage>
-                        </Button>
-                        <Menu
-                            id="basic-menu"
-                            anchorEl={anchorEl}
-                            open={open}
-                            onClose={handleClose}
-                            MenuListProps={{
-                                'aria-labelledby': 'button, filter',
-                            }}
-                            anchorOrigin={{
-                                vertical: 'bottom',
-                                horizontal: 'center',
-                            }}
-                            transformOrigin={{
-                                vertical: 'top',
-                                horizontal: 'center',
-                            }}
-                            PaperProps={{
-                                sx: {
-                                    minWidth: '12rem',
-                                },
-                            }}
-                        >
-                            <MenuList dense>
-                                <MenuItem onClick={() => handleFilterClick(EcogestViewedEnum.READ)}>
-                                    <TypographyFormatMessage>Lu</TypographyFormatMessage>
-                                </MenuItem>
-                                <MenuItem onClick={() => handleFilterClick(EcogestViewedEnum.UNREAD)}>
-                                    <TypographyFormatMessage>Non lu</TypographyFormatMessage>
-                                </MenuItem>
-                                <MenuItem onClick={() => handleFilterClick(EcogestViewedEnum.ALL)}>
-                                    <TypographyFormatMessage>Tous</TypographyFormatMessage>
-                                </MenuItem>
-                            </MenuList>
-                        </Menu>
-                    </>
-                )}
-            </div>
-            {(isEmpty(ecogestes) || isNull(ecogestes)) && !isEcogestesLoadingInProgress && (
-                <div className="flex flex-row justify-center items-start w-full h-full">
-                    <TypographyFormatMessage>Aucun écogeste n'est disponible pour le moment.</TypographyFormatMessage>
-                </div>
+    return (isEmpty(ecogestes) || isNull(ecogestes)) && !isEcogestesLoadingInProgress ? (
+        <div className="flex justify-center items-center w-full h-full">
+            <TypographyFormatMessage className="text-18 md:text-24 font-400 text-grey-400">
+                Aucun écogeste n'est disponible
+            </TypographyFormatMessage>
+        </div>
+    ) : (
+        <div
+            className="flex flex-nowrap gap-5 flex-col sm:flex-row  w-full sm:flex-wrap h-full sm:h-auto"
+            aria-label="list, ecogests, cards"
+        >
+            {isEcogestesLoadingInProgress ? (
+                <EcogestesLoadingSpinner />
+            ) : (
+                ecogestes?.map((ecogeste: IEcogeste) => <EcogesteCard key={ecogeste.id} ecogeste={ecogeste} />)
             )}
-            <div
-                className="flex flex-nowrap gap-5 flex-col sm:flex-row  w-full sm:flex-wrap h-full sm:h-auto"
-                aria-label="list, ecogests, cards"
-            >
-                {isEcogestesLoadingInProgress ? (
-                    <EcogestesLoadingSpinner />
-                ) : (
-                    ecogestes?.map((ecogeste: IEcogeste) => <EcogesteCard key={ecogeste.id} ecogeste={ecogeste} />)
-                )}
-            </div>
-        </>
+        </div>
     )
 }
 
