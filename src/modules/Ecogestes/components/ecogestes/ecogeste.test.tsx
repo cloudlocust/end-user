@@ -129,7 +129,7 @@ describe('Ecogestes tests', () => {
             mockEcogestes = TEST_ECOGESTES
             const { getByText, getByLabelText, queryAllByLabelText } = reduxedRender(
                 <BrowserRouter>
-                    <Ecogestes ecogestCategoryName="category name" ecogestCategoryIcon="category icon" />
+                    <Ecogestes ecogestCategoryName="category name" ecogestCategoryIconUrl="category icon" />
                 </BrowserRouter>,
             )
 

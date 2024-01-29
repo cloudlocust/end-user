@@ -17,11 +17,11 @@ import { DetailAdviceDialog } from 'src/modules/Dashboard/AdviceContainer/compon
  *
  * @param root0 N/A.
  * @param root0.ecogestCategoryName The name of the ecogestes category.
- * @param root0.ecogestCategoryIcon The icon url of the ecogestes category.
+ * @param root0.ecogestCategoryIconUrl The icon url of the ecogestes category.
  * @param root0.isEcogestsViewed Indicates whether to show just viewed ecogests.
  * @returns A Component which displays and filter the ecogestes.
  */
-export const Ecogestes = ({ ecogestCategoryName, ecogestCategoryIcon, isEcogestsViewed }: EcogestesProps) => {
+export const Ecogestes = ({ ecogestCategoryName, ecogestCategoryIconUrl, isEcogestsViewed }: EcogestesProps) => {
     /**
      * Mandatory...
      * If we don't do that we got a Re-render and some bugs like all ecogeste instead of Ecogeste linked to a Category...
@@ -60,29 +60,29 @@ export const Ecogestes = ({ ecogestCategoryName, ecogestCategoryIcon, isEcogests
     return (
         <div className="flex flex-col w-full h-full">
             <div className="flex gap-10 items-center mb-20">
-                {ecogestCategoryIcon && (
+                {ecogestCategoryIconUrl && (
                     <Icon
                         aria-hidden="true"
                         color="primary"
                         className="w-36 h-36 sm:w-40 sm:h-40"
                         aria-label="ecogestCategoryIcon"
                     >
-                        <img src={ecogestCategoryIcon} alt={ecogestCategoryName} className="w-full" />
+                        <img src={ecogestCategoryIconUrl} alt={ecogestCategoryName} className="w-full" />
                     </Icon>
                 )}
                 <TypographyFormatMessage variant="h2" className="text-17 sm:text-20 font-600">
                     {ecogestCategoryName ?? ' '}
                 </TypographyFormatMessage>
             </div>
-            {(isEmpty(ecogestes) || isNull(ecogestes)) && !isEcogestesLoadingInProgress ? (
+            {isEcogestesLoadingInProgress ? (
+                <div className="flex-1 flex justify-center items-center">
+                    <EcogestesLoadingSpinner />
+                </div>
+            ) : isEmpty(ecogestes) || isNull(ecogestes) ? (
                 <div className="flex-1 flex justify-center items-center">
                     <TypographyFormatMessage className="text-18 sm:text-20 font-400 text-grey-400">
                         Aucun écogeste n'est disponible
                     </TypographyFormatMessage>
-                </div>
-            ) : isEcogestesLoadingInProgress ? (
-                <div className="flex-1 flex justify-center items-center">
-                    <EcogestesLoadingSpinner />
                 </div>
             ) : (
                 <div className="grid gap-16 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">

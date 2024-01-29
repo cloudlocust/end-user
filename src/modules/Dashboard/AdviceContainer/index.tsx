@@ -1,5 +1,5 @@
 import { CardContent, IconButton, useTheme, useMediaQuery } from '@mui/material'
-import { FuseCard } from 'src/modules/shared/FuseCard/FuseCard'
+import { FuseCard } from 'src/modules/shared/FuseCard'
 import { ReactComponent as AdviceIcon } from 'src/assets/images/navbarItems/advice.svg'
 import { iconStyle } from 'src/modules/Dashboard/StatusWrapper/components/EnergyStatusWidget/Index'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
@@ -26,7 +26,7 @@ export const CardContentPaddingStyle = {
 
 /**
  * Advice wrapper component.
- 
+
  * @returns Advice wrapper component.
  */
 export const AdviceContainer = () => {

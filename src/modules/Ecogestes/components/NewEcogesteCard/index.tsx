@@ -1,5 +1,5 @@
 import { useTheme, alpha } from '@mui/material'
-import { FuseCard } from 'src/modules/shared/FuseCard/FuseCard'
+import { FuseCard } from 'src/modules/shared/FuseCard'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import { truncate } from 'lodash'
 import { SavingPercentage } from 'src/modules/Dashboard/AdviceContainer/components/SavingPercentage'

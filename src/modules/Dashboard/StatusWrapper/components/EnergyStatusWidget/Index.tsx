@@ -4,7 +4,7 @@ import { ReactComponent as BoltIcon } from 'src/assets/images/dashboard/bolt.svg
 import dayjs from 'dayjs'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import { SVGAttributes, useMemo } from 'react'
-import { FuseCard } from 'src/modules/shared/FuseCard/FuseCard'
+import { FuseCard } from 'src/modules/shared/FuseCard'
 import { EnergyStatusWidgetProps } from 'src/modules/Dashboard/StatusWrapper/components/EnergyStatusWidget/energyStatusWidget'
 import convert from 'convert-units'
 

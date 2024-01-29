@@ -1,6 +1,6 @@
 import React from 'react'
 import { Card, CircularProgress } from '@mui/material'
-import { FuseCardProps } from 'src/modules/shared/FuseCard/fuseCard'
+import { FuseCardProps } from 'src/modules/shared/FuseCard/FuseCard'
 
 /**
  * FuseCard component.

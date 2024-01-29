@@ -48,7 +48,7 @@ const EcogestesPage: FC<IEcogesteListPageProps> = ({
             tabTitle: 'Nos conseils',
             tabSlug: 'nos-conseils',
             tabContent: (
-                <Ecogestes ecogestCategoryName={currentCategory?.name} ecogestCategoryIcon={currentCategory?.icon} />
+                <Ecogestes ecogestCategoryName={currentCategory?.name} ecogestCategoryIconUrl={currentCategory?.icon} />
             ),
             icon: <AdvicesIcon height={26} width={26} />,
         },
@@ -58,7 +58,7 @@ const EcogestesPage: FC<IEcogesteListPageProps> = ({
             tabContent: (
                 <Ecogestes
                     ecogestCategoryName={currentCategory?.name}
-                    ecogestCategoryIcon={currentCategory?.icon}
+                    ecogestCategoryIconUrl={currentCategory?.icon}
                     isEcogestsViewed
                 />
             ),
