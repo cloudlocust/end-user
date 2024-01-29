@@ -26,7 +26,7 @@ export const Advices = () => {
         {
             tabTitle: 'Réalisés',
             tabSlug: 'realises',
-            tabContent: <Ecogestes isEcogestsViewed />,
+            tabContent: <Ecogestes ecogestCategoryName="Tous les écogestes réalisés" isEcogestsViewed />,
             icon: <CircleCheckIcon height={26} width={26} />,
         },
     ]

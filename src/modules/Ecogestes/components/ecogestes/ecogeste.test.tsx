@@ -127,13 +127,14 @@ describe('Ecogestes tests', () => {
         test('When rendering, should render correctly ecogestes', async () => {
             mockCategoryId = '2'
             mockEcogestes = TEST_ECOGESTES
-            const { queryByLabelText, queryAllByLabelText } = reduxedRender(
+            const { getByText, getByLabelText, queryAllByLabelText } = reduxedRender(
                 <BrowserRouter>
-                    <Ecogestes />
+                    <Ecogestes ecogestCategoryName="category name" ecogestCategoryIconUrl="category icon" />
                 </BrowserRouter>,
             )
 
-            expect(queryByLabelText('list, ecogests, cards')).toBeTruthy()
+            expect(getByText('category name')).toBeInTheDocument()
+            expect(getByLabelText('ecogestCategoryIcon')).toBeInTheDocument()
             expect(queryAllByLabelText(TEST_ECOGESTES_ECO_CARD_LABEL)).toHaveLength(TEST_ECOGESTES.length)
         })
 
@@ -154,7 +155,7 @@ describe('Ecogestes tests', () => {
     describe('Test proper rendering for EcogestesPage', () => {
         test('When rendering, should render correctly EcogestesPage', async () => {
             mockCategoryId = mockEcogesteCategory.id.toString()
-            const { getByText } = reduxedRender(
+            const { getByText, getAllByText, getByLabelText } = reduxedRender(
                 <BrowserRouter>
                     <EcogestesPage />
                 </BrowserRouter>,
@@ -162,11 +163,12 @@ describe('Ecogestes tests', () => {
 
             await waitFor(() => {
                 expect(getByText('Ecogestes')).toBeInTheDocument()
-                expect(getByText(mockEcogesteCategory.name)).toBeInTheDocument()
+                expect(getAllByText(mockEcogesteCategory.name)).toHaveLength(2)
                 expect(getByText('arrow_back')).toBeInTheDocument()
                 expect(getByText('Retour')).toBeInTheDocument()
                 expect(getByText('Nos conseils')).toBeInTheDocument()
                 expect(getByText('Réalisés')).toBeInTheDocument()
+                expect(getByLabelText('ecogestCategoryIcon')).toBeInTheDocument()
             })
         })
 

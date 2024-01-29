@@ -11,21 +11,6 @@ import { ReactComponent as AdvicesIcon } from 'src/assets/images/navbarItems/adv
 import { ReactComponent as CircleCheckIcon } from 'src/assets/images/circleCheck.svg'
 import { Ecogestes } from 'src/modules/Ecogestes'
 
-const tabsContent = [
-    {
-        tabTitle: 'Nos conseils',
-        tabSlug: 'nos-conseils',
-        tabContent: <Ecogestes />,
-        icon: <AdvicesIcon height={26} width={26} />,
-    },
-    {
-        tabTitle: 'Réalisés',
-        tabSlug: 'realises',
-        tabContent: <Ecogestes isEcogestsViewed />,
-        icon: <CircleCheckIcon height={26} width={26} />,
-    },
-]
-
 /**
  * EcogestListPage.
  *
@@ -58,6 +43,29 @@ const EcogestesPage: FC<IEcogesteListPageProps> = ({
         setCurrentCategory(_category ? _category : null)
     }, [elementList, categoryIdInt])
 
+    const tabsContent = [
+        {
+            tabTitle: 'Nos conseils',
+            tabSlug: 'nos-conseils',
+            tabContent: (
+                <Ecogestes ecogestCategoryName={currentCategory?.name} ecogestCategoryIconUrl={currentCategory?.icon} />
+            ),
+            icon: <AdvicesIcon height={26} width={26} />,
+        },
+        {
+            tabTitle: 'Réalisés',
+            tabSlug: 'realises',
+            tabContent: (
+                <Ecogestes
+                    ecogestCategoryName={currentCategory?.name}
+                    ecogestCategoryIconUrl={currentCategory?.icon}
+                    isEcogestsViewed
+                />
+            ),
+            icon: <CircleCheckIcon height={26} width={26} />,
+        },
+    ]
+
     return (
         <MultiTab
             header={
@@ -84,6 +92,7 @@ const EcogestesPage: FC<IEcogesteListPageProps> = ({
                             className="w-full flex gap-10 justify-center items-center text-18 md:text-24 flex-wrap text-center mx-52"
                         >
                             <TypographyFormatMessage
+                                variant="h1"
                                 className="text-18 md:text-24"
                                 style={{ color: theme.palette.primary.contrastText }}
                             >
@@ -91,10 +100,11 @@ const EcogestesPage: FC<IEcogesteListPageProps> = ({
                             </TypographyFormatMessage>
                             &gt;
                             <TypographyFormatMessage
+                                variant="h1"
                                 className="text-18 md:text-24"
                                 style={{ color: theme.palette.primary.contrastText }}
                             >
-                                {currentCategory?.name ?? '...'}
+                                {currentCategory?.name ?? ' '}
                             </TypographyFormatMessage>
                         </motion.div>
                     </div>
