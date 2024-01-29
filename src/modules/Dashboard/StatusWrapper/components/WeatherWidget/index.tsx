@@ -1,4 +1,4 @@
-import { FuseCard } from 'src/modules/shared/FuseCard/FuseCard'
+import { FuseCard } from 'src/modules/shared/FuseCard'
 import { CardContent, useTheme, IconButton, useMediaQuery } from '@mui/material'
 import { CARD_HEIGHT } from 'src/modules/Dashboard/StatusWrapper/components/EnergyStatusWidget/Index'
 import { WeatherWidgetProps } from 'src/modules/Dashboard/StatusWrapper/components/WeatherWidget/weatherWidget.d'
