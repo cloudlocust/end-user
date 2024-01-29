@@ -179,7 +179,7 @@ export interface EcogestesProps {
     /**
      * The icon url of the ecogestes category.
      */
-    ecogestCategoryIcon?: string
+    ecogestCategoryIconUrl?: string
     /**
      * Indicates whether to show just viewed ecogests.
      */
