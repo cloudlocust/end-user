@@ -1,12 +1,14 @@
 import { isEmpty, isNull } from 'lodash'
 import useEcogestes from 'src/modules/Ecogestes/hooks/ecogestesHook'
 import { useParams } from 'react-router-dom'
-import { EcogesteCard } from 'src/modules/Ecogestes'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { Icon } from '@mui/material'
 import { EcogestViewedEnum, EcogestesProps, IEcogeste } from 'src/modules/Ecogestes/components/ecogeste.d'
 import { EcogestesLoadingSpinner } from 'src/modules/Ecogestes/components/shared/EcogestesLoadingSpinner'
+import { NewEcogesteCard } from 'src/modules/Ecogestes/components/NewEcogesteCard'
+import { useModal } from 'src/hooks/useModal'
+import { DetailAdviceDialog } from 'src/modules/Dashboard/AdviceContainer/components/DetailAdviceDialog'
 
 /**
  * Given a category of ecogestes,
@@ -33,21 +35,27 @@ export const Ecogestes = ({ ecogestCategoryName, ecogestCategoryIconUrl, isEcoge
          */
         categoryId: string
     }>()
-
     const categoryIdInt = categoryId ? parseInt(categoryId) : undefined
-
     const {
         elementList: ecogestes,
         loadingInProgress: isEcogestesLoadingInProgress,
         filterEcogestes,
+        setViewStatus,
     } = useEcogestes(isEcogestsViewed ? { viewed: EcogestViewedEnum.READ } : { viewed: EcogestViewedEnum.UNREAD })
+    const [currentEcogeste, setCurrentEcogeste] = useState<IEcogeste | null>(null)
+    const {
+        isOpen: isDetailsEcogestePopupOpen,
+        closeModal: onCloseDetailsEcogestePopup,
+        openModal: onOpenDetailsEcogestePopup,
+    } = useModal()
 
     useEffect(() => {
-        filterEcogestes({
-            viewed: isEcogestsViewed ? EcogestViewedEnum.READ : EcogestViewedEnum.UNREAD,
-            tag_id: categoryIdInt,
-        })
-    }, [categoryIdInt, filterEcogestes, isEcogestsViewed])
+        if (!isDetailsEcogestePopupOpen)
+            filterEcogestes({
+                viewed: isEcogestsViewed ? EcogestViewedEnum.READ : EcogestViewedEnum.UNREAD,
+                tag_id: categoryIdInt,
+            })
+    }, [categoryIdInt, filterEcogestes, isDetailsEcogestePopupOpen, isEcogestsViewed])
 
     return (
         <div className="flex flex-col w-full h-full">
@@ -79,9 +87,24 @@ export const Ecogestes = ({ ecogestCategoryName, ecogestCategoryIconUrl, isEcoge
             ) : (
                 <div className="grid gap-16 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                     {ecogestes?.map((ecogeste: IEcogeste) => (
-                        <EcogesteCard key={ecogeste.id} ecogeste={ecogeste} />
+                        <NewEcogesteCard
+                            key={ecogeste.id}
+                            ecogeste={ecogeste}
+                            showMoreDetails={() => {
+                                setCurrentEcogeste(ecogeste)
+                                onOpenDetailsEcogestePopup()
+                            }}
+                        />
                     ))}
                 </div>
+            )}
+            {isDetailsEcogestePopupOpen && (
+                <DetailAdviceDialog
+                    isDetailAdvicePopupOpen={isDetailsEcogestePopupOpen}
+                    onCloseDetailAdvicePopup={onCloseDetailsEcogestePopup}
+                    currentEcogeste={currentEcogeste}
+                    setViewStatus={setViewStatus}
+                />
             )}
         </div>
     )

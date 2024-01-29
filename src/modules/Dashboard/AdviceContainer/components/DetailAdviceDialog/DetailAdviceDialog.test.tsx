@@ -5,66 +5,119 @@ import { DetailAdviceDialog } from 'src/modules/Dashboard/AdviceContainer/compon
 import { IEcogeste } from 'src/modules/Ecogestes/components/ecogeste'
 import { BrowserRouter as Router } from 'react-router-dom'
 import userEvent from '@testing-library/user-event'
+import { waitFor } from '@testing-library/react'
 
 describe('DetailAdviceDialog', () => {
-    test('should render with the correct props', () => {
-        const isOpen = true
-        const onClose = jest.fn()
-        const currentEcogeste: IEcogeste = applyCamelCase(TEST_ECOGESTES[1])
+    describe('DetailAdviceDialog for Dashboard page', () => {
+        test('should render with the correct props', () => {
+            const isOpen = true
+            const onClose = jest.fn()
+            const currentEcogeste: IEcogeste = applyCamelCase(TEST_ECOGESTES[1])
 
-        const { getByText } = reduxedRender(
-            <Router>
-                <DetailAdviceDialog
-                    isDetailAdvicePopupOpen={isOpen}
-                    onCloseDetailAdvicePopup={onClose}
-                    currentEcogeste={currentEcogeste}
-                />
-                ,
-            </Router>,
-        )
+            const { getByText } = reduxedRender(
+                <Router>
+                    <DetailAdviceDialog
+                        isDetailAdvicePopupOpen={isOpen}
+                        onCloseDetailAdvicePopup={onClose}
+                        currentEcogeste={currentEcogeste}
+                        isDashboardAdvice
+                    />
+                </Router>,
+            )
 
-        expect(getByText(currentEcogeste.title)).toBeInTheDocument()
-        expect(getByText(currentEcogeste.description)).toBeInTheDocument()
-        expect(getByText(currentEcogeste.infos)).toBeInTheDocument()
+            expect(getByText(currentEcogeste.title)).toBeInTheDocument()
+            expect(getByText(currentEcogeste.description)).toBeInTheDocument()
+            expect(getByText(currentEcogeste.infos)).toBeInTheDocument()
+        })
+
+        test('when clicked on close button, should call onClose', () => {
+            const isOpen = true
+            const onClose = jest.fn()
+            const currentEcogeste: IEcogeste = applyCamelCase(TEST_ECOGESTES[1])
+
+            const { getByTestId } = reduxedRender(
+                <Router>
+                    <DetailAdviceDialog
+                        isDetailAdvicePopupOpen={isOpen}
+                        onCloseDetailAdvicePopup={onClose}
+                        currentEcogeste={currentEcogeste}
+                        isDashboardAdvice
+                    />
+                </Router>,
+            )
+
+            userEvent.click(getByTestId('CloseIcon'))
+
+            expect(onClose).toHaveBeenCalled()
+        })
+
+        test('when clicked on more advice button, user is redirect to /advices route', () => {
+            const isOpen = true
+            const onClose = jest.fn()
+            const currentEcogeste: IEcogeste = applyCamelCase(TEST_ECOGESTES[1])
+
+            const { getByText } = reduxedRender(
+                <Router>
+                    <DetailAdviceDialog
+                        isDetailAdvicePopupOpen={isOpen}
+                        onCloseDetailAdvicePopup={onClose}
+                        currentEcogeste={currentEcogeste}
+                        isDashboardAdvice
+                    />
+                </Router>,
+            )
+
+            userEvent.click(getByText('Plus de conseils'))
+
+            expect(window.location.pathname).toBe('/advices')
+        })
     })
-    test('when clicked on close button, should call onClose', () => {
-        const isOpen = true
-        const onClose = jest.fn()
-        const currentEcogeste: IEcogeste = applyCamelCase(TEST_ECOGESTES[1])
+    describe('DetailAdviceDialog for Advices page', () => {
+        test('should render with the correct props when the ecogeste has been seen', async () => {
+            const isOpen = true
+            const mockOnClose = jest.fn()
+            const mockSetViewStatus = jest.fn()
+            const currentEcogeste: IEcogeste = applyCamelCase({ ...TEST_ECOGESTES[1], seen_by_customer: true })
+            const { getByText } = reduxedRender(
+                <Router>
+                    <DetailAdviceDialog
+                        isDetailAdvicePopupOpen={isOpen}
+                        onCloseDetailAdvicePopup={mockOnClose}
+                        currentEcogeste={currentEcogeste}
+                        setViewStatus={mockSetViewStatus}
+                    />
+                </Router>,
+            )
 
-        const { getByTestId } = reduxedRender(
-            <Router>
-                <DetailAdviceDialog
-                    isDetailAdvicePopupOpen={isOpen}
-                    onCloseDetailAdvicePopup={onClose}
-                    currentEcogeste={currentEcogeste}
-                />
-                ,
-            </Router>,
-        )
+            const markAsDoneButton = getByText('Marquer comme non fait')
+            expect(markAsDoneButton).toBeInTheDocument()
+            userEvent.click(markAsDoneButton)
+            await waitFor(() => {
+                expect(mockSetViewStatus).toHaveBeenCalledWith(currentEcogeste.id, false)
+            })
+        })
+        test('should render with the correct props when the ecogeste has not been seen', async () => {
+            const isOpen = true
+            const mockOnClose = jest.fn()
+            const mockSetViewStatus = jest.fn()
+            const currentEcogeste: IEcogeste = applyCamelCase({ ...TEST_ECOGESTES[1], seen_by_customer: false })
+            const { getByText } = reduxedRender(
+                <Router>
+                    <DetailAdviceDialog
+                        isDetailAdvicePopupOpen={isOpen}
+                        onCloseDetailAdvicePopup={mockOnClose}
+                        currentEcogeste={currentEcogeste}
+                        setViewStatus={mockSetViewStatus}
+                    />
+                </Router>,
+            )
 
-        userEvent.click(getByTestId('CloseIcon'))
-
-        expect(onClose).toHaveBeenCalled()
-    })
-    test('when clicked on more advice button, user is redirect to /advices route', () => {
-        const isOpen = true
-        const onClose = jest.fn()
-        const currentEcogeste: IEcogeste = applyCamelCase(TEST_ECOGESTES[1])
-
-        const { getByText } = reduxedRender(
-            <Router>
-                <DetailAdviceDialog
-                    isDetailAdvicePopupOpen={isOpen}
-                    onCloseDetailAdvicePopup={onClose}
-                    currentEcogeste={currentEcogeste}
-                />
-                ,
-            </Router>,
-        )
-
-        userEvent.click(getByText('Plus de conseils'))
-
-        expect(window.location.pathname).toBe('/advices')
+            const markAsDoneButton = getByText('Marquer comme fait')
+            expect(markAsDoneButton).toBeInTheDocument()
+            userEvent.click(markAsDoneButton)
+            await waitFor(() => {
+                expect(mockSetViewStatus).toHaveBeenCalledWith(currentEcogeste.id, true)
+            })
+        })
     })
 })
