@@ -45,8 +45,27 @@ const mockPushNotifications = require('@capacitor/push-notifications').PushNotif
 
 describe('test getTokenWithFirebase function', () => {
     describe('when the browser is supported', () => {
+        // Save the original navigator.serviceWorker outside the test suite.
+        const originalServiceWorker = navigator.serviceWorker
+
         beforeEach(() => {
             mockedIsSupported.mockResolvedValue(true)
+            const mockServiceWorkerRegister = jest.fn().mockReturnValue({})
+
+            // Mock navigator.serviceWorker
+            Object.defineProperty(navigator, 'serviceWorker', {
+                value: {
+                    register: mockServiceWorkerRegister,
+                },
+                configurable: true, // Make it configurable to allow redefinition.
+            })
+        })
+
+        afterEach(() => {
+            // Restore the original navigator.serviceWorker.
+            Object.defineProperty(navigator, 'serviceWorker', {
+                value: originalServiceWorker,
+            })
         })
         test('when the token exists, it will send it to the backend', async () => {
             mockedGetToken.mockResolvedValue(MOCK_RESPONSE_GET_TOKEN)
@@ -56,7 +75,10 @@ describe('test getTokenWithFirebase function', () => {
             expect(mockedIsSupported).toHaveBeenCalled()
             expect(mockInitializeApp).toHaveBeenCalled()
             expect(mockedGetMessaging).toBeCalledWith(mockInitializeApp())
-            expect(mockedGetToken).toBeCalledWith(mockedGetMessaging(), { vapidKey: 'mockedVapidKey' })
+            expect(mockedGetToken).toBeCalledWith(mockedGetMessaging(), {
+                vapidKey: 'mockedVapidKey',
+                serviceWorkerRegistration: {},
+            })
             expect(mockAxios.post).toBeCalledWith(`http://test.fake/add-subscriber-device-token`, {
                 deviceToken: MOCK_RESPONSE_GET_TOKEN,
             })
@@ -69,7 +91,10 @@ describe('test getTokenWithFirebase function', () => {
             expect(mockedIsSupported).toHaveBeenCalled()
             expect(mockInitializeApp).toHaveBeenCalled()
             expect(mockedGetMessaging).toBeCalledWith(mockInitializeApp())
-            expect(mockedGetToken).toBeCalledWith(mockedGetMessaging(), { vapidKey: 'mockedVapidKey' })
+            expect(mockedGetToken).toBeCalledWith(mockedGetMessaging(), {
+                vapidKey: 'mockedVapidKey',
+                serviceWorkerRegistration: {},
+            })
             expect(mockAxios.post).not.toBeCalled()
         })
     })

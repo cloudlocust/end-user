@@ -1,10 +1,9 @@
 import { initializeApp } from 'firebase/app'
 import { getMessaging, getToken, isSupported } from 'firebase/messaging'
 import { axios } from 'src/common/react-platform-components'
-import { REACT_APP_FIREBASE_VAPID_KEY, FIREBASE_CONFIG } from 'src/configs'
+import { REACT_APP_FIREBASE_VAPID_KEY, FIREBASE_CONFIG, FIREBASE_MESSAGING_SW_URL } from 'src/configs'
 import { AUTH_BASE_URL } from './modules/User/configs'
 import { PushNotifications, Token } from '@capacitor/push-notifications'
-
 /**
  * Post function that adds a device token to the subscribers' devices.
  *
@@ -32,7 +31,12 @@ const getTokenWithFirebase = async () => {
     const messaging = getMessaging(firebaseApp)
 
     try {
-        const currentToken = await getToken(messaging, { vapidKey: REACT_APP_FIREBASE_VAPID_KEY })
+        const serviceWorker = await navigator.serviceWorker.register(`${FIREBASE_MESSAGING_SW_URL}`)
+
+        const currentToken = await getToken(messaging, {
+            vapidKey: REACT_APP_FIREBASE_VAPID_KEY,
+            serviceWorkerRegistration: serviceWorker,
+        })
 
         if (currentToken) {
             addSubscriberDeviceToken(currentToken)
@@ -66,7 +70,6 @@ const requestPermissionAndRegister = async () => {
  */
 export const getTokenFromFirebase = async (_onPermissionGranted?: () => void) => {
     const isBrowserSupported = await isSupported()
-
     if (isBrowserSupported) {
         return getTokenWithFirebase()
     } else {
