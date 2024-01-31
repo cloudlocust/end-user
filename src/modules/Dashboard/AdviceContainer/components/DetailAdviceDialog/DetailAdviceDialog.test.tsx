@@ -89,7 +89,7 @@ describe('DetailAdviceDialog', () => {
                 </Router>,
             )
 
-            const markAsDoneButton = getByText('Marquer comme non fait')
+            const markAsDoneButton = getByText('Retirer')
             expect(markAsDoneButton).toBeInTheDocument()
             userEvent.click(markAsDoneButton)
             await waitFor(() => {
@@ -112,7 +112,7 @@ describe('DetailAdviceDialog', () => {
                 </Router>,
             )
 
-            const markAsDoneButton = getByText('Marquer comme fait')
+            const markAsDoneButton = getByText('C’est fait !')
             expect(markAsDoneButton).toBeInTheDocument()
             userEvent.click(markAsDoneButton)
             await waitFor(() => {

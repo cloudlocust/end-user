@@ -1,6 +1,7 @@
 import { Dialog, DialogContent, useTheme, IconButton, alpha, Button, Typography } from '@mui/material'
 import { DetailAdviceDialogProps } from 'src/modules/Dashboard/AdviceContainer/components/DetailAdviceDialog/detailAdviceDialog'
-import { Close as CloseIcon } from '@mui/icons-material'
+import CloseIcon from '@mui/icons-material/Close'
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline'
 import { SavingPercentage } from 'src/modules/Dashboard/AdviceContainer/components/SavingPercentage'
 import { Link } from 'react-router-dom'
 import { useState } from 'react'
@@ -80,23 +81,22 @@ export const DetailAdviceDialog = ({
                     </Button>
                 ) : isEcogesteSeen ? (
                     <Button
-                        fullWidth
                         variant="outlined"
-                        className="text-14 md:text-16"
+                        className="text-14 md:text-16 flex mx-auto"
                         onClick={() => {
                             if (setViewStatus) {
                                 setViewStatus(currentEcogeste.id, false)
                                 setIsEcogesteSeen(false)
                             }
                         }}
+                        endIcon={<DeleteOutlineIcon />}
                     >
-                        <TypographyFormatMessage>Marquer comme non fait</TypographyFormatMessage>
+                        <TypographyFormatMessage>Retirer</TypographyFormatMessage>
                     </Button>
                 ) : (
                     <Button
-                        fullWidth
                         variant="contained"
-                        className="text-14 md:text-16"
+                        className="text-14 md:text-16 flex mx-auto"
                         onClick={() => {
                             if (setViewStatus) {
                                 setViewStatus(currentEcogeste.id, true)
@@ -104,7 +104,7 @@ export const DetailAdviceDialog = ({
                             }
                         }}
                     >
-                        <TypographyFormatMessage>Marquer comme fait</TypographyFormatMessage>
+                        <TypographyFormatMessage>C’est fait !</TypographyFormatMessage>
                     </Button>
                 )}
             </DialogContent>
