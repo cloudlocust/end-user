@@ -56,7 +56,7 @@ export const SelectButtons = ({
                                     value={option.value}
                                 >
                                     {option.iconPath || option.iconLabel ? (
-                                        <div>
+                                        <>
                                             {option.iconLabel ? (
                                                 <Icon color="inherit" className={option.iconStyles}>
                                                     {option.iconLabel}
@@ -68,7 +68,7 @@ export const SelectButtons = ({
                                                     alt={option.iconPath}
                                                 />
                                             )}
-                                        </div>
+                                        </>
                                     ) : (
                                         <>{option.icon}</>
                                     )}

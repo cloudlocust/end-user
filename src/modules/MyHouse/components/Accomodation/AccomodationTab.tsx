@@ -121,7 +121,7 @@ export const AccomodationTab = () => {
         )
 
     return (
-        <Container>
+        <>
             <RouterPrompt
                 when={methods.formState.isDirty}
                 content="Attention si vous n’enregistrez pas, vos données risques d’être perdues, souhaitez-vous enregistrer vos modifications"
@@ -369,6 +369,6 @@ export const AccomodationTab = () => {
                     </FormProvider>
                 </div>
             </div>
-        </Container>
+        </>
     )
 }
