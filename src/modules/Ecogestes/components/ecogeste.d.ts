@@ -45,6 +45,10 @@ export type IEcogeste =
          * Whether the ecogeste is highlighted or not.
          */
         highlighted: boolean | null
+        /**
+         * The creation date of the ecogeste.
+         */
+        createdAt?: string
     }
 
 /**
@@ -167,3 +171,21 @@ export type IEcogesteCategoriesListProps =
          */
         loadingInProgress: boolean
     }
+
+/**
+ * Ecogestes props.
+ */
+export interface EcogestesProps {
+    /**
+     * The name of the ecogestes category.
+     */
+    ecogestCategoryName?: string
+    /**
+     * The icon url of the ecogestes category.
+     */
+    ecogestCategoryIconUrl?: string
+    /**
+     * Indicates whether to show just viewed ecogests.
+     */
+    isEcogestsViewed?: boolean
+}
