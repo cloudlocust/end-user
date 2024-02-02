@@ -1,37 +1,14 @@
 import { isEmpty, isNull } from 'lodash'
 import useEcogestes from 'src/modules/Ecogestes/hooks/ecogestesHook'
 import { useParams } from 'react-router-dom'
-import { EcogesteCard } from 'src/modules/Ecogestes'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
-import { Button, Menu, MenuItem, MenuList, SvgIcon } from '@mui/material'
-import { useState } from 'react'
-import FilterListIcon from '@mui/icons-material/FilterList'
-import VisibilityIcon from '@mui/icons-material/Visibility'
-import { ReactComponent as NotViewIcon } from 'src/modules/Ecogestes/components/ecogesteCard/NotRead.svg'
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
+import { useEffect, useState } from 'react'
+import { Icon } from '@mui/material'
 import { EcogestViewedEnum, EcogestesProps, IEcogeste } from 'src/modules/Ecogestes/components/ecogeste.d'
 import { EcogestesLoadingSpinner } from 'src/modules/Ecogestes/components/shared/EcogestesLoadingSpinner'
-
-/**
- * Get an icon elment fragment corresponding to the given filter.
- *
- * @param filter The filter to get the icon for.
- * @returns The icon element JSX fragment, all subclasses of SvgIcon.
- */
-const getFilterIcon = (filter: EcogestViewedEnum) => {
-    switch (filter) {
-        case EcogestViewedEnum.READ:
-            return <VisibilityIcon />
-        case EcogestViewedEnum.UNREAD:
-            return (
-                <SvgIcon className="pt-4" inheritViewBox fontSize="inherit">
-                    <NotViewIcon />
-                </SvgIcon>
-            )
-        default:
-            return <FilterListIcon />
-    }
-}
+import { NewEcogesteCard } from 'src/modules/Ecogestes/components/NewEcogesteCard'
+import { useModal } from 'src/hooks/useModal'
+import { DetailAdviceDialog } from 'src/modules/Dashboard/AdviceContainer/components/DetailAdviceDialog'
 
 /**
  * Given a category of ecogestes,
@@ -39,10 +16,12 @@ const getFilterIcon = (filter: EcogestViewedEnum) => {
  * Temporary display until we have category cards.
  *
  * @param root0 N/A.
+ * @param root0.ecogestCategoryName The name of the ecogestes category.
+ * @param root0.ecogestCategoryIconUrl The icon url of the ecogestes category.
  * @param root0.isEcogestsViewed Indicates whether to show just viewed ecogests.
  * @returns A Component which displays and filter the ecogestes.
  */
-export const Ecogestes = ({ isEcogestsViewed }: EcogestesProps) => {
+export const Ecogestes = ({ ecogestCategoryName, ecogestCategoryIconUrl, isEcogestsViewed }: EcogestesProps) => {
     /**
      * Mandatory...
      * If we don't do that we got a Re-render and some bugs like all ecogeste instead of Ecogeste linked to a Category...
@@ -56,120 +35,78 @@ export const Ecogestes = ({ isEcogestsViewed }: EcogestesProps) => {
          */
         categoryId: string
     }>()
-
     const categoryIdInt = categoryId ? parseInt(categoryId) : undefined
-
     const {
         elementList: ecogestes,
         loadingInProgress: isEcogestesLoadingInProgress,
         filterEcogestes,
-    } = useEcogestes(isEcogestsViewed ? { viewed: EcogestViewedEnum.READ } : {})
+        setViewStatus,
+    } = useEcogestes(isEcogestsViewed ? { viewed: EcogestViewedEnum.READ } : { viewed: EcogestViewedEnum.UNREAD })
+    const [currentEcogeste, setCurrentEcogeste] = useState<IEcogeste | null>(null)
+    const {
+        isOpen: isDetailsEcogestePopupOpen,
+        closeModal: onCloseDetailsEcogestePopup,
+        openModal: onOpenDetailsEcogestePopup,
+    } = useModal()
 
-    const [currentViewFilter, setCurrentViewFilter] = useState<EcogestViewedEnum>(EcogestViewedEnum.ALL)
-
-    const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
-    const open = Boolean(anchorEl)
-    /**
-     * Handle the click event on the filter button dropdown.
-     *
-     * @param event The click event.
-     */
-    const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-        setAnchorEl(event.currentTarget)
-    }
-    /**
-     * Handle how to close the dropdown menu.
-     */
-    const handleClose = () => {
-        setAnchorEl(null)
-    }
-
-    /**
-     * Handled clicks on the filter menu items.
-     *
-     * @param viewed The filter to set.
-     */
-    const handleFilterClick = (viewed: EcogestViewedEnum) => {
-        setCurrentViewFilter(viewed)
-        filterEcogestes({ viewed, tag_id: categoryIdInt })
-        handleClose()
-    }
+    useEffect(() => {
+        if (!isDetailsEcogestePopupOpen)
+            filterEcogestes({
+                viewed: isEcogestsViewed ? EcogestViewedEnum.READ : EcogestViewedEnum.UNREAD,
+                tag_id: categoryIdInt,
+            })
+    }, [categoryIdInt, filterEcogestes, isDetailsEcogestePopupOpen, isEcogestsViewed])
 
     return (
-        <>
-            <div className="flex justify-between w-full mb-20">
-                {!isEcogestsViewed && (
-                    <>
-                        <TypographyFormatMessage variant="h2" className="text-20 font-bold mx-auto">
-                            Les écogestes associés
-                        </TypographyFormatMessage>
-                        <Button
-                            variant="outlined"
-                            startIcon={getFilterIcon(currentViewFilter)}
-                            endIcon={<KeyboardArrowDownIcon />}
-                            onClick={handleClick}
-                            aria-label="button, filter"
-                            aria-controls={open ? 'basic-menu' : undefined}
-                            aria-haspopup="true"
-                            aria-expanded={open ? 'true' : undefined}
-                        >
-                            <TypographyFormatMessage className="font-semibold text-center">
-                                Filtrer
-                            </TypographyFormatMessage>
-                        </Button>
-                        <Menu
-                            id="basic-menu"
-                            anchorEl={anchorEl}
-                            open={open}
-                            onClose={handleClose}
-                            MenuListProps={{
-                                'aria-labelledby': 'button, filter',
-                            }}
-                            anchorOrigin={{
-                                vertical: 'bottom',
-                                horizontal: 'center',
-                            }}
-                            transformOrigin={{
-                                vertical: 'top',
-                                horizontal: 'center',
-                            }}
-                            PaperProps={{
-                                sx: {
-                                    minWidth: '12rem',
-                                },
-                            }}
-                        >
-                            <MenuList dense>
-                                <MenuItem onClick={() => handleFilterClick(EcogestViewedEnum.READ)}>
-                                    <TypographyFormatMessage>Lu</TypographyFormatMessage>
-                                </MenuItem>
-                                <MenuItem onClick={() => handleFilterClick(EcogestViewedEnum.UNREAD)}>
-                                    <TypographyFormatMessage>Non lu</TypographyFormatMessage>
-                                </MenuItem>
-                                <MenuItem onClick={() => handleFilterClick(EcogestViewedEnum.ALL)}>
-                                    <TypographyFormatMessage>Tous</TypographyFormatMessage>
-                                </MenuItem>
-                            </MenuList>
-                        </Menu>
-                    </>
+        <div className="flex flex-col w-full h-full">
+            <div className="flex gap-10 items-center mb-20">
+                {ecogestCategoryIconUrl && (
+                    <Icon
+                        aria-hidden="true"
+                        color="primary"
+                        className="w-36 h-36 sm:w-40 sm:h-40"
+                        aria-label="ecogestCategoryIcon"
+                    >
+                        <img src={ecogestCategoryIconUrl} alt={ecogestCategoryName} className="w-full" />
+                    </Icon>
                 )}
+                <TypographyFormatMessage variant="h2" className="text-17 sm:text-20 font-600">
+                    {ecogestCategoryName ?? ' '}
+                </TypographyFormatMessage>
             </div>
-            {(isEmpty(ecogestes) || isNull(ecogestes)) && !isEcogestesLoadingInProgress && (
-                <div className="flex flex-row justify-center items-start w-full h-full">
-                    <TypographyFormatMessage>Aucun écogeste n'est disponible pour le moment.</TypographyFormatMessage>
+            {isEcogestesLoadingInProgress ? (
+                <div className="flex-1 flex justify-center items-center">
+                    <EcogestesLoadingSpinner />
+                </div>
+            ) : isEmpty(ecogestes) || isNull(ecogestes) ? (
+                <div className="flex-1 flex justify-center items-center">
+                    <TypographyFormatMessage className="text-18 sm:text-20 font-400 text-grey-400">
+                        Aucun écogeste n'est disponible
+                    </TypographyFormatMessage>
+                </div>
+            ) : (
+                <div className="grid gap-16 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                    {ecogestes?.map((ecogeste: IEcogeste) => (
+                        <NewEcogesteCard
+                            key={ecogeste.id}
+                            ecogeste={ecogeste}
+                            showMoreDetails={() => {
+                                setCurrentEcogeste(ecogeste)
+                                onOpenDetailsEcogestePopup()
+                            }}
+                        />
+                    ))}
                 </div>
             )}
-            <div
-                className="flex flex-nowrap gap-5 flex-col sm:flex-row  w-full sm:flex-wrap h-full sm:h-auto"
-                aria-label="list, ecogests, cards"
-            >
-                {isEcogestesLoadingInProgress ? (
-                    <EcogestesLoadingSpinner />
-                ) : (
-                    ecogestes?.map((ecogeste: IEcogeste) => <EcogesteCard key={ecogeste.id} ecogeste={ecogeste} />)
-                )}
-            </div>
-        </>
+            {isDetailsEcogestePopupOpen && (
+                <DetailAdviceDialog
+                    isDetailAdvicePopupOpen={isDetailsEcogestePopupOpen}
+                    onCloseDetailAdvicePopup={onCloseDetailsEcogestePopup}
+                    currentEcogeste={currentEcogeste}
+                    setViewStatus={setViewStatus}
+                />
+            )}
+        </div>
     )
 }
 

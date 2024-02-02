@@ -6,7 +6,7 @@ import { Advices } from 'src/modules/Advices/Advices'
 
 describe('Advices tests', () => {
     test('renders correctly, and show the ecogest tags screen initialy', async () => {
-        const { getByLabelText, queryByLabelText, getByText } = reduxedRender(
+        const { getByText } = reduxedRender(
             <Router>
                 <Advices />
             </Router>,
@@ -20,8 +20,7 @@ describe('Advices tests', () => {
         // when clicking on the tab "Réalisés", show the realized ecogest list screen
         userEvent.click(getByText('Réalisés'))
         await waitFor(() => {
-            expect(getByLabelText('list, ecogests, cards')).toBeInTheDocument()
-            expect(queryByLabelText('button, filter')).not.toBeTruthy()
+            expect(getByText('Tous les écogestes réalisés')).toBeInTheDocument()
         })
     })
 })

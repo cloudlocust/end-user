@@ -177,6 +177,14 @@ export type IEcogesteCategoriesListProps =
  */
 export interface EcogestesProps {
     /**
+     * The name of the ecogestes category.
+     */
+    ecogestCategoryName?: string
+    /**
+     * The icon url of the ecogestes category.
+     */
+    ecogestCategoryIconUrl?: string
+    /**
      * Indicates whether to show just viewed ecogests.
      */
     isEcogestsViewed?: boolean
