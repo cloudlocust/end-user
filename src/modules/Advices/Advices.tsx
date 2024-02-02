@@ -21,13 +21,13 @@ export const Advices = () => {
             tabTitle: 'Nos conseils',
             tabSlug: 'nos-conseils',
             tabContent: <EcogestesWrapper />,
-            icon: <AdvicesIcon height={30} width={30} />,
+            icon: <AdvicesIcon height={26} width={26} />,
         },
         {
             tabTitle: 'Réalisés',
             tabSlug: 'realises',
-            tabContent: <Ecogestes isEcogestsViewed />,
-            icon: <CircleCheckIcon height={30} width={30} />,
+            tabContent: <Ecogestes ecogestCategoryName="Tous les écogestes réalisés" isEcogestsViewed />,
+            icon: <CircleCheckIcon height={26} width={26} />,
         },
     ]
 
@@ -52,7 +52,7 @@ export const Advices = () => {
             content={tabsContent}
             innerScroll
             TabsProps={{ variant: 'fullWidth' }}
-            TabProps={{ iconPosition: 'start', sx: { fontSize: 17 } }}
+            TabProps={{ iconPosition: 'start', sx: { fontSize: 15 } }}
             rootCss={{
                 height: 'auto',
                 minHeight: 'auto',
