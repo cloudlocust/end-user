@@ -219,7 +219,7 @@ export const ConsumptionChartContainer = ({
      */
     const onSwitchConsumptionButton = useCallback(
         (buttonType: SwitchConsumptionButtonTypeEnum) => {
-            setTargets(() => {
+            setTargets((prev) => {
                 switch (buttonType) {
                     case SwitchConsumptionButtonTypeEnum.Idle:
                         return isEurosButtonToggled ? eurosIdleConsumptionTargets : idleConsumptionTargets
@@ -228,7 +228,8 @@ export const ConsumptionChartContainer = ({
                     case SwitchConsumptionButtonTypeEnum.AutoconsmptionProduction:
                         return getAutoconsumptionProductionTargets()
                     default:
-                        throw new Error('Unknown buttonType')
+                        // Reset to prev when user click on the same button.
+                        return prev
                 }
             })
         },
