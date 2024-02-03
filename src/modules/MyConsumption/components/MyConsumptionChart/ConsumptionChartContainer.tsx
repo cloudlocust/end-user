@@ -22,7 +22,7 @@ import {
 import { sgeConsentFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
 import TargetMenuGroup from 'src/modules/MyConsumption/components/TargetMenuGroup'
 import CloseIcon from '@mui/icons-material/Close'
-import { SwitchIdleConsumption } from 'src/modules/MyConsumption/components/SwitchIdleConsumption'
+import { SwitchConsumptionButton } from 'src/modules/MyConsumption/components/SwitchConsumptionButton'
 import {
     eurosConsumptionTargets,
     eurosIdleConsumptionTargets,
@@ -30,6 +30,7 @@ import {
     temperatureOrPmaxTargets,
 } from 'src/modules/MyConsumption/utils/myConsumptionVariables'
 import MyConsumptionChart from 'src/modules/MyConsumption/components/MyConsumptionChart'
+import { SwitchConsumptionButtonTypeEnum } from 'src/modules/MyConsumption/components/SwitchConsumptionButton/SwitchConsumptionButton.types'
 
 /**
  * MyConsumptionChartContainer Component.
@@ -42,6 +43,7 @@ import MyConsumptionChart from 'src/modules/MyConsumption/components/MyConsumpti
  * @param props.hasMissingHousingContracts Consumption or production chart type.
  * @param props.enedisSgeConsent Consumption or production chart type.
  * @param props.isSolarProductionConsentOff Boolean indicating if solar production consent is off.
+ * @param props.setMetricsInterval Set metrics interval.
  * @returns ConsumptionChartContainer Component.
  */
 export const ConsumptionChartContainer = ({
@@ -52,6 +54,7 @@ export const ConsumptionChartContainer = ({
     hasMissingHousingContracts,
     enedisSgeConsent,
     isSolarProductionConsentOff,
+    setMetricsInterval,
 }: ConsumptionChartContainerProps) => {
     const theme = useTheme()
     const [isShowIdleConsumptionDisabledInfo, setIsShowIdleConsumptionDisabledInfo] = useState(false)
@@ -195,22 +198,41 @@ export const ConsumptionChartContainer = ({
         [isSolarProductionConsentOff, isIdleSwitchToggled],
     )
 
+    const getConsumptionTargets = useCallback(() => {
+        if (period === 'daily') setMetricsInterval('1m')
+        return isEurosButtonToggled
+            ? eurosConsumptionTargets
+            : [metricTargetsEnum.consumptionByTariffComponent, metricTargetsEnum.consumption]
+    }, [isEurosButtonToggled, period, setMetricsInterval])
+
+    const getAutoconsumptionProductionTargets = useCallback(() => {
+        if (period === 'daily') setMetricsInterval('30m')
+        return isEurosButtonToggled
+            ? eurosConsumptionTargets
+            : [metricTargetsEnum.autoconsumption, metricTargetsEnum.consumption]
+    }, [isEurosButtonToggled, period, setMetricsInterval])
+
     /**
      * Handler when switching to IdleTarget On ConsumptionSwitchButton.
      *
      * @param isIdleConsumptionToggled Indicates if the idleConsumption was selected.
      */
-    const onIdleConsumptionSwitchButton = useCallback(
-        async (isIdleConsumptionToggled: boolean) => {
-            setTargets((_prevTargets) => {
-                if (isIdleConsumptionToggled)
-                    return isEurosButtonToggled ? eurosIdleConsumptionTargets : idleConsumptionTargets
-                return isEurosButtonToggled
-                    ? eurosConsumptionTargets
-                    : getDefaultConsumptionTargets(isSolarProductionConsentOff)
+    const onSwitchConsumptionButton = useCallback(
+        (buttonType: SwitchConsumptionButtonTypeEnum) => {
+            setTargets(() => {
+                switch (buttonType) {
+                    case SwitchConsumptionButtonTypeEnum.Idle:
+                        return isEurosButtonToggled ? eurosIdleConsumptionTargets : idleConsumptionTargets
+                    case SwitchConsumptionButtonTypeEnum.Consumption:
+                        return getConsumptionTargets()
+                    case SwitchConsumptionButtonTypeEnum.AutoconsmptionProduction:
+                        return getAutoconsumptionProductionTargets()
+                    default:
+                        throw new Error('Unknown buttonType')
+                }
             })
         },
-        [isEurosButtonToggled, isSolarProductionConsentOff],
+        [getAutoconsumptionProductionTargets, getConsumptionTargets, isEurosButtonToggled],
     )
 
     return (
@@ -261,12 +283,12 @@ export const ConsumptionChartContainer = ({
                     showEurosConsumption={!isEurosButtonToggled}
                     disabled={isEurosConsumptionDisabled}
                 />
-                <SwitchIdleConsumption
-                    removeIdleTarget={() => onIdleConsumptionSwitchButton(false)}
-                    addIdleTarget={() => onIdleConsumptionSwitchButton(true)}
+                <SwitchConsumptionButton
+                    onSwitchConsumptionButton={onSwitchConsumptionButton}
                     isIdleConsumptionButtonDisabled={period === 'daily' || !isSolarProductionConsentOff}
                     onClickIdleConsumptionDisabledInfoIcon={() => setIsShowIdleConsumptionDisabledInfo(true)}
-                    isIdleConsumptionButtonSelected={isIdleSwitchToggled}
+                    period={period}
+                    isSolarProductionConsentOff={isSolarProductionConsentOff}
                 />
                 <TargetMenuGroup
                     removeTargets={() => onTemperatureOrPmaxMenuClick([])}

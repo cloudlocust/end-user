@@ -102,6 +102,7 @@ let echartsConsumptionChartContainerProps: ConsumptionChartContainerProps = {
     metricsInterval: mockMetricsInterval,
     period: mockPeriod,
     range: mockRange,
+    setMetricsInterval: jest.fn(),
 }
 
 const mockGetMetricsWithParamsValues: getMetricsWithParamsType = {
