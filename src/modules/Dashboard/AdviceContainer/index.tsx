@@ -13,6 +13,7 @@ import { DetailAdviceDialog } from 'src/modules/Dashboard/AdviceContainer/compon
 import { IEcogeste } from 'src/modules/Ecogestes/components/ecogeste'
 import { useState } from 'react'
 import { NewEcogesteCard } from 'src/modules/Ecogestes/components/NewEcogesteCard'
+import { orderListBy } from 'src/modules/utils'
 
 /**
  * @see https://stackoverflow.com/a/60403040/14005627
@@ -40,7 +41,7 @@ export const AdviceContainer = () => {
     } = useModal()
     const [currentEcogeste, setCurrentEcogeste] = useState<IEcogeste | null>(null)
 
-    const cards = ecogestes?.map((ecogeste) => (
+    const cards = orderListBy(ecogestes ?? [], (item) => item.createdAt ?? '', true).map((ecogeste) => (
         <NewEcogesteCard
             ecogeste={ecogeste}
             showMoreDetails={() => {
