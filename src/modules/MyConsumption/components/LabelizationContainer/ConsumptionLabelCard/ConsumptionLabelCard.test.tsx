@@ -1,26 +1,42 @@
 import { BrowserRouter as Router } from 'react-router-dom'
 import { reduxedRender } from 'src/common/react-platform-components/test'
 import ConsumptionLabelCard from 'src/modules/MyConsumption/components/LabelizationContainer/ConsumptionLabelCard'
-import { ConsumptionLabelDataType } from 'src/modules/MyConsumption/components/LabelizationContainer/labelizaitonTypes.d'
 
-const mockLabelData: ConsumptionLabelDataType = {
-    id: 1,
-    name: 'label test',
-    startTime: '12-12-2021T02:50:00.000Z',
-    endTime: '12-12-2021T03:50:00.000Z',
-    consumption: 10,
-    price: 2,
+jest.mock('src/modules/MyConsumption/utils/unitConversionFunction', () => ({
+    ...jest.requireActual('src/modules/MyConsumption/utils/unitConversionFunction'),
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    consumptionWattUnitConversion: (value: number) => ({ value, unit: 'kWh' }),
+}))
+
+const mockConsumptionLabelCardProp: ConsumptionLabelCardProps = {
+    equipmentName: 'Micro-onde',
+    day: '2022-11-19',
+    startTime: '02:50',
+    endTime: '04:23',
+    consumption: 54,
+    consumptionPrice: 24,
+    useType: 'Standard',
 }
+
 describe('ConsumptionLabelCard', () => {
     test('should render', () => {
         const { getByText } = reduxedRender(
             <Router>
-                <ConsumptionLabelCard labelData={mockLabelData} />
+                <ConsumptionLabelCard {...mockConsumptionLabelCardProp} />
             </Router>,
         )
 
-        expect(getByText(mockLabelData.name)).toBeInTheDocument()
-        expect(getByText('02:50')).toBeInTheDocument()
-        expect(getByText('03:50')).toBeInTheDocument()
+        expect(getByText(mockConsumptionLabelCardProp.equipmentName)).toBeInTheDocument()
+        expect(getByText('Le')).toBeInTheDocument()
+        expect(getByText(mockConsumptionLabelCardProp.day)).toBeInTheDocument()
+        expect(getByText('de')).toBeInTheDocument()
+        expect(getByText(mockConsumptionLabelCardProp.startTime)).toBeInTheDocument()
+        expect(getByText('à')).toBeInTheDocument()
+        expect(getByText(mockConsumptionLabelCardProp.endTime)).toBeInTheDocument()
+        expect(getByText(mockConsumptionLabelCardProp.consumption)).toBeInTheDocument()
+        expect(getByText('kWh')).toBeInTheDocument()
+        expect(getByText(mockConsumptionLabelCardProp.consumptionPrice)).toBeInTheDocument()
+        expect(getByText('€')).toBeInTheDocument()
+        expect(getByText(mockConsumptionLabelCardProp.useType!)).toBeInTheDocument()
     })
 })

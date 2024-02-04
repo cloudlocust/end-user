@@ -429,7 +429,7 @@ describe('MyConsumptionContainer test', () => {
             { initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[0] } } },
         )
 
-        expect(queryByText('Identifier mes appareils')).toBeInTheDocument()
+        expect(queryByText('Identifier mes activités')).toBeInTheDocument()
     })
 
     describe('TemperatureOrPmax TargetMenuGroup Test', () => {

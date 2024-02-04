@@ -1,5 +1,6 @@
 import { IEnedisSgeConsent } from 'src/modules/Consents/Consents.d'
 import { metricFiltersType, metricIntervalType, metricRangeType } from 'src/modules/Metrics/Metrics'
+import { IEquipmentMeter } from 'src/modules/MyHouse/components/Installation/InstallationType'
 
 /**
  * Consumption label data type.
@@ -14,25 +15,29 @@ export type ConsumptionLabelDataType =
          */
         id: number
         /**
-         * Label name.
+         * The label start date.
          */
-        name: string
+        startDate: string
         /**
-         * Start time.
+         * The label end date.
          */
-        startTime: string
+        endDate: string
         /**
-         * End time.
-         */
-        endTime: string
-        /**
-         * Consumption consumed in that time range.
+         * Total consumption in that time range (in kWh).
          */
         consumption: number
         /**
-         * Price consumed in that time range.
+         * Price of the total consumption in that time range.
          */
-        price: number
+        consumptionPrice: number
+        /**
+         * The type of use for the equipment.
+         */
+        useType?: string | null
+        /**
+         * The equipment associated to the label.
+         */
+        housingEquipment: IEquipmentMeter
     }
 
 /**

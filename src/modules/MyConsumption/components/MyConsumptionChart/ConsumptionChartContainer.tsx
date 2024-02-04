@@ -286,7 +286,7 @@ export const ConsumptionChartContainer = ({
                                 variant="outlined"
                                 onClick={handleClick}
                             >
-                                Identifier mes appareils
+                                Identifier mes activités
                             </Button>
                         </div>
                     )}

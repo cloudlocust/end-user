@@ -156,7 +156,7 @@ describe('MyConsumptionContainer test', () => {
             </Router>,
             { initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[0] } } },
         )
-        expect(queryAllByText('Ajouter un label')).toBeTruthy()
+        expect(queryAllByText('Ajouter une étiquette')).toBeTruthy()
     })
     test('onLoad getMetrics with isSolarProductionConsentOff false is called two times, one with default targets of autoconsumption and then all targets.', async () => {
         const { getByText } = reduxedRender(
