@@ -278,9 +278,8 @@ export const ConsumptionChartContainer = ({
             <div className="my-16 flex justify-between">
                 {period !== 'daily' ? (
                     <EurosConsumptionButtonToggler
-                        onEuroClick={() => onEurosConsumptionButtonToggle(true)}
-                        onConsumptionClick={() => onEurosConsumptionButtonToggle(false)}
-                        showEurosConsumption={!isEurosButtonToggled}
+                        onEurosConsumptionButtonToggle={onEurosConsumptionButtonToggle}
+                        isEurosButtonToggled={isEurosButtonToggled}
                     />
                 ) : (
                     <div className="w-36" />

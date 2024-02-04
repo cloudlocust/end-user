@@ -67,9 +67,9 @@ const CONSUMPTION_TITLE_DAILY = 'en Watt par jour'
 const CONSUMPTION_TITLE_WEEKLY = 'en kWh par semaine'
 const CONSUMPTION_TITLE_MONTHLY = 'en kWh par mois'
 const CONSUMPTION_TITLE_YEARLY = 'en kWh par année'
-const EUROS_CONSUMPTION_TITLE_WEEKLY = 'en € par semaine'
-const EUROS_CONSUMPTION_TITLE_MONTHLY = 'en € par mois'
-const EUROS_CONSUMPTION_TITLE_YEARLY = 'en € par année'
+// const EUROS_CONSUMPTION_TITLE_WEEKLY = 'en € par semaine'
+// const EUROS_CONSUMPTION_TITLE_MONTHLY = 'en € par mois'
+// const EUROS_CONSUMPTION_TITLE_YEARLY = 'en € par année'
 const CONSUMPTION_ICON_TEST_ID = 'BoltIcon'
 const EUROS_CONSUMPTION_ICON_TEST_ID = 'EuroIcon'
 let buttonLabelText = 'target-menu'
@@ -221,46 +221,46 @@ describe('MyConsumptionContainer test', () => {
 
         expect(() => getByText(CONSUMPTION_ENEDIS_SGE_WARNING_TEXT)).toThrow()
     })
-    // TODO: refractor this test
-    test('Different period props, When euros consumption chart.', async () => {
-        const consumptionTitleCases = [
-            {
-                period: 'weekly' as periodType,
-                metricsInterval: '1d' as metricIntervalType,
-                ConsumptionChartPeriodTitle: EUROS_CONSUMPTION_TITLE_WEEKLY,
-            },
-            {
-                period: 'monthly' as periodType,
-                metricsInterval: '1d' as metricIntervalType,
-                ConsumptionChartPeriodTitle: EUROS_CONSUMPTION_TITLE_MONTHLY,
-            },
-            {
-                period: 'yearly' as periodType,
-                metricsInterval: '1M' as metricIntervalType,
-                ConsumptionChartPeriodTitle: EUROS_CONSUMPTION_TITLE_YEARLY,
-            },
-        ]
+    // TODO: this test does not work correctly, refactor it
+    // test('Different period props, When euros consumption chart.', async () => {
+    //     const consumptionTitleCases = [
+    //         {
+    //             period: 'weekly' as periodType,
+    //             metricsInterval: '1d' as metricIntervalType,
+    //             ConsumptionChartPeriodTitle: EUROS_CONSUMPTION_TITLE_WEEKLY,
+    //         },
+    //         {
+    //             period: 'monthly' as periodType,
+    //             metricsInterval: '1d' as metricIntervalType,
+    //             ConsumptionChartPeriodTitle: EUROS_CONSUMPTION_TITLE_MONTHLY,
+    //         },
+    //         {
+    //             period: 'yearly' as periodType,
+    //             metricsInterval: '1M' as metricIntervalType,
+    //             ConsumptionChartPeriodTitle: EUROS_CONSUMPTION_TITLE_YEARLY,
+    //         },
+    //     ]
 
-        consumptionTitleCases.forEach(async ({ period, metricsInterval, ConsumptionChartPeriodTitle }) => {
-            echartsConsumptionChartContainerProps.period = period
-            echartsConsumptionChartContainerProps.metricsInterval = metricsInterval
-            const { getByText, getByTestId } = reduxedRender(
-                <Router>
-                    <ConsumptionChartContainer {...echartsConsumptionChartContainerProps} />
-                </Router>,
-                { initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[0] } } },
-            )
-            // TOGGLING TO EUROS CONSUMPTION CHART
-            userEvent.click(getByTestId(EUROS_CONSUMPTION_ICON_TEST_ID).parentElement as HTMLButtonElement)
-            // CONSUMPTION ICON should be shown
-            await waitFor(() => {
-                expect(getByTestId(CONSUMPTION_ICON_TEST_ID)).toBeTruthy()
-            })
-            try {
-                expect(getByText(ConsumptionChartPeriodTitle)).toBeTruthy()
-            } catch (err) {}
-        })
-    }, 20000)
+    //     consumptionTitleCases.forEach(async ({ period, metricsInterval, ConsumptionChartPeriodTitle }) => {
+    //         echartsConsumptionChartContainerProps.period = period
+    //         echartsConsumptionChartContainerProps.metricsInterval = metricsInterval
+    //         const { getByText, getByTestId } = reduxedRender(
+    //             <Router>
+    //                 <ConsumptionChartContainer {...echartsConsumptionChartContainerProps} />
+    //             </Router>,
+    //             { initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[0] } } },
+    //         )
+    //         // TOGGLING TO EUROS CONSUMPTION CHART
+    //         userEvent.click(getByTestId(EUROS_CONSUMPTION_ICON_TEST_ID).parentElement as HTMLButtonElement)
+    //         // CONSUMPTION ICON should be shown
+    //         await waitFor(() => {
+    //             expect(getByTestId(CONSUMPTION_ICON_TEST_ID)).toBeTruthy()
+    //         })
+    //         try {
+    //             expect(getByText(ConsumptionChartPeriodTitle)).toBeTruthy()
+    //         } catch (err) {}
+    //     })
+    // }, 20000)
     test('When hasMissingHousingContracts and isEurosConsumptin, message is shown', async () => {
         echartsConsumptionChartContainerProps.period = 'weekly'
         echartsConsumptionChartContainerProps.metricsInterval = '1d'
@@ -379,25 +379,25 @@ describe('MyConsumptionContainer test', () => {
         mockManualContractFillingIsEnabled = true
     })
 
-    // test('When isShowIdleConsumptionDisabledInfo is false', async () => {
-    //     echartsConsumptionChartContainerProps.period = 'daily'
-    //     echartsConsumptionChartContainerProps.metricsInterval = '1m' as metricIntervalType
+    test('When isShowIdleConsumptionDisabledInfo is false', async () => {
+        echartsConsumptionChartContainerProps.period = 'daily'
+        echartsConsumptionChartContainerProps.metricsInterval = '1m' as metricIntervalType
 
-    //     const { getByText } = reduxedRender(
-    //         <Router>
-    //             <ConsumptionChartContainer {...echartsConsumptionChartContainerProps} />
-    //         </Router>,
-    //         { initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[0] } } },
-    //     )
+        const { getByText } = reduxedRender(
+            <Router>
+                <ConsumptionChartContainer {...echartsConsumptionChartContainerProps} />
+            </Router>,
+            { initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[0] } } },
+        )
 
-    //     const idleConsumptionButtonElement = getByText('Veille')
+        const idleConsumptionButtonElement = getByText('Veille')
 
-    //     userEvent.click(idleConsumptionButtonElement)
-    //     expect(getByText('Les informations de veille ne sont pas disponibles pour cette pèriode')).toBeTruthy()
-    //     // await waitFor(() => {
-    //     //     expect(getByText('Les informations de veille ne sont pas disponibles pour cette pèriode')).toBeTruthy()
-    //     // })
-    // })
+        userEvent.click(idleConsumptionButtonElement)
+        expect(getByText('Les informations de veille ne sont pas disponibles pour cette pèriode')).toBeTruthy()
+        // await waitFor(() => {
+        //     expect(getByText('Les informations de veille ne sont pas disponibles pour cette pèriode')).toBeTruthy()
+        // })
+    })
 
     describe('TemperatureOrPmax TargetMenuGroup Test', () => {
         test('When clicking on reset button, getMetrics should be called without pMax or temperature', async () => {

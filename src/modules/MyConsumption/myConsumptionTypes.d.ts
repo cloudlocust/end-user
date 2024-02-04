@@ -140,21 +140,13 @@ export type EurosConsumptionButtonTogglerProps =
     // eslint-disable-next-line jsdoc/require-jsdoc
     {
         /**
-         * Handler when clicking on EuroButton.
+         * Handler when clicking on EurosConsumptionButton.
          */
-        onEuroClick: () => void
+        onEurosConsumptionButtonToggle: (isEuroToggled: boolean) => void
         /**
-         * Handler when clicking on ConsumptionButton.
+         * Indicate if euro button is toggled.
          */
-        onConsumptionClick: () => void
-        /**
-         * Indicate eurosConsumption or consumption IconButton to be shown.
-         */
-        showEurosConsumption?: boolean
-        /**
-         * Indicate if EurosConsumptionButton is disabled.
-         */
-        disabled?: boolean
+        isEurosButtonToggled?: boolean
     }
 
 /**
