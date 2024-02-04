@@ -74,6 +74,7 @@ export const AlertWidget = ({ alertPeriod, alertThreshold, currentValue }: Alert
                             percent={gaugeChartPercent}
                             hideText
                             className="gauge-chart-alert"
+                            animate={false}
                         />
                     </Box>
                 ) : (
