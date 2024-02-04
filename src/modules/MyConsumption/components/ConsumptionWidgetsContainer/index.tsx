@@ -47,19 +47,22 @@ const ConsumptionWidgetsContainer = ({
     )
 
     const widgetsToRender = useMemo<metricTargetType[]>(() => {
-        let widgetsToRender: metricTargetType[] = [metricTargetsEnum.eurosConsumption, metricTargetsEnum.pMax]
+        let widgetsToRender: metricTargetType[] = [metricTargetsEnum.eurosConsumption]
 
-        const currentTime = utcToZonedTime(new Date(), 'Europe/Paris')
-        if (
-            period === 'daily' &&
-            range.from === getDateWithoutTimezoneOffset(startOfDay(currentTime)) &&
-            range.to === getDateWithoutTimezoneOffset(endOfDay(currentTime))
-        ) {
-            widgetsToRender = [
-                ...widgetsToRender,
-                metricTargetsEnum.externalTemperature,
-                metricTargetsEnum.internalTemperature,
-            ]
+        if (period !== 'daily') {
+            widgetsToRender = [...widgetsToRender, metricTargetsEnum.pMax]
+        } else {
+            const currentTime = utcToZonedTime(new Date(), 'Europe/Paris')
+            if (
+                range.from === getDateWithoutTimezoneOffset(startOfDay(currentTime)) &&
+                range.to === getDateWithoutTimezoneOffset(endOfDay(currentTime))
+            ) {
+                widgetsToRender = [
+                    ...widgetsToRender,
+                    metricTargetsEnum.externalTemperature,
+                    metricTargetsEnum.internalTemperature,
+                ]
+            }
         }
 
         if (isProductionEnabled) {
