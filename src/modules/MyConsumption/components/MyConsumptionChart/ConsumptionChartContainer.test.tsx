@@ -296,10 +296,10 @@ describe('MyConsumptionContainer test', () => {
         })
         expect(() => getByText(HAS_MISSING_CONTRACTS_WARNING_TEXT)).toThrow()
     }, 20000)
-    test('When period is daily, EurosConsumption and pMax button should be disabled', async () => {
+    test('When period is daily, EurosConsumption and pMax buttons should not be shown', async () => {
         echartsConsumptionChartContainerProps.period = 'daily'
         echartsConsumptionChartContainerProps.metricsInterval = '1m' as metricIntervalType
-        const { getByText, getByTestId, getByLabelText, getAllByRole } = reduxedRender(
+        const { getByText, getByTestId, getByLabelText, getAllByRole, queryByText } = reduxedRender(
             <Router>
                 <ConsumptionChartContainer {...echartsConsumptionChartContainerProps} />
             </Router>,
@@ -320,19 +320,17 @@ describe('MyConsumptionContainer test', () => {
         button.click()
 
         expect(getByText('Ajouter un axe sur le graphique :')).toBeTruthy()
-        let menuItems = getAllByRole('menuitem')
-
-        expect(menuItems[3].classList.contains(buttonDisabledClassname)).toBeTruthy()
-        expect(menuItems[3]).toHaveAttribute('aria-disabled', 'true')
+        expect(getAllByRole('menuitem').length).toBe(3)
+        expect(queryByText('Pmax')).not.toBeInTheDocument()
     })
 
-    test('When period is not daily and enedisSgeConsent is not Connected, pMax button should be disabled, enedisSgeConsent warning is shown', async () => {
+    test('When period is not daily and enedisSgeConsent is not Connected, pMax button should not be shown, enedisSgeConsent warning is shown', async () => {
         echartsConsumptionChartContainerProps.period = 'weekly'
         echartsConsumptionChartContainerProps.metricsInterval = mockGetMetricsWithParamsValues.interval
         echartsConsumptionChartContainerProps.enedisSgeConsent = mockEnedisSgeConsentOff
         mockEnedisConsent = mockEnedisSgeConsentOff
 
-        const { getByText, getAllByRole, getByLabelText } = reduxedRender(
+        const { getByText, getAllByRole, getByLabelText, queryByText } = reduxedRender(
             <Router>
                 <ConsumptionChartContainer {...echartsConsumptionChartContainerProps} />
             </Router>,
@@ -346,10 +344,9 @@ describe('MyConsumptionContainer test', () => {
         button.click()
 
         expect(getByText('Ajouter un axe sur le graphique :')).toBeTruthy()
-        let menuItems = getAllByRole('menuitem')
+        expect(getAllByRole('menuitem').length).toBe(3)
+        expect(queryByText('Pmax')).not.toBeInTheDocument()
 
-        expect(menuItems[3].classList.contains('Mui-disabled')).toBeTruthy()
-        expect(menuItems[3]).toHaveAttribute('aria-disabled', 'true')
         expect(getByText(CONSUMPTION_ENEDIS_SGE_WARNING_TEXT)).toBeTruthy()
     })
 
