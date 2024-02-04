@@ -127,8 +127,6 @@ export const ConsumptionChartContainer = ({
         return 'reset'
     }, [targets])
 
-    const isEurosConsumptionDisabled = !isEurosButtonToggled && period === 'daily'
-
     const getMetrics = useCallback(async () => {
         if (isMetricRequestNotAllowed) return
         setIsShowIdleConsumptionDisabledInfo(false)
@@ -278,12 +276,15 @@ export const ConsumptionChartContainer = ({
             )}
 
             <div className="my-16 flex justify-between">
-                <EurosConsumptionButtonToggler
-                    onEuroClick={() => onEurosConsumptionButtonToggle(true)}
-                    onConsumptionClick={() => onEurosConsumptionButtonToggle(false)}
-                    showEurosConsumption={!isEurosButtonToggled}
-                    disabled={isEurosConsumptionDisabled}
-                />
+                {period !== 'daily' ? (
+                    <EurosConsumptionButtonToggler
+                        onEuroClick={() => onEurosConsumptionButtonToggle(true)}
+                        onConsumptionClick={() => onEurosConsumptionButtonToggle(false)}
+                        showEurosConsumption={!isEurosButtonToggled}
+                    />
+                ) : (
+                    <div className="w-36" />
+                )}
                 <SwitchConsumptionButton
                     onSwitchConsumptionButton={onSwitchConsumptionButton}
                     isIdleConsumptionButtonDisabled={period === 'daily' || !isSolarProductionConsentOff}
