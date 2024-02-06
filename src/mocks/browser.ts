@@ -25,6 +25,7 @@ import { ecogestesEndpoints } from './handlers/ecogestes'
 import { novuALertPreferencesEndpoints } from 'src/mocks/handlers/novuAlertPreferences'
 import { connectedPlugsEndpoints } from 'src/mocks/handlers/connectedPlugs'
 import { accessRightsEndpoints } from './handlers/accessRights'
+import { activitiesEndpoints } from './handlers/labelization'
 
 /**
  * Handlers to mock urls for tests.
@@ -66,6 +67,8 @@ export const handlers = [
     ...connectedPlugsEndpoints,
     /****** Access rights endpiont. */
     ...accessRightsEndpoints,
+    /****** Activities endpiont. */
+    ...activitiesEndpoints,
 ]
 
 /**

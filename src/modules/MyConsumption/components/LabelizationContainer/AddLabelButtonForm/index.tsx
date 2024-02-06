@@ -25,7 +25,7 @@ import CircularProgress from '@mui/material/CircularProgress'
  * @param root0.inputPeriodTime Input Period Time.
  * @param root0.setInputPeriodTime Set the input period time.
  * @param root0.equipments The equipments list.
- * @param root0.loadingEquipmentsInProgress Whether the equipments are loading.
+ * @param root0.addingLabelsIsDisabled Weather the creation of labels is disabled.
  * @param root0.addNewLabel Function to add a new label.
  * @returns JSX Element.
  */
@@ -34,7 +34,7 @@ const AddLabelButtonForm = ({
     inputPeriodTime,
     setInputPeriodTime,
     equipments,
-    loadingEquipmentsInProgress,
+    addingLabelsIsDisabled,
     addNewLabel,
 }: AddLabelButtonFormProps) => {
     const theme = useTheme()
@@ -47,7 +47,7 @@ const AddLabelButtonForm = ({
      *  Handle the click on the button.
      */
     const handleBrushSelection = () => {
-        if (!chartRef.current || loadingEquipmentsInProgress) return
+        if (!chartRef.current || addingLabelsIsDisabled) return
         if (isSelectLabelActive) {
             setIsSelectLabelActive(false)
             // To Desactivate the cursor
@@ -209,7 +209,7 @@ const AddLabelButtonForm = ({
                     </>
                 )}
                 <ButtonLoader
-                    inProgress={loadingEquipmentsInProgress}
+                    inProgress={addingLabelsIsDisabled}
                     className="whitespace-nowrap hidden sm:block w-full md:w-auto"
                     variant="contained"
                     color="primary"
@@ -225,19 +225,17 @@ const AddLabelButtonForm = ({
                     sx={{
                         height: '38.7px',
                         width: '38.7px',
-                        backgroundColor: loadingEquipmentsInProgress
-                            ? theme.palette.grey[300]
-                            : theme.palette.primary.main,
+                        backgroundColor: addingLabelsIsDisabled ? theme.palette.grey[300] : theme.palette.primary.main,
                         '&:hover': {
-                            backgroundColor: loadingEquipmentsInProgress
+                            backgroundColor: addingLabelsIsDisabled
                                 ? theme.palette.grey[300]
                                 : theme.palette.primary.main,
                         },
-                        color: loadingEquipmentsInProgress ? theme.palette.grey[500] : 'white',
+                        color: addingLabelsIsDisabled ? theme.palette.grey[500] : 'white',
                     }}
                     onClick={() => handleBrushSelection()}
                 >
-                    {loadingEquipmentsInProgress ? (
+                    {addingLabelsIsDisabled ? (
                         <CircularProgress size={14} color="inherit" />
                     ) : isSelectLabelActive ? (
                         <ClearIcon sx={{ color: 'white' }} />

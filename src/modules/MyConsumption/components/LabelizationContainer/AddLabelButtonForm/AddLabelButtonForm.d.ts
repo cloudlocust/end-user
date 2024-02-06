@@ -34,9 +34,9 @@ interface AddLabelButtonFormProps {
         name: string
     }[]
     /**
-     * Whether the equipments are loading.
+     * Weather the creation of labels is disabled.
      */
-    loadingEquipmentsInProgress: boolean
+    addingLabelsIsDisabled: boolean
     /**
      * Function to add a new label.
      */

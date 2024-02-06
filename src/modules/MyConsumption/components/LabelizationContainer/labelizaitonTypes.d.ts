@@ -23,7 +23,7 @@ export type ConsumptionLabelDataType =
          */
         endDate: string
         /**
-         * Total consumption in that time range (in kWh).
+         * Total consumption in that time range (in Wh).
          */
         consumption: number
         /**
@@ -73,3 +73,34 @@ export type SimplifiedConsumptionChartContainerPropsType =
          */
         setRange: (range: metricRangeType) => void
     }
+
+/**
+ * Type of the body object to be passed when with the post request to add an activity.
+ */
+// eslint-disable-next-line jsdoc/require-jsdoc
+export type addActivityRequestBodyType = {
+    /**
+     * The label start date.
+     */
+    startDate: string
+    /**
+     * The label end date.
+     */
+    endDate: string
+    /**
+     * Total consumption in that time range (in Wh).
+     */
+    consumption: number
+    /**
+     * Price of the total consumption in that time range.
+     */
+    consumptionPrice: number
+    /**
+     * The type of use for the equipment.
+     */
+    useType: string | null
+    /**
+     * The id of the housing equipment associated to the label.
+     */
+    housingEquipmentId: number
+}

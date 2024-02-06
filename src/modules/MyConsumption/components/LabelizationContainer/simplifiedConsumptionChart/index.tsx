@@ -11,16 +11,14 @@ import { RootState } from 'src/redux'
 import MyConsumptionDatePicker from 'src/modules/MyConsumption/components/MyConsumptionDatePicker'
 import ConsumptionLabelCard from 'src/modules/MyConsumption/components/LabelizationContainer/ConsumptionLabelCard'
 import { mappingEquipmentNameToType, myEquipmentOptions } from 'src/modules/MyHouse/utils/MyHouseVariables'
-import {
-    ConsumptionLabelDataType,
-    SimplifiedConsumptionChartContainerPropsType,
-} from 'src/modules/MyConsumption/components/LabelizationContainer/labelizaitonTypes.d'
+import { SimplifiedConsumptionChartContainerPropsType } from 'src/modules/MyConsumption/components/LabelizationContainer/labelizaitonTypes.d'
 import { IPeriodTime } from 'src/modules/MyConsumption/components/MyConsumptionChart/MyConsumptionChartTypes.d'
 import ReactECharts from 'echarts-for-react'
 import AddLabelButtonForm from 'src/modules/MyConsumption/components/LabelizationContainer/AddLabelButtonForm'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import { useEquipmentList } from 'src/modules/MyHouse/components/Installation/installationHook'
 import { equipmentNameType } from 'src/modules/MyHouse/components/Installation/InstallationType'
+import { useLabelization } from 'src/modules/MyConsumption/components/LabelizationContainer/labelizationHook'
 
 /**
  * MyConsumptionChartContainer Component.
@@ -57,6 +55,14 @@ const SimplifiedConsumptionChartContainer = ({
     })
 
     const { currentHousing } = useSelector(({ housingModel }: RootState) => housingModel)
+    const { isGetActivitiesLoading, activitiesList, isAddActivityLoading, getActivitiesList } = useLabelization(
+        currentHousing?.id,
+    )
+
+    useEffect(() => {
+        getActivitiesList()
+    }, [getActivitiesList])
+
     const { housingEquipmentsList, loadingEquipmentInProgress } = useEquipmentList(currentHousing?.id)
 
     const [consumptionChartData, setConsumptionChartData] = useState<IMetric[]>(data)
@@ -92,7 +98,7 @@ const SimplifiedConsumptionChartContainer = ({
     }, [data, targets])
 
     const [consumptionLabelCardsData, setConsumptionLabelCardsData] = useState<ConsumptionLabelCardProps[]>([])
-    const [selectedLabelData, setSelectedLabelData] = useState<ConsumptionLabelCardProps | undefined>(undefined)
+    // const [selectedLabelData, setSelectedLabelData] = useState<ConsumptionLabelCardProps | undefined>(undefined)
     const [selectedCardIndex, setSelectedCardIndex] = useState<number | null>(null)
     const [selectedPeriod, setSelectedPeriod] = useState<IPeriodTime>({ startTime: undefined, endTime: undefined })
     const [inputPeriodTime, setInputPeriodTime] = useState<IPeriodTime>({ startTime: undefined, endTime: undefined })
@@ -105,179 +111,45 @@ const SimplifiedConsumptionChartContainer = ({
     const handleCardClick = (cardIndex: number, labelData: ConsumptionLabelCardProps) => {
         if (cardIndex === selectedCardIndex) {
             setSelectedCardIndex(null)
-            setSelectedLabelData(undefined)
+            // setSelectedLabelData(undefined)
+            setSelectedPeriod({ startTime: undefined, endTime: undefined })
         } else {
             setSelectedCardIndex(cardIndex)
-            setSelectedLabelData({ ...labelData })
+            // setSelectedLabelData({ ...labelData })
+            setSelectedPeriod({ startTime: labelData.startTime, endTime: labelData.endTime })
         }
     }
 
     useEffect(() => {
-        const startTime = selectedLabelData?.startTime
-        const endTime = selectedLabelData?.endTime
-        setSelectedPeriod({ startTime, endTime })
-    }, [selectedLabelData])
-
-    useEffect(() => {
-        const RANDOM_DATE = '2022-11-19'
-        const labelsDataExample: ConsumptionLabelDataType[] = [
-            {
-                id: 1,
-                startDate: `${RANDOM_DATE}T08:00:00.000Z`,
-                endDate: `${RANDOM_DATE}T09:00:00.000Z`,
-                consumption: 2,
-                consumptionPrice: 3,
-                useType: 'standard',
-                housingEquipment: {
-                    equipmentId: 6,
-                    equipmentType: 'electricity',
-                    equipmentNumber: 1,
-                    id: 93,
-                    equipment: {
-                        id: 6,
-                        name: 'microwave',
-                        allowedType: ['electricity'],
-                        customerId: null,
-                        measurementDuration: '2m',
-                        measurementModes: ['Standard', 'Grill'],
-                    },
-                },
-            },
-            {
-                id: 2,
-                startDate: `${RANDOM_DATE}T10:00:00.000Z`,
-                endDate: `${RANDOM_DATE}T11:00:00.000Z`,
-                consumption: 5,
-                consumptionPrice: 13,
-                useType: null,
-                housingEquipment: {
-                    equipmentId: 7,
-                    equipmentType: 'electricity',
-                    equipmentNumber: 1,
-                    id: 177,
-                    equipment: {
-                        id: 7,
-                        name: 'fridge',
-                        allowedType: ['electricity'],
-                        customerId: null,
-                        measurementDuration: null,
-                        measurementModes: null,
-                    },
-                },
-            },
-            {
-                id: 3,
-                startDate: `${RANDOM_DATE}T08:00:00.000Z`,
-                endDate: `${RANDOM_DATE}T09:00:00.000Z`,
-                consumption: 2,
-                consumptionPrice: 3,
-                useType: 'Hello world !!!',
-                housingEquipment: {
-                    equipmentId: 6,
-                    equipmentType: 'electricity',
-                    equipmentNumber: 1,
-                    id: 93,
-                    equipment: {
-                        id: 6,
-                        name: 'microwave',
-                        allowedType: ['electricity'],
-                        customerId: null,
-                        measurementDuration: '2m',
-                        measurementModes: ['Standard', 'Grill'],
-                    },
-                },
-            },
-            {
-                id: 4,
-                startDate: `${RANDOM_DATE}T10:00:00.000Z`,
-                endDate: `${RANDOM_DATE}T11:00:00.000Z`,
-                consumption: 5,
-                consumptionPrice: 13,
-                useType: null,
-                housingEquipment: {
-                    equipmentId: 7,
-                    equipmentType: 'electricity',
-                    equipmentNumber: 1,
-                    id: 177,
-                    equipment: {
-                        id: 7,
-                        name: 'fridge',
-                        allowedType: ['electricity'],
-                        customerId: null,
-                        measurementDuration: null,
-                        measurementModes: null,
-                    },
-                },
-            },
-            {
-                id: 5,
-                startDate: `${RANDOM_DATE}T08:00:00.000Z`,
-                endDate: `${RANDOM_DATE}T09:00:00.000Z`,
-                consumption: 2,
-                consumptionPrice: 3,
-                useType: 'This is an example for the use type of a label',
-                housingEquipment: {
-                    equipmentId: 6,
-                    equipmentType: 'electricity',
-                    equipmentNumber: 1,
-                    id: 93,
-                    equipment: {
-                        id: 6,
-                        name: 'microwave',
-                        allowedType: ['electricity'],
-                        customerId: null,
-                        measurementDuration: '2m',
-                        measurementModes: ['Standard', 'Grill'],
-                    },
-                },
-            },
-            {
-                id: 6,
-                startDate: `${RANDOM_DATE}T10:00:00.000Z`,
-                endDate: `${RANDOM_DATE}T11:00:00.000Z`,
-                consumption: 5,
-                consumptionPrice: 13,
-                useType: null,
-                housingEquipment: {
-                    equipmentId: 7,
-                    equipmentType: 'electricity',
-                    equipmentNumber: 1,
-                    id: 177,
-                    equipment: {
-                        id: 7,
-                        name: 'fridge',
-                        allowedType: ['electricity'],
-                        customerId: null,
-                        measurementDuration: null,
-                        measurementModes: null,
-                    },
-                },
-            },
-        ]
-
-        setConsumptionLabelCardsData(
-            labelsDataExample.map((labelData) => {
-                const [hourStartTime, minutStartTime] = labelData.startDate
-                    .split('T')[1]
-                    .split('.')[0]
-                    .split(':')
-                    .slice(0, 2)
-                const [hourEndTime, minutEndTime] = labelData.endDate.split('T')[1].split('.')[0].split(':').slice(0, 2)
-
-                return {
-                    equipmentName:
-                        myEquipmentOptions.find((option) => option.name === labelData.housingEquipment.equipment.name)
-                            ?.labelTitle || labelData.housingEquipment.equipment.name,
-                    day: labelData.startDate.split('T')[0],
-                    startTime: `${hourStartTime}:${minutStartTime}`,
-                    endTime: `${hourEndTime}:${minutEndTime}`,
-                    consumption: labelData.consumption,
-                    consumptionPrice: labelData.consumptionPrice,
-                    useType: labelData.useType,
-                }
-            }),
-        )
-    }, [])
+        if (!isGetActivitiesLoading && activitiesList) {
+            setConsumptionLabelCardsData(
+                activitiesList.map((activity) => {
+                    const [hourStartTime, minutStartTime] = activity.startDate
+                        .split('T')[1]
+                        .split('.')[0]
+                        .split(':')
+                        .slice(0, 2)
+                    const [hourEndTime, minutEndTime] = activity.endDate
+                        .split('T')[1]
+                        .split('.')[0]
+                        .split(':')
+                        .slice(0, 2)
+                    return {
+                        equipmentName:
+                            myEquipmentOptions.find(
+                                (option) => option.name === activity.housingEquipment.equipment.name,
+                            )?.labelTitle || activity.housingEquipment.equipment.name,
+                        day: activity.startDate.split('T')[0],
+                        startTime: `${hourStartTime}:${minutStartTime}`,
+                        endTime: `${hourEndTime}:${minutEndTime}`,
+                        consumption: activity.consumption,
+                        consumptionPrice: activity.consumptionPrice,
+                        useType: activity.useType,
+                    }
+                }),
+            )
+        }
+    }, [activitiesList, isGetActivitiesLoading])
 
     return (
         <div className="flex flex-col justify-center my-20">
@@ -312,7 +184,7 @@ const SimplifiedConsumptionChartContainer = ({
                             }
                         }) ?? []
                 }
-                loadingEquipmentsInProgress={loadingEquipmentInProgress}
+                addingLabelsIsDisabled={loadingEquipmentInProgress || isAddActivityLoading}
                 addNewLabel={() => {}}
             />
             <div>
@@ -338,19 +210,28 @@ const SimplifiedConsumptionChartContainer = ({
                             <TypographyFormatMessage variant="h2" fontSize="25px" fontWeight="500">
                                 Mes étiquettes
                             </TypographyFormatMessage>
-                            <div className="grid gap-16 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 mt-24">
-                                {consumptionLabelCardsData.map((labelData, index) => (
-                                    <div
-                                        key={index}
-                                        className={`cursor-pointer transition-transform transform ${
-                                            selectedCardIndex === index ? 'scale-105' : 'scale-100'
-                                        }`}
-                                        onClick={() => handleCardClick(index, labelData)}
-                                    >
-                                        <ConsumptionLabelCard {...labelData} />
-                                    </div>
-                                ))}
-                            </div>
+                            {isGetActivitiesLoading ? (
+                                <div
+                                    className="flex h-full w-full flex-col items-center justify-center"
+                                    style={{ height: '320px' }}
+                                >
+                                    <CircularProgress style={{ color: theme.palette.primary.main }} />
+                                </div>
+                            ) : (
+                                <div className="grid gap-16 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 mt-24">
+                                    {consumptionLabelCardsData.map((labelData, index) => (
+                                        <div
+                                            key={index}
+                                            className={`cursor-pointer transition-transform transform ${
+                                                selectedCardIndex === index ? 'scale-105' : 'scale-100'
+                                            }`}
+                                            onClick={() => handleCardClick(index, labelData)}
+                                        >
+                                            <ConsumptionLabelCard {...labelData} />
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
                         </div>
                     </>
                 )}
