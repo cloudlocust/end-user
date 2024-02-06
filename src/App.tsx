@@ -18,8 +18,12 @@ import { isMaintenanceMode } from 'src/configs'
 import { Maintenance } from 'src/modules/Maintenance/Maintenance'
 import { URL_MAINTENANCE } from 'src/modules/Maintenance/MaintenanceConfig'
 import { getTokenFromFirebase } from 'src/firebase'
-import { isEnergyProviderSubscriptionForm } from './modules/User/EnergyProviderSubscription/EnergyProviderSubscriptionConfig'
-import PdlVerificationForm from './modules/User/EnergyProviderSubscription/PdlVerificationForm'
+import {
+    URL_ALPIQ_SUBSCRIPTION_FORM,
+    isAlpiqSubscriptionForm,
+} from 'src/modules/User/AlpiqSubscription/AlpiqSubscriptionConfig'
+import { useConsents } from 'src/modules/Consents/consentsHook'
+import AlpiqSubscriptionStepper from './modules/User/AlpiqSubscription/AlpiqSubscriptionStepper'
 
 const Root = styled('div')(({ theme }) => ({
     '& #fuse-main': {
@@ -85,6 +89,23 @@ const Routes = () => {
     const history = useHistory()
     const { user } = useSelector(({ userModel }: RootState) => userModel)
     const { updateLastVisitTime } = useLastVisit(dayjs().toISOString())
+    const { currentHousing } = useSelector(({ housingModel }: RootState) => housingModel)
+    const { enedisSgeConsent, getConsents } = useConsents()
+    const isInitialMount = useRef(true)
+    const isApplicationBlocked = useRef(false)
+
+    useEffect(() => {
+        if (isInitialMount.current && currentHousing?.id) {
+            isInitialMount.current = false
+            getConsents(currentHousing?.id)
+        }
+    }, [getConsents, currentHousing])
+
+    useEffect(() => {
+        if (isAlpiqSubscriptionForm && enedisSgeConsent?.enedisSgeConsentState !== 'CONNECTED') {
+            isApplicationBlocked.current = true
+        }
+    }, [enedisSgeConsent])
 
     useEffect(() => {
         /**
@@ -115,10 +136,17 @@ const Routes = () => {
         }
     }, [history, location])
 
+    if (!isMaintenanceMode && location.pathname !== URL_ALPIQ_SUBSCRIPTION_FORM && isApplicationBlocked.current) {
+        return (
+            <ThemingProvider>
+                <AlpiqSubscriptionStepper />
+            </ThemingProvider>
+        )
+    }
+
     return (
         <Switch>
             {routesConfig.map((route, index) => {
-                console.log('route', route)
                 return (
                     <Route
                         key={index}
@@ -135,23 +163,19 @@ const Routes = () => {
                                         {/* Note: If you're using Material UI ThemeProvider, make sure ConfirmProvider is a child of it. */}
                                         <ConfirmProvider>
                                             <Root>
-                                                {isEnergyProviderSubscriptionForm ? (
-                                                        <PdlVerificationForm />
-                                                ) : (
-                                                    <Layout1
-                                                        navbarContent={navbarContent}
-                                                        displayToolbar={route.settings?.layout?.toolbar?.display}
-                                                        displayNavbar={route.settings?.layout?.navbar?.display}
-                                                        toolbarContent={<ToolbarContent />}
-                                                        toolbarIcon={<ToolbarIcon />}
-                                                    >
-                                                        {isMaintenanceMode ? (
-                                                            <Maintenance />
-                                                        ) : (
-                                                            <route.component {...route.props} />
-                                                        )}
-                                                    </Layout1>
-                                                )}
+                                                <Layout1
+                                                    navbarContent={navbarContent}
+                                                    displayToolbar={route.settings?.layout?.toolbar?.display}
+                                                    displayNavbar={route.settings?.layout?.navbar?.display}
+                                                    toolbarContent={<ToolbarContent />}
+                                                    toolbarIcon={<ToolbarIcon />}
+                                                >
+                                                    {isMaintenanceMode ? (
+                                                        <Maintenance />
+                                                    ) : (
+                                                        <route.component {...route.props} />
+                                                    )}
+                                                </Layout1>
                                             </Root>
                                         </ConfirmProvider>
                                     </ThemingProvider>
