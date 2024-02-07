@@ -16,11 +16,11 @@ export const consumptionChartClassName = 'consumption-chart-classname'
  *
  * @param props N/A.
  * @param props.data Data received from backend of format IMetric[].
- * @param props.isSolarProductionConsentOff Boolean indicating if solar production consent is off.
+ * @param props.switchButtonType Boolean indicating if solar production consent is off.
  * @param props.period Period Type.
  * @returns MyConsumptionChart Component.
  */
-const MyConsumptionChart = ({ data, isSolarProductionConsentOff, period }: ConsumptionChartProps) => {
+const MyConsumptionChart = ({ data, switchButtonType, period }: ConsumptionChartProps) => {
     const theme = useTheme()
 
     const { timestamps, values } = useMemo(() => {
@@ -31,15 +31,8 @@ const MyConsumptionChart = ({ data, isSolarProductionConsentOff, period }: Consu
 
     // EchartsConsumptionChart Option.
     const option = useMemo(() => {
-        return getEchartsConsumptionChartOptions(
-            timestamps,
-            values,
-            theme,
-            isSolarProductionConsentOff,
-            isMobile,
-            period,
-        )
-    }, [timestamps, values, theme, isSolarProductionConsentOff, isMobile, period])
+        return getEchartsConsumptionChartOptions(timestamps, values, theme, switchButtonType, isMobile, period)
+    }, [timestamps, values, theme, switchButtonType, isMobile, period])
 
     return (
         <>

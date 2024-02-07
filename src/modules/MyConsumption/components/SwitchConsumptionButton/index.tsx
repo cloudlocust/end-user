@@ -1,4 +1,4 @@
-import { MouseEvent, useState } from 'react'
+import { MouseEvent } from 'react'
 import { ToggleButtonGroup, ToggleButton, capitalize } from '@mui/material'
 import { linksColor, warningMainHashColor } from 'src/modules/utils/muiThemeVariables'
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline'
@@ -33,16 +33,14 @@ const switchButtons: SwitchConsumpytionButtonType = [
  */
 export const SwitchConsumptionButton = (props: SwitchConsumptionButtonProps): JSX.Element => {
     const {
-        onSwitchConsumptionButton,
         isIdleConsumptionButtonDisabled,
         onClickIdleConsumptionDisabledInfoIcon,
         period,
         isSolarProductionConsentOff,
+        consumptionToggleButton,
+        setConsumptionToggleButton,
+        onSwitchConsumptionButton,
     } = props
-
-    const [buttonType, setButtonType] = useState<SwitchConsumptionButtonTypeEnum>(
-        SwitchConsumptionButtonTypeEnum.Consumption,
-    )
 
     /**
      * Function handling switch of idleConsumptionButton.
@@ -56,7 +54,7 @@ export const SwitchConsumptionButton = (props: SwitchConsumptionButtonProps): JS
             return
         }
         onSwitchConsumptionButton(value)
-        setButtonType(value)
+        setConsumptionToggleButton(value)
     }
 
     /**
@@ -94,7 +92,7 @@ export const SwitchConsumptionButton = (props: SwitchConsumptionButtonProps): JS
                 color="secondary"
                 exclusive
                 size="small"
-                value={buttonType}
+                value={consumptionToggleButton}
                 onChange={onChange}
                 aria-label="toggle-consumption-button-group"
             >

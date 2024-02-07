@@ -68,12 +68,6 @@ export type SwitchConsumpytionButtonType =
  */
 export interface SwitchConsumptionButtonProps {
     /**
-     *
-     * @param switchConsumptionButtonTypeEnum SwitchConsumptionButtonTypeEnum.
-     * @returns Void.
-     */
-    onSwitchConsumptionButton: (switchConsumptionButtonTypeEnum: SwitchConsumptionButtonTypeEnum) => void
-    /**
      * Indicate if IdleConsumptionTogglButton is disabled.
      */
     isIdleConsumptionButtonDisabled?: boolean
@@ -89,4 +83,19 @@ export interface SwitchConsumptionButtonProps {
      *
      */
     isSolarProductionConsentOff: boolean
+    /**
+     * Switch consumption button type.
+     */
+    consumptionToggleButton: SwitchConsumptionButtonTypeEnum
+    /**
+     *
+     */
+    setConsumptionToggleButton: (value: SwitchConsumptionButtonTypeEnum) => void
+    /**
+     * Handle the click event on the switch consumption button.
+     *
+     * @param buttonType Indicates which button is currently active.
+     * @returns
+     */
+    onSwitchConsumptionButton: (buttonType: SwitchConsumptionButtonTypeEnum) => void
 }
