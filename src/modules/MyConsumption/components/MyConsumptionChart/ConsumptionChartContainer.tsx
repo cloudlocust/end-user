@@ -6,7 +6,6 @@ import { useMetrics } from 'src/modules/Metrics/metricsHook'
 import { IMetric, metricTargetsEnum, metricTargetType } from 'src/modules/Metrics/Metrics.d'
 import { ConsumptionChartContainerProps } from 'src/modules/MyConsumption/components/MyConsumptionChart/MyConsumptionChartTypes.d'
 import CircularProgress from '@mui/material/CircularProgress'
-import Box from '@mui/material/Box'
 import EurosConsumptionButtonToggler from 'src/modules/MyConsumption/components/EurosConsumptionButtonToggler'
 import {
     getTotalOffIdleConsumptionData,
@@ -21,7 +20,6 @@ import {
 } from 'src/modules/MyConsumption/components/MyConsumptionChart/ConsumptionChartWarnings'
 import { sgeConsentFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
 import TargetMenuGroup from 'src/modules/MyConsumption/components/TargetMenuGroup'
-import CloseIcon from '@mui/icons-material/Close'
 import { SwitchConsumptionButton } from 'src/modules/MyConsumption/components/SwitchConsumptionButton'
 import {
     eurosConsumptionTargets,
@@ -57,10 +55,11 @@ export const ConsumptionChartContainer = ({
     setMetricsInterval,
 }: ConsumptionChartContainerProps) => {
     const theme = useTheme()
-    const [isShowIdleConsumptionDisabledInfo, setIsShowIdleConsumptionDisabledInfo] = useState(false)
 
     // Handling the targets makes it simpler instead of the useMetrics as it's a straightforward array of metricTargetType
     const [targets, setTargets] = useState<metricTargetType[]>([])
+    const isIdleShown = period !== 'daily' && isSolarProductionConsentOff
+    const isAutoConsumptionProductionShown = period === 'daily' && !isSolarProductionConsentOff
 
     // When solar production consent is off, the default targets should be different.
     useEffect(() => {
@@ -129,7 +128,6 @@ export const ConsumptionChartContainer = ({
 
     const getMetrics = useCallback(async () => {
         if (isMetricRequestNotAllowed) return
-        setIsShowIdleConsumptionDisabledInfo(false)
         await getMetricsWithParams({ interval: metricsInterval, range, targets, filters })
     }, [getMetricsWithParams, metricsInterval, range, targets, filters, isMetricRequestNotAllowed])
 
@@ -256,25 +254,6 @@ export const ConsumptionChartContainer = ({
                 </motion.div>
             </div>
 
-            {/* SwitchIdleConsumption Info Text*/}
-            {isShowIdleConsumptionDisabledInfo && (
-                <Box
-                    className="flex items-center justify-between text-13 md:text-16 w-full p-16 my-16"
-                    sx={{ backgroundColor: 'primary.main', color: 'primary.contrastText' }}
-                >
-                    <TypographyFormatMessage
-                        sx={{
-                            flexGrow: 1,
-                            display: 'flex',
-                            justifyContent: 'center',
-                        }}
-                    >
-                        Les informations de veille ne sont pas disponibles pour cette pèriode
-                    </TypographyFormatMessage>
-                    <CloseIcon className="cursor-pointer" onClick={() => setIsShowIdleConsumptionDisabledInfo(false)} />
-                </Box>
-            )}
-
             <div className="my-16 flex justify-between">
                 {period !== 'daily' ? (
                     <EurosConsumptionButtonToggler
@@ -284,13 +263,13 @@ export const ConsumptionChartContainer = ({
                 ) : (
                     <div className="w-36" />
                 )}
-                <SwitchConsumptionButton
-                    onSwitchConsumptionButton={onSwitchConsumptionButton}
-                    isIdleConsumptionButtonDisabled={period === 'daily' || !isSolarProductionConsentOff}
-                    onClickIdleConsumptionDisabledInfoIcon={() => setIsShowIdleConsumptionDisabledInfo(true)}
-                    period={period}
-                    isSolarProductionConsentOff={isSolarProductionConsentOff}
-                />
+                {(isIdleShown || isAutoConsumptionProductionShown) && (
+                    <SwitchConsumptionButton
+                        onSwitchConsumptionButton={onSwitchConsumptionButton}
+                        isIdleShown={isIdleShown}
+                        isAutoConsumptionProductionShown={isAutoConsumptionProductionShown}
+                    />
+                )}
                 <TargetMenuGroup
                     removeTargets={() => onTemperatureOrPmaxMenuClick([])}
                     addTargets={onTemperatureOrPmaxMenuClick}

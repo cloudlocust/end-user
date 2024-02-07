@@ -1,5 +1,3 @@
-import { periodType } from 'src/modules/MyConsumption/myConsumptionTypes.d'
-
 /**
  * Enum representing the types of switch consumption buttons.
  */
@@ -74,19 +72,11 @@ export interface SwitchConsumptionButtonProps {
      */
     onSwitchConsumptionButton: (switchConsumptionButtonTypeEnum: SwitchConsumptionButtonTypeEnum) => void
     /**
-     * Indicate if IdleConsumptionTogglButton is disabled.
+     *
      */
-    isIdleConsumptionButtonDisabled?: boolean
-    /**
-     * Callback when clicking the infoIcon on disabled idleConsumption button.
-     */
-    onClickIdleConsumptionDisabledInfoIcon: () => void
+    isIdleShown: boolean
     /**
      *
      */
-    period: periodType
-    /**
-     *
-     */
-    isSolarProductionConsentOff: boolean
+    isAutoConsumptionProductionShown: boolean
 }
