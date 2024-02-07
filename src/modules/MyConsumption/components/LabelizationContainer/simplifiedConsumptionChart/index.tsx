@@ -8,10 +8,15 @@ import { filterMetricsData, getDefaultConsumptionTargets } from 'src/modules/MyC
 import { useMetrics } from 'src/modules/Metrics/metricsHook'
 import { useSelector } from 'react-redux'
 import { RootState } from 'src/redux'
+import { Form } from 'src/common/react-platform-components'
 import MyConsumptionDatePicker from 'src/modules/MyConsumption/components/MyConsumptionDatePicker'
 import ConsumptionLabelCard from 'src/modules/MyConsumption/components/LabelizationContainer/ConsumptionLabelCard'
 import { mappingEquipmentNameToType, myEquipmentOptions } from 'src/modules/MyHouse/utils/MyHouseVariables'
-import { SimplifiedConsumptionChartContainerPropsType } from 'src/modules/MyConsumption/components/LabelizationContainer/labelizaitonTypes.d'
+import {
+    SimplifiedConsumptionChartContainerPropsType,
+    addActivityFormFieldsType,
+    addActivityRequestBodyType,
+} from 'src/modules/MyConsumption/components/LabelizationContainer/labelizaitonTypes.d'
 import { IPeriodTime } from 'src/modules/MyConsumption/components/MyConsumptionChart/MyConsumptionChartTypes.d'
 import ReactECharts from 'echarts-for-react'
 import AddLabelButtonForm from 'src/modules/MyConsumption/components/LabelizationContainer/AddLabelButtonForm'
@@ -19,6 +24,9 @@ import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyForm
 import { useEquipmentList } from 'src/modules/MyHouse/components/Installation/installationHook'
 import { equipmentNameType } from 'src/modules/MyHouse/components/Installation/InstallationType'
 import { useLabelization } from 'src/modules/MyConsumption/components/LabelizationContainer/labelizationHook'
+import { metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
+import { computeWidgetAssets } from 'src/modules/MyConsumption/components/Widget/WidgetFunctions'
+import convert, { Unit } from 'convert-units'
 
 /**
  * MyConsumptionChartContainer Component.
@@ -55,9 +63,8 @@ const SimplifiedConsumptionChartContainer = ({
     })
 
     const { currentHousing } = useSelector(({ housingModel }: RootState) => housingModel)
-    const { isGetActivitiesLoading, activitiesList, isAddActivityLoading, getActivitiesList } = useLabelization(
-        currentHousing?.id,
-    )
+    const { isGetActivitiesLoading, activitiesList, isAddActivityLoading, getActivitiesList, addActivity } =
+        useLabelization(currentHousing?.id)
 
     useEffect(() => {
         getActivitiesList()
@@ -74,7 +81,12 @@ const SimplifiedConsumptionChartContainer = ({
     }, [isSolarProductionConsentOff])
 
     const getMetrics = useCallback(async () => {
-        await getMetricsWithParams({ interval: metricsInterval, range, targets, filters })
+        await getMetricsWithParams({
+            interval: metricsInterval,
+            range,
+            targets: [...targets, metricTargetsEnum.eurosConsumption],
+            filters,
+        })
     }, [getMetricsWithParams, metricsInterval, range, targets, filters])
 
     // Happens everytime getMetrics dependencies change, and doesn't execute when hook is instanciated.
@@ -84,13 +96,14 @@ const SimplifiedConsumptionChartContainer = ({
 
     // To avoid multiple rerendering and thus calculation in MyConsumptionChart, CosnumptionChartData change only once, when targets change or when the first getMetrics targets is loaded, thus avoiding to rerender when the second getMetrics is loaded with all targets which should only happen in the background.
     useEffect(() => {
-        if (data.length > 0) {
-            let chartData = data
+        const dataWithoutEuros = data.filter((metric) => metric.target !== metricTargetsEnum.eurosConsumption)
+        if (dataWithoutEuros.length > 0) {
+            let chartData = dataWithoutEuros
             const fileteredMetricsData = filterMetricsData(chartData, period, isSolarProductionConsentOff)
             if (fileteredMetricsData) chartData = fileteredMetricsData
             setConsumptionChartData(chartData)
         } else {
-            setConsumptionChartData(data)
+            setConsumptionChartData(dataWithoutEuros)
         }
         // Only use data & targets as dependencies.
         // TODO REMOVE this exhausitve-deps due to filteredMetricsData
@@ -98,27 +111,7 @@ const SimplifiedConsumptionChartContainer = ({
     }, [data, targets])
 
     const [consumptionLabelCardsData, setConsumptionLabelCardsData] = useState<ConsumptionLabelCardProps[]>([])
-    // const [selectedLabelData, setSelectedLabelData] = useState<ConsumptionLabelCardProps | undefined>(undefined)
-    const [selectedCardIndex, setSelectedCardIndex] = useState<number | null>(null)
-    const [selectedPeriod, setSelectedPeriod] = useState<IPeriodTime>({ startTime: undefined, endTime: undefined })
     const [inputPeriodTime, setInputPeriodTime] = useState<IPeriodTime>({ startTime: undefined, endTime: undefined })
-    /**
-     * Handle card click.
-     *
-     * @param cardIndex Index of the card.
-     * @param labelData Consumption label data.
-     */
-    const handleCardClick = (cardIndex: number, labelData: ConsumptionLabelCardProps) => {
-        if (cardIndex === selectedCardIndex) {
-            setSelectedCardIndex(null)
-            // setSelectedLabelData(undefined)
-            setSelectedPeriod({ startTime: undefined, endTime: undefined })
-        } else {
-            setSelectedCardIndex(cardIndex)
-            // setSelectedLabelData({ ...labelData })
-            setSelectedPeriod({ startTime: labelData.startTime, endTime: labelData.endTime })
-        }
-    }
 
     useEffect(() => {
         if (!isGetActivitiesLoading && activitiesList) {
@@ -151,6 +144,67 @@ const SimplifiedConsumptionChartContainer = ({
         }
     }, [activitiesList, isGetActivitiesLoading])
 
+    /**
+     * Handle the submit of the add label form.
+     *
+     * @param fieldsValues Form fields values.
+     */
+    const handleSubmitAddLabelRequest = async (fieldsValues: addActivityFormFieldsType) => {
+        const selectedDate = range.from.split('T')[0]
+        const startDate = `${selectedDate}T${fieldsValues.startDate}:00.000Z`
+        const endDate = `${selectedDate}T${fieldsValues.endDate}:00.000Z`
+        const consumptionData = data.find((metric) => metric.target === metricTargetsEnum.consumption)
+        const eurosConsumptionData = data.find((metric) => metric.target === metricTargetsEnum.eurosConsumption)
+        if (consumptionData && eurosConsumptionData) {
+            const startRangeIndex = consumptionData.datapoints.findIndex(
+                (datapoint) => datapoint[1] === new Date(startDate).getTime(),
+            )
+            const endRangeIndex = consumptionData?.datapoints.findIndex(
+                (datapoint) => datapoint[1] === new Date(endDate).getTime(),
+            )
+            const consumptionDataRange: IMetric = {
+                target: metricTargetsEnum.consumption,
+                datapoints: consumptionData.datapoints.slice(startRangeIndex + 1, endRangeIndex + 1),
+            }
+            const { value: totalConsumptionValue, unit: totalConsumptionUnit } = computeWidgetAssets(
+                [consumptionDataRange],
+                metricTargetsEnum.consumption,
+            )
+            const eurosConsumptionDataRange: IMetric = {
+                target: metricTargetsEnum.eurosConsumption,
+                datapoints: eurosConsumptionData.datapoints.slice(startRangeIndex + 1, endRangeIndex + 1),
+            }
+            const { value: totalEurosConsumptionValue } = computeWidgetAssets(
+                [eurosConsumptionDataRange],
+                metricTargetsEnum.eurosConsumption,
+            )
+            const requestBody: addActivityRequestBodyType = {
+                ...fieldsValues,
+                startDate,
+                endDate,
+                consumption: Number(
+                    convert(totalConsumptionValue as number)
+                        .from(totalConsumptionUnit as Unit)
+                        .to('Wh'),
+                ),
+                consumptionPrice: Number(totalEurosConsumptionValue),
+            }
+            try {
+                await addActivity(requestBody)
+                // To clean the brush selected area
+                chartRef.current?.getEchartsInstance().dispatchAction({
+                    type: 'brush',
+                    areas: [],
+                })
+                // Reset the states
+                setInputPeriodTime({
+                    startTime: undefined,
+                    endTime: undefined,
+                })
+            } catch (error) {}
+        }
+    }
+
     return (
         <div className="flex flex-col justify-center my-20">
             <div className="flex flex-row justify-center align-center">
@@ -161,80 +215,69 @@ const SimplifiedConsumptionChartContainer = ({
                     color={theme.palette.primary.main}
                 />
             </div>
-            <AddLabelButtonForm
-                chartRef={chartRef}
-                inputPeriodTime={inputPeriodTime}
-                setInputPeriodTime={setInputPeriodTime}
-                equipments={
-                    housingEquipmentsList
-                        ?.filter(
-                            (housingEquipment) =>
-                                housingEquipment.equipmentNumber &&
-                                (mappingEquipmentNameToType[housingEquipment.equipment.name as equipmentNameType] ===
-                                    'number' ||
-                                    housingEquipment.equipment.customerId),
-                        )
-                        .map((housingEquipment) => {
-                            const equipmentOption = myEquipmentOptions.find(
-                                (option) => option.name === housingEquipment.equipment.name,
+            <Form onSubmit={handleSubmitAddLabelRequest}>
+                <AddLabelButtonForm
+                    chartRef={chartRef}
+                    inputPeriodTime={inputPeriodTime}
+                    setInputPeriodTime={setInputPeriodTime}
+                    equipments={
+                        housingEquipmentsList
+                            ?.filter(
+                                (housingEquipment) =>
+                                    housingEquipment.equipmentNumber &&
+                                    (mappingEquipmentNameToType[
+                                        housingEquipment.equipment.name as equipmentNameType
+                                    ] === 'number' ||
+                                        housingEquipment.equipment.customerId),
                             )
-                            return {
-                                id: housingEquipment.id,
-                                name: equipmentOption?.labelTitle || housingEquipment.equipment.name,
-                            }
-                        }) ?? []
-                }
-                addingLabelsIsDisabled={loadingEquipmentInProgress || isAddActivityLoading}
-                addNewLabel={() => {}}
-            />
+                            .map((housingEquipment) => {
+                                const equipmentOption = myEquipmentOptions.find(
+                                    (option) => option.name === housingEquipment.equipment.name,
+                                )
+                                return {
+                                    id: housingEquipment.id,
+                                    name: equipmentOption?.labelTitle || housingEquipment.equipment.name,
+                                }
+                            }) ?? []
+                    }
+                    addingLabelsIsDisabled={loadingEquipmentInProgress || isAddActivityLoading}
+                    range={range}
+                />
+            </Form>
             <div>
                 {isMetricsLoading ? (
-                    <div
-                        className="flex h-full w-full flex-col items-center justify-center"
-                        style={{ height: '320px' }}
-                    >
+                    <div className="flex w-full items-center justify-center" style={{ height: '360px' }}>
                         <CircularProgress style={{ color: theme.palette.primary.main }} />
                     </div>
                 ) : (
-                    <>
-                        <MyConsumptionChart
-                            data={consumptionChartData}
-                            period={period}
-                            isSolarProductionConsentOff={isSolarProductionConsentOff}
-                            axisColor={theme.palette.common.black}
-                            selectedLabelPeriod={selectedPeriod}
-                            chartRef={chartRef}
-                            setInputPeriodTime={setInputPeriodTime}
-                        />
-                        <div className="mx-32 mt-32">
-                            <TypographyFormatMessage variant="h2" fontSize="25px" fontWeight="500">
-                                Mes étiquettes
-                            </TypographyFormatMessage>
-                            {isGetActivitiesLoading ? (
-                                <div
-                                    className="flex h-full w-full flex-col items-center justify-center"
-                                    style={{ height: '320px' }}
-                                >
-                                    <CircularProgress style={{ color: theme.palette.primary.main }} />
-                                </div>
-                            ) : (
-                                <div className="grid gap-16 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 mt-24">
-                                    {consumptionLabelCardsData.map((labelData, index) => (
-                                        <div
-                                            key={index}
-                                            className={`cursor-pointer transition-transform transform ${
-                                                selectedCardIndex === index ? 'scale-105' : 'scale-100'
-                                            }`}
-                                            onClick={() => handleCardClick(index, labelData)}
-                                        >
-                                            <ConsumptionLabelCard {...labelData} />
-                                        </div>
-                                    ))}
-                                </div>
-                            )}
-                        </div>
-                    </>
+                    <MyConsumptionChart
+                        data={consumptionChartData}
+                        period={period}
+                        isSolarProductionConsentOff={isSolarProductionConsentOff}
+                        axisColor={theme.palette.common.black}
+                        selectedLabelPeriod={inputPeriodTime}
+                        chartRef={chartRef}
+                        setInputPeriodTime={setInputPeriodTime}
+                    />
                 )}
+                <div className="mx-32 mt-32">
+                    <TypographyFormatMessage variant="h2" fontSize="25px" fontWeight="500">
+                        Mes étiquettes
+                    </TypographyFormatMessage>
+                    {isGetActivitiesLoading ? (
+                        <div className="flex w-full items-center justify-center" style={{ height: '200px' }}>
+                            <CircularProgress style={{ color: theme.palette.primary.main }} />
+                        </div>
+                    ) : (
+                        <div className="grid gap-16 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 mt-24">
+                            {consumptionLabelCardsData.map((labelData, index) => (
+                                <div key={index}>
+                                    <ConsumptionLabelCard {...labelData} />
+                                </div>
+                            ))}
+                        </div>
+                    )}
+                </div>
             </div>
         </div>
     )

@@ -71,7 +71,6 @@ export const Select: FC<SelectFieldProps> = function ({
                 <FormControl
                     // by default we set fullWidth true because we use it on 80% of our cases
                     fullWidth={true}
-                    margin="normal"
                     error={fieldState.invalid}
                     {...formControlProps}
                     required={Boolean(find(validateFunctions, { name: 'required' }))}

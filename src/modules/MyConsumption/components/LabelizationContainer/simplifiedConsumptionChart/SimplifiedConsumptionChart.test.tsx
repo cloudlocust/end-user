@@ -84,7 +84,7 @@ const mockGetMetricsWithParamsValues: getMetricsWithParamsType = {
     filters: mockFilters,
     interval: mockMetricsInterval,
     range: mockRange,
-    targets: [metricTargetsEnum.autoconsumption, metricTargetsEnum.consumption],
+    targets: [metricTargetsEnum.autoconsumption, metricTargetsEnum.consumption, metricTargetsEnum.eurosConsumption],
 }
 // Mock metricsHook
 jest.mock('src/modules/Metrics/metricsHook.ts', () => ({
