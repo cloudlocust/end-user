@@ -43,6 +43,7 @@ import {
     subYears,
 } from 'date-fns'
 import fr from 'date-fns/locale/fr'
+import { SwitchConsumptionButtonTypeEnum } from 'src/modules/MyConsumption/components/SwitchConsumptionButton/SwitchConsumptionButton.types'
 
 // eslint-disable-next-line jsdoc/require-jsdoc
 let interval: metricIntervalType = '1m'
@@ -433,20 +434,20 @@ describe('addTime', () => {
 })
 
 describe('getDefaultConsumptionTargets tests', () => {
-    let enphaseOff = false
+    let switchButtonType: SwitchConsumptionButtonTypeEnum
 
     beforeEach(() => {
-        enphaseOff = false
+        switchButtonType = SwitchConsumptionButtonTypeEnum.Consumption
     })
 
-    test('when enphaseOff is true, it returns consumption metrics', () => {
-        enphaseOff = true
-        const result = getDefaultConsumptionTargets(enphaseOff)
+    test('when switchButtonType is CONSUMPTION, it returns consumption metrics', () => {
+        const result = getDefaultConsumptionTargets(switchButtonType)
         expect(result).toStrictEqual([metricTargetsEnum.consumptionByTariffComponent, metricTargetsEnum.consumption])
     })
 
-    test('when enphase is false, , it returns auto conso w/ base consumption', () => {
-        const result = getDefaultConsumptionTargets(enphaseOff)
+    test('when switchButtonType is AUTOCONSUMPTION PRODUCTION, it returns auto conso w/ production metrics', () => {
+        switchButtonType = SwitchConsumptionButtonTypeEnum.AutoconsmptionProduction
+        const result = getDefaultConsumptionTargets(switchButtonType)
 
         expect(result).toStrictEqual([metricTargetsEnum.autoconsumption, metricTargetsEnum.consumption])
     })

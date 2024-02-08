@@ -36,6 +36,7 @@ import { isNil } from 'lodash'
 import fr from 'date-fns/locale/fr'
 import { getDataFromYAxis } from 'src/modules/MyConsumption/components/Widget/WidgetFunctions'
 import { allTempoMetrics, temperatureOrPmaxTargets } from 'src/modules/MyConsumption/utils/myConsumptionVariables'
+import { SwitchConsumptionButtonTypeEnum } from 'src/modules/MyConsumption/components/SwitchConsumptionButton/SwitchConsumptionButton.types'
 
 /**
  * FormatMetricFilter function converts the data to the required format.
@@ -550,17 +551,20 @@ export function getRangeV2(period: PeriodEnum) {
 /**
  * Utility function to return whuch targets should be visible.
  *
- * Used in ConsumptionChartContainer in visibleTargetCharts state.
+ * Used in ConsumptionChartContainer.
  *
- * @param isEnphaseOff Enphase state OFF.
+ * @param switchButtonType Indicates which button is currently active.
  * @returns Metric targets list.
  */
-export const getDefaultConsumptionTargets = (isEnphaseOff: boolean): metricTargetType[] => {
-    if (isEnphaseOff) {
-        return [metricTargetsEnum.consumptionByTariffComponent, metricTargetsEnum.consumption]
+export const getDefaultConsumptionTargets = (switchButtonType: SwitchConsumptionButtonTypeEnum): metricTargetType[] => {
+    switch (switchButtonType) {
+        case SwitchConsumptionButtonTypeEnum.AutoconsmptionProduction:
+            return [metricTargetsEnum.autoconsumption, metricTargetsEnum.consumption]
+        case SwitchConsumptionButtonTypeEnum.Consumption:
+            return [metricTargetsEnum.consumptionByTariffComponent, metricTargetsEnum.consumption]
+        default:
+            return [metricTargetsEnum.autoconsumption, metricTargetsEnum.consumption]
     }
-
-    return [metricTargetsEnum.autoconsumption, metricTargetsEnum.consumption]
 }
 
 /**
