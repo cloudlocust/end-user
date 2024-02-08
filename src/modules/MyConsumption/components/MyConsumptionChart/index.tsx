@@ -5,6 +5,7 @@ import { useTheme } from '@mui/material/styles'
 import { ConsumptionChartProps } from 'src/modules/MyConsumption/components/MyConsumptionChart/MyConsumptionChartTypes.d'
 import { getEchartsConsumptionChartOptions } from 'src/modules/MyConsumption/components/MyConsumptionChart/consumptionChartOptions'
 import { useMediaQuery } from '@mui/material'
+import { useMyConsumptionStore } from 'src/modules/MyConsumption/store/myConsumptionStore'
 
 /**
  * Consumption test id.
@@ -16,12 +17,12 @@ export const consumptionChartClassName = 'consumption-chart-classname'
  *
  * @param props N/A.
  * @param props.data Data received from backend of format IMetric[].
- * @param props.isSolarProductionConsentOff Boolean indicating if solar production consent is off.
  * @param props.period Period Type.
  * @returns MyConsumptionChart Component.
  */
-const MyConsumptionChart = ({ data, isSolarProductionConsentOff, period }: ConsumptionChartProps) => {
+const MyConsumptionChart = ({ data, period }: ConsumptionChartProps) => {
     const theme = useTheme()
+    const { consumptionToggleButton } = useMyConsumptionStore()
 
     const { timestamps, values } = useMemo(() => {
         return formatMetricsDataToTimestampsValues(data)
@@ -31,15 +32,8 @@ const MyConsumptionChart = ({ data, isSolarProductionConsentOff, period }: Consu
 
     // EchartsConsumptionChart Option.
     const option = useMemo(() => {
-        return getEchartsConsumptionChartOptions(
-            timestamps,
-            values,
-            theme,
-            isSolarProductionConsentOff,
-            isMobile,
-            period,
-        )
-    }, [timestamps, values, theme, isSolarProductionConsentOff, isMobile, period])
+        return getEchartsConsumptionChartOptions(timestamps, values, theme, consumptionToggleButton, isMobile, period)
+    }, [timestamps, values, theme, consumptionToggleButton, isMobile, period])
 
     return (
         <>
