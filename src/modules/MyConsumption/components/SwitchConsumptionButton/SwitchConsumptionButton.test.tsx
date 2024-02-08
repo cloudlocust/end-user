@@ -28,16 +28,14 @@ describe('SwitchConsumptionButton', () => {
         switchConsumptionButtonProps = {
             isIdleConsumptionButtonDisabled: false,
             onClickIdleConsumptionDisabledInfoIcon: jest.fn(),
-            period: 'daily',
             isSolarProductionConsentOff: false,
             consumptionToggleButton: SwitchConsumptionButtonTypeEnum.Consumption,
             onSwitchConsumptionButton: jest.fn(),
         }
     })
 
-    test('when isSolarProductionConsentOff is true and period is daily, Autoconsumption button is not shown', async () => {
+    test('when isSolarProductionConsentOff is true, Autoconsumption button is not shown', async () => {
         switchConsumptionButtonProps.isSolarProductionConsentOff = true
-        switchConsumptionButtonProps.period = 'daily'
         const { getByText } = reduxedRender(<SwitchConsumptionButton {...switchConsumptionButtonProps} />)
 
         expect(getByText(SwitchConsumptionButtonLabelEnum.General)).toBeInTheDocument()
@@ -45,40 +43,13 @@ describe('SwitchConsumptionButton', () => {
         expect(() => getByText(SwitchConsumptionButtonLabelEnum.AutoconsmptionProduction)).toThrow()
     })
 
-    test('when isSolarProductionConsentOff is false and period is daily, Autoconsumption button is shown', async () => {
+    test('when isSolarProductionConsentOff is false, Autoconsumption button is shown', async () => {
         switchConsumptionButtonProps.isSolarProductionConsentOff = false
-        switchConsumptionButtonProps.period = 'daily'
         const { getByText } = reduxedRender(<SwitchConsumptionButton {...switchConsumptionButtonProps} />)
 
         expect(getByText(SwitchConsumptionButtonLabelEnum.General)).toBeInTheDocument()
         expect(getByText(SwitchConsumptionButtonLabelEnum.Idle)).toBeInTheDocument()
         expect(getByText(SwitchConsumptionButtonLabelEnum.AutoconsmptionProduction)).toBeInTheDocument()
-    })
-
-    test('when isSolarProductionConsentOff is true and period is weekly, Autoconsumption button is not shown', async () => {
-        switchConsumptionButtonProps.isSolarProductionConsentOff = true
-        switchConsumptionButtonProps.period = 'weekly'
-        const { getByText } = reduxedRender(<SwitchConsumptionButton {...switchConsumptionButtonProps} />)
-
-        expect(getByText(SwitchConsumptionButtonLabelEnum.General)).toBeInTheDocument()
-        expect(getByText(SwitchConsumptionButtonLabelEnum.Idle)).toBeInTheDocument()
-        expect(() => getByText(SwitchConsumptionButtonLabelEnum.AutoconsmptionProduction)).toThrow()
-    })
-
-    test('when isSolarProductionConsentOff is false and period is weekly / monthly / yearly, Autoconsumption button is not shown', async () => {
-        switchConsumptionButtonProps.isSolarProductionConsentOff = false
-        switchConsumptionButtonProps.period = 'weekly'
-        const { getByText } = reduxedRender(<SwitchConsumptionButton {...switchConsumptionButtonProps} />)
-
-        expect(getByText(SwitchConsumptionButtonLabelEnum.General)).toBeInTheDocument()
-        expect(getByText(SwitchConsumptionButtonLabelEnum.Idle)).toBeInTheDocument()
-        expect(() => getByText(SwitchConsumptionButtonLabelEnum.AutoconsmptionProduction)).toThrow()
-
-        switchConsumptionButtonProps.period = 'monthly'
-        expect(() => getByText(SwitchConsumptionButtonLabelEnum.AutoconsmptionProduction)).toThrow()
-
-        switchConsumptionButtonProps.period = 'yearly'
-        expect(() => getByText(SwitchConsumptionButtonLabelEnum.AutoconsmptionProduction)).toThrow()
     })
 
     test('when isIdleConsumptionButtonDisabled is true, clicking on idle button should call onClickIdleConsumptionDisabledInfoIcon', async () => {
@@ -137,7 +108,6 @@ describe('SwitchConsumptionButton', () => {
 
     test("when any of the button is selected, it's style should change", async () => {
         switchConsumptionButtonProps.isIdleConsumptionButtonDisabled = false
-        switchConsumptionButtonProps.period = 'weekly'
         const { getByText } = reduxedRender(
             <ThemeProvider theme={theme}>
                 <SwitchConsumptionButton {...switchConsumptionButtonProps} />

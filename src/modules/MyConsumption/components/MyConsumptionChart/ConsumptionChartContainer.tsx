@@ -282,7 +282,6 @@ export const ConsumptionChartContainer = ({
                 <SwitchConsumptionButton
                     isIdleConsumptionButtonDisabled={period === 'daily' || !isSolarProductionConsentOff}
                     onClickIdleConsumptionDisabledInfoIcon={() => setIsShowIdleConsumptionDisabledInfo(true)}
-                    period={period}
                     isSolarProductionConsentOff={isSolarProductionConsentOff}
                     consumptionToggleButton={consumptionToggleButton}
                     onSwitchConsumptionButton={onSwitchConsumptionButton}
