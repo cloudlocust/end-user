@@ -26,7 +26,6 @@ import { useEquipmentMeasurementResults } from 'src/modules/MyHouse/components/E
 export const EquipmentDetailsContent = ({ equipmentDetails }: EquipmentDetailsContentProps) => {
     const { formatMessage } = useIntl()
     const MAX_WIDTH_600 = useMediaQuery('(max-width:600px)')
-    const MAX_WIDTH_470 = useMediaQuery('(max-width:470px)')
     const [selectedEquipmentNumber, setSelectedEquipmentNumber] = useState(equipmentDetails.number === 1 ? 1 : null)
     const { measurementResults, isLoadingMeasurements, updateEquipmentMeasurementResults } =
         useEquipmentMeasurementResults()
@@ -135,17 +134,11 @@ export const EquipmentDetailsContent = ({ equipmentDetails }: EquipmentDetailsCo
                 </div>
 
                 {/* Buttons */}
-                <div className={`flex ${MAX_WIDTH_470 ? 'flex-col' : 'flex-row'} justify-end gap-10 flex-wrap`}>
-                    <Button variant="outlined" size="large" className={MAX_WIDTH_600 ? 'flex-1' : ''} disabled>
-                        {formatMessage({
-                            id: "Supprimer l'appareil",
-                            defaultMessage: "Supprimer l'appareil",
-                        })}
-                    </Button>
+                <div className={`flex justify-end`}>
                     <Button
                         variant="contained"
                         size="large"
-                        className={MAX_WIDTH_600 ? 'flex-1' : ''}
+                        className={'flex-1 sm:flex-none'}
                         onClick={onOpenMeasurementModal}
                         disabled={!isMeasurementButtonShown}
                     >
