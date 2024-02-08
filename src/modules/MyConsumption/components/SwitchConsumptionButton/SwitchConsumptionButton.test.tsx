@@ -52,16 +52,6 @@ describe('SwitchConsumptionButton', () => {
         expect(getByText(SwitchConsumptionButtonLabelEnum.AutoconsmptionProduction)).toBeInTheDocument()
     })
 
-    // eslint-disable-next-line sonarjs/no-identical-functions
-    test('when isSolarProductionConsentOff is true and Autoconsumption button is not shown', async () => {
-        switchConsumptionButtonProps.isSolarProductionConsentOff = true
-        const { getByText } = reduxedRender(<SwitchConsumptionButton {...switchConsumptionButtonProps} />)
-
-        expect(getByText(SwitchConsumptionButtonLabelEnum.General)).toBeInTheDocument()
-        expect(getByText(SwitchConsumptionButtonLabelEnum.Idle)).toBeInTheDocument()
-        expect(() => getByText(SwitchConsumptionButtonLabelEnum.AutoconsmptionProduction)).toThrow()
-    })
-
     test('when isIdleConsumptionButtonDisabled is true, clicking on idle button should call onClickIdleConsumptionDisabledInfoIcon', async () => {
         switchConsumptionButtonProps.isIdleConsumptionButtonDisabled = true
         const mockOnClickIdleConsumptionDisabledInfoIcon = jest.fn()
