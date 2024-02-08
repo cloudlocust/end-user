@@ -36,7 +36,6 @@ export const SwitchConsumptionButton = (props: SwitchConsumptionButtonProps): JS
     const {
         isIdleConsumptionButtonDisabled,
         onClickIdleConsumptionDisabledInfoIcon,
-        period,
         isSolarProductionConsentOff,
         consumptionToggleButton,
         onSwitchConsumptionButton,
@@ -102,7 +101,7 @@ export const SwitchConsumptionButton = (props: SwitchConsumptionButtonProps): JS
                     // Hide the solar production button if the period is daily and the solar production consent is off.
                     if (
                         element.type === SwitchConsumptionButtonTypeEnum.AutoconsmptionProduction &&
-                        (period !== 'daily' || isSolarProductionConsentOff)
+                        isSolarProductionConsentOff
                     ) {
                         return null
                     }

@@ -60,6 +60,11 @@ export const MyConsumptionContainer = () => {
     const nrlinkOff = nrlinkConsent?.nrlinkConsentState === 'NONEXISTENT'
     const enedisOff = enedisSgeConsent?.enedisSgeConsentState !== 'CONNECTED'
 
+    // Productioon chart should be shown only when user click on Autoconsumption-Production switch button
+    const isProductionChartShown =
+        isProductionActiveAndHousingHasAccess(currentHousingScopes) &&
+        consumptionToggleButton === SwitchConsumptionButtonTypeEnum.AutoconsmptionProduction
+
     const [metricsInterval, setMetricsInterval] = useState<metricIntervalType>(
         isSolarProductionConsentOff ? '1m' : '30m',
     )
@@ -137,19 +142,16 @@ export const MyConsumptionContainer = () => {
                 )}
 
                 {/* Production Chart */}
-                {/* It should be shown only when user click on Autoconsumption-Production switch button */}
-                {isProductionActiveAndHousingHasAccess(currentHousingScopes) &&
-                    consumptionToggleButton === SwitchConsumptionButtonTypeEnum.AutoconsmptionProduction && (
-                        <ProductionChartContainer
-                            period={period}
-                            range={range}
-                            filters={filters}
-                            isProductionConsentOff={isSolarProductionConsentOff}
-                            isProductionConsentLoadingInProgress={isConnectedPlugListLoadingInProgress}
-                            // Production chart should be displayed with a 30m interval when the daily period is selected.
-                            metricsInterval={period === 'daily' && metricsInterval === '1m' ? '30m' : metricsInterval}
-                        />
-                    )}
+                {isProductionChartShown && (
+                    <ProductionChartContainer
+                        period={period}
+                        range={range}
+                        filters={filters}
+                        isProductionConsentOff={isSolarProductionConsentOff}
+                        isProductionConsentLoadingInProgress={isConnectedPlugListLoadingInProgress}
+                        metricsInterval={metricsInterval}
+                    />
+                )}
             </div>
 
             {/* Widget List */}
