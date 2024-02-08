@@ -80,17 +80,13 @@ export interface SwitchConsumptionButtonProps {
      */
     period: periodType
     /**
-     *
+     * If user has NOT solar production.
      */
     isSolarProductionConsentOff: boolean
     /**
      * Switch consumption button type.
      */
     consumptionToggleButton: SwitchConsumptionButtonTypeEnum
-    /**
-     *
-     */
-    setConsumptionToggleButton: (value: SwitchConsumptionButtonTypeEnum) => void
     /**
      * Handle the click event on the switch consumption button.
      *

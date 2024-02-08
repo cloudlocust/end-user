@@ -1,6 +1,5 @@
 import { Dispatch, SetStateAction } from 'react'
 import { metricIntervalType, targetTimestampsValuesFormat } from 'src/modules/Metrics/Metrics'
-import { SwitchConsumptionButtonTypeEnum } from 'src/modules/MyConsumption/components/SwitchConsumptionButton/SwitchConsumptionButton.types'
 import { periodType } from 'src/modules/MyConsumption/myConsumptionTypes.d'
 
 /**
@@ -80,10 +79,6 @@ export interface ConsumptionChartProps {
      * Data.
      */
     data: IMetric[]
-    /**
-     * Indicates which button is currently active.
-     */
-    switchButtonType: SwitchConsumptionButtonTypeEnum
     /**
      * Period Type.
      */

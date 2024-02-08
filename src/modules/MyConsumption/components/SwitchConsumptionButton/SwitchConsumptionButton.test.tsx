@@ -31,7 +31,6 @@ describe('SwitchConsumptionButton', () => {
             period: 'daily',
             isSolarProductionConsentOff: false,
             consumptionToggleButton: SwitchConsumptionButtonTypeEnum.Consumption,
-            setConsumptionToggleButton: jest.fn(),
             onSwitchConsumptionButton: jest.fn(),
         }
     })

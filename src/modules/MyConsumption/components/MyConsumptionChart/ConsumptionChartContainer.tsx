@@ -59,7 +59,7 @@ export const ConsumptionChartContainer = ({
 }: ConsumptionChartContainerProps) => {
     const theme = useTheme()
     const [isShowIdleConsumptionDisabledInfo, setIsShowIdleConsumptionDisabledInfo] = useState(false)
-    const { consumptionToggleButton, setConsumptionToggleButton } = useMyConsumptionStore()
+    const { consumptionToggleButton } = useMyConsumptionStore()
 
     // Handling the targets makes it simpler instead of the useMetrics as it's a straightforward array of metricTargetType
     const [targets, setTargets] = useState<metricTargetType[]>([])
@@ -214,11 +214,6 @@ export const ConsumptionChartContainer = ({
      */
     const onSwitchConsumptionButton = useCallback(
         (buttonType: SwitchConsumptionButtonTypeEnum) => {
-            if (buttonType === consumptionToggleButton) {
-                // Ignore if the same button is clicked
-                return
-            }
-
             setTargets((prev) => {
                 switch (buttonType) {
                     case SwitchConsumptionButtonTypeEnum.Idle:
@@ -233,7 +228,7 @@ export const ConsumptionChartContainer = ({
                 }
             })
         },
-        [consumptionToggleButton, getAutoconsumptionProductionTargets, getConsumptionTargets, isEurosButtonToggled],
+        [getAutoconsumptionProductionTargets, getConsumptionTargets, isEurosButtonToggled],
     )
 
     return (
@@ -290,7 +285,6 @@ export const ConsumptionChartContainer = ({
                     period={period}
                     isSolarProductionConsentOff={isSolarProductionConsentOff}
                     consumptionToggleButton={consumptionToggleButton}
-                    setConsumptionToggleButton={setConsumptionToggleButton}
                     onSwitchConsumptionButton={onSwitchConsumptionButton}
                 />
                 <TargetMenuGroup
@@ -306,11 +300,7 @@ export const ConsumptionChartContainer = ({
                     <CircularProgress style={{ color: theme.palette.background.paper }} />
                 </div>
             ) : (
-                <MyConsumptionChart
-                    data={consumptionChartData}
-                    period={period}
-                    switchButtonType={consumptionToggleButton}
-                />
+                <MyConsumptionChart data={consumptionChartData} period={period} />
             )}
             <DefaultContractWarning isShowWarning={isEurosButtonToggled && Boolean(hasMissingHousingContracts)} />
             <ConsumptionEnedisSgeWarning isShowWarning={enedisSgeOff && sgeConsentFeatureState} />

@@ -9,6 +9,7 @@ import {
     SwitchConsumptionButtonTypeEnum,
     SwitchConsumpytionButtonType,
 } from 'src/modules/MyConsumption/components/SwitchConsumptionButton/SwitchConsumptionButton.types'
+import { useMyConsumptionStore } from 'src/modules/MyConsumption/store/myConsumptionStore'
 
 const switchButtons: SwitchConsumpytionButtonType = [
     {
@@ -38,9 +39,10 @@ export const SwitchConsumptionButton = (props: SwitchConsumptionButtonProps): JS
         period,
         isSolarProductionConsentOff,
         consumptionToggleButton,
-        setConsumptionToggleButton,
         onSwitchConsumptionButton,
     } = props
+
+    const { setConsumptionToggleButton } = useMyConsumptionStore()
 
     /**
      * Function handling switch of idleConsumptionButton.
