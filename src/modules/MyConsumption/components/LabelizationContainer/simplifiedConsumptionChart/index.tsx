@@ -63,8 +63,15 @@ const SimplifiedConsumptionChartContainer = ({
     })
 
     const { currentHousing } = useSelector(({ housingModel }: RootState) => housingModel)
-    const { isGetActivitiesLoading, activitiesList, isAddActivityLoading, getActivitiesList, addActivity } =
-        useLabelization(currentHousing?.id)
+    const {
+        activitiesList,
+        isGetActivitiesLoading,
+        isAddActivityLoading,
+        isDeleteActivityLoading,
+        getActivitiesList,
+        addActivity,
+        deleteActivity,
+    } = useLabelization(currentHousing?.id)
 
     useEffect(() => {
         getActivitiesList()
@@ -110,7 +117,7 @@ const SimplifiedConsumptionChartContainer = ({
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [data, targets])
 
-    const [consumptionLabelCardsData, setConsumptionLabelCardsData] = useState<ConsumptionLabelCardProps[]>([])
+    const [consumptionLabelCardsData, setConsumptionLabelCardsData] = useState<LabelCardDataType[]>([])
     const [inputPeriodTime, setInputPeriodTime] = useState<IPeriodTime>({ startTime: undefined, endTime: undefined })
 
     useEffect(() => {
@@ -128,6 +135,7 @@ const SimplifiedConsumptionChartContainer = ({
                         .split(':')
                         .slice(0, 2)
                     return {
+                        labelId: activity.id,
                         equipmentName:
                             myEquipmentOptions.find(
                                 (option) => option.name === activity.housingEquipment.equipment.name,
@@ -264,15 +272,19 @@ const SimplifiedConsumptionChartContainer = ({
                     <TypographyFormatMessage variant="h2" fontSize="25px" fontWeight="500">
                         Mes étiquettes
                     </TypographyFormatMessage>
-                    {isGetActivitiesLoading ? (
+                    {isGetActivitiesLoading || isDeleteActivityLoading ? (
                         <div className="flex w-full items-center justify-center" style={{ height: '200px' }}>
                             <CircularProgress style={{ color: theme.palette.primary.main }} />
                         </div>
+                    ) : consumptionLabelCardsData.length === 0 ? (
+                        <TypographyFormatMessage className="text-18 sm:text-20 font-400 text-grey-400 text-center m-20 mt-60">
+                            Aucun label n'est disponible
+                        </TypographyFormatMessage>
                     ) : (
                         <div className="grid gap-16 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 mt-24">
                             {consumptionLabelCardsData.map((labelData, index) => (
                                 <div key={index}>
-                                    <ConsumptionLabelCard {...labelData} />
+                                    <ConsumptionLabelCard labelData={labelData} deleteLabel={deleteActivity} />
                                 </div>
                             ))}
                         </div>
