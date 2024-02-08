@@ -35,7 +35,7 @@ describe('Test ProfileManagementForm', () => {
             </BrowserRouter>,
         )
         // Modifier button
-        expect(container.querySelectorAll(INPUT_DISABLED_ELEMENT)!.length).toBe(8) // Including Modifier button
+        expect(container.querySelectorAll(INPUT_DISABLED_ELEMENT)!.length).toBe(9) // Including Modifier button
         expect(getByText(MODIFIER_BUTTON_TEXT)).toBeTruthy()
         expect(() => getByText(ANNULER_BUTTON_TEXT)).toThrow()
         expect(() => getByText(ENREGISTRER_BUTTON_TEXT)).toThrow()
@@ -134,6 +134,7 @@ describe('Test ProfileManagementForm', () => {
                 email: TEST_SUCCESS_USER.email,
                 phone: TEST_SUCCESS_USER.phone,
                 address: TEST_SUCCESS_USER.address,
+                birthdate: TEST_SUCCESS_USER.birthdate,
             })
         })
     })

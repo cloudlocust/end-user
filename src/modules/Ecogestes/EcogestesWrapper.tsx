@@ -1,8 +1,8 @@
 import { useState } from 'react'
 import { IEcogesteCategoryTypes } from 'src/modules/Ecogestes/EcogestesConfig'
 import { ConsumptionPoleEcogestes, RoomEcogestes } from 'src/modules/Ecogestes/components/ecogesteCategoryTypes'
-import { IPillSwitcherComponent } from 'src/modules/shared/PillSwitcher/pillSwitcher'
-import { PillSwitcherMenuComponent } from 'src/modules/shared/PillSwitcher/pillSwitcherComponent'
+import { ButtonSwitcherParamsType } from 'src/modules/shared/ButtonsSwitcher/ButtonsSwitcher'
+import { ButtonsSwitcher } from 'src/modules/shared/ButtonsSwitcher'
 
 /**
  *  Ecogestes Wrapper.
@@ -10,38 +10,38 @@ import { PillSwitcherMenuComponent } from 'src/modules/shared/PillSwitcher/pillS
  *  @returns JSX.Element.
  */
 export const EcogestesWrapper = () => {
-    const [ecogestesCategory, changeEcogestesCategory] = useState<IEcogesteCategoryTypes>(
+    const [selectedEcogestesCategory, setSelectedEcogestesCategory] = useState<IEcogesteCategoryTypes>(
         IEcogesteCategoryTypes.CONSUMPTION,
     )
 
-    const menuComponents: IPillSwitcherComponent[] = [
+    const buttonsSwitcherParams: ButtonSwitcherParamsType[] = [
         {
-            btnText: 'Postes de conso',
+            buttonText: 'Postes de conso',
             /**
              * Switch to Consumption Poles when a User fire a Click.
              */
             clickHandler: () => {
-                changeEcogestesCategory(IEcogesteCategoryTypes.CONSUMPTION)
+                setSelectedEcogestesCategory(IEcogesteCategoryTypes.CONSUMPTION)
             },
         },
         {
-            btnText: 'Pièces',
+            buttonText: 'Pièces',
             /**
              * Switch to Rooms when a User fire a Click.
              */
             clickHandler: () => {
-                changeEcogestesCategory(IEcogesteCategoryTypes.ROOMS)
+                setSelectedEcogestesCategory(IEcogesteCategoryTypes.ROOMS)
             },
         },
     ]
 
     return (
         <div
-            className="w-full relative flex flex-col items-center p-16"
-            aria-label={ecogestesCategory.toString() + 'Ecogests'}
+            className="w-full relative flex flex-col items-center gap-20 p-16"
+            aria-label={selectedEcogestesCategory.toString() + 'Ecogests'}
         >
-            <PillSwitcherMenuComponent components={menuComponents} />
-            {ecogestesCategory === IEcogesteCategoryTypes.CONSUMPTION ? (
+            <ButtonsSwitcher buttonsSwitcherParams={buttonsSwitcherParams} />
+            {selectedEcogestesCategory === IEcogesteCategoryTypes.CONSUMPTION ? (
                 <ConsumptionPoleEcogestes />
             ) : (
                 <RoomEcogestes />

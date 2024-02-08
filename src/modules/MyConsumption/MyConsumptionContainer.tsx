@@ -40,16 +40,6 @@ export const MyConsumptionContainer = () => {
     const [range, setRange] = useState<metricRangeType>(getRangeV2(PeriodEnum.DAILY))
     const [filters, setFilters] = useState<metricFiltersType>([])
 
-    // metricsInterval is initialized this way, so that its value is different from 2m or 30m, because it'll be set to 2m or 30m once consent request has finished.
-    // This won't create a problem even if metricIntervalType doesn't include undefined, because this will affect only on mount of MyConsumptionContainer and all children component that useMetrics, won't execute getMetrics on mount.
-    const [metricsInterval, setMetricsInterval] = useState<metricIntervalType>('30m') // changed to 30min so that those who has production does not see the graph with 1m on loading
-    const { ecowattSignalsData, isLoadingInProgress: isEcowattDataInProgress } = useEcowatt(true)
-
-    const { hasMissingHousingContracts } = useHasMissingHousingContracts(range, currentHousing?.id)
-
-    const nrlinkOff = nrlinkConsent?.nrlinkConsentState === 'NONEXISTENT'
-    const enedisOff = enedisSgeConsent?.enedisSgeConsentState !== 'CONNECTED'
-
     // Load connected plug only when housing is defined
     const {
         loadingInProgress: isConnectedPlugListLoadingInProgress,
@@ -63,6 +53,16 @@ export const MyConsumptionContainer = () => {
     let isSolarProductionConsentOff = enphaseConsent?.enphaseConsentState !== 'ACTIVE'
     if (arePlugsUsedBasedOnProductionStatus(currentHousingScopes))
         isSolarProductionConsentOff = isSolarProductionConsentOff && !isProductionConnectedPlug
+
+    const nrlinkOff = nrlinkConsent?.nrlinkConsentState === 'NONEXISTENT'
+    const enedisOff = enedisSgeConsent?.enedisSgeConsentState !== 'CONNECTED'
+
+    const [metricsInterval, setMetricsInterval] = useState<metricIntervalType>(
+        isSolarProductionConsentOff ? '1m' : '30m',
+    )
+    const { ecowattSignalsData, isLoadingInProgress: isEcowattDataInProgress } = useEcowatt(true)
+
+    const { hasMissingHousingContracts } = useHasMissingHousingContracts(range, currentHousing?.id)
 
     // UseEffect to check for consent whenever a meter is selected.
     useEffect(() => {
@@ -80,13 +80,6 @@ export const MyConsumptionContainer = () => {
         if (interval === '1m') setMetricsInterval(!isSolarProductionConsentOff ? '30m' : '1m')
         else setMetricsInterval(interval)
     }
-
-    useEffect(() => {
-        setMetricsInterval((prevState) => {
-            if (prevState === '1m' || prevState === '30m') return !isSolarProductionConsentOff ? '30m' : '1m'
-            else return prevState
-        })
-    }, [isSolarProductionConsentOff])
 
     useEffect(() => {
         loadConnectedPlugList()
@@ -145,6 +138,7 @@ export const MyConsumptionContainer = () => {
                             isSolarProductionConsentOff={isSolarProductionConsentOff}
                             enedisSgeConsent={enedisSgeConsent}
                             metricsInterval={metricsInterval}
+                            setMetricsInterval={setMetricsInterval}
                         />
                     </>
                 )}
