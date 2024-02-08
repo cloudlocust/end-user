@@ -30,7 +30,6 @@ describe('SwitchConsumptionButton', () => {
             onClickIdleConsumptionDisabledInfoIcon: jest.fn(),
             isSolarProductionConsentOff: false,
             consumptionToggleButton: SwitchConsumptionButtonTypeEnum.Consumption,
-            setConsumptionToggleButton: jest.fn(),
             onSwitchConsumptionButton: jest.fn(),
         }
     })
