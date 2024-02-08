@@ -87,6 +87,10 @@ export const TEST_GET_ACTIVITIES_BACKEND_ERROR_MESSAGE = 'Erreur backend lors du
  */
 export const TEST_ADD_ACTIVITY_BACKEND_ERROR_MESSAGE = "Erreur backend lors de l'enregistrement du label"
 /**
+ * Backend error message for delete activity.
+ */
+export const TEST_DELETE_ACTIVITY_BACKEND_ERROR_MESSAGE = 'Erreur backend lors de la suppression du label'
+/**
  * Failed request authorization.
  */
 export const FAILED_REQ_AUTHORIZATION = 'Failed'
@@ -117,7 +121,7 @@ export const activitiesEndpoints = [
         return res(ctx.status(200), ctx.delay(1000), ctx.json(TEST_ACTIVITIES))
     }),
 
-    // Create one activity.
+    // Create an activity.
     rest.post<addActivityRequestBodyType>(`${HOUSING_API}/:id/activities`, (req, res, ctx) => {
         const authorization = req.headers.get('authorization')
         if (authorization && authorization === FAILED_REQ_AUTHORIZATION) {
@@ -133,5 +137,23 @@ export const activitiesEndpoints = [
             )
         }
         return res(ctx.status(201), ctx.delay(1000), ctx.json(TEST_ACTIVITIES[0]))
+    }),
+
+    // Delete an activity.
+    rest.delete(`${HOUSING_API}/:id/activities/:activityId`, (req, res, ctx) => {
+        const authorization = req.headers.get('authorization')
+        if (authorization && authorization === FAILED_REQ_AUTHORIZATION) {
+            return res(ctx.status(404), ctx.delay(1000))
+        }
+        if (authorization && authorization === FAILED_WITH_MSG_REQ_AUTHORIZATION) {
+            return res(
+                ctx.status(404),
+                ctx.delay(1000),
+                ctx.json({
+                    detail: TEST_DELETE_ACTIVITY_BACKEND_ERROR_MESSAGE,
+                }),
+            )
+        }
+        return res(ctx.status(200), ctx.delay(1000))
     }),
 ]
