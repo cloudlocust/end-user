@@ -21,6 +21,10 @@ export type AccomodationDataType =
      */
     {
         /**
+         * Accomodation Id.
+         */
+        id: number
+        /**
          * House type.
          */
         houseType?: string
