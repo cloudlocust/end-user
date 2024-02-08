@@ -49,4 +49,30 @@ describe('WidgetItem Component test', () => {
 
         expect(getByText('trending_down')).toBeInTheDocument()
     })
+    test('when the percentageChange is null, the trending_down should not be shown', async () => {
+        const mockWidgetProps: IWidgetItemProps = {
+            ...mockWidgetPropsDefault,
+            percentageChange: 0,
+        }
+        const { queryByText } = reduxedRender(<WidgetItem {...mockWidgetProps} />)
+
+        expect(queryByText('trending_down')).not.toBeInTheDocument()
+        expect(queryByText('trending_up')).not.toBeInTheDocument()
+    })
+
+    test.each`
+        target
+        ${metricTargetsEnum.internalTemperature}
+        ${metricTargetsEnum.externalTemperature}
+    `('when the target is $target, the trending_up/down should not be shown', ({ target }) => {
+        const mockWidgetProps: IWidgetItemProps = {
+            ...mockWidgetPropsDefault,
+            target,
+            percentageChange: 50,
+        }
+        const { queryByText } = reduxedRender(<WidgetItem {...mockWidgetProps} />)
+
+        expect(queryByText('trending_down')).not.toBeInTheDocument()
+        expect(queryByText('trending_up')).not.toBeInTheDocument()
+    })
 })

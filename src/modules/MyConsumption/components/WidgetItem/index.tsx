@@ -29,6 +29,11 @@ export function WidgetItem({
     period,
     noValueMessage,
 }: IWidgetItemProps) {
+    const showTrendingIndicator =
+        percentageChange !== 0 &&
+        target !== metricTargetsEnum.internalTemperature &&
+        target !== metricTargetsEnum.externalTemperature
+
     return (
         <div className="p-16 flex flex-col flex-1 gap-3 justify-between">
             <div className="flex flex-row justify-between">
@@ -54,7 +59,7 @@ export function WidgetItem({
                         </Typography>
                     </div>
                     {/* Widget arrow */}
-                    {percentageChange !== 0 && (
+                    {showTrendingIndicator && (
                         // Negative means decrease
                         <div className="h-full flex items-center">
                             {percentageChange < 0 ? (
