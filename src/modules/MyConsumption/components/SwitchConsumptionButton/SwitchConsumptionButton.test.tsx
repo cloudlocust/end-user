@@ -6,6 +6,7 @@ import { waitFor } from '@testing-library/react'
 import {
     SwitchConsumptionButtonLabelEnum,
     SwitchConsumptionButtonProps,
+    SwitchConsumptionButtonTypeEnum,
 } from 'src/modules/MyConsumption/components/SwitchConsumptionButton/SwitchConsumptionButton.types'
 import { SwitchConsumptionButton } from 'src/modules/MyConsumption/components/SwitchConsumptionButton'
 
@@ -25,11 +26,12 @@ describe('SwitchConsumptionButton', () => {
 
     beforeEach(() => {
         switchConsumptionButtonProps = {
-            onSwitchConsumptionButton: jest.fn(),
             isIdleConsumptionButtonDisabled: false,
             onClickIdleConsumptionDisabledInfoIcon: jest.fn(),
             period: 'daily',
             isSolarProductionConsentOff: false,
+            consumptionToggleButton: SwitchConsumptionButtonTypeEnum.Consumption,
+            onSwitchConsumptionButton: jest.fn(),
         }
     })
 
@@ -135,21 +137,14 @@ describe('SwitchConsumptionButton', () => {
 
     test("when any of the button is selected, it's style should change", async () => {
         switchConsumptionButtonProps.isIdleConsumptionButtonDisabled = false
+        switchConsumptionButtonProps.period = 'weekly'
         const { getByText } = reduxedRender(
             <ThemeProvider theme={theme}>
                 <SwitchConsumptionButton {...switchConsumptionButtonProps} />
             </ThemeProvider>,
         )
 
-        const idleButtonElement = getByText(SwitchConsumptionButtonLabelEnum.Idle)
         const generalButtonElement = getByText(SwitchConsumptionButtonLabelEnum.General)
-
-        userEvent.click(idleButtonElement)
-        await waitFor(() => {
-            expect(idleButtonElement).toHaveStyle({
-                backgroundColor: theme.palette.secondary.main,
-            })
-        })
 
         userEvent.click(generalButtonElement)
         await waitFor(() => {
