@@ -868,13 +868,13 @@ export const getOnlyEuroConsumptionMetrics = (data: IMetric[]) => {
  *
  * @param data Metrics data.
  * @param period Period type.
- * @param enphaseOff Enphase boolean when it's OFF.
+ * @param consumptionToggleButton Consumption toggle button.
  * @returns New filterd metrics array data.
  */
 export const filterMetricsData = (
     data: IMetric[],
     period?: periodType,
-    enphaseOff?: boolean,
+    consumptionToggleButton?: SwitchConsumptionButtonTypeEnum,
     // TODO: Refactor this function, it's too long.
     // eslint-disable-next-line sonarjs/cognitive-complexity
 ): IMetric[] => {
@@ -886,28 +886,15 @@ export const filterMetricsData = (
     )
 
     const isBasePeakOffPeakConsumptionTargets = data.some((metric) =>
-        [
-            metricTargetsEnum.baseConsumption,
-            metricTargetsEnum.peakHourConsumption,
-            metricTargetsEnum.offPeakHourConsumption,
-        ].includes(metric.target as metricTargetsEnum),
+        [metricTargetsEnum.peakHourConsumption, metricTargetsEnum.offPeakHourConsumption].includes(
+            metric.target as metricTargetsEnum,
+        ),
     )
 
     const isTempoTargets = data.some((metric) => allTempoMetrics.includes(metric.target as metricTargetsEnum))
 
     // When basic HP HC consumption metrics are empty
     if (isBasePeakOffPeakConsumptionTargets || isTempoTargets) {
-        if (!enphaseOff) {
-            return [
-                ...data.filter(
-                    (metric) =>
-                        metric.target === metricTargetsEnum.consumption ||
-                        metric.target === metricTargetsEnum.autoconsumption,
-                ),
-                ...temperatureOrPmaxMetricsData,
-            ]
-        }
-
         // When neither of: baseConsumption or HP or HC consumption metrics has data, we use the "general" consumption metrics target.
         // In this case it's handled from the front as onlyConsumption.
         const isBasePeakOffPeakConsumptionEmpty = isEmptyMetricsData(data, [
@@ -922,7 +909,11 @@ export const filterMetricsData = (
 
         if (nonEmptyTempoMetricsData.length > 0) return [...nonEmptyTempoMetricsData, ...temperatureOrPmaxMetricsData]
 
-        if (isBasePeakOffPeakConsumptionEmpty && !nonEmptyTempoMetricsData.length && enphaseOff) {
+        if (
+            isBasePeakOffPeakConsumptionEmpty &&
+            !nonEmptyTempoMetricsData.length &&
+            consumptionToggleButton !== SwitchConsumptionButtonTypeEnum.AutoconsmptionProduction
+        ) {
             const onlyConsumption = getOnlyConsumptionMetrics(data)
 
             if (onlyConsumption) {
@@ -934,7 +925,11 @@ export const filterMetricsData = (
     // Base consumption is empty & period is daily & enphase consent is OFF
     const isBaseConsumptionEmpty = isEmptyMetricsData(data, [metricTargetsEnum.baseConsumption])
 
-    if (period === 'daily' && isBaseConsumptionEmpty && enphaseOff) {
+    if (
+        period === 'daily' &&
+        isBaseConsumptionEmpty &&
+        consumptionToggleButton !== SwitchConsumptionButtonTypeEnum.AutoconsmptionProduction
+    ) {
         return [
             ...data.filter(
                 (metric) =>
@@ -947,7 +942,11 @@ export const filterMetricsData = (
     }
 
     // Base consumption is NOT empty (has data), period is daily & enphase is OFF
-    if (period === 'daily' && !isBaseConsumptionEmpty && enphaseOff) {
+    if (
+        period === 'daily' &&
+        !isBaseConsumptionEmpty &&
+        consumptionToggleButton !== SwitchConsumptionButtonTypeEnum.AutoconsmptionProduction
+    ) {
         return [
             ...data.filter(
                 (metric) =>

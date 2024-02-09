@@ -145,8 +145,8 @@ export const ConsumptionChartContainer = ({
                 chartData = nullifyTodayIdleConsumptionValue([totalOffIdleConsumptionData, ...chartData])
             } else {
                 // Filter target cases.
-                const fileteredMetricsData = filterMetricsData(chartData, period, isSolarProductionConsentOff)
-                if (fileteredMetricsData) chartData = fileteredMetricsData
+                const fileteredMetricsData = filterMetricsData(chartData, period, consumptionToggleButton)
+                if (fileteredMetricsData.length > 0) chartData = fileteredMetricsData
             }
             setConsumptionChartData(chartData)
         } else {
@@ -272,7 +272,7 @@ export const ConsumptionChartContainer = ({
                 </Box>
             )}
 
-            <div className="my-16 flex justify-between">
+            <div className="my-16 flex justify-between items-center gap-10 md:gap-0">
                 <EurosConsumptionButtonToggler
                     onEuroClick={() => onEurosConsumptionButtonToggle(true)}
                     onConsumptionClick={() => onEurosConsumptionButtonToggle(false)}
