@@ -643,6 +643,7 @@ export const getYAxisOptionEchartsConsumptionChart = (
             axisLabel: {
                 formatter: targetsYAxisValueFormatters[targetYAxisIndex as targetYAxisIndexEnum],
             },
+            min: 0,
         })),
     } as EChartsOption
 }
