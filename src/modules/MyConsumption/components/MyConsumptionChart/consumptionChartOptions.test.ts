@@ -89,7 +89,11 @@ describe('Test echartsConsumptionOptions', () => {
         ]
         caseList.forEach(({ color, target }) => {
             // Result
-            const resultColor = getColorTargetSeriesEchartsConsumptionChart(target, theme)
+            const resultColor = getColorTargetSeriesEchartsConsumptionChart(
+                target,
+                theme,
+                SwitchConsumptionButtonTypeEnum.AutoconsmptionProduction,
+            )
 
             expect(resultColor).toStrictEqual(color)
         })
