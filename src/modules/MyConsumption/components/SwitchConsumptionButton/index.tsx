@@ -1,5 +1,5 @@
 import { MouseEvent } from 'react'
-import { ToggleButtonGroup, ToggleButton, capitalize } from '@mui/material'
+import { ToggleButtonGroup, ToggleButton, capitalize, useTheme, useMediaQuery } from '@mui/material'
 import { linksColor, warningMainHashColor } from 'src/modules/utils/muiThemeVariables'
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline'
 import {
@@ -40,6 +40,8 @@ export const SwitchConsumptionButton = (props: SwitchConsumptionButtonProps): JS
         consumptionToggleButton,
         onSwitchConsumptionButton,
     } = props
+    const theme = useTheme()
+    const smDown = useMediaQuery(theme.breakpoints.down('sm'))
 
     const { setConsumptionToggleButton } = useMyConsumptionStore()
 
@@ -96,6 +98,9 @@ export const SwitchConsumptionButton = (props: SwitchConsumptionButtonProps): JS
                 value={consumptionToggleButton}
                 onChange={onChange}
                 aria-label="toggle-consumption-button-group"
+                style={{
+                    height: smDown ? '40px' : 'auto',
+                }}
             >
                 {switchButtons.map((element, index) => {
                     // Hide the solar production button if the period is daily and the solar production consent is off.
