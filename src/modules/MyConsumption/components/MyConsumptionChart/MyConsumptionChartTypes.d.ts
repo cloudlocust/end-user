@@ -80,10 +80,6 @@ export interface ConsumptionChartProps {
      */
     data: IMetric[]
     /**
-     * Is Solar production consent off.
-     */
-    isSolarProductionConsentOff: boolean
-    /**
      * Period Type.
      */
     period: periodType
