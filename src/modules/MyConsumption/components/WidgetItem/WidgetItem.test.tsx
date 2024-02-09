@@ -49,4 +49,21 @@ describe('WidgetItem Component test', () => {
 
         expect(getByText('trending_down')).toBeInTheDocument()
     })
+
+    test.each`
+        testCase                               | target                                   | percentageChange
+        ${'the percentageChange is null'}      | ${metricTargetsEnum.consumption}         | ${0}
+        ${'the target is internalTemperature'} | ${metricTargetsEnum.internalTemperature} | ${50}
+        ${'the target is externalTemperature'} | ${metricTargetsEnum.externalTemperature} | ${50}
+    `('when $testCase, the trending indicator should not be shown', ({ target, percentageChange }) => {
+        const mockWidgetProps: IWidgetItemProps = {
+            ...mockWidgetPropsDefault,
+            target,
+            percentageChange,
+        }
+        const { queryByText } = reduxedRender(<WidgetItem {...mockWidgetProps} />)
+
+        expect(queryByText('trending_down')).not.toBeInTheDocument()
+        expect(queryByText('trending_up')).not.toBeInTheDocument()
+    })
 })
