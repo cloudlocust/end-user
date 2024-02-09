@@ -1,3 +1,4 @@
+import { SwitchConsumptionButtonTypeEnum } from 'src/modules/MyConsumption/components/SwitchConsumptionButton/SwitchConsumptionButton.types'
 import { metricTargetType, metricTargetsEnum, targetTimestampsValuesFormat } from 'src/modules/Metrics/Metrics.d'
 import { EChartsOption } from 'echarts'
 import dayjs from 'dayjs'
@@ -24,7 +25,7 @@ dayjs.extend(timezone)
  * @param timestamps Timestamps.
  * @param values Values datapoints.
  * @param theme Theme used for colors, fonts and backgrounds purposes.
- * @param isSolarProductionConsentOff Boolean indicating if solar production consent is off.
+ * @param switchButtonType Boolean indicating if solar production consent is off.
  * @param isMobile Is Mobile view.
  * @param period Period type.
  * @returns Echarts Consumption Option.
@@ -33,7 +34,7 @@ export const getEchartsConsumptionChartOptions = (
     timestamps: targetTimestampsValuesFormat,
     values: targetTimestampsValuesFormat,
     theme: Theme,
-    isSolarProductionConsentOff: boolean,
+    switchButtonType: SwitchConsumptionButtonTypeEnum,
     isMobile: boolean,
     period: periodType,
 ) => {
@@ -53,9 +54,9 @@ export const getEchartsConsumptionChartOptions = (
 
     return {
         ...getDefaultOptionsEchartsConsumptionChart(theme, period, isMobile),
-        ...getXAxisOptionEchartsConsumptionChart(xAxisTimestamps, isSolarProductionConsentOff, period, theme),
+        ...getXAxisOptionEchartsConsumptionChart(xAxisTimestamps, switchButtonType, period, theme),
         ...getYAxisOptionEchartsConsumptionChart(filteredValues, period, theme),
-        ...getSeriesOptionEchartsConsumptionChart(filteredValues, period, isSolarProductionConsentOff, theme),
+        ...getSeriesOptionEchartsConsumptionChart(filteredValues, period, switchButtonType, theme),
     } as EChartsOption
 }
 
@@ -109,14 +110,14 @@ const getDefaultOptionsEchartsConsumptionChart = (theme: Theme, period: periodTy
  *
  * @param values Datapoint values from the echarts metrics conversion function.
  * @param period Current period.
- * @param isSolarProductionConsentOff Boolean indicating if solar production consent is off.
+ * @param switchButtonType Indicates the current switch button type.
  * @param theme Theme used for colors, fonts and backgrounds of xAxis.
  * @returns XAxis object option for Echarts Consumption Options.
  */
 export const getSeriesOptionEchartsConsumptionChart = (
     values: targetTimestampsValuesFormat,
     period: periodType,
-    isSolarProductionConsentOff: boolean,
+    switchButtonType: SwitchConsumptionButtonTypeEnum,
     theme: Theme,
 ) => {
     // Targets functions yAxis Value formatter type (label shown in tooltip).
@@ -127,7 +128,7 @@ export const getSeriesOptionEchartsConsumptionChart = (
         const colorTargetSeries = getColorTargetSeriesEchartsConsumptionChart(
             target as metricTargetsEnum,
             theme,
-            isSolarProductionConsentOff,
+            switchButtonType,
         )
         // When the series is Transparent we hide it through type 'line' and symbole none, so that it won't interject with the already bar and line charts additional to its own stack name.
         const typeTargetSeries: EChartsOption['series'] =
@@ -142,16 +143,9 @@ export const getSeriesOptionEchartsConsumptionChart = (
             emphasis: {
                 focus: 'series',
             },
-            name: `${getNameTargetSeriesEchartsConsumptionChart(
-                target as metricTargetsEnum,
-                isSolarProductionConsentOff,
-            )}`,
+            name: `${getNameTargetSeriesEchartsConsumptionChart(target as metricTargetsEnum, switchButtonType)}`,
             data: values[target as metricTargetType],
-            stack: getStackTargetSeriesEchartsConsumptionChart(
-                target as metricTargetsEnum,
-                theme,
-                isSolarProductionConsentOff,
-            ),
+            stack: getStackTargetSeriesEchartsConsumptionChart(target as metricTargetsEnum, theme, switchButtonType),
             yAxisIndex: Number(targetYAxisIndex),
             tooltip: {
                 valueFormatter: targetsYAxisValueFormatters[targetYAxisIndex as targetYAxisIndexEnum],
@@ -172,20 +166,14 @@ export const getSeriesOptionEchartsConsumptionChart = (
         const index = resultSeries.findIndex(
             (serie) =>
                 serie.name ===
-                    getNameTargetSeriesEchartsConsumptionChart(
-                        metricTargetsEnum.idleConsumption,
-                        isSolarProductionConsentOff,
-                    ) ||
+                    getNameTargetSeriesEchartsConsumptionChart(metricTargetsEnum.idleConsumption, switchButtonType) ||
                 serie.name ===
                     getNameTargetSeriesEchartsConsumptionChart(
                         metricTargetsEnum.eurosIdleConsumption,
-                        isSolarProductionConsentOff,
+                        switchButtonType,
                     ) ||
                 serie.name ===
-                    getNameTargetSeriesEchartsConsumptionChart(
-                        metricTargetsEnum.subscriptionPrices,
-                        isSolarProductionConsentOff,
-                    ),
+                    getNameTargetSeriesEchartsConsumptionChart(metricTargetsEnum.subscriptionPrices, switchButtonType),
         )
 
         // if no index then veille is not activated and we are not showing it in the first place
@@ -204,14 +192,14 @@ export const getSeriesOptionEchartsConsumptionChart = (
  * Get Xaxis option of Echarts Consumption Option.
  *
  * @param xAxisTimestamps Timestamps array.
- * @param isSolarProductionConsentOff IsSolarProductionConsentOff.
+ * @param switchButtonType Indicates the current switch button type.
  * @param period Current period.
  * @param theme Theme used for colors, fonts and backgrounds of xAxis.
  * @returns XAxis object option for Echarts Consumption Options.
  */
 export const getXAxisOptionEchartsConsumptionChart = (
     xAxisTimestamps: number[],
-    isSolarProductionConsentOff: boolean,
+    switchButtonType: SwitchConsumptionButtonTypeEnum,
     period: periodType,
     theme: Theme,
 ) =>
@@ -222,7 +210,7 @@ export const getXAxisOptionEchartsConsumptionChart = (
                 type: 'category',
                 data: getXAxisCategoriesData(xAxisTimestamps, period),
                 axisLabel: {
-                    interval: getXAxisLabelInterval(isSolarProductionConsentOff, period),
+                    interval: getXAxisLabelInterval(switchButtonType, period),
                     hideOverlap: true,
                     rotate: 30,
                     /**
@@ -271,13 +259,13 @@ export const getXAxisOptionEchartsConsumptionChart = (
  * Function that give the index of the time in timestamps that we will get the interval from.
  * For exemple : ['00:30', '01:00', '01:30', '02:00'], if we put the index 1, it will show every 2 timestamps in the axis line.
  *
- * @param isSolarProductionConsentOff Is production on, to know if data is every minute or 30min.
+ * @param switchButtonType Indicates the current switch button type.
  * @param period Period to know if it's daily or not.
  * @returns Value of the index that will be the reference for the times.
  */
-const getXAxisLabelInterval = (isSolarProductionConsentOff: boolean, period: periodType) => {
+const getXAxisLabelInterval = (switchButtonType: SwitchConsumptionButtonTypeEnum, period: periodType) => {
     if (period === 'daily') {
-        return isSolarProductionConsentOff ? 59 : 1
+        return switchButtonType !== SwitchConsumptionButtonTypeEnum.AutoconsmptionProduction ? 59 : 1
     }
 }
 
@@ -307,13 +295,13 @@ export const getXAxisCategoriesData = (timestamps: number[], period: periodType)
  *
  * @param target MetricTarget Chart.
  * @param theme Current MUI Theme Applied.
- * @param isSolarProductionConsentOff Indicates if solarProduction consent is off.
+ * @param switchButtonType Indicates the current switch button type.
  * @returns Color of the given target series in EchartsConsumptionChart.
  */
 export const getColorTargetSeriesEchartsConsumptionChart = (
     target: metricTargetsEnum,
     theme: Theme,
-    isSolarProductionConsentOff?: boolean,
+    switchButtonType?: SwitchConsumptionButtonTypeEnum,
 ) => {
     switch (target) {
         case metricTargetsEnum.externalTemperature:
@@ -344,7 +332,9 @@ export const getColorTargetSeriesEchartsConsumptionChart = (
         case metricTargetsEnum.totalOffIdleConsumption:
             return theme.palette.secondary.main
         case metricTargetsEnum.consumption:
-            return isSolarProductionConsentOff ? TRANSPARENT_COLOR : theme.palette.secondary.main
+            return switchButtonType !== SwitchConsumptionButtonTypeEnum.AutoconsmptionProduction
+                ? TRANSPARENT_COLOR
+                : theme.palette.secondary.main
         case metricTargetsEnum.euroPeakHourConsumption:
             return '#6BCBFF'
         case metricTargetsEnum.euroOffPeakConsumption:
@@ -378,12 +368,12 @@ export const getColorTargetSeriesEchartsConsumptionChart = (
  * Function that returns the name which represents the label for each target series of EchartsConsumptionChart (shown in tooltip and legend).
  *
  * @param target MetricTarget Chart.
- * @param isSolarProductionConsentOff Indicates if solarProduction consent is off.
+ * @param switchButtonType Indicates the current switch button type.
  * @returns Label of the given target series in EchartsConsumptionChart.
  */
 export const getNameTargetSeriesEchartsConsumptionChart = (
     target: metricTargetsEnum,
-    isSolarProductionConsentOff?: boolean,
+    switchButtonType?: SwitchConsumptionButtonTypeEnum,
 ) => {
     const totalConsumptionSeriesLabel = 'Consommation totale'
     const totalEurosConsumptionSeriesLabel = 'Consommation euro totale'
@@ -393,9 +383,13 @@ export const getNameTargetSeriesEchartsConsumptionChart = (
         case metricTargetsEnum.totalIdleConsumption:
             return totalConsumptionSeriesLabel
         case metricTargetsEnum.consumption:
-            return isSolarProductionConsentOff ? totalConsumptionSeriesLabel : 'Electricité achetée sur le réseau'
+            return switchButtonType !== SwitchConsumptionButtonTypeEnum.AutoconsmptionProduction
+                ? totalConsumptionSeriesLabel
+                : 'Electricité achetée sur le réseau'
         case metricTargetsEnum.baseConsumption:
-            return isSolarProductionConsentOff ? 'Consommation de base' : 'Electricité achetée sur le réseau'
+            return switchButtonType !== SwitchConsumptionButtonTypeEnum.AutoconsmptionProduction
+                ? 'Consommation de base'
+                : 'Electricité achetée sur le réseau'
         case metricTargetsEnum.autoconsumption:
             return 'Autoconsommation'
         case metricTargetsEnum.eurosConsumption:
@@ -570,15 +564,15 @@ export const getTypeTargetSeriesEchartsConsumptionChart = (
  * 3rd case: Targets that has their series color 'TRANSPARENT', it's a workaround so that they will seem invisible and won't conflicts with the others charts even if they have invisible Color.
  * @param target MetricTarget Chart.
  * @param theme Current MUI Theme Applied.
- * @param isSolarProductionConsentOff Indicates if solarProduction consent is off.
+ * @param switchButtonType Indicates the current switch button type.
  * @returns Stack group name of the given target series in EchartsConsumptionChart.
  */
 export const getStackTargetSeriesEchartsConsumptionChart = (
     target: metricTargetsEnum,
     theme: Theme,
-    isSolarProductionConsentOff?: boolean,
+    switchButtonType?: SwitchConsumptionButtonTypeEnum,
 ) => {
-    const targetColor = getColorTargetSeriesEchartsConsumptionChart(target, theme, isSolarProductionConsentOff)
+    const targetColor = getColorTargetSeriesEchartsConsumptionChart(target, theme, switchButtonType)
     const stackHiddenTargetsSeries = 'stackHiddenTargetsSeries'
     const stackConsumptionTargetsSeries = 'stackConsumptionTargetsSeries'
     if (target === metricTargetsEnum.pMax) return 'stackPmaxTargetSeries'
