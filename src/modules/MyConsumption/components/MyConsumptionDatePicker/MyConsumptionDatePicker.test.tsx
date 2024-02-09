@@ -8,6 +8,7 @@ import { waitFor } from '@testing-library/react'
 import dayjs from 'dayjs'
 import { startOfDay, subMonths } from 'date-fns'
 import { PeriodEnum } from 'src/modules/MyConsumption/myConsumptionTypes.d'
+import { fr } from 'date-fns/locale'
 
 let mockSetRange = jest.fn()
 let mockOnDatePickerChange = jest.fn()
@@ -16,10 +17,25 @@ const DECREMENT_DATE_ARROW_TEXT = 'chevron_left'
 const disabledClass = 'Mui-disabled'
 const CONFIRM_DATE_PICKER_TEXT = 'OK'
 let mockPeriod = PeriodEnum.DAILY
-const dateFormat = 'dd/MM/yyyy'
+const dailyDateFormat = 'EEEE dd/MM/yyyy'
+const weeklyDateFormat = 'dd/MM/yyyy'
+const montlyDateFormat = 'MM/yyyy'
+const yearlyDateFormat = 'yyyy'
 const date = new Date()
 const yesterday = date.setDate(date.getDate() - 1)
 let mockRange = getRange(mockPeriod, new Date(yesterday), 'sub')
+
+/**
+ * Format date in dateformat and in local france.
+ *
+ * @param date Date to format.
+ * @param dateformat Format to apply.
+ * @returns Formatted date.
+ */
+function formatDate(date: Date | number, dateformat: string) {
+    return format(new Date(date), dateformat, { locale: fr })
+}
+
 describe('Load MyConsumptionDatePicker', () => {
     test('when the user clicks on the left arrow, yesterday`s date is shown', async () => {
         const { getByText, container } = reduxedRender(
@@ -27,9 +43,9 @@ describe('Load MyConsumptionDatePicker', () => {
                 <MyConsumptionDatePicker period={mockPeriod} setRange={mockSetRange} range={mockRange} />
             </Router>,
         )
-        expect(container.querySelector('input')?.value).toBe(format(date, dateFormat))
+        expect(container.querySelector('input')?.value).toBe(formatDate(date, dailyDateFormat))
         userEvent.click(getByText(DECREMENT_DATE_ARROW_TEXT))
-        expect(container.querySelector('input')?.value).toBe(format(new Date(yesterday), dateFormat))
+        expect(container.querySelector('input')?.value).toBe(formatDate(yesterday, dailyDateFormat))
     })
     test('when the user clicks on the left arrow, the previous week is shown', async () => {
         mockPeriod = PeriodEnum.WEEKLY
@@ -42,7 +58,7 @@ describe('Load MyConsumptionDatePicker', () => {
             </Router>,
         )
         userEvent.click(getByText(DECREMENT_DATE_ARROW_TEXT))
-        expect(container.querySelector('input')?.value).toBe(format(new Date(prevWeek), dateFormat))
+        expect(container.querySelector('input')?.value).toBe(formatDate(prevWeek, weeklyDateFormat))
     })
     test('when the user clicks on the left arrow, the previous month is shown', async () => {
         mockPeriod = PeriodEnum.MONTHLY
@@ -55,7 +71,7 @@ describe('Load MyConsumptionDatePicker', () => {
             </Router>,
         )
         userEvent.click(getByText(DECREMENT_DATE_ARROW_TEXT))
-        expect(container.querySelector('input')?.value).toBe(format(prevMonthDate, 'MM/yyyy'))
+        expect(container.querySelector('input')?.value).toBe(formatDate(prevMonthDate, montlyDateFormat))
     })
     test('when the user clicks on the left arrow, the previous year is shown', async () => {
         mockPeriod = PeriodEnum.YEARLY
@@ -68,7 +84,7 @@ describe('Load MyConsumptionDatePicker', () => {
             </Router>,
         )
         userEvent.click(getByText(DECREMENT_DATE_ARROW_TEXT))
-        expect(container.querySelector('input')?.value).toBe(format(new Date(prevYear), 'yyyy'))
+        expect(container.querySelector('input')?.value).toBe(formatDate(prevYear, yearlyDateFormat))
     })
     test('when the user clicks on the right arrow, the end of year is shown', async () => {
         mockPeriod = PeriodEnum.YEARLY
