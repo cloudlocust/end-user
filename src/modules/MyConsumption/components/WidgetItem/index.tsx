@@ -44,7 +44,7 @@ export function WidgetItem({
                     ? (!value || period === PeriodEnum.DAILY) && infoIcon
                     : infoIcon}
             </div>
-            {!value || (target === metricTargetsEnum.injectedProduction && period === PeriodEnum.DAILY) ? (
+            {!value ? (
                 <div className="text-center flex flex-1 justify-center items-center py-4">{noValueMessage}</div>
             ) : (
                 <div className="flex flex-row justify-between items-center gap-3">

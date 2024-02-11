@@ -34,7 +34,19 @@ export const DEFAULT_NO_VALUE_MESSAGE = 'Aucune donnée disponible'
  */
 // eslint-disable-next-line sonarjs/cognitive-complexity
 export const Widget = memo(
-    ({ filters, range, infoIcons, metricsInterval, targets, period, enphaseOff, children }: IWidgetProps) => {
+    ({
+        filters,
+        range,
+        infoIcons,
+        metricsInterval,
+        targets,
+        period,
+        enphaseOff,
+        children,
+        displayWidgetCondition,
+        displayTargetsConditions,
+    }: // eslint-disable-next-line sonarjs/cognitive-complexity
+    IWidgetProps) => {
         const { data, setMetricsInterval, setRange, isMetricsLoading } = useMetrics({
             interval: metricsInterval,
             range: getWidgetRange(range, period),
@@ -113,9 +125,11 @@ export const Widget = memo(
                 isRangeChanged.current = false
             }
         }, [period, range, setRange, setRangePrevious])
+        // display the widget only if displayWidgetCondition is true or not set in the component props
+        if (displayWidgetCondition && !displayWidgetCondition(targetsInfos)) return null
 
         return (
-            <Grid item xs={6} sm={6} md={4} lg={3} xl={3} className="flex">
+            <Grid item xs={6} sm={6} md={4} lg={3} xl={3} className="flex" data-testid="widget">
                 <Card className="w-full rounded-20 shadow sm:m-4" variant="outlined" style={{ minHeight: '170px' }}>
                     <>
                         {isMetricsLoading ? (
@@ -128,30 +142,35 @@ export const Widget = memo(
                         ) : (
                             <div className="h-full flex flex-col">
                                 {children}
-                                {(Object.keys(targetsInfos) as metricTargetType[]).map((target, index) => (
-                                    <WidgetItem
-                                        key={index}
-                                        target={target}
-                                        title={renderWidgetTitle(target, enphaseOff)}
-                                        infoIcon={infoIcons && infoIcons[target]}
-                                        value={targetsInfos[target].value}
-                                        unit={targetsInfos[target].unit}
-                                        percentageChange={targetsInfos[target].percentageChange}
-                                        period={period}
-                                        noValueMessage={
-                                            target === metricTargetsEnum.pMax && period === PeriodEnum.DAILY ? (
-                                                // maxWidth to have a more balanced text.
-                                                <TypographyFormatMessage style={{ maxWidth: '90%' }}>
-                                                    La puissance maximale n'est pas disponible sur la journée en cours
-                                                </TypographyFormatMessage>
-                                            ) : (
-                                                <TypographyFormatMessage>
-                                                    {DEFAULT_NO_VALUE_MESSAGE}
-                                                </TypographyFormatMessage>
-                                            )
-                                        }
-                                    />
-                                ))}
+                                {(Object.keys(targetsInfos) as metricTargetType[]).map((target, index) =>
+                                    !displayTargetsConditions ||
+                                    (displayTargetsConditions &&
+                                        displayTargetsConditions[target]?.(targetsInfos[target].value)) ? (
+                                        <WidgetItem
+                                            key={index}
+                                            target={target}
+                                            title={renderWidgetTitle(target, enphaseOff)}
+                                            infoIcon={infoIcons && infoIcons[target]}
+                                            value={targetsInfos[target].value}
+                                            unit={targetsInfos[target].unit}
+                                            percentageChange={targetsInfos[target].percentageChange}
+                                            period={period}
+                                            noValueMessage={
+                                                target === metricTargetsEnum.pMax && period === PeriodEnum.DAILY ? (
+                                                    // maxWidth to have a more balanced text.
+                                                    <TypographyFormatMessage style={{ maxWidth: '90%' }}>
+                                                        La puissance maximale n'est pas disponible sur la journée en
+                                                        cours
+                                                    </TypographyFormatMessage>
+                                                ) : (
+                                                    <TypographyFormatMessage>
+                                                        {DEFAULT_NO_VALUE_MESSAGE}
+                                                    </TypographyFormatMessage>
+                                                )
+                                            }
+                                        />
+                                    ) : null,
+                                )}
                             </div>
                         )}
                     </>

@@ -57,6 +57,16 @@ export interface IWidgetProps {
      * Children of the Widget.
      */
     children?: ReactNode | ReactElement
+
+    /**
+     * Here we can set the condition when we don't need to display the widget.
+     */
+    displayWidgetCondition?: (targetsInfos: targetsInfosType) => boolean
+
+    /**
+     * We can hide any value of target on the widget.
+     */
+    displayTargetsConditions?: Partial<Record<metricTargetType, (value: targetsInfosType[string]['value']) => boolean>>
 }
 
 /**
