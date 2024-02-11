@@ -66,17 +66,18 @@ export type SwitchConsumpytionButtonType =
  */
 export interface SwitchConsumptionButtonProps {
     /**
+     * Handle the click event on the switch consumption button.
      *
-     * @param switchConsumptionButtonTypeEnum SwitchConsumptionButtonTypeEnum.
+     * @param switchConsumptionButtonTypeEnum Indicates which button should will be active.
      * @returns Void.
      */
     onSwitchConsumptionButton: (switchConsumptionButtonTypeEnum: SwitchConsumptionButtonTypeEnum) => void
     /**
-     *
+     * Indicates if the veille is shown.
      */
     isIdleShown: boolean
     /**
-     *
+     * Indicates if the auto consumption & production is shown.
      */
     isAutoConsumptionProductionShown: boolean
 }

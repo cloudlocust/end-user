@@ -1,4 +1,4 @@
-import { MouseEvent, useState } from 'react'
+import { MouseEvent } from 'react'
 import { ToggleButtonGroup, ToggleButton, capitalize } from '@mui/material'
 import {
     SwitchConsumptionButtonLabelEnum,
@@ -6,6 +6,7 @@ import {
     SwitchConsumptionButtonTypeEnum,
     SwitchConsumpytionButtonType,
 } from 'src/modules/MyConsumption/components/SwitchConsumptionButton/SwitchConsumptionButton.types'
+import { useMyConsumptionStore } from 'src/modules/MyConsumption/store/myConsumptionStore'
 
 const switchButtons: SwitchConsumpytionButtonType = [
     {
@@ -36,9 +37,7 @@ export const SwitchConsumptionButton = ({
     isIdleShown,
     isAutoConsumptionProductionShown,
 }: SwitchConsumptionButtonProps): JSX.Element => {
-    const [buttonType, setButtonType] = useState<SwitchConsumptionButtonTypeEnum>(
-        SwitchConsumptionButtonTypeEnum.Consumption,
-    )
+    const { consumptionToggleButton, setConsumptionToggleButton } = useMyConsumptionStore()
 
     /**
      * Function handling switch of idleConsumptionButton.
@@ -48,8 +47,8 @@ export const SwitchConsumptionButton = ({
      */
     const onChange = (_event: MouseEvent<HTMLElement>, value: SwitchConsumptionButtonTypeEnum) => {
         if (value === null) return
+        setConsumptionToggleButton(value)
         onSwitchConsumptionButton(value)
-        setButtonType(value)
     }
 
     return (
@@ -57,7 +56,7 @@ export const SwitchConsumptionButton = ({
             color="secondary"
             exclusive
             size="small"
-            value={buttonType}
+            value={consumptionToggleButton}
             onChange={onChange}
             aria-label="toggle-consumption-button-group"
         >

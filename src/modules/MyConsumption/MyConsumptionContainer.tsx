@@ -25,6 +25,8 @@ import {
     arePlugsUsedBasedOnProductionStatus,
     isProductionActiveAndHousingHasAccess,
 } from 'src/modules/MyHouse/MyHouseConfig'
+import { SwitchConsumptionButtonTypeEnum } from 'src/modules/MyConsumption/components/SwitchConsumptionButton/SwitchConsumptionButton.types'
+import { useMyConsumptionStore } from 'src/modules/MyConsumption/store/myConsumptionStore'
 
 /**
  * MyConsumptionContainer.
@@ -39,6 +41,7 @@ export const MyConsumptionContainer = () => {
     const { currentHousing, currentHousingScopes } = useSelector(({ housingModel }: RootState) => housingModel)
     const [range, setRange] = useState<metricRangeType>(getRangeV2(PeriodEnum.DAILY))
     const [filters, setFilters] = useState<metricFiltersType>([])
+    const { consumptionToggleButton } = useMyConsumptionStore()
 
     // Load connected plug only when housing is defined
     const {
@@ -57,6 +60,11 @@ export const MyConsumptionContainer = () => {
     const nrlinkOff = nrlinkConsent?.nrlinkConsentState === 'NONEXISTENT'
     const enedisOff = enedisSgeConsent?.enedisSgeConsentState !== 'CONNECTED'
 
+    // Productioon chart should be shown only when user click on Autoconsumption-Production switch button
+    const isProductionChartShown =
+        isProductionActiveAndHousingHasAccess(currentHousingScopes) &&
+        consumptionToggleButton === SwitchConsumptionButtonTypeEnum.AutoconsmptionProduction
+
     const [metricsInterval, setMetricsInterval] = useState<metricIntervalType>(
         isSolarProductionConsentOff ? '1m' : '30m',
     )
@@ -70,16 +78,6 @@ export const MyConsumptionContainer = () => {
         setFilters(formatMetricFilter(currentHousing?.id))
         getConsents(currentHousing?.id)
     }, [setFilters, getConsents, currentHousing?.id])
-
-    /**
-     * Callback when MyConsumptionPeriod components change metrics Interval.
-     *
-     * @param interval Metric Interval selected.
-     */
-    const setMyConsumptionPeriodMetricsInterval = (interval: metricIntervalType) => {
-        if (interval === '1m') setMetricsInterval(!isSolarProductionConsentOff ? '30m' : '1m')
-        else setMetricsInterval(interval)
-    }
 
     useEffect(() => {
         loadConnectedPlugList()
@@ -123,7 +121,7 @@ export const MyConsumptionContainer = () => {
                             <MyConsumptionPeriod
                                 setPeriod={setPeriod}
                                 setRange={setRange}
-                                setMetricsInterval={setMyConsumptionPeriodMetricsInterval}
+                                setMetricsInterval={setMetricsInterval}
                                 period={period}
                                 range={range}
                             />
@@ -144,7 +142,7 @@ export const MyConsumptionContainer = () => {
                 )}
 
                 {/* Production Chart */}
-                {isProductionActiveAndHousingHasAccess(currentHousingScopes) && (
+                {isProductionChartShown && (
                     <ProductionChartContainer
                         period={period}
                         range={range}

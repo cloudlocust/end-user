@@ -69,7 +69,7 @@ export const equipmentsAccomodationFeatureState =
 /**
  * Env Variable to know if the temp and pmax features are enabled.
  */
-export const tempPmaxFeatureDisabled = window._env_.REACT_APP_TEMP_PMAX_FEATURE_STATE === 'disabled'
+export const isTempPmaxFeatureDisabled = window._env_.REACT_APP_TEMP_PMAX_FEATURE_STATE === 'disabled'
 
 /**
  * Env Variable to know if SGE consent feature is enabled.

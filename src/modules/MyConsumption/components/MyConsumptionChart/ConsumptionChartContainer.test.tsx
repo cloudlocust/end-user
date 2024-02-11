@@ -112,7 +112,7 @@ const mockGetMetricsWithParamsValues: getMetricsWithParamsType = {
     filters: mockFilters,
     interval: mockMetricsInterval,
     range: mockRange,
-    targets: [metricTargetsEnum.autoconsumption, metricTargetsEnum.consumption],
+    targets: [metricTargetsEnum.consumptionByTariffComponent, metricTargetsEnum.consumption],
 }
 // Mock metricsHook
 jest.mock('src/modules/Metrics/metricsHook.ts', () => ({
@@ -200,8 +200,8 @@ describe('MyConsumptionContainer test', () => {
                 { initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[0] } } },
             )
 
-            expect(getByText(ConsumptionChartTitle)).toBeTruthy()
-            expect(getByText(ConsumptionChartPeriodTitle)).toBeTruthy()
+            expect(getByText(ConsumptionChartTitle)).toBeInTheDocument()
+            expect(getByText(ConsumptionChartPeriodTitle)).toBeInTheDocument()
         },
     )
     test('onLoad getMetrics with isSolarProductionConsentOff false is called two times, one with default targets of autoconsumption and then all targets.', async () => {
@@ -215,9 +215,9 @@ describe('MyConsumptionContainer test', () => {
             { initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[0] } } },
         )
 
-        // First time, getMetrics is called with only two targets
         await waitFor(() => {
             expect(mockGetMetricsWithParams).toHaveBeenCalledWith(mockGetMetricsWithParamsValues)
+            expect(mockGetMetricsWithParams).toHaveBeenCalledTimes(2)
         })
 
         expect(() => getByText(CONSUMPTION_ENEDIS_SGE_WARNING_TEXT)).toThrow()
@@ -242,10 +242,10 @@ describe('MyConsumptionContainer test', () => {
             userEvent.click(getByTestId(EUROS_CONSUMPTION_ICON_TEST_ID).parentElement as HTMLButtonElement)
             // CONSUMPTION ICON should be shown
             await waitFor(() => {
-                expect(getByTestId(CONSUMPTION_ICON_TEST_ID)).toBeTruthy()
+                expect(getByTestId(CONSUMPTION_ICON_TEST_ID)).toBeInTheDocument()
             })
-            expect(getByText(CONSUMPTION_TITLE_NOT_DAILY)).toBeTruthy()
-            expect(getByText(ConsumptionChartPeriodTitle)).toBeTruthy()
+            expect(getByText(CONSUMPTION_TITLE_NOT_DAILY)).toBeInTheDocument()
+            expect(getByText(ConsumptionChartPeriodTitle)).toBeInTheDocument()
         },
         20000,
     )
@@ -264,12 +264,12 @@ describe('MyConsumptionContainer test', () => {
         userEvent.click(getByTestId(EUROS_CONSUMPTION_ICON_TEST_ID).parentElement as HTMLButtonElement)
         // CONSUMPTION ICON should be shown
         await waitFor(() => {
-            expect(getByTestId(CONSUMPTION_ICON_TEST_ID)).toBeTruthy()
+            expect(getByTestId(CONSUMPTION_ICON_TEST_ID)).toBeInTheDocument()
         })
         expect(() => getByTestId(EUROS_CONSUMPTION_ICON_TEST_ID)).toThrow()
 
         // HasMissingContractsExample Text
-        expect(getByText(HAS_MISSING_CONTRACTS_WARNING_TEXT)).toBeTruthy()
+        expect(getByText(HAS_MISSING_CONTRACTS_WARNING_TEXT)).toBeInTheDocument()
         // Contracts Redirection URL
         expect(getByText(HAS_MISSING_CONTRACTS_WARNING_REDIRECT_LINK_TEXT).parentElement!.closest('a')).toHaveAttribute(
             'href',
@@ -280,7 +280,7 @@ describe('MyConsumptionContainer test', () => {
         userEvent.click(getByTestId(CONSUMPTION_ICON_TEST_ID).parentElement as HTMLButtonElement)
         // EUROS ICON Should be shown
         await waitFor(() => {
-            expect(getByTestId(EUROS_CONSUMPTION_ICON_TEST_ID)).toBeTruthy()
+            expect(getByTestId(EUROS_CONSUMPTION_ICON_TEST_ID)).toBeInTheDocument()
         })
         expect(() => getByText(HAS_MISSING_CONTRACTS_WARNING_TEXT)).toThrow()
     }, 20000)
@@ -302,7 +302,7 @@ describe('MyConsumptionContainer test', () => {
         menuButton.focus()
         menuButton.click()
 
-        expect(getByText('Ajouter un axe sur le graphique :')).toBeTruthy()
+        expect(getByText('Ajouter un axe sur le graphique :')).toBeInTheDocument()
         expect(getAllByRole(menuItemRole).length).toBe(3)
         expect(queryByText('Pmax')).not.toBeInTheDocument()
     })
@@ -326,11 +326,11 @@ describe('MyConsumptionContainer test', () => {
         menuButton.focus()
         menuButton.click()
 
-        expect(getByText('Ajouter un axe sur le graphique :')).toBeTruthy()
+        expect(getByText('Ajouter un axe sur le graphique :')).toBeInTheDocument()
         expect(getAllByRole(menuItemRole).length).toBe(3)
         expect(queryByText('Pmax')).not.toBeInTheDocument()
 
-        expect(getByText(CONSUMPTION_ENEDIS_SGE_WARNING_TEXT)).toBeTruthy()
+        expect(getByText(CONSUMPTION_ENEDIS_SGE_WARNING_TEXT)).toBeInTheDocument()
     })
 
     test('When isSolarProductionConsentOff is true, autoconsumption target is not shown, getMetrics is called without autoconsumption target', async () => {
@@ -422,29 +422,20 @@ describe('MyConsumptionContainer test', () => {
             },
         )
 
-        test.each`
-            caseName                 | period       | metricsInterval | isSolarProductionConsentOff
-            ${'Daily without Solar'} | ${'daily'}   | ${'1m'}         | ${true}
-            ${'Weekly with Solar'}   | ${'weekly'}  | ${'1d'}         | ${false}
-            ${'Monthly with Solar'}  | ${'monthly'} | ${'1d'}         | ${false}
-            ${'Yearly with Solar'}   | ${'yearly'}  | ${'1M'}         | ${false}
-        `(
-            'cases when SwitchConsumption button is not shown: case: $caseName',
-            async ({ period, metricsInterval, isSolarProductionConsentOff }) => {
-                echartsConsumptionChartContainerProps.period = period
-                echartsConsumptionChartContainerProps.metricsInterval = metricsInterval
-                echartsConsumptionChartContainerProps.isSolarProductionConsentOff = isSolarProductionConsentOff
+        test('cases when SwitchConsumption button is not shown: case: Daily without Solar', async () => {
+            echartsConsumptionChartContainerProps.period = 'daily'
+            echartsConsumptionChartContainerProps.metricsInterval = '1m'
+            echartsConsumptionChartContainerProps.isSolarProductionConsentOff = true
 
-                const { getByText } = reduxedRender(
-                    <Router>
-                        <ConsumptionChartContainer {...echartsConsumptionChartContainerProps} />
-                    </Router>,
-                    { initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[0] } } },
-                )
+            const { getByText } = reduxedRender(
+                <Router>
+                    <ConsumptionChartContainer {...echartsConsumptionChartContainerProps} />
+                </Router>,
+                { initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[0] } } },
+            )
 
-                // test with General Properties, because it is always shown.
-                expect(() => getByText(SwitchConsumptionButtonLabelEnum.General)).toThrow()
-            },
-        )
+            // test with General Properties, because it is always shown.
+            expect(() => getByText(SwitchConsumptionButtonLabelEnum.General)).toThrow()
+        })
     })
 })

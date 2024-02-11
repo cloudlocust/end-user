@@ -77,15 +77,7 @@ describe('SwitchConsumptionButton', () => {
             </ThemeProvider>,
         )
 
-        const idleButtonElement = getByText(SwitchConsumptionButtonLabelEnum.Idle)
         const generalButtonElement = getByText(SwitchConsumptionButtonLabelEnum.General)
-
-        userEvent.click(idleButtonElement)
-        await waitFor(() => {
-            expect(idleButtonElement).toHaveStyle({
-                backgroundColor: theme.palette.secondary.main,
-            })
-        })
 
         userEvent.click(generalButtonElement)
         await waitFor(() => {
@@ -125,11 +117,13 @@ describe('SwitchConsumptionButton', () => {
 
         const idleButtonElement = getByText(SwitchConsumptionButtonLabelEnum.Idle)
 
+        // Initial click
         userEvent.click(idleButtonElement)
         await waitFor(() => {
             expect(switchConsumptionButtonProps.onSwitchConsumptionButton).toHaveBeenCalledTimes(1)
         })
 
+        // Second click
         userEvent.click(idleButtonElement)
         await waitFor(() => {
             expect(switchConsumptionButtonProps.onSwitchConsumptionButton).toHaveBeenCalledTimes(1)

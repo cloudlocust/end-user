@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { useTheme } from '@mui/material'
 import { ITargetMenuGroup } from 'src/modules/MyConsumption/myConsumptionTypes'
 import { metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
-import { tempPmaxFeatureDisabled } from 'src/modules/MyHouse/MyHouseConfig'
+import { isTempPmaxFeatureDisabled } from 'src/modules/MyHouse/MyHouseConfig'
 import { Menu, MenuItem, ListItemIcon } from '@mui/material'
 import MoreVertIcon from '@mui/icons-material/MoreVert'
 import { SyntheticEvent } from 'react'
@@ -119,17 +119,16 @@ const TargetMenuGroup = ({ removeTargets, addTargets, hidePmax, activeButton }: 
                         <TypographyFormatMessage>Ajouter un axe sur le graphique :</TypographyFormatMessage>
                     </MenuItem>
                     {buttonOptions.map((option) => {
-                        const isPmaxOptionDisabled = (tempPmaxFeatureDisabled || hidePmax) && option.value === 'Pmax'
-                        const isTemperatureOptionDisabled = tempPmaxFeatureDisabled && option.value === 'temperature'
-                        const isOptionExcluded = isPmaxOptionDisabled || isTemperatureOptionDisabled
+                        const isPmaxOptionExcluded = (isTempPmaxFeatureDisabled || hidePmax) && option.value === 'Pmax'
+                        const isTemperatureOptionExcluded = isTempPmaxFeatureDisabled && option.value === 'temperature'
+
+                        if (isPmaxOptionExcluded || isTemperatureOptionExcluded) return null
 
                         const activeField = activeButton === option.value
                         const BackgroundColor = activeField ? theme.palette.primary.light : theme.palette.common.white
                         const Color = activeField
                             ? theme.palette.primary.contrastText
                             : theme.palette.secondary.contrastText
-
-                        if (isOptionExcluded) return null
 
                         return (
                             <MenuItem
