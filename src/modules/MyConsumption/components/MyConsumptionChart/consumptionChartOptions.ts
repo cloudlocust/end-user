@@ -295,13 +295,13 @@ export const getXAxisCategoriesData = (timestamps: number[], period: periodType)
  *
  * @param target MetricTarget Chart.
  * @param theme Current MUI Theme Applied.
- * @param _switchButtonType Indicates the current switch button type.
+ * @param switchButtonType Indicates the current switch button type.
  * @returns Color of the given target series in EchartsConsumptionChart.
  */
 export const getColorTargetSeriesEchartsConsumptionChart = (
     target: metricTargetsEnum,
     theme: Theme,
-    _switchButtonType?: SwitchConsumptionButtonTypeEnum,
+    switchButtonType?: SwitchConsumptionButtonTypeEnum,
 ) => {
     switch (target) {
         case metricTargetsEnum.externalTemperature:
@@ -332,11 +332,9 @@ export const getColorTargetSeriesEchartsConsumptionChart = (
         case metricTargetsEnum.totalOffIdleConsumption:
             return theme.palette.secondary.main
         case metricTargetsEnum.consumption:
-            // return switchButtonType !== SwitchConsumptionButtonTypeEnum.AutoconsmptionProduction
-            //     ? TRANSPARENT_COLOR
-            //     :
-
-            return theme.palette.secondary.main
+            return switchButtonType !== SwitchConsumptionButtonTypeEnum.AutoconsmptionProduction
+                ? TRANSPARENT_COLOR
+                : theme.palette.secondary.main
         case metricTargetsEnum.euroPeakHourConsumption:
             return '#6BCBFF'
         case metricTargetsEnum.euroOffPeakConsumption:
@@ -645,6 +643,7 @@ export const getYAxisOptionEchartsConsumptionChart = (
             axisLabel: {
                 formatter: targetsYAxisValueFormatters[targetYAxisIndex as targetYAxisIndexEnum],
             },
+            min: 0,
         })),
     } as EChartsOption
 }

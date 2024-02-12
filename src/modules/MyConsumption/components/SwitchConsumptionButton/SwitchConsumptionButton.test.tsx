@@ -94,8 +94,8 @@ describe('SwitchConsumptionButton', () => {
             </ThemeProvider>,
         )
 
-        const idleButtonElement = getByText(SwitchConsumptionButtonLabelEnum.Idle)
         const generalButtonElement = getByText(SwitchConsumptionButtonLabelEnum.General)
+        const idleButtonElement = getByText(SwitchConsumptionButtonLabelEnum.Idle)
 
         userEvent.click(idleButtonElement)
         await waitFor(() => {

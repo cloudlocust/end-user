@@ -27,7 +27,7 @@ export enum SwitchConsumptionButtonLabelEnum {
     /**
      * Label for Auto consumption & Production.
      */
-    AutoconsmptionProduction = 'Auto-conso | Production',
+    AutoconsmptionProduction = 'Autoconso | Production',
     /**
      * Label for Idle.
      */

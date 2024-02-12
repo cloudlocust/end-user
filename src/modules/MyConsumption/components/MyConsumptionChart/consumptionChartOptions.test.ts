@@ -89,7 +89,11 @@ describe('Test echartsConsumptionOptions', () => {
         ]
         caseList.forEach(({ color, target }) => {
             // Result
-            const resultColor = getColorTargetSeriesEchartsConsumptionChart(target, theme)
+            const resultColor = getColorTargetSeriesEchartsConsumptionChart(
+                target,
+                theme,
+                SwitchConsumptionButtonTypeEnum.AutoconsmptionProduction,
+            )
 
             expect(resultColor).toStrictEqual(color)
         })
@@ -642,6 +646,7 @@ describe('Test echartsConsumptionOptions', () => {
                             opacity: 0.4,
                         },
                     },
+                    min: 0,
                 },
                 // TEMPERATURE YAXIS
                 {
@@ -660,6 +665,7 @@ describe('Test echartsConsumptionOptions', () => {
                             opacity: 0,
                         },
                     },
+                    min: 0,
                 },
                 // PMAX YAXIS
                 {
@@ -678,6 +684,7 @@ describe('Test echartsConsumptionOptions', () => {
                             opacity: 0,
                         },
                     },
+                    min: 0,
                 },
                 // EUROS YAXIS
                 {
@@ -696,6 +703,7 @@ describe('Test echartsConsumptionOptions', () => {
                             opacity: 0.4,
                         },
                     },
+                    min: 0,
                 },
             ],
         } as EChartsOption)

@@ -72,7 +72,7 @@ export const SwitchConsumptionButton = ({
                 return (
                     <ToggleButton
                         key={element.label}
-                        className="rounded-xl px-20"
+                        className="rounded-full px-20"
                         aria-label="toggle-consumption-button"
                         value={element.type}
                         sx={{
