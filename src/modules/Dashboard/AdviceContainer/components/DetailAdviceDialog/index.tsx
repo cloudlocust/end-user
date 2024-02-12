@@ -69,14 +69,22 @@ export const DetailAdviceDialog = ({
                         </span>
                     </div>
                 )}
-                <div className="mb-10">
-                    <Typography className="text-14 md:text-16" fontWeight={600}>
-                        Pour en savoir plus
-                    </Typography>
-                    <Typography className="text-14 md:text-16 text-justify">{`${currentEcogeste?.infos}`}</Typography>
-                </div>
+                {currentEcogeste?.infos && (
+                    <div className="mb-10">
+                        <Typography className="text-14 md:text-16" fontWeight={600}>
+                            Pour en savoir plus
+                        </Typography>
+                        <Typography className="text-14 md:text-16 text-justify">{`${currentEcogeste?.infos}`}</Typography>
+                    </div>
+                )}
                 {isDashboardAdvice ? (
-                    <Button fullWidth component={Link} to="/advices" variant="contained" className="text-14 md:text-16">
+                    <Button
+                        fullWidth
+                        component={Link}
+                        to="/advices"
+                        variant="contained"
+                        className="text-14 md:text-16 mt-10"
+                    >
                         <TypographyFormatMessage>Plus de conseils</TypographyFormatMessage>
                     </Button>
                 ) : isEcogesteSeen ? (
