@@ -2,11 +2,10 @@ import { reduxedRender } from 'src/common/react-platform-components/test'
 import { createTheme } from '@mui/material/styles'
 import { ThemeProvider } from '@mui/material'
 import userEvent from '@testing-library/user-event'
-import { waitFor } from '@testing-library/react'
+import { cleanup, waitFor } from '@testing-library/react'
 import {
     SwitchConsumptionButtonLabelEnum,
     SwitchConsumptionButtonProps,
-    SwitchConsumptionButtonTypeEnum,
 } from 'src/modules/MyConsumption/components/SwitchConsumptionButton/SwitchConsumptionButton.types'
 import { SwitchConsumptionButton } from 'src/modules/MyConsumption/components/SwitchConsumptionButton'
 
@@ -26,88 +25,52 @@ describe('SwitchConsumptionButton', () => {
 
     beforeEach(() => {
         switchConsumptionButtonProps = {
-            isIdleConsumptionButtonDisabled: false,
-            onClickIdleConsumptionDisabledInfoIcon: jest.fn(),
-            isSolarProductionConsentOff: false,
-            consumptionToggleButton: SwitchConsumptionButtonTypeEnum.Consumption,
             onSwitchConsumptionButton: jest.fn(),
+            isIdleShown: true,
+            isAutoConsumptionProductionShown: true,
         }
     })
 
-    test('when isSolarProductionConsentOff is true, Autoconsumption button is not shown', async () => {
-        switchConsumptionButtonProps.isSolarProductionConsentOff = true
+    // Unmounts React trees after each test.
+    afterEach(cleanup)
+
+    test('when isAutoConsumptionProduction is not Active, Autoconsumption element button should not be shown', async () => {
+        switchConsumptionButtonProps.isAutoConsumptionProductionShown = false
+
         const { getByText } = reduxedRender(<SwitchConsumptionButton {...switchConsumptionButtonProps} />)
 
         expect(getByText(SwitchConsumptionButtonLabelEnum.General)).toBeInTheDocument()
-        expect(getByText(SwitchConsumptionButtonLabelEnum.Idle)).toBeInTheDocument()
         expect(() => getByText(SwitchConsumptionButtonLabelEnum.AutoconsmptionProduction)).toThrow()
     })
 
-    test('when isSolarProductionConsentOff is false, Autoconsumption button is shown', async () => {
-        switchConsumptionButtonProps.isSolarProductionConsentOff = false
+    test('when AutoConsumptionProduction is Active, Autoconsumption element button should be shown', async () => {
+        switchConsumptionButtonProps.isAutoConsumptionProductionShown = true
+
+        const { getByText } = reduxedRender(<SwitchConsumptionButton {...switchConsumptionButtonProps} />)
+
+        expect(getByText(SwitchConsumptionButtonLabelEnum.General)).toBeInTheDocument()
+        expect(getByText(SwitchConsumptionButtonLabelEnum.AutoconsmptionProduction)).toBeInTheDocument()
+    })
+
+    test('when Idle is not Active, Idle element button should not be shown', async () => {
+        switchConsumptionButtonProps.isIdleShown = false
+
+        const { getByText } = reduxedRender(<SwitchConsumptionButton {...switchConsumptionButtonProps} />)
+
+        expect(getByText(SwitchConsumptionButtonLabelEnum.General)).toBeInTheDocument()
+        expect(() => getByText(SwitchConsumptionButtonLabelEnum.Idle)).toThrow()
+    })
+
+    test('when Idle is Active, Idle element button should be shown', async () => {
+        switchConsumptionButtonProps.isIdleShown = true
+
         const { getByText } = reduxedRender(<SwitchConsumptionButton {...switchConsumptionButtonProps} />)
 
         expect(getByText(SwitchConsumptionButtonLabelEnum.General)).toBeInTheDocument()
         expect(getByText(SwitchConsumptionButtonLabelEnum.Idle)).toBeInTheDocument()
-        expect(getByText(SwitchConsumptionButtonLabelEnum.AutoconsmptionProduction)).toBeInTheDocument()
-    })
-
-    test('when isIdleConsumptionButtonDisabled is true, clicking on idle button should call onClickIdleConsumptionDisabledInfoIcon', async () => {
-        switchConsumptionButtonProps.isIdleConsumptionButtonDisabled = true
-        const mockOnClickIdleConsumptionDisabledInfoIcon = jest.fn()
-        switchConsumptionButtonProps.onClickIdleConsumptionDisabledInfoIcon = mockOnClickIdleConsumptionDisabledInfoIcon
-        const { getByText } = reduxedRender(<SwitchConsumptionButton {...switchConsumptionButtonProps} />)
-
-        const idleButtonElement = getByText(SwitchConsumptionButtonLabelEnum.Idle)
-        userEvent.click(idleButtonElement)
-        await waitFor(() => {
-            expect(mockOnClickIdleConsumptionDisabledInfoIcon).toHaveBeenCalled()
-        })
-    })
-
-    test('when isIdleConsumptionButtonDisabled is false, clicking on idle button should call onSwitchConsumptionButton', async () => {
-        switchConsumptionButtonProps.isIdleConsumptionButtonDisabled = false
-        const mockOnSwitchConsumptionButton = jest.fn()
-        switchConsumptionButtonProps.onSwitchConsumptionButton = mockOnSwitchConsumptionButton
-        const { getByText } = reduxedRender(<SwitchConsumptionButton {...switchConsumptionButtonProps} />)
-
-        const idleButtonElement = getByText(SwitchConsumptionButtonLabelEnum.Idle)
-        userEvent.click(idleButtonElement)
-        await waitFor(() => {
-            expect(mockOnSwitchConsumptionButton).toHaveBeenCalled()
-        })
-    })
-
-    test('when isIdleConsumptionButtonDisabled is true, the idle button has a disabled style', async () => {
-        switchConsumptionButtonProps.isIdleConsumptionButtonDisabled = true
-        const { getByText } = reduxedRender(
-            <ThemeProvider theme={theme}>
-                <SwitchConsumptionButton {...switchConsumptionButtonProps} />
-            </ThemeProvider>,
-        )
-
-        const idleButtonElement = getByText(SwitchConsumptionButtonLabelEnum.Idle)
-        expect(idleButtonElement).toHaveStyle({
-            backgroundColor: theme.palette.grey[600],
-        })
-    })
-
-    test('when isIdleConsumptionButtonDisabled is false, the idle button has a style', async () => {
-        switchConsumptionButtonProps.isIdleConsumptionButtonDisabled = false
-        const { getByText } = reduxedRender(
-            <ThemeProvider theme={theme}>
-                <SwitchConsumptionButton {...switchConsumptionButtonProps} />
-            </ThemeProvider>,
-        )
-
-        const idleButtonElement = getByText(SwitchConsumptionButtonLabelEnum.Idle)
-        expect(idleButtonElement).toHaveStyle({
-            backgroundColor: theme.palette.primary.main,
-        })
     })
 
     test("when any of the button is selected, it's style should change", async () => {
-        switchConsumptionButtonProps.isIdleConsumptionButtonDisabled = false
         const { getByText } = reduxedRender(
             <ThemeProvider theme={theme}>
                 <SwitchConsumptionButton {...switchConsumptionButtonProps} />
@@ -121,6 +84,49 @@ describe('SwitchConsumptionButton', () => {
             expect(generalButtonElement).toHaveStyle({
                 backgroundColor: theme.palette.secondary.main,
             })
+        })
+    })
+
+    test('when any of the button is selected, it should call onSwitchConsumptionButton function', async () => {
+        const { getByText } = reduxedRender(
+            <ThemeProvider theme={theme}>
+                <SwitchConsumptionButton {...switchConsumptionButtonProps} />
+            </ThemeProvider>,
+        )
+
+        const generalButtonElement = getByText(SwitchConsumptionButtonLabelEnum.General)
+        const idleButtonElement = getByText(SwitchConsumptionButtonLabelEnum.Idle)
+
+        userEvent.click(idleButtonElement)
+        await waitFor(() => {
+            expect(switchConsumptionButtonProps.onSwitchConsumptionButton).toHaveBeenCalled()
+        })
+
+        userEvent.click(generalButtonElement)
+        await waitFor(() => {
+            expect(switchConsumptionButtonProps.onSwitchConsumptionButton).toHaveBeenCalled()
+        })
+    })
+
+    test('when click on selected button, it should not call onSwitchConsumptionButton function', async () => {
+        const { getByText } = reduxedRender(
+            <ThemeProvider theme={theme}>
+                <SwitchConsumptionButton {...switchConsumptionButtonProps} />
+            </ThemeProvider>,
+        )
+
+        const idleButtonElement = getByText(SwitchConsumptionButtonLabelEnum.Idle)
+
+        // Initial click
+        userEvent.click(idleButtonElement)
+        await waitFor(() => {
+            expect(switchConsumptionButtonProps.onSwitchConsumptionButton).toHaveBeenCalledTimes(1)
+        })
+
+        // Second click
+        userEvent.click(idleButtonElement)
+        await waitFor(() => {
+            expect(switchConsumptionButtonProps.onSwitchConsumptionButton).toHaveBeenCalledTimes(1)
         })
     })
 })
