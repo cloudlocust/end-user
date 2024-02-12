@@ -61,7 +61,7 @@ export const ConsumptionChartContainer = ({
     // Handling the targets makes it simpler instead of the useMetrics as it's a straightforward array of metricTargetType
     const [targets, setTargets] = useState<metricTargetType[]>([])
     const isIdleShown = period !== 'daily' && isSolarProductionConsentOff
-    const isAutoConsumptionProductionShown = !isSolarProductionConsentOff
+    const isAutoConsumptionProductionShown = true
 
     useEffect(() => {
         const defaultTargets = getDefaultConsumptionTargets(consumptionToggleButton)
@@ -267,7 +267,7 @@ export const ConsumptionChartContainer = ({
                         isEurosButtonToggled={isEurosButtonToggled}
                     />
                 )}
-                <div className="flex flex-auto justify-center">
+                <div className={`flex flex-auto justify-center ${period === 'daily' && 'ml-36'}`}>
                     {(isIdleShown || isAutoConsumptionProductionShown) && (
                         <SwitchConsumptionButton
                             onSwitchConsumptionButton={onSwitchConsumptionButton}
