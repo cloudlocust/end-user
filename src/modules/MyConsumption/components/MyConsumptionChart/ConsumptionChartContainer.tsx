@@ -61,7 +61,7 @@ export const ConsumptionChartContainer = ({
     // Handling the targets makes it simpler instead of the useMetrics as it's a straightforward array of metricTargetType
     const [targets, setTargets] = useState<metricTargetType[]>([])
     const isIdleShown = period !== 'daily' && isSolarProductionConsentOff
-    const isAutoConsumptionProductionShown = true
+    const isAutoConsumptionProductionShown = !isSolarProductionConsentOff
 
     useEffect(() => {
         const defaultTargets = getDefaultConsumptionTargets(consumptionToggleButton)
