@@ -9,6 +9,7 @@ import Button from '@mui/material/Button'
 import useMediaQuery from '@mui/material/useMediaQuery'
 import { textNrlinkColor } from 'src/modules/nrLinkConnection/components/LastStepNrLinkConnection/LastStepNrLinkConnection'
 
+// TODO ADD NEXT STEP AFTER VALIDATING THE SGE
 /**
  * Sge Consent Step.
  *

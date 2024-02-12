@@ -31,4 +31,5 @@ describe('Test SgeConsentStepProps', () => {
         userEvent.click(getByText(BACK_TEXT))
         expect(mockHandleBack).toBeCalledTimes(1)
     })
+    // TODO - ADD TEST FOR WHEN SGE SUCCESSFULL, NEXT FUNCTION IS CALLED
 })
