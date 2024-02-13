@@ -148,44 +148,4 @@ describe('Widget component test', () => {
         expect(getByText(renderWidgetTitle(metricTargetsEnum.totalProduction))).toBeInTheDocument()
         expect(getByText(renderWidgetTitle(metricTargetsEnum.autoconsumption))).toBeInTheDocument()
     })
-
-    test('when there is many targets, all targets should be renderedrr', async () => {
-        mockData = []
-        const { queryByTestId } = renderTestComponent({
-            ...mockWidgetPropsDefault,
-            targets: [metricTargetsEnum.totalProduction, metricTargetsEnum.autoconsumption],
-            /**
-             * Hide the widget.
-             *
-             * @returns False.
-             */
-            displayWidgetCondition: () => false,
-        })
-        expect(queryByTestId('widget')).toBeNull()
-    })
-
-    test('Can hide or display some targets using conditions "displayTargetsConditions"', async () => {
-        mockData = []
-        const { getByText, queryByText } = renderTestComponent({
-            ...mockWidgetPropsDefault,
-            targets: [metricTargetsEnum.totalProduction, metricTargetsEnum.autoconsumption],
-            displayTargetsConditions: {
-                /**
-                 * Display totalProduction.
-                 *
-                 * @returns True.
-                 */
-                [metricTargetsEnum.totalProduction]: () => true,
-                /**
-                 * Hide autoconsumption.
-                 *
-                 * @returns False.
-                 */
-                [metricTargetsEnum.autoconsumption]: () => false,
-            },
-        })
-
-        expect(getByText(renderWidgetTitle(metricTargetsEnum.totalProduction))).toBeInTheDocument()
-        expect(queryByText(renderWidgetTitle(metricTargetsEnum.autoconsumption))).toBeNull()
-    })
 })

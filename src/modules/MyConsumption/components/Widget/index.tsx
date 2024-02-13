@@ -14,6 +14,8 @@ import { ConsumptionWidgetsMetricsContext } from 'src/modules/MyConsumption/comp
 import { metricTargetType, metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
 import { PeriodEnum } from 'src/modules/MyConsumption/myConsumptionTypes.d'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
+import { useMyConsumptionStore } from 'src/modules/MyConsumption/store/myConsumptionStore'
+import { SwitchConsumptionButtonTypeEnum } from 'src/modules/MyConsumption/components/SwitchConsumptionButton/SwitchConsumptionButton.types'
 const emptyValueUnit = { value: 0, unit: '' }
 
 /**
@@ -43,10 +45,9 @@ export const Widget = memo(
         period,
         enphaseOff,
         children,
-        displayWidgetCondition,
-        displayTargetsConditions,
     }: // eslint-disable-next-line sonarjs/cognitive-complexity
     IWidgetProps) => {
+        const { consumptionToggleButton } = useMyConsumptionStore()
         const { data, setMetricsInterval, setRange, isMetricsLoading } = useMetrics({
             interval: metricsInterval,
             range: getWidgetRange(range, period),
@@ -70,7 +71,7 @@ export const Widget = memo(
             filters,
         })
 
-        const { storeWidgetMetricsData } = useContext(ConsumptionWidgetsMetricsContext)
+        const { storeWidgetMetricsData, currentRangeMetricWidgetsData } = useContext(ConsumptionWidgetsMetricsContext)
 
         useEffect(() => {
             storeWidgetMetricsData(data)
@@ -94,7 +95,14 @@ export const Widget = memo(
                     oldValue,
                     percentageChange,
                 }
-                targetsInfos[target] = targetInfos
+                if (target === metricTargetsEnum.injectedProduction) {
+                    // in injection production we display the target only if value of it exists.
+                    if (value) {
+                        targetsInfos[target] = targetInfos
+                    }
+                } else {
+                    targetsInfos[target] = targetInfos
+                }
             })
             return targetsInfos
         }, [data, oldData, targets])
@@ -125,8 +133,27 @@ export const Widget = memo(
                 isRangeChanged.current = false
             }
         }, [period, range, setRange, setRangePrevious])
-        // display the widget only if displayWidgetCondition is true or not set in the component props
-        if (displayWidgetCondition && !displayWidgetCondition(targetsInfos)) return null
+
+        // We use this hook to check if the injectedProduction metrics exists in the currentRangeMetricWidgetsData and their value are not null.
+        const isInjectedProductionAvailable = useMemo(() => {
+            if (targets.includes(metricTargetsEnum.autoconsumption)) {
+                const injectedProductionMetrics = currentRangeMetricWidgetsData.find(
+                    (item) => item.target === metricTargetsEnum.injectedProduction,
+                )
+                return injectedProductionMetrics?.datapoints.some((item) => item[0] !== null) ?? false
+            }
+            return false
+        }, [currentRangeMetricWidgetsData, targets])
+
+        const isAutoconsmptionProductionTab =
+            consumptionToggleButton === SwitchConsumptionButtonTypeEnum.AutoconsmptionProduction
+        // display the widget autoconsumption only if isInjectedProductionAvailable is true.
+        if (
+            targets.includes(metricTargetsEnum.autoconsumption) &&
+            isAutoconsmptionProductionTab &&
+            !isInjectedProductionAvailable
+        )
+            return null
 
         return (
             <Grid item xs={6} sm={6} md={4} lg={3} xl={3} className="flex" data-testid="widget">
@@ -142,35 +169,30 @@ export const Widget = memo(
                         ) : (
                             <div className="h-full flex flex-col">
                                 {children}
-                                {(Object.keys(targetsInfos) as metricTargetType[]).map((target, index) =>
-                                    !displayTargetsConditions ||
-                                    (displayTargetsConditions &&
-                                        displayTargetsConditions[target]?.(targetsInfos[target].value)) ? (
-                                        <WidgetItem
-                                            key={index}
-                                            target={target}
-                                            title={renderWidgetTitle(target, enphaseOff)}
-                                            infoIcon={infoIcons && infoIcons[target]}
-                                            value={targetsInfos[target].value}
-                                            unit={targetsInfos[target].unit}
-                                            percentageChange={targetsInfos[target].percentageChange}
-                                            period={period}
-                                            noValueMessage={
-                                                target === metricTargetsEnum.pMax && period === PeriodEnum.DAILY ? (
-                                                    // maxWidth to have a more balanced text.
-                                                    <TypographyFormatMessage style={{ maxWidth: '90%' }}>
-                                                        La puissance maximale n'est pas disponible sur la journée en
-                                                        cours
-                                                    </TypographyFormatMessage>
-                                                ) : (
-                                                    <TypographyFormatMessage>
-                                                        {DEFAULT_NO_VALUE_MESSAGE}
-                                                    </TypographyFormatMessage>
-                                                )
-                                            }
-                                        />
-                                    ) : null,
-                                )}
+                                {(Object.keys(targetsInfos) as metricTargetType[]).map((target, index) => (
+                                    <WidgetItem
+                                        key={index}
+                                        target={target}
+                                        title={renderWidgetTitle(target, enphaseOff)}
+                                        infoIcon={infoIcons && infoIcons[target]}
+                                        value={targetsInfos[target].value}
+                                        unit={targetsInfos[target].unit}
+                                        percentageChange={targetsInfos[target].percentageChange}
+                                        period={period}
+                                        noValueMessage={
+                                            target === metricTargetsEnum.pMax && period === PeriodEnum.DAILY ? (
+                                                // maxWidth to have a more balanced text.
+                                                <TypographyFormatMessage style={{ maxWidth: '90%' }}>
+                                                    La puissance maximale n'est pas disponible sur la journée en cours
+                                                </TypographyFormatMessage>
+                                            ) : (
+                                                <TypographyFormatMessage>
+                                                    {DEFAULT_NO_VALUE_MESSAGE}
+                                                </TypographyFormatMessage>
+                                            )
+                                        }
+                                    />
+                                ))}
                             </div>
                         )}
                     </>

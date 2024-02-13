@@ -8,6 +8,7 @@ import { periodType } from 'src/modules/MyConsumption/myConsumptionTypes'
 import { getDateWithoutTimezoneOffset } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
 import { endOfDay, startOfDay } from 'date-fns'
 import { utcToZonedTime } from 'date-fns-tz'
+import { SwitchConsumptionButtonTypeEnum } from 'src/modules/MyConsumption/components/SwitchConsumptionButton/SwitchConsumptionButton.types'
 
 const CONSOMMATION_TOTAL_TEXT = 'Consommation Totale'
 const CONSOMMATION_PURCHASED_TEXT = 'Achetée'
@@ -57,7 +58,7 @@ jest.mock('src/modules/MyHouse/MyHouseConfig', () => ({
     isProductionActiveAndHousingHasAccess: () => mockIsProductionActiveAndHousingHasAccess,
 }))
 
-// Convert metricTargetsEnum enum to array of values for we can set it in target.
+// Convert metricTargetsEnum enum to array of values for we can set it in target (simulate the existing data).
 let metricsData: IMetric[] = Object.values(metricTargetsEnum).map(
     (target) =>
         ({
@@ -76,6 +77,16 @@ jest.mock('src/modules/Metrics/metricsHook.ts', () => ({
         setRange: jest.fn(),
         setMetricsInterval: jest.fn(),
     }),
+}))
+
+let mockMyConsumptionTab = SwitchConsumptionButtonTypeEnum.Consumption
+jest.mock('src/modules/MyConsumption/store/myConsumptionStore', () => ({
+    /**
+     * Mock useMyConsumptionStore hook for we can change between tabs.
+     *
+     * @returns Current tab.
+     */
+    useMyConsumptionStore: () => ({ consumptionToggleButton: mockMyConsumptionTab }),
 }))
 
 describe('ConsumptionWidgetsContainer test', () => {
@@ -156,7 +167,8 @@ describe('ConsumptionWidgetsContainer test', () => {
         expect(queryByText(TEMPERATURE_INTERIEURE_TEXT)).not.toBeInTheDocument()
     })
 
-    test('when the metrics of injected production not available, the widgets of autoconsumption and injection should not be showing', async () => {
+    test('when the metrics of injected production not available, the widgets of autoconsumption and injection should not be showing on AutoconsmptionProduction tab', async () => {
+        mockMyConsumptionTab = SwitchConsumptionButtonTypeEnum.AutoconsmptionProduction
         mockMetricsData = mockMetricsData.map((metric) =>
             metric.target === metricTargetsEnum.injectedProduction ? { ...metric, datapoints: [] } : metric,
         )

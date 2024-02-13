@@ -142,40 +142,10 @@ const ConsumptionWidgetsContainer = ({
 
                     {/** Display the other targets with Widget Component. */}
                     {widgetsToRender.map((target) => {
-                        return (
-                            [metricTargetsEnum.totalProduction, metricTargetsEnum.autoconsumption] as metricTargetType[]
-                        ).includes(target) ? (
+                        return target === metricTargetsEnum.totalProduction ? (
                             <Widget
                                 key={target}
                                 targets={[target, metricTargetsEnum.injectedProduction]}
-                                displayTargetsConditions={{
-                                    /**
-                                     *
-                                     * All targets must be displayed.
-                                     *
-                                     * @returns True for all other target.
-                                     */
-                                    [target]: () => true,
-                                    /**
-                                     * Conditions to for we can show injectedProduction on the widget or not.
-                                     *
-                                     * @param value The value of metric data.
-                                     * @returns False if we don't need to show injectedProduction.
-                                     */
-                                    [metricTargetsEnum.injectedProduction]: (value) => {
-                                        if (target === metricTargetsEnum.autoconsumption) return false
-                                        if (!value) return false
-                                        return true
-                                    },
-                                }}
-                                displayWidgetCondition={(targetsInfos) => {
-                                    if (
-                                        target === metricTargetsEnum.autoconsumption &&
-                                        !targetsInfos[metricTargetsEnum.injectedProduction].value
-                                    )
-                                        return false
-                                    return true
-                                }}
                                 range={range}
                                 filters={filters}
                                 metricsInterval={metricsInterval}
