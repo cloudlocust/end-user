@@ -12,7 +12,7 @@ import ContractEstimation from '../ContractEstimation'
 /**
  * Steps labels.
  */
-export let stepsLabels = ['Mon Compteur Linky', 'Mon historique', 'Mon Contrat']
+export const stepsLabels = ['Mon Compteur Linky', 'Mon historique', 'Mon Contrat']
 
 /**
  * Energy Provider Subscription Stepper for Alpic.
@@ -41,7 +41,7 @@ const AlpiqSubscriptionStepper = () => {
     const stepsContent = [
         <PdlVerificationForm handleNext={handleNext} />,
         <SgeConsentStep handleBack={handleBack} />,
-        <ContractEstimation />,
+        <ContractEstimation handleNext={handleNext} />,
     ]
     return (
         <div className="w-full h-full flex flex-col justify-center items-center">
