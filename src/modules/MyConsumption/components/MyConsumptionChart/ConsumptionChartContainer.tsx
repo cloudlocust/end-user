@@ -113,6 +113,20 @@ export const ConsumptionChartContainer = ({
         await getMetricsWithParams({ interval: metricsInterval, range, targets, filters })
     }, [getMetricsWithParams, metricsInterval, range, targets, filters, isMetricRequestNotAllowed])
 
+    const resetToDefaultConsumption = useCallback(() => {
+        setConsumptionToggleButton(SwitchConsumptionButtonTypeEnum.Consumption)
+        setTargets(getDefaultConsumptionTargets(SwitchConsumptionButtonTypeEnum.Consumption))
+        setMetricsInterval('1m')
+    }, [setConsumptionToggleButton, setMetricsInterval])
+
+    // When switching to period daily, if Euros Charts or Idle charts buttons are selected, metrics should be reset to default.
+    // Also when consumptionToggleButton is Autoconsumption or Production, it should be reset to Consumption with metricsInterval set to 1m.
+    useEffect(() => {
+        if (isMetricRequestNotAllowed) {
+            resetToDefaultConsumption()
+        }
+    }, [isMetricRequestNotAllowed, resetToDefaultConsumption])
+
     // Happens everytime getMetrics dependencies change, and doesn't execute when hook is instanciated.
     useEffect(() => {
         getMetrics()
@@ -201,14 +215,18 @@ export const ConsumptionChartContainer = ({
     )
 
     const getConsumptionTargets = useCallback(() => {
-        if (period === 'daily') setMetricsInterval('1m')
+        if (period === 'daily') {
+            setMetricsInterval('1m')
+        }
         return isEurosButtonToggled
             ? eurosConsumptionTargets
             : [metricTargetsEnum.consumptionByTariffComponent, metricTargetsEnum.consumption]
     }, [isEurosButtonToggled, period, setMetricsInterval])
 
     const getAutoconsumptionProductionTargets = useCallback(() => {
-        if (period === 'daily') setMetricsInterval('30m')
+        if (period === 'daily') {
+            setMetricsInterval('30m')
+        }
         return isEurosButtonToggled
             ? eurosConsumptionTargets
             : [metricTargetsEnum.autoconsumption, metricTargetsEnum.consumption]
@@ -260,14 +278,18 @@ export const ConsumptionChartContainer = ({
                 </motion.div>
             </div>
 
-            <div className="my-16 flex justify-between">
-                {period !== 'daily' && (
-                    <EurosConsumptionButtonToggler
-                        onEurosConsumptionButtonToggle={onEurosConsumptionButtonToggle}
-                        isEurosButtonToggled={isEurosButtonToggled}
-                    />
+            <div className="my-16 flex justify-between gap-10 h-40">
+                {period !== 'daily' ? (
+                    <div className="flex justify-center items-center mr-10">
+                        <EurosConsumptionButtonToggler
+                            onEurosConsumptionButtonToggle={onEurosConsumptionButtonToggle}
+                            isEurosButtonToggled={isEurosButtonToggled}
+                        />
+                    </div>
+                ) : (
+                    <div className="mr-20"></div>
                 )}
-                <div className={`flex flex-auto justify-center ${period === 'daily' && 'ml-36'}`}>
+                <div className="flex flex-auto justify-center">
                     {(isIdleShown || isAutoConsumptionProductionShown) && (
                         <SwitchConsumptionButton
                             onSwitchConsumptionButton={onSwitchConsumptionButton}

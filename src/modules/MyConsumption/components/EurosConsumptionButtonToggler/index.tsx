@@ -21,22 +21,20 @@ const EurosConsumptionButtonToggler = ({
     return (
         <>
             {!isEurosButtonToggled ? (
-                <div>
-                    <IconButton
-                        sx={{
-                            color: 'white',
+                <IconButton
+                    sx={{
+                        color: 'white',
+                        backgroundColor: theme.palette.primary.light,
+                        opacity: 1,
+                        '&:hover': {
                             backgroundColor: theme.palette.primary.light,
-                            opacity: 1,
-                            '&:hover': {
-                                backgroundColor: theme.palette.primary.light,
-                                opacity: 0.7,
-                            },
-                        }}
-                        onClick={() => onEurosConsumptionButtonToggle(true)}
-                    >
-                        <EuroIcon sx={{ width: 20, height: 20 }} />
-                    </IconButton>
-                </div>
+                            opacity: 0.7,
+                        },
+                    }}
+                    onClick={() => onEurosConsumptionButtonToggle(true)}
+                >
+                    <EuroIcon sx={{ width: 20, height: 20 }} />
+                </IconButton>
             ) : (
                 <IconButton
                     sx={{
