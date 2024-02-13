@@ -3,7 +3,7 @@ import SgeConsentStep from 'src/modules/User/AlpiqSubscription/SgeConsentStep'
 import userEvent from '@testing-library/user-event'
 
 const BACK_TEXT = 'Retour'
-const SGE_POPUP_BUTTON_TEXT = 'Récupérer Mes Données'
+const SGE_POPUP_BUTTON_TEXT = 'Récupérer mes données'
 const mockHandleBack = jest.fn()
 const mockSgeConsentStepProps = {
     handleBack: mockHandleBack,

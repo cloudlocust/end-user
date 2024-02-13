@@ -67,8 +67,8 @@ const SgeConsentStep = ({
                 </Button>
                 <EnedisSgePopup
                     openEnedisSgeConsentText={formatMessage({
-                        id: 'Récupérer Mes Données',
-                        defaultMessage: 'Récupérer Mes Données',
+                        id: 'Récupérer mes données',
+                        defaultMessage: 'Récupérer mes données',
                     })}
                     TypographyProps={{
                         color: theme.palette.primary.main,
