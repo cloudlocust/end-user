@@ -59,25 +59,11 @@ export const ConsumptionChartContainer = ({
     const { consumptionToggleButton, setConsumptionToggleButton } = useMyConsumptionStore()
 
     // Handling the targets makes it simpler instead of the useMetrics as it's a straightforward array of metricTargetType
-    const [targets, setTargets] = useState<metricTargetType[]>([])
+    const [targets, setTargets] = useState<metricTargetType[]>(
+        getDefaultConsumptionTargets(SwitchConsumptionButtonTypeEnum.Consumption),
+    )
     const isIdleShown = period !== 'daily' && isSolarProductionConsentOff
     const isAutoConsumptionProductionShown = !isSolarProductionConsentOff
-
-    useEffect(() => {
-        const defaultTargets = getDefaultConsumptionTargets(consumptionToggleButton)
-        setTargets(defaultTargets)
-    }, [consumptionToggleButton])
-
-    // Switch consumption button should be reset to consumption when the other two are not shown.
-    useEffect(() => {
-        if (
-            (!isIdleShown && consumptionToggleButton === SwitchConsumptionButtonTypeEnum.Idle) ||
-            (!isAutoConsumptionProductionShown &&
-                consumptionToggleButton === SwitchConsumptionButtonTypeEnum.AutoconsmptionProduction)
-        ) {
-            setConsumptionToggleButton(SwitchConsumptionButtonTypeEnum.Consumption)
-        }
-    }, [consumptionToggleButton, isAutoConsumptionProductionShown, isIdleShown, setConsumptionToggleButton])
 
     // Indicates if enedisSgeConsent is not Connected
     const enedisSgeOff = enedisSgeConsent?.enedisSgeConsentState !== 'CONNECTED'
@@ -112,25 +98,6 @@ export const ConsumptionChartContainer = ({
         if (isMetricRequestNotAllowed) return
         await getMetricsWithParams({ interval: metricsInterval, range, targets, filters })
     }, [getMetricsWithParams, metricsInterval, range, targets, filters, isMetricRequestNotAllowed])
-
-    const resetToDefaultConsumption = useCallback(() => {
-        setConsumptionToggleButton(SwitchConsumptionButtonTypeEnum.Consumption)
-        setTargets(getDefaultConsumptionTargets(SwitchConsumptionButtonTypeEnum.Consumption))
-        setMetricsInterval('1m')
-    }, [setConsumptionToggleButton, setMetricsInterval])
-
-    // When switching to period daily, if Euros Charts or Idle charts buttons are selected, metrics should be reset to default.
-    // Also when consumptionToggleButton is Autoconsumption or Production, it should be reset to Consumption with metricsInterval set to 1m.
-    useEffect(() => {
-        if (isMetricRequestNotAllowed) {
-            resetToDefaultConsumption()
-        }
-    }, [isMetricRequestNotAllowed, resetToDefaultConsumption])
-
-    // Happens everytime getMetrics dependencies change, and doesn't execute when hook is instanciated.
-    useEffect(() => {
-        getMetrics()
-    }, [getMetrics])
 
     const isEurosButtonToggled = useMemo(
         () => targets.some((target) => [...eurosConsumptionTargets, ...eurosIdleConsumptionTargets].includes(target)),
@@ -255,6 +222,29 @@ export const ConsumptionChartContainer = ({
         },
         [getAutoconsumptionProductionTargets, getConsumptionTargets, isEurosButtonToggled],
     )
+
+    // Switch consumption button should be reset to consumption when the other two are not shown.
+    useEffect(() => {
+        if (
+            (!isIdleShown && consumptionToggleButton === SwitchConsumptionButtonTypeEnum.Idle) ||
+            (!isAutoConsumptionProductionShown &&
+                consumptionToggleButton === SwitchConsumptionButtonTypeEnum.AutoconsmptionProduction)
+        ) {
+            setConsumptionToggleButton(SwitchConsumptionButtonTypeEnum.Consumption)
+        }
+    }, [consumptionToggleButton, isAutoConsumptionProductionShown, isIdleShown, setConsumptionToggleButton])
+
+    // When switching to period daily, if Euros Charts or Idle charts buttons are selected, metrics should be reset to default.
+    useEffect(() => {
+        if (isMetricRequestNotAllowed) {
+            setTargets(getDefaultConsumptionTargets(SwitchConsumptionButtonTypeEnum.Consumption))
+        }
+    }, [isMetricRequestNotAllowed])
+
+    // Happens everytime getMetrics dependencies change, and doesn't execute when hook is instanciated.
+    useEffect(() => {
+        getMetrics()
+    }, [getMetrics])
 
     return (
         <div className="mb-12">
