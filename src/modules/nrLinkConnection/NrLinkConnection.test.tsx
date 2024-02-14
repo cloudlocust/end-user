@@ -4,7 +4,7 @@ import { reduxedRender } from 'src/common/react-platform-components/test'
 import { URL_NRLINK_CONNECTION_STEPS, NrLinkConnection } from 'src/modules/nrLinkConnection'
 import { showNrLinkPopupFalse, showNrLinkPopupTrue, TEST_SUCCESS_USER } from 'src/mocks/handlers/user'
 import { applyCamelCase } from 'src/common/react-platform-components'
-import { URL_CONSUMPTION } from 'src/modules/MyConsumption'
+import { URL_DASHBOARD } from 'src/modules/Dashboard/DashboardConfig'
 
 const userData = applyCamelCase(TEST_SUCCESS_USER)
 
@@ -39,7 +39,7 @@ describe('Test NrLinkConnection Page', () => {
 
         await waitFor(
             () => {
-                expect(mockHistoryPush).toHaveBeenCalledWith(URL_CONSUMPTION)
+                expect(mockHistoryPush).toHaveBeenCalledWith(URL_DASHBOARD)
             },
             { timeout: 5000 },
         )
@@ -58,7 +58,7 @@ describe('Test NrLinkConnection Page', () => {
 
         await waitFor(
             () => {
-                expect(mockHistoryPush).toHaveBeenCalledWith(URL_CONSUMPTION)
+                expect(mockHistoryPush).toHaveBeenCalledWith(URL_DASHBOARD)
             },
             { timeout: 5000 },
         )
@@ -76,13 +76,13 @@ describe('Test NrLinkConnection Page', () => {
         // If you want to test that your link works I suggest to check the href attribute of your <a>:
         expect(getByText(CONNECT_NRLINK_BTN_TEXT).closest('a')).toHaveAttribute('href', URL_NRLINK_CONNECTION_STEPS)
     })
-    test('When clicking on Skip nrLinkConnection Link, it should redirect to URL_CONSUMPTION', async () => {
+    test('When clicking on Skip nrLinkConnection Link, it should redirect to URL_DASHBOARD', async () => {
         const { getByText } = reduxedRender(<NrLinkConnectionRouter />, {
             initialState: { userModel: { user: userData } },
         })
         await waitFor(() => {
             expect(getByText(SKIP_LINK_TEXT)).toBeTruthy()
         })
-        expect(getByText(SKIP_LINK_TEXT).closest('a')).toHaveAttribute('href', URL_CONSUMPTION)
+        expect(getByText(SKIP_LINK_TEXT).closest('a')).toHaveAttribute('href', URL_DASHBOARD)
     })
 })

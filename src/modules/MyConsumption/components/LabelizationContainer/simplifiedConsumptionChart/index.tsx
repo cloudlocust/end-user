@@ -19,6 +19,7 @@ import {
 import { IPeriodTime } from '../../MyConsumptionChart/MyConsumptionChartTypes.d'
 import { ConsumptionEnedisSgeWarning } from '../../MyConsumptionChart/ConsumptionChartWarnings'
 import { sgeConsentFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
+import { useMyConsumptionStore } from 'src/modules/MyConsumption/store/myConsumptionStore'
 
 /**
  * MyConsumptionChartContainer Component.
@@ -27,7 +28,6 @@ import { sgeConsentFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
  * @param props.range Current range so that we handle the xAxis values according to period and range selected.
  * @param props.metricsInterval Boolean state to know whether the stacked option is true or false.
  * @param props.filters Consumption or production chart type.
- * @param props.isSolarProductionConsentOff Boolean indicating if solar production consent is off.
  * @param props.enedisSgeConsent Enedis SGE Consent.
  * @param props.setRange Set Range.
  * @returns MyConsumptionChartContainer Component.
@@ -36,17 +36,15 @@ const SimplifiedConsumptionChartContainer = ({
     range,
     metricsInterval,
     filters,
-    isSolarProductionConsentOff,
     enedisSgeConsent,
     setRange,
 }: SimplifiedConsumptionChartContainerPropsType) => {
     const theme = useTheme()
     const history = useHistory()
+    const { consumptionToggleButton } = useMyConsumptionStore()
     // Handling the targets makes it simpler instead of the useMetrics as it's a straightforward array of metricTargetType
     // Meanwhile the setTargets for useMetrics needs to add {type: 'timeserie'} everytime...
-    const [targets, setTargets] = useState<metricTargetType[]>(
-        getDefaultConsumptionTargets(isSolarProductionConsentOff),
-    )
+    const [targets, setTargets] = useState<metricTargetType[]>(getDefaultConsumptionTargets(consumptionToggleButton))
     const period = PeriodEnum.DAILY
 
     // Indicates if enedisSgeConsent is not Connected
@@ -64,8 +62,8 @@ const SimplifiedConsumptionChartContainer = ({
     // When switching to period daily, if Euros Charts or Idle charts buttons are selected, metrics should be reset.
     // This useEffect reset metrics.
     useEffect(() => {
-        setTargets(getDefaultConsumptionTargets(isSolarProductionConsentOff))
-    }, [isSolarProductionConsentOff])
+        setTargets(getDefaultConsumptionTargets(consumptionToggleButton))
+    }, [consumptionToggleButton])
 
     const getMetrics = useCallback(async () => {
         await getMetricsWithParams({ interval: metricsInterval, range, targets, filters })
@@ -80,7 +78,7 @@ const SimplifiedConsumptionChartContainer = ({
     useEffect(() => {
         if (data.length > 0) {
             let chartData = data
-            const fileteredMetricsData = filterMetricsData(chartData, period, isSolarProductionConsentOff)
+            const fileteredMetricsData = filterMetricsData(chartData, period, consumptionToggleButton)
             if (fileteredMetricsData) chartData = fileteredMetricsData
             setConsumptionChartData(chartData)
         } else {
@@ -239,7 +237,6 @@ const SimplifiedConsumptionChartContainer = ({
                         <MyConsumptionChart
                             data={consumptionChartData}
                             period={period}
-                            isSolarProductionConsentOff={isSolarProductionConsentOff}
                             axisColor={theme.palette.common.black}
                             selectedLabelPeriod={selectedPeriod}
                         />

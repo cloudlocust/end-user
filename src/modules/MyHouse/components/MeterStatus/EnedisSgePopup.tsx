@@ -12,6 +12,7 @@ import { warningMainHashColor } from 'src/modules/utils/muiThemeVariables'
 import { RootState } from 'src/redux'
 import { ThemeProvider } from '@mui/material/styles'
 import { selectTheme } from 'src/common/ui-kit/fuse/utils/theming-generator'
+import Button from '@mui/material/Button'
 
 /**
  * Enedis Sge consent popup component.
@@ -23,6 +24,7 @@ import { selectTheme } from 'src/common/ui-kit/fuse/utils/theming-generator'
  * @param param0.createEnedisSgeConsent Setter function that handles Enedis consent request.
  * @param param0.isCreateEnedisSgeConsentLoading Loading state when creating enedis sge consent.
  * @param param0.createEnedisSgeConsentError Error when create enedis sge consent.
+ * @param param0.isElementButton If true, the component is a button.
  * @returns Enedis Sge consent JSX.
  */
 export const EnedisSgePopup = ({
@@ -32,6 +34,7 @@ export const EnedisSgePopup = ({
     createEnedisSgeConsent,
     isCreateEnedisSgeConsentLoading,
     createEnedisSgeConsentError,
+    isElementButton,
 }: EnedisSgePopupProps): JSX.Element => {
     const selectedTheme = selectTheme()
     const { formatMessage } = useIntl()
@@ -83,19 +86,32 @@ export const EnedisSgePopup = ({
         setSgeStep(EnedisSgePopupStepsEnum.METER_VERIFICATION)
     }
 
+    /**
+     * Function that opens the SGE popup.
+     */
+    const OpenSgePopup = () => {
+        if (!sgeConsentFeatureState) return
+        else setOpenSgePopup(true)
+    }
+
     return (
         <ThemeProvider theme={selectedTheme}>
-            <Typography
-                className={`underline cursor-pointer ${!sgeConsentFeatureState && 'cursor-not-allowed text-grey-600'}`}
-                fontWeight={600}
-                onClick={() => {
-                    if (!sgeConsentFeatureState) return
-                    else setOpenSgePopup(true)
-                }}
-                {...TypographyProps}
-            >
-                {openEnedisSgeConsentText}
-            </Typography>
+            {isElementButton ? (
+                <Button variant="contained" color="primary" onClick={() => OpenSgePopup()}>
+                    {openEnedisSgeConsentText}
+                </Button>
+            ) : (
+                <Typography
+                    className={`underline cursor-pointer ${
+                        !sgeConsentFeatureState && 'cursor-not-allowed text-grey-600'
+                    }`}
+                    fontWeight={600}
+                    onClick={() => OpenSgePopup()}
+                    {...TypographyProps}
+                >
+                    {openEnedisSgeConsentText}
+                </Typography>
+            )}
 
             {openSgePopup && (
                 <Dialog

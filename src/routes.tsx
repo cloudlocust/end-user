@@ -21,7 +21,8 @@ import { ErrorsConfig } from 'src/modules/Errors/ErrorsConfig'
 import { EcogestesConfig } from 'src/modules/Ecogestes/EcogestesConfig'
 import { AlertsConfig } from 'src/modules/Alerts/AlertsConfig'
 import { MaintenanceConfig } from 'src/modules/Maintenance/MaintenanceConfig'
-import { DashboardConfig } from 'src/modules/Dashboard/DashboardConfig'
+import { DashboardConfig, URL_DASHBOARD } from 'src/modules/Dashboard/DashboardConfig'
+import { AlpiqSubscriptionConfig } from './modules/User/AlpiqSubscription/AlpiqSubscriptionConfig'
 
 /**
  *
@@ -48,6 +49,8 @@ export const routes = [
     ...EcogestesConfig,
     ...AlertsConfig,
     ...MaintenanceConfig,
+    ...AlpiqSubscriptionConfig,
+    ...DashboardConfig,
     {
         /**
          * TODO Document.
@@ -56,7 +59,7 @@ export const routes = [
          */
         // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
         // eslint-disable-next-line react/display-name
-        component: (): JSX.Element => <Redirect to="/my-consumption" />,
+        component: (): JSX.Element => <Redirect to={URL_DASHBOARD} />,
         path: '/',
         auth: { authType: authTypes.loginRequired },
     } as IRoute</**
@@ -139,4 +142,4 @@ export type IPageSettingsDisabled = IPageSettings & /**
 export const navigationsConfig: IRouteNavigationConfig</**
  *
  */
-{}>[] = [MyConsumptionConfig[0], AnalysisConfig[0], AdvicesConfig[0], MyHouseConfig[0]]
+{}>[] = [DashboardConfig[0], MyConsumptionConfig[0], AnalysisConfig[0], AdvicesConfig[0], MyHouseConfig[0]]

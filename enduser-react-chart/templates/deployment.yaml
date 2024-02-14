@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
       - name: enduser-react
-        image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+        image: "{{ .Values.image.repository }}:{{ .Values.global.image.tag}}"
         imagePullPolicy: {{ .Values.global.imagePullPolicy }}
         ports:
         - containerPort: 80
@@ -297,5 +297,15 @@ spec:
             configMapKeyRef:
               name: enduser-react
               key: REACT_APP_EQUIPMENT_MEASUREMENT_FEATURE_STATE 
+        - name: REACT_APP_DASHBOARD_FEATURE_STATE
+          valueFrom:
+            configMapKeyRef:
+              name: enduser-react
+              key: REACT_APP_DASHBOARD_FEATURE_STATE
+        - name: REACT_APP_ALPIQ_SUBSCRIPTION_FORM_STATE
+          valueFrom:
+            configMapKeyRef:
+              name: enduser-react
+              key: REACT_APP_ALPIQ_SUBSCRIPTION_FORM_STATE
       imagePullSecrets:
       - name: dockersecret  

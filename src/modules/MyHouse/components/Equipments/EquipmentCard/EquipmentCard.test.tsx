@@ -4,6 +4,13 @@ import { screen, waitFor } from '@testing-library/react'
 import { reduxedRender } from 'src/common/react-platform-components/test'
 import { EquipmentCard } from 'src/modules/MyHouse/components/Equipments/EquipmentCard'
 import { EquipmentCardProps } from 'src/modules/MyHouse/components/Equipments/EquipmentCard/equipmentsCard'
+import { URL_MY_HOUSE } from 'src/modules/MyHouse/MyHouseConfig'
+import { TEST_HOUSES } from 'src/mocks/handlers/houses'
+import { applyCamelCase } from 'src/common/react-platform-components'
+import { IHousing } from 'src/modules/MyHouse/components/HousingList/housing'
+
+// List of houses to add to the redux state
+const LIST_OF_HOUSES: IHousing[] = applyCamelCase(TEST_HOUSES)
 
 let mockIsEquipmentMeasurementFeatureState = true
 
@@ -33,6 +40,7 @@ describe('EquipmentCard tests', () => {
     }
 
     const EQUIPMENT_CARD_TEST_ID = 'equipment-item'
+    const MES_MESURES_TEXT = 'Mes mesures'
 
     test('if equipmentCard component is rendered', async () => {
         const { getByTestId } = reduxedRender(
@@ -99,7 +107,23 @@ describe('EquipmentCard tests', () => {
             expect(screen.getByRole('presentation')).toBeInTheDocument()
         })
     })
-    test('when isEquipmentMeasurementFeatureState is false, the button is disabled', async () => {
+    test('measurement results', async () => {
+        mockEquipmentCardProps.equipment.name = 'microwave'
+        reduxedRender(
+            <Router>
+                <EquipmentCard {...mockEquipmentCardProps} />
+            </Router>,
+            {
+                initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[0] } },
+            },
+        )
+        userEvent.click(screen.getByText(MES_MESURES_TEXT))
+
+        await waitFor(() => {
+            expect(window.location.pathname).toBe(`${URL_MY_HOUSE}/${LIST_OF_HOUSES[0].id}/equipments/details`)
+        })
+    })
+    test('when isEquipmentMeasurementFeatureState is false, the buttons is disabled', async () => {
         mockIsEquipmentMeasurementFeatureState = false
         mockEquipmentCardProps.equipment.name = 'microwave'
         const { getByText } = reduxedRender(
@@ -110,6 +134,7 @@ describe('EquipmentCard tests', () => {
         const measurementButton = getByText('Mesurer')
         userEvent.click(measurementButton)
         expect(() => getByText("Mesure d'appareil")).toThrow()
+        expect(getByText(MES_MESURES_TEXT).closest('button')).toBeDisabled()
         expect(getByText('Mesurer').closest('button')).toBeDisabled()
     })
 })

@@ -18,6 +18,8 @@ import { ecogestesEndpoints } from 'src/mocks/handlers/ecogestes'
 import { novuALertPreferencesEndpoints } from './handlers/novuAlertPreferences'
 import { connectedPlugsEndpoints } from 'src/mocks/handlers/connectedPlugs'
 import { accessRightsEndpoints } from './handlers/accessRights'
+import { DashboardEndpoints } from 'src/mocks/handlers/dashboard'
+import { AlpiqSubscriptionEndpoints } from 'src/mocks/handlers/alpiqSubscription'
 
 /**
  * Handlers to mock urls for tests.
@@ -59,6 +61,9 @@ const handlers = [
     ...connectedPlugsEndpoints,
     /****** Access rights endpoint. */
     ...accessRightsEndpoints,
+    ...DashboardEndpoints,
+    /****** Alpiq Subscription Endpoints. */
+    ...AlpiqSubscriptionEndpoints,
 ]
 
 // This configures a request mocking server with the given request handlers.

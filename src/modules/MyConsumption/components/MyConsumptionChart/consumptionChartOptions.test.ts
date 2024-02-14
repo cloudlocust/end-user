@@ -15,6 +15,7 @@ import { createTheme } from '@mui/material/styles'
 import { PeriodEnum } from 'src/modules/MyConsumption/myConsumptionTypes.d'
 import { targetYAxisIndexEnum } from 'src/modules/MyConsumption/components/MyConsumptionChart/MyConsumptionChartTypes.d'
 import { EChartsOption } from 'echarts-for-react'
+import { SwitchConsumptionButtonTypeEnum } from 'src/modules/MyConsumption/components/SwitchConsumptionButton/SwitchConsumptionButton.types'
 
 describe('Test echartsConsumptionOptions', () => {
     const theme = createTheme({
@@ -30,67 +31,70 @@ describe('Test echartsConsumptionOptions', () => {
 
     test('getColorTargetSeriesEchartsConsumptionChart', () => {
         const caseList = [
-            { target: metricTargetsEnum.externalTemperature, isSolarProductionConsentOff: false, color: '#FFC200' },
-            { target: metricTargetsEnum.internalTemperature, isSolarProductionConsentOff: false, color: '#BA1B1B' },
-            { target: metricTargetsEnum.pMax, isSolarProductionConsentOff: false, color: '#FF7A00' },
+            { target: metricTargetsEnum.externalTemperature, color: '#FFC200' },
+            { target: metricTargetsEnum.internalTemperature, color: '#BA1B1B' },
+            { target: metricTargetsEnum.pMax, color: '#FF7A00' },
             {
                 target: metricTargetsEnum.eurosConsumption,
-                isSolarProductionConsentOff: false,
+
                 color: TRANSPARENT_COLOR,
             },
             {
                 target: metricTargetsEnum.totalEurosIdleConsumption,
-                isSolarProductionConsentOff: false,
+
                 color: TRANSPARENT_COLOR,
             },
             {
                 target: metricTargetsEnum.totalIdleConsumption,
-                isSolarProductionConsentOff: false,
+
                 color: TRANSPARENT_COLOR,
             },
             {
                 target: metricTargetsEnum.baseEuroConsumption,
-                isSolarProductionConsentOff: false,
+
                 color: theme.palette.primary.light,
             },
             {
                 target: metricTargetsEnum.totalEurosOffIdleConsumption,
-                isSolarProductionConsentOff: false,
+
                 color: theme.palette.primary.light,
             },
             {
                 target: metricTargetsEnum.onlyEuroConsumption,
-                isSolarProductionConsentOff: false,
+
                 color: theme.palette.primary.light,
             },
-            { target: metricTargetsEnum.autoconsumption, isSolarProductionConsentOff: false, color: '#BEECDB' },
-            { target: metricTargetsEnum.idleConsumption, isSolarProductionConsentOff: false, color: '#8191B2' },
-            { target: metricTargetsEnum.eurosIdleConsumption, isSolarProductionConsentOff: false, color: '#8191B2' },
-            { target: metricTargetsEnum.subscriptionPrices, isSolarProductionConsentOff: false, color: '#CCDCDD' },
-            { target: metricTargetsEnum.peakHourConsumption, isSolarProductionConsentOff: false, color: '#CC9121' },
-            { target: metricTargetsEnum.offPeakHourConsumption, isSolarProductionConsentOff: false, color: '#CCAB1D' },
+            { target: metricTargetsEnum.autoconsumption, color: '#BEECDB' },
+            { target: metricTargetsEnum.idleConsumption, color: '#8191B2' },
+            { target: metricTargetsEnum.eurosIdleConsumption, color: '#8191B2' },
+            { target: metricTargetsEnum.subscriptionPrices, color: '#CCDCDD' },
+            { target: metricTargetsEnum.peakHourConsumption, color: '#CC9121' },
+            { target: metricTargetsEnum.offPeakHourConsumption, color: '#CCAB1D' },
             {
                 target: metricTargetsEnum.totalOffIdleConsumption,
-                isSolarProductionConsentOff: false,
+
                 color: theme.palette.secondary.main,
             },
-            { target: metricTargetsEnum.consumption, isSolarProductionConsentOff: true, color: TRANSPARENT_COLOR },
             {
                 target: metricTargetsEnum.consumption,
-                isSolarProductionConsentOff: false,
+
                 color: theme.palette.secondary.main,
             },
-            { target: metricTargetsEnum.euroPeakHourConsumption, isSolarProductionConsentOff: false, color: '#6BCBFF' },
-            { target: metricTargetsEnum.euroOffPeakConsumption, isSolarProductionConsentOff: false, color: '#BEE8FF' },
+            { target: metricTargetsEnum.euroPeakHourConsumption, color: '#6BCBFF' },
+            { target: metricTargetsEnum.euroOffPeakConsumption, color: '#BEE8FF' },
             {
                 target: metricTargetsEnum.onlyConsumption,
-                isSolarProductionConsentOff: false,
+
                 color: theme.palette.secondary.main,
             },
         ]
-        caseList.forEach(({ color, isSolarProductionConsentOff, target }) => {
+        caseList.forEach(({ color, target }) => {
             // Result
-            const resultColor = getColorTargetSeriesEchartsConsumptionChart(target, theme, isSolarProductionConsentOff)
+            const resultColor = getColorTargetSeriesEchartsConsumptionChart(
+                target,
+                theme,
+                SwitchConsumptionButtonTypeEnum.AutoconsmptionProduction,
+            )
 
             expect(resultColor).toStrictEqual(color)
         })
@@ -142,25 +146,26 @@ describe('Test echartsConsumptionOptions', () => {
                 )['0']
                 expect(consumptionYAxisWeeklyValueFormatter(10_000)).toBe('0 MWh')
             })
-            test('YAxis duplicates values', async () => {
-                // Removing duplicates from yAxisLine because when rounding values it creates duplicates.
-                // Echarts handles data two times and the second time the duplicates processing happens
-                // REFRENCE: SEE ConsumptionValueFormatter in echartsConsumptionChartOptions function for more documentation.
-                const consumptionYAxisDuplicatesValueFormatter = getTargetsYAxisValueFormatters(
-                    {
-                        [metricTargetsEnum.consumption]: [100, 200, 300],
-                    },
-                    PeriodEnum.WEEKLY,
-                    true,
-                )['0']
-                // Triggering the echarts first process.
-                expect(consumptionYAxisDuplicatesValueFormatter(1)).toBe('1 Wh')
-                // Triggering the duplication handling.
-                expect(consumptionYAxisDuplicatesValueFormatter(0)).toBe('0 Wh')
-                expect(consumptionYAxisDuplicatesValueFormatter(0)).toBe(null)
-                expect(consumptionYAxisDuplicatesValueFormatter(1)).toBe('1 Wh')
-                expect(consumptionYAxisDuplicatesValueFormatter(1)).toBe(null)
-            })
+            // This test is related to the commented code in the component.
+            // test('YAxis duplicates values', async () => {
+            //     // Removing duplicates from yAxisLine because when rounding values it creates duplicates.
+            //     // Echarts handles data two times and the second time the duplicates processing happens
+            //     // REFRENCE: SEE ConsumptionValueFormatter in echartsConsumptionChartOptions function for more documentation.
+            //     const consumptionYAxisDuplicatesValueFormatter = getTargetsYAxisValueFormatters(
+            //         {
+            //             [metricTargetsEnum.consumption]: [100, 200, 300],
+            //         },
+            //         PeriodEnum.WEEKLY,
+            //         true,
+            //     )['0']
+            //     // Triggering the echarts first process.
+            //     expect(consumptionYAxisDuplicatesValueFormatter(1)).toBe('1 Wh')
+            //     // Triggering the duplication handling.
+            //     expect(consumptionYAxisDuplicatesValueFormatter(0)).toBe('0 Wh')
+            //     expect(consumptionYAxisDuplicatesValueFormatter(0)).toBe(null)
+            //     expect(consumptionYAxisDuplicatesValueFormatter(1)).toBe('1 Wh')
+            //     expect(consumptionYAxisDuplicatesValueFormatter(1)).toBe(null)
+            // })
         })
         test('Temperature value formatter', async () => {
             const temperatureValueFormatter = getTargetsYAxisValueFormatters({}, PeriodEnum.DAILY, false)['1']
@@ -188,33 +193,28 @@ describe('Test echartsConsumptionOptions', () => {
         const caseList = [
             {
                 target: metricTargetsEnum.externalTemperature,
-                isSolarProductionConsentOff: false,
                 stack: 'stackExternalTemperatureTargetSeries',
             },
             {
                 target: metricTargetsEnum.internalTemperature,
-                isSolarProductionConsentOff: false,
                 stack: 'stackInternalTemperatureTargetSeries',
             },
             {
                 target: metricTargetsEnum.pMax,
-                isSolarProductionConsentOff: false,
                 stack: 'stackPmaxTargetSeries',
             },
             {
                 target: metricTargetsEnum.eurosConsumption,
-                isSolarProductionConsentOff: false,
                 stack: 'stackHiddenTargetsSeries',
             },
             {
                 target: metricTargetsEnum.idleConsumption,
-                isSolarProductionConsentOff: false,
                 stack: 'stackConsumptionTargetsSeries',
             },
         ]
-        caseList.forEach(({ stack, isSolarProductionConsentOff, target }) => {
+        caseList.forEach(({ stack, target }) => {
             // Result
-            const resultStack = getStackTargetSeriesEchartsConsumptionChart(target, theme, isSolarProductionConsentOff)
+            const resultStack = getStackTargetSeriesEchartsConsumptionChart(target, theme)
 
             expect(resultStack).toStrictEqual(stack)
         })
@@ -227,106 +227,101 @@ describe('Test echartsConsumptionOptions', () => {
         const caseList = [
             {
                 target: metricTargetsEnum.externalTemperature,
-                isSolarProductionConsentOff: false,
                 name: 'Température Extérieure',
             },
             {
                 target: metricTargetsEnum.internalTemperature,
-                isSolarProductionConsentOff: false,
                 name: 'Température Intérieure',
             },
-            { target: metricTargetsEnum.pMax, isSolarProductionConsentOff: false, name: 'Pmax' },
+            { target: metricTargetsEnum.pMax, name: 'Pmax' },
             {
                 target: metricTargetsEnum.eurosConsumption,
-                isSolarProductionConsentOff: false,
                 name: totalEurosConsumptionSeriesLabel,
             },
             {
                 target: metricTargetsEnum.totalEurosIdleConsumption,
-                isSolarProductionConsentOff: false,
                 name: totalEurosConsumptionSeriesLabel,
             },
             {
                 target: metricTargetsEnum.totalIdleConsumption,
-                isSolarProductionConsentOff: false,
                 name: totalConsumptionSeriesLabel,
             },
             {
                 target: metricTargetsEnum.baseEuroConsumption,
-                isSolarProductionConsentOff: false,
+                switchButtonType: SwitchConsumptionButtonTypeEnum.Consumption,
                 name: 'Consommation euro de base',
             },
             {
                 target: metricTargetsEnum.totalEurosOffIdleConsumption,
-                isSolarProductionConsentOff: false,
                 name: 'Consommation euro Hors-veille',
             },
             {
                 target: metricTargetsEnum.onlyEuroConsumption,
-                isSolarProductionConsentOff: false,
                 name: totalEurosConsumptionSeriesLabel,
             },
-            { target: metricTargetsEnum.autoconsumption, isSolarProductionConsentOff: false, name: 'Autoconsommation' },
+            {
+                target: metricTargetsEnum.autoconsumption,
+                switchButtonType: SwitchConsumptionButtonTypeEnum.AutoconsmptionProduction,
+                name: 'Autoconsommation',
+            },
             {
                 target: metricTargetsEnum.idleConsumption,
-                isSolarProductionConsentOff: false,
                 name: 'Consommation de veille',
             },
             {
                 target: metricTargetsEnum.eurosIdleConsumption,
-                isSolarProductionConsentOff: false,
                 name: 'Consommation euro de veille',
             },
-            { target: metricTargetsEnum.subscriptionPrices, isSolarProductionConsentOff: false, name: 'Abonnement' },
+            {
+                target: metricTargetsEnum.subscriptionPrices,
+                name: 'Abonnement',
+            },
             {
                 target: metricTargetsEnum.peakHourConsumption,
-                isSolarProductionConsentOff: false,
+                switchButtonType: SwitchConsumptionButtonTypeEnum.Consumption,
                 name: 'Consommation en HP',
             },
             {
                 target: metricTargetsEnum.offPeakHourConsumption,
-                isSolarProductionConsentOff: false,
+                switchButtonType: SwitchConsumptionButtonTypeEnum.Consumption,
                 name: 'Consommation en HC',
             },
             {
                 target: metricTargetsEnum.totalOffIdleConsumption,
-                isSolarProductionConsentOff: false,
                 name: 'Consommation Hors-veille',
             },
             {
                 target: metricTargetsEnum.consumption,
-                isSolarProductionConsentOff: true,
+                switchButtonType: SwitchConsumptionButtonTypeEnum.Consumption,
                 name: totalConsumptionSeriesLabel,
             },
             {
                 target: metricTargetsEnum.consumption,
-                isSolarProductionConsentOff: false,
+                switchButtonType: SwitchConsumptionButtonTypeEnum.AutoconsmptionProduction,
                 name: 'Electricité achetée sur le réseau',
             },
             {
                 target: metricTargetsEnum.euroPeakHourConsumption,
-                isSolarProductionConsentOff: false,
                 name: 'Consommation achetée HP',
             },
             {
                 target: metricTargetsEnum.euroOffPeakConsumption,
-                isSolarProductionConsentOff: false,
                 name: 'Consommation achetée HC',
             },
             {
                 target: metricTargetsEnum.baseConsumption,
-                isSolarProductionConsentOff: true,
+                switchButtonType: SwitchConsumptionButtonTypeEnum.Consumption,
                 name: 'Consommation de base',
             },
             {
                 target: metricTargetsEnum.baseConsumption,
-                isSolarProductionConsentOff: false,
+                switchButtonType: SwitchConsumptionButtonTypeEnum.AutoconsmptionProduction,
                 name: 'Electricité achetée sur le réseau',
             },
         ]
-        caseList.forEach(({ name, isSolarProductionConsentOff, target }) => {
+        caseList.forEach(({ name, switchButtonType, target }) => {
             // Result
-            const resultName = getNameTargetSeriesEchartsConsumptionChart(target, isSolarProductionConsentOff)
+            const resultName = getNameTargetSeriesEchartsConsumptionChart(target, switchButtonType)
 
             expect(resultName).toStrictEqual(name)
         })
@@ -513,7 +508,7 @@ describe('Test echartsConsumptionOptions', () => {
             const FirstJanData = getXAxisCategoriesData([FirstJanTimetamp], PeriodEnum.DAILY)
             const result = getXAxisOptionEchartsConsumptionChart(
                 FirstJanData,
-                true,
+                SwitchConsumptionButtonTypeEnum.Consumption,
                 PeriodEnum.DAILY,
                 theme.palette.primary.contrastText,
             )
@@ -560,7 +555,7 @@ describe('Test echartsConsumptionOptions', () => {
             const FirstJanData = getXAxisCategoriesData([FirstJanTimetamp], PeriodEnum.DAILY)
             const xAxisDailyOption = getXAxisOptionEchartsConsumptionChart(
                 FirstJanData,
-                true,
+                SwitchConsumptionButtonTypeEnum.Consumption,
                 PeriodEnum.DAILY,
                 theme.palette.primary.contrastText,
             )
@@ -574,7 +569,7 @@ describe('Test echartsConsumptionOptions', () => {
             const FirstJanData = getXAxisCategoriesData([FirstJanTimetamp], PeriodEnum.WEEKLY)
             const xAxisWeeklyOption = getXAxisOptionEchartsConsumptionChart(
                 FirstJanData,
-                true,
+                SwitchConsumptionButtonTypeEnum.Consumption,
                 PeriodEnum.WEEKLY,
                 theme.palette.primary.contrastText,
             )
@@ -588,7 +583,7 @@ describe('Test echartsConsumptionOptions', () => {
             const FirstJanData = getXAxisCategoriesData([FirstJanTimetamp], PeriodEnum.MONTHLY)
             const xAxisMonthlyOption = getXAxisOptionEchartsConsumptionChart(
                 FirstJanData,
-                true,
+                SwitchConsumptionButtonTypeEnum.Consumption,
                 PeriodEnum.MONTHLY,
                 theme.palette.primary.contrastText,
             )
@@ -602,7 +597,7 @@ describe('Test echartsConsumptionOptions', () => {
             const FirstJanData = getXAxisCategoriesData([FirstJanTimetamp], PeriodEnum.YEARLY)
             const xAxisYearlyOption = getXAxisOptionEchartsConsumptionChart(
                 FirstJanData,
-                true,
+                SwitchConsumptionButtonTypeEnum.Consumption,
                 PeriodEnum.YEARLY,
                 theme.palette.primary.contrastText,
             )
@@ -621,6 +616,9 @@ describe('Test echartsConsumptionOptions', () => {
         const commonOptions = {
             type: 'value',
             axisLine: {
+                axisLabel: {
+                    show: true,
+                },
                 onZero: true,
                 show: true,
                 lineStyle: {
@@ -654,6 +652,7 @@ describe('Test echartsConsumptionOptions', () => {
                             opacity: 0.4,
                         },
                     },
+                    min: 0,
                 },
                 // TEMPERATURE YAXIS
                 {
@@ -672,6 +671,7 @@ describe('Test echartsConsumptionOptions', () => {
                             opacity: 0,
                         },
                     },
+                    min: 0,
                 },
                 // PMAX YAXIS
                 {
@@ -690,6 +690,7 @@ describe('Test echartsConsumptionOptions', () => {
                             opacity: 0,
                         },
                     },
+                    min: 0,
                 },
                 // EUROS YAXIS
                 {
@@ -708,6 +709,7 @@ describe('Test echartsConsumptionOptions', () => {
                             opacity: 0.4,
                         },
                     },
+                    min: 0,
                 },
             ],
         } as EChartsOption)

@@ -3,7 +3,7 @@ import { BrowserRouter as Router } from 'react-router-dom'
 import { reduxedRender } from 'src/common/react-platform-components/test'
 import { NrLinkConnectionSteps } from 'src/modules/nrLinkConnection'
 import userEvent from '@testing-library/user-event'
-import { URL_CONSUMPTION } from 'src/modules/MyConsumption'
+import { URL_DASHBOARD } from 'src/modules/Dashboard/DashboardConfig'
 
 const BACK_BUTTON_TEXT = 'Précédent'
 const NEXT_BUTTON_TEXT = 'Suivant'
@@ -79,7 +79,7 @@ describe('Test NrLinkConnection Page', () => {
             await waitFor(() => {
                 expect(getByText(SKIP_LINK_TEXT)).toBeTruthy()
             })
-            expect(getByText(SKIP_LINK_TEXT).closest('a')).toHaveAttribute('href', URL_CONSUMPTION)
+            expect(getByText(SKIP_LINK_TEXT).closest('a')).toHaveAttribute('href', URL_DASHBOARD)
         })
         test('When Screen is landscape stepper is vertical, and content is inside the stepper and stepContent, Skip_Link it should redirect to URL_CONSUMPTION', async () => {
             Object.defineProperty(window, 'matchMedia', {
@@ -99,7 +99,7 @@ describe('Test NrLinkConnection Page', () => {
             await waitFor(() => {
                 expect(getByText(SKIP_LINK_TEXT)).toBeTruthy()
             })
-            expect(getByText(SKIP_LINK_TEXT).closest('a')).toHaveAttribute('href', URL_CONSUMPTION)
+            expect(getByText(SKIP_LINK_TEXT).closest('a')).toHaveAttribute('href', URL_DASHBOARD)
         })
     })
     describe('test stateChanges', () => {

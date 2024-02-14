@@ -1,4 +1,4 @@
-import { Card, CardContent, Icon, useTheme, CardActionArea } from '@mui/material'
+import { Card, CardContent, Icon, CardActionArea } from '@mui/material'
 import { FC } from 'react'
 import { useHistory } from 'react-router-dom'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
@@ -17,7 +17,6 @@ export const EcogesteCategoryCard: FC<IEcogesteCategoryCardProps> = ({
     ecogestCategory,
     categoryType,
 }: IEcogesteCategoryCardProps): JSX.Element => {
-    const theme = useTheme()
     const history = useHistory()
 
     /**
@@ -30,7 +29,7 @@ export const EcogesteCategoryCard: FC<IEcogesteCategoryCardProps> = ({
     const ecogestsNumberFormatted = `${ecogestCategory.nbEcogeste} Écogeste${ecogestCategory.nbEcogeste > 1 ? 's' : ''}`
 
     return (
-        <Card style={{ width: '150px', height: '180px' }} aria-label="ecogestCategoryCard">
+        <Card sx={{ width: '135px', height: '180px', boxShadow: 3 }} aria-label="ecogestCategoryCard">
             <CardActionArea className="w-full h-full" onClick={handleClick}>
                 <CardContent className="flex flex-col flex-nowrap justify-around h-full w-full">
                     <Icon
@@ -40,26 +39,21 @@ export const EcogesteCategoryCard: FC<IEcogesteCategoryCardProps> = ({
                     >
                         <img
                             style={{
-                                filter: `opacity(0.1) drop-shadow(0 0 0 ${theme.palette.primary.main}) drop-shadow(0 0 0 ${theme.palette.primary.main}) drop-shadow(0 0 0 ${theme.palette.primary.main}) drop-shadow(0 0 0 ${theme.palette.primary.main}) drop-shadow(0 0 0 ${theme.palette.primary.main})`,
                                 height: 'inherit',
                                 margin: 'auto',
                             }}
                             src={ecogestCategory.icon}
                             alt={ecogestCategory.name}
-                        ></img>
+                        />
                     </Icon>
                     <div className="flex flex-col justify-evenly items-center">
-                        <TypographyFormatMessage className="font-bold text-12 md:text-13 whitespace-normal text-center mb-4">
+                        <TypographyFormatMessage className="font-bold text-12 sm:text-13 whitespace-normal text-center mb-4">
                             {ecogestCategory.name}
                         </TypographyFormatMessage>
-                        <TypographyFormatMessage className="text-center text-12 md:text-13">
+                        <TypographyFormatMessage className="text-center text-12 sm:text-13">
                             {ecogestsNumberFormatted}
                         </TypographyFormatMessage>
                     </div>
-                    {/* <TypographyFormatMessage className="font-bold text-15 whitespace-normal text-center">
-                        {ecogestCategory.name}
-                    </TypographyFormatMessage>
-                    <TypographyFormatMessage className="text-center">{ecogestsNumberFormatted}</TypographyFormatMessage> */}
                 </CardContent>
             </CardActionArea>
         </Card>

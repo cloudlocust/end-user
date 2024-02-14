@@ -1,4 +1,3 @@
-import { useEffect } from 'react'
 import { NovuProvider, useNotifications, PopoverNotificationCenter, NotificationBell } from '@novu/notification-center'
 import {
     REACT_APP_NOVU_APPLICATION_IDENTIFIER,
@@ -10,7 +9,6 @@ import { RootState } from 'src/redux'
 import EmptyTableMessage from 'src/common/ui-kit/components/Table/EmptyTableMessage'
 import './Notification.scss'
 import { useIntl } from 'src/common/react-platform-translation'
-import { getTokenFromFirebase } from 'src/firebase'
 
 /**
  * Notification Component using novu library.
@@ -19,11 +17,6 @@ import { getTokenFromFirebase } from 'src/firebase'
  */
 const Notification = () => {
     const { user } = useSelector(({ userModel }: RootState) => userModel)
-
-    useEffect(() => {
-        // Send the device token to the backend
-        getTokenFromFirebase()
-    }, [])
 
     return (
         <NovuProvider
