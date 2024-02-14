@@ -19,7 +19,7 @@ const EurosConsumptionButtonToggler = ({
     const theme = useTheme()
 
     return (
-        <>
+        <div className="flex items-center">
             {!isEurosButtonToggled ? (
                 <div>
                     <IconButton
@@ -53,7 +53,7 @@ const EurosConsumptionButtonToggler = ({
                     <BoltIcon sx={{ width: 24, height: 24 }} />
                 </IconButton>
             )}
-        </>
+        </div>
     )
 }
 

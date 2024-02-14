@@ -366,6 +366,34 @@ describe('MyConsumptionContainer test', () => {
         mockManualContractFillingIsEnabled = true
     })
 
+    test('When daily period, no button idle', async () => {
+        echartsConsumptionChartContainerProps.period = 'daily'
+        echartsConsumptionChartContainerProps.metricsInterval = '1m' as metricIntervalType
+
+        const { queryByText } = reduxedRender(
+            <Router>
+                <ConsumptionChartContainer {...echartsConsumptionChartContainerProps} />
+            </Router>,
+            { initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[0] } } },
+        )
+
+        expect(queryByText('Veille')).not.toBeInTheDocument()
+    })
+
+    test('When daily period, their is button for labelisation', async () => {
+        echartsConsumptionChartContainerProps.period = 'daily'
+        echartsConsumptionChartContainerProps.metricsInterval = '1m' as metricIntervalType
+
+        const { queryByText } = reduxedRender(
+            <Router>
+                <ConsumptionChartContainer {...echartsConsumptionChartContainerProps} />
+            </Router>,
+            { initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[0] } } },
+        )
+
+        expect(queryByText('Identifier mes appareils')).toBeInTheDocument()
+    })
+
     describe('TemperatureOrPmax TargetMenuGroup Test', () => {
         test('When clicking on reset button, getMetrics should be called without pMax or temperature', async () => {
             echartsConsumptionChartContainerProps.period = 'weekly'
