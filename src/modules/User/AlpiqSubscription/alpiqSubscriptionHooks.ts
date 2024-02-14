@@ -94,6 +94,7 @@ export const useAlpiqProvider = () => {
                 }),
                 { variant: 'error' },
             )
+            return
         }
         setLoadingInProgress(true)
         try {

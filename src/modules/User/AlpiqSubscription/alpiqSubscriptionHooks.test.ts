@@ -30,15 +30,9 @@ describe('Test useAlpiqProvider functions', () => {
     describe('Test Get monthly subscription estimation', () => {
         test('When no housingId, returns error message', async () => {
             const {
-                renderedHook: { result, waitForValueToChange },
+                renderedHook: { result },
             } = reduxedRenderHook(() => useAlpiqProvider())
             result.current.getMonthlySubscriptionEstimation(3, 'BASE', undefined)
-            await waitForValueToChange(
-                () => {
-                    return result.current.loadingInProgress
-                },
-                { timeout: 6000 },
-            )
             expect(mockEnqueueSnackbar).toHaveBeenCalledWith(NO_HOUSING_ERROR_MESSAGE, {
                 variant: 'error',
             })
