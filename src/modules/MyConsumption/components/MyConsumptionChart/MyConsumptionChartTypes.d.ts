@@ -1,6 +1,8 @@
-import { Dispatch, SetStateAction } from 'react'
+import { RefObject } from 'react'
 import { metricIntervalType, targetTimestampsValuesFormat } from 'src/modules/Metrics/Metrics'
+import { Dispatch, SetStateAction } from 'react'
 import { periodType } from 'src/modules/MyConsumption/myConsumptionTypes.d'
+import ReactECharts from 'echarts-for-react'
 
 /**
  * Period of time type, with start and end time.
@@ -123,4 +125,12 @@ export interface ConsumptionChartProps {
      * The time interval in the label selected by the user.
      */
     selectedLabelPeriod?: IPeriodTime
+    /**
+     * ChartRef.
+     */
+    chartRef?: RefObject<ReactECharts>
+    /**
+     * Set Input period Time.
+     */
+    setInputPeriodTime?: (periodTime: IPeriodTime) => void
 }

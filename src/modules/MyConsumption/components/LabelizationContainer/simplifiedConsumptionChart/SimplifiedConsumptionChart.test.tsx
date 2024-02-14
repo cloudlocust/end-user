@@ -150,14 +150,13 @@ describe('MyConsumptionContainer test', () => {
         setupJestCanvasMock()
     })
     test('Simplified consumption chart renders correctly.', async () => {
-        const { getByText, queryAllByText } = reduxedRender(
+        const { queryAllByText } = reduxedRender(
             <Router>
                 <SimplifiedConsumptionChartContainer {...echartsConsumptionChartContainerProps} />
             </Router>,
             { initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[0] } } },
         )
         expect(queryAllByText('Ajouter un label')).toBeTruthy()
-        expect(getByText('Retour')).toBeTruthy()
     })
     test('onLoad getMetrics with isSolarProductionConsentOff false is called two times, one with default targets of autoconsumption and then all targets.', async () => {
         const { getByText } = reduxedRender(

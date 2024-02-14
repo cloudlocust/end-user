@@ -18,16 +18,14 @@ import { NRLINK_ENEDIS_OFF_MESSAGE } from 'src/modules/MyConsumption/utils/myCon
 import { MissingHousingMeterErrorMessage } from 'src/modules/MyConsumption/utils/ErrorMessages'
 import SimplifiedConsumptionChartContainer from 'src/modules/MyConsumption/components/LabelizationContainer/simplifiedConsumptionChart'
 import Box from '@mui/material/Box'
+import { Button, Icon } from '@mui/material'
+import { useHistory } from 'react-router-dom'
 
 const Root = styled(PageSimple)(({ theme }) => ({
     '& .PageSimple-header': {
         minHeight: 72,
         height: 72,
         alignItems: 'center',
-        [theme.breakpoints.up('sm')]: {
-            minHeight: 136,
-            height: 136,
-        },
     },
     '& .PageSimple-contentCard': {
         overflow: 'hidden',
@@ -46,6 +44,7 @@ const Root = styled(PageSimple)(({ theme }) => ({
  */
 const LablizationContainer = () => {
     const theme = useTheme()
+    const history = useHistory()
     const { getConsents, nrlinkConsent, enedisSgeConsent, enphaseConsent, consentsLoading } = useConsents()
 
     const { currentHousing, currentHousingScopes } = useSelector(({ housingModel }: RootState) => housingModel)
@@ -114,6 +113,21 @@ const LablizationContainer = () => {
         <Root
             header={
                 <ThemeProvider theme={theme}>
+                    <div className="flex flex-col items-center ml-0 sm:ml-20">
+                        <Button
+                            className="flex justify-center items-center m-0 p-0"
+                            variant="text"
+                            onClick={() => history.goBack()}
+                        >
+                            <Icon sx={{ color: theme.palette.primary.contrastText }}>arrow_back</Icon>
+                            <TypographyFormatMessage
+                                sx={{ color: theme.palette.primary.contrastText }}
+                                className="text-16 font-medium hidden sm:flex"
+                            >
+                                Retour
+                            </TypographyFormatMessage>
+                        </Button>
+                    </div>
                     <motion.div
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}

@@ -126,6 +126,17 @@ const getDefaultOptionsEchartsConsumptionChart = (
                 minValueSpan: 10,
             },
         ],
+        brush: {
+            toolbox: ['lineX'],
+            xAxisIndex: 0,
+        },
+        toolbox: {
+            feature: {
+                brush: {
+                    show: false,
+                },
+            },
+        },
         // Putting % on the left & bottom & right helps to give space to make visible all the labels on xAxis & yAxis.
         grid: {
             left: '5%',
