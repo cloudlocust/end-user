@@ -12,7 +12,7 @@ import {
     convertToDateFnsPeriod,
     getCalendarDates,
     getDateWithTimezoneOffset,
-    getRange,
+    getRangeFromDate,
     subPeriod,
 } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
 import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker'
@@ -47,7 +47,7 @@ const MyConsumptionDatePicker = ({
     const theme = useTheme()
     const { formatMessage } = useIntl()
     const [isRangeLoading, setIsRangeLoading] = useState(false)
-    const DATE_PICKER_COLOR: string = color || theme.palette.secondary.light
+    const DATE_PICKER_COLOR: string = color || theme.palette.common.white
 
     const rangeDateFormat = {
         from: getDateWithTimezoneOffset(range.from),
@@ -65,7 +65,9 @@ const MyConsumptionDatePicker = ({
     const handleDateChange = (newDate: Date | null) => {
         if (newDate) {
             if (onDatePickerChange) onDatePickerChange(newDate)
-            else setRange(getRange(period, newDate, 'add'))
+            else {
+                setRange(getRangeFromDate(newDate, period))
+            }
         }
     }
 

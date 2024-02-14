@@ -39,10 +39,11 @@ export function useAccomodation(housingId?: number) {
         if (!housingId) return
         setIsLoadingInProgress(true)
         try {
-            await axios.post<AccomodationDataType, AxiosResponse<AccomodationDataType>>(
+            const response = await axios.post<AccomodationDataType, AxiosResponse<AccomodationDataType>>(
                 `${ACCOMODATION_API(housingId)}`,
                 body,
             )
+            setAccomodation(response.data)
             enqueueSnackbar(
                 formatMessage({
                     id: 'Vos modifications ont été sauvegardées',
