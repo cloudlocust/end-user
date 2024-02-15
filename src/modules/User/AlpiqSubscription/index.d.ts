@@ -25,3 +25,13 @@ export interface IAlpiqMeterEligibiltyResponse {
      */
     isMeterEligible: boolean
 }
+
+/**
+ * Response for alpiq monthly subscription estimation response.
+ */
+export interface IApliqMonthlySubscriptionEstimationResponse {
+    /**
+     * Monthly subscription estimation.
+     */
+    monthlySubscriptionEstimation: number
+}

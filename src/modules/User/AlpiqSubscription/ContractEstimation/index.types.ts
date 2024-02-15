@@ -9,7 +9,7 @@ export interface AlpiqContractTypeSelectOptionsType {
     /**
      * Value.
      */
-    value: 'BASE' | 'HPHC'
+    value: 'BASE' | 'HPHC' | number
 }
 
 /**
@@ -25,3 +25,10 @@ export const AlpiqContractTypeSelectOptions: AlpiqContractTypeSelectOptionsType[
         value: 'HPHC',
     },
 ]
+
+//eslint-disable-next-line
+export const AlpiqPowerValuesSelectOptions: { value: number, label: string}[] = Array.from({length: 34}, (_, index) => ({
+        value: index + 3,
+        label: `${index + 3} kva`,
+    }),
+)
