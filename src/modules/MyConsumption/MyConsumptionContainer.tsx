@@ -1,6 +1,10 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo, useCallback } from 'react'
 import { ConsumptionChartContainer } from 'src/modules/MyConsumption/components/MyConsumptionChart/ConsumptionChartContainer'
-import { formatMetricFilter, getRangeV2 } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
+import {
+    formatMetricFilter,
+    getRangeV2,
+    getDateWithTimezoneOffset,
+} from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
 import { useTheme } from '@mui/material'
 import { metricRangeType, metricFiltersType, metricIntervalType } from 'src/modules/Metrics/Metrics.d'
 import { PeriodEnum } from 'src/modules/MyConsumption/myConsumptionTypes.d'
@@ -27,17 +31,25 @@ import {
 } from 'src/modules/MyHouse/MyHouseConfig'
 import { SwitchConsumptionButtonTypeEnum } from 'src/modules/MyConsumption/components/SwitchConsumptionButton/SwitchConsumptionButton.types'
 import { useMyConsumptionStore } from 'src/modules/MyConsumption/store/myConsumptionStore'
+import { MyConsumptionContainerProps } from 'src/modules/MyConsumption/myConsumptionTypes.d'
+
+/**
+ * Const represent how many years we want to display on the calender in the yearly view.
+ */
+export const NUMBER_OF_LAST_YEARS_TO_DISPLAY_IN_DATE_PICKER_OF_YEARLY_VIEW = 3
 
 /**
  * MyConsumptionContainer.
  * Parent component.
  *
+ * @param root0 MyConsumptionContainer props.
+ * @param root0.defaultPeriod The default period will be displayed on the page.
  * @returns MyConsumptionContainer and its children.
  */
-export const MyConsumptionContainer = () => {
+export const MyConsumptionContainer = ({ defaultPeriod = PeriodEnum.DAILY }: MyConsumptionContainerProps) => {
     const theme = useTheme()
     const { getConsents, nrlinkConsent, enedisSgeConsent, enphaseConsent, consentsLoading } = useConsents()
-    const [period, setPeriod] = useState<PeriodEnum>(PeriodEnum.DAILY)
+    const [period, setPeriod] = useState<PeriodEnum>(defaultPeriod)
     const { currentHousing, currentHousingScopes } = useSelector(({ housingModel }: RootState) => housingModel)
     const [range, setRange] = useState<metricRangeType>(getRangeV2(PeriodEnum.DAILY))
     const [filters, setFilters] = useState<metricFiltersType>([])
@@ -83,6 +95,30 @@ export const MyConsumptionContainer = () => {
         loadConnectedPlugList()
     }, [loadConnectedPlugList])
 
+    const handleYearsOfDatePicker = useCallback(
+        (date) => {
+            // in yearly view display only the last three years if the enedis consent is active.
+            return (
+                period === PeriodEnum.YEARLY &&
+                !enedisOff &&
+                date.getFullYear() <
+                    new Date().getFullYear() - NUMBER_OF_LAST_YEARS_TO_DISPLAY_IN_DATE_PICKER_OF_YEARLY_VIEW
+            )
+        },
+        [enedisOff, period],
+    )
+
+    const disablePreviousYearOfNavigationButton = useMemo(() => {
+        // in yearly view display only the previous button for the last three years if the enedis consent is active.
+        return (
+            period === PeriodEnum.YEARLY &&
+            !enedisOff &&
+            range &&
+            getDateWithTimezoneOffset(range.from).getFullYear() <=
+                new Date().getFullYear() - NUMBER_OF_LAST_YEARS_TO_DISPLAY_IN_DATE_PICKER_OF_YEARLY_VIEW
+        )
+    }, [enedisOff, period, range])
+
     if (consentsLoading)
         return (
             <Box
@@ -125,7 +161,13 @@ export const MyConsumptionContainer = () => {
                                 period={period}
                                 range={range}
                             />
-                            <MyConsumptionDatePicker period={period} setRange={setRange} range={range} />
+                            <MyConsumptionDatePicker
+                                period={period}
+                                setRange={setRange}
+                                range={range}
+                                handleYears={handleYearsOfDatePicker}
+                                isPreviousButtonDisabling={disablePreviousYearOfNavigationButton}
+                            />
                         </div>
 
                         <ConsumptionChartContainer
