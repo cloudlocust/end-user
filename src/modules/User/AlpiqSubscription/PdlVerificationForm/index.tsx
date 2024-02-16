@@ -86,52 +86,54 @@ const PdlVerificationForm = ({
     }
 
     return (
-        <Form
-            onSubmit={onSubmit}
-            defaultValues={{
-                guid: currentMeterGuid,
-            }}
-        >
-            <div className="flex justify-center w-full mb-32">
-                <TypographyFormatMessage
-                    color={theme.palette.primary.main}
-                    textAlign="center"
-                    variant={isMobile ? 'body1' : 'h6'}
-                    fontWeight={600}
-                >
-                    Connectons votre compteur Linky
-                </TypographyFormatMessage>
-            </div>
-            <div className="flex flex-col justify-start mb-32">
-                <TypographyFormatMessage
-                    color={theme.palette.text.primary}
-                    className="mb-32"
-                    variant={isMobile ? 'caption' : 'body1'}
-                    fontWeight={500}
-                >
-                    Connectons votre compteur à votre espace personnel, ainsi, une fois que vous aurez votre nrLINK vous
-                    pourrez visualiser votre consommation à la minute !
-                </TypographyFormatMessage>
-                <TextField
-                    name="guid"
-                    label="Votre N° de PDL"
-                    style={{ marginBottom: '5px' }}
-                    placeholder="Ex: 12345678912345"
-                    validateFunctions={[requiredBuilder(), regex(meteGuidNumberRegex, METER_GUID_REGEX_TEXT)]}
-                />
-                <TypographyFormatMessage variant="caption" sx={{ color: textNrlinkColor }}>
-                    * Votre N° de PDL (point de livraison) est présent sur votre facture.
-                </TypographyFormatMessage>
-            </div>
-            <div className="flex w-full justify-center mt-32">
-                <ButtonLoader inProgress={isAddOrEditInProgress || isAlpiqVerificationInProgress} type="submit">
-                    {formatMessage({
-                        id: 'Continuer',
-                        defaultMessage: 'Continuer',
-                    })}
-                </ButtonLoader>
-            </div>
-        </Form>
+        <div className="flex flex-col justify-center">
+            <Form
+                onSubmit={onSubmit}
+                defaultValues={{
+                    guid: currentMeterGuid,
+                }}
+            >
+                <div className="flex justify-center w-full mb-32">
+                    <TypographyFormatMessage
+                        color={theme.palette.primary.main}
+                        textAlign="center"
+                        variant={isMobile ? 'body1' : 'h6'}
+                        fontWeight={600}
+                    >
+                        Connectons votre compteur Linky
+                    </TypographyFormatMessage>
+                </div>
+                <div className="flex flex-col justify-start mb-32">
+                    <TypographyFormatMessage
+                        color={theme.palette.text.primary}
+                        className="mb-32"
+                        variant={isMobile ? 'caption' : 'body1'}
+                        fontWeight={500}
+                    >
+                        Connectons votre compteur à votre espace personnel, ainsi, une fois que vous aurez votre nrLINK
+                        vous pourrez visualiser votre consommation à la minute !
+                    </TypographyFormatMessage>
+                    <TextField
+                        name="guid"
+                        label="Votre N° de PDL"
+                        style={{ marginBottom: '5px' }}
+                        placeholder="Ex: 12345678912345"
+                        validateFunctions={[requiredBuilder(), regex(meteGuidNumberRegex, METER_GUID_REGEX_TEXT)]}
+                    />
+                    <TypographyFormatMessage variant="caption" sx={{ color: textNrlinkColor }}>
+                        * Votre N° de PDL (point de livraison) est présent sur votre facture.
+                    </TypographyFormatMessage>
+                </div>
+                <div className="flex w-full justify-center mt-32">
+                    <ButtonLoader inProgress={isAddOrEditInProgress || isAlpiqVerificationInProgress} type="submit">
+                        {formatMessage({
+                            id: 'Continuer',
+                            defaultMessage: 'Continuer',
+                        })}
+                    </ButtonLoader>
+                </div>
+            </Form>
+        </div>
     )
 }
 

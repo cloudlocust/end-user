@@ -9,6 +9,7 @@ import Button from '@mui/material/Button'
 import useMediaQuery from '@mui/material/useMediaQuery'
 import { textNrlinkColor } from 'src/modules/nrLinkConnection/components/LastStepNrLinkConnection/LastStepNrLinkConnection'
 
+// TODO ADD NEXT STEP AFTER VALIDATING THE SGE
 /**
  * Sge Consent Step.
  *
@@ -66,8 +67,8 @@ const SgeConsentStep = ({
                 </Button>
                 <EnedisSgePopup
                     openEnedisSgeConsentText={formatMessage({
-                        id: 'Récupérer Mes Données',
-                        defaultMessage: 'Récupérer Mes Données',
+                        id: 'Récupérer mes données',
+                        defaultMessage: 'Récupérer mes données',
                     })}
                     TypographyProps={{
                         color: theme.palette.primary.main,

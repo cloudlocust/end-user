@@ -7,11 +7,12 @@ import PdlVerificationForm from 'src/modules/User/AlpiqSubscription/PdlVerificat
 import { useIntl } from 'react-intl'
 import { FuseCard } from 'src/modules/shared/FuseCard'
 import SgeConsentStep from 'src/modules/User/AlpiqSubscription/SgeConsentStep'
+import ContractEstimation from '../ContractEstimation'
 
 /**
  * Steps labels.
  */
-export let stepsLabels = ['Mon Compteur Linky', 'Mon historique']
+export const stepsLabels = ['Mon Compteur Linky', 'Mon historique', 'Mon Contrat']
 
 /**
  * Energy Provider Subscription Stepper for Alpic.
@@ -37,7 +38,11 @@ const AlpiqSubscriptionStepper = () => {
         setActiveStep((prevActiveStep) => prevActiveStep - 1)
     }
 
-    const stepsContent = [<PdlVerificationForm handleNext={handleNext} />, <SgeConsentStep handleBack={handleBack} />]
+    const stepsContent = [
+        <PdlVerificationForm handleNext={handleNext} />,
+        <SgeConsentStep handleBack={handleBack} />,
+        <ContractEstimation handleNext={handleNext} />,
+    ]
     return (
         <div className="w-full h-full flex flex-col justify-center items-center">
             <Stepper
@@ -91,10 +96,10 @@ const AlpiqSubscriptionStepper = () => {
                 ))}
             </Stepper>
             <FuseCard
-                className="rounded flex justify-center items-center p-16 w-5/6 md:w-1/2"
+                className="rounded flex p-16 w-5/6 md:w-1/2"
                 sx={{
                     border: alpha(theme.palette.primary.light, 0.1),
-                    height: '450px',
+                    minHeight: '450px',
                 }}
             >
                 {stepsContent[activeStep]}
