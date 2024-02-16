@@ -14,7 +14,7 @@ import { mappingEquipmentNameToType, myEquipmentOptions } from 'src/modules/MyHo
 import {
     ConsumptionLabelDataType,
     SimplifiedConsumptionChartContainerPropsType,
-} from 'src/modules/MyConsumption/components/LabelizationContainer/labelizaitonTypes.d'
+} from 'src/modules/MyConsumption/components/LabelizationContainer/labelizaitonTypes.types'
 import { IPeriodTime } from 'src/modules/MyConsumption/components/MyConsumptionChart/MyConsumptionChartTypes.d'
 import ReactECharts from 'echarts-for-react'
 import AddLabelButtonForm from 'src/modules/MyConsumption/components/LabelizationContainer/AddLabelButtonForm'
@@ -22,6 +22,7 @@ import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyForm
 import { useEquipmentList } from 'src/modules/MyHouse/components/Installation/installationHook'
 import { equipmentNameType } from 'src/modules/MyHouse/components/Installation/InstallationType'
 import { useMyConsumptionStore } from 'src/modules/MyConsumption/store/myConsumptionStore'
+import { ConsumptionLabelCardProps } from 'src/modules/MyConsumption/components/LabelizationContainer/ConsumptionLabelCard/ConsumptionLabelCard.types'
 
 /**
  * MyConsumptionChartContainer Component.

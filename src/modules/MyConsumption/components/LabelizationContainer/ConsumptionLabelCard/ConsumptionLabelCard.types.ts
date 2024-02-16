@@ -1,7 +1,7 @@
 /**
  * Props of the ConsumptionLabelCard component.
  */
-interface ConsumptionLabelCardProps {
+export interface ConsumptionLabelCardProps {
     /**
      * The label equipment name.
      */

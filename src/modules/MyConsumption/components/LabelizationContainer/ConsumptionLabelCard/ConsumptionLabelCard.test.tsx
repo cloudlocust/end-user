@@ -1,6 +1,7 @@
 import { BrowserRouter as Router } from 'react-router-dom'
 import { reduxedRender } from 'src/common/react-platform-components/test'
 import ConsumptionLabelCard from 'src/modules/MyConsumption/components/LabelizationContainer/ConsumptionLabelCard'
+import { ConsumptionLabelCardProps } from 'src/modules/MyConsumption/components/LabelizationContainer/ConsumptionLabelCard/ConsumptionLabelCard.types'
 
 jest.mock('src/modules/MyConsumption/utils/unitConversionFunction', () => ({
     ...jest.requireActual('src/modules/MyConsumption/utils/unitConversionFunction'),
@@ -8,7 +9,7 @@ jest.mock('src/modules/MyConsumption/utils/unitConversionFunction', () => ({
     consumptionWattUnitConversion: (value: number) => ({ value, unit: 'kWh' }),
 }))
 
-const mockConsumptionLabelCardProp: ConsumptionLabelCardProps = {
+let mockConsumptionLabelCardProp: ConsumptionLabelCardProps = {
     equipmentName: 'Micro-onde',
     day: '2022-11-19',
     startTime: '02:50',
@@ -19,7 +20,7 @@ const mockConsumptionLabelCardProp: ConsumptionLabelCardProps = {
 }
 
 describe('ConsumptionLabelCard', () => {
-    test('should render', () => {
+    test('should render correctly', () => {
         const { getByText } = reduxedRender(
             <Router>
                 <ConsumptionLabelCard {...mockConsumptionLabelCardProp} />
@@ -38,5 +39,16 @@ describe('ConsumptionLabelCard', () => {
         expect(getByText(mockConsumptionLabelCardProp.consumptionPrice)).toBeInTheDocument()
         expect(getByText('€')).toBeInTheDocument()
         expect(getByText(mockConsumptionLabelCardProp.useType!)).toBeInTheDocument()
+    })
+
+    test('should render correctly when useType is not specified', () => {
+        mockConsumptionLabelCardProp.useType = undefined
+        const { queryByLabelText } = reduxedRender(
+            <Router>
+                <ConsumptionLabelCard {...mockConsumptionLabelCardProp} />
+            </Router>,
+        )
+
+        expect(queryByLabelText('useType')).toBeNull()
     })
 })
