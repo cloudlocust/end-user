@@ -2,6 +2,7 @@ import { BuilderUseElementList } from 'src/modules/utils/useElementHookBuilder'
 import { IEcogestCategory } from 'src/modules/Ecogestes/components/ecogeste'
 import { formatMessageType } from 'src/common/react-platform-translation'
 import { ECOGESTES_ENDPOINT, IEcogesteCategoryTypes } from 'src/modules/Ecogestes/EcogestesConfig'
+import { orderListBy } from 'src/modules/utils'
 
 // eslint-disable-next-line jsdoc/require-jsdoc
 export const loadElementListError = (_error: any, formatMessage: formatMessageType) => {
@@ -25,7 +26,7 @@ export const useEcogestesCategories = (categoryType: IEcogesteCategoryTypes) => 
     })(undefined, {})
 
     return {
-        elementList,
+        elementList: orderListBy(elementList ?? [], (item) => item.name),
         loadingInProgress,
     }
 }

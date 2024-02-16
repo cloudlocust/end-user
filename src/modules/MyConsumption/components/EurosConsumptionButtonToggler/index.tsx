@@ -19,22 +19,24 @@ const EurosConsumptionButtonToggler = ({
     const theme = useTheme()
 
     return (
-        <>
+        <div className="flex items-center">
             {!isEurosButtonToggled ? (
-                <IconButton
-                    sx={{
-                        color: 'white',
-                        backgroundColor: theme.palette.primary.light,
-                        opacity: 1,
-                        '&:hover': {
+                <div>
+                    <IconButton
+                        sx={{
+                            color: 'white',
                             backgroundColor: theme.palette.primary.light,
-                            opacity: 0.7,
-                        },
-                    }}
-                    onClick={() => onEurosConsumptionButtonToggle(true)}
-                >
-                    <EuroIcon sx={{ width: 20, height: 20 }} />
-                </IconButton>
+                            opacity: 1,
+                            '&:hover': {
+                                backgroundColor: theme.palette.primary.light,
+                                opacity: 0.7,
+                            },
+                        }}
+                        onClick={() => onEurosConsumptionButtonToggle(true)}
+                    >
+                        <EuroIcon sx={{ width: 20, height: 20 }} />
+                    </IconButton>
+                </div>
             ) : (
                 <IconButton
                     sx={{
@@ -51,7 +53,7 @@ const EurosConsumptionButtonToggler = ({
                     <BoltIcon sx={{ width: 24, height: 24 }} />
                 </IconButton>
             )}
-        </>
+        </div>
     )
 }
 

@@ -7,6 +7,7 @@ import {
     getTargetYAxisIndexFromTargetName,
     getXAxisOptionEchartsConsumptionChart,
     getYAxisOptionEchartsConsumptionChart,
+    getXAxisCategoriesData,
 } from 'src/modules/MyConsumption/components/MyConsumptionChart/consumptionChartOptions'
 import { metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
 import { TRANSPARENT_COLOR } from 'src/modules/MyConsumption/utils/myConsumptionVariables'
@@ -501,14 +502,15 @@ describe('Test echartsConsumptionOptions', () => {
 
     describe('getXAxisOptionEchartsConsumptionChart different Periods', () => {
         // GMT: Sunday, 1 January 2023 01:00:00
-        const FirstJanTimestamp = 1672534800000
+        const FirstJanTimetamp = 1672534800000
 
         test('Default options', () => {
+            const FirstJanData = getXAxisCategoriesData([FirstJanTimetamp], PeriodEnum.DAILY)
             const result = getXAxisOptionEchartsConsumptionChart(
-                [FirstJanTimestamp],
+                FirstJanData,
                 SwitchConsumptionButtonTypeEnum.Consumption,
                 PeriodEnum.DAILY,
-                theme,
+                theme.palette.primary.contrastText,
             )
             expect(result).toEqual({
                 xAxis: [
@@ -550,11 +552,12 @@ describe('Test echartsConsumptionOptions', () => {
         })
         test('Formatter DAILY', async () => {
             // XAXIS Formatter when Daily
+            const FirstJanData = getXAxisCategoriesData([FirstJanTimetamp], PeriodEnum.DAILY)
             const xAxisDailyOption = getXAxisOptionEchartsConsumptionChart(
-                [FirstJanTimestamp],
+                FirstJanData,
                 SwitchConsumptionButtonTypeEnum.Consumption,
                 PeriodEnum.DAILY,
-                theme,
+                theme.palette.primary.contrastText,
             )
             const xAxisDaily = (xAxisDailyOption.xAxis as Array<any>)![0]
             const xAxisDailyLabel = xAxisDaily.axisLabel
@@ -563,11 +566,12 @@ describe('Test echartsConsumptionOptions', () => {
         })
         test('Formatter WEEKLY', async () => {
             // XAXIS Formatter when Weekly
+            const FirstJanData = getXAxisCategoriesData([FirstJanTimetamp], PeriodEnum.WEEKLY)
             const xAxisWeeklyOption = getXAxisOptionEchartsConsumptionChart(
-                [FirstJanTimestamp],
+                FirstJanData,
                 SwitchConsumptionButtonTypeEnum.Consumption,
                 PeriodEnum.WEEKLY,
-                theme,
+                theme.palette.primary.contrastText,
             )
             const xAxisWeekly = (xAxisWeeklyOption.xAxis as Array<any>)![0]
             const xAxisWeeklyLabel = xAxisWeekly.axisLabel
@@ -576,11 +580,12 @@ describe('Test echartsConsumptionOptions', () => {
         })
         test('Formatter MONTHLY', async () => {
             // XAXIS Formatter when Monthly
+            const FirstJanData = getXAxisCategoriesData([FirstJanTimetamp], PeriodEnum.MONTHLY)
             const xAxisMonthlyOption = getXAxisOptionEchartsConsumptionChart(
-                [FirstJanTimestamp],
+                FirstJanData,
                 SwitchConsumptionButtonTypeEnum.Consumption,
                 PeriodEnum.MONTHLY,
-                theme,
+                theme.palette.primary.contrastText,
             )
             const xAxisMonthly = (xAxisMonthlyOption.xAxis as Array<any>)![0]
             const xAxisMonthlyLabel = xAxisMonthly.axisLabel
@@ -589,11 +594,12 @@ describe('Test echartsConsumptionOptions', () => {
         })
         test('Formatter YEARLY', async () => {
             // XAXIS Formatter when Yearly
+            const FirstJanData = getXAxisCategoriesData([FirstJanTimetamp], PeriodEnum.YEARLY)
             const xAxisYearlyOption = getXAxisOptionEchartsConsumptionChart(
-                [FirstJanTimestamp],
+                FirstJanData,
                 SwitchConsumptionButtonTypeEnum.Consumption,
                 PeriodEnum.YEARLY,
-                theme,
+                theme.palette.primary.contrastText,
             )
             const xAxisYearly = (xAxisYearlyOption.xAxis as Array<any>)![0]
             const xAxisYearlyLabel = xAxisYearly.axisLabel
@@ -625,7 +631,7 @@ describe('Test echartsConsumptionOptions', () => {
         const result = getYAxisOptionEchartsConsumptionChart(
             { [metricTargetsEnum.consumption]: [100, 200, 300] },
             PeriodEnum.DAILY,
-            theme,
+            theme.palette.primary.contrastText, // axis Color
         )
         expect(result).toEqual({
             yAxis: [
